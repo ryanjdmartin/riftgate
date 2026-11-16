@@ -310,13 +310,13 @@
    }
   },
   {
-   "id": "flak",
+   "id": "brittle",
    "category": "keyword",
-   "name": "Flak",
-   "codex": "Flak N: each foe hit gains N stacks of Flak a strike, laid once the strikes are done, so no strike of the spend feeds on what it lays.",
+   "name": "Brittle",
+   "codex": "Keyword with a number, the same on either side. On a weapon or equipment, Brittle 2 means each foe hit gains two stacks of Brittle a strike, laid once the strikes are done, so no strike of the spend feeds on what it lays. On a foe's attack, each blow that lands leaves that many stacks of Brittle on the machine it hit; a Ward turns it away.",
    "status": "implemented",
    "design": {
-    "holes": "The stacks land after the blow, so the blow that lays them never feeds on them and a later strike of the same spend does."
+    "holes": "Its number rides on the face beside the keyword (brittle), and the validator asks for it. Flak on our side and Crush on the foes' until 15 November, one word on both since (Ryan: \"Crushed and flak - agreed, brittle\"). The word names the state, so a piece that lays it reads Brittle 2 and the Flak pieces keep their names; a verb for it is his to pick if he wants one. A session's draft, his to write."
    }
   },
   {
@@ -532,7 +532,7 @@
    "id": "cleanse",
    "category": "keyword",
    "name": "Cleanse",
-   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Ablating, Scorched, Crushed, Jammed and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. On a foe's move of its own, the same word: every mark the team laid (Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox, the Drone) comes off the most-marked of its own, never Numbed or Suppressed.",
+   "codex": "Player keyword, on shield and vent components. Whoever the component is spent on also loses every Ablating, Scorched, Brittle, Jammed and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. On a foe's move of its own, the same word: every mark the team laid (Ablating, Brittle, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox, the Drone) comes off the most-marked of its own, never Numbed or Suppressed.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -574,10 +574,10 @@
    "id": "pinned",
    "category": "status",
    "name": "Pinned",
-   "codex": "Foe status, from the Hollow-point Harpoon. Its Flak does not halve at this round's end. Until the round's end; refreshed, never added.",
+   "codex": "Foe status, from the Hollow-point Harpoon. Its Brittle does not halve at this round's end. Until the round's end; refreshed, never added.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan, 11 November: \"The Flak pin should be its own status that gets applied for one turn. I assume we're going to want a similar one for burning as well.\" Pinned Flak until 15 November; the name is his (\"Just \\\"Pinned.\\\"\").",
+    "holes": "Ryan, 11 November: \"The Flak pin should be its own status that gets applied for one turn. I assume we're going to want a similar one for burning as well.\" Pinned Flak until 15 November, and what it holds Brittle since; the name is his (\"Just \\\"Pinned.\\\"\").",
     "table": {
      "kind": "debuff",
      "on": "foe",
@@ -593,7 +593,7 @@
    "codex": "Foe status. Its Ablating takes its points and loses no stack this round. Until the round's end; refreshed, never added.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan, 11 November: coded in beside Flak's pin, \"since the Mastema will want it as a fitted piece, if nothing else\". No piece lays it yet. The name is his, 15 November: \"Rename 'Seared.'\"",
+    "holes": "Ryan, 11 November: coded in beside Brittle's pin, \"since the Mastema will want it as a fitted piece, if nothing else\". No piece lays it yet. The name is his, 15 November: \"Rename 'Seared.'\"",
     "table": {
      "kind": "debuff",
      "on": "foe",
@@ -759,22 +759,6 @@
      "on": "machine",
      "stacks": "Yes: its bite a stack",
      "lasts": "The skirmish"
-    }
-   }
-  },
-  {
-   "id": "crushed",
-   "category": "status",
-   "name": "Crushed",
-   "codex": "Machine status, from a foe's crush (the World Eater's pin): every blow it takes deals a point more a stack, the shield taking the extra first as it takes any blow, through the next round, when every stack goes. A Ward turns the crush away; an ally's Cleanse lifts it.",
-   "status": "implemented",
-   "design": {
-    "holes": "Monster Hunter's Defense Down by archetype, the pin's mark (Ryan, 4 November: rework the World Eater's below-half bite \"into a form of its pin, since that inflicts Defense Down in game, something we don't have\"). Claude's form: Flak's shape on the other body, a point a blow a stack, so every machine feels it and the chip is a number; the forms not taken, its armour counting for nothing through the round (nothing on a car) and its shield halved (fiddly at single digits). Numbers placeholders.",
-    "table": {
-     "kind": "debuff",
-     "on": "machine",
-     "stacks": "Yes: a point more a blow a stack",
-     "lasts": "Through the next round, every stack at once"
     }
    }
   },
@@ -955,17 +939,17 @@
    }
   },
   {
-   "id": "flakked",
+   "id": "brittled",
    "category": "status",
-   "name": "Flak",
-   "codex": "Foe status, Wainwright & Sutler's on-hit. Every blow of a weapon it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.",
+   "name": "Brittle",
+   "codex": "Status, the same on either side: every blow its carrier takes deals a point more a stack, and at the end of each round the stacks halve, rounded down. On a foe: every blow of a weapon, one of 0 included, added before its armour comes off. On a machine: every blow a foe lands, the shield taking the extra first as it takes any blow; an ally's Cleanse lifts it.",
    "status": "implemented",
    "design": {
-    "holes": "Adds before multiplies and before armour, to a weapon's blow of 0 too (Ryan, 25 October: \"Flak and overcharge exist in part to get past armour\"), so a Shocked foe carrying Flak takes blow plus Flak, doubled. The id follows the participle habit (Ablating, Shocked). Numbers are placeholders; Flak beside Empowered at a point a stack each may read too strong, the two read together on the Prairie Dog's rows.",
+    "holes": "Engine ids brittled (a foe's) and brittled_mech (a machine's). Flak on a foe (Wainwright & Sutler's on-hit, 19 October) and Crushed on a machine (the World Eater's pin, 4 November, Monster Hunter's Defense Down by archetype; Ryan: \"that inflicts Defense Down in game, something we don't have\") until 15 November, folded on Ryan's mark (\"We could consider making this one symmetrical and folding it into Flak as well, changing the name so it works on both sides\") and his \"agreed, brittle\". One clock, the halving: a machine's stood whole through the next round until then, so a foe's Brittle 1 is now the pack's for the turn it is laid in and gone by the next. Adds before multiplies and before armour, to a weapon's blow of 0 too (Ryan, 25 October: \"Flak and overcharge exist in part to get past armour\"), so a Shocked foe carrying Brittle takes blow plus Brittle, doubled. Numbers are placeholders; Brittle beside Empowered at a point a stack each may read too strong, the two read together on the Prairie Dog's rows. A session's draft, his to write.",
     "table": {
      "kind": "debuff",
-     "on": "foe",
-     "stacks": "Yes: N a hit from a Flak N piece; a point more on every blow of a weapon it takes, a stack",
+     "on": "both",
+     "stacks": "Yes: N a hit from a Brittle N piece, N a blow from a foe's Brittle N; a point more on every blow it takes, a stack",
      "lasts": "Halves at the end of each round, rounded down, until gone"
     }
    }
@@ -1004,7 +988,7 @@
    "id": "mine",
    "category": "status",
    "name": "Mine",
-   "codex": "Foe status, the Lammergeier's: every weapon and equipment it aims at a foe adds its flat damage to a Mine on that foe, with what the spend fired at it: every hit's stacks and its other keywords, one Mine a foe however many spends feed it. When the foe falls, even one that gets back up or splits, the Mine blows: its damage on every foe round its slot, each through its own Flak and armour, then its keywords as on a blow. Spread, Penetrate, a spill behind and Lure stay with the spend, and its damage never grows with the spend's. The chip shows its damage; its readout, its keywords.",
+   "codex": "Foe status, the Lammergeier's: every weapon and equipment it aims at a foe adds its flat damage to a Mine on that foe, with what the spend fired at it: every hit's stacks and its other keywords, one Mine a foe however many spends feed it. When the foe falls, even one that gets back up or splits, the Mine blows: its damage on every foe round its slot, each through its own Brittle and armour, then its keywords as on a blow. Spread, Penetrate, a spill behind and Lure stay with the spend, and its damage never grows with the spend's. The chip shows its damage; its readout, its keywords.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 9 November: \"the lammergeier basically converts all hits to AoE hits, at the cost of a delay until Death\". One Mine a spend at a flat 2 (\"then look at per hit later if it's weak\"); its riders the spend's whole result on the foe (\"the mine should take the entire result of the spend, then apply it. So a 3-hit flak that burns 1 per hit if the target is under 50% HP, would result in adding a 2 damage mine with 3 flak, and 0-3 burn\"), every hit's stacks as its machine deepened and doubled them and a gated keyword where its gate held (\"if a gate is met when fired only, then apply it\"); the numbered ones add up and the rest ride once; Chain rides as its arcs (Claude's lean, which he took); in the enemy's turn a Mine's Disrupt does nothing; a Suppress rides as fired, each foe the blast meets judging its own Numbed (Claude's read; Ryan: \"Your reads are correct\"). A mark the team laid: a Ward turns it away, a foe's cleanse takes it, the Paradox counts it. A foe taken into a merge hands its Mine to the merger.",
@@ -1841,7 +1825,7 @@
    "id": "gated",
    "category": "component_property",
    "name": "Gated",
-   "codex": "A keyword printed with a condition, such as a Suppress on a foe carrying Flak or on a foe carrying two Ablating or more: it lands only on a foe that meets the condition, read as the die is spent and before the blow's own riders, so a spend never opens its own gate. Held over a foe where the condition does not hold, the die shows the keyword's chip struck through.",
+   "codex": "A keyword printed with a condition, such as a Suppress on a foe carrying Brittle or on a foe carrying two Ablating or more: it lands only on a foe that meets the condition, read as the die is spent and before the blow's own riders, so a spend never opens its own gate. Held over a foe where the condition does not hold, the die shows the keyword's chip struck through.",
    "status": "implemented",
    "design": {
     "holes": "Suppress alone carries a gate today. A working name for Ryan's name pass."
@@ -2149,7 +2133,7 @@
    "id": "ward",
    "category": "status",
    "name": "Ward",
-   "codex": "Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (ablate, scorch, jam, corrupt, purge), until the round's end. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it (Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox and the drone), nor a stun, nor a Purge, and a turned mark feeds no Paradox, until the end of the player's next turn.",
+   "codex": "Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (ablate, scorch, jam, corrupt, purge), until the round's end. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it (Ablating, Brittle, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox and the drone), nor a stun, nor a Purge, and a turned mark feeds no Paradox, until the end of the player's next turn.",
    "status": "implemented",
    "design": {
     "holes": "A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: \"Should stop all riders, even from non-damaging attacks\"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by. A foe's Ward (28 October) turns the team's marks (Effects.TEAM_MARKS), and since 2 November a stun and a Purge too, on either side, and stands (Ryan: nothing but damage lands on a Warded foe; the exception that let a stun through went with Numbed's roll).",
@@ -2169,16 +2153,6 @@
    "status": "implemented",
    "design": {
     "holes": ""
-   }
-  },
-  {
-   "id": "crush",
-   "category": "foe",
-   "name": "Crush",
-   "codex": "Foe attack keyword with a number. Each blow that lands leaves that many stacks of Crushed on the machine it hit (Crush 2: two): every blow it takes through the next round deals a point more a stack. A Ward turns it away; an ally's Cleanse lifts the mark.",
-   "status": "implemented",
-   "design": {
-    "holes": "The World Eater's pin (4 November); see Crushed."
    }
   },
   {

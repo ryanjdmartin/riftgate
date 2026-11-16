@@ -1482,17 +1482,17 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: an entry with Cryo says its stacks: cryo, a positive number" % where)
 	if fd.has("cryo") and not Array(fd.get("keywords", [])).has("cryo"):
 		errs.append("%s: cryo (the stacks) rides with the Cryo keyword" % where)
-	# And Flak (21 October): the stacks each foe hit gains.
+	# And Brittle (21 October): the stacks each foe hit gains.
 	if Array(fd.get("keywords", [])).has("sap") and int(fd.get("sap", 0)) <= 0:
 		errs.append("%s: Sap needs its number: the stacks of Sapped each foe hit gains" % where)
 	if fd.has("sap") and not Array(fd.get("keywords", [])).has("sap"):
 		errs.append("%s: sap is the Sap keyword's number: the entry needs the keyword" % where)
 	if fd.has("disrupts_attackers") and kind != "buff":
 		errs.append("%s: disrupts_attackers is a buff's: every foe aiming at the machine it lands on is Disrupted" % where)
-	if Array(fd.get("keywords", [])).has("flak") and int(fd.get("flak", 0)) <= 0:
-		errs.append("%s: an entry with Flak says its stacks: flak, a positive number" % where)
-	if fd.has("flak") and not Array(fd.get("keywords", [])).has("flak"):
-		errs.append("%s: flak (the stacks) rides with the Flak keyword" % where)
+	if Array(fd.get("keywords", [])).has("brittle") and int(fd.get("brittle", 0)) <= 0:
+		errs.append("%s: an entry with Brittle says its stacks: brittle, a positive number" % where)
+	if fd.has("brittle") and not Array(fd.get("keywords", [])).has("brittle"):
+		errs.append("%s: brittle (the stacks) rides with the Brittle keyword" % where)
 	# Area by shape, numbered (Ryan, 28 October; the half retired): a weapon's Spread or Penetrate
 	# says the number each foe past its target takes (cleave, penetrate); a debuff's area deals
 	# nothing, so it says none. A piece may carry both, at one number or two (Splash, the two
@@ -1750,7 +1750,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	for k in kws:
 		# A planned component may carry a keyword the vocabulary names but the engine lacks
 		# (taunt, corrode once), and a built component may carry a planned one (the
-		# Flakshot Repeater's Flak from 19 to 21 October): Face.from_dict builds the entry without that
+		# Flakshot Repeater's Brittle from 19 to 21 October): Face.from_dict builds the entry without that
 		# keyword until it is coded, so content is written ahead of the engine either way,
 		# the keyword never shown and never run. An idea-stage keyword rides only on a draft.
 		var drafted: bool = vocabulary.has(str(k)) and vocabulary[str(k)].get("status") != "implemented"
@@ -1904,7 +1904,7 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			# keyword's must (Ryan, 28 October); a keyword with no number takes none.
 			var numbered := Face.NUMBER_FIELDS.has(Face.keyword_from_name(kw))
 			if eff.has("number") and (not numbered or int(eff["number"]) <= 0):
-				errs.append("%s: grant_keyword's number is a positive number for a numbered keyword (Ablate, Cryo, Flak, Spread, Penetrate, Chain, Purge)" % where)
+				errs.append("%s: grant_keyword's number is a positive number for a numbered keyword (Ablate, Cryo, Brittle, Spread, Penetrate, Chain, Purge)" % where)
 			# An area granted to one debuff (`entry`: the Cryo Flinger's Spread while sealed) carries
 			# no number, as a debuff's printed one does: its effects reach those foes, and it deals
 			# nothing. Any other area grant says what each foe past the target takes.
@@ -1926,7 +1926,7 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: condition '%s' reads a tag outside the working set (%s)" % [where, when, ", ".join(TAGS)])
 		if when == "attacker_status" and eff.has("status"):
 			# The status named may be the engine's or one the vocabulary drafts (the Prairie
-			# Dog read Flak from 19 to 21 October, before Flak was built): a drafted status never holds, so the
+			# Dog read Brittle from 19 to 21 October, before Brittle was built): a drafted status never holds, so the
 			# clause waits inert, and the passive stays built, so the chassis stays dealable.
 			var st := str(eff["status"])
 			var drafted: bool = vocabulary.has(st) and vocabulary[st].get("category") == "status" and vocabulary[st].get("status") != "implemented"

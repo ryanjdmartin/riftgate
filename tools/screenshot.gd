@@ -277,7 +277,7 @@ func _apply_pose() -> void:
 					if Effects.STATUS.has(st[0]):
 						Effects.stack(u, Effects.STATUS[st[0]], Effects.SKIRMISH, "shot", 2, st[1])
 			for foe in s.sk.field_foes():
-				for id in ["ablating", "flakked", "shocked", "cryoed", "vitriol"]:
+				for id in ["ablating", "brittled", "shocked", "cryoed", "vitriol"]:
 					Effects.stack(foe, Effects.STATUS[id], Effects.SKIRMISH, "mech", 2, Effects.status_decay(Effects.STATUS[id]))
 			s._refresh()
 		"essence":
@@ -326,8 +326,8 @@ func _apply_pose() -> void:
 			s._refresh()
 		"foeheat":
 			# Heat's red-orange beside the enemy's violet on the foes' chip rows, the one place the two
-			# sit side by side: Ablating on the first front foe, Flak on the second, Shocked on the third.
-			var ids := ["ablating", "flakked", "shocked"]
+			# sit side by side: Ablating on the first front foe, Brittle on the second, Shocked on the third.
+			var ids := ["ablating", "brittled", "shocked"]
 			var k := 0
 			for foe in s.sk.front:
 				if foe == null or k >= ids.size():

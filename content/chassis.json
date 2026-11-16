@@ -386,7 +386,7 @@
    "passive": {
     "id": "track_dispersing_tyres",
     "name": "Track-Dispersing Tyres",
-    "description": "Treads cut to scuff out their own trail as they roll. No hunter ever picks the Prairie Dog as its prey, and a foe carrying Flak hits it 1 lighter.",
+    "description": "Treads cut to scuff out their own trail as they roll. No hunter ever picks the Prairie Dog as its prey, and a foe carrying Brittle hits it 1 lighter.",
     "effects": [
      {
       "trigger": "static",
@@ -398,7 +398,7 @@
       "effect": "add_damage_taken",
       "value": -1,
       "when": "attacker_status",
-      "status": "flakked"
+      "status": "brittled"
      }
     ]
    },
@@ -1000,7 +1000,7 @@
    "tier": 3,
    "design": {
     "fantasy": "Ryan's mobile artillery, 21 October: \"a cross between a Big Bertha, a M270 MLRS, and/or a truck-mounted MEADS launcher. Big. Big wheels. Massive launchers and massive artillery cannons\"; the \"high-tech\" Wainwright & Sutler design, \"where they tried to resolve their inherent bias against energy weapons\". Wide (Ryan: \"Wide is good\"): the old cannon on the centreline, the high-tech guns on flank sponsons, a rack of glowing cells feeding them, the musk ox's ring of horns facing out.",
-    "niche": "The maker's second tier three, the old-world artillery and the raining death: the machine that runs on ammo where every other runs on heat, so it carries any maker's hottest energy guns without heating. Its cluster cannon earns ammo off a crowd and lays Flak for the team; its salvo spends the whole magazine at random foes, Splash on every strike."
+    "niche": "The maker's second tier three, the old-world artillery and the raining death: the machine that runs on ammo where every other runs on heat, so it carries any maker's hottest energy guns without heating. Its cluster cannon earns ammo off a crowd and lays Brittle for the team; its salvo spends the whole magazine at random foes, Splash on every strike."
    },
    "codex": "",
    "hull": 44,

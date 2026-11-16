@@ -60,7 +60,7 @@ const PLATE_ROUNDS := 2.0        # rounds a held load's Armoured is likely to st
 const RICOCHET_WORTH := 2.0      # a stack of Ricochet (the Skua's, 11 November), in foe hit points: about two shots' worth before the fight ends or a blow halves it; a placeholder, as every weight
 const ROLL_AGAIN_WEIGHT := 1.0   # another action of the die (Rapid, Instant, the reset gun, the Horn's), as the die's own average blow
 const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Ablate's does
-const FLAK_WEIGHT := 0.5         # a stack of Flak, as the point it adds to each team blow the foe is likely to take while it lasts
+const BRITTLE_WEIGHT := 0.5         # a stack of Brittle, as the point it adds to each team blow the foe is likely to take while it lasts
 const SWAP_WEIGHT := 0.25        # a foe brought into the front rank by a swap, as a share of its kill and its threat: it stands exposed to Direct fire
 const BUNCH_WEIGHT := 0.75       # what a swap adds to an ally's area entry this round, as a share: the ally may still spend elsewhere
 const COUNTDOWN_DISCOUNT := 0.75 # a gathering blow's worth now, for each round it still gathers: it lands later, and the fight may end first
@@ -599,7 +599,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	if suppress_open:
 		# A stun on a Numbed foe strips a stack and lands nothing (2 November), so each is a step
 		# toward the one that lands: worth the stopped blow over the stuns still needed. A gated
-		# Suppress (the Battery's on Flak) is worth nothing where its gate is shut.
+		# Suppress (the Battery's on Brittle) is worth nothing where its gate is shut.
 		var lands := 1.0 / float(Effects.stacks_of(target, "numbed") + 1)
 		score += (1.0 - p_kill) * suppress_worth(sk, target) * HULL_WEIGHT * maxf(0.0, lands)
 	if not f.consumes.is_empty():
@@ -626,14 +626,14 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		for foe in sk.reached_by(f, target):
 			if foe.alive() and foe.attacks() and not foe.is_suppressed():
 				score += float(mini(sk.foe_blow(foe), f.sap) * foe.strikes()) * HULL_WEIGHT
-	# Flak (21 October): a point a stack on every team blow each foe reached takes while the
-	# stacks last on their clock, damage in hand for the team's blows (flak_score).
-	if f.has(Face.Keyword.FLAK):
+	# Brittle (21 October): a point a stack on every team blow each foe reached takes while the
+	# stacks last on their clock, damage in hand for the team's blows (brittle_score).
+	if f.has(Face.Keyword.BRITTLE):
 		for foe in sk.reached_by(f, target):
 			if not foe.alive():
 				continue
-			var survives_flak := (1.0 - p_kill) if foe == target else 1.0
-			score += survives_flak * flak_score(sk, ms, f, foe, maxf(0.0, float(foe.hp) - mean), foe == target)
+			var survives_brittle := (1.0 - p_kill) if foe == target else 1.0
+			score += survives_brittle * brittle_score(sk, ms, f, foe, maxf(0.0, float(foe.hp) - mean), foe == target)
 	# What this machine's passives lay on each foe the blow reaches, judged alone (the
 	# funnel-web's Ambush, 18 October): a stack per strike, worth its ticks over the actions to
 	# come on the hull the blow leaves, at the odds the foe outlives the blow. A lay that asks for
@@ -657,7 +657,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 				laid_apps += 1
 	# The statuses this blow applies feed any machine's Paradox meter (the Baboon's Pocket
 	# Paradox, a meter since 10 October): the share of a knock-out they move on this foe.
-	var apps := int(f.has(Face.Keyword.ABLATE)) + int(f.has(Face.Keyword.SHOCK)) + int(suppress_open) + int(f.webs) + int(f.has(Face.Keyword.FLAK)) + laid_apps
+	var apps := int(f.has(Face.Keyword.ABLATE)) + int(f.has(Face.Keyword.SHOCK)) + int(suppress_open) + int(f.webs) + int(f.has(Face.Keyword.BRITTLE)) + laid_apps
 	if apps > 0:
 		score += _paradox_share(sk, target, apps) * (1.0 - p_kill) * _threat_now(target, sk) * HULL_WEIGHT
 	if f.has(Face.Keyword.ABLATE) and not Effects.turns_mark(target, "ablating"):
@@ -1037,17 +1037,17 @@ func expose_score(sk: Skirmish, foe: Foe) -> float:
 	return score
 
 
-## What Flak laid on one foe is worth (21 October): a point a stack on every team blow it takes
+## What Brittle laid on one foe is worth (21 October): a point a stack on every team blow it takes
 ## this round, capped by what the foe will have left. The blows still to come this round are
 ## this spend's later strikes and the damaging entries the other machines show unspent, all of
 ## them on the spend's target and half on a neighbour it sweeps (the team may well pick
 ## another); then a round of the team's blows at the stacks its clock keeps (the status names
 ## it: half, or a stack less), a blow a machine on the target and half that elsewhere. Damage
-## in hand, at FLAK_WEIGHT.
-func flak_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, left: float, is_target: bool) -> float:
-	if f == null or not f.has(Face.Keyword.FLAK) or left <= 0.0 or Effects.turns_mark(foe, "flakked"):
+## in hand, at BRITTLE_WEIGHT.
+func brittle_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, left: float, is_target: bool) -> float:
+	if f == null or not f.has(Face.Keyword.BRITTLE) or left <= 0.0 or Effects.turns_mark(foe, "brittled"):
 		return 0.0
-	var stacks := f.flak + Effects.extra_stacks(ms.unit, "flakked", ms.heat)
+	var stacks := f.brittle + Effects.extra_stacks(ms.unit, "brittled", ms.heat)
 	var now := float(maxi(0, f.strikes - 1))
 	var next := 0.0
 	for other in sk.live_mechs():
@@ -1058,8 +1058,8 @@ func flak_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, left: f
 		if of != null and of.is_attack() and of.power > 0:
 			now += float(maxi(1, of.strikes))
 	var share := 1.0 if is_target else 0.5
-	var gain := float(stacks) * now * share + float(Effects.stacks_next_round(Effects.STATUS["flakked"], stacks)) * next * share
-	return minf(left, gain) * FLAK_WEIGHT
+	var gain := float(stacks) * now * share + float(Effects.stacks_next_round(Effects.STATUS["brittled"], stacks)) * next * share
+	return minf(left, gain) * BRITTLE_WEIGHT
 
 
 ## What a volatile entry costs its owner in the score: the hull it bites per use, and the
@@ -1324,11 +1324,11 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 		# judged on this foe, then its own reads.
 		var dmg: int = int(Effects.attack(ms.unit, f, Skirmish.split_share(v + fired, f.split), 0, target)["damage"]) + own
 		# The foe's own statuses read last: a Shocked foe takes the first blow aimed at it double
-		# (a foe past the target, an area's or an arc's, never: 29 October), and its Flak adds to
+		# (a foe past the target, an area's or an arc's, never: 29 October), and its Brittle adds to
 		# every blow of a weapon, a strike of 0 included. Then its armour comes off every blow, so
 		# a braced foe is worth less to a volume weapon.
 		var arm := target.armour_for(f) if target != null else 0
-		var later := maxi(0, (Effects.damage_taken(target, dmg, ms.unit, true, false) if target != null and damaging else dmg) - arm)   # every add and multiply but a Shocked doubling: its Flak, a Guarded core's nothing
+		var later := maxi(0, (Effects.damage_taken(target, dmg, ms.unit, true, false) if target != null and damaging else dmg) - arm)   # every add and multiply but a Shocked doubling: its Brittle, a Guarded core's nothing
 		if area >= 0:
 			out.append([float(later) * (maxf(0.0, n - 1.0) if barred else n), w])   # no strike aimed at it: no Shock read
 			continue
@@ -1336,7 +1336,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 		if barred:
 			first = 0
 		# Ricochet (the Skua's, 12 November): once the weapon's strikes are done, a strike of 1 more
-		# a stack at its target, through the firer's pipeline, the foe's Flak and its armour.
+		# a stack at its target, through the firer's pipeline, the foe's Brittle and its armour.
 		var bounced := 0.0
 		var stacks := Effects.stacks_of(ms.unit, "ricochet") if f.is_weapon() and target != null and f.reach != Face.Reach.EVERY_FOE else 0
 		if stacks > 0:
@@ -1540,9 +1540,10 @@ func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 		for eff in Effects.STATUS["scorched"]["effects"]:
 			if str(eff.get("effect", "")) == "add_heat":
 				score += float(int(eff.get("value", 0)) * scorch) * BANK_WEIGHT
-	var crushed := Effects.stacks_of(who.unit, "crushed")
-	if crushed > 0:
-		score += float(crushed) * HULL_WEIGHT * CLEANSE_ROUNDS   # a point more on every blow it takes (4 November)
+	var brittle := Effects.stacks_of(who.unit, "brittled_mech")
+	if brittle > 0:
+		# A point more a stack on every blow it takes this round, and the half that would stand the next.
+		score += float(brittle + Effects.stacks_next_round(Effects.STATUS["brittled_mech"], brittle)) * HULL_WEIGHT
 	var n := who.die.faces.size()
 	if n > 0:
 		for i in range(n):
@@ -2385,7 +2386,7 @@ static func barrier_stakes(sk: Skirmish, foe: Foe, except: Skirmish.MechState = 
 
 ## What a cleanser's move would take off its side this round (28 October), each mark at what
 ## laying it is worth (placeholders): a Shock the biggest blow a machine still to act shows on
-## that foe, Flak its stacks for every machine still to act, Ablating its stacks, every other mark
+## that foe, Brittle its stacks for every machine still to act, Ablating its stacks, every other mark
 ## a point.
 static func _cleanse_worth(f: Foe, sk: Skirmish) -> float:
 	var marked := sk.cleanse_target(f)
@@ -2407,7 +2408,7 @@ static func _cleanse_worth(f: Foe, sk: Skirmish) -> float:
 					if of != null and of.is_attack() and sk.targets_for_face(ms, of).has(marked):
 						best = maxf(best, float(of.power))
 				worth += best
-			"flakked":
+			"brittled":
 				worth += float(Effects.stacks_of(marked, id) * to_act.size())
 			"ablating":
 				worth += float(Effects.stacks_of(marked, id))

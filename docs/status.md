@@ -35,7 +35,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1196 tests, 372,829 checks, green on `ccr-722ca9f0-yj8na3` (16 November, the
+- Tests: 1196 tests, 372,811 checks, green on `ccr-722ca9f0-yj8na3` (16 November,
+  Brittle, over main at `7ac3902`). Before it, 1196 tests, 372,829 checks, green on the same
+  branch (16 November, the
   marks' first three rule changes, over main at `d1b6827`). Before it, 1195 tests, 372,792
   checks, green on the same branch (16 November, the
   marks' renames, over main at `0eb2745`). Before it, 1192 tests, 372,768 checks, green on
@@ -360,9 +362,9 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   Lance, the Flechette Pod, the Solar Flare Array, the Flakshot Repeater, the Plow, the Harpoon)
   get a tweak before any cut: Claude's first round and his first answers are the proposal's
   section 4. The Dingo's is settled and built (11 November, the bible's Dingo row: Shock on the
-  Translocator, the harpoon the Hollow-point Harpoon, a Flak and a pin on its target's Flak for
+  Translocator, the harpoon the Hollow-point Harpoon, Brittle 1 and a pin on its target's Brittle for
   the round, Pinned a status of its own with Burning's beside it), the Prairie Dog's Flakshot
-  Repeater (Flak 2 on a cooldown of 1), the Stingray's Photosphere Lance (support, no damage: on
+  Repeater (Brittle 2 on a cooldown of 1), the Stingray's Photosphere Lance (support, no damage: on
   itself or an ally, Empowered there and Sapped, his name, on the foe in front of it, the squad's
   spots one rule in the sim the screen draws by; Sapped coded in for either side, until after its
   carrier's next turn), the Wild Boar's (the Plow a Cleanse and a Barrier on itself; its
@@ -1483,7 +1485,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   stacks as its machine deepened and doubled them, a gated keyword where its gate held), the
   numbered ones added and the rest once, area, Sweep's targeting and Lure left behind;
   when the foe falls (getting back up, splitting, a tick or a part included) the Mine blows in
-  Splash's shape round its slot, plain through each foe's own Flak and armour, in strike order,
+  Splash's shape round its slot, plain through each foe's own Brittle and armour, in strike order,
   a blast's fall blowing its own. The Syrinx Drone detonates (a weapon of 1, no cooldown, its
   own Mine first); the Lorentz Contractor gathers every Mine onto one foe and Exposes it. A Mine
   is a foe status: its chip shows the damage and its readout the keywords; a Ward turns it away,
@@ -1734,7 +1736,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   `docs/bosses_proposal.md`'s tables): twenty-one elite kits, six of them wanderers drawn at
   random on the Fracture's roll (Gilgamesh, the Reaper, the Wild Hunt, the World Eater, the
   Shuffler, the Astromancer, the first elite in parts); Enraged (the Nob's bellow), Golden (the
-  Thunder Ape's mode), Crushed (the World Eater's pin), the opener; thirteen bosses, three a
+  Thunder Ape's mode), Brittle on a machine (the World Eater's pin), the opener; thirteen bosses, three a
   domain and the Marsh's four (the Fiend of Fire, the Mantis Ant, the Marsh Serpent and the
   Emperor Scorpion new); every foe with art, a placeholder stamped "?" where no pick exists
   (`tools/placeholder_art.py`); the hangar page's foe sprites with filters by kind, tier and
@@ -1816,7 +1818,7 @@ The tasks are the to-do's; this is the index of what waits.
   Lure wins. No foe carries it. It is the foes' pass's (the to-do's Engine list).
 - His marks on the vocabulary's table (15 November, all eighty-two rows; the proposal's
   section 18 has each with its read, and the to-do's Engine list the build in parts), what
-  is not built yet: Brittle and Phased as he ruled them; and for the foes' pass,
+  is not built yet: Phased as he ruled it; and for the foes' pass,
   Drain, Steal and the drained reroll as their units' own text, countdowns an elite's or a
   boss's mostly, a fall free to do more than strike. Until built, content and the engine
   run each of those as before.
@@ -1893,8 +1895,11 @@ rows): a rally reaches its rallier too; Regenerating is a point a stack as the c
 turn comes and then a stack fades, grants adding; and Primed is the third primer, a stack a
 weapon fired lending Ablate 1, on a foe a stack a move that strikes. No number moved, so the
 foes that regenerate regrow less in all and a rally of 1 leaves its rallier nothing: the
-foes' pass sizes both. **What rides behind, in the to-do's order, each a commit of its
-own**: Brittle in place of Flak and Crushed, and Phased granted at the round's end; then
+foes' pass sizes both. **Brittle is built** (16 November; the bible's Brittle row): Flak
+and Crushed are one word and one state on either side, a point more on every blow a stack,
+halving as each round ends, so a foe's Brittle on a machine is whole for the foes still to
+strike that turn and half for the next. One foe carries it, the World Eater's Pin at 2.
+**What rides behind, in the to-do's order**: Phased granted at the round's end; then
 the anchor read again as the baseline. **Then the foes' pass**
 (the to-do's line): Exposed's carriers and its engine, the moves his marks renamed or
 moved onto the unit, the countdowns off the rank and file, a fall free to do more than

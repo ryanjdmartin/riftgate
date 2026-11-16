@@ -399,12 +399,12 @@ func intent_on(u) -> bool:
 ## economy around it"); a shield that takes the whole blow, a Barrier or a Ward keeps the entry.
 ## A purge is a special, never a rider (28 October: a rider on a hitter's blow is a tax with no
 ## decision), so it is no attack keyword; the validator refuses it on a blow.
-const ATTACK_KEYWORDS := ["scorch", "ablate", "jam", "corrupt", "crush", "self_destruct", "all", "steal", "drain", "destroy"]
+const ATTACK_KEYWORDS := ["scorch", "ablate", "jam", "corrupt", "brittle", "self_destruct", "all", "steal", "drain", "destroy"]
 ## The specials that may never ride a blow (28 October).
 const SPECIALS_ONLY := ["dispel"]
 ## The riders that lay stacks, each a number on the move beside its keyword (24 October, as the
 ## player's Ablate N: Scorch 2 lays two stacks a blow).
-const NUMBERED_RIDERS := ["scorch", "ablate", "corrupt", "crush"]
+const NUMBERED_RIDERS := ["scorch", "ablate", "corrupt", "brittle"]
 
 
 func has_keyword(a: Dictionary, k: String) -> bool:

@@ -5,7 +5,7 @@ extends CanvasLayer
 ## what we need"): a tap on a term in shown text (EntryReadout) opens its entry from the keywords
 ## list beside the word, over every screen and the pause menu: the list's heading, the term's icon
 ## and its name in its colour, then its line, whose own terms open theirs in its place. A name two
-## terms share (Cryo, Flak: a keyword and the status it leaves) shows both. A tap anywhere else, or
+## terms share (Cryo, Brittle: a keyword and the status it leaves) shows both. A tap anywhere else, or
 ## back, closes it. One is open at a time.
 
 const LAYER := 120         # over the screens and the pause menu

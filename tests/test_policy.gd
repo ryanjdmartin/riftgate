@@ -411,7 +411,7 @@ func test_greedy_holds_a_volatile_die_that_would_wreck_the_machine() -> void:
 ## reads a consumer's blow with the stacks in, and gives up the ticks it eats.
 func test_greedy_values_a_gated_stun_where_it_lands_and_prices_what_a_consumer_eats() -> void:
 	var gun := Face.attack(3, I, [K.SUPPRESS])
-	gun.gates = {"suppress": {"when": "target_status", "status": "flakked"}}
+	gun.gates = {"suppress": {"when": "target_status", "status": "brittled"}}
 	var sk := Skirmish.new(3)
 	sk.add_mech(_mech("A", Die.single(gun), 40, 100))
 	var plain := _ghoul(100, 20)
@@ -419,7 +419,7 @@ func test_greedy_values_a_gated_stun_where_it_lands_and_prices_what_a_consumer_e
 	sk.add_foes([plain, marked])
 	sk.begin()
 	sk.start_round()
-	Effects.stack(marked, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
+	Effects.stack(marked, Effects.STATUS["brittled"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
 	var pol := Policy.make(Policy.GREEDY)
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var on_marked := pol.attack_score(sk, ms, gun, marked)
@@ -747,25 +747,25 @@ func test_greedy_values_a_web_by_the_blows_its_burst_stops() -> void:
 	assert_eq(pol.web_score(sk, big), 0.0, "and a web on a webbed foe is worth nothing more")
 
 
-## Flak (21 October): the bot values it as damage in hand for the team's blows still to come,
-## so a Flak spray beats the same spray without it while the team has blows to land, and is
+## Brittle (21 October): the bot values it as damage in hand for the team's blows still to come,
+## so a Brittle spray beats the same spray without it while the team has blows to land, and is
 ## worth less once the team has spent.
-func test_greedy_values_flak_by_the_team_blows_still_to_come() -> void:
+func test_greedy_values_brittle_by_the_team_blows_still_to_come() -> void:
 	var sk := Skirmish.new(3)
-	var flak := Face.attack(5, L, K.FLAK)
-	flak.flak = 3
+	var brittle := Face.attack(5, L, K.BRITTLE)
+	brittle.brittle = 3
 	var plain := Face.attack(5, L)
-	sk.add_mech(_mech("A", Die.single(flak), 0, 200))
+	sk.add_mech(_mech("A", Die.single(brittle), 0, 200))
 	sk.add_mech(_mech("B", Die.single(Face.attack(10, L)), 0, 200))
 	sk.add_foes([_ghoul(200)])
 	sk.begin()
 	sk.start_round()
 	var pol := Policy.make(Policy.GREEDY)
-	var with := pol.attack_score(sk, sk.mechs[0], flak, sk.front[0])
+	var with := pol.attack_score(sk, sk.mechs[0], brittle, sk.front[0])
 	var without := pol.attack_score(sk, sk.mechs[0], plain, sk.front[0])
-	assert_true(with > without, "Flak is worth the team's blows still to come")
+	assert_true(with > without, "Brittle is worth the team's blows still to come")
 	sk.mechs[1].assigned = true
-	var spent := pol.attack_score(sk, sk.mechs[0], flak, sk.front[0])
+	var spent := pol.attack_score(sk, sk.mechs[0], brittle, sk.front[0])
 	assert_true(spent < with and spent > without, "less once the team has spent, and the halved stacks still count for next round")
 
 
@@ -1439,11 +1439,11 @@ func test_the_bot_reads_each_foe_past_the_target_at_its_shapes_number() -> void:
 	sk.add_foes([marked, aim, plain])
 	sk.begin()
 	sk.start_round()
-	Effects.stack(marked, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
+	Effects.stack(marked, Effects.STATUS["brittled"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var pol := Policy.new()
 	assert_eq(pol.damage_outcomes(ms, sweep, aim), [[6.0, 1.0]], "the clean target: the roll alone")
-	assert_eq(pol.damage_outcomes(ms, sweep, marked, Skirmish.AREA_ROW), [[4.0, 1.0]], "the marked neighbour: Spread 2, the point its status earns, its Flak")
+	assert_eq(pol.damage_outcomes(ms, sweep, marked, Skirmish.AREA_ROW), [[4.0, 1.0]], "the marked neighbour: Spread 2, the point its status earns, its Brittle")
 	assert_eq(pol.damage_outcomes(ms, sweep, plain, Skirmish.AREA_ROW), [[2.0, 1.0]], "the plain one: Spread 2")
 	var before := pol.attack_score(sk, ms, sweep, aim)
 	sweep.cleave = 4

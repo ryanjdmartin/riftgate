@@ -61,7 +61,7 @@ GODOT = os.environ.get('GODOT') or shutil.which('godot') or os.path.expanduser('
 # are priced on; a candidate goes into the slot in place of the stock piece there.
 BENCHES = OrderedDict([
     ('badger', ('badger', 0, ['badger', 'clydesdale', 'kite'])),           # a heavy tank's gun slot (the Rivet Gun), armour 2, in the default team
-    ('prairie_dog', ('prairie_dog', 0, ['clydesdale', 'prairie_dog', 'dingo'])),  # a light car's gun slot (the Twin Autoguns), beside a Flak layer and a Shock, in Wainwright & Sutler's team
+    ('prairie_dog', ('prairie_dog', 0, ['clydesdale', 'prairie_dog', 'dingo'])),  # a light car's gun slot (the Twin Autoguns), beside a Brittle layer and a Shock, in Wainwright & Sutler's team
     ('puffin', ('puffin', 3, ['kite', 'buzzard', 'puffin'])),              # a light escort's gun slot (the Laser Carbine) beside two hot kits, in Kestrel's team: equipment reads here
     ('buzzard', ('buzzard', 2, ['kite', 'buzzard', 'puffin'])),            # a hot flyer's gun slot (the Arc Fault Cannon): a gun's heat is priced where heat bites
     ('nemesis', ('nemesis', 0, ['nemesis', 'ammit', 'puffin'])),                  # an Arsenal bruiser's slot (the Plasma Arquebus) beside the Ammit: the hull-damage loops read here

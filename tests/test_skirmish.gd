@@ -1394,14 +1394,14 @@ func test_a_weapon_that_ignores_armour_takes_nothing_off_for_it() -> void:
 
 
 ## A gated keyword (the stun row's gated stuns, Ryan, 22 October): the Suppression Battery's
-## Suppress lands only on a foe carrying Flak, read at the spend before its own riders, so a
-## spend that lays Flak never opens its own gate; the die over a foe strikes the chip where it
+## Suppress lands only on a foe carrying Brittle, read at the spend before its own riders, so a
+## spend that lays Brittle never opens its own gate; the die over a foe strikes the chip where it
 ## will not land, and the hold's line says where it does.
 func test_a_gated_suppress_lands_only_where_its_gate_holds() -> void:
 	var gun := Face.attack(3, I, [K.SUPPRESS])
-	gun.gates = {"suppress": {"when": "target_status", "status": "flakked"}}
-	var spray := Face.attack(3, I, [K.SUPPRESS, K.FLAK])
-	spray.gates = {"suppress": {"when": "target_status", "status": "flakked"}}
+	gun.gates = {"suppress": {"when": "target_status", "status": "brittled"}}
+	var spray := Face.attack(3, I, [K.SUPPRESS, K.BRITTLE])
+	spray.gates = {"suppress": {"when": "target_status", "status": "brittled"}}
 	var sk := Skirmish.new(1)
 	sk.add_mech(_mech("A", Die.single(gun), 40, 100))
 	sk.add_mech(_mech("B", Die.single(gun.duplicate_face()), 40, 100))
@@ -1412,20 +1412,20 @@ func test_a_gated_suppress_lands_only_where_its_gate_holds() -> void:
 	sk.add_foes([plain, marked, fresh])
 	sk.begin()
 	sk.start_round()
-	Effects.stack(marked, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
-	assert_true(gun.describe().contains("(on a foe carrying Flak)"), "the hold's line says where it lands: %s" % gun.describe())
+	Effects.stack(marked, Effects.STATUS["brittled"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
+	assert_true(gun.describe().contains("(on a foe carrying Brittle)"), "the hold's line says where it lands: %s" % gun.describe())
 	assert_true(gun.has_unique_rule(), "a gate is a printed rule, the star")
-	assert_eq(sk.shut_gates(sk.mechs[0], gun, plain), [K.SUPPRESS] as Array[int], "over a foe with no Flak the chip is struck")
-	assert_true(sk.shut_gates(sk.mechs[0], gun, marked).is_empty(), "over a foe carrying Flak it is lit")
+	assert_eq(sk.shut_gates(sk.mechs[0], gun, plain), [K.SUPPRESS] as Array[int], "over a foe with no Brittle the chip is struck")
+	assert_true(sk.shut_gates(sk.mechs[0], gun, marked).is_empty(), "over a foe carrying Brittle it is lit")
 	assert_true(sk.shut_gates(sk.mechs[0], gun, null).is_empty(), "with no foe in hand, as printed")
 	assert_true(sk.assign(0, plain), "spent on the plain foe")
 	assert_false(Effects.has(plain, "suppressed"), "the gate is shut: no stun")
 	assert_eq(plain.hp, 97, "the blow lands all the same")
 	assert_true("\n".join(sk.log).contains("suppress does not land"), "the log says so")
-	assert_true(sk.assign(1, marked), "spent on the foe carrying Flak")
+	assert_true(sk.assign(1, marked), "spent on the foe carrying Brittle")
 	assert_true(Effects.has(marked, "suppressed"), "the gate is open: stunned")
-	assert_true(sk.assign(2, fresh), "a spend that lays Flak itself")
-	assert_true(Effects.has(fresh, "flakked"), "lays its Flak")
+	assert_true(sk.assign(2, fresh), "a spend that lays Brittle itself")
+	assert_true(Effects.has(fresh, "brittled"), "lays its Brittle")
 	assert_false(Effects.has(fresh, "suppressed"), "and never opens its own gate")
 
 
@@ -1661,7 +1661,7 @@ func test_the_firers_modifiers_ride_every_arc() -> void:
 
 func test_the_riders_land_on_every_conductor() -> void:
 	var sk := Skirmish.new(1, 2)
-	sk.add_mech(_mech("A", Die.single(_chain_gun(4, 2, 3, [K.ABLATE, K.FLAK]))))
+	sk.add_mech(_mech("A", Die.single(_chain_gun(4, 2, 3, [K.ABLATE, K.BRITTLE]))))
 	var target := _ghoul(30, 5)
 	var other := _ghoul(30, 5)
 	sk.add_foes([target, other])
@@ -1669,9 +1669,9 @@ func test_the_riders_land_on_every_conductor() -> void:
 	sk.start_round()
 	_shock_on(other)
 	assert_true(sk.assign(0, target), "the Chain gun spent")
-	assert_eq(other.hp, 28, "the conductor's blow, before the Flak it lays")
+	assert_eq(other.hp, 28, "the conductor's blow, before the Brittle it lays")
 	assert_eq(Effects.stacks_of(other, "ablating"), 1, "Ablate 1 lands on the conductor")
-	assert_eq(Effects.stacks_of(other, "flakked"), 1, "and Flak 1, after its blow")
+	assert_eq(Effects.stacks_of(other, "brittled"), 1, "and Brittle 1, after its blow")
 
 
 func test_a_kill_by_an_arc_fires_the_kill_rules() -> void:
@@ -3557,11 +3557,11 @@ func test_spillover_carries_every_later_strike_into_the_foe_behind() -> void:
 ## The foe behind falls partway through the spend: the strikes left are lost, since nothing
 ## stands behind the back rank, and nothing else is hit.
 ## A later strike that spills past a corpse still lands its riders on it, as every hit's do (the
-## audit's eighth bug, 8 November): a Wild Boar's ×2 Flak 1 that kills with its first strike
-## leaves Flak 2 on the fallen foe, its second strike's number gone on behind it.
+## audit's eighth bug, 8 November): a Wild Boar's ×2 Brittle 1 that kills with its first strike
+## leaves Brittle 2 on the fallen foe, its second strike's number gone on behind it.
 func test_a_spilling_strikes_riders_land_on_the_corpse() -> void:
-	var plow := _spiller(Face.attack(10, L, [K.FLAK]))
-	plow.flak = 1
+	var plow := _spiller(Face.attack(10, L, [K.BRITTLE]))
+	plow.brittle = 1
 	plow.strikes = 2
 	var sk := Skirmish.new(2, 1)
 	sk.add_mech(_mech("Boar", Die.single(plow), 40, 100))
@@ -3571,7 +3571,7 @@ func test_a_spilling_strikes_riders_land_on_the_corpse() -> void:
 	sk.begin()
 	sk.start_round()
 	assert_true(sk.assign(0, front), "the plow")
-	assert_eq(Effects.stacks_of(front, "flakked"), 2, "a stack a strike on the corpse, the spilling one's included")
+	assert_eq(Effects.stacks_of(front, "brittled"), 2, "a stack a strike on the corpse, the spilling one's included")
 	assert_eq(behind.hp, 100 - 5 - 10, "the first strike's excess and the second's whole number went on behind")
 
 
@@ -6001,7 +6001,7 @@ func test_an_ambush_lays_its_status_on_a_foe_showing_no_intent_on_it_a_stack_per
 ## passive text"): a debuff spent on the foe lays the plain lay and not the weapon's one.
 func test_a_passives_lay_lands_on_any_hit_unless_it_asks_for_a_weapons() -> void:
 	var lays := {"id": "lays_t", "name": "Lays", "description": "", "effects": [
-		{"trigger": "on_attack", "effect": "lay_status", "value": "flakked", "stacks": 1},
+		{"trigger": "on_attack", "effect": "lay_status", "value": "brittled", "stacks": 1},
 		{"trigger": "on_attack", "effect": "lay_status", "value": "vitriol", "stacks": 1, "damaging": true}]}
 	var probe := Face.attack(0, L, [K.SUPPRESS])
 	var gun := Face.attack(5, L)
@@ -6015,7 +6015,7 @@ func test_a_passives_lay_lands_on_any_hit_unless_it_asks_for_a_weapons() -> void
 	sk.start_round()
 	sk.mechs[0].face_index = 0
 	assert_true(sk.assign(0, g), "a debuff on the foe")
-	assert_eq(Effects.stacks_of(g, "flakked"), 1, "the plain lay lands on a blow of nothing")
+	assert_eq(Effects.stacks_of(g, "brittled"), 1, "the plain lay lands on a blow of nothing")
 	assert_eq(Effects.stacks_of(g, "vitriol"), 0, "the weapon's one waits for a weapon's hit")
 	sk.end_round()
 	sk.start_round()
@@ -6061,11 +6061,11 @@ func test_a_weapons_hit_of_nothing_still_spends_a_shock_cashes_cryo_and_lays() -
 			assert_eq(Effects.stacks_of(g, "vitriol"), 2, "and lays the weapon's lay on each strike")
 
 
-## Flak on a weapon's blow of 0 (Ryan, 25 October: "Flak and overcharge exist in part
-## to get past armour"): a split 1 strikes twice at 1 (never below one, 27 October), and each strike takes the foe's Flak
+## Brittle on a weapon's blow of 0 (Ryan, 25 October: "Flak and overcharge exist in part
+## to get past armour"): a split 1 strikes twice at 1 (never below one, 27 October), and each strike takes the foe's Brittle
 ## before its armour comes off, on the die over the foe, in the bot's read and in the blow; a
 ## debuff's blow stays nothing.
-func test_a_weapons_blow_of_0_takes_the_foes_flak_before_its_armour() -> void:
+func test_a_weapons_blow_of_0_takes_the_foes_brittle_before_its_armour() -> void:
 	var split := {"id": "split", "name": "Split", "description": "", "effects": [
 		{"trigger": "on_attack", "effect": "split_strikes", "value": 2}]}
 	for weapon in ["debuff", "gun"]:
@@ -6080,20 +6080,20 @@ func test_a_weapons_blow_of_0_takes_the_foes_flak_before_its_armour() -> void:
 		sk.begin()
 		sk.start_round()
 		var ms: Skirmish.MechState = sk.mechs[0]
-		Effects.stack(g, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_HALF)
+		Effects.stack(g, Effects.STATUS["brittled"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_HALF)
 		var shown := sk.shown_face(ms, f)
 		var pol := Policy.make(Policy.GREEDY)
 		if weapon == "debuff":
-			assert_eq(sk.shown_number(ms, shown, g), 0, "a debuff shows none, Flak or not")
+			assert_eq(sk.shown_number(ms, shown, g), 0, "a debuff shows none, Brittle or not")
 			assert_eq(pol.expected_damage(ms, shown, g), 0.0, "and the bot reads none")
 			assert_true(sk.assign(0, g), "the debuff spent")
 			assert_eq(g.hp, 100, "and it deals nothing")
 		else:
 			assert_eq(shown.number_text(), "1", "a 1 halved is 1, never below one")
-			assert_eq(sk.shown_number(ms, shown, g), 3, "over the foe a strike shows its 1 and the 3 Flak, the armour off")
+			assert_eq(sk.shown_number(ms, shown, g), 3, "over the foe a strike shows its 1 and the 3 Brittle, the armour off")
 			assert_eq(pol.expected_damage(ms, shown, g), 6.0, "and the bot reads both strikes")
 			assert_true(sk.assign(0, g), "the gun spent")
-			assert_eq(g.hp, 94, "each strike of 1 takes the Flak, then loses the armour: 3 twice")
+			assert_eq(g.hp, 94, "each strike of 1 takes the Brittle, then loses the armour: 3 twice")
 
 
 func test_the_ambush_reads_the_intent_before_the_spends_own_riders() -> void:
@@ -6331,8 +6331,8 @@ func test_an_attacker_status_condition_reads_the_foe_striking() -> void:
 	assert_true(notes.is_empty(), "a passive with no component names no die row")
 	var lead := Effects.effect_text(m.modifiers[0].effects[0])
 	assert_eq(lead, "blows from foes carrying Ablating: damage taken -5", "the rule reads with its condition as the lead")
-	assert_eq(Effects.effect_text({"trigger": "static", "effect": "add_damage_taken", "value": -5, "when": "attacker_status", "status": "flakked"}),
-		"blows from foes carrying Flak: damage taken -5", "Flak reads by its name since it was built (21 October)")
+	assert_eq(Effects.effect_text({"trigger": "static", "effect": "add_damage_taken", "value": -5, "when": "attacker_status", "status": "brittled"}),
+		"blows from foes carrying Brittle: damage taken -5", "Brittle reads by its name since it was built (21 October)")
 	assert_eq(Effects.effect_text({"trigger": "static", "effect": "add_damage_taken", "value": -5, "when": "attacker_status", "status": "unbuilt"}),
 		"blows from foes carrying Unbuilt: damage taken -5", "a status the engine lacks reads by its id")
 	var other := _mech("B", Die.single(Face.attack(20, L)), 0, 100)
@@ -6586,15 +6586,15 @@ func test_a_weapons_hit_cashes_a_foes_cryo_for_the_hitters_cooling() -> void:
 	assert_true(pol.attack_score(s2, s2.mechs[0], c.die.faces[0], s2.front[1]) > cold, "the hot machine prefers the foe carrying Cryo")
 
 
-## Flak (Ryan's go, 19 October; built 21 October): Flak N lays N stacks on each foe hit, whatever
+## Brittle (Ryan's go, 19 October; built 21 October): Brittle N lays N stacks on each foe hit, whatever
 ## the blow dealt, after the blow, and every blow the foe takes deals a point more a stack: an
-## add before the multiplies (a Shocked foe takes a weapon's strike aimed at it plus Flak,
+## add before the multiplies (a Shocked foe takes a weapon's strike aimed at it plus Brittle,
 ## doubled) and before its armour, folded into the die's number over it; a blow of nothing stays
 ## nothing.
-func test_flak_lays_its_number_on_each_foe_hit_and_every_blow_it_takes_lands_harder() -> void:
+func test_brittle_lays_its_number_on_each_foe_hit_and_every_blow_it_takes_lands_harder() -> void:
 	var sk := Skirmish.new(1)
-	var spray := Face.attack(5, L, [K.CLEAVE, K.FLAK])
-	spray.flak = 2
+	var spray := Face.attack(5, L, [K.CLEAVE, K.BRITTLE])
+	spray.brittle = 2
 	spray.cleave = 2
 	var gun := Face.attack(10, L)
 	var lure := Face.attack(0, I, K.LURE)
@@ -6606,84 +6606,84 @@ func test_flak_lays_its_number_on_each_foe_hit_and_every_blow_it_takes_lands_har
 	sk.start_round()
 	var mid: Foe = sk.front[1]
 	assert_true(sk.assign(0, mid), "spray the middle")
-	assert_eq(mid.hp, 95, "the blow that lays the Flak never feeds on it: a plain 5")
+	assert_eq(mid.hp, 95, "the blow that lays the Brittle never feeds on it: a plain 5")
 	assert_eq(sk.front[0].hp, 98, "the spray's neighbour takes its Spread 2 (area by shape, numbered)")
 	for foe in [sk.front[0], mid, sk.front[2]]:
-		assert_eq(Effects.stacks_of(foe, "flakked"), 2, "each foe hit carries Flak 2")
+		assert_eq(Effects.stacks_of(foe, "brittled"), 2, "each foe hit carries Brittle 2")
 	assert_true(Effects.carries_status(mid), "a status the team put on it, for the Tensor")
-	assert_eq(sk.shown_number(sk.mechs[1], gun, mid), 12, "the die over a Flak foe folds in its 2")
+	assert_eq(sk.shown_number(sk.mechs[1], gun, mid), 12, "the die over a Brittle foe folds in its 2")
 	assert_true(sk.assign(1, mid), "the gun on it")
 	assert_eq(mid.hp, 83, "every blow it takes deals a point more a stack: 10 and 2")
 	assert_true(sk.assign(2, sk.front[2]), "a lure on another")
-	assert_eq(sk.front[2].hp, 98, "a blow of nothing stays nothing, Flak or not")
+	assert_eq(sk.front[2].hp, 98, "a blow of nothing stays nothing, Brittle or not")
 	assert_eq(Effects.damage_taken(mid, 0), 0, "nothing in, nothing out")
 	Effects.stack(mid, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
-	assert_eq(Effects.damage_taken(mid, 10, null, true), 24, "adds before multiplies: a Shocked foe takes a weapon's strike aimed at it plus Flak, doubled")
-	assert_eq(Effects.damage_taken(mid, 10, null, true, false), 12, "a blow that only reaches it: the Flak, never the Shock")
+	assert_eq(Effects.damage_taken(mid, 10, null, true), 24, "adds before multiplies: a Shocked foe takes a weapon's strike aimed at it plus Brittle, doubled")
+	assert_eq(Effects.damage_taken(mid, 10, null, true, false), 12, "a blow that only reaches it: the Brittle, never the Shock")
 	mid.armour = 5
-	assert_eq(sk.shown_number(sk.mechs[1], gun, mid), 7, "its armour comes off after the Flak, and the shock stays on its chip")
+	assert_eq(sk.shown_number(sk.mechs[1], gun, mid), 7, "its armour comes off after the Brittle, and the shock stays on its chip")
 
 
-## A spend of several strikes lays its Flak a stack a strike once the strikes are done (Ryan, 3
+## A spend of several strikes lays its Brittle a stack a strike once the strikes are done (Ryan, 3
 ## November: riders land after the hits), so no strike of the spend feeds on what it lays.
-func test_a_later_strike_of_a_flak_spend_lands_plain_and_the_flak_lands_after() -> void:
+func test_a_later_strike_of_a_brittle_spend_lands_plain_and_the_brittle_lands_after() -> void:
 	var sk := Skirmish.new(1)
-	var burst := _strikes(Face.attack(5, L, K.FLAK), 3)
-	burst.flak = 1
+	var burst := _strikes(Face.attack(5, L, K.BRITTLE), 3)
+	burst.brittle = 1
 	sk.add_mech(_mech("A", Die.single(burst), 0, 200))
 	var g := _ghoul(100)
 	sk.add_foes([g])
 	sk.begin()
 	sk.start_round()
 	assert_true(sk.assign(0, g), "three strikes")
-	assert_eq(g.hp, 100 - 5 - 5 - 5, "5, 5 and 5: the Flak lands after the hits")
-	assert_eq(Effects.stacks_of(g, "flakked"), 3, "a stack a strike")
+	assert_eq(g.hp, 100 - 5 - 5 - 5, "5, 5 and 5: the Brittle lands after the hits")
+	assert_eq(Effects.stacks_of(g, "brittled"), 3, "a stack a strike")
 
 
-## Flak halves at the end of each round, rounded down, until gone (Empowered's clock): a
-## foe's statuses tick at its action, and its Flak waits for the round's end.
-func test_flak_halves_at_the_rounds_end_rounded_down_until_gone() -> void:
+## Brittle halves at the end of each round, rounded down, until gone (Empowered's clock): a
+## foe's statuses tick at its action, and its Brittle waits for the round's end.
+func test_brittle_halves_at_the_rounds_end_rounded_down_until_gone() -> void:
 	var sk := Skirmish.new(1)
 	sk.add_mech(_mech("A", Die.single(Face.shield(10)), 0, 500))
 	var g := _ghoul(500, 1)
 	sk.add_foes([g])
 	sk.begin()
 	sk.start_round()
-	Effects.stack(g, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 5, Effects.DECAY_HALF)
+	Effects.stack(g, Effects.STATUS["brittled"], Effects.SKIRMISH, "mech", 5, Effects.DECAY_HALF)
 	Effects.tick(g, false)
-	assert_eq(Effects.stacks_of(g, "flakked"), 5, "a foe's action leaves its Flak alone")
+	assert_eq(Effects.stacks_of(g, "brittled"), 5, "a foe's action leaves its Brittle alone")
 	sk.end_round()
-	assert_eq(Effects.stacks_of(g, "flakked"), 2, "the round's end halves it, rounded down")
+	assert_eq(Effects.stacks_of(g, "brittled"), 2, "the round's end halves it, rounded down")
 	sk.start_round()
 	sk.end_round()
-	assert_eq(Effects.stacks_of(g, "flakked"), 1, "two to one")
+	assert_eq(Effects.stacks_of(g, "brittled"), 1, "two to one")
 	sk.start_round()
 	sk.end_round()
-	assert_false(Effects.has(g, "flakked"), "and one halves to none")
+	assert_false(Effects.has(g, "brittled"), "and one halves to none")
 	var ov := _mech("B", Die.single(Face.shield(10)), 0, 100)
 	Effects.stack(ov, Effects.STATUS["overcharged"], Effects.SKIRMISH, "buff", 4, Effects.DECAY_HALF)
 	Effects.tick(ov)
 	assert_eq(Effects.stacks_of(ov, "overcharged"), 2, "a machine's tick is the round's end, and halves as before")
 
 
-## Flak runs on the clock its status names (the stock pass's loop reads a stack a round against
+## Brittle runs on the clock its status names (the stock pass's loop reads a stack a round against
 ## the halving, 22 October): a spend lays stacks carrying the definition's decay, and what a
 ## clock keeps into the next round reads from a definition alone.
-func test_flak_laid_carries_the_clock_its_status_names() -> void:
+func test_brittle_laid_carries_the_clock_its_status_names() -> void:
 	var sk := Skirmish.new(1)
-	var spray := Face.attack(1, L, K.FLAK)
-	spray.flak = 3
+	var spray := Face.attack(1, L, K.BRITTLE)
+	spray.brittle = 3
 	sk.add_mech(_mech("A", Die.single(spray), 0, 200))
 	var g := _ghoul(100)
 	sk.add_foes([g])
 	sk.begin()
 	sk.start_round()
-	assert_true(sk.assign(0, g), "Flak laid")
+	assert_true(sk.assign(0, g), "Brittle laid")
 	var clocks: Array = []
 	for m in g.modifiers:
-		if m.id == "flakked":
+		if m.id == "brittled":
 			clocks.append(m.decay)
-	assert_eq(clocks, [Effects.status_decay(Effects.STATUS["flakked"])], "one stack of Flak on the status's own clock")
+	assert_eq(clocks, [Effects.status_decay(Effects.STATUS["brittled"])], "one stack of Brittle on the status's own clock")
 	assert_eq(Effects.stacks_next_round({"decay": "half"}, 5), 2, "a halving clock keeps half, rounded down")
 	assert_eq(Effects.stacks_next_round({}, 5), 4, "a clock that names none loses a stack")
 	assert_eq(Effects.stacks_next_round({"decay": "round"}, 5), 0, "a round's clock keeps nothing")
@@ -7492,7 +7492,7 @@ func test_a_foes_cleanse_takes_the_teams_marks_off_the_most_marked_of_its_own() 
 	Effects.stack(b, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_TICK)
 	assert_eq(sk.cleanse_target(healer), null, "Numbed alone is no mark")
 	Effects.stack(b, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 3)
-	Effects.stack(b, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 2, Effects.status_decay(Effects.STATUS["flakked"]))
+	Effects.stack(b, Effects.STATUS["brittled"], Effects.SKIRMISH, "mech", 2, Effects.status_decay(Effects.STATUS["brittled"]))
 	Effects.stack(b, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	Effects.stack(a, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	assert_eq(sk.cleanse_target(healer), b, "the most marked of its own")
@@ -7501,7 +7501,7 @@ func test_a_foes_cleanse_takes_the_teams_marks_off_the_most_marked_of_its_own() 
 	assert_eq(str(healer.action.get("effect", "")), "cleanse", "it announces the cleanse")
 	assert_true(healer.acts_on_nobody(), "aimed at no machine")
 	sk.end_round()
-	for id in ["ablating", "flakked", "shocked"]:
+	for id in ["ablating", "brittled", "shocked"]:
 		assert_false(Effects.has(b, id), "%s gone" % id)
 	assert_true(Effects.has(b, "numbed"), "Numbed stays: nothing removes it")
 	assert_true(Effects.has(b, "suppressed"), "and Suppressed stays: the stun is sure")
@@ -7555,7 +7555,7 @@ func test_a_foes_barrier_takes_the_next_weapon_blow_and_lasts_to_the_players_tur
 
 
 ## A foe's Ward (the ladder's brief, B; 28 October): its special wards every foe on the field,
-## itself included; no mark the team lays lands (Ablating, Flak, Shock, the Paradox), Suppressed
+## itself included; no mark the team lays lands (Ablating, Brittle, Shock, the Paradox), Suppressed
 ## excepted, since Numbed stays the one stun resistance; the damage lands; the spend tells it
 ## once; a passive's lay is turned too; it goes at the end of the player's next turn.
 ## A foe's Purge N on a machine (2 November; 8 November: "A stack is a stack, doesn't matter where
@@ -7583,7 +7583,7 @@ func test_a_foes_ward_turns_the_teams_marks_away_and_the_stun_with_them() -> voi
 	var meter := {"id": "loop", "name": "Pocket Paradox", "description": "", "effects": [
 		{"trigger": "on_foe_status", "effect": "paradox", "value": 3}]}
 	var sk := Skirmish.new(1, 2)
-	var gun := Face.attack(5, L, [K.ABLATE, K.SHOCK, K.FLAK])
+	var gun := Face.attack(5, L, [K.ABLATE, K.SHOCK, K.BRITTLE])
 	gun.strikes = 2
 	var a := _mech("A", Die.single(gun), 40, 200)
 	a.grant_passive(meter)
@@ -7601,8 +7601,8 @@ func test_a_foes_ward_turns_the_teams_marks_away_and_the_stun_with_them() -> voi
 	sk.start_round()
 	var before := g.hp
 	assert_true(sk.assign(0, g), "a gun of three marks, twice")
-	assert_eq(g.hp, before - 10, "the damage lands, and no Flak feeds the second blow")
-	for id in ["ablating", "shocked", "flakked", "paradox"]:
+	assert_eq(g.hp, before - 10, "the damage lands, and no Brittle feeds the second blow")
+	for id in ["ablating", "shocked", "brittled", "paradox"]:
 		assert_false(Effects.has(g, id), "no %s" % id)
 	assert_eq("\n".join(sk.log).count("Ward turns away"), 1, "the spend tells it once")
 	assert_true(sk.assign(1, g), "a Suppress")
@@ -7618,7 +7618,7 @@ func test_a_foes_ward_turns_the_teams_marks_away_and_the_stun_with_them() -> voi
 	assert_false(Effects.has(hallow, "ward") or Effects.has(g, "ward"), "and goes when the player's turn ends")
 	sk.start_round()
 	assert_true(sk.assign(0, g), "the gun again")
-	assert_true(Effects.has(g, "ablating") and Effects.has(g, "flakked"), "its marks land once the Ward is gone")
+	assert_true(Effects.has(g, "ablating") and Effects.has(g, "brittled"), "its marks land once the Ward is gone")
 
 
 ## Primed on a foe (the ladder's brief, B; 28 October; the primers' format since 15 November):
@@ -8191,7 +8191,7 @@ func test_a_kill_recharges_the_shield_whole() -> void:
 ## number of hits ... for Weapons and Equipment. Base weapon damage is
 ## halved (rounded down, minimum 1)"; "the spirit of buffs and riders is they happen after"): a
 ## weapon hits twice as often, each hit's base halved, rounded down and never below one, then every
-## buff counting on each hit whole, then the foe's own reads (its Flak) and its armour; the die
+## buff counting on each hit whole, then the foe's own reads (its Brittle) and its armour; the die
 ## shows a hit's blow beside the hits. A debuff deals nothing to halve and hits twice all the same,
 ## its riders on each hit (Ryan, 25 October: "That's kind of the whole point"). No passive splits today.
 func test_a_split_passive_hits_twice_its_base_halved_rounded_down() -> void:
@@ -8226,26 +8226,26 @@ func test_a_split_passive_hits_twice_its_base_halved_rounded_down() -> void:
 	ms.face_index = 0
 	assert_true(sk.assign(0, plate), "fired on plate")
 	assert_eq(plate.hp, 96, "(1 + 2 - 1) twice")
-	var probe := Face.attack(0, L, [K.FLAK])
-	probe.flak = 1
+	var probe := Face.attack(0, L, [K.BRITTLE])
+	probe.brittle = 1
 	assert_eq(Effects.effective_face(m, probe).strikes, 2, "a debuff hits twice")
 	sk.end_round()
 	sk.start_round()
 	ms.die = Die.single(probe)
 	ms.face_index = 0
-	var before := Effects.stacks_of(bare, "flakked")
+	var before := Effects.stacks_of(bare, "brittled")
 	assert_true(sk.assign(0, bare), "the debuff spent")
-	assert_eq(Effects.stacks_of(bare, "flakked") - before, 2, "its Flak on each hit")
+	assert_eq(Effects.stacks_of(bare, "brittled") - before, 2, "its Brittle on each hit")
 	assert_eq(bare.hp, 98, "and no damage")
-	# The foe's own reads come after the halving, whole (the blow's order): the Flak the debuff
+	# The foe's own reads come after the halving, whole (the blow's order): the Brittle the debuff
 	# laid adds its points to each halved hit.
 	sk.end_round()
 	sk.start_round()
 	ms.die = Die.single(gun)
 	ms.face_index = 0
-	var flak := Effects.stacks_of(bare, "flakked")
-	assert_true(flak > 0, "the Flak still stands")
-	assert_eq(sk.shown_number(ms, sk.shown_face(ms, gun), bare), 1 + flak, "a halved 1, then the foe's Flak whole")
+	var brittle := Effects.stacks_of(bare, "brittled")
+	assert_true(brittle > 0, "the Brittle still stands")
+	assert_eq(sk.shown_number(ms, sk.shown_face(ms, gun), bare), 1 + brittle, "a halved 1, then the foe's Brittle whole")
 
 
 ## The spend's order (Ryan, 7 November: "Spend-hit(s)-riders per hit-check death-end
@@ -8479,7 +8479,7 @@ func test_every_spend_at_a_foe_leaves_one_mine_of_its_flat_damage_and_keywords()
 ## The Mine blows when its foe falls (Ryan, 9 November: "On death, the mine explodes, dealing its
 ## damage and keywords in an area, I would probably go for Splash as the shape to start"): every foe
 ## beside it in its rank and the other rank of its column takes its damage, plain, through its own
-## Flak and armour, aimed at nobody (a Shock neither doubles nor is spent), then its keywords; the
+## Brittle and armour, aimed at nobody (a Shock neither doubles nor is spent), then its keywords; the
 ## blast lands as a blow the screen plays, after the spend's own.
 func test_a_mine_blows_on_every_foe_round_its_slot_when_its_foe_falls() -> void:
 	var sk := Skirmish.new(1, 3)
@@ -8499,14 +8499,14 @@ func test_a_mine_blows_on_every_foe_round_its_slot_when_its_foe_falls() -> void:
 	sk.start_round()
 	assert_true(sk.front[1] == b and sk.back[1] == behind, "b mid-front, the archer behind it")
 	a.armour = 1
-	Effects.stack(c, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.status_decay(Effects.STATUS["flakked"]))
+	Effects.stack(c, Effects.STATUS["brittled"], Effects.SKIRMISH, "mech", 1, Effects.status_decay(Effects.STATUS["brittled"]))
 	_shock_on(behind)
 	assert_true(sk.assign(0, b), "the Mine laid on b")
 	var b_hp := b.hp
 	assert_true(sk.assign(1, b), "the killer fells it")
 	assert_false(b.alive(), "b is down")
 	assert_eq(a.hp, 100 - 1, "beside it, its armour off the 2")
-	assert_eq(c.hp, 100 - 3, "beside it, its Flak on the 2")
+	assert_eq(c.hp, 100 - 3, "beside it, its Brittle on the 2")
 	assert_eq(behind.hp, 100 - 2, "behind it, the 2 plain: no Shock doubles a blast")
 	assert_true(Effects.has(behind, "shocked"), "and its Shock stands")
 	assert_eq(far.hp, 100, "the far back slot is no neighbour")
@@ -8525,26 +8525,26 @@ func test_a_mine_blows_on_every_foe_round_its_slot_when_its_foe_falls() -> void:
 ## (a single-target weapon's conditions are read then, the rules' blow order); the damage stays flat.
 func test_a_mine_takes_the_whole_result_of_the_spend_every_hits_stacks_as_fired() -> void:
 	var sk := Skirmish.new(1, 3)
-	var flak := Face.attack(1, I, [K.FLAK])
-	flak.flak = 1
-	flak.strikes = 3
-	var bomber := _mech("Bomber", Die.single(flak), 40, 100)
+	var brittle := Face.attack(1, I, [K.BRITTLE])
+	brittle.brittle = 1
+	brittle.strikes = 3
+	var bomber := _mech("Bomber", Die.single(brittle), 40, 100)
 	bomber.grant_passive(MINER)
-	bomber.grant_passive({"id": "test_scorch_flak", "name": "Scorch", "description": "", "effects": [{"trigger": "on_attack", "effect": "lay_status", "value": "ablating", "when": "target_status", "status": "flakked"}]})
+	bomber.grant_passive({"id": "test_scorch_brittle", "name": "Scorch", "description": "", "effects": [{"trigger": "on_attack", "effect": "lay_status", "value": "ablating", "when": "target_status", "status": "brittled"}]})
 	sk.add_mech(bomber)
 	var b := _ghoul(100, 0)
 	sk.add_foes([_ghoul(100, 0), b])
 	sk.begin()
 	sk.start_round()
-	assert_true(sk.assign(0, b), "three hits of Flak 1 on a foe with no Flak")
+	assert_true(sk.assign(0, b), "three hits of Brittle 1 on a foe with no Brittle")
 	var mine := Skirmish.mine_of(b)
 	assert_eq(int(mine["damage"]), 2, "a 2 damage Mine")
-	assert_eq(int(mine["riders"]["stacks"].get("flakked", 0)), 3, "with 3 Flak")
+	assert_eq(int(mine["riders"]["stacks"].get("brittled", 0)), 3, "with 3 Brittle")
 	assert_eq(int(mine["riders"]["stacks"].get("ablating", 0)), 0, "and no Ablating: the condition did not hold as the die was spent")
 	sk.mechs[0].assigned = false
-	assert_true(sk.assign(0, b), "again, the foe now Flakked")
+	assert_true(sk.assign(0, b), "again, the foe now Brittle")
 	mine = Skirmish.mine_of(b)
-	assert_eq([int(mine["riders"]["stacks"]["flakked"]), int(mine["riders"]["stacks"].get("ablating", 0))], [6, 3], "its 3 Flak more and 3 Ablating, a hit each")
+	assert_eq([int(mine["riders"]["stacks"]["brittled"]), int(mine["riders"]["stacks"].get("ablating", 0))], [6, 3], "its 3 Brittle more and 3 Ablating, a hit each")
 	# Deepened and doubled as its machine lays them, and a passive's lays among them.
 	var s2 := Skirmish.new(1, 3)
 	var burner := Face.attack(1, I, [K.ABLATE])
@@ -8677,7 +8677,7 @@ func test_a_mines_keywords_add_up_and_its_blast_meets_armour() -> void:
 	assert_eq(merged["keywords"], ["shock", "expose"], "the flags once each, in a fixed order")
 	var sk := Skirmish.new(1, 3)
 	var gated := Face.attack(1, I, [K.SUPPRESS])
-	gated.gates = {"suppress": {"when": "target_status", "status": "flakked"}}
+	gated.gates = {"suppress": {"when": "target_status", "status": "brittled"}}
 	gated.consumes = "ablating"
 	gated.per_consumed = 1
 	var piercer := Face.attack(1, I)
@@ -8694,13 +8694,13 @@ func test_a_mines_keywords_add_up_and_its_blast_meets_armour() -> void:
 	sk.start_round()
 	Effects.stack(b, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 4)
 	sk.mechs[0].face_index = 0
-	assert_true(sk.assign(0, b), "the gated stun on a foe without Flak")
+	assert_true(sk.assign(0, b), "the gated stun on a foe without Brittle")
 	assert_eq(Skirmish.mine_of(b)["riders"]["keywords"], [], "the gate shut: no Suppress in the Mine")
 	assert_eq(int(Skirmish.mine_of(b)["damage"]), 2, "and the eaten stacks stay with the hit")
-	Effects.stack(b, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.status_decay(Effects.STATUS["flakked"]))
+	Effects.stack(b, Effects.STATUS["brittled"], Effects.SKIRMISH, "mech", 1, Effects.status_decay(Effects.STATUS["brittled"]))
 	sk.mechs[0].assigned = false
 	sk.mechs[0].face_index = 0
-	assert_true(sk.assign(0, b), "again, on the Flak")
+	assert_true(sk.assign(0, b), "again, on the Brittle")
 	assert_true(Skirmish.mine_of(b)["riders"]["keywords"].has("suppress"), "the gate held: the Suppress rides")
 	sk.mechs[0].assigned = false
 	sk.mechs[0].face_index = 1
@@ -9690,11 +9690,11 @@ func test_area_takes_its_number_through_the_firers_modifiers_then_each_foes_own(
 	sk.add_foes([left, mid, right])
 	sk.begin()
 	sk.start_round()
-	Effects.stack(left, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
+	Effects.stack(left, Effects.STATUS["brittled"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
 	Effects.stack(right, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	assert_true(sk.assign(0, mid), "the sweep at the middle")
 	assert_eq(mid.hp, 100 - (6 + 1) * 2, "the target: the roll, the firer's add, then its multiply")
-	assert_eq(left.hp, 100 - ((2 + 1) * 2 + 1 - 1), "a neighbour: Spread 2, the firer's add and multiply, then its own Flak, then its armour")
+	assert_eq(left.hp, 100 - ((2 + 1) * 2 + 1 - 1), "a neighbour: Spread 2, the firer's add and multiply, then its own Brittle, then its armour")
 	assert_eq(right.hp, 100 - (2 + 1) * 2, "the other: the same blow, its Shock never read, no strike being aimed at it (29 October)")
 	assert_true(Effects.has(right, "shocked"), "and the shock stands")
 	# The Kite's double stays on the printed number (Ryan, 28 October: his reading, doubling after
@@ -9970,10 +9970,10 @@ func test_a_reroll_or_a_rapid_spend_is_the_undos_floor_and_a_step_is_not() -> vo
 ## whole attack plays out on it, death the last check.
 func test_every_rider_lands_on_the_foe_its_strike_killed_and_the_preview_shows_them() -> void:
 	var sk := Skirmish.new(1, 2)
-	var gun := _webber(Face.attack(5, L, [K.ABLATE, K.CRYO, K.FLAK, K.SUPPRESS]))
+	var gun := _webber(Face.attack(5, L, [K.ABLATE, K.CRYO, K.BRITTLE, K.SUPPRESS]))
 	gun.ablate = 1
 	gun.cryo = 1
-	gun.flak = 1
+	gun.brittle = 1
 	gun.strikes = 2
 	sk.add_mech(_mech("A", Die.single(gun), 40, 100))
 	var weak := _ghoul(3, 10)
@@ -9983,12 +9983,12 @@ func test_every_rider_lands_on_the_foe_its_strike_killed_and_the_preview_shows_t
 	var pv := sk.preview_round(0, weak)
 	assert_false(bool(pv["foes"][weak]["alive"]), "the first strike kills it")
 	var coming: Dictionary = pv["foes"][weak]["coming"]
-	for sid in ["ablating", "cryoed", "flakked", "suppressed", "webbed"]:
+	for sid in ["ablating", "cryoed", "brittled", "suppressed", "webbed"]:
 		assert_true(coming.has(sid), "the %s on its way beside the skull: %s" % [sid, str(coming.keys())])
 	if coming.has("ablating"):
 		assert_eq(int(coming["ablating"]["stacks"]), 2, "both strikes' Ablate: the whole attack plays out on it (death the last check)")
 	assert_true(sk.assign(0, weak), "fired")
-	assert_eq([Effects.stacks_of(weak, "ablating"), Effects.stacks_of(weak, "cryoed"), Effects.stacks_of(weak, "flakked")], [2, 2, 2], "each rider a strike, the felling strike's and the one after")
+	assert_eq([Effects.stacks_of(weak, "ablating"), Effects.stacks_of(weak, "cryoed"), Effects.stacks_of(weak, "brittled")], [2, 2, 2], "each rider a strike, the felling strike's and the one after")
 
 
 ## Death is the last thing checked (Ryan, 3 November: "'death' is just another chip, and is the
@@ -10115,7 +10115,7 @@ func test_a_foe_its_burn_kills_at_its_action_never_strikes_and_keeps_its_intent(
 
 
 ## Every Foe on a weapon (12 November, Sweep's place for the two gated specials): dropped on any
-## foe, it strikes every foe in the fight for its number, each through its own Flak and armour,
+## foe, it strikes every foe in the fight for its number, each through its own Brittle and armour,
 ## and none is its one target (Ryan: "Target all shouldn't need a target in the same way that
 ## sweep didn't. Why would only the first target pop shock?"): a Shock on any foe is doubled and
 ## spent, and no Ricochet follows it.
@@ -10238,29 +10238,29 @@ func test_a_spent_die_or_a_blank_is_no_pass() -> void:
 
 
 ## The Hollow-point Harpoon's pin (Ryan, 11 November: "Applies 1 flak and the target's flak does
-## not decay this round"): the Flak on its target, its own and what stood there, skips this
+## not decay this round"): the Brittle on its target, its own and what stood there, skips this
 ## round's halving and halves again the round after. Synthetic piece.
-func test_a_pin_holds_its_targets_flak_through_the_rounds_end() -> void:
+func test_a_pin_holds_its_targets_brittle_through_the_rounds_end() -> void:
 	var sk := Skirmish.new(1)
-	var pin := Face.from_dict({"kind": "attack", "reach": "direct", "power": 1, "keywords": ["flak"], "flak": 1, "holds": "flakked"})
+	var pin := Face.from_dict({"kind": "attack", "reach": "direct", "power": 1, "keywords": ["brittle"], "brittle": 1, "holds": "brittled"})
 	sk.add_mech(_mech("A", Die.single(pin), 40, 1000))
 	var a := _ghoul(500, 0)
 	var b := _ghoul(500, 0)
 	sk.add_foes([a, b])
 	sk.begin()
 	sk.start_round()
-	Effects.stack(a, Effects.STATUS["flakked"], Effects.SKIRMISH, "test", 4, Effects.DECAY_HALF)
-	Effects.stack(b, Effects.STATUS["flakked"], Effects.SKIRMISH, "test", 4, Effects.DECAY_HALF)
+	Effects.stack(a, Effects.STATUS["brittled"], Effects.SKIRMISH, "test", 4, Effects.DECAY_HALF)
+	Effects.stack(b, Effects.STATUS["brittled"], Effects.SKIRMISH, "test", 4, Effects.DECAY_HALF)
 	assert_true(sk.assign(0, a), "the harpoon on the first")
-	assert_eq(Effects.stacks_of(a, "flakked"), 5, "it lays its own")
+	assert_eq(Effects.stacks_of(a, "brittled"), 5, "it lays its own")
 	assert_true(Effects.has(a, "pinned"), "and leaves it Pinned, a status of its own")
 	sk.end_round()
-	assert_eq(Effects.stacks_of(a, "flakked"), 5, "pinned: no halving this round")
+	assert_eq(Effects.stacks_of(a, "brittled"), 5, "pinned: no halving this round")
 	assert_false(Effects.has(a, "pinned"), "the pin is the round's: gone with it")
-	assert_eq(Effects.stacks_of(b, "flakked"), 2, "the other's halves as ever")
+	assert_eq(Effects.stacks_of(b, "brittled"), 2, "the other's halves as ever")
 	sk.start_round()
 	sk.end_round()
-	assert_eq(Effects.stacks_of(a, "flakked"), 2, "and it halves the round after")
+	assert_eq(Effects.stacks_of(a, "brittled"), 2, "and it halves the round after")
 
 
 ## The Combat Translocator's Shock (Ryan, 11 November: "not dead versus only frontliners and
@@ -10559,11 +10559,11 @@ func test_the_paradox_counts_debuff_stacks_and_suppresses_at_its_count() -> void
 	sk.start_round()
 	var gained := {}
 	var turned := {}
-	sk._land_rider(foe, "flakked", 3, gained, turned)
+	sk._land_rider(foe, "brittled", 3, gained, turned)
 	for f in gained.keys():
 		for sid in gained[f]:
 			sk._foe_gained_status(f, sid, int(gained[f][sid]))
-	assert_eq(Effects.stacks_of(foe, "paradox"), 3, "Flak 3: three Paradox")
+	assert_eq(Effects.stacks_of(foe, "paradox"), 3, "Brittle 3: three Paradox")
 	sk._foe_gained_status(foe, "kindled", 2)
 	assert_eq(Effects.stacks_of(foe, "paradox"), 3, "a buff it gains feeds nothing")
 	sk._shock(foe, sk.mechs[0])

@@ -185,10 +185,10 @@ const STATUS := {
 	# round, refreshed and never added. The formation's exposed back rank is reach only, and the
 	# id is "exposure" since "exposed" names that formation word and the foes' default aim.
 	# Pinned (the Hollow-point Harpoon's, Ryan, 11 November): a status of its own for the round,
-	# holding the foe's Flak from halving at the round's end. HOLDERS names the holder of each
+	# holding the foe's Brittle from halving at the round's end. HOLDERS names the holder of each
 	# status a piece may hold, so a like one for Ablating is a row there and a status here.
-	"pinned": {"id": "pinned", "name": "Pinned", "description": "Its Flak does not decay this round.", "stacking": "renew",
-		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "flakked"}]},
+	"pinned": {"id": "pinned", "name": "Pinned", "description": "Its Brittle does not decay this round.", "stacking": "renew",
+		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "brittled"}]},
 	# Ablating's pin, Seared (Ryan, 11 November: "Might as well code it in since the Mastema will
 	# want it as a fitted piece, if nothing else"; its name his, 15 November: "Rename 'Seared.'"):
 	# its Ablating takes its points and loses no stack this round. No piece lays it yet.
@@ -299,12 +299,6 @@ const STATUS := {
 	# 22 October). Cleansable.
 	"corrupted": {"id": "corrupted", "name": "Corrupted", "description": "This component bites its owner {value} a stack when spent.",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "status", "effect": "corrupt_bite", "value": 3}]},
-	# Crushed (4 November, the World Eater's pin: Monster Hunter's Defense Down by archetype,
-	# Ryan: "something we don't have"): a foe's crush rider lays it, a point more on every blow
-	# the machine takes a stack, through the next round (a timed grant, laid in Skirmish's blow
-	# loop); Flak's shape on the other body, so the chip is a number and every machine feels it,
-	# the shield taking the extra first as it takes any blow. An ally's Cleanse lifts it; a Ward
-	# turns the crush away as it turns any rider.
 	# Sapped (Ryan, 11 November: "Deals 1 less damage per stack with attacks"; "Weaken can apply to
 	# both sides"; "Weaken can change till after it's next turn then, instead of round end. Let's
 	# use Sapped"): a machine's attacks through its pipeline's add (never below nothing), a foe's
@@ -319,20 +313,32 @@ const STATUS := {
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "ignore_armour", "value": 1}]},
 	"sapped": {"id": "sapped", "name": "Sapped", "description": "Its attacks deal 1 less damage a stack. Every stack goes after its next turn.", "decay": "after_turn",
 		"tags": ["sap", CLEANSABLE], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": -1}, {"trigger": "static", "effect": "add_attack", "value": -1}]},
-	"crushed": {"id": "crushed", "name": "Crushed", "description": "Every blow it takes deals a point more a stack, through the next round.", "decay": "none",
-		"tags": [CLEANSABLE], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
-	# Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, laid by the
-	# Flak keyword's number. Every blow of a weapon the foe takes deals a point more a stack, a
+	# Brittle, one state on either body (Ryan, 15 November: "Crushed and flak - agreed, brittle";
+	# his mark on the crush: "We could consider making this one symmetrical and folding it into
+	# Flak as well, changing the name so it works on both sides"): a point more on every blow its
+	# carrier takes a stack, halving at the end of each round, rounded down. Flak on a foe until
+	# then (Ryan's go, 19 October; built 21 October: Wainwright & Sutler's on-hit) and Crushed on
+	# a machine (4 November, the World Eater's pin: Monster Hunter's Defense Down by archetype,
+	# Ryan: "something we don't have"), which stood whole through the next round.
+	# On a foe ("brittled"), laid by the Brittle keyword's number: every blow of a weapon the foe takes deals a point more a stack, a
 	# strike of 0 included (Ryan, 25 October: "Flak and overcharge exist in part to get past
-	# armour"), an add before the multiplies (a Shocked foe takes a strike aimed at it plus Flak, doubled) and
+	# armour"), an add before the multiplies (a Shocked foe takes a strike aimed at it plus Brittle, doubled) and
 	# before its armour comes off (the bible's armour row); equipment's blow stays nothing
 	# (damage_taken). The stacks halve at the end of each round, rounded down (Empowered's
 	# clock: Skirmish.end_round halves a foe's), so a sprayer feeding three a round settles near
-	# six and a boss never ramps. The clock is this entry's decay, read where Flak is laid, by
+	# six and a boss never ramps. The clock is this entry's decay, read where Brittle is laid, by
 	# the bot and by the hold (stacks_next_round), so the stock pass's loop can read a stack a
 	# round against it (Ryan's question, 22 October).
-	"flakked": {"id": "flakked", "name": "Flak", "description": "Every blow of a weapon it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.", "decay": "half",
-		"tags": ["flak"], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
+	"brittled": {"id": "brittled", "name": "Brittle", "description": "Every blow of a weapon it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.", "decay": "half",
+		"tags": ["brittle"], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
+	# On a machine ("brittled_mech"), laid by a foe's Brittle rider, its number a blow: the same
+	# point a stack on every blow it takes, the shield taking the extra first as it takes any
+	# blow, and the same clock, a machine's halving statuses going with its Empowered as the
+	# round ends (tick). So it stands whole for the foes still to strike this turn and half for
+	# the next: a Brittle 1 is the pack's this turn and gone by the next. An ally's Cleanse
+	# lifts it; a Ward turns the rider away as it turns any.
+	"brittled_mech": {"id": "brittled_mech", "name": "Brittle", "description": "Every blow it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.", "decay": "half",
+		"tags": [CLEANSABLE], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
 	# The Cassowary's Spun Up (Ryan's go, 19 October; built 21 October): the Spin-Up's buff, its
 	# number a stack on the next weapon the machine spends, stacking, carried between turns until
 	# then (`spent_by`: the skirmish lifts every stack after a weapon's spend, equipment leaving
@@ -482,7 +488,7 @@ static func foe_barrier() -> Dictionary:
 
 static func foe_ward() -> Dictionary:
 	var d: Dictionary = STATUS["ward"].duplicate(true)
-	d["description"] = "No mark the team lays lands on it but Suppressed: no Ablating, Flak, Cryo, Vitriol, Shock, Expose, Web Bomb, Paradox or drone. Damage lands. Until the player's turn ends."
+	d["description"] = "No mark the team lays lands on it but Suppressed: no Ablating, Brittle, Cryo, Vitriol, Shock, Expose, Web Bomb, Paradox or drone. Damage lands. Until the player's turn ends."
 	return d
 
 
@@ -516,9 +522,9 @@ static func brace_stacks(value: int) -> int:
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
 ## what the team put on it. Never Numbed (a buff only a Purge lowers, 2 November), and never the foe's
 ## own buffs (Braced, Empowered, Undying).
-const FOE_STATUSES := ["ablating", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "flakked", "exposure", "mine", "pinned", "seared", "sapped"]
+const FOE_STATUSES := ["ablating", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "brittled", "exposure", "mine", "pinned", "seared", "sapped"]
 ## The status that holds each status a piece may hold on its target (Face.holds).
-const HOLDERS := {"flakked": "pinned", "ablating": "seared"}
+const HOLDERS := {"brittled": "pinned", "ablating": "seared"}
 ## The buff a machine gains when it spends an entry that holds a status on every unit this round
 ## (Face.holds_all: the Quintessence Tap's hold on Empowered is Essence Flare), by the status the
 ## entry names. The buff's own effect is the hold (hold_all), so the rule lives on the buff.
@@ -751,7 +757,7 @@ static func remove(u, id: String) -> bool:
 ## `at_turn_end` asks the statuses that tick at the end of the owner's turn (turn decay, a
 ## machine's Ablating and Scorched), and only those; otherwise every other. What the ticks take
 ## goes through what the unit takes, its multiplies alone (Guarded's nothing: Ryan, 8 November, a
-## guarded core takes no tick "by definition"), never a weapon's adds (Flak) nor an aimed strike's
+## guarded core takes no tick "by definition"), never a weapon's adds (Brittle) nor an aimed strike's
 ## (Shocked).
 static func tick_preview(u, at_turn_end: bool = false) -> Dictionary:
 	var out := {"hp": 0, "skip": false, "share": 0}
@@ -861,7 +867,7 @@ static func turn_tick(u, waits: bool = false) -> Dictionary:
 ## The owner's turn comes: apply this tick (the caller subtracts hp), then
 ## every tick-decaying status loses a stack and the empty ones go. A machine's turn is the
 ## round's end, so its halving statuses halve here too; a foe's comes at its action, so it
-## passes `halving` false and its halving statuses wait for the round's end (halve: Flak on
+## passes `halving` false and its halving statuses wait for the round's end (halve: Brittle on
 ## Empowered's clock, 21 October). `held_round`: the statuses the round itself holds from
 ## decaying on every unit (Essence Flare's "No Empowered decays this round"), beside a pin's.
 static func tick(u, halving: bool = true, held_round: Array = []) -> Dictionary:
@@ -899,7 +905,7 @@ static func turn_opens(u) -> void:
 	u.modifiers = u.modifiers.filter(func(m) -> bool: return m.decay != DECAY_ROUND)
 
 
-## The round's end for a foe (Flak, 21 October: it halves at the end of each round, rounded
+## The round's end for a foe (Brittle, 21 October: it halves at the end of each round, rounded
 ## down, Empowered's clock): every halving status halves and the empty ones go. Its other
 ## statuses tick at its action (tick).
 static func halve(u, held: Array = []) -> void:
@@ -913,7 +919,7 @@ static func halve(u, held: Array = []) -> void:
 	u.modifiers = keep
 
 
-## The statuses `u` holds from decaying right now (Pinned holds Flak; Ryan, 11 November: "The
+## The statuses `u` holds from decaying right now (Pinned holds Brittle; Ryan, 11 November: "The
 ## Flak pin should be its own status that gets applied for one turn. I assume we're going to want
 ## a similar one for burning as well"): every status id a live hold_status names.
 static func held_statuses(u) -> Array:
@@ -1088,7 +1094,7 @@ static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionar
 			return face != null and effective_reach(u, face) == Face.Reach.INDIRECT
 		"target_status":
 			# Any status the team put on it, or the one named, at least so many stacks (a gate's:
-			# the Suppression Battery's on Flak, the Backdraft Charge's on 2 Ablating; 22 October).
+			# the Suppression Battery's on Brittle, the Backdraft Charge's on 2 Ablating; 22 October).
 			if target == null or target.get("modifiers") == null:
 				return false
 			var want := str(eff.get("status", ""))
@@ -1238,7 +1244,7 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dicti
 
 ## An incoming blow before shield and armour see it: adds, then multiplies, never below zero.
 ## A blow of nothing (a lure, a web, a probe) stays nothing: an add on what a blow deals
-## (Flak's point a stack) never turns no blow into one. A `weapon` blow, a weapon's, takes every
+## (Brittle's point a stack) never turns no blow into one. A `weapon` blow, a weapon's, takes every
 ## add whatever it deals, a strike of 0 included (Ryan, 25 October: "Flak and overcharge exist
 ## in part to get past armour"). An effect marked aimed_only (Shocked's double) is read only on a
 ## weapon's strike `aimed` at the unit, never on a blow that only reaches it (29 October).
@@ -1490,7 +1496,7 @@ static func gate_holds(u, f: Face, kw: int, foe) -> bool:
 	return _holds(u, g, f, foe)
 
 
-## A gate in words, for the hold's line ("on a foe carrying Flak").
+## A gate in words, for the hold's line ("on a foe carrying Brittle").
 static func gate_text(g) -> String:
 	if not (g is Dictionary):
 		return ""
@@ -2182,7 +2188,7 @@ static func purge(u, n: int = 1) -> Array[String]:
 ## The marks the team lays on foes (28 October), what a foe's cleanse takes off its own: never
 ## Numbed (the buff nothing removes), never Suppressed (so a stun stays sure), never Guarded or a
 ## buff.
-const TEAM_MARKS := ["ablating", "flakked", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine", "pinned", "seared", "sapped"]
+const TEAM_MARKS := ["ablating", "brittled", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine", "pinned", "seared", "sapped"]
 
 
 ## How many of the team's marks a foe carries, each status one mark.

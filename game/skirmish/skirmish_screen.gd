@@ -1647,11 +1647,11 @@ func _foe_rows(foe: Foe) -> Array:
 	if vitriol > 0:
 		# The funnel-web's acid (18 October): its stacks, and the share they eat at its action.
 		rows.append(status_row("vitriol", "vitriol", str(vitriol), "Vitriol ×%d" % vitriol, _foe_chip_colour("vitriol")))
-	var flak := Effects.stacks_of(foe, "flakked")
-	if flak > 0:
+	var brittle := Effects.stacks_of(foe, "brittled")
+	if brittle > 0:
 		# Wainwright & Sutler's on-hit (21 October): the count is the extra every blow of a
 		# weapon it takes deals.
-		rows.append(status_row("flakked", "flak", str(flak), "Flak ×%d" % flak, _foe_chip_colour("flakked")))
+		rows.append(status_row("brittled", "brittle", str(brittle), "Brittle ×%d" % brittle, _foe_chip_colour("brittled")))
 	var cryo := Effects.stacks_of(foe, "cryoed")
 	if cryo > 0:
 		# The Polar Bear's mark (20 October; its chip from 21 October): what a weapon's hit on it
@@ -1798,8 +1798,8 @@ static func _foe_glyph(id: String) -> String:
 	match id:
 		"ablating":
 			return "ablate"
-		"flakked":
-			return "flak"
+		"brittled":
+			return "brittle"
 		"sapped":
 			return "sap"
 		"cryoed":
@@ -1838,6 +1838,8 @@ static func status_glyph(id: String) -> String:
 	match id:
 		"ablating_mech":
 			return "ablate"   # one mark on either body (15 November): the machine's thermometer flame went with Burning as heat
+		"brittled_mech":
+			return "brittle"   # and Brittle's the same (15 November): the airburst a foe wears
 		"scorched":
 			return "scorch"
 		"overcharged":

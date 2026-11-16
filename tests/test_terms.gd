@@ -91,16 +91,16 @@ func test_the_die_and_the_chips_wear_each_terms_one_colour() -> void:
 
 
 func test_shown_text_cuts_out_its_terms() -> void:
-	var flak := _name("flak")
+	var brittle := _name("brittle")
 	var spread := _name("cleave")
 	var found := {}
-	for seg in Terms.split("A foe carrying %s takes more, and %s 2 hits beside it." % [flak, spread]):
+	for seg in Terms.split("A foe carrying %s takes more, and %s 2 hits beside it." % [brittle, spread]):
 		if not (seg["terms"] as Array).is_empty():
 			found[str(seg["text"])] = seg["terms"]
-	assert_true(found.has(flak) and (found[flak] as Array).has("flak"), "a keyword by its name")
+	assert_true(found.has(brittle) and (found[brittle] as Array).has("brittle"), "a keyword by its name")
 	assert_true(found.has(spread + " 2"), "with its number")
-	if _name("flakked") == flak:
-		assert_eq(found[flak], ["flak", "flakked"], "a name two terms share: the keyword's, then its status's")
+	if _name("brittled") == brittle:
+		assert_eq(found[brittle], ["brittle", "brittled"], "a name two terms share: the keyword's, then its status's")
 	var verb: String = Terms.verb_forms(_name("suppress"))[0]
 	var segs := Terms.split("It %s the foe." % verb)
 	assert_true(segs.size() == 3 and (segs[1]["terms"] as Array).has("suppress"), "a keyword's verb form (%s)" % verb)
@@ -175,9 +175,9 @@ func test_a_tap_on_a_term_opens_its_entry_and_a_tap_off_it_falls_through() -> vo
 	var codex := str(Terms.entry("shocked")["codex"])
 	assert_true(tip != null and tip.text().contains(name) and tip.text().contains(codex.substr(0, 24)), "its name over its line from the keywords list")
 	# A term in the tip opens its own in its place.
-	var flak := _name("flak")
-	r.open_tip(["flak", "flakked"], Rect2(10, 10, 40, 20))
-	assert_true(KeywordTip.current() == tip and tip.terms == ["flak", "flakked"], "the open tip moves to the next term, both of a shared name")
+	var brittle := _name("brittle")
+	r.open_tip(["brittle", "brittled"], Rect2(10, 10, 40, 20))
+	assert_true(KeywordTip.current() == tip and tip.terms == ["brittle", "brittled"], "the open tip moves to the next term, both of a shared name")
 	KeywordTip.close_open()
 	assert_true(KeywordTip.current() == null, "and it closes")
 	# A press that travels is a drag, never a tap.
@@ -185,7 +185,7 @@ func test_a_tap_on_a_term_opens_its_entry_and_a_tap_off_it_falls_through() -> vo
 	release.position = at + Vector2(0.0, 40.0)
 	r._gui_input(release)
 	assert_true(KeywordTip.current() == null, "a drag opens nothing")
-	assert_true(flak.length() > 0, "names from the vocabulary")
+	assert_true(brittle.length() > 0, "names from the vocabulary")
 	r.free()
 
 

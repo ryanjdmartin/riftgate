@@ -22,8 +22,9 @@ enum Reach { NONE, DIRECT, INDIRECT, EVERY_FOE }   # Every Foe (4 November), bel
 ## spend takes a second target, another foe or an empty slot, and the two trade places); and
 ## the Overrun Gearing's spill (`spills`, a module's, on the effective entry alone: damage past
 ## a kill in the front rank carries into the foe behind).
-## Flak (Ryan's go, 19 October; built 21 October): Wainwright & Sutler's on-hit, a numbered
-## keyword like Ablate and Cryo; each foe hit gains that many stacks of Flak.
+## Brittle (Ryan's go, 19 October; built 21 October; Flak until 15 November): Wainwright &
+## Sutler's on-hit, a numbered keyword like Ablate and Cryo; each foe hit gains that many stacks
+## of Brittle.
 ## Area by shape, numbered (Ryan, 28 October; the half retired): Spread N (id `cleave`) the
 ## foes beside the target in its rank, Penetrate N the other rank of its column, each foe past
 ## the target taking N as its blow's number. A piece may carry both (the plus round its target);
@@ -42,7 +43,7 @@ enum Reach { NONE, DIRECT, INDIRECT, EVERY_FOE }   # Every Foe (4 November), bel
 ## team, its own machine among them, or every machine but its own, the Mooring Screens'; Ryan:
 ## "the difference is whether the center one is lit or not, its two modes"). `reaches_all` reads
 ## any of them.
-enum Keyword { NONE, CLEAVE, PENETRATE, ABLATE, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SHOCK, CRYO, FLAK, EXPOSE, DISPEL, INSTANT, SAP }
+enum Keyword { NONE, CLEAVE, PENETRATE, ABLATE, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SHOCK, CRYO, BRITTLE, EXPOSE, DISPEL, INSTANT, SAP }
 ## Whom a component may be spent on (Ryan, 26 September): an attack (a weapon or a debuff)
 ## targets foes; a shield, a vent or a buff targets self and allies by default, and content may
 ## narrow one to self only or allies only, so the design space stays open; Every Ally and Every
@@ -61,7 +62,7 @@ const KEYWORD_NAMES := {
 	Keyword.CHAIN: "chain", Keyword.RAPID: "rapid", Keyword.CLEANSE: "cleanse",
 	Keyword.LURE: "lure", Keyword.DISRUPT: "disrupt",
 	Keyword.SHOCK: "shock",
-	Keyword.CRYO: "cryo", Keyword.FLAK: "flak",
+	Keyword.CRYO: "cryo", Keyword.BRITTLE: "brittle",
 	Keyword.EXPOSE: "expose",
 	Keyword.DISPEL: "dispel", Keyword.INSTANT: "instant", Keyword.SAP: "sap",
 }
@@ -71,15 +72,15 @@ const KEYWORD_LABELS := { Keyword.CLEAVE: "spread", Keyword.DISPEL: "purge" }
 ## The status each foe hit gains from a keyword that lays one: the die's hold lists such a
 ## keyword as what the spend applies on hit, after its heat (Ryan, 25 October).
 const KEYWORD_STATUS := {
-	Keyword.ABLATE: "ablating", Keyword.CRYO: "cryoed", Keyword.FLAK: "flakked", Keyword.SHOCK: "shocked",
+	Keyword.ABLATE: "ablating", Keyword.CRYO: "cryoed", Keyword.BRITTLE: "brittled", Keyword.SHOCK: "shocked",
 	Keyword.SUPPRESS: "suppressed", Keyword.EXPOSE: "exposure", Keyword.SAP: "sapped",
 }
 ## The keywords that carry a number, each in the field of its name on the entry: the stacks a
-## rider lays (Ablate, Cryo, Flak), the blow an area keyword deals each foe past the target
+## rider lays (Ablate, Cryo, Brittle), the blow an area keyword deals each foe past the target
 ## (Spread, Penetrate; Ryan, 28 October) or the blow Chain deals each conductor (Chain,
 ## 28 October).
 const NUMBER_FIELDS := {
-	Keyword.ABLATE: "ablate", Keyword.CRYO: "cryo", Keyword.FLAK: "flak",
+	Keyword.ABLATE: "ablate", Keyword.CRYO: "cryo", Keyword.BRITTLE: "brittle",
 	Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate",
 	Keyword.CHAIN: "chain", Keyword.DISPEL: "dispel", Keyword.SAP: "sap",
 }
@@ -123,9 +124,9 @@ var heat: int = 0
 var strikes: int = 1          # blows per use: a rapid-fire weapon lands many small hits (each rolls and procs on its own)
 var ablate: int = 0             # an attack with Ablate: the stacks of Ablating each blow leaves (Ryan, 18 October: a numbered keyword, never read off the damage)
 var cryo: int = 0             # an attack with Cryo: the stacks of Cryo each foe it reaches gains (the Cryo Flinger, 20 October; a numbered keyword like Ablate)
-var sap: int = 0              # an attack with Sap: the stacks of Sapped each foe hit gains (the Baboon's Redshift Emitter, 11 November; numbered like Flak)
+var sap: int = 0              # an attack with Sap: the stacks of Sapped each foe hit gains (the Baboon's Redshift Emitter, 11 November; numbered like Brittle)
 var disrupts_attackers: bool = false   # a buff: every foe aiming at the machine it lands on is Disrupted (the Baboon's Retrocausal Shroud, 11 November)
-var flak: int = 0             # an attack with Flak: the stacks of Flak each foe hit gains (the Flakshot Repeater, 21 October; numbered like Ablate)
+var brittle: int = 0             # an attack with Brittle: the stacks of Brittle each foe hit gains (the Flakshot Repeater, 21 October; numbered like Ablate)
 var cleave: int = 0           # an attack with Spread: the number each foe beside its target in its rank takes as its blow's (Ryan, 28 October: Spread N, the half retired)
 var penetrate: int = 0        # an attack with Penetrate: the number the other rank of its target's column takes (Penetrate N)
 var chain: int = 0            # an attack with Chain: the number every other Shocked foe on the field takes as its blow's (Chain N, 28 October)
@@ -133,8 +134,8 @@ var dispel: int = 0           # an attack or equipment with Purge: the stacks ev
 var shield_cost: int = 0      # a cost (Ryan, 26 October): the shield a spend takes from its owner first; short of it the entry cannot be played
 var short: bool = false       # shown only: its machine cannot pay the entry's price now, a shield cost or the count it spends (Skirmish.shown_face), struck through on the die like a dry gun
 var volatile: int = 0         # a cost (Ryan, 26 October, a keyword with a chip until then): the hull a spend bites its owner, past shield and armour, before the component acts; it may wreck it (a numbered keyword since the stock pass's engine, 22 October; a constant of 10 before)
-var gates: Dictionary = {}    # an attack: keyword name -> the condition it lands under, read against each foe at the spend before its own riders (the Suppression Battery's Suppress on a foe carrying Flak; the stock pass's engine, 22 October)
-var holds: String = ""        # an attack: the status its target keeps through this round's end, its halving skipped (the Hollow-point Harpoon's pin on Flak)
+var gates: Dictionary = {}    # an attack: keyword name -> the condition it lands under, read against each foe at the spend before its own riders (the Suppression Battery's Suppress on a foe carrying Brittle; the stock pass's engine, 22 October)
+var holds: String = ""        # an attack: the status its target keeps through this round's end, its halving skipped (the Hollow-point Harpoon's pin on Brittle)
 var consumes: String = ""     # an attack: the status it consumes on its target, every stack, a point more a stack before the multiplies (the Backdraft Charge's Ablating, 22 October)...
 var per_consumed: int = 1     # ...the damage a stack consumed adds
 var ignores_armour: bool = false   # an attack: its blows take nothing off for a foe's armour, a rule written on the piece (Ryan, 15 November: "Ignores armour can be an explicitly written out property", where the Breach keyword stood on our side)
@@ -364,7 +365,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.fills_hopper = maxi(0, int(d.get("fills_hopper", 0)))
 		f.ablate = maxi(0, int(d.get("ablate", 0)))   # add_keyword gives an Ablate entry one stack when it says none
 		f.cryo = maxi(0, int(d.get("cryo", 0)))
-		f.flak = maxi(0, int(d.get("flak", 0)))
+		f.brittle = maxi(0, int(d.get("brittle", 0)))
 		f.sap = maxi(0, int(d.get("sap", 0)))
 		f.cleave = maxi(0, int(d.get("cleave", 0)))   # add_keyword gives an area keyword a number of one when it says none
 		f.penetrate = maxi(0, int(d.get("penetrate", 0)))
@@ -452,8 +453,8 @@ func to_dict() -> Dictionary:
 		d["ablate"] = ablate
 	if cryo > 0 and has(Keyword.CRYO):
 		d["cryo"] = cryo
-	if flak > 0 and has(Keyword.FLAK):
-		d["flak"] = flak
+	if brittle > 0 and has(Keyword.BRITTLE):
+		d["brittle"] = brittle
 	if sap > 0 and has(Keyword.SAP):
 		d["sap"] = sap
 	if disrupts_attackers:
@@ -542,8 +543,8 @@ func add_keyword(kw: int) -> void:
 		ablate = 1   # an Ablate entry says its stacks; one when nothing says (a synthetic entry, an old save)
 	if kw == Keyword.CRYO and cryo <= 0:
 		cryo = 1
-	if kw == Keyword.FLAK and flak <= 0:
-		flak = 1
+	if kw == Keyword.BRITTLE and brittle <= 0:
+		brittle = 1
 	if kw == Keyword.SAP and sap <= 0:
 		sap = 1
 	if kw == Keyword.DISPEL and dispel <= 0:
@@ -734,7 +735,7 @@ func duplicate_face() -> Face:
 	f.holds_all = holds_all
 	f.ablate = ablate
 	f.cryo = cryo
-	f.flak = flak
+	f.brittle = brittle
 	f.sap = sap
 	f.disrupts_attackers = disrupts_attackers
 	f.cleave = cleave
@@ -1061,8 +1062,8 @@ func describe() -> String:
 					s += " %d" % ablate   # a numbered keyword: the stacks each blow leaves
 				if k == Keyword.CRYO:
 					s += " %d" % cryo
-				if k == Keyword.FLAK:
-					s += " %d" % flak
+				if k == Keyword.BRITTLE:
+					s += " %d" % brittle
 				if k == Keyword.SAP:
 					s += " %d" % sap
 				if k == Keyword.DISPEL:

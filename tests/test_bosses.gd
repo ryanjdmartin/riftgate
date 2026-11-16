@@ -1159,14 +1159,15 @@ func test_a_stagger_numbs_nothing_and_a_tick_broken_rage_costs_the_next_action()
 
 
 ## The World Eater's pin (4 November, Ryan: "rework the below half attack into a form of its pin,
-## since that inflicts Defense Down in game, something we don't have"): a crush rider lays
-## Crushed on the machine, a point more on every blow it takes a stack, through the next round;
-## a Ward turns it away and a Cleanse lifts it.
-func test_a_crush_makes_every_blow_the_machine_takes_land_harder_through_the_next_round() -> void:
+## since that inflicts Defense Down in game, something we don't have"; Brittle on both sides
+## since 15 November, "Crushed and flak - agreed, brittle"): a foe's Brittle rider lays Brittle on
+## the machine, a point more on every blow it takes a stack, whole for the blows after it that
+## turn and halving as each round ends; a Ward turns it away and a Cleanse lifts it.
+func test_a_foes_brittle_makes_every_blow_the_machine_takes_land_harder_and_halves_each_round() -> void:
 	var sk := Skirmish.new(1, 3)
 	sk.add_mech(_mech("A", Die.single(Face.blank())))
 	var jho := Foe.make("jho", 40, 8)
-	jho.actions = [_move("chomp"), _move("pin", {"factor": 1.25, "keywords": ["crush"], "crush": 2})]
+	jho.actions = [_move("chomp"), _move("pin", {"factor": 1.25, "keywords": ["brittle"], "brittle": 2})]
 	var gob := Foe.make("gob", 9, 3)
 	gob.actions = [_move("stab")]
 	sk.add_foes([jho, gob])
@@ -1180,26 +1181,28 @@ func test_a_crush_makes_every_blow_the_machine_takes_land_harder_through_the_nex
 		sk.end_round()
 	sk.start_round()
 	turn.call(1)
-	assert_eq(Effects.stacks_of(a.unit, "crushed"), 2, "pinned: Crushed ×2")
-	assert_eq(a.unit.hull, 485, "the pin's 10, then the stab's 3 and 2 more")
+	assert_eq(a.unit.hull, 485, "the pin's 10 and Brittle 2, then the stab's 3 and 2 more")
+	assert_true("\n".join(sk.log).contains("lays Brittle ×2 on A"), "the log says so")
+	assert_eq(Effects.stacks_of(a.unit, "brittled_mech"), 1, "the round's end halves it")
+	assert_eq(Effects.STATUS["brittled_mech"]["name"], Effects.STATUS["brittled"]["name"], "one word on either body")
 	sk.start_round()
-	assert_eq(Effects.stacks_of(a.unit, "crushed"), 2, "through the next round")
 	turn.call(0)
-	assert_eq(a.unit.hull, 470, "the chomp's 8 and the stab's 3, each 2 harder")
+	assert_eq(a.unit.hull, 472, "the chomp's 8 and the stab's 3, each 1 harder")
+	assert_eq(Effects.stacks_of(a.unit, "brittled_mech"), 0, "one halves to none")
 	sk.start_round()
-	assert_eq(Effects.stacks_of(a.unit, "crushed"), 0, "then it goes")
 	turn.call(0)
-	assert_eq(a.unit.hull, 459, "their own numbers again")
-	# A Ward turns the crush away; a Cleanse lifts it.
+	assert_eq(a.unit.hull, 461, "their own numbers again")
+	# A Ward turns the rider away; a Cleanse lifts the mark.
 	sk.start_round()
 	Effects.grant_for_rounds(a.unit, Effects.STATUS["ward"], "test", sk.round)
 	turn.call(1)
-	assert_eq(Effects.stacks_of(a.unit, "crushed"), 0, "the Ward turns the crush away")
+	assert_eq(a.unit.hull, 448, "warded: the pin's 10 and the stab's plain 3")
+	assert_eq(Effects.stacks_of(a.unit, "brittled_mech"), 0, "the Ward turns the Brittle away")
 	sk.start_round()
 	turn.call(1)
-	assert_eq(Effects.stacks_of(a.unit, "crushed"), 2, "crushed again")
-	assert_true(Effects.cleanse(a.unit).has(Effects.STATUS["crushed"]["name"]), "a Cleanse lifts it")
-	assert_eq(Effects.stacks_of(a.unit, "crushed"), 0, "and it is gone")
+	assert_eq(Effects.stacks_of(a.unit, "brittled_mech"), 1, "Brittle again, halved by the round's end")
+	assert_true(Effects.cleanse(a.unit).has(Effects.STATUS["brittled_mech"]["name"]), "a Cleanse lifts it")
+	assert_eq(Effects.stacks_of(a.unit, "brittled_mech"), 0, "and it is gone")
 
 
 ## Every domain holds three bosses at least (Ryan, 3 November: more is fine): the slate's twelve

@@ -720,7 +720,7 @@ static func hopper_fill_of(u, f: Face) -> int:
 ## flat entry. Without a target, every source that needs none: the pipeline's adds and
 ## multiplies, the heat a vent-on-fire shot fires, a raised ceiling. Over a foe, what it deals
 ## to that foe: its missing hull, conditions on it (a status it carries), what it takes (its
-## Flak, a point a stack on a weapon's blow; a Guarded core's nothing) and its armour off the
+## Brittle, a point a stack on a weapon's blow; a Guarded core's nothing) and its armour off the
 ## blow. A shock is left out, the foe's own chip, and spent by the first blow of many.
 ## `f` is the entry as this machine's passives make it (shown_face); [0, 0] for no attack.
 ## A split entry's base (the Skua's Split-cycle Breech, Ryan, 7 November: "base weapon damage is
@@ -744,7 +744,7 @@ func shown_number(ms: MechState, f: Face, target: Foe = null) -> int:
 	var d := int(Effects.attack(ms.unit, f, split_share(f.power + add, f.split), 0, target)["damage"]) + own
 	if target != null:
 		if not f.is_debuff():
-			d = Effects.damage_taken(target, d, ms.unit, true, false)   # every add and multiply it takes (its Flak, a Guarded core's nothing) but a Shocked doubling, the foe's own chip
+			d = Effects.damage_taken(target, d, ms.unit, true, false)   # every add and multiply it takes (its Brittle, a Guarded core's nothing) but a Shocked doubling, the foe's own chip
 		d = maxi(0, d - target.armour_for(f))
 	return d
 
@@ -2492,7 +2492,7 @@ func field_holds() -> Array:
 
 
 ## The round's end, once the enemy's turn is done and the fight undecided: the machines' statuses
-## tick, a foe's halving statuses halve (Flak, Empowered's clock), each but what a pin or the
+## tick, a foe's halving statuses halve (Brittle, Empowered's clock), each but what a pin or the
 ## round holds (round_holds), shield past the maximum fades and the parts due grow back. The fight's own (end_round, which then refreshes its cores' guards
 ## and its machines' allies and reads the outcome) and the round preview's copy (preview_round)
 ## both run it, so the preview's round ends as the round will.
@@ -2563,7 +2563,7 @@ func _enemy_turn() -> void:
 		if not f.alive():
 			continue   # fallen earlier this turn (with its core, taken in by a merge), and does nothing
 		var regrow := Effects.regrowth(f)   # read before the tick counts down its clock (28 October)
-		var tick := Effects.tick(f, false)   # a halving status (Flak) waits for the round's end
+		var tick := Effects.tick(f, false)   # a halving status (Brittle) waits for the round's end
 		var share := int(tick.get("share", 0))
 		if int(tick["hp"]) - share > 0:
 			log.append("%s is ablating: -%d" % [f.display_name, int(tick["hp"]) - share])
@@ -2786,13 +2786,13 @@ func _strike(f: Foe, t: MechState) -> void:
 			# The entry the die shows is corrupted for the fight: it bites when spent.
 			Effects.corrupt_entry(t.unit, t.face_index, "foe:" + f.content_id, f.rider(f.action, "corrupt"))
 			log.append("%s corrupts %s's %s (×%d)" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe(), Effects.corrupt_stacks(t.unit, t.face_index)])
-		if f.has_keyword(f.action, "crush") and t.alive():
-			# A crush (4 November, the World Eater's pin): Crushed on the machine, a point more on
-			# every blow it takes a stack, through the next round, so the pack's blows after the
-			# pin and the next turn's land harder; an ally's Cleanse lifts it.
-			var nc := f.rider(f.action, "crush")
-			Effects.stack(t.unit, Effects.STATUS["crushed"], Effects.ROUNDS, "foe:" + f.content_id, nc, Effects.DECAY_NONE, round + 1)
-			log.append("%s crushes %s ×%d: every blow it takes through the next round lands harder" % [f.display_name, t.unit.display_name, nc])
+		if f.has_keyword(f.action, "brittle") and t.alive():
+			# Brittle on the machine (15 November; the World Eater's pin, a crush until then): a
+			# point more on every blow it takes a stack, so the pack's blows after this one land
+			# harder; the stacks halve as the round ends, and an ally's Cleanse lifts them.
+			var nc := f.rider(f.action, "brittle")
+			_fire_on(t, "brittled_mech", nc, f)
+			log.append("%s lays Brittle ×%d on %s: every blow it takes lands harder" % [f.display_name, nc, t.unit.display_name])
 		if f.has_keyword(f.action, "steal") and t.alive() and t.face_index >= 0:
 			_steal(f, t)
 		if f.has_keyword(f.action, "destroy") and t.alive() and int(ev["through"]) > 0:
@@ -2806,9 +2806,9 @@ func _strike(f: Foe, t: MechState) -> void:
 
 
 ## Whether this foe's blows carry a rider a Ward turns away: a scorch, an ablate, a jam, a
-## corrupt, a crush, a steal or a destroy (a purge is a special).
+## corrupt, a Brittle, a steal or a destroy (a purge is a special).
 static func _rides(f: Foe) -> bool:
-	for kw in ["scorch", "ablate", "jam", "corrupt", "crush", "steal", "destroy"]:
+	for kw in ["scorch", "ablate", "jam", "corrupt", "brittle", "steal", "destroy"]:
 		if f.has_keyword(f.action, kw):
 			return true
 	return Effects.has(f, "primed")   # a primed foe's blows carry Ablating as a rider (28 October)
@@ -3080,7 +3080,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	# more time per stack, dealing 1 damage each time and applying all effects other than area
 	# keywords"): once the weapon's strikes are done, a strike of 1 more a stack at the target
 	# alone. Each is a strike through the whole blow, its number 1 in place of the entry's and what
-	# the entry reads: the firer's pipeline on it, the foe's Flak and armour, the weapon's riders
+	# the entry reads: the firer's pipeline on it, the foe's Brittle and armour, the weapon's riders
 	# a strike. Read as the spend begins, so a stack the spend earns bounces none of it.
 	var strikes := maxi(1, f.strikes)
 	# A reach over every foe has no one target (Ryan, 12 November: "Target all shouldn't need a
@@ -3143,15 +3143,15 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				# more, its armour included, and the strike's whole number goes on behind it; with
 				# nothing standing there, it is lost. The blow's record counts it whole, as it
 				# counts the killing strike's excess. Its riders land on the corpse as any hit's do
-				# (the audit's eighth bug, 8 November: a Wild Boar's ×2 Flak 1 that kills with its
-				# first strike leaves Flak 2).
+				# (the audit's eighth bug, 8 November: a Wild Boar's ×2 Brittle 1 that kills with its
+				# first strike leaves Brittle 2).
 				if struck:
 					_note_blow(foe, at, 0, "ricochet" if bounce else "strike")   # the shot lands on the corpse before it spills
 				_spill(ms, f, foe, blow, hit, at, not f.is_debuff())
 				if foe == target:
 					landed = blow
 			else:
-				# What the foe takes of the blow: its own statuses read last (its Flak adds to a
+				# What the foe takes of the blow: its own statuses read last (its Brittle adds to a
 				# weapon's blow, a strike of 0 included: Ryan, 25 October; a Shocked foe takes the
 				# strike aimed at it double, spending the shock, while a blow that only reaches it, an
 				# area's or a Chain's arc, neither doubles nor spends it: Ryan, 29 October), then its armour comes off, flat,
@@ -3235,20 +3235,20 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				riders.append(func() -> void: _land_rider(foe, "cryoed", cryo_laid, gained, turned))
 				if into_mine:
 					h.mine_stack("cryoed", cryo_laid)
-			# Flak (Ryan's go, 19 October; built 21 October): each foe hit gains the keyword's
+			# Brittle (Ryan's go, 19 October; built 21 October): each foe hit gains the keyword's
 			# number in stacks a strike, with the riders, so no strike of the spend feeds on what
 			# it lays (Ryan, 3 November: "5,5,5 makes way more sense to me").
-			# Sap (the Baboon's Redshift Emitter, 11 November): Sapped laid as Flak is, with the riders.
+			# Sap (the Baboon's Redshift Emitter, 11 November): Sapped laid as Brittle is, with the riders.
 			if f.has(Face.Keyword.SAP):
 				var sap_laid := _stacks_from(ms, "sapped", f.sap) * doubled
 				riders.append(func() -> void: _land_rider(foe, "sapped", sap_laid, gained, turned))
 				if into_mine:
 					h.mine_stack("sapped", sap_laid)
-			if f.has(Face.Keyword.FLAK):
-				var flak_laid := _stacks_from(ms, "flakked", f.flak) * doubled
-				riders.append(func() -> void: _land_rider(foe, "flakked", flak_laid, gained, turned))
+			if f.has(Face.Keyword.BRITTLE):
+				var brittle_laid := _stacks_from(ms, "brittled", f.brittle) * doubled
+				riders.append(func() -> void: _land_rider(foe, "brittled", brittle_laid, gained, turned))
 				if into_mine:
-					h.mine_stack("flakked", flak_laid)
+					h.mine_stack("brittled", brittle_laid)
 			# A pin (the Hollow-point Harpoon's; Ryan, 11 November: "the target's flak does not decay
 			# this round"): the status held through this round's end, after what the spend lays.
 			if not f.holds.is_empty():
@@ -3305,7 +3305,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 
 ## One blow of a hit landing on a foe, a strike's, an area's, an arc's or a spill's: what the foe
 ## takes of `blow` (Effects.damage_taken: its own statuses read last, a `weapon`'s blow taking its
-## Flak even at 0, a Shocked foe's double on a weapon's strike `aimed` at it), a Barrier taking a
+## Brittle even at 0, a Shocked foe's double on a weapon's strike `aimed` at it), a Barrier taking a
 ## weapon's blow whole (28 October), then its `armour`, flat; off its HP and recorded for the
 ## screen as `kind` in `strike`. Returns {taken: what came off its HP, armoured: what the armour
 ## took, barred: whether a Barrier took it}.
@@ -3441,9 +3441,9 @@ func _pay_hits(ms: MechState, f: Face, h: Hits, pays: int) -> void:
 ## never feeds its own read), foe -> [[status id, stacks a hit, asks a weapon], ...]; the foe's
 ## own reads (the mechanics audit's 19), foe -> [the hull it is missing (the Coriolis's), the
 ## stacks a consumer eats on it (the Backdraft Charge's)], landed on its blow after the firer's
-## pipeline, flat, beside its Flak, the eaten stacks a point each on its first blow and gone as it
+## pipeline, flat, beside its Brittle, the eaten stacks a point each on its first blow and gone as it
 ## lands; and the gates (the stock pass's engine, 22 October: the Suppression Battery's Suppress on
-## a foe carrying Flak), foe -> [keywords turned away], so a hit never opens its own gate. A
+## a foe carrying Brittle), foe -> [keywords turned away], so a hit never opens its own gate. A
 ## weapon's hits judge once, at the spend.
 func _judge(ms: MechState, f: Face, foes: Array) -> Dictionary:
 	var lays := {}
@@ -3691,7 +3691,7 @@ static func area_number(f: Face, shape: int) -> int:
 
 ## What one foe reads for itself in a spend (the blow's order): the hull it is missing, on
 ## every blow, and on its first blow the stacks a consumer eats on it, a point each
-## (per_consumed); flat, after the firer's pipeline, beside its Flak. A debuff's blow stays
+## (per_consumed); flat, after the firer's pipeline, beside its Brittle. A debuff's blow stays
 ## nothing. A foe the spend did not judge (none in practice) is read now.
 static func _foe_reads(f: Face, reads: Dictionary, foe: Foe, first: bool) -> int:
 	if f.is_debuff():
@@ -4427,7 +4427,7 @@ static func mine_of(foe: Foe) -> Dictionary:
 static func mine_riders(f: Face) -> Dictionary:
 	var hits := maxi(1, f.strikes)
 	var stacks := {}
-	for k in [Face.Keyword.ABLATE, Face.Keyword.CRYO, Face.Keyword.FLAK, Face.Keyword.SAP]:
+	for k in [Face.Keyword.ABLATE, Face.Keyword.CRYO, Face.Keyword.BRITTLE, Face.Keyword.SAP]:
 		if f.has(k):
 			var n := maxi(0, int(f.get(str(Face.NUMBER_FIELDS[k])))) * hits
 			if n > 0:
@@ -4464,7 +4464,7 @@ static func mine_riders_merged(a: Dictionary, b: Dictionary) -> Dictionary:
 
 
 ## A Mine's words, for the log and the chip's readout: its damage, then its riders, each stack by
-## the keyword that lays it where one does ("Mine 6: Ablate 4, Flak 3, Vitriol 2, Shock").
+## the keyword that lays it where one does ("Mine 6: Ablate 4, Brittle 3, Vitriol 2, Shock").
 static func mine_text(mine: Dictionary) -> String:
 	var bits: Array[String] = []
 	var r: Dictionary = mine.get("riders", {})
@@ -4542,10 +4542,10 @@ func mine_reach(rank: int, col: int, massive: bool) -> Array[Foe]:
 
 
 ## A Mine blowing at a slot (Ryan, 9 November): one plain blow of its damage on every foe its reach
-## meets (mine_reach), each through its own reads (its Flak, a Barrier, what it takes; aimed at
+## meets (mine_reach), each through its own reads (its Brittle, a Barrier, what it takes; aimed at
 ## nobody, so a Shock neither doubles it nor is spent) and its armour, and
 ## Chain's number on every other Shocked foe on the field; then its riders on each foe it met,
-## felled or not, as a hit's land: every status's stacks it carries (Ablating, Cryo, Flak, a
+## felled or not, as a hit's land: every status's stacks it carries (Ablating, Cryo, Brittle, a
 ## passive's Vitriol), Purge, Suppress and a web, then Shock and Expose, and Disrupt in the
 ## player's turn alone, the foes' moves being under way in theirs.
 ## Nothing ties it to the machine that laid it: no modifier, no deepening, no Cryo cashed. Its
@@ -4787,7 +4787,7 @@ func _land_web(foe: Foe, gained: Dictionary, turned: Dictionary, webbed: Array[F
 ## that the blow already reaches (a penetrate) takes the strike itself, never a spill too, and
 ## one already fallen takes nothing: nothing stands behind the back rank, so the damage is lost.
 ## `strike`: the strike it spills from, for the blow it records. `whole`: a later strike's whole
-## number, a weapon's, which lands as its blow even at 0 (its Flak added); a kill's excess of 0
+## number, a weapon's, which lands as its blow even at 0 (its Brittle added); a kill's excess of 0
 ## carries nothing.
 func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe], strike: int, whole: bool = false) -> void:
 	var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
