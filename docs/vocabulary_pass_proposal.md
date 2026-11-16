@@ -2456,8 +2456,9 @@ His words, on section 29 and the targeting audit:
 >
 > Pull in main and push our work to main if you haven't already.
 
-**Main.** It had not moved: the branch and main stood at one commit, every piece of this
-work already on it.
+**Main.** It stood level with the branch when he asked, every piece of this work already on
+it. The map session landed on it the same evening; the two were merged with the tests green,
+and main holds both.
 
 ### The Roc is Aloft
 
