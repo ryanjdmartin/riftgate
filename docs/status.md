@@ -2164,7 +2164,14 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 282 (16 November, from `ccr-bd73687d-w8qox1` at `9f1c22f`, ahead of main, on his
+  page's Version 283 (16 November, from `ccr-bd73687d-w8qox1` at `756c0ae`, ahead of main, on his
+  next notes on the deaths, the Baboon's "execution needs work" to the Nemesis's "just take a
+  knee, arms slumped down by the elbows" and the lost flicker): the twenty-two sidecars with their
+  deaths reworked and falling, and `motion.js` with the fall, the floor held every frame, the limp
+  joints, the keyed glows and the stuttering paint; the twenty-three live copies Version 282's own
+  and the page its source, every machine's lowest point checked on the floor and the Badger's and
+  the Polar Bear's lights read in the hangar headless first. `edits` and `text` empty, `designs`
+  the two folded ideas. Version 282 (16 November, from `ccr-bd73687d-w8qox1` at `9f1c22f`, ahead of main, on his
   notes from the hangar: "some of these look like they aren't touching the ground", "Boosters
   should go dark", "Nemesis should fall to one knee"): fifteen sidecars with their deaths reworked
   to rest on what touches the floor, and `motion.js` with the settle read on the parts' own
