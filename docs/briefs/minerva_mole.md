@@ -248,11 +248,96 @@ follow the hook (a heavy brawler that winds up and unloads), a new round of look
    the cadence to the fast one against most of tier one; Claude's lean is the numbers above
    instead.
 
+## The burrow and the Inertia Drill (16 November)
+
+Ryan's design, the same day, in the dive's place:
+
+> Mole: Instead of Reboot, it Burrows. While burrowed, it gains gains a unpurgable buff called
+> "Burrowed" that grants 1 Armour, enough Shield Regen and Cooling to recover fully in say, 3
+> rounds, and all its die faces change to its locked piece, the Inertia Drill, and it remains
+> burrowed until it uses it. At the start of every turn while burrowed, it gains a stack of
+> Conserved Momentum.
+>
+> Inertia Drill: Equipment, direct. Consumes all Conserved Momentum and grants a stack of
+> Applied Momentum for each one. Applied Momentum decays 1 at the start of the target's turn.
+> Here's where we need to pick a shape, or shapes that are upgrade options:
+>
+> -Applied momentum grants Exposed before it decays. So it's an extended exposed.
+> -Applied momentum grants 1 Brittle and Pinned before it decays.
+> -Applied momentum deals damage equal to its stacks before it decays.
+> -Applied momentum grants 1 Ablate and Seared before it decays.
+>
+> Applied Momentum is removed upon Burrowing. The Inertia Drill is only available while
+> burrowed, it's not on the unburrowed die.
+>
+> Thematically, it's a rocket drill. It returns to the Mole when it burrows, taking the debuff
+> with it.
+>
+> One thing I'm not certain of, is if applied Momentum should return to conserved momentum when
+> it burrows. If the Regen and cooling it gets while burrowed is too encouraging to stay
+> Burrowed and avoid fighting (not that it's going to win that way), then we can scale it based
+> on percent missing shield and percent heat.
+
+**What follows from it, no question.** Burrowed, it is still in the fight and may be picked;
+its armour is for that. Rerolls and locks do nothing for its die while every entry is the
+Drill. The Drill is a mark the team laid, so a Ward turns it away and a foe's cleanse takes it,
+as with the Mine. A drilled foe that falls takes what is left with it, so the Drill wants a
+target that lives through its stacks: an elite, a boss, a massive foe. Seared has had no
+carrier ("no piece lays it yet"), and the fourth shape would be its first; the Dingo's harpoon
+carries Pinned today.
+
+**Where his words give two answers or none** (Claude's lean on each, his to rule):
+
+1. *What a burrow resets.* A Broken shield gains no shield by any method until a reboot's
+   recovery, so Burrowed's regen cannot touch one unless burrowing lifts Broken; and with no
+   reboot, the one break and the one overheat between reboots would never reset. Lean:
+   burrowing is its reboot for both, lifting Broken at once and resetting the two; the shield
+   is not emptied, since the slow recovery is the point; and like a rebooting machine it
+   neither overheats nor burns at the END TURN it burrows.
+2. *Its gate.* Lean: the reboot's, a turn with nothing spent, given whole.
+3. *A cap on Conserved Momentum.* None is stated, and three of the shapes pay more than one for
+   one: on a foe that lives through them, k stacks deal k + (k-1) + ... + 1 as damage, twice
+   that past armour as Ablating held by Seared, and on the squad's blows the round after each
+   decay +1, +2, ... +k with Brittle held by Pinned. So each turn under pays more than the one
+   before, and the longest dig always wins. Lean: a cap of 3, the recovery's rounds.
+4. *The damage shape's damage.* A blow (armour, a Barrier and a Shock read) or a tick past
+   armour like Ablating's. Lean: a tick, since it lands at the foe's turn start and no strike
+   carries it, so a foe's armour does not eat a stack of 1.
+
+**The four shapes at a cap of 3** (one foe living through it; the Brittle line on three squad
+blows a round): damage 3 + 2 + 1, so 6; Ablate and Seared 12, past armour; Brittle and Pinned
+about +21 to the squad's blows; Exposed four rounds, of which only the armour half counts, since
+the Drill is Direct and its target is already in Direct reach. Against a reboot, a dig of three
+rounds spends four turns of its die (the burrow, three under, the Drill on the last) where a
+reboot spends one; the three more buy no bare turn, armour 1 for three enemy turns, and the
+Drill. Claude's mapping, on the locked pieces' branch shape (two directions, two steps):
+
+- *Base*: damage equal to its stacks. Its own payoff, the plainest to read, and the smallest,
+  right for a tier one's base.
+- *The squad's direction*: Brittle 1 and Pinned, then the Drill reaching any foe with Exposed
+  joining, so its target opens to the squad's Direct guns as well; Exposed is only worth its
+  place once the Drill reaches past the front.
+- *Its own direction*: Ablate 1 and Seared in place of the plain damage (double it, past
+  armour), then the cap one or two higher.
+
+**His two questions.**
+
+- *Applied returning as Conserved on a burrow.* Claude's lean: no. With the return, momentum is
+  never lost and climbs across burrows, a ratchet that pays a long fight more than one for one;
+  and the loss is the decision the rocket drill sets up: pull it back to recover now and lose
+  what is left, or leave it working and stay out. If he wants some carry, half of what is left.
+- *The recovery tempting it to stay under.* What pays for staying is momentum more than the
+  regen, so the cap is the first lever: with it, nothing grows past the third round and staying
+  buys armour 1 alone. His scaling by what is missing then stops the other way of staying, a
+  sponge: the recovery sized as it burrows, a third of what is missing a round for three
+  rounds, so blows taken while under are not healed.
+
 ## Open for the session
 
-1. Its hook: the dive, a tempo bruiser (his of 16 November); which tweak, or none.
-2. Its look: whether the drill ties to it (the reboot as the drill's act), or a look that
-   follows the hook; then a round of looks.
+1. Its hook: the burrow and the Inertia Drill (his of 16 November); his rulings on the four
+   points above and his two questions; the shapes as base and upgrades.
+2. Its look: the rocket drill (a drill it fires into a foe that returns as it burrows), then a
+   round of looks.
 3. Its tier: it or the Wild Boar comes down to tier one.
 4. Its numbers, stock and locked piece.
 
