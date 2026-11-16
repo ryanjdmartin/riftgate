@@ -1722,9 +1722,10 @@ His words, on the eighth round's build and its two questions:
 - A stack of Empowered a machine gains in the enemy's turn is whole for its next turn. Two of
   ours gain there: the Grievance Reliquary's, on a hull hit, and the Ammit's flare, as the
   round ends.
-- The Ammit with a kill every round settles near twice its flare on its swing, where the
-  flare at the kill settled it near one: the old flare landed after the swing and halved
-  before the next. A round with no kill halves it, as before.
+- The Ammit with a kill every round swings at one under twice its flare, where the flare at
+  the kill left it one under the flare: 3 for 1 at ten Essence, and 1 for nothing at five.
+  The old flare landed after the swing and halved before the next. A round with no kill
+  halves it, as before.
 - What reads a machine's Empowered after END TURN meets it halved: a foe's Purge, and a
   passed turn's release.
 - Essence Flare is read twice in its round: at END TURN for the machines and as the round
@@ -1737,13 +1738,13 @@ His words, on the eighth round's build and its two questions:
   swallower's fall, it goes on from where it stood.
 - A Swallowed Ammit's Essence Flare holds nothing while it is out, and holds the round it
   is back for.
+- The kill trigger of 12 November stays in the engine for the Kite's shield.
 
 **Where his words give no answer on the swallow**, a session's reads, each cheap to turn.
 An event of its fight still reaches a Swallowed machine: a foe felled banks an Ammit's
 Essence, since the Ammit is in the fight and a kill is no clock. And a reboot it had begun
 before it was taken recovers as the next round opens, the second half of a turn already
 given.
-- The kill trigger of 12 November stays in the engine for the Kite's shield.
 
 ## 23. When everything ends: the table he asked for
 
