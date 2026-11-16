@@ -312,17 +312,15 @@ func _screen_space() -> void:
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
-## The base of a hex in map space: its grid cell before any height. The enemy's marks and
-## the packs themselves sit here (Ryan, 22 September: their world is flat, and they
-## flatten what they walk on).
+## The base of a hex in map space: its grid cell before any height, where the depth of what
+## stands on it is read and the bleed is measured.
 func base(h: Vector2i) -> Vector2:
 	return _origin + MapOrient.to_pixel(h, HEX_SIZE)
 
 
 ## Centre of a hex in map space: its grid cell, lifted by the height of its column so the
-## overlays stand on the terrain. Under the painting the column is gone and the ground is
-## flat, so the lift goes with it (Ryan, 29 September: a pack on flattened ground was
-## placed by the height of the geometry the painting had replaced, and its marks with it).
+## overlays stand on the terrain, under the painting too, which stands at the same heights
+## (DomainGround.draw_columns; Ryan, 16 November).
 func center(h: Vector2i) -> Vector2:
 	return _origin + MapOrient.to_pixel(h, HEX_SIZE) + Vector2(0, -_lift_at(h))
 
@@ -330,18 +328,14 @@ func center(h: Vector2i) -> Vector2:
 var _bleed_grad := Vector2.ZERO
 var _bleed_src := PackedVector3Array()
 
-## A hex's lift on screen: its column's height where the reconstruction stands, nothing
-## where the painting has taken it, with the compositor's own threshold between.
+## A hex's lift on screen: its column's height, the same in either world (the painting stands at
+## the reconstruction's heights). Until 16 November it faded to nothing where the painting took
+## the ground, so a pack on flattened ground stood by the geometry it had replaced (Ryan, 29
+## September), and the marks rose and sank as the bleed passed.
 func _lift_at(h: Vector2i) -> float:
 	if _map3d == null:
 		return 0.0
-	var lift := _map3d.lift(h)
-	if lift == 0.0:
-		return 0.0
-	if _bleed_src.is_empty():
-		_bleed_grad = Bleed.gradient(field, _origin, HEX_SIZE, seam_shown)
-		_bleed_src = Bleed.sources(field, _origin, HEX_SIZE, _anim_px)
-	return lift * Bleed.solid(base(h), _bleed_grad, _bleed_src)
+	return _map3d.lift(h)
 
 
 ## The hex under a screen point. A raised hex's top sits above its cell and covers part of
@@ -2337,8 +2331,24 @@ func _unit_center(u: Unit) -> Vector2:
 	if _anim_px.has(u.id):
 		var px: Vector2 = _anim_px[u.id]
 		var under := MapOrient.from_pixel(px, HEX_SIZE)
-		return _origin + px + Vector2(0, -_lift_at(under))
+		return _origin + px + Vector2(0, -_lift_along(px, under))
 	return center(shown_hex(u))
+
+
+## A moving token's lift: its hex's, eased toward the nearest neighbour's across the middle of
+## their shared edge, so it climbs onto a rise or down a bank rather than stepping (`px` from hex
+## (0, 0), `under` its hex).
+func _lift_along(px: Vector2, under: Vector2i) -> float:
+	var here := MapOrient.to_pixel(under, HEX_SIZE)
+	var near := under
+	var best := INF
+	for n in Hex.neighbors(under):
+		var d := px.distance_to(MapOrient.to_pixel(n, HEX_SIZE))
+		if d < best:
+			best = d
+			near = n
+	var across := (best - px.distance_to(here)) / (HEX_SIZE * sqrt(3.0))   # 1 at the hex's middle, 0 at the edge
+	return lerpf(_lift_at(near), _lift_at(under), smoothstep(-0.3, 0.3, across))
 
 
 func _draw_unit(u: Unit) -> void:

@@ -152,8 +152,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    ends with its ticks, its action done or lost. A passed turn's release follows (the Whip
    Scorpion's, Passives below).
 6. The round's end: round-timed effects end (Phased and the wait for it, Essence Flare, a
-   swallow's and a golden rage's rounds), and a machine whose own attack killed in the round
-   fires what its passive grants for it (the Ammit's flare). Nothing ticks or halves here.
+   swallow's and a golden rage's rounds), a web on a foe bursts (the Web Bomb, below), and a
+   machine whose own attack killed in the round fires what its passive grants for it (the
+   Ammit's flare). Nothing ticks or halves here.
 7. A part due to grow back does, in its corpse's slot (below). Next round.
 
 The fight ends the moment it is decided, mid-turn too: victory when no foe stands, defeat when
@@ -170,8 +171,8 @@ landed, lost to a stun or skipped.
   pays after them and loses one; Empowered halves, rounded down; Scorched and Sapped go; a
   cooldown and a jam whose rounds are done light again; a Suppress is spent with the turn it
   cost; Numbed loses a stack, or lands on a foe that lost this turn to a stun.
-- **The round ends**: Phased is granted or lost, Essence Flare goes, and a swallow's and a
-  golden rage's rounds run.
+- **The round ends**: Phased is granted or lost, Essence Flare goes, a swallow's and a
+  golden rage's rounds run, and a web bursts.
 - **It is spent**: the primers by a weapon fired, Spun Up and the Juggernaut Drive by the next
   weapon, Shocked and Cryo by the weapon's hit that cashes them, Undying by its fall, a Mine by
   its foe's fall, and a pin by the decay it stops.
@@ -431,9 +432,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **The gauges forecast the round**: everything the rest of the round will do as it stands,
   played on a copy of the fight with every rule as it runs: the end of the player's turn (what
   Ablating takes, the burns and the overheats), the enemy's turn with each foe's move as announced (a heal, a brace, a
-  rally, a web's burst, the ticks as its turn ends and a death they bring, the last act it sets off,
+  rally, the ticks as its turn ends and a death they bring, the last act it sets off,
   a self-destruct) and
-  the round's end. The die in hand counts only over somewhere it may be spent, as it would be
+  the round's end, a web's burst with it. The die in hand counts only over somewhere it may be spent, as it would be
   spent there. A foe whose machine falls before it acts strikes the next machine in line: its
   arrow stays on its pick, and a second, dashed, goes to the machine its blow lands on.
   Nothing a roll decides
@@ -540,8 +541,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   star for them and its readout says the rule (a keyword is a word several pieces share). Three
   were keywords until they were each found on one piece alone.
 - **The Web Bomb's web** (the funnel-web's): the foe hit wears the Web Bomb's mark, one web
-  however often it is webbed; at the end of its action the web bursts, Suppressing it and the
-  next foe to act beside it (the Web Bomb, below). No Mine carries it.
+  however often it is webbed; as the round ends the web bursts, Suppressing it and the
+  foe beside it, each for its next turn (the Web Bomb, below). No Mine carries it.
 - **The swap** (the Dingo's Combat Translocator): the spend takes two targets, a foe and then
   another foe or an empty slot, and they trade places; no damage; a massive foe does not move.
   What the entry carries beside the swap lands on both foes named (the Translocator's Shock: both
@@ -757,6 +758,16 @@ On a machine:
   alike, and unspent it goes as the round's own do. While the die in hand would grant one the
   REROLL button pulses, lit even when it cannot be pressed, and its badge shows the count and
   the gain ("×1+1").
+- **A drained reroll** is no status and no keyword: the move that takes one says so in its own
+  text, and the REROLL button wears it. While a drain is announced the button says what the
+  next round stands to lose under its count ("NEXT -1": the drains still coming, summed, never
+  more than a round gives) and rings close in on its edge, since the loss can still be stopped;
+  a drain that will not land (its foe destroyed or Suppressed, its move changed) leaves the
+  note. As each lands in the enemy's turn the button flashes, and the rings stop with the
+  last. The round a drain shortened wears what it took ("DRAINED -1") for as long as it lasts.
+  A reroll taken as a foe falls (A last act, below) lands in the player's own turn: the
+  button flashes as the fall is named, and the note counts it at once, with no rings, since
+  nothing can stop it now.
 - **Charged** (buff): while it lasts the machine's weapons fire with Shock, shown on the die
   and landing as the keyword does, after the blows; a weapon fired spends a stack (a Rapid's
   or an Instant's second fire is a second fire, a salvo one, a passed turn's release none; equipment carries it not and spends
@@ -903,14 +914,18 @@ On a foe:
   after Ablating on what it leaves, the whole share rounded down and never the last hit point,
   then a stack fades; it never finishes a foe. The funnel-web's Ambush lays it, a stack per
   weapon hit, as its text says; a web or a lure lays none.
-- **The Web Bomb** (debuff, the mark its piece leaves): at the end of its action, skipped or not, the web bursts: it is
-  Suppressed (its next action, since it has acted; a countdown it gathers is held a round),
-  and so is the next foe to act beside it in its rank, its right-hand neighbour, which loses
-  this round's action, or with none standing there its left-hand one, which has acted and
-  loses its next (a stun like any other, each for itself: a Numbed foe strips a stack instead; a foe already suppressed gains nothing,
-  as from any second suppress; each half feeds the Paradox as the Suppress keyword's does).
-  Killed first, or gone by the end of its action, it takes its web with it. Its chip points at
-  the neighbour the burst catches.
+- **The Web Bomb** (debuff, the mark its piece leaves): as the round ends the web bursts: it is
+  Suppressed, losing its next turn (a countdown it gathers is held a round),
+  and so is the foe beside it in its rank, its right-hand neighbour, or with none standing
+  there its left-hand one. Every foe acts in the round the web is laid, so it stops nothing
+  already announced: it is a double stun a round ahead. Each stun is like any other, each for
+  itself. Every foe's turn has ended by the burst, so it meets the Numbed the foe ends the
+  round with: a stack on it strips and nothing is stunned, and a foe the team stunned this
+  round has just gained its Numbed, so the web strips a stack of that. A foe already
+  Suppressed for its next turn gains nothing; a Ward turns the stun away; each half feeds the
+  Paradox as the Suppress keyword's does. A foe felled before the round ends takes its web
+  with it, and a foe's cleanse may lift it first. Its chip points at the neighbour the burst
+  catches.
 - **Cryo** (debuff): a weapon's hit on it spends every stack and cools the hitter 2 a stack;
   equipment spends none. It never fades on its own.
 - **Brittle** (debuff): every blow of a weapon it takes deals a point more a stack, before its
@@ -952,9 +967,9 @@ On a foe:
   absorbs does not; no Purge strips it, an Ability. Its chip counts
   the rounds left and the damage that breaks it. It goes gold only while calm (the `calm`
   condition: not gold), so one rage at a time.
-- **Appropriated** (buff, a take: Gilgamesh's): the number of the entry he took, which his
-  borrowed swing lands in place of his attack and spends. One piece at a time, what he takes
-  next replacing it; a Purge lowers it, and the swing with it.
+- **Appropriated** (an Ability, a take's: Gilgamesh's): the number of the entry he holds, which
+  his borrowed swing lands in place of his attack and spends. One piece at a time, what he
+  takes next replacing it; no Purge reaches it.
 - **Undying** (buff, Reraise, on itself or from an ally's): after it falls it gets
   back up once, whole, in its own slot, unless it self-destructed: once the spend that felled
   it is done, or at once to a tick; its round is over, as a split's half's is, and it comes back
@@ -1146,8 +1161,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   (Brittle stacks on the machine: a point more on every blow it takes a stack, halving as its
   next turn starts), destroy (any of the blow on the hull destroys
   the entry the machine shows: Destroy, above; no foe carries it yet), expose (the machine is
-  Exposed through the round after: Exposed, above; a tier-two foe's at the least, the validator
-  refusing it on anything dealt at tier one; no foe carries it yet),
+  Exposed through the round after: Exposed, above; among the rank and file a tier-two foe's at
+  the least, the validator refusing it on a foe of the line dealt at tier one, while an elite
+  and a boss may hold any mechanic at any tier; no foe carries it yet),
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it). Scorch, ablate, corrupt and brittle each say their stacks a blow, as the player's
@@ -1171,7 +1187,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   last machine, a second Expose. One blow a move, and that its first step.
 - **A take** (Gilgamesh's Collect): a blow that Jams the entry its machine shows, then a step
   of his own: he gains Appropriated, that entry's number, a weapon's printed blow and 1 for
-  anything else, a fake. It is a buff, so a Purge lowers it, and what he takes next replaces
+  anything else, a fake. Appropriated is his Ability, a chip he wears from the fight's start
+  whose number is the piece he holds: no Purge reaches it, and what he takes next replaces
   it. His Borrowed Blade is a blow whose number is his Appropriated in place of his attack; it
   comes only as Collect's follow-up, only while he holds something, and the swing spends it. A
   Ward turns the jam and the take away together.
@@ -1199,9 +1216,25 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   every one of them that lands on its machine, a scorch all's and a corrupt all's share
   included, and a scorch all or a corrupt all passes a machine out of the fight by. No foe in
   content carries a ward all yet; the Djinn's Unmake is the one purge.
-- **A last act**: a foe may land a blow the moment it falls (a death blow, with its own
-  riders, every machine included), before anything else and even when it was the last foe,
-  since damage sticks for the battle.
+- **A last act**: a foe may act the moment it falls, before anything else and even when it
+  was the last foe, since damage sticks for the battle. A fall is a short list of steps, as a
+  move is: a death blow with its own riders, every machine included, or one special in a
+  blow's place, and then what it does also, each effect by its own rules in the order
+  written, as a move's are. Its blow lands on the foe's own pick, or on the next machine in
+  line when its pick is gone or out of the fight. A curse, an effect aimed at one machine,
+  lands on the machine that made the kill: the one whose spend or whose passed turn's
+  release felled it, a Mine that spend sets off included. A kill no machine made lands it on
+  nobody, so Ablating a foe to death dodges its curse, as a Mine blowing in the enemy's turn
+  and the foe's own burst do; a killer wrecked or out of the fight by then takes nothing,
+  and a Ward on it turns the curse away. What a fall lays on its own side reaches the foes
+  still standing, never itself.
+  A fall may heal, armour, cleanse, ward, prime, ready or rally its own, take rerolls from
+  the next round, ablate or jam its pick, and scorch or corrupt every machine. It does
+  nothing its own body would carry, summons nothing (a split is the fall's own summon),
+  swallows nothing, never purges, and lays no Expose, which is announced. A reroll a fall
+  takes in the player's own turn is owed at once, and the REROLL button counts it (A drained
+  reroll, above). The foe wears its fall as an Ability from the fight's start, its blow's
+  number on the chip where it strikes. No foe in content carries more than a blow yet.
 - **A foe in parts**: a core and the parts of its pack that stand with it. A guard keeps the
   core from taking any damage while all its parts stand, or while any does (Guarded, an Ability), its
   Ablating and Vitriol included, whose stacks fade all the same; a part
@@ -1211,7 +1244,7 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   just before its move lands until the next acts. Each foe makes its move, every step of it,
   and then its own turn ends (When a status ends, above): its Ablating takes its points, which
   may fell it, then Vitriol what that leaves, and each loses a stack; its Regenerating pays;
-  its Empowered halves; its Sapped goes; a web on it bursts; its Numbed loses a stack. A
+  its Empowered halves; its Sapped goes; its Numbed loses a stack. A
   suppressed foe does nothing and its turn ends the same way, its Suppress spent and its stun
   resist landing as Numbed. A foe with no machine to strike (every one fallen or out of the fight) loses its blow
   alone: its countdown gathers, a special or a step on its own side acts, and the turn goes on to the foes
@@ -1360,38 +1393,47 @@ a stat.
   the field is bright cells and the scenery (the margin past the field's sides and past the
   rift, the city) one shaded ground with no cells.
 - **Ground**: open (plain or road), rough, ruins, water, and walls, a wall named by what it is
-  (crags, mesas, towers or cliffs) with one rule under every name. Six map shapes, one a
+  (crags, mesas, towers, cliffs or chasms) with one rule under every name. Six map shapes, one a
   battle, each with its own water, walls, decorative ground and relief, laid to fill the open
   rows at any size the ramp deals, none of them a band and none an orientation. Two water
-  shapes: River Crossing (a river winding through the whole field from past one edge to past
-  the other, through the field's centre, two hexes thick and three in places, with one or two
-  narrows a hex thick, the water fords where the wade is short, one or two tributaries a hex
-  thick off it, a crag on a bank at most, gravel bars along its banks; no land ford: everyone
-  wades) and Fjord (the open rows under water, the scenery beside them too, with land lanes
-  winding from the rift's row to the team's ground, two hexes wide and pinched to one in
-  places, one for every seven hexes of wall, a branch or two off each, and islands; shingle on
-  its shores; half to two thirds of the field water). Three wall shapes, a spectrum by the mass
-  and the structure of what blocks you: Gorge (cliff mass over the open rows cut by winding,
-  branching channels, a trunk for every five hexes of wall from the rift's row to the team's
-  ground, one or two hexes wide, three or four branches off each toward the next trunk, meeting
-  a channel at a junction or ending blind, a stretch or two flooded, scree at the cliffs' feet,
-  the gorge's own sides past both edges), Ruined City (large blocks of
-  towers in a grid of streets: avenues one wide from the wall toward the rift four to five
-  columns apart, the gate's always one and two wide, side streets along the wall mid the blocks
-  whose segments are there or not, an avenue segment fallen in now and then, a plaza or two with
-  a fountain in some, a street segment or two flooded, rubble everywhere else, towers thick in
-  the scenery) and Badlands (an open field of mesas in groups of two to five, many of them, a
-  hex of ground between any two groups so no straight path crosses, two or three ponds of two
-  to four hexes, scrub at the mesas' feet). And Open Steppe, the baseline, clear but never bare
-  (a crag of one or two hexes at most for every seven hexes of wall, a pond at most for every
-  ten, scrub in belts over about a sixth of the field, grass on the open ground). A battle that
-  names no shape draws one by its seed, never by its domain. Every map guarantees the
-  horde a crossing three hexes wide or more through its walls; the ground beside the rift (its
-  mouth, where the packs land) and the gate, and the two rows before the gate, hold no water and
-  no wall; every other row is the shape's, the rift's own included. Height is landscape and a look
-  alone; no rule reads it: the field is level but for the badlands' mesas on their shoulders and the
-  steppe's one rise, at most two steps and never a lone raised hex, and the scenery past the
-  edges rises to three.
+  shapes: River Crossing (one fat river winding in long bends through the whole field from
+  past one edge to past the other, through the field's centre, three hexes thick and four in
+  places, with one narrow a hex thick across the field's middle columns, the water ford where
+  the pushers cross and the wade is short, the flanks the long wade, a crag on a bank at most,
+  gravel bars along its banks; no land ford: everyone wades) and River Delta (a true delta of
+  streams a hex wide: the river comes in at one end, by the seed down past the rift's end beside
+  it or out from under the wall off the gate's front, runs whole and two wide for a row or two,
+  then splits and splits again, each arm taking its share of the fan, until a stream runs for
+  every three or four columns across the field and past its edges at the far end, where it meets
+  the wall or the lagoon past the rift that a delta from the gate empties into; the streams
+  wander, fork round islets and rejoin, and a short cut joins two now and then, so they braid;
+  no dry way from the rift to the gate is kept, every stream a single wade; shingle on some
+  shores; two to five tenths of the field water). Three wall shapes, a spectrum by the mass and the structure of what
+  blocks you: Gorge (chunks of land split by chasms a hex wide winding along their borders, the
+  field's and the scenery's alike, each chunk joined to a chunk beside it by a land bridge a hex
+  wide or by none where the chunks stay joined the long way round; a stretch of chasm flooded now
+  and then, spilling into the chasm beside it as a waterfall; scree at the chasms' edges), Ruined City (blocks of towers in a grid of streets:
+  avenues one wide from the wall toward the rift four to five columns apart, the gate's always
+  one and two wide, cross-streets along the wall every third row so a block is two rows deep, an
+  avenue segment fallen in now and then, on a field twelve wide or more a suburb of ruins between
+  one edge and its first avenue and a plaza, on a narrower one a plaza or two, two such sections
+  of ruins at most, no water, rubble everywhere else, towers thick in the scenery) and Badlands (an open field of mesas in groups of two to five, many of them, a
+  hex of ground between any two groups so no straight path crosses, two or three ponds of two to
+  four hexes, scrub at about two thirds of the mesas' feet). And Open Steppe, the baseline and
+  the anything-goes ground, clear but never bare (a wall of one to three hexes for every six
+  columns of the width, half of them cliffs and the rest each of another look, never the gorge's
+  chasm and never in front of the rift, a little lake of five to eight hexes for every eight and a patch of ruins of two to four for every ten, always laid,
+  scrub in belts over about a sixth of the field, grass on the open ground). A battle that names no shape draws one by its seed, never by
+  its domain. Every map guarantees the horde a crossing three hexes wide or more through its
+  walls; the ground beside the rift (its mouth, where the packs land) and the gate, and the two
+  rows before the gate, hold no wall, though water, rough and ruins may lie there as anywhere;
+  every other row is the shape's, the rift's own included. Height is landscape and a look alone; no rule reads it: the field is level but for the
+  badlands' mesas on their shoulders and the steppe's one rise, at most two steps and never a
+  lone raised hex, water sunk and a chasm deep, and the scenery past the edges rises to three.
+  The painted world stands at the same heights. A chasm is a black pit in the painting; in the
+  machines' world its rock darkens down to a dim gravel floor with a stream winding along it.
+  Water beside a chasm falls into it, a waterfall from the water's edge to the floor in the
+  machines' world and the water's bank drawn falling in the painting.
 - **Moving**: a machine's move is a count of hexes, each step one hex, and a chassis has one
   way of moving (tracked, walker, wheeled, hover or flyer), which is its look and its footfall
   and never a rule of its own. Open ground (plain, road), rough and ruins are ground to
@@ -1430,7 +1472,10 @@ a stat.
   included. Each machine has one action (the Dingo two, by its Retrograde Flywheel: it may
   move and act twice during each turn of the map phase, and inside a fight it spends its die once a round like any machine): one move,
   in one go, then it may fight; a fight ends the action however it ends, and the board under the
-  map says what each can still do. A selected machine lights the hexes its move reaches, one
+  map says what each can still do. The fight is ordered before the move plays: a move that plays
+  (EXECUTE, ENGAGE or END TURN) with no order standing ends the action there, and one that plays
+  with an order keeps that order as given, the machine taking no other and the order taken back
+  ending the action. A machine carried in another's move keeps its action and its move. A selected machine lights the hexes its move reaches, one
   border round the whole reach, its dashes crawling as its target's do, and brackets the packs it could be ordered onto. A move is
   planned: its route shows from where the machine stands, and the next move or order reads from
   the route's end. An order can be given again: a machine with a move planned or an order
@@ -1444,9 +1489,10 @@ a stat.
   the packs in the order their orders were given), else EXECUTE while planned moves wait, else
   END TURN; back from a fight with more waiting, the orders stand and the button pulses. EXECUTE plays every planned move and the turn goes on, so moves play in
   whatever sequence the player gives them; ENGAGE plays them first too (the boss's fight aside,
-  below), then the fight opens. UNDO takes back the last move or order, whoever made it, in the
+  below), then the fight opens. EXECUTE lets go of the machine in hand, its reach dark at once.
+  UNDO takes back the last move or order, whoever made it, in the
   order they were made, a move that has played included (the machine goes back where it
-  stood), back to the turn's start or the last fight. A caught machine's fights come first, one a
+  stood, its action whole again), back to the turn's start or the last fight. A caught machine's fights come first, one a
   hunter, and the map draws each as the machine's order onto the hunter that caught it. END TURN asks first
   while a machine can still move or fight; then the turn ends: packs walk and strike; Rift
   Pressure rises one. Nothing returns on the map: the shield is full as every fight opens. Once every
@@ -1515,7 +1561,7 @@ a stat.
   by the share still standing: its rating's strike times the heads it holds over the heads it took the
   field with, rounded down, at least 1; grown past that count, its rating and no more. The gate is the look
   and the bar's name; the whole wall is the target, so no line plugs it.
-- **Hunters** (the packs whose composition hunts) lock one machine when they appear, by its caveat (nearest, weakest, strongest, slowest or fastest; never
+- **Hunters** (the packs whose composition hunts) lock one machine when they appear, by its caveat (nearest, weakest, strongest or slowest; never
   the Prairie Dog, never a machine another hunter already hunts), keep it while it stands, and
   walk to stand beside it; a hunter that finds every machine hunted pushes for the wall
   as a pusher does until one is free, and turns on it then (the log says so). One hunter a
@@ -1784,7 +1830,7 @@ and nothing scales a pack.
   on the map (absent: a patrol 1, a formation 3, an elite and an escort 4); `lead`, a foe id in
   the grid whose sprite the pack wears, an elite composition's its elite (absent: the first in
   reading order, front left to right, then back); `hunts`, the caveat its pack hunts by
-  (nearest, weakest, strongest, slowest or fastest; absent: it pushes), never on an escort, which
+  (nearest, weakest, strongest or slowest; absent: it pushes), never on an escort, which
   walks with its boss; a foe carries no hunt and no ring; `ramp`, `[lo, hi]`, the
   Convergences it is dealt at, both held (absent: every one): a battle, the quick campaign and the
   Fractures' elites deal only the compositions whose gate holds their ramp, and where a domain's

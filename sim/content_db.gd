@@ -10,8 +10,9 @@ const DIR := "res://content/"
 # Design knobs. Loosen or tighten here; the validator and the bible should agree.
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
 const MAX_MOVE := 6                 # a move in hexes, chassis or foe, is 1 to this (a placeholder bound, 28 October)
-## The caveats a hunting composition may name (`hunts`): whom its pack locks.
-const HUNT_CAVEATS := ["nearest", "weakest", "strongest", "slowest", "fastest"]
+## The caveats a hunting composition may name (`hunts`): whom its pack locks. The fastest left on
+## 16 November with nothing hunting by it (the rule of 12 November).
+const HUNT_CAVEATS := ["nearest", "weakest", "strongest", "slowest"]
 const MIN_DIE := 4                  # a d3 was the first Kite's one-off (21 October to 11 November); no machine rolls one today
 const MAX_DIE := 10                 # the Clydesdale carries nine (Ryan, 28 September); ten leaves it room
 ## A chassis's class by mass, lightest first (Ryan, 5 October: the machines' scale on the map
@@ -308,7 +309,9 @@ func make_foe(foe_id: String) -> Foe:
 	f.regrow_parts = maxi(0, int(d.get("regrow_parts", 0)))
 	var od = d.get("on_death", {})
 	if od is Dictionary:
-		# A split (the Gel) and a last act (15 October, the Gargantuan King's Meteor), either or both.
+		# A split (the Gel) and a fall, either or both: a last act's blow (15 October, the
+		# Gargantuan King's Meteor) or one special in its place, each with what it does also (16
+		# November: a fall is a short list of steps, as a move is).
 		var made := {}
 		if od.has("summon"):
 			made["summon"] = str(od["summon"])
@@ -317,6 +320,8 @@ func make_foe(foe_id: String) -> Foe:
 				made["pair"] = true   # its two halves stand as a pair in its slot (the Gel's, 26 October)
 		if od.get("blow", null) is Dictionary:
 			made["blow"] = Foe.death_blow_from(od["blow"])
+		elif od.get("act", null) is Dictionary:
+			made["act"] = Foe.fall_act_from(od["act"])
 		f.on_death = made
 	var acts: Array = []
 	for a in d.get("actions", []):
@@ -350,21 +355,9 @@ func make_foe(foe_id: String) -> Foe:
 				act["rounds"] = int(a["rounds"])   # a golden rage's rounds
 		# What the move does also (16 November: a move is a short list of steps), each a special's
 		# effect with the fields it reads, speaking under the move's name.
-		if a.get("also", null) is Array:
-			var also: Array = []
-			for st in a["also"]:
-				if not (st is Dictionary):
-					continue
-				var step := {"name": act["name"], "effect": str(st.get("effect", "")), "kind": Foe.effect_kind(str(st.get("effect", ""))), "value": int(st.get("value", 0))}
-				if st.has("foe"):
-					step["foe"] = Foe.kinds_named(st) if st["foe"] is Array else str(st["foe"])
-				if st.has("count"):
-					step["count"] = int(st["count"])
-				if st.has("rounds"):
-					step["rounds"] = int(st["rounds"])
-				also.append(step)
-			if not also.is_empty():
-				act["also"] = also
+		var also := Foe.also_from(a.get("also", null), str(act["name"]))
+		if not also.is_empty():
+			act["also"] = also
 		# The move's own sense and condition (2 October), when it has them.
 		if a.has("aim"):
 			act["aim"] = str(a["aim"])
@@ -405,8 +398,8 @@ func codex_for_foe(f: Foe) -> Dictionary:
 	var moves: Array = []
 	for a in f.actions:
 		moves.append(a)
-	if not f.last_act().is_empty():
-		moves.append(f.last_act())
+	if not f.fall().is_empty():
+		moves.append(f.fall())
 	var faction_name := str(fac.get("name", "")).strip_edges()
 	if faction_name.is_empty():
 		faction_name = str(d.get("faction", "")).capitalize()
@@ -2460,6 +2453,39 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 		errs.append("%s: needs at least one implemented attack action" % where)
 
 
+## What a fall's special (`on_death.act`) may carry.
+const FALL_ACT_KEYS := ["name", "effect", "value", "count", "rounds", "text", "also"]
+
+
+## One effect of a fall, its special or a step after: one of those a fall may do
+## (Foe.FALL_EFFECTS), by that effect's own fields.
+func _validate_fall_effect(aw: String, a: Dictionary, errs: Array[String]) -> void:
+	var effect := str(a.get("effect", ""))
+	if not Foe.FALL_EFFECTS.has(effect):
+		errs.append("%s: a fall may do one of %s, got '%s' (never what its own body would carry, a summon, a swallow, a purge or an Expose)" % [aw, ", ".join(Foe.FALL_EFFECTS), effect])
+	else:
+		_validate_effect(aw, a, effect, errs)
+
+
+## What a fall does also, after its blow or its special: steps as a move's are (`also`), each
+## an effect a fall may do.
+func _validate_fall_steps(aw: String, a: Dictionary, errs: Array[String]) -> void:
+	if not a.has("also"):
+		return
+	if not (a["also"] is Array) or (a["also"] as Array).is_empty():
+		errs.append("%s: also lists what the fall does after its first step, each an object with its effect" % aw)
+		return
+	for st in a["also"]:
+		if not (st is Dictionary) or str(st.get("effect", "")).is_empty():
+			errs.append("%s: each step of also is an object that names its effect" % aw)
+			continue
+		var sw := "%s also %s" % [aw, str(st["effect"])]
+		for key in (st as Dictionary).keys():
+			if not ALSO_KEYS.has(str(key)):
+				errs.append("%s: a step knows %s, got '%s'" % [sw, ", ".join(ALSO_KEYS), str(key)])
+		_validate_fall_effect(sw, st, errs)
+
+
 ## The statuses a move's `power` may name, each with the step that grants it: a borrowed swing's
 ## number is what its foe took (Appropriated, the `appropriate` step).
 const POWER_STATUSES := {"appropriated": "appropriate"}
@@ -2718,9 +2744,27 @@ func _validate_foes(errs: Array[String]) -> void:
 					for k in b.get("keywords", []):
 						if Foe.SPECIALS_ONLY.has(str(k)):
 							errs.append("%s: on_death blow: '%s' is a special, never a rider, and a last act never purges (28 October)" % [where, k])
+						elif str(k) == "expose":
+							errs.append("%s: on_death blow: an Expose is announced, one machine at a time, so a fall lays none" % where)
 						elif not Foe.ATTACK_KEYWORDS.has(str(k)):
 							errs.append("%s: on_death blow: unknown attack keyword '%s'" % [where, k])
-			if od is Dictionary and od.has("blow") and not od.has("summon"):
+					_validate_fall_steps("%s: on_death blow" % where, b, errs)
+			if od is Dictionary and od.has("act"):
+				# A fall that is one special in a blow's place (16 November: a fall is a short list
+				# of steps, as a move is): its name, its effect and that effect's own fields.
+				var act = od["act"]
+				if od.has("blow"):
+					errs.append("%s: on_death is a blow or an act, the fall's first step, never both; what it does after goes in that one's also" % where)
+				elif not (act is Dictionary) or str(act.get("name", "")).is_empty() or str(act.get("effect", "")).is_empty():
+					errs.append("%s: on_death act is a special: a name and an effect" % where)
+				else:
+					var aw := "%s: on_death act" % where
+					for key in (act as Dictionary).keys():
+						if not FALL_ACT_KEYS.has(str(key)):
+							errs.append("%s knows %s, got '%s'" % [aw, ", ".join(FALL_ACT_KEYS), str(key)])
+					_validate_fall_effect(aw, act, errs)
+					_validate_fall_steps(aw, act, errs)
+			if od is Dictionary and (od.has("blow") or od.has("act")) and not od.has("summon"):
 				pass
 			elif not (od is Dictionary) or not foes.has(str(od.get("summon", ""))):
 				errs.append("%s: on_death must name a known foe to summon" % where)
@@ -2782,16 +2826,21 @@ func _validate_factions(errs: Array[String]) -> void:
 			if c.has("members") or c.has("layout"):
 				errs.append("%s: members and layout are gone (8 November); the grid, front and back, is the whole declaration" % cw)
 			_validate_grid(cw, c, size, errs)
-			# Exposed on a machine is a tier-two foe's at the least (Ryan, 15 November: "only in
-			# formations that feel thematic and fair, so that the player has tools to answer by that
-			# point"): nothing dealt at tier one holds a foe whose move lays it.
+			# Exposed on a machine is a tier-two foe's at the least among the rank and file (Ryan, 15
+			# November: "only in formations that feel thematic and fair, so that the player has tools
+			# to answer by that point"): nothing dealt at tier one holds a foe of the line whose move
+			# lays it. An elite is held to no tier, as a boss is not (Ryan, 16 November: "I think
+			# elites can hold any mechanic at any tier, as a boss can"); a boss and its parts stand
+			# in no grid, so the hold never reached them.
 			if tiers is Array and composition_tiers(c).has(1) and c.get("front", null) is Array and c.get("back", null) is Array:
 				var told := {}
 				for cell in layout_cells(c):
+					if is_elite(str(cell)) or is_boss(str(cell)):
+						continue
 					for a in foes.get(str(cell), {}).get("actions", []):
 						if a is Dictionary and str(a.get("status", "implemented")) != "planned" and Foe.exposes(a) and not told.has(str(cell)):
 							told[str(cell)] = true
-							errs.append("%s: %s lays Exposed, and nothing dealt at tier one may (the player has no answer to it yet)" % [cw, str(cell)])
+							errs.append("%s: %s lays Exposed, and none of the rank and file dealt at tier one may (the player has no answer to it yet); an elite and a boss may at any tier" % [cw, str(cell)])
 			# The formation pass's fields (10 November): what the player must answer, written down on
 			# every patrol and formation (internal, under design, never shown), and the roles.
 			if c.has("design") and not (c["design"] is Dictionary):

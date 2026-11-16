@@ -213,6 +213,11 @@ var _blasts: Array = []
 ## The enemy's turn is under way (_enemy_turn): a Mine's Disrupt does nothing then, the foes' moves
 ## being under way.
 var _enemy_acting := false
+## The machine whose spend, or whose passed turn's release, is under way: the one that makes
+## the kills its death check clears, as the kill trigger reads them (_after_kills). Null
+## outside one: a tick's kill, a Mine blowing in the enemy's turn and a foe's own burst are
+## nobody's. A fall's curse lands on it (_last_act).
+var _killer: MechState = null
 ## Every blow of the last enemy turn, in order, for the screen to replay:
 ## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull,
 ## seq, name, boss, all}. `seq` orders it among the turn's specials; `name` is the move's shown
@@ -283,16 +288,19 @@ var _acted: Array = []
 var previewing := false
 ## Rerolls a foe's roar has cost the team for the coming round.
 var reroll_debt: int = 0
+## The rerolls a drain took from this round, as it opened: what the REROLL button's note says
+## while the round lasts (Ryan, 15 November: "There should be an effect on the reroll button
+## when this happens"). The count itself is rerolls_left.
+var drained: int = 0
+## The drains that landed in the enemy's turn just played, for the screen to strike the REROLL
+## button as each lands: {foe, value, seq}.
+var turn_drains: Array = []
 ## The team's rerolls banked as the last player's turn ended (Maverick's Playbook, the Giant
 ## Petrel's; built 30 October), back at the next round's start while a banker fights.
 var banked: int = 0
 ## Makes a foe from a content id, for a summoning action; set by the battle (the content
 ## database), left empty by tests, in which case a summon calls nothing up.
 var foe_factory: Callable = Callable()
-## The targeting rule: empty for the aims (decided 2 October), "lowest" for the rule before
-## it (every foe on the machine with the lowest shield, then the lowest hull), kept for the
-## balance runner's comparison and nothing else.
-var targeting_override: String = ""
 ## The shared pick of a rank that fires as one this round, by rank; cleared as the round opens.
 var _focus: Dictionary = {}
 ## The undo (Ryan, 2 November, the randomness pass: "undo to your last roll"): every spend and
@@ -1424,6 +1432,7 @@ func start_round() -> void:
 	var from_bank := mini(banked, bank_cap())
 	banked = 0
 	rerolls_left = maxi(0, REROLLS_PER_ROUND + from_bank - reroll_debt)   # a roar last round costs rerolls now
+	drained = REROLLS_PER_ROUND + from_bank - rerolls_left   # what the drains took of this round's, never more than it had
 	if from_bank > 0:
 		log.append("the bank carries %d reroll%s" % [from_bank, "" if from_bank == 1 else "s"])
 	if reroll_debt > 0:
@@ -2206,6 +2215,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	# The spend's order (Ryan, 7 November): its hits, their riders, the death check, the spend's
 	# end, then what its kills bring back; so the returns wait until the match is done.
 	_holding_returns = true
+	_killer = ms
 	match f.kind:
 		Face.Kind.BLANK:
 			pass
@@ -2366,6 +2376,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 			if f.is_weapon() and Effects.remove(ms.unit, "juggernaut"):
 				log.append("%s: its Juggernaut Drive is spent" % ms.unit.display_name)
 	_holding_returns = false
+	_killer = null
 	_release_returns()   # the spend is done with the field: what its kills bring back stands now
 	if f.on_machines():
 		_machine_spend_after(ms, f, target)
@@ -2497,8 +2508,10 @@ func _release_passes() -> void:
 		ms.heat = 0
 		spend_blows.clear()
 		_shoved.clear()
+		_killer = ms   # its own shot: what it fells is its kill
 		var h := _hit(ms, shot, target)
 		_finish_hits(i, ms, shot, target, h, Pays.FREE)
+		_killer = null
 		ms.heat = 0   # cold after it, whatever the blows cashed
 		releases.append({"mech": i, "heat": fired, "blows": spend_blows.duplicate()})
 		_refresh_guards()
@@ -2526,6 +2539,7 @@ func field_holds() -> Array:
 ## and its machines' allies and reads the outcome) and the round preview's copy (preview_round)
 ## both run it, so the preview's round ends as the round will.
 func _finish_round() -> void:
+	_burst_webs()
 	_tick_mechs()
 	_round_kills()
 	_regrow_parts()
@@ -2589,6 +2603,7 @@ func _end_player_turn() -> void:
 func _enemy_turn() -> void:
 	turn_events.clear()
 	turn_specials.clear()
+	turn_drains.clear()
 	_seq = 0
 	# Foes act in the order they stand: front rank left to right, then the back rank. A
 	# suppressed foe skips, and a foe with two strikes lands two separate blows, so a shield
@@ -2600,8 +2615,8 @@ func _enemy_turn() -> void:
 	# fade, its Empowered halves, its Sapped goes and its Numbed counts down or lands. A foe is
 	# never struck down and then left to strike (Ryan, 4 November: "What we absolutely do not
 	# want to do is have a zero-hp enemy attacking and then dying after, because burn ticked
-	# first"): it strikes whole and burns after. A web on the foe bursts at the end of its
-	# action, skipped or not (18 October). The death check runs as each foe's action is done
+	# first"): it strikes whole and burns after. A web on a foe bursts as the round ends, no
+	# foe's own turn's business since 16 November (_burst_webs). The death check runs as each foe's action is done
 	# and again on a foe its tick fells: its last act lands, its parts fall, its machine is let
 	# go and a return stands before the next foe moves; and the fight ends the moment it is
 	# decided, the foes after the blow that wrecks the last machine doing nothing.
@@ -2664,10 +2679,6 @@ func _enemy_turn() -> void:
 		# blow of a foe that had acted before it landed. Essence Flare holds it while it stands.
 		Effects.halve_buffs(f, field_holds())
 		Effects.foe_turn_end(f)   # what lasts until after its next turn goes (Sapped)
-		# A web on it bursts before its Numbed moves, so the burst's stun meets the Numbed the
-		# foe stood in, and a foe that lost this turn to a stun is still Suppressed for it: the
-		# web gives it nothing more, and strips none of the Numbed it is about to gain.
-		_web_burst(f)
 		# Numbed's clock (Ryan, 2 November; at its turn's end since 16 November, "Numbed (applied
 		# or reduced)"): a stack goes, then a foe that lost this action to a stun gains its stun
 		# resist in stacks, so its chip reads the turns until one stun lands.
@@ -2772,33 +2783,36 @@ func _foe_turn(f: Foe) -> void:
 	return
 
 
-## The web bursts at the end of the webbed foe's action (the funnel-web's Web Bomb, Ryan's go,
-## 18 October): a Suppress on it, costing its next action since it has acted (its countdown
-## held a round, if it gathers one), and one on the next foe to act beside it (web_catch), each
-## resisted by its own Numbed; a foe already suppressed for that action gains nothing, as from
-## any second suppress, so a web on a foe the team has stunned is spent on the neighbour alone.
-## The web is spent either way. A foe gone by the end of its action (a Bomb's burst) takes its
-## web with it, as one killed before it does.
-func _web_burst(f: Foe) -> void:
-	if not f.alive() or not Effects.has(f, "webbed"):
-		return
-	Effects.remove(f, "webbed")
-	var beside := web_catch(f)
-	log.append("%s's web bursts%s" % [f.display_name, "" if beside == null else ", catching %s" % beside.display_name])
-	if _suppress(f):
-		_foe_gained_status(f, "suppressed")
-	if beside != null and _suppress(beside):
-		_foe_gained_status(beside, "suppressed")
+## Every web on the field bursts as the round ends (the funnel-web's Web Bomb, Ryan's go of 18
+## October; at the round's end since 16 November, his: "moved to End of Round and be
+## repositioned as a double suppress on a delay, not suppress one this turn and one the next",
+## with no cooldown): a Suppress on the webbed foe and one on the foe beside it (web_catch),
+## each for its next turn, a countdown it gathers held a round. Every foe's own turn has ended
+## by then, so the stun meets the Numbed the foe ends the round with: one the team stunned this
+## round has just gained its Numbed, and the web strips a stack of it and stuns nothing. A foe
+## already Suppressed for its next turn gains nothing, and a Ward turns the stun away. The web
+## is spent either way. A foe felled before the round ends takes its web with it, and a foe's
+## cleanse may lift it first. In the order the foes stand.
+func _burst_webs() -> void:
+	for f in field_foes():
+		if not f.alive() or not Effects.has(f, "webbed"):
+			continue
+		Effects.remove(f, "webbed")
+		var beside := web_catch(f)
+		log.append("%s's web bursts%s" % [f.display_name, "" if beside == null else ", catching %s" % beside.display_name])
+		if _suppress(f, null, true):
+			_foe_gained_status(f, "suppressed")
+		if beside != null and _suppress(beside, null, true):
+			_foe_gained_status(beside, "suppressed")
 
 
-## The foe a web on `f` catches: the next to act beside it, its right-hand neighbour in its
-## rank (which acts after it, so the burst costs this round's action), or with none standing
-## there the one to its left (which has acted, and loses its next); a massive foe stands in
+## The foe a web on `f` catches, the one beside it in its rank: its right-hand neighbour, or
+## with none standing there the one to its left; a massive foe stands in
 ## both ranks, so it is beside either. Null with nobody standing beside it.
 func web_catch(f: Foe) -> Foe:
 	if f.column < 0 or f.rank < 0:
 		return null
-	# The rank in acting order, a twin slot's pair left then right: the next after it, or with
+	# The rank left to right, a twin slot's pair left then right: the next after it, or with
 	# none standing there the one before.
 	var order: Array[Foe] = []
 	for c in range(columns):
@@ -3350,8 +3364,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				if into_mine:
 					h.mine_flag(Face.Keyword.SUPPRESS)   # fired through its gate: each foe the blast meets judges its own Numbed
 			# The Web Bomb's web (18 October; its piece's own rule since 15 November): the foe wears
-			# its mark, one web however often it is webbed, and the skirmish bursts it at the end of
-			# the foe's action (_web_burst). No Mine carries it: a rule one piece prints is that
+			# its mark, one web however often it is webbed, and the skirmish bursts it as the round
+			# ends (_burst_webs). No Mine carries it: a rule one piece prints is that
 			# piece's.
 			if f.webs:
 				riders.append(func() -> void: _land_web(foe, gained, turned, webbed))
@@ -3628,7 +3642,7 @@ func _land_riders(ms: MechState, riders: Array[Callable], laid: Dictionary, webb
 		log.append("%s lays %s on %s" % [ms.unit.display_name, ", ".join(bits), foe.display_name])
 	for foe in webbed:
 		var caught := web_catch(foe)
-		log.append("%s webs %s: it bursts after its action%s" % [ms.unit.display_name, foe.display_name, "" if caught == null else ", on it and %s" % caught.display_name])
+		log.append("%s webs %s: it bursts as the round ends%s" % [ms.unit.display_name, foe.display_name, "" if caught == null else ", on it and %s" % caught.display_name])
 	riders.clear()
 	laid.clear()
 	webbed.clear()
@@ -3966,6 +3980,11 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			log.append("%s: %s, %d hit %d harder, halving each turn" % [f.display_name, str(a.get("name", "rallies")), rallied, value])
 		"drain_rerolls":
 			reroll_debt += maxi(0, value)
+			if _enemy_acting:
+				# The screen strikes the REROLL button as each lands in the enemy's turn; a
+				# fall's, in the player's own turn, is told with its last act.
+				turn_drains.append({"foe": f, "value": maxi(0, value), "seq": _seq})
+				_seq += 1
 			log.append("%s: %s, the team loses %d reroll%s next round" % [f.display_name, str(a.get("name", "roars")), value, "" if value == 1 else "s"])
 		"golden":
 			# The Thunder Ape's Golden Rage (4 November): a mode for the rounds the move says, its
@@ -4981,10 +5000,11 @@ func _stacks_from(ms: MechState, status_id: String, n: int) -> int:
 ## carries (Ryan, 17 October: "Suppressed is suppressed - they lose their next action. It does
 ## not stack, it does not carry"), so a Paradox tripping on a suppressed foe is wasted, its
 ## meter spent.
-func _suppress(foe: Foe, turned = null) -> bool:
+func _suppress(foe: Foe, turned = null, ahead: bool = false) -> bool:
 	# A foe that has already acted this turn loses its next action instead of one it has taken,
-	# and so does one that stepped up mid-round (a split's half), the round's turn being over.
-	var next := _acted.has(foe) or foe.fresh
+	# and so does one that stepped up mid-round (a split's half), the round's turn being over;
+	# `ahead` says the round itself is over (a web's burst), so every foe loses its next.
+	var next := ahead or _acted.has(foe) or foe.fresh
 	if _suppressed_through(foe, round + 1 if next else round):
 		log.append("%s is already suppressed" % foe.display_name)
 		return false
@@ -5515,10 +5535,10 @@ func _injure_entry(ms: MechState, idx: int) -> String:
 ## buffed, the most stacks of buffs (each of those two the exposed when no machine qualifies);
 ## fires as one (focus), the rank's shared pick. No pick lands on a machine in `avoid`, which
 ## the blows already drawn this round would wreck, while another stands. The pick is a
-## commitment: a foe whose target shields up still swings at it. With the override set, or
-## asked with no foe, the rule before: the lowest shield, then the lowest hull. A pick made
-## again mid-round is _repick's, and draws nothing.
-func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
+## commitment: a foe whose target shields up still swings at it. A pick made again mid-round is
+## _repick's, and draws nothing. The rule before 2 October, every foe on the lowest shield, left
+## the engine on 16 November with the runner's comparison that kept it.
+func _pick_mech_target(f: Foe, avoid: Array = []) -> MechState:
 	var live := targetable_mechs()
 	if live.is_empty():
 		return null
@@ -5537,10 +5557,8 @@ func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 	# So the whole field targets up until predicted death, then the rest pick intent targets as
 	# normal"). No draw is made for it.
 	var marked := exposed_mech()
-	if f != null and marked != null and open.has(marked):
+	if marked != null and open.has(marked):
 		return marked
-	if f == null or targeting_override == "lowest":
-		return _lowest_shield(live)
 	match f.aim_of():
 		"anything":
 			return live[r.randi_range(0, live.size() - 1)]
@@ -5590,24 +5608,10 @@ func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 ## foe's aim (Ryan, 26 October: Slice and Dice's rule, "it just targets the next ally in line",
 ## which the player can tell without the preview, and an aim breaking it would be "more
 ## unpredictable info"; it retires a draw from a stream of the fight's own, randomness the player
-## could see only through the preview). With the override set, the rule before.
+## could see only through the preview).
 func _repick(_f: Foe) -> MechState:
 	var live := targetable_mechs()   # in field order, left to right
-	if live.is_empty():
-		return null
-	if targeting_override == "lowest":
-		return _lowest_shield(live)
-	return live[0]
-
-
-static func _lowest_shield(live: Array[MechState]) -> MechState:
-	var best: MechState = null
-	for ms in live:
-		if best == null \
-				or ms.unit.shield < best.unit.shield \
-				or (ms.unit.shield == best.unit.shield and ms.unit.hull < best.unit.hull):
-			best = ms
-	return best
+	return null if live.is_empty() else live[0]
 
 
 ## The exposed: each machine weighs one, plus the hull this foe's blows would reach through
@@ -5775,33 +5779,51 @@ func _regrows(f: Foe) -> bool:
 	return false
 
 
-## A foe's last act (15 October, the Gargantuan King's Meteor): its death blow lands the moment it
-## falls, before anything else, so the player shields first and kills after, and even the last
-## foe's lands, since damage sticks for the battle.
+## A foe's fall (a last act, 15 October, the Gargantuan King's Meteor): what it does the moment
+## it falls, before anything else, so the player readies first and kills after, and even the
+## last foe's lands, since damage sticks for the battle. A short list of steps as a move is (16
+## November, on Ryan's mark of 15 November: "foes who, say buff others on death, or debuff on
+## death, which makes kill sequencing more interesting in normal formations"): its blow, if it
+## strikes, then each effect by that effect's own rules, as a move's are (Ryan, 16 November:
+## "Death effects should be dictated by the effect, same as moves"). Its blow lands where a
+## move's does, on the foe's own pick, or its next pick when that machine is gone or out of the
+## fight. A curse, an effect aimed at one machine, lands on the machine that made the kill ("if
+## the effect is a curse, then it should apply to the killer, and the dodge is ablating it"):
+## the one whose spend or release is under way (_killer), and on nobody when no machine made
+## it, a tick's kill, a Mine blowing in the enemy's turn or the foe's own burst, nor when the
+## killer is wrecked or out of the fight by then; a Ward on it turns the curse. What the fall
+## lays on its own side reaches the foes still standing, never itself.
 func _last_act(f: Foe) -> void:
-	var blow := f.last_act()
-	if blow.is_empty():
+	var fall := f.fall()
+	if fall.is_empty():
 		return
-	f.action = blow
+	f.action = fall
 	f.pending = {}
 	f.charge = 0
-	log.append("%s falls, and its last act lands: %s" % [f.display_name, str(blow.get("name", ""))])
+	log.append("%s falls, and its last act lands: %s" % [f.display_name, str(fall.get("name", ""))])
 	var struck: Array[int] = []
 	var gauges: Array = []   # each struck machine's [shield, hull] as the act met it
-	if f.hits_all():
-		for m in targetable_mechs():
-			struck.append(mechs.find(m))
-			gauges.append([m.unit.shield, m.unit.hull])
-			_strike(f, m)
-	else:
-		var t := f.target as MechState
-		if t == null or not t.alive():
-			t = _repick(f)
-		if t != null:
+	var t := f.target as MechState
+	if t == null or not t.alive() or is_out(t):
+		t = _repick(f)
+	if Foe.is_attack_action(fall):
+		if f.hits_all():
+			for m in targetable_mechs():
+				struck.append(mechs.find(m))
+				gauges.append([m.unit.shield, m.unit.hull])
+				_strike(f, m)
+		elif t != null:
 			struck.append(mechs.find(t))
 			gauges.append([t.unit.shield, t.unit.hull])
 			_strike(f, t)
-	last_acts.append({"foe": f, "name": str(blow.get("name", "")), "mechs": struck, "gauges": gauges})
+	var owed := reroll_debt
+	var did: Array = []
+	var cursed := _killer if _killer != null and _killer.alive() and not is_out(_killer) else null
+	for st in Foe.effects_of(fall):
+		_foe_acts(f, cursed, st)   # an effect aimed at nobody reads no machine at all
+		did.append(str(st.get("effect", "")))
+	last_acts.append({"foe": f, "name": str(fall.get("name", "")), "mechs": struck, "gauges": gauges, "effects": did,
+		"drained": reroll_debt - owed, "cursed": mechs.find(cursed) if cursed != null else -1})
 
 
 ## A core that falls for good takes its parts with it, on the field and waiting alike.

@@ -47,7 +47,27 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1229 tests, 373,302 checks, green on `ccr-722ca9f0-yj8na3` (16 November, a foe's
+- Tests: 1258 tests, 372,972 checks, green on main, the map session's branch landed (16 November: main at
+  `93384f9` taken into `ccr-1e6e6571-7x7ayr` in a merge, the save's versions renumbered, the
+  maps' 35 to 38 after the foes' 32 to 34). Before it, on the map session's branch, 1215 tests, 372,412 checks, green on `ccr-1e6e6571-7x7ayr` (16 November, the steppe's
+  cliffs and the gorge's waterfalls, over main at `e26589f`). Before it, 1213 tests, 357,935
+  checks (his third notes: a played move ends the action, the delta's braided streams, the aprons,
+  the chasm's 3D floor), 1208 tests, 376,201 checks (his second notes), 1208
+  tests, 377,578 checks (his first notes), and 1206
+  tests, 383,019 checks (the mock-up of the painted world at the 3D map's heights), and 1203 tests,
+  373,302 checks, green on the same branch (16 November, the painted walls as joined ranges).
+  On main beside it, 1241 tests, 373,433 checks, green on `ccr-722ca9f0-yj8na3` (16 November, the
+  targeting audit's cuts, over main at `c503783`). Before it, 1240 tests, 373,435 checks,
+  green on the same branch (16 November, his
+  thirteenth round: a fall's curse on the killer, an elite at any tier, over main at
+  `8e31b26`). Before it, 1239 tests, 373,422 checks, green on the same branch (16 November, a fall
+  as a list of steps and the drain switch's test, over main at `45b4d3e`). Before it, 1231 tests, 373,341 checks, green
+  on the same branch (16 November, the
+  REROLL button's drain note, over main at `1aa34b3`). Before it, 1230 tests, 373,327
+  checks, green on the same branch (16 November, his
+  twelfth round: the Web Bomb at the round's end, Appropriated as an Ability, the
+  Antiquarian's names, over main at `23aebc7`). Before it, 1229 tests, 373,302 checks, green
+  on the same branch (16 November, a foe's
   move as a list of steps and Gilgamesh's Collect, over main at `e777a80`). Before it, 1222
   tests, 373,248 checks, green on the same branch (16 November, the clocks on his four
   places, over main at `d7fe86f`). Before it, 1217 tests, 373,189 checks, green on the same
@@ -135,11 +155,20 @@ engine and its forecast, the tests, the rules' END TURN, the Rebooting term, the
 row and the refit brief's line 8); with `tools/lowforge/looks/sheet.py`, a round's sheet
 in one command, and a look builder that finds its modules itself; then a second round of five
 of them on his notes of 15 and 16 November, and his word that a nickname follows its machine in the
-bible's nickname row (the file v0.602 on this branch, main's v0.601 and that line,
+bible's nickname row (the file v0.612 on this branch, main's v0.611 and those lines,
 unpublished). It took main at `0f5c801`, at `c9e55a9`, the reboot's fold-in, at `0eb2745`, the
-marks' cuts, and at `d1b6827`, their renames, in merges, the bible's version line the one
-conflict (1195 tests green after the last); not landed, main takes it on his word. Its briefs' new sections reach the hangar's
+marks' cuts, at `d1b6827`, their renames, and at `f190205`, the foes' pass and the map session,
+in merges, the bible's version line and this file the conflicts, both sides kept; not landed,
+main takes it on his word. Its briefs' new sections reach the hangar's
 Designs tab with the next publish that carries `designs.json`.
+`ccr-1e6e6571-7x7ayr`, the map session's, restarted from main at `e26589f` on 16 November (its
+earlier work all on main): the painted walls as joined ranges, the painted world at the 3D map's
+heights, and Ryan's three rounds of notes of 16 November, the quick fixes, the shapes, the
+played move's rule, the steppe's cliffs and the gorge's waterfalls (How things stand, below). It
+took main at `93384f9` in a merge (the save's versions renumbered, the maps' after the foes'; the
+bible's version, the measurements and this file the other conflicts, both sides kept) and landed
+on main as a fast-forward on Ryan's "Ok, merge this into main" (16 November). It is merged and to
+delete with the rest.
 `ccr-b7d5164e-1wtzzm`, this session's (12 November), cut from main at `6112939`: the to-do's
 roster pruned, then the Needletail's two modes and the Giant Petrel's hull on Ryan's design and
 mix, reworked on his notes (How things stand, below); it took main at `4a0c9b5` in a merge on 13
@@ -529,6 +558,53 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (`sim/campaign.gd`); no screen shows them. The quick campaign is an experiment, not a feature
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
+
+- **Ryan's notes of 16 November, three rounds** (`ccr-1e6e6571-7x7ayr`, on the mock-up and the
+  shapes in play; the bible's shapes, tileset, reconstruction, field and round rows). The painted world stands
+  at the reconstruction's heights for good ("Lock the painted world height change"): every
+  painted hex at its column's height over banks of its domain's rock (`DomainGround.lift_of`,
+  `draw_columns`, the one path; the flat painting, its scenery layer and the marks' fading lift
+  are gone), the marks, packs and flyers on the same lift in either world, a moving token climbing
+  a bank (`BattleMapView._lift_along`); his ruling that the Flattening holds ("a 2D depiction of a
+  hill", the camera fixed). A pack's bleed reaches 2.5 hexes and the boss's 3.5 (it was 1.45 and
+  2.6; 3 and 4 for an hour). A move that plays (EXECUTE, ENGAGE or END TURN) ends its machine's
+  action unless an order stands ("if an attack wasn't ordered, it cannot attack"): a path and then
+  an order is the action, an order stands as given once its move has played, a carried machine
+  keeps its action, and UNDO gives the action back with the move (`Battle.take_plan`,
+  `Battle.played`, kept on the save); EXECUTE lets go of the machine in hand, its reach dark at
+  once. The Meadow's forest is five trees a hex. The machines' layer is lit (its camera saw no
+  sun, so a machine walking into the painting went dark). The shapes (`BattleMap`; save version
+  35): the river one fat river with one narrow across the field's middle; the RIVER DELTA
+  (`delta`, in the fjord's place) a true delta, the river coming in at the rift's end or out from
+  under the wall by the seed and fanning into braided streams a hex wide, a stream for every three
+  or four columns at the far end, no dry way kept, about two fifths water; the gorge chunks of land
+  between chasms a hex wide joined by bridges, the chasm a new wall look (`chasms`, its vocabulary
+  term a session's draft) sunk deep, a black pit in the painting and in 3D a dim gravel floor with
+  a stream along it, a flooded stretch spilling into it as a waterfall in both worlds
+  (`waterfall.gdshader`; the painting's two frames); the city a cross-street every third row, a suburb of ruins on one side and a
+  plaza (two sections of ruins at most), no water, one great tower a hex or two; the steppe
+  drawing on every shape but the gorge, half its walls cliffs (its own look now) and the rest each
+  another look, never a chasm, a little lake of five to eight for every eight columns, a patch of
+  ruins; the badlands' scrub a third of the
+  field where it was half. The mouth, the gate's front and the team's two rows refuse walls alone,
+  water, rough and ruins welcome ("needs to disallow crags, not other soft terrain tiles"). The badlands' mesas and the city's towers are one layout for both worlds
+  (`Map3D.wall_pieces`, painted by `DomainGround._piece_tex`).
+
+- **The painted walls as joined ranges** (`ccr-1e6e6571-7x7ayr`, 16 November, on Ryan's "They could
+  fill their hexes more and mesh together better. A mountain range should look like a continuous
+  range, not a bunch of isolated chunks. Especially true for the gorge"; the bible's domain tileset
+  row). A wall in the painted world is one piece of a range joining its look's walls beside it
+  (`DomainGround.draw_ranges`, `wall_links`): a massif filling its hex, its top raised and running
+  on into a joined neighbour's, a face and a dark edge only where the range ends; crags stand peaks
+  on a low base (one at the saddle of each joined edge, so a ridge runs on), towers stand on a
+  plinth (short at a block's back, so the street behind shows), mesas and the gorge's cliffs are
+  flat and cracked plateaus with rocks; drawn bases first, then what lies on them, then what stands
+  by its foot. Each domain's rock (`RANGE_INKS`) is from its own inks, its top, base and faces
+  picked by the colourblind simulations against its ground; the Marsh is pale stone with moss, the
+  Peak dark basalt with lava seams. The hand-drawn range sprites and the 10 November blocks are
+  gone. `tools/tileset_shot.gd` now lays its patch in the view's layout and shows a joined range of
+  each look per domain. The paint at a battle's start costs about 50 to 100 ms more on the cloud
+  container (`docs/measurements.md`); the phone's hitch is the to-do's.
 
 - **The blade class retired** (`ccr-b7d5164e-1wtzzm`, 15 November, on Ryan's "The four you listed are
   locked pieces. The others need to be renamed into short range (i.e "melee" as per our definition)
@@ -1875,13 +1951,8 @@ The tasks are the to-do's; this is the index of what waits.
   Lure wins. No foe carries it. It is the foes' pass's (the to-do's Engine list).
 - His marks on the vocabulary's table (15 November, all eighty-two rows; the proposal's
   section 18 has each with its read, and the to-do's Engine list the build in parts), what
-  is not built yet, all of it the foes' pass's: a foe's Phased,
-  Drain, Steal and the drained reroll as their units' own text, countdowns an elite's or a
-  boss's mostly, a fall free to do more than strike. Until built, content and the engine
-  run each of those as before.
-- A foe's move need not take a component's shape (the same day; the bible's row on the foes'
-  rule set, the proposal's section 19): the direction for the foes' pass, with Claude's
-  proposal of a move as a short list of steps. Nothing of it is built.
+  is not built yet, all of it the foes' pass's: a foe's Phased, and countdowns an elite's
+  or a boss's mostly. Until built, content and the engine run each of those as before.
 
 - The Fracture's prize (section 12); the escorts' marks (`docs/bosses_proposal.md`) and the
   promoted forms' one move more for seven of them (`docs/heroes_proposal.md`).
@@ -1999,8 +2070,11 @@ any Empowered gained in a foe's own turn. The anchor read again says tier one st
 it stood (`docs/measurements.md`, its last entry: the wolf pack 12.3% to 13.1% of a four's
 hull, one fight lost in 30). A session's reads in it, his to overrule, are the to-do's Ryan
 line: the foes' turn start is the whole side's, where the agreed lean said its own action.
-His thought of the same round, the Web Bomb at the round's end as "a double suppress on a
-delay", is answered in chat and waits on his word (section 25).
+**The Web Bomb bursts as the round ends** (his twelfth round, the same day: "Go ahead with
+the Web Bomb at round end, no cooldown"; the proposal's section 27): every foe acts in the
+round it is laid, and the webbed foe and the foe beside it each lose their next turn. A
+squad with the Funnel-web at tier two loses no more hull under it (`docs/measurements.md`,
+its last entry, a direction). A rally keeps its floor of 2 on his word.
 **The foes' pass has begun** (16 November, on his "Yes, go ahead with the next work"):
 **Exposed on a machine is built** (the proposal's section 17; `tests/test_exposed.gd`), a
 foe's Expose as a move of its own and as a rider on its blow. The machine's armour of every
@@ -2019,13 +2093,43 @@ each a special's effect by that effect's own rules. The intent wears the steps' 
 round preview plays them, a Ward turns what lands on its machine, and the rules of
 announcing read every step. One blow a move, and that its first step, for now.
 **Gilgamesh's Disarm is Collect**, the first move written so (his mark of 15 November): a
-blow that Jams, then a step of his own that leaves him Appropriated at the entry's number, a
-buff his Borrowed Blade swings and spends. The steal rider and the foe's own field for what
-it held left the engine. No number moved.
+blow that Jams, then a step of his own that leaves him Appropriated at the entry's number,
+which his Borrowed Blade swings and spends. Appropriated is his Ability (his twelfth round:
+"a number that fluctuates depending on what he's currently holding"), a chip from the
+fight's start that no Purge reaches. The steal rider and the foe's own field for what
+it held left the engine. No number moved. The Marsh's Antiquarian's moves are Collect Call
+and Show Collection, so the name Collect is Gilgamesh's alone.
+**The REROLL button wears a drain** (16 November, his mark of 15 November: "There should be
+an effect on the reroll button when this happens"; a first cut, his to judge running:
+`RIFTGATE_DRAIN_DEBUG=1`): what the next round stands to lose under its count while a drain
+is announced, rings closing on its edge; a flash as each lands in the enemy's turn; and what
+the drains took, through the round they shortened. The five moves say it in their own text
+and no keyword names it.
+**A fall is a short list of steps** (16 November, his mark of 15 November: "foes who, say
+buff others on death, or debuff on death"; the engine alone, the rules' A last act): a death
+blow or one special in its place, then what it does also. Its blow lands on the foe's own
+pick, and a curse on the machine that made the kill (his thirteenth round: "it should apply
+to the killer, and the dodge is ablating it"), nobody when a tick did. No foe carries more
+than a blow: the carriers are the bench's.
+**An elite holds any mechanic at any tier, as a boss can** (the same round): the tier a rule
+names, Exposed's tier two, holds the rank and file alone. **Phased foes act.**
+**The foes' targeting is audited** (the same round: "We need to look at foe targeting rules
+now, I think. Clean that up"; `docs/targeting_proposal.md`): the rules as they run are set
+down in one place, and two leftovers are cut, the rule before 2 October with the runner's
+comparison that kept it and the map's fastest hunt, a test now holding the aims and the hunts
+to content. What is a design call waits on him, five points with leans (the bible's section
+12): the aim that content calls exposed renamed, exact where it draws by weight, the armed's
+and the buffed's fallback, a fall's single blow with the pick a move at nobody still draws,
+and the aims' words on the screen. `docs/balance.md` still prints the comparison section of
+its last run; the next run drops it.
 **First now: the foes' pass, the rest**
-(the to-do's line): Exposed's carriers, the countdowns off
-the rank and file, a fall free to do more than strike, and the moves that want steps, each
-proposed in chat with its foe.
+(the to-do's line): the content, put to him on 16 November as the proposal's section 28 and
+waiting on his marks: the moves that take the rank and file's countdowns' place, a fall for
+a domain each, Exposed's carriers, a foe's Phased with its two carriers, two moves as steps
+and three immunities; his thirteenth round answered part and is its section 29. Still his:
+the marks on the rows, the Roc's round before its stoop, Phased's name, and the targeting
+audit's five calls. On his word: the engine for a foe's Phased and for an immunity, the
+targeting build, then the content, then a read of what changed.
 The table of every rider, buff and debuff (`docs/vocabulary_table.md`) stands with its page
 (Pages, below) as the record of his marks until the pass retires.
 With the pass, on his proposal, the tier-one

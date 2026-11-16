@@ -139,10 +139,10 @@ const STATUS := {
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp_share", "value": 10}]},
 	# The funnel-web's web (18 October): the mark its Web Bomb leaves, named for the piece since
 	# 15 November (Ryan: "the debuff can be renamed \"web bomb.\""; the id is the engine's). The
-	# skirmish bursts it at the end of the foe's action (Skirmish._web_burst): a Suppress on it
-	# and on the next foe to act beside it, each for itself. One web on a foe, however often it
-	# is webbed.
-	"webbed": {"id": "webbed", "name": "Web Bomb", "description": "At the end of its action the web bursts: it and the next foe to act beside it are Suppressed.", "stacking": "renew", "decay": "none",
+	# skirmish bursts it as the round ends (Skirmish._burst_webs; at the end of the foe's own
+	# action until 16 November): a Suppress on it and on the foe beside it, each for its next
+	# turn, each for itself. One web on a foe, however often it is webbed.
+	"webbed": {"id": "webbed", "name": "Web Bomb", "description": "As the round ends the web bursts: it and the foe beside it are Suppressed, each losing its next turn.", "stacking": "renew", "decay": "none",
 		"tags": ["web"], "effects": []},
 	# The machines' buffs (29 September): what buff equipment grants. Names are placeholders
 	# for Ryan. Flat since 2 October (the damage scale: a tenth of a blow of 10 to 20 is nothing
@@ -294,11 +294,14 @@ const STATUS := {
 	# Appropriated (Gilgamesh's; Ryan's mark of 15 November on the steal: "It grants Jammed on the
 	# target, and Gilgamesh gains Appropriated with the value"): what a foe took off a machine,
 	# the number its borrowed swing lands, a point a stack, and the swing spends it (a move whose
-	# `power` names it: Foe.power_status). A buff, so a Purge lowers it and the swing with it.
+	# `power` names it: Foe.power_status). His Ability, a count on his own chip (Ryan, 16
+	# November, of the purgeable buff a session had read from "gains Appropriated": "I think
+	# Appropriated is a balance read. Maybe make it his ability, a number that fluctuates
+	# depending on what he's currently holding"), so no Purge reaches it.
 	# One hold at a time: what it takes next replaces what it held. The steal's own field on the
 	# foe until 16 November.
-	"appropriated": {"id": "appropriated", "name": "Appropriated", "description": "Holds what it took off a machine: its borrowed swing lands this number, and spends it.", "decay": "none", "stacking": "renew",
-		"tags": ["buff"], "effects": []},
+	"appropriated": {"id": "appropriated", "name": "Appropriated", "description": "The number of the piece it took off a machine: its borrowed swing lands it, and spends it.", "decay": "none", "stacking": "renew", "counted": true,
+		"tags": ["ability"], "effects": []},
 	# The Honey Badger's hopper (Ryan, 11 October; its Ore Hopper since 31 October): loads every
 	# foe its weapons damage puts in, which the Bullion Fragmenter fires a few a shot. A store on
 	# the machine with no effect of its own (the weapon that fires it reads it, and what the loads

@@ -301,6 +301,18 @@ func test_the_validator_refuses_an_expose_on_anything_dealt_at_tier_one() -> voi
 	# A planned draft is kept and not held to it.
 	(db.foes[who]["actions"] as Array)[-1]["status"] = "planned"
 	assert_true(db.validate().filter(func(e) -> bool: return e.contains("lays Exposed")).is_empty(), "a planned draft is no carrier")
+	# An elite is held to no tier, as a boss is not (Ryan, 16 November: "I think elites can hold
+	# any mechanic at any tier, as a boss can"): the first elite dealt at tier one learns the move.
+	var elite := ""
+	for fid in db.factions.keys():
+		for c in db.factions[fid].get("compositions", []):
+			if elite.is_empty() and ContentDB.composition_tiers(c).has(1):
+				for cell in ContentDB.layout_cells(c):
+					if elite.is_empty() and db.is_elite(str(cell)):
+						elite = str(cell)
+	assert_false(elite.is_empty(), "an elite dealt at tier one is read")
+	(db.foes[elite]["actions"] as Array).append({"id": "x_mark", "name": "Mark", "kind": "debuff", "effect": "expose", "text": "", "status": "implemented"})
+	assert_true(db.validate().filter(func(e) -> bool: return e.contains("lays Exposed")).is_empty(), "an elite may lay Exposed at tier one")
 
 
 func test_the_bot_reads_an_expose_aimed_at_it_and_a_cleanse_of_one() -> void:

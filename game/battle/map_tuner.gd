@@ -32,7 +32,7 @@ func _init(map: BattleMapView) -> void:
 	_slider("POSTERIZE", 2.0, 10.0, 5.0, func(v: float) -> void: _map.tune("levels", v))
 	_slider("FLICKER", 0.0, 3.0, 1.0, func(v: float) -> void: _map.tune("flicker", v))
 	_slider("FRAME RATE", 0.2, 6.0, 1.6, func(v: float) -> void: _map.tune("anim_rate", v))
-	_slider("BLEED RADIUS", 0.6, 3.0, Bleed.pack_radius_hex, func(v: float) -> void:
+	_slider("BLEED RADIUS", 0.6, 4.5, Bleed.pack_radius_hex, func(v: float) -> void:
 		Bleed.pack_radius_hex = v
 		_map.queue_redraw())
 	_toggle("SCAN", true, func(on: bool) -> void:

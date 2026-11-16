@@ -10164,3 +10164,148 @@ fight in 30, the howl whole on the wolves that had bitten before it; the antlion
 What it does not say: what Ablate lost with the kill before the blow, since no squad here
 leans on it and the bot never played for that kill; tiers two and three, where the Warg's
 howl and the Captain's Warcry, the Regenerating foes and the Brittle layers stand.
+
+**The same day, the Web Bomb at the round's end.** His ruling ("Go ahead with the Web Bomb at
+round end, no cooldown"): the web bursts as the round ends, and the webbed foe and the foe
+beside it each lose their next turn, where the burst came at the end of the webbed foe's own
+action and the foe beside it lost that round's. Read before and after on one squad, the
+Funnel-web, the Honey Badger and the Skua, at tier two, 20 seeds a row, greedy
+(`anchor_probe.gd`, the scratch probe): the formations at their rating of three, and the
+elites with the same three against fights rated four.
+
+| Fights | Before | After |
+|---|---|---|
+| A formation, the mean of seven | 98% won, 11.8 rounds, 20.5% of a four's hull, 0.27 wrecks | 96%, 12.3, 18.8%, 0.26 |
+| An elite, the mean of twenty-one | 90% won, 7.8 rounds, 30.4%, 0.58 wrecks | 93%, 7.5, 28.5%, 0.46 |
+| The grave field | 100%, 20.0 rounds, 18.3% | 90%, 26.2, 18.1%, two fights stalled |
+| The Nob | 85%, 6.3, 47.3% | 95%, 5.8, 38.6% |
+| The bone wyvern's flight | 85%, 9.5, 47.6% | 100%, 8.5, 38.2% |
+| The Cinder Tortoise's brood | 90%, 13.5, 46.3% | 100%, 12.4, 37.4% |
+
+A direction, one squad and 20 fights a row. Under the new rule the squad loses no more hull
+and wins the elites a little more often; the bot still spends the web 2.6 times a formation
+fight, each burst landing. One formation runs longer, the grave field, six rounds more with
+two fights in twenty stalled: a line that gets back up, where two foes held a round ahead
+buys time and no kill. What it does not say: how much of the move is the bot's, whose
+reading of a web changed with the rule (a turn a round ahead at a share, and the Numbed a foe
+ends the round with read exactly), and no count of webs was kept before; nor what a player
+makes of two foes that show no intent next round, which the greedy bot does not plan round.
+
+
+## 16 November: the painted walls as joined ranges
+
+Ryan, of the painted domains' crags: "They could fill their hexes more and mesh together better. A
+mountain range should look like a continuous range, not a bunch of isolated chunks. Especially
+true for the gorge." Each wall became a piece of a range that joins its look's walls beside it
+(`DomainGround.draw_ranges`; the bible's domain tileset row). Two reads went with it.
+
+### The walls' inks over their grounds
+
+The three Machado simulations (severity 1.0) and normal vision, each ink of a range against the
+ground it stands on, as CIE76 distance; the worst case decides. Every ink is one the domain's sprites
+already wore (a test holds it). Weak picks were changed on these numbers before the build landed:
+the Meadow's crag base went from #996633 to #663300 (5.4 to 25.3 for a deutan) and its plateau top
+from #cc9966 to #cccc99 (14.7 to 30.4); a range's faces took two tones, lit and the rest, after
+the Meadow's lit face (#996633) and the Marsh's shaded face (#333333) read as their grounds (5.4 deutan,
+5.6 tritan); the Peak's faces left its ground's own grey (#333333, 0) for its rust and red inks.
+Two weak pairs stay, each the pairing the old sprites already drew on the same ground: the Meadow's
+peaks' lit tan (14.7 deutan), framed by their dark edge and snow, and the Peak's shaded flank of a
+peak (18.0). Every range keeps its dark edge where it ends, so no wall is told from its ground by a
+colour alone.
+
+| Domain | Ink | Over its ground | Luminance contrast | Worst simulated distance (dE) | Normal / protan / deutan / tritan |
+|---|---|---|---|---|---|
+| Meadow | top #cccc99 | #339933 | 2.20 | 30.4 | 52 / 35 / 30 / 47 |
+| Meadow | crag base #663300 | #339933 | 2.82 | 25.3 | 75 / 39 / 25 / 76 |
+| Meadow | face, lit #996633 | #339933 | 1.34 | 5.4 | 66 / 22 / 5 / 68 |
+| Meadow | face #663300 | #339933 | 2.82 | 25.3 | 75 / 39 / 25 / 76 |
+| Meadow | peak, lit #cc9966 | #339933 | 1.45 | 14.7 | 64 / 22 / 15 / 67 |
+| Meadow | edge #333300 | #339933 | 3.56 | 35.9 | 58 / 45 / 36 / 52 |
+| Waste | top #993300 | #cc9966 | 2.94 | 31.2 | 44 / 35 / 31 / 44 |
+| Waste | crag base #663300 | #cc9966 | 4.08 | 39.5 | 40 / 40 / 40 / 40 |
+| Waste | face #663300 | #cc9966 | 4.08 | 39.5 | 40 / 40 / 40 / 40 |
+| Waste | face, shade #330000 | #cc9966 | 7.29 | 58.7 | 66 / 67 / 64 / 59 |
+| Waste | peak, lit #993300 | #cc9966 | 2.94 | 31.2 | 44 / 35 / 31 / 44 |
+| Waste | edge #330000 | #cc9966 | 7.29 | 58.7 | 66 / 67 / 64 / 59 |
+| Marsh | top #999999 | #333300 | 4.57 | 43.5 | 52 / 52 / 51 / 43 |
+| Marsh | crag base #666666 | #333300 | 2.27 | 23.7 | 37 / 37 / 36 / 24 |
+| Marsh | face #666666 | #333300 | 2.27 | 23.7 | 37 / 37 / 36 / 24 |
+| Marsh | face, shade #333333 | #333300 | 1.03 | 5.6 | 29 / 28 / 28 / 6 |
+| Marsh | peak, lit #999999 | #333300 | 4.57 | 43.5 | 52 / 52 / 51 / 43 |
+| Marsh | edge #000000 | #333300 | 1.61 | 20.8 | 36 / 35 / 34 / 21 |
+| Peak | top #666666 | #333333 | 2.20 | 21.9 | 22 / 22 / 22 / 22 |
+| Peak | crag base #666666 | #333333 | 2.20 | 21.9 | 22 / 22 / 22 / 22 |
+| Peak | face, lit #993300 | #333333 | 1.70 | 39.9 | 65 / 40 / 51 / 66 |
+| Peak | face #990000 | #333333 | 1.42 | 31.3 | 72 / 31 / 46 / 77 |
+| Peak | face, shade #330000 | #333333 | 1.46 | 18.0 | 31 / 19 / 18 / 33 |
+| Peak | peak, lit #999999 | #333333 | 4.43 | 42.0 | 42 / 42 / 42 / 42 |
+| Peak | edge #000000 | #333333 | 1.66 | 21.2 | 21 / 21 / 21 / 21 |
+
+### The paint at a battle's start
+
+The painted map is drawn once a battle, two frames, before the first turn. Its first paint on a
+cloud container (llvmpipe, `--rendering-method gl_compatibility`; times are this machine's, a
+direction only), main at `e26589f` against this branch, two runs each:
+
+| Map | Main | Joined ranges |
+|---|---|---|
+| Gorge, seed 7, the Meadow | 170 and 162 ms | 254 and 207 ms |
+| Ruined City, seed 7, the Marsh | 172 and 154 ms | 241 and 261 ms |
+
+A range's base is built once for its look and its joined sides and kept, so a range's middle hexes
+share one (33 bases for the gorge, 51 for the city): about 1.3 ms each after the build moved to
+packed arrays (2.3 ms before). Whether a battle's start hitches on the phone is the to-do's.
+
+
+## 16 November: the shapes relaid on Ryan's notes
+
+**The river, the delta, the steppe and the city at the long wall's 20 by 12**, seeds 1 to 100
+(`BattleMap.generate`), the band the open rows a shape lays in. The river: water 40% of the band
+(it was about 22% two hexes thick), two narrows in every seed, no dry way across (everyone wades).
+The river delta in the fjord's place: water 23% of the band (the fjord laid half to two thirds),
+five dry ways from the rift to the gate in every seed (`dry_crossing`, the disjoint land routes;
+five is the open steppe's too, the gate's front the limit). The steppe: water 4%, crags 4%, five
+dry ways. The city: no water, towers 57% of the band, three dry ways at least. Cited by the
+bible's shapes row (three dry ways at least on the delta).
+
+**The painted mesas and towers as the 3D's own pieces**: the first paint on the cloud container at
+20 by 12 in the Waste, `RIFTGATE_BLEED_DEBUG` whole, 296 ms the badlands and 328 ms the city with
+the pieces filled a row's span at a time (574 and 787 ms filled pixel by pixel; the steppe, with
+none, 174 ms).
+
+## 16 November: the shapes relaid on Ryan's second notes
+
+**Every shape at the long wall's 20 by 12**, seeds 1 to 100 (`BattleMap.generate`), shares of the
+band the open rows a shape lays in; dry ways the disjoint land routes from the rift to the gate
+(`dry_crossing`), the crossing the horde's through walls (`narrowest_crossing`), both to nine.
+The river: water 45%, one narrow every seed, no dry way, the crossing 5. The river delta: water
+36% (23% as first cut, the channels then blind short of the team's ground), dry ways 5. The gorge:
+chasms 27% of the band (its cliff mass was 44%), water 1%, scree 11%, dry ways 4.0 and 2 at the
+least, the crossing 4.1 (3.8 before). The city: towers 41% (57% before), ruins ground 21% (the
+suburb, the streets and the plazas; 11% before), dry ways 4.2 (3.5 before). The steppe: walls 4%,
+every look of wall among its seeds, ruins 3%, water 4%. The badlands: scrub 34% of the field (53%
+before; 26% at a half), mesas 31%. Cited by the bible's shapes row.
+
+
+## 16 November: the shapes on Ryan's third notes
+
+**Every shape at the long wall's 20 by 12**, seeds 1 to 100 (`BattleMap.generate`), shares of the
+band (the rift's row to the last row short of the team's two) as the second notes' entry read them.
+The river delta, a true delta now (the river at one end by the seed, fanning into streams a hex
+wide): water 38% (36% as its channels were), dry ways 0.1 and none at the least, so most seeds
+keep none (Ryan: "We don't need to guarantee land bridges"); over the whole field, the team's rows
+in, 24% to 46% a seed. Its streams' thinness, as the share of its water hexes with four of water
+round them (a fork, a join, two streams touching), over 40 seeds a size: 38% at 20 by 12, 41% at
+30 by 10, 39% at 24 by 14, 42% at 20 by 14, 48% at 20 by 16, the blobbiest seed 56% to 70%; a form
+that spread each stream to its share steadily, with a step along the row on most rows, read 56% to
+63% (staircases two hexes wide to the eye) and was put back the same hour. The far end holds three
+streams at the least at 20 wide, five or six at 30. The old field's narrow sizes run wet (7 by 20:
+36% to 64% of the field), as a fan four columns a stream fills a field seven wide. The city: towers
+42%, ruins ground 22% (the suburb and its one plaza, the streets), dry ways 4.1. The steppe: water
+8% (its lakes, 4% as ponds), walls 4% of every look but the chasm, ruins 3%. The river, the gorge
+and the badlands as the second notes left them (45% water; chasms 27%, dry ways 4.0; scrub 36% of
+the band). Then the cliffs half the steppe's walls, on his word the same evening: 67% of its wall
+hexes at 20 by 12 (two walls of three), on every one of 100 seeds; laid after the other looks and
+kept off the rift's mouth, since a wall laid there first was bared away with the mouth on some
+seeds (8 and 16 at 20 by 12) and left the cliffs alone. A gorge's flooded stretch touches a chasm,
+so falls into it, on 21 of the first 80 seeds at 20 by 12. Cited by the bible's shapes row.

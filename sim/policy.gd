@@ -563,7 +563,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			score += _capped(damage_outcomes(ms, f, n) if f.reach == Face.Reach.EVERY_FOE else damage_outcomes(ms, f, n, int(shapes.get(n, Skirmish.AREA_ALL))), n.hp)
 	# A kill ends the countdown it gathers, opens the core its fall unguards, and sets off its
 	# last act (the boss mechanics of 15 October; valued 22 October).
-	score += p_kill * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target))
+	score += p_kill * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target, ms))
 	if f.has(Face.Keyword.LURE) or f.has(Face.Keyword.DISRUPT) or f.has(Face.Keyword.SHOCK):
 		# Every foe the blows reach: the target, the neighbours of a spread, the column of a
 		# penetrate; a lure, a disrupt or a shock lands on a felled foe too (death is the last
@@ -752,7 +752,7 @@ func zap_worth(sk: Skirmish, ms: Skirmish.MechState, target: Foe, burnt: int, ou
 			continue
 		worth += float(o[1]) * minf(float(zap), left)
 		if float(zap) >= left:
-			worth += float(o[1]) * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target))
+			worth += float(o[1]) * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target, ms))
 	return worth
 
 
@@ -1704,10 +1704,10 @@ static func core_opening(sk: Skirmish, part: Foe) -> float:
 ## 22 October): its blow the moment it falls, on the machine it aims at or every machine for a
 ## blow at every machine, through each one's shield and armour as they stand: hull at
 ## HULL_WEIGHT, shield at SHIELD_LOSS_WEIGHT, a wreck at DEATH_WEIGHT.
-static func last_act_cost(sk: Skirmish, f: Foe) -> float:
+static func last_act_cost(sk: Skirmish, f: Foe, killer: Skirmish.MechState = null) -> float:
 	var blow := f.last_act()
 	if blow.is_empty():
-		return 0.0
+		return fall_steps_cost(sk, f, killer)
 	var amount := f.damage_of(blow)
 	var whom: Array = []
 	if f.has_keyword(blow, "all"):
@@ -1727,24 +1727,91 @@ static func last_act_cost(sk: Skirmish, f: Foe) -> float:
 			hull -= int(r["through"])
 		if hull <= 0:
 			cost += DEATH_WEIGHT
+	return cost + fall_steps_cost(sk, f, killer)
+
+
+## What the steps of a foe's fall cost the team beside its blow (16 November: a fall is a short
+## list of steps): each at the price the bot already puts on the same effect from a move, a
+## Ward's score for what lands on a machine and a rally's point on every blow. A curse lands on
+## the machine that makes the kill (`killer`: the one weighing the spend), and on nobody when
+## none does. An effect with no price here counts nothing until a piece carries it.
+static func fall_steps_cost(sk: Skirmish, f: Foe, killer: Skirmish.MechState = null) -> float:
+	var fall := f.fall()
+	if fall.is_empty():
+		return 0.0
+	var pick: Skirmish.MechState = killer
+	if pick != null and (not pick.alive() or Skirmish.is_out(pick)):
+		pick = null
+	var scorch := 0
+	for eff in Effects.STATUS["scorched"]["effects"]:
+		if str(eff.get("effect", "")) == "add_heat":
+			scorch += int(eff.get("value", 0))
+	var ablate := Effects.status_value("ablating_mech", "tick_hp")
+	var cost := 0.0
+	for st in Foe.effects_of(fall):
+		var value := maxi(1, int(st.get("value", 0)))
+		match str(st.get("effect", "")):
+			"ablate":
+				if pick != null and not Effects.has(pick.unit, "ward"):
+					cost += float(ablate * value * (value + 1)) / 2.0 * ABLATED_WEIGHT
+			"jam":
+				if pick != null and not Effects.has(pick.unit, "ward"):
+					cost += _raw_attack_mean(pick) / float(maxi(1, pick.die.faces.size()))
+			"scorch_all":
+				for m in sk.live_mechs():
+					if not Effects.has(m.unit, "ward"):
+						cost += float(scorch * value) * BANK_WEIGHT
+			"corrupt_all":
+				for m in sk.live_mechs():
+					if not Effects.has(m.unit, "ward"):
+						cost += float(Skirmish.corrupt_bite() * value) * HULL_WEIGHT * CLEANSE_ROUNDS / float(maxi(1, m.die.faces.size()))
+			"drain_rerolls":
+				cost += REROLL_SHARE * _team_raw_attack_mean(sk) * float(value)
+			"rally":
+				# Every foe still standing hits that much harder at its next blow, before it halves.
+				for o in sk.field_foes():
+					if o != f and o.alive():
+						cost += float(value * o.strikes()) * HULL_WEIGHT
+			"heal":
+				var most := 0
+				for o in sk.field_foes():
+					if o != f and o.alive():
+						most = maxi(most, o.hp_max - o.hp)
+				cost += float(mini(value, most))
+			"prime":
+				for o in sk.field_foes():
+					if o != f and o.alive():
+						cost += PRIMED_WORTH * float(value)
 	return cost
 
 
-## A web on a foe (the funnel-web's Web Bomb, 18 October): the blow the foe it catches beside
-## it will not land (this round's when the catch acts after it; its next, read as this round's,
-## when it has acted), and the webbed foe's own next action, read as the blow it shows now,
-## each at the odds Numbed lets the burst land; nothing on a foe already suppressed, which
-## gains nothing from a second, and nothing on a foe already webbed.
+## A web on a foe (the funnel-web's Web Bomb, 18 October; bursting as the round ends since 16
+## November): the next turn of the webbed foe and of the foe beside it, each read as the blow
+## it shows now and at a round ahead's share, since the fight may end and the foes pick
+## afresh; nothing for a foe the burst will not stun (web_stuns), and nothing on a foe already
+## webbed.
 func web_score(sk: Skirmish, target: Foe) -> float:
 	if Effects.has(target, "webbed") or Effects.turns_mark(target, "webbed"):
 		return 0.0
 	var score := 0.0
-	if not target.is_suppressed():
-		score += _threat_next(target, sk) * HULL_WEIGHT / float(Effects.stacks_of(target, "numbed") + 1)
-	var beside := sk.web_catch(target)
-	if beside != null and not beside.is_suppressed():
-		score += _threat_next(beside, sk) * HULL_WEIGHT / float(Effects.stacks_of(beside, "numbed") + 1)
+	for foe in [target, sk.web_catch(target)]:
+		if foe != null and web_stuns(foe):
+			score += _threat_next(foe, sk) * HULL_WEIGHT * AHEAD_SHARE
 	return score
+
+
+## Will a web's burst stun this foe as the round ends? It meets the Numbed the foe ends the
+## round with, which is exact: a stack goes as its turn ends, and a foe that loses this turn
+## to a stun gains its stun resist there, so the web strips a stack of that and stuns nothing.
+## A Ward up now is gone by then on a machine's side only: a foe's stands until its next turn
+## starts, and turns the web itself away as it lands (web_score).
+static func web_stuns(f: Foe) -> bool:
+	if f == null or not f.alive():
+		return false
+	var left := maxi(0, Effects.stacks_of(f, "numbed") - 1)
+	if f.is_suppressed():
+		left += f.stun_resist()
+	return left <= 0
 
 
 ## The blow a foe lands at its next action, read as the one it shows: its blow now, a

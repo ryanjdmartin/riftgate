@@ -176,7 +176,8 @@ func test_a_take_holds_the_showing_entrys_number_and_the_borrowed_swing_lands_it
 	sk.end_round()
 	assert_eq(sk.mechs[0].unit.hull, 490, "the move lands its own blow")
 	assert_eq(Effects.stacks_of(g, "appropriated"), 30, "and it is Appropriated at the weapon's number")
-	assert_eq(Effects.status_kind("appropriated"), "buff", "a buff on it")
+	assert_eq(Effects.status_kind("appropriated"), "ability", "his own Ability, a count on his chip")
+	assert_true(g.takes(), "a foe that takes says so from the start")
 	assert_true("\n".join(sk.log).contains("it takes A's 30: Appropriated ×30"), "the log says what it took")
 	sk.start_round()
 	assert_eq(str(g.action.get("id", "")), "borrowed", "the borrowed swing is next round's intent")
@@ -224,8 +225,10 @@ func test_a_ward_turns_a_take_away_and_with_nothing_taken_the_roll_decides() -> 
 	assert_eq(str(g.action.get("id", "")), "collect", "nothing taken, no swing: the roll decides")
 
 
-## What it holds is a buff (the same mark): a Purge lowers it, and the swing lands what is left.
-func test_a_purge_lowers_what_a_foe_took_and_the_swing_with_it() -> void:
+## What it holds is its own Ability (Ryan, 16 November: "make it his ability, a number that
+## fluctuates depending on what he's currently holding"): no Purge reaches it, and its number
+## follows the piece it holds, what it takes next replacing what it held.
+func test_what_a_foe_took_is_its_ability_and_no_purge_reaches_it() -> void:
 	var sk := Skirmish.new(1, 3)
 	sk.add_mech(_mech("A", Die.single(Face.attack(30, L))))
 	var g := _collector()
@@ -235,10 +238,10 @@ func test_a_purge_lowers_what_a_foe_took_and_the_swing_with_it() -> void:
 	sk.end_round()
 	sk.start_round()
 	assert_eq(g.damage(), 30, "the borrowed swing at what it holds")
-	Effects.purge(g, 12)
-	assert_eq([Effects.stacks_of(g, "appropriated"), g.damage()], [18, 18], "a Purge takes its stacks, and the intent follows")
+	assert_true(Effects.purge(g, 12).is_empty(), "a Purge finds nothing of it to take")
+	assert_eq([Effects.stacks_of(g, "appropriated"), g.damage()], [30, 30], "the number stands, and the intent with it")
 	sk.end_round()
-	assert_eq(sk.mechs[0].unit.hull, 490 - 18, "the swing lands what was left")
+	assert_eq(sk.mechs[0].unit.hull, 490 - 30, "the swing lands it whole")
 	# One piece at a time: a second take replaces the first.
 	sk.start_round()
 	g.action = g.actions[0]

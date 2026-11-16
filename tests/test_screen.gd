@@ -427,6 +427,95 @@ func test_reroll_goes_dark_with_every_die_spent_or_locked() -> void:
 	s.free()
 
 
+## A drain shows on REROLL (Ryan, 15 November: "There should be an effect on the reroll button
+## when this happens"): a note under the badge says what next round stands to lose while a foe
+## announces it, its rings closing in while the loss can still be stopped; the note settles as
+## the drain lands, and the round it took from says what it took.
+func test_reroll_wears_a_drain_announced_landed_and_taken() -> void:
+	var s := _screen(5)
+	var sk: Skirmish = s.sk
+	s._refresh()
+	assert_eq([s._reroll_btn.note, s._reroll_btn.draining], ["", false], "no drain out: no note")
+	var roarer: Foe = sk.field_foes()[0]
+	roarer.actions.append({"id": "roar", "name": "Roar", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "text": ""})
+	roarer.action = roarer.actions[roarer.actions.size() - 1]
+	s._refresh()
+	assert_eq([s._reroll_btn.note, s._reroll_btn.draining], ["NEXT -1", true], "a drain announced: what next round stands to lose, the rings closing in")
+	assert_eq(s._reroll_btn.badge, "×%d" % sk.rerolls_left, "this round's count stands")
+	Effects.grant_for_rounds(roarer, Effects.STATUS["suppressed"], "mech", sk.round)
+	s._refresh()
+	assert_eq(s._reroll_btn.note, "", "its foe Suppressed, the drain is stopped and the note goes")
+	Effects.remove(roarer, "suppressed")
+	# Two foes draining two apiece: the note never says more than a round gives.
+	roarer.action["value"] = 2
+	assert_eq(SkirmishScreen.drain_note(sk)[0], "NEXT -2", "two announced")
+	roarer.action["value"] = 1
+	# The replay: the note stands, announced, until the drain lands, then settles.
+	assert_eq(SkirmishScreen.drain_note(sk, 0, 1), ["NEXT -1", true], "in the enemy's turn, before it lands")
+	assert_eq(SkirmishScreen.drain_note(sk, 1, 0), ["NEXT -1", false], "landed: the same words, settled")
+	for f in sk.field_foes():
+		f.target = sk.mechs[0]
+	sk.end_round()
+	assert_eq(sk.turn_drains.size(), 1, "the engine tells the screen the drain that landed")
+	assert_eq(int(sk.turn_drains[0]["value"]), 1, "and its size")
+	sk.start_round()
+	assert_eq([sk.rerolls_left, sk.drained], [Skirmish.REROLLS_PER_ROUND - 1, 1], "the round it took from opens a reroll short, and says so")
+	for f in sk.field_foes():
+		f.action = f.actions[0]
+	s._refresh()
+	assert_eq([s._reroll_btn.note, s._reroll_btn.draining], ["DRAINED -1", false], "the button says what was taken, with nothing more announced")
+	assert_eq(s._reroll_btn.badge, "×%d" % (Skirmish.REROLLS_PER_ROUND - 1), "beside the count it left")
+	var copy: Skirmish = SaveGame.clone_skirmish(sk)
+	assert_eq(copy.drained, 1, "a save keeps the round's note")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(sk.drained, 0, "and the round after is whole")
+	s.free()
+
+
+## A fall that takes a reroll (16 November: a fall is a short list of steps) lands in the
+## player's own turn: its foe wears the fall as an Ability from the start, the note counts what
+## it took at once, settled, and the button is struck as the fall is named.
+func test_a_fall_that_drains_shows_on_its_foe_and_on_reroll() -> void:
+	var s := _screen(5)
+	var sk: Skirmish = s.sk
+	var root: Foe = sk.field_foes()[0]
+	root.on_death = {"act": Foe.fall_act_from({"name": "Last Scream", "effect": "drain_rerolls", "value": 1})}
+	s._refresh()
+	var rows: Array = s._foe_rows(root).filter(func(row) -> bool: return row.size() >= 5 and str(row[4]) == "ability")
+	assert_eq(rows.size(), 1, "its fall is its ability")
+	if rows.size() == 1:
+		assert_eq([str(rows[0][0]), str(rows[0][1]), str(rows[0][2])], ["skull", "", "Ability, Last Act: Last Scream"], "the skull, no number, and the fall's name")
+	assert_eq(s._reroll_btn.note, "", "nothing is owed yet")
+	root.hp = 0
+	sk.reroll_debt = 0
+	sk._last_act(root)
+	assert_eq(int(sk.last_acts.back()["drained"]), 1, "the engine says what the fall took")
+	assert_eq(SkirmishScreen.drain_note(sk), ["NEXT -1", false], "the note counts it at once, settled: nothing can stop it now")
+	s._reroll_btn._strike_t = -1.0
+	s._land_last_act(sk.last_acts.back())
+	assert_true(s._reroll_btn._strike_t >= 0.0, "and the button is struck as the fall is named")
+	assert_eq(int(s._before_enemy_turn().get("debt", 0)), 1, "the enemy's turn's replay starts from what the fall took")
+	s.free()
+
+
+## RIFTGATE_DRAIN_DEBUG=1: the button wears a drain announced the whole fight and flashes on
+## its three seconds, so the note, the rings and the flash are judged running.
+func test_the_drain_debug_switch_holds_the_note_and_flashes_the_button() -> void:
+	var s := _screen()
+	var was := SkirmishScreen.DRAIN_DEBUG
+	SkirmishScreen.DRAIN_DEBUG = true
+	s._refresh()
+	assert_eq([s._reroll_btn.note, s._reroll_btn.draining], ["NEXT -1", true], "the note stands, announced")
+	s._reroll_btn._strike_t = -1.0
+	s._process(3.1)
+	assert_true(s._reroll_btn._strike_t >= 0.0, "and the button flashes on its three seconds")
+	SkirmishScreen.DRAIN_DEBUG = was
+	s._refresh()
+	assert_eq(s._reroll_btn.note, "", "off, nothing is worn")
+	s.free()
+
+
 ## REROLL lights while the die in hand would bring the team a reroll, and its badge shows the
 ## count it would leave (Ryan, 15 November: "We can communicate by highlighting the reroll button
 ## as part of the preview, if one will be granted"): no buff and no chip stand for the grant.
@@ -1873,6 +1962,19 @@ func test_the_predator_sense_marks_the_foes_looking_away_while_the_die_is_read_o
 			assert_eq(r[1], "2", "Cryo's chip counts its stacks (21 October: it had none)")
 	assert_true(glyphs.has("web") and glyphs.has("vitriol"), "a webbed, acid-eaten foe wears both chips: %s" % str(glyphs))
 	assert_true(glyphs.has("brittle") and glyphs.has("cryo"), "and Brittle and Cryo wear theirs: %s" % str(glyphs))
+	# A foe that takes wears its Ability from the start, its number the piece it holds (Ryan, 16
+	# November: "make it his ability, a number that fluctuates depending on what he's currently
+	# holding"): no number while it holds none.
+	assert_false(glyphs.has("taken"), "a foe that takes nothing wears none")
+	foe.actions.append({"id": "take", "name": "Take", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": [], "text": "", "also": [{"effect": "appropriate"}]})
+	var held: Array = s._foe_rows(foe).filter(func(r) -> bool: return r[0] == "taken")
+	assert_eq(held.size(), 1, "one chip for the rule it plays by")
+	assert_eq([str(held[0][1]), str(held[0][4])], ["", "ability"], "an Ability, and no number while it holds nothing")
+	assert_true(str(held[0][2]).begins_with("Ability, Appropriated: it takes the piece a machine shows"), "its readout says the rule")
+	Effects.stack(foe, Effects.STATUS["appropriated"], Effects.SKIRMISH, "test", 6, Effects.DECAY_NONE)
+	held = s._foe_rows(foe).filter(func(r) -> bool: return r[0] == "taken")
+	assert_eq(str(held[0][1]), "6", "holding a piece, the chip is its number")
+	assert_true(str(held[0][2]).begins_with("Ability, Appropriated 6:"), "and the readout says it")
 	s.free()
 
 

@@ -160,6 +160,34 @@ func test_every_tool_script_parses_against_the_engine() -> void:
 	assert_true(seen > 10, "the tools are read (%d)" % seen)
 
 
+## The foes' targeting lists, held to content both ways (16 November, on Ryan's "We need to look
+## at foe targeting rules now, I think. Clean that up"): an aim no foe or move carries, or a
+## caveat no pack hunts by, has lost its last piece. The fastest hunt went that day.
+const KEPT_AIMS := {}
+const KEPT_HUNTS := {}
+
+
+func test_every_aim_and_every_hunt_has_a_carrier_or_a_reason() -> void:
+	var db := ContentDB.load_default()
+	var aims := {Foe.AIM_ANYTHING: true}   # the default: every foe's that names none
+	for id in db.foes.keys():
+		var f: Dictionary = db.foes[id]
+		if f.has("aim"):
+			aims[str(f["aim"])] = true
+		for a in f.get("actions", []):
+			if a is Dictionary and a.has("aim"):
+				aims[str(a["aim"])] = true
+	assert_true(Foe.AIMS.size() >= 2, "the aims are read")
+	_hold("the aim", Foe.AIMS, aims, KEPT_AIMS)
+	var hunts := {}
+	for fid in db.factions.keys():
+		for c in db.factions[fid].get("compositions", []):
+			if c is Dictionary and c.has("hunts"):
+				hunts[str(c["hunts"])] = true
+	assert_true(ContentDB.HUNT_CAVEATS.size() >= 2, "the hunts are read")
+	_hold("the hunt", ContentDB.HUNT_CAVEATS, hunts, KEPT_HUNTS)
+
+
 ## A foe's rider no move carries, as a keyword of ours no piece prints.
 const KEPT_RIDERS := {
 	"destroy": "the vocabulary pass's settled answer (docs/vocabulary_pass_proposal.md, section 18; Ryan, 15 November: \"This can be a boss-level rider, that destroys the visible face if it damages hull at all. Only promoted form or superboss-level\"): the injury rule's one form, its carrier the foes' pass's",

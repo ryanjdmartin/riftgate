@@ -820,7 +820,7 @@
    "id": "webbed",
    "category": "status",
    "name": "Web Bomb",
-   "codex": "Foe status, the mark the Funnel-web's Web Bomb leaves on the foe it hits, the piece's own rule. At the end of its action the web bursts: it and the next foe to act beside it are Suppressed, each a stun like any other (a Numbed foe strips a stack instead, a Warded one turns it). Killed first, it takes its web with it; one the team has already suppressed gains nothing from the burst on itself.",
+   "codex": "Foe status, the mark the Funnel-web's Web Bomb leaves on the foe it hits, the piece's own rule. As the round ends the web bursts: it and the foe beside it are Suppressed, each losing its next turn, each a stun like any other (a Numbed foe strips a stack instead, a Warded one turns it). Every foe still acts in the round the web is laid. Felled before the round ends, it takes its web with it; one the team has stunned this round has just gained its Numbed, so the burst strips a stack of that and stuns nothing.",
    "status": "implemented",
    "design": {
     "holes": "The burst catches the next foe to act beside it in its rank, the one to its left when none stands to its right; on a foe already suppressed it is wasted, and each half feeds the Paradox as the Suppress keyword's does. Named for its piece and its rider no keyword since 15 November (Ryan: \"I don't think the rider needs to be listed as a keyword. It's a unique effect, and the debuff can be renamed \\\"web bomb.\\\"\"); the id is the engine's.",
@@ -828,7 +828,7 @@
      "kind": "debuff",
      "on": "foe",
      "stacks": "No",
-     "lasts": "Until the end of its action this round, when it bursts"
+     "lasts": "Until the round's end, when it bursts"
     }
    }
   },
@@ -1218,7 +1218,7 @@
    "codex": "Tracks, walkers and wheels wade it, a hex costing two of their move; hovercraft and flyers cross it at full pace. Packs wade it as the ground machines do; a winged pack crosses it.",
    "status": "implemented",
    "design": {
-    "holes": "No skirmish condition yet (section 12). Each map shape lays its own water (a river with narrows and tributaries, the flooded fjord, ponds, a pond, the gorge's flooded channels, the city's flooded streets, or none). Since 29 October the horde wades it as the ground machines do, so water slows a crossing and never walls it; the crossing guarantee binds the walls."
+    "holes": "No skirmish condition yet (section 12). Each map shape lays its own water (a fat river with its narrows, a delta's channels, ponds, a pond, the gorge's flooded channels, or none: the city has none). Since 29 October the horde wades it as the ground machines do, so water slows a crossing and never walls it; the crossing guarantee binds the walls."
    }
   },
   {
@@ -1256,6 +1256,16 @@
    "category": "terrain",
    "name": "Cliffs",
    "codex": "A wall of rock. Impassable, except to flyers and winged packs.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
+   "id": "chasms",
+   "category": "terrain",
+   "name": "Chasms",
+   "codex": "A sheer drop. Impassable, except to flyers and winged packs.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1728,7 +1738,7 @@
    "codex": "A blow a foe lands the moment it falls, shown on it by the skull and its number. It lands at once, before anything else, even when the foe was the last one standing, so shield up before the kill rather than after.",
    "status": "implemented",
    "design": {
-    "holes": "Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. The Gargantuan King's Meteor (30 October)."
+    "holes": "Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. The Gargantuan King's Meteor (30 October). A short list of steps since 16 November, on Ryan's mark of 15 November ('foes who, say buff others on death, or debuff on death'): the blow may carry also, and on_death.act is one special in a blow's place with its own also, each an effect a fall may do (Foe.FALL_EFFECTS). No piece carries more than a blow yet, so the codex still says a blow; it and the term's word are his when a carrier lands ('maybe rename to something more interesting')."
    }
   },
   {
@@ -2065,12 +2075,12 @@
    "id": "appropriated",
    "category": "status",
    "name": "Appropriated",
-   "codex": "Foe buff, Gilgamesh's: what he took off a machine. His Collect knocks loose the component a machine's die is showing, Jams it through that machine's next turn, and leaves him Appropriated at its number: a weapon's printed blow, and 1 for anything that is no weapon, a fake. His Borrowed Blade lands that number next round and spends it. One piece at a time. A Purge lowers it, and a Ward on the machine turns the taking away.",
+   "codex": "Ability, Gilgamesh's: the number of the piece he holds. His Collect knocks loose the component a machine's die is showing, Jams it through that machine's next turn, and leaves him Appropriated at its number: a weapon's printed blow, and 1 for anything that is no weapon, a fake. His Borrowed Blade lands that number next round and spends it. One piece at a time, what he takes next replacing it. No Purge reaches it; a Ward on the machine turns the taking away.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan's mark of 15 November on the steal rider: \"Doesn't need to be it's own rider. It grants Jammed on the target, and Gilgamesh gains Appropriated with the value. The ability should be renamed to Collect.\" Built 16 November as the first move written in steps: a blow that jams, then a step of its own (appropriate). The swing is one strike at the piece's number, whatever strikes the piece had, and no keyword of the piece rides it. The steal rider and the foe's own field for what it held left the engine with it. The text is a session's draft.",
+    "holes": "Ryan's mark of 15 November on the steal rider: \"Doesn't need to be it's own rider. It grants Jammed on the target, and Gilgamesh gains Appropriated with the value. The ability should be renamed to Collect.\" Built 16 November as the first move written in steps: a blow that jams, then a step of its own (appropriate). His Ability, a count on his chip that follows what he holds (Ryan, the same day, of the purgeable buff a session had read from \"gains\": \"I think Appropriated is a balance read. Maybe make it his ability, a number that fluctuates depending on what he's currently holding\"). The swing is one strike at the piece's number, whatever strikes the piece had, and no keyword of the piece rides it. The steal rider and the foe's own field for what it held left the engine with it. The text is a session's draft.",
     "table": {
-     "kind": "buff",
+     "kind": "ability",
      "on": "foe",
      "stacks": "No: its number is the piece's, and what it takes next replaces it",
      "lasts": "Until its borrowed swing spends it"

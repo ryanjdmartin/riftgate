@@ -236,8 +236,8 @@ def tally(words):
         if foe.get("parts"):
             t.grant("guarded", "foe", "%s's parts" % whom, "foe", False, foe["id"], whom)
             t.count("parts", "foe", False, name)
-        if isinstance((foe.get("on_death") or {}).get("blow"), dict):
-            t.count("last_act", "foe", False, name)
+        if isinstance((foe.get("on_death") or {}).get("blow"), dict) or isinstance((foe.get("on_death") or {}).get("act"), dict):
+            t.count("last_act", "foe", False, name)   # a fall: a blow, or one special in its place (16 November)
     for status, lays in VIA_STATUS.items():
         for target, on in lays:
             t.grant(target, on, "via %s" % words.get(status, {}).get("name", status), "via")

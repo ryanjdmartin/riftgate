@@ -5,7 +5,9 @@ extends TestCase
 ## should change with tileset"; the grounds "not wildly different like it was", yet "the
 ## different types need different backgrounds"): the painted map dresses every hex by the lead
 ## domain's bleed, each ground a tone of the domain's, in sprites inked in the domain's colours,
-## and a road runs to the roads beside it.
+## and a road runs to the roads beside it; a wall is a piece of a range that joins its look's
+## walls beside it (16 November: "A mountain range should look like a continuous range, not a
+## bunch of isolated chunks").
 
 const DECORATIVE := [BattleMap.Terrain.PLAIN, BattleMap.Terrain.ROAD, BattleMap.Terrain.ROUGH, BattleMap.Terrain.RUINS]
 
@@ -54,31 +56,191 @@ func test_a_domains_grounds_are_one_family() -> void:
 
 
 func test_water_and_the_walls_are_each_domains_own() -> void:
+	# Ryan, 30 October: "walls and water certainly should change with tileset": each domain's
+	# water is its own liquid, and its walls its own rock and its own crags' shape.
 	var waters := {}
-	var walls := {}
+	var rocks := {}
 	for key in DomainGround.TILESETS.keys():
 		var ts: Dictionary = DomainGround.TILESETS[key]
 		var water := DomainGround.fill(str(key), BattleMap.Terrain.WATER).to_html()
 		assert_false(waters.has(water), "%s's water is its own liquid" % key)
 		waters[water] = true
 		assert_true(water != Color(str(ts["ground"])).to_html(), "and not its ground")
-		assert_true(ts["walls"].size() >= 1, "%s has a range for its walls" % key)
-		for name in ts["walls"]:
-			var art := _inked(str(key), str(name))
-			assert_false(walls.has(art), "%s's %s is its own" % [key, name])
-			walls[art] = true
+		assert_true(DomainGround.RANGE_INKS.has(key), "%s has a rock for its walls" % key)
+		var ink: Dictionary = DomainGround.RANGE_INKS[key]
+		var rock := "%s/%s/%s/%s" % [ink["top"], ink["face"], ink["seam"], ink["peak"]]
+		assert_false(rocks.has(rock), "%s's walls are its own (%s)" % [key, rock])
+		rocks[rock] = true
+		assert_true(DomainGround.PEAK_SIZES.has(str(ink["peak"])), "%s's crags stand up a shape that has its sizes" % key)
+
+
+## Both views, each check run in each and the setting put back.
+func _in_both_views(check: Callable) -> void:
+	var was := MapOrient.wall_left
+	for left in [true, false]:
+		MapOrient.wall_left = left
+		check.call("wall at the left" if left else "wall at the bottom")
+	MapOrient.wall_left = was
 
 
 func test_the_walls_stand_out_of_the_top_of_their_hex() -> void:
 	# Ryan, 30 October: "The wall objects on all can be larger, or at least taller. Can they
-	# extend out of the top of their hex"; a range stands on its foot low in the hex, so its
-	# peaks reach past the hex's top corner into the hexes above.
-	var hex := 48.0
-	var reach := hex * (1.0 + DomainGround.WALL_FOOT)
-	for key in DomainGround.TILESETS.keys():
-		for name in DomainGround.TILESETS[key]["walls"]:
-			var tall: float = DomainGround.SPRITES[key][name].size() * DomainGround.scale_of(hex)
-			assert_true(tall > reach, "%s's %s stands out of its hex (%d px from a foot %d px below the top)" % [key, name, tall, reach])
+	# extend out of the top of their hex": a lone crag's tallest peak stands past the top of its
+	# hex into the hexes above, in either view.
+	_in_both_views(func(view: String) -> void:
+		var r := 24.0
+		var top := INF
+		for p in MapOrient.corners(Vector2.ZERO, r):
+			top = minf(top, p.y)
+		for key in DomainGround.TILESETS.keys():
+			var rng := RandomNumberGenerator.new()
+			rng.seed = 11
+			var highest := INF
+			for p in DomainGround._range_props(str(key), "crags", 0, 24.0, 1, rng):
+				if not bool(p["lies"]):
+					highest = minf(highest, (p["at"] as Vector2).y)
+			assert_true(highest < top, "%s's crag stands out of its hex, %s (its top %d, the hex's %d)" % [key, view, highest, top]))
+
+
+## The colour of one pixel of a texture.
+func _px(tex: Texture2D, x: int, y: int) -> Color:
+	return tex.get_image().get_pixel(x, y)
+
+
+## How many pixels of a texture are its range's edge: `c`, the dark ink, beside an empty pixel or
+## the texture's border (a fleck in the same ink, inside, is no edge).
+func _edge(tex: Texture2D, c: Color) -> int:
+	var img := tex.get_image()
+	var w := img.get_width()
+	var h := img.get_height()
+	var n := 0
+	for y in range(h):
+		for x in range(w):
+			var p := img.get_pixel(x, y)
+			if p.a < 0.5 or not p.is_equal_approx(c):
+				continue
+			for d in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
+				var q: Vector2i = Vector2i(x, y) + d
+				if q.x < 0 or q.y < 0 or q.x >= w or q.y >= h or img.get_pixel(q.x, q.y).a < 0.5:
+					n += 1
+					break
+	return n
+
+
+func test_a_wall_joins_the_walls_of_its_look_beside_it() -> void:
+	# A wall's range runs on into the walls of its own look beside it, on the field or in the
+	# scenery, and stops at ground or at another look's wall.
+	var m := BattleMap.flat(9, 12)
+	var at := Hex.offset_to_axial(4, 5)
+	var east := at + Hex.DIRECTIONS[0]
+	var nw := at + Hex.DIRECTIONS[2]
+	var sw := at + Hex.DIRECTIONS[4]
+	for h in [at, east, nw, sw]:
+		m.terrain[h] = BattleMap.Terrain.MOUNTAIN
+		m.wall_look[h] = "cliffs"
+	m.wall_look[sw] = "towers"
+	assert_eq(DomainGround.wall_links(m, at), (1 << 0) | (1 << 2), "joined to the cliffs east and north-west, not the towers south-west")
+	assert_eq(DomainGround.wall_links(m, sw), 0, "and the towers stand alone")
+	var edge := Hex.offset_to_axial(0, 5)
+	var past := edge + Hex.DIRECTIONS[3]
+	m.terrain[edge] = BattleMap.Terrain.MOUNTAIN
+	m.wall_look[edge] = "cliffs"
+	m.margin[past] = BattleMap.Terrain.MOUNTAIN
+	m.wall_look[past] = "cliffs"
+	assert_eq(DomainGround.wall_links(m, edge) & (1 << 3), 1 << 3, "a field's wall joins the scenery's past its edge")
+
+
+func test_a_range_is_edged_only_where_it_ends() -> void:
+	# A wall's base fills its hex and joins its neighbours' with no edge between: a hex joined
+	# on every side has no dark edge and no face at all; one standing alone is edged all round
+	# and faced only on the sides the view sees, below its top; one joined on a side has less
+	# edge than one alone. In every domain, every look, either view.
+	_in_both_views(func(view: String) -> void:
+		for key in DomainGround.TILESETS.keys():
+			var ink: Dictionary = DomainGround._range_inks(str(key))
+			for look in DomainGround.RANGE_LOOKS.keys():
+				var whole: Dictionary = DomainGround._range_base(str(key), look, 63, 24.0, 1)
+				var alone: Dictionary = DomainGround._range_base(str(key), look, 0, 24.0, 1)
+				var one: Dictionary = DomainGround._range_base(str(key), look, 1 << 1, 24.0, 1)
+				var tag := "%s's %s, %s" % [key, look, view]
+				assert_eq(_edge(whole["tex"], ink["out"]), 0, "%s: joined all round, no edge" % tag)
+				var around := _edge(alone["tex"], ink["out"])
+				assert_true(around > 40, "%s: alone, edged all round (%d)" % [tag, around])
+				assert_true(_edge(one["tex"], ink["out"]) < around, "%s: joined on a side, less edge than alone" % tag)
+				# The faces lie below the top: the top's middle is the top's colour.
+				var at: Vector2 = alone["at"]
+				var lift := int(DomainGround.RANGE_LOOKS[look]["lift"])
+				var mid := _px(alone["tex"], int(-at.x), int(-at.y) - lift)
+				var top_ink: Color = ink[str(DomainGround.RANGE_LOOKS[look]["top"])]
+				if top_ink == Color(str(DomainGround.TILESETS[key]["ground"])):
+					top_ink = ink["top"]
+				assert_true(mid.is_equal_approx(top_ink) or mid.is_equal_approx(ink[str(DomainGround.RANGE_LOOKS[look]["fleck"])]) or mid.is_equal_approx(ink["seam"]), "%s: its top in the middle (%s)" % [tag, mid.to_html()]))
+
+
+func test_a_crags_peaks_run_on_across_its_joined_hexes() -> void:
+	# A ridge runs on: a crag joined to its neighbour stands a peak at the saddle on the edge
+	# between them (the hex on the edge's first three directions' side standing it), as well as
+	# its tallest about its middle.
+	_in_both_views(func(view: String) -> void:
+		var r := 24.0
+		var lift := float(DomainGround.RANGE_LOOKS["crags"]["lift"])
+		for d in range(3):
+			var rng := RandomNumberGenerator.new()
+			rng.seed = 5 + d
+			var saddle := MapOrient.to_pixel(Hex.DIRECTIONS[d], r) * 0.5 - Vector2(0.0, lift)
+			var near := INF
+			for p in DomainGround._range_props("plains", "crags", 1 << d, r, 1, rng):
+				if not bool(p["lies"]):
+					near = minf(near, (p["foot"] as Vector2).distance_to(saddle))
+			assert_true(near <= 4.0, "a peak stands at the saddle toward direction %d, %s (%.1f away)" % [d, view, near]))
+
+
+func test_the_painted_mesas_and_towers_are_the_reconstructions_own_pieces() -> void:
+	# The badlands' mesas and the city's towers stand in the painting where the 3D stands them, the
+	# same pieces drawn from the same seed (Ryan, 16 November: "In Badlands, the connected mesas of
+	# the painted and the rock features of the 3D don't really mesh"), each piece's foot where the
+	# camera sees it, in either view.
+	_in_both_views(func(view: String) -> void:
+		var hex_px := 48.0
+		var s := DomainGround.scale_of(hex_px)
+		var k := (hex_px / Map3D.HEX_WORLD) / float(s)
+		var sp := sin(deg_to_rad(Map3D.PITCH))
+		for look in ["mesas", "towers"]:
+			for seed_value in range(6):
+				var rng := RandomNumberGenerator.new()
+				rng.seed = seed_value
+				var pieces := Map3D.wall_pieces(look, rng)
+				rng.seed = seed_value
+				var stands: Array = []
+				for p in DomainGround._range_props("plains", look, 0, hex_px, s, rng):
+					if not bool(p["lies"]):
+						stands.append(p)
+				assert_eq(stands.size(), pieces.size(), "%s seed %d, %s: a piece in the painting for every piece in 3D" % [look, seed_value, view])
+				for i in range(mini(stands.size(), pieces.size())):
+					var want := Vector2(float(pieces[i]["x"]) * k, float(pieces[i]["z"]) * sp * k)
+					assert_true((stands[i]["foot"] as Vector2).distance_to(want) < 0.1, "%s seed %d, %s: piece %d stands where the 3D stands it" % [look, seed_value, view, i]))
+
+
+func test_a_city_hex_holds_one_or_two_great_towers() -> void:
+	# Fewer, larger buildings (Ryan, 16 November: "pull the scale back a bit and make the city
+	# relatively larger than the machines. So less buildings in each hex, but they're larger"): a
+	# hex's towers are one or two, the great one half the hex across at least, and every tower
+	# stands taller than a machine's hex is wide.
+	var hex_across := Map3D.HEX_WORLD * sqrt(3.0)
+	for seed_value in range(40):
+		var rng := RandomNumberGenerator.new()
+		rng.seed = seed_value
+		var towers := {}   # a tower's middle -> [its half width at the foot, its top]
+		for p in Map3D.wall_pieces("towers", rng):
+			var at := Vector2(float(p["x"]), float(p["z"]))
+			var was: Array = towers.get(at, [0.0, 0.0])
+			towers[at] = [maxf(float(was[0]), float(p["r0"])), maxf(float(was[1]), float(p["to"]))]
+		assert_true(towers.size() >= 1 and towers.size() <= 2, "seed %d: one or two towers a hex: %d" % [seed_value, towers.size()])
+		var great := 0.0
+		for t in towers.values():
+			great = maxf(great, float(t[0]))
+			assert_true(float(t[1]) > hex_across * 0.7, "seed %d: a tower taller than a machine's hex is wide (%.0f)" % [seed_value, float(t[1])])
+		assert_true(great * 2.0 >= hex_across * 0.45, "seed %d: the great tower half the hex across or so (%.0f of %.0f)" % [seed_value, great * 2.0, hex_across])
 
 
 func test_every_sprite_is_inked_and_every_name_drawn() -> void:
@@ -97,7 +259,9 @@ func test_every_sprite_is_inked_and_every_name_drawn() -> void:
 		for ground in ["plain", "rough", "ruins"]:
 			for e in ts[ground]:
 				named.append(e[0])
-		named.append_array(ts["walls"] + ts["ripples"] + ts["flat"] + ts["fixed"])
+		named.append_array(ts["ripples"] + ts["flat"] + ts["fixed"] + DomainGround.RANGE_INKS[key]["lies"])
+		if DomainGround.RANGE_INKS[key]["peak"] == "volcanic":
+			named.append("steam")   # a crater breathes it (DomainGround._draw_range_prop)
 		if ts.has("road_stone"):
 			named.append(ts["road_stone"])
 		for host in DomainGround.ATTACH.get(key, {}).keys():
@@ -114,10 +278,25 @@ func test_every_colour_sits_on_the_posterize_grid() -> void:
 		var ts: Dictionary = DomainGround.TILESETS[key]
 		var colours: Array = [ts["ground"], ts["grid"], ts["rim"]]
 		colours.append_array(ts["grounds"].values() + ts["specks"] + ts["road"] + DomainGround.INKS[key].values())
+		for role in DomainGround.RANGE_COLOURS:
+			colours.append(DomainGround.RANGE_INKS[key][role])
+		colours.append_array(DomainGround.BANK_INKS[key].values())
 		for h in colours:
 			var c := Color(str(h))
 			for ch in [c.r8, c.g8, c.b8]:
 				assert_eq(int(ch) % 51, 0, "%s's #%s is on the grid" % [key, h])
+
+
+func test_a_ranges_inks_are_its_domains_own() -> void:
+	# A wall's rock is inked in colours its domain's sprites already wear (INKS), so no colour the
+	# colourblind checks never saw comes in with the ranges (docs/measurements.md, 30 October).
+	for key in DomainGround.TILESETS.keys():
+		var inks := {}
+		for v in DomainGround.INKS[key].values():
+			inks[Color(str(v)).to_html(false)] = true
+		for role in DomainGround.RANGE_COLOURS:
+			var h := str(DomainGround.RANGE_INKS[key][role])
+			assert_true(inks.has(Color(h).to_html(false)), "%s's %s #%s is one of its inks" % [key, role, h])
 
 
 func test_a_road_runs_to_the_roads_beside_it() -> void:
@@ -192,3 +371,104 @@ func test_no_domain_wears_the_enemys_violet() -> void:
 			var c := Color(str(hex))
 			var violet := c.h * 360.0 >= 245.0 and c.h * 360.0 <= 300.0 and c.s > 0.15 and c.v > 0.1
 			assert_false(violet, "%s paints no violet (%s)" % [key, hex])
+
+
+func test_the_painting_at_heights_stands_each_hex_at_its_columns_height() -> void:
+	# The painting at the reconstruction's heights (Ryan, 16 November: "Lock the painted world height
+	# change, its subtle but things make more sense"): a hex's top stands where the reconstruction's
+	# column puts it on screen (Map3D: its relief step, water sunk), within half a design pixel, on
+	# the design pixels' grid.
+	var map := BattleMap.generate(20, 12, 7, "delta")   # water sunk and the scenery rising
+	var hex_px := 48.0
+	var s := DomainGround.scale_of(hex_px)
+	var seen := {}
+	for h in map.all_hexes() + map.margin.keys():
+		var e: int = map.elevation.get(h, 0)
+		var units: float = Map3D.WATER_DROP if e < 0 else float(e) * Map3D.STEP
+		var want := units * cos(deg_to_rad(Map3D.PITCH)) * hex_px / Map3D.HEX_WORLD
+		var lift := DomainGround.lift_of(map, h, hex_px)
+		assert_true(absf(float(lift) - want) <= float(s) * 0.5 + 0.001, "the hex at %s stands within half a design pixel of its column (%d, %.1f)" % [h, lift, want])
+		assert_eq(lift % s, 0, "on the design pixels' grid")
+		seen[e] = true
+	assert_true(seen.has(-1) and seen.has(0) and seen.size() > 2, "the map has water and a rise to read")
+
+
+func test_a_raised_hex_has_a_bank_where_it_drops_toward_the_view() -> void:
+	# A bank under a raised hex on each side the view sees where its neighbour is lower, none where
+	# nothing drops or the side faces away, in either view; and its inks are the domain's own.
+	_in_both_views(func(view: String) -> void:
+		var edges := DomainGround._hex_edges(24.0)
+		for key in DomainGround.TILESETS.keys():
+			var flat := PackedInt32Array([4, 4, 4, 4, 4, 4])
+			assert_true(DomainGround._column_faces(str(key), 4, flat, 48.0, 2, 0).is_empty(), "%s: no bank where nothing drops, %s" % [key, view])
+			for k in range(6):
+				var drops := PackedInt32Array([4, 4, 4, 4, 4, 4])
+				drops[k] = 0
+				var banks := DomainGround._column_faces(str(key), 4, drops, 48.0, 2, 0)
+				var n: Vector2 = edges[k]["n"]
+				var seen := n.y >= 0.2 and absf((edges[k]["b"] as Vector2).x - (edges[k]["a"] as Vector2).x) > 0.01
+				assert_eq(not banks.is_empty(), seen, "%s: a bank on side %d only where the view sees it, %s" % [key, k, view])
+			var down := PackedInt32Array([0, 0, 0, 0, 0, 0])
+			var img := (DomainGround._column_faces(str(key), 4, down, 48.0, 2, 1)["tex"] as Texture2D).get_image()
+			var inks := {}
+			for v in DomainGround.INKS[key].values():
+				inks[Color(str(v)).to_html(false)] = true
+			for y in range(img.get_height()):
+				for x in range(img.get_width()):
+					var p := img.get_pixel(x, y)
+					if p.a > 0.5:
+						assert_true(inks.has(p.to_html(false)), "%s's banks are inked in its own colours (#%s)" % [key, p.to_html(false)]))
+
+
+## A flooded stretch spills into a chasm beside it (Ryan, 16 November: "Is there any way to get a
+## water tile on Gorge to waterfall if it touches a chasm?"): the water's bank on that side, where
+## the view sees it, is its domain's liquid falling rather than rock, in the tileset's own colours,
+## its foam a step further down in the painting's second frame.
+func test_water_beside_a_chasm_falls_into_it() -> void:
+	_in_both_views(func(view: String) -> void:
+		var map := BattleMap.flat(9, 12)
+		var w := Hex.offset_to_axial(4, 5)
+		var edges := DomainGround._hex_edges(24.0)
+		var k := -1
+		for i in range(6):
+			var n: Vector2 = edges[i]["n"]
+			if n.y >= 0.5:
+				k = i
+				break
+		assert_true(k >= 0, "a side the view sees, %s" % view)
+		var below: Vector2i = w + Hex.DIRECTIONS[int(edges[k]["dir"])]
+		map.terrain[w] = BattleMap.Terrain.WATER
+		map.elevation[w] = -1
+		map.terrain[below] = BattleMap.Terrain.MOUNTAIN
+		map.wall_look[below] = "chasms"
+		map.elevation[below] = -2
+		var col := DomainGround.column(map, w, Vector2.ZERO, 48.0, true, Color.WHITE)
+		assert_eq(int(col.get("falls", 0)), 1 << k, "the water's side on the chasm falls, %s" % view)
+		var s := DomainGround.scale_of(48.0)
+		var drops := PackedInt32Array()
+		for d in col["drops"]:
+			drops.append(int(d) / s)
+		for key in DomainGround.TILESETS.keys():
+			var liquid: Dictionary = DomainGround.LIQUIDS[key]
+			var inks := {}
+			for v in DomainGround.INKS[key].values():
+				inks[Color(str(v)).to_html(false)] = true
+			for v in [liquid["body"], liquid["rim"], liquid["deep"]] + (liquid["glints"] as Array):
+				inks[Color(str(v)).to_html(false)] = true
+			var frames: Array = []
+			for frame in [0, 1]:
+				var faces := DomainGround._column_faces(str(key), int(col["lift"]) / s, drops, 48.0, s, 0, int(col["falls"]), frame)
+				assert_false(faces.is_empty(), "%s: a bank into the chasm, %s" % [key, view])
+				frames.append((faces["tex"] as Texture2D).get_image())
+			var img: Image = frames[0]
+			var body := 0
+			for y in range(img.get_height()):
+				for x in range(img.get_width()):
+					var p := img.get_pixel(x, y)
+					if p.a <= 0.5:
+						continue
+					assert_true(inks.has(p.to_html(false)), "%s: the fall in its own colours (#%s), %s" % [key, p.to_html(false), view])
+					body += 1 if p.to_html(false) == Color(str(liquid["body"])).to_html(false) else 0
+			assert_true(body > 0, "%s: its liquid falling, %s" % [key, view])
+			assert_true((frames[0] as Image).get_data() != (frames[1] as Image).get_data(), "%s: its foam moving between the frames, %s" % [key, view]))
+

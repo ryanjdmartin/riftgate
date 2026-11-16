@@ -132,7 +132,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   the die's own drawing (every main mark and what it holds, whom a piece reaches, the rest of a face's marks);
   `hero_shot.gd` renders one unit large; `fit_sheet.gd` renders every
   machine wearing each silhouette class on all its mounts, one sheet; `tileset_shot.gd` draws every
-  domain's tileset side by side, posterized as the map shows it; `perf_probe.gd` measures
+  domain's tileset side by side, a joined range of each look of wall among them, posterized as the
+  map shows it, in the view RIFTGATE_MAP_VIEW names; `perf_probe.gd` measures
   the battle map's or the skirmish's frame cost and draw calls; `lowforge/` builds the
   ally units by code from a brief (`models_low.py`, one function per modelled chassis, named by its id; a chassis without one
   draws the Badger's) in the
@@ -188,7 +189,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   design-session briefs (`briefs/`, with a README that says what each waits on), the economy
   pass (`economy_pass.md`), the formation pass (`formation_proposal.md`: its grids landed in `content/factions.json` on
   10 November, re-cut to the roles, and its tool retired with them; kept for the bosses' stat
-  blocks, its section 6, and the flankers' slate and bench, its section 13), the refit pass's brief (`briefs/refit_pass.md`: the resource model Ryan set on 9 November, the formation pass folded into it), the locked pieces' footing (`locked_pieces_proposal.md`: Ryan's direction of 10 November, glue kept locked and a bought level that lifts the whole machine, waiting on his marks), the vocabulary pass (`vocabulary_pass_proposal.md`, 14 and 15 November, five rounds: every rider, cost, buff and debuff on both sides read against the reboot and the yardstick for the basics, our riders measured on the vanilla and the foes' on the standard blow, the vanilla one under the standard foe or two, armour against the hit sizes, the foes' Burn as a status that erodes on both sides, the Barrier unwound, what still grants shield or cooling, the tier-one bench and the approach to the defence side, his third round's calls with Ward read in the Barrier basic's slot, and his fourth and fifth rounds': Exposed for the foes as one rule, Breach cut on both sides, and where a piece that ignores armour may sit; with `vocabulary_table.md`, every rider, buff and debuff in one table by name, type, effect and where it exists, which he marks on its page; waiting on his marks), the bosses' and elites' slate (`bosses_proposal.md`), the heroes'
+  blocks, its section 6, and the flankers' slate and bench, its section 13), the refit pass's brief (`briefs/refit_pass.md`: the resource model Ryan set on 9 November, the formation pass folded into it), the locked pieces' footing (`locked_pieces_proposal.md`: Ryan's direction of 10 November, glue kept locked and a bought level that lifts the whole machine, waiting on his marks), the foes' targeting audit (`targeting_proposal.md`, 16 November, on Ryan's "Clean that up": the rules as they run in one place, read as a system, the leftovers cut that day, and five calls of his with leans, nothing of them built), the vocabulary pass (`vocabulary_pass_proposal.md`, 14 and 15 November, five rounds: every rider, cost, buff and debuff on both sides read against the reboot and the yardstick for the basics, our riders measured on the vanilla and the foes' on the standard blow, the vanilla one under the standard foe or two, armour against the hit sizes, the foes' Burn as a status that erodes on both sides, the Barrier unwound, what still grants shield or cooling, the tier-one bench and the approach to the defence side, his third round's calls with Ward read in the Barrier basic's slot, and his fourth and fifth rounds': Exposed for the foes as one rule, Breach cut on both sides, and where a piece that ignores armour may sit; with `vocabulary_table.md`, every rider, buff and debuff in one table by name, type, effect and where it exists, which he marks on its page; waiting on his marks), the bosses' and elites' slate (`bosses_proposal.md`), the heroes'
   pass beyond Final Fantasy (`heroes_proposal.md`), the mechanics audit (`mechanics_audit.md`),
   the skirmish code audit (`skirmish_audit.md`: exceptions, duplicates and dead code, its
   questions and its order of work) and the roster analysis (`roster_analysis.md`, published as a page by
@@ -279,7 +280,7 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # Corrupted a stack every overheat; the driver's too),
 # --shield-ahead (the shield persona: a shield left standing valued by the blows it turns next round,
 # where the rungs bank it at a fifth of a point; the driver's too, for the support ladders),
-# --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
+# --json out.json for every cell;
 # --rows badger,team runs only those rows; --team badger,kite (repeatable) adds a row of exactly those machines,
 # any number, so pairs and fours read beside the trios; --module tactical_databank runs every row beside its
 # twin with that module fitted to every machine, the differences in a section of their own; for prices, --bump armour:5
@@ -343,7 +344,7 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/balance.gd --
 # the phases each way of moving takes to the rift at move 3 and its reach after two phases,
 # the relief (the steps, the lone hexes, a ring's jogs), then every map shape compared on as
 # many seeds; written to docs/map_survey.md (about fifteen minutes). --type KIND
-# (steppe, the baseline, or river, fjord, badlands, city, gorge: BattleMap.KINDS) for the detailed report, --seeds N,
+# (steppe, the baseline, or river, delta, badlands, city, gorge: BattleMap.KINDS) for the detailed report, --seeds N,
 # --move M, --w/--h (--width/--height) for another size, 20 by 12 the long wall's field (the default is
 # the old field's, for the old reads); --show SEED prints one map as text.
 perl -e 'alarm 2400; exec @ARGV' godot --headless --path . -s tools/map_survey.gd -- --seeds 200
@@ -512,6 +513,10 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # to judge it running.
 # RIFTGATE_PULSE_DEBUG=1 (any run) keeps END TURN pulsing, on the map and in a fight, to judge it
 # running (it pulses on its own once nothing else is left to do).
+# RIFTGATE_DRAIN_DEBUG=1 (any skirmish) keeps a drain announced on the REROLL button ("NEXT -1"
+# under its count, rings closing in on its edge) and flashes it every three seconds as a drain
+# landing does, to judge them running; RIFTGATE_FOES=mandragora:2 fields the real thing, the
+# round after a Scream wearing "DRAINED -1".
 # RIFTGATE_MAP_VIEW=left|bottom (any run) turns the battle map for the run without touching the saved
 # MAP VIEW setting (MapOrient): the wall at the left with the rift at the right (flat-top, the default),
 # or at the bottom with the rift at the top; the battle screen's `queue` pose (two orders onto two
@@ -519,7 +524,8 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # RIFTGATE_BLEED_DEBUG=1 (any run) gives the whole field to the painted world, to judge a domain's
 # tileset in place (RIFTGATE_FACTION=meadow|waste|marsh|peak picks the domain on the standalone
 # screen); `xvfb-run -a godot --rendering-method gl_compatibility --path . -s tools/tileset_shot.gd
-# -- tilesets.png [frame]` draws all four side by side.
+# -- tilesets.png [frame]` draws all four side by side, with a joined range of each look of wall
+# (crags, mesas, towers, cliffs, chasms), in the view RIFTGATE_MAP_VIEW=left|bottom names.
 # RIFTGATE_PREVIEW_DEBUG=1 (any skirmish) puts the pulsing preview chip of a rally on its way on
 # every foe showing a blow (+1 where none is coming, its number unchanged), to judge the pulse
 # running; RIFTGATE_FOES=wolf:4 fields the real thing, howls lifting the bites after them.

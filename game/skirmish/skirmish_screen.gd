@@ -234,6 +234,9 @@ func _process(delta: float) -> void:
 	if HIT_DEBUG and _fight_t - _hit_debug_at > 1.5 and not _mech_views.is_empty():
 		_hit_debug_at = _fight_t
 		_hit_debug()
+	if DRAIN_DEBUG and _reroll_btn != null and _fight_t - _drain_debug_at > 3.0:
+		_drain_debug_at = _fight_t
+		_reroll_btn.strike()   # the landing's flash, every three seconds beside the standing rings
 	if _undo_waiting and Time.get_ticks_msec() >= _undo_from:
 		_undo_waiting = false
 		_refresh_undo()   # the spend's blow has played: the undo opens
@@ -1322,6 +1325,8 @@ func _refresh(save: bool = true) -> void:
 	_reroll_btn.badge = "×%d" % sk.rerolls_left if gained <= 0 else "×%d+%d" % [sk.rerolls_left, gained]
 	_reroll_btn.set_granting(gained > 0)
 	_reroll_btn.set_enabled(assigning and sk.can_reroll() and not _reroll_indices().is_empty())
+	var note := drain_note(sk, _drain_landed, _drain_pending)
+	_reroll_btn.set_draining(str(note[0]), bool(note[1]))
 	if _reboot_btn != null:
 		var may := assigning and _pending.is_empty() and _any_may_reboot()
 		if _drag_from >= 0:
@@ -1628,16 +1633,32 @@ func _foe_abilities(foe: Foe) -> Array:
 		# The Vampire Lord's (Ryan, 15 November: "This should be moved to an ability on the unit
 		# since it's on every attack. Like the Nob"): the rule its every blow plays by.
 		rows.append([Terms.glyph("drain"), "", "Ability, Drain: every blow it lands heals it by what the blow took from the hull", Terms.colour("drain"), "ability"])
+	if foe.takes() or Effects.has(foe, "appropriated"):
+		# Gilgamesh's (Ryan, 16 November: "make it his ability, a number that fluctuates depending
+		# on what he's currently holding"): the rule he plays by from the fight's start, its
+		# number the piece he holds and nothing while he holds none. No Purge reaches it.
+		var taken := Effects.stacks_of(foe, "appropriated")
+		var word := str(Effects.STATUS["appropriated"]["name"])
+		rows.append([_foe_glyph("appropriated"), str(taken) if taken > 0 else "",
+			("Ability, %s %d: its borrowed swing lands the number of the piece it took, and spends it" % [word, taken]) if taken > 0
+			else "Ability, %s: it takes the piece a machine shows, and its borrowed swing lands that piece's number" % word,
+			_foe_chip_colour("appropriated"), "ability"])
 	if Effects.has(foe, "guarded"):
 		# A boss in parts (15 October): the lock while its parts stand, so the zero its die
 		# shows has a reason on the foe itself.
 		rows.append(["lock", "", "Ability, Guarded: no damage while its parts stand", _foe_chip_colour("guarded"), "ability"])
 	if foe.on_death.has("summon"):
 		rows.append(["splits", "", "Ability: it splits in two when it falls", Palette.ENEMY, "ability"])
-	if not foe.last_act().is_empty():
-		# A last act (15 October): the skull and what it lands the moment the foe falls.
-		var la := foe.last_act()
-		rows.append(["skull", str(foe.damage_of(la)), "Ability, Last Act: %s, %d%s" % [str(la.get("name", "")), foe.damage_of(la), " at Every Machine" if Array(la.get("keywords", [])).has("all") else ""], Palette.ENEMY, "ability"])
+	if not foe.fall().is_empty():
+		# A last act (15 October): the skull and what the foe does the moment it falls, its
+		# blow's number where it strikes; a fall that only curses or blesses says its name (16
+		# November: a fall is a short list of steps), and the foe's own page says the rest.
+		var la := foe.fall()
+		var strikes := Foe.is_attack_action(la)
+		var said := "Ability, Last Act: %s" % str(la.get("name", ""))
+		if strikes:
+			said += ", %d%s" % [foe.damage_of(la), " at Every Machine" if Array(la.get("keywords", [])).has("all") else ""]
+		rows.append(["skull", str(foe.damage_of(la)) if strikes else "", said, Palette.ENEMY, "ability"])
 	if Effects.has(foe, "golden"):
 		# A golden rage (4 November): the add it carries, the rounds left and the damage that
 		# breaks it, so burst-or-shield reads off the chip.
@@ -1690,7 +1711,7 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(status_row("cryoed", "cryo", str(cryo), "Cryo ×%d" % cryo, _foe_chip_colour("cryoed")))
 	if Effects.has(foe, "webbed"):
 		# The funnel-web's web (18 October): the chip points at the neighbour the burst catches
-		# (> the right-hand one, which acts after it; < the left-hand one, which has acted).
+		# as the round ends (> the right-hand one; < the left-hand one, with none to its right).
 		var caught := sk.web_catch(foe)
 		var mark := "" if caught == null else (">" if caught.column > foe.column else "<")
 		rows.append(status_row("webbed", "web", mark, "Web Bomb" + ("" if caught == null else ": bursts on %s too" % caught.display_name), _foe_chip_colour("webbed")))
@@ -1741,11 +1762,6 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(status_row("kindled", "overcharge", "+%d" % maxi(1, coming), "Empowered +%d on its way, from %s" % [maxi(1, coming), from], _foe_chip_colour("kindled"), "preview"))
 	if Effects.has(foe, "risen"):
 		rows.append(status_row("risen", "star", "", str(Effects.STATUS["risen"]["name"]), _foe_chip_colour("risen")))
-	var taken := Effects.stacks_of(foe, "appropriated")
-	if taken > 0:
-		# What it took off a machine (Gilgamesh's; Appropriated since 16 November): the chip is
-		# the number its borrowed swing will land, and a Purge lowers it.
-		rows.append(status_row("appropriated", _foe_glyph("appropriated"), str(taken), "%s %d: its borrowed swing lands that number, and spends it" % [str(Effects.STATUS["appropriated"]["name"]), taken], _foe_chip_colour("appropriated")))
 	# The four buffs a foe's specials grant (28 October), on the machines' chips: Primed's lit
 	# flame, the shield with its wall or its struck ring, the heart regrowing.
 	var primed := Effects.stacks_of(foe, "primed")
@@ -3350,6 +3366,8 @@ func _land_last_act(act: Dictionary) -> void:
 		if int(mi) >= 0 and int(mi) < _mech_views.size():
 			_shown_gauges.erase(int(mi))
 			_animate_hit(_mech_views[int(mi)], 0.1)
+	if int(act.get("drained", 0)) > 0:
+		_reroll_btn.strike()   # a fall that takes a reroll strikes the button as a drain landing does
 	_refresh(false)
 
 
@@ -3635,7 +3653,7 @@ func _before_enemy_turn() -> Dictionary:
 	var gauges: Array = []
 	for ms in sk.mechs:
 		gauges.append([ms.unit.shield, ms.unit.hull])
-	return {"views": views, "gauges": gauges}
+	return {"views": views, "gauges": gauges, "debt": sk.reroll_debt}   # and the rerolls a fall took in the player's own turn
 
 
 ## Seconds between the enemy's blows: the ENEMY PACE setting divides the beat, so its top
@@ -3651,12 +3669,16 @@ func _enemy_beat() -> float:
 func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	var steps := _replay_steps(before)
 	var hits: Array = []
+	_drain_landed = int(before.get("debt", 0))   # what a fall took before the turn ended has landed already
+	_drain_pending = 0
 	for st in steps:
 		if not (st["blow"] as Array).is_empty():
 			hits.append(st["blow"])
 	if not is_inside_tree() or (steps.is_empty() and sk.overheats.is_empty() and sk.ablations.is_empty()):
 		then.call()
 		return
+	for st in steps:
+		_drain_pending += int(st.get("drain", 0))   # the note stands, its rings closing, until each has landed
 	# The burn is the end of the player's own turn (11 October), and so is what a machine's
 	# Ablating takes (15 November): both land before the phase turns over to the enemy.
 	var own_end: bool = not sk.overheats.is_empty() or not sk.ablations.is_empty()
@@ -3720,6 +3742,9 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 		if not (st["blow"] as Array).is_empty():
 			tw.tween_callback(_land_blow.bind(st["blow"]))
 			tw.tween_interval(beat - lead if switching else beat)
+		if int(st.get("drain", 0)) > 0:
+			tw.tween_callback(_land_drain.bind(int(st["drain"])))
+			tw.tween_interval(beat * 0.5)
 		if switching:
 			# The next foe lights while this one's move settles, its lead out of the beat.
 			tw.tween_callback(_spotlight.bind(before["views"].get(steps[k + 1]["foe"])))
@@ -3731,6 +3756,8 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	tw.tween_interval(0.25)
 	tw.tween_callback(func() -> void:
 		_replay_shade.visible = false
+		_drain_landed = 0   # the next round's own note takes over: what the drains took of it (Skirmish.drained)
+		_drain_pending = 0
 		then.call())
 
 
@@ -3756,10 +3783,15 @@ func _replay_steps(before: Dictionary) -> Array:
 	for sp in sk.turn_specials:
 		steps.append({"seq": int(sp.get("seq", 0)), "foe": sp["foe"], "name": str(sp.get("name", "")),
 			"named": true, "announce": "", "blow": []})
+	for dr in sk.turn_drains:
+		# A drain landing, its own beat after its move is named: the REROLL button is struck.
+		steps.append({"seq": int(dr.get("seq", 0)), "foe": dr["foe"], "name": "", "named": false, "announce": "", "blow": [], "drain": int(dr.get("value", 0))})
 	steps.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a["seq"]) < int(b["seq"]))
 	var last_foe = null
 	var last_name := ""
 	for st in steps:
+		if st.has("drain"):
+			continue   # a landing, no move of its own: the names either side of it read as one
 		if bool(st["named"]) and not (st["foe"] == last_foe and str(st["name"]) == last_name):
 			st["announce"] = str(st["name"])
 		last_foe = st["foe"]
@@ -3768,6 +3800,49 @@ func _replay_steps(before: Dictionary) -> Array:
 
 
 var _lit: UnitView = null   # the foe lit as it acts in the enemy's turn
+var _drain_landed := 0    # the rerolls the drains have taken so far in the enemy's turn being replayed
+var _drain_pending := 0   # and those still to land in it
+
+
+## RIFTGATE_DRAIN_DEBUG=1: the REROLL button wears a drain announced the whole fight, its rings
+## closing in, and flashes as if one landed every three seconds, to judge the effect running.
+static var DRAIN_DEBUG := OS.get_environment("RIFTGATE_DRAIN_DEBUG") == "1"
+var _drain_debug_at := 0.0
+
+
+## What the REROLL button says of a drain (Ryan, 15 November: "There should be an effect on the
+## reroll button when this happens"), as [the note, whether any of it is only announced]. While
+## a foe announces a drain, what next round stands to lose, never more than a round gives, and
+## the loss can still be stopped (a kill, a Suppress, a Disrupt): announced. In the enemy's
+## turn's replay the same words stand, announced until the last drain has landed (`landed` and
+## `pending`, as the replay reaches them), then settled. In a round a drain took from, with
+## none announced, what it took.
+static func drain_note(sk: Skirmish, landed: int = 0, pending: int = 0) -> Array:
+	if sk == null:
+		return ["", false]
+	if DRAIN_DEBUG:
+		return ["NEXT -1", true]
+	if landed + pending > 0:
+		return ["NEXT -%d" % mini(landed + pending, Skirmish.REROLLS_PER_ROUND), pending > 0]
+	# What a fall has taken already this turn (a drain as a foe falls lands in the player's own
+	# turn), and what the foes still standing announce.
+	var owed := sk.reroll_debt if sk.state == Skirmish.State.ASSIGN else 0
+	var coming := sk.drain_announced(null) if sk.state == Skirmish.State.ASSIGN else 0
+	if owed + coming > 0:
+		return ["NEXT -%d" % mini(owed + coming, Skirmish.REROLLS_PER_ROUND), coming > 0]
+	if sk.drained > 0:
+		return ["DRAINED -%d" % sk.drained, false]
+	return ["", false]
+
+
+## A drain lands in the enemy's turn's replay: the button is struck, and its note settles once
+## the last has landed.
+func _land_drain(n: int) -> void:
+	_drain_landed += n
+	_drain_pending = maxi(0, _drain_pending - n)
+	_reroll_btn.strike()
+	var landed_note := drain_note(sk, _drain_landed, _drain_pending)
+	_reroll_btn.set_draining(str(landed_note[0]), bool(landed_note[1]))
 
 
 ## Light `v` as the foe acting now, and put out the one lit before; null puts it out.

@@ -35,6 +35,16 @@ var pulse: bool = false
 ## it pulses as the next thing to press does, whether or not it may be pressed now, since a team
 ## with no reroll left is the one that most wants to see it. Set with set_granting.
 var granting: bool = false
+## What this button counts is being taken (a foe's drain on the team's rerolls: Ryan, 15
+## November, "There should be an effect on the reroll button when this happens"): a note under
+## its badge says what and when, and while the loss is only announced rings close in on the
+## edge, the grant's own rings run backwards, so the two are told apart by motion as well as
+## by the note's sign and colour. Set with set_draining; strike() flashes it as a loss lands.
+var note: String = ""
+var note_size: int = 13
+var draining: bool = false
+var _strike_t := -1.0   # seconds since a loss landed, -1 with none to show
+const STRIKE_SPAN := 0.45
 var _pulse_t := 0.0
 const PULSE_RATE := 1.1   # rings a second
 ## RIFTGATE_PULSE_DEBUG=1: every button asked whether to pulse pulses, to judge it running.
@@ -69,7 +79,11 @@ func set_enabled(on: bool) -> void:
 
 
 func _ready() -> void:
-	set_process(pulse or granting)   # a script with _process processes from the start; only a pulse needs it
+	set_process(_animates())   # a script with _process processes from the start; only a pulse needs it
+
+
+func _animates() -> bool:
+	return pulse or granting or draining or _strike_t >= 0.0
 
 
 func set_pulse(on: bool) -> void:
@@ -78,7 +92,7 @@ func set_pulse(on: bool) -> void:
 		return
 	pulse = on
 	_pulse_t = 0.0
-	set_process(pulse or granting)
+	set_process(_animates())
 	queue_redraw()
 
 
@@ -87,12 +101,37 @@ func set_granting(on: bool) -> void:
 		return
 	granting = on
 	_pulse_t = 0.0
-	set_process(pulse or granting)
+	set_process(_animates())
+	queue_redraw()
+
+
+## The note under the badge, and whether the loss it names is still only announced (rings
+## closing in while it is: it may yet be stopped).
+func set_draining(text_: String, announced: bool) -> void:
+	if note == text_ and draining == announced:
+		return
+	note = text_
+	if draining != announced:
+		_pulse_t = 0.0
+	draining = announced
+	set_process(_animates())
+	queue_redraw()
+
+
+## A loss lands: the button flashes once in the taker's colour.
+func strike() -> void:
+	_strike_t = 0.0
+	set_process(true)
 	queue_redraw()
 
 
 func _process(delta: float) -> void:
 	_pulse_t += delta
+	if _strike_t >= 0.0:
+		_strike_t += delta
+		if _strike_t > STRIKE_SPAN:
+			_strike_t = -1.0
+			set_process(_animates())
 	queue_redraw()
 
 
@@ -113,6 +152,16 @@ func _draw() -> void:
 			var ph := fmod(_pulse_t * PULSE_RATE + k * 0.5, 1.0)
 			var grow := 3.0 + 18.0 * ph
 			Hud.stroke_poly(self, Hud.slant(rect.grow(grow), slant_px + grow * 0.4), Color(base, 0.9 * (1.0 - ph)), 3.0 - 1.5 * ph)
+	if draining:
+		# The grant's rings run backwards: two close in on the edge from outside, growing
+		# stronger as they arrive, in the taker's colour. Hot, like every mark on a phone.
+		for k in range(2):
+			var ph := fmod(_pulse_t * PULSE_RATE + k * 0.5, 1.0)
+			var grow := 3.0 + 18.0 * (1.0 - ph)
+			Hud.stroke_poly(self, Hud.slant(rect.grow(grow), slant_px + grow * 0.4), Color(Palette.ENEMY, 0.25 + 0.7 * ph), 1.5 + 1.5 * ph)
+	if _strike_t >= 0.0:
+		# A loss landing: the face floods in the taker's colour and drains away.
+		Hud.fill_poly(self, pts, Color(Palette.ENEMY, 0.85 * (1.0 - _strike_t / STRIKE_SPAN)))
 	if state_marked and not filled:
 		if disabled:
 			# Off: nothing to take back. A dashed edge, faint, and faint text: absent, by its shape.
@@ -158,8 +207,13 @@ func _draw() -> void:
 		draw_string(font, Vector2(tx, ty), text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, ink)
 	if not badge.is_empty():
 		var bfont := Hud.mono()
-		var by := size.y * 0.5 + bfont.get_ascent(badge_size) * 0.5 - bfont.get_descent(badge_size) * 0.5
+		var lift := 0.0 if note.is_empty() else 8.0   # the badge rides up to leave the note its line
+		var by := size.y * 0.5 + bfont.get_ascent(badge_size) * 0.5 - bfont.get_descent(badge_size) * 0.5 - lift
 		draw_string(bfont, Vector2(0, by), badge, HORIZONTAL_ALIGNMENT_RIGHT, size.x - 16.0, badge_size, ink)
+	if not note.is_empty():
+		# What is being taken, in the taker's colour at full strength whatever the button's
+		# own state: a team with no reroll left still reads why.
+		draw_string(Hud.mono(), Vector2(0, size.y - 6.0), note, HORIZONTAL_ALIGNMENT_RIGHT, size.x - 16.0, note_size, Palette.ENEMY)
 
 
 ## A closed outline in dashes, each dash on the button's own edge (a state-marked button's off).
