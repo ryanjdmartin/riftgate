@@ -1581,6 +1581,8 @@ func legal_actions(f: Foe, announced = null) -> Array:
 			continue   # the drains already out take every reroll a round gives (Ryan, 15 November: "mandragoras shouldn't try to scream away 3 rerolls, they should be smarter than that when declaring intents")
 		if str(a.get("effect", "")) == "swallow" and swallowable().size() < 2:
 			continue   # never the last machine able to act
+		if Foe.exposes(a) and (expose_announced(f, announced) or _any_exposed()):
+			continue   # one at a time (Ryan, 15 November): none while another's Expose is out, nor while a machine stands Exposed, so the whole field's fire comes every other round at most
 		if str(a.get("effect", "")) == "merge" and mergeable(f, a).is_empty():
 			continue   # nothing of its kinds stands to take in
 		if str(a.get("effect", "")) == "summon" and not _summon_has_room(f, a):
@@ -1601,6 +1603,15 @@ func legal_actions(f: Foe, announced = null) -> Array:
 			if Foe.is_attack_action(a):
 				legal.append(a)
 	return legal
+
+
+## Does any live machine stand Exposed, in reach or out of it? What the rule of announcing
+## reads: a machine marked and then Phased or Swallowed is marked still.
+func _any_exposed() -> bool:
+	for ms in live_mechs():
+		if Effects.has(ms.unit, "exposure_mech"):
+			return true
+	return false
 
 
 ## Whether a summon has a slot for what it calls: an empty slot of the called foe's rank no
@@ -2867,6 +2878,8 @@ func _strike(f: Foe, t: MechState) -> void:
 			log.append("%s lays Brittle ×%d on %s: every blow it takes lands harder" % [f.display_name, nc, t.unit.display_name])
 		if f.has_keyword(f.action, "steal") and t.alive() and t.face_index >= 0:
 			_steal(f, t)
+		if f.has_keyword(f.action, "expose") and t.alive():
+			_expose_mech(f, t)
 		if f.has_keyword(f.action, "destroy") and t.alive() and int(ev["through"]) > 0:
 			# Destroy (Ryan, 15 November: "a boss-level rider, that destroys the visible face if it
 			# damages hull at all"): any of the blow on the hull, past shield, armour and a Barrier,
@@ -2878,9 +2891,9 @@ func _strike(f: Foe, t: MechState) -> void:
 
 
 ## Whether this foe's blows carry a rider a Ward turns away: a scorch, an ablate, a jam, a
-## corrupt, a Brittle, a steal or a destroy (a purge is a special).
+## corrupt, a Brittle, a steal, a destroy or an expose (a purge is a special).
 static func _rides(f: Foe) -> bool:
-	for kw in ["scorch", "ablate", "jam", "corrupt", "brittle", "steal", "destroy"]:
+	for kw in ["scorch", "ablate", "jam", "corrupt", "brittle", "steal", "destroy", "expose"]:
 		if f.has_keyword(f.action, kw):
 			return true
 	return Effects.has(f, "primed")   # a primed foe's blows carry Ablating as a rider (28 October)
@@ -3071,6 +3084,42 @@ func _ablate(ms: MechState, points: int) -> void:
 ## What a foe lays on a machine that ticks or fades at the end of the player's turn (Ryan, 13
 ## October, as Burn and Scorch; Ablate since 15 November): stacks of Ablating or Scorched for
 ## the skirmish, decaying as each says there (Ablating a stack, Scorched every stack).
+## A foe's Expose lands on a machine (Ryan, 15 November: "all armour of all kinds"; "So the
+## whole field targets up until predicted death, then the rest pick intent targets as
+## normal"): Exposed at once and through the round after, its armour counting for nothing
+## (the status's own effect, read through the stat) and, as that round opens, every targeted
+## intent turning on it (_pick_mech_target). Refreshed, never added. The caller has read the
+## Ward.
+func _expose_mech(f: Foe, t: MechState, said: String = "") -> void:
+	Effects.grant_for_rounds(t.unit, Effects.STATUS["exposure_mech"], "foe:" + f.content_id, round + 1)
+	var lead := "%s exposes %s" % [f.display_name, t.unit.display_name] if said.is_empty() else "%s: %s, %s is Exposed" % [f.display_name, said, t.unit.display_name]
+	log.append("%s: its armour counts for nothing, and the next round's fire turns on it" % lead)
+
+
+## The machine that stands Exposed and can be picked, or null: one at a time is the foes'
+## rule of announcing (legal_actions), so the first is the one.
+func exposed_mech() -> MechState:
+	for ms in targetable_mechs():
+		if Effects.has(ms.unit, "exposure_mech"):
+			return ms
+	return null
+
+
+## Is another foe's Expose out this round: a live foe on the field but `f`, among `announced`
+## (every foe on the field when unsaid), whose move lays Exposed and will land? What a foe
+## reads before it announces one of its own (Ryan, 15 November: "Enemy units should be smart
+## enough to only try to Expose one player unit at a time"), the reroll drain's pattern.
+func expose_announced(f: Foe, announced = null) -> bool:
+	var said: Array = announced if announced is Array else Array(field_foes())
+	for o in said:
+		if o == f or not o.alive() or not o.on_field() or not Foe.exposes(o.action):
+			continue
+		if o.fresh or o.is_suppressed():
+			continue   # stepped up this round with no move out, or held this round: it lays nothing
+		return true
+	return false
+
+
 func _fire_on(t: MechState, id: String, n: int, f: Foe) -> void:
 	Effects.stack(t.unit, Effects.STATUS[id], Effects.SKIRMISH, "foe:" + f.content_id, n, Effects.status_decay(Effects.STATUS[id]))
 
@@ -3804,7 +3853,7 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 	var a := f.action
 	var effect := str(a.get("effect", ""))
 	var value := int(a.get("value", 0))
-	if t == null and effect in ["ablate", "jam", "dispel", "swallow"]:
+	if t == null and effect in ["ablate", "jam", "dispel", "swallow", "expose"]:
 		log.append("%s: %s, and no machine stands to take it" % [f.display_name, str(a.get("name", effect))])
 		return
 	turn_specials.append({"foe": f, "name": str(a.get("name", "")), "kind": Foe.kind_of(a), "seq": _seq})
@@ -3920,6 +3969,13 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 				log.append("%s: %s, Ablating ×%d on %s" % [f.display_name, str(a.get("name", "stokes")), maxi(1, value), t.unit.display_name])
 		"swallow":
 			_swallow(f, t, maxi(1, value))
+		"expose":
+			# Exposed on a machine (Ryan, 15 November): a move of its own here, a rider on a blow in
+			# _strike. A Ward turns it away as it turns every rider.
+			if Effects.has(t.unit, "ward"):
+				log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "exposes")), t.unit.display_name])
+			else:
+				_expose_mech(f, t, str(a.get("name", "exposes")))
 		"jam":
 			# The entry the die shows is Jammed, switched off through the machine's next turn, no blow.
 			if Effects.has(t.unit, "ward"):
@@ -5441,6 +5497,14 @@ func _pick_mech_target(f: Foe = null, avoid: Array = []) -> MechState:
 			open.append(ms)
 	if not open.is_empty():
 		live = open
+	# An Exposed machine draws every targeted intent as the round opens, whatever the foe's aim,
+	# until the blows already drawn would wreck it; from there the rest pick as they would (Ryan,
+	# 15 November: "keep the logic where enemies don't try and overkill. That helps keep it fair.
+	# So the whole field targets up until predicted death, then the rest pick intent targets as
+	# normal"). No draw is made for it.
+	var marked := exposed_mech()
+	if f != null and marked != null and open.has(marked):
+		return marked
 	if f == null or targeting_override == "lowest":
 		return _lowest_shield(live)
 	match f.aim_of():

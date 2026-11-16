@@ -43,7 +43,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1206 tests, 372,963 checks, green on `ccr-722ca9f0-yj8na3` (16 November, his
+- Tests: 1216 tests, 373,182 checks, green on `ccr-722ca9f0-yj8na3` (16 November, Exposed
+  on a machine, over main at `d97245e`). Before it, 1206 tests, 372,963 checks, green on the
+  same branch (16 November, his
   ninth round's rulings, over main at `e26589f`). Before it, 1198 tests, 372,873 checks,
   green on the same branch (16 November, his
   eighth round's rulings, over main at `3801a1b`). Before it, 1197 tests, 372,849 checks,
@@ -1940,12 +1942,25 @@ end it sits out, so it comes back as it left; the Ammit flares once a round, as 
 that an attack of its own killed in, his passive word for word; Regenerating stays one
 combined stack; and our own pieces carry no floor of 2 ("they can sequence"). No run was
 made on it: one machine's flare and the edge cases of two statuses moved, no foe's number.
-**The end table he asked for is the proposal's section 23**: every buff and debuff by the
-clock it ends on, and four places to standardize, waiting on his marks (the to-do's line).
-**First now: the foes' pass**
-(the to-do's line): Exposed's carriers and its engine, the moves his marks renamed or
-moved onto the unit, the countdowns off the rank and file, a fall free to do more than
-strike, and a move as a short list of steps if he takes section 19's proposal.
+**The end table he asked for is the proposal's section 23**, every buff and debuff by the
+clock it ends on, and **his four places are its section 24** (16 November: turn start, turn
+end, round end, when spent). They cover every status that ticks. The clocks are not built on
+them yet: three points wait on him (what a foe's turn is, Ablate and Vitriol after a foe's
+blow, Brittle's place), and they decide the wording of every status line, so it is one pass.
+**The foes' pass has begun** (16 November, on his "Yes, go ahead with the next work"):
+**Exposed on a machine is built** (the proposal's section 17; `tests/test_exposed.gd`), a
+foe's Expose as a move of its own and as a rider on its blow. The machine's armour of every
+kind counts for nothing through the round after, and as that round opens every targeted
+intent turns on it until the blows already drawn would wreck it; a Lure and a Ward answer
+the move, a Cleanse gives the armour back, a round Phased is passed by, and no foe announces
+one while another's is out or a machine stands Exposed. No foe carries it: its carriers are
+content, his to place at tier two or above, and the validator refuses it at tier one.
+**First now: the foes' pass, the rest**
+(the to-do's line): Exposed's carriers, the moves his marks renamed or
+moved onto the unit (Collect and Appropriated, the Vampire Lord's rule), the countdowns off
+the rank and file, a fall free to do more than strike, and a move as a short list of steps
+if he takes section 19's proposal, the one answer that shapes how those are built. Beside
+it, the clocks on his four places once he answers section 24's three points.
 The table of every rider, buff and debuff (`docs/vocabulary_table.md`) stands with its page
 (Pages, below) as the record of his marks until the pass retires.
 With the pass, on his proposal, the tier-one

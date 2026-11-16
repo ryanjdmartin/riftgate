@@ -1180,7 +1180,9 @@ as the Barrier had, since a Ward on the right machine turns an Exposed whole.
 
 ### Exposed, on a machine: the rule as ruled
 
-Decided, not built. It rides with the vocabulary's build.
+Built 16 November, the foes' pass's first piece (`tests/test_exposed.gd`), as a move of a
+foe's own and as a rider on its blow. No foe carries it: its carriers are that pass's
+content.
 
 1. *Who lays it.* A foe of tier two or above, "only in formations that feel thematic and
    fair, so that the player has tools to answer by that point". None at tier one.
@@ -1213,7 +1215,13 @@ Decided, not built. It rides with the vocabulary's build.
 Still his, one point. May a machine that stands Exposed be marked again? Two foes that lay
 it in turn would hold the whole field on one machine every round. Claude's lean: no foe
 announces it while a machine stands Exposed either, so the fire comes every other round at
-most, and that is "one at a time" read over rounds as well as over machines.
+most, and that is "one at a time" read over rounds as well as over machines. Built so, and
+one line to turn.
+
+As built, three reads where his words give none. A countdown's pick carried from the round
+before holds: it was announced then. A machine out of reach as the round opens draws nothing,
+so a round Phased answers an Expose, the tool bought a round ahead meeting the threat
+announced a round ahead. And the validator refuses the move on anything dealt at tier one.
 
 For the build, two notes. The aim that content calls exposed, shown as "aims at the
 exposed", is no mark and wants another name once the word means one. And the
@@ -1882,3 +1890,70 @@ the turn it works in ends, a stack each time its turn comes, and until spent. Wh
 is the round's own rules (Phased and its wait, the pins, Essence Flare, Exposed), the fight,
 and timers that count rounds. Claude's lean: take 1, 2 and 4, which cost nothing in play but
 the one Mine case, and rule on 3 with the Storm Petrel's piece in hand.
+
+## 24. His tenth round, 16 November: four places a status ends
+
+His words, on section 23's table:
+
+> I see four places things should decay, tick, or fall off:
+>
+> -Its turn Start: Armoured, Barrier, Ward, all pinned variants, Exposed on next turn start,
+> -Its turn End: Empowered, Regeneration, Brittle, Ablate, Vitriol, Scorched, Jammed, Sapped,
+> Suppressed, Numbed (applied or reduced), Web Bomb,
+> -Round End: Phased (applied or lost), Essence Flare
+> -When Spent: as you say
+>
+> Does that cover them all and make sense?
+>
+> Yes, go ahead with the next work
+
+Not built: three answers decide the wording of every status line, so the clocks are one pass
+after them. The next work he names is the foes' pass, whose first piece is built (section
+17: Exposed on a machine).
+
+**Does it cover them all?** Every status that ticks, halves or falls off is placed. Three
+that count rounds are not: a cooldown, the swallow and the golden rage. A cooldown is a dark
+entry, as a jam is, and sits with Jammed at its turn's end. The swallow and the rage count
+rounds and sit at the round's end with Phased. None of the three moves in play. What lasts
+the fight needs no place: Corrupted, Ricochet, Enraged, the forms and the stores.
+
+**What each placement changes in play.**
+
+| Status | Today | In his four places | In play |
+|---|---|---|---|
+| Armoured | Its side's next turn begins | Turn start | Nothing |
+| Barrier, Ward | The round's end on a machine, END TURN on a foe | Turn start | Nothing: the same moment under one word |
+| Pinned, Seared | The round's end | Turn start | Nothing, read as the turn start after the tick it holds: at the first one the pin would fall before it held anything. His "next", as for Exposed |
+| Exposed | The next round's end | The next turn start | Nothing on a foe or a machine |
+| Empowered | Its side's turn's end | Turn end | A machine's as built. A foe's hangs on the first question below |
+| Regenerating, machine | As the round opens | Turn end | A round sooner: the shield comes before the blows of the round it was bought in. After Ablating, the foe's order |
+| Brittle, machine | The round's end | Turn end | The same blows. But the halving falls between his turn and the foes', so its chip reads double what the blows will meet all through the player's turn |
+| Brittle, foe | The round's end | Turn end | Nothing |
+| Ablating, Scorched, Sapped, machine | END TURN | Turn end | Nothing |
+| Jammed | The next round's end in the engine | Turn end | Nothing |
+| Ablating, Vitriol, foe | The start of its action | Turn end | Every burning foe strikes before it burns: the second question |
+| Regenerating, Sapped, Suppressed, Web Bomb, foe | At its action | Turn end | Nothing |
+| Numbed | The round's end | Turn end | Nothing |
+| Phased, Essence Flare | The round's end | Round end | Nothing |
+
+**Three points for him.**
+
+1. *What a foe's turn is.* A machine's turn is the player's turn. A foe's can be its own
+   action or the foes' whole turn, and the list needs both today: the Web Bomb bursts at the
+   end of its own action, and Armoured falls as the foes' whole turn opens, on his mark of 15
+   November. The simple rule is its own action for all of it. One thing then moves: a foe's
+   Empowered halves after its own blow, where it halves as the round ends today, so a rally
+   stands whole on the next blow of a foe that had already acted when it landed. That is the
+   rule he gave the machines, a stack gained outside its turn whole for its next, and it makes
+   a rally stronger. Claude's lean: its own action, with the wolves' howl read again.
+2. *Ablate and Vitriol after a foe's blow.* They tick at the start of its action today, so a
+   burn can fell a foe before it strikes. At its turn's end every burning foe strikes first.
+   It is the bible's open question (section 12; his of 4 November, "it's a fair point about
+   whether dots tick before or after the enemy action"), and the list answers it "after".
+   Claude's lean: take it. It is one rule on both sides, since a machine acts and then ticks,
+   and the forecast stops dropping a doomed foe's blow. Ablate loses its kill before the blow,
+   which is part of its worth today, so its numbers want a look with it.
+3. *Brittle's place.* It works in the other side's turn, as Armoured, Barrier and Ward do. At
+   its carrier's turn start it halves right after the blows that used it and its chip always
+   shows what the next blows will meet. At its turn end a machine's halves just before the
+   foes use it. Claude's lean: file it under turn start.

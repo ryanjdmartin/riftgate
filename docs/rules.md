@@ -831,6 +831,17 @@ On a machine:
   end of each round, rounded down. So it stands whole for the foes still to strike that turn
   and half for the next, and a Brittle 1 is gone by then. A Ward turns the rider away.
   Cleansable.
+- **Exposed** (debuff, from a foe's Expose; a foe's Exposed below is the armour rule on the
+  other body): its armour counts for nothing, its own, any Armoured and what a kit grants,
+  from the moment it lands through the round after. Armour it gains meanwhile is gained and
+  does nothing until the mark ends; its shield, and a reduction that is no armour, are
+  untouched. As that round opens every foe's targeted move turns on it, whatever the foe's
+  aim, in the order they strike, until the blows already drawn would wreck it; from there the
+  rest pick as they would. A move at every machine or at none is unmoved, a countdown's pick
+  carried from the round before holds, and a machine out of reach as the round opens (Phased)
+  draws nothing. Everything after is as ever: a Lure pulls a blow off it, and a foe that picks
+  again mid-round takes the next machine in line. Refreshed, never added. Cleansable: a
+  Cleanse gives the armour back and leaves the intents where they turned.
 - **A foe's purge** is Purge N, the rule ours runs: N stacks off every buff the machine carries,
   for good, whatever granted it (a stack is a stack); its Abilities and its stores stay (the
   Ammit's Essence among them, never the Empowered it grants); a Ward turns it away.
@@ -1069,12 +1080,15 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   engine's pattern and no term of the player's list: a move's readout says what it names next,
   and nothing calls it a follow-up. A borrowed swing with nothing taken is no follow-up, and the
   roll decides. A swallow is never drawn while fewer than two machines stand
-  in the fight, nor a merge while nothing of its kinds stands on the field.
+  in the fight, nor a merge while nothing of its kinds stands on the field, nor an Expose while
+  another foe's is out this round or a machine stands Exposed: one machine at a time, and the
+  whole field's fire every other round at the most.
 - **Its target**, drawn as the round opens: at random, unless the foe or its move carries an
   aim, as its threat calls for: exposed (weighted by the hull its blows would reach
   plus half the shield they would break), heat (the hottest machine), armed (a machine
   showing an intact weapon or debuff, the exposed when none does), focus (its rank shares one pick),
-  buffed (the machine carrying the most stacks of buffs, the exposed when none does). The
+  buffed (the machine carrying the most stacks of buffs, the exposed when none does). A
+  machine that stands Exposed comes before every aim (Exposed, above). The
   foes pick in the order they strike and never over-commit: a machine the blows already picked
   would wreck through its shield and armour is passed over while another stands (a blow at
   every machine counts on each; a special, a suppressed foe and a countdown still gathering
@@ -1100,7 +1114,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   entry the machine shows Jammed through its next turn, as a jam, and taken: its foe
   holds it until its borrowed swing, whose number is what it took, a weapon's printed blow,
   and anything that was no weapon a fake, for 1), destroy (any of the blow on the hull destroys
-  the entry the machine shows: Destroy, above; no foe carries it yet),
+  the entry the machine shows: Destroy, above; no foe carries it yet), expose (the machine is
+  Exposed through the round after: Exposed, above; a tier-two foe's at the least, the validator
+  refusing it on anything dealt at tier one; no foe carries it yet),
   drain (the striker regrows what the blow took from the hull, no more than the machine had,
   so a shield starves it; it lays nothing on the machine, so a Barrier's blow drains nothing),
   self-destruct (the striker dies after, for good), every machine
@@ -1126,7 +1142,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   Barrier on itself), regenerate (Regenerating, its value in stacks, on itself), ward all (a Ward on
   every foe on the field, itself included), prime (Primed, its value in stacks, on every other foe on the
   field, at once), swallow (its machine Swallowed for its rounds, never the last machine in the
-  fight, let go early once the swallower has lost a quarter of its HP), merge (every other foe on the field of the kinds it names taken into it, gone with no
+  fight, let go early once the swallower has lost a quarter of its HP), expose (its machine
+  Exposed, the rider's rule as a move of its own, its intent wearing Expose's mark), merge (every other foe on the field of the kinds it names taken into it, gone with no
   fall, no last act, no split and no kill of the team's: it regrows the HP they had left, and
   its blows hit its value harder for each, Empowered that halves at the round's end, so half
   reaches the next round), each on its target, no blow; a purge is a special, never a rider. A Ward turns away

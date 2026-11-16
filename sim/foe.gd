@@ -338,6 +338,11 @@ func strikes() -> int:
 ##           scorch_all: every machine gains `value` stacks of Scorched, its weapons and debuffs
 ##           running hotter (Eruption; nobody in particular)
 ##           corrupt_all: every machine's showing entry is corrupted (Unravel; nobody in particular)
+##           expose: its target is Exposed through the round after (Ryan, 15 November): its
+##           armour counts for nothing, and as that round opens every targeted intent turns on
+##           it until the blows drawn would wreck it. Also a rider a blow may carry (`expose`
+##           among its keywords). One out at a time: no foe announces one while another's is
+##           out or a machine stands Exposed (Skirmish.legal_actions)
 ##           swallow: its target is Swallowed for `value` rounds, out of the fight until they run
 ##           out or the swallower falls; never the last machine able to act (Floraison's, 30
 ##           October: hard control on the team, answered before it lands by a Ward, a Lure, a
@@ -348,7 +353,7 @@ func strikes() -> int:
 const ACTION_EFFECTS := {
 	"defend": ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate"],
 	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "golden"],
-	"debuff": ["drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all", "dispel", "swallow"],
+	"debuff": ["drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all", "dispel", "swallow", "expose"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
@@ -399,12 +404,20 @@ func intent_on(u) -> bool:
 ## economy around it"); a shield that takes the whole blow, a Barrier or a Ward keeps the entry.
 ## A purge is a special, never a rider (28 October: a rider on a hitter's blow is a tax with no
 ## decision), so it is no attack keyword; the validator refuses it on a blow.
-const ATTACK_KEYWORDS := ["scorch", "ablate", "jam", "corrupt", "brittle", "self_destruct", "all", "steal", "drain", "destroy"]
+const ATTACK_KEYWORDS := ["scorch", "ablate", "jam", "corrupt", "brittle", "self_destruct", "all", "steal", "drain", "destroy", "expose"]
 ## The specials that may never ride a blow (28 October).
 const SPECIALS_ONLY := ["dispel"]
 ## The riders that lay stacks, each a number on the move beside its keyword (24 October, as the
 ## player's Ablate N: Scorch 2 lays two stacks a blow).
 const NUMBERED_RIDERS := ["scorch", "ablate", "corrupt", "brittle"]
+
+
+## Does this move lay Exposed on the machine it lands on: a move of its own (`expose`), or a
+## blow that carries the rider?
+static func exposes(a: Dictionary) -> bool:
+	if str(a.get("effect", "")) == "expose":
+		return true
+	return is_attack_action(a) and Array(a.get("keywords", [])).has("expose")
 
 
 func has_keyword(a: Dictionary, k: String) -> bool:

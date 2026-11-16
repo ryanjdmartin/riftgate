@@ -2716,6 +2716,16 @@ func _validate_factions(errs: Array[String]) -> void:
 			if c.has("members") or c.has("layout"):
 				errs.append("%s: members and layout are gone (8 November); the grid, front and back, is the whole declaration" % cw)
 			_validate_grid(cw, c, size, errs)
+			# Exposed on a machine is a tier-two foe's at the least (Ryan, 15 November: "only in
+			# formations that feel thematic and fair, so that the player has tools to answer by that
+			# point"): nothing dealt at tier one holds a foe whose move lays it.
+			if tiers is Array and composition_tiers(c).has(1) and c.get("front", null) is Array and c.get("back", null) is Array:
+				var told := {}
+				for cell in layout_cells(c):
+					for a in foes.get(str(cell), {}).get("actions", []):
+						if a is Dictionary and str(a.get("status", "implemented")) != "planned" and Foe.exposes(a) and not told.has(str(cell)):
+							told[str(cell)] = true
+							errs.append("%s: %s lays Exposed, and nothing dealt at tier one may (the player has no answer to it yet)" % [cw, str(cell)])
 			# The formation pass's fields (10 November): what the player must answer, written down on
 			# every patrol and formation (internal, under design, never shown), and the roles.
 			if c.has("design") and not (c["design"] is Dictionary):

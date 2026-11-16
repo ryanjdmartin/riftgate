@@ -59,6 +59,7 @@ CURRENCIES = OrderedDict([
     ("regenerating", ("Regenerating", "on a machine")),
     ("ablating_mech", ("Ablating", "on a machine")),
     ("brittled_mech", ("Brittle", "on a machine")),
+    ("exposure_mech", ("Exposed", "on a machine")),
     ("scorched", ("Scorched", "on a machine")),
     ("disabled", ("Jammed", "on a machine")),
     ("corrupted", ("Corrupted", "on a machine")),
@@ -88,7 +89,7 @@ KEYWORDS = {
     "expose": [("exposure", "sets")], "lure": [("lure", "sets")], "disrupt": [("disrupt", "sets")],
     "chain": [("kill", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")],
     "dispel": [("foe_buff", "reads")],
-    "cleanse": [("ablating_mech", "reads"), ("brittled_mech", "reads"), ("scorched", "reads"), ("disabled", "reads"), ("corrupted", "reads")],
+    "cleanse": [("ablating_mech", "reads"), ("brittled_mech", "reads"), ("exposure_mech", "reads"), ("scorched", "reads"), ("disabled", "reads"), ("corrupted", "reads")],
     "rapid": [], "instant": [], "every_foe": [], "every_ally": [],
 }
 # A face field and what it sets or reads.
@@ -130,8 +131,8 @@ TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_
 CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None,
               "target_no_intent": None, "shield_up": None, "target_unhurt": "missing_hp", "target_half": "missing_hp"}
 # A foe move's riders and effects, on machines.
-FOE_RIDERS = {"ablate": "ablating_mech", "brittle": "brittled_mech", "scorch": "scorched", "jam": "disabled", "corrupt": "corrupted"}
-FOE_EFFECTS = {"ablate": "ablating_mech", "scorch_all": "scorched", "jam": "disabled", "corrupt_all": "corrupted", "drain_rerolls": "reroll",
+FOE_RIDERS = {"ablate": "ablating_mech", "brittle": "brittled_mech", "scorch": "scorched", "jam": "disabled", "corrupt": "corrupted", "expose": "exposure_mech"}
+FOE_EFFECTS = {"ablate": "ablating_mech", "scorch_all": "scorched", "jam": "disabled", "corrupt_all": "corrupted", "expose": "exposure_mech", "drain_rerolls": "reroll",
                "brace": "foe_buff", "brace_all": "foe_buff", "rally": "foe_buff", "revive_once": "foe_buff", "revive_once_ally": "foe_buff",
                "prime_all": "foe_buff", "barrier": "foe_buff", "ward_all": "foe_buff", "regenerate": "foe_buff"}
 
@@ -161,6 +162,7 @@ ENGINE_READERS = {
     "regenerating": ["a point of shield a stack as the round opens, then a stack fades"],
     "ablating_mech": ["its tick: 1 shield a stack at the turn's end, then hull, past armour and a Barrier"],
     "brittled_mech": ["every blow it takes, +1 a stack; halves each round"],
+    "exposure_mech": ["its armour counts for nothing, and the next round's targeted moves turn on it until the blows drawn would wreck it"],
     "scorched": ["every weapon fired runs 1 hotter a stack this turn"],
     "disabled": ["the entry comes up blank"],
     "corrupted": ["each spend bites 3 a stack"],
@@ -377,7 +379,7 @@ def render(m):
         if cur == "heat":
             set_text = "every weapon with heat (%d pieces); " % m.heat_guns + set_text
         L.append("| %s | %s | %s | %s |" % (label, side, set_text, "; ".join(engine + [word(e) for e in readers]) or "nothing"))
-        foe_laid = cur in ("scorched", "disabled", "corrupted", "ablating_mech", "brittled_mech")
+        foe_laid = cur in ("scorched", "disabled", "corrupted", "ablating_mech", "brittled_mech", "exposure_mech")
         if (side == "on a foe" or side == "on a machine") and not foe_laid:
             if setters and not sl:
                 unique.append(label)

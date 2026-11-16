@@ -273,10 +273,10 @@
    "id": "expose",
    "category": "keyword",
    "name": "Expose",
-   "codex": "Player keyword, on any entry aimed at a foe. Every foe the entry reaches is Exposed until the end of the next round, a felled one too: in Direct reach of every machine, and its armour counts for nothing. A second Expose refreshes it, never adds.",
+   "codex": "Keyword, on either side. On an entry of ours aimed at a foe: every foe the entry reaches is Exposed until the end of the next round, a felled one too: in Direct reach of every machine, and its armour counts for nothing. A second Expose refreshes it, never adds. On a foe's move, a rider on its blow or a move of its own: the machine it lands on is Exposed through the round after, its armour counting for nothing, and as that round opens every foe's targeted move turns on it, up to the blows that would wreck it. A Lure turns the move and a Ward turns it away; no foe announces one while another's is out or a machine stands Exposed.",
    "status": "implemented",
    "design": {
-    "holes": "The formation word exposed stays rules text, so the status's id is exposure."
+    "holes": "The formation word exposed stays rules text, so the status's id is exposure. The foes' half is Ryan's of 15 November (the vocabulary pass's fourth and fifth rounds), built 16 November: a tier-two foe's at the least, the validator refusing it on anything dealt at tier one (\"only in formations that feel thematic and fair, so that the player has tools to answer by that point\"), and one out at a time (\"Enemy units should be smart enough to only try to Expose one player unit at a time\"). No foe carries it yet: its carriers are the foes' pass's content. The foes' text is a session's draft, his to write."
    }
   },
   {
@@ -622,15 +622,15 @@
    "id": "exposure",
    "category": "status",
    "name": "Exposed",
-   "codex": "Foe status. In Direct reach of every machine as if its column's front were empty, and its armour counts for nothing, its own and any Armoured. Until the end of the next round, so through your next turn and the foes' turn after it; refreshed, never added.",
+   "codex": "Status, on either side: its armour counts for nothing, its own and any Armoured. On a foe: in Direct reach of every machine as if its column's front were empty, until the end of the next round, so through your next turn and the foes' turn after it; refreshed, never added. On a machine, from a foe's Expose: through the round after it lands, and as that round opens every foe's targeted move turns on it, whatever the foe's aim, until the blows already drawn would wreck it, the rest picking as they would. Armour it gains while Exposed does nothing until the mark ends; its shield is untouched. A Lure pulls a blow off it, and a Cleanse gives the armour back and leaves the intents where they turned.",
    "status": "implemented",
    "design": {
-    "holes": "The id is exposure, since exposed names the formation word and the foes' default aim.",
+    "holes": "The id is exposure, since exposed names the formation word and the foes' default aim; a machine's is exposure_mech in the engine. The machine's half is Ryan's of 15 November, built 16 November: \"all armour of all kinds\"; \"Exposed does not strip the petrel's resistant shield\"; \"keep the logic where enemies don't try and overkill. That helps keep it fair. So the whole field targets up until predicted death, then the rest pick intent targets as normal\"; \"Exposed sets the intents, everything after proceeds as normal\"; \"Lure wins\". A session's reads where his words give none: a countdown's pick carried from the round before holds, and a machine out of reach (Phased as the round ended) draws nothing. Still his: whether a machine that stands Exposed may be marked again; built as no, so the whole field's fire comes every other round at most. The aim content calls exposed, shown as \"aims at the exposed\", is no mark and wants another word, his. The machine's text is a session's draft, his to write.",
     "table": {
      "kind": "debuff",
-     "on": "foe",
+     "on": "both",
      "stacks": "Never: a second Expose refreshes it",
-     "lasts": "Until the end of the next round"
+     "lasts": "A foe's until the end of the next round; a machine's through the round after it lands"
     }
    }
   },

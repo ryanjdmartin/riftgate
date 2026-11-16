@@ -200,6 +200,17 @@ const STATUS := {
 		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "ablating"}]},
 	"exposure": {"id": "exposure", "name": "Exposed", "description": "In Direct reach of every machine, and its armour counts for nothing. Until the end of the next round.", "stacking": "renew",
 		"tags": ["expose"], "effects": []},
+	# Exposed on a machine (Ryan, 15 November, the vocabulary pass's fourth and fifth rounds;
+	# built 16 November), from a foe's Expose: the armour half is the foe's rule whole, "all
+	# armour of all kinds", its own, any Armoured and what a kit grants by a condition, read as
+	# nothing through the stat itself, so armour gained while it stands is gained and does
+	# nothing until the mark ends; the shield, and a reduction that is no armour, are untouched.
+	# The second half is the skirmish's: as the next round opens every targeted intent turns on
+	# the machine until the blows already drawn would wreck it (Skirmish._pick_mech_target). It
+	# lands in the enemy's turn and stands through the round after, refreshed and never added;
+	# an ally's Cleanse gives the armour back and leaves the intents where they turned.
+	"exposure_mech": {"id": "exposure_mech", "name": "Exposed", "description": "Its armour counts for nothing, and as the round opens every foe's targeted move turns on it, up to the blows that would wreck it. Lasts the round after it lands.", "stacking": "renew",
+		"tags": ["expose", "cleansable"], "effects": [{"trigger": "static", "effect": "multiply_stat", "stat": "armour", "value": 0}]},
 	# The Mine (the Lammergeier's Reverberant Payload, Ryan, 9 November: "the lammergeier basically
 	# converts all hits to AoE hits, at the cost of a delay until Death"): a spend of its weapons and
 	# equipment aimed at a foe leaves a Mine on it, flat damage and the spend's keywords, one Mine a
