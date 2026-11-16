@@ -1385,8 +1385,8 @@ a stat.
   time, a catch first; the order changes nothing a fight opens on, its dice included: a fight's
   seed is the battle's seed, the turn, its packs and its machines. Afterwards each machine in it has used its action, a wrecked machine lies on the hex it fell on for the battle, held as
   any unit holds one: every walk passes it and none ends on it, no tear opens on it, and a cache
-  under it waits unclaimed; its model lies there at three quarters of its size, slumped as a
-  lost machine slumps in a fight and dimmed, smoking, seen over both worlds as a machine is. A pack keeps only its survivors, by member, and Rift Pressure does not tick: it
+  under it waits unclaimed; its model lies there at its size, slumped as a lost machine slumps
+  in a fight and dimmed, smoking, seen over both worlds as a machine is. A pack keeps only its survivors, by member, and Rift Pressure does not tick: it
   ticks on the map alone.
 - **Packs**: a pack is a composition on one hex: its members, each a foe type times a
   strength, in content order, the lead first, whose sprite the pack wears; a hold lists them. It
@@ -1555,11 +1555,13 @@ a stat.
   the boss's seal breaks, and nothing else breaks it. A field cleared with the seal standing
   earns nothing by itself: it is the squad's breathing room, to reposition or fetch a cache,
   until the next peak comes on its beat. Rift Pressure keeps
-  running after. A Fracture brings no prize (not built). The rift's shell covers the seven
-  hexes beside its five, the boss's among them, a plate each: while the seal stands no machine
-  enters or stands on one, a flyer as much as any, while the packs pass and land there as ever;
-  each Fracture cracks a plate, the ends first and the boss's last, and the Rupture bursts the
-  shell and opens the seven. No cache is laid inside it; what may lie behind it is not built.
+  running after. A Fracture brings no prize (not built). The rift's shell is a wall along the
+  outer edges of the seven hexes beside its five, the boss's among them, so the boss stands
+  behind it: while the seal stands no machine enters or stands on one of the seven, a flyer as
+  much as any, while the packs pass and land there as ever; each Fracture cracks one hex's
+  stretch of it, the ends first and the boss's last, and the Rupture bursts it and opens the
+  seven. One cache lies behind it, on one of the seven (never the boss's), its kind rolled at
+  the rift's depth: the final sortie's bait.
 - **The battle ends** when the gate reaches zero, every machine is wrecked, or the boss unit
   falls (every commander of the unit at the rift, its fight won); a wipe after the commander's
   fall is a wipe.

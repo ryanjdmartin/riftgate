@@ -993,22 +993,43 @@ func seed_caches(content: ContentDB, seed_arg: int) -> void:
 		if at == NO_HEX:
 			continue
 		var depth := float(last - Hex.axial_to_offset(at).y) / float(maxi(1, last - first))   # 0 at the wall's end, 1 at the rift's
-		var weights: Array = []
-		var total := 0.0
-		for k in kinds:
-			var w: Array = content.loot[k].get("weight", [0, 0])
-			weights.append(lerpf(float(w[0]), float(w[1]), depth))
-			total += weights[weights.size() - 1]
-		if total <= 0.0:
+		var kind := _roll_kind(content, kinds, depth, rng)
+		if kind.is_empty():
 			continue
-		var roll := rng.randf() * total
-		var kind := str(kinds[0])
-		for j in range(kinds.size()):
-			roll -= float(weights[j])
-			if roll < 0.0:
-				kind = str(kinds[j])
-				break
 		caches.append({"id": i + 1, "tier": int(content.loot[kind].get("tier", 1)), "pos": at})
+	# Behind the rift's shell (Ryan, 16 November: "a cache can and probably should appear behind it
+	# as well"): on its seven hexes beside the rift, the boss's aside, its kind rolled at the rift's
+	# depth, so the best likeliest: the final sortie's bait, out of the machines' reach until the
+	# Rupture opens the seven.
+	var behind: Array = map.shell_hexes().filter(func(h: Vector2i) -> bool: return _cache_fits(h))
+	for i in range(int(content.loot_rules.get("behind_shell", 0))):
+		if behind.is_empty():
+			break
+		var at: Vector2i = behind[rng.randi_range(0, behind.size() - 1)]
+		var kind := _roll_kind(content, kinds, 1.0, rng)
+		if kind.is_empty():
+			break
+		caches.append({"id": n + 1 + i, "tier": int(content.loot[kind].get("tier", 1)), "pos": at})
+		behind = behind.filter(func(h: Vector2i) -> bool: return _cache_fits(h))
+
+
+## A cache's kind rolled at `depth` (0 at the wall's end of the field, 1 at the rift's), each kind
+## weighted between its two weights; "" when nothing weighs.
+func _roll_kind(content: ContentDB, kinds: Array, depth: float, rng: RandomNumberGenerator) -> String:
+	var weights: Array = []
+	var total := 0.0
+	for k in kinds:
+		var w: Array = content.loot[k].get("weight", [0, 0])
+		weights.append(lerpf(float(w[0]), float(w[1]), depth))
+		total += weights[weights.size() - 1]
+	if total <= 0.0:
+		return ""
+	var roll := rng.randf() * total
+	for j in range(kinds.size()):
+		roll -= float(weights[j])
+		if roll < 0.0:
+			return str(kinds[j])
+	return str(kinds[0])
 
 
 ## Whether a cache may lie on a hex: open ground on the field (a step to cross, no water and no
@@ -1016,8 +1037,6 @@ func seed_caches(content: ContentDB, seed_arg: int) -> void:
 func _cache_fits(h: Vector2i) -> bool:
 	if not map.has(h) or map.is_structure(h) or unit_at(h) != null:
 		return false
-	if map.shell_hexes().has(h):
-		return false   # nothing lies behind the rift's shell until its loot is decided (the to-do)
 	if BattleMap.step_cost(int(map.terrain.get(h, BattleMap.Terrain.PLAIN)), []) != BattleMap.STEP:
 		return false
 	for c in caches:

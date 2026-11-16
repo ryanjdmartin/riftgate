@@ -87,10 +87,24 @@ func test_a_saved_battle_keeps_its_shell_by_its_seal() -> void:
 	assert_true(after.field.shell.is_empty(), "broken, none")
 
 
-func test_no_cache_lies_inside_the_shell() -> void:
+func test_a_cache_lies_behind_the_shell() -> void:
+	# Ryan, 16 November: "a cache can and probably should appear behind it as well": one on the
+	# seven (content's behind_shell), never the boss's hex, out of the machines' reach until the
+	# Rupture.
+	var db := ContentDB.load_default()
+	var want := int(db.loot_rules.get("behind_shell", 0))
+	assert_true(want >= 1, "content lays one behind the shell")
 	for sd in range(1, 13):
-		var db := ContentDB.load_default()
 		var b := Battle.new(sd)
 		b.setup([db.make_mech("badger")], "waste")
+		var behind := 0
 		for c in b.field.caches:
-			assert_false(b.map.shell_hexes().has(c["pos"]), "seed %d: no cache behind the shell until its loot is decided" % sd)
+			if b.map.shell_hexes().has(c["pos"]):
+				behind += 1
+				assert_ne(c["pos"], b.boss.pos, "seed %d: never under the boss" % sd)
+				assert_false(b.field.can_stand(b.mechs()[0], c["pos"]), "seed %d: out of reach while the seal stands" % sd)
+		assert_eq(behind, want, "seed %d: the cache behind the shell" % sd)
+		var ids := {}
+		for c in b.field.caches:
+			assert_false(ids.has(int(c["id"])), "seed %d: every cache its own id" % sd)
+			ids[int(c["id"])] = true

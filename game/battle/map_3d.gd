@@ -1816,17 +1816,17 @@ func sync() -> void:
 ## The wrecks (Battlefield.wrecks; Ryan, 4 November: a wreck stays on its hex and blocks it for
 ## the battle; 16 November: "A wreck should behave like any other unit, meaning nobody can land
 ## on it"): a machine wrecked in a fight lies on the hex it fell on, built as the living machine
-## is (_machine_model: its model, its fit, its seat, the units' layer over both worlds, so it is
-## seen as a machine is, never sunk into the ground or painted over), a size smaller so it keeps
-## to its hex (Ryan, 16 November: "Make sure the kill wrecks don't take up too much of the adjacent
-## hexes ... Make sure that perspective of the wrecks make sense. Don't embed them in the
-## terrain"). It goes as a lost machine goes in a fight (MechRig.kill: its lights gutter out and it
+## is (_machine_model: its model, its fit and its size, its seat, the units' layer over both
+## worlds, so it is seen as a machine is, never sunk into the ground or painted over; Ryan, 16
+## November: "Make sure the kill wrecks don't take up too much of the adjacent hexes ... Make sure
+## that perspective of the wrecks make sense. Don't embed them in the terrain"; the tipped pose of
+## the first cut was what crossed into the next hex, not the size). It goes as a lost machine goes in a fight (MechRig.kill: its lights gutter out and it
 ## slumps, nothing tipping the body, a walker sinking on its own legs and a flyer or a hover coming
 ## down onto its lowest point; his rules of 3 November for the slump, no weird lean and nothing
 ## through the floor), its colours dimmed, no outline. A wreck the map sees come down goes there;
 ## one already down as the map is built lies as it lies. RIFTGATE_WRECK_DEBUG=1 lays one of each of
 ## the team's chassis beside it and lets them go again every few seconds.
-const WRECK_FIT := 0.75         # of a living machine's fit: a heavy wreck keeps inside its hex
+const WRECK_FIT := 1.0          # of a living machine's fit: its own size (Ryan, 16 November: "Wrecks don't have to shrink from their actual living size, just the pose you had for some really had them falling into another hex")
 const WRECK_DARK := 0.28        # what is left of its colours: the sun lights a white livery at 0.45 near white again
 const WRECK_SETTLE := 3.0       # seconds its slump and its landing take, done
 const WRECK_LAND := 0.6         # seconds a flyer or a hover takes to come down, after the slump starts (MechView3D.LAND's role)
@@ -1861,8 +1861,8 @@ func _sync_wrecks(occupied: Dictionary) -> void:
 			_wrecks.erase(uid)
 
 
-## A wreck's model: the machine's own as a living machine is built (_machine_model), WRECK_FIT of
-## its size and down on the ground, every surface's colour dimmed and matt, then lost
+## A wreck's model: the machine's own as a living machine is built (_machine_model), at its size
+## and down on the ground, every surface's colour dimmed and matt, then lost
 ## (MechRig.kill) facing as it fell. {} for a chassis with no model.
 func _make_wreck(u: Unit) -> Dictionary:
 	var m := _machine_model(u, WRECK_FIT, false)
