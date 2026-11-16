@@ -1631,3 +1631,47 @@ pass. Whether a machine that stands Exposed may be marked again, lean no.
 first, then Ablate, then the guns' 3 with Breach's cut, then the marks that needed no
 answer, then the five his answers settle. The foes' pass and the pieces with their own
 sessions wait as section 18 lists them.
+
+## 21. The build, and his eighth round on its reads
+
+The build landed on 15 and 16 November, a commit a part, each on main: the reboot folded in,
+Ablate, the guns' 3 with Breach's cut, the marks' cuts, the renames, the five rule changes,
+and the anchor read again as the baseline (`docs/measurements.md`, its last entry). The
+build made reads of its own where his words gave none; the to-do's line for him lists them.
+
+His words, 16 November, on those reads:
+
+> Elaborate specifically on what you mean about phased, regenerating, and essence flare. For
+> phased, it shouldn't take damage from overheating since we don't need the exception. It
+> does accumulate the stacks, though, which it will feel the round after.
+>
+> Buffs and debuffs that decay at end of round should just have a minimum of 2. If that's too
+> oppressive when multiple foes roll the same ability, we just tweak the ability to say
+> something like "apply 2 if none, otherwise 1."
+>
+> For primed: by special, you mean like a buff? That makes sense, same rules as the player.
+>
+> Mine is lammergeier only, now, so we don't need to worry about it applying other unique
+> passive debuffs.
+>
+> Armoured we should change so its end is symmetrical on both sides. Probably means until
+> "start of its next turn."
+
+**What each settles.**
+
+| The read | His answer | What was built, 16 November |
+|---|---|---|
+| A Phased machine's own heat burned it | "it shouldn't take damage from overheating" | No burn while Phased. Its heat past the maximum stays, more if it fires again, and burns the turn it is back in reach |
+| A rally of 1 left its rallier nothing, and a foe's Brittle 1 was gone by the foes' next turn | "a minimum of 2" | A foe's rally and a foe's Brittle say 2 or more, and the validator holds it. The three rallies that said 1 say 2 |
+| A foe's Primed spends no stack on a special | "same rules as the player" | Nothing to build: a move that is no blow spends none, as equipment spends none of ours |
+| A Mine carries no web | "we don't need to worry about it" | Nothing to build: the Mine takes what its own machine's spend lays, and no care is added for another machine's marks |
+| A machine's Armoured still ended at the round's end | "until "start of its next turn"" | It goes as the next round opens, before the foes announce, from a buff, a brace or the hopper alike. No blow lands between the two moments, so no number moved |
+
+**Two questions the answers leave**, both in the bible's section 12. Whether the minimum of
+2 reaches our own six sources of a status that halves: three pieces that lay Brittle 1, two
+of them by his own numbers, and three grants of Empowered that are a stack an event. And
+whether a Phased machine still pays a Volatile bite, a price a piece prints and no blow.
+
+**The wolves.** The howl at 2 reads a third dearer in hull on the tier-one pack, with no
+fight lost (`docs/measurements.md`). His tweak for a move several foes may roll at once,
+the first laying 2 and the rest 1, is not built.

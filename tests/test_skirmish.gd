@@ -612,10 +612,11 @@ func test_the_bot_fills_the_hopper_before_it_fires_it() -> void:
 	assert_eq(pol.hopper_fill_score(sk, ms, claw, sk.front[1]), 0.0, "two shots' worth waiting already: no more value")
 
 
-func test_a_bracing_entry_braces_its_owner_until_the_rounds_end() -> void:
+func test_a_bracing_entry_armours_its_owner_until_its_sides_next_turn_begins() -> void:
 	# Ryan, 12 October: the Breaching Plow braces the Boar behind its blade, in place of the
-	# Glacis. Spending a bracing entry Armours its owner, the stacks it says, until the round's
-	# end: the armour stands through the enemy's turn and is gone when the next round opens.
+	# Glacis. Spending a bracing entry Armours its owner, the stacks it says, until its side's
+	# next turn begins (16 November: "Armoured we should change so its end is symmetrical on both
+	# sides"): the armour stands through the enemy's turn and goes as the next round opens.
 	var sk := Skirmish.new(1)
 	var plow := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "braces": 10})
 	assert_eq(plow.describe(), "10 braces ×10", "the entry says what it does")
@@ -634,13 +635,20 @@ func test_a_bracing_entry_braces_its_owner_until_the_rounds_end() -> void:
 	var hull: int = m.hull
 	sk.end_round()
 	assert_eq(hull - m.hull, maxi(0, 20 - (armour + 10)), "the ghoul's 20 lands less the brace")
-	assert_eq(Effects.stacks_of(m, "braced"), 0, "and it is gone at the round's end")
+	assert_eq(Effects.stacks_of(m, "braced"), 10, "it stands at the round's end")
+	sk.start_round()
+	assert_eq([Effects.stacks_of(m, "braced"), m.armour], [0, armour], "and goes as its side's next turn begins, before the foes announce")
+	# A foe's goes the same way on its own side: as the enemy's turn opens.
+	var g: Foe = sk.front[0]
+	Effects.stack(g, Effects.STATUS["braced"], Effects.SKIRMISH, "foe", 2, Effects.status_decay(Effects.STATUS["braced"]))
+	sk.end_round()
+	assert_eq(Effects.stacks_of(g, "braced"), 0, "a foe's Armoured from before its turn is gone as that turn opens")
 
 
 func test_braced_lasts_one_turn_from_every_source() -> void:
 	# Ryan, 12 October: a defensive buff that lingered, a stack fading a round, would stack
-	# into a wall. A passive's Braced (the Phase Conjugator's) goes at the round's end whole,
-	# like a buff's.
+	# into a wall. A passive's Armoured (the Phase Conjugator's) goes whole as its side's next
+	# turn begins, like a buff's; the round's own tick leaves it.
 	var m := _mech("A", Die.single(Face.attack(10)))
 	m.grant_passive({"id": "brace_on_round", "name": "Brace", "description": "",
 		"effects": [{"trigger": "on_round_start", "effect": "stack_status", "value": "braced"}]})
@@ -648,7 +656,15 @@ func test_braced_lasts_one_turn_from_every_source() -> void:
 	Effects.fire(m, "on_round_start")
 	assert_eq(Effects.stacks_of(m, "braced"), 2, "two stacks from the passive")
 	Effects.tick(m)
-	assert_eq(Effects.stacks_of(m, "braced"), 0, "every stack goes at the tick, none lingers")
+	assert_eq(Effects.stacks_of(m, "braced"), 2, "the round's tick leaves them")
+	Effects.turn_opens(m)
+	assert_eq(Effects.stacks_of(m, "braced"), 0, "every stack goes as the turn opens, none lingers")
+	# A buff of Armoured for two rounds, which the validator refuses in content, is held no longer.
+	Effects.grant_buff(m, "braced", 3, "buff:test", 9)
+	Effects.end_round(m, 1)
+	assert_eq(Effects.stacks_of(m, "braced"), 3, "no round's end takes it")
+	Effects.turn_opens(m)
+	assert_eq(Effects.stacks_of(m, "braced"), 0, "its end is its side's next turn, whatever round the grant named")
 
 
 func test_the_bot_values_a_brace_by_the_blows_coming() -> void:
@@ -2919,9 +2935,10 @@ func test_a_buff_component_grants_its_status_through_the_round() -> void:
 	sk.start_round()
 	sk.assign(1, sk.front[0])
 	assert_eq(sk.front[0].hp, 500 - 30 - 25, "20 plus the five left the round after")
-	# A two-round buff outlasts the first end of round; targets are the component's to set.
+	# A two-round buff outlasts the first end of round; targets are the component's to set. A
+	# Ward here: Armoured ends as its side's next turn begins and takes no rounds (16 November).
 	var s2 := Skirmish.new(2)
-	var brace := Face.buff("braced", 5, 2)
+	var brace := Face.buff("ward", 1, 2)
 	brace.targets = Face.Target.ALLY
 	var c := _mech("C", Die.single(brace), 40, 100)
 	var d := _mech("D", Die.single(Face.attack(20, L)), 0, 100)
@@ -2934,11 +2951,11 @@ func test_a_buff_component_grants_its_status_through_the_round() -> void:
 	assert_false(s2.assign(0, null), "allies only: not on itself")
 	assert_true(s2.assign(0, s2.mechs[1]), "on the ally")
 	s2.end_round()
-	assert_eq(Effects.stacks_of(d, "braced"), 5, "still there after one round")
-	assert_eq(d.hull, 100 - 15, "20 less the brace's armour 5, on bare hull")
+	assert_true(Effects.has(d, "ward"), "still there after one round")
+	assert_eq(d.hull, 100 - 20, "a Ward turns riders, never the blow: 20 on bare hull")
 	s2.start_round()
 	s2.end_round()
-	assert_eq(Effects.stacks_of(d, "braced"), 0, "gone after the second")
+	assert_false(Effects.has(d, "ward"), "gone after the second")
 	var rt := Face.from_dict({"kind": "buff", "status": "ward", "stacks": 3, "rounds": 2, "targets": "self"})
 	assert_eq(rt.to_dict(), {"kind": "buff", "reach": "none", "power": 0, "keywords": [], "heat": 0, "targets": "self", "status": "ward", "stacks": 3, "rounds": 2}, "a buff round-trips through content")
 
@@ -3237,29 +3254,29 @@ func test_a_status_for_the_skirmish_still_stacks_onto_one_modifier() -> void:
 	assert_eq(Effects.stacks_of(m, "test_mark"), 4, "and every scope counts together")
 
 
-func test_a_two_round_buff_spent_in_two_rounds_goes_a_grant_at_a_time() -> void:
-	# The same through the skirmish: a buff entry for two rounds, spent in round 1 and again in
-	# round 2, leaves two stacks in round 2, and round 1's goes at the end of round 2. Armoured
-	# is the one status of the game's own the rounds scope still stacks, so it stands in here:
-	# content grants it for one round alone (the validator), and the two are the engine's path.
+func test_a_two_round_buff_spent_again_runs_to_its_later_end() -> void:
+	# The rounds a buff entry says, through the skirmish: a Ward for two rounds spent in round 1
+	# stands through round 2; spent again in round 2 it stands through round 3, one Ward and
+	# never two (it renews). No status of the game's own stacks by rounds for more than one, so
+	# each grant keeping its own end is held on the synthetic one, above.
 	var sk := Skirmish.new(1)
-	var lattice := Face.buff("braced", 1, 2)
-	var m := _mech("A", Die.single(lattice), 40, 300)
+	var veil := Face.buff("ward", 1, 2)
+	var m := _mech("A", Die.single(veil), 40, 300)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(500, 10)])
 	sk.begin()
 	sk.start_round()
 	assert_true(sk.assign(0, null), "spent on itself in round 1")
 	sk.end_round()
-	assert_eq(Effects.stacks_of(m, "braced"), 1, "it outlasts round 1")
+	assert_true(Effects.has(m, "ward"), "it outlasts round 1")
 	sk.start_round()
 	assert_true(sk.assign(0, null), "and again in round 2")
-	assert_eq(Effects.stacks_of(m, "braced"), 2, "two stacks during round 2")
+	assert_eq(Effects.stacks_of(m, "ward"), 1, "one Ward, renewed")
 	sk.end_round()
-	assert_eq(Effects.stacks_of(m, "braced"), 1, "round 1's goes at the end of round 2")
+	assert_true(Effects.has(m, "ward"), "the second spend carries it past round 2's end")
 	sk.start_round()
 	sk.end_round()
-	assert_eq(Effects.stacks_of(m, "braced"), 0, "round 2's at the end of round 3")
+	assert_false(Effects.has(m, "ward"), "and it goes at the end of round 3")
 
 
 func test_removing_a_status_clears_every_grant_of_it() -> void:

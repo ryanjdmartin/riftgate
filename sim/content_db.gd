@@ -1589,7 +1589,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: %s is a positive number on an attack" % [where, key])
 	if fd.has("fires_hopper") != fd.has("power_per_load") or (fd.has("power_per_load") and int(fd["power_per_load"]) <= 0):
 		errs.append("%s: fires_hopper and a positive power_per_load go together" % where)
-	# The brace (12 October): spending the entry Armours its owner until the round's end.
+	# The brace (12 October): spending the entry Armours its owner until its side's next turn begins.
 	if fd.has("braces") and int(fd["braces"]) <= 0:
 		errs.append("%s: braces is a positive number of stacks of Armoured, an armour point each" % where)
 	# Rolling again on a status (the Nemesis's fists on rage, 12 October to 11 November) and the
@@ -1722,10 +1722,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: '%s' is a foe's status; a buff grants one of %s" % [where, st, ", ".join(Effects.MECH_STATUSES)])
 		if int(fd.get("stacks", 1)) < 1 or int(fd.get("rounds", 1)) < 1:
 			errs.append("%s: a buff's stacks and rounds are at least 1" % where)
-		# Braced lasts one turn from every source (Ryan, 12 October): a status that decays
-		# whole at the round's end is never granted for longer.
+		# Armoured lasts one turn from every source (Ryan, 12 October): a status that goes whole
+		# as its side's next turn begins is never granted for longer.
 		if str(Effects.STATUS.get(st, {}).get("decay", "")) == "round" and int(fd.get("rounds", 1)) > 1:
-			errs.append("%s: %s lasts until the round's end, so a buff grants it for one round" % [where, st])
+			errs.append("%s: %s lasts until its side's next turn begins, so a buff grants it for one round" % [where, st])
 		# A status that decays to zero on its own clock (Empowered halving) has no duration
 		# (Ryan, 18 October: "Things either decrease to zero, or are timed, not both").
 		if Effects.decays_to_zero(Effects.STATUS.get(st, {})) and fd.has("rounds"):
@@ -2425,6 +2425,8 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 				for key in ["factor", "strikes", "keywords", "countdown"] + Foe.NUMBERED_RIDERS:
 					if a.has(key):
 						errs.append("%s: '%s' belongs to an attack action" % [aw, key])
+				if _halves(effect) and int(a.get("value", 0)) < HALVING_MINIMUM:
+					errs.append("%s: %s lays a status that halves as each round ends, so its value is %d at the least: one stack is gone before its side's next turn" % [aw, effect, HALVING_MINIMUM])
 			else:
 				implemented_attacks += 1
 				# An attack scales the foe's base attack: factor, not a value of its own, so the
@@ -2451,8 +2453,23 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 						errs.append("%s: a %s rider says its stacks: %s, a positive number" % [aw, k, k])
 					if a.has(k) and not carried:
 						errs.append("%s: %s (the stacks) rides with the %s keyword" % [aw, k, k])
+					if carried and _halves(k) and int(a.get(k, 0)) < HALVING_MINIMUM:
+						errs.append("%s: a %s rider lays a status that halves as each round ends, so it says %d at the least: one stack is gone before its side's next turn" % [aw, k, HALVING_MINIMUM])
 	if implemented_attacks < 1:
 		errs.append("%s: needs at least one implemented attack action" % where)
+
+
+## What a foe's move lays that halves as each round ends, by the rider or the special that lays
+## it (Brittle on a machine, Empowered on its own side), and the least such a move may say
+## (Ryan, 16 November: "Buffs and debuffs that decay at end of round should just have a minimum
+## of 2"). One stack halves to none as the round it was laid in ends, so a rallier's own share
+## and a Brittle 1 were gone before the foes' next turn. His exit, for a move several foes may
+## roll at once: "we just tweak the ability to say something like "apply 2 if none, otherwise
+## 1."" Read off the status's own clock, so a status that stops halving leaves the rule.
+const HALVING_LAID := {"brittle": "brittled_mech", "rally": "kindled"}
+const HALVING_MINIMUM := 2
+static func _halves(move: String) -> bool:
+	return HALVING_LAID.has(move) and Effects.decays_to_zero(Effects.STATUS.get(str(HALVING_LAID[move]), {}))
 
 
 ## A rank-and-file unit's battlefield role (Ryan, 9 November: a unit is made for a pusher's, a

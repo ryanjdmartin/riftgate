@@ -216,11 +216,12 @@ func test_a_rebooting_machine_neither_burns_nor_overheats() -> void:
 	assert_eq([ms.heat, ms.overheat_stacks(), m.shield], [0, 0, 40], "back cold and whole")
 
 
-## A machine out of the fight has no turn to give, so it neither reboots nor burns (Swallowed).
-## A Phased one is out of reach and acts (Ryan, 15 November: "it's a safe reboot if you can pull
-## it off"): it may reboot, bare where nothing reaches it, and left hot it burns as any machine
-## does, the burn being its own act's cost and no blow.
-func test_a_swallowed_machine_does_not_burn_and_a_phased_one_may_reboot() -> void:
+## A machine out of reach does not burn: a Swallowed one has no turn to give, so it cannot
+## reboot either; a Phased one is damaged by nothing (Ryan, 16 November: "it shouldn't take
+## damage from overheating since we don't need the exception. It does accumulate the stacks,
+## though, which it will feel the round after") and acts, so it may reboot, bare where nothing
+## reaches it (15 November: "it's a safe reboot if you can pull it off").
+func test_a_machine_out_of_reach_does_not_burn_and_a_phased_one_may_reboot() -> void:
 	var m := _mech(1, "A", _gun(40), 40, 200, 30)
 	var sk := _fight([m, _mech(2, "B", _gun(0))], [Foe.make("dummy", 9000, 0)])
 	var ms: Skirmish.MechState = sk.mechs[0]
@@ -241,13 +242,20 @@ func test_a_swallowed_machine_does_not_burn_and_a_phased_one_may_reboot() -> voi
 	Effects.grant_for_rounds(m, Effects.STATUS["phased"], "test", sk.round)
 	assert_true(Skirmish.is_out(ms), "Phased, it is out of reach this round")
 	assert_true(sk.can_reboot(0), "and free to reboot: the safe one")
+	assert_eq(int(sk.forecast(ms)["overheat"]), 0, "the forecast shows no burn on it this turn")
+	sk.assign(0, sk.front[0])
+	assert_eq(ms.overheat_stacks(), 50, "it fires again, and its heat past the maximum grows: the stacks accumulate")
 	sk.end_round()
-	assert_eq(m.hull, 170, "left hot, it burns as any machine does")
+	assert_eq(m.hull, 180, "Phased, it takes nothing from its own heat")
+	assert_true(sk.overheats.is_empty(), "and the turn is no overheat")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(m.hull, 130, "back in reach, it feels every stack the round after")
 	sk.start_round()
 	Effects.grant_for_rounds(m, Effects.STATUS["phased"], "test", sk.round)
-	assert_true(sk.reboot_mech(0), "it gives its Phased turn to the reboot")
+	assert_true(sk.reboot_mech(0), "it gives a Phased turn to the reboot")
 	sk.end_round()
-	assert_eq(m.hull, 170, "and burns nothing that turn")
+	assert_eq(m.hull, 130, "and burns nothing that turn")
 	sk.start_round()
 	assert_eq([ms.heat, m.shield], [0, 40], "cold and whole the round after")
 

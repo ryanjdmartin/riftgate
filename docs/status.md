@@ -41,7 +41,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1197 tests, 372,849 checks, green on `ccr-722ca9f0-yj8na3` (16 November,
+- Tests: 1198 tests, 372,873 checks, green on `ccr-722ca9f0-yj8na3` (16 November, his
+  eighth round's rulings, over main at `3801a1b`). Before it, 1197 tests, 372,849 checks,
+  green on the same branch (16 November,
   Phased, over main at `1d2b544`). Before it, 1196 tests, 372,811 checks, green on the same
   branch (16 November,
   Brittle, over main at `7ac3902`). Before it, 1196 tests, 372,829 checks, green on the same
@@ -1918,6 +1920,13 @@ and its gate is that session's; a foe's Phased is the foes' pass's.
 entry): at tier one a formation is 5.2 rounds and 7.2% of a four's hull, an elite 5.7 and
 11.2%, a boss 9.5 and 31.5% with a wreck in a quarter of its fights, and the four formations
 built on foes that breached cost under 3%, their blows plain against a whole shield.
+**His eighth round's rulings are built** (16 November, on the build's reads; the
+proposal's section 21): a Phased machine does not burn, its heat staying for the turn it is
+back in reach; a machine's Armoured ends as its side's next turn begins, as a foe's does;
+and what a foe lays that halves each round it lays 2 of at the least, so three rallies went
+from 1 to 2 and the tier-one wolf pack reads a third dearer in hull, no fight lost. Two
+questions stand in the bible's section 12: whether that minimum reaches our own six sources,
+and whether a Phased machine pays a Volatile bite.
 **First now: the foes' pass**
 (the to-do's line): Exposed's carriers and its engine, the moves his marks renamed or
 moved onto the unit, the countdowns off the rank and file, a fall free to do more than

@@ -696,6 +696,8 @@ static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1
 		return held
 	var id := str(passive.get("id", ""))
 	for m in u.modifiers:
+		if m.source == HOPPER_PLATE:
+			continue   # the hopper's grant of Armoured stays its own (_plate), so the loads fired take back only what it gave
 		if m.id == id and m.scope == scope and (scope != ROUNDS or m.expires_round == expires_round):
 			m.stacks += n
 			_record(u, m, n)
@@ -886,8 +888,8 @@ static func tick(u, halving: bool = true, held_round: Array = []) -> Dictionary:
 	held.append_array(held_round)  # and the field's (Skirmish.round_holds: Essence Flare's hold on Empowered)
 	var keep: Array = []
 	for m in u.modifiers:
-		if m.decay == DECAY_ROUND and halving:
-			continue   # a machine's, at the round's end; a foe's goes as the enemy's turn opens (turn_opens)
+		if m.decay == DECAY_ROUND and halving and m.tags.has(ONCE):
+			continue   # a once-a-round gate's own note goes with the round; what lasts until its side's next turn (Armoured) waits for it (turn_opens)
 		if m.decay == DECAY_TICK and held.has(m.id):
 			pass
 		elif m.decay == DECAY_TICK:
@@ -907,10 +909,13 @@ static func tick(u, halving: bool = true, held_round: Array = []) -> Dictionary:
 	return out
 
 
-## A foe's side's turn opens: every status that lasts until then goes, every stack at once (its
-## Armoured, its own brace's and a Protect's alike; Ryan, 15 November: "The common "end" state
-## between both sides is "start of their next turn""). It went at the foe's own action until
-## then, so a foe acting late in the turn wore its plate through the blasts of the foes before it.
+## A unit's side's turn opens: every status that lasts until then goes, every stack at once
+## (Armoured, from a brace, a buff, a Protect or the hopper alike; Ryan, 15 November: "The common
+## "end" state between both sides is "start of their next turn""). A foe's as the enemy's turn
+## opens (it went at the foe's own action until 15 November, so a foe acting late wore its plate
+## through the blasts of the foes before it); a machine's as the round opens, before the foes
+## announce (16 November: "Armoured we should change so its end is symmetrical on both sides";
+## it went at the round's end until then, a moment earlier and no blow apart).
 static func turn_opens(u) -> void:
 	u.modifiers = u.modifiers.filter(func(m) -> bool: return m.decay != DECAY_ROUND)
 
@@ -1904,8 +1909,8 @@ static func plate_round(u) -> int:
 	return maxi(0, short)
 
 
-## The hopper's grant of Armoured moved by `change` stacks: more as a stack of its own, gone at
-## the round's end like any Armoured on a machine; fewer off its own grant alone, as far as that
+## The hopper's grant of Armoured moved by `change` stacks: more as a stack of its own, gone as
+## the next round opens like any Armoured on a machine; fewer off its own grant alone, as far as that
 ## still stands (a Purge may have taken it already), never off another source's Armoured.
 static func _plate(u, change: int) -> void:
 	if change > 0:
@@ -2443,6 +2448,10 @@ static func grant_buff(u, status_id: String, stacks: int, source: String, until_
 ## The grant itself, by the status's own definition: its clock decides how it is held (the
 ## three cases below), whichever status it is.
 static func grant_def(u, def: Dictionary, stacks: int, source: String, until_round: int) -> Modifier:
+	# One that ends as its side's next turn begins (Armoured) is held until then, whoever grants
+	# it and whatever round the grant names: its end is the turn's opening, no round's.
+	if status_decay(def) == DECAY_ROUND:
+		return stack(u, def, SKIRMISH, source, stacks, DECAY_ROUND)
 	if decays_to_zero(def):
 		return stack(u, def, SKIRMISH, source, stacks, status_decay(def))
 	# One a use spends (Spun Up, spent whole by the next weapon; a primer, a stack a weapon
