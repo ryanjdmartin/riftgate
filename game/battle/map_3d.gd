@@ -1786,6 +1786,7 @@ func sync() -> void:
 			if not _rest_yaw.has(u.id) or not _rigs.has(u.id):
 				(_pivots[u.id] as Node3D).rotation.y = facing_yaw(_facing_of(u))
 			_rest_yaw[u.id] = facing_yaw(_facing_of(u))
+	_sync_wrecks(occupied, grad, src)
 	_sync_caches(occupied, grad, src)
 	_hide_props_under(occupied)
 	for uid in _units.keys():
@@ -1808,6 +1809,143 @@ func sync() -> void:
 			if _shadows.has(uid):
 				_shadows[uid].queue_free()
 				_shadows.erase(uid)
+
+
+# ---------------------------------------------------------------- the field's wrecks
+
+## The wrecks (Battlefield.wrecks; Ryan, 4 November: a wreck stays on its hex and blocks it for
+## the battle; 16 November: "A wreck should behave like any other unit, meaning nobody can land
+## on it"): a machine wrecked in a fight lies on the hex it fell on, its own model gone dark and
+## dead, slumped over, a flyer down on the ground. Dressed matt as a cache's dead steel, its lit
+## parts out, on the world's layer with no sheen and no outline (it is no longer the player's),
+## and it sinks into the painting as the ground does (Bleed.solid), the map view's flat mark
+## over the painting from there (BattleMapView._draw_wrecks, with its smoke). A wreck the map
+## sees come down falls: it lurches over onto its side and settles, WRECK_FALL seconds; one
+## already down as the map is built lies still. A first cut, judged running
+## (RIFTGATE_WRECK_DEBUG=1 lays one of each of the team's chassis beside it and drops them
+## again every few seconds).
+const WRECK_TILT := 0.5         # radians it lies over about its own long axis: hot, for the phone
+const WRECK_PITCH := 0.22       # and nose down
+const WRECK_SINK := 0.14        # of its height, sunk into its hex
+const WRECK_DARK := 0.3         # what is left of its light
+const WRECK_FALL := 0.75        # seconds its fall takes
+const WRECK_DEBUG_EVERY := 3.5  # seconds between falls under RIFTGATE_WRECK_DEBUG
+static var WRECK_DEBUG := OS.get_environment("RIFTGATE_WRECK_DEBUG") == "1"
+var _wrecks: Dictionary = {}       # unit id -> {"seat", "pivot", "lie": the yaw it lies at, "depth": its sink in model units, "age"}
+var _wrecks_seen := false          # whether a sync has run: the wrecks there before it lie still
+
+
+func _sync_wrecks(occupied: Dictionary, grad: Vector2, src: PackedVector3Array) -> void:
+	var live := {}
+	for u in field.wrecks:
+		live[u.id] = true
+		if not _wrecks.has(u.id):
+			var made := _make_wreck(u)
+			if made.is_empty():
+				continue
+			add_child(made["seat"])
+			made["age"] = WRECK_FALL if not _wrecks_seen else 0.0
+			_wrecks[u.id] = made
+		for h in u.hexes():
+			occupied[h] = true   # its hex's dressing would stand through it: hidden, as under a machine
+		var w: Dictionary = _wrecks[u.id]
+		var seat: Node3D = w["seat"]
+		var solid := Bleed.solid(_origin + MapOrient.to_pixel(u.pos, hex_px), grad, src)
+		seat.visible = solid > 0.02
+		seat.position = _hex_world(u.pos, _height_of(u.pos))
+		seat.scale = Vector3(1.0, maxf(solid, 0.02), 1.0)
+		_lay_wreck(w)
+	_wrecks_seen = true
+	for uid in _wrecks.keys():
+		if not live.has(uid):
+			(_wrecks[uid]["seat"] as Node3D).queue_free()
+			_wrecks.erase(uid)
+
+
+## A wreck's model: the machine's own, worn as it fell, fitted to its hex as a machine's is
+## (_make_unit) and set down on the ground, then dead: every surface darkened and matt, its lamps
+## and its weapons' fire out. {} for a chassis with no model.
+func _make_wreck(u: Unit) -> Dictionary:
+	var db := ContentDB.load_default()
+	var model_id := MechView3D.model_for(u.chassis_id)
+	if model_id.is_empty() or not ResourceLoader.exists("res://art/models/%s.glb" % model_id):
+		return {}
+	var scene: PackedScene = load("res://art/models/%s.glb" % model_id)
+	var node: Node3D = scene.instantiate()
+	MechView3D.toon(node, db.maker_of(u.chassis_id), "clean", u.paint, false)
+	MechView3D.wear(MechView3D.pins_of(node), MechView3D.plan_for(u, db) if model_id == u.chassis_id else [], "clean", u.paint, false, true, model_id)
+	MechView3D.launches_of(node, MechRig.load_sidecar(model_id))   # what it fires out of itself stays hidden, as on a machine
+	MechWeld.weld(node, MechWeld.kept_parts(model_id))
+	for child in node.find_children("*", "MeshInstance3D", true, false):
+		var mi: MeshInstance3D = child
+		mi.layers = 1   # the world's layer alone: no sheen light, drawn under the painting as a prop
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		for i in range(mi.mesh.get_surface_count()):
+			var m := mi.get_active_material(i)
+			if m is StandardMaterial3D:
+				var dead: StandardMaterial3D = (m as StandardMaterial3D).duplicate()
+				dead.albedo_color = Color(WRECK_DARK, WRECK_DARK * 0.96, WRECK_DARK * 0.92) * dead.albedo_color
+				dead.roughness = 0.95
+				dead.metallic = 0.0
+				dead.metallic_specular = 0.15
+				dead.emission_enabled = false
+				mi.set_surface_override_material(i, dead)
+			elif m is ShaderMaterial:
+				mi.set_surface_override_material(i, null)
+				mi.material_override = _lit(Color(0.16, 0.15, 0.14))
+	for child in node.find_children("*", "MeshInstance3D", true, false):
+		_trace(child, "prop")   # traced as the world's dead things are, no longer as the player's
+	var aabb := _bounds(node)
+	var widest := maxf(aabb.size.x, aabb.size.z)
+	var fit := fit_for(str(db.chassis.get(u.chassis_id, {}).get("size", "")))
+	var k := (HEX_WORLD * 2.0 * fit / widest) if widest > 0.0 else 1.0
+	node.scale = Vector3.ONE * k
+	# As a machine stands (_make_unit): the model's Z = 0 on the ground, centred across by its
+	# bounds and halfway along them, and set south by as much as its middle projects north under
+	# the pitched camera. A flyer comes down to the ground.
+	node.position = Vector3(-aabb.get_center().x, 0.0, -aabb.get_center().z * 0.5) * k
+	var pivot := Node3D.new()
+	pivot.add_child(node)
+	var south := Node3D.new()
+	south.position = Vector3(0.0, 0.0, (aabb.end.y * k) * 0.5 * _cos / _sin)
+	south.add_child(pivot)
+	var seat := Node3D.new()
+	seat.add_child(south)
+	var lie := facing_yaw(u.facing)
+	pivot.rotation.y = lie
+	return {"seat": seat, "pivot": pivot, "lie": lie, "depth": aabb.size.y * k * WRECK_SINK,
+		"flyer": u.traits.has("flyer"), "node": node}
+
+
+## A wreck's pose by its age: upright as it comes down, over onto its side and settled by
+## WRECK_FALL, with a little rock back past the lie as it lands. A flyer comes down harder.
+func _lay_wreck(w: Dictionary) -> void:
+	var t := clampf(float(w["age"]) / WRECK_FALL, 0.0, 1.0)
+	var fall := 1.0 - pow(1.0 - t, 3.0)
+	var rock := sin(t * PI * 2.0) * (1.0 - t) * 0.18   # it lands, rocks back and lies
+	var hard := 1.35 if bool(w["flyer"]) else 1.0
+	var pivot: Node3D = w["pivot"]
+	pivot.rotation = Vector3(WRECK_PITCH * hard * fall, float(w["lie"]), (WRECK_TILT * hard) * (fall - rock))
+	pivot.position = Vector3(0.0, -float(w["depth"]) * fall, 0.0)
+
+
+## Each wreck's fall played on; under RIFTGATE_WRECK_DEBUG every wreck falls again every
+## WRECK_DEBUG_EVERY seconds.
+func _fell_wrecks(delta: float) -> void:
+	for uid in _wrecks.keys():
+		var w: Dictionary = _wrecks[uid]
+		var age := float(w["age"]) + delta
+		if WRECK_DEBUG and age > WRECK_DEBUG_EVERY:
+			age = 0.0
+		w["age"] = age
+		if age <= WRECK_FALL + delta:
+			_lay_wreck(w)
+
+
+## How long ago a wreck came down on the map, in seconds (the map view's smoke reads it); a
+## large number for one the map does not show.
+func wreck_age(uid: int) -> float:
+	return float(_wrecks[uid]["age"]) if _wrecks.has(uid) else 1.0e6
 
 
 # ---------------------------------------------------------------- the field's caches
@@ -1919,6 +2057,7 @@ var _dt := 1.0 / 60.0
 func _process(delta: float) -> void:
 	_time += delta
 	_turn_caches(delta)
+	_fell_wrecks(delta)
 	_dt = delta
 	for uid in _rigs.keys():
 		var rig: MechRig = _rigs[uid]

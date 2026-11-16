@@ -100,6 +100,13 @@ var _next_id: int = 1
 ## Ryan, 21 October: lifted in place, they travel as a ring round it), so their hexes never
 ## block it. Battle sets it for the search and clears it after; empty otherwise.
 var lifted: Array[Unit] = []
+## The machines wrecked this battle, each on the hexes it fell on (Ryan, 4 November: a wreck
+## stays on its hex and blocks it for the battle; 16 November: "A wreck should behave like any
+## other unit, meaning nobody can land on it"). Every walk passes it as it passes a unit
+## (`passes`) and none ends on it (can_stand, _landable), and no tear opens on it; it is off
+## `units`, so no pack hunts it, no fight takes it and nothing counts it as a machine. The
+## campaign reads its die from here (Campaign._fielded).
+var wrecks: Array[Unit] = []
 
 
 func _init(battle_map: BattleMap) -> void:
@@ -186,6 +193,14 @@ func unit_at(h: Vector2i) -> Unit:
 	return null
 
 
+## The wreck lying on a hex, or null (`wrecks`).
+func wreck_at(h: Vector2i) -> Unit:
+	for u in wrecks:
+		if u.occupies(h):
+			return u
+	return null
+
+
 func unit_by_id(uid: int) -> Unit:
 	for u in units:
 		if u.id == uid:
@@ -218,7 +233,7 @@ func defenses() -> Array[Unit]:
 
 
 func is_free(h: Vector2i) -> bool:
-	return map.has(h) and not map.is_structure(h) and unit_at(h) == null
+	return map.has(h) and not map.is_structure(h) and unit_at(h) == null and wreck_at(h) == null
 
 
 ## Whether `mover` may pass the hex `occ` stands on, never stopping there: always, since 10
@@ -233,13 +248,15 @@ static func passes(_mover: Unit, _occ: Unit) -> bool:
 
 
 ## Whether `u` could stand with its anchor at `at`: every footprint hex in the map, passable,
-## not a structure, and not held by another unit. Nobody stops on another unit's hex.
+## not a structure, and not held by another unit or a wreck. Nobody stops on another unit's hex.
 func can_stand(u: Unit, at: Vector2i) -> bool:
 	if not _ground_fits(u, at):
 		return false
 	for o in u.footprint:
 		var occ := unit_at(at + o)
 		if occ != null and occ != u and not lifted.has(occ):
+			return false
+		if wreck_at(at + o) != null:
 			return false
 	return true
 
@@ -494,8 +511,9 @@ func _walkable(sq: Unit, at: Vector2i, _blocked: Dictionary) -> bool:
 	return true
 
 
-## Whether a pack may stop with its anchor at `at`: walkable, no machine there at all, and no
-## other pack's hold (`blocked`: where the packs planned before it end, where the rest stand).
+## Whether a pack may stop with its anchor at `at`: walkable, no machine or wreck there at all,
+## and no other pack's hold (`blocked`: where the packs planned before it end, where the rest
+## stand).
 func _landable(sq: Unit, at: Vector2i, blocked: Dictionary) -> bool:
 	for o in sq.footprint:
 		var h: Vector2i = at + o
@@ -503,6 +521,8 @@ func _landable(sq: Unit, at: Vector2i, blocked: Dictionary) -> bool:
 			return false
 		var occ := unit_at(h)
 		if occ != null and occ != sq and occ.is_player():
+			return false
+		if wreck_at(h) != null:
 			return false
 	return true
 
@@ -1079,7 +1099,7 @@ func tear_hex() -> Vector2i:
 			var h := Hex.offset_to_axial(col, row)
 			if not map.has(h) or map.is_structure(h) or int(map.terrain[h]) == BattleMap.Terrain.WATER or int(map.terrain[h]) == BattleMap.Terrain.MOUNTAIN:
 				continue
-			if unit_at(h) != null or machine_adjacent(h):
+			if unit_at(h) != null or wreck_at(h) != null or machine_adjacent(h):
 				continue
 			var d := Hex.distance(h, map.rift)
 			for t in tears:
@@ -1094,14 +1114,17 @@ func tear_hex() -> Vector2i:
 	return NO_HEX
 
 
-## Apply a finished skirmish back to the map: survivors keep marching, wrecks are removed.
-## Rift Pressure does not tick here (Ryan, 13 October: a tick per round fought punished care
-## invisibly and taxed the epic fight like a stall); it ticks on the map's enemy turns only.
+## Apply a finished skirmish back to the map: survivors keep marching, a wrecked machine leaves
+## the units and lies where it fell (`wrecks`). Rift Pressure does not tick here (Ryan, 13
+## October: a tick per round fought punished care invisibly and taxed the epic fight like a
+## stall); it ticks on the map's enemy turns only.
 func apply_skirmish_result(sk: Skirmish) -> void:
 	for ms in sk.mechs:
 		if ms.unit.hull <= 0:
 			log.append("%s is wrecked" % ms.unit.display_name)
 			units.erase(ms.unit)
+			if not wrecks.has(ms.unit):
+				wrecks.append(ms.unit)
 	for sq in sk.packs:
 		if sq.is_boss:
 			# A boss unit stands while one of its commanders does, holding the rift: its lineup

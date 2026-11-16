@@ -114,8 +114,37 @@ func setup(b: Battle) -> void:
 	battle = b
 	if CACHE_DEBUG and b.field.phase == 0:
 		_debug_caches(b)
+	if Map3D.WRECK_DEBUG and b.field.phase == 0:
+		_debug_wrecks(b)
 	_build()
 	_refresh()
+
+
+## RIFTGATE_WRECK_DEBUG=1: a new battle lays a wreck of each of the team's chassis two hexes and
+## more from the team (copies: the team stays whole), each lying a different way, and the map
+## drops them again every few seconds (Map3D.WRECK_DEBUG), so a wreck's look, its fall and its
+## smoke are judged running without losing a fight. A battle read back from a save keeps its own.
+func _debug_wrecks(b: Battle) -> void:
+	var f := b.field
+	if b.mechs().is_empty():
+		return
+	var from: Vector2i = b.mechs()[0].pos
+	var open: Array = f.map.all_hexes().filter(func(h: Vector2i) -> bool: return Hex.distance(h, from) >= 2 and Hex.distance(h, from) <= 4)
+	open.sort_custom(func(x: Vector2i, y: Vector2i) -> bool: return Hex.distance(x, from) < Hex.distance(y, from))
+	var k := 0
+	for m in b.mechs():
+		var copy: Unit = b.db.make_mech(m.chassis_id)
+		copy.traits = m.traits.duplicate()
+		for h in open:
+			if f.can_stand(copy, h) and f.cache_at(h).is_empty():
+				copy.id = f._next_id
+				f._next_id += 1
+				copy.pos = h
+				copy.facing = (k * 2 + 1) % 6
+				copy.hull = 0
+				f.wrecks.append(copy)
+				k += 1
+				break
 
 
 func _debug_caches(b: Battle) -> void:

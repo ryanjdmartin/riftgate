@@ -579,6 +579,16 @@ func _apply_battle_pose() -> void:
 				s._map.scroll_y = s._map.size.y * 0.5 - p.y * s._map.zoom
 				s._map._clamp_scroll()
 				s._map.queue_redraw()
+		"wrecks":
+			# Zoomed in on the first wreck (with RIFTGATE_WRECK_DEBUG=1 one of each of the team's
+			# chassis lies beside it, 16 November).
+			if not b.field.wrecks.is_empty():
+				s._map.zoom_at(s._map.size * 0.5, 2.0)
+				var p: Vector2 = s._map.center(b.field.wrecks[0].pos)
+				s._map.scroll_x = s._map.size.x * 0.5 - p.x * s._map.zoom
+				s._map.scroll_y = s._map.size.y * 0.5 - p.y * s._map.zoom
+				s._map._clamp_scroll()
+				s._map.queue_redraw()
 		"zoom", "zoomlast":
 			# Zoomed in twice on the first (or last) mech, panned so it sits mid-screen.
 			s._map.zoom_at(s._map.size * 0.5, 2.4)

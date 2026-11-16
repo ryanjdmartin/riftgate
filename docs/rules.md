@@ -1283,8 +1283,8 @@ a stat.
   and never a rule of its own. Open ground (plain, road), rough and ruins are ground to
   everyone. Water: a ground machine wades it, a water hex costing two of its move, and it can
   always enter one with whatever move it has left; a hovercraft and a flyer cross it at one.
-  Walls stop all but a flyer. Nobody stops on another unit's hex, and nothing else blocks a
-  move: every unit passes every other, a machine through a machine or a pack and a pack through
+  Walls stop all but a flyer. Nobody stops on another unit's hex or a wreck's, and nothing else
+  blocks a move: every unit passes every other, a machine through a machine or a pack and a pack through
   a machine, as under a flyer (they slide under each other, from two different dimensional
   counts), and the two sides meet only in a fight. Each move still lands at once, so the next is
   planned from where it ended.
@@ -1361,8 +1361,10 @@ a stat.
   catch is a fight a hunter, one hunter a machine. The machines whose engage range covers
   it (1: beside it, the one range everyone on the map has) may join. Orders onto several packs queue, ENGAGE opening them one at a
   time, a catch first; the order changes nothing a fight opens on, its dice included: a fight's
-  seed is the battle's seed, the turn, its packs and its machines. Afterwards each machine in it has used its action, a wreck stays on its hex and blocks it for the battle (not built: today
-  it leaves), a pack keeps only its survivors, by member, and Rift Pressure does not tick: it
+  seed is the battle's seed, the turn, its packs and its machines. Afterwards each machine in it has used its action, a wrecked machine lies on the hex it fell on for the battle, held as
+  any unit holds one: every walk passes it and none ends on it, no tear opens on it, and a cache
+  under it waits unclaimed; its model lies there dark and slumped, smoking, a flat mark over the
+  painting. A pack keeps only its survivors, by member, and Rift Pressure does not tick: it
   ticks on the map alone.
 - **Packs**: a pack is a composition on one hex: its members, each a foe type times a
   strength, in content order, the lead first, whose sprite the pack wears; a hold lists them. It
@@ -1384,7 +1386,7 @@ a stat.
   the Drake, and their lines' recolours) crosses both as a flyer does and may stand there;
   moves 2 (fast 3, the Dire Wolf's line 4, massive 1). No foe and no pack carries a ring: a
   hunter catches a machine beside where its walk ends, at the engage range everyone on the map
-  shares (1). They walk through every other unit, never ending a walk on another unit's hex, so
+  shares (1). They walk through every other unit and every wreck, never ending a walk on either, so
   nobody holds ground against them and a pusher never turns back for a machine in its way; the
   walk shown is the walk played. The
   enemy never attacks a machine on the map: pushers strike the gate, hunters catch.

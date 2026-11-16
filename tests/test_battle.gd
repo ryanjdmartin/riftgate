@@ -1397,7 +1397,7 @@ func test_wrecked_mechs_leave_the_map() -> void:
 	var before := b.mechs().size()
 	b.finish_skirmish()
 	assert_eq(b.mechs().size(), before - sk.mechs.size(), "wrecks are gone")
-	assert_eq(b.wrecks.size(), sk.mechs.size(), "and the battle keeps them, for the campaign to read")
+	assert_eq(b.field.wrecks.size(), sk.mechs.size(), "and the field keeps them where they fell, for the campaign to read")
 	assert_true(b.state == Battle.State.PLAN or b.outcome == Battle.Outcome.WRECKED, "battle continues or ends")
 
 

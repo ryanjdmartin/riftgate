@@ -75,7 +75,7 @@ static func to_dict(b: Battle) -> Dictionary:
 		"sponsorship": b.sponsorship,
 		"loot": b.loot, "blueprints_known": b.blueprints_known,   # the caches claimed and the run's blueprints (7 November)
 		"action_hexes": _int_keys(b.action_hexes),
-		"wrecks": _units(b.wrecks),
+		"wrecks": _units(b.field.wrecks),   # where each fell, its hexes held for the battle (16 November)
 		"state": b.state,
 		"outcome": b.outcome,
 		"spent": _int_keys(b.spent),
@@ -147,8 +147,6 @@ static func from_dict(d: Dictionary) -> Battle:
 	var hexes: Dictionary = d.get("action_hexes", {})
 	for uid in hexes.keys():
 		b.action_hexes[int(str(uid))] = int(hexes[uid])
-	for wd in d.get("wrecks", []):
-		b.wrecks.append(_unit_from(wd))
 	b.state = int(d.get("state", Battle.State.PLAN))
 	b.outcome = int(d.get("outcome", Battle.Outcome.NONE))
 	var md: Dictionary = d.get("map", {})
@@ -159,6 +157,8 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.map = BattleMap.generate(w, h, map_seed, b.map_kind) if map_seed != 0 else BattleMap.flat(w, h)
 	b.field = _field_from(d.get("field", {}), b.map)
 	b.field.seed_value = b.seed_value   # a dealt layout's draw reads the battle's seed (section 6)
+	for wd in d.get("wrecks", []):
+		b.field.wrecks.append(_unit_from(wd))
 	# What the map knows of each foe type, from the content as the setup gives it: a pack Rift
 	# Pressure spawns after a resume is dressed by it, its ring, move and hunt (the mechanics
 	# audit, 25 October: a resumed battle's spawns came out as plain pushers).

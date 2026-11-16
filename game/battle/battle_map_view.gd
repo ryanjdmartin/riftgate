@@ -711,6 +711,7 @@ func _draw() -> void:
 				_queue_number(center(on.pos) + Vector2(-HEX_SIZE * 0.62, -HEX_SIZE * 0.55), k + 1)
 
 	_draw_caches()
+	_draw_wrecks()
 	for u in field.units:
 		_draw_unit(u)
 	for prey in hunted.keys():
@@ -891,7 +892,7 @@ func _draw_caches() -> void:
 		var h: Vector2i = c["pos"]
 		var at := center(h)
 		var t := int(c.get("tier", 1))
-		var a := 0.45 if field.unit_at(h) != null else 1.0
+		var a := 0.45 if field.unit_at(h) != null or field.wreck_at(h) != null else 1.0
 		var kind := db.loot_kind_of_tier(t)
 		if _map3d == null or not Map3D.has_cache_model(kind):
 			_chest(at, t, a, CHEST * 1.3)
@@ -904,6 +905,47 @@ func _draw_caches() -> void:
 			var ts := tex.get_size() * CACHE_TOKEN
 			draw_texture_rect(tex, Rect2((at - Vector2(ts.x * 0.5, ts.y - SPRITE_FEET)).floor(), ts), false, Color(1, 1, 1, flat * a))
 		_chest(at + Vector2(0.0, -HEX_SIZE * 0.86), t, a, CHEST)
+
+
+## The wrecks (Battlefield.wrecks; the model is Map3D's): smoke rising off each where it lies,
+## a burst of it as it comes down, and over the painting, or with no 3D map, its flat mark, a
+## dark plate with a heavy cross on it, so the hex reads as held by structure, never by a hue.
+## A first cut, judged running (RIFTGATE_WRECK_DEBUG=1). The smoke carries nothing the cross
+## and the model do not, so its grey is no colour of the tuner's.
+const WRECK_SMOKE := Color(0.72, 0.72, 0.74)
+const WRECK_PUFFS := 5
+const WRECK_RISE_S := 2.8      # seconds a puff takes to rise and go
+
+func _draw_wrecks() -> void:
+	if field == null or field.wrecks.is_empty():
+		return
+	_map_space()
+	for u in field.wrecks:
+		var at := center(u.pos)
+		var flat := 1.0 - _solid_at(u.pos)
+		if _map3d == null or flat > 0.02:
+			var a := 1.0 if _map3d == null else flat
+			var pts := MapOrient.corners(at, HEX_SIZE * 0.62)
+			draw_colored_polygon(pts, Color(Palette.BG, 0.9 * a))
+			Hud.stroke_poly(self, pts, Color(Palette.MUTED, a), _px(2.0))
+			var r := HEX_SIZE * 0.34
+			for d in [Vector2(1, 1), Vector2(1, -1)]:
+				draw_line(at - d * r, at + d * r, Color(Palette.BG, a), _px(7.0))
+				draw_line(at - d * r, at + d * r, Color(Palette.INK, a), _px(4.0))
+		var age: float = _map3d.wreck_age(u.id) if _map3d != null else 1.0e6
+		var seed_t := float(u.id) * 0.61
+		if age < 1.4:
+			# The burst as it comes down: puffs thrown out round it, swelling and gone.
+			var k := age / 1.4
+			for i in range(8):
+				var ang := float(i) * TAU / 8.0 + seed_t
+				var p := at + Vector2(cos(ang), sin(ang) * 0.6) * HEX_SIZE * (0.25 + 0.9 * k) + Vector2(0.0, -HEX_SIZE * 0.25 * k)
+				draw_circle(p, HEX_SIZE * (0.12 + 0.22 * k), Color(WRECK_SMOKE, 0.7 * (1.0 - k)))
+		for i in range(WRECK_PUFFS):
+			var t := fmod(_ring_t / WRECK_RISE_S + float(i) / float(WRECK_PUFFS) + seed_t, 1.0)
+			var p := at + Vector2(sin(t * 3.0 + seed_t) * HEX_SIZE * 0.12 + t * HEX_SIZE * 0.35, -HEX_SIZE * (0.2 + 1.7 * t))
+			var fade := (1.0 - t) * minf(1.0, t * 5.0)
+			draw_circle(p, HEX_SIZE * (0.1 + 0.3 * t), Color(WRECK_SMOKE, 0.55 * fade))
 
 
 ## How good a cache is, as a chest on a dark plate (drawn in screen space at the map point `at`,
