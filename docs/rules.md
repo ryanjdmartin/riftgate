@@ -1267,40 +1267,42 @@ a stat.
   the field is bright cells and the scenery (the margin past the field's sides and past the
   rift, the city) one shaded ground with no cells.
 - **Ground**: open (plain or road), rough, ruins, water, and walls, a wall named by what it is
-  (crags, mesas, towers or cliffs) with one rule under every name. Six map shapes, one a
+  (crags, mesas, towers, cliffs or chasms) with one rule under every name. Six map shapes, one a
   battle, each with its own water, walls, decorative ground and relief, laid to fill the open
   rows at any size the ramp deals, none of them a band and none an orientation. Two water
   shapes: River Crossing (one fat river winding in long bends through the whole field from
   past one edge to past the other, through the field's centre, three hexes thick and four in
-  places, with two narrows a hex thick (one on a field under twelve wide), the water fords
-  where the wade is short, a crag on a bank at most, gravel bars along its banks; no land ford:
-  everyone wades) and River Delta (the river past the rift's end and its channels fingering
-  down the open rows from a sandbar on the rift's row, one for every five columns of the width
-  and one past each edge, a hex wide and two in places, some forking, each in its own stretch of
-  the width and ending blind short of the team's ground, so the tongues of land between are dry
-  ways from the rift to the gate, three at least; shingle on its shores; a tenth to four tenths
-  of the field water). Three wall shapes, a spectrum by the mass
-  and the structure of what blocks you: Gorge (cliff mass over the open rows cut by winding,
-  branching channels, a trunk for every five hexes of wall from the rift's row to the team's
-  ground, one or two hexes wide, three or four branches off each toward the next trunk, meeting
-  a channel at a junction or ending blind, a stretch or two flooded, scree at the cliffs' feet,
-  the gorge's own sides past both edges), Ruined City (large blocks of
-  towers in a grid of streets: avenues one wide from the wall toward the rift four to five
-  columns apart, the gate's always one and two wide, side streets along the wall mid the blocks
-  whose segments are there or not, an avenue segment fallen in now and then, a plaza or two, no
-  water, rubble everywhere else, towers thick in the scenery) and Badlands (an open field of mesas in groups of two to five, many of them, a
-  hex of ground between any two groups so no straight path crosses, two or three ponds of two
-  to four hexes, scrub at the mesas' feet). And Open Steppe, the baseline, clear but never bare
-  (a crag of one to three hexes for every six columns of the width and a pond of two to four
-  for every eight, always laid, scrub in belts over about a sixth of the field, grass on the
-  open ground). A battle that
-  names no shape draws one by its seed, never by its domain. Every map guarantees the
-  horde a crossing three hexes wide or more through its walls; the ground beside the rift (its
-  mouth, where the packs land) and the gate, and the two rows before the gate, hold no water and
-  no wall; every other row is the shape's, the rift's own included. Height is landscape and a look
-  alone; no rule reads it: the field is level but for the badlands' mesas on their shoulders and the
-  steppe's one rise, at most two steps and never a lone raised hex, and the scenery past the
-  edges rises to three.
+  places, with one narrow a hex thick across the field's middle columns, the water ford where
+  the pushers cross and the wade is short, the flanks the long wade, a crag on a bank at most,
+  gravel bars along its banks; no land ford: everyone wades) and River Delta (the river past the
+  rift's end and its channels running the whole depth of the open rows from it to the team's
+  ground, one for every four columns of the width and one past each edge, two hexes wide and
+  three in places, some forking round an islet, each in its own stretch of the width with a
+  strip of land a hex or two wide between every two, none within two columns of the rift's, so
+  the packs come out onto a tongue of land down the middle; shingle on its shores; two to six
+  tenths of the field water). Three wall shapes, a spectrum by the mass and the structure of what
+  blocks you: Gorge (chunks of land split by chasms a hex wide winding along their borders, the
+  field's and the scenery's alike, each chunk joined to a chunk beside it by a land bridge a hex
+  wide or by none where the chunks stay joined the long way round; a stretch of chasm flooded now
+  and then; scree at the chasms' edges), Ruined City (blocks of towers in a grid of streets:
+  avenues one wide from the wall toward the rift four to five columns apart, the gate's always
+  one and two wide, cross-streets along the wall every third row so a block is two rows deep, an
+  avenue segment fallen in now and then, on a field twelve wide or more a suburb of ruins between
+  one edge and its first avenue, a plaza or two, no water, rubble everywhere else, towers thick
+  in the scenery) and Badlands (an open field of mesas in groups of two to five, many of them, a
+  hex of ground between any two groups so no straight path crosses, two or three ponds of two to
+  four hexes, scrub at about two thirds of the mesas' feet). And Open Steppe, the baseline and
+  the anything-goes ground, clear but never bare (a wall of one to three hexes for every six
+  columns of the width, each of another look, a pond of two to four for every eight and a patch
+  of ruins of two to four for every ten, always laid, scrub in belts over about a sixth of the
+  field, grass on the open ground). A battle that names no shape draws one by its seed, never by
+  its domain. Every map guarantees the horde a crossing three hexes wide or more through its
+  walls; the ground beside the rift (its mouth, where the packs land) and the gate, and the two
+  rows before the gate, hold no water and no wall; every other row is the shape's, the rift's own
+  included. Height is landscape and a look alone; no rule reads it: the field is level but for the
+  badlands' mesas on their shoulders and the steppe's one rise, at most two steps and never a
+  lone raised hex, water sunk and a chasm deep, and the scenery past the edges rises to three.
+  The painted world stands at the same heights.
 - **Moving**: a machine's move is a count of hexes, each step one hex, and a chassis has one
   way of moving (tracked, walker, wheeled, hover or flyer), which is its look and its footfall
   and never a rule of its own. Open ground (plain, road), rough and ruins are ground to

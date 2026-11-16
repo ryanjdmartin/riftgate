@@ -158,7 +158,7 @@ func test_a_range_is_edged_only_where_it_ends() -> void:
 	_in_both_views(func(view: String) -> void:
 		for key in DomainGround.TILESETS.keys():
 			var ink: Dictionary = DomainGround._range_inks(str(key))
-			for look in BattleMap.WALL_LOOKS:
+			for look in DomainGround.RANGE_LOOKS.keys():
 				var whole: Dictionary = DomainGround._range_base(str(key), look, 63, 24.0, 1)
 				var alone: Dictionary = DomainGround._range_base(str(key), look, 0, 24.0, 1)
 				var one: Dictionary = DomainGround._range_base(str(key), look, 1 << 1, 24.0, 1)
@@ -261,7 +261,7 @@ func test_every_sprite_is_inked_and_every_name_drawn() -> void:
 				named.append(e[0])
 		named.append_array(ts["ripples"] + ts["flat"] + ts["fixed"] + DomainGround.RANGE_INKS[key]["lies"])
 		if DomainGround.RANGE_INKS[key]["peak"] == "volcanic":
-			named.append("steam")   # a crater breathes it (DomainGround.draw_ranges)
+			named.append("steam")   # a crater breathes it (DomainGround._draw_range_prop)
 		if ts.has("road_stone"):
 			named.append(ts["road_stone"])
 		for host in DomainGround.ATTACH.get(key, {}).keys():
@@ -374,10 +374,10 @@ func test_no_domain_wears_the_enemys_violet() -> void:
 
 
 func test_the_painting_at_heights_stands_each_hex_at_its_columns_height() -> void:
-	# The mock-up of the painting at the reconstruction's heights (Ryan, 16 November: "what it would
-	# look like if the painted world used the same terrain 'heights?'"): a hex's top stands where the
-	# reconstruction's column puts it on screen (Map3D: its relief step, water sunk), within half a
-	# design pixel, on the design pixels' grid.
+	# The painting at the reconstruction's heights (Ryan, 16 November: "Lock the painted world height
+	# change, its subtle but things make more sense"): a hex's top stands where the reconstruction's
+	# column puts it on screen (Map3D: its relief step, water sunk), within half a design pixel, on
+	# the design pixels' grid.
 	var map := BattleMap.generate(20, 12, 7, "delta")   # water sunk and the scenery rising
 	var hex_px := 48.0
 	var s := DomainGround.scale_of(hex_px)
@@ -418,8 +418,3 @@ func test_a_raised_hex_has_a_bank_where_it_drops_toward_the_view() -> void:
 					var p := img.get_pixel(x, y)
 					if p.a > 0.5:
 						assert_true(inks.has(p.to_html(false)), "%s's banks are inked in its own colours (#%s)" % [key, p.to_html(false)]))
-
-
-func test_the_painting_at_heights_is_a_debug_switch() -> void:
-	# The mock-up is off unless RIFTGATE_PAINTED_HEIGHTS=1 asks for it: the painting stays flat.
-	assert_eq(DomainGround.heights, OS.get_environment("RIFTGATE_PAINTED_HEIGHTS") == "1", "the switch reads the environment")

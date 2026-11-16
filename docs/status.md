@@ -41,8 +41,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1208 tests, 377,578 checks, green on `ccr-1e6e6571-7x7ayr` (16 November, Ryan's notes
-  of the day: the quick fixes and the shapes relaid, over main at `e26589f`). Before it, 1206
+- Tests: 1208 tests, 376,201 checks, green on `ccr-1e6e6571-7x7ayr` (16 November, Ryan's second
+  notes: the heights locked, the gorge of chasms and the shapes relaid again, over main at
+  `e26589f`). Before it, 1208 tests, 377,578 checks (his first notes), and 1206
   tests, 383,019 checks (the mock-up of the painted world at the 3D map's heights), and 1203 tests,
   373,302 checks, green on the same branch (16 November, the painted walls as joined ranges). Before it, 1198 tests, 372,873 checks, green on `ccr-722ca9f0-yj8na3` (16 November, his
   eighth round's rulings, over main at `3801a1b`). Before it, 1197 tests, 372,849 checks,
@@ -111,9 +112,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 Everything is on main as of 13 November 2026; the formation and refit session's branch lands as it goes, below.
 `ccr-1e6e6571-7x7ayr`, the map session's, restarted from main at `e26589f` on 16 November (its
-earlier work all on main): the painted walls as joined ranges, the mock-up of the painted world
-at the 3D map's heights behind its switch, and Ryan's notes of 16 November on both, the quick
-fixes and the shapes (How things stand, below); not landed, main takes it on Ryan's word.
+earlier work all on main): the painted walls as joined ranges, the painted world at the 3D map's
+heights, and Ryan's two rounds of notes of 16 November, the quick fixes and the shapes (How things
+stand, below); not landed, main takes it on Ryan's word.
 `ccr-b7d5164e-1wtzzm`, this session's (12 November), cut from main at `6112939`: the to-do's
 roster pruned, then the Needletail's two modes and the Giant Petrel's hull on Ryan's design and
 mix, reworked on his notes (How things stand, below); it took main at `4a0c9b5` in a merge on 13
@@ -504,37 +505,27 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 (Ryan, 28 October): no decision reads its runs. Landed in the last week, each with its reads in
 `docs/measurements.md` and its judge or play line in the to-do's Ryan list:
 
-- **Ryan's notes of 16 November** (`ccr-1e6e6571-7x7ayr`, on the mock-up and the shapes in play).
-  The quick ones: EXECUTE turns the machine in hand's reach off; a pack's bleed reaches 3 hexes
-  where it reached 1.45 and the boss's 4 (`Bleed`; the map tuner's slider to 4.5); the Meadow's
-  forest is five trees a hex where it was eight; and the machines' own layer, which draws a
-  machine over the painting, is lit by the sun and the sheen (its camera saw the machines' layer
-  alone, and a cull mask hides the lights off its layers too, so a machine walking into the
-  painting went dark). The shapes (`BattleMap`; the bible's shapes row; save version 32 sets a
-  battle saved on a relaid shape aside): the river one fat river winding in long bends with two
-  narrows and no tributary; the RIVER DELTA (`delta`) in the fjord's place, its channels
-  fingering down from a sandbar between dry tongues (`dry_crossing`, three at least); the steppe's
-  crags and ponds always laid; the city with no water. The badlands' mesas and the city's towers
-  are one layout for both worlds (`Map3D.wall_pieces`, painted by `DomainGround._piece_tex`), the
-  city's towers one great one a hex or two side by side where four slim ones stood. His ruling:
-  the Flattening holds with painted heights ("it's a 2D depiction of a hill"; the bible's
-  reconstruction row); the gorge as holes is his question, answered in chat.
-
-- **The painted world at the 3D map's heights, a mock-up** (`ccr-1e6e6571-7x7ayr`, 16 November, on
-  Ryan's "it solves a big problem I had with the Seam, where height shifts make things really janky
-  to look at when the packs are moving around. Can you mock up what it would look like if the
-  painted world used the same terrain 'heights?' Obviously done in its style"). Behind a switch,
-  off by default: `RIFTGATE_PAINTED_HEIGHTS=1`, or a debug build's TRIALS → PAINTED HEIGHTS. Every
-  painted hex, the field's and the scenery's, stands at its 3D column's height
-  (`DomainGround.lift_of`: the relief's step, water sunk, to the nearest design pixel, within a
-  pixel of the reconstruction's), over banks of its domain's rock (`BANK_INKS`: a light lip, lit
-  facing right, a dark foot) on the sides the view sees, drawn the farthest first with the scenery
-  in its shade hex by hex (`draw_columns`); a range joins only a wall at its own height; the
-  tokens, marks and flyers keep the full lift under the painting, and a moving token climbs a bank
-  rather than stepping (`BattleMapView._lift_along`). The field is level but for the water, the
-  badlands' shoulders and the steppe's rise, so those are where it shows. Not a decision: the
-  to-do's judge line asks whether it stays; the theme holds either way (his ruling, above).
-  The walls are not matched: a 3D wall's model still stands far taller than its painted range.
+- **Ryan's notes of 16 November, two rounds** (`ccr-1e6e6571-7x7ayr`, on the mock-up and the
+  shapes in play; the bible's shapes, tileset and reconstruction rows). The painted world stands
+  at the reconstruction's heights for good ("Lock the painted world height change"): every
+  painted hex at its column's height over banks of its domain's rock (`DomainGround.lift_of`,
+  `draw_columns`, the one path; the flat painting, its scenery layer and the marks' fading lift
+  are gone), the marks, packs and flyers on the same lift in either world, a moving token climbing
+  a bank (`BattleMapView._lift_along`); his ruling that the Flattening holds ("a 2D depiction of a
+  hill", the camera fixed). A pack's bleed reaches 2.5 hexes and the boss's 3.5 (it was 1.45 and
+  2.6; 3 and 4 for an hour). EXECUTE turns the reach off as the plan plays and keeps the machine
+  in hand only while a pack is in reach of where it stopped (a move spends the move, never the
+  action). The Meadow's forest is five trees a hex. The machines' layer is lit (its camera saw no
+  sun, so a machine walking into the painting went dark). The shapes (`BattleMap`; save version
+  33): the river one fat river with one narrow across the field's middle; the RIVER DELTA
+  (`delta`, in the fjord's place) its channels the whole depth from the river past the rift to the
+  team's ground, a strip of land between, about a third water; the gorge chunks of land between
+  chasms a hex wide joined by bridges, the chasm a new wall look (`chasms`, its vocabulary term a
+  session's draft) sunk deep in both worlds; the city a cross-street every third row, a suburb of
+  ruins on one side, no water, one great tower a hex or two; the steppe drawing on every shape,
+  its walls each another look, a patch of ruins; the badlands' scrub a third of the field where it
+  was half. The badlands' mesas and the city's towers are one layout for both worlds
+  (`Map3D.wall_pieces`, painted by `DomainGround._piece_tex`).
 
 - **The painted walls as joined ranges** (`ccr-1e6e6571-7x7ayr`, 16 November, on Ryan's "They could
   fill their hexes more and mesh together better. A mountain range should look like a continuous

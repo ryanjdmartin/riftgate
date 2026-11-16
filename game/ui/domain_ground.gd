@@ -737,8 +737,8 @@ static func road_links(map: BattleMap, h: Vector2i) -> int:
 
 ## One hex of the other world in a domain's tileset: its ground, and on it the domain's water
 ## or what stands on a decorative ground; a road runs to `links` (as road_links), across the
-## hex when it has none. A wall hex's range is draw_ranges's, drawn after every hex's ground,
-## since it stands taller than its hex. The second frame moves what moves. With `cell` off the
+## hex when it has none. A wall hex's range is draw_columns's, on its hex's top. The second
+## frame moves what moves. With `cell` off the
 ## hex has no outline of its own: ground with no cells, the scenery past the field (PaintedMap).
 ## `tint` multiplies every colour it draws (the scenery's shade where it is drawn hex by hex among
 ## the field's, at the reconstruction's heights).
@@ -774,17 +774,17 @@ static func draw_hex(ci: CanvasItem, c: Vector2, hex_px: float, t: int, seed_val
 		Hud.stroke_poly(ci, pts, Color(Color(str(ts["grid"])), 0.35) * tint, 1.0)
 
 
-## The painted world at the reconstruction's heights: a mock-up (Ryan, 16 November, of the joined
+## The painted world stands at the reconstruction's heights (Ryan, 16 November, of the joined
 ## ranges: "it solves a big problem I had with the Seam, where height shifts make things really
 ## janky to look at when the packs are moving around. Can you mock up what it would look like if
-## the painted world used the same terrain 'heights?' Obviously done in its style"). Every hex of
-## the painting stands at its column's own height in the reconstruction (lift_of: Map3D's relief
-## step, water sunk, to the nearest design pixel), a bank of the domain's rock (BANK_INKS) down
-## from its edge to each lower neighbour on the sides the view sees, the farthest hex first, so
-## where the painting meets the reconstruction (the seam, a pack's bleed) the ground changes its
-## look and never its height. RIFTGATE_PAINTED_HEIGHTS=1 (any run) or a debug build's TRIALS →
-## PAINTED HEIGHTS (Settings.field_trial) turns it on; off, the painting is flat as it has been.
-static var heights := OS.get_environment("RIFTGATE_PAINTED_HEIGHTS") == "1"
+## the painted world used the same terrain 'heights?' Obviously done in its style"; then, of the
+## mock-up, "Lock the painted world height change, its subtle but things make more sense"). Every
+## hex of the painting stands at its column's own height in the reconstruction (lift_of: Map3D's
+## relief step, water sunk, to the nearest design pixel), a bank of the domain's rock (BANK_INKS)
+## down from its edge to each lower neighbour on the sides the view sees, the farthest hex first,
+## so where the painting meets the reconstruction (the seam, a pack's bleed) the ground changes its
+## look and never its height. Still the flattening: a 2D depiction of a hill, the camera fixed (his
+## ruling the same day, the bible's reconstruction row).
 
 ## Each domain's banks, the faces under a raised hex: `lip` the light along the top's edge,
 ## `lit` facing right, `face` the rest, `streak` the dark lines down them and `foot` the line where
@@ -805,8 +805,12 @@ static var _banks: Dictionary = {}   # a hex's banks by everything they depend o
 ## projected as the reconstruction's camera sees it, to the nearest design pixel, so the
 ## painting's pixels stay on their grid (within a pixel of the reconstruction's).
 static func lift_of(map: BattleMap, h: Vector2i, hex_px: float) -> int:
-	var e: int = map.elevation.get(h, 0)
-	var units: float = Map3D.WATER_DROP if e < 0 else float(e) * Map3D.STEP
+	return lift_of_step(map.elevation.get(h, 0), hex_px)
+
+
+## A relief step's lift in the painted world, in screen pixels (lift_of).
+static func lift_of_step(e: int, hex_px: float) -> int:
+	var units := Map3D.height_of_step(e)
 	var px := units * cos(deg_to_rad(Map3D.PITCH)) * hex_px / Map3D.HEX_WORLD
 	var s := scale_of(hex_px)
 	return roundi(px / float(s)) * s
@@ -825,11 +829,15 @@ static func column(map: BattleMap, h: Vector2i, c: Vector2, hex_px: float, cell:
 		drops.append(lift_of(map, n, hex_px) if map.has(n) or map.margin.has(n) else mini(lift, 0))
 	var col := {"c": c, "lift": lift, "drops": drops, "t": t, "seed": h.x * 131 + h.y * 7919, "links": road_links(map, h) if t == BattleMap.Terrain.ROAD else 0, "cell": cell, "tint": tint}
 	if t == BattleMap.Terrain.MOUNTAIN:
-		col["wall"] = {"look": str(map.wall_look.get(h, BattleMap.WALL_LOOKS[0])), "links": wall_links(map, h, true)}
+		var look := str(map.wall_look.get(h, BattleMap.WALL_LOOKS[0]))
+		if look == "chasms":
+			col["pit"] = true   # a chasm is its hex sunk deep, its walls its neighbours' banks
+		else:
+			col["wall"] = {"look": look, "links": wall_links(map, h, true)}
 	return col
 
 
-## The painting at the reconstruction's heights (`heights`), in one go: every hex of `cols`
+## The painting at the reconstruction's heights, in one go: every hex of `cols`
 ## (column's) up on its own height over its banks, the farthest (highest on screen) first, so a
 ## nearer raised hex laps over the foot of a farther one; a wall's range on its hex's top, what
 ## lies on it with it, and what stands on it among the hexes by its own foot.
@@ -888,6 +896,17 @@ static func _draw_column(ci: CanvasItem, key: String, col: Dictionary, hex_px: f
 	var banks := _column_faces(key, lift / s, drops, hex_px, s, int(col.get("seed", 0)) % 3)
 	if not banks.is_empty():
 		ci.draw_texture(banks["tex"], c.floor() + banks["at"], tint)
+	if bool(col.get("pit", false)):
+		# A chasm's floor, far down and dark, a few darker flecks on it; its walls are the banks of
+		# the hexes behind it, drawn down to it.
+		ci.draw_colored_polygon(MapOrient.corners(c, hex_px + 1.0), Color.BLACK)
+		var rng := RandomNumberGenerator.new()
+		rng.seed = int(col.get("seed", 0))
+		var dust := Color(str(BANK_INKS.get(key, BANK_INKS["plains"])["foot"])) * tint
+		for i in range(5):
+			var p := c + Vector2(rng.randf_range(-0.6, 0.6) * hex_px * 0.866, rng.randf_range(-0.2, 0.5) * hex_px)
+			ci.draw_rect(Rect2(p.floor(), Vector2(s, s)), dust)
+		return
 	if cell:
 		ci.draw_colored_polygon(MapOrient.corners(c, hex_px), Palette.BG)
 	else:
@@ -996,10 +1015,10 @@ static func _column_faces(key: String, lift: int, drops: PackedInt32Array, hex_p
 ## need to be represented in the painted world, for clarity"), told apart by their structure in
 ## every domain: crags peaks on a low base of rubble, mesas flat tops over banded faces, towers
 ## lit blocks on a plinth, cliffs a high plateau over cracked faces. Lit from the right as the
-## domains' sprites are, in each domain's own inks (RANGE_INKS). Every wall of a map goes down in
-## one call (draw_ranges): the bases, the farthest first; what lies on them; then what stands
-## on them, each by its own foot, so a nearer peak stands in front of a farther one whatever hex
-## each stands on.
+## domains' sprites are, in each domain's own inks (RANGE_INKS). Every hex of a map goes down in
+## one call (draw_columns), the farthest first, a wall's base on its hex's top and what stands on
+## it among the hexes by its own foot, so a nearer peak stands in front of a farther one whatever
+## hex each stands on.
 
 ## How each look of wall (BattleMap.WALL_LOOKS) stands, in design pixels: `lift`, how high its top
 ## stands off the ground; `lip`, whether the range's edge is broken rock or cut clean; `face`,
@@ -1068,51 +1087,11 @@ static func wall_links(map: BattleMap, h: Vector2i, by_height: bool = false) -> 
 	for i in range(Hex.DIRECTIONS.size()):
 		var n: Vector2i = h + Hex.DIRECTIONS[i]
 		if (map.has(n) or map.margin.has(n)) and map.terrain_of(n) == BattleMap.Terrain.MOUNTAIN and str(map.wall_look.get(n, "")) == look:
-			# At the reconstruction's heights (`heights`) a range joins only a wall at its own height.
+			# At the reconstruction's heights a range joins only a wall at its own height.
 			if by_height and int(map.elevation.get(n, 0)) != int(map.elevation.get(h, 0)):
 				continue
 			links |= 1 << i
 	return links
-
-
-## Every wall of a painted map, in one go: `walls`, each {"c": its hex's middle, "seed": int,
-## "look": a BattleMap.WALL_LOOKS word, "links": wall_links, "tint": what multiplies its colours
-## (the scenery's shade)}. The bases go down first, the farthest (highest on screen) first, so a
-## nearer top laps over the foot of a farther range; then what lies on the tops; then what stands
-## on them, each by its own foot.
-static func draw_ranges(ci: CanvasItem, walls: Array, hex_px: float, frame: int, biome: String) -> void:
-	var key := key_of(biome)
-	var s := scale_of(hex_px)
-	var order := walls.duplicate()
-	order.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-		var pa: Vector2 = a["c"]
-		var pb: Vector2 = b["c"]
-		return pa.y < pb.y or (is_equal_approx(pa.y, pb.y) and pa.x < pb.x))
-	var lies: Array = []
-	var stands: Array = []
-	for w in order:
-		var look := str(w.get("look", "crags"))
-		if not RANGE_LOOKS.has(look):
-			look = "crags"
-		var links := int(w.get("links", 0))
-		var tint: Color = w.get("tint", Color.WHITE)
-		var at: Vector2 = (w["c"] as Vector2).floor()
-		var base := _range_base(key, look, links, hex_px, s)
-		ci.draw_texture(base["tex"], at + base["at"], tint)
-		var rng := RandomNumberGenerator.new()
-		rng.seed = int(w.get("seed", 0))
-		for p in _range_props(key, look, links, hex_px, s, rng):
-			p["origin"] = at
-			p["tint"] = tint
-			(lies if bool(p["lies"]) else stands).append(p)
-	for p in lies:
-		_draw_range_prop(ci, key, p, s, frame)
-	stands.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-		var fa: Vector2 = (a["origin"] as Vector2) + (a["foot"] as Vector2) * a["s"]
-		var fb: Vector2 = (b["origin"] as Vector2) + (b["foot"] as Vector2) * b["s"]
-		return fa.y < fb.y or (is_equal_approx(fa.y, fb.y) and fa.x < fb.x))
-	for p in stands:
-		_draw_range_prop(ci, key, p, s, frame)
 
 
 static func _draw_range_prop(ci: CanvasItem, key: String, p: Dictionary, s: int, frame: int) -> void:

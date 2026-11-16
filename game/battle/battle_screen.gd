@@ -1338,9 +1338,11 @@ var _queue_pulse := false  # back from a fight with orders still waiting: the bu
 ## EXECUTE: the planned moves play on the map and the turn goes on, with no enemy turn (Ryan, 2
 ## November: "Movement should be able to be executed in sequence if the player wants, and
 ## undone"). UNDO still takes them back, in order, each machine set back where it stood
-## (Battle.take_plan). What is in hand stays in hand, to pick a target from where it now stands,
-## and its reach goes dark (Ryan, 16 November: "When Execute is clicked, the movement range
-## overlay should turn off if visible"): it was drawn from where the machine stood before.
+## (Battle.take_plan). Its reach goes dark as it plays (Ryan, 16 November: "When Execute is
+## clicked, the movement range overlay should turn off if visible"): it was drawn from where the
+## machine stood before. A machine's move is spent then but not its action (one move, then a
+## fight), so the machine in hand stays in hand once its move has played only while a pack is in
+## reach of where it stopped, that pack bracketed; with none it is let go.
 func _execute() -> void:
 	var plan := battle.take_plan()
 	if plan.is_empty():
@@ -1354,7 +1356,24 @@ func _execute() -> void:
 	_executing = true
 	_play_plan(plan, [], func() -> void:
 		_executing = false
+		var held: Unit = _map.selected
+		if held != null:
+			_select(held if _can_still_fight(held) else null)
 		_refresh())
+
+
+## Whether a machine may still be ordered onto a pack this turn: its action left and a pack in
+## reach of where it stands or of where its move could still take it (Battle.threat_for, as the
+## map brackets them).
+func _can_still_fight(u: Unit) -> bool:
+	var reach := battle.threat_for(u)
+	if reach.is_empty():
+		return false
+	for sq in battle.field.packs():
+		for x in sq.hexes():
+			if reach.has(x) or Hex.distance(x, u.pos) <= u.attack_range:
+				return true
+	return false
 
 
 ## END TURN: at once with nothing left to do; while a machine can still move or fight it asks

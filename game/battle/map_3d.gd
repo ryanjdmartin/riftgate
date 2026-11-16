@@ -49,6 +49,7 @@ const TERRAIN := {
 ## the spikes on top.
 const STEP := 7.0
 const WATER_DROP := -5.0
+const CHASM_DROP := -42.0   # a chasm's floor (the gorge's, 16 November): six steps down, out of sight of most of it
 
 ## The tile each terrain's top wears (art/terrain/<name>.png); sides wear rock.
 const TILE := {
@@ -123,6 +124,7 @@ var _base: Dictionary = {}      # unit id -> resting position, which the idle sw
 var _phase: Dictionary = {}     # unit id -> idle phase, so the team does not sway in step
 var _columns: Dictionary = {}   # hex -> Node3D at the hex's ground: the marks hang off it
 var _lift: Dictionary = {}      # hex -> how far above its grid cell the top sits on screen, in px
+var _void_mat: StandardMaterial3D = null   # a chasm's dark floor, one material for every chasm so they bake together
 var _top: Dictionary = {}       # hex -> the tallest thing standing on it, in model units above the ground
 var _materials: Dictionary = {} # tile name -> ShaderMaterial
 var _time: float = 0.0
@@ -269,7 +271,14 @@ func lift(h: Vector2i) -> float:
 
 ## A hex's ground height in model units, from the map's relief (margin hexes included).
 func _height_of(h: Vector2i) -> float:
-	var e: int = field.map.elevation.get(h, 0)
+	return height_of_step(field.map.elevation.get(h, 0))
+
+
+## A relief step's height in model units: a step up STEP each, water sunk, a chasm's floor deep
+## (BattleMap.elevation); the painted world stands at the same (DomainGround.lift_of).
+static func height_of_step(e: int) -> float:
+	if e <= -2:
+		return CHASM_DROP
 	return WATER_DROP if e < 0 else float(e) * STEP
 
 
@@ -1271,8 +1280,15 @@ func _build_ground() -> void:
 		var ground_t: int = map.crag_base.get(h, t) if t == BattleMap.Terrain.MOUNTAIN else t
 		var at_xf := Transform3D(Basis.IDENTITY, at)
 		var shaded: bool = scenery.has(h)   # past the field: in shade (SCENERY_SHADE)
+		var pit: bool = t == BattleMap.Terrain.MOUNTAIN and str(map.wall_look.get(h, "")) == "chasms"
 		var column: Array
-		if ground_t == BattleMap.Terrain.ROAD:
+		if pit:
+			# A chasm: the column sunk deep, its own walls rock from the ground down, its floor dark.
+			column = _column_geo(hgt, sides)
+			if _void_mat == null:
+				_void_mat = _flat(Color("07090c"))
+			_bake(column[0], at_xf, _void_mat, band, true)
+		elif ground_t == BattleMap.Terrain.ROAD:
 			# The road's links and its seed ride in the vertex colour (road.gdshader), so
 			# road hexes bake like any other and need nothing per instance.
 			var seed_f := fmod(float(h.x * 131 + h.y * 7919) * 0.0137, 1.0)
@@ -1282,10 +1298,10 @@ func _build_ground() -> void:
 			column = _column_geo(hgt, sides)
 			_bake(column[0], at_xf, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0, false, SCENERY_SHADE if shaded else 1.0), band, true)
 		_bake(column[1], at_xf, _terrain_material("rock", 0.0, false, SCENERY_SHADE) if shaded else rock, band, true)
-		if in_field and not (map.gate_hexes.has(h) or map.wall_hexes.has(h)):
+		if in_field and not pit and not (map.gate_hexes.has(h) or map.wall_hexes.has(h)):
 			# The grid is the display's own light, drawn on the ground in the scene so a
 			# raised hex hides the lines behind it; the wall and the machines hide it the
-			# same way, by standing on it.
+			# same way, by standing on it. Never down a chasm.
 			_bake(_grid_geo(hgt + 0.35), at_xf, _grid_material(), band, false)
 		rng.seed = h.x * 131 + h.y * 7919
 		if map.city.has(h) or _city_row(h):
@@ -1518,6 +1534,8 @@ func _wall_model(col: Node3D, look: String, hgt: float, rng: RandomNumberGenerat
 			return top
 		"cliffs":
 			return _cliff(col, hgt, rng)
+		"chasms":
+			return 0.0   # a chasm is its column, sunk: nothing stands in it
 	# Crags: rock spikes, leaning, filling the tile.
 	var rock_dark := _terrain_material("rock")
 	for k in range(6):
@@ -1799,20 +1817,15 @@ func sync() -> void:
 		var ground_y := y
 		if u.traits.has("flyer"):
 			# A flyer rides over whatever stands on its hex (Ryan, 22 September: no clipping
-			# through a mesa), just clear of the tallest thing there. Over ground the other
-			# world has taken, the painting is flat, so it flies level with it, and the
-			# height it flies at eases between hexes rather than stepping (Ryan, the same day).
-			var under_px: Vector2 = _origin + (_anim_px[u.id] if _anim_px.has(u.id) else MapOrient.to_pixel(_hex_of(u), hex_px))
-			# Whether the ground here is still the reconstruction's: the same threshold the
-			# compositor paints at, so the flyer clears the geometry wherever it can be seen
-			# and flies level only where the painting has taken it.
-			var solid := 1.0 if DomainGround.heights else Bleed.solid(under_px, grad, src)   # the painting at the reconstruction's heights (the mock-up): no flat ground to fly level with
+			# through a mesa), just clear of the tallest thing there, in either world (the
+			# painting stands at the same heights), and the height it flies at eases between
+			# hexes rather than stepping (Ryan, the same day).
 			var clear := maxf(0.0, float(_top.get(under, 0.0)) - _height_of(under) + 6.0 - HOVER)
-			var want := (_height_of(under) + clear) * solid
+			var want := _height_of(under) + clear
 			var prev: float = _fly_y.get(u.id, want)
 			y = lerpf(prev, want, 1.0 - exp(-_dt * 7.0))
 			_fly_y[u.id] = y
-			ground_y = _height_of(under) * solid
+			ground_y = _height_of(under)
 		if _anim_px.has(u.id):
 			_base[u.id] = _world(_anim_px[u.id], y)
 			if _shadows.has(u.id):

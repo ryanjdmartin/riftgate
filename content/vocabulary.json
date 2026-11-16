@@ -1272,6 +1272,16 @@
    }
   },
   {
+   "id": "chasms",
+   "category": "terrain",
+   "name": "Chasms",
+   "codex": "A sheer drop. Impassable, except to flyers and winged packs.",
+   "status": "implemented",
+   "design": {
+    "holes": ""
+   }
+  },
+  {
    "id": "flyer",
    "category": "trait",
    "name": "Flyer",

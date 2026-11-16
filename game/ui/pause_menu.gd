@@ -179,8 +179,6 @@ func _show_page(page: String) -> void:
 			_credit("The Barrier on the starting dice, or the Armoured basic in its slot. Next launch.")
 			_choice_row("SHIELD BREAK", "shield_break", Settings.SHIELD_BREAKS, Settings.SHIELD_BREAK_LABELS)   # the block (Ryan, 13 November: "when a shield breaks, it absorbs the whole blow"): Skirmish.shield_break, a what-if and no decision
 			_credit("A blow that breaks a shield is stopped whole. Next battle.")
-			_choice_row("PAINTED HEIGHTS", "painted_heights", Settings.PAINTED_HEIGHTS, Settings.PAINTED_HEIGHTS_LABELS)   # the painted world at the 3D map's heights, a mock-up (DomainGround.heights; Ryan, 16 November)
-			_credit("The painted world at the 3D map's heights: a mock-up. Next battle.")
 			_choice_row("FIELD DEPTH", "field_depth", Settings.FIELD_DEPTHS)   # the field's depth in rows, twelve the game's (Ramp.depth_trial; Ryan, 10 November: "I think the map is a bit too shallow")
 			_choice_row("OPENING", "field_opening", Settings.FIELD_OPENINGS, Settings.FIELD_OPENING_LABELS)   # how many moves farther from the wall the opening's packs stand (Battle.opening_trial): depth alone leaves their first walk on the wall
 			_credit("Rows from rift to wall; moves farther out the first packs stand. Next battle.")

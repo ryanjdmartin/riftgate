@@ -10221,3 +10221,16 @@ bible's shapes row (three dry ways at least on the delta).
 20 by 12 in the Waste, `RIFTGATE_BLEED_DEBUG` whole, 296 ms the badlands and 328 ms the city with
 the pieces filled a row's span at a time (574 and 787 ms filled pixel by pixel; the steppe, with
 none, 174 ms).
+
+## 16 November: the shapes relaid on Ryan's second notes
+
+**Every shape at the long wall's 20 by 12**, seeds 1 to 100 (`BattleMap.generate`), shares of the
+band the open rows a shape lays in; dry ways the disjoint land routes from the rift to the gate
+(`dry_crossing`), the crossing the horde's through walls (`narrowest_crossing`), both to nine.
+The river: water 45%, one narrow every seed, no dry way, the crossing 5. The river delta: water
+36% (23% as first cut, the channels then blind short of the team's ground), dry ways 5. The gorge:
+chasms 27% of the band (its cliff mass was 44%), water 1%, scree 11%, dry ways 4.0 and 2 at the
+least, the crossing 4.1 (3.8 before). The city: towers 41% (57% before), ruins ground 21% (the
+suburb, the streets and the plazas; 11% before), dry ways 4.2 (3.5 before). The steppe: walls 4%,
+every look of wall among its seeds, ruins 3%, water 4%. The badlands: scrub 34% of the field (53%
+before; 26% at a half), mesas 31%. Cited by the bible's shapes row.

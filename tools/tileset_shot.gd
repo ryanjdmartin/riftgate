@@ -4,7 +4,7 @@ extends SceneTree
 ## order, its four decorative grounds and then its water and walls, each a hex at the map's
 ## size; a patch of field mixing them all, its roads and its crags joined up as the map joins
 ## them; and a small range of each look of wall (BattleMap.WALL_LOOKS: crags, mesas, towers,
-## cliffs), each joined as a range is and ending as one does. Laid in the view's layout
+## cliffs, chasms), each joined as a range is and ending as one does, a chasm sunk. Laid in the view's layout
 ## (MapOrient: RIFTGATE_MAP_VIEW=left|bottom), posterized as the map's compositor posterizes the
 ## painted world (bleed.gdshader), so it shows what the map shows.
 ## Needs a renderer:
@@ -102,7 +102,7 @@ class Sheet extends Control:
 			for j in range(BattleMap.WALL_LOOKS.size()):
 				origins.append(Vector2(30.0 + j * (rb.size.x + 16.0), top) - rb.position)
 			_blocks.append([y, singles, patch_origin, origins])
-			right = maxf(right, maxf(px + pb.size.x, 30.0 + 4.0 * (rb.size.x + 16.0)))
+			right = maxf(right, maxf(px + pb.size.x, 30.0 + float(BattleMap.WALL_LOOKS.size()) * (rb.size.x + 16.0)))
 			y = top + rb.size.y + 40.0
 		return Vector2(right + 20.0, y)
 
@@ -137,40 +137,63 @@ class Sheet extends Control:
 			for k in range(GROUNDS.size()):
 				var t: int = GROUNDS[k]
 				var c: Vector2 = block[1][k]
-				DomainGround.draw_hex(self, c, HEX, t, 7919 * (i + 1) + 131 * k, frame, biome)
-				if t == BattleMap.Terrain.MOUNTAIN:
-					DomainGround.draw_ranges(self, [{"c": c, "seed": 7919 * (i + 1) + 131 * k, "look": "crags", "links": 0}], HEX, frame, biome)
+				DomainGround.draw_columns(self, [_col(c, t, 7919 * (i + 1) + 131 * k, 0, "crags", 0)], HEX, frame, biome)
 				var label := "walls" if t == BattleMap.Terrain.MOUNTAIN else str(BattleMap.TERRAIN_NAMES[t])
 				draw_string(font, Vector2(c.x - w * 0.5, c.y + HEX + 16.0), label, HORIZONTAL_ALIGNMENT_CENTER, w, 14, Palette.MUTED)
 			# The patch: the grounds as they lie together on a field, at the map's size, its walls a
 			# range of crags joined as the map joins them.
 			var origin: Vector2 = block[2]
-			var walls: Array = []
+			var cols: Array = []
 			for r in range(PATCH.size()):
 				for q in range(PATCH[r].size()):
 					var c := origin + MapOrient.to_pixel(Hex.offset_to_axial(q, r), HEX)
 					var t: int = GROUNDS[int(PATCH[r][q])]
-					DomainGround.draw_hex(self, c, HEX, t, 977 * (i + 1) + 37 * (r * 8 + q), frame, biome, _links(q, r) if t == BattleMap.Terrain.ROAD else 0)
-					if t == BattleMap.Terrain.MOUNTAIN:
-						walls.append({"c": c, "seed": 977 * (i + 1) + 37 * (r * 8 + q), "look": "crags", "links": _wall_links(q, r)})
-			DomainGround.draw_ranges(self, walls, HEX, frame, biome)
+					cols.append(_col(c, t, 977 * (i + 1) + 37 * (r * 8 + q), _links(q, r) if t == BattleMap.Terrain.ROAD else 0, "crags", _wall_links(q, r)))
+			DomainGround.draw_columns(self, cols, HEX, frame, biome)
 			# A small range of each look on its plain ground, joined where its hexes meet.
 			var ground := _range_ground()
 			for j in range(BattleMap.WALL_LOOKS.size()):
 				var look: String = BattleMap.WALL_LOOKS[j]
 				var base: Vector2 = block[3][j]
+				var range_cols: Array = []
+				var pit := DomainGround.lift_of_step(-2, HEX)   # a chasm's floor, deep
 				for hx in ground.keys():
-					DomainGround.draw_hex(self, base + MapOrient.to_pixel(hx, HEX), HEX, BattleMap.Terrain.PLAIN, 31 * (hx.x + 7) + 113 * (hx.y + 5) + j, frame, biome)
-				var range_walls: Array = []
+					if RANGE.has(hx):
+						continue
+					var col := _col(base + MapOrient.to_pixel(hx, HEX), BattleMap.Terrain.PLAIN, 31 * (hx.x + 7) + 113 * (hx.y + 5) + j, 0, "", 0)
+					if look == "chasms":
+						# Its banks go down into the chasm on the sides that face it.
+						var drops := PackedInt32Array()
+						for e in DomainGround._hex_edges(1.0):
+							drops.append(pit if RANGE.has(hx + Hex.DIRECTIONS[int(e["dir"])]) else 0)
+						col["drops"] = drops
+					range_cols.append(col)
 				for hx in RANGE:
 					var links := 0
 					for k in range(Hex.DIRECTIONS.size()):
 						if RANGE.has(hx + Hex.DIRECTIONS[k]):
 							links |= 1 << k
-					range_walls.append({"c": base + MapOrient.to_pixel(hx, HEX), "seed": 5003 * (i + 1) + 71 * (hx.x + 3) + 7 * (hx.y + 3) + j, "look": look, "links": links})
-				DomainGround.draw_ranges(self, range_walls, HEX, frame, biome)
+					var wall := _col(base + MapOrient.to_pixel(hx, HEX), BattleMap.Terrain.MOUNTAIN, 5003 * (i + 1) + 71 * (hx.x + 3) + 7 * (hx.y + 3) + j, 0, look, links)
+					if look == "chasms":
+						wall.erase("wall")
+						wall["pit"] = true
+						wall["lift"] = pit
+						var floor_drops := PackedInt32Array()
+						for e in DomainGround._hex_edges(1.0):
+							floor_drops.append(pit)
+						wall["drops"] = floor_drops
+					range_cols.append(wall)
+				DomainGround.draw_columns(self, range_cols, HEX, frame, biome)
 				var lb := _bounds(ground.keys())
 				draw_string(font, base + lb.position + Vector2(4.0, lb.size.y + 14.0), look, HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Palette.MUTED)
+
+	## One hex of the sheet for DomainGround.draw_columns, on level ground: a wall of `look` joined
+	## to `wall_links`, a road to `links`.
+	func _col(c: Vector2, t: int, seed_value: int, links: int, look: String, wall_links: int) -> Dictionary:
+		var col := {"c": c, "lift": 0, "drops": PackedInt32Array([0, 0, 0, 0, 0, 0]), "t": t, "seed": seed_value, "links": links, "cell": true, "tint": Color.WHITE}
+		if t == BattleMap.Terrain.MOUNTAIN:
+			col["wall"] = {"look": look, "links": wall_links}
+		return col
 
 	## The patch's roads beside one of its hexes (DomainGround.road_links), its rows laid
 	## odd-r as the map's are.

@@ -44,7 +44,6 @@ const DISPLAY_DEFAULTS := {
 	"overheat_burn": "1",   # OVERHEATS: a debug build's trial of the hull an overheat burns a point of excess (Skirmish.overheat_scale), read as a battle starts
 	"barrier_basic": "built",   # BARRIER_BASICS: a debug build's what-if, the Barrier basic off the stock dice with the Armoured basic in its slot (Refit's barrier=none), read at the next launch
 	"shield_break": "off",   # SHIELD_BREAKS: a debug build's trial of the block, the blow that breaks a shield stopped whole (Skirmish.shield_break), read as a battle starts
-	"painted_heights": "off",   # PAINTED_HEIGHTS: a debug build's mock-up, the painted world at the 3D map's heights (DomainGround.heights), read as a battle starts
 }
 const DISPLAY_RANGES := {
 	"brightness": Vector2(0.5, 1.5), "pace": Vector2(0.5, 2.0), "enemy_pace": Vector2(0.5, 3.75),
@@ -110,12 +109,6 @@ const OVERHEAT_LABELS := {"1": "×1", "2": "×2", "3": "×3"}
 ## bot's reads are docs/measurements.md, 13 November; nothing is decided.
 const SHIELD_BREAKS := ["off", "on"]
 const SHIELD_BREAK_LABELS := {"off": "BUILT", "on": "BLOCK"}
-## The painted world's heights as a mock-up, a debug build's (Ryan, 16 November: "Can you mock up
-## what it would look like if the painted world used the same terrain 'heights?' Obviously done in
-## its style"): flat as built, or every painted hex at its 3D column's height (DomainGround.heights),
-## so the seam and a pack's bleed change the ground's look and never its height.
-const PAINTED_HEIGHTS := ["off", "on"]
-const PAINTED_HEIGHTS_LABELS := {"off": "FLAT", "on": "3D HEIGHTS"}
 ## The Barrier basic's place as a what-if, a debug build's (Ryan, 12 November: "Is it toxic? ...
 ## Should it be rare or locked? An argument could be made that a chassis with barrier is a sub
 ## for a Tank on a team, and thus it's not widely available"): as built, on the stock dice where a
@@ -168,11 +161,11 @@ const STRIKES := ["10", "7", "5", "3"]
 
 ## Set the field's trial for the battles that start after this: RIFTGATE_FIELD_DEPTH,
 ## RIFTGATE_OPENING, RIFTGATE_FODDER, RIFTGATE_BEATS, RIFTGATE_TIDE, RIFTGATE_STRIKE,
-## RIFTGATE_OVERHEAT, RIFTGATE_SHIELD_BREAK (1, the block) and RIFTGATE_PAINTED_HEIGHTS (1, the
-## mock-up) on any run, else a debug build's nine settings when `saved` (the game's own
+## RIFTGATE_OVERHEAT and RIFTGATE_SHIELD_BREAK (1, the block) on
+## any run, else a debug build's eight settings when `saved` (the game's own
 ## entry points pass it; a scene run alone and the tests read the environment only, so no
 ## machine's saved settings move a test's field). Nothing set is the game's own field, meter,
-## tide, overheat, shield, heat and flat painting.
+## tide, overheat, shield and heat.
 static func field_trial(saved: bool = false) -> void:
 	var depth := OS.get_environment("RIFTGATE_FIELD_DEPTH")
 	var opening := OS.get_environment("RIFTGATE_OPENING")
@@ -182,7 +175,6 @@ static func field_trial(saved: bool = false) -> void:
 	var strike := OS.get_environment("RIFTGATE_STRIKE")
 	var burn := OS.get_environment("RIFTGATE_OVERHEAT")
 	var block := OS.get_environment("RIFTGATE_SHIELD_BREAK")
-	var heights := OS.get_environment("RIFTGATE_PAINTED_HEIGHTS")
 	if saved and OS.is_debug_build():
 		if depth.is_empty() and FIELD_DEPTHS.has(str(display.get("field_depth", ""))):
 			depth = str(display["field_depth"])
@@ -200,8 +192,6 @@ static func field_trial(saved: bool = false) -> void:
 			burn = str(display["overheat_burn"])
 		if block.is_empty() and str(display.get("shield_break", "")) == "on":
 			block = "1"
-		if heights.is_empty() and str(display.get("painted_heights", "")) == "on":
-			heights = "1"
 	Ramp.depth_trial = clampi(int(depth), 10, 24) if depth.is_valid_int() else 0
 	Battle.opening_trial = clampi(int(opening), 0, 3) if opening.is_valid_int() else 0
 	Battle.fodder_trial = clampi(int(fodder), 10, 100) if fodder.is_valid_int() else 100
@@ -212,7 +202,6 @@ static func field_trial(saved: bool = false) -> void:
 	Skirmish.overheat_scale = clampi(int(burn), 1, 10) if burn.is_valid_int() else 1
 	Skirmish.shield_break = block.is_valid_int() and int(block) > 0
 	Skirmish.shield_break_min = 0
-	DomainGround.heights = heights == "1"
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.

@@ -113,8 +113,9 @@ func test_a_planned_move_reads_execute_and_plays_with_the_turn_going_on() -> voi
 	assert_false(s._map.destinations.is_empty(), "the machine in hand shows its reach")
 	s._on_main_button()
 	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "EXECUTE plays the plan")
-	assert_true(s._map.destinations.is_empty() and s._map.threat.is_empty(), "and turns the reach off (Ryan, 16 November: \"When Execute is clicked, the movement range overlay should turn off if visible\")")
-	assert_eq(s._map.selected, a, "the machine still in hand, to pick a target from where it now stands")
+	assert_true(s._map.destinations.is_empty(), "and turns the reach off (Ryan, 16 November: \"When Execute is clicked, the movement range overlay should turn off if visible\")")
+	# Its move is spent, its action not: in hand only while a pack is in reach of where it stopped.
+	assert_eq(s._map.selected, a if s._can_still_fight(a) else null, "the machine in hand while it can still fight, let go when it cannot")
 	assert_eq(a.pos, ha, "the machine stands where it went")
 	assert_eq(b.field.phase, 0, "and the turn goes on")
 	assert_eq(b.state, Battle.State.PLAN, "the player's still")
@@ -1155,3 +1156,48 @@ func test_engage_counts_the_fights_waiting() -> void:
 	s._select(ms[2])
 	assert_false(s._queue_pulse, "until the player does something else")
 	s.free()
+
+
+## EXECUTE spends a machine's move, never its action (one move, then a fight): once the move has
+## played, the machine stays in hand with the packs in reach of where it stopped bracketed, or is
+## let go when no pack is in reach (Ryan, 16 November: "On execute, wouldn't its action be over,
+## then?").
+func test_after_execute_a_machine_stays_in_hand_only_while_it_can_still_fight() -> void:
+	var s := _screen()
+	var b := s.battle
+	var a: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	# A move that ends beside a pack: in hand after it plays, its fight bracketed.
+	var stop := Vector2i(-9999, -9999)
+	s._on_hex_tapped(a.pos)
+	for h in s._map.destinations.keys():
+		for n in Hex.neighbors(h):
+			if b.field.can_stand(sq, n) and b.field.unit_at(n) == null:
+				stop = h
+				sq.pos = n
+				break
+		if stop != Vector2i(-9999, -9999):
+			break
+	assert_true(stop != Vector2i(-9999, -9999), "a move that ends beside a pack")
+	s._select(a)
+	s._on_hex_tapped(stop)
+	s._select(a)
+	s._on_main_button()
+	assert_eq(a.pos, stop, "the move played")
+	assert_eq(s._map.selected, a, "the machine still in hand, a pack in reach")
+	assert_true(s._map.destinations.is_empty(), "no move left to light")
+	assert_false(s._map.threat.is_empty(), "its reach for a fight drawn from where it stopped")
+	s.free()
+	# A move with no pack anywhere near: let go once it plays.
+	var s2 := _screen()
+	var b2 := s2.battle
+	var m: Unit = b2.mechs()[0]
+	for p in b2.field.packs():
+		p.pos = b2.field.map.rift
+	s2._on_hex_tapped(m.pos)
+	var to: Vector2i = s2._map.destinations.keys()[0]
+	s2._on_hex_tapped(to)
+	s2._select(m)
+	s2._on_main_button()
+	assert_eq(s2._map.selected, null, "no pack in reach: the machine let go")
+	s2.free()

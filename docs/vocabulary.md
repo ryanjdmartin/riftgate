@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 189 implemented, 6 planned, 0 idea.
+Status: 190 implemented, 6 planned, 0 idea.
 
 ## Resource
 
@@ -202,6 +202,7 @@ Status: 189 implemented, 6 planned, 0 idea.
 | **Mesas** | Flat-topped rock. Impassable, except to flyers and winged packs. | implemented |
 | **Towers** | Dead skyscrapers. Impassable, except to flyers and winged packs. | implemented |
 | **Cliffs** | A wall of rock. Impassable, except to flyers and winged packs. | implemented |
+| **Chasms** | A sheer drop. Impassable, except to flyers and winged packs. | implemented |
 
 ## Trait
 
