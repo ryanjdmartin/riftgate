@@ -31,8 +31,9 @@ word above. The other directions stay for the session:
   point more. The line frame's combo counts blows on anything; this counts blows on one foe.
 - **The burrow** (from the bench, 17 October; Ryan called it "hilarious"). Spent on itself, it goes
   under and every foe aiming at it re-picks. That form was broken on the spider and was a reverse
-  Lure without the choice. It is sound only with Phased's rule (only before it acts), and it is
-  the time-shifter's shift (`aphelion_time_shifter.md`).
+  Lure without the choice. It was sound only with Phased's rule as it then stood (only before it
+  acts; since 16 November Phased is granted as the round ends and the machine acts through it),
+  and it is the time-shifter's shift (`aphelion_time_shifter.md`).
 
 ## Mock-ups and rough kits (15 November)
 
@@ -102,14 +103,16 @@ reboot, the game's rule since 15 November: the rules' The reboot and the refit b
      or over a tier's blows is immunity (the lure tank's hole and section 12's floor of 1), and
      2 over a base of 1 shrugs off tier one's rank and file.
 3. **It comes up under them**, an ambusher, and the long shot.
-   - Its locked piece: the Burrow, equipment spent on itself before it acts (Phased's rule),
-     cooldown 1. Phased until the round's end, underground; as it surfaces it is Spun Up (its
-     next weapon 2 more a stack, two stacks) and that weapon reaches any foe.
-   - The decision: reading the picks. A foe aiming at it picks again as it dives, so a dive
-     moves a blow onto an ally; it dives when the squad can take that, and comes up where the
-     fight wants one big blow.
-   - Under the reboot: nothing in it grants shield, regen or cooling. A Phased machine cannot
-     reboot, so a dive is cover with no recovery: it spares a shield that will not mend.
+   - Its locked piece: the Burrow, equipment spent on itself, cooldown 1. It lays Phased's wait,
+     so as the enemy's turn ends it goes under, Phased through the next round and acting while
+     it is (Phased as the rules have it since 16 November); the first weapon it fires there is
+     Spun Up (2 more a stack, two stacks) and reaches any foe.
+   - The decision: reading the next round. No foe picks it while it is under, so a dive moves
+     next round's blows onto its allies; it dives when the squad can take that, and comes up
+     where the fight wants one big blow.
+   - Under the reboot: nothing in it grants shield, regen or cooling. A Phased machine may
+     reboot, and that reboot is the safe one (the rules' reboot), so the Burrow is also its
+     own cover for a reboot, two actions spent for a recovery nothing reaches.
    - Holes: a tank that sends its blows to its allies is a tank backwards (the burrow above, a
      reverse Lure) and off Minerva's line ("Everything is a tank, even the ones with legs");
      Phased is the shadow panther's orbit by his word of 11 November; its rhythm waits on one
@@ -199,10 +202,57 @@ Set aside with its rule, his to overrule: undermined ground, a point more for ea
 round its target (the Lammergeier's row: "A chassis based around opening an empty spot isn't a
 good design").
 
+## The tempo bruiser (16 November)
+
+Ryan, 16 November, on the three glues: "The drill tank reboot is cool, not sure how to connect it
+with "drill tank", but it's a great hook for a Minervan machine: tempo bruiser. Maybe can be
+tweaked a bit." So the dive is the slot's hook, its role a tempo bruiser, and the drill is
+open. Claude's round on it, for him to move:
+
+**Read as a system.** The dive gives back the turn every other machine pays for a reboot and
+keeps the bare enemy turn, so:
+
+- Heat stops being its pace and becomes a burst's budget. It opens every double round cold, so
+  its two spends together must fit under its maximum; past it, the overheat breaks the shield
+  it has just got back and burns hull at that END TURN. So it wants the hottest guns, the big
+  numbers other machines cannot sustain, two of them a burst: a build question that is its own.
+- Its cadence reads the foes' blows. Diving every other round is bare at every other enemy turn
+  with a whole shield at the rest; diving seldom is bare once and a shield that wears down. At
+  tier one's small blows the slow cadence loses less hull, against big blows the fast one does,
+  and the fast one keeps it cold for the hot guns: no line wins everywhere.
+- Minerva's plate is what pays for the bare turns: its base armour stands while its shield is
+  down. So a bruiser's hull and base armour, numbers rather than a rule, are its toughness.
+- Its threats are the foes that find a broken shield (the exposed aim) and big single blows on
+  its bare turns, and the counterplay on its side is choosing when to dive; that is the system
+  the defence side's pass sizes the foes against.
+
+**How it ties to the drill.** The reboot is the drill's act, never a pause: while it reboots it
+bores into the ground and the hull settles, still in the fight; as the burst round opens it
+comes up with the drill screaming. That is a model's act, judged running once there is one.
+If that does not land, the hook needs no drill: the slot is Minerva's tier one, and its look can
+follow the hook (a heavy brawler that winds up and unloads), a new round of looks once he says.
+
+**Tweaks, his to take or leave.**
+
+1. *As is* (Claude's lean): the round after it reboots it acts twice, its die rolling again
+   after its first spend. Two actions bunch the tempo: a brace and a blow, or two kills before
+   the foes act again.
+2. *The drill's form*: the round after it reboots, its first weapon strikes twice. Simpler for a
+   tier one and tied to the drill, but damage alone, one target and heat paid once, so it is
+   the stronger per heat and the poorer in choices.
+3. *Fight, then dive*: it may reboot after its first spend, so its reboot costs no turn and
+   nothing bunches. The steady form, if a double round is too swingy at tier one; less tempo,
+   so less of what he named.
+4. *Dug in*, a dial on any of them: Armoured 1 while it reboots. It softens the bare turn, and
+   at tier one's blows of 2 or 3 a point of armour takes a third to a half of each, so it tips
+   the cadence to the fast one against most of tier one; Claude's lean is the numbers above
+   instead.
+
 ## Open for the session
 
-1. Its hook: his read of the three glues (16 November), the rough kits its parts; or none.
-2. Its look: his pick from the three mock-ups, or another round once it has its glue.
+1. Its hook: the dive, a tempo bruiser (his of 16 November); which tweak, or none.
+2. Its look: whether the drill ties to it (the reboot as the drill's act), or a look that
+   follows the hook; then a round of looks.
 3. Its tier: it or the Wild Boar comes down to tier one.
 4. Its numbers, stock and locked piece.
 
