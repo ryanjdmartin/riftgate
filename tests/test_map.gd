@@ -168,6 +168,7 @@ func test_each_shape_lays_what_its_name_says() -> void:
 	# channels through cliff mass, the city's streets between large blocks, the badlands' small
 	# obstacles on open ground in groups; no wall on the team's ground.
 	var delta_thick := {}   # a size -> [the delta's water hexes with four of water round them, its water hexes], over the seeds
+	var steppe_cliffs := [0, 0]   # the steppe's cliff hexes and its wall hexes, fields twelve wide or more, over the seeds
 	for size in SIZES:
 		var w: int = size[0]
 		var h: int = size[1]
@@ -300,6 +301,9 @@ func test_each_shape_lays_what_its_name_says() -> void:
 						assert_true(water.size() >= (1 if w >= 12 else 0) and water.size() <= 8 * maxi(1, w / 8), "%s: a little lake of five to eight for every eight columns: %d" % [tag, water.size()])
 						for hx in walls:
 							assert_true(m.wall_look[hx] != "chasms", "%s: no chasm, the gorge's own" % tag)
+							if w >= 12:
+								steppe_cliffs[0] += 1 if m.wall_look[hx] == "cliffs" else 0
+								steppe_cliffs[1] += 1
 						if w >= 12:
 							var kinds := {}
 							for hx in walls:
@@ -360,6 +364,8 @@ func test_each_shape_lays_what_its_name_says() -> void:
 								massed += 1
 						if w >= 12:
 							assert_true(massed * 20 <= walls.size() * 3, "%s: the chasms a hex wide, where three chunks meet aside: %d of %d hexes with land on one side or none" % [tag, massed, walls.size()])
+	# Then "Agreed about the cliffs. They can take a larger share of the Steppe's crags": about half.
+	assert_true(steppe_cliffs[0] * 100 >= steppe_cliffs[1] * 35, "the steppe's cliffs the larger share of its walls: %d of %d hexes" % steppe_cliffs)
 	for key in delta_thick.keys():
 		var sum: Array = delta_thick[key]
 		assert_true(int(sum[0]) * 2 <= int(sum[1]), "delta %s: the streams a hex wide, half their hexes or fewer with four of water round them over the seeds: %d of %d" % [key, int(sum[0]), int(sum[1])])

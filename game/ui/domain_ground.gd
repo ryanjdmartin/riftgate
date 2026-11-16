@@ -828,6 +828,17 @@ static func column(map: BattleMap, h: Vector2i, c: Vector2, hex_px: float, cell:
 		# Past the map's end a raised hex's bank runs down to the ground.
 		drops.append(lift_of(map, n, hex_px) if map.has(n) or map.margin.has(n) else mini(lift, 0))
 	var col := {"c": c, "lift": lift, "drops": drops, "t": t, "seed": h.x * 131 + h.y * 7919, "links": road_links(map, h) if t == BattleMap.Terrain.ROAD else 0, "cell": cell, "tint": tint}
+	if t == BattleMap.Terrain.WATER:
+		# A flooded stretch spills into a chasm beside it: its bank there is a waterfall.
+		var falls := 0
+		var k := 0
+		for e in _hex_edges(1.0):
+			var n: Vector2i = h + Hex.DIRECTIONS[int(e["dir"])]
+			if map.terrain_of(n) == BattleMap.Terrain.MOUNTAIN and str(map.wall_look.get(n, "")) == "chasms":
+				falls |= 1 << k
+			k += 1
+		if falls != 0:
+			col["falls"] = falls
 	if t == BattleMap.Terrain.MOUNTAIN:
 		var look := str(map.wall_look.get(h, BattleMap.WALL_LOOKS[0]))
 		if look == "chasms":
@@ -893,7 +904,7 @@ static func _draw_column(ci: CanvasItem, key: String, col: Dictionary, hex_px: f
 	var drops := PackedInt32Array()
 	for d in col["drops"]:
 		drops.append(int(d) / s)
-	var banks := _column_faces(key, lift / s, drops, hex_px, s, int(col.get("seed", 0)) % 3)
+	var banks := _column_faces(key, lift / s, drops, hex_px, s, int(col.get("seed", 0)) % 3, int(col.get("falls", 0)), frame)
 	if not banks.is_empty():
 		ci.draw_texture(banks["tex"], c.floor() + banks["at"], tint)
 	if bool(col.get("pit", false)):
@@ -923,13 +934,17 @@ static func _draw_column(ci: CanvasItem, key: String, col: Dictionary, hex_px: f
 ## in `drops` (design pixels, _hex_edges' order) where that is lower and the view sees the side
 ## (its normal down the screen, never edge-on); a light lip under the top's edge, lit facing
 ## right, streaked, a dark foot where it meets the ground below. Cached by everything it depends on; `variant` moves the streaks.
+## A side in `falls` (a bit a side, _hex_edges' order) is a waterfall instead (Ryan, 16 November:
+## "Is there any way to get a water tile on Gorge to waterfall if it touches a chasm?"): the domain's
+## liquid falling from a white lip, foam running down it a step further each of the painting's two
+## frames, sinking to its deep tone toward the dark below and spraying at the foot.
 ## {"tex", "at": its top left from the hex's lifted middle in screen pixels}, or empty where
 ## nothing drops.
-static func _column_faces(key: String, lift: int, drops: PackedInt32Array, hex_px: float, s: int, variant: int) -> Dictionary:
+static func _column_faces(key: String, lift: int, drops: PackedInt32Array, hex_px: float, s: int, variant: int, falls: int = 0, frame: int = 0) -> Dictionary:
 	var parts: Array = []
 	for d in drops:
 		parts.append(str(d))
-	var ck := "%s/%d/%s/%d/%d/%d/%d" % [key, lift, ",".join(parts), roundi(hex_px * 4.0), s, int(MapOrient.wall_left), variant]
+	var ck := "%s/%d/%s/%d/%d/%d/%d/%d/%d" % [key, lift, ",".join(parts), roundi(hex_px * 4.0), s, int(MapOrient.wall_left), variant, falls, frame if falls != 0 else 0]
 	if _banks.has(ck):
 		return _banks[ck]
 	var r := hex_px / float(s)
@@ -940,6 +955,11 @@ static func _column_faces(key: String, lift: int, drops: PackedInt32Array, hex_p
 	var c_face := Color(str(src["face"])).to_abgr32()
 	var c_streak := Color(str(src["streak"])).to_abgr32()
 	var c_foot := Color(str(src["foot"])).to_abgr32()
+	var liquid: Dictionary = LIQUIDS.get(key, LIQUIDS["plains"])
+	var w_body := Color(str(liquid["body"])).to_abgr32()
+	var w_rim := Color(str(liquid["rim"])).to_abgr32()
+	var w_deep := Color(str(liquid["deep"])).to_abgr32()
+	var w_glint := Color(str((liquid["glints"] as Array)[0])).to_abgr32()
 	var seen: Array = []
 	var top := INF
 	var bottom := -INF
@@ -970,6 +990,7 @@ static func _column_faces(key: String, lift: int, drops: PackedInt32Array, hex_p
 		var n: Vector2 = e["n"]
 		var tone := c_lit if n.x > 0.3 else c_face
 		var fall := float(lift - drops[k])
+		var spills: bool = (falls & (1 << int(k))) != 0
 		for px in range(w):
 			var x := float(x0 + px) + 0.5
 			var t := (x - a.x) / (b.x - a.x)
@@ -987,7 +1008,24 @@ static func _column_faces(key: String, lift: int, drops: PackedInt32Array, hex_p
 					continue
 				var u := y - y_top   # down from the lip
 				var col := tone
-				if y >= y_foot - 1.0:
+				if spills:
+					# The fall: a white lip, the body sinking to its deep tone a third of the way
+					# from the foot, lanes of foam in dashes that drop three pixels a frame, spray
+					# at the foot.
+					var lane := _noise_at(x0 + px, k, 29)
+					var period := 6 + lane % 4
+					var dash := posmod(int(u) - 3 * frame + lane, period) < 2
+					if y >= y_foot - 2.0:
+						col = w_rim
+					elif u < 1.0:
+						col = w_rim
+					elif lane < 112 and dash:
+						col = w_glint
+					elif u > fall * 0.66:
+						col = w_deep
+					else:
+						col = w_body
+				elif y >= y_foot - 1.0:
 					col = c_foot
 				elif u < 1.0:
 					col = c_lip

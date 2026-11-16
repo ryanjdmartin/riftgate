@@ -160,3 +160,31 @@ func test_a_chasm_has_a_dim_floor_and_a_stream() -> void:
 		reach = maxf(reach, Vector2(p.x, p.z).dot(way.normalized()))
 	assert_true(absf(reach - way.length() * 0.5) <= Map3D.CHASM_STREAM_WIDTH, "running to the edge it shares with the next chasm: %.1f of %.1f" % [reach, way.length() * 0.5])
 	m.free()
+
+
+## Where a flooded stretch of the gorge meets a chasm, the chasm's wall there is a waterfall in the
+## machines' world (Ryan, 16 November: "Is there any way to get a water tile on Gorge to waterfall if
+## it touches a chasm?"): a sheet from the water's level down to the chasm's floor, its UV along the
+## lip and down the fall, drawn by its own shader.
+func test_a_flooded_stretch_falls_into_the_chasm_beside_it() -> void:
+	var m := Map3D.new()
+	m.hex_px = 44.0
+	m._ppu = m.hex_px / Map3D.HEX_WORLD
+	m._sin = sin(deg_to_rad(Map3D.PITCH))
+	var geo := m._falls_geo([0], Map3D.CHASM_DROP)
+	var v: PackedVector3Array = geo["v"]
+	var uv: PackedVector2Array = geo["uv"]
+	assert_eq(v.size(), 6, "one sheet on the one edge")
+	var lo := INF
+	var hi := -INF
+	for p in v:
+		lo = minf(lo, p.y)
+		hi = maxf(hi, p.y)
+	assert_eq([hi, lo], [Map3D.WATER_DROP, Map3D.CHASM_DROP], "from the water's level to the chasm's floor")
+	var reach := Rect2(uv[0], Vector2.ZERO)
+	for c in uv:
+		reach = reach.expand(c)
+	assert_eq(reach, Rect2(0.0, 0.0, 1.0, 1.0), "along the lip and down the fall")
+	assert_eq(m._falls_material().shader.resource_path, "res://game/battle/waterfall.gdshader", "drawn as falling water")
+	m.free()
+

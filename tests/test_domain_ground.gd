@@ -418,3 +418,57 @@ func test_a_raised_hex_has_a_bank_where_it_drops_toward_the_view() -> void:
 					var p := img.get_pixel(x, y)
 					if p.a > 0.5:
 						assert_true(inks.has(p.to_html(false)), "%s's banks are inked in its own colours (#%s)" % [key, p.to_html(false)]))
+
+
+## A flooded stretch spills into a chasm beside it (Ryan, 16 November: "Is there any way to get a
+## water tile on Gorge to waterfall if it touches a chasm?"): the water's bank on that side, where
+## the view sees it, is its domain's liquid falling rather than rock, in the tileset's own colours,
+## its foam a step further down in the painting's second frame.
+func test_water_beside_a_chasm_falls_into_it() -> void:
+	_in_both_views(func(view: String) -> void:
+		var map := BattleMap.flat(9, 12)
+		var w := Hex.offset_to_axial(4, 5)
+		var edges := DomainGround._hex_edges(24.0)
+		var k := -1
+		for i in range(6):
+			var n: Vector2 = edges[i]["n"]
+			if n.y >= 0.5:
+				k = i
+				break
+		assert_true(k >= 0, "a side the view sees, %s" % view)
+		var below: Vector2i = w + Hex.DIRECTIONS[int(edges[k]["dir"])]
+		map.terrain[w] = BattleMap.Terrain.WATER
+		map.elevation[w] = -1
+		map.terrain[below] = BattleMap.Terrain.MOUNTAIN
+		map.wall_look[below] = "chasms"
+		map.elevation[below] = -2
+		var col := DomainGround.column(map, w, Vector2.ZERO, 48.0, true, Color.WHITE)
+		assert_eq(int(col.get("falls", 0)), 1 << k, "the water's side on the chasm falls, %s" % view)
+		var s := DomainGround.scale_of(48.0)
+		var drops := PackedInt32Array()
+		for d in col["drops"]:
+			drops.append(int(d) / s)
+		for key in DomainGround.TILESETS.keys():
+			var liquid: Dictionary = DomainGround.LIQUIDS[key]
+			var inks := {}
+			for v in DomainGround.INKS[key].values():
+				inks[Color(str(v)).to_html(false)] = true
+			for v in [liquid["body"], liquid["rim"], liquid["deep"]] + (liquid["glints"] as Array):
+				inks[Color(str(v)).to_html(false)] = true
+			var frames: Array = []
+			for frame in [0, 1]:
+				var faces := DomainGround._column_faces(str(key), int(col["lift"]) / s, drops, 48.0, s, 0, int(col["falls"]), frame)
+				assert_false(faces.is_empty(), "%s: a bank into the chasm, %s" % [key, view])
+				frames.append((faces["tex"] as Texture2D).get_image())
+			var img: Image = frames[0]
+			var body := 0
+			for y in range(img.get_height()):
+				for x in range(img.get_width()):
+					var p := img.get_pixel(x, y)
+					if p.a <= 0.5:
+						continue
+					assert_true(inks.has(p.to_html(false)), "%s: the fall in its own colours (#%s), %s" % [key, p.to_html(false), view])
+					body += 1 if p.to_html(false) == Color(str(liquid["body"])).to_html(false) else 0
+			assert_true(body > 0, "%s: its liquid falling, %s" % [key, view])
+			assert_true((frames[0] as Image).get_data() != (frames[1] as Image).get_data(), "%s: its foam moving between the frames, %s" % [key, view]))
+

@@ -1286,7 +1286,7 @@ a stat.
   blocks you: Gorge (chunks of land split by chasms a hex wide winding along their borders, the
   field's and the scenery's alike, each chunk joined to a chunk beside it by a land bridge a hex
   wide or by none where the chunks stay joined the long way round; a stretch of chasm flooded now
-  and then; scree at the chasms' edges), Ruined City (blocks of towers in a grid of streets:
+  and then, spilling into the chasm beside it as a waterfall; scree at the chasms' edges), Ruined City (blocks of towers in a grid of streets:
   avenues one wide from the wall toward the rift four to five columns apart, the gate's always
   one and two wide, cross-streets along the wall every third row so a block is two rows deep, an
   avenue segment fallen in now and then, on a field twelve wide or more a suburb of ruins between
@@ -1295,8 +1295,8 @@ a stat.
   hex of ground between any two groups so no straight path crosses, two or three ponds of two to
   four hexes, scrub at about two thirds of the mesas' feet). And Open Steppe, the baseline and
   the anything-goes ground, clear but never bare (a wall of one to three hexes for every six
-  columns of the width, each of another look, any but the gorge's chasm, a little lake of five to
-  eight hexes for every eight and a patch of ruins of two to four for every ten, always laid,
+  columns of the width, half of them cliffs and the rest each of another look, never the gorge's
+  chasm and never in front of the rift, a little lake of five to eight hexes for every eight and a patch of ruins of two to four for every ten, always laid,
   scrub in belts over about a sixth of the field, grass on the open ground). A battle that names no shape draws one by its seed, never by
   its domain. Every map guarantees the horde a crossing three hexes wide or more through its
   walls; the ground beside the rift (its mouth, where the packs land) and the gate, and the two
@@ -1306,6 +1306,8 @@ a stat.
   lone raised hex, water sunk and a chasm deep, and the scenery past the edges rises to three.
   The painted world stands at the same heights. A chasm is a black pit in the painting; in the
   machines' world its rock darkens down to a dim gravel floor with a stream winding along it.
+  Water beside a chasm falls into it, a waterfall from the water's edge to the floor in the
+  machines' world and the water's bank drawn falling in the painting.
 - **Moving**: a machine's move is a count of hexes, each step one hex, and a chassis has one
   way of moving (tracked, walker, wheeled, hover or flyer), which is its look and its footfall
   and never a rule of its own. Open ground (plain, road), rough and ruins are ground to

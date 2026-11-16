@@ -784,18 +784,30 @@ func _lay_badlands(rng: RandomNumberGenerator) -> void:
 ## (Ryan, 10 November: "Steppe is VERY barren"; 16 November: "Open steppe is still too sparse"),
 ## and the anything-goes ground (the same day: "I think Open Steppe is the anything-goes terrain,
 ## it pulls from all the others in small doses. Multiple crag types, even"; then "Water features
-## can be larger where they appear. Little lakes ... I guess use every crag EXCEPT gorge's, now"):
-## a wall of one to three hexes for every six columns of the width, each of another look (a crag,
-## a mesa's spires, a cliff, a lone tower; never the gorge's chasm); a little lake of five to eight
-## hexes, round, for every eight; a patch of ruins of two to four for every ten; scrub in belts
-## from a seeded noise over about a sixth of it, the one rise, grass on the open field (the dress)
-## and the odd crag out in the scenery.
+## can be larger where they appear. Little lakes ... I guess use every crag EXCEPT gorge's, now"; then
+## "Agreed about the cliffs. They can take a larger share of the Steppe's crags"): a wall of one to
+## three hexes for every six columns of the width, half of them cliffs, the steppe's own look since
+## the gorge's went to chasms, and the rest each of another look (a crag, a mesa's spires, a lone
+## tower; never the gorge's chasm); a little lake of five to eight hexes, round, for every eight; a
+## patch of ruins of two to four for every ten; scrub in belts from a seeded noise over about a
+## sixth of it, the one rise, grass on the open field (the dress) and the odd crag out in the
+## scenery.
 const STEPPE_PER := 8         # columns of the width a lake
 const STEPPE_LAKE := [5, 8]   # a lake's hexes, from the first to the second
 const STEPPE_CRAG_PER := 6    # columns of the width a wall
 const STEPPE_RUINS_PER := 10  # columns of the width a patch of ruins
-const STEPPE_LOOKS := ["crags", "mesas", "cliffs", "towers"]   # the walls it draws from, each once before any twice: every look but the gorge's
+const STEPPE_CLIFFS := 0.5    # the share of its walls that are cliffs, rounded up
+const STEPPE_LOOKS := ["crags", "mesas", "towers"]   # the rest of its walls, each once before any twice: every look but the gorge's
 const STEPPE_SCRUB := 0.17    # the share of the field in scrub belts
+
+
+## An array shuffled in place by the map's seed.
+static func _shuffle(rng: RandomNumberGenerator, arr: Array) -> void:
+	for i in range(arr.size() - 1, 0, -1):
+		var j := rng.randi_range(0, i)
+		var t = arr[i]
+		arr[i] = arr[j]
+		arr[j] = t
 
 
 ## How many lakes the steppe takes: one for every STEPPE_PER columns, one at least.
@@ -810,13 +822,19 @@ func _lay_steppe(rng: RandomNumberGenerator) -> void:
 		if not _grow(rng, spots, rng.randi_range(int(STEPPE_LAKE[0]), int(STEPPE_LAKE[1])), "", 2, true).is_empty():
 			ponds += 1
 	var looks: Array = STEPPE_LOOKS.duplicate()
-	for i in range(looks.size() - 1, 0, -1):
-		var j := rng.randi_range(0, i)
-		var t: String = looks[i]
-		looks[i] = looks[j]
-		looks[j] = t
-	for i in range(maxi(1, width / STEPPE_CRAG_PER)):
-		_grow(rng, spots, rng.randi_range(1, 3), str(looks[i % looks.size()]), 2)
+	_shuffle(rng, looks)
+	var count := maxi(1, width / STEPPE_CRAG_PER)
+	var cliffs := ceili(float(count) * STEPPE_CLIFFS)
+	# The other looks first, so each finds room among the lakes; then the cliffs. None in front of
+	# the rift, where the mouth is bared of walls once the shape is laid (_clear_ends).
+	var wall_spots: Array = spots.filter(func(hx: Vector2i) -> bool: return Hex.distance(hx, rift) > 2)
+	var walls: Array = []
+	for i in range(count - cliffs):
+		walls.append(str(looks[i % looks.size()]))
+	for i in range(cliffs):
+		walls.append("cliffs")
+	for look in walls:
+		_grow(rng, wall_spots, rng.randi_range(1, 3), str(look), 2)
 	var ruins: Array = []
 	for i in range(maxi(1, width / STEPPE_RUINS_PER)):
 		ruins.append_array(_grow_ground(rng, spots, rng.randi_range(2, 4), 1))

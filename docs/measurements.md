@@ -10253,4 +10253,8 @@ streams at the least at 20 wide, five or six at 30. The old field's narrow sizes
 42%, ruins ground 22% (the suburb and its one plaza, the streets), dry ways 4.1. The steppe: water
 8% (its lakes, 4% as ponds), walls 4% of every look but the chasm, ruins 3%. The river, the gorge
 and the badlands as the second notes left them (45% water; chasms 27%, dry ways 4.0; scrub 36% of
-the band). Cited by the bible's shapes row.
+the band). Then the cliffs half the steppe's walls, on his word the same evening: 67% of its wall
+hexes at 20 by 12 (two walls of three), on every one of 100 seeds; laid after the other looks and
+kept off the rift's mouth, since a wall laid there first was bared away with the mouth on some
+seeds (8 and 16 at 20 by 12) and left the cliffs alone. A gorge's flooded stretch touches a chasm,
+so falls into it, on 21 of the first 80 seeds at 20 by 12. Cited by the bible's shapes row.

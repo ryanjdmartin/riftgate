@@ -350,6 +350,52 @@ func _chasm_material(tile: String, ripple: float = 0.0, floor_shade: float = CHA
 	return _materials[key]
 
 
+const NO_HEX := Vector2i(-99999, -99999)
+
+
+## Whether a hex is a chasm: a wall of the chasms' look, sunk deep.
+func _is_chasm(h: Vector2i) -> bool:
+	return field.map.terrain_of(h) == BattleMap.Terrain.MOUNTAIN and str(field.map.wall_look.get(h, "")) == "chasms"
+
+
+## The waterfalls down a chasm's walls where a flooded stretch beside it spills in: on each edge in
+## `edges` (_column_geo's order), a sheet from the water's level down to the floor at `floor_h`, its
+## UV along the lip and down the fall for waterfall.gdshader, facing into the chasm.
+func _falls_geo(edges: Array, floor_h: float) -> Dictionary:
+	var corners := MapOrient.corners(Vector2.ZERO, hex_px - 0.75)
+	var n := corners.size()
+	var v := PackedVector3Array()
+	var nn := PackedVector3Array()
+	var uv := PackedVector2Array()
+	for i in edges:
+		var a := _world(corners[i], 0.0)
+		var b := _world(corners[(i + 1) % n], 0.0)
+		var mid := (a + b) * 0.5
+		var nrm := -Vector3(mid.x, 0.0, mid.z).normalized()
+		var at_top := Vector3(a.x, WATER_DROP, a.z)
+		var bt_top := Vector3(b.x, WATER_DROP, b.z)
+		var a_foot := Vector3(a.x, floor_h, a.z)
+		var b_foot := Vector3(b.x, floor_h, b.z)
+		var quad := [[at_top, Vector2(0, 0)], [bt_top, Vector2(1, 0)], [b_foot, Vector2(1, 1)], [at_top, Vector2(0, 0)], [b_foot, Vector2(1, 1)], [a_foot, Vector2(0, 1)]]
+		for q in quad:
+			v.append(q[0])
+			uv.append(q[1])
+			nn.append(nrm)
+	return {"v": v, "n": nn, "uv": uv}
+
+
+var _falls_mat: ShaderMaterial = null
+
+func _falls_material() -> ShaderMaterial:
+	if _falls_mat == null:
+		_falls_mat = ShaderMaterial.new()
+		_falls_mat.shader = load("res://game/battle/waterfall.gdshader")
+		var path := "res://art/terrain/%s.png" % TILE[BattleMap.Terrain.WATER]
+		if ResourceLoader.exists(path):
+			_falls_mat.set_shader_parameter("tile", load(path))
+	return _falls_mat
+
+
 ## The stream on a chasm's floor, about the hex's middle: a ribbon CHASM_STREAM_WIDTH across from
 ## the middle to the edge it shares with each neighbouring chasm (or a flooded stretch of one),
 ## bending a little on the way and straight again at the edge so the next hex's half meets it, and
@@ -364,7 +410,7 @@ func _stream_geo(h: Vector2i) -> Dictionary:
 	for d in Hex.DIRECTIONS:
 		var nb: Vector2i = h + d
 		var wet: bool = map.terrain_of(nb) == BattleMap.Terrain.WATER
-		if not (wet or (map.terrain_of(nb) == BattleMap.Terrain.MOUNTAIN and str(map.wall_look.get(nb, "")) == "chasms")):
+		if not (wet or _is_chasm(nb)):
 			continue
 		links += 1
 		var to := _hex_world(nb) - here
@@ -1320,15 +1366,19 @@ func _build_ground() -> void:
 		var hgt := _height_of(h)
 		# Which edges need a wall: those facing a neighbour at another height, or none.
 		var sides: Array = []
+		var beyond: Array = []   # the hex across each edge, or NO_HEX past the scenery
 		var here := MapOrient.to_pixel(h, hex_px)
 		for i in range(corners.size()):
 			var mid: Vector2 = (corners[i] + corners[(i + 1) % corners.size()]) * 0.5
 			var across := here + mid * 2.0
 			var other: float = -999.0
+			var who := NO_HEX
 			for nb in Hex.neighbors(h):
 				if (map.has(nb) or map.margin.has(nb)) and MapOrient.to_pixel(nb, hex_px).distance_to(across) < hex_px * 0.5:
 					other = _height_of(nb)
+					who = nb
 			sides.append(absf(other - hgt) > 0.01)
+			beyond.append(who)
 		var band := _band(h)
 		_bake(rim, Transform3D(Basis.IDENTITY, at + Vector3(0, minf(0.0, hgt) - 0.2, 0)), rim_mat, band, false)
 		# One node at ground level per hex: the marks hang off it.
@@ -1344,7 +1394,19 @@ func _build_ground() -> void:
 		var ground_t: int = map.crag_base.get(h, t) if t == BattleMap.Terrain.MOUNTAIN else t
 		var at_xf := Transform3D(Basis.IDENTITY, at)
 		var shaded: bool = scenery.has(h)   # past the field: in shade (SCENERY_SHADE)
-		var pit: bool = t == BattleMap.Terrain.MOUNTAIN and str(map.wall_look.get(h, "")) == "chasms"
+		var pit: bool = _is_chasm(h)
+		# A flooded stretch beside a chasm spills into it: the chasm's wall on that edge is a
+		# waterfall from the water's level to its floor, and the water keeps no bank there.
+		var falls: Array = []
+		for i in range(sides.size()):
+			var nb: Vector2i = beyond[i]
+			if nb == NO_HEX:
+				continue
+			if pit and map.terrain_of(nb) == BattleMap.Terrain.WATER:
+				falls.append(i)
+				sides[i] = false
+			elif t == BattleMap.Terrain.WATER and _is_chasm(nb):
+				sides[i] = false
 		var column: Array
 		if pit:
 			# A chasm: the column sunk deep, its own walls rock from the ground down darkening as
@@ -1352,6 +1414,8 @@ func _build_ground() -> void:
 			column = _column_geo(hgt, sides)
 			_bake(column[0], at_xf, _chasm_material("gravel"), band, true)
 			_bake(_stream_geo(h), at_xf, _chasm_material("water", 1.0, CHASM_STREAM_SHADE), band, false)
+			if not falls.is_empty():
+				_bake(_falls_geo(falls, hgt), at_xf, _falls_material(), band, false)
 		elif ground_t == BattleMap.Terrain.ROAD:
 			# The road's links and its seed ride in the vertex colour (road.gdshader), so
 			# road hexes bake like any other and need nothing per instance.
