@@ -183,6 +183,40 @@ const COLLAPSE = {at: 0.3, heft: 0.3, sink: 0.28, waist: 16, passes: 2, touch: 0
 const COLLAPSE_SKIP = ["hip", "knee", "ankle", "toe", "foot", "coxa", "wheel", "steer", "caster", "tread", "rotor", "fan", "drum", "louvre",
   "shutter", "vent", "valve", "run", "salvo", "top_mouth", "top_lamp", "cell", "recoil", "capacitor", "rudder", "waist", "yaw", "turret", "sensor", "eye"];
 function hitK(t) { if (t < 0 || t >= HIT.up + HIT.hold + HIT.down) return 0; if (t < HIT.up) return t / HIT.up; if (t < HIT.up + HIT.hold) return 1; const g = (t - HIT.up - HIT.hold) / HIT.down; return (1 - g) * (1 - g); }
+// The lowest point of the shown surfaces under a node, each mesh's matrix from `matrixOf`, read on
+// every vertex it has (MechRig._lowest_under reads its hull's corners, the same lowest point; a
+// box's corners stood a turned part off the floor, 16 November). A geometry's points are kept
+// once, without repeats.
+const POINTS = new WeakMap();
+function pointsOf(geo) {
+  let pts = POINTS.get(geo);
+  if (pts) return pts;
+  const a = geo.attributes.position, seen = new Set(), out = [];
+  for (let i = 0; i < a.count; i++) {
+    const x = a.getX(i), y = a.getY(i), z = a.getZ(i), k = x.toFixed(5) + "," + y.toFixed(5) + "," + z.toFixed(5);
+    if (!seen.has(k)) { seen.add(k); out.push(x, y, z); }
+  }
+  pts = new Float32Array(out);
+  POINTS.set(geo, pts);
+  return pts;
+}
+function lowestOf(node, matrixOf) {
+  let low = Infinity;
+  const walk = (o) => {
+    if (o.visible === false) return;
+    if (o.isMesh && o.geometry && o.geometry.attributes.position && !o.userData.halo) {
+      const e = matrixOf(o).elements, pts = pointsOf(o.geometry);
+      for (let i = 0; i < pts.length; i += 3) {
+        const y = e[1] * pts[i] + e[5] * pts[i + 1] + e[9] * pts[i + 2] + e[13];
+        if (y < low) low = y;
+      }
+    }
+    for (const c of o.children) walk(c);
+  };
+  walk(node);
+  return low;
+}
+const DEAD_PAINT = 0.1;   // MechRig.DEAD_PAINT: a lit part's paint once its light is out, a dead booster dark
 function gutterK(t) { if (t >= GUTTER) return 0; const f = t / GUTTER; return (1 - f) * (1 - f) * ((t % 0.13) < 0.05 ? 0.35 : 1); }
 // A lit material's light at rest, kept the first time it is asked (MechRig._rest_of), so a standing
 // glow that raises it is never taken for its rest.
@@ -831,7 +865,7 @@ class Rig {
     this.flashes = [];
     const mats = [];
     this.model.traverse(n => { if (n.isMesh && !n.userData.halo) for (const m of [].concat(n.material)) if (m.userData.lit && !mats.includes(m)) mats.push(m); });
-    this.gutter = {t: 0, mats: mats.map(m => [m, m.emissiveIntensity])};
+    this.gutter = {t: 0, mats: mats.map(m => [m, m.emissiveIntensity, m.color.clone()])};
     if (this.forms["@death"]) { this.settleDeath(); this.formOn["@death"] = true; this.collapse = -1; this.collapseFloor = 0; }   // its own death (MechRig.kill)
     else this.collapse = 0;
   }
@@ -851,18 +885,8 @@ class Rig {
     this.body.position.set(this.bodyRestPos.x + bo.x, this.bodyRestPos.y + bo.y, this.bodyRestPos.z + bo.z);
     this.body.rotation.set(this.bodyRestRot.x + be.x, this.bodyRestRot.y + be.y, this.bodyRestRot.z + be.z, "YXZ");
     this.body.updateMatrixWorld(true);
-    const parentInv = new T.Matrix4().copy(this.body.parent ? this.body.parent.matrixWorld : new T.Matrix4()).invert(), v = new T.Vector3();
-    let low = Infinity;
-    const walk = (o) => {
-      if (o.visible === false) return;
-      if (o.isMesh && o.geometry && !o.userData.halo) {
-        if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
-        const bb = o.geometry.boundingBox, m = new T.Matrix4().multiplyMatrices(parentInv, o.matrixWorld);
-        for (let k = 0; k < 8; k++) { v.set(k & 1 ? bb.max.x : bb.min.x, k & 2 ? bb.max.y : bb.min.y, k & 4 ? bb.max.z : bb.min.z).applyMatrix4(m); if (v.y < low) low = v.y; }
-      }
-      for (const c of o.children) walk(c);
-    };
-    walk(this.model);
+    const parentInv = new T.Matrix4().copy(this.body.parent ? this.body.parent.matrixWorld : new T.Matrix4()).invert();
+    const low = lowestOf(this.model, o => new T.Matrix4().multiplyMatrices(parentInv, o.matrixWorld));
     for (const [jn, j] of Object.entries(this.joints)) j.rotation.copy(saved[jn]);
     this.body.position.copy(savedPos); this.body.rotation.copy(savedRot); this.body.updateMatrixWorld(true);
     if (low === Infinity) return;
@@ -874,7 +898,7 @@ class Rig {
   revive() {
     if (!this.dead) return;
     this.dead = false;
-    for (const [m] of (this.gutter || {mats: []}).mats) this.lightTo(m, restOf(m), 1);
+    for (const [m, , c] of (this.gutter || {mats: []}).mats) { this.lightTo(m, restOf(m), 1); m.color.copy(c); }   // its light and its paint as they were
     this.gutter = null;
     this.collapse = -1; this.collapseFloor = 0; this.spinK = 1; this.wantRot = {}; this.bodyWantRot = v3(); this.bodyWantSlide = v3();
     if (this.forms["@death"]) { this.formOn["@death"] = false; this.formT["@death"] = 0; this.formsApply(); }   // stood up at once (MechRig.revive)
@@ -938,20 +962,7 @@ class Rig {
   inModel(node) { return new window.THREE.Matrix4().multiplyMatrices(this.modelInv, node.matrixWorld); }
   jointDepth(node) { let n = 0; const all = new Set(Object.values(this.joints)); for (let p = node.parent; p && p !== this.model; p = p.parent) if (all.has(p)) n++; return n; }
   // MechRig._lowest_under: the lowest point of the shown surfaces under a node, in the model's frame.
-  lowestUnder(node) {
-    const T = window.THREE, v = new T.Vector3(); let low = Infinity;
-    const walk = (o) => {
-      if (o.visible === false) return;
-      if (o.isMesh && o.geometry && !o.userData.halo) {
-        if (!o.geometry.boundingBox) o.geometry.computeBoundingBox();
-        const bb = o.geometry.boundingBox, m = this.inModel(o);
-        for (let k = 0; k < 8; k++) { v.set(k & 1 ? bb.max.x : bb.min.x, k & 2 ? bb.max.y : bb.min.y, k & 4 ? bb.max.z : bb.min.z).applyMatrix4(m); if (v.y < low) low = v.y; }
-      }
-      for (const c of o.children) walk(c);
-    };
-    walk(node);
-    return low;
-  }
+  lowestUnder(node) { return lowestOf(node, o => this.inModel(o)); }
   // MechRig._subtree_centre: the centroid of every shown vertex under a node, in the model's frame.
   subtreeCentre(node) {
     const T = window.THREE, sum = new T.Vector3(); let n = 0;
@@ -1070,9 +1081,10 @@ class Rig {
   stepGutter(dt) {
     if (!this.gutter || this.gutter.t >= GUTTER) return false;
     this.gutter.t += dt;
-    const k = gutterK(this.gutter.t);
-    for (const [m, e] of this.gutter.mats) {
+    const k = gutterK(this.gutter.t), f = clamp(this.gutter.t / GUTTER, 0, 1), paint = 1 + (DEAD_PAINT - 1) * (1 - (1 - f) * (1 - f));
+    for (const [m, e, c] of this.gutter.mats) {
       m.emissiveIntensity = e * k;
+      m.color.copy(c).multiplyScalar(paint);   // the paint darkens with the light, steadily (MechRig)
       for (const h of this.halos.get(m) || []) { h.uniforms.light.value = Math.pow(m.emissiveIntensity, 1 / 2.2); h.uniforms.presence.value = 0; }
     }
     return true;

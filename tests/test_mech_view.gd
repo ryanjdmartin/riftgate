@@ -508,6 +508,29 @@ func test_a_blow_flashes_the_hull_on_a_beat_and_the_shield_takes_its_own() -> vo
 	assert_eq(SkirmishScreen.blow_took(false, false, 0), "block", "the armour turning it")
 
 
+func test_a_lost_machines_lit_parts_go_dark_and_a_revive_gives_them_back() -> void:
+	# Ryan, 16 November: "Boosters should go dark, if possible": a lost machine's lit parts lose
+	# their paint with their light, a dead booster dark rather than its hot colour.
+	var view := MechView3D.make("kite", "kestrel", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64), false, {}, [])
+	var lit: Array = []
+	view.rig._lit_under(view._model, lit)
+	assert_true(lit.size() > 0, "the Kite has lit parts")
+	var paint := {}
+	for m in lit:
+		paint[m] = (m as StandardMaterial3D).albedo_color
+	view.lose()
+	view._process(MechRig.GUTTER + 0.01)
+	for m in lit:
+		var was: Color = paint[m]
+		var now: Color = (m as StandardMaterial3D).albedo_color
+		assert_true(absf(now.r - was.r * MechRig.DEAD_PAINT) < 0.01 and absf(now.g - was.g * MechRig.DEAD_PAINT) < 0.01, "its lit paint went dark (%s from %s)" % [now, was])
+		assert_true((m as StandardMaterial3D).emission_energy_multiplier < 0.001, "and its light is out")
+	view.rig.revive()
+	for m in lit:
+		assert_eq((m as StandardMaterial3D).albedo_color, paint[m], "a revive gives its paint back")
+	view.free()
+
+
 func test_a_struck_machine_wears_heats_flash_and_a_lost_one_dims() -> void:
 	var db := ContentDB.load_default()
 	var view := MechView3D.make("polar_bear", "minerva", "clean", "", MechView3D.YAW_FRONT, Vector2i(96, 96), false, {}, [])
@@ -616,9 +639,11 @@ func test_a_lost_flyer_comes_down_onto_its_lowest_point() -> void:
 					n = n.get_parent()
 				if shown and (mi as MeshInstance3D).mesh != null and not mi.has_meta("halo") and not mi.has_meta("plume") and not mi.has_meta("is_trace"):
 					var xf := view.rig.body.transform * view.rig._in_model(mi)
-					for k in range(8):
-						low = minf(low, (xf * (mi as MeshInstance3D).get_aabb().get_endpoint(k)).y)
-			assert_true(absf(low - view.rig._body_rest_pos.y) < 0.6, "and its pose rests its lowest point on it (%.2f)" % low)
+					var mesh: Mesh = (mi as MeshInstance3D).mesh
+					for si in range(mesh.get_surface_count()):
+						for v in (mesh.surface_get_arrays(si)[Mesh.ARRAY_VERTEX] as PackedVector3Array):
+							low = minf(low, (xf * v).y)   # the parts themselves, never their boxes
+			assert_true(absf(low - view.rig._body_rest_pos.y) < 0.05, "and its pose rests its lowest point on it (%.2f)" % low)
 		else:
 			assert_true(lands < 0.0, "a hover with none settles past its origin onto its skirt")
 		view.free()

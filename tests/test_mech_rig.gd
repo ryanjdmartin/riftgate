@@ -1788,7 +1788,8 @@ func test_a_lost_machine_slumps_and_its_spins_run_down() -> void:
 
 
 
-## The lowest point of what a rig's body carries, where the body stands (in its parent's frame).
+## The lowest point of what a rig's body carries, where the body stands (in its parent's frame),
+## read on every vertex of every shown mesh: the parts themselves, never their boxes.
 func _lowest_standing(rig: MechRig) -> float:
 	var low := INF
 	for mi in rig.model.find_children("*", "MeshInstance3D", true, false):
@@ -1800,10 +1801,61 @@ func _lowest_standing(rig: MechRig) -> float:
 		if not shown or (mi as MeshInstance3D).mesh == null or mi.has_meta("halo") or mi.has_meta("plume") or mi.has_meta("is_trace"):
 			continue
 		var xf := rig.body.transform * rig._in_model(mi)
-		var bb := (mi as MeshInstance3D).get_aabb()
-		for k in range(8):
-			low = minf(low, (xf * bb.get_endpoint(k)).y)
+		var mesh: Mesh = (mi as MeshInstance3D).mesh
+		for si in range(mesh.get_surface_count()):
+			var verts = mesh.surface_get_arrays(si)[Mesh.ARRAY_VERTEX]
+			if verts is PackedVector3Array:
+				for v in verts:
+					low = minf(low, (xf * v).y)
 	return low
+
+
+func test_the_floor_is_read_on_a_part_never_its_box() -> void:
+	# 16 November: a turned part's box reached below the part, so a death set down on box corners
+	# rested on air, up to a twentieth of the machine's size off the floor.
+	var rig := MechRig.new()
+	var model := Node3D.new()
+	var mi := MeshInstance3D.new()
+	var tube := SphereMesh.new()   # a ball's box stands out past it at every corner
+	tube.radius = 1.0
+	tube.height = 2.0
+	mi.mesh = tube
+	mi.rotation = Vector3(0.0, 0.0, deg_to_rad(45.0))
+	mi.position = Vector3(0.0, 5.0, 0.0)
+	model.add_child(mi)
+	rig.model = model
+	var truth := INF
+	for v in (tube.surface_get_arrays(0)[Mesh.ARRAY_VERTEX] as PackedVector3Array):
+		truth = minf(truth, (mi.transform * v).y)
+	var box := INF
+	var bb := tube.get_aabb()
+	for k in range(8):
+		box = minf(box, (mi.transform * bb.get_endpoint(k)).y)
+	assert_true(box < truth - 0.2, "the ball's box reaches below the ball (%.2f against %.2f)" % [box, truth])
+	assert_true(absf(rig._lowest_under(model) - truth) < 0.01, "the floor reads the ball itself (%.2f against %.2f)" % [rig._lowest_under(model), truth])
+	model.free()
+
+
+func test_every_death_rests_on_what_touches_the_floor() -> void:
+	# Ryan, 16 November: "some of these look like they aren't touching the ground. Like the badger
+	# seems like it raises up on its arms, baboon lifts its legs with fists on the ground": a death
+	# lies on the floor, its lowest point on it, and rests on what touches it, its middle inside the
+	# outline of what lies there (MechRig.rest_of), never propped on a limb's tip.
+	var read := 0
+	for id in MACHINES:
+		var side := MechRig.load_sidecar(id)
+		if (side.get("death", {}) as Dictionary).is_empty():
+			continue
+		var pair := _rig_for(id)
+		var rig: MechRig = pair[0]
+		rig.kill()
+		rig.tick(float(rig.forms[MechRig.DEATH]["duration"]) + 1.0)
+		var r := rig.rest_of()
+		assert_true(absf(float(r["low"])) < 0.005, "%s lies on the floor (%+.1f%% of its size)" % [id, 100.0 * float(r["low"])])
+		assert_true(float(r["margin"]) > 0.0, "%s rests on what touches (%s), its middle inside it (%+.1f%%; it would tip %s)" % [id, ", ".join(r["touching"]), 100.0 * float(r["margin"]), r["tips"]])
+		read += 1
+		pair[1].free()
+	assert_true(read >= 20, "the roster's deaths read (%d)" % read)
 
 
 func test_a_death_pose_goes_in_place_of_the_slump_and_rests_on_the_floor() -> void:

@@ -78,6 +78,7 @@ const JOLT_PITCH := 6.0       # rocking its nose up this many degrees,
 const JOLT_UP := 0.05         # in this many seconds,
 const JOLT_DOWN := 0.34       # and settling back over this long
 const GUTTER := 0.9           # a machine lost: its lit parts gutter out over this many seconds (kill)
+const DEAD_PAINT := 0.1        # what a lit part's paint keeps once its light has guttered out: a dead booster, lamp or glow goes dark, never its hot colour (Ryan, 16 November: "Boosters should go dark, if possible")
 # And then it slumps (Ryan, 3 November: "they should slump or collapse after, limbs dropping, flyers
 # and hovers landing, fans stopping, idle spins stopping"), one rule every model shares, worked on
 # its own frame; the second notes the same day: "don't fall through the floor, and don't do weird
@@ -215,10 +216,11 @@ var _flashes: Array = []           # [{mats, base, t}] a weapon's fire flaring (
 var dead := false                  # the machine is lost: no acts, its lit parts dark (kill)
 var halo_skip: Array = []          # lit parts that wear no halo, set before setup: a booster burning as a plume (MechView3D)
 var _gutter := -1.0                # seconds into its lit parts guttering out (kill); negative when not
-var _gutter_mats: Array = []       # [material, its light at rest] for every lit part, as the kill found them
+var _gutter_mats: Array = []       # [material, its light at rest, its paint at rest] for every lit part, as the kill found them
 var _size := -1.0                  # the model's longest side, measured once (_model_size), for the jolt
 var _collapse := -1.0              # seconds since a lost machine was killed, for its slump (kill); negative while standing
 var _centroids: Dictionary = {}     # mesh -> [its vertex centroid, its vertex count] (_centroid_of)
+var _hulls: Dictionary = {}         # mesh -> the corners of its convex hull, in its own frame (_hull_of)
 var airborne := false              # a flyer or a hover (the view sets it): lost, it comes down onto its lowest point rather than sinking on its limbs
 var collapse_floor := 0.0          # the floor a lost machine's slump keeps to, in its own frame: an airborne one's lowest point standing, where the view lands it (MechView3D.lose)
 var _spin_k := 1.0                 # how much of its turn every spinner keeps: running down to nothing as a lost machine dies
@@ -1113,10 +1115,14 @@ func _step(dt: float) -> bool:
 	if _gutter >= 0.0:
 		_gutter += dt
 		var k := gutter_k(_gutter)
+		var f := clampf(_gutter / GUTTER, 0.0, 1.0)
+		var paint := lerpf(1.0, DEAD_PAINT, 1.0 - (1.0 - f) * (1.0 - f))   # the paint darkens with the light, steadily
 		for pair in _gutter_mats:
 			var m: StandardMaterial3D = pair[0]
 			var e := float(pair[1]) * k
 			m.emission_energy_multiplier = e
+			var c: Color = pair[2]
+			m.albedo_color = Color(c.r * paint, c.g * paint, c.b * paint, c.a)
 			for h in _halos.get(m, []):
 				(h as ShaderMaterial).set_shader_parameter("light", e)
 				(h as ShaderMaterial).set_shader_parameter("presence", 0.0)
@@ -1232,9 +1238,10 @@ func _joint_depth(node: Node) -> int:
 	return n
 
 
-## The lowest point of what a node carries, in the model's frame: the shown surfaces under it (a
-## halo, a flare, a plume, an outline's hull or anything hidden aside); INF when it carries none.
-func _lowest_under(node: Node) -> float:
+## The lowest point of what a node carries, in the model's frame (`frame` times it: the body's
+## parent's, for a death's settle): the shown surfaces under it (a halo, a flare, a plume, an
+## outline's hull or anything hidden aside), read on their hulls' corners; INF when it carries none.
+func _lowest_under(node: Node, frame := Transform3D.IDENTITY) -> float:
 	var low := INF
 	var stack: Array = [node]
 	while not stack.is_empty():
@@ -1247,11 +1254,29 @@ func _lowest_under(node: Node) -> float:
 			var mi := n as MeshInstance3D
 			if mi.mesh == null:
 				continue
-			var xf := _in_model(mi)
-			var bb := mi.get_aabb()
-			for k in range(8):
-				low = minf(low, (xf * bb.get_endpoint(k)).y)
+			var xf := frame * _in_model(mi)
+			for v in _hull_of(mi.mesh):
+				low = minf(low, (xf * v).y)
 	return low
+
+
+## The corners of a mesh's convex hull in its own frame, worked out once a mesh: its lowest point
+## under any turn is one of them (16 November: a box's corners stood a turned part off the floor,
+## its death resting on air up to a twentieth of its size).
+func _hull_of(mesh: Mesh) -> PackedVector3Array:
+	if _hulls.has(mesh):
+		return _hulls[mesh]
+	var pts := PackedVector3Array()
+	var shape := mesh.create_convex_shape(true, false)
+	if shape != null:
+		pts = shape.points
+	if pts.is_empty():
+		for si in range(mesh.get_surface_count()):
+			var verts = mesh.surface_get_arrays(si)[Mesh.ARRAY_VERTEX]
+			if verts is PackedVector3Array:
+				pts.append_array(verts)
+	_hulls[mesh] = pts
+	return pts
 
 
 ## The limbs a walker stands on, each [root, middle, end]: a leg's hip, knee and ankle, and an arm's
@@ -1493,8 +1518,9 @@ func jolt(away: Vector3, k: float = 1.0) -> void:
 
 
 ## The machine is lost (the kill's beat, Ryan's go of 3 November): its act stops, no other starts,
-## and every lit part gutters out over GUTTER, flickering as it dies, its halo with it; it stays
-## dark. revive() lights it again (the hit debug switch's machines come back).
+## and every lit part gutters out over GUTTER, flickering as it dies, its halo with it and its
+## paint darkening to DEAD_PAINT of itself; it stays dark. revive() lights it again and gives the
+## paint back (the hit debug switch's machines come back).
 func kill() -> void:
 	if dead:
 		return
@@ -1508,7 +1534,7 @@ func kill() -> void:
 		_lit_under(model, mats)
 		for m in mats:
 			_rest_of(m)   # its rest kept before it dims, for revive()
-			_gutter_mats.append([m, (m as StandardMaterial3D).emission_energy_multiplier])
+			_gutter_mats.append([m, (m as StandardMaterial3D).emission_energy_multiplier, (m as StandardMaterial3D).albedo_color])
 	_gutter = 0.0
 	if forms.has(DEATH):
 		# Its own death in place of the slump: the pose set down on its lowest point, and nothing for
@@ -1529,6 +1555,7 @@ func revive() -> void:
 	_gutter = -1.0
 	for pair in _gutter_mats:
 		_light_to(pair[0], _rest_of(pair[0]), 1.0)
+		(pair[0] as StandardMaterial3D).albedo_color = pair[2]   # its paint as it was
 	_gutter_mats.clear()
 	_collapse = -1.0
 	collapse_floor = 0.0
@@ -1568,22 +1595,7 @@ func _settle_death() -> void:
 		(joints[jn] as Node3D).rotation = _rest[jn] + euler_of(Vector3(float(v[0]), float(v[1]), float(v[2])) + (_form_rot.get(jn, Vector3.ZERO) as Vector3))
 	body.position = _body_rest_pos + offset_of(slide + _form_body_slide)
 	body.rotation = _body_rest_rot + euler_of(turn + _form_body_rot)
-	var low := INF
-	var stack: Array = [model]
-	while not stack.is_empty():
-		var n: Node = stack.pop_back()
-		if n is Node3D and not (n as Node3D).visible:
-			continue
-		for c in n.get_children():
-			stack.append(c)
-		if n is MeshInstance3D and not n.has_meta("halo") and not n.has_meta("plume") and not n.has_meta("is_trace"):
-			var mi := n as MeshInstance3D
-			if mi.mesh == null:
-				continue
-			var xf := body.transform * _in_model(mi)
-			var bb := mi.get_aabb()
-			for k in range(8):
-				low = minf(low, (xf * bb.get_endpoint(k)).y)
+	var low := _lowest_under(model, body.transform)
 	for jn in saved.keys():
 		(joints[jn] as Node3D).rotation = saved[jn]
 	body.position = saved_pos
@@ -1600,6 +1612,87 @@ func _settle_death() -> void:
 			row.append(0.0)
 		row[3] = float(row[3]) + lift * clampf(float(row[0]) / d, 0.0, 1.0)
 	f["curves"][BODY] = curve(raw, d, "smooth")
+
+
+## Where the machine lies now over its floor (its body's rest height, or what a slumped flyer's view
+## lands it on): {"low": its lowest point's height off the floor, "top": its highest's, "size": its
+## size, "touching": the
+## joints whose parts lie within `touch` of its size of its lowest point ("hull" for what no joint
+## carries), "margin": how far its middle lies inside the outline of what touches, a share of its
+## size, below zero where it would tip, and "tips": which way it would go then (forward, back,
+## left, right)}. Read on the hulls' corners, as the death's settle reads them; the middle is every
+## vertex's. A death rests when its margin is above zero (16 November: one propped on an arm's
+## tip, or on its fists with its legs in the air, did not; tools/death_floor.gd, the tests).
+func rest_of(touch := 0.02) -> Dictionary:
+	var frame := body.transform   # the body's parent's frame, as the death's settle reads it
+	var floor_y := _body_rest_pos.y + collapse_floor
+	var by_node := {}
+	for jn in joints.keys():
+		by_node[joints[jn]] = str(jn)
+	var parts: Array = []   # [joint, PackedVector3Array of its hull's corners where it lies now]
+	var lo := Vector3(INF, INF, INF)
+	var hi := Vector3(-INF, -INF, -INF)
+	var mid := Vector3.ZERO
+	var count := 0
+	var stack: Array = [model]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		if n is Node3D and not (n as Node3D).visible:
+			continue
+		for c in n.get_children():
+			stack.append(c)
+		if not (n is MeshInstance3D) or n.has_meta("halo") or n.has_meta("plume") or n.has_meta("is_trace"):
+			continue
+		var mi := n as MeshInstance3D
+		if mi.mesh == null:
+			continue
+		var xf := frame * _in_model(mi)
+		var pts := PackedVector3Array()
+		for v in _hull_of(mi.mesh):
+			var p := xf * v
+			pts.append(p)
+			lo = lo.min(p)
+			hi = hi.max(p)
+		var c: Array = _centroid_of(mi.mesh)
+		mid += (xf * (c[0] as Vector3)) * float(c[1])
+		count += int(c[1])
+		var owner := "hull"
+		var up := mi.get_parent()
+		while up != null and up != model:
+			if by_node.has(up):
+				owner = by_node[up]
+				break
+			up = up.get_parent()
+		parts.append([owner, pts])
+	if parts.is_empty() or count == 0:
+		return {}
+	var size := (hi - lo).length()
+	var band := lo.y + touch * size
+	var foot := PackedVector2Array()
+	var touching := {}
+	for part in parts:
+		for p in (part[1] as PackedVector3Array):
+			if p.y <= band:
+				foot.append(Vector2(p.x, p.z))
+				touching[part[0]] = true
+	var m := mid / float(count)
+	var m2 := Vector2(m.x, m.z)
+	var hull := Geometry2D.convex_hull(foot)
+	var margin := -INF
+	var tips := ""
+	if hull.size() >= 4:
+		var near := hull[0]
+		for k in range(hull.size() - 1):
+			var q := Geometry2D.get_closest_point_to_segment(m2, hull[k], hull[k + 1])
+			if q.distance_to(m2) < near.distance_to(m2):
+				near = q
+		margin = m2.distance_to(near) * (1.0 if Geometry2D.is_point_in_polygon(m2, hull) else -1.0) / size
+		if margin <= 0.0:
+			var d := m2 - near
+			tips = ("forward" if d.y < 0.0 else "back") if absf(d.y) >= absf(d.x) else ("right" if d.x > 0.0 else "left")
+	elif not foot.is_empty():
+		margin = -m2.distance_to(foot[0]) / size
+	return {"low": (lo.y - floor_y) / size, "top": (hi.y - floor_y) / size, "size": size, "touching": touching.keys(), "margin": margin, "tips": tips}
 
 
 ## How much of its light a lost machine's lit part keeps `t` seconds into guttering out: a stutter

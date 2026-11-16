@@ -43,9 +43,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1241 tests, 373,910 checks, green on `ccr-bd73687d-w8qox1` (16 November, over main at
-  `d7fe86f` taken in a merge: his ninth round's rulings, Exposed on a machine, the Vampire Lord's
-  drain). Before it, 1222 tests, 373,594 checks, green on the same branch (16 November, his third notes:
+- Tests: 1244 tests, 374,011 checks, green on `ccr-bd73687d-w8qox1` (16 November, his notes on the
+  deaths: resting on what touches, the paint dark, the Nemesis on one knee). Before it, 1241 tests,
+  373,910 checks, green on the same branch (over main at `d7fe86f` taken in a merge: his ninth
+  round's rulings, Exposed on a machine, the Vampire Lord's drain). Before it, 1222 tests, 373,594 checks, green on the same branch (16 November, his third notes:
   the shell a wall on the seven's outer edges with a cache behind it, the wrecks at living size,
   and the roster's own deaths). Before it, 1220 tests, 373,260 checks, green on the same branch
   (his notes on the shell and the wrecks; over main at `e26589f` taken in a merge). Before it, 1213 tests, 373,034 checks,
@@ -541,8 +542,15 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   (`b.death`, the sidecar's `death`, MechRig's death pose set down on its lowest point, the
   hangar's script in step), every one of the twenty-two dealt machines given one, the slump
   the baseline beneath (the bible's row; the models rebuilt byte for byte, only their sidecars
-  moving). The hangar shows the deaths since Version 281 (Pages, below), published from this
-  branch ahead of main; the bible (v0.601 since main's ninth round merged in) republishes on his word.
+  moving). Reworked the same day on his notes from the hangar ("some of these look like they aren't
+  touching the ground", "Boosters should go dark", "Nemesis should fall to one knee"): a death set
+  down on its parts' own lowest point, never their boxes (`MechRig._hull_of`, the slump's floor
+  with it), every death resting on what touches the floor, its middle inside it (`MechRig.rest_of`,
+  `tools/death_floor.gd`, the tests), fifteen poses reworked to rest (the Badger on its tracks with
+  its claw and gun down, the Nemesis on one knee, the Baboon and the Ammit sunk as low as their
+  limits go, the flyers and hovers flat), and a lost machine's lit parts' paint going dark with
+  their light (`MechRig.DEAD_PAINT`). The hangar shows them (Pages, below), published from this
+  branch ahead of main; the bible (v0.602) republishes on his word.
 - **The blade class retired** (`ccr-b7d5164e-1wtzzm`, 15 November, on Ryan's "The four you listed are
   locked pieces. The others need to be renamed into short range (i.e "melee" as per our definition)
   guns, or just sent back to design"): four silhouette classes (barrel, twin barrel, rack, dish) in
