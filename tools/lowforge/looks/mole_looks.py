@@ -5,14 +5,27 @@ a mole machine in Minerva's steel and green, none of them a kit: the drill tank 
 a nose), the tunnel-borer (a full-face cutter head on a long segmented body) and the digger (two
 shovel claws flanking a small snout drill, a mole's forepaws). Mounts are placeholders, three a
 machine, set clear of the digging gear. Not content and not in models_low.py: built only by
-build_look.py and sheet.py. x right, y forward, z up, the ground at z = 0, as in models_low.py."""
+build_look.py and sheet.py. x right, y forward, z up, the ground at z = 0, as in models_low.py.
+
+Second round, 16 November: the rocket drill. Ryan's kit for it the same day (it burrows in its
+reboot's place, and its locked piece, the Inertia Drill, is a rocket drill it fires into a foe,
+Indirect, tunnelling to its target, back in the mole as it burrows again), and his word on the
+look: "try your first design, but the trick is to make it look like it can fire the drill, but
+also not look silly without it." So A's drill tank, shorter and lower, its drill a projectile
+seated in a launch bore through the nose: the bore runs down a launch barrel along the hull's
+spine, ringed with guide rings, a breech behind it with a loading hatch and blast vents; the
+cab sits on the left deck so the barrel has the spine. Loaded, the drill's head stands proud of
+the bore's reinforced rim. Fired, the nose is shown two ways: (A) armoured iris petals close
+over the empty bore into a pointed prow; (B) the bore stays open, a heavy launch mouth with
+guide rails inside and the rocket guide's glow deep in it, so empty it reads as a launcher. The
+last row is the drill in flight, nose down out of the open bore, its plume behind it."""
 
 import math
 
 from mathutils import Matrix, Vector
 
 from bl_low import boom, rect
-from models_low import _beam, _chamfered, _poly, _rings, _spike, _sq
+from models_low import _beam, _chamfered, _disc, _poly, _rings, _slab, _spike, _sq, _tube
 
 MN = "minerva"
 
@@ -263,7 +276,197 @@ def mnlook_mole_c(b):
 
 mnlook_mole_c.maker = MN
 
-LOOKS = ["mnlook_mole_a", "mnlook_mole_b", "mnlook_mole_c"]
+# ---------------------------------------------------------------- round two: the rocket drill
+
+R2_TX, R2_TW, R2_TH = 24.0, 17.0, 16.0   # the treads: centre across, width, height
+R2_CZ = 21.0                             # the launch bore's axis
+R2_BORE = 10.6                           # the bore's radius
+R2_BARREL = 14.0                         # the launch barrel's
+R2_MOUTH = 30.6                          # where the bore opens, the rim's face
+R2_RIM = 16.6                            # the reinforced rim's outer radius
+R2_N = 12                                # the barrel's sides
+
+
+def _r2_ring(y, r, cz=R2_CZ, n=R2_N):
+    """A ring of `n` points round the bore's axis at `y`, phased as _ngon's sections are."""
+    return [(r * math.cos(math.pi / n + i * 2.0 * math.pi / n), y, cz + r * math.sin(math.pi / n + i * 2.0 * math.pi / n)) for i in range(n)]
+
+
+def _r2_band(b, y0, y1, r_out, r_in, material, label, cz=R2_CZ, n=R2_N):
+    """A closed ring of square section round the bore's axis from `y0` to `y1`: a band that
+    never caps the bore, so a look down it stays clear."""
+    _rings(b, [_r2_ring(y0, r_in, cz, n), _r2_ring(y0, r_out, cz, n), _r2_ring(y1, r_out, cz, n),
+               _r2_ring(y1, r_in, cz, n), _r2_ring(y0, r_in, cz, n)], material, label, cap=False)
+
+
+def _r2_drill_head(b, y_root, cz=R2_CZ, label="drill"):
+    """The Inertia Drill's head from `y_root` forward: round one's spiral cone, shorter, sized to
+    the bore, and the hazard collar it seats on."""
+    _r2_band(b, y_root - 2.6, y_root + 0.4, 10.3, 7.5, "steel.stripe", label + "_collar", cz)
+    _drill(b, (0.0, y_root, cz), 24.0, 10.0, n=12, steps=12, turns=1.6, flutes=3, label=label)
+
+
+def _r2_projectile(b, flame=False):
+    """The whole Inertia Drill at the origin, along +y, its head's root at y = 0: the head, the
+    rocket body behind it (a green band, four swept fins), four nozzles at its tail and, with
+    `flame`, its plume."""
+    _r2_drill_head(b, 0.0, cz=0.0)
+    b.loft([(-21.0, _ngon(0.0, 0.0, 8.0, 12)), (-2.6, _ngon(0.0, 0.0, 8.6, 12))], "steel.plate", "drill_body")
+    b.loft([(-14.0, _ngon(0.0, 0.0, 8.9, 12)), (-8.0, _ngon(0.0, 0.0, 8.9, 12))], "livery.livery", "drill_band")
+    for k in range(4):
+        a = math.pi / 4.0 + k * math.pi / 2.0
+        out = Vector((math.cos(a), 0.0, math.sin(a)))
+        side = Vector((0.0, 1.0, 0.0)).cross(out)
+        root0, root1 = out * 7.8 + Vector((0.0, -21.0, 0.0)), out * 8.4 + Vector((0.0, -11.0, 0.0))
+        tip0, tip1 = out * 13.0 + Vector((0.0, -23.0, 0.0)), out * 12.2 + Vector((0.0, -17.0, 0.0))
+        _slab(b, [tuple(root0), tuple(root1), tuple(tip1), tuple(tip0)], tuple(side), 1.2, "steel.dark", "drill_fin")
+    for k in range(4):
+        a = math.pi / 4.0 + k * math.pi / 2.0
+        cx, cz = 3.9 * math.cos(a), 3.9 * math.sin(a)
+        b.loft([(-25.0, _ngon(cx, cz, 2.9, 8)), (-21.0, _ngon(cx, cz, 2.2, 8))], "steel.dark", "nozzle")
+        b.loft([(-25.4, _ngon(cx, cz, 2.5, 8)), (-25.0, _ngon(cx, cz, 2.5, 8))], "amber.exhaust", "nozzle_mouth")
+    if flame:
+        b.loft([(-44.0, _ngon(0.0, 0.0, 0.6, 10)), (-31.0, _ngon(0.0, 0.0, 5.5, 10)), (-25.6, _ngon(0.0, 0.0, 7.8, 10))], "amber.glow", "plume")
+
+
+def _r2_iris(b, depth=8.0, r=12.0):
+    """Armoured iris petals closed over the empty bore: six plates from the rim's face to a point,
+    a hazard seam between each, so the fired machine wears a whole prow."""
+    apex = Vector((0.0, R2_MOUTH + depth, R2_CZ))
+    pts = [Vector((r * math.cos(math.pi / 6.0 + i * math.pi / 3.0), R2_MOUTH + 0.1, R2_CZ + r * math.sin(math.pi / 6.0 + i * math.pi / 3.0))) for i in range(6)]
+    for i in range(6):
+        a, c = pts[i], pts[(i + 1) % 6]
+        normal = (c - a).cross(apex - a).normalized()
+        _slab(b, [tuple(a), tuple(c), tuple(apex)], tuple(normal), 1.2, "steel.plate", "iris_petal")
+        _beam(b, tuple(a), tuple(apex), _sq(1.1, 0.9), _sq(0.7, 0.6), "steel.stripe", "iris_seam")
+    b.prism("y", 0.0, R2_MOUTH + depth - 0.6, R2_CZ, 1.6, 2.0, "steel.dark", 6, "iris_hub")
+
+
+def _mole2_hull(b, nose):
+    """Round two's hull: A's drill tank shorter and lower, a drill-launcher. Treads, a lower hull
+    between them, a launch barrel down the spine whose front half is the bore, guide rings round
+    it, a reinforced rim at its mouth, a breech behind it (a loading hatch, blast vents), the
+    engine deck and stacks at the tail, the cab on the left deck. `nose` is "loaded", "shut" or
+    "bore": what the bore's mouth shows. Mounts: hp_1 on the cab's roof, hp_2 a rack on the right
+    deck aft, hp_3 bare on the left deck forward."""
+    TX, TW, TH, CZ = R2_TX, R2_TW, R2_TH, R2_CZ
+    _treads(b, TX, TW, TH, -36.0, 24.0)
+    for s in (-1.0, 1.0):
+        x0, x1 = sorted((s * (TX + TW / 2.0 + 1.0), s * (TX + TW / 2.0 + 3.0)))
+        b.box(x0, x1, -26.0, 12.0, 5.0, TH - 2.0, "livery.livery2", "flank_plate")
+    # The lower hull between the treads, its lamps under the barrel's mouth.
+    # (Under the bore it stays below the bore's floor, so a look down the empty bore is clear.)
+    b.loft([(-36.0, rect(0.0, 31.0, 6.0, 20.0)), (-14.0, rect(0.0, 31.0, 6.0, 20.0))], "steel.panel", "lower_hull")
+    b.loft([(-14.0, rect(0.0, 31.0, 5.0, CZ - R2_BORE - 1.0)), (20.0, rect(0.0, 31.0, 5.0, CZ - R2_BORE - 1.0)),
+            (25.0, rect(0.0, 28.0, 6.0, CZ - R2_BORE - 2.0))], "steel.panel", "belly")
+    for s in (-1.0, 1.0):
+        b.box(s * 17.5 - 2.0, s * 17.5 + 2.0, 22.4, 23.4, TH + 0.5, TH + 2.5, "amber.light", "lamp")
+    # The launch barrel: solid behind, the bore in front, open at its mouth.
+    b.loft([(-14.0, _ngon(0.0, CZ, R2_BARREL, R2_N)), (4.0, _ngon(0.0, CZ, R2_BARREL, R2_N))], "steel.panel", "barrel")
+    _tube(b, (0.0, 4.0, CZ), (0.0, R2_MOUTH - 0.2, CZ), R2_BARREL, R2_BORE, R2_N, "steel.panel", "bore", phase=math.pi / R2_N)
+    # Inside the bore: four guide rails, two guide rings, the rocket guide's glow on its floor.
+    for k in range(4):
+        a = math.pi / 4.0 + k * math.pi / 2.0
+        p0 = (9.6 * math.cos(a), 5.0, CZ + 9.6 * math.sin(a))
+        p1 = (9.6 * math.cos(a), R2_MOUTH - 0.6, CZ + 9.6 * math.sin(a))
+        _beam(b, p0, p1, _sq(1.9, 1.9), _sq(1.9, 1.9), "steel.plate", "guide_rail")
+    for y in (11.0, 19.5):
+        _r2_band(b, y, y + 1.4, R2_BORE + 0.1, 9.0, "steel.dark", "bore_ring")
+    _disc(b, (0.0, 4.9, CZ), (0.0, 1.0, 0.0), 6.6, 10, "amber.glow", "bore_glow")
+    # The reinforced rim at the mouth, a hazard band behind it, the guide rings down the barrel.
+    _r2_band(b, 24.0, R2_MOUTH, R2_RIM, R2_BORE, "steel.dark", "rim")
+    _r2_band(b, 22.0, 24.0, R2_BARREL + 1.3, R2_BARREL - 0.3, "steel.stripe", "rim_band")
+    for y in (-11.5, -5.5):
+        _r2_band(b, y, y + 2.2, R2_BARREL + 1.0, R2_BARREL - 0.3, "steel.dark", "guide_ring")
+    _r2_band(b, -2.5, 1.0, R2_BARREL + 0.4, R2_BARREL - 0.3, "livery.livery", "barrel_band")
+    # The cheeks: sloped armour either side of the bore's front half, from the tread decks up to
+    # the barrel's shoulders, so the launcher sits in the hull and its top runs out as a ridge.
+    for s in (-1.0, 1.0):
+        sec = [(s * 8.5, CZ + 11.2), (s * 26.0, TH + 3.0), (s * 26.0, TH + 1.0), (s * 13.5, TH + 1.0)]
+        sec = sec if s < 0 else list(reversed(sec))
+        b.loft([(1.0, sec), (21.0, sec)], "livery.livery2", "cheek")
+        b.loft([(21.0, sec), (22.4, [(x * 0.97, z - 0.4) for x, z in sec])], "steel.stripe", "cheek_edge")
+    # The breech: a heavier block behind the barrel, a hazard band at its face, a loading hatch
+    # on top, blast vents on its flanks and a blast deflector at its back.
+    b.loft([(-27.0, _oct(0.0, CZ + 2.0, 32.0, 30.0, 7.0)), (-14.0, _oct(0.0, CZ + 2.0, 32.0, 30.0, 7.0))], "steel.plate", "breech")
+    b.loft([(-15.6, _oct(0.0, CZ + 2.0, 32.8, 30.8, 7.2)), (-14.0, _oct(0.0, CZ + 2.0, 32.8, 30.8, 7.2))], "steel.stripe", "breech_band")
+    b.box(-6.0, 6.0, -25.0, -17.0, CZ + 16.8, CZ + 18.2, "steel.panel", "loading_hatch")
+    b.prism("x", 0.0, -25.0, CZ + 17.6, 1.0, 13.0, "steel.dark", 6, "hatch_hinge")
+    for s in (-1.0, 1.0):
+        x0, x1 = sorted((s * 15.6, s * 16.6))
+        b.box(x0, x1, -25.0, -17.0, CZ - 1.0, CZ + 8.0, "steel.vent", "blast_vent")
+    b.box(-10.0, 10.0, -28.4, -26.8, CZ + 10.0, CZ + 18.0, "steel.vent", "blast_deflector")
+    # The engine deck and its stacks.
+    b.loft([(-37.0, rect(0.0, 31.0, 6.0, 28.0)), (-27.0, rect(0.0, 31.0, 6.0, 29.0))], "steel.panel", "engine_deck")
+    b.box(-12.0, 12.0, -37.6, -36.0, 12.0, 27.0, "steel.vent", "rear_vents")
+    for s in (-1.0, 1.0):
+        b.prism("z", s * 10.0, -32.0, 34.0, 2.6, 12.0, "steel.dark", 6, "stack")
+    # The cab on the left deck, its slit looking forward past the barrel, a brow and a lamp.
+    cx = -TX
+    b.box(cx - 7.5, cx + 6.5, -29.0, -11.0, TH + 2.5, TH + 15.5, "steel.panel", "cab")
+    b.box(cx - 6.0, cx + 4.0, -11.2, -10.6, TH + 9.5, TH + 12.5, "glass.glass", "vision_slit")
+    b.box(cx - 8.0, cx + 7.0, -12.6, -10.4, TH + 15.0, TH + 16.6, "steel.plate", "brow")
+    b.box(cx - 1.5, cx + 1.5, -10.6, -9.8, TH + 13.2, TH + 14.8, "amber.light", "floodlight")
+    # Stowage on the right deck forward, a tow eye at the nose.
+    b.box(TX - 6.0, TX + 7.0, -2.0, 13.0, TH + 2.5, TH + 7.0, "steel.plate", "stowage")
+    b.box(TX - 6.2, TX + 7.2, 10.0, 13.2, TH + 7.0, TH + 7.8, "steel.stripe", "stowage_lid")
+    # The nose.
+    if nose == "shut":
+        _r2_iris(b)
+    # Mounts: a gun on the cab's roof, firing forward beside the barrel; a rack on the right deck
+    # aft; a bare mount on the left deck forward.
+    b.prism("z", cx - 0.5, -20.0, TH + 16.1, 5.0, 1.0, "steel.dark", 8, "gun_ring")
+    b.stock("hp_1", (cx - 0.5, -20.0, TH + 20.6), "barrel", scale=0.8, carries="rivet_gun")
+    b.stock("hp_2", (TX, -22.0, TH + 2.5 + 6.0), "rack", scale=0.8, carries="shotfire_rack")
+    b.pad("hp_3", (-TX, 4.0, TH + 3.5), size=(8.0, 1.0))
+    b.pivots = True   # tracks: it turns on the spot to aim, as a tank's neutral turn
+    b.move(slide=0.2, bank=0.0, accel=1.0, heft=0.3)
+
+
+def mnlook_mole2_loaded(b):
+    """The rocket drill seated: its head proud of the rim, its collar in the mouth, its rocket body
+    down the bore."""
+    _mole2_hull(b, "loaded")
+    b.loft([(6.0, _ngon(0.0, R2_CZ, 8.4, 12)), (R2_MOUTH - 2.4, _ngon(0.0, R2_CZ, 8.4, 12))], "steel.plate", "drill_body")
+    with b.joint("drill", (0.0, R2_MOUTH, R2_CZ), axis="roll"):
+        _r2_drill_head(b, R2_MOUTH + 0.4)
+    b.spin("drill", 40.0, 420.0)
+
+
+mnlook_mole2_loaded.maker = MN
+
+
+def mnlook_mole2_shut(b):
+    """Fired, (A): the bore shut behind it, iris petals closed into a prow."""
+    _mole2_hull(b, "shut")
+
+
+mnlook_mole2_shut.maker = MN
+
+
+def mnlook_mole2_bore(b):
+    """Fired, (B): the bore open, a heavy launch mouth with its rails and its glow."""
+    _mole2_hull(b, "bore")
+
+
+mnlook_mole2_bore.maker = MN
+
+
+def mnlook_mole2_flight(b):
+    """The drill in flight: (B) with its bore empty, the drill out ahead of it nose down, its
+    plume trailing back toward the mouth, about to go under."""
+    _mole2_hull(b, "bore")
+    start = len(b.objects)
+    _r2_projectile(b, flame=True)
+    m = Matrix.Translation((0.0, 72.0, 18.0)) @ Matrix.Rotation(math.radians(-16.0), 4, "X")
+    for ob in b.objects[start:]:
+        ob.matrix_world = m @ ob.matrix_world
+
+
+mnlook_mole2_flight.maker = MN
+
+LOOKS = ["mnlook_mole_a", "mnlook_mole_b", "mnlook_mole_c",
+         "mnlook_mole2_loaded", "mnlook_mole2_shut", "mnlook_mole2_bore", "mnlook_mole2_flight"]
 
 _VIEWS = ["codex", "above", "skirmish", ("from the side", 90.0, 8.0)]
 SHEET = {
@@ -274,5 +477,18 @@ SHEET = {
         {"model": "mnlook_mole_a", "label": "A, the drill tank", "views": _VIEWS},
         {"model": "mnlook_mole_b", "label": "B, the tunnel-borer", "views": _VIEWS},
         {"model": "mnlook_mole_c", "label": "C, the digger", "views": _VIEWS},
+    ],
+}
+
+_VIEWS2 = ["codex", "above", "skirmish", ("from the side", 90.0, 8.0)]
+SHEET2 = {
+    "title": "The mole, second round: the rocket drill, 16 November (look tests, not content)",
+    "out": "docs/looks/minerva_mole2.png",
+    "cell": (320, 320),
+    "rows": [
+        {"model": "mnlook_mole2_loaded", "label": "Loaded", "views": _VIEWS2},
+        {"model": "mnlook_mole2_shut", "label": "Fired, the bore shut (A)", "views": _VIEWS2 + ["front"]},
+        {"model": "mnlook_mole2_bore", "label": "Fired, the bore a launcher (B)", "views": _VIEWS2 + ["front"]},
+        {"model": "mnlook_mole2_flight", "label": "The drill in flight", "views": ["codex", ("from the side", 90.0, 8.0), "above"]},
     ],
 }

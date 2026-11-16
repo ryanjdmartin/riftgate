@@ -440,8 +440,18 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
 2. Its numbers (hull, shield, armour, heat, move), its stock, and the Drill's heat.
 3. Its look: the rocket drill, a drill it fires into a foe that returns as it burrows ("try your
    first design, but the trick is to make it look like it can fire the drill, but also not look
-   silly without it", 16 November); the second round of looks is the drill tank loaded and
-   fired.
+   silly without it", 16 November). The second round (`docs/looks/minerva_mole2.png`, the
+   module's `SHEET2`): the drill tank shorter and lower, about 71 wide and 67 long without its
+   drill (93 with it) where the first was 118; a launch barrel down its spine whose front half
+   is the bore, sloped green cheeks from the tread decks up to it, a breech behind with a
+   hazard band, a loading hatch, blast vents and a deflector. The drill seats in the bore's
+   reinforced rim, a spiral head on a rocket body with four fins and four nozzles. Fired, the
+   nose two ways: A, six iris petals closing into a pointed prow, whole armour; B, the mouth
+   left open with guide rails and a glow deep in it, a launcher plainly (Claude's pick: empty,
+   it still says it fires something, and it needs no part of its own). A row has the drill in
+   flight ahead of B. Three placeholder mounts: a gun on the cab's roof (the cab on the left
+   rear deck), a rack on the right rear deck, a bare pad on the left front deck. His to judge:
+   the green cheeks' share, the iris prow's bluntness, the plume's brightness.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike
