@@ -493,7 +493,7 @@ func test_a_merge_takes_its_kinds_in_and_regrows_what_they_had() -> void:
 	for g in gels:
 		assert_false(sk.field_foes().has(g), "each Gel is gone from the field")
 	assert_eq(sk.team_kills, 0, "and none is a kill of the team's")
-	assert_eq(k.damage_of(k.actions[0]), 6 + 1, "a point of Empowered for each, three, halved to one at the round's end (one clock, 4 November)")
+	assert_eq(k.damage_of(k.actions[0]), 6 + 1, "a point of Empowered for each, three, halved to one as its own turn ends (16 November: gained in its turn, like a rallier's share)")
 	assert_true("\n".join(sk.log).contains("3 taken in"), "the log says how many")
 
 
@@ -1203,8 +1203,9 @@ func test_a_stagger_numbs_nothing_and_a_tick_broken_rage_costs_the_next_action()
 ## since that inflicts Defense Down in game, something we don't have"; Brittle on both sides
 ## since 15 November, "Crushed and flak - agreed, brittle"): a foe's Brittle rider lays Brittle on
 ## the machine, a point more on every blow it takes a stack, whole for the blows after it that
-## turn and halving as each round ends; a Ward turns it away and a Cleanse lifts it.
-func test_a_foes_brittle_makes_every_blow_the_machine_takes_land_harder_and_halves_each_round() -> void:
+## turn and halving as each of the machine's turns starts (16 November; at the round's end until
+## then, no blow apart); a Ward turns it away and a Cleanse lifts it.
+func test_a_foes_brittle_makes_every_blow_the_machine_takes_land_harder_and_halves_each_turn() -> void:
 	var sk := Skirmish.new(1, 3)
 	sk.add_mech(_mech("A", Die.single(Face.blank())))
 	var jho := Foe.make("jho", 40, 8)
@@ -1224,24 +1225,25 @@ func test_a_foes_brittle_makes_every_blow_the_machine_takes_land_harder_and_halv
 	turn.call(1)
 	assert_eq(a.unit.hull, 485, "the pin's 10 and Brittle 2, then the stab's 3 and 2 more")
 	assert_true("\n".join(sk.log).contains("lays Brittle ×2 on A"), "the log says so")
-	assert_eq(Effects.stacks_of(a.unit, "brittled_mech"), 1, "the round's end halves it")
+	assert_eq(Effects.stacks_of(a.unit, "brittled_mech"), 2, "the round's end leaves it")
 	assert_eq(Effects.STATUS["brittled_mech"]["name"], Effects.STATUS["brittled"]["name"], "one word on either body")
 	sk.start_round()
+	assert_eq(Effects.stacks_of(a.unit, "brittled_mech"), 1, "its turn's start halves it")
 	turn.call(0)
 	assert_eq(a.unit.hull, 472, "the chomp's 8 and the stab's 3, each 1 harder")
-	assert_eq(Effects.stacks_of(a.unit, "brittled_mech"), 0, "one halves to none")
 	sk.start_round()
+	assert_eq(Effects.stacks_of(a.unit, "brittled_mech"), 0, "one halves to none")
 	turn.call(0)
 	assert_eq(a.unit.hull, 461, "their own numbers again")
 	# A Ward turns the rider away; a Cleanse lifts the mark.
 	sk.start_round()
-	Effects.grant_for_rounds(a.unit, Effects.STATUS["ward"], "test", sk.round)
+	Effects.grant_buff(a.unit, "ward", 1, "test", sk.round)
 	turn.call(1)
 	assert_eq(a.unit.hull, 448, "warded: the pin's 10 and the stab's plain 3")
 	assert_eq(Effects.stacks_of(a.unit, "brittled_mech"), 0, "the Ward turns the Brittle away")
 	sk.start_round()
 	turn.call(1)
-	assert_eq(Effects.stacks_of(a.unit, "brittled_mech"), 1, "Brittle again, halved by the round's end")
+	assert_eq(Effects.stacks_of(a.unit, "brittled_mech"), 2, "Brittle again, whole until its next turn starts")
 	assert_true(Effects.cleanse(a.unit).has(Effects.STATUS["brittled_mech"]["name"]), "a Cleanse lifts it")
 	assert_eq(Effects.stacks_of(a.unit, "brittled_mech"), 0, "and it is gone")
 

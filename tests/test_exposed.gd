@@ -80,9 +80,10 @@ func test_a_foes_expose_takes_armour_of_every_kind_through_the_round_after() -> 
 	assert_eq(int(sk.forecast(sk.mechs[0])["hull_after"]), 91, "the forecast reads the bare hull")
 	sk.end_round()
 	assert_eq(a.hull, 100 - 9, "the blow of 10 loses the 1 that is no armour, and no armour comes off it")
-	assert_false(Effects.has(a, "exposure_mech"), "the mark ends with the round after it landed")
+	assert_true(Effects.has(a, "exposure_mech"), "the mark stands through the foes' next turn, the round's end included")
 	sk.start_round()
-	assert_eq(a.armour, 5, "and the armour counts again")
+	assert_false(Effects.has(a, "exposure_mech"), "and falls as its machine's turn starts, the round after that")
+	assert_eq(a.armour, 5, "the armour counts again")
 
 
 func test_a_cleanse_gives_the_armour_back_and_leaves_the_intents() -> void:

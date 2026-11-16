@@ -221,7 +221,7 @@ func test_the_regenerator_lures_and_regains_a_point_a_stack_as_each_round_opens(
 	assert_true(sk.assign(0, foe), "the lure spent")
 	assert_eq(foe.target, sk.mechs[0], "the foe turns on the spender")
 	assert_eq(Effects.stacks_of(u, "regenerating"), 3, "Regenerating on its own machine, its stacks")
-	assert_eq(int(Effects.round_start(u, 0)["shield"]), 3, "a point of shield a stack as the round opens")
+	assert_eq(Effects.regrowth(u), 3, "a point of shield a stack as its turn ends")
 	assert_eq(Skirmish.shield_regen_of(sk.mechs[0]), 0, "an event of the round's opening, never the machine's regen")
 	assert_eq(u.shield, 2, "nothing this round")
 	var seen: Array = []

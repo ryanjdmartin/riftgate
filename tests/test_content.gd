@@ -2064,10 +2064,10 @@ func test_a_foes_stacking_rider_says_its_number() -> void:
 	assert_true(_refused(db, "foe test_licker", "says what it lays"), "an effect that lays stacks says how many")
 
 
-## What a foe lays that halves as each round ends says 2 at the least (Ryan, 16 November: "Buffs
-## and debuffs that decay at end of round should just have a minimum of 2"): one stack is gone
-## before its side's next turn, so a rally of 1 left its rallier nothing and a Brittle 1 was the
-## pack's for one turn alone. A rally's Empowered and a blow's Brittle; a rider that does not
+## What a foe lays that halves says 2 at the least (Ryan, 16 November: "Buffs and debuffs that
+## decay at end of round should just have a minimum of 2"): one stack is gone at its first
+## halving, so a rally of 1 leaves its rallier nothing and a Brittle 1 is the pack's for one
+## turn alone. A rally's Empowered and a blow's Brittle; a rider that does not
 ## halve (a Scorch, an Ablate) may still say 1.
 func test_a_foes_halving_status_is_laid_two_at_the_least() -> void:
 	var db := _fresh()

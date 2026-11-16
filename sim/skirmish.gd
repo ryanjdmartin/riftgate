@@ -184,14 +184,6 @@ var last_roll: Dictionary = {}
 ## screen: {mech, heat, blows (spend_blows' shape)} each. Cleared as a turn ends.
 var releases: Array = []
 var _shoved: Dictionary = {}   # Foe -> true: the front-rank foes this spend has driven into the rank behind (the Juggernaut Drive), once a spend
-var _held: Dictionary = {}   # Foe -> the status ids a pin holds from this round's halving, read as the round's statuses run out
-## The statuses no unit's clock runs down at this round's end, either side's (the Quintessence Tap's
-## hold, Ryan, 12 November: "No Empowered decays this round. And I mean none, not ally or enemy"):
-## what the live machines' buffs hold on the whole field (field_holds: Essence Flare, a buff on
-## the machine that spent the Tap since 15 November), read as the enemy's turn ends, before the
-## round's own statuses run out, used as the round's statuses run down (_finish_round) and
-## cleared there. Nothing between rounds, so no save holds it.
-var round_holds: Array = []
 ## The fight's share of the run's Sponsorship measures (the bible's Sponsorship row; tallied 21
 ## October, never shown live): damage the team took on shield and armour, dice spent on
 ## entries that deal damage and on entries that deal none.
@@ -248,9 +240,6 @@ var spend_blows: Array = []
 ## the screen to announce on its plaque in order: {foe, name, kind, seq}.
 var turn_specials: Array = []
 var _seq: int = 0   # the order of the turn's blows and specials, shared by both lists
-## A merge's lift on the merger (30 October), granted once its own move has spent what it carried,
-## so the lift rides its next move: foe -> the Empowered it gains.
-var _lift_after: Dictionary = {}
 ## The team's kills this fight (is_kill), counted at the death check: a spend's kills are the
 ## difference across it (the kill triggers), and a grudge reads the whole.
 var team_kills: int = 0
@@ -846,9 +835,9 @@ func attackers_of(ms: MechState) -> Array[Foe]:
 
 ## Every foe that will act on this mech when the round ends, whatever its action: alive, not
 ## suppressed, showing intent on it (its pick, or a blow at every machine; a special that acts
-## on nobody in particular shows none: Foe.intent_on), and not about to die to its Ablating first. Its
-## intent still shows on the screen whether its blow will land or not (Ryan, 4 November: "that
-## is still possibly relevant information", an effect counting the intents on a machine).
+## on nobody in particular shows none: Foe.intent_on). A foe its Ablating will fell strikes
+## first: its ticks come as its turn ends (16 November; at its action's start until then, when
+## a doomed foe's blow was left out here).
 func acting_on(ms: MechState) -> Array[Foe]:
 	var out: Array[Foe] = []
 	if is_out(ms):
@@ -856,16 +845,13 @@ func acting_on(ms: MechState) -> Array[Foe]:
 	for f in field_foes():
 		if not f.intent_on(ms.unit):
 			continue
-		if hp_after_ticks(f) <= 0:   # its ticks kill it before it strikes
-			continue
 		out.append(f)
 	return out
 
 
-## The HP a foe's ticks leave it at the start of its action (its Ablating, then Vitriol's share):
-## static numbers, so its gauge shows the loss to come and a death before it acts (Ryan, 26
-## October). At 0 its ticks kill it before it strikes: the forecast leaves its blow out and no
-## rally of its lands, while its intent stays shown.
+## The HP a foe's ticks leave it as its turn ends (its Ablating, then Vitriol's share): static
+## numbers, so its gauge shows the loss to come (Ryan, 26 October). At 0 its ticks fell it
+## once it has acted: its blow lands and its rally lands first (16 November, his four places).
 func hp_after_ticks(f: Foe) -> int:
 	return maxi(0, f.hp - int(Effects.tick_preview(f)["hp"]))
 
@@ -919,14 +905,11 @@ func rallies_on(x: Foe) -> Array[Foe]:
 
 
 ## Will this foe's move this round rally the others: a rally, the foe alive and yet to act, not
-## Suppressed, not gathering, not stepped up this round and not about to die to its ticks at its
-## action.
+## Suppressed, not gathering and not stepped up this round.
 func rallies_now(r: Foe) -> bool:
 	if r == null or not r.alive() or r.fresh or r.is_suppressed() or r.gathering() or _acted.has(r):
 		return false
-	if Foe.is_attack_action(r.action) or str(r.action.get("effect", "")) != "rally":
-		return false
-	return hp_after_ticks(r) > 0
+	return not Foe.is_attack_action(r.action) and str(r.action.get("effect", "")) == "rally"
 
 
 ## The rest of the round as it stands (Ryan, 26 October: the preview "should account for every
@@ -1068,8 +1051,6 @@ func rally_worth(r: Foe) -> int:
 	for x in field_foes():
 		if not rallies_on(x).has(r) or not x.attacks() or x.is_suppressed() or x.target == null:
 			continue
-		if hp_after_ticks(x) <= 0:
-			continue   # its Ablating kills it before it acts (the audit's fifteenth)
 		var machines := targetable_mechs().size() if x.hits_all() else 1
 		total += (foe_blow(x) - x.damage_of(x.action, incoming_rally(x) - v)) * x.strikes() * machines
 	return total
@@ -1139,6 +1120,12 @@ func forecast(ms: MechState, extra_shield: int = 0) -> Dictionary:
 	var off_shield := clampi(shield, 0, ablated)
 	shield -= off_shield
 	hull -= ablated - off_shield
+	# Its Regenerating pays as its turn ends, after the Ablating and before the foes strike (16
+	# November): a point of shield a stack, none for a shield that is broken or that the tick
+	# has just taken to nothing, none while it is Swallowed.
+	var regrow := 0 if paused(ms) else Effects.regrowth(ms.unit)
+	if regrow > 0 and not ms.shield_broken and not (off_shield > 0 and shield <= 0):
+		shield = mini(maxi(ms.unit.shield_max, shield), shield + regrow)
 	var incoming := 0
 	var component_risk := false
 	var walk := {"shield": shield, "barrier": Effects.has(ms.unit, "barrier")}
@@ -1450,7 +1437,7 @@ func start_round() -> void:
 	# and before the foes announce, so their blows are drawn against the armour that will stand.
 	for ms in mechs:
 		if not paused(ms):
-			Effects.turn_opens(ms.unit)
+			Effects.turn_opens(ms.unit, round)   # its turn starts: Armoured, a Barrier and a Ward go, its Brittle halves, and an Exposed whose round is past falls
 	# The turn begins with what cooling a machine is granted (a module's, a passive's, a
 	# status's: a chassis has none of its own since the reboot), one log line for all.
 	var cooled: Array[String] = []
@@ -1495,14 +1482,6 @@ func start_round() -> void:
 			regened.append("%s +%d" % [ms.unit.display_name, gained])
 	if not regened.is_empty():
 		log.append("shield regen: " + ", ".join(regened))
-	# What fires at the round's start, after the roll: a flat shield, a vent, a status. A
-	# machine's Regenerating is one, a point of shield a stack; its turn come, a stack fades
-	# (15 November), whether the shield took the points or not.
-	for ms in live_mechs():
-		if paused(ms):
-			continue   # Swallowed: nothing of its own fires, and its Regenerating waits with the rest
-		_fired(ms, Effects.round_start(ms.unit, ms.heat), "round start")
-		Effects.spend_stacks(ms.unit, "regenerating", 1)
 	# The hopper grants its Armoured for the round, what the loads it holds are worth (the Honey
 	# Badger's, Ryan, 10 November: "returns at the start of his turn since its granted by the
 	# funnel bar"): last round's went at the round's end as every machine's Armoured does, and a
@@ -2372,12 +2351,12 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				log.append("%s: the kill brings the team %d reroll%s" % [ms.unit.display_name, f.kill_rerolls, "" if f.kill_rerolls == 1 else "s"])
 			# The rider on its own spender (the Storm Petrel's St. Elmo's Regenerator, Ryan's go of 21
 			# October; built 30 October): spent on a foe, its machine gains Regenerating, the stacks
-			# the entry says, a point of shield a stack as each round opens and a stack fading then
-			# (15 November); a second spend adds its stacks. Bought by a die entry, so a foe's purge
+			# the entry says, a point of shield a stack as its turn ends and a stack fading then
+			# (15 and 16 November); a second spend adds its stacks. Bought by a die entry, so a foe's purge
 			# takes it.
 			if f.regen_stacks > 0 and target is Foe and ms.alive():
-				Effects.stack(ms.unit, Effects.regenerating_shield(), Effects.SKIRMISH, "buff:" + f.component, f.regen_stacks, Effects.DECAY_NONE)
-				log.append("%s gains Regenerating ×%d: a point of shield a stack as each round opens, then a stack fades" % [ms.unit.display_name, Effects.stacks_of(ms.unit, "regenerating")])
+				Effects.stack(ms.unit, Effects.regenerating_mech(), Effects.SKIRMISH, "buff:" + f.component, f.regen_stacks, Effects.DECAY_TURN)
+				log.append("%s gains Regenerating ×%d: a point of shield a stack as its turn ends, then a stack fades" % [ms.unit.display_name, Effects.stacks_of(ms.unit, "regenerating")])
 			if Effects.counts_shots(ms.unit) > 0:
 				Effects.stack(ms.unit, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 1, Effects.DECAY_NONE)
 			if f.is_weapon() and Effects.remove(ms.unit, "spun_up"):
@@ -2538,18 +2517,15 @@ func field_holds() -> Array:
 	return out
 
 
-## The round's end, once the enemy's turn is done and the fight undecided: the machines' statuses
-## tick, a foe's halving statuses halve (Brittle, Empowered's clock), each but what a pin or the
-## round holds (round_holds), shield past the maximum fades and the parts due grow back. The fight's own (end_round, which then refreshes its cores' guards
+## The round's end, once the enemy's turn is done and the fight undecided: the machines'
+## once-a-round notes go, a machine whose own attack killed fires what its passive grants for
+## it, and the parts due grow back. Nothing halves or ticks here since 16 November: each does
+## at its carrier's turn start or end. The fight's own (end_round, which then refreshes its cores' guards
 ## and its machines' allies and reads the outcome) and the round preview's copy (preview_round)
 ## both run it, so the preview's round ends as the round will.
 func _finish_round() -> void:
 	_tick_mechs()
 	_round_kills()
-	for f in field_foes():
-		Effects.halve(f, (_held.get(f, []) as Array) + round_holds)
-	_held.clear()
-	round_holds = []   # the round's hold (Essence Flare's) is over: everything halves again from the next
 	_regrow_parts()
 
 
@@ -2590,19 +2566,18 @@ func _end_player_turn() -> void:
 	# Maverick's Playbook (the Giant Petrel's, built 30 October): the team's rerolls left unspent
 	# as the turn ends are banked, up to its cap, for the next round while it still fights.
 	banked = mini(rerolls_left, bank_cap())
-	for f in field_foes():
-		Effects.player_turn_end_foe(f)   # a foe's Barrier and Ward last to the end of the player's turn (28 October)
 	_ablate_mechs()
 	_seal_heat()
 	_burn_overheated()
-	# The player's side's turn ends: a machine's Empowered halves (Ryan, 16 November: "Empowered
-	# should decay at the end of turn, clearly, not end of round"; a foe's halves as the foes'
-	# turn ends, the round's end). What it gains in the enemy's turn it now carries whole into
+	# The machines' turn ends: a machine's Empowered halves (Ryan, 16 November: "Empowered
+	# should decay at the end of turn, clearly, not end of round"; a foe's halves as its own
+	# turn ends). What it gains in the enemy's turn it now carries whole into
 	# its next turn. A hold on the field (Essence Flare) is read here for the machines' own.
 	var holds := field_holds()
 	for ms in live_mechs():
 		if not paused(ms):
 			Effects.halve_buffs(ms.unit, holds)
+			Effects.entries_relight(ms.unit, round)   # a dark entry whose rounds are done lights as its machine's turn ends: a cooldown, a jam, Rapid's switch-off
 	_refresh_allies()
 	_check_outcome()
 
@@ -2613,31 +2588,61 @@ func _enemy_turn() -> void:
 	turn_events.clear()
 	turn_specials.clear()
 	_seq = 0
-	# Foes act in the order they stand: front rank left to right, then the back rank. Each
-	# foe's statuses tick at the start of its action (Ablating may kill it first, and a dead foe
-	# never strikes: Ryan, 4 November, "What we absolutely do not want to do is have a zero-hp
-	# enemy attacking and then dying after"; vitriol eats its share of what is left and
-	# finishes nobody), a suppressed foe skips, and a foe with two strikes lands two separate
-	# blows, so a shield stops the first and the second reaches the hull. A web on the foe
-	# bursts at the end of its action, skipped or not (18 October). The death check runs as each
-	# foe's action is done, and at once on a foe its tick kills (the audit's first bug, 8
-	# November): its last act lands, its parts fall, its machine is let go and a return stands
-	# before the next foe moves; and the fight ends the moment it is decided, the foes after the
-	# blow that wrecks the last machine doing nothing (the audit's second).
+	# Foes act in the order they stand: front rank left to right, then the back rank. A
+	# suppressed foe skips, and a foe with two strikes lands two separate blows, so a shield
+	# stops the first and the second reaches the hull. Each foe's statuses tick as its turn
+	# ends, its action done or lost (Ryan, 16 November, his four places: "Its turn End:
+	# Empowered, Regeneration, Brittle, Ablate, Vitriol ..."; at its action's start until then,
+	# when a burn could fell a foe before it struck): its Ablating takes its points and Vitriol
+	# its share of what is left, finishing nobody; what it regrows comes after them; its stacks
+	# fade, its Empowered halves, its Sapped goes and its Numbed counts down or lands. A foe is
+	# never struck down and then left to strike (Ryan, 4 November: "What we absolutely do not
+	# want to do is have a zero-hp enemy attacking and then dying after, because burn ticked
+	# first"): it strikes whole and burns after. A web on the foe bursts at the end of its
+	# action, skipped or not (18 October). The death check runs as each foe's action is done
+	# and again on a foe its tick fells: its last act lands, its parts fall, its machine is let
+	# go and a return stands before the next foe moves; and the fight ends the moment it is
+	# decided, the foes after the blow that wrecks the last machine doing nothing.
 	_acted.clear()
 	_enemy_acting = true
-	# Armoured ends as its side's next turn begins (Ryan, 15 November): every foe's plate from
-	# its last turn, its own brace's or a Protect's, goes here, before the first foe acts.
+	# The foes' turn starts (his four places: "Its turn Start: Armoured, Barrier, Ward"; Brittle
+	# with them, the team's blows having used it): every foe's plate, Barrier and Ward from its
+	# last turn go here, before the first foe acts, its Brittle halves unless a pin holds it,
+	# and an Exposed whose round is past falls. The whole side's opening, never each foe's own
+	# action: what one foe lays on the rest must outlast their actions that turn (a guard on
+	# every foe), and no blow of the team's lands between the two moments.
 	for f in field_foes():
 		if f.alive():
-			Effects.turn_opens(f)
+			Effects.turn_opens(f, round)
 	for f in field_foes():
 		if outcome != Outcome.NONE:
 			break
 		if not f.alive():
 			continue   # fallen earlier this turn (with its core, taken in by a merge), and does nothing
-		var regrow := Effects.regrowth(f)   # read before the tick counts down its clock (28 October)
-		var tick := Effects.tick(f, false)   # a halving status (Brittle) waits for the round's end
+		var skip := f.is_suppressed()
+		# A countdown still gathering carries its priming to the blow it lands, and a foe that
+		# stepped up this round has had its round, so it keeps it for its next.
+		var moves := not f.fresh and not f.gathering()
+		if skip and not _staggered(f):
+			f.recovering = true   # its action lost to a stun: its stun resist lands as Numbed as its turn ends (a stagger is no stun's, and numbs nothing)
+		if not skip and not f.fresh:   # a suppressed foe does nothing, and a web on it still bursts; one that stepped up this round has had its round
+			_foe_turn(f)
+			# A move that landed names its follow-up for next round (30 October); one lost to a
+			# Suppress or turned by a Disrupt names nothing, so either answer breaks the pair.
+			if f.alive() and not f.gathering() and f.action.has("then"):
+				f.next_move = str(f.action["then"])
+		if moves and not skip and f.attacks():
+			Effects.spend_stacks(f, "primed", 1)   # a stoker's priming rides a move that strikes, a stack a move (15 November: the primers' format); a special or a move lost to a stun spends none
+		_turn_death_check()   # what its action felled, and the fight's end if its blow decided it: nothing ticks after that
+		if outcome != Outcome.NONE:
+			break
+		if not f.alive():
+			continue   # spent by its own blow (a Bomb's burst): it takes its web with it
+		# Its turn ends. Regenerating (28 October) is read before the tick fades its stack, and
+		# regrows after the Ablating and the Vitriol, so an Ablate is a race and never a wall; a
+		# suppressed foe ticks and regrows too, its turn being its own.
+		var regrow := Effects.regrowth(f)
+		var tick := Effects.tick(f)
 		var share := int(tick.get("share", 0))
 		if int(tick["hp"]) - share > 0:
 			log.append("%s is ablating: -%d" % [f.display_name, int(tick["hp"]) - share])
@@ -2646,47 +2651,24 @@ func _enemy_turn() -> void:
 		if int(tick["hp"]) > 0:
 			f.hp -= int(tick["hp"])
 			if not f.alive():
-				_turn_death_check()   # ablated to death before it acts: a web it carried goes with it
+				_turn_death_check()   # ablated to death, its action done: a web it carried goes with it
 				continue
-		# Regenerating (28 October): what it regrows comes after its Ablating and Vitriol, so an
-		# Ablate is a race and never a wall; a suppressed foe regrows too, its ticks being its own.
 		if regrow > 0 and f.hp < f.hp_max:
 			var before := f.hp
 			f.hp = mini(f.hp_max, f.hp + regrow)
 			log.append("%s regenerates %d" % [f.display_name, f.hp - before])
-		# Its move this turn, landing or lost to a Suppress, spends what a rally gave it (Empowered,
-		# 26 October); a countdown still gathering carries it to the blow it lands, and a foe
-		# that stepped up this round has had its round, so it keeps it for its next.
-		var moves := not f.fresh and not f.gathering()
-		if tick["skip"] and not _staggered(f):
-			f.recovering = true   # its action lost to a stun: its stun resist lands as Numbed at the round's end (a stagger is no stun's, and numbs nothing)
-		if not tick["skip"] and not f.fresh:   # a suppressed foe does nothing, and a web on it still bursts; one that stepped up this round has had its round
-			_foe_turn(f)
-			# A move that landed names its follow-up for next round (30 October); one lost to a
-			# Suppress or turned by a Disrupt names nothing, so either answer breaks the pair.
-			if f.alive() and not f.gathering() and f.action.has("then"):
-				f.next_move = str(f.action["then"])
-		if moves and not tick["skip"] and f.attacks():
-			Effects.spend_stacks(f, "primed", 1)   # a stoker's priming rides a move that strikes, a stack a move (15 November: the primers' format); a special or a move lost to a stun spends none
-		if _lift_after.has(f):
-			# A merge's lift (30 October), its own Empowered, riding its next move.
-			Effects.stack(f, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:" + f.content_id, int(_lift_after[f]), Effects.DECAY_HALF)
-			_lift_after.erase(f)
+		# Its Empowered halves, its own turn over (16 November: a machine's at END TURN, a foe's
+		# here, where it halved as the round ended until then): a rally stands whole on the next
+		# blow of a foe that had acted before it landed. Essence Flare holds it while it stands.
+		Effects.halve_buffs(f, field_holds())
 		Effects.foe_turn_end(f)   # what lasts until after its next turn goes (Sapped)
+		# A web on it bursts before its Numbed moves, so the burst's stun meets the Numbed the
+		# foe stood in, and a foe that lost this turn to a stun is still Suppressed for it: the
+		# web gives it nothing more, and strips none of the Numbed it is about to gain.
 		_web_burst(f)
-		_turn_death_check()   # with the foe in _acted: a gold rage its own tick broke staggers it out of its next action, not the one it has had
-	if outcome == Outcome.NONE:
-		_turn_death_check()   # and once the turn is done, for a foe that fell outside an action's check
-	_enemy_acting = false
-	_acted.clear()
-	if outcome != Outcome.NONE:
-		return
-	# Numbed's clock (Ryan, 2 November): a stack goes at the round's end, then a foe that lost its
-	# action to a stun this turn gains its stun resist in stacks, so its chip reads the rounds
-	# until one stun lands.
-	for f in field_foes():
-		if not f.alive():
-			continue
+		# Numbed's clock (Ryan, 2 November; at its turn's end since 16 November, "Numbed (applied
+		# or reduced)"): a stack goes, then a foe that lost this action to a stun gains its stun
+		# resist in stacks, so its chip reads the turns until one stun lands.
 		if Effects.stacks_of(f, "numbed") > 0:
 			Effects.spend_stacks(f, "numbed", 1)
 		if f.recovering:
@@ -2695,6 +2677,20 @@ func _enemy_turn() -> void:
 			if r > 0:
 				Effects.stack(f, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", r, Effects.DECAY_NONE)
 				log.append("%s recovers: Numbed ×%d" % [f.display_name, Effects.stacks_of(f, "numbed")])
+		if skip:
+			# The Suppress is spent with the turn it cost (his four places: "Its turn End: ...
+			# Suppressed"): the foe has had its turn, so a stun that reaches it later this turn
+			# meets its Numbed and costs its next action like any foe's that has acted.
+			_spend_suppress(f)
+			if not _acted.has(f):
+				_acted.append(f)
+		_turn_death_check()   # with the foe in _acted: a gold rage its own tick broke staggers it out of its next action, not the one it has had
+	if outcome == Outcome.NONE:
+		_turn_death_check()   # and once the turn is done, for a foe that fell outside an action's check
+	_enemy_acting = false
+	_acted.clear()
+	if outcome != Outcome.NONE:
+		return
 	# A Swallowed machine first (Ryan, 16 November: "Swallowed it's out of play so everything
 	# should pause"): one whose swallow has run its rounds is let go here, as the round ends, so
 	# this round's end reads it like any machine, the end of the round it was taken in, owed
@@ -2702,16 +2698,11 @@ func _enemy_turn() -> void:
 	for ms in mechs:
 		if paused(ms):
 			Effects.pause_round(ms.unit, round, "swallowed")
-	round_holds = field_holds()   # read before the round's statuses run out: Essence Flare holds this round's halving
 	_land_phases()   # before the round's timed effects run out: the wait for Phased is one of them
 	for ms in mechs:
 		if not paused(ms):
 			Effects.end_round(ms.unit, round)   # timed effects run out; a Swallowed machine's wait
-	_held.clear()
 	for f in field_foes():
-		var kept := Effects.held_statuses(f)   # read before its round's statuses run out: a pin holds this round's halving
-		if not kept.is_empty():
-			_held[f] = kept
 		Effects.end_round(f, round)
 
 
@@ -2977,12 +2968,13 @@ func _purge(t: MechState, f: Foe, n: int = 1) -> void:
 	log.append("%s purges %s ×%d%s" % [f.display_name, t.unit.display_name, n, ": " + ", ".join(touched) if not touched.is_empty() else ", and finds nothing to take"])
 
 
-## The round ends with the machines' statuses ticking, after the enemy has struck. Ablating and
-## Scorched are not among them: they tick at the end of the player's turn (_ablate_mechs).
+## The round ends for the machines, after the enemy has struck: their once-a-round notes go.
+## What ticks on a machine does so as its turn ends (_ablate_mechs), and what halves as its
+## turn ends or starts.
 func _tick_mechs() -> void:
 	for ms in live_mechs():
 		if not paused(ms):
-			Effects.tick(ms.unit, true, round_holds)
+			Effects.tick(ms.unit, true)
 
 
 ## A machine's shield regen as the round opens: what it is granted (a module's, a passive's, a
@@ -3048,16 +3040,25 @@ static func form_change(ms: MechState, f: Face, on_self: bool = true) -> String:
 
 
 ## The end of the player's turn, before the overheat (Ryan, 15 November: Ablate, one rule on
-## both sides): each machine's Ablating takes a point a stack and loses a stack, and Scorched
-## goes. A Phased machine takes no point and its stacks fade all the same; a Swallowed one's wait and
+## both sides): each machine's Ablating takes a point a stack and loses a stack, its Regenerating
+## pays a point of shield a stack and loses one, and its Scorched and Sapped go. A Phased machine
+## takes no point and its stacks fade all the same; a Swallowed one's wait and
 ## tick again the turn it is back, as its overheat does.
 func _ablate_mechs() -> void:
 	for ms in live_mechs():
 		if paused(ms):
 			continue   # Swallowed: out of play, so its Ablating, its Scorched and its Sapped wait for the turn it is back
+		var regrow := Effects.regrowth(ms.unit)   # read before the tick fades its stack
 		var points := int(Effects.turn_tick(ms.unit, is_phased(ms))["hp"])   # Phased: the stacks fade and take nothing
 		if points > 0:
 			_ablate(ms, points)
+		# Regenerating (16 November, his four places: its turn's end, after its Ablating, the
+		# foes' order): a point of shield a stack, a shield gain like any, so a shield the tick
+		# just broke takes none; the stack has faded either way.
+		if regrow > 0 and ms.alive():
+			var mended := _gain_shield(ms, regrow)
+			if mended > 0:
+				log.append("%s regenerates %d shield" % [ms.unit.display_name, mended])
 
 
 ## What a machine's Ablating takes as its turn ends: the shield first ("hits shield first, I
@@ -3374,14 +3375,15 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				riders.append(func() -> void: _land_rider(foe, "brittled", brittle_laid, gained, turned))
 				if into_mine:
 					h.mine_stack("brittled", brittle_laid)
-			# A pin (the Hollow-point Harpoon's; Ryan, 11 November: "the target's flak does not decay
-			# this round"): the status held through this round's end, after what the spend lays.
+			# A pin (the Hollow-point Harpoon's; Ryan, 16 November: "the next time it would decay, it
+			# doesn't"; a status for the round until then): laid after what the spend lays, standing
+			# until the decay it stops, which spends it (Effects.spend_hold).
 			if not f.holds.is_empty():
 				var held_id := f.holds
 				riders.append(func() -> void:
 					var holder: String = Effects.HOLDERS[held_id]
-					if foe.alive() and Effects.grant_for_rounds(foe, Effects.STATUS[holder], "mech", round) != null:
-						log.append("%s is %s: its %s does not decay this round" % [foe.display_name, str(Effects.STATUS[holder]["name"]), str(Effects.STATUS[held_id]["name"])])
+					if foe.alive() and Effects.stack(foe, Effects.STATUS[holder], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE) != null:
+						log.append("%s is %s: the next time its %s would decay, it does not" % [foe.display_name, str(Effects.STATUS[holder]["name"]), str(Effects.STATUS[held_id]["name"])])
 						_foe_gained_status(foe, holder))
 			# Purge (the player's, 28 October): every buff the foe carries but Numbed and Guarded,
 			# with the riders, equipment's included; a foe the blow killed loses its Getting Back
@@ -3940,7 +3942,7 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 			# move's own value in stacks (Ryan, 26 October: "howl is more clear if it gives kindled
 			# for the next action, which could be the turn its granted"): one acting after the
 			# rallier this turn hits harder now, and every intent showed it from the round's start
-			# (incoming_rally). The stacks halve at the round's end like a machine's (Ryan, 4
+			# (incoming_rally). The stacks halve as its own turn ends, like a machine's (Ryan, 4
 			# November: one clock on both sides), so one that has acted, the rallier among them,
 			# carries half to the next round; two rallies add.
 			var rallied := 0
@@ -3948,7 +3950,7 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 				if other.alive():
 					Effects.stack(other, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:" + f.content_id, maxi(0, value), Effects.DECAY_HALF)
 					rallied += 1
-			log.append("%s: %s, %d hit %d harder, halving each round" % [f.display_name, str(a.get("name", "rallies")), rallied, value])
+			log.append("%s: %s, %d hit %d harder, halving each turn" % [f.display_name, str(a.get("name", "rallies")), rallied, value])
 		"drain_rerolls":
 			reroll_debt += maxi(0, value)
 			log.append("%s: %s, the team loses %d reroll%s next round" % [f.display_name, str(a.get("name", "roars")), value, "" if value == 1 else "s"])
@@ -3996,18 +3998,18 @@ func _foe_acts(f: Foe, t: MechState) -> void:
 				log.append("%s: %s, %s loses %s" % [f.display_name, str(a.get("name", "cleanses")), marked.display_name, ", ".join(gone).to_lower()])
 		"barrier":
 			# A foe's Barrier (28 October, the Waste's burrow by lean): the next weapon blow it
-			# takes deals nothing, its riders landing; a debuff pops nothing; it goes at the end
-			# of the player's next turn if nothing pops it.
-			Effects.stack(f, Effects.foe_barrier(), Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_TURN_ALL)
+			# takes deals nothing, its riders landing; a debuff pops nothing; it goes as its next
+			# turn starts if nothing pops it (the foes' turn opening, the end of the player's).
+			Effects.stack(f, Effects.foe_barrier(), Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_ROUND)
 			log.append("%s: %s, the next weapon blow on it deals nothing" % [f.display_name, str(a.get("name", "shelters"))])
 		"ward_all":
 			# A sanctuary (28 October, the Marsh's by lean): a Ward on every foe on the field,
-			# itself included, until the end of the player's next turn; no mark the team lays
+			# itself included, until its next turn starts; no mark the team lays
 			# lands, Suppressed excepted, and the damage does.
 			var warded := 0
 			for other in field_foes():
 				if other.alive():
-					Effects.stack(other, Effects.foe_ward(), Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_TURN_ALL)
+					Effects.stack(other, Effects.foe_ward(), Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_ROUND)
 					warded += 1
 			log.append("%s: %s, %d of its own warded against the team's marks" % [f.display_name, str(a.get("name", "hallows")), warded])
 		"prime":
@@ -4299,8 +4301,9 @@ func mergeable(f: Foe, a: Dictionary) -> Array[Foe]:
 
 ## A merge (the King Gel's, 30 October): every foe of the move's kinds on the field is taken into
 ## the merger, leaving its slot with no fall (no last act, no split, no kill of the team's, a twin
-## keeping the slot alone); the merger regrows the HP they had left and its next move hits the
-## move's value harder for each, an Empowered of its own, so thinning them first is the answer.
+## keeping the slot alone); the merger regrows the HP they had left and gains the move's value in
+## Empowered for each, its own, halving as its turn ends like any, so thinning them first is the
+## answer.
 func _merge(f: Foe, a: Dictionary) -> void:
 	var regrown := 0
 	var taken := 0
@@ -4319,8 +4322,10 @@ func _merge(f: Foe, a: Dictionary) -> void:
 	f.hp = mini(f.hp_max, f.hp + regrown)
 	var lift := maxi(1, int(a.get("value", 1))) * taken
 	if lift > 0:
-		_lift_after[f] = int(_lift_after.get(f, 0)) + lift   # granted after this move spends what it carried
-	log.append("%s: %s, %d taken in, regrows %d, its next move %d harder" % [f.display_name, str(a.get("name", "merges")), taken, f.hp - before, lift])
+		# Its own Empowered, gained in its own turn like a rallier's share of its rally: it
+		# halves as that turn ends, so half reaches its next blow.
+		Effects.stack(f, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:" + f.content_id, lift, Effects.DECAY_HALF)
+	log.append("%s: %s, %d taken in, regrows %d, Empowered ×%d" % [f.display_name, str(a.get("name", "merges")), taken, f.hp - before, lift])
 	_refresh_kin()
 
 
@@ -4742,12 +4747,12 @@ func _blow_mine(mine: Dictionary, rank: int, col: int, massive: bool, where: Str
 			_foe_gained_status(foe, status_id, int(gained[foe][status_id]))
 
 
-## A mark a Mine's blast lays after its blow, Shocked or Exposed (through the next round, renewing),
-## or noted turned away by a Ward.
+## A mark a Mine's blast lays after its blow, Shocked or Exposed (through the player's next
+## turn, renewing), or noted turned away by a Ward.
 func _mine_mark(foe: Foe, sid: String, gained: Dictionary, turned: Dictionary) -> void:
 	if not Effects.turns_mark(foe, sid):
 		if sid == "exposure":
-			Effects.grant_for_rounds(foe, Effects.STATUS["exposure"], "mech", round + 1)
+			Effects.grant_for_rounds(foe, Effects.STATUS["exposure"], "mech", round)   # it falls as its turn starts, the first after this round (Effects.turn_opens)
 		else:
 			Effects.stack(foe, Effects.STATUS[sid], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	_note_status(gained, foe, sid, turned)
@@ -4856,13 +4861,15 @@ func _blows_blocked(ms: MechState, n: int) -> void:
 ## Shocked (the Polar Bear's retaliation, 28 September; built 29 September): the foe that struck
 ## carries one shock, never more, until a weapon's strike aimed at it spends it double. A machine's loop passive
 ## may catch the status like any other.
-## Exposed on a foe through the next round (renewing, never adding): in Direct reach of every
-## machine and its armour counting for nothing.
+## Exposed on a foe (renewing, never adding): in Direct reach of every machine and its armour
+## counting for nothing, through the player's next turn: it falls as the foe's turn starts in
+## the next round (Ryan, 16 November: "Exposed on next turn start"; the next round's end until
+## then, an enemy turn longer and no blow of the team's apart).
 func _expose(foe: Foe, by: MechState, turned = null) -> void:
 	if Effects.turns_mark(foe, "exposure"):
 		_turned_away(foe, "exposure", turned, by)
 		return
-	Effects.grant_for_rounds(foe, Effects.STATUS["exposure"], "mech", round + 1)
+	Effects.grant_for_rounds(foe, Effects.STATUS["exposure"], "mech", round)
 	log.append("%s exposes %s" % [by.unit.display_name, foe.display_name])
 	_foe_gained_status(foe, "exposure")
 
@@ -4983,6 +4990,12 @@ func _suppress(foe: Foe, turned = null) -> bool:
 		foe.golden_mark = -1
 		log.append("%s's golden rage breaks under the stun" % foe.display_name)
 	return true
+
+
+## The Suppressed that cost a foe this round's turn, gone as that turn ends; one laid for its
+## next action (on a foe that had acted, or one that stepped up this round) stays for it.
+func _spend_suppress(f: Foe) -> void:
+	f.modifiers = f.modifiers.filter(func(m) -> bool: return not (m.id == "suppressed" and m.scope == Effects.ROUNDS and m.expires_round <= round))
 
 
 ## Is the foe's action of round `r` already lost to a Suppressed it carries?
@@ -6006,6 +6019,5 @@ func _check_outcome() -> void:
 ## and timed effects end.
 func _finish() -> void:
 	state = State.DONE
-	round_holds = []
 	for ms in mechs:
 		Effects.end_skirmish(ms.unit)

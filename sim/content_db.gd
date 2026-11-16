@@ -1472,7 +1472,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# A hold on the whole field (the Quintessence Tap's "No Empowered decays this round"): a status that
 	# halves on its own clock, held on every unit through the round's end.
 	if fd.has("holds_all") and (not Effects.decays_to_zero(Effects.STATUS.get(str(fd["holds_all"]), {})) or not Effects.ROUND_HOLDERS.has(str(fd["holds_all"]))):
-		errs.append("%s: holds_all names a status that halves at the round's end and has a buff that holds it on every unit (Empowered: Essence Flare)" % where)
+		errs.append("%s: holds_all names a status that halves on its own and has a buff that holds it on every unit (Empowered: Essence Flare)" % where)
 	# Ablate is a numbered keyword (Ryan, 18 October): an entry says the stacks each hit leaves.
 	if Array(fd.get("keywords", [])).has("ablate") and int(fd.get("ablate", 0)) <= 0:
 		errs.append("%s: an entry with Ablate says its stacks: ablate, a positive number" % where)
@@ -1730,7 +1730,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		# A status that decays to zero on its own clock (Empowered halving) has no duration
 		# (Ryan, 18 October: "Things either decrease to zero, or are timed, not both").
 		if Effects.decays_to_zero(Effects.STATUS.get(st, {})) and fd.has("rounds"):
-			errs.append("%s: %s halves at the round's end on its own, so a buff grants it stacks and no rounds" % [where, st])
+			errs.append("%s: %s halves on its own clock, so a buff grants it stacks and no rounds" % [where, st])
 		# One a use spends (Spun Up, spent by the next weapon; a primer, a stack a weapon fired)
 		# lasts until then.
 		if Effects.STATUS.get(st, {}).has("spent_by") and fd.has("rounds"):
@@ -2427,7 +2427,7 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 					if a.has(key):
 						errs.append("%s: '%s' belongs to an attack action" % [aw, key])
 				if _halves(effect) and int(a.get("value", 0)) < HALVING_MINIMUM:
-					errs.append("%s: %s lays a status that halves as each round ends, so its value is %d at the least: one stack is gone before its side's next turn" % [aw, effect, HALVING_MINIMUM])
+					errs.append("%s: %s lays a status that halves, so its value is %d at the least: one stack is gone at its first halving" % [aw, effect, HALVING_MINIMUM])
 			else:
 				implemented_attacks += 1
 				# An attack scales the foe's base attack: factor, not a value of its own, so the
@@ -2455,12 +2455,12 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 					if a.has(k) and not carried:
 						errs.append("%s: %s (the stacks) rides with the %s keyword" % [aw, k, k])
 					if carried and _halves(k) and int(a.get(k, 0)) < HALVING_MINIMUM:
-						errs.append("%s: a %s rider lays a status that halves as each round ends, so it says %d at the least: one stack is gone before its side's next turn" % [aw, k, HALVING_MINIMUM])
+						errs.append("%s: a %s rider lays a status that halves, so it says %d at the least: one stack is gone at its first halving" % [aw, k, HALVING_MINIMUM])
 	if implemented_attacks < 1:
 		errs.append("%s: needs at least one implemented attack action" % where)
 
 
-## What a foe's move lays that halves as each round ends, by the rider or the special that lays
+## What a foe's move lays that halves, by the rider or the special that lays
 ## it (Brittle on a machine, Empowered on its own side), and the least such a move may say
 ## (Ryan, 16 November: "Buffs and debuffs that decay at end of round should just have a minimum
 ## of 2"). One stack halves to none as the round it was laid in ends, so a rallier's own share

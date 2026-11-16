@@ -1946,9 +1946,23 @@ combined stack; and our own pieces carry no floor of 2 ("they can sequence"). No
 made on it: one machine's flare and the edge cases of two statuses moved, no foe's number.
 **The end table he asked for is the proposal's section 23**, every buff and debuff by the
 clock it ends on, and **his four places are its section 24** (16 November: turn start, turn
-end, round end, when spent). They cover every status that ticks. The clocks are not built on
-them yet: three points wait on him (what a foe's turn is, Ablate and Vitriol after a foe's
-blow, Brittle's place), and they decide the wording of every status line, so it is one pass.
+end, round end, when spent). **The clocks are built on them** (the same day, on his
+"Otherwise I agree with your leans"; the proposal's section 25; the bible's four places row;
+`tests/test_clocks.gd`). A machine's turn starts as the round opens and ends at END TURN; a
+foe's starts as the foes' turn opens and ends as its own action does. So a foe's Ablating and
+Vitriol tick after its blow, a burning foe striking first and the forecast counting it; a
+foe's Empowered halves as its own action ends, a rally whole on the next blow of a foe that
+had acted; Brittle halves as its carrier's turn starts; a Barrier and a Ward go there with
+Armoured; a machine's Regenerating pays at END TURN after its Ablating; a dark entry lights
+as its machine's turn ends; a Suppress is spent with the turn it cost and Numbed lands
+there; and a pin is spent by the decay it stops ("the next time it would decay, it
+doesn't"). The round-start trigger left with its last piece, and a merge's lift halves like
+any Empowered gained in a foe's own turn. The anchor read again says tier one stands where
+it stood (`docs/measurements.md`, its last entry: the wolf pack 12.3% to 13.1% of a four's
+hull, one fight lost in 30). A session's reads in it, his to overrule, are the to-do's Ryan
+line: the foes' turn start is the whole side's, where the agreed lean said its own action.
+His thought of the same round, the Web Bomb at the round's end as "a double suppress on a
+delay", is answered in chat and waits on his word (section 25).
 **The foes' pass has begun** (16 November, on his "Yes, go ahead with the next work"):
 **Exposed on a machine is built** (the proposal's section 17; `tests/test_exposed.gd`), a
 foe's Expose as a move of its own and as a rider on its blow. The machine's armour of every
@@ -1964,8 +1978,8 @@ names it, and the rider is cut from the engine with its last carrier.
 (the to-do's line): Exposed's carriers, the moves his marks renamed or
 moved onto the unit (Collect and Appropriated), the countdowns off
 the rank and file, a fall free to do more than strike, and a move as a short list of steps
-if he takes section 19's proposal, the one answer that shapes how those are built. Beside
-it, the clocks on his four places once he answers section 24's three points.
+which he took on 16 November ("Yes, go with the steps if you think that's best"), the one
+answer that shapes how those are built.
 The table of every rider, buff and debuff (`docs/vocabulary_table.md`) stands with its page
 (Pages, below) as the record of his marks until the pass retires.
 With the pass, on his proposal, the tier-one

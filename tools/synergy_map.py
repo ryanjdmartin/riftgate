@@ -126,7 +126,7 @@ EFFECTS = {
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
 }
 TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_granted": "shield_granted", "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",
-            "on_foe_status": "paradox_feed", "on_stack": None, "on_attack": None, "static": None, "on_round_start": None,
+            "on_foe_status": "paradox_feed", "on_stack": None, "on_attack": None, "static": None,
             "on_injury": None, "on_skirmish_start": None, "on_shield_gain": None, "on_damage": None}
 CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None,
               "target_no_intent": None, "shield_up": None, "target_unhurt": "missing_hp", "target_half": "missing_hp"}
@@ -139,7 +139,7 @@ FOE_EFFECTS = {"ablate": "ablating_mech", "scorch_all": "scorched", "jam": "disa
 # The engine's own readers, where a currency pays by itself (the rules, docs/rules.md).
 ENGINE_READERS = {
     "ablating": ["its tick: 1 HP a stack at the foe's action, past armour"],
-    "brittled": ["every blow of a damaging weapon it takes, +1 a stack, a 0 included: most on strikes; halves each round"],
+    "brittled": ["every blow of a weapon it takes, +1 a stack, a 0 included: most on strikes; halves as its turn starts"],
     "shocked": ["the next damaging blow it takes, doubled: most on one big blow"],
     "exposure": ["Direct reach to it wherever it stands, and its armour counts for nothing"],
     "cryoed": ["any machine's damaging hit on it spends every stack and cools the hitter 2 a stack"],
@@ -150,7 +150,7 @@ ENGINE_READERS = {
     "lure": ["every foe reached turns on the spender, so whatever reads being struck pays (a Barrier, the Armoured and Sealed plate, and every reader of hull damage)"],
     "disrupt": ["the foe takes its next open move"],
     "swap": ["the two trade places: reach, the acting order, area"],
-    "overcharged": ["every blow +1 a stack: most on strikes; halves each round"],
+    "overcharged": ["every blow +1 a stack: most on strikes; halves as its turn ends"],
     "braced": ["armour +1 a stack until the round's end"],
     "primed": ["the weapons it fires carry Ablate 1, a stack of Ablating a strike: most on strikes; a weapon fired spends a stack"],
     "barrier": ["the next blow deals nothing"],
@@ -161,7 +161,7 @@ ENGINE_READERS = {
     "sealed": ["armour +3, cooling stopped, 3 heat a turn"],
     "regenerating": ["a point of shield a stack as the round opens, then a stack fades"],
     "ablating_mech": ["its tick: 1 shield a stack at the turn's end, then hull, past armour and a Barrier"],
-    "brittled_mech": ["every blow it takes, +1 a stack; halves each round"],
+    "brittled_mech": ["every blow it takes, +1 a stack; halves as its turn starts"],
     "exposure_mech": ["its armour counts for nothing, and the next round's targeted moves turn on it until the blows drawn would wreck it"],
     "scorched": ["every weapon fired runs 1 hotter a stack this turn"],
     "disabled": ["the entry comes up blank"],

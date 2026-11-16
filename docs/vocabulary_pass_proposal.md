@@ -1960,3 +1960,116 @@ the fight needs no place: Corrupted, Ricochet, Enraged, the forms and the stores
    its carrier's turn start it halves right after the blows that used it and its chip always
    shows what the next blows will meet. At its turn end a machine's halves just before the
    foes use it. Claude's lean: file it under turn start.
+
+## 25. His eleventh round, 16 November: the four places built, the pins, the Web Bomb
+
+His words:
+
+> I think web bomb could be moved to End pf Round and be repositioned as a double suppress
+> on a delay, not suppress one this turn and one the next. The current version is
+> almost-not-quite an unconditional suppress on one foe. If it stays as the current version,
+> it probably needs a bigger cost, like a cooldown. Thoughts?
+>
+> Otherwise I agree with your leans.
+>
+> The pins, actually, probably work better worded as "the next time it would decay, it
+> doesn't." So at the end of Turn End, implementation wise.
+>
+> Yes, go with the steps if you think that's best.
+
+**Built: the four places.** The three leans of section 24 are his, so the clocks stand on
+his list (`tests/test_clocks.gd`; the bible's row; `docs/rules.md`, When a status ends).
+
+| Place | What ends there |
+|---|---|
+| Its turn starts | Armoured, a Barrier and a Ward go. Brittle halves. Exposed falls, at the start after the next one |
+| Its turn ends | Ablating and Vitriol tick and fade a stack. Regenerating pays after them and fades one. Empowered halves. Scorched and Sapped go. A dark entry lights, a cooldown's and a jam's. A Suppress is spent. Numbed loses a stack, or lands on a foe that lost the turn to a stun |
+| The round ends | Phased is granted or lost. Essence Flare goes. A swallow's and a golden rage's rounds run |
+| It is spent | The primers, Spun Up, the Juggernaut Drive, Shocked, Cryo, Undying, a Mine, and a pin |
+
+A machine's turn starts as the round opens and ends at END TURN. A foe's turn ends as its
+own action does, landed, lost or skipped.
+
+**What falls out, each built as his words have it.**
+
+1. A burning foe strikes, then burns. The forecast counts its blow, and a foe its Ablating
+   fells has acted. Ablate no longer saves a blow by the kill before it.
+2. A rally is whole on the next blow of a foe that had acted when it landed. A foe acting
+   after the rallier hits harder that turn and carries half on, as before. The rallier's own
+   share halves at once, its turn ending on the rally.
+3. A merge's lift halves at once too, gained in the merger's own turn, so half reaches its
+   next blow as it did. The engine's own holding of the lift until after the move, a
+   leftover of the days a move spent Empowered, is cut.
+4. A machine's Regenerating pays at END TURN, after its Ablating and before the foes strike,
+   the first time on the turn it is bought. A foe's pays first as the turn it is cast ends,
+   so a Purge the turn after takes one payment fewer.
+5. Brittle that a Mine's blast lays in the enemy's turn stands whole for the player's next
+   turn, where the round's end used to halve it first.
+6. A Suppress is spent with the turn it cost. A stun that reaches the foe later in that
+   enemy turn, a web's catch or a Mine's blast, meets the Numbed it has just gained and
+   strips a stack, where it did nothing before.
+7. A foe's Exposed falls as the foes' turn starts in the round after it landed, so a pass's
+   release or a Mine's blast in that enemy turn no longer meets it. The player's turns it
+   covers are the same two.
+8. The round-start trigger for a passive left the engine with its last piece.
+
+**A session's reads, his to overrule.**
+
+1. *The foes' turn starts as the whole side's opens.* The lean he agreed to said "its own
+   action for all of it". Built that way, a guard or a Ward that one foe lays on every foe
+   would fall off each foe still to act that turn, before the player ever met it. That is
+   the clock his mark of 15 November retired for Armoured. No blow of the team's lands
+   between the foes' turn opening and a foe's own action, so no number moves by it.
+2. *Where a pin is spent.* His wording is the rule: the next time the status would decay, it
+   does not, and the pin is gone. Brittle halves as its carrier's turn starts, on the lean he
+   agreed to, so Pinned is spent there. Seared is spent as the foe's turn ends, where
+   Ablating fades. His "end of Turn End" reads as written with Brittle in that place. A pin
+   with nothing to hold waits.
+3. *The floor of 2 for a rally* stands as built. Its reason has thinned: a foe that had
+   acted now carries the whole rally to its next blow, a 1 included, and only the rallier's
+   own share is lost at 1. Whether a rally still wants the floor is his.
+
+**The read** (`docs/measurements.md`, 16 November): tier one stands where it stood. The wolf
+pack goes from 12.3% of a four's hull to 13.1% and loses one fight in 30, the hunters' mean
+from 11.1% to 11.6%, the formations' from 7.2% to 7.0%, and the elites' holds at 11.1%. A
+direction at 30 fights a row. Not read: what Ablate lost with the kill before the blow, and
+tiers two and three.
+
+**The Web Bomb: thoughts.** Today the web bursts as the webbed foe's own action ends. That
+foe loses its next turn, and the foe beside it that acts next loses this one. So one spend
+at heat 1, with no cooldown, stops a blow already announced and takes a second action a
+round later.
+
+His version: the web bursts as the round ends, and both foes lose their next turn.
+
+*For it.* It is one rule where today's is two timings and a rule about acting order. It
+takes away the part that reads as a free stun, the announced blow stopped this turn. And it
+fits the kit: the Funnel-web bites foes that show no intent on it, and a web spent this
+round makes two such foes for the next. Bind, then bite.
+
+*What it gives up.* The reactive use. A stun is worth most against a blow the player has
+seen, and a delayed one lands before the next intents are drawn. It still has known prey: a
+countdown still gathering, and a follow-up announced a round ahead.
+
+*What follows from the round's end.*
+
+1. The burst comes after every foe's turn has ended. A foe the team stunned this round has
+   just gained its Numbed, so the web strips a stack from it where today it does nothing. A
+   web and one other stun a round then hold a small foe every round. That is the price
+   Numbed sets, two stuns a round for a foe of resist 1, and a foe of resist 2 or 3 is not
+   held by it.
+2. The web sits through the whole enemy turn. A foe felled in it takes the web with it, and
+   a foe that cleanses its own side has a turn to lift it. Both are counterplay the foes do
+   not have today.
+3. Acting order no longer matters, so "the next foe to act beside it" can be simply the foe
+   beside it, the right-hand one, or the left-hand one with none there. The chip already
+   points at it.
+4. Alone, a web every round holds its pair every other round: the round they skip they gain
+   Numbed, and the next web strips it. So Numbed is already most of a cooldown for it.
+
+*Claude's lean.* Take his version, with no cooldown at first, and keep three things as they
+are: a Ward turns it, Numbed strips instead of stunning, and a foe killed first takes its web
+with it. Then read the pair held and the Vitriol it earns before pricing it further. A
+cooldown of 1 is the lever if two silent foes every other round reads as too much, and it is
+the right price if the piece stays as it is today. Not built: it waits on his word.
+

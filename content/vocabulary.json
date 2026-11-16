@@ -273,7 +273,7 @@
    "id": "expose",
    "category": "keyword",
    "name": "Expose",
-   "codex": "Keyword, on either side. On an entry of ours aimed at a foe: every foe the entry reaches is Exposed until the end of the next round, a felled one too: in Direct reach of every machine, and its armour counts for nothing. A second Expose refreshes it, never adds. On a foe's move, a rider on its blow or a move of its own: the machine it lands on is Exposed through the round after, its armour counting for nothing, and as that round opens every foe's targeted move turns on it, up to the blows that would wreck it. A Lure turns the move and a Ward turns it away; no foe announces one while another's is out or a machine stands Exposed.",
+   "codex": "Keyword, on either side. On an entry of ours aimed at a foe: every foe the entry reaches is Exposed through your next turn, a felled one too: in Direct reach of every machine, and its armour counts for nothing. A second Expose refreshes it, never adds. On a foe's move, a rider on its blow or a move of its own: the machine it lands on is Exposed through the round after, its armour counting for nothing, and as that round opens every foe's targeted move turns on it, up to the blows that would wreck it. A Lure turns the move and a Ward turns it away; no foe announces one while another's is out or a machine stands Exposed.",
    "status": "implemented",
    "design": {
     "holes": "The formation word exposed stays rules text, so the status's id is exposure. The foes' half is Ryan's of 15 November (the vocabulary pass's fourth and fifth rounds), built 16 November: a tier-two foe's at the least, the validator refusing it on anything dealt at tier one (\"only in formations that feel thematic and fair, so that the player has tools to answer by that point\"), and one out at a time (\"Enemy units should be smart enough to only try to Expose one player unit at a time\"). No foe carries it yet: its carriers are the foes' pass's content. The foes' text is a session's draft, his to write."
@@ -349,7 +349,7 @@
    "id": "numbed",
    "category": "status",
    "name": "Numbed",
-   "codex": "Foe buff: the rounds until one stun lands. A stun on it strips a stack and lands nothing, so a foe with Numbed N takes N+1 stuns in a round. A stunned foe recovers with its stun resist in stacks (1 for most, 2 for a massive foe, 3 for an elite, a hero or a boss), after the round's decay; a stack goes at the end of each round. A Purge lowers it like any buff; nothing deepens, spreads or cleanses it.",
+   "codex": "Foe buff: the rounds until one stun lands. A stun on it strips a stack and lands nothing, so a foe with Numbed N takes N+1 stuns in a round. A stunned foe gains its stun resist in stacks (1 for most, 2 for a massive foe, 3 for an elite, a hero or a boss) as the turn it lost ends; a stack goes as each of its turns ends after that. A Purge lowers it like any buff; nothing deepens, spreads or cleanses it.",
    "status": "implemented",
    "design": {
     "holes": "Ryan's clock (2 November): the chip reads as the rounds until it can be stunned again, so the stacks land after the decay phase; a stun lock costs its resist and one every round, so an all-in stun team can brute-force a boss at a price, and a Purge is the other key. The resist numbers are placeholders (content's resist; the bosses' by hand).",
@@ -357,7 +357,7 @@
      "kind": "buff",
      "on": "foe",
      "stacks": "Yes: its stun resist as it recovers from a stun",
-     "lasts": "A stack goes at the end of each round"
+     "lasts": "A stack goes as each of its turns ends"
     }
    }
   },
@@ -574,7 +574,7 @@
    "id": "pinned",
    "category": "status",
    "name": "Pinned",
-   "codex": "Foe status, from the Hollow-point Harpoon. Its Brittle does not halve at this round's end. Until the round's end; refreshed, never added.",
+   "codex": "Foe status, from the Hollow-point Harpoon. The next time its Brittle would halve, it does not, and the pin is spent. Refreshed, never added.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 11 November: \"The Flak pin should be its own status that gets applied for one turn. I assume we're going to want a similar one for burning as well.\" Pinned Flak until 15 November, and what it holds Brittle since; the name is his (\"Just \\\"Pinned.\\\"\").",
@@ -582,7 +582,7 @@
      "kind": "debuff",
      "on": "foe",
      "stacks": "Never: a second pin refreshes it",
-     "lasts": "Until the round's end"
+     "lasts": "Until the halving it stops"
     }
    }
   },
@@ -590,7 +590,7 @@
    "id": "seared",
    "category": "status",
    "name": "Seared",
-   "codex": "Foe status. Its Ablating takes its points and loses no stack this round. Until the round's end; refreshed, never added.",
+   "codex": "Foe status. The next time its Ablating would lose a stack, it takes its points and loses none, and the pin is spent. Refreshed, never added.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 11 November: coded in beside Brittle's pin, \"since the Mastema will want it as a fitted piece, if nothing else\". No piece lays it yet. The name is his, 15 November: \"Rename 'Seared.'\"",
@@ -598,7 +598,7 @@
      "kind": "debuff",
      "on": "foe",
      "stacks": "Never: a second pin refreshes it",
-     "lasts": "Until the round's end"
+     "lasts": "Until the fade it stops"
     }
    }
   },
@@ -622,7 +622,7 @@
    "id": "exposure",
    "category": "status",
    "name": "Exposed",
-   "codex": "Status, on either side: its armour counts for nothing, its own and any Armoured. On a foe: in Direct reach of every machine as if its column's front were empty, until the end of the next round, so through your next turn and the foes' turn after it; refreshed, never added. On a machine, from a foe's Expose: through the round after it lands, and as that round opens every foe's targeted move turns on it, whatever the foe's aim, until the blows already drawn would wreck it, the rest picking as they would. Armour it gains while Exposed does nothing until the mark ends; its shield is untouched. A Lure pulls a blow off it, and a Cleanse gives the armour back and leaves the intents where they turned.",
+   "codex": "Status, on either side: its armour counts for nothing, its own and any Armoured. On a foe: in Direct reach of every machine as if its column's front were empty, through your next turn, falling as the foes' turn starts in the round after it landed; refreshed, never added. On a machine, from a foe's Expose: through the round after it lands, and as that round opens every foe's targeted move turns on it, whatever the foe's aim, until the blows already drawn would wreck it, the rest picking as they would. Armour it gains while Exposed does nothing until the mark ends; its shield is untouched. A Lure pulls a blow off it, and a Cleanse gives the armour back and leaves the intents where they turned.",
    "status": "implemented",
    "design": {
     "holes": "The id is exposure, since exposed names the formation word and the foes' default aim; a machine's is exposure_mech in the engine. The machine's half is Ryan's of 15 November, built 16 November: \"all armour of all kinds\"; \"Exposed does not strip the petrel's resistant shield\"; \"keep the logic where enemies don't try and overkill. That helps keep it fair. So the whole field targets up until predicted death, then the rest pick intent targets as normal\"; \"Exposed sets the intents, everything after proceeds as normal\"; \"Lure wins\". A session's reads where his words give none: a countdown's pick carried from the round before holds, and a machine out of reach (Phased as the round ended) draws nothing. Still his: whether a machine that stands Exposed may be marked again; built as no, so the whole field's fire comes every other round at most. The aim content calls exposed, shown as \"aims at the exposed\", is no mark and wants another word, his. The machine's text is a session's draft, his to write.",
@@ -630,7 +630,7 @@
      "kind": "debuff",
      "on": "both",
      "stacks": "Never: a second Expose refreshes it",
-     "lasts": "A foe's until the end of the next round; a machine's through the round after it lands"
+     "lasts": "A foe's through the player's next turn, falling as its turn starts; a machine's through the round after it lands"
     }
    }
   },
@@ -638,7 +638,7 @@
    "id": "overcharged",
    "category": "status",
    "name": "Empowered",
-   "codex": "Machine status. Each stack is +1 damage on this machine's attacks, flat, so the count is the bonus. As its side's turn ends it halves, rounded down, whatever granted it, until it is gone.",
+   "codex": "Machine status. Each stack is +1 damage on this machine's attacks, flat, so the count is the bonus. As its turn ends it halves, rounded down, whatever granted it, until it is gone.",
    "status": "implemented",
    "design": {
     "holes": "Every grant is one status on the machine and the stacks add up. A halving rule has no duration, so a buff component grants stacks and no rounds. The name is a placeholder. It halves at END TURN since 16 November (Ryan: \"Empowered should decay at the end of turn, clearly, not end of round\"), so what a machine gains in the enemy's turn it carries whole into its next; at the round's end until then.",
@@ -646,7 +646,7 @@
      "kind": "buff",
      "on": "machine",
      "stacks": "Yes: a damage point a stack",
-     "lasts": "Halves as its side's turn ends, rounded down, until gone"
+     "lasts": "Halves as its turn ends, rounded down, until gone"
     }
    }
   },
@@ -702,7 +702,7 @@
    "id": "braced",
    "category": "status",
    "name": "Armoured",
-   "codex": "Status, on either side. Armour +1 a stack: that much off every blow that reaches it, flat, every stack at once, whatever granted it, so the count is the armour. It lasts until its side's next turn begins: a machine's (a buff, an armouring component, a passive) through the enemy's turn, coming off blows on bare hull, and a foe's, from its brace or another's, through the player's.",
+   "codex": "Status, on either side. Armour +1 a stack: that much off every blow that reaches it, flat, every stack at once, whatever granted it, so the count is the armour. It lasts until its next turn starts: a machine's (a buff, an armouring component, a passive) through the enemy's turn, coming off blows on bare hull, and a foe's, from its brace or another's, through the player's.",
    "status": "implemented",
    "design": {
     "holes": "The engine id stays braced. One clock on both sides, the opening of its side's next turn (Ryan, 15 November: \"The common \"end\" state between both sides is \"start of their next turn.\"\"; 16 November, of a machine's, which went at the round's end until then: \"Armoured we should change so its end is symmetrical on both sides. Probably means until \"start of its next turn.\"\"). A machine's goes as the round opens, before the foes announce, so no blow lands between its old end and its new one. It takes no rounds from any grant.",
@@ -710,7 +710,7 @@
      "kind": "buff",
      "on": "both",
      "stacks": "Yes: an armour point a stack, every stack going at once",
-     "lasts": "Until its side's next turn begins"
+     "lasts": "Until its next turn starts"
     }
    }
   },
@@ -742,7 +742,7 @@
      "kind": "debuff",
      "on": "machine",
      "stacks": "No",
-     "lasts": "Through the machine's next turn"
+     "lasts": "Until the machine's next turn ends"
     }
    }
   },
@@ -782,7 +782,7 @@
    "id": "ablating",
    "category": "status",
    "name": "Ablating",
-   "codex": "Status, the same on either side: it takes a point a stack, then loses a stack. On a foe: its HP, past armour, at the start of its action. On a machine: its shield first, then its hull past armour, at the end of the player's turn, before the overheat, so a Cleanse that turn takes it off. A tick is no blow: a Barrier neither stops it nor is spent on it.",
+   "codex": "Status, the same on either side: it takes a point a stack, then loses a stack. On a foe: its HP, past armour, as its turn ends, so a burning foe strikes before it burns. On a machine: its shield first, then its hull past armour, at the end of the player's turn, before the overheat, so a Cleanse that turn takes it off. A tick is no blow: a Barrier neither stops it nor is spent on it.",
    "status": "implemented",
    "design": {
     "holes": "Engine ids ablating (a foe's) and ablating_mech (a machine's). Ryan's rule, 15 November, in the place of Burning as heat on a machine: \"hits shield first, I think. Pretty deadly otherwise. Bypasses armour when damaging hull\"; \"Tick of ablate ignores barrier yes\". A Phased machine takes no point and its stack fades all the same, and a Swallowed one's stacks wait (Ryan, 16 November: \"Everything ticks during phased. It doesn't take damage but it's a way of waiting out a debuff\"; \"Swallowed it's out of play so everything should pause\"). The foes' numbers are still the ones sized as heat, his to set. A session's draft, his to write.",
@@ -790,7 +790,7 @@
      "kind": "debuff",
      "on": "both",
      "stacks": "Yes: the Ablate's number per blow, or as many as the foe's move says",
-     "lasts": "Until the stacks run out: one fades at each tick (a foe's action; the end of the player's turn on a machine)"
+     "lasts": "Until the stacks run out: one fades at each tick, as its turn ends (a foe's own action done; the end of the player's turn on a machine)"
     }
    }
   },
@@ -798,7 +798,7 @@
    "id": "suppressed",
    "category": "status",
    "name": "Suppressed",
-   "codex": "Foe status. Skips its action this round, then clears.",
+   "codex": "Foe status. Skips its next turn, and is spent with it.",
    "status": "implemented",
    "design": {
     "holes": "",
@@ -806,7 +806,7 @@
      "kind": "debuff",
      "on": "foe",
      "stacks": "No",
-     "lasts": "One action: this round's, or the next if it has acted"
+     "lasts": "One turn: this round's, or the next if it has acted"
     }
    }
   },
@@ -814,7 +814,7 @@
    "id": "vitriol",
    "category": "status",
    "name": "Vitriol",
-   "codex": "Foe status, the funnel-web's acid. At its action it loses 10% of its current HP a stack, past armour, after Ablating, rounded down, then a stack fades. A share of what is left: it opens on a boss and never finishes a foe.",
+   "codex": "Foe status, the funnel-web's acid. As its turn ends it loses 10% of its current HP a stack, past armour, after Ablating, rounded down, then a stack fades. A share of what is left: it opens on a boss and never finishes a foe.",
    "status": "implemented",
    "design": {
     "holes": "Only the funnel-web's passive lays it; a keyword that ever carries it shares the word. Whether a tick passes Guarded is the parts' question, as Ablating's is. The word Corroded is kept for a foe's damage over time on machines.",
@@ -822,7 +822,7 @@
      "kind": "debuff",
      "on": "foe",
      "stacks": "Yes: a stack per weapon hit on a foe showing no intent on the spider; a tick a stack",
-     "lasts": "A stack fades at each of its actions"
+     "lasts": "A stack fades as each of its turns ends"
     }
    }
   },
@@ -894,7 +894,7 @@
    "id": "essence_flare",
    "category": "status",
    "name": "Essence Flare",
-   "codex": "Machine status, from the Ammit's Quintessence Tap, on the machine that spent it. While it lasts no Empowered halves this round, its own or any other unit's, machine and foe alike: a machine's as the player's turn ends, a foe's as the round does. Until the round's end. A buff like any: a Purge takes it and the hold with it, and a wreck holds nothing.",
+   "codex": "Machine status, from the Ammit's Quintessence Tap, on the machine that spent it. While it lasts no Empowered halves this round, its own or any other unit's, machine and foe alike: a machine's as the player's turn ends, a foe's as its own turn does. Until the round's end. A buff like any: a Purge takes it and the hold with it, and a wreck holds nothing.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 12 November: \"No Empowered decays this round. And I mean none, not ally or enemy.\" Pinned Empowered until 15 November, a chip on every unit holding Empowered and the round's own rule; then his: \"This is not pinned empowered, this is an Ammit specific buff. I would give it to the Ammit only, even though it affects the whole battlefield\"; \"Grants the no-decay state which is represented as a buff on the Ammit called Essence Flare.\" That a Purge ends the hold follows from its being a buff.",
@@ -942,15 +942,15 @@
    "id": "brittled",
    "category": "status",
    "name": "Brittle",
-   "codex": "Status, the same on either side: every blow its carrier takes deals a point more a stack, and at the end of each round the stacks halve, rounded down. On a foe: every blow of a weapon, one of 0 included, added before its armour comes off. On a machine: every blow a foe lands, the shield taking the extra first as it takes any blow; an ally's Cleanse lifts it.",
+   "codex": "Status, the same on either side: every blow its carrier takes deals a point more a stack, and the stacks halve as its turn starts, rounded down, the other side's blows behind it. On a foe: every blow of a weapon, one of 0 included, added before its armour comes off. On a machine: every blow a foe lands, the shield taking the extra first as it takes any blow; an ally's Cleanse lifts it.",
    "status": "implemented",
    "design": {
-    "holes": "Engine ids brittled (a foe's) and brittled_mech (a machine's). Flak on a foe (Wainwright & Sutler's on-hit, 19 October) and Crushed on a machine (the World Eater's pin, 4 November, Monster Hunter's Defense Down by archetype; Ryan: \"that inflicts Defense Down in game, something we don't have\") until 15 November, folded on Ryan's mark (\"We could consider making this one symmetrical and folding it into Flak as well, changing the name so it works on both sides\") and his \"agreed, brittle\". One clock, the halving: a machine's stood whole through the next round until then, so a foe's Brittle 1 was the pack's for the turn it was laid in and gone by the next, and a foe lays 2 at the least since 16 November (Ryan: \"Buffs and debuffs that decay at end of round should just have a minimum of 2\"; the validator holds a foe's moves to it, and our own pieces are not held to it: \"The minimum 2 is different for the player since they can sequence. So I wouldn't make it a blanket rule\"). Adds before multiplies and before armour, to a weapon's blow of 0 too (Ryan, 25 October: \"Flak and overcharge exist in part to get past armour\"), so a Shocked foe carrying Brittle takes blow plus Brittle, doubled. Numbers are placeholders; Brittle beside Empowered at a point a stack each may read too strong, the two read together on the Prairie Dog's rows. A session's draft, his to write.",
+    "holes": "Engine ids brittled (a foe's) and brittled_mech (a machine's). Flak on a foe (Wainwright & Sutler's on-hit, 19 October) and Crushed on a machine (the World Eater's pin, 4 November, Monster Hunter's Defense Down by archetype; Ryan: \"that inflicts Defense Down in game, something we don't have\") until 15 November, folded on Ryan's mark (\"We could consider making this one symmetrical and folding it into Flak as well, changing the name so it works on both sides\") and his \"agreed, brittle\". One clock, the halving: a machine's stood whole through the next round until then, so a foe's Brittle 1 was the pack's for the turn it was laid in and gone by the next, and a foe lays 2 at the least since 16 November (Ryan: \"Buffs and debuffs that decay at end of round should just have a minimum of 2\"; the validator holds a foe's moves to it, and our own pieces are not held to it: \"The minimum 2 is different for the player since they can sequence. So I wouldn't make it a blanket rule\"). Adds before multiplies and before armour, to a weapon's blow of 0 too (Ryan, 25 October: \"Flak and overcharge exist in part to get past armour\"), so a Shocked foe carrying Brittle takes blow plus Brittle, doubled. Numbers are placeholders; Brittle beside Empowered at a point a stack each may read too strong, the two read together on the Prairie Dog's rows. A session's draft, his to write. It halves as its carrier's turn starts since 16 November (his four places, Brittle with what ends at a turn's start; at the round's end until then, no blow apart).",
     "table": {
      "kind": "debuff",
      "on": "both",
      "stacks": "Yes: N a hit from a Brittle N piece, N a blow from a foe's Brittle N; a point more on every blow it takes, a stack",
-     "lasts": "Halves at the end of each round, rounded down, until gone"
+     "lasts": "Halves as its turn starts, rounded down, until gone"
     }
    }
   },
@@ -1372,16 +1372,6 @@
    }
   },
   {
-   "id": "on_round_start",
-   "category": "trigger",
-   "name": "On round start",
-   "codex": "Passive trigger. Fires after the roll, before rerolls: shield from heat, a flat shield, a vent.",
-   "status": "implemented",
-   "design": {
-    "holes": "The heat it reads is the gauge after the turn's passive cooling (the Buzzard's Thermal Recoupler)."
-   }
-  },
-  {
    "id": "on_skirmish_start",
    "category": "trigger",
    "name": "On skirmish start",
@@ -1585,7 +1575,7 @@
    "id": "regenerates",
    "category": "component_property",
    "name": "Regenerates",
-   "codex": "A rule printed on a component (the Storm Petrel's St. Elmo's Regenerator, a lure): spent on a foe, its own machine gains Regenerating, the stacks it says, a point of shield a stack as each round opens and a stack fading then.",
+   "codex": "A rule printed on a component (the Storm Petrel's St. Elmo's Regenerator, a lure): spent on a foe, its own machine gains Regenerating, the stacks it says, a point of shield a stack as each of its turns ends, this one first, and a stack fading then.",
    "status": "implemented",
    "design": {
     "holes": "Self only and never Rapid: the die is its brake (Ryan, 19 October)."
@@ -1885,7 +1875,7 @@
    "id": "brace_property",
    "category": "component_property",
    "name": "Braces",
-   "codex": "A rule printed on a component (the Breaching Plow's). Spending it Armours its owner, the stacks it says (an armour point each), until the round's end: the armour stands behind the blow through the enemy's turn.",
+   "codex": "A rule printed on a component (the Breaching Plow's). Spending it Armours its owner, the stacks it says (an armour point each), until its next turn starts: the armour stands behind the blow through the enemy's turn.",
    "status": "implemented",
    "design": {
     "holes": "A rule on one carrier, not a keyword, until another piece wants it; the stacks are a placeholder."
@@ -2053,7 +2043,7 @@
    "id": "kindled",
    "category": "status",
    "name": "Empowered",
-   "codex": "Foe status, from a rally: it lands on every foe on the field, the rallier too, the moment the rally does, the rally's value in stacks, and every blow the foe lands hits a point harder a stack, an add before the move's factor. It halves as the foes' turn ends, which is the round's end, rounded down, as a machine's Empowered does at the player's: no move spends it, a Suppress takes none of it, and a foe that has acted when the rally lands, its rallier among them, carries half to the next round. Two rallies add. An intent counts the rallies on their way to it this round.",
+   "codex": "Foe status, from a rally: it lands on every foe on the field, the rallier too, the moment the rally does, the rally's value in stacks, and every blow the foe lands hits a point harder a stack, an add before the move's factor. It halves as its own turn ends, its action done, rounded down, as a machine's Empowered does at the player's: no move spends it and a Suppress takes none of it. A foe that had acted when the rally landed carries all of it to its next blow; the rallier's own share halves at once. Two rallies add. An intent counts the rallies on their way to it this round.",
    "status": "implemented",
    "design": {
     "holes": "One clock on both sides since 4 November (Ryan: \"we try and make it work. If it's unbalanceable, we go back to separate keywords with different clocks\"); the next-move clock of 26 October retired. A rally says 2 at the least since 16 November (Ryan: \"Buffs and debuffs that decay at end of round should just have a minimum of 2\"): one stack halved to none before its rallier's next blow. His exit, for a move several foes may roll at once: \"apply 2 if none, otherwise 1\".",
@@ -2061,7 +2051,7 @@
      "kind": "buff",
      "on": "foe",
      "stacks": "Yes: each rally's value adds",
-     "lasts": "Halves as its side's turn ends, rounded down, until gone"
+     "lasts": "Halves as its turn ends, rounded down, until gone"
     }
    }
   },
@@ -2127,7 +2117,7 @@
    "id": "barrier",
    "category": "status",
    "name": "Barrier",
-   "codex": "Status, on either side. The next blow it takes deals no damage; the blow's riders land. On a machine, the next blow a foe lands on it, until the round's end, so a Destroy on that blow finds no hull damage to read; never granted to every ally at once. On a foe, from its own move, the next blow of a weapon the team lands on it, equipment popping nothing, until it pops or the end of the player's next turn.",
+   "codex": "Status, on either side. The next blow it takes deals no damage; the blow's riders land. On a machine, the next blow a foe lands on it, until its next turn starts, so a Destroy on that blow finds no hull damage to read; never granted to every ally at once. On a foe, from its own move, the next blow of a weapon the team lands on it, equipment popping nothing, until it pops or its next turn starts.",
    "status": "implemented",
    "design": {
     "holes": "",
@@ -2135,7 +2125,7 @@
      "kind": "buff",
      "on": "both",
      "stacks": "No",
-     "lasts": "A machine's until the next blow a foe lands on it, or the round's end; a foe's until a weapon's blow pops it, or the end of the player's next turn"
+     "lasts": "A machine's until the next blow a foe lands on it, a foe's until a weapon's blow pops it; either until its next turn starts"
     }
    }
   },
@@ -2143,7 +2133,7 @@
    "id": "ward",
    "category": "status",
    "name": "Ward",
-   "codex": "Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (ablate, scorch, jam, corrupt, purge), until the round's end. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it (Ablating, Brittle, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox and the drone), nor a stun, nor a Purge, and a turned mark feeds no Paradox, until the end of the player's next turn.",
+   "codex": "Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (ablate, scorch, jam, corrupt, purge), until its next turn starts. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it (Ablating, Brittle, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox and the drone), nor a stun, nor a Purge, and a turned mark feeds no Paradox, until its next turn starts.",
    "status": "implemented",
    "design": {
     "holes": "A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: \"Should stop all riders, even from non-damaging attacks\"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by. A foe's Ward (28 October) turns the team's marks (Effects.TEAM_MARKS), and since 2 November a stun and a Purge too, on either side, and stands (Ryan: nothing but damage lands on a Warded foe; the exception that let a stun through went with Numbed's roll).",
@@ -2151,7 +2141,7 @@
      "kind": "buff",
      "on": "both",
      "stacks": "No",
-     "lasts": "A machine's the round; a foe's until the end of the player's next turn"
+     "lasts": "Until its next turn starts"
     }
    }
   },
@@ -2247,7 +2237,7 @@
    "id": "regenerating",
    "category": "status",
    "name": "Regenerating",
-   "codex": "Status, on either side: a point a stack as its turn comes round, then a stack fades, so Regenerating 3 gives 3, 2 and 1, and a second grant adds its stacks. A foe's, from its own move, is hit points at its action, after its Ablating and Vitriol have ticked, so an Ablate is a race and never a wall. A machine's, from the Storm Petrel's St. Elmo's Regenerator, is shield as the round opens, up to its maximum, and a broken shield takes none though the stack fades.",
+   "codex": "Status, on either side: a point a stack as its turn ends, then a stack fades, so Regenerating 3 gives 3, 2 and 1, the first as the turn it was gained in ends, and a second grant adds its stacks. A foe's, from its own move, is hit points, after its Ablating and Vitriol have ticked, so an Ablate is a race and never a wall. A machine's, from the Storm Petrel's St. Elmo's Regenerator, is shield at the end of the player's turn, after its Ablating and before the foes strike, up to its maximum, and a broken shield takes none though the stack fades.",
    "status": "implemented",
    "design": {
     "holes": "One clock on both sides since 15 November (Ryan: \"These are structured as 'Regen 1 per stack' and I'd give all sources either a fixed duration, say 2 or 3 turns, or have it decay one stack at a time\"; \"Regenerating - agreed\"), Ablating's turned round; a value at each of three turns until then. The machine half, the Storm Petrel's, built 30 October, bought by a die entry so a foe's purge takes it. The numbers are placeholders, the foes' unmoved by the new clock.",
@@ -2255,7 +2245,7 @@
      "kind": "buff",
      "on": "both",
      "stacks": "Yes: a point a stack, grants adding",
-     "lasts": "A stack fades each time its turn comes round"
+     "lasts": "A stack fades as each of its turns ends"
     }
    }
   },

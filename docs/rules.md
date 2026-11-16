@@ -113,13 +113,14 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   names none stands empty.
 
 ### The round
-1. Rerolls reset to two (less any a foe drained). The player's side's turn begins: a
-   machine's Armoured goes, every stack. A machine that gave its last turn to a
+1. Rerolls reset to two (less any a foe drained). The machines' turn starts: a
+   machine's Armoured, its Barrier and its Ward go, its Brittle halves, and an Exposed whose
+   round is past falls (When a status ends, below). A machine that gave its last turn to a
    reboot recovers: its heat nothing, its shield whole. Every machine sheds what cooling it is
    granted, then regains what shield regen it is granted, up to its maximum (a module's, a
    passive's or a status's: a chassis has neither of its own; a shield gain like any; a passive that adds
    to the regen by heat, the Buzzard's Thermal Recoupler, reads the heat the cooling left). Every die rolls;
-   entries are equally likely. Round-start passives fire, and a store that grants a buff
+   entries are equally likely. A store that grants a buff
    grants it for the round (the Honey Badger's hopper its Armoured), before the foes pick.
 2. Every foe picks its move, then its target; both show, exact, before the player acts, its
    intent chip under it: the move's kind, its blow's number and strikes, and each rider by its
@@ -135,24 +136,48 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    off by its edge, a heavy solid one or a faint dashed one. END TURN pulses once no
    die has anywhere to be spent, rerolls aside. A machine that has spent nothing this turn may
    give the turn to a reboot, its die dragged onto REBOOT between the two (The reboot, below).
-4. END TURN: a machine's Ablating takes a point a stack, its shield first and then its hull
-   past armour, and loses a stack, and its Scorched and its Sapped go;
+4. END TURN, the machines' turn's end: a machine's Ablating takes a point a stack, its shield
+   first and then its hull past armour, and loses a stack; its Regenerating then pays a point
+   of shield a stack and loses one; its Scorched and its Sapped go;
    then heat over a machine's maximum burns hull one for one and stays on the gauge, burning
    again every turn it stands there; the first such turn since the machine's last reboot is
-   its overheat, and its shield breaks; then each machine's Empowered halves, its side's turn
-   over. A rebooting machine neither burns nor overheats, nor
+   its overheat, and its shield breaks; then each machine's Empowered halves, and a dark entry
+   whose rounds are done lights again (a cooldown, a jam). A rebooting machine neither burns nor overheats, nor
    one out of reach (Phased, Swallowed), whose heat stays for the turn it is back: a Phased
    machine's stacks tick all the same and take nothing, and everything a Swallowed one carries
    waits. A machine the tick or the burn wrecks is lost on its own turn, before the enemy acts.
-5. The enemy's turn (below), then a passed turn's release (the Whip Scorpion's, Passives
-   below). Round-timed effects end.
-6. The round's end: Brittle halves on either side and a foe's Empowered with it, the foes'
-   turn over; and a machine whose own attack killed in the round fires what its passive grants
-   for it (the Ammit's flare).
+5. The enemy's turn (below). It starts with every foe's Armoured, Barrier and Ward going, its
+   Brittle halving and its Exposed falling once its round is past; each foe's own turn then
+   ends with its ticks, its action done or lost. A passed turn's release follows (the Whip
+   Scorpion's, Passives below).
+6. The round's end: round-timed effects end (Phased and the wait for it, Essence Flare, a
+   swallow's and a golden rage's rounds), and a machine whose own attack killed in the round
+   fires what its passive grants for it (the Ammit's flare). Nothing ticks or halves here.
 7. A part due to grow back does, in its corpse's slot (below). Next round.
 
 The fight ends the moment it is decided, mid-turn too: victory when no foe stands, defeat when
 every machine is wrecked. There is no round limit.
+
+### When a status ends
+A status decays, ticks or falls off in one of four places. A machine's turn is the player's
+turn: it starts as the round opens and ends at END TURN. A foe's turn starts as the foes' turn
+opens, after END TURN and before the first of them acts, and ends as its own action does,
+landed, lost to a stun or skipped.
+- **Its turn starts**: Armoured, a Barrier and a Ward go, every stack; Brittle halves, rounded
+  down; Exposed falls, at the turn start after the next one.
+- **Its turn ends**: Ablating and Vitriol take their points and lose a stack; Regenerating
+  pays after them and loses one; Empowered halves, rounded down; Scorched and Sapped go; a
+  cooldown and a jam whose rounds are done light again; a Suppress is spent with the turn it
+  cost; Numbed loses a stack, or lands on a foe that lost this turn to a stun.
+- **The round ends**: Phased is granted or lost, Essence Flare goes, and a swallow's and a
+  golden rage's rounds run.
+- **It is spent**: the primers by a weapon fired, Spun Up and the Juggernaut Drive by the next
+  weapon, Shocked and Cryo by the weapon's hit that cashes them, Undying by its fall, a Mine by
+  its foe's fall, and a pin by the decay it stops.
+What works in the other side's turn ends as its own turn starts, and what works in its own
+turn ends with it. So a stack gained outside its carrier's turn stands whole for its next
+one, and a chip always shows what the next blows will meet. On a Phased machine every clock
+runs and nothing damages it; on a Swallowed one none runs but the swallow's.
 
 ### Dice
 - **Rerolls**: two a round for the team, never banked (Maverick's Playbook, the Giant
@@ -292,13 +317,13 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   clears a kill's slot; a foe getting back up and a split's arrivals stand only once the spend
   is done, in the slot their unit died in, wherever a swap moved it, so nothing the spend does meets them, and the preview shows a foe that will get back
   up or split with its return's chip in the skull's place. What a foe's tick fells comes back
-  at once, once the Mines its falls set off have blown. The prediction runs in phases: a foe its Ablating will kill before it
-  acts keeps its intent shown, information whether its blow lands or not, and its blow is left
-  out. The enemy's turn is sequenced as it happens: a foe its tick kills never strikes, and a
-  wreck takes no more strikes. Its death check runs as each foe's action is done, and at once
-  on a foe its tick fells, so its last act lands, its parts fall, its machine is let go and its
-  return stands before the next foe moves; and it ends the moment the fight is decided, the
-  foes after the blow that wrecks the last machine doing nothing.
+  at once, once the Mines its falls set off have blown. The enemy's turn is sequenced as it
+  happens: a foe strikes whole and its ticks come as its turn ends, so a foe its Ablating will
+  fell strikes first, and its blow is counted; a wreck takes no more strikes. Its death check
+  runs as each foe's action is done, and again on a foe its tick fells, so its last act lands,
+  its parts fall, its machine is let go and its return stands before the next foe moves; and
+  it ends the moment the fight is decided, the foes after the blow that wrecks the last machine
+  doing nothing, their ticks included.
 - **A kill**: a foe the death check clears that stays down. A foe getting back up and a split
   are none (a split's halves are kills of their own), nor a part, felled alone or taken with
   its core, since a core and its parts are one unit and only the core's fall counts, nor a
@@ -405,7 +430,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **The gauges forecast the round**: everything the rest of the round will do as it stands,
   played on a copy of the fight with every rule as it runs: the end of the player's turn (what
   Ablating takes, the burns and the overheats), the enemy's turn with each foe's move as announced (a heal, a brace, a
-  rally, a web's burst, a death before it acts with its intent kept, the last act it sets off,
+  rally, a web's burst, the ticks as its turn ends and a death they bring, the last act it sets off,
   a self-destruct) and
   the round's end. The die in hand counts only over somewhere it may be spent, as it would be
   spent there. A foe whose machine falls before it acts strikes the next machine in line: its
@@ -536,11 +561,12 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   each foe hit gains that many stacks of Brittle a strike (Brittle 2: two stacks), laid once
   the strikes are done, so no strike of the spend feeds on what it lays. A foe's blow that
   carries it leaves its number on the machine it hits.
-- **A pin** (the Dingo's Hollow-point Harpoon): its target is Pinned for the round, a status of
-  its own, and a Pinned foe's Brittle, what the spend lays and what stood there, does not halve at
-  this round's end; it halves again the round after. A Ward turns it away. Ablating has a pin of
-  its own, Seared: the foe takes a point for every stack at its action and loses none that
-  round (no piece lays it yet). Each wears the lock on the status it holds. Empowered has no
+- **A pin** (the Dingo's Hollow-point Harpoon): its target is Pinned, a status of its own:
+  the next time its Brittle would halve, what the spend lays and what stood there, it does
+  not, and the pin is spent; it halves again the time after. A pin with nothing to hold waits.
+  A Ward turns it away. Ablating has a pin of its own, Seared: the next time the foe's Ablating
+  would lose a stack it takes its points and loses none (no piece lays it yet). Each wears the
+  lock on the status it holds. Empowered has no
   pin: what holds it is a buff on the Ammit, Essence Flare (the Quintessence Tap, below).
 - **Costs** are printed along the entry's foot with its heat, each a mark and a number with no
   word and no sign (the heat's thermometer, the shield's, the hull's machine body, a forging
@@ -588,7 +614,7 @@ itself, cooldown 3): it consumes the Ammit's Essence, as much as it holds up to 
 stack of Empowered for each, the die showing what it would take now; and its machine gains
 Essence Flare, a buff, until the round's end. While a live machine carries Essence Flare no
 Empowered halves that round, on any unit: a machine's as the player's turn ends, a foe's as
-the round does, what each holds and what it gains before then, and it halves again the
+its own turn does, what each holds and what it gains before then, and it halves again the
 round after. The buff is on the Ammit alone and no other unit wears anything for it, so a Ward
 turns nothing away and nothing counts it as a mark; it is a buff like any, so a Purge that
 takes it ends the hold, a carrier wrecked before the round's end holds nothing, and a
@@ -650,13 +676,13 @@ status by what it is, and the keywords list files the statuses under BUFFS, DEBU
 ABILITIES.
 
 On a machine:
-- **Empowered** (buff): +1 damage a stack, so the count is the bonus. As its side's turn ends
+- **Empowered** (buff): +1 damage a stack, so the count is the bonus. As its turn ends
   (END TURN) it halves, rounded down, whatever granted it, until it is gone, so what a machine
   gains in the enemy's turn it carries whole into its next; a buff component
   grants it stacks and no rounds. While a machine carries Essence Flare it does not halve, on any
   unit (the Quintessence Tap, above).
 - **Essence Flare** (buff, the Quintessence Tap's, on the machine that spent it): no Empowered
-  halves this round, any unit's, a machine's at END TURN or a foe's at the round's end. Until
+  halves this round, any unit's, a machine's at END TURN or a foe's as its own turn ends. Until
   the round's end; one stack, renewed.
 - **Essence** (Ability, the Ammit's Quintessence Reactor): 1 for every foe that falls in a fight
   the Ammit stands in, whoever or whatever fells it (its own blow, an ally's, an Ablate tick, a
@@ -757,30 +783,31 @@ On a machine:
   a lone stack is lost; a blow its shield takes whole costs none. It lasts the fight, with no
   cap, and a Purge takes it as any buff. The die shows the strikes its weapon will get in its
   passive box ("+3").
-- **Regenerating** (buff, on either side): a point a stack as its carrier's turn comes round,
-  then a stack fades, so Regenerating 3 gives 3, 2 and 1; a second grant adds its stacks. A
-  foe's, from its own special, its value in stacks: HP at each of its actions, after its
+- **Regenerating** (buff, on either side): a point a stack as its carrier's turn ends, after
+  its Ablating, then a stack fades, so Regenerating 3 gives 3, 2 and 1, the first as the turn
+  it was gained in ends; a second grant adds its stacks. A
+  foe's, from its own special, its value in stacks: HP as each of its turns ends, after its
   Ablating and Vitriol have ticked (a suppressed foe's included), so a foe its tick kills
-  regrows nothing. A machine's (the Storm Petrel's St. Elmo's Regenerator, 3 stacks): shield as
-  each round opens, up to its maximum; a broken shield takes none and the stack fades all the
+  regrows nothing. A machine's (the Storm Petrel's St. Elmo's Regenerator, 3 stacks): shield at
+  END TURN, before the foes strike, up to its maximum; a broken shield takes none and the stack fades all the
   same. A die entry granted it, a buff, so an enemy's purge takes it, a stack a point of the
   purge.
 - **Barrier** (buff): the next blow a foe lands on this machine deals no damage, so a Destroy
   on it finds no hull to read; its riders land, and a blow of nothing leaves it standing. One at a time and one
   stack whoever grants it (a passive that deepens the stacks its machine applies leaves it at
-  one, and a Purge of one takes it whole); until the round's end. No piece grants it to every
+  one, and a Purge of one takes it whole); until its next turn starts. No piece grants it to every
   ally at once, and every piece that grants one carries a cooldown of 1, so it sits out the
   round after its spend: the Halo Projector and the Blast Door, self or ally, and the Wild
   Boar's Breaching Plow, on itself.
   A foe's, from its own special: the next blow of a weapon the team lands on it deals no damage,
   the blow's riders landing and a Shock it carried spent; equipment pops nothing; until it pops
-  or the end of the player's next turn.
+  or its next turn starts.
 - **Ward** (buff): no rider a foe lays lands on this machine this round, from a blow or from a
-  move of its own (ablate, scorch, jam, corrupt, destroy, purge); a blow's damage lands. Until the round's end. The Decoherence
+  move of its own (ablate, scorch, jam, corrupt, destroy, purge); a blow's damage lands. Until its next turn starts. The Decoherence
   Veil grants it, self or ally. A foe's, from a special that wards every foe on the field: no mark
   the team lays lands on it (Ablating, Brittle, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox,
   a Mine), nor a stun, nor a Purge, so a turned mark feeds no Paradox; the damage
-  lands; until the end of the player's next turn. On either side a Ward turns the whole thing
+  lands; until its next turn starts. On either side a Ward turns the whole thing
   and stands.
 - **Rage** (store, the Nemesis's): its Crucible Capacitor banks one for each foe's blow its
   shield takes with nothing on its hull, two for hull damage (a blow, a bite of its own, an
@@ -814,21 +841,21 @@ On a machine:
   each strike lands: the strike that meets the stacks takes the 1 and its hit spends them, so a
   later strike of the same spend lands plain.
 - **Ablating** (debuff, from a foe's ablate; a foe's Ablating below is the same rule on the
-  other body): a point a stack at the end of the player's turn, before the overheat, off the
+  other body): a point a stack as its turn ends, at END TURN, before the overheat, off the
   shield first and then off the hull past armour, then a stack fades. A tick is no blow: a
   Barrier neither stops it nor is spent on it, and nothing that reads a blow fires; a shield
   it takes to nothing is broken, and what it takes from the hull is hull damage for every
   passive that reads it. The player has the turn to cleanse what the foes laid. Cleansable.
 - **Scorched** (debuff, from a foe's scorch): every weapon and equipment the machine aims at a
-  foe runs 1 hotter a stack, until the end of the player's turn, when every stack goes, so it never piles up.
+  foe runs 1 hotter a stack, until its turn ends, when every stack goes, so it never piles up.
   Cleansable.
-- **Jammed** (debuff, a foe's jam): the entry comes up blank through the machine's next turn.
+- **Jammed** (debuff, a foe's jam): the entry comes up blank until the machine's next turn ends.
 - **Corrupted** (debuff): each spend of the entry bites its owner 3 a stack, shield first,
   no armour off it; lasts the skirmish.
 - **Brittle** (debuff, from a foe's Brittle rider: the World Eater's pin; a foe's Brittle below
   is the same rule on the other body): every blow the machine takes deals a point more a
-  stack, the shield taking the extra first as it takes any blow, and the stacks halve at the
-  end of each round, rounded down. So it stands whole for the foes still to strike that turn
+  stack, the shield taking the extra first as it takes any blow, and the stacks halve as its
+  turn starts, rounded down. So it stands whole for the foes still to strike that turn
   and half for the next, and a Brittle 1 is gone by then. A Ward turns the rider away.
   Cleansable.
 - **Exposed** (debuff, from a foe's Expose; a foe's Exposed below is the armour rule on the
@@ -847,20 +874,21 @@ On a machine:
   Ammit's Essence among them, never the Empowered it grants); a Ward turns it away.
 
 On a foe:
-- **Ablating** (debuff): 1 damage a stack at the start of its action, past armour, then a
-  stack fades. It never stops healing.
+- **Ablating** (debuff): 1 damage a stack as its turn ends, past armour, then a
+  stack fades, so a burning foe strikes before it burns, and one its Ablating fells has
+  acted. It never stops healing.
 - **Suppressed** (debuff): it loses its next action: this round's, or the next round's when
   it has already acted this turn. It never stacks and never carries: a second suppress on a
-  foe already suppressed, a Paradox's included, does nothing. As the foe recovers it gains its
-  stun resist in Numbed, after the round's decay.
+  foe already suppressed, a Paradox's included, does nothing. As the turn it lost ends it gains
+  its stun resist in Numbed.
 - **Shocked** (debuff): when a weapon's strike aimed at it lands, the blow deals double and the
   shock is spent. A strike is aimed at the foe it resolves on: the player's pick, or each foe a
   weapon over every foe strikes, which the game targets rather than the player. A blow that
   only reaches it (an area's, a Chain's arc, a spill, a Mine's blast) neither doubles nor spends it, and equipment leaves it standing; it never stacks.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
-  Until the end of the next round, so through the player's next turn and the foes' turn after
-  it; refreshed, never added.
+  Through the player's next turn: it falls as the foe's turn starts in the next round;
+  refreshed, never added.
 - **Mine** (debuff, the Lammergeier's): its damage, the spends that fed it added, and their
   keywords, one Mine a foe; when the foe falls it blows on every foe round its slot (A Mine,
   under A blow). It lasts the skirmish, until its foe falls or the Syrinx Drone detonates it.
@@ -870,7 +898,7 @@ On a foe:
   (a stun like any other: a Numbed foe strips a stack instead, a Warded one turns it, and a foe
   already suppressed gains nothing), the stacks spent either way. It never decays. The Suppressed a Paradox causes adds none; a Suppress
   keyword's does.
-- **Vitriol** (debuff): at its action it loses 10% of its current HP a stack, past armour,
+- **Vitriol** (debuff): as its turn ends it loses 10% of its current HP a stack, past armour,
   after Ablating on what it leaves, the whole share rounded down and never the last hit point,
   then a stack fades; it never finishes a foe. The funnel-web's Ambush lays it, a stack per
   weapon hit, as its text says; a web or a lure lays none.
@@ -886,7 +914,8 @@ On a foe:
   equipment spends none. It never fades on its own.
 - **Brittle** (debuff): every blow of a weapon it takes deals a point more a stack, before its
   multiplies and its armour (a Shocked foe takes a strike aimed at it plus Brittle, doubled); a
-  debuff's blow stays nothing. The stacks halve at the end of each round, rounded down.
+  debuff's blow stays nothing. The stacks halve as its turn starts, rounded down: once the
+  player's turn is over, so what a Mine's blast lays in the enemy's turn stands whole for the next.
 - **Sapped** (debuff, on either side): its attacks deal 1 less a stack, an add before the
   multiplies, never below nothing: a foe's blow, its intent showing it, or a machine's weapon.
   Every stack goes after its next turn: a foe's at the end of its next action, a machine's at the
@@ -895,13 +924,14 @@ On a foe:
   next weapon attack ignores armour and lifts it, equipment leaving it standing. A purge takes it.
 - **Empowered** (buff, Rally): lands on every foe on the field the moment the rally does, its
   rallier too, the rally's value in stacks, and every blow the foe lands hits a point harder a stack, an add
-  before the move's factor as every add is. It halves as the foes' turn ends, the round's end, rounded down,
-  as a machine's does at the player's, and skips the halving of a round a machine carries Essence Flare, as a machine's
+  before the move's factor as every add is. It halves as its own turn ends, its action done, rounded down,
+  as a machine's does at the player's, and skips the halving while a machine carries Essence Flare, as a machine's
   does: no move spends it, a special or a Suppress takes none of it, and a
   countdown still gathering carries what stands to the blow it lands. A foe acting after the
-  rallier hits harder this turn; one that has acted, and the rallier itself, carries half to the
-  next round, so a rally says 2 at the least (below); each rally's grant adds. An intent counts the rallies on their way to a blow this round, those of the ralliers acting
-  before it, each from a rallier alive, not Suppressed and not about to die to its Ablating, so it
+  rallier hits harder this turn and carries half on; one that has acted has had this turn's
+  halving, so its next blow has the whole rally; the rallier's own share halves at once, its
+  turn ending on the rally. A rally says 2 at the least (below); each rally's grant adds. An intent counts the rallies on their way to a blow this round, those of the ralliers acting
+  before it, each from a rallier alive and not Suppressed, so it
   drops the moment the rallier is killed, Suppressed or Disrupted; a countdown still gathering
   shows what it would deal now, at the fight as it stands, never a rally of a round before it
   lands, nor a halving to come. The foe wears the coming Empowered as a preview chip on a dashed edge, its opacity
@@ -928,8 +958,8 @@ On a foe:
 - **Numbed** (buff): the rounds until one stun lands. A stun on a Numbed foe strips a stack and
   lands nothing, so a foe with Numbed N takes N+1 stuns in a round. As a stunned foe recovers it
   gains its stun resist in stacks (content's `resist`; by its kind when content says none: 1, a
-  massive foe 2, an elite, a hero or a boss 3), after
-  the round's decay; a stack goes at the end of each round. A Purge lowers it like any buff;
+  massive foe 2, an elite, a hero or a boss 3), as the turn it lost ends;
+  a stack goes as each of its turns ends after that. A Purge lowers it like any buff;
   nothing deepens, spreads or cleanses it, and a fresh foe is stunned by one.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
@@ -1120,9 +1150,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it). Scorch, ablate, corrupt and brittle each say their stacks a blow, as the player's
-  Ablate does (Scorch 2: two). What a foe lays that halves as each round ends says 2 at the
-  least, a blow's Brittle and a rally's Empowered: one stack is gone before its side's next
-  turn. The validator holds a foe's moves to it. No such floor binds the player's pieces:
+  Ablate does (Scorch 2: two). What a foe lays that halves says 2 at the
+  least, a blow's Brittle and a rally's Empowered: one stack is gone at its first halving, a
+  machine's Brittle as its next turn starts and the rallier's own share as its turn ends. The validator holds a foe's moves to it. No such floor binds the player's pieces:
   the player orders the turn's spends, so a single stack is used before it halves.
 - **A drain** is no rider: it is a foe's own Ability, a chip on it that no Purge reaches (the
   Vampire Lord's). Every blow it lands, whatever the move, regrows it by what the blow took
@@ -1148,8 +1178,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   fight, let go early once the swallower has lost a quarter of its HP), expose (its machine
   Exposed, the rider's rule as a move of its own, its intent wearing Expose's mark), merge (every other foe on the field of the kinds it names taken into it, gone with no
   fall, no last act, no split and no kill of the team's: it regrows the HP they had left, and
-  its blows hit its value harder for each, Empowered that halves at the round's end, so half
-  reaches the next round), each on its target, no blow; a purge is a special, never a rider. A Ward turns away
+  its blows hit its value harder for each, Empowered that halves as its own turn ends, so
+  half reaches its next blow), each on its target, no blow; a purge is a special, never a rider. A Ward turns away
   every one of them that lands on its machine, a scorch all's and a corrupt all's share
   included, and a scorch all or a corrupt all passes a machine out of the fight by. No foe in
   content carries a ward all yet; the Djinn's Unmake is the one purge.
@@ -1200,7 +1230,7 @@ who return whole (a foe that joined it in the fight, a Gel's half, a raised Reve
 is no survivor, and each of them counts as a kill as any foe does: A kill, above).
 
 ### Passives: triggers and conditions
-- Triggers: static, on attack, on injury (a blow that would destroy a component), on round start (after the roll), on skirmish start,
+- Triggers: static, on attack, on injury (a blow that would destroy a component), on skirmish start,
   on hull damage (any hull lost: a blow, a bite or an overheat), on shield gain, on shield
   granted (an ally this machine shields), on heat gain, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
@@ -1276,8 +1306,8 @@ met, and for an ability its component not destroyed), adds, multiplies, floors a
 overrides (shortest-lived source, then latest granted). Every buff, debuff, passive, module
 and reward is a modifier with a source and a scope: rounds, skirmish, battle or loadout. The
 same status in the same scope stacks: an add counts per stack, a multiply applies per stack,
-and a ticking status loses a stack at its owner's turn, a halving one half of them, rounded
-down, a buff as its side's turn ends and a debuff at the round's end; a timed one stacks only with a grant that ends the same round, so each grant's stacks go
+and a ticking status loses a stack as its owner's turn ends, a halving one half of them, rounded
+down, a buff as its turn ends and a debuff as its turn starts (When a status ends, above); a timed one stacks only with a grant that ends the same round, so each grant's stacks go
 when its own rounds run out. A status runs down to zero on its own clock or is timed, never
 both. A status's
 definition may say otherwise: one that renews keeps one grant, its end the later and its

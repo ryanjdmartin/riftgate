@@ -1577,8 +1577,8 @@ func test_a_foes_four_buffs_wear_their_own_chips() -> void:
 		assert_eq(str(by["primed"][1]), "×2", "Primed counts its stacks")
 		assert_eq(str(by["primed"][2]), "Buff, Primed ×2", "and the readout names it with them, a buff")
 	if by.has("regenerating"):
-		assert_eq(str(by["regenerating"][1]), "×4", "Regenerating counts its stacks, a point each at its action")
-		assert_true(str(by["regenerating"][2]).contains("+4 at its action, then a stack fades"), "and the readout says what they do and how they run down")
+		assert_eq(str(by["regenerating"][1]), "×4", "Regenerating counts its stacks, a point each as its turn ends")
+		assert_true(str(by["regenerating"][2]).contains("+4 as its turn ends, then a stack fades"), "and the readout says what they do and how they run down")
 	if by.has("barrier"):
 		assert_eq(str(by["barrier"][2]), "Buff, Barrier", "a foe's Barrier by its name alone, a buff, its meaning the term's")
 	assert_eq(SkirmishScreen.status_glyph("primed"), "primed", "the same chip on a machine")

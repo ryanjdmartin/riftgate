@@ -1655,7 +1655,7 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(status_row("ablating", "ablate", str(foe.ablate_stacks()), "Ablating ×%d" % foe.ablate_stacks(), _foe_chip_colour("ablating")))
 	var vitriol := Effects.stacks_of(foe, "vitriol")
 	if vitriol > 0:
-		# The funnel-web's acid (18 October): its stacks, and the share they eat at its action.
+		# The funnel-web's acid (18 October): its stacks, and the share they eat as its turn ends.
 		rows.append(status_row("vitriol", "vitriol", str(vitriol), "Vitriol ×%d" % vitriol, _foe_chip_colour("vitriol")))
 	var brittle := Effects.stacks_of(foe, "brittled")
 	if brittle > 0:
@@ -1731,9 +1731,9 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(status_row("ward", _foe_glyph("ward"), "", "Ward", _foe_chip_colour("ward")))
 	var regrow := Effects.regrowth(foe)
 	if regrow > 0:
-		# A point a stack at its action, then a stack fades (15 November): the chip is the count.
+		# A point a stack as its turn ends, then a stack fades (15 and 16 November): the chip is the count.
 		var mending := Effects.stacks_of(foe, "regenerating")
-		rows.append(status_row("regenerating", _foe_glyph("regenerating"), "×%d" % mending, "Regenerating ×%d: +%d at its action, then a stack fades" % [mending, regrow], _foe_chip_colour("regenerating")))
+		rows.append(status_row("regenerating", _foe_glyph("regenerating"), "×%d" % mending, "Regenerating ×%d: +%d as its turn ends, then a stack fades" % [mending, regrow], _foe_chip_colour("regenerating")))
 	var paradox := Effects.stacks_of(foe, "paradox")
 	if paradox > 0:
 		var at := sk.paradox_count()
