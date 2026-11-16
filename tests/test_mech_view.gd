@@ -745,3 +745,50 @@ func _run_view(view: MechView3D, from: float, until: float) -> float:
 		view._fly(1.0 / 60.0)
 		now += 1.0 / 60.0
 	return now
+
+
+func test_a_weapon_on_a_hidden_mount_fires_as_the_drum() -> void:
+	# The Cottonmouth's guns sit inside its drum, hidden mounts: each fires as the drum's shot, a
+	# chamber's worth of the ranging turning two chambers on (Ryan, 3 November: "Shots moving two
+	# makes sense"), and no flare or fire hangs at a hidden mount (2 November: "I'd rather suppress
+	# them to avoid any clipping or effects bleed through the drum"); built 16 November.
+	var db := ContentDB.load_default()
+	var side := MechRig.load_sidecar("cottonmouth")
+	var f: Dictionary = side.get("hidden_fire", {})
+	assert_false(f.is_empty(), "the Cottonmouth names its hidden mounts' slice")
+	if f.is_empty():
+		return
+	var act := {}
+	for a in side.get("acts", []):
+		if str(a["name"]) == str(f.get("act", "")):
+			act = a
+	assert_false(act.is_empty(), "an act of its own")
+	assert_false(bool(act.get("idle", true)), "never played at rest")
+	var drum: Array = act["tracks"]["drum"]
+	var turned := float(drum[drum.size() - 1][3]) - float(drum[0][3])
+	assert_eq(roundi(turned), roundi(2.0 * float(side["spin_step"]["drum"])), "the drum turns two chambers on")
+	assert_true(float(f["from"]) <= float(f["blow"]) and float(f["blow"]) <= float(f["to"]), "its blow inside its slice")
+	var view := MechView3D.make("cottonmouth", db.maker_of("cottonmouth"), "clean", "cottonmouth", MechView3D.YAW_FRONT, Vector2i(96, 96), false, {}, [])
+	var fired := 0
+	for key in (side.get("pins", {}) as Dictionary).keys():
+		var cid := str(side["pins"][key])
+		var c: Dictionary = db.components.get(cid, {})
+		if cid.is_empty() or str((c.get("face", {}) as Dictionary).get("kind", "")) != "attack":
+			continue
+		assert_true(view.fires_hidden(cid), "%s on a hidden mount fires as the drum" % cid)
+		assert_true(absf(view.fire_wind(cid) - (float(f["blow"]) - float(f["from"]))) < 0.001, "%s winds up to the drum's blow" % cid)
+		assert_true(absf(view.fire_span(cid) - (float(f["to"]) - float(f["from"]))) < 0.001, "%s's aim holds through the slice" % cid)
+		fired += 1
+	assert_true(fired > 0, "its stock carries a weapon in its drum")
+	assert_true(view.rig.fire_hidden(0.0), "the slice plays")
+	assert_eq(str(view.rig._current.get("name", "")), str(f["act"]), "its own act")
+	for fl in view._flares:
+		for n in MechView3D.hidden_pins("cottonmouth").keys():
+			assert_ne((fl[0] as Node).get_parent(), view.hardpoints.get(n), "no flare hangs on its hidden hp_%d" % int(n))
+	# A gun fitted to a hidden mount wears no flare and no fire there either.
+	var gun := "twin_autoguns"
+	var fitted := [[1, gun, str(db.components[gun].get("shape", "")), str(db.components[gun].get("maker", ""))]]
+	for row in MechView3D.flare_rows("cottonmouth", fitted, db, false) + MechView3D.burn_rows("cottonmouth", fitted, db, false):
+		assert_ne(int(row[0]), 1, "nothing at the hidden hp_1 a refit fills")
+	assert_false(MechView3D.flare_rows("badger", fitted, db, false).is_empty(), "the same gun fitted where a mount shows flares as before")
+	view.free()

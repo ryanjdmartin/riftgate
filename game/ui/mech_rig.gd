@@ -218,6 +218,7 @@ var _fire_turn: Dictionary = {}    # a fixed component -> how many times it has 
 var _flares: Array = []            # [{node, mat, look, t}] a muzzle flare on its look's beat (fire_flare)
 var _aim: Dictionary = {}          # {joint (or BODY), deg, hold, t}: the turn onto a target (aim)
 var fires: Dictionary = {}         # a fixed component -> {act, from, to[, blow]} or a list of them taking turns: the slices of acts that are its firing (the sidecar's `fires`)
+var hidden_fire: Dictionary = {}   # {act, from, to[, blow]}: the slice every weapon on a hidden mount fires with (the sidecar's `hidden_fire`: the Cottonmouth's drum, fire_hidden)
 var aims: Dictionary = {}          # a fixed component -> the joint that turns to aim it, when no waist does (the sidecar's `aims`)
 var pivots := false                # the whole machine turns on the spot to aim (the sidecar's `pivots`: a tank's tracks, a castered chassis)
 var _until := -1.0                 # where a firing slice playing now ends (fire_act); below nought, the act's own end
@@ -600,6 +601,7 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 	_spin_debug_t = 0.0
 	use_gait(side.get("gait", {}) if side.get("gait", {}) is Dictionary else {})
 	fires = side.get("fires", {}) if side.get("fires", {}) is Dictionary else {}
+	hidden_fire = side.get("hidden_fire", {}) if side.get("hidden_fire", {}) is Dictionary else {}
 	aims = side.get("aims", {}) if side.get("aims", {}) is Dictionary else {}
 	pivots = bool(side.get("pivots", false))
 	_body_rest_pos = body.position
@@ -1564,15 +1566,42 @@ func act_set() -> Array:
 ## joints its act moves (the sealed Polar Bear's rack): the spend strikes as before.
 func fire_act(cid: String, lead := 0.0) -> bool:
 	var f := fire_slice(cid)
-	if f.is_empty():
+	if f.is_empty() or not _play_slice(f, lead):
 		return false
+	_fire_turn[cid] = int(_fire_turn.get(cid, 0)) + 1
+	return true
+
+
+## A weapon on a hidden mount fires with the model's one slice for them (the sidecar's
+## `hidden_fire`; 16 November: the Cottonmouth's guns, hidden inside its drum, fire as the drum's
+## shot, a chamber's worth of the ranging turning two chambers on, Ryan, 3 November: "Shots
+## moving two makes sense"), as a fixed weapon's slice plays (fire_act). False with none.
+func fire_hidden(lead := 0.0) -> bool:
+	return not hidden_fire.is_empty() and _play_slice(hidden_fire, lead)
+
+
+## How long the hidden mounts' slice winds up before its blow, and how long it plays (fire_wind,
+## fire_span); nought with none.
+func hidden_wind() -> float:
+	if hidden_fire.is_empty() or not hidden_fire.has("blow"):
+		return 0.0
+	return maxf(0.0, float(hidden_fire["blow"]) - float(hidden_fire.get("from", 0.0)))
+
+
+func hidden_span() -> float:
+	return 0.0 if hidden_fire.is_empty() else maxf(0.0, float(hidden_fire.get("to", 0.0)) - float(hidden_fire.get("from", 0.0)))
+
+
+## Play a firing slice now ({act, from, to}), from `lead` seconds before its start, the act playing
+## cut short, its servos snappier than an idle act's. False when the act is not among those this
+## machine may play now (a held form keeps its joints).
+func _play_slice(f: Dictionary, lead: float) -> bool:
 	var act: Dictionary = {}
 	for a in act_set():
 		if str(a["name"]) == str(f.get("act", "")):
 			act = a
 	if act.is_empty():
 		return false
-	_fire_turn[cid] = int(_fire_turn.get(cid, 0)) + 1
 	if not _current.is_empty():
 		_end_act()
 	_start(act)

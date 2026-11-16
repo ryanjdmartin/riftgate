@@ -2771,16 +2771,16 @@ def cottonmouth(b):
     MOUTH_IN, LAMP_OUT = 3.9, 1.9                # how far the top mouth and lamp slide out of hiding
     SLICE = 1.12                                 # seconds a shot takes, its turn included
 
-    def shot(t0, turned, at, pose):
+    def shot(t0, turned, at, pose, chambers=CHAMBERS):
         """One shot, self-contained from t0 to t0 + SLICE (so the hookup of every weapon's fire can
-        cut it): the drum turns CHAMBERS on in 0.36 s, the strip burning as it turns; parked, the top
-        mouth and lamp slide out of hiding into the top chamber; at t0 + 0.58 the shot flashes them,
-        kicks the drum up four degrees and shoves the hull back on its cushion; they slide home by
-        t0 + 1.08. `turned` is the drum's turn so far in the act, `at` its elevation, `pose` the
+        cut it): the drum turns `chambers` on in 0.36 s, the strip burning as it turns; parked, the
+        top mouth and lamp slide out of hiding into the top chamber; at t0 + 0.58 the shot flashes
+        them, kicks the drum up four degrees and shoves the hull back on its cushion; they slide home
+        by t0 + 1.08. `turned` is the drum's turn so far in the act, `at` its elevation, `pose` the
         body's (dx, dy, dz, yaw, pitch, roll) held through it. Returns the keys by track."""
         dx, dy, dz, yaw, pitch, roll = pose
         out_key = lambda t, d: (t, 0.0, 0.0, 0.0, 0.0, d, 0.0)
-        return {"drum": [(t0, turned), (t0 + 0.36, turned + CHAMBERS * 60.0)],
+        return {"drum": [(t0, turned), (t0 + 0.36, turned + chambers * 60.0)],
                 "elev_drum": [(t0 + 0.58, at), (t0 + 0.64, at + 4.0), (t0 + 1.06, at)],
                 "top_mouth": [out_key(t0 + 0.38, 0.0), out_key(t0 + 0.46, MOUTH_IN), out_key(t0 + 1.0, MOUTH_IN), out_key(t0 + 1.08, 0.0)],
                 "top_lamp": [out_key(t0 + 0.38, 0.0), out_key(t0 + 0.46, -LAMP_OUT), out_key(t0 + 1.0, -LAMP_OUT), out_key(t0 + 1.08, 0.0)],
@@ -2826,6 +2826,20 @@ def cottonmouth(b):
     tracks.update({r: lay(3.95, -18.0) + lay(SHOTS[2][0] + SLICE + 0.03, 16.0) + lay(SHOTS[3][0] + SLICE + 0.03, 16.0) + lay(end + 0.05, -16.0) for r in rudders})
     b.act("ranging", end + 1.0, tracks, body=body, heft=0.08, locks=["drum"],
           glow=[(STRIP, strip), (FLASH, flash), (["sight"], [(0.4, 0.0), (0.9, 6.0), (end, 6.0), (end + 0.6, 0.0)])])
+    # The hookup (16 November; Ryan, 3 November: "Shots moving two makes sense"; 2 November: no
+    # effect at a hidden mount, "I'd rather suppress them to avoid any clipping or effects bleed
+    # through the drum"): a weapon on any of its hidden mounts fires as one shot of the ranging's
+    # shape, the drum lifting a touch, turning two chambers on and flashing the top chamber at the
+    # blow; never at rest. The game plays it as that weapon's firing slice (b.hidden_fire).
+    FIRE_LIFT, FIRE_AT = 10.0, 0.2
+    k = shot(FIRE_AT, 0.0, FIRE_LIFT, (0.0, 0.0, 0.0, 0.0, 0.0, 0.0), chambers=2)
+    fire_end = FIRE_AT + SLICE + 0.3
+    b.act("drum_fire", fire_end, {
+        "elev_drum": [(0.0, 0.0), (FIRE_AT, FIRE_LIFT)] + k["elev_drum"] + [(FIRE_AT + SLICE, FIRE_LIFT), (fire_end, 0.0)],
+        "drum": k["drum"] + [(fire_end, 120.0)],
+        "top_mouth": k["top_mouth"], "top_lamp": k["top_lamp"],
+    }, body=k["body"], heft=0.08, locks=["drum"], glow=[(STRIP, k["strip"]), (FLASH, k["flash"])], idle=False)
+    b.hidden_fire = ("drum_fire", 0.0, fire_end, FIRE_AT + 0.58)   # the blow at the shot's flash
     # Coming about: the rudders go hard over and the hull swings round on its cushion to its
     # left, tipping out as it turns, the searchlight sweeping the water as it holds; then hard
     # over the other way and back round to its station, settling with a heave.

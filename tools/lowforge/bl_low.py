@@ -477,6 +477,7 @@ class Build:
         self.halo = []         # the lit parts a glow names that wear a soft halo when they flare, the hot ones; (part, scale) for one larger, (part, scale, ahead) for one drawn its own way toward the eye (MechRig's halos)
         self.standing = {}     # lit part -> the glow it holds always, over its rest, an act's flare rising past it (MechRig's standing glow)
         self.fires = {}        # a fixed component (or the chassis's passive, for what it fires: the Whip Scorpion's release) -> (act, from, to[, blow]) or a list of them taking turns: the slices of acts that are its firing, played on the spend (MechRig.fire_act)
+        self.hidden_fire = None  # (act, from, to[, blow]): the slice every weapon on a hidden mount fires with (the Cottonmouth's drum turning two chambers, 16 November), the sidecar's hidden_fire (MechRig.fire_hidden)
         self.aims = {}         # a fixed component -> the joint that turns to aim it, when it is no waist (MechView3D.aim_joint_for)
         self.pivots = False    # whether the whole machine turns on the spot to aim (a tank's tracks, a castered chassis), as a hover does
         self.fx_sizes = {}     # a fixed weapon -> its muzzle flare's size: an fx_<component> Empty at its business end (fx())
@@ -1282,26 +1283,33 @@ class Build:
         # list of slices takes turns (Ryan, 3 November: the Ammit "can also afford two different
         # Claw animations since it's got 4 and will use them often"). A key is a fixed component's
         # id, or the chassis's passive's for what the passive fires (the Whip Scorpion's release).
+        def fire_slice(cid, sl):
+            name, t0, t1 = sl[0], sl[1], sl[2]
+            blow = sl[3] if len(sl) > 3 else None
+            act = next((a for a in self.acts if a["name"] == name), None)
+            if act is None:
+                raise ValueError("%s: %s fires with an act it has not got, %r" % (self.name, cid, name))
+            if not (0.0 <= t0 < t1 <= act["duration"]):
+                raise ValueError("%s: %s fires from %.2f to %.2f, outside %r's %.2f seconds" % (self.name, cid, t0, t1, name, act["duration"]))
+            if blow is not None and not (t0 <= blow <= t1):
+                raise ValueError("%s: %s's blow at %.2f lies outside its slice of %r, %.2f to %.2f" % (self.name, cid, blow, name, t0, t1))
+            d = {"act": name, "from": t0, "to": t1}
+            if blow is not None:
+                d["blow"] = blow
+            return d
         fires = {}
         for cid, spec in self.fires.items():
-            out_slices = []
-            for sl in (spec if isinstance(spec, list) else [spec]):
-                name, t0, t1 = sl[0], sl[1], sl[2]
-                blow = sl[3] if len(sl) > 3 else None
-                act = next((a for a in self.acts if a["name"] == name), None)
-                if act is None:
-                    raise ValueError("%s: %s fires with an act it has not got, %r" % (self.name, cid, name))
-                if not (0.0 <= t0 < t1 <= act["duration"]):
-                    raise ValueError("%s: %s fires from %.2f to %.2f, outside %r's %.2f seconds" % (self.name, cid, t0, t1, name, act["duration"]))
-                if blow is not None and not (t0 <= blow <= t1):
-                    raise ValueError("%s: %s's blow at %.2f lies outside its slice of %r, %.2f to %.2f" % (self.name, cid, blow, name, t0, t1))
-                d = {"act": name, "from": t0, "to": t1}
-                if blow is not None:
-                    d["blow"] = blow
-                out_slices.append(d)
+            out_slices = [fire_slice(cid, sl) for sl in (spec if isinstance(spec, list) else [spec])]
             fires[cid] = out_slices[0] if len(out_slices) == 1 else out_slices
         if fires:
             out["fires"] = fires
+        # Every weapon on a hidden mount fires with one slice (16 November: the Cottonmouth's guns,
+        # hidden inside its drum, fire as the drum's shot turning two chambers on; Ryan, 2 and 3
+        # November: no effect at a hidden pin, "Shots moving two makes sense").
+        if self.hidden_fire:
+            if not self.hidden:
+                raise ValueError("%s: a hidden mount's firing slice with no hidden mount" % self.name)
+            out["hidden_fire"] = fire_slice("a hidden mount", self.hidden_fire)
         for cid, name in self.aims.items():
             if self.joint_meta.get(name, {}).get("axis") != "yaw":
                 raise ValueError("%s: %s aims with %r, which is no joint turning about its up axis" % (self.name, cid, name))

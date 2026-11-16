@@ -378,6 +378,7 @@ class Rig {
     }
     this.useGait(side.gait || {});
     this.fires = side.fires || {}; this.until = -1;   // a fixed weapon's firing slice (MechRig.fire_act), and where one playing now ends
+    this.hiddenFire = side.hidden_fire || null;   // the slice a weapon on a hidden mount fires with (MechRig.fire_hidden: the Cottonmouth's drum)
     this.fireTurn = {}; this.collapse = -1; this.spinK = 1; this.airborne = false; this.collapseFloor = 0;   // each weapon's slices taking turns (MechRig.fire_slice); a lost machine's slump and its spins running down
     this.aims = side.aims || {}; this.pivots = !!side.pivots;   // a fixed weapon's aim joint; the whole machine turning on the spot (tracks, casters)
     root.rotation.order = "YXZ";
@@ -738,10 +739,17 @@ class Rig {
   fireSpan(cid) { const f = this.fireSlice(cid); return f ? Math.max(0, f.to - f.from) : 0; }   // MechRig.fire_span: how long the next slice plays
   fireAct(cid, lead = 0) {
     const f = this.fireSlice(cid);
-    if (!f) return false;
+    if (!f || !this.playSlice(f, lead)) return false;
+    this.fireTurn[cid] = (this.fireTurn[cid] || 0) + 1;
+    return true;
+  }
+  // A weapon on a hidden mount fires as the model's one slice for them (MechRig.fire_hidden, 16
+  // November: the Cottonmouth's drum turning two chambers on); false with none.
+  fireHidden(lead = 0) { return !!this.hiddenFire && this.playSlice(this.hiddenFire, lead); }
+  hiddenSpan() { const f = this.hiddenFire; return f ? Math.max(0, f.to - f.from) : 0; }   // MechRig.hidden_span
+  playSlice(f, lead) {   // MechRig._play_slice: the act cut to its slice, snappier than an idle act
     const act = this.actSet().find(a => a.name === f.act);
     if (!act) return false;
-    this.fireTurn[cid] = (this.fireTurn[cid] || 0) + 1;
     if (this.current) this.endAct(true);
     this.start(act);
     this.t = Math.max(0, f.from - lead); this.until = f.to;
@@ -2000,13 +2008,19 @@ class Stage {
     if (!this.rig) return;
     const rig = this.rig, mounts = [...new Set(this.flares.map(f => f.pin).filter(p => typeof p === "number"))].sort((a, b) => a - b);
     const marked = Object.keys((this.side || {}).fx || {}).map(c => "fx:" + c);   // fixed weapons with a business end marked: they kick their joint and flare (MechView3D.strike)
-    const fixed = Object.keys(rig.fires || {}), shots = [...mounts, ...marked, ...fixed];
+    const fixed = Object.keys(rig.fires || {}), shots = [...mounts, ...marked, ...fixed, ...(rig.hiddenFire ? ["@hidden"] : [])];
     if (!ranged || !shots.length) {
       rig.strike(ranged);
       for (const part of this.burns || []) if (part.visible !== false && part.parent && part.parent.visible !== false) rig.flashUnder(part);
       return;
     }
     const next = shots[this.shot++ % shots.length];
+    if (next === "@hidden") {   // the hidden mounts' slice (MechView3D.strike): the Cottonmouth's drum turns two chambers on and flashes its top chamber, no kick or flare at a mount
+      let lead = 0;
+      if (this.hover || this.flyer || rig.pivots) { this.aimSide = -this.aimSide; rig.aim("@body", 22 * this.aimSide, Math.max(0.8, rig.hiddenSpan() + AIM_HOLD)); lead = AIM_UP; }
+      if (!rig.fireHidden(lead)) rig.strike(true, [], null, lead);
+      return;
+    }
     if (typeof next === "string" && next.startsWith("fx:")) {   // a fixed weapon with its business end marked: its aim joint or the waist or the pivot turns, its own joint kicks, it flares
       const cid = next.slice(3), node = rig.model.getObjectByName("fx_" + cid);
       let joint = rig.joints[rig.aims[cid]] ? rig.aims[cid] : (rig.joints.waist && rig.meta.waist.axis === "yaw" ? "waist" : ((this.hover || this.flyer || rig.pivots) ? "@body" : ""));
