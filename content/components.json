@@ -289,7 +289,7 @@
     "gates": {
      "suppress": {
       "when": "target_status",
-      "status": "flakked"
+      "status": "brittled"
      }
     }
    },
@@ -688,7 +688,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A drum-fed scattergun on a pintle, its shells bursting into a rank of foes. Fire, and the car is already moving. Ryan, 19 October: \"a low damage, spread, maybe rapid, weapon with a new debuff: flak\".",
-    "niche": "The Prairie Dog's locked gun and the maker's first Flak piece: a flat low blow that sprays the target's rank and lays Flak on each foe hit, so the team's many small blows land harder and the car takes less from the foes it has flakked (its passive). The softener's round: spray, then the four cash. Ryan, 11 November: \"turn the Flak repeater into a Flak weapon and not a bad spread weapon\"; \"1 damage, Flak 2, cooldown 1. Heat not sure. But that prevents it from being the chase every round and stacking on itself.\" Its Spread kept as it stood, his to cut."
+    "niche": "The Prairie Dog's locked gun and the maker's first Brittle piece: a flat low blow that sprays the target's rank and lays Brittle on each foe hit, so the team's many small blows land harder and the car takes less from the foes that carry it (its passive). The softener's round: spray, then the four cash. Ryan, 11 November: \"turn the Flak repeater into a Flak weapon and not a bad spread weapon\"; \"1 damage, Flak 2, cooldown 1. Heat not sure. But that prevents it from being the chase every round and stacking on itself.\" Its Spread kept as it stood, his to cut."
    },
    "face": {
     "kind": "attack",
@@ -696,10 +696,10 @@
     "power": 1,
     "keywords": [
      "cleave",
-     "flak"
+     "brittle"
     ],
     "cleave": 1,
-    "flak": 2,
+    "brittle": 2,
     "heat": 3,
     "cooldown": 1
    },
@@ -718,18 +718,18 @@
    "design": {
     "stage": "draft",
     "fantasy": "A barbed dart on a cable that opens inside whatever it pins and keeps the wound open. Ryan, 11 November: kept \"since it's such a stupid and neat silhouette\", and named by him (the Megataser Harpoon until then, its Shock gone to the Translocator).",
-    "niche": "The Dingo's Flak piece (Ryan, 11 November: \"the obvious hole I see in the W&S lineup ... is another Flak orbit. The harpoon could be that synergy\"; \"Applies 1 flak and the target's flak does not decay this round\", the pin \"the better shape\"): it lays a Flak and holds every stack on its target through the round's end, so the team's Flak builds on one foe, a boss most of all. Reading Flak twice is \"a better upgrade for something\"."
+    "niche": "The Dingo's Brittle piece (Ryan, 11 November: \"the obvious hole I see in the W&S lineup ... is another Flak orbit. The harpoon could be that synergy\"; \"Applies 1 flak and the target's flak does not decay this round\", the pin \"the better shape\"): it lays Brittle 1 and holds every stack on its target through the round's end, so the team's Brittle builds on one foe, a boss most of all. Reading Brittle twice is \"a better upgrade for something\"."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 2,
     "keywords": [
-     "flak"
+     "brittle"
     ],
-    "flak": 1,
+    "brittle": 1,
     "heat": 5,
-    "holds": "flakked"
+    "holds": "brittled"
    },
    "passive": null,
    "tags": [
@@ -1199,13 +1199,12 @@
    "design": {
     "stage": "draft",
     "fantasy": "A lattice of light laid over a machine's weapons. Everything it hits afterwards keeps burning.",
-    "niche": "Aphelion's buff: a stack of Primed for the round, on itself or an ally, so the Stingray's suite has a buff to deepen as well as its burns."
+    "niche": "Aphelion's buff: a stack of Primed, on itself or an ally, so the next weapon that machine fires carries Ablate 1 (one more a strike on an Ablate gun) and the Stingray's suite has a buff to deepen as well as its burns. A primer since 15 November, a stack a weapon fired; for the round, on every blow, until then. Its one stack is a placeholder."
    },
    "face": {
     "kind": "buff",
     "status": "primed",
-    "stacks": 1,
-    "rounds": 1
+    "stacks": 1
    },
    "passive": null,
    "tags": []
@@ -1644,7 +1643,8 @@
    "design": {
     "stage": "draft",
     "fantasy": "The hangar deck's mooring field thrown over the squad; charged, the shutters close and the squad is gone from the fight for a round.",
-    "niche": "The Swallowtail's dock, locked: a shield to every ally (the team shield, the first in the game, honest by its number); spending a muster instead Phases every ally that has not acted this round, no cooldown."
+    "niche": "The Swallowtail's dock, locked: a shield to every ally (the team shield, the first in the game, honest by its number); spending a muster instead Phases every ally that has not acted this round, no cooldown.",
+    "notes": "15 November: Phased is granted as the round ends and stands through the next (Ryan's mark; the bible's Phased row), so the charged form queues it and the allies keep their dice. Every granter of ours is to be gated (\"it should be earned\"): this piece's gate and its reach are its machine's session's."
    },
    "face": {
     "kind": "shield",
@@ -1752,7 +1752,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A cluster howitzer whose shells burst over a rank, and whose spent casings the forge pulls back as ammo. Ryan, 21 October: \"a cluster cannon that does low damage, spreads Flak 1 to all targets hit, and returns 1 ammo for each target hit\". The name is Claude's, Ryan's pick: shrapnel is the old-world cluster round, and a recuperator is the real artillery part that returns the barrel after recoil, here returning the shells.",
-    "niche": "The Musk Ox's status and ammo piece: a low number on up to four foes (Spread 1 and Penetrate 1, Splash until the word was cut on 15 November), Flak 1 on each for the team's blows that turn, and 1 ammo back for every foe it hits, so a crowd fills the magazine and a lone boss is a wash."
+    "niche": "The Musk Ox's status and ammo piece: a low number on up to four foes (Spread 1 and Penetrate 1, Splash until the word was cut on 15 November), Brittle 1 on each for the team's blows that turn, and 1 ammo back for every foe it hits, so a crowd fills the magazine and a lone boss is a wash."
    },
    "face": {
     "kind": "attack",
@@ -1761,11 +1761,11 @@
     "keywords": [
      "cleave",
      "penetrate",
-     "flak"
+     "brittle"
     ],
     "cleave": 1,
     "penetrate": 1,
-    "flak": 1,
+    "brittle": 1,
     "heat": 5,
     "ammo_per_foe_hit": 1
    },
@@ -1934,8 +1934,8 @@
    "design": {
     "stage": "draft",
     "fantasy": "St. Elmo's fire on the mast (Ryan named it 21 October): a beacon that draws the foe's eye, and the glow that mends the shield.",
-    "niche": "The Storm Petrel's lock, the lure that regens itself (Ryan, 19 October): a debuff, Indirect, no heat; the foe it is spent on is Lured for the round, and its machine gains Regenerating, shield at the start of each round for three rounds, stacking. Self only, never Rapid, no cooldown: the die is its brake.",
-    "notes": "Built 30 October: the rider on its own spender (regenerates) grants its machine a timed Regenerating, the shield at each round's start after the spend, a grant of its own each time; a foe's purge takes it, a die entry having bought it."
+    "niche": "The Storm Petrel's lock, the lure that regens itself (Ryan, 19 October): a debuff, Indirect, no heat; the foe it is spent on is Lured for the round, and its machine gains Regenerating 3: a point of shield a stack as each round opens, a stack fading then, so 3, 2 and 1 (2 a round for three rounds until 15 November, the same six), a second spend adding its stacks. Self only, never Rapid, no cooldown: the die is its brake.",
+    "notes": "Built 30 October, in stacks since 15 November: the rider on its own spender (regenerates) grants its machine Regenerating's stacks, the shield as each round opens after the spend, a second spend adding to the count; a foe's purge takes it, a die entry having bought it."
    },
    "face": {
     "kind": "attack",
@@ -1947,8 +1947,7 @@
     "heat": 0,
     "regenerates": {
      "status": "regenerating",
-     "shield": 2,
-     "rounds": 3
+     "stacks": 3
     }
    },
    "passive": null,
@@ -2089,7 +2088,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A shell fused to burst over a rank, peppering every foe under it with fragments that leave each one easier to hit.",
-    "niche": "The Flak family's slot-in above the basics: a rolled Indirect spray laying Flak 1 on a foe and its neighbours, for the team's many small blows to cash."
+    "niche": "The Brittle family's slot-in above the basics: a rolled Indirect spray laying Brittle 1 on a foe and its neighbours, for the team's many small blows to cash."
    },
    "face": {
     "kind": "attack",
@@ -2097,10 +2096,10 @@
     "power": 2,
     "keywords": [
      "cleave",
-     "flak"
+     "brittle"
     ],
     "cleave": 1,
-    "flak": 1,
+    "brittle": 1,
     "heat": 4
    },
    "passive": null,
@@ -2119,7 +2118,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A rotary cannon run at its full cyclic rate: four rounds where a rifle fires one.",
-    "niche": "The multi-strike gun (Ryan, 14 October: badly needed), Flak's partner and the strafer's eight: every strike carries the foe's Flak and loses its armour."
+    "niche": "The multi-strike gun (Ryan, 14 October: badly needed), Brittle's partner and the strafer's eight: every strike carries the foe's Brittle and loses its armour."
    },
    "face": {
     "kind": "attack",
@@ -2145,16 +2144,16 @@
    "design": {
     "stage": "draft",
     "fantasy": "An anti-aircraft gun levelled at the ground: one heavy burst that leaves its target ringing for everything after it.",
-    "niche": "The Flak family's single-target layer: Flak 2 on one foe for the Maxigun to chew."
+    "niche": "The Brittle family's single-target layer: Brittle 2 on one foe for the Maxigun to chew."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 3,
     "keywords": [
-     "flak"
+     "brittle"
     ],
-    "flak": 2,
+    "brittle": 2,
     "heat": 5
    },
    "passive": null,

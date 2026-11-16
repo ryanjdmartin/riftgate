@@ -24,7 +24,7 @@ const TABLE := {
 	"every_foe": ["aim_every_foe", "plain"], "every_ally": ["aim_every_ally", "plain"], "every_other_ally": ["aim_every_other_ally", "plain"],
 	"rapid": ["rapid", "plain"], "instant": ["instant", "plain"],
 	"ablate": ["ablate", "heat"], "shock": ["shock", "heat"], "chain": ["chain", "heat"],
-	"flak": ["flak", "heat"], "sap": ["sap", "guard"],
+	"brittle": ["brittle", "heat"], "sap": ["sap", "guard"],
 	"cryo": ["cryo", "guard"], "lure": ["lure", "guard"], "disrupt": ["disrupt", "guard"],
 	"suppress": ["suppress", "guard"],
 	"dispel": ["dispel", "guard"], "cleanse": ["cleanse", "guard"],
@@ -46,22 +46,22 @@ const TABLE := {
 	"ablating": ["ablate", "heat"], "scorched": ["scorch", "heat"], "primed": ["primed", "heat"],
 	"overcharged": ["overcharge", "heat"], "kindled": ["overcharge", "heat"], "enraged": ["overcharge", "heat"], "golden": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
 	"charged": ["shocked", "heat"], "supercooled": ["cryo", "guard"],
-	"flakked": ["flak", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"], "ricochet": ["ricochet", "heat"],
+	"brittled": ["brittle", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"], "ricochet": ["ricochet", "heat"],
 	"mine": ["mine", "heat"],
 	"essence": ["essence", "heat"], "essence_flare": ["essence_flare", "heat"],   # the Ammit's count and its Tap's buff (12 and 15 November), with Empowered's group: what hits harder
 	"braced": ["shield", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"],
 	"phased": ["phased", "guard"], "guarded": ["lock", "guard"], "sealed": ["seal", "guard"], "changed_over": ["reroll", "plain"],
 	"suppressed": ["suppress", "guard"], "webbed": ["web", "guard"],
 	"numbed": ["numbed", "guard"], "paradox": ["paradox", "guard"], "cryoed": ["cryo", "guard"],
-	"exposure": ["exposed", "harm"], "pinned": ["pin_flak", "heat"], "sapped": ["sap", "guard"], "juggernaut": ["juggernaut", "heat"], "seared": ["pin_ablate", "heat"], "destroyed_component": ["crack", "harm"],
-	"corrupted": ["corrupt", "enemy"], "crushed": ["flak", "enemy"], "jammed": ["blank", "enemy"],
+	"exposure": ["exposed", "harm"], "pinned": ["pin_brittle", "heat"], "sapped": ["sap", "guard"], "juggernaut": ["juggernaut", "heat"], "seared": ["pin_ablate", "heat"], "destroyed_component": ["crack", "harm"],
+	"corrupted": ["corrupt", "enemy"], "jammed": ["blank", "enemy"],
 	"risen": ["star", "enemy"], "regenerating": ["regenerating", "guard"], "swallowed": ["swallowed", "enemy"],
 	"ability": ["", "plain"],   # a unit's own mechanic, no buff or debuff (8 November): its chips carry their own marks
 	"quick_turned": ["rapid", "plain"],
 	"overheated": ["heat", "heat"], "broken": ["shieldbreak", "guard"], "rebooting": ["shield_vent", "plain"],   # the reboot's three states (13 November), read off the gauges: no status of the engine's table
 	# A foe's moves: the keywords they carry, the list's last heading. A foe-side word without a row
 	# here (its aim, its menace, the seal) is the engine's and stays out of the list.
-	"scorch": ["scorch", "heat"], "crush": ["flak", "enemy"], "golden_rage": ["overcharge", "heat"], "swallow": ["swallowed", "enemy"],
+	"scorch": ["scorch", "heat"], "golden_rage": ["overcharge", "heat"], "swallow": ["swallowed", "enemy"],
 	"self_destruct": ["blast", "enemy"], "all": ["all", "enemy"], "countdown": ["warning", "enemy"],
 	"last_act": ["skull", "enemy"], "parts": ["parts", "enemy"],
 	"drain": ["heart", "enemy"],   # the Vampire Lord's (31 October): a blow that regrows what it took from the hull
@@ -70,7 +70,7 @@ const TABLE := {
 ## A die entry's own mark, by the engine's prefix on its status id, and the term it reads as.
 const ENTRY_MARKS := {"corrupted": "corrupted", "disabled": "jammed"}
 ## An engine status keyed apart from its term: a machine's Ablating, the Badger's hopper.
-const ALIASES := {"ablating_mech": "ablating", "hopper": "hopper_property"}
+const ALIASES := {"ablating_mech": "ablating", "brittled_mech": "brittled", "phasing": "phased", "hopper": "hopper_property"}
 
 ## Terms never matched in prose: names a shown text uses as a plain word in their place
 ## ("Targets any front-rank foe", a move that "Strikes twice").
@@ -163,8 +163,8 @@ static func engine_status(term_id: String) -> String:
 
 
 ## `text` cut into runs, each {text, terms}: a term the list defines, by its name or a keyword's
-## verb form ("Exposes"), with a number after it ("Spread 2", "Flak N"), carries its ids (two
-## where a keyword and the status it leaves share a name: Cryo, Flak); the rest has none. A name
+## verb form ("Exposes"), with a number after it ("Spread 2", "Brittle N"), carries its ids (two
+## where a keyword and the status it leaves share a name: Cryo, Brittle); the rest has none. A name
 ## inside the name of a component, a module, a chassis, a passive or a foe (the Web Bomb, the
 ## Pocket Paradox) is no term there.
 ## Case counts: shown text writes a term with its capital, so a plain "shield" stays a word.

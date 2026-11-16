@@ -200,21 +200,21 @@ def lever_aim(root, arg):
     return 'every foe aims at %s (%d moved)' % (aim, moved)
 
 
-def lever_flak_clock(root, arg):
-    """Flak's clock in the engine's status table: flak_clock:tick (a stack a round) or flak_clock:half"""
+def lever_brittle_clock(root, arg):
+    """Brittle's clock in the engine's status table: brittle_clock:tick (a stack a round) or brittle_clock:half"""
     p = f'{root}/sim/effects.gd'
     s = open(p, encoding='utf-8').read()
-    i = s.index('"flakked": {"id": "flakked"')
+    i = s.index('"brittled": {"id": "brittled"')
     j = s.index('\n', i)
     line = s[i:j]
     if arg == 'tick':
         new = line.replace(' "decay": "half",', '')
-        assert new != line, 'the Flak status carries no halving clock to remove'
+        assert new != line, 'the Brittle status carries no halving clock to remove'
     else:
         new = line
     s = s[:i] + new + s[j:]
     open(p, 'w', encoding='utf-8').write(s)
-    return 'Flak\'s clock: %s' % (arg or 'half')
+    return 'Brittle\'s clock: %s' % (arg or 'half')
 
 
 def lever_set(root, arg):

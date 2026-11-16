@@ -27,8 +27,8 @@ chat first.
   designs whose briefs stand on those entries, and its section 4 the battlefield roles a foe is
   now designed for.
 
-- Read its section 22 with it (13 November): the reboot, the working shape of the shield and
-  of heat, built and on trial, off in the game. Nothing regenerates or cools by itself; a
+- Read its section 22 with it (13 November): the reboot, the rule of the shield and of heat,
+  in the game since 15 November. Nothing regenerates or cools by itself; a
   machine that has spent nothing may give its turn to a reboot, bare that turn, cold and whole
   the next; heat past the maximum stays and burns hull every turn; a shield at nothing is
   broken and gains none until the reboot. Ryan: "This is fundamental, I don't want it to get
@@ -36,6 +36,23 @@ chat first.
   an overheat predate it and are read under it as well; its list reads each machine and each
   design in these briefs against it, and holds his expectation that what grants regen,
   cooling, flat shield or flat heat reduction is a kit's, a locked piece's or a synergy's.
+
+- Read every brief's words under the vocabulary pass (15 and 16 November: Ryan's marks on all
+  eighty-two rows of `docs/vocabulary_table.md`, built since; `docs/vocabulary_pass_proposal.md`,
+  sections 18 and 20, says what became of each). The briefs were written before it and are not
+  rewritten, so where one says: Burn or Burning, read Ablate and Ablating, a point a stack off
+  the shield and then the hull on a machine, never heat; Flak or Crushed, read Brittle, one
+  state on either side that halves each round; Breach, read "ignores armour" written on a
+  piece of a higher tier or behind a gate on our side, and nothing on the foes'; Splash,
+  Silence, Overshield, Retaliate and Rallied, read a word that is cut (a granted reroll lands
+  at once and is no status); Disable, read Jam and Jammed; Pinned Flak and Pinned Burning,
+  read Pinned and Seared; Swap, Web and Spillover, read a rule written on its one piece and no
+  keyword; souls, read Essence; Regenerating, read a point a stack and a stack fading as the
+  turn comes; Primed, read a primer, a stack a weapon fired lending Ablate 1; Phased, read out
+  of reach of both sides for a round and still acting, granted as the round before it ends,
+  every granter of ours behind a gate; and the injury rule, read a boss's Destroy rider and no
+  rule of every blow. `docs/vocabulary.md` is the vocabulary as it runs. A design that leans
+  on a word that moved says so when its session opens.
 
 - Read `CLAUDE.md`, `docs/rules.md`, the bible's first row (`docs/design-bible.html`), the
   "Start here" of `docs/status.md`, this file, then the brief and the files it names. If a chat

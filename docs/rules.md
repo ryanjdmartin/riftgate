@@ -142,7 +142,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    machine the tick or the burn wrecks is lost on its own turn, before the enemy acts.
 5. The enemy's turn (below), then a passed turn's release (the Whip Scorpion's, Passives
    below). Round-timed effects end.
-6. Machines' statuses tick, and foes' Flak halves.
+6. Machines' statuses tick, and what halves does, on either side (Empowered, Brittle).
 7. A part due to grow back does, in its corpse's slot (below). Next round.
 
 The fight ends the moment it is decided, mid-turn too: victory when no foe stands, defeat when
@@ -203,10 +203,11 @@ every machine is wrecked. There is no round limit.
   number in heat; a combined entry spends two halves on one machine (the Wake Diffuser: a vent
   that shields, the vent first, then the shield, sized on the heat the vent left, so the
   Puffin's Slipstream grows it on what is left); a buff grants its status, so many stacks, through so many rounds, or with
-  no rounds when the status runs down on its own (Empowered).
+  no rounds when the status runs down on its own (Empowered), waits for the weapon that spends
+  it (Spun Up, a primer) or lasts the fight (Ricochet).
 - **A debuff** is equipment aimed at a foe (a setter, a swap), spent on a foe in reach as a
   weapon is: its keywords are its whole effect, no effect adds damage to it (Empowered, Spun
-  Up, Primed's Ablating), and its heat is paid as a weapon's. A debuff's entry is read as it is
+  Up), no primer rides it, and its heat is paid as a weapon's. A debuff's entry is read as it is
   spent: the Cottonmouth's drum fires every weapon and equipment it aims at a foe as its shot of
   4, so a debuff through the drum is a weapon.
 - **The die's face**: the kinds are Direct, Indirect, Equipment, Shield, Vent and the blank, and
@@ -239,7 +240,7 @@ every machine is wrecked. There is no round limit.
   explosives carry which is open).
 - **Every Foe** reaches any foe and lands on every foe in the fight, front rank and back, and
   none is its one target: a debuff's effects on each, a weapon's strike on each for its whole
-  number, every foe through its own Flak and armour. A weapon's strike is aimed at each, so a
+  number, every foe through its own Brittle and armour. A weapon's strike is aimed at each, so a
   Shock on any of them is doubled and spent; with no primary target no Ricochet follows it, and
   no area keyword rides it. It is
   a targeting mode of its own: no passive turns it into Direct or Indirect. Two gated specials carry it, the Whip Scorpion's
@@ -264,16 +265,16 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 2. The attacker's modifiers, on every blow: adds, then multiplies, then floors, a condition on
    the foe read on that foe (a status it carries, its rank).
 3. The foe's own, flat first: what the entry reads off it (the hull it is missing on every
-   blow, the stacks a consumer eats on it on its first blow) and its Flak; then its multiplies
+   blow, the stacks a consumer eats on it on its first blow) and its Brittle; then its multiplies
    (Shocked doubles a weapon's strike aimed at it, never a blow that only reaches it); then its
    armour comes off. A weapon's blow takes them whatever it deals, a 0 included; a debuff's
    blow stays nothing. Its riders land on every foe struck, after its
    weapon's hits (below).
-- **Riders land after the hits**: each hit's Cryo and Flak gather on its own foe and land
+- **Riders land after the hits**: each hit's Cryo and Brittle gather on its own foe and land
   once its weapon's hits are done, an application a hit, so no hit of a single-target weapon
   cashes or feeds on what the weapon lays (a ×2 Cryo 1 leaves Cryo 2 and cools nothing; a ×3
-  Flak 1 lands 5, 5 and 5 and leaves Flak 3). Every rider lands so, Ablate, Suppress, the Web Bomb's web, a
-  passive's lays, Purge and a Primed machine's Ablating with them, in the order the hits earned
+  Brittle 1 lands 5, 5 and 5 and leaves Brittle 3). Every rider lands so, Ablate, Suppress, the Web Bomb's web, a
+  passive's lays, Purge and a primer's rider with them, in the order the hits earned
   them; Shock, Expose, Lure and Disrupt land after the blow.
 - **A spend's order**: a weapon (an area's and a reach over every foe included) lands its hits
   on its target, then every hit's riders, then the death check; then the spend ends, then what
@@ -305,7 +306,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   whatever its strikes (a reach over every foe's on the foe the die is dropped on): the passive's
   flat damage, 2, plain, and the spend's whole result on that foe, joining any Mine the foe
   carries, one Mine a foe: every status's stacks the hits aimed at it fired (each hit's, as its
-  machine deepened and doubled them, a Primed machine's Ablating and a passive's lays among them,
+  machine deepened and doubled them, a primer's rider and a passive's lays among them,
   a condition read as the die was spent), its Purge and Chain at every hit's number, the rest
   once each (Shock, Suppress, Expose, Disrupt), a gated keyword where its gate held.
   The numbered ones add up across the spends that feed it. Spread and Penetrate, Rapid, Instant
@@ -317,7 +318,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   death check has cleared the slots and before what the falls bring back stands: one blow of
   its damage on every foe round its slot (the slot's other half, the foes beside it in its rank
   and the other rank of its column; a massive foe's, the front-rank foes in the columns either
-  side), each through its own Flak, a Barrier and its armour, aimed at nobody
+  side), each through its own Brittle, a Barrier and its armour, aimed at nobody
   so a Shock neither doubles it nor is spent; Chain's number on every other Shocked foe on the
   field; then its keywords on each foe it met, felled or not, as a hit's riders land, Shock and
   Expose after its blow, Disrupt only in the player's turn. Several Mines due at one death check
@@ -334,7 +335,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   Ricochet strikes again after each shot (Ricochet, below).
 - **The die shows the number** one blow will deal after every modifier; a debuff shows none,
   and a gun whose blow is nothing here shows 0. Dragged over a foe it may strike,
-  it shows that foe's number: its missing hull, conditions on it, its Flak, its armour off. A
+  it shows that foe's number: its missing hull, conditions on it, its Brittle, its armour off. A
   Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
 - **Tapping a die** opens its readout, the entry showing alone, its marks as text, each line headed
@@ -525,11 +526,12 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   once no readout is open: the first such tap closes the open readout.
 - **Sap** (with a number; the Baboon's Redshift Emitter, beside a Purge 1): each foe hit gains
   that many stacks of Sapped a strike, laid once the strikes are done.
-- **Flak** (with a number, Wainwright & Sutler's on-hit): each foe hit gains that many stacks
-  of Flak a strike (Flak 2: two stacks), laid once the strikes are done, so no strike of the
-  spend feeds on what it lays.
+- **Brittle** (with a number, the same on either side; Wainwright & Sutler's on-hit on ours):
+  each foe hit gains that many stacks of Brittle a strike (Brittle 2: two stacks), laid once
+  the strikes are done, so no strike of the spend feeds on what it lays. A foe's blow that
+  carries it leaves its number on the machine it hits.
 - **A pin** (the Dingo's Hollow-point Harpoon): its target is Pinned for the round, a status of
-  its own, and a Pinned foe's Flak, what the spend lays and what stood there, does not halve at
+  its own, and a Pinned foe's Brittle, what the spend lays and what stood there, does not halve at
   this round's end; it halves again the round after. A Ward turns it away. Ablating has a pin of
   its own, Seared: the foe takes a point for every stack at its action and loses none that
   round (no piece lays it yet). Each wears the lock on the status it holds. Empowered has no
@@ -546,7 +548,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   condition on its play, and the pattern for any to come; the second is a **count it spends**
   (the Quintessence Tap's Essence, by its mark, the number what it would take now), unplayable and
   struck the same way while its machine holds none.
-- **Cleanse** (on a shield or a vent, today): the machine it lands on loses Ablating, Scorched, Crushed,
+- **Cleanse** (on a shield or a vent, today): the machine it lands on loses Ablating, Scorched, Brittle,
   a foe's Jammed and Corrupted (never a cooldown).
 - No shield passes its maximum: a shield granted to a full machine is lost.
 
@@ -557,7 +559,7 @@ then its own heat lands. **Missing HP** adds its bonus for every
 step of HP the foe struck is missing, each foe its own, on each blow after the attacker's
 modifiers (so a split weapon's two strikes each add it), both numbers on the entry (the
 Coriolis Accelerator: +1 per 5). **Gated**: a keyword printed with a condition on the foe (a Suppress on a foe carrying
-Flak, or on a foe carrying two Ablating or more) lands only on a foe that meets it, judged as its
+Brittle, or on a foe carrying two Ablating or more) lands only on a foe that meets it, judged as its
 hit is (as the die is spent) and before the hit's own riders, so a hit
 never opens its own gate; the die
 held over a foe strikes the chip where it will not land; a Mine its spend leaves carries the
@@ -566,7 +568,7 @@ the entry names on that foe and deals it a point more a stack eaten, after the a
 modifiers and before the foe's own, so an area consumer spikes only the foes carrying the status; the die over the foe
 showing the number with the stacks in; one blow on each foe (no strikes past one); a Mine eats
 nothing. The Suppression Battery's Suppress is
-gated on Flak, and the Backdraft Charge consumes Ablating, its Suppress gated at two.
+gated on Brittle, and the Backdraft Charge consumes Ablating, its Suppress gated at two.
 **Ablates its firer** (the Stoker's): spending it sets its own machine Ablating, the stacks it
 prints, after the blow; the round preview with the die in hand counts the first tick, off its shield as the turn ends.
 **The hopper**: a weapon that fills it puts the loads it prints in its machine's hopper for
@@ -600,8 +602,8 @@ Giant Petrel's): a spend of it that kills gives the team two rerolls this round,
 many fell, banked if unspent. **The Reheat Uplink** (the Giant Petrel's, allies only): the ally
 gains Empowered 2 and its die rolls again, never onto the entry showing; a spent die rolls
 nothing. **Regenerates** (the Storm Petrel's St. Elmo's Regenerator, a lure): spent on a
-foe, its own machine gains Regenerating, the shield it prints at the start of each of the
-rounds it prints after this one. **The spill** (the Overrun Gearing's, a Minerva module, on
+foe, its own machine gains Regenerating, the stacks it prints, a second spend adding its
+own. **The spill** (the Overrun Gearing's, a Minerva module, on
 every weapon its machine fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
 strike of the spend whole, aimed at nobody, so a Shock behind neither doubles it nor is
@@ -664,21 +666,19 @@ On a machine:
   stands through the enemy's turn and goes at the round's end, and a foe's (from its brace or
   another's) stands through the player's turn and goes as the foes' next turn opens, before the
   first of them acts.
-- **Primed** (buff, on either side): each blow leaves an Ablating stack per Primed stack on its
-  target, a blow that kills on the foe it felled, a hit at a
-  corpse on the corpse. A foe's,
-  from a stoker's priming, is spent by its next move, whatever it is, and a
-  machine's Ward turns its Ablating away as it does an ablate.
-- **Phased** (buff): cannot act, take damage or be targeted until the
-  round's end, so allies cannot vent or shield it, a foe's intent on it re-picks, and a blow or
-  a special at every machine passes it by; it still cools by what cooling it is granted, its
-  Scorched goes as its turn ends, and it neither burns nor overheats while it is out, since it
-  cannot reboot: what it carries past its maximum burns again the turn it is back. Its
-  Ablating waits the same way, taking nothing and losing no stack until the machine is back. Granted only to a unit that has not acted
-  this round, whose die stands down as it is granted.
-- **Swallowed** (debuff, from a foe's swallow): out of the fight as a Phased machine is (it
+- **Phased** (buff): cannot be damaged or targeted by anything until the end of the round, and
+  it acts. Granted as the round ends: a source lays the wait for it (Phasing, a buff, a chip on
+  a dashed edge), on a machine that has acted or not, and as the enemy's turn ends every machine
+  that waits and still stands is Phased through the next round's end; one wrecked first never
+  phases, and a foe's Purge takes the wait as any buff. While it stands no foe picks the
+  machine, a blow or a special at every machine passes it by, no ally may spend on it, and its
+  Ablating waits, taking nothing and losing no stack until it is back in reach. Its own acts
+  are its own: it spends its die on a foe or on itself, a Volatile bite and the burn past its
+  maximum land as on any machine, and it may reboot, bare where nothing reaches it. Its Lure
+  turns no pick. A second grant while it stands carries it through the round after.
+- **Swallowed** (debuff, from a foe's swallow): out of the fight (it
   cannot act, take damage or be targeted, a foe's intent on it re-picks, and a blow or a special
-  at every machine passes it by; its cooling is its own, and it neither burns nor overheats while it is out, its Ablating waiting as a Phased machine's does) for the swallow's
+  at every machine passes it by; its cooling is its own, and it neither burns nor overheats while it is out, since it cannot reboot, its Ablating waiting as a Phased machine's does) for the swallow's
   rounds, its die standing down as each round opens, until its swallower falls, or until its
   swallower has lost a quarter of its maximum HP since the swallow (its chip counting the damage
   still to deal, never more than the swallower has left; a second machine taken while it holds
@@ -692,7 +692,7 @@ On a machine:
   piece goes out charged, unasked, and its die shows the charged form under a double frame;
   when the charged form has nowhere to land (Phased once any ally has acted, the act again
   with no ally spent), the plain form goes out and the charge waits. The
-  Mooring Screens shield every ally but the carrier (Every Other Ally), or Phase every ally, only
+  Mooring Screens shield every ally but the carrier (Every Other Ally), or queue Phased on every ally, only
   while none has acted this round, so it is never a selective protection;
   the Spotting Flare Exposes a foe, or Exposes and Suppresses it; the Sutler's Hoist cools an ally
   2 and then shields it, or fills its shield, cools it to nothing and cleanses it; the Reveille
@@ -709,12 +709,19 @@ On a machine:
   nothing); a Mine the fire leaves carries the Shock.
 - **Supercooled** (buff): the same with Cryo 1, a stack a strike on each foe hit, one more
   than its own on a gun that carries Cryo, laid after the hits.
+- **Primed** (buff, on either side): the third primer, the same with Ablate 1, a stack of
+  Ablating a strike on each foe hit, one more than its own on a gun that carries Ablate. The
+  three wait for a weapon, across rounds: no clock runs them down. A foe's, from a stoker's
+  priming, its value in stacks: each blow of a move that strikes leaves Ablating 1 on the
+  machine it hits, and that move spends a stack; a special, or a move lost to a stun, spends
+  none; stokings add their stacks; and a machine's Ward turns its Ablating away as it does an
+  ablate.
 - **Spun Up** (buff): the next weapon the machine spends deals +2 a stack and takes every
   stack; equipment leaves them standing; carried between turns until a weapon takes it.
 - **Ricochet** (buff, the Skua's): after a weapon fires, it hits its target again for 1, once a
   stack, once all its own strikes are done. Each is a strike of its own with every effect of
   the weapon but its area: its number 1 in place of the entry's and of what the entry reads off
-  the foe, the firer's modifiers on it (Empowered adds), the foe's Flak, then its armour, so a
+  the foe, the firer's modifiers on it (Empowered adds), the foe's Brittle, then its armour, so a
   point of plate stops every one and an Exposed foe's plate stops none; the weapon's riders
   land with each, a stack a strike; an area and a Chain's arcs are the weapon's own and no
   Ricochet carries them, and a weapon over every foe has no target for one to hit. The stacks are read as the spend begins, so one
@@ -723,12 +730,14 @@ On a machine:
   a lone stack is lost; a blow its shield takes whole costs none. It lasts the fight, with no
   cap, and a Purge takes it as any buff. The die shows the strikes its weapon will get in its
   passive box ("+3").
-- **Regenerating** (buff, on either side): a foe's, from its own special, regrows its value in HP
-  at each of its next three actions, after its Ablating and Vitriol have ticked (a suppressed
-  foe's included), so a foe its tick kills regrows nothing; each grant keeps its own clock. A
-  machine's (the Storm Petrel's St. Elmo's Regenerator): 2 shield at the start of each of the
-  next three rounds, up to its maximum; it stacks, each grant keeping its own end, and a die
-  entry granted it, a buff, so an enemy's purge takes it.
+- **Regenerating** (buff, on either side): a point a stack as its carrier's turn comes round,
+  then a stack fades, so Regenerating 3 gives 3, 2 and 1; a second grant adds its stacks. A
+  foe's, from its own special, its value in stacks: HP at each of its actions, after its
+  Ablating and Vitriol have ticked (a suppressed foe's included), so a foe its tick kills
+  regrows nothing. A machine's (the Storm Petrel's St. Elmo's Regenerator, 3 stacks): shield as
+  each round opens, up to its maximum; a broken shield takes none and the stack fades all the
+  same. A die entry granted it, a buff, so an enemy's purge takes it, a stack a point of the
+  purge.
 - **Barrier** (buff): the next blow a foe lands on this machine deals no damage, so a Destroy
   on it finds no hull to read; its riders land, and a blow of nothing leaves it standing. One at a time and one
   stack whoever grants it (a passive that deepens the stacks its machine applies leaves it at
@@ -742,7 +751,7 @@ On a machine:
 - **Ward** (buff): no rider a foe lays lands on this machine this round, from a blow or from a
   move of its own (ablate, scorch, jam, corrupt, destroy, purge); a blow's damage lands. Until the round's end. The Decoherence
   Veil grants it, self or ally. A foe's, from a special that wards every foe on the field: no mark
-  the team lays lands on it (Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox,
+  the team lays lands on it (Ablating, Brittle, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox,
   a Mine), nor a stun, nor a Purge, so a turned mark feeds no Paradox; the damage
   lands; until the end of the player's next turn. On either side a Ward turns the whole thing
   and stands.
@@ -788,9 +797,12 @@ On a machine:
 - **Jammed** (debuff, a foe's jam): the entry comes up blank through the machine's next turn.
 - **Corrupted** (debuff): each spend of the entry bites its owner 3 a stack, shield first,
   no armour off it; lasts the skirmish.
-- **Crushed** (debuff, a foe's crush: the World Eater's pin): every blow the machine takes
-  deals a point more a stack, the shield taking the extra first as it takes any blow, through
-  the next round, when every stack goes; a Ward turns the crush away. Cleansable.
+- **Brittle** (debuff, from a foe's Brittle rider: the World Eater's pin; a foe's Brittle below
+  is the same rule on the other body): every blow the machine takes deals a point more a
+  stack, the shield taking the extra first as it takes any blow, and the stacks halve at the
+  end of each round, rounded down. So it stands whole for the foes still to strike that turn
+  and half for the next, and a Brittle 1 is gone by then. A Ward turns the rider away.
+  Cleansable.
 - **A foe's purge** is Purge N, the rule ours runs: N stacks off every buff the machine carries,
   for good, whatever granted it (a stack is a stack); its Abilities and its stores stay (the
   Ammit's Essence among them, never the Empowered it grants); a Ward turns it away.
@@ -833,8 +845,8 @@ On a foe:
   the neighbour the burst catches.
 - **Cryo** (debuff): a weapon's hit on it spends every stack and cools the hitter 2 a stack;
   equipment spends none. It never fades on its own.
-- **Flak** (debuff): every blow of a weapon it takes deals a point more a stack, before its
-  multiplies and its armour (a Shocked foe takes a strike aimed at it plus Flak, doubled); a
+- **Brittle** (debuff): every blow of a weapon it takes deals a point more a stack, before its
+  multiplies and its armour (a Shocked foe takes a strike aimed at it plus Brittle, doubled); a
   debuff's blow stays nothing. The stacks halve at the end of each round, rounded down.
 - **Sapped** (debuff, on either side): its attacks deal 1 less a stack, an add before the
   multiplies, never below nothing: a foe's blow, its intent showing it, or a machine's weapon.
@@ -842,14 +854,14 @@ On a foe:
   end of the player's turn. A foe's Ward turns it away; a Cleanse clears it from a machine.
 - **Juggernaut Drive** (buff, the Wild Boar's passive waiting): gained as it gains a Barrier, one at a time; its
   next weapon attack ignores armour and lifts it, equipment leaving it standing. A purge takes it.
-- **Empowered** (buff, Rally): lands on every other foe on the field the moment the rally does,
-  the rally's value in stacks, and every blow the foe lands hits a point harder a stack, an add
+- **Empowered** (buff, Rally): lands on every foe on the field the moment the rally does, its
+  rallier too, the rally's value in stacks, and every blow the foe lands hits a point harder a stack, an add
   before the move's factor as every add is. It halves at the end of each round, rounded down,
   the machine's clock, and skips the halving of a round a machine carries Essence Flare, as a machine's
   does: no move spends it, a special or a Suppress takes none of it, and a
   countdown still gathering carries what stands to the blow it lands. A foe acting after the
-  rallier hits harder this turn; one that has acted carries half to the next round; each rally's
-  grant adds. An intent counts the rallies on their way to a blow this round, those of the ralliers acting
+  rallier hits harder this turn; one that has acted, and the rallier itself, carries half to the
+  next round, so a rally of 1 leaves its rallier nothing; each rally's grant adds. An intent counts the rallies on their way to a blow this round, those of the ralliers acting
   before it, each from a rallier alive, not Suppressed and not about to die to its Ablating, so it
   drops the moment the rallier is killed, Suppressed or Disrupted; a countdown still gathering
   shows what it would deal now, at the fight as it stands, never a rally of a round before it
@@ -882,7 +894,7 @@ On a foe:
   nothing deepens, spreads or cleanses it, and a fresh foe is stunned by one.
 
 "A foe carrying a status" (the Susceptibility Tensor) means a debuff the team put on it:
-Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Flak, Exposed or a Mine.
+Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Exposed or a Mine.
 
 ### Shields, armour, hull
 - A shield absorbs a blow up to its number and loses what it absorbed; the excess reaches
@@ -943,7 +955,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Flak, Expos
   recovery, so a shield breaks once between reboots. No cleanse lifts it. A Barrier is a buff
   in front of shield and hull: it touches neither bar and lands on any machine, Broken or
   rebooting.
-- A machine out of the fight, Swallowed or Phased, cannot reboot.
+- A Swallowed machine cannot reboot: it has no turn to give. A Phased one may, and its reboot
+  is the safe one, bare where nothing reaches it.
 - The fight bot reboots a machine past its maximum, unless a vent it shows takes it back
   under; one whose shield is broken when a blow is coming or its heat is half spent; one whose
   entry would pass its maximum, where it has heat to shed and this round's blows would take a
@@ -1038,8 +1051,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Flak, Expos
   would wreck through its shield and armour is passed over while another stands (a blow at
   every machine counts on each; a special, a suppressed foe and a countdown still gathering
   count nothing). The pick is a commitment, smart as it is made and never after (Slice and Dice's model): during the player's turn it moves only by a Lure, by the
-  machine leaving the fight (Phased or Swallowed), or by a Disrupt whose foe finds its machine
-  gone or out of the fight; a foe whose machine has fallen or is out of the fight when it acts
+  machine leaving the fight (Swallowed), or by a Disrupt whose foe finds its machine
+  gone or out of the fight; a machine Phased as the round ended is out of the picks the next
+  round opens with, a countdown's carried pick drawn again; a foe whose machine has fallen or is out of the fight when it acts
   strikes the next machine in line, left to right, that stands in the fight, whatever its aim,
   so the player can tell the pick it
   will make, and the round preview shows it. The preview never moves a pick: a foe aimed at a machine the round will wreck stays
@@ -1052,9 +1066,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Flak, Expos
   the move's factor: the adds, then the multiplies, the one damage formula on both
   sides; strikes are separate blows. Riders (a Ward turns away all but the last
   three): scorch (stacks of Scorched), ablate (stacks of
-  Ablating), jam (the entry the machine shows is Jammed), corrupt (Corrupted stacks on it), crush
-  (Crushed stacks on the machine: a point more on every blow it takes a stack, through the
-  next round), steal (the
+  Ablating), jam (the entry the machine shows is Jammed), corrupt (Corrupted stacks on it), brittle
+  (Brittle stacks on the machine: a point more on every blow it takes a stack, halving as each
+  round ends), steal (the
   entry the machine shows Jammed through its next turn, as a jam, and taken: its foe
   holds it until its borrowed swing, whose number is what it took, a weapon's printed blow,
   and anything that was no weapon a fake, for 1), destroy (any of the blow on the hull destroys
@@ -1063,7 +1077,7 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Flak, Expos
   so a shield starves it; it lays nothing on the machine, so a Barrier's blow drains nothing),
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
-  Lure moves it). Scorch, ablate, corrupt and crush each say their stacks a blow, as the player's
+  Lure moves it). Scorch, ablate, corrupt and brittle each say their stacks a blow, as the player's
   Ablate does (Scorch 2: two).
 - **A special** replaces the blow: brace (Armoured, its value in stacks, an armour point each, until the
   foes' next turn opens), recover (regains its value, itself), heal (the most hurt of its own, itself included, regains its
@@ -1071,15 +1085,15 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Flak, Expos
   revive an ally (Undying on one of its own, never itself, not readied already: a
   party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,
-  rally (Empowered at its value on every other foe on the field, at once), golden (the rage: Golden for the rounds it says, 1 to 5 and three unsaid, its value the add; only while calm), drain rerolls, ablate (stacks of Ablating on one machine), scorch all (stacks of
+  rally (Empowered at its value on every foe on the field, itself too, at once), golden (the rage: Golden for the rounds it says, 1 to 5 and three unsaid, its value the add; only while calm), drain rerolls, ablate (stacks of Ablating on one machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted stacks on the entry every machine shows),
   jam, purge (Purge N: N stacks off every buff, for good, whatever
   granted it; the Djinn's Unmake at 1; never a last act's), cleanse
-  (every mark the team laid, Ablating, Flak, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox
+  (every mark the team laid, Ablating, Brittle, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox
   and a Mine, off the most-marked of its own, itself included, the first in strike order on
   a tie; never Numbed, never Suppressed; cast where one of its own carries a mark), barrier (a
-  Barrier on itself), regenerate (Regenerating at its value on itself), ward all (a Ward on
-  every foe on the field, itself included), prime (Primed at its value on every other foe on the
+  Barrier on itself), regenerate (Regenerating, its value in stacks, on itself), ward all (a Ward on
+  every foe on the field, itself included), prime (Primed, its value in stacks, on every other foe on the
   field, at once), swallow (its machine Swallowed for its rounds, never the last machine in the
   fight, let go early once the swallower has lost a quarter of its HP), merge (every other foe on the field of the kinds it names taken into it, gone with no
   fall, no last act, no split and no kill of the team's: it regrows the HP they had left, and
@@ -1172,8 +1186,8 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   an attack's own effects the rank of each foe struck with the spend's reach beside it (the Ram
   Frame's Direct blows at the front rank, the Artillery Rangefinder's Indirect blows at the
   back, a point each); the striker carries a status (the Prairie Dog's fight
-  half: its damage-taken effect reads the foe whose blow it is taking, so a foe carrying Flak
-  hits it 1 lighter, whoever laid the Flak); the target is unhurt (at its full HP) or at half
+  half: its damage-taken effect reads the foe whose blow it is taking, so a foe carrying Brittle
+  hits it 1 lighter, whoever laid the Brittle); the target is unhurt (at its full HP) or at half
   its HP or less, each read once a hit as the hit begins, so a
   hit's strikes share one answer and the first strike of a two-strike gun does not take the
   double from the second.
@@ -1197,7 +1211,7 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   enemy's turn ends a machine that passed and holds 8 heat or more opens its valves on every
   foe, front rank and back: 1 each, and 1 more for each heat over 8, and it is left cold; under
   8 it keeps its heat. One hit of its own, a strike on each foe through its machine's adds and
-  the foe's Flak and armour (a Shocked one doubled), costing no heat. The round's
+  the foe's Brittle and armour (a Shocked one doubled), costing no heat. The round's
   forecast plays it. Its locked Heliographic Death Ray fires the same heat at one foe: 2, and 1
   more for every 2 heat, leaving it cold (the form the Buzzard's Afterburner Cannon also has
   until its rework).

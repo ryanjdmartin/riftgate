@@ -273,11 +273,11 @@ func _apply_pose() -> void:
 			# width and the third row under a machine shows its room.
 			for ms in s.sk.mechs:
 				var u: Unit = ms.unit
-				for st in [["ablating_mech", Effects.DECAY_TURN], ["scorched", Effects.DECAY_TURN_ALL], ["primed", Effects.DECAY_TICK], ["overcharged", Effects.DECAY_NONE], ["braced", Effects.DECAY_TURN_ALL], ["phased", Effects.DECAY_TURN_ALL], ["cryoed", Effects.DECAY_NONE]]:
+				for st in [["ablating_mech", Effects.DECAY_TURN], ["scorched", Effects.DECAY_TURN_ALL], ["primed", Effects.DECAY_NONE], ["overcharged", Effects.DECAY_NONE], ["braced", Effects.DECAY_TURN_ALL], ["phased", Effects.DECAY_TURN_ALL], ["cryoed", Effects.DECAY_NONE]]:
 					if Effects.STATUS.has(st[0]):
 						Effects.stack(u, Effects.STATUS[st[0]], Effects.SKIRMISH, "shot", 2, st[1])
 			for foe in s.sk.field_foes():
-				for id in ["ablating", "flakked", "shocked", "cryoed", "vitriol"]:
+				for id in ["ablating", "brittled", "shocked", "cryoed", "vitriol"]:
 					Effects.stack(foe, Effects.STATUS[id], Effects.SKIRMISH, "mech", 2, Effects.status_decay(Effects.STATUS[id]))
 			s._refresh()
 		"essence":
@@ -322,12 +322,12 @@ func _apply_pose() -> void:
 			var u: Unit = s.sk.mechs[0].unit
 			Effects.stack(u, Effects.STATUS["ablating_mech"], Effects.SKIRMISH, "shot", 2, Effects.DECAY_TURN)
 			Effects.stack(u, Effects.STATUS["scorched"], Effects.SKIRMISH, "shot", 1, Effects.DECAY_TURN_ALL)
-			Effects.stack(u, Effects.STATUS["primed"], Effects.SKIRMISH, "shot", 1, Effects.DECAY_TICK)
+			Effects.stack(u, Effects.STATUS["primed"], Effects.SKIRMISH, "shot", 1, Effects.DECAY_NONE)
 			s._refresh()
 		"foeheat":
 			# Heat's red-orange beside the enemy's violet on the foes' chip rows, the one place the two
-			# sit side by side: Ablating on the first front foe, Flak on the second, Shocked on the third.
-			var ids := ["ablating", "flakked", "shocked"]
+			# sit side by side: Ablating on the first front foe, Brittle on the second, Shocked on the third.
+			var ids := ["ablating", "brittled", "shocked"]
 			var k := 0
 			for foe in s.sk.front:
 				if foe == null or k >= ids.size():

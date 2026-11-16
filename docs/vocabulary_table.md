@@ -11,6 +11,14 @@ share a row. "Planned" is a draft the engine does not run; "in design" is a mach
 dealt. The pass itself is `docs/vocabulary_pass_proposal.md`; his marks on this table fold
 into it. `tools/pages/vocabulary_marks_page.py` turns this file into the page he marks on.
 
+The rows stand as he marked them, all eighty-two, on 15 November: the record of what each
+mark was made on. The game has moved since, on those marks (built 15 and 16 November; the
+proposal's sections 18 and 20 say what became of each row): Burn is Ablate; Breach, Splash,
+Silence, Overshield, Retaliate and Rallied are cut; Flak and Crushed are Brittle; Disabled
+is Jammed, Pinned Flak Pinned and Pinned Burning Seared; Swap, Web and Spillover are their
+pieces' own text; Regenerating, Primed, Phased and the rally run his new rules; and the
+injury rule is a boss's Destroy. `docs/vocabulary.md` is the vocabulary as it runs.
+
 | Name | Type | Effect | Where it exists |
 |---|---|---|---|
 | **Our riders: the shape of a blow** | | | |
@@ -97,10 +105,10 @@ into it. `tools/pages/vocabulary_marks_page.py` turns this file into the page he
 | **A machine's own states, no buff and no debuff** | | | |
 | Sealed, Changed Over, Souls, Quick turn spent | A kit's own | Each its machine's mechanic: no Purge, Silence or Cleanse touches it | The Polar Bear. The Clydesdale. The Ammit. The Needletail |
 | **New with the reboot, and proposed in this pass** | | | |
-| Rebooting | State, the reboot's | The machine has given its turn: its shield is at nothing through the enemy's turn, and it is cold and whole as the next round opens | Every machine, behind the REBOOT trial |
-| Overheated | Debuff on a machine, the reboot's | Heat past the maximum stays, a stack a point, and burns hull a stack at every END TURN. No cleanse lifts it | Every machine, behind the REBOOT trial |
-| Broken | Debuff on a machine, the reboot's | A shield at nothing gains no shield by any method until the reboot. No cleanse lifts it | Every machine, behind the REBOOT trial |
-| Ablate, lays Ablating | Decided 15 November, his word and form: one rule for Burn on both sides | Stacks. As its side's turn comes round the unit loses a point a stack, then a stack fades. On a foe hit points, past armour. On a machine the shield first, then the hull past armour. A tick ignores a Barrier | Replaces Burn and Burning on every piece and foe that carries them. Not built |
-| Exposed, on a machine | Decided 15 November, his | The machine's armour of every kind counts for nothing at once and until the end of the next round, and as the next round opens every targeted intent turns on it, the whole field, until the blows already drawn would wreck it. Nothing happens to its shield. A Lure moves the fire, and the mark as it is announced; a Ward turns it; a Cleanse gives the armour back and leaves the intents. The foes try it on one machine at a time | No foe yet: tier two and up, in formations that suit it. Not built |
+| Rebooting | State, the reboot's | The machine has given its turn: its shield is at nothing through the enemy's turn, and it is cold and whole as the next round opens | Every machine: the game's rule since 15 November |
+| Overheated | Debuff on a machine, the reboot's | Heat past the maximum stays, a stack a point, and burns hull a stack at every END TURN. No cleanse lifts it | Every machine: the game's rule since 15 November |
+| Broken | Debuff on a machine, the reboot's | A shield at nothing gains no shield by any method until the reboot. No cleanse lifts it | Every machine: the game's rule since 15 November |
+| Ablate, lays Ablating | Decided 15 November, his word and form: one rule for Burn on both sides | Stacks. As its side's turn comes round the unit loses a point a stack, then a stack fades. On a foe hit points, past armour. On a machine the shield first, then the hull past armour. A tick ignores a Barrier | Replaces Burn and Burning on every piece and foe that carries them. Built 15 November |
+| Exposed, on a machine | Decided 15 November, his | The machine's armour of every kind counts for nothing at once and until the end of the next round, and as the next round opens every targeted intent turns on it, the whole field, until the blows already drawn would wreck it. Nothing happens to its shield. A Lure moves the fire, and the mark as it is announced; a Ward turns it; a Cleanse gives the armour back and leaves the intents. The foes try it on one machine at a time | No foe yet: tier two and up, in formations that suit it. Not built: the foes' pass's |
 | Breach, the foes', as shield damage | Set aside 15 November with the word, which he cut on both sides | The blow deals more to a shield, in place of ignoring shield and armour. It no longer reaches the hull directly | On the shelf, as one domain's identity on a few foes at most. Not built |
-| Ignores armour | Decided 15 November, his: a property written on the piece, no keyword, on pieces of a higher tier or behind a gate | The blow ignores a foe's armour | Replaces our Breach on the Ammit's Soulcutter Talons and the Wild Boar's next weapon after it gains a Barrier. The Overclocked Railgun, a tier-one find, is the one open piece, its place his. Not built |
+| Ignores armour | Decided 15 November, his: a property written on the piece, no keyword, on pieces of a higher tier or behind a gate | The blow ignores a foe's armour | Replaces our Breach on the Ammit's Soulcutter Talons and the Wild Boar's next weapon after it gains a Barrier. The Overclocked Railgun, a tier-one find, is the one open piece, its place his. Built 15 November |

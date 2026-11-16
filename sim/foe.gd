@@ -325,7 +325,7 @@ func strikes() -> int:
 ##           the next time it falls (Reraise, the promoted Cleric's, 16 October): a party
 ##           member first, the heaviest hitter among them, then the rest of its own the same way
 ##           summon: `count` foes of `foe` join the pool at the round's end (Raise)
-##           rally: every other foe on the field hits `value` harder next round (Kindle)
+##           rally: every foe on the field, itself too, is Empowered `value`, at once (Kindle)
 ##           prime: Primed `value` on every other foe on the field, its next move's blows each
 ##           leaving that much Ablating on the machine they hit (28 October)
 ##           ward_all: a Ward on every foe on the field, itself included: no mark the team lays
@@ -399,12 +399,12 @@ func intent_on(u) -> bool:
 ## economy around it"); a shield that takes the whole blow, a Barrier or a Ward keeps the entry.
 ## A purge is a special, never a rider (28 October: a rider on a hitter's blow is a tax with no
 ## decision), so it is no attack keyword; the validator refuses it on a blow.
-const ATTACK_KEYWORDS := ["scorch", "ablate", "jam", "corrupt", "crush", "self_destruct", "all", "steal", "drain", "destroy"]
+const ATTACK_KEYWORDS := ["scorch", "ablate", "jam", "corrupt", "brittle", "self_destruct", "all", "steal", "drain", "destroy"]
 ## The specials that may never ride a blow (28 October).
 const SPECIALS_ONLY := ["dispel"]
 ## The riders that lay stacks, each a number on the move beside its keyword (24 October, as the
 ## player's Ablate N: Scorch 2 lays two stacks a blow).
-const NUMBERED_RIDERS := ["scorch", "ablate", "corrupt", "crush"]
+const NUMBERED_RIDERS := ["scorch", "ablate", "corrupt", "brittle"]
 
 
 func has_keyword(a: Dictionary, k: String) -> bool:

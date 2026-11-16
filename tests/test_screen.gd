@@ -800,7 +800,7 @@ func test_the_hold_reads_shields_debuffs_buffs_and_grants() -> void:
 	assert_eq(EntryReadout.whom(shield), "Target: Any ally or self", "either")
 	var probe := Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.SUPPRESS])
 	probe.strikes = 2
-	probe.gates = {"suppress": {"when": "target_status", "status": "flakked"}}
+	probe.gates = {"suppress": {"when": "target_status", "status": "brittled"}}
 	var lines := EntryReadout.effects_of(probe)
 	assert_eq(str(lines[0]["text"]), "Debuff ×2", "a debuff prints no number")
 	assert_eq(str(lines[1]["text"]), "Target: Enemy, Indirect", "a weapon's target and reach")
@@ -1368,8 +1368,11 @@ func test_an_incoming_rally_lifts_the_intent_and_wears_a_preview_chip_until_the_
 	assert_eq(previews.size(), 1, "and one preview chip says why")
 	if previews.size() == 1:
 		assert_eq(str(previews[0][1]), "+5", "at the rally's value")
-	for st in s._foe_view_for(lord).statuses:
-		assert_false(st.size() >= 4 and str(st[3]) == "preview", "the rallier wears none")
+	# The rallier is Empowered by its own rally too (15 November), so it wears the chip coming.
+	var own: Array = s._foe_view_for(lord).statuses.filter(func(st: Array) -> bool: return st.size() >= 4 and str(st[3]) == "preview")
+	assert_eq(own.size(), 1, "the rallier wears one too: its own rally reaches it")
+	if own.size() == 1:
+		assert_eq(str(own[0][1]), "+5", "at the rally's value")
 	s._use_die(0, lord)
 	assert_false(lord.alive(), "the rallier falls")
 	v = s._foe_view_for(g)
@@ -1555,10 +1558,10 @@ func test_a_foes_four_buffs_wear_their_own_chips() -> void:
 	s.setup(sk)
 	Effects.stack(foe, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 2)
 	Effects.stack(foe, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:revenant", 1, Effects.DECAY_NONE)
-	Effects.grant(foe, Effects.primed_foe(2, "foe:caster"))
+	Effects.stack(foe, Effects.primed_foe(), Effects.SKIRMISH, "foe:caster", 2, Effects.DECAY_NONE)
 	Effects.stack(foe, Effects.foe_barrier(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
 	Effects.stack(foe, Effects.foe_ward(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
-	Effects.grant(foe, Effects.regenerating(4))
+	Effects.stack(foe, Effects.STATUS["regenerating"], Effects.SKIRMISH, "foe:caster", 4, Effects.DECAY_TICK)
 	var by := {}
 	for r in s._foe_rows(foe):
 		by[str(r[0])] = r
@@ -1571,8 +1574,8 @@ func test_a_foes_four_buffs_wear_their_own_chips() -> void:
 		assert_eq(str(by["primed"][1]), "×2", "Primed counts its stacks")
 		assert_eq(str(by["primed"][2]), "Buff, Primed ×2", "and the readout names it with them, a buff")
 	if by.has("regenerating"):
-		assert_eq(str(by["regenerating"][1]), "+4", "Regenerating its regrowth")
-		assert_true(str(by["regenerating"][2]).contains("3 actions to go"), "and its clock, which no chip shows")
+		assert_eq(str(by["regenerating"][1]), "×4", "Regenerating counts its stacks, a point each at its action")
+		assert_true(str(by["regenerating"][2]).contains("+4 at its action, then a stack fades"), "and the readout says what they do and how they run down")
 	if by.has("barrier"):
 		assert_eq(str(by["barrier"][2]), "Buff, Barrier", "a foe's Barrier by its name alone, a buff, its meaning the term's")
 	assert_eq(SkirmishScreen.status_glyph("primed"), "primed", "the same chip on a machine")
@@ -1853,7 +1856,7 @@ func test_the_predator_sense_marks_the_foes_looking_away_while_the_die_is_read_o
 	var foe: Foe = s.sk.front[0]
 	Effects.stack(foe, Effects.STATUS["webbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	Effects.stack(foe, Effects.STATUS["vitriol"], Effects.SKIRMISH, "mech", 2)
-	Effects.stack(foe, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_HALF)
+	Effects.stack(foe, Effects.STATUS["brittled"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_HALF)
 	Effects.stack(foe, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
 	s._refresh()
 	var glyphs: Array = []
@@ -1861,12 +1864,12 @@ func test_the_predator_sense_marks_the_foes_looking_away_while_the_die_is_read_o
 		glyphs.append(r[0])
 		if r[0] == "web":
 			assert_eq(r[1], ">", "the web's chip points at the neighbour it catches, to its right")
-		if r[0] == "flak":
-			assert_eq(r[1], "3", "Flak's chip counts its stacks, the extra every blow deals")
+		if r[0] == "brittle":
+			assert_eq(r[1], "3", "Brittle's chip counts its stacks, the extra every blow deals")
 		if r[0] == "cryo":
 			assert_eq(r[1], "2", "Cryo's chip counts its stacks (21 October: it had none)")
 	assert_true(glyphs.has("web") and glyphs.has("vitriol"), "a webbed, acid-eaten foe wears both chips: %s" % str(glyphs))
-	assert_true(glyphs.has("flak") and glyphs.has("cryo"), "and Flak and Cryo wear theirs: %s" % str(glyphs))
+	assert_true(glyphs.has("brittle") and glyphs.has("cryo"), "and Brittle and Cryo wear theirs: %s" % str(glyphs))
 	s.free()
 
 

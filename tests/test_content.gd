@@ -840,7 +840,7 @@ func test_planned_component_may_carry_a_planned_keyword() -> void:
 	plate["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["loud_plate"] = plate
 	for e in db.validate():
-		assert_false(e.begins_with("component loud_plate"), "a built component may carry a planned keyword too (19 October, the Flakshot's Flak): %s" % e)
+		assert_false(e.begins_with("component loud_plate"), "a built component may carry a planned keyword too (19 October, the Flakshot's Brittle): %s" % e)
 	plate["face"]["keywords"] = ["no_such_keyword"]
 	db.components["loud_plate"] = plate
 	var hit := false
@@ -860,7 +860,7 @@ func test_crits_are_refused_in_content() -> void:
 	gun["tier"] = 1
 	db.components["old_gun"] = gun
 	var c: Dictionary = db.chassis[db.chassis.keys()[0]].duplicate(true)
-	c["passive"] = {"id": "hot", "name": "Hot", "description": "Crits burn.", "effects": [{"trigger": "on_crit", "effect": "add_ablate", "value": 1}]}
+	c["passive"] = {"id": "hot", "name": "Hot", "description": "Crits burn.", "effects": [{"trigger": "on_crit", "effect": "add_damage", "value": 1}]}
 	db.chassis["hot_one"] = c
 	var gun_refused := false
 	var passive_refused := false
@@ -1548,11 +1548,11 @@ func test_gates_and_consumers_validate() -> void:
 	base["tier"] = 1
 	base["face"].erase("keywords")
 	base["face"].erase("penetrate")   # the beam's Penetrate number goes with its keyword
-	var flak_gate := {"suppress": {"when": "target_status", "status": "flakked"}}
+	var brittle_gate := {"suppress": {"when": "target_status", "status": "brittled"}}
 	var cases := {
-		"test_battery": [{"keywords": ["suppress"], "gates": flak_gate}, ""],
+		"test_battery": [{"keywords": ["suppress"], "gates": brittle_gate}, ""],
 		"test_backdraft": [{"keywords": ["suppress"], "gates": {"suppress": {"when": "target_status", "status": "ablating", "stacks": 2}}, "consumes": "ablating", "per_consumed": 1}, ""],
-		"test_gate_absent": [{"keywords": [], "gates": flak_gate}, "does not carry"],
+		"test_gate_absent": [{"keywords": [], "gates": brittle_gate}, "does not carry"],
 		"test_gate_burn": [{"keywords": ["ablate"], "ablate": 2, "gates": {"ablate": {"when": "target_status"}}}, "rides on Suppress today"],
 		"test_gate_when": [{"keywords": ["suppress"], "gates": {"suppress": {"when": "ally_present"}}}, "a condition on the foe in hand"],
 		"test_gate_status": [{"keywords": ["suppress"], "gates": {"suppress": {"when": "target_status", "status": "numbed"}}}, "a status the team puts on a foe"],
@@ -2429,8 +2429,31 @@ func test_a_buff_of_a_halving_status_takes_no_rounds() -> void:
 			refused = true
 	assert_true(refused, "a buff granting Empowered for rounds is refused")
 	assert_true(Effects.decays_to_zero(Effects.STATUS["overcharged"]), "Empowered runs down on its own")
-	assert_false(Effects.decays_to_zero(Effects.STATUS["primed"]), "Primed is timed by the component")
+	assert_false(Effects.decays_to_zero(Effects.STATUS["primed"]), "Primed runs down on no clock: a weapon fired spends it")
 	assert_false(Effects.decays_to_zero(Effects.STATUS["braced"]), "Armoured ends with the round")
+
+
+## A primer lasts until its stacks are fired (15 November, Primed the third beside Charged and
+## Supercooled: "give it the same format as cryo ... use a stack on firing"), so a buff grants one
+## stacks and no rounds, as it does a status the next weapon spends whole.
+func test_a_buff_of_a_primer_takes_no_rounds() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var coil: Dictionary = db.components["overcharge_coil"].duplicate(true)
+	coil["face"] = {"kind": "buff", "status": "primed", "stacks": 2}
+	coil["tier"] = 1
+	db.components["primer_coil"] = coil
+	var timed: Dictionary = coil.duplicate(true)
+	timed["face"]["rounds"] = 2
+	db.components["timed_primer"] = timed
+	var refused := false
+	for e in db.validate():
+		assert_false(e.begins_with("component primer_coil"), "a primer granted in stacks is content: %s" % e)
+		if e.begins_with("component timed_primer") and e.contains("until a use spends it"):
+			refused = true
+	assert_true(refused, "a buff granting Primed for rounds is refused")
+	for id in ["primed", "charged", "supercooled"]:
+		assert_eq(str(Effects.STATUS[id].get("spent_by", "")), "weapon", "%s is spent by the weapons fired" % id)
 
 
 ## lay_status (the funnel-web's Ambush, 18 October) names a status the engine has and lays at
@@ -2490,7 +2513,7 @@ func test_a_passive_may_hold_on_one_piece_and_on_the_sealed_form() -> void:
 
 
 func test_a_passive_may_read_the_striker_for_a_status_the_vocabulary_drafts() -> void:
-	# The Prairie Dog's fight half (21 October): its clause named Flak before Flak was built (the
+	# The Prairie Dog's fight half (21 October): its clause named Brittle before Brittle was built (the
 	# same day), so the passive stayed built and the chassis dealable; a status nobody knows is refused.
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
@@ -2573,9 +2596,9 @@ func test_a_cryo_weapon_says_its_stacks_and_the_polar_bear_leads_with_its_flinge
 	assert_eq(m.armour, int(fresh.chassis["polar_bear"]["armour"]), "its base armour, as the content says")
 
 
-## Flak lands (21 October): the Flakshot Repeater builds with its Flak and sprays, and the
-## validator asks a Flak weapon for its stacks and the stacks for the keyword, as it does Ablate's
-## and Cryo's (a foe carrying Flak hitting lighter is the synthetic attacker_status test's).
+## Brittle lands (21 October): the Flakshot Repeater builds with its Brittle and sprays, and the
+## validator asks a Brittle weapon for its stacks and the stacks for the keyword, as it does Ablate's
+## and Cryo's (a foe carrying Brittle hitting lighter is the synthetic attacker_status test's).
 func test_the_flakshot_lays_flak_and_the_validator_asks_for_its_stacks() -> void:
 	var fresh := ContentDB.load_default()
 	var m := fresh.make_mech("prairie_dog")
@@ -2583,26 +2606,26 @@ func test_the_flakshot_lays_flak_and_the_validator_asks_for_its_stacks() -> void
 	for f in m.die.faces:
 		if f.component == "flakshot_repeater":
 			gun = f
-	var stacks := int(fresh.components["flakshot_repeater"]["face"]["flak"])
-	assert_true(gun != null and gun.has(Face.Keyword.FLAK) and gun.flak == stacks and stacks > 0, "the Repeater carries its Flak")
+	var stacks := int(fresh.components["flakshot_repeater"]["face"]["brittle"])
+	assert_true(gun != null and gun.has(Face.Keyword.BRITTLE) and gun.brittle == stacks and stacks > 0, "the Repeater carries its Brittle")
 	assert_true(gun.has(Face.Keyword.CLEAVE), "and sprays")
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var mute: Dictionary = db.components["flakshot_repeater"].duplicate(true)
-	mute["face"].erase("flak")
-	db.components["mute_flak"] = mute
+	mute["face"].erase("brittle")
+	db.components["mute_brittle"] = mute
 	var stray: Dictionary = db.components["slugthrower"].duplicate(true)
-	stray["face"]["flak"] = 1
+	stray["face"]["brittle"] = 1
 	stray["tier"] = 1
-	db.components["stray_flak"] = stray
+	db.components["stray_brittle"] = stray
 	var refused := {}
 	for e in db.validate():
-		if e.begins_with("component mute_flak") and e.contains("says its stacks"):
+		if e.begins_with("component mute_brittle") and e.contains("says its stacks"):
 			refused["mute"] = true
-		if e.begins_with("component stray_flak") and e.contains("rides with the Flak keyword"):
+		if e.begins_with("component stray_brittle") and e.contains("rides with the Brittle keyword"):
 			refused["stray"] = true
-	assert_true(refused.has("mute"), "a Flak weapon with no number is refused")
-	assert_true(refused.has("stray"), "a number with no Flak keyword is refused")
+	assert_true(refused.has("mute"), "a Brittle weapon with no number is refused")
+	assert_true(refused.has("stray"), "a number with no Brittle keyword is refused")
 
 
 ## The cooldown (Ryan, 14 October; counted after the round of the spend since 12 November) and

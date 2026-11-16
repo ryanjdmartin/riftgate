@@ -31,7 +31,7 @@ END = "<!-- bible-tables:end -->"
 # lands on. A keyword or effect missing here grants no status.
 COMPONENT_KEYWORDS = {"ablate": [("ablating", "foe")], "shock": [("shocked", "foe")],
                       "suppress": [("suppressed", "foe"), ("numbed", "foe")],
-                      "cryo": [("cryoed", "foe")], "flak": [("flakked", "foe")], "expose": [("exposure", "foe")]}
+                      "cryo": [("cryoed", "foe")], "brittle": [("brittled", "foe")], "expose": [("exposure", "foe")]}
 FACE_FIELDS = {"braces": "braced", "fills_hopper": "hopper",
                "holds_all": "essence_flare"}   # the Quintessence Tap's hold on Empowered, a buff on its machine (Essence Flare, 15 November)
 FACE_FIELDS_ON_FOES = {"webs": ["webbed", "suppressed", "numbed"]}   # the Web Bomb's own rule; the Syrinx Drone's status went with the slot mines (9 November), the Contractor's Expose is its keyword
@@ -39,7 +39,7 @@ PASSIVE_EFFECTS = {"seal_form": ("sealed", "machine"),
                    "paradox": ("paradox", "foe"), "muster": ("muster", "machine"),
                    "fill_hopper": ("hopper", "machine"), "hopper_plate": ("braced", "machine"),
                    "mine_on_spend": ("mine", "foe")}   # stack_status names its own, on the machine; the Reverberant Payload's Mine (9 November)
-FOE_KEYWORDS = {"scorch": "scorched", "ablate": "ablating", "jam": "jammed", "corrupt": "corrupted", "crush": "crushed", "steal": "jammed"}
+FOE_KEYWORDS = {"scorch": "scorched", "ablate": "ablating", "jam": "jammed", "corrupt": "corrupted", "brittle": "brittled", "steal": "jammed"}
 FOE_EFFECTS_ON_MACHINES = {"ablate": "ablating", "scorch_all": "scorched", "corrupt_all": "corrupted",
                            "jam": "jammed", "swallow": "swallowed"}
 FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
@@ -48,7 +48,8 @@ FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "brac
 # A special that is a rider's own mechanic, played as a whole move, counts under the rider.
 MOVE_AS_KEYWORD = {"ablate": "ablate", "jam": "jam", "scorch_all": "scorch", "corrupt_all": "corrupt", "swallow": "swallow", "merge": "merge", "dispel": "dispel", "golden": "golden_rage"}
 VIA_STATUS = {"primed": [("ablating", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
-ENGINE_ALIASES = {"ablating_mech": "ablating"}   # the same word on the other body
+ENGINE_ALIASES = {"ablating_mech": "ablating", "brittled_mech": "brittled",   # the same word on the other body
+                  "phasing": "phased"}   # the wait for Phased, which is granted as the round ends (15 November)
 
 # Printed rules, read off a component's face.
 PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
@@ -74,10 +75,11 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            # A printed cooldown: the rounds an entry sits out after its spend (12 November); Rapid's own
            # switch-off is never printed.
            ("cooldown", "Cooldown", lambda f: "cooldown" in f)]
-FOE_ONLY = ["scorch", "ablate", "jam", "corrupt", "crush", "steal", "destroy", "drain", "dispel", "swallow", "merge", "golden_rage", "self_destruct", "all", "countdown", "grudge", "last_act", "parts"]
+FOE_ONLY = ["scorch", "ablate", "jam", "corrupt", "brittle", "steal", "destroy", "drain", "dispel", "swallow", "merge", "golden_rage", "self_destruct", "all", "countdown", "grudge", "last_act", "parts"]
 FOE_ONLY_TEXT = {"ablate": "Keyword with a number on a foe's attack: each blow that lands leaves that many stacks of Ablating on the machine it hits (Ablating, above).",
+                 "brittle": "Keyword with a number on a foe's attack: each blow that lands leaves that many stacks of Brittle on the machine it hits (Brittle, above).",
                  "dispel": "A foe's move of its own, never a rider on a blow and never a last act's: Purge N, the rule ours runs, N stacks off every buff the machine it lands on carries, for good, whatever granted it; its Abilities and its stores stay; a Ward turns it away."}
-SHARED = ["ablate", "dispel"]   # our keyword and the foes' word share it, each with a row (Purge on both sides, 28 October)
+SHARED = ["ablate", "brittle", "dispel"]   # our keyword and the foes' word share it, each with a row (Purge on both sides, 28 October; Brittle, 15 November)
 KIND_ORDER = {"buff": 0, "debuff": 1, "ability": 2, "store": 3}   # a store is a capped resource, its own kind (Ryan, 21 October); an ability a unit's own mechanic, no buff or debuff (8 November)
 ON_ORDER = {"machine": 0, "both": 1, "foe": 2}
 

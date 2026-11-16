@@ -22,11 +22,11 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			else:
 				ci.draw_line(ax + Vector2(0, s * 0.85), ax + Vector2(0, -s * 0.4), color, width)
 				ci.draw_polyline(PackedVector2Array([ax + Vector2(-s * 0.36, 0.0), ax + Vector2(0, -s * 0.43), ax + Vector2(s * 0.36, 0.0)]), color, width)
-		"pin_flak", "pin_ablate":
+		"pin_brittle", "pin_ablate":
 			# A pin (Ryan, 11 November: "Can we combine the lock and the flak/burn for these
 			# glyphs?"): the status it holds, drawn a little smaller up and to the left, with the
 			# lock at its lower right.
-			draw(ci, {"pin_flak": "flak", "pin_ablate": "ablate"}[id], c + Vector2(-s * 0.2, -s * 0.16), size * 0.8, color, width)
+			draw(ci, {"pin_brittle": "brittle", "pin_ablate": "ablate"}[id], c + Vector2(-s * 0.2, -s * 0.16), size * 0.8, color, width)
 			draw(ci, "lock", c + Vector2(s * 0.5, s * 0.48), size * 0.52, color, width)
 		"essence_flare":
 			# Essence Flare (the Quintessence Tap's hold on Empowered; Pinned Empowered's mark until
@@ -396,8 +396,8 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var a := -PI * 0.5 + i * TAU / 6.0
 				var dir := Vector2(cos(a), sin(a))
 				ci.draw_line(hit + dir * s * 0.16, hit + dir * s * 0.45, color, width)
-		"flak":
-			# An airburst: a small shell ring and the dashes of shrapnel thrown off it (Flak,
+		"brittle":
+			# An airburst: a small shell ring and the dashes of shrapnel thrown off it (Brittle,
 			# 21 October). Ablating's flame is a closed shape; this one is open, so the two part
 			# by structure as well as colour.
 			ci.draw_arc(c, s * 0.24, 0.0, TAU, 14, color, width)

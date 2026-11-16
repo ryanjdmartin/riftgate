@@ -204,10 +204,14 @@ func test_a_shield_cost_is_paid_first_and_never_burnt_into_a_blow() -> void:
 	assert_eq(foe.hp, 30 - 4 - 3, "the strike's 4 and the 3 the shield paid for the heat; the cost lands nowhere")
 
 
-func test_the_regenerator_lures_and_regains_shield_three_rounds_each_grant_its_own() -> void:
+## The St. Elmo's Regenerator on Regenerating's one clock (Ryan, 15 November: a point a stack as
+## the turn comes, then a stack fades): three stacks regain 3, 2 and 1 as the next three rounds
+## open, and a second spend adds its stacks to what stands.
+func test_the_regenerator_lures_and_regains_a_point_a_stack_as_each_round_opens() -> void:
 	var regen := Face.attack(0, I, [K.LURE])
-	regen.regen_shield = 2
-	regen.regen_rounds = 3
+	regen.regen_stacks = 3
+	assert_eq(regen.describe(), "indirect lure Regenerating 3 on itself", "the entry says its stacks")
+	assert_eq(Face.from_dict(regen.to_dict()).regen_stacks, 3, "and a save keeps them")
 	var u := _mech("Petrel", Die.of([regen, Face.blank()]), 2)
 	u.shield_max = 20
 	var ally := _mech("Ally", Die.single(Face.blank()), 0)
@@ -216,7 +220,9 @@ func test_the_regenerator_lures_and_regains_shield_three_rounds_each_grant_its_o
 	sk.mechs[0].face_index = 0
 	assert_true(sk.assign(0, foe), "the lure spent")
 	assert_eq(foe.target, sk.mechs[0], "the foe turns on the spender")
-	assert_true(Effects.has(u, "regenerating"), "Regenerating on its own machine")
+	assert_eq(Effects.stacks_of(u, "regenerating"), 3, "Regenerating on its own machine, its stacks")
+	assert_eq(int(Effects.round_start(u, 0)["shield"]), 3, "a point of shield a stack as the round opens")
+	assert_eq(Skirmish.shield_regen_of(sk.mechs[0]), 0, "an event of the round's opening, never the machine's regen")
 	assert_eq(u.shield, 2, "nothing this round")
 	var seen: Array = []
 	for r in range(4):
@@ -226,17 +232,32 @@ func test_the_regenerator_lures_and_regains_shield_three_rounds_each_grant_its_o
 		if r == 0:
 			sk.mechs[0].face_index = 0
 			assert_true(sk.assign(0, sk.front[0]), "a second grant in the second round")
-	assert_eq(seen, [4, 8, 12, 14], "2 a round for three rounds from each grant: the second's rounds overlap the first's, then run on alone")
+	assert_eq(seen, [5, 10, 14, 17], "3 as the next round opens and a stack fades; the second spend's three join the two left, so 5, then 4, then 3")
 	sk.end_round()
 	sk.start_round()
-	assert_false(Effects.has(u, "regenerating"), "both clocks have run out")
-	assert_eq(u.shield, 14, "and nothing more comes")
+	sk.end_round()
+	sk.start_round()
+	assert_false(Effects.has(u, "regenerating"), "the last two stacks paid and faded")
+	assert_eq(u.shield, 20, "2 and 1 more, and nothing after")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(u.shield, 20, "nothing more comes")
+	# A broken shield takes none, and the stack fades all the same: its turn came.
+	var b := _mech("Broken", Die.of([regen.duplicate_face(), Face.blank()]), 5)
+	b.shield_max = 20
+	var s2 := _fight([b], [_foe(300)])
+	s2.mechs[0].face_index = 0
+	assert_true(s2.assign(0, s2.front[0]), "spent")
+	b.shield = 0
+	s2.mechs[0].shield_broken = true
+	s2.end_round()
+	s2.start_round()
+	assert_eq([b.shield, Effects.stacks_of(b, "regenerating")], [0, 2], "broken: no shield regained, a stack gone")
 
 
 func test_a_regeneration_is_bought_so_a_purge_takes_it_and_the_shield_caps_it() -> void:
 	var regen := Face.attack(0, I, [K.LURE])
-	regen.regen_shield = 5
-	regen.regen_rounds = 3
+	regen.regen_stacks = 5
 	var u := _mech("Petrel", Die.single(regen), 10)
 	u.shield_max = 12
 	var sk := _fight([u], [_foe(300)])
@@ -466,11 +487,17 @@ func test_the_validator_holds_the_petrels_fields_to_their_kinds() -> void:
 	for cid in cases.keys():
 		assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component %s" % cid) and e.contains(str(cases[cid][1]))), "%s is refused" % cid)
 	var good := base.duplicate(true)
-	good["face"] = {"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "regenerates": {"status": "regenerating", "shield": 2, "rounds": 3}}
+	good["face"] = {"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "regenerates": {"status": "regenerating", "stacks": 3}}
 	good["tier"] = 2
 	db.components["good_regen"] = good
+	var old_regen: Dictionary = good.duplicate(true)
+	old_regen["face"]["regenerates"] = {"status": "regenerating", "shield": 2, "rounds": 3}
+	db.components["old_regen"] = old_regen
+	var old_refused := false
 	for e in db.validate():
 		assert_false(e.begins_with("component good_regen"), "a lure that regenerates its machine passes: %s" % e)
+		old_refused = old_refused or (e.begins_with("component old_regen") and e.contains("regenerates"))
+	assert_true(old_refused, "the shape before 15 November, a shield a round for so many rounds, is refused")
 	var p := {"id": "p", "name": "P", "description": "", "effects": [{"trigger": "static", "effect": "burn_shield", "value": 2}, {"trigger": "static", "effect": "bank_rerolls", "value": 0}]}
 	var perrs: Array[String] = []
 	db._validate_passive("passive p", p, perrs)

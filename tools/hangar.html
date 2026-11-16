@@ -1009,7 +1009,7 @@ function faceLine(f) {
 function kwChip(k, cls = "kw", num = 0) { return el("span", {class: cls, title: vocabTitle(k)}, vocabName(k) + (num ? ` ${num}` : "")); }
 // A numbered keyword's number, as the face carries it beside the keyword (Ablate 2, Volatile 3,
 // Spread 2: the area keywords numbered since 28 October).
-const KW_NUMBER = {ablate: "ablate", cryo: "cryo", flak: "flak", volatile: "volatile", cleave: "cleave", penetrate: "penetrate"};
+const KW_NUMBER = {ablate: "ablate", cryo: "cryo", brittle: "brittle", volatile: "volatile", cleave: "cleave", penetrate: "penetrate"};
 function kwNumber(f, k) { return KW_NUMBER[k] ? Number(f[KW_NUMBER[k]] || 0) : 0; }
 // An entry's place on its die as the game prints it: a Roman numeral, from one.
 function roman(n) {
