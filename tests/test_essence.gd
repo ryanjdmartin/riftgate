@@ -204,7 +204,7 @@ func test_no_empowered_decays_in_the_taps_round_on_either_side() -> void:
 	sk.begin()
 	sk.start_round()
 	_empower(rallied, 4, "kindled")
-	Effects.stack(rallied, Effects.STATUS["flakked"], Effects.SKIRMISH, "test", 4, Effects.status_decay(Effects.STATUS["flakked"]))
+	Effects.stack(rallied, Effects.STATUS["brittled"], Effects.SKIRMISH, "test", 4, Effects.status_decay(Effects.STATUS["brittled"]))
 	sk.mechs[0].face_index = 0
 	assert_true(sk.assign(0, null), "the Tap spent")
 	assert_eq(Effects.stacks_of(m, "essence_flare"), 1, "its machine gains Essence Flare, a buff of its own")
@@ -218,7 +218,7 @@ func test_no_empowered_decays_in_the_taps_round_on_either_side() -> void:
 	assert_eq(Effects.stacks_of(ally, "overcharged"), 4, "an ally's")
 	assert_eq(Effects.stacks_of(rallied, "kindled"), 4, "a foe's: none, not ally or enemy")
 	assert_eq(Effects.stacks_of(late, "kindled"), 2, "and what came after the spend")
-	assert_eq(Effects.stacks_of(rallied, "flakked"), 2, "nothing else is held: Flak halves as ever")
+	assert_eq(Effects.stacks_of(rallied, "brittled"), 2, "nothing else is held: Brittle halves as ever")
 	assert_false(Effects.has(m, "essence_flare"), "the buff is the round's, and over with it")
 	assert_true(sk.round_holds.is_empty() and sk.field_holds().is_empty(), "and the hold with it")
 	sk.start_round()

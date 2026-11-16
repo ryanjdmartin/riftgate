@@ -216,7 +216,11 @@ func test_a_rebooting_machine_neither_burns_nor_overheats() -> void:
 	assert_eq([ms.heat, ms.overheat_stacks(), m.shield], [0, 0, 40], "back cold and whole")
 
 
-func test_a_machine_out_of_the_fight_does_not_burn() -> void:
+## A machine out of the fight has no turn to give, so it neither reboots nor burns (Swallowed).
+## A Phased one is out of reach and acts (Ryan, 15 November: "it's a safe reboot if you can pull
+## it off"): it may reboot, bare where nothing reaches it, and left hot it burns as any machine
+## does, the burn being its own act's cost and no blow.
+func test_a_swallowed_machine_does_not_burn_and_a_phased_one_may_reboot() -> void:
 	var m := _mech(1, "A", _gun(40), 40, 200, 30)
 	var sk := _fight([m, _mech(2, "B", _gun(0))], [Foe.make("dummy", 9000, 0)])
 	var ms: Skirmish.MechState = sk.mechs[0]
@@ -225,14 +229,27 @@ func test_a_machine_out_of_the_fight_does_not_burn() -> void:
 	sk.end_round()
 	assert_eq(m.hull, 190, "it burns the turn it passes its maximum")
 	sk.start_round()
-	Effects.grant_buff(m, "phased", 1, "test", sk.round)
-	assert_true(Skirmish.is_out(ms), "Phased, it is out of the fight this round")
+	Effects.grant_for_rounds(m, Effects.STATUS["swallowed"], "test", sk.round)
+	assert_true(Skirmish.is_out(ms), "Swallowed, it is out of the fight this round")
 	assert_false(sk.can_reboot(0), "and cannot reboot")
 	sk.end_round()
 	assert_eq(m.hull, 190, "so the burn does not ask it to: nothing burns while it is out")
 	sk.start_round()
 	sk.end_round()
 	assert_eq(m.hull, 180, "back in the fight, the stacks it still carries burn again")
+	sk.start_round()
+	Effects.grant_for_rounds(m, Effects.STATUS["phased"], "test", sk.round)
+	assert_true(Skirmish.is_out(ms), "Phased, it is out of reach this round")
+	assert_true(sk.can_reboot(0), "and free to reboot: the safe one")
+	sk.end_round()
+	assert_eq(m.hull, 170, "left hot, it burns as any machine does")
+	sk.start_round()
+	Effects.grant_for_rounds(m, Effects.STATUS["phased"], "test", sk.round)
+	assert_true(sk.reboot_mech(0), "it gives its Phased turn to the reboot")
+	sk.end_round()
+	assert_eq(m.hull, 170, "and burns nothing that turn")
+	sk.start_round()
+	assert_eq([ms.heat, m.shield], [0, 40], "cold and whole the round after")
 
 
 func test_a_blow_that_takes_a_shield_to_nothing_breaks_it_and_a_lesser_one_does_not() -> void:

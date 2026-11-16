@@ -19,6 +19,12 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   stats are what a grant adds to, and the validator refuses both keys on a chassis. The foes'
   numbers are still the ones sized against a shield that refilled. Read both before any work
   on a machine, a component, a module or a foe (`CLAUDE.md` has the rule).
+- **The vocabulary moved on 15 and 16 November** (the vocabulary pass, built on Ryan's marks
+  on every rider, buff and debuff): Burn is Ablate, Flak and Crushed are Brittle, Breach,
+  Splash, Silence, Overshield, Retaliate and Rallied are cut, and Regenerating, Primed,
+  Phased and the rally run new rules. `docs/vocabulary.md` is the vocabulary as it runs; the
+  briefs and the older proposals predate it, and `docs/briefs/README.md` says how to read
+  their words. The baseline of that game is the last entry of `docs/measurements.md`.
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared file
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word; expect the
@@ -35,7 +41,13 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1195 tests, 372,792 checks, green on `ccr-722ca9f0-yj8na3` (16 November, the
+- Tests: 1197 tests, 372,849 checks, green on `ccr-722ca9f0-yj8na3` (16 November,
+  Phased, over main at `1d2b544`). Before it, 1196 tests, 372,811 checks, green on the same
+  branch (16 November,
+  Brittle, over main at `7ac3902`). Before it, 1196 tests, 372,829 checks, green on the same
+  branch (16 November, the
+  marks' first three rule changes, over main at `d1b6827`). Before it, 1195 tests, 372,792
+  checks, green on the same branch (16 November, the
   marks' renames, over main at `0eb2745`). Before it, 1192 tests, 372,768 checks, green on
   the same branch (15 November, the marks' cuts, over main at `c9e55a9`). Before it, 1196 tests, 372,909 checks, green on the
   same branch (15 November, the vanilla's 3 and breach's cut). Before it, 1197 tests, 372,937
@@ -102,7 +114,7 @@ look tests of six chassis in briefs and the mole's rough kits and glues (How thi
 Models line; each brief has its own), with `tools/lowforge/looks/sheet.py`, a round's sheet
 in one command, and a look builder that finds its modules itself; then a second round of five
 of them on his notes of 15 and 16 November, and his word that a nickname follows its machine in the
-bible's nickname row (the file v0.593 on this branch, main's v0.592 and that line,
+bible's nickname row (the file v0.596 on this branch, main's v0.595 and that line,
 unpublished). It took main at `0f5c801`, at `c9e55a9`, the reboot's fold-in, at `0eb2745`, the
 marks' cuts, and at `d1b6827`, their renames, in merges, the bible's version line the one
 conflict (1195 tests green after the last); not landed, main takes it on his word. Its briefs' new sections reach the hangar's
@@ -372,9 +384,9 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   Lance, the Flechette Pod, the Solar Flare Array, the Flakshot Repeater, the Plow, the Harpoon)
   get a tweak before any cut: Claude's first round and his first answers are the proposal's
   section 4. The Dingo's is settled and built (11 November, the bible's Dingo row: Shock on the
-  Translocator, the harpoon the Hollow-point Harpoon, a Flak and a pin on its target's Flak for
+  Translocator, the harpoon the Hollow-point Harpoon, Brittle 1 and a pin on its target's Brittle for
   the round, Pinned a status of its own with Burning's beside it), the Prairie Dog's Flakshot
-  Repeater (Flak 2 on a cooldown of 1), the Stingray's Photosphere Lance (support, no damage: on
+  Repeater (Brittle 2 on a cooldown of 1), the Stingray's Photosphere Lance (support, no damage: on
   itself or an ally, Empowered there and Sapped, his name, on the foe in front of it, the squad's
   spots one rule in the sim the screen draws by; Sapped coded in for either side, until after its
   carrier's next turn), the Wild Boar's (the Plow a Cleanse and a Barrier on itself; its
@@ -1495,7 +1507,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   stacks as its machine deepened and doubled them, a gated keyword where its gate held), the
   numbered ones added and the rest once, area, Sweep's targeting and Lure left behind;
   when the foe falls (getting back up, splitting, a tick or a part included) the Mine blows in
-  Splash's shape round its slot, plain through each foe's own Flak and armour, in strike order,
+  Splash's shape round its slot, plain through each foe's own Brittle and armour, in strike order,
   a blast's fall blowing its own. The Syrinx Drone detonates (a weapon of 1, no cooldown, its
   own Mine first); the Lorentz Contractor gathers every Mine onto one foe and Exposes it. A Mine
   is a foe status: its chip shows the damage and its readout the keywords; a Ward turns it away,
@@ -1746,7 +1758,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   `docs/bosses_proposal.md`'s tables): twenty-one elite kits, six of them wanderers drawn at
   random on the Fracture's roll (Gilgamesh, the Reaper, the Wild Hunt, the World Eater, the
   Shuffler, the Astromancer, the first elite in parts); Enraged (the Nob's bellow), Golden (the
-  Thunder Ape's mode), Crushed (the World Eater's pin), the opener; thirteen bosses, three a
+  Thunder Ape's mode), Brittle on a machine (the World Eater's pin), the opener; thirteen bosses, three a
   domain and the Marsh's four (the Fiend of Fire, the Mantis Ant, the Marsh Serpent and the
   Emperor Scorpion new); every foe with art, a placeholder stamped "?" where no pick exists
   (`tools/placeholder_art.py`); the hangar page's foe sprites with filters by kind, tier and
@@ -1841,8 +1853,7 @@ The tasks are the to-do's; this is the index of what waits.
   Lure wins. No foe carries it. It is the foes' pass's (the to-do's Engine list).
 - His marks on the vocabulary's table (15 November, all eighty-two rows; the proposal's
   section 18 has each with its read, and the to-do's Engine list the build in parts), what
-  is not built yet: Rally on the rallier
-  too, Regenerating, Primed, Brittle and Phased as he ruled them; and for the foes' pass,
+  is not built yet, all of it the foes' pass's: a foe's Phased,
   Drain, Steal and the drained reroll as their units' own text, countdowns an elite's or a
   boss's mostly, a fall free to do more than strike. Until built, content and the engine
   run each of those as before.
@@ -1882,8 +1893,9 @@ The tasks are the to-do's; this is the index of what waits.
 Each a session of its own, with what it reads first; Ryan's play tasks run beside them (the
 to-do's Ryan list).
 
-**First: the vocabulary pass's build** (Ryan, 15 November, on his marks and his answers of
-the seventh round: "Go ahead on the fold and build"). `docs/vocabulary_pass_proposal.md` is
+**The vocabulary pass's build is done** (Ryan, 15 November, on his marks and his answers of
+the seventh round: "Go ahead on the fold and build"; built 15 and 16 November, each part a
+commit landed on main, the last `0030c35` and the baseline after it). `docs/vocabulary_pass_proposal.md` is
 its record: six rounds, his marks on all eighty-two rows (section 18), his answers and the
 go (section 20), and his direction for the foes' moves (section 19). **The reboot is folded
 in** (15 November: the rule out of its switch; the chassis's own regen and cooling and the
@@ -1913,10 +1925,27 @@ Spillover are rules written on their one piece, the die's star and the piece's o
 Follow-up is off the player's list; Jam lays Jammed; Pinned; Recover and Heal name a foe's
 flat healing; the Ammit's passive is the Quintessence Reactor, its count Essence, its piece
 the Quintessence Tap and the Tap's hold a buff on the Ammit, Essence Flare; Supercooled
-says Cryo 1; and a foe's Armoured ends as the foes' next turn opens. **What rides behind,
-in the to-do's order, each a commit of its own**: his marks' rule changes (Rally on the rallier, Regenerating fading a stack a
-turn, Primed a stack a weapon fired, Brittle in place of Flak and Crushed, Phased granted
-at the round's end); then the anchor read again as the baseline. **Then the foes' pass**
+says Cryo 1; and a foe's Armoured ends as the foes' next turn opens. **Three of his marks'
+five rule changes are built** (16 November; the bible's rally, Regenerating and primers
+rows): a rally reaches its rallier too; Regenerating is a point a stack as the carrier's
+turn comes and then a stack fades, grants adding; and Primed is the third primer, a stack a
+weapon fired lending Ablate 1, on a foe a stack a move that strikes. No number moved, so the
+foes that regenerate regrow less in all and a rally of 1 leaves its rallier nothing: the
+foes' pass sizes both. **Brittle is built** (16 November; the bible's Brittle row): Flak
+and Crushed are one word and one state on either side, a point more on every blow a stack,
+halving as each round ends, so a foe's Brittle on a machine is whole for the foes still to
+strike that turn and half for the next. One foe carries it, the World Eater's Pin at 2.
+**Phased is built, the last of the five** (16 November; the bible's Phased row): a source
+lays the wait for it, and as the enemy's turn ends a machine that waits and still stands is
+Phased through the next round's end, out of reach of both sides and acting all the same, so
+its reboot there is the safe one. Its own acts' costs land, the burn among them, a
+session's read. One piece grants it, the Mooring Screens' charge, on a machine in design,
+and its gate is that session's; a foe's Phased is the foes' pass's.
+**The anchor is read again as the baseline** (16 November; `docs/measurements.md`, its last
+entry): at tier one a formation is 5.2 rounds and 7.2% of a four's hull, an elite 5.7 and
+11.2%, a boss 9.5 and 31.5% with a wreck in a quarter of its fights, and the four formations
+built on foes that breached cost under 3%, their blows plain against a whole shield.
+**First now: the foes' pass**
 (the to-do's line): Exposed's carriers and its engine, the moves his marks renamed or
 moved onto the unit, the countdowns off the rank and file, a fall free to do more than
 strike, and a move as a short list of steps if he takes section 19's proposal.

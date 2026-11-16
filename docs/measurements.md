@@ -10022,3 +10022,100 @@ machine move little: the cut frees the bot to reboot a touch more than under a b
 shield never met, and double asks the most. What it does not say: what a domain built on the
 shield form would play like, since today's eleven breaching slots of sixty-nine are spread
 over three domains; and nothing of tier two, where Exposed would live.
+
+## 16 November, the anchor read again: tier one's fights at their ratings on the game as the vocabulary pass built it
+
+Ryan's "Go ahead on the fold and build" (15 November), built by the 16th: the reboot the
+game's rule, Ablate in Burn's place, the plain basic guns at 3 with their heat unmoved,
+Breach cut on both sides, and his marks' cuts, renames and five rule changes (main at
+`0030c35`). This is that game read once, as the baseline the foes' pass sizes against. The
+squads, the seeds and the rows are the entries' of 14 and 15 November: tier one at
+Convergence 1, the six certain tier ones (the Honey Badger, the Skua, the Storm Petrel, the
+Prairie Dog, the Cassowary, the Cottonmouth), the greedy rung, content as built; six squads
+and five seeds a fight for a flanker, a hunter's pack and a formation (30 fights a cell),
+five squads and four seeds for an elite and a boss (20 a cell). A scratch probe, the
+reboot's of 13 November with the what-ifs the engine no longer has taken out, on the
+battle's own builders. A cell is a direction; a kind's mean is a band. Rounds, hull lost as
+a share of a squad of four's, and the turns given to a reboot a machine a fight.
+
+| The read | A lone flanker (4 fights) | A hunter's pack (2) | A formation (10) | An elite (11) | A boss (13) |
+|---|---|---|---|---|---|
+| Before the reboot, as built then (12 and 13 November) | | | 4.5 rounds, 5.9% | 100% won, 4.8, 9.5% | 98%, 8.1, 21.4% |
+| The reboot's first read, guns at 2 (13 and 14 November) | 96%, 5.5, 6.8% | 100%, 5.3, 11.6% | 100%, 6.0, 10.7%, 1.02 reboots | 100%, 6.1, 14.8%, 0.89 | 93%, 10.8, 37.1%, 1.63 |
+| The what-if `basics=1`, guns at 3, Breach standing (14 November) | 100%, 4.5, 5.1% | 98%, 4.6, 9.3% | 100%, 5.1, 9.4%, 0.85 | | |
+| The what-if `basics=1,hotter=-1` with Breach cut (15 November) | | | 4.8, 5.7%, 0.70 | 5.3, 10.6% | 8.3, 25.6% |
+| **As built, 16 November** | 100%, 4.5, 5.1%, 0.91 | 98%, 4.5, 9.4%, 0.90 | 100%, 5.2, 7.2%, 0.91 | 100%, 5.7, 11.2%, 0.84 | 99%, 9.5, 31.5%, 1.48 |
+
+Wrecks a fight, as built: none against a flanker or a formation, 0.05 in a hunter's pack and
+against an elite, 0.28 against a boss. The burn is 0.0 to 0.2 hull a fight in every kind:
+the bot reboots before it burns. One boss fight in 260 stalled (the Gargantuan King's).
+
+By fight, rounds and hull, as built:
+
+| Kind | Fight | Rounds | Of a four's hull | Reboots a machine | Wrecks a fight |
+|---|---|---|---|---|---|
+| Flanker | The lone whisker cat | 4.0 | 4.9% | 0.77 | 0.00 |
+| Flanker | The lone roc | 4.4 | 3.1% | 0.83 | 0.00 |
+| Flanker | The lone dullahan | 5.7 | 6.0% | 1.03 | 0.00 |
+| Flanker | The lone cerberus | 3.9 | 6.4% | 1.00 | 0.00 |
+| Hunter | The wolf pack | 5.4 | 8.9% | 1.02 | 0.07 |
+| Hunter | The antlion trio | 3.7 | 9.9% | 0.78 | 0.03 |
+| Formation | The goblin horde | 4.8 | 6.4% | 0.82 | 0.00 |
+| Formation | The treant's grove | 6.2 | 12.7% | 1.27 | 0.00 |
+| Formation | The gel wall | 7.2 | 18.2% | 1.47 | 0.00 |
+| Formation | The needler thicket | 3.7 | 2.9% | 0.54 | 0.00 |
+| Formation | The sandworm's ambush | 5.2 | 0.8% | 0.73 | 0.00 |
+| Formation | The grave throng | 5.3 | 6.6% | 1.02 | 0.00 |
+| Formation | The barrow mound | 6.7 | 7.6% | 1.28 | 0.00 |
+| Formation | The knights' vigil | 3.3 | 1.0% | 0.29 | 0.00 |
+| Formation | The ember pyre | 4.8 | 13.8% | 0.99 | 0.00 |
+| Formation | The magma vent | 4.6 | 1.8% | 0.66 | 0.00 |
+| Elite | The shaman's warband | 4.6 | 17.7% | 1.01 | 0.00 |
+| Elite | The Nob | 5.8 | 16.9% | 0.91 | 0.20 |
+| Elite | The old man's rising | 7.6 | 8.2% | 1.02 | 0.00 |
+| Elite | The pilgrims' wake | 5.8 | 3.2% | 0.82 | 0.00 |
+| Elite | The rust monsters' scavenge | 4.0 | 3.5% | 0.33 | 0.00 |
+| Elite | Gilgamesh wanders | 7.6 | 10.1% | 1.05 | 0.05 |
+| Elite | The fell riders' hunt | 4.5 | 12.0% | 0.54 | 0.00 |
+| Elite | The Reaper | 3.4 | 0.6% | 0.28 | 0.00 |
+| Elite | The Wild Hunt | 5.1 | 19.1% | 0.91 | 0.00 |
+| Elite | The cinder tortoises' brood | 9.2 | 19.7% | 1.86 | 0.00 |
+| Elite | The Thunder Ape's rampage | 4.7 | 12.5% | 0.45 | 0.25 |
+| Boss | Floraison | 7.1 | 31.2% | 1.18 | 0.35 |
+| Boss | The King Gel | 8.8 | 28.5% | 1.54 | 0.05 |
+| Boss | The Mantis Ant | 6.8 | 13.7% | 0.81 | 0.10 |
+| Boss | The Ruby Colossus (95% won) | 11.4 | 38.3% | 1.82 | 0.45 |
+| Boss | The Fallen Weapon | 8.8 | 33.3% | 1.43 | 0.10 |
+| Boss | The Emperor Scorpion (95% won) | 9.7 | 42.1% | 1.89 | 0.55 |
+| Boss | The Matador | 7.3 | 19.6% | 1.05 | 0.05 |
+| Boss | The Phantom Train | 13.1 | 38.8% | 2.27 | 0.10 |
+| Boss | The Vampire Lord | 7.2 | 11.5% | 1.00 | 0.05 |
+| Boss | The Marsh Serpent | 6.7 | 27.3% | 1.05 | 0.25 |
+| Boss | The Gargantuan King (95% won) | 18.6 | 31.4% | 1.93 | 0.25 |
+| Boss | The Fiend of Fire | 8.1 | 50.4% | 1.48 | 1.05 |
+| Boss | The Obsidian Tyrant | 10.2 | 43.8% | 1.84 | 0.25 |
+
+What it says. A formation costs 7.2% of a four's hull over 5.2 rounds, between the 5.9% of
+the anchor before the reboot and the 10.7% of the reboot's first read: the gun's third point
+took nearly a round and a point of hull off (the 14 November what-if, 5.1 rounds and 9.4%),
+and the cut of Breach two points more. The cut shows in the four formations built on foes
+that breached (the sandworm, the needlers, the zombie knights, the magma elemental and the
+bomb), against the 14 November read at guns of 3 with Breach standing: the sandworm's ambush
+9.7% to 0.8%, the magma vent 10.0% to 1.8%, the knights' vigil 4.5% to 1.0%, the needler
+thicket 6.2% to 2.9%. Those four now cost under 3%, their blows plain against a shield that
+meets them whole; the dear three are the plated and the thick, the gel wall, the ember pyre
+and the treant's grove, at 13 to 18%. A flanker and a hunter's pack stand where the what-if
+at guns of 3 put them. An elite is 5.7 rounds and 11.2%; a boss 9.5 rounds and 31.5% with a
+wreck in a little over a quarter of its fights, above the 21.4% before the reboot and below
+the 37.1% of the reboot's first read. Three bosses pass 40%, the Fiend of Fire with a wreck
+a fight. A machine gives about nine tenths of a turn a fight to a reboot below the bosses
+and a turn and a half against one.
+
+What it does not say. Which of the pass's changes moved a cell: the switches that read each
+alone left the engine as they landed, so the rows above it are the records of 13 to 15
+November and no re-run. Whether the marks' five rule changes reach tier one at all, few of
+its foes carrying a rally, a Regenerating or a Brittle and no piece of the six a primer or a
+Phased. Tiers two and three. Whether a reboot or a hold is right, the bot's play being a
+floor. The foes' numbers are still the ones sized against a shield that refilled and, for
+eleven slots, a blow that passed it: the defence side's pass sizes them, and this is what it
+starts from.

@@ -1647,11 +1647,11 @@ func _foe_rows(foe: Foe) -> Array:
 	if vitriol > 0:
 		# The funnel-web's acid (18 October): its stacks, and the share they eat at its action.
 		rows.append(status_row("vitriol", "vitriol", str(vitriol), "Vitriol ×%d" % vitriol, _foe_chip_colour("vitriol")))
-	var flak := Effects.stacks_of(foe, "flakked")
-	if flak > 0:
+	var brittle := Effects.stacks_of(foe, "brittled")
+	if brittle > 0:
 		# Wainwright & Sutler's on-hit (21 October): the count is the extra every blow of a
 		# weapon it takes deals.
-		rows.append(status_row("flakked", "flak", str(flak), "Flak ×%d" % flak, _foe_chip_colour("flakked")))
+		rows.append(status_row("brittled", "brittle", str(brittle), "Brittle ×%d" % brittle, _foe_chip_colour("brittled")))
 	var cryo := Effects.stacks_of(foe, "cryoed")
 	if cryo > 0:
 		# The Polar Bear's mark (20 October; its chip from 21 October): what a weapon's hit on it
@@ -1721,11 +1721,9 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(status_row("ward", _foe_glyph("ward"), "", "Ward", _foe_chip_colour("ward")))
 	var regrow := Effects.regrowth(foe)
 	if regrow > 0:
-		var left := 0
-		for m in Effects.live(foe):
-			if m.id == "regenerating":
-				left = maxi(left, m.stacks)
-		rows.append(status_row("regenerating", _foe_glyph("regenerating"), "+%d" % regrow, "Regenerating +%d, %d action%s to go" % [regrow, left, "" if left == 1 else "s"], _foe_chip_colour("regenerating")))
+		# A point a stack at its action, then a stack fades (15 November): the chip is the count.
+		var mending := Effects.stacks_of(foe, "regenerating")
+		rows.append(status_row("regenerating", _foe_glyph("regenerating"), "×%d" % mending, "Regenerating ×%d: +%d at its action, then a stack fades" % [mending, regrow], _foe_chip_colour("regenerating")))
 	var paradox := Effects.stacks_of(foe, "paradox")
 	if paradox > 0:
 		var at := sk.paradox_count()
@@ -1800,8 +1798,8 @@ static func _foe_glyph(id: String) -> String:
 	match id:
 		"ablating":
 			return "ablate"
-		"flakked":
-			return "flak"
+		"brittled":
+			return "brittle"
 		"sapped":
 			return "sap"
 		"cryoed":
@@ -1840,6 +1838,8 @@ static func status_glyph(id: String) -> String:
 	match id:
 		"ablating_mech":
 			return "ablate"   # one mark on either body (15 November): the machine's thermometer flame went with Burning as heat
+		"brittled_mech":
+			return "brittle"   # and Brittle's the same (15 November): the airburst a foe wears
 		"scorched":
 			return "scorch"
 		"overcharged":
@@ -1856,8 +1856,8 @@ static func status_glyph(id: String) -> String:
 			return "hopper"
 		"sealed":
 			return "seal"   # the shell's mark, as the die's chip that seals it (2 November)
-		"phased":
-			return "phased"
+		"phased", "phasing":
+			return "phased"   # the wait for it wears its mark, on a preview's dashed edge (_mech_rows)
 		"swallowed":
 			return "swallowed"
 		"barrier":
@@ -1950,6 +1950,10 @@ func _mech_rows(i: int) -> Array:
 		var named := str(d[0]) + ((" %d" % stacks) if counted else ((" ×%d" % stacks) if stacks > 1 else ""))
 		if Effects.is_ability(id):
 			abilities.append([glyph, count, "Ability, " + named, colour, "ability"])
+		elif id == "phasing":
+			# Phased on its way (15 November: granted as the round ends): a status to come, so a
+			# preview chip, as a rally's Empowered is on a foe.
+			rows.append(status_row(id, glyph, "", "Phased as this round ends, if it stands", colour, "preview"))
 		else:
 			rows.append(status_row(id, glyph, count, named, colour))
 	if ABILITY_DEBUG and abilities.is_empty():

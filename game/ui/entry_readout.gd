@@ -247,7 +247,7 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 		var line: Dictionary
 		if Face.KEYWORD_STATUS.has(k):
 			var parts := [_bare(word("Apply %s" % label))]
-			var field: String = {Face.Keyword.ABLATE: "ablate", Face.Keyword.CRYO: "cryo", Face.Keyword.FLAK: "flak", Face.Keyword.SAP: "sap"}.get(k, "")
+			var field: String = {Face.Keyword.ABLATE: "ablate", Face.Keyword.CRYO: "cryo", Face.Keyword.BRITTLE: "brittle", Face.Keyword.SAP: "sap"}.get(k, "")
 			if not field.is_empty() and int(f.get(field)) > 0:
 				parts.append(num(str(f.get(field)), int(f.get(field)), int(base.get(field))))
 			parts.append(word(gate if not gate.is_empty() else "on hit"))
@@ -436,7 +436,7 @@ const MOVE_TARGETS := {
 	"brace": "Self", "recover": "Self", "revive_once": "Self", "barrier": "Self", "regenerate": "Self", "golden": "Self",
 	"heal": "The most hurt of its own", "brace_all": "Every foe", "revive_once_ally": "One of its own",
 	"cleanse": "The most-marked of its own", "prime": "Every other foe", "ward_all": "Every foe",
-	"summon": "The waiting pool", "rally": "Every other foe", "merge": "Its kinds on the field",
+	"summon": "The waiting pool", "rally": "Every foe", "merge": "Its kinds on the field",
 	"drain_rerolls": "The team's rerolls", "scorch_all": "Every machine", "corrupt_all": "Every machine",
 }
 

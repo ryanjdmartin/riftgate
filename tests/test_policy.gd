@@ -411,7 +411,7 @@ func test_greedy_holds_a_volatile_die_that_would_wreck_the_machine() -> void:
 ## reads a consumer's blow with the stacks in, and gives up the ticks it eats.
 func test_greedy_values_a_gated_stun_where_it_lands_and_prices_what_a_consumer_eats() -> void:
 	var gun := Face.attack(3, I, [K.SUPPRESS])
-	gun.gates = {"suppress": {"when": "target_status", "status": "flakked"}}
+	gun.gates = {"suppress": {"when": "target_status", "status": "brittled"}}
 	var sk := Skirmish.new(3)
 	sk.add_mech(_mech("A", Die.single(gun), 40, 100))
 	var plain := _ghoul(100, 20)
@@ -419,7 +419,7 @@ func test_greedy_values_a_gated_stun_where_it_lands_and_prices_what_a_consumer_e
 	sk.add_foes([plain, marked])
 	sk.begin()
 	sk.start_round()
-	Effects.stack(marked, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
+	Effects.stack(marked, Effects.STATUS["brittled"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
 	var pol := Policy.make(Policy.GREEDY)
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var on_marked := pol.attack_score(sk, ms, gun, marked)
@@ -504,6 +504,10 @@ func test_greedy_counts_a_flat_buff_once_a_strike_of_the_allys_gun() -> void:
 	var on_skua := pol.buff_score(sk, sk.mechs[2], coil)
 	assert_true(on_plain > 0.0, "worth something on a gun showing")
 	assert_true(absf(on_skua - 2.0 * on_plain) < 0.001, "twice as much on a gun that strikes twice")
+	# A primer is worth what its rider leaves (15 November, a placeholder): Primed an Ablate 1 a
+	# stack on the fires to come, a stack's tick at the bot's weight for a point of Ablating.
+	var tick := float(Effects.STATUS["ablating"]["effects"][0]["value"])
+	assert_eq(pol.buff_score(sk, sk.mechs[1], Face.buff("primed", 2)), 2.0 * tick * Policy.ABLATE_WEIGHT, "Primed 2: two stacks of Ablating to come")
 
 
 func test_greedy_lures_when_it_saves_the_glass_machine() -> void:
@@ -743,25 +747,25 @@ func test_greedy_values_a_web_by_the_blows_its_burst_stops() -> void:
 	assert_eq(pol.web_score(sk, big), 0.0, "and a web on a webbed foe is worth nothing more")
 
 
-## Flak (21 October): the bot values it as damage in hand for the team's blows still to come,
-## so a Flak spray beats the same spray without it while the team has blows to land, and is
+## Brittle (21 October): the bot values it as damage in hand for the team's blows still to come,
+## so a Brittle spray beats the same spray without it while the team has blows to land, and is
 ## worth less once the team has spent.
-func test_greedy_values_flak_by_the_team_blows_still_to_come() -> void:
+func test_greedy_values_brittle_by_the_team_blows_still_to_come() -> void:
 	var sk := Skirmish.new(3)
-	var flak := Face.attack(5, L, K.FLAK)
-	flak.flak = 3
+	var brittle := Face.attack(5, L, K.BRITTLE)
+	brittle.brittle = 3
 	var plain := Face.attack(5, L)
-	sk.add_mech(_mech("A", Die.single(flak), 0, 200))
+	sk.add_mech(_mech("A", Die.single(brittle), 0, 200))
 	sk.add_mech(_mech("B", Die.single(Face.attack(10, L)), 0, 200))
 	sk.add_foes([_ghoul(200)])
 	sk.begin()
 	sk.start_round()
 	var pol := Policy.make(Policy.GREEDY)
-	var with := pol.attack_score(sk, sk.mechs[0], flak, sk.front[0])
+	var with := pol.attack_score(sk, sk.mechs[0], brittle, sk.front[0])
 	var without := pol.attack_score(sk, sk.mechs[0], plain, sk.front[0])
-	assert_true(with > without, "Flak is worth the team's blows still to come")
+	assert_true(with > without, "Brittle is worth the team's blows still to come")
 	sk.mechs[1].assigned = true
-	var spent := pol.attack_score(sk, sk.mechs[0], flak, sk.front[0])
+	var spent := pol.attack_score(sk, sk.mechs[0], brittle, sk.front[0])
 	assert_true(spent < with and spent > without, "less once the team has spent, and the halved stacks still count for next round")
 
 
@@ -825,9 +829,9 @@ func test_the_bot_reads_a_foes_barrier_ward_priming_and_regrowth() -> void:
 	assert_eq(worth["barrier"], 10.0, "a Barrier: the biggest weapon blow a machine still to act shows on it")
 	assert_eq(worth["ward_all"], 0.0, "a Ward: nothing")
 	assert_eq(worth["prime"], 8.0, "a priming: 2 a stack, two stacks on each of two others")
-	assert_eq(worth["regenerate"], 12.0, "a regrowth: its value for each of three actions")
+	assert_eq(worth["regenerate"], 10.0, "a regrowth: its four stacks, a point each and one fewer an action, 4, 3, 2 and 1")
 	var plain := Policy._threat_now(g1, sk)
-	Effects.grant(g1, Effects.primed_foe(3, "foe:caster"))
+	Effects.stack(g1, Effects.primed_foe(), Effects.SKIRMISH, "foe:caster", 3, Effects.DECAY_NONE)
 	assert_eq(Policy._threat_now(g1, sk), plain + 6.0, "a primed foe threatens its blow and 2 a stack")
 	var a: Skirmish.MechState = sk.mechs[0]
 	var b: Skirmish.MechState = sk.mechs[1]
@@ -847,7 +851,7 @@ func test_the_bot_reads_a_foes_barrier_ward_priming_and_regrowth() -> void:
 ## what the foe carries: Undying its maximum HP whatever the blow does, a Barrier the
 ## biggest weapon blow an ally still to act shows on it (nothing when its own weapon pops it),
 ## Armoured its stacks for each allied blow to come, Empowered its value, Primed 2 a stack,
-## Regenerating its value for each action left, a Ward nothing, a bare foe nothing; the attack
+## Regenerating what the stacks it takes would have regrown, a Ward nothing, a bare foe nothing; the attack
 ## score carries it.
 func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	var pol := Policy.make(Policy.GREEDY)
@@ -879,12 +883,12 @@ func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	Effects.stack(g, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:caster", 3, Effects.DECAY_HALF)
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 3.0, "Empowered: its value")
 	Effects.remove(g, "kindled")
-	Effects.grant(g, Effects.primed_foe(2, "foe:caster"))
+	Effects.stack(g, Effects.primed_foe(), Effects.SKIRMISH, "foe:caster", 2, Effects.DECAY_NONE)
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 4.0, "Primed: 2 a stack")
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 0.5), 2.0, "at the odds the foe outlives the blow")
 	Effects.remove(g, "primed")
-	Effects.grant(g, Effects.regenerating(4))
-	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 12.0, "Regenerating: its value for each of three actions left")
+	Effects.stack(g, Effects.STATUS["regenerating"], Effects.SKIRMISH, "foe:caster", 4, Effects.DECAY_TICK)
+	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 10.0, "Regenerating: what the stacks the Purge takes would have regrown, 4, 3, 2 and 1")
 	Effects.remove(g, "regenerating")
 	Effects.stack(g, Effects.foe_ward(), Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_TURN_ALL)
 	assert_eq(pol.purge_worth(sk, a, null_field, g, 1.0), 0.0, "a Ward: nothing, since it turns the Purge away")
@@ -892,7 +896,7 @@ func test_the_bot_prices_a_purge_by_what_the_foe_carries() -> void:
 	Effects.stack(g, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
 	assert_true(pol.purge_worth(sk, a, null1, g, 1.0) > 0.0, "Numbed: a stack stripped is a step toward a stun")
 	var bare := pol.attack_score(sk, a, null_field, g)
-	Effects.grant(g, Effects.primed_foe(5, "foe:caster"))
+	Effects.stack(g, Effects.primed_foe(), Effects.SKIRMISH, "foe:caster", 5, Effects.DECAY_NONE)
 	assert_eq(pol.attack_score(sk, a, null_field, g), bare + 10.0, "the attack score carries it")
 
 
@@ -1235,7 +1239,9 @@ func test_greedy_weighs_a_mine_its_blast_on_a_kill_the_detonation_and_the_gather
 
 ## The Swallowtail for the bot (21 October; the charge never primed since 22 October), synthetic:
 ## the bot weighs the die as it will go out, so with a charge up and an ally yet to act the
-## Screens' options are Phased's, and it Phases the ally its blows would kill.
+## Screens' options are Phased's, and it queues Phased on the ally the foes are on: granted as
+## the round ends since 15 November, so worth the next round's blows on a machine that stands
+## through this one, and nothing on one this round would wreck.
 func test_greedy_weighs_the_charged_form_the_die_will_spend() -> void:
 	var deck := {"id": "deck", "name": "Deck", "description": "", "effects": [{"trigger": "static", "effect": "muster", "value": 3, "cap": 2, "kill": 2}]}
 	var screens := Face.shield(10)
@@ -1246,7 +1252,7 @@ func test_greedy_weighs_the_charged_form_the_die_will_spend() -> void:
 	var c := _mech("Carrier", Die.single(screens), 40, 100)
 	c.grant_passive(deck)
 	sk.add_mech(c)
-	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 10)
+	var a := _mech("A", Die.single(Face.attack(10, L)), 0, 100)
 	sk.add_mech(a)
 	sk.add_foes([_ghoul(300, 40), _ghoul(300, 40)])
 	sk.begin()
@@ -1258,8 +1264,12 @@ func test_greedy_weighs_the_charged_form_the_die_will_spend() -> void:
 	var opts := pol.options_for(sk, 0)
 	assert_false(opts.is_empty(), "the Screens have options")
 	assert_eq(sk.spend_face(sk.mechs[0]).buff_status, "phased", "and they are the charged form's")
+	assert_true(pol.phased_score(sk, sk.mechs[1]) > 0.0, "Phased is worth the blows it would keep off a machine that stands")
+	a.hull = 10
+	assert_eq(pol.phased_score(sk, sk.mechs[1]), 0.0, "and nothing on one this round's blows would wreck: it never phases")
+	a.hull = 100
 	pol.play_round(sk)
-	assert_true(Effects.has(a, "phased"), "the bot Phases the ally its blows would kill")
+	assert_true(Effects.has(a, "phasing") and not Effects.has(a, "phased"), "the bot queues Phased on the ally the foes are on")
 	assert_eq(Effects.muster_charges(c), 0, "the charge went with it")
 
 
@@ -1435,11 +1445,11 @@ func test_the_bot_reads_each_foe_past_the_target_at_its_shapes_number() -> void:
 	sk.add_foes([marked, aim, plain])
 	sk.begin()
 	sk.start_round()
-	Effects.stack(marked, Effects.STATUS["flakked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
+	Effects.stack(marked, Effects.STATUS["brittled"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_HALF)
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var pol := Policy.new()
 	assert_eq(pol.damage_outcomes(ms, sweep, aim), [[6.0, 1.0]], "the clean target: the roll alone")
-	assert_eq(pol.damage_outcomes(ms, sweep, marked, Skirmish.AREA_ROW), [[4.0, 1.0]], "the marked neighbour: Spread 2, the point its status earns, its Flak")
+	assert_eq(pol.damage_outcomes(ms, sweep, marked, Skirmish.AREA_ROW), [[4.0, 1.0]], "the marked neighbour: Spread 2, the point its status earns, its Brittle")
 	assert_eq(pol.damage_outcomes(ms, sweep, plain, Skirmish.AREA_ROW), [[2.0, 1.0]], "the plain one: Spread 2")
 	var before := pol.attack_score(sk, ms, sweep, aim)
 	sweep.cleave = 4
