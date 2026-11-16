@@ -41,9 +41,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1211 tests, 372,977 checks, green on `ccr-bd73687d-w8qox1` (16 November, Ryan's five beside the
+- Tests: 1213 tests, 373,034 checks, green on `ccr-bd73687d-w8qox1` (16 November, Ryan's five beside the
   formation pass: the wreck, the musters, the peak's sounds, the drum, the shell; over main at
-  `d1b6827`). Before it, 1197 tests, 372,849 checks, green on `ccr-722ca9f0-yj8na3` (16 November,
+  `3801a1b` taken in a merge). Before it, 1211 tests, 372,977 checks, green on the same branch
+  over main at `d1b6827`. Before it, 1197 tests, 372,849 checks, green on `ccr-722ca9f0-yj8na3` (16 November,
   Phased, over main at `1d2b544`). Before it, 1196 tests, 372,811 checks, green on the same
   branch (16 November,
   Brittle, over main at `7ac3902`). Before it, 1196 tests, 372,829 checks, green on the same
