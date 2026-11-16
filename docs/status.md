@@ -22,9 +22,13 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 - **The vocabulary moved on 15 and 16 November** (the vocabulary pass, built on Ryan's marks
   on every rider, buff and debuff): Burn is Ablate, Flak and Crushed are Brittle, Breach,
   Splash, Silence, Overshield, Retaliate and Rallied are cut, and Regenerating, Primed,
-  Phased and the rally run new rules; and the clocks with them on 16 November: a machine's
-  Empowered halves at END TURN, everything a Phased machine carries ticks and nothing damages
-  it, and everything a Swallowed machine carries waits. `docs/vocabulary.md` is the vocabulary as it runs; the
+  Phased and the rally run new rules; and the clocks with them on 16 November: every status
+  ends as its carrier's turn starts, as it ends, as the round ends or when it is spent (the
+  rules' When a status ends), a foe's turn being its own action, so a burning foe strikes
+  before it burns and a rally is whole on a foe that had acted; everything a Phased machine
+  carries ticks and nothing damages it, and everything a Swallowed machine carries waits. A
+  foe's move is a short list of steps since the same day (`also` on a move in
+  `content/foes.json`; the rules' Foes). `docs/vocabulary.md` is the vocabulary as it runs; the
   briefs and the older proposals predate it, and `docs/briefs/README.md` says how to read
   their words. The baseline of that game is the last entry of `docs/measurements.md`.
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared file
@@ -43,7 +47,11 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1217 tests, 373,189 checks, green on `ccr-722ca9f0-yj8na3` (16 November, the
+- Tests: 1229 tests, 373,302 checks, green on `ccr-722ca9f0-yj8na3` (16 November, a foe's
+  move as a list of steps and Gilgamesh's Collect, over main at `e777a80`). Before it, 1222
+  tests, 373,248 checks, green on the same branch (16 November, the clocks on his four
+  places, over main at `d7fe86f`). Before it, 1217 tests, 373,189 checks, green on the same
+  branch (16 November, the
   Vampire Lord's drain as its own Ability, over main at `3ad445b`). Before it, 1216 tests,
   373,182 checks, green on the same branch (16 November, Exposed
   on a machine, over main at `d97245e`). Before it, 1206 tests, 372,963 checks, green on the
