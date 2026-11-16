@@ -97,10 +97,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 Everything is on main as of 13 November 2026; the formation and refit session's branch lands as it goes, below.
 `ccr-c1cf6f73-ql6n4q`, the look tests' session of 15 November, cut from main at `011576a`:
-first look tests of six chassis in briefs and three rough kits for the mole (How things stand,
-the Models line; each brief has its own), with `tools/lowforge/looks/sheet.py`, a round's sheet
-in one command, and a look builder that finds its modules itself; then a second round of four
-of them on his notes of the same day, and his word that a nickname follows its machine in the
+look tests of six chassis in briefs and the mole's rough kits and glues (How things stand, the
+Models line; each brief has its own), with `tools/lowforge/looks/sheet.py`, a round's sheet
+in one command, and a look builder that finds its modules itself; then a second round of five
+of them on his notes of 15 and 16 November, and his word that a nickname follows its machine in the
 bible's nickname row (the file v0.592 on this branch, main's v0.591 and that line,
 unpublished). It took main at `0f5c801`, at `c9e55a9`, the reboot's fold-in, and at `0eb2745`,
 the marks' cuts, in merges, the bible's version line the one conflict; not landed, main takes
@@ -1811,11 +1811,15 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   since none are finalized"): the siege battery, Mastema, the echidna two ways (his half-track
   and his armoured car with protected wheels), Minos, the line frame and the mole three ways,
   each a sheet of stills with its choices in its brief, his to judge (the to-do); the mole's
-  brief carries three rough kits and a bench with them. Four went a second round on his notes
-  of the same day: the siege battery's hull down between its treads with its mounts fixed in
-  three places, Mastema as a flying wing with arms under it, the echidna as his pick, the
-  armoured car, skid-steered, with its bristle three ways, and Minos with no tail and bigger
-  wings. A pick's next round is a model with its rig and acts.
+  brief carries three rough kits and a bench with them. Five went a second round on his notes
+  (15 and 16 November): the siege battery's hull down between its treads with its mounts fixed
+  in three places, Mastema as a flying wing with arms under it, the echidna as his pick, the
+  armoured car, skid-steered, with its bristle three ways, Minos with no tail and bigger
+  wings, and the line frame on his new direction, a lean frame whose forearms carry its locked
+  weaponry (fists that give way to beam rifles, beam blades, a buckler of light). The mole's
+  look waits on its glue: his read of the kits (16 November) asked for one, and its brief has
+  three for his next (the dive, behind their line, undermining). A pick's next round is a
+  model with its rig and acts.
 - **Balance, read by stage** (the bible's section 2 kill-time row; `docs/measurements.md`): the
   200-seed matrix on file (`docs/balance.md`, 27 October) predates the ladder, the numbered
   area, the blow's order, the compositions and the randomness pass, so the next 200-seed run

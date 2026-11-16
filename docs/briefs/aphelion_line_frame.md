@@ -86,28 +86,16 @@ Aphelion row records Ryan's call of 13 October: that session went off the rails,
 proposal is "a list of ideas, not a design to defend". Everything here is Claude's unless
 marked Ryan's, and the numbers are the proposal's placeholders.
 
-- **The frame**: tier one, medium, a walker (Ryan's), move 30. Locked: the beam saber (round
-  one) and a kite shield on the forearm (round two). Hardpoints: the rifle stocked in a hand
-  mount, the hand showing whatever is fitted to it; the rest basic kit after the stock pass.
-- **The look** (round one, part of what Ryan was "fine trying"): a V-crest on a small head,
-  chest intakes, the kite shield on the forearm, saber hilts on the backpack; pearl and red are
-  already half the RX-78's colours. The homage lives in the silhouette only, and it moves as
-  every machine does (the bible: "MechWarrior or Star Wars, not Gundam or Evangelion").
-  A first look test of it, 15 November, on Ryan's ask of that day for the chassis with a
-  direction ("let's see what you come up with for all of these. Doesn't have to be too detailed
-  since none are finalized"): `docs/looks/aphelion_line_frame.png`, built by
-  `tools/lowforge/looks/line_frame_looks.py`, never content until the chassis lands. An upright
-  biped in pearl with red markings alone, about 62 across the pauldrons and 78 to the helm: a
-  small chamfered helm with a visor band under a large red V-crest, two louvred chest intakes
-  either side of a red hatch, square pauldrons, skirt plates and flared greaves, the kite shield
-  on the left arm, two hilts raked off the backpack's corners over two thrusters, a long rifle
-  at the right hip; a second row with a saber drawn. Claude's choices, his to change: a visor
-  band and a red crest, to stay clear of any one real suit; the shield held forward of the arm,
-  since at the side it showed edge-on; both poses baked, no joint and no act. Four placeholder
-  mounts (the right hand with the rifle, the left hand and the left pauldron bare, a small rack
-  on the right pauldron); the saber and the shield, locked, take none. His to judge: the
-  crest's size, the hilts reading as two prongs beside the head from head on, and a figure
-  stockier at the codex angle than head on.
+- **The frame**: tier one, medium, a walker (Ryan's), move 30. Its locked pieces and its mounts
+  are his of 16 November (its own section, below): transforming weaponry in its forearms, and
+  the other weapons on the shoulders or the chest pectorals. They take the place of round one's
+  locked saber, round two's kite shield on the forearm and the rifle stocked in a hand mount.
+- **The look**: his of 16 November too, below. Round one's (a V-crest on a small head, chest
+  intakes, the kite shield, saber hilts on the backpack, part of what he was "fine trying" on 12
+  October) was built as the first look test (`docs/looks/aphelion_line_frame.png`, 15 November)
+  and he read it as "too stocky, and too much like a bad clone of the RX". The homage lives in
+  the silhouette only, and it moves as every machine does (the bible: "MechWarrior or Star Wars,
+  not Gundam or Evangelion").
 - **Engine**: components still carry the old internal filing tags and only `melee` is read,
   though a `tag_<tag>` condition already works (`docs/rules.md`, tags); the stock pass assigns
   the new tags, Beam among them.
@@ -245,6 +233,52 @@ be one or more active buff effects." So the combo is a store (the bible's row on
 capped resource no Silence or Purge touches, its bar a smooth fill with a tick a power boost,
 and what it grants buffs, slept by a silence and silenced a turn by a purge.
 
+## Ryan, 16 November: its own identity, and transforming weaponry
+
+His words, on the first look test: "The line frame is too stocky, and too much like a bad clone
+of the RX. It needs its own identity. Let's go with a transforming type of weaponry for its
+locked pieces: it has fists (use the baboon/nemesis as a base), that retract and get replaced
+with guns for its beam rifles. It has beam blades mounted on its forearms, that can turn on and
+off. It can project a shield made of light from each forearm, like a buckler (the "beam
+shields"). It cycles through weapon combinations as it idles and as it fights. Other weapons are
+mounted either on the shoulders, or on the chest pectorals. A small winged backpack that it uses
+to boost along the ground, not true flight or hover. The rest is up to you, it's a homage not a
+clone, remember, so maybe pull from a few different main character Gundams and take some from
+each."
+
+What it settles: the locked pieces are built into the forearms, the same on both arms, a beam
+rifle (the fist gone and a gun in its place), a beam blade and a beam shield; the hardpoints sit
+on the shoulders or the pectorals, and no hand is a mount; it boosts along the ground on a small
+winged pack and neither flies nor hovers; the homage draws on several lead machines and copies
+none. What it leaves to the session: how the three sit on the die and what each does. A beam
+shield is a shield gain or a block by another name, which the reboot makes dear, so its rule
+says which (`CLAUDE.md`, the reboot's expectation).
+
+**The second look test** (`docs/looks/aphelion_line_frame2.png`, the `SHEET2` of
+`tools/lowforge/looks/line_frame_looks.py`; look tests, never content until the chassis lands).
+A lean frame with heavy forearms: 91 to the helm where round one stood 78, 46 across the
+shoulders where it was 62, its hips at 59% of its height, a stance of 24; bare dark upper arms
+and a bare inner frame at the waist, so the gauntlets, 23 long, are the arms' weight. Its head
+is a small helm with a visor band, dark cheeks and chin, and one red blade of a crest swept up
+and back. The pack is small, two short drooped wings inside the shoulder line over two boosters
+canted down and back, a booster on each calf. One builder takes a state for each arm, and the
+sheet has four as baked poses:
+
+- **Fists, at rest**: the Nemesis's fist at each wrist, thumb up.
+- **Rifles out**: the fists gone, a shrouded barrel with a lit lens out of each wrist.
+- **A blade and a buckler**: a beam run 37 past the hand off a rail on top of one forearm; off
+  the other's outer face a hexagon of light 23 across.
+- **Twin blades**.
+
+Four placeholder mounts: a rack and a dish on the shoulder tops, a barrel and a twin barrel in
+the pectorals. The cues taken, each from a different lead machine's vocabulary: forearm blades,
+forearm beam shields, wing binders, a bare inner frame. Kept out: the V-fin, twin eyes, a red
+chin, chest intakes, skirt armour, red feet, any third colour. On the way the pack's wings rose
+beside the head and read as a V-crest from head on, so they came down and shrank. His to judge:
+the crest is a thin upright bar from head on; the shoulder mounts are boxy from above; the
+blade arm foreshortens at the codex angle. Nothing animates: the cycling he asks for is a
+model's acts and its firing, judged running once it is one.
+
 ## Open for the session
 
 Ryan settled what one hit is on 20 October (every blow counts) and sent the shield's Beam tag
@@ -258,7 +292,9 @@ to the model session; what stays open:
    20 October tier rule.
 4. The saber's keyword now that Chain is being reworked; its scaling with the count later.
 5. Its designation in Aphelion's shape ("Flight n" and a job; "Frame" is Aphelion's word).
-6. Its look: his read of the first look test (15 November), or another round.
+6. Its look: his read of the second look test (16 November), or another round.
+7. Its locked pieces on the die (his direction of 16 November): how the rifle, the blade and
+   the shield sit there, what each does, and what the cycling reads.
 
 ## Holes already raised
 
