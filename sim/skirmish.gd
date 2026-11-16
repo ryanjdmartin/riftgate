@@ -213,6 +213,11 @@ var _blasts: Array = []
 ## The enemy's turn is under way (_enemy_turn): a Mine's Disrupt does nothing then, the foes' moves
 ## being under way.
 var _enemy_acting := false
+## The machine whose spend, or whose passed turn's release, is under way: the one that makes
+## the kills its death check clears, as the kill trigger reads them (_after_kills). Null
+## outside one: a tick's kill, a Mine blowing in the enemy's turn and a foe's own burst are
+## nobody's. A fall's curse lands on it (_last_act).
+var _killer: MechState = null
 ## Every blow of the last enemy turn, in order, for the screen to replay:
 ## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull,
 ## seq, name, boss, all}. `seq` orders it among the turn's specials; `name` is the move's shown
@@ -2214,6 +2219,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	# The spend's order (Ryan, 7 November): its hits, their riders, the death check, the spend's
 	# end, then what its kills bring back; so the returns wait until the match is done.
 	_holding_returns = true
+	_killer = ms
 	match f.kind:
 		Face.Kind.BLANK:
 			pass
@@ -2374,6 +2380,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 			if f.is_weapon() and Effects.remove(ms.unit, "juggernaut"):
 				log.append("%s: its Juggernaut Drive is spent" % ms.unit.display_name)
 	_holding_returns = false
+	_killer = null
 	_release_returns()   # the spend is done with the field: what its kills bring back stands now
 	if f.on_machines():
 		_machine_spend_after(ms, f, target)
@@ -2505,8 +2512,10 @@ func _release_passes() -> void:
 		ms.heat = 0
 		spend_blows.clear()
 		_shoved.clear()
+		_killer = ms   # its own shot: what it fells is its kill
 		var h := _hit(ms, shot, target)
 		_finish_hits(i, ms, shot, target, h, Pays.FREE)
+		_killer = null
 		ms.heat = 0   # cold after it, whatever the blows cashed
 		releases.append({"mech": i, "heat": fired, "blows": spend_blows.duplicate()})
 		_refresh_guards()
@@ -5792,10 +5801,15 @@ func _regrows(f: Foe) -> bool:
 ## last foe's lands, since damage sticks for the battle. A short list of steps as a move is (16
 ## November, on Ryan's mark of 15 November: "foes who, say buff others on death, or debuff on
 ## death, which makes kill sequencing more interesting in normal formations"): its blow, if it
-## strikes, then each effect by that effect's own rules. What is aimed at one machine lands on
-## the foe's own pick, as its blow always has, or on its next pick when that machine is gone or
-## out of the fight; a Ward there turns it. What it lays on its own side reaches the foes
-## still standing, never itself.
+## strikes, then each effect by that effect's own rules, as a move's are (Ryan, 16 November:
+## "Death effects should be dictated by the effect, same as moves"). Its blow lands where a
+## move's does, on the foe's own pick, or its next pick when that machine is gone or out of the
+## fight. A curse, an effect aimed at one machine, lands on the machine that made the kill ("if
+## the effect is a curse, then it should apply to the killer, and the dodge is ablating it"):
+## the one whose spend or release is under way (_killer), and on nobody when no machine made
+## it, a tick's kill, a Mine blowing in the enemy's turn or the foe's own burst, nor when the
+## killer is wrecked or out of the fight by then; a Ward on it turns the curse. What the fall
+## lays on its own side reaches the foes still standing, never itself.
 func _last_act(f: Foe) -> void:
 	var fall := f.fall()
 	if fall.is_empty():
@@ -5821,10 +5835,12 @@ func _last_act(f: Foe) -> void:
 			_strike(f, t)
 	var owed := reroll_debt
 	var did: Array = []
+	var cursed := _killer if _killer != null and _killer.alive() and not is_out(_killer) else null
 	for st in Foe.effects_of(fall):
-		_foe_acts(f, t, st)
+		_foe_acts(f, cursed, st)   # an effect aimed at nobody reads no machine at all
 		did.append(str(st.get("effect", "")))
-	last_acts.append({"foe": f, "name": str(fall.get("name", "")), "mechs": struck, "gauges": gauges, "effects": did, "drained": reroll_debt - owed})
+	last_acts.append({"foe": f, "name": str(fall.get("name", "")), "mechs": struck, "gauges": gauges, "effects": did,
+		"drained": reroll_debt - owed, "cursed": mechs.find(cursed) if cursed != null else -1})
 
 
 ## A core that falls for good takes its parts with it, on the field and waiting alike.

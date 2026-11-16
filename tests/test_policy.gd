@@ -1214,6 +1214,11 @@ func test_greedy_reads_a_countdown_a_core_and_a_last_act() -> void:
 	s4.start_round()
 	assert_true(is_equal_approx(Policy.last_act_cost(s4, howler), 2.0 * 2.0 * Policy.HULL_WEIGHT), "a fall that rallies costs its number on each foe still standing")
 	assert_true(is_equal_approx(Policy.last_act_cost(s4, root), Policy.REROLL_SHARE * 40.0), "one that drains, a reroll's worth")
+	# A curse lands on the machine that makes the kill: the one weighing the spend pays for it.
+	var gazer := Foe.make("gargantuan_king", 30, 20)
+	gazer.on_death = {"act": Foe.fall_act_from({"name": "Last Gaze", "effect": "jam"})}
+	assert_eq(Policy.last_act_cost(s4, gazer), 0.0, "a curse with no killer costs nothing: a tick's kill dodges it")
+	assert_true(is_equal_approx(Policy.last_act_cost(s4, gazer, s4.mechs[0]), 40.0), "and with one, the entry it would lose")
 	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"], "also": [{"effect": "drain_rerolls", "value": 1}]})}
 	assert_true(is_equal_approx(Policy.last_act_cost(s3, beast), 20.0 * Policy.HULL_WEIGHT + Policy.REROLL_SHARE * 40.0), "and a blow's steps add to its blow")
 	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}

@@ -2359,3 +2359,66 @@ a fall takes lands in the player's turn, so the REROLL button flashes with the f
 note counts it at once. The four falls of the table need one effect more, the Lich's, built
 when it is marked. The pick rule of the first open point is built as leaned and is one line
 to turn (`tests/test_skirmish.gd`).
+
+## 29. His thirteenth round, 16 November: the killer, elites at any tier, Phased foes act
+
+His words, on section 28's bench:
+
+> Regarding wild hunt et al, can we add moves to elites when they appear at higher tiers?
+> Otherwise we're limiting ourselves in what an elite can do. That said, I think elites can
+> hold any mechanic at any tier, as a boss can.
+>
+> What does the goblin captain have?
+>
+> What's the thang needles question?
+>
+> Death effects should be dictated by the effect, same as moves. I think if the effect is a
+> curse, then it should apply to the killer, and the dodge is ablating it.
+>
+> Phased foes act. Should we rename phased?
+>
+> Is your question about the Rocs about in what formations it should be allowed to stoop? If
+> so, the answer to that is yes, since that's its identity.
+>
+> We need to look at foe targeting rules now, I think. Clean that up.
+
+**What each settles.**
+
+| His words | What it means | Built |
+|---|---|---|
+| "elites can hold any mechanic at any tier, as a boss can" | A tier a rule names holds the rank and file. Exposed's tier two no longer binds an elite, and a boss stood in no grid, so the hold never reached one | The validator passes an elite by. The Rider of the Wild Hunt and the Piercing Eye are back on the bench as carriers, his to mark |
+| "can we add moves to elites when they appear at higher tiers?" | Yes. A move would say the tier it comes in at, and the fight's builder would leave it off below that | Not built. No elite wants one yet, and a rule with no piece is what the rule of 12 November cuts. It is built with the first elite that asks for it |
+| "Death effects should be dictated by the effect, same as moves" | Each effect of a fall lands by its own rule: a blow where a move's blow does, a blessing on the foes still standing, a blow or a curse at every machine on each | As built on 16 November, but for the curse |
+| "if the effect is a curse, then it should apply to the killer, and the dodge is ablating it" | A curse, an effect aimed at one machine, lands on the machine that made the kill. A kill no machine made lands it on nobody | Built. The killer is the machine whose spend or release is under way when the foe is cleared, as the kill trigger counts it |
+| "Phased foes act" | Section 28's second open point, closed as leaned | Recorded. The engine for a foe's Phased waits on its carriers and on the name |
+
+**The killer, as built** (`tests/test_skirmish.gd`). The curse follows the kill, whatever
+the foe's own pick was. A Ward on the killer turns it. A killer wrecked or out of the fight
+by then takes nothing. Nobody made the kill when a tick did, when a Mine blew in the
+enemy's turn, or when the foe burst itself, so each of those dodges the curse, and Ablate
+is the one the player plans. A Mine the spend itself sets off is the spender's kill, as it
+is for the kill trigger. The bot prices a curse on the machine weighing the spend.
+
+What it does to section 28's falls. The Gorgon's dying gaze now jams the entry the killer
+has just spent, which is blank through its next turn: the choice is which machine can spare
+that entry next round, or a burn. The Mandragora's scream, the Salamander's embers and the
+Lich's fall aim at no one machine and are unmoved.
+
+**One point his words leave open: a fall's single blow.** "Dictated by the effect, same as
+moves" keeps a death blow where a move's blow lands, on the foe's own pick, and it is built
+so: the Dread Knight's Death Throes still lands on the machine its arrow showed. The other
+reading is that everything a fall aims at one machine follows the kill. Lean: the killer for
+both. It is one rule, the arrow of a foe about to die stops mattering, and a burn then
+dodges the throes as it dodges a curse, which gives Ablate a job against the Marsh. One line
+turns it.
+
+**His three questions, answered in chat.** The Goblin Captain has Stab, Shield Wall and
+Warcry: a blow of 6, a point of armour for a round, and a rally of 2 when another foe
+stands with it. Thousand Needles was no question: it named an idea his countdown mark
+killed, the Great Needler keeping its two-round gather as the cactus's signature, beside the
+proposal of five needles at once. And the Roc's question was not where it may stoop. The
+stoop stays in either form. The question is the round before it: the Roc on the field
+gathering, a countdown as today, or the Roc climbed out of reach, a foe's Phased.
+
+**Phased's name.** His question. Section 30 has the lean.
+

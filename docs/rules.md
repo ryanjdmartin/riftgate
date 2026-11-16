@@ -1160,8 +1160,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   (Brittle stacks on the machine: a point more on every blow it takes a stack, halving as its
   next turn starts), destroy (any of the blow on the hull destroys
   the entry the machine shows: Destroy, above; no foe carries it yet), expose (the machine is
-  Exposed through the round after: Exposed, above; a tier-two foe's at the least, the validator
-  refusing it on anything dealt at tier one; no foe carries it yet),
+  Exposed through the round after: Exposed, above; among the rank and file a tier-two foe's at
+  the least, the validator refusing it on a foe of the line dealt at tier one, while an elite
+  and a boss may hold any mechanic at any tier; no foe carries it yet),
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; no aim or
   Lure moves it). Scorch, ablate, corrupt and brittle each say their stacks a blow, as the player's
@@ -1218,9 +1219,14 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   was the last foe, since damage sticks for the battle. A fall is a short list of steps, as a
   move is: a death blow with its own riders, every machine included, or one special in a
   blow's place, and then what it does also, each effect by its own rules in the order
-  written. What it aims at one machine lands on the foe's own pick, whoever made the kill,
-  or on the next machine in line when its pick is gone or out of the fight, and a Ward there
-  turns it away. What it lays on its own side reaches the foes still standing, never itself.
+  written, as a move's are. Its blow lands on the foe's own pick, or on the next machine in
+  line when its pick is gone or out of the fight. A curse, an effect aimed at one machine,
+  lands on the machine that made the kill: the one whose spend or whose passed turn's
+  release felled it, a Mine that spend sets off included. A kill no machine made lands it on
+  nobody, so Ablating a foe to death dodges its curse, as a Mine blowing in the enemy's turn
+  and the foe's own burst do; a killer wrecked or out of the fight by then takes nothing,
+  and a Ward on it turns the curse away. What a fall lays on its own side reaches the foes
+  still standing, never itself.
   A fall may heal, armour, cleanse, ward, prime, ready or rally its own, take rerolls from
   the next round, ablate or jam its pick, and scorch or corrupt every machine. It does
   nothing its own body would carry, summons nothing (a split is the fall's own summon),

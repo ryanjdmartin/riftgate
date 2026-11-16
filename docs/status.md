@@ -47,7 +47,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1239 tests, 373,422 checks, green on `ccr-722ca9f0-yj8na3` (16 November, a fall
+- Tests: 1240 tests, 373,435 checks, green on `ccr-722ca9f0-yj8na3` (16 November, his
+  thirteenth round: a fall's curse on the killer, an elite at any tier, over main at
+  `8e31b26`). Before it, 1239 tests, 373,422 checks, green on the same branch (16 November, a fall
   as a list of steps and the drain switch's test, over main at `45b4d3e`). Before it, 1231 tests, 373,341 checks, green
   on the same branch (16 November, the
   REROLL button's drain note, over main at `1aa34b3`). Before it, 1230 tests, 373,327
@@ -2008,8 +2010,12 @@ the drains took, through the round they shortened. The five moves say it in thei
 and no keyword names it.
 **A fall is a short list of steps** (16 November, his mark of 15 November: "foes who, say
 buff others on death, or debuff on death"; the engine alone, the rules' A last act): a death
-blow or one special in its place, then what it does also, on the foe's own pick where it
-aims at one machine. No foe carries more than a blow: the carriers are the bench's.
+blow or one special in its place, then what it does also. Its blow lands on the foe's own
+pick, and a curse on the machine that made the kill (his thirteenth round: "it should apply
+to the killer, and the dodge is ablating it"), nobody when a tick did. No foe carries more
+than a blow: the carriers are the bench's.
+**An elite holds any mechanic at any tier, as a boss can** (the same round): the tier a rule
+names, Exposed's tier two, holds the rank and file alone. **Phased foes act.**
 **First now: the foes' pass, the rest**
 (the to-do's line): the content, put to him on 16 November as the proposal's section 28 and
 waiting on his marks: the moves that take the rank and file's countdowns' place, a fall for

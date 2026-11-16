@@ -5739,9 +5739,11 @@ func test_a_fall_that_blesses_lifts_the_foes_still_standing() -> void:
 	assert_eq(hull - a.hull, 24, "both land their blow, two harder each")
 
 
-## What a fall aims at one machine lands on the foe's own pick, as its blow always has; a Ward
-## there turns it away; and with its pick gone it takes the next machine in line.
-func test_a_fall_that_curses_lands_on_its_own_pick_and_a_ward_turns_it() -> void:
+## A fall's curse, an effect aimed at one machine, lands on the machine that made the kill (Ryan,
+## 16 November: "if the effect is a curse, then it should apply to the killer, and the dodge is
+## ablating it"), whatever the foe's own pick was; a Ward on the killer turns it away; a kill no
+## machine made, a tick's, lands it on nobody; and a killer out of the fight is out of its reach.
+func test_a_falls_curse_lands_on_the_killer_and_a_tick_dodges_it() -> void:
 	var sk := Skirmish.new(1, 2)
 	var a := _mech("A", Die.single(Face.attack(40, I)), 0, 100)
 	var b := _mech("B", Die.single(Face.attack(3, I)), 0, 100)
@@ -5753,38 +5755,69 @@ func test_a_fall_that_curses_lands_on_its_own_pick_and_a_ward_turns_it() -> void
 	sk.start_round()
 	gazer.target = sk.mechs[1]
 	assert_true(sk.assign(0, gazer), "A makes the kill")
-	assert_true(Effects.is_entry_disabled(b, sk.mechs[1].face_index), "the entry its pick shows is Jammed, whoever made the kill")
-	assert_false(Effects.is_entry_disabled(a, sk.mechs[0].face_index), "and the killer's is not")
-	# A Ward on the pick turns the fall's curse away.
+	assert_true(Effects.is_entry_disabled(a, sk.mechs[0].face_index), "the entry the killer shows is Jammed")
+	assert_false(Effects.is_entry_disabled(b, sk.mechs[1].face_index), "and its own pick's is not: the curse follows the kill")
+	assert_eq(int(sk.last_acts[0]["cursed"]), 0, "the screen is told whom it cursed")
+	# A Ward on the killer turns the curse away.
 	var s2 := Skirmish.new(1, 2)
 	var c := _mech("C", Die.single(Face.attack(40, I)), 0, 100)
-	var d := _mech("D", Die.single(Face.attack(3, I)), 0, 100)
 	s2.add_mech(c)
-	s2.add_mech(d)
 	var g2 := _falls_with("jam")
 	s2.add_foes([g2, _ghoul(500, 1)])
 	s2.begin()
 	s2.start_round()
-	g2.target = s2.mechs[1]
-	Effects.stack(d, Effects.STATUS["ward"], Effects.SKIRMISH, "test", 1)
-	assert_true(s2.assign(0, g2), "the gazer falls")
-	assert_false(Effects.is_entry_disabled(d, s2.mechs[1].face_index), "the Ward turns it away")
+	Effects.stack(c, Effects.STATUS["ward"], Effects.SKIRMISH, "test", 1)
+	assert_true(s2.assign(0, g2), "the gazer falls to a warded machine")
+	assert_false(Effects.is_entry_disabled(c, s2.mechs[0].face_index), "the Ward turns it away")
 	assert_true("\n".join(s2.log).contains("Ward turns it away"), "and the log says so")
-	# Its pick out of the fight: the next machine in line takes it.
+	# The dodge: Ablating fells it as its turn ends, and no machine made the kill.
 	var s3 := Skirmish.new(1, 2)
-	var e := _mech("E", Die.single(Face.attack(40, I)), 0, 100)
-	var f := _mech("F", Die.single(Face.attack(3, I)), 0, 100)
+	var e := _mech("E", Die.single(Face.blank()), 0, 100)
 	s3.add_mech(e)
-	s3.add_mech(f)
 	var g3 := _falls_with("jam")
+	g3.hp = 2
+	Effects.stack(g3, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 5)
 	s3.add_foes([g3, _ghoul(500, 1)])
 	s3.begin()
 	s3.start_round()
-	g3.target = s3.mechs[1]
-	Effects.grant_for_rounds(f, Effects.STATUS["phased"], "test", s3.round)
-	assert_true(s3.assign(0, g3), "the gazer falls with its pick Phased")
-	assert_false(Effects.is_entry_disabled(f, s3.mechs[1].face_index), "nothing reaches a Phased machine")
-	assert_true(Effects.is_entry_disabled(e, s3.mechs[0].face_index), "so the next machine in line takes it")
+	g3.target = s3.mechs[0]
+	s3.end_round()
+	assert_false(g3.alive(), "it burns down as its turn ends")
+	assert_false(Effects.is_entry_disabled(e, s3.mechs[0].face_index), "and its curse lands on nobody, its pick included")
+	assert_true("\n".join(s3.log).contains("no machine stands to take it"), "the log says so")
+	# A killer out of the fight is out of the curse's reach too.
+	var s4 := Skirmish.new(1, 2)
+	var h := _mech("H", Die.single(Face.attack(40, I)), 0, 100)
+	s4.add_mech(h)
+	var g4 := _falls_with("jam")
+	s4.add_foes([g4, _ghoul(500, 1)])
+	s4.begin()
+	s4.start_round()
+	Effects.grant_for_rounds(h, Effects.STATUS["phased"], "test", s4.round)
+	assert_true(s4.assign(0, g4), "a Phased machine makes the kill")
+	assert_false(Effects.is_entry_disabled(h, s4.mechs[0].face_index), "nothing reaches it")
+	assert_eq(int(s4.last_acts[0]["cursed"]), -1, "so the curse lands on nobody")
+
+
+## One fall, two machines: its blow lands where a move's does, on the foe's own pick, and its
+## curse on the machine that made the kill.
+func test_a_falls_blow_keeps_its_pick_while_its_curse_follows_the_kill() -> void:
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("A", Die.single(Face.attack(40, I)), 0, 100)
+	var b := _mech("B", Die.single(Face.blank()), 0, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var knight := Foe.make("revenant", 10, 6)
+	knight.on_death = {"blow": Foe.death_blow_from({"name": "Throes", "factor": 1.0, "also": [{"effect": "ablate", "value": 2}]})}
+	sk.add_foes([knight, _ghoul(500, 0)])
+	sk.begin()
+	sk.start_round()
+	knight.target = sk.mechs[1]
+	assert_true(sk.assign(0, knight), "A makes the kill")
+	assert_eq([a.hull, b.hull], [100, 94], "its blow lands on the machine it had picked")
+	assert_eq([Effects.stacks_of(a, "ablating_mech"), Effects.stacks_of(b, "ablating_mech")], [2, 0], "and its curse on the machine that killed it")
+	assert_eq(sk.last_acts[0]["mechs"], [1], "the blow's machine")
+	assert_eq(int(sk.last_acts[0]["cursed"]), 0, "and the curse's")
 
 
 ## A fall strikes first and then does the rest, in the order written: its blow, then each

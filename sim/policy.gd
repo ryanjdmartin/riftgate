@@ -563,7 +563,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			score += _capped(damage_outcomes(ms, f, n) if f.reach == Face.Reach.EVERY_FOE else damage_outcomes(ms, f, n, int(shapes.get(n, Skirmish.AREA_ALL))), n.hp)
 	# A kill ends the countdown it gathers, opens the core its fall unguards, and sets off its
 	# last act (the boss mechanics of 15 October; valued 22 October).
-	score += p_kill * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target))
+	score += p_kill * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target, ms))
 	if f.has(Face.Keyword.LURE) or f.has(Face.Keyword.DISRUPT) or f.has(Face.Keyword.SHOCK):
 		# Every foe the blows reach: the target, the neighbours of a spread, the column of a
 		# penetrate; a lure, a disrupt or a shock lands on a felled foe too (death is the last
@@ -752,7 +752,7 @@ func zap_worth(sk: Skirmish, ms: Skirmish.MechState, target: Foe, burnt: int, ou
 			continue
 		worth += float(o[1]) * minf(float(zap), left)
 		if float(zap) >= left:
-			worth += float(o[1]) * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target))
+			worth += float(o[1]) * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target, ms))
 	return worth
 
 
@@ -1704,10 +1704,10 @@ static func core_opening(sk: Skirmish, part: Foe) -> float:
 ## 22 October): its blow the moment it falls, on the machine it aims at or every machine for a
 ## blow at every machine, through each one's shield and armour as they stand: hull at
 ## HULL_WEIGHT, shield at SHIELD_LOSS_WEIGHT, a wreck at DEATH_WEIGHT.
-static func last_act_cost(sk: Skirmish, f: Foe) -> float:
+static func last_act_cost(sk: Skirmish, f: Foe, killer: Skirmish.MechState = null) -> float:
 	var blow := f.last_act()
 	if blow.is_empty():
-		return fall_steps_cost(sk, f)
+		return fall_steps_cost(sk, f, killer)
 	var amount := f.damage_of(blow)
 	var whom: Array = []
 	if f.has_keyword(blow, "all"):
@@ -1727,20 +1727,21 @@ static func last_act_cost(sk: Skirmish, f: Foe) -> float:
 			hull -= int(r["through"])
 		if hull <= 0:
 			cost += DEATH_WEIGHT
-	return cost + fall_steps_cost(sk, f)
+	return cost + fall_steps_cost(sk, f, killer)
 
 
 ## What the steps of a foe's fall cost the team beside its blow (16 November: a fall is a short
 ## list of steps): each at the price the bot already puts on the same effect from a move, a
-## Ward's score for what lands on a machine and a rally's point on every blow. An effect with
-## no price here counts nothing until a piece carries it.
-static func fall_steps_cost(sk: Skirmish, f: Foe) -> float:
+## Ward's score for what lands on a machine and a rally's point on every blow. A curse lands on
+## the machine that makes the kill (`killer`: the one weighing the spend), and on nobody when
+## none does. An effect with no price here counts nothing until a piece carries it.
+static func fall_steps_cost(sk: Skirmish, f: Foe, killer: Skirmish.MechState = null) -> float:
 	var fall := f.fall()
 	if fall.is_empty():
 		return 0.0
-	var pick: Skirmish.MechState = f.target as Skirmish.MechState
-	if pick == null or not pick.alive() or Skirmish.is_out(pick):
-		pick = sk.live_mechs()[0] if not sk.live_mechs().is_empty() else null
+	var pick: Skirmish.MechState = killer
+	if pick != null and (not pick.alive() or Skirmish.is_out(pick)):
+		pick = null
 	var scorch := 0
 	for eff in Effects.STATUS["scorched"]["effects"]:
 		if str(eff.get("effect", "")) == "add_heat":
