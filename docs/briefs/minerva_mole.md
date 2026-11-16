@@ -432,11 +432,26 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
 
 ## Open for the session
 
-1. Its tier: it or the Wild Boar comes down to tier one ("still slated ideally for tier 1").
+1. Its tier, his lean of 16 November: "Polar bear is going up a tier, so I think this one goes to
+   tier 1. Boar is arguably simpler, but I think it has more support in tier 2, so I'm not sure.
+   Some of that comes down to what the lure tank turns into though." So the mole at tier one and
+   the Wild Boar staying at two, at that strength, the lure tank's session the one that settles
+   it.
 2. Its numbers (hull, shield, armour, heat, move), its stock, and the Drill's heat.
-3. Its look: the rocket drill, a drill it fires into a foe that returns as it burrows; a round
-   of looks.
-4. Its name (the mole a working label) and its texts, his.
+3. Its look: the rocket drill, a drill it fires into a foe that returns as it burrows ("try your
+   first design, but the trick is to make it look like it can fire the drill, but also not look
+   silly without it", 16 November); the second round of looks is the drill tank loaded and
+   fired.
+4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
+   for a true burrower?"), Claude's candidates, each checked against the reserved names: the
+   Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike
+   aircraft's nickname besides, which suits a war machine); the Mole (the plain one, and a
+   knowing nod to the Thunderbirds' drilling machine); the Pangolin (a digger in armour, for a
+   machine that digs in behind its plate); the Wombat (the best fit, a tank of a burrower that
+   plugs its tunnel with its armoured rump, but Halo has a Wombat, so it stays only with a
+   reason he records); and a deep cut, Palaeocastor, the extinct beaver that dug corkscrew
+   burrows, the Devil's corkscrews, if a drill is worth a fossil. Out: the Burrower (a
+   BattleTech 'Mech) and the Badger (Heavy Gear's, and the Honey Badger's).
 
 ## What the session hands back
 
