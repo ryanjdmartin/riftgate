@@ -726,7 +726,7 @@ func test_greedy_bites_the_foe_looking_away() -> void:
 	assert_eq(Effects.stacks_of(looking, "vitriol"), 0, "not on the one looking")
 
 
-func test_greedy_values_a_web_by_the_blows_its_burst_stops() -> void:
+func test_greedy_values_a_web_by_the_turns_its_burst_takes() -> void:
 	var sk := Skirmish.new(3, 3)
 	var a := _mech("A", Die.single(_webber(Face.attack(0, L))), 0, 500)
 	sk.add_mech(a)
@@ -737,11 +737,18 @@ func test_greedy_values_a_web_by_the_blows_its_burst_stops() -> void:
 	sk.begin()
 	sk.start_round()
 	var pol := Policy.make(Policy.GREEDY)
-	assert_eq(pol.web_score(sk, big), 60.0 * Policy.HULL_WEIGHT, "a web on the big one: its own next blow and the middle one's, caught beside it")
-	assert_eq(pol.web_score(sk, small), 30.0 * Policy.HULL_WEIGHT, "on the small one: its own and the middle one's to its left, which has acted")
+	assert_eq(pol.web_score(sk, big), 60.0 * Policy.HULL_WEIGHT * Policy.AHEAD_SHARE, "a web on the big one: its next turn and the middle one's, caught beside it, each a round ahead")
+	assert_eq(pol.web_score(sk, small), 30.0 * Policy.HULL_WEIGHT * Policy.AHEAD_SHARE, "on the small one: its own and the middle one's to its left")
 	Effects.grant_for_rounds(big, Effects.STATUS["suppressed"], "mech", sk.round)
-	assert_eq(pol.web_score(sk, big), 20.0 * Policy.HULL_WEIGHT, "a stunned foe gains nothing from the burst on itself: the catch alone")
+	assert_false(Policy.web_stuns(big), "a foe stunned this round ends it Numbed, and the burst only strips a stack")
+	assert_eq(pol.web_score(sk, big), 20.0 * Policy.HULL_WEIGHT * Policy.AHEAD_SHARE, "so a web on it is worth the catch alone")
 	Effects.remove(big, "suppressed")
+	Effects.stack(mid, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
+	assert_eq(pol.web_score(sk, big), 40.0 * Policy.HULL_WEIGHT * Policy.AHEAD_SHARE, "a foe with two of Numbed ends the round with one: the burst strips it and stuns nothing")
+	Effects.remove(mid, "numbed")
+	Effects.stack(mid, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	assert_eq(pol.web_score(sk, big), 60.0 * Policy.HULL_WEIGHT * Policy.AHEAD_SHARE, "one stack is gone by the round's end, so the burst lands")
+	Effects.remove(mid, "numbed")
 	pol.play_round(sk)
 	assert_true(Effects.has(big, "webbed"), "greedy webs the big one")
 	assert_eq(pol.web_score(sk, big), 0.0, "and a web on a webbed foe is worth nothing more")
@@ -1195,6 +1202,26 @@ func test_greedy_reads_a_countdown_a_core_and_a_last_act() -> void:
 	s3.start_round()
 	assert_true(is_equal_approx(Policy.last_act_cost(s3, beast), 20.0 * Policy.HULL_WEIGHT), "its Meteor's twenty on the bare machine")
 	assert_eq(Policy.last_act_cost(s3, calm), 0.0, "a foe without one costs nothing")
+	# A fall's steps (16 November), each at the price the same effect has from a move.
+	var howler := Foe.make("gargantuan_king", 30, 20)
+	howler.on_death = {"act": Foe.fall_act_from({"name": "Last Howl", "effect": "rally", "value": 2})}
+	var root := Foe.make("gargantuan_king", 30, 20)
+	root.on_death = {"act": Foe.fall_act_from({"name": "Last Scream", "effect": "drain_rerolls", "value": 1})}
+	var s4 := Skirmish.new(1, 3)
+	s4.add_mech(_mech("A", Die.single(Face.attack(40, I)), 0, 100))
+	s4.add_foes([howler, root, Foe.make("gargantuan_king", 30, 20)])
+	s4.begin()
+	s4.start_round()
+	assert_true(is_equal_approx(Policy.last_act_cost(s4, howler), 2.0 * 2.0 * Policy.HULL_WEIGHT), "a fall that rallies costs its number on each foe still standing")
+	assert_true(is_equal_approx(Policy.last_act_cost(s4, root), Policy.REROLL_SHARE * 40.0), "one that drains, a reroll's worth")
+	# A curse lands on the machine that makes the kill: the one weighing the spend pays for it.
+	var gazer := Foe.make("gargantuan_king", 30, 20)
+	gazer.on_death = {"act": Foe.fall_act_from({"name": "Last Gaze", "effect": "jam"})}
+	assert_eq(Policy.last_act_cost(s4, gazer), 0.0, "a curse with no killer costs nothing: a tick's kill dodges it")
+	assert_true(is_equal_approx(Policy.last_act_cost(s4, gazer, s4.mechs[0]), 40.0), "and with one, the entry it would lose")
+	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"], "also": [{"effect": "drain_rerolls", "value": 1}]})}
+	assert_true(is_equal_approx(Policy.last_act_cost(s3, beast), 20.0 * Policy.HULL_WEIGHT + Policy.REROLL_SHARE * 40.0), "and a blow's steps add to its blow")
+	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}
 	beast.target = s3.mechs[0]
 	calm.target = s3.mechs[0]
 	var f40 := Face.attack(40, I)

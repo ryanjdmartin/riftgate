@@ -10141,6 +10141,57 @@ flankers and the antlion trio read the same to the decimal (4.5 rounds and 5.1%;
 the next one's opening, and no piece of the six grants Phased. Not read: the Warg's pack at
 tier two and the Captain's formations at tier three, where the same change lands.
 
+**The same day, on his four places.** The clocks moved to the four places a status ends (the
+bible's row, section 5): a foe's Ablating and Vitriol tick after its blow, its Empowered
+halves as its own turn ends, so a rally stands whole on the next blow of a foe that had acted,
+Brittle halves as its carrier's turn starts, and a machine's Regenerating pays at END TURN.
+The anchor again, the same squads and seeds (`anchor_probe.gd`, a scratch probe on the
+battle's own builders, greedy, each fight at its rating):
+
+| Fight | Before the four places | On them |
+|---|---|---|
+| The wolf pack, four wolves, two machines | 100% won, 5.4 rounds, 12.3%, no wreck | 97%, 5.3, 13.1%, 0.07 wrecks |
+| A hunter's pack, the mean of the two | 100%, 4.5, 11.1% | 98%, 4.5, 11.6% |
+| A flanker, the mean of four | 4.5 rounds, 5.1% | 4.5, 5.1% |
+| A formation, the mean of ten | 5.2 rounds, 7.2% | 5.2, 7.0% |
+| An elite, the mean of eleven | 5.7 rounds, 11.1% | 5.7, 11.1% |
+
+A direction at 30 fights a row. The wolf pack costs a little under a point more and loses one
+fight in 30, the howl whole on the wolves that had bitten before it; the antlion trio moves
+0.2 of a point, the flankers none, and no formation more than 0.6 (the goblin horde 6.4% to
+5.8%). The elites' mean holds, with the shaman's warband 16.0% to 17.4% and the Wild Hunt
+19.1% to 20.4%, each inside a cell's noise at 20 fights. So tier one stands where it stood.
+What it does not say: what Ablate lost with the kill before the blow, since no squad here
+leans on it and the bot never played for that kill; tiers two and three, where the Warg's
+howl and the Captain's Warcry, the Regenerating foes and the Brittle layers stand.
+
+**The same day, the Web Bomb at the round's end.** His ruling ("Go ahead with the Web Bomb at
+round end, no cooldown"): the web bursts as the round ends, and the webbed foe and the foe
+beside it each lose their next turn, where the burst came at the end of the webbed foe's own
+action and the foe beside it lost that round's. Read before and after on one squad, the
+Funnel-web, the Honey Badger and the Skua, at tier two, 20 seeds a row, greedy
+(`anchor_probe.gd`, the scratch probe): the formations at their rating of three, and the
+elites with the same three against fights rated four.
+
+| Fights | Before | After |
+|---|---|---|
+| A formation, the mean of seven | 98% won, 11.8 rounds, 20.5% of a four's hull, 0.27 wrecks | 96%, 12.3, 18.8%, 0.26 |
+| An elite, the mean of twenty-one | 90% won, 7.8 rounds, 30.4%, 0.58 wrecks | 93%, 7.5, 28.5%, 0.46 |
+| The grave field | 100%, 20.0 rounds, 18.3% | 90%, 26.2, 18.1%, two fights stalled |
+| The Nob | 85%, 6.3, 47.3% | 95%, 5.8, 38.6% |
+| The bone wyvern's flight | 85%, 9.5, 47.6% | 100%, 8.5, 38.2% |
+| The Cinder Tortoise's brood | 90%, 13.5, 46.3% | 100%, 12.4, 37.4% |
+
+A direction, one squad and 20 fights a row. Under the new rule the squad loses no more hull
+and wins the elites a little more often; the bot still spends the web 2.6 times a formation
+fight, each burst landing. One formation runs longer, the grave field, six rounds more with
+two fights in twenty stalled: a line that gets back up, where two foes held a round ahead
+buys time and no kill. What it does not say: how much of the move is the bot's, whose
+reading of a web changed with the rule (a turn a round ahead at a share, and the Numbed a foe
+ends the round with read exactly), and no count of webs was kept before; nor what a player
+makes of two foes that show no intent next round, which the greedy bot does not plan round.
+
+
 ## 16 November: the painted walls as joined ranges
 
 Ryan, of the painted domains' crags: "They could fill their hexes more and mesh together better. A

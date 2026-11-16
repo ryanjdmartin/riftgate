@@ -1180,7 +1180,9 @@ as the Barrier had, since a Ward on the right machine turns an Exposed whole.
 
 ### Exposed, on a machine: the rule as ruled
 
-Decided, not built. It rides with the vocabulary's build.
+Built 16 November, the foes' pass's first piece (`tests/test_exposed.gd`), as a move of a
+foe's own and as a rider on its blow. No foe carries it: its carriers are that pass's
+content.
 
 1. *Who lays it.* A foe of tier two or above, "only in formations that feel thematic and
    fair, so that the player has tools to answer by that point". None at tier one.
@@ -1213,7 +1215,13 @@ Decided, not built. It rides with the vocabulary's build.
 Still his, one point. May a machine that stands Exposed be marked again? Two foes that lay
 it in turn would hold the whole field on one machine every round. Claude's lean: no foe
 announces it while a machine stands Exposed either, so the fire comes every other round at
-most, and that is "one at a time" read over rounds as well as over machines.
+most, and that is "one at a time" read over rounds as well as over machines. Built so, and
+one line to turn.
+
+As built, three reads where his words give none. A countdown's pick carried from the round
+before holds: it was announced then. A machine out of reach as the round opens draws nothing,
+so a round Phased answers an Expose, the tool bought a round ahead meeting the threat
+announced a round ahead. And the validator refuses the move on anything dealt at tier one.
 
 For the build, two notes. The aim that content calls exposed, shown as "aims at the
 exposed", is no mark and wants another name once the word means one. And the
@@ -1504,7 +1512,10 @@ Each with Claude's lean. The first five stand between the marks and their build.
    Crushed as one word; Phased.
 4. *The foes' pass*: Exposed's carriers; Collect and Appropriated; the Vampire Lord's rule;
    the countdowns off the rank and file; Last Act widened; immunities; the reroll button's
-   effect with the five moves' texts; and section 19.
+   effect with the five moves' texts; and section 19. Built 16 November, its first two
+   pieces: Exposed on a machine (section 17), on no foe yet, and the Vampire Lord's drain as
+   the unit's own Ability, the rider cut from the engine with its last carrier. Collect
+   waits on section 19's answer, since a move as a list of steps is how it would be said.
 5. *Their own sessions*: the Thurible and the Railgun in the component pass; the Puffin's
    Ionizer and the Swallowtail's two pieces with their machines; the aims' audit.
 
@@ -1667,11 +1678,756 @@ His words, 16 November, on those reads:
 | A Mine carries no web | "we don't need to worry about it" | Nothing to build: the Mine takes what its own machine's spend lays, and no care is added for another machine's marks |
 | A machine's Armoured still ended at the round's end | "until "start of its next turn"" | It goes as the next round opens, before the foes announce, from a buff, a brace or the hopper alike. No blow lands between the two moments, so no number moved |
 
-**Two questions the answers leave**, both in the bible's section 12. Whether the minimum of
-2 reaches our own six sources of a status that halves: three pieces that lay Brittle 1, two
-of them by his own numbers, and three grants of Empowered that are a stack an event. And
-whether a Phased machine still pays a Volatile bite, a price a piece prints and no blow.
+**Two questions the answers left**, which his ninth round settled (section 22). Whether the
+minimum of 2 reaches our own six sources of a status that halves: three pieces that lay
+Brittle 1, two of them by his own numbers, and three grants of Empowered that are a stack an
+event. And whether a Phased machine still pays a Volatile bite, a price a piece prints and no
+blow.
 
 **The wolves.** The howl at 2 reads a third dearer in hull on the tier-one pack, with no
 fight lost (`docs/measurements.md`). His tweak for a move several foes may roll at once,
 the first laying 2 and the rest 1, is not built.
+
+## 22. His ninth round, 16 November: the clocks
+
+His words, on the eighth round's build and its two questions:
+
+> Understood on phased, all good.
+>
+> Everything ticks during phased. It doesn't take damage but it's a way of waiting out a
+> debuff. That's why my clause of the self-cleanse and self-purge is our way out if it's
+> broken. Swallowed it's out of play so everything should pause.
+>
+> Regen, I think we either keep each stack with its own duration, or have them decay as a
+> combined stack. The latter is a little more dangerous but easier to understand.
+>
+> Ammit - understood.
+>
+> The minimum 2 is different for the player since they can sequence. So I wouldn't make it a
+> blanket rule. One thing I would change based on your observations, though, is when some of
+> these decay. Empowered should decay at the end of turn, clearly, not end of round. Can you
+> make an "end" table for buffs and debuffs so we can look for inconsistencies? It would be
+> nice to standardize as much as we can.
+>
+> Ammit specifically, passive change: At the start of the skirmish, or at the end of a round
+> where the Ammit killed at least one enemy, the Essences Flare, granting 1 Empowered per 5
+> Essences it holds.
+>
+> Good point about phased and volatile. I think we block the damage as a feature, and see how
+> bad it is once we have real hull cost pieces that matter.
+
+**What each settles.** Built the same day.
+
+| The read | His answer | What was built |
+|---|---|---|
+| A Phased machine's Ablating waited, no point and no fade | "Everything ticks during phased" | Every clock runs on a Phased machine and nothing damages it: its Ablating fades a stack and takes no point, its Scorched and Sapped go, its Empowered and Brittle halve, its Regenerating pays |
+| A Swallowed machine's clocks ran as a Phased one's | "it's out of play so everything should pause" | Nothing it carries fades, halves, pays or runs out, and it neither cools, regenerates nor burns. Every timed status on it, a dark entry's rounds among them, moves a round later for each round's end it sits out, so the rounds it sat out never came for it. Only the swallow's own rounds run |
+| Regenerating's grants add into one stack | "either ... or ...; the latter is a little more dangerous but easier to understand" | The combined stack stands, as built on 15 November. Each grant on a clock of its own is his other form, and a small change if play asks for it |
+| Whether the minimum of 2 reaches our six sources | "I wouldn't make it a blanket rule" | No floor on our pieces. None moved |
+| A machine's Empowered halved at the round's end | "Empowered should decay at the end of turn, clearly, not end of round" | A machine's halves at END TURN. A foe's halves as the foes' turn ends, which is the round's end, so it did not move. Essence Flare holds both |
+| The Ammit's flare came after each attack that killed | His passive, above | A trigger of its own, the end of a round it killed in: once a round, as the round ends, after the enemy's turn. The passive's second sentence is his, word for word |
+| A Phased machine paid a Volatile bite | "I think we block the damage as a feature" | No hull cost, no passive's hull price on a spend and no corrupted entry's bite while Phased |
+
+**What follows from his words**, built and named, none of it a question.
+
+- A stack of Empowered a machine gains in the enemy's turn is whole for its next turn. Two of
+  ours gain there: the Grievance Reliquary's, on a hull hit, and the Ammit's flare, as the
+  round ends.
+- The Ammit with a kill every round swings at one under twice its flare, where the flare at
+  the kill left it one under the flare: 3 for 1 at ten Essence, and 1 for nothing at five.
+  The old flare landed after the swing and halved before the next. A round with no kill
+  halves it, as before.
+- What reads a machine's Empowered after END TURN meets it halved: a foe's Purge, and a
+  passed turn's release.
+- Essence Flare is read twice in its round: at END TURN for the machines and as the round
+  ends for the foes.
+- A Phased round is a free one for a hull-cost piece. His exit is the pieces themselves:
+  "see how bad it is once we have real hull cost pieces that matter".
+- A machine let go as its swallow's rounds run out is back before that round's end is read,
+  so it gets the round's end it was owed: what was the round's ends, its Brittle halves, a
+  kill of the round it was taken in flares, a wait for Phased lands. Let go sooner, by its
+  swallower's fall, it goes on from where it stood.
+- A Swallowed Ammit's Essence Flare holds nothing while it is out, and holds the round it
+  is back for.
+- The kill trigger of 12 November stays in the engine for the Kite's shield.
+
+**Where his words give no answer on the swallow**, a session's reads, each cheap to turn.
+An event of its fight still reaches a Swallowed machine: a foe felled banks an Ammit's
+Essence, since the Ammit is in the fight and a kill is no clock. And a reboot it had begun
+before it was taken recovers as the next round opens, the second half of a turn already
+given.
+
+## 23. When everything ends: the table he asked for
+
+Every buff and debuff by the clock it ends on, read off the engine. A round has four moments
+a status can end at: the round opens, END TURN, a foe's own action, and the round's end. "Its
+side's turn" is the player's turn for a machine and the enemy's turn for a foe, so a
+machine's turn begins as the round opens and ends at END TURN, and a foe's begins after END
+TURN and ends as the round does.
+
+**A. Until its side's next turn begins**
+
+| Status | On | Kind | Laid | Ends |
+|---|---|---|---|---|
+| Armoured | Both | Buff | Its own turn: a brace or a buff, the hopper's as the round opens | As its side's next turn begins: a machine's as the round opens, a foe's after END TURN |
+
+**B. The round's end**
+
+| Status | On | Kind | Laid | Ends |
+|---|---|---|---|---|
+| Barrier | Machine | Buff | The player's turn | The first blow a foe lands on it, or the round's end |
+| Ward | Machine | Buff | The player's turn | The round's end |
+| Essence Flare | Machine | Buff | The player's turn | The round's end |
+| Phasing, the wait | Machine | Buff | The player's turn | The round's end, when a machine that stands is Phased |
+| Phased | Machine | Buff | The round's end | The next round's end |
+| Pinned, Seared | Foe | Debuff | The player's turn | The round's end |
+| Exposed | Foe | Debuff | The player's turn | The next round's end |
+| Numbed | Foe | Buff | The round's end, on recovering from a stun | A stack as each round ends |
+
+**C. The end of the player's turn**
+
+| Status | On | Kind | Laid | Ends |
+|---|---|---|---|---|
+| Barrier | Foe | Buff | The enemy's turn | The first weapon blow on it, or END TURN of the player's next turn |
+| Ward | Foe | Buff | The enemy's turn | END TURN of the player's next turn |
+| Scorched | Machine | Debuff | The enemy's turn | END TURN, every stack |
+| Sapped | Machine | Debuff | The enemy's turn | END TURN, every stack |
+| Jammed | Machine | Debuff | The enemy's turn | The next round's end in the engine; in play END TURN, since the die is not read after it |
+
+**D. A foe's own next action**
+
+| Status | On | Kind | Laid | Ends |
+|---|---|---|---|---|
+| Sapped | Foe | Debuff | The player's turn | After its next action |
+| Suppressed | Foe | Debuff | The player's turn | One action: this round's, or the next round's if it has acted |
+| Web Bomb | Foe | Debuff | The player's turn | The end of its action, when it bursts |
+
+**E. Halving, rounded down, until gone**
+
+| Status | On | Kind | Laid | Halves |
+|---|---|---|---|---|
+| Empowered | Machine | Buff | Any time | At END TURN, its side's turn over |
+| Empowered | Foe | Buff | The enemy's turn, a rally | At the round's end, its side's turn over |
+| Brittle | Machine | Debuff | The enemy's turn | At the round's end |
+| Brittle | Foe | Debuff | The player's turn | At the round's end; a pin holds it a round |
+
+**F. A stack each time its turn comes**
+
+| Status | On | Kind | Laid | Ticks |
+|---|---|---|---|---|
+| Ablating | Foe | Debuff | The player's turn | At its action: a point a stack, then a stack fades; a sear holds it a round |
+| Vitriol | Foe | Debuff | The player's turn | At its action, after Ablating |
+| Regenerating | Foe | Buff | The enemy's turn | At its action, after both: a point a stack, then a stack fades |
+| Ablating | Machine | Debuff | The enemy's turn | At END TURN: a point a stack, then a stack fades |
+| Regenerating | Machine | Buff | The player's turn | As the round opens: a point a stack, then a stack fades |
+
+**G. Until spent**
+
+| Status | On | Kind | Spent by |
+|---|---|---|---|
+| Primed, Charged, Supercooled | Machine | Buff | A stack a weapon fired |
+| Primed | Foe | Buff | A stack a move that strikes |
+| Spun Up | Machine | Buff | Whole, by the next weapon |
+| Juggernaut Drive | Machine | Buff | Its next weapon attack |
+| Shocked | Foe | Debuff | The next weapon's strike aimed at it |
+| Cryo | Foe | Debuff | The next weapon's hit |
+| Undying | Foe | Buff | Its first fall |
+| Mine | Foe | Debuff | The foe's fall, or its detonation |
+| Paradox | Foe | Debuff | Its count, when it is Suppressed |
+
+**H. The fight, or a timer of its own**
+
+| Status | On | Kind | Ends |
+|---|---|---|---|
+| Corrupted | Machine | Debuff | The fight |
+| Ricochet | Machine | Buff | The fight; hull damage halves it |
+| Enraged | Foe | Buff | The fight |
+| Swallowed | Machine | Debuff | Its rounds, its swallower's fall, or a quarter of the swallower's HP |
+| Golden | Foe | Ability | Its rounds, a quarter of its HP, or a Suppress |
+| A cooldown | Machine | A dark entry | Its rounds |
+| Overheated, Broken, Rebooting | Machine | The reboot's states | The heat back under the maximum; the reboot; the next round's opening |
+
+On a Phased machine every clock above runs and nothing damages it. On a Swallowed machine
+none runs but the swallow's own.
+
+### What the table shows
+
+**1. A, B and C hold one moment under three names.** A machine's Armoured ends as the round
+opens and its Barrier and Ward as the round before it ends. Nothing happens between the two.
+A foe's Armoured ends after END TURN and its Barrier and Ward at END TURN: again one moment.
+The standard is his phrase for Armoured, on both sides: **until its next turn begins**, for
+Armoured, Barrier and Ward. Nothing changes in play, and the three become one clock in the
+engine.
+
+**2. Halving wants one sentence: it halves as the turn it works in ends.** Empowered works
+in its carrier's own turn and now halves there. Brittle works in the other side's turn: a
+machine's is read by the foes, and halves as their turn ends, which fits. A foe's is read by
+the player and still waits for the round's end. Moving it to END TURN changes one case: Brittle
+laid on a foe in the enemy's turn, by a Mine's blast as a mined foe falls to its Ablating,
+would stand whole for the player's next turn, where today it is half before any machine can
+use it. That is the fault he fixed for Empowered.
+
+**3. A machine's stacks tick at two moments.** Its Ablating bites at END TURN and its
+Regenerating pays as the round opens; a foe's both tick at its action, Ablating first. One
+moment a side would put Regenerating at END TURN, after Ablating. It is not free: the shield
+would arrive before the blows of the round it was bought in, a round sooner than today, and
+the one piece that grants it draws fire as it does (the Storm Petrel's St. Elmo's
+Regenerator, a Lure). Today a shield the lured blows break takes none of its regen at all.
+Left as it is, the rule to say is that harm ticks as the turn ends, with a turn to answer
+it, and help as the turn opens.
+
+**4. A tax on its next turn says three things.** On a machine, Scorched lasts "until the end
+of the player's turn", Sapped "until after its next turn" and Jammed "through its next turn".
+On a foe, Sapped lasts "after its next action" and Suppressed "one action". All five are
+**until its next turn ends**, a foe's turn being its own action. Nothing changes in play;
+Jammed's engine end would move to END TURN to match.
+
+**5. Two smaller ones.** Numbed loses a stack as the round ends where every other stack on a
+foe ticks at its action; either reads the same in the player's turn. Exposed and Phased both
+say "the next round's end" and cover different lengths: Exposed the rest of the player's turn
+and the whole of the next, Phased one round. Each is right for its own rule.
+
+**The standard, if he takes all four.** Five clocks would cover every timed status: until
+its next turn begins (defence), until its next turn ends (a tax on its own turn), halves as
+the turn it works in ends, a stack each time its turn comes, and until spent. What is left
+is the round's own rules (Phased and its wait, the pins, Essence Flare, Exposed), the fight,
+and timers that count rounds. Claude's lean: take 1, 2 and 4, which cost nothing in play but
+the one Mine case, and rule on 3 with the Storm Petrel's piece in hand.
+
+## 24. His tenth round, 16 November: four places a status ends
+
+His words, on section 23's table:
+
+> I see four places things should decay, tick, or fall off:
+>
+> -Its turn Start: Armoured, Barrier, Ward, all pinned variants, Exposed on next turn start,
+> -Its turn End: Empowered, Regeneration, Brittle, Ablate, Vitriol, Scorched, Jammed, Sapped,
+> Suppressed, Numbed (applied or reduced), Web Bomb,
+> -Round End: Phased (applied or lost), Essence Flare
+> -When Spent: as you say
+>
+> Does that cover them all and make sense?
+>
+> Yes, go ahead with the next work
+
+Not built: three answers decide the wording of every status line, so the clocks are one pass
+after them. The next work he names is the foes' pass, whose first piece is built (section
+17: Exposed on a machine).
+
+**Does it cover them all?** Every status that ticks, halves or falls off is placed. Three
+that count rounds are not: a cooldown, the swallow and the golden rage. A cooldown is a dark
+entry, as a jam is, and sits with Jammed at its turn's end. The swallow and the rage count
+rounds and sit at the round's end with Phased. None of the three moves in play. What lasts
+the fight needs no place: Corrupted, Ricochet, Enraged, the forms and the stores.
+
+**What each placement changes in play.**
+
+| Status | Today | In his four places | In play |
+|---|---|---|---|
+| Armoured | Its side's next turn begins | Turn start | Nothing |
+| Barrier, Ward | The round's end on a machine, END TURN on a foe | Turn start | Nothing: the same moment under one word |
+| Pinned, Seared | The round's end | Turn start | Nothing, read as the turn start after the tick it holds: at the first one the pin would fall before it held anything. His "next", as for Exposed |
+| Exposed | The next round's end | The next turn start | Nothing on a foe or a machine |
+| Empowered | Its side's turn's end | Turn end | A machine's as built. A foe's hangs on the first question below |
+| Regenerating, machine | As the round opens | Turn end | A round sooner: the shield comes before the blows of the round it was bought in. After Ablating, the foe's order |
+| Brittle, machine | The round's end | Turn end | The same blows. But the halving falls between his turn and the foes', so its chip reads double what the blows will meet all through the player's turn |
+| Brittle, foe | The round's end | Turn end | Nothing |
+| Ablating, Scorched, Sapped, machine | END TURN | Turn end | Nothing |
+| Jammed | The next round's end in the engine | Turn end | Nothing |
+| Ablating, Vitriol, foe | The start of its action | Turn end | Every burning foe strikes before it burns: the second question |
+| Regenerating, Sapped, Suppressed, Web Bomb, foe | At its action | Turn end | Nothing |
+| Numbed | The round's end | Turn end | Nothing |
+| Phased, Essence Flare | The round's end | Round end | Nothing |
+
+**Three points for him.**
+
+1. *What a foe's turn is.* A machine's turn is the player's turn. A foe's can be its own
+   action or the foes' whole turn, and the list needs both today: the Web Bomb bursts at the
+   end of its own action, and Armoured falls as the foes' whole turn opens, on his mark of 15
+   November. The simple rule is its own action for all of it. One thing then moves: a foe's
+   Empowered halves after its own blow, where it halves as the round ends today, so a rally
+   stands whole on the next blow of a foe that had already acted when it landed. That is the
+   rule he gave the machines, a stack gained outside its turn whole for its next, and it makes
+   a rally stronger. Claude's lean: its own action, with the wolves' howl read again.
+2. *Ablate and Vitriol after a foe's blow.* They tick at the start of its action today, so a
+   burn can fell a foe before it strikes. At its turn's end every burning foe strikes first.
+   It is the bible's open question (section 12; his of 4 November, "it's a fair point about
+   whether dots tick before or after the enemy action"), and the list answers it "after".
+   Claude's lean: take it. It is one rule on both sides, since a machine acts and then ticks,
+   and the forecast stops dropping a doomed foe's blow. Ablate loses its kill before the blow,
+   which is part of its worth today, so its numbers want a look with it.
+3. *Brittle's place.* It works in the other side's turn, as Armoured, Barrier and Ward do. At
+   its carrier's turn start it halves right after the blows that used it and its chip always
+   shows what the next blows will meet. At its turn end a machine's halves just before the
+   foes use it. Claude's lean: file it under turn start.
+
+## 25. His eleventh round, 16 November: the four places built, the pins, the Web Bomb
+
+His words:
+
+> I think web bomb could be moved to End pf Round and be repositioned as a double suppress
+> on a delay, not suppress one this turn and one the next. The current version is
+> almost-not-quite an unconditional suppress on one foe. If it stays as the current version,
+> it probably needs a bigger cost, like a cooldown. Thoughts?
+>
+> Otherwise I agree with your leans.
+>
+> The pins, actually, probably work better worded as "the next time it would decay, it
+> doesn't." So at the end of Turn End, implementation wise.
+>
+> Yes, go with the steps if you think that's best.
+
+**Built: the four places.** The three leans of section 24 are his, so the clocks stand on
+his list (`tests/test_clocks.gd`; the bible's row; `docs/rules.md`, When a status ends).
+
+| Place | What ends there |
+|---|---|
+| Its turn starts | Armoured, a Barrier and a Ward go. Brittle halves. Exposed falls, at the start after the next one |
+| Its turn ends | Ablating and Vitriol tick and fade a stack. Regenerating pays after them and fades one. Empowered halves. Scorched and Sapped go. A dark entry lights, a cooldown's and a jam's. A Suppress is spent. Numbed loses a stack, or lands on a foe that lost the turn to a stun |
+| The round ends | Phased is granted or lost. Essence Flare goes. A swallow's and a golden rage's rounds run |
+| It is spent | The primers, Spun Up, the Juggernaut Drive, Shocked, Cryo, Undying, a Mine, and a pin |
+
+A machine's turn starts as the round opens and ends at END TURN. A foe's turn ends as its
+own action does, landed, lost or skipped.
+
+**What falls out, each built as his words have it.**
+
+1. A burning foe strikes, then burns. The forecast counts its blow, and a foe its Ablating
+   fells has acted. Ablate no longer saves a blow by the kill before it.
+2. A rally is whole on the next blow of a foe that had acted when it landed. A foe acting
+   after the rallier hits harder that turn and carries half on, as before. The rallier's own
+   share halves at once, its turn ending on the rally.
+3. A merge's lift halves at once too, gained in the merger's own turn, so half reaches its
+   next blow as it did. The engine's own holding of the lift until after the move, a
+   leftover of the days a move spent Empowered, is cut.
+4. A machine's Regenerating pays at END TURN, after its Ablating and before the foes strike,
+   the first time on the turn it is bought. A foe's pays first as the turn it is cast ends,
+   so a Purge the turn after takes one payment fewer.
+5. Brittle that a Mine's blast lays in the enemy's turn stands whole for the player's next
+   turn, where the round's end used to halve it first.
+6. A Suppress is spent with the turn it cost. A stun that reaches the foe later in that
+   enemy turn, a web's catch or a Mine's blast, meets the Numbed it has just gained and
+   strips a stack, where it did nothing before.
+7. A foe's Exposed falls as the foes' turn starts in the round after it landed, so a pass's
+   release or a Mine's blast in that enemy turn no longer meets it. The player's turns it
+   covers are the same two.
+8. The round-start trigger for a passive left the engine with its last piece.
+
+**A session's reads, his to overrule.**
+
+1. *The foes' turn starts as the whole side's opens.* The lean he agreed to said "its own
+   action for all of it". Built that way, a guard or a Ward that one foe lays on every foe
+   would fall off each foe still to act that turn, before the player ever met it. That is
+   the clock his mark of 15 November retired for Armoured. No blow of the team's lands
+   between the foes' turn opening and a foe's own action, so no number moves by it.
+2. *Where a pin is spent.* His wording is the rule: the next time the status would decay, it
+   does not, and the pin is gone. Brittle halves as its carrier's turn starts, on the lean he
+   agreed to, so Pinned is spent there. Seared is spent as the foe's turn ends, where
+   Ablating fades. His "end of Turn End" reads as written with Brittle in that place. A pin
+   with nothing to hold waits.
+3. *The floor of 2 for a rally* stands as built. Its reason has thinned: a foe that had
+   acted now carries the whole rally to its next blow, a 1 included, and only the rallier's
+   own share is lost at 1. Whether a rally still wants the floor is his.
+
+**The read** (`docs/measurements.md`, 16 November): tier one stands where it stood. The wolf
+pack goes from 12.3% of a four's hull to 13.1% and loses one fight in 30, the hunters' mean
+from 11.1% to 11.6%, the formations' from 7.2% to 7.0%, and the elites' holds at 11.1%. A
+direction at 30 fights a row. Not read: what Ablate lost with the kill before the blow, and
+tiers two and three.
+
+**The Web Bomb: thoughts.** Today the web bursts as the webbed foe's own action ends. That
+foe loses its next turn, and the foe beside it that acts next loses this one. So one spend
+at heat 1, with no cooldown, stops a blow already announced and takes a second action a
+round later.
+
+His version: the web bursts as the round ends, and both foes lose their next turn.
+
+*For it.* It is one rule where today's is two timings and a rule about acting order. It
+takes away the part that reads as a free stun, the announced blow stopped this turn. And it
+fits the kit: the Funnel-web bites foes that show no intent on it, and a web spent this
+round makes two such foes for the next. Bind, then bite.
+
+*What it gives up.* The reactive use. A stun is worth most against a blow the player has
+seen, and a delayed one lands before the next intents are drawn. It still has known prey: a
+countdown still gathering, and a follow-up announced a round ahead.
+
+*What follows from the round's end.*
+
+1. The burst comes after every foe's turn has ended. A foe the team stunned this round has
+   just gained its Numbed, so the web strips a stack from it where today it does nothing. A
+   web and one other stun a round then hold a small foe every round. That is the price
+   Numbed sets, two stuns a round for a foe of resist 1, and a foe of resist 2 or 3 is not
+   held by it.
+2. The web sits through the whole enemy turn. A foe felled in it takes the web with it, and
+   a foe that cleanses its own side has a turn to lift it. Both are counterplay the foes do
+   not have today.
+3. Acting order no longer matters, so "the next foe to act beside it" can be simply the foe
+   beside it, the right-hand one, or the left-hand one with none there. The chip already
+   points at it.
+4. Alone, a web every round holds its pair every other round: the round they skip they gain
+   Numbed, and the next web strips it. So Numbed is already most of a cooldown for it.
+
+*Claude's lean.* Take his version, with no cooldown at first, and keep three things as they
+are: a Ward turns it, Numbed strips instead of stunning, and a foe killed first takes its web
+with it. Then read the pair held and the Vitriol it earns before pricing it further. A
+cooldown of 1 is the lever if two silent foes every other round reads as too much, and it is
+the right price if the piece stays as it is today. Not built: it waits on his word.
+
+## 26. The steps, built: a move as a short list of steps, and Collect
+
+His word on section 19's proposal, 16 November: "Yes, go with the steps if you think that's
+best." Built the same day (`tests/test_bosses.gd`; the bible's row on the foes' rule set;
+`docs/rules.md`, Foes).
+
+**The shape.** A move's first step is the move as it was always written: a blow with its
+riders, or one special. It may do more after, in content under `also`, each further step a
+special's effect with the fields that effect reads. So the 284 moves stand untouched, and a
+new one may strike and curse, or mend one foe and call another.
+
+```json
+{"id": "collect", "name": "Collect", "kind": "attack", "factor": 0.5, "keywords": ["jam"],
+ "also": [{"effect": "appropriate"}], "then": "borrowed_blade"}
+```
+
+**What a step owes the player**, as section 19 set it:
+
+| The rule | How a step keeps it |
+|---|---|
+| Announced before the player acts | The move is announced once. Its intent wears the marks of its steps beside its blow's riders, and its text says all of it |
+| The forecast shows what lands | The round preview plays the move whole. A move with a step aimed at a machine shows its arrow, whatever its first step is |
+| Met by answers learned once | A step runs the same code as the same effect as a move of its own. A Ward turns what lands on its machine. A Suppress or a Disrupt stops every step with the move |
+| No surprise from a dead aim | A step aimed at a machine the blow wrecked, or that is out of the fight, lands on nobody. A step on its own side acts whoever stands |
+| The rules of announcing | Read off every step: a drain past the round's two, a swallow of the last machine, a second Expose |
+
+**The limit that stands.** One blow a move, and that its first step. It is a first build's
+and no rule. It goes when a spell wants two blows, or a blow after its curse.
+
+**What the bot reads.** A Ward's worth counts every step it would turn, and the planner's
+copy of the round plays them. A foe's threat is still weighed by its move's first step. That
+widens as moves use steps.
+
+**Its first carrier: Collect.** His mark on the steal rider, 15 November: "Doesn't need to be
+it's own rider. It grants Jammed on the target, and Gilgamesh gains Appropriated with the
+value. The ability should be renamed to Collect." So Gilgamesh's Disarm is Collect: a blow
+at half that carries Jam, then a step of his own, the take. He gains Appropriated at the
+number of the entry the machine shows, a weapon's printed blow and 1 for a fake. His
+Borrowed Blade swings that number next round and spends it.
+
+Left the engine with it: the steal rider, its mark as a keyword, and the foe's own field for
+what it held. The mark's drawing is Appropriated's chip now.
+
+**A session's reads, his to overrule.**
+
+1. *Appropriated is a buff.* His words are "gains Appropriated", so a Purge lowers it and
+   the swing with it. That is a new answer to Gilgamesh: purge what he took.
+2. *A Ward turns the take with the jam*, as it turned the steal whole.
+3. *One piece at a time.* What he takes next replaces what he held, as before.
+4. *Two moves named Collect.* The Marsh's Collector has a Collect that raises three
+   revenants. Both stand under the one name until he parts them.
+
+**No number moved.** Collect's blow, its weight, its follow-up and the swing's number are
+Disarm's. Every text it touched is a draft for his writing.
+
+## 27. His twelfth round, 16 November: the Web Bomb built, the rally's floor, Appropriated, the Antiquarian's names
+
+His words:
+
+> Go ahead with the Web Bomb at round end, no cooldown. Makes sense. The spider is a
+> planner, so removing the reactive tool and rewarding it for thinking ahead is good.
+>
+> The rally thing is fine. +1 damage to a machine isn't really worth bothering about, +2 is
+> much more scary. Especially since the wolf pack is a hunter, it should be dangerous.
+>
+> I think Appropriated is a balance read. Maybe make it his ability, a number that fluctuates
+> depending on what he's currently holding. If its too difficult, we make it a normal
+> purgeable buff.
+>
+> Marsh collector's move can change. In DD, it's called "collect call," his other moves being
+> Life Steal and Show Collection. I think we can use the same move names, so Collect Call for
+> the summon and Show Collection for the corrupt.
+>
+> Lets continue.
+
+**Built.**
+
+1. *The Web Bomb at the round's end.* Every foe acts in the round the web is laid. As the
+   round ends the web bursts, and the webbed foe and the foe beside it each lose their next
+   turn. No cooldown. The burst meets the Numbed each foe ends the round with, a Ward turns
+   it, a foe felled first takes its web along and a foe's cleanse may lift it. The bot reads
+   a web as two turns a round ahead, and knows which foes the burst will only strip.
+2. *The rally's floor of 2 stays*, on his reason: the size of the threat.
+3. *Appropriated is Gilgamesh's Ability.* He wears its chip from the fight's start. Its
+   number is the piece he holds, and nothing while he holds none. No Purge reaches it.
+4. *The Antiquarian's moves*: Collect Call raises its dead, and Show Collection is the blow
+   at every machine that corrupts. Gilgamesh's Collect stands alone under its name. The
+   summon's text lost its pool, which left the game on 6 November.
+
+**The read** (`docs/measurements.md`, 16 November): a squad with the Funnel-web at tier two
+loses no more hull under the new web. The formations' mean goes from 20.5% of a four's hull
+to 18.8%, and the elites' from 30.4% to 28.5%. One formation runs six rounds longer, the
+grave field. A direction, one squad and 20 fights a row, and the bot's reading of the web
+changed with the rule.
+
+
+## 28. The foes' pass, the rest: the REROLL button's note, and the bench for his marks
+
+**Built since section 27** (16 November). The REROLL button wears a drain, his mark of 15
+November ("There should be an effect on the reroll button when this happens"). While a
+drain is announced the button says what the next round stands to lose under its count,
+"NEXT -1", and rings close in on its edge, the grant's rings run backwards. It flashes as
+each drain lands. The round a drain shortened wears "DRAINED -1". A first cut, his to judge
+running (`RIFTGATE_DRAIN_DEBUG=1`). The five moves that drain each say so in their own text
+already, drafts until signed. With it, five codex drafts lost a clause that still said a
+blow passes a shield, a rule cut with Breach: the Roc's, the Bomb's, the Old Man of the
+Desert's, the Needler's and the Magma Elemental's.
+
+**The bench.** What is left of the pass is content, and content is proposed before it
+lands. Each row below is designed from its piece's own fantasy. Every number is today's or
+a placeholder. Nothing here is in content. His marks decide, and his own notes overrule
+any row.
+
+### The countdowns off the rank and file
+
+His mark: "This is too ubiquitous. Should be primarily an elite or boss mechanic. Causes a
+lot of mental overhead." Seven moves of the rank and file gather. The Balloon's burst stays
+on his word. The other six:
+
+| Foe | The move today | Proposed | What the player answers |
+|---|---|---|---|
+| Roc, Night Roc, Great Roc | Stoop gathers a round, then 1.5 times its talons | Climb, then Stoop. The round it climbs it leaves reach, a foe's Phased, below. The stoop is its next move, on the machine it named | The round Climb is announced is the window: a kill, a Suppress or a Disrupt. After it, a Barrier or plate for the one blow |
+| Great Needler | Thousand Needles gathers two rounds, then 10 at once | Five needles of 2, at once, no gathering. The same 10 | Plate stops every needle and a Barrier only the first, where its plain Needles is one blow of 5 that a Barrier eats whole |
+| Antlion Queen | Devour gathers a round, then 10 | A bite of 8 that feeds her: she recovers 3 after it, a second step | Burst her, or Ablate her, which takes back what she heals |
+| Red Dragon | Crush gathers a round, then 10 | Crush goes, and the dragon takes the Peak's Expose in its place, below | Below |
+
+The Roc's row leans on a foe's Phased. If that is not wanted there, the lean is to keep the
+Rocs' countdown as the flanker's own: a flanker is a duel with one machine, and one counter
+in a duel is not the overhead a formation of them is. The validator can then hold the rule:
+a countdown is an elite's, a boss's, a hero's, a bomb's or a flanker's.
+
+### A fall that does more
+
+His mark: "A common strategy trope is foes who, say buff others on death, or debuff on
+death, which makes kill sequencing more interesting in normal formations. It's a good
+domain identity, too."
+
+**The form.** A fall is a short list of steps, as a move is since section 26: its blow, as
+today, and after it any special's effect by that effect's own rules. It lands the moment
+the foe falls. The foe wears it as an Ability's chip from the fight's start, the die held
+over a kill previews it, and the decided limit stands: a fall never purges. A step aimed at
+one machine lands where a fall's blow lands today, on the foe's own pick, or its next pick
+when that machine is gone, and a Ward there turns it.
+
+What makes a fall a decision is that it lands in the player's turn, on the dice as they
+lie. A curse on "the entry the machine shows" takes the entry showing then, so the player
+picks which entry pays: the kill can wait for a reroll, or come while the machine shows one
+it can spare.
+
+| Foe | Today | Its fall, proposed | The decision |
+|---|---|---|---|
+| Mandragora, Mandrake, Alraune | Scream is a move: a reroll off next round. The Alraune's Shriek Jams | Uprooted, it screams: the team loses a reroll next round. The move goes from the first two; the Alraune keeps its Shriek | When to pull the root. Left standing it lashes every round; pulled, it costs half a round's rerolls. The last kill of a fight is free |
+| Gorgon | Stone is a move: Jam | The gaze outlives her, as the head on the shield did: the entry her pick shows is Jammed | Which entry pays. It is blank through that machine's next turn, so kill her while it shows one it can spare |
+| Lich | Reraise readies one of its own to rise | What it readied falls with it: every foe on the field loses its readiness to rise | The one fall that pays the player: reach the Lich before the knights it readied |
+| Salamander | Ember Hide is a planned draft on Retaliate, a rule cut on 15 November | Its embers scatter: every machine Scorched 1. The draft goes | Make it the turn's last kill, or run a point hotter for the rest of the turn. The Firelord calls two a time |
+
+A domain each to start. The Meadow's drains, the Waste's jams, the Marsh's pays and the
+Peak's burns, which is each domain's own word already. Two of the four reach tier one: the
+Mandragora stands three and four to a back rank in the Meadow's first formations, and the
+Salamander two to a front rank in the Peak's, with the Cinder Tortoise's and the Firelord's.
+The Gorgon stands two to a formation at tier three, and the Lich leads two.
+
+Two consequences, named. The rule that foes never announce a drain past the round's two
+does not reach a fall: three mandragoras pulled in one round leave the next with none, and
+that is the player's own choice. And a fall on a foe that a boss summons (the Rotbloom's
+Seedfall, the Firelord's Sons of Flame) prices the cleanup of its adds.
+
+### Exposed's carriers
+
+Built on 16 November and carried by nobody (section 17). His rules: tier two at the least,
+"only in formations that feel thematic and fair", one machine at a time. Each as a move of
+its own, announced like any. The formations are his to place.
+
+| Foe | Tier | In place of | The fiction |
+|---|---|---|---|
+| Basilisk | 2 | A third move, beside Peck and Stone | Its stare holds a machine still, and everything else gets a free swing at it |
+| Alpha Warg | 3 | A third move, beside Bite and Howl | The alpha marks the prey and the pack turns on it |
+| Lich | 3 | Dark Rite, a planned draft on a countdown | The dead that commands the dead sends all of them at one machine |
+| Red Dragon | 3 | Crush, with its countdown | It marks the hottest machine. The mark reads the reboot: the round it is announced is the round to reboot, and the hottest machine is the one that wanted to |
+
+With a carrier landed, the aim that content calls exposed needs its new name, since the
+word now means the mark. It picks the machine whose hull the blows reach soonest. Lean:
+"aims at the weakest", which the Alpha Warg's codex already says. His word.
+
+### A foe's Phased
+
+His words: "I think we give this to the foes too"; and "Phased on foes can be less strict
+since it's balanced around their kit and theme."
+
+**The form, proposed.** A foe is Phased by its own move or by a step of one, from the end
+of that round to the end of the next. Nothing damages or targets it meanwhile, by either
+side, and it acts, as a Phased machine does. Its clocks run and its Ablating takes no
+point, as ours. Two guards, both against a fight that will not end: no foe phases while it
+is the last one standing, and a Phased foe gains no Phased, so none is out two rounds
+running. The decided line that every foe on the field can be reached every round already
+carries this exit.
+
+| Foe | How it phases | What it does to the fight |
+|---|---|---|
+| Roc, Night Roc, Great Roc | Climb, a move of its own, and Stoop follows | The row above. In a duel the climb is a round with nothing to shoot: a safe reboot, paid for by the stoop |
+| Spectre, Wraith | A step after Hex Bolt: it strikes and fades | A ghost that bolts is gone next round and solid the round after. One that raises its dead stays solid. Reach it on the solid round, or Suppress the bolt and stop both |
+
+The tier-one Ghost stays plain, by the lean: its twist is the dead it raises. The Lancer's
+Jump is the same shape as the Roc's climb and the genre's own, a hero's, so it keeps its
+countdown until he says otherwise.
+
+### Moves that want steps
+
+Beside the Antlion Queen's Devour, two whose names promise two things:
+
+| Foe | Today | As steps |
+|---|---|---|
+| The Thief | Mug is a blow that corrupts. Steal is a second move: a reroll off | Mug is the blow and then the theft, one move. Steal's slot is free for a move of his |
+| The Cleric | Cure heals one of its own 4 | Cure heals, then cleanses the same foe of what the team laid |
+
+### Immunities, case by case
+
+His words: "not as a blanket for all bosses, but for ones who need it for their fight to
+actually do something." Each an Ability's chip, one line on the plaque. Three candidates:
+
+| Foe | Immune to | Why its fight needs it |
+|---|---|---|
+| The Pilgrim | Suppress | Its dread is that it keeps coming. Today a stun holds its knife a round |
+| The Obsidian Tyrant | Disrupt, while Firestorm gathers | Five rounds of warning are the fight. One Disrupt die breaks them off today |
+| The Ruby Colossus | Disrupt, while Ultima gathers | The same, at three rounds |
+
+Nobody else is proposed. The Thunder Ape's Golden Rage is an Ability already and no Purge
+reaches it, and a follow-up once announced cannot be Disrupted on anyone.
+
+### The bench: what lost to a row above, or to a rule
+
+One line each, with the rule or the row, so either can be overruled.
+
+- *The Rider of the Wild Hunt marks its quarry.* The Hunt's whole myth, and the best fit for
+  Expose in content. Killed by the tier-two rule: he is an elite dealt at tier one.
+- *The Piercing Eye Exposes.* Its name is the effect. Killed by the same rule: a boss's part
+  at tier one.
+- *The Goblin Captain points.* Lost to its own move count: three moves, the Warcry placed as
+  its twist on 10 November.
+- *The Wyvern marks in Stoke's place.* Lost to the Red Dragon, whose aim at heat is the
+  reason the mark belongs on the Peak.
+- *The Red Dragon's Crush leaves Brittle 2.* Lost to the mark. It stands if the mark goes
+  elsewhere.
+- *The Antlion Queen swallows.* Her twist on 28 October. Lost to the weight of a swallow on
+  the rank and file: a machine out of the fight is a boss's rule today.
+- *Thousand Needles keeps its count.* The homage's signature. Killed by his mark.
+- *The Alpha Warg's last howl*, every other foe Empowered 2 as it falls. His own example of
+  a fall. Lost to the mark on the same foe, and to the Meadow's fall being the scream.
+- *The Ghost's hex passes on*, Corrupted 1 on the entry its pick shows. Lost to Phased on
+  the same line, and Corrupted lasts the fight.
+- *The Skeleton King's court falls with him.* A fall that pays, an elite's. Lost to the
+  Lich's, the same idea in a formation.
+- *The Mending Orb's last ply*, healing its own as it falls. No decision: the healer dies
+  first either way.
+- *The Djinn's Mirage as Phased.* Lost to the Barrier it has, which the player pops.
+- *The burrowers go under*, Phased for Burrow. Lost to plate, which is what a burrow is
+  today and has its own answers.
+
+### What his words leave open
+
+1. **Whom a fall's aimed step lands on.** Built, a fall's blow lands on the foe's own pick.
+   The steps follow it above. The other reading is the machine that made the kill, with
+   the pick when a tick or a Mine did. It hands the player the choice outright, and a
+   machine under a Ward becomes the one to kill with. Lean: the pick, one rule for the blow
+   and the curse, and the choice stays in the die's order.
+2. **Whether a Phased foe acts.** A Phased machine does. A ghost that could not would trade
+   a round for a round, and the Roc's stoop needs it to. Lean: it acts.
+
+### The build, once marked
+
+Engine first, each with synthetic tests: a fall as steps; a foe's Phased; an immunity as
+an Ability. Then content by his marks, the validator's rule on who may gather, the aim's
+name, and a read of the formations that changed.
+
+**Built ahead, 16 November: a fall as steps.** His mark settles that a fall may do more
+than strike, and the steps of section 26 are the way a move already says it, so the engine
+is built on the form above and carries no content. `on_death.blow` may carry `also`, and
+`on_death.act` is one special in a blow's place. A fall may heal, armour, cleanse, ward,
+prime, ready or rally its own, take rerolls, ablate or jam its pick, and scorch or corrupt
+every machine. The validator refuses the rest: what its own body would carry, a summon
+beside its split, a swallow, a purge and an Expose. The chip names the fall, the round
+preview plays every step, the save keeps them, and the bot prices a kill by them. A reroll
+a fall takes lands in the player's turn, so the REROLL button flashes with the fall and its
+note counts it at once. The four falls of the table need one effect more, the Lich's, built
+when it is marked. The pick rule of the first open point is built as leaned and is one line
+to turn (`tests/test_skirmish.gd`).
+
+## 29. His thirteenth round, 16 November: the killer, elites at any tier, Phased foes act
+
+His words, on section 28's bench:
+
+> Regarding wild hunt et al, can we add moves to elites when they appear at higher tiers?
+> Otherwise we're limiting ourselves in what an elite can do. That said, I think elites can
+> hold any mechanic at any tier, as a boss can.
+>
+> What does the goblin captain have?
+>
+> What's the thang needles question?
+>
+> Death effects should be dictated by the effect, same as moves. I think if the effect is a
+> curse, then it should apply to the killer, and the dodge is ablating it.
+>
+> Phased foes act. Should we rename phased?
+>
+> Is your question about the Rocs about in what formations it should be allowed to stoop? If
+> so, the answer to that is yes, since that's its identity.
+>
+> We need to look at foe targeting rules now, I think. Clean that up.
+
+**What each settles.**
+
+| His words | What it means | Built |
+|---|---|---|
+| "elites can hold any mechanic at any tier, as a boss can" | A tier a rule names holds the rank and file. Exposed's tier two no longer binds an elite, and a boss stood in no grid, so the hold never reached one | The validator passes an elite by. The Rider of the Wild Hunt and the Piercing Eye are back on the bench as carriers, his to mark |
+| "can we add moves to elites when they appear at higher tiers?" | Yes. A move would say the tier it comes in at, and the fight's builder would leave it off below that | Not built. No elite wants one yet, and a rule with no piece is what the rule of 12 November cuts. It is built with the first elite that asks for it |
+| "Death effects should be dictated by the effect, same as moves" | Each effect of a fall lands by its own rule: a blow where a move's blow does, a blessing on the foes still standing, a blow or a curse at every machine on each | As built on 16 November, but for the curse |
+| "if the effect is a curse, then it should apply to the killer, and the dodge is ablating it" | A curse, an effect aimed at one machine, lands on the machine that made the kill. A kill no machine made lands it on nobody | Built. The killer is the machine whose spend or release is under way when the foe is cleared, as the kill trigger counts it |
+| "Phased foes act" | Section 28's second open point, closed as leaned | Recorded. The engine for a foe's Phased waits on its carriers and on the name |
+
+**The killer, as built** (`tests/test_skirmish.gd`). The curse follows the kill, whatever
+the foe's own pick was. A Ward on the killer turns it. A killer wrecked or out of the fight
+by then takes nothing. Nobody made the kill when a tick did, when a Mine blew in the
+enemy's turn, or when the foe burst itself, so each of those dodges the curse, and Ablate
+is the one the player plans. A Mine the spend itself sets off is the spender's kill, as it
+is for the kill trigger. The bot prices a curse on the machine weighing the spend.
+
+What it does to section 28's falls. The Gorgon's dying gaze now jams the entry the killer
+has just spent, which is blank through its next turn: the choice is which machine can spare
+that entry next round, or a burn. The Mandragora's scream, the Salamander's embers and the
+Lich's fall aim at no one machine and are unmoved.
+
+**One point his words leave open: a fall's single blow.** "Dictated by the effect, same as
+moves" keeps a death blow where a move's blow lands, on the foe's own pick, and it is built
+so: the Dread Knight's Death Throes still lands on the machine its arrow showed. The other
+reading is that everything a fall aims at one machine follows the kill. Lean: the killer for
+both. It is one rule, the arrow of a foe about to die stops mattering, and a burn then
+dodges the throes as it dodges a curse, which gives Ablate a job against the Marsh. One line
+turns it.
+
+**His three questions, answered in chat.** The Goblin Captain has Stab, Shield Wall and
+Warcry: a blow of 6, a point of armour for a round, and a rally of 2 when another foe
+stands with it. Thousand Needles was no question: it named an idea his countdown mark
+killed, the Great Needler keeping its two-round gather as the cactus's signature, beside the
+proposal of five needles at once. And the Roc's question was not where it may stoop. The
+stoop stays in either form. The question is the round before it: the Roc on the field
+gathering, a countdown as today, or the Roc climbed out of reach, a foe's Phased.
+
+**Phased's name.** His question: "Should we rename phased?" Lean: yes, to **Untouchable**.
+The rule is that nothing touches the unit, friend or foe: no blow, no pick, no tick's
+damage, no ally's spend. The word says that whole rule, on a machine behind its screens, a
+bird in the sky and a ghost alike. Phased says one maker's fiction, and since the unit now
+acts it also promises an absence that is no longer true. Second choice: Out of Reach, the
+rules' own phrase for the state. Third: keep Phased, the shortest, and the card games' word
+for exactly this. The engine's id can stay whichever is picked. Nothing is renamed until he
+says.
+
+**The targeting audit** he asked for is its own proposal, `docs/targeting_proposal.md`.
+

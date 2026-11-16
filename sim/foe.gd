@@ -40,7 +40,7 @@ var target: RefCounted = null    # Skirmish.MechState, set when intents are tele
 var action: Dictionary = {}      # this round's chosen action
 var modifiers: Array = []        # statuses on this foe (ablating, suppressed, numbed...): Effects.Modifier list
 var recorder = null              # the round preview's copy alone (Skirmish.preview_round): an Array every grant and stack this foe gains is noted in (Effects._record); null in any fight that plays
-var recovering: bool = false     # lost its action to a stun this turn: its stun resist lands as Numbed at the round's end
+var recovering: bool = false     # lost its action to a stun this turn: its stun resist lands as Numbed as that turn ends
 var die = null                   # foes have no die; the pipeline asks, so the field exists
 var stays_down: bool = false     # gone whole (a Bomb's burst): a foe that would get back up does not (Execute retired 10 October)
 var last_special: String = ""    # the special it announced last round, so none fires twice running
@@ -60,13 +60,13 @@ var regrow_parts: int = 0        # rounds after a part falls before it grows bac
 var regrow_due: Array = []       # [part id, round it returns] for each part on its way back
 var next_move: String = ""       # the follow-up it announces next round: the move its last move names in `then` (30 October)
 var committed: bool = false      # its action this round is the follow-up it announced, which no Disrupt turns (Ryan, 2 November)
-var held: Dictionary = {}        # what a steal took off a machine, {"name", "power"}, until the borrowed swing spends it (30 October)
 var grudge: int = 0              # foes the team has killed this fight, for a blow that grows with them (`per_kill`); the skirmish keeps it
 var spent_once: Array = []       # the moves marked `once` it has used this fight (30 October: the Vampire Lord readies its rise once)
 var swallow_mark: int = -1       # its HP as it swallowed a machine, -1 holding none: a quarter of its HP lost since lets it go (31 October)
 var wanders: bool = false        # an elite any domain's Fracture may send, drawn by chance (Gilgamesh, 31 October and 2 November)
 var rage: int = 0                # what every shield, vent or equipment entry the team spends adds to its blows while it stands, its own from the fight's start (content's `rage`: the Goblin Nob, 3 November; innate since 8 November)
 var golden_mark: int = -1        # its HP as it went gold (golden, 4 November: the Thunder Ape), -1 while calm: a quarter of its HP lost since breaks the rage
+var drains: bool = false         # every blow of its own regrows it by what the blow took from the hull (content's `drains`: the Vampire Lord's, an Ability on the unit since 16 November, Ryan: "This should be moved to an ability on the unit since it's on every attack. Like the Nob"; a rider on its blows until then)
 
 ## The aims a foe type or a move may name, and how the codex says each.
 const AIM_EXPOSED := "exposed"
@@ -207,11 +207,13 @@ func damage_of(a: Dictionary, extra: int = 0) -> int:
 	return maxi(0, int(roundf((base_number(a) + Effects.foe_attack_bonus(self) + extra + swarm + grudged) * float(a.get("factor", 1.0)))))   # never below nothing (a Weakened foe's)
 
 
-## The number a move's blow starts from: the foe's attack, or for a borrowed swing (`power`
-## "held", 30 October) the number of what it took, nothing while it holds nothing.
+## The number a move's blow starts from: the foe's attack, or for a move whose `power` names a
+## status of its own (a borrowed swing's Appropriated, what it took: 30 October, a status since
+## 16 November) that status's stacks, nothing while it holds none.
 func base_number(a: Dictionary) -> int:
-	if str(a.get("power", "")) == "held":
-		return int(held.get("power", 0))
+	var held := power_status(a)
+	if not held.is_empty():
+		return Effects.stacks_of(self, held)
 	return attack
 
 
@@ -224,9 +226,59 @@ static func kinds_named(a: Dictionary) -> Array:
 	return [] if str(k).is_empty() else [str(k)]
 
 
-## Does the move swing what the foe took (`power` "held")?
-static func swings_held(a: Dictionary) -> bool:
-	return str(a.get("power", "")) == "held"
+## Does any move of its own take a machine's piece (a step that appropriates: Gilgamesh's
+## Collect)? Its Ability chip stands from the fight's start, its number what it holds.
+func takes() -> bool:
+	for a in actions:
+		if does(a, "appropriate"):
+			return true
+	return false
+
+
+## The status of its own a move's blow takes its number from, and spends as it swings (`power`:
+## a borrowed swing's Appropriated); "" for a move that swings its foe's own attack.
+static func power_status(a: Dictionary) -> String:
+	return str(a.get("power", ""))
+
+
+## A move's steps in order (Ryan, 16 November, on the proposal that a move be a short list of
+## steps where it was one effect: "Yes, go with the steps if you think that's best"): the move
+## itself, its first step as a move has always been written, a blow with its riders or one
+## special, then what it does also (`also`), each a special's effect with the fields it reads.
+## So a spell may strike and curse, or mend one foe and call another. One blow a move, and that
+## its first step, for now.
+static func steps_of(a: Dictionary) -> Array:
+	var out: Array = [a]
+	for st in a.get("also", []):
+		out.append(st)
+	return out
+
+
+## The steps of a move that are effects: its first when the move is a special, and every step
+## after it.
+static func effects_of(a: Dictionary) -> Array:
+	var out: Array = []
+	for st in steps_of(a):
+		if not str(st.get("effect", "")).is_empty():
+			out.append(st)
+	return out
+
+
+## Does any step of the move do `effect`?
+static func does(a: Dictionary, effect: String) -> bool:
+	for st in effects_of(a):
+		if str(st.get("effect", "")) == effect:
+			return true
+	return false
+
+
+## The kind an effect belongs to (ACTION_EFFECTS), for a step that names its effect alone; ""
+## for a word no kind knows.
+static func effect_kind(effect: String) -> String:
+	for k in ACTION_EFFECTS.keys():
+		if (ACTION_EFFECTS[k] as Array).has(effect):
+			return str(k)
+	return ""
 
 
 ## The moves another of its moves names in `then` (30 October): a follow-up comes only the round
@@ -271,13 +323,79 @@ static func countdown_of(a: Dictionary) -> int:
 
 
 ## A last act as an attack action (content `on_death.blow`, 15 October: the Gargantuan King's Meteor),
-## shaped like any move so the blow reads through the same rules.
+## shaped like any move so the blow reads through the same rules, with what it does also.
 static func death_blow_from(b: Dictionary) -> Dictionary:
-	return {"id": "last_act", "name": str(b.get("name", "Last Act")), "kind": "attack", "factor": float(b.get("factor", 1.0)),
+	var out := {"id": "last_act", "name": str(b.get("name", "Last Act")), "kind": "attack", "factor": float(b.get("factor", 1.0)),
 		"strikes": maxi(1, int(b.get("strikes", 1))), "weight": 1, "keywords": Array(b.get("keywords", [])), "text": str(b.get("text", ""))}
+	for k in NUMBERED_RIDERS:
+		if b.has(k):
+			out[k] = int(b[k])   # the stacks the rider lays a blow
+	_also_onto(out, b)
+	return out
 
 
-## Its last act, if it has one: the blow it lands the moment it falls.
+## A fall that is one special in a blow's place (content `on_death.act`, 16 November), shaped
+## like any special, with what it does also.
+static func fall_act_from(a: Dictionary) -> Dictionary:
+	var effect := str(a.get("effect", ""))
+	var out := {"id": "last_act", "name": str(a.get("name", "Last Act")), "kind": effect_kind(effect), "effect": effect,
+		"value": int(a.get("value", 0)), "weight": 1, "text": str(a.get("text", ""))}
+	for k in ["count", "rounds"]:
+		if a.has(k):
+			out[k] = int(a[k])
+	_also_onto(out, a)
+	return out
+
+
+## A move's further steps as the engine reads them (content's `also`, or a save's): each names
+## its effect and carries the fields that effect reads, speaking under the move's name.
+static func also_from(raw, move_name: String) -> Array:
+	var out: Array = []
+	if not (raw is Array):
+		return out
+	for st in raw:
+		if not (st is Dictionary):
+			continue
+		var effect := str(st.get("effect", ""))
+		var step := {"name": move_name, "effect": effect, "kind": effect_kind(effect), "value": int(st.get("value", 0))}
+		if st.has("foe"):
+			step["foe"] = kinds_named(st) if st["foe"] is Array else str(st["foe"])
+		for k in ["count", "rounds"]:
+			if st.has(k):
+				step[k] = int(st[k])
+		out.append(step)
+	return out
+
+
+static func _also_onto(move: Dictionary, raw: Dictionary) -> void:
+	var also := also_from(raw.get("also", null), str(move.get("name", "")))
+	if not also.is_empty():
+		move["also"] = also
+
+
+## What a fall may do beside its blow (16 November): what lands on the foes still standing and
+## on the team. Never what its own body would carry (it is gone), never a summon (a split is
+## the fall's own, standing once its slot is clear), never a swallow, never a purge (decided 28
+## October: a fall lands in the player's turn and would hold through the whole enemy turn
+## after) and never an Expose, which is announced, one machine at a time.
+const FALL_EFFECTS := ["heal", "brace_all", "cleanse", "revive_once_ally", "rally", "prime", "ward_all",
+	"drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all"]
+
+
+## Its fall, if it has one: what it does the moment it falls. A last act was one blow (15
+## October); it is a short list of steps as a move is (16 November, on Ryan's mark of 15
+## November: "foes who, say buff others on death, or debuff on death, which makes kill
+## sequencing more interesting in normal formations"): a blow with its riders (`blow`) or one
+## special (`act`), then what it does also. Empty for a foe with none.
+func fall() -> Dictionary:
+	for key in ["blow", "act"]:
+		var m = on_death.get(key, null)
+		if m is Dictionary:
+			return m
+	return {}
+
+
+## Its last act's blow, if its fall strikes: the blow it lands the moment it falls.
 func last_act() -> Dictionary:
 	var b = on_death.get("blow", null)
 	return b if b is Dictionary else {}
@@ -338,6 +456,11 @@ func strikes() -> int:
 ##           scorch_all: every machine gains `value` stacks of Scorched, its weapons and debuffs
 ##           running hotter (Eruption; nobody in particular)
 ##           corrupt_all: every machine's showing entry is corrupted (Unravel; nobody in particular)
+##           expose: its target is Exposed through the round after (Ryan, 15 November): its
+##           armour counts for nothing, and as that round opens every targeted intent turns on
+##           it until the blows drawn would wreck it. Also a rider a blow may carry (`expose`
+##           among its keywords). One out at a time: no foe announces one while another's is
+##           out or a machine stands Exposed (Skirmish.legal_actions)
 ##           swallow: its target is Swallowed for `value` rounds, out of the fight until they run
 ##           out or the swallower falls; never the last machine able to act (Floraison's, 30
 ##           October: hard control on the team, answered before it lands by a Ward, a Lure, a
@@ -345,10 +468,18 @@ func strikes() -> int:
 ##   buff    merge: every other foe on the field of the kinds its `foe` names (one id or a list)
 ##           is taken into it, gone without a fall: it regrows the HP they had left and its next
 ##           move hits `value` harder for each (the King Gel's, 30 October: thin the Gels first)
+##           appropriate: it gains Appropriated, the number of the entry its target's die shows,
+##           a weapon's printed blow and 1 for anything else, the fake; what it held before is
+##           replaced. A Ward on the machine turns it away. Appropriated is the foe's own
+##           Ability, a count no Purge reaches. Gilgamesh's own rule, a step of his
+##           Collect after the blow that jams the entry (Ryan's mark of 15 November: "It grants
+##           Jammed on the target, and Gilgamesh gains Appropriated with the value")
+## A move may do more than one of these: its first step is the move as written, and `also`
+## lists what it does after, each an effect from these lists with its own fields (steps_of).
 const ACTION_EFFECTS := {
 	"defend": ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate"],
-	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "golden"],
-	"debuff": ["drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all", "dispel", "swallow"],
+	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "golden", "appropriate"],
+	"debuff": ["drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all", "dispel", "swallow", "expose"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
@@ -359,7 +490,12 @@ const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "cleanse",
 ## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? Its pick
 ## is drawn like any foe's, and means nothing: no arrow, no intent on anyone.
 func acts_on_nobody() -> bool:
-	return not is_attack_action(action) and UNTARGETED_EFFECTS.has(str(action.get("effect", "")))
+	if is_attack_action(action):
+		return false
+	for st in effects_of(action):
+		if not UNTARGETED_EFFECTS.has(str(st.get("effect", ""))):
+			return false   # one step of it lands on its pick: the move is aimed
+	return true
 
 
 ## Does this foe show intent on a machine (the funnel-web's ambush read, 18 October, as the
@@ -388,23 +524,29 @@ func intent_on(u) -> bool:
 ## back up (the Bomb). all: the blow lands on every machine in the fight, each strike on each
 ## machine, so no aim or lure moves it (Ryan, 15 October: no foe struck more than one
 ## machine, the storms' three blows included; the content follows in a foe kit refresh).
-## steal: as jam, the entry the machine's die shows switched off through its next turn, and
-## the foe takes it: its borrowed swing (a move with `power` "held") lands that weapon's number,
-## and anything else it took is a fake, for 1 (Gilgamesh's, 30 October). drain: the striker
-## regrows what the blow dealt, shield and hull (the Vampire Lord's, 30 October); it lays nothing
-## on the machine, so no Ward turns it away, and Ablating on the striker is its race. destroy:
+## A steal is no rider since 16 November (Ryan's mark: "Doesn't need to be it's own rider"):
+## Gilgamesh's Collect is a blow that jams and a step of its own, `appropriate`. A drain is no
+## rider since the same day: it is the Vampire Lord's own Ability, on every blow (`drains`). destroy:
 ## any of the blow on the hull and the entry the machine's die shows is destroyed, blank until
 ## the hangar mends it (Ryan, 15 November: "a boss-level rider, that destroys the visible face
 ## if it damages hull at all. Only promoted form or superboss-level so we're not tuning the
 ## economy around it"); a shield that takes the whole blow, a Barrier or a Ward keeps the entry.
 ## A purge is a special, never a rider (28 October: a rider on a hitter's blow is a tax with no
 ## decision), so it is no attack keyword; the validator refuses it on a blow.
-const ATTACK_KEYWORDS := ["scorch", "ablate", "jam", "corrupt", "brittle", "self_destruct", "all", "steal", "drain", "destroy"]
+const ATTACK_KEYWORDS := ["scorch", "ablate", "jam", "corrupt", "brittle", "self_destruct", "all", "destroy", "expose"]
 ## The specials that may never ride a blow (28 October).
 const SPECIALS_ONLY := ["dispel"]
 ## The riders that lay stacks, each a number on the move beside its keyword (24 October, as the
 ## player's Ablate N: Scorch 2 lays two stacks a blow).
 const NUMBERED_RIDERS := ["scorch", "ablate", "corrupt", "brittle"]
+
+
+## Does this move lay Exposed on the machine it lands on: a move of its own (`expose`), or a
+## blow that carries the rider?
+static func exposes(a: Dictionary) -> bool:
+	if does(a, "expose"):
+		return true   # its own move, or a step of one
+	return is_attack_action(a) and Array(a.get("keywords", [])).has("expose")
 
 
 func has_keyword(a: Dictionary, k: String) -> bool:

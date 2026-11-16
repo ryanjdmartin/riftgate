@@ -2064,10 +2064,10 @@ func test_a_foes_stacking_rider_says_its_number() -> void:
 	assert_true(_refused(db, "foe test_licker", "says what it lays"), "an effect that lays stacks says how many")
 
 
-## What a foe lays that halves as each round ends says 2 at the least (Ryan, 16 November: "Buffs
-## and debuffs that decay at end of round should just have a minimum of 2"): one stack is gone
-## before its side's next turn, so a rally of 1 left its rallier nothing and a Brittle 1 was the
-## pack's for one turn alone. A rally's Empowered and a blow's Brittle; a rider that does not
+## What a foe lays that halves says 2 at the least (Ryan, 16 November: "Buffs and debuffs that
+## decay at end of round should just have a minimum of 2"): one stack is gone at its first
+## halving, so a rally of 1 leaves its rallier nothing and a Brittle 1 is the pack's for one
+## turn alone. A rally's Empowered and a blow's Brittle; a rider that does not
 ## halve (a Scorch, an Ablate) may still say 1.
 func test_a_foes_halving_status_is_laid_two_at_the_least() -> void:
 	var db := _fresh()
@@ -2339,6 +2339,45 @@ func test_a_split_is_validated_one_deep_and_read_into_the_foe() -> void:
 	var f := db.make_foe("split_test")
 	assert_eq(f.on_death, {"summon": any_id, "count": 2}, "read into the foe")
 	db.foes.erase("split_test")
+
+
+## A fall is a short list of steps, as a move is (16 November): a blow with what it does also,
+## or one special in a blow's place. The validator holds it to what a fall may do, and content
+## reads it into the foe. Synthetic foes: no piece of content carries one yet.
+func test_a_fall_is_validated_as_steps_and_read_into_the_foe() -> void:
+	var db := _db()
+	var any_id: String = db.foes.keys()[0]
+	var said := func(f: Dictionary) -> String:
+		db.foes["fall_test"] = f
+		var errs := db.validate().filter(func(e) -> bool: return e.begins_with("foe fall_test"))
+		db.foes.erase("fall_test")
+		return "\n".join(errs)
+	var base: Dictionary = db.foes[any_id].duplicate(true)
+	base.erase("on_death")
+	var with := func(od: Dictionary) -> Dictionary:
+		var f: Dictionary = base.duplicate(true)
+		f["on_death"] = od
+		return f
+	assert_eq(said.call(with.call({"act": {"name": "Last Scream", "effect": "drain_rerolls", "value": 1, "text": "x"}})), "", "a fall that is one special validates")
+	assert_eq(said.call(with.call({"blow": {"name": "Throes", "factor": 1, "also": [{"effect": "scorch_all", "value": 1}, {"effect": "rally", "value": 2}]}})), "", "and a blow with what it does also")
+	assert_true(str(said.call(with.call({"act": {"name": "Rites", "effect": "dispel", "value": 1}}))).contains("a fall may do one of"), "a fall never purges")
+	for effect in ["summon", "swallow", "expose", "recover", "brace", "revive_once", "regenerate", "barrier", "merge", "golden", "appropriate"]:
+		assert_true(str(said.call(with.call({"act": {"name": "X", "effect": effect, "value": 2}}))).contains("a fall may do one of"), "a fall does no %s" % effect)
+	assert_true(str(said.call(with.call({"blow": {"name": "Throes", "factor": 1, "also": [{"effect": "swallow", "value": 1}]}}))).contains("a fall may do one of"), "nor a step of one")
+	assert_true(str(said.call(with.call({"blow": {"name": "Throes", "factor": 1, "keywords": ["expose"]}}))).contains("a fall lays none"), "a fall's blow lays no Expose: one is announced")
+	assert_true(str(said.call(with.call({"blow": {"name": "Throes", "factor": 1}, "act": {"name": "Rites", "effect": "rally", "value": 2}}))).contains("never both"), "a blow or an act, the fall's first step")
+	assert_true(str(said.call(with.call({"act": {"effect": "rally", "value": 2}}))).contains("a name and an effect"), "an act says its name")
+	assert_true(str(said.call(with.call({"act": {"name": "Howl", "effect": "rally", "value": 1}}))).contains("at the least"), "an effect keeps its own rules: a rally says 2")
+	assert_true(str(said.call(with.call({"act": {"name": "Scream", "effect": "drain_rerolls"}}))).contains("says what it lays"), "and a drain its number")
+	assert_true(str(said.call(with.call({"act": {"name": "Howl", "effect": "rally", "value": 2, "weight": 3}}))).contains("got 'weight'"), "an act carries no key the engine does not read")
+	assert_true(str(said.call(with.call({"act": {"name": "Howl", "effect": "rally", "value": 2, "also": [{"effect": "heal", "value": 2, "when": "hurt"}]}}))).contains("got 'when'"), "nor a step")
+	db.foes["fall_test"] = with.call({"act": {"name": "Last Scream", "effect": "drain_rerolls", "value": 1, "text": "It screams.", "also": [{"effect": "rally", "value": 2}]}})
+	var f := db.make_foe("fall_test")
+	assert_eq([str(f.fall().get("name", "")), str(f.fall().get("effect", "")), str(f.fall().get("kind", ""))], ["Last Scream", "drain_rerolls", "debuff"], "read into the foe as a special")
+	assert_eq(Foe.effects_of(f.fall()).map(func(st) -> String: return str(st["effect"])), ["drain_rerolls", "rally"], "its steps in order")
+	assert_true(f.last_act().is_empty(), "it has no blow")
+	assert_eq(str((db.codex_for_foe(f)["moves"] as Array).back().get("name", "")), "Last Scream", "and its page lists the fall after its moves")
+	db.foes.erase("fall_test")
 
 
 ## A component's sound (decided 2 October): its label where content names one, else derived

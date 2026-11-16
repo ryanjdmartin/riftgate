@@ -189,7 +189,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   design-session briefs (`briefs/`, with a README that says what each waits on), the economy
   pass (`economy_pass.md`), the formation pass (`formation_proposal.md`: its grids landed in `content/factions.json` on
   10 November, re-cut to the roles, and its tool retired with them; kept for the bosses' stat
-  blocks, its section 6, and the flankers' slate and bench, its section 13), the refit pass's brief (`briefs/refit_pass.md`: the resource model Ryan set on 9 November, the formation pass folded into it), the locked pieces' footing (`locked_pieces_proposal.md`: Ryan's direction of 10 November, glue kept locked and a bought level that lifts the whole machine, waiting on his marks), the vocabulary pass (`vocabulary_pass_proposal.md`, 14 and 15 November, five rounds: every rider, cost, buff and debuff on both sides read against the reboot and the yardstick for the basics, our riders measured on the vanilla and the foes' on the standard blow, the vanilla one under the standard foe or two, armour against the hit sizes, the foes' Burn as a status that erodes on both sides, the Barrier unwound, what still grants shield or cooling, the tier-one bench and the approach to the defence side, his third round's calls with Ward read in the Barrier basic's slot, and his fourth and fifth rounds': Exposed for the foes as one rule, Breach cut on both sides, and where a piece that ignores armour may sit; with `vocabulary_table.md`, every rider, buff and debuff in one table by name, type, effect and where it exists, which he marks on its page; waiting on his marks), the bosses' and elites' slate (`bosses_proposal.md`), the heroes'
+  blocks, its section 6, and the flankers' slate and bench, its section 13), the refit pass's brief (`briefs/refit_pass.md`: the resource model Ryan set on 9 November, the formation pass folded into it), the locked pieces' footing (`locked_pieces_proposal.md`: Ryan's direction of 10 November, glue kept locked and a bought level that lifts the whole machine, waiting on his marks), the foes' targeting audit (`targeting_proposal.md`, 16 November, on Ryan's "Clean that up": the rules as they run in one place, read as a system, the leftovers cut that day, and five calls of his with leans, nothing of them built), the vocabulary pass (`vocabulary_pass_proposal.md`, 14 and 15 November, five rounds: every rider, cost, buff and debuff on both sides read against the reboot and the yardstick for the basics, our riders measured on the vanilla and the foes' on the standard blow, the vanilla one under the standard foe or two, armour against the hit sizes, the foes' Burn as a status that erodes on both sides, the Barrier unwound, what still grants shield or cooling, the tier-one bench and the approach to the defence side, his third round's calls with Ward read in the Barrier basic's slot, and his fourth and fifth rounds': Exposed for the foes as one rule, Breach cut on both sides, and where a piece that ignores armour may sit; with `vocabulary_table.md`, every rider, buff and debuff in one table by name, type, effect and where it exists, which he marks on its page; waiting on his marks), the bosses' and elites' slate (`bosses_proposal.md`), the heroes'
   pass beyond Final Fantasy (`heroes_proposal.md`), the mechanics audit (`mechanics_audit.md`),
   the skirmish code audit (`skirmish_audit.md`: exceptions, duplicates and dead code, its
   questions and its order of work) and the roster analysis (`roster_analysis.md`, published as a page by
@@ -280,7 +280,7 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 # Corrupted a stack every overheat; the driver's too),
 # --shield-ahead (the shield persona: a shield left standing valued by the blows it turns next round,
 # where the rungs bank it at a fifth of a point; the driver's too, for the support ladders),
-# --targeting lowest (the rule before 2 October for the matrix), --json out.json for every cell;
+# --json out.json for every cell;
 # --rows badger,team runs only those rows; --team badger,kite (repeatable) adds a row of exactly those machines,
 # any number, so pairs and fours read beside the trios; --module tactical_databank runs every row beside its
 # twin with that module fitted to every machine, the differences in a section of their own; for prices, --bump armour:5
@@ -513,6 +513,10 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # to judge it running.
 # RIFTGATE_PULSE_DEBUG=1 (any run) keeps END TURN pulsing, on the map and in a fight, to judge it
 # running (it pulses on its own once nothing else is left to do).
+# RIFTGATE_DRAIN_DEBUG=1 (any skirmish) keeps a drain announced on the REROLL button ("NEXT -1"
+# under its count, rings closing in on its edge) and flashes it every three seconds as a drain
+# landing does, to judge them running; RIFTGATE_FOES=mandragora:2 fields the real thing, the
+# round after a Scream wearing "DRAINED -1".
 # RIFTGATE_MAP_VIEW=left|bottom (any run) turns the battle map for the run without touching the saved
 # MAP VIEW setting (MapOrient): the wall at the left with the rift at the right (flat-top, the default),
 # or at the bottom with the rift at the top; the battle screen's `queue` pose (two orders onto two

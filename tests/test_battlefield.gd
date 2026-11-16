@@ -470,9 +470,6 @@ func test_a_hunter_picks_its_prey_by_its_caveat_and_keeps_it() -> void:
 	sq.hunts = "slowest"
 	assert_eq(f.pick_prey(sq), slow, "the slowest")
 	sq.prey = 0
-	sq.hunts = "fastest"
-	assert_eq(f.pick_prey(sq), weak, "the fastest")
-	sq.prey = 0
 	sq.hunts = "weakest"
 	assert_eq(f.pick_prey(sq), weak, "the weakest, by hull and shield")
 	sq.prey = 0

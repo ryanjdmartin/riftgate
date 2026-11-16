@@ -16,8 +16,12 @@ mark was made on. The game has moved since, on those marks (built 15 and 16 Nove
 proposal's sections 18 and 20 say what became of each row): Burn is Ablate; Breach, Splash,
 Silence, Overshield, Retaliate and Rallied are cut; Flak and Crushed are Brittle; Disabled
 is Jammed, Pinned Flak Pinned and Pinned Burning Seared; Swap, Web and Spillover are their
-pieces' own text; Regenerating, Primed, Phased and the rally run his new rules; and the
-injury rule is a boss's Destroy. `docs/vocabulary.md` is the vocabulary as it runs.
+pieces' own text; Regenerating, Primed, Phased and the rally run his new rules; the
+injury rule is a boss's Destroy; every clock stands on his four places (16 November, the
+proposal's section 25), so a row's "this round" or "at its action" reads as that section's
+table has it; a drain is the Vampire Lord's own Ability; and the steal is Gilgamesh's
+Collect, a blow that jams and a step of his own that leaves him Appropriated (section 26).
+`docs/vocabulary.md` is the vocabulary as it runs.
 
 | Name | Type | Effect | Where it exists |
 |---|---|---|---|

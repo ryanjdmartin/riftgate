@@ -362,14 +362,16 @@ def content_slots():
             add("foes.entries", e["id"], "actions.%s.name" % a["id"], "title", a.get("name", ""), name, g, shown=sh, why=wy, sub="move", facts=a.get("text", ""))
             add("foes.entries", e["id"], "actions.%s.text" % a["id"], "foe_move", a.get("text", ""), name, g, shown=sh, why=wy,
                 sub=a.get("name", ""), facts=move_words(a), mech=mech)
-        blow = e.get("on_death", {}).get("blow") if isinstance(e.get("on_death"), dict) else None
-        if isinstance(blow, dict):
-            mech = canon({k: v for k, v in blow.items() if k not in ("name", "text")})
-            if "name" in blow:
-                add("foes.entries", e["id"], "on_death.blow.name", "title", blow["name"], name, g, shown=shown, why=why, sub="last act", facts=blow.get("text", ""))
-            if "text" in blow:
-                add("foes.entries", e["id"], "on_death.blow.text", "foe_move", blow["text"], name, g, shown=shown, why=why,
-                    sub=blow.get("name", "last act"), facts="last act, " + move_words(blow), mech=mech)
+        # A fall: a last act's blow, or one special in its place (16 November), either with steps.
+        for key in ("blow", "act"):
+            blow = e.get("on_death", {}).get(key) if isinstance(e.get("on_death"), dict) else None
+            if isinstance(blow, dict):
+                mech = canon({k: v for k, v in blow.items() if k not in ("name", "text")})
+                if "name" in blow:
+                    add("foes.entries", e["id"], "on_death.%s.name" % key, "title", blow["name"], name, g, shown=shown, why=why, sub="last act", facts=blow.get("text", ""))
+                if "text" in blow:
+                    add("foes.entries", e["id"], "on_death.%s.text" % key, "foe_move", blow["text"], name, g, shown=shown, why=why,
+                        sub=blow.get("name", "last act"), facts="last act, " + move_words(blow), mech=mech)
 
     # Domains and caches.
     for e in docs["factions"]["entries"]:
