@@ -73,9 +73,15 @@ Lines 1, 2, 4 and 5 are decided and built. Line 3 is the part to settle.
   nothing to take elsewhere. The strongest and the weakest are added where a foe's threat
   calls for one, move by move for his marks, in the tiers' pass and each elite's, boss's and
   hero's own session. Until then their attacks pick anyone.
-- **One question.** A fall's single blow, which only the Dread Knight carries. Lean: it lands
-  on the machine that made the kill, as a curse does by his ruling, and on nobody when no
-  machine made it. Then no move at nobody draws a pick.
+- **One question: a blow a foe lands as it dies.** Only the Dread Knight has one today, its
+  Death Throes for 8. It lands on the machine the Dread Knight was aiming at that round, which
+  the player sees as its arrow. On a round it is not attacking, showing Reraise, it has no
+  arrow, yet the engine has drawn it a target all the same and the blow lands there: 24 of 256
+  of its deaths in the Lich's Court. A death curse already lands on the machine that made the
+  kill, by his ruling. Two ways to close it. Lean: the blow lands on the killer too, one rule
+  for everything a dying foe does to one machine, so the player picks who pays by picking who
+  takes the shot, and a kill by a tick pays nothing; then no move at nobody draws a target.
+  The other: keep the arrow's rule and draw the arrow on every round, attacking or not.
 - **The words on the screen** are his, for his terminology pass: the line an attack shows in
   place of "aims at heat".
 

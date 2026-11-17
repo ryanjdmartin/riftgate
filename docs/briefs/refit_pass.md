@@ -2867,6 +2867,22 @@ Present tense, in the round's order (`docs/rules.md`, The round).
    shield is whole, and Broken and Overheated are gone.
 7. Nothing forces a reboot, and it clears nothing else: the machine's statuses stand.
 8. A rebooting machine neither overheats nor burns at END TURN.
+   Open again, 17 November. In another session he ruled that the reboot's turn burns all the
+   same (16 November: "If a machine uses Reboot, and it already has overheated stacks, it
+   should take that damage ... Otherwise the heat penalty is probably not hard enough"), built
+   on that session's branch and not merged. Then: "I'm second guessing that now since it's
+   unintuitive that you have to reboot a turn before you actually need to. Maybe the heat gets
+   shunted when the shield gets taken down?" Three forms, his to pick (the bible's section 12):
+
+   | | The heat goes | The reboot's turn | An overshoot of X then a reboot |
+   |---|---|---|---|
+   | As built here | as the next round opens | no burn, by this line | X hull |
+   | His ruling of 16 November | as the next round opens | burns like any turn | 2X hull |
+   | Shunted | as the shield drops, line 5 | nothing left to burn | X hull |
+
+   Lean: shunted. This line goes, line 5 gains the heat and line 6 keeps the shield. The price
+   of a stack is line 10's dial if one burn is too soft. Each form leaves the shield broken a
+   turn early by line 11, which is the larger part of what an overshoot costs.
 
 *Past the maximum.*
 

@@ -19,6 +19,13 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   stats are what a grant adds to, and the validator refuses both keys on a chassis. The foes'
   numbers are still the ones sized against a shield that refilled. Read both before any work
   on a machine, a component, a module or a foe (`CLAUDE.md` has the rule).
+  **One line of it is open again** (17 November): when a reboot's heat goes. Main spares the
+  reboot's turn its burn, as built on 13 November. His ruling of 16 November, that the turn
+  burns all the same, is built on another session's branch and not merged
+  (`ccr-c1cf6f73-ql6n4q`, commits `d26e462` and `beaa206`), and he has second-guessed it since:
+  "Maybe the heat gets shunted when the shield gets taken down?" The three forms and a lean
+  are in the brief under the spec's line 8 and in the bible's section 12. Whoever merges that
+  branch: take his latest word, not the branch's.
 - **The vocabulary moved on 15 and 16 November** (the vocabulary pass, built on Ryan's marks
   on every rider, buff and debuff): Burn is Ablate, Flak and Crushed are Brittle, Breach,
   Splash, Silence, Overshield, Retaliate and Rallied are cut, and Regenerating, Primed,

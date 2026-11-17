@@ -2667,3 +2667,39 @@ anyone, never overkill, a word on the attack, the mark, the commitment. Four are
 built. The fifth is three words, each the most or the least of one thing on the screen with a
 tie drawn at random: the strongest and the weakest by hull and shield, Slice and Dice's two,
 and the hottest, ours. Every other aim goes, a foe's own with them. Nothing of it is built.
+
+## 32. His sixteenth round, 17 November: the reboot's heat, and the death blow explained
+
+His words:
+
+> Ok, regarding the reboot, I changed it in another session to take its overheat damage at
+> the end of the turn where the reboot was declared. So basically, an overheat pays its
+> damage twice. I made that decision because it didn't make sense to have that overheat
+> hanging around and not hurting the mech, and because the heat system seemed to have room
+> for it. I'm second guessing that now since it's unintuitive that you have to reboot a turn
+> before you actually need to. Maybe the heat gets shunted when the shield gets taken down?
+>
+> Explain this fall issue to me.
+
+### The reboot's heat
+
+Not built: a question on a fundamental, answered in chat first. Where it stands. The change
+he describes is on that session's branch and has not reached main, which still spares the
+reboot's turn its burn. The three forms, his words and the lean are the refit brief's, under
+the spec's line 8 (section 22), and the question is the bible's section 12.
+
+The answer given him. Shunt it. It meets both of his objections at once: nothing stands past
+the maximum unburnt, since the gauge is empty, and the reboot does its work the turn it is
+declared. It takes a rule out, the spared turn being arithmetic and no exception. It gives up
+the second burn; if one proves too soft, the price of a stack is the lever, the trial's
+OVERHEAT dial, which charges an overshoot on the turn it was chosen. No read can say whether
+one burn is too soft: the bot reboots before it burns, 0.0 to 0.2 hull a fight at the anchor.
+Under every form an overshoot also breaks the shield a turn early, the larger part of its
+price. One hole put to him: heat laid on a machine while it reboots, which the recovery
+wipes today and would stay if the one vent is at the drop.
+
+### The death blow
+
+His question was the last line of section 31's page. Put plainly for him: a foe's blow as it
+dies lands where its arrow points, and on a round it is not attacking it has no arrow and a
+target all the same. The targeting page's line says it so now, with both ways to close it.
