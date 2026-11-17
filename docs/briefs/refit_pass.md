@@ -320,14 +320,14 @@ modelled here went with the reboot. The frame stands:
   broken ... never in between": a threat is fair when some layer answers it in part with
   nothing spent and some tool answers it whole with a die. Breach failed both ways and is cut;
   the Barrier basic fails its mirror, erasing the one shape most elites and bosses were.
-- *The model.* `tools/shield_model.py` sets a rule against the foes' shapes with no dice and no
+- *The model.* the shield model of that week (`git show cc446826:tools/shield_model.py`, retired for `tools/budget_model.py`) sets a rule against the foes' shapes with no dice and no
   content: what a rule does with a shape, never what a fight costs.
 
 ## 17. Other shapes for the shield (13 November, a bench he asked for; nothing decided)
 
 A stub: a bench of nine shapes (one bar for heat and shield, rest to recharge, a block a
 machine calls, one field for the squad, a shield for each maker and four more), set aside on
-his call for one shape first (section 18). `python3 tools/shield_model.py --bench` runs four.
+his call for one shape first (section 18). `--bench` of the model as it stood (`git show cc446826:tools/shield_model.py`) runs four.
 
 ## 18. A reboot that grows, one shape first, and one gauge for hits and heat (13 November; nothing decided)
 
@@ -368,7 +368,7 @@ when convenient." The frame it was reasoned in, in today's words:
 - *The foes' counterplay.* An attack that goes for the hottest machine, which finds the one
   that wants the reset. Exposed, which turns the field on one machine. A blow at every machine.
   Numbers, each one more pick. A countdown, whose pick holds while it gathers.
-- *What the model said* (`python3 tools/shield_model.py --choice`): the choice protects as a
+- *What the model said* (`--choice` of the same file): the choice protects as a
   forced shutdown did; firing past the maximum is a trap; and his emptying rule closes the stall
   of 9 November, since a squad that could top up a standing shield would pass half its turns.
 

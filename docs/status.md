@@ -142,13 +142,14 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
 - **The numbers.** Tier one alone is tuned (Ryan, 11 November), on the anchor: the second
   battle, four tier ones against a tier-one rift. The hull budget is a formation's fight a
   twentieth of a squad's hull at its rating, a flanker's a thirtieth, a hunter's a tenth, an
-  elite's a quarter and the boss what is left. The baseline of 17 November
-  (`docs/measurements.md`) has a tier-one formation at 6.0 rounds and 8.3% of a four's hull,
-  from nothing to 23.2% by formation, a lone flanker at 5.9%, a hunter's pack at 12.7%, an
-  elite at 6.3 rounds and 10.9%, and a boss at 10.4 rounds and 32.6% with a wreck in two
-  fights of five. The foes' blows and hit points are still
-  the ones sized against a shield that refilled; tiers two and three, the first battle, the
-  elites' and the bosses' kits and the Barrier's place are unsized or open. On a debug
+  elite's a quarter and the boss what is left. Tier one's flankers, hunters and formations
+  are sized to it since 17 November (`docs/briefs/numbers_pass.md`, section 8; the reads
+  `docs/measurements.md`): a lone flanker 3.2% of a four's hull, a hunter's pack 8.9%, a
+  formation 5.0% over 5.9 rounds, from 1.9% to 7.7% by formation, every fight won. The
+  elites and the bosses are not, and wait on the Barrier's place, his call (the bible's
+  section 12): an elite costs 10.9% with the Barrier basic on the starting dice and 22.7%
+  without it, a boss 32.5% and 52.8%. Tiers two and three and the first battle are unsized,
+  their foes still the ones sized against a shield that refilled. On a debug
   build's SETTINGS, TRIALS, each a number still to be picked: HEAT, TOP BASIC, RANK AND FILE
   and BARRIER BASIC (read at the next launch), OVERHEAT, FIELD DEPTH, OPENING, FODDER,
   RUPTURE, TIDE and STRIKE (read as the next battle starts). A dial leaves the page with its
@@ -202,8 +203,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   ladder and `tools/campaign_run.gd` whole runs (the README has every command). The bot has
   a first play of the reboot, and prices every step of a foe's move and of its fall by one
   table (`Policy.effect_cost`); a brace, a summon, a revival, a swallow, a purge and a merge
-  it still counts as nothing. `tools/shield_model.py`
-  and `tools/basics_model.py` are the small models apart from content.
+  it still counts as nothing. `tools/anchor_read.gd` reads every fight of a tier at its
+  rating, the measure the sizing stands on. `tools/budget_model.py` and
+  `tools/basics_model.py` are the small models apart from content.
   `tests/test_leftovers.gd` fails the build for a rule no piece prints, and
   `tools/behaviour_trace.gd` checks that a refactor changes no fight.
 - **The phone.** A Pixel on a debug build (the README's phone commands). Ryan's reads arrive
@@ -218,9 +220,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
 Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
 
 1. **The foes' line** (`ccr-722ca9f0-yj8na3`; `docs/briefs/numbers_pass.md`), in this order:
-   - The defence side: tier one's foes sized against the reboot at the anchor, a small model
-     first (`CLAUDE.md`: a fundamental is reasoned as a system before it is measured), this
-     line free to adjust content when it is ready (Ryan, 17 November).
+   - The defence side's rest, this line free to adjust content when it is ready (Ryan, 17
+     November): the elites and the bosses, once he says where the Barrier stands; a kit for
+     the Waste now that Breach is cut, proposed in chat first.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
      his picks on RANK AND FILE, HEAT and TOP BASIC: its prices are read from the vanilla he
      settles on.

@@ -10759,3 +10759,129 @@ shape: the three that cost most are the three whose fights run longest, the gel 
 the four that cost least are the four whose foes breached until 15 November and strike a
 whole shield plain. The lone flankers all sit over the thirtieth. The elites sit under half
 their quarter with the Barrier on the dice, and the bosses run from 9% to 62%.
+
+## 17 November: tier one sized to the hull budget, and the Barrier's place read under it
+
+Ryan the same day: "When it comes to the sizing numbers, you have authority over the other
+session ... You can adjust content if you feel like it's ready to do so." The numbers pass
+(`docs/briefs/numbers_pass.md`) sized tier one's flankers, hunters and formations to his
+budget of 9 November: a formation's fight a twentieth of the squad's hull at its rating, a
+flanker's a thirtieth or less, a hunter's a tenth. Every read is `tools/anchor_read.gd` on
+the six certain tier ones, the squads and seeds of the baseline above, the greedy bot.
+
+**The frame first** (`tools/budget_model.py`, apart from content). Under the reboot a squad
+meets a fight with a fixed pool, its shields, and buys it again with a turn, so a fight costs
+what the foes offer past that pool. The model lands on the bot's read of a duel (the lone
+roc 3.6% for 3.4%, the whisker cat 5.5% for 5.4%) and of the wolf pack (16.1% for 15.1%); it
+reads a formation at two to three times the bot's, a squad of three bringing kits, plate and
+a Barrier it lacks, so its formation cells are read against each other. What it says: a
+point on a lone flanker's blow is two points of a four's hull; a horde's cost rises faster
+than its count; and a foe one shot kills costs a seventh of one that takes two, the gun's
+kill line being the biggest lever on the defence side as it is on the offence.
+
+**The moves, each with its reason.** Every one is a placeholder still, his to move.
+
+| Foe | Number | Was | Is | The reason |
+|---|---|---|---|---|
+| Mandragora | Blow | 3 | 2 | It strikes every round since its scream became a fall: 2 a round as before, where a 3 two rounds in three had been |
+| Mandrake, tier two | Blow | 4 | 3 | The same row of the bench, the same reason |
+| Half-Gel | Blow | 2 | 1 | A split conserves the blow: two halves strike for what their gel did, where a dying wall struck twice as hard |
+| Dire Wolf | Blow | 4 | 3 | A pack that rallies strikes for the standard blow: its Howl is its point more |
+| Whisker Cat | Blow | 5 | 4 | A lone flanker's blow is the heavy standard, 4, the Roc's |
+| Dullahan | Blow | 5 | 4 | The same |
+| Dullahan | Hit points | 10 | 9 | It rises once: two lives of 10 ran the longest duel |
+| Cerberus | Blow | 5 | 4 | The same: its three heads strike for 1 each and its Maul for 4 |
+| Needler | Blow | 3 | 4 | It lost Breach on 15 November, a rider worth two points on its blow that it had paid for in hit points |
+| Sandworm | Blow | 3 | 6 | The same, and a massive's blow |
+| Zombie Knight | Blow | 3 | 4 | The same |
+| Magma Elemental | Blow | 4 | 6 | The same, and a massive's blow |
+| Magma Elemental | Eruption | Scorch 4 on every machine | 2 | Sized against a cooling the reboot removed: at 4 the answer is always to hold fire |
+| Drake | Blow | 4 | 3 | A back rank strikes for the standard blow, as the roots, the ghosts and the cockatrices do |
+| Drake | Stoke | Ablate 2 | 1 | A rank-and-file rider at 1 |
+| Salamander | Blow | 4 | 3 | The standard blow, its Scorch on top |
+| Treant | Blow | 7 | 6 | The grove ran at nearly three times the budget and its fight is the longest |
+| Treant | Recover | 3 | 2 | The same |
+| The gel wall | Its back rank | Three mandragoras | Two | The wall's cost is its length, fifteen bodies, and its blows were as light as they go |
+
+Tried and put back: the Gel at 4 hit points for 5, which moved its wall half a point.
+
+**The reads.** Rounds, then hull lost as a share of a four's.
+
+| Kind | Fight | Before | After the first pass | As landed | The budget |
+|---|---|---|---|---|---|
+| Flanker | The lone whisker cat | 4.8, 5.4% | 4.5, 3.1% | 4.5, 3.1% | 3.3% or less |
+| Flanker | The lone roc | 6.3, 3.4% | | 6.3, 3.4% | |
+| Flanker | The lone dullahan | 7.4, 7.4% | 6.8, 4.6% | 5.8, 3.8% | |
+| Flanker | The lone cerberus | 4.7, 7.4% | 4.0, 2.5% | 4.0, 2.5% | |
+| Hunter | The wolf pack | 6.0, 15.1% | 6.1, 7.4% | 6.1, 7.4% | 10% |
+| Hunter | The antlion trio | 4.2, 10.3% | | 4.2, 10.3% | |
+| Formation | The goblin horde | 5.2, 7.1% | 5.1, 3.5% | 5.1, 3.5% | 5% |
+| Formation | The treant's grove | 7.2, 13.9% | 7.5, 9.6% | 7.3, 7.7% | |
+| Formation | The gel wall | 8.1, 23.2% | 7.3, 10.4% | 7.1, 7.4% | |
+| Formation | The needler thicket | 4.1, 2.1% | 3.8, 2.8% | 3.8, 2.8% | |
+| Formation | The sandworm's ambush | 5.9, 0.0% | 6.0, 1.0% | 6.0, 1.9% | |
+| Formation | The grave throng | 6.3, 7.6% | | 6.3, 7.6% | |
+| Formation | The barrow mound | 7.5, 5.6% | | 7.5, 5.6% | |
+| Formation | The knights' vigil | 4.6, 1.5% | 4.5, 2.4% | 4.5, 2.4% | |
+| Formation | The ember pyre | 5.6, 18.2% | 5.5, 13.4% | 5.4, 7.7% | |
+| Formation | The magma vent | 5.9, 3.5% | 5.9, 3.0% | 6.0, 3.1% | |
+
+| Kind | Before | As landed | The budget |
+|---|---|---|---|
+| A lone flanker | 5.8 rounds, 5.9% | 5.2, 3.2% | 3.3% or less |
+| A hunter's pack | 5.1, 12.7% | 5.1, 8.9% | 10% |
+| A formation | 6.0, 8.3% | 5.9, 5.0% | 5% |
+| An elite | 6.3, 10.9% | 6.3, 10.9% | 25% |
+| A boss | 10.4, 32.6%, 0.40 wrecks | 10.4, 32.5%, 0.40 | what is left |
+
+Every flanker, hunter and formation was won in every fight, with no wreck. The formations
+run from 1.9% to 7.7%. The two that stay light are the Waste's, whose foes lost Breach and
+are thin: a needler is one shot. Their teeth are a kit's to give, a proposal for his marks,
+and no number here chases them. The elites and bosses moved only where a sized foe stands
+in them: the shaman's warband 21.1% to 20.1%, the Pilgrim's wake 2.0% to 2.7%, the King Gel
+30.3% to 28.6%.
+
+**The Barrier's place, read under it.** His lean of 15 November is that the Barrier is no
+basic: "I don't want the existence of barrier as an accessible-to-all tool, to justify the
+existence of massive enemy strikes." The same elites and bosses with the Barrier basic off
+the starting dice, the Armoured basic in its slot (`refit=barrier=none`, eight dice; read
+while the Gel stood at 4 hit points, which touches the King Gel's cell alone):
+
+| Kind | With the Barrier basic | Without it |
+|---|---|---|
+| An elite, eleven fights | 100% won, 6.3 rounds, 10.9%, 0.05 wrecks | 99%, 6.1, 22.7%, 0.24 |
+| A boss, thirteen fights | 97% won, 10.4 rounds, 32.5%, 0.40 wrecks | 87%, 10.1, 52.8%, 1.11 |
+
+| Fight | With it | Without it |
+|---|---|---|
+| The Reaper | 0.7% | 3.6% |
+| The Pilgrim's wake | 2.7% | 11.7% |
+| The Rust Monster's scavenge | 4.8% | 11.8% |
+| The Thunder Ape's rampage | 16.1% | 15.7% |
+| The old man's rising | 7.7% | 16.0% |
+| The Fell Rider's hunt | 10.0% | 19.1% |
+| The shaman's warband | 20.1% | 20.8% |
+| The Wild Hunt | 14.9% | 22.7% |
+| Gilgamesh wanders | 6.7% | 29.1% |
+| The Cinder Tortoise's brood | 17.0% | 40.2% |
+| The Nob | 18.9% | 59.2%, 85% won, 1.55 wrecks |
+| Floraison | 29.6% | 24.9% |
+| The Matador | 21.9% | 26.8% |
+| The Mantis Ant | 8.9% | 38.8% |
+| The Fiend of Fire | 62.2%, 90% won | 47.2%, 95% won |
+| The Marsh Serpent | 21.2% | 48.8% |
+| The Vampire Lord | 13.2% | 49.6%, 80% won |
+| The Emperor Scorpion | 32.8% | 50.2% |
+| The Gargantuan King | 30.6%, 18.1 rounds | 54.0%, 10.3 rounds |
+| The King Gel | 28.6% | 59.7% |
+| The Fallen Weapon | 34.8%, 95% won | 66.8%, 80% won |
+| The Ruby Colossus | 41.2%, 90% won | 67.5%, 50% won |
+| The Obsidian Tyrant | 51.4% | 72.7%, 80% won |
+| The Phantom Train | 45.6%, 90% won | 78.9%, 65% won |
+
+So the elites are sized for a squad with no Barrier, on his quarter but for the two whose
+kit is one great blow a round, the Nob and the tortoise; and the bosses are sized for a
+squad with one, half the squad's hull and a wreck a fight without it. That is his concern
+as a number: the bosses' strikes are the ones the Barrier justifies. Taking it off the
+starting dice takes the bosses' blows down with it, by about two fifths, the one-blow kits
+first. Nothing of it is landed: the Barrier's place is his call (the bible's section 12).

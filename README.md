@@ -78,11 +78,11 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
 - `tools/`: each script carries its own usage notes at its head; the commands are below.
   - Generated documents: `export_vocabulary.gd`, `pages/bible_tables.py`,
     `pages/bible_merge.py`, `pages/roster_analysis_page.py`, `synergy_map.py`
-  - Runners: `balance.gd`, `campaign_run.gd`, `quick_run.gd`, `map_survey.gd`
+  - Runners: `balance.gd`, `anchor_read.gd`, `campaign_run.gd`, `quick_run.gd`, `map_survey.gd`
   - Probes: `special_probe.gd` and `chain_probe.gd` (each with a `_read.py`),
     `reboot_probe.gd`, `behaviour_trace.gd`
   - Drivers over the balance runner: `stock_loop.py`, `endgame_fours.py`, `pricing_run.py`
-  - Models apart from content: `turn_loop.py`, `basics_model.py`, `shield_model.py`
+  - Models apart from content: `turn_loop.py`, `basics_model.py`, `budget_model.py`
   - Pictures: `screenshot.gd`, `die_sheet.gd`, `hero_shot.gd`, `act_shot.gd`, `gait_clip.gd`,
     `fit_sheet.gd`, `tileset_shot.gd`, `backdrop_shot.gd`, `perf_probe.gd`, `sound_smoke.gd`
   - Art: `lowforge/` builds the machines, the gate, the wall and the caches by code
@@ -207,6 +207,15 @@ python3 tools/hangar_designs.py --fold build/hangar/inbox --dry     # what it wo
 ### The runners
 
 ```sh
+# the anchor read: every fight of a tier at its rating (a lone flanker one machine, a hunter's
+# pack two, a formation three, an elite and a boss four), by the greedy bot, hull lost as a
+# share of a squad of four's: the measure the numbers pass sizes against. It prints markdown
+# and writes no file. About a minute a fight; split the kinds across cores with only= or kinds=
+perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=5 squads=6 kinds=patrol,formation
+perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=4 squads=5 kinds=elite,boss
+#   only=id,id reads those compositions or bosses alone; tier=, ramp=; refit=<spec> lays a
+#   what-if over content for the run (refit=barrier=none, the Barrier basic off the stock dice)
+
 # the balance report into docs/balance.md: every chassis alone, the starting team and each
 # maker's team against every pack, each domain's formation at each tier and the party, random
 # and greedy over 200 seeds a cell (hours on one core; about two in four parts)
@@ -297,9 +306,7 @@ python3 tools/pricing_run.py run vanilla --parts vanilla,vanillaheat,ladders --b
 python3 tools/turn_loop.py --seeds 2000            # the campaign's turn loop from sim/campaign.gd's constants, every battle won: the pressure the fronts put on the cities
 python3 tools/turn_loop.py --seeds 2000 --widen 3  # with a rift that steps a tier up once it has bled its city three times
 python3 tools/basics_model.py                      # the stock guns against rank and file: shots to kill, the gun that deals one more by its heat, the rider ladder, a bench of guns by its spends to kill five marks
-python3 tools/shield_model.py                      # a plated machine and three lights against a round's damage in each shape, the shield under each rule
-python3 tools/shield_model.py --damage 12 --rounds 4
-python3 tools/shield_model.py --choice             # the reboot by choice, the form the game runs; --bench, --fight, --builds and --shutdown are the earlier forms it was chosen over
+python3 tools/budget_model.py                      # what a fight costs a squad under the reboot, as the hull budget counts it: a horde, a massive in front, a lone flanker, a pack and an elite by blow and hit points, and how far it tracks the bot
 
 # how often each foe special fires: every third starter trio against each domain's formation,
 # each boss and each hero alone, as built or with a condition named in OPENED read as true;
