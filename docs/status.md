@@ -583,7 +583,14 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   Nemesis on from its knee onto its face and brought the Clydesdale's rear down; he kept both as they
   were ("I liked the nemesis kneel, it was iconic"; "Clydesdale rear legs can stay planted, the
   faceplant is the iconic AT-AT pose"), the Clydesdale's hind feet now planted and its barrels no
-  longer in its deck. Every death ends with its lowest point on the floor and resting. Section 12 holds the Baboon's sit, the Funnel-web's
+  longer in its deck. His next notes the same day: the Polar Bear back on its folded legs, a little
+  lopsided ("it can probably just settle on its legs"); the Ammit giving up gracefully, its upper arms
+  laid out first and its rear sinking last, slowly, with no landing's hop (a death whose ease is no
+  fall settles without one: "like it's admitting defeat. All six limbs touch the ground and it gently
+  sits down"); the Cassowary sinking over its held feet before it goes onto its chin ("glitched on its
+  pivot point, it ends up floating"); the Whip Scorpion's middle pair splaying along the floor as its
+  belly settles, every foot down and no part crossing ("pulls legs up into a float"); the Funnel-web
+  "fine now". Every death ends with its lowest point on the floor and resting. Section 12 holds the Baboon's sit, the Funnel-web's
   hinges (a tenth up whatever its legs do) and the Ammit's clean fold; the to-do the crossings left
   elsewhere. The bible (v0.607) republishes on his word. And on his "Can we make it so the
   game doesn't enable auto rotate every time it loads?": `tools/android.sh` launches the game with

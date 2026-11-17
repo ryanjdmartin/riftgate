@@ -1912,7 +1912,7 @@ func test_a_fall_starts_slow_and_lands_at_speed() -> void:
 func test_a_death_keeps_to_its_floor_all_the_way_down() -> void:
 	# The fourth notes: "The animation as a whole is a little janky": a death's lowest point is held on
 	# its floor every frame of its fall (MechRig._hold_death_floor), never through it and never
-	# floating but for its landing's hop.
+	# floating but for its landing's hop, none for a death that settles rather than falls (its ease no fall).
 	for id in ["clydesdale", "cassowary", "nemesis", "baboon", "funnel_web", "ammit", "whip_scorpion"]:
 		var pair := _rig_for(id)
 		var rig: MechRig = pair[0]
@@ -1927,7 +1927,10 @@ func test_a_death_keeps_to_its_floor_all_the_way_down() -> void:
 			assert_true(float(r["low"]) > -0.003, "%s never goes through the floor (%+.2f%% at %.2f s)" % [id, 100.0 * float(r["low"]), t])
 			assert_true(float(r["low"]) < MechRig.IMPACT_HOP + 0.003, "%s never floats off it (%+.2f%% at %.2f s)" % [id, 100.0 * float(r["low"]), t])
 			hopped = hopped or float(r["low"]) > 0.002
-		assert_true(hopped, "%s lands with a hop" % id)
+		if str(rig.forms[MechRig.DEATH].get("ease", "fall")) == "fall":
+			assert_true(hopped, "%s lands with a hop" % id)
+		else:
+			assert_false(hopped, "%s settles: no hop" % id)
 		assert_true(absf(float(rig.rest_of()["low"])) < 0.002, "%s lies on the floor once it has landed" % id)
 		pair[1].free()
 

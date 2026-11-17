@@ -1585,18 +1585,19 @@ def polar_bear(b):
     b.act("rock", 4.6, tracks, body=body, form="sealed")
     b.act("lure", 5.2, {"run_rack": [along(0.6, 0.0), along(1.4, 4.0), along(3.8, 4.0), along(4.6, 0.0)]}, form="sealed",
           glow=[(["beacon"], blink(1.4, 3.8))])
-    # Its death: the fore legs folding in under it as its seal folds them and the hind legs swinging
-    # forward beside its belly, so it comes down flat on its belly (Ryan, 17 November, judging by the
-    # hangar: "Some end up on the ground, some don't"; its four folded legs had held its belly off the
-    # floor, and a list had tipped it onto one side), its vents thrown open a pair at a time as it
-    # settles, their heat flaring as they open, and guttering out once it is down (Ryan, 16 November,
-    # the fourth notes: "Open the vents as it settles, then have them flicker out").
+    # Its death: the four legs folding out from under it as its seal folds them, down on them, a little
+    # lopsided, its right pair folding less than its left (Ryan, 17 November, of a pass that laid it
+    # flat on its belly: "It's heavy and the vents are enough interest that it can probably just settle
+    # on its legs, maybe a little lopsided"; a list of the body alone does not hold, its legs setting it
+    # level again), its vents thrown open a pair at a time as it settles, their heat flaring as they open,
+    # and guttering out once it is down (Ryan, 16 November, the fourth notes: "Open the vents as it
+    # settles, then have them flicker out").
     DIE = 1.6
     dying = {
         "hip_fl": [(DIE, 48.0)], "knee_fl": [(DIE, -108.0)], "ankle_fl": [(DIE, 68.0)],
-        "hip_fr": [(DIE, 46.0)], "knee_fr": [(DIE, -105.0)], "ankle_fr": [(DIE, 66.0)],
-        "hip_hl": [(DIE, 75.0)], "knee_hl": [(DIE, 30.0)], "ankle_hl": [(DIE, 0.0)],
-        "hip_hr": [(DIE, 75.0)], "knee_hr": [(DIE, 30.0)], "ankle_hr": [(DIE, 0.0)],
+        "hip_fr": [(DIE, 46.0)], "knee_fr": [(DIE, -96.0)], "ankle_fr": [(DIE, 66.0)],
+        "hip_hl": [(DIE, 34.0)], "knee_hl": [(DIE, -98.0)], "ankle_hl": [(DIE, 72.0)],
+        "hip_hr": [(DIE, 32.0)], "knee_hr": [(DIE, -86.0)], "ankle_hr": [(DIE, 70.0)],
     }
     heats = []
     for k, (heat, vent) in enumerate(vents):
@@ -1607,7 +1608,7 @@ def polar_bear(b):
     for heat, jn, line, out in pops:
         dying[jn] = [along(t, out * f, line) for t, f in ((0.4, 0.0), (0.85, 1.0), (DIE, 1.0))]
         heats.append(heat)
-    b.death(DIE, dying, body=[(DIE, 0.0, 0.0, -12.0, 0.0, 0.0, 0.0)],
+    b.death(DIE, dying, body=[(DIE, 0.0, 0.0, -12.0, 0.0, -2.0, 0.0)],
             glow=[(heats, [(0.25, 0.0), (0.85, HEAT * 0.8), (DIE, HEAT * 0.8)])])
 
 polar_bear.maker = "minerva"
@@ -2387,21 +2388,23 @@ def cassowary(b):
     b.fires = {"spin_up": ("test_charge", 0.9, 3.8)}
     # Its death: a stagger two steps back, the right foot first, and then down onto its face (Ryan, 17
     # November: "take two steps back, instead, then fall on its face. Make sure not to kick the feet out
-    # too soon"; the fourth notes' step forward and fall onto its back gave way to it): its legs buckle,
-    # it goes down onto its knees and over onto its chin, its legs trailing out behind it and its guns
-    # thrown up as its face meets the floor. Its feet stay where they stand while they carry it (the fifth
-    # notes; the next day, "pivot or slide in correct, plausible places"), each lifted before it swings back
-    # and set down as the other leaves the floor, both held through the fall, and only once its knees are
-    # down do they trail out behind it. (A face flat on the
-    # floor will not rest: its heavy legs tip it back over onto its belly.)
-    b.death(1.9, {
-        "hip_r": [(0.08, 0.0), (0.2, -12.8), (0.4, -35.0), (0.8, -6.0), (1.9, 40.0)], "knee_r": [(0.08, -22.0), (0.2, -42.0), (0.4, -6.0), (0.8, -4.0), (1.9, -55.0)],
-        "ankle_r": [(0.08, 12.0), (0.2, 22.0), (0.4, 6.0), (0.8, 4.0), (1.9, -60.0)], "toe_r": [(0.08, 12.0), (0.2, 25.0), (0.4, 0.0), (0.8, 0.0), (1.9, 0.0)],
-        "hip_l": [(0.4, 16.0), (0.48, 16.0), (0.6, -12.8), (0.8, -35.0), (1.9, 40.0)], "knee_l": [(0.4, -4.0), (0.48, -24.0), (0.6, -42.0), (0.8, -6.0), (1.9, -55.0)],
-        "ankle_l": [(0.4, 4.0), (0.48, 13.0), (0.6, 22.0), (0.8, 6.0), (1.9, -60.0)], "toe_l": [(0.4, 0.0), (0.48, 12.0), (0.6, 25.0), (0.8, 0.0), (1.9, 0.0)],
-        "waist": [(0.8, 4.0, 0.0, 0.0), (1.9, 0.0, 0.0, 0.0)], "elev_chin": [(0.8, 0.0), (1.9, 25.0)], "elev_pod": [(0.8, 0.0), (1.9, 25.0)], "elev_mortar": [(1.9, -5.0)],
-    }, body=[(0.4, 0.0, 0.0, 0.0, 0.0, 3.0, 0.0), (0.8, 0.0, 0.0, 0.0, 0.0, 5.0, 0.0), (1.9, 0.0, 0.0, 0.0, 0.0, -40.0, 0.0)],
-       plant=[("ankle_l", 0.0, 0.4), ("ankle_r", 0.4, 1.5), ("ankle_l", 0.8, 1.5)])
+    # too soon"; the fourth notes' step forward and fall onto its back gave way to it): its knees give and
+    # it sinks straight down over its feet, and only then goes over onto its chin, its legs trailing out
+    # behind it and its guns thrown up as its face meets the floor. Its feet stay where they stand while
+    # they carry it (the fifth notes; the next day, "pivot or slide in correct, plausible places"), each
+    # lifted before it swings back and set down as the other leaves the floor, both held as it sinks (its
+    # heels kept off the floor, which they had scraped), let go as it goes over. (His
+    # of the same day, of a fall that tipped over on its toes from full height: "glitched on its pivot
+    # point, it ends up floating"; a face flat on the floor will not rest, its heavy legs tipping it back.)
+    SINK, D = 1.25, 1.9
+    b.death(D, {
+        "hip_r": [(0.08, 0.0), (0.2, -12.8), (0.4, -35.0), (0.8, -6.0), (SINK, 20.0), (D, 40.0)], "knee_r": [(0.08, -22.0), (0.2, -42.0), (0.4, -6.0), (0.8, -4.0), (SINK, -50.0), (D, -55.0)],
+        "ankle_r": [(0.08, 12.0), (0.2, 22.0), (0.4, 6.0), (0.8, 4.0), (SINK, 20.0), (D, -60.0)], "toe_r": [(0.08, 12.0), (0.2, 25.0), (0.4, 0.0), (0.8, 0.0), (SINK, 0.0), (D, 0.0)],
+        "hip_l": [(0.4, 16.0), (0.48, 16.0), (0.6, -12.8), (0.8, -35.0), (SINK, 20.0), (D, 40.0)], "knee_l": [(0.4, -4.0), (0.48, -24.0), (0.6, -42.0), (0.8, -6.0), (SINK, -50.0), (D, -55.0)],
+        "ankle_l": [(0.4, 4.0), (0.48, 13.0), (0.6, 22.0), (0.8, 6.0), (SINK, 20.0), (D, -60.0)], "toe_l": [(0.4, 0.0), (0.48, 12.0), (0.6, 25.0), (0.8, 0.0), (SINK, 0.0), (D, 0.0)],
+        "waist": [(0.8, 4.0, 0.0, 0.0), (SINK, 0.0, 0.0, 0.0), (D, 0.0, 0.0, 0.0)], "elev_chin": [(SINK, 0.0), (D, 25.0)], "elev_pod": [(SINK, 0.0), (D, 25.0)], "elev_mortar": [(D, -5.0)],
+    }, body=[(0.4, 0.0, 0.0, 0.0, 0.0, 3.0, 0.0), (0.8, 0.0, 0.0, 0.0, 0.0, 5.0, 0.0), (SINK, 0.0, 0.0, 0.0, 0.0, -5.0, 0.0), (D, 0.0, 0.0, 0.0, 0.0, -40.0, 0.0)],
+       plant=[("ankle_l", 0.0, 0.4), ("ankle_r", 0.4, SINK), ("ankle_l", 0.8, SINK)])
 
 cassowary.maker = "wainwright_sutler"
 
@@ -3693,14 +3696,17 @@ def whip_scorpion(b):
     # bore's floor lit together as its blast flares them.
     b.halo = ["vent_heat_" + t for t in ("l1", "l2", "r1", "r2")] + ["vent_bore_%s_floor" % t for t in ("l1", "l2", "r1", "r2")]
     # Its death: its legs buckle under it, every foot where it stands while they carry it, the knees
-    # rising as the body comes down; then they give, splaying out as its belly drops onto the floor, its
-    # tail laid down behind and its gun dipped. Ryan, 16 November, the fifth notes: "all six legs slide out
-    # from under it and it ends up floating"; 17 November, of a sink that stopped where its middle legs'
-    # limits do: "I think it's legs are coming up instead of the body coming down, it's floating". The
-    # crouch is its limbs' reach at its deepest (MechRig._sink_limb), its middle pair splaying least so it
-    # clears the hind pair.
+    # rising as the body comes down; then they give, splaying out along the floor as its belly drops onto
+    # it, every foot staying down, its tail laid down behind and its gun dipped. Ryan, 16 November, the
+    # fifth notes: "all six legs slide out from under it and it ends up floating"; 17 November, of a sink
+    # that stopped where its middle legs' limits do: "I think it's legs are coming up instead of the body
+    # coming down, it's floating", and of the splay after it: "in hangar it pulls legs up into a float,
+    # instead of settling it's body down". The crouch is its limbs' reach at its deepest
+    # (MechRig._sink_limb), its middle pair splaying least so it clears the hind pair; the splay's angles
+    # leave every foot on the floor as the belly lands, keep them near it all the way and keep the legs
+    # clear of each other. No fold its joints allow brings the belly down with its feet where they stood.
     crouch = {"f": (46.5, -15.1, -31.3), "m": (-57.9, 18.1, 39.9), "h": (-40.8, 13.3, 27.6)}
-    down = {"f": (24.5, 24.5, -4.9), "m": (-57.9, 3.7, 33.5), "h": (-23.2, -21.9, 5.6)}
+    down = {"f": (40.0, 0.0, 25.0), "m": (0.0, 60.0, 25.0), "h": (0.0, -40.0, -50.0)}
     tracks = {"abdomen": [(1.3, -10.0, 0.0, 0.0)], "ray": [(1.3, -8.0)]}
     for side in ("l", "r"):
         for leg in ("f", "m", "h"):
@@ -5526,29 +5532,30 @@ def ammit(b):
                "quintessence_tap": ("threat", 0.4, 1.5)}
     _flare_scale(b, "tail_slot", VENT_FLARE)   # its rear vent's flares kept gold on its sickly amber (Ryan, 3 November, the second notes)
     b.move(accel=1.0, heft=0.2)
-    # Its death: it goes forward (Ryan, 17 November: "Send the Ammit forward", a little crossing allowed;
-    # the fifth notes had it stand with its upper limbs drawn in): its walking arms buckle at the elbow
-    # and it pitches down onto its chest, the hands sliding out ahead, while its hind feet stay where
-    # they stand until the hind legs fold and its rear comes down after; the upper arms laid out to
-    # either side on the floor, the talons closed, the cannons down. It ends on its belly. Its thighs
-    # fold up past level into its belly to bring the rear down (no lower fold of its legs lets the rear
-    # reach the floor), the crossing he allowed (tools/death_floor.gd --clip).
-    D = 1.6
-    dying = {"talon_%s_%s" % (arm, t): [(D, -40.0)] for arm in ("l", "r") for t in ("in", "mid", "out")}
+    # Its death: it gives up, gracefully (Ryan, 17 November, of a fall forward onto its belly: "Ammit
+    # should be more graceful, like it's admitting defeat. All six limbs touch the ground and it gently
+    # sits down"): it bows, its cannons down, and lays its upper arms out on the floor ahead and to either
+    # side, its talons open; its walking arms bend and let its chest down onto them, their hands sliding
+    # out ahead; and last its rear sinks, its hind feet where they stand, slowly, settling with no
+    # landing's beat. Its upper arms reach the floor only as its chest does, and its rear only with its
+    # thighs folded up into its belly (no lower fold of its legs brings it down), the crossing he allowed
+    # (tools/death_floor.gd --clip).
+    D = 2.6
+    dying = {"talon_%s_%s" % (arm, t): [(1.0, 0.0), (D, 0.0)] for arm in ("l", "r") for t in ("in", "mid", "out")}
     for side, out in (("l", 1.0), ("r", -1.0)):
-        dying["shoulder_low_" + side] = [(0.5, 20.0), (D, 60.0)]
-        dying["elbow_low_" + side] = [(0.5, -60.0), (D, 0.0)]
-        dying["hand_low_" + side] = [(0.5, 30.0), (D, -40.0)]
-        dying["hip_" + side] = [(0.4, 0.0), (D, 60.0)]
-        dying["knee_" + side] = [(0.4, 0.0), (D, 65.0)]
-        dying["ankle_" + side] = [(0.4, 0.0), (D, -60.0)]
-        dying["shoulder_" + side] = [(0.5, 20.0, 0.0, 0.0), (D, 0.0, 40.0 * out, 0.0)]
-        dying["elbow_" + side] = [(D, 64.0)]
-        dying["hand_" + side] = [(D, -10.0)]
-        dying["elev_" + side] = [(D, -12.0)]
-    dying["waist"] = [(D, 12.0, 0.0, 0.0)]
-    b.death(D, dying, body=[(0.6, 0.0, 0.0, 0.0, 0.0, -20.0, 0.0), (D, 0.0, 0.0, 0.0, 0.0, -8.0, 0.0)],
-            plant=[("ankle_l", 0.0, 1.0), ("ankle_r", 0.0, 1.0)])
+        dying["shoulder_" + side] = [(0.9, 30.0, 10.0 * out, 0.0), (1.7, 0.0, 40.0 * out, 0.0), (D, 0.0, 40.0 * out, 0.0)]
+        dying["elbow_" + side] = [(0.9, 20.0), (1.7, 64.0), (D, 64.0)]
+        dying["hand_" + side] = [(1.7, -10.0), (D, -10.0)]
+        dying["shoulder_low_" + side] = [(0.6, 0.0), (1.0, 10.0), (1.9, 60.0), (D, 60.0)]
+        dying["elbow_low_" + side] = [(0.6, 0.0), (1.0, -40.0), (1.9, 0.0), (D, 0.0)]
+        dying["hand_low_" + side] = [(0.6, 0.0), (1.0, 20.0), (1.9, -40.0), (D, -40.0)]
+        dying["hip_" + side] = [(1.2, 0.0), (D, 60.0)]
+        dying["knee_" + side] = [(1.2, 0.0), (D, 65.0)]
+        dying["ankle_" + side] = [(1.2, 0.0), (D, -60.0)]
+        dying["elev_" + side] = [(1.0, -12.0), (D, -12.0)]
+    dying["waist"] = [(0.8, -12.0, 0.0, 0.0), (1.7, -12.0, 0.0, 0.0), (D, 12.0, 0.0, 0.0)]
+    b.death(D, dying, body=[(1.0, 0.0, 0.0, 0.0, 0.0, -6.0, 0.0), (1.9, 0.0, 0.0, 0.0, 0.0, -14.0, 0.0), (D, 0.0, 0.0, 0.0, 0.0, -8.0, 0.0)],
+            ease="smooth", plant=[("ankle_l", 0.0, D), ("ankle_r", 0.0, D)])
 
 ammit.maker = "arsenal"
 

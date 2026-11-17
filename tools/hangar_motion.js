@@ -706,9 +706,9 @@ class Rig {
       const want = this.formOn[name] ? f.duration : 0, t = this.formT[name];
       if (t !== want) {
         this.formT[name] = t < want ? Math.min(want, t + delta) : Math.max(want, t - delta); turning = true;
-        if (name === "@death" && this.dead && want > 0) {   // it lands: the landing's beat as its pose meets the floor, and again as a long tip past it rests (MechRig._forms_step)
-          const now = this.formT[name], first = f.toppleFrom ?? want;
-          if ((t < first && now >= first) || (now >= want && first < want && (f.toppleAngle || 0) >= TOPPLE.beat * Math.PI / 180)) this.impact = 0;
+        if (name === "@death" && this.dead && want > 0) {   // it lands: the landing's beat as a falling pose meets the floor (one that settles, its ease no fall, lands none), and again as a long tip past it rests (MechRig._forms_step)
+          const now = this.formT[name], first = f.toppleFrom ?? want, falls = (f.ease || "fall") === "fall";
+          if ((falls && t < first && now >= first) || (now >= want && first < want && (f.toppleAngle || 0) >= TOPPLE.beat * Math.PI / 180)) this.impact = 0;
         }
       }
     }

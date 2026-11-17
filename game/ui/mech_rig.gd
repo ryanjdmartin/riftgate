@@ -963,11 +963,13 @@ func _forms_step(delta: float) -> bool:
 			_form_t[name] = move_toward(t, want, delta)
 			turning = true
 			if name == DEATH and dead and want > 0.0:
-				# it lands: the landing's beat as its pose meets the floor, and again as a long tip past
-				# it comes to rest (_topple_death)
+				# it lands: the landing's beat as a falling pose meets the floor (one that settles, its ease no
+				# fall, lands none: the Ammit's surrender), and again as a long tip past it comes to rest
+				# (_topple_death)
 				var now := float(_form_t[name])
 				var first := float(forms[name].get("topple_from", want))
-				if (t < first and now >= first) or (now >= want and first < want and float(forms[name].get("topple_angle", 0.0)) >= deg_to_rad(TOPPLE_BEAT)):
+				var falls := str(forms[name].get("ease", "fall")) == "fall"
+				if (falls and t < first and now >= first) or (now >= want and first < want and float(forms[name].get("topple_angle", 0.0)) >= deg_to_rad(TOPPLE_BEAT)):
 					_impact = 0.0
 	if not turning:
 		return false
