@@ -1219,6 +1219,17 @@ func test_greedy_reads_a_countdown_a_core_and_a_last_act() -> void:
 	gazer.on_death = {"act": Foe.fall_act_from({"name": "Last Gaze", "effect": "jam"})}
 	assert_eq(Policy.last_act_cost(s4, gazer), 0.0, "a curse with no killer costs nothing: a tick's kill dodges it")
 	assert_true(is_equal_approx(Policy.last_act_cost(s4, gazer, s4.mechs[0]), 40.0), "and with one, the entry it would lose")
+	# The one fall that pays (17 November): a foe whose fall takes back the readiness it gave is
+	# worth the second kill it spares, the whole HP of each foe it readied.
+	var binder := Foe.make("binder", 30, 20)
+	binder.content_id = "binder"
+	binder.on_death = {"act": Foe.fall_act_from({"name": "Unbound", "effect": "unready_all"})}
+	assert_eq(Policy.last_act_cost(s4, binder), 0.0, "nothing readied: its fall is worth nothing either way")
+	Effects.stack(howler, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:binder", 1, Effects.DECAY_NONE)
+	Effects.stack(root, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:other", 1, Effects.DECAY_NONE)
+	assert_true(is_equal_approx(Policy.last_act_cost(s4, binder), -30.0), "one foe it readied stands: its fall pays that foe's HP, and no other's")
+	Effects.remove(howler, "risen")
+	Effects.remove(root, "risen")
 	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"], "also": [{"effect": "drain_rerolls", "value": 1}]})}
 	assert_true(is_equal_approx(Policy.last_act_cost(s3, beast), 20.0 * Policy.HULL_WEIGHT + Policy.REROLL_SHARE * 40.0), "and a blow's steps add to its blow")
 	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}

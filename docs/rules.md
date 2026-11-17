@@ -1185,7 +1185,10 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   the entry the machine shows: Destroy, above; no foe carries it yet), expose (the machine is
   Exposed through the round after: Exposed, above; among the rank and file a tier-two foe's at
   the least, the validator refusing it on a foe of the line dealt at tier one, while an elite
-  and a boss may hold any mechanic at any tier; no foe carries it yet),
+  and a boss may hold any mechanic at any tier; a blow's Expose lays nothing while a machine
+  stands Exposed, never a second mark and never the first renewed, and its intent wears no
+  mark for it that round, so the one foe whose only move it is, the Piercing Eye, marks every
+  other round at the most),
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; it holds no
   pick, so no word and no Lure moves it). Scorch, ablate, corrupt and brittle each say their stacks a blow, as the player's
@@ -1206,7 +1209,11 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   stands. A foe its own blow spent does nothing more. The move is announced once, its intent
   wears the marks of its steps beside its blow's riders, and its text says all of it. What may
   never be announced is read off every step: a drain past the round's two, a swallow of the
-  last machine, a second Expose. One blow a move, and that its first step.
+  last machine, a second Expose. A foe left with nothing to announce takes a blow whose own
+  condition holds before any other, so the Thief's Mug lands when the round's rerolls are
+  spoken for and what it takes past them is nothing. One blow a move, and that its first
+  step. One pair of steps reads as one act: a cleanse that follows a heal lands on the foe
+  the heal mended, whoever else carries more marks (the Cleric's Cure, one patient).
 - **A take** (Gilgamesh's Collect): a blow that Jams the entry its machine shows, then a step
   of his own: he gains Appropriated, that entry's number, a weapon's printed blow and 1 for
   anything else, a fake. Appropriated is his Ability, a chip he wears from the fight's start
@@ -1237,7 +1244,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   half reaches its next blow), each on its target, no blow; a purge is a special, never a rider. A Ward turns away
   every one of them that lands on its machine, a scorch all's and a corrupt all's share
   included, and a scorch all or a corrupt all passes a machine out of the fight by. No foe in
-  content carries a ward all yet; the Djinn's Unmake is the one purge.
+  content carries a ward all yet; the Djinn's Unmake is the one purge; an Expose of its own
+  is the Goblin Warchief's, the Basilisk's, the Alpha Warg's, the Lich's and the Rider of the
+  Wild Hunt's, each cast while another foe stands to follow it.
 - **A last act**: a foe may act the moment it falls, before anything else and even when it
   was the last foe, since damage sticks for the battle. A fall is a short list of steps, as a
   move is: a death blow with its own riders, every machine included, or one special in a
@@ -1251,12 +1260,18 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   every machine lands on each. What a fall lays on its own side reaches the foes still
   standing, never itself.
   A fall may heal, armour, cleanse, ward, prime, ready or rally its own, take rerolls from
-  the next round, ablate or jam its pick, and scorch or corrupt every machine. It does
+  the next round, ablate or jam its pick, scorch or corrupt every machine, and take back the
+  readiness to rise its kind gave: every other foe still standing loses the Undying it
+  readied, what a foe readied for itself staying its own, and a foe felled by the same blow
+  fell readied and gets up. It does
   nothing its own body would carry, summons nothing (a split is the fall's own summon),
   swallows nothing, never purges, and lays no Expose, which is announced. A reroll a fall
   takes in the player's own turn is owed at once, and the REROLL button counts it (A drained
   reroll, above). The foe wears its fall as an Ability from the fight's start, its blow's
-  number on the chip where it strikes. No foe in content carries more than a blow yet.
+  number on the chip where it strikes. In content the Dread Knight's Death Throes and the
+  Gargantuan King's Meteor are blows; the Mandragora, the Mandrake and the Alraune scream a
+  reroll off the next round, the Gorgon's dying gaze Jams the entry its killer shows, the
+  Salamander's embers Scorch every machine, and the Lich's fall takes back what it readied.
 - **A foe in parts**: a core and the parts of its pack that stand with it. A guard keeps the
   core from taking any damage while all its parts stand, or while any does (Guarded, an Ability), its
   Ablating and Vitriol included, whose stacks fade all the same; a part

@@ -71,11 +71,12 @@
     {
       "id": "alpha_warg", "name": "Alpha Warg", "faction": "meadow", "tier": 3,
       "design": { "fantasy": "The alpha, the pack's commander. Tier three of the wolf line." },
-      "codex": "The pack's leader. Its howl lifts every foe on the field, and it hunts the weakest machine.",
+      "codex": "The pack's leader. Its howl lifts every foe on the field, it marks one machine for the whole pack to turn on, Exposed, and it hunts the weakest machine.",
       "hp": 5, "attack": 5, "rank": "front", "movespeed": 4, "role": "hunter",
       "actions": [
         { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "text": "Teeth in the hull for {damage}.", "status": "implemented" },
-        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented" }
+        { "id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented" },
+        { "id": "mark_prey", "name": "Mark Prey", "kind": "debuff", "effect": "expose", "weight": 1, "when": "others_on_field", "text": "The alpha marks its prey: it stands Exposed through the next round, its armour counting for nothing and every foe's targeted move turned on it.", "status": "implemented" }
       ],
       "flavour": "When the big one howls, kill it or shield everyone. There is no third option."
     },
@@ -124,30 +125,31 @@
     {
       "id": "mandragora", "name": "Mandragora", "faction": "meadow",
       "design": { "sprite": "a gnarled root creature with a screaming human face, root legs, leaves sprouting from its head", "variants": ["a gnarled pale root creature with clods of soil still clinging to its root legs, arched back mid-scream with its root arms flung wide and the mouth of its human face stretched open, leaves sprouting from its head", "a gnarled dark brown root creature crouched low on splayed root legs, lashing a long whip of root out ahead of it, its screaming human face twisted with fury, leaves sprouting from its head", "a gnarled root creature wreathed in trailing ivy with a crown of wilted purple flowers, hunched forward with its long root fingers clawed, its human face screaming", "a gnarled root creature with bark like old weathered skin and clusters of blood-red berries among the leaves on its head, lunging forward on its root legs with its root arms thrown back, its human face screaming"], "fantasy": "The screaming root, pulled up and furious.", "niche": "Back rank. Its scream costs the team a reroll, which is the Meadow's one attack on the die." },
-      "codex": "A root with a face, and it screams. Stands behind the crowd and shrieks the fight out of your dice: a scream costs the team a reroll next round.",
+      "codex": "A root with a face, and it screams. It stands behind the crowd and lashes, and it saves the scream for when it is pulled up: kill one and the team loses a reroll next round.",
       "hp": 4, "attack": 3, "rank": "back", "movespeed": 2,
+      "on_death": { "act": { "name": "Scream", "effect": "drain_rerolls", "value": 1, "text": "Pulled up, it screams: the team loses one reroll next round." } },
       "actions": [
-        { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "text": "A whip of root for {damage}.", "status": "implemented" },
-        { "id": "scream", "name": "Scream", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "text": "Costs the team one reroll next round.", "status": "implemented" }
+        { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "text": "A whip of root for {damage}.", "status": "implemented" }
       ],
       "flavour": "Earplugs are issued. Earplugs do not help."
     },
     {
       "id": "mandrake", "name": "Mandrake", "faction": "meadow", "tier": 2,
       "design": { "fantasy": "The mandrake, the louder root. Tier two of the mandragora line." },
-      "codex": "A mandragora with lungs. Its scream costs the team a reroll.",
+      "codex": "A mandragora with lungs. Its dying scream costs the team a reroll.",
       "hp": 4, "attack": 4, "rank": "back", "movespeed": 2,
+      "on_death": { "act": { "name": "Scream", "effect": "drain_rerolls", "value": 1, "text": "Pulled up, it screams: the team loses a reroll next round." } },
       "actions": [
-        { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "text": "A whip of root for {damage}.", "status": "implemented" },
-        { "id": "scream", "name": "Scream", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "text": "Costs the team a reroll next round.", "status": "implemented" }
+        { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "text": "A whip of root for {damage}.", "status": "implemented" }
       ],
       "flavour": "The screaming is not the attack. The screaming is what it does to your plan."
     },
     {
       "id": "alraune", "name": "Alraune", "faction": "meadow", "tier": 3,
       "design": { "fantasy": "The alraune, the genre's flower woman, here a root that steals an entry. Tier three of the mandragora line." },
-      "codex": "The flowering root. Its shriek jams the component a machine's die is showing.",
+      "codex": "The flowering root. Its shriek jams the component a machine's die is showing, and it screams as it dies: a reroll off the team next round.",
       "hp": 5, "attack": 5, "rank": "back", "movespeed": 2,
+      "on_death": { "act": { "name": "Scream", "effect": "drain_rerolls", "value": 1, "text": "Pulled up, it screams: the team loses a reroll next round." } },
       "actions": [
         { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "text": "A whip of root for {damage}.", "status": "implemented" },
         { "id": "shriek", "name": "Shriek", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to wood, through its next turn.", "status": "implemented" }
@@ -278,12 +280,12 @@
     },
     {
       "id": "antlion_queen", "name": "Antlion Queen", "faction": "waste", "tier": 3,
-      "design": { "fantasy": "The antlion grown to a queen: the Waste's big fixed blow on a countdown. Tier three of the antlion line." },
-      "codex": "The queen of the pit. Its Devour is announced a round ahead; hurt, it digs in behind three points of plate.",
+      "design": { "fantasy": "The antlion grown to a queen: a bite that feeds her, so a fight with her is a race against what she eats back. Tier three of the antlion line. Devour gathered a round for a blow of 10 until 17 November (Ryan's mark on the rank and file's countdowns: \"too ubiquitous. Should be primarily an elite or boss mechanic\"; his yes to the bench's row the same day)." },
+      "codex": "The queen of the pit. Its Devour is a bite that feeds it, three hit points back each time; hurt, it digs in behind three points of plate.",
       "hp": 9, "attack": 8, "rank": "front", "movespeed": 2, "role": "hunter",
       "actions": [
         { "id": "mandibles", "name": "Mandibles", "kind": "attack", "weight": 2, "text": "Jaws close on the hull for {damage}.", "status": "implemented" },
-        { "id": "devour", "name": "Devour", "kind": "attack", "factor": 1.25, "countdown": 1, "weight": 1, "text": "Rears for a round, then devours: {damage}.", "status": "implemented" },
+        { "id": "devour", "name": "Devour", "kind": "attack", "weight": 1, "also": [{"effect": "recover", "value": 3}], "text": "A bite for {damage} that feeds her: she recovers 3 HP.", "status": "implemented" },
         { "id": "burrow", "name": "Burrow", "kind": "defend", "effect": "brace", "value": 3, "weight": 1, "when": "below_half", "text": "Digs in: armour +{value} until its next turn.", "status": "implemented" }
       ],
       "flavour": "Everything in the badlands is something's lunch. This is the something."
@@ -302,19 +304,21 @@
     {
       "id": "basilisk", "name": "Basilisk", "faction": "waste", "tier": 2,
       "design": { "fantasy": "The basilisk, the gaze that turns what a machine shows to stone. Tier two of the cockatrice line. It aimed at the armed until 17 November, when every foe's own aim went; whether its gaze gets a word of its own is the tiers' pass's." },
-      "codex": "A cockatrice with the stone gaze: its stone switches off the component a machine is showing.",
+      "codex": "A cockatrice with the stone gaze: its stone switches off the component a machine is showing, and its stare holds a machine still for the rest of the pack, Exposed.",
       "hp": 5, "attack": 4, "rank": "back", "movespeed": 2, "winged": true,
       "actions": [
         { "id": "peck", "name": "Peck", "kind": "attack", "weight": 2, "text": "A beak like a pick, for {damage}.", "status": "implemented" },
-        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" }
+        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" },
+        { "id": "transfix", "name": "Transfix", "kind": "debuff", "effect": "expose", "weight": 1, "when": "others_on_field", "text": "Its stare holds one machine still: it stands Exposed through the next round, its armour counting for nothing and every foe's targeted move turned on it.", "status": "implemented" }
       ],
       "flavour": "It looks at what you are pointing at it. Then that stops working."
     },
     {
       "id": "gorgon", "name": "Gorgon", "faction": "waste", "tier": 3,
       "design": { "fantasy": "The gorgon, theft of entries by corruption on the back rank. Tier three of the cockatrice line." },
-      "codex": "The gaze that corrupts. Its peck leaves the component a machine is showing biting its owner, and its stone switches one off.",
+      "codex": "The gaze that corrupts. Its peck leaves the component a machine is showing biting its owner, and its stone switches one off. Its last look is for whoever kills it: the entry that machine shows turns to stone too.",
       "hp": 6, "attack": 5, "rank": "back", "movespeed": 2, "winged": true,
+      "on_death": { "act": { "name": "Dying Gaze", "effect": "jam", "text": "Her gaze outlives her: what her killer's die is showing turns to stone, through its next turn." } },
       "actions": [
         { "id": "peck", "name": "Peck", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "corrupt": 1, "text": "A beak like a pick, for {damage}; the component the machine is showing bites when spent.", "status": "implemented" },
         { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" }
@@ -425,12 +429,13 @@
     {
       "id": "lich", "name": "Lich", "faction": "marsh", "tier": 3,
       "design": { "fantasy": "The lich, the Marsh's commander: a backliner of its own since 10 November, no rung of the revenant's line (Ryan: 'its no longer a revenant. It's its own thing ... a lich its own backliner to pair with it'); it stands behind the Draugr at tier three. Its sprite is still the Revenant's in another hue, a placeholder until it has art of its own. Its Dark Rite, a delayed heal on a countdown, is planned until the engine has a special with a countdown (Ryan, 28 October, mentioned a delayed heal; not built here)." },
-      "codex": "The dead that commands the dead. It readies an ally to get back up once, and strikes from the back. Reach it, or purge what it readies.",
+      "codex": "The dead that commands the dead. It readies an ally to get back up once, names one machine for all of them to turn on, Exposed, and strikes from the back. Kill it and what it readied will not get back up. Reach it, or purge what it readies.",
       "hp": 6, "attack": 4, "rank": "back", "movespeed": 2,
+      "on_death": { "act": { "name": "Unbound", "effect": "unready_all", "text": "What it readied falls with it: every foe it readied to get back up will not." } },
       "actions": [
         { "id": "soul_bolt", "name": "Soul Bolt", "kind": "attack", "weight": 2, "text": "A bolt of cold for {damage}.", "status": "implemented" },
         { "id": "reraise", "name": "Reraise", "kind": "buff", "effect": "revive_once_ally", "weight": 1, "when": "ally_unready", "text": "Readies one of its own, never itself: the next time it falls it gets back up, whole, once.", "status": "implemented" },
-        { "id": "dark_rite", "name": "Dark Rite", "kind": "defend", "effect": "heal_all", "value": 3, "countdown": 2, "weight": 1, "text": "A rite that lands two rounds on: heals every foe on its side for {value}.", "status": "planned" }
+        { "id": "command", "name": "Command", "kind": "debuff", "effect": "expose", "weight": 1, "when": "others_on_field", "text": "It names one machine for all the dead: it stands Exposed through the next round, its armour counting for nothing and every foe's targeted move turned on it.", "status": "implemented" }
       ],
       "flavour": "It does not fight. It makes sure the others do not stop."
     },
@@ -621,11 +626,11 @@
     {
       "id": "salamander", "name": "Salamander", "faction": "peak",
       "design": { "sprite": "a long low red lizard crawling on all four legs close to the ground, glowing lava cracks across its scales, flames running along its spine", "variants": ["a long low red lizard crawling on all four legs close to the ground, glowing lava cracks across its scales and flames running along its spine, its head raised and its jaws open to bite", "a long low dark red lizard with a crest of jagged black horns and flames running along its spine, rearing its front half up off the ground and hissing, its tail curled behind it", "a long low red lizard armoured in plates of cooled black lava with glowing cracks between them, lunging forward close to the ground with its jaws wide and smoke trailing from its nostrils", "a long low orange-red lizard with a frill around its neck spread wide like a fan of flame, crouched low on all four legs with glowing lava cracks across its scales, its tail lashing"], "fantasy": "The lizard that lives in the fire. Its hide burns what touches it.", "niche": "Front rank, scorching blows, and a hide that burns back. The melee machines pay to hit it.", "notes": "Ember Hide, a foe-side retaliate, is planned: it waits on section 12's question of Retaliate for the foes' counters." },
-      "codex": "A lizard the size of a car that lives in the lava and does not notice. Its bites burn, and so does its hide.",
+      "codex": "A lizard the size of a car that lives in the lava and does not notice. Its bites burn, and when it dies its embers scatter over every machine.",
       "hp": 6, "attack": 4, "rank": "front", "movespeed": 2,
+      "on_death": { "act": { "name": "Embers", "effect": "scorch_all", "value": 1, "text": "Its embers scatter as it falls: every machine scorched, ×{value}." } },
       "actions": [
-        { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 1, "text": "A burning bite for {damage}. It scorches.", "status": "implemented" },
-        { "id": "ember_hide", "name": "Ember Hide", "kind": "defend", "effect": "retaliate", "weight": 1, "text": "Whatever strikes it up close runs hot.", "status": "planned" }
+        { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 1, "text": "A burning bite for {damage}. It scorches.", "status": "implemented" }
       ],
       "flavour": "Do not pet the lizard."
     },
@@ -924,11 +929,12 @@
     {
       "id": "wild_hunt_rider", "name": "Rider of the Wild Hunt", "faction": "marsh", "elite": true, "wanders": true,
       "design": {"fantasy": "The Wild Hunt, the riders of European folklore that cross the winter sky and take whoever they catch, the Witcher's take the homage (riders in spiked plate on gaunt horses, frost in their wake; the name is folklore's, so it stays). Ryan, 3 November: \"Wild Hunt is better, and this is a good place to make an elite pack of multiple clones instead of a unique unit\", a wanderer: the Hunt rides between worlds, so it rides out of any rift.", "niche": "Three riders, winged, hunting the slowest machine, the one that cannot outrun the Hunt. Each lance is a point harder for every other rider standing, the engine's swarm, so the pack is the threat and thinning it is the answer; Frost switches off the entry its target shows.", "notes": "Landed 3 November as a placeholder kit on Ryan's marks, the first elite composition led by a foe at a strength above one; every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py) until a render is picked.", "sprite": "a gaunt rider in black spiked plate with a horned helm astride a skeletal horse wreathed in frost, a long lance couched, riding on the air, drawn retro"},
-      "codex": "They ride in threes across the sky and take the slowest. Each lance hits harder for every other rider still up, and their frost jams whatever a machine is showing. Thin them, and the Hunt is only a rider.",
+      "codex": "They ride in threes across the sky and take the slowest. Each lance hits harder for every other rider still up, their frost jams whatever a machine is showing, and one of them names the quarry: Exposed, with the Hunt turned on it. Thin them, and the Hunt is only a rider.",
       "hp": 20, "attack": 10, "rank": "front", "movespeed": 3, "winged": true,
       "actions": [
         {"id": "lance", "name": "Lance", "kind": "attack", "swarm": 1, "weight": 2, "text": "A lance from the Hunt for {damage}: more for every other rider standing.", "status": "implemented"},
-        {"id": "frost", "name": "Frost", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Frost in its wake: {damage}, and the entry it shows is Jammed through its next turn.", "status": "implemented"}
+        {"id": "frost", "name": "Frost", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Frost in its wake: {damage}, and the entry it shows is Jammed through its next turn.", "status": "implemented"},
+        {"id": "quarry", "name": "Name the Quarry", "kind": "debuff", "effect": "expose", "weight": 1, "when": "others_on_field", "text": "A rider names the quarry: it stands Exposed through the next round, its armour counting for nothing and every foe's targeted move turned on it.", "status": "implemented"}
       ],
       "flavour": "Gate order four, footnote: they are not from the Marsh. They are not from anywhere."
     },
@@ -1019,10 +1025,10 @@
     {
       "id": "piercing_eye", "name": "Piercing Eye", "faction": "waste",
       "design": {"fantasy": "One of the Fallen Weapon's two eyes, a part of the boss in parts (the slate's Exor homage; Claude's lean on the eyes' blows, the Waste's two halves).", "niche": "A part: while both eyes stand the core is Guarded; it grows back three rounds after it falls while the core stands, and falls with the core.", "notes": "Landed 30 October as a runnable placeholder kit for Ryan's marks (the slate, docs/bosses_proposal.md); every number a placeholder. No art yet: the placeholder shape until the eyes are cut from the axe or rendered apart.", "sprite": "a huge disembodied glaring amber eye set in a crescent of cracked bronze axe blade, floating above the ground, veins of light running out from it across the metal", "variants": ["a huge disembodied glaring amber eye set in a crescent of cracked bronze axe blade, floating above the ground, veins of light running out from it across the metal"]},
-      "codex": "An eye in the Fallen Weapon's blade. While it and its twin stand, the weapon cannot be hurt. Its stare is the one that strikes.",
+      "codex": "An eye in the Fallen Weapon's blade. While it and its twin stand, the weapon cannot be hurt. Its stare is the one that strikes, and what it strikes stands Exposed.",
       "hp": 8, "attack": 8, "rank": "front", "movespeed": 1,
       "actions": [
-        {"id": "gaze", "name": "Gaze", "kind": "attack", "weight": 1, "text": "A stare with weight behind it: {damage}.", "status": "implemented"}
+        {"id": "gaze", "name": "Gaze", "kind": "attack", "weight": 1, "keywords": ["expose"], "text": "A stare with weight behind it: {damage}, and the machine it lands on stands Exposed through the next round.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: do not meet its eye. It will meet yours."
     },
@@ -1327,8 +1333,7 @@
       "codex": "It does not hit hard. It takes things: a reroll here, the weapon you were about to use there. Hurt, it puts on a show: a blow at every machine.",
       "hp": 18, "attack": 8, "rank": "front",
       "actions": [
-        { "id": "mug", "name": "Mug", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "corrupt": 1, "text": "A blow for {damage} that corrupts the component the machine is showing.", "status": "implemented" },
-        { "id": "steal", "name": "Steal", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "text": "Takes a reroll from the team for next round.", "status": "implemented" },
+        { "id": "mug", "name": "Mug", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "corrupt": 1, "also": [{"effect": "drain_rerolls", "value": 1}], "text": "A blow for {damage} that corrupts the component the machine is showing, and a hand in the team's pocket: a reroll off next round.", "status": "implemented" },
         { "id": "showtime", "name": "Showtime", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "Showtime: {damage} to every machine.", "status": "implemented" }
       ],
       "flavour": "Check your pockets. Check the gun."
@@ -1348,11 +1353,11 @@
     {
       "id": "cleric", "name": "The Cleric", "faction": "marsh", "hero": true,
       "design": { "sprite": "a plump young man with light brown skin and curly black hair, in layered white robes with red and gold trim and a high collar, holding a tall staff topped with a glowing crystal upright in both hands", "variants": ["an elderly woman with deep brown skin and white hair under a hood, in layered white robes with red and gold trim and a high collar, leaning on a tall staff topped with a glowing crystal", "a plump young man with light brown skin and curly black hair, in layered white robes with red and gold trim and a high collar, holding a tall staff topped with a glowing crystal upright in both hands", "a tall stern middle-aged woman with pale skin and a severe grey bun, in layered white robes with red and gold trim and a high collar, one hand raised in blessing and a tall staff topped with a glowing crystal in the other", "a slight young woman with olive skin and short black hair, in layered white robes with red and gold trim and a high collar, clutching a tall staff topped with a glowing crystal close to her chest"], "fantasy": "The healer who heals the dead: the homage to every white mage and priest, the Cleric since 16 October (Ryan: the genre's generic word; the White Mage until then, the bench's Priest folded in, their kits much alike). The lesson every JRPG teaches: kill the healer first. Its robe's red trim, the one thing about it that is only Final Fantasy's, goes at its next redraw. The id cleric since 9 November.", "niche": "Back rank behind a wall of the dead, keeping it standing: Cure on whichever is most hurt, itself included. Reach it, and burst beats its regrowth. Dia between, and Holy below half, which is big." },
-      "codex": "It hardly fights. It stands behind the dead and keeps them standing, the worst hurt healed first, itself among them. Reach it or lose the fight slowly. When it is hurt it has one spell left, and it is a big one.",
+      "codex": "It hardly fights. It stands behind the dead and keeps them standing, the worst hurt healed first and cleansed of your marks, itself among them. Reach it or lose the fight slowly. When it is hurt it has one spell left, and it is a big one.",
       "hp": 18, "attack": 4, "rank": "back",
       "actions": [
         { "id": "dia", "name": "Dia", "kind": "attack", "weight": 2, "text": "A lance of white light for {damage}.", "status": "implemented" },
-        { "id": "cure", "name": "Cure", "kind": "defend", "effect": "heal", "value": 4, "weight": 1, "when": "ally_hurt", "text": "Heals the most hurt of its own for {value} HP.", "status": "implemented" },
+        { "id": "cure", "name": "Cure", "kind": "defend", "effect": "heal", "value": 4, "also": [{"effect": "cleanse"}], "weight": 1, "when": "ally_hurt", "text": "Heals the most hurt of its own for {value} HP, and lifts every mark the team laid on it.", "status": "implemented" },
         { "id": "holy", "name": "Holy", "kind": "attack", "factor": 3.0, "weight": 2, "when": "below_half", "text": "Everything it has, as light: {damage}.", "status": "implemented" }
       ],
       "flavour": "It healed the thing that was eating the gate. Then it looked at us."

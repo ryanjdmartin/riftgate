@@ -1590,7 +1590,7 @@ static func form_mark(ms: Skirmish.MechState, f: Face) -> String:
 ## intents with a rider need to show that rider as part of the intent chip"): each keyword its
 ## move carries by its term's mark in its term's colour (Terms), a numbered one with its stacks
 ## (Scorch 2: two), so a scorch or a blow at every machine is read off the chip itself.
-static func intent_riders(foe: Foe) -> Array:
+static func intent_riders(foe: Foe, inert: Array = []) -> Array:
 	var out: Array = []
 	if foe == null:
 		return out
@@ -1603,8 +1603,8 @@ static func intent_riders(foe: Foe) -> Array:
 		return out
 	for k in foe.action.get("keywords", []):
 		var id := str(k)
-		if not Terms.has(id) or Terms.glyph(id).is_empty():
-			continue
+		if not Terms.has(id) or Terms.glyph(id).is_empty() or inert.has(id):
+			continue   # a rider that will lay nothing this round wears no mark (`inert`: a blow's Expose while a machine stands Exposed)
 		out.append([Terms.glyph(id), str(foe.rider(foe.action, id)) if Foe.NUMBERED_RIDERS.has(id) else "", Terms.colour(id)])
 	out.append_array(_step_marks(foe.action, out))
 	return out
@@ -2496,7 +2496,10 @@ func _intent_chip(foe: Foe) -> Array:
 ## alone.
 func _intent_read(foe: Foe) -> Array:
 	var blow := foe.attacks() or foe.gathering()
-	return [sk.intent_value(foe), ("×%d" % foe.strikes()) if blow and foe.strikes() > 1 else "", intent_riders(foe) if blow or Foe.exposes(foe.action) or foe.action.has("also") else []]
+	# A blow's Expose lays nothing while a machine stands Exposed or another's is out ahead of it
+	# (Skirmish.expose_rider_lands): its mark is off the chip for that round.
+	var inert: Array = ["expose"] if Foe.is_attack_action(foe.action) and foe.has_keyword(foe.action, "expose") and not sk.expose_rider_lands(foe) else []
+	return [sk.intent_value(foe), ("×%d" % foe.strikes()) if blow and foe.strikes() > 1 else "", intent_riders(foe, inert) if blow or Foe.exposes(foe.action) or foe.action.has("also") else []]
 
 
 ## A stat in a hold, as the codex has it: its label, its base in ink and the change in a

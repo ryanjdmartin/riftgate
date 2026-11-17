@@ -5551,6 +5551,69 @@ func test_a_disrupt_breaks_off_a_gathering_move() -> void:
 	assert_eq(Foe.countdown_of(back.pending), 2, "a whole number")
 
 
+## A cleanse that follows a heal in one move has the heal's patient (the Cleric's Cure, Ryan's
+## yes of 17 November: "Cure heals 4, then cleanses the same foe"), whoever else carries more
+## marks; a cleanse of its own still finds the most marked.
+func test_a_cleanse_after_a_heal_lands_on_the_foe_it_mended() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 40, 100))
+	var healer := Foe.make("mage", 60, 10, true)
+	healer.actions = [{"id": "cure", "name": "Cure", "kind": "defend", "effect": "heal", "value": 20, "weight": 1, "text": "",
+		"also": Foe.also_from([{"effect": "cleanse"}], "Cure")}]
+	healer.action = healer.actions[0]
+	var hurt := _ghoul(100, 10)
+	var marked := _ghoul(100, 10)
+	sk.add_foes([hurt, marked, healer])
+	sk.begin()
+	hurt.hp = 50
+	Effects.stack(hurt, Effects.STATUS["brittled"], Effects.SKIRMISH, "mech", 1)
+	Effects.stack(marked, Effects.STATUS["brittled"], Effects.SKIRMISH, "mech", 4)
+	Effects.stack(marked, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 2)
+	sk.start_round()
+	assert_eq(sk.cleanse_target(healer), marked, "a cleanse of its own would find the most marked")
+	sk.end_round()
+	assert_eq(hurt.hp, 70, "the most hurt is mended")
+	assert_false(Effects.has(hurt, "brittled"), "and the same foe is cleansed")
+	assert_true(Effects.has(marked, "brittled") and Effects.has(marked, "cryoed"), "the more marked foe keeps its marks: one patient a Cure")
+	# With nobody hurt the heal mends nobody, and the cleanse goes by its own rule.
+	hurt.hp = hurt.hp_max
+	sk.start_round()
+	sk.end_round()
+	assert_false(Effects.has(marked, "cryoed"), "no patient, so the step is a cleanse like any: the most marked")
+
+
+## The one fall that pays the team (the Lich's, Ryan's yes of 17 November: "Killed, every foe it
+## readied loses its readiness to rise"): every foe still standing loses the Undying the fallen
+## foe's kind gave it. What a foe readied for itself stays, and one felled by the same blow
+## had its readiness as it fell, so it gets up.
+func test_a_fall_takes_back_the_readiness_its_foe_gave() -> void:
+	var sk := Skirmish.new(1, 4)
+	var sweep := Face.attack(200, I, K.CLEAVE)
+	sweep.cleave = 200
+	sk.add_mech(_mech("A", Die.single(sweep), 0, 500))
+	var binder := Foe.make("binder", 10, 0)
+	binder.content_id = "binder"
+	binder.on_death = {"act": Foe.fall_act_from({"name": "Unbound", "effect": "unready_all"})}
+	var readied := _ghoul(500, 0)
+	var own := _ghoul(500, 0)
+	own.content_id = "knight"
+	var beside := _ghoul(10, 0)
+	sk.add_foes([beside, binder, readied, own])
+	sk.begin()
+	Effects.stack(readied, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:binder", 1, Effects.DECAY_NONE)
+	Effects.stack(beside, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:binder", 1, Effects.DECAY_NONE)
+	Effects.stack(own, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:knight", 1, Effects.DECAY_NONE)
+	sk.start_round()
+	assert_true(absi(binder.column - beside.column) == 1 and binder.rank == beside.rank, "the binder stands beside a foe it readied")
+	assert_true(sk.assign(0, binder), "a blow that fells the binder and the foe beside it")
+	assert_false(binder.alive(), "the binder falls")
+	assert_false(Effects.has(readied, "risen"), "what it readied will not get back up")
+	assert_true(Effects.has(own, "risen"), "a foe that readied itself keeps its own")
+	assert_true(beside.alive() and beside.hp == beside.hp_max, "and the foe felled with it fell readied: it gets up")
+	assert_true("\n".join(sk.log).contains("will not get back up"), "the log says who lost it: %s" % sk.log[sk.log.size() - 1])
+	assert_true(Foe.FALL_EFFECTS.has("unready_all") and Foe.UNTARGETED_EFFECTS.has("unready_all"), "a fall's effect, aimed at no machine")
+
+
 func test_a_healer_cures_the_most_hurt_of_its_own() -> void:
 	# The Cleric's Cure (15 October): foes helping foes.
 	var sk := Skirmish.new(1, 3)

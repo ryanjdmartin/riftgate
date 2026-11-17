@@ -217,6 +217,7 @@ var _enemy_acting := false
 ## outside one: a tick's kill, a Mine blowing in the enemy's turn and a foe's own burst are
 ## nobody's. A fall's curse lands on it (_last_act).
 var _killer: MechState = null
+var _mended: Foe = null   # the foe a move's heal mended, for a cleanse that follows it in the same move (the Cleric's Cure, one patient); cleared as each move's first step begins
 ## Every blow of the last enemy turn, in order, for the screen to replay:
 ## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull,
 ## seq, name, boss, all}. `seq` orders it among the turn's specials; `name` is the move's shown
@@ -1567,7 +1568,8 @@ func _draw_blows(f: Foe, ahead: Dictionary) -> void:
 
 ## The moves a foe may announce this round: those whose conditions hold, less the special
 ## it announced last round when anything else is open (a special never fires twice running,
-## so the swing after the roar can be counted on). Nothing legal falls back to its blow.
+## so the swing after the roar can be counted on). Nothing legal falls back to its blow, one
+## whose own condition holds before any other.
 ## `announced` is the foes whose move for this round is already out, as the round's opening
 ## hands them down the strike order; unsaid, it is every foe on the field (the player's turn,
 ## where a Disrupt reads what a foe would turn to).
@@ -1598,6 +1600,14 @@ func legal_actions(f: Foe, announced = null) -> Array:
 				kept.append(a)
 		if not kept.is_empty():
 			legal = kept
+	if legal.is_empty():
+		# Nothing legal falls back to its blow: first a blow whose own condition holds, which
+		# only a rule of announcing held back (a blow that also takes a reroll past the round's
+		# two, the Thief's Mug; a blow whose rider is a second Expose, the Piercing Eye's Gaze),
+		# so a foe never reaches for a move its own condition shuts; then any blow at all.
+		for a in f.actions:
+			if Foe.is_attack_action(a) and not follow.has(str(a.get("id", ""))) and _when_holds(f, a) and not (bool(a.get("once", false)) and f.spent_once.has(str(a.get("id", "")))):
+				legal.append(a)
 	if legal.is_empty():
 		for a in f.actions:
 			if Foe.is_attack_action(a):
@@ -2887,7 +2897,11 @@ func _strike(f: Foe, t: MechState) -> void:
 			var nc := f.rider(f.action, "brittle")
 			_fire_on(t, "brittled_mech", nc, f)
 			log.append("%s lays Brittle ×%d on %s: every blow it takes lands harder" % [f.display_name, nc, t.unit.display_name])
-		if f.has_keyword(f.action, "expose") and t.alive():
+		if f.has_keyword(f.action, "expose") and t.alive() and not _any_exposed():
+			# One machine at a time, and never a mark renewed (the rule of announcing, legal_actions):
+			# a blow whose rider this is may be its foe's one move (the Piercing Eye's Gaze), so the
+			# rider lands nothing while a machine stands Exposed, and the whole field's fire still
+			# comes every other round at the most.
 			_expose_mech(f, t)
 		if f.has_keyword(f.action, "destroy") and t.alive() and int(ev["through"]) > 0:
 			# Destroy (Ryan, 15 November: "a boss-level rider, that destroys the visible face if it
@@ -3137,6 +3151,20 @@ func expose_announced(f: Foe, announced = null) -> bool:
 			continue   # stepped up this round with no move out, or held this round: it lays nothing
 		return true
 	return false
+
+
+## Would this foe's blow lay its Exposed as the round stands (a rider on a blow, _strike): no
+## machine stands Exposed, and no foe that strikes before it this round is laying one? The
+## intent's read, so the mark on its chip is the truth: one machine at a time.
+func expose_rider_lands(f: Foe) -> bool:
+	if _any_exposed():
+		return false
+	var ahead: Array = []
+	for o in field_foes():
+		if o == f:
+			break
+		ahead.append(o)
+	return not expose_announced(f, ahead)
 
 
 func _fire_on(t: MechState, id: String, n: int, f: Foe) -> void:
@@ -3884,6 +3912,7 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 		log.append("%s: %s, and no machine stands to take it" % [f.display_name, str(a.get("name", effect))])
 		return
 	if first:
+		_mended = null
 		turn_specials.append({"foe": f, "name": str(a.get("name", "")), "kind": Foe.kind_of(a), "seq": _seq})
 		_seq += 1
 		if bool(a.get("once", false)):
@@ -3914,6 +3943,7 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			else:
 				var before := hurt.hp
 				hurt.hp = mini(hurt.hp_max, hurt.hp + value)
+				_mended = hurt
 				log.append("%s: %s, heals %s for %d" % [f.display_name, str(a.get("name", "heals")), hurt.display_name, hurt.hp - before])
 		"brace_all":
 			# Armoured on every foe in the fight, on the one clock every Armoured runs (15
@@ -4036,12 +4066,41 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			# A foe's cleanse (28 October, the Marsh's lever: "debuffs are hard here"): every mark
 			# the team laid off the most-marked of its own, itself included; never Numbed, never
 			# Suppressed, never a buff.
-			var marked := cleanse_target(f)
+			# A cleanse that follows a heal in one move has the heal's patient (the Cleric's Cure,
+			# Ryan's yes of 17 November: "Cure heals 4, then cleanses the same foe").
+			var same: bool = not first and _mended != null and _mended.alive()
+			var marked: Foe = _mended if same else cleanse_target(f)
 			if marked == null:
 				log.append("%s: %s, and none of its own carries a mark" % [f.display_name, str(a.get("name", "cleanses"))])
 			else:
 				var gone := Effects.clear_marks(marked)
-				log.append("%s: %s, %s loses %s" % [f.display_name, str(a.get("name", "cleanses")), marked.display_name, ", ".join(gone).to_lower()])
+				if gone.is_empty():
+					log.append("%s: %s, and %s carries no mark to lift" % [f.display_name, str(a.get("name", "cleanses")), marked.display_name])
+				else:
+					log.append("%s: %s, %s loses %s" % [f.display_name, str(a.get("name", "cleanses")), marked.display_name, ", ".join(gone).to_lower()])
+		"unready_all":
+			# The Lich's fall (Ryan's yes of 17 November to the bench's row: "Killed, every foe it
+			# readied loses its readiness to rise"): every other foe still standing loses the
+			# Undying this foe's kind gave it. What a foe readied for itself is its own and
+			# stays, and one felled by the same blow has fallen with its readiness: it gets up.
+			var lost: Array[String] = []
+			for other in field_foes():
+				if other == f or not other.alive():
+					continue
+				var keep: Array = []
+				var stripped := false
+				for m in other.modifiers:
+					if m.id == "risen" and m.source == "foe:" + f.content_id:
+						stripped = true
+					else:
+						keep.append(m)
+				if stripped:
+					other.modifiers = keep
+					lost.append(other.display_name)
+			if lost.is_empty():
+				log.append("%s: %s, and nothing it readied still stands" % [f.display_name, str(a.get("name", "falls"))])
+			else:
+				log.append("%s: %s, %s will not get back up" % [f.display_name, str(a.get("name", "falls")), ", ".join(lost)])
 		"barrier":
 			# A foe's Barrier (28 October, the Waste's burrow by lean): the next weapon blow it
 			# takes deals nothing, its riders landing; a debuff pops nothing; it goes as its next

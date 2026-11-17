@@ -2943,3 +2943,52 @@ foe's Phased will stand on the same guard.
 "Yes. That's the risk, same as taking hull damage with no shield." The session's read of
 section 33 is his word now: heat laid on a machine once its reboot has vented stays. Nothing
 to build; the bible's row and the brief's spec line carry his words.
+
+### Built: the rows that are content, and two that needed a little engine
+
+Rows 1, 3 to 11, 13 and 14 are in content (`content/foes.json`), every number a placeholder
+and every shown text a session's draft. The rules are `docs/rules.md`'s (Foes).
+
+| Row | As built | A name or a rule of the session's, his to change |
+|---|---|---|
+| 1 | The Antlion Queen's Devour is a bite of 8 with a step that recovers 3. No gather | |
+| 3 | The Mandragora and the Mandrake keep Root Lash alone and scream as a fall. The Alraune keeps its Shriek and gains the fall | The fall keeps the move's name, Scream |
+| 4 | The Gorgon's fall Jams the entry her killer shows. She keeps Peck and Stone | The fall's name, Dying Gaze |
+| 5 | The Lich's fall takes back the readiness it gave, a fall effect built for it | The fall's name, Unbound |
+| 6 | The Salamander's fall Scorches every machine 1. Its unbuilt Ember Hide is gone | The fall's name, Embers |
+| 7 | The Basilisk's third move Exposes | Its name, Transfix |
+| 8 | The Alpha Warg's third move Exposes | Its name, Mark Prey |
+| 9 | The Lich's third move Exposes, where the unbuilt Dark Rite stood | Its name, Command |
+| 10 | The Rider of the Wild Hunt's third move Exposes | Its name, Name the Quarry |
+| 11 | The Piercing Eye's Gaze carries Expose as a rider | |
+| 13 | The Thief's Mug is the blow, its Corrupt, and then a reroll off the next round. Steal is gone | |
+| 14 | The Cleric's Cure heals 4, then cleanses the foe it healed | |
+
+Every Expose of a foe's own is cast while another foe stands to follow it, as the Goblin
+Warchief's is. A yes put each where its foe already stands, so no formation changed.
+
+What followed from the rows and was built so:
+
+- **The Piercing Eye marks every other round at the most.** Gaze is its one move, so the
+  rule of announcing cannot hold it back. The rider is held instead: a blow's Expose lays
+  nothing while a machine stands Exposed, never a second mark and never the first renewed,
+  and its intent wears no mark for it that round.
+- **The Lich's fall reaches what stands.** Every foe still standing that a Lich readied
+  loses its readiness. What a foe readied for itself, the Dread Knight's own Reraise, stays.
+  A foe felled by the same blow as the Lich fell readied and gets up. With two Liches on a
+  field, either one's fall takes back what both gave: the engine tells a readiness by the
+  kind that gave it.
+- **The Cure has one patient.** A cleanse that follows a heal in one move lands on the foe
+  the heal mended, whoever else carries more marks. A cleanse of its own still finds the
+  most marked.
+- **The Thief always has a move.** With the round's rerolls spoken for, the rule of
+  announcing would hold Mug back and leave only Showtime, which its own condition shuts.
+  A foe left with nothing to announce now takes a blow whose own condition holds before any
+  other, so it Mugs, and what the theft takes past the round's rerolls is nothing.
+- **The Gorgon's gaze takes the entry just spent.** The killer has spent its die, so the
+  entry it shows is the one it used: that entry is blank through its next turn.
+- **The formations' notes** that told of the screamers draining a reroll a round say the
+  fall now (`content/factions.json`, never shown).
+
+The synergy map reads a foe's fall since this build (`tools/synergy_map.py`): it had read
+moves alone, and the Mandragora's scream had left it.

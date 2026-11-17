@@ -54,7 +54,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1269 tests, 373,357 checks, green on `ccr-722ca9f0-yj8na3` (17 November, nothing
+- Tests: 1273 tests, 373,381 checks, green on `ccr-722ca9f0-yj8na3` (17 November, twelve of
+  the bench's rows in content, over main at `7dcb221`). Before it, 1269 tests, 373,357 checks,
+  green on the same branch (17 November, nothing
   reaching a Roc aloft, over main at `f475a59`). Before it, 1269 tests, 373,351 checks, green
   on the same branch (17 November, the foes'
   targeting built afresh, over main at `d657a20`). The runner fails a run whose tests never
@@ -2147,7 +2149,9 @@ nineteenth round, sixteen rows put to him in chat: "yes to all, seems fine. Ill 
 tell in play. Except the red dragon"; the proposal's section 35 has the table): the Antlion
 Queen's bite in Devour's place, a fall for a domain each, Exposed's carriers, a foe's Phased
 on the Spectre and the Wraith, two moves as steps and three immunities, fifteen rows to
-build. The Red Dragon's row is held on his words and put back to him (the bible's section
+build. Twelve are in content since the same day (the section's Built table: the names of
+four falls and four Expose moves are a session's drafts); the ghosts' Phased and the three
+immunities need engine first. The Red Dragon's row is held on his words and put back to him (the bible's section
 12): it stands as it is until he says. **The Goblin Warchief is in** (17 November, his idea and his name: "a back
 rank goblin captain that gives orders and Exposes"; "more like warchief"): a back-rank unit of
 its own behind the Captains in the tier-three warband, the chieftain render cut for its sprite,

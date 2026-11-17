@@ -1783,6 +1783,16 @@ static func fall_steps_cost(sk: Skirmish, f: Foe, killer: Skirmish.MechState = n
 				for o in sk.field_foes():
 					if o != f and o.alive():
 						cost += PRIMED_WORTH * float(value)
+			"unready_all":
+				# The one fall that pays: every foe its kind readied stays down when it next
+				# falls, a second kill the team is spared, at that foe's whole HP.
+				for o in sk.field_foes():
+					if o == f or not o.alive():
+						continue
+					for m in o.modifiers:
+						if m.id == "risen" and m.source == "foe:" + f.content_id:
+							cost -= float(o.hp_max)
+							break
 	return cost
 
 
