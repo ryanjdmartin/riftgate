@@ -10477,6 +10477,74 @@ It pays more below the maximum and the same at it, and half as much for each hea
 past it. So a blast is worth taking early, and riding the burn for a bigger one buys less than
 it did.
 
+## 17 November: the machines the reboot reaches, one at a time, and three leans emulated
+
+Ryan, 17 November: "I want to examine the chassis that broke during the huge change to heat
+and shield and work on fixing them." The decision it informs: none yet; it is the read under
+`docs/reboot_machines_proposal.md`'s first round, his to mark.
+
+`tools/reboot_probe.gd`: each chassis first in a squad of four beside the Honey Badger, the
+Prairie Dog and the Cassowary, which the rule does not reach, the greedy bot. Tier one's
+formations and elites, 21 compositions at 8 seeds (168 fights a machine, `--seeds 8`), and tier
+one's bosses alone, 13 at 6 seeds (78, `--bosses --seeds 6`), on main at `0565624` (the vent at
+the drop, the Whip Scorpion's blast and a death blow on its killer in; a first read on `7beb2b4`
+before them matched it but for the Scorpion and the sealed bear). Of the machine's turns, the
+share it gave to a reboot and the share it stood bare of shield as the enemy struck; its own
+hull lost (a share of its own) and its fights wrecked. A direction.
+
+| The machine | Formations: rebooted, bare, own hull | Bosses: rebooted, bare | Bosses: own hull, wrecked |
+|---|---|---|---|
+| Honey Badger | 16%, 18%, 3% | 18%, 22% | 14%, 0% |
+| Wild Boar | 16%, 18%, 2% | 18%, 22% | 14%, 0% |
+| Prairie Dog | 11%, 13%, 6% | 13%, 17% | 28%, 5% |
+| Cassowary | 8%, 9%, 4% | 10%, 13% | 30%, 9% |
+| Polar Bear (sealed 7% and 16% of its turns) | 17%, 19%, 5% | 22%, 26% | 31%, 4% |
+| Storm Petrel | 11%, 35%, 7% | 16%, 42% | 33%, 10% |
+| Buzzard | 11%, 12%, 2% | 15%, 18% | 15%, 3% |
+| Kite | 19%, 20%, 8% | 23%, 24% | 36%, 17% |
+| Needletail | 25%, 25%, 4% | 29%, 30% | 23%, 1% |
+| Cottonmouth | 18%, 18%, 7% | 17%, 17% | 32%, 8% |
+| Skua | 14%, 15%, 7% | 17%, 21% | 29%, 4% |
+| Whip Scorpion (blasts 0.58 and 0.94 a fight) | 16%, 17%, 3% | 16%, 20% | 9%, 0% |
+| Stingray | 15%, 16%, 4% | 19%, 24% | 26%, 4% |
+| Nemesis | 19%, 21%, 3% | 20%, 24% | 18%, 0% |
+| Giant Petrel | 13%, 13%, 2% | 19%, 19% | 12%, 0% |
+
+The rest of the dealt roster, formations (rebooted, bare, own hull): the Dingo 15%, 16%, 5%; the
+Clydesdale 13%, 15%, 3%; the Ammit 13%, 15%, 3%; the Funnel-web 10%, 12%, 2%; the Baboon 9%,
+12%, 4%; the Musk Ox 9%, 13%, 2%; the Lammergeier 11%, 12%, 1%. Every formation was won, in four
+to six rounds, the squad losing 3% to 7% of its hull; against the bosses 94% to 100%, in 6.5 to
+12 rounds, the squad losing 14% to 30%.
+
+The three leans, `--whatif` (`bear_opens`, `petrel`, `petrel_hot`, `kite_bot`, `kite_mends`;
+the tool's header says what each lays over the fight), at the same seeds. The bear's lean was
+his ruling the same day and built on main at `d657a20`, its what-if cut from the tool with it;
+its row is the read of that rule before it landed:
+
+| The lean | Formations: bare, own hull, wrecked | Bosses: bare, own hull, wrecked | Bosses: rounds, won, squad |
+|---|---|---|---|
+| Polar Bear as built | 19%, 5%, 0% | 26%, 31%, 4% | 11.1, 97%, 30% |
+| The reboot opens it | 19%, 6%, 0% | 25%, 33%, 3% | 11.7, 96%, 31% |
+| Storm Petrel as built | 35%, 7%, 0% | 42%, 33%, 10% | 8.3, 100%, 24% |
+| The hook, the Regenerator kept | 17%, 5%, 0% | 25%, 30%, 6% | 10.8, 99%, 26% |
+| The hook, its lock a lure of heat 3 | 18%, 4%, 0% | 27%, 27%, 5% | 10.9, 96%, 28% |
+| Kite as built | 20%, 8%, 2% | 24%, 36%, 17% | 8.9, 99%, 27% |
+| A bot that fights a broken Kite on | 20%, 8%, 2% | 24%, 36%, 15% | 8.8, 99%, 27% |
+| That bot, and a kill mends | 19%, 7%, 1% | 23%, 36%, 15% | 8.8, 99%, 27% |
+
+What it says. In tier one's formations every machine reboots about once a fight and nothing
+breaks; against a boss the cycle shows. The Storm Petrel as built stands bare twice as often as
+anyone, its guns spending the shield it tanks with. The Kite is wrecked twice as often as the
+other lights against a boss, a lone boss leaving it nothing to kill; the mend moves a point in
+formations and nothing there. The Needletail gives the most turns to the reboot, two actions
+each, without paying in hull. The bear seals on few turns, so opening it on its reboot costs the
+bot two points of the bear's hull. The Petrel's hook halves its bare turns and its wrecks, and
+without the zap its fights run two rounds longer and the squad pays two to four points more; the
+two forms of its lock read alike. The reworked Whip Scorpion is the strongest machine read against
+a lone boss, 6.5 rounds with the squad losing 14%. The bot's play of the reboot is a first
+heuristic, blind to a seal's timing, a Kite's kill and a Petrel's plate, and today's foes were
+sized against a shield that refilled.
+
 ## 17 November: the formations that lost an aim, before and after
 
 The foes' targeting was built afresh that day (Ryan: "if it's the strongest/weakest/hottest
@@ -10563,3 +10631,43 @@ A direction, at 120 fights. Three things show.
 The rest sit inside noise. Two rows cannot show their change at all: the Pilgrim's
 immunity, since this squad carries no stun, and the Tyrant's and the Colossus's, whose
 fights no row here holds. Nor do the Thief and the Cleric, which stand in their finals.
+
+## 17 November: the Storm Petrel as landed, and its four builds
+
+Ryan, 17 November: "Storm Petrel: Your verdict leans are solid. We need upgrade branches since
+this is tier 1 ... Adjust the stock as you see fit, then land it and push it to main." The
+decision it informs: none of his; it is the read of the landing, and of whether a build breaks
+anything, the bot's play of the branches being a first heuristic (Hardened read as shield stood
+up against the blows its lure draws, Charged as its own blow again).
+
+`tools/reboot_probe.gd` (`--branches` since the same day), as in the entry above: the Storm
+Petrel first in a squad of four beside the Honey Badger, the Prairie Dog and the Cassowary, the
+greedy bot. Tier one's formations and elites, 21 compositions at 8 seeds (168 fights, `--seeds
+8`), and tier one's bosses alone, 13 at 6 seeds (78, `--bosses --seeds 6`), on
+`ccr-178e0404-ptuh2m` over main at `f8fb28b`. As landed: the hook a point of shield a point of
+heat, the plate, the lure at heat 3, the Arc Fault Cannon in the Shoring Jack's slot. Of the
+machine's turns, the share it gave to a reboot and the share it stood bare of shield as the
+enemy struck; its own hull lost (a share of its own), its fights wrecked, the squad's hull lost.
+
+| The build | Formations: rebooted, bare, own hull | Bosses: rounds, won | Bosses: rebooted, bare | Bosses: own hull, wrecked, squad |
+|---|---|---|---|---|
+| None, the stock as landed | 20%, 22%, 4% | 9.8, 99% | 26%, 30% | 28%, 6%, 23% |
+| Defence twice (Hardened, then Spread and a stack a foe lured) | 21%, 22%, 3% | 9.9, 97% | 25%, 28% | 26%, 8%, 25% |
+| Striker twice (Charged 2, then Chain 3) | 19%, 20%, 5% | 9.1, 100% | 24%, 27% | 27%, 8%, 23% |
+| Mixed (Hardened and Charged 2) | 19%, 20%, 4% | 9.1, 100% | 23%, 26% | 23%, 3%, 22% |
+
+Beside the entry above (the machine as built before it: bosses bare 42%, own hull 33%, wrecked
+10%, 8.3 rounds), read across two commits and so a direction only: the landed Petrel stands bare
+against a boss on 30% of its turns where it stood bare on 42%, gives a quarter of its turns to
+the reboot where it gave a sixth (its guns heat the gauge now, where they once burnt the shield),
+and its boss fights run a round and a half longer without the zap. Every formation was won, in
+five rounds or so, the squad losing 5% or 6% of its hull.
+
+What it says, at 78 fights a build against the bosses, a direction. No build breaks anything:
+every one wins its formations and all but three of 312 boss fights. The Striker's two shorten a
+boss fight by about two thirds of a round, its Charged shocking the next fires and the Arc Fault
+Cannon and the lure's arcs cashing them. The Defence's two take two points off the machine's
+own hull lost and add a wreck, inside this sample's noise: its Spread reaches only the foes
+beside the target in its rank, so Hardened passes one stack only where a rank holds two or
+three, and the bot weighs Hardened by a placeholder. The mixed build reads best on the
+machine's own hull and wrecks, two of 78, at the edge of what 78 fights can say. A pick share or a band waits for the runner and his play.

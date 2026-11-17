@@ -124,7 +124,7 @@ class MechState:
 class Hits:
 	var reach: int = 0              # the entry's reach as the hits began (the runner's reach tally)
 	var aimed_back := false         # the target stood in the back rank as they began (the tally)
-	var heat := 0                   # the spend's heat through the pipeline, once a spend; a shield's burn takes its share (_zap)
+	var heat := 0                   # the spend's heat through the pipeline, once a spend
 	var vent := 0                   # what the firer's modifiers vent off it
 	var dealt := 0                  # hull the blows took off foes standing, for the tally
 	var total := 0                  # what the hits landed on their own foes, for the log and the screen
@@ -135,7 +135,6 @@ class Hits:
 	var reached: Array = []         # every foe the blows reached, felled or not (the casings' refund)
 	var thawed := 0                 # Cryo stacks the hits spent, cooling the hitter once its heat lands (_pay_hits)
 	var damaged := 0                # the foes the blows took HP off (the on_damage trigger's read)
-	var steps := 0                  # the strikes the spend came in, a Ricochet's among them: what lands after them takes the next place (_zap)
 	## What the hits aimed at the spend's target fired at it, for the Mine its machine leaves there
 	## (Ryan, 9 November: "the mine should take the entire result of the spend, then apply it"):
 	## each status's stacks every hit laid, as its machine deepened and doubled them, its Purge
@@ -236,11 +235,14 @@ var returned: Array = []
 ## Every blow the latest spend landed on a foe, in the order it landed, for the screen to land a
 ## blow at a time in step with the strikes (Ryan, 2 November: "flechette pod and other multistrikes
 ## need to clearly show the strikes in order, with individual ticks of damage ... damage needs to
-## be timed to the animation across the board"): {foe, strike (from 0, the zap after the last),
+## be timed to the animation across the board"): {foe, strike (from 0, a shove after the last),
 ## taken (what the blow took off its HP), hp (after it), kind ("strike", "ricochet", "area",
-## "chain", "spill", "zap" or "mine")}, a blow on a foe an earlier hit felled included. Cleared as a
+## "chain", "spill", "shove" or "mine")}, a blow on a foe an earlier hit felled included. Cleared as a
 ## spend begins; the rules never read it.
 var spend_blows: Array = []
+## The foes the latest spend at a foe reached, felled or not (Hits.reached): what a grant on its
+## own machine counts a stack for (Face.self_statuses' per_foe). The rules never read it otherwise.
+var _reached_last := 0
 ## Every special of the last enemy turn (a defend, buff or debuff in place of a blow), for
 ## the screen to announce on its plaque in order: {foe, name, kind, seq}.
 var turn_specials: Array = []
@@ -673,29 +675,13 @@ func can_withdraw() -> bool:
 	return false
 
 
-## The shield a weapon's spend burns in place of `heat` (the Storm Petrel's Riot Field Generator,
-## Ryan's go of 21 October; built 30 October): as much of the gun's own heat as the shield holds
-## as it stands; the rest reaches the gauge, and so does a Scorched machine's
-## extra, which heats the bar and never the shield (Ryan, 8 November: "scorch affects the actual
-## heat bar, not the ammo cost ... Same as the storm petrel when its shield is up"; the forge
-## splits it the same way, Effects.ammo_price). Nothing for equipment, a forging machine's gun
-## (its heat is paid in ammo) or a machine whose shield pays nothing. `paid` is the shield a
-## shield cost takes first, when the spend is still to come (the die as shown, shown_face): a
-## strict cost is paid as the entry is spent, before the heat, and is never burnt into a blow
-## (Ryan, 4 November, asking whether the passive turns every shield cost into damage: it does not).
-static func shield_burn(ms: MechState, f: Face, heat: int, paid: int = 0) -> int:
-	if ms == null or f == null or not f.is_weapon() or heat <= 0 or ms.ammo_max > 0 or not Effects.burns_shield(ms.unit):
+## A plain blow of `amount` on a foe (the Wild Boar's shove): no keyword and no Shock read, through
+## what the foe takes and its armour; nothing on a Guarded core, as every blow there. The Storm
+## Petrel's zap was dealt so until its rework of 17 November.
+static func plain_blow_on(foe: Foe, amount: int, by: MechState) -> int:
+	if foe == null or amount <= 0:
 		return 0
-	var own := maxi(0, heat - Effects.debuff_heat(ms.unit, f))
-	return mini(own, maxi(0, ms.unit.shield - paid))
-
-
-## The blow the burn pays a foe after a weapon's strikes (the zap): what the shield paid, plain,
-## through what the foe takes and its armour; nothing on a Guarded core, as every blow there.
-static func zap_on(foe: Foe, burnt: int, by: MechState) -> int:
-	if foe == null or burnt <= 0:
-		return 0
-	return maxi(0, Effects.damage_taken(foe, burnt, by.unit if by != null else null) - foe.armour_total())
+	return maxi(0, Effects.damage_taken(foe, amount, by.unit if by != null else null) - foe.armour_total())
 
 
 ## What a vent-on-fire attack adds to every blow from the heat it fires: its power_per_heat
@@ -807,20 +793,7 @@ func shut_gates(ms: MechState, f: Face, foe: Foe) -> Array[int]:
 func shown_number_text(ms: MechState, f: Face, target: Foe = null) -> String:
 	if f == null or not f.is_attack() or f.is_debuff():
 		return f.number_text() if f != null else ""
-	# The blow alone: a blow a passive adds after the strikes (the Storm Petrel's zap) is its own
-	# number in the die's passive box (after_blow), never joined to this one (Ryan, 4 November:
-	# "not made the player do math").
 	return str(shown_number(ms, f, target))
-
-
-## The blow a machine's passive adds after a weapon's strikes, as the die's passive box prints it
-## (a shield mark and the number, no sign): the Storm Petrel's zap, what its shield pays for the
-## weapon's heat, over a foe through that foe's damage taken and armour (zap_on); 0 for an entry
-## with none.
-static func after_blow(ms: MechState, f: Face, target: Foe = null) -> int:
-	if f == null or not f.is_weapon() or f.burns <= 0:
-		return 0
-	return zap_on(target, f.burns, ms) if target != null else f.burns
 
 
 ## Every live machine learns how many allies stand with it, for passives that read it.
@@ -1128,12 +1101,6 @@ func forecast(ms: MechState, extra_shield: int = 0) -> Dictionary:
 	var off_shield := clampi(shield, 0, ablated)
 	shield -= off_shield
 	hull -= ablated - off_shield
-	# Its Regenerating pays as its turn ends, after the Ablating and before the foes strike (16
-	# November): a point of shield a stack, none for a shield that is broken or that the tick
-	# has just taken to nothing, none while it is Swallowed.
-	var regrow := 0 if paused(ms) else Effects.regrowth(ms.unit)
-	if regrow > 0 and not ms.shield_broken and not (off_shield > 0 and shield <= 0):
-		shield = mini(maxi(ms.unit.shield_max, shield), shield + regrow)
 	var incoming := 0
 	var component_risk := false
 	var walk := {"shield": shield, "barrier": Effects.has(ms.unit, "barrier")}
@@ -1435,16 +1402,6 @@ func shown_face(ms: MechState, f: Face, target: Foe = null) -> Face:
 		sf.ammo = price
 		sf.dry = not can_fire(ms, sf)
 		sf.heat = Effects.debuff_heat(ms.unit, sf)
-		return sf
-	var burn := shield_burn(ms, sf, heat, sf.shield_cost if not ms.assigned else 0)   # a spent entry's cost is paid already
-	if burn > 0:
-		# A weapon whose heat the shield pays (the Storm Petrel's): the burn, the passive box's
-		# number on the die (never a cost along its foot: Ryan, 4 November), and the heat past what
-		# the shield holds once a shield cost has taken its share, along the foot.
-		if sf == f:
-			sf = f.duplicate_face()
-		sf.burns = burn
-		sf.heat = heat - burn
 		return sf
 	if heat == sf.heat:
 		return sf
@@ -2396,14 +2353,11 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 			if f.kill_rerolls > 0 and killed > 0:
 				rerolls_left += f.kill_rerolls
 				log.append("%s: the kill brings the team %d reroll%s" % [ms.unit.display_name, f.kill_rerolls, "" if f.kill_rerolls == 1 else "s"])
-			# The rider on its own spender (the Storm Petrel's St. Elmo's Regenerator, Ryan's go of 21
-			# October; built 30 October): spent on a foe, its machine gains Regenerating, the stacks
-			# the entry says, a point of shield a stack as its turn ends and a stack fading then
-			# (15 and 16 November); a second spend adds its stacks. Bought by a die entry, so a foe's purge
-			# takes it.
-			if f.regen_stacks > 0 and target is Foe and ms.alive():
-				Effects.stack(ms.unit, Effects.regenerating_mech(), Effects.SKIRMISH, "buff:" + f.component, f.regen_stacks, Effects.DECAY_TURN)
-				log.append("%s gains Regenerating ×%d: a point of shield a stack as its turn ends, then a stack fades" % [ms.unit.display_name, Effects.stacks_of(ms.unit, "regenerating")])
+			# What the spend lays on its own spender (the Storm Petrel's lure and its branches, 17
+			# November: Hardened for each foe it reached, Charged): after the primers, so a weapon
+			# that grants Charged never spends the stack it has just laid.
+			if not f.self_statuses.is_empty() and target is Foe and ms.alive():
+				_self_grants(ms, f, _reached_last)
 			if Effects.counts_shots(ms.unit) > 0:
 				Effects.stack(ms.unit, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 1, Effects.DECAY_NONE)
 			if f.is_weapon() and Effects.remove(ms.unit, "spun_up"):
@@ -3100,25 +3054,17 @@ static func form_change(ms: MechState, f: Face, on_self: bool = true) -> String:
 
 
 ## The end of the player's turn, before the overheat (Ryan, 15 November: Ablate, one rule on
-## both sides): each machine's Ablating takes a point a stack and loses a stack, its Regenerating
-## pays a point of shield a stack and loses one, and its Scorched and Sapped go. A Phased machine
+## both sides): each machine's Ablating takes a point a stack and loses a stack, and its Scorched
+## and Sapped go. A Phased machine
 ## takes no point and its stacks fade all the same; a Swallowed one's wait and
 ## tick again the turn it is back, as its overheat does.
 func _ablate_mechs() -> void:
 	for ms in live_mechs():
 		if paused(ms):
 			continue   # Swallowed: out of play, so its Ablating, its Scorched and its Sapped wait for the turn it is back
-		var regrow := Effects.regrowth(ms.unit)   # read before the tick fades its stack
 		var points := int(Effects.turn_tick(ms.unit, is_phased(ms))["hp"])   # Phased: the stacks fade and take nothing
 		if points > 0:
 			_ablate(ms, points)
-		# Regenerating (16 November, his four places: its turn's end, after its Ablating, the
-		# foes' order): a point of shield a stack, a shield gain like any, so a shield the tick
-		# just broke takes none; the stack has faded either way.
-		if regrow > 0 and ms.alive():
-			var mended := _gain_shield(ms, regrow)
-			if mended > 0:
-				log.append("%s regenerates %d shield" % [ms.unit.display_name, mended])
 
 
 ## What a machine's Ablating takes as its turn ends: the shield first ("hits shield first, I
@@ -3226,6 +3172,7 @@ func _spend_at(mech_index: int, ms: MechState, f: Face, target: Foe, second = nu
 		ms.ammo -= price
 		pays = Pays.AMMO
 	var h := _hit(ms, f, target)
+	_reached_last = h.reached.size()
 	_lay_mine(ms, target, h.mine)
 	_entry_effects(ms, f, target, second)
 	_finish_hits(mech_index, ms, f, target, h, pays)
@@ -3288,7 +3235,6 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	# is doubled and spent, and with no primary target no Ricochet follows it.
 	var everyone := f.reach == Face.Reach.EVERY_FOE
 	var bounces := Effects.stacks_of(ms.unit, "ricochet") if f.is_weapon() and not everyone else 0
-	h.steps = strikes + bounces
 	for at in range(strikes + bounces):
 		var bounce := at >= strikes
 		if bounce and at == strikes:
@@ -3523,13 +3469,10 @@ func _land_blow(foe: Foe, blow: int, by: Unit, weapon: bool, aimed: bool, armour
 
 
 ## The end of a spend's hits, in the spend's order (Ryan, 7 November: the hits and their riders,
-## the death check, the spend's end): told (_tell_hits), the shield's burn and its zap for a gun
-## whose heat its gauge takes (_zap), the death check, then what the spend pays (_pay_hits,
-## `pays` one of Pays).
+## the death check, the spend's end): told (_tell_hits), the shove, the death check, then what the
+## spend pays (_pay_hits, `pays` one of Pays).
 func _finish_hits(mech_index: int, ms: MechState, f: Face, target: Foe, h: Hits, pays: int) -> void:
 	_tell_hits(mech_index, ms, f, target, h, pays)
-	if pays == Pays.HEAT:
-		_zap(ms, f, target, h)
 	_shove(ms, f, h)
 	# The death check (Ryan, 7 November), once the hits and their riders are done: a kill clears
 	# its slot (Ryan, 22 September: burning a hole through the front opens the
@@ -3547,7 +3490,7 @@ func _finish_hits(mech_index: int, ms: MechState, f: Face, target: Foe, h: Hits,
 ## deals 25% of its maximum HP, rounded up, to the enemy immediately behind"; "like the old storm
 ## petrel zap, but to all targets hit"): once the spend's hits have landed, every front-rank foe a
 ## blow of it damaged, felled or not, drives that share into the foe standing behind it, once a
-## spend, as the zap was dealt: plain, no keyword, through what the foe takes, its armour and its
+## spend, a plain blow (plain_blow_on): no keyword, through what the foe takes, its armour and its
 ## Barrier, before the death check. A massive foe fills its column: nothing stands behind it.
 func _shove(ms: MechState, f: Face, h: Hits) -> void:
 	var pct := Effects.shove_share(ms.unit)
@@ -3556,7 +3499,7 @@ func _shove(ms: MechState, f: Face, h: Hits) -> void:
 	var fronts: Array[Foe] = []
 	for b in spend_blows:
 		var foe = b.get("foe", null)
-		if foe == null or int(b.get("taken", 0)) <= 0 or str(b.get("kind", "")) in ["zap", "mine", "shove"]:
+		if foe == null or int(b.get("taken", 0)) <= 0 or str(b.get("kind", "")) in ["mine", "shove"]:
 			continue
 		if foe.rank == 0 and not foe.is_massive() and not fronts.has(foe) and not _shoved.has(foe):
 			fronts.append(foe)
@@ -3566,11 +3509,11 @@ func _shove(ms: MechState, f: Face, h: Hits) -> void:
 		if back == null or back == front or not back.alive() or out_of_reach(back):
 			continue
 		var before := back.hp
-		var dealt := zap_on(back, ceili(float(front.hp_max) * float(pct) / 100.0), ms)
+		var dealt := plain_blow_on(back, ceili(float(front.hp_max) * float(pct) / 100.0), ms)
 		if _barrier_eats(back, true):
 			dealt = 0
 		back.hp -= dealt
-		_note_blow(back, maxi(1, f.strikes), dealt, "shove")   # after the strikes, as the zap is
+		_note_blow(back, maxi(1, f.strikes), dealt, "shove")   # after the strikes
 		h.dealt += clampi(dealt, 0, maxi(0, before))
 		log.append("%s drives %s into %s for %d" % [ms.unit.display_name, front.display_name, back.display_name, dealt])
 
@@ -3586,29 +3529,6 @@ func _tell_hits(mech_index: int, ms: MechState, f: Face, target: Foe, h: Hits, p
 		log.append("%s fires its heat: -%d, +%d to the blow" % [ms.unit.display_name, h.vented_all, h.fired])
 
 
-## The Riot Field Generator (the Storm Petrel's, Ryan's go of 21 October; built 30 October): while
-## its shield stands its weapons burn shield in place of heat, the gun's own heat coming off the
-## shield as it stands, and the rest reaching the gauge, a Scorched machine's
-## extra among it (shield_burn); then, the hits landed, the target takes a blow of what the
-## shield paid (the zap), plain, no keyword and no Shock read, through what it takes and its
-## armour, before the death check, so a target the strikes felled takes it too (Ryan, 7 November).
-## The burn comes off the hits' heat and the zap's hull joins what they dealt.
-func _zap(ms: MechState, f: Face, target: Foe, h: Hits) -> void:
-	var burnt := shield_burn(ms, f, h.heat)
-	if burnt <= 0:
-		return
-	ms.unit.shield -= burnt
-	h.heat -= burnt
-	log.append("%s burns %d shield in place of heat" % [ms.unit.display_name, burnt])
-	_note_break(ms)   # its own spend may take its last point ("you can break yourself")
-	var zap_before := target.hp
-	var zap := zap_on(target, burnt, ms)
-	if _barrier_eats(target, true):
-		zap = 0
-	target.hp -= zap
-	_note_blow(target, maxi(maxi(1, f.strikes), h.steps), zap, "zap")   # after the strikes, on a corpse too
-	h.dealt += clampi(zap, 0, maxi(0, zap_before))
-	log.append("%s zaps %s for %d" % [ms.unit.display_name, target.display_name, zap])
 
 
 ## What a spend pays for its hits once its death check is done, in order: the runner's reach tally
@@ -3817,10 +3737,12 @@ func reached_by(f: Face, target: Foe) -> Array[Foe]:
 
 ## Chain's conductors (Ryan, 28 October; the kill and repeat retired): every other foe on the
 ## field alive and Shocked, wherever it stands and whatever the entry's reach, in the field's
-## order. None for an entry without Chain, or for a debuff, whose blow is nothing. Read as the
-## die is spent, before any blow lands, so a Shock the spend lays never conducts its own arc.
+## order. None for an entry without Chain. A debuff's arcs are its Chain's number alone, and they
+## carry its riders as any area of it does (the Storm Petrel's lure since 17 November: every
+## Shocked foe it arcs to is lured). Read as the die is spent, before any blow lands, so a Shock
+## the spend lays never conducts its own arc.
 func conductors(f: Face, target: Foe) -> Array[Foe]:
-	if f != null and f.has(Face.Keyword.CHAIN) and not f.is_debuff():
+	if f != null and f.has(Face.Keyword.CHAIN):
 		return shocked_foes(target)
 	var none: Array[Foe] = []
 	return none
@@ -3907,6 +3829,11 @@ static func _foe_reads(f: Face, reads: Dictionary, foe: Foe, first: bool) -> int
 ## shape's number with `prints` (what the entry prints from its firer), a split's halving of that
 ## base, through the firer's pipeline with its conditions judged on that foe.
 func _area_blow(ms: MechState, f: Face, shape: int, foe: Foe, prints: int, split: int, ctx: Dictionary = {}) -> int:
+	if f.is_debuff():
+		# A debuff deals nothing under any effect (Effects.attack); its Chain's arcs land the number
+		# it prints, plain, no add or multiply (the Storm Petrel's lure, its Striker branch, 17
+		# November: "adds Chain 3 to the lure"), and every other area of it nothing.
+		return area_number(f, shape) if shape == AREA_CHAIN else 0
 	return int(Effects.attack(ms.unit, f, split_share(area_number(f, shape) + prints, split), 0, foe, ctx)["damage"])
 
 
@@ -5043,6 +4970,24 @@ func _spend_primers(ms: MechState) -> void:
 			continue
 		Effects.spend_stacks(ms.unit, id, 1)
 		log.append("%s: %s spent on the fire (%d left)" % [ms.unit.display_name, str(Effects.STATUS[id]["name"]), Effects.stacks_of(ms.unit, id)])
+
+
+## What a spend at a foe lays on its own machine (Face.self_statuses; the Storm Petrel's lure and its
+## branches, Ryan, 17 November: "adds a self-buff that increases shield armour for a turn to the
+## lure", "a self-grant of Charged stacks"): each status its stacks, or its stacks for every foe the
+## spend reached when it says per_foe (a Spread's neighbours among them), on the clock its definition
+## names. Bought by a die entry, so a foe's Purge takes it.
+func _self_grants(ms: MechState, f: Face, reached: int) -> void:
+	for g in f.self_statuses:
+		var id := str(g.get("status", ""))
+		if not Effects.STATUS.has(id):
+			continue
+		var n := maxi(1, int(g.get("stacks", 1))) * (maxi(0, reached) if bool(g.get("per_foe", false)) else 1)
+		if n <= 0:
+			continue
+		var def: Dictionary = Effects.STATUS[id]
+		Effects.stack(ms.unit, def, Effects.status_scope(def), "buff:" + f.component, n, Effects.status_decay(def))
+		log.append("%s gains %s ×%d" % [ms.unit.display_name, str(def["name"]), Effects.stacks_of(ms.unit, id)])
 
 
 ## A strike's rider landing on its foe once the strikes are done, felled or not (death is the

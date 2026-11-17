@@ -1933,9 +1933,9 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "St. Elmo's fire on the mast (Ryan named it 21 October): a beacon that draws the foe's eye, and the glow that mends the shield.",
-    "niche": "The Storm Petrel's lock, the lure that regens itself (Ryan, 19 October): a debuff, Indirect, no heat; the foe it is spent on is Lured for the round, and its machine gains Regenerating 3: a point of shield a stack as each round opens, a stack fading then, so 3, 2 and 1 (2 a round for three rounds until 15 November, the same six), a second spend adding its stacks. Self only, never Rapid, no cooldown: the die is its brake.",
-    "notes": "Built 30 October, in stacks since 15 November: the rider on its own spender (regenerates) grants its machine Regenerating's stacks, the shield as each round opens after the spend, a second spend adding to the count; a foe's purge takes it, a die entry having bought it."
+    "fantasy": "St. Elmo's fire on the mast (Ryan named it 21 October): a beacon that draws the foe's eye, its glow the heat that mends the shield.",
+    "niche": "The Storm Petrel's lock since its rework of 17 November: a debuff, Indirect, heat 3; the foe it is spent on is Lured for the round, and its heat stands up shield through the Riot Field Generator, so the taunt is its own mending. Its branches tweak it (the chassis's branches): the Defence direction's Hardened and then Spread with a stack for each foe lured, the Striker's Charged and then Chain 3.",
+    "notes": "Built 30 October as a lure of no heat laying Regenerating 3 on its own machine (regenerates), the rider that left the engine with it on 17 November; a lure that runs hot in its place, his \"Your verdict leans are solid\" to the lean of the same day."
    },
    "face": {
     "kind": "attack",
@@ -1944,11 +1944,7 @@
     "keywords": [
      "lure"
     ],
-    "heat": 0,
-    "regenerates": {
-     "status": "regenerating",
-     "stacks": 3
-    }
+    "heat": 3
    },
    "passive": null,
    "tags": []

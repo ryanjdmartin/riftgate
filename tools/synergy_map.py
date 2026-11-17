@@ -56,7 +56,8 @@ CURRENCIES = OrderedDict([
     ("ricochet", ("Ricochet", "on a machine")),
     ("phased", ("Phased", "on a machine")),
     ("sealed", ("Sealed", "on a machine")),
-    ("regenerating", ("Regenerating", "on a machine")),
+    ("hardened", ("Hardened", "on a machine")),
+    ("charged", ("Charged", "on a machine")),
     ("ablating_mech", ("Ablating", "on a machine")),
     ("brittled_mech", ("Brittle", "on a machine")),
     ("exposure_mech", ("Exposed", "on a machine")),
@@ -87,7 +88,7 @@ KEYWORDS = {
     "ablate": [("ablating", "sets")], "shock": [("shocked", "sets")], "suppress": [("suppressed", "sets")],
     "cryo": [("cryoed", "sets")], "brittle": [("brittled", "sets")],
     "expose": [("exposure", "sets")], "lure": [("lure", "sets")], "disrupt": [("disrupt", "sets")],
-    "chain": [("kill", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")],
+    "chain": [("shocked", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")],
     "dispel": [("foe_buff", "reads")],
     "cleanse": [("ablating_mech", "reads"), ("brittled_mech", "reads"), ("exposure_mech", "reads"), ("scorched", "reads"), ("disabled", "reads"), ("corrupted", "reads")],
     "rapid": [], "instant": [], "every_foe": [], "every_ally": [],
@@ -98,7 +99,7 @@ FACE_FIELDS = {
     "fires_hopper": [("hopper", "reads")], "detonates": [("mine", "reads")],
     "gathers_mines": [("mine", "reads")], "vents_all": [("heat", "reads")], "power_per_heat": [("heat", "reads")],
     "power_per_missing": [("missing_hp", "reads")], "finisher": [("missing_hp", "reads")],
-    "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "regenerates": [("regenerating", "sets")],
+    "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")],
     "spends": [("essence", "reads")], "spends_up_to": [], "holds_all": [("overcharged", "reads")],   # the Quintessence Tap: it consumes Essence, and holds every Empowered a round
     "spends_magazine": [("ammo", "reads")], "magazine_min": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
     "self_ablate": [("ablating_mech", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
@@ -122,7 +123,7 @@ EFFECTS = {
     "add_shield": [], "refill_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
     "multiply_heat": [("heat", "sets")], "add_damage": [], "add_damage_taken": [], "hull_per_spend": [("hull_damage", "sets")],
     "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "one_of_each": [], "min_damage": [],
-    "burn_shield": [("heat", "reads")], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
+    "shield_per_heat": [], "self_status": [], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
 }
 TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_granted": "shield_granted", "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",
@@ -159,7 +160,8 @@ ENGINE_READERS = {
     "ricochet": ["a strike of 1 more a stack at the target once a weapon has fired: most on riders a strike and on flat buffs; hull damage halves it"],
     "phased": ["granted as the round ends: out of reach of both sides through the next, and it acts"],
     "sealed": ["armour +3, cooling stopped, 3 heat a turn"],
-    "regenerating": ["a point of shield a stack as the round opens, then a stack fades"],
+    "hardened": ["while its shield stands, every blow on it loses 1 a stack, until its next turn starts"],
+    "charged": ["its weapons fire with Shock, a stack a fire"],
     "ablating_mech": ["its tick: 1 shield a stack at the turn's end, then hull, past armour and a Barrier"],
     "brittled_mech": ["every blow it takes, +1 a stack; halves as its turn starts"],
     "exposure_mech": ["its armour counts for nothing, and the next round's targeted moves turn on it until the blows drawn would wreck it"],
@@ -265,7 +267,12 @@ class Map:
                  "on": [], "maker": c.get("maker", ""), "planned": (c.get("passive") or {}).get("status") == "planned", "stocked": []}
             self.walk_effects((c.get("passive") or {}).get("effects", []), p)
             if (c.get("passive") or {}).get("status") == "planned":
-                self.add("heat", "reads", dict(p, how="planned"))   # the Storm Petrel's shield in place of heat
+                self.add("heat", "reads", dict(p, how="planned"))
+            # Its upgrades' branches (the Storm Petrel's first, 17 November): each step's effects on
+            # its locked piece.
+            for b in c.get("branches") or []:
+                for i, step in enumerate(b.get("steps") or []):
+                    self.walk_effects(step.get("effects") or [], dict(p, who="%s's %s %s" % (c["name"], b.get("name", ""), "I" if i == 0 else "II"), kind="upgrade"))
         for m in self.mo:
             p = {"who": m["name"], "kind": "module", "tier": m.get("tier"), "on": [], "maker": m.get("maker", ""),
                  "planned": (m.get("text") or {}).get("status") == "planned", "stocked": []}
@@ -327,6 +334,8 @@ class Map:
                 self.add(str(eff.get("value")), "sets", p)
             if name == "lay_status":
                 self.add(str(eff.get("value")), "sets", p)
+            if name == "self_status":   # laid on its own machine by a spend (an upgrade's branch, 17 November)
+                self.add(str(eff.get("status")), "sets", p)
             if name == "grant_keyword":
                 for cur, how in KEYWORDS.get(str(eff.get("value")), []):
                     self.add(cur, how, p)
@@ -398,7 +407,7 @@ def render(m):
                 unique.append(label)
             if len(sl) == 1:
                 holes.append("**%s** has one slottable setter, %s." % (label, word(sl[0])))
-            if not readers and cur not in ("suppressed", "webbed", "disrupt", "swap", "phased", "barrier", "ward", "sealed", "regenerating",
+            if not readers and cur not in ("suppressed", "webbed", "disrupt", "swap", "phased", "barrier", "ward", "sealed", "hardened",
                                            "spun_up", "ricochet", "braced", "vitriol", "mine", "paradox", "lure"):
                 holes.append("**%s** is read by nothing but its own effect." % label)
     L.append("")

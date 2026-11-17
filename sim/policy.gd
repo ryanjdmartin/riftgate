@@ -715,15 +715,12 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# The Spindrift Salvo's kill rider (30 October): the team's rerolls it brings mid-round, at
 		# the odds of the kill, worth what the bank carries of them (bank_delta).
 		score += p_kill * bank_delta(sk, f.kill_rerolls)
-	if f.regen_stacks > 0:
-		score += regen_worth(sk, ms, f)   # the St. Elmo's Regenerator's rider on its own spender
-	# The Riot Field Generator (the Storm Petrel's, 30 October): the shield the spend burns in place
-	# of heat, at what that shield would have kept this round and after (burn_cost), and the zap it
-	# pays the target, a plain blow of that much on every roll the strikes leave it standing, with
-	# the kill it makes (zap_worth). The heat it saves is heat_cost's, read net of the burn.
-	var burnt := Skirmish.shield_burn(ms, f, int(Effects.attack(ms.unit, f, 0, f.heat)["heat"]), f.shield_cost) if f.is_weapon() and Effects.burns_shield(ms.unit) else 0   # a shield cost is paid first (4 November)
-	if burnt > 0:
-		score += zap_worth(sk, ms, target, burnt, outcomes) - burn_cost(sk, ms, burnt)
+	# What the spend lays on its own machine (the Storm Petrel's lure and its branches, 17
+	# November), and the shield its heat stands up (the Riot Field Generator's hook): each worth
+	# what it keeps of this round's blows (self_grant_worth, heat_shield_gain), the grant read on the
+	# entry as its machine's branches make it.
+	score += self_grant_worth(sk, ms, f, target)
+	score += shield_gain_worth(sk, ms, heat_shield_gain(ms, real))
 	score -= heat_cost(sk, ms, f) + self_ablate_cost(sk, ms, f)
 	if not f.is_weapon():
 		score -= rage_cost(sk)   # a debuff is equipment, and feeds a raging foe (3 November)
@@ -738,24 +735,6 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
 
 
-## The zap a burn pays (the Storm Petrel's Riot Field Generator, 30 October): on every roll that
-## leaves the target standing, a plain blow of what the shield paid, through what it takes and
-## its armour, capped at what it has left, and the kill it makes there; nothing where the strikes
-## kill, since the zap then lands on the corpse.
-func zap_worth(sk: Skirmish, ms: Skirmish.MechState, target: Foe, burnt: int, outcomes: Array) -> float:
-	var zap := Skirmish.zap_on(target, burnt, ms)
-	if zap <= 0:
-		return 0.0
-	var worth := 0.0
-	for o in outcomes:
-		var left := float(target.hp) - float(o[0])
-		if left <= 0.0:
-			continue
-		worth += float(o[1]) * minf(float(zap), left)
-		if float(zap) >= left:
-			worth += float(o[1]) * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target, ms))
-	return worth
-
 
 ## What a piece that ablates its own firer costs it (the Stoker's, Ablate since 15 November): its
 ## first tick lands as this turn ends, before the foes strike, so it is shield gone this round
@@ -768,9 +747,9 @@ func self_ablate_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 	return burn_cost(sk, ms, per * k) + float(per * k * (k - 1)) / 2.0 * ABLATED_WEIGHT
 
 
-## What burning shield costs a machine (the Storm Petrel's): the hull the enemy's blows would take
-## through the gap this round, a death it opens, and the shield that would have stood afterwards,
-## at shield_score's weights, read as the shield gone.
+## What losing shield this turn costs a machine (a self-Ablate's first tick; the Storm Petrel's burn
+## until 17 November): the hull the enemy's blows would take through the gap this round, a death it
+## opens, and the shield that would have stood afterwards, at shield_score's weights.
 func burn_cost(sk: Skirmish, ms: Skirmish.MechState, burnt: int) -> float:
 	var before := sk.forecast(ms)
 	var after := sk.forecast(ms, -burnt)
@@ -781,15 +760,52 @@ func burn_cost(sk: Skirmish, ms: Skirmish.MechState, burnt: int) -> float:
 	return cost
 
 
-## What a regeneration on its own spender is worth (the Storm Petrel's St. Elmo's Regenerator, 30
-## October): its shield at each round it runs, a point a stack and a stack fewer each round (15
-## November), as hull kept against the blows to come, this round's incoming the guess, at
-## REGEN_WEIGHT, and what nothing strikes as shield banked.
-func regen_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
-	var incoming := float(sk.incoming_for(ms))
+## What shield stood up this turn is worth (the Storm Petrel's hook and its Hardened, 17 November):
+## the hull it keeps from this round's blows, a death it averts, and what stands past them banked,
+## burn_cost read the other way.
+func shield_gain_worth(sk: Skirmish, ms: Skirmish.MechState, gain: int) -> float:
+	if gain <= 0:
+		return 0.0
+	var before := sk.forecast(ms)
+	var after := sk.forecast(ms, gain)
+	var kept := maxf(0.0, float(after["hull_after"])) - maxf(0.0, float(before["hull_after"]))
+	var worth := kept * HULL_WEIGHT + float(maxi(0, int(after["shield_after"]) - int(before["shield_after"]))) * BANK_WEIGHT
+	if before["destroyed"] and not after["destroyed"]:
+		worth += DEATH_WEIGHT
+	return worth
+
+
+## The shield a spend's heat stands up (the Storm Petrel's Riot Field Generator, 17 November: a point
+## of shield for every point of heat it gains): on a shield that stands, up to its maximum.
+static func heat_shield_gain(ms: Skirmish.MechState, f: Face) -> int:
+	var per := Effects.shield_per_heat(ms.unit)
+	if per <= 0 or f == null or ms.shield_broken or ms.unit.shield <= 0:
+		return 0
+	return mini(per * maxi(0, heat_of(ms, f)), maxi(0, ms.unit.shield_max - ms.unit.shield))
+
+
+## What a spend lays on its own machine is worth (the effective entry's self_statuses, by an
+## upgrade's branch; the Storm Petrel's lure, 17 November): Hardened a point off every blow it meets this round while its shield stands, read as
+## that much shield stood up against the foes aiming at it once the spend has turned the ones it
+## reaches; Charged a Shock on each of its next fires, its own blow again as a Charged buff is worth.
+## Placeholders, as every weight.
+func self_grant_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
+	if f == null or f.self_statuses.is_empty() or target == null:
+		return 0.0
+	var reached := sk.reached_by(f, target)
 	var worth := 0.0
-	for n in range(f.regen_stacks, 0, -1):
-		worth += minf(float(n), incoming) * HULL_WEIGHT * REGEN_WEIGHT + maxf(0.0, float(n) - incoming) * BANK_WEIGHT
+	for g in f.self_statuses:
+		var n := maxi(1, int(g.get("stacks", 1))) * (reached.size() if bool(g.get("per_foe", false)) else 1)
+		match str(g.get("status", "")):
+			"hardened":
+				var blows := 0
+				for foe in sk.field_foes():
+					if foe.alive() and foe.attacks() and not foe.is_suppressed() and (foe.target == ms or (f.has(Face.Keyword.LURE) and reached.has(foe))):
+						blows += maxi(1, foe.strikes())
+				if ms.unit.shield > 0 and not ms.shield_broken:
+					worth += shield_gain_worth(sk, ms, mini(blows * n, ms.unit.shield_max))
+			"charged":
+				worth += float(n) * _raw_attack_mean(ms)
 	return worth
 
 
@@ -1293,8 +1309,7 @@ static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
 		return f.heat   # a printed heat on a piece spent on machines, landing as it is (the Musk Ox's quick reload)
 	if ms.ammo_max > 0 and f != null and not f.is_debuff():
 		return Effects.debuff_heat(ms.unit, f)   # a forging machine's gun: only a foe's debuff heats it
-	var own := int(Effects.attack(ms.unit, f, 0, f.heat)["heat"])
-	var added := own - Skirmish.shield_burn(ms, f, own)   # what the shield pays never reaches the gauge (the Storm Petrel's)
+	var added := int(Effects.attack(ms.unit, f, 0, f.heat)["heat"])
 	return added - ms.heat if f.vents_all else added
 
 
@@ -1327,7 +1342,11 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 	var barred := damaging and target != null and Effects.has(target, "barrier")
 	for v in rolls:
 		# A split's halving of the base (rounded down, never below one), then the firer's modifiers
-		# judged on this foe, then its own reads.
+		# judged on this foe, then its own reads. A debuff's Chain arc is its printed number plain
+		# (Skirmish._area_blow), its armour off.
+		if area == Skirmish.AREA_CHAIN and not damaging:
+			out.append([float(maxi(0, v - (target.armour_for(f) if target != null else 0))), w])
+			continue
 		var dmg: int = int(Effects.attack(ms.unit, f, Skirmish.split_share(v + fired, f.split), 0, target)["damage"]) + own
 		# The foe's own statuses read last: a Shocked foe takes the first blow aimed at it double
 		# (a foe past the target, an area's or an arc's, never: 29 October), and its Brittle adds to

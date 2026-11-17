@@ -18,6 +18,9 @@ const I := Face.Reach.INDIRECT
 const MENDER := {"id": "mender", "name": "Mender", "description": "", "effects": [
 	{"trigger": "static", "effect": "add_stat", "stat": "shield_regen", "value": 3},
 	{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 2}]}
+## A buff on a machine's turn clock, a stack fading as each of its turns ends (a machine's
+## Regenerating was one until 17 November, when it left with its last carrier).
+const TICKER := {"id": "ticker", "name": "Ticker", "description": "", "decay": "turn", "tags": ["buff"], "effects": []}
 ## A hull hit that grants Empowered: a stack gained in the enemy's turn.
 const SPITE := {"id": "spite", "name": "Spite", "description": "", "effects": [
 	{"trigger": "on_hull_damage", "effect": "stack_status", "value": "overcharged", "stacks": 3}]}
@@ -44,7 +47,7 @@ func _carried(sk: Skirmish, at: int, entry: int) -> Array:
 	var ms: Skirmish.MechState = sk.mechs[at]
 	var u: Unit = ms.unit
 	return [Effects.stacks_of(u, "ablating_mech"), Effects.stacks_of(u, "scorched"), Effects.stacks_of(u, "sapped"),
-		Effects.stacks_of(u, "overcharged"), Effects.stacks_of(u, "brittled_mech"), Effects.stacks_of(u, "regenerating"),
+		Effects.stacks_of(u, "overcharged"), Effects.stacks_of(u, "brittled_mech"), Effects.stacks_of(u, "ticker"),
 		Effects.stacks_of(u, "braced"), Effects.has(u, "barrier"), Effects.dark_rounds(u, entry, sk.round),
 		u.shield, u.hull, ms.heat]
 
@@ -110,7 +113,7 @@ func test_everything_a_phased_machine_carries_ticks_and_nothing_damages_it() -> 
 	_lay(u, "scorched", 2)
 	_lay(u, "overcharged", 4)
 	_lay(u, "brittled_mech", 4)
-	Effects.stack(u, Effects.regenerating_mech(), Effects.SKIRMISH, "buff:test", 2, Effects.DECAY_TURN)
+	Effects.stack(u, TICKER, Effects.SKIRMISH, "buff:test", 2, Effects.DECAY_TURN)
 	Effects.corrupt_entry(u, 0, "foe:x", 2)
 	ms.heat = ms.heat_max + 5
 	# A bite of its own entry is damage, and nothing damages it.
@@ -121,9 +124,9 @@ func test_everything_a_phased_machine_carries_ticks_and_nothing_damages_it() -> 
 	assert_true(g.hp < 900, "the weapon did its work")
 	var hot := ms.heat
 	sk.end_round()
-	assert_eq([u.shield, u.hull], [12, 100], "END TURN: its Ablating takes no point and its heat burns nothing, and its Regenerating pays its two")
+	assert_eq([u.shield, u.hull], [10, 100], "END TURN: its Ablating takes no point and its heat burns nothing")
 	assert_eq(Effects.stacks_of(u, "ablating_mech"), 2, "a stack fades all the same: Phased waits a debuff out")
-	assert_eq(Effects.stacks_of(u, "regenerating"), 1, "and one of its Regenerating, paid")
+	assert_eq(Effects.stacks_of(u, "ticker"), 1, "and a stack of a buff on its turn's clock")
 	assert_false(Effects.has(u, "scorched"), "its Scorched goes with the turn")
 	assert_eq(Effects.stacks_of(u, "overcharged"), 2, "its Empowered halves as its turn ends")
 	assert_eq(Effects.stacks_of(u, "brittled_mech"), 4, "its Brittle waits for its turn's start")
@@ -132,8 +135,8 @@ func test_everything_a_phased_machine_carries_ticks_and_nothing_damages_it() -> 
 	assert_true(Skirmish.is_phased(ms), "Phased still as the next round opens")
 	assert_eq(Effects.stacks_of(u, "brittled_mech"), 2, "and its Brittle halves there, Phased or not")
 	sk.end_round()
-	assert_eq([Effects.stacks_of(u, "ablating_mech"), Effects.stacks_of(u, "overcharged"), Effects.stacks_of(u, "regenerating")], [1, 1, 0], "a second round of the same: each a step down")
-	assert_eq([u.shield, u.hull], [13, 100], "the last point of Regenerating, and no damage taken")
+	assert_eq([Effects.stacks_of(u, "ablating_mech"), Effects.stacks_of(u, "overcharged"), Effects.stacks_of(u, "ticker")], [1, 1, 0], "a second round of the same: each a step down")
+	assert_eq([u.shield, u.hull], [10, 100], "and no damage taken")
 	# Back in reach: the stack left takes its point, and the heat it carried burns.
 	sk.start_round()
 	assert_eq(Effects.stacks_of(u, "brittled_mech"), 1, "its Brittle a step down again as its turn starts")
@@ -167,7 +170,7 @@ func test_everything_a_swallowed_machine_carries_waits_and_it_comes_back_as_it_l
 	_lay(u, "sapped", 2)
 	_lay(u, "overcharged", 4)
 	_lay(u, "brittled_mech", 4)
-	Effects.stack(u, Effects.regenerating_mech(), Effects.SKIRMISH, "buff:test", 2, Effects.DECAY_TURN)
+	Effects.stack(u, TICKER, Effects.SKIRMISH, "buff:test", 2, Effects.DECAY_TURN)
 	Effects.grant_buff(u, "braced", 2, "test", sk.round)
 	Effects.grant_buff(u, "barrier", 1, "test", sk.round)
 	Effects.disable_entry(u, 1, "cooldown", sk.round + 2)
@@ -196,7 +199,7 @@ func test_everything_a_swallowed_machine_carries_waits_and_it_comes_back_as_it_l
 	assert_eq(_carried(sk, 0, 1), [3, 2, 2, 4, 2, 2, 0, false, 2, 13 + 3, 100, 35 - 2], "as its turn starts")
 	sk.end_round()
 	assert_eq([Effects.stacks_of(u, "ablating_mech"), Effects.stacks_of(u, "scorched"), Effects.stacks_of(u, "sapped")], [2, 0, 0], "its turn's end, as it would have been: Ablating ticks, Scorched and Sapped go")
-	assert_eq([Effects.stacks_of(u, "regenerating"), u.shield], [1, 0], "its Regenerating fades one with the turn; the overheat it carried broke its shield after")
+	assert_eq([Effects.stacks_of(u, "ticker"), u.shield], [1, 0], "its turn's buff fades one with the turn; the overheat it carried broke its shield")
 	assert_eq([Effects.stacks_of(u, "overcharged"), Effects.stacks_of(u, "brittled_mech")], [2, 2], "Empowered halves with its turn; its Brittle halved as that turn started")
 	assert_eq(u.hull, 100 - 3 * Skirmish.overheat_scale, "the heat it carried burns the turn it is back")
 	sk.start_round()
@@ -337,45 +340,6 @@ func test_a_later_foes_statuses_wait_for_its_own_turns_end() -> void:
 	assert_eq(sk.end_round(), Skirmish.Outcome.DEFEAT, "the first blow wrecks the last machine")
 	assert_eq(Effects.stacks_of(killer, "kindled"), 4, "the fight ended on its blow: nothing ticks after that, its own turn's end included")
 	assert_eq([Effects.stacks_of(after, "kindled"), Effects.stacks_of(after, "ablating"), after.hp], [4, 3, 400], "and the foe after it never had its turn")
-
-
-## A machine's Regenerating pays at END TURN, after its Ablating (Ryan, 16 November, his four
-## places: "Its turn End: ... Regeneration"; at the round's opening until then): shield before
-## the foes strike, a point a stack, the first as the turn it was gained in ends. A shield the
-## Ablating just broke takes none, and the stack fades all the same.
-func test_a_machines_regenerating_pays_at_end_turn_after_its_ablating() -> void:
-	var sk := Skirmish.new(1)
-	var u := _mech("A", Die.single(Face.blank()), 5, 100)
-	u.shield_max = 20
-	sk.add_mech(u)
-	var g := Foe.make("revenant", 900, 4)
-	sk.add_foes([g])
-	sk.begin()
-	sk.start_round()
-	_lay(u, "ablating_mech", 2)
-	Effects.stack(u, Effects.regenerating_mech(), Effects.SKIRMISH, "buff:test", 3, Effects.DECAY_TURN)
-	var fc := sk.forecast(sk.mechs[0])
-	assert_eq([int(fc["shield_after"]), int(fc["hull_after"])], [5 - 2 + 3 - 4, 100], "the forecast reads it: two ablated, three regrown, then the foe's four on the shield")
-	sk.end_round()
-	assert_eq([u.shield, u.hull], [2, 100], "as it landed")
-	assert_eq([Effects.stacks_of(u, "ablating_mech"), Effects.stacks_of(u, "regenerating")], [1, 2], "each a stack down as its turn ended")
-	sk.start_round()
-	assert_eq(u.shield, 2, "the round's opening pays nothing")
-	# A shield the tick breaks takes none.
-	var s2 := Skirmish.new(1)
-	var b := _mech("B", Die.single(Face.blank()), 2, 100)
-	b.shield_max = 20
-	s2.add_mech(b)
-	s2.add_foes([Foe.make("revenant", 900, 0)])
-	s2.begin()
-	s2.start_round()
-	_lay(b, "ablating_mech", 3)
-	Effects.stack(b, Effects.regenerating_mech(), Effects.SKIRMISH, "buff:test", 3, Effects.DECAY_TURN)
-	var f2 := s2.forecast(s2.mechs[0])
-	s2.end_round()
-	assert_eq([b.shield, b.hull], [0, 99], "the Ablating broke the shield and took a point of hull; a broken shield gains none")
-	assert_eq([int(f2["shield_after"]), int(f2["hull_after"])], [0, 99], "and the forecast said so")
-	assert_eq(Effects.stacks_of(b, "regenerating"), 2, "the stack faded all the same")
 
 
 ## A dark entry lights again as its machine's turn ends, a cooldown's and a jam's alike (16

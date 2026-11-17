@@ -1942,7 +1942,9 @@ func test_the_maps_list_the_conductors() -> void:
 	assert_false(hit.has(beside) or hit.has(other_back), "no foe without a charge")
 	assert_eq(Skirmish.area_number(gun, Skirmish.AREA_CHAIN), 2, "a conductor's number is Chain's")
 	var probe := Face.attack(0, L, [K.CHAIN])
-	assert_true(sk.conductors(probe, target).is_empty(), "a debuff conducts nothing")
+	probe.chain = 2
+	assert_eq(Array(sk.conductors(probe, target)), [behind], "a debuff's Chain conducts too, its arcs carrying its riders (the Storm Petrel's lure, 17 November)")
+	assert_true(sk.conductors(Face.attack(0, L, [K.LURE]), target).is_empty(), "an entry without Chain conducts nothing")
 
 
 ## Chain's footprint beside an area's (Ryan, 29 October: "Chain is an AoE shape, so it doesn't proc

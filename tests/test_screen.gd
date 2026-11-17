@@ -234,28 +234,15 @@ func test_the_main_mark_holds_what_an_entry_delivers() -> void:
 
 ## What a machine's passive adds to an entry stands in its passive box at the rail's foot (Ryan, 4
 ## November: "Can't we just put the number in the cassowary-type box, call that the 'passive helper
-## box' for all these types of effects?"): a blow added after the strikes as "+N", no mark (the
-## Storm Petrel's), a stepping die's next entry by its main mark (the Cassowary's); never beside the
-## main mark, never joined to its number.
+## box' for all these types of effects?"): a stepping die's next entry by its main mark (the
+## Cassowary's), the Skua's Ricochet strikes; never beside the main mark, never joined to its number.
+## The Storm Petrel's zap stood there until its rework of 17 November.
 func test_a_passive_adds_its_box_at_the_rails_foot() -> void:
 	var picked := func(d: DieFaceView) -> Array:
 		return d.passive_marks().map(func(m: Array) -> Array: return [m[0], DieFaceView.passive_plain(m[1])])
 	var d := DieFaceView.new()
 	d.set_face(Face.attack(4))
 	assert_eq(picked.call(d), [], "a plain weapon: no box")
-	var hot := Face.attack(4)
-	hot.burns = 3
-	d.set_face(hot)
-	assert_eq(picked.call(d), [["shield", "3"]], "a weapon whose shield pays its heat: what the shield pays, a blow after the strikes, beside the shield's mark")
-	var lines := EntryReadout.effects_of(hot)
-	var boxed := lines.filter(func(l: Dictionary) -> bool: return (l.get("marks", []) as Array).any(func(m: Dictionary) -> bool: return m.has("passive")))
-	assert_eq(boxed.size(), 1, "the readout says it on one line")
-	assert_eq(str(boxed[0]["text"]), "Its shield pays 3 of the heat, and the target takes as much after the strikes", "the tap popup clarifies the number, both the spend and the blow")
-	assert_false(lines.any(func(l: Dictionary) -> bool: return (l.get("marks", []) as Array).any(func(m: Dictionary) -> bool: return str(m.get("glyph", "")) == "shield")), "and no shield cost line: the passive's payment is no cost")
-	assert_eq((boxed[0]["marks"] as Array)[0]["passive"], ["shield", "3"], "headed by the box the die shows")
-	d.after_blow = 2
-	assert_eq(picked.call(d), [["shield", "2"]], "over a foe, that foe's share")
-	d.after_blow = -1
 	d.set_face(Face.attack(3))
 	d.next_face = Face.shield(5)
 	assert_eq(picked.call(d), [["shield", "5"]], "a stepping die's next entry by its mark and its number (Ryan, 4 November: \"Maybe icon+face number?\")")

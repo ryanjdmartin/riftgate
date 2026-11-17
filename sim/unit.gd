@@ -126,6 +126,10 @@ var damaged_faces: Dictionary = {}
 ## Modules fitted (content ids, in slot order), for the codex and the hangar; the engine runs
 ## them as loadout modifiers sourced "module" (ContentDB.fit_module).
 var modules: Array[String] = []
+## Its upgrades' picks along its chassis's branches, the direction ids in the order taken
+## (ContentDB.branch_error), for the codex, the save and the hangar; the engine runs each step as a
+## loadout modifier sourced "branch" (ContentDB.fit_branches).
+var branches: Array[String] = []
 
 
 static func mech(uid: int, name: String, at: Vector2i, speed: int = MECH_MOVE) -> Unit:
