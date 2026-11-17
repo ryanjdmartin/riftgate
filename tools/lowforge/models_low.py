@@ -1853,6 +1853,34 @@ def _mole_projectile(b):
     b.loft([(-44.0, _mole_ngon(0.0, 0.0, 0.6, 10)), (-31.0, _mole_ngon(0.0, 0.0, 5.5, 10)), (-25.6, _mole_ngon(0.0, 0.0, 7.8, 10))], "amber.glow", "plume")
 
 
+def _mole_cowl_section(r, base=MOLE_TH + 2.0, cz=MOLE_CZ, n=16):
+    """The cowl's section at radius `r`: an arc of `n` facets about the bore's axis over the top, from
+    the right tread deck to the left, closed along the deck line at `base`."""
+    a0 = math.asin(max(-1.0, (base - cz) / r))
+    a1 = math.pi - a0
+    return [(r * math.cos(a0 + (a1 - a0) * k / n), cz + r * math.sin(a0 + (a1 - a0) * k / n)) for k in range(n + 1)]
+
+
+def _mole_cowl(b):
+    """The cowl behind the drill face, as big as the face (Ryan, 17 November: "So my main issue right
+    now is the cowling is too small for the drill face, from behind"): the ring's bearing and the
+    bore's front half housed in a hood of the ring's own size, a tunnel borer's shield, sixteen
+    facets over the top from one tread deck to the other, its front just behind the ring's root and
+    a hair inside it so the ring's rim and teeth stand proud, tapering back to the barrel ahead of
+    the weapon boxes; two steel bands round it, a hazard lip at its front where the ring turns
+    against it, and a hatch on its crown."""
+    R, R_BACK = MOLE_R0 - 0.8, 15.0
+    Y_BACK, Y_SHOULDER, Y_FRONT = 1.0, 12.0, MOLE_ROOT - 0.4
+    sec = _mole_cowl_section
+    b.loft([(Y_BACK, sec(R_BACK)), (Y_SHOULDER, sec(R)), (Y_FRONT, sec(R))], "livery.livery2", "cowl")
+    for y0, y1 in ((13.6, 14.8), (20.2, 21.4)):
+        b.loft([(y0, sec(R + 0.45)), (y1, sec(R + 0.45))], "steel.plate", "cowl_band")
+    b.loft([(Y_FRONT - 1.2, sec(R + 0.35)), (Y_FRONT, sec(R + 0.35))], "steel.stripe", "cowl_lip")
+    top = MOLE_CZ + R
+    b.box(-3.5, 3.5, 15.6, 19.4, top - 0.5, top + 0.6, "steel.panel", "cowl_hatch")
+    b.prism("x", 0.0, 15.6, top + 0.3, 0.6, 7.4, "steel.dark", 6, "cowl_hinge")
+
+
 def _mole_well(b, x, y, z, wx, wy, label, rim=0.2):
     """A mount's well in a deck at height `z`, `wx` across and `wy` long, wide enough for any class
     the mount wears to sink through tipped muzzle-up: a hazard rim `rim` wide round a dark recess,
@@ -1954,7 +1982,7 @@ def _mole_boxes(b):
 def mole(b):
     """Minerva "Mole" (TB-2FAB Tunnel Borer), a planned draft: its fifth look round set moving.
     The drill tank, low and narrow behind its drill: two treads under a lower hull, a launch barrel
-    down the spine whose front half is the bore, sloped green cheeks from the tread decks up to it,
+    down the spine whose front half is the bore, housed in a green cowl as big as the drill face,
     a breech behind it under a loading hatch and an engine deck with two stacks at the tail. Its
     nose is one drill, a cone of sixteen faceted sides wound with four bright spiral flutes: the
     ring, the cone's frustum on a bearing round the bore's mouth, turning slowly one way (ring),
@@ -2009,9 +2037,9 @@ def mole(b):
     for y in (-9.0, -5.6):
         _mole_band(b, y, y + 2.2, MOLE_BARREL + 1.0, MOLE_BARREL - 0.3, "steel.dark", "guide_ring")
     _mole_band(b, -2.4, 1.0, MOLE_BARREL + 0.4, MOLE_BARREL - 0.3, "livery.livery", "barrel_band")
-    # The ring's bearing, the drum it turns on, and the ring, slow against the tip; its rev rides outside its turn.
-    _mole_band(b, 20.6, MOLE_ROOT, 19.0, MOLE_BORE, "steel.plate", "ring_bearing", CZ, MOLE_N)
-    _mole_band(b, 19.6, 20.6, MOLE_BARREL + 1.6, MOLE_BARREL - 0.3, "steel.stripe", "bearing_band")
+    # The cowl over the ring's bearing and the bore's front half, as big as the drill face; then the
+    # ring, slow against the tip, its rev riding outside its turn.
+    _mole_cowl(b)
     with b.joint("ring_rev", (0.0, MOLE_ROOT, CZ), axis="roll"):
         with b.joint("ring", (0.0, MOLE_ROOT, CZ), axis="roll"):
             _mole_ring_cutter(b)
@@ -2024,12 +2052,6 @@ def mole(b):
             with b.joint("drill", (0.0, MOLE_LIP, CZ), axis="roll"):
                 _mole_tip_head(b, MOLE_LIP, CZ)
     b.spin("drill", 40.0, 420.0)
-    # The cheeks, from the barrel's shoulders down to the tread decks, inside the ring head on.
-    for s in (-1.0, 1.0):
-        sec = [(s * 8.0, CZ + 10.4), (s * 20.5, TH + 3.0), (s * 20.5, TH + 1.0), (s * 12.6, TH + 1.0)]
-        sec = sec if s < 0 else list(reversed(sec))
-        b.loft([(1.0, sec), (19.2, sec)], "livery.livery2", "cheek")
-        b.loft([(19.2, sec), (20.4, [(x * 0.97, z - 0.4) for x, z in sec])], "steel.stripe", "cheek_edge")
     # The breech: the Minervan vent on each upper chamfer and across its back; a loading hatch on top.
     breech = b.loft([(-27.0, _mole_oct(0.0, CZ + 1.0, 28.0, 28.0, 7.0)), (-14.0, _mole_oct(0.0, CZ + 1.0, 28.0, 28.0, 7.0))], "steel.plate", "breech")
     b.loft([(-15.6, _mole_oct(0.0, CZ + 1.0, 28.8, 28.8, 7.2)), (-14.0, _mole_oct(0.0, CZ + 1.0, 28.8, 28.8, 7.2))], "steel.stripe", "breech_band")
@@ -2119,31 +2141,33 @@ def mole(b):
     b.fires = {"inertia_drill": ("drill_fire", 0.0, 3.0, T_LAUNCH)}
 
     # The burrow (the form "burrowed"), for whatever each mount wears (Ryan, 17 November: "What
-    # happens if the stock guns are swapped out? Can't just ignore that"): the louvres shut; the cab
+    # happens if the stock guns are swapped out? Can't just ignore that"): the louvres shut; each gun
+    # tips muzzle-up where it stands, so none pointing forward meets the cowl as it comes in; the cab
     # and the boxes run in on their rams a beat apart and stop with their inboard edges at the
-    # breech's flank, over the treads, and drop; each gun tips muzzle-up and sinks through its well
-    # into the piece and the tread under it, clear of the breech, its column down flush; the leaves
-    # swing up shut; the pieces slide the last way in behind the ring; the shutter runs down over
-    # the slit and the periscopes sink; then the whole machine digs in nose first and settles.
+    # breech's flank, over the treads, and drop; each gun sinks through its well into the piece and
+    # the tread under it, clear of the breech, its column down flush; the leaves swing up shut; the
+    # pieces slide the last way in behind the ring; the shutter runs down over the slit and the
+    # periscopes sink; then the whole machine digs in nose first and settles.
     # Coming up runs it back. Each class fits: the cab's guns at 0.75 of a class's size and the
     # boxes' at 0.65 sink a barrel's whole length (25.5 and 22.1) into the 26 under the cab's roof
     # and the 22.5 under a box's, and a rack, 16 across, wears 0.62 there (the mounts' fits) so it
     # passes a well 10 across; the rest pass as they are.
     DOWN = MOLE_LIFT + MOLE_TUCK
     tracks = {}
-    for jn, s, t0 in (("cab_deploy", 1.0, 0.0), ("sponson_deploy", -1.0, 0.08), ("fore_box_deploy", -1.0, 0.16)):
+    pieces = (("cab_deploy", 1.0, 0.3, "gun", 29.4, 4.4), ("sponson_deploy", -1.0, 0.38, "aft", 24.8, 3.6), ("fore_box_deploy", -1.0, 0.46, "fore", 22.8, 3.2))
+    for k, (jn, s, t0, tag, sink, col) in enumerate(pieces):
         out = MOLE_OUT_X[0] if s > 0 else MOLE_OUT_X[1]
         stow, home = s * MOLE_STOW_X - out, s * MOLE_IN_X - out
         tracks[jn] = [slide(t0), slide(t0 + 0.5, dx=stow), slide(t0 + 0.8, dx=stow, dz=-DOWN), slide(2.15, dx=stow, dz=-DOWN), slide(2.45, dx=home, dz=-DOWN)]
+        tt, ts = 0.05 * k, t0 + 0.85   # its gun tips up before its piece runs in, and sinks once it is down
+        tracks["tilt_" + tag] = [(tt, 0.0), (round(tt + 0.3, 3), 90.0)]
+        tracks["col_" + tag] = [slide(ts), slide(ts + 0.2, dz=-col)]
+        tracks["lift_" + tag] = [slide(ts), slide(ts + 0.5, dz=-sink)]
     for k, (heat, vent) in enumerate(vents):
         for jn, shut, swing in vent:
             tracks[jn] = [(0.0, 0.0), (round(0.1 + 0.05 * k, 3), 0.0), (round(0.45 + 0.05 * k, 3), shut)]
     tracks["shutter"] = [slide(2.1), slide(2.4, dy=round(MOLE_SHUTTER / 1.1, 3), dz=-MOLE_SHUTTER)]
     tracks["periscopes"] = [slide(2.1), slide(2.4, dz=-3.2)]
-    for tag, t0, sink, col in (("gun", 0.85, 29.4, 4.4), ("aft", 0.95, 24.8, 3.6), ("fore", 1.05, 22.8, 3.2)):   # each once its piece is down
-        tracks["tilt_" + tag] = [(t0, 0.0), (round(t0 + 0.3, 3), 90.0)]
-        tracks["col_" + tag] = [slide(t0 + 0.3), slide(t0 + 0.5, dz=-col)]
-        tracks["lift_" + tag] = [slide(t0 + 0.3), slide(t0 + 0.8, dz=-sink)]
     for name, swing in leaves:   # once every gun is down
         tracks[name] = [(1.9, 0.0), (2.15, swing)]
     T_DIG0, T_DIG1, SINK, NOSE = 2.4, 3.3, -7.0, -8.0

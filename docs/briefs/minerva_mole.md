@@ -533,6 +533,18 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    pieces running out less far, or skirts that close the bays as they run out), the burrow's
    order and pace (3.3 seconds in, the same out), the dig-in, and the drill's flight; and any
    class fitted on the Models tab to watch it stow.
+   His note the same day: "So my main issue right now is the cowling is too small for the drill
+   face, from behind." From behind and from the skirmish's angle the ring's dark back, 44 across,
+   stood far wider and taller than the cheeks and the barrel in front of it. Now a cowl as big as
+   the drill face houses the ring's bearing and the bore's front half in the cheeks' and the
+   bearing drum's place: a tunnel borer's shield, sixteen facets over the top from one tread deck
+   to the other, 42.4 across (the ring's root 44, so its rim and teeth stand just proud), from just
+   behind the ring back 12.6 at full size and then tapering to the barrel by y 1, ahead of the
+   weapon boxes; Minerva's dark green with two steel bands, a hazard lip where the ring turns
+   against it and a hatch on its crown. Head on it stays behind the ring. The burrow changed with
+   it: each gun now tips muzzle-up where it stands before its piece runs in, since the fore box's
+   gun, pointing forward, would have met the cowl's flank on the way in. His to judge: the cowl's
+   size and taper from behind, and its green.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike
