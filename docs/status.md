@@ -2193,14 +2193,15 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 288 (17 November, from `ccr-bd73687d-w8qox1` at `a6af0a7`, ahead of main, on his
-  "Some end up on the ground, some don't. Go ahead and fix the others" and his asks for the Ammit and
-  the Cassowary): `motion.js` with the settle and the five sidecars whose deaths now end on the ground
-  (the Ammit, the Cassowary, the Clydesdale, the Nemesis, the Polar Bear); the six live copies the last
-  publishes' own and the page its source, every machine's death probed in the hangar headless first.
-  `edits` and `text` empty, `designs` the two folded ideas. Versions 281 to 286 (16 and 17 November)
-  took the deaths out from this branch round by round on his notes. A republish from main before this
-  branch lands would drop the deaths: land the branch first, or publish from it. Version 280 (15 November, from main at `4514a2c`, the branch `ccr-b7d5164e-1wtzzm` landed
+  page's Version 290 (17 November, from `ccr-bd73687d-w8qox1` at `8637e3d`, ahead of main, on his
+  "I liked the nemesis kneel, it was iconic" and "the faceplant is the iconic AT-AT pose"): the
+  Nemesis's and the Clydesdale's sidecars, over Version 289, another session's publish of 17 November
+  (its content files newer than this branch's and main's, kept; the page, `motion.js` and these two
+  sidecars it left as 288 had them, read and checked first). Version 288 (from `a6af0a7`, on his "Some
+  end up on the ground, some don't. Go ahead and fix the others"): `motion.js` with the settle and five
+  sidecars. `edits` and `text` empty, `designs` the two folded ideas. Versions 281 to 286 (16 and 17
+  November) took the deaths out from this branch round by round on his notes. A republish from main
+  before this branch lands would drop the deaths: land the branch first, or publish from it. Version 280 (15 November, from main at `4514a2c`, the branch `ccr-b7d5164e-1wtzzm` landed
   there on Ryan's "These look great. Let's clean up and merge into main"): main's `vocabulary.json`
   (the vocabulary pass's rounds), `text.json` from the merged tree, `renders.json` with the Giant
   Petrel shipped, and the Needletail's eight candidate-final pictures removed; the live copy
