@@ -1933,9 +1933,10 @@ func test_a_death_keeps_to_its_floor_all_the_way_down() -> void:
 
 
 func test_a_limp_joint_hangs_where_its_weight_takes_it() -> void:
-	# The fourth notes: the Baboon's "Arms that clearly had to have moved back under their own power": a
-	# death's `hang` joints are turned where their weight takes them once the rest of the pose lies where
-	# it ends, above the floor, resting on it where they reach it.
+	# The fourth notes: the Baboon's "Arms that clearly had to have moved back under their own power";
+	# the Nemesis's "arms slumped down by the elbows": a death's `hang` joints are turned where their
+	# weight takes them once the rest of the pose lies where it ends, above the floor, resting on it
+	# where they reach it.
 	var read := 0
 	for id in MACHINES:
 		var side := MechRig.load_sidecar(id)
@@ -1959,7 +1960,7 @@ func test_a_limp_joint_hangs_where_its_weight_takes_it() -> void:
 			assert_true(hangs_below or low < 0.03 * size, "%s's %s hangs below its joint or rests on the floor" % [id, jn])
 		read += 1
 		pair[1].free()
-	assert_true(read >= 1, "deaths with limp joints read (%d)" % read)
+	assert_true(read >= 2, "deaths with limp joints read (%d)" % read)
 
 
 func test_every_death_pose_names_what_its_model_has() -> void:

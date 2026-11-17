@@ -579,9 +579,11 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   edge nearest its middle until it rests, worked on the pose it ends in (a kill mid-act had read the
   act's leftover turn, so the hangar's falls varied run to run); the Ammit goes forward onto its belly
   (its thighs fold up into it, the crossing he allowed), the Cassowary two steps back and down onto
-  its knees and chin, the Nemesis over from its knee onto its face and side, the Clydesdale's rear
-  down after its face, the Polar Bear flat; `land=False` cut with its last carrier. Every death ends
-  with its lowest point on the floor and resting. Section 12 holds the Baboon's sit, the Funnel-web's
+  its knees and chin, the Polar Bear flat; `land=False` cut with its last carrier. A pass took the
+  Nemesis on from its knee onto its face and brought the Clydesdale's rear down; he kept both as they
+  were ("I liked the nemesis kneel, it was iconic"; "Clydesdale rear legs can stay planted, the
+  faceplant is the iconic AT-AT pose"), the Clydesdale's hind feet now planted and its barrels no
+  longer in its deck. Every death ends with its lowest point on the floor and resting. Section 12 holds the Baboon's sit, the Funnel-web's
   hinges (a tenth up whatever its legs do) and the Ammit's clean fold; the to-do the crossings left
   elsewhere. The bible (v0.607) republishes on his word. And on his "Can we make it so the
   game doesn't enable auto rotate every time it loads?": `tools/android.sh` launches the game with

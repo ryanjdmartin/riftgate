@@ -879,30 +879,25 @@ def clydesdale(b):
             form["elev_%d" % n] = [(0.0, 0.0), (R1, 0.0), (E1, -BATTERY_PIVOT)]
     b.form("changed_over", E1, form)
     # Its death: face first, as the AT-AT that made it falls (Ryan, 16 November: "like the Clydesdale
-    # falling onto its face like the AT-AT that influenced it"): the fore legs buckle at the knee and the
-    # nose goes down onto the ground while the hind legs hold, the head lolling aside; then the hind legs
-    # give and slide out behind it and the rear comes down, so it ends on its belly, its fore legs folded
-    # under it (Ryan, 17 November, judging by the hangar: "Some end up on the ground, some don't. Go
-    # ahead and fix the others"; its rear had stayed up on its locked hind legs). The hind feet stay where
-    # they stand until the nose is down, the one pair that slides (the fifth notes: a quad may slide one
-    # pair). The battery's barrels droop a touch (further, they sank into the deck).
+    # falling onto its face like the AT-AT that influenced it"): the fore legs buckle at the knee, the
+    # nose goes down onto the ground while the hind legs stay locked, their feet planted where they stand
+    # (17 November, of a pass that brought its rear down after: "Clydesdale rear legs can stay planted,
+    # the faceplant is the iconic AT-AT pose"), the head lolls aside and the battery's barrels droop a
+    # touch (further, they sank into the deck).
     batteries = [j for j in ("elev_%d" % n for n in range(1, 9))]
     # The fore knees give slowly first, then it goes over and lands hard (the fourth notes: it
     # "topples too smoothly. It should start slower and hit harder"; b.death's fall).
-    DIE = 2.5
     tracks = {
-        "hip_fl": [(0.7, 18.0), (1.8, 55.0), (DIE, 55.0)], "knee_fl": [(0.7, -45.0), (1.8, -108.0), (DIE, -115.0)], "ankle_fl": [(1.8, 52.0), (DIE, 52.0)],
-        "hip_fr": [(0.75, 16.0), (1.8, 52.0), (DIE, 52.0)], "knee_fr": [(0.75, -40.0), (1.8, -104.0), (DIE, -115.0)], "ankle_fr": [(1.8, 50.0), (DIE, 50.0)],
-        "head": [(1.8, -10.0, 16.0, 0.0), (DIE, -10.0, 16.0, 0.0)],
+        "hip_fl": [(0.7, 18.0), (1.8, 55.0)], "knee_fl": [(0.7, -45.0), (1.8, -108.0)], "ankle_fl": [(1.8, 52.0)],
+        "hip_fr": [(0.75, 16.0), (1.8, 52.0)], "knee_fr": [(0.75, -40.0), (1.8, -104.0)], "ankle_fr": [(1.8, 50.0)],
+        "hip_hl": [(1.8, -16.0)], "knee_hl": [(1.8, 6.0)], "ankle_hl": [(1.8, 10.0)],
+        "hip_hr": [(1.8, -16.0)], "knee_hr": [(1.8, 6.0)], "ankle_hr": [(1.8, 10.0)],
+        "head": [(1.8, -10.0, 16.0, 0.0)],
     }
-    for side in ("l", "r"):
-        tracks["hip_h" + side] = [(1.6, -16.0), (DIE, -60.0)]
-        tracks["knee_h" + side] = [(1.6, 6.0), (DIE, -40.0)]
-        tracks["ankle_h" + side] = [(1.6, 10.0), (DIE, 0.0)]
     for k, jn in enumerate(batteries):
-        tracks[jn] = [(1.8, -4.0 if k % 2 == 0 else -2.0), (DIE, -4.0 if k % 2 == 0 else -2.0)]
-    b.death(DIE, tracks, body=[(0.7, 0.0, 1.0, -3.0, 0.0, -4.0, 0.0), (1.8, 0.0, 3.0, -6.0, 3.0, -22.0, 2.0), (DIE, 0.0, 3.0, -6.0, 3.0, 4.0, 2.0)],
-            plant=[("ankle_hl", 0.0, 1.6), ("ankle_hr", 0.0, 1.6)])
+        tracks[jn] = [(1.8, -4.0 if k % 2 == 0 else -2.0)]
+    b.death(1.8, tracks, body=[(0.7, 0.0, 1.0, -3.0, 0.0, -4.0, 0.0), (1.8, 0.0, 3.0, -6.0, 3.0, -22.0, 2.0)],
+            plant=[("ankle_hl", 0.0, 1.8), ("ankle_hr", 0.0, 1.8)])
 
 # The Clydesdale's batteries (the form above): the first battery's ports in pin order, the second's
 # the same rows mirrored across the spine; how far a stowed gun sits under the deck, the guns'
@@ -4708,20 +4703,14 @@ def nemesis(b):
     # Its death: the brawler takes a knee (Ryan, 16 November: "Nemesis should fall to one knee";
     # the fourth notes: "don't list it to the side, just take a knee, arms slumped down by the
     # elbows"), level, the left knee and its toes down, the right foot planted under the raised knee,
-    # its head and shoulders bowed, its arms slack at the elbows; then, a beat on, it goes over onto its
-    # face, turning on the knee it is down on, its legs going out straight behind it and its arms along
-    # its sides, and rolls onto its left as the gun on its right shoulder meets the floor (Ryan, 17
-    # November, judging by the hangar: "Some end up on the ground, some don't. Go ahead and fix the
-    # others"; on its knee it had ended a quarter of its height off the floor).
-    KNEE, DOWN = 1.2, 1.45   # down on the knee, and the beat before it goes over
-    b.death(2.4, {
-        "hip_l": [(KNEE, -40.0), (DOWN, -40.0), (2.4, -26.0)], "knee_l": [(KNEE, -47.5), (DOWN, -47.5), (2.4, 20.0)], "ankle_l": [(KNEE, 20.5), (DOWN, 20.5), (2.4, 40.0)],
-        "hip_r": [(KNEE, 50.0), (DOWN, 50.0), (1.9, 10.0), (2.4, -26.0)], "knee_r": [(KNEE, -50.0), (DOWN, -50.0), (1.9, -60.0), (2.4, 20.0)], "ankle_r": [(KNEE, 2.5), (DOWN, 2.5), (2.4, 40.0)],
-        "shoulder_l": [(KNEE, -5.0, 0.0, 0.0), (DOWN, -5.0, 0.0, 0.0), (2.4, 0.0, 0.0, 0.0)], "shoulder_r": [(KNEE, -5.0, 0.0, 0.0), (DOWN, -5.0, 0.0, 0.0), (2.4, 0.0, 0.0, 0.0)],
-        "elbow_l": [(KNEE, -55.0), (DOWN, -55.0), (2.4, -70.0)], "elbow_r": [(KNEE, -55.0), (DOWN, -55.0), (2.4, -70.0)],
-        "waist": [(KNEE, -6.0, 0.0, 0.0), (2.4, 0.0, 0.0, 0.0)], "elev_shoulder": [(KNEE, -13.0), (DOWN, -13.0), (2.4, 0.0)],
-    }, body=[(KNEE, 0.0, 2.0, -14.0, 0.0, 3.0, 0.0), (DOWN, 0.0, 2.0, -14.0, 0.0, 2.0, 0.0), (2.4, 0.0, 2.0, -14.0, 0.0, -80.0, -30.0)],
-       plant=[("knee_l", DOWN, 2.1)])
+    # its head and shoulders bowed, its arms gone limp from the shoulder (b.death's hang). It ends on
+    # its knee, the one death that does not lie down (Ryan, 17 November, of a pass that took it on over
+    # onto its face: "I liked the nemesis kneel, it was iconic").
+    b.death(1.2, {
+        "hip_l": [(1.2, -40.0)], "knee_l": [(1.2, -47.5)], "ankle_l": [(1.2, 20.5)],
+        "hip_r": [(1.2, 50.0)], "knee_r": [(1.2, -50.0)], "ankle_r": [(1.2, 2.5)],
+        "waist": [(1.2, -6.0, 0.0, 0.0)], "elev_shoulder": [(1.2, -13.0)],
+    }, body=[(1.2, 0.0, 2.0, -14.0, 0.0, 3.0, 0.0)], hang=["shoulder_l", "elbow_l", "shoulder_r", "elbow_r"])
 
 nemesis.maker = "arsenal"
 
