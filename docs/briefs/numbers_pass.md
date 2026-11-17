@@ -190,11 +190,12 @@ tier in the component pass.
 ## 7. Open
 
 His, each with this pass's lean and its read (`docs/measurements.md`, 17 November, the last
-entry):
+two entries):
 
 | The call | The lean | Why |
 |---|---|---|
 | The Barrier's place | No basic, his own lean ("I think no barrier basic", 17 November) | Tune for a squad with none, and hold every boss to a test that a block is a bounded edge: no more than about half its damage in one blow at one machine. One Barrier in a squad takes a quarter off a boss on the mean, half off the four whose kit is one great blow, nothing off the four that strike every machine. With none, the bosses' blows at four fifths cost a squad what they cost today |
+| Large blows as strikes | His thought, no instruction: "large blows should be multi-strikes except where particularly thematic or the whole point is to suppress, disrupt, or block it. Makes armour more valuable which too, is a bonus. A barrier is just another mitigation tool then, not a free pass. Just a thought, not an instruction" (17 November). This pass's lean: yes, a leader's plain blow as two strikes | It is the bounded-edge test with its fix. A Barrier takes one strike, so its worth on a boss falls from 27 points of a four's hull to 16 at two strikes and 4 at three. Three is no default: there the Armoured basic, which has no cooldown, is worth what the Barrier is, and a kit of small strikes starves on plate (the Vampire Lord 49.6% to 15.5%), so three or more is a kit's own shape, sized against plate and a walled tank. A blow that gathers stays whole, the one built to be answered. A split sizes nothing (the Nob 59.2%, 54.2% and 56.2% with no Barrier), so the blows' numbers follow it, and a rider lands once a strike, so a split blow's rider is sized again. Read by the anchor read's `split=`, which leaves with the question |
 | Where the Halo Projector goes | A tier-one find beside the Blast Door, or locked to a machine: his | It is a tier-zero blueprint today, so off the starting dice is not out of every squad's reach |
 | HEAT | −1: a vanilla 3 for 3 | Four shots a gauge for three; a formation 0.7 rounds shorter and a point of hull lighter, a quarter fewer reboots; "I just know I overheated a lot" |
 | TOP BASIC | +2: the Carbine 4 for 6 | Its point is paid in heat: two shots a gauge for the vanilla's four |
@@ -216,7 +217,8 @@ Leans not yet built, each a number this pass may land with its read:
   tier two waiting for a kit that wants one.
 - The kits a block takes half of: the Mantis Ant, the Phantom Train, the Gargantuan King,
   the Emperor Scorpion, Gilgamesh and the Nob. Each a proposal in chat, a second blow, a
-  rider that lands through a Barrier or a blow at every machine.
+  rider that lands through a Barrier or a blow at every machine; or its plain blow as two
+  strikes, if his thought lands (the table's row).
 
 ## 8. What landed, 17 November
 

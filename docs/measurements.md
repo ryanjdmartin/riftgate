@@ -10971,3 +10971,80 @@ quarter fewer reboots. Two more heat on the Carbine gives back a fifth of that. 
 on the rank and file is a round and 3.7 points of hull on a formation, half again its cost,
 so a standard foe of 5 wants the foes' blows sized again; it touches no flanker and no
 hunter, which the dial does not reach.
+
+## 17 November: the leaders' plain blows as two and three strikes, with the Barrier basic and without it
+
+Ryan, of tuning for a block that exists: "By designed in case a barrier exists, I mean more
+that large blows should be multi-strikes except where particularly thematic or the whole
+point is to suppress, disrupt, or block it. Makes armour more valuable which too, is a
+bonus. A barrier is just another mitigation tool then, not a free pass. Just a thought, not
+an instruction." Read before it was answered: `tools/anchor_read.gd` with `split=2` and
+`split=3`, which land every elite's and boss's plain blow, one strike at one machine that
+lands the round it shows and carries no keyword, as that many strikes of the same total, a
+point either way for the rounding. A blow that gathers, a blow at every machine, a blow
+with a rider (it would land once a strike) and a move of many strikes stay as content has
+them. The six certain tier ones, the greedy bot, twenty fights a row, the game as sized
+that day; the Barrier basic on the starting dice as content has it, and the Armoured basic
+in its slot (`refit=barrier=none`). Hull is a share of a four's.
+
+What it split: eleven moves on ten bosses (the Fallen Weapon's Haft 16, the Gargantuan
+King's Gore 15, the King Gel's Body Slam 15, the Mantis Ant's Mandibles 15 and Upheaval 19,
+the Marsh Serpent's Bite 18, the Matador's Estocada 12, the Obsidian Tyrant's Crunch 18,
+the Phantom Train's Run Down 16, the Ruby Colossus's Big Claw 14, the Vampire Lord's Drain
+12) and nine on the elites of seven fights (the Cinder Tortoise's Bite 14, Gilgamesh's
+Blade 18 and his borrowed one, the Old Man of the Desert's Maw 12, the Wild Hunt's Lance
+10, the Nob's Rush 23, the Pilgrim's Karma 9 and Lantern 9, the Reaper's Scythe 12). The
+Emperor Scorpion, the Fiend of Fire and Floraison have no plain blow, nor have the leaders
+of four elite fights; their rows came back the same to the decimal and are left out.
+
+| Their plain blows land as | The Barrier basic on the dice | The Armoured basic in its slot | What the Barrier takes off |
+|---|---|---|---|
+| The ten bosses, one strike, as content has them | 98% won, 29.7%, 0.29 wrecks | 84%, 56.4%, 1.26 | 26.7 points |
+| The ten bosses, two strikes | 93%, 37.8%, 0.56 | 84%, 53.9%, 1.19 | 16.1 |
+| The ten bosses, three strikes | 92%, 40.2%, 0.60 | 88%, 44.0%, 0.86 | 3.8 |
+| The seven elite fights, one strike, as content has them | 100%, 9.8%, 0.04 | 98%, 26.1%, 0.33 | 16.3 |
+| The seven elite fights, two strikes | 100%, 16.9%, 0.18 | 99%, 23.7%, 0.21 | 6.8 |
+| The seven elite fights, three strikes | 100%, 17.7%, 0.16 | 98%, 22.1%, 0.28 | 4.4 |
+
+Over every boss the means are 32.5%, 38.6% and 40.5% with the Barrier basic and 52.8%,
+50.9% and 43.3% without; over every elite fight 10.9%, 15.4% and 15.9%, and 22.7%, 21.2%
+and 20.2%.
+
+| Fight, hull lost | Barrier, one strike | Two | Three | Armoured, one strike | Two | Three |
+|---|---|---|---|---|---|---|
+| The Fallen Weapon | 34.8% | 56.7% | 55.4% | 66.8% | 65.7% | 50.0% |
+| The Gargantuan King | 30.6% | 40.2% | 44.4% | 54.0% | 54.4% | 51.7% |
+| The King Gel | 28.6% | 38.2% | 41.9% | 59.7% | 55.6% | 42.9% |
+| The Mantis Ant | 8.9% | 19.0% | 21.6% | 38.8% | 34.1% | 18.0% |
+| The Marsh Serpent | 21.2% | 23.9% | 27.8% | 48.8% | 50.5% | 51.2% |
+| The Matador | 21.9% | 23.9% | 26.6% | 26.8% | 24.1% | 20.8% |
+| The Obsidian Tyrant | 51.4% | 56.2% | 61.1% | 72.7% | 72.9% | 71.2% |
+| The Phantom Train | 45.6% | 40.6% | 43.5% | 78.9% | 64.1% | 50.4% |
+| The Ruby Colossus | 41.2% | 53.3% | 64.7% | 67.5% | 73.4% | 68.2% |
+| The Vampire Lord | 13.2% | 25.6% | 14.9% | 49.6% | 44.2% | 15.5% |
+| The Cinder Tortoise's brood | 17.0% | 25.0% | 27.5% | 40.2% | 36.4% | 40.0% |
+| Gilgamesh wanders | 6.7% | 13.6% | 15.3% | 29.1% | 24.2% | 14.7% |
+| The old man's rising | 7.7% | 10.1% | 11.3% | 16.0% | 14.1% | 10.3% |
+| The Pilgrim's wake | 2.7% | 2.5% | 2.4% | 11.7% | 11.1% | 10.2% |
+| The Nob | 18.9% | 43.3% | 47.0% | 59.2% | 54.2% | 56.2% |
+| The Reaper | 0.7% | 0.9% | 2.1% | 3.6% | 3.4% | 2.8% |
+| The Wild Hunt | 14.9% | 22.7% | 18.0% | 22.7% | 22.2% | 20.2% |
+
+A row is twenty fights and a direction; the means, over 200 fights and 140, are bands.
+
+- **It does to the Barrier what he says.** A Barrier takes one strike, so its worth on a
+  boss falls from 27 points of a four's hull to 16 at two strikes and 4 at three, on an
+  elite from 16 to 7 to 4. At two it is still the better tool against a great blow; at
+  three it is worth what the Armoured basic is.
+- **Armour gains little at two strikes and much at three.** A squad with the Armoured basic
+  pays a boss 56.4% in one strike, 53.9% in two, 44.0% in three: Armoured 2 takes a sixth
+  of a blow of 12 whole, a third of it in two strikes, half in three, and it has no
+  cooldown where the Barrier basic sits out a round. The fall at three is carried by the
+  kits of small strikes: the Mantis Ant 38.8% to 18.0%, the Vampire Lord 49.6% to 15.5%
+  (its drain regrows what reaches the hull, and strikes of 4 past plate reach little),
+  Gilgamesh 29.1% to 14.7%, the Phantom Train 78.9% to 50.4%.
+- **A split sizes nothing.** The Nob costs a squad with no Barrier 59.2% in one strike,
+  54.2% in two and 56.2% in three; what the split takes is the Barrier's cover over it,
+  18.9% to 43.3%. The Obsidian Tyrant, the Ruby Colossus and the Marsh Serpent, whose
+  weight is a blow that gathers, read the same without a Barrier at any count. So the
+  blows' numbers are sized after the split, never by it.

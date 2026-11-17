@@ -150,8 +150,11 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   no barrier basic"; the lean and its reads are the numbers brief's section 7): an elite
   costs 10.9% with the Barrier basic on the starting dice and 22.7% without it, a boss 32.5%
   and 52.8%, and with none the bosses' blows at four fifths cost a squad what they cost
-  today. This pass's leans on the dials stand in the same section, each his to take. Tiers two and three and the first battle are unsized,
-  their foes still the ones sized against a shield that refilled. On a debug
+  today. His thought since, no instruction, that a large blow land as strikes was read: a
+  Barrier's worth on a boss falls from 27 points of a four's hull to 16 at two strikes and 4
+  at three. This pass's leans on the dials stand in the same section, each his to take.
+  Tiers two and three and the first battle are unsized, their foes still the ones sized
+  against a shield that refilled. On a debug
   build's SETTINGS, TRIALS, each a number still to be picked: HEAT, TOP BASIC, RANK AND FILE
   and BARRIER BASIC (read at the next launch), OVERHEAT, FIELD DEPTH, OPENING, FODDER,
   RUPTURE, TIDE and STRIKE (read as the next battle starts). A dial leaves the page with its

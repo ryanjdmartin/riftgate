@@ -13,7 +13,7 @@ extends SceneTree
 ##
 ## usage: godot --headless --path . -s tools/anchor_read.gd -- pool=a,b,c,d,e,f [seeds=5]
 ##        [squads=6] [tier=1] [ramp=1] [kinds=patrol,formation,elite,boss] [only=id,id]
-##        [refit=spec] [blows=percent] [label=text]
+##        [refit=spec] [blows=percent] [split=strikes] [label=text]
 ##   pool    the chassis ids the squads are drawn from
 ##   seeds   fights a squad; squads: how many of the pool's squads of that size (0, all)
 ##   only    the composition or boss ids to read, the rest skipped
@@ -21,6 +21,12 @@ extends SceneTree
 ##   blows   a what-if on the leaders alone: every elite's, boss's, hero's and commander's
 ##           attack at that share of content's, in hundredths (blows=80), a foe a fight
 ##           fields or a foe it makes later; the rank and file beside them as content has it
+##   split   a what-if on the leaders alone: each of their plain blows, one strike at one
+##           machine that lands the round it shows and carries no keyword, becomes that many
+##           strikes of the same total, a point either way for the rounding (split=2). A blow
+##           that gathers, a blow at every machine, a blow with a rider (it would land once a
+##           strike) and a move of many strikes stay as content has them; the moves it split
+##           are listed under the table
 
 
 func combos(pool: Array, n: int) -> Array:
@@ -47,7 +53,7 @@ func combos(pool: Array, n: int) -> Array:
 
 
 func _init() -> void:
-	var o := {"seeds": "5", "tier": "1", "pool": "", "kinds": "patrol,formation,elite,boss", "ramp": "1", "squads": "0", "label": "", "only": "", "refit": "", "blows": "100"}
+	var o := {"seeds": "5", "tier": "1", "pool": "", "kinds": "patrol,formation,elite,boss", "ramp": "1", "squads": "0", "label": "", "only": "", "refit": "", "blows": "100", "split": "1"}
 	for arg in OS.get_cmdline_user_args():
 		var kv := str(arg).split("=", true, 1)
 		if kv.size() == 2:
@@ -97,10 +103,28 @@ func _init() -> void:
 	var blows := clampi(int(o["blows"]), 10, 300)
 	if blows != 100:
 		print("what-if: every leader's attack at %d%% of content's" % blows)
-	# A foe as content makes it, a leader's attack at the what-if's share (never under one).
+	var split := clampi(int(o["split"]), 1, 6)
+	if split != 1:
+		print("what-if: every leader's plain blow (one strike at one machine, no countdown, no keyword) lands as %d strikes of the same total" % split)
+	var cut := {}   # the moves the split changed, by foe and move: the strikes it lands now
+	# A foe as content makes it, a leader's attack at the what-if's share (never under one)
+	# and its plain blows split into strikes.
 	var lead := func(f: Foe) -> Foe:
-		if f != null and blows != 100 and (f.boss or f.elite or f.hero or f.commands):
+		if f == null or not (f.boss or f.elite or f.hero or f.commands):
+			return f
+		if blows != 100:
 			f.attack = maxi(1, roundi(float(f.attack) * float(blows) / 100.0))
+		if split != 1:
+			var moves: Array = f.actions.duplicate(true)
+			for a in moves:
+				if Foe.is_attack_action(a) and int(a.get("strikes", 1)) == 1 and Foe.countdown_of(a) == 0 and Array(a.get("keywords", [])).is_empty():
+					var whole := f.base_damage_of(a)
+					a["strikes"] = split
+					a["factor"] = float(a.get("factor", 1.0)) / float(split)
+					cut["%s's %s" % [f.display_name, str(a.get("name", a.get("id", "")))]] = "%d as %d×%d" % [whole, split, f.base_damage_of(a)]
+			f.actions.assign(moves)
+			if not f.actions.is_empty():
+				f.action = f.actions[0]
 		return f
 	var sums := {}
 	for row in rows:
@@ -179,4 +203,10 @@ func _init() -> void:
 	for key in sums.keys():
 		var v: Array = sums[key]
 		print("mean, %s (%d rows, %d fights): won %d%%, %.1f rounds, %.1f%% of a four's hull, %.2f wrecks a fight, %.2f reboots a machine a fight, the burn %.1f hull a fight, %d stalled" % [key, v[0], v[7], roundi(v[1] / v[0]), v[2] / v[0], v[3] / v[0], v[4] / v[0], v[5] / v[0], v[6] / v[0], v[8]])
+	if not cut.is_empty():
+		var said: Array = []
+		for key in cut.keys():
+			said.append("%s %s" % [key, cut[key]])
+		said.sort()
+		print("split: " + ", ".join(said))
 	quit(0)
