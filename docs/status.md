@@ -2367,7 +2367,13 @@ commands are in `README.md`.
 - The hangar page: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
-  the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
+  the last publish's before it is replaced, and `edits`, `designs` and `text` read first.
+  **Not republished for the Storm Petrel's landing** (17 November, main at `e9a070f`): the live
+  page's `content/chassis.json` and `components.json` carry a Mole chassis and an Inertia Drill
+  that main does not, from another session's publish ahead of main (its vocabulary is main's of
+  `d7fe86f`), so a publish from main would drop them. The next publish takes main's files with
+  those entries kept, or waits for that branch to land; until then the Text tab lacks the
+  Storm Petrel's new texts (`text` and `designs` were read the same day: nothing to fold). At the
   page's Version 280 (15 November, from main at `4514a2c`, the branch `ccr-b7d5164e-1wtzzm` landed
   there on Ryan's "These look great. Let's clean up and merge into main"): main's `vocabulary.json`
   (the vocabulary pass's rounds), `text.json` from the merged tree, `renders.json` with the Giant

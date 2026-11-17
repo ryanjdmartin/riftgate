@@ -23,7 +23,8 @@ func _db(tier: int = 1) -> ContentDB:
 	var charge := {"trigger": "static", "effect": "self_status", "status": "charged", "value": 2, "entry": "test_lure"}
 	var chain := {"trigger": "static", "effect": "grant_keyword", "value": "chain", "number": 3, "entry": "test_lure"}
 	var deep := maxi(0, 3 - tier)
-	db.chassis["test_frame"] = {"id": "test_frame", "name": "Test Frame", "tier": tier, "hull": 20, "shield": 10, "heat_max": 12,
+	db.chassis["test_frame"] = {"id": "test_frame", "name": "Test Frame", "designation": "TF-1", "codex": "", "flavour": "", "tier": tier,
+		"hull": 20, "shield": 10, "armour": 0, "heat_max": 12, "movespeed": 3, "size": "medium", "traits": ["hover"],
 		"hardpoints": 1, "module_slots": 0, "fixed": ["test_lure"], "loadout": ["test_gun"], "passive": null,
 		"branches": [
 			{"id": "guard", "name": "Guard", "steps": [{"description": "Guard one.", "effects": [hard]}, {"description": "Guard two.", "effects": [wide, each]}].slice(0, deep)},
@@ -150,3 +151,32 @@ func test_the_validator_holds_a_branch_to_a_tweak_of_a_locked_piece() -> void:
 		if real.chassis[cid].has("branches"):
 			for b in real.branch_builds(str(cid)):
 				assert_eq(real.make_mech(str(cid), 1, Vector2i.ZERO, null, [], b).branches.size(), (b as Array).size(), "%s builds with %s" % [cid, str(b)])
+
+
+## The harness's UPG line (under a machine's hardpoints): every build its chassis allows, one pick,
+## the setup's and the row's at once; Stock takes it off with the rest.
+func test_the_harness_offers_every_build_and_the_row_names_the_one_picked() -> void:
+	var db := _db(1)
+	var s := HarnessSetup.new(db)
+	s.team = []
+	var h: Control = preload("res://game/harness.gd").new()
+	h.build(s)
+	h._rows["test_frame"]["check"].button_pressed = true
+	h._toggle_loadout("test_frame")
+	var upg: OptionButton = null
+	for line in h._rows["test_frame"]["editor"].get_children():
+		if line.get_child_count() > 1 and line.get_child(0) is Label and (line.get_child(0) as Label).text == "UPG":
+			upg = line.get_child(1)
+	assert_true(upg != null, "a chassis with branches has its UPG line")
+	assert_eq(upg.item_count, 6, "the six builds, none first")
+	var at := -1
+	for i in range(upg.item_count):
+		if upg.get_item_metadata(i) == ["guard", "guard"]:
+			at = i
+	assert_true(at > 0 and upg.get_item_text(at) == "Guard I, Guard II", "each build by its steps' names")
+	upg.select(at)
+	upg.item_selected.emit(at)
+	assert_eq(s.branch_picks("test_frame"), ["guard", "guard"], "the pick is the setup's")
+	assert_true(h._rows["test_frame"]["status"].text.contains("upgrades: Guard I, Guard II"), "and the row names it: %s" % h._rows["test_frame"]["status"].text)
+	h.free()
+
