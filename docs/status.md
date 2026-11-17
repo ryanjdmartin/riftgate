@@ -183,8 +183,9 @@ Everything is on main as of 13 November 2026; the formation and refit session's 
 and brought up to `f8fb28b` as main moved: the refit brief's section 22 list read again, every
 kit written out whole against the system (`docs/reboot_machines_proposal.md`) with its probe
 (`tools/reboot_probe.gd`), and the Storm Petrel landed whole on his "Your verdict leans are
-solid" with his two upgrade branches, the first built (How things stand, below). It goes to main
-as a fast-forward on his "land it and push it to main" (17 November).
+solid" with his two upgrade branches, the first built (How things stand, below). It landed on
+main as a fast-forward on his "land it and push it to main" (17 November, `c2b8d83`); merged,
+and to delete with the rest.
 `ccr-1e6e6571-7x7ayr`, the map session's, restarted from main at `e26589f` on 16 November (its
 earlier work all on main): the painted walls as joined ranges, the painted world at the 3D map's
 heights, and Ryan's three rounds of notes of 16 November, the quick fixes, the shapes, the
