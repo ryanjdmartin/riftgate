@@ -142,14 +142,14 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    then heat over a machine's maximum burns hull one for one and stays on the gauge, burning
    again every turn it stands there; the first such turn since the machine's last reboot is
    its overheat, and its shield breaks; then each machine's Empowered halves, and a dark entry
-   whose rounds are done lights again (a cooldown, a jam). A rebooting machine neither burns nor overheats, nor
-   one out of reach (Phased, Swallowed), whose heat stays for the turn it is back: a Phased
+   whose rounds are done lights again (a cooldown, a jam). A rebooting machine has vented as
+   its shield dropped, so it carries nothing to burn, and no rule spares it. One out of reach
+   (Phased, Swallowed) neither burns nor overheats, its heat staying for the turn it is back: a Phased
    machine's stacks tick all the same and take nothing, and everything a Swallowed one carries
    waits. A machine the tick or the burn wrecks is lost on its own turn, before the enemy acts.
 5. The enemy's turn (below). It starts with every foe's Armoured, Barrier and Ward going, its
    Brittle halving and its Exposed falling once its round is past; each foe's own turn then
-   ends with its ticks, its action done or lost. A passed turn's release follows (the Whip
-   Scorpion's, Passives below).
+   ends with its ticks, its action done or lost.
 6. The round's end: round-timed effects end (Phased and the wait for it, Essence Flare, a
    swallow's and a golden rage's rounds), a web on a foe bursts (the Web Bomb, below), and a
    machine whose own attack killed in the round fires what its passive grants for it (the
@@ -276,7 +276,7 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   Shock on any of them is doubled and spent; with no primary target no Ricochet follows it, and
   no area keyword rides it. It is
   a targeting mode of its own: no passive turns it into Direct or Indirect. Two gated specials carry it, the Whip Scorpion's
-  release and the Musk Ox's salvo, and one debuff, the Shift Whistle's lure (Minerva, tier
+  blast as it reboots and the Musk Ox's salvo, and one debuff, the Shift Whistle's lure (Minerva, tier
   three). A
   weapon reaches wide by Spread or Penetrate, or lands on every foe.
 - Chain's arcs read no reach: they land on every Shocked foe on the field, front or back,
@@ -769,7 +769,7 @@ On a machine:
   nothing can stop it now.
 - **Charged** (buff): while it lasts the machine's weapons fire with Shock, shown on the die
   and landing as the keyword does, after the blows; a weapon fired spends a stack (a Rapid's
-  or an Instant's second fire is a second fire, a salvo one, a passed turn's release none; equipment carries it not and spends
+  or an Instant's second fire is a second fire, a salvo one, a reboot's blast none; equipment carries it not and spends
   nothing); a Mine the fire leaves carries the Shock.
 - **Supercooled** (buff): the same with Cryo 1, a stack a strike on each foe hit, one more
   than its own on a gun that carries Cryo, laid after the hits.
@@ -1037,9 +1037,11 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   turn: on the player's turn a machine that has spent nothing this turn may reboot, its die
   dragged onto REBOOT, the target in the middle of the bottom row. It is its whole turn: a
   machine that could act more than once, by Rapid, Instant or a grant, gives all of it up.
-- At once its shield goes to nothing, and it is Rebooting through the enemy's turn. As the next
-  round opens, before the roll and before the foes pick, its heat is nothing, its shield is
-  whole, and Overheated and Broken are gone. UNDO takes a reboot back like a spend.
+- At once its shield goes to nothing and its heat with it, Overheated's stacks too, and it is
+  free to overheat again; it is Rebooting through the enemy's turn. As the next round opens,
+  before the roll and before the foes pick, its shield is whole and Broken is gone. Heat laid
+  on it after the vent stays: one vent, as the shield drops. UNDO takes a reboot back like a
+  spend.
 - Nothing forces a reboot, and it clears nothing else: the machine's statuses stand. It is no
   pass, no entry spent and no shield gain, so nothing that reads one fires on it.
 - **Overheated** (debuff): the heat a machine carries past its maximum, a stack a point. It is
@@ -1057,7 +1059,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
 - The fight bot reboots a machine past its maximum, unless a vent it shows takes it back
   under; one whose shield is broken when a blow is coming or its heat is half spent; one whose
   entry would pass its maximum, where it has heat to shed and this round's blows would take a
-  point of its shield or less; and a die left idle, where there is something to get back.
+  point of its shield or less; one whose vent would blast for more than its best spend; and a
+  die left idle, where there is something to get back.
 - **The Riot Field Generator** (the Storm Petrel's passive): its weapons' heat comes off its
   shield as they are spent, every point of a gun's own heat taken from the shield as it
   stands, and only what the shield cannot pay reaching the gauge; a
@@ -1231,14 +1234,14 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   was the last foe, since damage sticks for the battle. A fall is a short list of steps, as a
   move is: a death blow with its own riders, every machine included, or one special in a
   blow's place, and then what it does also, each effect by its own rules in the order
-  written, as a move's are. Its blow lands on the foe's own pick, or on the next machine in
-  line when its pick is gone or out of the fight. A curse, an effect aimed at one machine,
-  lands on the machine that made the kill: the one whose spend or whose passed turn's
-  release felled it, a Mine that spend sets off included. A kill no machine made lands it on
-  nobody, so Ablating a foe to death dodges its curse, as a Mine blowing in the enemy's turn
-  and the foe's own burst do; a killer wrecked or out of the fight by then takes nothing,
-  and a Ward on it turns the curse away. What a fall lays on its own side reaches the foes
-  still standing, never itself.
+  written, as a move's are. What it aims at one machine, its single blow and its curse
+  alike, lands on the machine that made the kill: the one whose spend or whose reboot's
+  blast felled it, a Mine that spend sets off included. A kill no machine made lands it on
+  nobody, so Ablating a foe to death dodges its blow and its curse, as a Mine blowing in the
+  enemy's turn and the foe's own burst do; a killer wrecked or out of the fight by then
+  takes nothing, and a Ward on it turns the curse and the blow's riders away. A blow at
+  every machine lands on each. What a fall lays on its own side reaches the foes still
+  standing, never itself.
   A fall may heal, armour, cleanse, ward, prime, ready or rally its own, take rerolls from
   the next round, ablate or jam its pick, and scorch or corrupt every machine. It does
   nothing its own body would carry, summons nothing (a split is the fall's own summon),
@@ -1347,18 +1350,18 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   under every other change (Indirect,
   a flat 4, heat 3, one blow, Ballistic, the entry's keywords, rules and tags kept),
   Penetrate 2 when aimed at the back rank and Spread 2 at the front, shown on the die over the foe
-  it is dragged to. The Whip Scorpion's Thermal Ejection Manifold is its boiler: nothing cools
-  it, every blow a foe lands on it adds 2 heat (in the enemy's turn, after the overheat, so the
-  gauge may stand past its maximum), and a pass releases the lot. A pass is a turn it ends with
-  an entry it could have spent: a die never spent or locked and left, an entry Rapid or Instant rolled or
-  an action granted and not used; a blank, or an entry with nowhere to land, is none. As the
-  enemy's turn ends a machine that passed and holds 8 heat or more opens its valves on every
-  foe, front rank and back: 1 each, and 1 more for each heat over 8, and it is left cold; under
-  8 it keeps its heat. One hit of its own, a strike on each foe through its machine's adds and
-  the foe's Brittle and armour (a Shocked one doubled), costing no heat. The round's
-  forecast plays it. Its locked Heliographic Death Ray fires the same heat at one foe: 2, and 1
-  more for every 2 heat, leaving it cold (the form the Buzzard's Afterburner Cannon also has
-  until its rework).
+  it is dragged to. The Whip Scorpion's Thermal Ejection Manifold is its boiler: every blow a
+  foe lands on it adds 2 heat (in the enemy's turn, after the overheat, so the gauge may
+  stand past its maximum), and its reboot's vent is the one that explodes. A reboot it starts
+  holding 8 heat or more opens its valves on every foe as its shield drops, front rank and
+  back: 1 each, and 1 more for each heat over 8, what stood past its maximum with the rest;
+  under 8 its vent is any machine's. One hit of its own in the player's turn, a strike on
+  each foe through its machine's adds and the foe's Brittle and armour (a Shocked one
+  doubled), costing no heat, its machine's kill for what it fells. The blows it takes bare
+  while it reboots bank heat that stays, the next blast's first fuel. A turn it ends with its
+  die unspent releases nothing. Its locked Heliographic Death Ray fires the same heat at one
+  foe: 2, and 1 more for every 2 heat, leaving it cold and its shield standing (the form the
+  Buzzard's Afterburner Cannon also has until its rework).
 
 ### Every number is a question
 Every stat, damage figure and property is read through one pipeline (`sim/effects.gd`), in

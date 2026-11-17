@@ -1563,7 +1563,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The signal mirror on its mast, turned on one foe with the whole boiler behind it. Ryan, 11 November: the locked piece \"takes the buzzards old form. Cools completely, damage per heat spent. Low base damage\"; \"The heliograph term can go on the new locked piece\" (his name of 20 October: \"Keep heliographic cause its dumber\"). The name is a session's draft he kept (11 November: \"Heliographic death ray is a great name. Kept\"), and its gun his the same day: \"an actual gun. Pipes connecting it to the boiler, steampunk style. Mirror or mirrors as part of it because weird future nonsense tech. Like a steam powered mirrored laser railgun.\"",
-    "niche": "The Whip Scorpion's answer to one big foe: it fires every point of heat the machine holds as one blow and leaves it cold, a low base and a point for every 2 heat. The same gauge feeds its passive's release, which lands on every foe once it holds 8 heat (Ryan, 11 November, of the release as a Sweep: \"I'd keep the sweep the more attractive option in terms of raw power\"; a blow on every foe since the 12th), so each round is the ray on one foe now or the valves on the whole pack after the enemy's turn. The Buzzard's Afterburner Cannon held this form until its rework of 11 November."
+    "niche": "The Whip Scorpion's answer to one big foe: it fires every point of heat the machine holds as one blow and leaves it cold, a low base and a point for every 2 heat. The same gauge feeds its passive's release, which lands on every foe as it reboots holding 8 heat or more (Ryan, 11 November, of the release as a Sweep: \"I'd keep the sweep the more attractive option in terms of raw power\"; a blow on every foe since the 12th, on the reboot's vent since the 17th), so its heat is the ray on one foe now, its shield kept, or the valves on the whole pack for its turn and a round bare. The Buzzard's Afterburner Cannon held this form until its rework of 11 November."
    },
    "face": {
     "kind": "attack",
@@ -1619,7 +1619,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A heat ray in the old sense, the one that walks across a field on three legs (Ryan, 20 October: \"Thermal Ray gives me war-of-the-worlds vibes\"). The hottest shot a spend can make, and the pressure it leaves is the point.",
-    "niche": "The Whip Scorpion's stock gun and fuel: Direct, flat and hot, so one shot banks the heat its passed turn's release fires. A hot slot-in for any machine that runs hot on purpose."
+    "niche": "The Whip Scorpion's stock gun and fuel: Direct, flat and hot, so one shot banks the heat its reboot's vent fires. A hot slot-in for any machine that runs hot on purpose."
    },
    "face": {
     "kind": "attack",

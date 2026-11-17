@@ -2038,7 +2038,7 @@ func _mech_rows(i: int) -> Array:
 	if stacks > 0:
 		rows.append(["heat", "×%d" % stacks, "Debuff, Overheated ×%d: hull -%d every turn until it reboots" % [stacks, stacks * Skirmish.overheat_scale], Palette.HEAT, "status", "debuff"])
 	if ms.rebooting:
-		rows.append(["shield_vent", "", "Rebooting: bare this turn, cold and whole the next", Palette.HUD])
+		rows.append(["shield_vent", "", "Rebooting: vented and bare this turn, its shield whole the next", Palette.HUD])
 	elif ms.shield_broken:
 		rows.append(["shieldbreak", "", "Debuff, Broken: no shield until it reboots", Palette.SHIELD, "status", "debuff"])
 	if sk.state == Skirmish.State.ASSIGN:
@@ -4074,17 +4074,41 @@ func _on_reroll() -> void:
 
 
 ## Machine `i` gives its turn to a reboot, if it may (its die dropped on REBOOT): its shield
-## drops at once, the round preview plays it bare, and UNDO takes it back. False when it may not,
+## drops and its heat vents at once, the round preview plays it bare, and UNDO takes it back. A
+## vent that explodes (the Whip Scorpion's valves, Ryan, 17 November: "the reboot vent is the one
+## that explodes") plays its blast from what stood there, the foes it fells and what they do as
+## they fall after it, and the fight it decides ends once it has played. False when it may not,
 ## and nothing changes.
 func _do_reboot(i: int) -> bool:
 	if _replay_shade.visible or not _pending.is_empty() or not sk.can_reboot(i):
 		return false
 	_flush_blows()   # whatever of the last spend is still landing lands first
+	var was: Dictionary = {}   # every foe's view and look before the vent, for a blast's shots and deaths
+	for foe in sk.field_foes():
+		var fv := _foe_view_for(foe)
+		if fv != null:
+			was[foe] = [fv, fv.look(), _home.get(fv, fv.position)]
 	if not sk.reboot_mech(i):
 		return false
+	var released: Array = sk.releases.duplicate(true)
 	_close_pop()
 	Sound.play("vent")
+	var valves := _hold_releases(released)
+	if is_inside_tree():
+		for act in sk.last_acts:   # a machine a last act struck holds its gauges until the act lands
+			var g: Array = act.get("gauges", [])
+			for k in range(mini(g.size(), (act["mechs"] as Array).size())):
+				if not _shown_gauges.has(int(act["mechs"][k])):
+					_shown_gauges[int(act["mechs"][k])] = g[k]
 	_refresh()
+	var over := _play_releases(released, was, valves)
+	if sk.outcome != Skirmish.Outcome.NONE:
+		if over > 0.0 and is_inside_tree():
+			var ow := create_tween()
+			ow.tween_interval(over + 0.75)
+			ow.tween_callback(_show_outcome.bind(sk.outcome))
+		else:
+			_show_outcome(sk.outcome)
 	return true
 
 
@@ -4234,16 +4258,8 @@ func _end_turn_now() -> void:
 		var rv := _foe_view_for(foe)
 		if Effects.has(foe, "risen") and rv != null:
 			readied[foe] = [rv, rv.sprite, rv.sprite_frame(), rv.flip_h, _home.get(rv, rv.position)]
-	# Every foe's view and look before the turn ends, for a release's shots and deaths (the Whip
-	# Scorpion's valves, 11 November): they play once the enemy's turn has, from what stood there.
-	var was: Dictionary = {}
-	for foe in field_before:
-		var fv := _foe_view_for(foe)
-		if fv != null:
-			was[foe] = [fv, fv.look(), _home.get(fv, fv.position)]
 	var returns_before := sk.returned.size()
 	var outcome := sk.end_round()
-	var released: Array = sk.releases.duplicate(true)
 	var rose_in_turn := _risen_since(returns_before)   # read before the next round's start clears the returns
 	if outcome == Skirmish.Outcome.NONE:
 		sk.start_round()
@@ -4252,18 +4268,10 @@ func _end_turn_now() -> void:
 			locked[i] = false
 	_refresh_log()   # the blows type into the log as they play
 	_play_enemy_turn(before, func() -> void:
-		var valves := _hold_releases(released)
 		if outcome != Skirmish.Outcome.NONE:
-			var over := _play_releases(released, was, valves)
-			if over > 0.0 and is_inside_tree():
-				var ow := create_tween()
-				ow.tween_interval(over + 0.75)
-				ow.tween_callback(_show_outcome.bind(outcome))
-			else:
-				_show_outcome(outcome)
+			_show_outcome(outcome)
 			return
 		_refresh()
-		_play_releases(released, was, valves)
 		_acquire_intents()
 		# A foe that got back up in the enemy's turn falls on screen, then stands again.
 		var rose := 0
@@ -4284,8 +4292,9 @@ func _end_turn_now() -> void:
 				arrived += 1)
 
 
-## What every foe a release struck had before it (the Whip Scorpion's valves): Foe -> its HP as
-## the enemy's turn left it, read off its first blow, and its gauge held there until the blow lands.
+## What every foe a release struck had before it (the Whip Scorpion's valves, on its reboot):
+## Foe -> its HP as the blast met it, read off its first blow, and its gauge held there until the
+## blow lands.
 func _hold_releases(released: Array) -> Dictionary:
 	var hp_before := {}
 	for r in released:
@@ -4300,7 +4309,8 @@ func _hold_releases(released: Array) -> Dictionary:
 	return hp_before
 
 
-## The releases played, once the enemy's turn has (a first cut, to judge running): each machine
+## The releases played, as the reboot that vents them is declared (a first cut, to judge running;
+## after the enemy's turn until 17 November, when the release was a passed turn's): each machine
 ## fires once and its blow lands on every foe at a beat, each its own flash and number, and the
 ## foes it felled die after it. A machine whose model fires its release with an act (the Whip
 ## Scorpion's broadside, keyed by the passive's id: Ryan, 12 November, "the blast should be hooked
@@ -4339,12 +4349,12 @@ func _play_releases(released: Array, was: Dictionary, hp_before: Dictionary) -> 
 	return ends
 
 
-## What a machine's release fires with on its model: its releasing passive's id (Effects.pass_release),
-## the key its sidecar's `fires` names the act's slice by; "" for a machine whose pass releases nothing.
+## What a machine's release fires with on its model: its releasing passive's id (Effects.reboot_release),
+## the key its sidecar's `fires` names the act's slice by; "" for a machine whose vent blasts nothing.
 static func release_key(ms: Skirmish.MechState) -> String:
 	if ms == null or ms.unit == null:
 		return ""
-	return str(Effects.pass_release(ms.unit).get("id", ""))
+	return str(Effects.reboot_release(ms.unit).get("id", ""))
 
 
 func _show_outcome(outcome: int) -> void:

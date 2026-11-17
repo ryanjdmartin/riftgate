@@ -894,7 +894,7 @@
    "tier": 2,
    "design": {
     "fantasy": "Ryan's boiler (12 and 13 October: \"a crazy steampunk machine venting everywhere\"; 20 October: \"it doesn't actually use steam to run, its a future-tech machine. it just kind of behaves like a steampunk device\"). The whip scorpion sprays when provoked. Named by Ryan, 20 October; 11 November: \"this is a scorpion, so it's probably not a frontliner, thematically\", and it \"goes all in with the weird and wonderful, along with the cassowary and cottonmouth\".",
-    "niche": "The tier-two formation breaker (Ryan, 11 November, from the role map in its brief): heat is its ammunition and nothing cools it. A turn it ends with an entry it could have spent is a pass, and as the enemy's turn ends, holding 8 heat or more, it opens its valves on every foe: 1 each, and 1 more for each heat over 8 (Ryan, 12 November, in place of the Sweep of a shot a heat: \"1 damage to each enemy, increased by 1 for each heat over 8\"); under 8 it keeps its heat. Every blow a foe lands on it banks heat, so the best release ends the turn just under the maximum and lets the foes push it over. Its locked ray fires the same heat at one foe, the weaker spend. A bruiser's body, \"since it's not a burst machine\". Rapid and a granted action let it fire and release in one round."
+    "niche": "The tier-two formation breaker (Ryan, 11 November, from the role map in its brief): heat is its ammunition. Its reboot's vent is the one that explodes (Ryan, 17 November: \"Whip scorpion needs a rework, and honestly, I think you just found it: the reboot vent is the one that explodes. It's an easy swap in\"): rebooting with 8 heat or more, the heat it sheds as its shield drops lands on every foe, 1 each and 1 more for each heat over 8 (his number of 12 November, kept: \"1 damage to each enemy, increased by 1 for each heat over 8\"); under 8 its vent is any machine's. Every blow a foe lands on it banks heat, the blows it takes bare while it reboots among them, the next blast's first fuel. Heat past its maximum burns it every turn and feeds the blast, so how long it rides is its choice. Its locked ray fires the same heat at one foe and keeps its shield, the weaker spend. Until 17 November the release was a passed turn's, once the enemy had acted, a sustained blow each round it held its die; this is a burst a reboot (\"Unfortunately it changes it's profile from sustained damage to huge burst, but I think it's ok. It was headed that way anyway\"). Numbers placeholders."
    },
    "codex": "",
    "hull": 40,
@@ -920,11 +920,11 @@
    "passive": {
     "id": "thermal_ejection_manifold",
     "name": "Thermal Ejection Manifold",
-    "description": "Nothing cools it. A turn it ends with an entry it could have spent and 8 heat or more opens its valves once the enemy has acted: every foe takes 1, and 1 more for each heat over 8, and it is left cold. Every blow a foe lands on it adds 2 heat.",
+    "description": "A reboot it starts with 8 heat or more opens its valves as its heat vents: every foe takes 1, and 1 more for each heat over 8. Every blow a foe lands on it adds 2 heat.",
     "effects": [
      {
       "trigger": "static",
-      "effect": "pass_release",
+      "effect": "reboot_release",
       "value": 1,
       "gate": 8
      },

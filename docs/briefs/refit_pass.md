@@ -2861,28 +2861,30 @@ Present tense, in the round's order (`docs/rules.md`, The round).
 4. On the player's turn a machine that has spent nothing this turn may reboot. It is its whole
    turn: a machine that could act more than once, by Rapid, Instant or a grant, gives all of
    it up.
-5. At once its shield goes to nothing, and it is Rebooting through the enemy's turn. UNDO
-   takes a reboot back like a spend.
-6. As the next round opens, before the roll and before the foes pick, its heat is nothing, its
-   shield is whole, and Broken and Overheated are gone.
+5. At once its shield goes to nothing and its heat with it, Overheated's stacks too, and it is
+   Rebooting through the enemy's turn. UNDO takes a reboot back like a spend. (The heat went
+   with the recovery, line 6, until 17 November: "Maybe the heat gets shunted when the shield
+   gets taken down?")
+6. As the next round opens, before the roll and before the foes pick, its shield is whole and
+   Broken is gone. Heat laid on it since the vent stays: one vent, at the drop (a session's
+   read, his to overrule).
 7. Nothing forces a reboot, and it clears nothing else: the machine's statuses stand.
-8. A rebooting machine neither overheats nor burns at END TURN.
-   Open again, 17 November. In another session he ruled that the reboot's turn burns all the
-   same (16 November: "If a machine uses Reboot, and it already has overheated stacks, it
-   should take that damage ... Otherwise the heat penalty is probably not hard enough"), built
-   on that session's branch and not merged. Then: "I'm second guessing that now since it's
-   unintuitive that you have to reboot a turn before you actually need to. Maybe the heat gets
-   shunted when the shield gets taken down?" Three forms, his to pick (the bible's section 12):
+8. A rebooting machine has nothing past its maximum to burn at END TURN: its heat went as its
+   shield dropped (line 5). No rule spares it, and what lands on it after burns like any.
+   Settled 17 November, on his own thought, after two forms of this line:
 
    | | The heat goes | The reboot's turn | An overshoot of X then a reboot |
    |---|---|---|---|
-   | As built here | as the next round opens | no burn, by this line | X hull |
-   | His ruling of 16 November | as the next round opens | burns like any turn | 2X hull |
-   | Shunted | as the shield drops, line 5 | nothing left to burn | X hull |
+   | As first built, 13 November | as the next round opens | no burn, by this line as an exception | X hull |
+   | His ruling of 16 November, in another session, built on its branch and never merged | as the next round opens | burns like any turn | 2X hull |
+   | Shunted, as it stands | as the shield drops | nothing left to burn | X hull |
 
-   Lean: shunted. This line goes, line 5 gains the heat and line 6 keeps the shield. The price
-   of a stack is line 10's dial if one burn is too soft. Each form leaves the shield broken a
-   turn early by line 11, which is the larger part of what an overshoot costs.
+   The first failed on "it didn't make sense to have that overheat hanging around and not
+   hurting the mech"; the second, his answer to that ("Otherwise the heat penalty is probably
+   not hard enough"), on "it's unintuitive that you have to reboot a turn before you actually
+   need to". The price of a stack is line 10's dial if one burn is too soft in his play; the
+   bot reboots before it burns, so no read says. Under every form an overshoot also breaks
+   the shield a turn early by line 11, the larger part of what it costs.
 
 *Past the maximum.*
 
@@ -2957,8 +2959,8 @@ fight, which it does not: its two actions are on the map.
 
 | The machine | What it is built on | Under the rules |
 |---|---|---|
-| **Whip Scorpion**, Wainwright & Sutler, tier 2 | "Nothing cools it"; a pass at 8 heat or more releases the lot on every foe and leaves it cold; its ray fires its whole gauge; regen 3; a foe's blow on it adds 2 heat | Its rule is every machine's now. It has two ways to empty its gauge that keep its shield. A foe's blows can carry it past its maximum, which breaks its shield |
-| **Polar Bear**, Minerva, tier 1 | The seal: "its own cooling stopped", 3 heat more a turn, opening its heat's "one way down" | Nothing to stop, opening cools nothing, and the seal walks it into the overheat |
+| **Whip Scorpion**, Wainwright & Sutler, tier 2 | "Nothing cools it"; a pass at 8 heat or more releases the lot on every foe and leaves it cold; its ray fires its whole gauge; regen 3; a foe's blow on it adds 2 heat | Its rule is every machine's now. It has two ways to empty its gauge that keep its shield. A foe's blows can carry it past its maximum, which breaks its shield. **Reworked 17 November**, his find: its release is its reboot's vent ("the reboot vent is the one that explodes"), so the pass is gone and one way down that keeps its shield is left, its locked ray |
+| **Polar Bear**, Minerva, tier 1 | The seal: "its own cooling stopped", 3 heat more a turn, opening its heat's "one way down" | Nothing to stop, opening cools nothing, and the seal walks it into the overheat. His question of 17 November, for its session: "Should the polar bear be allowed to reboot while sealed?" Today it may and stays sealed, a shell it never has to open (the bible's section 12) |
 | **Stingray**, Aphelion, tier 1 | A stack deeper for every 5 heat it carries | Heat never leaves and counts past the maximum, so it is paid to ride there, against a burn that stands |
 | **Nemesis**, Arsenal, tier 2 | Rage on a hit on its shield and on hull damage, the burn included | A shield that does not mend is hit fewer times. A burn every turn banks rage every turn |
 | **Cottonmouth**, Wainwright & Sutler, tier 1 | Cooling 3 for a drum shot of heat 6 | Two shots a reboot at a maximum of 12 |

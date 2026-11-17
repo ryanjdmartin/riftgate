@@ -2703,3 +2703,67 @@ wipes today and would stay if the one vent is at the drop.
 His question was the last line of section 31's page. Put plainly for him: a foe's blow as it
 dies lands where its arrow points, and on a round it is not attacking it has no arrow and a
 target all the same. The targeting page's line says it so now, with both ways to close it.
+
+## 33. His seventeenth round, 17 November: the vent at the drop, the Whip Scorpion's blast, the death blow
+
+His words, on section 32's answer:
+
+> Should the polar bear be allowed to reboot while sealed? That's an interesting question.
+> Whip scorpion needs a rework, and honestly, I think you just found it: the reboot vent is the
+> one that explodes. It's an easy swap in. Unfortunately it changes it's profile from sustained
+> damage to huge burst, but I think it's ok. It was headed that way anyway.
+>
+> Dread Knight - yes, hit its killer, if it has one.
+>
+> What's our next step?
+
+Three things built, one pass, since they meet in the reboot's code (`tests/test_reboot.gd`,
+`tests/test_skirmish.gd`). The rules are `docs/rules.md`'s, the reasons the bible's rows.
+
+### The reboot vents as its shield drops
+
+Built on his reply, read as the word asked for: his rework of the Whip Scorpion stands on
+"the reboot vent". The heat and its Overheated stacks go at the drop, the reboot's turn has
+nothing to burn and no rule spares it, and the recovery brings the shield back and clears
+Broken. The refit brief's spec lines 5, 6 and 8 say it. One read where his words give none,
+his to overrule: heat laid on a machine while it reboots stays, one vent at the drop. The
+other session's branch still carries his ruling of the 16th; the status's Start here tells
+whoever merges it to keep main's side.
+
+### The Whip Scorpion's blast
+
+His swap, as he said it. A reboot it starts with 8 heat or more lands what it vents on every
+foe, his number of 12 November kept, in the player's own turn. What follows from his words
+and was built so:
+
+- The release on a passed turn is gone, and the pass with it: the engine's note of one, the
+  release after the enemy's turn, its place in the round preview and the bot's held die. A
+  turn it ends with its die unspent releases nothing.
+- The blast is its machine's kill, as the release was. So a foe it fells lands its last blow
+  on the Scorpion, bare.
+- The blows it takes while it reboots bank heat after the vent, and that heat stays: the next
+  blast's first fuel.
+- Heat past its maximum fires with the rest, so riding the burn for a bigger blast is the
+  choice the rework makes.
+- The screen plays the blast at the drop with the release's own shots, the model's broadside.
+  A first cut; REBOOT shows no preview of it yet.
+
+Its read, a direction (`docs/measurements.md`): in the bot's hands a blast is worth what a
+release was and comes two to four times as often, since every reboot it made for nothing is
+a blast now. The burst he names is the player's to find past the maximum.
+
+### The death blow
+
+"Yes, hit its killer, if it has one." A dying foe's single blow lands on the machine that made
+the kill and on nobody when none did, as its curse does. A blow at every machine lands on
+each. The pick a move at nobody draws has no reader left. It does not leave in this pass: a
+foe's pick is also the engine's sign that it has an intent at all, on the screen and in the
+bot, so the cut belongs with the targeting build, where the pick is rewritten, and the to-do
+holds it there.
+
+### His question of the Polar Bear
+
+Put to him, not built. Today a sealed Polar Bear may reboot and stays sealed, and with the
+heat gone at the drop it need never open: three turns sealed, one rebooting behind four
+armour. Three ways, the bible's section 12: as today; no reboot while sealed; or a reboot
+opens it, one soft turn at the end of every seal, the lean.

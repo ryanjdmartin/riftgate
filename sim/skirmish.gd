@@ -92,13 +92,12 @@ class MechState:
 	var face_index: int = -1
 	var locked: bool = false
 	var assigned: bool = false
-	var passed: bool = false    # it ended the player's turn with an entry it could have spent (a pass: the Whip Scorpion's release reads it)
 	var free_rerolls: int = 0   # rerolls of this die alone left this round, from a passive, on top of the team's
 	var ammo: int = 0           # the magazine (the Musk Ox's Desublimation Forge): a resource beside heat, never a status
 	var ammo_max: int = 0       # its size; 0 for a machine that forges nothing
 	var hot_entry: int = -1     # the entry whose spend last took the gauge past its maximum this turn (the overheat's what-ifs)
 	var spends: int = 0             # the entries it has spent this turn: a reboot is for a machine that has spent nothing
-	var rebooting: bool = false     # it gave this turn to a reboot: its shield is down through the enemy's turn, and both gauges are back as the next round opens
+	var rebooting: bool = false     # it gave this turn to a reboot: its heat went as its shield dropped, it is bare through the enemy's turn, and its shield is back as the next round opens
 	var shield_broken: bool = false # its shield has stood at nothing since its last reboot: it gains none by any method until the reboot's recovery
 	var overheated: bool = false    # it has overheated since its last reboot: one overheat, and one shield broken by it, between reboots
 	var killed_round: bool = false  # an attack of its own killed this round: what its passive reads as the round ends (on_round_kill: the Ammit's flare)
@@ -994,8 +993,6 @@ func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 	var shield_hit: Array[int] = []
 	for i in range(mechs.size()):
 		shield_hit.append(copy.mechs[i].unit.shield)
-	if played and copy.outcome == Outcome.NONE:
-		copy._release_passes()   # a passed turn's heat, on the rank as the enemy's turn left it
 	if played and copy.outcome == Outcome.NONE:   # a fight decided in the enemy's turn has no round's end
 		copy._finish_round()
 	var coming := {}   # the copy's unit or foe -> {status id: {"stacks", "name", "description"}}
@@ -1148,8 +1145,8 @@ func forecast(ms: MechState, extra_shield: int = 0) -> Dictionary:
 	shield = int(walk["shield"])
 	var heat_end := ms.heat + seal_heat(ms)
 	var over := maxi(0, heat_end - ms.heat_max)
-	if ms.rebooting or is_out(ms):
-		over = 0   # a machine giving its turn to a reboot neither burns nor overheats, nor one out of reach (_burn_stacks)
+	if is_out(ms):
+		over = 0   # one out of reach neither burns nor overheats (_burn_stacks); a rebooting machine has vented, and burns what it carries like any
 	hull -= over * overheat_scale
 	# The gauge does not settle: what stands past the maximum stays, and burns again.
 	var heat_after := heat_end + Effects.heat_per_blow(ms.unit) * blows
@@ -1465,8 +1462,9 @@ func start_round() -> void:
 		ms.spends = 0
 		if not ms.alive():
 			continue
-		# A reboot's recovery: the machine that gave its last turn to one opens the round cold
-		# and whole, before anything cools or regenerates and before the foes pick.
+		# A reboot's recovery: the machine that gave its last turn to one opens the round with its
+		# shield whole, before anything cools or regenerates and before the foes pick. Its heat
+		# went as its shield dropped.
 		if ms.rebooting:
 			_recover(ms)
 		# A sealed machine's cooling stops (the Polar Bear's Lockdown, 20 October): opening or
@@ -2471,9 +2469,6 @@ func end_round() -> int:
 	_enemy_turn()
 	if outcome != Outcome.NONE:
 		return outcome   # decided in the enemy's turn: the fight ends there, no round's end after it
-	_release_passes()
-	if outcome != Outcome.NONE:
-		return outcome   # the release felled the last foe
 	_finish_round()
 	# No reinforcement phase (Ryan, 6 November: "Cut"): a pack is what its grid holds, so a kill's
 	# slot stays empty unless a split, a summon or a part regrowing in its corpse's place fills it.
@@ -2485,46 +2480,39 @@ func end_round() -> int:
 	return outcome
 
 
-## The blow a machine's release lands on every foe (the Whip Scorpion's Thermal Ejection Manifold;
-## Ryan, 12 November: "1 damage to each enemy, increased by 1 for each heat over 8"): its passive's
-## number at the gate and a point more for each heat it holds past it. Null for a machine whose
-## pass releases nothing, or one holding less than the gate.
+## The blow a machine's reboot lands on every foe as its heat vents (the Whip Scorpion's Thermal
+## Ejection Manifold; Ryan, 12 November: "1 damage to each enemy, increased by 1 for each heat
+## over 8"; 17 November: "the reboot vent is the one that explodes"): its passive's number at the
+## gate and a point more for each heat it holds past it. Null for a machine whose vent blasts
+## nothing, or one holding less than the gate. Read before the heat goes.
 func release_shot(ms: MechState) -> Face:
-	var rule := Effects.pass_release(ms.unit) if ms != null else {}
+	var rule := Effects.reboot_release(ms.unit) if ms != null else {}
 	if rule.is_empty() or ms.heat < int(rule["gate"]):
 		return null
 	return Face.attack(int(rule["value"]) + ms.heat - int(rule["gate"]), Face.Reach.EVERY_FOE)
 
 
-## The passes released (the Whip Scorpion's; Ryan, 11 and 12 November), as the enemy's turn ends,
-## so the heat the foes' blows banked over its maximum fires with the rest ("end the turn right
-## under the overheat, get hit a couple times to go over the threshold, and then release it
-## all"): each machine that passed and holds its gate's heat lands its release on every foe and
-## is left cold; under the gate it keeps its heat. One hit, a weapon's, striking every foe (_hit),
-## costing no heat of its own; the fight it decides ends there.
-func _release_passes() -> void:
-	for i in range(mechs.size()):
-		var ms := mechs[i]
-		if not ms.passed or not ms.alive() or outcome != Outcome.NONE:
-			continue
-		var shot := release_shot(ms)
-		var standing := field_foes().filter(func(foe: Foe) -> bool: return foe.alive())
-		if shot == null or standing.is_empty():
-			continue
-		var target: Foe = standing[0]
-		var fired := ms.heat
-		log.append("%s opens its valves: %d heat, %d on every foe" % [ms.unit.display_name, fired, shot.power])
-		ms.heat = 0
-		spend_blows.clear()
-		_shoved.clear()
-		_killer = ms   # its own shot: what it fells is its kill
-		var h := _hit(ms, shot, target)
-		_finish_hits(i, ms, shot, target, h, Pays.FREE)
-		_killer = null
-		ms.heat = 0   # cold after it, whatever the blows cashed
-		releases.append({"mech": i, "heat": fired, "blows": spend_blows.duplicate()})
-		_refresh_guards()
-		_check_outcome()
+## A reboot's vent that explodes (the Whip Scorpion's; Ryan, 17 November, in place of the release
+## on a passed turn of 11 and 12 November: "the reboot vent is the one that explodes. It's an
+## easy swap in. Unfortunately it changes it's profile from sustained damage to huge burst, but I
+## think it's ok"): the heat a machine sheds as its shield drops lands on every foe, `shot` as
+## release_shot read it before the heat went. One hit, a weapon's, striking every foe (_hit),
+## costing no heat of its own, its machine's kill for what it fells; the fight it decides ends
+## there. Under its gate the vent is every machine's, and blasts nothing.
+func _vent_blast(i: int, ms: MechState, shot: Face, fired: int) -> void:
+	var standing := field_foes().filter(func(foe: Foe) -> bool: return foe.alive())
+	if shot == null or standing.is_empty() or outcome != Outcome.NONE:
+		return
+	var target: Foe = standing[0]
+	log.append("%s opens its valves: %d heat, %d on every foe" % [ms.unit.display_name, fired, shot.power])
+	_killer = ms   # its own shot: what it fells is its kill
+	var h := _hit(ms, shot, target)
+	_finish_hits(i, ms, shot, target, h, Pays.FREE)
+	_killer = null
+	ms.heat = 0   # cold after it, whatever the blows cashed
+	releases.append({"mech": i, "heat": fired, "blows": spend_blows.duplicate()})
+	_refresh_guards()
+	_check_outcome()
 
 
 ## The statuses the field holds from decaying right now, on every unit of either side: what a
@@ -2579,12 +2567,7 @@ func _round_kills() -> void:
 ## heat, 13 October), the shield first, so a cleanse took it off in the turn the player had.
 ## END TURN's (a withdrawal shared it until the long wall brief, 3.5).
 func _end_player_turn() -> void:
-	# A pass (Ryan, 11 November: "any time it ends the round with a spendable die face"): read as
-	# the turn ends, before anything moves, so an entry Rapid rolled or an action granted and left
-	# unspent is one and a blank, a spent die or an entry with nowhere to land is none.
 	releases.clear()
-	for i in range(mechs.size()):
-		mechs[i].passed = can_spend(i)
 	overheats.clear()
 	ablations.clear()
 	history.clear()   # the enemy's turn draws: nothing before it comes back
@@ -3169,7 +3152,7 @@ func withdraw() -> bool:
 # ---------------------------------------------------------------- resolution
 
 ## A weapon's or a debuff's spend at a foe, the plain one (the salvo and a pass's release fire
-## their own: _salvo, _release_passes). A forging machine's gun pays ammo first for the heat its own spend would
+## their own: _salvo, _vent_blast). A forging machine's gun pays ammo first for the heat its own spend would
 ## make (the Musk Ox's Desublimation Forge), a dry magazine firing nothing; then its hits (_hit);
 ## then, in the rider phase before the death check, on a target the hit felled too: the Mine its
 ## machine leaves on the target (_lay_mine, what the hits fired at it) and what the entry does
@@ -5314,15 +5297,17 @@ func _burn_overheated() -> void:
 ## player is essentially forced to reboot, or die"): the heat a machine carries past its maximum
 ## stays, and every point of it burns hull, every turn it stands there. The first such turn since
 ## its last reboot is its overheat: its shield breaks, and what an overheat sets off fires, once
-## between reboots. A machine giving this turn to a reboot is shut down: it neither burns nor
-## overheats. Nor does one out of reach: a Swallowed machine cannot reboot, so the burn would
-## ask it for a choice it has not got; and a Phased one is damaged by nothing, its own heat
+## between reboots. A machine giving this turn to a reboot has vented as its shield dropped
+## (reboot_mech; Ryan, 17 November), so it carries nothing to burn, and no rule spares it: what
+## lands on it after burns like any. One out of reach does not burn: a Swallowed machine cannot
+## reboot, so the burn would ask it for a choice it has not got; and a Phased one is damaged by
+## nothing, its own heat
 ## included (Ryan, 16 November: "it shouldn't take damage from overheating since we don't need
 ## the exception. It does accumulate the stacks, though, which it will feel the round after").
 ## What either carries past its maximum stays and burns the turn it is back in reach, the first
 ## such turn its overheat.
 func _burn_stacks(ms: MechState, over: int) -> void:
-	if ms.rebooting or is_out(ms):
+	if is_out(ms):
 		return
 	var burn := over * overheat_scale
 	var culprit := ms.hot_entry
@@ -5365,10 +5350,15 @@ func can_reboot(mech_index: int) -> bool:
 	return ms.alive() and not is_swallowed(ms) and not ms.assigned and not ms.rebooting and ms.spends == 0   # a Phased machine may: the safe reboot (Ryan, 15 November)
 
 
-## The reboot: the machine gives its whole turn. Its shield goes to nothing at once
-## and stays so through the enemy's turn; as the next round opens its heat is nothing and its
-## shield whole (_recover). No pass, no entry spent and no shield gain, so nothing that reads one
-## fires. The undo takes it back like a spend. False when it may not (can_reboot).
+## The reboot: the machine gives its whole turn. At once its shield goes to nothing and its
+## heat with it, what stood past the maximum too (Ryan, 17 November, of the heat that stayed on
+## the gauge until the recovery: "it didn't make sense to have that overheat hanging around and
+## not hurting the mech"; "Maybe the heat gets shunted when the shield gets taken down?"), and it
+## is free to overheat again. It stands bare through the enemy's turn, and as the next round
+## opens its shield is whole (_recover). Heat laid on it after the vent stays: one vent, at the
+## drop. A vent that explodes lands on every foe (_vent_blast, the Whip Scorpion's). No pass, no
+## entry spent and no shield gain, so nothing that reads one fires. The undo takes it back like a
+## spend, a blast and what it felled with it. False when it may not (can_reboot).
 func reboot_mech(mech_index: int) -> bool:
 	if not can_reboot(mech_index):
 		return false
@@ -5376,28 +5366,32 @@ func reboot_mech(mech_index: int) -> bool:
 	last_acts.clear()
 	spend_blows.clear()
 	_shoved.clear()
+	releases.clear()
 	var ms := mechs[mech_index]
 	ms.rebooting = true
 	ms.assigned = true
 	var dropped := ms.unit.shield
 	ms.unit.shield = 0
 	_note_break(ms)
-	log.append("%s reboots: %sheat %d to vent, back next round" % [ms.unit.display_name, "shield -%d, " % dropped if dropped > 0 else "", ms.heat])
+	var vented := ms.heat
+	var shot := release_shot(ms)   # read while it holds its heat
+	ms.heat = 0
+	ms.overheated = false
+	log.append("%s reboots: %sheat -%d, back next round" % [ms.unit.display_name, "shield -%d, " % dropped if dropped > 0 else "", vented])
+	_vent_blast(mech_index, ms, shot, vented)
 	if not snap.is_empty():
 		history.append(snap)
 	_refresh_allies()
 	return true
 
 
-## A reboot's recovery, as the round after it opens: the heat gone, what stood past the maximum
-## with it, the shield whole, and the machine free to overheat and to break again.
+## A reboot's recovery, as the round after it opens: the shield whole, and the machine free to
+## break again. Its heat went as its shield dropped; what landed on it since is its own.
 func _recover(ms: MechState) -> void:
 	ms.rebooting = false
 	ms.shield_broken = false
-	ms.overheated = false
-	ms.heat = 0
 	ms.unit.shield = ms.unit.shield_max
-	log.append("%s is back: heat 0, shield %d" % [ms.unit.display_name, ms.unit.shield])
+	log.append("%s is back: shield %d" % [ms.unit.display_name, ms.unit.shield])
 
 
 ## The overheat's what-if (Ryan, 30 October), on the component whose spend took the gauge past
@@ -5798,14 +5792,16 @@ func _regrows(f: Foe) -> bool:
 ## November, on Ryan's mark of 15 November: "foes who, say buff others on death, or debuff on
 ## death, which makes kill sequencing more interesting in normal formations"): its blow, if it
 ## strikes, then each effect by that effect's own rules, as a move's are (Ryan, 16 November:
-## "Death effects should be dictated by the effect, same as moves"). Its blow lands where a
-## move's does, on the foe's own pick, or its next pick when that machine is gone or out of the
-## fight. A curse, an effect aimed at one machine, lands on the machine that made the kill ("if
-## the effect is a curse, then it should apply to the killer, and the dodge is ablating it"):
-## the one whose spend or release is under way (_killer), and on nobody when no machine made
-## it, a tick's kill, a Mine blowing in the enemy's turn or the foe's own burst, nor when the
-## killer is wrecked or out of the fight by then; a Ward on it turns the curse. What the fall
-## lays on its own side reaches the foes still standing, never itself.
+## "Death effects should be dictated by the effect, same as moves"). What it aims at one
+## machine lands on the machine that made the kill, its curse ("if the effect is a curse, then
+## it should apply to the killer, and the dodge is ablating it") and its single blow alike
+## (17 November, of the Dread Knight's Death Throes: "yes, hit its killer, if it has one"; the
+## blow followed the foe's own pick until then, which no arrow shows on a round the foe aims at
+## nobody): the one whose spend or release is under way (_killer), and on nobody when no
+## machine made it, a tick's kill, a Mine blowing in the enemy's turn or the foe's own burst,
+## nor when the killer is wrecked or out of the fight by then; a Ward on it turns the curse
+## and the blow's riders. A blow at every machine lands on each as ever. What the fall lays on
+## its own side reaches the foes still standing, never itself.
 func _last_act(f: Foe) -> void:
 	var fall := f.fall()
 	if fall.is_empty():
@@ -5816,22 +5812,21 @@ func _last_act(f: Foe) -> void:
 	log.append("%s falls, and its last act lands: %s" % [f.display_name, str(fall.get("name", ""))])
 	var struck: Array[int] = []
 	var gauges: Array = []   # each struck machine's [shield, hull] as the act met it
-	var t := f.target as MechState
-	if t == null or not t.alive() or is_out(t):
-		t = _repick(f)
+	var cursed := _killer if _killer != null and _killer.alive() and not is_out(_killer) else null   # the machine that made the kill, in the fight still
 	if Foe.is_attack_action(fall):
 		if f.hits_all():
 			for m in targetable_mechs():
 				struck.append(mechs.find(m))
 				gauges.append([m.unit.shield, m.unit.hull])
 				_strike(f, m)
-		elif t != null:
-			struck.append(mechs.find(t))
-			gauges.append([t.unit.shield, t.unit.hull])
-			_strike(f, t)
+		elif cursed != null:
+			struck.append(mechs.find(cursed))
+			gauges.append([cursed.unit.shield, cursed.unit.hull])
+			_strike(f, cursed)
+		else:
+			log.append("%s lands on nobody: no machine made the kill" % str(fall.get("name", "")))
 	var owed := reroll_debt
 	var did: Array = []
-	var cursed := _killer if _killer != null and _killer.alive() and not is_out(_killer) else null
 	for st in Foe.effects_of(fall):
 		_foe_acts(f, cursed, st)   # an effect aimed at nobody reads no machine at all
 		did.append(str(st.get("effect", "")))

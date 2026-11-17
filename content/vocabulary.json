@@ -1735,10 +1735,10 @@
    "id": "last_act",
    "category": "foe",
    "name": "Last Act",
-   "codex": "A blow a foe lands the moment it falls, shown on it by the skull and its number. It lands at once, before anything else, even when the foe was the last one standing, so shield up before the kill rather than after.",
+   "codex": "A blow a foe lands the moment it falls, shown on it by the skull and its number. It lands on the machine that made the kill, at once, even when the foe was the last one standing; a kill no machine made, a tick's, lands it on nobody. A blow at every machine lands on each.",
    "status": "implemented",
    "design": {
-    "holes": "Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. The Gargantuan King's Meteor (30 October). A short list of steps since 16 November, on Ryan's mark of 15 November ('foes who, say buff others on death, or debuff on death'): the blow may carry also, and on_death.act is one special in a blow's place with its own also, each an effect a fall may do (Foe.FALL_EFFECTS). No piece carries more than a blow yet, so the codex still says a blow; it and the term's word are his when a carrier lands ('maybe rename to something more interesting')."
+    "holes": "Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. The Gargantuan King's Meteor (30 October). A short list of steps since 16 November, on Ryan's mark of 15 November ('foes who, say buff others on death, or debuff on death'): the blow may carry also, and on_death.act is one special in a blow's place with its own also, each an effect a fall may do (Foe.FALL_EFFECTS). No piece carries more than a blow yet, so the codex still says a blow; it and the term's word are his when a carrier lands ('maybe rename to something more interesting'). A single blow lands on the machine that made the kill since 17 November, as a curse does (Ryan, of the Dread Knight's Death Throes: 'yes, hit its killer, if it has one'); it followed the foe's own pick until then."
    }
   },
   {
@@ -1995,7 +1995,7 @@
    "id": "rebooting",
    "category": "status",
    "name": "Rebooting",
-   "codex": "Machine status. A machine that has spent nothing this turn may give the turn to a reboot: drag its die onto REBOOT. Its shield drops to nothing at once and it stands bare through the enemy's turn; as the next round opens its heat is nothing, its shield is whole, and Overheated and Broken are gone. It neither burns nor overheats while it reboots. Nothing forces one, and UNDO takes it back like a spend.",
+   "codex": "Machine status. A machine that has spent nothing this turn may give the turn to a reboot: drag its die onto REBOOT. At once its shield drops to nothing and its heat vents, Overheated with it, and it stands bare through the enemy's turn; as the next round opens its shield is whole and Broken is gone. Nothing forces one, and UNDO takes it back like a spend.",
    "status": "implemented",
    "design": {
     "holes": "The reboot (Ryan, 13 November; folded in 15 November), a state of the machine and no status of the engine's table. A session's draft, his to write.",
