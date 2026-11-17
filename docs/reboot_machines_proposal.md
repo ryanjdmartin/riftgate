@@ -346,9 +346,9 @@ went back to design.
 
 *As a whole.* The system feeds it. Its 6 shield breaks in a round and stays broken, so nearly every
 blow is hull damage and 2 rage; its bare reboot turn is a rage turn; and the burn past its maximum
-is hull damage at every END TURN, more rage. A pair of Instant Knuckles is 12 heat in one round,
-so its raging rounds push it over its maximum and the burn pays back in rage: "reboot, or die" as
-a build.
+is hull damage at every END TURN, more rage. An Instant Knuckle buys a second spend the same
+round, up to 12 heat between them, so its raging rounds push it over its maximum and the burn pays
+back in rage: "reboot, or die" as a build.
 
 *Verdict.* It fits. To watch: that loop, rage from its own overheat into more Instant heat; its
 placeholder slot is the stock re-deal's.

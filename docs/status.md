@@ -54,7 +54,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1269 tests, 373,351 checks, green on `ccr-722ca9f0-yj8na3` (17 November, the foes'
+- Tests: 1269 tests, 373,352 checks, green on `ccr-178e0404-ptuh2m` (17 November, the reboot
+  machines' page and its probe over main at `f475a59`, the check the leftovers test's load of
+  the new tool). Before it, 1269 tests, 373,351 checks, green on `ccr-722ca9f0-yj8na3` (17 November, the foes'
   targeting built afresh, over main at `d657a20`). The runner fails a run whose tests never
   ran since that day: a script that did not compile had read as "0 checks, 0 failures" and a
   clean exit, so read the checks' count, never the exit code alone, on any older commit.
@@ -168,10 +170,12 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 Everything is on main as of 13 November 2026; the formation and refit session's branch lands as it goes, below.
 `ccr-178e0404-ptuh2m`, the reboot machines' session's (17 November), cut from main at `7beb2b4`
-and brought up to `d657a20` as fast-forwards while main took his seventeenth and eighteenth
-rounds (the vent at the drop, the Scorpion's blast, the bear's seal opened by its reboot): the refit
-brief's section 22 list read again, `docs/reboot_machines_proposal.md` and its probe
-(`tools/reboot_probe.gd`), no engine or content moved; main takes it on his word.
+and brought up to `f475a59` as main took his seventeenth and eighteenth rounds (the vent at the
+drop, the Scorpion's blast, the bear's seal opened by its reboot) and the targeting: the refit
+brief's section 22 list read again, every kit written out whole against the system
+(`docs/reboot_machines_proposal.md`) with its probe (`tools/reboot_probe.gd`), and the Storm
+Petrel's direction locked in the bible (v0.619, its page republished on his word); no engine or
+content moved; main takes it on his word.
 `ccr-1e6e6571-7x7ayr`, the map session's, restarted from main at `e26589f` on 16 November (its
 earlier work all on main): the painted walls as joined ranges, the painted world at the 3D map's
 heights, and Ryan's three rounds of notes of 16 November, the quick fixes, the shapes, the
