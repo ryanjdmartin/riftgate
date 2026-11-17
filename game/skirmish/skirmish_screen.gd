@@ -1494,9 +1494,10 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	v.hover = WINGED_LIFT if bool(entry.get("winged", false)) else 0.0   # what flies floats over its shadow
 	# Aloft (the Roc while its Stoop gathers, 16 November): no die may be dropped on it, so it is
 	# drawn as what is out of the fight is, a faint ghost under a dashed edge, and higher over its
-	# shadow. A first cut, to judge running (RIFTGATE_ALOFT_DEBUG=1 holds every foe so).
+	# shadow. A first cut, to judge running (RIFTGATE_ALOFT_DEBUG=1 holds every foe so). A Phased
+	# foe (17 November) is out of reach the same way and drawn the same, where it stands.
 	v.away = Skirmish.out_of_reach(foe) or ALOFT_DEBUG
-	if v.away:
+	if Effects.has(foe, "aloft") or ALOFT_DEBUG:
 		v.hover = maxf(v.hover, WINGED_LIFT) + ALOFT_LIFT
 	v.breathe = true
 	# Breathing spread by slot at the golden angle, so no two neighbours are near in phase
@@ -1589,7 +1590,9 @@ static func form_mark(ms: Skirmish.MechState, f: Face) -> String:
 ## intents with a rider need to show that rider as part of the intent chip"): each keyword its
 ## move carries by its term's mark in its term's colour (Terms), a numbered one with its stacks
 ## (Scorch 2: two), so a scorch or a blow at every machine is read off the chip itself.
-static func intent_riders(foe: Foe, inert: Array = []) -> Array:
+## `inert` names the riders, and `idle` the steps by their effect, that lay nothing this round:
+## neither wears a mark, so the chip never promises what will not land.
+static func intent_riders(foe: Foe, inert: Array = [], idle: Array = []) -> Array:
 	var out: Array = []
 	if foe == null:
 		return out
@@ -1598,29 +1601,30 @@ static func intent_riders(foe: Foe, inert: Array = []) -> Array:
 		# intent is the first of its two warnings, and a bare debuff mark would not say which.
 		if Foe.exposes(foe.action) and Terms.has("expose"):
 			out.append([Terms.glyph("expose"), "", Terms.colour("expose")])
-		out.append_array(_step_marks(foe.action, out))
+		out.append_array(_step_marks(foe.action, out, idle))
 		return out
 	for k in foe.action.get("keywords", []):
 		var id := str(k)
 		if not Terms.has(id) or Terms.glyph(id).is_empty() or inert.has(id):
 			continue   # a rider that will lay nothing this round wears no mark (`inert`: a blow's Expose while a machine stands Exposed)
 		out.append([Terms.glyph(id), str(foe.rider(foe.action, id)) if Foe.NUMBERED_RIDERS.has(id) else "", Terms.colour(id)])
-	out.append_array(_step_marks(foe.action, out))
+	out.append_array(_step_marks(foe.action, out, idle))
 	return out
 
 
 ## The marks of what a move does also (16 November: a move is a short list of steps), beside
 ## its blow's own: each step's effect by the term it reads as, the word a rider of the same
 ## effect wears or the status it grants, once each and never a mark the blow already shows.
-## A step with no term of its own shows none: the move's text says it.
+## A step with no term of its own shows none: the move's text says it, and a step named in
+## `idle` shows none either (it lays nothing this round: a fade on a foe Phased already).
 const STEP_TERMS := {"ablate": "ablate", "jam": "jam", "expose": "expose", "dispel": "dispel", "swallow": "swallow",
-	"scorch_all": "scorch", "corrupt_all": "corrupt", "appropriate": "appropriated"}
-static func _step_marks(a: Dictionary, shown: Array = []) -> Array:
+	"scorch_all": "scorch", "corrupt_all": "corrupt", "appropriate": "appropriated", "phase": "phased"}
+static func _step_marks(a: Dictionary, shown: Array = [], idle: Array = []) -> Array:
 	var out: Array = []
 	var seen: Array = shown.map(func(row) -> String: return str(row[0]))
 	for st in a.get("also", []):
 		var term := str(STEP_TERMS.get(str(st.get("effect", "")), ""))
-		if term.is_empty() or not Terms.has(term) or Terms.glyph(term).is_empty() or seen.has(Terms.glyph(term)):
+		if term.is_empty() or idle.has(str(st.get("effect", ""))) or not Terms.has(term) or Terms.glyph(term).is_empty() or seen.has(Terms.glyph(term)):
 			continue
 		seen.append(Terms.glyph(term))
 		var n := int(st.get("value", 0))
@@ -1652,6 +1656,14 @@ func _foe_abilities(foe: Foe) -> Array:
 			("Ability, %s %d: its borrowed swing lands the number of the piece it took, and spends it" % [word, taken]) if taken > 0
 			else "Ability, %s: it takes the piece a machine shows, and its borrowed swing lands that piece's number" % word,
 			_foe_chip_colour("appropriated"), "ability"])
+	for what in Foe.IMMUNITIES:
+		# An immunity (17 November): what of the team's never lands on it, always or while the
+		# move it names gathers, so a die's struck chip has its reason on the foe itself.
+		if not foe.immune.has(what):
+			continue
+		var held = foe.immune[what]
+		var tail := "" if held is bool else " while %s gathers" % EntryReadout._move_name(foe, str(held))
+		rows.append(["lock", "", ("Ability, Immune: no Suppress lands on it%s" if what == "suppress" else "Ability, Immune: no Disrupt turns it%s") % tail, _foe_chip_colour("guarded"), "ability"])
 	if Effects.has(foe, "guarded"):
 		# A boss in parts (15 October): the lock while its parts stand, so the zero its die
 		# shows has a reason on the foe itself.
@@ -1740,6 +1752,10 @@ func _foe_rows(foe: Foe) -> Array:
 		# Aloft (the Roc while its Stoop gathers, 16 November): no die may be dropped on it. The
 		# chip beside its countdown says why the foe is no target; a Purge that reaches it takes it.
 		rows.append(status_row("aloft", _foe_glyph("aloft"), "", str(Effects.STATUS["aloft"]["name"]), _foe_chip_colour("aloft")))
+	if Skirmish.foe_phased(foe):
+		# A foe's Phased (17 November): out of the team's reach until the round's end, on the
+		# chip a Phased machine wears.
+		rows.append(status_row("phased", status_glyph("phased"), "", str(Effects.STATUS["phased"]["name"]), _foe_chip_colour("phased")))
 	if foe.committed:
 		# An announced follow-up (2 November): committed, so no Disrupt turns it; a Suppress still takes
 		# it. The chip says what the player may do about it and names no term: the pattern is the
@@ -2498,7 +2514,10 @@ func _intent_read(foe: Foe) -> Array:
 	# A blow's Expose lays nothing while a machine stands Exposed or another's is out ahead of it
 	# (Skirmish.expose_rider_lands): its mark is off the chip for that round.
 	var inert: Array = ["expose"] if Foe.is_attack_action(foe.action) and foe.has_keyword(foe.action, "expose") and not sk.expose_rider_lands(foe) else []
-	return [sk.intent_value(foe), ("×%d" % foe.strikes()) if blow and foe.strikes() > 1 else "", intent_riders(foe, inert) if blow or Foe.exposes(foe.action) or foe.action.has("also") else []]
+	# And a step that fades a foe lays nothing on one Phased already (Skirmish.fade_lands): a
+	# ghost is out one round in two, and the round it is out its bolt wears no Phased mark.
+	var idle: Array = [] if Skirmish.fade_lands(foe) else ["phase"]
+	return [sk.intent_value(foe), ("×%d" % foe.strikes()) if blow and foe.strikes() > 1 else "", intent_riders(foe, inert, idle) if blow or Foe.exposes(foe.action) or foe.action.has("also") else []]
 
 
 ## A stat in a hold, as the codex has it: its label, its base in ink and the change in a

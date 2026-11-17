@@ -2992,3 +2992,66 @@ What followed from the rows and was built so:
 
 The synergy map reads a foe's fall since this build (`tools/synergy_map.py`): it had read
 moves alone, and the Mandragora's scream had left it.
+
+### Built: a foe's Phased, row 12
+
+The Spectre and the Wraith fade after their Hex Bolt (`tests/test_skirmish.gd`; the rules'
+Phased; the bible's Phased row).
+
+| When | What holds |
+|---|---|
+| The round a ghost announces Hex Bolt | It stands solid, a target like any. This is the window |
+| That round's enemy turn | The bolt lands, and what the ghost carries still ticks and damages it |
+| As that round ends | It fades, if it still stands and is not the last foe standing |
+| The next round | No die may be dropped on it and nothing aimed elsewhere reaches it. Nothing it carries damages it, and its clocks run. It acts |
+| As that round ends | It is back. A bolt it threw while Phased faded nothing |
+
+So a ghost that bolts is gone a round and solid the round after, and one that raises or
+hallows stays solid. The engine's effect is `phase`, a move of a foe's own or a step of one,
+and it stands on the guard built for the Roc: `Skirmish.out_of_reach`.
+
+One read where his words leave room, his to overrule. A machine's Phased shuts out both
+sides. A foe's shuts out ours alone: its own side still reaches it, a rally's Empowered or a
+mend. He allowed a foe's to be "less strict since it's balanced around their kit and theme",
+and the strict form would put a guard on every move the foes make among themselves.
+
+It is drawn as what no die reaches is, faint under a dashed edge where it stands, with the
+chip a Phased machine wears. Its Hex Bolt's intent wears Phased's mark beside the blow, so
+the round to reach it is said on the field.
+
+### Built: immunities, rows 15 and 16
+
+An immunity is a foe's own Ability, said on its chip (`tests/test_skirmish.gd`; the rules'
+An immunity; the bible's row).
+
+| Foe | Immune to | As built |
+|---|---|---|
+| The Pilgrim | Suppress, always | No stun lands on it, from a die, a web's burst or a Paradox, and it gains no Numbed for it |
+| The Obsidian Tyrant | Disrupt, while Firestorm gathers | From the round Firestorm is announced to the round it lands. A Suppress still holds the count a round |
+| The Ruby Colossus | Disrupt, while Ultima gathers | The same |
+
+Content says it as `immune` on the foe: `suppress` or `disrupt`, each `true` or the id of a
+move of its own that gathers. The die's own mark is struck over a foe it will do nothing
+to, as it is over a follow-up already announced, so the player reads it off the die in hand.
+The bot prices neither. A save keeps it.
+
+The vocabulary has a term for it, Immune, a session's draft.
+
+### Read: what the rows changed
+
+Twenty formations that field a changed foe, before the rows and after them, 120 fights each
+with the greedy bot (`docs/measurements.md`, 17 November, a direction). Three things move.
+
+- The scream as a fall costs the squad more rerolls than the move did: 2.5 to 2.8 a fight
+  where three or four screamers stand behind a wall, up from 1 to 2. Every kill takes one
+  now, where a root took one only on a round it chose to scream and lived through.
+- The ghosts' fade makes their fights about a round longer at tier two, and at tier three
+  the wraith choir is won 77% of the time where it was 93%.
+- The Wild Hunt hits a little softer, 23% of the squad's hull where it took 29%: a rider
+  naming the quarry is not lancing.
+
+The rest sit inside noise, and three immunities, the Thief and the Cleric stand in no row.
+His play judges every one (the to-do's line); the 200-seed read waits for the tiers' pass.
+
+With the read, a fix to the intent: a ghost's bolt wears Phased's mark only on a round the
+fade would land, never on the round it is out already (`Skirmish.fade_lands`).

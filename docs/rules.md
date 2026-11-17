@@ -495,7 +495,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 2
   a stack, after the spend's own heat lands; equipment spends none.
 - **Suppress**: each foe hit is Suppressed; on a Numbed foe the stun strips a stack and lands
-  nothing; a Ward turns it away; one already suppressed for that action gains nothing more.
+  nothing; a Ward turns it away; one already suppressed for that action gains nothing more;
+  and a foe immune to it (An immunity, under Foes) takes none.
 - **Shock**: every foe the hit reaches is Shocked after its blow, the ones it fells included, so
   a hit never spends its own Shock.
 - **Chain N**: the blow also lands N on every other Shocked foe on the field,
@@ -515,6 +516,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   conditions allow, keeping its pick while the machine stands and is in the fight; the next
   machine in line otherwise, and when the move it leaves held no pick (a brace, a blow at
   every machine); and no pick at all when the move it turns to is aimed at no one machine.
+  A follow-up once announced is not turned, nor a gather its foe is immune through (An
+  immunity, under Foes).
   Disrupt resolves before Lure. The Baboon's
   Retrocausal Shroud, spent on itself or an ally, Cleanses it and gives Disrupt to every foe
   showing intent on it, its pick or a blow at every machine: they change their move, not their
@@ -740,6 +743,16 @@ On a machine:
   again, and burns the turn it is back in reach, the first such turn its overheat. A bite of
   its own entry is damage and is blocked with the rest: a hull cost (Volatile), a passive's
   hull price on a spend and a corrupted entry's bite take nothing. Its Lure turns no pick. A second grant while it stands carries it through the round after.
+  On a foe (the Spectre's and the Wraith's, a step after their Hex Bolt, or a move of a foe's
+  own): the wait is laid as the move lands and the foe fades as that round ends, if it still
+  stands, so the round its move is announced is the window. Through the next round it is out
+  of the team's reach as an Aloft foe is, no die dropped on it and nothing aimed elsewhere
+  reaching it, and nothing damages it: what it carries ticks and takes no point, and a Mine on
+  it does it no harm. It acts all the same, and it is back as that round ends. A foe's is
+  less strict than a machine's in one way, its own side still reaching it, a rally's
+  Empowered or a mend. Two guards: the last foe standing does not fade, so a fight has a foe
+  to end on, and a foe Phased already gains no wait, so none is out two rounds running, and
+  its intent wears Phased's mark only on a round the fade would land.
 - **Swallowed** (debuff, from a foe's swallow): out of the fight (it
   cannot act, take damage or be targeted, a foe's intent on it re-picks, and a blow or a special
   at every machine passes it by) for the swallow's
@@ -1202,6 +1215,13 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   least, a blow's Brittle and a rally's Empowered: one stack is gone at its first halving, a
   machine's Brittle as its next turn starts and the rallier's own share as its turn ends. The validator holds a foe's moves to it. No such floor binds the player's pieces:
   the player orders the turn's spends, so a single stack is used before it halves.
+- **An immunity** is a foe's own Ability, a chip on it that no Purge reaches, given case by
+  case to a foe whose fight needs it: one thing of the team's that never lands on it. A foe
+  immune to Suppress is never stunned, by a die, a web's burst or a Paradox, and gains no
+  Numbed for it (the Pilgrim). A foe immune to Disrupt while a move gathers is not turned
+  from that move, from the round it is announced to the round it lands, and a Suppress
+  still holds it a round (the Obsidian Tyrant through Firestorm, the Ruby Colossus through
+  Ultima). The die's own mark is struck over a foe it will do nothing to.
 - **A drain** is no rider: it is a foe's own Ability, a chip on it that no Purge reaches (the
   Vampire Lord's). Every blow it lands, whatever the move, regrows it by what the blow took
   from the hull, no more than the machine had, so a shield starves it; it lays nothing on the
@@ -1240,7 +1260,7 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   (every mark the team laid, Ablating, Brittle, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox
   and a Mine, off the most-marked of its own, itself included, the first in strike order on
   a tie; never Numbed, never Suppressed; cast where one of its own carries a mark), barrier (a
-  Barrier on itself), regenerate (Regenerating, its value in stacks, on itself), ward all (a Ward on
+  Barrier on itself), phase (the wait for Phased on itself: Phased, above), regenerate (Regenerating, its value in stacks, on itself), ward all (a Ward on
   every foe on the field, itself included), prime (Primed, its value in stacks, on every other foe on the
   field, at once), swallow (its machine Swallowed for its rounds, never the last machine in the
   fight, let go early once the swallower has lost a quarter of its HP), expose (its machine

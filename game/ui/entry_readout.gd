@@ -438,7 +438,7 @@ const MOVE_TARGETS := {
 	"cleanse": "The most-marked of its own", "prime": "Every other foe", "ward_all": "Every foe",
 	"summon": "The waiting pool", "rally": "Every foe", "merge": "Its kinds on the field", "appropriate": "Any machine",
 	"drain_rerolls": "The team's rerolls", "scorch_all": "Every machine", "corrupt_all": "Every machine",
-	"unready_all": "Every foe it readied",
+	"unready_all": "Every foe it readied", "phase": "Self",
 }
 
 

@@ -783,8 +783,10 @@ func shut_gates(ms: MechState, f: Face, foe: Foe) -> Array[int]:
 	for k in f.keywords:
 		if not Effects.gate_holds(ms.unit, f, k, foe):
 			out.append(k)
-		elif k == Face.Keyword.DISRUPT and foe.committed:
-			out.append(k)   # an announced follow-up holds (2 November): the chip struck over it
+		elif k == Face.Keyword.DISRUPT and (foe.committed or foe.immune_to("disrupt")):
+			out.append(k)   # an announced follow-up holds (2 November), and so does a gather its foe is immune through: the chip struck over it
+		elif k == Face.Keyword.SUPPRESS and foe.immune_to("suppress"):
+			out.append(k)   # no stun lands on a foe immune to it: the chip struck over it
 	return out
 
 
@@ -832,6 +834,8 @@ func acting_on(ms: MechState) -> Array[Foe]:
 ## numbers, so its gauge shows the loss to come (Ryan, 26 October). At 0 its ticks fell it
 ## once it has acted: its blow lands and its rally lands first (16 November, his four places).
 func hp_after_ticks(f: Foe) -> int:
+	if foe_phased(f):
+		return f.hp   # its clocks run and take nothing
 	return maxi(0, f.hp - int(Effects.tick_preview(f)["hp"]))
 
 
@@ -1260,11 +1264,30 @@ func spend_face(ms: MechState) -> Face:
 ## reaches it either, a neighbour's Spread, a blow or a mark at every foe, a Chain's arc, a
 ## Mine's blast beside it, a web's catch, a spill or a shove from the foe in front. What it
 ## carries is its own: its Ablating and Vitriol tick and damage it, a web on it bursts on it
-## and a Mine on it blows on it. Every list of the foes a spend reaches is read through here
+## and a Mine on it blows on it. A Phased foe is out of reach the same way (foe_phased), and
+## nothing damages it besides. Every list of the foes a spend reaches is read through here
 ## (reached_by, area_shapes, shocked_foes, mine_reach, web_catch), so the bot and the screen
 ## read the same.
 static func out_of_reach(foe: Foe) -> bool:
-	return foe != null and Effects.has(foe, "aloft")
+	return foe != null and (Effects.has(foe, "aloft") or Effects.has(foe, "phased"))
+
+
+## Is this foe Phased (Ryan, 15 November: "I think we give this to the foes too"; "Phased on
+## foes can be less strict since it's balanced around their kit and theme"; 16 November:
+## "Phased foes act")? It fades as the round its move lands in ends (_land_phases) and is back
+## as the next one ends: out of the team's reach meanwhile, with an aim or without, and
+## damaged by nothing, what it carries included, whose clocks run all the same. It acts, and
+## its own side still reaches it, a rally or a mend: less strict than a machine's, as he
+## allowed. Never the last foe standing, and never two rounds running.
+static func foe_phased(foe: Foe) -> bool:
+	return foe != null and Effects.has(foe, "phased")
+
+
+## Would a step that fades this foe (`phase`) lay its wait now? Never on one Phased already or
+## waiting for it, so none is out two rounds running: the step's own rule, and the intent's
+## read of it, so its chip wears the mark only on a round the fade would land.
+static func fade_lands(foe: Foe) -> bool:
+	return foe != null and not Effects.has(foe, "phased") and not Effects.has(foe, "phasing")
 
 
 ## Foes this mech's current face may be spent on.
@@ -2615,6 +2638,12 @@ func _enemy_turn() -> void:
 		# suppressed foe ticks and regrows too, its turn being its own.
 		var regrow := Effects.regrowth(f)
 		var tick := Effects.tick(f)
+		if foe_phased(f):
+			# Phased: everything it carries ticks and nothing damages it, as a machine's does.
+			if int(tick["hp"]) > 0:
+				log.append("%s is faded: what it carries takes nothing" % f.display_name)
+			tick["hp"] = 0
+			tick["share"] = 0
 		var share := int(tick.get("share", 0))
 		if int(tick["hp"]) - share > 0:
 			log.append("%s is ablating: -%d" % [f.display_name, int(tick["hp"]) - share])
@@ -4005,6 +4034,15 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 					log.append("%s: %s, and %s carries no mark to lift" % [f.display_name, str(a.get("name", "cleanses")), marked.display_name])
 				else:
 					log.append("%s: %s, %s loses %s" % [f.display_name, str(a.get("name", "cleanses")), marked.display_name, ", ".join(gone).to_lower()])
+		"phase":
+			# A foe's Phased (foe_phased), its own move or a step of one: the wait for it, as a
+			# machine's is laid, landing as the round ends (_land_phases). A foe Phased already
+			# gains none, so none is out two rounds running.
+			if not fade_lands(f):
+				log.append("%s: %s, and it cannot fade again so soon" % [f.display_name, str(a.get("name", "fades"))])
+			else:
+				Effects.stack(f, Effects.STATUS["phasing"], Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_NONE)
+				log.append("%s: %s, and it fades as the round ends" % [f.display_name, str(a.get("name", "fades"))])
 		"unready_all":
 			# The Lich's fall (Ryan's yes of 17 November to the bench's row: "Killed, every foe it
 			# readied loses its readiness to rise"): every other foe still standing loses the
@@ -4310,6 +4348,20 @@ func _land_phases() -> void:
 			continue   # a Swallowed machine's wait pauses with the rest, and lands at the end of the round it is back in
 		Effects.grant_for_rounds(ms.unit, Effects.STATUS["phased"], "buff", round + 1)
 		log.append("%s is Phased: out of reach until the next round's end" % ms.unit.display_name)
+	# A foe that waits for it (a step of its move, `phase`) fades the same way, if it still
+	# stands, and never the last foe standing: a fight has a foe to end on.
+	for f in field_foes():
+		if not Effects.remove(f, "phasing") or not f.alive():
+			continue
+		var others := 0
+		for o in field_foes():
+			if o != f and o.alive():
+				others += 1
+		if others == 0:
+			log.append("%s does not fade: it is the last one standing" % f.display_name)
+			continue
+		Effects.grant_for_rounds(f, Effects.STATUS["phased"], "foe:" + f.content_id, round + 1)
+		log.append("%s fades: out of reach until the next round's end" % f.display_name)
 
 
 # ---------------------------------------------------------------- a swallow and what a foe takes (30 October)
@@ -4699,8 +4751,8 @@ func mine_reach(rank: int, col: int, massive: bool) -> Array[Foe]:
 	for slot in at:
 		for foe in slot_foes(slot.x, slot.y):
 			# The slot's own foe carries the Mine, and what a foe carries is its own; a neighbour
-			# out of the team's reach (Aloft) is passed over.
-			if foe.alive() and not out.has(foe) and (slot == at[0] or not out_of_reach(foe)):
+			# out of the team's reach (Aloft) is passed over, and nothing damages a Phased foe.
+			if foe.alive() and not out.has(foe) and not foe_phased(foe) and (slot == at[0] or not out_of_reach(foe)):
 				out.append(foe)
 	return out
 
@@ -5009,6 +5061,9 @@ func _suppress(foe: Foe, turned = null, ahead: bool = false) -> bool:
 	# and so does one that stepped up mid-round (a split's half), the round's turn being over;
 	# `ahead` says the round itself is over (a web's burst), so every foe loses its next.
 	var next := ahead or _acted.has(foe) or foe.fresh
+	if foe.immune_to("suppress"):
+		log.append("%s is immune: no stun lands on it" % foe.display_name)
+		return false   # its own Ability (Foe.immune): nothing gained, and nothing for the Paradox
 	if _suppressed_through(foe, round + 1 if next else round):
 		log.append("%s is already suppressed" % foe.display_name)
 		return false
@@ -5162,6 +5217,12 @@ func _disrupt(foes: Array) -> void:
 			# A follow-up announced a round ahead holds (Ryan, 2 November: "cannot be Disrupted"):
 			# the move that named it was the window, and a Suppress still takes it.
 			log.append("%s is committed to %s, and nothing turns it" % [foe.display_name, str(foe.action.get("name", ""))])
+			continue
+		if foe.immune_to("disrupt"):
+			# Its own Ability (Foe.immune): a gather no Disrupt breaks off, the warning being the
+			# fight (the Obsidian Tyrant's Firestorm, the Ruby Colossus's Ultima); a Suppress
+			# still holds it a round.
+			log.append("%s is immune: no Disrupt turns it from %s" % [foe.display_name, str(foe.action.get("name", ""))])
 			continue
 		var next := disrupt_next(foe)
 		if next.is_empty():

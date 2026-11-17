@@ -534,6 +534,41 @@ func test_a_foe_aloft_is_drawn_out_of_reach_and_is_no_drop_target() -> void:
 	Effects.remove(foe, "aloft")
 	s._refresh()
 	assert_false(view.away, "back on the ground, it is drawn whole again")
+	# A Phased foe (17 November) is out of reach the same way and drawn the same, where it
+	# stands, under the chip a Phased machine wears.
+	Effects.grant_for_rounds(foe, Effects.STATUS["phased"], "test", sk.round + 1)
+	s._refresh()
+	assert_true(view.away, "Phased, it is drawn as what no die reaches")
+	assert_eq(view.hover, grounded, "and no higher: it has not climbed")
+	var faded: Array = s._foe_rows(foe).filter(func(row) -> bool: return str(row[2]).contains("Phased"))
+	assert_eq(faded.size(), 1, "it wears Phased's chip")
+	for i in range(sk.mechs.size()):
+		assert_false(sk.targets_for(i).has(foe), "no machine's die may be dropped on it")
+	# A blow that fades its foe wears Phased's mark on its intent, and never on a round the
+	# fade would lay nothing: the foe is Phased already, and none is out two rounds running.
+	var bolt := {"kind": "attack", "value": 3, "name": "Test Bolt", "also": [{"effect": "phase"}]}
+	var held: Dictionary = foe.action
+	foe.action = bolt
+	var mark := Terms.glyph("phased")
+	assert_false(mark.is_empty(), "Phased has a mark to wear")
+	assert_true(SkirmishScreen.intent_riders(foe, [], ["phase"]).filter(func(row) -> bool: return str(row[0]) == mark).is_empty(), "idle, the step wears no mark")
+	assert_eq(SkirmishScreen.intent_riders(foe).filter(func(row) -> bool: return str(row[0]) == mark).size(), 1, "live, it wears it once")
+	assert_false(Skirmish.fade_lands(foe), "and the engine says a Phased foe's fade is idle")
+	assert_true(s._intent_read(foe)[2].filter(func(row) -> bool: return str(row[0]) == mark).is_empty(), "so the chip of a foe out already shows none")
+	Effects.remove(foe, "phased")
+	assert_true(Skirmish.fade_lands(foe), "back in reach, its fade would land")
+	assert_eq(s._intent_read(foe)[2].filter(func(row) -> bool: return str(row[0]) == mark).size(), 1, "and its chip says so")
+	foe.action = held
+	s._refresh()
+	assert_false(view.away, "and it is drawn whole again once it is back")
+	# An immunity (17 November) is an Ability's chip on the foe, saying what never lands.
+	assert_true(s._foe_abilities(foe).filter(func(row) -> bool: return str(row[2]).contains("Immune")).is_empty(), "no immunity, no chip")
+	foe.immune = {"suppress": true}
+	var said: Array = s._foe_abilities(foe).filter(func(row) -> bool: return str(row[2]).contains("Immune"))
+	assert_eq(said.size(), 1, "immune, it wears the Ability's chip")
+	if said.size() == 1:
+		assert_true(str(said[0][2]).contains("no Suppress lands on it") and str(said[0][4]) == "ability", "which says what never lands: %s" % str(said[0][2]))
+	foe.immune = {}
 	s.free()
 
 

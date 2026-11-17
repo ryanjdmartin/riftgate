@@ -404,6 +404,12 @@ func make_foe(foe_id: String) -> Foe:
 	f.armour_step = maxi(0, int(d.get("armour_step", 0)))
 	f.rage = maxi(0, int(d.get("rage", 0)))   # its own from the fight's start (the Goblin Nob's, Ryan, 8 November: "It's not innate? ... unbelievably incorrect")
 	f.drains = bool(d.get("drains", false))   # its own too: every blow of its regrows what it took from the hull (the Vampire Lord's, 16 November)
+	# What never lands on it (17 November, on Ryan's yes to the bench's rows): a Suppress or a
+	# Disrupt, always (true) or while the move it names gathers.
+	var im = d.get("immune", null)
+	if im is Dictionary:
+		for k in (im as Dictionary).keys():
+			f.immune[str(k)] = true if im[k] is bool else str(im[k])
 	f.wanders = bool(d.get("wanders", false))
 	f.hero = bool(d.get("hero", false)) or d.has("promotes")   # one of the party: a hero, or its promoted form
 	f.boss = is_boss(foe_id)
@@ -2704,7 +2710,7 @@ func _validate_effect(aw: String, a: Dictionary, effect: String, errs: Array[Str
 	# A golden rage (4 November) lasts the rounds it says, 1 to 5, three unsaid.
 	if effect == "golden" and a.has("rounds") and (int(a["rounds"]) < 1 or int(a["rounds"]) > 5):
 		errs.append("%s: golden's rounds are the rounds the rage lasts, 1 to 5" % aw)
-	if (effect == "barrier" or effect == "ward_all" or effect == "appropriate") and a.has("value"):
+	if (effect == "barrier" or effect == "ward_all" or effect == "appropriate" or effect == "phase" or effect == "unready_all") and a.has("value"):
 		errs.append("%s: %s takes no value" % [aw, effect])
 	# A cleanse (28 October) takes every mark the team laid, so it says no number.
 	if effect == "cleanse" and a.has("value"):
@@ -2845,6 +2851,24 @@ func _validate_foes(errs: Array[String]) -> void:
 		# what it took from the hull; a rider on a blow until 16 November.
 		if f.has("drains") and not (f["drains"] is bool and f["drains"]):
 			errs.append("%s: drains is true or left out: every blow of the foe's regrows what it takes from a hull" % where)
+		# An immunity (Ryan, 15 November: "not as a blanket for all bosses, but for ones who need
+		# it for their fight to actually do something"): an Ability on the unit, a Suppress or a
+		# Disrupt that never lands on it, always or while the move it names gathers.
+		if f.has("immune"):
+			var im = f["immune"]
+			if not (im is Dictionary) or (im as Dictionary).is_empty():
+				errs.append("%s: immune is an object: %s, each true or the id of a move of its own that gathers" % [where, " or ".join(Foe.IMMUNITIES)])
+			else:
+				for k in (im as Dictionary).keys():
+					if not Foe.IMMUNITIES.has(str(k)):
+						errs.append("%s: immune knows %s, got '%s'" % [where, ", ".join(Foe.IMMUNITIES), str(k)])
+					elif not (im[k] is bool and im[k]):
+						var gathers := false
+						for a in f.get("actions", []):
+							if a is Dictionary and str(a.get("id", "")) == str(im[k]) and int(a.get("countdown", 0)) > 0 and str(a.get("status", "")) == "implemented":
+								gathers = true
+						if not gathers:
+							errs.append("%s: immune %s is true, or the id of a move of its own that gathers (a countdown), got '%s'" % [where, str(k), str(im[k])])
 		# A foe has no aim of its own (Ryan, 17 November: "the heat target is a property of the
 		# attack, not the dragon itself"): the word goes on the move.
 		if f.has("aim"):

@@ -68,7 +68,23 @@ var swallow_mark: int = -1       # its HP as it swallowed a machine, -1 holding 
 var wanders: bool = false        # an elite any domain's Fracture may send, drawn by chance (Gilgamesh, 31 October and 2 November)
 var rage: int = 0                # what every shield, vent or equipment entry the team spends adds to its blows while it stands, its own from the fight's start (content's `rage`: the Goblin Nob, 3 November; innate since 8 November)
 var golden_mark: int = -1        # its HP as it went gold (golden, 4 November: the Thunder Ape), -1 while calm: a quarter of its HP lost since breaks the rage
+var immune: Dictionary = {}      # what of the team's never lands on it (content's `immune`; Ryan, 15 November: "not as a blanket for all bosses, but for ones who need it for their fight to actually do something"): "suppress" or "disrupt" (IMMUNITIES), each true, always, or the id of a move of its own, while that move gathers
 var drains: bool = false         # every blow of its own regrows it by what the blow took from the hull (content's `drains`: the Vampire Lord's, an Ability on the unit since 16 November, Ryan: "This should be moved to an ability on the unit since it's on every attack. Like the Nob"; a rider on its blows until then)
+
+## What a foe may be immune to, an Ability said on its chip (immune_to).
+const IMMUNITIES := ["suppress", "disrupt"]
+
+
+## Is it immune to this (IMMUNITIES) right now: always, or while the move its immunity names
+## gathers, from the round that move is announced to the round it lands?
+func immune_to(what: String) -> bool:
+	if not immune.has(what):
+		return false
+	var held = immune[what]
+	if held is bool:
+		return held
+	return not pending.is_empty() and str(pending.get("id", "")) == str(held)
+
 
 ## The words a move aimed at one machine may carry for whom it goes for (`aim`), and how its
 ## target line says each: the most or the least of one thing the screen shows, a tie drawn at
@@ -447,6 +463,12 @@ func strikes() -> int:
 ##           popped or the end of the player's next turn (28 October)
 ##           regenerate: Regenerating `value` on itself, a regrowth at each of its next three
 ##           actions after its ticks (28 October)
+##           phase: it fades as the round ends, Phased through the round after: out of the
+##           team's reach and damaged by nothing, acting all the same; never while it is the
+##           last foe standing, and never a foe Phased already, so none is out two rounds
+##           running (Ryan, 15 November: "I think we give this to the foes too"; "Phased on
+##           foes can be less strict since it's balanced around their kit and theme"; the
+##           Spectre's and the Wraith's, a step after their Hex Bolt, 17 November)
 ##   buff    revive_once: comes back from the pool once after dying (Get Back Up); Suppress and
 ##           Disrupt answer the telegraphed move, kill order the rest
 ##           revive_once_ally: one of its own, never itself, not yet readied, comes back once
@@ -493,14 +515,14 @@ func strikes() -> int:
 ## A cleanse that follows a heal in one move lands on the foe the heal mended (the Cleric's
 ## Cure, one patient: Skirmish._foe_acts).
 const ACTION_EFFECTS := {
-	"defend": ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate"],
+	"defend": ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "phase"],
 	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "golden", "appropriate"],
 	"debuff": ["drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all", "dispel", "swallow", "expose", "unready_all"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
 ## is shown intent (the ambush read below).
-const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all", "merge", "golden", "unready_all"]
+const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all", "merge", "golden", "unready_all", "phase"]
 
 
 ## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? It draws
