@@ -623,7 +623,7 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    its cheeks, its barrel and its breech grown together by 1.2 about the bore's axis (MOLE_GROW in
    the model), so the cheeks stay on the barrel's shoulders and keep their shape: the cheeks' foot
    from 20.5 out to 24.6, meeting the skirts at the treads' edges (24.25), their top from 33.9 to
-   36; the barrel from 13 across to 15.6; the breech from 28 to 33.6 square, its top from 38.5 to
+   36; the barrel's radius from 13 to 15.6; the breech from 28 to 33.6 square, its top from 38.5 to
    41.5, its hatch and its three vents moved and grown with it. "The edges" read as the treads':
    the cowl's foot already stood within 1.5 of the ring's edge, so the ring's could not be what it
    grows to; grown about the axis, its outer corners now show beside the ring head on. Burrowed, the
