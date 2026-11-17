@@ -484,7 +484,18 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    "F.A.B.", the series' sign-off, and 2 for Thunderbird 2, which carried the Mole in its pods);
    TB-2P Combat Borer (Thunderbird 2 and its pod, quieter); and, beside either, a burrow act that tips the drill down
    into the ground at a slant, the way the Mole goes in, once it is a model, and a flavour quote of
-   his that signs off the same way.
+   his that signs off the same way. His call, 17 November: "You're right about the name, keep it
+   'The Mole' and throw 'TB-2FAB Thunder Tunneler' as it's designation. Does that work? You're
+   better at the designations than I am." So the name is the Mole (in content plain "Mole", as
+   every name there carries no article, the Mole in prose, unless he wants the article kept as
+   part of it). Claude's read of the designation: TB-2FAB is Minerva's shape exactly (two letters,
+   a number and a letter suffix, as the EX-45XLE, the HW-22T and the AB-70R), and it carries the
+   whole hint, Thunderbird 2 and F.A.B.; "Thunder Tunneler" is the one part that bends a row,
+   since a designation is dull and names the job in the maker's voice (the bible's designation
+   row, Decided; Minerva's voice a maintenance manual), and "Thunder" is no job. Offered: the
+   TB-2FAB Combat Tunneller, the hint all in the code, the job dull, beside the Honey Badger's
+   Combat Miner like a sibling from the same works, and spelt with the game's British double l.
+   His to choose; "Thunder Tunneller" stands if he wants the louder hint.
 
 ## What the session hands back
 
