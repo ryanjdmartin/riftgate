@@ -1945,9 +1945,12 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   look round set moving, and a planned draft in content so the hangar shows it: its burrow a
   form (the cab and the boxes in, every gun sunk into the hull under its well's leaves whatever
   class it wears, on his "What happens if the stock guns are swapped out? Can't just ignore
-  that", dug in nose first) and its drill a launch, and a cowl as big as its drill face since his
-  note that it looked too small from behind; his to judge in action (his first read, "flimsy").
-  The hangar's Version 291 is the death session's page and files (`ccr-bd73687d`,
+  that", dug in nose first) and its drill a launch; on his notes of the same day its cheeks are
+  back and larger, its rear vents bigger under brows, and it has four hardpoints in two pieces, the
+  cab and one weapon pod, each a roof gun that sinks down a trapdoor port and a bay gun that runs
+  back behind barn doors; his to judge in action (his first read, "flimsy"). The Polar Bear's
+  designation is the XE-22S Extreme Environment Walker, his pick. The hangar's Version 293 is the
+  death session's page and files (`ccr-bd73687d`,
   unlanded) with the Mole added to them, so the two Minervan vents show there once the
   branches meet. A
   pick's next round is a model with its rig and acts.

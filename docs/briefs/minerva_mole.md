@@ -442,7 +442,12 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
 2. Its numbers (hull, shield, armour, heat, move), its stock, and the Drill's heat. In content as
    placeholders since 17 November: the Honey Badger's numbers, and a stock of the Rivet Gun, the
    Slugthrower and the Shoring Jack (the Jack takes no mount, so the third mount stands bare);
-   whatever class a mount wears retracts as it burrows (the model, below).
+   whatever class a mount wears retracts as it burrows (the model, below). Its hardpoints are four
+   since his word of 17 November ("Let's lock in 4 or 5 hardpoints for it, the drill isn't
+   accessible while unburrowed so it doesn't add to the face count"), so its die above ground is the
+   four alone; content still lists the Drill as fixed, the engine's way today, and its build takes it
+   off that die. The stock since: the Rivet Gun and the Slugthrower on the two roof guns, the Twin
+   Autoguns in the cab's bay, and the Shoring Jack, which takes no mount, so the pod's bay stands bare.
 3. Its look: the rocket drill, a drill it fires into a foe that returns as it burrows ("try your
    first design, but the trick is to make it look like it can fire the drill, but also not look
    silly without it", 16 November). The second round (`docs/looks/minerva_mole2.png`, the
@@ -545,6 +550,33 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    it: each gun now tips muzzle-up where it stands before its piece runs in, since the fore box's
    gun, pointing forward, would have met the cowl's flank on the way in. His to judge: the cowl's
    size and taper from behind, and its green.
+   His notes on it, 17 November: "For the mole, the geometry before was better, the sloped cowling
+   just needed to be a bit larger. it doesn't have to completely encompass the inner drill face,
+   just be closer to its edges. Bump up the vents on the back, and maybe give them hoods or brows to
+   'keep the dirt out.' Let's lock in 4 or 5 hardpoints for it ... Your current layout would have
+   the port side weapons overlapping, so it might need to be either an offset layout, or one or two
+   side-mounts instead of top mounts. One mount on the top would work too. For the weapons
+   retracting, look at the clydesdale and polar bear for hatch ideas, so the guns aren't just
+   clipping through the hull." So, the hangar's Version 293: the cowl gone and the cheeks back,
+   larger, from the barrel's upper shoulder out and down in two facets that keep within about three
+   of the ring's edge, the ring's crown still showing over the barrel, and the bearing drum back. The
+   two vents across the engine deck's tail 11 by 14 (10 by 9 before) and the breech's back vent 13
+   by 7 (11 by 6), each under an armoured brow with a hazard lip and a cheek plate at each end. Four
+   hardpoints, since two pieces carry two each without crossing: the two boxes one weapon pod on the
+   left, 36 long, the cab as long and 16 tall, its cockpit over a bay, both 11.8 across; each a roof
+   gun aft (hp_1 the cab's, hp_2 the pod's) and a gun in a front bay low in its nose (hp_3 the cab's,
+   hp_4 the pod's), the roof gun's line over the bay gun's: his offset layout and his top mount at
+   once. The retracting on his hatch ideas: a roof gun tips upright and sinks down a square port
+   cut through its piece, a dark well, its trapdoors hanging open in the well and swung up shut over
+   it, the Clydesdale's batteries' way; a bay gun runs back along its line into its bay, a dark
+   hollow 24.5 deep, and two barn doors swing shut across the mouth, the Polar Bear's ports' way. Any
+   class stows still: the roof guns at 0.75 and 0.7 of a class's size sink a barrel's whole length,
+   a rack wearing 0.62 to pass the trapdoors, and the bay guns at 0.6 run back whole; rendered with
+   each class on all four mounts through the burrow, each ends hidden. The burrow's order: the roof
+   guns up and the bay guns in, the bay doors shut, the pieces in to the stop and down, the roof guns
+   down, the trapdoors shut, the last slide in, the slit's shutter and the periscopes, the dig-in;
+   3.6 seconds. His to judge running: the cheeks' size, the brows, the pieces' bulk, the bays and
+   their doors, and the burrow's pace.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike
