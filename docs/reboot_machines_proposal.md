@@ -16,7 +16,7 @@ Scorpion). It retires once its calls are rows and content.
 | The machine | What the rule did to it | The fix put to him |
 |---|---|---|
 | Polar Bear | Its seal was priced against a cooling that stopped; none exists, so opening cools nothing, and a sealed bear rebooted inside its shell at armour 4, so the shell never had to open | Decided and built on main the same day, his word ("Polar bear unseals when rebooting"), this page's lean too; one clause of its text is left (below) |
-| **Storm Petrel**, as built | Its guns spend the shield it tanks with, and a shield its own guns empty is Broken: bare on 42% of its turns against a boss, a tank losing a third of its hull | **Build his direction of 11 November**: a point of shield for every point of heat it gains, the plate kept, its lock a lure that runs hot. Emulated, its bare turns and wrecks halve, and its fights run longer without the zap |
+| **Storm Petrel**, as built | Its guns spend the shield it tanks with, and a shield its own guns empty is Broken: bare on 42% of its turns against a boss, a tank losing a third of its hull | **His direction of 11 November, locked on his word of 17 November** ("That direction is locked, or should be locked. It just needs to be finalized and landed"): left to finalize, the hook's rate, its lock and its stock. Emulated, its bare turns and wrecks halve, and its fights run longer without the zap |
 | **Buzzard**, as built | Its regen climbs with a heat that never leaves, and the Afterburner is a reboot's heat half that keeps the shield | **Build the form settled on 11 November**, with two corrections and one hole (below) |
 | **Kite** | A kill recharges its shield, but a Broken shield takes nothing: once its 8 break, its 12 hull is bare until it reboots. Small at tier one in the read; a design call more than a measured need | **A kill mends its shield, broken or not**: its passive breaks the Broken rule, as a passive may |
 | **Puffin** (in design) | Moving heat, his direction, is now the dearest verb in the game | **A first round of its kit** (below); its numbers wait on the heat prices |
@@ -135,7 +135,7 @@ goes, the rest of the text as it stands (a draft, his to write). If the Barrier 
 dice (his lean), the bear's open turn has less cover; and the bot seals on few turns, so how a
 player times the shell is read by his play, not the runner.
 
-### The Storm Petrel: build his direction
+### The Storm Petrel: his direction, locked, to finalize and land
 
 *As built*, the old form: the Riot Field Generator burns its guns' heat off its shield and zaps
 the target with it, and the St. Elmo's Regenerator lures and lays Regenerating 3.
@@ -298,8 +298,8 @@ An offer for his session, nothing more.
 
 ## What is his
 
-1. The Storm Petrel: a point of shield a point of heat, its lock a hot lure, the shield burn and
-   the zap cut; built on his word.
+1. The Storm Petrel, locked (his word of 17 November): its finalization, the hook at a point of
+   shield a point of heat and its lock a hot lure the leans, then landed.
 2. The Buzzard: the settled form built, the last point kept (the lean).
 3. The Kite: a kill mends a broken shield (the lean), or left as it is.
 4. The Puffin: its first round, now or kept for its session after the heat prices.

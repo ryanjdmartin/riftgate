@@ -1,6 +1,10 @@
 # The Storm Petrel: a rework
 
-<!-- hangar: {"kind": "chassis", "maker": "kestrel", "tier": 1, "status": "direction", "slot": false, "name": "Storm Petrel", "built": "storm_petrel"} -->
+<!-- hangar: {"kind": "chassis", "maker": "kestrel", "tier": 1, "status": "locked", "slot": false, "name": "Storm Petrel", "built": "storm_petrel"} -->
+
+**Locked (Ryan, 17 November)**: "That direction is locked, or should be locked. It just needs to
+be finalized and landed." The bible's Storm Petrel row; what is left to finalize is the
+hook's rate, its lock and its stock (`docs/reboot_machines_proposal.md`).
 
 **Ryan's direction (11 November)**: "Storm petrel I don't see as that much of a buff, really. In
 fact, it's really a nerf because it can no longer fill its shields with regular components. We
