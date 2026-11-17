@@ -46,7 +46,20 @@ lip make the seam, and the crown is what the fired nose shows round its open bor
 longer and the tip shorter than round three's. The body is narrowed to stand behind the ring head
 on: the treads closer in, the hull, the barrel, the breech and the cheeks narrower, the cab, the
 mounts' boxes and the vents moved in with them. The first row sets round three's loaded machine
-beside round four's at one scale."""
+beside round four's at one scale.
+
+Fifth round, the same day, on his notes ("The thin mole still looks great. Maybe the answer to the
+cockpit problem is to have it tuck in for digging and move out for unburrowed. Same with the
+weapons, so that they clear the drill face. But it's very solid right now."): round four's
+machine, its body, drill and vents as they are, with the cab and the two weapon boxes on runs.
+Deployed, each rises and runs out over its tread on two hazard-striped rams out of collars in the
+hull's side, the cab to the right and the boxes to the left, so head on the cab's slit and every
+muzzle stand clear of the ring's circle; each leaves a black bay in a hazard rim on the deck, its
+rams across it. Burrowed, each runs back in, a little in and down from round four's place so it
+sits wholly behind the ring, its mounts down their wells under shut lids, the slit shuttered and
+the periscopes drawn down into the brow. The runs are joints (cab_deploy, sponson_deploy,
+fore_box_deploy), which nothing moves yet. The first row sets round four's loaded machine beside
+round five's deployed one at one scale."""
 
 import math
 
@@ -877,6 +890,13 @@ def _r4_cab(b, shut):
 def _mole4_hull(b, state):
     """Round four's hull: round three's narrowed to stand behind the ring head on, its nose one
     drill. `state` is "loaded", "fired", "burrowed" or "flight", as round three's."""
+    _mole4_body(b, state)
+    _mole4_upper(b, state)
+
+
+def _mole4_body(b, state):
+    """Round four's hull below its upper works: the treads, the hull, the barrel and the ring, the
+    cheeks, the breech and the engine deck with their vents, which round five keeps as they are."""
     TX, TW, TH, CZ = R4_TX, R4_TW, R4_TH, R4_CZ
     out = state != "burrowed"
     rest = 22.0 if out else 0.0
@@ -931,6 +951,13 @@ def _mole4_hull(b, state):
     _vent(b, [deck], (0.0, -32.5, 28.5), 0.0, 8.0, 6.0, 3, "louvre_t", rest, 80.0, heat="deck_heat")
     for s in (-1.0, 1.0):
         b.prism("z", s * 8.6, -32.0, 34.0, 2.4, 12.0, "steel.dark", 6, "stack")
+
+
+def _mole4_upper(b, state):
+    """Round four's upper works: the cab and its locker on the right deck, the two mount boxes on
+    the left, every mount on a lift in a well."""
+    TH = R4_TH
+    out = state != "burrowed"
     # The cab on the right deck, and a locker ahead of it.
     _r4_cab(b, shut=not out)
     b.box(13.6, 21.6, -8.0, 0.0, TH + 0.5, TH + 5.0, "steel.plate", "locker")
@@ -1029,10 +1056,189 @@ def mnlook_mole4_compare(b):
 
 mnlook_mole4_compare.maker = MN
 
+
+# The fifth round: round four's machine, its cab and weapon boxes on runners.
+R5_RUN = 11.0    # how far the cab and the weapon boxes run out across the treads, deployed
+R5_LIFT = 5.0    # how far they rise as they run, so each stands clear of its deck on its rams
+R5_TUCK = 1.5    # how far each sits in toward the spine and down from round four's place, burrowed
+R5_DECK = R4_TH + 2.9   # the bays' floors, just over the tread skirts
+
+
+def _r5_place(out, s):
+    """How far a piece on side `s` (1 the cab's, -1 the boxes') stands from round four's place,
+    across and up: run out and up, deployed; tucked in toward the spine and down, burrowed."""
+    return (s * R5_RUN, R5_LIFT) if out else (-s * R5_TUCK, -R5_TUCK)
+
+
+def _r5_shift(b, start, pstart, dx, dz):
+    """Move what was built since `start` objects and `pstart` pins along x and z: a piece built
+    where round four has it, set where its run puts it."""
+    m = Matrix.Translation((dx, 0.0, dz))
+    for ob in b.objects[start:] + b.pins[pstart:]:
+        if ob.parent is None:
+            ob.matrix_world = m @ ob.matrix_world
+
+
+def _r5_bay(b, x0, x1, y0, y1, label):
+    """The bay a running piece sits in: a black floor in a hazard rim, covered while the piece is
+    tucked in and left bare when it runs out."""
+    b.box(x0 - 0.9, x1 + 0.9, y0 - 0.9, y1 + 0.9, R5_DECK - 0.5, R5_DECK + 0.15, "steel.stripe", label + "_rim")
+    b.box(x0, x1, y0, y1, R5_DECK - 0.4, R5_DECK + 0.3, "bore.void", label + "_bay")
+
+
+def _r5_runner(b, s, y, x_hull, x_out, z_top, label):
+    """One ram a piece runs out on (`s` the side): out of a collar in the hull's side at `x_hull`,
+    across the bay, to under the piece's outboard edge at `x_out`, its top `z_top`, the piece's
+    floor."""
+    b.box(*sorted((x_hull - s * 1.5, x_out)), y - 1.1, y + 1.1, z_top - 1.6, z_top, "steel.hazard", label + "_ram")
+    b.box(*sorted((x_hull - s * 0.6, x_hull + s * 1.2)), y - 1.8, y + 1.8, z_top - 2.2, z_top + 0.6, "steel.dark", label + "_collar")
+
+
+def _r5_cab(b, out):
+    """The cab and the gun in its roof (hp_1) on their run: built where round four has them and
+    run out to the right and up, deployed, so its slit stands clear of the ring head on; burrowed,
+    tucked in and down behind the ring, its periscopes drawn down into its brow."""
+    TH, cx, top = R4_TH, R4_CAB_X, R4_CAB_TOP
+    dx, dz = _r5_place(out, 1.0)
+    with b.joint("cab_deploy", (cx + dx, -20.0, TH + 1.0 + dz)):
+        start, pstart = len(b.objects), len(b.pins)
+        _r4_cab(b, shut=not out)
+        if not out:
+            for ob in b.objects[start:]:
+                if ob.name.startswith("periscope"):
+                    ob.matrix_world = Matrix.Translation((0.0, 0.0, -3.2)) @ ob.matrix_world
+        _r3_well(b, cx, -25.0, top, 5.6, out, "gun")
+        if out:
+            _r3_lift(b, cx, -25.0, top - 1.0, top + 3.2, 2.0, "gun")
+            b.stock("hp_1", (cx, -25.0, top + 6.6), "barrel", scale=0.75, carries="rivet_gun")
+        else:
+            b.pin("hp_1", (cx, -25.0, top - 3.0), carries="rivet_gun", hidden=True)
+        _r5_shift(b, start, pstart, dx, dz)
+
+
+def _r5_boxes(b, out):
+    """The left deck's two armoured boxes on their runs, the rack (hp_2) in the aft one and the bare
+    mount (hp_3) in the fore one: built where round four has them and run out to the left and up,
+    deployed, so each muzzle stands clear of the ring head on; burrowed, tucked in and down."""
+    TH = R4_TH
+    dx, dz = _r5_place(out, -1.0)
+    with b.joint("sponson_deploy", (-17.5 + dx, -24.0, TH + dz)):
+        start, pstart = len(b.objects), len(b.pins)
+        b.box(-22.0, -13.0, -34.0, -14.0, TH, 24.0, "steel.panel", "sponson")
+        _r3_well(b, -17.5, -24.0, 24.0, 6.6, out, "rack")
+        if out:
+            _r3_lift(b, -17.5, -24.0, 23.0, 26.4, 2.4, "rack")
+            b.stock("hp_2", (-17.5, -24.0, 32.2), "rack", scale=0.75, carries="shotfire_rack")
+        else:
+            b.pin("hp_2", (-17.5, -24.0, 21.0), carries="shotfire_rack", hidden=True)
+        _r5_shift(b, start, pstart, dx, dz)
+    with b.joint("fore_box_deploy", (-17.25 + dx, -6.0, TH + dz)):
+        start, pstart = len(b.objects), len(b.pins)
+        b.box(-21.5, -13.0, -12.0, 0.0, TH, 23.5, "steel.panel", "fore_box")
+        _r3_well(b, -17.25, -6.0, 23.5, 6.0, out, "pad")
+        if out:
+            _r3_lift(b, -17.25, -6.0, 22.5, 26.0, 2.0, "pad")
+            b.pad("hp_3", (-17.25, -6.0, 27.0), size=(6.0, 1.0))
+        else:
+            b.pin("hp_3", (-17.25, -6.0, 20.5), carries="", hidden=True)
+        _r5_shift(b, start, pstart, dx, dz)
+
+
+def _mole5_hull(b, state):
+    """Round five's hull: round four's body as it is, its cab and weapon boxes on runners. Deployed
+    (every state but "burrowed"), each runs out over its tread and up, its mounts up out of their
+    wells; burrowed, each is tucked in behind the ring, a little in and down from round four's
+    place, its lid shut and the slit shuttered, and the rams are drawn into the hull."""
+    TH = R4_TH
+    out = state != "burrowed"
+    _mole4_body(b, state)
+    cx, hw, t = R4_CAB_X, R4_CAB_W / 2.0, R5_TUCK
+    _r5_bay(b, cx - hw - t, cx + hw - t, -30.0, -10.0, "cab")
+    _r5_bay(b, -22.0 + t, -13.0 + t, -34.0, -14.0, "sponson")
+    _r5_bay(b, -21.5 + t, -13.0 + t, -12.0, 0.0, "fore_box")
+    _r5_cab(b, out)
+    _r5_boxes(b, out)
+    if out:   # the rams, out of collars in the breech's sides, the engine deck's and the barrel's
+        for y, xh in ((-25.0, 14.0), (-13.0, 12.6)):
+            _r5_runner(b, 1.0, y, xh, cx + hw + R5_RUN - 1.0, TH + 1.0 + R5_LIFT, "cab")
+        for y, xh in ((-30.0, -12.5), (-18.0, -14.0)):
+            _r5_runner(b, -1.0, y, xh, -22.0 - R5_RUN + 1.0, TH + R5_LIFT, "sponson")
+        for y in (-9.0, -3.0):
+            _r5_runner(b, -1.0, y, -12.6, -21.5 - R5_RUN + 1.0, TH + R5_LIFT, "fore_box")
+    # The locker ahead of the cab's bay stays where it is.
+    b.box(13.6, 21.6, -8.0, 0.0, TH + 0.5, TH + 5.0, "steel.plate", "locker")
+    b.box(13.4, 21.8, -1.0, 0.0, TH + 5.0, TH + 5.6, "steel.stripe", "locker_edge")
+    b.pivots = True   # tracks: it turns on the spot to aim, as a tank's neutral turn
+    b.move(slide=0.2, bank=0.0, accel=1.0, heft=0.3)
+
+
+def mnlook_mole5_deployed(b):
+    """Unburrowed, loaded: the tip in the ring, the cab and the weapon boxes run out and up, every
+    mount up out of its well."""
+    _mole5_hull(b, "loaded")
+    _r4_tip(b)
+
+
+mnlook_mole5_deployed.maker = MN
+
+
+def mnlook_mole5_burrowed(b):
+    """Burrowed: the tip seated, the cab and the weapon boxes tucked in behind the ring, every mount
+    down its well under a shut lid, the slit shuttered, the louvres shut."""
+    _mole5_hull(b, "burrowed")
+    _r4_tip(b)
+
+
+mnlook_mole5_burrowed.maker = MN
+
+
+def mnlook_mole5_fired(b):
+    """Fired, deployed: the tip gone, the ring's crown round the open bore, the cab and weapons out."""
+    _mole5_hull(b, "fired")
+
+
+mnlook_mole5_fired.maker = MN
+
+
+def mnlook_mole5_flight(b):
+    """The tip in flight out of the ring, the cab and weapons out."""
+    _mole5_hull(b, "flight")
+    start = len(b.objects)
+    _r4_projectile(b, flame=True)
+    m = Matrix.Translation((0.0, 84.0, 17.0)) @ Matrix.Rotation(math.radians(-14.0), 4, "X")
+    for ob in b.objects[start:]:
+        ob.matrix_world = m @ ob.matrix_world
+
+
+mnlook_mole5_flight.maker = MN
+
+
+def mnlook_mole5_compare(b):
+    """Round four's loaded machine beside round five's deployed one at one scale: built into the same
+    file and set off on a diagonal, so head on it stands on the left and from the skirmish angle
+    behind on the right, clear of round five in both; its cuts applied here and its pins renamed,
+    as round four's compare does."""
+    mnlook_mole5_deployed(b)
+    other = type(b)("round_four", b.tiles)
+    other.materials = b.materials
+    mnlook_mole4_loaded(other)
+    other.apply_cuts()
+    shift = Matrix.Translation((80.0, 70.0, 0.0))
+    for ob in other.objects + other.pins:
+        if ob.parent is None:
+            ob.matrix_world = shift @ ob.matrix_world
+    for e in other.pins:
+        if e.name.startswith("hp_"):
+            e.name = "round_four_" + e.name
+
+
+mnlook_mole5_compare.maker = MN
+
 LOOKS = ["mnlook_mole_a", "mnlook_mole_b", "mnlook_mole_c",
          "mnlook_mole2_loaded", "mnlook_mole2_shut", "mnlook_mole2_bore", "mnlook_mole2_flight",
          "mnlook_mole3_loaded", "mnlook_mole3_fired", "mnlook_mole3_burrowed", "mnlook_mole3_flight",
-         "mnlook_mole4_loaded", "mnlook_mole4_fired", "mnlook_mole4_burrowed", "mnlook_mole4_flight", "mnlook_mole4_compare"]
+         "mnlook_mole4_loaded", "mnlook_mole4_fired", "mnlook_mole4_burrowed", "mnlook_mole4_flight", "mnlook_mole4_compare",
+         "mnlook_mole5_deployed", "mnlook_mole5_burrowed", "mnlook_mole5_fired", "mnlook_mole5_flight", "mnlook_mole5_compare"]
 
 _VIEWS = ["codex", "above", "skirmish", ("from the side", 90.0, 8.0)]
 SHEET = {
@@ -1087,5 +1293,21 @@ SHEET4 = {
         {"model": "mnlook_mole4_flight", "label": "The drill in flight", "views": ["codex", ("from the side", 90.0, 8.0), "above"]},
         {"model": "mnlook_mole4_loaded", "label": "The cab, open", "views": [("front three-quarter, close", 28.0, 22.0), ("right bow, low, close", 55.0, 10.0)], "cell": (480, 400)},
         {"model": "mnlook_mole4_burrowed", "label": "The cab, shut", "views": [("front three-quarter, close", 28.0, 22.0), ("right bow, low, close", 55.0, 10.0)], "cell": (480, 400)},
+    ],
+}
+
+_VIEWS5 = ["codex", "above", "skirmish", ("from the side", 90.0, 8.0), "front"]
+SHEET5 = {
+    "title": "The mole, fifth round: out to fight, in to dig, 17 November (look tests, not content)",
+    "out": "docs/looks/minerva_mole5.png",
+    "cell": (320, 320),
+    "rows": [
+        {"model": "mnlook_mole5_compare", "label": "Round four loaded beside round five out", "views": [("head on, level, round four on the left", 0.0, 0.0), ("skirmish angle, round four behind on the right", 155.0, 48.0)], "cell": (780, 330)},
+        {"model": "mnlook_mole5_deployed", "label": "Unburrowed, cab and weapons out", "views": _VIEWS5},
+        {"model": "mnlook_mole5_burrowed", "label": "Burrowed, all tucked in", "views": _VIEWS5},
+        {"model": "mnlook_mole5_fired", "label": "Fired, deployed", "views": ["codex", "front"]},
+        {"model": "mnlook_mole5_flight", "label": "The drill in flight", "views": ["codex", ("from the side", 90.0, 8.0), "above"]},
+        {"model": "mnlook_mole5_deployed", "label": "The cab, out", "views": [("front three-quarter, close", 28.0, 22.0), ("right bow, low, close", 55.0, 10.0)], "cell": (480, 400)},
+        {"model": "mnlook_mole5_burrowed", "label": "The cab, tucked in", "views": [("front three-quarter, close", 28.0, 22.0), ("right bow, low, close", 55.0, 10.0)], "cell": (480, 400)},
     ],
 }

@@ -479,6 +479,19 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    wells and the vents all moved in with it. His to judge: longer for its width from above, the
    cab's slit looking into the back of the ring, and the spiral lining up only at rest, since the
    ring and the tip turn opposite ways.
+   His read, 17 November: "The thin mole still looks great. Maybe the answer to the cockpit
+   problem is to have it tuck in for digging and move out for unburrowed. Same with the weapons,
+   so that they clear the drill face. But it's very solid right now." The fifth round
+   (`docs/looks/minerva_mole5.png`, `SHEET5`, its first row round four beside round five at one
+   scale): round four's machine as it was, its cab and its two weapon boxes on runs. Out of the
+   burrow each rises 5 and runs 11 out over its tread on two hazard-striped rams from collars in
+   the hull's side, the cab to the right and the boxes to the left, so head on the cab's slit and
+   every muzzle stand clear of the ring, each leaving a black bay in a hazard rim on the deck.
+   Burrowed, each runs back in, a little in and down from round four's place, wholly behind the
+   ring, its mounts down their wells under shut lids, the slit shuttered and the periscopes drawn
+   down. The runs are joints (cab_deploy, sponson_deploy, fore_box_deploy) a model's form would
+   drive, as the Polar Bear's seal does; nothing moves them in a look test. His to judge: the
+   width out of the burrow with a piece standing off each side, and the rams.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike
