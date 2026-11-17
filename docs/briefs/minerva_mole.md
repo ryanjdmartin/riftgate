@@ -442,15 +442,14 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
 2. Its numbers (hull, shield, armour, heat, move), its stock, and the Drill's heat. In content as
    placeholders since 17 November: the Honey Badger's numbers, and a stock of the Rivet Gun, the
    Slugthrower and the Shoring Jack (the Jack takes no mount, so the third mount stands bare);
-   whatever class a mount wears retracts as it burrows (the model, below). Its hardpoints will be
-   four or five, his words of 17 November ("Let's lock in 4 or 5 hardpoints for it, the drill isn't
-   accessible while unburrowed so it doesn't add to the face count"; then "Add a gun mount to the
-   top of the central roof, above the vent"), so its die above ground is those alone; content still
-   lists the Drill as fixed, the engine's way today, and its build takes it off that die. They wait
-   for the unburrowed form's rework (the same day: "go back to version 289 ... Don't worry about
-   unburrowed form just yet"): until then the model is Version 289's three mounts and content's
-   count and stock follow it, the Rivet Gun in the cab's roof, the Slugthrower in the aft box and
-   the Shoring Jack, which takes no mount, so the fore box's mount stands bare.
+   whatever class a mount wears retracts as it burrows (the model, below). Its hardpoints are four,
+   his words of 17 November ("Let's lock in 4 or 5 hardpoints for it, the drill isn't accessible
+   while unburrowed so it doesn't add to the face count"; then "Add a gun mount to the top of the
+   central roof, above the vent"), the top gun the fourth, so its die above ground is the four
+   alone; content still lists the Drill as fixed, the engine's way today, and its build takes it off
+   that die. The stock, placeholders: the Rivet Gun in the cab's roof, the Slugthrower in the aft
+   box, the Twin Autoguns on the top gun and the Shoring Jack, which takes no mount, so the fore
+   box's mount stands bare.
 3. Its look: the rocket drill, a drill it fires into a foe that returns as it burrows ("try your
    first design, but the trick is to make it look like it can fire the drill, but also not look
    silly without it", 16 November). The second round (`docs/looks/minerva_mole2.png`, the
@@ -634,6 +633,26 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    smaller (3 at most either side of a gun's line). Rendered with each class on all three mounts,
    level from the sides and the tail: nothing shows outside the hull. Not yet his to judge: the
    unburrowed form, the stock's place on the pieces and the closures.
+   His read, the same day: "Yes, better. Now add the vent hoods, the irised gun ports, the top gun,
+   and rethink how best to peek those guns and cockpit around the drill, now that things are
+   expanded. It wasn't that I was against rams, they were just SO long that they looked silly." So,
+   the hangar's next version: round six's hoods back over the engine deck's tail, its two vents 11 by
+   14 again, and a brow over the grown breech's back vent, short of the stacks. Every gun port
+   irised, the Polar Bear's plug: each piece's gun on its column in a round port 8.2 across, its
+   iris resting under the well's floor and coming up once the gun has sunk through it; the lidded
+   wells gone. The top gun over the back vent (hp_4, the Twin Autoguns), on a drum in its own irised
+   port on the breech's top where the loading hatch was, raised 5 degrees so its line clears the
+   ring; burrowed it sinks into the breech and the hull under it. The peek: grown, the body already
+   seats the pieces half outside the ring head on (their centres 22.3 out, the ring 22), so out of
+   the burrow each stands only 4.5 up and 2.1 out from its seat on two short rams, angled with the
+   peek and running into sleeves on the skirts, instead of running out 12 on long ones; that is
+   enough for the cab's whole slit and every gun to clear the ring head on, and keeps the rams'
+   rods to about four showing. The ports' sizes follow from the seats: a port burrowed must stand
+   inside its piece and over the tread, so a piece's gun stands at most 2.6 either side of its
+   line, a barrel at 0.65 of a class's size and twin barrels, a round rack or a dish at about 0.43;
+   rendered with each class on all four mounts through the burrow, level from the sides too,
+   nothing shows outside the hull. The burrow, 2.8 seconds: the pieces down onto their seats as the
+   top gun sinks, the pieces' guns sink, the irises shut with the slit's shutter, the dig-in.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike

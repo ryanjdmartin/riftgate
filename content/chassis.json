@@ -361,16 +361,16 @@
    "tier": 1,
    "status": "planned",
    "design": {
-    "fantasy": "Ryan's drill-tank mole (4 November: \"Some kind of drill-tank mole machine\"): a low, narrow tank behind one great drill, a ring cutter turning round a rocket tip that it fires into a foe, tunnelling to it, and takes back as it burrows. Out of the burrow its cab and weapon boxes run out on rams to clear the drill's face; burrowed, they tuck in behind it and every gun retracts. The name is the Thunderbirds' Mole, and the designation carries the nod (TB-2 for Thunderbird 2, FAB the sign-off): his call of 17 November, \"Designation and name are good\".",
+    "fantasy": "Ryan's drill-tank mole (4 November: \"Some kind of drill-tank mole machine\"): a low, narrow tank behind one great drill, a ring cutter turning round a rocket tip that it fires into a foe, tunnelling to it, and takes back as it burrows. Out of the burrow its cab and weapon boxes stand up and out on short rams to peek round the drill's face; burrowed, they tuck in behind it and every gun retracts. The name is the Thunderbirds' Mole, and the designation carries the nod (TB-2 for Thunderbird 2, FAB the sign-off): his call of 17 November, \"Designation and name are good\".",
     "niche": "tempo bruiser (Ryan, 16 November): it burrows in its reboot's place, banks momentum underground and drills a foe with it",
-    "notes": "A planned draft, undealt, in content since 17 November so its model can be judged moving in the hangar (Ryan: \"I think I need to see the model animated in the hangar to judge\"). Its kit as he set it is in docs/briefs/minerva_mole.md, which stays its home until its session lands; the passive and the Inertia Drill are planned drafts of that kit. Its numbers are the Honey Badger's, placeholders, and its stock is the Rivet Gun and the Slugthrower on its two gun mounts and the Shoring Jack, which takes no mount, so its third mount stands bare. Whatever class a mount wears stows as it burrows (Ryan, 17 November: \"What happens if the stock guns are swapped out? Can't just ignore that\"): the model's burrow sinks any of the four into the hull. Its hardpoints will be four or five, his (17 November: \"Let's lock in 4 or 5 hardpoints for it, the drill isn't accessible while unburrowed so it doesn't add to the face count\"), a gun on the breech's top among them (the same day: \"Add a gun mount to the top of the central roof, above the vent\"), once its unburrowed form is reworked; until then the model is Version 289's three mounts (the same day: \"go back to version 289 ... Don't worry about unburrowed form just yet\"), and the count here follows it."
+    "notes": "A planned draft, undealt, in content since 17 November so its model can be judged moving in the hangar (Ryan: \"I think I need to see the model animated in the hangar to judge\"). Its kit as he set it is in docs/briefs/minerva_mole.md, which stays its home until its session lands; the passive and the Inertia Drill are planned drafts of that kit. Its numbers are the Honey Badger's, placeholders. Its four hardpoints are his (17 November: \"Let's lock in 4 or 5 hardpoints for it, the drill isn't accessible while unburrowed so it doesn't add to the face count\"; then \"Add a gun mount to the top of the central roof, above the vent\"), the top gun the fourth; its stock, placeholders: the Rivet Gun in the cab's roof, the Slugthrower in the aft box, the Twin Autoguns on the top gun and the Shoring Jack, which takes no mount, so the fore box's mount stands bare. Whatever class a mount wears stows as it burrows (Ryan, 17 November: \"What happens if the stock guns are swapped out? Can't just ignore that\"): the model's burrow sinks any of the four into the hull under an iris."
    },
    "codex": "",
    "hull": 36,
    "shield": 6,
    "movespeed": 3,
    "heat_max": 12,
-   "hardpoints": 3,
+   "hardpoints": 4,
    "module_slots": 2,
    "armour": 1,
    "traits": [
@@ -383,7 +383,8 @@
    "loadout": [
     "rivet_gun",
     "slugthrower",
-    "shoring_jack"
+    "shoring_jack",
+    "twin_autoguns"
    ],
    "passive": {
     "id": "burrow",

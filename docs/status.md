@@ -1947,13 +1947,12 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   class it wears, on his "What happens if the stock guns are swapped out? Can't just ignore
   that", dug in nose first) and its drill a launch; after three more rounds on his notes he
   took it back to Version 289 ("Each step takes us farther away from good"), and on his word it
-  is that model with its cheeks, barrel and breech grown together by 1.2 about the bore's axis, the
-  cheeks' foot out to the treads' edges, and burrowed the cab and the boxes seated further out
-  against the grown breech, each gun's well over its tread; the burrowed form is his to judge
-  first ("Don't worry about unburrowed form just yet"), then the unburrowed form with his four or
-  five hardpoints and the breech's gun, which wait for it (content's count is the model's three
-  until then). The Polar Bear's
-  designation is the XE-22S Extreme Environment Walker, his pick. The hangar's Version 296 is the
+  is that model with its cheeks, barrel and breech grown together by 1.2 about the bore's axis
+  ("Yes, better"), and since, the vent hoods, every gun port irised, the top gun on the breech
+  (four hardpoints), and the cab and the boxes peeking round the drill on short rams, 4.5 up and
+  2.1 out from their seats beside the grown breech; his to judge in action (his first read,
+  "flimsy"). The Polar Bear's
+  designation is the XE-22S Extreme Environment Walker, his pick. The hangar's Version 298 is the
   death session's page and files (`ccr-bd73687d`,
   unlanded) with the Mole added to them, so the two Minervan vents show there once the
   branches meet. A
