@@ -2595,3 +2595,75 @@ draw among them, anyone when every shield stands, in place of the most hull reac
 name with it: the broken. A figure given him in chat is withdrawn: "eleven times in twelve"
 was a built case, one bare machine against one whose shield holds the whole blow.
 
+## 31. His fifteenth round, 17 November: the Warchief, and targeting afresh
+
+His words, on section 30 and the page of scenes:
+
+> We aren't worrying about the higher tier scaling right now, I shouldn't have bothered
+> pointing it out. But sure we can put the captain in wherever he fits. Maybe not Captain
+> with that sprite, more like warchief.
+>
+> Reading your targeting document: "You can see the state on the heat bars, and you can
+> change it: reboot the hot machine, or spread the heat. One state on the screen, an even
+> draw among the machines that match, anyone when none does." Just trying to clarify that the
+> dragon does not change targets after declaring, and that the heat target is a property of
+> the attack, not the dragon itself.
+>
+> The rest of it, I guess I'm confused as to the purpose. When I said we need to review
+> targeting, I meant let's make it good and fun and make sense and not try to "fix" what was
+> already there, since those rules were built for what is basically a completely different
+> game, and was a placeholder system anyway that kind of got folded in as a feature.
+>
+> I said it before, when I proposed random targeting, that Slice and Dice is a pretty close
+> analog to our enemies, and that game has a ton of depth with just random, don't overkill,
+> and a spattering of "target highest HP" and "target lowest HP." We don't need to copy that
+> verbatim, but when you need a 10 page document to detail our targeting rules, something
+> seems very wrong to me.
+
+### The Goblin Warchief
+
+Built, in content. The back-rank unit of section 30 under the name his sprite asks for.
+
+| | |
+|---|---|
+| Rank and tier | Back, tier three, a unit of its own and no rung of the goblin's line |
+| Stands | Behind the Captains in the tier-three warband, its one grid for now |
+| Moves | Hatchet, a blow from the back. Kill Order, the foes' Expose: one machine, the round after, with another foe on the field to obey |
+| Sprite | The chieftain render he marked, cut for the fight and the map |
+| Numbers | 5 hit points and a blow of 5, the Alraune's beside it. Placeholders |
+| Shown text | A session's drafts, unsigned: its name, its page, its quote, its two moves |
+
+What follows from his words and was built so. The Goblin Captain keeps his name, his rank and
+his kit: the rename to a Veteran was to free the name, and the name is not taken. The
+placeholder ladder of section 30 is withdrawn with the question of tier three's numbers, which
+he set aside. The warband's lead is still the Captain, so its pack on the map wears his
+sprite; the Warchief leading it is one word in content.
+
+It is the foes' Expose on its first carrier, so the mark is in a fight for the first time.
+A first read, a direction (`docs/measurements.md`): the order shows, lands and turns the
+field, and the warband is over in two or three rounds with him or without, tier three being
+unread.
+
+### His two points on the Red Dragon
+
+- *It does not change targets after declaring.* So in the engine. The pick is drawn as the
+  round opens, from the heat the turn before left, and never moves by itself after; a
+  countdown carries it a round. The page's sentence meant the next round's pick and said so
+  badly; it is reworded.
+- *The heat target is a property of the attack.* Not so in the engine today: the aim sits on
+  the foe, and every aimed move of the Red Dragon follows it, Breath and Crush alike. A move
+  may name its own, and two do. His reading is the better rule, and the proposal below puts
+  the word on the attack.
+
+### Targeting afresh
+
+The audit answered a question he had not asked. It took the aims as the frame and proposed
+five repairs, where he had asked for targeting that is good and fun and makes sense in the
+game as it now is. The five calls are withdrawn. The scenes' counts stand as the read of the
+old aims, and the page is marked as such.
+
+In their place, one page: `docs/targeting_proposal.md`. Five lines hold the whole of it:
+anyone, never overkill, a word on the attack, the mark, the commitment. Four are decided and
+built. The fifth is three words, each the most or the least of one thing on the screen with a
+tie drawn at random: the strongest and the weakest by hull and shield, Slice and Dice's two,
+and the hottest, ours. Every other aim goes, a foe's own with them. Nothing of it is built.

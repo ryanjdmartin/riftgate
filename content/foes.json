@@ -36,6 +36,17 @@
       "flavour": "They have ranks. We do not know how they decide them. We suspect volume."
     },
     {
+      "id": "goblin_warchief", "name": "Goblin Warchief", "faction": "meadow", "tier": 3,
+      "design": { "sprite": "a green-skinned goblin chieftain in a crown of bent nails and a cape of stitched hides, rearing back with both arms flung wide and its mouth open in a war cry, the cape flaring, its small head set low between hunched shoulders", "fantasy": "The goblin warchief, the one that gives the orders: a unit of its own in the back rank, as the Lich became one, no rung of the goblin's line (Ryan, 16 November: 'a back rank goblin captain that gives orders and Exposes'; 17 November: 'Maybe not Captain with that sprite, more like warchief'). The foes' Expose has its first carrier in it. Its sprite is the chieftain render he marked (goblin, takes D, 4). Its numbers are the Alraune's, its neighbour in the back rank, placeholders and unread as tier three is.", "niche": "Back rank. Its Kill Order lays Exposed on one machine: the round after, every foe's targeted move turns on it, up to the blows that would wreck it, and its armour counts for nothing. One at a time by the foes' rule of announcing, so every other round at the most, and never with no other foe on the field to obey. The answers: reach it, a Suppress or a Disrupt the round it points, a Lure, a Barrier, a Cleanse for the armour." },
+      "codex": "The goblin the line answers to. It keeps to the back and points: the machine it names stands Exposed, and next round the whole warband turns on it, its armour counting for nothing. Reach it, or stop it the round it points.",
+      "hp": 5, "attack": 5, "rank": "back", "movespeed": 2,
+      "actions": [
+        { "id": "hatchet", "name": "Hatchet", "kind": "attack", "weight": 2, "text": "A hatchet from the back for {damage}.", "status": "implemented" },
+        { "id": "kill_order", "name": "Kill Order", "kind": "debuff", "effect": "expose", "weight": 1, "when": "others_on_field", "text": "Points out one machine: it stands Exposed through the next round, its armour counting for nothing and every foe's targeted move turned on it.", "status": "implemented" }
+      ],
+      "flavour": "The one in the crown does not stab. It points, and then all of them stab."
+    },
+    {
       "id": "wolf", "name": "Dire Wolf", "faction": "meadow",
       "design": { "sprite": "a lean grey wolf, hackles up and teeth bared, mid-lunge, on four legs", "variants": ["a lean grey wolf with a ragged black mane down its spine, stalking forward low to the ground on four legs with its head down and its lips peeled back from long fangs", "a lean grey wolf with a torn ear and old scars across its muzzle, leaping forward mid-lunge with its forelegs reaching and its jaws wide open", "a big grey wolf in a spiked iron collar trailing a broken chain, braced on four legs with its head thrown back mid-howl and its hackles raised", "a gaunt grey wolf with a pale chest and a ridge of bristling fur, crouched on four legs and coiled to spring, its head thrust low and its teeth bared in a snarl"], "fantasy": "The pack that runs down the straggler, in every forest the genre has.", "niche": "A hunter of the slowest, fast, in threes. Whoever lags is caught, and the pack howls each other on." },
       "codex": "Runs in threes and picks the slowest machine on the field. It closes fast, and once it has caught something it does not let go until it is dead.",

@@ -47,7 +47,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1264 tests, 373,042 checks, green on `ccr-722ca9f0-yj8na3` (16 November, main at
+- Tests: 1264 tests, 373,061 checks, green on `ccr-722ca9f0-yj8na3` (17 November, his fifteenth
+  round: the Goblin Warchief in content, over main at `0101e14`). Before it, 1264 tests, 373,042
+  checks, green on the same branch (16 November, main at
   `f190205`, the map session's landing, taken into this branch in a merge: the Roc aloft beside
   the maps' shapes and the save's renumbered versions).
   Before the merge, on this branch, 1247 tests, 373,503 checks, green on `ccr-722ca9f0-yj8na3`
@@ -2095,33 +2097,36 @@ still wears at it, and by a session's read what lands with no aim still reaches 
 round the climb is announced is the window. A lone Roc costs about a round and a point of
 hull more (`docs/measurements.md`, a direction). **Phased keeps its name for now.** A foe's
 aim no longer runs into the stat beside it on its page.
-**The foes' targeting is audited** (the thirteenth round: "We need to look at foe targeting rules
-now, I think. Clean that up"; `docs/targeting_proposal.md`): the rules as they run are set
-down in one place, and two leftovers are cut, the rule before 2 October with the runner's
-comparison that kept it and the map's fastest hunt, a test now holding the aims and the hunts
-to content. What is a design call waits on him, five points with leans (the bible's section
-12): what the aim that content calls exposed does and its new name, the armed's and the
-buffed's fallback, a fall's single blow with the pick a move at nobody still draws, and the
-aims' words on the screen. He asked to see them in a fight, and they are a page of scenes
-(Pages, below), the game's own screens with the engine's draws counted
-(`docs/measurements.md`): heat names its machine, 2582 picks of 2593 on a hottest one; the
-aim at the exposed picks like chance, a broken shield 29% of the time where an even draw
-gives 30%; the armed follows the dice; and one blow, the Dread Knight's Death Throes, lands
-on a pick the screen never shows. Two leans moved on them: that aim would go for a broken
-shield, an even draw among them and anyone when every shield stands, and be named for it.
-`docs/balance.md` still prints the comparison section of its last run; the next run drops it.
+**The foes' targeting is to be designed afresh** (Ryan, 17 November: "let's make it good and fun
+and make sense and not try to 'fix' what was already there, since those rules were built for
+what is basically a completely different game"; Slice and Dice's "random, don't overkill, and a
+spattering of 'target highest HP' and 'target lowest HP'"; "when you need a 10 page document to
+detail our targeting rules, something seems very wrong to me"). The audit of 16 November took
+the aims as its frame and put five repairs to him; they are withdrawn. Its cuts stand: the
+rule before 2 October with the runner's comparison that kept it, and the map's fastest hunt,
+a test holding the aims and the hunts to content. Its page of scenes stands as the read of the
+old aims (Pages, below; `docs/measurements.md`): heat names its machine, and the aim at the
+exposed picked like chance. In the calls' place, one page that waits on him
+(`docs/targeting_proposal.md`; the bible's section 12): anyone, never overkill, the mark and
+the commitment as they are built, and a word on the attack where its threat calls for one,
+the strongest, the weakest or the hottest, a tie drawn; every other aim would go, a foe's own
+with them. Nothing of it is built. `docs/balance.md` still prints the comparison section of
+its last run; the next run drops it.
 **First now: the foes' pass, the rest**
 (the to-do's line): the content, put to him on 16 November as the proposal's section 28 and
 waiting on his marks: the moves that take the rank and file's countdowns' place, a fall for
 a domain each, Exposed's carriers, a foe's Phased with its two carriers, two moves as steps
 and three immunities; his thirteenth and fourteenth rounds answered part and are its
-sections 29 and 30. Still his (the bible's section 12): the marks on the rows; which gathers
-stay beside the Roc's and the bombs', the Great Needler's by lean; the goblin line's split,
-his own idea, a front-liner renamed and a back-rank Captain that Exposes, with its three open
-points and a spare chieftain render for its sprite; Aloft's name; and the targeting audit's
-five calls, on the page of scenes he asked for. His codex cleanup and
+sections 29 to 31. **The Goblin Warchief is in** (17 November, his idea and his name: "a back
+rank goblin captain that gives orders and Exposes"; "more like warchief"): a back-rank unit of
+its own behind the Captains in the tier-three warband, the chieftain render cut for its sprite,
+its Kill Order the foes' Expose on its first carrier, its texts a session's drafts and its
+numbers placeholders; the Captain keeps his name and his kit, and tier three's numbers are set
+aside on his word. Still his (the bible's section 12): the marks on the rows; which gathers
+stay beside the Roc's and the bombs', the Great Needler's by lean; Aloft's name; and the
+page on targeting. His codex cleanup and
 terminology pass is a session of his own after this work (the to-do's line keeps what was
-found for it). On his word: the goblin split in content, the engine for a foe's Phased and
+found for it). On his word: the engine for a foe's Phased and
 for an immunity, the targeting build, then the rest of the content and a read of what
 changed.
 The table of every rider, buff and debuff (`docs/vocabulary_table.md`) stands with its page
@@ -2224,11 +2229,12 @@ with it. A page's link goes into this file in the same commit as its first publi
 commands are in `README.md`.
 
 - The targeting scenes: https://claude.ai/artifact/9UTL3VqdoHVVGfodtBv124 (16 November, on his
-  "I think I need to see these targeting rules in context"): each of the foes' targeting rules
-  on the game's own screen with the engine's counts beside it, and the audit's five calls with
-  their options (`docs/targeting_proposal.md`, section 4). Read only; he answers in chat. Built
-  in a session's scratch from the screenshot tool's captures of real compositions at their
-  tiers, so a change starts from the page itself, read back with the Artifact tool.
+  "I think I need to see these targeting rules in context"): each of the old aims on the
+  game's own screen with the engine's counts beside it. Its five calls are withdrawn (17
+  November, his redirect) and the page says so at its head; it stands as the read of what the
+  old aims did. Built in a session's scratch from the screenshot tool's captures of real
+  compositions at their tiers, so a change starts from the page itself, read back with the
+  Artifact tool.
 - The vocabulary pass's table, with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko,
   built from `docs/vocabulary_table.md` by `tools/pages/vocabulary_marks_page.py` and published
   with the `db` capability (Version 3, 15 November, from `ccr-722ca9f0-yj8na3`, with the

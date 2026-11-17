@@ -10396,3 +10396,23 @@ blows had already wrecked. The armed fell back to the weights 28 times in 5889. 
 play decides how often a state comes up, the squad is three tier-one machines and one of
 tier two, under strength at tier three (it won the Lich's Court 31% of the time), and none
 of this reads a win rate.
+
+## 17 November: the Goblin Warchief's first read
+
+The foes' Expose on its first carrier (Ryan: "a back rank goblin captain that gives orders
+and Exposes"; "more like warchief"). The tier-three warband as content has it, and the same
+grid with his cell empty; a scratch probe on the engine's own fight, the greedy bot, 150
+fights a row:
+
+| The squad | The warband | Won | Rounds | Wrecks a fight | Hull lost |
+|---|---|---|---|---|---|
+| Honey Badger, Skua, Cassowary, Buzzard | without him | 100% | 2.1 | 0 | 0% |
+| | with him | 100% | 2.6 | 0 | 1% |
+| Clydesdale, Buzzard, Lammergeier, Giant Petrel | without him | 100% | 2.1 | 0 | 0% |
+| | with him | 100% | 2.2 | 0 | 0% |
+
+A direction, and a smoke more than a read. The order was shown 71 times in the first row's
+150 fights, a machine stood marked for 51 rounds with 141 picks turned on it, and none was
+wrecked while marked. So the mark runs on a real piece. What it costs cannot be read here:
+the warband falls in two or three rounds either way, tier three's numbers being unsized and
+set aside (Ryan, 17 November: "We aren't worrying about the higher tier scaling right now").
