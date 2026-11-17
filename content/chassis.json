@@ -354,6 +354,47 @@
    "flavour": ""
   },
   {
+   "id": "mole",
+   "name": "Mole",
+   "designation": "TB-2FAB Tunnel Borer",
+   "maker": "minerva",
+   "tier": 1,
+   "status": "planned",
+   "design": {
+    "fantasy": "Ryan's drill-tank mole (4 November: \"Some kind of drill-tank mole machine\"): a low, narrow tank behind one great drill, a ring cutter turning round a rocket tip that it fires into a foe, tunnelling to it, and takes back as it burrows. Out of the burrow its cab and weapon boxes run out on rams to clear the drill's face; burrowed, they tuck in behind it and every gun retracts. The name is the Thunderbirds' Mole, and the designation carries the nod (TB-2 for Thunderbird 2, FAB the sign-off): his call of 17 November, \"Designation and name are good\".",
+    "niche": "tempo bruiser (Ryan, 16 November): it burrows in its reboot's place, banks momentum underground and drills a foe with it",
+    "notes": "A planned draft, undealt, in content since 17 November so its model can be judged moving in the hangar (Ryan: \"I think I need to see the model animated in the hangar to judge\"). Its kit as he set it is in docs/briefs/minerva_mole.md, which stays its home until its session lands; the passive and the Inertia Drill are planned drafts of that kit. Its numbers are the Honey Badger's, placeholders, and its stock is the Rivet Gun and the Slugthrower on its two gun mounts and the Shoring Jack, which takes no mount, so its third mount stands bare; barrel-class, since every stock gun retracts into the hull as it burrows and a rack is too wide for the boxes behind the breech."
+   },
+   "codex": "",
+   "hull": 36,
+   "shield": 6,
+   "movespeed": 3,
+   "heat_max": 12,
+   "hardpoints": 3,
+   "module_slots": 2,
+   "armour": 1,
+   "traits": [
+    "tracked"
+   ],
+   "size": "heavy",
+   "fixed": [
+    "inertia_drill"
+   ],
+   "loadout": [
+    "rivet_gun",
+    "slugthrower",
+    "shoring_jack"
+   ],
+   "passive": {
+    "id": "burrow",
+    "name": "Burrow",
+    "description": "On a turn it has spent nothing it may burrow in place of a reboot, gaining a stack of Conserved Momentum, up to 3, and taking back what is left of its Applied Momentum as Conserved. Burrowed, a buff no Purge takes, it has armour 1, every entry on its die is the Inertia Drill, and each of its turns opens with Broken and Overheated cleared, half of what its shield and heat were missing as it burrowed made good, and another stack. It stays under until it spends the Drill.",
+    "status": "planned",
+    "effects": []
+   },
+   "flavour": ""
+  },
+  {
    "id": "prairie_dog",
    "name": "Prairie Dog",
    "designation": "Pattern 9 Scout Car",

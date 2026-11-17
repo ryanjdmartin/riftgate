@@ -1,13 +1,15 @@
-# Brief: the mole, Minerva's burrowing drill (new chassis, a direction)
+# Brief: the Mole, Minerva's burrowing drill (a planned chassis, a direction)
 
-<!-- hangar: {"kind": "chassis", "maker": "minerva", "tier": 1, "status": "direction", "slot": true, "name": "the mole"} -->
+<!-- hangar: {"kind": "chassis", "maker": "minerva", "tier": 1, "status": "direction", "slot": false, "name": "Mole", "built": "mole"} -->
 
 The session finds a verb for Ryan's drill-tank mole of 4 November, a silhouette with no mechanic
 yet, and with it its tier: the mole or the Wild Boar comes down to tier one as the Polar Bear goes
-up. "The mole" is a working label; the name is Ryan's.
+up. Its name is the Mole, Ryan's of 17 November.
 
-**Status**: a direction: his burrow and Inertia Drill, its kit set on 16 November (The kit as he
-set it, below); its tier, numbers, look and name to come. **Maker**: Minerva. **Proposed tier**:
+**Status**: a direction, in content as a planned draft since 17 November: his burrow and Inertia
+Drill, its kit set on 16 November (The kit as he set it, below); its name the Mole and its
+designation the TB-2FAB Tunnel Borer, his of 17 November; its model built from the fifth look
+round and in the hangar to judge running; its numbers and stock placeholders. **Maker**: Minerva. **Proposed tier**:
 one ("still slated ideally for tier 1", Ryan, 16 November), as it or the Wild Boar comes down. **Read first**: `docs/briefs/README.md` (ten a maker, the orbits); the bible's
 rows on a chassis's identity and on map rules (section 7).
 
@@ -437,7 +439,10 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    Some of that comes down to what the lure tank turns into though"), then his set the same day:
    "Badger, Boar, Mole, and Lure tank, for 4-4-2", so the Wild Boar came down and the Polar Bear
    went up in content (the bible's Minerva roster row).
-2. Its numbers (hull, shield, armour, heat, move), its stock, and the Drill's heat.
+2. Its numbers (hull, shield, armour, heat, move), its stock, and the Drill's heat. In content as
+   placeholders since 17 November: the Honey Badger's numbers, and a stock of the Rivet Gun, the
+   Slugthrower and the Shoring Jack (the Jack takes no mount, so the third mount stands bare),
+   barrel-class so every stock gun retracts as it burrows (the model, below).
 3. Its look: the rocket drill, a drill it fires into a foe that returns as it burrows ("try your
    first design, but the trick is to make it look like it can fire the drill, but also not look
    silly without it", 16 November). The second round (`docs/looks/minerva_mole2.png`, the
@@ -492,6 +497,34 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    down. The runs are joints (cab_deploy, sponson_deploy, fore_box_deploy) a model's form would
    drive, as the Polar Bear's seal does; nothing moves them in a look test. His to judge: the
    width out of the burrow with a piece standing off each side, and the rams.
+   The model, 17 November, on his "I think I need to see the model animated in the hangar to
+   judge. My first impression is it looks flimsy. But I need to set it in action": round five
+   built as a model (`models_low.py`'s `mole`), in content as a planned draft so the hangar
+   shows it (the page's Version 287). At rest it stands out of the burrow, the cab and the
+   boxes out on their rams; its idle acts are the Minervan vent's, a check of the rams (the cab
+   in a way and out, then the boxes) and a drill run-up (the tip six turns, the ring two the
+   other way, the hull shuddering); the ring and the tip turn against each other all the while,
+   faster under way. Burrowed (the form `burrowed`, the hangar's Burrowed toggle; the engine
+   holds it while the machine carries the status of that name, which waits on the kit's build):
+   the louvres shut, the cab and the boxes run in on their rams and drop into their bays, the
+   slit's shutter runs down from under the brow and the periscopes sink, each gun tips
+   muzzle-up and sinks through its well into the hull, its column down flush and its well's two
+   leaves swung up shut, and then the whole machine digs in nose first, 7 down and 8 degrees
+   nose-down, so the ring's lower rim is in the ground (Claude's addition, the Thunderbirds' Mole
+   going in at a slant: his to strike or tone down); burrowed, it churns its drill and runs its
+   periscopes up for a look. The Inertia Drill fires as a launch from either pose: the tip spins
+   up three turns as the hull braces, the whole rocket drill leaves the throat on a line diving 8
+   degrees into the ground ahead, gathering speed, the hull kicked back nose-up, and the bore
+   stands empty a beat round its crown of teeth before the tip slides home. In the game the
+   drill stays in its foe until the next burrow, so an empty bore held between the two wants a
+   marker the engine lays: the build session's. Changed from round five so the guns can stow: the
+   stock is barrel-class (a rack is 12 across at the mounts' scale, and the boxes leave 6.5 clear
+   of the breech), the boxes' guns at 0.65 of a class's size where the cab's is 0.75, their wells
+   a little outboard to clear the breech, and the fore box half a unit wider; a rack or a dish
+   fitted there still shows through its box as it sinks. His to judge running: whether it still
+   looks flimsy in action (the levers if so: heavier rams or a slide rail under each piece, the
+   pieces running out less far, or skirts that close the bays as they run out), the burrow's
+   order and pace (2.9 seconds in, the same out), the dig-in, and the drill's flight.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike
@@ -529,8 +562,12 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    TB is the Tunnel Borer and Thunderbird at once, 2 for Thunderbird 2, FAB the sign-off; the job
    plain, as a tunnel boring machine is. It replaces the Combat Tunneller offered first, whose
    code would have wanted to be CT.
+   His word, 17 November: "Designation and name are good." So the Mole, the TB-2FAB Tunnel Borer,
+   in content so since 17 November (plain "Mole", as every name there is); its texts his still.
 
 ## What the session hands back
 
 A proposal in chat; on Ryan's go, the bible's Minerva row, content planned, and this brief kept
-until its content lands.
+until its content lands. Content planned since 17 November (the chassis, its passive and the
+Inertia Drill, drafts of the kit as he set it, so the hangar could show its model); the rest
+waits on its session.

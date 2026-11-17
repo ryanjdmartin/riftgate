@@ -156,7 +156,10 @@ row and the refit brief's line 8); with `tools/lowforge/looks/sheet.py`, a round
 in one command, and a look builder that finds its modules itself; then a second round of five
 of them on his notes of 15 and 16 November, and his word that a nickname follows its machine in the
 bible's nickname row (the file v0.612 on this branch, main's v0.611 and those lines,
-unpublished). It took main at `0f5c801`, at `c9e55a9`, the reboot's fold-in, at `0eb2745`, the
+unpublished); Minerva at 4-4-2 (the Polar Bear up, the Wild Boar down), the Minervan vent on the
+Badger and the Boar, the Mole's later look rounds and, on 17 November, the Mole in content as a
+planned draft with its model (`models_low.py`'s `mole`), published to the hangar beside the
+death session's files. It took main at `0f5c801`, at `c9e55a9`, the reboot's fold-in, at `0eb2745`, the
 marks' cuts, at `d1b6827`, their renames, and at `f190205`, the foes' pass and the map session,
 in merges, the bible's version line and this file the conflicts, both sides kept; not landed,
 main takes it on his word. Its briefs' new sections reach the hangar's
@@ -1937,11 +1940,14 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   weaponry (fists that give way to beam rifles, beam blades, a buckler of light). The Honey
   Badger and the Wild Boar wear the Polar Bear's vent since 16 November, Minerva's signature on
   his word, each with a vent act, made bigger on 17 November (the Badger's on a radiator wall
-  across its tail), and the Boar's sweep no longer clips its side mounts; the
-  hangar's renders of the two are stale until its next publish. The mole's
-  look waits on its glue: his read of the kits (16 November) asked for one, and its brief has
-  three for his next (the dive, behind their line, undermining). A pick's next round is a
-  model with its rig and acts.
+  across its tail), and the Boar's sweep no longer clips its side mounts. The Mole (his name and
+  designation, the TB-2FAB Tunnel Borer, 17 November) is a model since 17 November, its fifth
+  look round set moving, and a planned draft in content so the hangar shows it: its burrow a
+  form (the cab and the boxes in, every gun sunk into the hull under its well's leaves, dug in
+  nose first) and its drill a launch, his to judge in action (his first read, "flimsy"). The
+  hangar's Version 287 is the death session's page and files (`ccr-bd73687d`, unlanded) with
+  the Mole added to them, so the two Minervan vents show there once the branches meet. A
+  pick's next round is a model with its rig and acts.
 - **Balance, read by stage** (the bible's section 2 kill-time row; `docs/measurements.md`): the
   200-seed matrix on file (`docs/balance.md`, 27 October) predates the ladder, the numbered
   area, the blow's order, the compositions and the randomness pass, so the next 200-seed run
