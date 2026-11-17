@@ -9651,7 +9651,7 @@ wall's rise is inside a cell's noise at 30 fights.
 
 ## 14 November, the rider and keyword pass: each rider on the vanilla, a gun's strikes, and the Barrier basic at a price
 
-Ryan's "let's do the rider and keyword pass now" (`docs/vocabulary_pass_proposal.md`, whose
+Ryan's "let's do the rider and keyword pass now" (`git show 07f01fb:docs/vocabulary_pass_proposal.md`, whose
 section 2 reads these). Each formation of tier one at its rating, Convergence 1, the six
 certain tier ones as trios, six squads and five seeds a fight, the greedy rung, the reboot
 on, the trial's basics (`basics=1,hotter=-1`: a vanilla of 3 for 3 heat). Every plain basic
@@ -9760,7 +9760,7 @@ a boss for the riders; a difference under 0.2 rounds or half a point of hull.
 
 ## 14 November, the vocabulary pass's second round: the unit riders, a horde by its hit points and plate, the foes' riders on the standard blow, Burning as erosion, and the Barrier by cooldown and by the spike
 
-Ryan's second round on the pass (`docs/vocabulary_pass_proposal.md`, his words there): "Why
+Ryan's second round on the pass (`git show 07f01fb:docs/vocabulary_pass_proposal.md`, his words there): "Why
 measure penetrate 2, burn 2, and not 1?", "Should we still be considering +2?", "I want to
 examine enemy riders as well", Burn on a machine as "a DoT that hits both meters", and the
 Barrier basic, "I'm really not sure how to unwind it from the data". The same squads, basics
@@ -9948,7 +9948,7 @@ direction's direction.
 
 ## 15 November, the vocabulary pass's third round: what stands in the Barrier basic's slot, and Breach as damage to the shield
 
-Ryan's third round (`docs/vocabulary_pass_proposal.md`, section 16): "I lean towards not
+Ryan's third round (`git show 07f01fb:docs/vocabulary_pass_proposal.md`, section 16): "I lean towards not
 having it as a basic. Ward, however, is another question", and of Breach, "I would make it
 deal extra damage to shield, 1.5x, double, triple, who knows ... But not directly to hull".
 The same squads, basics and probe as the two entries above: the six certain tier ones, the
@@ -9992,7 +9992,7 @@ lays few marks to turn.
 
 ## 15 November, the vocabulary pass's fourth round: the foes' Breach cut outright
 
-Ryan's fourth round (`docs/vocabulary_pass_proposal.md`, section 17): "My question about
+Ryan's fourth round (`git show 07f01fb:docs/vocabulary_pass_proposal.md`, section 17): "My question about
 enemy breach is if it's even needed. It could be a domain identity, i.e. shields suck here,
 but only if it asks an interesting question and not an unfair one." So what today's foes
 lose with it. The same squads, basics and probe as the entry above: the six certain tier
@@ -10580,7 +10580,7 @@ under strength against numbers Ryan set aside, read for the difference alone.
 ## 17 November: the formations the foes' bench changed, before and after
 
 The bench's fifteen rows landed that day on Ryan's "yes to all, seems fine. Ill be able to
-tell in play" (`docs/vocabulary_pass_proposal.md`, section 35). Read on the commit before
+tell in play" (`git show 07f01fb:docs/vocabulary_pass_proposal.md`, section 35). Read on the commit before
 them (`7dcb2216`) and on the tree with all fifteen, a scratch probe on the engine's own
 fight: twenty compositions that field a changed foe, as content has them at their tiers,
 against the squad of the 16 November scenes (Honey Badger, Skua, Cassowary, Buzzard), the

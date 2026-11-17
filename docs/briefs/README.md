@@ -37,9 +37,10 @@ chat first.
   design in these briefs against it, and holds his expectation that what grants regen,
   cooling, flat shield or flat heat reduction is a kit's, a locked piece's or a synergy's.
 
-- Read every brief's words under the vocabulary pass (15 and 16 November: Ryan's marks on all
-  eighty-two rows of `docs/vocabulary_table.md`, built since; `docs/vocabulary_pass_proposal.md`,
-  sections 18 and 20, says what became of each). The briefs were written before it and are not
+- Read every brief's words under the vocabulary pass (15 and 16 November: Ryan's marks on
+  every rider, buff and debuff, built since; `docs/vocabulary.md` is the vocabulary as it
+  runs, and the retired proposal's sections 18 and 20 say what became of each word, `git show
+  07f01fb:docs/vocabulary_pass_proposal.md`). The briefs were written before it and are not
   rewritten, so where one says: Burn or Burning, read Ablate and Ablating, a point a stack off
   the shield and then the hull on a machine, never heat; Flak or Crushed, read Brittle, one
   state on either side that halves each round; Breach, read "ignores armour" written on a
@@ -423,6 +424,7 @@ a banked resource, a cooldown or an ally's turn. Rapid stays for the cantrip, ga
 | `kestrel_storm_petrel.md` | landed 17 November on his direction of 11 November, locked that day (the shield armour kept, a point of shield for every point of heat gained from any source, its lure run hot, the zap the Buzzard's) with his two branches, Defence and Striker, the first upgrade branches built; retired (`git show ca717bd:docs/briefs/kestrel_storm_petrel.md`; the bible's Storm Petrel row) | Kestrel | 1 | his play of the hook and the branches, and his marks on their texts (the to-do) |
 | `arsenal_nemesis.md` | landed 11 November on his answers (a rage bar: a hit on its shield 1, hull 2, a blow of its own blocked whole 2 a blow, up to 10; spent automatically in fives to make the Knuckle breach; a Barrier left whole his lean; the roll again an upgrade direction), retired (`git show d264c85:docs/briefs/arsenal_nemesis.md`; the bible's Nemesis rows) | the Arsenal | 2 | his play of the rage bar |
 | `refit_pass.md` | the refit pass's brief (9 November): Ryan's direction from his play of Phase 2, the resource model (an innate shield that regenerates, passive cooling, no shield or vent faces, a component a weapon or equipment, the hold as the heat decision), component destruction off to test, the cover withdrawn, the formation pass folded in, the what-if built and what its first reads say (9 November), the rework list and the open questions | the battle and the kit | rule | Ryan's play of the trial and his answers to its section 7, then the content |
+| `numbers_pass.md` | the numbers pass (17 November): tier one sized against the reboot, in one place the yardsticks as content has them, the baseline of 16 November against his hull budget, what a point is worth on either side, the defence side's approach and its order of work, the tier-one bench and its five rules, and what is open; it took over what the vocabulary pass left to do | the battle and the kit | rule | this line's sizing, free to land numbers in content (Ryan, 17 November), then his play; the bench waits on his picks of the dials |
 | `elites.md` | landed 3 November on Ryan's marks (the bible's register row and tiers row, section 9; `docs/bosses_proposal.md`'s elites table: twenty-one elites, six wanderers, the Nob's rage, the Fiend of Fire, the demotions; every domain's third boss landed 4 November), retired (`git show e75be15:docs/briefs/elites.md`) | the foes | — | his calls still open (the to-do: the elites' numbers, the names) |
 | `minerva_armadillo.md` | landed 20 October, retired (`git show 63487a9:docs/briefs/minerva_armadillo.md`) | Minerva | 1 | its model (the to-do) |
 | `minerva_honey_badger.md` | landed 31 October on Ryan's go (the Ore Hopper: a load a foe a spend damages, four at most, a point of Ore Plate for every two loads; the claw the boss chase, the fragmenter firing two at +2; never destroyed the Reinforced Skeleton module), retired (`git show c05c41b:docs/briefs/minerva_honey_badger.md`) | Minerva | 1 | Ryan's play (the to-do); its runner rows read 31 October (`docs/measurements.md`), his fallbacks waiting on them |

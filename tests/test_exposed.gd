@@ -1,7 +1,7 @@
 extends TestCase
 
 ## Exposed on a machine, from a foe's Expose (Ryan, 15 November, the vocabulary pass's fourth and
-## fifth rounds: docs/vocabulary_pass_proposal.md, section 17), on synthetic foes. The armour
+## fifth rounds: the bible's Exposed row), on synthetic foes. The armour
 ## half is the foe's rule whole ("all armour of all kinds"); the second half is the field's fire:
 ## as the round after opens every targeted intent turns on the machine until the blows already
 ## drawn would wreck it ("keep the logic where enemies don't try and overkill ... So the whole

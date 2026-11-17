@@ -193,7 +193,7 @@ func test_every_aim_and_every_hunt_has_a_carrier_or_a_reason() -> void:
 
 ## A foe's rider no move carries, as a keyword of ours no piece prints.
 const KEPT_RIDERS := {
-	"destroy": "the vocabulary pass's settled answer (docs/vocabulary_pass_proposal.md, section 18; Ryan, 15 November: \"This can be a boss-level rider, that destroys the visible face if it damages hull at all. Only promoted form or superboss-level\"): the injury rule's one form, its carrier the foes' pass's",
+	"destroy": "the vocabulary pass's settled answer (the bible's Destroy row; Ryan, 15 November: \"This can be a boss-level rider, that destroys the visible face if it damages hull at all. Only promoted form or superboss-level\"): the injury rule's one form, its carrier the foes' pass's",
 }
 
 
