@@ -2662,7 +2662,7 @@ five repairs, where he had asked for targeting that is good and fun and makes se
 game as it now is. The five calls are withdrawn. The scenes' counts stand as the read of the
 old aims, and the page is marked as such.
 
-In their place, one page: `docs/targeting_proposal.md`. Five lines hold the whole of it:
+In their place, one page: `docs/targeting_proposal.md` (retired on its build, section 34). Five lines hold the whole of it:
 anyone, never overkill, a word on the attack, the mark, the commitment. Four are decided and
 built. The fifth is three words, each the most or the least of one thing on the screen with a
 tie drawn at random: the strongest and the weakest by hull and shield, Slice and Dice's two,
@@ -2807,3 +2807,57 @@ read one gauge the same way. What the formula changes, for his judging later:
 
 Its read, a direction (`docs/measurements.md`): the bot blasts a round sooner, at 8 to 10
 heat, for about the same a blast, about once a fight; fights run a little shorter again.
+
+### Targeting, built on his go
+
+"If it's the strongest/weakest/hottest table from above, then yes I agree and you can go
+ahead." Built as the page had it, and the page retired (`git show
+d657a206:docs/targeting_proposal.md`); the rule is `docs/rules.md`'s (Foes, Its target) and
+the reasons the bible's targeting row.
+
+| The line | In the engine |
+|---|---|
+| Anyone | An attack at one machine with no word picks any machine, drawn level |
+| Never overkill | As it was |
+| A word on the attack | `aim` on the move: the strongest, the weakest, the hottest; a tie drawn level among the tied |
+| The mark | As it was: an Exposed machine first |
+| The commitment | As it was, and a move at every machine or at nobody holds no pick |
+
+What went, with its tests and its tools' rows: a foe's own aim and the SENSE row on its page,
+the aim at the exposed and its weights, the armed, fires as one, both fallbacks, the pick a
+move at nobody drew, the probe of 23 October that read the exposed aim, and the runner's
+lever that set every foe's aim to one. The validator refuses an aim on a foe, a word on a
+move that is aimed at no one machine, and a step aimed at one machine on a blow at every
+machine, since that blow draws no pick and nothing would show whom. A save from before is
+set aside.
+
+What follows from his words and was built so:
+
+- Fourteen foes lost an aim and pick anyone: the Basilisk, the Gorgon, the Rust Monster,
+  Gilgamesh and the Thief (the armed); the Bone Wyvern, the Warrior, the Martial Artist and
+  the Lancer (the exposed); the Cleric, the Augur and the Summoner (fires as one); and the
+  Red Dragon and the Black Mage, whose word moved onto their attacks.
+- A jam or a corrupt may land on an entry that is no weapon. That is the roll's.
+- A Lure turns nothing of a foe on a brace, a rally or a blow at every machine, and the log
+  says so.
+- The move's target line says the word: "Target: The hottest machine" in the codex, and
+  "Target: Skua, the hottest machine" in a fight. The words are a session's drafts.
+- Three foe pages said an aim their foe no longer has and were redrafted as little as that
+  needed: the Red Dragon's, the Basilisk's, the Rust Monster's. Drafts, for his codex pass.
+
+Two reads where his go names three words and the page asked, his to overrule (the bible's
+section 12):
+
+- **Which fire attacks carry the hottest.** The Red Dragon's Breath and the Black Mage's
+  Fire and Flare. The dragon's Crush picks anyone.
+- **The Djinn's Unmake keeps a fourth word, the most buffed.** It is the same shape as his
+  three, the most of one thing on the screen with a tie drawn. Without it a purge mostly
+  lands on a machine with nothing to take. Cutting it is one line of content and four of
+  the engine.
+
+The strongest and the weakest are in the engine with no carrier yet, held by the leftovers
+test as his settled answer's words. Their first carriers are content, his to mark move by
+move in the tiers' pass.
+
+Found on the way and fixed: the test runner printed "0 checks, 0 failures" and exited clean
+when a script its setup stands on failed to compile. It fails now when a test never ran.

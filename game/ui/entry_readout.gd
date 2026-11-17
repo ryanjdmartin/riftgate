@@ -352,8 +352,12 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 	out.append({"style": "title", "text": name, "parts": [word(name)], "place": ""})
 	var own := f.base_damage_of(a)
 	var dmg := f.damage_of(a) if live else own
+	# The word an attack carries for whom it goes for (17 November): in the codex it is the
+	# target's line whole, and in a fight it follows the machine it picked.
 	var aim := f.aim_of(a)
-	var aimed := "" if aim == Foe.AIM_ANYTHING else ", " + str(Foe.AIM_TEXT.get(aim, aim))
+	var word_for := "" if aim.is_empty() else str(Foe.AIM_TEXT.get(aim, aim))
+	var aimed := "" if word_for.is_empty() else ", " + word_for
+	var anyone := "Any machine" if word_for.is_empty() else capital(word_for)
 	if Foe.is_attack_action(a):
 		var line := [word("Attack"), num(str(dmg), dmg, own) if live else word(str(dmg))]
 		if not Foe.power_status(a).is_empty() and (not live or not Effects.has(f, Foe.power_status(a))):
@@ -369,16 +373,18 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 		if Array(a.get("keywords", [])).has("all"):
 			out.append(text_line("effect", "Target: %s" % str(db.vocabulary.get("all", {}).get("name", "Every machine")), "attr"))   # the term, so it reads as one (Terms)
 		else:
-			out.append(text_line("effect", "Target: %s%s" % [target if live and not target.is_empty() else "Any machine", aimed], "attr"))
+			out.append(text_line("effect", "Target: %s" % ((target + aimed) if live and not target.is_empty() else anyone), "attr"))
 	else:
 		var kind := capital(Foe.kind_of(a))
 		var whom := str(MOVE_TARGETS.get(str(a.get("effect", "")), "Any machine"))
 		if whom == "Every machine":
 			whom = str(db.vocabulary.get("all", {}).get("name", whom))   # the term, as a blow at every machine says it
 		if live and whom == "Any machine" and not target.is_empty():
-			whom = target
+			whom = target + aimed
+		elif whom == "Any machine":
+			whom = anyone
 		out.append(text_line("effect", kind, "attr"))
-		out.append(text_line("effect", "Target: %s%s" % [whom, aimed if whom == "Any machine" or whom == target else ""], "attr"))
+		out.append(text_line("effect", "Target: %s" % whom, "attr"))
 	if str(a.get("id", "")) == "last_act":
 		out.append(text_line("effect", "Lands the moment it falls", "attr"))   # its last act (15 October)
 	if bool(a.get("once", false)):

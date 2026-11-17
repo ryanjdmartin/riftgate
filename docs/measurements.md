@@ -10336,7 +10336,8 @@ so falls into it, on 21 of the first 80 seeds at 20 by 12. Cited by the bible's 
 
 Ryan asked to see the targeting audit's calls in a fight ("I think I need to see these
 targeting rules in context to understand the issue you're presenting";
-`docs/targeting_proposal.md`, section 4, and its page). Nothing of the rules changed for
+the audit as it stood, `git show 0101e14d:docs/targeting_proposal.md`, section 4, and its
+page; the aims it reads left the engine on 17 November). Nothing of the rules changed for
 these: two scratch probes read the picks the engine draws as a round opens, on a squad of
 four, the Honey Badger (36 hull, 6 shield, 1 armour), the Skua (20 and 9), the Cassowary (24
 and 6) and the Buzzard (28 and 12).
@@ -10475,3 +10476,35 @@ plays it, by coming a round earlier. What the formula changes by heat, for his j
 It pays more below the maximum and the same at it, and half as much for each heat ridden
 past it. So a blast is worth taking early, and riding the burn for a bigger one buys less than
 it did.
+
+## 17 November: the formations that lost an aim, before and after
+
+The foes' targeting was built afresh that day (Ryan: "if it's the strongest/weakest/hottest
+table from above, then yes I agree and you can go ahead"; the bible's targeting row): fourteen
+foes lost an aim of their own and pick anyone, and the word moved onto the fire attacks. Read
+on the commit before the build (`d657a206`) and on the working tree, a scratch probe on the
+engine's own fight: the eleven compositions that field one of those foes or the Djinn, as
+content has them at their tiers, against the squad of the 16 November scenes (Honey Badger,
+Skua, Cassowary, Buzzard), the greedy bot, 200 fights a row on the same seeds. Every fight
+was won in both. Each cell is before to after.
+
+| Composition | Who lost what | Rounds | Wrecks a fight | Squad hull lost | Hull lost by the machine hit hardest |
+|---|---|---|---|---|---|
+| Barbed swarm, tier two | Basilisk, the armed | 2.4 to 2.4 | 0.00 to 0.00 | 0% to 0% | 1% to 1% |
+| Sandworm pit, tier two | Basilisk, the armed | 7.3 to 7.3 | 0.00 to 0.00 | 6% to 6% | 21% to 22% |
+| Djinn's mirage, tier two | Basilisk, the armed | 2.8 to 2.8 | 0.00 to 0.00 | 0% to 0% | 1% to 1% |
+| Bone Wyvern's flight, tier two | Bone Wyvern, the exposed | 7.7 to 7.7 | 0.34 to 0.35 | 31% to 32% | 73% to 73% |
+| Rust Monster's scavenge, tier two | Rust Monster, the armed | 4.3 to 4.4 | 0.04 to 0.04 | 8% to 8% | 28% to 28% |
+| Gilgamesh wanders, tier two | Gilgamesh, the armed | 7.3 to 7.4 | 0.06 to 0.12 | 13% to 15% | 41% to 45% |
+| Great swarm, tier three | Gorgon and Basilisk, the armed | 3.2 to 3.2 | 0.00 to 0.00 | 2% to 2% | 6% to 6% |
+| Mirage court, tier three | Gorgon, the armed | 3.5 to 3.5 | 0.00 to 0.00 | 2% to 2% | 9% to 10% |
+| Dragon's roost, tier three | Red Dragon, Crush no longer on the hottest | 5.0 to 5.0 | 0.12 to 0.14 | 28% to 28% | 59% to 61% |
+| Magma pit, tier three | Red Dragon, the same | 4.3 to 4.3 | 0.01 to 0.01 | 11% to 12% | 32% to 34% |
+| Balloon storm, tier three | Red Dragon, the same | 4.2 to 4.1 | 0.01 to 0.01 | 10% to 11% | 30% to 33% |
+
+A direction, and a flat one: nothing moves beyond noise but Gilgamesh alone, whose wrecks go
+from 12 to 24 in 200 fights now that his blows land on any machine and no longer on one
+showing a weapon. So the old aims were costing rules and buying no outcome the bot's play
+can show, which is the 16 November read again from the other side. It says nothing of feel,
+and nothing of the heroes, whose fights no row here holds. Tier three's rows are a squad
+under strength against numbers Ryan set aside, read for the difference alone.

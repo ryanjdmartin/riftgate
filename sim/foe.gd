@@ -7,10 +7,13 @@ extends RefCounted
 ## of attack actions that scale it: {id, name, factor, strikes, weight, keywords, text}.
 ## Each round it picks one by weight before the player acts, so the intent shown is exact.
 ##
-## Targeting: machines do not taunt (2 October), and a foe draws its target at random unless it
-## or its move carries an `aim` (Ryan, 24 October: random is the baseline balanced on, and an
-## aim serves a foe's threat, any foe's); the skirmish makes the pick (`Skirmish._pick_mech_target`), shown before the
-## player acts, and the foes never over-commit to a machine already doomed.
+## Targeting (Ryan, 17 November, after Slice and Dice: "random, don't overkill, and a
+## spattering of 'target highest HP' and 'target lowest HP'"): machines do not taunt, and a move
+## aimed at one machine picks any of them as the round opens, unless the move carries a word for
+## whom it goes for (`aim`: the strongest, the weakest, the hottest). The word is the attack's:
+## a foe has no aim of its own. The skirmish makes the pick (`Skirmish._pick_mech_target`), shown
+## before the player acts; the foes never over-commit to a machine already doomed, and a move
+## at every machine or at nobody draws no pick at all.
 ## A move may carry a `when`, the condition that lets the foe pick it this round, and a
 ## special never fires twice running (`last_special`). A blow may carry `swarm`: so much more
 ## per other foe of its type on the field (`kin`, kept by the skirmish), the ghoul's threat.
@@ -25,7 +28,6 @@ var hp_max: int = 30
 var attack: int = 10             # base attack: the number the player reads as "how hard it hits"
 var armour: int = 0              # flat off every blow that lands on it (content; 2 October: the one enemy mitigation besides recovery)
 var armour_step: int = 0         # armour more a tier above one, a boss whose kit is armour (content `armour_step`; Ryan, 31 October)
-var aim: String = AIM_ANYTHING   # the sense its target pick follows (content; a move may override it)
 var prefers_back: bool = false   # ranged types hold the back rank and never step up
 var pack_id: int = 0            # which battlefield pack this foe came from
 var size: int = 1                # 2 = massive: fills both slots of a column
@@ -36,7 +38,7 @@ var actions: Array = []          # implemented attack actions; at least the basi
 # Live state.
 var rank: int = -1               # 0 front, 1 back, -1 in reserve
 var column: int = -1
-var target: RefCounted = null    # Skirmish.MechState, set when intents are telegraphed
+var target: RefCounted = null    # Skirmish.MechState, its pick, drawn as intents are telegraphed for a move aimed at one machine; null for any other move (intends)
 var action: Dictionary = {}      # this round's chosen action
 var modifiers: Array = []        # statuses on this foe (ablating, suppressed, numbed...): Effects.Modifier list
 var recorder = null              # the round preview's copy alone (Skirmish.preview_round): an Array every grant and stack this foe gains is noted in (Effects._record); null in any fight that plays
@@ -68,13 +70,15 @@ var rage: int = 0                # what every shield, vent or equipment entry th
 var golden_mark: int = -1        # its HP as it went gold (golden, 4 November: the Thunder Ape), -1 while calm: a quarter of its HP lost since breaks the rage
 var drains: bool = false         # every blow of its own regrows it by what the blow took from the hull (content's `drains`: the Vampire Lord's, an Ability on the unit since 16 November, Ryan: "This should be moved to an ability on the unit since it's on every attack. Like the Nob"; a rider on its blows until then)
 
-## The aims a foe type or a move may name, and how the codex says each.
-const AIM_EXPOSED := "exposed"
-const AIM_ANYTHING := "anything"   # at random: the default
-const AIMS := ["exposed", "anything", "heat", "armed", "focus", "buffed"]
+## The words a move aimed at one machine may carry for whom it goes for (`aim`), and how its
+## target line says each: the most or the least of one thing the screen shows, a tie drawn at
+## random, so a field that is level picks anyone and no word needs a fallback. A move that
+## names none picks any machine. Hull and shield together are the strongest's and the weakest's
+## measure, as the map's hunts read them.
+const AIMS := ["strongest", "weakest", "hottest", "buffed"]
 const AIM_TEXT := {
-	"exposed": "aims at the exposed", "anything": "aims at anything", "heat": "aims at heat",
-	"armed": "aims at the armed", "focus": "fires as one", "buffed": "aims at the buffed",
+	"strongest": "the strongest machine", "weakest": "the weakest machine",
+	"hottest": "the hottest machine", "buffed": "the most buffed machine",
 }
 ## The conditions a move may carry (`when`, one word or a list meaning any), and how the
 ## codex says each. The skirmish reads them (`Skirmish._when_holds`).
@@ -179,9 +183,9 @@ func choose_from(legal: Array, rng: RandomNumberGenerator) -> void:
 	action = legal[legal.size() - 1]
 
 
-## The sense a move's pick follows: its own, else the foe's.
+## The word a move's pick follows (AIMS), or "" for a move that picks any machine.
 func aim_of(a: Dictionary = action) -> String:
-	return str(a.get("aim", aim))
+	return str(a.get("aim", ""))
 
 
 ## The conditions on a move, as a list (content writes one word or a list meaning any).
@@ -493,15 +497,37 @@ const ACTION_EFFECTS := {
 const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all", "merge", "golden"]
 
 
-## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? Its pick
-## is drawn like any foe's, and means nothing: no arrow, no intent on anyone.
+## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? It draws
+## no pick: no arrow, no intent on anyone.
 func acts_on_nobody() -> bool:
-	if is_attack_action(action):
-		return false
-	for st in effects_of(action):
+	return not lands_on_one(action) and not is_attack_action(action)
+
+
+## Is a move aimed at one machine: a blow that is no blow at every machine, or a special with
+## a step that lands on its pick? Only such a move draws a pick, and only such a move may carry
+## a word for whom it goes for.
+static func lands_on_one(a: Dictionary) -> bool:
+	if is_attack_action(a):
+		return not Array(a.get("keywords", [])).has("all")
+	for st in effects_of(a):
 		if not UNTARGETED_EFFECTS.has(str(st.get("effect", ""))):
-			return false   # one step of it lands on its pick: the move is aimed
-	return true
+			return true   # one step of it lands on its pick: the move is aimed
+	return false
+
+
+## Is this round's move aimed at one machine (lands_on_one)? Its pick is its `target`.
+func aims_at_one() -> bool:
+	return lands_on_one(action)
+
+
+## Does it show a move this round: alive, on its own round (one that stepped up mid-round has
+## had its), and with a machine to land it on when it is aimed at one? A move at every machine
+## or at nobody holds no pick and is an intent all the same. The screen's and the bot's read of
+## "is there anything to show"; whether a Suppress has taken it is the caller's.
+func intends() -> bool:
+	if not alive() or fresh or action.is_empty():
+		return false
+	return target != null or not aims_at_one()
 
 
 ## Does this foe show intent on a machine (the funnel-web's ambush read, 18 October, as the
@@ -509,13 +535,11 @@ func acts_on_nobody() -> bool:
 ## every machine, a gathering countdown included. A foe on a special that acts on nobody in
 ## particular shows intent on no machine, whatever its pick. `u` is the machine's Unit.
 func intent_on(u) -> bool:
-	if u == null or not alive() or is_suppressed() or target == null:
+	if u == null or not intends() or is_suppressed():
 		return false
 	if reaches_every_machine():
 		return true
-	if acts_on_nobody():
-		return false
-	return target.get("unit") == u
+	return target != null and aims_at_one() and target.get("unit") == u
 
 
 ## Tags an attack action may carry. Anything true or false about a blow is a tag here, never

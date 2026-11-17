@@ -1600,8 +1600,9 @@ func shield_score(sk: Skirmish, who: Skirmish.MechState, power: int, by: Skirmis
 ## of a standing shield): each live foe's moves by their weight, since a foe rolls its move as a
 ## round opens (a defend, a buff or a debuff deals nothing at its weight; a follow-up never
 ## rolls), a blow less this machine's armour and its armour against the foe's rank, times the
-## move's strikes, whole for a blow on every machine and a share of one otherwise, since a foe
-## without an aim picks at random (this round's pick was the read until 2 November).
+## move's strikes, whole for a blow on every machine and a share of one otherwise, since an
+## attack with no word of its own picks any machine (this round's pick was the read until 2
+## November; an attack's word is not read here).
 func next_round_hull(sk: Skirmish, who: Skirmish.MechState) -> float:
 	var total := 0.0
 	var live := float(maxi(1, sk.live_mechs().size()))
@@ -1632,7 +1633,7 @@ func lure_score(sk: Skirmish, who: Skirmish.MechState, foes: Array) -> float:
 	var before := _team_outlook(sk, who, 0)
 	var saved := {}
 	for foe in foes:
-		if foe.alive() and foe.target != who:
+		if foe.alive() and foe.aims_at_one() and foe.target != who:   # a move at every machine or at nobody holds no pick to turn
 			saved[foe] = foe.target
 			foe.target = who
 	if saved.is_empty():
@@ -1818,7 +1819,7 @@ static func web_stuns(f: Foe) -> bool:
 ## gathering one included, on every machine for a blow at every machine, or its base attack
 ## when it shows a special.
 static func _threat_next(f: Foe, sk: Skirmish) -> float:
-	if f.target == null or not f.alive():
+	if not f.intends():
 		return 0.0
 	if f.attacks() or f.gathering():
 		var machines: int = sk.live_mechs().size() if f.reaches_every_machine() else 1
@@ -2459,7 +2460,7 @@ static func _threat_now(f: Foe, sk: Skirmish = null) -> float:
 				return _cleanse_worth(f, sk)
 			"barrier", "ward_all", "prime", "regenerate":
 				return _foe_buff_worth(f, sk)
-	if f.target == null or f.is_suppressed() or not f.attacks():
+	if not f.intends() or f.is_suppressed() or not f.attacks():
 		return 0.0
 	var machines: int = sk.targetable_mechs().size() if sk != null and f.hits_all() else 1
 	var blow := sk.foe_blow(f) if sk != null else f.damage()

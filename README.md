@@ -97,7 +97,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
     `floor_plane.gdshader` its near part, our ground with the display's grid, both seen by the
     one camera that draws the machines
 - `tests/` — headless tests. `run_tests.gd` discovers `test_*.gd` files and runs every
-  `test_` method, including the content validator and a headless drive of the skirmish screen;
+  `test_` method, including the content validator and a headless drive of the skirmish screen
+  (a test that never ran fails the run: a script that no longer compiles once read as green);
   a `live_test_` method runs on the first frame, once the scene tree is up, for a test that
   routes input as the engine does (a drag over a scrolled list).
 - `tools/` — `export_vocabulary.gd` regenerates `docs/vocabulary.md`; `pages/bible_tables.py`
@@ -106,8 +107,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   chassis and the team against every pack under each policy and writes `docs/balance.md`
   (`--trace` prints one fight blow by blow); `map_survey.gd` measures the map generator over
   many seeds and writes `docs/map_survey.md`; `campaign_run.gd` plays whole runs and writes
-  `docs/campaign_run.md`; `target_probe.gd` tallies whom the foes strike, every starter trio
-  against each faction's formation, bosses and first pack; `special_probe.gd` tallies how often
+  `docs/campaign_run.md`; `special_probe.gd` tallies how often
   each foe special's condition holds and it is picked, and each fight's overheats, as built, with
   a condition opened or with the foes' heat stacks scaled (`special_probe_read.py` reads its
   parts); `chain_probe.gd` plays a squad through one domain's formation up to nine times in a
@@ -189,7 +189,7 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   design-session briefs (`briefs/`, with a README that says what each waits on), the economy
   pass (`economy_pass.md`), the formation pass (`formation_proposal.md`: its grids landed in `content/factions.json` on
   10 November, re-cut to the roles, and its tool retired with them; kept for the bosses' stat
-  blocks, its section 6, and the flankers' slate and bench, its section 13), the refit pass's brief (`briefs/refit_pass.md`: the resource model Ryan set on 9 November, the formation pass folded into it), the locked pieces' footing (`locked_pieces_proposal.md`: Ryan's direction of 10 November, glue kept locked and a bought level that lifts the whole machine, waiting on his marks), the foes' targeting audit (`targeting_proposal.md`, 16 November, on Ryan's "Clean that up": the rules as they run in one place, read as a system, the leftovers cut that day, and five calls of his with leans, nothing of them built), the vocabulary pass (`vocabulary_pass_proposal.md`, 14 and 15 November, five rounds: every rider, cost, buff and debuff on both sides read against the reboot and the yardstick for the basics, our riders measured on the vanilla and the foes' on the standard blow, the vanilla one under the standard foe or two, armour against the hit sizes, the foes' Burn as a status that erodes on both sides, the Barrier unwound, what still grants shield or cooling, the tier-one bench and the approach to the defence side, his third round's calls with Ward read in the Barrier basic's slot, and his fourth and fifth rounds': Exposed for the foes as one rule, Breach cut on both sides, and where a piece that ignores armour may sit; with `vocabulary_table.md`, every rider, buff and debuff in one table by name, type, effect and where it exists, which he marks on its page; waiting on his marks), the bosses' and elites' slate (`bosses_proposal.md`), the heroes'
+  blocks, its section 6, and the flankers' slate and bench, its section 13), the refit pass's brief (`briefs/refit_pass.md`: the resource model Ryan set on 9 November, the formation pass folded into it), the locked pieces' footing (`locked_pieces_proposal.md`: Ryan's direction of 10 November, glue kept locked and a bought level that lifts the whole machine, waiting on his marks), the vocabulary pass (`vocabulary_pass_proposal.md`, 14 and 15 November, five rounds: every rider, cost, buff and debuff on both sides read against the reboot and the yardstick for the basics, our riders measured on the vanilla and the foes' on the standard blow, the vanilla one under the standard foe or two, armour against the hit sizes, the foes' Burn as a status that erodes on both sides, the Barrier unwound, what still grants shield or cooling, the tier-one bench and the approach to the defence side, his third round's calls with Ward read in the Barrier basic's slot, and his fourth and fifth rounds': Exposed for the foes as one rule, Breach cut on both sides, and where a piece that ignores armour may sit; with `vocabulary_table.md`, every rider, buff and debuff in one table by name, type, effect and where it exists, which he marks on its page; waiting on his marks), the bosses' and elites' slate (`bosses_proposal.md`), the heroes'
   pass beyond Final Fantasy (`heroes_proposal.md`), the mechanics audit (`mechanics_audit.md`),
   the skirmish code audit (`skirmish_audit.md`: exceptions, duplicates and dead code, its
   questions and its order of work) and the roster analysis (`roster_analysis.md`, published as a page by
@@ -377,7 +377,7 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/quick_run.gd 
 
 # a balance loop (the stock pass's method): a copy of the project under build/loops/<name> with one lever moved in
 # its content (`levers` lists them: the foes' blows, our durability, cooling, the maxima, a foe's armour, HP or move,
-# every foe's aim, Brittle's clock, any one value), the balance runner on the team rows at 30 seeds with every rung in four processes
+# Brittle's clock, any one value), the balance runner on the team rows at 30 seeds with every rung in four processes
 # (--policies, --packs big, --rows cut it down), every chassis alone with --alone, the campaign report unless
 # --no-campaign, and a summary against the bible's section 2 tests; `compare` lays finished loops side by side.
 # --team adds a row of exactly those machines (a squad of four), --set passes the runner a fit no stock may carry
@@ -430,10 +430,6 @@ python3 tools/shield_model.py --builds  # whole rule sets spliced from Ryan's me
 python3 tools/shield_model.py --shutdown  # the shutdown as he stated it the same day (no regen, no cooling, a break allows it, an overheat forces it, none by choice), with what an overheat costs and when the recovery lands each as a row; a gun's heat in turns; a foe that heats
 python3 tools/basics_model.py           # the stock basics apart from content (Ryan's logic of 14 November: the vanilla gun one under the standard fodder's hit points): shots to kill, the pairs that kill, a fight by the gun's number, the gun that deals one more by its heat under the reboot, how often a die shows an entry, a hot entry beside a lasting point, the rider ladder by the standard foe's hit points, 3 to 6, and a bench of guns, each the vanilla with one thing traded, by its spends to kill five marks (two with the same row and heat are one gun)
 python3 tools/shield_model.py --choice  # the reboot by choice, his next form: a machine rides at its maximum, a reboot takes the turn and empties the shield, both back the round after; played blind to the foes' picks and reading them, with what the emptying buys
-# whom the foes strike (23 October): every starter trio a tender can deal, stock, greedy, against each
-# faction's formation, bosses and first pack; picks as intents are drawn, the same with every machine standing,
-# swings after any Lure, the exposed aim's weights, hull lost. JSON per cell, read by hand; four parts in parallel.
-perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/target_probe.gd -- --out build/probe_0.json --part 0/4 --seeds 20
 # how often each foe special fires (24 October): every third starter trio against each domain's formation, each boss
 # and each hero alone, the same seeds, as built or with a condition named in OPENED read as true; --heat N scales the
 # foes' heat stacks to size a buff, --only peak,magma keeps the cells named; four parts in parallel, then the reader

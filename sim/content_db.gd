@@ -299,7 +299,6 @@ func make_foe(foe_id: String) -> Foe:
 	f.rage = maxi(0, int(d.get("rage", 0)))   # its own from the fight's start (the Goblin Nob's, Ryan, 8 November: "It's not innate? ... unbelievably incorrect")
 	f.drains = bool(d.get("drains", false))   # its own too: every blow of its regrows what it took from the hull (the Vampire Lord's, 16 November)
 	f.wanders = bool(d.get("wanders", false))
-	f.aim = str(d.get("aim", Foe.AIM_ANYTHING))
 	f.hero = bool(d.get("hero", false)) or d.has("promotes")   # one of the party: a hero, or its promoted form
 	f.boss = is_boss(foe_id)
 	f.elite = is_elite(foe_id)   # a mini-boss: its stun resist is a boss's (3 November)
@@ -360,7 +359,8 @@ func make_foe(foe_id: String) -> Foe:
 		var also := Foe.also_from(a.get("also", null), str(act["name"]))
 		if not also.is_empty():
 			act["also"] = also
-		# The move's own sense and condition (2 October), when it has them.
+		# The move's own word for whom it goes for (17 November) and its condition (2 October),
+		# when it has them.
 		if a.has("aim"):
 			act["aim"] = str(a["aim"])
 		if a.has("when"):
@@ -414,8 +414,6 @@ func codex_for_foe(f: Foe) -> Dictionary:
 			arm.append({"text": "+%d A TIER" % f.armour_step, "trend": 0, "gain": false})
 		items.append(["armour", arm])
 	items.append(["rank", "BACK" if f.prefers_back else "FRONT"])
-	if f.aim != Foe.AIM_ANYTHING:
-		items.append(["sense", str(Foe.AIM_TEXT.get(f.aim, f.aim)).to_upper()])
 	if f.is_massive():
 		items.append(["size", "MASSIVE"])
 	return {
@@ -2337,9 +2335,19 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 			errs.append("%s: kind must be one of %s" % [aw, ", ".join(ACTION_KINDS)])
 		if not ACTION_STATUSES.has(str(a.get("status", ""))):
 			errs.append("%s: status must be implemented or planned" % aw)
-		# A move's own sense and its condition (2 October), checked whatever its status.
+		# A move's word for whom it goes for (Ryan, 17 November: "the heat target is a property
+		# of the attack, not the dragon itself") and its condition (2 October), checked whatever
+		# its status. The word is for a move aimed at one machine; and a blow at every machine
+		# takes no step aimed at one, since it draws no pick and nothing would show whom.
+		var steps_read: bool = not a.has("also") or (a["also"] is Array and (a["also"] as Array).all(func(st) -> bool: return st is Dictionary))
 		if a.has("aim") and not Foe.AIMS.has(str(a["aim"])):
 			errs.append("%s: aim must be one of %s, got '%s'" % [aw, ", ".join(Foe.AIMS), str(a["aim"])])
+		elif a.has("aim") and steps_read and not Foe.lands_on_one(a):
+			errs.append("%s: aim is for a move aimed at one machine; a move at every machine or at nobody draws no pick" % aw)
+		if steps_read and str(a.get("kind", "")) == "attack" and Array(a.get("keywords", [])).has("all"):
+			for st in a.get("also", []):
+				if not Foe.UNTARGETED_EFFECTS.has(str(st.get("effect", ""))) and not Foe.effect_kind(str(st.get("effect", ""))).is_empty():
+					errs.append("%s: a blow at every machine draws no pick, so no step of it may be aimed at one machine (%s)" % [aw, str(st.get("effect", ""))])
 		if a.has("when"):
 			var whens := Foe.whens_of(a)
 			if whens.is_empty():
@@ -2658,8 +2666,10 @@ func _validate_foes(errs: Array[String]) -> void:
 		# what it took from the hull; a rider on a blow until 16 November.
 		if f.has("drains") and not (f["drains"] is bool and f["drains"]):
 			errs.append("%s: drains is true or left out: every blow of the foe's regrows what it takes from a hull" % where)
-		if f.has("aim") and not Foe.AIMS.has(str(f["aim"])):
-			errs.append("%s: aim must be one of %s, got '%s'" % [where, ", ".join(Foe.AIMS), str(f["aim"])])
+		# A foe has no aim of its own (Ryan, 17 November: "the heat target is a property of the
+		# attack, not the dragon itself"): the word goes on the move.
+		if f.has("aim"):
+			errs.append("%s: a foe has no aim of its own; the word for whom an attack goes for is its move's (aim on the action)" % where)
 		_validate_actions(where, f, errs)
 		if not ["front", "back"].has(str(f.get("rank", ""))):
 			errs.append("%s: rank must be front or back" % where)
