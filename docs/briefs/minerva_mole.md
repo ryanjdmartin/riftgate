@@ -442,14 +442,15 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
 2. Its numbers (hull, shield, armour, heat, move), its stock, and the Drill's heat. In content as
    placeholders since 17 November: the Honey Badger's numbers, and a stock of the Rivet Gun, the
    Slugthrower and the Shoring Jack (the Jack takes no mount, so the third mount stands bare);
-   whatever class a mount wears retracts as it burrows (the model, below). Its hardpoints are five
-   since his words of 17 November ("Let's lock in 4 or 5 hardpoints for it, the drill isn't
+   whatever class a mount wears retracts as it burrows (the model, below). Its hardpoints will be
+   four or five, his words of 17 November ("Let's lock in 4 or 5 hardpoints for it, the drill isn't
    accessible while unburrowed so it doesn't add to the face count"; then "Add a gun mount to the
-   top of the central roof, above the vent"), so its die above ground is the five alone; content
-   still lists the Drill as fixed, the engine's way today, and its build takes it off that die. The
-   stock since, placeholders: the Slugthrower on the breech's gun, a Rivet Gun on each piece's roof
-   gun (the fifth piece of stock, a session's pick), the Twin Autoguns in the cab's bay, and the
-   Shoring Jack, which takes no mount, so the pod's bay stands bare.
+   top of the central roof, above the vent"), so its die above ground is those alone; content still
+   lists the Drill as fixed, the engine's way today, and its build takes it off that die. They wait
+   for the unburrowed form's rework (the same day: "go back to version 289 ... Don't worry about
+   unburrowed form just yet"): until then the model is Version 289's three mounts and content's
+   count and stock follow it, the Rivet Gun in the cab's roof, the Slugthrower in the aft box and
+   the Shoring Jack, which takes no mount, so the fore box's mount stands bare.
 3. Its look: the rocket drill, a drill it fires into a foe that returns as it burrows ("try your
    first design, but the trick is to make it look like it can fire the drill, but also not look
    silly without it", 16 November). The second round (`docs/looks/minerva_mole2.png`, the
@@ -611,6 +612,28 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    good underground. Rendered with each class on all five mounts through the burrow, level from the
    sides and the tail too: nothing shows outside the hull. His to judge running: the cheeks' height,
    the slide decks, the guns' sizes, the breech's gun, the three movements and both vents.
+   His read of that, the same day: "Each step takes us farther away from good. You need to scale or
+   remodel the center too, now there's just cheeks hanging out in space. go back to version 289.
+   widen the bottom edge of the cowl to almost the edges, which will let it grow vertically while
+   maintaining aspect ratio. Expand the center cylinder as you do so to match. That may involve
+   making the middle-rear chamfered section with the top vent bigger too, that's ok, and as it
+   grows the side chunks with the guns can get pushed out to the sides more when collapsed, to make
+   room. Don't worry about unburrowed form just yet." So, the hangar's next version: Version 289's
+   model (its cab and two boxes on rams, its three mounts in lidded wells, its vents and acts), with
+   its cheeks, its barrel and its breech grown together by 1.2 about the bore's axis (MOLE_GROW in
+   the model), so the cheeks stay on the barrel's shoulders and keep their shape: the cheeks' foot
+   from 20.5 out to 24.6, meeting the skirts at the treads' edges (24.25), their top from 33.9 to
+   36; the barrel from 13 across to 15.6; the breech from 28 to 33.6 square, its top from 38.5 to
+   41.5, its hatch and its three vents moved and grown with it. "The edges" read as the treads':
+   the cowl's foot already stood within 1.5 of the ring's edge, so the ring's could not be what it
+   grows to; grown about the axis, its outer corners now show beside the ring head on. Burrowed, the
+   pieces sit against the grown breech's flanks, centres 22.3 out (15.75 before), and settle onto the
+   skirts; the last slide in is gone with the room it needed. Each gun's well moves 1.7 inboard on
+   its piece and narrows to 6.5, so burrowed it stands over the tread, and a gun sinks into the
+   tread whole: the stock barrels as they were, twin barrels, a rack in its round form and a dish
+   smaller (3 at most either side of a gun's line). Rendered with each class on all three mounts,
+   level from the sides and the tail: nothing shows outside the hull. Not yet his to judge: the
+   unburrowed form, the stock's place on the pieces and the closures.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike
