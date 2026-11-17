@@ -4088,11 +4088,14 @@ func _do_reboot(i: int) -> bool:
 		var fv := _foe_view_for(foe)
 		if fv != null:
 			was[foe] = [fv, fv.look(), _home.get(fv, fv.position)]
+	var sealed_before := Effects.is_sealed(sk.mechs[i].unit)
 	if not sk.reboot_mech(i):
 		return false
 	var released: Array = sk.releases.duplicate(true)
 	_close_pop()
 	Sound.play("vent")
+	if sealed_before and not Effects.is_sealed(sk.mechs[i].unit):
+		_form_shift_at(0.0, i, false)   # a reboot opens a sealed machine: its shell bursts as the die drops
 	var valves := _hold_releases(released)
 	if is_inside_tree():
 		for act in sk.last_acts:   # a machine a last act struck holds its gauges until the act lands

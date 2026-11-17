@@ -2912,7 +2912,7 @@ func test_a_status_row_says_buff_or_debuff_and_its_chip_carries_it() -> void:
 func test_a_reboots_blast_plays_as_the_die_is_dropped() -> void:
 	var s := _screen(5)
 	var ms: Skirmish.MechState = s.sk.mechs[0]
-	ms.unit.grant_passive({"id": "boiler", "name": "Boiler", "description": "", "effects": [{"trigger": "static", "effect": "reboot_release", "value": 1, "gate": 4}]})
+	ms.unit.grant_passive({"id": "boiler", "name": "Boiler", "description": "", "effects": [{"trigger": "static", "effect": "reboot_release", "value": 1, "per": 2}]})
 	ms.heat = 6
 	assert_eq(SkirmishScreen.release_key(ms), "boiler", "its model's firing for the release is keyed by the passive (the broadside, 12 November)")
 	assert_eq(SkirmishScreen.release_key(s.sk.mechs[1]), "", "a machine whose vent blasts nothing has none")

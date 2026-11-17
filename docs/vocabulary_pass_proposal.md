@@ -2767,3 +2767,43 @@ Put to him, not built. Today a sealed Polar Bear may reboot and stays sealed, an
 heat gone at the drop it need never open: three turns sealed, one rebooting behind four
 armour. Three ways, the bible's section 12: as today; no reboot while sealed; or a reboot
 opens it, one soft turn at the end of every seal, the lean.
+
+## 34. His eighteenth round, 17 November: the seal opens, the blast with no gate, targeting's go
+
+His words, on section 33's answer:
+
+> Polar bear unseals when rebooting. It's a good change because you're never accidentally
+> stuck sealed, and a weaponless build is possible if you wanted it for some reason.
+>
+> I'll judge scorpion later. One change: remove the 8 heat minimum. Set it to 1 damage to all
+> enemies for every X heat, your call. Far more intuitive I think, and more flexible.
+>
+> I can't see the targeting page from here, but if it's the strongest/weakest/hottest table
+> from above, then yes I agree and you can go ahead.
+
+### A reboot opens the Polar Bear
+
+Built (`tests/test_reboot.gd`; the rules' Sealed, the bible's Polar Bear row). The shell and
+its armour go as the die drops, with the shield and the heat. What follows from his words
+and was built so:
+
+- The seal's clock adds nothing on the reboot's turn, the machine being open by then.
+- It stands bare and open through the enemy's turn: no shield, and 1 armour where the shell
+  gave 4.
+- A kit with no weapon may seal and open at will, his second reason.
+- The screen plays the form's change at the drop, the shift it plays when a weapon opens it.
+
+### The Whip Scorpion's blast, no gate
+
+Built. Every foe takes 1 for every 2 heat it sheds, whole steps alone, from any heat. X is
+2, a session's pick and a placeholder: it gives 7 on every foe at its maximum of 14, the
+number the gate gave there, and it is the rate its locked ray fires at, so its two ways down
+read one gauge the same way. What the formula changes, for his judging later:
+
+- Below its maximum a blast is worth more than the gated one, and it exists at all under 8.
+- At its maximum it is worth the same.
+- Past its maximum each heat buys half what it did, so riding the burn for a bigger blast
+  pays less.
+
+Its read, a direction (`docs/measurements.md`): the bot blasts a round sooner, at 8 to 10
+heat, for about the same a blast, about once a fight; fights run a little shorter again.

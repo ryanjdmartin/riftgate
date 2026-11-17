@@ -274,7 +274,7 @@
    "passive": {
     "id": "lockdown",
     "name": "Lockdown",
-    "description": "Equipment it spends on itself seals it: armour +3, its own cooling stopped, 3 hotter at the end of each turn, and its Cryo Flinger gains Spread. A weapon it fires opens it. Its weapons deal 1 more to a foe carrying Cryo.",
+    "description": "Equipment it spends on itself seals it: armour +3, its own cooling stopped, 3 hotter at the end of each turn, and its Cryo Flinger gains Spread. A weapon it fires opens it, and so does a reboot. Its weapons deal 1 more to a foe carrying Cryo.",
     "effects": [
      {
       "trigger": "static",
@@ -894,7 +894,7 @@
    "tier": 2,
    "design": {
     "fantasy": "Ryan's boiler (12 and 13 October: \"a crazy steampunk machine venting everywhere\"; 20 October: \"it doesn't actually use steam to run, its a future-tech machine. it just kind of behaves like a steampunk device\"). The whip scorpion sprays when provoked. Named by Ryan, 20 October; 11 November: \"this is a scorpion, so it's probably not a frontliner, thematically\", and it \"goes all in with the weird and wonderful, along with the cassowary and cottonmouth\".",
-    "niche": "The tier-two formation breaker (Ryan, 11 November, from the role map in its brief): heat is its ammunition. Its reboot's vent is the one that explodes (Ryan, 17 November: \"Whip scorpion needs a rework, and honestly, I think you just found it: the reboot vent is the one that explodes. It's an easy swap in\"): rebooting with 8 heat or more, the heat it sheds as its shield drops lands on every foe, 1 each and 1 more for each heat over 8 (his number of 12 November, kept: \"1 damage to each enemy, increased by 1 for each heat over 8\"); under 8 its vent is any machine's. Every blow a foe lands on it banks heat, the blows it takes bare while it reboots among them, the next blast's first fuel. Heat past its maximum burns it every turn and feeds the blast, so how long it rides is its choice. Its locked ray fires the same heat at one foe and keeps its shield, the weaker spend. Until 17 November the release was a passed turn's, once the enemy had acted, a sustained blow each round it held its die; this is a burst a reboot (\"Unfortunately it changes it's profile from sustained damage to huge burst, but I think it's ok. It was headed that way anyway\"). Numbers placeholders."
+    "niche": "The tier-two formation breaker (Ryan, 11 November, from the role map in its brief): heat is its ammunition. Its reboot's vent is the one that explodes (Ryan, 17 November: \"Whip scorpion needs a rework, and honestly, I think you just found it: the reboot vent is the one that explodes. It's an easy swap in\"): the heat it sheds as its shield drops lands on every foe, 1 each for every 2 heat (the same day, of the gate of 8 it had from 12 November: \"remove the 8 heat minimum. Set it to 1 damage to all enemies for every X heat, your call. Far more intuitive I think, and more flexible\"; 2 a point is a session's pick, 7 on every foe at its maximum of 14 as the gate gave, and its ray's own rate). Every blow a foe lands on it banks heat, the blows it takes bare while it reboots among them, the next blast's first fuel. Heat past its maximum burns it every turn and feeds the blast, so how long it rides is its choice. Its locked ray fires the same heat at one foe and keeps its shield, the weaker spend. Until 17 November the release was a passed turn's, once the enemy had acted, a sustained blow each round it held its die; this is a burst a reboot (\"Unfortunately it changes it's profile from sustained damage to huge burst, but I think it's ok. It was headed that way anyway\"). Numbers placeholders."
    },
    "codex": "",
    "hull": 40,
@@ -920,13 +920,13 @@
    "passive": {
     "id": "thermal_ejection_manifold",
     "name": "Thermal Ejection Manifold",
-    "description": "A reboot it starts with 8 heat or more opens its valves as its heat vents: every foe takes 1, and 1 more for each heat over 8. Every blow a foe lands on it adds 2 heat.",
+    "description": "A reboot opens its valves as its heat vents: every foe takes 1 for every 2 heat it sheds. Every blow a foe lands on it adds 2 heat.",
     "effects": [
      {
       "trigger": "static",
       "effect": "reboot_release",
       "value": 1,
-      "gate": 8
+      "per": 2
      },
      {
       "trigger": "static",

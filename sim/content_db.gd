@@ -1877,8 +1877,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		# every spend aimed at a foe leaves, a whole number, 1 or more.
 		if effect == "mine_on_spend" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or float(eff["value"]) != floorf(float(eff["value"]))):
 			errs.append("%s: mine_on_spend is the Mine's flat damage a spend: a whole number, 1 or more" % where)
-		if effect == "reboot_release" and (int(eff.get("value", 0)) < 1 or int(eff.get("gate", 0)) < 1):
-			errs.append("%s: reboot_release is what every foe takes from a reboot's vent at its gate: value and gate (the heat it needs), whole numbers, 1 or more" % where)
+		if effect == "reboot_release" and (int(eff.get("value", 0)) < 1 or int(eff.get("per", 0)) < 1 or eff.has("gate")):
+			errs.append("%s: reboot_release is what every foe takes from a reboot's vent for every so much heat: value and per (the heat a step), whole numbers, 1 or more; it has no gate" % where)
 		if effect == "shove_behind" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or int(eff["value"]) > 100 or float(eff["value"]) != floorf(float(eff["value"]))):
 			errs.append("%s: shove_behind is the share of a front foe's maximum HP its damaging blow drives into the foe behind, in percent: a whole number, 1 to 100" % where)
 		# The Petrels' passives (built 30 October): the shield paying a weapon's heat point for

@@ -10613,12 +10613,13 @@ func test_a_weapon_over_every_foe_lands_its_number_on_each() -> void:
 
 ## The boiler's release (the Whip Scorpion's Thermal Ejection Manifold; Ryan, 12 November: "1
 ## damage to each enemy, increased by 1 for each heat over 8"; 17 November, on its reboot's vent
-## in place of a passed turn: "the reboot vent is the one that explodes"): a machine that reboots
-## holding its gate's heat lands what it vents on every foe as its shield drops, in the player's
-## own turn; under the gate its vent is any machine's; a turn it ends with its die unspent
-## releases nothing. Synthetic passive.
-func _boiler(gate: int = 8, per_blow: int = 0) -> Dictionary:
-	var effects: Array = [{"trigger": "static", "effect": "reboot_release", "value": 1, "gate": gate}]
+## in place of a passed turn: "the reboot vent is the one that explodes"; and of its gate of 8,
+## "remove the 8 heat minimum. Set it to 1 damage to all enemies for every X heat"): a machine
+## that reboots lands what it vents on every foe as its shield drops, its number for every so
+## much heat, in the player's own turn; with less than a step its vent is any machine's; a turn
+## it ends with its die unspent releases nothing. Synthetic passive.
+func _boiler(per: int = 2, per_blow: int = 0) -> Dictionary:
+	var effects: Array = [{"trigger": "static", "effect": "reboot_release", "value": 1, "per": per}]
 	if per_blow > 0:
 		effects.append({"trigger": "static", "effect": "heat_per_blow", "value": per_blow})
 	return {"id": "boiler", "name": "Boiler", "description": "", "effects": effects}
@@ -10627,7 +10628,7 @@ func _boiler(gate: int = 8, per_blow: int = 0) -> Dictionary:
 func _boiler_fight(d: Die, front: int, back: int, atk: int = 0) -> Array:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", d, 40, 1000)
-	m.grant_passive(_boiler(8, 2 if atk > 0 else 0))
+	m.grant_passive(_boiler(2, 2 if atk > 0 else 0))
 	sk.add_mech(m)
 	var foes: Array = []
 	for k in range(front):
@@ -10640,30 +10641,30 @@ func _boiler_fight(d: Die, front: int, back: int, atk: int = 0) -> Array:
 	return [sk, m, foes]
 
 
-func test_a_reboots_vent_blasts_every_foe_past_its_gate_and_leaves_it_cold() -> void:
+func test_a_reboots_vent_blasts_every_foe_by_its_heat_and_leaves_it_cold() -> void:
 	var made := _boiler_fight(Die.single(Face.attack(1, L)), 2, 1)
 	var sk: Skirmish = made[0]
 	var m: Unit = made[1]
 	var foes: Array = made[2]
 	var ms := sk.mechs[0]
-	ms.heat = 7
-	assert_true(sk.release_shot(ms) == null, "under its gate of eight nothing is ready")
-	assert_true(sk.reboot_mech(0), "it reboots under its gate")
+	ms.heat = 1
+	assert_true(sk.release_shot(ms) == null, "one heat is less than a step of two: nothing is ready")
+	assert_true(sk.reboot_mech(0), "it reboots all but cold")
 	assert_eq([ms.heat, sk.releases.size()], [0, 0], "its heat vents as any machine's does, and blasts nothing")
 	assert_eq([int(foes[0].hp), int(foes[1].hp), int(foes[2].hp)], [500, 500, 500], "no foe touched")
 	sk.end_round()
 	sk.start_round()
 	ms.heat = 11
-	assert_eq(sk.release_shot(ms).power, 4, "1 at eight, and 1 more for each heat over")
-	assert_eq(Policy.make(Policy.GREEDY, 1).release_worth(sk, ms), 12.0, "the bot reads it on every foe standing")
+	assert_eq(sk.release_shot(ms).power, 5, "1 for every 2 heat, whole steps alone: no gate")
+	assert_eq(Policy.make(Policy.GREEDY, 1).release_worth(sk, ms), 15.0, "the bot reads it on every foe standing")
 	assert_true(sk.reboot_mech(0), "it reboots holding eleven")
 	assert_eq(sk.state, Skirmish.State.ASSIGN, "in the player's own turn, as its shield drops")
-	assert_eq([int(foes[0].hp), int(foes[1].hp), int(foes[2].hp)], [496, 496, 496], "every foe takes it at once, front and back")
+	assert_eq([int(foes[0].hp), int(foes[1].hp), int(foes[2].hp)], [495, 495, 495], "every foe takes it at once, front and back")
 	assert_eq([ms.heat, m.shield], [0, 0], "left cold, and bare as any reboot")
 	assert_eq(sk.releases.size(), 1, "the screen is told")
 	assert_eq(int(sk.releases[0]["heat"]), 11, "the heat it fired")
 	assert_eq((sk.releases[0]["blows"] as Array).size(), 3, "a blow on every foe")
-	assert_true("\n".join(sk.log).contains("opens its valves: 11 heat, 4 on every foe"), "the log says so")
+	assert_true("\n".join(sk.log).contains("opens its valves: 11 heat, 5 on every foe"), "the log says so")
 
 
 ## Heat past its maximum fires with the rest, and what the foes' blows bank while it reboots,
@@ -10677,7 +10678,7 @@ func test_blows_taken_while_it_reboots_bank_heat_for_the_next_blast() -> void:
 	ms.heat_max = 10
 	ms.heat = 13
 	assert_true(sk.reboot_mech(0), "three past its maximum, it reboots")
-	assert_eq([int(foes[0].hp), int(foes[1].hp)], [494, 494], "six on each: 1 and the five over its gate, what stood past its maximum with the rest")
+	assert_eq([int(foes[0].hp), int(foes[1].hp)], [494, 494], "six on each: a point for every 2 of its thirteen, what stood past its maximum with the rest")
 	sk.end_round()
 	assert_eq(m.hull, 994, "bare, it takes both blows whole, and burns nothing: its heat went with its shield")
 	assert_eq(ms.heat, 4, "two blows banked at 2 each since the vent")
@@ -10690,7 +10691,7 @@ func test_blows_taken_while_it_reboots_bank_heat_for_the_next_blast() -> void:
 func test_a_blast_that_kills_is_its_machines_kill() -> void:
 	var sk := Skirmish.new(1, 2)
 	var m := _mech("A", Die.single(Face.attack(1, L)), 40, 100)
-	m.grant_passive(_boiler(8))
+	m.grant_passive(_boiler(2))
 	sk.add_mech(m)
 	sk.add_mech(_mech("B", Die.single(Face.blank()), 40, 100))
 	var knight := Foe.make("revenant", 3, 6)
@@ -10700,7 +10701,7 @@ func test_a_blast_that_kills_is_its_machines_kill() -> void:
 	sk.start_round()
 	sk.mechs[0].heat = 11
 	assert_true(sk.reboot_mech(0), "it reboots, and its vent fells the knight")
-	assert_false(knight.alive(), "four on a foe of three")
+	assert_false(knight.alive(), "five on a foe of three")
 	assert_eq(m.hull, 94, "the knight's last blow lands on its killer, whose shield is down")
 	assert_eq(sk.mechs[1].unit.hull, 100, "and on nobody else")
 

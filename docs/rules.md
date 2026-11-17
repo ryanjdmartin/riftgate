@@ -844,10 +844,11 @@ On a machine:
 - **Sealed** (Ability, the Polar Bear's form): equipment it spends on itself (a buff dropped on
   itself) seals it: armour +3, its own cooling stopped, 3 heat more at the end of each turn
   before the overheat, and its Cryo Flinger gains Spread (one foe open, its rank's three sealed);
-  a weapon it fires opens it. Equipment on an ally and a debuff (the Flinger's lure) leave the
-  form as it is, so the sealed shell lures and stays shut; an ally's buff on it seals nothing. Its
-  heat has one way down while it is sealed, opening, and an overheat leaves it sealed. One seal,
-  however often it seals.
+  a weapon it fires opens it, and so does a reboot: the shell and its armour go as the die
+  drops, so the seal's clock adds nothing that turn and it stands bare and open through the
+  enemy's. Equipment on an ally and a debuff (the Flinger's lure) leave the
+  form as it is, so the sealed shell lures and stays shut; an ally's buff on it seals nothing.
+  An overheat leaves it sealed. One seal, however often it seals.
   Its Lockdown also lands its weapons 1 harder on a foe carrying Cryo, open or sealed, read as
   each strike lands: the strike that meets the stacks takes the 1 and its hit spends them, so a
   later strike of the same spend lands plain.
@@ -1352,10 +1353,10 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   Penetrate 2 when aimed at the back rank and Spread 2 at the front, shown on the die over the foe
   it is dragged to. The Whip Scorpion's Thermal Ejection Manifold is its boiler: every blow a
   foe lands on it adds 2 heat (in the enemy's turn, after the overheat, so the gauge may
-  stand past its maximum), and its reboot's vent is the one that explodes. A reboot it starts
-  holding 8 heat or more opens its valves on every foe as its shield drops, front rank and
-  back: 1 each, and 1 more for each heat over 8, what stood past its maximum with the rest;
-  under 8 its vent is any machine's. One hit of its own in the player's turn, a strike on
+  stand past its maximum), and its reboot's vent is the one that explodes. A reboot opens
+  its valves on every foe as its shield drops, front rank and back: 1 each for every 2 heat
+  it sheds, whole steps alone, what stood past its maximum with the rest; with less than 2
+  its vent is any machine's. One hit of its own in the player's turn, a strike on
   each foe through its machine's adds and the foe's Brittle and armour (a Shocked one
   doubled), costing no heat, its machine's kill for what it fells. The blows it takes bare
   while it reboots bank heat that stays, the next blast's first fuel. A turn it ends with its

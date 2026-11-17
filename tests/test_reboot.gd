@@ -16,9 +16,9 @@ const MENDER := {"id": "mender", "name": "Mender", "description": "", "effects":
 ## A hull hit that stands a shield up, a gain by another road than the regen.
 const LINER := {"id": "liner", "name": "Liner", "description": "", "effects": [
 	{"trigger": "on_hull_damage", "effect": "add_shield", "value": 10}]}
-## A reboot at 8 heat or more blasts what it vents on every foe.
+## A reboot blasts what it vents on every foe, 1 for every 2 heat.
 const BOILER := {"id": "boiler", "name": "Boiler", "description": "", "effects": [
-	{"trigger": "static", "effect": "reboot_release", "value": 1, "gate": 8}]}
+	{"trigger": "static", "effect": "reboot_release", "value": 1, "per": 2}]}
 
 
 func _mech(id: int, name: String, d: Die, shield: int = 40, hull: int = 100, heat_max: int = 30) -> Unit:
@@ -222,6 +222,36 @@ func test_a_reboot_vents_what_stood_past_the_maximum_so_its_turn_burns_nothing()
 	assert_eq([ms.heat, ms.overheat_stacks(), m.shield], [0, 0, 40], "back cold and whole")
 
 
+## A reboot opens a sealed machine (Ryan, 17 November: "Polar bear unseals when rebooting. It's
+## a good change because you're never accidentally stuck sealed, and a weaponless build is
+## possible if you wanted it for some reason"): the seal and its armour go as the die drops, so
+## the seal's clock adds nothing that turn, and it comes back open. Synthetic passive.
+func test_a_reboot_opens_a_sealed_machine() -> void:
+	var m := _mech(1, "A", Die.single(Face.buff("overcharged", 1)), 40, 200, 30)
+	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
+		{"trigger": "static", "effect": "seal_form", "value": 10, "heat": 15}]})
+	var sk := _fight([m], [Foe.make("brute", 900, 25)])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	sk.start_round()
+	assert_true(sk.assign(0, null), "a buff on itself")
+	assert_true(Effects.is_sealed(m), "seals it")
+	sk.end_round()
+	assert_eq(ms.heat, 15, "sealed, it ran 15 hotter as its turn ended")
+	var hull := m.hull
+	sk.start_round()
+	assert_true(sk.can_reboot(0), "sealed, it may reboot: it is never stuck in its shell")
+	assert_true(sk.reboot_mech(0), "and does")
+	assert_false(Effects.is_sealed(m), "the reboot opens it")
+	assert_eq(m.armour, 0, "the seal's armour gone with it")
+	assert_true("\n".join(sk.log).contains("A opens as it reboots"), "the log says so")
+	sk.end_round()
+	assert_eq(ms.heat, 0, "open, the seal's clock adds nothing to the gauge it vented")
+	assert_eq(m.hull, hull - 25, "and the blow lands whole: bare, and behind no shell")
+	sk.start_round()
+	assert_false(Effects.is_sealed(m), "it comes back open")
+	assert_eq(m.shield, 40, "and whole")
+
+
 ## One vent, at the drop: heat that lands on a machine while it reboots is its own, there as the
 ## next round opens, and what it carries past its maximum as the turn ends burns like any
 ## machine's. A session's read where his words give none (17 November), his to overrule.
@@ -371,13 +401,13 @@ func test_a_reboots_vent_explodes_and_an_unspent_die_releases_nothing() -> void:
 	sk.end_round()
 	var hp := foe.hp
 	sk.start_round()
-	assert_eq(ms.heat, 10, "ten held, past its valve's gate")
+	assert_eq(ms.heat, 10, "ten held")
 	sk.end_round()
 	assert_eq(foe.hp, hp, "a turn it ends with its die unspent opens no valve")
 	assert_true(sk.releases.is_empty(), "nothing released")
 	sk.start_round()
 	assert_true(sk.reboot_mech(0), "it reboots")
-	assert_eq(foe.hp, hp - 3, "and its vent lands on the foe at once: 1 at eight and 1 more for each heat over")
+	assert_eq(foe.hp, hp - 5, "and its vent lands on the foe at once: 1 for every 2 heat it sheds")
 	assert_eq(ms.heat, 0, "left cold")
 	assert_eq(sk.releases.size(), 1, "the screen is told")
 

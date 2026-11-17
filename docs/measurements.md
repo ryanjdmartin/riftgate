@@ -10445,3 +10445,33 @@ now nine reboots in ten are a blast. Fights run a little shorter and the squad l
 less hull. So the swap makes it stronger as the bot plays it, and the burst he names is the
 player's to find, by riding past the maximum for a bigger one against the burn. Its heat
 maximum is his first lever if the stroke outdoes the area machines (the bible's row).
+
+### The same read with no gate, 1 for every 2 heat
+
+Ryan, the same day: "remove the 8 heat minimum. Set it to 1 damage to all enemies for every X
+heat, your call." X is 2: 7 on every foe at its maximum of 14, the gated number's own there.
+The same probe on the working tree, the same squad, formations and seeds; every fight won.
+
+| Formation | Rounds | Squad hull lost | Its reboots a fight | Blasts a fight | Hit points a blast | Its heat at a blast |
+|---|---|---|---|---|---|---|
+| Goblin horde, tier one | 3.0 | 2% | 1.00 | 0.99 | 19.5 | 9.9 |
+| Grave throng, tier one | 2.5 | 1% | 1.02 | 1.02 | 21.5 | 9.1 |
+| Ember pyre, tier one | 2.9 | 4% | 0.98 | 0.97 | 22.0 | 10.2 |
+| Needler thicket, tier one | 2.8 | 1% | 0.88 | 0.87 | 18.1 | 8.4 |
+| Guard horde, tier two | 3.0 | 3% | 0.91 | 0.90 | 17.6 | 8.8 |
+| Barbed swarm, tier two | 2.8 | 1% | 0.73 | 0.73 | 14.2 | 9.6 |
+| Treant march, tier two | 8.0 | 14% | 2.01 | 1.58 | 7.9 | 10.1 |
+
+A direction. The bot blasts sooner, at 8 to 10 heat where the gated one waited for 12 or 13,
+for about the same hit points a blast, and about once a fight where it was 0.5 to 1.0. Fights
+run 0.2 to 0.7 of a round shorter than the gated blast's. So it is stronger again as the bot
+plays it, by coming a round earlier. What the formula changes by heat, for his judging:
+
+| Its heat as it reboots | 4 | 8 | 10 | 12 | 14, its maximum | 16 | 20 |
+|---|---|---|---|---|---|---|---|
+| The gated blast, on every foe | 0 | 1 | 3 | 5 | 7 | 9 | 13 |
+| 1 for every 2 heat | 2 | 4 | 5 | 6 | 7 | 8 | 10 |
+
+It pays more below the maximum and the same at it, and half as much for each heat ridden
+past it. So a blast is worth taking early, and riding the burn for a bigger one buys less than
+it did.

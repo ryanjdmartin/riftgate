@@ -2340,14 +2340,14 @@ static func heat_per_blow(u) -> int:
 ## What a machine's reboot blasts as its heat vents (reboot_release, static; the Whip Scorpion's
 ## Thermal Ejection Manifold, Ryan, 12 November: "1 damage to each enemy, increased by 1 for each
 ## heat over 8"; 17 November, on the reboot's vent in place of a passed turn: "the reboot vent is
-## the one that explodes"): {value: what every foe takes at the gate, gate: the heat it needs to
-## fire, id: the passive's, which its model's firing is keyed by (the broadside,
-## MechRig.fire_act)}, a point more for each heat past the gate (Skirmish.release_shot). Empty
-## for a machine whose vent blasts nothing.
+## the one that explodes"; no gate since the same day, "1 damage to all enemies for every X
+## heat"): {value: what every foe takes a step, per: the heat a step, id: the passive's, which
+## its model's firing is keyed by (the broadside, MechRig.fire_act)} (Skirmish.release_shot).
+## Empty for a machine whose vent blasts nothing.
 static func reboot_release(u) -> Dictionary:
 	for pair in _taking_part(u, "static", null):
 		if str(pair[0].get("effect", "")) == "reboot_release":
-			return {"value": int(pair[0].get("value", 1)), "gate": int(pair[0].get("gate", 1)), "id": str(pair[1].id)}
+			return {"value": int(pair[0].get("value", 1)), "per": maxi(1, int(pair[0].get("per", 1))), "id": str(pair[1].id)}
 	return {}
 
 
@@ -2642,7 +2642,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
 		"fold_die": body = "its die is two batteries of %s, one up at a time with its fixed pieces; the battery up stays up from fight to fight, and a battle opens on the first" % vs
 		"rewrite_weapon": body = "every weapon and equipment it aims at a foe fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
-		"reboot_release": body = "a reboot it starts holding %d heat or more blasts what it vents: %s on every foe, 1 more for each heat over %d" % [int(eff.get("gate", 1)), vs, int(eff.get("gate", 1))]
+		"reboot_release": body = "a reboot blasts what it vents: %s on every foe for every %d heat" % [vs, maxi(1, int(eff.get("per", 1)))]
 		"shove_behind": body = "damaging a foe in the front rank deals %s%% of its maximum HP, rounded up, to the foe behind it" % vs
 		"hold_status": body = "its %s does not decay" % str(STATUS.get(str(v), {}).get("name", v))
 		"hold_all": body = "no %s decays this round, any unit's" % str(STATUS.get(str(v), {}).get("name", v))

@@ -54,7 +54,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1266 tests, 373,079 checks, green on `ccr-722ca9f0-yj8na3` (17 November, his
+- Tests: 1267 tests, 373,091 checks, green on `ccr-722ca9f0-yj8na3` (17 November, his
+  eighteenth round's first two: a reboot opens the Polar Bear's seal, the Whip Scorpion's
+  blast with no gate, over main at `0565624`). Before it, 1266 tests, 373,079 checks, green on
+  the same branch (17 November, his
   seventeenth round: the reboot's vent at the drop, the Whip Scorpion's blast on it, a last
   act's blow on its killer, over main at `7beb2b4`). Before it, 1264 tests, 373,061 checks,
   green on the same branch (17 November, his fifteenth
@@ -495,7 +498,7 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   all those exceptions and code branches that it caused"; the bible's Sweep row):
   the reach, its spots and per-shot rules, the wasted shot and the rank's bracket, the bot's two
   special paths and the salvo's routine; every weapon is one shape. Every Foe is a weapon's mode
-  too, for the Whip Scorpion's release (1 on every foe at 8 heat, 1 more for each heat over) and
+  too, for the Whip Scorpion's release (1 on every foe for every 2 heat as it reboots, since 17 November) and
   the Musk Ox's salvo (a stand-in behind 8 ammo, its own session's), each foe struck as its own
   target, so a Shock on any is doubled and spent. The Flechette Pod is four strikes of 1; Ricochet hits its weapon's target alone, his text of that day. A first direction on the placeholder
   numbers is in `docs/measurements.md` (each alone on the patrols, 30 seeds, the old kit beside
@@ -2137,16 +2140,21 @@ numbers placeholders; the Captain keeps his name and his kit, and tier three's n
 aside on his word. **Three rulings of 17 November are built** (his sixteenth and seventeenth
 rounds; the proposal's sections 32 and 33). A reboot's heat goes as its shield drops, so its
 turn burns nothing (Start here). The Whip Scorpion's release is that vent (his find: "the
-reboot vent is the one that explodes"): rebooting at 8 heat or more it blasts every foe in
-the player's own turn, and the release on a passed turn is gone from the engine with the
-pass itself; the bot reboots for the blast by a first heuristic, and a first read has it
-blasting two to four times as often as it released, for about the same a blast, since every
-reboot it made for nothing is a blast now (`docs/measurements.md`, a direction). And a dying foe's
+reboot vent is the one that explodes"): a reboot blasts every foe in the player's own turn, 1
+for every 2 heat it sheds with no gate (his eighteenth round: "remove the 8 heat minimum. Set
+it to 1 damage to all enemies for every X heat, your call"; 2 a session's pick, 7 at its
+maximum of 14 as the gate gave), and the release on a passed turn is gone from the engine
+with the pass itself; the bot reboots for the blast by a first heuristic, and a read has it
+blasting about once a fight at 8 to 10 heat, a round sooner than the gated blast and for
+about the same (`docs/measurements.md`, a direction; his to judge in play, the to-do's line).
+A dying foe's
 single blow lands on the machine that made the kill, as its curse does ("yes, hit its killer,
 if it has one"), which leaves the pick a move at nobody draws with no reader: it goes with
-the targeting build. Still his (the bible's section 12): the marks on the rows; which gathers
-stay beside the Roc's and the bombs', the Great Needler's by lean; Aloft's name; whether a
-sealed Polar Bear may reboot; and the page on targeting. His codex cleanup and
+the targeting build. **A reboot opens a sealed Polar Bear** (his eighteenth round: "Polar bear
+unseals when rebooting. It's a good change because you're never accidentally stuck sealed"):
+the shell and its armour go as the die drops. Still his (the bible's section 12): the marks
+on the rows; which gathers
+stay beside the Roc's and the bombs', the Great Needler's by lean; and Aloft's name. His codex cleanup and
 terminology pass is a session of his own after this work (the to-do's line keeps what was
 found for it). On his word: the engine for a foe's Phased and
 for an immunity, the targeting build, then the rest of the content and a read of what

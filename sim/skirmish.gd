@@ -2481,15 +2481,19 @@ func end_round() -> int:
 
 
 ## The blow a machine's reboot lands on every foe as its heat vents (the Whip Scorpion's Thermal
-## Ejection Manifold; Ryan, 12 November: "1 damage to each enemy, increased by 1 for each heat
-## over 8"; 17 November: "the reboot vent is the one that explodes"): its passive's number at the
-## gate and a point more for each heat it holds past it. Null for a machine whose vent blasts
-## nothing, or one holding less than the gate. Read before the heat goes.
+## Ejection Manifold; Ryan, 17 November: "the reboot vent is the one that explodes"; and, of the
+## gate of 8 heat it had from 12 November, "remove the 8 heat minimum. Set it to 1 damage to
+## all enemies for every X heat, your call. Far more intuitive I think, and more flexible"): its
+## passive's number for every `per` heat it holds, whole steps alone. Null for a machine whose
+## vent blasts nothing, or one holding less than a step. Read before the heat goes.
 func release_shot(ms: MechState) -> Face:
 	var rule := Effects.reboot_release(ms.unit) if ms != null else {}
-	if rule.is_empty() or ms.heat < int(rule["gate"]):
+	if rule.is_empty():
 		return null
-	return Face.attack(int(rule["value"]) + ms.heat - int(rule["gate"]), Face.Reach.EVERY_FOE)
+	var power := int(rule["value"]) * int(ms.heat / maxi(1, int(rule["per"])))
+	if power <= 0:
+		return null
+	return Face.attack(power, Face.Reach.EVERY_FOE)
 
 
 ## A reboot's vent that explodes (the Whip Scorpion's; Ryan, 17 November, in place of the release
@@ -2498,7 +2502,7 @@ func release_shot(ms: MechState) -> Face:
 ## think it's ok"): the heat a machine sheds as its shield drops lands on every foe, `shot` as
 ## release_shot read it before the heat went. One hit, a weapon's, striking every foe (_hit),
 ## costing no heat of its own, its machine's kill for what it fells; the fight it decides ends
-## there. Under its gate the vent is every machine's, and blasts nothing.
+## there. With less heat than a step of its rule the vent is every machine's, and blasts nothing.
 func _vent_blast(i: int, ms: MechState, shot: Face, fired: int) -> void:
 	var standing := field_foes().filter(func(foe: Foe) -> bool: return foe.alive())
 	if shot == null or standing.is_empty() or outcome != Outcome.NONE:
@@ -5356,7 +5360,7 @@ func can_reboot(mech_index: int) -> bool:
 ## not hurting the mech"; "Maybe the heat gets shunted when the shield gets taken down?"), and it
 ## is free to overheat again. It stands bare through the enemy's turn, and as the next round
 ## opens its shield is whole (_recover). Heat laid on it after the vent stays: one vent, at the
-## drop. A vent that explodes lands on every foe (_vent_blast, the Whip Scorpion's). No pass, no
+## drop. A sealed machine opens. A vent that explodes lands on every foe (_vent_blast, the Whip Scorpion's). No pass, no
 ## entry spent and no shield gain, so nothing that reads one fires. The undo takes it back like a
 ## spend, a blast and what it felled with it. False when it may not (can_reboot).
 func reboot_mech(mech_index: int) -> bool:
@@ -5373,6 +5377,13 @@ func reboot_mech(mech_index: int) -> bool:
 	var dropped := ms.unit.shield
 	ms.unit.shield = 0
 	_note_break(ms)
+	# A reboot opens a sealed machine (Ryan, 17 November: "Polar bear unseals when rebooting.
+	# It's a good change because you're never accidentally stuck sealed, and a weaponless build
+	# is possible if you wanted it for some reason"): the shell and its armour go at the drop,
+	# so the seal's clock adds nothing this turn and every seal ends on one soft turn.
+	if Effects.is_sealed(ms.unit):
+		Effects.remove(ms.unit, "sealed")
+		log.append("%s opens as it reboots" % ms.unit.display_name)
 	var vented := ms.heat
 	var shot := release_shot(ms)   # read while it holds its heat
 	ms.heat = 0
