@@ -1512,8 +1512,8 @@ cited there was two rounds dark, not one).
    out of an order.
 7. The Storm Petrel. The reads used it as it is built, zapping for the shield its guns burn,
    4 or 5 a shot under heat's prices. His direction of 11 November takes the zap off it and
-   gives it shield for heat gained (`kestrel_storm_petrel.md`), and that session waited on
-   the heat pass, which has landed. Two of the three squads in the whole-battle reads carry
+   gives it shield for heat gained; it landed on 17 November (the bible's Storm Petrel row; its
+   brief retired, `git show ca717bd:docs/briefs/kestrel_storm_petrel.md`). Two of the three squads in the whole-battle reads carry
    it; the third, without it, reads the same band.
 
 **The plan from here**: his word on the machine's rest and on the first battle's block; then

@@ -11,13 +11,15 @@ out whole, with its context, and read as a whole against the system (his second 
 day: "we need to evaluate the kit as a whole against the new system and not just repair the
 deltas"). It builds nothing and moves nothing in content; two of its machines were settled on
 main the same day by his own rulings in another session (the Polar Bear, the Whip Scorpion), and
-the Storm Petrel's direction is locked on his word. It retires once its calls are rows and content.
+the Storm Petrel landed the same day on his word, with his upgrade branches (the bible's Storm
+Petrel row; its kit below is the form it was read in). It retires once its calls are rows and
+content.
 
 ## The whole of it
 
 | The machine | The kit as a whole, under the system | Open |
 |---|---|---|
-| Storm Petrel | As built, a striker that shoots through its own shield; the locked direction fits, its clock its fuel and the overheat its cap | Its finalization: the hook's rate, its lock, its stock (the Shoring Jack does next to nothing on it) |
+| Storm Petrel | Landed 17 November: the hook a point of shield a point of heat, its lure run hot, the Arc Fault Cannon in the Shoring Jack's slot, his branches Defence and Striker (the bible's row) | His play of it, and his marks on the branches' texts |
 | Buzzard | As built, a heat engine with its own regen and its own dump, so the reboot is optional for it; the settled form trades the dump for a shield spend and fits | Build the settled form; its last point; its stock's heat |
 | Needletail | Two actions a round cost two actions' heat and the reboot takes both: it fires less than a plain machine | Its heat budget for two actions, and his "dull" |
 | Skua | Its ramp lives behind a shield that lasts a cycle, and every cycle ends bare | Whether its ramp is for a cycle or a fight |
@@ -559,8 +561,8 @@ in formations and nothing against a lone boss.
 
 ## What is his
 
-1. Storm Petrel: its finalization (leans: a point of shield a point of heat, its lock a lure that
-   runs hot), then landed.
+1. Storm Petrel: landed 17 November on his "Your verdict leans are solid", with his branches
+   (the bible's row; `docs/measurements.md`, the same day, reads the four builds).
 2. Buzzard: the settled form built; the last point kept (lean); its stock's heat.
 3. Needletail: its heat budget sized for two actions, or the kit rethought.
 4. Skua: its ramp for a cycle or for a fight.

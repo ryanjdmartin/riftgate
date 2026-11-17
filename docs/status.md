@@ -54,7 +54,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1277 tests, 373,471 checks, green on `ccr-722ca9f0-yj8na3` (17 November, the
+- Tests: 1277 tests, 373,515 checks, green on `ccr-178e0404-ptuh2m` (17 November, the Storm
+  Petrel landed whole with the first upgrade branches, over main at `f8fb28b`). Before it, 1277
+  tests, 373,471 checks, green on `ccr-722ca9f0-yj8na3` (17 November, the
   bench's read and a ghost's intent, over main at `6fd975e`). Before it, 1277 tests, 373,464
   checks, green on the same branch (17 November, a foe's
   immunities, the bench's last rows, over the same main). Before it, 1275 tests, 373,417
@@ -178,12 +180,11 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 
 Everything is on main as of 13 November 2026; the formation and refit session's branch lands as it goes, below.
 `ccr-178e0404-ptuh2m`, the reboot machines' session's (17 November), cut from main at `7beb2b4`
-and brought up to `f475a59` as main took his seventeenth and eighteenth rounds (the vent at the
-drop, the Scorpion's blast, the bear's seal opened by its reboot) and the targeting: the refit
-brief's section 22 list read again, every kit written out whole against the system
-(`docs/reboot_machines_proposal.md`) with its probe (`tools/reboot_probe.gd`), and the Storm
-Petrel's direction locked in the bible (v0.619, its page republished on his word); no engine or
-content moved; main takes it on his word.
+and brought up to `f8fb28b` as main moved: the refit brief's section 22 list read again, every
+kit written out whole against the system (`docs/reboot_machines_proposal.md`) with its probe
+(`tools/reboot_probe.gd`), and the Storm Petrel landed whole on his "Your verdict leans are
+solid" with his two upgrade branches, the first built (How things stand, below). It goes to main
+as a fast-forward on his "land it and push it to main" (17 November).
 `ccr-1e6e6571-7x7ayr`, the map session's, restarted from main at `e26589f` on 16 November (its
 earlier work all on main): the painted walls as joined ranges, the painted world at the 3D map's
 heights, and Ryan's three rounds of notes of 16 November, the quick fixes, the shapes, the
@@ -403,7 +404,7 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   word, on its base regen of one). His directions are at each brief's head: the Whip Scorpion's
   role first, from a role map of the roster; the Swallowtail punted until its niche is carved;
   the Puffin a heat mover, tier two his lean; and two reworks with briefs of their own, still
-  dealt: the Storm Petrel (shield as it gains heat, after the heat pass) and the Nemesis (a rage
+  dealt: the Storm Petrel (shield as it gains heat, landed 17 November) and the Nemesis (a rage
   bar that breaches, a tank buster). The Ammit's stock wants a Ward piece (the to-do). The holes
   raised on each are in its brief with his answers of the same day (the Puffin's dump allies
   only; the Petrel's hook from any source, its zap a piece that spends shield into a blow; the
@@ -1193,9 +1194,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   what-if it cited for the cooldown was two rounds dark, not one (the cooldown's count had
   changed on main the same day), and the Gargantuan King's twenty-round fight is no matter
   of heat, the squad blocking and bracing where it could fire because a round costs it
-  nothing. The Storm Petrel in these reads is the machine as built, zap and all; his
-  direction of 11 November takes the zap off it, and that session waited on the heat pass,
-  which has landed. Open, his: the Barrier's place, the discussion he opened the same day
+  nothing. The Storm Petrel in these reads is the machine as built then, zap and all; its
+  rework landed on 17 November. Open, his: the Barrier's place, the discussion he opened the same day
   ("Is it toxic? Is it worse than giving numerical shield? Should it be rare or locked? An
   argument could be made that a chassis with barrier is a sub for a Tank on a team"). The
   reads: a Barrier takes seven blows in ten from a foe whose kit is one blow a round and one
@@ -1827,7 +1827,7 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   Sweep's shots queued as the spend begins, a pair's halves a spot each, each shot judged on its
   own; the enemy's turn checks death after every foe and stops the moment the fight is decided;
   the Goblin Nob's rage its own from the start; Guarded on the die, the bot and the ticks;
-  Scorched on the bar, never the ammo or the Storm Petrel's shield; a countdown shown at the fight
+  Scorched on the bar, never the ammo; a countdown shown at the fight
   as it stands; a Purge takes N stacks of every buff whatever granted them, on both sides, and a
   unit's own mechanic is an Ability on a chip of its own that no Purge touches
   (`RIFTGATE_ABILITY_DEBUG=1`); the Musk Ox reloads once, the greater; every roll inside the
@@ -1858,8 +1858,8 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   wasted shot, and a Skua read (the to-do).
 - **The die's standard face** (2 to 4 November): one main mark holding what the entry delivers,
   whom it reaches under it, the costs along the foot, keywords down the edge, a passive box at
-  the edge's foot for what the machine's passive adds (the Storm Petrel's zap, the Whip
-  Scorpion's blast, the Cassowary's next chamber); Every Foe, Every Ally and Every Other Ally as
+  the edge's foot for what the machine's passive adds (the Skua's Ricochet, the Cassowary's
+  next chamber); Every Foe, Every Ally and Every Other Ally as
   targeting modes with marks of their own, never keywords, so a Silence leaves them whole (Ryan,
   4 November: "Silence should not narrow targeting modes"); Sweep's mark lobbed with a line of
   fire rising for each column; the readouts headed by the die's marks; gauges with ticks; strikes landing one at a time; the
@@ -1905,9 +1905,17 @@ section 12 lists what is built and what waits. The campaign's rules run headless
 - **The Honey Badger's hopper** (31 October): a load a foe its weapons damage, four at most,
   every two loads a stack of Armoured, granted as each round opens (10 November; the Ore Plate before it), the first buff a store grants; "never destroyed" is the
   Reinforced Skeleton module. Read at 30 seeds, Ryan's second fallback landed.
-- **The Petrels** (30 October): the Storm Petrel's shield pays its weapons' heat and zaps the
-  target for what it paid; the Giant Petrel banks rerolls and buys an ally's action. Both
-  fielded; the Storm Petrel is in Kestrel's tender.
+- **The Petrels**: the Storm Petrel, Kestrel's tank by shield since 17 November (Ryan's
+  direction of 11 November, locked and landed that day): its plate while the shield stands, a
+  point of shield for every point of heat it gains from any source, its lure run hot (heat 3,
+  its Regenerating gone with the machine half of that status), the Arc Fault Cannon in the
+  Shoring Jack's slot, and his two upgrade branches, the first built (Defence: Hardened, a new
+  machine buff, then Spread with a stack for each foe lured; Striker: Charged 2, then Chain 3,
+  a debuff's Chain arcing plain and carrying the lure); a branch is a passive of its own scoped
+  to the locked piece (the rules' Branches), the harness picks a build (UPG under a machine's
+  hardpoints) and a run buys none until a machine holds a tier. The Giant Petrel banks rerolls
+  and buys an ally's action (30 October). Both fielded; the Storm Petrel is in Kestrel's
+  tender.
 - **The bosses' slate** (30 October to 2 November): the slate's bosses as runnable placeholder
   kits with their own escorts at tiers two and three, the stand-ins demoted to the ranks with
   recolour lines; a follow-up, a steal, a swallow, a merge, a drain, a grudge, a part's
@@ -2232,8 +2240,9 @@ guns were priced against a cooling of 2 the reboot removes; some foes took "a sh
 many", which a vanilla of 2 does on a fifth of tier one's formation slots. Beside them, his: the
 machines the rule reaches, read again on 17 November with each one played by the bot and a first
 round of fixes for his marks (`docs/reboot_machines_proposal.md`, on his "I want to examine the
-chassis that broke during the huge change to heat and shield and work on fixing them"): the
-Storm Petrel's direction and the Buzzard's settled form built, the Kite's kill mending a broken
+chassis that broke during the huge change to heat and shield and work on fixing them"; the
+Storm Petrel landed from it on 17 November with his branches): the Buzzard's settled form
+built, the Kite's kill mending a broken
 shield, the Puffin's first round and the Swallowtail's niche as the team's pit crew, the
 Needletail's maximum, and the clause "its own cooling stopped" off the Polar Bear's text. The
 Polar Bear's reboot opening its seal and the Whip Scorpion's rework were his the same day and are
@@ -2340,10 +2349,10 @@ commands are in `README.md`.
   that leaned on them, the triangle row's heat prices, the anchor's tier-one lines, Reset let go,
   the Barrier's cooldown and place, the shield's worth and the grant withdrawn, tier as a
   machine's word, and the looks row's Kite for its shipped mount. BASE for the next merge is
-  `620c717`'s file. Main's file is v0.569 since
-  `ccr-722ca9f0-yj8na3` landed again the same day (section 12's breaking shield, his idea of 13
-  November read as a what-if, and the method his question set), unpublished, its republish on
-  Ryan's word. The
+  `620c717`'s file. The last publish this file knows of is v0.619 (17 November, from
+  `ccr-178e0404-ptuh2m`, the Storm Petrel's direction locked, on his word); main's file is v0.621
+  since that branch landed the Storm Petrel and its branches the same day, unpublished, its
+  republish on Ryan's word. The
   live page may carry rows ahead of main's code while a branch has not landed. Before
   republishing, read the live page; if another session moved it, publish a three-way merge onto
   it row by row (`tools/pages/bible_merge.py`: BASE the last publish both started from, OURS

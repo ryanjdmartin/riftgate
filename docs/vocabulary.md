@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 192 implemented, 6 planned, 0 idea.
+Status: 193 implemented, 6 planned, 0 idea.
 
 ## Resource
 

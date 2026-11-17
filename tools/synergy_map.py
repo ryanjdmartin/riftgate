@@ -56,7 +56,8 @@ CURRENCIES = OrderedDict([
     ("ricochet", ("Ricochet", "on a machine")),
     ("phased", ("Phased", "on a machine")),
     ("sealed", ("Sealed", "on a machine")),
-    ("regenerating", ("Regenerating", "on a machine")),
+    ("hardened", ("Hardened", "on a machine")),
+    ("charged", ("Charged", "on a machine")),
     ("ablating_mech", ("Ablating", "on a machine")),
     ("brittled_mech", ("Brittle", "on a machine")),
     ("exposure_mech", ("Exposed", "on a machine")),
@@ -87,7 +88,7 @@ KEYWORDS = {
     "ablate": [("ablating", "sets")], "shock": [("shocked", "sets")], "suppress": [("suppressed", "sets")],
     "cryo": [("cryoed", "sets")], "brittle": [("brittled", "sets")],
     "expose": [("exposure", "sets")], "lure": [("lure", "sets")], "disrupt": [("disrupt", "sets")],
-    "chain": [("kill", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")],
+    "chain": [("shocked", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")],
     "dispel": [("foe_buff", "reads")],
     "cleanse": [("ablating_mech", "reads"), ("brittled_mech", "reads"), ("exposure_mech", "reads"), ("scorched", "reads"), ("disabled", "reads"), ("corrupted", "reads")],
     "rapid": [], "instant": [], "every_foe": [], "every_ally": [],
@@ -159,7 +160,8 @@ ENGINE_READERS = {
     "ricochet": ["a strike of 1 more a stack at the target once a weapon has fired: most on riders a strike and on flat buffs; hull damage halves it"],
     "phased": ["granted as the round ends: out of reach of both sides through the next, and it acts"],
     "sealed": ["armour +3, cooling stopped, 3 heat a turn"],
-    "regenerating": ["a point of shield a stack as the round opens, then a stack fades"],
+    "hardened": ["while its shield stands, every blow on it loses 1 a stack, until its next turn starts"],
+    "charged": ["its weapons fire with Shock, a stack a fire"],
     "ablating_mech": ["its tick: 1 shield a stack at the turn's end, then hull, past armour and a Barrier"],
     "brittled_mech": ["every blow it takes, +1 a stack; halves as its turn starts"],
     "exposure_mech": ["its armour counts for nothing, and the next round's targeted moves turn on it until the blows drawn would wreck it"],
@@ -405,7 +407,7 @@ def render(m):
                 unique.append(label)
             if len(sl) == 1:
                 holes.append("**%s** has one slottable setter, %s." % (label, word(sl[0])))
-            if not readers and cur not in ("suppressed", "webbed", "disrupt", "swap", "phased", "barrier", "ward", "sealed", "regenerating",
+            if not readers and cur not in ("suppressed", "webbed", "disrupt", "swap", "phased", "barrier", "ward", "sealed", "hardened",
                                            "spun_up", "ricochet", "braced", "vitriol", "mine", "paradox", "lure"):
                 holes.append("**%s** is read by nothing but its own effect." % label)
     L.append("")

@@ -25,8 +25,9 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   - `skirmish.gd` the dice skirmish: two-rank enemy formation fed from a pool, reach rules,
     keywords, heat, shields, destroyed components, outcome
   - `loadouts.gd` sample dice and packs for prototypes and tests
-  - `harness_setup.gd` what the harness launches (team, loadouts, a battle as a run deals it,
-    a fight, seed, map shape), built into a battle or a skirmish, kept between launches
+  - `harness_setup.gd` what the harness launches (team, loadouts, modules and upgrade picks, a
+    battle as a run deals it, a fight, seed, map shape), built into a battle or a skirmish, kept
+    between launches
   - `policy.gd` a player for the headless skirmish, a ladder of skill (random, blind, greedy,
     and a planner that rolls each decision out two rounds) with personas on top, so balance can
     be measured over thousands of fights
@@ -59,7 +60,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
 - `game/` — scenes and presentation.
   - `harness.tscn` is the main scene, four tabs over launch buttons that stay put: TEAM
     (who deploys, in the order ticked, and each machine's hardpoints, any component on any
-    hardpoint), BATTLE (a battle as a run deals it: the domain, which of its bosses, a guest
+    hardpoint, its modules, and its upgrades' build on the UPG line for a chassis with branches,
+    the Storm Petrel's first), BATTLE (a battle as a run deals it: the domain, which of its bosses, a guest
     domain, the tier and the ramp), FIGHT (a composition picked by its domain, tier and threat
     rating, fought alone with its layout; or one unit by hand, loaded from a faction and edited
     from there: the packs' foes as one pack, or a boss at the tier with them as its escort, its own
@@ -114,7 +116,8 @@ questions only Ryan can settle, and the order of work is `docs/status.md`'s.
   row with its damage carried, for the quick campaign (`chain_probe_read.py` reads its parts);
   `reboot_probe.gd` fields each chassis first in a squad beside three the reboot does not reach
   and counts its turns given to a reboot, stood bare and sealed, its burns, blasts and wrecks,
-  with the open leans of `docs/reboot_machines_proposal.md` as what-ifs;
+  with the open leans of `docs/reboot_machines_proposal.md` as what-ifs and a machine's upgrade
+  picks (`--branches`);
   `quick_run.gd` plays whole quick campaigns and writes `docs/quick_run.md`; `behaviour_trace.gd`
   records the skirmish engine byte for byte over 2,988 seeded fights, for a refactor that must
   change nothing to be compared against main's (the skirmish code audit's steps); `endgame_fours.py`
@@ -440,9 +443,11 @@ perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/special_prob
 python3 tools/special_probe_read.py build
 # the machines the reboot reaches, one at a time (17 November, docs/reboot_machines_proposal.md): each chassis first in
 # a squad beside the Honey Badger, the Prairie Dog and the Cassowary, tier one's formations and elites or (--bosses)
-# its bosses alone; --only narrows the roster, --whatif petrel|petrel_hot|kite_bot|kite_mends lays a lean
-# over the fight; four in parallel, a part of the roster each, about seven minutes
+# its bosses alone; --only narrows the roster, --whatif kite_bot|kite_mends lays a lean over the fight,
+# --branches defence,striker fields the machine read with those upgrade picks (the directions in the order
+# taken, where its chassis allows them); four in parallel, a part of the roster each, about seven minutes
 perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/reboot_probe.gd -- --seeds 8 --only polar_bear,storm_petrel,kite
+perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/reboot_probe.gd -- --bosses --seeds 6 --only storm_petrel --branches striker,striker
 perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/reboot_probe.gd -- --bosses --seeds 6 --only kite --whatif kite_mends
 # formations back to back (25 October, docs/quick_campaign_proposal.md): every starter trio (or four: --squads fours,
 # or a JSON file of squads, as endgame_fours.py --json prints the endgame fours) against one domain's formation up

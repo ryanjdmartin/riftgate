@@ -10631,3 +10631,43 @@ A direction, at 120 fights. Three things show.
 The rest sit inside noise. Two rows cannot show their change at all: the Pilgrim's
 immunity, since this squad carries no stun, and the Tyrant's and the Colossus's, whose
 fights no row here holds. Nor do the Thief and the Cleric, which stand in their finals.
+
+## 17 November: the Storm Petrel as landed, and its four builds
+
+Ryan, 17 November: "Storm Petrel: Your verdict leans are solid. We need upgrade branches since
+this is tier 1 ... Adjust the stock as you see fit, then land it and push it to main." The
+decision it informs: none of his; it is the read of the landing, and of whether a build breaks
+anything, the bot's play of the branches being a first heuristic (Hardened read as shield stood
+up against the blows its lure draws, Charged as its own blow again).
+
+`tools/reboot_probe.gd` (`--branches` since the same day), as in the entry above: the Storm
+Petrel first in a squad of four beside the Honey Badger, the Prairie Dog and the Cassowary, the
+greedy bot. Tier one's formations and elites, 21 compositions at 8 seeds (168 fights, `--seeds
+8`), and tier one's bosses alone, 13 at 6 seeds (78, `--bosses --seeds 6`), on
+`ccr-178e0404-ptuh2m` over main at `f8fb28b`. As landed: the hook a point of shield a point of
+heat, the plate, the lure at heat 3, the Arc Fault Cannon in the Shoring Jack's slot. Of the
+machine's turns, the share it gave to a reboot and the share it stood bare of shield as the
+enemy struck; its own hull lost (a share of its own), its fights wrecked, the squad's hull lost.
+
+| The build | Formations: rebooted, bare, own hull | Bosses: rounds, won | Bosses: rebooted, bare | Bosses: own hull, wrecked, squad |
+|---|---|---|---|---|
+| None, the stock as landed | 20%, 22%, 4% | 9.8, 99% | 26%, 30% | 28%, 6%, 23% |
+| Defence twice (Hardened, then Spread and a stack a foe lured) | 21%, 22%, 3% | 9.9, 97% | 25%, 28% | 26%, 8%, 25% |
+| Striker twice (Charged 2, then Chain 3) | 19%, 20%, 5% | 9.1, 100% | 24%, 27% | 27%, 8%, 23% |
+| Mixed (Hardened and Charged 2) | 19%, 20%, 4% | 9.1, 100% | 23%, 26% | 23%, 3%, 22% |
+
+Beside the entry above (the machine as built before it: bosses bare 42%, own hull 33%, wrecked
+10%, 8.3 rounds), read across two commits and so a direction only: the landed Petrel stands bare
+against a boss on 30% of its turns where it stood bare on 42%, gives a quarter of its turns to
+the reboot where it gave a sixth (its guns heat the gauge now, where they once burnt the shield),
+and its boss fights run a round and a half longer without the zap. Every formation was won, in
+five rounds or so, the squad losing 5% or 6% of its hull.
+
+What it says, at 78 fights a build against the bosses, a direction. No build breaks anything:
+every one wins its formations and all but three of 312 boss fights. The Striker's two shorten a
+boss fight by about two thirds of a round, its Charged shocking the next fires and the Arc Fault
+Cannon and the lure's arcs cashing them. The Defence's two take two points off the machine's
+own hull lost and add a wreck, inside this sample's noise: its Spread reaches only the foes
+beside the target in its rank, so Hardened passes one stack only where a rank holds two or
+three, and the bot weighs Hardened by a placeholder. The mixed build reads best on the
+machine's own hull and wrecks, two of 78, at the edge of what 78 fights can say. A pick share or a band waits for the runner and his play.
