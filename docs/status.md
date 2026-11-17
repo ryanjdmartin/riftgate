@@ -2094,9 +2094,10 @@ the drains took, through the round they shortened. The five moves say it in thei
 and no keyword names it.
 **A fall is a short list of steps** (16 November, his mark of 15 November: "foes who, say
 buff others on death, or debuff on death"; the engine alone, the rules' A last act): a death
-blow or one special in its place, then what it does also. Its blow lands on the foe's own
-pick, and a curse on the machine that made the kill (his thirteenth round: "it should apply
-to the killer, and the dodge is ablating it"), nobody when a tick did. No foe carries more
+blow or one special in its place, then what it does also. What it aims at one machine lands
+on the machine that made the kill, its curse (his thirteenth round: "it should apply to the
+killer, and the dodge is ablating it") and its single blow (17 November: "yes, hit its
+killer, if it has one"), nobody when a tick did. No foe carries more
 than a blow: the carriers are the bench's.
 **An elite holds any mechanic at any tier, as a boss can** (the same round): the tier a rule
 names, Exposed's tier two, holds the rank and file alone. **Phased foes act.**
