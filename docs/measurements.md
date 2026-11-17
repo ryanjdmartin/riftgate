@@ -10671,3 +10671,91 @@ own hull lost and add a wreck, inside this sample's noise: its Spread reaches on
 beside the target in its rank, so Hardened passes one stack only where a rank holds two or
 three, and the bot weighs Hardened by a placeholder. The mixed build reads best on the
 machine's own hull and wrecks, two of 78, at the edge of what 78 fights can say. A pick share or a band waits for the runner and his play.
+
+## 17 November: the bot reads every step of a foe's move, and the anchor read again as the baseline the sizing starts from
+
+Two reads the same evening, on main at `2ee770b` with the bot's new pricing (`96874714`:
+one table, `Policy.effect_cost`, for a fall's steps, a move's own special and the steps a
+move does also).
+
+**What the pricing changed.** The twenty formations of the entry above again, the same
+squad (the Honey Badger, the Skua, the Cassowary, the Buzzard), seeds and 120 fights a row,
+the greedy bot before the pricing and after it. Fifteen rows are the same to the digit. The
+five that moved did so inside a run's grain: the wight host 4.4 rounds to 4.2, the grave
+field 11.9 to 12.1, the sandworm pit 7.2 to 7.3, the Lich's court 12.4 to 12.6 at 27% won
+either way, and the wraith choir won 77% to 78% with 1.39 wrecks a fight to 1.28. So the
+bot's play of these fights does not turn on a step's price: a kill and a blow decide what
+it spends on, and a fading ghost is already the foe it shoots. The pricing is the read a
+later bot stands on, and no earlier read wants running again for it.
+
+**The anchor, as the game stands.** Tier one at Convergence 1, the six certain tier ones
+(the Honey Badger, the Skua, the Storm Petrel, the Prairie Dog, the Cassowary, the
+Cottonmouth), squads as large as the fight is rated, the greedy bot: six squads and five
+seeds a fight for a flanker, a hunter's pack and a formation (30 fights a cell), five
+squads and four seeds for an elite and a boss (20 a cell). The scratch probe of 16
+November's entry on the battle's own builders. Hull is a share of a squad of four's. A cell
+is a direction; a kind's mean is a band.
+
+| Kind | Rows | Won | Rounds | Hull lost | The budget | Reboots a machine | Wrecks a fight |
+|---|---|---|---|---|---|---|---|
+| A lone flanker | 4 | 100% | 5.8 | 5.9% | 3.3% or less | 1.14 | 0.00 |
+| A hunter's pack | 2 | 98% | 5.1 | 12.7% | 10% | 1.09 | 0.03 |
+| A formation | 10 | 100% | 6.0 | 8.3% | 5% | 1.21 | 0.02 |
+| An elite | 11 | 100% | 6.3 | 10.9% | 25% | 0.99 | 0.05 |
+| A boss | 13 | 97% | 10.4 | 32.6% | what is left | 1.78 | 0.40 |
+
+Against the read of 16 November every kind but the elites costs more: a flanker 5.1% then,
+a hunter's pack 9.4%, a formation 7.2% over 5.2 rounds, an elite 11.2%, a boss 31.5%. What
+moved between the two is the game and not the bot: the Storm Petrel as reworked, in half
+the squads; the foes' targeting, a level draw where fourteen foes had aims; the bench's
+rows; the reboot's vent at the drop.
+
+| Kind | Fight | Won | Rounds | Of a four's hull | Reboots a machine | Wrecks a fight |
+|---|---|---|---|---|---|---|
+| Flanker | The lone whisker cat | 100% | 4.8 | 5.4% | 0.87 | 0.00 |
+| Flanker | The lone roc | 100% | 6.3 | 3.4% | 1.17 | 0.00 |
+| Flanker | The lone dullahan | 100% | 7.4 | 7.4% | 1.37 | 0.00 |
+| Flanker | The lone cerberus | 100% | 4.7 | 7.4% | 1.17 | 0.00 |
+| Hunter | The wolf pack | 97% | 6.0 | 15.1% | 1.28 | 0.07 |
+| Hunter | The antlion trio | 100% | 4.2 | 10.3% | 0.90 | 0.00 |
+| Formation | The goblin horde | 100% | 5.2 | 7.1% | 1.03 | 0.00 |
+| Formation | The treant's grove | 100% | 7.2 | 13.9% | 1.62 | 0.00 |
+| Formation | The gel wall | 100% | 8.1 | 23.2% | 1.79 | 0.10 |
+| Formation | The needler thicket | 100% | 4.1 | 2.1% | 0.64 | 0.00 |
+| Formation | The sandworm's ambush | 100% | 5.9 | 0.0% | 0.94 | 0.00 |
+| Formation | The grave throng | 100% | 6.3 | 7.6% | 1.29 | 0.00 |
+| Formation | The barrow mound | 100% | 7.5 | 5.6% | 1.58 | 0.00 |
+| Formation | The knights' vigil | 100% | 4.6 | 1.5% | 0.82 | 0.00 |
+| Formation | The ember pyre | 100% | 5.6 | 18.2% | 1.26 | 0.07 |
+| Formation | The magma vent | 100% | 5.9 | 3.5% | 1.11 | 0.00 |
+| Elite | The shaman's warband | 100% | 5.3 | 21.1% | 1.14 | 0.00 |
+| Elite | The Nob | 100% | 6.7 | 18.9% | 1.10 | 0.20 |
+| Elite | The old man's rising | 100% | 8.4 | 7.8% | 1.27 | 0.00 |
+| Elite | The Pilgrim's wake | 100% | 6.5 | 2.0% | 0.99 | 0.00 |
+| Elite | The Rust Monster's scavenge | 100% | 4.7 | 4.8% | 0.65 | 0.05 |
+| Elite | Gilgamesh wanders | 100% | 8.4 | 6.7% | 1.29 | 0.05 |
+| Elite | The Fell Rider's hunt | 100% | 4.8 | 10.0% | 0.65 | 0.00 |
+| Elite | The Reaper | 100% | 3.9 | 0.7% | 0.38 | 0.00 |
+| Elite | The Wild Hunt | 100% | 5.0 | 14.9% | 0.82 | 0.00 |
+| Elite | The Cinder Tortoise's brood | 100% | 9.7 | 17.0% | 1.94 | 0.00 |
+| Elite | The Thunder Ape's rampage | 100% | 5.5 | 16.1% | 0.71 | 0.20 |
+| Boss | Floraison | 100% | 7.5 | 29.6% | 1.31 | 0.25 |
+| Boss | The King Gel | 100% | 9.9 | 30.3% | 1.91 | 0.35 |
+| Boss | The Mantis Ant | 100% | 8.2 | 8.9% | 1.31 | 0.00 |
+| Boss | The Ruby Colossus | 90% | 12.8 | 41.2% | 2.21 | 0.60 |
+| Boss | The Fallen Weapon | 95% | 10.9 | 34.8% | 1.93 | 0.40 |
+| Boss | The Emperor Scorpion | 100% | 9.3 | 32.8% | 1.98 | 0.25 |
+| Boss | The Matador | 100% | 8.6 | 21.9% | 1.44 | 0.10 |
+| Boss | The Phantom Train | 90% | 13.9 | 45.6% | 2.51 | 0.70 |
+| Boss | The Vampire Lord | 100% | 9.2 | 13.2% | 1.62 | 0.05 |
+| Boss | The Marsh Serpent | 100% | 7.3 | 21.2% | 1.26 | 0.10 |
+| Boss | The Gargantuan King | 100% | 18.1 | 30.6% | 2.12 | 0.35 |
+| Boss | The Fiend of Fire | 90% | 8.8 | 62.2% | 1.59 | 1.70 |
+| Boss | The Obsidian Tyrant | 100% | 10.6 | 51.4% | 1.99 | 0.35 |
+
+What it says for the sizing. The formations' spread is the finding, and it is by the foe's
+shape: the three that cost most are the three whose fights run longest, the gel wall at
+8.1 rounds, the treant's grove at 7.2 and the ember pyre, whose salamanders hit hardest;
+the four that cost least are the four whose foes breached until 15 November and strike a
+whole shield plain. The lone flankers all sit over the thirtieth. The elites sit under half
+their quarter with the Barrier on the dice, and the bosses run from 9% to 62%.

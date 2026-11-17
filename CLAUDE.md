@@ -71,7 +71,7 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   the minimal swaps"; `docs/briefs/refit_pass.md`): shields and vents have left the die, so a
   dealt component is a weapon or equipment, and the shield and the heat come back by a reboot
   alone (the next rule: no chassis regenerates or cools); the slottable shields and vents are
-  planned drafts nothing deals, four machines are back in design (`"status": "planned"` on the
+  planned drafts nothing deals, two machines are back in design (`"status": "planned"` on the
   chassis), and the engine still runs the four kinds for the locked pieces that are one.
 - The reboot is the rule of the shield and of heat (Ryan, 13 November: "This is
   fundamental, I don't want it to get skipped by other sessions"; folded into the game on 15
@@ -82,8 +82,9 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   reboot, bare that turn, cold and whole the next; heat past the maximum stays and burns hull
   every turn; a shield at nothing is broken and gains none until the reboot. No chassis
   carries a regen or a cooling (the validator refuses both keys), and the foes' numbers are
-  still the ones sized against a shield that refilled: the defence side's pass sizes them
-  again. A piece that leans on regen, cooling, a shield gain or a vent says so. His
+  still the ones sized against a shield that refilled: the numbers pass sizes them again
+  (`docs/briefs/numbers_pass.md`; its line alone moves a balance number, the status's Start
+  here). A piece that leans on regen, cooling, a shield gain or a vent says so. His
   expectation, no strict rule ("I don't want to make a strict rule about anything"): what
   grants regen, cooling, flat shield or flat heat reduction is part of a kit or a locked
   piece, or gated behind a synergy ("they should be something special"); and a shield spend
@@ -219,6 +220,14 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
 - Before ending a session, or whenever a large task completes, update `docs/status.md`: what
   changed, what was decided, what is next. Keep it short and replace stale lines rather than
   appending forever.
+- The documents a session starts from stay short (Ryan, 17 November, after they had grown to
+  hold every earlier form of the game: "I don't feel like it's necessary to be wading through
+  all of that context for new sessions when they're reading"). The status says how things
+  stand in about three hundred lines, with the latest test count alone; a to-do line is a
+  line, and a ticked one leaves the file; a brief or a proposal holds what is live and open,
+  and a section the game has left is a stub with its place in git. A decision's history is
+  its bible row's and git's. An earlier iteration of the game is never described where a
+  session starts reading.
 - Check for a newer Godot every two weeks (Ryan, 30 October: "check for godot updates
   periodically"): when the Godot line in `docs/status.md`'s Start here is dated two weeks back
   or more, read `github.com/godotengine/godot-builds/releases` (every build, pre-releases

@@ -64,31 +64,33 @@ the stock dice with the Armoured basic in its slot.
 
 ## 3. Where tier one stands
 
-The baseline, 16 November: tier one at Convergence 1, the six certain tier ones (the Honey
-Badger, the Skua, the Storm Petrel, the Prairie Dog, the Cassowary, the Cottonmouth) as trios
-for a flanker, a hunter's pack and a formation and as fours for an elite and a boss, the
-greedy bot. Hull is a share of a four's.
+The baseline, 17 November: tier one at Convergence 1, the six certain tier ones (the Honey
+Badger, the Skua, the Storm Petrel, the Prairie Dog, the Cassowary, the Cottonmouth), squads
+as large as the fight is rated (a lone flanker one machine, a hunter's pack two, a formation
+three, an elite and a boss four), the greedy bot with every step of a foe's move priced.
+Hull is a share of a four's, 96 points for this pool.
 
 | Kind of fight | Rounds | Hull lost | The budget | Reboots a machine |
 |---|---|---|---|---|
-| A lone flanker | 4.5 | 5.1% | 3.3% or less | 0.91 |
-| A hunter's pack | 4.5 | 9.4% | 10% | 0.90 |
-| A formation | 5.2 | 7.2% | 5% | 0.91 |
-| An elite | 5.7 | 11.2% | 25% | 0.84 |
-| A boss | 9.5 | 31.5%, a wreck in a quarter of fights | what is left | 1.48 |
+| A lone flanker | 5.8 | 5.9% | 3.3% or less | 1.14 |
+| A hunter's pack | 5.1 | 12.7% | 10% | 1.09 |
+| A formation | 6.0 | 8.3% | 5% | 1.21 |
+| An elite | 6.3 | 10.9% | 25% | 0.99 |
+| A boss | 10.4 | 32.6%, a wreck in two fights of five | what is left | 1.78 |
 
-By formation the spread is the finding: the sandworm's ambush 0.8%, the knights' vigil
-1.0%, the magma vent 1.8%, the needler thicket 2.9%, the goblin horde 6.4%, the grave throng
-6.6%, the barrow mound 7.6%, the treant's grove 12.7%, the ember pyre 13.8%, the gel wall
-18.2%. The four built on foes that breached cost under 3% since Breach was cut: their blows
-are plain against a whole shield. The bench's rows of 17 November moved rerolls and the
-ghosts' fights, and no formation's hull by more than two points.
+By formation the spread is the finding: the sandworm's ambush nothing, the knights' vigil
+1.5%, the needler thicket 2.1%, the magma vent 3.5%, the barrow mound 5.6%, the goblin horde
+7.1%, the grave throng 7.6%, the treant's grove 13.9%, the ember pyre 18.2%, the gel wall
+23.2%. The four that cost least are the four built on foes that breached until 15 November:
+their blows are plain against a whole shield. The three that cost most run longest or hit
+hardest. The lone flankers cost 3.4% to 7.4%, all over the thirtieth; the wolf pack 15.1%.
 
 The elites are sized for a squad with no Barrier: 24.6% of a four's hull with the Armoured
-basic in the Halo's slot, his quarter, and 11.1% with the Barrier. The bosses are not: 46.8%
-without it, 92% won, 0.9 wrecks a fight (15 November). A Barrier is worth nothing against a
-kit of many strikes or of blows at every machine, and three quarters of a kit that is one
-blow a round (the Goblin Nob 15.6% with it, 53.3% without).
+basic in the Halo's slot, his quarter, and 11.1% with the Barrier (15 November; 10.9% on the
+baseline). The bosses are not: 46.8% without it, 92% won, 0.9 wrecks a fight. A Barrier is
+worth nothing against a kit of many strikes or of blows at every machine, and three quarters
+of a kit that is one blow a round (the Goblin Nob 15.6% with it, 53.3% without). The bosses
+run from 8.9% (the Mantis Ant) to 62.2% (the Fiend of Fire, 1.7 wrecks a fight).
 
 ## 4. What a point is worth
 
