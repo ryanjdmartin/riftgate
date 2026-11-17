@@ -2184,7 +2184,12 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 284 (16 November, from `ccr-bd73687d-w8qox1` at `2287374`, ahead of main, on his
+  page's Version 285 (17 November, from `ccr-bd73687d-w8qox1` at `8891238`, ahead of main, on his
+  correction: "pivot or slide in correct, plausible places"): the Baboon's, the Cassowary's and the
+  Funnel-web's sidecars with their falls back, the feet held while they carry it; the three live
+  copies Version 284's own and the page its source, the falls driven frame by frame in the hangar
+  headless first. `edits` and `text` empty, `designs` the two folded ideas. Version 284 (16 November,
+  from `ccr-bd73687d-w8qox1` at `2287374`, ahead of main, on his
   fifth notes on the deaths: the Ammit's limbs clipping, the bipeds' legs sliding out, the Whip
   Scorpion and the Funnel-web floating): five sidecars with their deaths reworked (the Ammit, the
   Baboon, the Cassowary, the Whip Scorpion, the Funnel-web) and `motion.js` with planted feet, the
