@@ -10416,3 +10416,32 @@ A direction, and a smoke more than a read. The order was shown 71 times in the f
 wrecked while marked. So the mark runs on a real piece. What it costs cannot be read here:
 the warband falls in two or three rounds either way, tier three's numbers being unsized and
 set aside (Ryan, 17 November: "We aren't worrying about the higher tier scaling right now").
+
+## 17 November: the Whip Scorpion's blast on its reboot
+
+Ryan: "the reboot vent is the one that explodes. It's an easy swap in. Unfortunately it changes
+it's profile from sustained damage to huge burst, but I think it's ok." The release moved
+from a passed turn, once the enemy had acted, to the reboot's vent as the shield drops, the
+number kept (1 on every foe at 8 heat, 1 more for each heat over). Read on the commit before
+and on the working tree, a scratch probe on the engine's own fight: a squad of the Whip
+Scorpion, the Honey Badger and the Skua in seven formations as content has them, the greedy
+bot, 100 fights a row. Every fight was won in both.
+
+| Formation | Rounds, before and after | Squad hull lost | Releases a fight | Hit points a release | Its heat at a release |
+|---|---|---|---|---|---|
+| Goblin horde, tier one | 3.5 to 3.4 | 3% to 2% | 0.40 to 0.78 | 22.0 to 19.7 | 13.1 to 12.6 |
+| Grave throng, tier one | 3.9 to 3.2 | 4% to 2% | 0.43 to 0.86 | 24.4 to 22.4 | 13.6 to 12.3 |
+| Ember pyre, tier one | 3.7 to 3.2 | 7% to 4% | 0.41 to 0.75 | 17.4 to 23.6 | 12.8 to 12.8 |
+| Needler thicket, tier one | 3.5 to 3.3 | 2% to 1% | 0.22 to 0.54 | 15.5 to 18.0 | 12.9 to 12.7 |
+| Guard horde, tier two | 3.8 to 3.3 | 4% to 3% | 0.16 to 0.69 | 20.8 to 16.6 | 13.2 to 12.1 |
+| Barbed swarm, tier two | 3.1 to 3.0 | 1% to 1% | 0.14 to 0.49 | 11.4 to 10.9 | 13.0 to 12.0 |
+| Treant march, tier two | 9.3 to 8.3 | 18% to 16% | 0.32 to 0.99 | 6.8 to 6.9 | 13.2 to 12.0 |
+
+A direction. In the bot's hands it is no bigger burst: a blast is worth about what a release
+was, at about the same heat, since the bot reboots near the maximum of 14 and never rides
+past it. It is two to four times as frequent. Before, the bot rebooted the Scorpion 0.4 to
+2.0 times a fight and released 0.1 to 0.4 times, so most of the heat it shed bought nothing;
+now nine reboots in ten are a blast. Fights run a little shorter and the squad loses a little
+less hull. So the swap makes it stronger as the bot plays it, and the burst he names is the
+player's to find, by riding past the maximum for a bigger one against the burn. Its heat
+maximum is his first lever if the stroke outdoes the area machines (the bible's row).

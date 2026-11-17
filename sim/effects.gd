@@ -51,7 +51,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "pass_release", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "reboot_release", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
 	"on_blocked": ["stack_status"],
@@ -2337,15 +2337,16 @@ static func heat_per_blow(u) -> int:
 	return n
 
 
-## What a machine's passed turn releases (pass_release, static; the Whip Scorpion's Thermal
-## Ejection Manifold, Ryan, 12 November: "1 damage to each enemy, increased by 1 for each heat
-## over 8"): {value: what every foe takes at the gate, gate: the heat it needs to fire, id: the
-## passive's, which its model's firing is keyed by (the broadside, MechRig.fire_act)}, a point
-## more for each heat past the gate (Skirmish.release_shot). Empty for a machine whose pass
-## releases nothing.
-static func pass_release(u) -> Dictionary:
+## What a machine's reboot blasts as its heat vents (reboot_release, static; the Whip Scorpion's
+## Thermal Ejection Manifold, Ryan, 12 November: "1 damage to each enemy, increased by 1 for each
+## heat over 8"; 17 November, on the reboot's vent in place of a passed turn: "the reboot vent is
+## the one that explodes"): {value: what every foe takes at the gate, gate: the heat it needs to
+## fire, id: the passive's, which its model's firing is keyed by (the broadside,
+## MechRig.fire_act)}, a point more for each heat past the gate (Skirmish.release_shot). Empty
+## for a machine whose vent blasts nothing.
+static func reboot_release(u) -> Dictionary:
 	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "pass_release":
+		if str(pair[0].get("effect", "")) == "reboot_release":
 			return {"value": int(pair[0].get("value", 1)), "gate": int(pair[0].get("gate", 1)), "id": str(pair[1].id)}
 	return {}
 
@@ -2641,7 +2642,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
 		"fold_die": body = "its die is two batteries of %s, one up at a time with its fixed pieces; the battery up stays up from fight to fight, and a battle opens on the first" % vs
 		"rewrite_weapon": body = "every weapon and equipment it aims at a foe fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
-		"pass_release": body = "a turn it ends with an entry it could have spent and %d heat or more releases its heat once the enemy has acted: %s on every foe, 1 more for each heat over %d" % [int(eff.get("gate", 1)), vs, int(eff.get("gate", 1))]
+		"reboot_release": body = "a reboot it starts holding %d heat or more blasts what it vents: %s on every foe, 1 more for each heat over %d" % [int(eff.get("gate", 1)), vs, int(eff.get("gate", 1))]
 		"shove_behind": body = "damaging a foe in the front rank deals %s%% of its maximum HP, rounded up, to the foe behind it" % vs
 		"hold_status": body = "its %s does not decay" % str(STATUS.get(str(v), {}).get("name", v))
 		"hold_all": body = "no %s decays this round, any unit's" % str(STATUS.get(str(v), {}).get("name", v))

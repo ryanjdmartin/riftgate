@@ -2904,30 +2904,33 @@ func test_a_status_row_says_buff_or_debuff_and_its_chip_carries_it() -> void:
 	s.free()
 
 
-## A release plays on the screen (the Whip Scorpion's valves, 11 November): a machine that ends
-## its turn with an entry it could have spent fires its heat once the enemy's turn has played, and
-## the screen takes the fight as it stands after; its model fires it with the act keyed by the
-## passive (release_key). Synthetic passive.
-func test_a_passed_turns_release_plays_after_the_enemy_turn() -> void:
+## A release plays on the screen (the Whip Scorpion's valves; on its reboot since 17 November,
+## Ryan: "the reboot vent is the one that explodes"): a machine whose die is dropped on REBOOT
+## holding its gate's heat fires what it vents at once, and the screen takes the fight as it
+## stands after; its model fires it with the act keyed by the passive (release_key). Synthetic
+## passive.
+func test_a_reboots_blast_plays_as_the_die_is_dropped() -> void:
 	var s := _screen(5)
 	var ms: Skirmish.MechState = s.sk.mechs[0]
-	ms.unit.grant_passive({"id": "boiler", "name": "Boiler", "description": "", "effects": [{"trigger": "static", "effect": "pass_release", "value": 1, "gate": 4}]})
+	ms.unit.grant_passive({"id": "boiler", "name": "Boiler", "description": "", "effects": [{"trigger": "static", "effect": "reboot_release", "value": 1, "gate": 4}]})
 	ms.heat = 6
 	assert_eq(SkirmishScreen.release_key(ms), "boiler", "its model's firing for the release is keyed by the passive (the broadside, 12 November)")
-	assert_eq(SkirmishScreen.release_key(s.sk.mechs[1]), "", "a machine whose pass releases nothing has none")
-	assert_true(s.sk.can_spend(0), "its die has somewhere to go, and is left")
+	assert_eq(SkirmishScreen.release_key(s.sk.mechs[1]), "", "a machine whose vent blasts nothing has none")
 	var hp := 0
 	for foe in s.sk.field_foes():
 		hp += foe.hp
 	var standing := s.sk.field_foes().size()
-	s._end_turn_now()
+	assert_true(s._do_reboot(0), "its die dropped on REBOOT")
 	assert_eq(s.sk.releases.size(), 1, "it released")
 	assert_eq((s.sk.releases[0]["blows"] as Array).size(), standing, "a blow on every foe that stood")
 	var after := 0
 	for foe in s.sk.field_foes():
 		after += foe.hp
 	assert_true(after < hp, "the pack took it")
+	assert_eq(ms.heat, 0, "and the machine is cold")
 	assert_true(s._shown_hp.is_empty(), "no gauge is left held off the tree")
+	s._end_turn_now()
+	assert_true(s.sk.releases.is_empty(), "the round's end releases nothing more")
 	s.free()
 
 

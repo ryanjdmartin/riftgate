@@ -19,13 +19,13 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   stats are what a grant adds to, and the validator refuses both keys on a chassis. The foes'
   numbers are still the ones sized against a shield that refilled. Read both before any work
   on a machine, a component, a module or a foe (`CLAUDE.md` has the rule).
-  **One line of it is open again** (17 November): when a reboot's heat goes. Main spares the
-  reboot's turn its burn, as built on 13 November. His ruling of 16 November, that the turn
-  burns all the same, is built on another session's branch and not merged
-  (`ccr-c1cf6f73-ql6n4q`, commits `d26e462` and `beaa206`), and he has second-guessed it since:
-  "Maybe the heat gets shunted when the shield gets taken down?" The three forms and a lean
-  are in the brief under the spec's line 8 and in the bible's section 12. Whoever merges that
-  branch: take his latest word, not the branch's.
+  **Its heat goes as its shield drops** (17 November, built; his own thought on his ruling
+  of the 16th: "Maybe the heat gets shunted when the shield gets taken down?"): a reboot vents
+  at once, its turn has nothing to burn, an overshoot pays once, and the shield is back as the
+  next round opens. Another session's branch (`ccr-c1cf6f73-ql6n4q`, commits `d26e462` and
+  `beaa206`) still carries the ruling this replaces, that the reboot's turn burns all the
+  same. Whoever merges that branch keeps main's side: the burn in `sim/skirmish.gd`, the
+  rules' END TURN, the brief's line 8, the Rebooting term and `tests/test_reboot.gd`.
 - **The vocabulary moved on 15 and 16 November** (the vocabulary pass, built on Ryan's marks
   on every rider, buff and debuff): Burn is Ablate, Flak and Crushed are Brittle, Breach,
   Splash, Silence, Overshield, Retaliate and Rallied are cut, and Regenerating, Primed,
@@ -54,7 +54,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1264 tests, 373,061 checks, green on `ccr-722ca9f0-yj8na3` (17 November, his fifteenth
+- Tests: 1266 tests, 373,079 checks, green on `ccr-722ca9f0-yj8na3` (17 November, his
+  seventeenth round: the reboot's vent at the drop, the Whip Scorpion's blast on it, a last
+  act's blow on its killer, over main at `7beb2b4`). Before it, 1264 tests, 373,061 checks,
+  green on the same branch (17 November, his fifteenth
   round: the Goblin Warchief in content, over main at `0101e14`). Before it, 1264 tests, 373,042
   checks, green on the same branch (16 November, main at
   `f190205`, the map session's landing, taken into this branch in a merge: the Roc aloft beside
@@ -401,7 +404,8 @@ Each resumes from its brief; `docs/briefs/README.md`'s table says what each wait
   rank at a shot of 2 a heat), the blows it took banked on top; its locked ray the Buzzard's old
   form on one foe), dealt again, its brief retired: `pass_release` a passive's rule, the release
   after the enemy's turn in the round and its forecast, the bot holding its die when the
-  release beats its best spend, the screen playing the shots once the enemy's turn has (a first
+  release beats its best spend (all of it the pass's form: the release is its reboot's vent
+  since 17 November, Next, in order), the screen playing the shots once the enemy's turn has (a first
   cut). Its locked piece is the Heliographic Death Ray (his keep of the name; id
   `heliographic_death_ray`), remodelled the same day as a steam-fed mirrored railgun in the
   mast's place, with a firing act of its own (the model rebuilt in a cloud session: a python3.11
@@ -2129,9 +2133,19 @@ rank goblin captain that gives orders and Exposes"; "more like warchief"): a bac
 its own behind the Captains in the tier-three warband, the chieftain render cut for its sprite,
 its Kill Order the foes' Expose on its first carrier, its texts a session's drafts and its
 numbers placeholders; the Captain keeps his name and his kit, and tier three's numbers are set
-aside on his word. Still his (the bible's section 12): the marks on the rows; which gathers
-stay beside the Roc's and the bombs', the Great Needler's by lean; Aloft's name; and the
-page on targeting. His codex cleanup and
+aside on his word. **Three rulings of 17 November are built** (his sixteenth and seventeenth
+rounds; the proposal's sections 32 and 33). A reboot's heat goes as its shield drops, so its
+turn burns nothing (Start here). The Whip Scorpion's release is that vent (his find: "the
+reboot vent is the one that explodes"): rebooting at 8 heat or more it blasts every foe in
+the player's own turn, and the release on a passed turn is gone from the engine with the
+pass itself; the bot reboots for the blast by a first heuristic, and a first read has it
+blasting two to four times as often as it released, for about the same a blast, since every
+reboot it made for nothing is a blast now (`docs/measurements.md`, a direction). And a dying foe's
+single blow lands on the machine that made the kill, as its curse does ("yes, hit its killer,
+if it has one"), which leaves the pick a move at nobody draws with no reader: it goes with
+the targeting build. Still his (the bible's section 12): the marks on the rows; which gathers
+stay beside the Roc's and the bombs', the Great Needler's by lean; Aloft's name; whether a
+sealed Polar Bear may reboot; and the page on targeting. His codex cleanup and
 terminology pass is a session of his own after this work (the to-do's line keeps what was
 found for it). On his word: the engine for a foe's Phased and
 for an immunity, the targeting build, then the rest of the content and a read of what

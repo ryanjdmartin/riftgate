@@ -211,10 +211,12 @@ func play_round(sk: Skirmish, rerolls: bool = true) -> void:
 					_note_forced(sk, ms)
 					held.append(i)
 					continue
-				# A machine whose pass releases its heat (the Whip Scorpion's) holds its die when the
-				# release is worth more than its best spend: the valves or the gun.
-				if release_worth(sk, ms) > float(pick["score"]):
-					held.append(i)
+				# A machine whose reboot's vent explodes (the Whip Scorpion's) gives its turn to it when
+				# the blast is worth more than its best spend: the valves or the gun. One that may not
+				# reboot (it has spent this turn) spends.
+				if release_worth(sk, ms) > float(pick["score"]) and sk.can_reboot(i):
+					if sk.reboot_mech(i):
+						reboots += 1
 					continue
 				if kind == PLANNER:
 					alternatives.append_array(_top_two(opts))
@@ -287,8 +289,7 @@ func _wants_reboot(sk: Skirmish, ms: Skirmish.MechState) -> bool:
 
 ## A die left unspent as the turn's spending ends is the cheap moment for a reboot:
 ## a machine that may, has something to get back, and would lose little shield to this round's
-## blows, gives the turn it was not using. One holding its die for a release (the Whip Scorpion's
-## pass) keeps it: a reboot is no pass.
+## blows, gives the turn it was not using.
 func _reboot_idle(sk: Skirmish) -> void:
 	if sk.state != Skirmish.State.ASSIGN:
 		return
@@ -296,7 +297,7 @@ func _reboot_idle(sk: Skirmish) -> void:
 		if not sk.can_reboot(i):
 			continue
 		var ms: Skirmish.MechState = sk.mechs[i]
-		if (ms.heat <= 0 and ms.unit.shield >= ms.unit.shield_max) or release_worth(sk, ms) > 0.0:
+		if ms.heat <= 0 and ms.unit.shield >= ms.unit.shield_max:
 			continue
 		var fc := sk.forecast(ms)
 		var kept := maxi(0, ms.unit.shield - int(fc["shield_after"]))
@@ -305,10 +306,10 @@ func _reboot_idle(sk: Skirmish) -> void:
 				reboots += 1
 
 
-## What a pass would release (the Whip Scorpion's Thermal Ejection Manifold, 11 and 12 November),
-## in foe hit points: its blow on every foe standing, each through its armour, capped at what the
-## foe has left. The heat the foes' blows will bank is left out, so it reads low, and nothing
-## under its gate. Nothing for a machine whose pass releases nothing.
+## What a reboot's vent would blast (the Whip Scorpion's Thermal Ejection Manifold, on the reboot
+## since 17 November), in foe hit points: its blow on every foe standing, each through its
+## armour, capped at what the foe has left; nothing under its gate. Nothing for a machine whose
+## vent blasts nothing.
 func release_worth(sk: Skirmish, ms: Skirmish.MechState) -> float:
 	var shot := sk.release_shot(ms)
 	if shot == null:
@@ -1701,7 +1702,8 @@ static func core_opening(sk: Skirmish, part: Foe) -> float:
 
 
 ## What a foe's last act costs the team when it falls (15 October, the Gargantuan King's Meteor; valued
-## 22 October): its blow the moment it falls, on the machine it aims at or every machine for a
+## 22 October): its blow the moment it falls, on the machine that makes the kill (`killer`: the
+## one weighing the spend; nobody when none does, Ryan, 17 November) or every machine for a
 ## blow at every machine, through each one's shield and armour as they stand: hull at
 ## HULL_WEIGHT, shield at SHIELD_LOSS_WEIGHT, a wreck at DEATH_WEIGHT.
 static func last_act_cost(sk: Skirmish, f: Foe, killer: Skirmish.MechState = null) -> float:
@@ -1712,10 +1714,8 @@ static func last_act_cost(sk: Skirmish, f: Foe, killer: Skirmish.MechState = nul
 	var whom: Array = []
 	if f.has_keyword(blow, "all"):
 		whom = sk.live_mechs()
-	elif f.target != null and (f.target as Skirmish.MechState).alive():
-		whom = [f.target]
-	elif not sk.live_mechs().is_empty():
-		whom = [sk.live_mechs()[0]]
+	elif killer != null and killer.alive() and not Skirmish.is_out(killer):
+		whom = [killer]   # a single death blow lands on the machine that made the kill, and on nobody when none did
 	var cost := 0.0
 	for m in whom:
 		var shield: int = m.unit.shield

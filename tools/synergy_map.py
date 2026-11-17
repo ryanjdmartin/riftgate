@@ -115,7 +115,7 @@ EFFECTS = {
     "seal_form": [("sealed", "sets"), ("braced", "sets"), ("heat", "sets")],
     "paradox": [("paradox", "sets"), ("suppressed", "sets")], "muster": [("muster", "sets"), ("reroll", "reads")],
     "shield_per_ally_heat": [("ally_heat", "reads"), ("shield_granted", "reads")],
-    "add_stacks": [], "pass_release": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
+    "add_stacks": [], "reboot_release": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
     "heat_per_blow": [("heat", "sets")],
     "step_die": [("reroll", "reads")], "split_strikes": [("strikes", "sets")], "multiply_printed": [], "free_reroll": [("reroll", "sets")],
     "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "rewrite_weapon": [], "grant_keyword": [], "spillover": [("strikes", "sets")],
