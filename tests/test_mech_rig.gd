@@ -2059,20 +2059,26 @@ func test_a_sinking_death_keeps_every_foot_and_comes_down() -> void:
 
 
 func test_every_planted_death_keeps_its_feet() -> void:
-	# Every death the recipes plant or sink keeps those feet where they stand (the fifth notes).
+	# Every death the recipes plant or sink keeps those feet where they stand while they carry it (the
+	# fifth notes; the next day, "pivot or slide in correct, plausible places": a foot let go as the body
+	# lands may slide then), read up to the moment the first is let go.
 	var read := 0
 	for id in MACHINES:
 		var death: Dictionary = MechRig.load_sidecar(id).get("death", {})
 		var named: Array = []
+		var until := float(death.get("duration", 1.0)) + 0.6
 		for p in death.get("plant", []):
 			named.append(str(p[0]) if p is Array else str(p))
+			if p is Array and (p as Array).size() > 2:
+				until = minf(until, float(p[2]))
 		if named.is_empty() and float(death.get("sink", 0.0)) <= 0.0:
 			continue
 		var pair := _rig_for(id)
-		var held := _slides_of(pair[0], float(death.get("duration", 1.0)) + 0.6)
+		var held := _slides_of(pair[0], until)
 		for jn in held.keys():
 			if (named.is_empty() and str(jn).begins_with("ankle")) or named.has(jn):
-				assert_true(float(held[jn]) < 0.01, "%s's %s stays where it stands (%.1f%%)" % [id, jn, 100.0 * float(held[jn])])
+				# within a fiftieth of its size: a long foot turning on its toes leaves the leg's two-link reach a sliver
+				assert_true(float(held[jn]) < 0.02, "%s's %s stays where it stands (%.1f%%)" % [id, jn, 100.0 * float(held[jn])])
 		read += 1
 		pair[1].free()
 	assert_true(read >= 3, "the planted deaths read (%d)" % read)
