@@ -442,12 +442,14 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
 2. Its numbers (hull, shield, armour, heat, move), its stock, and the Drill's heat. In content as
    placeholders since 17 November: the Honey Badger's numbers, and a stock of the Rivet Gun, the
    Slugthrower and the Shoring Jack (the Jack takes no mount, so the third mount stands bare);
-   whatever class a mount wears retracts as it burrows (the model, below). Its hardpoints are four
-   since his word of 17 November ("Let's lock in 4 or 5 hardpoints for it, the drill isn't
-   accessible while unburrowed so it doesn't add to the face count"), so its die above ground is the
-   four alone; content still lists the Drill as fixed, the engine's way today, and its build takes it
-   off that die. The stock since: the Rivet Gun and the Slugthrower on the two roof guns, the Twin
-   Autoguns in the cab's bay, and the Shoring Jack, which takes no mount, so the pod's bay stands bare.
+   whatever class a mount wears retracts as it burrows (the model, below). Its hardpoints are five
+   since his words of 17 November ("Let's lock in 4 or 5 hardpoints for it, the drill isn't
+   accessible while unburrowed so it doesn't add to the face count"; then "Add a gun mount to the
+   top of the central roof, above the vent"), so its die above ground is the five alone; content
+   still lists the Drill as fixed, the engine's way today, and its build takes it off that die. The
+   stock since, placeholders: the Slugthrower on the breech's gun, a Rivet Gun on each piece's roof
+   gun (the fifth piece of stock, a session's pick), the Twin Autoguns in the cab's bay, and the
+   Shoring Jack, which takes no mount, so the pod's bay stands bare.
 3. Its look: the rocket drill, a drill it fires into a foe that returns as it burrows ("try your
    first design, but the trick is to make it look like it can fire the drill, but also not look
    silly without it", 16 November). The second round (`docs/looks/minerva_mole2.png`, the
@@ -577,6 +579,38 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    down, the trapdoors shut, the last slide in, the slit's shutter and the periscopes, the dig-in;
    3.6 seconds. His to judge running: the cheeks' size, the brows, the pieces' bulk, the bays and
    their doors, and the burrow's pace.
+   His notes on that, the same day: "I don't understand the cowl change - couldnt you just take the
+   old one, widen it to the edges, and lift it higher? It was still better before, even if it was
+   'too small,' so it doesnt need fundamental changes. it needs a vent animation. I think the
+   transformation has too many steps in it. I also still think the rams are flimsy looking poking
+   sideways like that. Add a gun mount to the top of the central roof, above the vent. Minerva
+   doesn't use barn doors. A sliding door or irised port instead, Remember that the gun models can
+   be smaller if they need to be, to hide properly. Right now they poke througgh the rear of the
+   treads." So, the hangar's next version: the cheeks round four's single slope again, its outer
+   edge out to 21.6 (20.5 before; the ring is 22) and lifted, its top from 33.9 at 8 out to 40 at 7.5
+   and its outer corner from 19 to 24, the slope near round four's angle. The rams gone for a slide
+   deck under each piece's inboard side, a plate 30 long and 3 thick with two hazard runners, out of a
+   housing along the hull's flank; the pieces ride the skirts, both 16 tall, with no rise and no drop
+   out of the burrow. The gun on the breech's top over its back vent, hp_5, the largest of the five
+   (a class at 0.72 to 0.75), on a drum, raised 5 degrees so its line clears the ring; the loading
+   hatch gone for it. Every closure Minerva's, read as reaching the trapdoors too (the Clydesdale's,
+   Wainwright & Sutler's): a round leaf that slides forward under each roof port's rim, the Polar
+   Bear's iris in each bay and in the breech's port. The guns sized to stow inside the hull and
+   nowhere else, the old roof guns having sunk out through the treads' chamfered tails: a roof gun
+   on a drum in the Clydesdale's way, sinking upright through its well's floor whole inside its
+   piece, which holds a class of at most 11.5 over its pin (a barrel at 0.38, twin barrels at 0.41,
+   a rack in its round form or a dish at 0.45); the breech's into the breech and the hull under it;
+   a bay gun in its port form at 0.6, run back 23.5 through its floor before the iris shuts. The
+   burrow in three movements, 2.5 seconds: the guns stow and the vents blow open, the heat draining
+   as it goes under (the burrow is its reboot, which vents, main's rule of the same day), then the
+   doors and irises shut; the pieces slide in a beat apart, settling 2.2 into their skirts so their
+   roofs pass under the breech's chamfer vents, as the tail's and the back's louvres shut against the
+   dirt and the slit's shutter and the periscopes go down; the dig-in. "It needs a vent animation"
+   read as the burrow's: the vent act was there out of the burrow, so it now vents going under, and
+   burrowed its top vents stand ajar and have a vent act of their own, as its passive makes heat
+   good underground. Rendered with each class on all five mounts through the burrow, level from the
+   sides and the tail too: nothing shows outside the hull. His to judge running: the cheeks' height,
+   the slide decks, the guns' sizes, the breech's gun, the three movements and both vents.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike
