@@ -2200,11 +2200,14 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 290 (17 November, from `ccr-bd73687d-w8qox1` at `8637e3d`, ahead of main, on his
-  "I liked the nemesis kneel, it was iconic" and "the faceplant is the iconic AT-AT pose"): the
-  Nemesis's and the Clydesdale's sidecars, over Version 289, another session's publish of 17 November
-  (its content files newer than this branch's and main's, kept; the page, `motion.js` and these two
-  sidecars it left as 288 had them, read and checked first). Version 288 (from `a6af0a7`, on his "Some
+  page's Version 292 (17 November, from `ccr-bd73687d-w8qox1` at `b5557f2`, ahead of main, on his
+  next notes: the Polar Bear "can probably just settle on its legs", the Ammit "like it's admitting
+  defeat", the Cassowary "glitched on its pivot point", the Whip "pulls legs up into a float"): `motion.js`
+  (a death that settles lands no hop) and the four sidecars, over Version 291, another session's
+  publish (the page and these files as 290 had them, read and checked first; its content kept).
+  Version 290 (from `8637e3d`, on his "I liked the nemesis kneel, it was iconic" and "the faceplant is
+  the iconic AT-AT pose"): the Nemesis's and the Clydesdale's sidecars, over Version 289, another
+  session's (its content files newer than this branch's and main's, kept). Version 288 (from `a6af0a7`, on his "Some
   end up on the ground, some don't. Go ahead and fix the others"): `motion.js` with the settle and five
   sidecars. `edits` and `text` empty, `designs` the two folded ideas. Versions 281 to 286 (16 and 17
   November) took the deaths out from this branch round by round on his notes. A republish from main
