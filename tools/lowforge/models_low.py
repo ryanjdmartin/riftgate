@@ -5220,29 +5220,58 @@ def _ammit_talons_drop(psi, curl):
 def _ammit_death(legs, arms, hz=30.0):
     """The Ammit's death as keys `hz` a second, solved so its body only ever goes down and nothing of it
     passes through the floor: it bows, its head and cannons down, and folds its upper arms into its chest;
-    its walking arms stand where they are as it starts to sink, then fold under it, each forearm swinging
-    back under its elbow with the hand dragging back along the floor (the talons tipped up while the hand
-    points down and forward, tipped down once it trails behind), the elbow coming down onto the floor as
-    the chest settles onto the folded arms; its hind legs fold under its rear with each foot where it
-    stands. The walking arm's elbow stands no lower than its hand and talons need (_ammit_talons_drop) and
-    the elbow's own round over the floor, and hangs from its shoulder until the chest is low enough for it
-    to reach. Returns (duration, tracks, body keys)."""
-    D, PLANTED, FOLD = 2.8, 0.9, 2.3
+    its walking arms fold under it from the start, while the chest still stands high over them: each hand
+    rolls back off its talons onto its wrist (the talons opening just so far as keeps their tips on the
+    floor) as the forearm swings up to stand upright over it, the elbow held level; then the forearm swings
+    back under the elbow, close to the elbow's fold, and the hand rises behind it, turning over with its
+    talons open (their tips clear of the floor at the top of the hand's arc) and curling them shut once it
+    trails; the folded arm is laid along the floor as the chest settles onto it. Its hind legs fold under
+    its rear with each foot where it stands. The forearm cannot pass upright without the elbow standing its
+    length and the wrist's round over the floor, a little over its height at rest, so it rises that much,
+    before the chest has sunk; past upright it only ever goes down. The elbow stands no lower than the hand
+    and talons need (_ammit_talons_drop) and hangs from its shoulder until the chest is low enough for it to
+    reach. Returns (duration, tracks, body keys)."""
+    D, FOLD = 2.8, 2.3
+    T0, TV = 0.35, 0.8                  # the fold starts; the forearm stands upright over the hand
     PHI_END, PSI_END = -177.0, -158.0   # the forearm folded back along the floor; the hand trailing behind it
     ELBOW_R, WRIST_R = 5.1, 3.9          # how high the elbow's and the wrist's pivots stand off the floor resting on it (the forearm's square end tilted)
-    body_at = _cassowary_mono([(0.0, 0.0, 0.0, 0.0), (PLANTED, -1.0, -3.0, -4.0), (1.6, -4.0, -7.0, -10.0), (FOLD, -10.0, -14.5, -19.0),
+    body_at = _cassowary_mono([(0.0, 0.0, 0.0, 0.0), (0.9, -1.0, -3.0, -4.0), (1.6, -4.0, -7.0, -10.0), (FOLD, -10.0, -14.5, -19.0),
                                (D, -12.0, -16.0, -21.0)])   # (dy, dz, pitch): the monotone curve the rig runs keys on
-    ease = lambda u: (lambda v: v * v * (3.0 - 2.0 * v))(min(1.0, max(0.0, u)))
     hip, knee, ankle = (p[1:] for p in legs["l"])
     sh, el, wr = (p[1:] for p in arms["l"])
     l1, l2 = math.hypot(el[0] - sh[0], el[1] - sh[1]), math.hypot(wr[0] - el[0], wr[1] - el[1])
     th1, th2 = math.degrees(math.atan2(el[1] - sh[1], el[0] - sh[0])), math.degrees(math.atan2(wr[1] - el[1], wr[0] - el[0]))
 
     def planted_arm(dy, dz, pitch):
-        a, e = _ik2(sh, el, wr, _to_body(wr[0], wr[1], dy, dz, pitch), _bend(arms["l"]))
-        return a, e
-    a0, e0 = planted_arm(*body_at(PLANTED))
-    phi0 = th2 + a0 + e0 + body_at(PLANTED)[2]   # the forearm's turn in the world as the fold starts
+        return _ik2(sh, el, wr, _to_body(wr[0], wr[1], dy, dz, pitch), _bend(arms["l"]))
+
+    def shoulder(dy, dz, pitch):
+        s = _ammit_turn(sh, pitch)
+        return (s[0] + dy, s[1] + dz)
+    b0 = body_at(T0)
+    a0, e0 = planted_arm(*b0)
+    # The forearm's turn in the world (pitch) and the elbow's height: from where they stand as the fold starts, up
+    # over the hand, back under the elbow within a few degrees of its fold (the hand rising its highest), laid on
+    # the floor.
+    phi_at = _cassowary_mono([(T0, th2 + a0 + e0 + b0[2]), (TV, -90.0), (1.2, -135.0), (1.45, -155.0), (1.65, -164.0), (1.85, -170.0),
+                              (FOLD, PHI_END)])
+    ez_at = _cassowary_mono([(T0, shoulder(*b0)[1] + l1 * math.sin(math.radians(th1 + a0 + b0[2]))), (TV, l2 + WRIST_R + 0.2), (1.2, 24.5),
+                             (1.45, 21.5), (1.85, 13.8), (FOLD, ELBOW_R)])
+
+    def rolling(t):
+        """Up to upright: the hand level, its talons opened just so far as keeps their tips on the floor."""
+        reach = max(WRIST_R, ez_at(t)[0] + l2 * math.sin(math.radians(phi_at(t)[0]))) - 0.07
+        lo, hi = 0.0, 50.0
+        if _ammit_talons_drop(0.0, lo) <= reach:
+            return lo
+        for _ in range(40):
+            mid = 0.5 * (lo + hi)
+            lo, hi = (mid, hi) if _ammit_talons_drop(0.0, mid) > reach else (lo, mid)
+        return hi
+    # Past upright, the hand's turn in the world and its talons' curl: it turns back as the forearm swings, the
+    # talons open while it points down (their tips clear of the floor at the top of its arc) and shut once it trails.
+    psi_at = _cassowary_mono([(TV, 0.0), (1.05, -18.0), (1.3, -55.0), (1.5, -100.0), (1.68, -133.0), (1.9, -150.0), (FOLD, PSI_END)])
+    curl_at = _cassowary_mono([(TV, rolling(TV)), (1.05, 50.0), (1.48, 50.0), (1.95, -40.0)])
 
     tracks, body = {}, []
     for i in range(int(round(D * hz)) + 1):
@@ -5250,21 +5279,19 @@ def _ammit_death(legs, arms, hz=30.0):
         dy, dz, pitch = body_at(t)
         body.append((t, 0.0, round(dy, 3), round(dz, 3), 0.0, round(pitch, 3), 0.0))
         h, k = _ik2(hip, knee, ankle, _to_body(ankle[0], ankle[1], dy, dz, pitch), _bend(legs["l"]))
-        if t <= PLANTED:
+        if t <= T0:
             a, e = planted_arm(dy, dz, pitch)
             hand, curl = -(a + e + pitch), 0.0
         else:
-            u = ease((t - PLANTED) / (FOLD - PLANTED))
-            phi = phi0 + (PHI_END - phi0) * u
-            psi = min(phi - th2 + 90.0, max(phi - th2 - 40.0, PSI_END * ease(u / 0.85)))   # within the hand's turn on the forearm
-            curl = (50.0 - 90.0 * ease((-psi - 60.0) / 40.0)) * ease((t - PLANTED) / 0.3)
-            s = _ammit_turn(sh, pitch)
-            s = (s[0] + dy, s[1] + dz)
-            ez = max(ELBOW_R, max(WRIST_R, _ammit_talons_drop(psi, curl)) - l2 * math.sin(math.radians(phi)), s[1] - l1 * 0.999)
+            phi = phi_at(t)[0]
+            psi, curl = (0.0, rolling(t)) if t <= TV else (psi_at(t)[0], curl_at(t)[0])
+            hand = min(90.0, max(-40.0, psi - (phi - th2)))   # within the hand's turn on the forearm
+            psi = hand + (phi - th2)
+            s = shoulder(dy, dz, pitch)
+            ez = max(ez_at(t)[0], max(WRIST_R, _ammit_talons_drop(psi, curl)) - l2 * math.sin(math.radians(phi)), s[1] - l1 * 0.999)
             ey = s[0] + math.sqrt(l1 * l1 - (s[1] - ez) ** 2)
             a = math.degrees(math.atan2(ez - s[1], ey - s[0])) - th1 - pitch
-            e = max(-110.0, phi - th2 - a - pitch)   # the elbow's fold, its limit brushed (a hundredth of a degree) as the arm passes under
-            hand = min(90.0, max(-40.0, psi - (phi - th2)))
+            e = max(-110.0, phi - th2 - a - pitch)   # the elbow's fold, its limit brushed (a hundredth of a degree) as the chest settles
         for side in ("l", "r"):
             for jn, v in (("hip_", h), ("knee_", k), ("ankle_", -(h + k + pitch)), ("shoulder_low_", a), ("elbow_low_", e), ("hand_low_", hand)):
                 tracks.setdefault(jn + side, []).append((t, round(v, 3)))
@@ -5690,7 +5717,11 @@ def ammit(b):
     # with no landing's beat. The hop was the floor's hold lifting it over walking hands its forward pitch
     # pressed below the floor; every frame is solved now with each limb on the floor or clear of it
     # (_ammit_death), so the body only ever goes down. Its walking elbows fold only back (their limits),
-    # so the arms fold under, never out ahead onto the forearms.
+    # so the arms fold under, never out ahead onto the forearms. They fold from the start, while the
+    # chest stands high over them (the ninth notes: "only hiccup is a little jump the mid-arms make when
+    # folding. I think their fold needs to start earlier to avoid bumping the ground and jumping like
+    # that"): folded late, each forearm had to pass upright with the hand pointing its talons at the
+    # floor, so the elbow jumped up to clear them and dropped again.
     D, dying, body = _ammit_death(legs, arms)
     b.death(D, dying, body=body, ease="smooth", plant=[("ankle_l", 0.0, D), ("ankle_r", 0.0, D)])
 
