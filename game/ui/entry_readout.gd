@@ -144,6 +144,10 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 				out.append(marked(text_line("effect", "An ally whose die is spent acts again", "attr"), [main, star]))
 			elif f.turns_die:
 				out.append(marked(text_line("effect", "Turns its die to its other battery", "attr"), [main, star]))
+			elif f.buff_status.is_empty():
+				# A buff that grants no status (the Retrocausal Shroud, the Immelmann Booster): its
+				# kind alone, as a debuff's line is, its keywords and its rules saying what it does.
+				out.append(marked(text_line("effect", "Buff", "attr"), [main]))
 			else:
 				var st: Dictionary = Effects.STATUS.get(f.buff_status, {})
 				# What a buff grants against the component's own; one that spends a count for its

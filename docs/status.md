@@ -54,7 +54,11 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1264 tests, 373,061 checks, green on `ccr-722ca9f0-yj8na3` (17 November, his fifteenth
+- Tests: 1264 tests, 373,063 checks, green on `claude/gameplay-terminology-tooltips-rug879` (17
+  November, the terminology pass's first round: a buff that grants no status reads Buff on the die,
+  over `7beb2b4`; a container whose import predates the Kite's and the Needletail's models fails
+  seven rig and view tests until `--import` runs again, its rewritten textures restored after).
+  Before it, 1264 tests, 373,061 checks, green on `ccr-722ca9f0-yj8na3` (17 November, his fifteenth
   round: the Goblin Warchief in content, over main at `0101e14`). Before it, 1264 tests, 373,042
   checks, green on the same branch (16 November, main at
   `f190205`, the map session's landing, taken into this branch in a merge: the Roc aloft beside
@@ -2132,8 +2136,11 @@ numbers placeholders; the Captain keeps his name and his kit, and tier three's n
 aside on his word. Still his (the bible's section 12): the marks on the rows; which gathers
 stay beside the Roc's and the bombs', the Great Needler's by lean; Aloft's name; and the
 page on targeting. His codex cleanup and
-terminology pass is a session of his own after this work (the to-do's line keeps what was
-found for it). On his word: the engine for a foe's Phased and
+terminology pass began on 17 November ("I want to standardize and clean up the terms we use
+and the way we write tooltip text"): its first round, `docs/terminology_proposal.md`, counts
+the gameplay text and puts a standard of twenty-nine rules to his marks; nothing of it is
+built but one bug, a buff that grants no status reading "Grants  ×1" on the die (the to-do's
+line keeps what was found for it). On his word: the engine for a foe's Phased and
 for an immunity, the targeting build, then the rest of the content and a read of what
 changed.
 The table of every rider, buff and debuff (`docs/vocabulary_table.md`) stands with its page

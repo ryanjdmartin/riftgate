@@ -954,6 +954,13 @@ func test_the_hold_reads_shields_debuffs_buffs_and_grants() -> void:
 	assert_eq(str(EntryReadout.lines_for(wreck, 2, -1, wreck, [], [], db)[0]["text"]), db.component_name(wreck.component).to_upper(), "its name still the title")
 	var coil := Face.buff("overcharged", 2)
 	assert_eq(str(EntryReadout.effects_of(coil)[0]["text"]), "Grants %s ×2" % str(Effects.STATUS["overcharged"]["name"]), "a buff grants its status")
+	var shroud := Face.buff("", 1)
+	shroud.disrupts_attackers = true
+	var said: Array[String] = []
+	for l in EntryReadout.effects_of(shroud):
+		said.append(str(l["text"]))
+	assert_eq(said[0], "Buff", "a buff that grants no status says its kind, as a debuff does: %s" % str(said))
+	assert_false(said.any(func(t: String) -> bool: return t.begins_with("Grants")), "and no Grants line with no name: %s" % str(said))
 	var u := Unit.new()
 	u.grant_passive({"id": "t_spill", "name": "Spill", "description": "Damage past a kill spills behind.", "effects": [{"trigger": "static", "effect": "spillover", "value": 1}]})
 	var gun := Face.attack(4)
