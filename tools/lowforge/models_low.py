@@ -25,8 +25,8 @@ def badger(b):
     right, a sawed-off cannon with a crusher hopper built in (6 October: the Slug Cannon converted to melee and
     locked to the Badger, the second claw gone, so the right boom's mount is no hardpoint and
     the pins run hp_1 the deck's ring, hp_2 left gimbal, hp_3 right gimbal); floodlights,
-    two louvred rear vents (the Minervan vent, the Polar Bear's, since 16 November), a ladder, a
-    hatch. Since the stock pass (22 October) its stock is the Rivet Gun
+    two louvred rear vents (the Minervan vent, the Polar Bear's, since 16 November) on a radiator
+    wall across its tail (17 November), a ladder, a hatch. Since the stock pass (22 October) its stock is the Rivet Gun
     alone, on the deck's ring as its class shape, the gimbals bare; the missile box and the
     gimbal's autoguns went with the old stock (Ryan's go, 28 October)."""
     # Treads: wide enough for the booms to rest over them, chamfered both ends, a skirt
@@ -52,11 +52,17 @@ def badger(b):
     # Engine deck at the rear, raised, with vents, an exhaust and the hatch.
     deck = b.loft([(-30.0, rect(0.0, 36.0, 34.0, 46.0)), (-4.0, rect(0.0, 36.0, 34.0, 46.0)), (2.0, rect(0.0, 34.0, 34.0, 40.0))], "steel.panel", "deck")
     # Its two rear vents, the Minervan vent (Ryan, 16 November: "Make vents into real vents, like
-    # the Polar bear ... make that vent a Minervan signature"), where a grille-tiled block stood:
-    # side by side across the tail where the hull meets the engine deck, each fourteen square,
-    # four heavy louvres a little out at rest over heat banked in its floor, thrown open by its
-    # vent act. The skirmish's camera sees it from behind, so they face the player.
-    rear_vents = _minerva_vents(b, [hull, deck], (-8.5, 8.5), -30.0, 33.0, width=14.0, height=14.0)
+    # the Polar bear ... make that vent a Minervan signature"), where a grille-tiled block stood,
+    # thrown open by its vent act; the skirmish's camera sees them from behind, so they face the
+    # player. Bigger on 17 November (Ryan: "both badger and boar could use bigger vents ... Badger
+    # could change some rear geometry if it needs to"): the engine deck's tail carried out to the
+    # hull's width as one armoured radiator wall, chamfered at its top corners and standing a
+    # little proud of the old rear face, and across it a pair eighteen wide and twenty-two tall
+    # (fourteen square before), eight heavy louvres each at the Polar Bear's pitch.
+    RW, RY0, RY1 = 21.0, -31.5, -23.0   # the wall's half width, its face and its back (inside the deck)
+    wall = b.loft([(RY0, [(-RW, 21.0), (RW, 21.0), (RW, 43.0), (RW - 3.0, 46.0), (-RW + 3.0, 46.0), (-RW, 43.0)]),
+                   (RY1, [(-RW, 21.0), (RW, 21.0), (RW, 43.0), (RW - 3.0, 46.0), (-RW + 3.0, 46.0), (-RW, 43.0)])], "steel.panel", "radiator_wall")
+    rear_vents = _minerva_vents(b, [wall], (-10.0, 10.0), RY0, 33.0, width=18.0, height=22.0, slats=8)
     b.box(-8.0, 0.0, -14.0, -6.0, 46.0, 48.0, "steel.plate", "hatch")
     b.box(-14.0, -10.0, -26.0, -18.0, 46.0, 54.0, "steel.dark", "exhaust")
     b.box(-22.5, -19.5, -20.0, 0.0, 22.0, 44.0, "steel.ladder", "ladder")
@@ -1640,9 +1646,12 @@ def wild_boar(b):
             b.box(min(s * (TX + TW / 2 + 1.0), s * (TX + TW / 2 + 4.0)), max(s * (TX + TW / 2 + 1.0), s * (TX + TW / 2 + 4.0)), y0, y1, 8.0, 22.0, "livery.livery2", "ablative")
     # Its two rear vents, the Minervan vent (Ryan, 16 November: "Make vents into real vents, like
     # the Polar bear ... make that vent a Minervan signature"), where a grille-tiled plate stood:
-    # side by side low in the hull's rear face between the treads, four heavy louvres a little
-    # out at rest over heat banked in its floor, thrown open by its vent act.
-    rear_vents = _minerva_vents(b, [hull], (-6.5, 6.5), -38.0, 15.5, width=11.5, height=12.0)
+    # side by side in the hull's rear face between the treads, heavy louvres a little out at rest
+    # over heat banked in its floor, thrown open by its vent act. Grown on 17 November to fill
+    # that face (Ryan: "Boar doesn't have much more room so just use what's there"): twelve wide
+    # and seventeen tall (eleven and a half by twelve before), six louvres each at the Polar
+    # Bear's pitch, a hand's width of plate left at the face's edges and between the two.
+    rear_vents = _minerva_vents(b, [hull], (-6.75, 6.75), -38.0, 16.0, width=12.0, height=17.0, slats=6)
     b.prism("z", 0.0, -34.0, 30.0, 4.0, 12.0, "steel.dark", 6, "stack")
     b.prism("z", 0.0, -34.0, 37.0, 5.0, 2.0, "steel.plate", 6, "stack_cap")
     # The right rear quarter's mount (hp_5), its stock's Twin Autoguns worn as their class (the
