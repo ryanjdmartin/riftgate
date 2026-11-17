@@ -281,6 +281,18 @@ class Map:
                 for e in [a.get("effect")] + [st.get("effect") for st in a.get("also") or []]:   # its own special and what it does also
                     if e in FOE_EFFECTS:
                         self.add(FOE_EFFECTS[e], "sets", dict(p, who="%s's %s" % (f["name"], a["name"])))
+            # Its fall, a death blow or one special in its place, and what that does also (17
+            # November: the Mandragora's scream is a fall, no move).
+            od = f.get("on_death") if isinstance(f.get("on_death"), dict) else {}
+            fall = od.get("blow") or od.get("act")
+            if isinstance(fall, dict):
+                who = "%s's %s, as it falls" % (f["name"], fall.get("name", "last act"))
+                for kw in fall.get("keywords", []):
+                    if kw in FOE_RIDERS:
+                        self.add(FOE_RIDERS[kw], "sets", dict(p, who=who))
+                for e in [fall.get("effect")] + [st.get("effect") for st in fall.get("also") or []]:
+                    if e in FOE_EFFECTS:
+                        self.add(FOE_EFFECTS[e], "sets", dict(p, who=who))
 
     def walk_effects(self, effects, p):
         for eff in effects:

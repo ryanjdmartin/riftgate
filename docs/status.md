@@ -54,9 +54,11 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1269 tests, 373,352 checks, green on `ccr-178e0404-ptuh2m` (17 November, the reboot
-  machines' page and its probe over main at `f475a59`, the check the leftovers test's load of
-  the new tool). Before it, 1269 tests, 373,351 checks, green on `ccr-722ca9f0-yj8na3` (17 November, the foes'
+- Tests: 1273 tests, 373,381 checks, green on `ccr-722ca9f0-yj8na3` (17 November, twelve of
+  the bench's rows in content, over main at `7dcb221`). Before it, 1269 tests, 373,357 checks,
+  green on the same branch (17 November, nothing
+  reaching a Roc aloft, over main at `f475a59`). Before it, 1269 tests, 373,351 checks, green
+  on the same branch (17 November, the foes'
   targeting built afresh, over main at `d657a20`). The runner fails a run whose tests never
   ran since that day: a script that did not compile had read as "0 checks, 0 failures" and a
   clean exit, so read the checks' count, never the exit code alone, on any older commit.
@@ -2119,9 +2121,11 @@ than a blow: the carriers are the bench's.
 names, Exposed's tier two, holds the rank and file alone. **Phased foes act.**
 **The Roc is Aloft while its Stoop gathers** (his fourteenth round, 16 November: "the stoop
 can make it untargetable, yes. I don't think I'd call it phased though, it should still take
-damage from its riders"; the rules' Aloft): a buff of its own, a working name. No die may be
-dropped on it through the player's turn between the climb and the stoop; what it carries
-still wears at it, and by a session's read what lands with no aim still reaches it. The
+damage from its riders"; the rules' Aloft): a buff of its own, a working name. Nothing of the
+team's reaches it through the player's turn between the climb and the stoop, a die dropped on
+it or a blow and a mark aimed elsewhere (his nineteenth round: "the roc doesn't get splashed
+while aloft"; `Skirmish.out_of_reach`, the one guard every list of reached foes reads); what
+it carries still wears at it. The
 round the climb is announced is the window. A lone Roc costs about a round and a point of
 hull more (`docs/measurements.md`, a direction). **Phased keeps its name for now.** A foe's
 aim no longer runs into the stat beside it on its page.
@@ -2147,11 +2151,15 @@ line and three foe pages are a session's drafts. A save from before is set aside
 still prints the comparison section of its last run and the old aims' cells; the next run
 drops both.
 **First now: the foes' pass, the rest**
-(the to-do's line): the content, put to him on 16 November as the proposal's section 28 and
-waiting on his marks: the moves that take the rank and file's countdowns' place, a fall for
-a domain each, Exposed's carriers, a foe's Phased with its two carriers, two moves as steps
-and three immunities; his thirteenth and fourteenth rounds answered part and are its
-sections 29 to 31. **The Goblin Warchief is in** (17 November, his idea and his name: "a back
+(the to-do's line): the content of the proposal's section 28, **marked on 17 November** (his
+nineteenth round, sixteen rows put to him in chat: "yes to all, seems fine. Ill be able to
+tell in play. Except the red dragon"; the proposal's section 35 has the table): the Antlion
+Queen's bite in Devour's place, a fall for a domain each, Exposed's carriers, a foe's Phased
+on the Spectre and the Wraith, two moves as steps and three immunities, fifteen rows to
+build. Twelve are in content since the same day (the section's Built table: the names of
+four falls and four Expose moves are a session's drafts); the ghosts' Phased and the three
+immunities need engine first. The Red Dragon's row is held on his words and put back to him (the bible's section
+12): it stands as it is until he says. **The Goblin Warchief is in** (17 November, his idea and his name: "a back
 rank goblin captain that gives orders and Exposes"; "more like warchief"): a back-rank unit of
 its own behind the Captains in the tier-three warband, the chieftain render cut for its sprite,
 its Kill Order the foes' Expose on its first carrier, its texts a session's drafts and its
@@ -2170,9 +2178,9 @@ A dying foe's
 single blow lands on the machine that made the kill, as its curse does ("yes, hit its killer,
 if it has one"). **A reboot opens a sealed Polar Bear** (his eighteenth round: "Polar bear
 unseals when rebooting. It's a good change because you're never accidentally stuck sealed"):
-the shell and its armour go as the die drops. Still his (the bible's section 12): the marks
-on the rows; which gathers
-stay beside the Roc's and the bombs', the Great Needler's by lean; and Aloft's name. His codex cleanup and
+the shell and its armour go as the die drops. Still his (the bible's section 12): the Red Dragon's row, and Aloft's name. The Great
+Needler keeps its gather, and heat laid on a machine once its reboot has vented stays (his
+word: "That's the risk, same as taking hull damage with no shield"). His codex cleanup and
 terminology pass is a session of his own after this work (the to-do's line keeps what was
 found for it). On his word: the engine for a foe's Phased and
 for an immunity, then the rest of the content and a read of what

@@ -5396,13 +5396,13 @@ func test_a_foe_that_climbs_is_no_target_while_its_blow_gathers() -> void:
 	sk.begin()
 	sk.start_round()
 	assert_true(roc.gathering(), "announced, it gathers")
-	assert_false(Skirmish.untargetable(roc), "the round the climb is announced it is still on the ground")
+	assert_false(Skirmish.out_of_reach(roc), "the round the climb is announced it is still on the ground")
 	assert_true(sk.targets_for(0).has(roc), "and a target like any: the window")
 	sk.end_round()
 	assert_true(Effects.has(roc, "aloft"), "as it begins to gather it climbs")
 	assert_true("\n".join(sk.log).contains("climbs out of reach"), "the log says so")
 	sk.start_round()
-	assert_true(Skirmish.untargetable(roc), "through the player's next turn it is out of the dice's reach")
+	assert_true(Skirmish.out_of_reach(roc), "through the player's next turn it is out of the dice's reach")
 	assert_false(sk.targets_for(0).has(roc), "no die may be dropped on it")
 	assert_true(sk.targets_for(0).has(other), "the foe beside it is a target as ever")
 	assert_false(sk.assign(0, roc), "and a spend at it is refused")
@@ -5419,9 +5419,10 @@ func test_a_foe_that_climbs_is_no_target_while_its_blow_gathers() -> void:
 
 ## Aloft is not Phased (Ryan, 16 November: "it should still take damage from its riders, unlike
 ## phased. So it's different, should be a different buff"): what the foe carries still wears at
-## it, and what lands with no aim still reaches it, a neighbour's Spread and a blow at every foe.
-## Only a die dropped on it is refused.
-func test_a_foe_aloft_still_takes_what_it_carries_and_what_lands_with_no_aim() -> void:
+## it. And nothing new reaches it, with an aim or without (17 November: "the roc doesn't get
+## splashed while aloft"): a neighbour's Spread, a blow at every foe, a Chain's arc, a Mine's
+## blast beside it, a spill and a shove from the foe in front all pass it by.
+func test_a_foe_aloft_takes_what_it_carries_and_nothing_that_lands_elsewhere() -> void:
 	var sk := Skirmish.new(1, 2)
 	var sweep := Face.attack(20, I, K.CLEAVE)
 	sweep.cleave = 10
@@ -5434,37 +5435,46 @@ func test_a_foe_aloft_still_takes_what_it_carries_and_what_lands_with_no_aim() -
 	sk.start_round()
 	Effects.stack(roc, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 3)
 	sk.end_round()
-	assert_true(Skirmish.untargetable(roc), "it has climbed")
+	assert_true(Skirmish.out_of_reach(roc), "it has climbed")
 	var after_first := roc.hp
 	assert_true(after_first < 60, "its Ablating took its points as its turn ended, climb or no (%d)" % after_first)
 	sk.start_round()
-	assert_true(sk.assign(0, other), "a Spread dropped on the foe beside it")
-	assert_eq(after_first - roc.hp, 10, "reaches it: nothing aimed at it, so nothing refused")
-	var after_spread := roc.hp
-	assert_true(sk.targets_for(1).has(other) and not sk.targets_for(1).has(roc), "a blow at every foe is dropped on a foe that can be targeted")
+	assert_false(sk.reached_by(sweep, other).has(roc), "a Spread on the foe beside it does not reach it")
+	assert_false(sk.area_shapes(sweep, other).has(roc), "and no shape of the spend holds it")
+	assert_true(sk.assign(0, other), "the Spread, dropped beside it")
+	assert_eq(roc.hp, after_first, "passes it by")
+	assert_true(sk.targets_for(1).has(other) and not sk.targets_for(1).has(roc), "a blow at every foe is dropped on a foe in reach")
 	assert_true(sk.assign(1, other), "and dropped there")
-	assert_eq(after_spread - roc.hp, 6, "it lands on the climber with the rest")
+	assert_eq(roc.hp, after_first, "it lands on every foe but the climber")
+	assert_true(sk.web_catch(other) == null, "a web on the foe beside it catches nobody, the climber its one neighbour")
 	var before_tick := roc.hp
 	sk.end_round()
 	assert_true(roc.hp < before_tick, "and what it carries wears at it again as its turn ends")
-	# A Purge that reaches it takes the buff, as it takes any, and it is a target again.
-	var s2 := Skirmish.new(1, 2)
+	# A Chain's arc, a Mine's blast beside it and a web's catch pass it by; a Mine it carries
+	# itself is its own.
+	var s2 := Skirmish.new(1, 3)
 	s2.add_mech(_mech("A", Die.single(Face.attack(5, I)), 0, 100))
 	var r2 := _climber()
-	s2.add_foes([r2, _ghoul(500, 0)])
+	s2.add_foes([r2, _ghoul(500, 0), _ghoul(500, 0)])
 	s2.begin()
 	s2.start_round()
 	s2.end_round()
 	s2.start_round()
-	assert_false(s2.targets_for(0).has(r2), "aloft")
-	Effects.purge(r2, 1)
-	assert_true(s2.targets_for(0).has(r2), "a Purge takes the buff, and a die may be dropped on it again")
-	assert_true(r2.gathering() or not r2.pending.is_empty(), "its stoop still coming")
+	assert_true(Skirmish.out_of_reach(r2), "aloft")
+	assert_eq(r2.column, 0, "the heaviest hitter stands left")
+	var next_to: Foe = s2.front[1]
+	var far: Foe = s2.front[2]
+	Effects.stack(r2, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1)
+	assert_false(s2.shocked_foes(null).has(r2), "Shocked, it conducts no arc")
+	var blast := s2.mine_reach(next_to.rank, next_to.column, false)
+	assert_true(blast.has(next_to) and blast.has(far) and not blast.has(r2), "a Mine blowing beside it reaches the foes in reach and passes it by")
+	assert_true(s2.mine_reach(r2.rank, r2.column, false).has(r2), "a Mine it carries blows on it: what it carries is its own")
+	assert_eq(s2.web_catch(next_to), far, "a web on the foe beside it catches the foe on the other side")
 
 
-## A climb broken off comes down: a Disrupt that reaches the foe with no aim turns its move, and
-## it is a target again that turn.
-func test_a_disrupt_that_reaches_a_climber_brings_it_down() -> void:
+## Nothing breaks off a climb once it is up: a Disrupt over every foe passes the climber by, as
+## every spend with no aim does, so the round the climb is announced is the window.
+func test_a_disrupt_over_every_foe_passes_a_climber_by() -> void:
 	var sk := Skirmish.new(1, 2)
 	sk.add_mech(_mech("A", Die.single(Face.attack(1, E, K.DISRUPT)), 0, 100))
 	sk.add_mech(_mech("B", Die.single(Face.attack(5, I)), 0, 100))
@@ -5478,11 +5488,11 @@ func test_a_disrupt_that_reaches_a_climber_brings_it_down() -> void:
 	roc.charge = 1
 	sk.end_round()
 	sk.start_round()
-	assert_true(Skirmish.untargetable(roc), "it has climbed, its stoop coming")
+	assert_true(Skirmish.out_of_reach(roc), "it has climbed, its stoop coming")
 	assert_true(sk.assign(0, other), "a Disrupt over every foe, dropped on the foe beside it")
-	assert_false(Effects.has(roc, "aloft"), "its stoop broken off, it comes down")
-	assert_eq(str(roc.action.get("id", "")), "talons", "its other move in the stoop's place")
-	assert_true(sk.targets_for(1).has(roc), "and a die may be dropped on it this very turn")
+	assert_true(Effects.has(roc, "aloft"), "does not reach it: it is still up")
+	assert_eq(str(roc.action.get("id", "")), "stoop", "and its stoop still comes")
+	assert_false(sk.targets_for(1).has(roc), "no die may be dropped on it this turn")
 
 
 func test_a_longer_countdown_holds_its_pick_and_a_suppress_holds_its_blow() -> void:
@@ -5539,6 +5549,69 @@ func test_a_disrupt_breaks_off_a_gathering_move() -> void:
 	assert_true(back.gathering(), "the save keeps the move gathering")
 	assert_eq(back.charge, 2, "and its count")
 	assert_eq(Foe.countdown_of(back.pending), 2, "a whole number")
+
+
+## A cleanse that follows a heal in one move has the heal's patient (the Cleric's Cure, Ryan's
+## yes of 17 November: "Cure heals 4, then cleanses the same foe"), whoever else carries more
+## marks; a cleanse of its own still finds the most marked.
+func test_a_cleanse_after_a_heal_lands_on_the_foe_it_mended() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(10, L)), 40, 100))
+	var healer := Foe.make("mage", 60, 10, true)
+	healer.actions = [{"id": "cure", "name": "Cure", "kind": "defend", "effect": "heal", "value": 20, "weight": 1, "text": "",
+		"also": Foe.also_from([{"effect": "cleanse"}], "Cure")}]
+	healer.action = healer.actions[0]
+	var hurt := _ghoul(100, 10)
+	var marked := _ghoul(100, 10)
+	sk.add_foes([hurt, marked, healer])
+	sk.begin()
+	hurt.hp = 50
+	Effects.stack(hurt, Effects.STATUS["brittled"], Effects.SKIRMISH, "mech", 1)
+	Effects.stack(marked, Effects.STATUS["brittled"], Effects.SKIRMISH, "mech", 4)
+	Effects.stack(marked, Effects.STATUS["cryoed"], Effects.SKIRMISH, "mech", 2)
+	sk.start_round()
+	assert_eq(sk.cleanse_target(healer), marked, "a cleanse of its own would find the most marked")
+	sk.end_round()
+	assert_eq(hurt.hp, 70, "the most hurt is mended")
+	assert_false(Effects.has(hurt, "brittled"), "and the same foe is cleansed")
+	assert_true(Effects.has(marked, "brittled") and Effects.has(marked, "cryoed"), "the more marked foe keeps its marks: one patient a Cure")
+	# With nobody hurt the heal mends nobody, and the cleanse goes by its own rule.
+	hurt.hp = hurt.hp_max
+	sk.start_round()
+	sk.end_round()
+	assert_false(Effects.has(marked, "cryoed"), "no patient, so the step is a cleanse like any: the most marked")
+
+
+## The one fall that pays the team (the Lich's, Ryan's yes of 17 November: "Killed, every foe it
+## readied loses its readiness to rise"): every foe still standing loses the Undying the fallen
+## foe's kind gave it. What a foe readied for itself stays, and one felled by the same blow
+## had its readiness as it fell, so it gets up.
+func test_a_fall_takes_back_the_readiness_its_foe_gave() -> void:
+	var sk := Skirmish.new(1, 4)
+	var sweep := Face.attack(200, I, K.CLEAVE)
+	sweep.cleave = 200
+	sk.add_mech(_mech("A", Die.single(sweep), 0, 500))
+	var binder := Foe.make("binder", 10, 0)
+	binder.content_id = "binder"
+	binder.on_death = {"act": Foe.fall_act_from({"name": "Unbound", "effect": "unready_all"})}
+	var readied := _ghoul(500, 0)
+	var own := _ghoul(500, 0)
+	own.content_id = "knight"
+	var beside := _ghoul(10, 0)
+	sk.add_foes([beside, binder, readied, own])
+	sk.begin()
+	Effects.stack(readied, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:binder", 1, Effects.DECAY_NONE)
+	Effects.stack(beside, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:binder", 1, Effects.DECAY_NONE)
+	Effects.stack(own, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:knight", 1, Effects.DECAY_NONE)
+	sk.start_round()
+	assert_true(absi(binder.column - beside.column) == 1 and binder.rank == beside.rank, "the binder stands beside a foe it readied")
+	assert_true(sk.assign(0, binder), "a blow that fells the binder and the foe beside it")
+	assert_false(binder.alive(), "the binder falls")
+	assert_false(Effects.has(readied, "risen"), "what it readied will not get back up")
+	assert_true(Effects.has(own, "risen"), "a foe that readied itself keeps its own")
+	assert_true(beside.alive() and beside.hp == beside.hp_max, "and the foe felled with it fell readied: it gets up")
+	assert_true("\n".join(sk.log).contains("will not get back up"), "the log says who lost it: %s" % sk.log[sk.log.size() - 1])
+	assert_true(Foe.FALL_EFFECTS.has("unready_all") and Foe.UNTARGETED_EFFECTS.has("unready_all"), "a fall's effect, aimed at no machine")
 
 
 func test_a_healer_cures_the_most_hurt_of_its_own() -> void:

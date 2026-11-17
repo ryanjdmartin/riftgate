@@ -217,6 +217,7 @@ var _enemy_acting := false
 ## outside one: a tick's kill, a Mine blowing in the enemy's turn and a foe's own burst are
 ## nobody's. A fall's curse lands on it (_last_act).
 var _killer: MechState = null
+var _mended: Foe = null   # the foe a move's heal mended, for a cleanse that follows it in the same move (the Cleric's Cure, one patient); cleared as each move's first step begins
 ## Every blow of the last enemy turn, in order, for the screen to replay:
 ## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull,
 ## seq, name, boss, all}. `seq` orders it among the turn's specials; `name` is the move's shown
@@ -1285,12 +1286,17 @@ func spend_face(ms: MechState) -> Face:
 	return f
 
 
-## Can no die be dropped on this foe right now? A foe Aloft (the Roc while its Stoop gathers,
+## Is this foe out of the team's reach right now? A foe Aloft (the Roc while its Stoop gathers,
 ## Ryan, 16 November: "the stoop can make it untargetable ... it should still take damage from
-## its riders, unlike phased"): it is no target of a spend, a Swap's second included, and
-## nothing else changes. What it carries ticks and damages it, and what lands with no aim
-## reaches it: a neighbour's Spread, a blow at every foe, a Mine's blast, a Chain's arc.
-static func untargetable(foe: Foe) -> bool:
+## its riders, unlike phased"; 17 November: "the roc doesn't get splashed while aloft"): it is
+## no target of a spend, a Swap's second included, and nothing a spend lands with no aim
+## reaches it either, a neighbour's Spread, a blow or a mark at every foe, a Chain's arc, a
+## Mine's blast beside it, a web's catch, a spill or a shove from the foe in front. What it
+## carries is its own: its Ablating and Vitriol tick and damage it, a web on it bursts on it
+## and a Mine on it blows on it. Every list of the foes a spend reaches is read through here
+## (reached_by, area_shapes, shocked_foes, mine_reach, web_catch), so the bot and the screen
+## read the same.
+static func out_of_reach(foe: Foe) -> bool:
 	return foe != null and Effects.has(foe, "aloft")
 
 
@@ -1312,7 +1318,7 @@ func swap_targets(first: Foe, carries: bool = false) -> Array:
 		return out
 	var pair := twin_of(first)
 	for foe in field_foes():
-		if foe != first and foe != pair and foe.alive() and (carries or not foe.is_massive()) and not untargetable(foe):
+		if foe != first and foe != pair and foe.alive() and (carries or not foe.is_massive()) and not out_of_reach(foe):
 			out.append(foe)
 	for col in range(columns):
 		if front[col] == null and not corpses.has(Vector2i(0, col)):
@@ -1350,10 +1356,10 @@ func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
 	var anyone := reach_of(ms, f) != Face.Reach.DIRECT
 	for col in range(columns):
 		for foe in slot_foes(0, col):
-			if foe.alive() and not out.has(foe) and not untargetable(foe):
+			if foe.alive() and not out.has(foe) and not out_of_reach(foe):
 				out.append(foe)
 		for foe in slot_foes(1, col):
-			if not foe.alive() or out.has(foe) or untargetable(foe):
+			if not foe.alive() or out.has(foe) or out_of_reach(foe):
 				continue
 			if anyone or in_direct_reach(foe):
 				out.append(foe)
@@ -1562,7 +1568,8 @@ func _draw_blows(f: Foe, ahead: Dictionary) -> void:
 
 ## The moves a foe may announce this round: those whose conditions hold, less the special
 ## it announced last round when anything else is open (a special never fires twice running,
-## so the swing after the roar can be counted on). Nothing legal falls back to its blow.
+## so the swing after the roar can be counted on). Nothing legal falls back to its blow, one
+## whose own condition holds before any other.
 ## `announced` is the foes whose move for this round is already out, as the round's opening
 ## hands them down the strike order; unsaid, it is every foe on the field (the player's turn,
 ## where a Disrupt reads what a foe would turn to).
@@ -1593,6 +1600,14 @@ func legal_actions(f: Foe, announced = null) -> Array:
 				kept.append(a)
 		if not kept.is_empty():
 			legal = kept
+	if legal.is_empty():
+		# Nothing legal falls back to its blow: first a blow whose own condition holds, which
+		# only a rule of announcing held back (a blow that also takes a reroll past the round's
+		# two, the Thief's Mug; a blow whose rider is a second Expose, the Piercing Eye's Gaze),
+		# so a foe never reaches for a move its own condition shuts; then any blow at all.
+		for a in f.actions:
+			if Foe.is_attack_action(a) and not follow.has(str(a.get("id", ""))) and _when_holds(f, a) and not (bool(a.get("once", false)) and f.spent_once.has(str(a.get("id", "")))):
+				legal.append(a)
 	if legal.is_empty():
 		for a in f.actions:
 			if Foe.is_attack_action(a):
@@ -2494,9 +2509,9 @@ func release_shot(ms: MechState) -> Face:
 ## costing no heat of its own, its machine's kill for what it fells; the fight it decides ends
 ## there. With less heat than a step of its rule the vent is every machine's, and blasts nothing.
 func _vent_blast(i: int, ms: MechState, shot: Face, fired: int) -> void:
-	var standing := field_foes().filter(func(foe: Foe) -> bool: return foe.alive())
+	var standing := field_foes().filter(func(foe: Foe) -> bool: return foe.alive() and not out_of_reach(foe))
 	if shot == null or standing.is_empty() or outcome != Outcome.NONE:
-		return
+		return   # nothing stands in reach to take it: the heat vents as any machine's
 	var target: Foe = standing[0]
 	log.append("%s opens its valves: %d heat, %d on every foe" % [ms.unit.display_name, fired, shot.power])
 	_killer = ms   # its own shot: what it fells is its kill
@@ -2818,8 +2833,8 @@ func web_catch(f: Foe) -> Foe:
 		if j < 0 or j >= order.size():
 			continue
 		var n: Foe = order[j]
-		if absi(n.column - f.column) <= 1 and n != f and n.alive():
-			return n
+		if absi(n.column - f.column) <= 1 and n != f and n.alive() and not out_of_reach(n):
+			return n   # one out of the team's reach (Aloft) is no catch: the other side is tried
 	return null
 
 
@@ -2882,7 +2897,11 @@ func _strike(f: Foe, t: MechState) -> void:
 			var nc := f.rider(f.action, "brittle")
 			_fire_on(t, "brittled_mech", nc, f)
 			log.append("%s lays Brittle ×%d on %s: every blow it takes lands harder" % [f.display_name, nc, t.unit.display_name])
-		if f.has_keyword(f.action, "expose") and t.alive():
+		if f.has_keyword(f.action, "expose") and t.alive() and not _any_exposed():
+			# One machine at a time, and never a mark renewed (the rule of announcing, legal_actions):
+			# a blow whose rider this is may be its foe's one move (the Piercing Eye's Gaze), so the
+			# rider lands nothing while a machine stands Exposed, and the whole field's fire still
+			# comes every other round at the most.
 			_expose_mech(f, t)
 		if f.has_keyword(f.action, "destroy") and t.alive() and int(ev["through"]) > 0:
 			# Destroy (Ryan, 15 November: "a boss-level rider, that destroys the visible face if it
@@ -3132,6 +3151,20 @@ func expose_announced(f: Foe, announced = null) -> bool:
 			continue   # stepped up this round with no move out, or held this round: it lays nothing
 		return true
 	return false
+
+
+## Would this foe's blow lay its Exposed as the round stands (a rider on a blow, _strike): no
+## machine stands Exposed, and no foe that strikes before it this round is laying one? The
+## intent's read, so the mark on its chip is the truth: one machine at a time.
+func expose_rider_lands(f: Foe) -> bool:
+	if _any_exposed():
+		return false
+	var ahead: Array = []
+	for o in field_foes():
+		if o == f:
+			break
+		ahead.append(o)
+	return not expose_announced(f, ahead)
 
 
 func _fire_on(t: MechState, id: String, n: int, f: Foe) -> void:
@@ -3501,7 +3534,7 @@ func _shove(ms: MechState, f: Face, h: Hits) -> void:
 	for front in fronts:
 		_shoved[front] = true
 		var back := foe_at(1, front.column)
-		if back == null or back == front or not back.alive():
+		if back == null or back == front or not back.alive() or out_of_reach(back):
 			continue
 		var before := back.hp
 		var dealt := zap_on(back, ceili(float(front.hp_max) * float(pct) / 100.0), ms)
@@ -3721,25 +3754,26 @@ func _lured(ms: MechState, aimed: Foe) -> Array[Foe]:
 
 ## Every foe one strike of an entry reaches from its target, each once: the target, a Spread's
 ## neighbours in its rank, a Penetrate's other rank of its column; a foe killed this round
-## still standing in its slot included, as the strikes find it. The resolver and the bot read
-## the same list.
+## still standing in its slot included, as the strikes find it. A foe out of the team's reach
+## (out_of_reach: Aloft) is passed over by all of it. The resolver and the bot read the same
+## list.
 func reached_by(f: Face, target: Foe) -> Array[Foe]:
 	var hit: Array[Foe] = [target]
 	# A reach over every foe in the fight (the Shift Whistle, a lure-all), front and back.
 	if f.reaches_all:
 		for foe in field_foes():
-			if not hit.has(foe):
+			if not hit.has(foe) and not out_of_reach(foe):
 				hit.append(foe)
 		return hit
 	if f.reaches_row():
 		for c in [target.column - 1, target.column + 1]:
 			if c >= 0 and c < columns:
 				var n := foe_at(target.rank, c)
-				if n != null and not hit.has(n):
+				if n != null and not hit.has(n) and not out_of_reach(n):
 					hit.append(n)
 	if f.reaches_column():
 		var other := foe_at(1 - target.rank, target.column)
-		if other != null and not hit.has(other):
+		if other != null and not hit.has(other) and not out_of_reach(other):
 			hit.append(other)
 	if f.has_area():
 		_with_twins(hit)   # an area blow reaches a twin slot whole
@@ -3768,7 +3802,7 @@ func conductors(f: Face, target: Foe) -> Array[Foe]:
 func shocked_foes(but: Foe) -> Array[Foe]:
 	var out: Array[Foe] = []
 	for foe in field_foes():
-		if foe != but and foe.alive() and Effects.has(foe, "shocked") and not out.has(foe):
+		if foe != but and foe.alive() and Effects.has(foe, "shocked") and not out.has(foe) and not out_of_reach(foe):
 			out.append(foe)
 	return out
 
@@ -3788,11 +3822,11 @@ func area_shapes(f: Face, target: Foe) -> Dictionary:
 		for c in [target.column - 1, target.column + 1]:
 			if c >= 0 and c < columns:
 				var n := foe_at(target.rank, c)
-				if n != null and n != target and not out.has(n):
+				if n != null and n != target and not out.has(n) and not out_of_reach(n):
 					out[n] = AREA_ROW
 	if f.reaches_column():
 		var other := foe_at(1 - target.rank, target.column)
-		if other != null and other != target and not out.has(other):
+		if other != null and other != target and not out.has(other) and not out_of_reach(other):
 			out[other] = AREA_COLUMN
 	if f.has_area():
 		for foe in out.keys():
@@ -3807,7 +3841,7 @@ func area_shapes(f: Face, target: Foe) -> Dictionary:
 			out[foe] = AREA_CHAIN
 	if f.reaches_all:
 		for foe in field_foes():
-			if foe != target and not out.has(foe):
+			if foe != target and not out.has(foe) and not out_of_reach(foe):
 				out[foe] = AREA_ALL
 	return out
 
@@ -3878,6 +3912,7 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 		log.append("%s: %s, and no machine stands to take it" % [f.display_name, str(a.get("name", effect))])
 		return
 	if first:
+		_mended = null
 		turn_specials.append({"foe": f, "name": str(a.get("name", "")), "kind": Foe.kind_of(a), "seq": _seq})
 		_seq += 1
 		if bool(a.get("once", false)):
@@ -3908,6 +3943,7 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			else:
 				var before := hurt.hp
 				hurt.hp = mini(hurt.hp_max, hurt.hp + value)
+				_mended = hurt
 				log.append("%s: %s, heals %s for %d" % [f.display_name, str(a.get("name", "heals")), hurt.display_name, hurt.hp - before])
 		"brace_all":
 			# Armoured on every foe in the fight, on the one clock every Armoured runs (15
@@ -4030,12 +4066,41 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			# A foe's cleanse (28 October, the Marsh's lever: "debuffs are hard here"): every mark
 			# the team laid off the most-marked of its own, itself included; never Numbed, never
 			# Suppressed, never a buff.
-			var marked := cleanse_target(f)
+			# A cleanse that follows a heal in one move has the heal's patient (the Cleric's Cure,
+			# Ryan's yes of 17 November: "Cure heals 4, then cleanses the same foe").
+			var same: bool = not first and _mended != null and _mended.alive()
+			var marked: Foe = _mended if same else cleanse_target(f)
 			if marked == null:
 				log.append("%s: %s, and none of its own carries a mark" % [f.display_name, str(a.get("name", "cleanses"))])
 			else:
 				var gone := Effects.clear_marks(marked)
-				log.append("%s: %s, %s loses %s" % [f.display_name, str(a.get("name", "cleanses")), marked.display_name, ", ".join(gone).to_lower()])
+				if gone.is_empty():
+					log.append("%s: %s, and %s carries no mark to lift" % [f.display_name, str(a.get("name", "cleanses")), marked.display_name])
+				else:
+					log.append("%s: %s, %s loses %s" % [f.display_name, str(a.get("name", "cleanses")), marked.display_name, ", ".join(gone).to_lower()])
+		"unready_all":
+			# The Lich's fall (Ryan's yes of 17 November to the bench's row: "Killed, every foe it
+			# readied loses its readiness to rise"): every other foe still standing loses the
+			# Undying this foe's kind gave it. What a foe readied for itself is its own and
+			# stays, and one felled by the same blow has fallen with its readiness: it gets up.
+			var lost: Array[String] = []
+			for other in field_foes():
+				if other == f or not other.alive():
+					continue
+				var keep: Array = []
+				var stripped := false
+				for m in other.modifiers:
+					if m.id == "risen" and m.source == "foe:" + f.content_id:
+						stripped = true
+					else:
+						keep.append(m)
+				if stripped:
+					other.modifiers = keep
+					lost.append(other.display_name)
+			if lost.is_empty():
+				log.append("%s: %s, and nothing it readied still stands" % [f.display_name, str(a.get("name", "falls"))])
+			else:
+				log.append("%s: %s, %s will not get back up" % [f.display_name, str(a.get("name", "falls")), ", ".join(lost)])
 		"barrier":
 			# A foe's Barrier (28 October, the Waste's burrow by lean): the next weapon blow it
 			# takes deals nothing, its riders landing; a debuff pops nothing; it goes as its next
@@ -4706,7 +4771,9 @@ func mine_reach(rank: int, col: int, massive: bool) -> Array[Foe]:
 		at.append(Vector2i(1 - rank, col))
 	for slot in at:
 		for foe in slot_foes(slot.x, slot.y):
-			if foe.alive() and not out.has(foe):
+			# The slot's own foe carries the Mine, and what a foe carries is its own; a neighbour
+			# out of the team's reach (Aloft) is passed over.
+			if foe.alive() and not out.has(foe) and (slot == at[0] or not out_of_reach(foe)):
 				out.append(foe)
 	return out
 
@@ -4963,7 +5030,7 @@ func _land_web(foe: Foe, gained: Dictionary, turned: Dictionary, webbed: Array[F
 ## carries nothing.
 func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe], strike: int, whole: bool = false) -> void:
 	var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
-	if (amount <= 0 and not whole) or behind == null or not behind.alive() or hit.has(behind):
+	if (amount <= 0 and not whole) or behind == null or not behind.alive() or hit.has(behind) or out_of_reach(behind):
 		return
 	var behind_taken := int(_land_blow(behind, amount, ms.unit, true, false, behind.armour_total(), strike, "spill")["taken"])
 	log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])

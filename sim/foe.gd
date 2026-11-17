@@ -389,7 +389,7 @@ static func _also_onto(move: Dictionary, raw: Dictionary) -> void:
 ## October: a fall lands in the player's turn and would hold through the whole enemy turn
 ## after) and never an Expose, which is announced, one machine at a time.
 const FALL_EFFECTS := ["heal", "brace_all", "cleanse", "revive_once_ally", "rally", "prime", "ward_all",
-	"drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all"]
+	"drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all", "unready_all"]
 
 
 ## Its fall, if it has one: what it does the moment it falls. A last act was one blow (15
@@ -484,17 +484,23 @@ func strikes() -> int:
 ##           Ability, a count no Purge reaches. Gilgamesh's own rule, a step of his
 ##           Collect after the blow that jams the entry (Ryan's mark of 15 November: "It grants
 ##           Jammed on the target, and Gilgamesh gains Appropriated with the value")
+##           unready_all: every other foe standing loses the readiness to rise this foe's kind
+##           gave it, what a foe readied for itself staying its own (the Lich's fall, Ryan's
+##           yes of 17 November: "Killed, every foe it readied loses its readiness to rise");
+##           a fall's by sense, the one fall that pays the team
 ## A move may do more than one of these: its first step is the move as written, and `also`
 ## lists what it does after, each an effect from these lists with its own fields (steps_of).
+## A cleanse that follows a heal in one move lands on the foe the heal mended (the Cleric's
+## Cure, one patient: Skirmish._foe_acts).
 const ACTION_EFFECTS := {
 	"defend": ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate"],
 	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "golden", "appropriate"],
-	"debuff": ["drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all", "dispel", "swallow", "expose"],
+	"debuff": ["drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all", "dispel", "swallow", "expose", "unready_all"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
 ## is shown intent (the ambush read below).
-const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all", "merge", "golden"]
+const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all", "merge", "golden", "unready_all"]
 
 
 ## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? It draws

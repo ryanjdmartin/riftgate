@@ -304,9 +304,10 @@ const STATUS := {
 	# think I'd call it phased though, it should still take damage from its riders, unlike phased.
 	# So it's different, should be a different buff, could be unique to the Roc for now if nothing
 	# else has that shape"): worn while a move that climbs gathers (Foe.climbs). No die may be
-	# dropped on it; everything else reaches it, what it carries and what lands with no aim alike.
-	# The name is a working one, his to change.
-	"aloft": {"id": "aloft", "name": "Aloft", "description": "No die can be dropped on it while it climbs. What it carries still wears at it, and so does anything that lands without an aim. It comes down as it strikes.", "decay": "none", "stacking": "renew",
+	# dropped on it and nothing a spend lands with no aim reaches it (17 November: "the roc
+	# doesn't get splashed while aloft"); what it carries still wears at it
+	# (Skirmish.out_of_reach). The name is a working one, his to change.
+	"aloft": {"id": "aloft", "name": "Aloft", "description": "Out of reach while it climbs: no die can be dropped on it, and nothing aimed elsewhere reaches it. What it carries still wears at it. It comes down as it strikes.", "decay": "none", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
 	"appropriated": {"id": "appropriated", "name": "Appropriated", "description": "The number of the piece it took off a machine: its borrowed swing lands it, and spends it.", "decay": "none", "stacking": "renew", "counted": true,
 		"tags": ["ability"], "effects": []},

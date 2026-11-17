@@ -2861,3 +2861,134 @@ move in the tiers' pass.
 
 Found on the way and fixed: the test runner printed "0 checks, 0 failures" and exited clean
 when a script its setup stands on failed to compile. It fails now when a test never ran.
+
+## 35. His nineteenth round, 17 November: the bench marked, the Roc out of reach, the heat that stays
+
+He asked what was needed of him ("what exactly doo you need from me?") and was given
+section 28's bench as sixteen rows, a yes or a no each, with four reads built on a session's
+word. His reply:
+
+> yes to all, seems fine. Ill be able to tell in play. Except the red dragon - I feel like it
+> should still have an attack that deals damage.
+>
+> Things like Unmake and heals and such do obviously need targeting logic, I assume you're
+> asking only because its a machine-targeted ability? Is that the only Purge we have?
+>
+> I'd say the roc doesn't get splashed while aloft.
+>
+> Heat laid on a machine after venting - yes. That's the risk, same as taking hull damage with
+> no shield.
+
+### The rows, as marked
+
+| # | Foe | On his yes | Mark |
+|---|---|---|---|
+| 1 | Antlion Queen | Devour stops gathering: a bite of 8 that heals her 3 | Yes |
+| 2 | Red Dragon | Crush goes, and a move that Exposes the hottest machine takes its place | Held, below |
+| 3 | Mandragora, Mandrake, Alraune | Killed, it screams and the team loses a reroll next round. The first two lose Scream as a move | Yes |
+| 4 | Gorgon | Killed, she Jams the entry her killer shows | Yes |
+| 5 | Lich | Killed, every foe it readied loses its readiness to rise | Yes |
+| 6 | Salamander | Killed, every machine is Scorched 1 | Yes |
+| 7 | Basilisk | A third move that Exposes | Yes |
+| 8 | Alpha Warg | A third move that Exposes | Yes |
+| 9 | Lich | A move that Exposes, in place of its unbuilt Dark Rite | Yes |
+| 10 | Rider of the Wild Hunt | A move that Exposes | Yes |
+| 11 | Piercing Eye | Its Gaze Exposes | Yes |
+| 12 | Spectre, Wraith | After Hex Bolt it fades: Phased through the next round, and it still acts | Yes |
+| 13 | The Thief | Mug is the blow and then the stolen reroll, one move. Steal's slot is freed | Yes |
+| 14 | The Cleric | Cure heals 4, then cleanses the same foe | Yes |
+| 15 | The Pilgrim | Immune to Suppress | Yes |
+| 16 | Obsidian Tyrant, Ruby Colossus | Cannot be Disrupted while Firestorm or Ultima gathers | Yes |
+
+The Great Needler keeps its two-round gather: it was put to him as standing unless he said
+otherwise, and he did not.
+
+### The Red Dragon, held
+
+"I feel like it should still have an attack that deals damage." Under the row it keeps one:
+its Breath, 7 and Scorch 2, on the hottest machine. What the row takes is Crush, its 10 a
+round later. So his words may rest on the row as it was put to him, which said the dragon
+would "lose its one plain attack". Nothing of the row is built. It is put back to him plainly
+(the bible's section 12): if Breath is enough, the row is built; if the big blow is what he
+means, the dragon stands as it is and the Peak carries no Expose. Until he says, it stands.
+
+### His question on the purge
+
+Answered in chat. Yes: his go named three words for attacks on a machine, and Unmake is a
+fourth on a move aimed at one, so it was named. The foes' heals and cleanses pick among
+their own by rules of their own, the most hurt and the most marked, and were never in
+question. And the Djinn's Unmake is the foes' one purge in content. Ours are two, both
+aimed by the player: the Null Field Emitter and the Baboon's Redshift Emitter.
+
+### Nothing reaches a Roc aloft
+
+"I'd say the roc doesn't get splashed while aloft." Built (`tests/test_skirmish.gd`; the
+rules' Aloft). The session's read of section 30 is turned: nothing a spend lands with no
+aim reaches it. What follows and was built so:
+
+- A Spread beside it, a blow at every foe, a Chain's arc, a Mine blowing beside it, a web's
+  catch, a spill and a shove from the foe in front all pass it by.
+- Equipment over every foe passes it by as a blast does, a Lure, a Disrupt or a mark. So
+  nothing breaks off a climb once it is up, and the round it is announced is the window.
+- What it carries is still its own, as he ruled on 16 November: its Ablating and Vitriol
+  tick and damage it, a web on it bursts on it, and a Mine on it blows on it.
+- The Whip Scorpion's blast needs a foe in reach to land on. With only a Roc aloft on the
+  field its vent is any machine's.
+
+One guard reads all of it (`Skirmish.out_of_reach`), so the bot and the screen follow, and a
+foe's Phased will stand on the same guard.
+
+### Heat after the vent
+
+"Yes. That's the risk, same as taking hull damage with no shield." The session's read of
+section 33 is his word now: heat laid on a machine once its reboot has vented stays. Nothing
+to build; the bible's row and the brief's spec line carry his words.
+
+### Built: the rows that are content, and two that needed a little engine
+
+Rows 1, 3 to 11, 13 and 14 are in content (`content/foes.json`), every number a placeholder
+and every shown text a session's draft. The rules are `docs/rules.md`'s (Foes).
+
+| Row | As built | A name or a rule of the session's, his to change |
+|---|---|---|
+| 1 | The Antlion Queen's Devour is a bite of 8 with a step that recovers 3. No gather | |
+| 3 | The Mandragora and the Mandrake keep Root Lash alone and scream as a fall. The Alraune keeps its Shriek and gains the fall | The fall keeps the move's name, Scream |
+| 4 | The Gorgon's fall Jams the entry her killer shows. She keeps Peck and Stone | The fall's name, Dying Gaze |
+| 5 | The Lich's fall takes back the readiness it gave, a fall effect built for it | The fall's name, Unbound |
+| 6 | The Salamander's fall Scorches every machine 1. Its unbuilt Ember Hide is gone | The fall's name, Embers |
+| 7 | The Basilisk's third move Exposes | Its name, Transfix |
+| 8 | The Alpha Warg's third move Exposes | Its name, Mark Prey |
+| 9 | The Lich's third move Exposes, where the unbuilt Dark Rite stood | Its name, Command |
+| 10 | The Rider of the Wild Hunt's third move Exposes | Its name, Name the Quarry |
+| 11 | The Piercing Eye's Gaze carries Expose as a rider | |
+| 13 | The Thief's Mug is the blow, its Corrupt, and then a reroll off the next round. Steal is gone | |
+| 14 | The Cleric's Cure heals 4, then cleanses the foe it healed | |
+
+Every Expose of a foe's own is cast while another foe stands to follow it, as the Goblin
+Warchief's is. A yes put each where its foe already stands, so no formation changed.
+
+What followed from the rows and was built so:
+
+- **The Piercing Eye marks every other round at the most.** Gaze is its one move, so the
+  rule of announcing cannot hold it back. The rider is held instead: a blow's Expose lays
+  nothing while a machine stands Exposed, never a second mark and never the first renewed,
+  and its intent wears no mark for it that round.
+- **The Lich's fall reaches what stands.** Every foe still standing that a Lich readied
+  loses its readiness. What a foe readied for itself, the Dread Knight's own Reraise, stays.
+  A foe felled by the same blow as the Lich fell readied and gets up. With two Liches on a
+  field, either one's fall takes back what both gave: the engine tells a readiness by the
+  kind that gave it.
+- **The Cure has one patient.** A cleanse that follows a heal in one move lands on the foe
+  the heal mended, whoever else carries more marks. A cleanse of its own still finds the
+  most marked.
+- **The Thief always has a move.** With the round's rerolls spoken for, the rule of
+  announcing would hold Mug back and leave only Showtime, which its own condition shuts.
+  A foe left with nothing to announce now takes a blow whose own condition holds before any
+  other, so it Mugs, and what the theft takes past the round's rerolls is nothing.
+- **The Gorgon's gaze takes the entry just spent.** The killer has spent its die, so the
+  entry it shows is the one it used: that entry is blank through its next turn.
+- **The formations' notes** that told of the screamers draining a reroll a round say the
+  fall now (`content/factions.json`, never shown).
+
+The synergy map reads a foe's fall since this build (`tools/synergy_map.py`): it had read
+moves alone, and the Mandragora's scream had left it.
