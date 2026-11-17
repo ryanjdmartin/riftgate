@@ -2214,11 +2214,14 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 292 (17 November, from `ccr-bd73687d-w8qox1` at `b5557f2`, ahead of main, on his
-  next notes: the Polar Bear "can probably just settle on its legs", the Ammit "like it's admitting
-  defeat", the Cassowary "glitched on its pivot point", the Whip "pulls legs up into a float"): `motion.js`
-  (a death that settles lands no hop) and the four sidecars, over Version 291, another session's
-  publish (the page and these files as 290 had them, read and checked first; its content kept).
+  page's Version 294 (17 November, from `ccr-bd73687d-w8qox1` at `c91fce0`, ahead of main, on his
+  eighth notes: the Ammit's "weird kind of hop" and its curl, the Whip's middle pair back, the
+  Cassowary's toes): the Ammit's, the Cassowary's and the Whip Scorpion's sidecars, over Version 293,
+  another session's publish at 15:27 UTC (the page, `motion.js` and these three as 292 had them,
+  read and checked first; its content kept). Version 292 (from `b5557f2`, on his next notes: the
+  Polar Bear "can probably just settle on its legs", the Ammit "like it's admitting defeat"):
+  `motion.js` (a death that settles lands no hop) and four sidecars, over Version 291, another
+  session's (its content kept).
   Version 290 (from `8637e3d`, on his "I liked the nemesis kneel, it was iconic" and "the faceplant is
   the iconic AT-AT pose"): the Nemesis's and the Clydesdale's sidecars, over Version 289, another
   session's (its content files newer than this branch's and main's, kept). Version 288 (from `a6af0a7`, on his "Some
