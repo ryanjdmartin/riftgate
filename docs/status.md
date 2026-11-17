@@ -2191,43 +2191,14 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 286 (17 November, from `ccr-bd73687d-w8qox1` at `a205ab2`, ahead of main, on his
-  next notes: the Whip Scorpion "floating", the Funnel-web's "back legs come off the ground"): the two
-  sidecars and `motion.js` with each held stretch its own anchor and the sink cut; the three live
-  copies the last publishes' own and the page its source. `edits` and `text` empty, `designs` the two
-  folded ideas. Version 285 (17 November, from `ccr-bd73687d-w8qox1` at `8891238`, ahead of main, on his
-  correction: "pivot or slide in correct, plausible places"): the Baboon's, the Cassowary's and the
-  Funnel-web's sidecars with their falls back, the feet held while they carry it; the three live
-  copies Version 284's own and the page its source, the falls driven frame by frame in the hangar
-  headless first. `edits` and `text` empty, `designs` the two folded ideas. Version 284 (16 November,
-  from `ccr-bd73687d-w8qox1` at `2287374`, ahead of main, on his
-  fifth notes on the deaths: the Ammit's limbs clipping, the bipeds' legs sliding out, the Whip
-  Scorpion and the Funnel-web floating): five sidecars with their deaths reworked (the Ammit, the
-  Baboon, the Cassowary, the Whip Scorpion, the Funnel-web) and `motion.js` with planted feet, the
-  legs' reach and the sink; the six live copies Version 283's own and the page its source, the five
-  deaths driven frame by frame in the hangar headless first. `edits` and `text` empty, `designs` the
-  two folded ideas. Version 283 (16 November, from `ccr-bd73687d-w8qox1` at `756c0ae`, ahead of main, on his
-  next notes on the deaths, the Baboon's "execution needs work" to the Nemesis's "just take a
-  knee, arms slumped down by the elbows" and the lost flicker): the twenty-two sidecars with their
-  deaths reworked and falling, and `motion.js` with the fall, the floor held every frame, the limp
-  joints, the keyed glows and the stuttering paint; the twenty-three live copies Version 282's own
-  and the page its source, every machine's lowest point checked on the floor and the Badger's and
-  the Polar Bear's lights read in the hangar headless first. `edits` and `text` empty, `designs`
-  the two folded ideas. Version 282 (16 November, from `ccr-bd73687d-w8qox1` at `9f1c22f`, ahead of main, on his
-  notes from the hangar: "some of these look like they aren't touching the ground", "Boosters
-  should go dark", "Nemesis should fall to one knee"): fifteen sidecars with their deaths reworked
-  to rest on what touches the floor, and `motion.js` with the settle read on the parts' own
-  vertices and a lost machine's lit paint going dark; the sixteen live copies Version 281's own,
-  every machine's lowest point checked on the floor in the hangar headless first. `edits` and
-  `text` empty, `designs` the two folded ideas. Version 281 (16 November, from `ccr-bd73687d-w8qox1` at `a3cc3fb`, ahead of main, on
-  Ryan's "Can you get these into the hangar?"): the twenty-two sidecars with their deaths (the
-  Cottonmouth's with its drum), `motion.js` with the death form, the page with the death kept off
-  the Statuses list and a lost machine's acts line saying so, and main's moves since 280 (the six
-  content files, `text.json`, `designs.json`, the page's own); every replaced live copy read first
-  and found Version 280's (the two generated files differing in their stamp alone), and the
-  Models tab driven headless on every machine first. `edits` and `text` empty, `designs` the two
-  folded ideas. A republish from main before this branch lands would drop the deaths: land the
-  branch first, or publish from it. Version 280 (15 November, from main at `4514a2c`, the branch `ccr-b7d5164e-1wtzzm` landed
+  page's Version 288 (17 November, from `ccr-bd73687d-w8qox1` at `a6af0a7`, ahead of main, on his
+  "Some end up on the ground, some don't. Go ahead and fix the others" and his asks for the Ammit and
+  the Cassowary): `motion.js` with the settle and the five sidecars whose deaths now end on the ground
+  (the Ammit, the Cassowary, the Clydesdale, the Nemesis, the Polar Bear); the six live copies the last
+  publishes' own and the page its source, every machine's death probed in the hangar headless first.
+  `edits` and `text` empty, `designs` the two folded ideas. Versions 281 to 286 (16 and 17 November)
+  took the deaths out from this branch round by round on his notes. A republish from main before this
+  branch lands would drop the deaths: land the branch first, or publish from it. Version 280 (15 November, from main at `4514a2c`, the branch `ccr-b7d5164e-1wtzzm` landed
   there on Ryan's "These look great. Let's clean up and merge into main"): main's `vocabulary.json`
   (the vocabulary pass's rounds), `text.json` from the merged tree, `renders.json` with the Giant
   Petrel shipped, and the Needletail's eight candidate-final pictures removed; the live copy
