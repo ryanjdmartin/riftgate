@@ -17,7 +17,7 @@ the Storm Petrel's direction is locked on his word. It retires once its calls ar
 
 | The machine | The kit as a whole, under the system | Open |
 |---|---|---|
-| Storm Petrel | Locked on his word of 17 November: the shield armour, shield as its heat climbs, the zap the Buzzard's | Its finalization: the hook's rate, its lock, its stock |
+| Storm Petrel | As built, a striker that shoots through its own shield; the locked direction fits, its clock its fuel and the overheat its cap | Its finalization: the hook's rate, its lock, its stock (the Shoring Jack does next to nothing on it) |
 | Buzzard | As built, a heat engine with its own regen and its own dump, so the reboot is optional for it; the settled form trades the dump for a shield spend and fits | Build the settled form; its last point; its stock's heat |
 | Needletail | Two actions a round cost two actions' heat and the reboot takes both: it fires less than a plain machine | Its heat budget for two actions, and his "dull" |
 | Skua | Its ramp lives behind a shield that lasts a cycle, and every cycle ends bare | Whether its ramp is for a cycle or a fight |
@@ -71,16 +71,70 @@ the probe's (above).
 
 ### Storm Petrel, locked
 
-Kestrel, tier 1, medium hover: hull 24, shield 12, armour 0, heat 12. His direction of 11
-November is locked (17 November: "That direction is locked, or should be locked. It just needs
-to be finalized and landed"; the bible's row): the shield armour kept, shield gained whenever
-its heat climbs from any source, the zap the Buzzard's. Left to finalize, then land: the hook's
-rate (lean: a point of shield a point of heat), its lock (lean: a lure that runs hot, so its
-taunt feeds the hook; the Regenerator kept beside it reads alike), its stock and numbers. As
-built it still burns shield in place of heat and zaps (the rules' Riot Field Generator). The
-read: the hook halves its bare turns and its wrecks, and without the zap its fights run two
-rounds longer, so the direction makes it the tank and takes the striker out; if its damage is
-wanted back, the lever is a gun in its stock, never the zap.
+Kestrel, tier 1, medium hover. *Context*: the off-tank and the fast hovercraft (Ryan, 20 October:
+since the Puffin is slow, the shield-burner should be fast), "its hard shields used both for
+defence and for whacking things with" (21 October); Kestrel's tier-one body, beside the Skua once
+the Puffin goes to tier two. His direction of 11 November, locked on 17 November ("That direction
+is locked, or should be locked. It just needs to be finalized and landed"; the bible's row): "The
+thing I want to keep mostly on it is the shield armour, since it's kestrels one and only tank, kind
+of ... gaining shield when it gains heat is a really solid hook. That would fuel the shield tank
+role with risk, and then the Puffin gets a natural buddy. The shield zap can go somewhere else";
+"I did mean any source"; the zap the Buzzard's the same day.
+
+*Kit, as built*: hull 24, shield 12, armour 0, heat 12, move 6, 4 hardpoints, 2 modules.
+- Riot Field Generator: while its shield stands, every blow on it loses 1 (the plate); its weapons'
+  heat comes off its shield in place of the gauge, only what the shield cannot pay heating it; after
+  a weapon's strikes its target takes a blow of what the shield paid (the zap).
+- St. Elmo's Regenerator (fixed): Lure on one foe, Indirect, heat 0; spent, it lays Regenerating 3
+  on its own machine (3, 2 and 1 shield at the next three END TURNs, none on a Broken shield).
+- Laser Carbine 4 for 5 (9 with its zap); Ankle Mortar 3 for 4 (7); Twin Autoguns 3 for 4 (7);
+  Shoring Jack, Armoured 2.
+
+*As built, as a whole.* A striker that shoots through its own shield. Each gun spends 4 or 5 of its
+12 shield and doubles its blow with the zap, so its shield is gone in three shots; a shield its own
+spend empties is Broken, so the plate, the zap and the Regenerator's regrowth all stop together,
+its guns heat the gauge from there, and only the reboot brings any of it back. Its tank's parts
+are spent to shoot: bare of shield on 35% of its turns in formations and 42% against a boss, twice
+anyone else, wrecked in one boss fight in ten, though the zap's damage makes its fights short
+(8.3 rounds against a boss).
+
+*The direction, as a kit* (the leans, his to finalize):
+- Riot Field Generator: while its shield stands, every blow on it loses 1, and every point of heat
+  it gains stands up a point of shield, up to its maximum, from any source (its spends, Scorched's
+  extra, an ally's heat moved onto it); a Broken shield takes none. Its weapons make heat as
+  anyone's; the burn and the zap go.
+- Its lock: a lure that runs hot (heat 3), so its taunt feeds the hook; or the Regenerator kept as
+  it is beside the hook. The read cannot tell the two apart.
+- Its stock as it stands: the Laser Carbine, the Ankle Mortar, the Twin Autoguns and the Shoring
+  Jack, now 4 or 5 heat a gun and 4 or 5 shield a shot.
+
+*The direction, as a whole.* Heat is its fuel and its clock at once. Each spend refills what the
+last enemy turn took, about a tier-one blow a spend once the plate has taken its point, so a cycle
+of three spends absorbs its 12 and up to as much again, near twice a plain machine's at best,
+each blow costing it a point less while the shield stands. The overheat is its hard cap: a spend past
+12 stands up shield that the END TURN's overheat breaks, the plate going with it, so unlike the Stingray or
+the Nemesis it never rides past its maximum and reboots at it, bare and plateless for that enemy
+turn. Its turns ask how much heat it can turn into shield before the clock runs out, and its lure
+draws a chosen foe onto a shield that mends, while the foes' picks give it its share anyway (and
+the hottest-seeking attacks find a Petrel running hot, onto its plate). In the read, its bare turns
+and its wrecks halve (25% to 27% bare against a boss, 5% to 6% wrecked), and without the zap its
+fights run two rounds longer with the squad paying two to four points more: the direction makes it
+the tank and takes the striker out, which is his "the petrel now goes more defensive".
+
+*Verdict.* The locked direction fits the system: its clock is its fuel, the overheat its cap, the
+reboot its rhythm. To finalize, then land:
+- The hook's rate: a point of shield a point of heat (lean), so its heat maximum is also its
+  shield regained a cycle and the two numbers move together; a point for every two halves it.
+- Its lock: the hot lure (lean, one idea) or the Regenerator kept.
+- Its stock: the Shoring Jack does next to nothing on it, since Armoured comes off what reaches
+  the hull and its shield takes the blows first, and it makes no heat for the hook; its slot wants
+  a piece that runs warm (the stock re-deal). And a gun in its stock is the lever if its damage is
+  wanted back, never the zap.
+- A spend's heat at a full shield stands up nothing, so a cycle's first spend is wasted while it
+  is whole; the hook pays the tank that is struck, the lure its partner. Watch, no fix.
+- On landing, the shield burn and the zap leave the engine with their last carrier, the Buzzard's
+  cannon being a whole-field spend of its own; the Boundary-layer Bleed (a shield point each time
+  heat climbs) is the hook in a module, his "no bar".
 
 ### Buzzard
 
