@@ -2866,8 +2866,9 @@ Present tense, in the round's order (`docs/rules.md`, The round).
    with the recovery, line 6, until 17 November: "Maybe the heat gets shunted when the shield
    gets taken down?")
 6. As the next round opens, before the roll and before the foes pick, its shield is whole and
-   Broken is gone. Heat laid on it since the vent stays: one vent, at the drop (a session's
-   read, his to overrule).
+   Broken is gone. Heat laid on it since the vent stays: one vent, at the drop (built as a
+   session's read; his word on it, 17 November: "That's the risk, same as taking hull damage
+   with no shield").
 7. Nothing forces a reboot, and it clears nothing else: the machine's statuses stand.
 8. A rebooting machine has nothing past its maximum to burn at END TURN: its heat went as its
    shield dropped (line 5). No rule spares it, and what lands on it after burns like any.

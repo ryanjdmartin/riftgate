@@ -2075,10 +2075,10 @@
    "id": "aloft",
    "category": "status",
    "name": "Aloft",
-   "codex": "Foe status, the Roc's. While its Stoop gathers it has climbed out of reach: no die can be dropped on it. It is not out of the fight. What it carries still wears at it, Ablating and Vitriol taking their points, and anything that lands without an aim still reaches it: a neighbour's Spread, a blow at every foe, a Mine's blast. It comes down as it strikes, so the round the climb is announced is the window.",
+   "codex": "Foe status, the Roc's. While its Stoop gathers it has climbed out of reach: no die can be dropped on it, and nothing aimed elsewhere reaches it either, a neighbour's Spread, a blow at every foe, a Mine's blast. It is not out of the fight. What it carries still wears at it, Ablating and Vitriol taking their points. It comes down as it strikes, so the round the climb is announced is the window.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan, 16 November: \"I think the stoop can make it untargetable, yes. I don't think I'd call it phased though, it should still take damage from its riders, unlike phased. So it's different, should be a different buff, could be unique to the Roc for now if nothing else has that shape.\" Content: aloft on a blow that gathers one round. A session's read where his words give none: only a spend's aim is refused, so what lands with no aim reaches it. A buff, so a Purge that reaches it takes it and it is a target again. The name is a working one, his to change.",
+    "holes": "Ryan, 16 November: \"I think the stoop can make it untargetable, yes. I don't think I'd call it phased though, it should still take damage from its riders, unlike phased. So it's different, should be a different buff, could be unique to the Roc for now if nothing else has that shape.\" And 17 November: \"I'd say the roc doesn't get splashed while aloft.\" Content: aloft on a blow that gathers one round. Built on his second ruling as nothing new reaching it at all, with an aim or without, so equipment over every foe passes it by as a blast does and nothing breaks off a climb once it is up; what it carries is its own, a web and a Mine on it included. The name is a working one, his to change.",
     "table": {
      "kind": "buff",
      "on": "foe",

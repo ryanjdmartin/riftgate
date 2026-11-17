@@ -1285,12 +1285,17 @@ func spend_face(ms: MechState) -> Face:
 	return f
 
 
-## Can no die be dropped on this foe right now? A foe Aloft (the Roc while its Stoop gathers,
+## Is this foe out of the team's reach right now? A foe Aloft (the Roc while its Stoop gathers,
 ## Ryan, 16 November: "the stoop can make it untargetable ... it should still take damage from
-## its riders, unlike phased"): it is no target of a spend, a Swap's second included, and
-## nothing else changes. What it carries ticks and damages it, and what lands with no aim
-## reaches it: a neighbour's Spread, a blow at every foe, a Mine's blast, a Chain's arc.
-static func untargetable(foe: Foe) -> bool:
+## its riders, unlike phased"; 17 November: "the roc doesn't get splashed while aloft"): it is
+## no target of a spend, a Swap's second included, and nothing a spend lands with no aim
+## reaches it either, a neighbour's Spread, a blow or a mark at every foe, a Chain's arc, a
+## Mine's blast beside it, a web's catch, a spill or a shove from the foe in front. What it
+## carries is its own: its Ablating and Vitriol tick and damage it, a web on it bursts on it
+## and a Mine on it blows on it. Every list of the foes a spend reaches is read through here
+## (reached_by, area_shapes, shocked_foes, mine_reach, web_catch), so the bot and the screen
+## read the same.
+static func out_of_reach(foe: Foe) -> bool:
 	return foe != null and Effects.has(foe, "aloft")
 
 
@@ -1312,7 +1317,7 @@ func swap_targets(first: Foe, carries: bool = false) -> Array:
 		return out
 	var pair := twin_of(first)
 	for foe in field_foes():
-		if foe != first and foe != pair and foe.alive() and (carries or not foe.is_massive()) and not untargetable(foe):
+		if foe != first and foe != pair and foe.alive() and (carries or not foe.is_massive()) and not out_of_reach(foe):
 			out.append(foe)
 	for col in range(columns):
 		if front[col] == null and not corpses.has(Vector2i(0, col)):
@@ -1350,10 +1355,10 @@ func targets_for_face(ms: MechState, f: Face) -> Array[Foe]:
 	var anyone := reach_of(ms, f) != Face.Reach.DIRECT
 	for col in range(columns):
 		for foe in slot_foes(0, col):
-			if foe.alive() and not out.has(foe) and not untargetable(foe):
+			if foe.alive() and not out.has(foe) and not out_of_reach(foe):
 				out.append(foe)
 		for foe in slot_foes(1, col):
-			if not foe.alive() or out.has(foe) or untargetable(foe):
+			if not foe.alive() or out.has(foe) or out_of_reach(foe):
 				continue
 			if anyone or in_direct_reach(foe):
 				out.append(foe)
@@ -2494,9 +2499,9 @@ func release_shot(ms: MechState) -> Face:
 ## costing no heat of its own, its machine's kill for what it fells; the fight it decides ends
 ## there. With less heat than a step of its rule the vent is every machine's, and blasts nothing.
 func _vent_blast(i: int, ms: MechState, shot: Face, fired: int) -> void:
-	var standing := field_foes().filter(func(foe: Foe) -> bool: return foe.alive())
+	var standing := field_foes().filter(func(foe: Foe) -> bool: return foe.alive() and not out_of_reach(foe))
 	if shot == null or standing.is_empty() or outcome != Outcome.NONE:
-		return
+		return   # nothing stands in reach to take it: the heat vents as any machine's
 	var target: Foe = standing[0]
 	log.append("%s opens its valves: %d heat, %d on every foe" % [ms.unit.display_name, fired, shot.power])
 	_killer = ms   # its own shot: what it fells is its kill
@@ -2818,8 +2823,8 @@ func web_catch(f: Foe) -> Foe:
 		if j < 0 or j >= order.size():
 			continue
 		var n: Foe = order[j]
-		if absi(n.column - f.column) <= 1 and n != f and n.alive():
-			return n
+		if absi(n.column - f.column) <= 1 and n != f and n.alive() and not out_of_reach(n):
+			return n   # one out of the team's reach (Aloft) is no catch: the other side is tried
 	return null
 
 
@@ -3501,7 +3506,7 @@ func _shove(ms: MechState, f: Face, h: Hits) -> void:
 	for front in fronts:
 		_shoved[front] = true
 		var back := foe_at(1, front.column)
-		if back == null or back == front or not back.alive():
+		if back == null or back == front or not back.alive() or out_of_reach(back):
 			continue
 		var before := back.hp
 		var dealt := zap_on(back, ceili(float(front.hp_max) * float(pct) / 100.0), ms)
@@ -3721,25 +3726,26 @@ func _lured(ms: MechState, aimed: Foe) -> Array[Foe]:
 
 ## Every foe one strike of an entry reaches from its target, each once: the target, a Spread's
 ## neighbours in its rank, a Penetrate's other rank of its column; a foe killed this round
-## still standing in its slot included, as the strikes find it. The resolver and the bot read
-## the same list.
+## still standing in its slot included, as the strikes find it. A foe out of the team's reach
+## (out_of_reach: Aloft) is passed over by all of it. The resolver and the bot read the same
+## list.
 func reached_by(f: Face, target: Foe) -> Array[Foe]:
 	var hit: Array[Foe] = [target]
 	# A reach over every foe in the fight (the Shift Whistle, a lure-all), front and back.
 	if f.reaches_all:
 		for foe in field_foes():
-			if not hit.has(foe):
+			if not hit.has(foe) and not out_of_reach(foe):
 				hit.append(foe)
 		return hit
 	if f.reaches_row():
 		for c in [target.column - 1, target.column + 1]:
 			if c >= 0 and c < columns:
 				var n := foe_at(target.rank, c)
-				if n != null and not hit.has(n):
+				if n != null and not hit.has(n) and not out_of_reach(n):
 					hit.append(n)
 	if f.reaches_column():
 		var other := foe_at(1 - target.rank, target.column)
-		if other != null and not hit.has(other):
+		if other != null and not hit.has(other) and not out_of_reach(other):
 			hit.append(other)
 	if f.has_area():
 		_with_twins(hit)   # an area blow reaches a twin slot whole
@@ -3768,7 +3774,7 @@ func conductors(f: Face, target: Foe) -> Array[Foe]:
 func shocked_foes(but: Foe) -> Array[Foe]:
 	var out: Array[Foe] = []
 	for foe in field_foes():
-		if foe != but and foe.alive() and Effects.has(foe, "shocked") and not out.has(foe):
+		if foe != but and foe.alive() and Effects.has(foe, "shocked") and not out.has(foe) and not out_of_reach(foe):
 			out.append(foe)
 	return out
 
@@ -3788,11 +3794,11 @@ func area_shapes(f: Face, target: Foe) -> Dictionary:
 		for c in [target.column - 1, target.column + 1]:
 			if c >= 0 and c < columns:
 				var n := foe_at(target.rank, c)
-				if n != null and n != target and not out.has(n):
+				if n != null and n != target and not out.has(n) and not out_of_reach(n):
 					out[n] = AREA_ROW
 	if f.reaches_column():
 		var other := foe_at(1 - target.rank, target.column)
-		if other != null and other != target and not out.has(other):
+		if other != null and other != target and not out.has(other) and not out_of_reach(other):
 			out[other] = AREA_COLUMN
 	if f.has_area():
 		for foe in out.keys():
@@ -3807,7 +3813,7 @@ func area_shapes(f: Face, target: Foe) -> Dictionary:
 			out[foe] = AREA_CHAIN
 	if f.reaches_all:
 		for foe in field_foes():
-			if foe != target and not out.has(foe):
+			if foe != target and not out.has(foe) and not out_of_reach(foe):
 				out[foe] = AREA_ALL
 	return out
 
@@ -4706,7 +4712,9 @@ func mine_reach(rank: int, col: int, massive: bool) -> Array[Foe]:
 		at.append(Vector2i(1 - rank, col))
 	for slot in at:
 		for foe in slot_foes(slot.x, slot.y):
-			if foe.alive() and not out.has(foe):
+			# The slot's own foe carries the Mine, and what a foe carries is its own; a neighbour
+			# out of the team's reach (Aloft) is passed over.
+			if foe.alive() and not out.has(foe) and (slot == at[0] or not out_of_reach(foe)):
 				out.append(foe)
 	return out
 
@@ -4963,7 +4971,7 @@ func _land_web(foe: Foe, gained: Dictionary, turned: Dictionary, webbed: Array[F
 ## carries nothing.
 func _spill(ms: MechState, f: Face, foe: Foe, amount: int, hit: Array[Foe], strike: int, whole: bool = false) -> void:
 	var behind: Foe = back[foe.column] if foe.column >= 0 and foe.column < columns else null
-	if (amount <= 0 and not whole) or behind == null or not behind.alive() or hit.has(behind):
+	if (amount <= 0 and not whole) or behind == null or not behind.alive() or hit.has(behind) or out_of_reach(behind):
 		return
 	var behind_taken := int(_land_blow(behind, amount, ms.unit, true, false, behind.armour_total(), strike, "spill")["taken"])
 	log.append("%s spills over: %d into %s" % [ms.unit.display_name, behind_taken, behind.display_name])

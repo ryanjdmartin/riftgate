@@ -1496,7 +1496,7 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	# Aloft (the Roc while its Stoop gathers, 16 November): no die may be dropped on it, so it is
 	# drawn as what is out of the fight is, a faint ghost under a dashed edge, and higher over its
 	# shadow. A first cut, to judge running (RIFTGATE_ALOFT_DEBUG=1 holds every foe so).
-	v.away = Skirmish.untargetable(foe) or ALOFT_DEBUG
+	v.away = Skirmish.out_of_reach(foe) or ALOFT_DEBUG
 	if v.away:
 		v.hover = maxf(v.hover, WINGED_LIFT) + ALOFT_LIFT
 	v.breathe = true
