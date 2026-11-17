@@ -867,7 +867,7 @@ func _button(text: String, on_pressed: Callable, h: float = 60, size_px: int = 2
 # ---------------------------------------------------------------- launching
 
 func _on_fight() -> void:
-	Settings.field_trial(true)   # the fight's trials as the settings stand now (the block, the overheat's burn): a lone fight reads them as a battle does
+	Settings.field_trial(true)   # the fight's trials as the settings stand now (the overheat's burn): a lone fight reads them as a battle does
 	var sk := setup.make_skirmish()
 	if sk == null:
 		return

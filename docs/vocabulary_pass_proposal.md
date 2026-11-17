@@ -2903,14 +2903,15 @@ word. His reply:
 The Great Needler keeps its two-round gather: it was put to him as standing unless he said
 otherwise, and he did not.
 
-### The Red Dragon, held
+### The Red Dragon keeps its Crush
 
-"I feel like it should still have an attack that deals damage." Under the row it keeps one:
-its Breath, 7 and Scorch 2, on the hottest machine. What the row takes is Crush, its 10 a
-round later. So his words may rest on the row as it was put to him, which said the dragon
-would "lose its one plain attack". Nothing of the row is built. It is put back to him plainly
-(the bible's section 12): if Breath is enough, the row is built; if the big blow is what he
-means, the dragon stands as it is and the Peak carries no Expose. Until he says, it stands.
+"I feel like it should still have an attack that deals damage." Under the row it kept one,
+its Breath, 7 and Scorch 2 on the hottest machine; what the row took was Crush, its 10 a
+round later. Put back to him plainly, he called it the same day: "let's keep Crush on the
+Red Dragon just because. If it feels too limp, then we can figure that out later." The row
+is unbuilt, the dragon stands as it was, and the Peak has no foe that Exposes. The bench's
+fallbacks stand for when one is wanted: the Wyvern marking in Stoke's place, or Crush
+leaving Brittle 2.
 
 ### His question on the purge
 

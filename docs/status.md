@@ -38,6 +38,13 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   `content/foes.json`; the rules' Foes). `docs/vocabulary.md` is the vocabulary as it runs; the
   briefs and the older proposals predate it, and `docs/briefs/README.md` says how to read
   their words. The baseline of that game is the last entry of `docs/measurements.md`.
+- **The sizing numbers have one owner** (Ryan, 17 November, to the session on
+  `ccr-722ca9f0-yj8na3`, the foes' line: "When it comes to the sizing numbers, you have
+  authority over the other session ... it's not actually going to change any balance-related
+  numbers there, since you have the context ... You can adjust content if you feel like it's
+  ready to do so"): the foes' blows and hit points and the machines' shield, hull and heat
+  numbers are sized against the reboot by that line (the to-do's Engine list). A session on
+  another line builds a kit at placeholder numbers and moves no balance number.
 - Sessions run in parallel on this repo: `git status` first, stage by path, diff a shared file
   before staging it, never a bare `git add -A`, never kill a bare `godot --path .`. A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word; expect the
@@ -54,7 +61,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1278 tests, 373,520 checks, green on `ccr-722ca9f0-yj8na3` (17 November, main at
+- Tests: 1271 tests, 373,485 checks, green on `ccr-722ca9f0-yj8na3` (17 November, the
+  block's what-if cut with its seven tests, over main at `779dc53`). Before it, 1278 tests,
+  373,520 checks, green on the same branch (17 November, main at
   `86234dc` taken in a merge, the harness's UPG line under test with it). Before it, 1277
   tests, 373,515 checks, green on `ccr-178e0404-ptuh2m` (17 November, the Storm
   Petrel landed whole with the first upgrade branches, over main at `f8fb28b`). Before it, 1277
@@ -2186,8 +2195,8 @@ before and after, 120 fights each, a direction: `docs/measurements.md`, 17 Novem
 scream as a fall takes more rerolls than the move did, 2.5 to 2.8 a fight where three or four
 screamers stand behind a wall; the ghosts' fade makes their fights a round longer and the
 tier-three wraith choir harder, won 77% where it was 93%; the Wild Hunt hits a little softer;
-the rest sit inside noise. His play judges each (the to-do's line). The Red Dragon's row is held on his words and put back to him (the bible's section
-12): it stands as it is until he says. **The Goblin Warchief is in** (17 November, his idea and his name: "a back
+the rest sit inside noise. His play judges each (the to-do's line). The Red Dragon keeps its Crush on his word (17
+November: "let's keep Crush on the Red Dragon just because"), the bench's row for it unbuilt. **The Goblin Warchief is in** (17 November, his idea and his name: "a back
 rank goblin captain that gives orders and Exposes"; "more like warchief"): a back-rank unit of
 its own behind the Captains in the tier-three warband, the chieftain render cut for its sprite,
 its Kill Order the foes' Expose on its first carrier, its texts a session's drafts and its
@@ -2206,7 +2215,7 @@ A dying foe's
 single blow lands on the machine that made the kill, as its curse does ("yes, hit its killer,
 if it has one"). **A reboot opens a sealed Polar Bear** (his eighteenth round: "Polar bear
 unseals when rebooting. It's a good change because you're never accidentally stuck sealed"):
-the shell and its armour go as the die drops. Still his (the bible's section 12): the Red Dragon's row, and Aloft's name. The Great
+the shell and its armour go as the die drops. Still his (the bible's section 12): Aloft's name. The Great
 Needler keeps its gather, and heat laid on a machine once its reboot has vented stays (his
 word: "That's the risk, same as taking hull damage with no shield"). His codex cleanup and
 terminology pass is a session of his own after this work (the to-do's line keeps what was

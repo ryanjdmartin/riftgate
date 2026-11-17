@@ -1741,7 +1741,7 @@ static func last_act_cost(sk: Skirmish, f: Foe, killer: Skirmish.MechState = nul
 		var shield: int = m.unit.shield
 		var hull: int = m.unit.hull
 		for s in range(maxi(1, int(blow.get("strikes", 1)))):
-			var r := Skirmish._blow(shield, m.unit.armour, Effects.damage_taken(m.unit, amount, f), Skirmish.breaks_whole(shield, m.unit.shield_max))
+			var r := Skirmish._blow(shield, m.unit.armour, Effects.damage_taken(m.unit, amount, f))
 			cost += float(int(r["absorbed"])) * SHIELD_LOSS_WEIGHT + float(int(r["through"])) * HULL_WEIGHT
 			shield = int(r["shield"])
 			hull -= int(r["through"])

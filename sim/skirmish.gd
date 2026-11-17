@@ -49,18 +49,6 @@ static var pilot: Dictionary = {}   # chassis id -> heat it gains as each round 
 # overheat Corrupts the component that took the gauge past the maximum, so many stacks
 # (--overheat-corrupt N).
 static var overheat_corrupt: int = 0
-## The block, a what-if for the runners and a debug build's trial (Ryan, 13 November: "What if we
-## bring back that when a shield breaks, it absorbs the whole blow? It does not bleed into the
-## hull"; docs/briefs/refit_pass.md, sections 15 to 22). Never content, and off the honest shield
-## of 14 October runs. Its other half that day, a broken shield resting a couple of rounds before
-## its regen started again, left with the reboot below: nothing comes back by itself there.
-##   shield_break      the blow that takes a standing shield to nothing is stopped whole, what
-##                     was left of it never reaching the hull (the rule of before 14 October)
-##   shield_break_min  the share of its maximum, in hundredths, a shield must stand at for its
-##                     break to stop the blow whole; 0, any shield at all (the bench's guard
-##                     against a sliver doing a full gauge's work)
-static var shield_break: bool = false
-static var shield_break_min: int = 0
 ## The reboot, the shield's and the heat's rule (Ryan, 13 November; folded in on his go of 15
 ## November: "Go ahead on the fold and build"; docs/briefs/refit_pass.md, section 22, has his
 ## words and the spec line by line):
@@ -1173,7 +1161,7 @@ func blows_on(ms: MechState, f: Foe, walk: Dictionary) -> Array:
 func _blow_on(ms: MechState, amount: int, source: Foe, shield: int, barrier: bool) -> Dictionary:
 	var arrived := Effects.damage_taken(ms.unit, amount, source, false, true, maxi(0, shield))
 	var barred := arrived > 0 and barrier
-	var r := _blow(shield, ms.unit.armour, 0 if barred else arrived, breaks_whole(shield, ms.unit.shield_max))
+	var r := _blow(shield, ms.unit.armour, 0 if barred else arrived)
 	r["amount"] = arrived
 	r["barred"] = barred
 	return r
@@ -5510,7 +5498,7 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	sponsorship["guarded"] = int(sponsorship["guarded"]) + int(r["absorbed"]) + int(r["armoured"])
 	# The mech's gauges after the blow ride along, so a replay can step them down blow by blow.
 	turn_events.append({"foe": source, "mech": mechs.find(ms), "amount": brought, "absorbed": r["absorbed"], "through": r["through"],
-		"blocked": r["blocked"], "barred": barred, "broke_shield": had_shield and ms.unit.shield == 0, "stopped": r["stopped"], "injured": false,
+		"blocked": r["blocked"], "barred": barred, "broke_shield": had_shield and ms.unit.shield == 0, "injured": false,
 		"shield": ms.unit.shield, "hull": ms.unit.hull, "seq": _seq,
 		"name": str(source.action.get("name", "")) if source != null else "", "boss": source != null and source.boss,
 		"all": source != null and source.hits_all()})
@@ -5519,8 +5507,6 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	var armoured: String = " (armour -%d)" % r["armoured"] if r["armoured"] > 0 else ""
 	if barred:
 		log.append("%s hits %s: the Barrier takes the blow" % [source.display_name, ms.unit.display_name])
-	elif int(r["stopped"]) > 0:
-		log.append("%s hits %s: shield -%d, it breaks and stops the other %d" % [source.display_name, ms.unit.display_name, r["absorbed"], r["stopped"]])
 	elif r["blocked"]:
 		log.append("%s hits %s: shield -%d, blocked" % [source.display_name, ms.unit.display_name, r["absorbed"]])
 	elif r["through"] == 0:
@@ -5546,30 +5532,16 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 ## and the forecast. The honest shield (Ryan, 14 October): a shield absorbs its number and the
 ## excess passes to the hull.
 ## Returns shield after, absorbed, through (to hull), armoured (taken off by armour), blocked
-## (the shield took the whole blow), broke (the blow took a standing shield to
-## nothing) and stopped (what a break kept from the hull: nothing on the honest shield).
-## `whole` is the block, a what-if (shield_break; breaks_whole says when): the blow that breaks
-## the shield is stopped there, and what was left of it reaches nothing.
-static func _blow(shield: int, armour: int, amount: int, whole: bool = false) -> Dictionary:
+## (the shield took the whole blow) and broke (the blow took a standing shield to nothing).
+static func _blow(shield: int, armour: int, amount: int) -> Dictionary:
 	var absorbed := mini(maxi(0, shield), maxi(0, amount))
 	var through := maxi(0, amount) - absorbed
 	var broke := shield > 0 and absorbed >= shield
-	var stopped := 0
-	if whole and broke:
-		stopped = through
-		through = 0
 	# Armour comes off every blow that reaches the hull, a shield's overflow included. A blow
 	# on the shield costs it its full damage: shield is not armoured.
 	var armoured := mini(armour, through) if through > 0 else 0
 	through -= armoured
-	return {"shield": shield - absorbed, "absorbed": absorbed, "through": through, "armoured": armoured, "blocked": absorbed > 0 and through + armoured == 0, "broke": broke, "stopped": stopped}
-
-
-## Whether the blow that breaks a shield standing at `shield` of `shield_max` is stopped whole:
-## never on the honest shield, and under the block's what-if when the shield stands
-## at shield_break_min hundredths of its maximum or more (any shield at all at 0).
-static func breaks_whole(shield: int, shield_max: int) -> bool:
-	return shield_break and shield > 0 and shield * 100 >= shield_max * shield_break_min
+	return {"shield": shield - absorbed, "absorbed": absorbed, "through": through, "armoured": armoured, "blocked": absorbed > 0 and through + armoured == 0, "broke": broke}
 
 
 ## An injury destroys the entry the die shows (Ryan, 2 November, in place of the die's roll of

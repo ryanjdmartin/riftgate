@@ -565,10 +565,6 @@ cat build/trace_{0,1,2,3}.hash > build/trace.hash; cat build/trace_{0,1,2,3}.log
 # battle or run, since a saved one keeps the numbers it was saved with. RIFTGATE_OVERHEAT=2 (any battle) sets the hull an overheat burns a point of heat past
 # the gauge, 1 the game's; the same page's OVERHEAT (×1, ×2, ×3) sets it on the phone, read
 # as a battle or a lone fight starts from the menu.
-# RIFTGATE_SHIELD_BREAK=1 (any battle) tries the block (Ryan, 13 November: "when a shield
-# breaks, it absorbs the whole blow"): the blow that breaks a shield is stopped whole. The same
-# page's SHIELD BREAK (BUILT, BLOCK) sets it on the phone, read as a battle or a lone fight
-# starts. A what-if, nothing decided; its rest timer of that morning left with the reboot.
 # The reboot is the game's rule (Ryan, 13 November; folded in 15 November; docs/rules.md, The
 # reboot): REBOOT stands in the middle of the bottom row, between END TURN and UNDO, a drop's
 # target and no button, dashed at rest, lit with a die in hand, taking the drop a little past its
