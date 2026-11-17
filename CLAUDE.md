@@ -138,6 +138,9 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   in everything): Skaði, Fáfnir, Ragnarök. Content ids stay plain ASCII. Every font the game
   ships draws Latin-1 (ð, á, ö, þ, æ); Share Tech Mono, the HUD's mono face, lacks the macrons
   (ā, ō, ū), so a name that carries one is checked wherever the mono face shows it.
+- Canadian/British spelling everywhere (Ryan, 17 November: "yes we're using Canadian/British
+  spelling everywhere"): armour, colour, centre, tunneller, in shown text, content, docs and
+  comments alike. Engine and library names keep their own spelling (Godot's `Color`).
 - When Ryan suggests a rule or a change, look for holes in the argument and discuss them in
   chat before building. A suggestion opens a discussion; it is not a spec. If he reaffirms
   after hearing the holes, build it as he said. A consequence that follows from a rule as he

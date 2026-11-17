@@ -509,6 +509,13 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    TB-2FAB Combat Tunneller, the hint all in the code, the job dull, beside the Honey Badger's
    Combat Miner like a sibling from the same works, and spelt with the game's British double l.
    His to choose; "Thunder Tunneller" stands if he wants the louder hint.
+   His word on it, 17 November: "do what you think about the designations and such for the mole,
+   if you have a better idea for the identifier propose it and I'll give my notes." Claude's
+   working designation for his notes: the TB-2FAB Tunnel Borer. Minerva's codes are their jobs'
+   initials where they can be (the HW-22T Heavy Weapons Carrier, the AB-70R Assault Breacher), so
+   TB is the Tunnel Borer and Thunderbird at once, 2 for Thunderbird 2, FAB the sign-off; the job
+   plain, as a tunnel boring machine is. It replaces the Combat Tunneller offered first, whose
+   code would have wanted to be CT.
 
 ## What the session hands back
 
