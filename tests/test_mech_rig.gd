@@ -1885,7 +1885,7 @@ func test_a_death_pose_goes_in_place_of_the_slump_and_rests_on_the_floor() -> vo
 	var pair := _rig_for("clydesdale")
 	var rig: MechRig = pair[0]
 	rig.kill()
-	rig.tick(float(rig.forms[MechRig.DEATH]["duration"]) + 1.0)
+	rig.tick(1.8)   # its fore knees given, before its rear comes down after them (17 November)
 	assert_true(rig.body.rotation.x < -0.15, "the Clydesdale goes down on its face (%.2f)" % rig.body.rotation.x)
 	pair[1].free()
 
@@ -1912,7 +1912,7 @@ func test_a_fall_starts_slow_and_lands_at_speed() -> void:
 func test_a_death_keeps_to_its_floor_all_the_way_down() -> void:
 	# The fourth notes: "The animation as a whole is a little janky": a death's lowest point is held on
 	# its floor every frame of its fall (MechRig._hold_death_floor), never through it and never
-	# floating but for its landing's hop (none for a death that stays on its feet: the fifth notes' Ammit).
+	# floating but for its landing's hop.
 	for id in ["clydesdale", "cassowary", "nemesis", "baboon", "funnel_web", "ammit", "whip_scorpion"]:
 		var pair := _rig_for(id)
 		var rig: MechRig = pair[0]
@@ -1927,19 +1927,15 @@ func test_a_death_keeps_to_its_floor_all_the_way_down() -> void:
 			assert_true(float(r["low"]) > -0.003, "%s never goes through the floor (%+.2f%% at %.2f s)" % [id, 100.0 * float(r["low"]), t])
 			assert_true(float(r["low"]) < MechRig.IMPACT_HOP + 0.003, "%s never floats off it (%+.2f%% at %.2f s)" % [id, 100.0 * float(r["low"]), t])
 			hopped = hopped or float(r["low"]) > 0.002
-		if bool(rig.forms[MechRig.DEATH].get("land", true)):
-			assert_true(hopped, "%s lands with a hop" % id)
-		else:
-			assert_false(hopped, "%s stays on its feet: nothing lands, no hop" % id)
+		assert_true(hopped, "%s lands with a hop" % id)
 		assert_true(absf(float(rig.rest_of()["low"])) < 0.002, "%s lies on the floor once it has landed" % id)
 		pair[1].free()
 
 
 func test_a_limp_joint_hangs_where_its_weight_takes_it() -> void:
-	# The fourth notes: the Baboon's "Arms that clearly had to have moved back under their own power";
-	# the Nemesis's "arms slumped down by the elbows": a death's `hang` joints are turned where their
-	# weight takes them once the rest of the pose lies where it ends, above the floor, resting on it
-	# where they reach it.
+	# The fourth notes: the Baboon's "Arms that clearly had to have moved back under their own power": a
+	# death's `hang` joints are turned where their weight takes them once the rest of the pose lies where
+	# it ends, above the floor, resting on it where they reach it.
 	var read := 0
 	for id in MACHINES:
 		var side := MechRig.load_sidecar(id)
@@ -1963,7 +1959,7 @@ func test_a_limp_joint_hangs_where_its_weight_takes_it() -> void:
 			assert_true(hangs_below or low < 0.03 * size, "%s's %s hangs below its joint or rests on the floor" % [id, jn])
 		read += 1
 		pair[1].free()
-	assert_true(read >= 2, "deaths with limp joints read (%d)" % read)
+	assert_true(read >= 1, "deaths with limp joints read (%d)" % read)
 
 
 func test_every_death_pose_names_what_its_model_has() -> void:
@@ -2042,24 +2038,87 @@ func test_feet_down_apart_each_keep_their_place() -> void:
 func test_every_planted_death_keeps_its_feet() -> void:
 	# Every death the recipes plant keeps those feet where they stand while they carry it (the
 	# fifth notes; the next day, "pivot or slide in correct, plausible places": a foot let go as the body
-	# lands may slide then), read up to the moment the first is let go.
+	# lands may slide then, and a foot stepping is in the air), each read over its own stretches.
 	var read := 0
 	for id in MACHINES:
 		var death: Dictionary = MechRig.load_sidecar(id).get("death", {})
-		var named: Array = []
-		var until := float(death.get("duration", 1.0)) + 0.6
+		var rows: Array = []
 		for p in death.get("plant", []):
-			named.append(str(p[0]) if p is Array else str(p))
-			if p is Array and (p as Array).size() > 2:
-				until = minf(until, float(p[2]))
-		if named.is_empty():
+			var row: Array = p if p is Array else [p]
+			rows.append([str(row[0]), float(row[1]) if row.size() > 1 else 0.0, float(row[2]) if row.size() > 2 else float(death.get("duration", 1.0))])
+		if rows.is_empty():
 			continue
 		var pair := _rig_for(id)
-		var held := _slides_of(pair[0], until)
+		var held := _held_slides(pair[0], rows)
 		for jn in held.keys():
-			if named.has(jn):
-				# within a fiftieth of its size: a long foot turning on its toes leaves the leg's two-link reach a sliver
-				assert_true(float(held[jn]) < 0.02, "%s's %s stays where it stands (%.1f%%)" % [id, jn, 100.0 * float(held[jn])])
+			# within a fiftieth of its size: a long foot turning on its toes leaves the leg's two-link reach a sliver
+			assert_true(float(held[jn]) < 0.02, "%s's %s stays where it stands (%.1f%%)" % [id, jn, 100.0 * float(held[jn])])
 		read += 1
 		pair[1].free()
 	assert_true(read >= 3, "the planted deaths read (%d)" % read)
+
+
+## How far each planted foot of a death slides while it is held (rows of [joint, from, to]), a share of
+## the machine's size: each stretch read from where the foot stands as the stretch begins.
+func _held_slides(rig: MechRig, rows: Array) -> Dictionary:
+	var meshes := DeathFloor._meshes_of(rig)
+	var floor_y := float(rig.get("_body_rest_pos").y)
+	var size := rig._model_size()
+	var feet := DeathFloor._feet_at_rest(rig, meshes, floor_y, size)
+	rig.kill()
+	var end := 0.0
+	for r in rows:
+		end = maxf(end, float(r[2]))
+	var out := {}
+	var stretch := {}   # row -> that foot followed from the stretch's start
+	var t := 0.0
+	while t < end - 0.0001:
+		rig.tick(1.0 / 60.0)
+		t += 1.0 / 60.0
+		for i in range(rows.size()):
+			var jn := str(rows[i][0])
+			if not feet.has(jn) or t < float(rows[i][1]) or t > float(rows[i][2]):
+				continue
+			if not stretch.has(i):
+				stretch[i] = {jn: {"pts": feet[jn]["pts"], "anchor": PackedVector2Array(), "down": false, "max": 0.0, "steps": 0}}
+			DeathFloor._follow_feet(rig, stretch[i], floor_y, size)
+			out[jn] = maxf(float(out.get(jn, 0.0)), float(stretch[i][jn]["max"]) / size)
+	return out
+
+
+func test_a_death_that_cannot_stand_tips_until_it_rests() -> void:
+	# Ryan, 17 November, judging by the hangar: "Some end up on the ground, some don't. Go ahead and fix
+	# the others": a death whose pose ends where it cannot stand goes on falling, tipped over the edge
+	# nearest its middle until it rests (MechRig._topple_death), never through the floor on the way,
+	# its landing's beat as its pose meets the floor; a pose that stands is left as it is.
+	var lean := {"duration": 1.0, "ease": "fall", "body": [[1.0, 0.0, 0.0, 0.0, 0.0, -50.0, 0.0]]}
+	var pair := _rig_for("nemesis")
+	var rig: MechRig = pair[0]
+	rig.forms[MechRig.DEATH] = rig._form_entry(lean)
+	rig.kill()
+	var f: Dictionary = rig.forms[MechRig.DEATH]
+	assert_false((f["topple"] as Array).is_empty(), "a lean past its feet tips on")
+	assert_true(float(f["duration"]) > 1.0, "the tip lengthens its turn (%.2f s)" % float(f["duration"]))
+	var lowest := INF
+	var hopped_at := -1.0
+	var t := 0.0
+	while t < float(f["duration"]) + MechRig.IMPACT_S + 0.2:
+		rig.tick(1.0 / 60.0)
+		t += 1.0 / 60.0
+		var low := float(rig.rest_of()["low"])
+		lowest = minf(lowest, low)
+		if hopped_at < 0.0 and low > 0.002:
+			hopped_at = t
+	var r := rig.rest_of()
+	assert_true(float(r["margin"]) > 0.0, "once tipped it rests on what touches (%s; %+.1f%%)" % [", ".join(r["touching"]), 100.0 * float(r["margin"])])
+	assert_true(lowest > -0.003, "never through the floor on the way (%+.2f%%)" % (100.0 * lowest))
+	assert_true(hopped_at > 0.0 and hopped_at < 1.0 + 0.1, "its landing's beat as its pose meets the floor (%.2f s)" % hopped_at)
+	pair[1].free()
+	var stand := {"duration": 1.0, "ease": "fall", "tracks": {"waist": [[1.0, -4.0, 0.0, 0.0]]}}
+	var pair2 := _rig_for("nemesis")
+	var rig2: MechRig = pair2[0]
+	rig2.forms[MechRig.DEATH] = rig2._form_entry(stand)
+	rig2.kill()
+	assert_true((rig2.forms[MechRig.DEATH]["topple"] as Array).is_empty(), "a pose that stands is left standing")
+	assert_true(absf(float(rig2.forms[MechRig.DEATH]["duration"]) - 1.0) < 0.0001, "and keeps its turn")
+	pair2[1].free()

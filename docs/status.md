@@ -570,19 +570,20 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   pass held every foot fixed and left them "a little lame"): a foot carrying the machine turns rather
   than slides and slides once the weight is off it (`b.death`'s `plant` over a stretch, the rig carrying
   the body along the floor over the feet and each leg reaching for its own, `MechRig._plant_death`
-  and `_reach_limb`; `sink` lowering a many-legged walker on its planted legs; `land=False` for a
-  death on its feet), measured by `tools/death_floor.gd --slide --clip`. The Cassowary strides and
-  falls back over its held feet, which flop out as its back lands; the Baboon sits back over its
-  feet, which slide out as its rump lands (its thighs still crossing its barrel); the Funnel-web
-  splays onto its hinges with all four feet left down; the Whip Scorpion buckles on its six held
-  feet and splays as its belly drops onto the floor (the sink it had cut, no death using it); the
-  Ammit stays on its feet with its upper limbs drawn in. His asks of 17 November ("Some end up on the
-  ground, some don't. Go ahead and fix the others"; the Ammit sent forward; the Cassowary two steps
-  back and onto its face) are the to-do's first death line: measured in the hangar, five bodies end
-  off the ground, and the poses tried ended propped mid-fall, since nothing lets a pose that does not
-  rest go on toppling. Next: a settle that tips the body over the edge of what it stands on until it
-  rests, in the rig and the hangar's script both. Section 12 holds the Baboon's sit; the to-do the crossings left elsewhere.
-  The bible (v0.606) republishes on his word. And on his "Can we make it so the
+  and `_reach_limb`), measured by `tools/death_floor.gd --slide --clip`: the Baboon sits back over
+  its feet, which slide out as its rump lands; the Funnel-web splays onto its hinges with all four
+  feet left down; the Whip Scorpion buckles on its six held feet and splays as its belly drops. His
+  asks of 17 November ("Some end up on the ground, some don't. Go ahead and fix the others"; the
+  Ammit sent forward; the Cassowary two steps back and onto its face) landed the same day: a settle
+  in the rig and the hangar's script (`MechRig._topple_death`) tips a pose that cannot stand over the
+  edge nearest its middle until it rests, worked on the pose it ends in (a kill mid-act had read the
+  act's leftover turn, so the hangar's falls varied run to run); the Ammit goes forward onto its belly
+  (its thighs fold up into it, the crossing he allowed), the Cassowary two steps back and down onto
+  its knees and chin, the Nemesis over from its knee onto its face and side, the Clydesdale's rear
+  down after its face, the Polar Bear flat; `land=False` cut with its last carrier. Every death ends
+  with its lowest point on the floor and resting. Section 12 holds the Baboon's sit, the Funnel-web's
+  hinges (a tenth up whatever its legs do) and the Ammit's clean fold; the to-do the crossings left
+  elsewhere. The bible (v0.607) republishes on his word. And on his "Can we make it so the
   game doesn't enable auto rotate every time it loads?": `tools/android.sh` launches the game with
   `am start` as Godot's own one-click deploy does, no longer with `monkey`, whose every run ends by
   unlocking the screen's rotation and so turned the phone's auto-rotate on (the game itself is

@@ -94,6 +94,10 @@ const COLLAPSE_HEFT := 0.3     # its servos' time constant as it goes: a drop wi
 const COLLAPSE_SINK := 0.28    # a walker sinks this share of its shortest planted limb's height, each foot where it stands
 const COLLAPSE_WAIST := 16.0   # a biped's waist slumps forward this many degrees (a walker with a hand on the floor keeps its back)
 const HANG_SCAN := 36         # steps a hanging joint's range is read in when it starts through the floor (_hang)
+const TOPPLE_STEPS := 6       # how many edges a death may tip over before it rests (_topple_death)
+const TOPPLE_TOUCH := 0.005   # a share of its size: a point this near the floor bears on it as it tips
+const TOPPLE_HOLD := 0.01     # a share of its size: a middle this near the edge of what bears on the floor is let stand
+const TOPPLE_BEAT := 15.0     # degrees: a death that tips this far past its pose lands again as it comes to rest
 const PLANT_STEP := 0.025     # seconds between the samples a death's planted feet are held at (_plant_death)
 const PLANT_SOLE := 0.02      # a share of its size: a planted foot stands on its points this near its lowest
 const PLANT_PIVOT := 0.005    # a share of its size: of those, it turns on the ones this near the lowest now
@@ -786,7 +790,7 @@ func _form_entry(f: Dictionary) -> Dictionary:
 		if not row.is_empty() and joints.has(str(row[0])):
 			plant.append([str(row[0]), float(row[1]) if row.size() > 1 else 0.0, float(row[2]) if row.size() > 2 else duration])
 	return {"duration": duration, "curves": curves, "glow": glow, "glow_keys": glow_keys, "acts": own, "hang": hang, "ease": ease,
-		"plant": plant, "land": bool(f.get("land", true)), "shift": {}, "raw_body": (f.get("body", []) as Array).duplicate(true)}
+		"plant": plant, "shift": {}, "topple": [], "base_duration": duration, "raw_body": (f.get("body", []) as Array).duplicate(true)}
 
 
 ## Hold a form or let it go: it turns in over its duration and back out the same way, from
@@ -958,8 +962,13 @@ func _forms_step(delta: float) -> bool:
 		if t != want:
 			_form_t[name] = move_toward(t, want, delta)
 			turning = true
-			if name == DEATH and dead and want > 0.0 and float(_form_t[name]) >= want and bool(forms[name].get("land", true)):
-				_impact = 0.0   # it lands: the landing's beat (none for a death that stays on its feet)
+			if name == DEATH and dead and want > 0.0:
+				# it lands: the landing's beat as its pose meets the floor, and again as a long tip past
+				# it comes to rest (_topple_death)
+				var now := float(_form_t[name])
+				var first := float(forms[name].get("topple_from", want))
+				if (t < first and now >= first) or (now >= want and first < want and float(forms[name].get("topple_angle", 0.0)) >= deg_to_rad(TOPPLE_BEAT)):
+					_impact = 0.0
 	if not turning:
 		return false
 	if _forms_apply():
@@ -1616,6 +1625,16 @@ func kill() -> void:
 	_flashes.clear()
 	_gutter_mats.clear()
 	_gutter_end = GUTTER
+	_death_lift = 0.0
+	_impact = -1.0
+	if forms.has(DEATH):
+		# Its own death in place of the slump, worked out first (a death that tips past its pose lands
+		# later, _topple_death): its limp joints where it will lie, its lowest point held on the floor
+		# every frame of the fall (_hold_death_floor), and nothing for the view to land (collapse_floor
+		# 0: an airborne one comes down to the floor).
+		if _size < 0.0:
+			_size = _model_size()
+		_settle_death()
 	var late := {}   # a lit part its death keys (the Polar Bear's vents): lit as it goes down, guttering once it lands
 	if forms.has(DEATH):
 		for gk in forms[DEATH].get("glow_keys", []):
@@ -1629,15 +1648,7 @@ func kill() -> void:
 			_gutter_mats.append([m, (m as StandardMaterial3D).emission_energy_multiplier, (m as StandardMaterial3D).albedo_color, start, false])
 			_gutter_end = maxf(_gutter_end, start + GUTTER)
 	_gutter = 0.0
-	_death_lift = 0.0
-	_impact = -1.0
 	if forms.has(DEATH):
-		# Its own death in place of the slump: its limp joints worked out where it will lie, its
-		# lowest point held on the floor every frame of the fall (_hold_death_floor), and nothing
-		# for the view to land (collapse_floor 0: an airborne one comes down to the floor).
-		if _size < 0.0:
-			_size = _model_size()
-		_settle_death()
 		_form_on[DEATH] = true
 		_collapse = -1.0
 		collapse_floor = 0.0
@@ -1676,10 +1687,148 @@ func revive() -> void:
 func _settle_death() -> void:
 	var f: Dictionary = forms[DEATH]
 	f["shift"] = {}
+	f["topple"] = []
+	f.erase("topple_from")
+	f.erase("topple_angle")
+	f["duration"] = float(f.get("base_duration", f["duration"]))
+	# Worked on the pose it will end in: what an act, a jolt, an aim or the walk's body still adds at the
+	# kill eases out as it falls, so none of it is read (a kill mid-act had tipped poses that rest).
+	var kept := [_act_rot, _act_slide, _strikes, _aim, _body_act_rot, _body_act_slide, _body_move_rot, _body_move_slide]
+	_act_rot = {}
+	_act_slide = {}
+	_strikes = []
+	_aim = {}
+	_body_act_rot = Vector3.ZERO
+	_body_act_slide = Vector3.ZERO
+	_body_move_rot = Vector3.ZERO
+	_body_move_slide = Vector3.ZERO
 	if not (f.get("hang", []) as Array).is_empty():
 		_hang_death(f)
 	if not (f.get("plant", []) as Array).is_empty():
 		_plant_death(f)
+	_topple_death(f)
+	_act_rot = kept[0]
+	_act_slide = kept[1]
+	_strikes = kept[2]
+	_aim = kept[3]
+	_body_act_rot = kept[4]
+	_body_act_slide = kept[5]
+	_body_move_rot = kept[6]
+	_body_move_slide = kept[7]
+	_pose()
+
+
+## A death that ends where it cannot stand goes on falling (Ryan, 17 November, judging by the hangar:
+## "Some end up on the ground, some don't. Go ahead and fix the others"): its pose as it ends tipped over
+## the edge of what bears on the floor nearest its middle until the next point meets the floor, again
+## until its middle lies inside what bears on it; the tips laid on after its turn, already moving and
+## landing at speed (_topple_now), the turn lengthened by them, a small settle quick and a long tip
+## slower. A pose that rests is left as it is.
+func _topple_death(f: Dictionary) -> void:
+	var d := float(f["duration"])
+	var saved_t := float(_form_t[DEATH])
+	_form_t[DEATH] = d
+	_forms_apply()
+	_pose()   # as it ends, unlifted (the lift is nought at the kill), no topple on yet
+	var pts := PackedVector3Array()
+	var sum := Vector3.ZERO
+	var count := 0
+	var stack: Array = [model]
+	while not stack.is_empty():
+		var n: Node = stack.pop_back()
+		if n is Node3D and not (n as Node3D).visible:
+			continue
+		for c in n.get_children():
+			stack.append(c)
+		if n is MeshInstance3D and (n as MeshInstance3D).mesh != null and not n.has_meta("halo") and not n.has_meta("plume") and not n.has_meta("is_trace"):
+			var xf := body.transform * _in_model(n)
+			for v in _hull_of((n as MeshInstance3D).mesh):
+				pts.append(xf * v)
+			var cn: Array = _centroid_of((n as MeshInstance3D).mesh)
+			sum += (xf * (cn[0] as Vector3)) * float(cn[1])
+			count += int(cn[1])
+	_form_t[DEATH] = saved_t
+	_forms_apply()
+	_pose()
+	if pts.is_empty() or count == 0:
+		return
+	var mid := sum / float(count)
+	var size := maxf(1.0, _size)
+	var steps: Array = []
+	var total := 0.0
+	for _i in range(TOPPLE_STEPS):
+		var lo := INF
+		for p in pts:
+			lo = minf(lo, p.y)
+		var foot := PackedVector2Array()
+		for p in pts:
+			if p.y <= lo + TOPPLE_TOUCH * size:
+				foot.append(Vector2(p.x, p.z))
+		var m2 := Vector2(mid.x, mid.z)
+		var hull := Geometry2D.convex_hull(foot)
+		if hull.size() >= 4 and Geometry2D.is_point_in_polygon(m2, hull):
+			break   # it rests
+		var near := foot[0]
+		var best := INF
+		for k in range(hull.size() - 1):
+			var q := Geometry2D.get_closest_point_to_segment(m2, hull[k], hull[k + 1])
+			if q.distance_to(m2) < best:
+				best = q.distance_to(m2)
+				near = q
+		var n2 := m2 - near
+		if n2.length() < TOPPLE_HOLD * size:
+			break
+		n2 = n2.normalized()
+		var out := Vector3(n2.x, 0.0, n2.y)
+		var a := Vector3(near.x, lo, near.y)
+		var axis := Vector3.UP.cross(out).normalized()
+		var theta := PI * 0.5
+		for p in pts:
+			var r := p - a
+			var h := r.dot(out)
+			if h > 0.001 * size and r.y > 0.001 * size:
+				theta = minf(theta, atan2(r.y, h))
+		if theta < 0.001:
+			break
+		var turn := Transform3D(Basis.IDENTITY, a) * Transform3D(Basis(axis, theta), Vector3.ZERO) * Transform3D(Basis.IDENTITY, -a)
+		for i in range(pts.size()):
+			pts[i] = turn * pts[i]
+		mid = turn * mid
+		steps.append([a, axis, theta])
+		total += theta
+		if total > deg_to_rad(150.0):
+			break
+	if steps.is_empty():
+		return
+	f["topple"] = steps
+	f["topple_from"] = d
+	f["topple_angle"] = total
+	f["duration"] = d + clampf(0.12 + 0.5 * sqrt(total / (PI * 0.5)), 0.12, 0.7)
+
+
+## How far a dying machine has tipped past its pose's end (_topple_death), now: its tips in turn, going
+## on from its fall at half its mean pace and landing at half again.
+func _topple_now() -> Transform3D:
+	if not dead or not forms.has(DEATH):
+		return Transform3D.IDENTITY
+	var f: Dictionary = forms[DEATH]
+	var steps: Array = f.get("topple", [])
+	if steps.is_empty():
+		return Transform3D.IDENTITY
+	var from := float(f["topple_from"])
+	var t := float(_form_t[DEATH])
+	if t <= from:
+		return Transform3D.IDENTITY
+	var s := clampf((t - from) / maxf(0.01, float(f["duration"]) - from), 0.0, 1.0)
+	var left := (s + s * s) * 0.5 * float(f["topple_angle"])
+	var xf := Transform3D.IDENTITY
+	for st in steps:
+		var ang := minf(float(st[2]), left)
+		if ang <= 0.0:
+			break
+		xf = (Transform3D(Basis.IDENTITY, st[0]) * Transform3D(Basis(st[1], ang), Vector3.ZERO) * Transform3D(Basis.IDENTITY, -(st[0] as Vector3))) * xf
+		left -= ang
+	return xf
 
 
 ## A death's limp joints worked out where it will lie (its `hang`: an arm gone slack): the pose put on
@@ -2383,8 +2532,12 @@ func _pose() -> void:
 				rock += (st["vec"] as Vector3) * _strike_envelope(st)   # a jolt's nose rocking up
 		var turn := Vector3(0.0, float(_aim["deg"]) * aim_envelope(), 0.0) if not _aim.is_empty() and _aim["joint"] == BODY else Vector3.ZERO
 		var landing := Vector3(impact_rock(_impact), 0.0, 0.0)   # a death's landing rocks it on what it landed on
-		body.position = _body_rest_pos + offset_of(_body_act_slide + _body_move_slide + _form_body_slide) + recoil + Vector3(0.0, _death_lift, 0.0) + _death_shift()
+		body.position = _body_rest_pos + offset_of(_body_act_slide + _body_move_slide + _form_body_slide) + recoil + _death_shift()
 		body.rotation = _body_rest_rot + euler_of(_body_act_rot + _body_move_rot + _form_body_rot + turn + rock + landing)
+		var tipped := _topple_now()   # a death going on falling past its pose, over the edges it tips across
+		if tipped != Transform3D.IDENTITY:
+			body.transform = tipped * body.transform
+		body.position.y += _death_lift
 
 
 # ---------------------------------------------------------------- movement

@@ -964,7 +964,7 @@ class Build:
         self.forms[name] = out
         return out
 
-    def death(self, duration, tracks=None, body=None, glow=None, ease="fall", hang=None, plant=None, land=True):
+    def death(self, duration, tracks=None, body=None, glow=None, ease="fall", hang=None, plant=None):
         """The pose the machine goes to when it is lost (MechRig.kill), in place of the baseline
         slump every model shares (Ryan, 16 November: "The slump was supposed to be a general
         guideline so that everything got an adequate baseline death animation and pose. There's
@@ -986,8 +986,8 @@ class Build:
         `plant` names the feet held while they carry it, a joint alone for the whole fall or (joint,
         from, to) for a stretch of it, a foot that steps planted anew where it comes down; the rig moves
         the body along the floor over them, each leg reaching for its own, a planted hand catching
-        without steering it. `land` False for a death that stays on its feet (the Ammit's limbs drawn
-        in where it stands): nothing lands, so no hop and no rock."""
+        without steering it. A pose that ends where it cannot stand goes on falling, tipped over the
+        edge it would go across until it rests (MechRig._topple_death)."""
         self.form("@death", duration, tracks or {}, glow=glow, body=body)
         self.death_pose = self.forms.pop("@death")
         self.death_pose["ease"] = str(ease)
@@ -1006,8 +1006,6 @@ class Build:
             rows.append([jn, round(t0, 3), round(t1, 3)])
         if rows:
             self.death_pose["plant"] = rows
-        if not land:
-            self.death_pose["land"] = False
         return self.death_pose
 
     def ajar(self, unless, joints):

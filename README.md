@@ -688,11 +688,11 @@ RIFTGATE_SHELL_DEBUG=1 godot --path .          # the rift's shell, the wall on t
 # joint_<name> Empty, nested where it rides another; `b.act(name, seconds, {joint: [(t, degrees), ...]}, body=, glow=)` at the end of a
 # machine writes its idle acts to art/models/<id>.rig.json with the joints. Judge them running:
 RIFTGATE_ACTS_DEBUG=1 godot --path .            # every act back to back in the skirmish and on the map (=<act name> loops one)
-# a machine's own way down: `b.death(seconds, tracks, body=, glow=, ease="fall", hang=[joints], plant=[joints], land=True)`
+# a machine's own way down: `b.death(seconds, tracks, body=, glow=, ease="fall", hang=[joints], plant=[joints])`
 # at the end of its recipe, a held pose in place of the baseline slump: it falls (slow, then hard), the rig holding its lowest
 # point on the floor every frame, `hang` limbs going limp, a `glow` given keys burning as it goes down, `plant` feet held while
-# they carry it (a joint, or (joint, from, to) for a stretch, a stepping foot held anew where it comes down), `land=False` for
-# one that stays on its feet (16 and 17 November: pivot or slide where a body would; keep it on its hex); one frame of it:
+# they carry it (a joint, or (joint, from, to) for a stretch, a stepping foot held anew where it comes down); a pose that cannot
+# stand goes on falling until it rests (16 and 17 November: pivot or slide where a body would; keep it on its hex); one frame of it:
 xvfb-run -a godot --path . --resolution 360x640 -s tools/act_shot.gd -- clydesdale wainwright_sutler lose 3.0 /tmp/dead.png skirmish 300x300
 # where each lost machine lies (MechRig.rest_of): its lowest point off the floor, the joints whose parts touch, and whether it
 # rests on them or tips (its middle outside what touches: propped on a limb); --joints its joints' places, --try a list of

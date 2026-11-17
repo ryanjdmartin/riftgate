@@ -11,7 +11,7 @@ extends SceneTree
 ## the lowest point it carries. --try reads a list of variants, each {"id", "label", "tracks":
 ## {joint: [pitch, yaw, roll] or keys [[t, pitch, yaw, roll], ...]}, "body": [dx, dy, dz, yaw,
 ## pitch, roll] or keys [[t, dx, dy, dz, yaw, pitch, roll], ...], "duration", "hang": [joints],
-## "ease", "plant": [joint or [joint, from, to]], "land", "untrack": [joints whose tracks to
+## "ease", "plant": [joint or [joint, from, to]], "untrack": [joints whose tracks to
 ## drop], "report": [joints whose place to
 ## print, off its middle: x right, y up, z back, shares
 ## of its size]}, laid over the machine's own death (a joint named turns to its values from rest, or
@@ -417,7 +417,6 @@ static func _laid_over(id: String, v: Dictionary) -> Dictionary:
 		base["hang"] = (v["hang"] as Array).duplicate()
 	if v.has("ease"):
 		base["ease"] = str(v["ease"])
-	for key in ["plant", "land"]:
-		if v.has(key):
-			base[key] = v[key]
+	if v.has("plant"):
+		base["plant"] = v["plant"]
 	return base
