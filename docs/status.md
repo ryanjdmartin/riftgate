@@ -2221,7 +2221,11 @@ commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map, republished after every content, model or
   render change with only the files that moved, each live copy read first and checked against
   the last publish's before it is replaced, and `edits`, `designs` and `text` read first. At the
-  page's Version 294 (17 November, from `ccr-bd73687d-w8qox1` at `c91fce0`, ahead of main, on his
+  page's Version 297 (17 November, from `ccr-bd73687d-w8qox1` at `2bd0b96`, ahead of main, on his
+  ninth notes: the Ammit's walking arms folding from the start, no jump): the Ammit's sidecar alone,
+  over Version 296, another session's publish at 19:29 UTC (its page this branch's, its Ammit sidecar
+  294's and its death files this branch's, read and checked first; its Mole's model and rig kept).
+  Version 294 (17 November, from `ccr-bd73687d-w8qox1` at `c91fce0`, ahead of main, on his
   eighth notes: the Ammit's "weird kind of hop" and its curl, the Whip's middle pair back, the
   Cassowary's toes): the Ammit's, the Cassowary's and the Whip Scorpion's sidecars, over Version 293,
   another session's publish at 15:27 UTC (the page, `motion.js` and these three as 292 had them,
