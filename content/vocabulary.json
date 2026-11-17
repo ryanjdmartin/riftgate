@@ -412,10 +412,10 @@
    "id": "chain",
    "category": "keyword",
    "name": "Chain",
-   "codex": "Keyword with a number, a weapon's. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the number: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. No strike is aimed at them, so their Shock stands.",
+   "codex": "Keyword with a number. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the number: a weapon's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. On a debuff, which deals nothing itself, the arcs land the number plain, through each foe's armour, and carry the debuff's riders, as any area of it does. No strike is aimed at them, so their Shock stands.",
    "status": "implemented",
    "design": {
-    "holes": "Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain). Retired 3 November: the charge, one other foe at random after the arcs (Ryan, 2 November: \"Chain just is the situational aoe, and if weak we can either add more things for it to proc on, or give it the self-charge again\"); Charged, the primer, supplies the Shock beside the Shock weapons and Retaliate."
+    "holes": "Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain). Retired 3 November: the charge, one other foe at random after the arcs (Ryan, 2 November: \"Chain just is the situational aoe, and if weak we can either add more things for it to proc on, or give it the self-charge again\"); Charged, the primer, supplies the Shock beside the Shock weapons and Retaliate. A debuff's since 17 November (the Storm Petrel's lure, its Striker branch: \"adds Chain 3 to the lure\"): refused until then, since a debuff's arc would carry its riders to every conductor for no blow; with a number the arc is a blow, and its riders ride it, so the lure's Chain lures every Shocked foe it arcs to, a session's read of his words."
    }
   },
   {
@@ -700,6 +700,22 @@
      "kind": "buff",
      "on": "both",
      "stacks": "Yes: an armour point a stack, every stack going at once",
+     "lasts": "Until its next turn starts"
+    }
+   }
+  },
+  {
+   "id": "hardened",
+   "category": "status",
+   "name": "Hardened",
+   "codex": "Machine buff. While its shield stands, every blow on it loses 1 a stack, beside any plate of its own. Every stack goes as its next turn starts. Laid by the Storm Petrel's lure in its Defence branch.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 17 November, the Storm Petrel's Defence branch (\"Defense\" his): \"adds a self-buff that increases shield armour for a turn to the lure\", then \"adds spread to the lure, increasing shield armour by foes lured\". The plate's rule on a clock, Armoured's: through the enemy's turn, gone as its side's next turn starts. Shield armour, never armour: Exposed leaves it, and it takes nothing off a blow on bare hull. A working name.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "Yes: a point off every blow a stack while its shield stands",
      "lasts": "Until its next turn starts"
     }
    }
@@ -1065,7 +1081,6 @@
    "category": "battlefield",
    "name": "Ring",
    "codex": "A hunter catches what stands beside where its walk ends: the engage range, one hex, the same reach every unit has on the map, so a machine joins a fight on a pack beside it and a hunter catches a machine beside it. The map draws the ring of hexes beside the hunter's walk's end, where the catch is judged, and round the hunter while a catch it made waits. No other pack has a ring. No pack joins a fight; one pack is one fight.",
-
    "status": "implemented",
    "design": {
     "holes": "One number in the engine, the engage range (Unit.ENGAGE_RANGE, a placeholder: adjacency), serving the machines' reach onto a pack, the hunters' catch and the ring drawn; the hunters' pounce of two (Ryan, 29 October, \"wolfs pounce\") retired 10 November with the body blocking, so the catch is \"the same melee engage range as everyone else\" (Ryan); no foe or composition carries a ring since 8 November."
@@ -1572,13 +1587,13 @@
    }
   },
   {
-   "id": "regenerates",
+   "id": "self_statuses",
    "category": "component_property",
-   "name": "Regenerates",
-   "codex": "A rule printed on a component (the Storm Petrel's St. Elmo's Regenerator, a lure): spent on a foe, its own machine gains Regenerating, the stacks it says, a point of shield a stack as each of its turns ends, this one first, and a stack fading then.",
+   "name": "On itself",
+   "codex": "A rule an upgrade writes on a locked piece (the Storm Petrel's St. Elmo's Regenerator, in its branches): spent on a foe, its own machine gains the status it says, the stacks it says, or that many for every foe the spend reached, a foe its Spread lures beside the target included.",
    "status": "implemented",
    "design": {
-    "holes": "Self only and never Rapid: the die is its brake (Ryan, 19 October)."
+    "holes": "Its first carrier the Storm Petrel's lure, in its branches (Ryan, 17 November): the Defence direction's Hardened, then a stack for each foe lured, the Striker's Charged. An upgrade's effect (self_status), read through the pipeline onto the entry as spent, never printed on the piece. The St. Elmo's Regenerator's Regenerating on itself (regenerates, 30 October to 17 November), printed on the piece, was its one form until then; it left with that piece's rework. Machine buffs alone, never a Barrier or a Ward, which keep their pieces and their cooldowns."
    }
   },
   {
@@ -2240,7 +2255,7 @@
    "codex": "Machine buff. While it lasts the machine's weapons fire with Shock, shown on the die: every foe a fire reaches is Shocked after the blows, a felled one too. A weapon fired spends a stack: a Rapid's second fire is a second fire, a salvo one, a passive's own fire none, and equipment carries it not and spends nothing. A laid shot spends the stack as it is laid and carries the Shock. A Purge lowers it.",
    "status": "implemented",
    "design": {
-    "holes": "The Shock primer (Ryan, 2 November), Primed's cousin, so Chain is the arcs alone and the Shock supply is a kit choice; a keyword on the weapon fired, never a mark per hit (3 November: \"a multi-hit weapon with Shock would apply it after both hits\"), so a strikes gun never cashes what it just laid. No piece grants it yet: capacitor pieces are content to propose.",
+    "holes": "The Shock primer (Ryan, 2 November), Primed's cousin, so Chain is the arcs alone and the Shock supply is a kit choice; a keyword on the weapon fired, never a mark per hit (3 November: \"a multi-hit weapon with Shock would apply it after both hits\"), so a strikes gun never cashes what it just laid. Its first granter is the Storm Petrel's lure in its Striker branch (17 November: \"adds a self-grant of Charged stacks to the lure\"), two stacks a spend.",
     "table": {
      "kind": "buff",
      "on": "machine",
@@ -2269,13 +2284,13 @@
    "id": "regenerating",
    "category": "status",
    "name": "Regenerating",
-   "codex": "Status, on either side: a point a stack as its turn ends, then a stack fades, so Regenerating 3 gives 3, 2 and 1, the first as the turn it was gained in ends, and a second grant adds its stacks. A foe's, from its own move, is hit points, after its Ablating and Vitriol have ticked, so an Ablate is a race and never a wall. A machine's, from the Storm Petrel's St. Elmo's Regenerator, is shield at the end of the player's turn, after its Ablating and before the foes strike, up to its maximum, and a broken shield takes none though the stack fades.",
+   "codex": "Foe buff: a point of HP a stack as its turn ends, then a stack fades, so Regenerating 3 gives 3, 2 and 1, the first as the turn it was gained in ends, and a second grant adds its stacks. It comes from its own move, after its Ablating and Vitriol have ticked, so an Ablate is a race and never a wall.",
    "status": "implemented",
    "design": {
-    "holes": "One clock on both sides since 15 November (Ryan: \"These are structured as 'Regen 1 per stack' and I'd give all sources either a fixed duration, say 2 or 3 turns, or have it decay one stack at a time\"; \"Regenerating - agreed\"), Ablating's turned round; a value at each of three turns until then. The machine half, the Storm Petrel's, built 30 October, bought by a die entry so a foe's purge takes it. The numbers are placeholders, the foes' unmoved by the new clock.",
+    "holes": "One clock on both sides since 15 November (Ryan: \"These are structured as 'Regen 1 per stack' and I'd give all sources either a fixed duration, say 2 or 3 turns, or have it decay one stack at a time\"; \"Regenerating - agreed\"), Ablating's turned round; a value at each of three turns until then. Its machine half, shield as the player's turn ended (the Storm Petrel's St. Elmo's Regenerator, built 30 October), left the engine on 17 November with that piece's rework, its last carrier; a piece that wants a machine's regen back has it built then. The numbers are placeholders, the foes' unmoved by the new clock.",
     "table": {
      "kind": "buff",
-     "on": "both",
+     "on": "foe",
      "stacks": "Yes: a point a stack, grants adding",
      "lasts": "A stack fades as each of its turns ends"
     }

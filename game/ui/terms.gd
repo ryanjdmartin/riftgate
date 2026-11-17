@@ -40,7 +40,7 @@ const TABLE := {
 	"self_ablate": ["ablate", "heat"], "ignores_armour": ["", "plain"], "vents_all": ["vent", "heat"],
 	"gather": ["mine", "heat"], "detonate": ["mine", "heat"],
 	"swap": ["swap", "guard"],   # the Combat Translocator's rule, its own text since 15 November, its mark kept
-	"regenerates": ["regenerating", "guard"], "ally_action": ["reroll", "plain"], "rolls_target": ["reroll", "plain"],
+	"self_statuses": ["buff", "plain"], "ally_action": ["reroll", "plain"], "rolls_target": ["reroll", "plain"],
 	"kill_rerolls": ["reroll", "plain"], "team_rerolls": ["reroll", "plain"],
 	# Statuses.
 	"ablating": ["ablate", "heat"], "scorched": ["scorch", "heat"], "primed": ["primed", "heat"],
@@ -49,7 +49,7 @@ const TABLE := {
 	"brittled": ["brittle", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"], "ricochet": ["ricochet", "heat"],
 	"mine": ["mine", "heat"],
 	"essence": ["essence", "heat"], "essence_flare": ["essence_flare", "heat"],   # the Ammit's count and its Tap's buff (12 and 15 November), with Empowered's group: what hits harder
-	"braced": ["shield", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"],
+	"braced": ["shield", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"], "hardened": ["hardened", "guard"],
 	"phased": ["phased", "guard"], "guarded": ["lock", "guard"], "sealed": ["seal", "guard"], "changed_over": ["reroll", "plain"],
 	"suppressed": ["suppress", "guard"], "webbed": ["web", "guard"],
 	"numbed": ["numbed", "guard"], "paradox": ["paradox", "guard"], "cryoed": ["cryo", "guard"],

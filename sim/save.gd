@@ -305,7 +305,7 @@ static func _unit_dict(u: Unit) -> Dictionary:
 		"traits": u.traits, "footprint": _hexes(u.footprint), "facing": u.facing,
 		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "members": u.members, "composition": u.composition, "composition_size": u.composition_size, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "goal_col": u.goal_col, "squad": u.squad, "full_strength": u.full_strength, "layout": u.layout, "is_boss": u.is_boss, "sealed": u.sealed, "lineup": u.lineup, "boss_tier": u.boss_tier, "attack_range": u.attack_range,
 		"die": faces, "paint": paint, "passive": u.passive, "chassis_id": u.chassis_id,
-		"hardpoints": u.hardpoints, "damaged_faces": damaged, "modules": u.modules,
+		"hardpoints": u.hardpoints, "damaged_faces": damaged, "modules": u.modules, "branches": u.branches,
 	}
 
 
@@ -380,6 +380,9 @@ static func _unit_into(u: Unit, d: Dictionary) -> void:
 	u.modules.clear()
 	for mid in d.get("modules", []):   # the fitted modules' ids, for the codex (their effects are the modifiers above)
 		u.modules.append(str(mid))
+	u.branches.clear()
+	for pick in d.get("branches", []):   # its branches' picks, the same (a save from before 17 November has none)
+		u.branches.append(str(pick))
 
 
 ## A die entry with everything the die keeps beyond the content shape: its component,

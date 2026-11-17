@@ -83,7 +83,6 @@ var dark: int = 0            # a dark entry (a cooldown, a foe's jam): the round
 var cooldown: int = -1       # the rounds a spend darkens it, its machine's passives in (Skirmish.cooldown_of); -1 reads the entry's own
 var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), in the passive box at the rail's foot; null for a die that rolls
 var next_number: String = "" # the blow that next entry will deal now, as the screen reads it (Skirmish.shown_number_text); "" reads its own
-var after_blow: int = -1     # the blow its machine's passive adds after the strikes (the Storm Petrel's), its number in the passive box; -1 reads the entry's own (Skirmish.after_blow off a foe)
 var ricochet: int = 0        # the strikes of 1 its machine's Ricochet adds after each shot of a weapon (the Skua's), in the passive box
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var locked: bool = false
@@ -616,9 +615,6 @@ func passive_marks() -> Array:
 		return out
 	var dark_now := face.disabled and dark > 0
 	if not dark_now:
-		var after := after_blow if after_blow >= 0 else Skirmish.after_blow(null, face)
-		if after > 0 and face.is_weapon():
-			out.append(["shield", str(after), Palette.SHIELD])   # by the shield's mark, in its colour, no sign (Ryan, 4 November: "can we fit the number inside, or next to, a shield icon in the helper box? or at least colour the number shield colour?")
 		if ricochet > 0 and face.is_weapon():
 			out.append(["ricochet", "+%d" % ricochet, Glyphs.colour_for("ricochet")])   # a strike of 1 more a stack after each shot (the Skua's)
 	if next_face != null:

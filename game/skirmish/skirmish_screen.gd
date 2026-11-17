@@ -1299,7 +1299,6 @@ func _refresh(save: bool = true) -> void:
 		d.charged = not ms.assigned and sk.charge_lands(ms)
 		var sf := sk.shown_face(ms, sk.spend_face(ms))   # reach as the passive reads it now, the charged form when it goes out charged
 		d.set_face(sf, sk.shown_number_text(ms, sf))   # and the number the blow will deal
-		d.after_blow = -1   # the blow its passive adds after the strikes, as the entry carries it (no foe in hand)
 		d.ricochet = _ricochets(ms, sf) if not ms.assigned and ms.alive() else 0   # the strikes of 1 its Ricochet adds after each shot
 		d.form_mark = form_mark(ms, sf) if not ms.assigned and ms.alive() else ""   # it seals its machine or opens it
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
@@ -2635,7 +2634,6 @@ func _on_drag_started(i: int) -> void:
 	var sf := sk.shown_face(sk.mechs[i], sk.spend_face(sk.mechs[i]))
 	_ghost.shut = []   # no foe in hand yet: every chip as printed
 	_ghost.set_face(sf, sk.shown_number_text(sk.mechs[i], sf))
-	_ghost.after_blow = -1
 	_ghost.ricochet = _ricochets(sk.mechs[i], sf)
 	_ghost.form_mark = form_mark(sk.mechs[i], sf)
 	_ghost.cooldown = sf.cooldown_rounds() if sf != null else 0
@@ -2685,9 +2683,6 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 			_ghost.set_face(sf, str(sk.shield_amount(ms, sf, target)))
 		else:
 			_ghost.set_face(sf, sk.shown_number_text(ms, sf, over_foe))
-		# The blow its passive adds after the strikes, over the foe through its armour, in the
-		# passive's box (the Storm Petrel's; Ryan, 4 November).
-		_ghost.after_blow = Skirmish.after_blow(ms, sf, over_foe) if over_foe != null else -1
 		# The heat bar reads the net over a Cryo foe (Ryan, 16 October: on the bar, never the die)
 		# through the forecast the refresh above reads (_forecast_for).
 
@@ -2822,7 +2817,6 @@ func _send_second_home() -> void:
 	fly.set_face(d.face, d.shown_number)
 	fly.slot = d.slot
 	fly.corrupted = d.corrupted
-	fly.after_blow = d.after_blow
 	fly.ricochet = d.ricochet
 	fly.charged = d.charged
 	fly.dark = d.dark
@@ -3184,7 +3178,7 @@ func _form_shift_at(t: float, i: int, sealing: bool) -> void:
 static func _strikes_of(blows: Array) -> int:
 	var n := 1
 	for b in blows:
-		if str(b["kind"]) != "zap" and str(b["kind"]) != "mine" and str(b["kind"]) != "shove":
+		if str(b["kind"]) != "mine" and str(b["kind"]) != "shove":
 			n = maxi(n, int(b["strike"]) + 1)
 	return n
 

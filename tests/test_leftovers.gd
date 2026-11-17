@@ -30,7 +30,7 @@ const KEPT_TRIGGERS := {
 }
 ## Keys a die entry reads that no piece prints.
 const KEPT_KEYS := {
-	"shield_cost": "the Buzzard's and the Storm Petrel's settled briefs pay in shield (docs/briefs/kestrel_buzzard.md), and the to-do's Ryan list asks which piece carries it",
+	"shield_cost": "the Buzzard's settled brief pays in shield (docs/briefs/kestrel_buzzard.md; the Storm Petrel's left it with its rework of 17 November), and the to-do's Ryan list asks which piece carries it",
 	"cools_all": "set by the engine: a charged form's vents all (the Sutler's Hoist), read back from a save",
 	"fills_shield": "set by the engine: a charged form's shield full (the Sutler's Hoist), read back from a save",
 }

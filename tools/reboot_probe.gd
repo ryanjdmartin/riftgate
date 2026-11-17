@@ -12,23 +12,25 @@ extends SceneTree
 ## ends there as it stands.
 ##   perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/reboot_probe.gd -- --seeds 8
 ##   perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/reboot_probe.gd -- --bosses --seeds 6 --only kite,badger
-## Options: --seeds N (6), --only <chassis ids>, --bosses, --whatif <lean>. Four in parallel, a
-## part of the roster each, read the whole roster in about seven minutes.
+## Options: --seeds N (6), --only <chassis ids>, --bosses, --whatif <lean>, --branches <picks> (the
+## machine read's upgrades, its directions in the order taken: --branches defence,defence; each
+## machine read takes those its chassis allows). Four in parallel, a part of the roster each, read
+## the whole roster in about seven minutes.
 ##
 ## --whatif lays one of the proposal's leans over the fight loop, where the engine has no switch
-## for it, the machine first in the squad the one it reads: `petrel` and `petrel_hot`, the Storm
-## Petrel's weapons heat (its shield burn and the zap gone, the plate kept) and its turn's heat
-## stands up as much shield while the shield stands,
-## the second with its St. Elmo's Regenerator a lure of heat 3 and no Regenerating; `kite_bot`, a
+## for it, the machine first in the squad the one it reads:
+## `kite_bot`, a
 ## bot that fights a broken Kite on when the die it shows would fell a foe, and `kite_mends`, that
 ## bot and a kill of its own mending a broken shield. Each is cut here once its lean is built or
-## refused: the Polar Bear's, a reboot opening its seal, was built on his word the same day.
+## refused: the Polar Bear's, a reboot opening its seal, and the Storm Petrel's, its heat standing
+## up its shield, were built on his word the same day.
 
 var db: ContentDB
 var seeds := 6
 var only: Array = []
 var bosses := false
 var whatif := ""
+var picks: Array = []   # the machine read's branch picks (--branches)
 
 const CAP := 40   # a fight still standing at forty rounds ends there as it stands, the bot stalled
 
@@ -59,18 +61,13 @@ func _init() -> void:
 				bosses = true
 			"--whatif":
 				whatif = v
+			"--branches":
+				picks = Array(v.split(","))
 	db = ContentDB.load_default()
 	if not db.load_errors.is_empty():
 		push_error("content did not load: " + "\n".join(db.load_errors))
 		quit(1)
 		return
-	if whatif.begins_with("petrel"):
-		var pas: Dictionary = db.chassis["storm_petrel"]["passive"]
-		pas["effects"] = Array(pas["effects"]).filter(func(e) -> bool: return str(e.get("effect", "")) != "burn_shield")
-		if whatif == "petrel_hot":
-			var face: Dictionary = db.components["st_elmos_regenerator"]["face"]
-			face.erase("regenerates")
-			face["heat"] = 3
 	var mates := ["badger", "prairie_dog", "cassowary"]
 	var comps: Array = []
 	for fac in db.factions.keys():
@@ -81,8 +78,8 @@ func _init() -> void:
 		for size in ["formation", "elite"]:
 			for c in db.compositions(str(fac), 1, size):
 				comps.append(c)
-	print("%d %s, %d seeds, the squad's three: %s%s" % [comps.size(), "bosses" if bosses else "compositions", seeds, ", ".join(mates),
-		"" if whatif.is_empty() else ", what-if " + whatif])
+	print("%d %s, %d seeds, the squad's three: %s%s%s" % [comps.size(), "bosses" if bosses else "compositions", seeds, ", ".join(mates),
+		"" if whatif.is_empty() else ", what-if " + whatif, "" if picks.is_empty() else ", upgrades " + ",".join(picks)])
 	var t0 := Time.get_ticks_msec()
 	print("| Machine | Fights | Won | Rounds | Spent | Rebooted | Held | Rounds a reboot | Overheats a fight | Burn a fight | Bare turns | Sealed | Blasts a fight | Own hull lost | Wrecked | Squad hull lost |")
 	print("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
@@ -116,7 +113,7 @@ func _fight(cid: String, mates: Array, c: Dictionary, seed_value: int, agg: Dict
 	var hull_max := 0
 	for id in [cid] + mates:
 		uid += 1
-		var u := db.make_mech(str(id), uid, Vector2i.ZERO, null, [])
+		var u := db.make_mech(str(id), uid, Vector2i.ZERO, null, [], picks if id == cid and db.branch_error(cid, picks).is_empty() else [])
 		hull_max += u.hull_max
 		sk.add_mech(u)
 	var fielded: Array = []
@@ -147,7 +144,6 @@ func _fight(cid: String, mates: Array, c: Dictionary, seed_value: int, agg: Dict
 		sk.start_round()
 		rounds += 1
 		var alive := me.alive()
-		var heat_before := me.heat
 		var log_from := sk.log.size()
 		pol.play_round(sk)
 		var valves := "%s opens its valves" % me.unit.display_name   # a reboot's vent that blasts, in the player's turn
@@ -157,8 +153,6 @@ func _fight(cid: String, mates: Array, c: Dictionary, seed_value: int, agg: Dict
 		if whatif == "kite_mends" and me.alive() and me.killed_round and me.shield_broken:
 			me.shield_broken = false
 			me.unit.shield = me.unit.shield_max
-		if whatif.begins_with("petrel") and me.alive() and not me.rebooting and me.unit.shield > 0:
-			me.unit.shield = mini(me.unit.shield_max, me.unit.shield + maxi(0, me.heat - heat_before))
 		if alive:
 			agg["turns"] += 1
 			if me.rebooting:

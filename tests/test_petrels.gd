@@ -1,19 +1,34 @@
 extends TestCase
 
-## The Storm Petrel's and the Giant Petrel's engines (Ryan's go, 21 October; built 30 October), on
-## synthetic passives and entries: the shield paying a weapon's heat and the zap it pays back, the
-## plate while the shield stands, Regenerating's machine half on its own spender; the bank of
-## unspent rerolls, the action bought with them, the kill that brings them and the roll on an ally.
+## The Storm Petrel's and the Giant Petrel's engines (Ryan's go, 21 October; built 30 October; the
+## Storm Petrel's reworked 17 November), on synthetic passives and entries: the plate while the
+## shield stands and the shield every point of heat gained stands up, what a spend at a foe lays on
+## its own machine by its branches (Hardened for each foe reached, Charged), a debuff's Chain; the
+## bank of unspent rerolls, the action bought with them, the kill that brings them and the roll on an
+## ally. The branches' picks themselves are tests/test_branches.gd's.
 
 const L := Face.Reach.DIRECT
 const I := Face.Reach.INDIRECT
 const K := Face.Keyword
 
-## The Storm Petrel's shape: a point off every blow while the shield stands, and the shield paying
-## its weapons' heat.
+## The Storm Petrel's shape since 17 November: a point off every blow while the shield stands, and
+## a point of shield for every point of heat it gains.
 const RIOT := {"id": "riot", "name": "Riot", "description": "", "effects": [
 	{"trigger": "static", "effect": "add_damage_taken", "value": -1, "when": "shield_up"},
-	{"trigger": "static", "effect": "burn_shield", "value": 1}]}
+	{"trigger": "on_heat_gain", "effect": "shield_per_heat", "value": 1}]}
+## The Storm Petrel's branches' shapes (17 November): its lure's spend at a foe lays Hardened on
+## itself, a stack for each foe reached, or Charged 2, scoped to that piece (`entry`).
+const HARDEN := {"id": "harden", "name": "Harden", "description": "", "effects": [
+	{"trigger": "static", "effect": "self_status", "status": "hardened", "value": 1, "per_foe": true, "entry": "test_lure"}]}
+const CHARGE := {"id": "charge", "name": "Charge", "description": "", "effects": [
+	{"trigger": "static", "effect": "self_status", "status": "charged", "value": 2, "entry": "test_lure"}]}
+
+
+## A lure as the tests' locked piece, its component the one the grants are scoped to.
+func _lure() -> Face:
+	var f := Face.attack(0, I, [K.LURE])
+	f.component = "test_lure"
+	return f
 ## The Giant Petrel's shape: the team's unspent rerolls banked, up to three.
 const BANK := {"id": "bank", "name": "Bank", "description": "", "effects": [
 	{"trigger": "static", "effect": "bank_rerolls", "value": 3}]}
@@ -53,100 +68,65 @@ func _fight(units: Array, foes: Array) -> Skirmish:
 
 # ---------------------------------------------------------------- the Storm Petrel
 
-func test_the_shield_pays_a_weapons_heat_and_the_target_takes_it_back() -> void:
-	var u := _mech("Petrel", Die.single(_hot(4, 3)), 10)
+func test_the_heat_a_spend_adds_stands_up_as_much_shield() -> void:
+	var u := _mech("Petrel", Die.single(_hot(4, 3)), 5)
 	u.grant_passive(RIOT)
-	var sk := _fight([u], [_foe(30)])
-	var foe: Foe = sk.front[0]
-	assert_true(sk.assign(0, foe), "the hot gun spent")
-	assert_eq(u.shield, 7, "its 3 heat came off the shield")
-	assert_eq(sk.mechs[0].heat, 0, "and none reached the gauge")
-	assert_eq(foe.hp, 30 - 4 - 3, "the strike's 4, then the zap of what the shield paid")
+	var plain := _mech("Plain", Die.single(_hot(4, 3)), 5)
+	var sk := _fight([u, plain], [_foe(30), _foe(30)])
+	assert_true(sk.assign(0, sk.front[0]), "the gun spent")
+	assert_eq([sk.mechs[0].heat, u.shield], [3, 8], "its heat on the gauge, and as much shield stood up")
+	assert_eq(sk.front[0].hp, 26, "the strike alone: the zap left with the shield burn")
+	assert_true(sk.assign(1, sk.front[1]), "a machine without the passive")
+	assert_eq([sk.mechs[1].heat, plain.shield], [3, 5], "heat and nothing more")
 
 
-func test_a_weapon_hotter_than_the_shield_burns_what_it_holds_and_heats_the_rest() -> void:
-	var u := _mech("Petrel", Die.single(_hot(4, 5)), 2)
-	u.grant_passive(RIOT)
-	var sk := _fight([u], [_foe(30)])
-	var foe: Foe = sk.front[0]
-	assert_true(sk.assign(0, foe), "the hot gun spent")
-	assert_eq([u.shield, sk.mechs[0].heat], [0, 3], "the shield's 2 burnt, the other 3 on the gauge")
-	assert_eq(foe.hp, 30 - 4 - 2, "the zap is what the shield paid")
-	sk.end_round()
-	sk.start_round()
-	sk.mechs[0].face_index = 0
-	var heat := sk.mechs[0].heat
-	assert_true(sk.assign(0, foe), "again, with the shield at nothing")
-	assert_eq(sk.mechs[0].heat, heat + 5, "nothing to burn: every point heats the gauge")
-	assert_eq(foe.hp, 30 - 4 - 2 - 4, "and no zap")
-
-
-## Scorched heats the gauge, never the shield (Ryan, 8 November: "scorch affects the actual heat
-## bar, not the ammo cost. It still can generate heat through other sources, just not weapons
-## fire. Same as the storm petrel when its shield is up"): the shield pays the gun's own heat, and
-## a Scorched machine's extra lands on the gauge; the die says so.
-func test_the_shield_pays_the_guns_own_heat_and_scorched_heats_the_gauge() -> void:
-	var u := _mech("Petrel", Die.single(_hot(4, 3)), 10)
-	u.grant_passive(RIOT)
-	var sk := _fight([u], [_foe(30)])
-	Effects.stack(u, Effects.STATUS["scorched"], Effects.SKIRMISH, "foe", 2, Effects.DECAY_NONE)
-	var ms: Skirmish.MechState = sk.mechs[0]
-	var extra := 0
-	for eff in Effects.STATUS["scorched"]["effects"]:
-		if str(eff.get("effect", "")) == "add_heat":
-			extra = 2 * int(eff["value"])   # the status's own number, read rather than copied
-	var foe: Foe = sk.front[0]
-	assert_eq(sk.shown_face(ms, ms.face(), foe).burns, 3, "the die: the shield pays the gun's own 3")
-	assert_true(sk.assign(0, foe), "the hot gun, scorched")
-	assert_eq(u.shield, 7, "the shield paid the gun's own 3")
-	assert_eq(ms.heat, extra, "and Scorched's extra reached the gauge")
-	assert_eq(foe.hp, 30 - 4 - 3, "the zap is what the shield paid")
-
-
-## The zap is a blow of the spend's, so it lands before the death check (Ryan, 7 November: the
-## hit's every effect, then the death): on a target the strikes felled too, its corpse taking it.
-func test_the_zap_meets_armour_and_lands_on_a_target_the_strikes_felled() -> void:
-	var u := _mech("Petrel", Die.single(_hot(4, 3)), 16)
-	u.grant_passive(RIOT)
-	var sk := _fight([u], [_foe(30, 0, 1), _foe(4)])
-	var plated: Foe = sk.front[0]
-	var frail: Foe = sk.front[1]
-	assert_true(sk.assign(0, plated), "on the armoured foe")
-	assert_eq(plated.hp, 30 - 3 - 2, "its armour off the strike and off the zap")
-	sk.end_round()
-	sk.start_round()
-	sk.mechs[0].face_index = 0
-	var shield := u.shield
-	assert_true(sk.assign(0, frail), "on a foe the strike kills")
-	assert_eq(u.shield, shield - 3, "the heat is paid all the same")
-	assert_false(frail.alive(), "the strike killed")
-	assert_true(sk.log.filter(func(l: String) -> bool: return l.contains("zaps")).size() == 2, "and the zap landed all the same, on the felled foe")
-	assert_eq(frail.hp, 4 - 4 - 3, "its corpse took the zap of what the shield paid")
-
-
-func test_the_zap_is_plain_and_a_guarded_foe_takes_none_of_it() -> void:
-	var u := _mech("Petrel", Die.single(_hot(4, 3)), 16)
-	u.grant_passive(RIOT)
-	var sk := _fight([u], [_foe(30)])
-	var foe: Foe = sk.front[0]
-	Effects.stack(foe, Effects.STATUS["guarded"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
-	assert_true(sk.assign(0, foe), "on a guarded foe")
-	assert_eq(foe.hp, 30, "neither the strike nor the zap lands on it")
-	assert_eq(u.shield, 13, "the heat is the shield's whatever the blows did")
-
-
-func test_equipment_and_a_machine_without_the_passive_heat_as_ever() -> void:
+func test_any_heat_stands_up_shield_to_its_maximum_and_never_on_a_broken_one() -> void:
+	# Any source (Ryan, 11 November: "I did mean any source"): equipment's heat, Scorched's extra.
 	var probe := Face.attack(0, I, [K.SHOCK])
 	probe.heat = 2
-	var u := _mech("Petrel", Die.of([probe, _hot(4, 3)]), 10)
+	var u := _mech("Petrel", Die.of([probe, _hot(4, 3)]), 4)
 	u.grant_passive(RIOT)
-	var plain := _mech("Plain", Die.single(_hot(4, 3)), 10)
-	var sk := _fight([u, plain], [_foe(30), _foe(30)])
-	sk.mechs[0].face_index = 0
+	var sk := _fight([u], [_foe(30), _foe(30)])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
 	assert_true(sk.assign(0, sk.front[0]), "the debuff")
-	assert_eq([u.shield, sk.mechs[0].heat], [10, 2], "equipment heats the gauge: only a weapon's heat burns shield")
-	assert_true(sk.assign(1, sk.front[1]), "a machine without the passive")
-	assert_eq([plain.shield, sk.mechs[1].heat, sk.front[1].hp], [10, 3, 26], "heat on its gauge and no zap")
+	assert_eq([ms.heat, u.shield], [2, 6], "equipment's heat stands up shield as a gun's does")
+	var hot := _mech("Scorched", Die.single(_hot(4, 3)), 4)
+	hot.grant_passive(RIOT)
+	var s2 := _fight([hot], [_foe(30)])
+	Effects.stack(hot, Effects.STATUS["scorched"], Effects.SKIRMISH, "foe", 2, Effects.DECAY_NONE)
+	assert_true(s2.assign(0, s2.front[0]), "a gun under a foe's Scorched")
+	assert_true(s2.mechs[0].heat > 3, "Scorched's extra on the gauge")
+	assert_eq(hot.shield, 4 + s2.mechs[0].heat, "and every point of it stood up as shield")
+	var full := _mech("Full", Die.single(_hot(4, 6)), 14)
+	full.shield_max = 16
+	full.grant_passive(RIOT)
+	var s3 := _fight([full], [_foe(30)])
+	assert_true(s3.assign(0, s3.front[0]), "spent near the top")
+	assert_eq(full.shield, 16, "up to its maximum and no further")
+	var broken := _mech("Broken", Die.single(_hot(4, 3)), 0)
+	broken.grant_passive(RIOT)
+	var s4 := _fight([broken], [_foe(30)])
+	s4.mechs[0].shield_broken = true
+	assert_true(s4.assign(0, s4.front[0]), "spent on a broken shield")
+	assert_eq([s4.mechs[0].heat, broken.shield], [3, 0], "the heat lands, and a broken shield takes none of it")
+
+
+func test_a_shield_cost_is_paid_first_and_the_heat_stands_some_back() -> void:
+	var gun := _hot(4, 4)
+	gun.shield_cost = 2
+	var u := _mech("Petrel", Die.single(gun), 5)
+	u.shield_max = 6
+	u.grant_passive(RIOT)
+	var sk := _fight([u], [_foe(30)])
+	assert_true(sk.assign(0, sk.front[0]), "spent")
+	assert_eq([u.shield, sk.mechs[0].heat], [6, 4], "the cost first, 5 to 3, then its heat's 4 back up to its maximum of 6")
+	var spent := gun.duplicate_face()
+	var v := _mech("Petrel", Die.single(spent), 2)
+	v.grant_passive(RIOT)
+	var s2 := _fight([v], [_foe(30)])
+	assert_true(s2.assign(0, s2.front[0]), "a cost that takes the last point")
+	assert_eq([v.shield, s2.mechs[0].shield_broken], [0, true], "it breaks itself, and its heat stands up nothing after")
 
 
 func test_the_plate_takes_a_point_off_every_blow_while_the_shield_stands() -> void:
@@ -159,114 +139,75 @@ func test_the_plate_takes_a_point_off_every_blow_while_the_shield_stands() -> vo
 	assert_eq([u.shield, u.hull], [0, 94], "the first blow lost a point to the plate while the shield stood; the second met none")
 
 
-func test_the_die_shows_the_burn_and_the_zap() -> void:
-	var u := _mech("Petrel", Die.single(_hot(4, 3)), 10)
-	u.grant_passive(RIOT)
-	var sk := _fight([u], [_foe(30, 0, 1)])
-	var ms: Skirmish.MechState = sk.mechs[0]
-	var foe: Foe = sk.front[0]
-	var sf := sk.shown_face(ms, ms.face(), foe)
-	assert_eq([sf.burns, sf.heat], [3, 0], "the burn in the heat slot's place, no heat past it")
-	assert_eq(sk.shown_number_text(ms, sf, foe), "3", "over the foe: the blow alone, its armour off")
-	assert_eq(Skirmish.after_blow(ms, sf, foe), 2, "and the zap its own number, the die's passive box (Ryan, 4 November), its armour off too")
-	assert_eq(sk.shown_number_text(ms, sf), "4", "without a foe, the blow alone")
-	assert_eq(Skirmish.after_blow(ms, sf), 3, "and the zap what the shield pays")
-	assert_eq(int(sk.preview_round(0, foe)["mechs"][0]["shield_after"]), 7, "the round preview with the die in hand spends the burn")
-	u.shield = 2
-	sf = sk.shown_face(ms, ms.face(), foe)
-	assert_eq([sf.burns, sf.heat], [2, 1], "a shield short of the heat: what it holds, and the rest as heat")
-
-
-## A shield cost on the Storm Petrel's weapon (Ryan, 4 November: "Does it actually convert ALL
-## shield costs to damage?"): it does not. The strict cost is paid first as the entry is spent and
-## never lands as a blow; the shield pays the heat from what the cost leaves, the rest reaching the
-## gauge, and only what it paid for the heat lands after the strikes. The preview and the forecast
-## read the same order; the die prints the cost along its foot and the burn in its passive box,
-## never the burn as a cost ("the passive shield cost can't go there").
-func test_a_shield_cost_is_paid_first_and_never_burnt_into_a_blow() -> void:
-	var gun := _hot(4, 4)
-	gun.shield_cost = 2
-	var u := _mech("Petrel", Die.single(gun), 5)
-	u.grant_passive(RIOT)
-	var sk := _fight([u], [_foe(30)])
-	var ms: Skirmish.MechState = sk.mechs[0]
-	var foe: Foe = sk.front[0]
-	var sf := sk.shown_face(ms, ms.face())
-	assert_eq([sf.shield_cost, sf.burns, sf.heat], [2, 3, 1], "the cost first, the heat from the 3 it leaves, the 1 past it as heat")
-	assert_eq(int(sk.preview_round(0, foe)["mechs"][0]["shield_after"]), 0, "the round preview spends the cost, then the burn")
-	var d := DieFaceView.new()
-	d.set_face(sf)
-	assert_eq(d.cost_marks().map(func(c: Array) -> String: return "%s %d" % [c[0], c[1]]), ["heat 1", "shield 2"], "along the foot what must be paid: the heat past the shield and the shield cost, never the burn")
-	assert_eq(d.passive_marks().map(func(m: Array) -> String: return str(m[1])), ["3"], "the burn the passive box's number")
-	d.free()
-	assert_true(sk.assign(0, foe), "spent")
-	assert_eq([u.shield, ms.heat], [0, 1], "the cost, then the burn, then the gauge")
-	assert_eq(foe.hp, 30 - 4 - 3, "the strike's 4 and the 3 the shield paid for the heat; the cost lands nowhere")
-
-
-## The St. Elmo's Regenerator on Regenerating's one clock (Ryan, 15 November: a point a stack as
-## the turn comes, then a stack fades): three stacks regain 3, 2 and 1 as the next three rounds
-## open, and a second spend adds its stacks to what stands.
-func test_the_regenerator_lures_and_regains_a_point_a_stack_as_each_round_opens() -> void:
-	var regen := Face.attack(0, I, [K.LURE])
-	regen.regen_stacks = 3
-	assert_eq(regen.describe(), "indirect lure Regenerating 3 on itself", "the entry says its stacks")
-	assert_eq(Face.from_dict(regen.to_dict()).regen_stacks, 3, "and a save keeps them")
-	var u := _mech("Petrel", Die.of([regen, Face.blank()]), 2)
-	u.shield_max = 20
-	var ally := _mech("Ally", Die.single(Face.blank()), 0)
-	var sk := _fight([u, ally], [_foe(300), _foe(300)])
-	var foe: Foe = sk.front[0]
-	sk.mechs[0].face_index = 0
-	assert_true(sk.assign(0, foe), "the lure spent")
-	assert_eq(foe.target, sk.mechs[0], "the foe turns on the spender")
-	assert_eq(Effects.stacks_of(u, "regenerating"), 3, "Regenerating on its own machine, its stacks")
-	assert_eq(Effects.regrowth(u), 3, "a point of shield a stack as its turn ends")
-	assert_eq(Skirmish.shield_regen_of(sk.mechs[0]), 0, "an event of the round's opening, never the machine's regen")
-	assert_eq(u.shield, 2, "nothing this round")
-	var seen: Array = []
-	for r in range(4):
-		sk.end_round()
-		sk.start_round()
-		seen.append(u.shield)
-		if r == 0:
-			sk.mechs[0].face_index = 0
-			assert_true(sk.assign(0, sk.front[0]), "a second grant in the second round")
-	assert_eq(seen, [5, 10, 14, 17], "3 as the next round opens and a stack fades; the second spend's three join the two left, so 5, then 4, then 3")
-	sk.end_round()
-	sk.start_round()
-	sk.end_round()
-	sk.start_round()
-	assert_false(Effects.has(u, "regenerating"), "the last two stacks paid and faded")
-	assert_eq(u.shield, 20, "2 and 1 more, and nothing after")
-	sk.end_round()
-	sk.start_round()
-	assert_eq(u.shield, 20, "nothing more comes")
-	# A broken shield takes none, and the stack fades all the same: its turn came.
-	var b := _mech("Broken", Die.of([regen.duplicate_face(), Face.blank()]), 5)
-	b.shield_max = 20
-	var s2 := _fight([b], [_foe(300)])
-	s2.mechs[0].face_index = 0
-	assert_true(s2.assign(0, s2.front[0]), "spent")
-	b.shield = 0
-	s2.mechs[0].shield_broken = true
+## What a spend at a foe lays on its own machine (self_status, a passive's: the Storm Petrel's
+## branches, 17 November): Hardened a stack for each foe reached, a Spread's neighbours among them,
+## until its next turn starts; Charged on its next fires; the entry as spent says them, the die's
+## own never, and a copy of the fight keeps them.
+func test_a_lure_lays_hardened_for_each_foe_it_reaches_until_its_next_turn() -> void:
+	var lure := _lure()
+	lure.heat = 3
+	var u := _mech("Petrel", Die.single(lure), 10)
+	u.grant_passive(HARDEN)
+	assert_true(lure.self_statuses.is_empty(), "the die keeps the piece as printed")
+	var spent := Effects.effective_face(u, lure)
+	assert_eq(spent.self_statuses, [{"status": "hardened", "stacks": 1, "per_foe": true}], "the entry as spent carries the grant")
+	assert_true(spent.describe().contains("Hardened 1 on itself for each foe reached"), "and says it: %s" % spent.describe())
+	assert_true(Effects.effective_face(u, Face.attack(0, I, [K.LURE])).self_statuses.is_empty(), "another piece carries none: the grant is its piece's")
+	var sk := _fight([u], [_foe(300, 5), _foe(300, 5), _foe(300, 5)])
+	assert_eq(Effects.self_grants(SaveGame.clone_skirmish(sk).mechs[0].unit, lure), Effects.self_grants(u, lure), "a copy of the fight keeps the grant")
+	var mid: Foe = sk.foe_at(0, 1)
+	assert_true(sk.assign(0, mid), "the lure at one foe")
+	assert_eq(Effects.stacks_of(u, "hardened"), 1, "a stack for the one foe it reached")
+	assert_eq(mid.target, sk.mechs[0], "and the foe turns on it")
+	var wide := lure.duplicate_face()
+	wide.keywords.append(K.CLEAVE)
+	var w := _mech("Wide", Die.single(wide), 10)
+	w.grant_passive(HARDEN)
+	var s2 := _fight([w], [_foe(300, 5), _foe(300, 5), _foe(300, 5)])
+	assert_true(s2.assign(0, s2.foe_at(0, 1)), "the lure with Spread at the middle foe")
+	assert_eq(Effects.stacks_of(w, "hardened"), 3, "a stack for each foe lured, the two beside it too")
 	s2.end_round()
+	assert_eq([w.shield, w.hull], [10 - 3 * (5 - 3), 100], "three lured blows of 5, each 3 lighter while its shield stood")
 	s2.start_round()
-	assert_eq([b.shield, Effects.stacks_of(b, "regenerating")], [0, 2], "broken: no shield regained, a stack gone")
+	assert_false(Effects.has(w, "hardened"), "gone as its next turn starts")
 
 
-func test_a_regeneration_is_bought_so_a_purge_takes_it_and_the_shield_caps_it() -> void:
-	var regen := Face.attack(0, I, [K.LURE])
-	regen.regen_stacks = 5
-	var u := _mech("Petrel", Die.single(regen), 10)
-	u.shield_max = 12
-	var sk := _fight([u], [_foe(300)])
-	assert_true(sk.assign(0, sk.front[0]), "spent")
+func test_a_lure_that_charges_its_machine_shocks_its_next_fires() -> void:
+	var lure := _lure()
+	var u := _mech("Petrel", Die.of([lure, _hot(1, 1)]), 10)
+	u.grant_passive(CHARGE)
+	var sk := _fight([u], [_foe(300), _foe(300)])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	assert_true(sk.assign(0, sk.front[0]), "the lure")
+	assert_eq(Effects.stacks_of(u, "charged"), 2, "Charged 2 on its own machine, the lure, equipment, spending none")
 	sk.end_round()
 	sk.start_round()
-	assert_eq(u.shield, 12, "capped at the maximum")
-	var gone := Effects.purge(u, 9)
-	assert_true(gone.has("Regenerating gone"), "a buff, so a purge takes it")
+	ms.face_index = 1
+	assert_true(sk.assign(0, sk.front[1]), "a gun")
+	assert_true(Effects.has(sk.front[1], "shocked"), "the fire carried the Shock")
+	assert_eq(Effects.stacks_of(u, "charged"), 1, "and spent a stack")
+
+
+## A debuff's Chain (the Storm Petrel's lure, its Striker branch, 17 November: "adds Chain 3 to the
+## lure"): its arcs land the number it prints, plain, through each conductor's armour, and carry its
+## riders, so every Shocked foe it arcs to is lured; its target takes nothing, and no Shock is spent.
+func test_a_debuffs_chain_lands_its_number_plain_on_every_other_shocked_foe_and_lures_them() -> void:
+	var lure := Face.attack(0, I, [K.LURE, K.CHAIN])
+	lure.chain = 3
+	var u := _mech("Petrel", Die.single(lure), 10)
+	var sk := _fight([u], [_foe(30, 2), _foe(30, 2, 1), _foe(30, 2)])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var a: Foe = sk.foe_at(0, 0)
+	var b: Foe = sk.foe_at(0, 1)
+	var c: Foe = sk.foe_at(0, 2)
+	for foe in [b, c]:
+		Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	Effects.stack(u, Effects.STATUS["overcharged"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
+	assert_true(sk.assign(0, a), "the lure at a foe that carries no Shock")
+	assert_eq([a.hp, b.hp, c.hp], [30, 28, 27], "nothing on its target; 3 on each conductor, b's point of armour off, Empowered adding nothing to a debuff")
+	assert_true(Effects.has(b, "shocked") and Effects.has(c, "shocked"), "no strike was aimed at them: their Shock stands")
+	assert_eq([a.target, b.target, c.target], [ms, ms, ms], "the lure rides its arcs: every conductor turns on it")
 
 
 # ---------------------------------------------------------------- the Giant Petrel
@@ -403,22 +344,29 @@ func test_the_bank_rides_in_a_copy_and_a_save() -> void:
 
 # ---------------------------------------------------------------- the bot
 
-func test_the_bot_reads_the_burn_off_the_gauge_and_prices_the_zap_and_the_shield() -> void:
+func test_the_bot_prices_the_shield_its_heat_stands_up_and_what_its_lure_lays_on_itself() -> void:
 	var gun := _hot(4, 3)
-	var u := _mech("Petrel", Die.single(gun), 10)
+	var u := _mech("Petrel", Die.single(gun), 4)
 	u.grant_passive(RIOT)
-	var sk := _fight([u], [_foe(30, 6), _foe(4)])
+	var sk := _fight([u], [_foe(30, 6), _foe(30, 6)])
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var bot := Policy.make(Policy.GREEDY, 1)
-	assert_eq(Policy.heat_of(ms, gun), 0, "the shield pays it all: no heat on the gauge")
-	var tough: Foe = sk.front[0] if sk.front[0].hp == 30 else sk.front[1]
-	var frail: Foe = sk.front[1] if tough == sk.front[0] else sk.front[0]
-	var sure := bot.damage_outcomes(ms, gun, frail)
-	assert_eq(bot.zap_worth(sk, ms, frail, 3, sure), 0.0, "a strike that surely kills loses the zap")
-	assert_true(bot.zap_worth(sk, ms, tough, 3, bot.damage_outcomes(ms, gun, tough)) >= 3.0, "a foe the strike leaves standing takes it")
-	assert_true(bot.burn_cost(sk, ms, 3) > 0.0, "shield burnt under a foe's blow costs hull and the plate")
-	u.shield = 1
-	assert_eq(Policy.heat_of(ms, gun), 2, "what the shield cannot pay is heat")
+	assert_eq(Policy.heat_of(ms, gun), 3, "its heat on the gauge, whole")
+	assert_eq(Policy.heat_shield_gain(ms, gun), 3, "a point of shield a point of heat, on a shield that stands")
+	assert_true(bot.shield_gain_worth(sk, ms, 3) > 0.0, "worth what it keeps of the blows coming")
+	ms.shield_broken = true
+	assert_eq(Policy.heat_shield_gain(ms, gun), 0, "a broken shield takes none")
+	ms.shield_broken = false
+	u.shield = u.shield_max
+	assert_eq(Policy.heat_shield_gain(ms, gun), 0, "a full one has no room")
+	u.shield = 6
+	var lure := Face.attack(0, I, [K.LURE])
+	lure.self_statuses = [{"status": "hardened", "stacks": 1, "per_foe": true}]   # the entry as its branches make it
+	assert_true(bot.self_grant_worth(sk, ms, lure, sk.front[0]) > 0.0, "Hardened against the blows its lure draws")
+	var charge := Face.attack(0, I, [K.LURE])
+	charge.self_statuses = [{"status": "charged", "stacks": 2}]
+	assert_true(bot.self_grant_worth(sk, ms, charge, sk.front[0]) > 0.0, "Charged on its next fires")
+	assert_eq(bot.self_grant_worth(sk, ms, Face.attack(0, I, [K.LURE]), sk.front[0]), 0.0, "a lure with no grant is worth none of it")
 
 
 func test_the_bot_holds_rerolls_for_an_action_worth_its_price_and_buys_it() -> void:
@@ -471,8 +419,9 @@ func test_the_validator_holds_the_petrels_fields_to_their_kinds() -> void:
 	db.load_dir(ContentDB.DIR)
 	var base: Dictionary = db.components["twin_autoguns"].duplicate(true)
 	var cases := {
-		"bad_regen": [{"kind": "buff", "status": "overcharged", "regenerates": {"status": "regenerating", "shield": 2, "rounds": 3}}, "regenerates"],
-		"bad_regen_status": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "regenerates": {"status": "overcharged", "shield": 2, "rounds": 3}}, "regenerates"],
+		"bad_regen": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "regenerates": {"status": "regenerating", "stacks": 3}}, "printed on no entry"],
+		"bad_self_printed": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "self_statuses": [{"status": "hardened"}]}, "printed on no entry"],
+		"bad_debuff_chain": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "chain"]}, "chain"],
 		"bad_price": [{"kind": "attack", "reach": "direct", "power": 2, "ally_action": {"rerolls": 3}}, "ally_action"],
 		"bad_price_self": [{"kind": "buff", "team_rerolls": 1, "targets": "self", "ally_action": {"rerolls": 3}}, "ally_action"],
 		"bad_roll": [{"kind": "attack", "reach": "direct", "power": 2, "rolls_target": true}, "rolls_target"],
@@ -487,19 +436,27 @@ func test_the_validator_holds_the_petrels_fields_to_their_kinds() -> void:
 	for cid in cases.keys():
 		assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component %s" % cid) and e.contains(str(cases[cid][1]))), "%s is refused" % cid)
 	var good := base.duplicate(true)
-	good["face"] = {"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "regenerates": {"status": "regenerating", "stacks": 3}}
+	good["face"] = {"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "chain"], "chain": 3, "heat": 3}
 	good["tier"] = 2
-	db.components["good_regen"] = good
-	var old_regen: Dictionary = good.duplicate(true)
-	old_regen["face"]["regenerates"] = {"status": "regenerating", "shield": 2, "rounds": 3}
-	db.components["old_regen"] = old_regen
-	var old_refused := false
+	db.components["good_lure"] = good
 	for e in db.validate():
-		assert_false(e.begins_with("component good_regen"), "a lure that regenerates its machine passes: %s" % e)
-		old_refused = old_refused or (e.begins_with("component old_regen") and e.contains("regenerates"))
-	assert_true(old_refused, "the shape before 15 November, a shield a round for so many rounds, is refused")
-	var p := {"id": "p", "name": "P", "description": "", "effects": [{"trigger": "static", "effect": "burn_shield", "value": 2}, {"trigger": "static", "effect": "bank_rerolls", "value": 0}]}
+		assert_false(e.begins_with("component good_lure"), "a hot lure with Chain 3 passes: %s" % e)
+	var grants := {"id": "g", "name": "G", "description": "", "effects": [
+		{"trigger": "static", "effect": "self_status", "status": "barrier", "value": 1},
+		{"trigger": "static", "effect": "self_status", "status": "hardened", "value": 0},
+		{"trigger": "static", "effect": "self_status", "status": "charged", "value": 2, "per_foe": "yes"}]}
+	var gerrs: Array[String] = []
+	db._validate_passive("passive g", grants, gerrs)
+	assert_true(gerrs.any(func(e: String) -> bool: return e.contains("self_status lays one of")), "a Barrier keeps its pieces: %s" % str(gerrs))
+	assert_true(gerrs.any(func(e: String) -> bool: return e.contains("the stacks it lays")), "a grant of nothing is refused")
+	assert_true(gerrs.any(func(e: String) -> bool: return e.contains("per_foe is true or false")), "per_foe is a switch")
+	var fine: Array[String] = []
+	db.components["test_lure"] = good.duplicate(true)   # the piece the grants are scoped to
+	db._validate_passive("passive h", HARDEN, fine)
+	db._validate_passive("passive c", CHARGE, fine)
+	assert_eq(fine, [] as Array[String], "Hardened for each foe and Charged 2 pass")
+	var p := {"id": "p", "name": "P", "description": "", "effects": [{"trigger": "static", "effect": "shield_per_heat", "value": 1}, {"trigger": "on_heat_gain", "effect": "shield_per_heat", "value": 0}, {"trigger": "static", "effect": "bank_rerolls", "value": 0}]}
 	var perrs: Array[String] = []
 	db._validate_passive("passive p", p, perrs)
-	assert_true(perrs.any(func(e: String) -> bool: return e.contains("burn_shield")), "a burn of 2 a heat point is refused")
+	assert_eq(perrs.filter(func(e: String) -> bool: return e.contains("shield_per_heat")).size() >= 2, true, "the hook off its trigger, and a hook of nothing, are refused: %s" % str(perrs))
 	assert_true(perrs.any(func(e: String) -> bool: return e.contains("bank_rerolls")), "a bank of nothing is refused")

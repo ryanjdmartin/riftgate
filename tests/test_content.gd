@@ -3034,7 +3034,8 @@ func test_chain_says_its_number_and_rides_a_weapon() -> void:
 		"test_chain_bare": [{"keywords": ["chain"]}, "Chain says the number every other Shocked foe takes"],
 		"test_chain_n": [{"keywords": ["chain"], "chain": 2}, ""],
 		"test_chain_stray": [{"chain": 2}, "chain (the number) rides with the Chain keyword"],
-		"test_chain_debuff": [{"power": 0, "keywords": ["chain"], "chain": 2}, "Chain is a weapon's keyword"],
+		"test_chain_debuff": [{"power": 0, "keywords": ["chain"], "chain": 2}, ""],
+		"test_chain_debuff_bare": [{"power": 0, "keywords": ["chain"]}, "Chain says the number every other Shocked foe takes"],
 	}
 	for id in cases:
 		var c: Dictionary = base.duplicate(true)

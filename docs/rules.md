@@ -78,6 +78,18 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   guns, three dealing 3 for 4 heat (the Twin Autoguns and the Rivet Gun, Direct; the Ankle Mortar, Indirect) and the Laser
   Carbine, Direct and warm, 4 for 5, and two defensive pieces, each spent on itself or an ally (the
   Halo Projector, a Barrier, cooldown 1; the Shoring Jack, Armoured 2 until its side's next turn).
+- **Branches** (an upgrade's picks; a run buys none yet, since no machine holds a tier of its
+  own, and the harness fields them): a chassis of tier one or two may carry two directions,
+  each a step a pick, as deep as its machine picks, a tier one twice and a tier two once. A
+  machine's first pick takes a direction's first step and its second the same direction's
+  deeper step or the other's first, so a tier one ends specialized or mixed. A step tweaks one
+  locked piece and never a stat: its effects ride the machine as a passive of their own scoped
+  to that piece, so the die keeps the piece as printed and the entry as spent carries the
+  tweak, and a destroyed piece takes its tweaks with it. The codex says each step taken on its
+  piece's row, its direction's name and numeral first (DEFENCE I). The Storm Petrel's are the
+  first: Defence, its lure laying Hardened 1 on it and then gaining Spread with a stack of
+  Hardened for each foe it lures; Striker, its lure laying Charged 2 on it and then gaining
+  Chain 3.
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
@@ -137,8 +149,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    die has anywhere to be spent, rerolls aside. A machine that has spent nothing this turn may
    give the turn to a reboot, its die dragged onto REBOOT between the two (The reboot, below).
 4. END TURN, the machines' turn's end: a machine's Ablating takes a point a stack, its shield
-   first and then its hull past armour, and loses a stack; its Regenerating then pays a point
-   of shield a stack and loses one; its Scorched and its Sapped go;
+   first and then its hull past armour, and loses a stack; its Scorched and its Sapped go;
    then heat over a machine's maximum burns hull one for one and stays on the gauge, burning
    again every turn it stands there; the first such turn since the machine's last reboot is
    its overheat, and its shield breaks; then each machine's Empowered halves, and a dark entry
@@ -166,8 +177,8 @@ opens, after END TURN and before the first of them acts, and ends as its own act
 landed, lost to a stun or skipped.
 - **Its turn starts**: Armoured, a Barrier and a Ward go, every stack; Brittle halves, rounded
   down; Exposed falls, at the turn start after the next one.
-- **Its turn ends**: Ablating and Vitriol take their points and lose a stack; Regenerating
-  pays after them and loses one; Empowered halves, rounded down; Scorched and Sapped go; a
+- **Its turn ends**: Ablating and Vitriol take their points and lose a stack; a foe's
+  Regenerating pays after them and loses one; Empowered halves, rounded down; Scorched and Sapped go; a
   cooldown and a jam whose rounds are done light again; a Suppress is spent with the turn it
   cost; Numbed loses a stack, or lands on a foe that lost this turn to a stun.
 - **The round ends**: Phased is granted or lost, Essence Flare goes, a swallow's and a
@@ -257,9 +268,8 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   spent on, and for Every Ally and Every Other Ally the three cells under one low arch, the middle
   lit for the whole team and dark for every other ally. Its costs run along the foot (Costs, below) and its keywords
   down the edge. What the machine's passive adds sits in its passive box at the foot of the
-  edge, never joined to the blow: a blow added after the strikes by the mark of what pays it
-  (the Storm Petrel's zap by the shield's, in the shield's colour), a stepping die's next entry
-  by its mark and the
+  edge, never joined to the blow: the strikes a Ricochet adds after each shot (the Skua's), a
+  stepping die's next entry by its mark and the
   number it will show (the Cassowary's). The readout says each on a line of its own, headed by
   the same box. A dark entry is blank, its clock and its turns left along the foot. How each
   mark is drawn is `tools/die_sheet.gd`'s sheet and the bible's section 6.
@@ -312,7 +322,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   on its target, then every hit's riders, then the death check; then the spend ends, then what
   its kills bring back. Everything a hit does lands before the death check, on a foe it fells
   too (its riders, a Mine, a Shock, an Expose, a Lure's turn, a swap, a gather, a detonation,
-  the zap after the strikes), so the
+  a shove after the strikes), so the
   preview shows the chips beside the skull and no trigger goes unfired; a spend that asks
   whether it killed (a kill trigger, the Spindrift Salvo's rerolls) reads its own death check. The death check
   clears a kill's slot; a foe getting back up and a split's arrivals stand only once the spend
@@ -488,9 +498,12 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   nothing; a Ward turns it away; one already suppressed for that action gains nothing more.
 - **Shock**: every foe the hit reaches is Shocked after its blow, the ones it fells included, so
   a hit never spends its own Shock.
-- **Chain N** (a weapon's): the blow also lands N on every other Shocked foe on the field,
+- **Chain N**: the blow also lands N on every other Shocked foe on the field,
   each arc a blow of the spend that no strike is aimed at, so its Shock stands, the riders land
-  and an arc adds no heat. Its footprint, like an area's, is read from the strike's own foe: an arc
+  and an arc adds no heat. On a debuff, which deals nothing itself (the Storm Petrel's lure in
+  its Striker branch), each arc lands N plain, no add or multiply of the machine's, through the
+  foe's armour, and carries the debuff's riders as any area of it does, so a lure's Chain lures
+  every Shocked foe it arcs to. Its footprint, like an area's, is read from the strike's own foe: an arc
   spreads nowhere, a foe an area reaches never arcs, and a foe both beside the target and
   Shocked takes one blow, the area's.
 - **Lure**: every foe reached turns on the spender for the round, a felled one too. A move at
@@ -638,9 +651,10 @@ again, while the Booster's own Rapid gives the Petrel its turn back. **The Spind
 Giant Petrel's): a spend of it that kills gives the team two rerolls this round, once however
 many fell, banked if unspent. **The Reheat Uplink** (the Giant Petrel's, allies only): the ally
 gains Empowered 2 and its die rolls again, never onto the entry showing; a spent die rolls
-nothing. **Regenerates** (the Storm Petrel's St. Elmo's Regenerator, a lure): spent on a
-foe, its own machine gains Regenerating, the stacks it prints, a second spend adding its
-own. **The spill** (the Overrun Gearing's, a Minerva module, on
+nothing. **On itself** (an upgrade's rule on a locked piece, the Storm Petrel's lure in its
+branches): spent on a foe, its own machine gains the status it says, after the spend's hits
+and its primers, so a fire never spends a Charged it has just laid; a stack set for every foe
+the spend reached where it says so, a foe its Spread lures among them. **The spill** (the Overrun Gearing's, a Minerva module, on
 every weapon its machine fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
 strike of the spend whole, aimed at nobody, so a Shock behind neither doubles it nor is
@@ -648,7 +662,7 @@ spent; it is the module's own rule and no keyword, so each weapon wears the
 star, the die's readout reading the module's line.
 **The Juggernaut Drive** (the Wild Boar's, since 11 November): once a spend's hits land, every
 front-rank foe a blow of it damaged, felled or not, drives a quarter of its maximum HP, rounded
-up, into the foe standing behind it, once a spend, a plain blow as the Storm Petrel's zap was (no
+up, into the foe standing behind it, once a spend, a plain blow (no
 keyword and no Shock read, through what that foe takes, its armour and its Barrier); a massive foe
 has nothing behind it. As the Boar gains a Barrier, from its own Breaching Plow (Cleanse and a
 Barrier on itself, a cooldown of 1) or an ally's piece, its Drive waits (a buff under the passive's own name): its next weapon attack ignores armour.
@@ -708,6 +722,10 @@ On a machine:
   round opens, before the foes announce, and a foe's (from its brace or another's) stands
   through the player's turn and goes as the foes' next turn opens, before the first of them
   acts. It takes no rounds: no grant holds it longer.
+- **Hardened** (a machine's buff; the Storm Petrel's lure in its Defence branch): while its
+  shield stands, every blow on it loses 1 a stack, beside any plate of its own, a damage-taken
+  effect read on the shield the blow meets, so it takes nothing off a blow on bare hull and an
+  Expose leaves it; every stack goes as its next turn starts, as Armoured's does.
 - **Phased** (buff): cannot be damaged or targeted by anything until the end of the round, and
   it acts. Granted as the round ends: a source lays the wait for it (Phasing, a buff, a chip on
   a dashed edge), on a machine that has acted or not, and as the enemy's turn ends every machine
@@ -715,8 +733,8 @@ On a machine:
   phases, and a foe's Purge takes the wait as any buff. While it stands no foe picks the
   machine, a blow or a special at every machine passes it by, and no ally may spend on it.
   Everything it carries ticks as ever, and nothing damages it: its Ablating takes no point and
-  loses its stack, its Scorched and Sapped go, its Empowered and its Brittle halve, its
-  Regenerating pays, so a round Phased waits a debuff out. It spends
+  loses its stack, its Scorched and Sapped go, its Empowered and its Brittle halve, so a
+  round Phased waits a debuff out. It spends
   its die on a foe or on itself, and it may reboot, bare where nothing reaches it. Its own
   heat does not burn it either: what it carries past its maximum stays, more if it fires
   again, and burns the turn it is back in reach, the first such turn its overheat. A bite of
@@ -731,7 +749,7 @@ On a machine:
   one joins that count, and the quarter lets both go); either lets it go at once, and in the
   player's turn it acts that round. The swallower loses nothing else. Nothing cleanses it.
   Out of play, so everything it carries waits where a Phased machine's ticks: no stack fades,
-  halves or pays (its Ablating, Scorched, Sapped, Empowered, Brittle and Regenerating stand as
+  halves or pays (its Ablating, Scorched, Sapped, Empowered and Brittle stand as
   they were), nothing of its own cools, regenerates or fires, a buff of its own holds nothing
   on the field (Essence Flare), it neither burns nor overheats,
   and no timed status on it runs out: each, a dark entry's rounds among them, moves a round
@@ -797,15 +815,11 @@ On a machine:
   a lone stack is lost; a blow its shield takes whole costs none. It lasts the fight, with no
   cap, and a Purge takes it as any buff. The die shows the strikes its weapon will get in its
   passive box ("+3").
-- **Regenerating** (buff, on either side): a point a stack as its carrier's turn ends, after
-  its Ablating, then a stack fades, so Regenerating 3 gives 3, 2 and 1, the first as the turn
-  it was gained in ends; a second grant adds its stacks. A
-  foe's, from its own special, its value in stacks: HP as each of its turns ends, after its
-  Ablating and Vitriol have ticked (a suppressed foe's included), so a foe its tick kills
-  regrows nothing. A machine's (the Storm Petrel's St. Elmo's Regenerator, 3 stacks): shield at
-  END TURN, before the foes strike, up to its maximum; a broken shield takes none and the stack fades all the
-  same. A die entry granted it, a buff, so an enemy's purge takes it, a stack a point of the
-  purge.
+- **Regenerating** (a foe's buff): a point of HP a stack as its turn ends, after its Ablating
+  and Vitriol have ticked (a suppressed foe's included), then a stack fades, so Regenerating 3
+  gives 3, 2 and 1, the first as the turn it was gained in ends; a second grant adds its
+  stacks. It comes from its own special, its value in stacks, so a foe its tick kills regrows
+  nothing; a buff, so a purge takes it, a stack a point of the purge. No machine carries it.
 - **Barrier** (buff): the next blow a foe lands on this machine deals no damage, so a Destroy
   on it finds no hull to read; its riders land, and a blow of nothing leaves it standing. One at a time and one
   stack whoever grants it (a passive that deepens the stacks its machine applies leaves it at
@@ -1066,22 +1080,14 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   entry would pass its maximum, where it has heat to shed and this round's blows would take a
   point of its shield or less; one whose vent would blast for more than its best spend; and a
   die left idle, where there is something to get back.
-- **The Riot Field Generator** (the Storm Petrel's passive): its weapons' heat comes off its
-  shield as they are spent, every point of a gun's own heat taken from the shield as it
-  stands, and only what the shield cannot pay reaching the gauge; a
-  Scorched machine's extra heats the gauge, never the shield, as the forge's does, and
-  equipment heats the gauge as ever. After the weapon's strikes, its
-  target takes a blow of what the shield paid (the zap): plain, no keyword and no Shock read,
-  through what the foe takes and its armour, before the death check, so a target the strikes
-  felled takes it too. And while its
-  shield stands, every blow on it loses 1, a damage-taken effect read on the shield the blow
-  meets. A shield cost on its weapon is no part of it: the cost is paid first as the entry is
-  spent and never lands as a blow, and the shield pays the heat from what the cost leaves. The
-  die shows what the shield will pay for the heat in its passive box, beside the shield's mark
-  and in the shield's colour, one number for the spend and the blow (over a foe, the blow's share with that foe's armour off, as the main number's
-  is), never as a cost along its foot, since the spend goes ahead without it; along the foot
-  stand only the heat past the shield and a shield cost, as on any machine. The number is never
-  joined to the blow's.
+- **The Riot Field Generator** (the Storm Petrel's passive): every point of heat it gains, from
+  any source (a spend of its own, a foe's Scorch, a passive's), stands up a point of shield as
+  the gauge climbs, on a shield that stands and up to its maximum; a Broken shield gains none
+  until the reboot, so its heat is its fuel and its clock at once, and the overheat it walks
+  toward breaks the shield it built. A shield cost is paid first as the entry is spent, and the
+  heat stands shield back from what the cost leaves. And while its shield stands, every blow on
+  it loses 1, a damage-taken effect read on the shield the blow meets. Its lock, the St. Elmo's
+  Regenerator, is a lure of heat 3, so its taunt stands up its shield.
 - **Ammo** (the Musk Ox's Desublimation Forge): its weapons spend ammo instead
   of heating it, 1 for every 2 heat a gun's own spend would make, rounded up, at least 1, the
   price printed on the die where the gun's heat would be; its debuffs, buffs and shields and

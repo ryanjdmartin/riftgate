@@ -98,7 +98,7 @@ FACE_FIELDS = {
     "fires_hopper": [("hopper", "reads")], "detonates": [("mine", "reads")],
     "gathers_mines": [("mine", "reads")], "vents_all": [("heat", "reads")], "power_per_heat": [("heat", "reads")],
     "power_per_missing": [("missing_hp", "reads")], "finisher": [("missing_hp", "reads")],
-    "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "regenerates": [("regenerating", "sets")],
+    "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")],
     "spends": [("essence", "reads")], "spends_up_to": [], "holds_all": [("overcharged", "reads")],   # the Quintessence Tap: it consumes Essence, and holds every Empowered a round
     "spends_magazine": [("ammo", "reads")], "magazine_min": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
     "self_ablate": [("ablating_mech", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
@@ -122,7 +122,7 @@ EFFECTS = {
     "add_shield": [], "refill_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
     "multiply_heat": [("heat", "sets")], "add_damage": [], "add_damage_taken": [], "hull_per_spend": [("hull_damage", "sets")],
     "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "one_of_each": [], "min_damage": [],
-    "burn_shield": [("heat", "reads")], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
+    "shield_per_heat": [], "self_status": [], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
 }
 TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_granted": "shield_granted", "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",
@@ -265,7 +265,12 @@ class Map:
                  "on": [], "maker": c.get("maker", ""), "planned": (c.get("passive") or {}).get("status") == "planned", "stocked": []}
             self.walk_effects((c.get("passive") or {}).get("effects", []), p)
             if (c.get("passive") or {}).get("status") == "planned":
-                self.add("heat", "reads", dict(p, how="planned"))   # the Storm Petrel's shield in place of heat
+                self.add("heat", "reads", dict(p, how="planned"))
+            # Its upgrades' branches (the Storm Petrel's first, 17 November): each step's effects on
+            # its locked piece.
+            for b in c.get("branches") or []:
+                for i, step in enumerate(b.get("steps") or []):
+                    self.walk_effects(step.get("effects") or [], dict(p, who="%s's %s %s" % (c["name"], b.get("name", ""), "I" if i == 0 else "II"), kind="upgrade"))
         for m in self.mo:
             p = {"who": m["name"], "kind": "module", "tier": m.get("tier"), "on": [], "maker": m.get("maker", ""),
                  "planned": (m.get("text") or {}).get("status") == "planned", "stocked": []}
@@ -327,6 +332,8 @@ class Map:
                 self.add(str(eff.get("value")), "sets", p)
             if name == "lay_status":
                 self.add(str(eff.get("value")), "sets", p)
+            if name == "self_status":   # laid on its own machine by a spend (an upgrade's branch, 17 November)
+                self.add(str(eff.get("status")), "sets", p)
             if name == "grant_keyword":
                 for cur, how in KEYWORDS.get(str(eff.get("value")), []):
                     self.add(cur, how, p)
