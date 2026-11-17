@@ -576,9 +576,12 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   feet, which slide out as its rump lands (its thighs still crossing its barrel); the Funnel-web
   splays onto its hinges with all four feet left down; the Whip Scorpion buckles on its six held
   feet and splays as its belly drops onto the floor (the sink it had cut, no death using it); the
-  Ammit stays on its feet with its upper limbs drawn in. His asks of 17 November, the Ammit sent
-  forward and the Cassowary two steps back and onto its face, are the to-do's: the poses tried ended
-  propped. Section 12 holds the Baboon's sit; the to-do the crossings left elsewhere.
+  Ammit stays on its feet with its upper limbs drawn in. His asks of 17 November ("Some end up on the
+  ground, some don't. Go ahead and fix the others"; the Ammit sent forward; the Cassowary two steps
+  back and onto its face) are the to-do's first death line: measured in the hangar, five bodies end
+  off the ground, and the poses tried ended propped mid-fall, since nothing lets a pose that does not
+  rest go on toppling. Next: a settle that tips the body over the edge of what it stands on until it
+  rests, in the rig and the hangar's script both. Section 12 holds the Baboon's sit; the to-do the crossings left elsewhere.
   The bible (v0.606) republishes on his word. And on his "Can we make it so the
   game doesn't enable auto rotate every time it loads?": `tools/android.sh` launches the game with
   `am start` as Godot's own one-click deploy does, no longer with `monkey`, whose every run ends by
