@@ -1943,10 +1943,12 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   across its tail), and the Boar's sweep no longer clips its side mounts. The Mole (his name and
   designation, the TB-2FAB Tunnel Borer, 17 November) is a model since 17 November, its fifth
   look round set moving, and a planned draft in content so the hangar shows it: its burrow a
-  form (the cab and the boxes in, every gun sunk into the hull under its well's leaves, dug in
-  nose first) and its drill a launch, his to judge in action (his first read, "flimsy"). The
-  hangar's Version 287 is the death session's page and files (`ccr-bd73687d`, unlanded) with
-  the Mole added to them, so the two Minervan vents show there once the branches meet. A
+  form (the cab and the boxes in, every gun sunk into the hull under its well's leaves whatever
+  class it wears, on his "What happens if the stock guns are swapped out? Can't just ignore
+  that", dug in nose first) and its drill a launch, his to judge in action (his first read,
+  "flimsy"). The hangar's Version 289 is the death session's page and files (`ccr-bd73687d`,
+  unlanded) with the Mole added to them, so the two Minervan vents show there once the
+  branches meet. A
   pick's next round is a model with its rig and acts.
 - **Balance, read by stage** (the bible's section 2 kill-time row; `docs/measurements.md`): the
   200-seed matrix on file (`docs/balance.md`, 27 October) predates the ladder, the numbered

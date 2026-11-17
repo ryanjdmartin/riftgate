@@ -12,7 +12,9 @@ extends SceneTree
 ## it is lost (MechView3D.lose: its lights out and its slump). RIFTGATE_FORM=<name> holds
 ## that form first, all the way in, so the act is one of its own (the sealed Polar Bear's) or
 ## "-" its held pose; RIFTGATE_FORM_AT=<seconds> stops it that far into its turn instead, to see
-## a frame of the form going in (the Mole's burrow). An act of "fire:<component>" fires that weapon (MechView3D.strike: a fixed one
+## a frame of the form going in (the Mole's burrow). RIFTGATE_FIT="1:rivet_gun,2:shotfire_rack" hangs
+## those components' classes on the mounts in place of the stock parts, as tools/hero_shot.gd does,
+## to see a swap through an act or a form (a machine whose guns stow). An act of "fire:<component>" fires that weapon (MechView3D.strike: a fixed one
 ## with its act's slice and what it fires out of the machine, lowforge's launches) and renders it that
 ## many seconds on. Needs a window (xvfb-run does, on a Linux box).
 
@@ -36,7 +38,9 @@ func _init() -> void:
 	if args.size() >= 7 and args[6].contains("x"):
 		frame = Vector2i(int(args[6].get_slice("x", 0)), int(args[6].get_slice("x", 1)))
 	_out = args[4]
-	_view = MechView3D.make(args[0], args[1], "clean", "badger", yaw, frame, false, {}, [])
+	var fit := OS.get_environment("RIFTGATE_FIT")
+	var plan: Array = MechView3D.plan_from_spec(fit, ContentDB.load_default()) if not fit.is_empty() else []
+	_view = MechView3D.make(args[0], args[1], "clean", "badger", yaw, frame, false, {}, plan)
 	root.add_child(_view)
 	_view.set_process(false)
 	var form := OS.get_environment("RIFTGATE_FORM")

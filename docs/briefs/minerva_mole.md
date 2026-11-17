@@ -441,8 +441,8 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    went up in content (the bible's Minerva roster row).
 2. Its numbers (hull, shield, armour, heat, move), its stock, and the Drill's heat. In content as
    placeholders since 17 November: the Honey Badger's numbers, and a stock of the Rivet Gun, the
-   Slugthrower and the Shoring Jack (the Jack takes no mount, so the third mount stands bare),
-   barrel-class so every stock gun retracts as it burrows (the model, below).
+   Slugthrower and the Shoring Jack (the Jack takes no mount, so the third mount stands bare);
+   whatever class a mount wears retracts as it burrows (the model, below).
 3. Its look: the rocket drill, a drill it fires into a foe that returns as it burrows ("try your
    first design, but the trick is to make it look like it can fire the drill, but also not look
    silly without it", 16 November). The second round (`docs/looks/minerva_mole2.png`, the
@@ -517,14 +517,22 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    degrees into the ground ahead, gathering speed, the hull kicked back nose-up, and the bore
    stands empty a beat round its crown of teeth before the tip slides home. In the game the
    drill stays in its foe until the next burrow, so an empty bore held between the two wants a
-   marker the engine lays: the build session's. Changed from round five so the guns can stow: the
-   stock is barrel-class (a rack is 12 across at the mounts' scale, and the boxes leave 6.5 clear
-   of the breech), the boxes' guns at 0.65 of a class's size where the cab's is 0.75, their wells
-   a little outboard to clear the breech, and the fore box half a unit wider; a rack or a dish
-   fitted there still shows through its box as it sinks. His to judge running: whether it still
+   marker the engine lays: the build session's. Its first cut stowed only barrels; his word the same
+   day, "What happens if the stock guns are swapped out? Can't just ignore that", so now any class
+   a mount wears stows. Each gun tips muzzle-up and sinks through its piece into the tread under it,
+   so a piece must be wide enough to pass the class and stand clear of the breech while it does:
+   the cab and the boxes are 10.5 across (round five's 9), each with a well across its top 10 by
+   9.6; on the way in they stop with their inboard edges at the breech's flank, over the treads,
+   drop, sink their guns and shut their lids, and only then slide the last 3.5 in behind the ring.
+   The cab's guns are 0.75 of a class's size and the boxes' 0.65, so a barrel's whole length (25.5
+   and 22.1) fits under the cab's roof and a box's (26 and 22.5 to the ground); the fore box is
+   half a unit taller for it; and a rack, 16 across, wears 0.62 at all three (the mounts' fits, the
+   Polar Bear's way of fitting a class to a mount) to pass a 10-wide well. Rendered with each class
+   on every mount through the burrow, each ends hidden. His to judge running: whether it still
    looks flimsy in action (the levers if so: heavier rams or a slide rail under each piece, the
    pieces running out less far, or skirts that close the bays as they run out), the burrow's
-   order and pace (2.9 seconds in, the same out), the dig-in, and the drill's flight.
+   order and pace (3.3 seconds in, the same out), the dig-in, and the drill's flight; and any
+   class fitted on the Models tab to watch it stow.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike
