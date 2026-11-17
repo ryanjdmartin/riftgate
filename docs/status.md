@@ -54,7 +54,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1277 tests, 373,515 checks, green on `ccr-178e0404-ptuh2m` (17 November, the Storm
+- Tests: 1278 tests, 373,520 checks, green on `ccr-722ca9f0-yj8na3` (17 November, main at
+  `86234dc` taken in a merge, the harness's UPG line under test with it). Before it, 1277
+  tests, 373,515 checks, green on `ccr-178e0404-ptuh2m` (17 November, the Storm
   Petrel landed whole with the first upgrade branches, over main at `f8fb28b`). Before it, 1277
   tests, 373,471 checks, green on `ccr-722ca9f0-yj8na3` (17 November, the
   bench's read and a ghost's intent, over main at `6fd975e`). Before it, 1277 tests, 373,464
