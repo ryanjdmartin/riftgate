@@ -43,8 +43,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1252 tests, 374,859 checks, green on `ccr-bd73687d-w8qox1` (17 November, his correction on
-  the deaths: feet that pivot while they carry it and slide once the weight is off). Before it, 1252
+- Tests: 1251 tests, 374,868 checks, green on `ccr-bd73687d-w8qox1` (17 November, his next notes on the
+  deaths: the Funnel-web's hind feet down, the Whip Scorpion's belly down, the sink cut). Before it, 1252
+  tests, 374,859 checks (his correction: feet that pivot while they carry it). Before it, 1252
   tests, 374,828 checks (16 November, his fifth notes: planted feet, the sink, the crossings
   measured). Before it, 1248 tests, 374,667 checks,
   green on the same branch (his next notes on the deaths: the fall, the floor every frame, limp limbs,
@@ -573,10 +574,12 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   death on its feet), measured by `tools/death_floor.gd --slide --clip`. The Cassowary strides and
   falls back over its held feet, which flop out as its back lands; the Baboon sits back over its
   feet, which slide out as its rump lands (its thighs still crossing its barrel); the Funnel-web
-  splays onto its hinges, nose down; the Whip Scorpion sinks on its six planted legs; the Ammit
-  stays on its feet with its upper limbs drawn in, every collapse tried clipping. Section 12 holds
-  the Baboon's sit and the Ammit's way down; the to-do the crossings left elsewhere.
-  The bible (v0.605) republishes on his word. And on his "Can we make it so the
+  splays onto its hinges with all four feet left down; the Whip Scorpion buckles on its six held
+  feet and splays as its belly drops onto the floor (the sink it had cut, no death using it); the
+  Ammit stays on its feet with its upper limbs drawn in. His asks of 17 November, the Ammit sent
+  forward and the Cassowary two steps back and onto its face, are the to-do's: the poses tried ended
+  propped. Section 12 holds the Baboon's sit; the to-do the crossings left elsewhere.
+  The bible (v0.606) republishes on his word. And on his "Can we make it so the
   game doesn't enable auto rotate every time it loads?": `tools/android.sh` launches the game with
   `am start` as Godot's own one-click deploy does, no longer with `monkey`, whose every run ends by
   unlocking the screen's rotation and so turned the phone's auto-rotate on (the game itself is

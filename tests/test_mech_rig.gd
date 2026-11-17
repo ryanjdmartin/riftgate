@@ -2039,27 +2039,8 @@ func test_feet_down_apart_each_keep_their_place() -> void:
 		assert_true(float(held.get(jn, 1.0)) < 0.01, "%s keeps its place (%.1f%%)" % [jn, 100.0 * float(held.get(jn, 1.0))])
 
 
-func test_a_sinking_death_keeps_every_foot_and_comes_down() -> void:
-	# The fifth notes' Whip Scorpion, "all six legs slide out from under it": a death's sink lowers a
-	# walker on the limbs it stands on, every foot where it stands (MechRig._sink_death).
-	var pair := _rig_for("whip_scorpion")
-	var rig: MechRig = pair[0]
-	var stood := float(rig.rest_of()["top"])
-	rig.forms[MechRig.DEATH] = rig._form_entry({"duration": 1.0, "ease": "fall", "sink": 0.8})
-	var held := _slides_of(rig, 2.0)
-	assert_true(float(rig.rest_of()["top"]) < stood - 0.05, "it comes down (its top %.0f%% of its size from %.0f%%)" % [100.0 * float(rig.rest_of()["top"]), 100.0 * stood])
-	assert_true(absf(float(rig.rest_of()["low"])) < 0.005, "on its feet on the floor")
-	var n := 0
-	for jn in held.keys():
-		if str(jn).begins_with("ankle"):
-			assert_true(float(held[jn]) < 0.01, "%s stays where it stands (%.1f%%)" % [jn, 100.0 * float(held[jn])])
-			n += 1
-	assert_eq(n, 6, "all six feet read")
-	pair[1].free()
-
-
 func test_every_planted_death_keeps_its_feet() -> void:
-	# Every death the recipes plant or sink keeps those feet where they stand while they carry it (the
+	# Every death the recipes plant keeps those feet where they stand while they carry it (the
 	# fifth notes; the next day, "pivot or slide in correct, plausible places": a foot let go as the body
 	# lands may slide then), read up to the moment the first is let go.
 	var read := 0
@@ -2071,12 +2052,12 @@ func test_every_planted_death_keeps_its_feet() -> void:
 			named.append(str(p[0]) if p is Array else str(p))
 			if p is Array and (p as Array).size() > 2:
 				until = minf(until, float(p[2]))
-		if named.is_empty() and float(death.get("sink", 0.0)) <= 0.0:
+		if named.is_empty():
 			continue
 		var pair := _rig_for(id)
 		var held := _slides_of(pair[0], until)
 		for jn in held.keys():
-			if (named.is_empty() and str(jn).begins_with("ankle")) or named.has(jn):
+			if named.has(jn):
 				# within a fiftieth of its size: a long foot turning on its toes leaves the leg's two-link reach a sliver
 				assert_true(float(held[jn]) < 0.02, "%s's %s stays where it stands (%.1f%%)" % [id, jn, 100.0 * float(held[jn])])
 		read += 1

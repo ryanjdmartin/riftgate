@@ -3209,7 +3209,8 @@ def funnel_web(b):
     b.aims = {"web_bomb": "head"}   # the Web Bomb rides the head with the rest of its guns, so the head turns to aim it
     b.move(accel=0.9, heft=0.16)
     # Its death: its legs buckle and splay as it drops, its body coming down onto its four low hip
-    # hinges, nose a little down, every foot left on the floor (Ryan, 16 November, the fourth notes:
+    # hinges, nose a touch down, every foot left on the floor, the hind ones too (Ryan, 17 November: "its
+    # back legs come off the ground at the end" with its nose further down) (Ryan, 16 November, the fourth notes:
     # drawn up, its "back legs are in the air awkwardly"), the head bowed and the guns slack. The fifth
     # notes found it "ok but it ends up floating a bit": the hinges hang a little over a tenth of its
     # size below its belly at the struts' feet and turn only fore and aft, so they reach the floor
@@ -3221,7 +3222,7 @@ def funnel_web(b):
             tracks["hip_" + leg + side] = [(1.2, hip)]
             tracks["knee_" + leg + side] = [(1.2, knee)]
             tracks["ankle_" + leg + side] = [(1.2, ankle)]
-    b.death(1.2, tracks, body=[(1.2, 0.0, 0.0, -8.0, 0.0, -8.0, 0.0)])
+    b.death(1.2, tracks, body=[(1.2, 0.0, 0.0, -8.0, 0.0, -4.5, 0.0)])
 
 funnel_web.maker = "wainwright_sutler"
 
@@ -3683,12 +3684,21 @@ def whip_scorpion(b):
     # 'hot' things - so all glowing boosters and vents"; found bare on 3 November), the collar and the
     # bore's floor lit together as its blast flares them.
     b.halo = ["vent_heat_" + t for t in ("l1", "l2", "r1", "r2")] + ["vent_bore_%s_floor" % t for t in ("l1", "l2", "r1", "r2")]
-    # Its death: it sinks on all six legs, every foot where it stands, the knees rising as the body
-    # comes down (b.death's sink), its tail laid down behind and its gun dipped. Ryan, 16 November, the
-    # fifth notes: "all six legs slide out from under it and it ends up floating". Its middle legs'
-    # limits stop it about a tenth of its size above the floor, past where its fore and middle thighs
-    # would meet (a share of the most); its belly on the floor wants those limits wider.
-    b.death(1.3, {"abdomen": [(1.3, -10.0, 0.0, 0.0)], "ray": [(1.3, -8.0)]}, sink=0.85)
+    # Its death: its legs buckle under it, every foot where it stands while they carry it, the knees
+    # rising as the body comes down; then they give, splaying out as its belly drops onto the floor, its
+    # tail laid down behind and its gun dipped. Ryan, 16 November, the fifth notes: "all six legs slide out
+    # from under it and it ends up floating"; 17 November, of a sink that stopped where its middle legs'
+    # limits do: "I think it's legs are coming up instead of the body coming down, it's floating". The
+    # crouch is its limbs' reach at its deepest (MechRig._sink_limb), its middle pair splaying least so it
+    # clears the hind pair.
+    crouch = {"f": (46.5, -15.1, -31.3), "m": (-57.9, 18.1, 39.9), "h": (-40.8, 13.3, 27.6)}
+    down = {"f": (24.5, 24.5, -4.9), "m": (-57.9, 3.7, 33.5), "h": (-23.2, -21.9, 5.6)}
+    tracks = {"abdomen": [(1.3, -10.0, 0.0, 0.0)], "ray": [(1.3, -8.0)]}
+    for side in ("l", "r"):
+        for leg in ("f", "m", "h"):
+            for k, jn in enumerate(("hip_", "knee_", "ankle_")):
+                tracks[jn + leg + side] = [(0.65, crouch[leg][k]), (1.3, down[leg][k])]
+    b.death(1.3, tracks, plant=[("ankle_" + leg + side, 0.0, 0.65) for leg in ("f", "m", "h") for side in ("l", "r")])
 
 whip_scorpion.maker = "wainwright_sutler"
 
