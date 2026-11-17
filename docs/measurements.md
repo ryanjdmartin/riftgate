@@ -10508,3 +10508,58 @@ showing a weapon. So the old aims were costing rules and buying no outcome the b
 can show, which is the 16 November read again from the other side. It says nothing of feel,
 and nothing of the heroes, whose fights no row here holds. Tier three's rows are a squad
 under strength against numbers Ryan set aside, read for the difference alone.
+
+## 17 November: the formations the foes' bench changed, before and after
+
+The bench's fifteen rows landed that day on Ryan's "yes to all, seems fine. Ill be able to
+tell in play" (`docs/vocabulary_pass_proposal.md`, section 35). Read on the commit before
+them (`7dcb2216`) and on the tree with all fifteen, a scratch probe on the engine's own
+fight: twenty compositions that field a changed foe, as content has them at their tiers,
+against the squad of the 16 November scenes (Honey Badger, Skua, Cassowary, Buzzard), the
+greedy bot, 120 fights a row on the same seeds. Each cell is before to after. Every fight
+was won in both where no share is given.
+
+| Composition | What changed in it | Rounds | Squad hull lost | Hull lost by the machine hit hardest | Rerolls drained a fight |
+|---|---|---|---|---|---|
+| Goblin horde, tier one | The Mandragora's scream, a fall | 3.3 to 3.5 | 0% to 1% | 2% to 3% | 1.79 to 2.53 |
+| Gel wall, tier one | The same | 6.0 to 5.9 | 4% to 6% | 14% to 21% | 2.83 to 2.55 |
+| Treant grove, tier one | The same | 4.3 to 4.4 | 3% to 4% | 13% to 16% | 0.97 to 2.77 |
+| Ember pyre, tier one | The Salamander's embers | 3.4 to 3.6 | 2% to 3% | 8% to 10% | |
+| Magma vent, tier one | The same | 3.4 to 3.6 | 1% to 1% | 3% to 3% | |
+| The Wild Hunt, tier two | A rider names the quarry | 5.8 to 5.7 | 29% to 23% | 66% to 62% | |
+| Pilgrim's wake, tier two | The Pilgrim immune to Suppress | 6.0 to 6.0 | 6% to 6% | 22% to 22% | |
+| Guard horde, tier two | The Mandrake's scream, a fall | 2.9 to 3.1 | 1% to 1% | 2% to 6% | 1.65 to 2.24 |
+| Treant march, tier two | The same | 6.8 to 7.1 | 6% to 8% | 21% to 28% | 0.81 to 2.82 |
+| Wight host, tier two | The Spectre fades | 3.6 to 4.4 | 2% to 3% | 9% to 12% | |
+| Grave field, tier two | The same | 10.5 to 11.9 | 8% to 10% | 27% to 32% | |
+| Barbed swarm, tier two | The Basilisk's Transfix | 2.4 to 2.4 | 0% to 0% | 1% to 1% | |
+| Sandworm pit, tier two | The same | 7.3 to 7.2 | 6% to 5% | 23% to 20% | |
+| Alpha pack, tier three | The Alpha Warg's Mark Prey | 1.4 to 1.4 | 0% to 0% | 0% to 0% | |
+| Captain's warband, tier three | The Alraune's scream, a fall | 2.6 to 2.6 | 1% to 1% | 5% to 5% | 0.00 to 0.76 |
+| Lich's court, tier three | The Lich's Command and its fall, the ghosts' fade | 12.6 to 12.4, won 33% to 27% | 88% to 92% | 97% to 99% | |
+| Wraith choir, tier three | The Spectre and the Wraith fade | 11.1 to 12.2, won 93% to 77% | 50% to 62% | 83% to 89% | |
+| Draugr host, tier three | The Lich and a Wraith | 5.3 to 5.8 | 19% to 19% | 48% to 46% | |
+| Great swarm, tier three | The Gorgon's dying gaze, the Basilisk's Transfix | 3.2 to 3.2 | 2% to 2% | 7% to 6% | |
+| Queen's hunt, tier three | The Antlion Queen's bite | 2.2 to 2.2 | 1% to 1% | 3% to 3% | |
+
+Wrecks a fight moved in two rows: the wraith choir, 0.72 to 1.39, and the Lich's court, 2.96
+to 3.24.
+
+A direction, at 120 fights. Three things show.
+
+- **The scream costs more as a fall than it did as a move.** The bot kills the screamers
+  either way, and now every kill takes a reroll, where before a root took one only on a round
+  it chose to scream and lived to. Where three or four stand behind a wall the squad loses
+  2.5 to 2.8 rerolls a fight, up from 1 to 2 in four rows of five. Rounds and hull barely
+  move, since this squad's bot spends few rerolls. It is the row the session was least sure
+  of at tier one, and it is his to judge in play.
+- **The ghosts' fade lengthens their fights.** A round out of reach is a round more to kill
+  a Spectre in: about a round more at tier two, and at tier three the wraith choir is won
+  77% of the time where it was 93%, with twice the wrecks. Tier three's rows are a squad
+  under strength against numbers Ryan set aside, read for the difference alone.
+- **The Wild Hunt hits a little softer.** A rider that names the quarry is a rider that did
+  not lance that round, and the squad loses 23% of its hull where it lost 29%.
+
+The rest sit inside noise. Two rows cannot show their change at all: the Pilgrim's
+immunity, since this squad carries no stun, and the Tyrant's and the Colossus's, whose
+fights no row here holds. Nor do the Thief and the Cleric, which stand in their finals.

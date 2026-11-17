@@ -3036,3 +3036,22 @@ to, as it is over a follow-up already announced, so the player reads it off the 
 The bot prices neither. A save keeps it.
 
 The vocabulary has a term for it, Immune, a session's draft.
+
+### Read: what the rows changed
+
+Twenty formations that field a changed foe, before the rows and after them, 120 fights each
+with the greedy bot (`docs/measurements.md`, 17 November, a direction). Three things move.
+
+- The scream as a fall costs the squad more rerolls than the move did: 2.5 to 2.8 a fight
+  where three or four screamers stand behind a wall, up from 1 to 2. Every kill takes one
+  now, where a root took one only on a round it chose to scream and lived through.
+- The ghosts' fade makes their fights about a round longer at tier two, and at tier three
+  the wraith choir is won 77% of the time where it was 93%.
+- The Wild Hunt hits a little softer, 23% of the squad's hull where it took 29%: a rider
+  naming the quarry is not lancing.
+
+The rest sit inside noise, and three immunities, the Thief and the Cleric stand in no row.
+His play judges every one (the to-do's line); the 200-seed read waits for the tiers' pass.
+
+With the read, a fix to the intent: a ghost's bolt wears Phased's mark only on a round the
+fade would land, never on the round it is out already (`Skirmish.fade_lands`).

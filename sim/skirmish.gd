@@ -1316,6 +1316,13 @@ static func foe_phased(foe: Foe) -> bool:
 	return foe != null and Effects.has(foe, "phased")
 
 
+## Would a step that fades this foe (`phase`) lay its wait now? Never on one Phased already or
+## waiting for it, so none is out two rounds running: the step's own rule, and the intent's
+## read of it, so its chip wears the mark only on a round the fade would land.
+static func fade_lands(foe: Foe) -> bool:
+	return foe != null and not Effects.has(foe, "phased") and not Effects.has(foe, "phasing")
+
+
 ## Foes this mech's current face may be spent on.
 func targets_for(mech_index: int) -> Array[Foe]:
 	var ms := mechs[mech_index]
@@ -4104,7 +4111,7 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			# A foe's Phased (foe_phased), its own move or a step of one: the wait for it, as a
 			# machine's is laid, landing as the round ends (_land_phases). A foe Phased already
 			# gains none, so none is out two rounds running.
-			if Effects.has(f, "phased") or Effects.has(f, "phasing"):
+			if not fade_lands(f):
 				log.append("%s: %s, and it cannot fade again so soon" % [f.display_name, str(a.get("name", "fades"))])
 			else:
 				Effects.stack(f, Effects.STATUS["phasing"], Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_NONE)

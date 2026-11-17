@@ -733,7 +733,8 @@ On a machine:
   it does it no harm. It acts all the same, and it is back as that round ends. A foe's is
   less strict than a machine's in one way, its own side still reaching it, a rally's
   Empowered or a mend. Two guards: the last foe standing does not fade, so a fight has a foe
-  to end on, and a foe Phased already gains no wait, so none is out two rounds running.
+  to end on, and a foe Phased already gains no wait, so none is out two rounds running, and
+  its intent wears Phased's mark only on a round the fade would land.
 - **Swallowed** (debuff, from a foe's swallow): out of the fight (it
   cannot act, take damage or be targeted, a foe's intent on it re-picks, and a blow or a special
   at every machine passes it by) for the swallow's

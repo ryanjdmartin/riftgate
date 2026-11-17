@@ -1591,7 +1591,9 @@ static func form_mark(ms: Skirmish.MechState, f: Face) -> String:
 ## intents with a rider need to show that rider as part of the intent chip"): each keyword its
 ## move carries by its term's mark in its term's colour (Terms), a numbered one with its stacks
 ## (Scorch 2: two), so a scorch or a blow at every machine is read off the chip itself.
-static func intent_riders(foe: Foe, inert: Array = []) -> Array:
+## `inert` names the riders, and `idle` the steps by their effect, that lay nothing this round:
+## neither wears a mark, so the chip never promises what will not land.
+static func intent_riders(foe: Foe, inert: Array = [], idle: Array = []) -> Array:
 	var out: Array = []
 	if foe == null:
 		return out
@@ -1600,29 +1602,30 @@ static func intent_riders(foe: Foe, inert: Array = []) -> Array:
 		# intent is the first of its two warnings, and a bare debuff mark would not say which.
 		if Foe.exposes(foe.action) and Terms.has("expose"):
 			out.append([Terms.glyph("expose"), "", Terms.colour("expose")])
-		out.append_array(_step_marks(foe.action, out))
+		out.append_array(_step_marks(foe.action, out, idle))
 		return out
 	for k in foe.action.get("keywords", []):
 		var id := str(k)
 		if not Terms.has(id) or Terms.glyph(id).is_empty() or inert.has(id):
 			continue   # a rider that will lay nothing this round wears no mark (`inert`: a blow's Expose while a machine stands Exposed)
 		out.append([Terms.glyph(id), str(foe.rider(foe.action, id)) if Foe.NUMBERED_RIDERS.has(id) else "", Terms.colour(id)])
-	out.append_array(_step_marks(foe.action, out))
+	out.append_array(_step_marks(foe.action, out, idle))
 	return out
 
 
 ## The marks of what a move does also (16 November: a move is a short list of steps), beside
 ## its blow's own: each step's effect by the term it reads as, the word a rider of the same
 ## effect wears or the status it grants, once each and never a mark the blow already shows.
-## A step with no term of its own shows none: the move's text says it.
+## A step with no term of its own shows none: the move's text says it, and a step named in
+## `idle` shows none either (it lays nothing this round: a fade on a foe Phased already).
 const STEP_TERMS := {"ablate": "ablate", "jam": "jam", "expose": "expose", "dispel": "dispel", "swallow": "swallow",
 	"scorch_all": "scorch", "corrupt_all": "corrupt", "appropriate": "appropriated", "phase": "phased"}
-static func _step_marks(a: Dictionary, shown: Array = []) -> Array:
+static func _step_marks(a: Dictionary, shown: Array = [], idle: Array = []) -> Array:
 	var out: Array = []
 	var seen: Array = shown.map(func(row) -> String: return str(row[0]))
 	for st in a.get("also", []):
 		var term := str(STEP_TERMS.get(str(st.get("effect", "")), ""))
-		if term.is_empty() or not Terms.has(term) or Terms.glyph(term).is_empty() or seen.has(Terms.glyph(term)):
+		if term.is_empty() or idle.has(str(st.get("effect", ""))) or not Terms.has(term) or Terms.glyph(term).is_empty() or seen.has(Terms.glyph(term)):
 			continue
 		seen.append(Terms.glyph(term))
 		var n := int(st.get("value", 0))
@@ -2512,7 +2515,10 @@ func _intent_read(foe: Foe) -> Array:
 	# A blow's Expose lays nothing while a machine stands Exposed or another's is out ahead of it
 	# (Skirmish.expose_rider_lands): its mark is off the chip for that round.
 	var inert: Array = ["expose"] if Foe.is_attack_action(foe.action) and foe.has_keyword(foe.action, "expose") and not sk.expose_rider_lands(foe) else []
-	return [sk.intent_value(foe), ("×%d" % foe.strikes()) if blow and foe.strikes() > 1 else "", intent_riders(foe, inert) if blow or Foe.exposes(foe.action) or foe.action.has("also") else []]
+	# And a step that fades a foe lays nothing on one Phased already (Skirmish.fade_lands): a
+	# ghost is out one round in two, and the round it is out its bolt wears no Phased mark.
+	var idle: Array = [] if Skirmish.fade_lands(foe) else ["phase"]
+	return [sk.intent_value(foe), ("×%d" % foe.strikes()) if blow and foe.strikes() > 1 else "", intent_riders(foe, inert, idle) if blow or Foe.exposes(foe.action) or foe.action.has("also") else []]
 
 
 ## A stat in a hold, as the codex has it: its label, its base in ink and the change in a
