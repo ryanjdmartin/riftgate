@@ -797,8 +797,10 @@ func shut_gates(ms: MechState, f: Face, foe: Foe) -> Array[int]:
 	for k in f.keywords:
 		if not Effects.gate_holds(ms.unit, f, k, foe):
 			out.append(k)
-		elif k == Face.Keyword.DISRUPT and foe.committed:
-			out.append(k)   # an announced follow-up holds (2 November): the chip struck over it
+		elif k == Face.Keyword.DISRUPT and (foe.committed or foe.immune_to("disrupt")):
+			out.append(k)   # an announced follow-up holds (2 November), and so does a gather its foe is immune through: the chip struck over it
+		elif k == Face.Keyword.SUPPRESS and foe.immune_to("suppress"):
+			out.append(k)   # no stun lands on a foe immune to it: the chip struck over it
 	return out
 
 
@@ -5107,6 +5109,9 @@ func _suppress(foe: Foe, turned = null, ahead: bool = false) -> bool:
 	# and so does one that stepped up mid-round (a split's half), the round's turn being over;
 	# `ahead` says the round itself is over (a web's burst), so every foe loses its next.
 	var next := ahead or _acted.has(foe) or foe.fresh
+	if foe.immune_to("suppress"):
+		log.append("%s is immune: no stun lands on it" % foe.display_name)
+		return false   # its own Ability (Foe.immune): nothing gained, and nothing for the Paradox
 	if _suppressed_through(foe, round + 1 if next else round):
 		log.append("%s is already suppressed" % foe.display_name)
 		return false
@@ -5260,6 +5265,12 @@ func _disrupt(foes: Array) -> void:
 			# A follow-up announced a round ahead holds (Ryan, 2 November: "cannot be Disrupted"):
 			# the move that named it was the window, and a Suppress still takes it.
 			log.append("%s is committed to %s, and nothing turns it" % [foe.display_name, str(foe.action.get("name", ""))])
+			continue
+		if foe.immune_to("disrupt"):
+			# Its own Ability (Foe.immune): a gather no Disrupt breaks off, the warning being the
+			# fight (the Obsidian Tyrant's Firestorm, the Ruby Colossus's Ultima); a Suppress
+			# still holds it a round.
+			log.append("%s is immune: no Disrupt turns it from %s" % [foe.display_name, str(foe.action.get("name", ""))])
 			continue
 		var next := disrupt_next(foe)
 		if next.is_empty():

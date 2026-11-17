@@ -597,7 +597,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 				score += float(o[1]) * minf(float(spill), float(behind.hp))
 				if spill >= behind.hp:
 					score += float(o[1]) * (KILL_BONUS + _threat_now(behind, sk) * HULL_WEIGHT)
-	var suppress_open := f.has(Face.Keyword.SUPPRESS) and Effects.gate_holds(ms.unit, f, Face.Keyword.SUPPRESS, target)
+	var suppress_open := f.has(Face.Keyword.SUPPRESS) and Effects.gate_holds(ms.unit, f, Face.Keyword.SUPPRESS, target) and not target.immune_to("suppress")
 	if suppress_open:
 		# A stun on a Numbed foe strips a stack and lands nothing (2 November), so each is a step
 		# toward the one that lands: worth the stopped blow over the stuns still needed. A gated
@@ -1649,8 +1649,8 @@ func lure_score(sk: Skirmish, who: Skirmish.MechState, foes: Array) -> float:
 ## discount, less the blow of the move the disrupt turns it to (Skirmish.disrupt_next), when that
 ## lands this round.
 static func disrupt_score(sk: Skirmish, foe: Foe) -> float:
-	if foe.is_suppressed() or not foe.alive() or foe.committed:
-		return 0.0   # an announced follow-up holds (2 November): a disrupt turns nothing
+	if foe.is_suppressed() or not foe.alive() or foe.committed or foe.immune_to("disrupt"):
+		return 0.0   # an announced follow-up holds (2 November), and so does a gather its foe is immune through: a disrupt turns nothing
 	var now := countdown_threat(foe, sk) if foe.gathering() else _threat_now(foe, sk)
 	if now <= 0.0:
 		return 0.0
@@ -1817,7 +1817,7 @@ func web_score(sk: Skirmish, target: Foe) -> float:
 ## A Ward up now is gone by then on a machine's side only: a foe's stands until its next turn
 ## starts, and turns the web itself away as it lands (web_score).
 static func web_stuns(f: Foe) -> bool:
-	if f == null or not f.alive():
+	if f == null or not f.alive() or f.immune_to("suppress"):
 		return false
 	var left := maxi(0, Effects.stacks_of(f, "numbed") - 1)
 	if f.is_suppressed():
@@ -2123,8 +2123,8 @@ static func _paradox_share(sk: Skirmish, target: Foe, apps: int) -> float:
 			continue
 		adds += meter[0]
 		at = meter[1] if at == 0 else mini(at, meter[1])
-	if at <= 0 or apps <= 0 or not target.alive() or Effects.turns_mark(target, "paradox"):
-		return 0.0   # a Ward turns the Paradox itself away (28 October)
+	if at <= 0 or apps <= 0 or not target.alive() or Effects.turns_mark(target, "paradox") or target.immune_to("suppress"):
+		return 0.0   # a Ward turns the Paradox itself away (28 October), and the stun it ends in lands on no foe immune to it
 	var need := maxi(1, at - Effects.stacks_of(target, "paradox"))
 	return minf(1.0, float(apps * adds) / float(need)) / float(Effects.stacks_of(target, "numbed") + 1)
 

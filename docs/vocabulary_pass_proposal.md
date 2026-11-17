@@ -3018,3 +3018,21 @@ and the strict form would put a guard on every move the foes make among themselv
 It is drawn as what no die reaches is, faint under a dashed edge where it stands, with the
 chip a Phased machine wears. Its Hex Bolt's intent wears Phased's mark beside the blow, so
 the round to reach it is said on the field.
+
+### Built: immunities, rows 15 and 16
+
+An immunity is a foe's own Ability, said on its chip (`tests/test_skirmish.gd`; the rules'
+An immunity; the bible's row).
+
+| Foe | Immune to | As built |
+|---|---|---|
+| The Pilgrim | Suppress, always | No stun lands on it, from a die, a web's burst or a Paradox, and it gains no Numbed for it |
+| The Obsidian Tyrant | Disrupt, while Firestorm gathers | From the round Firestorm is announced to the round it lands. A Suppress still holds the count a round |
+| The Ruby Colossus | Disrupt, while Ultima gathers | The same |
+
+Content says it as `immune` on the foe: `suppress` or `disrupt`, each `true` or the id of a
+move of its own that gathers. The die's own mark is struck over a foe it will do nothing
+to, as it is over a follow-up already announced, so the player reads it off the die in hand.
+The bot prices neither. A save keeps it.
+
+The vocabulary has a term for it, Immune, a session's draft.

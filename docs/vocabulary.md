@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 191 implemented, 6 planned, 0 idea.
+Status: 192 implemented, 6 planned, 0 idea.
 
 ## Resource
 
@@ -257,6 +257,7 @@ Status: 191 implemented, 6 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
+| **Immune** | Ability, a foe's own, said on its chip: one thing of yours that never lands on it. A foe immune to Suppress is never stunned, and the stun a Paradox or a web ends in lands nothing on it. A foe immune to Disrupt while a move gathers cannot be turned from that move, from the round it is announced to the round it lands; a stun still holds it a round. The die's own mark is struck over a foe it will do nothing to. No Purge reaches it. | implemented |
 | **Drain** | Ability, the Vampire Lord's own: every blow it lands heals it by what the blow took from the hull, no more than the machine had, so a shield starves it. It lays nothing on the machine, so no Ward turns it away; a Barrier's blow deals nothing to drain, and Ablating on the foe takes back what it heals. No Purge reaches it. | implemented |
 | **Swallow** | Foe move of its own, never a rider on a blow. The machine it lands on is Swallowed: out of the fight for the rounds it says, until the swallower falls, or until the swallower has lost a quarter of its HP since the swallow, the damage still to deal counting down on its chip. It never takes the last machine able to act. A Ward turns it away; a Lure turns it, and a Suppress or a Disrupt stops it, as any move. | implemented |
 | **Golden Rage** | Foe move of its own, never a rider on a blow: the foe goes gold (Golden) for the rounds it says, so the round it roars is the window to shield up or to start the burst. It goes gold only while calm, so one rage at a time; a Suppress or a Disrupt stops the roar, as any move. | implemented |
@@ -316,6 +317,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Instant** (implemented): Ryan, 12 November: "the rapid no cooldown pieces change to a new keyword: Instant (reroll after use, can land on itself)". Every Instant piece carries a limiter, which the validator holds content to: a cooldown, heat, Volatile or a shield cost, or the store a charged form spends (the Knuckle of Fury's five rage); a piece locked on a stepping die has the cylinder's odds (the Spin-Up's). An entry is Rapid or Instant, never both.
 - **Jam** (implemented): Disable until 15 November (Ryan: "Rename to Jammed"); the rider follows the pattern, Jam lays Jammed.
 - **Destroy** (implemented): No foe carries it (Ryan, 15 November: "This can be a boss-level rider, that destroys the visible face if it damages hull at all. Only promoted form or superboss-level so we're not tuning the economy around it. No longer a general rule"). Its carrier is the foes' pass's, and the fight bot prices no entry's loss until one does.
+- **Immune** (implemented): Ryan, 15 November: "not as a blanket for all bosses, but for ones who need it for their fight to actually do something." Content: immune on a foe, suppress or disrupt, each true or the id of a move of its own that gathers. Three carriers since 17 November, on his yes to the bench's rows: the Pilgrim, Suppress, whose dread is that it keeps coming; the Obsidian Tyrant, Disrupt while Firestorm gathers, and the Ruby Colossus, Disrupt while Ultima gathers, whose rounds of warning are the fight. A session's draft, his to write.
 - **Drain** (implemented): The Vampire Lord's (30 October), its bite and, below half, a drain at every machine. The genre's word (Drain), and the soft counter section 2 asks for: Ablating never stops healing. The hull alone, so the shield answers it: a drain of shield and hull walled the slowest trio at every HP tried, the shield, its answer to every blow, doing nothing against the heal. A rider on its blows until 16 November, and the unit's own Ability since, on Ryan's mark of 15 November ("This should be moved to an ability on the unit since it's on every attack. Like the Nob"): a chip on the foe, every blow of its, and no word on the blow. The text is a session's draft, his to write.
 - **Swallow** (implemented): Floraison's (30 October). The rounds, 1 to 3, are the move's, and no damage lands on the machine while it is held. The early release (31 October, Ryan agreeing Claude's lean): a quarter of the swallower's HP lost since the swallow, Clair Obscur's stagger in its smallest form, a round of the team's focus; the swallower loses nothing else, since a lost action on top would be a stun. A machine let go in the player's turn acts that round.
 - **Golden Rage** (implemented): The Thunder Ape's (4 November); see Golden. Its weight is content's, 2 so it comes about a round in three while calm.

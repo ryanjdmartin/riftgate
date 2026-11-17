@@ -68,7 +68,23 @@ var swallow_mark: int = -1       # its HP as it swallowed a machine, -1 holding 
 var wanders: bool = false        # an elite any domain's Fracture may send, drawn by chance (Gilgamesh, 31 October and 2 November)
 var rage: int = 0                # what every shield, vent or equipment entry the team spends adds to its blows while it stands, its own from the fight's start (content's `rage`: the Goblin Nob, 3 November; innate since 8 November)
 var golden_mark: int = -1        # its HP as it went gold (golden, 4 November: the Thunder Ape), -1 while calm: a quarter of its HP lost since breaks the rage
+var immune: Dictionary = {}      # what of the team's never lands on it (content's `immune`; Ryan, 15 November: "not as a blanket for all bosses, but for ones who need it for their fight to actually do something"): "suppress" or "disrupt" (IMMUNITIES), each true, always, or the id of a move of its own, while that move gathers
 var drains: bool = false         # every blow of its own regrows it by what the blow took from the hull (content's `drains`: the Vampire Lord's, an Ability on the unit since 16 November, Ryan: "This should be moved to an ability on the unit since it's on every attack. Like the Nob"; a rider on its blows until then)
+
+## What a foe may be immune to, an Ability said on its chip (immune_to).
+const IMMUNITIES := ["suppress", "disrupt"]
+
+
+## Is it immune to this (IMMUNITIES) right now: always, or while the move its immunity names
+## gathers, from the round that move is announced to the round it lands?
+func immune_to(what: String) -> bool:
+	if not immune.has(what):
+		return false
+	var held = immune[what]
+	if held is bool:
+		return held
+	return not pending.is_empty() and str(pending.get("id", "")) == str(held)
+
 
 ## The words a move aimed at one machine may carry for whom it goes for (`aim`), and how its
 ## target line says each: the most or the least of one thing the screen shows, a tie drawn at

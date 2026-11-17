@@ -67,6 +67,7 @@ const TABLE := {
 	"self_destruct": ["blast", "enemy"], "all": ["all", "enemy"], "countdown": ["warning", "enemy"],
 	"last_act": ["skull", "enemy"], "parts": ["parts", "enemy"],
 	"drain": ["heart", "enemy"],   # the Vampire Lord's (31 October): a blow that regrows what it took from the hull
+	"immune": ["lock", "guard"],   # a foe's own Ability (17 November): a Suppress or a Disrupt that never lands on it
 }
 
 ## A die entry's own mark, by the engine's prefix on its status id, and the term it reads as.

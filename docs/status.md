@@ -54,7 +54,9 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1275 tests, 373,417 checks, green on `ccr-722ca9f0-yj8na3` (17 November, a foe's
+- Tests: 1277 tests, 373,464 checks, green on `ccr-722ca9f0-yj8na3` (17 November, a foe's
+  immunities, the bench's last rows, over main at `6fd975e`). Before it, 1275 tests, 373,417
+  checks, green on the same branch (17 November, a foe's
   Phased on the Spectre and the Wraith, over main at `1405a91`). Before it, 1273 tests,
   373,381 checks, green on the same branch (17 November, twelve of
   the bench's rows in content, over main at `7dcb221`). Before it, 1269 tests, 373,357 checks,
@@ -2156,7 +2158,10 @@ four falls and four Expose moves are a session's drafts), and a foe's Phased is 
 its row: the Spectre and the Wraith fade the round after their Hex Bolt, out of the team's
 reach and acting all the same, never the last foe standing and never two rounds running
 (`Skirmish.foe_phased`; its own side still reaches it, a session's read of his "less
-strict"). The three immunities need engine first. The Red Dragon's row is held on his words and put back to him (the bible's section
+strict"). An immunity is a foe's own Ability, said on its chip (`immune` on a foe in
+content): the Pilgrim's to Suppress, and the Obsidian Tyrant's and the Ruby Colossus's to
+Disrupt while Firestorm and Ultima gather. So all fifteen marked rows are built. A save from
+before is set aside (version 40). The Red Dragon's row is held on his words and put back to him (the bible's section
 12): it stands as it is until he says. **The Goblin Warchief is in** (17 November, his idea and his name: "a back
 rank goblin captain that gives orders and Exposes"; "more like warchief"): a back-rank unit of
 its own behind the Captains in the tier-three warband, the chieftain render cut for its sprite,

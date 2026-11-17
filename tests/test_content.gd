@@ -2112,6 +2112,32 @@ func test_an_aim_is_a_moves_word_on_a_move_aimed_at_one_machine() -> void:
 	assert_true(str(said.call(foe.actions[2], false, "")).contains("Target: The most buffed machine"), "a special aimed at one machine says its word the same way")
 
 
+## An immunity is a foe's own Ability (17 November): a Suppress or a Disrupt, each always or
+## while a move of its own that gathers is named.
+func test_an_immunity_names_what_never_lands_and_a_move_that_gathers() -> void:
+	var db := _fresh()
+	var f: Dictionary = db.foes["revenant"].duplicate(true)
+	f["actions"] = [{"id": "claw", "name": "Claw", "kind": "attack", "weight": 1, "text": "", "status": "implemented"},
+		{"id": "storm", "name": "Storm", "kind": "attack", "countdown": 3, "weight": 1, "text": "", "status": "implemented"}]
+	f["immune"] = {"suppress": true, "disrupt": "storm"}
+	db.foes["test_walker"] = f
+	for e in db.validate():
+		assert_false(e.begins_with("foe test_walker"), "both forms validate clean: %s" % e)
+	var made := db.make_foe("test_walker")
+	assert_true(made.immune_to("suppress"), "always immune to the stun")
+	assert_false(made.immune_to("disrupt"), "and to a Disrupt only while its storm gathers")
+	made.pending = made.actions[1]
+	assert_true(made.immune_to("disrupt"), "which it then is")
+	f["immune"] = {"purge": true}
+	assert_true(_refused(db, "foe test_walker", "immune knows"), "an immunity the engine does not know is refused")
+	f["immune"] = {"disrupt": "claw"}
+	assert_true(_refused(db, "foe test_walker", "a move of its own that gathers"), "and a move that does not gather")
+	f["immune"] = {"suppress": false}
+	assert_true(_refused(db, "foe test_walker", "a move of its own that gathers"), "and a false, which says nothing")
+	f["immune"] = {}
+	assert_true(_refused(db, "foe test_walker", "immune is an object"), "and an empty one")
+
+
 ## What a foe lays that halves says 2 at the least (Ryan, 16 November: "Buffs and debuffs that
 ## decay at end of round should just have a minimum of 2"): one stack is gone at its first
 ## halving, so a rally of 1 leaves its rallier nothing and a Brittle 1 is the pack's for one

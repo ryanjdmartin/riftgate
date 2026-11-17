@@ -1654,6 +1654,14 @@ func _foe_abilities(foe: Foe) -> Array:
 			("Ability, %s %d: its borrowed swing lands the number of the piece it took, and spends it" % [word, taken]) if taken > 0
 			else "Ability, %s: it takes the piece a machine shows, and its borrowed swing lands that piece's number" % word,
 			_foe_chip_colour("appropriated"), "ability"])
+	for what in Foe.IMMUNITIES:
+		# An immunity (17 November): what of the team's never lands on it, always or while the
+		# move it names gathers, so a die's struck chip has its reason on the foe itself.
+		if not foe.immune.has(what):
+			continue
+		var held = foe.immune[what]
+		var tail := "" if held is bool else " while %s gathers" % EntryReadout._move_name(foe, str(held))
+		rows.append(["lock", "", ("Ability, Immune: no Suppress lands on it%s" if what == "suppress" else "Ability, Immune: no Disrupt turns it%s") % tail, _foe_chip_colour("guarded"), "ability"])
 	if Effects.has(foe, "guarded"):
 		# A boss in parts (15 October): the lock while its parts stand, so the zero its die
 		# shows has a reason on the foe itself.

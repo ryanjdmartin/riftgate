@@ -485,7 +485,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 2
   a stack, after the spend's own heat lands; equipment spends none.
 - **Suppress**: each foe hit is Suppressed; on a Numbed foe the stun strips a stack and lands
-  nothing; a Ward turns it away; one already suppressed for that action gains nothing more.
+  nothing; a Ward turns it away; one already suppressed for that action gains nothing more;
+  and a foe immune to it (An immunity, under Foes) takes none.
 - **Shock**: every foe the hit reaches is Shocked after its blow, the ones it fells included, so
   a hit never spends its own Shock.
 - **Chain N** (a weapon's): the blow also lands N on every other Shocked foe on the field,
@@ -502,6 +503,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   conditions allow, keeping its pick while the machine stands and is in the fight; the next
   machine in line otherwise, and when the move it leaves held no pick (a brace, a blow at
   every machine); and no pick at all when the move it turns to is aimed at no one machine.
+  A follow-up once announced is not turned, nor a gather its foe is immune through (An
+  immunity, under Foes).
   Disrupt resolves before Lure. The Baboon's
   Retrocausal Shroud, spent on itself or an ally, Cleanses it and gives Disrupt to every foe
   showing intent on it, its pick or a blow at every machine: they change their move, not their
@@ -1205,6 +1208,13 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   least, a blow's Brittle and a rally's Empowered: one stack is gone at its first halving, a
   machine's Brittle as its next turn starts and the rallier's own share as its turn ends. The validator holds a foe's moves to it. No such floor binds the player's pieces:
   the player orders the turn's spends, so a single stack is used before it halves.
+- **An immunity** is a foe's own Ability, a chip on it that no Purge reaches, given case by
+  case to a foe whose fight needs it: one thing of the team's that never lands on it. A foe
+  immune to Suppress is never stunned, by a die, a web's burst or a Paradox, and gains no
+  Numbed for it (the Pilgrim). A foe immune to Disrupt while a move gathers is not turned
+  from that move, from the round it is announced to the round it lands, and a Suppress
+  still holds it a round (the Obsidian Tyrant through Firestorm, the Ruby Colossus through
+  Ultima). The die's own mark is struck over a foe it will do nothing to.
 - **A drain** is no rider: it is a foe's own Ability, a chip on it that no Purge reaches (the
   Vampire Lord's). Every blow it lands, whatever the move, regrows it by what the blow took
   from the hull, no more than the machine had, so a shield starves it; it lays nothing on the

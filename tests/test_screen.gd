@@ -560,6 +560,14 @@ func test_a_foe_aloft_is_drawn_out_of_reach_and_is_no_drop_target() -> void:
 	Effects.remove(foe, "phased")
 	s._refresh()
 	assert_false(view.away, "and it is drawn whole again once it is back")
+	# An immunity (17 November) is an Ability's chip on the foe, saying what never lands.
+	assert_true(s._foe_abilities(foe).filter(func(row) -> bool: return str(row[2]).contains("Immune")).is_empty(), "no immunity, no chip")
+	foe.immune = {"suppress": true}
+	var said: Array = s._foe_abilities(foe).filter(func(row) -> bool: return str(row[2]).contains("Immune"))
+	assert_eq(said.size(), 1, "immune, it wears the Ability's chip")
+	if said.size() == 1:
+		assert_true(str(said[0][2]).contains("no Suppress lands on it") and str(said[0][4]) == "ability", "which says what never lands: %s" % str(said[0][2]))
+	foe.immune = {}
 	s.free()
 
 
