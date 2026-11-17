@@ -466,6 +466,19 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    (the breech's chamfers and back, the engine deck's tail, between the stacks), shut when it
    burrows. Rows loaded, fired, burrowed, in flight, and the cab open and shut close. His to
    judge: the cab's new side, the ring's grey against the green, the hull 2 taller.
+   His read, 17 November: "The mole looks mean with the double drill, but the proportions of the
+   combined drill are off, it's a little wonky. And as much as I love the proportions of the body
+   as it is, we might need to try and make it thinner to fit a bit more behind the cutter ring.
+   It's almost believable. But it looks pretty badass in this form." The fourth round
+   (`docs/looks/minerva_mole4.png`, `SHEET4`, its first row round three and round four side by
+   side): the ring and the tip two lengths of one cone with one taper, the ring 22 in radius and
+   15.6 long ending at a sharp lip round the bore, the tip 14.4 long, a hazard collar and a crown
+   of ten teeth at the seam, the four flutes winding on from the ring onto the tip as one spiral;
+   the body 54.5 wide where it was 71, so head on a fifth of the outline stands outside the ring
+   where it was two fifths, the treads, the hull, the barrel, the breech, the cab, the boxes, the
+   wells and the vents all moved in with it. His to judge: longer for its width from above, the
+   cab's slit looking into the back of the ring, and the spiral lining up only at rest, since the
+   ring and the tip turn opposite ways.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike

@@ -32,7 +32,21 @@ with a slit no wider than a hand and periscopes on its roof, shutters over the s
 burrows; every mount in a well it drops into (a gun on a lift in the cab's roof, a rack and a
 bare mount on lifts in armoured boxes on the left deck), lids shut over them when it burrows;
 and its vents the Polar Bear's own, louvres on joints in housings cut into the breech and the
-engine deck, shut when it burrows."""
+engine deck, shut when it burrows.
+
+Fourth round, 17 November, on his notes ("The mole looks mean with the double drill, but the
+proportions of the combined drill are off, it's a little wonky. And as much as I love the
+proportions of the body as it is, we might need to try and make it thinner to fit a bit more
+behind the cutter ring. It's almost believable. But it looks pretty badass in this form"): the
+two drills one head. The ring and the tip are two lengths of one cone, the ring the frustum from
+its root to a sharp lip round the throat and the tip the cap from that lip to the point, one
+taper, one wind of facets and one spiral of flutes running on from the ring onto the tip, each
+flute sized to the radius under it; a hazard collar on the tip and a crown of teeth on the ring's
+lip make the seam, and the crown is what the fired nose shows round its open bore. The ring is
+longer and the tip shorter than round three's. The body is narrowed to stand behind the ring head
+on: the treads closer in, the hull, the barrel, the breech and the cheeks narrower, the cab, the
+mounts' boxes and the vents moved in with them. The first row sets round three's loaded machine
+beside round four's at one scale."""
 
 import math
 
@@ -711,9 +725,314 @@ def mnlook_mole3_flight(b):
 
 mnlook_mole3_flight.maker = MN
 
+
+# ---------------------------------------------------------------- round four: one drill, a body behind it
+
+R4_TX, R4_TW, R4_TH = 18.0, 12.5, 16.0   # the treads: closer in and narrower than round three's 24 and 17
+R4_CZ = 23.5                             # the bore's axis, half a unit over round three's, for the ring's clearance
+R4_BARREL = 13.0                         # the launch barrel's radius (round three's 14), round the same bore
+R4_N = 16                                # the drill's sides, the ring's and the tip's alike
+R4_ROOT, R4_R0 = 25.0, 22.0              # the drill's root along y and its radius there, the ring's base
+R4_APEX = 55.0                           # its point
+R4_SLOPE = (R4_R0 - 0.6) / (R4_APEX - R4_ROOT)   # one taper from the root to the point
+R4_THROAT = R2_BORE                      # the ring's throat, the bore's own radius, so the tip passes it
+R4_LIP_R = 10.9                          # the ring's lip, a sharp edge round the throat
+R4_LIP = R4_ROOT + (R4_R0 - R4_LIP_R) / R4_SLOPE   # where the ring ends and the tip begins, on the one cone
+R4_TIP_IN = 0.6                          # the tip's core this far inside the cone's line, clear of the throat
+R4_WIND = 0.42                           # the flutes' wind, radians a unit along the drill, ring and tip alike (round three's tip's)
+R4_FACET = 0.04                          # the facets' gentler wind, ring and tip alike
+R4_CAB_X, R4_CAB_W, R4_CAB_TOP = 17.0, 9.0, 27.5   # the cab's centre across, its width and its roof
+
+
+def _r4_r(y):
+    """The one cone's radius at `y`, from the ring's root to the tip's point."""
+    return R4_R0 - R4_SLOPE * (y - R4_ROOT)
+
+
+def _r4_ring(y, r, cz=R4_CZ, n=R4_N, dy=0.0):
+    """A ring of the drill's sides at `y` (moved `dy` along it), its facets wound at the drill's one
+    gentle rate, so the ring's facets run on into the tip's."""
+    phase = math.pi / n + R4_FACET * (y - R4_ROOT)
+    return [(r * math.cos(phase + i * 2.0 * math.pi / n), y + dy, cz + r * math.sin(phase + i * 2.0 * math.pi / n)) for i in range(n)]
+
+
+def _r4_flutes(b, y0, y1, cz, inset, material, label, count=4, dy=0.0):
+    """Raised spiral flutes on the one cone (less `inset`) from `y0` to `y1`, wound at the drill's
+    one rate and phased from its root, so the ring's run on into the tip's as one spiral; each one's
+    height and width taken from the radius under it, so the tip's are the ring's grown small, and
+    eased in and out at its ends, so none stands proud as a hook."""
+    L = y1 - y0
+    m = max(6, int(L * 1.3))
+    for j in range(count):
+        ribbon = []
+        for k in range(m + 1):
+            y = y0 + L * k / float(m)
+            a = R4_WIND * (y - R4_ROOT) + j * 2.0 * math.pi / count
+            out = Vector((math.cos(a), 0.0, math.sin(a)))
+            r = _r4_r(y) - inset
+            ease = min(1.0, 0.3 + 0.7 * min(y - y0, y1 - y) / 1.8)
+            h = (0.10 * r + 0.45) * ease
+            w = 0.05 * r + 0.3
+
+            def at(d, lift, y=y, out=out):
+                yy = min(y1, max(y0, y + d))
+                return Vector((0.0, yy + dy, cz)) + out * (max(0.3, _r4_r(yy) - inset) + lift)
+
+            ribbon.append([at(-w, -0.6), at(w, -0.6), at(w * 0.35, h), at(-w * 0.35, h)])
+        _rings(b, ribbon, material, label)
+
+
+def _r4_ring_cutter(b, cz=R4_CZ):
+    """The ring: the one cone from its root to a sharp lip round the throat, dark iron, its flutes
+    worn bright, gauge teeth on its root's shoulder and a crown of teeth on its lip, raked forward
+    and standing clear of the throat, so the fired nose is a toothed cutter round an open bore."""
+    steps = 6
+    L = R4_LIP - R4_ROOT
+    outer = [_r4_ring(R4_ROOT + L * k / steps, _r4_r(R4_ROOT + L * k / steps), cz) for k in range(steps + 1)]
+    rings = outer + [_r4_ring(R4_LIP, R4_THROAT, cz), _r4_ring(R4_ROOT, R4_THROAT, cz), outer[0]]
+    _rings(b, rings, "steel.dark", "ring_cutter", cap=False)
+    _r4_flutes(b, R4_ROOT + 3.0, R4_LIP - 0.4, cz, 0.0, "steel.plate", "ring_flute")
+    for k in range(12):   # the gauge teeth on the root's shoulder, raked forward and out
+        a = math.pi / 12.0 + k * 2.0 * math.pi / 12.0
+        out = Vector((math.cos(a), 0.0, math.sin(a)))
+        base = Vector((0.0, R4_ROOT + 1.6, cz)) + out * (R4_R0 - 1.9)
+        tip = Vector((0.0, R4_ROOT + 4.4, cz)) + out * (R4_R0 + 0.5)
+        _spike(b, tuple(base), tuple(tip), 1.2, "steel.plate", "ring_tooth")
+    for k in range(10):   # the crown on the lip, raked forward round the throat and clear of it
+        a = math.pi / 10.0 + k * 2.0 * math.pi / 10.0
+        out = Vector((math.cos(a), 0.0, math.sin(a)))
+        base = Vector((0.0, R4_LIP - 2.0, cz)) + out * (_r4_r(R4_LIP - 2.0) - 0.4)
+        tip = Vector((0.0, R4_LIP + 2.5, cz)) + out * (R4_THROAT + 0.25)
+        _spike(b, tuple(base), tuple(tip), 1.3, "steel.plate", "lip_tooth")
+
+
+def _r4_tip_head(b, y_root, cz, label="drill"):
+    """The rocket tip's head: the one cone's cap from the ring's lip to the point, a hair inside the
+    cone's line so it clears the throat, its facets and flutes the ring's run on, and the hazard
+    collar it seats on at the seam. Built where it sits loaded and moved to `y_root`."""
+    dy = y_root - R4_LIP
+    steps = 8
+    rings = []
+    for k in range(steps + 1):
+        y = R4_LIP + (R4_APEX - R4_LIP) * k / steps
+        rings.append(_r4_ring(y, max(0.35, _r4_r(y) - R4_TIP_IN), cz, dy=dy))
+    _rings(b, rings, "steel.dark", label)
+    _r4_flutes(b, R4_LIP + 1.0, R4_APEX - 1.6, cz, R4_TIP_IN, "steel.plate", label + "_flute", dy=dy)
+    _r2_band(b, y_root - 2.6, y_root + 0.9, R4_LIP_R - 0.35, 7.5, "steel.stripe", label + "_collar", cz, R4_N)
+
+
+def _r4_projectile(b, flame=False):
+    """The whole Inertia Drill at the origin along +y, its head's root at y = 0: round two's rocket
+    (its body, a green band, four swept fins, four nozzles and, with `flame`, its plume) under
+    round four's head."""
+    _r4_tip_head(b, 0.0, 0.0)
+    b.loft([(-21.0, _ngon(0.0, 0.0, 8.0, 12)), (-2.6, _ngon(0.0, 0.0, 8.6, 12))], "steel.plate", "drill_body")
+    b.loft([(-14.0, _ngon(0.0, 0.0, 8.9, 12)), (-8.0, _ngon(0.0, 0.0, 8.9, 12))], "livery.livery", "drill_band")
+    for k in range(4):
+        a = math.pi / 4.0 + k * math.pi / 2.0
+        out = Vector((math.cos(a), 0.0, math.sin(a)))
+        side = Vector((0.0, 1.0, 0.0)).cross(out)
+        root0, root1 = out * 7.8 + Vector((0.0, -21.0, 0.0)), out * 8.4 + Vector((0.0, -11.0, 0.0))
+        tip0, tip1 = out * 13.0 + Vector((0.0, -23.0, 0.0)), out * 12.2 + Vector((0.0, -17.0, 0.0))
+        _slab(b, [tuple(root0), tuple(root1), tuple(tip1), tuple(tip0)], tuple(side), 1.2, "steel.dark", "drill_fin")
+    for k in range(4):
+        a = math.pi / 4.0 + k * math.pi / 2.0
+        cx, cz = 3.9 * math.cos(a), 3.9 * math.sin(a)
+        b.loft([(-25.0, _ngon(cx, cz, 2.9, 8)), (-21.0, _ngon(cx, cz, 2.2, 8))], "steel.dark", "nozzle")
+        b.loft([(-25.4, _ngon(cx, cz, 2.5, 8)), (-25.0, _ngon(cx, cz, 2.5, 8))], "amber.exhaust", "nozzle_mouth")
+    if flame:
+        b.loft([(-44.0, _ngon(0.0, 0.0, 0.6, 10)), (-31.0, _ngon(0.0, 0.0, 5.5, 10)), (-25.6, _ngon(0.0, 0.0, 7.8, 10))], "amber.glow", "plume")
+
+
+def _r4_cab(b, shut):
+    """Round three's sealed cab, narrower and lower so it stands inside the ring head on: a cupola
+    raked at its face under a peaked brow, flanges either side of the face, a slit set to its
+    outboard side, two periscopes on the brow and a floodlight under it; `shut`, a shutter over
+    the slit and the lamp dark."""
+    cx, w, z0, top = R4_CAB_X, R4_CAB_W, R4_TH + 1.0, R4_CAB_TOP
+    hw = w / 2.0
+    cab = b.loft([(-30.0, rect(cx, w, z0, top)), (-15.0, rect(cx, w, z0, top)), (-10.0, rect(cx, w, z0, top - 5.5))], "steel.panel", "cab")
+    b.loft([(-18.0, rect(cx, w + 0.6, top - 0.8, top + 1.4)), (-13.5, rect(cx, w + 1.0, top - 0.2, top + 3.0)),
+            (-9.2, rect(cx, w + 1.0, top - 1.2, top + 0.6))], "steel.plate", "brow")
+    b.box(cx - hw - 0.5, cx + hw + 0.5, -10.2, -9.0, top - 1.6, top - 0.5, "steel.stripe", "brow_lip")
+    for fx in (cx - hw - 0.6, cx + hw):   # flanges either side of the face, under the brow's ends
+        b.box(fx, fx + 0.6, -14.0, -9.2, z0 + 4.0, top - 0.8, "steel.plate", "cab_flange")
+    # The raked face: z = top - 1.1 (y + 15) from y -15 to -10; the slit just under the brow.
+    face_n = Vector((0.0, 1.1, 1.0)).normalized()
+    on = lambda x, z, lift: tuple(Vector((x, -15.0 + (top - z) / 1.1, z)) + face_n * lift)
+    x0, x1 = cx - 1.5, cx + 3.5
+    _slab(b, [on(x0 - 0.8, top - 5.4, 0.12), on(x1 + 0.8, top - 5.4, 0.12), on(x1 + 0.8, top - 3.1, 0.12), on(x0 - 0.8, top - 3.1, 0.12)], tuple(face_n), 0.3, "steel.dark", "slit_frame")
+    _slab(b, [on(x0, top - 5.1, 0.3), on(x1, top - 5.1, 0.3), on(x1, top - 3.6, 0.3), on(x0, top - 3.6, 0.3)], tuple(face_n), 0.4, "glass.glass", "vision_slit")
+    if shut:
+        _slab(b, [on(x0 - 1.0, top - 5.45, 0.6), on(x1 + 1.0, top - 5.45, 0.6), on(x1 + 1.0, top - 3.0, 0.6), on(x0 - 1.0, top - 3.0, 0.6)], tuple(face_n), 0.6, "steel.plate", "shutter")
+        _slab(b, [on(x0 - 1.0, top - 3.6, 0.85), on(x1 + 1.0, top - 3.6, 0.85), on(x1 + 1.0, top - 3.0, 0.85), on(x0 - 1.0, top - 3.0, 0.85)], tuple(face_n), 0.3, "steel.stripe", "shutter_edge")
+    else:
+        b.box(cx - 3.8, cx - 1.6, -10.05, -9.4, top - 7.8, top - 6.2, "amber.light", "floodlight")
+    for px in (cx - 2.3, cx + 2.1):   # two periscopes on the brow's back, their glass forward over its peak
+        b.box(px - 1.2, px + 1.2, -17.6, -15.4, top + 0.6, top + 4.2, "steel.dark", "periscope")
+        b.box(px - 0.8, px + 0.8, -15.5, -15.2, top + 2.4, top + 3.7, "glass.glass", "periscope_glass")
+    return cab
+
+
+def _mole4_hull(b, state):
+    """Round four's hull: round three's narrowed to stand behind the ring head on, its nose one
+    drill. `state` is "loaded", "fired", "burrowed" or "flight", as round three's."""
+    TX, TW, TH, CZ = R4_TX, R4_TW, R4_TH, R4_CZ
+    out = state != "burrowed"
+    rest = 22.0 if out else 0.0
+    _treads(b, TX, TW, TH, -36.0, 24.0)
+    for s in (-1.0, 1.0):
+        x0, x1 = sorted((s * (TX + TW / 2.0 + 1.0), s * (TX + TW / 2.0 + 3.0)))
+        b.box(x0, x1, -26.0, 12.0, 5.0, TH - 2.0, "livery.livery2", "flank_plate")
+        b.box(s * TX - 2.2, s * TX + 2.2, 19.9, 20.7, TH - 0.6, TH + 1.6, "amber.light", "lamp")
+    # The lower hull between the treads, below the bore's floor.
+    b.loft([(-36.0, rect(0.0, 23.0, 6.0, 20.0)), (-14.0, rect(0.0, 23.0, 6.0, 20.0))], "steel.panel", "lower_hull")
+    b.loft([(-14.0, rect(0.0, 23.0, 5.0, CZ - R2_BORE - 1.0)), (21.0, rect(0.0, 23.0, 5.0, CZ - R2_BORE - 1.0)),
+            (24.0, rect(0.0, 20.0, 6.0, CZ - R2_BORE - 2.0))], "steel.panel", "belly")
+    # The launch barrel, narrower round the same bore, running on into the ring's throat.
+    b.loft([(-14.0, _ngon(0.0, CZ, R4_BARREL, R2_N)), (4.0, _ngon(0.0, CZ, R4_BARREL, R2_N))], "steel.panel", "barrel")
+    _tube(b, (0.0, 4.0, CZ), (0.0, R4_ROOT, CZ), R4_BARREL, R2_BORE, R2_N, "steel.panel", "bore", phase=math.pi / R2_N)
+    for k in range(4):
+        a = math.pi / 4.0 + k * math.pi / 2.0
+        p0 = (9.6 * math.cos(a), 5.0, CZ + 9.6 * math.sin(a))
+        p1 = (9.6 * math.cos(a), R4_LIP - 3.2, CZ + 9.6 * math.sin(a))
+        _beam(b, p0, p1, _sq(1.9, 1.9), _sq(1.9, 1.9), "steel.plate", "guide_rail")
+    for y in (11.0, 19.5):
+        _r2_band(b, y, y + 1.4, R2_BORE + 0.1, 9.0, "steel.dark", "bore_ring", CZ)
+    _disc(b, (0.0, 8.0, CZ), (0.0, 1.0, 0.0), 7.6, 10, "amber.glow", "bore_glow")
+    for y in (-9.0, -5.6):
+        _r2_band(b, y, y + 2.2, R4_BARREL + 1.0, R4_BARREL - 0.3, "steel.dark", "guide_ring", CZ)
+    _r2_band(b, -2.4, 1.0, R4_BARREL + 0.4, R4_BARREL - 0.3, "livery.livery", "barrel_band", CZ)
+    # The ring's bearing, the drum it turns on, and the ring.
+    _r2_band(b, 20.6, R4_ROOT, 19.0, R4_THROAT, "steel.plate", "ring_bearing", CZ, R4_N)
+    _r2_band(b, 19.6, 20.6, R4_BARREL + 1.6, R4_BARREL - 0.3, "steel.stripe", "bearing_band", CZ)
+    with b.joint("ring", (0.0, R4_ROOT, CZ), axis="roll"):
+        _r4_ring_cutter(b, CZ)
+    b.spin("ring", -18.0, -150.0)   # slow, against the tip
+    # The cheeks, from the barrel's shoulders down to the tread decks, inside the ring head on.
+    for s in (-1.0, 1.0):
+        sec = [(s * 8.0, CZ + 10.4), (s * 20.5, TH + 3.0), (s * 20.5, TH + 1.0), (s * 12.6, TH + 1.0)]
+        sec = sec if s < 0 else list(reversed(sec))
+        b.loft([(1.0, sec), (19.2, sec)], "livery.livery2", "cheek")
+        b.loft([(19.2, sec), (20.4, [(x * 0.97, z - 0.4) for x, z in sec])], "steel.stripe", "cheek_edge")
+    # The breech, narrower and a little lower: its vents the Polar Bear's, three louvres on each
+    # upper chamfer and a vent across its back; a loading hatch on top.
+    breech = b.loft([(-27.0, _oct(0.0, CZ + 1.0, 28.0, 28.0, 7.0)), (-14.0, _oct(0.0, CZ + 1.0, 28.0, 28.0, 7.0))], "steel.plate", "breech")
+    b.loft([(-15.6, _oct(0.0, CZ + 1.0, 28.8, 28.8, 7.2)), (-14.0, _oct(0.0, CZ + 1.0, 28.8, 28.8, 7.2))], "steel.stripe", "breech_band")
+    b.box(-5.0, 5.0, -25.0, -17.0, CZ + 14.8, CZ + 16.2, "steel.panel", "loading_hatch")
+    b.prism("x", 0.0, -25.0, CZ + 15.6, 1.0, 11.0, "steel.dark", 6, "hatch_hinge")
+    for s, t in ((-1.0, "l"), (1.0, "r")):
+        _vent(b, [breech], (s * 10.5, -21.0, CZ + 1.0 + 10.5), 0.0, 10.0, 6.0, 3, "louvre_b" + t, rest, 80.0, flank=s, heat="breech_heat_" + t)
+    _vent(b, [breech], (0.0, -27.0, CZ + 9.5), 90.0, 11.0, 6.0, 3, "louvre_d", rest, 60.0, heat="breech_back_heat")
+    # The engine deck, narrower: two vents across its tail and one between its stacks.
+    deck = b.loft([(-37.0, rect(0.0, 25.0, 6.0, 28.5)), (-27.0, rect(0.0, 25.0, 6.0, 28.5))], "steel.panel", "engine_deck")
+    for s, t in ((-1.0, "l"), (1.0, "r")):
+        _vent(b, [deck], (s * 6.2, -37.0, 17.5), 90.0, 10.0, 9.0, 4, "louvre_r" + t, rest * 0.5, 60.0, heat="rear_heat_" + t)
+    _vent(b, [deck], (0.0, -32.5, 28.5), 0.0, 8.0, 6.0, 3, "louvre_t", rest, 80.0, heat="deck_heat")
+    for s in (-1.0, 1.0):
+        b.prism("z", s * 8.6, -32.0, 34.0, 2.4, 12.0, "steel.dark", 6, "stack")
+    # The cab on the right deck, and a locker ahead of it.
+    _r4_cab(b, shut=not out)
+    b.box(13.6, 21.6, -8.0, 0.0, TH + 0.5, TH + 5.0, "steel.plate", "locker")
+    b.box(13.4, 21.8, -1.0, 0.0, TH + 5.0, TH + 5.6, "steel.stripe", "locker_edge")
+    # The left deck: an armoured box aft and one forward, each holding a mount's well.
+    b.box(-22.0, -13.0, -34.0, -14.0, TH, 24.0, "steel.panel", "sponson")
+    b.box(-21.5, -13.0, -12.0, 0.0, TH, 23.5, "steel.panel", "fore_box")
+    # Mounts, every one on a lift in a well: hp_1 a gun in the cab's roof, hp_2 a rack in the left
+    # sponson, hp_3 bare in the left fore box. Burrowed, each drops in and its lid shuts.
+    cx, top = R4_CAB_X, R4_CAB_TOP
+    _r3_well(b, cx, -25.0, top, 5.6, out, "gun")
+    _r3_well(b, -17.5, -24.0, 24.0, 6.6, out, "rack")
+    _r3_well(b, -17.25, -6.0, 23.5, 6.0, out, "pad")
+    if out:
+        _r3_lift(b, cx, -25.0, top - 1.0, top + 3.2, 2.0, "gun")
+        b.stock("hp_1", (cx, -25.0, top + 6.6), "barrel", scale=0.75, carries="rivet_gun")
+        _r3_lift(b, -17.5, -24.0, 23.0, 26.4, 2.4, "rack")
+        b.stock("hp_2", (-17.5, -24.0, 32.2), "rack", scale=0.75, carries="shotfire_rack")
+        _r3_lift(b, -17.25, -6.0, 22.5, 26.0, 2.0, "pad")
+        b.pad("hp_3", (-17.25, -6.0, 27.0), size=(6.0, 1.0))
+    else:
+        b.pin("hp_1", (cx, -25.0, top - 3.0), carries="rivet_gun", hidden=True)
+        b.pin("hp_2", (-17.5, -24.0, 21.0), carries="shotfire_rack", hidden=True)
+        b.pin("hp_3", (-17.25, -6.0, 20.5), carries="", hidden=True)
+    b.pivots = True   # tracks: it turns on the spot to aim, as a tank's neutral turn
+    b.move(slide=0.2, bank=0.0, accel=1.0, heft=0.3)
+
+
+def _r4_tip(b):
+    """The rocket tip seated: its body down the bore and the throat, its collar at the ring's lip,
+    its head the cone's cap out of it."""
+    b.loft([(6.0, _ngon(0.0, R4_CZ, 8.4, 12)), (R4_LIP - 2.6, _ngon(0.0, R4_CZ, 8.4, 12))], "steel.plate", "drill_body")
+    with b.joint("drill", (0.0, R4_LIP, R4_CZ), axis="roll"):
+        _r4_tip_head(b, R4_LIP, R4_CZ)
+    b.spin("drill", 40.0, 420.0)
+
+
+def mnlook_mole4_loaded(b):
+    """Loaded, its weapons out: the tip in the ring, one cone from the ring's root to the point."""
+    _mole4_hull(b, "loaded")
+    _r4_tip(b)
+
+
+mnlook_mole4_loaded.maker = MN
+
+
+def mnlook_mole4_fired(b):
+    """Fired: the tip gone, the ring's crown of teeth round the open, glowing bore."""
+    _mole4_hull(b, "fired")
+
+
+mnlook_mole4_fired.maker = MN
+
+
+def mnlook_mole4_burrowed(b):
+    """Burrowed, everything stowed: the tip seated, every mount down its well under a shut lid,
+    the cab's slit shuttered, the louvres shut."""
+    _mole4_hull(b, "burrowed")
+    _r4_tip(b)
+
+
+mnlook_mole4_burrowed.maker = MN
+
+
+def mnlook_mole4_flight(b):
+    """The tip in flight out of the ring, nose down, its plume trailing back into the throat."""
+    _mole4_hull(b, "flight")
+    start = len(b.objects)
+    _r4_projectile(b, flame=True)
+    m = Matrix.Translation((0.0, 84.0, 17.0)) @ Matrix.Rotation(math.radians(-14.0), 4, "X")
+    for ob in b.objects[start:]:
+        ob.matrix_world = m @ ob.matrix_world
+
+
+mnlook_mole4_flight.maker = MN
+
+
+def mnlook_mole4_compare(b):
+    """Round three's loaded machine beside round four's at one scale (the camera is orthographic):
+    built into the same file and set off on a diagonal, so head on it stands on the left and from
+    the side behind, clear of round four in both. Its cuts are applied here, since only the file's
+    own build has its cuts applied at export, and its pins renamed so only round four's count."""
+    mnlook_mole4_loaded(b)
+    other = type(b)("round_three", b.tiles)
+    other.materials = b.materials
+    mnlook_mole3_loaded(other)
+    other.apply_cuts()
+    shift = Matrix.Translation((78.0, -112.0, 0.0))
+    for ob in other.objects + other.pins:
+        if ob.parent is None:
+            ob.matrix_world = shift @ ob.matrix_world
+    for e in other.pins:
+        if e.name.startswith("hp_"):
+            e.name = "round_three_" + e.name
+
+
+mnlook_mole4_compare.maker = MN
+
 LOOKS = ["mnlook_mole_a", "mnlook_mole_b", "mnlook_mole_c",
          "mnlook_mole2_loaded", "mnlook_mole2_shut", "mnlook_mole2_bore", "mnlook_mole2_flight",
-         "mnlook_mole3_loaded", "mnlook_mole3_fired", "mnlook_mole3_burrowed", "mnlook_mole3_flight"]
+         "mnlook_mole3_loaded", "mnlook_mole3_fired", "mnlook_mole3_burrowed", "mnlook_mole3_flight",
+         "mnlook_mole4_loaded", "mnlook_mole4_fired", "mnlook_mole4_burrowed", "mnlook_mole4_flight", "mnlook_mole4_compare"]
 
 _VIEWS = ["codex", "above", "skirmish", ("from the side", 90.0, 8.0)]
 SHEET = {
@@ -752,5 +1071,21 @@ SHEET3 = {
         {"model": "mnlook_mole3_flight", "label": "The drill in flight", "views": ["codex", ("from the side", 90.0, 8.0), "above"]},
         {"model": "mnlook_mole3_loaded", "label": "The cab, open", "views": [("head on, close", 0.0, 14.0), ("front three-quarter, close", 28.0, 22.0)], "cell": (480, 400)},
         {"model": "mnlook_mole3_burrowed", "label": "The cab, shut", "views": [("head on, close", 0.0, 14.0), ("front three-quarter, close", 28.0, 22.0)], "cell": (480, 400)},
+    ],
+}
+
+_VIEWS4 = ["codex", "above", "skirmish", ("from the side", 90.0, 8.0)]
+SHEET4 = {
+    "title": "The mole, fourth round: the rocket drill, 17 November (look tests, not content)",
+    "out": "docs/looks/minerva_mole4.png",
+    "cell": (320, 320),
+    "rows": [
+        {"model": "mnlook_mole4_compare", "label": "Loaded, round three (left) and round four", "views": [("head on, level", 0.0, 0.0), ("from the side, level", 90.0, 0.0)], "cell": (780, 250)},
+        {"model": "mnlook_mole4_loaded", "label": "Loaded, weapons out", "views": _VIEWS4 + ["front"]},
+        {"model": "mnlook_mole4_fired", "label": "Fired, the ring stays", "views": _VIEWS4 + ["front"]},
+        {"model": "mnlook_mole4_burrowed", "label": "Burrowed, everything stowed", "views": _VIEWS4},
+        {"model": "mnlook_mole4_flight", "label": "The drill in flight", "views": ["codex", ("from the side", 90.0, 8.0), "above"]},
+        {"model": "mnlook_mole4_loaded", "label": "The cab, open", "views": [("front three-quarter, close", 28.0, 22.0), ("right bow, low, close", 55.0, 10.0)], "cell": (480, 400)},
+        {"model": "mnlook_mole4_burrowed", "label": "The cab, shut", "views": [("front three-quarter, close", 28.0, 22.0), ("right bow, low, close", 55.0, 10.0)], "cell": (480, 400)},
     ],
 }
