@@ -6,28 +6,418 @@ machines, redone against the briefs`). Ryan, 17 November: "Now that we have some
 from the new game mechanics, I want to examine the chassis that broke during the huge change to
 heat and shield and work on fixing them."
 
-This page reads that list again against the game as it stands on 17 November, and puts a first
-round of fixes to him. It builds nothing and moves nothing in content; two of its machines were
-settled on main the same day by his own rulings in another session (the Polar Bear, the Whip
-Scorpion). It retires once its calls are rows and content.
+This page reads that list again against the game as it stands on 17 November: each kit written
+out whole, with its context, and read as a whole against the system (his second word the same
+day: "we need to evaluate the kit as a whole against the new system and not just repair the
+deltas"). It builds nothing and moves nothing in content; two of its machines were settled on
+main the same day by his own rulings in another session (the Polar Bear, the Whip Scorpion), and
+the Storm Petrel's direction is locked on his word. It retires once its calls are rows and content.
 
 ## The whole of it
 
-| The machine | What the rule did to it | The fix put to him |
+| The machine | The kit as a whole, under the system | Open |
 |---|---|---|
-| Polar Bear | Its seal was priced against a cooling that stopped; none exists, so opening cools nothing, and a sealed bear rebooted inside its shell at armour 4, so the shell never had to open | Decided and built on main the same day, his word ("Polar bear unseals when rebooting"), this page's lean too; one clause of its text is left (below) |
-| **Storm Petrel**, as built | Its guns spend the shield it tanks with, and a shield its own guns empty is Broken: bare on 42% of its turns against a boss, a tank losing a third of its hull | **His direction of 11 November, locked on his word of 17 November** ("That direction is locked, or should be locked. It just needs to be finalized and landed"): left to finalize, the hook's rate, its lock and its stock. Emulated, its bare turns and wrecks halve, and its fights run longer without the zap |
-| **Buzzard**, as built | Its regen climbs with a heat that never leaves, and the Afterburner is a reboot's heat half that keeps the shield | **Build the form settled on 11 November**, with two corrections and one hole (below) |
-| **Kite** | A kill recharges its shield, but a Broken shield takes nothing: once its 8 break, its 12 hull is bare until it reboots. Small at tier one in the read; a design call more than a measured need | **A kill mends its shield, broken or not**: its passive breaks the Broken rule, as a passive may |
-| **Puffin** (in design) | Moving heat, his direction, is now the dearest verb in the game | **A first round of its kit** (below); its numbers wait on the heat prices |
-| **Swallowtail** (in design) | Two of its pieces are kinds no die is dealt | **A niche for his session: the pit crew**, the machine that runs the team's reboots |
-| Needletail, Cottonmouth, Skua | Their pace moved: the Needletail reboots on a quarter of its turns, the drum's heat was set against a cooling of 3, the Skua's ramp halves on its reboot's bare turn | Flagged: a number each, or as designed (below) |
-| Whip Scorpion | Reworked on main the same day on his word ("the reboot vent is the one that explodes"): its blast is its reboot's vent, and since his next round it has no gate, 1 on every foe for every 2 heat it sheds | Done, his |
-| Stingray, Nemesis | The rule fits them: stacks deeper the higher it rides; rage from the hull the shield no longer covers | Nothing to fix |
-| Wild Boar, Giant Petrel, Musk Ox | Only their stats went (regen 3, cooling 3); the Musk Ox's ammo stands apart | Nothing to fix; the Musk Ox's own session |
-| The other nine | Nothing of theirs reads heat, cooling, regen or a shield gain | Untouched |
+| Storm Petrel | Locked on his word of 17 November: the shield armour, shield as its heat climbs, the zap the Buzzard's | Its finalization: the hook's rate, its lock, its stock |
+| Buzzard | As built, a heat engine with its own regen and its own dump, so the reboot is optional for it; the settled form trades the dump for a shield spend and fits | Build the settled form; its last point; its stock's heat |
+| Needletail | Two actions a round cost two actions' heat and the reboot takes both: it fires less than a plain machine | Its heat budget for two actions, and his "dull" |
+| Skua | Its ramp lives behind a shield that lasts a cycle, and every cycle ends bare | Whether its ramp is for a cycle or a fight |
+| Kite | Holds in short fights; its refill dies with a break, its reboot is the frailest bare turn | A kill mends a broken shield, or as it is |
+| Cottonmouth | The drum's shape holds; at 6 heat it is two shots a cycle on the lightest frame | The drum's heat or its gauge; a keyword shell in stock |
+| Puffin, in design | Nothing of the old kit survives; his direction, moving heat, is the system's dearest verb | Its session now or after the heat prices |
+| Swallowtail, in design | Two dead plain forms; the system hands it a niche, the team's pit crew | His session |
+| Polar Bear | Holds: a timed shell, a bare exit, and a Cryo that is now team cooling | Its text clause; the wall at tier one |
+| Whip Scorpion | His rework: the one kit built on the system | Its strength; the Ray a dump that keeps the shield |
+| Stingray | The Suite suits the system; its stock gives it almost nothing to deepen | Its stock; its tier |
+| Nemesis | The system feeds its rage, its overheat included | The rage-and-burn loop; its placeholder slot |
+| Wild Boar | Lost a stat and nothing else | Nothing |
+| Giant Petrel | Its rerolls stand; its gifts of actions cost their receivers heat | Its unrefined kit, his session |
+| Musk Ox | Its clock is ammo; the reboot is for its shield alone | Its session, the Forge's dead clause |
+| The other nine | Nothing of theirs reads heat, cooling, regen or a shield gain | Nothing |
 
 What is his is the last section.
+
+## The system the kits are read against
+
+Ryan, 17 November, of the first round: "we need to evaluate the kit as a whole against the new
+system and not just repair the deltas ... Need the context listed." The system, as main runs it:
+
+- Nothing regenerates or cools by itself. Regen and cooling exist only as a grant (a passive, a
+  module, a status, a piece), and his expectation is that such grants are special: a kit's, a
+  locked piece's, or behind a synergy.
+- Heat only climbs. A basic gun is 3 for 4 heat (the Laser Carbine 4 for 5), so a stock die at
+  a maximum of 12 fires three times and reboots on the fourth turn.
+- The reboot: a machine that has spent nothing gives its turn. Its heat vents at once, its
+  shield drops to nothing and it stands bare through the enemy's turn, and it comes back whole
+  and unbroken as the next round opens. Heat laid on it after the vent stays; Phased makes it
+  safe.
+- Past the maximum each point of heat burns a hull at every END TURN; the first time between
+  reboots is the overheat, and the shield breaks.
+- The shield is one cycle's budget. At nothing it is Broken, and takes no shield of any kind
+  until the reboot.
+- Cover for a bare turn comes from another machine: an ally's Barrier (every Barrier piece has a
+  cooldown of 1, and a machine's own is gone by the turn it would reboot), Armoured, a Lure
+  drawing the blows elsewhere.
+- The foes pick anyone, level, as the round opens; a few attacks go for the hottest or the most
+  buffed; they never overkill, and an Exposed machine comes first. Their numbers were sized
+  against a shield that refilled, the defence side's pass to size again.
+- Cryo is one of the few coolings left: a weapon's hit on a foe carrying it cools the hitter 2
+  a stack.
+
+## The kits, whole
+
+Each as content has it on main (`f475a59`): the context, every piece with its numbers (a gun
+as number for heat), then the kit read as a whole against the system. The read's numbers are
+the probe's (above).
+
+### Storm Petrel, locked
+
+Kestrel, tier 1, medium hover: hull 24, shield 12, armour 0, heat 12. His direction of 11
+November is locked (17 November: "That direction is locked, or should be locked. It just needs
+to be finalized and landed"; the bible's row): the shield armour kept, shield gained whenever
+its heat climbs from any source, the zap the Buzzard's. Left to finalize, then land: the hook's
+rate (lean: a point of shield a point of heat), its lock (lean: a lure that runs hot, so its
+taunt feeds the hook; the Regenerator kept beside it reads alike), its stock and numbers. As
+built it still burns shield in place of heat and zaps (the rules' Riot Field Generator). The
+read: the hook halves its bare turns and its wrecks, and without the zap its fights run two
+rounds longer, so the direction makes it the tank and takes the striker out; if its damage is
+wanted back, the lever is a gun in its stock, never the zap.
+
+### Buzzard
+
+Kestrel, tier 2, medium flyer. *Context*: the Kite's larger cousin that "trades explosiveness
+for longevity"; the bible's row, sustain split from burst. Settled 11 November and not built:
+each weapon pays a flat shield cost, unasked, for flat damage, plain when short ("Automatically
+paid"); the cannon fires its whole field; its heat raises its regen.
+
+*Kit, as built*: hull 28, shield 12, armour 0, heat 14, move 5, 5 hardpoints.
+- Thermal Recoupler: shield regen 1 higher for every 4 heat it carries (none cold, 3 from 12).
+- Afterburner Cannon (fixed): 2, heat 3, firing its whole heat, a point more a 2 heat, and
+  leaving it cold.
+- Overclocked Railgun 8 for 11, ignores armour; Transonic Rifle 5 for 7; Arc Fault Cannon 4 for
+  5, Chain 2; Twin Autoguns 3 for 4; Shoring Jack, Armoured 2.
+
+*As a whole.* A heat engine carrying its own sustain and its own dump. Its stock guns are the
+hottest in the game (6.75 heat a gun; the Railgun alone is 11 of its 14), its regen peaks at 3
+a round on that heat, and the cannon cashes the whole gauge (9 at 14) and leaves it cold with
+its shield standing. So it loops hot shot, regen, cannon and never needs a reboot but for a
+broken shield: two of the system's dearest effects on one tier-two medium. The read agrees: it
+reboots least for its heat and loses 15% of its hull against a boss, where the Kite, the Skua
+and the Needletail lose 23% to 36%. The regen's shape suits the system (weak cold, strong hot,
+gone at the overheat); the dump makes the reboot optional. The settled form turns the dump into
+a shield spend, so it reboots like anyone: its guns pay shield for damage, its heat refills the
+shield through the regen, and the cannon cashes the field before the reboot, which is its row's
+split as a choice every turn.
+
+*Verdict.* As built it breaks the system; the settled form fits it. Its holes: an automatic
+cost taking the last point breaks the shield and switches off the regen (lean: it pays only
+while a point would stand); its stock's heat, the Railgun one shot a cycle that crowds out the
+rest (the stock re-deal).
+
+### Needletail
+
+Kestrel, tier 2, light flyer. *Context*: the tempo machine ("using two things a round is very
+Kestrel and deserves a chassis", 11 November); its Designator the line's dependable setter, the
+machine that cashes Exposed an unspecced medium; his note of 5 November, before the rework:
+"unrefined, dull, kit, not worthy of tier 2".
+
+*Kit*: hull 20, shield 10, armour 0, heat 12, move 6, 4 hardpoints.
+- Quick-turn Avionics Relay: it acts twice a round, once with a weapon and once with equipment;
+  after its first spend its die turns to an entry of the other kind.
+- Fovea Designator (fixed): Expose, Indirect, heat 2 (the foe's armour counts for nothing and it
+  stands in Direct reach).
+- Transonic Rifle 5 for 7; Laser Carbine 4 for 5, twice; Twin Autoguns 3 for 4.
+
+*As a whole.* With one piece of equipment in its stock, its round is always a gun and the
+Designator, about 7 heat on 12, so it reboots after under two rounds and each reboot gives up
+both actions: a quarter of its turns and more in the read, the most of any machine. Over a cycle
+it fires about 0.6 guns a round, fewer than a plain machine's 0.75; its second action, an Expose
+a round, is paid for in its own shots, and it never varies.
+
+*Verdict.* The system eats its premise: two actions a round cost two actions' heat, and the
+reboot takes both. Its heat budget wants sizing for two actions (its maximum, or its equipment
+making no heat on it), and his "dull" likely wants more than a resize: equipment in its stock
+worth choosing between.
+
+### Skua
+
+Kestrel, tier 1, light flyer. *Context*: Ramping Dakka (11 November), "the long fight's hitter,
+weak in its first round and a storm by its fifth"; "it ramps only while its shield holds:
+Kestrel's risk".
+
+*Kit*: hull 20, shield 9, armour 0, heat 12, move 6, 3 hardpoints.
+- Carom Field: once a round, damaging a foe with a weapon gains it a stack of Ricochet (after a
+  weapon fires, a strike of 1 a stack through the foe's Brittle and armour); hull damage halves
+  the stacks.
+- Hypersonic Swoop (fixed): Ricochet 1 on itself, Rapid: the one way to a second stack a round.
+- Laser Carbine 4 for 5; Twin Autoguns 3 for 4; Flechette Pod 1 four times for 4.
+
+*As a whole.* A stack a round (two with the Swoop), each an extra strike after every gun, about
+three shots a cycle and the Swoop free. The shield it ramps behind lasts a cycle at most, and
+every cycle ends in a reboot whose bare turn makes any blow hull damage, halving the stacks; a
+burn halves them too. So the ramp tops out around one cycle, three or four stacks, likely halves
+at the reboot and climbs again. A storm by the fifth round needs the team to cover its reboot.
+
+*Verdict.* It collides with the system on length. If its ramp is meant for a cycle, it stands as
+built; if for a fight, the halving wants another trigger (a foe's blow alone, its own reboot's
+bare turn spared, or the stacks kept through the reboot). His: which it is for.
+
+### Kite
+
+Kestrel, tier 2, light flyer. *Context*: the burst glass cannon (11 November); its shield comes
+back by killing (his: "What exactly is wrong from a shield refill if the max shield is small?");
+"anything big after its first shot, and a long fight, are another machine's".
+
+*Kit*: hull 12, shield 8, armour 0, heat 12, move 6, 3 hardpoints.
+- Disabled Weapon Regulators: every weapon hits an unhurt foe at double its printed number; a
+  kill recharges its shield.
+- Pinion Driver (fixed): 2 twice for 3, Finisher (double on a foe at half its HP or less).
+- Transonic Rifle 5 for 7 (10 opening); Twin Autoguns 3 for 4 (6); Laser Carbine 4 for 5 (8).
+
+*As a whole.* Every entry is a gun, so every turn is a shot, an opener on a whole foe or the
+finisher on a half-dead one; two or three shots a cycle on 12. Its only defence and its only
+sustain is a shield a kill refills, and the Broken rule cuts that: once its 8 breaks, in two or
+three tier-one blows, kills refill nothing until the reboot. Its reboot is the most dangerous
+bare turn in the game, 12 hull, no armour and nothing on its die to cover itself; and since 17
+November a dying foe's blow lands on its killer, most often the Kite.
+
+*Verdict.* Its identity holds where it plays, short fights full of foes; the system costs it the
+refill past a break and a bare turn every short cycle. The lean is that a kill mends a broken
+shield, its passive breaking the rule as a one-off; the read has it small at tier one, so it is
+a design call.
+
+### Cottonmouth
+
+Wainwright & Sutler, tier 1, light hover. *Context*: versatility of reach, "a tier one that plugs
+holes in many draft compositions"; every weapon through the drum.
+
+*Kit*: hull 20, shield 6, armour 0, heat 12, move 6, 4 hardpoints.
+- Adaptive Munitions Drum: every weapon and equipment it aims at a foe leaves as the drum's shot,
+  Indirect, 4, heat 6, with its own keywords; Penetrate 2 into the back rank, Spread 2 on the
+  front.
+- Ankle Mortar, Twin Autoguns twice (each the drum's shot); Halo Projector, a Barrier, not drummed.
+
+*As a whole.* Three of its four entries are one shot, 4 on the target and 2 on its neighbours or
+on the foe in front of it. At 6 a shot it is two shots a cycle (a third overshoots by 6, a burn
+of 6 a turn and the shield broken), so it reboots every third turn on the lightest frame; the 6
+was set against its old cooling of 3, four shots to a gauge. It still deals about twice the
+vanilla's damage a round when its area finds foes, so the shot is paid in tempo and exposure now,
+not in heat. Its identity, a keyword shell of any maker made an area shot, never shows in its
+stock (the basics carry none); its Halo is now cover for an ally's reboot.
+
+*Verdict.* The shape holds, a row or a column every shot; the pace does not fit. The levers are
+the drum's heat (4 is three shots a cycle) or its gauge, and a keyword shell in its stock (the
+placeholder slot's mark).
+
+### Puffin, in design
+
+Kestrel, pegged for tier 2, light hover. *Context*: his 9 November instinct, "the only unit able
+to cool its allies"; his 11 November direction, it moves heat: equipment it spends on an ally
+pulls some of that ally's heat onto it, and a locked piece passes the Puffin's heat to another
+unit with a buff by the heat moved, allies only; its session set for after the heat prices.
+
+*Kit as it stands, undealt*: hull 20, shield 6, armour 0, heat 12, move 5, 4 hardpoints; the
+Slipstream Projector (a shield it gives grows with the ally's heat) and the Backwash Ionizer
+(shield 3 on an ally) are both shield kinds no die is dealt; the rest is a Halo Projector, two
+Twin Autoguns and a Laser Carbine.
+
+*As a whole.* Nothing of the old kit survives the system, and the direction is now its dearest
+verb: a pull is an ally's cooling paid on the Puffin's own clock, so its reboot is the team's
+vent, and the dump turns heat into a payoff for the machines that read it (the Stingray, the
+Storm Petrel, the Whip Scorpion, the Buzzard). The first round as a kit: the pull rides any
+equipment it spends on an ally (3 heat to start, the stacks past the ally's maximum first); the
+dump is its lock, with Empowered by the heat moved; its stock carries two pieces of equipment,
+so the pull has carriers.
+
+*Verdict.* The direction fits the system better than any kit on the list; whether its session
+runs now or after the heat prices is his.
+
+### Swallowtail, in design
+
+Wainwright & Sutler, tier 3, assault flyer. *Context*: his helicarrier, "It doesn't rain death,
+but it directs units to rain death, offers in-fight refueling and support, and gives them a lift
+when needed"; punted on his "Needs a skirmish niche properly carved"; the Horn to be replaced; his
+session to start.
+
+*Kit as it stands, undealt*: hull 48, shield 14, armour 1, heat 14, move 3, 3 hardpoints.
+- Muster Deck: allies beside it on the map travel with it; every die that rolls fills its Muster a
+  sliver, a kill by its guns more, up to three, and its locked pieces spend one unasked for their
+  charged forms.
+- Mooring Screens: shield 2 on every other ally, a dead kind; charged, Phased on every ally that
+  has not acted.
+- Spotting Flare: Expose, heat 1; charged, Suppress too.
+- Sutler's Hoist: shield 3 and vent 2 on an ally, dead kinds; charged, the ally's shield full, its
+  heat gone, cleansed.
+- Reveille Horn: a team reroll; charged, an ally acts again.
+- Howitzer 4 for 4, Spread 1 and Penetrate 1; Twin Autoguns 3 for 4; Shoring Jack.
+
+*As a whole.* Two of its four locks have dead plain forms, but the system hands it the niche it
+lacked: in-fight refuelling is the reboot itself now, so the HQ can be the team's pit crew. Its
+charged Screens already give every ally the safe reboot (Phased), and its charged Hoist, written
+to clear Broken and Overheated too, would be a reboot by another hand with no bare turn, the
+dearest effect in the system behind the Muster's gate.
+
+*Verdict.* A niche for his session to carve; the pit crew is the offer (the plain forms' bench
+is the Swallowtail's brief).
+
+### Polar Bear
+
+Minerva, tier 1 pegged for tier 2, assault walker. *Context*: Minerva's form-changing tank; his
+rework of 9 November ("The Armadillo is OP"), the trigger of 11 November, and today's "Polar bear
+unseals when rebooting"; "probably too much of a wall for tier 1".
+
+*Kit*: hull 40, shield 6, armour 1 (4 sealed), heat 12, move 3, 4 hardpoints.
+- Lockdown: equipment it spends on itself seals it, armour +3, 3 hotter at each END TURN, its
+  Cryo Flinger gaining Spread; a weapon it fires opens it, and so does a reboot; its weapons deal 1
+  more to a foe carrying Cryo. Its text still says "its own cooling stopped".
+- Cryo Flinger (fixed): Lure and Cryo 1, Indirect, heat 1; sealed, the foes beside the target too.
+- Rivet Gun 3 for 4; Twin Autoguns 3 for 4, twice; Shoring Jack, Armoured 2 (on itself, it seals).
+
+*As a whole.* Open, a plain three-gun line with a point more on Cryo. Sealed, a lure sponge at
+armour 4 (6 the round the Jack seals it) on a clock of 4 heat a turn, three turns from cold, the
+shell ending in a reboot that leaves it open and bare. Two things the system moved underneath
+it. Its shield barely matters sealed: it breaks in the first round of luring and stays broken,
+while armour 4 stops tier one's blows of 3 and 4 outright, so the wall is armour against blow
+size, not the shield. And its Cryo is now one of the few coolings in the game: sealed, the
+Flinger lays Cryo 1 on up to three foes a turn, up to 6 cooling for the team's hitters, which
+stretches every other machine's cycle; that may be its real worth to a team now.
+
+*Verdict.* It holds together. Left: the text clause; the wall at tier one (the bench's floor of 1,
+or its move to tier two, both his); and an open form with little reason to open.
+
+### Whip Scorpion
+
+Wainwright & Sutler, tier 2, heavy walker, his rework of 17 November. *Context*: the formation
+breaker, "heat is its ammunition"; "the reboot vent is the one that explodes", then "remove the 8
+heat minimum".
+
+*Kit*: hull 40, shield 8, armour 1, heat 14, move 3, 4 hardpoints.
+- Thermal Ejection Manifold: a reboot opens its valves as its heat vents, every foe taking 1 for
+  every 2 heat it sheds; every blow a foe lands on it adds 2 heat.
+- Heliographic Death Ray (fixed): 2, heat 3, firing its whole heat, a point more a 2 heat, and
+  leaving it cold.
+- Thermal Ray 6 for 9; Twin Autoguns 3 for 4, twice; Maxigun 2 three times for 4.
+
+*As a whole.* The one kit built on the system: its reboot is its attack, its bare turn a bruiser's
+price (40 hull), and the blows it takes bare are the next blast's fuel. Two ways to cash its heat:
+the blast on every foe, bare after, or the Ray on one foe with its shield kept and no reboot. Read
+with its gate it was the strongest machine against a lone boss; without the gate it blasts a
+round sooner.
+
+*Verdict.* It fits. One note: the Ray is a heat dump that keeps the shield, the same dear effect
+as the Buzzard's Afterburner, and it outvalues the blast against a lone foe. Its strength's first
+lever is his, a lower heat maximum.
+
+### Stingray
+
+Aphelion, tier unplaced, medium hover. *Context*: the hot status amplifier; the Lance support
+since 11 November ("a defensive debuff plus an offensive buff"); "Upgrades can redirect it to the
+primed+burn abuse".
+
+*Kit*: hull 24, shield 9, armour 0, heat 14, move 5, 5 hardpoints.
+- Exothermic Suite: every stack it lays, on a foe, an ally or itself, is 1 deeper for every 5
+  heat it carries.
+- Photosphere Lance (fixed): Empowered 2 on itself or an ally and Sapped 2 on the foe in front of
+  that machine, heat 6.
+- Laser Carbine 4 for 5; Halo Projector (a Barrier, which never deepens); Twin Autoguns 3 for 4,
+  twice; Ankle Mortar 3 for 4.
+
+*As a whole.* The system suits the Suite: heat only climbs, so it ramps through a cycle (the Lance
+2 and 2 cold, 3 and 3 from 5 heat, 4 and 4 from 10), and riding past 14 buys a stack for a burn.
+Its stock is the trouble: the Lance is the only thing it lays, so most turns it is a plain gunline
+whose heat is a timer and not a resource.
+
+*Verdict.* It fits; its stock starves its passive (riders for the Suite to deepen, the stock
+re-deal's), and its tier is his.
+
+### Nemesis
+
+Arsenal, tier 2, heavy walker. *Context*: the sustained-damage bruiser; rage from blows ("a smooth
+resource bar ... Taking a hit on shield gives 1 rage, hull damage gives 2 rage"); rage spent in
+fives for a fist that is Instant; its fourth slot a placeholder since the Retribution Thurible
+went back to design.
+
+*Kit*: hull 36, shield 6, armour 2, heat 14, move 3, 4 hardpoints.
+- Crucible Capacitor: a foe's hit on its shield banks 1 rage; hull damage, or a blow of its own a
+  foe's armour or Barrier takes whole, banks 2; up to 10.
+- Knuckle of Fury, twice (fixed): 5 for 6, melee; for 5 rage, Instant (it rolls again and acts
+  again).
+- Plasma Arquebus 4 for 5; Blazethrower 3 and Ablate 2 for 6; Twin Autoguns 3 for 4 (the
+  placeholder); Halo Projector.
+
+*As a whole.* The system feeds it. Its 6 shield breaks in a round and stays broken, so nearly every
+blow is hull damage and 2 rage; its bare reboot turn is a rage turn; and the burn past its maximum
+is hull damage at every END TURN, more rage. A pair of Instant Knuckles is 12 heat in one round,
+so its raging rounds push it over its maximum and the burn pays back in rage: "reboot, or die" as
+a build.
+
+*Verdict.* It fits. To watch: that loop, rage from its own overheat into more Instant heat; its
+placeholder slot is the stock re-deal's.
+
+### Wild Boar
+
+Minerva, tier 2, heavy tracked. *Context*: the vanguard tank that "dives rather than tanks"; it
+lost its regen stat and nothing else.
+
+*Kit*: hull 36, shield 8, armour 2, heat 12, move 4, 5 hardpoints.
+- Juggernaut Drive: damaging a front-rank foe deals 25% of its maximum HP, rounded up, to the foe
+  behind it; after it gains a Barrier, its next weapon ignores armour.
+- Breaching Plow (fixed): a Barrier on itself and a Cleanse, cooldown 1.
+- Slugthrower 4 for 4, twice; Shotfire Rack 4 for 5; Twin Autoguns 3 for 4; Shoring Jack.
+
+*As a whole.* Guns above the vanilla, a shove that turns front-rank hits into back-rank damage, two
+cool defensive entries that stretch its cycle, and armour 2 that keeps its bare turn survivable. As
+sturdy as the Honey Badger in the read.
+
+*Verdict.* It fits; the reboot leaves it nothing to fix.
+
+### Giant Petrel
+
+Kestrel, tier 3, assault hover. *Context*: Kestrel's capital and the reroll economy; his note of 5
+November, "Placeholder model, unrefined kit"; the kit's session his to start.
+
+*Kit*: hull 44, shield 14, armour 0, heat 14, move 3, 3 hardpoints.
+- Maverick's Playbook: the team's rerolls left unspent bank, up to three.
+- Immelmann Booster (fixed): Rapid, a team reroll; or for three rerolls a spent ally's die rolls
+  again and it acts again.
+- Spindrift Salvo (fixed): 4 for 7, Indirect; a kill brews two rerolls.
+- Reheat Uplink (fixed): Empowered 2 on an ally, and its die rolls again.
+- Overclocked Railgun 8 for 11, ignores armour; Twin Autoguns 3 for 4, twice.
+
+*As a whole.* Rerolls cost no heat, so its economy stands; but its gifts are actions, and an action
+costs its receiver heat: a second action on a hot ally is a burn, and a rebooting ally cannot take
+one. So its tempo is worth most on cool allies. Its own Railgun is one shot a cycle.
+
+*Verdict.* The system moves what its gifts are worth, not its rules; its unrefined kit is his
+session's.
+
+### Musk Ox
+
+Wainwright & Sutler, tier 3, assault wheeled. *Context*: the artillery on ammo; "Ox will be
+tackled in a seperate session"; its salvo a stand-in.
+
+*Kit*: hull 44, shield 10, armour 1, heat 8, move 3, 4 hardpoints.
+- Desublimation Forge: its weapons spend ammo instead of heat, 1 for every 2 heat a gun would
+  make; the magazine holds 10, opens at 3 and gains 1 a round; a vent it spends on itself adds 3,
+  a shield 2.
+- Shrapnel Recuperator (fixed): 1, Spread 1, Penetrate 1, Brittle 1 (3 ammo), and an ammo back
+  for every foe it reaches.
+- Unrestricted Expenditure (fixed): needs 8 ammo, empties the magazine, 2 on every foe.
+- Quick Reload (fixed): Rapid, heat 3, 2 ammo back.
+- Thermal Ray (5 ammo); Enfilade Beam 4, Penetrate 3 (3 ammo); Twin Autoguns (2 ammo); Shoring
+  Jack.
+
+*As a whole.* Its clock is ammo and not heat: its guns never heat it, so it hardly reboots for
+heat, its reboot is for its shield alone, and the reboot leaves its ammo as it stands. The Forge's
+"a vent adds 3, a shield 2" reads nothing now, since no die deals either and the Quick Reload
+counts as no vent.
+
+*Verdict.* The reboot barely reaches it; the dead clause is its own session's.
+
+### The nine the rule does not reach
+
+The Honey Badger, the Clydesdale, the Dingo, the Funnel-web, the Ammit, the Baboon, the Prairie
+Dog, the Cassowary and the Lammergeier: nothing of theirs reads heat, cooling, regen or a shield
+gain; they lost their stat lines alone. Written out the same way on his word.
 
 ## What moved since the list
 
@@ -110,199 +500,17 @@ lost beside.
 The bear's lean, his ruling since, costs it two points of its hull a boss fight, small because the
 bot seals on few turns. The Petrel's hook halves its bare turns and its wrecks, and its fights run two rounds
 longer with the squad paying two to four points more: the zap was a fair share of its damage, so
-the direction makes it the tank and takes the striker out (below). The Kite's mend moves a point
+the direction makes it the tank and takes the striker out (its kit, above). The Kite's mend moves a point
 in formations and nothing against a lone boss.
-
-## The fixes
-
-### The Polar Bear: decided, the reboot opens it
-
-*What the rule did.* Its seal was priced in heat against a cooling it stopped (the bible's row:
-"with no vent on any die its heat has one way down, opening"). Nothing cools now, so opening
-cooled nothing, and a reboot clears no status, so a sealed bear rebooted in its shell, no shield
-and armour 4, which tier one's blows of 3 and 4 cannot pass: three turns sealed and one rebooting,
-for good, and the shell never had to open.
-
-*His ruling, 17 November, his eighteenth round*, on the question another session had put to him
-that morning, with this page's lean: "Polar bear unseals when rebooting.
-It's a good change because you're never accidentally stuck sealed, and a weaponless build is
-possible if you wanted it for some reason." Built on main the same day (`d657a20`): the shell and
-its armour go as the die drops, and it stands open and bare through the enemy's turn. The read
-above has the lean's price as the bot plays it, two points of the bear's hull a boss fight.
-
-*Left.* Its passive still says "its own cooling stopped", a cooling no chassis has; the clause
-goes, the rest of the text as it stands (a draft, his to write). If the Barrier leaves the stock
-dice (his lean), the bear's open turn has less cover; and the bot seals on few turns, so how a
-player times the shell is read by his play, not the runner.
-
-### The Storm Petrel: his direction, locked, to finalize and land
-
-*As built*, the old form: the Riot Field Generator burns its guns' heat off its shield and zaps
-the target with it, and the St. Elmo's Regenerator lures and lays Regenerating 3.
-
-*His direction, 11 November* (its brief): "The thing I want to keep mostly on it is the shield
-armour ... gaining shield when it gains heat is a really solid hook. That would fuel the shield
-tank role with risk ... The shield zap can go somewhere else." The zap went to the Buzzard the same
-day.
-
-*What the rule did.* To the built form, it is the worst on the list: its guns empty the shield
-it tanks with, a shield its own spend empties is Broken until the reboot ("you can break
-yourself"), and the Regenerator lands nothing on a Broken shield. To the direction, the opposite:
-heat is a clock that never runs back, the hook turns the clock into shield up to its maximum, and
-the overheat it walks toward breaks the shield it built. The risk he asked for is the rule's own.
-
-*The lean, as a spec.*
-- The Riot Field Generator: while its shield stands, every blow on it loses 1, and every point of
-  heat it gains stands up a point of shield, up to its maximum. Any source: its spends, Scorched's
-  extra, heat an ally moves onto it. A Broken shield takes none.
-- Its weapons make heat as anyone's. The shield burn and the zap leave the engine with their last
-  carrier, unless the Buzzard's cannon takes the zap's path.
-- Its lock: a lure that runs hot (heat 3 to start), so its taunt raises its own shield through the
-  hook, one idea where the Regenerator was two; the Regenerating goes. The name is his, and St.
-  Elmo's fire still fits a lock that glows hotter.
-
-*The bench.* The Regenerator kept as built beside the hook: two shield sources on one machine, and
-a regen grant on the lock that his expectation would gate. A point of shield for every two heat:
-half the hook, if one a point reads too strong.
-
-*Holes.* The read's: the direction makes it the tank and takes the striker out. Its bare turns
-and its wrecks halve, but without the zap it deals less, so its fights run two rounds longer and
-the squad pays a few points more as the bot plays it. What has to pay for that is its lure, blows
-drawn onto a plated shield that mends instead of onto a light's hull, and the bot weighs a lure
-crudely; if its damage is wanted back, the lever is a gun in its stock (the stock re-deal), never
-the zap, which is the Buzzard's. At one a point, three basic shots are its whole gauge again, a
-cycle's shield doubled before the plate. A full shield gains nothing, so the hook pays the tank
-that is struck, the lure its partner. The Boundary-layer Bleed is the hook in a module (his "no
-bar"). The Puffin's dump onto it is heat in and shield out: a pair to watch.
-
-### The Buzzard: build the settled form
-
-*As built.* The Thermal Recoupler: its regen 1 higher for every 4 heat. The Afterburner Cannon:
-its whole heat in one blow, leaving it cold.
-
-*Settled, 11 November* (its brief): its passive pays a flat shield cost on each weapon, unasked,
-for flat damage, firing plain when short ("Automatically paid. Everything should be automatic in
-this game"); its cannon fires its whole field; its heat raises its regen.
-
-*Read under the rule, the settled form stands.* Heat climbs through a cycle and the regen with
-it, refilling what the guns pay; the cannon cashes the field; the reboot follows. Its heat dump
-goes with the cannon's old form, so it reboots like anyone, which is right for a machine whose
-heat is its sustain. Two corrections to section 22:
-- The cannon is not free before a reboot. The shield it fires is the shield that would have stood
-  through the enemy's turn, so the cannon and then the reboot are two turns bare where the reboot
-  alone is one. That turn is the cannon's price.
-- Its regen has no base now: cold it has none, so a cycle's first turns are its thinnest.
-
-*The hole, his.* The unasked cost that takes its last point breaks its shield, and a Broken
-shield regenerates nothing until the reboot, so an automatic payment can switch its own sustain
-off. Lean: the passive pays only while a point would stand, so nothing automatic breaks it and
-the cannon is the one break it chooses.
-
-### The Kite: a kill mends its shield, broken or not
-
-*As built.* Disabled Weapon Regulators: double on an unhurt foe; a kill recharges its shield.
-
-*What the rule did.* A Broken shield gains nothing by any method, a refill on a kill named in the
-rule. The Kite's 8 breaks in two or three blows, and from there its refill does nothing until it
-reboots: its one way to live is gone for the rest of the cycle, its hull of 12 bare.
-
-*What the read says.* Less than the rule suggests, at tier one. Against tier one's bosses it is
-wrecked in one fight in six, but a lone boss gives it nothing to kill, so that is its design ("a
-long fight, are another machine's") and no lean moves it; in tier one's formations the lean,
-with a bot that fights a broken Kite on for a kill, takes its wrecks from 2% to 1%. The break
-bites where a fight is long and full of foes, tier two's, which no read here reaches.
-
-*The lean.* Its kill mends a broken shield. The passive breaks the Broken rule as a one-off, which
-is what a passive is for (the bible's section 7: "A passive may break a rule, as a one-off"). Its
-design is "a kill recharges its shield whole", and the Broken rule came two days later without
-being read against it. The rule holds for every other machine, and the exception lives in the
-Kite's own words.
-
-*The bench.* Leave it: a short fight seldom reaches the break, and its risk is the point. A kill
-grants a Barrier in the shield's place. A kill Phases it: the shadow panther's orbit (his, 11
-November: "It keeps the phased orbit, not the Kite").
-
-*Holes.* A mended shield can break again in the same cycle; a trigger on a break, when one exists,
-still fires once between reboots (his ruling), so the exception reaches the shield and never the
-trigger. A kill mends the shield and never the heat. And since 17 November a dying foe's blow
-lands on the machine that killed it, so the machine that kills most takes the most of those
-blows: the Kite, on a shield the kill has just mended or on a hull it has not.
-
-### The Puffin: a first round of its kit
-
-*His direction, 11 November*: "it MOVES heat around. Using an equipment on an ally moves some of
-its heat to the Puffin. A locked piece can transfer the Puffins heat to another unit along with a
-buff based on heat moved, so it gets along with the Buzzard and stingray, and other niche
-interactions like forcing an overheat for hull damage. I'd probably move it to tier two though."
-The dump goes to allies only.
-
-*What the rule did.* It made the direction the dearest verb in the game. Short of a reboot, a dump,
-Cryo or a module's cooling, moving heat is the only way heat leaves a machine: a pull is an ally's
-cooling paid on the Puffin's own clock, and the dump hands the heat to a machine that profits
-from it (the Stingray's stacks, the Petrel's shield, the Scorpion's blast, the Buzzard's regen)
-or that pays for it (an overheat, the Nemesis's rage). The team's heat is moved, not removed, until the Puffin
-reboots: its reboot is the team's vent, and its bare turn the team's price.
-
-*A first round.*
-- Its passive: equipment it spends on an ally takes 3 of that ally's heat onto the Puffin, the
-  stacks past the ally's maximum first. A flat number the readout can show; "some" is his.
-- Its lock, in the Backwash Ionizer's place (a shield no die is dealt): the dump, all its heat onto
-  an ally, the ally Empowered 1 for every 3 heat moved.
-- The pull rides the equipment it carries and is never an entry of its own, so the refit's rule of
-  no pure recovery piece holds; its stock carries two pieces of it (the Halo Projector and the
-  Shoring Jack, where today it carries the Halo alone), so two entries of five can pull.
-- Tier two; Kestrel's tier one is then the Skua and the Storm Petrel.
-
-*Holes.* A pull on a rebooting ally takes heat its recovery would take anyway. A dump past an
-ally's maximum overheats it, its shield breaking and its burn standing: allowed, his "forcing an
-overheat", and the readout shows the gauge after. Its session was set for after the heat prices
-land: the shape is his to mark now, its numbers after.
-
-### The Swallowtail: a niche for his session
-
-*His word, 11 November*: "Needs a skirmish niche properly carved. It's got solid base mechanics
-but nothing solid to do with them." Its fantasy, his: "It doesn't rain death, but it directs units
-to rain death, offers in-fight refueling and support, and gives them a lift when needed."
-
-*What the rule hands it.* In-fight refuelling is now the reboot itself, and the dearest thing the
-rule has is a machine back cold and whole without its bare turn. A helicarrier that runs the
-team's reboots, a pit crew, is a verb no machine has, and his fantasy's own word.
-- Its charged Mooring Screens already are one: every ally that has not acted waits for Phased,
-  and is Phased through the round after, where a reboot is the safe one; so the charge is the
-  whole team's pit stop. Their plain form, a shield on every other ally, wants another: a Barrier
-  on every ally that has given its turn to a reboot, cover for the team's reboots that cannot
-  stand as a block, since a machine rebooting does nothing else. It bends the Barrier's rule (no
-  piece grants it to every ally at once) on his word of 10 November ("A team ward is probably ok,
-  as is a team barrier ... it's just combining them in a way that doesn't let both be cast back to
-  back granting perpetual invulnerability").
-- Its charged Sutler's Hoist ("its shield full, its heat gone", cleansed) would be a reboot by
-  another hand with no bare turn, the dearest effect, gated by the Muster, once it says so whole:
-  an ally recovered as a reboot recovers it, Broken and Overheated gone, since a Broken shield
-  takes no refill otherwise. Its plain form, a shield and a vent, wants another; cooling an ally is
-  the Puffin's, his call across the two.
-- The Spotting Flare stands; the Reveille Horn is to be replaced, its own question.
-
-An offer for his session, nothing more.
-
-### The pace, flagged
-
-- **Needletail.** Two spends a round on a light's maximum of 12: it reboots on a quarter of its
-  turns, the most of any, and each reboot gives up two actions. Its lever is its maximum (about
-  20 would give it the vanilla's share of actions a cycle; 16 halves the gap), a number for the
-  heat session or for this pass, his choice.
-- **Cottonmouth.** The drum's heat of 6 was set against its cooling of 3; it is two shots a cycle
-  now. Its lever is the drum's heat or its gauge, the heat session's.
-- **Skua.** Hull damage halves its Ricochet, and its reboot's bare turn is a turn of hull damage,
-  so its ramp spans a cycle unless an ally covers its reboot. As designed ("it ramps only while
-  its shield holds"), and the cover is the counterplay; read again with the Barrier's place.
 
 ## What is his
 
-1. The Storm Petrel, locked (his word of 17 November): its finalization, the hook at a point of
-   shield a point of heat and its lock a hot lure the leans, then landed.
-2. The Buzzard: the settled form built, the last point kept (the lean).
-3. The Kite: a kill mends a broken shield (the lean), or left as it is.
-4. The Puffin: its first round, now or kept for its session after the heat prices.
-5. The Swallowtail: the pit crew as its niche, for his session.
-6. The Needletail's maximum: now, or with the heat session.
-7. The Polar Bear's passive text: "its own cooling stopped" goes.
+1. Storm Petrel: its finalization (leans: a point of shield a point of heat, its lock a lure that
+   runs hot), then landed.
+2. Buzzard: the settled form built; the last point kept (lean); its stock's heat.
+3. Needletail: its heat budget sized for two actions, or the kit rethought.
+4. Skua: its ramp for a cycle or for a fight.
+5. Kite: a kill mends a broken shield (lean), or left as it is.
+6. Cottonmouth: the drum's heat or its gauge, and a keyword shell in its stock.
+7. Puffin and Swallowtail: their sessions now, or as set.
+8. Polar Bear: "its own cooling stopped" off its text; the wall at tier one stays with the bench.
