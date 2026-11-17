@@ -19,6 +19,9 @@ document's job and every command are in `README.md`.
   a regen or a cooling (the validator refuses both keys), and what a machine has of either is
   what a passive, a module, a status or a component grants it. Read both before any work on a
   machine, a component, a module or a foe.
+- **A machine's Regenerating stands with no piece granting it**, on Ryan's word (17 November:
+  "put machine regeneration back, that will literally be added in this session probably"), so
+  it is no leftover to cut while its piece is written.
 - **A reboot's heat goes as its shield drops.** It vents at once, its turn has nothing to
   burn, the shield is back as the next round opens, and heat laid on the machine after the
   vent stays. Another session's branch, `ccr-c1cf6f73-ql6n4q` (commits `d26e462` and
@@ -57,8 +60,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1272 tests, 373,502 checks, green on `ccr-722ca9f0-yj8na3` (17 November, over main at
-  `2ee770b`). The runner fails a run whose tests never ran, so read the checks' count, never
+- Tests: 1273 tests, 373,515 checks, green on `ccr-178e0404-ptuh2m` (17 November, the Storm
+  Petrel's new names and Hardened Light's clock, over main at `cc44682`). The runner fails a run whose tests never ran, so read the checks' count, never
   the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
   purpose. About four minutes in a cloud session; words after `--` run only the files whose
   names hold one (`-- loot rig`).
@@ -125,7 +128,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   `docs/locked_pieces_proposal.md`; the bible's locked and tiers rows): the Storm Petrel
   carries the first two, the harness's UPG line fields a build, and a run buys none yet. The
   machines the reboot broke are another session's line (`docs/reboot_machines_proposal.md`,
-  read with `tools/reboot_probe.gd`): the Storm Petrel landed from it on 17 November, and its
+  read with `tools/reboot_probe.gd`): the Storm Petrel landed from it on 17 November (its
+  Hardlight Generator and Hardlight Pulse, Hardened Light a stack off each turn start), and its
   first round on the Buzzard, the Kite, the Puffin, the Swallowtail and the Needletail waits
   on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis, the Polar Bear

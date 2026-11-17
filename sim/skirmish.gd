@@ -1089,6 +1089,12 @@ func forecast(ms: MechState, extra_shield: int = 0) -> Dictionary:
 	var off_shield := clampi(shield, 0, ablated)
 	shield -= off_shield
 	hull -= ablated - off_shield
+	# Its Regenerating pays as its turn ends, after the Ablating and before the foes strike (16
+	# November): a point of shield a stack, none for a shield that is broken or that the tick
+	# has just taken to nothing, none while it is Swallowed.
+	var regrow := 0 if paused(ms) else Effects.regrowth(ms.unit)
+	if regrow > 0 and not ms.shield_broken and not (off_shield > 0 and shield <= 0):
+		shield = mini(maxi(ms.unit.shield_max, shield), shield + regrow)
 	var incoming := 0
 	var component_risk := false
 	var walk := {"shield": shield, "barrier": Effects.has(ms.unit, "barrier")}
@@ -3053,17 +3059,25 @@ static func form_change(ms: MechState, f: Face, on_self: bool = true) -> String:
 
 
 ## The end of the player's turn, before the overheat (Ryan, 15 November: Ablate, one rule on
-## both sides): each machine's Ablating takes a point a stack and loses a stack, and its Scorched
-## and Sapped go. A Phased machine
+## both sides): each machine's Ablating takes a point a stack and loses a stack, its Regenerating
+## pays a point of shield a stack and loses one, and its Scorched and Sapped go. A Phased machine
 ## takes no point and its stacks fade all the same; a Swallowed one's wait and
 ## tick again the turn it is back, as its overheat does.
 func _ablate_mechs() -> void:
 	for ms in live_mechs():
 		if paused(ms):
 			continue   # Swallowed: out of play, so its Ablating, its Scorched and its Sapped wait for the turn it is back
+		var regrow := Effects.regrowth(ms.unit)   # read before the tick fades its stack
 		var points := int(Effects.turn_tick(ms.unit, is_phased(ms))["hp"])   # Phased: the stacks fade and take nothing
 		if points > 0:
 			_ablate(ms, points)
+		# Regenerating (16 November, his four places: its turn's end, after its Ablating, the
+		# foes' order): a point of shield a stack, a shield gain like any, so a shield the tick
+		# just broke takes none; the stack has faded either way.
+		if regrow > 0 and ms.alive():
+			var mended := _gain_shield(ms, regrow)
+			if mended > 0:
+				log.append("%s regenerates %d shield" % [ms.unit.display_name, mended])
 
 
 ## What a machine's Ablating takes as its turn ends: the shield first ("hits shield first, I
@@ -4972,7 +4986,8 @@ func _spend_primers(ms: MechState) -> void:
 ## branches, Ryan, 17 November: "adds a self-buff that increases shield armour for a turn to the
 ## lure", "a self-grant of Charged stacks"): each status its stacks, or its stacks for every foe the
 ## spend reached when it says per_foe (a Spread's neighbours among them), on the clock its definition
-## names. Bought by a die entry, so a foe's Purge takes it.
+## names. A machine's Regenerating is the status in a machine's words (shield). Bought by a die
+## entry, so a foe's Purge takes it.
 func _self_grants(ms: MechState, f: Face, reached: int) -> void:
 	for g in f.self_statuses:
 		var id := str(g.get("status", ""))
@@ -4981,7 +4996,7 @@ func _self_grants(ms: MechState, f: Face, reached: int) -> void:
 		var n := maxi(1, int(g.get("stacks", 1))) * (maxi(0, reached) if bool(g.get("per_foe", false)) else 1)
 		if n <= 0:
 			continue
-		var def: Dictionary = Effects.STATUS[id]
+		var def: Dictionary = Effects.regenerating_mech() if id == "regenerating" else Effects.STATUS[id]
 		Effects.stack(ms.unit, def, Effects.status_scope(def), "buff:" + f.component, n, Effects.status_decay(def))
 		log.append("%s gains %s ×%d" % [ms.unit.display_name, str(def["name"]), Effects.stacks_of(ms.unit, id)])
 

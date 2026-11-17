@@ -55,7 +55,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   beside its name in its codex row. A tag carries no rule of its own; a module or passive may
   read one. Every weapon and debuff wears its tags by its fantasy, a shield, a vent and a buff none, but five locked ones the stock
   pass's table did not reach (the Pinion Driver, the Lorentz Contractor, the Syrinx Drone,
-  the Fovea Designator, the St. Elmo's Regenerator), and only `melee` is read today: a blow
+  the Fovea Designator, the Hardlight Pulse), and only `melee` is read today: a blow
   lunges on screen when its weapon is melee and nothing about it crosses the field (no class
   built to fire, and no Ballistic, Missile or Beam); any other fires as a gun, a shotgun tagged melee and
   ballistic among them. A machine's gun shows its shot crossing the field, from its muzzle to
@@ -87,9 +87,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   to that piece, so the die keeps the piece as printed and the entry as spent carries the
   tweak, and a destroyed piece takes its tweaks with it. The codex says each step taken on its
   piece's row, its direction's name and numeral first (DEFENCE I). The Storm Petrel's are the
-  first: Defence, its lure laying Hardened 1 on it and then gaining Spread with a stack of
-  Hardened for each foe it lures; Striker, its lure laying Charged 2 on it and then gaining
-  Chain 3.
+  first: Defence, its lure laying Hardened Light 1 on it and then gaining Spread with a stack of
+  Hardened Light for each foe it lures; Striker, its lure laying Charged 2 on it and then
+  gaining Chain 3.
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
@@ -149,7 +149,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    die has anywhere to be spent, rerolls aside. A machine that has spent nothing this turn may
    give the turn to a reboot, its die dragged onto REBOOT between the two (The reboot, below).
 4. END TURN, the machines' turn's end: a machine's Ablating takes a point a stack, its shield
-   first and then its hull past armour, and loses a stack; its Scorched and its Sapped go;
+   first and then its hull past armour, and loses a stack; its Regenerating then pays a point
+   of shield a stack and loses one; its Scorched and its Sapped go;
    then heat over a machine's maximum burns hull one for one and stays on the gauge, burning
    again every turn it stands there; the first such turn since the machine's last reboot is
    its overheat, and its shield breaks; then each machine's Empowered halves, and a dark entry
@@ -175,10 +176,10 @@ A status decays, ticks or falls off in one of four places. A machine's turn is t
 turn: it starts as the round opens and ends at END TURN. A foe's turn starts as the foes' turn
 opens, after END TURN and before the first of them acts, and ends as its own action does,
 landed, lost to a stun or skipped.
-- **Its turn starts**: Armoured, a Barrier and a Ward go, every stack; Brittle halves, rounded
-  down; Exposed falls, at the turn start after the next one.
-- **Its turn ends**: Ablating and Vitriol take their points and lose a stack; a foe's
-  Regenerating pays after them and loses one; Empowered halves, rounded down; Scorched and Sapped go; a
+- **Its turn starts**: Armoured, a Barrier and a Ward go, every stack; Hardened Light loses a
+  stack; Brittle halves, rounded down; Exposed falls, at the turn start after the next one.
+- **Its turn ends**: Ablating and Vitriol take their points and lose a stack; Regenerating
+  pays after them and loses one; Empowered halves, rounded down; Scorched and Sapped go; a
   cooldown and a jam whose rounds are done light again; a Suppress is spent with the turn it
   cost; Numbed loses a stack, or lands on a foe that lost this turn to a stun.
 - **The round ends**: Phased is granted or lost, Essence Flare goes, a swallow's and a
@@ -725,10 +726,12 @@ On a machine:
   round opens, before the foes announce, and a foe's (from its brace or another's) stands
   through the player's turn and goes as the foes' next turn opens, before the first of them
   acts. It takes no rounds: no grant holds it longer.
-- **Hardened** (a machine's buff; the Storm Petrel's lure in its Defence branch): while its
-  shield stands, every blow on it loses 1 a stack, beside any plate of its own, a damage-taken
-  effect read on the shield the blow meets, so it takes nothing off a blow on bare hull and an
-  Expose leaves it; every stack goes as its next turn starts, as Armoured's does.
+- **Hardened Light** (a machine's buff; the Storm Petrel's Hardlight Pulse in its Defence
+  branch): while its shield stands, every blow on it loses 1 a stack, beside any plate of its
+  own, a damage-taken effect read on the shield the blow meets, so it takes nothing off a blow
+  on bare hull and an Expose leaves it. A stack goes as each of its turns starts, so Hardened
+  Light 3 takes 3 off every blow through the enemy's next turn, then 2, then 1; a second grant
+  adds its stacks to what is left.
 - **Phased** (buff): cannot be damaged or targeted by anything until the end of the round, and
   it acts. Granted as the round ends: a source lays the wait for it (Phasing, a buff, a chip on
   a dashed edge), on a machine that has acted or not, and as the enemy's turn ends every machine
@@ -736,8 +739,8 @@ On a machine:
   phases, and a foe's Purge takes the wait as any buff. While it stands no foe picks the
   machine, a blow or a special at every machine passes it by, and no ally may spend on it.
   Everything it carries ticks as ever, and nothing damages it: its Ablating takes no point and
-  loses its stack, its Scorched and Sapped go, its Empowered and its Brittle halve, so a
-  round Phased waits a debuff out. It spends
+  loses its stack, its Scorched and Sapped go, its Empowered and its Brittle halve, its
+  Regenerating pays, so a round Phased waits a debuff out. It spends
   its die on a foe or on itself, and it may reboot, bare where nothing reaches it. Its own
   heat does not burn it either: what it carries past its maximum stays, more if it fires
   again, and burns the turn it is back in reach, the first such turn its overheat. A bite of
@@ -762,7 +765,7 @@ On a machine:
   one joins that count, and the quarter lets both go); either lets it go at once, and in the
   player's turn it acts that round. The swallower loses nothing else. Nothing cleanses it.
   Out of play, so everything it carries waits where a Phased machine's ticks: no stack fades,
-  halves or pays (its Ablating, Scorched, Sapped, Empowered and Brittle stand as
+  halves or pays (its Ablating, Scorched, Sapped, Empowered, Brittle and Regenerating stand as
   they were), nothing of its own cools, regenerates or fires, a buff of its own holds nothing
   on the field (Essence Flare), it neither burns nor overheats,
   and no timed status on it runs out: each, a dark entry's rounds among them, moves a round
@@ -828,11 +831,14 @@ On a machine:
   a lone stack is lost; a blow its shield takes whole costs none. It lasts the fight, with no
   cap, and a Purge takes it as any buff. The die shows the strikes its weapon will get in its
   passive box ("+3").
-- **Regenerating** (a foe's buff): a point of HP a stack as its turn ends, after its Ablating
-  and Vitriol have ticked (a suppressed foe's included), then a stack fades, so Regenerating 3
-  gives 3, 2 and 1, the first as the turn it was gained in ends; a second grant adds its
-  stacks. It comes from its own special, its value in stacks, so a foe its tick kills regrows
-  nothing; a buff, so a purge takes it, a stack a point of the purge. No machine carries it.
+- **Regenerating** (buff, on either side): a point a stack as its carrier's turn ends, after
+  its Ablating, then a stack fades, so Regenerating 3 gives 3, 2 and 1, the first as the turn
+  it was gained in ends; a second grant adds its stacks. A foe's, from its own special, its
+  value in stacks: HP as each of its turns ends, after its Ablating and Vitriol have ticked (a
+  suppressed foe's included), so a foe its tick kills regrows nothing. A machine's (no piece
+  grants one today): shield at END TURN, before the foes strike, up to its maximum; a broken
+  shield takes none and the stack fades all the same. A buff, so an enemy's purge takes it, a
+  stack a point of the purge.
 - **Barrier** (buff): the next blow a foe lands on this machine deals no damage, so a Destroy
   on it finds no hull to read; its riders land, and a blow of nothing leaves it standing. One at a time and one
   stack whoever grants it (a passive that deepens the stacks its machine applies leaves it at
@@ -1093,14 +1099,14 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   entry would pass its maximum, where it has heat to shed and this round's blows would take a
   point of its shield or less; one whose vent would blast for more than its best spend; and a
   die left idle, where there is something to get back.
-- **The Riot Field Generator** (the Storm Petrel's passive): every point of heat it gains, from
+- **The Hardlight Generator** (the Storm Petrel's passive): every point of heat it gains, from
   any source (a spend of its own, a foe's Scorch, a passive's), stands up a point of shield as
   the gauge climbs, on a shield that stands and up to its maximum; a Broken shield gains none
   until the reboot, so its heat is its fuel and its clock at once, and the overheat it walks
   toward breaks the shield it built. A shield cost is paid first as the entry is spent, and the
   heat stands shield back from what the cost leaves. And while its shield stands, every blow on
-  it loses 1, a damage-taken effect read on the shield the blow meets. Its lock, the St. Elmo's
-  Regenerator, is a lure of heat 3, so its taunt stands up its shield.
+  it loses 1, a damage-taken effect read on the shield the blow meets. Its lock, the Hardlight
+  Pulse, is a lure of heat 3, so its taunt stands up its shield.
 - **Ammo** (the Musk Ox's Desublimation Forge): its weapons spend ammo instead
   of heating it, 1 for every 2 heat a gun's own spend would make, rounded up, at least 1, the
   price printed on the die where the gun's heat would be; its debuffs, buffs and shields and

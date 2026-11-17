@@ -925,7 +925,7 @@
   "projector_glow"
  ],
  "fires": {
-  "st_elmos_regenerator": {
+  "hardlight_pulse": {
    "act": "st_elmo",
    "from": 1.1,
    "to": 2.7

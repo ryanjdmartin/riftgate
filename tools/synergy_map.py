@@ -56,7 +56,8 @@ CURRENCIES = OrderedDict([
     ("ricochet", ("Ricochet", "on a machine")),
     ("phased", ("Phased", "on a machine")),
     ("sealed", ("Sealed", "on a machine")),
-    ("hardened", ("Hardened", "on a machine")),
+    ("hardened", ("Hardened Light", "on a machine")),
+    ("regenerating", ("Regenerating", "on a machine")),
     ("charged", ("Charged", "on a machine")),
     ("ablating_mech", ("Ablating", "on a machine")),
     ("brittled_mech", ("Brittle", "on a machine")),
@@ -160,7 +161,8 @@ ENGINE_READERS = {
     "ricochet": ["a strike of 1 more a stack at the target once a weapon has fired: most on riders a strike and on flat buffs; hull damage halves it"],
     "phased": ["granted as the round ends: out of reach of both sides through the next, and it acts"],
     "sealed": ["armour +3, cooling stopped, 3 heat a turn"],
-    "hardened": ["while its shield stands, every blow on it loses 1 a stack, until its next turn starts"],
+    "hardened": ["while its shield stands, every blow on it loses 1 a stack; a stack goes as each of its turns starts"],
+    "regenerating": ["a point of shield a stack as its turn ends, then a stack fades"],
     "charged": ["its weapons fire with Shock, a stack a fire"],
     "ablating_mech": ["its tick: 1 shield a stack at the turn's end, then hull, past armour and a Barrier"],
     "brittled_mech": ["every blow it takes, +1 a stack; halves as its turn starts"],
@@ -407,7 +409,7 @@ def render(m):
                 unique.append(label)
             if len(sl) == 1:
                 holes.append("**%s** has one slottable setter, %s." % (label, word(sl[0])))
-            if not readers and cur not in ("suppressed", "webbed", "disrupt", "swap", "phased", "barrier", "ward", "sealed", "hardened",
+            if not readers and cur not in ("suppressed", "webbed", "disrupt", "swap", "phased", "barrier", "ward", "sealed", "hardened", "regenerating",
                                            "spun_up", "ricochet", "braced", "vitriol", "mine", "paradox", "lure"):
                 holes.append("**%s** is read by nothing but its own effect." % label)
     L.append("")

@@ -7556,7 +7556,7 @@ def storm_petrel(b):
     # the Puffin, never banking (a hovercraft keeps flat).
     b.halo = [("nozzle_ring", KESTREL_HALO), ("exhaust", KESTREL_HALO), "projector_glow"]   # its boosters and the projector arch, hot (Ryan, 31 October)
     b.gait(body_hold=(0.0, 0.0, 0.0, 0.0, -3.0, 0.0), glow={"parts": boosters, "k": KESTREL_BURN}, rock=3.0)
-    b.fires = {"st_elmos_regenerator": ("st_elmo", 1.1, 2.7)}   # its fixed weapon fires with a slice of its act: the sparks' chase, the ring and the corona (Ryan, 31 October: "go for ones that are cheapest to do first")
+    b.fires = {"hardlight_pulse": ("st_elmo", 1.1, 2.7)}   # its fixed weapon fires with a slice of its act: the sparks' chase, the ring and the corona (Ryan, 31 October: "go for ones that are cheapest to do first")
     b.move(slide=0.3, bank=0.0, accel=0.6, heft=0.14, oversteer=1.1)
 
 storm_petrel.maker = "kestrel"

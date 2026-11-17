@@ -10,7 +10,7 @@ const K := Face.Keyword
 
 
 ## A tier-`tier` frame of the content's own shape: its lure the locked piece, a gun on its one
-## hardpoint, two directions as deep as the tier picks (Guard: Hardened, then Spread with a stack
+## hardpoint, two directions as deep as the tier picks (Guard: Hardened Light, then Spread with a stack
 ## for each foe lured; Spark: Charged 2, then Chain 3).
 func _db(tier: int = 1) -> ContentDB:
 	var db := ContentDB.new()
@@ -71,7 +71,7 @@ func test_each_step_tweaks_its_locked_piece_through_the_pipeline_and_the_die_kee
 	assert_false(lure.has(K.CLEAVE), "the die keeps the piece as printed")
 	var spent := Effects.effective_face(u, lure)
 	assert_true(spent.has(K.CLEAVE), "the lure as spent spreads")
-	assert_eq(spent.self_statuses, [{"status": "hardened", "stacks": 1, "per_foe": true}], "and lays Hardened, a stack for each foe lured: the deeper step takes the first further")
+	assert_eq(spent.self_statuses, [{"status": "hardened", "stacks": 1, "per_foe": true}], "and lays Hardened Light, a stack for each foe lured: the deeper step takes the first further")
 	assert_true(Effects.effective_face(u, gun).self_statuses.is_empty() and not Effects.effective_face(u, gun).has(K.CLEAVE), "the gun beside it untouched")
 	var mixed := db.make_mech("test_frame", 2, Vector2i.ZERO, null, [], ["guard", "spark"])
 	var m := Effects.effective_face(mixed, mixed.die.faces[0])
@@ -93,7 +93,7 @@ func test_a_built_machine_lures_three_and_hardens_for_each_and_its_striker_arcs_
 	var ms: Skirmish.MechState = sk.mechs[0]
 	ms.face_index = 0
 	assert_true(sk.assign(0, sk.foe_at(0, 1)), "the lure at the middle foe")
-	assert_eq(Effects.stacks_of(u, "hardened"), 3, "Hardened 3: a stack for each foe its Spread lured")
+	assert_eq(Effects.stacks_of(u, "hardened"), 3, "Hardened Light 3: a stack for each foe its Spread lured")
 	assert_true(sk.field_foes().all(func(f: Foe) -> bool: return f.target == ms), "all three turn on it")
 	var v := db.make_mech("test_frame", 1, Vector2i.ZERO, null, [], ["spark", "spark"])
 	var s2 := _fight([v], [Foe.make("revenant", 30, 2), Foe.make("revenant", 30, 2), Foe.make("revenant", 30, 2)])

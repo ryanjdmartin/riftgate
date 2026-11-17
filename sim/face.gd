@@ -212,8 +212,8 @@ var reloads_ammo: int = 0     # a vent: ammo it adds to its forging machine as i
 var ammo: int = 0             # shown only: what a forging machine's gun costs it in ammo now (Skirmish.shown_face), its heat slot's place on the die
 var dry: bool = false         # shown only: the magazine cannot pay that price, so the gun cannot be spent
 # The effective entry only, never printed: what a spend at a foe lays on its own machine, by an
-# upgrade's branch (Effects.self_grants: the Storm Petrel's lure, 17 November; the St. Elmo's
-# Regenerator's own Regenerating, printed on the piece, until then): each {status, stacks, per_foe},
+# upgrade's branch (Effects.self_grants: the Storm Petrel's lure, 17 November; its lock's own
+# Regenerating, printed on the piece, until then): each {status, stacks, per_foe},
 # a machine buff, its stacks once or once for every foe the spend reached.
 var self_statuses: Array = []
 # The Giant Petrel's locked pieces (Ryan's go, 21 October; built 30 October):
@@ -944,7 +944,7 @@ func _kill_rerolls_text() -> String:
 	return "a kill brings %d reroll%s" % [kill_rerolls, "" if kill_rerolls == 1 else "s"]
 
 
-## What a spend at a foe lays on its own machine, in the codex's words: "Hardened 1 on itself for each
+## What a spend at a foe lays on its own machine, in the codex's words: "Hardened Light 1 on itself for each
 ## foe reached", "Charged 2 on itself". The status's name is the vocabulary's, read off the engine's
 ## table so a rename follows.
 func _self_text() -> String:

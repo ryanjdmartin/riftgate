@@ -140,10 +140,11 @@ func test_the_plate_takes_a_point_off_every_blow_while_the_shield_stands() -> vo
 
 
 ## What a spend at a foe lays on its own machine (self_status, a passive's: the Storm Petrel's
-## branches, 17 November): Hardened a stack for each foe reached, a Spread's neighbours among them,
-## until its next turn starts; Charged on its next fires; the entry as spent says them, the die's
-## own never, and a copy of the fight keeps them.
-func test_a_lure_lays_hardened_for_each_foe_it_reaches_until_its_next_turn() -> void:
+## branches, 17 November): Hardened Light a stack for each foe reached, a Spread's neighbours among
+## them, a stack going as each of its turns starts (Ryan, 17 November: "decay by a stack at start of
+## Petrel's turn, not all at once"); Charged on its next fires; the entry as spent says them, the
+## die's own never, and a copy of the fight keeps them.
+func test_a_lure_lays_hardened_light_for_each_foe_it_reaches_a_stack_going_each_turn_start() -> void:
 	var lure := _lure()
 	lure.heat = 3
 	var u := _mech("Petrel", Die.single(lure), 10)
@@ -151,7 +152,7 @@ func test_a_lure_lays_hardened_for_each_foe_it_reaches_until_its_next_turn() -> 
 	assert_true(lure.self_statuses.is_empty(), "the die keeps the piece as printed")
 	var spent := Effects.effective_face(u, lure)
 	assert_eq(spent.self_statuses, [{"status": "hardened", "stacks": 1, "per_foe": true}], "the entry as spent carries the grant")
-	assert_true(spent.describe().contains("Hardened 1 on itself for each foe reached"), "and says it: %s" % spent.describe())
+	assert_true(spent.describe().contains("Hardened Light 1 on itself for each foe reached"), "and says it: %s" % spent.describe())
 	assert_true(Effects.effective_face(u, Face.attack(0, I, [K.LURE])).self_statuses.is_empty(), "another piece carries none: the grant is its piece's")
 	var sk := _fight([u], [_foe(300, 5), _foe(300, 5), _foe(300, 5)])
 	assert_eq(Effects.self_grants(SaveGame.clone_skirmish(sk).mechs[0].unit, lure), Effects.self_grants(u, lure), "a copy of the fight keeps the grant")
@@ -169,7 +170,23 @@ func test_a_lure_lays_hardened_for_each_foe_it_reaches_until_its_next_turn() -> 
 	s2.end_round()
 	assert_eq([w.shield, w.hull], [10 - 3 * (5 - 3), 100], "three lured blows of 5, each 3 lighter while its shield stood")
 	s2.start_round()
-	assert_false(Effects.has(w, "hardened"), "gone as its next turn starts")
+	assert_eq(Effects.stacks_of(w, "hardened"), 2, "a stack goes as its next turn starts, the rest standing")
+	assert_eq(Effects.stacks_next_round(Effects.STATUS["hardened"], 2), 1, "and the bot's look a round on reads the same clock")
+	s2.end_round()
+	s2.start_round()
+	assert_eq(Effects.stacks_of(w, "hardened"), 1, "another at the next")
+	assert_true(s2.assign(0, s2.foe_at(0, 1)), "a second lure at the middle foe")
+	assert_eq(Effects.stacks_of(w, "hardened"), 4, "piles its three on the one left")
+	s2.end_round()
+	s2.start_round()
+	s2.end_round()
+	s2.start_round()
+	s2.end_round()
+	s2.start_round()
+	assert_eq(Effects.stacks_of(w, "hardened"), 1, "a stack a turn start, whatever laid them")
+	s2.end_round()
+	s2.start_round()
+	assert_false(Effects.has(w, "hardened"), "and gone at zero")
 
 
 func test_a_lure_that_charges_its_machine_shocks_its_next_fires() -> void:

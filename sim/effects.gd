@@ -76,6 +76,7 @@ const DECAY_TURN_ALL := 4    # lasts until the end of its owner's turn, every st
 const DECAY_HALF := 5    # halves, rounded down, gone at zero (Empowered, 18 October: a halving rule has no duration): a buff as its carrier's turn ends, where it has worked (Empowered: a machine's at END TURN, a foe's as its own action ends: halve_buffs); a debuff as its carrier's turn starts, where the other side's blows have used it (Brittle: turn_opens)
 const DECAY_AFTER_TURN := 6    # gone after its owner's next turn, every stack at once: a foe's at the end of its next action, a machine's at the end of the player's turn (Sapped, 11 November)
 const DECAY_START := 7   # a timed mark that falls as its carrier's turn starts, the first one after the round it names (Exposed: Ryan, 16 November, "Exposed on next turn start"); the round's end leaves it alone
+const DECAY_START_TICK := 8   # loses a stack as its carrier's turn starts, gone at zero (Hardened Light: Ryan, 17 November, "decay by a stack at start of Petrel's turn, not all at once"): a machine's as the round opens (turn_opens)
 
 ## The tag a cleanse clears (decided 25 September): what a foe did to a machine, never what
 ## the machine did to itself (a component's own cooldown, the price a Rapid piece pays).
@@ -168,11 +169,13 @@ const STATUS := {
 	# keyword or an effect and the buff it creates share a name), its value its stacks.
 	"braced": {"id": "braced", "name": "Armoured", "description": "Armour +1 a stack, every stack at once, until its next turn starts.", "decay": "round",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
-	# Hardened, the shield armour for a turn (the Storm Petrel's Defense branch, Ryan, 17 November:
-	# "adds a self-buff that increases shield armour for a turn to the lure", then "increasing shield
-	# armour by foes lured"): a point more off every blow a stack while its shield stands, the plate's
-	# own rule, every stack at once as its next turn starts, as Armoured goes. A working name.
-	"hardened": {"id": "hardened", "name": "Hardened", "description": "While its shield stands, every blow on it loses 1 a stack. Until its next turn starts.", "decay": "round",
+	# Hardened Light, the shield armour (the Storm Petrel's Defence branch, Ryan, 17 November: "adds a
+	# self-buff that increases shield armour for a turn to the lure", then "increasing shield armour
+	# by foes lured"; his name and his clock the same day: "The shield armour buff is called
+	# Hardened Light. Make it decay by a stack at start of Petrel's turn, not all at once"): a point
+	# more off every blow a stack while its shield stands, the plate's own rule, a stack going as
+	# each of its turns starts, so three take 3, 2 and 1 off through three enemy turns.
+	"hardened": {"id": "hardened", "name": "Hardened Light", "description": "While its shield stands, every blow on it loses 1 a stack. A stack goes as each of its turns starts.", "decay": "start_tick",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": -1, "when": "shield_up"}]},
 	# Primed, the third primer since 15 November (Ryan's mark: "give it the same format as cryo
 	# ... use a stack on firing"; "Primed - agreed, how many Ablate stacks does each Primed stack
@@ -428,10 +431,12 @@ const STATUS := {
 	# stack as its unit's turn comes round, then a stack fades, Ablating's clock turned round, so
 	# Regenerating 3 gives 3, 2 and 1 and grants add their stacks. A foe's is hit points as its
 	# turn ends, after its Ablating and Vitriol have ticked, so an Ablate is a race and never a
-	# wall (regrowth() below; the Marsh's by lean). Until 15 November a foe's was its value at
-	# each of three actions. A machine's half, shield as its turn ended, left the engine on 17
-	# November with its last carrier, the Storm Petrel's St. Elmo's Regenerator. A buff a Purge
-	# lowers.
+	# wall (regrowth() below; the Marsh's by lean). A machine's is shield as its turn ends, after
+	# its Ablating the same (regenerating_mech; built 30 October for the Storm Petrel's lock, which
+	# no longer grants it, and kept on Ryan's word of 17 November with no piece granting it yet:
+	# "put machine regeneration back, that will literally be added in this session probably").
+	# Until 15 November a foe's was its value at each of three actions. A buff a Purge lowers, on
+	# either side.
 	"regenerating": {"id": "regenerating", "name": "Regenerating", "description": "Regrows {value} HP a stack as its turn ends, after its Ablating and Vitriol, then loses a stack.",
 		"tags": ["buff"], "effects": [{"trigger": "status", "effect": "regrow", "value": 1}]},
 	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (ablate, scorch, jam, corrupt, purge); a blow's damage lands. Until its next turn starts.", "stacking": "renew", "decay": "round",
@@ -500,8 +505,9 @@ static func golden_value(f) -> int:
 	return 0
 
 
-## What a foe regrows as its turn ends: a point of HP for every stack of Regenerating it carries
-## (the status's own number a stack), read before the tick that fades one.
+## What a unit regrows as its turn ends: a point for every stack of Regenerating it carries (the
+## status's own number a stack), a foe's HP and a machine's shield, read before the tick that
+## fades one.
 static func regrowth(u) -> int:
 	var n := 0
 	for m in live(u):
@@ -866,7 +872,7 @@ static func ends_with_turn(m) -> bool:
 ## The decay a status names in its definition ("none", "round", "turn", "turn_all", "half",
 ## "after_turn", "turn_start"), a stack a tick when it names none.
 static func status_decay(def: Dictionary) -> int:
-	return {"none": DECAY_NONE, "round": DECAY_ROUND, "turn": DECAY_TURN, "turn_all": DECAY_TURN_ALL, "half": DECAY_HALF, "after_turn": DECAY_AFTER_TURN, "turn_start": DECAY_START}.get(str(def.get("decay", "")), DECAY_TICK)
+	return {"none": DECAY_NONE, "round": DECAY_ROUND, "turn": DECAY_TURN, "turn_all": DECAY_TURN_ALL, "half": DECAY_HALF, "after_turn": DECAY_AFTER_TURN, "turn_start": DECAY_START, "start_tick": DECAY_START_TICK}.get(str(def.get("decay", "")), DECAY_TICK)
 
 
 ## What a foe's status keeps into the next round on the clock its definition names (the bot's
@@ -876,7 +882,7 @@ static func stacks_next_round(def: Dictionary, n: int) -> int:
 	match status_decay(def):
 		DECAY_HALF:
 			return int(n / 2.0)
-		DECAY_TICK, DECAY_TURN:
+		DECAY_TICK, DECAY_TURN, DECAY_START_TICK:
 			return maxi(0, n - 1)
 		DECAY_ROUND, DECAY_TURN_ALL, DECAY_AFTER_TURN:
 			return 0
@@ -900,8 +906,8 @@ static func decays_to_zero(def: Dictionary) -> bool:
 ## the foes still to act before the player ever met it), and ends as its own action does.
 
 ## A machine's turn ends (END TURN): its turn statuses tick, Ablating's points for the caller to
-## take before the overheat, then every stack that fades a turn loses one (Ablating), Scorched
-## and Sapped go whole,
+## take before the overheat, then every stack that fades a turn loses one (Ablating,
+## Regenerating, whose regrowth the caller reads first: regrowth), Scorched and Sapped go whole,
 ## and the empty ones go. `spared`: nothing damages the machine (Phased), so its Ablating takes
 ## no point, and fades a stack all the same (Ryan, 16 November: "Everything ticks during
 ## phased. It doesn't take damage but it's a way of waiting out a debuff"). A Swallowed machine
@@ -967,6 +973,10 @@ static func turn_opens(u, round: int = -1) -> void:
 			continue
 		if m.decay == DECAY_START and round >= 0 and m.expires_round < round:
 			continue
+		if m.decay == DECAY_START_TICK:
+			m.stacks -= 1   # a stack as its turn starts (Hardened Light), gone at zero
+			if m.stacks <= 0:
+				continue
 		if m.decay == DECAY_HALF and not m.tags.has("buff") and not held.has(m.id):
 			# Rounded down, so it reaches zero on its own (one stack halves to none). Its grants
 			# are one modifier, whatever granted each stack (stack), so it halves as one number.
@@ -1455,7 +1465,7 @@ static func granted_numbers(u, face: Face, target = null) -> Dictionary:
 ## self-buff that increases shield armour for a turn to the lure", "adds a self-grant of Charged
 ## stacks to the lure"), as [{status, stacks, per_foe}, ...]: each status once, its stacks the most
 ## any grant says and a stack set for every foe the spend reached if any grant says per_foe, so a
-## direction's deeper step takes its first step's buff further (the Defence direction's Hardened,
+## direction's deeper step takes its first step's buff further (the Defence direction's Hardened Light,
 ## a stack for each foe lured once the lure spreads). An attack's alone; the skirmish lays them
 ## once the spend's hits are done (Skirmish._self_grants).
 static func self_grants(u, face: Face, target = null) -> Array:
@@ -1846,7 +1856,7 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 			"add_shield":
 				out["shield"] += v
 			"shield_per_heat":
-				# Shield for every point of heat gained (the Storm Petrel's Riot Field Generator since 17
+				# Shield for every point of heat gained (the Storm Petrel's Hardlight Generator since 17
 				# November, Ryan: "gaining shield when it gains heat is a really solid hook"; "I did mean
 				# any source"): the trigger's amount, the points the gauge just climbed.
 				out["shield"] += v * maxi(0, amount)
@@ -2089,8 +2099,20 @@ static func free_rerolls(u) -> int:
 	return maxi(0, n)
 
 
+## A machine's Regenerating: the status in the machine's own words, the one rule on either body:
+## a point a stack as its turn ends, after its Ablating, then a stack fades (16 November, his four
+## places). Shield where a foe's is hit points, a shield gain like any other, so a broken shield
+## takes none. Stacked, never timed: grants add. No piece grants it today (the Storm Petrel's lock
+## did until 17 November); kept on Ryan's word for the one to come.
+static func regenerating_mech() -> Dictionary:
+	var d: Dictionary = STATUS["regenerating"].duplicate(true)
+	d["description"] = "Regains {value} shield a stack as its turn ends, after its Ablating, then loses a stack."
+	d["decay"] = "turn"
+	return d
+
+
 ## The shield a point of heat gained stands up on this machine (shield_per_heat, on_heat_gain; the
-## Storm Petrel's Riot Field Generator since 17 November): the bot's and the die's read of the hook.
+## Storm Petrel's Hardlight Generator since 17 November): the bot's and the die's read of the hook.
 static func shield_per_heat(u) -> int:
 	var n := 0
 	for pair in _taking_part(u, "on_heat_gain", null):
@@ -2577,6 +2599,8 @@ static func grant_def(u, def: Dictionary, stacks: int, source: String, until_rou
 	# it and whatever round the grant names: its end is the turn's opening, no round's.
 	if status_decay(def) == DECAY_ROUND:
 		return stack(u, def, SKIRMISH, source, stacks, DECAY_ROUND)
+	if status_decay(def) == DECAY_START_TICK:
+		return stack(u, def, SKIRMISH, source, stacks, DECAY_START_TICK)   # its clock is its stacks, a stack a turn start (Hardened Light)
 	if decays_to_zero(def):
 		return stack(u, def, SKIRMISH, source, stacks, status_decay(def))
 	# One a use spends (Spun Up, spent whole by the next weapon; a primer, a stack a weapon

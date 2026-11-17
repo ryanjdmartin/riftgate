@@ -12,7 +12,7 @@ const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed thi
 ## The machine buffs a spend at a foe may lay on its own machine (Face.self_statuses; the Storm
 ## Petrel's lure and its branches, 17 November). A Barrier and a Ward stay their pieces' own, each
 ## with its clock and its cooldown.
-const SELF_GRANTS := ["hardened", "charged", "supercooled", "primed", "overcharged", "braced"]
+const SELF_GRANTS := ["hardened", "charged", "supercooled", "primed", "overcharged", "braced", "regenerating"]
 const MAX_MOVE := 6                 # a move in hexes, chassis or foe, is 1 to this (a placeholder bound, 28 October)
 ## The caveats a hunting composition may name (`hunts`): whom its pack locks. The fastest left on
 ## 16 November with nothing hunting by it (the rule of 12 November).
@@ -1817,7 +1817,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# on the machine a buff lands on (the Reheat Uplink), and the rerolls a kill brings (the
 	# Spindrift Salvo).
 	if fd.has("regenerates") or fd.has("self_statuses"):
-		errs.append("%s: a status a spend lays on its own machine is printed on no entry (regenerates left with the St. Elmo's Regenerator's Regenerating, 17 November): a branch's or a passive's self_status lays one" % where)
+		errs.append("%s: a status a spend lays on its own machine is printed on no entry (regenerates left with the Storm Petrel's lock's Regenerating, 17 November): a branch's or a passive's self_status lays one" % where)
 	if fd.has("ally_action"):
 		var deal = fd["ally_action"]
 		if kind != "buff" or not (deal is Dictionary) or int(deal.get("rerolls", 0)) <= 0:

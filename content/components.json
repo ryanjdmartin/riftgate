@@ -1925,16 +1925,16 @@
    ]
   },
   {
-   "id": "st_elmos_regenerator",
-   "name": "St. Elmo's Regenerator",
+   "id": "hardlight_pulse",
+   "name": "Hardlight Pulse",
    "maker": "kestrel",
    "shape": "dish",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "St. Elmo's fire on the mast (Ryan named it 21 October): a beacon that draws the foe's eye, its glow the heat that mends the shield.",
-    "niche": "The Storm Petrel's lock since its rework of 17 November: a debuff, Indirect, heat 3; the foe it is spent on is Lured for the round, and its heat stands up shield through the Riot Field Generator, so the taunt is its own mending. Its branches tweak it (the chassis's branches): the Defence direction's Hardened and then Spread with a stack for each foe lured, the Striker's Charged and then Chain 3.",
+    "fantasy": "The Hardlight Pulse, Ryan's name of 17 November beside the Hardlight Generator, its machine's passive; the St. Elmo's Regenerator until then (his of 21 October: St. Elmo's fire on the mast, a beacon that draws the foe's eye).",
+    "niche": "The Storm Petrel's lock since its rework of 17 November: a debuff, Indirect, heat 3; the foe it is spent on is Lured for the round, and its heat stands up shield through the Hardlight Generator, so the taunt is its own mending. Its branches tweak it (the chassis's branches): the Defence direction's Hardened Light and then Spread with a stack for each foe lured, the Striker's Charged and then Chain 3.",
     "notes": "Built 30 October as a lure of no heat laying Regenerating 3 on its own machine (regenerates), the rider that left the engine with it on 17 November; a lure that runs hot in its place, his \"Your verdict leans are solid\" to the lean of the same day."
    },
    "face": {

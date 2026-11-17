@@ -716,7 +716,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		# the odds of the kill, worth what the bank carries of them (bank_delta).
 		score += p_kill * bank_delta(sk, f.kill_rerolls)
 	# What the spend lays on its own machine (the Storm Petrel's lure and its branches, 17
-	# November), and the shield its heat stands up (the Riot Field Generator's hook): each worth
+	# November), and the shield its heat stands up (the Hardlight Generator's hook): each worth
 	# what it keeps of this round's blows (self_grant_worth, heat_shield_gain), the grant read on the
 	# entry as its machine's branches make it.
 	score += self_grant_worth(sk, ms, f, target)
@@ -760,7 +760,7 @@ func burn_cost(sk: Skirmish, ms: Skirmish.MechState, burnt: int) -> float:
 	return cost
 
 
-## What shield stood up this turn is worth (the Storm Petrel's hook and its Hardened, 17 November):
+## What shield stood up this turn is worth (the Storm Petrel's hook and its Hardened Light, 17 November):
 ## the hull it keeps from this round's blows, a death it averts, and what stands past them banked,
 ## burn_cost read the other way.
 func shield_gain_worth(sk: Skirmish, ms: Skirmish.MechState, gain: int) -> float:
@@ -775,7 +775,7 @@ func shield_gain_worth(sk: Skirmish, ms: Skirmish.MechState, gain: int) -> float
 	return worth
 
 
-## The shield a spend's heat stands up (the Storm Petrel's Riot Field Generator, 17 November: a point
+## The shield a spend's heat stands up (the Storm Petrel's Hardlight Generator, 17 November: a point
 ## of shield for every point of heat it gains): on a shield that stands, up to its maximum.
 static func heat_shield_gain(ms: Skirmish.MechState, f: Face) -> int:
 	var per := Effects.shield_per_heat(ms.unit)
