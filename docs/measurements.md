@@ -10885,3 +10885,89 @@ squad with one, half the squad's hull and a wreck a fight without it. That is hi
 as a number: the bosses' strikes are the ones the Barrier justifies. Taking it off the
 starting dice takes the bosses' blows down with it, by about two fifths, the one-blow kits
 first. Nothing of it is landed: the Barrier's place is his call (the bible's section 12).
+
+## 17 November: what one Barrier is worth to a squad tuned without it, the bosses at lighter blows, and the dials on the sized game
+
+Ryan, of the Barrier: "I think no barrier basic. If we tune around it not being there, does
+it warp boss fights when it does show up? Would it be better to tune fights with the
+assumption that a complete block exists? Keeping in mind that we have Suppress which is kind
+of the same thing for a boss, I guess." And: "Do you have leans on any of the trial
+settings?" Every read is `tools/anchor_read.gd` on the game as sized that day, the greedy
+bot. Hull is a share of a four's.
+
+**One Barrier in a squad.** One squad of four, the Honey Badger, the Skua, the Storm Petrel
+and the Prairie Dog, whose Halo Projector is its only Barrier, sitting out a round after
+each spend; and the same four with the Armoured basic in that slot (`refit=barrier=none`).
+Twelve fights a cell, so a cell is a direction and a negative one is grain.
+
+| Kind | No Barrier | One Barrier |
+|---|---|---|
+| An elite, eleven fights | 5.6 rounds, 16.8%, 0.10 wrecks | 5.8, 12.7%, 0.07 |
+| A boss, thirteen fights | 97% won, 8.7 rounds, 37.3%, 0.43 wrecks | 97%, 8.7, 28.8%, 0.31 |
+
+| Fight | No Barrier | One Barrier | What the one takes off |
+|---|---|---|---|
+| The Mantis Ant | 25.2% | 12.3% | Half |
+| The Phantom Train | 62.3%, 92% won | 32.2%, 100% | Half |
+| The Gargantuan King | 37.1% | 20.2% | Nearly half |
+| The Emperor Scorpion | 35.4% | 20.1% | Two fifths |
+| The Vampire Lord | 18.8% | 11.9% | A third |
+| The Marsh Serpent | 37.4% | 24.6% | A third |
+| The Fallen Weapon | 56.9%, 83% won | 39.6%, 92% | A third |
+| The Matador | 21.2% | 16.7% | A fifth |
+| The King Gel | 36.1% | 29.2% | A fifth |
+| The Obsidian Tyrant | 63.8% | 61.9% | Nothing |
+| Floraison | 20.3% | 22.4% | Nothing |
+| The Ruby Colossus | 40.0%, 92% won | 45.8%, 75% | Nothing |
+| The Fiend of Fire | 30.5% | 37.3% | Nothing |
+| Gilgamesh wanders | 22.4% | 11.8% | Half |
+| The Pilgrim's wake | 7.8% | 4.6% | Two fifths |
+| The Fell Rider's hunt | 14.6% | 9.3% | A third |
+| The Reaper | 3.8% | 2.7% | A quarter |
+| The Cinder Tortoise's brood | 27.0% | 20.9% | A quarter |
+| The Nob | 41.2% | 32.7% | A fifth |
+| The Wild Hunt | 20.3% | 16.0% | A fifth |
+| The old man's rising | 10.8% | 8.6% | A fifth |
+| The shaman's warband | 14.0% | 11.7% | A sixth |
+| The Rust Monster's scavenge | 7.8% | 6.6% | A sixth |
+| The Thunder Ape's rampage | 14.8% | 14.9% | Nothing |
+
+So one Barrier is a quarter off an elite or a boss on the mean, and it runs by the kit: half
+off a boss whose damage is one great blow at one machine, nothing off one that strikes
+every machine or many times. This squad of four also stands a boss better than the pool's
+mean with no Barrier (37.3% for 52.8%), having the pool's plate and its largest shield.
+
+**The bosses with no Barrier, at lighter blows.** The six certain tier ones as before
+(`refit=barrier=none`), every leader's attack at a share of content's (`blows=`), twenty
+fights a cell.
+
+| The bosses' blows | Won | Rounds | Hull lost | Wrecks a fight |
+|---|---|---|---|---|
+| As content has them, the Barrier basic on the dice | 97% | 10.4 | 32.5% | 0.40 |
+| As content has them, no Barrier | 87% | 10.1 | 52.8% | 1.11 |
+| At four fifths, no Barrier | 98% | 9.2 | 31.9% | 0.34 |
+| At seven tenths, no Barrier | 100% | 8.9 | 24.6% | 0.18 |
+
+Four fifths of their blows gives a squad with no Barrier the bosses it has today with one.
+The elites want no such cut: at four fifths they cost 14.0% for their 22.7%, under his
+quarter. Two stand apart, the Nob at 40.5% even at four fifths (59.2% at content's blows,
+its kit one great blow a round) and the Cinder Tortoise's brood, 22.2% at four fifths for
+40.2%.
+
+**The dials on the sized game.** Tier one's flankers, hunters and formations under each
+what-if of the trials page; rounds, hull, reboots a machine.
+
+| The what-if | A lone flanker | A hunter's pack | A formation |
+|---|---|---|---|
+| As landed: a vanilla 3 for 4 heat, the Carbine 4 for 5, the standard foe 4 | 5.2, 3.2%, 0.91 | 5.1, 8.9%, 1.02 | 5.9, 5.0%, 1.14 |
+| HEAT on −1: 3 for 3, the Carbine 4 for 4 | 4.5, 2.6%, 0.70 | 4.8, 8.4%, 0.90 | 5.2, 4.0%, 0.87 |
+| HEAT on −1, TOP BASIC on +2: the Carbine 4 for 6 | 4.7, 3.2%, 0.82 | 4.9, 8.6%, 0.95 | 5.4, 4.5%, 0.95 |
+| RANK AND FILE on +1: the standard foe 5 | 5.2, 3.2%, 0.91 | 5.1, 8.9%, 1.02 | 6.9, 8.7%, 1.43, 99% won |
+| HEAT on −1, RANK AND FILE on +1 | 4.5, 2.6%, 0.70 | 4.8, 8.4%, 0.90 | 6.2, 6.9%, 1.12 |
+| All three | 4.7, 3.2%, 0.82 | 4.9, 8.6%, 0.95 | 6.4, 7.5%, 1.23 |
+
+A point of heat off every weapon is 0.7 rounds and a point of hull off a formation, and a
+quarter fewer reboots. Two more heat on the Carbine gives back a fifth of that. A hit point
+on the rank and file is a round and 3.7 points of hull on a formation, half again its cost,
+so a standard foe of 5 wants the foes' blows sized again; it touches no flanker and no
+hunter, which the dial does not reach.

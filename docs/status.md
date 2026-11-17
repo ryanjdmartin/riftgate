@@ -146,9 +146,11 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   are sized to it since 17 November (`docs/briefs/numbers_pass.md`, section 8; the reads
   `docs/measurements.md`): a lone flanker 3.2% of a four's hull, a hunter's pack 8.9%, a
   formation 5.0% over 5.9 rounds, from 1.9% to 7.7% by formation, every fight won. The
-  elites and the bosses are not, and wait on the Barrier's place, his call (the bible's
-  section 12): an elite costs 10.9% with the Barrier basic on the starting dice and 22.7%
-  without it, a boss 32.5% and 52.8%. Tiers two and three and the first battle are unsized,
+  elites and the bosses are not, and wait on his go for the Barrier (17 November: "I think
+  no barrier basic"; the lean and its reads are the numbers brief's section 7): an elite
+  costs 10.9% with the Barrier basic on the starting dice and 22.7% without it, a boss 32.5%
+  and 52.8%, and with none the bosses' blows at four fifths cost a squad what they cost
+  today. This pass's leans on the dials stand in the same section, each his to take. Tiers two and three and the first battle are unsized,
   their foes still the ones sized against a shield that refilled. On a debug
   build's SETTINGS, TRIALS, each a number still to be picked: HEAT, TOP BASIC, RANK AND FILE
   and BARRIER BASIC (read at the next launch), OVERHEAT, FIELD DEPTH, OPENING, FODDER,

@@ -189,13 +189,19 @@ tier in the component pass.
 
 ## 7. Open
 
-His:
+His, each with this pass's lean and its read (`docs/measurements.md`, 17 November, the last
+entry):
 
-- The dials' picks (section 2), and the Barrier's place: a basic with its cooldown as
-  built, or rare or locked (the refit brief's section 14 has the reads).
-- Whether a walled tank that reboots for nothing under a formation is its identity, or a
-  hole the reboot opened.
-- Where the bench's pieces live.
+| The call | The lean | Why |
+|---|---|---|
+| The Barrier's place | No basic, his own lean ("I think no barrier basic", 17 November) | Tune for a squad with none, and hold every boss to a test that a block is a bounded edge: no more than about half its damage in one blow at one machine. One Barrier in a squad takes a quarter off a boss on the mean, half off the four whose kit is one great blow, nothing off the four that strike every machine. With none, the bosses' blows at four fifths cost a squad what they cost today |
+| Where the Halo Projector goes | A tier-one find beside the Blast Door, or locked to a machine: his | It is a tier-zero blueprint today, so off the starting dice is not out of every squad's reach |
+| HEAT | −1: a vanilla 3 for 3 | Four shots a gauge for three; a formation 0.7 rounds shorter and a point of hull lighter, a quarter fewer reboots; "I just know I overheated a lot" |
+| TOP BASIC | +2: the Carbine 4 for 6 | Its point is paid in heat: two shots a gauge for the vanilla's four |
+| RANK AND FILE | As built: a standard foe of 4 | At 5 a formation runs a round longer and costs half again as much, so the blows would be sized again. The room 5 was to buy, a point between the Carbine and the kill, is bought by the Carbine's heat. Loosely held; tier two's standard is 5 already |
+| OVERHEAT | ×1, and the dial cut | A stack burns every turn until the reboot, so one compounds; the bot reboots before it burns |
+| The walled tank | His to say | Whether a machine that reboots for nothing under a formation is its identity or a hole |
+| Where the bench's pieces live | Rows a debug dial deals for the grid, content for what survives | A name and a line are his to write |
 
 Leans not yet built, each a number this pass may land with its read:
 
@@ -203,11 +209,14 @@ Leans not yet built, each a number this pass may land with its read:
   slot, against his expectation that cooling is a kit's or gated; the lean is to drop the
   cooling and keep the Radiators' maximum.
 - Cryo's stack cools 2, two thirds of a vanilla's heat at 3; the lean is 1 if the vanilla's
-  heat lands at 2 or 3, with the Polar Bear's session.
+  heat lands at 3, with the Polar Bear's session.
 - Indirect a point of heat over Direct.
 - The Overcharge Coil at one stack, or tier two.
 - The ten planned shields and vents: retire the seven at tiers zero and one, the three at
   tier two waiting for a kit that wants one.
+- The kits a block takes half of: the Mantis Ant, the Phantom Train, the Gargantuan King,
+  the Emperor Scorpion, Gilgamesh and the Nob. Each a proposal in chat, a second blow, a
+  rider that lands through a Barrier or a blow at every machine.
 
 ## 8. What landed, 17 November
 

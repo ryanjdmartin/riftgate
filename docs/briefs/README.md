@@ -236,8 +236,8 @@ One row a live brief; the to-do's Design sessions hold each one's task.
 |---|---|---|---|---|
 | `refit_pass.md` | the reboot's spec and the refit pass's open calls | the battle and the kit | rule | his play and his calls |
 | `numbers_pass.md` | tier one sized against the reboot; the tier-one bench | the battle and the kit | rule | the foes' line's sizing, then his play |
-| `heat_pillar.md` | heat as a pillar, written before the reboot | every maker | rule | the heat session |
-| `kestrel_line.md` | the Kestrel line's hub: what each fast flyer is for | Kestrel | all | his calls on its map |
+| `heat_pillar.md` | heat as a pillar: his frame, his overheat calls, what the reboot left open | every maker | rule | the heat session |
+| `kestrel_line.md` | the Kestrel line's hub: what each fast flyer is for | Kestrel | all | the Giant Petrel's kit, the chassis that orbits Exposed, the last two slots |
 | `kestrel_puffin.md` | the Puffin's rework: it moves heat | Kestrel | 1 (two his lean) | his session, after the heat prices |
 | `kestrel_buzzard.md` | the Buzzard's rework: shield spent into its blows, not built | Kestrel | 2 | his mark on the reboot machines' round |
 | `kestrel_magpie.md` | a support engine: the thief, the mimic, the cache | Kestrel | open | his pick of a direction |
@@ -265,7 +265,7 @@ One row a live brief; the to-do's Design sessions hold each one's task.
 | `arsenal_thunder.md` | the soft Archon homage, much shield | the Arsenal | 3 | Claude's round on his direction |
 | `arsenal_mastema.md` | fire through the team | the Arsenal | 3 | his calls |
 | `arsenal_minos.md` | the mover; "It needs something else" | the Arsenal | 3 | the something else, in chat |
-| `arsenal_frost.md` | cut by Ryan | the Arsenal | none | retires with `minerva_cryo_defence.md`'s round |
+| `arsenal_frost.md` | cut by Ryan: a stub of what the Cryo round takes | the Arsenal | none | retires with `minerva_cryo_defence.md`'s round |
 
 Not briefed: the empty slots toward each maker's ten; cantrips, his idea of small Rapid
 pieces with no cooldown, a combined entry before a Rapid one; the economy's items

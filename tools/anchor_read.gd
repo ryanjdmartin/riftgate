@@ -13,11 +13,14 @@ extends SceneTree
 ##
 ## usage: godot --headless --path . -s tools/anchor_read.gd -- pool=a,b,c,d,e,f [seeds=5]
 ##        [squads=6] [tier=1] [ramp=1] [kinds=patrol,formation,elite,boss] [only=id,id]
-##        [refit=spec] [label=text]
+##        [refit=spec] [blows=percent] [label=text]
 ##   pool    the chassis ids the squads are drawn from
 ##   seeds   fights a squad; squads: how many of the pool's squads of that size (0, all)
 ##   only    the composition or boss ids to read, the rest skipped
 ##   refit   a what-if laid over content for the run (sim/refit.gd's spec, as --refit takes)
+##   blows   a what-if on the leaders alone: every elite's, boss's, hero's and commander's
+##           attack at that share of content's, in hundredths (blows=80), a foe a fight
+##           fields or a foe it makes later; the rank and file beside them as content has it
 
 
 func combos(pool: Array, n: int) -> Array:
@@ -44,7 +47,7 @@ func combos(pool: Array, n: int) -> Array:
 
 
 func _init() -> void:
-	var o := {"seeds": "5", "tier": "1", "pool": "", "kinds": "patrol,formation,elite,boss", "ramp": "1", "squads": "0", "label": "", "only": "", "refit": ""}
+	var o := {"seeds": "5", "tier": "1", "pool": "", "kinds": "patrol,formation,elite,boss", "ramp": "1", "squads": "0", "label": "", "only": "", "refit": "", "blows": "100"}
 	for arg in OS.get_cmdline_user_args():
 		var kv := str(arg).split("=", true, 1)
 		if kv.size() == 2:
@@ -91,6 +94,14 @@ func _init() -> void:
 		if kinds.has("boss"):
 			for bid in db.bosses_of(str(fid)):
 				rows.append(["boss", str(fid), str(bid), {}])
+	var blows := clampi(int(o["blows"]), 10, 300)
+	if blows != 100:
+		print("what-if: every leader's attack at %d%% of content's" % blows)
+	# A foe as content makes it, a leader's attack at the what-if's share (never under one).
+	var lead := func(f: Foe) -> Foe:
+		if f != null and blows != 100 and (f.boss or f.elite or f.hero or f.commands):
+			f.attack = maxi(1, roundi(float(f.attack) * float(blows) / 100.0))
+		return f
 	var sums := {}
 	for row in rows:
 		if not only.is_empty() and not only.has(str(row[2])):
@@ -128,8 +139,11 @@ func _init() -> void:
 				pack.id = 100
 				if not pack.layout.is_empty():
 					sk.layout = pack.layout.duplicate()
-				sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
-				sk.add_foes(db.foes_for(pack), pack)
+				sk.foe_factory = func(foe_id: String) -> Foe: return lead.call(db.make_foe(foe_id)) if db.foes.has(foe_id) else null
+				var fielded: Array[Foe] = db.foes_for(pack)
+				for f in fielded:
+					lead.call(f)
+				sk.add_foes(fielded, pack)
 				sk.begin()
 				var pol: Policy = Policy.make(Policy.GREEDY, s)
 				if pol.play(sk) == Skirmish.Outcome.VICTORY:
