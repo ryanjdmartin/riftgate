@@ -1275,6 +1275,89 @@ func test_greedy_weighs_a_mine_its_blast_on_a_kill_the_detonation_and_the_gather
 	assert_true(pol.mine_worth(sk, bomber, gather, c, 0.0) < pol.mine_worth(sk, bomber, gather, b, 0.0), "onto the other end, less")
 
 
+## A move's steps (17 November): the bot's read of a foe's threat counts what the move it
+## shows does beside its blow, and what a special of its own costs, each by the one table a
+## fall's steps use (Policy.effect_cost). Synthetic foes; the lone machine's die is one 40.
+func test_a_foes_threat_counts_every_step_of_its_move() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(40, I)), 0, 100))
+	var thief := Foe.make("mugger", 30, 20)
+	var plain := Foe.make("mugger", 30, 20)
+	var ally := Foe.make("mugger", 30, 20)
+	sk.add_foes([thief, plain, ally])
+	sk.begin()
+	sk.start_round()
+	var me: Skirmish.MechState = sk.mechs[0]
+	var blow := Foe.basic_action()
+	for f in [thief, plain, ally]:
+		f.action = blow
+		f.target = me
+	var base := Policy._threat_now(plain, sk)
+	assert_true(is_equal_approx(base, 20.0), "a plain blow threatens its number: %s" % base)
+	# A blow and then a stolen reroll, one move (the Thief's Mug).
+	var mug := blow.duplicate()
+	mug["also"] = [{"effect": "drain_rerolls", "value": 1}]
+	thief.action = mug
+	var reroll := Policy.REROLL_SHARE * 40.0 / Policy.HULL_WEIGHT
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), base + reroll), "a blow that steals a reroll threatens both: %s" % Policy._threat_now(thief, sk))
+	var pol := Policy.make(Policy.GREEDY)
+	var f40 := Face.attack(40, I)
+	assert_true(pol.attack_score(sk, me, f40, thief) > pol.attack_score(sk, me, f40, plain), "so the kill that stops it is worth more than the same kill beside it")
+	assert_true(is_equal_approx(Policy.suppress_worth(sk, thief), base + reroll), "and a stun stops the whole move, its step with it")
+	Effects.stack(thief, Effects.STATUS["suppressed"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_eq(Policy._threat_now(thief, sk), 0.0, "a foe held this round threatens nothing, by blow or by step")
+	Effects.remove(thief, "suppressed")
+	# A bite that feeds its foe: the points it regrows are points of ours undone.
+	var devour := blow.duplicate()
+	devour["also"] = [{"effect": "recover", "value": 3}]
+	thief.action = devour
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), base), "whole, it regrows nothing")
+	thief.hp -= 5
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), base + 3.0 / Policy.HULL_WEIGHT), "hurt, its three: %s" % Policy._threat_now(thief, sk))
+	thief.hp = thief.hp_max
+	# A bolt that fades its foe: next round's blow, the one nothing can answer.
+	var bolt := blow.duplicate()
+	bolt["also"] = [{"effect": "phase"}]
+	thief.action = bolt
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), base + 20.0 * Policy.AHEAD_SHARE), "a fade adds its next blow at a round ahead's share: %s" % Policy._threat_now(thief, sk))
+	Effects.grant_for_rounds(thief, Effects.STATUS["phased"], "test", sk.round + 1)
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), base), "a foe Phased already fades no further, so the step is worth nothing")
+	Effects.remove(thief, "phased")
+	plain.hp = 0
+	ally.hp = 0
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), base), "nor does the last foe standing fade")
+	plain.hp = plain.hp_max
+	ally.hp = ally.hp_max
+	# A special of its own is priced by the same table, where it counted nothing.
+	thief.action = {"id": "scream", "name": "Scream", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "text": ""}
+	thief.target = null
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), reroll), "a scream of its own, a reroll's worth: %s" % Policy._threat_now(thief, sk))
+	thief.action = {"id": "gaze", "name": "Gaze", "kind": "debuff", "effect": "jam", "weight": 1, "text": ""}
+	thief.target = me
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), 40.0 / Policy.HULL_WEIGHT), "a jam, the entry its machine would lose")
+	Effects.grant_buff(me.unit, "ward", 1, "test", sk.round)
+	assert_eq(Policy._threat_now(thief, sk), 0.0, "and nothing where a Ward turns it")
+	Effects.remove(me.unit, "ward")
+	# A heal and then a cleanse of the same foe (the Cleric's Cure): the points it gives
+	# back, and the team's marks on its patient.
+	thief.action = {"id": "cure", "name": "Cure", "kind": "defend", "effect": "heal", "value": 4, "weight": 1, "text": "", "also": [{"effect": "cleanse"}]}
+	thief.target = null
+	assert_eq(Policy._threat_now(thief, sk), 0.0, "nobody hurt, nobody marked: a cure with no patient")
+	ally.hp -= 10
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), 4.0 / Policy.HULL_WEIGHT), "its four on the hurt one")
+	Effects.stack(ally, Effects.STATUS["ablating"], Effects.SKIRMISH, "test", 2, Effects.status_decay(Effects.STATUS["ablating"]))
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), (4.0 + 2.0) / Policy.HULL_WEIGHT), "and the two stacks it would lift off the same foe: %s" % Policy._threat_now(thief, sk))
+	# A move still gathering lands its steps with its blow: nothing now but the countdown.
+	var slow := mug.duplicate()
+	slow["countdown"] = 1
+	thief.action = slow
+	thief.pending = slow
+	thief.charge = 1
+	thief.target = me
+	assert_eq(Policy.steps_threat(thief, sk), 0.0, "a gathering move's steps wait for its blow")
+
+
+
 ## The Swallowtail for the bot (21 October; the charge never primed since 22 October), synthetic:
 ## the bot weighs the die as it will go out, so with a charge up and an ally yet to act the
 ## Screens' options are Phased's, and it queues Phased on the ally the foes are on: granted as

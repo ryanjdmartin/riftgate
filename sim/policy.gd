@@ -1751,10 +1751,8 @@ static func last_act_cost(sk: Skirmish, f: Foe, killer: Skirmish.MechState = nul
 
 
 ## What the steps of a foe's fall cost the team beside its blow (16 November: a fall is a short
-## list of steps): each at the price the bot already puts on the same effect from a move, a
-## Ward's score for what lands on a machine and a rally's point on every blow. A curse lands on
-## the machine that makes the kill (`killer`: the one weighing the spend), and on nobody when
-## none does. An effect with no price here counts nothing until a piece carries it.
+## list of steps): each by the one table (effect_cost). A curse lands on the machine that
+## makes the kill (`killer`: the one weighing the spend), and on nobody when none does.
 static func fall_steps_cost(sk: Skirmish, f: Foe, killer: Skirmish.MechState = null) -> float:
 	var fall := f.fall()
 	if fall.is_empty():
@@ -1762,57 +1760,133 @@ static func fall_steps_cost(sk: Skirmish, f: Foe, killer: Skirmish.MechState = n
 	var pick: Skirmish.MechState = killer
 	if pick != null and (not pick.alive() or Skirmish.is_out(pick)):
 		pick = null
-	var scorch := 0
-	for eff in Effects.STATUS["scorched"]["effects"]:
-		if str(eff.get("effect", "")) == "add_heat":
-			scorch += int(eff.get("value", 0))
-	var ablate := Effects.status_value("ablating_mech", "tick_hp")
 	var cost := 0.0
 	for st in Foe.effects_of(fall):
-		var value := maxi(1, int(st.get("value", 0)))
-		match str(st.get("effect", "")):
-			"ablate":
-				if pick != null and not Effects.has(pick.unit, "ward"):
-					cost += float(ablate * value * (value + 1)) / 2.0 * ABLATED_WEIGHT
-			"jam":
-				if pick != null and not Effects.has(pick.unit, "ward"):
-					cost += _raw_attack_mean(pick) / float(maxi(1, pick.die.faces.size()))
-			"scorch_all":
-				for m in sk.live_mechs():
-					if not Effects.has(m.unit, "ward"):
-						cost += float(scorch * value) * BANK_WEIGHT
-			"corrupt_all":
-				for m in sk.live_mechs():
-					if not Effects.has(m.unit, "ward"):
-						cost += float(Skirmish.corrupt_bite() * value) * HULL_WEIGHT * CLEANSE_ROUNDS / float(maxi(1, m.die.faces.size()))
-			"drain_rerolls":
-				cost += REROLL_SHARE * _team_raw_attack_mean(sk) * float(value)
-			"rally":
-				# Every foe still standing hits that much harder at its next blow, before it halves.
+		cost += effect_cost(sk, f, st, pick, true)
+	return cost
+
+
+## What one effect of a foe's costs the team, in the score's points: the one table for a
+## fall's steps, a move's own special and the steps a move does also (a move and a fall are
+## short lists of steps since 16 November; a move's priced 17 November, as the bench's rows
+## came to use them). Each is priced as the bot prices the same thing elsewhere: a Ward turns
+## what lands on a machine, a rally is a point on every blow, a reroll is its share of the
+## team's blow, a point regrown is a point of ours undone. `by` is the foe. `pick` is the
+## machine an aimed effect lands on, the killer for a fall and the foe's own pick for a move,
+## nobody when there is none. `falling` says the foe is gone as it lands: what it would do
+## for itself counts nothing, and its rally and its unreadying are a fall's alone (a move's
+## rally is Skirmish.rally_worth's). An effect with no line here counts nothing until a
+## piece carries it and a read asks its price: a brace, a summon, a revival, a swallow, a
+## purge, a merge.
+static func effect_cost(sk: Skirmish, by: Foe, st: Dictionary, pick: Skirmish.MechState, falling: bool = false) -> float:
+	var value := maxi(1, int(st.get("value", 0)))
+	var lands: bool = pick != null and not Effects.has(pick.unit, "ward")
+	var cost := 0.0
+	match str(st.get("effect", "")):
+		"ablate":
+			if lands:
+				cost += float(Effects.status_value("ablating_mech", "tick_hp") * value * (value + 1)) / 2.0 * ABLATED_WEIGHT
+		"jam":
+			if lands:
+				cost += _raw_attack_mean(pick) / float(maxi(1, pick.die.faces.size()))
+		"scorch_all":
+			var scorch := 0
+			for eff in Effects.STATUS["scorched"]["effects"]:
+				if str(eff.get("effect", "")) == "add_heat":
+					scorch += int(eff.get("value", 0))
+			for m in sk.live_mechs():
+				if not Effects.has(m.unit, "ward"):
+					cost += float(scorch * value) * BANK_WEIGHT
+		"corrupt_all":
+			for m in sk.live_mechs():
+				if not Effects.has(m.unit, "ward"):
+					cost += float(Skirmish.corrupt_bite() * value) * HULL_WEIGHT * CLEANSE_ROUNDS / float(maxi(1, m.die.faces.size()))
+		"drain_rerolls":
+			cost += REROLL_SHARE * _team_raw_attack_mean(sk) * float(value)
+		"rally":
+			# A fall's: every foe still standing hits that much harder at its next blow, before it halves.
+			if falling:
 				for o in sk.field_foes():
-					if o != f and o.alive():
+					if o != by and o.alive():
 						cost += float(value * o.strikes()) * HULL_WEIGHT
-			"heal":
-				var most := 0
+		"heal":
+			# The points the heal gives back to the most hurt of its side, the healer too
+			# while it stands.
+			var most := 0
+			for o in sk.field_foes():
+				if o.alive() and (o != by or not falling):
+					most = maxi(most, o.hp_max - o.hp)
+			cost += float(mini(value, most))
+		"recover":
+			if not falling:
+				cost += float(mini(value, by.hp_max - by.hp))
+		"cleanse":
+			# After a heal in the same move it lands on the heal's patient (the Cleric's
+			# Cure); a cleanse of its own is priced where the move is (_cleanse_worth).
+			if not falling:
+				cost += _marks_worth(sk.heal_target(by), sk)
+		"prime":
+			for o in sk.field_foes():
+				if o != by and o.alive():
+					cost += PRIMED_WORTH * float(value)
+		"expose":
+			# The plate the mark takes off its machine, on every blow the foes' next round
+			# turns on it. What the gathered fire is worth past that is no number here.
+			if lands and not falling:
+				var others := 0
 				for o in sk.field_foes():
-					if o != f and o.alive():
-						most = maxi(most, o.hp_max - o.hp)
-				cost += float(mini(value, most))
-			"prime":
+					if o != by and o.alive():
+						others += 1
+				cost += float(pick.unit.armour * others) * HULL_WEIGHT * AHEAD_SHARE
+		"phase":
+			# A foe that fades acts next round where no die reaches it: its next blow at a
+			# round ahead's share, the one no kill and no stun can answer. Nothing where the
+			# fade lays nothing: a foe out already, or the last one standing.
+			if not falling and Skirmish.fade_lands(by):
+				var stands := false
 				for o in sk.field_foes():
-					if o != f and o.alive():
-						cost += PRIMED_WORTH * float(value)
-			"unready_all":
-				# The one fall that pays: every foe its kind readied stays down when it next
-				# falls, a second kill the team is spared, at that foe's whole HP.
+					if o != by and o.alive():
+						stands = true
+				if stands:
+					cost += float((sk.foe_blow(by) if by.attacks() else by.damage()) * by.strikes()) * HULL_WEIGHT * AHEAD_SHARE
+		"appropriate":
+			# The number the foe takes is on its every blow while it holds the piece.
+			if lands and not falling and pick.face_index >= 0:
+				cost += float(Skirmish.stolen_number(pick.die.faces[pick.face_index]) * by.strikes()) * HULL_WEIGHT
+		"unready_all":
+			# The one fall that pays: every foe its kind readied stays down when it next
+			# falls, a second kill the team is spared, at that foe's whole HP.
+			if falling:
 				for o in sk.field_foes():
-					if o == f or not o.alive():
+					if o == by or not o.alive():
 						continue
 					for m in o.modifiers:
-						if m.id == "risen" and m.source == "foe:" + f.content_id:
+						if m.id == "risen" and m.source == "foe:" + by.content_id:
 							cost -= float(o.hp_max)
 							break
 	return cost
+
+
+## The specials _threat_now prices by reads of their own, so steps_threat leaves them be.
+const PRICED_MOVES := ["rally", "cleanse", "barrier", "ward_all", "prime", "regenerate"]
+
+
+## What the move a foe shows does beside its blow, in the points _threat_now counts (the
+## score's over HULL_WEIGHT, since every reader weighs a threat as hull): its own special
+## where the move is one the reads below do not already price, and every step it does also.
+## Nothing while it gathers: a countdown's steps land with its blow.
+static func steps_threat(f: Foe, sk: Skirmish) -> float:
+	if sk == null or not f.intends() or f.is_suppressed() or f.gathering():
+		return 0.0
+	var pick: Skirmish.MechState = f.target as Skirmish.MechState
+	if pick != null and (not pick.alive() or Skirmish.is_out(pick)):
+		pick = null
+	var cost := 0.0
+	if not Foe.is_attack_action(f.action) and not PRICED_MOVES.has(str(f.action.get("effect", ""))):
+		cost += effect_cost(sk, f, f.action, pick)
+	for st in f.action.get("also", []):
+		cost += effect_cost(sk, f, st, pick)
+	return cost / HULL_WEIGHT
 
 
 ## A web on a foe (the funnel-web's Web Bomb, 18 October; bursting as the round ends since 16
@@ -2483,18 +2557,19 @@ static func _buys_action(sk: Skirmish, ms: Skirmish.MechState) -> bool:
 static func _threat_now(f: Foe, sk: Skirmish = null) -> float:
 	if sk != null and sk.rallies_now(f):
 		return float(sk.rally_worth(f))
+	var steps := steps_threat(f, sk) if sk != null else 0.0
 	if sk != null and not f.is_suppressed():
 		match str(f.action.get("effect", "")):
 			"cleanse":
-				return _cleanse_worth(f, sk)
+				return _cleanse_worth(f, sk) + steps
 			"barrier", "ward_all", "prime", "regenerate":
-				return _foe_buff_worth(f, sk)
+				return _foe_buff_worth(f, sk) + steps
 	if not f.intends() or f.is_suppressed() or not f.attacks():
-		return 0.0
+		return steps
 	var machines: int = sk.targetable_mechs().size() if sk != null and f.hits_all() else 1
 	var blow := sk.foe_blow(f) if sk != null else f.damage()
 	# A primed foe's move leaves Ablating on what it hits (28 October), 2 a stack (a placeholder).
-	return float(blow * f.strikes() * machines) + PRIMED_WORTH * float(Effects.stacks_of(f, "primed"))
+	return float(blow * f.strikes() * machines) + PRIMED_WORTH * float(Effects.stacks_of(f, "primed")) + steps
 
 
 ## What a foe's buff special grants, as the bot reads it (28 October; placeholders): a Barrier
@@ -2535,7 +2610,11 @@ static func barrier_stakes(sk: Skirmish, foe: Foe, except: Skirmish.MechState = 
 ## that foe, Brittle its stacks for every machine still to act, Ablating its stacks, every other mark
 ## a point.
 static func _cleanse_worth(f: Foe, sk: Skirmish) -> float:
-	var marked := sk.cleanse_target(f)
+	return _marks_worth(sk.cleanse_target(f), sk)
+
+
+## The team's marks on one foe, each at what laying it is worth: what a cleanse of it takes.
+static func _marks_worth(marked: Foe, sk: Skirmish) -> float:
 	if marked == null:
 		return 0.0
 	var to_act: Array = []

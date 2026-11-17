@@ -1761,6 +1761,17 @@ func cleanse_target(f: Foe) -> Foe:
 	return best
 
 
+## The foe a heal mends (15 October, foes helping foes): the most hurt of its side by hull
+## missing, the healer included, the first in the order they stand on a tie; null when none
+## is hurt. One rule for the move and for the bot's read of it.
+func heal_target(_f: Foe) -> Foe:
+	var hurt: Foe = null
+	for other in field_foes():
+		if other.alive() and other.hp < other.hp_max and (hurt == null or other.hp_max - other.hp > hurt.hp_max - hurt.hp):
+			hurt = other
+	return hurt
+
+
 ## A foe that splits (the Gel): destroyed, so many of the named foe step up at once (Ryan, 25
 ## October: "spawn the half-gel immediately in place, not wait for the reinforcement phase"; the
 ## Gel is a wall, not an attacker), made by the battle's content; without a factory nothing
@@ -3877,11 +3888,8 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			log.append("%s: %s, recovers %d" % [f.display_name, str(a.get("name", "recovers")), f.hp - before])
 		"heal":
 			# Foes helping foes (15 October): the most hurt of its own by hull missing, itself
-			# included, the first in the order they stand on a tie.
-			var hurt: Foe = null
-			for other in field_foes():
-				if other.alive() and other.hp < other.hp_max and (hurt == null or other.hp_max - other.hp > hurt.hp_max - hurt.hp):
-					hurt = other
+			# included, the first in the order they stand on a tie (heal_target).
+			var hurt := heal_target(f)
 			if hurt == null:
 				log.append("%s: %s, and none of its own is hurt" % [f.display_name, str(a.get("name", "heals"))])
 			else:
