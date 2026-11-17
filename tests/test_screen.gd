@@ -550,19 +550,19 @@ func test_a_foe_aloft_is_drawn_out_of_reach_and_is_no_drop_target() -> void:
 	s.free()
 
 
-## A stat too long for its column takes a row of its own (16 November: on a phone a foe's aim,
-## "AIMS AT THE EXPOSED", ran into the size drawn beside it), so no value is drawn over the next.
+## A stat too long for its column takes a row of its own (16 November: on a phone a long value
+## ran into the size drawn beside it), so no value is drawn over the next.
 func test_a_long_stat_takes_a_row_of_its_own() -> void:
 	var sb := StatBlock.new()
 	sb.custom_minimum_size = Vector2(330, 0)
-	sb.set_items([["hp", "48"], ["attack", "18"], ["armour", "1"], ["rank", "FRONT"], ["sense", "AIMS AT THE EXPOSED"], ["size", "MASSIVE"]])
+	sb.set_items([["hp", "48"], ["attack", "18"], ["armour", "1"], ["rank", "FRONT"], ["note", "A VALUE FAR TOO LONG"], ["size", "MASSIVE"]])
 	var lay: Array = sb._layout(330.0)
 	assert_eq(lay[0][3], [1, 1], "short values sit two to a row")
 	assert_eq(lay[0][4], [2, 0], "the long one starts a row")
 	assert_eq(lay[0][5], [3, 0], "and what follows starts the next, never beside it")
 	assert_eq(int(lay[1]), 4, "four rows, where three had the two overlapping")
 	assert_eq(sb.custom_minimum_size.y, StatBlock.ROW_H * 4.0, "and its height follows")
-	sb.set_items([["hp", "48"], ["attack", "18"], ["sense", "AIMS AT THE EXPOSED"]])
+	sb.set_items([["hp", "48"], ["attack", "18"], ["note", "A VALUE FAR TOO LONG"]])
 	assert_eq(sb._layout(330.0)[0][2], [1, 0], "a long one last is alone on its row too")
 	sb.set_items([["hp", "48"], ["attack", "18"]])
 	assert_eq(int(sb._layout(330.0)[1]), 1, "and two short values are one row")

@@ -54,10 +54,11 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1267 tests, 373,092 checks, green on `ccr-178e0404-ptuh2m` (17 November, the reboot
-  machines' proposal and its probe over main at `d657a20`, the check the leftovers test's load of
-  the new tool; a stale import had failed the rig and view suites until `--import` ran again).
-  Before it, 1267 tests, 373,091 checks, green on `ccr-722ca9f0-yj8na3` (17 November, his
+- Tests: 1269 tests, 373,351 checks, green on `ccr-722ca9f0-yj8na3` (17 November, the foes'
+  targeting built afresh, over main at `d657a20`). The runner fails a run whose tests never
+  ran since that day: a script that did not compile had read as "0 checks, 0 failures" and a
+  clean exit, so read the checks' count, never the exit code alone, on any older commit.
+  Before it, 1267 tests, 373,091 checks, green on the same branch (17 November, his
   eighteenth round's first two: a reboot opens the Polar Bear's seal, the Whip Scorpion's
   blast with no gate, over main at `0565624`). Before it, 1266 tests, 373,079 checks, green on
   the same branch (17 November, his
@@ -2120,21 +2121,27 @@ still wears at it, and by a session's read what lands with no aim still reaches 
 round the climb is announced is the window. A lone Roc costs about a round and a point of
 hull more (`docs/measurements.md`, a direction). **Phased keeps its name for now.** A foe's
 aim no longer runs into the stat beside it on its page.
-**The foes' targeting is to be designed afresh** (Ryan, 17 November: "let's make it good and fun
+**The foes' targeting is five lines, built 17 November** (Ryan: "let's make it good and fun
 and make sense and not try to 'fix' what was already there, since those rules were built for
 what is basically a completely different game"; Slice and Dice's "random, don't overkill, and a
-spattering of 'target highest HP' and 'target lowest HP'"; "when you need a 10 page document to
-detail our targeting rules, something seems very wrong to me"). The audit of 16 November took
-the aims as its frame and put five repairs to him; they are withdrawn. Its cuts stand: the
-rule before 2 October with the runner's comparison that kept it, and the map's fastest hunt,
-a test holding the aims and the hunts to content. Its page of scenes stands as the read of the
-old aims (Pages, below; `docs/measurements.md`): heat names its machine, and the aim at the
-exposed picked like chance. In the calls' place, one page that waits on him
-(`docs/targeting_proposal.md`; the bible's section 12): anyone, never overkill, the mark and
-the commitment as they are built, and a word on the attack where its threat calls for one,
-the strongest, the weakest or the hottest, a tie drawn; every other aim would go, a foe's own
-with them. Nothing of it is built. `docs/balance.md` still prints the comparison section of
-its last run; the next run drops it.
+spattering of 'target highest HP' and 'target lowest HP'"; his go: "if it's the
+strongest/weakest/hottest table from above, then yes I agree and you can go ahead"). An attack
+at one machine picks anyone as the round opens; the foes never overkill; a few attacks carry a
+word for whom they go for, the strongest, the weakest or the hottest, a tie drawn level; an
+Exposed machine comes first; and a pick never moves by itself (the rules' Foes, Its target;
+the bible's targeting row). The word is the move's (`aim` on an action in
+`content/foes.json`): no foe has an aim of its own, and the validator refuses one. A move at
+every machine or at nobody holds no pick, so `Foe.intends()` is the read of "does it show a
+move", never `target != null`. Out of the engine with their tests, the probe of 23 October and
+the runner's aim lever: the aim at the exposed and its weights, the armed, fires as one, both
+fallbacks. Fourteen foes pick anyone that did not; the Red Dragon's Breath and the Black
+Mage's Fire and Flare carry the hottest, and the Djinn's Unmake a fourth word, the most
+buffed, both a session's reads and his to overrule (the bible's section 12); no move carries
+the strongest or the weakest yet, his to mark in the tiers' pass. The words on the move's
+line and three foe pages are a session's drafts. A save from before is set aside (version
+39). Its page of scenes stands as the read of the old aims (Pages, below). `docs/balance.md`
+still prints the comparison section of its last run and the old aims' cells; the next run
+drops both.
 **First now: the foes' pass, the rest**
 (the to-do's line): the content, put to him on 16 November as the proposal's section 28 and
 waiting on his marks: the moves that take the rank and file's countdowns' place, a fall for
@@ -2157,15 +2164,14 @@ blasting about once a fight at 8 to 10 heat, a round sooner than the gated blast
 about the same (`docs/measurements.md`, a direction; his to judge in play, the to-do's line).
 A dying foe's
 single blow lands on the machine that made the kill, as its curse does ("yes, hit its killer,
-if it has one"), which leaves the pick a move at nobody draws with no reader: it goes with
-the targeting build. **A reboot opens a sealed Polar Bear** (his eighteenth round: "Polar bear
+if it has one"). **A reboot opens a sealed Polar Bear** (his eighteenth round: "Polar bear
 unseals when rebooting. It's a good change because you're never accidentally stuck sealed"):
 the shell and its armour go as the die drops. Still his (the bible's section 12): the marks
 on the rows; which gathers
 stay beside the Roc's and the bombs', the Great Needler's by lean; and Aloft's name. His codex cleanup and
 terminology pass is a session of his own after this work (the to-do's line keeps what was
 found for it). On his word: the engine for a foe's Phased and
-for an immunity, the targeting build, then the rest of the content and a read of what
+for an immunity, then the rest of the content and a read of what
 changed.
 The table of every rider, buff and debuff (`docs/vocabulary_table.md`) stands with its page
 (Pages, below) as the record of his marks until the pass retires.

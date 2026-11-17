@@ -136,7 +136,7 @@ func test_every_targeted_intent_turns_on_it_until_the_blows_drawn_would_wreck_it
 			if f != warden and f.target == marked:
 				on_it += 1
 		# Three blows of 10 wreck a hull of 25; the fourth foe picks as it would, among the rest.
-		assert_eq(on_it, 3, "seed %d: the field turns on it, whatever each foe's aim, up to the blows that would wreck it" % seed)
+		assert_eq(on_it, 3, "seed %d: the field turns on it, whatever each move's word, up to the blows that would wreck it" % seed)
 		var order: Array = sk.field_foes().filter(func(f) -> bool: return f != warden)
 		assert_eq([order[0].target, order[1].target, order[2].target], [marked, marked, marked], "seed %d: in the order they strike" % seed)
 		assert_true(order[3].target != marked and order[3].target != null, "seed %d: and never an overkill: the rest pick intent targets as normal" % seed)

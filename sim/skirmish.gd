@@ -300,8 +300,6 @@ var banked: int = 0
 ## Makes a foe from a content id, for a summoning action; set by the battle (the content
 ## database), left empty by tests, in which case a summon calls nothing up.
 var foe_factory: Callable = Callable()
-## The shared pick of a rank that fires as one this round, by rank; cleared as the round opens.
-var _focus: Dictionary = {}
 ## The undo (Ryan, 2 November, the randomness pass: "undo to your last roll"): every spend and
 ## reroll since the last draw from the stream can be taken back, in the order made, the fight
 ## put back as it was before each. A draw is the floor, since a draw taken back would show its
@@ -1054,7 +1052,7 @@ func rally_worth(r: Foe) -> int:
 	var v := maxi(0, int(r.action.get("value", 0)))
 	var total := 0
 	for x in field_foes():
-		if not rallies_on(x).has(r) or not x.attacks() or x.is_suppressed() or x.target == null:
+		if not rallies_on(x).has(r) or not x.attacks() or x.is_suppressed() or not x.intends():
 			continue
 		var machines := targetable_mechs().size() if x.hits_all() else 1
 		total += (foe_blow(x) - x.damage_of(x.action, incoming_rally(x) - v)) * x.strikes() * machines
@@ -1508,11 +1506,11 @@ func start_round() -> void:
 			log.append("%s's hopper plates it: %s ×%d" % [ms.unit.display_name, Effects.STATUS["braced"]["name"], Effects.plated(ms.unit)])
 	# Every foe announces its move for the round: which action, at whom. Chosen now, before
 	# the player acts, so the intent chips and the forecast are exact. The move first, from
-	# the ones its conditions allow (never the same special twice running), then the pick by
-	# the move's aim, each foe on its own; a rank that fires as one shares its pick. The foes
-	# draw in the order they strike and never over-commit (Ryan, 24 October, after Slice and
-	# Dice): a machine the blows already drawn would wreck is skipped while another stands.
-	_focus.clear()
+	# the ones its conditions allow (never the same special twice running), then its pick, each
+	# foe on its own, when the move is aimed at one machine: a move at every machine or at
+	# nobody draws none (Ryan, 17 November). The foes draw in the order they strike and never
+	# over-commit (Ryan, 24 October, after Slice and Dice): a machine the blows already drawn
+	# would wreck is skipped while another stands.
 	_refresh_kin()
 	var ahead := {}
 	var announced: Array = []   # the foes whose move for this round is out, in the order they strike
@@ -1522,7 +1520,9 @@ func start_round() -> void:
 		var carried := not f.pending.is_empty()
 		_choose_foe_action(f, announced)
 		announced.append(f)
-		if not (carried and f.target != null and (f.target as MechState).alive() and not is_out(f.target as MechState)):
+		if not f.aims_at_one():
+			f.target = null   # nothing of it lands on one machine: no pick, and no draw
+		elif not (carried and f.target != null and (f.target as MechState).alive() and not is_out(f.target as MechState)):
 			f.target = _pick_mech_target(f, _doomed(ahead))   # a pick that fell, or went out of reach as the round ended (Phased), is drawn again
 		_draw_blows(f, ahead)
 	state = State.ASSIGN
@@ -1776,16 +1776,6 @@ func cleanse_target(f: Foe) -> Foe:
 			best = o
 			most = n
 	return best
-
-
-## The live machines showing an intact weapon or debuff: what a foe that aims at the armed looks for.
-func _armed_mechs() -> Array[MechState]:
-	var out: Array[MechState] = []
-	for ms in targetable_mechs():
-		var face := ms.face()
-		if face != null and face.is_attack():
-			out.append(ms)
-	return out
 
 
 ## A foe that splits (the Gel): destroyed, so many of the named foe step up at once (Ryan, 25
@@ -2730,7 +2720,7 @@ func _turn_death_check() -> void:
 ## own (the mechanics audit's 13, 27 October).
 func _foe_turn(f: Foe) -> void:
 	var t := f.target as MechState
-	if t == null or not t.alive() or is_out(t):
+	if f.aims_at_one() and (t == null or not t.alive() or is_out(t)):
 		t = _repick(f)   # its machine fell, or is out of the fight: the next in line
 	_acted.append(f)   # from its first blow, a suppress landing on it costs its next action
 	if not f.pending.is_empty():
@@ -5137,9 +5127,9 @@ func _lure(ms: MechState, foes: Array) -> void:
 	for foe in foes:
 		if foe.fresh:
 			continue   # one that stepped up mid-round has had its round: nothing to turn
-		if foe.hits_all() or foe.acts_on_nobody():
-			idle.append(foe.display_name)
-		if foe.target != ms:
+		if not foe.aims_at_one():
+			idle.append(foe.display_name)   # a move at every machine or at nobody holds no pick
+		elif foe.target != ms:
 			foe.target = ms
 			turned.append(foe.display_name)
 	if not turned.is_empty():
@@ -5166,7 +5156,7 @@ func _disrupt(foes: Array) -> void:
 			log.append("%s is disrupted, and has nothing else to do" % foe.display_name)
 			continue
 		var was := str(foe.action.get("name", ""))
-		var aimed: bool = not foe.acts_on_nobody() and not foe.reaches_every_machine()   # its pick was its intent, shown
+		var aimed: bool = foe.aims_at_one()   # the move it leaves held a pick, its intent, shown
 		foe.pending = {}   # a gathered move is broken off
 		foe.charge = 0
 		Effects.remove(foe, "aloft")   # and a foe that climbed for it comes down with it
@@ -5175,10 +5165,12 @@ func _disrupt(foes: Array) -> void:
 		_begin_countdown(foe)
 		# Its pick holds (Ryan, 26 October: the intent moves on a Disrupt "only if the disrupt would
 		# result in an invalid target"): a new one when the machine is gone or Phased, or when the
-		# move it leaves aimed at no one machine (a brace, a blow at every machine), so the pick it
-		# carried was never an intent the player saw.
+		# move it leaves aimed at no one machine (a brace, a blow at every machine) and so held no
+		# pick; and none at all when the move it turns to is aimed at no one machine.
 		var t := foe.target as MechState
-		if t == null or not t.alive() or is_out(t) or not aimed:
+		if not foe.aims_at_one():
+			foe.target = null
+		elif t == null or not t.alive() or is_out(t) or not aimed:
 			foe.target = _repick(foe)
 		log.append("%s is disrupted: %s instead of %s" % [foe.display_name, str(next.get("name", "")), was])
 
@@ -5546,21 +5538,19 @@ func _injure_entry(ms: MechState, idx: int) -> String:
 	return "destroyed"
 
 
-## Whom a foe strikes (decided 2 October): its own pick, by the sense its move follows, at
-## random unless the foe carries an aim (24 October). Anything, uniform; the exposed, weighted
-## by the hull its blow would reach, so a shield standing lowers the draw and a shield down
-## raises it; heat, the hottest machine; the armed, a machine showing an intact weapon or debuff; the
-## buffed, the most stacks of buffs (each of those two the exposed when no machine qualifies);
-## fires as one (focus), the rank's shared pick. No pick lands on a machine in `avoid`, which
-## the blows already drawn this round would wreck, while another stands. The pick is a
-## commitment: a foe whose target shields up still swings at it. A pick made again mid-round is
-## _repick's, and draws nothing. The rule before 2 October, every foe on the lowest shield, left
-## the engine on 16 November with the runner's comparison that kept it.
+## Whom a foe strikes (Ryan, 17 November, after Slice and Dice: "random, don't overkill, and a
+## spattering of 'target highest HP' and 'target lowest HP'"), for a move aimed at one machine:
+## any machine, drawn level, unless the move carries a word for whom it goes for (Foe.AIMS): the
+## strongest or the weakest by hull and shield together, the hottest by heat, the most buffed
+## by stacks of buffs. Each is the most or the least of one thing the screen shows, a tie
+## drawn level, so a field that is level picks anyone and no word falls back on another. No
+## pick lands on a machine in `avoid`, which the blows already drawn this round would wreck,
+## while another stands. The pick is a commitment: a foe whose target shields up or vents its
+## heat still swings at it. A pick made again mid-round is _repick's, and draws nothing.
 func _pick_mech_target(f: Foe, avoid: Array = []) -> MechState:
 	var live := targetable_mechs()
 	if live.is_empty():
 		return null
-	var r := rng
 	# Never over-commit: a machine the blows already drawn would wreck is passed over while
 	# another stands.
 	var open: Array[MechState] = []
@@ -5569,107 +5559,54 @@ func _pick_mech_target(f: Foe, avoid: Array = []) -> MechState:
 			open.append(ms)
 	if not open.is_empty():
 		live = open
-	# An Exposed machine draws every targeted intent as the round opens, whatever the foe's aim,
-	# until the blows already drawn would wreck it; from there the rest pick as they would (Ryan,
-	# 15 November: "keep the logic where enemies don't try and overkill. That helps keep it fair.
-	# So the whole field targets up until predicted death, then the rest pick intent targets as
-	# normal"). No draw is made for it.
+	# An Exposed machine draws every targeted intent as the round opens, whatever the move's
+	# word, until the blows already drawn would wreck it; from there the rest pick as they would
+	# (Ryan, 15 November: "keep the logic where enemies don't try and overkill. That helps keep
+	# it fair. So the whole field targets up until predicted death, then the rest pick intent
+	# targets as normal"). No draw is made for it.
 	var marked := exposed_mech()
 	if marked != null and open.has(marked):
 		return marked
-	match f.aim_of():
-		"anything":
-			return live[r.randi_range(0, live.size() - 1)]
-		"heat":
-			var hottest: Array[MechState] = []
-			for ms in live:
-				if hottest.is_empty() or ms.heat > hottest[0].heat:
-					hottest = [ms]
-				elif ms.heat == hottest[0].heat:
-					hottest.append(ms)
-			return hottest[r.randi_range(0, hottest.size() - 1)]
-		"armed":
-			var armed: Array[MechState] = []
-			for ms in _armed_mechs():
-				if live.has(ms):
-					armed.append(ms)
-			if armed.is_empty():
-				return _pick_exposed(f, live, r)
-			return armed[r.randi_range(0, armed.size() - 1)]
+	var word := f.aim_of()
+	if word.is_empty():
+		return live[rng.randi_range(0, live.size() - 1)]
+	var most: Array[MechState] = []
+	var top := 0
+	for ms in live:
+		var n := _aim_measure(word, ms)
+		if most.is_empty() or n > top:
+			top = n
+			most = [ms]
+		elif n == top:
+			most.append(ms)
+	return most[rng.randi_range(0, most.size() - 1)]
+
+
+## What a move's word reads on a machine, the most of it picked: its hull and shield together
+## (the strongest; the least of them the weakest), its heat (the hottest), its stacks of buffs
+## (the most buffed, never stores).
+func _aim_measure(word: String, ms: MechState) -> int:
+	match word:
+		"strongest":
+			return ms.unit.hull + ms.unit.shield
+		"weakest":
+			return -(ms.unit.hull + ms.unit.shield)
+		"hottest":
+			return ms.heat
 		"buffed":
-			# The buffed (21 October): the machine carrying the most stacks of buffs (never stores),
-			# drawn among the tied; the exposed when none carries any.
-			var most: Array[MechState] = []
-			var top := 0
-			for ms in live:
-				var n := Effects.buff_stacks(ms.unit)
-				if n > top:
-					top = n
-					most = [ms]
-				elif n == top and n > 0:
-					most.append(ms)
-			if most.is_empty():
-				return _pick_exposed(f, live, r)
-			return most[r.randi_range(0, most.size() - 1)]
-		"focus":
-			var shared = _focus.get(f.rank, null)
-			if shared != null and shared.alive() and not is_out(shared) and live.has(shared):
-				return shared
-			var pick := _pick_exposed(f, live, r)
-			_focus[f.rank] = pick
-			return pick
-	return _pick_exposed(f, live, r)
+			return Effects.buff_stacks(ms.unit)
+	return 0
 
 
 ## A pick made again mid-round (its machine fell before it acts or is Phased, a Disrupted foe's
 ## gone): the next machine in line, left to right, that stands and is not Phased, whatever the
-## foe's aim (Ryan, 26 October: Slice and Dice's rule, "it just targets the next ally in line",
+## move's word (Ryan, 26 October: Slice and Dice's rule, "it just targets the next ally in line",
 ## which the player can tell without the preview, and an aim breaking it would be "more
 ## unpredictable info"; it retires a draw from a stream of the fight's own, randomness the player
 ## could see only through the preview).
 func _repick(_f: Foe) -> MechState:
 	var live := targetable_mechs()   # in field order, left to right
 	return null if live.is_empty() else live[0]
-
-
-## The exposed: each machine weighs one, plus the hull this foe's blows would reach through
-## its shield, armour, Barrier and Ward as they stand, plus half of any shield they would
-## break (a shield about to fail is exposure too), and the pick is drawn by weight from `r`.
-func _pick_exposed(f: Foe, live: Array[MechState], r: RandomNumberGenerator) -> MechState:
-	var weights: Array[float] = []
-	var total := 0.0
-	for ms in live:
-		var w := 1.0 + float(hull_reached(f, ms)) + float(shield_broken(f, ms)) * 0.5
-		weights.append(w)
-		total += w
-	var roll := r.randf() * total
-	for i in range(live.size()):
-		roll -= weights[i]
-		if roll <= 0.0:
-			return live[i]
-	return live[live.size() - 1]
-
-
-## The shield this foe's blows would take off a machine, when they would take all of it;
-## zero when the shield holds.
-func shield_broken(f: Foe, ms: MechState) -> int:
-	if foe_blow(f) <= 0 or ms.unit.shield <= 0:
-		return 0
-	var walk := {"shield": ms.unit.shield, "barrier": Effects.has(ms.unit, "barrier")}
-	blows_on(ms, f, walk)
-	return ms.unit.shield if int(walk["shield"]) <= 0 else 0
-
-
-## The hull this foe's blows would reach on a machine as it stands: its damage and its strikes
-## against the shield, armour, Barrier and damage taken the forecast reads.
-func hull_reached(f: Foe, ms: MechState) -> int:
-	if foe_blow(f) <= 0:
-		return 0
-	var walk := {"shield": ms.unit.shield, "barrier": Effects.has(ms.unit, "barrier")}
-	var through := 0
-	for r in blows_on(ms, f, walk):
-		through += int(r["through"])
-	return mini(through, maxi(0, ms.unit.hull))
 
 
 # ---------------------------------------------------------------- formation

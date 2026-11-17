@@ -184,22 +184,6 @@ def lever_move(root, arg):
     return 'foe moves %s' % arg
 
 
-def lever_aim(root, arg):
-    """Every foe's aim, and every move's own, set to one: aim:anything (a level draw, the random baseline)"""
-    aim = arg or 'anything'
-    d = jl(root, 'foes')
-    moved = 0
-    for f in d['entries']:
-        if f.get('aim', 'exposed') != aim:
-            moved += 1
-        f['aim'] = aim
-        for a in f.get('actions', []):
-            if 'aim' in a:
-                a['aim'] = aim
-    js(root, 'foes', d)
-    return 'every foe aims at %s (%d moved)' % (aim, moved)
-
-
 def lever_brittle_clock(root, arg):
     """Brittle's clock in the engine's status table: brittle_clock:tick (a stack a round) or brittle_clock:half"""
     p = f'{root}/sim/effects.gd'

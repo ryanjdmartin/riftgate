@@ -411,7 +411,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   headed by the word ("Buff, Empowered +2", "Debuff, Ablating ×2") as an Ability's is, what it does
   a tap on its term away, and the round's warnings (an overheat, a wreck, a component at risk); then a foe's intent
   under its chip as the field draws it, a line a mark: its move's name,
-  its blow as it will land read against its own, the machine it is aimed at by name, when it
+  its blow as it will land read against its own, the machine it is aimed at by name with its
+  move's word after it ("Skua, the hottest machine"), when it
   lands, its riders and its text. The colours are the unit's, so a foe hitting harder is green
   and up. A suppressed foe shows no intent.
 - **The codex** (double-tap a machine or a foe) is the unit between fights, never a combat
@@ -492,14 +493,16 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   and an arc adds no heat. Its footprint, like an area's, is read from the strike's own foe: an arc
   spreads nowhere, a foe an area reaches never arcs, and a foe both beside the target and
   Shocked takes one blow, the area's.
-- **Lure**: every foe reached turns on the spender for the round, a felled one too.
+- **Lure**: every foe reached turns on the spender for the round, a felled one too. A move at
+  every machine or at nobody holds no pick, so it has nothing to turn.
 - **Expose** (the Needletail's Fovea Designator, the Swallowtail's Spotting Flare, the Lammergeier's Lorentz Contractor): every foe reached
   is Exposed through the next round, a felled one too; a second Expose refreshes it, never
   adds.
 - **Disrupt**: every foe reached takes the next move in its list that its
-  conditions allow, keeping its pick while the machine stands and is in the fight; a new one
-  otherwise, and when the move it leaves aimed at no one machine (a brace, a blow at every
-  machine), since the pick it carried was never shown. Disrupt resolves before Lure. The Baboon's
+  conditions allow, keeping its pick while the machine stands and is in the fight; the next
+  machine in line otherwise, and when the move it leaves held no pick (a brace, a blow at
+  every machine); and no pick at all when the move it turns to is aimed at no one machine.
+  Disrupt resolves before Lure. The Baboon's
   Retrocausal Shroud, spent on itself or an ally, Cleanses it and gives Disrupt to every foe
   showing intent on it, its pick or a blow at every machine: they change their move, not their
   pick.
@@ -874,8 +877,8 @@ On a machine:
   other body): its armour counts for nothing, its own, any Armoured and what a kit grants,
   from the moment it lands through the round after. Armour it gains meanwhile is gained and
   does nothing until the mark ends; its shield, and a reduction that is no armour, are
-  untouched. As that round opens every foe's targeted move turns on it, whatever the foe's
-  aim, in the order they strike, until the blows already drawn would wreck it; from there the
+  untouched. As that round opens every foe's targeted move turns on it, whatever the move's
+  word, in the order they strike, until the blows already drawn would wreck it; from there the
   rest pick as they would. A move at every machine or at none is unmoved, a countdown's pick
   carried from the round before holds, and a machine out of reach as the round opens (Phased)
   draws nothing. Everything after is as ever: a Lure pulls a blow off it, and a foe that picks
@@ -1098,8 +1101,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   weapon plays round it. Ablating is damage, never heat: a point a
   stack off the shield and then the hull (Statuses, above). A foe's ablate leaves Ablating
   and its scorch
-  leaves Scorched, a stack a blow; the Drake's Stoke sets one machine Ablating, picked as its
-  target is (at random: no foe but the Black Mage carries the heat aim), and
+  leaves Scorched, a stack a blow; the Drake's Stoke sets one machine Ablating, any machine,
+  as a move with no word picks, and
   the Magma Elemental's Eruption, the Black Mage's Fira and the Summoner's Pyroclasm scorch every
   machine.
 
@@ -1117,7 +1120,7 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
 
 ### Foes
 - A foe has HP (a foe's word; a machine has hull), a base attack, a rank it holds, a size,
-  flat armour (a boss only where its kit is armour, the Cinder Tortoise's stepping by the tier; the promoted forms 2) and perhaps an aim. Its damage
+  flat armour (a boss only where its kit is armour, the Cinder Tortoise's stepping by the tier; the promoted forms 2). Its damage
   never rolls.
 - **Its move**: from the moves whose conditions hold, weighted by each move's own weight (attacks mostly 2, specials 1, the Bomb's Self-Destruct 3), never
   the same special twice running while anything else is open. The foes announce in the order
@@ -1147,12 +1150,17 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   in the fight, nor a merge while nothing of its kinds stands on the field, nor an Expose while
   another foe's is out this round or a machine stands Exposed: one machine at a time, and the
   whole field's fire every other round at the most.
-- **Its target**, drawn as the round opens: at random, unless the foe or its move carries an
-  aim, as its threat calls for: exposed (weighted by the hull its blows would reach
-  plus half the shield they would break), heat (the hottest machine), armed (a machine
-  showing an intact weapon or debuff, the exposed when none does), focus (its rank shares one pick),
-  buffed (the machine carrying the most stacks of buffs, the exposed when none does). A
-  machine that stands Exposed comes before every aim (Exposed, above). The
+- **Its target**, for a move aimed at one machine, drawn as the round opens and shown as its
+  arrow: any machine, level, unless the move carries a word for whom it goes for. The words
+  are the strongest and the weakest (the most and the least hull and shield together), the
+  hottest (the most heat) and the most buffed (the most stacks of buffs). A tie is drawn level
+  among the tied, so a field that is level picks anyone and no word falls back on another.
+  The word is the move's: a foe has none of its own, and one may carry a seeking breath and a
+  plain claw. The Red Dragon's Breath and the Black Mage's Fire and Flare go for the hottest
+  and the Djinn's Unmake for the most buffed; no move carries the strongest or the weakest
+  yet. A move at every machine or at nobody (a brace, a regrow, a rally, a scorch all) draws no
+  pick and shows no arrow. A
+  machine that stands Exposed comes before every word (Exposed, above). The
   foes pick in the order they strike and never over-commit: a machine the blows already picked
   would wreck through its shield and armour is passed over while another stands (a blow at
   every machine counts on each; a special, a suppressed foe and a countdown still gathering
@@ -1160,12 +1168,10 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   machine leaving the fight (Swallowed), or by a Disrupt whose foe finds its machine
   gone or out of the fight; a machine Phased as the round ended is out of the picks the next
   round opens with, a countdown's carried pick drawn again; a foe whose machine has fallen or is out of the fight when it acts
-  strikes the next machine in line, left to right, that stands in the fight, whatever its aim,
+  strikes the next machine in line, left to right, that stands in the fight, whatever its move's word,
   so the player can tell the pick it
   will make, and the round preview shows it. The preview never moves a pick: a foe aimed at a machine the round will wreck stays
-  aimed at it, and the preview shows where its blow lands after. A special that acts on nobody
-  in particular (a brace, a regrow, a rally, a scorch all) keeps its pick and shows no arrow:
-  it is aimed at no machine.
+  aimed at it, and the preview shows where its blow lands after.
 - **A blow** is its base attack, plus its Empowered, its swarm for each other live foe of its
   type and its grudge (its number for every foe the team has killed this fight, every fall but a
   foe gone whole, a burst or a part falling with its core, and one taken in by a merge), times
@@ -1180,8 +1186,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   the least, the validator refusing it on a foe of the line dealt at tier one, while an elite
   and a boss may hold any mechanic at any tier; no foe carries it yet),
   self-destruct (the striker dies after, for good), every machine
-  (each strike lands on every live machine in turn, its number what each takes; no aim or
-  Lure moves it). Scorch, ablate, corrupt and brittle each say their stacks a blow, as the player's
+  (each strike lands on every live machine in turn, its number what each takes; it holds no
+  pick, so no word and no Lure moves it). Scorch, ablate, corrupt and brittle each say their stacks a blow, as the player's
   Ablate does (Scorch 2: two). What a foe lays that halves says 2 at the
   least, a blow's Brittle and a rally's Empowered: one stack is gone at its first halving, a
   machine's Brittle as its next turn starts and the rallier's own share as its turn ends. The validator holds a foe's moves to it. No such floor binds the player's pieces:

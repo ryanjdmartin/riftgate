@@ -28,7 +28,7 @@ slot: a new text, a mark, a note) until a session folds it in:
     python3 tools/hangar_text.py --fold DIR         # write content/*.json, the ledger and docs/voice.md; print the batch that clears the documents
     python3 tools/hangar_text.py --corpus           # docs/voice.md again, from the ledger
 
-Text the code composes (a status's line in sim/effects.gd, a foe's aim and condition words in
+Text the code composes (a status's line in sim/effects.gd, a move's aim and condition words in
 sim/foe.gd) is listed read-only, so it can be seen, compared and noted on; the fold changes no
 code. What it does not list at all is said in NOT_LISTED, which the page prints.
 """
@@ -89,8 +89,8 @@ KINDS = [
      "what": "A status's one-line description, written in sim/effects.gd.",
      "where": "Only the codex's KEPT FOR THE BATTLE row, for a status a battle keeps (the Ammit's Souls). Since 2 November a chip says its name and count and a tap opens the term's entry, so nothing else draws these."},
     {"id": "intent_words", "label": "Aims and conditions (in code)", "group": "",
-     "what": "How a foe's aim and a move's condition are said, written in sim/foe.gd.",
-     "where": "A foe's codex: its sense (AIMS AT THE EXPOSED) and the condition after a move's name (when below half)."},
+     "what": "How a move's word for whom it goes for and a move's condition are said, written in sim/foe.gd.",
+     "where": "A move's lines, in a foe's codex and its intent: its target (The hottest machine) and its condition (When below half)."},
 ]
 
 # What the page says it does not carry, so the gap is seen and not guessed at.
@@ -111,7 +111,7 @@ OTHER_KEYS = {
     "chassis.makers": {"id", "name", "style", "voice", "sponsorship"},
     "components.entries": {"id", "name", "maker", "shape", "sound", "status"},
     "modules.entries": {"id", "name", "maker"},
-    "foes.entries": {"id", "name", "faction", "rank", "aim", "promotes", "guard", "role"},   # role: a pusher's, a hunter's or a flanker's (10 November), read by the validator and never shown
+    "foes.entries": {"id", "name", "faction", "rank", "promotes", "guard", "role"},   # role: a pusher's, a hunter's or a flanker's (10 November), read by the validator and never shown
     "factions.entries": {"id", "name", "bleed", "reward_bias"},
     "loot.entries": {"id", "name"},
 }
@@ -392,7 +392,7 @@ def gd_string(s):
 
 
 def code_slots():
-    """The shown text two tables in the code hold, read-only: a status's line and a foe's aim
+    """The shown text two tables in the code hold, read-only: a status's line and a move's aim
     and condition words. A table that moves or changes shape is a problem, never a silent gap."""
     slots, problems = [], []
     src = read("sim/effects.gd")

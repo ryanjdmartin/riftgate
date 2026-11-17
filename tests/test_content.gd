@@ -1939,7 +1939,8 @@ func test_every_component_names_a_silhouette_class() -> void:
 
 func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 	# The set of 2 October (the bible, section 9): rank and file carry one or two moves and a
-	# boss three; every foe reads an aim the engine knows; the ghoul's claw is a swarm blow; a
+	# boss three; a move's word for whom it goes for is one the engine knows, on a move aimed at
+	# one machine; the ghoul's claw is a swarm blow; a
 	# boss wears armour only where its kit is armour (Ryan, 2 November), a point or two, and one
 	# whose armour steps by the tier starts from at least a point.
 	var db := ContentDB.new()
@@ -1947,7 +1948,8 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 	assert_true(db.validate().is_empty(), "the set validates: %s" % str(db.validate()))
 	for id in db.foes.keys():
 		var f := db.make_foe(id)
-		assert_true(Foe.AIMS.has(f.aim), "%s aims by a word the engine knows" % id)
+		for a in f.actions:
+			assert_true(f.aim_of(a).is_empty() or (Foe.AIMS.has(f.aim_of(a)) and Foe.lands_on_one(a)), "%s's %s goes for whom by a word the engine knows, on a move aimed at one machine" % [id, str(a.get("id", ""))])
 		if f.boss:
 			assert_eq(f.actions.size(), 3, "%s, a boss, has three moves" % id)
 			assert_true(f.armour >= 0 and f.armour <= 2, "%s, a boss, wears no armour or a point or two" % id)
@@ -2062,6 +2064,52 @@ func test_a_foes_stacking_rider_says_its_number() -> void:
 	f["actions"][0].erase("corrupt")
 	f["actions"].append({"id": "frost", "name": "Frost", "kind": "debuff", "effect": "corrupt_all", "weight": 1, "text": "", "status": "implemented"})
 	assert_true(_refused(db, "foe test_licker", "says what it lays"), "an effect that lays stacks says how many")
+
+
+## The word for whom an attack goes for is its move's (Ryan, 17 November: "the heat target is a
+## property of the attack, not the dragon itself"): a foe carries no aim of its own, the word
+## is one the engine knows, it sits on a move aimed at one machine alone, and a blow at every
+## machine takes no step aimed at one, since it draws no pick.
+func test_an_aim_is_a_moves_word_on_a_move_aimed_at_one_machine() -> void:
+	var db := _fresh()
+	var f: Dictionary = db.foes["revenant"].duplicate(true)
+	f["actions"] = [{"id": "breath", "name": "Breath", "kind": "attack", "weight": 1, "aim": "hottest", "text": "", "status": "implemented"}]
+	db.foes["test_seeker"] = f
+	for e in db.validate():
+		assert_false(e.begins_with("foe test_seeker"), "a word on a blow at one machine validates clean: %s" % e)
+	assert_eq(db.make_foe("test_seeker").aim_of(), "hottest", "and the move carries it into the fight")
+	f["aim"] = "hottest"
+	assert_true(_refused(db, "foe test_seeker", "a foe has no aim of its own"), "an aim on the foe is refused")
+	f.erase("aim")
+	f["actions"][0]["aim"] = "exposed"
+	assert_true(_refused(db, "foe test_seeker", "aim must be one of"), "and a word the engine does not know")
+	f["actions"][0]["aim"] = "weakest"
+	f["actions"][0]["keywords"] = ["all"]
+	assert_true(_refused(db, "foe test_seeker", "aim is for a move aimed at one machine"), "a blow at every machine takes no word")
+	f["actions"][0].erase("aim")
+	f["actions"][0]["also"] = [{"effect": "jam"}]
+	assert_true(_refused(db, "foe test_seeker", "no step of it may be aimed at one machine"), "nor a step aimed at one machine")
+	f["actions"][0]["also"] = [{"effect": "rally", "value": 2}]
+	for e in db.validate():
+		assert_false(e.begins_with("foe test_seeker"), "a step on its own side is no pick: %s" % e)
+	f["actions"] = [{"id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "aim": "strongest", "text": "", "status": "implemented"},
+		{"id": "claw", "name": "Claw", "kind": "attack", "weight": 1, "text": "", "status": "implemented"}]
+	assert_true(_refused(db, "foe test_seeker", "aim is for a move aimed at one machine"), "and a move at nobody takes no word")
+	# The move's target line says the word: whole in the codex, after the machine in a fight.
+	f["actions"] = [{"id": "breath", "name": "Breath", "kind": "attack", "weight": 1, "aim": "hottest", "text": "", "status": "implemented"},
+		{"id": "claw", "name": "Claw", "kind": "attack", "weight": 1, "text": "", "status": "implemented"},
+		{"id": "undo", "name": "Undo", "kind": "debuff", "effect": "dispel", "value": 1, "weight": 1, "aim": "buffed", "text": "", "status": "implemented"}]
+	var foe := db.make_foe("test_seeker")
+	var said := func(a: Dictionary, live: bool, target: String) -> String:
+		var out: Array[String] = []
+		for l in EntryReadout.move_lines(foe, a, db, live, target):
+			out.append(str(l["text"]))
+		return "\n".join(out)
+	assert_true(str(said.call(foe.actions[0], false, "")).contains("Target: The hottest machine"), "the codex: its word is the target's line (%s)" % str(said.call(foe.actions[0], false, "")))
+	assert_true(str(said.call(foe.actions[0], true, "Skua")).contains("Target: Skua, the hottest machine"), "a fight: the machine it picked, then its word")
+	assert_true(str(said.call(foe.actions[1], false, "")).contains("Target: Any machine"), "a blow with no word says any machine")
+	assert_true(str(said.call(foe.actions[1], true, "Skua")).contains("Target: Skua") and not str(said.call(foe.actions[1], true, "Skua")).contains("Skua,"), "and in a fight the machine alone")
+	assert_true(str(said.call(foe.actions[2], false, "")).contains("Target: The most buffed machine"), "a special aimed at one machine says its word the same way")
 
 
 ## What a foe lays that halves says 2 at the least (Ryan, 16 November: "Buffs and debuffs that
@@ -2852,7 +2900,7 @@ func test_a_promoted_form_takes_its_heros_kit_and_adds_its_own() -> void:
 	db.load_dir(ContentDB.DIR)
 	var fid := str(db.factions.keys()[0])
 	db.foes["test_hero"] = {"id": "test_hero", "name": "The Tester", "faction": fid, "hero": true,
-		"design": {"fantasy": "a test"}, "codex": "c", "flavour": "f", "hp": 70, "attack": 15, "rank": "back", "aim": "focus",
+		"design": {"fantasy": "a test"}, "codex": "c", "flavour": "f", "hp": 70, "attack": 15, "rank": "back",
 		"actions": [{"id": "jab", "name": "Jab", "kind": "attack", "weight": 2, "text": "", "status": "implemented"},
 			{"id": "guard", "name": "Guard", "kind": "defend", "effect": "brace", "value": 5, "weight": 1, "text": "", "status": "implemented"}]}
 	db.foes["test_hero_up"] = {"id": "test_hero_up", "promotes": "test_hero", "size": 2, "rank": "front", "armour": 5,
@@ -2862,7 +2910,7 @@ func test_a_promoted_form_takes_its_heros_kit_and_adds_its_own() -> void:
 	db._resolve_promotions()
 	var whole: Dictionary = db.foes["test_hero_up"]
 	assert_eq(str(whole["name"]), "The Tester", "the same name, its hero's")
-	assert_eq([int(whole["hp"]), int(whole["attack"]), str(whole["aim"]), str(whole["faction"])], [70, 15, "focus", fid], "its hero's numbers, sense and domain")
+	assert_eq([int(whole["hp"]), int(whole["attack"]), str(whole["faction"])], [70, 15, fid], "its hero's numbers and domain")
 	assert_eq([int(whole["size"]), str(whole["rank"]), int(whole["armour"])], [2, "front", 5], "massive, front, armour 5: its own")
 	assert_eq(whole["actions"].map(func(a): return str(a["id"])), ["jab", "guard", "ready"], "its hero's moves, then its own")
 	assert_eq(int(whole["actions"][1]["value"]), 10, "a move of its own with a hero's id takes that move's place")

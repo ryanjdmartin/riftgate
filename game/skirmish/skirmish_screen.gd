@@ -1518,7 +1518,7 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	# The intent is this round's chosen attack: a sword, its damage, and a mark for a double
 	# strike; a suppressed foe shows no intent, only the status; a dead one
 	# threatens nothing.
-	v.intent_kind = "" if (foe.is_suppressed() or foe.target == null or not foe.alive()) else Foe.kind_of(foe.action)
+	v.intent_kind = "" if (foe.is_suppressed() or not foe.intends()) else Foe.kind_of(foe.action)
 	# A move still gathering (a countdown) shows the blow it will land; its rounds are a chip.
 	var read := _intent_read(foe)   # the readout's chip is _intent_chip's, the same read
 	v.intent_value = read[0]
@@ -1766,7 +1766,7 @@ func _foe_rows(foe: Foe) -> Array:
 	# shows. The chip pulses on a dashed edge until the rally lands, so it never reads as one
 	# the foe carries by hue alone; a foe showing no blow wears none, its move gaining nothing.
 	var coming := sk.incoming_rally(foe)
-	var shows_blow := foe.alive() and not foe.is_suppressed() and foe.target != null and (foe.attacks() or foe.gathering())
+	var shows_blow := foe.intends() and not foe.is_suppressed() and (foe.attacks() or foe.gathering())
 	var rally_chip := shows_blow and coming > 0
 	if shows_blow and (coming > 0 or PREVIEW_DEBUG):
 		var who: Array[String] = []
@@ -2093,8 +2093,8 @@ func _refresh_arrows() -> void:
 	var lurer := (_drag_from if _drag_from >= 0 else _read_die()) if not _turns.is_empty() else -1
 	for foe in sk.field_foes():
 		# A foe on a special that acts on nobody in particular (a regrow, a rally) has no arrow:
-		# its pick means nothing, and the ambush read says so too (Foe.intent_on, 18 October).
-		if foe.target == null or foe.is_suppressed() or not foe.alive() or foe.acts_on_nobody():
+		# it holds no pick, and the ambush read says so too (Foe.intent_on, 18 October).
+		if not foe.intends() or foe.is_suppressed() or foe.acts_on_nobody():
 			continue
 		if _turns.has(foe):
 			continue   # its arrow is the lure preview's, below
@@ -2463,7 +2463,7 @@ func _foe_hold_lines(foe: Foe) -> Array:
 	if foe.is_suppressed() or foe.action.is_empty():
 		return out
 	var target := ""
-	if foe.target != null and not foe.acts_on_nobody() and not foe.reaches_every_machine():
+	if foe.target != null and foe.aims_at_one():
 		target = foe.target.unit.display_name
 	out.append({"style": "caption", "text": "INTENT", "parts": [], "place": ""})
 	var move := EntryReadout.move_lines(foe, foe.action, db, true, target)
@@ -2483,7 +2483,7 @@ func _foe_hold_lines(foe: Foe) -> Array:
 ## or empty when it shows none: its move's kind, its blow (or a special's value) with its strikes,
 ## its riders.
 func _intent_chip(foe: Foe) -> Array:
-	if foe.is_suppressed() or foe.target == null or not foe.alive() or foe.action.is_empty():
+	if foe.is_suppressed() or not foe.intends():
 		return []
 	var read := _intent_read(foe)
 	var value: int = read[0]

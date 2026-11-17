@@ -42,8 +42,8 @@ func _refit() -> void:
 
 ## Where each item is drawn, as [[row, column], ...] and the rows they take: two to a row, and a
 ## value too long for its column on a row of its own, so nothing is ever drawn over its
-## neighbour (a foe's aim, "AIMS AT THE EXPOSED", ran into the size beside it on a phone: 16
-## November).
+## neighbour (a foe's aim, the row it had until 17 November, ran into the size beside it on a
+## phone).
 func _layout(width: float) -> Array:
 	var bold := Hud.display_bold()
 	var col_w := width / float(COLS)
