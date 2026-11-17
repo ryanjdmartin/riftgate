@@ -2948,7 +2948,7 @@ fight, which it does not: its two actions are on the map.
 | The machine | As its brief has it | Under the rules |
 |---|---|---|
 | **Storm Petrel**, Kestrel, tier 1, direction of 11 November | It keeps the shield armour, a point off every blow while its shield stands. Its hook is shield gained whenever it gains heat, "any source". Its guns make heat again and the zap leaves | The one machine whose shield mends as it fires. The mending stops the moment its shield breaks, and a reboot throws away what it built |
-| **Buzzard**, Kestrel, tier 2, settled 11 November | Its passive pays a flat shield cost on each weapon, unasked, for flat damage. Its cannon fires its whole field. Its heat raises its regen | Heat that never leaves is a regen that only climbs, the one standing regen in the game. "You can break yourself": the cannon empties its own shield, and the unasked cost can take its last point. A reboot empties the shield anyway, so the cannon before a reboot is free |
+| **Buzzard**, Kestrel, tier 2, settled 11 November | Its passive pays a flat shield cost on each weapon, unasked, for flat damage. Its cannon fires its whole field. Its heat raises its regen | Heat that never leaves is a regen that only climbs, the one standing regen in the game. "You can break yourself": the cannon empties its own shield, and the unasked cost can take its last point. A reboot empties the shield anyway, so the cannon before a reboot costs only the turn it leaves bare before the reboot's own (corrected 17 November, `docs/reboot_machines_proposal.md`) |
 | **Puffin**, Kestrel, the rework, tier two | It moves heat. Equipment it spends on an ally pulls some of that ally's heat onto it. A locked piece dumps its heat on another unit with a buff by the heat moved, "forcing an overheat for hull damage" among its uses | Moving heat is the one way heat leaves a machine short of a reboot, so it is worth far more. A dump can force an ally's overheat, which now breaks that ally's shield and starts a burn that stands. Pulled heat can take the Puffin past its own maximum |
 | **Swallowtail**, Wainwright & Sutler, tier 3, punted | Its Screens and Hoist are to be replaced. On the bench: a team Ward or a team Barrier, every ally's regen doubled for a round, the Hoist as "in-fight refueling" | No regen is left to double. A team Barrier is cover for a round of reboots. Its charged Hoist, "its shield full, its heat gone", was a reboot by another hand, the dearest thing the rule has |
 | **Musk Ox**, Wainwright & Sutler, tier 3, a session pending | Ammo in place of heat, a maximum of 8 for equipment and the foes' heat | It sits outside the heat half of the rule. A reboot is for its shield alone |
@@ -3164,7 +3164,9 @@ the quick campaign's versions each moved). The anchor read as the new baseline i
    two and three up.
 
 Beside them, his: the machines the rule reaches (the list above), each a design session as
-his brainstorm yields it. Until its session a machine plays as it is built.
+his brainstorm yields it. Until its session a machine plays as it is built. The list was read
+again on 17 November against the game as it then stood, each machine played by the bot, with a
+first round of fixes for his marks: `docs/reboot_machines_proposal.md`.
 
 ## 23. The stock basics by the fodder's health (14 November; his logic read, nothing decided)
 

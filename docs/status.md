@@ -54,7 +54,10 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1267 tests, 373,091 checks, green on `ccr-722ca9f0-yj8na3` (17 November, his
+- Tests: 1267 tests, 373,092 checks, green on `ccr-178e0404-ptuh2m` (17 November, the reboot
+  machines' proposal and its probe over main at `d657a20`, the check the leftovers test's load of
+  the new tool; a stale import had failed the rig and view suites until `--import` ran again).
+  Before it, 1267 tests, 373,091 checks, green on `ccr-722ca9f0-yj8na3` (17 November, his
   eighteenth round's first two: a reboot opens the Polar Bear's seal, the Whip Scorpion's
   blast with no gate, over main at `0565624`). Before it, 1266 tests, 373,079 checks, green on
   the same branch (17 November, his
@@ -163,6 +166,11 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
 ## Branches
 
 Everything is on main as of 13 November 2026; the formation and refit session's branch lands as it goes, below.
+`ccr-178e0404-ptuh2m`, the reboot machines' session's (17 November), cut from main at `7beb2b4`
+and brought up to `d657a20` as fast-forwards while main took his seventeenth and eighteenth
+rounds (the vent at the drop, the Scorpion's blast, the bear's seal opened by its reboot): the refit
+brief's section 22 list read again, `docs/reboot_machines_proposal.md` and its probe
+(`tools/reboot_probe.gd`), no engine or content moved; main takes it on his word.
 `ccr-1e6e6571-7x7ayr`, the map session's, restarted from main at `e26589f` on 16 November (its
 earlier work all on main): the painted walls as joined ranges, the painted world at the 3D map's
 heights, and Ryan's three rounds of notes of 16 November, the quick fixes, the shapes, the
@@ -2187,7 +2195,14 @@ tiers two and three up. His play's notes for those numbers (the bible's section 
 words): a stack burns one hull, his pick to start; he overheated a lot, and today's basic
 guns were priced against a cooling of 2 the reboot removes; some foes took "a shot too
 many", which a vanilla of 2 does on a fifth of tier one's formation slots. Beside them, his: the
-machines the rule reaches, each a design session as his brainstorm yields them.
+machines the rule reaches, read again on 17 November with each one played by the bot and a first
+round of fixes for his marks (`docs/reboot_machines_proposal.md`, on his "I want to examine the
+chassis that broke during the huge change to heat and shield and work on fixing them"): the
+Storm Petrel's direction and the Buzzard's settled form built, the Kite's kill mending a broken
+shield, the Puffin's first round and the Swallowtail's niche as the team's pit crew, the
+Needletail's maximum, and the clause "its own cooling stopped" off the Polar Bear's text. The
+Polar Bear's reboot opening its seal and the Whip Scorpion's rework were his the same day and are
+built. Each of the rest is built on his marks, in its own commit.
 
 Ahead of the rest: **the refit pass** (`docs/briefs/refit_pass.md`, the direction
 Ryan set on 9 November after his play of Phase 2: shields and vents leave the die, a component a
