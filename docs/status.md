@@ -43,8 +43,11 @@ first row first); the tasks are `docs/todo.md`; every run a decision cites is
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1251 tests, 374,868 checks, green on `ccr-bd73687d-w8qox1` (17 November, his next notes on the
-  deaths: the Funnel-web's hind feet down, the Whip Scorpion's belly down, the sink cut). Before it, 1252
+- Tests: 1252 tests, 375,075 checks, green on `ccr-bd73687d-w8qox1` (17 November, his eighth notes on
+  the deaths: the Ammit's curl, the Whip Scorpion's middle pair back, the Cassowary's toes, the three
+  solved frame by frame). Before it, 1252 tests, 375,053 checks (his notes of the settle and the
+  surrender), and 1251 tests, 374,868 checks (the Funnel-web's hind feet down, the Whip Scorpion's
+  belly down, the sink cut). Before it, 1252
   tests, 374,859 checks (his correction: feet that pivot while they carry it). Before it, 1252
   tests, 374,828 checks (16 November, his fifth notes: planted feet, the sink, the crossings
   measured). Before it, 1248 tests, 374,667 checks,
@@ -590,9 +593,20 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   sits down"); the Cassowary sinking over its held feet before it goes onto its chin ("glitched on its
   pivot point, it ends up floating"); the Whip Scorpion's middle pair splaying along the floor as its
   belly settles, every foot down and no part crossing ("pulls legs up into a float"); the Funnel-web
-  "fine now". Every death ends with its lowest point on the floor and resting. Section 12 holds the Baboon's sit, the Funnel-web's
-  hinges (a tenth up whatever its legs do) and the Ammit's clean fold; the to-do the crossings left
-  elsewhere. The bible (v0.607) republishes on his word. And on his "Can we make it so the
+  "fine now". His eighth notes the same day: the Ammit "does a weird kind of hop", the Whip Scorpion
+  "sinks, then has to [hop] to get its feet out from under it" and the Cassowary's "only real issue
+  is the feet": the hops were the floor's hold lifting the body over a limb its keys swung below the
+  floor, so those three deaths are solved frame by frame now, each limb on the floor or clear of it
+  and the body only ever going down (lowforge's `_whip_scorpion_death` and `_ammit_death`, and the
+  walk's own `_cassowary_pose`): the Ammit curls up on its feet, its walking arms folding under it
+  ("curling forward, folding all its arms in, assuming a kind of fetal position but still on its
+  feet"); the Whip's feet slide out as its belly drops, its middle pair back ("the middle pair needs
+  to slide back, not forward"); the Cassowary's steps and fall work its toes as its walk does, and it
+  ends kneeling on its face up on its toes, no foot sliding. A death keyed thirty a second runs a
+  whole number of thirtieths: its last key short of the end, the rig's rest key there snaps it up.
+  Every death ends with its lowest point on the floor and resting. Section 12 holds the Baboon's sit,
+  the Funnel-web's hinges (a tenth up whatever its legs do) and the Ammit's clean fold; the to-do the
+  crossings left elsewhere. The bible (v0.608) republishes on his word. And on his "Can we make it so the
   game doesn't enable auto rotate every time it loads?": `tools/android.sh` launches the game with
   `am start` as Godot's own one-click deploy does, no longer with `monkey`, whose every run ends by
   unlocking the screen's rotation and so turned the phone's auto-rotate on (the game itself is

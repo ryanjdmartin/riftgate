@@ -2388,23 +2388,41 @@ def cassowary(b):
     b.fires = {"spin_up": ("test_charge", 0.9, 3.8)}
     # Its death: a stagger two steps back, the right foot first, and then down onto its face (Ryan, 17
     # November: "take two steps back, instead, then fall on its face. Make sure not to kick the feet out
-    # too soon"; the fourth notes' step forward and fall onto its back gave way to it): its knees give and
-    # it sinks straight down over its feet, and only then goes over onto its chin, its legs trailing out
-    # behind it and its guns thrown up as its face meets the floor. Its feet stay where they stand while
-    # they carry it (the fifth notes; the next day, "pivot or slide in correct, plausible places"), each
-    # lifted before it swings back and set down as the other leaves the floor, both held as it sinks (its
-    # heels kept off the floor, which they had scraped), let go as it goes over. (His
-    # of the same day, of a fall that tipped over on its toes from full height: "glitched on its pivot
-    # point, it ends up floating"; a face flat on the floor will not rest, its heavy legs tipping it back.)
-    SINK, D = 1.25, 1.9
-    b.death(D, {
-        "hip_r": [(0.08, 0.0), (0.2, -12.8), (0.4, -35.0), (0.8, -6.0), (SINK, 20.0), (D, 40.0)], "knee_r": [(0.08, -22.0), (0.2, -42.0), (0.4, -6.0), (0.8, -4.0), (SINK, -50.0), (D, -55.0)],
-        "ankle_r": [(0.08, 12.0), (0.2, 22.0), (0.4, 6.0), (0.8, 4.0), (SINK, 20.0), (D, -60.0)], "toe_r": [(0.08, 12.0), (0.2, 25.0), (0.4, 0.0), (0.8, 0.0), (SINK, 0.0), (D, 0.0)],
-        "hip_l": [(0.4, 16.0), (0.48, 16.0), (0.6, -12.8), (0.8, -35.0), (SINK, 20.0), (D, 40.0)], "knee_l": [(0.4, -4.0), (0.48, -24.0), (0.6, -42.0), (0.8, -6.0), (SINK, -50.0), (D, -55.0)],
-        "ankle_l": [(0.4, 4.0), (0.48, 13.0), (0.6, 22.0), (0.8, 6.0), (SINK, 20.0), (D, -60.0)], "toe_l": [(0.4, 0.0), (0.48, 12.0), (0.6, 25.0), (0.8, 0.0), (SINK, 0.0), (D, 0.0)],
-        "waist": [(0.8, 4.0, 0.0, 0.0), (SINK, 0.0, 0.0, 0.0), (D, 0.0, 0.0, 0.0)], "elev_chin": [(SINK, 0.0), (D, 25.0)], "elev_pod": [(SINK, 0.0), (D, 25.0)], "elev_mortar": [(D, -5.0)],
-    }, body=[(0.4, 0.0, 0.0, 0.0, 0.0, 3.0, 0.0), (0.8, 0.0, 0.0, 0.0, 0.0, 5.0, 0.0), (SINK, 0.0, 0.0, 0.0, 0.0, -5.0, 0.0), (D, 0.0, 0.0, 0.0, 0.0, -40.0, 0.0)],
-       plant=[("ankle_l", 0.0, 0.4), ("ankle_r", 0.4, SINK), ("ankle_l", 0.8, SINK)])
+    # too soon"): its knees give and it sinks straight down over its feet, then tips forward over them and
+    # drops onto its chin, its knees coming down onto the floor and its guns thrown up as its face meets
+    # it. Its feet work as they do in its walk (the eighth notes: "only real issue is the feet. It's not
+    # using its toes in your steps, nor in its fall-over. It has toe articulation in walking, so the
+    # joints are there"): each step back lifts the heel with the toe plates flat, the foot flexing up and
+    # its plates drooping as it swings, and comes down on its toes before the heel; as it tips over, its
+    # heels rise and its toe plates stay flat on the floor where they stand, bent on their hinges, so it
+    # ends kneeling on its face up on its toes. Every frame is the walk's own solver (_cassowary_pose), so
+    # no foot slides and nothing passes through the floor; the drop gathers speed into the floor after the
+    # tip, and the heels rise with it, which keeps each hip within reach of its foot all the way. (Of the
+    # fall before, its feet let go and dragging out behind it: "glitched on its pivot point, it ends up
+    # floating. I think it's sliding too soon, maybe?") The keys come thirty a second to its end, so the
+    # duration is a whole number of thirtieths: one short of it, the rig's rest key at the end snaps it up.
+    SINK, D = 1.3, 2.0
+    AT_R, AT_L = BY - 16.0, BY - 22.0   # where each foot comes down behind
+    frames = [(0.08, (0.0, 0.0, 0.5), {"r": (BY, BZ, -18.0, 0.0)}),                     # the right heel lifts, its toe plates flat
+              (0.2, (-2.0, -0.5, 1.5), {"r": (BY - 5.0, BZ + 9.0, 12.0, -15.0)}),      # off the floor, flexed up under the hock, the plates drooping
+              (0.32, (-5.0, -0.8, 2.5), {"r": (AT_R + 2.0, BZ + 3.5, -10.0, -5.0)}),   # reaching back
+              (0.38, (-6.0, -1.2, 3.0), {"r": (AT_R, BZ, -14.0, 0.0)}),               # down on its toes, the heel up
+              (0.48, (-7.0, -1.0, 3.0), {"r": (AT_R, BZ, 0.0, 0.0), "l": (BY, BZ, -18.0, 0.0)}),   # the heel down as the left one lifts
+              (0.6, (-11.0, -1.4, 4.0), {"l": (BY - 8.0, BZ + 9.0, 12.0, -15.0)}),
+              (0.72, (-15.0, -1.6, 5.0), {"l": (AT_L + 2.0, BZ + 3.5, -10.0, -5.0)}),
+              (0.78, (-17.0, -2.0, 5.0), {"l": (AT_L, BZ, -14.0, 0.0)}),
+              (0.9, (-18.0, -2.2, 5.0), {"l": (AT_L, BZ, 0.0, 0.0)}),
+              (SINK, (-19.0, -10.0, -4.0), {"r": (AT_R, BZ, 0.0, 0.0), "l": (AT_L, BZ, 0.0, 0.0)})]   # its knees give, straight down over its feet
+    sunk, face = (-19.0, -10.0, -4.0), (-24.0, -23.5, -44.0)   # (dy, dz, pitch): sunk over its feet, and kneeling on its face
+    for i in range(1, 21):
+        u = i / 20.0
+        frames.append((round(SINK + (D - SINK) * u, 4), (sunk[0] + (face[0] - sunk[0]) * u ** 3, sunk[1] + (face[1] - sunk[1]) * u ** 3,
+                                                          sunk[2] + (face[2] - sunk[2]) * u ** 1.5),
+                       {side: (at, BZ, -45.0 * u * u, 0.0) for side, at in (("r", AT_R), ("l", AT_L))}))
+    tracks, body = _cassowary_pose(frames, until=D)
+    tracks.update({"waist": [(0.8, 4.0, 0.0, 0.0), (SINK, 0.0, 0.0, 0.0), (D, -10.0, 0.0, 0.0)], "elev_chin": [(SINK, 0.0), (D, 25.0)],
+                   "elev_pod": [(SINK, 0.0), (D, 25.0)], "elev_mortar": [(D, -5.0)]})
+    b.death(D, tracks, body=body, plant=[("ankle_l", 0.0, 0.48), ("ankle_r", 0.38, D), ("ankle_l", 0.78, D)])
 
 cassowary.maker = "wainwright_sutler"
 
@@ -3292,6 +3310,48 @@ def _whip_scorpion_eased(keys, t):
     return keys[-1][1]
 
 
+def _whip_scorpion_pad(tilt):
+    """How high a Whip Scorpion's ankle stands over the floor with its pad tipped `tilt` degrees on its
+    post (pitch, positive throwing the foot forward) and the pad's lowest corner on the floor: the pad
+    14 long and 3.6 deep, its sole 22 under the ankle (_whip_scorpion_leg)."""
+    c, s = math.cos(math.radians(tilt)), math.sin(math.radians(tilt))
+    return -min(dy * s + dz * c for dy in (-7.0, 7.0) for dz in (-22.0, -18.4))
+
+
+def _whip_scorpion_death(legs, belly, hz=30.0):
+    """The Whip Scorpion's death as keys `hz` a second, solved: its legs buckle with every foot where it
+    stands, then give, each foot sliding out along the floor as the body comes down onto its belly
+    (`belly` its height at rest), the fore feet forward, the middle and hind back, each pad tipping over
+    onto an edge as its leg lies out. The body only ever goes down and every foot stays on the floor all
+    the way: each leg's hip and knee put its ankle over its pad's standing height (_whip_scorpion_pad)
+    where its foot has slid to, and its ankle tips the pad. Returns (duration, tracks, body keys, plant)."""
+    D, BUCKLE, SAG = 1.5, 0.35, 4.0
+    out = {"f": (9.0, 65.0), "m": (-20.0, -50.0), "h": (-30.0, -88.0)}   # (how far each ankle slides forward, its pad's tip) as it lands
+
+    def drop(t):
+        if t <= BUCKLE:
+            u = t / BUCKLE
+            return SAG * u * u * (3.0 - 2.0 * u)
+        return SAG + (belly - SAG) * ((t - BUCKLE) / (D - BUCKLE)) ** 1.7   # gathering speed onto its belly
+
+    tracks, body = {}, []
+    for i in range(int(round(D * hz)) + 1):
+        t = round(i / hz, 3)
+        dz = -drop(t)
+        u = max(0.0, (-dz - SAG) / (belly - SAG)) ** 0.8
+        w = u * u * (3.0 - 2.0 * u)
+        body.append((t, 0.0, 0.0, round(dz, 3), 0.0, 0.0, 0.0))
+        for leg, (slide, tip) in out.items():
+            for side in ("l", "r"):
+                at = legs[leg + side]
+                h, k, e = ((p[1], p[2]) for p in at)
+                tilt = tip * w
+                hip, knee = _ik2(h, k, e, _to_body(e[0] + slide * w, _whip_scorpion_pad(tilt), 0.0, dz, 0.0), _bend(at))
+                for jn, v in (("hip_", hip), ("knee_", knee), ("ankle_", tilt - hip - knee)):
+                    tracks.setdefault(jn + leg + side, []).append((t, round(v, 3)))
+    return D, tracks, body, [("ankle_" + leg, 0.0, BUCKLE) for leg in legs]
+
+
 def _whip_scorpion_round(order, t0, t1, lift=8.0):
     """One round of steps for _footwork, turning the machine on the spot: each foot of `order` in
     turn lifts and lands under the body as it stands at `t1`, a seventh of the round apart and up
@@ -3695,24 +3755,20 @@ def whip_scorpion(b):
     # 'hot' things - so all glowing boosters and vents"; found bare on 3 November), the collar and the
     # bore's floor lit together as its blast flares them.
     b.halo = ["vent_heat_" + t for t in ("l1", "l2", "r1", "r2")] + ["vent_bore_%s_floor" % t for t in ("l1", "l2", "r1", "r2")]
-    # Its death: its legs buckle under it, every foot where it stands while they carry it, the knees
-    # rising as the body comes down; then they give, splaying out along the floor as its belly drops onto
-    # it, every foot staying down, its tail laid down behind and its gun dipped. Ryan, 16 November, the
-    # fifth notes: "all six legs slide out from under it and it ends up floating"; 17 November, of a sink
-    # that stopped where its middle legs' limits do: "I think it's legs are coming up instead of the body
-    # coming down, it's floating", and of the splay after it: "in hangar it pulls legs up into a float,
-    # instead of settling it's body down". The crouch is its limbs' reach at its deepest
-    # (MechRig._sink_limb), its middle pair splaying least so it clears the hind pair; the splay's angles
-    # leave every foot on the floor as the belly lands, keep them near it all the way and keep the legs
-    # clear of each other. No fold its joints allow brings the belly down with its feet where they stood.
-    crouch = {"f": (46.5, -15.1, -31.3), "m": (-57.9, 18.1, 39.9), "h": (-40.8, 13.3, 27.6)}
-    down = {"f": (40.0, 0.0, 25.0), "m": (0.0, 60.0, 25.0), "h": (0.0, -40.0, -50.0)}
-    tracks = {"abdomen": [(1.3, -10.0, 0.0, 0.0)], "ray": [(1.3, -8.0)]}
-    for side in ("l", "r"):
-        for leg in ("f", "m", "h"):
-            for k, jn in enumerate(("hip_", "knee_", "ankle_")):
-                tracks[jn + leg + side] = [(0.65, crouch[leg][k]), (1.3, down[leg][k])]
-    b.death(1.3, tracks, plant=[("ankle_" + leg + side, 0.0, 0.65) for leg in ("f", "m", "h") for side in ("l", "r")])
+    # Its death: its legs buckle under it, every foot where it stands, the knees rising as the body
+    # comes down; then they give, each foot sliding out along the floor as its belly drops onto it, the
+    # fore pair forward and the middle and hind pairs back, its tail laid down behind and its gun dipped.
+    # Ryan, 16 November, the fifth notes: "all six legs slide out from under it and it ends up floating";
+    # 17 November, "in hangar it pulls legs up into a float, instead of settling it's body down", and the
+    # eighth notes: "The scorpion splay is good, but the way it gets there is weird. It sinks, then has to
+    # [hop] to get its feet out from under it. I think part of the issue is the middle pair needs to slide
+    # back, not forward" (the middle pair's knees point back, as the hind pair's do). The hop was the
+    # floor's hold lifting the body over feet that swung below it between a crouch and a splay keyed
+    # apart; now every frame is solved with each foot on the floor (_whip_scorpion_death), so the body
+    # only ever goes down, and the splay the fore and hind feet end in is the one he passed.
+    D, tracks, body, plant = _whip_scorpion_death(legs, 34.0)   # the belly's underside, 34 up at rest
+    tracks.update({"abdomen": [(D, -10.0, 0.0, 0.0)], "ray": [(D, -8.0)]})
+    b.death(D, tracks, body=body, plant=plant)
 
 whip_scorpion.maker = "wainwright_sutler"
 
@@ -5132,6 +5188,99 @@ def musk_ox(b):
 musk_ox.maker = "wainwright_sutler"
 
 
+def _ammit_turn(p, deg, about=(0.0, 0.0)):
+    """A point (y, z) turned `deg` degrees in pitch (positive raises the forward end) about `about`."""
+    c, s = math.cos(math.radians(deg)), math.sin(math.radians(deg))
+    y, z = p[0] - about[0], p[1] - about[1]
+    return (about[0] + y * c - z * s, about[1] + y * s + z * c)
+
+
+def _ammit_talons_drop(psi, curl):
+    """How far the Ammit's walking talons reach below its wrist's pivot with the hand turned `psi` degrees in
+    the world (pitch) and each talon `curl` degrees on its own joint: every section's top and bottom along
+    each tine as ammit() builds them (_tine, n=2), off a root one forward and one down of the wrist."""
+    lo = 0.0
+    root = (1.0, -1.0)
+    for tx in (-4.0, 0.0, 4.0):
+        p0, curve, length, t0, n = -30.0 - abs(tx) * 2.0, 20.0, 10.0, 2.4, 2
+        pos = root
+        for k in range(n + 1):
+            f = k / float(n)
+            th = math.radians(p0 + curve * f)
+            t = t0 * (1.0 - 0.9 * f) + 0.3
+            for half in (-0.5, 0.5):
+                q = (pos[0] - math.sin(th) * t * half, pos[1] + math.cos(th) * t * half)
+                lo = min(lo, _ammit_turn(_ammit_turn(q, curl, root), psi)[1])
+            if k < n:
+                th2 = math.radians(p0 + curve * (k + 0.5) / n)
+                pos = (pos[0] + math.cos(th2) * length / n, pos[1] + math.sin(th2) * length / n)
+    return -lo
+
+
+def _ammit_death(legs, arms, hz=30.0):
+    """The Ammit's death as keys `hz` a second, solved so its body only ever goes down and nothing of it
+    passes through the floor: it bows, its head and cannons down, and folds its upper arms into its chest;
+    its walking arms stand where they are as it starts to sink, then fold under it, each forearm swinging
+    back under its elbow with the hand dragging back along the floor (the talons tipped up while the hand
+    points down and forward, tipped down once it trails behind), the elbow coming down onto the floor as
+    the chest settles onto the folded arms; its hind legs fold under its rear with each foot where it
+    stands. The walking arm's elbow stands no lower than its hand and talons need (_ammit_talons_drop) and
+    the elbow's own round over the floor, and hangs from its shoulder until the chest is low enough for it
+    to reach. Returns (duration, tracks, body keys)."""
+    D, PLANTED, FOLD = 2.8, 0.9, 2.3
+    PHI_END, PSI_END = -177.0, -158.0   # the forearm folded back along the floor; the hand trailing behind it
+    ELBOW_R, WRIST_R = 5.1, 3.9          # how high the elbow's and the wrist's pivots stand off the floor resting on it (the forearm's square end tilted)
+    body_at = _cassowary_mono([(0.0, 0.0, 0.0, 0.0), (PLANTED, -1.0, -3.0, -4.0), (1.6, -4.0, -7.0, -10.0), (FOLD, -10.0, -14.5, -19.0),
+                               (D, -12.0, -16.0, -21.0)])   # (dy, dz, pitch): the monotone curve the rig runs keys on
+    ease = lambda u: (lambda v: v * v * (3.0 - 2.0 * v))(min(1.0, max(0.0, u)))
+    hip, knee, ankle = (p[1:] for p in legs["l"])
+    sh, el, wr = (p[1:] for p in arms["l"])
+    l1, l2 = math.hypot(el[0] - sh[0], el[1] - sh[1]), math.hypot(wr[0] - el[0], wr[1] - el[1])
+    th1, th2 = math.degrees(math.atan2(el[1] - sh[1], el[0] - sh[0])), math.degrees(math.atan2(wr[1] - el[1], wr[0] - el[0]))
+
+    def planted_arm(dy, dz, pitch):
+        a, e = _ik2(sh, el, wr, _to_body(wr[0], wr[1], dy, dz, pitch), _bend(arms["l"]))
+        return a, e
+    a0, e0 = planted_arm(*body_at(PLANTED))
+    phi0 = th2 + a0 + e0 + body_at(PLANTED)[2]   # the forearm's turn in the world as the fold starts
+
+    tracks, body = {}, []
+    for i in range(int(round(D * hz)) + 1):
+        t = round(i / hz, 3)
+        dy, dz, pitch = body_at(t)
+        body.append((t, 0.0, round(dy, 3), round(dz, 3), 0.0, round(pitch, 3), 0.0))
+        h, k = _ik2(hip, knee, ankle, _to_body(ankle[0], ankle[1], dy, dz, pitch), _bend(legs["l"]))
+        if t <= PLANTED:
+            a, e = planted_arm(dy, dz, pitch)
+            hand, curl = -(a + e + pitch), 0.0
+        else:
+            u = ease((t - PLANTED) / (FOLD - PLANTED))
+            phi = phi0 + (PHI_END - phi0) * u
+            psi = min(phi - th2 + 90.0, max(phi - th2 - 40.0, PSI_END * ease(u / 0.85)))   # within the hand's turn on the forearm
+            curl = (50.0 - 90.0 * ease((-psi - 60.0) / 40.0)) * ease((t - PLANTED) / 0.3)
+            s = _ammit_turn(sh, pitch)
+            s = (s[0] + dy, s[1] + dz)
+            ez = max(ELBOW_R, max(WRIST_R, _ammit_talons_drop(psi, curl)) - l2 * math.sin(math.radians(phi)), s[1] - l1 * 0.999)
+            ey = s[0] + math.sqrt(l1 * l1 - (s[1] - ez) ** 2)
+            a = math.degrees(math.atan2(ez - s[1], ey - s[0])) - th1 - pitch
+            e = max(-110.0, phi - th2 - a - pitch)   # the elbow's fold, its limit brushed (a hundredth of a degree) as the arm passes under
+            hand = min(90.0, max(-40.0, psi - (phi - th2)))
+        for side in ("l", "r"):
+            for jn, v in (("hip_", h), ("knee_", k), ("ankle_", -(h + k + pitch)), ("shoulder_low_", a), ("elbow_low_", e), ("hand_low_", hand)):
+                tracks.setdefault(jn + side, []).append((t, round(v, 3)))
+            for w in ("in", "mid", "out"):
+                tracks.setdefault("talon_low_%s_%s" % (side, w), []).append((t, round(curl, 3)))
+    for side, inward in (("l", 1.0), ("r", -1.0)):
+        tracks["shoulder_" + side] = [(0.2, 0.0, 0.0, 0.0), (1.4, -45.0, 30.0 * inward, 0.0), (D, -45.0, 30.0 * inward, 0.0)]
+        tracks["elbow_" + side] = [(0.3, 0.0), (1.4, -60.0), (D, -60.0)]
+        tracks["hand_" + side] = [(0.4, 0.0), (1.5, -55.0), (D, -55.0)]
+        for w in ("in", "mid", "out"):
+            tracks["talon_%s_%s" % (side, w)] = [(0.4, 0.0), (1.6, -40.0), (D, -40.0)]   # curled shut, no further: past it they turn into the forearm
+        tracks["elev_" + side] = [(0.3, 0.0), (1.2, -12.0), (D, -12.0)]
+    tracks["waist"] = [(1.2, -12.0, 0.0, 0.0), (D, -12.0, 0.0, 0.0)]
+    return D, tracks, body
+
+
 def ammit(b):
     """The Arsenal "Ammit" (Arsenal Instrument VII): a sinister digitigrade figure with four
     clawed arms, the middle pair a second pair of legs, a low snout of a cockpit. Second pass
@@ -5532,30 +5681,18 @@ def ammit(b):
                "quintessence_tap": ("threat", 0.4, 1.5)}
     _flare_scale(b, "tail_slot", VENT_FLARE)   # its rear vent's flares kept gold on its sickly amber (Ryan, 3 November, the second notes)
     b.move(accel=1.0, heft=0.2)
-    # Its death: it gives up, gracefully (Ryan, 17 November, of a fall forward onto its belly: "Ammit
-    # should be more graceful, like it's admitting defeat. All six limbs touch the ground and it gently
-    # sits down"): it bows, its cannons down, and lays its upper arms out on the floor ahead and to either
-    # side, its talons open; its walking arms bend and let its chest down onto them, their hands sliding
-    # out ahead; and last its rear sinks, its hind feet where they stand, slowly, settling with no
-    # landing's beat. Its upper arms reach the floor only as its chest does, and its rear only with its
-    # thighs folded up into its belly (no lower fold of its legs brings it down), the crossing he allowed
-    # (tools/death_floor.gd --clip).
-    D = 2.6
-    dying = {"talon_%s_%s" % (arm, t): [(1.0, 0.0), (D, 0.0)] for arm in ("l", "r") for t in ("in", "mid", "out")}
-    for side, out in (("l", 1.0), ("r", -1.0)):
-        dying["shoulder_" + side] = [(0.9, 30.0, 10.0 * out, 0.0), (1.7, 0.0, 40.0 * out, 0.0), (D, 0.0, 40.0 * out, 0.0)]
-        dying["elbow_" + side] = [(0.9, 20.0), (1.7, 64.0), (D, 64.0)]
-        dying["hand_" + side] = [(1.7, -10.0), (D, -10.0)]
-        dying["shoulder_low_" + side] = [(0.6, 0.0), (1.0, 10.0), (1.9, 60.0), (D, 60.0)]
-        dying["elbow_low_" + side] = [(0.6, 0.0), (1.0, -40.0), (1.9, 0.0), (D, 0.0)]
-        dying["hand_low_" + side] = [(0.6, 0.0), (1.0, 20.0), (1.9, -40.0), (D, -40.0)]
-        dying["hip_" + side] = [(1.2, 0.0), (D, 60.0)]
-        dying["knee_" + side] = [(1.2, 0.0), (D, 65.0)]
-        dying["ankle_" + side] = [(1.2, 0.0), (D, -60.0)]
-        dying["elev_" + side] = [(1.0, -12.0), (D, -12.0)]
-    dying["waist"] = [(0.8, -12.0, 0.0, 0.0), (1.7, -12.0, 0.0, 0.0), (D, 12.0, 0.0, 0.0)]
-    b.death(D, dying, body=[(1.0, 0.0, 0.0, 0.0, 0.0, -6.0, 0.0), (1.9, 0.0, 0.0, 0.0, 0.0, -14.0, 0.0), (D, 0.0, 0.0, 0.0, 0.0, -8.0, 0.0)],
-            ease="smooth", plant=[("ankle_l", 0.0, D), ("ankle_r", 0.0, D)])
+    # Its death: it curls up where it stands (Ryan, 17 November, the eighth notes, of a slow surrender
+    # that laid its arms out on the floor and lay down: "The ammit does a weird kind of hop. I more
+    # envisioned it curling forward, folding all its arms in, assuming a kind of fetal position but still
+    # on its feet"): it bows, its head and cannons down, its upper arms folding into its chest and their
+    # talons curling shut; its walking arms buckle and fold under it, its hind legs fold under its rear,
+    # each foot where it stands, and it settles low onto its folded arms, its head bowed to the floor,
+    # with no landing's beat. The hop was the floor's hold lifting it over walking hands its forward pitch
+    # pressed below the floor; every frame is solved now with each limb on the floor or clear of it
+    # (_ammit_death), so the body only ever goes down. Its walking elbows fold only back (their limits),
+    # so the arms fold under, never out ahead onto the forearms.
+    D, dying, body = _ammit_death(legs, arms)
+    b.death(D, dying, body=body, ease="smooth", plant=[("ankle_l", 0.0, D), ("ankle_r", 0.0, D)])
 
 ammit.maker = "arsenal"
 
