@@ -115,7 +115,7 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   together, and build simple models perhaps, before slamming it against the whole game as it
   stands"). For a rule over the shield, the die, heat or targeting, lay out first who it
   protects, how, what threatens it and the counterplay on both sides, with a small model apart
-  from content where one helps (`tools/shield_model.py` is the pattern), and name the foes it
+  from content where one helps (`tools/budget_model.py` is the pattern), and name the foes it
   would need. The runner's read on today's content says what today's foes do against the
   rule, never whether the rule is right: they were built for another.
 - The bible's register (decided 13 October): a Decided row is a design test (what the player

@@ -50,7 +50,7 @@ them after. Numbers in content are placeholders until then, as ever.
 | The vanilla, a plain basic gun | 3 for 4 heat (the Twin Autoguns, the Rivet Gun, the Ankle Mortar) |
 | The gun that deals one more | The Laser Carbine, 4 for 5 heat |
 | The standard foe's hit points | 4, on 59% of formation slots; 5 with the dial |
-| The standard blow | 3, on 62% of formation slots; then 4, on 25%. Tiers two and three: 4 and 5 |
+| The standard blow | 3; the heavy standard 4 (a goblin, a needler, a knight, a lone flanker); a root lashes for 2; a massive strikes for 6 or 7. Tiers two and three: 4 and 5, unsized |
 | A machine's shield | 6 to 12, so two to four standard blows |
 | A machine's heat maximum | 12 or 14 on all but one: three vanilla shots fill a gauge of 12, the fourth is past it |
 | An overheat | A point of hull a point past the maximum, every turn, until the reboot |
@@ -64,33 +64,32 @@ the stock dice with the Armoured basic in its slot.
 
 ## 3. Where tier one stands
 
-The baseline, 17 November: tier one at Convergence 1, the six certain tier ones (the Honey
-Badger, the Skua, the Storm Petrel, the Prairie Dog, the Cassowary, the Cottonmouth), squads
-as large as the fight is rated (a lone flanker one machine, a hunter's pack two, a formation
-three, an elite and a boss four), the greedy bot with every step of a foe's move priced.
-Hull is a share of a four's, 96 points for this pool.
+Sized on 17 November (section 8) and read at the anchor: tier one at Convergence 1, the six
+certain tier ones (the Honey Badger, the Skua, the Storm Petrel, the Prairie Dog, the
+Cassowary, the Cottonmouth), squads as large as the fight is rated (a lone flanker one
+machine, a hunter's pack two, a formation three, an elite and a boss four), the greedy bot
+(`tools/anchor_read.gd`). Hull is a share of a four's, 96 points for this pool.
 
-| Kind of fight | Rounds | Hull lost | The budget | Reboots a machine |
+| Kind of fight | Rounds | Hull lost | The budget | Before the sizing |
 |---|---|---|---|---|
-| A lone flanker | 5.8 | 5.9% | 3.3% or less | 1.14 |
-| A hunter's pack | 5.1 | 12.7% | 10% | 1.09 |
-| A formation | 6.0 | 8.3% | 5% | 1.21 |
-| An elite | 6.3 | 10.9% | 25% | 0.99 |
-| A boss | 10.4 | 32.6%, a wreck in two fights of five | what is left | 1.78 |
+| A lone flanker | 5.2 | 3.2% | 3.3% or less | 5.9% |
+| A hunter's pack | 5.1 | 8.9% | 10% | 12.7% |
+| A formation | 5.9 | 5.0% | 5% | 8.3% |
+| An elite | 6.3 | 10.9% | 25% | 10.9% |
+| A boss | 10.4 | 32.5%, a wreck in two fights of five | what is left | 32.6% |
 
-By formation the spread is the finding: the sandworm's ambush nothing, the knights' vigil
-1.5%, the needler thicket 2.1%, the magma vent 3.5%, the barrow mound 5.6%, the goblin horde
-7.1%, the grave throng 7.6%, the treant's grove 13.9%, the ember pyre 18.2%, the gel wall
-23.2%. The four that cost least are the four built on foes that breached until 15 November:
-their blows are plain against a whole shield. The three that cost most run longest or hit
-hardest. The lone flankers cost 3.4% to 7.4%, all over the thirtieth; the wolf pack 15.1%.
+By formation: the sandworm's ambush 1.9%, the knights' vigil 2.4%, the needler thicket 2.8%,
+the magma vent 3.1%, the goblin horde 3.5%, the barrow mound 5.6%, the gel wall 7.4%, the
+grave throng 7.6%, the treant's grove 7.7%, the ember pyre 7.7%. The flankers cost 2.5% to
+3.8%; the wolf pack 7.4% and the antlion trio 10.3%. Every one is won in every fight.
 
-The elites are sized for a squad with no Barrier: 24.6% of a four's hull with the Armoured
-basic in the Halo's slot, his quarter, and 11.1% with the Barrier (15 November; 10.9% on the
-baseline). The bosses are not: 46.8% without it, 92% won, 0.9 wrecks a fight. A Barrier is
-worth nothing against a kit of many strikes or of blows at every machine, and three quarters
-of a kit that is one blow a round (the Goblin Nob 15.6% with it, 53.3% without). The bosses
-run from 8.9% (the Mantis Ant) to 62.2% (the Fiend of Fire, 1.7 wrecks a fight).
+The elites and the bosses are unsized, and the Barrier's place decides how. With the Barrier
+basic on the starting dice an elite costs 10.9%, under half his quarter, and a boss 32.5%.
+With the Armoured basic in its slot an elite costs 22.7%, on the quarter but for the two
+whose kit is one great blow a round (the Nob 59.2%, the Cinder Tortoise's brood 40.2%), and
+a boss 52.8% with a wreck a fight and 87% won. So the elites are sized for a squad with no
+Barrier and the bosses for a squad with one. The bosses run from 8.9% (the Mantis Ant) to
+62.2% (the Fiend of Fire) today.
 
 ## 4. What a point is worth
 
@@ -152,14 +151,16 @@ kill; a blow's damage past a shield reaches the hull, so a shield is a pool, rea
    Exposed turns the field on one machine with its plate off. A blow at every machine
    catches the reboot. The hottest finds the machine a reboot is due on. Jam, a corrupted
    entry and a drained reroll attack the die.
-7. A model first (`tools/shield_model.py` runs the reboot against the foes' shapes), then
-   the numbers, read by the bot at the anchor as bands, then his play.
+7. A model first (`tools/budget_model.py`: what a shape of pack costs a squad that buys its
+   shields back with a turn), then the numbers, read by the bot at the anchor as bands
+   (`tools/anchor_read.gd`), then his play.
 
-The order of work: the bot priced for the foes' new moves; the model; tier one's formations
-brought to the budget's band, the heavy three first; the lone flankers; the Barrier's place
-and the elites and bosses with it; the scorches on every machine (4 and 5 today, sized
-against a cooling of 2: the Eruptions, Fira, Pyroclasm) toward 2; then the first battle
-scaled down and tiers two and three up.
+The order of work, with what is done: the bot prices every step of a foe's move (17
+November); the model; tier one's flankers, hunters and formations on the budget (section 8).
+Still to come: the Barrier's place, his call, and the elites and bosses with it; the
+scorches on every machine above tier one (the Eruptions' 4 and 5, Fira's and Pyroclasm's 4,
+sized against a cooling of 2) toward 2; then the first battle scaled down and tiers two and
+three up.
 
 ## 6. The offence side: the bench
 
@@ -207,3 +208,30 @@ Leans not yet built, each a number this pass may land with its read:
 - The Overcharge Coil at one stack, or tier two.
 - The ten planned shields and vents: retire the seven at tiers zero and one, the three at
   tier two waiting for a kit that wants one.
+
+## 8. What landed, 17 November
+
+Tier one's flankers, hunters and formations, in `content/foes.json` and one grid of
+`content/factions.json`. The table of moves with each read is `docs/measurements.md`, 17
+November. The rules the moves follow, each a lean of this pass and his to overrule:
+
+- A lone flanker's blow is the heavy standard, 4, the Roc's. The Whisker Cat, the Dullahan
+  and the Cerberus came down from 5; the Dullahan, which rises once, has 9 hit points for 10.
+- A pack that rallies strikes for the standard blow, 3: the Dire Wolf.
+- A back rank strikes for the standard blow: the Drake, at 3 as the roots, the ghosts and
+  the cockatrices are. Its Stoke lays Ablate 1.
+- A foe that strikes every round pays for it in its blow. The Mandragora and the Mandrake
+  lost Scream as a move on 17 November and strike a point lighter, for the same blows a
+  round as before.
+- A split conserves the blow: a Half-Gel strikes for 1, half its Gel's 2.
+- A blow that lost Breach takes back what it paid: the Needler and the Zombie Knight strike
+  for 4, and the two massives, the Sandworm and the Magma Elemental, for 6.
+- A scorch on every machine is 2 at tier one: the Magma Elemental's Eruption.
+- The standard blow with a rider on top: the Salamander strikes for 3.
+- The two formations that ran longest and dearest: the Treant strikes for 6 and mends 2, and
+  the gel wall fields two mandragoras behind its four gels, not three.
+
+The Waste's two formations stay light, 1.9% and 2.8%. Their foes are thin and lost the
+rider that was their bite; what a domain's kit should be without Breach is a content
+proposal for his marks, the Waste's first, and no number chases it.
+
