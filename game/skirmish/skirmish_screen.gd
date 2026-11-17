@@ -1495,9 +1495,10 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	v.hover = WINGED_LIFT if bool(entry.get("winged", false)) else 0.0   # what flies floats over its shadow
 	# Aloft (the Roc while its Stoop gathers, 16 November): no die may be dropped on it, so it is
 	# drawn as what is out of the fight is, a faint ghost under a dashed edge, and higher over its
-	# shadow. A first cut, to judge running (RIFTGATE_ALOFT_DEBUG=1 holds every foe so).
+	# shadow. A first cut, to judge running (RIFTGATE_ALOFT_DEBUG=1 holds every foe so). A Phased
+	# foe (17 November) is out of reach the same way and drawn the same, where it stands.
 	v.away = Skirmish.out_of_reach(foe) or ALOFT_DEBUG
-	if v.away:
+	if Effects.has(foe, "aloft") or ALOFT_DEBUG:
 		v.hover = maxf(v.hover, WINGED_LIFT) + ALOFT_LIFT
 	v.breathe = true
 	# Breathing spread by slot at the golden angle, so no two neighbours are near in phase
@@ -1615,7 +1616,7 @@ static func intent_riders(foe: Foe, inert: Array = []) -> Array:
 ## effect wears or the status it grants, once each and never a mark the blow already shows.
 ## A step with no term of its own shows none: the move's text says it.
 const STEP_TERMS := {"ablate": "ablate", "jam": "jam", "expose": "expose", "dispel": "dispel", "swallow": "swallow",
-	"scorch_all": "scorch", "corrupt_all": "corrupt", "appropriate": "appropriated"}
+	"scorch_all": "scorch", "corrupt_all": "corrupt", "appropriate": "appropriated", "phase": "phased"}
 static func _step_marks(a: Dictionary, shown: Array = []) -> Array:
 	var out: Array = []
 	var seen: Array = shown.map(func(row) -> String: return str(row[0]))
@@ -1741,6 +1742,10 @@ func _foe_rows(foe: Foe) -> Array:
 		# Aloft (the Roc while its Stoop gathers, 16 November): no die may be dropped on it. The
 		# chip beside its countdown says why the foe is no target; a Purge that reaches it takes it.
 		rows.append(status_row("aloft", _foe_glyph("aloft"), "", str(Effects.STATUS["aloft"]["name"]), _foe_chip_colour("aloft")))
+	if Skirmish.foe_phased(foe):
+		# A foe's Phased (17 November): out of the team's reach until the round's end, on the
+		# chip a Phased machine wears.
+		rows.append(status_row("phased", status_glyph("phased"), "", str(Effects.STATUS["phased"]["name"]), _foe_chip_colour("phased")))
 	if foe.committed:
 		# An announced follow-up (2 November): committed, so no Disrupt turns it; a Suppress still takes
 		# it. The chip says what the player may do about it and names no term: the pattern is the

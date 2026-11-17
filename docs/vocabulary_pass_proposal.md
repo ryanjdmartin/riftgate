@@ -2992,3 +2992,29 @@ What followed from the rows and was built so:
 
 The synergy map reads a foe's fall since this build (`tools/synergy_map.py`): it had read
 moves alone, and the Mandragora's scream had left it.
+
+### Built: a foe's Phased, row 12
+
+The Spectre and the Wraith fade after their Hex Bolt (`tests/test_skirmish.gd`; the rules'
+Phased; the bible's Phased row).
+
+| When | What holds |
+|---|---|
+| The round a ghost announces Hex Bolt | It stands solid, a target like any. This is the window |
+| That round's enemy turn | The bolt lands, and what the ghost carries still ticks and damages it |
+| As that round ends | It fades, if it still stands and is not the last foe standing |
+| The next round | No die may be dropped on it and nothing aimed elsewhere reaches it. Nothing it carries damages it, and its clocks run. It acts |
+| As that round ends | It is back. A bolt it threw while Phased faded nothing |
+
+So a ghost that bolts is gone a round and solid the round after, and one that raises or
+hallows stays solid. The engine's effect is `phase`, a move of a foe's own or a step of one,
+and it stands on the guard built for the Roc: `Skirmish.out_of_reach`.
+
+One read where his words leave room, his to overrule. A machine's Phased shuts out both
+sides. A foe's shuts out ours alone: its own side still reaches it, a rally's Empowered or a
+mend. He allowed a foe's to be "less strict since it's balanced around their kit and theme",
+and the strict form would put a guard on every move the foes make among themselves.
+
+It is drawn as what no die reaches is, faint under a dashed edge where it stands, with the
+chip a Phased machine wears. Its Hex Bolt's intent wears Phased's mark beside the blow, so
+the round to reach it is said on the field.

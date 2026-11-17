@@ -722,6 +722,15 @@ On a machine:
   again, and burns the turn it is back in reach, the first such turn its overheat. A bite of
   its own entry is damage and is blocked with the rest: a hull cost (Volatile), a passive's
   hull price on a spend and a corrupted entry's bite take nothing. Its Lure turns no pick. A second grant while it stands carries it through the round after.
+  On a foe (the Spectre's and the Wraith's, a step after their Hex Bolt, or a move of a foe's
+  own): the wait is laid as the move lands and the foe fades as that round ends, if it still
+  stands, so the round its move is announced is the window. Through the next round it is out
+  of the team's reach as an Aloft foe is, no die dropped on it and nothing aimed elsewhere
+  reaching it, and nothing damages it: what it carries ticks and takes no point, and a Mine on
+  it does it no harm. It acts all the same, and it is back as that round ends. A foe's is
+  less strict than a machine's in one way, its own side still reaching it, a rally's
+  Empowered or a mend. Two guards: the last foe standing does not fade, so a fight has a foe
+  to end on, and a foe Phased already gains no wait, so none is out two rounds running.
 - **Swallowed** (debuff, from a foe's swallow): out of the fight (it
   cannot act, take damage or be targeted, a foe's intent on it re-picks, and a blow or a special
   at every machine passes it by) for the swallow's
@@ -1234,7 +1243,7 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   (every mark the team laid, Ablating, Brittle, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox
   and a Mine, off the most-marked of its own, itself included, the first in strike order on
   a tie; never Numbed, never Suppressed; cast where one of its own carries a mark), barrier (a
-  Barrier on itself), regenerate (Regenerating, its value in stacks, on itself), ward all (a Ward on
+  Barrier on itself), phase (the wait for Phased on itself: Phased, above), regenerate (Regenerating, its value in stacks, on itself), ward all (a Ward on
   every foe on the field, itself included), prime (Primed, its value in stacks, on every other foe on the
   field, at once), swallow (its machine Swallowed for its rounds, never the last machine in the
   fight, let go early once the swallower has lost a quarter of its HP), expose (its machine

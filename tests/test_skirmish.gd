@@ -5495,6 +5495,115 @@ func test_a_disrupt_over_every_foe_passes_a_climber_by() -> void:
 	assert_false(sk.targets_for(1).has(roc), "no die may be dropped on it this turn")
 
 
+## A foe whose blow fades it (the Spectre's Hex Bolt, a blow and then a step, `phase`), built
+## as a test's own.
+func _fader(hp: int = 60, atk: int = 5) -> Foe:
+	var f := Foe.make("fader", hp, atk)
+	f.content_id = "fader"
+	f.actions = [{"id": "bolt", "name": "Bolt", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": [], "text": "",
+		"also": Foe.also_from([{"effect": "phase"}], "Bolt")}]
+	f.action = f.actions[0]
+	return f
+
+
+## A foe's Phased (Ryan, 15 November: "I think we give this to the foes too"; 16 November:
+## "Phased foes act"; his yes of 17 November to the ghosts' row: "After Hex Bolt it fades:
+## Phased through the next round, and it still acts"). The round its bolt lands it stands
+## solid, the window. As that round ends it fades. Through the next nothing of the team's
+## reaches it, with an aim or without, and nothing it carries damages it while its clocks run;
+## it acts all the same. It is back as that round ends, and never out two rounds running.
+func test_a_foe_that_fades_is_out_of_reach_for_a_round_and_acts_all_the_same() -> void:
+	var sk := Skirmish.new(1, 2)
+	var sweep := Face.attack(20, I, K.CLEAVE)
+	sweep.cleave = 10
+	var a := _mech("A", Die.single(sweep), 0, 500)
+	var b := _mech("B", Die.single(Face.attack(6, E)), 0, 500)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var ghost := _fader()
+	var other := _ghoul(500, 0)
+	sk.add_foes([ghost, other])
+	sk.begin()
+	sk.start_round()
+	assert_false(Skirmish.out_of_reach(ghost), "the round it throws its bolt it stands solid: the window")
+	assert_true(sk.targets_for(0).has(ghost), "and is a target like any")
+	Effects.stack(ghost, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 3)
+	var hull := a.hull + b.hull
+	sk.end_round()
+	assert_true(Skirmish.foe_phased(ghost), "as the round its bolt landed in ends, it fades")
+	assert_eq(hull - (a.hull + b.hull), 5, "its bolt landed first")
+	var solid_hp := ghost.hp
+	assert_true(solid_hp < 60, "and its Ablating took its points that turn: it stands through the round first (%d)" % solid_hp)
+	sk.start_round()
+	assert_true(ghost.intends(), "Phased, it announces a move like any")
+	assert_false(sk.targets_for(0).has(ghost) or sk.targets_for(1).has(ghost), "no die may be dropped on it")
+	assert_false(sk.assign(0, ghost), "and a spend at it is refused")
+	assert_true(sk.assign(0, other), "a Spread on the foe beside it")
+	assert_true(sk.assign(1, other), "and a blow at every foe")
+	assert_eq(ghost.hp, solid_hp, "both pass it by")
+	assert_eq(sk.hp_after_ticks(ghost), solid_hp, "and its gauge forecasts no loss to what it carries")
+	var stacks := Effects.stacks_of(ghost, "ablating")
+	hull = a.hull + b.hull
+	sk.end_round()
+	assert_eq(hull - (a.hull + b.hull), 5, "it acts all the same: its bolt lands")
+	assert_eq(ghost.hp, solid_hp, "what it carries takes nothing while it is Phased")
+	assert_true(Effects.stacks_of(ghost, "ablating") < stacks, "and its clock runs all the same (%d to %d)" % [stacks, Effects.stacks_of(ghost, "ablating")])
+	assert_false(Skirmish.foe_phased(ghost), "as that round ends it is back, and the bolt it threw while Phased faded nothing: never two rounds running")
+	sk.start_round()
+	assert_true(sk.targets_for(0).has(ghost), "solid again, a target once more")
+	sk.end_round()
+	assert_true(Skirmish.foe_phased(ghost), "and its next bolt fades it again: every other round")
+
+
+## The last foe standing does not fade, so a fight has a foe to end on; and a foe's Phased is
+## less strict than a machine's (Ryan, 15 November: "Phased on foes can be less strict since it's
+## balanced around their kit and theme"): its own side still reaches it, a rally's Empowered
+## among it.
+func test_the_last_foe_standing_does_not_fade_and_its_own_side_still_reaches_one_that_has() -> void:
+	var sk := Skirmish.new(1, 2)
+	sk.add_mech(_mech("A", Die.single(Face.blank()), 0, 500))
+	var lone := _fader()
+	sk.add_foes([lone])
+	sk.begin()
+	sk.start_round()
+	sk.end_round()
+	assert_false(Skirmish.foe_phased(lone), "alone, it throws its bolt and stays")
+	assert_false(Effects.has(lone, "phasing"), "and the wait is gone with the round")
+	assert_true("\n".join(sk.log).contains("the last one standing"), "the log says why: %s" % sk.log[sk.log.size() - 1])
+	var s2 := Skirmish.new(1, 2)
+	s2.add_mech(_mech("A", Die.single(Face.blank()), 0, 500))
+	var ghost := _fader()
+	var caller := _ghoul(500, 0)
+	caller.actions = [_special("buff", "rally", {"value": 2})]
+	caller.action = caller.actions[0]
+	s2.add_foes([ghost, caller])
+	s2.begin()
+	s2.start_round()
+	s2.end_round()
+	assert_true(Skirmish.foe_phased(ghost), "with another foe standing it fades")
+	Effects.remove(ghost, "kindled")
+	s2.start_round()
+	s2.end_round()
+	assert_true(s2.log.any(func(line) -> bool: return str(line).contains("hit 2 harder")), "the rally is called while it is Phased")
+	assert_true(Effects.has(ghost, "kindled"), "and reaches it with the rest of its side")
+	# The wait is a foe's own move too, and a Phased foe gains no second.
+	var s3 := Skirmish.new(1, 2)
+	s3.add_mech(_mech("A", Die.single(Face.blank()), 0, 500))
+	var veil := _ghoul(500, 0)
+	veil.actions = [_special("defend", "phase")]
+	veil.action = veil.actions[0]
+	s3.add_foes([veil, _ghoul(500, 0)])
+	s3.begin()
+	s3.start_round()
+	assert_true(veil.acts_on_nobody() and veil.target == null, "a move on itself: no pick")
+	s3.end_round()
+	assert_true(Skirmish.foe_phased(veil), "a move of its own fades it as a step does")
+	s3.start_round()
+	s3.end_round()
+	assert_false(Skirmish.foe_phased(veil), "and cast again while Phased it adds nothing: back the round after")
+	assert_true("\n".join(s3.log).contains("cannot fade again so soon"), "the log says so")
+
+
 func test_a_longer_countdown_holds_its_pick_and_a_suppress_holds_its_blow() -> void:
 	var sk := Skirmish.new(1, 1)
 	var a := _mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100)

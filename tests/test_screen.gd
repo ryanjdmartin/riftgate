@@ -547,6 +547,19 @@ func test_a_foe_aloft_is_drawn_out_of_reach_and_is_no_drop_target() -> void:
 	Effects.remove(foe, "aloft")
 	s._refresh()
 	assert_false(view.away, "back on the ground, it is drawn whole again")
+	# A Phased foe (17 November) is out of reach the same way and drawn the same, where it
+	# stands, under the chip a Phased machine wears.
+	Effects.grant_for_rounds(foe, Effects.STATUS["phased"], "test", sk.round + 1)
+	s._refresh()
+	assert_true(view.away, "Phased, it is drawn as what no die reaches")
+	assert_eq(view.hover, grounded, "and no higher: it has not climbed")
+	var faded: Array = s._foe_rows(foe).filter(func(row) -> bool: return str(row[2]).contains("Phased"))
+	assert_eq(faded.size(), 1, "it wears Phased's chip")
+	for i in range(sk.mechs.size()):
+		assert_false(sk.targets_for(i).has(foe), "no machine's die may be dropped on it")
+	Effects.remove(foe, "phased")
+	s._refresh()
+	assert_false(view.away, "and it is drawn whole again once it is back")
 	s.free()
 
 

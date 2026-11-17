@@ -453,10 +453,10 @@
     {
       "id": "spectre", "name": "Spectre", "faction": "marsh", "tier": 2,
       "design": { "fantasy": "The spectre, the Marsh's cleanser: the domain's lever (Ryan, 28 October, 'debuffs are hard here'). Tier two of the ghost line." },
-      "codex": "A ghost that keeps its dead clean. Its hallow strips what the team has laid on one of its own, Ablating, Brittle and Shock alike: kill it first, or cash the marks before it acts.",
+      "codex": "A ghost that keeps its dead clean. Its hallow strips what the team has laid on one of its own, Ablating, Brittle and Shock alike: kill it first, or cash the marks before it acts. When it throws its bolt it fades after: Phased through the next round, out of reach and striking all the same. Reach it on a round it stands solid.",
       "hp": 6, "attack": 4, "rank": "back", "movespeed": 2, "winged": true,
       "actions": [
-        { "id": "hex_bolt", "name": "Hex Bolt", "kind": "attack", "weight": 2, "text": "A bolt of grave-light for {damage}.", "status": "implemented" },
+        { "id": "hex_bolt", "name": "Hex Bolt", "kind": "attack", "weight": 2, "also": [{"effect": "phase"}], "text": "A bolt of grave-light for {damage}, and it fades as the round ends: Phased through the next.", "status": "implemented" },
         { "id": "raise", "name": "Raise", "kind": "buff", "effect": "summon", "foe": "revenant", "count": 1, "weight": 1, "text": "Raises a revenant into an empty place at once, or into the pool when the line is full.", "status": "implemented" },
         { "id": "hallow", "name": "Hallow", "kind": "defend", "effect": "cleanse", "weight": 1, "when": "ally_marked", "text": "Takes every mark the team laid off the most-marked of its own.", "status": "implemented" }
       ],
@@ -465,10 +465,10 @@
     {
       "id": "wraith", "name": "Wraith", "faction": "marsh", "tier": 3,
       "design": { "fantasy": "The wraith, the Ghost's curse (the proposal's rider on one advanced foe a domain) and the cleanse together. Tier three of the ghost line." },
-      "codex": "The spectre's elder. Its bolt corrupts the component a machine is showing, it raises the dead, and it keeps them clean of the team's marks.",
+      "codex": "The spectre's elder. Its bolt corrupts the component a machine is showing, it raises the dead, and it keeps them clean of the team's marks. When it throws its bolt it fades after: Phased through the next round, out of reach and striking all the same.",
       "hp": 8, "attack": 5, "rank": "back", "movespeed": 2, "winged": true,
       "actions": [
-        { "id": "hex_bolt", "name": "Hex Bolt", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "corrupt": 1, "text": "A bolt of grave-light for {damage}; the component the machine is showing bites when spent.", "status": "implemented" },
+        { "id": "hex_bolt", "name": "Hex Bolt", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "corrupt": 1, "also": [{"effect": "phase"}], "text": "A bolt of grave-light for {damage}; the component the machine is showing bites when spent, and the wraith fades as the round ends: Phased through the next.", "status": "implemented" },
         { "id": "raise", "name": "Raise", "kind": "buff", "effect": "summon", "foe": "revenant", "count": 1, "weight": 1, "text": "Raises a revenant into an empty place at once, or into the pool when the line is full.", "status": "implemented" },
         { "id": "hallow", "name": "Hallow", "kind": "defend", "effect": "cleanse", "weight": 1, "when": "ally_marked", "text": "Takes every mark the team laid off the most-marked of its own.", "status": "implemented" }
       ],
