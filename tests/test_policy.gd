@@ -1202,6 +1202,16 @@ func test_greedy_reads_a_countdown_a_core_and_a_last_act() -> void:
 	s3.start_round()
 	assert_true(is_equal_approx(Policy.last_act_cost(s3, beast), 20.0 * Policy.HULL_WEIGHT), "its Meteor's twenty on the bare machine")
 	assert_eq(Policy.last_act_cost(s3, calm), 0.0, "a foe without one costs nothing")
+	# What argues against the kill is what a wait could save (18 November): the blow is paid
+	# whenever the foe falls, so only the share a raised shield would take holds the bot back.
+	assert_eq(Policy.last_act_deterrent(s3, beast), 0.0, "a machine with no shield to raise saves nothing by waiting")
+	s3.mechs[0].unit.shield_max = 12
+	assert_true(is_equal_approx(Policy.last_act_deterrent(s3, beast), 12.0 * (Policy.HULL_WEIGHT - Policy.SHIELD_LOSS_WEIGHT)), "a shield of 12 down: a reboot first would put twelve of the twenty on the shield")
+	s3.mechs[0].unit.shield = 12
+	assert_eq(Policy.last_act_deterrent(s3, beast), 0.0, "and with it whole the kill waits on nothing")
+	assert_true(is_equal_approx(Policy.last_act_cost(s3, beast), 12.0 * Policy.SHIELD_LOSS_WEIGHT + 8.0 * Policy.HULL_WEIGHT), "the blow's whole price stands beside it")
+	s3.mechs[0].unit.shield = 0
+	s3.mechs[0].unit.shield_max = 0
 	# A fall's steps (16 November), each at the price the same effect has from a move.
 	var howler := Foe.make("gargantuan_king", 30, 20)
 	howler.on_death = {"act": Foe.fall_act_from({"name": "Last Howl", "effect": "rally", "value": 2})}
@@ -1236,7 +1246,11 @@ func test_greedy_reads_a_countdown_a_core_and_a_last_act() -> void:
 	beast.target = s3.mechs[0]
 	calm.target = s3.mechs[0]
 	var f40 := Face.attack(40, I)
-	assert_true(pol.attack_score(s3, s3.mechs[0], f40, beast) < pol.attack_score(s3, s3.mechs[0], f40, calm), "the kill that sets off a Meteor is worth less")
+	assert_true(is_equal_approx(pol.attack_score(s3, s3.mechs[0], f40, beast), pol.attack_score(s3, s3.mechs[0], f40, calm)), "with no shield to raise, the kill that sets off a Meteor is worth what any kill is: the blow is paid whenever it falls")
+	s3.mechs[0].unit.shield_max = 12
+	assert_true(pol.attack_score(s3, s3.mechs[0], f40, beast) < pol.attack_score(s3, s3.mechs[0], f40, calm), "with a shield down that a reboot would raise, it is worth less this round")
+	s3.mechs[0].unit.shield = 12
+	assert_true(is_equal_approx(pol.attack_score(s3, s3.mechs[0], f40, beast), pol.attack_score(s3, s3.mechs[0], f40, calm)), "and with the shield whole it is worth the same again")
 
 
 ## The Lammergeier's Mines for the bot (9 November), on a synthetic passive: a spend that leaves a

@@ -11212,3 +11212,86 @@ with its shield standing.
 What stays against it is his own point of 15 November: a squad with no Barrier pays a boss
 53.2% for 33.5% and the Nob 65.1% for 19.2%, so while the piece is a basic the leaders are
 sized so that a squad without one still stands, and none is sized up to it.
+
+## 18 November: tier one's elites and bosses sized for a squad without the Barrier
+
+Ryan, of keeping the Barrier on the starting dice and reading the budget on the squad with
+none: "I agree. And sizing it without means that if it does prove toxic after all, in my
+play, then it's relatively easy to remove. Go ahead." Every read is `tools/anchor_read.gd`
+on the six certain tier ones, the greedy bot; "without" is `refit=barrier=none`, the
+Armoured basic in the Halo Projector's slot. The rows before are twenty fights each, the
+rows after forty; hull is a share of a four's. The budget: an elite a quarter, a boss what
+is left, read here as about a third.
+
+**The bot first.** The Gargantuan King's rows were the bot's and not the boss's: it weighed
+the whole of a death blow against one round's worth of the kill and nursed the King rather
+than finish it, 20 rounds a fight with the Barrier basic and 33 with a Meteor of 12, its
+squad rebooting five times a machine. A foe has to fall for the fight to be won, so the
+blow is paid whenever it falls: only what a round's wait could save of it, its cost as the
+team stands less its cost on whole shields, argues against the kill now
+(`Policy.last_act_deterrent`). The King's fight is seven rounds since. No other tier-one
+foe has a death blow.
+
+**The bosses**, by what landed. Their attack is the number: every move is a share of it.
+
+| Boss | Attack | Without the Barrier, before | After | With the Barrier basic, before | After |
+|---|---|---|---|---|---|
+| Floraison | 10, as it was | 25.5% | 25.3% | 27.2% | 29.5% |
+| The King Gel | 15 to 12 | 53.9% | 33.6% | 27.0% | 15.9% |
+| The Mantis Ant | 15 to 13 | 40.9% | 26.1% | 10.0% | 7.7% |
+| The Ruby Colossus | 14 to 9 | 69.7%, 45% won | 26.2%, 98% | 43.8%, 90% won | 16.2% |
+| The Fallen Weapon | 16 to 10 | 66.4%, 85% won | 24.8% | 36.1% | 15.5% |
+| The Emperor Scorpion | 14 to 11 | 52.1% | 30.6%, 98% | 37.0% | 19.9% |
+| The Matador | 12, as it was | 27.0% | 27.0% | 21.4% | 21.2% |
+| The Phantom Train | 16 to 12 | 81.8%, 65% won | 28.3% | 47.6%, 90% won | 12.6% |
+| The Vampire Lord | 12 to 10 | 48.3%, 75% won | 23.4% | 13.5% | 7.1% |
+| The Marsh Serpent | 18 to 14 | 49.4% | 30.9% | 20.9% | 11.9% |
+| The Gargantuan King | 15 to 11, its Meteor at its whole attack, 11 as before | 54.1% | 32.3% | 34.8%, the bot stalling | 22.6% |
+| The Fiend of Fire | 14 to 11 | 50.1% | 32.2% | 64.7%, 85% won | 36.7% |
+| The Obsidian Tyrant | 18 to 11 | 73.1%, 80% won | 37.8% | 51.8% | 25.8% |
+| The mean | | 53.2%, 86% won, 1.12 wrecks | 29.1%, every boss won 98% or more, 0.21 wrecks, 8.9 rounds | 33.5%, 0.42 wrecks | 18.7%, 0.11 wrecks |
+
+**The elites.**
+
+| Elite fight | What moved | Without the Barrier, before | After | With the Barrier basic, before | After |
+|---|---|---|---|---|---|
+| The shaman's warband | Nothing | 22.3% | 21.4% | 22.9% | 20.1% |
+| The Nob | Its attack 18 to 11: a Rush of 14 for 23 | 65.1%, 75% won | 23.8% | 19.2% | 6.9% |
+| The old man's rising | Its Quake at 0.6 of its attack for 0.25: 7 at every machine for 3 | 15.6% | 27.7% | 7.6% | 16.0% |
+| The Pilgrim's wake | Its attack 9 to 11, its Karma 2 a kill for 1 | 11.7% | 19.7% | 3.0% | 4.0% |
+| The Rust Monster's scavenge | Its hit points 48 to 64 | 11.9% | 21.1% | 4.6% | 7.5% |
+| Gilgamesh wanders | Nothing | 28.0% | 24.7% | 8.1% | 6.8% |
+| The Fell Rider's hunt | Nothing | 19.4% | 21.5% | 10.4% | 11.2% |
+| The Reaper | Its attack 12 to 15, its hit points 44 to 70, its Harvest corrupting 2 for 1 | 3.6% | 20.5% | 0.7% | 4.6% |
+| The Wild Hunt | Nothing | 24.1% | 23.4% | 15.4% | 15.3% |
+| The Cinder Tortoise's brood | Its attack 14 to 12 | 40.2% | 26.3% | 17.6% | 14.4% |
+| The Thunder Ape's rampage | Nothing | 17.6% | 21.3% | 16.5% | 18.1% |
+| The mean | | 23.6%, 0.27 wrecks | 22.9%, every fight won, 0.14 wrecks, 6.5 rounds | 11.4% | 11.4%, 0.03 wrecks |
+
+A row that did not move reads a few points apart before and after: the grain of twenty
+fights against forty.
+
+**Who pays, as sized**, each machine's own hull a fight: a boss without the Barrier costs
+the Honey Badger 13.5%, the Storm Petrel 27.7%, the Skua 30.4%, the Prairie Dog 33.9%, the
+Cassowary 38.1% and the Cottonmouth 46.1%; with the Barrier basic 10.6%, 16.9%, 21.2%,
+23.2%, 20.6% and 27.7%. An elite, 12.7% to 30.9% without and 6.4% to 14.4% with.
+
+**What the sizing leaves.** The squad without the Barrier meets the budget; the squad with
+it pays half, and the leaders whose weight is one great blow at one machine cost it almost
+nothing: the Pilgrim 4.0%, the Reaper 4.6%, Gilgamesh 6.8%, the Nob 6.9%, the Vampire Lord
+7.1%, the Rust Monster 7.5%, the Mantis Ant 7.7%. Two were sized up through their blows, the
+Reaper and the Pilgrim, their kits being nothing else. The two flurry bosses are the other
+way about, dearer to the squad with the Barrier than to the one with plate in its slot:
+Floraison 29.5% for 25.3%, the Fiend of Fire 36.7% for 32.2%.
+
+**A pair, as a what-if** (content edited for the read and put back; forty fights a cell):
+the Mantis Ant's Mandibles as two strikes of 7 for one of 13, and the Gargantuan King's Gore
+as two of 6 for one of 11.
+
+| Boss | Without the Barrier, whole | A pair | With the Barrier basic, whole | A pair |
+|---|---|---|---|---|
+| The Mantis Ant | 26.1% | 25.6% | 7.7% | 14.3% |
+| The Gargantuan King | 32.3% | 33.5% | 22.6% | 27.7% |
+
+A pair leaves the squad without the Barrier where it was and takes half the piece's edge:
+the Mantis Ant's gap goes from 18 points to 11, the King's from 10 to 6.
