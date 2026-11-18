@@ -147,18 +147,19 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   battle, four tier ones against a tier-one rift. The hull budget is a formation's fight a
   twentieth of a squad's hull at its rating, a flanker's a thirtieth, a hunter's a tenth, an
   elite's a quarter and the boss what is left. Tier one's flankers, hunters and formations
-  are sized to it since 17 November (`docs/briefs/numbers_pass.md`, section 8; the reads
-  `docs/measurements.md`; read again on 18 November over the Storm Petrel's rework): a lone
-  flanker 3.4% of a four's hull, a hunter's pack 9.5%, a formation 5.0% over 6.0 rounds,
-  from 1.9% to 8.2% by formation, every fight won. The elites and the bosses are sized
-  since 18 November for a squad without the Barrier, on his word ("sizing it without means
-  that if it does prove toxic after all, in my play, then it's relatively easy to remove"):
-  an elite costs it 22.7%, from 19.3% to 27.7%, and a boss 29.1%, from 23.4% to 37.8%. The
-  Barrier basic stays on the starting dice ("one of the two sides of the defensive coin"),
-  and the squad with it pays half, an elite 11.2% and a boss 18.7%: whether that proves
-  toxic is his play's to say, on BARRIER BASIC. How the leaders strike is his lean of the
+  are sized to it since 17 November (`docs/briefs/numbers_pass.md`, sections 3 and 8; the
+  reads `docs/measurements.md`), read on every squad of the six certain tier ones since 18
+  November (a count of them had the Honey Badger in four fours of five): a lone flanker
+  3.4% of a four's hull, a hunter's pack 8.9%, a formation 4.5% over 5.7 rounds, from 1.3%
+  to 9.3% by formation, every fight won. The elites and the bosses are sized since 18
+  November for a squad without the Barrier, on his word ("sizing it without means that if
+  it does prove toxic after all, in my play, then it's relatively easy to remove"): an
+  elite costs it 24.6% and a boss 29.8%. The Barrier basic stays on the starting dice ("one
+  of the two sides of the defensive coin"), and the squad with it pays about half, an elite
+  13.1% and a boss 19.2%: whether that proves toxic is his play's to say, on BARRIER BASIC. How the leaders strike is his lean of the
   same day (the bible's section 9): whole blows the norm, slightly towards strikes so plate
-  earns in their fights; two pairs wait on his marks. A foe's adds, its Empowered first,
+  earns in their fights; two pairs wait on his marks, the Reaper's Harvest is a sweep at
+  every machine on his word, and the Pilgrim's knife against a Barrier is his to settle. A foe's adds, its Empowered first,
   land on every strike of a move since then, the machines' formula. This pass's leans on the
   dials stand in the brief's section 7, each his.
   Tiers two and three and the first battle are unsized, their foes still the ones sized
@@ -251,9 +252,9 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
 
 1. **The foes' line** (`ccr-722ca9f0-yj8na3`; `docs/briefs/numbers_pass.md`), in this order:
    - The defence side's rest, this line free to adjust content when it is ready (Ryan, 17
-     November): a kit for the Waste now that Breach is cut and a move a Barrier does not
-     take for the Reaper, each proposed in chat first; the scorches on every machine above
-     tier one.
+     November): the Pilgrim's knife, a purge ahead of its blow, on his word; a kit for the
+     Waste now that Breach is cut, proposed in chat first; the scorches on every machine
+     above tier one.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
      his picks on RANK AND FILE, HEAT and TOP BASIC: its prices are read from the vanilla he
      settles on.

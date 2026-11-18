@@ -13,10 +13,13 @@ extends SceneTree
 ## markdown and writes no file: a read a decision cites is copied into docs/measurements.md.
 ##
 ## usage: godot --headless --path . -s tools/anchor_read.gd -- pool=a,b,c,d,e,f [seeds=5]
-##        [squads=6] [tier=1] [ramp=1] [kinds=patrol,formation,elite,boss] [only=id,id]
+##        [squads=0] [tier=1] [ramp=1] [kinds=patrol,formation,elite,boss] [only=id,id]
 ##        [refit=spec] [blows=percent] [label=text]
 ##   pool    the chassis ids the squads are drawn from
-##   seeds   fights a squad; squads: how many of the pool's squads of that size (0, all)
+##   seeds   fights a squad; squads: how many of the pool's squads of that size (0, all:
+##           the even draw, every machine in as many squads as every other; a count takes
+##           every k-th squad and is uneven by machine, five of a six's fifteen fours
+##           holding the first machine four times and the last twice)
 ##   only    the composition or boss ids to read, the rest skipped
 ##   refit   a what-if laid over content for the run (sim/refit.gd's spec, as --refit takes)
 ##   blows   a what-if on the leaders alone: every elite's, boss's, hero's and commander's

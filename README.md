@@ -211,10 +211,13 @@ python3 tools/hangar_designs.py --fold build/hangar/inbox --dry     # what it wo
 # the anchor read: every fight of a tier at its rating (a lone flanker one machine, a hunter's
 # pack two, a formation three, an elite and a boss four), by the greedy bot, hull lost as a
 # share of a squad of four's: the measure the numbers pass sizes against. It prints markdown
-# and writes no file. About a minute a fight; split the kinds across cores with only= or kinds=.
-# Under each kind's mean it says who paid: each machine's own hull lost a fight, and its wrecks
-perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=5 squads=6 kinds=patrol,formation
-perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=4 squads=5 kinds=elite,boss
+# and writes no file. About a second a fight; split the kinds across cores with only= or kinds=.
+# Under each kind's mean it says who paid: each machine's own hull lost a fight, and its wrecks.
+# Every squad of the pool is the draw (squads=0, the default): a count of them is uneven by
+# machine, and five of the fifteen fours had the Honey Badger in four and the Cottonmouth in two
+perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=5 kinds=patrol
+perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=2 kinds=formation
+perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=2 kinds=elite,boss
 #   only=id,id reads those compositions or bosses alone; tier=, ramp=; refit=<spec> lays a
 #   what-if over content for the run (refit=barrier=none, the Barrier basic off the stock dice);
 #   blows=80 sets every elite's and boss's attack to that share of content's, in hundredths

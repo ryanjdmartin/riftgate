@@ -809,13 +809,13 @@
     },
     {
       "id": "reaper", "name": "The Reaper", "faction": "marsh", "elite": true, "wanders": true,
-      "design": { "fantasy": "Every JRPG has a reaper; Persona's chained one is the homage (Ryan, 15 October: in, a trope by the tiers' own test; 24 October: the deadly hunter elite). The hunter elite: this one is going to kill a machine. A wanderer since 3 November (Ryan: \"Reaper might as well go full Persona and be a wanderer\"): Persona's Reaper comes to any floor once you linger, so it walks out of any rift.", "niche": "It hunts the weakest machine, fast, and its Knell is a telegraphed knife two rounds out through the shield. A fight the detachment it catches cannot win, so the squad comes to it.", "notes": "Proposed 26 October; landed 30 October as a placeholder kit for Ryan's marks; to the wanderers 3 November, listed once under the Marsh and every domain's. Art picked and cut 18 October (art/foes/reaper)." },
+      "design": { "fantasy": "Every JRPG has a reaper; Persona's chained one is the homage (Ryan, 15 October: in, a trope by the tiers' own test; 24 October: the deadly hunter elite). The hunter elite: this one is going to kill a machine. A wanderer since 3 November (Ryan: \"Reaper might as well go full Persona and be a wanderer\"): Persona's Reaper comes to any floor once you linger, so it walks out of any rift.", "niche": "It hunts the weakest machine, fast, and its Knell is a telegraphed knife two rounds out through the shield. A fight the detachment it catches cannot win, so the squad comes to it. Its Harvest is a sweep at every machine that corrupts the entry each shows, the weight a Barrier does not take (Ryan, 18 November: \"Reaper sweep seems like a good idea\"), so its scythe and its knell stay the single blows they were.", "notes": "Proposed 26 October; landed 30 October as a placeholder kit for Ryan's marks; to the wanderers 3 November, listed once under the Marsh and every domain's. Art picked and cut 18 October (art/foes/reaper)." },
       "codex": "It walks out of any rift, picks a machine and comes for it, faster than anything else on the field. Its scythe is bad; the knell is worse: a blow named two rounds ahead. Whatever it catches alone, it kills alone.",
-      "hp": 70, "attack": 15, "rank": "front", "movespeed": 3,
+      "hp": 70, "attack": 12, "rank": "front", "movespeed": 3,
       "actions": [
         { "id": "scythe", "name": "Scythe", "kind": "attack", "weight": 2, "text": "The scythe, for {damage}.", "status": "implemented" },
         { "id": "deaths_knell", "name": "Death's Knell", "kind": "attack", "factor": 1.5, "countdown": 2, "weight": 2, "text": "A bell rung for one machine: {damage}, two rounds on.", "status": "implemented" },
-        { "id": "harvest", "name": "Harvest", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["corrupt"], "corrupt": 2, "text": "A cut that rots: {damage}, and the entry it shows is corrupted.", "status": "implemented" }
+        { "id": "harvest", "name": "Harvest", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["all", "corrupt"], "corrupt": 1, "text": "A cut that rots: {damage} to every machine, and the entry each shows is corrupted.", "status": "implemented" }
       ],
       "flavour": "Gate order four, footnote: it is not that it has died. It is what died first."
     },
