@@ -1728,18 +1728,24 @@ MOLE_LIP_R = 10.9                                   # the ring's lip, a sharp ed
 MOLE_LIP = MOLE_ROOT + (MOLE_R0 - MOLE_LIP_R) / MOLE_SLOPE   # where the ring ends and the tip begins, on the one cone
 MOLE_TIP_IN = 0.6                                   # the tip's core this far inside the cone's line, clear of the throat
 MOLE_WIND, MOLE_FACET = 0.42, 0.04                  # the flutes' wind and the facets', radians a unit along the drill
-MOLE_PIECE_W = 10.5                                 # the cab's width and the boxes'
-MOLE_CAB_H, MOLE_BOX_H = 10.5, 8.0                  # the cab's height and the boxes'
-MOLE_IN_X = 14.0 * MOLE_GROW + 0.25 + MOLE_PIECE_W / 2.0   # burrowed, their centres: inboard edges at the grown breech's flank, out to the sides to make room
-MOLE_SEAT = MOLE_TH + 2.5                           # burrowed, the skirts' tops they sit on
-MOLE_PEEK = (2.1, 4.5)                              # out of the burrow, how far each stands out and up from its seat on its rams: the cab's slit and every gun just clear of the ring head on
-MOLE_RAM_R, MOLE_RAM_L = 1.2, 7.8                   # a ram's rod, its radius and its length
-MOLE_PORT_X, MOLE_PORT_R, MOLE_PORT_WELL = 21.65, 4.1, 3.0   # burrowed, a piece's gun port's centre across (over the tread, so a gun sinks into it whole), its bore, its floor under the rim's top
+MOLE_FOOT = 20.5 * MOLE_GROW                        # the cowl's foot across, the cheeks' outer faces: the cab and the port blocks stand flush with it
+MOLE_SEAT = MOLE_TH + 2.5                           # the skirts' tops, which the cab and the blocks stand on
+MOLE_PIECE_W, MOLE_CAB_H = 10.5, 10.5               # the cab's width and height
+MOLE_CAB_X = (MOLE_FOOT - MOLE_PIECE_W / 2.0, 24.0) # the cab's centre across: burrowed, flush with the cowl's foot, its inboard side in the hull's flank; out of the burrow, its slit just clear of the ring head on
+MOLE_BLOCK_X, MOLE_BLOCK_H = (-15.4, -MOLE_FOOT), 10.5   # the port blocks' inboard and outboard faces, flush with the cowl's foot, and their height, a port in each's outboard face
+MOLE_RISE, MOLE_CAM_R = 9.6, 5.3                    # out of the burrow, how far the rear block stands up on its cams, its port clear over the fore block; a cam's radius, its throw half the rise
+MOLE_RAM_R, MOLE_RAM_L = 1.3, 7.0                   # the cab's rams, their rods' radius and length
+MOLE_PORT_S = 0.65                                  # the port blocks' guns' scale
+MOLE_SIDE_R, MOLE_SIDE_WELL, MOLE_SIDE_RUN = 3.3, 3.0, 24.4   # a side port's bore, its floor in from the face, how far its gun runs in burrowing: the longest port model's muzzle behind the iris's rest
+MOLE_CAB_PORT = (1.35, 3.4, 0.68)                   # the cab's roof port: how far outboard of the cab's centre (over the tread burrowed, clear of the breech), its bore, its gun's scale
+MOLE_PORT_WELL = 3.0                                # a roof port's floor under its rim's top
+MOLE_PORT_FITS = {"barrel": "barrel_port", "rack": "rack_port", "twin_barrel": "twin_barrel_round", "dish": "dish_port"}   # every class in its port form
 MOLE_DECK = MOLE_TH + 2.9                           # the bays' floors, just over the tread skirts
 MOLE_SHUTTER = 2.6                                  # how far up the cab's face its slit's shutter stands out of the burrow
-MOLE_TOP_Y, MOLE_TOP_R, MOLE_TOP_WELL = -20.0, 5.3, 4.0   # the top gun's port on the breech's top: its centre along y, its bore, its floor under the rim's top
-MOLE_TOP_PIN, MOLE_TOP_EL = 4.85, 5.0               # the top gun's pin over its rim (a dish clear of it) and its elevation at rest, its line over the ring
-MOLE_TOP_SCALE, MOLE_TOP_SINK = 0.75, 32.0          # its scale, and how far it sinks upright with its drum, under its iris's rest
+MOLE_TOP_Y, MOLE_TOP_R, MOLE_TOP_WELL = -19.5, 3.7, 4.0   # the top gun's port on the breech's top: its centre along y, its bore, its floor under the rim's top
+MOLE_TOP_PIN, MOLE_TOP_EL = 3.6, 5.0                # the top gun's pin over its rim (its port model clear of the rim) and its elevation at rest, its line over the ring
+MOLE_TOP_SCALE, MOLE_TOP_SINK = 0.72, 32.2          # its scale, and how far it sinks upright with its drum, under its iris's rest
+MOLE_HALO_AHEAD = 0.8                               # how far toward the eye a vent's heat halo is drawn: its grown shell kept inside the vent's box, behind the frame
 
 
 def _mole_oct(cx, cz, w, h, c):
@@ -1858,13 +1864,13 @@ def _mole_projectile(b):
     b.loft([(-44.0, _mole_ngon(0.0, 0.0, 0.6, 10)), (-31.0, _mole_ngon(0.0, 0.0, 5.5, 10)), (-25.6, _mole_ngon(0.0, 0.0, 7.8, 10))], "amber.glow", "plume")
 
 
-def _mole_port(b, tag, x, y, top, body):
+def _mole_port(b, tag, x, y, top, body, r):
     """A gun's port in a piece's roof, irised (Ryan, 17 November: "the irised gun ports"; the Polar
-    Bear's Lockdown Shutters): a stripe rim round a round mouth MOLE_PORT_R across centred at (`x`,
-    `y`), a dark well MOLE_PORT_WELL under the rim's top cut down into `body`, and the iris plug
-    resting under the well's floor (shutter_<tag>), which comes up out of the floor and shuts the
-    mouth once the gun has sunk through it. Returns the iris's joint and its slide home."""
-    r, rim_top = MOLE_PORT_R, top + 0.5
+    Bear's Lockdown Shutters): a stripe rim round a round mouth of bore `r` centred at (`x`, `y`), a
+    dark well MOLE_PORT_WELL under the rim's top cut down into `body`, and the iris plug resting under
+    the well's floor (shutter_<tag>), which comes up out of the floor and shuts the mouth once the gun
+    has sunk through it. Returns the iris's joint and its slide home."""
+    rim_top = top + 0.5
     floor = rim_top - MOLE_PORT_WELL
     b.cut([body], (x, y, floor - 0.3), (x, y, rim_top), r + 0.1, 12)
     _tube(b, (x, y, floor - 0.3), (x, y, top), r + 0.15, r, 12, "steel.dark", tag + "_port", floor_depth=0.3)
@@ -1872,26 +1878,61 @@ def _mole_port(b, tag, x, y, top, body):
     return _plug(b, tag, (x, y, rim_top - 0.35), (0.0, 0.0, 1.0), r + 0.05, MOLE_PORT_WELL + 0.75)
 
 
-def _mole_ram(b, s, x, y, z):
-    """A short ram under a piece's inboard side, its rod from (`x`, `y`, `z`) down and in along the
-    piece's peek (MOLE_PEEK), into its sleeve on the skirt (_mole_sleeves): rams that lift the piece
-    up and out from its seat rather than run it far out sideways (Ryan, 17 November: "It wasn't that
-    I was against rams, they were just SO long that they looked silly")."""
-    u = Vector((s * MOLE_PEEK[0], 0.0, MOLE_PEEK[1])).normalized()
-    a = Vector((x, y, z))
-    _beam(b, tuple(a - u * MOLE_RAM_L), tuple(a), _poly(MOLE_RAM_R, 8), _poly(MOLE_RAM_R, 8), "steel.plate", "ram")
-    _beam(b, tuple(a - u * 1.6), tuple(a - u * 0.6), _poly(MOLE_RAM_R + 0.25, 8), _poly(MOLE_RAM_R + 0.25, 8), "steel.hazard", "ram_band")
+def _mole_side_port(b, tag, hp, y, z, body, shape, carries):
+    """A gun's port in a port block's outboard face, facing port (Ryan, 18 November: "Move the ports to
+    the side of the blocks they're on, facing port"), irised: a stripe rim round a round mouth
+    MOLE_SIDE_R across centred at (`y`, `z`) on the face, a dark well MOLE_SIDE_WELL in, cut into
+    `body`, the iris plug resting behind the well's floor (shutter_<tag>); the gun on its slide
+    (run_<tag>) out of the mouth along its line, any class in its port form at MOLE_PORT_S (the same
+    day: "Use the port models for the guns"), or a bare pad. Burrowing, it runs in through the floor,
+    into the block and the hull beyond, and the iris comes out of the floor and shuts the mouth.
+    Returns the iris's joint and its slide home."""
+    xf, r, axis = MOLE_BLOCK_X[1], MOLE_SIDE_R, (-1.0, 0.0, 0.0)
+    floor = xf + MOLE_SIDE_WELL
+    b.cut([body], (floor + 0.3, y, z), (xf, y, z), r + 0.1, 12)
+    _tube(b, (floor + 0.3, y, z), (xf, y, z), r + 0.15, r, 12, "steel.dark", tag + "_port", floor_depth=0.3)
+    _tube(b, (xf + 0.1, y, z), (xf - 0.5, y, z), r + 0.8, r, 12, "steel.stripe", tag + "_port_rim", floor=False)
+    iris = _plug(b, tag, (xf + 0.45, y, z), axis, r + 0.05, MOLE_SIDE_WELL + 0.75)
+    pin = (xf + 1.0, y, z)
+    with b.joint("run_" + tag, pin, slide=axis):
+        if shape:
+            b.stock(hp, pin, shape, forward=axis, scale=MOLE_PORT_S, carries=carries, fits=MOLE_PORT_FITS)
+        else:
+            b.pad(hp, pin, forward=axis, scale=MOLE_PORT_S, size=(5.0, 1.0), fits=MOLE_PORT_FITS)
+    return iris
 
 
-def _mole_sleeves(b, rams):
-    """The rams' sleeves on the skirts, where each rod runs in: `rams` as (s, x, y, z), each rod's top
-    out of the burrow, its sleeve where its line meets the skirt's top, under the piece's seat."""
-    for s, x, y, z in rams:
-        u = Vector((s * MOLE_PEEK[0], 0.0, MOLE_PEEK[1])).normalized()
-        a = Vector((x, y, z))
-        at = a - u * ((z - MOLE_SEAT) / u.z)
-        _beam(b, tuple(at - u * 1.0), tuple(at + u * 1.2), _poly(MOLE_RAM_R + 0.7, 8), _poly(MOLE_RAM_R + 0.7, 8), "steel.dark", "ram_sleeve")
-        _beam(b, tuple(at + u * 1.0), tuple(at + u * 1.5), _poly(MOLE_RAM_R + 0.9, 8), _poly(MOLE_RAM_R + 0.9, 8), "steel.stripe", "ram_sleeve_lip")
+def _mole_blocks(b):
+    """The port blocks on the left deck, flush with the cowl's foot and tall enough for a port in each's
+    outboard face, facing port (Ryan, 18 November: "I feel like there's no reason for the port side
+    guns to extend out. Move the ports to the side of the blocks they're on, facing port. Make the
+    blocks flush with the edge of the cowling, and taller so the ports fit. Then when it transforms,
+    the rear one just needs to rise vertically on cams to clear the one in front"): the rear block's
+    gun (hp_2) and the fore block's bare mount (hp_3), each a port model running out of its irised
+    port; the fore block fixed; the rear one (sponson_deploy) built standing MOLE_RISE up on two cams
+    (cam_0, cam_1), eccentric discs under it in a slot on the skirt, each turning a half turn about
+    the machine's width on a hub, their tops under the block's floor all the way. Returns the ports'
+    irises (the rear's, the fore's) and the cams' joints."""
+    x0, x1, h = MOLE_BLOCK_X[1], MOLE_BLOCK_X[0], MOLE_BLOCK_H
+    zr = MOLE_SEAT + MOLE_RISE
+    with b.joint("sponson_deploy", ((x0 + x1) / 2.0, -24.0, zr)):
+        body = b.box(x0, x1, -34.0, -14.0, zr, zr + h, "steel.panel", "sponson")
+        b.box(x0 - 0.4, x1 + 0.4, -17.4, -16.0, zr + h - 0.6, zr + h + 0.3, "steel.stripe", "sponson_band")
+        rear = _mole_side_port(b, "aft", "hp_2", -23.5, zr + h / 2.0, body, "barrel", "slugthrower")
+    body = b.box(x0, x1, -12.0, 0.0, MOLE_SEAT, MOLE_SEAT + h, "steel.panel", "fore_box")
+    b.box(x0 - 0.4, x1 + 0.4, -3.4, -2.0, MOLE_SEAT + h - 0.6, MOLE_SEAT + h + 0.3, "steel.stripe", "fore_box_band")
+    fore = _mole_side_port(b, "fore", "hp_3", -6.0, MOLE_SEAT + h / 2.0, body, "", "")
+    e = MOLE_RISE / 2.0
+    zp = zr - e - MOLE_CAM_R   # a cam's hub: its top under the block's floor, lobe up
+    cams = []
+    for k, (x, y) in enumerate(((-22.4, -26.5), (-17.6, -20.5))):
+        name = "cam_%d" % k
+        with b.joint(name, (x, y, zp), axis="pitch", limits=(-180.0, 180.0)):
+            b.prism("x", x, y, zp + e, MOLE_CAM_R, 1.6, "steel.plate", 12, "cam", phase=math.pi / 12)
+            b.prism("x", x, y, zp + e, MOLE_CAM_R - 1.4, 1.8, "steel.stripe", 12, "cam_face", phase=math.pi / 12)
+        b.prism("x", x, y, zp, 1.1, 2.4, "steel.dark", 8, "cam_hub", phase=math.pi / 8)
+        cams.append(name)
+    return rear, fore, cams
 
 
 def _mole_hood(b, x0, x1, y_face, z_top, reach=4.4, drop=2.2):
@@ -1910,7 +1951,8 @@ def _mole_hood(b, x0, x1, y_face, z_top, reach=4.4, drop=2.2):
 def _mole_top_gun(b, cut):
     """The gun on the breech's top, over its back vent (Ryan, 17 November: "Add a gun mount to the
     top of the central roof, above the vent"; again on Version 296: "the top gun"; hp_4, the Twin
-    Autoguns): a round port MOLE_TOP_R across in the breech's top (`cut`, the breech and its band), a
+    Autoguns, in its port form as every class is here: Ryan, 18 November, "Use the port models for the
+    guns"): a round port MOLE_TOP_R across in the breech's top (`cut`, the breech and its band), a
     stripe rim, a dark well MOLE_TOP_WELL under the rim's top; a drum standing in the mouth
     (lift_top) with the gun's pin MOLE_TOP_PIN over the rim, raised MOLE_TOP_EL so its line clears
     the ring, on its tilt (tilt_top); and the iris plug resting under the floor (shutter_top).
@@ -1932,7 +1974,7 @@ def _mole_top_gun(b, cut):
         with b.joint("tilt_top", pin, axis="pitch", limits=(0.0, 90.0)):
             el = math.radians(MOLE_TOP_EL)
             b.stock("hp_4", pin, "twin_barrel", forward=(0.0, math.cos(el), math.sin(el)), scale=MOLE_TOP_SCALE, carries="twin_autoguns",
-                    fits={"barrel": 0.96, "twin_barrel": 0.96, "rack": "rack_round"})
+                    fits=MOLE_PORT_FITS)
     return iris
 
 
@@ -1954,18 +1996,18 @@ def _mole_mount(b, tag, hp, x, y, deck, col_top, col_r, pin_z, scale, shape, car
 
 def _mole_cab(b):
     """The cab and the gun in its roof (hp_1) on their rams (cab_deploy), built where they stand out
-    of the burrow: up and out from the cab's seat beside the grown breech on two short rams, just far
-    enough that head on its slit and its gun clear the ring (Ryan, 17 November: "rethink how best to
-    peek those guns and cockpit around the drill, now that things are expanded"): a sealed cupola
-    raked at its face under a peaked brow, flanges either side of the face, a slit to its outboard
-    side and a floodlight under it, the slit's shutter up under the brow like a raised visor
-    (shutter), two periscopes on the brow (periscopes), and the gun on its column in an irised port
-    in the roof behind the brow, over the tread when the cab sits burrowed. Returns its port's iris
-    and its rams' tops."""
+    of the burrow: run out level from its seat just far enough that head on its slit clears the ring
+    (Ryan, 18 November: "The cockpit section should tuck in horizontally more so that it ends up flush
+    with the cowl, and it only needs to extend in the horizontal direction"), seated burrowed flush
+    with the cowl's foot, its inboard side in the hull's flank: a sealed cupola raked at its face
+    under a peaked brow, flanges either side of the face, a slit to its outboard side and a floodlight
+    under it, the slit's shutter up under the brow like a raised visor (shutter), two periscopes on
+    the brow (periscopes), the gun on its column in an irised port in the roof behind the brow, over
+    the tread and clear of the breech when the cab is seated, its class in its port form; and two
+    short rams out of the hull's flank under its inboard side. Returns its port's iris."""
     s, w = 1.0, MOLE_PIECE_W
-    cx, z0 = MOLE_IN_X + MOLE_PEEK[0], MOLE_SEAT + MOLE_PEEK[1]
+    cx, z0 = MOLE_CAB_X[1], MOLE_SEAT
     top, hw = z0 + MOLE_CAB_H, w / 2.0
-    rams = []
     with b.joint("cab_deploy", (cx, -20.0, z0)):
         body = b.loft([(-30.0, rect(cx, w, z0, top)), (-15.0, rect(cx, w, z0, top)), (-10.0, rect(cx, w, z0, top - 5.5))], "steel.panel", "cab")
         b.loft([(-18.0, rect(cx, w + 0.6, top - 0.8, top + 1.4)), (-13.5, rect(cx, w + 1.0, top - 0.2, top + 3.0)),
@@ -1985,43 +2027,17 @@ def _mole_cab(b):
             _slab(b, [up(x0 - 1.0, top - 5.45, 0.6), up(x1 + 1.0, top - 5.45, 0.6), up(x1 + 1.0, top - 3.0, 0.6), up(x0 - 1.0, top - 3.0, 0.6)], tuple(face_n), 0.6, "steel.plate", "shutter")
             _slab(b, [up(x0 - 1.0, top - 3.6, 0.85), up(x1 + 1.0, top - 3.6, 0.85), up(x1 + 1.0, top - 3.0, 0.85), up(x0 - 1.0, top - 3.0, 0.85)], tuple(face_n), 0.3, "steel.stripe", "shutter_edge")
         with b.joint("periscopes", (cx, -16.5, top + 0.6)):   # two on the brow's back, their glass forward over its peak
-            for px in (cx - 2.3, cx + 2.1):
+            for px in (cx - 0.6, cx + 2.6):   # clear of the breech's flank, the cab seated
                 b.box(px - 1.2, px + 1.2, -17.6, -15.4, top + 0.6, top + 4.2, "steel.dark", "periscope")
                 b.box(px - 0.8, px + 0.8, -15.5, -15.2, top + 2.4, top + 3.7, "glass.glass", "periscope_glass")
-        wx = MOLE_PORT_X + MOLE_PEEK[0]
-        iris = _mole_port(b, "gun", wx, -25.5, top, body)
-        _mole_mount(b, "gun", "hp_1", wx, -25.0, top, top + 3.2, 2.0, top + 6.6, 0.75, "barrel", "rivet_gun",
-                    fits={"barrel": 0.867, "twin_barrel": 0.578, "rack": ("rack_round", 0.572), "dish": 0.533})
-        for y in (-25.0, -13.0):   # its rams, under its inboard side
-            ram = (s, cx - s * 2.6, y, z0 + 0.6)
-            _mole_ram(b, *ram)
-            rams.append(ram)
-    return iris, rams
-
-
-def _mole_boxes(b):
-    """The left deck's two armoured boxes on their rams (sponson_deploy, fore_box_deploy), built where
-    they stand out of the burrow, up and out from their seats as the cab is, so each muzzle clears
-    the ring head on: a gun in the aft box (hp_2) and a bare mount in the fore one (hp_3), each on its
-    column in an irised port across its box's top, over the tread burrowed, and two short rams under
-    each box's inboard side. Returns their ports' irises and their rams' tops."""
-    s, hw = -1.0, MOLE_PIECE_W / 2.0
-    cx, z0 = -(MOLE_IN_X + MOLE_PEEK[0]), MOLE_SEAT + MOLE_PEEK[1]
-    top, wx = z0 + MOLE_BOX_H, -(MOLE_PORT_X + MOLE_PEEK[0])
-    fits = {"twin_barrel": 0.667, "rack": ("rack_round", 0.66), "dish": 0.615}
-    irises, rams = [], []
-    for joint, label, y0, y1, tag, hp, y_gun, col_top, col_r, pin_z, shape, carries, ram_ys in (
-            ("sponson_deploy", "sponson", -34.0, -14.0, "aft", "hp_2", -24.0, top + 2.4, 2.2, top + 5.0, "barrel", "slugthrower", (-30.0, -18.0)),
-            ("fore_box_deploy", "fore_box", -12.0, 0.0, "fore", "hp_3", -6.0, top + 2.0, 2.0, top + 3.0, "", "", (-9.0, -3.0))):
-        with b.joint(joint, (cx, (y0 + y1) / 2.0, z0)):
-            body = b.box(cx - hw, cx + hw, y0, y1, z0, top, "steel.panel", label)
-            irises.append(_mole_port(b, tag, wx, y_gun - 0.5, top, body))
-            _mole_mount(b, tag, hp, wx, y_gun, top, col_top, col_r, pin_z, 0.65, shape, carries, fits=fits)
-            for y in ram_ys:
-                ram = (s, cx - s * 2.6, y, z0 + 0.6)
-                _mole_ram(b, *ram)
-                rams.append(ram)
-    return irises, rams
+        wx = cx + MOLE_CAB_PORT[0]
+        iris = _mole_port(b, "gun", wx, -25.0, top, body, MOLE_CAB_PORT[1])
+        _mole_mount(b, "gun", "hp_1", wx, -25.0, top, top + 3.2, 2.0, top + 6.6, MOLE_CAB_PORT[2], "barrel", "rivet_gun", fits=MOLE_PORT_FITS)
+        for y in (-25.0, -13.0):   # its rams, short and stout, out of the hull's flank under its inboard side
+            a = Vector((cx - hw + 0.5, y, z0 + 2.5))
+            _beam(b, tuple(a - Vector((MOLE_RAM_L, 0.0, 0.0))), tuple(a), _poly(MOLE_RAM_R, 8), _poly(MOLE_RAM_R, 8), "steel.plate", "ram")
+            _beam(b, tuple(a - Vector((1.4, 0.0, 0.0))), tuple(a - Vector((0.5, 0.0, 0.0))), _poly(MOLE_RAM_R + 0.25, 8), _poly(MOLE_RAM_R + 0.25, 8), "steel.hazard", "ram_band")
+    return iris
 
 
 def mole(b):
@@ -2038,27 +2054,27 @@ def mole(b):
     upper chamfers and one across its back, two big ones across the engine deck's tail, the back's
     and the tail's each under a brow to keep the dirt out, and one between its stacks.
 
-    Out of the burrow (its rest) the cab stands up and out over the right tread and the two weapon
-    boxes over the left, each lifted from its seat beside the breech on two short rams just far
-    enough that head on the cab's slit and every muzzle clear the ring, the rams' sleeves on the
-    skirts; mounts, in the stock's order: hp_1 the gun in the cab's roof (the Rivet Gun), hp_2 the
-    gun in the aft box (the Slugthrower), hp_3 a bare mount in the fore box, each on a column in an
-    irised port, and hp_4 the top gun on the breech (the Twin Autoguns), on a drum in its own irised
-    port, raised over the ring.
+    Out of the burrow (its rest) the cab stands run out level on two short rams over the right tread,
+    just far enough that head on its slit clears the ring; on the left deck two blocks stand flush
+    with the cowl's foot, their guns run out of irised ports in their outboard faces, facing port, the
+    rear block raised on two cams to clear the fore one. Mounts, in the stock's order: hp_1 the gun in
+    the cab's roof (the Rivet Gun), on a column in an irised port; hp_2 the rear block's gun (the
+    Slugthrower); hp_3 the fore block's, bare; and hp_4 the top gun on the breech (the Twin
+    Autoguns), on a drum in its own irised port, raised over the ring; every class in its port form.
 
     Burrowed (the form "burrowed", held while the machine carries the status: Ryan, 17 November,
     "Maybe the answer to the cockpit problem is to have it tuck in for digging and move out for
-    unburrowed. Same with the weapons"): the louvres shut, the cab and the boxes sink down and in on
-    their rams onto their seats against the grown breech's flanks (the same day: "as it grows the
-    side chunks with the guns can get pushed out to the sides more when collapsed"), and the top gun
-    tips upright and sinks into the breech; each piece's gun, whatever class it is, tips muzzle-up
-    and sinks through its port's floor, over the tread, into its piece and the tread under it, its
-    column after it, and every iris comes up and shuts; the slit's shutter runs down over it and the
-    periscopes sink into the brow; and the whole machine digs in nose first, the ring's lower rim in
-    the ground (Claude's addition, the way the Thunderbirds' Mole goes in: his to strike). The
-    Inertia Drill fires as a launch: the tip spins up, leaves the throat and dives into the ground
-    ahead, tunnelling, as an Indirect drill does, while the bore stands empty a moment; the tip
-    slides home after, as it does on a burrow."""
+    unburrowed. Same with the weapons"): the louvres shut, the cab runs in level onto its seat flush
+    with the cowl's foot, its inboard side in the hull's flank, the rear block sinks on its cams onto
+    the skirt beside the fore one, the top gun tips upright and sinks into the breech; the blocks'
+    guns run in through their ports' floors into the hull, the cab's gun tips muzzle-up and sinks
+    through its port's floor into the cab and the tread, and every iris comes up and shuts; the
+    slit's shutter runs down over it and the periscopes sink into the brow; and the whole machine digs
+    in nose first revving its drill hard, the ring's lower rim in the ground (the dig-in Claude's
+    addition, the way the Thunderbirds' Mole goes in: his to strike). The Inertia Drill fires as a
+    launch: the tip spins up, leaves the throat and dives into the ground ahead, tunnelling, as an
+    Indirect drill does, while the bore stands empty a moment; the tip slides home after, as it does
+    on a burrow."""
     TX, TW, TH, CZ = MOLE_TX, MOLE_TW, MOLE_TH, MOLE_CZ
     REST = 22.0   # the louvres' rest, degrees out of the face
     for s in (-1.0, 1.0):   # the treads, chamfered both ends, a skirt over each with a hazard tip forward
@@ -2131,24 +2147,24 @@ def mole(b):
     for s, t in ((-1.0, "l"), (1.0, "r")):
         vents.append(("rear_heat_" + t, _vent(b, [deck], (s * 6.1, -37.0, 16.5), 90.0, 11.0, 14.0, 5, "louvre_r" + t, REST * 0.5, 60.0, heat="rear_heat_" + t)))
         _mole_hood(b, *sorted((s * 0.2, s * 12.0)), -37.0, 24.6)
-    # The breech's back vent, short of the top gun sunk in the breech, under its brow, clear of the stacks.
-    vents.append(("breech_back_heat", _vent(b, [breech], (0.0, -27.0, CZ + 9.5 * G), 90.0, 11.0 * G, 6.0 * G, 3, "louvre_d", REST, 60.0, depth=2.4, heat="breech_back_heat")))
+    # The breech's back vent, clear of the top gun sunk in the breech, under its brow.
+    vents.append(("breech_back_heat", _vent(b, [breech], (0.0, -27.0, CZ + 9.5 * G), 90.0, 11.0 * G, 6.0 * G, 3, "louvre_d", REST, 60.0, heat="breech_back_heat")))
     _mole_hood(b, -7.6, 7.6, -27.0, CZ + 9.5 * G + 3.0 * G + 0.8, reach=2.5, drop=1.4)
     vents.append(("deck_heat", _vent(b, [deck], (0.0, -32.5, 28.5), 0.0, 8.0, 6.0, 3, "louvre_t", REST, 80.0, heat="deck_heat")))
     for s, t in ((-1.0, "l"), (1.0, "r")):
-        vents.append(("breech_heat_" + t, _vent(b, [breech], (s * 10.5 * G, -21.0, CZ + 11.5 * G), 0.0, 10.0, 6.0 * G, 3, "louvre_b" + t, REST, 80.0, flank=s, heat="breech_heat_" + t)))
-    for s in (-1.0, 1.0):
-        b.prism("z", s * 8.6, -32.0, 34.0, 2.4, 12.0, "steel.dark", 6, "stack")
-    # The bays the cab and the boxes sit in burrowed, bare in a hazard rim out of the burrow, as far
-    # as the skirts reach.
-    hw, edge = MOLE_PIECE_W / 2.0, TX + TW / 2.0 + 0.1
-    for x0, x1, y0, y1, label in ((MOLE_IN_X - hw, edge, -30.0, -10.0, "cab"),
-                                  (-edge, -MOLE_IN_X + hw, -34.0, -14.0, "sponson"), (-edge, -MOLE_IN_X + hw, -12.0, 0.0, "fore_box")):
+        vents.append(("breech_heat_" + t, _vent(b, [breech], (s * 10.5 * G, -20.5, CZ + 11.5 * G), 0.0, 8.0, 6.0 * G, 3, "louvre_b" + t, REST, 80.0, flank=s, heat="breech_heat_" + t)))   # 8 along: its halo inside the breech's ends
+    for s in (-1.0, 1.0):   # the stacks, back from the brow over the breech's back vent (Ryan, 18 November: "Make sure the rear hood doesn't hit the rear stacks")
+        b.prism("z", s * 8.6, -33.6, 34.0, 2.4, 12.0, "steel.dark", 6, "stack")
+    # The bays the cab stands out of and the rear block rises from, bare in a hazard rim: the cab's
+    # between the breech and where the cab stands out, the rear block's under it, its cams in it.
+    for x0, x1, y0, y1, label in ((14.0 * G + 0.1, MOLE_FOOT, -30.0, -10.0, "cab"), (MOLE_BLOCK_X[1], MOLE_BLOCK_X[0], -34.0, -14.0, "sponson")):
         b.box(x0 - 0.9, x1 + 0.9, y0 - 0.9, y1 + 0.9, MOLE_DECK - 0.5, MOLE_DECK + 0.15, "steel.stripe", label + "_bay_rim")
         b.box(x0, x1, y0, y1, MOLE_DECK - 0.4, MOLE_DECK + 0.3, "bore.void", label + "_bay")
-    cab_iris, cab_rams = _mole_cab(b)
-    box_irises, box_rams = _mole_boxes(b)
-    _mole_sleeves(b, cab_rams + box_rams)
+    cab_iris = _mole_cab(b)
+    rear_iris, fore_iris, cams = _mole_blocks(b)
+    # The cab's rams' collars on the hull's flank, the breech's and the barrel's.
+    for y, xh in ((-25.0, 14.0 * G), (-13.0, 15.4)):
+        _beam(b, (xh - 0.8, y, MOLE_SEAT + 2.5), (xh + 0.6, y, MOLE_SEAT + 2.5), _poly(MOLE_RAM_R + 0.6, 8), _poly(MOLE_RAM_R + 0.6, 8), "steel.dark", "ram_collar")
     # The locker ahead of the cab's bay.
     b.box(13.6, 21.6, -8.0, 0.0, TH + 0.5, TH + 5.0, "steel.plate", "locker")
     b.box(13.4, 21.8, -1.0, 0.0, TH + 5.0, TH + 5.6, "steel.stripe", "locker_edge")
@@ -2179,15 +2195,33 @@ def mole(b):
         return keys + [(round(t1, 3), 0.0, 0.0, 0.0)]
 
     # Idle acts. Venting, the Minervan vent's act: the louvres thrown open a vent a beat apart over
-    # flaring heat, held, shut, the hull settling a little on its treads.
+    # flaring heat, held, shut, the hull settling a little on its treads; each vent's heat halo drawn
+    # only MOLE_HALO_AHEAD toward the eye, so it glows inside its box and not over its frame (Ryan, 18
+    # November: "The vent heat effect bleeds through the frame").
     _minerva_vent_act(b, vents)
-    # A check of the rams: the cab sinks most of the way to its seat and rises again, then the boxes.
-    px, pz = MOLE_PEEK[0] * 0.7, MOLE_PEEK[1] * 0.7
-    b.act("ram_check", 3.6, {
-        "cab_deploy": [slide(0.4), slide(1.1, dx=-px, dz=-pz), slide(1.6, dx=-px, dz=-pz), slide(2.4)],
-        "sponson_deploy": [slide(0.9), slide(1.6, dx=px, dz=-pz), slide(2.1, dx=px, dz=-pz), slide(2.9)],
-        "fore_box_deploy": [slide(1.0), slide(1.7, dx=px, dz=-pz), slide(2.2, dx=px, dz=-pz), slide(3.0)],
-    }, glow=[(["lamp"], [(0.3, 0.0), (0.6, 4.0), (2.8, 4.0), (3.3, 0.0)])])
+    heats = {heat: (0.75 if heat.startswith("rear_heat") else 1.0) for heat, _ in vents}   # the tail's grown less, inside the deck's flanks
+    b.halo = [[h, heats[h], MOLE_HALO_AHEAD] if h in heats else h for h in b.halo]
+    E = MOLE_RISE / 2.0
+
+    def cam_tracks(t0, t1, frm, to, n=8):
+        """The rear block's drop and its cams' turn from `frm` to `to` degrees, in step, keyed close
+        so the block's floor rides the cams' tops all the way."""
+        block, cam = [], []
+        for k in range(n + 1):
+            th = frm + (to - frm) * eased(k / float(n))
+            t = round(t0 + (t1 - t0) * k / float(n), 3)
+            block.append(slide(t, dz=round(-E * (1.0 - math.cos(math.radians(th))), 3)))
+            cam.append((t, round(th, 2)))
+        return block, cam
+
+    # A check of the rams and the cams: the cab runs in a way on its rams and out again, then the
+    # rear block sinks a way on its cams and rises again.
+    down, turn_down = cam_tracks(0.9, 1.6, 0.0, 80.0)
+    up, turn_up = cam_tracks(2.1, 2.9, 80.0, 0.0)
+    check = {"cab_deploy": [slide(0.4), slide(1.1, dx=-2.5), slide(1.6, dx=-2.5), slide(2.4)], "sponson_deploy": down + up}
+    for cam in cams:
+        check[cam] = turn_down + turn_up
+    b.act("ram_check", 3.6, check, glow=[(["lamp"], [(0.3, 0.0), (0.6, 4.0), (2.8, 4.0), (3.3, 0.0)])])
     # The drill run up: the tip spins up six turns and down again, the ring two the other way, the
     # hull shuddering with it.
     tip = spin_up(0.4, 4.0, 6)
@@ -2210,34 +2244,46 @@ def mole(b):
 
     # The burrow (the form "burrowed"), for whatever each mount wears (Ryan, 17 November: "What
     # happens if the stock guns are swapped out? Can't just ignore that"): the louvres shut; the cab
-    # and the boxes sink down and in on their rams a beat apart onto their seats on the skirts, inboard
-    # edges at the grown breech's flanks, as the top gun tips upright and sinks into the breech under
-    # its iris; each piece's gun tips muzzle-up and sinks through its port's floor, over the tread,
-    # into its piece and the tread under it, its column down after it, and the irises come up and
-    # shut; the shutter runs down over the slit and the periscopes sink; then the whole machine digs
-    # in nose first and settles. Coming up runs it back. Each class fits: a piece's gun stands at
-    # most 2.6 either side of its line and 4.05 from its port's centre upright, so it passes the
-    # port's bore (4.1) and sinks whole into the tread (the mounts' fits: a barrel at 0.65 of a
-    # class's size, twin barrels, a round rack and a dish at about 0.43); the top gun at 0.72 to 0.75
-    # stands at most 21.6 over its pin, on a drum 4.85 tall, into the 27.1 under its iris's rest.
+    # runs in level onto its seat, flush with the cowl's foot, as the rear block sinks on its cams
+    # onto the skirt and the top gun tips upright and sinks into the breech under its iris; the fore
+    # block's gun runs in through its port's floor, then the rear block's, both into the hull, and
+    # the cab's gun tips muzzle-up and sinks through its port's floor into the cab and the tread,
+    # each iris coming up behind; the shutter runs down over the slit and the periscopes sink; then
+    # the whole machine digs in nose first, revving its drill hard (Ryan, 18 November: "It needs to
+    # rev the drill hard while it burrows"), the tip six turns and the ring two against it, the hull
+    # shaking, and settles. Coming up runs it back, the drill backing out. Each class fits, in its
+    # port form: a block's gun at 0.65 of a class's size runs in 24.4, the longest's muzzle behind its
+    # iris's rest; the cab's at 0.68 stands at most 21.8 over its pin upright and 3.3 from its line,
+    # so it passes its port's bore (3.4) and sinks whole into the tread; the top gun at 0.72 stands at
+    # most 23 over its pin, on a drum 3.6 tall, into the 27.3 under its iris's rest.
     tracks = {}
-    for jn, s, t0 in (("cab_deploy", 1.0, 0.0), ("sponson_deploy", -1.0, 0.08), ("fore_box_deploy", -1.0, 0.16)):
-        tracks[jn] = [slide(t0), slide(t0 + 0.5, dx=-s * MOLE_PEEK[0], dz=-MOLE_PEEK[1])]
+    tracks["cab_deploy"] = [slide(0.0), slide(0.55, dx=MOLE_CAB_X[0] - MOLE_CAB_X[1])]
+    tracks["sponson_deploy"], turn = cam_tracks(0.0, 0.6, 0.0, 180.0)
+    for cam in cams:
+        tracks[cam] = turn
     for k, (heat, vent) in enumerate(vents):
         for jn, shut, swing in vent:
             tracks[jn] = [(0.0, 0.0), (round(0.1 + 0.05 * k, 3), 0.0), (round(0.45 + 0.05 * k, 3), shut)]
     tracks["tilt_top"] = [(0.1, 0.0), (0.4, 90.0 - MOLE_TOP_EL)]
     tracks["lift_top"] = [slide(0.4), slide(0.85, dz=-MOLE_TOP_SINK)]
-    for tag, t0, sink, col in (("gun", 0.55, 33.0, 7.6), ("aft", 0.63, 28.9, 6.8), ("fore", 0.71, 26.9, 6.4)):   # each once its piece is down
-        tracks["tilt_" + tag] = [(t0, 0.0), (round(t0 + 0.3, 3), 90.0)]
-        tracks["col_" + tag] = [slide(t0 + 0.3), slide(t0 + 0.5, dz=-col)]
-        tracks["lift_" + tag] = [slide(t0 + 0.3), slide(t0 + 0.8, dz=-sink)]
-    for (jn, (hx, hy, hz)), t0 in [(top_iris, 0.85)] + [(iris, 1.55) for iris in [cab_iris] + box_irises]:
+    tracks["run_fore"] = [slide(0.0), slide(0.5, dx=MOLE_SIDE_RUN)]
+    tracks["run_aft"] = [slide(0.6), slide(1.1, dx=MOLE_SIDE_RUN)]
+    tracks["tilt_gun"] = [(0.55, 0.0), (0.85, 90.0)]
+    tracks["col_gun"] = [slide(0.85), slide(1.05, dz=-7.6)]
+    tracks["lift_gun"] = [slide(0.85), slide(1.35, dz=-35.0)]
+    for (jn, (hx, hy, hz)), t0 in ((top_iris, 0.85), (fore_iris, 0.5), (rear_iris, 1.1), (cab_iris, 1.35)):
         tracks[jn] = [slide(t0), slide(t0 + 0.25, hx, hy, hz)]
-    tracks["shutter"] = [slide(1.55), slide(1.85, dy=round(MOLE_SHUTTER / 1.1, 3), dz=-MOLE_SHUTTER)]
-    tracks["periscopes"] = [slide(1.55), slide(1.85, dz=-3.2)]
-    T_DIG0, T_DIG1, SINK, NOSE = 1.9, 2.8, -7.0, -8.0
-    body = [(round(T_DIG0 + (T_DIG1 - T_DIG0) * k / 9.0, 3), 0.0, 0.0, round(SINK * eased(k / 9.0), 3), 0.0, round(NOSE * eased(k / 9.0), 3), 0.0) for k in range(10)]
+    tracks["shutter"] = [slide(1.35), slide(1.65, dy=round(MOLE_SHUTTER / 1.1, 3), dz=-MOLE_SHUTTER)]
+    tracks["periscopes"] = [slide(1.35), slide(1.65, dz=-3.2)]
+    T_REV, T_DIG0, T_DIG1, SINK, NOSE = 1.2, 1.6, 2.6, -7.0, -8.0
+    rev = [(round(T_REV + (T_DIG1 - T_REV) * k / 16.0, 3), round(eased(k / 16.0), 4)) for k in range(17)]
+    tracks["drill_rev"] = [(t, round(2160.0 * u, 2)) for t, u in rev]
+    tracks["ring_rev"] = [(t, round(-720.0 * u, 2)) for t, u in rev]
+    body = [(T_DIG0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)]
+    for k in range(1, 17):   # dug in nose first, the hull shaking with the drill
+        u = k / 16.0
+        shake = 0.6 * min(1.0, 4.0 * min(u, 1.0 - u)) * (1.0 if k % 2 else -1.0)
+        body.append((round(T_DIG0 + (T_DIG1 - T_DIG0) * u, 3), 0.0, 0.0, round(SINK * eased(u), 3), 0.0, round(NOSE * eased(u), 3), round(shake, 3)))
     b.form("burrowed", T_DIG1, tracks, glow=[(["lamp", "floodlight"] + [heat for heat, _ in vents], -1.0)], body=body)
     # Burrowed, its own acts from the dug-in pose: the drill churning in the ground, the hull
     # shuddering and settling a hair deeper; the periscopes run up out of the brow for a look and

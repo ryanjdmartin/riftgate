@@ -653,6 +653,33 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    rendered with each class on all four mounts through the burrow, level from the sides too,
    nothing shows outside the hull. The burrow, 2.8 seconds: the pieces down onto their seats as the
    top gun sinks, the pieces' guns sink, the irises shut with the slit's shutter, the dig-in.
+   His notes on that, 18 November: "Make sure the rear hood doesn't hit the rear stacks. Use the port
+   models for the guns. It needs to rev the drill hard while it burrows. I feel like there's no
+   reason for the port side guns to extend out. Move the ports to the side of the blocks they're on,
+   facing port. Make the blocks flush with the edge of the cowling, and taller so the ports fit. Then
+   when it transforms, the rear one just needs to rise vertically on cams to clear the one in front.
+   The cockpit section should tuck in horizontally more so that it ends up flush with the cowl, and
+   it only needs to extend in the horizontal direction. The vent heat effect bleeds through the
+   frame." So, the hangar's next version: the stacks back 1.6, clear of the brow over the breech's
+   back vent. Every gun in its port form. Burrowing, the drill revs hard as it digs in, the tip six
+   turns and the ring two against it, the hull shaking; coming up it backs out. The port blocks
+   stand flush with the cowl's foot (their outboard faces at 24.6, inboard against the breech and the
+   barrel), 10.5 tall, each gun in an irised port in its outboard face facing port, running out
+   along its line and, burrowing, running 24.4 in through the floor into the hull; out of the burrow
+   the fore block stays put and the rear one stands 9.6 up on two cams, eccentric discs a half turn
+   apart in a slot on the skirt, its port clear over the fore block. A port gun fires broadside: the
+   engine turns a machine that aims on its tracks until the gun's own line, not its nose, bears.
+   The cab seats flush with the cowl's foot, its inboard side in the hull's flank, and out of the
+   burrow runs out 4.65 level on two short rams, just far enough that head on its slit clears the
+   ring; its gun stays on its column in its roof port, moved outboard so the port stands clear of the
+   breech when the cab is seated, a class in its port form at 0.68. The heat: each vent's halo, a
+   copy of its hot floor grown 2.4 and drawn 3 toward the eye, stood out of the shallower back vent
+   and over the frames; now the back vent is as deep as the rest, every halo is drawn 0.8 toward the
+   eye, the tail vents' grown less, and the chamfer vents 8 along so their halos stay inside the
+   breech's ends. Rendered with each class on all four mounts through the burrow, level from both
+   sides: nothing shows outside the hull. His to settle: what the rear block clears. Facing port, the
+   fore block stands in no gun's line, so the rise clears it in height only; if he meant the ports to
+   face forward, the rise is what lets the rear gun fire over the fore block.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike
