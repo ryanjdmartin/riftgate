@@ -922,7 +922,7 @@ class Build:
                 raise ValueError("%s %r of %s asks %s for %s %g, outside its limits %g..%g" % (kind, name, self.name, jn, ax, v, lo, hi))
         return row
 
-    def form(self, name, duration, tracks, glow=None, body=None):
+    def form(self, name, duration, tracks, glow=None, body=None, releases=None):
         """A pose the machine holds while it carries the status of the same name (the
         Polar Bear's seal, 28 October: its guns sink and its ports shut while Sealed). `tracks`
         map a joint to keys as an act's do, from rest at 0 to the held pose at `duration` (a
@@ -931,9 +931,13 @@ class Build:
         while it is in. `glow` is a list of (parts, k): lit parts named by label and their
         light's offset at the held pose (-1 dark, as an act's glow keys), eased in with the
         turn. `body` moves the whole machine as an act's body keys do, to the held pose (the
-        sealed Polar Bear hunkers down: Ryan, 29 October). Its own acts are act()'s with
-        `form` naming it."""
+        sealed Polar Bear hunkers down: Ryan, 29 October). `releases` names the forms this one
+        lets go as it is held, the statuses its own ends (the Mole's burrow takes its drill
+        back, so Burrowed lets Drill Out go and the drill docks as it digs), so the hangar's
+        toggles turn as the statuses would. Its own acts are act()'s with `form` naming it."""
         out = {"duration": float(duration), "tracks": {}, "glow": []}
+        if releases:
+            out["releases"] = [str(r) for r in releases]
         if body:
             rows = []
             for key in body:
@@ -1248,6 +1252,10 @@ class Build:
         for fname in self.form_acts:
             if fname not in self.forms:
                 raise ValueError("%s: acts are given to a form it has not got: %s" % (self.name, fname))
+        for fname, f in self.forms.items():
+            for other in f.get("releases", []):
+                if other not in self.forms or other == fname:
+                    raise ValueError("%s: form %r releases a form it has not got: %s" % (self.name, fname, other))
         every_act = self.acts + [a for acts in self.form_acts.values() for a in acts]
         lit_parts = ({p for a in every_act for g in a["glow"] for p in g["parts"]}
                      | {p for f in self.forms.values() for g in f["glow"] for p in g["parts"]}

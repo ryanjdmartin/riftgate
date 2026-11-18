@@ -87,10 +87,24 @@ func test_the_machines_back_in_design_are_undealt_and_still_build() -> void:
 				dead = true
 		if dead:
 			assert_true(back.has(str(id)), "%s reads a shield or a vent the die no longer has: back in design" % id)
+	# Handed back, a machine whose kit is built runs; one whose kit is a draft too (a new machine
+	# landed planned, its passive and locked piece drafts with it) waits on its kit as well.
 	var copy := _own()
-	copy.chassis[back[0]].erase("status")
-	assert_true(copy.chassis_runnable(back[0]), "and its session hands it back by taking the status off")
-	copy.chassis[back[0]]["status"] = "elsewhere"
+	var built := ""
+	for id in back:
+		var drafted := false
+		var p = copy.chassis[id].get("passive", null)
+		if p is Dictionary and str(p.get("status", "implemented")) == "planned":
+			drafted = true
+		for cid in copy.chassis[id].get("fixed", []):
+			if str(copy.components.get(cid, {}).get("status", "implemented")) == "planned":
+				drafted = true
+		if not drafted and built.is_empty():
+			built = str(id)
+	assert_false(built.is_empty(), "a machine back in design has a kit that runs")
+	copy.chassis[built].erase("status")
+	assert_true(copy.chassis_runnable(built), "and its session hands it back by taking the status off")
+	copy.chassis[built]["status"] = "elsewhere"
 	var refused := false
 	for e in copy.validate():
 		if e.contains("status is one of"):

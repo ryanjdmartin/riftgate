@@ -165,7 +165,7 @@ moves he has not marked stand as its plan.
 
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
-| Minerva (10) | Honey Badger; *the lure tank*; the Wild Boar or *the mole* | the Polar Bear, dealt at tier one until the lure tank lands; *the echidna*; *the Cryo party defence*; *the immune one*; *the mole* or the Wild Boar | *the siege battery*; *the battlecruiser* |
+| Minerva (10) | Honey Badger; the Wild Boar (down, 16 November); *the mole*; *the lure tank* | the Polar Bear (up, 16 November); *the echidna*; *the Cryo party defence*; *the immune one*, the Pangolin his stand-in name | *the siege battery*; *the battlecruiser* |
 | Kestrel (10) | Skua; Storm Petrel; Puffin, back in design | Buzzard, its rework settled and unbuilt; Kite; Needletail | Lammergeier; Giant Petrel |
 | Kestrel's two, tiers open | *the Snowy Owl*, leaning to Cryo | *the Magpie*, its slot open to another design | |
 | Wainwright & Sutler (10) | Prairie Dog; Cassowary; Cottonmouth | Dingo; Clydesdale; funnel-web; Whip Scorpion; *the gunship* | Swallowtail, back in design; Musk Ox |
@@ -174,10 +174,9 @@ moves he has not marked stand as its plan.
 
 His calls that shape it, and what each leaves open:
 
-- The Polar Bear moves to tier two when Minerva's replacement tier-one front, his own design,
-  lands: the lure tank, "and either Boar or Mole will move down". 12 November, of the fourth
-  tier one: "the choice now would be between the mole and the echidna depending on their
-  mechanics". The Wild Boar's place is unsaid.
+- Minerva under 4-4-2 (Ryan, 16 November): "Badger, Boar, Mole, and Lure tank, for 4-4-2" at
+  tier one, so the Wild Boar came down and the Polar Bear went up the same day (in content: the
+  Polar Bear tier two, the Wild Boar tier one, the Mole a planned draft at tier one).
 - "Mole needs a better hook than 'ignores armour' but we can work on that later."
 - The shield-basher is cut as a unit and kept as a piece (`minerva_shield_bash.md`).
 - The status detonator is the jellyfish's; the time-shifter stays unrefined; the frost figure
@@ -244,7 +243,7 @@ One row a live brief; the to-do's Design sessions hold each one's task.
 | `ws_swallowtail.md` | the Swallowtail's rework, three locked pieces open | Wainwright & Sutler | 3 | parked: his session, its niche first |
 | `ws_gunship.md` | proposal, Claude's first round | Wainwright & Sutler | 2 | his own session |
 | `minerva_lure_tank.md` | the tier-one front: every hit lures | Minerva | 1 | his calls |
-| `minerva_mole.md` | a shape, the drill tank | Minerva | 1 or 2 | its hook |
+| `minerva_mole.md` | the drill tank: it burrows in its reboot's place, a planned draft with its model | Minerva | 1 | its kit's session |
 | `minerva_hedgehog.md` | the echidna: strikers hurt themselves after they act | Minerva | 2 | his calls on the new shape |
 | `minerva_cryo_defence.md` | Cryo for the party, detonated by a locked piece | Minerva | 2 | Claude's round on his direction |
 | `minerva_immune.md` | immune to every buff and debuff, lent to an ally | Minerva | 2 | his calls |

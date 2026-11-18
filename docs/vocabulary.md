@@ -403,7 +403,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Grudge** (implemented): The Pilgrim's Karma (30 October), the Tonberry's Everyone's Grudge under a name of ours. Content: per_kill on an attack, the points a kill. Every fall counts but a foe that went whole (a burst, a part falling with its core) and one taken in by a merge.
 - **Foe action** (implemented): A foe's whole brain is its weighted draw and its pick; none plans ahead.
 - **Vents all** (implemented): Only the first shot of a chain fires the heat.
-- **Fires the shield** (implemented): Its carrier the Buzzard's Afterburner Cannon (Ryan, 18 November: it breaks the shield, and no zap rides it: "It can't, since the shield will be empty"). Never beside Vents all on one entry (the validator). The codex is a session's draft.
+- **Fires the shield** (implemented): Its carrier the Buzzard's Shield-burner Cannon (Ryan, 18 November: it breaks the shield, and no zap rides it: "It can't, since the shield will be empty"). Never beside Vents all on one entry (the validator). The codex is a session's draft.
 - **Grows with missing HP** (implemented): Both numbers are the entry's own (power_per_missing and per_missing), placeholders.
 - **Finisher** (implemented): A working name. The Coriolis Accelerator's slope as one step (Ryan, 11 November: "is there a way to make the pinion driver simpler but fill the same purpose"); its factor is the entry's own (finisher), a placeholder.
 - **Gated** (implemented): Suppress alone carries a gate today. A working name for Ryan's name pass.

@@ -211,15 +211,16 @@ python3 tools/hangar_designs.py --fold build/hangar/inbox --dry     # what it wo
 # the anchor read: every fight of a tier at its rating (a lone flanker one machine, a hunter's
 # pack two, a formation three, an elite and a boss four), by the greedy bot, hull lost as a
 # share of a squad of four's: the measure the numbers pass sizes against. It prints markdown
-# and writes no file. About a minute a fight; split the kinds across cores with only= or kinds=.
-# Under each kind's mean it says who paid: each machine's own hull lost a fight, and its wrecks
-perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=5 squads=6 kinds=patrol,formation
-perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=4 squads=5 kinds=elite,boss
+# and writes no file. About a second a fight; split the kinds across cores with only= or kinds=.
+# Under each kind's mean it says who paid: each machine's own hull lost a fight, and its wrecks.
+# Every squad of the pool is the draw (squads=0, the default): a count of them is uneven by
+# machine, and five of the fifteen fours had the Honey Badger in four and the Cottonmouth in two
+perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=5 kinds=patrol
+perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=2 kinds=formation
+perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=2 kinds=elite,boss
 #   only=id,id reads those compositions or bosses alone; tier=, ramp=; refit=<spec> lays a
 #   what-if over content for the run (refit=barrier=none, the Barrier basic off the stock dice);
-#   blows=80 sets every elite's and boss's attack to that share of content's, in hundredths;
-#   split=2 lands each of their plain blows (one strike at one machine, no countdown, no
-#   keyword) as that many strikes of the same total, and lists the moves it split
+#   blows=80 sets every elite's and boss's attack to that share of content's, in hundredths
 
 # the balance report into docs/balance.md: every chassis alone, the starting team and each
 # maker's team against every pack, each domain's formation at each tier and the party, random
@@ -498,6 +499,11 @@ godot --path . --resolution 360x640 --position 2000,2000 -s tools/fit_sheet.gd -
 # set yaw and pitch, then its art/models/ files deleted again
 $BPY_PYTHON tools/lowforge/looks/build_look.py -- --model wslook_deck --out art/models/wslook_deck.glb --tiles /tmp/tiles
 godot --path . --resolution 360x640 -s tools/lowforge/looks/look_shot.gd -- wslook_deck wainwright_sutler deck.png 180 75 520 520
+# a look round's sheet in one command (15 November): each model a look module's SHEET names is built, imported and rendered at
+# each view it lists, laid out under its labels into the module's sheet under docs/looks/, and the built models deleted again; a
+# new round is a new file in that folder (its LOOKS and its SHEET), found by build_look.py itself. --project <a copy of the
+# project> builds, imports and renders there, so several rounds built side by side never meet in one import
+$BPY_PYTHON tools/lowforge/looks/sheet.py siege_looks
 
 # the map tokens and the contact sheet from the grids in docs/sprites-enemies.html into art/foes, then the import
 tools/spriter/.venv/bin/python tools/sheet_export.py

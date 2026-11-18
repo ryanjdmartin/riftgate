@@ -613,14 +613,16 @@ class Rig {
     const hang = (f.hang || []).filter(jn => this.joints[jn]);
     const plant = [];   // [joint, from, to]: a foot that stays where it stands over that stretch of a death (MechRig._form_entry)
     for (const p of f.plant || []) { const row = Array.isArray(p) ? p : [p]; if (row.length && this.joints[row[0]]) plant.push([String(row[0]), row.length > 1 ? +row[1] : 0, row.length > 2 ? +row[2] : duration]); }
-    return {duration, ease, curves, glow, glowKeys, hang, plant, shift: null, topple: null, baseDuration: duration, acts: (f.acts || []).filter(a => a && a.name), rawBody: JSON.parse(JSON.stringify(f.body || []))};
+    return {duration, ease, curves, glow, glowKeys, hang, plant, shift: null, topple: null, baseDuration: duration, acts: (f.acts || []).filter(a => a && a.name), rawBody: JSON.parse(JSON.stringify(f.body || [])), releases: (f.releases || []).map(String)};
   }
   // Hold a form or let it go (MechRig.set_form): it turns in over its duration and back out the
-  // same way, from wherever it is; while a form turns no act starts, and one playing stops.
+  // same way, from wherever it is; while a form turns no act starts, and one playing stops. Held,
+  // it lets go the forms it releases, as the statuses would end (the Mole's burrow docks its drill).
   setForm(name, on) {
     if (this.dead || name === "@death") return;   // MechRig.set_form: a lost machine's forms stay as they were; its death pose is kill()'s
     if (!this.forms[name] || this.formOn[name] === on) return;
     this.formOn[name] = on;
+    if (on) for (const other of this.forms[name].releases || []) if (this.forms[other] && other !== "@death") this.formOn[other] = false;
     if (this.current) this.endAct();
   }
   formHeld(name) { return !!this.formOn[name]; }

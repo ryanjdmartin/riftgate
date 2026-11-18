@@ -789,8 +789,12 @@ func _form_entry(f: Dictionary) -> Dictionary:
 		var row: Array = p if p is Array else [p]
 		if not row.is_empty() and joints.has(str(row[0])):
 			plant.append([str(row[0]), float(row[1]) if row.size() > 1 else 0.0, float(row[2]) if row.size() > 2 else duration])
+	var releases: Array = []   # the forms it lets go as it is held (set_form)
+	for r in f.get("releases", []):
+		releases.append(str(r))
 	return {"duration": duration, "curves": curves, "glow": glow, "glow_keys": glow_keys, "acts": own, "hang": hang, "ease": ease,
-		"plant": plant, "shift": {}, "topple": [], "base_duration": duration, "raw_body": (f.get("body", []) as Array).duplicate(true)}
+		"plant": plant, "shift": {}, "topple": [], "base_duration": duration, "raw_body": (f.get("body", []) as Array).duplicate(true),
+		"releases": releases}
 
 
 ## Hold a form or let it go: it turns in over its duration and back out the same way, from
@@ -798,13 +802,18 @@ func _form_entry(f: Dictionary) -> Dictionary:
 ## opens in the reverse). While a form turns no act starts, and one playing stops: held, the
 ## machine plays the form's own acts, from its held pose (Ryan, 29 October: sealed, "the
 ## animations set shouldn't be the same"), or else its own, less any that moves a joint the
-## form keeps.
+## form keeps. Held, it lets go the forms it releases (the Mole's Burrowed, its Drill Out: the
+## drill docks as it digs), as the statuses would end.
 func set_form(name: String, on: bool) -> void:
 	if dead or name == DEATH:
 		return   # a lost machine's forms stay as they were, and its death pose is kill()'s alone
 	if not forms.has(name) or bool(_form_on[name]) == on:
 		return
 	_form_on[name] = on
+	if on:
+		for other in forms[name].get("releases", []):
+			if forms.has(other):
+				_form_on[other] = false
 	if not _current.is_empty():
 		_end_act()
 

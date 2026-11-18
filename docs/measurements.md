@@ -11033,7 +11033,8 @@ that large blows should be multi-strikes except where particularly thematic or t
 point is to suppress, disrupt, or block it. Makes armour more valuable which too, is a
 bonus. A barrier is just another mitigation tool then, not a free pass. Just a thought, not
 an instruction." Read before it was answered: `tools/anchor_read.gd` with `split=2` and
-`split=3`, which land every elite's and boss's plain blow, one strike at one machine that
+`split=3` (a what-if cut on 18 November, its question answered: `git show
+4ae57e4:tools/anchor_read.gd`), which land every elite's and boss's plain blow, one strike at one machine that
 lands the round it shows and carries no keyword, as that many strikes of the same total, a
 point either way for the rounding. A blow that gathers, a blow at every machine, a blow
 with a rider (it would land once a strike) and a move of many strikes stay as content has
@@ -11333,3 +11334,82 @@ gives only through its parts and summons. Burst ends a boss fight more than half
 sooner, fires the cannon twice as often in the formations and half again as often against a
 boss, and stands bare on half its turns, with no wreck in 78. A direction at 78 fights a build; a pick share or a band waits for the runner and his
 play.
+
+**The cap, after.** The scale row's cap is that no one action takes the lightest machine
+from full, 26 points on the Cottonmouth. The Thunder Ape's golden Rampage broke it, 27
+before the foes' adds landed on every strike and 30 since: its Rampage is three strikes of
+6 for 8, 24 gold, and it has 54 hit points for 48. It costs a squad without the Barrier
+19.3% for 21.3% and one with it 15.7% for 18.1%, forty fights a cell. Every other action of
+tier one's leaders stands under the cap, Floraison's Full Bloom nearest at 25. With it the
+elites' mean is 22.7% without the Barrier and 11.2% with it.
+
+## 18 November: the anchor's squads, the even draw, and the Reaper's sweep
+
+Ryan: "what's your test squad?" The pool is the six certain tier ones, the Honey Badger, the
+Skua, the Storm Petrel, the Prairie Dog, the Cassowary and the Cottonmouth, each on its
+stock die with no module and no found piece; a fight takes as many as it is rated, and the
+greedy bot plays them. Until this entry the read took a count of the pool's squads, every
+k-th in the order the pool is written, and the count was uneven by machine:
+
+| The fight | The squads the count kept | By machine |
+|---|---|---|
+| An elite or a boss, five of fifteen fours | Badger, Skua, Petrel, Prairie Dog; Badger, Skua, Prairie Dog, Cassowary; Badger, Petrel, Prairie Dog, Cassowary; Badger, Prairie Dog, Cassowary, Cottonmouth; Skua, Petrel, Cassowary, Cottonmouth | The Honey Badger, the Prairie Dog and the Cassowary in four, the Skua and the Storm Petrel in three, the Cottonmouth in two |
+| A formation, six of twenty threes | Badger, Skua, Petrel; Badger, Skua, Cottonmouth; Badger, Petrel, Cottonmouth; Skua, Petrel, Prairie Dog; Skua, Prairie Dog, Cassowary; Petrel, Prairie Dog, Cassowary | The Skua and the Storm Petrel in four, the Cassowary and the Cottonmouth in two |
+| A hunter's pack, six of fifteen pairs | Badger, Skua; Badger, Prairie Dog; Skua, Petrel; Skua, Cassowary; Petrel, Cassowary; Prairie Dog, Cassowary | The Cottonmouth in none |
+| A lone flanker | Each of the six | Even |
+
+So the leaders were sized on squads that held the sturdiest machine four times in five and
+the thinnest twice. The even draw is every squad of the pool with fewer fights each
+(`squads=0`, the read's default and the README's commands since): the same fights' worth,
+every machine in as many squads as every other.
+
+| Kind | The count's read | Every squad |
+|---|---|---|
+| A lone flanker | 5.3 rounds, 3.4% | The same six |
+| A hunter's pack | 5.1, 9.5% | 4.8, 8.9%: the wolf pack 7.1%, the antlion trio 10.7% |
+| A formation | 6.0, 5.0% | 5.7, 4.5% |
+| An elite, without the Barrier | 6.5, 22.7%, 0.14 wrecks | 6.5, 24.4%, 0.23 wrecks |
+| An elite, with the Barrier basic | 11.2% | 12.6%, 0.05 wrecks |
+| A boss, without the Barrier | 8.9, 29.1%, 0.21 wrecks | 8.9, 29.8%, 99% won, 0.22 wrecks |
+| A boss, with the Barrier basic | 18.7% | 19.2%, 0.11 wrecks |
+
+The sizing stands on the even draw: the skew was worth under a point on a boss and under
+two on an elite. By fight, thirty a row for the leaders and forty for the formations:
+
+- The formations: the needler thicket 1.3%, the sandworm's ambush 1.5%, the knights' vigil
+  2.4%, the magma vent 2.7%, the goblin horde 3.3%, the gel wall 4.9%, the barrow mound
+  6.2%, the ember pyre 6.5%, the grave throng 6.6%, the treant's grove 9.3%.
+- The elites, without the Barrier and with: the shaman's warband 15.0% and 15.6%, the
+  Pilgrim's wake 17.4% and 7.6%, the Thunder Ape's rampage 20.3% and 18.0%, the Fell Rider's
+  hunt 20.6% and 7.4%, the Rust Monster's scavenge 22.4% and 7.4%, the Reaper 22.6% and
+  7.8%, the old man's rising 25.4% and 17.0%, the Nob 27.4% and 9.6%, the Cinder Tortoise's
+  brood 27.5% and 12.8%, Gilgamesh 33.4% and 11.5%, the Wild Hunt 36.6% and 24.5%.
+- The bosses: the Vampire Lord 20.6% and 7.1%, the Ruby Colossus 20.8% and 18.0%, the Fallen
+  Weapon 22.2% and 13.9%, the Mantis Ant 24.7% and 7.8%, the Matador 25.1% and 20.6%,
+  Floraison 28.5% and 37.1%, the Phantom Train 29.8% and 15.5%, the Fiend of Fire 30.3% and
+  35.2%, the Gargantuan King 33.5% and 21.1%, the Marsh Serpent 35.6% and 8.3%, the King Gel
+  37.0% and 18.0%, the Emperor Scorpion 37.8% and 23.8%, the Obsidian Tyrant 41.5% and 23.4%.
+
+Ten that read outside their band at thirty fights were read again at sixty, every squad,
+without the Barrier: the shaman's warband 22.2%, the Wild Hunt 25.0%, Gilgamesh 26.1%; the
+Vampire Lord 21.1%, the Fallen Weapon 27.0%, the Ruby Colossus 31.8% and won 93% of the
+time, the King Gel 33.0%, the Marsh Serpent 33.9%, the Emperor Scorpion 36.4%, the Obsidian
+Tyrant 42.2%. A row at thirty fights is a direction. Two sit at their band's edge and no
+number chases them: the Tyrant just over, the Vampire Lord just under. The entry before
+this one said every boss is won 98% of the time or more; on the even draw the Ruby Colossus
+runs from 93% to 100% by read.
+
+**The Reaper's sweep.** Ryan, of a move for the Reaper that a Barrier does not take: "Reaper
+sweep seems like a good idea." Its Harvest is a blow at every machine, 9 for a cut of 8 at
+one, corrupting the entry each shows by 1 for 2, and drawn as often as its scythe; its
+single blows are back where content had them, a Scythe of 12 and a Knell of 18 for 15 and
+23, at the 70 hit points it was sized to. Every squad, thirty fights a cell:
+
+| The Reaper | Without the Barrier | With the Barrier basic |
+|---|---|---|
+| Sized through its blows | 6.8 rounds, 22.6% | 7.8% |
+| The sweep alone, its blows and hit points as content had them | 5.2, 12.1% | 4.1% |
+| The sweep at 9, drawn as often as the scythe, 70 hit points | 6.6, 24.3%, 0.17 wrecks | 13.5% |
+
+The squad without the Barrier pays what it paid and the piece's edge falls from two thirds
+to under a half. With it the elites' mean is 24.6% without the Barrier and 13.1% with it.
