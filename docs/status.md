@@ -316,15 +316,11 @@ publish; the commands are in `README.md`.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each live copy read first, with `edits`, `designs` and `text` read first. Main went up whole
-  last at Version 280 (15 November, `4514a2c`). Since then the deaths' branch sent its death
-  files round by round, the last its Version 297 (17 November): `motion.js` and every
-  machine's sidecar, which match main byte for byte since it landed, but the Storm Petrel's;
-  other sessions' publishes between were kept, and the Mole's session published after it, to
-  Version 305 (18 November: the Mole's model, rig and chassis entry, and `motion.js` with a
-  form's `releases`). That branch has landed, so a publish from main carries the Mole; **the
-  rest of main is not up**: the Text tab lacks the Storm Petrel's and the foes' newest texts,
-  and the Storm Petrel's sidecar waits with them (main's fires `hardlight_pulse`; the live one
-  fires `st_elmos_regenerator`, the id the live content still has).
+  at Version 306 (18 November, `aeeed09`, the Mole's branch landed): every file of the map
+  checked against the live copy by hash, and the fifteen that differed sent (the content, the
+  Designs and Text inventories, the pins and foes manifests, the Goblin Warchief's sprite, the
+  Storm Petrel's sidecar, and the Badger's and the Wild Boar's models and sidecars with their
+  Minervan vents). The page itself was unchanged.
   `build/hangar/designs.json` is one 795 KB line: write it indented before reading it whole.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their
