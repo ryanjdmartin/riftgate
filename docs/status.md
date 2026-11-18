@@ -148,13 +148,14 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   twentieth of a squad's hull at its rating, a flanker's a thirtieth, a hunter's a tenth, an
   elite's a quarter and the boss what is left. Tier one's flankers, hunters and formations
   are sized to it since 17 November (`docs/briefs/numbers_pass.md`, section 8; the reads
-  `docs/measurements.md`): a lone flanker 3.2% of a four's hull, a hunter's pack 8.9%, a
-  formation 5.0% over 5.9 rounds, from 1.9% to 7.7% by formation, every fight won. The
+  `docs/measurements.md`; read again on 18 November over the Storm Petrel's rework): a lone
+  flanker 3.4% of a four's hull, a hunter's pack 9.5%, a formation 5.0% over 6.0 rounds,
+  from 1.9% to 8.2% by formation, every fight won. The
   elites and the bosses are not, and wait on the Barrier's place: his lean of 18 November is
   that it stays on the starting dice ("one of the two sides of the defensive coin"; no basic
   until then), answered in chat with the read (the numbers brief's section 7), and what he
-  has still to say is the squad the budget is read on. An elite costs 11.1% with the Barrier
-  basic and 23.3% without it, a boss 32.5% and 52.4%. How the leaders strike is his lean of
+  has still to say is the squad the budget is read on. An elite costs 11.4% with the Barrier
+  basic and 23.6% without it, a boss 33.5% and 53.2%. How the leaders strike is his lean of
   the same day (the bible's section 9): whole blows the norm, slightly towards strikes so
   plate earns in their fights. A foe's adds, its Empowered first, land on every strike of a
   move since then, the machines' formula. This pass's leans on the dials stand in the same
