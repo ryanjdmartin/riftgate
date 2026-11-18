@@ -302,6 +302,31 @@ the first wings, long and narrow, read as spikes, so they gained depth and a sli
 judge: the hands are small at rest, the forward blade shows as a stub from head on, and from
 behind the shield's top shows over the shoulder.
 
+**The model** (18 November, on Ryan's "then we'll do line frame" that day; `line_frame` in
+`tools/lowforge/models_low.py`, `art/models/line_frame.glb`; no content entry, so it shows in no
+hangar tab and no fight deals it). The third round as built, rigged: a waist the upper body turns
+and leans on, a head that turns, hips, knees and ankles, shoulders and elbows, each shoulder gun on
+an elevation of its own and the pack's four wings on pivots at their roots. In each forearm the
+fist and the rifle ride slides along its line: the fist draws back through the wrist's collar and
+the rifle runs out from inside where it lies. The blades and the kites of light are made of light
+(lowforge's `b.beams`, new with it): unseen at rest, they appear as an act lights them and go as it
+lets them go, a beam lit as the machine is lost stuttering out with its lights. The blade in the lit
+tile's white-hot yellow, the kite in the game's shield blue (`amber.shield`, the Storm Petrel's and
+the Puffin's glow), each with its halo. Chosen where his words were silent: the fist a size up on
+round three's (his "the hands are small at rest"); the forward blade's stub head on and the shield
+over the shoulder from behind left as they are, the head-on view no game angle. Its acts are his
+cycling, each a combination from the fists at rest and back: the rifles (both run out, laid level,
+the torso sweeping), a blade and the shield (the right blade thrust out and up, the left forearm
+across the body behind the kite, a parry's jolt), twin blades (a cut across the front), a rifle and
+the shield (the other way round, so each arm shows all three), ready to dash (a crouch onto the
+boosters, the wings spread) and a look round. It moves by the dash, skimming on its feet in a crouch
+with every booster lit and the wings spread, a walk beside it as a gait option to compare. Its death:
+the boosters cut and its knees go, it sits down hard over its planted feet and goes over onto its
+pack, its knees up and its arms limp; falls onto its back or its face from standing drifted half its
+height off its hex, and a bow onto its knees folded its limbs through each other. Lying back, it
+falls toward the skirmish's camera, its head and pack at the bottom of its window there. Nothing
+fires as its kit would yet: its locked pieces are this session's open item 7.
+
 ## Open for the session
 
 Ryan settled what one hit is on 20 October (every blow counts) and sent the shield's Beam tag
@@ -315,7 +340,9 @@ to the model session; what stays open:
    20 October tier rule.
 4. The saber's keyword now that Chain is being reworked; its scaling with the count later.
 5. Its designation in Aphelion's shape ("Flight n" and a job; "Frame" is Aphelion's word).
-6. Its look: his read of the third look test (16 November), or another round.
+6. Its look: his read of the model running (18 November; `RIFTGATE_MECH3D_MODEL=line_frame` draws it in every
+   slot of any fight, `RIFTGATE_ACTS_DEBUG=1` its acts back to back), and whether it goes into content as a
+   planned draft, as the Mole did, so the hangar's Models tab shows it.
 7. Its locked pieces on the die (his direction of 16 November): how the rifle, the blade and
    the shield sit there, what each does, and what the cycling reads.
 

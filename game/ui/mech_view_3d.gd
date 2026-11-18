@@ -591,6 +591,19 @@ static func plume_k(light: float, rest: float) -> float:
 	return clampf((light / rest - 1.0) / maxf(0.01, top - 1.0), 0.0, 1.0)
 
 
+## The parts made of light a sidecar names (`beams`: the line frame's blades and kites of light),
+## hidden as a model loads, before it is measured, framed or welded, so no frame and no fit takes in a
+## light that is out; the rig shows each while a glow lights it (MechRig._setup_beams).
+static func hide_beams(model: Node, side: Dictionary) -> void:
+	var named = side.get("beams", [])
+	if not (named is Array) or (named as Array).is_empty() or model == null:
+		return
+	for mi in model.find_children("*", "MeshInstance3D", true, false):
+		for part in named:
+			if MechRig.labelled(str(mi.name), str(part)):
+				(mi as Node3D).visible = false
+
+
 ## What each fixed weapon fires out of the machine (lowforge's launch(): the Lammergeier's drones,
 ## the Swallowtail's flares, the Musk Ox's rockets, shell and casing), by its sidecar's `launches`:
 ## a flight's row each (flight_at), the node hidden until it flies (launch). Hidden before a weld,
@@ -953,6 +966,7 @@ func _setup(chassis_id: String, maker: String) -> void:
 
 	var scene: PackedScene = load("res://art/models/%s.glb" % chassis_id)
 	_model = scene.instantiate()
+	hide_beams(_model, MechRig.load_sidecar(chassis_id))   # a part made of light is out at rest, and the frame below never takes it in
 	# The model hangs off a pivot at its own bounds' centre (a model's origin is wherever
 	# its author put it; the Badger's is off to one side, and it turned around that, Ryan
 	# 22 September). Yaw, spin and sway all turn the pivot. The ground stays at y = 0.

@@ -476,6 +476,7 @@ class Build:
         self.form_acts = {}    # form name -> the acts it plays while held (act()'s `form`)
         self.halo = []         # the lit parts a glow names that wear a soft halo when they flare, the hot ones; (part, scale) for one larger, (part, scale, ahead) for one drawn its own way toward the eye (MechRig's halos)
         self.standing = {}     # lit part -> the glow it holds always, over its rest, an act's flare rising past it (MechRig's standing glow)
+        self.beams = []        # the lit parts made of light (the line frame's blades and shields): unseen until a glow lights them over their rest (MechRig's beams)
         self.fires = {}        # a fixed component (or the chassis's passive, for what it fires: the Whip Scorpion's release) -> (act, from, to[, blow]) or a list of them taking turns: the slices of acts that are its firing, played on the spend (MechRig.fire_act)
         self.death_pose = None   # the pose it goes to when lost, in place of the baseline slump (see death())
         self.hidden_fire = None  # (act, from, to[, blow]): the slice every weapon on a hidden mount fires with (the Cottonmouth's drum turning two chambers, 16 November), the sidecar's hidden_fire (MechRig.fire_hidden)
@@ -1336,6 +1337,18 @@ class Build:
             raise ValueError("%s: a standing glow names %s, which no glow lights" % (self.name, ", ".join(repr(p) for p in stray)))
         if self.standing:
             out["standing"] = dict(self.standing)
+        # A part made of light (Ryan, 16 November, of the line frame: "beam blades ... that can turn on
+        # and off", "a shield made of light"): unseen at its light at rest, shown while a glow lights it
+        # over that (MechRig._light_to), so a glow must light it, and what it is made of must be light,
+        # every mesh it labels lit (the amber role), or a part of it would stand there unlit.
+        for part in self.beams:
+            if part not in lit_parts:
+                raise ValueError("%s: a beam names %r, which no act, form or gait lights, so it would never be seen" % (self.name, part))
+            unlit = sorted({m.name for ob in self.objects if _labelled(ob.name, part) for m in ob.data.materials if m is not None and not m.name.startswith("amber.")})
+            if unlit:
+                raise ValueError("%s: the beam %r is made of light, but some of it wears %s" % (self.name, part, ", ".join(unlit)))
+        if self.beams:
+            out["beams"] = list(self.beams)
         # A fixed weapon fires with a slice of one of its acts (Ryan, 31 October: "go for ones that
         # are cheapest to do first, where pre-existing animation work has already been looked at").
         # A slice is (act, from, to), or (act, from, to, blow) when it winds up before its blow (the

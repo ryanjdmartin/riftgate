@@ -61,8 +61,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1326 tests, 379,536 checks, green (18 November, the model texture copies' test on
-  `ccr-64b5deec-lunnff`, over main's Buzzard and the Pilgrim's knife). The runner fails a run
+- Tests: 1329 tests, 381,489 checks, green (18 November, the line frame's model and the model
+  texture copies' test on `ccr-64b5deec-lunnff`, over main's Buzzard and the Pilgrim's knife). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -231,7 +231,11 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Minerva's vent, the Polar Bear's (16 and 17 November). The Mole is a model, its look his
   ("looks great", 18 November; the brief's look item), with two status forms, Burrowed and
   Drill Out: a form may let others go as it is held (`releases`), as the statuses would end, so
-  a burrow docks a drill that is out. Look tests of six chassis are stills in `docs/looks/`, their
+  a burrow docks a drill that is out. The line frame is a model from its third look round (18
+  November, on `ccr-64b5deec-lunnff`; its brief's model paragraph), in no content, so no hangar
+  tab shows it (`RIFTGATE_MECH3D_MODEL=line_frame` in a fight does): its fists draw back for
+  rifles on slides, and its blades and kites of light are made of light (`b.beams`), seen only
+  while an act lights them. Look tests of four chassis are stills in `docs/looks/`, their
   choices in their briefs, never content.
 - **Audio.** Three pairs play in the game (Hold The Line, Night Shift, The Far Bank;
   `Sound.PAIRS`): a battle picks one as it starts and loops it, the map half on the field and
@@ -327,7 +331,8 @@ publish; the commands are in `README.md`.
   Minervan vents). The page itself was unchanged.
   The Buzzard, landed after that publish, is not up: its content (the passive, the
   branches, the cannon's id), its texts, and its model and sidecar (the Shield-burner Cannon
-  in the shield's light) go up with the next.
+  in the shield's light) go up with the next, and the motion script's parts made of light
+  (`tools/hangar_motion.js`, the line frame's beams; no model on the page carries one yet).
   `build/hangar/designs.json` is one 795 KB line: write it indented before reading it whole.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their

@@ -1791,6 +1791,7 @@ func _dead_tree(col: Node3D, at: Vector3, rng: RandomNumberGenerator) -> void:
 func _model(id: String, maker: String, paint: Dictionary = {}, plan: Array = [], own: bool = true) -> Node3D:
 	var scene: PackedScene = load("res://art/models/%s.glb" % id)
 	var node: Node3D = scene.instantiate()
+	MechView3D.hide_beams(node, MechRig.load_sidecar(id))   # a part made of light is out at rest, and the machine's bounds never take it in
 	MechView3D.toon(node, maker, "clean", paint, false)
 	var pins := MechView3D.pins_of(node)
 	MechView3D.wear(pins, plan, "clean", paint, false, true, id)

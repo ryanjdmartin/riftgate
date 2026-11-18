@@ -7,7 +7,7 @@ extends TestCase
 
 const MACHINES := ["badger", "kite", "clydesdale", "baboon", "polar_bear", "wild_boar", "prairie_dog", "dingo", "buzzard", "nemesis", "ammit", "stingray", "puffin", "funnel_web",
 	"skua", "needletail", "storm_petrel", "giant_petrel", "lammergeier", "musk_ox",
-	"cassowary", "cottonmouth", "swallowtail", "whip_scorpion", "mole"]
+	"cassowary", "cottonmouth", "swallowtail", "whip_scorpion", "mole", "line_frame"]
 
 
 func _rig_for(model_id: String, seed_value: int = 1) -> Array:
@@ -1595,6 +1595,89 @@ func _boxed_rig(lit: bool = false) -> Array:
 	rig.model = root
 	rig.body = body
 	return [rig, root, body, mi]
+
+
+## A lit part on the boxed rig, its own material at rest light 2, named `name` and hung on its body.
+func _lit_part(r: Array, name: String) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	mi.name = name
+	mi.mesh = BoxMesh.new()
+	var m := StandardMaterial3D.new()
+	m.emission_enabled = true
+	m.emission_energy_multiplier = 2.0
+	mi.set_surface_override_material(0, m)
+	(r[2] as Node).add_child(mi)
+	return mi
+
+
+func test_a_part_made_of_light_is_unseen_until_a_glow_lights_it() -> void:
+	# lowforge's b.beams (Ryan, 16 November, of the line frame: "beam blades mounted on its forearms,
+	# that can turn on and off", "a shield made of light"): a part made of light is hidden at its
+	# light at rest, shown while an act lights it over that, and gone again as the act lets it go; a
+	# lit part not made of light shows throughout, whatever its light.
+	var r := _boxed_rig()
+	var rig: MechRig = r[0]
+	var blade := _lit_part(r, "blade")
+	var lamp := _lit_part(r, "lamp")
+	rig._setup_beams({"beams": ["blade"]})
+	assert_false(blade.visible, "made of light, it is out at rest")
+	assert_false(rig.beam_shown("blade"), "and the rig says so")
+	assert_true(lamp.visible, "a lit part not made of light stands as it is")
+	rig.acts = [{"name": "ignite", "duration": 2.0, "tracks": {}, "body": [],
+		"glow": [{"parts": ["blade", "lamp"], "keys": [[0.4, 0.0], [0.6, 6.0], [1.4, 6.0], [1.6, 0.0]]}]}]
+	assert_true(rig.play("ignite"), "an act that lights it")
+	rig.tick(0.2)
+	assert_false(blade.visible, "still out before its light rises")
+	rig.tick(0.6)
+	assert_true(blade.visible and rig.beam_shown("blade"), "seen while it is lit")
+	rig.tick(1.5)
+	assert_false(blade.visible, "out again once the act lets it go")
+	assert_true(lamp.visible, "the lamp showing all the while")
+	(r[1] as Node).free()
+
+
+func test_a_lit_beam_goes_out_with_a_lost_machine_and_stays_out() -> void:
+	# A beam lit as its machine is lost stutters out with its lights (the gutter) and stays out, and
+	# a machine stood up again stands with its beams out, as at rest.
+	var r := _boxed_rig()
+	var rig: MechRig = r[0]
+	var blade := _lit_part(r, "blade")
+	rig._setup_beams({"beams": ["blade"]})
+	rig.acts = [{"name": "ignite", "duration": 4.0, "tracks": {}, "body": [], "glow": [{"parts": ["blade"], "keys": [[0.3, 0.0], [0.5, 6.0], [3.5, 6.0]]}]}]
+	rig.play("ignite")
+	rig.tick(1.0)
+	assert_true(blade.visible, "lit as the blow lands")
+	rig.kill()
+	rig.tick(MechRig.GUTTER + 0.2)
+	assert_false(blade.visible, "out with its lights once the gutter is done")
+	rig.tick(5.0)
+	assert_false(blade.visible, "and out for good")
+	rig.revive()
+	assert_false(blade.visible, "a machine stood up again stands with its beams out")
+	(r[1] as Node).free()
+
+
+func test_every_beam_names_lit_parts_a_glow_lights_and_is_out_as_its_model_loads() -> void:
+	# The sidecar's beams are parts its acts light (lowforge refuses one no glow lights, or one whose
+	# parts are not all light), and MechView3D.hide_beams has them out as the model loads, before it
+	# is measured, framed or welded.
+	var found := 0
+	for id in MACHINES:
+		var side := MechRig.load_sidecar(id)
+		var beams: Array = side.get("beams", [])
+		if beams.is_empty():
+			continue
+		found += 1
+		var model: Node3D = (load("res://art/models/%s.glb" % id) as PackedScene).instantiate()
+		MechView3D.hide_beams(model, side)
+		for part in beams:
+			assert_true((side.get("glow_parts", []) as Array).has(part), "%s: the beam %s is lit by a glow" % [id, part])
+			var meshes := model.find_children("*", "MeshInstance3D", true, false).filter(func(n): return MechRig.labelled(str(n.name), str(part)))
+			assert_false(meshes.is_empty(), "%s: the beam %s labels parts of the model" % [id, part])
+			for n in meshes:
+				assert_false((n as Node3D).visible, "%s: %s is out as the model loads" % [id, n.name])
+		model.free()
+	assert_true(found > 0, "some model has parts made of light (the line frame's blades and shields)")
 
 
 func test_a_blow_on_the_hull_shoves_the_machine_back_and_settles() -> void:

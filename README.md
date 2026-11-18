@@ -477,7 +477,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 
 ```sh
 # the machines from their code (tools/lowforge/models_low.py), then the import
-tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger kite clydesdale baboon polar_bear wild_boar prairie_dog dingo buzzard nemesis ammit stingray puffin funnel_web skua needletail storm_petrel giant_petrel musk_ox cassowary cottonmouth swallowtail whip_scorpion
+tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger kite clydesdale baboon polar_bear wild_boar prairie_dog dingo buzzard nemesis ammit stingray puffin funnel_web skua needletail storm_petrel giant_petrel musk_ox cassowary cottonmouth swallowtail whip_scorpion mole line_frame
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build cache_derelict cache_carcass cache_relic
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes   # the silhouette classes a swapped component wears, in every maker's metal
@@ -489,7 +489,8 @@ BPY_PYTHON=.bpy/bin/python tools/spriter/.venv/bin/python tools/lowforge/forge.p
 tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /tmp/badger.glb   # a rebuild's geometry against the committed file
 # Joints, acts, gaits, counts, spins, hidden mounts and launches are code in models_low.py
 # (`b.joint`, `b.act`, `b.gait`, `b.count`, `b.spin`, `b.pin`, `b.launch`); all of it lands in
-# art/models/<id>.rig.json.
+# art/models/<id>.rig.json. `b.beams` names lit parts made of light (the line frame's blades and
+# kites of light): unseen at rest, shown while an act or a form lights them over their rest.
 # A machine's own way down is `b.death(seconds, tracks, body=, glow=, ease=, hang=, plant=)` at the
 # end of its recipe, in place of the slump (the bible's death row; act_shot's "lose 3" shows it).
 # Where each lost machine lies and whether it rests; --slide how far its standing feet move along the

@@ -6812,6 +6812,384 @@ def stingray(b):
 stingray.maker = "aphelion"
 
 
+# ---------------------------------------------------------------- the line frame
+
+LF_FOREARM = 15.0     # a forearm, elbow to wrist: the third look round's, two thirds of the second's gauntlet
+# The right arm at rest, the third look round's hanging pose: the shoulder, the elbow, the forearm's
+# line and where its outer face looks; the left mirrors it.
+LF_SHOULDER, LF_ELBOW = (18.6, 0.0, 75.0), (21.2, -2.5, 62.5)
+LF_LINE, LF_OUTER = (0.05, 0.50, -0.86), (1.0, 0.0, 0.0)
+LF_FIST_IN = 8.2      # how far a fist draws back into its forearm for the rifle
+LF_RIFLE_OUT = 11.6   # how far a rifle runs out of its forearm past the wrist, from where it lies inside
+# The third look round's arm poses as the shoulder's (pitch, yaw, roll) and the elbow's pitch, the
+# right arm's (the left's mirrored: yaw and roll turned), solved in the engine's order of turns
+# (MechRig: roll, then pitch, then yaw, each in its parent's axes) for its elbow, its forearm's line
+# and its outer face: the rifle laid level on the enemy, the blade thrust forward, out and up, the
+# guard's forearm level across the body with its outer face to the enemy, so the kite of light
+# stands upright with its point down, and the blade swept low and out.
+LF_AIM = (27.4, 8.9, -0.7, 34.9)
+LF_THRUST = (31.2, -15.2, -4.5, 51.8)
+LF_GUARD = (11.5, 81.0, -22.7, 51.2)
+LF_LOW = (18.0, -15.3, -11.3, 8.5)
+
+
+def _lf_cs(w, h, c):
+    """A chamfered rectangle profile for _beam and a loft: (across, up) pairs, eight points."""
+    a, u = w / 2.0, h / 2.0
+    return [(-a + c, -u), (a - c, -u), (a, -u + c), (a, u - c), (a - c, u), (-a + c, u), (-a, u - c), (-a, -u + c)]
+
+
+def _lf_along(p0, p1, t):
+    return tuple(p0[i] + (p1[i] - p0[i]) * t for i in range(3))
+
+
+def _lf_line(s):
+    """A forearm's line at rest, the right's (s = 1) or the left's, as a unit vector."""
+    return Vector((s * LF_LINE[0], LF_LINE[1], LF_LINE[2])).normalized()
+
+
+def _lf_frame(s):
+    """A forearm's own frame at rest as a matrix into the model: +y along the forearm from the
+    elbow, +z its top and s * x its outer face, as the look test built it."""
+    y = _lf_line(s)
+    o = Vector((s * LF_OUTER[0], LF_OUTER[1], LF_OUTER[2]))
+    o = (o - y * o.dot(y)).normalized()
+    x = o * s
+    z = x.cross(y).normalized()
+    e = (s * LF_ELBOW[0], LF_ELBOW[1], LF_ELBOW[2])
+    return Matrix(((x.x, y.x, z.x, e[0]), (x.y, y.y, z.y, e[1]), (x.z, y.z, z.z, e[2]), (0.0, 0.0, 0.0, 1.0)))
+
+
+def _lf_lay(b, start, m):
+    """Lay what was built since `start`, in a forearm's own frame, onto the model by `m`."""
+    for ob in b.objects[start:]:
+        ob.matrix_world = m @ ob.matrix_world
+
+
+def _lf_forearm(b, s, side):
+    """One forearm and its locked weaponry (Ryan, 16 November: fists "that retract and get replaced
+    with guns for its beam rifles", "beam blades mounted on its forearms, that can turn on and
+    off", "a shield made of light from each forearm"), the same on both arms, built in its own
+    frame and laid on the arm at rest inside the elbow's joint. The forearm with its red band and a
+    dark collar round the wrist's mouth; the fist on a joint that draws it back inside (fist_<side>)
+    and the compact beam rifle on another that runs it out past the wrist from where it lies inside
+    (rifle_<side>), each sliding along the forearm's line; the blade's emitter on the wrist's outer
+    face, the shield's nearer the elbow. The blade (blade_<side>) and the kite of light
+    (shield_<side>) are made of light (b.beams): unseen until an act lights them."""
+    m = _lf_frame(s)
+    L = LF_FOREARM
+    line = tuple(_lf_line(s))
+    k = len(b.objects)
+    b.loft([(0.4, _lf_cs(6.0, 6.4, 1.4)), (3.0, _lf_cs(7.8, 8.2, 1.9)), (12.0, _lf_cs(7.8, 8.2, 1.9)), (L, _lf_cs(7.4, 7.8, 1.7))], "steel.plate", "forearm")
+    b.loft([(5.0, _lf_cs(8.3, 8.7, 2.0)), (7.0, _lf_cs(8.3, 8.7, 2.0))], "livery.livery", "forearm_band")
+    b.loft([(L - 0.3, _lf_cs(7.2, 7.6, 1.6)), (L + 0.9, _lf_cs(6.8, 7.2, 1.5))], "steel.dark", "wrist_collar")
+    # The blade's emitter on the wrist's outer face, its mouth forward; the shield's nearer the elbow.
+    b.box(min(s * 3.7, s * 6.5), max(s * 3.7, s * 6.5), L - 5.0, L + 0.6, -1.8, 1.8, "steel.dark", "blade_emitter")
+    b.box(min(s * 4.3, s * 6.1), max(s * 4.3, s * 6.1), L + 0.6, L + 0.9, -1.0, 1.0, "bore.dark", "blade_mouth")
+    b.prism("x", s * 4.6, 5.8, 0.0, 1.9, 1.3, "steel.dark", 8, "shield_boss")
+    b.prism("x", s * 5.35, 5.8, 0.0, 1.0, 0.3, "bore.dark", 8, "shield_mouth")
+    _lf_lay(b, k, m)
+    wrist = tuple(m @ Vector((0.0, L, 0.0)))
+    # The fist, the Nemesis's turned thumb up, a size up on round three's (his to judge there: "the
+    # hands are small at rest"); it draws back through the collar into the forearm.
+    with b.joint("fist_" + side, wrist, slide=line):
+        k = len(b.objects)
+        _fist(b, 0.0, L + 0.9, L + 7.7, -3.0, 3.0, 6.0, -s)
+        c = Vector((0.0, L + 4.3, 0.0))
+        turn = Matrix.Translation(c) @ Matrix.Rotation(s * math.pi / 2.0, 4, "Y") @ Matrix.Translation(-c)
+        for ob in b.objects[k:]:
+            ob.matrix_world = turn @ ob.matrix_world
+        _lf_lay(b, k, m)
+    # The beam rifle, custom and compact: a short shroud, the barrel, a muzzle ring and its lens, a
+    # sight on the shroud, lying inside the forearm until it runs out in the fist's place.
+    with b.joint("rifle_" + side, wrist, slide=line):
+        k = len(b.objects)
+        R = -LF_RIFLE_OUT
+        b.loft([(L + 0.4 + R, _lf_cs(4.8, 5.0, 1.2)), (L + 3.4 + R, _lf_cs(4.0, 4.2, 1.0))], "steel.plate", "rifle_shroud")
+        b.prism("y", 0.0, L + 6.4 + R, 0.0, 1.4, 6.2, "steel.dark", 6, "rifle_barrel")
+        b.prism("y", 0.0, L + 9.9 + R, 0.0, 1.9, 1.2, "steel.plate", 6, "rifle_muzzle")
+        b.prism("y", 0.0, L + 10.7 + R, 0.0, 1.0, 0.4, "amber.lit", 6, "rifle_lens_" + side)
+        b.box(-0.7, 0.7, L + 0.8 + R, L + 3.2 + R, 2.3, 3.2, "livery.livery", "rifle_sight")
+        _lf_lay(b, k, m)
+    # The blade along the outside of the hand, a light at the emitter's mouth, the beam and its point.
+    k = len(b.objects)
+    ex = 5.2
+    b.box(min(s * 4.4, s * 6.0), max(s * 4.4, s * 6.0), L + 0.9, L + 1.1, -0.9, 0.9, "amber.lit", "blade_" + side)
+    _beam(b, (s * ex, L + 1.0, 0.0), (s * ex, L + 29.0, 0.0), _poly(2.0, 6), _poly(1.3, 6), "amber.lit", "blade_" + side)
+    _beam(b, (s * ex, L + 29.0, 0.0), (s * ex, L + 34.0, 0.0), _poly(1.3, 6), _poly(0.12, 6), "amber.lit", "blade_" + side)
+    # The kite of light: 17 across and 30 tall, its shoulders chamfered, closing to a point below,
+    # standing off the shield's emitter, a lit rim round its face and a light in the emitter's mouth.
+    X, yc, zc = s * 7.4, 7.0, -1.0
+    W, top, point, c = 17.0, 11.0, 19.0, 3.2
+    kite = [(yc - W / 2.0 + c, zc + top), (yc + W / 2.0 - c, zc + top), (yc + W / 2.0, zc + top - c), (yc + 0.46 * W, zc - 6.0),
+            (yc, zc - point), (yc - 0.46 * W, zc - 6.0), (yc - W / 2.0, zc + top - c)]
+    pts = [(X, py, pz) for py, pz in kite]
+    _slab(b, pts, (s, 0.0, 0.0), 0.5, "amber.shield", "shield_" + side)
+    for i in range(len(pts)):
+        _beam(b, pts[i], pts[(i + 1) % len(pts)], _poly(0.6, 4), _poly(0.6, 4), "amber.shield", "shield_" + side)
+    b.prism("x", s * 5.55, 5.8, 0.0, 0.8, 0.2, "amber.shield", 8, "shield_" + side)
+    _lf_lay(b, k, m)
+
+
+def _lf_leg(b, s, side):
+    """A long slim leg on its hip, knee and ankle: a narrow foot, a shin with a red blade down its
+    front and a booster on its calf, its nozzle level and aft for the dash, a knee guard drawn up to
+    a point, a slim thigh to a dark hip. Returns its (hip, knee, ankle)."""
+    ankle, knee, hip = (s * 7.6, -1.5, 6.0), (s * 7.2, 2.5, 29.5), (s * 6.5, -1.0, 54.0)
+    cx = ankle[0]
+    with b.joint("hip_" + side, hip, limits={"pitch": (-75.0, 100.0), "roll": (-20.0, 20.0), "yaw": (-30.0, 30.0)}):
+        _beam(b, knee, hip, _lf_cs(7.6, 8.6, 2.0), _lf_cs(8.2, 9.4, 2.2), "steel.plate", "thigh")
+        b.prism("x", hip[0], hip[1], hip[2], 3.6, 6.4, "steel.dark", 6, "hip")
+        with b.joint("knee_" + side, knee, limits=(-125.0, 10.0)):
+            b.prism("x", knee[0], knee[1], knee[2], 3.4, 8.6, "steel.dark", 6, "knee")
+            b.loft([(knee[1] + 2.6, rect(knee[0], 7.4, knee[2] - 4.6, knee[2] + 4.6)), (knee[1] + 5.4, rect(knee[0], 5.0, knee[2] - 2.8, knee[2] + 3.6))],
+                   "steel.plate", "knee_guard")
+            _spike(b, (knee[0], knee[1] + 3.8, knee[2] + 3.4), (knee[0], knee[1] + 2.4, knee[2] + 12.5), 1.9, "livery.livery", "knee_point")
+            _beam(b, _lf_along(ankle, knee, 0.07), knee, _lf_cs(7.4, 9.4, 2.0), _lf_cs(8.6, 10.4, 2.2), "steel.panel", "shin")
+            f0, f1 = _lf_along(ankle, knee, 0.18), _lf_along(ankle, knee, 0.82)
+            _beam(b, (f0[0], f0[1] + 4.9, f0[2]), (f1[0], f1[1] + 5.4, f1[2]), _lf_cs(2.6, 1.4, 0.4), _lf_cs(3.4, 1.6, 0.4), "livery.livery", "shin_blade")
+            c0 = _lf_along(ankle, knee, 0.62)
+            b.box(c0[0] - 2.6, c0[0] + 2.6, c0[1] - 7.6, c0[1] - 4.4, c0[2] - 5.5, c0[2] + 4.5, "steel.dark", "calf_housing")
+            _tube(b, (c0[0], c0[1] - 6.0, c0[2] - 1.0), (c0[0], c0[1] - 10.6, c0[2] - 1.0), 2.5, 1.9, 8, "steel.dark", "calf_booster",
+                  floor_material="amber.exhaust", floor_depth=3.6, phase=math.pi / 8)
+            with b.joint("ankle_" + side, ankle, limits=(-55.0, 70.0)):
+                b.loft([(-8.5, rect(cx, 7.0, 0.0, 4.2)), (-3.5, rect(cx, 8.4, 0.0, 6.6)), (5.0, rect(cx, 8.4, 0.0, 5.4)), (13.0, rect(cx, 6.4, 0.0, 2.6))],
+                       "steel.plate", "foot")
+                b.box(cx - 3.5, cx + 3.5, 9.6, 13.6, 0.0, 3.0, "steel.dark", "toe_cap")
+                b.box(cx - 3.8, cx + 3.8, -9.2, -6.0, 0.0, 3.6, "steel.dark", "heel")
+                b.prism("x", ankle[0], ankle[1], ankle[2], 2.9, 9.4, "steel.dark", 6, "ankle")
+    return hip, knee, ankle
+
+
+def line_frame(b):
+    """Aphelion's line frame (a working label; the name and the look are Ryan's), its Gundam
+    homage: "a homage not a clone" (16 November), its model from the third look round
+    (docs/looks/aphelion_line_frame3.png, docs/briefs/aphelion_line_frame.md), a planned design
+    with no kit in content yet. A lean frame on long legs, a dark inner frame bare at the waist,
+    a compact wedge of a chest in Aphelion's pearl with its red, a small helm under one swept blade
+    of a crest, and its silhouette and locked weaponry in its forearms, the same on both arms: a
+    fist that draws back for a beam rifle to run out in its place, a beam blade off the wrist's
+    outer face and a kite of light off the forearm's, both made of light and seen only while lit.
+    "It cycles through weapon combinations as it idles and as it fights": its acts are those
+    combinations, each from the fists at rest and back. Three placeholder mounts (his of 16
+    November: "scrap the chest ports, and maybe add a mount to the side of the head instead"): a
+    slim gun on each shoulder on its own elevation (hp_1, hp_2) and a small pod on the right side
+    of the helm (hp_3). The pack dashes along the ground on two boosters aft, two pairs of wings
+    swept back flat over them ("it's a dash, not a hover"), the calves' boosters aft too: it moves
+    so, skimming on its feet, a walk beside it as a gait option to compare."""
+    legs = {side: _lf_leg(b, s, side) for s, side in ((-1.0, "l"), (1.0, "r"))}
+    # The pelvis: the dark frame, a small plate with a red line down it in front, a tasset over
+    # each hip, a plate behind, a belt.
+    b.box(-6.0, 6.0, -5.5, 4.0, 50.5, 58.5, "steel.dark", "pelvis")
+    b.loft([(3.5, rect(0.0, 6.5, 50.0, 58.8)), (7.0, rect(0.0, 4.0, 51.5, 58.0))], "steel.plate", "pelvis_plate")
+    b.box(-1.2, 1.2, 6.6, 7.5, 52.0, 58.0, "livery.livery", "pelvis_line")
+    b.box(-6.5, 6.5, -8.0, -5.5, 50.5, 58.5, "steel.plate", "pelvis_rear")
+    for s in (-1.0, 1.0):
+        _slab(b, [(s * 10.6, -5.0, 59.0), (s * 10.6, 3.5, 59.0), (s * 12.8, 2.5, 47.5), (s * 12.8, -3.5, 49.5)], (s, 0.0, 0.18), 1.3, "steel.plate", "tasset")
+        _slab(b, [(s * 12.4, -3.4, 50.6), (s * 12.5, 2.4, 48.9), (s * 13.2, 2.5, 46.9), (s * 13.2, -3.5, 48.9)], (s, 0.0, 0.18), 1.5, "livery.livery", "tasset_edge")
+    b.box(-8.6, 8.6, -6.6, 5.0, 58.0, 60.0, "steel.panel", "belt")
+    # Everything above the belt turns and leans on the waist (a walker turns with a waist, never by
+    # sliding its feet: the Nemesis's rule, Ryan, 5 October).
+    waist = b.joint("waist", (0.0, -1.0, 60.0), axis="yaw", limits={"yaw": (-40.0, 40.0), "pitch": (-20.0, 20.0), "roll": (-10.0, 10.0)}, swing=False)
+    waist.__enter__()
+    b.prism("z", 0.0, -1.0, 63.0, 4.2, 6.4, "steel.dark", 8, "waist", phase=math.pi / 8)
+    for s in (-1.0, 1.0):
+        b.prism("z", s * 5.4, 1.2, 63.0, 1.0, 6.4, "steel.vent", 6, "waist_strut")
+    # The chest: a wedge, narrow at the waist and widest under the shoulders, a pectoral plate each
+    # side of a red sternum, plain armour (the ports scrapped), a small plate over the belly.
+    _rings(b, [_deck(13.0, 10.0, -0.5, 65.6, 2.5), _deck(22.0, 14.0, 0.5, 70.0, 3.2), _deck(27.0, 15.5, 1.0, 74.5, 3.6),
+               _deck(24.0, 13.5, 0.0, 78.6, 3.2), _deck(15.0, 10.0, -1.0, 80.6, 2.6)], "steel.panel", "torso")
+    for s in (-1.0, 1.0):
+        b.loft([(7.0, rect(s * 6.6, 9.6, 71.4, 77.6)), (10.6, rect(s * 6.5, 7.8, 72.2, 77.0))], "steel.plate", "pectoral")
+    b.box(-1.4, 1.4, 8.4, 9.9, 69.6, 78.2, "livery.livery2", "sternum")
+    b.box(-3.6, 3.6, 5.4, 7.2, 66.4, 69.8, "steel.plate", "belly_plate")
+    b.box(-5.6, 5.6, -5.0, 5.0, 80.2, 81.6, "steel.dark", "collar")
+    # The head turns on its neck: a small helm, a visor band round its face, dark cheeks and chin,
+    # one blade of a crest from the brow swept up and back, and hp_3 in a pod on its right side,
+    # the side the codex and the skirmish see.
+    b.prism("z", 0.0, 0.3, 82.6, 2.2, 2.4, "steel.dark", 6, "neck")
+    with b.joint("head", (0.0, 0.3, 83.4), limits={"yaw": (-60.0, 60.0), "pitch": (-15.0, 15.0)}):
+        _rings(b, [_deck(6.4, 8.4, 0.6, 83.6, 1.6), _deck(7.6, 9.6, 0.8, 86.2, 2.0), _deck(7.2, 9.2, 0.5, 89.0, 2.0), _deck(4.6, 6.4, -0.3, 91.0, 1.5)],
+               "steel.plate", "helm")
+        b.box(-3.3, 3.3, 5.0, 5.9, 86.4, 88.2, "glass.glass", "visor")
+        b.box(-1.7, 1.7, 4.4, 5.6, 83.6, 85.8, "steel.dark", "chin")
+        for s in (-1.0, 1.0):
+            b.box(min(s * 3.3, s * 4.0), max(s * 3.3, s * 4.0), 2.2, 5.4, 86.4, 88.2, "glass.glass", "visor_side")
+            b.box(min(s * 3.6, s * 4.7), max(s * 3.6, s * 4.7), -2.0, 1.8, 85.2, 88.0, "steel.dark", "cheek")
+        _slab(b, [(0.0, 4.6, 89.4), (0.0, 5.8, 91.6), (0.0, -4.0, 99.6), (0.0, -8.5, 96.4), (0.0, -3.4, 91.2)], (1.0, 0.0, 0.0), 2.4, "livery.livery", "crest")
+        b.loft([(1.6, rect(0.0, 4.4, 89.0, 92.2)), (6.3, rect(0.0, 2.4, 89.2, 91.6))], "steel.plate", "crest_root")
+        b.box(4.6, 7.4, -2.6, 2.4, 85.4, 89.6, "steel.plate", "head_pod")
+        b.box(7.4, 7.7, -2.0, 1.8, 86.0, 89.0, "livery.livery", "head_pod_line")
+        b.stock("hp_3", (6.0, 2.4, 88.6), "rack", scale=0.2, carries="ankle_mortar")
+    # The shoulders: a small clipped cap each, a red line along its top edge, and a slim gun on a
+    # small ring on each, raised on its own elevation (hp_1 the right, hp_2 the left).
+    for s, side, n, shape, scale, cid in ((1.0, "r", 1, "barrel", 0.3, "laser_carbine"), (-1.0, "l", 2, "twin_barrel", 0.28, "twin_autoguns")):
+        sec = [(s * 14.0, 72.6), (s * 21.5, 72.6), (s * 23.0, 75.0), (s * 23.0, 78.6), (s * 20.5, 80.6), (s * 14.0, 80.6)]
+        b.loft([(-5.5, sec), (5.5, sec)], "steel.plate", "shoulder")
+        b.box(min(s * 20.6, s * 23.3), max(s * 20.6, s * 23.3), -5.8, 5.8, 78.0, 79.2, "livery.livery", "shoulder_line")
+        b.prism("x", s * 14.6, 0.0, 76.0, 3.2, 4.6, "steel.dark", 6, "shoulder_joint")
+        b.prism("z", s * 18.4, -0.5, 81.1, 2.4, 1.0, "steel.dark", 8, "shoulder_mount", phase=math.pi / 8)
+        with b.joint("elev_" + side, (s * 18.4, -0.5, 82.0), limits=(-10.0, 35.0)):
+            b.stock("hp_%d" % n, (s * 18.4, -1.5, 83.0), shape, scale=scale, carries=cid)
+    # The arms: a slim upper arm, the inner frame bare, off the shoulder; an elbow drum; the forearm
+    # and its weaponry.
+    for s, side in ((1.0, "r"), (-1.0, "l")):
+        sh = (s * LF_SHOULDER[0], LF_SHOULDER[1], LF_SHOULDER[2])
+        el = (s * LF_ELBOW[0], LF_ELBOW[1], LF_ELBOW[2])
+        with b.joint("shoulder_" + side, sh, limits={"pitch": (-45.0, 100.0), "yaw": (-95.0, 95.0), "roll": (-45.0, 45.0)}):
+            _beam(b, sh, el, _lf_cs(5.6, 6.0, 1.4), _lf_cs(5.0, 5.4, 1.2), "steel.dark", "upper_arm")
+            with b.joint("elbow_" + side, el, limits=(-15.0, 120.0)):
+                b.prism("x", el[0], el[1], el[2], 3.0, 6.6, "steel.dark", 6, "elbow")
+                _lf_forearm(b, s, side)
+    # The pack: compact, two boosters level with their nozzles aft, and two pairs of wings swept back
+    # flat, an upper pair off its shoulders and a lower off its hips, each on a pivot at its root so
+    # the dash can spread them: it dashes along the ground and does not fly.
+    b.box(-5.5, 5.5, -12.0, -6.6, 66.5, 78.0, "steel.panel", "pack")
+    b.box(-3.8, 3.8, -11.4, -7.2, 78.0, 79.0, "livery.livery", "pack_cap")
+    b.box(-1.4, 1.4, -12.5, -12.0, 67.5, 76.5, "steel.vent", "pack_vent")
+    for s, side in ((-1.0, "l"), (1.0, "r")):
+        _tube(b, (s * 3.4, -10.5, 72.5), (s * 3.4, -18.6, 72.5), 2.8, 2.1, 8, "steel.dark", "booster", floor_material="amber.exhaust", floor_depth=5.0,
+              phase=math.pi / 8)
+        _tube(b, (s * 3.4, -18.2, 72.5), (s * 3.4, -19.0, 72.5), 3.2, 2.1, 8, "amber.engine", "booster_rim", floor=False, phase=math.pi / 8)
+        for jn, z_root, tip, chord_root, chord_tip, label in (("wing_" + side, 76.0, (16.5, -20.5, 78.0), 9.0, 4.6, "pack_wing"),
+                                                              ("vane_" + side, 68.5, (14.5, -18.5, 65.0), 7.5, 3.8, "pack_vane")):
+            root = (s * 5.2, -7.4 - chord_root / 2.0, z_root)
+            with b.joint(jn, root, axis="yaw", limits=(-40.0, 40.0)):
+                wing = [(s * 5.2, -7.4, z_root), (s * tip[0], tip[1], tip[2]), (s * tip[0], tip[1] - chord_tip, tip[2]), (s * 5.2, -7.4 - chord_root, z_root)]
+                n = (Vector(wing[1]) - Vector(wing[0])).cross(Vector(wing[3]) - Vector(wing[0])).normalized()
+                _slab(b, wing, tuple(n), 1.0, "steel.plate", label)
+                _beam(b, wing[0], wing[1], _lf_cs(1.6, 1.4, 0.3), _lf_cs(1.2, 1.0, 0.2), "livery.livery", label + "_edge")
+    waist.__exit__(None, None, None)
+    _line_frame_motion(b, legs)
+
+line_frame.maker = "aphelion"
+
+
+def _line_frame_motion(b, legs):
+    """The line frame's acts, its gait, its weight and its death (line_frame above). Its idle is
+    the cycling Ryan asked for, a weapon combination an act: the rifles out and laid on the enemy,
+    a blade and the shield, twin blades, a rifle and the shield; with the dash it is built for, a
+    crouch onto the boosters with the wings spread, and a look round. Every act starts from the
+    fists at rest and the beams out, and ends there. A pose is the shoulder's (pitch, yaw, roll)
+    and the elbow's pitch, the right arm's; the left takes it mirrored."""
+    feet = [{"hip": "hip_" + side, "knee": "knee_" + side, "ankle": "ankle_" + side, "at": legs[side]} for side in ("l", "r")]
+    rest = (0.0, 0.0, 0.0, 0.0)
+    mir = lambda side, p: p if side == "r" else (p[0], -p[1], -p[2], p[3])
+    lines = {side: tuple(_lf_line(s)) for s, side in ((1.0, "r"), (-1.0, "l"))}
+    slide = lambda side, t, d: (t, 0.0, 0.0, 0.0) + tuple(round(v * d, 3) for v in lines[side])
+
+    def arm(tracks, side, keys):
+        """A pose's keys (t, pose) on one arm's shoulder and elbow."""
+        tracks["shoulder_" + side] = [(t, *mir(side, p)[:3]) for t, p in keys]
+        tracks["elbow_" + side] = [(t, mir(side, p)[3]) for t, p in keys]
+
+    def rifle(tracks, side, t_in, t_out):
+        """The fist drawn back and the rifle run out from `t_in`, then the rifle in and the fist out
+        again by `t_out`."""
+        tracks["fist_" + side] = [slide(side, t_in, 0.0), slide(side, t_in + 0.3, -LF_FIST_IN), slide(side, t_out - 0.35, -LF_FIST_IN), slide(side, t_out, 0.0)]
+        tracks["rifle_" + side] = [slide(side, t_in + 0.15, 0.0), slide(side, t_in + 0.5, LF_RIFLE_OUT), slide(side, t_out - 0.6, LF_RIFLE_OUT),
+                                   slide(side, t_out - 0.3, 0.0)]
+
+    def lit(t_on, t_off, steady, flash):
+        """A beam's light: flashing on at `t_on`, burning `steady` rests over its own, and gone at
+        `t_off` (made of light, it is seen only while lit)."""
+        return [(round(t_on - 0.05, 3), 0.0), (t_on, flash), (round(t_on + 0.18, 3), steady), (round(t_off - 0.12, 3), steady), (t_off, 0.0)]
+
+    BLADE, SHIELD = (4.0, 12.0), (14.0, 28.0)   # (steady, flash): the blade a white-hot yellow, the shield the game's shield blue
+    # The rifles: both fists drawn back and the rifles run out, laid level on the enemy, the torso
+    # sweeping a slow arc on the waist as it tracks, the lenses charging at each end of the sweep.
+    tracks, body = _planted(feet, [(0.3, 0.0, 0.0, 0.0), (1.1, -0.4, -1.2, 1.5), (3.6, -0.4, -1.2, 1.5), (4.6, 0.0, 0.0, 0.0)])
+    for side in ("l", "r"):
+        arm(tracks, side, [(0.5, rest), (1.15, LF_AIM), (3.5, LF_AIM), (4.2, rest)])
+        rifle(tracks, side, 0.25, 4.7)
+    tracks["waist"] = _dense([(1.1, 0.0, 0.0, 0.0), (1.8, 0.0, 14.0, 0.0), (2.7, 0.0, -12.0, 0.0), (3.4, 0.0, 0.0, 0.0)])
+    tracks["head"] = _dense([(1.1, 0.0, 0.0, 0.0), (1.7, 0.0, 10.0, 0.0), (2.6, 0.0, -9.0, 0.0), (3.4, 0.0, 0.0, 0.0)])
+    b.act("rifles", 5.0, tracks, body=body,
+          glow=[(["rifle_lens_r", "rifle_lens_l"], [(1.1, 0.0), (1.5, 6.0), (1.8, 2.0), (2.4, 2.0), (2.7, 8.0), (3.0, 2.0), (3.5, 0.0)])])
+    # A blade and the shield: the right blade lit and thrust forward, out and up, the left forearm
+    # brought across the body and the kite of light thrown up off it, the stance dropping into a
+    # guard and the torso turned to lead with the shield; a parry's jolt, the blade flicked.
+    tracks, body = _planted(feet, [(0.3, 0.0, 0.0, 0.0), (1.0, -0.6, -2.4, 2.0), (2.1, -0.6, -2.4, 2.0), (2.25, -1.4, -2.8, -1.0), (2.6, -0.6, -2.4, 2.0),
+                                   (3.8, -0.6, -2.4, 2.0), (4.7, 0.0, 0.0, 0.0)])
+    arm(tracks, "r", [(0.35, rest), (0.95, LF_THRUST), (2.75, LF_THRUST), (2.9, (LF_THRUST[0] + 14.0, LF_THRUST[1], LF_THRUST[2], LF_THRUST[3] - 8.0)),
+                      (3.1, LF_THRUST), (3.8, LF_THRUST), (4.5, rest)])
+    arm(tracks, "l", [(0.5, rest), (1.1, LF_GUARD), (2.1, LF_GUARD), (2.25, (LF_GUARD[0] + 6.0, LF_GUARD[1], LF_GUARD[2], LF_GUARD[3] - 6.0)), (2.5, LF_GUARD),
+                      (3.8, LF_GUARD), (4.5, rest)])
+    tracks["waist"] = _dense([(0.4, 0.0, 0.0, 0.0), (1.1, -2.0, 10.0, 0.0), (3.8, -2.0, 10.0, 0.0), (4.6, 0.0, 0.0, 0.0)])
+    b.act("blade_and_shield", 5.0, tracks, body=body,
+          glow=[(["blade_r"], lit(0.45, 4.0, *BLADE)), (["shield_l"], lit(0.95, 3.95, *SHIELD))])
+    # Twin blades: both lit, the right thrust forward and the left swept low, then a cut across the
+    # front with the right and back, the torso turning into it.
+    tracks, body = _planted(feet, [(0.3, 0.0, 0.0, 0.0), (1.0, -0.4, -1.8, 1.0), (3.6, -0.4, -1.8, 1.0), (4.4, 0.0, 0.0, 0.0)])
+    CUT = (40.0, 55.0, -10.0, 40.0)
+    arm(tracks, "r", [(0.3, rest), (0.9, LF_THRUST), (1.7, LF_THRUST), (2.0, (LF_THRUST[0] + 10.0, -40.0, LF_THRUST[2], LF_THRUST[3]))]
+        + _slam(2.0, (LF_THRUST[0] + 10.0, -40.0, LF_THRUST[2], LF_THRUST[3]), 2.3, CUT) + [(2.9, CUT), (3.4, LF_THRUST), (4.2, rest)])
+    arm(tracks, "l", [(0.45, rest), (1.05, LF_LOW), (3.4, LF_LOW), (4.2, rest)])
+    tracks["waist"] = _dense([(0.5, 0.0, 0.0, 0.0), (1.9, 0.0, -10.0, 0.0), (2.3, 0.0, 16.0, 0.0), (2.9, 0.0, 14.0, 0.0), (3.5, 0.0, 0.0, 0.0)])
+    b.act("twin_blades", 4.6, tracks, body=body, heft=0.08,
+          glow=[(["blade_r"], lit(0.4, 3.6, *BLADE)), (["blade_l"], lit(0.55, 3.5, *BLADE))])
+    # A rifle and the shield, the other way round, so each arm shows all three across the cycle:
+    # the left rifle run out and aimed, the right forearm across the body behind the kite of light,
+    # the torso leading with the shield and the rifle laid past its edge.
+    tracks, body = _planted(feet, [(0.3, 0.0, 0.0, 0.0), (1.1, -0.5, -1.8, 1.5), (3.8, -0.5, -1.8, 1.5), (4.7, 0.0, 0.0, 0.0)])
+    arm(tracks, "l", [(0.5, rest), (1.15, LF_AIM), (3.7, LF_AIM), (4.4, rest)])
+    rifle(tracks, "l", 0.25, 4.85)
+    arm(tracks, "r", [(0.6, rest), (1.2, LF_GUARD), (3.7, LF_GUARD), (4.4, rest)])
+    tracks["waist"] = _dense([(0.4, 0.0, 0.0, 0.0), (1.2, -1.0, -8.0, 0.0), (2.4, -1.0, -2.0, 0.0), (3.6, -1.0, -8.0, 0.0), (4.5, 0.0, 0.0, 0.0)])
+    b.act("rifle_and_shield", 5.0, tracks, body=body,
+          glow=[(["shield_r"], lit(1.05, 4.0, *SHIELD)), (["rifle_lens_l"], [(1.2, 0.0), (1.6, 6.0), (2.0, 2.0), (3.5, 2.0), (3.9, 0.0)])])
+    # The dash it is built for: it drops into a crouch onto the balls of its feet, leaning in, the
+    # arms swept back, the wings spread on their pivots and the boosters lit, holds as if to go,
+    # and stands down.
+    tracks, body = _planted(feet, [(0.2, 0.0, 0.0, 0.0), (0.8, -1.5, -5.0, -10.0), (2.2, -1.5, -5.2, -11.0), (3.0, 0.0, 0.0, 0.0)])
+    for side in ("l", "r"):
+        arm(tracks, side, [(0.25, rest), (0.85, (-30.0, 0.0, -8.0, 30.0)), (2.2, (-32.0, 0.0, -8.0, 32.0)), (2.9, rest)])
+    for side, s in (("r", -1.0), ("l", 1.0)):
+        tracks["wing_" + side] = [(0.3, 0.0), (0.8, s * 22.0), (2.3, s * 24.0), (2.9, 0.0)]
+        tracks["vane_" + side] = [(0.35, 0.0), (0.85, s * 18.0), (2.3, s * 20.0), (2.9, 0.0)]
+    b.act("dash_ready", 3.4, tracks, body=body,
+          glow=[(["booster_floor", "booster_rim", "calf_booster_floor"], [(0.5, 0.0), (0.9, 8.0), (1.3, 5.0), (1.9, 9.0), (2.4, 4.0), (2.9, 0.0)])])
+    # A look round: the head turns one way and the other, the torso a little with it, a shoulder
+    # gun lifting as it looks.
+    tracks = {"head": [(0.3, 0.0, 0.0, 0.0), (0.9, 0.0, 35.0, 0.0), (1.8, 0.0, 35.0, 0.0), (2.5, 0.0, -30.0, 0.0), (3.3, 0.0, -30.0, 0.0), (3.9, 0.0, 0.0, 0.0)],
+              "waist": [(0.3, 0.0, 0.0, 0.0), (1.0, 0.0, 10.0, 0.0), (1.8, 0.0, 10.0, 0.0), (2.6, 0.0, -8.0, 0.0), (3.3, 0.0, -8.0, 0.0), (4.0, 0.0, 0.0, 0.0)],
+              "elev_l": [(0.6, 0.0), (1.1, 18.0), (1.7, 18.0), (2.2, 0.0)], "elev_r": [(2.4, 0.0), (2.9, 16.0), (3.4, 16.0), (3.9, 0.0)]}
+    b.act("look_round", 4.2, tracks)
+    # The boosters and the beams bloom (MechRig's halos); the beams are made of light.
+    b.halo = ["booster_floor", "calf_booster_floor", ("blade_r", 1.5), ("blade_l", 1.5), "shield_r", "shield_l"]
+    b.beams = ["blade_r", "blade_l", "shield_r", "shield_l"]
+    # It moves by the dash (Ryan, 16 November: "boost forward, not up - it's a dash, not a hover"):
+    # skimming on its feet in a crouch, leaning into its travel, the arms swept back and the wings
+    # spread, every booster lit; a walk beside it to compare (b.gait_option).
+    skim, _ = _planted(feet, [(0.0, 0.0, -3.0, -8.0), (1.0, 0.0, -3.0, -8.0)])
+    hold = {jn: keys[-1][1] for jn, keys in skim.items()}
+    hold.update({"shoulder_l": (-24.0, 0.0, 6.0), "shoulder_r": (-24.0, 0.0, -6.0), "elbow_l": 28.0, "elbow_r": 28.0,
+                 "wing_l": 18.0, "wing_r": -18.0, "vane_l": 14.0, "vane_r": -14.0})
+    walk, walk_body, stride = _plant([dict(f, phase=0.0 if f["hip"] == "hip_l" else 0.5) for f in feet], sweep=26.0, lift=7.0, crouch=0.5, dip=1.2, nod=0.8)
+    walk["shoulder_l"] = (_swing(8.0, 0.5), 0.0)
+    walk["shoulder_r"] = (_swing(8.0, 0.0), 0.0)
+    b.gait_option("walk", stride=stride, tracks=walk, hold={"elbow_l": 10.0, "elbow_r": 10.0}, body=walk_body, ease="linear")
+    b.gait(stride=90.0, hold=hold, body_hold=(0.0, 0.0, -3.0, 0.0, -8.0, 0.0), body=[(0.0, 0.0, 0.0, 0.0), (0.5, 0.0, 0.0, 0.6), (1.0, 0.0, 0.0, 0.0)],
+           glow={"parts": ["booster_floor", "booster_rim", "calf_booster_floor"], "k": 7.0}, rock=4.0)
+    b.move(slide=0.25, bank=8.0, accel=0.7, heft=0.12)
+    # Its death: the boosters cut and its knees go, and it sits down hard over its feet, then goes
+    # over onto its pack, its knees up and its arms gone limp, its head lolled aside. Its feet stay
+    # where they stand the whole way (b.death's plant), so it drops and rolls back over them rather
+    # than toppling like a tree, its middle ending a fifth of its height off where it stood
+    # (tools/death_floor.gd). Tried and set aside on the way: falls from standing onto its back or its
+    # face (thrown over half its height off its hex, the feet sliding), and down onto its knees and
+    # over onto its face or bowed to the floor (its long forearms propping its chest up, the limbs
+    # folded through each other, and a crumpled heap too small to read in the skirmish's frame).
+    D = 1.4
+    dying = {"waist": [(0.6, -8.0, 0.0, 0.0), (D, 6.0, 0.0, 0.0)], "head": [(0.6, -8.0, 0.0, 0.0), (D, 12.0, 30.0, 0.0)]}
+    for side, d in (("l", 0.0), ("r", -5.0)):
+        dying["hip_" + side] = [(0.6, 95.0 + d), (D, 60.0 + d)]
+        dying["knee_" + side] = [(0.6, -105.0 - d), (D, -120.0 - d)]
+        dying["ankle_" + side] = [(0.6, 10.0), (D, 10.0 + d)]
+    b.death(D, dying, body=[(0.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (D, 0.0, 0.0, 0.0, 0.0, 60.0, 0.0)], hang=["shoulder_l", "elbow_l", "shoulder_r", "elbow_r"],
+            plant=["ankle_l", "ankle_r"])
+
+
 def _hull_section(z0, z1, w, c, cx=0.0, belly=0.8):
     """A hovercraft hull's section as (x, z) points, counter-clockwise: a chamfered rectangle,
     wide and low, its underside softened: flat for the middle third and rising `belly` to the

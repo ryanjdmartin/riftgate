@@ -70,6 +70,8 @@ const GLOW_BASE := 1.8        # the amber role's emission at rest (MechView3D.to
 const LIGHT_EASE := 1.0 / 2.2 # the power a lit part's light is eased by on the phone's renderer (light())
 static var _eases_light := -1   # whether light() eases: unknown until first asked (the renderer's known once the screen is up)
 const HALO_FULL := 8.0        # a halo is full once its part's light stands this many rests over its own (_light_to)
+const BEAM_SHOWS := 1.05      # a part made of light shows once its light stands this far over its own rest (_light_to), and is unseen at rest
+const BEAM_GUTTER := 0.35     # a lit beam on a lost machine stutters out with the gutter, shown while its light is over this share of what it was
 const HALO_SPREAD := 0.025    # how far a halo stands out, a share of its machine's longest side (_setup_halos)
 const HALO_REACH := 0.45      # the share of its part's colour a halo adds at its fullest (halo.gdshader)
 const HALO_AHEAD := 3.0       # how far toward the eye a halo is drawn, in its part's units: out of a slot over its walls; a part standing proud names its own (_setup_halos)
@@ -222,6 +224,8 @@ var _strikes: Array = []           # [{joint, vec (degrees), slide (world units,
 var _glow: Array = []              # [{mats: [StandardMaterial3D], base: [float]}] per glow track of the act playing
 var _glow_cache: Dictionary = {}   # part prefix -> [StandardMaterial3D]
 var _halos: Dictionary = {}        # a lit material -> the halos' ShaderMaterials round its surfaces (_setup_halos)
+var _beams: Dictionary = {}        # a lit material of a part made of light -> the meshes it lights (_setup_beams)
+var _beam_lit: Dictionary = {}     # a beam's lit material -> whether it was lit as the machine was lost (its gutter)
 var _standing: Dictionary = {}     # a lit material -> the multiple of its rest light it never falls under (_setup_standing)
 var _halo_grow := 0.0              # how far a halo stands out on this model (_setup_halos), for hot parts hung later (wear_hot)
 var _flashes: Array = []           # [{mats, base, t}] a weapon's fire flaring (flash)
@@ -681,6 +685,7 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 		_form_on[DEATH] = false
 		_form_t[DEATH] = 0.0
 	_setup_halos(side)
+	_setup_beams(side)
 	_setup_standing(side)
 	_setup_counts(side.get("counts", []))
 	_setup_ajar(side.get("ajar", {}) if side.get("ajar", {}) is Dictionary else {})
@@ -1184,7 +1189,11 @@ func _step(dt: float) -> bool:
 			if not bool(pair[4]):
 				pair[1] = m.emission_energy_multiplier   # its light as its gutter starts
 				pair[4] = true
+				if _beams.has(m):
+					_beam_lit[m] = (_beams[m] as Array).any(func(mi): return (mi as Node3D).visible)
 			var k := gutter_k(local)
+			for mi in _beams.get(m, []):
+				(mi as Node3D).visible = bool(_beam_lit.get(m, false)) and k > BEAM_GUTTER   # a beam lit as it was lost stutters out with its light
 			var paint := DEAD_PAINT + (1.0 - DEAD_PAINT) * k   # the paint stutters out with the light (Ryan, 16 November, the fourth notes: a steady darkening hid the flicker)
 			var e := float(pair[1]) * k
 			m.emission_energy_multiplier = e
@@ -1676,6 +1685,7 @@ func revive() -> void:
 		_light_to(pair[0], _rest_of(pair[0]), 1.0)
 		(pair[0] as StandardMaterial3D).albedo_color = pair[2]   # its paint as it was
 	_gutter_mats.clear()
+	_beam_lit.clear()
 	_death_lift = 0.0
 	_impact = -1.0
 	_collapse = -1.0
@@ -2773,9 +2783,45 @@ func _light_to(m: StandardMaterial3D, base: float, multiple: float) -> void:
 	multiple = maxf(multiple, float(_standing.get(m, 1.0)))
 	var e := base * light(multiple)
 	m.emission_energy_multiplier = e
+	for mi in _beams.get(m, []):
+		(mi as Node3D).visible = multiple > BEAM_SHOWS   # a part made of light is there only while it is lit
 	for h in _halos.get(m, []):
 		(h as ShaderMaterial).set_shader_parameter("light", e)
 		(h as ShaderMaterial).set_shader_parameter("presence", clampf((multiple - 1.0) / HALO_FULL, 0.0, 1.0))
+
+
+## The parts made of light a sidecar names (`beams`; Ryan, 16 November, of the line frame: "beam
+## blades mounted on its forearms, that can turn on and off", "a shield made of light"): each lit
+## material of every mesh a beam labels and the meshes it lights, every one hidden, since a part made
+## of light is unseen at its light at rest; _light_to shows it while a glow lights it over that
+## (BEAM_SHOWS) and hides it as the glow lets it go. Its halo is its child and goes with it.
+## MechView3D.hide_beams hides them as a model loads, before it is measured; this is the rig's own.
+func _setup_beams(side: Dictionary) -> void:
+	_beams.clear()
+	_beam_lit.clear()
+	var named = side.get("beams", [])
+	if not (named is Array) or model == null:
+		return
+	for part in named:
+		for mi in model.find_children("*", "MeshInstance3D", true, false):
+			if mi.has_meta("halo") or not labelled(str(mi.name), str(part)):
+				continue
+			(mi as Node3D).visible = false
+			for i in range((mi as MeshInstance3D).get_surface_override_material_count()):
+				var sm := (mi as MeshInstance3D).get_surface_override_material(i)
+				if sm is StandardMaterial3D and (sm as StandardMaterial3D).emission_enabled:
+					if not _beams.has(sm):
+						_beams[sm] = []
+					(_beams[sm] as Array).append(mi)
+
+
+## Whether a part made of light shows now (a beam: _setup_beams): any mesh it labels drawn.
+func beam_shown(part: String) -> bool:
+	for m in _beams.keys():
+		for mi in _beams[m]:
+			if labelled(str((mi as Node).name), part) and (mi as Node3D).visible:
+				return true
+	return false
 
 
 ## The glows a sidecar holds always (`standing`: a lit part and how many rests over its own),
