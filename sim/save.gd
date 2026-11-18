@@ -14,7 +14,7 @@ extends RefCounted
 ## it travels as a string. Nothing here is shown to the player.
 
 const PATH := "user://battle.json"
-const VERSION := 38   # 2: moves in tens (2 October); 3: the water feature and the map's kind (3 and 4 October); 4: the generator's roads changed under every seed, and the guest, kills and wrecks (6 October); 5: the redesigned round, a turn of actions and fights in place of routes and contacts (8 October); 6: moves in hexes, a move in one go (28 October's movement proposal); 7: the six map shapes, every seed's map laid anew (29 October); 8: the fords and streets three or four in all, every river and city laid anew, and the horde wading (29 October); 9: hunters at ring two, and a sealed-off prey's stand-in in place of the re-pick (29 October); 10: the long wall (the field's size from the ramp, the tide, a pusher's wall segment, one pack one fight, no withdrawal, the shield the fight's, a pack's threat rating and dealt layout; 6 November); 11: no reinforcement inside a fight (a pack is what its slots hold, a regrowing foe's corpse holds its slot, a catch's overflow held back) and the compositions fitted to the ranks (7 November); 12: the field's caches, seeded with the map, and those claimed (7 November); 13: a hunter's catch a fight of its own, and no escort grown by the tier (7 November); 14: a cache's kind by its depth, the seam's upgrade gone (8 November); 15: a composition its grid, the cycle's entries carrying eight cells (8 November); 16: a composition saying whether its pack hunts, never its foes, and a hunter catching at the pounce alone, no pack carrying a ring (8 November); 17: the shapes relaid for the shallow field (the mouth a share of the depth, the fjords and cliffs by the width, the shores' rough ground), every seed's map laid anew (9 November); 18: the Armadillo's id the Polar Bear's, polar_bear (9 November), so a battle saved with the old id is set aside rather than drawn without its model; 19: every id still wearing an old name its name's (9 November): kite, buzzard, oblation_mantle, eleven foes and the compositions named for them; 20: the Lammergeier's Mines on foes, a foe status, in place of the slots' shots (9 November); 21: the refit pass's model landed (10 November): the stock dice with no shield or vent, the Halo Shield's id its name's (halo_projector), every chassis its own shield regen; 22: the rift five hexes, the two in front of its middle with its row's three, and the boss in front of them (10 November), every map's mouth laid anew, and the formation pass's compositions in place of the old (the same day); 23: the boss holding its hex in front of the rift, no patrol (10 November); 24: menace a pack's threat rating in hundredths of a pip (11 November), so a battle's tally and its thresholds are counted anew, with the Rupture sized in beats and the stall guard gone; 25: a cooldown counted after the round of its spend, Rapid's own switch-off back and Instant a keyword (12 November), so a die saved with a Rapid piece's printed cooldown, the Spin-Up's spin or a fist's Breach is set aside; 26: the rules no piece printed left the engine (12 November: Empowered a kill, a passive's keep of a status, Reset, an entry's heat a blow and label, the battle's fought record), so a die saved with one, or a machine saved holding kept Empowered, is set aside, and the readers for older saves' forms went with them; 27: the reboot the rule (15 November): no chassis regains shield or cools of its own, heat past the maximum stays and burns, and a machine's four reboot states are every fight's, so a fight saved under the rule before it is set aside; 28: the vocabulary pass's build (15 November): Ablate in Burn's place, a machine's Ablating damage where its Burning was heat, and the keywords and statuses the pass cut or renamed, so a fight saved under the old words is set aside; 29: the pass's renames (16 November): Jam and Jammed, Essence and the Quintessence Tap, Recover and Heal, and Swap, Web and Spillover as rules written on their pieces, so a fight saved under the ids before them is set aside; 30: the pass's first rule changes (16 November): Regenerating in stacks that fade and Primed a primer, so a fight saved with either on its old clock is set aside; 31: Brittle in place of Flak and Crushed (16 November), the keyword and both statuses under new ids, so a fight saved under the old ones is set aside; 32: a drain as its foe's own Ability (16 November), no rider on a blow, so a fight saved with the rider on its moves is set aside; 33: the four places a status ends (16 November), a machine's Regenerating, a Barrier, a Ward, a pin and Exposed each on a new clock, so a fight saved with one on its old clock is set aside; 34: a move as a list of steps (16 November), what a foe took a status of its own, Appropriated, so a fight saved with a steal's hold is set aside; 35: the shapes relaid on Ryan's notes of 16 November (one fat river with two narrows and no tributary, the fjord a river delta, the steppe's crags and ponds always laid, the city with no water), so a battle saved on a river, a fjord, a steppe or a city, whose map its seed now lays anew, is set aside; 36: his second notes of the day (the river's one narrow at the middle, the delta's channels the whole depth, the gorge's chunks of land between chasms, the city's cross-streets every third row and its suburb, the steppe drawing on every shape, the badlands' scrub thinned), so a battle saved before them is set aside; 37: his third (the delta a true delta of thin streams, the city's two open sections at most, the steppe's lakes and no chasm, soft ground on the aprons, and a machine's action ended by its move played with no order standing, the moves played kept apart on the save), so a battle saved before them is set aside; 38: the steppe's walls half cliffs and kept off the rift's mouth (his of the same evening), so a battle saved on a steppe before them is set aside
+const VERSION := 40   # 2: moves in tens (2 October); 3: the water feature and the map's kind (3 and 4 October); 4: the generator's roads changed under every seed, and the guest, kills and wrecks (6 October); 5: the redesigned round, a turn of actions and fights in place of routes and contacts (8 October); 6: moves in hexes, a move in one go (28 October's movement proposal); 7: the six map shapes, every seed's map laid anew (29 October); 8: the fords and streets three or four in all, every river and city laid anew, and the horde wading (29 October); 9: hunters at ring two, and a sealed-off prey's stand-in in place of the re-pick (29 October); 10: the long wall (the field's size from the ramp, the tide, a pusher's wall segment, one pack one fight, no withdrawal, the shield the fight's, a pack's threat rating and dealt layout; 6 November); 11: no reinforcement inside a fight (a pack is what its slots hold, a regrowing foe's corpse holds its slot, a catch's overflow held back) and the compositions fitted to the ranks (7 November); 12: the field's caches, seeded with the map, and those claimed (7 November); 13: a hunter's catch a fight of its own, and no escort grown by the tier (7 November); 14: a cache's kind by its depth, the seam's upgrade gone (8 November); 15: a composition its grid, the cycle's entries carrying eight cells (8 November); 16: a composition saying whether its pack hunts, never its foes, and a hunter catching at the pounce alone, no pack carrying a ring (8 November); 17: the shapes relaid for the shallow field (the mouth a share of the depth, the fjords and cliffs by the width, the shores' rough ground), every seed's map laid anew (9 November); 18: the Armadillo's id the Polar Bear's, polar_bear (9 November), so a battle saved with the old id is set aside rather than drawn without its model; 19: every id still wearing an old name its name's (9 November): kite, buzzard, oblation_mantle, eleven foes and the compositions named for them; 20: the Lammergeier's Mines on foes, a foe status, in place of the slots' shots (9 November); 21: the refit pass's model landed (10 November): the stock dice with no shield or vent, the Halo Shield's id its name's (halo_projector), every chassis its own shield regen; 22: the rift five hexes, the two in front of its middle with its row's three, and the boss in front of them (10 November), every map's mouth laid anew, and the formation pass's compositions in place of the old (the same day); 23: the boss holding its hex in front of the rift, no patrol (10 November); 24: menace a pack's threat rating in hundredths of a pip (11 November), so a battle's tally and its thresholds are counted anew, with the Rupture sized in beats and the stall guard gone; 25: a cooldown counted after the round of its spend, Rapid's own switch-off back and Instant a keyword (12 November), so a die saved with a Rapid piece's printed cooldown, the Spin-Up's spin or a fist's Breach is set aside; 26: the rules no piece printed left the engine (12 November: Empowered a kill, a passive's keep of a status, Reset, an entry's heat a blow and label, the battle's fought record), so a die saved with one, or a machine saved holding kept Empowered, is set aside, and the readers for older saves' forms went with them; 27: the reboot the rule (15 November): no chassis regains shield or cools of its own, heat past the maximum stays and burns, and a machine's four reboot states are every fight's, so a fight saved under the rule before it is set aside; 28: the vocabulary pass's build (15 November): Ablate in Burn's place, a machine's Ablating damage where its Burning was heat, and the keywords and statuses the pass cut or renamed, so a fight saved under the old words is set aside; 29: the pass's renames (16 November): Jam and Jammed, Essence and the Quintessence Tap, Recover and Heal, and Swap, Web and Spillover as rules written on their pieces, so a fight saved under the ids before them is set aside; 30: the pass's first rule changes (16 November): Regenerating in stacks that fade and Primed a primer, so a fight saved with either on its old clock is set aside; 31: Brittle in place of Flak and Crushed (16 November), the keyword and both statuses under new ids, so a fight saved under the old ones is set aside; 32: a drain as its foe's own Ability (16 November), no rider on a blow, so a fight saved with the rider on its moves is set aside; 33: the four places a status ends (16 November), a machine's Regenerating, a Barrier, a Ward, a pin and Exposed each on a new clock, so a fight saved with one on its old clock is set aside; 34: a move as a list of steps (16 November), what a foe took a status of its own, Appropriated, so a fight saved with a steal's hold is set aside; 35: the shapes relaid on Ryan's notes of 16 November (one fat river with two narrows and no tributary, the fjord a river delta, the steppe's crags and ponds always laid, the city with no water), so a battle saved on a river, a fjord, a steppe or a city, whose map its seed now lays anew, is set aside; 36: his second notes of the day (the river's one narrow at the middle, the delta's channels the whole depth, the gorge's chunks of land between chasms, the city's cross-streets every third row and its suburb, the steppe drawing on every shape, the badlands' scrub thinned), so a battle saved before them is set aside; 37: his third (the delta a true delta of thin streams, the city's two open sections at most, the steppe's lakes and no chasm, soft ground on the aprons, and a machine's action ended by its move played with no order standing, the moves played kept apart on the save), so a battle saved before them is set aside; 38: the steppe's walls half cliffs and kept off the rift's mouth (his of the same evening), so a battle saved on a steppe before them is set aside; 39: the foes' targeting afresh (17 November): a pick drawn level or by its attack's own word, none held by a move at every machine or at nobody, and no foe carrying an aim, so a fight saved with the old aims' picks is set aside; 40: the foes' bench landed (17 November): moves gone from six foes and added to five, falls on six, a foe's Phased and a foe's immunities, so a fight saved before, whose foes' moves it names by their place, is set aside
 
 
 # ---------------------------------------------------------------- the file
@@ -78,7 +78,7 @@ static func to_dict(b: Battle) -> Dictionary:
 		"sponsorship": b.sponsorship,
 		"loot": b.loot, "blueprints_known": b.blueprints_known,   # the caches claimed and the run's blueprints (7 November)
 		"action_hexes": _int_keys(b.action_hexes),
-		"wrecks": _units(b.wrecks),
+		"wrecks": _units(b.field.wrecks),   # where each fell, its hexes held for the battle (16 November)
 		"state": b.state,
 		"outcome": b.outcome,
 		"spent": _int_keys(b.spent),
@@ -151,8 +151,6 @@ static func from_dict(d: Dictionary) -> Battle:
 	var hexes: Dictionary = d.get("action_hexes", {})
 	for uid in hexes.keys():
 		b.action_hexes[int(str(uid))] = int(hexes[uid])
-	for wd in d.get("wrecks", []):
-		b.wrecks.append(_unit_from(wd))
 	b.state = int(d.get("state", Battle.State.PLAN))
 	b.outcome = int(d.get("outcome", Battle.Outcome.NONE))
 	var md: Dictionary = d.get("map", {})
@@ -163,6 +161,8 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.map = BattleMap.generate(w, h, map_seed, b.map_kind) if map_seed != 0 else BattleMap.flat(w, h)
 	b.field = _field_from(d.get("field", {}), b.map)
 	b.field.seed_value = b.seed_value   # a dealt layout's draw reads the battle's seed (section 6)
+	for wd in d.get("wrecks", []):
+		b.field.wrecks.append(_unit_from(wd))
 	# What the map knows of each foe type, from the content as the setup gives it: a pack Rift
 	# Pressure spawns after a resume is dressed by it, its ring, move and hunt (the mechanics
 	# audit, 25 October: a resumed battle's spawns came out as plain pushers).
@@ -193,6 +193,7 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.boss_fight = bool(d.get("boss_fight", false))
 	var boss_id := int(d.get("boss", -1))
 	b.boss = b.field.unit_by_id(boss_id) if boss_id >= 0 else null
+	b.field.set_shell(b.is_sealed())   # the rift's shell stands while the seal does
 	b.skirmishes_fought = int(d.get("skirmishes_fought", 0))
 	b.columns = int(d.get("columns", Skirmish.DEFAULT_COLUMNS))
 	var sd = d.get("skirmish", null)
@@ -305,7 +306,7 @@ static func _unit_dict(u: Unit) -> Dictionary:
 		"traits": u.traits, "footprint": _hexes(u.footprint), "facing": u.facing,
 		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "members": u.members, "composition": u.composition, "composition_size": u.composition_size, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "goal_col": u.goal_col, "squad": u.squad, "full_strength": u.full_strength, "layout": u.layout, "is_boss": u.is_boss, "sealed": u.sealed, "lineup": u.lineup, "boss_tier": u.boss_tier, "attack_range": u.attack_range,
 		"die": faces, "paint": paint, "passive": u.passive, "chassis_id": u.chassis_id,
-		"hardpoints": u.hardpoints, "damaged_faces": damaged, "modules": u.modules,
+		"hardpoints": u.hardpoints, "damaged_faces": damaged, "modules": u.modules, "branches": u.branches,
 	}
 
 
@@ -380,6 +381,9 @@ static func _unit_into(u: Unit, d: Dictionary) -> void:
 	u.modules.clear()
 	for mid in d.get("modules", []):   # the fitted modules' ids, for the codex (their effects are the modifiers above)
 		u.modules.append(str(mid))
+	u.branches.clear()
+	for pick in d.get("branches", []):   # its branches' picks, the same (a save from before 17 November has none)
+		u.branches.append(str(pick))
 
 
 ## A die entry with everything the die keeps beyond the content shape: its component,
@@ -739,7 +743,7 @@ static func _foe_dict(f: Foe, sk: Skirmish) -> Dictionary:
 		target = sk.mechs.find(f.target)
 	return {
 		"name": f.display_name, "content_id": f.content_id, "hp": f.hp, "hp_max": f.hp_max, "attack": f.attack,
-		"prefers_back": f.prefers_back, "pack_id": f.pack_id, "size": f.size, "armour": f.armour, "aim": f.aim, "last_special": f.last_special, "kin": f.kin,
+		"prefers_back": f.prefers_back, "pack_id": f.pack_id, "size": f.size, "armour": f.armour, "last_special": f.last_special, "kin": f.kin,
 		"resist": f.resist,
 		"actions": f.actions, "rank": f.rank, "column": f.column, "target": target,
 		"action": f.actions.find(f.action), "modifiers": mods,
@@ -747,7 +751,7 @@ static func _foe_dict(f: Foe, sk: Skirmish) -> Dictionary:
 		"pending": f.actions.find(f.pending) if not f.pending.is_empty() else -1, "charge": f.charge,
 		"part_ids": f.part_ids, "guard": f.guard, "regrow_parts": f.regrow_parts, "regrow_due": f.regrow_due,
 		"next_move": f.next_move, "committed": f.committed, "grudge": f.grudge, "spent_once": f.spent_once, "swallow_mark": f.swallow_mark,
-		"rage": f.rage, "golden_mark": f.golden_mark, "drains": f.drains,
+		"rage": f.rage, "golden_mark": f.golden_mark, "drains": f.drains, "immune": f.immune,
 	}
 
 
@@ -763,7 +767,6 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	f.size = int(d.get("size", 1))
 	f.armour = int(d.get("armour", 0))
 	f.resist = int(d.get("resist", -1))   # its stun resist (2 November); a save from before reads the default by size
-	f.aim = str(d.get("aim", Foe.AIM_EXPOSED))
 	f.last_special = str(d.get("last_special", ""))
 	f.kin = int(d.get("kin", 0))
 	f.boss = bool(d.get("boss", f.size >= 2))   # a save from before 15 October read a massive foe as the boss
@@ -831,6 +834,10 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	f.rage = maxi(int(d.get("rage", 0)), bellowed)   # what the team's safe spends add to its blows while it stands (3 November; its own from the start since 8 November)
 	f.golden_mark = int(d.get("golden_mark", -1))   # its HP as it went gold, -1 while calm (4 November)
 	f.drains = bool(d.get("drains", false))   # its blows regrow what they take from a hull, its own Ability (16 November)
+	var im = d.get("immune", null)   # what never lands on it, its own Ability (17 November)
+	if im is Dictionary:
+		for k in (im as Dictionary).keys():
+			f.immune[str(k)] = true if im[k] is bool else str(im[k])
 	var pi := int(d.get("pending", -1))   # a countdown move it was gathering (15 October)
 	pi = int(moved[pi]) if pi >= 0 and pi < moved.size() else pi
 	if pi >= 0 and pi < f.actions.size():

@@ -51,7 +51,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "pass_release", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "reboot_release", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status", "self_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
 	"on_blocked": ["stack_status"],
@@ -59,7 +59,7 @@ const SUPPORTED_EFFECTS := {
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
 	"on_shield_gain": ["vent_heat", "stack_status"],
 	"on_shield_granted": ["vent_heat", "stack_status", "shield_per_ally_heat"],
-	"on_heat_gain": ["add_shield", "stack_status"],
+	"on_heat_gain": ["add_shield", "shield_per_heat", "stack_status"],
 	"status": ["tick_hp", "tick_hp_share", "skip_action", "disable_entry", "corrupt_entry", "regrow"],
 	"on_foe_status": ["paradox"],
 	"on_stack": ["add_stacks"],
@@ -76,6 +76,7 @@ const DECAY_TURN_ALL := 4    # lasts until the end of its owner's turn, every st
 const DECAY_HALF := 5    # halves, rounded down, gone at zero (Empowered, 18 October: a halving rule has no duration): a buff as its carrier's turn ends, where it has worked (Empowered: a machine's at END TURN, a foe's as its own action ends: halve_buffs); a debuff as its carrier's turn starts, where the other side's blows have used it (Brittle: turn_opens)
 const DECAY_AFTER_TURN := 6    # gone after its owner's next turn, every stack at once: a foe's at the end of its next action, a machine's at the end of the player's turn (Sapped, 11 November)
 const DECAY_START := 7   # a timed mark that falls as its carrier's turn starts, the first one after the round it names (Exposed: Ryan, 16 November, "Exposed on next turn start"); the round's end leaves it alone
+const DECAY_BREAK := 8   # lasts until its machine's shield breaks, every stack going then, a reboot's drop included (Hardened Light: Ryan, 18 November, "The reboot breaks it yes. When it breaks, it loses all of them"); no turn and no round touches it (clear_on_break)
 
 ## The tag a cleanse clears (decided 25 September): what a foe did to a machine, never what
 ## the machine did to itself (a component's own cooldown, the price a Rapid piece pays).
@@ -168,6 +169,16 @@ const STATUS := {
 	# keyword or an effect and the buff it creates share a name), its value its stacks.
 	"braced": {"id": "braced", "name": "Armoured", "description": "Armour +1 a stack, every stack at once, until its next turn starts.", "decay": "round",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
+	# Hardened Light, the Storm Petrel's shield armour (Ryan, 18 November: "no innate shield
+	# armour. The Pulse grants one Hardened Light at tier 1. Hardened Light only decays when the
+	# shield breaks, and has a cap of 3 stacks"; "The reboot breaks it yes. When it breaks, it loses
+	# all of them"): a point off every blow a stack while its shield stands, every stack going when
+	# the shield breaks, a reboot's drop among the breaks. The cap is the grant's (Skirmish._self_grants),
+	# its machine's branches raising it. Shield armour, never armour: an Expose leaves it ("It's the
+	# only tank not weak to Expose"); a Purge takes stacks as any buff's, a bar of its own the move
+	# if that proves too threatening (his word of the same day).
+	"hardened": {"id": "hardened", "name": "Hardened Light", "description": "While its shield stands, every blow on it loses 1 a stack. Every stack goes when its shield breaks.", "decay": "break",
+		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": -1, "when": "shield_up"}]},
 	# Primed, the third primer since 15 November (Ryan's mark: "give it the same format as cryo
 	# ... use a stack on firing"; "Primed - agreed, how many Ablate stacks does each Primed stack
 	# apply? Just one, like supercooled?"; one): the primers below have its rule, and a foe's is
@@ -268,9 +279,10 @@ const STATUS := {
 	# to the next. It halves as the foes' turn ends, which is the round's end, the machines'
 	# clock on the other side (4 November; a machine's at its own turn's end since 16 November):
 	# no move spends it and a Suppress takes none of it. The intents read a rally on its way
-	# (Skirmish.incoming_rally), so no foe strikes above the number it showed. An add before the
-	# factor, one damage formula for the whole game (Ryan, 26 October), as Empowered is on the
-	# machines' side. Each grant is its rally's value; the stacks add.
+	# (Skirmish.incoming_rally), so no foe strikes above the number it showed. A point a stack
+	# on every strike of its move, on the move's own number (Foe.damage_of; 18 November), one
+	# damage formula for the whole game (Ryan, 26 October), as Empowered is on the machines'
+	# side. Each grant is its rally's value; the stacks add.
 	"kindled": {"id": "kindled", "name": "Empowered", "description": "Its blows hit +1 harder a stack. Halves as its turn ends, rounded down.", "decay": "half",
 		"tags": ["buff", "rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 1}]},
 	# Enraged (3 November, the Goblin Nob's): a stack for every shield, vent or equipment entry
@@ -300,6 +312,15 @@ const STATUS := {
 	# depending on what he's currently holding"), so no Purge reaches it.
 	# One hold at a time: what it takes next replaces what it held. The steal's own field on the
 	# foe until 16 November.
+	# Aloft (the Roc's climb; Ryan, 16 November: "the stoop can make it untargetable, yes. I don't
+	# think I'd call it phased though, it should still take damage from its riders, unlike phased.
+	# So it's different, should be a different buff, could be unique to the Roc for now if nothing
+	# else has that shape"): worn while a move that climbs gathers (Foe.climbs). No die may be
+	# dropped on it and nothing a spend lands with no aim reaches it (17 November: "the roc
+	# doesn't get splashed while aloft"); what it carries still wears at it
+	# (Skirmish.out_of_reach). The name is a working one, his to change.
+	"aloft": {"id": "aloft", "name": "Aloft", "description": "Out of reach while it climbs: no die can be dropped on it, and nothing aimed elsewhere reaches it. What it carries still wears at it. It comes down as it strikes.", "decay": "none", "stacking": "renew",
+		"tags": ["buff"], "effects": []},
 	"appropriated": {"id": "appropriated", "name": "Appropriated", "description": "The number of the piece it took off a machine: its borrowed swing lands it, and spends it.", "decay": "none", "stacking": "renew", "counted": true,
 		"tags": ["ability"], "effects": []},
 	# The Honey Badger's hopper (Ryan, 11 October; its Ore Hopper since 31 October): loads every
@@ -414,10 +435,11 @@ const STATUS := {
 	# Regenerating 3 gives 3, 2 and 1 and grants add their stacks. A foe's is hit points as its
 	# turn ends, after its Ablating and Vitriol have ticked, so an Ablate is a race and never a
 	# wall (regrowth() below; the Marsh's by lean). A machine's is shield as its turn ends, after
-	# its Ablating the same (regenerating_mech: the Storm Petrel's, built 30 October; as the
-	# round opened until 16 November, a round later than the blows it was bought for). Until 15 November a foe's was
-	# its value at each of three actions and a machine's a number a round for the rounds it
-	# said, each grant its own clock. A buff a Purge lowers, on either side.
+	# its Ablating the same (regenerating_mech; built 30 October for the Storm Petrel's lock, which
+	# no longer grants it, and kept on Ryan's word of 17 November with no piece granting it yet:
+	# "put machine regeneration back, that will literally be added in this session probably").
+	# Until 15 November a foe's was its value at each of three actions. A buff a Purge lowers, on
+	# either side.
 	"regenerating": {"id": "regenerating", "name": "Regenerating", "description": "Regrows {value} HP a stack as its turn ends, after its Ablating and Vitriol, then loses a stack.",
 		"tags": ["buff"], "effects": [{"trigger": "status", "effect": "regrow", "value": 1}]},
 	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (ablate, scorch, jam, corrupt, purge); a blow's damage lands. Until its next turn starts.", "stacking": "renew", "decay": "round",
@@ -853,7 +875,7 @@ static func ends_with_turn(m) -> bool:
 ## The decay a status names in its definition ("none", "round", "turn", "turn_all", "half",
 ## "after_turn", "turn_start"), a stack a tick when it names none.
 static func status_decay(def: Dictionary) -> int:
-	return {"none": DECAY_NONE, "round": DECAY_ROUND, "turn": DECAY_TURN, "turn_all": DECAY_TURN_ALL, "half": DECAY_HALF, "after_turn": DECAY_AFTER_TURN, "turn_start": DECAY_START}.get(str(def.get("decay", "")), DECAY_TICK)
+	return {"none": DECAY_NONE, "round": DECAY_ROUND, "turn": DECAY_TURN, "turn_all": DECAY_TURN_ALL, "half": DECAY_HALF, "after_turn": DECAY_AFTER_TURN, "turn_start": DECAY_START, "break": DECAY_BREAK}.get(str(def.get("decay", "")), DECAY_TICK)
 
 
 ## What a foe's status keeps into the next round on the clock its definition names (the bot's
@@ -1437,6 +1459,61 @@ static func granted_numbers(u, face: Face, target = null) -> Dictionary:
 	return out
 
 
+## What a spend of this entry at a foe lays on its own machine, as [{status, stacks, per_foe, cap},
+## ...]: what the piece prints (Face.self_statuses: the Hardlight Pulse's Hardened Light, 18
+## November) and what a live effect adds to it (self_status, static, scoped to its piece by
+## `entry`, its `when` honoured: the Storm Petrel's branches). Each status once: its stacks the
+## most any grant says, a stack set for every foe the spend reached if any says per_foe, and its
+## cap the highest any names (0 for none), so a direction's step takes the piece's own grant
+## further (Ryan, 18 November: "max stacks raised to 4"; "grants 1 Hardened Light per target hit
+## instead of a flat 1. Max stacks raised to 5"). An attack's alone; the skirmish lays them once
+## the spend's hits are done (Skirmish._self_grants).
+static func self_grants(u, face: Face, target = null) -> Array:
+	var out: Array = []
+	if face == null or not face.is_attack():
+		return out
+	var at := {}
+	var grants: Array = []
+	for g in face.self_statuses:
+		grants.append(g)
+	for pair in _taking_part(u, "static", face, target):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) == "self_status":
+			grants.append({"status": str(eff.get("status", "")), "stacks": int(eff.get("value", 1)), "per_foe": bool(eff.get("per_foe", false)), "cap": int(eff.get("cap", 0))})
+	for g in grants:
+		var id := str(g.get("status", ""))
+		if not STATUS.has(id):
+			continue
+		var n := maxi(1, int(g.get("stacks", 1)))
+		var each := bool(g.get("per_foe", false))
+		var cap := maxi(0, int(g.get("cap", 0)))
+		if at.has(id):
+			var have: Dictionary = out[int(at[id])]
+			have["stacks"] = maxi(int(have["stacks"]), n)
+			have["per_foe"] = bool(have["per_foe"]) or each
+			have["cap"] = maxi(int(have["cap"]), cap)
+		else:
+			at[id] = out.size()
+			out.append({"status": id, "stacks": n, "per_foe": each, "cap": cap})
+	return out
+
+
+## A machine's shield breaks (Skirmish._note_break: a blow, the overheat, a shield cost, the
+## reboot's drop): every status held until then goes whole (DECAY_BREAK: Hardened Light). The
+## names of what went, for the log.
+static func clear_on_break(u) -> Array[String]:
+	var gone: Array[String] = []
+	var keep: Array = []
+	for m in u.modifiers:
+		if m.decay == DECAY_BREAK:
+			if not gone.has(m.name):
+				gone.append(m.name)
+			continue
+		keep.append(m)
+	u.modifiers = keep
+	return gone
+
+
 ## The statuses this machine's live passives lay on one foe its blow reaches (lay_status on
 ## on_attack, its `when` read against that foe: the funnel-web's Ambush, 18 October), as
 ## [[status id, stacks a hit, damaging], ...]. The skirmish asks once a foe at the spend,
@@ -1504,7 +1581,11 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	# Damage past a kill spilling behind by a rule its machine wears (the Overrun Gearing's, a
 	# module's; a written rule since 15 November, no keyword): every entry aimed at a foe.
 	var spills := base.is_attack() and not base.spills and grants_spill(u, base, target)
-	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not spills:
+	# What its spend lays on its own machine, by an upgrade's branch (self_status: the Storm
+	# Petrel's lure, 17 November), the copy's to carry, never the die's.
+	var grants := self_grants(u, base, target)
+	var regranted := grants != base.self_statuses   # a branch takes the piece's own grant further, or adds one
+	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not spills and not regranted:
 		return face
 	var c := base.duplicate_face() if base == face else base
 	c.reach = r
@@ -1531,6 +1612,8 @@ static func effective_face(u, face: Face, target = null) -> Face:
 		c.ignores_armour = true
 	if spills:
 		c.spills = true
+	if regranted:
+		c.self_statuses = grants
 	return c
 
 
@@ -1797,6 +1880,11 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 		match str(eff.get("effect", "")):
 			"add_shield":
 				out["shield"] += v
+			"shield_per_heat":
+				# Shield for every point of heat gained (the Storm Petrel's Hardlight Generator since 17
+				# November, Ryan: "gaining shield when it gains heat is a really solid hook"; "I did mean
+				# any source"): the trigger's amount, the points the gauge just climbed.
+				out["shield"] += v * maxi(0, amount)
 			"refill_shield":
 				# The shield back whole (the Kite's kill, Ryan, 11 November: "kills recharge it's
 				# shield completely"): what it is short of its maximum, no more.
@@ -2036,15 +2124,26 @@ static func free_rerolls(u) -> int:
 	return maxi(0, n)
 
 
-## Does this machine's shield pay its weapons' heat (burn_shield, static; the Storm Petrel's Riot
-## Field Generator, Ryan's go of 21 October, built 30 October)? While its shield stands, the gun's
-## own heat a weapon's spend would add comes off the shield instead, as far as it holds, and the
-## target takes a blow of what the shield paid (Skirmish._zap).
-static func burns_shield(u) -> bool:
-	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "burn_shield":
-			return true
-	return false
+## A machine's Regenerating: the status in the machine's own words, the one rule on either body:
+## a point a stack as its turn ends, after its Ablating, then a stack fades (16 November, his four
+## places). Shield where a foe's is hit points, a shield gain like any other, so a broken shield
+## takes none. Stacked, never timed: grants add. No piece grants it today (the Storm Petrel's lock
+## did until 17 November); kept on Ryan's word for the one to come.
+static func regenerating_mech() -> Dictionary:
+	var d: Dictionary = STATUS["regenerating"].duplicate(true)
+	d["description"] = "Regains {value} shield a stack as its turn ends, after its Ablating, then loses a stack."
+	d["decay"] = "turn"
+	return d
+
+
+## The shield a point of heat gained stands up on this machine (shield_per_heat, on_heat_gain; the
+## Storm Petrel's Hardlight Generator since 17 November): the bot's and the die's read of the hook.
+static func shield_per_heat(u) -> int:
+	var n := 0
+	for pair in _taking_part(u, "on_heat_gain", null):
+		if str(pair[0].get("effect", "")) == "shield_per_heat":
+			n += int(pair[0].get("value", 0)) * pair[1].stacks
+	return maxi(0, n)
 
 
 ## The most of the team's unspent rerolls this machine banks at the round's end (bank_rerolls,
@@ -2056,18 +2155,6 @@ static func bank_cap(u) -> int:
 		if str(pair[0].get("effect", "")) == "bank_rerolls":
 			cap = maxi(cap, int(pair[0].get("value", 0)))
 	return cap
-
-
-## A machine's Regenerating (the Storm Petrel's St. Elmo's Regenerator, built 30 October): the
-## status in the machine's own words, the one rule on either body: a point a stack as its turn
-## ends, after its Ablating, then a stack fades (16 November, his four places; as the round
-## opened until then). Shield where a foe's is hit points, a shield gain like any other, so a
-## broken shield takes none. Stacked, never timed: grants add.
-static func regenerating_mech() -> Dictionary:
-	var d: Dictionary = STATUS["regenerating"].duplicate(true)
-	d["description"] = "Regains {value} shield a stack as its turn ends, after its Ablating, then loses a stack."
-	d["decay"] = "turn"
-	return d
 
 
 ## What this machine's passives do to an ally it shields (on_shield_granted; the Puffin's
@@ -2329,16 +2416,17 @@ static func heat_per_blow(u) -> int:
 	return n
 
 
-## What a machine's passed turn releases (pass_release, static; the Whip Scorpion's Thermal
-## Ejection Manifold, Ryan, 12 November: "1 damage to each enemy, increased by 1 for each heat
-## over 8"): {value: what every foe takes at the gate, gate: the heat it needs to fire, id: the
-## passive's, which its model's firing is keyed by (the broadside, MechRig.fire_act)}, a point
-## more for each heat past the gate (Skirmish.release_shot). Empty for a machine whose pass
-## releases nothing.
-static func pass_release(u) -> Dictionary:
+## What a machine's reboot blasts as its heat vents (reboot_release, static; the Whip Scorpion's
+## Thermal Ejection Manifold, Ryan, 12 November: "1 damage to each enemy, increased by 1 for each
+## heat over 8"; 17 November, on the reboot's vent in place of a passed turn: "the reboot vent is
+## the one that explodes"; no gate since the same day, "1 damage to all enemies for every X
+## heat"): {value: what every foe takes a step, per: the heat a step, id: the passive's, which
+## its model's firing is keyed by (the broadside, MechRig.fire_act)} (Skirmish.release_shot).
+## Empty for a machine whose vent blasts nothing.
+static func reboot_release(u) -> Dictionary:
 	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "pass_release":
-			return {"value": int(pair[0].get("value", 1)), "gate": int(pair[0].get("gate", 1)), "id": str(pair[1].id)}
+		if str(pair[0].get("effect", "")) == "reboot_release":
+			return {"value": int(pair[0].get("value", 1)), "per": maxi(1, int(pair[0].get("per", 1))), "id": str(pair[1].id)}
 	return {}
 
 
@@ -2536,6 +2624,8 @@ static func grant_def(u, def: Dictionary, stacks: int, source: String, until_rou
 	# it and whatever round the grant names: its end is the turn's opening, no round's.
 	if status_decay(def) == DECAY_ROUND:
 		return stack(u, def, SKIRMISH, source, stacks, DECAY_ROUND)
+	if status_decay(def) == DECAY_BREAK:
+		return stack(u, def, SKIRMISH, source, stacks, DECAY_BREAK)   # held until its machine's shield breaks (Hardened Light)
 	if decays_to_zero(def):
 		return stack(u, def, SKIRMISH, source, stacks, status_decay(def))
 	# One a use spends (Spun Up, spent whole by the next weapon; a primer, a stack a weapon
@@ -2619,6 +2709,9 @@ static func effect_text(eff: Dictionary) -> String:
 			body = "gains %s" % (Face.keyword_label(kw) if kw > 0 else str(v))
 			if eff.has("number"):
 				body += " %d" % int(eff["number"])   # a numbered grant says its number (the drum's Spread 2)
+		"self_status":
+			var sn := str(STATUS.get(str(eff.get("status", "")), {}).get("name", str(eff.get("status", ""))))
+			body = "spent on a foe, lays %s %s on its own machine%s%s" % [sn, vs, " for each foe it reaches" if bool(eff.get("per_foe", false)) else "", (", up to %d" % int(eff["cap"])) if int(eff.get("cap", 0)) > 0 else ""]
 		"seal_form": body = "equipment it spends on itself seals it: armour +%s, its own cooling stopped, %s hotter at the end of each turn; a weapon it fires opens it" % [vs, str(eff.get("heat", 0))]
 		"stack_status":
 			var nm := str(STATUS.get(str(v), {}).get("name", str(v)))
@@ -2633,7 +2726,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
 		"fold_die": body = "its die is two batteries of %s, one up at a time with its fixed pieces; the battery up stays up from fight to fight, and a battle opens on the first" % vs
 		"rewrite_weapon": body = "every weapon and equipment it aims at a foe fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
-		"pass_release": body = "a turn it ends with an entry it could have spent and %d heat or more releases its heat once the enemy has acted: %s on every foe, 1 more for each heat over %d" % [int(eff.get("gate", 1)), vs, int(eff.get("gate", 1))]
+		"reboot_release": body = "a reboot blasts what it vents: %s on every foe for every %d heat" % [vs, maxi(1, int(eff.get("per", 1)))]
 		"shove_behind": body = "damaging a foe in the front rank deals %s%% of its maximum HP, rounded up, to the foe behind it" % vs
 		"hold_status": body = "its %s does not decay" % str(STATUS.get(str(v), {}).get("name", v))
 		"hold_all": body = "no %s decays this round, any unit's" % str(STATUS.get(str(v), {}).get("name", v))
@@ -2644,6 +2737,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"shield_regen_per_heat": body = "shield regen +%s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
 		"shield_per_ally_heat": body = "the shield grows by %s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
 		"add_shield": body = "+%s shield" % vs
+		"shield_per_heat": body = "+%s shield for each point" % vs
 		"refill_shield": body = "its shield recharges whole"
 		"tick_hp": body = "%s damage per stack each turn" % vs
 		"tick_hp_share": body = "loses %s%% of its current HP per stack each turn" % vs
@@ -2784,5 +2878,5 @@ static func describe(u) -> Array:
 	for m in live(u):
 		if m.tags.has(ONCE):
 			continue   # a once-a-round gate's mark: the engine's own note
-		out.append([m.name, m.description, m.source, m.scope, m.stacks, m.id])
+		out.append([m.name, m.description, m.source, m.scope, m.stacks, m.id, m.component])
 	return out

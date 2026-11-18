@@ -12,6 +12,7 @@ extends SceneTree
 ## quick look while working; the whole suite is the check before a commit.
 
 var _total_checks := 0
+var _finished := 0   # the tests whose run reached its end: a script the runner's own setup stands on that fails to compile aborts every one before its first check
 var _total_failures := 0
 var _total_tests := 0
 var _live: Array = []   # [file, instance, method]: the live tests, for the first frame
@@ -95,8 +96,6 @@ func _run(f: String, inst, method: String) -> void:
 	Ramp.tide_trial = 100
 	Battlefield.strike_trial = 0
 	Skirmish.overheat_scale = 1
-	Skirmish.shield_break = false
-	Skirmish.shield_break_min = 0
 	inst.script_errors_expected = 0
 	_errors.take()
 	inst.call(method)
@@ -119,9 +118,16 @@ func _run(f: String, inst, method: String) -> void:
 		print("  FAIL  %s :: %s" % [f, method])
 		for msg in inst.failures:
 			print("        - " + msg)
+	_finished += 1
 
 
 func _finish() -> void:
 	print("")
+	# A test whose run never reached its end was aborted by a script error in the runner's own
+	# setup (a sim script that no longer compiles): it printed nothing and counted nothing, so
+	# the tally alone read as green (17 November: "1269 tests, 0 checks, 0 failures").
+	if _finished != _total_tests:
+		_total_failures += _total_tests - _finished
+		print("  FAIL  %d of %d tests never ran: a script they stand on did not compile (the errors head this log)" % [_total_tests - _finished, _total_tests])
 	print("%d tests, %d checks, %d failures" % [_total_tests, _total_checks, _total_failures])
 	quit(1 if _total_failures > 0 else 0)

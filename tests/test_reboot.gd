@@ -16,9 +16,9 @@ const MENDER := {"id": "mender", "name": "Mender", "description": "", "effects":
 ## A hull hit that stands a shield up, a gain by another road than the regen.
 const LINER := {"id": "liner", "name": "Liner", "description": "", "effects": [
 	{"trigger": "on_hull_damage", "effect": "add_shield", "value": 10}]}
-## A pass at 8 heat or more releases it on every foe.
+## A reboot blasts what it vents on every foe, 1 for every 2 heat.
 const BOILER := {"id": "boiler", "name": "Boiler", "description": "", "effects": [
-	{"trigger": "static", "effect": "pass_release", "value": 1, "gate": 8}]}
+	{"trigger": "static", "effect": "reboot_release", "value": 1, "per": 2}]}
 
 
 func _mech(id: int, name: String, d: Die, shield: int = 40, hull: int = 100, heat_max: int = 30) -> Unit:
@@ -73,7 +73,7 @@ func test_a_machine_cools_and_mends_only_by_what_it_is_granted() -> void:
 	assert_eq(m.shield, 40, "the regen again, up to the maximum")
 
 
-func test_a_reboot_drops_the_shield_at_once_and_both_gauges_are_back_next_round() -> void:
+func test_a_reboot_drops_the_shield_and_vents_the_heat_at_once_and_the_shield_is_back_next_round() -> void:
 	var m := _mech(1, "A", _gun(10))
 	var sk := _fight([m], [Foe.make("brute", 900, 25)])
 	var ms: Skirmish.MechState = sk.mechs[0]
@@ -88,12 +88,12 @@ func test_a_reboot_drops_the_shield_at_once_and_both_gauges_are_back_next_round(
 	assert_eq(m.shield, 0, "its shield is down at once")
 	assert_true(ms.rebooting and ms.assigned, "it is rebooting, and its turn is given")
 	assert_false(sk.can_spend(0), "so its die is not to be spent")
-	assert_eq(ms.heat, 10, "its heat is still on the gauge this turn")
-	assert_true("\n".join(sk.log).contains("A reboots: shield -15, heat 10 to vent, back next round"), "the log says what it gave up")
+	assert_eq(ms.heat, 0, "and its heat with it: shunted as the shield drops (Ryan, 17 November)")
+	assert_true("\n".join(sk.log).contains("A reboots: shield -15, heat -10, back next round"), "the log says what it gave up")
 	sk.end_round()
 	assert_eq(m.hull, 75, "the enemy's turn finds it bare: the whole blow on the hull")
 	sk.start_round()
-	assert_eq([ms.heat, m.shield], [0, 40], "round three opens cold and whole")
+	assert_eq([ms.heat, m.shield], [0, 40], "round three opens cold still, and whole")
 	assert_false(ms.rebooting or ms.shield_broken or ms.overheated, "and clear of all three states")
 	assert_true(sk.can_reboot(0), "free to reboot again")
 
@@ -197,11 +197,11 @@ func test_the_first_overheat_breaks_the_shield_once_between_reboots() -> void:
 	assert_eq("\n".join(sk.log).count("its shield breaks"), 2, "breaking the shield it got back")
 
 
-## A machine that reboots past its maximum burns what it carries as that turn ends, all the same
-## (Ryan, 16 November: "If a machine uses Reboot, and it already has overheated stacks, it should
-## take that damage. Heat is cleared when the shield comes back"): the reboot clears its heat with
-## the next round, never the burn already due.
-func test_a_rebooting_machine_still_burns_what_it_carries() -> void:
+## A reboot vents what stands past the maximum as its shield drops (Ryan, 17 November, of the
+## heat that stayed on the gauge until the recovery: "it didn't make sense to have that overheat
+## hanging around and not hurting the mech"; "Maybe the heat gets shunted when the shield gets
+## taken down?"), so its turn has nothing to burn, and no rule spares it.
+func test_a_reboot_vents_what_stood_past_the_maximum_so_its_turn_burns_nothing() -> void:
 	var m := _mech(1, "A", _gun(40), 40, 200, 30)
 	var sk := _fight([m], [Foe.make("dummy", 9000, 0)])
 	var ms: Skirmish.MechState = sk.mechs[0]
@@ -212,13 +212,67 @@ func test_a_rebooting_machine_still_burns_what_it_carries() -> void:
 	sk.start_round()
 	assert_eq(int(sk.forecast(ms)["overheat"]), 10, "the forecast has it burning again")
 	sk.reboot_mech(0)
-	assert_eq(int(sk.forecast(ms)["overheat"]), 10, "and still once it reboots")
+	assert_eq([ms.heat, ms.overheat_stacks()], [0, 0], "the reboot vents it all at once, the stacks past its maximum too")
+	assert_false(ms.overheated, "and it is free to overheat again")
+	assert_eq(int(sk.forecast(ms)["overheat"]), 0, "so the forecast shows no burn")
 	sk.end_round()
-	assert_eq(m.hull, 180, "the turn of its reboot burns its ten all the same")
-	assert_eq(sk.overheats.size(), 1, "one burn")
-	assert_false(bool(sk.overheats[0]["first"]), "and no second overheat: round one's was its one since its last reboot")
+	assert_eq(m.hull, 190, "the turn of its reboot burns nothing: an overshoot pays once")
+	assert_true(sk.overheats.is_empty(), "and is no overheat")
 	sk.start_round()
-	assert_eq([ms.heat, ms.overheat_stacks(), m.shield], [0, 0, 40], "back cold and whole: its heat clears as its shield comes back")
+	assert_eq([ms.heat, ms.overheat_stacks(), m.shield], [0, 0, 40], "back cold and whole")
+
+
+## A reboot opens a sealed machine (Ryan, 17 November: "Polar bear unseals when rebooting. It's
+## a good change because you're never accidentally stuck sealed, and a weaponless build is
+## possible if you wanted it for some reason"): the seal and its armour go as the die drops, so
+## the seal's clock adds nothing that turn, and it comes back open. Synthetic passive.
+func test_a_reboot_opens_a_sealed_machine() -> void:
+	var m := _mech(1, "A", Die.single(Face.buff("overcharged", 1)), 40, 200, 30)
+	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
+		{"trigger": "static", "effect": "seal_form", "value": 10, "heat": 15}]})
+	var sk := _fight([m], [Foe.make("brute", 900, 25)])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	sk.start_round()
+	assert_true(sk.assign(0, null), "a buff on itself")
+	assert_true(Effects.is_sealed(m), "seals it")
+	sk.end_round()
+	assert_eq(ms.heat, 15, "sealed, it ran 15 hotter as its turn ended")
+	var hull := m.hull
+	sk.start_round()
+	assert_true(sk.can_reboot(0), "sealed, it may reboot: it is never stuck in its shell")
+	assert_true(sk.reboot_mech(0), "and does")
+	assert_false(Effects.is_sealed(m), "the reboot opens it")
+	assert_eq(m.armour, 0, "the seal's armour gone with it")
+	assert_true("\n".join(sk.log).contains("A opens as it reboots"), "the log says so")
+	sk.end_round()
+	assert_eq(ms.heat, 0, "open, the seal's clock adds nothing to the gauge it vented")
+	assert_eq(m.hull, hull - 25, "and the blow lands whole: bare, and behind no shell")
+	sk.start_round()
+	assert_false(Effects.is_sealed(m), "it comes back open")
+	assert_eq(m.shield, 40, "and whole")
+
+
+## One vent, at the drop: heat that lands on a machine while it reboots is its own, there as the
+## next round opens, and what it carries past its maximum as the turn ends burns like any
+## machine's. A session's read where his words give none (17 November), his to overrule.
+func test_heat_laid_on_a_rebooting_machine_stays_and_burns_like_any() -> void:
+	var m := _mech(1, "A", _gun(10), 40, 200, 30)
+	var sk := _fight([m], [Foe.make("dummy", 9000, 0)])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	sk.start_round()
+	sk.assign(0, sk.front[0])
+	sk.end_round()
+	sk.start_round()
+	sk.reboot_mech(0)
+	sk._add_heat(ms, 6)
+	sk.end_round()
+	assert_eq(m.hull, 200, "six laid on it after the vent, under its maximum: nothing burns")
+	sk.start_round()
+	assert_eq([ms.heat, m.shield], [6, 40], "its shield is back, and the six are still on its gauge")
+	sk.reboot_mech(0)
+	sk._add_heat(ms, 35)
+	sk.end_round()
+	assert_eq(m.hull, 195, "thirty-five laid on it while it reboots, five past its maximum, burn like any machine's")
 
 
 ## A machine out of reach does not burn: a Swallowed one has no turn to give, so it cannot
@@ -333,7 +387,10 @@ func test_a_barrier_lands_on_a_broken_shield_and_covers_a_reboot() -> void:
 	assert_true("\n".join(sk.log).contains("the Barrier takes the blow"), "the log says so")
 
 
-func test_a_reboot_is_no_pass() -> void:
+## The vent that explodes (Ryan, 17 November: "the reboot vent is the one that explodes"): a
+## machine whose reboot blasts what it vents lands it on every foe as its shield drops; a turn it
+## ends with its die unspent releases nothing, the release a passed turn's until then.
+func test_a_reboots_vent_explodes_and_an_unspent_die_releases_nothing() -> void:
 	var m := _mech(1, "A", _gun(10), 40, 200)
 	m.grant_passive(BOILER)
 	var foe := Foe.make("dummy", 900, 0)
@@ -344,20 +401,15 @@ func test_a_reboot_is_no_pass() -> void:
 	sk.end_round()
 	var hp := foe.hp
 	sk.start_round()
-	assert_eq(ms.heat, 10, "ten held, past its valve's gate")
-	sk.reboot_mech(0)
+	assert_eq(ms.heat, 10, "ten held")
 	sk.end_round()
-	assert_false(ms.passed, "a reboot is no pass")
-	assert_eq(foe.hp, hp, "so the valve does not open")
+	assert_eq(foe.hp, hp, "a turn it ends with its die unspent opens no valve")
 	assert_true(sk.releases.is_empty(), "nothing released")
 	sk.start_round()
-	sk.assign(0, sk.front[0])
-	sk.end_round()
-	hp = foe.hp
-	sk.start_round()
-	sk.end_round()
-	assert_true(ms.passed, "a turn it ends with its die unspent is one")
-	assert_true(foe.hp < hp, "and the valve opens")
+	assert_true(sk.reboot_mech(0), "it reboots")
+	assert_eq(foe.hp, hp - 5, "and its vent lands on the foe at once: 1 for every 2 heat it sheds")
+	assert_eq(ms.heat, 0, "left cold")
+	assert_eq(sk.releases.size(), 1, "the screen is told")
 
 
 func test_the_round_preview_plays_a_reboot_bare_and_a_burn_that_stands() -> void:
@@ -378,8 +430,8 @@ func test_the_round_preview_plays_a_reboot_bare_and_a_burn_that_stands() -> void
 	sk.start_round()
 	sk.reboot_mech(0)
 	var shown: Dictionary = sk.preview_round()["mechs"][0]
-	assert_eq(int(shown["overheat"]), 10, "rebooting, it still burns what it carries")
-	assert_eq(int(shown["hull_after"]), m.hull - 10 - 25, "the burn, and the blow whole on it")
+	assert_eq(int(shown["overheat"]), 0, "rebooting, it burns nothing")
+	assert_eq(int(shown["hull_after"]), m.hull - 25, "and the blow lands whole on it")
 	assert_eq(m.shield, 0, "the fight itself as the reboot left it")
 
 
@@ -390,10 +442,12 @@ func test_a_copy_of_the_fight_carries_the_reboot() -> void:
 	sk.assign(0, sk.front[0])
 	sk.end_round()
 	sk.start_round()
+	var hot: Skirmish.MechState = (SaveGame.clone_skirmish(sk) as Skirmish).mechs[0]
+	assert_true(hot.shield_broken and hot.overheated and hot.overheat_stacks() == 10, "a copy before the reboot is broken and overheated as the fight's machine is")
 	sk.reboot_mech(0)
 	var copy: Skirmish = SaveGame.clone_skirmish(sk)
 	var cm: Skirmish.MechState = copy.mechs[0]
-	assert_true(cm.rebooting and cm.shield_broken and cm.overheated, "the copy's machine is rebooting, broken and overheated as the fight's is")
+	assert_true(cm.rebooting and cm.shield_broken and not cm.overheated and cm.heat == 0, "the copy's machine is rebooting, broken and vented as the fight's is")
 	copy.end_round()
 	copy.start_round()
 	assert_eq([cm.heat, cm.unit.shield], [0, 40], "and the copy's next round opens cold and whole")
@@ -424,9 +478,7 @@ func test_the_bot_reboots_out_of_a_burn_it_did_not_choose() -> void:
 	p.play_round(sk)
 	assert_true(sk.mechs[0].rebooting, "past its maximum it burns every turn, so the bot reboots before it spends")
 	sk.end_round()
-	assert_eq(m.hull, 300 - 15 * Skirmish.overheat_scale, "the reboot's turn burns what it carries all the same")
-	sk.start_round()
-	assert_eq(sk.mechs[0].overheat_stacks(), 0, "and the next round opens cold")
+	assert_eq(m.hull, 300, "and the reboot's turn burns nothing")
 
 
 func test_the_bot_keeps_a_shield_a_blow_is_coming_for() -> void:
@@ -496,7 +548,8 @@ func test_the_screen_s_reboot_control_is_a_drop_s_target_and_shows_the_three_sta
 	chips.clear()
 	for r in s._mech_rows(0):
 		chips.append(str(r[2]))
-	assert_true(chips.has("Rebooting: bare this turn, cold and whole the next"), "the machine says it is rebooting: %s" % str(chips))
+	assert_true(chips.has("Rebooting: vented and bare this turn, its shield whole the next"), "the machine says it is rebooting: %s" % str(chips))
+	assert_eq(ms.heat, 0, "and its heat went with its shield")
 	s._undo_from = 0
 	s._on_undo()
 	assert_false(sk.mechs[0].rebooting, "UNDO takes the reboot back")

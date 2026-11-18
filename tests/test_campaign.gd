@@ -39,7 +39,7 @@ func _end(b: Battle, outcome: int) -> void:
 func _wreck(b: Battle, u: Unit) -> void:
 	u.hull = 0
 	b.field.units.erase(u)
-	b.wrecks.append(u)
+	b.field.wrecks.append(u)
 
 
 ## A field the gate outlasts after a wipe: its boss and one patrol, the rest gone. The horde's six
@@ -571,7 +571,7 @@ func test_the_run_saves_and_resumes_between_battles_and_mid_battle() -> void:
 	var c3 := SaveGame.load_campaign(TMP)
 	assert_eq(c3.state, Campaign.BATTLE, "still in battle")
 	assert_eq(c3.battle.field.phase, b3.field.phase, "at the same phase")
-	assert_eq(c3.battle.wrecks.size(), 1, "the wreck kept")
+	assert_eq(c3.battle.field.wrecks.size(), 1, "the wreck kept")
 	assert_eq(c3.squad, c.squad, "the same squad")
 	_end(c3.battle, Battle.Outcome.VICTORY)
 	var r := c3.finish_battle()

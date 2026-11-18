@@ -705,8 +705,8 @@ func _draw() -> void:
 				_queue_number(center(on.pos) + Vector2(-HEX_SIZE * 0.62, -HEX_SIZE * 0.55), k + 1)
 
 	_draw_caches()
-	for u in field.units:
-		_draw_unit(u)
+	_draw_wrecks()
+	_draw_field_units(map)
 	for prey in hunted.keys():
 		_hunted_tag(prey, hunted[prey])
 	for sq in hunting.keys():
@@ -885,7 +885,7 @@ func _draw_caches() -> void:
 		var h: Vector2i = c["pos"]
 		var at := center(h)
 		var t := int(c.get("tier", 1))
-		var a := 0.45 if field.unit_at(h) != null else 1.0
+		var a := 0.45 if field.unit_at(h) != null or field.wreck_at(h) != null else 1.0
 		var kind := db.loot_kind_of_tier(t)
 		if _map3d == null or not Map3D.has_cache_model(kind):
 			_chest(at, t, a, CHEST * 1.3)
@@ -898,6 +898,45 @@ func _draw_caches() -> void:
 			var ts := tex.get_size() * CACHE_TOKEN
 			draw_texture_rect(tex, Rect2((at - Vector2(ts.x * 0.5, ts.y - SPRITE_FEET)).floor(), ts), false, Color(1, 1, 1, flat * a))
 		_chest(at + Vector2(0.0, -HEX_SIZE * 0.86), t, a, CHEST)
+
+
+## The wrecks (Battlefield.wrecks; the model is Map3D's, seen in both worlds as a machine is):
+## smoke rising off each where it lies and a burst of it as it comes down; with no 3D map, its flat
+## mark, a dark plate with a heavy cross on it, so the hex reads as held by structure, never by a
+## hue. A first cut, judged running (RIFTGATE_WRECK_DEBUG=1). The smoke carries nothing the model
+## does not, so its grey is no colour of the tuner's.
+const WRECK_SMOKE := Color(0.72, 0.72, 0.74)
+const WRECK_PUFFS := 5
+const WRECK_RISE_S := 2.8      # seconds a puff takes to rise and go
+
+func _draw_wrecks() -> void:
+	if field == null or field.wrecks.is_empty():
+		return
+	_map_space()
+	for u in field.wrecks:
+		var at := center(u.pos)
+		if _map3d == null:
+			var pts := MapOrient.corners(at, HEX_SIZE * 0.62)
+			draw_colored_polygon(pts, Color(Palette.BG, 0.9))
+			Hud.stroke_poly(self, pts, Palette.MUTED, _px(2.0))
+			var r := HEX_SIZE * 0.34
+			for d in [Vector2(1, 1), Vector2(1, -1)]:
+				draw_line(at - d * r, at + d * r, Palette.BG, _px(7.0))
+				draw_line(at - d * r, at + d * r, Palette.INK, _px(4.0))
+		var age: float = _map3d.wreck_age(u.id) if _map3d != null else 1.0e6
+		var seed_t := float(u.id) * 0.61
+		if age < 1.4:
+			# The burst as it comes down: puffs thrown out round it, swelling and gone.
+			var k := age / 1.4
+			for i in range(8):
+				var ang := float(i) * TAU / 8.0 + seed_t
+				var p := at + Vector2(cos(ang), sin(ang) * 0.6) * HEX_SIZE * (0.25 + 0.9 * k) + Vector2(0.0, -HEX_SIZE * 0.25 * k)
+				draw_circle(p, HEX_SIZE * (0.12 + 0.22 * k), Color(WRECK_SMOKE, 0.7 * (1.0 - k)))
+		for i in range(WRECK_PUFFS):
+			var t := fmod(_ring_t / WRECK_RISE_S + float(i) / float(WRECK_PUFFS) + seed_t, 1.0)
+			var p := at + Vector2(sin(t * 3.0 + seed_t) * HEX_SIZE * 0.12 + t * HEX_SIZE * 0.35, -HEX_SIZE * (0.2 + 1.7 * t))
+			var fade := (1.0 - t) * minf(1.0, t * 5.0)
+			draw_circle(p, HEX_SIZE * (0.1 + 0.3 * t), Color(WRECK_SMOKE, 0.55 * fade))
 
 
 ## How good a cache is, as a chest on a dark plate (drawn in screen space at the map point `at`,
@@ -1372,6 +1411,201 @@ func _draw_rift(map: BattleMap) -> void:
 		var src := Rect2(k * fw, b * band_h, fw, band_h)
 		var dst := Rect2(dest.position + Vector2(shear, b * band_h * SPRITE_SCALE), Vector2(fw, band_h) * SPRITE_SCALE)
 		draw_texture_rect_region(tex, dst, src, Color(1, 1, 1, 1) if not torn else Color(0.55, 0.55, 0.68, 1.0))   # dimmed hard: at 0.82 only the shear showed (Ryan, 23 September)
+
+
+## The rift's shell (the bible's pacing row; Ryan, 16 November: "The shell only needs to cover the 7
+## hexes in front of the rift. Make it follow the hex border on those hexes, with a faux 'height' as
+## per the pixel aesthetic, a little animation"; then: "I meant JUST the outer hex edges, so it looks
+## like the boss is behind a wall"): a wall along the outer edges of the seven hexes beside the rift
+## (BattleMap.shell_hexes, which no machine enters while it stands: Battlefield.shell), each edge a
+## pixel wall raised by a faux height, pillars at its corners, a lit dash crawling along its top and
+## a scan running up its face; it is drawn in the units' order down the glass (_draw_field_units), so
+## what stands inside, the boss first, stands behind it. Each Fracture cracks one hex's stretch of it,
+## the ends first and the boss's last (SHELL_CRACK_ORDER: seven to give, the tiers calling three to
+## five), the crack run down from its top with a notch and a flash; the Rupture throws it up and out
+## from the mouth, and the hexes open with it. A cracked stretch reads from a whole one by structure
+## (the crack, the notch), never by a hue. A first cut, judged running (RIFTGATE_SHELL_DEBUG=1 cracks a
+## stretch every SHELL_DEBUG_EVERY seconds through all seven and bursts the wall, over and over).
+const SHELL_HEIGHT := 0.55      # the wall's faux height, in hexes: hot, for the phone, and tall enough to stand in front of the boss's feet
+const SHELL_CRACK_ORDER := [0, 6, 1, 5, 2, 4, 3]   # which hex's stretch each Fracture cracks, by its place round the rift (BattleMap.shell_hexes): the ends first, the boss's last
+const SHELL_CRACK_S := 0.6      # seconds a crack takes to run down its stretch
+const SHELL_BURST_S := 1.4      # seconds the burst takes
+const SHELL_CRAWL := 52.0       # map pixels a second the top's lit dash crawls
+const SHELL_SCAN_S := 2.2       # seconds the scan takes up the face
+const SHELL_DEBUG_EVERY := 1.2  # seconds between cracks under RIFTGATE_SHELL_DEBUG
+const SHELL_FACE := Color("1a0d2b")
+const SHELL_CAP := Color("3a1f5c")
+static var SHELL_DEBUG := OS.get_environment("RIFTGATE_SHELL_DEBUG") == "1"
+var _shell_cracked := 0         # the Fractures earned while the shell stands (set_shell)
+var _shell_up := false          # the seal stands
+var _shell_crack_at: Dictionary = {}   # crack number -> when it began (_ring_t)
+var _shell_burst_at := -1.0
+var _shell_seen := false        # whether the shell has been set once: what was cracked or broken before shows as it is, unplayed
+
+
+## The shell as the battle stands: `cracked` the Fractures earned, `up` the seal standing. A crack
+## or the burst the map had not shown yet plays.
+func set_shell(cracked: int, up: bool) -> void:
+	var was_cracked := _shell_cracked
+	var was_up := _shell_up
+	_shell_cracked = clampi(cracked, 0, SHELL_CRACK_ORDER.size())
+	_shell_up = up
+	if not _shell_seen:
+		_shell_seen = true
+		return
+	for k in range(was_cracked, _shell_cracked):
+		_shell_crack_at[k] = _ring_t
+	if was_up and not up:
+		_shell_burst_at = _ring_t
+
+
+## The shell's state this frame: {"cracked", "crack_at", "burst" (0 to 1, or -1 standing)}; {} when
+## there is no wall to draw. RIFTGATE_SHELL_DEBUG runs it through its cracks and its burst.
+func _shell_now() -> Dictionary:
+	var cracked := _shell_cracked
+	var up := _shell_up
+	var crack_at := _shell_crack_at
+	var burst_at := _shell_burst_at
+	if SHELL_DEBUG:
+		var n := SHELL_CRACK_ORDER.size()
+		var step := int(floorf(_ring_t / SHELL_DEBUG_EVERY)) % (n + 3)
+		var since := fmod(_ring_t, SHELL_DEBUG_EVERY)
+		cracked = mini(step, n)
+		up = step <= n
+		crack_at = {}
+		for k in range(cracked):
+			crack_at[k] = _ring_t - since - float(cracked - 1 - k) * SHELL_DEBUG_EVERY
+		burst_at = _ring_t - since - float(step - n - 1) * SHELL_DEBUG_EVERY if not up else -1.0
+	var burst := -1.0
+	if not up:
+		if burst_at < 0.0 or _ring_t - burst_at >= SHELL_BURST_S:
+			return {}   # gone with the seal
+		burst = (_ring_t - burst_at) / SHELL_BURST_S
+	var plate_crack := {}   # hex's place round the rift -> its crack's number
+	for k in range(cracked):
+		plate_crack[int(SHELL_CRACK_ORDER[k])] = k
+	return {"cracked": plate_crack, "crack_at": crack_at, "burst": burst}
+
+
+## The wall's stretches: every edge of the seven that faces a hex on the field neither theirs nor
+## the rift's, as {"a", "b" (its ends on the ground, in map space), "plate" (its hex's place round the
+## rift), "along" (map pixels along the wall to its start, for the crawl), "y" (its front on the
+## glass, for the order it is drawn in)}, in order round the rift.
+func _shell_walls(map: BattleMap) -> Array:
+	var hexes := map.shell_hexes()
+	var inside := {}
+	for h in hexes:
+		inside[h] = true
+	for r in map.rift_hexes:
+		inside[r] = true
+	var out: Array = []
+	var along := 0.0
+	for i in range(hexes.size()):
+		var c := center(hexes[i])
+		var corners := MapOrient.corners(c, HEX_SIZE)
+		var mine: Array = []
+		for n in Hex.neighbors(hexes[i]):
+			if not map.has(n) or inside.has(n):
+				continue
+			var nc := center(n)
+			var pair: Array = []   # the two corners nearest the neighbour: the edge between them
+			var order := range(6)
+			order.sort_custom(func(x: int, y: int) -> bool: return corners[x].distance_to(nc) < corners[y].distance_to(nc))
+			pair = [corners[order[0]], corners[order[1]]]
+			mine.append(pair)
+		# Round the rift the way the hexes run: each hex's edges by their bearing from the mouth.
+		mine.sort_custom(func(x: Array, y: Array) -> bool: return ((x[0] + x[1]) * 0.5 - c).angle() < ((y[0] + y[1]) * 0.5 - c).angle())
+		for pair in mine:
+			var e := {"a": pair[0], "b": pair[1], "plate": i, "along": along, "y": maxf((pair[0] as Vector2).y, (pair[1] as Vector2).y)}
+			along += (pair[0] as Vector2).distance_to(pair[1])
+			out.append(e)
+	return out
+
+
+## The units and the shell's wall in their order down the glass (a pack's feet, a stretch's front),
+## so what stands behind the wall, the boss first, is behind it, and what stands in front of it in
+## front.
+func _draw_field_units(map: BattleMap) -> void:
+	var items: Array = []
+	for u in field.units:
+		items.append([_unit_center(u).y, u])
+	var now := _shell_now()
+	var mouth := Vector2.ZERO
+	if not now.is_empty():
+		for r in map.rift_hexes:
+			mouth += center(r)
+		mouth /= float(maxi(1, map.rift_hexes.size()))
+		for w in _shell_walls(map):
+			items.append([float(w["y"]), w])
+	items.sort_custom(func(x: Array, y: Array) -> bool: return float(x[0]) < float(y[0]))
+	for it in items:
+		if it[1] is Unit:
+			_draw_unit(it[1])
+		else:
+			_draw_wall(it[1], now, mouth)
+
+
+## One stretch of the wall: its face from the ground to its faux height, a pale cap along its top
+## edge, a heavy violet rim on it, darker pillars at its ends; the scan up its face, the lit dash
+## along its top; its crack; its place in the burst.
+func _draw_wall(w: Dictionary, now: Dictionary, mouth: Vector2) -> void:
+	var a: Vector2 = w["a"]
+	var b: Vector2 = w["b"]
+	var rise := Vector2(0.0, -HEX_SIZE * SHELL_HEIGHT)
+	var alpha := 1.0
+	var burst := float(now["burst"])
+	if burst >= 0.0:
+		# Thrown out from the mouth and up, each stretch turning its own way, and gone.
+		var e := 1.0 - pow(1.0 - burst, 2.0)
+		var mid := (a + b) * 0.5
+		var out := (mid - mouth).normalized() if mid.distance_to(mouth) > 0.1 else Vector2(0.0, 1.0)
+		var shift := out * HEX_SIZE * 1.8 * e + Vector2(0.0, -HEX_SIZE * 1.4 * sin(e * PI * 0.8))
+		var turn := (0.5 if int(w["plate"]) % 2 == 0 else -0.5) * e
+		a = mid + (a - mid).rotated(turn) + shift
+		b = mid + (b - mid).rotated(turn) + shift
+		alpha = 1.0 - burst
+	var face := PackedVector2Array([a, b, b + rise, a + rise])
+	draw_colored_polygon(face, Color(SHELL_FACE, 0.92 * alpha))
+	var cap := PackedVector2Array([a + rise * 0.82, b + rise * 0.82, b + rise, a + rise])
+	draw_colored_polygon(cap, Color(SHELL_CAP, alpha))
+	if burst < 0.0:
+		# A scan running up the face, the stretches in turn round the rift.
+		var f := fmod(_ring_t / SHELL_SCAN_S + float(int(w["plate"])) * 0.13, 1.0)
+		var at := rise * (0.08 + 0.7 * f)
+		draw_line(a + at, b + at, Color(Palette.ENEMY, 0.35 * (1.0 - f)), _px(2.0))
+	draw_line(a, b, Color(Palette.ENEMY.darkened(0.4), alpha), _px(2.0))
+	draw_line(a + rise, b + rise, Color(Palette.ENEMY, alpha), _px(3.5))
+	for p in [a, b]:
+		var post: Vector2 = p
+		draw_line(post, post + rise * 1.12, Color(Palette.ENEMY.lightened(0.15), alpha), _px(3.0))
+		draw_rect(Rect2(post + rise * 1.12 - Vector2(_px(2.5), _px(2.5)), Vector2(_px(5.0), _px(5.0))), Color(Palette.ENEMY.lightened(0.45), alpha))
+	var cracks: Dictionary = now["cracked"]
+	if cracks.has(int(w["plate"])) or burst >= 0.0:
+		var age: float = _ring_t - float((now["crack_at"] as Dictionary).get(int(cracks.get(int(w["plate"]), 0)), -1.0e6)) if cracks.has(int(w["plate"])) else 1.0e6
+		var run := clampf(age / SHELL_CRACK_S, 0.0, 1.0) if burst < 0.0 else 1.0
+		var top_at := a.lerp(b, 0.45) + rise
+		var pts := PackedVector2Array()
+		for s in range(6):
+			var t := float(s) / 5.0
+			var side := (b - a).normalized() * HEX_SIZE * 0.07 * (1.0 if s % 2 == 0 else -1.0)
+			pts.append(top_at - rise * t + (side if s > 0 and s < 5 else Vector2.ZERO))
+		var part := pts.slice(0, maxi(2, int(ceil(run * float(pts.size())))))
+		draw_polyline(part, Color(Palette.BG, alpha), _px(6.0))
+		draw_polyline(part, Color(Palette.ENEMY.lightened(0.45), alpha), _px(3.0))
+		var dir := (b - a).normalized()
+		draw_colored_polygon(PackedVector2Array([top_at - dir * HEX_SIZE * 0.12, top_at + dir * HEX_SIZE * 0.12, top_at - rise * 0.3]), Color(Palette.BG, alpha))   # the notch out of its top
+		if age < SHELL_CRACK_S * 1.6 and burst < 0.0:
+			var flash := 1.0 - clampf(age / (SHELL_CRACK_S * 1.6), 0.0, 1.0)
+			draw_circle(top_at - rise * 0.5, HEX_SIZE * (0.25 + 0.45 * (1.0 - flash)), Color(Palette.ENEMY.lightened(0.4), 0.5 * flash))
+	if burst < 0.0:
+		# The lit dash crawling along the wall's top, stretch to stretch round the rift.
+		var length := a.distance_to(b)
+		var at_d := fmod(_ring_t * SHELL_CRAWL - float(w["along"]), HEX_SIZE * 7.0)
+		if at_d > 0.0 and at_d < length + HEX_SIZE * 0.4:
+			var d1 := minf(length, at_d)
+			var d0 := clampf(at_d - HEX_SIZE * 0.4, 0.0, length)
+			var dir := (b - a) / maxf(0.001, length)
+			draw_line(a + rise + dir * d0, a + rise + dir * d1, Palette.ENEMY.lightened(0.6), _px(4.0))
 
 
 ## Off-screen packs get a portrait at the edge nearest them: the source of the intent line.

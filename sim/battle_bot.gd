@@ -15,10 +15,24 @@ extends RefCounted
 ## at the rung given and fought out (there is no withdrawal). It is a floor, not a player. As
 ## each turn opens it reads the pressure ratio (pressure()). The squad-as-one rule and the turtle
 ## and detaching personas of 26 and 30 October went with the brief.
+##
+## The other rule, MUSTER, is a player that gathers (the anchor's reads of 12 November, built 16
+## November on Ryan's word; `muster_orders`): the catches first as above, then each pack in the
+## order it reaches the wall takes as many machines as it is rated, the nearest that can reach
+## it this turn; a pack that cannot have its rating is fought one short when it strikes the wall
+## this coming turn, and is gathered on otherwise, its rating's count of the nearest machines
+## walking toward it and holding off every other pack; a machine left over takes a cache or
+## closes on the pack that reaches the wall soonest. The boss, once its seal breaks, comes
+## first: the race for it, since its fall is the battle's (the anchor's reads raced for it too).
+## The defence rule sent one or two machines at an elite rated for four and lost that fight, so
+## a campaign read measured its orders.
 
 const MAX_PHASES := 120   # a battle the bot cannot finish in this many turns is stalled
 
+## The map's rule: DEFENCE, the floor (the header); MUSTER, the player that gathers.
+enum Rule { DEFENCE, MUSTER }
 
+var rule: int = Rule.DEFENCE
 var kind: int = Policy.GREEDY
 var guard_weight: float = 1.0   # the fight bot's habit, passed to every fight (Policy.guard_weight: the aggressor, near nothing)
 var rng := RandomNumberGenerator.new()
@@ -30,16 +44,18 @@ var stalled_fights: int = 0   # fights past the fight bot's round cap (Policy.MA
 var stalemates: int = 0       # fights with ten rounds running of nothing changed (Policy.stalemate), counted apart
 var spends: Dictionary = {}   # component id -> times spent, over every fight
 ## One entry a fight: [machines in it, machines on the field, packs in it, won, the packs held by
-## size, its threat rating (the largest of its packs')].
+## size, its threat rating (the largest of its packs'), its rounds, the hull its machines lost,
+## their hull at its start, the machines it wrecked, its kind (fight_kind)].
 var fight_sizes: Array = []
 ## The pressure ratio as each player's turn opened (pressure(): the long wall brief, section 5).
 var ratios: Array[float] = []
 
 
-static func make(kind_arg: int, seed_value: int = 0) -> BattleBot:
+static func make(kind_arg: int, seed_value: int = 0, rule_arg: int = Rule.DEFENCE) -> BattleBot:
 	var bot := BattleBot.new()
 	bot.kind = kind_arg
 	bot.rng.seed = seed_value
+	bot.rule = rule_arg
 	return bot
 
 
@@ -78,6 +94,9 @@ func take_turn(b: Battle) -> void:
 				_close_on(b, m, near)
 		var r := b.roster()
 		_fight(b, b.attack(null, r.get("eligible", [])))
+	if rule == Rule.MUSTER:
+		_muster_turn(b)
+		return
 	guard = 0
 	while b.state == Battle.State.PLAN and guard < 8:
 		guard += 1
@@ -105,6 +124,107 @@ func take_turn(b: Battle) -> void:
 			if sk == null:
 				break
 			_fight(b, sk)
+
+
+## The mustering player's turn past the catches (the header): orders as `muster_orders` gives
+## them, a second look once the machines that gathered have moved (a gathering that ends beside
+## its pack fights it the same turn), the fights they queue fought, and again while a fight's end
+## frees machines to act.
+func _muster_turn(b: Battle) -> void:
+	var gathering := {}
+	var guard := 0
+	while b.state == Battle.State.PLAN and guard < 8:
+		guard += 1
+		if b.field.packs().is_empty():
+			return
+		muster_orders(b, gathering)
+		if b.next_fight().is_empty() and not gathering.is_empty():
+			muster_orders(b, gathering)
+		if b.next_fight().is_empty():
+			return
+		while b.state == Battle.State.PLAN and not b.next_fight().is_empty():
+			var sk := b.engage()
+			if sk == null:
+				break
+			_fight(b, sk)
+
+
+## The mustering player's orders for the turn as the field stands (the header): each pack the
+## machines may be ordered onto, in the order it reaches the wall (by_wall), takes its rating's
+## count of the free machines that can reach it this turn, the nearest, its rating capped at the
+## machines standing; short of that it is fought one short when it strikes the wall this coming
+## turn (turns_to_wall at one or none), and otherwise gathered on: its rating's count of the
+## nearest free machines walk toward it and hold, kept in `gathering` (machine id -> the pack)
+## for the rest of the turn, free for that pack alone. A machine left free takes a cache its move
+## reaches, else closes on the pack that reaches the wall soonest. Fights nothing: the orders
+## wait for ENGAGE.
+func muster_orders(b: Battle, gathering: Dictionary = {}) -> void:
+	var walks := b.field.plan_walks()
+	var free: Array[Unit] = []
+	for m in b.mechs():
+		if b.actions_left(m) > 0 and b.order_of(m) == null and not b.is_pinned(m):
+			free.append(m)
+	var standing := b.mechs().size()
+	for p in by_wall(b, walks):
+		if free.is_empty():
+			break
+		var need := mini(maxi(1, p.squad), standing)
+		var mine: Array[Unit] = []   # the free machines this pack may have: none held for another standing pack
+		for m in free:
+			var held: Unit = gathering.get(m.id, null)
+			if held == null or held == p or not b.field.units.has(held):
+				mine.append(m)
+		var reach: Array[Unit] = []
+		for m in mine:
+			if b.attack_hex(m, p) != Battle.NO_HEX:
+				reach.append(m)
+		reach.sort_custom(func(x: Unit, y: Unit) -> bool: return Battlefield.unit_distance(x, p) < Battlefield.unit_distance(y, p))
+		var strikes := turns_to_wall(b, p, walks.get(p.id, null)) <= 1
+		if reach.size() >= need or (strikes and not reach.is_empty() and reach.size() >= need - 1):
+			for m in reach.slice(0, need):
+				b.order_onto(m, p)
+				free.erase(m)
+				gathering.erase(m.id)
+			continue
+		mine.sort_custom(func(x: Unit, y: Unit) -> bool: return Battlefield.unit_distance(x, p) < Battlefield.unit_distance(y, p))
+		for m in mine.slice(0, need):
+			if b.can_move(m):
+				_close_on(b, m, p)
+			gathering[m.id] = p
+			free.erase(m)
+	for m in free:
+		if gathering.has(m.id) and b.field.units.has(gathering[m.id]):
+			continue   # held for its pack, which wanted it no further this time
+		if b.state != Battle.State.PLAN or not b.can_move(m):
+			continue
+		var cache := cache_in_reach(b, m)
+		if cache != Battlefield.NO_HEX:
+			b.move_to(m, cache)
+		else:
+			var far := soonest(b, walks, m, false)
+			if far != null:
+				_close_on(b, m, far)
+
+
+## The packs the machines may be ordered onto (never the sealed boss), in the order they reach
+## the wall (turns_to_wall), ties by the larger threat rating, then the nearer to a machine; the
+## unsealed boss ahead of them all (the race for it).
+static func by_wall(b: Battle, walks: Dictionary) -> Array[Unit]:
+	var out: Array[Unit] = []
+	var keys := {}
+	for p in b.field.packs():
+		if not b.can_target(p):
+			continue
+		var near := 1 << 30
+		for m in b.mechs():
+			near = mini(near, Battlefield.unit_distance(m, p))
+		keys[p.id] = Vector3i(-1 if p.is_boss else turns_to_wall(b, p, walks.get(p.id, null)), -p.squad, near)
+		out.append(p)
+	out.sort_custom(func(x: Unit, y: Unit) -> bool:
+		var kx: Vector3i = keys[x.id]
+		var ky: Vector3i = keys[y.id]
+		return kx.x < ky.x or (kx.x == ky.x and (kx.y < ky.y or (kx.y == ky.y and kx.z < ky.z))))
+	return out
 
 
 ## The pack the defence rule sends `m` at: among the packs it may be ordered onto (never the
@@ -195,12 +315,24 @@ func _fight(b: Battle, sk: Skirmish) -> void:
 	var squad := 0
 	for p in sk.packs:
 		squad = maxi(squad, p.squad)
-	var size := [sk.mechs.size(), b.mechs().size(), sk.packs.size(), false, held, squad]
+	var hull_before := 0
+	for ms in sk.mechs:
+		hull_before += maxi(0, ms.unit.hull)
+	var size := [sk.mechs.size(), b.mechs().size(), sk.packs.size(), false, held, squad, 0, 0, hull_before, 0, fight_kind(sk)]
 	var pol := Policy.make(kind, rng.randi())
 	pol.guard_weight = guard_weight
 	if pol.play(sk) == Skirmish.Outcome.VICTORY:
 		fights_won += 1
 		size[3] = true
+	var hull_after := 0
+	var wrecked := 0
+	for ms in sk.mechs:
+		hull_after += maxi(0, ms.unit.hull)
+		if ms.unit.hull <= 0:
+			wrecked += 1
+	size[6] = sk.round
+	size[7] = hull_before - hull_after
+	size[9] = wrecked
 	if pol.stalled:
 		stalled_fights += 1
 	if pol.stalemate:
@@ -210,6 +342,23 @@ func _fight(b: Battle, sk: Skirmish) -> void:
 	for cid in pol.spends.keys():
 		spends[cid] = int(spends.get(cid, 0)) + int(pol.spends[cid])
 	b.finish_skirmish()
+
+
+## What a fight held, as the runners name it: "boss", "elite", "formation", or a patrol by the
+## machines it is rated for ("patrol for 1", the lone duel; "patrol for 2", a hunting pack or a
+## duel's pair), by the largest of its packs.
+static func fight_kind(sk: Skirmish) -> String:
+	var out := ""
+	var squad := 0
+	for p in sk.packs:
+		if p.is_boss:
+			return "boss"
+		if p.composition_size == "elite":
+			out = "elite"
+		elif p.composition_size == "formation" and out != "elite":
+			out = "formation"
+		squad = maxi(squad, p.squad)
+	return out if not out.is_empty() else "patrol for %d" % maxi(1, squad)
 
 
 static func _nearest(from: Vector2i, enemies: Array[Unit]) -> Unit:

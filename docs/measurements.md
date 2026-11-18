@@ -9651,7 +9651,7 @@ wall's rise is inside a cell's noise at 30 fights.
 
 ## 14 November, the rider and keyword pass: each rider on the vanilla, a gun's strikes, and the Barrier basic at a price
 
-Ryan's "let's do the rider and keyword pass now" (`docs/vocabulary_pass_proposal.md`, whose
+Ryan's "let's do the rider and keyword pass now" (`git show 07f01fb:docs/vocabulary_pass_proposal.md`, whose
 section 2 reads these). Each formation of tier one at its rating, Convergence 1, the six
 certain tier ones as trios, six squads and five seeds a fight, the greedy rung, the reboot
 on, the trial's basics (`basics=1,hotter=-1`: a vanilla of 3 for 3 heat). Every plain basic
@@ -9760,7 +9760,7 @@ a boss for the riders; a difference under 0.2 rounds or half a point of hull.
 
 ## 14 November, the vocabulary pass's second round: the unit riders, a horde by its hit points and plate, the foes' riders on the standard blow, Burning as erosion, and the Barrier by cooldown and by the spike
 
-Ryan's second round on the pass (`docs/vocabulary_pass_proposal.md`, his words there): "Why
+Ryan's second round on the pass (`git show 07f01fb:docs/vocabulary_pass_proposal.md`, his words there): "Why
 measure penetrate 2, burn 2, and not 1?", "Should we still be considering +2?", "I want to
 examine enemy riders as well", Burn on a machine as "a DoT that hits both meters", and the
 Barrier basic, "I'm really not sure how to unwind it from the data". The same squads, basics
@@ -9948,7 +9948,7 @@ direction's direction.
 
 ## 15 November, the vocabulary pass's third round: what stands in the Barrier basic's slot, and Breach as damage to the shield
 
-Ryan's third round (`docs/vocabulary_pass_proposal.md`, section 16): "I lean towards not
+Ryan's third round (`git show 07f01fb:docs/vocabulary_pass_proposal.md`, section 16): "I lean towards not
 having it as a basic. Ward, however, is another question", and of Breach, "I would make it
 deal extra damage to shield, 1.5x, double, triple, who knows ... But not directly to hull".
 The same squads, basics and probe as the two entries above: the six certain tier ones, the
@@ -9992,7 +9992,7 @@ lays few marks to turn.
 
 ## 15 November, the vocabulary pass's fourth round: the foes' Breach cut outright
 
-Ryan's fourth round (`docs/vocabulary_pass_proposal.md`, section 17): "My question about
+Ryan's fourth round (`git show 07f01fb:docs/vocabulary_pass_proposal.md`, section 17): "My question about
 enemy breach is if it's even needed. It could be a domain identity, i.e. shields suck here,
 but only if it asks an interesting question and not an unfair one." So what today's foes
 lose with it. The same squads, basics and probe as the entry above: the six certain tier
@@ -10141,6 +10141,60 @@ flankers and the antlion trio read the same to the decimal (4.5 rounds and 5.1%;
 the next one's opening, and no piece of the six grants Phased. Not read: the Warg's pack at
 tier two and the Captain's formations at tier three, where the same change lands.
 
+## 16 November, the runner's player that musters: the second battle whole under both rules, and the campaign
+
+Built on Ryan's word ("go ahead with all 5", of the to-do's engine line): `BattleBot.Rule.MUSTER`
+and the runners' switches, the battle runner (`tools/battle_run.gd`, the anchor's second battle
+whole and its ledger as a tool) and the rating read (`tools/balance.gd --packs rating`). Content
+as main at `d1b6827` has it (the reboot the rule, the vanilla at 3, Ablate in Burn's place, Breach
+cut), the foes still the numbers sized against a shield that refilled. Branch
+`ccr-bd73687d-w8qox1`. Each a direction at twenty seeds.
+
+**The second battle whole.** `tools/battle_run.gd -- --seeds 20` and `--rule defence`: tier one at
+Convergence 1, the three squads of 12 November (the Honey Badger, the Skua, the Cassowary and the
+Storm Petrel; the Honey Badger, the Storm Petrel, the Prairie Dog and the Cottonmouth; the Honey
+Badger, the Skua, the Cottonmouth and the Cassowary), twenty seeds a domain and squad, 240 battles
+a rule, the fights by the greedy rung. A cell is the range over the three squads; hull is a share
+of the squad's full hull at the battle's end.
+
+| Domain | The defence rule: won, the gate fell, wiped | Hull at the end | Wrecks | The player that musters: won, the gate fell, wiped | Hull at the end | Wrecks |
+|---|---|---|---|---|---|---|
+| The Meadow | 5 to 20%, 25 to 35%, 55 to 60% | 10 to 12% | 3.1 to 3.2 | 5 to 10%, 60 to 85%, 10 to 35% | 24 to 37% | 1.4 to 2.4 |
+| The Waste | 0 to 5%, 35 to 45%, 55 to 60% | 9 to 14% | 3.4 to 3.5 | 10 to 25%, 70 to 80%, 5 to 15% | 56 to 63% | 0.5 to 0.8 |
+| The Marsh | 10 to 25%, 35 to 80%, 10 to 40% | 29 to 33% | 2.4 to 2.5 | 0 to 30%, 40 to 65%, 5 to 45% | 25 to 47% | 1.4 to 2.9 |
+| The Peak | 0%, 55 to 75%, 25 to 45% | 18 to 19% | 3.2 | 5 to 10%, 60 to 70%, 20 to 35% | 21 to 25% | 2.6 to 3.0 |
+
+The elite by the ledger, the machines in its fight and the share of those fights lost: under the
+defence rule 1.4 to 2.1 machines and 47 to 87% lost; mustered, 2.5 to 3.3 machines and 7 to 18%
+lost, the Peak's 64%. The boss is fought 0.2 to 0.3 times a battle under either rule. Two cuts of
+the rule before the one built moved this: the packs alone in the order they reach the wall, with
+no race for the unsealed boss, never fought it and won no battle (the gate fell in 65 to 95% of
+them); and a gathering held off its own pack until the next turn read within a few points of the
+one built, which lets it fight the pack the same turn once it stands beside it. The scratch rule
+of 12 November won the Meadow and the Marsh 65 to 85% on that day's content, before the reboot
+and the basics' cut. The read as built is `docs/battle_run.md`.
+
+**The campaign.** `tools/campaign_run.gd -- --runs 40`, and with `--muster`: no run is won under
+either rule, every city falls, the first on the run's first turn (0.07 and 0.00 a run): three
+machines at Convergence 0 lose the first battle whichever player plays it. Mustered, the
+formations are fought by three in 44 fights of 221 and won every time, by two 67 times and won
+58%; the elites by three 11 times, won 81%, by two 24 times, won 41%. A lone machine fighting a
+formation (110 times, won 10%) is one of the last one or two standing: the rule caps a pack's
+count at the machines left and fights one short at the wall.
+
+Read.
+
+- The player that musters wins the fights it musters for: the elite at its rating is lost one
+  time in ten (the Peak's two in three), where the defence rule's one or two machines lost half
+  to nine in ten, and it ends a battle with two to five times the hull and half the wrecks.
+- It loses the battle at the gate instead: the machines held back to gather let the packs
+  strike, and the race for the boss takes the squad off the wall. On today's content the second
+  battle is a wall for either player (the gate falls in half to most of them, the boss fought
+  in a battle in four); the foes' numbers are the defence side's pass, so this is the content's
+  reading more than the rule's.
+- So a read of the battle measures the orders less than it did: the elite is fought at its
+  rating. The first battle is lost before either rule plays (the first battle's block, his call).
+
 **The same day, on his four places.** The clocks moved to the four places a status ends (the
 bible's row, section 5): a foe's Ablating and Vitriol tick after its blow, its Empowered
 halves as its own turn ends, so a rally stands whole on the next blow of a foe that had acted,
@@ -10190,6 +10244,28 @@ buys time and no kill. What it does not say: how much of the move is the bot's, 
 reading of a web changed with the rule (a turn a round ahead at a share, and the Numbed a foe
 ends the round with read exactly), and no count of webs was kept before; nor what a player
 makes of two foes that show no intent next round, which the greedy bot does not plan round.
+
+**16 November, the Roc's climb.** The Roc's Stoop makes it Aloft while it gathers (Ryan: "the
+stoop can make it untargetable, yes ... it should still take damage from its riders, unlike
+phased"; the bible's row on the foes' rule set): no die may be dropped on it through the
+player's turn between the climb and the stoop. The lone Roc at each tier before and after,
+the content of the commit before against the working tree's, on the one engine
+(`anchor_probe.gd`, the scratch probe on the battle's own builders, greedy, one machine a
+fight, the anchor's six tier-one machines, 10 seeds each, 60 fights a row):
+
+| Fight | Before | With the climb |
+|---|---|---|
+| Lone Roc, tier one | 100% won, 4.4 rounds, 2.6% of a four's hull, no wreck | 100%, 5.4, 3.5%, no wreck |
+| Lone Night Roc, tier two | 100%, 4.6, 4.6%, no wreck | 100%, 5.8, 5.8%, no wreck |
+| Lone Great Roc, tier three | 95%, 6.6, 11.0%, 0.05 wrecks a fight | 82%, 7.3, 12.5%, 0.18 |
+
+A direction at 60 fights a row. The climb costs about a round and a point of a four's hull:
+nobody shoots the Roc the round it is up, so it lives a round longer and stoops once more.
+The machine reboots a little oftener (0.83 a fight to 0.92 at tier one), the round with no
+target being a free one. The tier-three row is tier-one machines against a tier-three bird,
+unread as every tier above the first is, and says only that the Great Roc is no worse a
+mismatch than it was by much. The other three flankers' rows did not move, as they should
+not: nothing else climbs.
 
 
 ## 16 November: the painted walls as joined ranges
@@ -10309,3 +10385,922 @@ hexes at 20 by 12 (two walls of three), on every one of 100 seeds; laid after th
 kept off the rift's mouth, since a wall laid there first was bared away with the mouth on some
 seeds (8 and 16 at 20 by 12) and left the cliffs alone. A gorge's flooded stretch touches a chasm,
 so falls into it, on 21 of the first 80 seeds at 20 by 12. Cited by the bible's shapes row.
+
+## 16 November: the foes' aims in context
+
+Ryan asked to see the targeting audit's calls in a fight ("I think I need to see these
+targeting rules in context to understand the issue you're presenting";
+the audit as it stood, `git show 0101e14d:docs/targeting_proposal.md`, section 4, and its
+page; the aims it reads left the engine on 17 November). Nothing of the rules changed for
+these: two scratch probes read the picks the engine draws as a round opens, on a squad of
+four, the Honey Badger (36 hull, 6 shield, 1 armour), the Skua (20 and 9), the Cassowary (24
+and 6) and the Buzzard (28 and 12).
+
+**Prepared openings.** One position, the foe alone, 2000 seeds, counted on the openings it
+showed a blow aimed at one machine (n); an elite at tier two. The share of its picks:
+
+| Foe and blow | The position | n | Honey Badger | Skua | Cassowary | Buzzard |
+|---|---|---|---|---|---|---|
+| A Draugr, Claw, no aim | everyone whole | 2000 | 24.7% | 24.9% | 24.9% | 25.6% |
+| | the Skua's shield broken | 2000 | 24.7% | 24.9% | 24.9% | 25.6% |
+| Bone Wyvern, Tail Sweep 19, the exposed | everyone whole | 2000 | 25.6% | 27.4% | 26.7% | 20.3% |
+| | the Skua broken | 2000 | 24.4% | 32.5% | 24.2% | 18.9% |
+| | the Honey Badger broken | 2000 | 29.4% | 26.4% | 24.9% | 19.3% |
+| | the Buzzard broken | 2000 | 23.6% | 24.3% | 25.1% | 26.9% |
+| The Lancer, Thrust 10, the exposed | everyone whole | 1259 | 32.0% | 29.9% | 34.2% | 3.9% |
+| | the Skua broken | 1259 | 26.1% | 42.8% | 28.1% | 3.0% |
+| | the Honey Badger broken | 1259 | 40.4% | 26.4% | 30.0% | 3.1% |
+| | the Buzzard broken | 1259 | 21.8% | 20.7% | 25.9% | 31.7% |
+| The Warrior, Slash 10, the exposed | everyone whole | 2000 | 31.9% | 30.4% | 34.0% | 3.8% |
+| | the Skua broken | 2000 | 26.2% | 42.5% | 28.1% | 3.1% |
+| The Martial Artist, Flurry of two 8s, the exposed | everyone whole | 2000 | 24.6% | 27.4% | 27.9% | 20.1% |
+| | the Skua broken | 2000 | 22.5% | 34.4% | 24.6% | 18.6% |
+| Red Dragon, Breath and Crush, heat | the Skua at 4 heat, the rest at 1 | 1489 | 0 | 100% | 0 | 0 |
+| | the Skua and the Honey Badger at 4 | 1489 | 50.8% | 49.2% | 0 | 0 |
+| | every machine cold | 1489 | 25.8% | 22.2% | 25.0% | 27.0% |
+
+The weights behind the exposed, the Skua broken: 16, 20, 17 and 14 against the Wyvern's 19;
+7, 11, 8 and 1 against the Lancer's 10, the Buzzard's 12 holding the whole blow. The
+default's counts are the same seed for seed with a shield broken: it reads nothing.
+
+**Whole fights.** A composition from content at its tier, its grid as dealt, 300 fights
+each, the greedy bot; each watched foe's pick read as the round opens.
+
+| Composition | The foe | Aimed picks | What it chose between |
+|---|---|---|---|
+| The Bone Wyvern's Flight, tier two | Bone Wyvern | 1510 | 665 with a broken shield beside a whole one: a broken one picked 203 times, an even draw's share 200. 845 with every shield up: the softest picked 256 times, an even draw's share 237 |
+| The same, tier three | Bone Wyvern | 1684 | 738: 208, against 227. 935: 286, against 266 |
+| The Rust Monster's Scavenge, tier one | Rust Monster | 944 | The aim ruled a machine out in 612, all 612 on a weapon showing; every machine showed one in 329; none did in 3, the fallback |
+| The same, tier two | Rust Monster | 1040 | 673, all on a weapon; 364; 3 |
+| Barbed Swarm, tier two | Basilisk | 1095 | 767, all on a weapon; 325; 3 |
+| | Djinn, Unmake, the buffed | 159 | A buffed machine stood in all 159: the move is only open while one does |
+| Great Swarm, tier three | Gorgon | 1415 | 1014, all on a weapon; 390; 11 |
+| | Basilisk | 1395 | 988, all on a weapon; 399; 8 |
+| Dragon's Roost, tier three | Red Dragon | 1648 | 1353 drawn that round, 1345 on a hottest machine: one alone hottest in 821, every machine cold in 450, a tie above nothing in 82. 293 carried from the round before by Crush's countdown, 91 of them still on a hottest |
+| Magma Pit, tier three | Red Dragon | 1508 | 1240 drawn, 1237 on a hottest: 691, 453, 96. 268 carried, 78 still on a hottest |
+| The Lich's Court, tier three | Dread Knight | | 256 fell, 24 of them on a round they opened showing a move at nobody |
+
+Staged beside the last row, on the first three machines: 600 kills of a Dread Knight showing
+Reraise, its Death Throes on the Skua 201 times, the Cassowary 197 and the Honey Badger 202.
+
+Read as directions. The aim at the exposed picked a broken shield 411 times in 1403 where
+one stood beside a whole one, 29%, and an even draw gives 30%: the weight counts only the
+hull left to reach, and the broken machine is usually the hurt one. Heat's drawn picks went
+to a hottest machine 2582 times in 2593, the other 11 passing over a machine the round's
+blows had already wrecked. The armed fell back to the weights 28 times in 5889. The bot's
+play decides how often a state comes up, the squad is three tier-one machines and one of
+tier two, under strength at tier three (it won the Lich's Court 31% of the time), and none
+of this reads a win rate.
+
+## 17 November: the Goblin Warchief's first read
+
+The foes' Expose on its first carrier (Ryan: "a back rank goblin captain that gives orders
+and Exposes"; "more like warchief"). The tier-three warband as content has it, and the same
+grid with his cell empty; a scratch probe on the engine's own fight, the greedy bot, 150
+fights a row:
+
+| The squad | The warband | Won | Rounds | Wrecks a fight | Hull lost |
+|---|---|---|---|---|---|
+| Honey Badger, Skua, Cassowary, Buzzard | without him | 100% | 2.1 | 0 | 0% |
+| | with him | 100% | 2.6 | 0 | 1% |
+| Clydesdale, Buzzard, Lammergeier, Giant Petrel | without him | 100% | 2.1 | 0 | 0% |
+| | with him | 100% | 2.2 | 0 | 0% |
+
+A direction, and a smoke more than a read. The order was shown 71 times in the first row's
+150 fights, a machine stood marked for 51 rounds with 141 picks turned on it, and none was
+wrecked while marked. So the mark runs on a real piece. What it costs cannot be read here:
+the warband falls in two or three rounds either way, tier three's numbers being unsized and
+set aside (Ryan, 17 November: "We aren't worrying about the higher tier scaling right now").
+
+## 17 November: the Whip Scorpion's blast on its reboot
+
+Ryan: "the reboot vent is the one that explodes. It's an easy swap in. Unfortunately it changes
+it's profile from sustained damage to huge burst, but I think it's ok." The release moved
+from a passed turn, once the enemy had acted, to the reboot's vent as the shield drops, the
+number kept (1 on every foe at 8 heat, 1 more for each heat over). Read on the commit before
+and on the working tree, a scratch probe on the engine's own fight: a squad of the Whip
+Scorpion, the Honey Badger and the Skua in seven formations as content has them, the greedy
+bot, 100 fights a row. Every fight was won in both.
+
+| Formation | Rounds, before and after | Squad hull lost | Releases a fight | Hit points a release | Its heat at a release |
+|---|---|---|---|---|---|
+| Goblin horde, tier one | 3.5 to 3.4 | 3% to 2% | 0.40 to 0.78 | 22.0 to 19.7 | 13.1 to 12.6 |
+| Grave throng, tier one | 3.9 to 3.2 | 4% to 2% | 0.43 to 0.86 | 24.4 to 22.4 | 13.6 to 12.3 |
+| Ember pyre, tier one | 3.7 to 3.2 | 7% to 4% | 0.41 to 0.75 | 17.4 to 23.6 | 12.8 to 12.8 |
+| Needler thicket, tier one | 3.5 to 3.3 | 2% to 1% | 0.22 to 0.54 | 15.5 to 18.0 | 12.9 to 12.7 |
+| Guard horde, tier two | 3.8 to 3.3 | 4% to 3% | 0.16 to 0.69 | 20.8 to 16.6 | 13.2 to 12.1 |
+| Barbed swarm, tier two | 3.1 to 3.0 | 1% to 1% | 0.14 to 0.49 | 11.4 to 10.9 | 13.0 to 12.0 |
+| Treant march, tier two | 9.3 to 8.3 | 18% to 16% | 0.32 to 0.99 | 6.8 to 6.9 | 13.2 to 12.0 |
+
+A direction. In the bot's hands it is no bigger burst: a blast is worth about what a release
+was, at about the same heat, since the bot reboots near the maximum of 14 and never rides
+past it. It is two to four times as frequent. Before, the bot rebooted the Scorpion 0.4 to
+2.0 times a fight and released 0.1 to 0.4 times, so most of the heat it shed bought nothing;
+now nine reboots in ten are a blast. Fights run a little shorter and the squad loses a little
+less hull. So the swap makes it stronger as the bot plays it, and the burst he names is the
+player's to find, by riding past the maximum for a bigger one against the burn. Its heat
+maximum is his first lever if the stroke outdoes the area machines (the bible's row).
+
+### The same read with no gate, 1 for every 2 heat
+
+Ryan, the same day: "remove the 8 heat minimum. Set it to 1 damage to all enemies for every X
+heat, your call." X is 2: 7 on every foe at its maximum of 14, the gated number's own there.
+The same probe on the working tree, the same squad, formations and seeds; every fight won.
+
+| Formation | Rounds | Squad hull lost | Its reboots a fight | Blasts a fight | Hit points a blast | Its heat at a blast |
+|---|---|---|---|---|---|---|
+| Goblin horde, tier one | 3.0 | 2% | 1.00 | 0.99 | 19.5 | 9.9 |
+| Grave throng, tier one | 2.5 | 1% | 1.02 | 1.02 | 21.5 | 9.1 |
+| Ember pyre, tier one | 2.9 | 4% | 0.98 | 0.97 | 22.0 | 10.2 |
+| Needler thicket, tier one | 2.8 | 1% | 0.88 | 0.87 | 18.1 | 8.4 |
+| Guard horde, tier two | 3.0 | 3% | 0.91 | 0.90 | 17.6 | 8.8 |
+| Barbed swarm, tier two | 2.8 | 1% | 0.73 | 0.73 | 14.2 | 9.6 |
+| Treant march, tier two | 8.0 | 14% | 2.01 | 1.58 | 7.9 | 10.1 |
+
+A direction. The bot blasts sooner, at 8 to 10 heat where the gated one waited for 12 or 13,
+for about the same hit points a blast, and about once a fight where it was 0.5 to 1.0. Fights
+run 0.2 to 0.7 of a round shorter than the gated blast's. So it is stronger again as the bot
+plays it, by coming a round earlier. What the formula changes by heat, for his judging:
+
+| Its heat as it reboots | 4 | 8 | 10 | 12 | 14, its maximum | 16 | 20 |
+|---|---|---|---|---|---|---|---|
+| The gated blast, on every foe | 0 | 1 | 3 | 5 | 7 | 9 | 13 |
+| 1 for every 2 heat | 2 | 4 | 5 | 6 | 7 | 8 | 10 |
+
+It pays more below the maximum and the same at it, and half as much for each heat ridden
+past it. So a blast is worth taking early, and riding the burn for a bigger one buys less than
+it did.
+
+## 17 November: the machines the reboot reaches, one at a time, and three leans emulated
+
+Ryan, 17 November: "I want to examine the chassis that broke during the huge change to heat
+and shield and work on fixing them." The decision it informs: none yet; it is the read under
+`docs/reboot_machines_proposal.md`'s first round, his to mark.
+
+`tools/reboot_probe.gd`: each chassis first in a squad of four beside the Honey Badger, the
+Prairie Dog and the Cassowary, which the rule does not reach, the greedy bot. Tier one's
+formations and elites, 21 compositions at 8 seeds (168 fights a machine, `--seeds 8`), and tier
+one's bosses alone, 13 at 6 seeds (78, `--bosses --seeds 6`), on main at `0565624` (the vent at
+the drop, the Whip Scorpion's blast and a death blow on its killer in; a first read on `7beb2b4`
+before them matched it but for the Scorpion and the sealed bear). Of the machine's turns, the
+share it gave to a reboot and the share it stood bare of shield as the enemy struck; its own
+hull lost (a share of its own) and its fights wrecked. A direction.
+
+| The machine | Formations: rebooted, bare, own hull | Bosses: rebooted, bare | Bosses: own hull, wrecked |
+|---|---|---|---|
+| Honey Badger | 16%, 18%, 3% | 18%, 22% | 14%, 0% |
+| Wild Boar | 16%, 18%, 2% | 18%, 22% | 14%, 0% |
+| Prairie Dog | 11%, 13%, 6% | 13%, 17% | 28%, 5% |
+| Cassowary | 8%, 9%, 4% | 10%, 13% | 30%, 9% |
+| Polar Bear (sealed 7% and 16% of its turns) | 17%, 19%, 5% | 22%, 26% | 31%, 4% |
+| Storm Petrel | 11%, 35%, 7% | 16%, 42% | 33%, 10% |
+| Buzzard | 11%, 12%, 2% | 15%, 18% | 15%, 3% |
+| Kite | 19%, 20%, 8% | 23%, 24% | 36%, 17% |
+| Needletail | 25%, 25%, 4% | 29%, 30% | 23%, 1% |
+| Cottonmouth | 18%, 18%, 7% | 17%, 17% | 32%, 8% |
+| Skua | 14%, 15%, 7% | 17%, 21% | 29%, 4% |
+| Whip Scorpion (blasts 0.58 and 0.94 a fight) | 16%, 17%, 3% | 16%, 20% | 9%, 0% |
+| Stingray | 15%, 16%, 4% | 19%, 24% | 26%, 4% |
+| Nemesis | 19%, 21%, 3% | 20%, 24% | 18%, 0% |
+| Giant Petrel | 13%, 13%, 2% | 19%, 19% | 12%, 0% |
+
+The rest of the dealt roster, formations (rebooted, bare, own hull): the Dingo 15%, 16%, 5%; the
+Clydesdale 13%, 15%, 3%; the Ammit 13%, 15%, 3%; the Funnel-web 10%, 12%, 2%; the Baboon 9%,
+12%, 4%; the Musk Ox 9%, 13%, 2%; the Lammergeier 11%, 12%, 1%. Every formation was won, in four
+to six rounds, the squad losing 3% to 7% of its hull; against the bosses 94% to 100%, in 6.5 to
+12 rounds, the squad losing 14% to 30%.
+
+The three leans, `--whatif` (`bear_opens`, `petrel`, `petrel_hot`, `kite_bot`, `kite_mends`;
+the tool's header says what each lays over the fight), at the same seeds. The bear's lean was
+his ruling the same day and built on main at `d657a20`, its what-if cut from the tool with it;
+its row is the read of that rule before it landed:
+
+| The lean | Formations: bare, own hull, wrecked | Bosses: bare, own hull, wrecked | Bosses: rounds, won, squad |
+|---|---|---|---|
+| Polar Bear as built | 19%, 5%, 0% | 26%, 31%, 4% | 11.1, 97%, 30% |
+| The reboot opens it | 19%, 6%, 0% | 25%, 33%, 3% | 11.7, 96%, 31% |
+| Storm Petrel as built | 35%, 7%, 0% | 42%, 33%, 10% | 8.3, 100%, 24% |
+| The hook, the Regenerator kept | 17%, 5%, 0% | 25%, 30%, 6% | 10.8, 99%, 26% |
+| The hook, its lock a lure of heat 3 | 18%, 4%, 0% | 27%, 27%, 5% | 10.9, 96%, 28% |
+| Kite as built | 20%, 8%, 2% | 24%, 36%, 17% | 8.9, 99%, 27% |
+| A bot that fights a broken Kite on | 20%, 8%, 2% | 24%, 36%, 15% | 8.8, 99%, 27% |
+| That bot, and a kill mends | 19%, 7%, 1% | 23%, 36%, 15% | 8.8, 99%, 27% |
+
+What it says. In tier one's formations every machine reboots about once a fight and nothing
+breaks; against a boss the cycle shows. The Storm Petrel as built stands bare twice as often as
+anyone, its guns spending the shield it tanks with. The Kite is wrecked twice as often as the
+other lights against a boss, a lone boss leaving it nothing to kill; the mend moves a point in
+formations and nothing there. The Needletail gives the most turns to the reboot, two actions
+each, without paying in hull. The bear seals on few turns, so opening it on its reboot costs the
+bot two points of the bear's hull. The Petrel's hook halves its bare turns and its wrecks, and
+without the zap its fights run two rounds longer and the squad pays two to four points more; the
+two forms of its lock read alike. The reworked Whip Scorpion is the strongest machine read against
+a lone boss, 6.5 rounds with the squad losing 14%. The bot's play of the reboot is a first
+heuristic, blind to a seal's timing, a Kite's kill and a Petrel's plate, and today's foes were
+sized against a shield that refilled.
+
+## 17 November: the formations that lost an aim, before and after
+
+The foes' targeting was built afresh that day (Ryan: "if it's the strongest/weakest/hottest
+table from above, then yes I agree and you can go ahead"; the bible's targeting row): fourteen
+foes lost an aim of their own and pick anyone, and the word moved onto the fire attacks. Read
+on the commit before the build (`d657a206`) and on the working tree, a scratch probe on the
+engine's own fight: the eleven compositions that field one of those foes or the Djinn, as
+content has them at their tiers, against the squad of the 16 November scenes (Honey Badger,
+Skua, Cassowary, Buzzard), the greedy bot, 200 fights a row on the same seeds. Every fight
+was won in both. Each cell is before to after.
+
+| Composition | Who lost what | Rounds | Wrecks a fight | Squad hull lost | Hull lost by the machine hit hardest |
+|---|---|---|---|---|---|
+| Barbed swarm, tier two | Basilisk, the armed | 2.4 to 2.4 | 0.00 to 0.00 | 0% to 0% | 1% to 1% |
+| Sandworm pit, tier two | Basilisk, the armed | 7.3 to 7.3 | 0.00 to 0.00 | 6% to 6% | 21% to 22% |
+| Djinn's mirage, tier two | Basilisk, the armed | 2.8 to 2.8 | 0.00 to 0.00 | 0% to 0% | 1% to 1% |
+| Bone Wyvern's flight, tier two | Bone Wyvern, the exposed | 7.7 to 7.7 | 0.34 to 0.35 | 31% to 32% | 73% to 73% |
+| Rust Monster's scavenge, tier two | Rust Monster, the armed | 4.3 to 4.4 | 0.04 to 0.04 | 8% to 8% | 28% to 28% |
+| Gilgamesh wanders, tier two | Gilgamesh, the armed | 7.3 to 7.4 | 0.06 to 0.12 | 13% to 15% | 41% to 45% |
+| Great swarm, tier three | Gorgon and Basilisk, the armed | 3.2 to 3.2 | 0.00 to 0.00 | 2% to 2% | 6% to 6% |
+| Mirage court, tier three | Gorgon, the armed | 3.5 to 3.5 | 0.00 to 0.00 | 2% to 2% | 9% to 10% |
+| Dragon's roost, tier three | Red Dragon, Crush no longer on the hottest | 5.0 to 5.0 | 0.12 to 0.14 | 28% to 28% | 59% to 61% |
+| Magma pit, tier three | Red Dragon, the same | 4.3 to 4.3 | 0.01 to 0.01 | 11% to 12% | 32% to 34% |
+| Balloon storm, tier three | Red Dragon, the same | 4.2 to 4.1 | 0.01 to 0.01 | 10% to 11% | 30% to 33% |
+
+A direction, and a flat one: nothing moves beyond noise but Gilgamesh alone, whose wrecks go
+from 12 to 24 in 200 fights now that his blows land on any machine and no longer on one
+showing a weapon. So the old aims were costing rules and buying no outcome the bot's play
+can show, which is the 16 November read again from the other side. It says nothing of feel,
+and nothing of the heroes, whose fights no row here holds. Tier three's rows are a squad
+under strength against numbers Ryan set aside, read for the difference alone.
+
+## 17 November: the formations the foes' bench changed, before and after
+
+The bench's fifteen rows landed that day on Ryan's "yes to all, seems fine. Ill be able to
+tell in play" (`git show 07f01fb:docs/vocabulary_pass_proposal.md`, section 35). Read on the commit before
+them (`7dcb2216`) and on the tree with all fifteen, a scratch probe on the engine's own
+fight: twenty compositions that field a changed foe, as content has them at their tiers,
+against the squad of the 16 November scenes (Honey Badger, Skua, Cassowary, Buzzard), the
+greedy bot, 120 fights a row on the same seeds. Each cell is before to after. Every fight
+was won in both where no share is given.
+
+| Composition | What changed in it | Rounds | Squad hull lost | Hull lost by the machine hit hardest | Rerolls drained a fight |
+|---|---|---|---|---|---|
+| Goblin horde, tier one | The Mandragora's scream, a fall | 3.3 to 3.5 | 0% to 1% | 2% to 3% | 1.79 to 2.53 |
+| Gel wall, tier one | The same | 6.0 to 5.9 | 4% to 6% | 14% to 21% | 2.83 to 2.55 |
+| Treant grove, tier one | The same | 4.3 to 4.4 | 3% to 4% | 13% to 16% | 0.97 to 2.77 |
+| Ember pyre, tier one | The Salamander's embers | 3.4 to 3.6 | 2% to 3% | 8% to 10% | |
+| Magma vent, tier one | The same | 3.4 to 3.6 | 1% to 1% | 3% to 3% | |
+| The Wild Hunt, tier two | A rider names the quarry | 5.8 to 5.7 | 29% to 23% | 66% to 62% | |
+| Pilgrim's wake, tier two | The Pilgrim immune to Suppress | 6.0 to 6.0 | 6% to 6% | 22% to 22% | |
+| Guard horde, tier two | The Mandrake's scream, a fall | 2.9 to 3.1 | 1% to 1% | 2% to 6% | 1.65 to 2.24 |
+| Treant march, tier two | The same | 6.8 to 7.1 | 6% to 8% | 21% to 28% | 0.81 to 2.82 |
+| Wight host, tier two | The Spectre fades | 3.6 to 4.4 | 2% to 3% | 9% to 12% | |
+| Grave field, tier two | The same | 10.5 to 11.9 | 8% to 10% | 27% to 32% | |
+| Barbed swarm, tier two | The Basilisk's Transfix | 2.4 to 2.4 | 0% to 0% | 1% to 1% | |
+| Sandworm pit, tier two | The same | 7.3 to 7.2 | 6% to 5% | 23% to 20% | |
+| Alpha pack, tier three | The Alpha Warg's Mark Prey | 1.4 to 1.4 | 0% to 0% | 0% to 0% | |
+| Captain's warband, tier three | The Alraune's scream, a fall | 2.6 to 2.6 | 1% to 1% | 5% to 5% | 0.00 to 0.76 |
+| Lich's court, tier three | The Lich's Command and its fall, the ghosts' fade | 12.6 to 12.4, won 33% to 27% | 88% to 92% | 97% to 99% | |
+| Wraith choir, tier three | The Spectre and the Wraith fade | 11.1 to 12.2, won 93% to 77% | 50% to 62% | 83% to 89% | |
+| Draugr host, tier three | The Lich and a Wraith | 5.3 to 5.8 | 19% to 19% | 48% to 46% | |
+| Great swarm, tier three | The Gorgon's dying gaze, the Basilisk's Transfix | 3.2 to 3.2 | 2% to 2% | 7% to 6% | |
+| Queen's hunt, tier three | The Antlion Queen's bite | 2.2 to 2.2 | 1% to 1% | 3% to 3% | |
+
+Wrecks a fight moved in two rows: the wraith choir, 0.72 to 1.39, and the Lich's court, 2.96
+to 3.24.
+
+A direction, at 120 fights. Three things show.
+
+- **The scream costs more as a fall than it did as a move.** The bot kills the screamers
+  either way, and now every kill takes a reroll, where before a root took one only on a round
+  it chose to scream and lived to. Where three or four stand behind a wall the squad loses
+  2.5 to 2.8 rerolls a fight, up from 1 to 2 in four rows of five. Rounds and hull barely
+  move, since this squad's bot spends few rerolls. It is the row the session was least sure
+  of at tier one, and it is his to judge in play.
+- **The ghosts' fade lengthens their fights.** A round out of reach is a round more to kill
+  a Spectre in: about a round more at tier two, and at tier three the wraith choir is won
+  77% of the time where it was 93%, with twice the wrecks. Tier three's rows are a squad
+  under strength against numbers Ryan set aside, read for the difference alone.
+- **The Wild Hunt hits a little softer.** A rider that names the quarry is a rider that did
+  not lance that round, and the squad loses 23% of its hull where it lost 29%.
+
+The rest sit inside noise. Two rows cannot show their change at all: the Pilgrim's
+immunity, since this squad carries no stun, and the Tyrant's and the Colossus's, whose
+fights no row here holds. Nor do the Thief and the Cleric, which stand in their finals.
+
+## 17 November: the Storm Petrel as landed, and its four builds
+
+Ryan, 17 November: "Storm Petrel: Your verdict leans are solid. We need upgrade branches since
+this is tier 1 ... Adjust the stock as you see fit, then land it and push it to main." The
+decision it informs: none of his; it is the read of the landing, and of whether a build breaks
+anything, the bot's play of the branches being a first heuristic (Hardened read as shield stood
+up against the blows its lure draws, Charged as its own blow again).
+
+`tools/reboot_probe.gd` (`--branches` since the same day), as in the entry above: the Storm
+Petrel first in a squad of four beside the Honey Badger, the Prairie Dog and the Cassowary, the
+greedy bot. Tier one's formations and elites, 21 compositions at 8 seeds (168 fights, `--seeds
+8`), and tier one's bosses alone, 13 at 6 seeds (78, `--bosses --seeds 6`), on
+`ccr-178e0404-ptuh2m` over main at `f8fb28b`. As landed: the hook a point of shield a point of
+heat, the plate, the lure at heat 3, the Arc Fault Cannon in the Shoring Jack's slot. Of the
+machine's turns, the share it gave to a reboot and the share it stood bare of shield as the
+enemy struck; its own hull lost (a share of its own), its fights wrecked, the squad's hull lost.
+
+| The build | Formations: rebooted, bare, own hull | Bosses: rounds, won | Bosses: rebooted, bare | Bosses: own hull, wrecked, squad |
+|---|---|---|---|---|
+| None, the stock as landed | 20%, 22%, 4% | 9.8, 99% | 26%, 30% | 28%, 6%, 23% |
+| Defence twice (Hardened, then Spread and a stack a foe lured) | 21%, 22%, 3% | 9.9, 97% | 25%, 28% | 26%, 8%, 25% |
+| Striker twice (Charged 2, then Chain 3) | 19%, 20%, 5% | 9.1, 100% | 24%, 27% | 27%, 8%, 23% |
+| Mixed (Hardened and Charged 2) | 19%, 20%, 4% | 9.1, 100% | 23%, 26% | 23%, 3%, 22% |
+
+Beside the entry above (the machine as built before it: bosses bare 42%, own hull 33%, wrecked
+10%, 8.3 rounds), read across two commits and so a direction only: the landed Petrel stands bare
+against a boss on 30% of its turns where it stood bare on 42%, gives a quarter of its turns to
+the reboot where it gave a sixth (its guns heat the gauge now, where they once burnt the shield),
+and its boss fights run a round and a half longer without the zap. Every formation was won, in
+five rounds or so, the squad losing 5% or 6% of its hull.
+
+What it says, at 78 fights a build against the bosses, a direction. No build breaks anything:
+every one wins its formations and all but three of 312 boss fights. The Striker's two shorten a
+boss fight by about two thirds of a round, its Charged shocking the next fires and the Arc Fault
+Cannon and the lure's arcs cashing them. The Defence's two take two points off the machine's
+own hull lost and add a wreck, inside this sample's noise: its Spread reaches only the foes
+beside the target in its rank, so Hardened passes one stack only where a rank holds two or
+three, and the bot weighs Hardened by a placeholder. The mixed build reads best on the
+machine's own hull and wrecks, two of 78, at the edge of what 78 fights can say. A pick share or a band waits for the runner and his play.
+
+## 17 November: the bot reads every step of a foe's move, and the anchor read again as the baseline the sizing starts from
+
+Two reads the same evening, on main at `2ee770b` with the bot's new pricing (`96874714`:
+one table, `Policy.effect_cost`, for a fall's steps, a move's own special and the steps a
+move does also).
+
+**What the pricing changed.** The twenty formations of the entry above again, the same
+squad (the Honey Badger, the Skua, the Cassowary, the Buzzard), seeds and 120 fights a row,
+the greedy bot before the pricing and after it. Fifteen rows are the same to the digit. The
+five that moved did so inside a run's grain: the wight host 4.4 rounds to 4.2, the grave
+field 11.9 to 12.1, the sandworm pit 7.2 to 7.3, the Lich's court 12.4 to 12.6 at 27% won
+either way, and the wraith choir won 77% to 78% with 1.39 wrecks a fight to 1.28. So the
+bot's play of these fights does not turn on a step's price: a kill and a blow decide what
+it spends on, and a fading ghost is already the foe it shoots. The pricing is the read a
+later bot stands on, and no earlier read wants running again for it.
+
+**The anchor, as the game stands.** Tier one at Convergence 1, the six certain tier ones
+(the Honey Badger, the Skua, the Storm Petrel, the Prairie Dog, the Cassowary, the
+Cottonmouth), squads as large as the fight is rated, the greedy bot: six squads and five
+seeds a fight for a flanker, a hunter's pack and a formation (30 fights a cell), five
+squads and four seeds for an elite and a boss (20 a cell). The scratch probe of 16
+November's entry on the battle's own builders. Hull is a share of a squad of four's. A cell
+is a direction; a kind's mean is a band.
+
+| Kind | Rows | Won | Rounds | Hull lost | The budget | Reboots a machine | Wrecks a fight |
+|---|---|---|---|---|---|---|---|
+| A lone flanker | 4 | 100% | 5.8 | 5.9% | 3.3% or less | 1.14 | 0.00 |
+| A hunter's pack | 2 | 98% | 5.1 | 12.7% | 10% | 1.09 | 0.03 |
+| A formation | 10 | 100% | 6.0 | 8.3% | 5% | 1.21 | 0.02 |
+| An elite | 11 | 100% | 6.3 | 10.9% | 25% | 0.99 | 0.05 |
+| A boss | 13 | 97% | 10.4 | 32.6% | what is left | 1.78 | 0.40 |
+
+Against the read of 16 November every kind but the elites costs more: a flanker 5.1% then,
+a hunter's pack 9.4%, a formation 7.2% over 5.2 rounds, an elite 11.2%, a boss 31.5%. What
+moved between the two is the game and not the bot: the Storm Petrel as reworked, in half
+the squads; the foes' targeting, a level draw where fourteen foes had aims; the bench's
+rows; the reboot's vent at the drop.
+
+| Kind | Fight | Won | Rounds | Of a four's hull | Reboots a machine | Wrecks a fight |
+|---|---|---|---|---|---|---|
+| Flanker | The lone whisker cat | 100% | 4.8 | 5.4% | 0.87 | 0.00 |
+| Flanker | The lone roc | 100% | 6.3 | 3.4% | 1.17 | 0.00 |
+| Flanker | The lone dullahan | 100% | 7.4 | 7.4% | 1.37 | 0.00 |
+| Flanker | The lone cerberus | 100% | 4.7 | 7.4% | 1.17 | 0.00 |
+| Hunter | The wolf pack | 97% | 6.0 | 15.1% | 1.28 | 0.07 |
+| Hunter | The antlion trio | 100% | 4.2 | 10.3% | 0.90 | 0.00 |
+| Formation | The goblin horde | 100% | 5.2 | 7.1% | 1.03 | 0.00 |
+| Formation | The treant's grove | 100% | 7.2 | 13.9% | 1.62 | 0.00 |
+| Formation | The gel wall | 100% | 8.1 | 23.2% | 1.79 | 0.10 |
+| Formation | The needler thicket | 100% | 4.1 | 2.1% | 0.64 | 0.00 |
+| Formation | The sandworm's ambush | 100% | 5.9 | 0.0% | 0.94 | 0.00 |
+| Formation | The grave throng | 100% | 6.3 | 7.6% | 1.29 | 0.00 |
+| Formation | The barrow mound | 100% | 7.5 | 5.6% | 1.58 | 0.00 |
+| Formation | The knights' vigil | 100% | 4.6 | 1.5% | 0.82 | 0.00 |
+| Formation | The ember pyre | 100% | 5.6 | 18.2% | 1.26 | 0.07 |
+| Formation | The magma vent | 100% | 5.9 | 3.5% | 1.11 | 0.00 |
+| Elite | The shaman's warband | 100% | 5.3 | 21.1% | 1.14 | 0.00 |
+| Elite | The Nob | 100% | 6.7 | 18.9% | 1.10 | 0.20 |
+| Elite | The old man's rising | 100% | 8.4 | 7.8% | 1.27 | 0.00 |
+| Elite | The Pilgrim's wake | 100% | 6.5 | 2.0% | 0.99 | 0.00 |
+| Elite | The Rust Monster's scavenge | 100% | 4.7 | 4.8% | 0.65 | 0.05 |
+| Elite | Gilgamesh wanders | 100% | 8.4 | 6.7% | 1.29 | 0.05 |
+| Elite | The Fell Rider's hunt | 100% | 4.8 | 10.0% | 0.65 | 0.00 |
+| Elite | The Reaper | 100% | 3.9 | 0.7% | 0.38 | 0.00 |
+| Elite | The Wild Hunt | 100% | 5.0 | 14.9% | 0.82 | 0.00 |
+| Elite | The Cinder Tortoise's brood | 100% | 9.7 | 17.0% | 1.94 | 0.00 |
+| Elite | The Thunder Ape's rampage | 100% | 5.5 | 16.1% | 0.71 | 0.20 |
+| Boss | Floraison | 100% | 7.5 | 29.6% | 1.31 | 0.25 |
+| Boss | The King Gel | 100% | 9.9 | 30.3% | 1.91 | 0.35 |
+| Boss | The Mantis Ant | 100% | 8.2 | 8.9% | 1.31 | 0.00 |
+| Boss | The Ruby Colossus | 90% | 12.8 | 41.2% | 2.21 | 0.60 |
+| Boss | The Fallen Weapon | 95% | 10.9 | 34.8% | 1.93 | 0.40 |
+| Boss | The Emperor Scorpion | 100% | 9.3 | 32.8% | 1.98 | 0.25 |
+| Boss | The Matador | 100% | 8.6 | 21.9% | 1.44 | 0.10 |
+| Boss | The Phantom Train | 90% | 13.9 | 45.6% | 2.51 | 0.70 |
+| Boss | The Vampire Lord | 100% | 9.2 | 13.2% | 1.62 | 0.05 |
+| Boss | The Marsh Serpent | 100% | 7.3 | 21.2% | 1.26 | 0.10 |
+| Boss | The Gargantuan King | 100% | 18.1 | 30.6% | 2.12 | 0.35 |
+| Boss | The Fiend of Fire | 90% | 8.8 | 62.2% | 1.59 | 1.70 |
+| Boss | The Obsidian Tyrant | 100% | 10.6 | 51.4% | 1.99 | 0.35 |
+
+What it says for the sizing. The formations' spread is the finding, and it is by the foe's
+shape: the three that cost most are the three whose fights run longest, the gel wall at
+8.1 rounds, the treant's grove at 7.2 and the ember pyre, whose salamanders hit hardest;
+the four that cost least are the four whose foes breached until 15 November and strike a
+whole shield plain. The lone flankers all sit over the thirtieth. The elites sit under half
+their quarter with the Barrier on the dice, and the bosses run from 9% to 62%.
+
+## 17 November: tier one sized to the hull budget, and the Barrier's place read under it
+
+Ryan the same day: "When it comes to the sizing numbers, you have authority over the other
+session ... You can adjust content if you feel like it's ready to do so." The numbers pass
+(`docs/briefs/numbers_pass.md`) sized tier one's flankers, hunters and formations to his
+budget of 9 November: a formation's fight a twentieth of the squad's hull at its rating, a
+flanker's a thirtieth or less, a hunter's a tenth. Every read is `tools/anchor_read.gd` on
+the six certain tier ones, the squads and seeds of the baseline above, the greedy bot.
+
+**The frame first** (`tools/budget_model.py`, apart from content). Under the reboot a squad
+meets a fight with a fixed pool, its shields, and buys it again with a turn, so a fight costs
+what the foes offer past that pool. The model lands on the bot's read of a duel (the lone
+roc 3.6% for 3.4%, the whisker cat 5.5% for 5.4%) and of the wolf pack (16.1% for 15.1%); it
+reads a formation at two to three times the bot's, a squad of three bringing kits, plate and
+a Barrier it lacks, so its formation cells are read against each other. What it says: a
+point on a lone flanker's blow is two points of a four's hull; a horde's cost rises faster
+than its count; and a foe one shot kills costs a seventh of one that takes two, the gun's
+kill line being the biggest lever on the defence side as it is on the offence.
+
+**The moves, each with its reason.** Every one is a placeholder still, his to move.
+
+| Foe | Number | Was | Is | The reason |
+|---|---|---|---|---|
+| Mandragora | Blow | 3 | 2 | It strikes every round since its scream became a fall: 2 a round as before, where a 3 two rounds in three had been |
+| Mandrake, tier two | Blow | 4 | 3 | The same row of the bench, the same reason |
+| Half-Gel | Blow | 2 | 1 | A split conserves the blow: two halves strike for what their gel did, where a dying wall struck twice as hard |
+| Dire Wolf | Blow | 4 | 3 | A pack that rallies strikes for the standard blow: its Howl is its point more |
+| Whisker Cat | Blow | 5 | 4 | A lone flanker's blow is the heavy standard, 4, the Roc's |
+| Dullahan | Blow | 5 | 4 | The same |
+| Dullahan | Hit points | 10 | 9 | It rises once: two lives of 10 ran the longest duel |
+| Cerberus | Blow | 5 | 4 | The same: its three heads strike for 1 each and its Maul for 4 |
+| Needler | Blow | 3 | 4 | It lost Breach on 15 November, a rider worth two points on its blow that it had paid for in hit points |
+| Sandworm | Blow | 3 | 6 | The same, and a massive's blow |
+| Zombie Knight | Blow | 3 | 4 | The same |
+| Magma Elemental | Blow | 4 | 6 | The same, and a massive's blow |
+| Magma Elemental | Eruption | Scorch 4 on every machine | 2 | Sized against a cooling the reboot removed: at 4 the answer is always to hold fire |
+| Drake | Blow | 4 | 3 | A back rank strikes for the standard blow, as the roots, the ghosts and the cockatrices do |
+| Drake | Stoke | Ablate 2 | 1 | A rank-and-file rider at 1 |
+| Salamander | Blow | 4 | 3 | The standard blow, its Scorch on top |
+| Treant | Blow | 7 | 6 | The grove ran at nearly three times the budget and its fight is the longest |
+| Treant | Recover | 3 | 2 | The same |
+| The gel wall | Its back rank | Three mandragoras | Two | The wall's cost is its length, fifteen bodies, and its blows were as light as they go |
+
+Tried and put back: the Gel at 4 hit points for 5, which moved its wall half a point.
+
+**The reads.** Rounds, then hull lost as a share of a four's.
+
+| Kind | Fight | Before | After the first pass | As landed | The budget |
+|---|---|---|---|---|---|
+| Flanker | The lone whisker cat | 4.8, 5.4% | 4.5, 3.1% | 4.5, 3.1% | 3.3% or less |
+| Flanker | The lone roc | 6.3, 3.4% | | 6.3, 3.4% | |
+| Flanker | The lone dullahan | 7.4, 7.4% | 6.8, 4.6% | 5.8, 3.8% | |
+| Flanker | The lone cerberus | 4.7, 7.4% | 4.0, 2.5% | 4.0, 2.5% | |
+| Hunter | The wolf pack | 6.0, 15.1% | 6.1, 7.4% | 6.1, 7.4% | 10% |
+| Hunter | The antlion trio | 4.2, 10.3% | | 4.2, 10.3% | |
+| Formation | The goblin horde | 5.2, 7.1% | 5.1, 3.5% | 5.1, 3.5% | 5% |
+| Formation | The treant's grove | 7.2, 13.9% | 7.5, 9.6% | 7.3, 7.7% | |
+| Formation | The gel wall | 8.1, 23.2% | 7.3, 10.4% | 7.1, 7.4% | |
+| Formation | The needler thicket | 4.1, 2.1% | 3.8, 2.8% | 3.8, 2.8% | |
+| Formation | The sandworm's ambush | 5.9, 0.0% | 6.0, 1.0% | 6.0, 1.9% | |
+| Formation | The grave throng | 6.3, 7.6% | | 6.3, 7.6% | |
+| Formation | The barrow mound | 7.5, 5.6% | | 7.5, 5.6% | |
+| Formation | The knights' vigil | 4.6, 1.5% | 4.5, 2.4% | 4.5, 2.4% | |
+| Formation | The ember pyre | 5.6, 18.2% | 5.5, 13.4% | 5.4, 7.7% | |
+| Formation | The magma vent | 5.9, 3.5% | 5.9, 3.0% | 6.0, 3.1% | |
+
+| Kind | Before | As landed | The budget |
+|---|---|---|---|
+| A lone flanker | 5.8 rounds, 5.9% | 5.2, 3.2% | 3.3% or less |
+| A hunter's pack | 5.1, 12.7% | 5.1, 8.9% | 10% |
+| A formation | 6.0, 8.3% | 5.9, 5.0% | 5% |
+| An elite | 6.3, 10.9% | 6.3, 10.9% | 25% |
+| A boss | 10.4, 32.6%, 0.40 wrecks | 10.4, 32.5%, 0.40 | what is left |
+
+Every flanker, hunter and formation was won in every fight, with no wreck. The formations
+run from 1.9% to 7.7%. The two that stay light are the Waste's, whose foes lost Breach and
+are thin: a needler is one shot. Their teeth are a kit's to give, a proposal for his marks,
+and no number here chases them. The elites and bosses moved only where a sized foe stands
+in them: the shaman's warband 21.1% to 20.1%, the Pilgrim's wake 2.0% to 2.7%, the King Gel
+30.3% to 28.6%.
+
+**The Barrier's place, read under it.** His lean of 15 November is that the Barrier is no
+basic: "I don't want the existence of barrier as an accessible-to-all tool, to justify the
+existence of massive enemy strikes." The same elites and bosses with the Barrier basic off
+the starting dice, the Armoured basic in its slot (`refit=barrier=none`, eight dice; read
+while the Gel stood at 4 hit points, which touches the King Gel's cell alone):
+
+| Kind | With the Barrier basic | Without it |
+|---|---|---|
+| An elite, eleven fights | 100% won, 6.3 rounds, 10.9%, 0.05 wrecks | 99%, 6.1, 22.7%, 0.24 |
+| A boss, thirteen fights | 97% won, 10.4 rounds, 32.5%, 0.40 wrecks | 87%, 10.1, 52.8%, 1.11 |
+
+| Fight | With it | Without it |
+|---|---|---|
+| The Reaper | 0.7% | 3.6% |
+| The Pilgrim's wake | 2.7% | 11.7% |
+| The Rust Monster's scavenge | 4.8% | 11.8% |
+| The Thunder Ape's rampage | 16.1% | 15.7% |
+| The old man's rising | 7.7% | 16.0% |
+| The Fell Rider's hunt | 10.0% | 19.1% |
+| The shaman's warband | 20.1% | 20.8% |
+| The Wild Hunt | 14.9% | 22.7% |
+| Gilgamesh wanders | 6.7% | 29.1% |
+| The Cinder Tortoise's brood | 17.0% | 40.2% |
+| The Nob | 18.9% | 59.2%, 85% won, 1.55 wrecks |
+| Floraison | 29.6% | 24.9% |
+| The Matador | 21.9% | 26.8% |
+| The Mantis Ant | 8.9% | 38.8% |
+| The Fiend of Fire | 62.2%, 90% won | 47.2%, 95% won |
+| The Marsh Serpent | 21.2% | 48.8% |
+| The Vampire Lord | 13.2% | 49.6%, 80% won |
+| The Emperor Scorpion | 32.8% | 50.2% |
+| The Gargantuan King | 30.6%, 18.1 rounds | 54.0%, 10.3 rounds |
+| The King Gel | 28.6% | 59.7% |
+| The Fallen Weapon | 34.8%, 95% won | 66.8%, 80% won |
+| The Ruby Colossus | 41.2%, 90% won | 67.5%, 50% won |
+| The Obsidian Tyrant | 51.4% | 72.7%, 80% won |
+| The Phantom Train | 45.6%, 90% won | 78.9%, 65% won |
+
+So the elites are sized for a squad with no Barrier, on his quarter but for the two whose
+kit is one great blow a round, the Nob and the tortoise; and the bosses are sized for a
+squad with one, half the squad's hull and a wreck a fight without it. That is his concern
+as a number: the bosses' strikes are the ones the Barrier justifies. Taking it off the
+starting dice takes the bosses' blows down with it, by about two fifths, the one-blow kits
+first. Nothing of it is landed: the Barrier's place is his call (the bible's section 12).
+
+## 17 November: what one Barrier is worth to a squad tuned without it, the bosses at lighter blows, and the dials on the sized game
+
+Ryan, of the Barrier: "I think no barrier basic. If we tune around it not being there, does
+it warp boss fights when it does show up? Would it be better to tune fights with the
+assumption that a complete block exists? Keeping in mind that we have Suppress which is kind
+of the same thing for a boss, I guess." And: "Do you have leans on any of the trial
+settings?" Every read is `tools/anchor_read.gd` on the game as sized that day, the greedy
+bot. Hull is a share of a four's.
+
+**One Barrier in a squad.** One squad of four, the Honey Badger, the Skua, the Storm Petrel
+and the Prairie Dog, whose Halo Projector is its only Barrier, sitting out a round after
+each spend; and the same four with the Armoured basic in that slot (`refit=barrier=none`).
+Twelve fights a cell, so a cell is a direction and a negative one is grain.
+
+| Kind | No Barrier | One Barrier |
+|---|---|---|
+| An elite, eleven fights | 5.6 rounds, 16.8%, 0.10 wrecks | 5.8, 12.7%, 0.07 |
+| A boss, thirteen fights | 97% won, 8.7 rounds, 37.3%, 0.43 wrecks | 97%, 8.7, 28.8%, 0.31 |
+
+| Fight | No Barrier | One Barrier | What the one takes off |
+|---|---|---|---|
+| The Mantis Ant | 25.2% | 12.3% | Half |
+| The Phantom Train | 62.3%, 92% won | 32.2%, 100% | Half |
+| The Gargantuan King | 37.1% | 20.2% | Nearly half |
+| The Emperor Scorpion | 35.4% | 20.1% | Two fifths |
+| The Vampire Lord | 18.8% | 11.9% | A third |
+| The Marsh Serpent | 37.4% | 24.6% | A third |
+| The Fallen Weapon | 56.9%, 83% won | 39.6%, 92% | A third |
+| The Matador | 21.2% | 16.7% | A fifth |
+| The King Gel | 36.1% | 29.2% | A fifth |
+| The Obsidian Tyrant | 63.8% | 61.9% | Nothing |
+| Floraison | 20.3% | 22.4% | Nothing |
+| The Ruby Colossus | 40.0%, 92% won | 45.8%, 75% | Nothing |
+| The Fiend of Fire | 30.5% | 37.3% | Nothing |
+| Gilgamesh wanders | 22.4% | 11.8% | Half |
+| The Pilgrim's wake | 7.8% | 4.6% | Two fifths |
+| The Fell Rider's hunt | 14.6% | 9.3% | A third |
+| The Reaper | 3.8% | 2.7% | A quarter |
+| The Cinder Tortoise's brood | 27.0% | 20.9% | A quarter |
+| The Nob | 41.2% | 32.7% | A fifth |
+| The Wild Hunt | 20.3% | 16.0% | A fifth |
+| The old man's rising | 10.8% | 8.6% | A fifth |
+| The shaman's warband | 14.0% | 11.7% | A sixth |
+| The Rust Monster's scavenge | 7.8% | 6.6% | A sixth |
+| The Thunder Ape's rampage | 14.8% | 14.9% | Nothing |
+
+So one Barrier is a quarter off an elite or a boss on the mean, and it runs by the kit: half
+off a boss whose damage is one great blow at one machine, nothing off one that strikes
+every machine or many times. This squad of four also stands a boss better than the pool's
+mean with no Barrier (37.3% for 52.8%), having the pool's plate and its largest shield.
+
+**The bosses with no Barrier, at lighter blows.** The six certain tier ones as before
+(`refit=barrier=none`), every leader's attack at a share of content's (`blows=`), twenty
+fights a cell.
+
+| The bosses' blows | Won | Rounds | Hull lost | Wrecks a fight |
+|---|---|---|---|---|
+| As content has them, the Barrier basic on the dice | 97% | 10.4 | 32.5% | 0.40 |
+| As content has them, no Barrier | 87% | 10.1 | 52.8% | 1.11 |
+| At four fifths, no Barrier | 98% | 9.2 | 31.9% | 0.34 |
+| At seven tenths, no Barrier | 100% | 8.9 | 24.6% | 0.18 |
+
+Four fifths of their blows gives a squad with no Barrier the bosses it has today with one.
+The elites want no such cut: at four fifths they cost 14.0% for their 22.7%, under his
+quarter. Two stand apart, the Nob at 40.5% even at four fifths (59.2% at content's blows,
+its kit one great blow a round) and the Cinder Tortoise's brood, 22.2% at four fifths for
+40.2%.
+
+**The dials on the sized game.** Tier one's flankers, hunters and formations under each
+what-if of the trials page; rounds, hull, reboots a machine.
+
+| The what-if | A lone flanker | A hunter's pack | A formation |
+|---|---|---|---|
+| As landed: a vanilla 3 for 4 heat, the Carbine 4 for 5, the standard foe 4 | 5.2, 3.2%, 0.91 | 5.1, 8.9%, 1.02 | 5.9, 5.0%, 1.14 |
+| HEAT on −1: 3 for 3, the Carbine 4 for 4 | 4.5, 2.6%, 0.70 | 4.8, 8.4%, 0.90 | 5.2, 4.0%, 0.87 |
+| HEAT on −1, TOP BASIC on +2: the Carbine 4 for 6 | 4.7, 3.2%, 0.82 | 4.9, 8.6%, 0.95 | 5.4, 4.5%, 0.95 |
+| RANK AND FILE on +1: the standard foe 5 | 5.2, 3.2%, 0.91 | 5.1, 8.9%, 1.02 | 6.9, 8.7%, 1.43, 99% won |
+| HEAT on −1, RANK AND FILE on +1 | 4.5, 2.6%, 0.70 | 4.8, 8.4%, 0.90 | 6.2, 6.9%, 1.12 |
+| All three | 4.7, 3.2%, 0.82 | 4.9, 8.6%, 0.95 | 6.4, 7.5%, 1.23 |
+
+A point of heat off every weapon is 0.7 rounds and a point of hull off a formation, and a
+quarter fewer reboots. Two more heat on the Carbine gives back a fifth of that. A hit point
+on the rank and file is a round and 3.7 points of hull on a formation, half again its cost,
+so a standard foe of 5 wants the foes' blows sized again; it touches no flanker and no
+hunter, which the dial does not reach.
+
+## 17 November: the leaders' plain blows as two and three strikes, with the Barrier basic and without it
+
+Ryan, of tuning for a block that exists: "By designed in case a barrier exists, I mean more
+that large blows should be multi-strikes except where particularly thematic or the whole
+point is to suppress, disrupt, or block it. Makes armour more valuable which too, is a
+bonus. A barrier is just another mitigation tool then, not a free pass. Just a thought, not
+an instruction." Read before it was answered: `tools/anchor_read.gd` with `split=2` and
+`split=3` (a what-if cut on 18 November, its question answered: `git show
+4ae57e4:tools/anchor_read.gd`), which land every elite's and boss's plain blow, one strike at one machine that
+lands the round it shows and carries no keyword, as that many strikes of the same total, a
+point either way for the rounding. A blow that gathers, a blow at every machine, a blow
+with a rider (it would land once a strike) and a move of many strikes stay as content has
+them. The six certain tier ones, the greedy bot, twenty fights a row, the game as sized
+that day; the Barrier basic on the starting dice as content has it, and the Armoured basic
+in its slot (`refit=barrier=none`). Hull is a share of a four's.
+
+What it split: eleven moves on ten bosses (the Fallen Weapon's Haft 16, the Gargantuan
+King's Gore 15, the King Gel's Body Slam 15, the Mantis Ant's Mandibles 15 and Upheaval 19,
+the Marsh Serpent's Bite 18, the Matador's Estocada 12, the Obsidian Tyrant's Crunch 18,
+the Phantom Train's Run Down 16, the Ruby Colossus's Big Claw 14, the Vampire Lord's Drain
+12) and nine on the elites of seven fights (the Cinder Tortoise's Bite 14, Gilgamesh's
+Blade 18 and his borrowed one, the Old Man of the Desert's Maw 12, the Wild Hunt's Lance
+10, the Nob's Rush 23, the Pilgrim's Karma 9 and Lantern 9, the Reaper's Scythe 12). The
+Emperor Scorpion, the Fiend of Fire and Floraison have no plain blow, nor have the leaders
+of four elite fights; their rows came back the same to the decimal and are left out.
+
+| Their plain blows land as | The Barrier basic on the dice | The Armoured basic in its slot | What the Barrier takes off |
+|---|---|---|---|
+| The ten bosses, one strike, as content has them | 98% won, 29.7%, 0.29 wrecks | 84%, 56.4%, 1.26 | 26.7 points |
+| The ten bosses, two strikes | 93%, 37.8%, 0.56 | 84%, 53.9%, 1.19 | 16.1 |
+| The ten bosses, three strikes | 92%, 40.2%, 0.60 | 88%, 44.0%, 0.86 | 3.8 |
+| The seven elite fights, one strike, as content has them | 100%, 9.8%, 0.04 | 98%, 26.1%, 0.33 | 16.3 |
+| The seven elite fights, two strikes | 100%, 16.9%, 0.18 | 99%, 23.7%, 0.21 | 6.8 |
+| The seven elite fights, three strikes | 100%, 17.7%, 0.16 | 98%, 22.1%, 0.28 | 4.4 |
+
+Over every boss the means are 32.5%, 38.6% and 40.5% with the Barrier basic and 52.8%,
+50.9% and 43.3% without; over every elite fight 10.9%, 15.4% and 15.9%, and 22.7%, 21.2%
+and 20.2%.
+
+| Fight, hull lost | Barrier, one strike | Two | Three | Armoured, one strike | Two | Three |
+|---|---|---|---|---|---|---|
+| The Fallen Weapon | 34.8% | 56.7% | 55.4% | 66.8% | 65.7% | 50.0% |
+| The Gargantuan King | 30.6% | 40.2% | 44.4% | 54.0% | 54.4% | 51.7% |
+| The King Gel | 28.6% | 38.2% | 41.9% | 59.7% | 55.6% | 42.9% |
+| The Mantis Ant | 8.9% | 19.0% | 21.6% | 38.8% | 34.1% | 18.0% |
+| The Marsh Serpent | 21.2% | 23.9% | 27.8% | 48.8% | 50.5% | 51.2% |
+| The Matador | 21.9% | 23.9% | 26.6% | 26.8% | 24.1% | 20.8% |
+| The Obsidian Tyrant | 51.4% | 56.2% | 61.1% | 72.7% | 72.9% | 71.2% |
+| The Phantom Train | 45.6% | 40.6% | 43.5% | 78.9% | 64.1% | 50.4% |
+| The Ruby Colossus | 41.2% | 53.3% | 64.7% | 67.5% | 73.4% | 68.2% |
+| The Vampire Lord | 13.2% | 25.6% | 14.9% | 49.6% | 44.2% | 15.5% |
+| The Cinder Tortoise's brood | 17.0% | 25.0% | 27.5% | 40.2% | 36.4% | 40.0% |
+| Gilgamesh wanders | 6.7% | 13.6% | 15.3% | 29.1% | 24.2% | 14.7% |
+| The old man's rising | 7.7% | 10.1% | 11.3% | 16.0% | 14.1% | 10.3% |
+| The Pilgrim's wake | 2.7% | 2.5% | 2.4% | 11.7% | 11.1% | 10.2% |
+| The Nob | 18.9% | 43.3% | 47.0% | 59.2% | 54.2% | 56.2% |
+| The Reaper | 0.7% | 0.9% | 2.1% | 3.6% | 3.4% | 2.8% |
+| The Wild Hunt | 14.9% | 22.7% | 18.0% | 22.7% | 22.2% | 20.2% |
+
+A row is twenty fights and a direction; the means, over 200 fights and 140, are bands.
+
+- **It does to the Barrier what he says.** A Barrier takes one strike, so its worth on a
+  boss falls from 27 points of a four's hull to 16 at two strikes and 4 at three, on an
+  elite from 16 to 7 to 4. At two it is still the better tool against a great blow; at
+  three it is worth what the Armoured basic is.
+- **Armour gains little at two strikes and much at three.** A squad with the Armoured basic
+  pays a boss 56.4% in one strike, 53.9% in two, 44.0% in three: Armoured 2 takes a sixth
+  of a blow of 12 whole, a third of it in two strikes, half in three, and it has no
+  cooldown where the Barrier basic sits out a round. The fall at three is carried by the
+  kits of small strikes: the Mantis Ant 38.8% to 18.0%, the Vampire Lord 49.6% to 15.5%
+  (its drain regrows what reaches the hull, and strikes of 4 past plate reach little),
+  Gilgamesh 29.1% to 14.7%, the Phantom Train 78.9% to 50.4%.
+- **A split sizes nothing.** The Nob costs a squad with no Barrier 59.2% in one strike,
+  54.2% in two and 56.2% in three; what the split takes is the Barrier's cover over it,
+  18.9% to 43.3%. The Obsidian Tyrant, the Ruby Colossus and the Marsh Serpent, whose
+  weight is a blow that gathers, read the same without a Barrier at any count. So the
+  blows' numbers are sized after the split, never by it.
+
+## 18 November: the Storm Petrel on its Pulse's Hardened Light, and its four builds
+
+Ryan, 18 November: "no innate shield armour. The Pulse grants one Hardened Light at tier 1.
+Hardened Light only decays when the shield breaks, and has a cap of 3 stacks"; "If it's weak,
+we'll buff it". The decision it informs: none yet; the first read of his shape, the bot's play of
+it a first heuristic (a stack read to stand two rounds, a Ward by the Ward pieces' worth).
+
+`tools/reboot_probe.gd`, as the entry of 17 November on the landed Petrel: first in a squad
+beside the Honey Badger, the Prairie Dog and the Cassowary, the greedy bot; tier one's formations
+and elites, 21 compositions at 8 seeds (168 fights), and its bosses alone, 13 at 6 seeds (78), on
+`ccr-178e0404-ptuh2m` over main at `66c0a63` (main's tier-one sizing of the same day in, so beside
+the entry of the 17th it reads across two commits: a direction only).
+
+| The build | Formations: rebooted, bare, own hull | Bosses: rounds, won | Bosses: rebooted, bare | Bosses: own hull, wrecked, squad |
+|---|---|---|---|---|
+| None (the Pulse's Hardened Light, up to 3) | 21%, 23%, 4% | 9.8, 77 of 78 | 26%, 30% | 25%, 3 fights, 23% |
+| Defence twice (Ward, then Spread, up to 5) | 21%, 23%, 5% | 9.6, 78 of 78 | 26%, 29% | 25%, 2 fights, 22% |
+| Striker twice (Chain 2 and Charged 1, then 3 and 2) | 20%, 21%, 5% | 9.1, 77 of 78 | 24%, 27% | 30%, 8 fights, 24% |
+| Mixed (Ward and a cap of 4, Chain 2 and Charged 1) | 21%, 22%, 4% | 9.4, 77 of 78 | 25%, 29% | 29%, 6 fights, 26% |
+
+What it says, at 78 fights a build against the bosses. The plate's loss costs the stock nothing
+the probe can see: beside the 17th's form (its own hull 28% and 5 wrecks of 78) it loses 25% and
+is wrecked 3 times, Hardened Light standing in for the plate between reboots, the reboot (a
+quarter of its turns) wiping it each time. Defence twice is the sturdiest build, 2 wrecks. The
+Striker's two end a boss fight two thirds of a round sooner and pay for it on the Petrel itself,
+8 wrecks of 78 to Defence's 2, a gap of about two standard errors at this sample. Every formation
+was won, in five rounds or so. A pick share or a band waits for the runner and his play.
+
+A correction, the same day. This entry first put the Striker's wrecks down to the Pulse's arcs
+carrying its lure. Read again with riders off Chain (Ryan's call of the 18th), both Striker builds
+return the same numbers to the digit, and they must: a boss here fights alone, so the Pulse finds
+no other Shocked foe to arc to, and in the formations the arcs never moved a result at these seeds.
+The Striker's wrecks come from something else in its kit or its play by the bot (it carries the
+base cap of 3 and no Ward, and Charged weighs the Pulse higher); unread.
+
+## 18 November: a foe's adds on every strike, and the Barrier basic machine by machine
+
+Ryan, of a foe's Empowered as the engine had it, an add before the move's factor: "That
+seems very unintuitive for Empowered. Should work the same as the machines do, as I thought
+the damage formulas were the same on both sides." Built that day: a move's number is its
+own and every add lands on each strike (the rules' enemy turn; the bible's row on the
+rally). And of the Barrier: "I think it can stay on the starting dice, with this change to
+hit counts, and possibly with giving it cooldown 1. It's one of the two sides of the
+defensive coin, and without it the starting draft leans towards taking units that are ok
+with hull hits, and not ones that actually need their shield for stuff. Makes sense or no?"
+Every read is `tools/anchor_read.gd` on the six certain tier ones, the greedy bot, twenty
+fights a row for the leaders; hull is a share of a four's.
+
+**What the formula moved**, read on main at `15d6679`, before and after it alone. Nothing
+among tier one's flankers, hunters, formations and bosses: every row came back the same to
+the decimal, since every rallied move there strikes at its foe's whole attack. Three elite
+fights moved, the ones with an add on a move at a share of the attack: the shaman's warband
+20.1% to 23.4% (its Bloodlust on a Chain Lightning at half, at every machine), the Nob
+18.9% to 18.7% and the Thunder Ape's rampage 16.1% to 15.7% (a rage on moves over and under
+the attack, a wash). The elites' mean went from 10.9% to 11.1%.
+
+**Tier one again**, on main at `9df330a` with the formula, the Storm Petrel's shield armour
+its Pulse's Hardened Light since that day (the entry before this one): a lone flanker 3.4%
+(the whisker cat and the roc 3.4%, the dullahan 4.1%, the cerberus 2.5%), a hunter's pack
+9.5% (the wolf pack 7.4%, the antlion trio 11.6%), a formation 5.0% over 6.0 rounds (the
+sandworm's ambush 1.9%, the knights' vigil 2.4%, the needler thicket 2.8%, the goblin horde
+and the magma vent 3.6%, the barrow mound 5.8%, the gel wall 6.9%, the grave throng 7.0%,
+the treant's grove and the ember pyre 8.2%), an elite 11.4%, a boss 33.5% with 0.42 wrecks
+a fight. Every flanker, hunter and formation is won in every fight. The tables below are on
+that tree.
+
+**The Barrier basic by its cooldown.** `refit=barrier=cooldownN` and `refit=barrier=none`.
+
+| The Barrier basic | An elite | A boss |
+|---|---|---|
+| No cooldown | 6.5 rounds, 8.2%, 0.04 wrecks | 95% won, 11.4 rounds, 28.8%, 0.33 wrecks, 6 fights stalled |
+| A cooldown of 1, as content has it | 6.3, 11.4%, 0.04 | 97%, 10.5, 33.5%, 0.42 |
+| A cooldown of 2 | 6.1, 13.5%, 0.05 | 96%, 9.7, 37.0%, 0.48 |
+| Off the dice, the Armoured basic in its slot | 98% won, 6.1, 23.6%, 0.27 | 86%, 10.0, 53.2%, 1.12 |
+| Off the dice, the leaders' blows at four fifths | 5.9, 14.4%, 0.12 | 98%, 9.2, 32.9%, 0.33 |
+
+The cooldown is a weak dial and the piece's presence the strong one: a second round sat out
+is 3.5 points on a boss, the piece itself 20. By fight the Nob reads 10.2%, 19.2%, 28.4%
+and 65.1% down the first four rows, a great blow every round; the Fiend of Fire 55.7%,
+64.7%, 57.6% and 50.1%, the one boss cheaper with plate in the slot than with the Barrier,
+its weight six strikes of 4.
+
+**Who pays, machine by machine.** Each machine's own hull lost a fight it stood in and how
+often it was wrecked, the read's new lines under its means.
+
+| Machine, hull and shield | A boss, the Barrier basic | A boss, none | A boss, none, blows at four fifths | An elite, the Barrier basic | An elite, none | An elite, none, four fifths |
+|---|---|---|---|---|---|---|
+| Honey Badger, 36 and 6, plate 1 | 21.0%, 0.03 wrecks | 33.6%, 0.09 | 16.8%, 0.01 | 5.7% | 13.9% | 6.9% |
+| Storm Petrel, 24 and 12 | 37.2%, 0.13 | 57.3%, 0.28 | 30.6%, 0.06 | 12.5% | 25.2% | 11.6% |
+| Skua, 20 and 9 | 32.4%, 0.08 | 54.7%, 0.31 | 34.7%, 0.08 | 15.5% | 25.9% | 16.4% |
+| Prairie Dog, 20 and 8, a Halo Projector | 40.5%, 0.16 | 55.6%, 0.28 | 34.5%, 0.07 | 11.5% | 24.4% | 15.2% |
+| Cassowary, 24 and 6, a Halo Projector | 39.3%, 0.11 | 61.6%, 0.34 | 44.0%, 0.12 | 15.5% | 28.4% | 20.1% |
+| Cottonmouth, 20 and 6, a Halo Projector | 36.0%, 0.13 | 73.7%, 0.51 | 52.8%, 0.22 | 11.0% | 31.8% | 23.4% |
+| The squad, of a four's hull | 33.5% | 53.2% | 32.9% | 11.4% | 23.6% | 14.4% |
+
+Read the first boss column against the third, the same cost to the squad. With no Barrier
+and lighter blows the Honey Badger pays less (21% of its hull to 17%) and so does the Storm
+Petrel (37% to 31%), the largest hull and the largest shield; the two thinnest, a shield of
+6 on a hull of 20 or 24, pay more, the Cassowary 39% to 44% and the Cottonmouth 36% to 53%.
+So his premise holds in its direction, the squad's cost moving onto the machines least able
+to take a hull hit, with one correction: by hull the machine that lives on its shield does
+better without the Barrier at lighter blows, and the ones the piece keeps standing are the
+lightest. From the sturdiest machine to the thinnest the spread is two to one with the
+Barrier basic and three to one without it. The read counts hull, never what a kit got done
+with its shield standing.
+
+What stays against it is his own point of 15 November: a squad with no Barrier pays a boss
+53.2% for 33.5% and the Nob 65.1% for 19.2%, so while the piece is a basic the leaders are
+sized so that a squad without one still stands, and none is sized up to it.
+
+## 18 November: tier one's elites and bosses sized for a squad without the Barrier
+
+Ryan, of keeping the Barrier on the starting dice and reading the budget on the squad with
+none: "I agree. And sizing it without means that if it does prove toxic after all, in my
+play, then it's relatively easy to remove. Go ahead." Every read is `tools/anchor_read.gd`
+on the six certain tier ones, the greedy bot; "without" is `refit=barrier=none`, the
+Armoured basic in the Halo Projector's slot. The rows before are twenty fights each, the
+rows after forty; hull is a share of a four's. The budget: an elite a quarter, a boss what
+is left, read here as about a third.
+
+**The bot first.** The Gargantuan King's rows were the bot's and not the boss's: it weighed
+the whole of a death blow against one round's worth of the kill and nursed the King rather
+than finish it, 20 rounds a fight with the Barrier basic and 33 with a Meteor of 12, its
+squad rebooting five times a machine. A foe has to fall for the fight to be won, so the
+blow is paid whenever it falls: only what a round's wait could save of it, its cost as the
+team stands less its cost on whole shields, argues against the kill now
+(`Policy.last_act_deterrent`). The King's fight is seven rounds since. No other tier-one
+foe has a death blow.
+
+**The bosses**, by what landed. Their attack is the number: every move is a share of it.
+
+| Boss | Attack | Without the Barrier, before | After | With the Barrier basic, before | After |
+|---|---|---|---|---|---|
+| Floraison | 10, as it was | 25.5% | 25.3% | 27.2% | 29.5% |
+| The King Gel | 15 to 12 | 53.9% | 33.6% | 27.0% | 15.9% |
+| The Mantis Ant | 15 to 13 | 40.9% | 26.1% | 10.0% | 7.7% |
+| The Ruby Colossus | 14 to 9 | 69.7%, 45% won | 26.2%, 98% | 43.8%, 90% won | 16.2% |
+| The Fallen Weapon | 16 to 10 | 66.4%, 85% won | 24.8% | 36.1% | 15.5% |
+| The Emperor Scorpion | 14 to 11 | 52.1% | 30.6%, 98% | 37.0% | 19.9% |
+| The Matador | 12, as it was | 27.0% | 27.0% | 21.4% | 21.2% |
+| The Phantom Train | 16 to 12 | 81.8%, 65% won | 28.3% | 47.6%, 90% won | 12.6% |
+| The Vampire Lord | 12 to 10 | 48.3%, 75% won | 23.4% | 13.5% | 7.1% |
+| The Marsh Serpent | 18 to 14 | 49.4% | 30.9% | 20.9% | 11.9% |
+| The Gargantuan King | 15 to 11, its Meteor at its whole attack, 11 as before | 54.1% | 32.3% | 34.8%, the bot stalling | 22.6% |
+| The Fiend of Fire | 14 to 11 | 50.1% | 32.2% | 64.7%, 85% won | 36.7% |
+| The Obsidian Tyrant | 18 to 11 | 73.1%, 80% won | 37.8% | 51.8% | 25.8% |
+| The mean | | 53.2%, 86% won, 1.12 wrecks | 29.1%, every boss won 98% or more, 0.21 wrecks, 8.9 rounds | 33.5%, 0.42 wrecks | 18.7%, 0.11 wrecks |
+
+**The elites.**
+
+| Elite fight | What moved | Without the Barrier, before | After | With the Barrier basic, before | After |
+|---|---|---|---|---|---|
+| The shaman's warband | Nothing | 22.3% | 21.4% | 22.9% | 20.1% |
+| The Nob | Its attack 18 to 11: a Rush of 14 for 23 | 65.1%, 75% won | 23.8% | 19.2% | 6.9% |
+| The old man's rising | Its Quake at 0.6 of its attack for 0.25: 7 at every machine for 3 | 15.6% | 27.7% | 7.6% | 16.0% |
+| The Pilgrim's wake | Its attack 9 to 11, its Karma 2 a kill for 1 | 11.7% | 19.7% | 3.0% | 4.0% |
+| The Rust Monster's scavenge | Its hit points 48 to 64 | 11.9% | 21.1% | 4.6% | 7.5% |
+| Gilgamesh wanders | Nothing | 28.0% | 24.7% | 8.1% | 6.8% |
+| The Fell Rider's hunt | Nothing | 19.4% | 21.5% | 10.4% | 11.2% |
+| The Reaper | Its attack 12 to 15, its hit points 44 to 70, its Harvest corrupting 2 for 1 | 3.6% | 20.5% | 0.7% | 4.6% |
+| The Wild Hunt | Nothing | 24.1% | 23.4% | 15.4% | 15.3% |
+| The Cinder Tortoise's brood | Its attack 14 to 12 | 40.2% | 26.3% | 17.6% | 14.4% |
+| The Thunder Ape's rampage | Nothing | 17.6% | 21.3% | 16.5% | 18.1% |
+| The mean | | 23.6%, 0.27 wrecks | 22.9%, every fight won, 0.14 wrecks, 6.5 rounds | 11.4% | 11.4%, 0.03 wrecks |
+
+A row that did not move reads a few points apart before and after: the grain of twenty
+fights against forty.
+
+**Who pays, as sized**, each machine's own hull a fight: a boss without the Barrier costs
+the Honey Badger 13.5%, the Storm Petrel 27.7%, the Skua 30.4%, the Prairie Dog 33.9%, the
+Cassowary 38.1% and the Cottonmouth 46.1%; with the Barrier basic 10.6%, 16.9%, 21.2%,
+23.2%, 20.6% and 27.7%. An elite, 12.7% to 30.9% without and 6.4% to 14.4% with.
+
+**What the sizing leaves.** The squad without the Barrier meets the budget; the squad with
+it pays half, and the leaders whose weight is one great blow at one machine cost it almost
+nothing: the Pilgrim 4.0%, the Reaper 4.6%, Gilgamesh 6.8%, the Nob 6.9%, the Vampire Lord
+7.1%, the Rust Monster 7.5%, the Mantis Ant 7.7%. Two were sized up through their blows, the
+Reaper and the Pilgrim, their kits being nothing else. The two flurry bosses are the other
+way about, dearer to the squad with the Barrier than to the one with plate in its slot:
+Floraison 29.5% for 25.3%, the Fiend of Fire 36.7% for 32.2%.
+
+**A pair, as a what-if** (content edited for the read and put back; forty fights a cell):
+the Mantis Ant's Mandibles as two strikes of 7 for one of 13, and the Gargantuan King's Gore
+as two of 6 for one of 11.
+
+| Boss | Without the Barrier, whole | A pair | With the Barrier basic, whole | A pair |
+|---|---|---|---|---|
+| The Mantis Ant | 26.1% | 25.6% | 7.7% | 14.3% |
+| The Gargantuan King | 32.3% | 33.5% | 22.6% | 27.7% |
+
+A pair leaves the squad without the Barrier where it was and takes half the piece's edge:
+the Mantis Ant's gap goes from 18 points to 11, the King's from 10 to 6.
+
+**The cap, after.** The scale row's cap is that no one action takes the lightest machine
+from full, 26 points on the Cottonmouth. The Thunder Ape's golden Rampage broke it, 27
+before the foes' adds landed on every strike and 30 since: its Rampage is three strikes of
+6 for 8, 24 gold, and it has 54 hit points for 48. It costs a squad without the Barrier
+19.3% for 21.3% and one with it 15.7% for 18.1%, forty fights a cell. Every other action of
+tier one's leaders stands under the cap, Floraison's Full Bloom nearest at 25. With it the
+elites' mean is 22.7% without the Barrier and 11.2% with it.

@@ -211,12 +211,15 @@ var split: int = 1            # the effective entry only, never printed: each ro
 var reloads_ammo: int = 0     # a vent: ammo it adds to its forging machine as it is spent (the quick reload; the Forge counts it as no vent)
 var ammo: int = 0             # shown only: what a forging machine's gun costs it in ammo now (Skirmish.shown_face), its heat slot's place on the die
 var dry: bool = false         # shown only: the magazine cannot pay that price, so the gun cannot be spent
-# The Storm Petrel's and the Giant Petrel's locked pieces (Ryan's go, 21 October; built 30 October):
-var regen_stacks: int = 0     # an attack: spent on a foe, its machine gains Regenerating, this many stacks, a point of shield a stack as each round opens and a stack fading then (the St. Elmo's Regenerator; a number a round for so many rounds until 15 November)
+# What a spend at a foe lays on its own machine: each {status, stacks, per_foe, cap}, a machine
+# buff, its stacks once or once for every foe the spend reached, up to the cap it names (0 for
+# none). Printed on a piece (the Hardlight Pulse's Hardened Light 1, up to 3: Ryan, 18 November)
+# and taken further on the entry as spent by an upgrade's branch (Effects.self_grants).
+var self_statuses: Array = []
+# The Giant Petrel's locked pieces (Ryan's go, 21 October; built 30 October):
 var action_price: int = 0     # a buff: on an ally whose die is spent, the team's rerolls it pays, and the ally's die rolls again, never onto the entry it showed, and it acts again (the Immelmann Booster); on itself, its status
 var rolls_target: bool = false   # a buff: the die of the machine it lands on rolls again, never onto the entry showing; nothing on a spent die (the Reheat Uplink)
 var kill_rerolls: int = 0     # an attack: if its spend kills, the team gains this many rerolls this round, banked if unspent (the Spindrift Salvo)
-var burns: int = 0            # shown only: the shield the spend burns in place of heat now (the Storm Petrel's Riot Field Generator, Skirmish.shown_face), drawn in the heat slot
 var tags: Array[String] = []  # its component's tags (10 October): build flavour that never carries a rule; a passive may read one
 
 
@@ -402,13 +405,14 @@ static func from_dict(d: Dictionary) -> Face:
 	f.spends_magazine = bool(d.get("spends_magazine", false)) and f.kind == Kind.ATTACK
 	f.magazine_min = maxi(0, int(d.get("magazine_min", 0))) if f.spends_magazine else 0
 	f.reloads_ammo = maxi(0, int(d.get("reloads_ammo", 0))) if f.kind != Kind.ATTACK and f.kind != Kind.BLANK else 0
-	var regen = d.get("regenerates", {})
-	if f.kind == Kind.ATTACK and regen is Dictionary:
-		f.regen_stacks = maxi(0, int((regen as Dictionary).get("stacks", 0)))
 	var deal = d.get("ally_action", {})
 	f.action_price = maxi(0, int((deal as Dictionary).get("rerolls", 0))) if f.kind == Kind.BUFF and deal is Dictionary else 0
 	f.rolls_target = bool(d.get("rolls_target", false)) and f.kind == Kind.BUFF
 	f.kill_rerolls = maxi(0, int(d.get("kill_rerolls", 0))) if f.kind == Kind.ATTACK else 0
+	if f.kind == Kind.ATTACK and d.get("self_statuses", null) is Array:
+		for g in d["self_statuses"]:
+			if g is Dictionary and not str(g.get("status", "")).is_empty():
+				f.self_statuses.append({"status": str(g["status"]), "stacks": maxi(1, int(g.get("stacks", 1))), "per_foe": bool(g.get("per_foe", false)), "cap": maxi(0, int(g.get("cap", 0)))})
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
@@ -525,14 +529,14 @@ func to_dict() -> Dictionary:
 		d["magazine_min"] = magazine_min
 	if reloads_ammo > 0:
 		d["reloads_ammo"] = reloads_ammo
-	if regen_stacks > 0:
-		d["regenerates"] = {"status": "regenerating", "stacks": regen_stacks}
 	if action_price > 0:
 		d["ally_action"] = {"rerolls": action_price}
 	if rolls_target:
 		d["rolls_target"] = true
 	if kill_rerolls > 0:
 		d["kill_rerolls"] = kill_rerolls
+	if not self_statuses.is_empty():
+		d["self_statuses"] = self_statuses.duplicate(true)
 	return d
 
 
@@ -620,7 +624,7 @@ func has_unique_rule() -> bool:
 		or turns_die or team_rerolls > 0 or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
-		or regen_stacks > 0 or action_price > 0 or rolls_target or kill_rerolls > 0 \
+		or not self_statuses.is_empty() or action_price > 0 or rolls_target or kill_rerolls > 0 \
 		or not spends.is_empty() or not holds_all.is_empty()
 
 
@@ -777,11 +781,10 @@ func duplicate_face() -> Face:
 	f.reloads_ammo = reloads_ammo
 	f.ammo = ammo
 	f.dry = dry
-	f.regen_stacks = regen_stacks
+	f.self_statuses = self_statuses.duplicate(true)
 	f.action_price = action_price
 	f.rolls_target = rolls_target
 	f.kill_rerolls = kill_rerolls
-	f.burns = burns
 	f.tags = tags.duplicate()
 	for k in keywords:
 		f.keywords.append(k)
@@ -900,8 +903,8 @@ func rule_phrases() -> Array[String]:
 			out.append("+%d ammo a foe hit" % ammo_per_foe_hit)
 		if kill_rerolls > 0:
 			out.append(_kill_rerolls_text())
-		if regen_stacks > 0:
-			out.append(_regen_text())
+		if not self_statuses.is_empty():
+			out.append(_self_text())
 	else:
 		if team_rerolls > 0:
 			out.append(_team_rerolls_text())
@@ -947,8 +950,20 @@ func _kill_rerolls_text() -> String:
 	return "a kill brings %d reroll%s" % [kill_rerolls, "" if kill_rerolls == 1 else "s"]
 
 
-func _regen_text() -> String:
-	return "Regenerating %d on itself" % regen_stacks
+## What a spend at a foe lays on its own machine, in the codex's words: "Hardened Light 1 on itself for each
+## foe reached", "Charged 2 on itself". The status's name is the vocabulary's, read off the engine's
+## table so a rename follows.
+func _self_text() -> String:
+	var parts: Array[String] = []
+	for g in self_statuses:
+		var id := str(g.get("status", ""))
+		var def: Dictionary = Effects.STATUS.get(id, {})
+		var name := str(def.get("name", id.capitalize()))
+		var one := Effects.status_stacking(def) == "renew"   # a Ward is one, whatever lays it: no number
+		var cap := int(g.get("cap", 0))
+		parts.append("%s on itself%s%s" % [name if one else "%s %d" % [name, int(g.get("stacks", 1))],
+			" for each foe reached" if bool(g.get("per_foe", false)) else "", (", up to %d" % cap) if cap > 0 else ""])
+	return ", ".join(parts)
 
 
 func _action_text() -> String:
@@ -1102,8 +1117,8 @@ func describe() -> String:
 				s += " +%d ammo a foe hit" % ammo_per_foe_hit
 			if kill_rerolls > 0:
 				s += " " + _kill_rerolls_text()   # the Spindrift Salvo's kill rider
-			if regen_stacks > 0:
-				s += " " + _regen_text()   # the St. Elmo's Regenerator's rider on its own spender
+			if not self_statuses.is_empty():
+				s += " " + _self_text()   # what the spend lays on its own machine (the Storm Petrel's lure)
 			if not holds_all.is_empty():
 				s += " " + _holds_all_text()
 			s += cooldown_text()

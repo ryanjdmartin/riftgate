@@ -40,7 +40,7 @@ const TABLE := {
 	"self_ablate": ["ablate", "heat"], "ignores_armour": ["", "plain"], "vents_all": ["vent", "heat"],
 	"gather": ["mine", "heat"], "detonate": ["mine", "heat"],
 	"swap": ["swap", "guard"],   # the Combat Translocator's rule, its own text since 15 November, its mark kept
-	"regenerates": ["regenerating", "guard"], "ally_action": ["reroll", "plain"], "rolls_target": ["reroll", "plain"],
+	"self_statuses": ["buff", "plain"], "ally_action": ["reroll", "plain"], "rolls_target": ["reroll", "plain"],
 	"kill_rerolls": ["reroll", "plain"], "team_rerolls": ["reroll", "plain"],
 	# Statuses.
 	"ablating": ["ablate", "heat"], "scorched": ["scorch", "heat"], "primed": ["primed", "heat"],
@@ -49,7 +49,7 @@ const TABLE := {
 	"brittled": ["brittle", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"], "ricochet": ["ricochet", "heat"],
 	"mine": ["mine", "heat"],
 	"essence": ["essence", "heat"], "essence_flare": ["essence_flare", "heat"],   # the Ammit's count and its Tap's buff (12 and 15 November), with Empowered's group: what hits harder
-	"braced": ["shield", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"],
+	"braced": ["shield", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"], "hardened": ["hardened", "guard"],
 	"phased": ["phased", "guard"], "guarded": ["lock", "guard"], "sealed": ["seal", "guard"], "changed_over": ["reroll", "plain"],
 	"suppressed": ["suppress", "guard"], "webbed": ["web", "guard"],
 	"numbed": ["numbed", "guard"], "paradox": ["paradox", "guard"], "cryoed": ["cryo", "guard"],
@@ -57,6 +57,7 @@ const TABLE := {
 	"corrupted": ["corrupt", "enemy"], "jammed": ["blank", "enemy"],
 	"risen": ["star", "enemy"], "regenerating": ["regenerating", "guard"], "swallowed": ["swallowed", "enemy"],
 	"appropriated": ["taken", "enemy"],   # what a foe took off a machine (Gilgamesh's, 16 November; the steal's mark until then)
+	"aloft": ["aloft", "guard"],   # a foe climbed out of the dice's reach while its move gathers (the Roc's, 16 November), with what keeps a blow off
 	"ability": ["", "plain"],   # a unit's own mechanic, no buff or debuff (8 November): its chips carry their own marks
 	"quick_turned": ["rapid", "plain"],
 	"overheated": ["heat", "heat"], "broken": ["shieldbreak", "guard"], "rebooting": ["shield_vent", "plain"],   # the reboot's three states (13 November), read off the gauges: no status of the engine's table
@@ -66,6 +67,7 @@ const TABLE := {
 	"self_destruct": ["blast", "enemy"], "all": ["all", "enemy"], "countdown": ["warning", "enemy"],
 	"last_act": ["skull", "enemy"], "parts": ["parts", "enemy"],
 	"drain": ["heart", "enemy"],   # the Vampire Lord's (31 October): a blow that regrows what it took from the hull
+	"immune": ["lock", "guard"],   # a foe's own Ability (17 November): a Suppress or a Disrupt that never lands on it
 }
 
 ## A die entry's own mark, by the engine's prefix on its status id, and the term it reads as.

@@ -270,9 +270,10 @@ func _refresh_row(id: String) -> void:
 	var mods: Array = []
 	for mid in setup.fitted_modules(id):
 		mods.append(db.module_name(str(mid)))
-	var refit := setup.is_refit(id) or not mods.is_empty()
+	var ups := setup.branch_picks(id)
+	var refit := setup.is_refit(id) or not mods.is_empty() or not ups.is_empty()
 	var status: Label = row["status"]
-	status.text = ("REFIT  " if refit else "stock  ") + (", ".join(names) if not names.is_empty() else "no hardpoints") + ("  ·  modules: " + ", ".join(mods) if not mods.is_empty() else "")
+	status.text = ("REFIT  " if refit else "stock  ") + (", ".join(names) if not names.is_empty() else "no hardpoints") + ("  ·  modules: " + ", ".join(mods) if not mods.is_empty() else "") + ("  ·  upgrades: " + _build_name(id, ups) if not ups.is_empty() else "")
 	status.add_theme_color_override("font_color", Palette.HUD if refit else Palette.MUTED)
 	(row["toggle"] as Button).text = "CLOSE" if _open == id else "HARDPOINTS"
 
@@ -341,11 +342,36 @@ func _fill_editor(id: String) -> void:
 		ob.item_selected.connect(_on_module_pick.bind(ob, id, slot))
 		line.add_child(ob)
 		editor.add_child(line)
+	# Its upgrades' picks along its branches (the Storm Petrel's first, 17 November), as a run's
+	# upgrades will buy them: every build the chassis allows, one pick.
+	var builds := db.branch_builds(id)
+	if builds.size() > 1:
+		var line := HBoxContainer.new()
+		line.add_theme_constant_override("separation", 10)
+		var n := _label("UPG", 16, Palette.MUTED)
+		n.custom_minimum_size = Vector2(64, 0)
+		line.add_child(n)
+		var ob := _picker()
+		var mine := setup.branch_picks(id)
+		var at := 0
+		for b in builds:
+			ob.add_item(_build_name(id, b) if not (b as Array).is_empty() else "— at its tier, no upgrade —")
+			ob.set_item_metadata(ob.item_count - 1, b)
+			if b == mine:
+				at = ob.item_count - 1
+		ob.select(at)
+		ob.item_selected.connect(func(index: int) -> void:
+			setup.set_branches(id, ob.get_item_metadata(index))
+			_refresh_row(id)
+			_refresh_summary())
+		line.add_child(ob)
+		editor.add_child(line)
 	var tools := HBoxContainer.new()
 	tools.add_theme_constant_override("separation", 12)
 	tools.add_child(_button("Stock", func() -> void:
 		setup.reset_loadout(id)
 		setup.modules.erase(id)
+		setup.branches.erase(id)
 		_fill_editor(id)
 		_refresh_row(id)
 		_refresh_summary(), ROW_H, 16))
@@ -388,6 +414,14 @@ func _component_picker(selected: String) -> OptionButton:
 			ob.set_item_metadata(ob.item_count - 1, cid)
 	ob.select(_index_of(ob, selected))
 	return ob
+
+
+## A build's steps by name, in the order taken: "Defence I, Defence II".
+func _build_name(id: String, picks: Array) -> String:
+	var names: Array = []
+	for s in db.branch_steps(id, picks):
+		names.append(str(s["name"]))
+	return ", ".join(names)
 
 
 ## Every module, grouped by maker, with its tier and what it does on one line.
@@ -714,7 +748,7 @@ func _refresh_summary() -> void:
 		return   # the pages are built before the summary and the launch buttons
 	var team: Array = []
 	for id in setup.fielded():
-		team.append(str(db.chassis[id]["name"]) + (" (refit)" if setup.is_refit(str(id)) or not setup.fitted_modules(str(id)).is_empty() else ""))
+		team.append(str(db.chassis[id]["name"]) + (" (refit)" if setup.is_refit(str(id)) or not setup.fitted_modules(str(id)).is_empty() or not setup.branch_picks(str(id)).is_empty() else ""))
 	var dom := setup.battle_domain()
 	var battle := "%s T%d C%d" % [str(db.factions[dom].get("name", dom)), setup.battle_tier, setup.battle_ramp()]
 	var bid := setup.battle_boss_id()
@@ -833,7 +867,7 @@ func _button(text: String, on_pressed: Callable, h: float = 60, size_px: int = 2
 # ---------------------------------------------------------------- launching
 
 func _on_fight() -> void:
-	Settings.field_trial(true)   # the fight's trials as the settings stand now (the block, the overheat's burn): a lone fight reads them as a battle does
+	Settings.field_trial(true)   # the fight's trials as the settings stand now (the overheat's burn): a lone fight reads them as a battle does
 	var sk := setup.make_skirmish()
 	if sk == null:
 		return

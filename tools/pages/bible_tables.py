@@ -45,7 +45,7 @@ FOE_EFFECTS_ON_MACHINES = {"ablate": "ablating", "scorch_all": "scorched", "corr
 FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
                        "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen",
                        "prime": "primed", "barrier": "barrier", "ward_all": "ward", "regenerate": "regenerating", "golden": "golden",
-                       "appropriate": "appropriated"}   # the ladder's (28 October); golden the Thunder Ape's (4 November)
+                       "appropriate": "appropriated", "phase": "phased"}   # the ladder's (28 October); golden the Thunder Ape's (4 November)
 # A special that is a rider's own mechanic, played as a whole move, counts under the rider.
 MOVE_AS_KEYWORD = {"ablate": "ablate", "jam": "jam", "scorch_all": "scorch", "corrupt_all": "corrupt", "swallow": "swallow", "merge": "merge", "dispel": "dispel", "golden": "golden_rage"}
 VIA_STATUS = {"primed": [("ablating", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
@@ -68,7 +68,6 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("gather", "Gather", lambda f: bool(f.get("gathers_mines"))),
            ("detonate", "Detonate", lambda f: bool(f.get("detonates"))),
            # The Petrels' locked pieces (built 30 October).
-           ("regenerates", "Regenerates", lambda f: bool(f.get("regenerates"))),
            ("ally_action", "An ally's action", lambda f: bool(f.get("ally_action"))),
            ("rolls_target", "Rolls its die", lambda f: bool(f.get("rolls_target"))),
            ("kill_rerolls", "Rerolls a kill", lambda f: int(f.get("kill_rerolls", 0) or 0) > 0),
@@ -149,8 +148,8 @@ def tally(words):
         for field, status in FACE_FIELDS.items():
             if f.get(field):
                 t.grant(status, "machine", label, how, planned, who=who)
-        if isinstance(f.get("regenerates"), dict):   # a regen on its own spender (the Storm Petrel's St. Elmo's Regenerator)
-            t.grant(f["regenerates"].get("status", ""), "machine", label, how, planned, who=who)
+        for g in f.get("self_statuses") or []:   # what a spend lays on its own machine (the Hardlight Pulse's Hardened Light, 18 November)
+            t.grant(g.get("status", ""), "machine", label, how, planned, who=who)
         for field, statuses in FACE_FIELDS_ON_FOES.items():
             if f.get(field):
                 for status in statuses:
@@ -188,6 +187,8 @@ def tally(words):
                 t.grant(str(eff.get("value")), "machine", label, how, planned, who=who)
             elif e == "lay_status":   # laid on each foe the blow hits (the funnel-web's Ambush)
                 t.grant(str(eff.get("value")), "foe", label, how, planned, who=who)
+            elif e == "self_status":   # laid on its own machine by a spend at a foe (an upgrade's branch)
+                t.grant(str(eff.get("status")), "machine", label, how, planned, who=who)
             elif e in PASSIVE_EFFECTS:
                 status, on = PASSIVE_EFFECTS[e]
                 t.grant(status, on, label, how, planned, who=who)
@@ -195,6 +196,11 @@ def tally(words):
     for c in chassis:
         p = c.get("passive") or {}
         passive(p, "%s's %s" % (the(c["name"]), p.get("name", "passive")), "passive", the(c["name"]))
+        # Its upgrades' branches (the Storm Petrel's first, 17 November): each step a passive's worth
+        # of effects on its locked piece, counted as a passive's are, the step named.
+        for b in c.get("branches") or []:
+            for i, step in enumerate(b.get("steps") or []):
+                passive(step, "%s's %s %s" % (the(c["name"]), b.get("name", b.get("id", "")), "I" if i == 0 else "II"), "passive", the(c["name"]))
     for m in load("modules.json")["entries"]:
         if m.get("text"):
             passive(m["text"], "%s (module)" % m["name"], "module", None)
@@ -227,6 +233,8 @@ def tally(words):
                     row["moves"][1 if planned else 0] += 1
             if int(a.get("countdown", 0)) > 0:
                 t.count("countdown", "foe", planned, name)
+            if a.get("aloft"):
+                t.grant("aloft", "foe", move, "foe", planned, foe["id"], whom)   # worn while the move gathers (the Roc's Stoop, 16 November)
             if int(a.get("per_kill", 0)) > 0:
                 t.count("grudge", "foe", planned, name)
         if int(foe.get("rage", 0) or 0) > 0:

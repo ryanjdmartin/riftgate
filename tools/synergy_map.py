@@ -56,7 +56,9 @@ CURRENCIES = OrderedDict([
     ("ricochet", ("Ricochet", "on a machine")),
     ("phased", ("Phased", "on a machine")),
     ("sealed", ("Sealed", "on a machine")),
+    ("hardened", ("Hardened Light", "on a machine")),
     ("regenerating", ("Regenerating", "on a machine")),
+    ("charged", ("Charged", "on a machine")),
     ("ablating_mech", ("Ablating", "on a machine")),
     ("brittled_mech", ("Brittle", "on a machine")),
     ("exposure_mech", ("Exposed", "on a machine")),
@@ -87,7 +89,7 @@ KEYWORDS = {
     "ablate": [("ablating", "sets")], "shock": [("shocked", "sets")], "suppress": [("suppressed", "sets")],
     "cryo": [("cryoed", "sets")], "brittle": [("brittled", "sets")],
     "expose": [("exposure", "sets")], "lure": [("lure", "sets")], "disrupt": [("disrupt", "sets")],
-    "chain": [("kill", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")],
+    "chain": [("shocked", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")],
     "dispel": [("foe_buff", "reads")],
     "cleanse": [("ablating_mech", "reads"), ("brittled_mech", "reads"), ("exposure_mech", "reads"), ("scorched", "reads"), ("disabled", "reads"), ("corrupted", "reads")],
     "rapid": [], "instant": [], "every_foe": [], "every_ally": [],
@@ -98,7 +100,7 @@ FACE_FIELDS = {
     "fires_hopper": [("hopper", "reads")], "detonates": [("mine", "reads")],
     "gathers_mines": [("mine", "reads")], "vents_all": [("heat", "reads")], "power_per_heat": [("heat", "reads")],
     "power_per_missing": [("missing_hp", "reads")], "finisher": [("missing_hp", "reads")],
-    "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "regenerates": [("regenerating", "sets")],
+    "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "self_statuses": [],
     "spends": [("essence", "reads")], "spends_up_to": [], "holds_all": [("overcharged", "reads")],   # the Quintessence Tap: it consumes Essence, and holds every Empowered a round
     "spends_magazine": [("ammo", "reads")], "magazine_min": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
     "self_ablate": [("ablating_mech", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
@@ -115,14 +117,14 @@ EFFECTS = {
     "seal_form": [("sealed", "sets"), ("braced", "sets"), ("heat", "sets")],
     "paradox": [("paradox", "sets"), ("suppressed", "sets")], "muster": [("muster", "sets"), ("reroll", "reads")],
     "shield_per_ally_heat": [("ally_heat", "reads"), ("shield_granted", "reads")],
-    "add_stacks": [], "pass_release": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
+    "add_stacks": [], "reboot_release": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
     "heat_per_blow": [("heat", "sets")],
     "step_die": [("reroll", "reads")], "split_strikes": [("strikes", "sets")], "multiply_printed": [], "free_reroll": [("reroll", "sets")],
     "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "rewrite_weapon": [], "grant_keyword": [], "spillover": [("strikes", "sets")],
     "add_shield": [], "refill_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
     "multiply_heat": [("heat", "sets")], "add_damage": [], "add_damage_taken": [], "hull_per_spend": [("hull_damage", "sets")],
     "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "one_of_each": [], "min_damage": [],
-    "burn_shield": [("heat", "reads")], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
+    "shield_per_heat": [], "self_status": [], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
 }
 TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_granted": "shield_granted", "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",
@@ -134,7 +136,7 @@ CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "ra
 FOE_RIDERS = {"ablate": "ablating_mech", "brittle": "brittled_mech", "scorch": "scorched", "jam": "disabled", "corrupt": "corrupted", "expose": "exposure_mech"}
 FOE_EFFECTS = {"ablate": "ablating_mech", "scorch_all": "scorched", "jam": "disabled", "corrupt_all": "corrupted", "expose": "exposure_mech", "drain_rerolls": "reroll",
                "brace": "foe_buff", "brace_all": "foe_buff", "rally": "foe_buff", "revive_once": "foe_buff", "revive_once_ally": "foe_buff",
-               "prime_all": "foe_buff", "barrier": "foe_buff", "ward_all": "foe_buff", "regenerate": "foe_buff"}
+               "prime_all": "foe_buff", "barrier": "foe_buff", "ward_all": "foe_buff", "regenerate": "foe_buff", "phase": "foe_buff"}
 
 # The engine's own readers, where a currency pays by itself (the rules, docs/rules.md).
 ENGINE_READERS = {
@@ -159,7 +161,9 @@ ENGINE_READERS = {
     "ricochet": ["a strike of 1 more a stack at the target once a weapon has fired: most on riders a strike and on flat buffs; hull damage halves it"],
     "phased": ["granted as the round ends: out of reach of both sides through the next, and it acts"],
     "sealed": ["armour +3, cooling stopped, 3 heat a turn"],
-    "regenerating": ["a point of shield a stack as the round opens, then a stack fades"],
+    "hardened": ["while its shield stands, every blow on it loses 1 a stack, up to its cap; every stack goes when the shield breaks"],
+    "regenerating": ["a point of shield a stack as its turn ends, then a stack fades"],
+    "charged": ["its weapons fire with Shock, a stack a fire"],
     "ablating_mech": ["its tick: 1 shield a stack at the turn's end, then hull, past armour and a Barrier"],
     "brittled_mech": ["every blow it takes, +1 a stack; halves as its turn starts"],
     "exposure_mech": ["its armour counts for nothing, and the next round's targeted moves turn on it until the blows drawn would wreck it"],
@@ -238,6 +242,8 @@ class Map:
                     self.add(cur, how, p)
             if f.get("kind") == "buff":
                 self.add(f.get("status"), "sets", p)
+            for g in f.get("self_statuses") or []:   # what a spend lays on its own machine (the Hardlight Pulse's Hardened Light, 18 November)
+                self.add(g.get("status"), "sets", p)
             charged = f.get("charged") or {}
             if charged.get("status"):
                 self.add(charged["status"], "sets", dict(p, how="charged"))
@@ -265,7 +271,12 @@ class Map:
                  "on": [], "maker": c.get("maker", ""), "planned": (c.get("passive") or {}).get("status") == "planned", "stocked": []}
             self.walk_effects((c.get("passive") or {}).get("effects", []), p)
             if (c.get("passive") or {}).get("status") == "planned":
-                self.add("heat", "reads", dict(p, how="planned"))   # the Storm Petrel's shield in place of heat
+                self.add("heat", "reads", dict(p, how="planned"))
+            # Its upgrades' branches (the Storm Petrel's first, 17 November): each step's effects on
+            # its locked piece.
+            for b in c.get("branches") or []:
+                for i, step in enumerate(b.get("steps") or []):
+                    self.walk_effects(step.get("effects") or [], dict(p, who="%s's %s %s" % (c["name"], b.get("name", ""), "I" if i == 0 else "II"), kind="upgrade"))
         for m in self.mo:
             p = {"who": m["name"], "kind": "module", "tier": m.get("tier"), "on": [], "maker": m.get("maker", ""),
                  "planned": (m.get("text") or {}).get("status") == "planned", "stocked": []}
@@ -281,6 +292,18 @@ class Map:
                 for e in [a.get("effect")] + [st.get("effect") for st in a.get("also") or []]:   # its own special and what it does also
                     if e in FOE_EFFECTS:
                         self.add(FOE_EFFECTS[e], "sets", dict(p, who="%s's %s" % (f["name"], a["name"])))
+            # Its fall, a death blow or one special in its place, and what that does also (17
+            # November: the Mandragora's scream is a fall, no move).
+            od = f.get("on_death") if isinstance(f.get("on_death"), dict) else {}
+            fall = od.get("blow") or od.get("act")
+            if isinstance(fall, dict):
+                who = "%s's %s, as it falls" % (f["name"], fall.get("name", "last act"))
+                for kw in fall.get("keywords", []):
+                    if kw in FOE_RIDERS:
+                        self.add(FOE_RIDERS[kw], "sets", dict(p, who=who))
+                for e in [fall.get("effect")] + [st.get("effect") for st in fall.get("also") or []]:
+                    if e in FOE_EFFECTS:
+                        self.add(FOE_EFFECTS[e], "sets", dict(p, who=who))
 
     def walk_effects(self, effects, p):
         for eff in effects:
@@ -315,6 +338,8 @@ class Map:
                 self.add(str(eff.get("value")), "sets", p)
             if name == "lay_status":
                 self.add(str(eff.get("value")), "sets", p)
+            if name == "self_status":   # laid on its own machine by a spend (an upgrade's branch, 17 November)
+                self.add(str(eff.get("status")), "sets", p)
             if name == "grant_keyword":
                 for cur, how in KEYWORDS.get(str(eff.get("value")), []):
                     self.add(cur, how, p)
@@ -386,7 +411,7 @@ def render(m):
                 unique.append(label)
             if len(sl) == 1:
                 holes.append("**%s** has one slottable setter, %s." % (label, word(sl[0])))
-            if not readers and cur not in ("suppressed", "webbed", "disrupt", "swap", "phased", "barrier", "ward", "sealed", "regenerating",
+            if not readers and cur not in ("suppressed", "webbed", "disrupt", "swap", "phased", "barrier", "ward", "sealed", "hardened", "regenerating",
                                            "spun_up", "ricochet", "braced", "vitriol", "mine", "paradox", "lure"):
                 holes.append("**%s** is read by nothing but its own effect." % label)
     L.append("")

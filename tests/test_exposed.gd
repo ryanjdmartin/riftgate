@@ -1,7 +1,7 @@
 extends TestCase
 
 ## Exposed on a machine, from a foe's Expose (Ryan, 15 November, the vocabulary pass's fourth and
-## fifth rounds: docs/vocabulary_pass_proposal.md, section 17), on synthetic foes. The armour
+## fifth rounds: the bible's Exposed row), on synthetic foes. The armour
 ## half is the foe's rule whole ("all armour of all kinds"); the second half is the field's fire:
 ## as the round after opens every targeted intent turns on the machine until the blows already
 ## drawn would wreck it ("keep the logic where enemies don't try and overkill ... So the whole
@@ -136,7 +136,7 @@ func test_every_targeted_intent_turns_on_it_until_the_blows_drawn_would_wreck_it
 			if f != warden and f.target == marked:
 				on_it += 1
 		# Three blows of 10 wreck a hull of 25; the fourth foe picks as it would, among the rest.
-		assert_eq(on_it, 3, "seed %d: the field turns on it, whatever each foe's aim, up to the blows that would wreck it" % seed)
+		assert_eq(on_it, 3, "seed %d: the field turns on it, whatever each move's word, up to the blows that would wreck it" % seed)
 		var order: Array = sk.field_foes().filter(func(f) -> bool: return f != warden)
 		assert_eq([order[0].target, order[1].target, order[2].target], [marked, marked, marked], "seed %d: in the order they strike" % seed)
 		assert_true(order[3].target != marked and order[3].target != null, "seed %d: and never an overkill: the rest pick intent targets as normal" % seed)
@@ -279,6 +279,85 @@ func test_no_foe_announces_an_expose_while_one_is_out_or_a_machine_stands_expose
 
 
 # ---------------------------------------------------------------- content, the bot and the screen
+
+## A foe whose one move is a blow that lays Exposed (the Piercing Eye's Gaze) strikes every
+## round, so the rule of announcing cannot hold it back. The rider is held instead: it lays
+## nothing while a machine stands Exposed, never a second mark and never the first renewed, so
+## the whole field's fire still comes every other round at the most. Its intent says which.
+func test_a_blows_expose_lays_no_second_mark_and_renews_none() -> void:
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("A", Die.single(Face.blank()), 0, 500)
+	var b := _mech("B", Die.single(Face.blank()), 0, 500)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var eye := Foe.make("eye", 500, 5)
+	eye.actions = [_blow({"id": "gaze", "name": "Gaze", "keywords": ["expose"]})]
+	eye.action = eye.actions[0]
+	sk.add_foes([eye])
+	sk.begin()
+	sk.start_round()
+	assert_eq(_ids(sk.legal_actions(eye)), ["gaze"], "its one move is always its move")
+	assert_true(sk.expose_rider_lands(eye), "nobody stands Exposed: the mark will land")
+	eye.target = sk.mechs[0]
+	sk.end_round()
+	assert_true(Effects.has(a, "exposure_mech"), "the blow lays its mark")
+	sk.start_round()
+	assert_eq(_ids(sk.legal_actions(eye)), ["gaze"], "a machine stands Exposed, and it has nothing else to announce")
+	assert_eq(eye.target, sk.mechs[0], "the mark draws its aimed blow, as it draws every one")
+	assert_false(sk.expose_rider_lands(eye), "the rider will lay nothing this round")
+	assert_true(SkirmishScreen.intent_riders(eye, ["expose"]).is_empty(), "so its intent wears no mark for it")
+	eye.target = sk.mechs[1]
+	sk.end_round()
+	assert_false(Effects.has(b, "exposure_mech"), "its blow on another machine lays no second mark")
+	sk.start_round()
+	assert_false(Effects.has(a, "exposure_mech"), "and the first, never renewed, has run out as its round passed")
+	assert_true(sk.expose_rider_lands(eye), "so the mark may land again: every other round at the most")
+	# Another foe's Expose announced ahead of it holds the rider too.
+	var s2 := Skirmish.new(1, 2)
+	s2.add_mech(_mech("A", Die.single(Face.blank()), 0, 500))
+	s2.add_mech(_mech("B", Die.single(Face.blank()), 0, 500))
+	var first := _marker(500, 20)
+	var eye2 := Foe.make("eye", 500, 5)
+	eye2.actions = [_blow({"id": "gaze", "name": "Gaze", "keywords": ["expose"]})]
+	eye2.action = eye2.actions[0]
+	s2.add_foes([first, eye2])
+	s2.begin()
+	s2.start_round()
+	first.action = first.actions[0]
+	first.target = s2.mechs[0]
+	eye2.target = s2.mechs[1]
+	assert_eq(s2.field_foes()[0], first, "the heavier hitter strikes first")
+	assert_false(s2.expose_rider_lands(eye2), "another's Expose is out ahead of it")
+	s2.end_round()
+	assert_true(Effects.has(s2.mechs[0].unit, "exposure_mech") and not Effects.has(s2.mechs[1].unit, "exposure_mech"), "one machine at a time: the move's mark lands and the blow's does not")
+
+
+## Nothing legal falls back to a blow, and a blow whose own condition holds comes before one
+## whose condition shuts it: a rule of announcing may hold a foe's plain blow back (it also
+## takes a reroll, and the round's two are spoken for), and the foe then lands that blow, never
+## the one it keeps for when it is hurt.
+func test_a_foe_with_nothing_legal_takes_a_blow_whose_own_condition_holds() -> void:
+	var sk := Skirmish.new(1, 2)
+	sk.add_mech(_mech("A", Die.single(Face.blank()), 0, 500))
+	var screamers: Array = []
+	for i in range(2):
+		var m := Foe.make("screamer", 500, 1)
+		m.actions = [{"id": "scream", "name": "Scream", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "text": ""}]
+		m.action = m.actions[0]
+		screamers.append(m)
+	var thief := Foe.make("thief", 500, 0)
+	thief.actions = [_blow({"id": "mug", "name": "Mug", "also": [{"effect": "drain_rerolls", "value": 1}]}),
+		_blow({"id": "show", "name": "Show", "keywords": ["all"], "when": "below_half"})]
+	thief.action = thief.actions[0]
+	sk.add_foes(screamers + [thief])
+	sk.begin()
+	sk.start_round()
+	assert_eq(sk.drain_announced(thief), 2, "the round's two rerolls are spoken for")
+	assert_eq(_ids(sk.legal_actions(thief)), ["mug"], "its plain blow, held back by the rule alone, is its move; the blow its condition shuts is not")
+	assert_eq(str(thief.action.get("id", "")), "mug", "and it announced it")
+	thief.hp = 100
+	assert_eq(_ids(sk.legal_actions(thief)), ["show"], "hurt, its other blow is open and takes no reroll, so it is the legal one")
+
 
 func test_the_validator_refuses_an_expose_on_anything_dealt_at_tier_one() -> void:
 	var db := ContentDB.new()   # a copy of its own: the shared content is never written to

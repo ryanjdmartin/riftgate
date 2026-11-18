@@ -100,6 +100,19 @@ var _next_id: int = 1
 ## Ryan, 21 October: lifted in place, they travel as a ring round it), so their hexes never
 ## block it. Battle sets it for the search and clears it after; empty otherwise.
 var lifted: Array[Unit] = []
+## The machines wrecked this battle, each on the hexes it fell on (Ryan, 4 November: a wreck
+## stays on its hex and blocks it for the battle; 16 November: "A wreck should behave like any
+## other unit, meaning nobody can land on it"). Every walk passes it as it passes a unit
+## (`passes`) and none ends on it (can_stand, _landable), and no tear opens on it; it is off
+## `units`, so no pack hunts it, no fight takes it and nothing counts it as a machine. The
+## campaign reads its die from here (Campaign._fielded).
+var wrecks: Array[Unit] = []
+## The rift's shell while the seal stands (BattleMap.shell_hexes; Ryan, 16 November: "the 7 hexes
+## next to the rift are inaccessible to player units"): hex -> true. No machine enters or stands on
+## one, a flyer as much as any (_ground_fits); the packs pass and land there as ever, the rift's
+## own coming out through them. The battle lays it as it opens with the seal and lifts it at the
+## Rupture (Battle.rupture); empty with no seal.
+var shell: Dictionary = {}
 
 
 func _init(battle_map: BattleMap) -> void:
@@ -186,6 +199,14 @@ func unit_at(h: Vector2i) -> Unit:
 	return null
 
 
+## The wreck lying on a hex, or null (`wrecks`).
+func wreck_at(h: Vector2i) -> Unit:
+	for u in wrecks:
+		if u.occupies(h):
+			return u
+	return null
+
+
 func unit_by_id(uid: int) -> Unit:
 	for u in units:
 		if u.id == uid:
@@ -218,7 +239,7 @@ func defenses() -> Array[Unit]:
 
 
 func is_free(h: Vector2i) -> bool:
-	return map.has(h) and not map.is_structure(h) and unit_at(h) == null
+	return map.has(h) and not map.is_structure(h) and unit_at(h) == null and wreck_at(h) == null
 
 
 ## Whether `mover` may pass the hex `occ` stands on, never stopping there: always, since 10
@@ -233,13 +254,15 @@ static func passes(_mover: Unit, _occ: Unit) -> bool:
 
 
 ## Whether `u` could stand with its anchor at `at`: every footprint hex in the map, passable,
-## not a structure, and not held by another unit. Nobody stops on another unit's hex.
+## not a structure, and not held by another unit or a wreck. Nobody stops on another unit's hex.
 func can_stand(u: Unit, at: Vector2i) -> bool:
 	if not _ground_fits(u, at):
 		return false
 	for o in u.footprint:
 		var occ := unit_at(at + o)
 		if occ != null and occ != u and not lifted.has(occ):
+			return false
+		if wreck_at(at + o) != null:
 			return false
 	return true
 
@@ -256,7 +279,8 @@ func can_pass(u: Unit, at: Vector2i) -> bool:
 	return true
 
 
-## Every footprint hex on the field, no structure, ground `u` can enter.
+## Every footprint hex on the field, no structure, ground `u` can enter, and for a machine none
+## of the rift's shell while it stands.
 func _ground_fits(u: Unit, at: Vector2i) -> bool:
 	for o in u.footprint:
 		var h: Vector2i = at + o
@@ -264,7 +288,17 @@ func _ground_fits(u: Unit, at: Vector2i) -> bool:
 			return false
 		if not BattleMap.passable(map.terrain[h], u.traits):
 			return false
+		if u.is_player() and shell.has(h):
+			return false
 	return true
+
+
+## Lay the rift's shell (`up`) or lift it.
+func set_shell(up: bool) -> void:
+	shell = {}
+	if up:
+		for h in map.shell_hexes():
+			shell[h] = true
 
 
 ## Nearest hex where a unit with `traits` could stand, by breadth-first ring search.
@@ -492,8 +526,9 @@ func _walkable(sq: Unit, at: Vector2i, _blocked: Dictionary) -> bool:
 	return true
 
 
-## Whether a pack may stop with its anchor at `at`: walkable, no machine there at all, and no
-## other pack's hold (`blocked`: where the packs planned before it end, where the rest stand).
+## Whether a pack may stop with its anchor at `at`: walkable, no machine or wreck there at all,
+## and no other pack's hold (`blocked`: where the packs planned before it end, where the rest
+## stand).
 func _landable(sq: Unit, at: Vector2i, blocked: Dictionary) -> bool:
 	for o in sq.footprint:
 		var h: Vector2i = at + o
@@ -501,6 +536,8 @@ func _landable(sq: Unit, at: Vector2i, blocked: Dictionary) -> bool:
 			return false
 		var occ := unit_at(h)
 		if occ != null and occ != sq and occ.is_player():
+			return false
+		if wreck_at(h) != null:
 			return false
 	return true
 
@@ -954,22 +991,43 @@ func seed_caches(content: ContentDB, seed_arg: int) -> void:
 		if at == NO_HEX:
 			continue
 		var depth := float(last - Hex.axial_to_offset(at).y) / float(maxi(1, last - first))   # 0 at the wall's end, 1 at the rift's
-		var weights: Array = []
-		var total := 0.0
-		for k in kinds:
-			var w: Array = content.loot[k].get("weight", [0, 0])
-			weights.append(lerpf(float(w[0]), float(w[1]), depth))
-			total += weights[weights.size() - 1]
-		if total <= 0.0:
+		var kind := _roll_kind(content, kinds, depth, rng)
+		if kind.is_empty():
 			continue
-		var roll := rng.randf() * total
-		var kind := str(kinds[0])
-		for j in range(kinds.size()):
-			roll -= float(weights[j])
-			if roll < 0.0:
-				kind = str(kinds[j])
-				break
 		caches.append({"id": i + 1, "tier": int(content.loot[kind].get("tier", 1)), "pos": at})
+	# Behind the rift's shell (Ryan, 16 November: "a cache can and probably should appear behind it
+	# as well"): on its seven hexes beside the rift, the boss's aside, its kind rolled at the rift's
+	# depth, so the best likeliest: the final sortie's bait, out of the machines' reach until the
+	# Rupture opens the seven.
+	var behind: Array = map.shell_hexes().filter(func(h: Vector2i) -> bool: return _cache_fits(h))
+	for i in range(int(content.loot_rules.get("behind_shell", 0))):
+		if behind.is_empty():
+			break
+		var at: Vector2i = behind[rng.randi_range(0, behind.size() - 1)]
+		var kind := _roll_kind(content, kinds, 1.0, rng)
+		if kind.is_empty():
+			break
+		caches.append({"id": n + 1 + i, "tier": int(content.loot[kind].get("tier", 1)), "pos": at})
+		behind = behind.filter(func(h: Vector2i) -> bool: return _cache_fits(h))
+
+
+## A cache's kind rolled at `depth` (0 at the wall's end of the field, 1 at the rift's), each kind
+## weighted between its two weights; "" when nothing weighs.
+func _roll_kind(content: ContentDB, kinds: Array, depth: float, rng: RandomNumberGenerator) -> String:
+	var weights: Array = []
+	var total := 0.0
+	for k in kinds:
+		var w: Array = content.loot[k].get("weight", [0, 0])
+		weights.append(lerpf(float(w[0]), float(w[1]), depth))
+		total += weights[weights.size() - 1]
+	if total <= 0.0:
+		return ""
+	var roll := rng.randf() * total
+	for j in range(kinds.size()):
+		roll -= float(weights[j])
+		if roll < 0.0:
+			return str(kinds[j])
+	return str(kinds[0])
 
 
 ## Whether a cache may lie on a hex: open ground on the field (a step to cross, no water and no
@@ -1077,7 +1135,7 @@ func tear_hex() -> Vector2i:
 			var h := Hex.offset_to_axial(col, row)
 			if not map.has(h) or map.is_structure(h) or int(map.terrain[h]) == BattleMap.Terrain.WATER or int(map.terrain[h]) == BattleMap.Terrain.MOUNTAIN:
 				continue
-			if unit_at(h) != null or machine_adjacent(h):
+			if unit_at(h) != null or wreck_at(h) != null or machine_adjacent(h):
 				continue
 			var d := Hex.distance(h, map.rift)
 			for t in tears:
@@ -1092,14 +1150,17 @@ func tear_hex() -> Vector2i:
 	return NO_HEX
 
 
-## Apply a finished skirmish back to the map: survivors keep marching, wrecks are removed.
-## Rift Pressure does not tick here (Ryan, 13 October: a tick per round fought punished care
-## invisibly and taxed the epic fight like a stall); it ticks on the map's enemy turns only.
+## Apply a finished skirmish back to the map: survivors keep marching, a wrecked machine leaves
+## the units and lies where it fell (`wrecks`). Rift Pressure does not tick here (Ryan, 13
+## October: a tick per round fought punished care invisibly and taxed the epic fight like a
+## stall); it ticks on the map's enemy turns only.
 func apply_skirmish_result(sk: Skirmish) -> void:
 	for ms in sk.mechs:
 		if ms.unit.hull <= 0:
 			log.append("%s is wrecked" % ms.unit.display_name)
 			units.erase(ms.unit)
+			if not wrecks.has(ms.unit):
+				wrecks.append(ms.unit)
 	for sq in sk.packs:
 		if sq.is_boss:
 			# A boss unit stands while one of its commanders does, holding the rift: its lineup

@@ -150,15 +150,17 @@ func _show_page(page: String) -> void:
 			if OS.is_debug_build():
 				_toggle("EVERY LINE", "voice_test")   # Jenny on every hook, every time: to hear them all on the phone
 				_toggle("WELD", "weld")   # the machines' parts welded (MechWeld); off draws them as authored, to compare the look and the heat on the phone
-				_button("TRIALS", func() -> void: _show_page("trials"))   # the trial dials (the shield's regen, the field's depth and opening, the fodder's worth, the Rupture's size, the tide's density and the wall strike), a page of their own so the settings fit every glass
+				_button("TRIALS", func() -> void: _show_page("trials"))   # the trial dials, each a number still to be picked by play (the page's own note lists them), a page of their own so the settings fit every glass
 				_button("COLOURS", func() -> void: _show_page("colours"))   # the colours that carry a meaning and the HUD presets, by wheel or hex (ColourTuner)
 			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
 		"trials":
-			# A debug build's dials for the passes on trial, the game's own until one is picked: a
-			# flat shield regen in place of each chassis's own (read at the next launch), the
-			# field's depth, the opening's distance, the fodder's worth on the Rupture meter, the
-			# meter's size, the tide's density and the wall strike (each read as the next battle
-			# starts).
+			# A debug build's dials for the numbers still to be picked by play, the game's own
+			# until one is: the basics' heat, the top basic's price, the standard foe's hit
+			# points and the Barrier basic's place (each read at the next launch), the hull an
+			# overheat burns, the field's depth, the opening's distance, the fodder's worth on
+			# the Rupture meter, the meter's size, the tide's density and the wall strike (each
+			# read as the next battle starts). A dial leaves this page with its question: the
+			# pick lands in content or in the engine and the what-if is cut.
 			_title("TRIALS")
 			# The dials stand in a scroller, as the keywords do, so a glass of any height holds
 			# them (14 November: at twelve rows the page had outgrown the 1280 glass, and the
@@ -177,8 +179,6 @@ func _show_page(page: String) -> void:
 			_credit("Hull an overheat burns a point past the gauge. Next battle.")
 			_choice_row("BARRIER BASIC", "barrier_basic", Settings.BARRIER_BASICS, Settings.BARRIER_BASIC_LABELS)   # the Barrier basic on the stock dice as built, or off them with the Armoured basic in its slot (Refit's barrier=none; its place is open since 12 November)
 			_credit("The Barrier on the starting dice, or the Armoured basic in its slot. Next launch.")
-			_choice_row("SHIELD BREAK", "shield_break", Settings.SHIELD_BREAKS, Settings.SHIELD_BREAK_LABELS)   # the block (Ryan, 13 November: "when a shield breaks, it absorbs the whole blow"): Skirmish.shield_break, a what-if and no decision
-			_credit("A blow that breaks a shield is stopped whole. Next battle.")
 			_choice_row("FIELD DEPTH", "field_depth", Settings.FIELD_DEPTHS)   # the field's depth in rows, twelve the game's (Ramp.depth_trial; Ryan, 10 November: "I think the map is a bit too shallow")
 			_choice_row("OPENING", "field_opening", Settings.FIELD_OPENINGS, Settings.FIELD_OPENING_LABELS)   # how many moves farther from the wall the opening's packs stand (Battle.opening_trial): depth alone leaves their first walk on the wall
 			_credit("Rows from rift to wall; moves farther out the first packs stand. Next battle.")
