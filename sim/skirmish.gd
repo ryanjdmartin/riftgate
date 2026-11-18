@@ -231,6 +231,8 @@ var spend_blows: Array = []
 ## The foes the latest spend at a foe reached, felled or not (Hits.reached): what a grant on its
 ## own machine counts a stack for (Face.self_statuses' per_foe). The rules never read it otherwise.
 var _reached_last := 0
+## The zap the spend in hand paid for (the Buzzard's: _pay_zap), added to its every blow; 0 between spends.
+var _zap_now := 0
 ## Every special of the last enemy turn (a defend, buff or debuff in place of a blow), for
 ## the screen to announce on its plaque in order: {foe, name, kind, seq}.
 var turn_specials: Array = []
@@ -681,6 +683,27 @@ static func heat_bonus(ms: MechState, f: Face) -> int:
 	return f.power_per_heat * int(ms.heat / maxi(1, f.per_heat))
 
 
+## What a gun that fires its machine's whole shield adds to every blow from the shield it fires: its
+## power_per_shield for each `per_shield` the shield holds right now, nothing on a shield at nothing
+## (the Afterburner Cannon since 18 November, Ryan: "the cannon fires its whole field").
+static func shield_bonus(ms: MechState, f: Face) -> int:
+	if f == null or not f.spends_shield or ms.shield_broken:
+		return 0
+	return f.power_per_shield * int(maxi(0, ms.unit.shield) / maxi(1, f.per_shield))
+
+
+## The zap a weapon's spend at a foe would pay for now (the Buzzard's, Effects.zap_of): its damage
+## when the shield holds the cost, 0 when it is short or broken, so the gun fires plain (Ryan, 11
+## November: "when it can't pay it doesn't zap"). The die's number and the bot read it here.
+static func zap_ready(ms: MechState, f: Face) -> int:
+	if ms == null or f == null or ms.shield_broken:
+		return 0
+	var z := Effects.zap_of(ms.unit, f)
+	if z.is_empty() or ms.unit.shield < int(z["cost"]):
+		return 0
+	return int(z["damage"])
+
+
 ## The loads one shot of a hopper-firing attack takes (fires_hopper, the Bullion Fragmenter,
 ## 11 October): as many as the machine's hopper holds, up to the shot's most, so a full
 ## hopper feeds several shots rather than one. Read as the die is spent.
@@ -727,10 +750,11 @@ static func split_share(roll: int, split: int) -> int:
 func shown_number(ms: MechState, f: Face, target: Foe = null) -> int:
 	if f == null or not f.is_attack():
 		return 0
-	var add := heat_bonus(ms, f) + hopper_bonus(ms.unit, f)   # what the entry prints from its firer, inside the pipeline
+	var add := heat_bonus(ms, f) + shield_bonus(ms, f) + hopper_bonus(ms.unit, f)   # what the entry prints from its firer, inside the pipeline
 	var own := (f.missing_bonus(target) + f.consume_bonus(target)) if not f.is_debuff() else 0   # the foe's own reads, flat after it (the blow's order)
 	# A split entry (the Skua's) shows a hit's blow: its base halved, rounded down, never below one, then the buffs.
-	var d := int(Effects.attack(ms.unit, f, split_share(f.power + add, f.split), 0, target)["damage"]) + own
+	var zap := zap_ready(ms, f) if not ms.assigned else 0   # the zap it would pay for, beside Empowered's add
+	var d := int(Effects.attack(ms.unit, f, split_share(f.power + add, f.split), 0, target, {"zap": zap} if zap > 0 else {})["damage"]) + own
 	if target != null:
 		if not f.is_debuff():
 			d = Effects.damage_taken(target, d, ms.unit, true, false)   # every add and multiply it takes (its Brittle, a Guarded core's nothing) but a Shocked doubling, the foe's own chip
@@ -2997,10 +3021,9 @@ func _tick_mechs() -> void:
 
 
 ## A machine's shield regen as the round opens: what it is granted (a module's, a passive's, a
-## status's; a chassis has none of its own), and what its heat adds to it (the Buzzard's Thermal
-## Recoupler).
+## status's; a chassis has none of its own). The Buzzard's heat added to it until 18 November.
 static func shield_regen_of(ms: MechState) -> int:
-	return maxi(0, Effects.stat(ms.unit, "shield_regen") + Effects.regen_from_heat(ms.unit, ms.heat))
+	return maxi(0, Effects.stat(ms.unit, "shield_regen"))
 
 
 ## A machine's cooling as the round opens: what it is granted, a chassis having none of its own.
@@ -3184,7 +3207,9 @@ func _spend_at(mech_index: int, ms: MechState, f: Face, target: Foe, second = nu
 			log.append("%s empties the magazine: %d ammo" % [ms.unit.display_name, price])
 		ms.ammo -= price
 		pays = Pays.AMMO
+	_zap_now = _pay_zap(ms, f)
 	var h := _hit(ms, f, target)
+	_zap_now = 0
 	_reached_last = h.reached.size()
 	_lay_mine(ms, target, h.mine)
 	_entry_effects(ms, f, target, second)
@@ -3205,7 +3230,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	var turned := {}           # foe -> the marks its Ward turned away this spend, told once at the end (28 October)
 	# A vent-on-fire attack fires the machine's whole heat into the blow: its bonus is read now and
 	# the gauge emptied before the strikes land.
-	var fired := heat_bonus(ms, f)
+	var fired := heat_bonus(ms, f) + shield_bonus(ms, f)
 	h.fired = fired
 	var loads := hopper_loads(ms.unit, f)   # the loads this shot fires from the hopper, read once too
 	var from_hopper := loads * f.power_per_load
@@ -3214,6 +3239,13 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	h.vented_all = ms.heat if f.vents_all else 0
 	if f.vents_all:
 		ms.heat = 0
+	# A gun that fires its whole shield (the Afterburner Cannon since 18 November): the shield goes to
+	# nothing before the strikes, broken, as any shield a spend of its own takes to nothing is (Ryan:
+	# "Yes, same answer as 1 now. Breaks the shield").
+	if f.spends_shield and ms.unit.shield > 0:
+		log.append("%s fires its whole shield: -%d, +%d to the blow" % [ms.unit.display_name, ms.unit.shield, fired])
+		ms.unit.shield = 0
+		_note_break(ms)
 	# Every foe one strike reaches (a Spread's neighbours, a Penetrate's column, every foe for a
 	# reach over them all), the same for each strike, since a kill clears its slot only after the
 	# spend.
@@ -3266,7 +3298,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		# multiplies and floors in that order, its conditions read on that foe; then that foe's own
 		# reads, flat (_foe_reads): "the spirit of buffs and riders is they happen after".
 		# A Ricochet's strike is 1 where the entry's number and its reads of the foe would stand.
-		var modded := Effects.attack(ms.unit, f, 1 if bounce else split_share(f.power + own, split), heat, target, _judged(judged_hp, target))
+		var modded := Effects.attack(ms.unit, f, 1 if bounce else split_share(f.power + own, split), heat, target, _zapped(_judged(judged_hp, target)))
 		var dmg: int = int(modded["damage"]) + (0 if bounce else _foe_reads(f, reads, target, not struck_once.has(target)))
 		if at == 0:
 			h.heat += modded["heat"]   # heat is paid once a spend, every modifier's with it (the rules: a blow)
@@ -3279,7 +3311,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		# strike is read before any lands, so no blow of it reads what another did.
 		var blows := {}
 		for foe in hit:
-			blows[foe] = dmg if foe == target else _area_blow(ms, f, int(shapes.get(foe, AREA_ALL)), foe, own, split, _judged(judged_hp, foe)) + _foe_reads(f, reads, foe, not struck_once.has(foe))
+			blows[foe] = dmg if foe == target else _area_blow(ms, f, int(shapes.get(foe, AREA_ALL)), foe, own, split, _zapped(_judged(judged_hp, foe))) + _foe_reads(f, reads, foe, not struck_once.has(foe))
 		for foe in hit:
 			var was_alive := foe.alive()
 			var hp_before := foe.hp
@@ -3872,6 +3904,29 @@ func _area_blow(ms: MechState, f: Face, shape: int, foe: Foe, prints: int, split
 ## so a condition on it (unhurt, at half) holds for every blow of the hit or for none.
 static func _judged(judged_hp: Dictionary, foe) -> Dictionary:
 	return {"hp": int(judged_hp[foe])} if judged_hp.has(foe) else {}
+
+
+## A blow's context with the zap this spend paid for (_zap_now), so the pipeline adds it where
+## Empowered's add goes, on every blow of the spend, an area's and a Ricochet's among them.
+func _zapped(ctx: Dictionary) -> Dictionary:
+	if _zap_now > 0:
+		ctx["zap"] = _zap_now
+	return ctx
+
+
+## The Buzzard's zap paid as a weapon's spend at a foe begins (Ryan, 11 November: "Automatically
+## paid"; "when it can't pay it doesn't zap"): its cost off the shield when the shield holds it, a
+## shield it takes to nothing broken like any (18 November: "being able to break its own shield is
+## fine"); its damage for the spend's blows, 0 when it fires plain.
+func _pay_zap(ms: MechState, f: Face) -> int:
+	var dmg := zap_ready(ms, f)
+	if dmg <= 0:
+		return 0
+	var cost := int(Effects.zap_of(ms.unit, f)["cost"])
+	ms.unit.shield -= cost
+	log.append("%s pays %d shield into the blow, +%d" % [ms.unit.display_name, cost, dmg])
+	_note_break(ms)
+	return dmg
 
 
 ## Every twin of the foes in `hit` joins it, the slot reached whole: an area blow's (26 October).

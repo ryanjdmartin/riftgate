@@ -55,6 +55,7 @@ ENGINE_ALIASES = {"ablating_mech": "ablating", "brittled_mech": "brittled", "exp
 # Printed rules, read off a component's face.
 PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("vents_all", "Vents all", lambda f: bool(f.get("vents_all"))),
+           ("spends_shield", "Fires the shield", lambda f: bool(f.get("spends_shield"))),
            ("power_per_missing", "Grows with missing HP", lambda f: int(f.get("power_per_missing", 0)) > 0),
            ("finisher", "Finisher", lambda f: int(f.get("finisher", 0) or 0) > 1),
            ("gated", "Gated", lambda f: bool(f.get("gates"))),

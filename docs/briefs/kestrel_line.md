@@ -3,15 +3,14 @@
 <!-- hangar: {"kind": "hub", "maker": "kestrel", "tier": null, "status": "hub", "slot": false, "name": "the Kestrel line"} -->
 
 The hub of Kestrel's ten. It holds the map of what each fast flyer is for, the two slots
-still open, and what is Ryan's to call. Eight machines are in content: seven dealt, the
-Buzzard among them with its rework settled and unbuilt, and the Puffin back in design,
-undealt. Each one's decisions are the bible's Kestrel rows (section 7) and content. The
+still open, and what is Ryan's to call. Eight machines are in content: seven dealt and
+the Puffin back in design, undealt. Each one's decisions are the bible's Kestrel rows (section 7) and content. The
 review this file began as, with the kits written out and the names round, is in git: `git
 show 084500a7:docs/briefs/kestrel_line.md`.
 
 **Maker**: Kestrel. **Read first**: `docs/briefs/README.md`; `docs/briefs/refit_pass.md`,
-section 22, the reboot; the bible's Kestrel rows and its leans row; the four live Kestrel
-briefs (`kestrel_buzzard.md`, `kestrel_puffin.md`, `kestrel_magpie.md`, `kestrel_owl.md`);
+section 22, the reboot; the bible's Kestrel rows and its leans row; the three live Kestrel
+briefs (`kestrel_puffin.md`, `kestrel_magpie.md`, `kestrel_owl.md`);
 `content/chassis.json` and `content/components.json` (maker `kestrel`).
 
 ## The fast flyers, under the long wall (11 November)
@@ -43,7 +42,7 @@ one head that matters, and a fight too long for a light.
 | The Kite, tier two, move 6 | "Burst glass cannon" | the short one, and the first rounds of any | every weapon doubled on an unhurt foe, the Pinion Driver its finisher, a kill recharging its shield | anything big after its first shot; a long fight | one big single hit; reach |
 | The Skua, tier one, move 6 | "Ramping Dakka" | the long one | Ricochet: a stack a round for damaging a foe with a weapon, each stack a strike of 1 more | plate; a pack that out-hits its shield | riders a hit, flat buffs, Exposed |
 | The Needletail, tier two, move 6 | "free to be whatever we want" | beside another machine | two things a round, a weapon and an equipment, its mark every round | weight of its own | every maker's equipment |
-| The Buzzard, tier two, move 5, a medium | "risky dps/burst engine" | either, squad or flank | the burst that builds and commits: its shield spent into its blow, settled and not built (`kestrel_buzzard.md`) | | hot guns |
+| The Buzzard, tier two, move 5, a medium | "risky dps/burst engine" | either, squad or flank | every foe that falls feeds its shield, and its guns zap the shield into their blows, its cannon firing it whole | a lone boss, which feeds it nothing | falls: a squad that kills fast, spread damage |
 | A medium, unspecced | "at least one chassis that orbits" Exposed | its session's | cashing the mark the others set | | |
 
 In time they spread: the Kite is strongest in a fight's first round, the Skua in its last,
@@ -68,7 +67,7 @@ content:
 | one | The Puffin, a light hovercraft | his direction: it moves heat (`kestrel_puffin.md`) | back in design, undealt |
 | two | The Kite, a light flyer | the opener and the finisher, above | dealt; his play |
 | two | The Needletail, a light flyer | two things a round; the Fovea Designator Exposes | dealt; his play |
-| two | The Buzzard, a medium flyer | as built, a shield regen that grows with the heat it carries and one blow that fires all of it | dealt; its rework settled, unbuilt |
+| two | The Buzzard, a medium flyer | every foe that falls gives it shield, every weapon it fires pays a zap, its Afterburner Cannon fires the whole shield; two upgrade branches, Sustain and Burst | landed 18 November; his play |
 | three | The Lammergeier, a heavy flyer | a Mine on every foe it aims at, blowing round the foe as it falls; the Lorentz Contractor gathers, the Syrinx Drone sets one off | dealt; his play |
 | three | The Giant Petrel, an assault hovercraft | the team's unspent rerolls banked; three locks around rerolls and actions | dealt; its kit open, below |
 | open | The Magpie | a support engine (`kestrel_magpie.md`) | his pick of a direction |
@@ -82,12 +81,13 @@ predate four reworks and are in git.
 ## Each chassis: where it stands, what would improve it
 
 A stub. Every machine the review read has since landed, been reworked or taken a brief of
-its own: the bible's rows and the four live briefs hold where each stands.
+its own: the bible's rows and the three live briefs hold where each stands.
 
 ## The Buzzard's and the Puffin's kits, as the stock pass would leave them
 
 A stub. Both kits were written on the old scale, with a chassis's own cooling and with
-shields and vents on the die. The Buzzard's and the Puffin's briefs hold their reworks. The
+shields and vents on the die. The Buzzard's rework landed on 18 November (the bible's row);
+the Puffin's brief holds its own. The
 stock holes the review named are content: the Cyclic Cannon, the Transonic Rifle and Trim
 Tabs.
 
@@ -117,8 +117,8 @@ The bench for either, one line each:
 - Struck: a chain tier three, on which Rapid switches nothing off, the Rapid pile the action
   economy forbids. It reopens if every Rapid piece in the pool is gated and the shape still
   reads.
-- Taken: the capacitor, a bank of shield that pays damage. The Buzzard's settled rework
-  took that shape, its shield spent into its blow.
+- Taken: the capacitor, a bank of shield that pays damage. The Buzzard took that shape on
+  18 November, its shield spent into its blows.
 
 ## Records the review found stale or waiting on a go
 

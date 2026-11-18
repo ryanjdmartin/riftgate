@@ -99,6 +99,7 @@ FACE_FIELDS = {
     "braces": [("braced", "sets")], "fills_hopper": [("hopper", "sets")],
     "fires_hopper": [("hopper", "reads")], "detonates": [("mine", "reads")],
     "gathers_mines": [("mine", "reads")], "vents_all": [("heat", "reads")], "power_per_heat": [("heat", "reads")],
+    "spends_shield": [], "power_per_shield": [],   # the Afterburner Cannon's whole shield into the shot (18 November): no currency of this map's
     "power_per_missing": [("missing_hp", "reads")], "finisher": [("missing_hp", "reads")],
     "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "self_statuses": [],
     "spends": [("essence", "reads")], "spends_up_to": [], "holds_all": [("overcharged", "reads")],   # the Quintessence Tap: it consumes Essence, and holds every Empowered a round
@@ -125,6 +126,7 @@ EFFECTS = {
     "multiply_heat": [("heat", "sets")], "add_damage": [], "add_damage_taken": [], "hull_per_spend": [("hull_damage", "sets")],
     "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "one_of_each": [], "min_damage": [],
     "shield_per_heat": [], "self_status": [], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
+    "shield_zap": [], "add_power": [],   # the Buzzard's zap and its Burst's raise of the cannon's number (18 November)
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
 }
 TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_granted": "shield_granted", "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",
@@ -234,7 +236,7 @@ class Map:
                         self.add(cur, how, p)
             for k, v in f.items():
                 if k in ("kind", "reach", "power", "keywords", "heat", "targets", "status", "stacks", "rounds",
-                         "ablate", "brittle", "cryo", "cleave", "penetrate", "gates", "consumes", "per_consumed", "per_heat", "per_missing", "power_per_load"):
+                         "ablate", "brittle", "cryo", "cleave", "penetrate", "gates", "consumes", "per_consumed", "per_heat", "per_missing", "power_per_load", "per_shield"):
                     continue
                 if k not in FACE_FIELDS:
                     self.unmapped.append("%s: face field %s" % (e["name"], k))

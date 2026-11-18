@@ -51,7 +51,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "reboot_release", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status", "self_status"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "reboot_release", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status", "self_status", "shield_zap", "add_power"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
 	"on_blocked": ["stack_status"],
@@ -66,7 +66,7 @@ const SUPPORTED_EFFECTS := {
 	"on_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_kill": ["stack_status", "add_shield", "vent_heat", "refill_shield"],
 	"on_round_kill": ["stack_status"],   # the end of a round in which an attack of this machine's own killed, once however many fell (the Ammit's flare, Ryan, 16 November)
-	"on_foe_killed": ["stack_status"],   # every kill in this machine's fight, whoever made it, once for each foe (the Ammit's Essence, 12 November)
+	"on_foe_killed": ["stack_status", "add_shield"],   # every kill in this machine's fight, whoever made it, once for each foe (the Ammit's Essence, 12 November; the Buzzard's carrion, 18 November)
 }
 const DECAY_NONE := 0    # lives until its scope ends
 const DECAY_TICK := 1    # loses a stack as its carrier's turn ends, gone at zero: a foe's stacks at the end of its own action (Ablating, Vitriol, Regenerating), since 16 November; at its start until then
@@ -1262,6 +1262,10 @@ static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionar
 ## Every effect taking part in a query: [effect dictionary, modifier], gated as above.
 static func _taking_part(u, trigger: String, face: Face, target = null, ctx: Dictionary = {}) -> Array:
 	var out: Array = []
+	# An effect that names a `slot` gives way to a later grant in the same slot (an upgrade's step
+	# replacing its passive's number or form: the Buzzard's Sustain, Ryan, 18 November, "the death
+	# gives 2 shield regen instead of the flat boost"): the latest granted stands alone.
+	var slotted := {}
 	for m in live(u):
 		for eff in m.effects:
 			if str(eff.get("trigger", "")) != trigger or not _fires(trigger):
@@ -1269,6 +1273,14 @@ static func _taking_part(u, trigger: String, face: Face, target = null, ctx: Dic
 			var name := str(eff.get("effect", ""))
 			if not _usable(u, m, name) or not _holds(u, eff, face, target, ctx):
 				continue
+			var slot := str(eff.get("slot", ""))
+			if not slot.is_empty():
+				if slotted.has(slot):
+					var at: int = slotted[slot]
+					if (out[at][1] as Modifier).seq < m.seq:
+						out[at] = [eff, m]
+					continue
+				slotted[slot] = out.size()
 			out.append([eff, m])
 	return out
 
@@ -1357,6 +1369,9 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dicti
 				h_mult *= pow(v, n)
 			"vent_heat":
 				vent += int(v) * n
+	# The Buzzard's zap, paid for this spend (Skirmish._pay_zap): a flat add beside Empowered's (Ryan,
+	# 18 November: "Put the bonus damage where Empowered goes in the damage calculation").
+	d_add += float(ctx.get("zap", 0))
 	var out_dmg := maxi(d_floor, int(roundf((float(dmg) * p_mult + d_add) * d_mult)))
 	var out_heat := maxi(0, int(roundf((heat + h_add) * h_mult)))
 	if face != null and face.is_debuff():
@@ -1585,7 +1600,8 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	# Petrel's lure, 17 November), the copy's to carry, never the die's.
 	var grants := self_grants(u, base, target)
 	var regranted := grants != base.self_statuses   # a branch takes the piece's own grant further, or adds one
-	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not spills and not regranted:
+	var more := power_added(u, base, target)   # a branch's raise of the piece's own number (the Buzzard's Burst)
+	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not spills and not regranted and more == 0:
 		return face
 	var c := base.duplicate_face() if base == face else base
 	c.reach = r
@@ -1614,7 +1630,22 @@ static func effective_face(u, face: Face, target = null) -> Face:
 		c.spills = true
 	if regranted:
 		c.self_statuses = grants
+	if more != 0:
+		c.power = maxi(0, c.power + more)
 	return c
+
+
+## What a live effect adds to a weapon's own printed number (add_power, static, scoped to its piece
+## by `entry`: the Buzzard's Burst branch, Ryan, 18 November, "better base damage"): its base before
+## any buff, so the foes its area reaches take their shape's printed number as ever.
+static func power_added(u, face: Face, target = null) -> int:
+	if face == null or not face.is_weapon():
+		return 0
+	var n := 0
+	for pair in _taking_part(u, "static", face, target):
+		if str(pair[0].get("effect", "")) == "add_power":
+			n += int(pair[0].get("value", 0)) * int(pair[1].stacks)
+	return n
 
 
 ## Does a live effect make this weapon's blows ignore armour (ignore_armour, static, its `when`
@@ -1779,16 +1810,23 @@ static func seal_form(u) -> Dictionary:
 	return {}
 
 
-## The shield regen a machine's heat adds (shield_regen_per_heat, static; the Buzzard's Thermal
-## Recoupler as shield regen since 11 November, Ryan: "I would reword its passive to explicitly say
-## it gains shield regen"): `value` for every `per_heat` it carries as the round opens, read where
-## the regen is, after the cooling, so whatever reads the regen reads this with it.
-static func regen_from_heat(u, heat: int) -> int:
-	var n := 0
-	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "shield_regen_per_heat":
-			n += int(pair[0].get("value", 0)) * int(pair[1].stacks) * int(heat / maxi(1, int(pair[0].get("per_heat", 10))))
-	return n
+## The Buzzard's zap (shield_zap, static; Ryan, 11 November: "spend X shield and add it to the
+## attack", "Automatically paid"; 18 November: "Put the bonus damage where Empowered goes in the
+## damage calculation"): what each weapon it fires at a foe pays in shield, `cost`, and adds to its
+## every blow, `value`, as {cost, damage}, or {} for an entry that pays none: equipment, and a gun
+## that fires the whole shield (the Afterburner Cannon, which leaves nothing to pay). A later grant
+## in the same slot replaces the passive's (its Sustain branch's 3); otherwise the most of each.
+static func zap_of(u, face: Face) -> Dictionary:
+	if face == null or not face.is_weapon() or face.spends_shield:
+		return {}
+	var cost := 0
+	var damage := 0
+	for pair in _taking_part(u, "static", face):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) == "shield_zap":
+			cost = maxi(cost, int(eff.get("cost", 0)))
+			damage = maxi(damage, int(eff.get("value", 0)) * int(pair[1].stacks))
+	return {"cost": cost, "damage": damage} if cost > 0 and damage > 0 else {}
 
 
 ## The Sealed status with the seal's own numbers in it: the chip the machine wears while
@@ -1904,8 +1942,11 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 					if int(eff.get("cap", 0)) > 0:
 						n = mini(n, int(eff["cap"]) - banked(who, id))
 					if n > 0:
-						var decay := status_decay(STATUS[id])
-						var m := stack(who, STATUS[id], status_scope(STATUS[id]), "passive:" + str(pair[1].id), n, decay)
+						# A machine's Regenerating is the status in a machine's words, shield (the Buzzard's
+						# Sustain, 18 November); a foe's is hit points.
+						var def: Dictionary = regenerating_mech() if id == "regenerating" and not (who is Foe) else STATUS[id]
+						var decay := status_decay(def)
+						var m := stack(who, def, status_scope(def), "passive:" + str(pair[1].id), n, decay)
 						if m != null and not (out["statuses"] as Array).has(m.name):
 							(out["statuses"] as Array).append(m.name)
 	return out
@@ -2734,7 +2775,8 @@ static func effect_text(eff: Dictionary) -> String:
 		"heat_per_blow": body = "every blow a foe lands on it adds %s heat" % vs
 		"multiply_stacks": body = "the stacks it lays ×%s" % vs
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
-		"shield_regen_per_heat": body = "shield regen +%s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
+		"shield_zap": body = "each weapon it fires pays %d shield, when it holds that much, for +%s on its every blow" % [int(eff.get("cost", 0)), vs]
+		"add_power": body = "its own number +%s" % vs
 		"shield_per_ally_heat": body = "the shield grows by %s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
 		"add_shield": body = "+%s shield" % vs
 		"shield_per_heat": body = "+%s shield for each point" % vs

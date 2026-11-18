@@ -458,7 +458,8 @@
    "tier": 2,
    "design": {
     "fantasy": "The larger cousin of the Kite, trades explosiveness for longevity. Wide downturned wings evoking a hovering predator, weapon mounts mounted under the wings. Double boosters mounted on top of the tail section (similar to an A10 warthog).",
-    "niche": "Hot sustain: shield from its heat, and one blow that fires it all"
+    "niche": "A scavenger striker (Ryan, 18 November: \"Do the carrion-style\"): every foe that falls in its fight, whoever felled it, feeds its shield, and its guns spend the shield into their blows, a flat cost for a flat add where Empowered's goes, paid unasked when the shield holds it (11 November: \"Automatically paid\"), plain when it does not; its cannon fires the whole field. Its shield is its ammunition: keep it and live, or burn it into the shot. A lone boss feeds it nothing, its clear weakness.",
+    "notes": "Reworked 18 November on his calls of 11 and 18 November (its brief: git show 288de9a:docs/briefs/kestrel_buzzard.md; the bible's Buzzard row): the Thermal Recoupler's heat regen went, its last carrier, the Storm Petrel's hook having taken heat into shield; the fuel is carrion, 2 a fall (his \"I'd only give it 1 or 2 on death though, if the kills are coming from any source\"); a zap or the cannon may break its own shield (\"being able to break its own shield is fine\"). The stock: the Shoring Jack's slot to a Barrier piece (\"It should have a barrier piece instad of an armour piece\"): the Blast Door, Minerva's tier-one Barrier at cooldown 1, the session's pick over the basic Halo Projector, which prints the same; the Overclocked Railgun's to a lesser warm gun (\"It has a big spend with the cannon, so the railgun can be another, lesser, warm gun\"), the Laser Carbine. Its branches are his (one step a direction at tier two). Numbers are placeholders."
    },
    "codex": "",
    "hull": 28,
@@ -476,25 +477,96 @@
     "afterburner_cannon"
    ],
    "loadout": [
-    "overclocked_railgun",
+    "laser_carbine",
     "transonic_rifle",
     "arc_fault_cannon",
-    "shoring_jack",
+    "blast_door",
     "twin_autoguns"
    ],
    "passive": {
-    "id": "thermal_recoupler",
-    "name": "Thermal Recoupler",
-    "description": "Heat is not waste. Its shield regen is 1 higher for every 4 heat it carries.",
+    "id": "carrion_recoupler",
+    "name": "Carrion Recoupler",
+    "description": "Every foe that falls in its fight gives the Buzzard 2 shield. Each weapon it fires pays 2 shield, when it holds that much, for +2 on its every blow.",
     "effects": [
      {
+      "trigger": "on_foe_killed",
+      "effect": "add_shield",
+      "value": 2,
+      "slot": "carrion"
+     },
+     {
       "trigger": "static",
-      "effect": "shield_regen_per_heat",
-      "value": 1,
-      "per_heat": 4
+      "effect": "shield_zap",
+      "value": 2,
+      "cost": 2,
+      "slot": "zap"
      }
     ]
    },
+   "branches": [
+    {
+     "id": "sustain",
+     "name": "Sustain",
+     "design": {
+      "notes": "Ryan, 18 November: \"Sustain - The on-hit grows to 3, and the death gives 2 shield regen instead of the flat boost.\" The zap's add to 3 for the same 2 shield, the session's read of \"the on-hit\"; the fall's 2 shield in place becomes Regenerating 2, the machine half of that status he kept on 17 November for this, each slot's later grant replacing the passive's."
+     },
+     "steps": [
+      {
+       "description": "Its zap adds 3, and every foe that falls lays Regenerating 2 on it in place of the 2 shield.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "shield_zap",
+         "value": 3,
+         "cost": 2,
+         "slot": "zap"
+        },
+        {
+         "trigger": "on_foe_killed",
+         "effect": "stack_status",
+         "value": "regenerating",
+         "stacks": 2,
+         "slot": "carrion"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "burst",
+     "name": "Burst",
+     "design": {
+      "notes": "Ryan, 18 November: \"Burst - The cannon gains Spread and Penetrate, and either better base damage or better shield scaling (depends on how much max shield it gains on the actual chassis tier upgrade).\" The tier upgrade is not built, so its base damage for now, 2 higher, the shield scaling's form waiting on it; the area's numbers, 2 each, are placeholders."
+     },
+     "steps": [
+      {
+       "description": "Its Afterburner Cannon gains Spread 2 and Penetrate 2, and its own number is 2 higher.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "grant_keyword",
+         "value": "cleave",
+         "number": 2,
+         "entry": "afterburner_cannon"
+        },
+        {
+         "trigger": "static",
+         "effect": "grant_keyword",
+         "value": "penetrate",
+         "number": 2,
+         "entry": "afterburner_cannon"
+        },
+        {
+         "trigger": "static",
+         "effect": "add_power",
+         "value": 2,
+         "entry": "afterburner_cannon"
+        }
+       ]
+      }
+     ]
+    }
+   ],
    "flavour": ""
   },
   {

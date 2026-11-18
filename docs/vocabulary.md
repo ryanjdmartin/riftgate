@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 193 implemented, 6 planned, 0 idea.
+Status: 194 implemented, 6 planned, 0 idea.
 
 ## Resource
 
@@ -61,6 +61,7 @@ Status: 193 implemented, 6 planned, 0 idea.
 | **Rerolls a kill** | A rule printed on a weapon (the Giant Petrel's Spindrift Salvo): if its spend kills, the team gains the rerolls it says this round, once however many fell. | implemented |
 | **Grants a reroll** | A rule printed on equipment (the Swallowtail's Reveille Horn, the Giant Petrel's Immelmann Booster): spending it gives the team the rerolls it says, at once and past the round's two. While the die is held over its target, the REROLL button lights and shows the count it would leave. | implemented |
 | **Vents all** | An attack that fires the machine's whole heat as it is spent: the heat gauge is empty after the shot, and every step of heat fired, the step printed on the entry, adds the component's bonus to the blow before the passives. The shot's own heat cost still lands. | implemented |
+| **Fires the shield** | An attack that fires the machine's whole shield as it is spent: every step of shield fired, the step printed on the entry, adds the component's bonus to the blow before the passives, and the shield is left at nothing, Broken until the machine reboots. A broken shield fires nothing. | implemented |
 | **Grows with missing HP** | A flat blow that grows with its target's lost HP: it adds its bonus for every step of HP the target is missing, both numbers printed on the entry, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target. | implemented |
 | **Finisher** | A rule printed on a weapon: against a foe at half its HP or less its number is doubled, read as the die is spent, so every strike of the spend takes it or none does. The die shows the doubled number while held over such a foe. The Kite's Pinion Driver. | implemented |
 | **Gated** | A keyword printed with a condition, such as a Suppress on a foe carrying Brittle or on a foe carrying two Ablating or more: it lands only on a foe that meets the condition, read as the die is spent and before the blow's own riders, so a spend never opens its own gate. Held over a foe where the condition does not hold, the die shows the keyword's chip struck through. | implemented |
@@ -402,6 +403,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Grudge** (implemented): The Pilgrim's Karma (30 October), the Tonberry's Everyone's Grudge under a name of ours. Content: per_kill on an attack, the points a kill. Every fall counts but a foe that went whole (a burst, a part falling with its core) and one taken in by a merge.
 - **Foe action** (implemented): A foe's whole brain is its weighted draw and its pick; none plans ahead.
 - **Vents all** (implemented): Only the first shot of a chain fires the heat.
+- **Fires the shield** (implemented): Its carrier the Buzzard's Afterburner Cannon (Ryan, 18 November: it breaks the shield, and no zap rides it: "It can't, since the shield will be empty"). Never beside Vents all on one entry (the validator). The codex is a session's draft.
 - **Grows with missing HP** (implemented): Both numbers are the entry's own (power_per_missing and per_missing), placeholders.
 - **Finisher** (implemented): A working name. The Coriolis Accelerator's slope as one step (Ryan, 11 November: "is there a way to make the pinion driver simpler but fill the same purpose"); its factor is the entry's own (finisher), a placeholder.
 - **Gated** (implemented): Suppress alone carries a gate today. A working name for Ryan's name pass.

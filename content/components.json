@@ -772,8 +772,8 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "The Buzzard's engines fire forward for one shot. The hotter the airframe, the bigger the shot, and the airframe is cold afterwards.",
-    "niche": "The Buzzard's burst: spend the heat the passive was living on."
+    "fantasy": "The Buzzard's engines fire forward for one shot, fed by the field instead of the airframe's heat (the brief's, 11 November; his \"the cannon fires its whole field\"); the fuller the shield, the bigger the shot, and the shield is gone afterwards.",
+    "niche": "The Buzzard's burst since 18 November: it fires the whole shield, 2 and a point for every 2 shield, the shield to nothing and broken, so it is the shot before a reboot; the zap cannot ride it, the shield being empty (his \"It can't, since the shield will be empty\"). Its Burst branch gives it Spread, Penetrate and a higher number. Until then it fired its whole heat, the form the Whip Scorpion's Heliographic Death Ray keeps."
    },
    "face": {
     "kind": "attack",
@@ -781,9 +781,9 @@
     "power": 2,
     "keywords": [],
     "heat": 3,
-    "vents_all": true,
-    "power_per_heat": 1,
-    "per_heat": 2
+    "spends_shield": true,
+    "power_per_shield": 1,
+    "per_shield": 2
    },
    "passive": null,
    "tags": [

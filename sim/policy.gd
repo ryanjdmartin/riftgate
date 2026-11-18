@@ -723,7 +723,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# entry as its machine's branches make it.
 	score += self_grant_worth(sk, ms, f, target)
 	score += shield_gain_worth(sk, ms, heat_shield_gain(ms, real))
-	score -= heat_cost(sk, ms, f) + self_ablate_cost(sk, ms, f)
+	score -= heat_cost(sk, ms, f) + self_ablate_cost(sk, ms, f) + shield_spend_cost(sk, ms, f)
 	if not f.is_weapon():
 		score -= rage_cost(sk)   # a debuff is equipment, and feeds a raging foe (3 November)
 	# The Juggernaut Drive (the Wild Boar's, 11 November): a damaging blow on a front-rank foe drives
@@ -736,6 +736,20 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			score += minf(float(back.hp), float(ceili(float(target.hp_max) * float(pct) / 100.0)))
 	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
 
+
+
+## What a spend's own shield costs its machine (the Buzzard's, 18 November): a zap's cost where its
+## shield pays one, the whole shield for a gun that fires it (the Afterburner Cannon), read as
+## burn_cost reads shield gone this turn. A placeholder, as every weight: the regrowth a break shuts
+## off until the reboot (its carrion) is not counted.
+func shield_spend_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
+	if f == null or ms.shield_broken:
+		return 0.0
+	if f.spends_shield:
+		return burn_cost(sk, ms, maxi(0, ms.unit.shield))
+	if Skirmish.zap_ready(ms, f) > 0:
+		return burn_cost(sk, ms, int(Effects.zap_of(ms.unit, f)["cost"]))
+	return 0.0
 
 
 ## What a piece that ablates its own firer costs it (the Stoker's, Ablate since 15 November): its
@@ -1342,7 +1356,10 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 	else:
 		rolls.append(f.power)
 	var fired := Skirmish.heat_bonus(ms, f)   # what the heat it fires adds
+	fired += Skirmish.shield_bonus(ms, f)   # what the shield it fires adds (the Afterburner Cannon's)
 	fired += Skirmish.hopper_bonus(ms.unit, f)   # and what the loads it fires add
+	var zap := Skirmish.zap_ready(ms, f)   # the Buzzard's zap, where Empowered's add goes, when its shield pays
+	var zctx := {"zap": zap} if zap > 0 else {}
 	# The foe's own reads (the blow's order, 28 October): its missing hull on every blow, and the
 	# stacks a consumer eats on it on the first, flat after the firer's pipeline, as the resolver lands them.
 	var own := f.missing_bonus(target) if not f.is_debuff() else 0   # every blow's
@@ -1360,7 +1377,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 		if area == Skirmish.AREA_CHAIN and not damaging:
 			out.append([float(maxi(0, v - (target.armour_for(f) if target != null else 0))), w])
 			continue
-		var dmg: int = int(Effects.attack(ms.unit, f, Skirmish.split_share(v + fired, f.split), 0, target)["damage"]) + own
+		var dmg: int = int(Effects.attack(ms.unit, f, Skirmish.split_share(v + fired, f.split), 0, target, zctx.duplicate())["damage"]) + own
 		# The foe's own statuses read last: a Shocked foe takes the first blow aimed at it double
 		# (a foe past the target, an area's or an arc's, never: 29 October), and its Brittle adds to
 		# every blow of a weapon, a strike of 0 included. Then its armour comes off every blow, so
@@ -2298,8 +2315,9 @@ static func _widest(sk: Skirmish, areas: Array) -> float:
 ## that foe: the shape's number with what the entry prints from its firer (heat fired, the
 ## hopper), a split's halving of that base, through its machine's modifiers with no foe in hand.
 static func _area_mean(m: Skirmish.MechState, f: Face, shape: int) -> float:
-	var n := Skirmish.split_share(Skirmish.area_number(f, shape) + Skirmish.heat_bonus(m, f) + Skirmish.hopper_bonus(m.unit, f), f.split)
-	return float(Effects.attack(m.unit, f, n, 0)["damage"]) * float(maxi(1, f.strikes))
+	var n := Skirmish.split_share(Skirmish.area_number(f, shape) + Skirmish.heat_bonus(m, f) + Skirmish.shield_bonus(m, f) + Skirmish.hopper_bonus(m.unit, f), f.split)
+	var zap := Skirmish.zap_ready(m, f)
+	return float(Effects.attack(m.unit, f, n, 0, null, {"zap": zap} if zap > 0 else {})["damage"]) * float(maxi(1, f.strikes))
 
 
 ## A foe's worth standing in the front rank, where Direct fire reaches it.

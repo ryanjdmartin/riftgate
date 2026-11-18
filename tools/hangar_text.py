@@ -56,7 +56,7 @@ KINDS = [
      "what": "What a machine's passive does, after its name.",
      "where": "The codex and the quick campaign's hangar: NAME: description."},
     {"id": "upgrade", "label": "Upgrades", "group": "maker",
-     "what": "What one step of an upgrade's branch does to its machine's locked piece.",
+     "what": "What one step of an upgrade's branch does to its machine's locked piece or its passive.",
      "where": "The codex, on the locked piece's row, for a machine that has taken the step: DIRECTION I: its line. The harness picks them; a run buys none until a machine's tier is built."},
     {"id": "component_codex", "label": "Component codex", "group": "maker",
      "what": "One or two lines on a piece of kit.",

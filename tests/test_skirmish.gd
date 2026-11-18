@@ -1301,18 +1301,15 @@ func test_a_granted_shield_regen_comes_back_each_round_to_the_maximum_sealed_or_
 	assert_eq(m.shield, 6, "the regen runs while sealed")
 
 
-## Shield regen from heat (the Buzzard's Thermal Recoupler as shield regen, Ryan, 11 November: "I
-## would reword its passive to explicitly say it gains shield regen"): the passive adds its value
-## to the regen for every step of heat the machine carries as the round opens, after the cooling,
-## in the regen's one log line, up to the maximum; nothing when it runs cold. Synthetic passive.
-func test_heat_adds_to_the_shield_regen_where_a_passive_says_so() -> void:
+## Shield regen granted (a module's, a passive's, a status's; a chassis has none of its own): paid as
+## the round opens, after the cooling, in the regen's one log line, up to the maximum. The heat that
+## raised the Buzzard's left with its last carrier on 18 November. Synthetic passive.
+func test_a_granted_shield_regen_pays_as_the_round_opens_up_to_the_maximum() -> void:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(1, L)), 20, 100)
 	m.grant_passive({"id": "fitted", "name": "Fitted", "description": "", "effects": [
-		{"trigger": "static", "effect": "add_stat", "stat": "shield_regen", "value": 1},
+		{"trigger": "static", "effect": "add_stat", "stat": "shield_regen", "value": 3},
 		{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 1}]})
-	m.grant_passive({"id": "recoupler", "name": "Recoupler", "description": "", "effects": [
-		{"trigger": "static", "effect": "shield_regen_per_heat", "value": 1, "per_heat": 4}]})
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(500, 0)])
 	sk.begin()
@@ -1321,14 +1318,10 @@ func test_heat_adds_to_the_shield_regen_where_a_passive_says_so() -> void:
 	ms.heat = 10
 	sk.start_round()
 	assert_eq(ms.heat, 9, "the cooling first")
-	assert_eq(Skirmish.shield_regen_of(ms), 3, "the regen of one it is granted and two for the nine it carries")
+	assert_eq(Skirmish.shield_regen_of(ms), 3, "the regen it is granted, whatever its heat")
 	assert_eq(m.shield, 8, "three back as the round opens")
 	assert_true("\n".join(sk.log).contains("shield regen: A +3"), "in the regen's one line")
-	assert_eq(Effects.effect_text({"trigger": "static", "effect": "shield_regen_per_heat", "value": 1, "per_heat": 4}), "shield regen +1 for every 4 heat it carries", "its text says it is regen")
-	ms.heat = 0
-	assert_eq(Skirmish.shield_regen_of(ms), 1, "cold, the granted regen alone")
 	m.shield = 19
-	ms.heat = 40
 	sk.end_round()
 	sk.start_round()
 	assert_eq(m.shield, 20, "never past the maximum")

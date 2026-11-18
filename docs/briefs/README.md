@@ -239,7 +239,6 @@ One row a live brief; the to-do's Design sessions hold each one's task.
 | `heat_pillar.md` | heat as a pillar: his frame, his overheat calls, what the reboot left open | every maker | rule | the heat session |
 | `kestrel_line.md` | the Kestrel line's hub: what each fast flyer is for | Kestrel | all | the Giant Petrel's kit, the chassis that orbits Exposed, the last two slots |
 | `kestrel_puffin.md` | the Puffin's rework: it moves heat | Kestrel | 1 (two his lean) | his session, after the heat prices |
-| `kestrel_buzzard.md` | the Buzzard's rework: shield spent into its blows, not built | Kestrel | 2 | his mark on the reboot machines' round |
 | `kestrel_magpie.md` | a support engine: the thief, the mimic, the cache | Kestrel | open | his pick of a direction |
 | `kestrel_owl.md` | the silent hunter, leaning to Cryo | Kestrel | open | his pick of where the stealth lives |
 | `ws_swallowtail.md` | the Swallowtail's rework, three locked pieces open | Wainwright & Sutler | 3 | parked: his session, its niche first |
@@ -320,6 +319,7 @@ Each landed; its decisions are bible rows and content.
 - The Polar Bear's seal: `git show 96fe416:docs/briefs/minerva_polar_bear.md`
 - The Polar Bear's first form: `git show 63487a9:docs/briefs/minerva_armadillo.md`
 - The Honey Badger's Ore Hopper: `git show c05c41b:docs/briefs/minerva_honey_badger.md`
+- The Buzzard's carrion and its zap: `git show 288de9a:docs/briefs/kestrel_buzzard.md`
 - The Storm Petrel and the first upgrade branches: `git show ca717bd:docs/briefs/kestrel_storm_petrel.md`
 - The Storm Petrel's first engine: `git show d84ad16:docs/briefs/kestrel_shield_spender.md`
 - The Skua's Ricochet: `git show e5638e2:docs/briefs/kestrel_skua.md`

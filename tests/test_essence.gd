@@ -375,7 +375,7 @@ func test_the_validator_holds_the_new_keys() -> void:
 	c2["name"] = "Odd Test"
 	c2["passive"] = {"id": "odd", "name": "Odd", "description": "", "effects": [
 		{"trigger": "on_kill", "effect": "stack_status", "value": "overcharged", "stack_step": 5},
-		{"trigger": "on_foe_killed", "effect": "add_shield", "value": 2}]}
+		{"trigger": "on_foe_killed", "effect": "vent_heat", "value": 2}]}
 	db.chassis["odd"] = c2
 	var errs := db.validate()
 	var said := func(where: String, what: String) -> bool:
@@ -387,7 +387,7 @@ func test_the_validator_holds_the_new_keys() -> void:
 	assert_true(said.call("component odd_hold", "holds_all names a status that halves"), "a hold on a status that does not halve is refused")
 	assert_false(errs.any(func(e: String) -> bool: return e.begins_with("component fine_tap")), "and the entry as built is clean")
 	assert_true(said.call("chassis odd", "stack_step"), "a step with no status to count is refused")
-	assert_true(said.call("chassis odd", "'add_shield' on 'on_foe_killed'"), "and the new trigger banks a status, nothing else")
+	assert_true(said.call("chassis odd", "'vent_heat' on 'on_foe_killed'"), "and the trigger banks a status or gives shield (the Buzzard's carrion), nothing else")
 
 
 func test_the_content_as_shipped_runs_the_new_rules() -> void:
@@ -400,7 +400,7 @@ func test_the_content_as_shipped_runs_the_new_rules() -> void:
 		if not (p is Dictionary) or str(p.get("status", "implemented")) == "planned":
 			continue
 		for eff in p.get("effects", []):
-			if str(eff.get("trigger", "")) == "on_foe_killed":
+			if str(eff.get("trigger", "")) == "on_foe_killed" and str(eff.get("effect", "")) == "stack_status":
 				banked[str(eff.get("value", ""))] = id
 				assert_eq(Effects.status_scope(Effects.STATUS[str(eff["value"])]), Effects.BATTLE, "%s banks a count the battle keeps" % id)
 	for cid in db.components.keys():

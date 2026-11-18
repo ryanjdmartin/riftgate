@@ -83,13 +83,19 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   each a step a pick, as deep as its machine picks, a tier one twice and a tier two once. A
   machine's first pick takes a direction's first step and its second the same direction's
   deeper step or the other's first, so a tier one ends specialized or mixed. A step tweaks one
-  locked piece and never a stat: its effects ride the machine as a passive of their own scoped
-  to that piece, so the die keeps the piece as printed and the entry as spent carries the
-  tweak, and a destroyed piece takes its tweaks with it. The codex says each step taken on its
-  piece's row, its direction's name and numeral first (DEFENCE I). The Storm Petrel's are the
-  first, on its Hardlight Pulse: Defence, a Ward on itself and its Hardened Light held up to 4,
-  then Spread with a stack for each foe hit, up to 5; Striker, Chain 2 and Charged 1 on itself,
-  then Chain 3 and Charged 2.
+  locked piece or the machine's passive, never a stat: its effects ride the machine as a
+  passive of their own, scoped to that piece where it names one, so the die keeps the piece as
+  printed and the entry as spent carries the tweak, and a destroyed piece takes its tweaks with
+  it. A step on the passive takes over the effect it names in place: an effect that names a
+  slot gives way to a later grant in the same slot, so the step's number or form replaces the
+  passive's own rather than adding to it. The codex says each step taken on its piece's row,
+  or the passive's, its direction's name and numeral first (DEFENCE I). The Storm Petrel's are
+  the first, on its Hardlight Pulse: Defence, a Ward on itself and its Hardened Light held up to
+  4, then Spread with a stack for each foe hit, up to 5; Striker, Chain 2 and Charged 1 on
+  itself, then Chain 3 and Charged 2. The Buzzard's, a tier two's single pick: Sustain, on its
+  passive, its zap adding 3 for the same 2 shield and every foe that falls laying Regenerating 2
+  on it in place of the 2 shield; Burst, on its Afterburner Cannon, Spread 2 and Penetrate 2 and
+  its own number 2 higher.
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
@@ -130,8 +136,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    round is past falls (When a status ends, below). A machine that gave its last turn to a
    reboot recovers: its heat nothing, its shield whole. Every machine sheds what cooling it is
    granted, then regains what shield regen it is granted, up to its maximum (a module's, a
-   passive's or a status's: a chassis has neither of its own; a shield gain like any; a passive that adds
-   to the regen by heat, the Buzzard's Thermal Recoupler, reads the heat the cooling left). Every die rolls;
+   passive's or a status's: a chassis has neither of its own; a shield gain like any). Every die rolls;
    entries are equally likely. A store that grants a buff
    grants it for the round (the Honey Badger's hopper its Armoured), before the foes pick.
 2. Every foe picks its move, then its target; both show, exact, before the player acts, its
@@ -271,7 +276,8 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   down the edge. What the machine's passive adds sits in its passive box at the foot of the
   edge, never joined to the blow: the strikes a Ricochet adds after each shot (the Skua's), a
   stepping die's next entry by its mark and the
-  number it will show (the Cassowary's). The readout says each on a line of its own, headed by
+  number it will show (the Cassowary's), the shield a zap will pay by the shield's mark ("-2",
+  the Buzzard's). The readout says each on a line of its own, headed by
   the same box. A dark entry is blank, its clock and its turns left along the foot. How each
   mark is drawn is `tools/die_sheet.gd`'s sheet and the bible's section 6.
 
@@ -304,9 +310,11 @@ Every foe a strike reaches takes a blow of its own, read in one order:
    foe its area reaches, the number of the shape it stands in (Spread's beside the target,
    Penetrate's in the other rank of its column); on every other Shocked foe on
    the field, Chain's (a foe in a shape and Shocked takes the shape's, one blow). Then what the
-   entry prints from its firer: what heat fired adds (Vents all) and the hopper's loads.
+   entry prints from its firer: what heat fired adds (Vents all), what shield fired adds (Fires
+   the shield) and the hopper's loads.
 2. The attacker's modifiers, on every blow: adds, then multiplies, then floors, a condition on
-   the foe read on that foe (a status it carries, its rank).
+   the foe read on that foe (a status it carries, its rank). A zap's add is one of the adds,
+   beside Empowered's (Passives, below).
 3. The foe's own, flat first: what the entry reads off it (the hull it is missing on every
    blow, the stacks a consumer eats on it on its first blow) and its Brittle; then its multiplies
    (Shocked doubles a weapon's strike aimed at it, never a blow that only reaches it); then its
@@ -608,8 +616,11 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 
 Component properties, printed on the entry rather than learned as keywords (the die marks
 them with a star): **Vents all** fires the whole heat gauge into the shot, adding its
-bonus per step of heat fired, the step printed on the entry (the Afterburner Cannon: +1 per 2),
-then its own heat lands. **Missing HP** adds its bonus for every
+bonus per step of heat fired, the step printed on the entry (the Heliographic Death Ray: +1 per
+2), then its own heat lands. **Fires the shield** fires the whole shield into the shot, adding
+its bonus per step of shield fired, the step printed on the entry (the Afterburner Cannon: +1
+per 2), and leaves the shield at nothing, Broken until the reboot (Shields, below), so no zap
+rides it; a broken shield adds nothing. **Missing HP** adds its bonus for every
 step of HP the foe struck is missing, each foe its own, on each blow after the attacker's
 modifiers (so a split weapon's two strikes each add it), both numbers on the entry (the
 Coriolis Accelerator: +1 per 5). **Gated**: a keyword printed with a condition on the foe (a Suppress on a foe carrying
@@ -837,8 +848,8 @@ On a machine:
   its Ablating, then a stack fades, so Regenerating 3 gives 3, 2 and 1, the first as the turn
   it was gained in ends; a second grant adds its stacks. A foe's, from its own special, its
   value in stacks: HP as each of its turns ends, after its Ablating and Vitriol have ticked (a
-  suppressed foe's included), so a foe its tick kills regrows nothing. A machine's (no piece
-  grants one today): shield at END TURN, before the foes strike, up to its maximum; a broken
+  suppressed foe's included), so a foe its tick kills regrows nothing. A machine's (the Buzzard's
+  Sustain lays it as foes fall): shield at END TURN, before the foes strike, up to its maximum; a broken
   shield takes none and the stack fades all the same. A buff, so an enemy's purge takes it, a
   stack a point of the purge.
 - **Barrier** (buff): the next blow a foe lands on this machine deals no damage, so a Destroy
@@ -1047,7 +1058,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
 - The shield is the fight's, as the heat is: full as every fight opens, and nothing returns on
   the map. In a fight nothing mends it by itself: a reboot brings it back whole (The reboot,
   below), and a component, a module or a passive adds to one that still stands. A shield at
-  nothing is Broken, and takes none until its machine reboots. Hull
+  nothing is Broken, and takes none until its machine reboots, whatever took it there: a blow,
+  the overheat, or its own spend (the Buzzard's zap paying its last point, its cannon firing it
+  whole). Hull
   is the battle's and never heals in it.
 
 ### Heat
@@ -1361,7 +1374,8 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   the Kite's shield), at the end of a round it killed in (once as the round ends, after the
   enemy's turn, for a machine whose own attack killed in it, however many fell and however
   many attacks felled them; a machine wrecked first fires nothing: the Ammit's flare), on a foe killed (every kill the death check counts in
-  this machine's fight, whoever made it, once for each: the Ammit's Essence), on
+  this machine's fight, whoever made it, once for each: the Ammit's Essence, the Buzzard's
+  shield), on
   damaging a foe (after a spend of its weapons that took HP off a foe, once however many it
   hurt; what it grants lands after the spend, so the Skua's stack bounces none of the shots
   that earned it). An effect an event fires may fire once a round only (the Skua's). No trigger
@@ -1375,7 +1389,15 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   it) after those, undoubled, and under a condition where it carries one (the Kite's, against
   an unhurt foe); it may grant a cooldown to every weapon and equipment its machine aims at a
   foe (none does today). On a kill a passive may recharge its machine's shield whole (the
-  Kite's), as any shield gained is. A passive or a module may split every weapon and equipment aimed at a foe instead (the Split-cycle Breech, a module; a second adds nothing):
+  Kite's), as any shield gained is; on a foe killed it may give its machine shield (the
+  Buzzard's, 2 a fall), a shield gain like any, so a broken shield takes none.
+- A passive may charge every weapon its machine spends a **zap**, a cost in shield for a flat
+  add (the Buzzard's: 2 shield for +2). It is paid unasked as the spend begins whenever the
+  shield holds the cost: short of it the weapon fires plain, and the last point paid breaks
+  the shield. The add is the attacker's, beside Empowered's, wherever Empowered's goes: every
+  strike of the spend, every foe its area reaches, a Chain's arcs and a Ricochet's strikes, the
+  cost paid once a spend. Equipment pays none, nor an entry that fires the whole shield. The
+  die's number carries the add while the zap is ready, and its passive box shows the cost. A passive or a module may split every weapon and equipment aimed at a foe instead (the Split-cycle Breech, a module; a second adds nothing):
   each hits twice as often, and each hit's base weapon damage
   (its number and what the entry prints) is halved, rounded down and never below one, every
   buff and passive and the foe's conditions counting on each hit after it, its armour too; the
@@ -1419,8 +1441,7 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   doubled), costing no heat, its machine's kill for what it fells. The blows it takes bare
   while it reboots bank heat that stays, the next blast's first fuel. A turn it ends with its
   die unspent releases nothing. Its locked Heliographic Death Ray fires the same heat at one
-  foe: 2, and 1 more for every 2 heat, leaving it cold and its shield standing (the form the
-  Buzzard's Afterburner Cannon also has until its rework).
+  foe: 2, and 1 more for every 2 heat, leaving it cold and its shield standing.
 
 ### Every number is a question
 Every stat, damage figure and property is read through one pipeline (`sim/effects.gd`), in

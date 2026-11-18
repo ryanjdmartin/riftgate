@@ -1570,6 +1570,17 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: power_per_heat cannot be negative" % where)
 	if fd.has("per_heat") and (not fd.has("power_per_heat") or int(fd["per_heat"]) <= 0):
 		errs.append("%s: per_heat is the heat a step of power_per_heat stands for: positive, and only beside power_per_heat" % where)
+	# A gun that fires its machine's whole shield (the Afterburner Cannon since 18 November): an
+	# attack's, a step of power_per_shield for every per_shield it fires, never beside vents_all
+	# (one whole gauge a gun).
+	if (fd.has("spends_shield") or fd.has("power_per_shield")) and kind != "attack":
+		errs.append("%s: spends_shield and power_per_shield belong to an attack" % where)
+	if fd.has("power_per_shield") and not bool(fd.get("spends_shield", false)):
+		errs.append("%s: power_per_shield needs spends_shield (the shield it adds for is the shield it fires)" % where)
+	if fd.has("per_shield") and (not fd.has("power_per_shield") or int(fd["per_shield"]) <= 0):
+		errs.append("%s: per_shield is the shield a step of power_per_shield stands for: positive, and only beside power_per_shield" % where)
+	if bool(fd.get("spends_shield", false)) and bool(fd.get("vents_all", false)):
+		errs.append("%s: a gun fires its whole heat or its whole shield, never both" % where)
 	if fd.has("power_per_missing") and (kind != "attack" or int(fd["power_per_missing"]) <= 0):
 		errs.append("%s: power_per_missing is a positive number on an attack" % where)
 	if fd.has("per_missing") and (not fd.has("power_per_missing") or int(fd["per_missing"]) <= 0):
@@ -1971,6 +1982,15 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		# A status a spend at a foe lays on its own machine (the Storm Petrel's branches, 17
 		# November): a machine buff from the table, its stacks, and per_foe for a set of them for
 		# every foe the spend reached. A Barrier and a Ward keep their pieces and their cooldowns.
+		# The Buzzard's zap (18 November): what each weapon it fires pays in shield and adds to every
+		# blow, both whole numbers, 1 or more.
+		if effect == "shield_zap" and (trig != "static" or int(eff.get("value", 0)) < 1 or int(eff.get("cost", 0)) < 1):
+			errs.append("%s: shield_zap is static: cost, the shield each weapon pays, and value, what it adds to every blow, each 1 or more" % where)
+		if effect == "add_power" and (trig != "static" or int(eff.get("value", 0)) < 1):
+			errs.append("%s: add_power is static: value, what a weapon's own number gains, 1 or more" % where)
+		# A slot (18 November): an effect a later grant in the same slot replaces, its name a word.
+		if eff.has("slot") and (not (eff["slot"] is String) or str(eff["slot"]).strip_edges().is_empty()):
+			errs.append("%s: slot names the place a later grant replaces this effect in: a word" % where)
 		if effect == "self_status":
 			if not SELF_GRANTS.has(str(eff.get("status", ""))):
 				errs.append("%s: self_status lays one of %s" % [where, ", ".join(SELF_GRANTS)])
@@ -2098,7 +2118,7 @@ func _entry_is_debuff(eff: Dictionary) -> bool:
 		return false
 	var fd = components[cid].get("face", {})
 	return fd is Dictionary and str(fd.get("kind", "")) == "attack" and int(fd.get("power", 0)) <= 0 \
-		and not bool(fd.get("vents_all", false)) and int(fd.get("fires_hopper", 0)) <= 0 and int(fd.get("power_per_missing", 0)) <= 0
+		and not bool(fd.get("vents_all", false)) and not bool(fd.get("spends_shield", false)) and int(fd.get("fires_hopper", 0)) <= 0 and int(fd.get("power_per_missing", 0)) <= 0
 
 
 ## Every entry keeps its internal text under `design` (fantasy at least) and nothing
@@ -2484,11 +2504,14 @@ func _validate_branches(where: String, c: Dictionary, errs: Array[String]) -> vo
 					continue
 				if ["add_stat", "multiply_stat"].has(str(eff.get("effect", ""))):
 					errs.append("%s: a branch is never a stat (Ryan: \"more the job for Modules\")" % sw)
-				if not fixed.is_empty() and not fixed.has(str(eff.get("entry", ""))):
-					errs.append("%s: a step tweaks a locked piece: every effect names one of %s (entry)" % [sw, ", ".join(fixed)])
+				# A step tweaks a locked piece (`entry`), or the passive where the passive carries the
+				# numbers (no entry: Ryan, 18 November, of the Buzzard, "since this passive has numbers
+				# in it, I think one direction buffs the passive, one buffs the cannon").
+				if eff.has("entry") and not fixed.has(str(eff["entry"])):
+					errs.append("%s: a step tweaks a locked piece, %s, or the passive: an entry names one of them" % [sw, ", ".join(fixed) if not fixed.is_empty() else "none on this chassis"])
 				on[str(eff.get("entry", ""))] = true
 			if on.size() > 1:
-				errs.append("%s: a step tweaks one piece, its effects all on it" % sw)
+				errs.append("%s: a step tweaks one piece or the passive, its effects all on it" % sw)
 
 
 ## A chassis nickname (or id) that is a machine's name in BattleTech, Heavy Gear, Warhammer

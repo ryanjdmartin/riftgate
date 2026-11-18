@@ -1827,6 +1827,16 @@
    }
   },
   {
+   "id": "spends_shield",
+   "category": "component_property",
+   "name": "Fires the shield",
+   "codex": "An attack that fires the machine's whole shield as it is spent: every step of shield fired, the step printed on the entry, adds the component's bonus to the blow before the passives, and the shield is left at nothing, Broken until the machine reboots. A broken shield fires nothing.",
+   "status": "implemented",
+   "design": {
+    "holes": "Its carrier the Buzzard's Afterburner Cannon (Ryan, 18 November: it breaks the shield, and no zap rides it: \"It can't, since the shield will be empty\"). Never beside Vents all on one entry (the validator). The codex is a session's draft."
+   }
+  },
+  {
    "id": "power_per_missing",
    "category": "component_property",
    "name": "Grows with missing HP",

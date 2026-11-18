@@ -156,6 +156,9 @@ var front_stacks: int = 0     # ...this many stacks
 var vents_all: bool = false   # an attack that fires the machine's whole heat: the gauge is empty after the shot...
 var power_per_heat: int = 0   # ...and each `per_heat` heat it fired adds this to the blow (the Afterburner Cannon, 28 September)
 var per_heat: int = 10        # ...the heat a step of power_per_heat stands for (the stock pass, 22 October: a field, 10 until the content landing)
+var spends_shield: bool = false   # an attack that fires its machine's whole shield, leaving it at nothing, broken (the Afterburner Cannon since 18 November: Ryan, "the cannon fires its whole field")...
+var power_per_shield: int = 0   # ...and each `per_shield` shield it fired adds this to the blow, as power_per_heat does for heat
+var per_shield: int = 2       # ...the shield a step of power_per_shield stands for
 var power_per_missing: int = 0   # an attack: added for every per_missing HP its target is missing (10 October; flat, shown on the hover)...
 var per_missing: int = 20     # ...the HP a step of power_per_missing stands for (the stock pass, 22 October: a field, 20 until the content landing)
 var finisher: int = 0         # an attack: its number times this against a foe at half its HP or less, read as the hit judges the foe (the Kite's Pinion Driver, 11 November: the Coriolis's slope as one step); 0 for none
@@ -362,6 +365,9 @@ static func from_dict(d: Dictionary) -> Face:
 		f.vents_all = bool(d.get("vents_all", false))
 		f.power_per_heat = maxi(0, int(d.get("power_per_heat", 0))) if f.vents_all else 0
 		f.per_heat = maxi(1, int(d.get("per_heat", 10)))
+		f.spends_shield = bool(d.get("spends_shield", false))
+		f.power_per_shield = maxi(0, int(d.get("power_per_shield", 0))) if f.spends_shield else 0
+		f.per_shield = maxi(1, int(d.get("per_shield", 2)))
 		f.power_per_missing = maxi(0, int(d.get("power_per_missing", 0)))
 		f.per_missing = maxi(1, int(d.get("per_missing", 20)))
 		f.finisher = maxi(0, int(d.get("finisher", 0)))
@@ -448,6 +454,11 @@ func to_dict() -> Dictionary:
 		if power_per_heat > 0:
 			d["power_per_heat"] = power_per_heat
 			d["per_heat"] = per_heat
+	if spends_shield:
+		d["spends_shield"] = true
+		if power_per_shield > 0:
+			d["power_per_shield"] = power_per_shield
+			d["per_shield"] = per_shield
 	if power_per_missing > 0:
 		d["power_per_missing"] = power_per_missing
 		d["per_missing"] = per_missing
@@ -620,7 +631,7 @@ func acts_again() -> bool:
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or ignores_armour or swaps or webs or spills or fills_hopper > 0 or fires_hopper > 0 or braces > 0 \
+	return vents_all or spends_shield or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or ignores_armour or swaps or webs or spills or fills_hopper > 0 or fires_hopper > 0 or braces > 0 \
 		or turns_die or team_rerolls > 0 or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
@@ -663,7 +674,7 @@ func is_weapon() -> bool:
 ## effect; the die draws its reach frame with the status mark inside. A gun whose blow is
 ## nothing here (its 5 against armour 5) is no debuff: it prints "0".
 func is_debuff() -> bool:
-	return kind == Kind.ATTACK and power <= 0 and not vents_all and fires_hopper <= 0 and power_per_missing <= 0
+	return kind == Kind.ATTACK and power <= 0 and not vents_all and not spends_shield and fires_hopper <= 0 and power_per_missing <= 0
 
 
 ## Equipment (Ryan, 26 October: "the label for all 4 forms of buff and debuff faces"): a buff,
@@ -729,6 +740,9 @@ func duplicate_face() -> Face:
 	f.front_status = front_status
 	f.front_stacks = front_stacks
 	f.vents_all = vents_all
+	f.spends_shield = spends_shield
+	f.power_per_shield = power_per_shield
+	f.per_shield = per_shield
 	f.power_per_heat = power_per_heat
 	f.per_heat = per_heat
 	f.power_per_missing = power_per_missing
@@ -868,6 +882,8 @@ func rule_phrases() -> Array[String]:
 	if kind == Kind.ATTACK:
 		if vents_all:
 			out.append("vents all" + (", +%d per %d heat" % [power_per_heat, per_heat] if power_per_heat > 0 else ""))
+		if spends_shield:
+			out.append("fires the shield" + (", +%d per %d shield" % [power_per_shield, per_shield] if power_per_shield > 0 else ""))   # its term's name, so the readout links it
 		if power_per_missing > 0:
 			out.append("+%d per %d HP missing" % [power_per_missing, per_missing])
 		if finisher > 1:
@@ -1089,6 +1105,8 @@ func describe() -> String:
 					s += " (%s)" % Effects.gate_text(gates[KEYWORD_NAMES[k]])   # a gated keyword says where it lands
 			if vents_all:
 				s += " vents all" + (", +%d per %d heat" % [power_per_heat, per_heat] if power_per_heat > 0 else "")
+			if spends_shield:
+				s += " fires the shield" + (", +%d per %d shield" % [power_per_shield, per_shield] if power_per_shield > 0 else "")
 			if power_per_missing > 0:
 				s += " +%d per %d HP missing" % [power_per_missing, per_missing]
 			if finisher > 1:

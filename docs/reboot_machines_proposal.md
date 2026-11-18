@@ -12,14 +12,15 @@ day: "we need to evaluate the kit as a whole against the new system and not just
 deltas"). It builds nothing and moves nothing in content; two of its machines were settled on
 main the same day by his own rulings in another session (the Polar Bear, the Whip Scorpion), and
 the Storm Petrel landed the same day on his word, with his upgrade branches (the bible's Storm
-Petrel row; its section is a stub). It retires once its calls are rows and content.
+Petrel row; its section is a stub), and the Buzzard on the 18th (its row; its section a stub
+too). It retires once its calls are rows and content.
 
 ## The whole of it
 
 | The machine | The kit as a whole, under the system | Open |
 |---|---|---|
 | Storm Petrel | Landed 17 November (the bible's row): the Hardlight Generator, a point of shield a point of heat; its lock the Hardlight Pulse, a lure run hot; the Arc Fault Cannon in the Shoring Jack's slot; his branches Defence and Striker | His play of it, and his marks on its texts |
-| Buzzard | As built, a heat engine with its own regen and its own dump, so the reboot is optional for it; the settled form trades the dump for a shield spend and fits | Build the settled form; its last point; its stock's heat |
+| Buzzard | Landed 18 November (the bible's row): the Carrion Recoupler, 2 shield for every foe that falls and a zap on every weapon it fires; its Afterburner Cannon fires the whole shield; a Barrier piece and a warm gun in its stock; his branches Sustain and Burst | His play of it, and his marks on its texts |
 | Needletail | Two actions a round cost two actions' heat and the reboot takes both: it fires less than a plain machine | Its heat budget for two actions, and his "dull" |
 | Skua | Its ramp lives behind a shield that lasts a cycle, and every cycle ends bare | Whether its ramp is for a cycle or a fight |
 | Kite | Holds in short fights; its refill dies with a break, its reboot is the frailest bare turn | A kill mends a broken shield, or as it is |
@@ -75,36 +76,10 @@ the probe's (above).
 Landed 17 November on his word with his branches; the bible's Storm Petrel row says what it is
 and why. Its kit as this proposal read it is in git: `git show 86234dc:docs/reboot_machines_proposal.md`.
 
-### Buzzard
+### Buzzard, landed
 
-Kestrel, tier 2, medium flyer. *Context*: the Kite's larger cousin that "trades explosiveness
-for longevity"; the bible's row, sustain split from burst. Settled 11 November and not built:
-each weapon pays a flat shield cost, unasked, for flat damage, plain when short ("Automatically
-paid"); the cannon fires its whole field; its heat raises its regen.
-
-*Kit, as built*: hull 28, shield 12, armour 0, heat 14, move 5, 5 hardpoints.
-- Thermal Recoupler: shield regen 1 higher for every 4 heat it carries (none cold, 3 from 12).
-- Afterburner Cannon (fixed): 2, heat 3, firing its whole heat, a point more a 2 heat, and
-  leaving it cold.
-- Overclocked Railgun 8 for 11, ignores armour; Transonic Rifle 5 for 7; Arc Fault Cannon 4 for
-  5, Chain 2; Twin Autoguns 3 for 4; Shoring Jack, Armoured 2.
-
-*As a whole.* A heat engine carrying its own sustain and its own dump. Its stock guns are the
-hottest in the game (6.75 heat a gun; the Railgun alone is 11 of its 14), its regen peaks at 3
-a round on that heat, and the cannon cashes the whole gauge (9 at 14) and leaves it cold with
-its shield standing. So it loops hot shot, regen, cannon and never needs a reboot but for a
-broken shield: two of the system's dearest effects on one tier-two medium. The read agrees: it
-reboots least for its heat and loses 15% of its hull against a boss, where the Kite, the Skua
-and the Needletail lose 23% to 36%. The regen's shape suits the system (weak cold, strong hot,
-gone at the overheat); the dump makes the reboot optional. The settled form turns the dump into
-a shield spend, so it reboots like anyone: its guns pay shield for damage, its heat refills the
-shield through the regen, and the cannon cashes the field before the reboot, which is its row's
-split as a choice every turn.
-
-*Verdict.* As built it breaks the system; the settled form fits it. Its holes: an automatic
-cost taking the last point breaks the shield and switches off the regen (lean: it pays only
-while a point would stand); its stock's heat, the Railgun one shot a cycle that crowds out the
-rest (the stock re-deal).
+Landed 18 November on his word in its carrion form, with his branches; the bible's Buzzard row
+says what it is and why. Its kit as this proposal read it is in git: `git show 288de9a:docs/reboot_machines_proposal.md`.
 
 ### Needletail
 
@@ -500,7 +475,9 @@ in formations and nothing against a lone boss.
 
 1. Storm Petrel: landed 17 November on his "Your verdict leans are solid", with his branches
    (the bible's row; `docs/measurements.md`, the same day, reads the four builds).
-2. Buzzard: the settled form built; the last point kept (lean); its stock's heat.
+2. Buzzard: landed 18 November on his "Do the carrion-style", its own spend free to break its
+   shield, with his branches (the bible's row; `docs/measurements.md`, the same day, reads the
+   three builds).
 3. Needletail: its heat budget sized for two actions, or the kit rethought.
 4. Skua: its ramp for a cycle or for a fight.
 5. Kite: a kill mends a broken shield (lean), or left as it is.

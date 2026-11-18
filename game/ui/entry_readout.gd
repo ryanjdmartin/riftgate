@@ -921,6 +921,13 @@ static func ricochet_line(stacks: int) -> Dictionary:
 	return marked(text_line("effect", said, "rule"), [passive_mark("ricochet", "+%d" % stacks, Glyphs.colour_for("ricochet"))])
 
 
+## The shield its machine's zap pays as this weapon fires, and the add it buys (the Buzzard's, 18
+## November), headed by the mark the die's passive box shows for it; the number has the add in.
+static func zap_line(cost: int, add: int) -> Dictionary:
+	var said := "Zap: pays %d shield as it fires, +%d on its every blow" % [cost, add]
+	return marked(text_line("effect", said, "rule"), [passive_mark("shield", "-%d" % cost, Palette.SHIELD)])
+
+
 ## The terms under `point`, in the readout's own space; none off them.
 func terms_at(point: Vector2) -> Array:
 	for h in _hits:

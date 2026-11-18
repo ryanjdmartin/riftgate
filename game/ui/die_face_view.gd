@@ -84,6 +84,7 @@ var cooldown: int = -1       # the rounds a spend darkens it, its machine's pass
 var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), in the passive box at the rail's foot; null for a die that rolls
 var next_number: String = "" # the blow that next entry will deal now, as the screen reads it (Skirmish.shown_number_text); "" reads its own
 var ricochet: int = 0        # the strikes of 1 its machine's Ricochet adds after each shot of a weapon (the Skua's), in the passive box
+var zap_cost: int = 0        # the shield its machine's zap will pay for this weapon's spend (the Buzzard's), in the passive box; its damage is in the main number
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var locked: bool = false
 var charged: bool = false      # armed for its charged form, a muster paid at the spend (the Swallowtail's): a double frame and the word above
@@ -617,6 +618,8 @@ func passive_marks() -> Array:
 	if not dark_now:
 		if ricochet > 0 and face.is_weapon():
 			out.append(["ricochet", "+%d" % ricochet, Glyphs.colour_for("ricochet")])   # a strike of 1 more a stack after each shot (the Skua's)
+		if zap_cost > 0 and face.is_weapon():
+			out.append(["shield", "-%d" % zap_cost, Palette.SHIELD])   # the shield its zap pays, by the shield's mark in its colour (the Buzzard's); the blow it buys is in the number
 	if next_face != null:
 		out.append(next_mark(next_face, next_number))
 	return out

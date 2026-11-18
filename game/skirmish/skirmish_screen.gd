@@ -1300,6 +1300,7 @@ func _refresh(save: bool = true) -> void:
 		var sf := sk.shown_face(ms, sk.spend_face(ms))   # reach as the passive reads it now, the charged form when it goes out charged
 		d.set_face(sf, sk.shown_number_text(ms, sf))   # and the number the blow will deal
 		d.ricochet = _ricochets(ms, sf) if not ms.assigned and ms.alive() else 0   # the strikes of 1 its Ricochet adds after each shot
+		d.zap_cost = _zap_cost(ms, sf) if not ms.assigned and ms.alive() else 0   # the shield its zap will pay (the Buzzard's)
 		d.form_mark = form_mark(ms, sf) if not ms.assigned and ms.alive() else ""   # it seals its machine or opens it
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
 		# A dark entry shows the rounds it has left, this one included (the cooldown row).
@@ -1571,6 +1572,15 @@ static func charge_chunks(ms: Skirmish.MechState) -> Dictionary:
 ## readout's line read it.
 static func _ricochets(ms: Skirmish.MechState, f: Face) -> int:
 	return Effects.stacks_of(ms.unit, "ricochet") if ms != null and f != null and f.is_weapon() else 0
+
+
+## The shield a machine's zap will pay for the weapon it shows (the Buzzard's, 18 November): its cost
+## when the shield holds it, none when it would fire plain. The die's passive box reads it beside
+## the number, which carries the zap's damage already (Skirmish.shown_number).
+static func _zap_cost(ms: Skirmish.MechState, f: Face) -> int:
+	if ms == null or f == null or Skirmish.zap_ready(ms, f) <= 0:
+		return 0
+	return int(Effects.zap_of(ms.unit, f).get("cost", 0))
 
 
 ## Whether spending entry `f` changes its machine's form (Ryan, 2 November: "armadillo needs
@@ -2301,6 +2311,10 @@ func _show_die(i: int) -> bool:
 		var bounced := _ricochets(ms, sf) if not ms.assigned else 0
 		if bounced > 0:
 			extra.append(EntryReadout.ricochet_line(bounced))
+		# The shield its zap pays for a weapon (the Buzzard's), by the same box.
+		var zap := _zap_cost(ms, sf) if not ms.assigned else 0
+		if zap > 0:
+			extra.append(EntryReadout.zap_line(zap, Skirmish.zap_ready(ms, sf)))
 		# Its machine's form (the Polar Bear's): the seal or the opening this entry brings, by the
 		# chip the die shows for it, Sealed a term a tap opens.
 		var shift := form_mark(ms, sf) if not ms.assigned else ""
@@ -2654,6 +2668,7 @@ func _on_drag_started(i: int) -> void:
 	_ghost.shut = []   # no foe in hand yet: every chip as printed
 	_ghost.set_face(sf, sk.shown_number_text(sk.mechs[i], sf))
 	_ghost.ricochet = _ricochets(sk.mechs[i], sf)
+	_ghost.zap_cost = _zap_cost(sk.mechs[i], sf)
 	_ghost.form_mark = form_mark(sk.mechs[i], sf)
 	_ghost.cooldown = sf.cooldown_rounds() if sf != null else 0
 	_ghost.charged = sk.charge_lands(sk.mechs[i])
@@ -2837,6 +2852,7 @@ func _send_second_home() -> void:
 	fly.slot = d.slot
 	fly.corrupted = d.corrupted
 	fly.ricochet = d.ricochet
+	fly.zap_cost = d.zap_cost
 	fly.charged = d.charged
 	fly.dark = d.dark
 	fly.cooldown = d.cooldown
