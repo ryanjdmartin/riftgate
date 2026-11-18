@@ -111,14 +111,17 @@ func test_a_built_machine_lures_three_and_hardens_for_each_and_its_striker_arcs_
 	assert_true(Effects.has(u, "ward"), "and its Ward")
 	assert_true(sk.field_foes().all(func(f: Foe) -> bool: return f.target == ms), "all three turn on it")
 	var v := db.make_mech("test_frame", 1, Vector2i.ZERO, null, [], ["spark", "spark"])
-	var s2 := _fight([v], [Foe.make("revenant", 30, 2), Foe.make("revenant", 30, 2), Foe.make("revenant", 30, 2)])
+	var s2 := _fight([v, db.make_mech("test_frame", 2)], [Foe.make("revenant", 30, 2), Foe.make("revenant", 30, 2), Foe.make("revenant", 30, 2)])
 	var vs: Skirmish.MechState = s2.mechs[0]
 	vs.face_index = 0
+	for foe in s2.field_foes():
+		foe.target = s2.mechs[1]   # every foe aims at the other machine, so a lure shows as a turn
 	var c: Foe = s2.foe_at(0, 2)
 	Effects.stack(c, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	assert_true(s2.assign(0, s2.foe_at(0, 0)), "the lure at a foe that carries no Shock")
 	assert_eq(c.hp, 27, "its arc lands 3 on the Shocked foe")
-	assert_eq(c.target, vs, "and lures it")
+	assert_eq(c.target, s2.mechs[1], "and lures nothing: an arc is its blow alone")
+	assert_eq(s2.foe_at(0, 0).target, vs, "the lure turns its target alone")
 	assert_eq(Effects.stacks_of(v, "charged"), 2, "Charged 2 on itself, the lure spending none")
 	assert_eq(Effects.stacks_of(v, "hardened"), 1, "and the piece's own Hardened Light 1")
 

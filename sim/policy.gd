@@ -567,10 +567,11 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# last act (the boss mechanics of 15 October; valued 22 October).
 	score += p_kill * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target, ms))
 	if f.has(Face.Keyword.LURE) or f.has(Face.Keyword.DISRUPT) or f.has(Face.Keyword.SHOCK):
-		# Every foe the blows reach: the target, the neighbours of a spread, the column of a
-		# penetrate; a lure, a disrupt or a shock lands on a felled foe too (death is the last
-		# check, 3 November) but is worth something only on the ones that survive the blow.
-		var hit: Array = sk.reached_by(f, target).filter(func(n: Foe) -> bool: return n == target or n.alive())
+		# Every foe the riders reach: the target, the neighbours of a spread, the column of a
+		# penetrate, never a Chain's conductor (an arc is its blow alone, 18 November); a lure, a
+		# disrupt or a shock lands on a felled foe too (death is the last check, 3 November) but is
+		# worth something only on the ones that survive the blow.
+		var hit: Array = sk.ridden_by(f, target).filter(func(n: Foe) -> bool: return n == target or n.alive())
 		if f.has(Face.Keyword.DISRUPT):
 			for foe in hit:
 				score += ((1.0 - p_kill) if foe == target else 1.0) * disrupt_score(sk, foe)
@@ -620,19 +621,19 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	if f.has(Face.Keyword.DISPEL):
 		# Purge (28 October): what every foe the entry reaches carries but Numbed and Guarded,
 		# the target's at the odds it outlives the blow, its Undying whatever.
-		for foe in sk.reached_by(f, target):
+		for foe in sk.ridden_by(f, target):
 			if foe == target or foe.alive():
 				score += purge_worth(sk, ms, f, foe, (1.0 - p_kill) if foe == target else 1.0)
 	# Sap (the Baboon's Redshift Emitter, 11 November): each foe reached that is to strike this round
 	# strikes a point lower a stack, never below nothing.
 	if f.has(Face.Keyword.SAP):
-		for foe in sk.reached_by(f, target):
+		for foe in sk.ridden_by(f, target):
 			if foe.alive() and foe.attacks() and not foe.is_suppressed():
 				score += float(mini(sk.foe_blow(foe), f.sap) * foe.strikes()) * HULL_WEIGHT
 	# Brittle (21 October): a point a stack on every team blow each foe reached takes while the
 	# stacks last on their clock, damage in hand for the team's blows (brittle_score).
 	if f.has(Face.Keyword.BRITTLE):
-		for foe in sk.reached_by(f, target):
+		for foe in sk.ridden_by(f, target):
 			if not foe.alive():
 				continue
 			var survives_brittle := (1.0 - p_kill) if foe == target else 1.0
@@ -642,7 +643,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# come on the hull the blow leaves, at the odds the foe outlives the blow. A lay that asks for
 	# a weapon's hit (the Ambush's) gets nothing from equipment.
 	var laid_apps := 0
-	for foe in sk.reached_by(f, target):
+	for foe in sk.ridden_by(f, target):
 		if not foe.alive():
 			continue
 		var lays := Effects.laid_statuses(ms.unit, f, foe)
@@ -796,6 +797,7 @@ func self_grant_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe
 	if f == null or f.self_statuses.is_empty() or target == null:
 		return 0.0
 	var reached := sk.reached_by(f, target)
+	var lured := sk.ridden_by(f, target) if f.has(Face.Keyword.LURE) else []   # a Chain's arc lures nothing (18 November)
 	var worth := 0.0
 	for g in f.self_statuses:
 		var id := str(g.get("status", ""))
@@ -808,7 +810,7 @@ func self_grant_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe
 			"hardened":
 				var blows := 0
 				for foe in sk.field_foes():
-					if foe.alive() and foe.attacks() and not foe.is_suppressed() and (foe.target == ms or (f.has(Face.Keyword.LURE) and reached.has(foe))):
+					if foe.alive() and foe.attacks() and not foe.is_suppressed() and (foe.target == ms or lured.has(foe)):
 						blows += maxi(1, foe.strikes())
 				if ms.unit.shield > 0 and not ms.shield_broken:
 					worth += shield_gain_worth(sk, ms, mini(blows * n, ms.unit.shield_max)) * HARDENED_ROUNDS

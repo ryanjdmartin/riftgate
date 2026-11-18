@@ -11074,6 +11074,12 @@ the probe can see: beside the 17th's form (its own hull 28% and 5 wrecks of 78) 
 is wrecked 3 times, Hardened Light standing in for the plate between reboots, the reboot (a
 quarter of its turns) wiping it each time. Defence twice is the sturdiest build, 2 wrecks. The
 Striker's two end a boss fight two thirds of a round sooner and pay for it on the Petrel itself,
-8 wrecks of 78 to Defence's 2: the Pulse's arcs carry its lure to every Shocked foe (the open
-question of section 12), so the Striker draws more blows on its base cap of 3 and no Ward. Every
-formation was won, in five rounds or so. A pick share or a band waits for the runner and his play.
+8 wrecks of 78 to Defence's 2, a gap of about two standard errors at this sample. Every formation
+was won, in five rounds or so. A pick share or a band waits for the runner and his play.
+
+A correction, the same day. This entry first put the Striker's wrecks down to the Pulse's arcs
+carrying its lure. Read again with riders off Chain (Ryan's call of the 18th), both Striker builds
+return the same numbers to the digit, and they must: a boss here fights alone, so the Pulse finds
+no other Shocked foe to arc to, and in the formations the arcs never moved a result at these seeds.
+The Striker's wrecks come from something else in its kit or its play by the bot (it carries the
+base cap of 3 and no Ward, and Charged weighs the Pulse higher); unread.

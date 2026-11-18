@@ -1234,7 +1234,7 @@
      "id": "striker",
      "name": "Striker",
      "design": {
-      "notes": "Ryan, 18 November: \"Striker Branch 1: Gains Chain 2 and grants self Charged 1. Striker Branch 2: Chain 3 instead and Charged 2.\" The deeper step's numbers replace the first's, the higher standing (Effects.granted_numbers, Effects.self_grants). The Pulse's Chain is a debuff's, its arcs a blow of the number plain that carries the lure to every Shocked foe as any area carries its riders, his to keep or cut (the question of 18 November). His first form of 17 November (Charged 2, then Chain 3) is in git."
+      "notes": "Ryan, 18 November: \"Striker Branch 1: Gains Chain 2 and grants self Charged 1. Striker Branch 2: Chain 3 instead and Charged 2.\" The deeper step's numbers replace the first's, the higher standing (Effects.granted_numbers, Effects.self_grants). The Pulse's Chain is a debuff's, its arcs a blow of the number plain and nothing else (his of 18 November: \"take riders off chain. Thematically it's a lightning arc, not part of the impact\"), so its lure stays on its target. His first form of 17 November (Charged 2, then Chain 3) is in git."
      },
      "steps": [
       {

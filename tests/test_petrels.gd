@@ -223,25 +223,29 @@ func test_a_lure_that_wards_its_machine_turns_the_riders_of_the_turn() -> void:
 	assert_false(Effects.has(u, "ward"), "gone as its next turn starts")
 
 
-## A debuff's Chain (the Storm Petrel's lure, its Striker branch, 17 November: "adds Chain 3 to the
-## lure"): its arcs land the number it prints, plain, through each conductor's armour, and carry its
-## riders, so every Shocked foe it arcs to is lured; its target takes nothing, and no Shock is spent.
-func test_a_debuffs_chain_lands_its_number_plain_on_every_other_shocked_foe_and_lures_them() -> void:
+## A debuff's Chain (the Storm Petrel's Pulse, its Striker branch): its arcs land the number it
+## prints, plain, through each conductor's armour, and carry nothing else (Ryan, 18 November: "take
+## riders off chain. Thematically it's a lightning arc, not part of the impact"), so the lure stays on
+## its target; its target takes nothing, and no Shock is spent.
+func test_a_debuffs_chain_lands_its_number_plain_on_every_other_shocked_foe_and_lures_only_its_target() -> void:
 	var lure := Face.attack(0, I, [K.LURE, K.CHAIN])
 	lure.chain = 3
 	var u := _mech("Petrel", Die.single(lure), 10)
-	var sk := _fight([u], [_foe(30, 2), _foe(30, 2, 1), _foe(30, 2)])
+	var sk := _fight([u, _mech("Ally", Die.single(Face.blank()))], [_foe(30, 2), _foe(30, 2, 1), _foe(30, 2)])
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var a: Foe = sk.foe_at(0, 0)
 	var b: Foe = sk.foe_at(0, 1)
 	var c: Foe = sk.foe_at(0, 2)
+	for foe in [a, b, c]:
+		foe.target = sk.mechs[1]   # every foe aims at the ally, so a lure shows as a turn
 	for foe in [b, c]:
 		Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	Effects.stack(u, Effects.STATUS["overcharged"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
 	assert_true(sk.assign(0, a), "the lure at a foe that carries no Shock")
 	assert_eq([a.hp, b.hp, c.hp], [30, 28, 27], "nothing on its target; 3 on each conductor, b's point of armour off, Empowered adding nothing to a debuff")
 	assert_true(Effects.has(b, "shocked") and Effects.has(c, "shocked"), "no strike was aimed at them: their Shock stands")
-	assert_eq([a.target, b.target, c.target], [ms, ms, ms], "the lure rides its arcs: every conductor turns on it")
+	assert_eq(a.target, ms, "its target turns on it")
+	assert_eq([b.target, c.target], [sk.mechs[1], sk.mechs[1]], "an arc lures nobody: its blow alone")
 
 
 # ---------------------------------------------------------------- the Giant Petrel

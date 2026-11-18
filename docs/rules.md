@@ -500,14 +500,15 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   and a foe immune to it (An immunity, under Foes) takes none.
 - **Shock**: every foe the hit reaches is Shocked after its blow, the ones it fells included, so
   a hit never spends its own Shock.
-- **Chain N**: the blow also lands N on every other Shocked foe on the field,
-  each arc a blow of the spend that no strike is aimed at, so its Shock stands, the riders land
-  and an arc adds no heat. On a debuff, which deals nothing itself (the Storm Petrel's lure in
-  its Striker branch), each arc lands N plain, no add or multiply of the machine's, through the
-  foe's armour, and carries the debuff's riders as any area of it does, so a lure's Chain lures
-  every Shocked foe it arcs to. Its footprint, like an area's, is read from the strike's own foe: an arc
+- **Chain N**: the blow also lands N on every other Shocked foe on the field, each arc a blow
+  alone: no strike is aimed at it, so its Shock stands, it adds no heat, and no rider rides it,
+  the entry's, its primers' or a passive's (a lightning arc, never part of the impact), so a
+  conductor takes the arc's number through its own statuses and armour and nothing else. On a
+  debuff, which deals nothing itself (the Storm Petrel's Pulse in its Striker branch), each arc
+  lands N plain, no add or multiply of the machine's, and its lure stays on what its strike and
+  its area reach. Its footprint, like an area's, is read from the strike's own foe: an arc
   spreads nowhere, a foe an area reaches never arcs, and a foe both beside the target and
-  Shocked takes one blow, the area's.
+  Shocked takes one blow, the area's, with the area's riders.
 - **Lure**: every foe reached turns on the spender for the round, a felled one too. A move at
   every machine or at nobody holds no pick, so it has nothing to turn.
 - **Expose** (the Needletail's Fovea Designator, the Swallowtail's Spotting Flare, the Lammergeier's Lorentz Contractor): every foe reached
