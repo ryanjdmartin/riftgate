@@ -234,8 +234,11 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   to turn to is no draw: the die shows it in its passive box beforehand, and an undo reaches
   past the turn; several are a draw among them. With no lit entry of the other kind it has no
   second action, and a spend that is neither kind (a blank) gives none. A piece that acts
-  again of its own, Rapid or Instant, does so by its own rule and leaves the turn for the next spend. It is the machine's own
-  rule and no keyword.
+  again of its own, Rapid or Instant, does so by its own rule and leaves the turn for the next spend. Its second
+  spend may be its reboot (The reboot, below): after one spend of either kind, whatever that
+  spend left its die, its die may go onto REBOOT, so its reboot turn keeps one action, and the
+  vent takes that action's heat with the rest; after two spends it has no reboot that turn. It
+  is the machine's own rule and no keyword.
 - **Maverick's Playbook** (the Giant Petrel's passive): the team's rerolls unspent as the
   player's turn ends are banked, up to three, and come back at the next round's start beside
   its two, spent like any reroll; a roar's cost comes off the whole. It banks while the
@@ -1089,7 +1092,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
 - Nothing regenerates and nothing cools by itself. A machine gets both gauges back by giving a
   turn: on the player's turn a machine that has spent nothing this turn may reboot, its die
   dragged onto REBOOT, the target in the middle of the bottom row. It is its whole turn: a
-  machine that could act more than once, by Rapid, Instant or a grant, gives all of it up.
+  machine that could act more than once, by Rapid, Instant or a grant, gives all of it up. The
+  one exception is the Needletail's Quick-turn Avionics Relay: one spend made, of any kind, it
+  may reboot as its second (above), the vent taking that spend's heat with the rest.
 - At once its shield goes to nothing and its heat with it, Overheated's stacks too, and it is
   free to overheat again; it is Rebooting through the enemy's turn. As the next round opens,
   before the roll and before the foes pick, its shield is whole and Broken is gone. Heat laid
@@ -1113,7 +1118,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   under; one whose shield is broken when a blow is coming or its heat is half spent; one whose
   entry would pass its maximum, where it has heat to shed and this round's blows would take a
   point of its shield or less; one whose vent would blast for more than its best spend; and a
-  die left idle, where there is something to get back.
+  die left idle, where there is something to get back. A machine whose reboot may be its
+  second spend (the Needletail's) spends first where a spend is worth making, its heat free
+  before the vent, and reboots as its second.
 - **The Hardlight Generator** (the Storm Petrel's passive): every point of heat it gains, from
   any source (a spend of its own, a foe's Scorch, a passive's), stands up a point of shield as
   the gauge climbs, on a shield that stands and up to its maximum; a Broken shield gains none

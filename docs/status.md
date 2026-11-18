@@ -41,7 +41,8 @@ document's job and every command are in `README.md`.
   a branch: the desk machine's folder stays on `main`, and a session that needs another branch
   works in a worktree under `.claude/worktrees/` (`CLAUDE.md`, Session handoff). A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word.
-- Branches. Main holds everything this file describes. Not on main:
+- Branches. Main holds everything this file describes but the Needletail's quick turn (18
+  November), which waits on `ccr-178e0404-ptuh2m` for Ryan's word to land it. Not on main:
   `claude/gameplay-terminology-tooltips-rug879`, a remote branch whose commits were unread
   when this file was written: read it before taking main for the whole of the work.
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
@@ -61,8 +62,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1323 tests, 376,844 checks, green on main (18 November, the Buzzard landed over the Pilgrim's
-  knife). The runner fails a run whose tests never ran, so read the checks' count, never
+- Tests: 1326 tests, 376,869 checks, green on `ccr-178e0404-ptuh2m` (18 November, the
+  Needletail's quick turn, over main at `f167af8`). The runner fails a run whose tests never ran, so read the checks' count, never
   the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
   purpose. About four minutes in a cloud session; words after `--` run only the files whose
   names hold one (`-- loot rig`).
@@ -135,8 +136,10 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   up to 3, every stack gone when the shield breaks, the reboot included); the Buzzard landed
   on the 18th in his carrion form (every foe that falls in its fight gives it shield, every
   weapon it fires pays a zap of shield for a flat add, its Shield-burner Cannon fires the whole
-  shield; Sustain on its passive and Burst on its cannon its branches); its first round on
-  the Kite, the Puffin, the Swallowtail and the Needletail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
+  shield; Sustain on its passive and Burst on its cannon its branches); the Needletail the
+  same day on his two calls (its Designator at no heat, and its reboot its second spend, after
+  one action of either kind); its first round on the Kite, the Puffin and the Swallowtail
+  waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis, the Polar Bear
   (a reboot opens its seal), the Whip Scorpion (its reboot's vent blasts every foe), the
   Lammergeier, the Wild Boar, the Baboon, the Stingray. The Giant Petrel's kit, the Musk Ox
@@ -308,7 +311,7 @@ publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   The last publish known is v0.619 (17 November, from `ccr-178e0404-ptuh2m`); main's file is
-  v0.632 (the deaths' branch's rows, the Mole's branch's and the Buzzard's with it, 18 November), unpublished. Before republishing, read the live page; if another session moved it,
+  v0.633 (the deaths' branch's rows, the Mole's branch's and the Buzzard's with it, 18 November) and the Needletail's branch's v0.634, both unpublished. Before republishing, read the live page; if another session moved it,
   publish a three-way merge onto it row by row (`tools/pages/bible_merge.py`: BASE the last
   publish both started from, OURS this branch's file, THEIRS the saved live source with the
   tool's wrapper line, its trailing newline and `</body></html>` stripped). BASE is likely

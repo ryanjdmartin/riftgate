@@ -698,3 +698,85 @@ func _slide(vp: Viewport, a: Vector2, b: Vector2, steps: int = 8) -> void:
 		vp.push_input(sd)
 
 
+
+
+## The quick turn's reboot (the Needletail's Quick-turn Avionics Relay; Ryan, 18 November: "So it
+## may act, and then the second spend needs to be on the reboot. Doesn't matter what the action
+## is. It's pure tempo and flexibility"), on a synthetic one-of-each passive: one spend of either
+## kind, then the reboot as its second, the vent taking that spend's heat with the rest; none after
+## two spends; and the reboot standing whatever the first spend left its die.
+const RELAY := {"id": "relay", "name": "Relay", "description": "", "effects": [{"trigger": "static", "effect": "one_of_each"}]}
+
+
+func test_a_one_of_each_machine_acts_and_then_reboots_as_its_second_spend() -> void:
+	var gun := Face.attack(5, L, [], 20)
+	var mark := Face.attack(0, Face.Reach.INDIRECT, [K.EXPOSE], 0)
+	var m := _mech(1, "Spotter", Die.of([gun, mark]))
+	m.grant_passive(RELAY)
+	var foe := Foe.make("dummy", 900, 0)
+	var sk := _fight([m], [foe])
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	assert_true(sk.can_reboot(0), "nothing spent: it may reboot as any machine may")
+	assert_true(sk.assign(0, foe), "the gun first")
+	assert_eq(ms.heat, 20, "its heat on the gauge")
+	assert_true(sk.can_reboot(0), "one spend made: its second may be the reboot")
+	assert_true(sk.reboot_mech(0), "rebooted as its second spend")
+	assert_eq([ms.heat, m.shield, foe.hp], [0, 0, 895], "the gun landed, and the vent took its heat with the rest as the shield dropped")
+	assert_true(ms.assigned and ms.rebooting, "its turn is done")
+	assert_true("\n".join(sk.log).contains("reboots as its second spend"), "the log says so")
+	assert_true(sk.undo(), "the undo takes the reboot back")
+	ms = sk.mechs[0]
+	assert_true(not ms.rebooting and ms.heat == 20 and not ms.assigned, "back at its second action: %s" % str([ms.rebooting, ms.heat, ms.assigned]))
+	assert_true(sk.assign(0, sk.front[0]), "the mark as its second action instead")
+	assert_false(sk.can_reboot(0), "two spends made: no reboot this turn")
+	sk.end_round()
+	sk.start_round()
+	ms = sk.mechs[0]
+	ms.face_index = 1
+	assert_true(sk.assign(0, sk.front[0]), "equipment first this round")
+	assert_true(sk.can_reboot(0), "and the reboot as its second all the same: whatever the action")
+	var plain := _mech(2, "Plain", _gun(10))
+	var other := _fight([plain], [Foe.make("dummy", 900, 0)])
+	other.start_round()
+	assert_true(other.assign(0, other.front[0]), "a machine without the rule spends")
+	assert_false(other.can_reboot(0), "and has given up its reboot")
+
+
+func test_a_spend_that_leaves_nothing_to_turn_to_still_leaves_the_reboot() -> void:
+	var m := _mech(1, "Spotter", Die.of([Face.attack(5, L, [], 10), Face.attack(5, L, [], 10)]))
+	m.grant_passive(RELAY)
+	var sk := _fight([m], [Foe.make("dummy", 900, 0)])
+	sk.start_round()
+	assert_true(sk.assign(0, sk.front[0]), "a gun, and no equipment to turn to")
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_true(ms.assigned, "its die spent: no second action")
+	assert_true(sk.can_reboot(0), "the reboot is its second spend whatever the first left")
+	assert_true(sk.reboot_mech(0), "rebooted")
+	assert_eq(ms.heat, 0, "vented")
+
+
+func test_the_bot_spends_before_a_reboot_it_owes_and_reboots_as_its_second() -> void:
+	var gun := Face.attack(5, L, [], 4)
+	var mark := Face.attack(0, Face.Reach.INDIRECT, [K.EXPOSE], 0)
+	var m := _mech(1, "Spotter", Die.of([gun, mark]), 40, 100, 30)
+	m.grant_passive(RELAY)
+	var foe := Foe.make("dummy", 900, 0)
+	var sk := _fight([m], [foe])
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.heat = 34   # past its maximum: it owes a reboot
+	ms.face_index = 0
+	var bot := Policy.make(Policy.GREEDY, 1)
+	bot.play_round(sk, false)
+	assert_true(ms.rebooting, "it rebooted")
+	assert_eq(ms.spends, 1, "after one spend: the gun it showed, its heat free before the vent")
+	assert_eq([foe.hp, ms.heat], [895, 0], "the gun landed, and the vent took the heat")
+	var plain := _mech(2, "Plain", _gun(4, 5), 40, 100, 30)
+	var other := _fight([plain], [Foe.make("dummy", 900, 0)])
+	other.start_round()
+	other.mechs[0].heat = 34
+	Policy.make(Policy.GREEDY, 1).play_round(other, false)
+	assert_eq(other.mechs[0].spends, 0, "a machine without the rule reboots first and spends nothing")
+	assert_true(other.mechs[0].rebooting, "rebooted")

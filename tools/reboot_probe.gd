@@ -9,7 +9,8 @@ extends SceneTree
 ## and vents that blast (the Whip Scorpion's); its own hull lost (percent of its own), its fights wrecked,
 ## and the squad's hull lost; under the table, a machine that spends its shield into its blows (the
 ## Buzzard's zap and its cannon, 18 November): its zaps a fight, its shots of the whole shield and
-## the shield each fired. A direction, never a gate: the bot's play of the reboot is a first
+## the shield each fired; and one whose reboot may be its second spend (the Needletail's, the same
+## day): how many of its reboots came after a spend of its own. A direction, never a gate: the bot's play of the reboot is a first
 ## heuristic, so its losses are a floor of skill. A fight still standing at forty rounds (CAP)
 ## ends there as it stands.
 ##   perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/reboot_probe.gd -- --seeds 8
@@ -93,7 +94,7 @@ func _init() -> void:
 			continue
 		var agg := {"fights": 0, "won": 0, "rounds": 0, "turns": 0, "spent": 0, "reboot": 0, "held": 0, "overheats": 0, "burn": 0,
 			"bare": 0, "sealed": 0, "blasts": 0, "hull_lost": 0.0, "wrecked": 0, "squad_lost": 0.0,
-			"zaps": 0, "whole": 0, "whole_shield": 0}
+			"zaps": 0, "whole": 0, "whole_shield": 0, "spend_reboot": 0}
 		for ci in range(comps.size()):
 			for s in range(seeds):
 				_fight(str(cid), mates, comps[ci], 1000 + s * 7919 + ci * 104729, agg)
@@ -105,6 +106,9 @@ func _init() -> void:
 			("%.1f" % (t / float(agg["reboot"]))) if int(agg["reboot"]) > 0 else "never",
 			agg["overheats"] / n, agg["burn"] / n, int(round(100.0 * agg["bare"] / t)), int(round(100.0 * agg["sealed"] / t)),
 			agg["blasts"] / n, int(round(agg["hull_lost"] / n)), int(round(100.0 * agg["wrecked"] / n)), int(round(agg["squad_lost"] / n))])
+		if int(agg["spend_reboot"]) > 0:
+			spent_shield.append("%s: %d of its %d reboots after a spend of its own (its second spend the reboot)" % [
+				str(db.chassis[cid].get("name", cid)), int(agg["spend_reboot"]), int(agg["reboot"])])
 		if int(agg["zaps"]) + int(agg["whole"]) > 0:
 			spent_shield.append("%s: %.2f zaps a fight; %.2f shots of the whole shield a fight, %s shield each" % [
 				str(db.chassis[cid].get("name", cid)), agg["zaps"] / n, agg["whole"] / n,
@@ -175,6 +179,8 @@ func _fight(cid: String, mates: Array, c: Dictionary, seed_value: int, agg: Dict
 			agg["turns"] += 1
 			if me.rebooting:
 				agg["reboot"] += 1
+				if me.spends > 0:
+					agg["spend_reboot"] += 1   # the Needletail's: a spend, then the reboot as its second
 			elif me.spends > 0:
 				agg["spent"] += 1
 			else:

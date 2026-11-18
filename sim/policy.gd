@@ -93,6 +93,7 @@ var heat_peak_pct: float = 0.0   # the hottest any machine stood as a turn ended
 var hot_rounds: int = 0          # rounds a machine ended its turn at four fifths of its maximum or more
 var forced_holds: int = 0        # damaging dice held because spending them would cross the maximum (the heat report, 13 October: spikes, not actions)
 var reboots: int = 0             # turns given to a reboot
+var _owed: Array[int] = []        # machines that owe a reboot as their second spend this turn (_reboot_first)
 var forgone: float = 0.0         # the damage those dice would have dealt, at their mean
 var spends: Dictionary = {}      # component id, or "empty", "destroyed", "disabled" -> times spent
 var stalled: bool = false
@@ -194,6 +195,11 @@ func play_round(sk: Skirmish, rerolls: bool = true) -> void:
 			var ms: Skirmish.MechState = sk.mechs[i]
 			if not ms.alive() or ms.assigned or held.has(i):
 				continue
+			# Its second spend the reboot (the Needletail's): one it owed, or one its spend made it want.
+			if _reboots_second(sk, i):
+				if sk.reboot_mech(i):
+					reboots += 1
+				continue
 			var opts := options_for(sk, i)
 			if opts.is_empty():
 				held.append(i)
@@ -254,12 +260,46 @@ func play_round(sk: Skirmish, rerolls: bool = true) -> void:
 ## machines that owe one give their turn before any die is spent.
 ## A first cut, no weighing against the spend it gives up, so the runners still play a fight under
 ## the rule and its reads are a floor: a bot that reads the foes' picks reboots where no blow would
-## cost it a shield worth keeping.
+## cost it a shield worth keeping. A machine whose reboot may be its second spend (the Needletail's,
+## Skirmish.quick_reboot) spends first where it has a spend worth making, and owes the reboot
+## after it (_owed): the vent takes that spend's heat with the rest.
 func _reboot_first(sk: Skirmish) -> void:
+	_owed.clear()
 	for i in range(sk.mechs.size()):
 		if sk.can_reboot(i) and _wants_reboot(sk, sk.mechs[i]):
+			if Effects.one_of_each(sk.mechs[i].unit):
+				_owed.append(i)   # its spend's heat is free before the reboot (heat_cost), so it is weighed so
+				if _best_score(sk, i) > 0.0:
+					continue
+				_owed.erase(i)
 			if sk.reboot_mech(i):
 				reboots += 1
+
+
+## The best a machine's die offers now, or -1 with nothing to spend on.
+func _best_score(sk: Skirmish, i: int) -> float:
+	var best := -1.0
+	for o in options_for(sk, i):
+		best = maxf(best, float(o["score"]))
+	return best
+
+
+## Whether this machine's next spend is the one before a reboot it owes as its second spend
+## (_owed): its heat is vented with the rest, so it costs nothing.
+func _vents_after(sk: Skirmish, ms: Skirmish.MechState) -> bool:
+	if _owed.is_empty() or ms.spends != 0:
+		return false
+	var i := sk.mechs.find(ms)
+	return i >= 0 and _owed.has(i)
+
+
+## Whether a machine that has spent once may reboot as its second spend and should: it owed the
+## reboot as the turn began (_reboot_first), or wants one now, the spend's heat on it.
+func _reboots_second(sk: Skirmish, i: int) -> bool:
+	var ms: Skirmish.MechState = sk.mechs[i]
+	if ms.spends != 1 or not sk.can_reboot(i):
+		return false
+	return _owed.has(i) or _wants_reboot(sk, ms)
 
 
 ## Whether a machine that may reboot should, before it spends (_reboot_first): past its maximum
@@ -296,6 +336,10 @@ func _reboot_idle(sk: Skirmish) -> void:
 		return
 	for i in range(sk.mechs.size()):
 		if not sk.can_reboot(i):
+			continue
+		if _owed.has(i) or _reboots_second(sk, i):   # a reboot it owed and put after a spend it then held, or its second-spend reboot with its die spent and nothing to turn to
+			if sk.reboot_mech(i):
+				reboots += 1
 			continue
 		var ms: Skirmish.MechState = sk.mechs[i]
 		if ms.heat <= 0 and ms.unit.shield >= ms.unit.shield_max:
@@ -454,6 +498,11 @@ func _blind_round(sk: Skirmish) -> void:
 			var ms: Skirmish.MechState = sk.mechs[i]
 			if not ms.alive() or ms.assigned or held.has(i):
 				continue
+			if _reboots_second(sk, i):   # its second spend the reboot (the Needletail's), as the greedy's loop
+				if sk.reboot_mech(i):
+					reboots += 1
+				spent_one = true
+				break
 			var pick := _blind_pick(sk, i)
 			var face := ms.face()
 			var charged := sk.charge_lands(ms)
@@ -946,6 +995,8 @@ func purge_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, lives:
 ## over the cap burns hull, and a machine burnt out is the worst trade there is. Asked of the
 ## entry itself, not the one showing, so a reroll can weigh every entry the same way.
 func heat_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: float = 1.0) -> float:
+	if _vents_after(sk, ms):
+		return 0.0   # a spend before the reboot it owes as its second (the Needletail's): the vent takes its heat
 	var fc := sk.forecast(ms)
 	var added := int(roundf(heat_of(ms, f) * uses))
 	var over := maxi(0, int(fc["heat_end"]) + added - ms.heat_max)

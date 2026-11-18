@@ -1990,7 +1990,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A falcon's eye has two foveae, the deep one for distance (Ryan named it 21 October): the spotter's sensor ball, lit as it paints.",
-    "niche": "The Needletail's lock: a debuff, Indirect, that Exposes the foe it reaches through the next round (in every machine's Direct reach, its armour counting for nothing; refreshed, never added). A setup, so Rapid on its machine once a round, and the paint the team's Direct guns cash."
+    "niche": "The Needletail's lock: a debuff, Indirect, that Exposes the foe it reaches through the next round (in every machine's Direct reach, its armour counting for nothing; refreshed, never added). A setup, its machine's equipment action every round, and the paint the team's Direct guns cash. No heat since 18 November (Ryan: \"2 heat for an indirect expose and nothing else is pretty underpowered. It could safely go to zero heat.\")."
    },
    "face": {
     "kind": "attack",
@@ -1999,7 +1999,7 @@
     "keywords": [
      "expose"
     ],
-    "heat": 2
+    "heat": 0
    },
    "passive": null,
    "tags": []

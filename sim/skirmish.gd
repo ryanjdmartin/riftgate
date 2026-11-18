@@ -5550,15 +5550,29 @@ func _note_break(ms: MechState) -> void:
 ## Whether machine `mech_index` may give its turn to a reboot now (Ryan, 13
 ## November: "they have had to 'spent nothing' to smash the Reboot button"): on the player's
 ## turn, alive and in the fight, its die unspent and nothing spent by it this turn, whatever
-## would let it act more than once (Rapid, Instant, a second thing a round, a grant).
+## would let it act more than once (Rapid, Instant, a second thing a round, a grant); or, on a
+## machine whose second spend may be its reboot (quick_reboot, the Needletail's), one spend made.
 func can_reboot(mech_index: int) -> bool:
 	if state != State.ASSIGN or mech_index < 0 or mech_index >= mechs.size():
 		return false
 	var ms := mechs[mech_index]
-	return ms.alive() and not is_swallowed(ms) and not ms.assigned and not ms.rebooting and ms.spends == 0   # a Phased machine may: the safe reboot (Ryan, 15 November)
+	if not ms.alive() or is_swallowed(ms) or ms.rebooting:
+		return false   # a Phased machine may: the safe reboot (Ryan, 15 November)
+	return (not ms.assigned and ms.spends == 0) or quick_reboot(ms)
 
 
-## The reboot: the machine gives its whole turn. At once its shield goes to nothing and its
+## Whether a machine may reboot as the second spend of its turn (the Needletail's Quick-turn
+## Avionics Relay, a one-of-each machine; Ryan, 18 November: "So it may act, and then the second
+## spend needs to be on the reboot. Doesn't matter what the action is. It's pure tempo and
+## flexibility"): one spend made this turn, of any kind, and whatever that spend left its die
+## (a turn to the other kind, or none to turn to). Its reboot vents that spend's heat with the
+## rest; after two spends it has no reboot this turn.
+static func quick_reboot(ms: MechState) -> bool:
+	return ms != null and ms.spends == 1 and Effects.one_of_each(ms.unit)
+
+
+## The reboot: the machine gives its whole turn, or the rest of it as its second spend
+## (quick_reboot, the Needletail's). At once its shield goes to nothing and its
 ## heat with it, what stood past the maximum too (Ryan, 17 November, of the heat that stayed on
 ## the gauge until the recovery: "it didn't make sense to have that overheat hanging around and
 ## not hurting the mech"; "Maybe the heat gets shunted when the shield gets taken down?"), and it
@@ -5592,7 +5606,7 @@ func reboot_mech(mech_index: int) -> bool:
 	var shot := release_shot(ms)   # read while it holds its heat
 	ms.heat = 0
 	ms.overheated = false
-	log.append("%s reboots: %sheat -%d, back next round" % [ms.unit.display_name, "shield -%d, " % dropped if dropped > 0 else "", vented])
+	log.append("%s reboots%s: %sheat -%d, back next round" % [ms.unit.display_name, " as its second spend" if ms.spends > 0 else "", "shield -%d, " % dropped if dropped > 0 else "", vented])
 	_vent_blast(mech_index, ms, shot, vented)
 	if not snap.is_empty():
 		history.append(snap)

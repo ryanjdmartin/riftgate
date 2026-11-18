@@ -11449,3 +11449,31 @@ a cell.
 
 The five-squad read of the same pairs said the same: a pair costs the squad without the
 Barrier nothing and takes half the piece's edge.
+
+## 18 November: the Needletail's free Designator and its reboot as its second spend
+
+`tools/reboot_probe.gd`, as the entries above: first in a squad beside the Honey Badger, the
+Prairie Dog and the Cassowary, the greedy bot; tier one's formations and elites, 21
+compositions at 8 seeds (168 fights), and its bosses alone, 13 at 6 seeds (78). The three fast
+flyers as they stood on main at `f167af8`, the foes as sized that day; then the Needletail with
+its Fovea Designator at no heat alone (a what-if, content edited for the read and put back);
+then as built on Ryan's two calls of the day (the Designator at no heat, and its reboot its
+second spend), on `ccr-178e0404-ptuh2m`. A reboot turn counts as a reboot in the table whether
+or not it spent first; the probe counts the second kind since this entry.
+
+| The machine | Formations: rounds, spent, rebooted, own hull, squad | Bosses: rounds, spent, rebooted, own hull, squad |
+|---|---|---|
+| The Kite | 4.7, 73%, 20%, 7%, 7% | 7.1, 69%, 25%, 28%, 17% |
+| The Skua | 5.0, 79%, 15%, 7%, 7% | 7.3, 75%, 18%, 18%, 16% |
+| The Needletail as it stood | 5.1, 66%, 27%, 6%, 7% | 7.9, 60%, 30%, 12%, 18% |
+| Its Designator at no heat alone | 4.9, 74%, 19%, 7%, 7% | 7.4, 71%, 22%, 19%, 19% |
+| As built: and its reboot its second spend | 4.6, 69%, 25%, 6%, 6% | 6.6, 70%, 24%, 16%, 15% |
+
+What it says. As it stood the Needletail gave the most turns of the three to a reboot, each
+one both its actions, and its boss fights ran longest. The Designator's two heat alone put it
+there: at no heat it reboots at the Kite's pace. As built, 184 of its 190 reboots in the
+formations and 117 of 120 against a boss come after a spend of its own, so it acts on about 93%
+of its turns, where it acted on 60% to 66%. Its boss fights end in 6.6 rounds, the quickest of
+the three, and its squad loses 15% where it lost 18%. Its own hull pays a little more against a
+boss (16% where it paid 12%): it is in the fight more of the time. Every fight was won. A
+direction at 78 fights a build; his play of the two actions decides.
