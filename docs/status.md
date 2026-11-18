@@ -153,9 +153,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   from 1.9% to 8.2% by formation, every fight won. The elites and the bosses are sized
   since 18 November for a squad without the Barrier, on his word ("sizing it without means
   that if it does prove toxic after all, in my play, then it's relatively easy to remove"):
-  an elite costs it 22.9%, from 19.7% to 27.7%, and a boss 29.1%, from 23.4% to 37.8%. The
+  an elite costs it 22.7%, from 19.3% to 27.7%, and a boss 29.1%, from 23.4% to 37.8%. The
   Barrier basic stays on the starting dice ("one of the two sides of the defensive coin"),
-  and the squad with it pays half, an elite 11.4% and a boss 18.7%: whether that proves
+  and the squad with it pays half, an elite 11.2% and a boss 18.7%: whether that proves
   toxic is his play's to say, on BARRIER BASIC. How the leaders strike is his lean of the
   same day (the bible's section 9): whole blows the norm, slightly towards strikes so plate
   earns in their fights; two pairs wait on his marks. A foe's adds, its Empowered first,

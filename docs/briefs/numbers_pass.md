@@ -92,7 +92,7 @@ machine, a hunter's pack two, a formation three, an elite and a boss four), the 
 | A lone flanker | 5.3 | 3.4% | 3.3% or less | 5.9% |
 | A hunter's pack | 5.1 | 9.5% | 10% | 12.7% |
 | A formation | 6.0 | 5.0% | 5% | 8.3% |
-| An elite, the squad without the Barrier | 6.5 | 22.9% | 25% | 23.6%, the Nob at 65.1% |
+| An elite, the squad without the Barrier | 6.5 | 22.7% | 25% | 23.6%, the Nob at 65.1% |
 | A boss, the squad without the Barrier | 8.9 | 29.1%, a wreck in a fight of five | what is left | 53.2%, 86% won |
 
 By formation: the sandworm's ambush 1.9%, the knights' vigil 2.4%, the needler thicket 2.8%,
@@ -101,10 +101,10 @@ grave throng 7.0%, the treant's grove and the ember pyre 8.2%. The flankers cost
 4.1%; the wolf pack 7.4% and the antlion trio 11.6%. Every one is won in every fight.
 
 The elites and the bosses are sized since 18 November for a squad without the Barrier
-(section 8), the Armoured basic in the Halo Projector's slot: an elite from 19.7% (the
-Pilgrim's wake) to 27.7% (the old man's rising), every fight won; a boss from 23.4% (the
+(section 8), the Armoured basic in the Halo Projector's slot: an elite from 19.3% (the
+Thunder Ape's rampage) to 27.7% (the old man's rising), every fight won; a boss from 23.4% (the
 Vampire Lord) to 37.8% (the Obsidian Tyrant), every boss won 98% or more. The squad as the
-dice deal it, the Barrier basic on them, pays half: an elite 11.4%, a boss 18.7%. The piece
+dice deal it, the Barrier basic on them, pays half: an elite 11.2%, a boss 18.7%. The piece
 stays on the starting dice on his word, his play to say whether it proves toxic; the game
 is sized for the day it leaves.
 
@@ -217,7 +217,7 @@ two entries):
 | The call | The lean | Why |
 |---|---|---|
 | Whether the Barrier basic proves toxic | His play's to say (18 November: "if it does prove toxic after all, in my play, then it's relatively easy to remove"); it stays on the starting dice until then, on BARRIER BASIC | The leaders are sized for a squad without it, so taking it off moves no number. With it a squad pays half, and the leaders whose weight is one great blow cost it almost nothing: the Pilgrim 4.0%, the Reaper 4.6%, Gilgamesh 6.8%, the Nob 6.9%, the Vampire Lord 7.1%, the Rust Monster 7.5%, the Mantis Ant 7.7%. A second round of cooldown is 3.5 points on a boss where the piece itself is 20 |
-| How the leaders strike | His lean, 18 November (section 1; the bible's section 9): whole blows the norm, "leaning slightly towards multi to gently boost armour in boss and elite fights", never so "an armoured tank is just best in every fight" | A pair is the gentle setting and three strikes or more a wall's fight (section 4's plate arithmetic), so three and more stay the rare kit shape. Today one boss a domain carries a move of strikes (Floraison's three and five, the Emperor Scorpion's pair, the Matador's four, the Fiend of Fire's six) and one elite fight of tier one's eleven (the Thunder Ape's three). The lean's room is a pair on a few leaders' plain blows, most of it among the elites, each a proposal in chat by the kit's fantasy. A move of strikes is sized with what lands once a strike: its riders, and a machine's Brittle (the World Eater its one layer, so it keeps whole blows). A foe's Empowered goes through the move's multiplier, so a pair at the same total takes a rally as the whole blow did, and it grows on a move whose strikes add up to more than its attack (Full Bloom, five strikes at half, takes two and a half of one). This pass's lean of 17 November, every plain blow as two strikes, is retired; its read stands, and the anchor read's `split=` leaves with the leader pass |
+| How the leaders strike | His lean, 18 November (section 1; the bible's section 9): whole blows the norm, "leaning slightly towards multi to gently boost armour in boss and elite fights", never so "an armoured tank is just best in every fight" | A pair is the gentle setting and three strikes or more a wall's fight (section 4's plate arithmetic), so three and more stay the rare kit shape. Today one boss a domain carries a move of strikes (Floraison's three and five, the Emperor Scorpion's pair, the Matador's four, the Fiend of Fire's six) and one elite fight of tier one's eleven (the Thunder Ape's three). The lean's room is a pair on a few leaders' plain blows, most of it among the elites, each a proposal in chat by the kit's fantasy. A move of strikes is sized with what lands once a strike: its riders, and a machine's Brittle (the World Eater its one layer, so it keeps whole blows). A foe's Empowered goes through the move's multiplier, so a pair at the same total takes a rally as the whole blow did, and it grows on a move whose strikes add up to more than its attack (Full Bloom, five strikes at half, takes two and a half of one). This pass's lean of 17 November, every plain blow as two strikes, is retired; its read stands, and the what-if that made it, the anchor read's `split=`, left with the leader pass (`git show 4ae57e4:tools/anchor_read.gd`) |
 | A pair on two bosses | This pass's proposal, by the kits' own words, for his marks: the Mantis Ant's Mandibles as two strikes of 7 for one of 13, the Gargantuan King's Gore as two of 6 for one of 11 | Read as a what-if: a pair leaves the squad without the Barrier where it was (26.1% to 25.6%, 32.3% to 33.5%) and takes half the piece's edge with it (the Mantis Ant 7.7% to 14.3%, the King 22.6% to 27.7%) |
 | HEAT | −1: a vanilla 3 for 3 | Four shots a gauge for three; a formation 0.7 rounds shorter and a point of hull lighter, a quarter fewer reboots; "I just know I overheated a lot" |
 | TOP BASIC | +2: the Carbine 4 for 6 | Its point is paid in heat: two shots a gauge for the vanilla's four |
@@ -285,4 +285,7 @@ squads, is `docs/measurements.md` under that date. The rules the moves follow:
   blow: the Vampire Lord's Blood Feast at 6 or 7 for 5 had it out-heal a squad, 93% and 83%
   won, so its attack came down and the feast stands.
 - The Reaper and the Pilgrim rose through their blows, the exception: section 7.
+- No one action takes the lightest machine from full, the scale row's cap, 26 points on the
+  Cottonmouth: the Thunder Ape's Rampage is three strikes of 6 for 8, so gold it lands 24
+  where the foes' adds on every strike had made it 30, and the Ape has 54 hit points for 48.
 

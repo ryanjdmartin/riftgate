@@ -217,9 +217,7 @@ perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.
 perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=4 squads=5 kinds=elite,boss
 #   only=id,id reads those compositions or bosses alone; tier=, ramp=; refit=<spec> lays a
 #   what-if over content for the run (refit=barrier=none, the Barrier basic off the stock dice);
-#   blows=80 sets every elite's and boss's attack to that share of content's, in hundredths;
-#   split=2 lands each of their plain blows (one strike at one machine, no countdown, no
-#   keyword) as that many strikes of the same total, and lists the moves it split
+#   blows=80 sets every elite's and boss's attack to that share of content's, in hundredths
 
 # the balance report into docs/balance.md: every chassis alone, the starting team and each
 # maker's team against every pack, each domain's formation at each tier and the party, random

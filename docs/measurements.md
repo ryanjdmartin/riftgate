@@ -11033,7 +11033,8 @@ that large blows should be multi-strikes except where particularly thematic or t
 point is to suppress, disrupt, or block it. Makes armour more valuable which too, is a
 bonus. A barrier is just another mitigation tool then, not a free pass. Just a thought, not
 an instruction." Read before it was answered: `tools/anchor_read.gd` with `split=2` and
-`split=3`, which land every elite's and boss's plain blow, one strike at one machine that
+`split=3` (a what-if cut on 18 November, its question answered: `git show
+4ae57e4:tools/anchor_read.gd`), which land every elite's and boss's plain blow, one strike at one machine that
 lands the round it shows and carries no keyword, as that many strikes of the same total, a
 point either way for the rounding. A blow that gathers, a blow at every machine, a blow
 with a rider (it would land once a strike) and a move of many strikes stay as content has
@@ -11295,3 +11296,11 @@ as two of 6 for one of 11.
 
 A pair leaves the squad without the Barrier where it was and takes half the piece's edge:
 the Mantis Ant's gap goes from 18 points to 11, the King's from 10 to 6.
+
+**The cap, after.** The scale row's cap is that no one action takes the lightest machine
+from full, 26 points on the Cottonmouth. The Thunder Ape's golden Rampage broke it, 27
+before the foes' adds landed on every strike and 30 since: its Rampage is three strikes of
+6 for 8, 24 gold, and it has 54 hit points for 48. It costs a squad without the Barrier
+19.3% for 21.3% and one with it 15.7% for 18.1%, forty fights a cell. Every other action of
+tier one's leaders stands under the cap, Floraison's Full Bloom nearest at 25. With it the
+elites' mean is 22.7% without the Barrier and 11.2% with it.
