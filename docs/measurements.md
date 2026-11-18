@@ -11457,3 +11457,44 @@ Gargantuan King's Gore two of 6, in content. Read as landed, every squad of the 
 fights a cell: the Mantis Ant 26.1% without the Barrier and 13.8% with it, the King 33.4%
 and 27.4%, the what-if's numbers to the decimal. With them a boss costs 29.9% without the
 Barrier and 20.1% with it on the mean.
+
+## 18 November: the Needler's body, and a watch rule as a what-if
+
+Ryan: "give me your waste take since that seems important". The Needler had kept the 2 hit
+points that were the price of a needle through the shield, three days after Breach left,
+so the Waste's two formations cost a squad next to nothing. Every read is
+`tools/anchor_read.gd`, every squad of the six certain tier ones, the greedy bot: forty
+fights a formation's cell and thirty an elite's, each a direction. The elites are read
+without the Barrier (`refit=barrier=none`), as they are sized. A cell is rounds and hull,
+a share of a four's.
+
+| The Needler | The needler thicket | The sandworm's ambush | The old man's rising | The Pilgrim's wake |
+|---|---|---|---|---|
+| 2 hit points, as it was | 3.8, 1.3% | 5.8, 1.5% | 7.6, 25.4% | 5.9, 18.0% |
+| 4 | 4.6, 5.3% | 6.0, 5.5% | 8.3, 30.8% | 6.8, 20.5% |
+| 4, Watched | 4.8, 4.9% | 6.3, 4.4% | 8.3, 29.1% | 6.7, 20.6% |
+| 5 | 5.3, 12.2% | 6.3, 6.3% | | |
+| 5, Watched | 5.5, 8.3% | 6.7, 4.9% | | |
+| 4, two Needlers beside the old man for three | | | 7.9, 27.5% | |
+| The same, Watched | | | 8.5, 28.1% | |
+
+Watched is the proposal of the numbers brief, section 9, built in the working tree for the
+read and taken out again: a Needler does nothing in a round a machine has aimed a die at
+it, and the bot weighs the needles it stops as it weighs a Suppress. At 5 hit points the
+rule held a Needler 2.1 times a fight in the thicket, three holds in four in the first
+round.
+
+What the rows say. The body is the whole of the weight: at the standard foe's 4 both
+formations stand on the budget of a twentieth with nothing else moved. A point past 4 is
+dear where four Needlers stand before four Cockatrices, 5.3% to 12.2%. The watch rule is no
+number: in the bot's hands it takes half a point to a point off a formation at 4 and a
+third off the thicket at 5, and what it changes is which die goes where. Who pays for the
+thicket at 4: the Storm Petrel nothing, the Honey Badger 1.8% of its own hull, the Skua
+6.2%, the Prairie Dog 9.8%, the Cassowary 14.0%, the Cottonmouth 15.2%.
+
+Landed the same day, the sizing's own (a blow that lost Breach takes back what it paid, on
+the other half of the price): the Needler has 4 hit points, and the old man's rising
+fields two Needlers for three. With the Barrier basic the old man's rising costs 15.8% for
+17.0% and the Pilgrim's wake 15.5% for 15.1%. A formation's mean is 5.3% over 5.8 rounds
+for 4.5% over 5.7; an elite's is 25.2% without the Barrier for 24.8%, and 13.8% with it
+for 13.9%. Tiers two and three field the same Needler and are unsized as before.
