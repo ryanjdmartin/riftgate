@@ -106,7 +106,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Basilisk, the Alpha Warg, the Lich, the Rider of the Wild Hunt and the Piercing Eye lay it.
   The Roc is Aloft while its Stoop gathers and nothing reaches it; the Spectre and the Wraith
   fade after their Hex Bolt, Phased through the next round and still acting; the Pilgrim is
-  immune to Suppress, and the Obsidian Tyrant and the Ruby Colossus to Disrupt while Firestorm
+  immune to Suppress and its knife purges before it lands, the one move with a step ahead of
+  its blow, and the Obsidian Tyrant and the Ruby Colossus to Disrupt while Firestorm
   and Ultima gather. Four falls do more than strike: the root line's scream, the Gorgon's
   gaze, the Salamander's embers, the Lich's. The Red Dragon keeps its Crush on Ryan's word, so
   the Peak has no foe that Exposes. Content: four domains, 118 compositions as grids in
@@ -115,7 +116,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   129 foes, 21 of them elites and 8 heroes; thirteen bosses; two moves planned (the Warrior's
   Cover, the Martial Artist's Counter). The names of the newest moves and falls, the words
   for an aim and the term Immune are a session's drafts for Ryan's codex and terminology
-  pass. No foe number is sized for the reboot (The numbers, below). Detail: the rules' Foes;
+  pass. Tier one's foes are sized for the reboot and the higher tiers' are not (The numbers,
+  below). Detail: the rules' Foes;
   the bible's rows on the foes' rule set, targeting, Exposed and Phased.
 - **The machines.** Five makers and 25 chassis, 22 of them dealt (nine at tier one, nine at
   two, four at three); the Puffin and the Swallowtail are back in design and the Mole is a
@@ -159,15 +161,15 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   it does prove toxic after all, in my play, then it's relatively easy to remove"): an
   elite costs it 24.8% and a boss 29.9%. The Barrier basic stays on the starting dice ("one
   of the two sides of the defensive coin"), and the squad with it pays about half, an elite
-  13.9% and a boss 20.1%: whether that proves toxic is his play's to say, on BARRIER BASIC. How the leaders strike is his lean of the
-  same day (the bible's section 9): whole blows the norm, slightly towards strikes so plate
-  earns in their fights; the Mantis Ant's Mandibles and the Gargantuan King's Gore are
-  pairs on his go, the Reaper's Harvest is a sweep at every machine on his word, and the Pilgrim's knife purges before it lands, a step ahead
-  of its blow that the move says and the Pilgrim's alone ("Agreed on pilgrim-only"). A foe's adds, its Empowered first,
-  land on every strike of a move since then, the machines' formula. This pass's leans on the
-  dials stand in the brief's section 7, each his.
-  Tiers two and three and the first battle are unsized, their foes still the ones sized
-  against a shield that refilled. On a debug
+  13.9% and a boss 20.1%: whether that proves toxic is his play's to say, on BARRIER BASIC.
+  How the leaders strike is his lean of the same day (the bible's section 9): whole blows
+  the norm, slightly towards strikes so plate earns in their fights. On his go the Mantis
+  Ant's Mandibles and the Gargantuan King's Gore are pairs, the Reaper's Harvest is a sweep
+  at every machine, and the Pilgrim's knife purges before it lands, the Pilgrim's alone
+  ("Agreed on pilgrim-only"). A foe's adds, its Empowered first, land on every strike of a
+  move since then, the machines' formula. This pass's leans on the dials stand in the
+  brief's section 7, each his. Tiers two and three and the first battle are unsized, their
+  foes still the ones sized against a shield that refilled. On a debug
   build's SETTINGS, TRIALS, each a number still to be picked: HEAT, TOP BASIC, RANK AND FILE
   and BARRIER BASIC (read at the next launch), OVERHEAT, FIELD DEPTH, OPENING, FODDER,
   RUPTURE, TIDE and STRIKE (read as the next battle starts). A dial leaves the page with its
@@ -241,8 +243,10 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   ladder and `tools/campaign_run.gd` whole runs (the README has every command). The bot has
   a first play of the reboot, and prices every step of a foe's move and of its fall by one
   table (`Policy.effect_cost`); a brace, a summon, a revival, a swallow, a purge and a merge
-  it still counts as nothing. `tools/anchor_read.gd` reads every fight of a tier at its
-  rating, the measure the sizing stands on. `tools/battle_run.gd` plays one battle of a run
+  it still counts as nothing; it reads a purge ahead of a blow, and holds a kill only for
+  what a round's wait would save of a death blow. `tools/anchor_read.gd` reads every fight
+  of a tier at its rating on every squad of its pool, and says who paid by machine: the
+  measure the sizing stands on. `tools/battle_run.gd` plays one battle of a run
   whole by squads, and `tools/balance.gd --packs rating` fights every composition with squads
   of its rating. `tools/budget_model.py` and
   `tools/basics_model.py` are the small models apart from content.
@@ -308,7 +312,9 @@ publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   The last publish known is v0.619 (17 November, from `ccr-178e0404-ptuh2m`); main's file is
-  v0.632 (the deaths' branch's rows, the Mole's branch's and the Buzzard's with it, 18 November), unpublished. Before republishing, read the live page; if another session moved it,
+  v0.634 (18 November: the deaths' branch's rows, the Mole's and the Buzzard's, and the foes'
+  line's on the Barrier's place, how the leaders strike, a foe's adds on every strike and
+  the Pilgrim's step ahead of its blow), unpublished. Before republishing, read the live page; if another session moved it,
   publish a three-way merge onto it row by row (`tools/pages/bible_merge.py`: BASE the last
   publish both started from, OURS this branch's file, THEIRS the saved live source with the
   tool's wrapper line, its trailing newline and `</body></html>` stripped). BASE is likely
