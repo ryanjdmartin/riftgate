@@ -36,7 +36,9 @@ them after. Numbers in content are placeholders until then, as ever.
   this change to hit counts, and possibly with giving it cooldown 1. It's one of the two
   sides of the defensive coin, and without it the starting draft leans towards taking units
   that are ok with hull hits, and not ones that actually need their shield for stuff. Makes
-  sense or no?"
+  sense or no?" And the same day, on reading the budget on the squad without it: "I agree.
+  And sizing it without means that if it does prove toxic after all, in my play, then it's
+  relatively easy to remove. Go ahead."
 - How the leaders strike (17 November, of tuning for a block that exists: "large blows should
   be multi-strikes except where particularly thematic or the whole point is to suppress,
   disrupt, or block it ... Just a thought, not an instruction"; 18 November, the read in
@@ -90,22 +92,21 @@ machine, a hunter's pack two, a formation three, an elite and a boss four), the 
 | A lone flanker | 5.3 | 3.4% | 3.3% or less | 5.9% |
 | A hunter's pack | 5.1 | 9.5% | 10% | 12.7% |
 | A formation | 6.0 | 5.0% | 5% | 8.3% |
-| An elite | 6.3 | 11.4% | 25% | 10.9% |
-| A boss | 10.5 | 33.5%, a wreck in two fights of five | what is left | 32.6% |
+| An elite, the squad without the Barrier | 6.5 | 22.9% | 25% | 23.6%, the Nob at 65.1% |
+| A boss, the squad without the Barrier | 8.9 | 29.1%, a wreck in a fight of five | what is left | 53.2%, 86% won |
 
 By formation: the sandworm's ambush 1.9%, the knights' vigil 2.4%, the needler thicket 2.8%,
 the goblin horde and the magma vent 3.6%, the barrow mound 5.8%, the gel wall 6.9%, the
 grave throng 7.0%, the treant's grove and the ember pyre 8.2%. The flankers cost 2.5% to
 4.1%; the wolf pack 7.4% and the antlion trio 11.6%. Every one is won in every fight.
 
-The elites and the bosses are unsized, and the Barrier's place decides how. With the Barrier
-basic on the starting dice an elite costs 11.4%, under half his quarter, and a boss 33.5%.
-With the Armoured basic in its slot an elite costs 23.6%, on the quarter but for the two
-whose kit is one great blow a round (the Nob 65.1%, the Cinder Tortoise's brood 40.2%), and
-a boss 53.2% with a wreck a fight and 86% won. So the elites are sized for a squad with no
-Barrier and the bosses for a squad with one. The bosses run from 10.0% (the Mantis Ant) to
-64.7% (the Fiend of Fire) today. The same reads by machine and by the piece's cooldown are
-`docs/measurements.md`, 18 November.
+The elites and the bosses are sized since 18 November for a squad without the Barrier
+(section 8), the Armoured basic in the Halo Projector's slot: an elite from 19.7% (the
+Pilgrim's wake) to 27.7% (the old man's rising), every fight won; a boss from 23.4% (the
+Vampire Lord) to 37.8% (the Obsidian Tyrant), every boss won 98% or more. The squad as the
+dice deal it, the Barrier basic on them, pays half: an elite 11.4%, a boss 18.7%. The piece
+stays on the starting dice on his word, his play to say whether it proves toxic; the game
+is sized for the day it leaves.
 
 ## 4. What a point is worth
 
@@ -178,8 +179,8 @@ kill; a blow's damage past a shield reaches the hull, so a shield is a pool, rea
 
 The order of work, with what is done: the bot prices every step of a foe's move (17
 November); the model; tier one's flankers, hunters and formations on the budget (section 8).
-Still to come: the Barrier's place, his call, and the elites and bosses with it; the
-scorches on every machine above tier one (the Eruptions' 4 and 5, Fira's and Pyroclasm's 4,
+The elites and the bosses of tier one followed on 18 November, for a squad without the
+Barrier. Still to come: the scorches on every machine above tier one (the Eruptions' 4 and 5, Fira's and Pyroclasm's 4,
 sized against a cooling of 2) toward 2; then the first battle scaled down and tiers two and
 three up.
 
@@ -215,9 +216,9 @@ two entries):
 
 | The call | The lean | Why |
 |---|---|---|
-| The Barrier's place | His lean of 18 November: it stays on the starting dice, "with this change to hit counts, and possibly with giving it cooldown 1", as "one of the two sides of the defensive coin" (section 1); no basic until then (15 and 17 November). This pass's answer: yes, with his point of 15 November kept | It has its cooldown of 1 already, and a second round sat out is 3.5 points on a boss where the piece itself is 20. The read by machine backs him in its direction: with no Barrier and the bosses resized to cost the squad the same, the cost moves onto the two thinnest machines (the Cottonmouth 36% of its hull to 53%, the Cassowary 39% to 44%) and off the Honey Badger (21% to 17%); by hull the Storm Petrel, the machine that lives on its shield, does better without it (37% to 31%). What it brings back is the squad with none, a boss at 53.2% for 33.5% and the Nob at 65.1% for 19.2%. So the leaders are sized so a squad with none still stands, none is sized up to the piece, and what weight a leader gains goes into damage a Barrier does not take whole. The budget's anchor is his to say: an elite costs 11.4% with the piece on the dice and his quarter without it |
+| Whether the Barrier basic proves toxic | His play's to say (18 November: "if it does prove toxic after all, in my play, then it's relatively easy to remove"); it stays on the starting dice until then, on BARRIER BASIC | The leaders are sized for a squad without it, so taking it off moves no number. With it a squad pays half, and the leaders whose weight is one great blow cost it almost nothing: the Pilgrim 4.0%, the Reaper 4.6%, Gilgamesh 6.8%, the Nob 6.9%, the Vampire Lord 7.1%, the Rust Monster 7.5%, the Mantis Ant 7.7%. A second round of cooldown is 3.5 points on a boss where the piece itself is 20 |
 | How the leaders strike | His lean, 18 November (section 1; the bible's section 9): whole blows the norm, "leaning slightly towards multi to gently boost armour in boss and elite fights", never so "an armoured tank is just best in every fight" | A pair is the gentle setting and three strikes or more a wall's fight (section 4's plate arithmetic), so three and more stay the rare kit shape. Today one boss a domain carries a move of strikes (Floraison's three and five, the Emperor Scorpion's pair, the Matador's four, the Fiend of Fire's six) and one elite fight of tier one's eleven (the Thunder Ape's three). The lean's room is a pair on a few leaders' plain blows, most of it among the elites, each a proposal in chat by the kit's fantasy. A move of strikes is sized with what lands once a strike: its riders, and a machine's Brittle (the World Eater its one layer, so it keeps whole blows). A foe's Empowered goes through the move's multiplier, so a pair at the same total takes a rally as the whole blow did, and it grows on a move whose strikes add up to more than its attack (Full Bloom, five strikes at half, takes two and a half of one). This pass's lean of 17 November, every plain blow as two strikes, is retired; its read stands, and the anchor read's `split=` leaves with the leader pass |
-| Where the Halo Projector goes | Where it is, if his lean of 18 November stands: a tier-zero basic on five of tier one's nine stock dice | The Shoring Jack is the coin's other side, on the Honey Badger's and the Polar Bear's; the Skua and the Storm Petrel carry neither |
+| A pair on two bosses | This pass's proposal, by the kits' own words, for his marks: the Mantis Ant's Mandibles as two strikes of 7 for one of 13, the Gargantuan King's Gore as two of 6 for one of 11 | Read as a what-if: a pair leaves the squad without the Barrier where it was (26.1% to 25.6%, 32.3% to 33.5%) and takes half the piece's edge with it (the Mantis Ant 7.7% to 14.3%, the King 22.6% to 27.7%) |
 | HEAT | −1: a vanilla 3 for 3 | Four shots a gauge for three; a formation 0.7 rounds shorter and a point of hull lighter, a quarter fewer reboots; "I just know I overheated a lot" |
 | TOP BASIC | +2: the Carbine 4 for 6 | Its point is paid in heat: two shots a gauge for the vanilla's four |
 | RANK AND FILE | As built: a standard foe of 4 | At 5 a formation runs a round longer and costs half again as much, so the blows would be sized again. The room 5 was to buy, a point between the Carbine and the kill, is bought by the Carbine's heat. Loosely held; tier two's standard is 5 already |
@@ -236,13 +237,14 @@ Leans not yet built, each a number this pass may land with its read:
 - The Overcharge Coil at one stack, or tier two.
 - The ten planned shields and vents: retire the seven at tiers zero and one, the three at
   tier two waiting for a kit that wants one.
-- The leaders a Barrier takes half of, the Mantis Ant, the Phantom Train, the Gargantuan
-  King, the Emperor Scorpion, Gilgamesh and the Nob, are its niche by his word of 18
-  November and no hole to design out. What is left there is their numbers, the Nob's first,
-  and a pair where a kit's own words have one (the Mantis Ant's mandibles, the Gargantuan
-  King's horns), each a proposal in chat.
+- The Reaper and the Pilgrim were sized up through their blows, their kits being nothing
+  else, against this pass's own rule that a leader's added weight is damage a Barrier does
+  not take whole. A move for each that a Barrier does not take, the Reaper's Harvest as a
+  sweep at every machine the first thought, is a proposal in chat.
+- Tiers two and three scale from the same attacks, so the leaders there came down with tier
+  one's and are unsized as before.
 
-## 8. What landed, 17 November
+## 8. What landed, 17 and 18 November
 
 Tier one's flankers, hunters and formations, in `content/foes.json` and one grid of
 `content/factions.json`. The table of moves with each read is `docs/measurements.md`, 17
@@ -267,4 +269,20 @@ November. The rules the moves follow, each a lean of this pass and his to overru
 The Waste's two formations stay light, 1.9% and 2.8%. Their foes are thin and lost the
 rider that was their bite; what a domain's kit should be without Breach is a content
 proposal for his marks, the Waste's first, and no number chases it.
+
+The elites and the bosses of tier one, 18 November, in `content/foes.json`, read for a
+squad without the Barrier. Every boss and every changed elite, before and after for both
+squads, is `docs/measurements.md` under that date. The rules the moves follow:
+
+- A boss's attack is its number, every move a share of it, so a boss is sized by its
+  attack: eleven came down, by a fifth to two fifths, and Floraison and the Matador stand.
+- A great blow a squad without the Barrier cannot stand comes down first: the Nob's Rush is
+  14 for 23, the Phantom Train's Run Down 12 for 16, the Obsidian Tyrant's Crunch 11 for 18.
+- What a leader gains is damage a Barrier does not take whole: the old man's Quake is 7 at
+  every machine for 3, the Gargantuan King's Meteor keeps its 11 while its horns come down,
+  the Rust Monster lives longer for the same bite.
+- A heal that feeds on a blow at every machine is sized by the fight's length, never the
+  blow: the Vampire Lord's Blood Feast at 6 or 7 for 5 had it out-heal a squad, 93% and 83%
+  won, so its attack came down and the feast stands.
+- The Reaper and the Pilgrim rose through their blows, the exception: section 7.
 

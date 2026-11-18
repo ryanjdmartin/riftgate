@@ -81,10 +81,11 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   regenerates or cools by itself; a machine that has spent nothing may give its turn to a
   reboot, bare that turn, cold and whole the next; heat past the maximum stays and burns hull
   every turn; a shield at nothing is broken and gains none until the reboot. No chassis
-  carries a regen or a cooling (the validator refuses both keys), and the foes' numbers are
-  still the ones sized against a shield that refilled: the numbers pass sizes them again
-  (`docs/briefs/numbers_pass.md`; its line alone moves a balance number, the status's Start
-  here). A piece that leans on regen, cooling, a shield gain or a vent says so. His
+  carries a regen or a cooling (the validator refuses both keys). Tier one's foes are sized
+  against it, its elites and bosses for a squad without the Barrier basic (17 and 18
+  November); tiers two and three are still the ones sized against a shield that refilled,
+  and the numbers pass sizes them (`docs/briefs/numbers_pass.md`; its line alone moves a
+  balance number, the status's Start here). A piece that leans on regen, cooling, a shield gain or a vent says so. His
   expectation, no strict rule ("I don't want to make a strict rule about anything"): what
   grants regen, cooling, flat shield or flat heat reduction is part of a kit or a locked
   piece, or gated behind a synergy ("they should be something special"); and a shield spend

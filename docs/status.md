@@ -63,8 +63,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1310 tests, 375,438 checks, green on `ccr-722ca9f0-yj8na3` (18 November, a foe's
-  adds on every strike, over main at `9df330a`). The runner fails a run whose tests never ran, so read the checks' count, never
+- Tests: 1310 tests, 375,444 checks, green on `ccr-722ca9f0-yj8na3` (18 November, tier one's
+  elites and bosses sized, over main at `288de9a`). The runner fails a run whose tests never ran, so read the checks' count, never
   the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
   purpose. About four minutes in a cloud session; words after `--` run only the files whose
   names hold one (`-- loot rig`).
@@ -150,16 +150,17 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   are sized to it since 17 November (`docs/briefs/numbers_pass.md`, section 8; the reads
   `docs/measurements.md`; read again on 18 November over the Storm Petrel's rework): a lone
   flanker 3.4% of a four's hull, a hunter's pack 9.5%, a formation 5.0% over 6.0 rounds,
-  from 1.9% to 8.2% by formation, every fight won. The
-  elites and the bosses are not, and wait on the Barrier's place: his lean of 18 November is
-  that it stays on the starting dice ("one of the two sides of the defensive coin"; no basic
-  until then), answered in chat with the read (the numbers brief's section 7), and what he
-  has still to say is the squad the budget is read on. An elite costs 11.4% with the Barrier
-  basic and 23.6% without it, a boss 33.5% and 53.2%. How the leaders strike is his lean of
-  the same day (the bible's section 9): whole blows the norm, slightly towards strikes so
-  plate earns in their fights. A foe's adds, its Empowered first, land on every strike of a
-  move since then, the machines' formula. This pass's leans on the dials stand in the same
-  section, each his.
+  from 1.9% to 8.2% by formation, every fight won. The elites and the bosses are sized
+  since 18 November for a squad without the Barrier, on his word ("sizing it without means
+  that if it does prove toxic after all, in my play, then it's relatively easy to remove"):
+  an elite costs it 22.9%, from 19.7% to 27.7%, and a boss 29.1%, from 23.4% to 37.8%. The
+  Barrier basic stays on the starting dice ("one of the two sides of the defensive coin"),
+  and the squad with it pays half, an elite 11.4% and a boss 18.7%: whether that proves
+  toxic is his play's to say, on BARRIER BASIC. How the leaders strike is his lean of the
+  same day (the bible's section 9): whole blows the norm, slightly towards strikes so plate
+  earns in their fights; two pairs wait on his marks. A foe's adds, its Empowered first,
+  land on every strike of a move since then, the machines' formula. This pass's leans on the
+  dials stand in the brief's section 7, each his.
   Tiers two and three and the first battle are unsized, their foes still the ones sized
   against a shield that refilled. On a debug
   build's SETTINGS, TRIALS, each a number still to be picked: HEAT, TOP BASIC, RANK AND FILE
@@ -250,8 +251,9 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
 
 1. **The foes' line** (`ccr-722ca9f0-yj8na3`; `docs/briefs/numbers_pass.md`), in this order:
    - The defence side's rest, this line free to adjust content when it is ready (Ryan, 17
-     November): the elites and the bosses, once he says where the Barrier stands; a kit for
-     the Waste now that Breach is cut, proposed in chat first.
+     November): a kit for the Waste now that Breach is cut and a move a Barrier does not
+     take for the Reaper, each proposed in chat first; the scorches on every machine above
+     tier one.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
      his picks on RANK AND FILE, HEAT and TOP BASIC: its prices are read from the vanilla he
      settles on.
@@ -264,8 +266,8 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    unfinished (the Needletail, the Giant Petrel, the Musk Ox) and the gunship, the tier-one
    fronts (Minerva's lure tank, an Aphelion tier one), Claude's first rounds on his directions
    of 5 and 6 November, the rest as its session comes. The to-do's roster is grouped to match.
-4. **The refit pass's tail** (`docs/briefs/refit_pass.md`): his word on the Barrier's place
-   and on the first battle's block, his marks on the flanks' second patrols, the stock
+4. **The refit pass's tail** (`docs/briefs/refit_pass.md`): his word on the first battle's
+   block, his marks on the flanks' second patrols, the stock
    re-deal proper as a table in chat first, the component pass, what prices a round (parked
    on his word).
 5. **The skirmish code audit's structural steps** (`docs/skirmish_audit.md`): the bot's
