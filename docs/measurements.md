@@ -11526,3 +11526,23 @@ Badger 2.2% for 1.8%, and in the squad without the Barrier 3.3% for 1.7%, its br
 its hopper's plate a stack thinner a needle. The bot puts no price on a stack a purge
 takes, so the Skua's Ricochet and the Storm Petrel's Hardened Light going are in no number
 here.
+
+## 18 November: the Waste's formations against all four
+
+Ryan: "Also remember that the waste will only ever be fought with 4 machines. It's just the
+meadow at level 1 that gets 3." The anchor reads a formation at its rating, three machines
+of the four on the field (his split of 6 November: "a 'true' 4 should be reserved for
+elites and bosses, with formations a 3"). Read here with all four on it, the compositions'
+rating set to four for the read and put back: every squad of the pool, the greedy bot,
+thirty fights a cell; rounds and hull, a share of a four's.
+
+| Fight | Three, its rating | All four | All four, without the Barrier | All four, needles purging first |
+|---|---|---|---|---|
+| The needler thicket | 4.6, 5.3% | 3.0, 0.5% | 3.1, 1.0% | 3.0, 0.8% |
+| The sandworm's ambush | 6.0, 5.5% | 4.5, 1.4% | 4.5, 1.3% | 4.5, 1.5% |
+
+A fourth machine on a formation takes three quarters of its price or more, a shield more
+to spread the blows over and the Needlers down a round sooner. The purge has nothing to
+take there: the Needlers fall before they strike, as they do beside an elite. So a
+formation is no threat to a whole squad, which is the rating's meaning, and what a rule on
+the Needler asks is asked of a split squad: three on the formation and one on a flank.

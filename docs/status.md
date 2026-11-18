@@ -170,7 +170,10 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   restricting it to literally just the pilgrim"). A foe's adds, its Empowered first, land on every strike of a
   move since then, the machines' formula. This pass's leans on the dials stand in the
   brief's section 7, each his. Tiers two and three and the first battle are unsized, their
-  foes still the ones sized against a shield that refilled. On a debug
+  foes still the ones sized against a shield that refilled; the first battle, the one a
+  trio fights, is the Meadow's alone on his word of 18 November ("It's just the meadow at
+  level 1 that gets 3"), not built. A formation is read at its rating, three of the four on
+  the field, and all four on one cost a fifth of its price or less. On a debug
   build's SETTINGS, TRIALS, each a number still to be picked: HEAT, TOP BASIC, RANK AND FILE
   and BARRIER BASIC (read at the next launch), OVERHEAT, FIELD DEPTH, OPENING, FODDER,
   RUPTURE, TIDE and STRIKE (read as the next battle starts). A dial leaves the page with its
@@ -317,8 +320,9 @@ publish; the commands are in `README.md`.
   Published at v0.634 on 18 November from main's file at `1383f11` (the page's Version 513),
   every line of the file read first; the page it replaced was v0.564 of 13 November, the
   file of `620c717`, an ancestor of main, so main's file went up whole. Main's file is
-  v0.635 since, unpublished: its row on the foes' rule set says a step ahead of a blow is a
-  move's own order and no rule of Purge, his correction of 18 November. Before republishing,
+  v0.636 since, unpublished: its row on the foes' rule set says a step ahead of a blow is a
+  move's own order and no rule of Purge, his correction of 18 November, and its item on the
+  first battle holds his word that the trio's battle is the Meadow's. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
   `1383f11` unless the live page says otherwise, OURS this branch's file, THEIRS the saved

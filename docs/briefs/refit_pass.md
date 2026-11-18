@@ -128,6 +128,11 @@ the first battle at three machines and every battle after at four, and a fight i
 rating: a lone patrol one, a pair or a hunting pack two, a formation three, an elite and a boss
 four. Unmarked, Claude's lean: a first battle lost sends the machine left on the tender.
 
+**His word, 18 November**: "the waste will only ever be fought with 4 machines. It's just the
+meadow at level 1 that gets 3." So the band of three is the Meadow's first battle alone, this
+brief's bench idea made his word (the reading, his to correct: a run's first battle is the
+Meadow's). Not built: `Campaign` rolls a first rift's domain as it rolls any rift's.
+
 **His scope: tier one only.** "Let's focus only on balancing tier 1 fights for now. If you've
 read the other work done then you'll know that we're considering tier 3 machines to have higher
 stats, and lower tiers be upgradeable. That lets us actually scale player durability slightly
@@ -147,8 +152,9 @@ asks three machines for a formation and two flank patrols (`Ramp.formations_at`,
 1. What easy is read as. Lean: no fight of the first battle costs the worst trio more than a
    tenth of its hull and none wrecks a machine, the bot playing.
 2. How it is made easy. Lean: a block at Convergence 0, the first rift's foes at a share of
-   their hit points and blows, and one flank patrol at its opening where there are two. On the
-   bench: the first rifts always the Meadow's, or a first battle written by hand.
+   their hit points and blows, and one flank patrol at its opening where there are two. Only
+   the Meadow's needs it, the first rifts being the Meadow's on his word of 18 November
+   (above). On the bench: a first battle written by hand.
 3. Whether three machines are meant to leave a flank open and pay at the wall; and the heavy
    elites in the first two battles (the Old Man's rising, the Wild Hunt), gated or left.
 

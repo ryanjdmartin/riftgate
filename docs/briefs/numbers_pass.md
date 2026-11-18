@@ -88,7 +88,11 @@ formation three, an elite and a boss four), the greedy bot (`tools/anchor_read.g
 squad of the pool is read, the even draw: a count of them was uneven by machine until 18
 November, the Honey Badger in four of the five fours the leaders were sized on, and the
 sizing held when it was read again on all fifteen (`docs/measurements.md`, that day). Hull
-is a share of a four's, 96 points for this pool.
+is a share of a four's, 96 points for this pool. The squad on the field is four in every
+row: a formation's fight is three of it by its rating, the fourth on a flank (his split of
+6 November), and all four on a formation cost a fifth of its price or less, the Waste's two
+0.5% and 1.4% for 5.3% and 5.5% (18 November). The trio's battle is the first alone, and
+the Meadow's alone on his word of that day.
 
 | Kind of fight | Rounds | Hull lost | The budget | Before the sizing |
 |---|---|---|---|---|
@@ -315,7 +319,13 @@ How it is put to him, his word the same day: "I have only really been playtestin
 so you'll have to break down your proposals for me explicitly." So a domain's kit is laid
 out against the Meadow's fights, the ones his play knows, piece for piece, with its fights'
 screens and a round worked through (the thicket beside the goblin horde, the sandworm's
-ambush beside the Treant's grove).
+ambush beside the Treant's grove). And, of that breakdown's three machines: "Also remember
+that the waste will only ever be fought with 4 machines. It's just the meadow at level 1
+that gets 3." Every Waste read is a squad of four on the field, a formation's fight three
+of it by its rating; it is said so from here on, and a Waste fight is shown and read
+against all four beside it. Against all four the needle's rule has nothing to take, the
+Needlers falling before they strike, so it shows where the squad is split and beside the
+knife.
 
 **What Breach left.** It was the bite of three of the Waste's five tier-one foes, the
 Needler, the Sandworm and the Antlion, and the first half of the domain's signature, "fixed
