@@ -371,6 +371,13 @@ Unmake and its mirage, the pit's Barrier, Thousand Needles, the Gorgon's dying g
    play says the stare reads as nothing.
 4. With the landing: the faction's signature and answer, and the design notes that still
    say breach, about twenty across the four domains, never shown.
+5. For the squad of four: the purge on the Waste's leaders, each blow that lost its breach
+   taking a Purge ahead of it where its kit says so. The knife has it. The king sandworm's
+   Maw is the next by its kit, a what-if read on 18 November: the old man's rising costs the
+   squad with the Barrier basic 27.5% for 15.8% and the squad without it 29.3% for 27.5%,
+   so the Barrier's gap closes there as it did under the knife. The bosses' blows that lost
+   theirs (the Colossus's tentacle from below, the Lancer's Jump) are his open calls,
+   proposed one by one.
 
 **Its holes**, this pass's own. It is a step on the whole front rank, four purges a round
 in the thicket, and his word against Breach's second form was "a flat tax on every foe of

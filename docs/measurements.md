@@ -11546,3 +11546,18 @@ to spread the blows over and the Needlers down a round sooner. The purge has not
 take there: the Needlers fall before they strike, as they do beside an elite. So a
 formation is no threat to a whole squad, which is the rating's meaning, and what a rule on
 the Needler asks is asked of a split squad: three on the formation and one on a flank.
+
+Where a whole squad would meet the Waste's purge, then, is a leader's blow, as it meets the
+Pilgrim's knife. The old man's rising with a Purge 1 ahead of the king sandworm's Maw, the
+same what-if on the blow that lost its breach, thirty fights a cell:
+
+| The old man's rising | Without the Barrier | With the Barrier basic |
+|---|---|---|
+| The Maw a plain blow, as landed | 7.9 rounds, 27.5% | 8.5, 15.8% |
+| The Maw purging first | 8.1, 29.3% | 7.8, 27.5%, 0.17 wrecks |
+
+The squad without the Barrier pays two points more, a stack of its brace going with each
+bite. The squad with it pays what the other does, where it paid little more than half: the
+knife's read again (7.6% to 16.0%). So a purge ahead of a leader's blow is what closes the
+Barrier's gap in a Waste fight, and a purge on the Needler is not.
+
