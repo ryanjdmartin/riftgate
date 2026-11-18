@@ -286,8 +286,10 @@ squads, is `docs/measurements.md` under that date. The rules the moves follow:
   won, so its attack came down and the feast stands.
 - The Pilgrim rose through its blows, and its knife is damage a Barrier does not take since
   18 November, on his thought ("should the knife attack purge before hitting"): Purge 1 and
-  then the blow, a step ahead of the blow that the move says, a Ward the answer, and the
-  Pilgrim's alone ("Agreed on pilgrim-only": the bible's row on the foes' rule set). It costs a
+  then the blow, a step ahead of the blow that the move says, a Ward the answer, and its
+  move's own order, no rule of Purge ("pilgrim-only was in reference to not making it a
+  purge rule, not restricting it to literally just the pilgrim": the bible's row on the
+  foes' rule set), so another move may carry a step ahead where its kit calls for one. It costs a
   squad without the Barrier 19.2% and one with it 16.0% for 7.6%. The Reaper rose the same
   way, for a day: its Harvest is a sweep at every machine since 18 November, on his word ("Reaper
   sweep seems like a good idea"), 9 at each and corrupting 1, drawn as often as its scythe,
@@ -327,23 +329,32 @@ Unmake and its mirage, the pit's Barrier, Thousand Needles, the Gorgon's dying g
 
 **The lean**, each a mark of its own:
 
-1. What the Waste is: it takes. Entries, rerolls and buffs, and every turn a machine gives
-   to anything but shooting. Its damage is plain and steady, the needles' count. Nothing in
+1. What the Waste is: it takes. Entries and buffs, and every turn a machine gives to
+   anything but shooting (the reroll is the Meadow's to take, below). Its damage is plain and steady, the needles' count. Nothing in
    it goes round a shield and nothing should: the reboot made the shield a pool bought with
    a turn, and turns are what the Waste takes. The table's cells, drafts for his words: its
-   signature "theft of entries and buffs; needles that count every idle die"; the build
-   must answer "redundancy on the die, reach to the gazers, a die for every needle, a
-   Ward".
-2. The Needler's own rule, Watched (a working name): it does nothing in a round a machine
-   has aimed a die at it. Any die, the worst as well as the best; an area that only reaches
-   it is no aim. Its own Ability and no Suppress: no Numbed follows, and a countdown it
-   gathers waits a round. The fantasy is its own lines (never seen to move; do not take
-   your eyes off the cactus). In the system: a stoned entry, a drained reroll, a reboot and
-   a Barrier each let one cactus loose, so the Waste's theft has a price in hull, and a
-   reboot costs more here than anywhere, which is "tempo over shields" with no blow passing
-   a shield. The read: it moves no number, half a point to a point lighter at 4 hit points,
-   and what it changes is which die goes where. The engine: an Ability on a foe, its intent
-   struck through as a die lands on it, the bot's weight for it.
+   signature "theft of entries and buffs; needles nothing you put up answers"; the build
+   must answer "hull and tempo over what you put up; redundancy on the die; reach to the
+   gazers; a Ward".
+2. The Needler's own rule: a Purge ahead of its needles, "Purge 1, then exactly 4". His
+   question, 18 November, on this pass's first lean (a new rule, below on the bench):
+   "Doesn't purge make the most thematic sense for the waste based on your reasoning?" It
+   does: a buff is a thing bought with a die, the turn this pass said the Waste takes, and
+   the Purge takes it with a rule the game already runs. It is the knife's own mechanism,
+   a step ahead of the blow that the move says (section 8), so it is content alone: the
+   intent wears the purge's mark ahead of its number and the round's preview reads the
+   needle as it will land. What the needle meets: a Barrier is gone before it, a brace is
+   a stack thinner for each needle (a braced Honey Badger with its shield down takes 1
+   from a needle today, and 2 from the first and 3 from the second with the purge), the
+   hopper's plate loses a stack a needle until the round turns, and a stack of Ricochet,
+   of Hardened Light or of an unspent Spun Up goes for good. What still answers it: the
+   gauge, the hull, a chassis's own plate, the kill, a Lure and a Ward. So it is "fixed
+   damage no shield answers" in a form the 15 November rule passes, a needle nothing a
+   machine puts up answers, and "hull and tempo" is the Waste's answer again. The Sandworm,
+   the Antlion and the Roc keep plain blows, so the Barrier has work in the Waste and where
+   it goes is the question. The read (`docs/measurements.md`, 18 November): half a point to
+   a point of hull where Needlers live to strike, nothing beside an elite, and the squad
+   with the Barrier basic and the one without pay the same in the thicket, 6.3% and 6.4%.
 3. The second lever, not for the first build: the Cockatrice's Stone holds until that
    Cockatrice falls, one stone a machine, a new stare moving it. The back rank's bird
    becomes the thing to reach, and what a machine shows a standing choice. Held until his
@@ -351,11 +362,16 @@ Unmake and its mirage, the pit's Barrier, Thousand Needles, the Gorgon's dying g
 4. With the landing: the faction's signature and answer, and the design notes that still
    say breach, about twenty across the four domains, never shown.
 
-**Its holes**, this pass's own. The rule makes a Needler lighter, never heavier: its weight
-is its body and its count. At 4 hit points it lasts a round a cactus, a second die killing
-it, so it is tier one's lesson and the Barbed and the Great Needler carry it up. A squad
-with a die to spare holds every cactus: beside an elite the escort is three dice a round
-for two rounds and no threat. The bot plays it shallowly, so his play is its judge.
+**Its holes**, this pass's own. It is a step on the whole front rank, four purges a round
+in the thicket, and his word against Breach's second form was "a flat tax on every foe of
+a formation": what differs is that it falls on what the player chose to put up, the
+intents show where, and it reads a point of hull. A standing stack pays for good, the
+Skua's Ricochet a stack a needle: the kill order and a Lure are its answers, and the bot
+puts no price on a stack taken, so no read shows it and his play is its judge. Tier one's
+stock squads carry little to take, so there it is mostly the two defensive basics it
+answers; it grows with what a squad builds, which is the Waste's own scaling. The knife
+stops being singular and becomes the great form of the Needler's lesson. A Ward is the
+answer and no tier-one stock die holds one.
 
 **The reroll thief.** The signature says theft of rerolls, and no Waste rank steals one:
 the Thief, a hero, is its one drain. His word, 18 November: "Not that we need to bucket
@@ -383,7 +399,10 @@ the Meadow's kit's to ask.
   swallow is Floraison's and the Colossus's.
 - The whole thicket on one machine. The rule: the field on one machine is Exposed's, tier
   two and up.
-- A Purge ahead of more blows than the knife. The rule: "Agreed on pilgrim-only".
+- The Needler holds still while a die is aimed at it, this pass's first lean for its own
+  rule. Set aside for the purge, no rule's kill: a foe carries one twist, and the purge
+  does what it reached for with a rule the game has. Its read: no number moved, half a
+  point to a point lighter.
 - Thousand Needles at tier one. The rule: a countdown on the rank and file is "too
   ubiquitous".
 - A Needler that takes 1 from any blow, the genre's metal slime. The rule: his ceiling of 2

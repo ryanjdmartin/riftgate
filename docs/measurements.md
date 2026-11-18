@@ -11498,3 +11498,31 @@ fields two Needlers for three. With the Barrier basic the old man's rising costs
 17.0% and the Pilgrim's wake 15.5% for 15.1%. A formation's mean is 5.3% over 5.8 rounds
 for 4.5% over 5.7; an elite's is 25.2% without the Barrier for 24.8%, and 13.8% with it
 for 13.9%. Tiers two and three field the same Needler and are unsized as before.
+
+## 18 November: needles that purge first
+
+Ryan, of the step ahead of a blow: "pilgrim-only was in reference to not making it a purge
+rule, not restricting it to literally just the pilgrim." And of the Waste: "Doesn't purge
+make the most thematic sense for the waste based on your reasoning?" Read as content
+alone, on the knife's own engine: the Needler's Needles with a Purge 1 ahead of the blow,
+a needle of 4 on 4 hit points, content edited for the read and put back. Every squad of
+the pool, the greedy bot, forty fights a formation's cell and thirty an elite's; a cell is
+rounds and hull, a share of a four's.
+
+| Fight | The squad as dealt, plain needles | Purging first | Without the Barrier, plain | Purging first |
+|---|---|---|---|---|
+| The needler thicket | 4.6, 5.3% | 4.5, 6.3% | 4.6, 5.7% | 4.7, 6.4% |
+| The sandworm's ambush | 6.0, 5.5% | 6.0, 5.4% | 6.3, 6.9% | 6.5, 7.4% |
+| The old man's rising | 8.5, 15.8% | 8.5, 15.8% | 7.9, 27.5% | 7.9, 27.5% |
+| The Pilgrim's wake | 6.7, 15.5% | 6.8, 16.3% | 6.8, 20.5% | 6.8, 20.7% |
+
+What it says. The purge costs half a point to a point of hull where Needlers live long
+enough to strike, the thicket and the ambush, and nothing beside an elite, where four
+machines fell its two or three Needlers before they act. In the thicket it levels the two
+squads, 6.3% with the Barrier basic and 6.4% without: the needle is the blow neither
+defensive basic answers. Who pays in the thicket, each machine's own hull: the Prairie Dog
+16.0% for 9.8%, its Barrier going before the needle; the Skua 8.5% for 6.2%; the Honey
+Badger 2.2% for 1.8%, and in the squad without the Barrier 3.3% for 1.7%, its brace and
+its hopper's plate a stack thinner a needle. The bot puts no price on a stack a purge
+takes, so the Skua's Ricochet and the Storm Petrel's Hardened Light going are in no number
+here.
