@@ -221,7 +221,7 @@ two entries):
 |---|---|---|
 | Whether the Barrier basic proves toxic | His play's to say (18 November: "if it does prove toxic after all, in my play, then it's relatively easy to remove"); it stays on the starting dice until then, on BARRIER BASIC | The leaders are sized for a squad without it, so taking it off moves no number. With it a squad pays about half, and the leaders whose weight is one great blow cost it least: the Vampire Lord 7.1%, the Fell Rider and the Rust Monster 7.4%, the Mantis Ant 7.8%, the Marsh Serpent 8.3%, the Nob 9.6%. A second round of cooldown is 3.5 points on a boss where the piece itself is 20 |
 | How the leaders strike | His lean, 18 November (section 1; the bible's section 9): whole blows the norm, "leaning slightly towards multi to gently boost armour in boss and elite fights", never so "an armoured tank is just best in every fight" | A pair is the gentle setting and three strikes or more a wall's fight (section 4's plate arithmetic), so three and more stay the rare kit shape. Today one boss a domain carries a move of strikes (Floraison's three and five, the Emperor Scorpion's pair, the Matador's four, the Fiend of Fire's six) and one elite fight of tier one's eleven (the Thunder Ape's three). The lean's room is a pair on a few leaders' plain blows, most of it among the elites, each a proposal in chat by the kit's fantasy. A move of strikes is sized with what lands once a strike: its riders, and a machine's Brittle (the World Eater its one layer, so it keeps whole blows). A foe's Empowered goes through the move's multiplier, so a pair at the same total takes a rally as the whole blow did, and it grows on a move whose strikes add up to more than its attack (Full Bloom, five strikes at half, takes two and a half of one). This pass's lean of 17 November, every plain blow as two strikes, is retired; its read stands, and the what-if that made it, the anchor read's `split=`, left with the leader pass (`git show 4ae57e4:tools/anchor_read.gd`) |
-| A pair on two bosses | This pass's proposal, by the kits' own words, for his marks: the Mantis Ant's Mandibles as two strikes of 7 for one of 13, the Gargantuan King's Gore as two of 6 for one of 11 | Read as a what-if: a pair leaves the squad without the Barrier where it was (26.1% to 25.6%, 32.3% to 33.5%) and takes half the piece's edge with it (the Mantis Ant 7.7% to 14.3%, the King 22.6% to 27.7%) |
+| A pair on two bosses | This pass's proposal, by the kits' own words, for his marks: the Mantis Ant's Mandibles as two strikes of 7 for one of 13, the Gargantuan King's Gore as two of 6 for one of 11 | Read as a what-if on every squad, sixty fights a cell: a pair leaves the squad without the Barrier where it was (the Mantis Ant 25.9% to 26.1%, the King 31.6% to 33.4%) and takes half the piece's edge with it (7.8% to 13.8%, 23.1% to 27.4%). Each boss keeps a whole blow beside the pair, the Ant's Upheaval and the King's Charge |
 | HEAT | −1: a vanilla 3 for 3 | Four shots a gauge for three; a formation 0.7 rounds shorter and a point of hull lighter, a quarter fewer reboots; "I just know I overheated a lot" |
 | TOP BASIC | +2: the Carbine 4 for 6 | Its point is paid in heat: two shots a gauge for the vanilla's four |
 | RANK AND FILE | As built: a standard foe of 4 | At 5 a formation runs a round longer and costs half again as much, so the blows would be sized again. The room 5 was to buy, a point between the Carbine and the kill, is bought by the Carbine's heat. Loosely held; tier two's standard is 5 already |
@@ -240,12 +240,6 @@ Leans not yet built, each a number this pass may land with its read:
 - The Overcharge Coil at one stack, or tier two.
 - The ten planned shields and vents: retire the seven at tiers zero and one, the three at
   tier two waiting for a kit that wants one.
-- The form of the Pilgrim's purge, his question of 18 November: "Do we make the exception
-  for purge itself, or just the pilgrim with the attack sequencing?" Built as the Pilgrim's
-  own sequencing, this pass's lean and his to overrule (section 8): a foe's Purge is a step
-  of a move and never a rider, and riders land after the hits on either side so no blow
-  cashes what it lays itself. Purge's own rule would be the other form; today it would
-  reach a Mine's blast alone, our two Purge pieces being equipment with no blow.
 - Tiers two and three scale from the same attacks, so the leaders there came down with tier
   one's and are unsized as before.
 
@@ -291,7 +285,8 @@ squads, is `docs/measurements.md` under that date. The rules the moves follow:
   won, so its attack came down and the feast stands.
 - The Pilgrim rose through its blows, and its knife is damage a Barrier does not take since
   18 November, on his thought ("should the knife attack purge before hitting"): Purge 1 and
-  then the blow, a step ahead of the blow that the move says, a Ward the answer. It costs a
+  then the blow, a step ahead of the blow that the move says, a Ward the answer, and the
+  Pilgrim's alone ("Agreed on pilgrim-only": the bible's row on the foes' rule set). It costs a
   squad without the Barrier 19.2% and one with it 16.0% for 7.6%. The Reaper rose the same
   way, for a day: its Harvest is a sweep at every machine since 18 November, on his word ("Reaper
   sweep seems like a good idea"), 9 at each and corrupting 1, drawn as often as its scythe,

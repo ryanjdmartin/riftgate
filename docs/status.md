@@ -163,8 +163,7 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   same day (the bible's section 9): whole blows the norm, slightly towards strikes so plate
   earns in their fights; two pairs wait on his marks, the Reaper's Harvest is a sweep at
   every machine on his word, and the Pilgrim's knife purges before it lands, a step ahead
-  of its blow that the move says (whether that stays one move's order or becomes Purge's
-  rule is his). A foe's adds, its Empowered first,
+  of its blow that the move says and the Pilgrim's alone ("Agreed on pilgrim-only"). A foe's adds, its Empowered first,
   land on every strike of a move since then, the machines' formula. This pass's leans on the
   dials stand in the brief's section 7, each his.
   Tiers two and three and the first battle are unsized, their foes still the ones sized
