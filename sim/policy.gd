@@ -58,6 +58,7 @@ const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have
 const EXPOSED_SHARE := 0.5       # what standing Exposed next round would cost, at a share: it is a round away and answered there too (a Lure, a Cleanse, a kill, a reboot the turn before); a placeholder
 const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it adds when a later shot fires it
 const PLATE_ROUNDS := 2.0        # rounds a held load's Armoured is likely to stand (this round's blows and the next's), for the hull its armour keeps
+const HARDENED_ROUNDS := 2.0     # rounds a stack of Hardened Light is read to stand (the Storm Petrel's, 18 November): it lasts until its shield breaks, a reboot's drop among the breaks, so about half a reboot's cycle; a placeholder
 const RICOCHET_WORTH := 2.0      # a stack of Ricochet (the Skua's, 11 November), in foe hit points: about two shots' worth before the fight ends or a blow halves it; a placeholder, as every weight
 const ROLL_AGAIN_WEIGHT := 1.0   # another action of the die (Rapid, Instant, the reset gun, the Horn's), as the die's own average blow
 const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Ablate's does
@@ -566,10 +567,11 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# last act (the boss mechanics of 15 October; valued 22 October).
 	score += p_kill * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target, ms))
 	if f.has(Face.Keyword.LURE) or f.has(Face.Keyword.DISRUPT) or f.has(Face.Keyword.SHOCK):
-		# Every foe the blows reach: the target, the neighbours of a spread, the column of a
-		# penetrate; a lure, a disrupt or a shock lands on a felled foe too (death is the last
-		# check, 3 November) but is worth something only on the ones that survive the blow.
-		var hit: Array = sk.reached_by(f, target).filter(func(n: Foe) -> bool: return n == target or n.alive())
+		# Every foe the riders reach: the target, the neighbours of a spread, the column of a
+		# penetrate, never a Chain's conductor (an arc is its blow alone, 18 November); a lure, a
+		# disrupt or a shock lands on a felled foe too (death is the last check, 3 November) but is
+		# worth something only on the ones that survive the blow.
+		var hit: Array = sk.ridden_by(f, target).filter(func(n: Foe) -> bool: return n == target or n.alive())
 		if f.has(Face.Keyword.DISRUPT):
 			for foe in hit:
 				score += ((1.0 - p_kill) if foe == target else 1.0) * disrupt_score(sk, foe)
@@ -619,19 +621,19 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	if f.has(Face.Keyword.DISPEL):
 		# Purge (28 October): what every foe the entry reaches carries but Numbed and Guarded,
 		# the target's at the odds it outlives the blow, its Undying whatever.
-		for foe in sk.reached_by(f, target):
+		for foe in sk.ridden_by(f, target):
 			if foe == target or foe.alive():
 				score += purge_worth(sk, ms, f, foe, (1.0 - p_kill) if foe == target else 1.0)
 	# Sap (the Baboon's Redshift Emitter, 11 November): each foe reached that is to strike this round
 	# strikes a point lower a stack, never below nothing.
 	if f.has(Face.Keyword.SAP):
-		for foe in sk.reached_by(f, target):
+		for foe in sk.ridden_by(f, target):
 			if foe.alive() and foe.attacks() and not foe.is_suppressed():
 				score += float(mini(sk.foe_blow(foe), f.sap) * foe.strikes()) * HULL_WEIGHT
 	# Brittle (21 October): a point a stack on every team blow each foe reached takes while the
 	# stacks last on their clock, damage in hand for the team's blows (brittle_score).
 	if f.has(Face.Keyword.BRITTLE):
-		for foe in sk.reached_by(f, target):
+		for foe in sk.ridden_by(f, target):
 			if not foe.alive():
 				continue
 			var survives_brittle := (1.0 - p_kill) if foe == target else 1.0
@@ -641,7 +643,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# come on the hull the blow leaves, at the odds the foe outlives the blow. A lay that asks for
 	# a weapon's hit (the Ambush's) gets nothing from equipment.
 	var laid_apps := 0
-	for foe in sk.reached_by(f, target):
+	for foe in sk.ridden_by(f, target):
 		if not foe.alive():
 			continue
 		var lays := Effects.laid_statuses(ms.unit, f, foe)
@@ -784,26 +786,37 @@ static func heat_shield_gain(ms: Skirmish.MechState, f: Face) -> int:
 	return mini(per * maxi(0, heat_of(ms, f)), maxi(0, ms.unit.shield_max - ms.unit.shield))
 
 
-## What a spend lays on its own machine is worth (the effective entry's self_statuses, by an
-## upgrade's branch; the Storm Petrel's lure, 17 November): Hardened a point off every blow it meets this round while its shield stands, read as
-## that much shield stood up against the foes aiming at it once the spend has turned the ones it
-## reaches; Charged a Shock on each of its next fires, its own blow again as a Charged buff is worth.
-## Placeholders, as every weight.
+## What a spend lays on its own machine is worth (the entry's self_statuses as its machine's
+## branches make it: the Hardlight Pulse's Hardened Light, a Ward, Charged; Ryan, 18 November):
+## Hardened Light a point off every blow it meets while its shield stands, read as that much
+## shield stood up against the foes aiming at it once the spend has turned the ones it reaches,
+## over the rounds a stack is read to stand until the shield breaks (HARDENED_ROUNDS), nothing past
+## its cap; a Ward as a Ward piece is (ward_score); Charged a Shock on each of its next fires, its
+## own blow again as a Charged buff is worth. Placeholders, as every weight.
 func self_grant_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
 	if f == null or f.self_statuses.is_empty() or target == null:
 		return 0.0
 	var reached := sk.reached_by(f, target)
+	var lured := sk.ridden_by(f, target) if f.has(Face.Keyword.LURE) else []   # a Chain's arc lures nothing (18 November)
 	var worth := 0.0
 	for g in f.self_statuses:
+		var id := str(g.get("status", ""))
 		var n := maxi(1, int(g.get("stacks", 1))) * (reached.size() if bool(g.get("per_foe", false)) else 1)
-		match str(g.get("status", "")):
+		if int(g.get("cap", 0)) > 0:
+			n = mini(n, maxi(0, int(g["cap"]) - Effects.stacks_of(ms.unit, id)))
+		if n <= 0:
+			continue
+		match id:
 			"hardened":
 				var blows := 0
 				for foe in sk.field_foes():
-					if foe.alive() and foe.attacks() and not foe.is_suppressed() and (foe.target == ms or (f.has(Face.Keyword.LURE) and reached.has(foe))):
+					if foe.alive() and foe.attacks() and not foe.is_suppressed() and (foe.target == ms or lured.has(foe)):
 						blows += maxi(1, foe.strikes())
 				if ms.unit.shield > 0 and not ms.shield_broken:
-					worth += shield_gain_worth(sk, ms, mini(blows * n, ms.unit.shield_max))
+					worth += shield_gain_worth(sk, ms, mini(blows * n, ms.unit.shield_max)) * HARDENED_ROUNDS
+			"ward":
+				if not Effects.has(ms.unit, "ward"):
+					worth += ward_score(sk, ms)
 			"charged":
 				worth += float(n) * _raw_attack_mean(ms)
 	return worth

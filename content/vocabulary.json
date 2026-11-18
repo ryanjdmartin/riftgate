@@ -412,10 +412,10 @@
    "id": "chain",
    "category": "keyword",
    "name": "Chain",
-   "codex": "Keyword with a number. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the number: a weapon's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. On a debuff, which deals nothing itself, the arcs land the number plain, through each foe's armour, and carry the debuff's riders, as any area of it does. No strike is aimed at them, so their Shock stands.",
+   "codex": "Keyword with a number. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the number: a weapon's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. An arc is its blow alone: nothing the entry lays rides it, so a conductor takes the number and no mark, no Lure and no Shock. On a debuff, which deals nothing itself, the arcs land the number plain, through each foe's armour. No strike is aimed at them, so their Shock stands.",
    "status": "implemented",
    "design": {
-    "holes": "Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain). Retired 3 November: the charge, one other foe at random after the arcs (Ryan, 2 November: \"Chain just is the situational aoe, and if weak we can either add more things for it to proc on, or give it the self-charge again\"); Charged, the primer, supplies the Shock beside the Shock weapons and Retaliate. A debuff's since 17 November (the Storm Petrel's lure, its Striker branch: \"adds Chain 3 to the lure\"): refused until then, since a debuff's arc would carry its riders to every conductor for no blow; with a number the arc is a blow, and its riders ride it, so the lure's Chain lures every Shocked foe it arcs to, a session's read of his words."
+    "holes": "Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain). Retired 3 November: the charge, one other foe at random after the arcs (Ryan, 2 November: \"Chain just is the situational aoe, and if weak we can either add more things for it to proc on, or give it the self-charge again\"); Charged, the primer, supplies the Shock beside the Shock weapons and Retaliate. A debuff's since 17 November (the Storm Petrel's Pulse, its Striker branch): refused until then, since a debuff's arc would carry its riders to every conductor for no blow; with a number the arc is a blow. Its arcs carry no rider since 18 November (Ryan: \"take riders off chain. Thematically it's a lightning arc, not part of the impact\"): they had carried the entry's riders as any area does, the fourth footprint's rule, which on the Pulse lured every Shocked foe it arced to; the Arc Fault Cannon printed none, so it lost nothing."
    }
   },
   {
@@ -718,15 +718,15 @@
    "id": "hardened",
    "category": "status",
    "name": "Hardened Light",
-   "codex": "Machine buff. While its shield stands, every blow on it loses 1 a stack, beside any plate of its own. A stack goes as each of its turns starts, so Hardened Light 3 takes 3 off every blow through the enemy's next turn, then 2, then 1, and a second grant adds its stacks. Laid by the Storm Petrel's Hardlight Pulse in its Defence branch.",
+   "codex": "Machine buff. While its shield stands, every blow on it loses 1 a stack. It stays until the shield breaks, a reboot's drop included, and then every stack goes. The Storm Petrel's Hardlight Pulse lays it, a stack a spend up to 3, and up to 4 and then 5 in its Defence branch, where the Pulse's Spread lays a stack for each foe it hits.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan, 17 November, the Storm Petrel's Defence branch (\"Defense\" his): \"adds a self-buff that increases shield armour for a turn to the lure\", then \"adds spread to the lure, increasing shield armour by foes lured\". His name and his clock the same day: \"The shield armour buff is called Hardened Light. Make it decay by a stack at start of Petrel's turn, not all at once\" (Hardened, every stack at once on Armoured's clock, until then). Shield armour, never armour: Exposed leaves it, and it takes nothing off a blow on bare hull. Stacks a lure lays each turn pile on what is left, a turn's loss a stack.",
+    "holes": "Ryan, 18 November: \"no innate shield armour. The Pulse grants one Hardened Light at tier 1. Hardened Light only decays when the shield breaks, and has a cap of 3 stacks\"; \"The reboot breaks it yes. When it breaks, it loses all of them. If it's weak, we'll buff it, but this is the best shape that doesn't add any weird exceptions. It contains high points and low points and that makes it interesting and healthy\". Shield armour, never armour, so an Expose leaves it (\"It's the only tank not weak to Expose\"), and it takes nothing off a blow on bare hull, a tick or a burn. What reopens it: a Purge proving too threatening, which moves it to a resource bar in place of a buff (his word the same day). His name of 17 November; the session's Hardened before it, a stack off each turn start for a day.",
     "table": {
      "kind": "buff",
      "on": "machine",
      "stacks": "Yes: a point off every blow a stack while its shield stands",
-     "lasts": "A stack goes as each of its turns starts"
+     "lasts": "Until its shield breaks, every stack then"
     }
    }
   },
@@ -1600,10 +1600,10 @@
    "id": "self_statuses",
    "category": "component_property",
    "name": "On itself",
-   "codex": "A rule an upgrade writes on a locked piece (the Storm Petrel's Hardlight Pulse, in its branches): spent on a foe, its own machine gains the status it says, the stacks it says, or that many for every foe the spend reached, a foe its Spread lures beside the target included.",
+   "codex": "A rule printed on a component (the Storm Petrel's Hardlight Pulse, a lure): spent on a foe, its own machine gains the status it says, the stacks it says, or that many for every foe the spend reached, up to the most it names. An upgrade's branch may take it further or add another.",
    "status": "implemented",
    "design": {
-    "holes": "Its first carrier the Storm Petrel's lure, in its branches (Ryan, 17 November): the Defence direction's Hardened Light, then a stack for each foe lured, the Striker's Charged. An upgrade's effect (self_status), read through the pipeline onto the entry as spent, never printed on the piece. The lock's own Regenerating on itself (regenerates, 30 October to 17 November), printed on the piece, was its one form until then; it left with that piece's rework. Machine buffs alone, never a Barrier or a Ward, which keep their pieces and their cooldowns."
+    "holes": "Its carrier the Storm Petrel's Hardlight Pulse (Ryan, 18 November): Hardened Light 1, up to 3, printed on the piece; its branches take it further through the pipeline (self_status): the Defence direction a Ward and a cap of 4, then a stack for each foe hit and a cap of 5, the Striker's Charged 1 and then 2. Its first form the lock's own Regenerating on itself (regenerates, 30 October to 17 November). Machine buffs and a Ward, never a Barrier, which keeps its pieces and its cooldown."
    }
   },
   {
@@ -2190,7 +2190,7 @@
    "id": "ward",
    "category": "status",
    "name": "Ward",
-   "codex": "Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (ablate, scorch, jam, corrupt, purge), until its next turn starts. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it (Ablating, Brittle, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox and the drone), nor a stun, nor a Purge, and a turned mark feeds no Paradox, until its next turn starts.",
+   "codex": "Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (ablate, scorch, jam, corrupt, purge), until its next turn starts: the Decoherence Veil grants it, and the Storm Petrel's Hardlight Pulse lays it on itself in its Defence branch. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it (Ablating, Brittle, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox and the drone), nor a stun, nor a Purge, and a turned mark feeds no Paradox, until its next turn starts.",
    "status": "implemented",
    "design": {
     "holes": "A foe's move that lays a debuff without a blow is a rider too (Ryan, 25 October: \"Should stop all riders, even from non-damaging attacks\"), so a Stoke, a Stone, an Eruption on every machine and a Diamond Dust all pass a warded machine by. A foe's Ward (28 October) turns the team's marks (Effects.TEAM_MARKS), and since 2 November a stun and a Purge too, on either side, and stands (Ryan: nothing but damage lands on a Warded foe; the exception that let a stun through went with Numbed's roll).",

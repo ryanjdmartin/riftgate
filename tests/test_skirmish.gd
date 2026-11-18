@@ -1680,6 +1680,35 @@ func test_chain_arcs_to_every_shocked_foe_on_the_field_whatever_its_reach() -> v
 	assert_eq("\n".join(sk.log).count("arcs to"), 2, "the log tells each arc")
 
 
+## An arc is its blow alone (Ryan, 18 November: "take riders off chain. Thematically it's a lightning
+## arc, not part of the impact"): what the gun lays lands on the foes its strike and its area reach,
+## never on a conductor, which takes the arc's number through its armour and nothing else.
+func test_an_arc_carries_no_rider() -> void:
+	var sk := Skirmish.new(1, 2)
+	var gun := _chain_gun(4, 2, 3, [K.ABLATE, K.BRITTLE, K.LURE])
+	gun.ablate = 2
+	gun.brittle = 1
+	sk.add_mech(_mech("A", Die.single(gun)))
+	sk.add_mech(_mech("B", Die.single(Face.blank())))
+	var target := _ghoul(30, 5)
+	var other := _ghoul(30, 5)
+	sk.add_foes([target, other])
+	sk.begin()
+	sk.start_round()
+	_shock_on(other)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	for foe in [target, other]:
+		foe.target = sk.mechs[1]   # both aim at the other machine, so a lure shows as a turn
+	assert_true(sk.ridden_by(gun, target).has(target) and not sk.ridden_by(gun, target).has(other), "the riders reach the target, never the conductor")
+	assert_true(sk.reached_by(gun, target).has(other), "though the blow reaches it")
+	assert_true(sk.assign(0, target), "the Chain gun spent")
+	assert_eq(other.hp, 28, "the conductor takes Chain 2")
+	assert_eq([Effects.stacks_of(other, "ablating"), Effects.stacks_of(other, "brittled")], [0, 0], "and none of the gun's marks")
+	assert_eq(other.target, sk.mechs[1], "nor its lure")
+	assert_eq([Effects.stacks_of(target, "ablating"), Effects.stacks_of(target, "brittled")], [2, 1], "the target takes them all")
+	assert_eq(target.target, ms, "and turns on it")
+
+
 func test_chain_never_arcs_to_the_foe_it_is_aimed_at() -> void:
 	var sk := Skirmish.new(1, 2)
 	sk.add_mech(_mech("A", Die.single(_chain_gun())))
@@ -1712,21 +1741,6 @@ func test_the_firers_modifiers_ride_every_arc() -> void:
 		_shock_on(other)
 		assert_true(sk.assign(0, target), "the Chain gun spent")
 		assert_eq(30 - other.hp, int(amp[2]), "%s: the conductor takes %s" % [str(amp[0]), str(amp[3])])
-
-
-func test_the_riders_land_on_every_conductor() -> void:
-	var sk := Skirmish.new(1, 2)
-	sk.add_mech(_mech("A", Die.single(_chain_gun(4, 2, 3, [K.ABLATE, K.BRITTLE]))))
-	var target := _ghoul(30, 5)
-	var other := _ghoul(30, 5)
-	sk.add_foes([target, other])
-	sk.begin()
-	sk.start_round()
-	_shock_on(other)
-	assert_true(sk.assign(0, target), "the Chain gun spent")
-	assert_eq(other.hp, 28, "the conductor's blow, before the Brittle it lays")
-	assert_eq(Effects.stacks_of(other, "ablating"), 1, "Ablate 1 lands on the conductor")
-	assert_eq(Effects.stacks_of(other, "brittled"), 1, "and Brittle 1, after its blow")
 
 
 func test_a_kill_by_an_arc_fires_the_kill_rules() -> void:

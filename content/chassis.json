@@ -1144,8 +1144,8 @@
    "tier": 1,
    "design": {
     "fantasy": "The off-tank, a fast hovercraft (Ryan, 20 October: since the Puffin is slow, the shield-burner should be fast, so Kestrel is seen to make a fast hover), the Storm Petrel since 21 October, the small sea bird that patters across the water; its hard shields used both for defence and for whacking things with (Ryan, 21 October).",
-    "niche": "Kestrel's tier-one tank by shield (Ryan, 11 November, locked 17 November): while its shield stands every blow on it loses a point (the plate), and every point of heat it gains, from any source, stands up a point of shield, so its heat is its fuel and its clock at once and the overheat it walks toward breaks the shield it built. Its passive the Hardlight Generator and its lock the Hardlight Pulse (Ryan's names of 17 November, the Riot Field Generator and the St. Elmo's Regenerator until then), a lure that runs hot, so its taunt raises its shield through the hook. A generalist that can zoom off and fight a pack (Ryan, 20 October), the tank since its rework and no longer the striker.",
-    "notes": "Reworked 17 November on his direction of 11 November, locked that day (\"That direction is locked, or should be locked. It just needs to be finalized and landed\"; the bible's Storm Petrel row; docs/reboot_machines_proposal.md): the plate kept, the hook (on_heat_gain shield_per_heat, a point a point), the shield burn and its zap cut with their last carrier, the zap the Buzzard's to take; the lock a lure of heat 3, its Regenerating gone (\"Your verdict leans are solid\"); the passive and the lock renamed the same day, his. The stock's Shoring Jack, Armoured that came off only what reached its hull and made no heat for the hook, gave its slot to the Arc Fault Cannon, Kestrel's Chain gun, warm and the Striker branch's partner; the session's pick on his \"Adjust the stock as you see fit\". Its branches are his of the same day (branches, below). Numbers are placeholders: a medium hover at 24 hull and tier one's top shield, 12. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, storm_petrel), the Arc Fault Cannon worn on its fourth mount as a refit wears a class."
+    "niche": "Kestrel's tier-one tank by shield (Ryan, 11 November, locked 17 November): every point of heat it gains, from any source, stands up a point of shield, so its heat is its fuel and its clock at once and the overheat it walks toward breaks the shield it built; its shield armour is the Hardened Light its lock lays, a stack a spend up to 3, every stack gone when the shield breaks, a reboot's drop included (Ryan, 18 November: \"It contains high points and low points and that makes it interesting and healthy. It's the only tank not weak to Expose ... since heat gives shield, heat is its gate alone, and a smart player will look for ways to support that. So it needs the clear weakness\"). Its passive the Hardlight Generator and its lock the Hardlight Pulse (Ryan's names of 17 November, the Riot Field Generator and the St. Elmo's Regenerator until then), a lure that runs hot, so its taunt raises its shield through the hook. A generalist that can zoom off and fight a pack (Ryan, 20 October), the tank since its rework and no longer the striker.",
+    "notes": "Reworked 17 November on his direction of 11 November, locked that day (\"That direction is locked, or should be locked. It just needs to be finalized and landed\"; the bible's Storm Petrel row; docs/reboot_machines_proposal.md): the hook (on_heat_gain shield_per_heat, a point a point), the plate (a point off every blow while the shield stood) kept until 18 November, when the shield armour moved onto the Pulse as Hardened Light (his \"no innate shield armour\"), the shield burn and its zap cut with their last carrier, the zap the Buzzard's to take; the lock a lure of heat 3, its Regenerating gone (\"Your verdict leans are solid\"); the passive and the lock renamed the same day, his. The stock's Shoring Jack, Armoured that came off only what reached its hull and made no heat for the hook, gave its slot to the Arc Fault Cannon, Kestrel's Chain gun, warm and the Striker branch's partner; the session's pick on his \"Adjust the stock as you see fit\". Its branches are his of the same day (branches, below). Numbers are placeholders: a medium hover at 24 hull and tier one's top shield, 12. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, storm_petrel), the Arc Fault Cannon worn on its fourth mount as a refit wears a class."
    },
    "codex": "",
    "hull": 24,
@@ -1171,14 +1171,8 @@
    "passive": {
     "id": "hardlight_generator",
     "name": "Hardlight Generator",
-    "description": "While its shield stands, every blow on the Storm Petrel loses 1, and every point of heat it gains stands up a point of shield.",
+    "description": "Every point of heat the Storm Petrel gains stands up a point of shield.",
     "effects": [
-     {
-      "trigger": "static",
-      "effect": "add_damage_taken",
-      "value": -1,
-      "when": "shield_up"
-     },
      {
       "trigger": "on_heat_gain",
       "effect": "shield_per_heat",
@@ -1191,23 +1185,31 @@
      "id": "defence",
      "name": "Defence",
      "design": {
-      "notes": "Ryan, 17 November: \"Defense branch: 1st upgrade adds a self-buff that increases shield armour for a turn to the lure. 2nd upgrade adds spread to the lure, increasing shield armour by foes lured.\" Hardened Light is that self-buff (his name of the same day, Hardened the session's until then), the plate's rule losing a stack as each of its turns starts (his clock of the same day: \"decay by a stack at start of Petrel's turn, not all at once\"); its second step's per_foe reads \"increasing shield armour by foes lured\", the stacks the foes the spread lures."
+      "notes": "Ryan, 18 November: \"Defense branch 1: Pulse grants Ward to self. max stacks raised to 4. Defense branch 2: Pulse gains Spread, and grants 1 Hardened Light per target hit instead of a flat 1. Max stacks raised to 5.\" A step restates the Pulse's own grant with its cap and its per_foe, the most of each standing (Effects.self_grants). His first form of 17 November (a self-buff for a turn, then Spread with a stack for each foe lured) is in git."
      },
      "steps": [
       {
-       "description": "Its Hardlight Pulse also lays Hardened Light 1 on the Storm Petrel.",
+       "description": "Its Hardlight Pulse also lays Ward on the Storm Petrel, and its Hardened Light holds up to 4.",
        "effects": [
+        {
+         "trigger": "static",
+         "effect": "self_status",
+         "status": "ward",
+         "value": 1,
+         "entry": "hardlight_pulse"
+        },
         {
          "trigger": "static",
          "effect": "self_status",
          "status": "hardened",
          "value": 1,
+         "cap": 4,
          "entry": "hardlight_pulse"
         }
        ]
       },
       {
-       "description": "Its Hardlight Pulse gains Spread, and lays Hardened Light 1 for each foe it lures.",
+       "description": "Its Hardlight Pulse gains Spread, and lays Hardened Light 1 for each foe it hits, up to 5.",
        "effects": [
         {
          "trigger": "static",
@@ -1221,6 +1223,7 @@
          "status": "hardened",
          "value": 1,
          "per_foe": true,
+         "cap": 5,
          "entry": "hardlight_pulse"
         }
        ]
@@ -1231,29 +1234,43 @@
      "id": "striker",
      "name": "Striker",
      "design": {
-      "notes": "Ryan, 17 November: \"Striker branch: 1st upgrade adds a self-grant of Charged stacks to the lure. 2nd upgrade adds Chain 3 to the lure.\" The stacks, 2, are the session's placeholder. The lure's Chain is a debuff's, its arcs a blow of 3 that carries the lure to every other Shocked foe, a session's read of his words (the Chain term)."
+      "notes": "Ryan, 18 November: \"Striker Branch 1: Gains Chain 2 and grants self Charged 1. Striker Branch 2: Chain 3 instead and Charged 2.\" The deeper step's numbers replace the first's, the higher standing (Effects.granted_numbers, Effects.self_grants). The Pulse's Chain is a debuff's, its arcs a blow of the number plain and nothing else (his of 18 November: \"take riders off chain. Thematically it's a lightning arc, not part of the impact\"), so its lure stays on its target. His first form of 17 November (Charged 2, then Chain 3) is in git."
      },
      "steps": [
       {
-       "description": "Its Hardlight Pulse also lays Charged 2 on the Storm Petrel.",
+       "description": "Its Hardlight Pulse gains Chain 2, and lays Charged 1 on the Storm Petrel.",
        "effects": [
+        {
+         "trigger": "static",
+         "effect": "grant_keyword",
+         "value": "chain",
+         "number": 2,
+         "entry": "hardlight_pulse"
+        },
         {
          "trigger": "static",
          "effect": "self_status",
          "status": "charged",
-         "value": 2,
+         "value": 1,
          "entry": "hardlight_pulse"
         }
        ]
       },
       {
-       "description": "Its Hardlight Pulse gains Chain 3.",
+       "description": "Its Hardlight Pulse's Chain is 3, and it lays Charged 2.",
        "effects": [
         {
          "trigger": "static",
          "effect": "grant_keyword",
          "value": "chain",
          "number": 3,
+         "entry": "hardlight_pulse"
+        },
+        {
+         "trigger": "static",
+         "effect": "self_status",
+         "status": "charged",
+         "value": 2,
          "entry": "hardlight_pulse"
         }
        ]

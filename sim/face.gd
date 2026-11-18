@@ -211,10 +211,10 @@ var split: int = 1            # the effective entry only, never printed: each ro
 var reloads_ammo: int = 0     # a vent: ammo it adds to its forging machine as it is spent (the quick reload; the Forge counts it as no vent)
 var ammo: int = 0             # shown only: what a forging machine's gun costs it in ammo now (Skirmish.shown_face), its heat slot's place on the die
 var dry: bool = false         # shown only: the magazine cannot pay that price, so the gun cannot be spent
-# The effective entry only, never printed: what a spend at a foe lays on its own machine, by an
-# upgrade's branch (Effects.self_grants: the Storm Petrel's lure, 17 November; its lock's own
-# Regenerating, printed on the piece, until then): each {status, stacks, per_foe},
-# a machine buff, its stacks once or once for every foe the spend reached.
+# What a spend at a foe lays on its own machine: each {status, stacks, per_foe, cap}, a machine
+# buff, its stacks once or once for every foe the spend reached, up to the cap it names (0 for
+# none). Printed on a piece (the Hardlight Pulse's Hardened Light 1, up to 3: Ryan, 18 November)
+# and taken further on the entry as spent by an upgrade's branch (Effects.self_grants).
 var self_statuses: Array = []
 # The Giant Petrel's locked pieces (Ryan's go, 21 October; built 30 October):
 var action_price: int = 0     # a buff: on an ally whose die is spent, the team's rerolls it pays, and the ally's die rolls again, never onto the entry it showed, and it acts again (the Immelmann Booster); on itself, its status
@@ -409,6 +409,10 @@ static func from_dict(d: Dictionary) -> Face:
 	f.action_price = maxi(0, int((deal as Dictionary).get("rerolls", 0))) if f.kind == Kind.BUFF and deal is Dictionary else 0
 	f.rolls_target = bool(d.get("rolls_target", false)) and f.kind == Kind.BUFF
 	f.kill_rerolls = maxi(0, int(d.get("kill_rerolls", 0))) if f.kind == Kind.ATTACK else 0
+	if f.kind == Kind.ATTACK and d.get("self_statuses", null) is Array:
+		for g in d["self_statuses"]:
+			if g is Dictionary and not str(g.get("status", "")).is_empty():
+				f.self_statuses.append({"status": str(g["status"]), "stacks": maxi(1, int(g.get("stacks", 1))), "per_foe": bool(g.get("per_foe", false)), "cap": maxi(0, int(g.get("cap", 0)))})
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
@@ -531,6 +535,8 @@ func to_dict() -> Dictionary:
 		d["rolls_target"] = true
 	if kill_rerolls > 0:
 		d["kill_rerolls"] = kill_rerolls
+	if not self_statuses.is_empty():
+		d["self_statuses"] = self_statuses.duplicate(true)
 	return d
 
 
@@ -951,8 +957,12 @@ func _self_text() -> String:
 	var parts: Array[String] = []
 	for g in self_statuses:
 		var id := str(g.get("status", ""))
-		var name := str(Effects.STATUS.get(id, {}).get("name", id.capitalize()))
-		parts.append("%s %d on itself%s" % [name, int(g.get("stacks", 1)), " for each foe reached" if bool(g.get("per_foe", false)) else ""])
+		var def: Dictionary = Effects.STATUS.get(id, {})
+		var name := str(def.get("name", id.capitalize()))
+		var one := Effects.status_stacking(def) == "renew"   # a Ward is one, whatever lays it: no number
+		var cap := int(g.get("cap", 0))
+		parts.append("%s on itself%s%s" % [name if one else "%s %d" % [name, int(g.get("stacks", 1))],
+			" for each foe reached" if bool(g.get("per_foe", false)) else "", (", up to %d" % cap) if cap > 0 else ""])
 	return ", ".join(parts)
 
 

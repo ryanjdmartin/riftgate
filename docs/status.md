@@ -63,8 +63,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1309 tests, 375,408 checks, green on `ccr-722ca9f0-yj8na3` (18 November, a foe's
-  adds on every strike, over main at `15d6679`). The runner fails a run whose tests never ran, so read the checks' count, never
+- Tests: 1310 tests, 375,438 checks, green on `ccr-722ca9f0-yj8na3` (18 November, a foe's
+  adds on every strike, over main at `9df330a`). The runner fails a run whose tests never ran, so read the checks' count, never
   the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
   purpose. About four minutes in a cloud session; words after `--` run only the files whose
   names hold one (`-- loot rig`).
@@ -131,8 +131,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   `docs/locked_pieces_proposal.md`; the bible's locked and tiers rows): the Storm Petrel
   carries the first two, the harness's UPG line fields a build, and a run buys none yet. The
   machines the reboot broke are another session's line (`docs/reboot_machines_proposal.md`,
-  read with `tools/reboot_probe.gd`): the Storm Petrel landed from it on 17 November (its
-  Hardlight Generator and Hardlight Pulse, Hardened Light a stack off each turn start), and its
+  read with `tools/reboot_probe.gd`): the Storm Petrel landed from it on 17 November and took
+  Ryan's shape of the 18th (no shield armour on its passive; its Hardlight Pulse lays Hardened
+  Light, up to 3, every stack gone when the shield breaks, the reboot included), and its
   first round on the Buzzard, the Kite, the Puffin, the Swallowtail and the Needletail waits
   on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis, the Polar Bear

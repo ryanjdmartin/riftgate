@@ -1,33 +1,37 @@
 extends TestCase
 
 ## The Storm Petrel's and the Giant Petrel's engines (Ryan's go, 21 October; built 30 October; the
-## Storm Petrel's reworked 17 November), on synthetic passives and entries: the plate while the
-## shield stands and the shield every point of heat gained stands up, what a spend at a foe lays on
-## its own machine by its branches (Hardened for each foe reached, Charged), a debuff's Chain; the
-## bank of unspent rerolls, the action bought with them, the kill that brings them and the roll on an
-## ally. The branches' picks themselves are tests/test_branches.gd's.
+## Storm Petrel's reworked 17 and 18 November), on synthetic passives and entries: the shield every
+## point of heat gained stands up, what a spend at a foe lays on its own machine (Hardened Light, up
+## to its cap, until the shield breaks; a Ward; Charged), a debuff's Chain; the bank of unspent
+## rerolls, the action bought with them, the kill that brings them and the roll on an ally. The
+## branches' picks themselves are tests/test_branches.gd's.
 
 const L := Face.Reach.DIRECT
 const I := Face.Reach.INDIRECT
 const K := Face.Keyword
 
-## The Storm Petrel's shape since 17 November: a point off every blow while the shield stands, and
-## a point of shield for every point of heat it gains.
+## The Storm Petrel's passive's shape since 18 November: a point of shield for every point of heat
+## it gains, and no shield armour of its own.
 const RIOT := {"id": "riot", "name": "Riot", "description": "", "effects": [
-	{"trigger": "static", "effect": "add_damage_taken", "value": -1, "when": "shield_up"},
 	{"trigger": "on_heat_gain", "effect": "shield_per_heat", "value": 1}]}
-## The Storm Petrel's branches' shapes (17 November): its lure's spend at a foe lays Hardened on
-## itself, a stack for each foe reached, or Charged 2, scoped to that piece (`entry`).
+## The Storm Petrel's branches' shapes (18 November), scoped to its lock (`entry`): its Hardened Light
+## a stack for each foe hit, up to 5; a Ward on itself; Charged 2.
 const HARDEN := {"id": "harden", "name": "Harden", "description": "", "effects": [
-	{"trigger": "static", "effect": "self_status", "status": "hardened", "value": 1, "per_foe": true, "entry": "test_lure"}]}
+	{"trigger": "static", "effect": "self_status", "status": "hardened", "value": 1, "per_foe": true, "cap": 5, "entry": "test_lure"}]}
+const WARD := {"id": "ward_self", "name": "Ward", "description": "", "effects": [
+	{"trigger": "static", "effect": "self_status", "status": "ward", "value": 1, "entry": "test_lure"}]}
 const CHARGE := {"id": "charge", "name": "Charge", "description": "", "effects": [
 	{"trigger": "static", "effect": "self_status", "status": "charged", "value": 2, "entry": "test_lure"}]}
 
 
-## A lure as the tests' locked piece, its component the one the grants are scoped to.
-func _lure() -> Face:
+## A lure as the tests' locked piece, its component the one the grants are scoped to; `hardens` prints
+## the Hardlight Pulse's own grant on it, Hardened Light 1, up to 3.
+func _lure(hardens: bool = false) -> Face:
 	var f := Face.attack(0, I, [K.LURE])
 	f.component = "test_lure"
+	if hardens:
+		f.self_statuses = [{"status": "hardened", "stacks": 1, "per_foe": false, "cap": 3}]
 	return f
 ## The Giant Petrel's shape: the team's unspent rerolls banked, up to three.
 const BANK := {"id": "bank", "name": "Bank", "description": "", "effects": [
@@ -129,64 +133,61 @@ func test_a_shield_cost_is_paid_first_and_the_heat_stands_some_back() -> void:
 	assert_eq([v.shield, s2.mechs[0].shield_broken], [0, true], "it breaks itself, and its heat stands up nothing after")
 
 
-func test_the_plate_takes_a_point_off_every_blow_while_the_shield_stands() -> void:
+func test_hardened_light_takes_a_point_off_every_blow_while_the_shield_stands() -> void:
 	var u := _mech("Petrel", Die.single(Face.blank()), 3)
-	u.grant_passive(RIOT)
 	var sk := _fight([u], [_foe(300, 5), _foe(300, 5)])
+	Effects.stack(u, Effects.STATUS["hardened"], Effects.SKIRMISH, "test", 1, Effects.status_decay(Effects.STATUS["hardened"]))
 	var fc := sk.forecast(sk.mechs[0])
-	assert_eq(int(fc["hull_after"]), 100 - 1 - 5, "the forecast walks the plate: 4 on a shield of 3, then 5 on bare hull")
+	assert_eq(int(fc["hull_after"]), 100 - 1 - 5, "the forecast walks it: 4 on a shield of 3, then 5 on bare hull")
 	sk.end_round()
-	assert_eq([u.shield, u.hull], [0, 94], "the first blow lost a point to the plate while the shield stood; the second met none")
+	assert_eq([u.shield, u.hull], [0, 94], "the first blow lost a point while the shield stood; the second met none")
+	assert_false(Effects.has(u, "hardened"), "and the blow that broke the shield took it whole")
 
 
-## What a spend at a foe lays on its own machine (self_status, a passive's: the Storm Petrel's
-## branches, 17 November): Hardened Light a stack for each foe reached, a Spread's neighbours among
-## them, a stack going as each of its turns starts (Ryan, 17 November: "decay by a stack at start of
-## Petrel's turn, not all at once"); Charged on its next fires; the entry as spent says them, the
-## die's own never, and a copy of the fight keeps them.
-func test_a_lure_lays_hardened_light_for_each_foe_it_reaches_a_stack_going_each_turn_start() -> void:
-	var lure := _lure()
+## What a spend at a foe lays on its own machine (Ryan, 18 November: "The Pulse grants one Hardened
+## Light at tier 1. Hardened Light only decays when the shield breaks, and has a cap of 3 stacks";
+## "The reboot breaks it yes. When it breaks, it loses all of them"): printed on the piece, a stack a
+## spend up to its cap, standing through every turn until the shield breaks, a reboot's drop
+## included; a branch's grant a stack for each foe hit and a higher cap; the entry as spent says
+## them, and a copy of the fight keeps them.
+func test_the_pulse_lays_hardened_light_up_to_its_cap_and_a_break_takes_every_stack() -> void:
+	var lure := _lure(true)
 	lure.heat = 3
 	var u := _mech("Petrel", Die.single(lure), 10)
-	u.grant_passive(HARDEN)
-	assert_true(lure.self_statuses.is_empty(), "the die keeps the piece as printed")
-	var spent := Effects.effective_face(u, lure)
-	assert_eq(spent.self_statuses, [{"status": "hardened", "stacks": 1, "per_foe": true}], "the entry as spent carries the grant")
-	assert_true(spent.describe().contains("Hardened Light 1 on itself for each foe reached"), "and says it: %s" % spent.describe())
-	assert_true(Effects.effective_face(u, Face.attack(0, I, [K.LURE])).self_statuses.is_empty(), "another piece carries none: the grant is its piece's")
-	var sk := _fight([u], [_foe(300, 5), _foe(300, 5), _foe(300, 5)])
+	assert_true(lure.describe().contains("Hardened Light 1 on itself, up to 3"), "the entry says its grant: %s" % lure.describe())
+	assert_eq(Face.from_dict(lure.to_dict()).self_statuses, lure.self_statuses, "a save keeps the printed grant")
+	var sk := _fight([u], [_foe(300), _foe(300), _foe(300)])
 	assert_eq(Effects.self_grants(SaveGame.clone_skirmish(sk).mechs[0].unit, lure), Effects.self_grants(u, lure), "a copy of the fight keeps the grant")
-	var mid: Foe = sk.foe_at(0, 1)
-	assert_true(sk.assign(0, mid), "the lure at one foe")
-	assert_eq(Effects.stacks_of(u, "hardened"), 1, "a stack for the one foe it reached")
-	assert_eq(mid.target, sk.mechs[0], "and the foe turns on it")
-	var wide := lure.duplicate_face()
+	for k in range(4):
+		assert_true(sk.assign(0, sk.foe_at(0, 1)), "a lure, the %d" % (k + 1))
+		sk.end_round()
+		sk.start_round()
+	assert_eq(Effects.stacks_of(u, "hardened"), 3, "a stack a spend, never past its cap of 3, and no turn takes one")
+	assert_eq(Effects.stacks_next_round(Effects.STATUS["hardened"], 3), 3, "the bot's look a round on reads the same clock")
+	var bot := Policy.make(Policy.GREEDY, 1)
+	assert_eq(bot.self_grant_worth(sk, sk.mechs[0], lure, sk.foe_at(0, 1)), 0.0, "and a lure at its cap is worth nothing of it")
+	assert_true(sk.reboot_mech(0), "the reboot")
+	assert_false(Effects.has(u, "hardened"), "its drop breaks the shield, and every stack goes with it")
+	assert_true(sk.log.any(func(l: String) -> bool: return l.contains("Hardened Light goes with its shield")), "the log says so")
+	# A branch's grant (the Defence direction's second step): a stack for each foe hit, up to 5.
+	var wide := _lure(true)
 	wide.keywords.append(K.CLEAVE)
 	var w := _mech("Wide", Die.single(wide), 10)
 	w.grant_passive(HARDEN)
+	var spent := Effects.effective_face(w, wide)
+	assert_eq(spent.self_statuses, [{"status": "hardened", "stacks": 1, "per_foe": true, "cap": 5}], "the piece's grant taken further, the most of each standing")
+	assert_true(spent.describe().contains("Hardened Light 1 on itself for each foe reached, up to 5"), "and says it: %s" % spent.describe())
+	assert_true(Effects.effective_face(w, Face.attack(0, I, [K.LURE])).self_statuses.is_empty(), "another piece carries none: the grant is its piece's")
 	var s2 := _fight([w], [_foe(300, 5), _foe(300, 5), _foe(300, 5)])
 	assert_true(s2.assign(0, s2.foe_at(0, 1)), "the lure with Spread at the middle foe")
-	assert_eq(Effects.stacks_of(w, "hardened"), 3, "a stack for each foe lured, the two beside it too")
+	assert_eq(Effects.stacks_of(w, "hardened"), 3, "a stack for each foe hit, the two beside it too")
 	s2.end_round()
 	assert_eq([w.shield, w.hull], [10 - 3 * (5 - 3), 100], "three lured blows of 5, each 3 lighter while its shield stood")
 	s2.start_round()
-	assert_eq(Effects.stacks_of(w, "hardened"), 2, "a stack goes as its next turn starts, the rest standing")
-	assert_eq(Effects.stacks_next_round(Effects.STATUS["hardened"], 2), 1, "and the bot's look a round on reads the same clock")
+	assert_true(s2.assign(0, s2.foe_at(0, 1)), "a second lure")
+	assert_eq(Effects.stacks_of(w, "hardened"), 5, "three more, held at its cap of 5")
 	s2.end_round()
-	s2.start_round()
-	assert_eq(Effects.stacks_of(w, "hardened"), 1, "another at the next")
-	assert_true(s2.assign(0, s2.foe_at(0, 1)), "a second lure at the middle foe")
-	assert_eq(Effects.stacks_of(w, "hardened"), 4, "piles its three on the one left")
-	s2.end_round()
-	s2.start_round()
-	s2.end_round()
-	s2.start_round()
-	s2.end_round()
-	s2.start_round()
-	assert_eq(Effects.stacks_of(w, "hardened"), 1, "a stack a turn start, whatever laid them")
-	s2.end_round()
-	s2.start_round()
-	assert_false(Effects.has(w, "hardened"), "and gone at zero")
+	assert_eq([w.shield, Effects.stacks_of(w, "hardened")], [4, 5], "three blows of 5 at 5 off take nothing, and the stacks stand")
 
 
 func test_a_lure_that_charges_its_machine_shocks_its_next_fires() -> void:
@@ -206,25 +207,45 @@ func test_a_lure_that_charges_its_machine_shocks_its_next_fires() -> void:
 	assert_eq(Effects.stacks_of(u, "charged"), 1, "and spent a stack")
 
 
-## A debuff's Chain (the Storm Petrel's lure, its Striker branch, 17 November: "adds Chain 3 to the
-## lure"): its arcs land the number it prints, plain, through each conductor's armour, and carry its
-## riders, so every Shocked foe it arcs to is lured; its target takes nothing, and no Shock is spent.
-func test_a_debuffs_chain_lands_its_number_plain_on_every_other_shocked_foe_and_lures_them() -> void:
+## A Ward on itself (the Storm Petrel's Defence branch, Ryan, 18 November: "Pulse grants Ward to
+## self"): laid as the spend's hits are done, standing through the enemy's turn, gone as its next
+## turn starts, as a Ward piece's is.
+func test_a_lure_that_wards_its_machine_turns_the_riders_of_the_turn() -> void:
+	var lure := _lure()
+	var u := _mech("Petrel", Die.single(lure), 10)
+	u.grant_passive(WARD)
+	assert_true(Effects.effective_face(u, lure).describe().contains("Ward on itself"), "the entry says it, no number: a Ward is one")
+	var sk := _fight([u], [_foe(300), _foe(300)])
+	assert_true(sk.assign(0, sk.front[0]), "the lure")
+	assert_true(Effects.has(u, "ward"), "a Ward on its own machine")
+	sk.end_round()
+	sk.start_round()
+	assert_false(Effects.has(u, "ward"), "gone as its next turn starts")
+
+
+## A debuff's Chain (the Storm Petrel's Pulse, its Striker branch): its arcs land the number it
+## prints, plain, through each conductor's armour, and carry nothing else (Ryan, 18 November: "take
+## riders off chain. Thematically it's a lightning arc, not part of the impact"), so the lure stays on
+## its target; its target takes nothing, and no Shock is spent.
+func test_a_debuffs_chain_lands_its_number_plain_on_every_other_shocked_foe_and_lures_only_its_target() -> void:
 	var lure := Face.attack(0, I, [K.LURE, K.CHAIN])
 	lure.chain = 3
 	var u := _mech("Petrel", Die.single(lure), 10)
-	var sk := _fight([u], [_foe(30, 2), _foe(30, 2, 1), _foe(30, 2)])
+	var sk := _fight([u, _mech("Ally", Die.single(Face.blank()))], [_foe(30, 2), _foe(30, 2, 1), _foe(30, 2)])
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var a: Foe = sk.foe_at(0, 0)
 	var b: Foe = sk.foe_at(0, 1)
 	var c: Foe = sk.foe_at(0, 2)
+	for foe in [a, b, c]:
+		foe.target = sk.mechs[1]   # every foe aims at the ally, so a lure shows as a turn
 	for foe in [b, c]:
 		Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	Effects.stack(u, Effects.STATUS["overcharged"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
 	assert_true(sk.assign(0, a), "the lure at a foe that carries no Shock")
 	assert_eq([a.hp, b.hp, c.hp], [30, 28, 27], "nothing on its target; 3 on each conductor, b's point of armour off, Empowered adding nothing to a debuff")
 	assert_true(Effects.has(b, "shocked") and Effects.has(c, "shocked"), "no strike was aimed at them: their Shock stands")
-	assert_eq([a.target, b.target, c.target], [ms, ms, ms], "the lure rides its arcs: every conductor turns on it")
+	assert_eq(a.target, ms, "its target turns on it")
+	assert_eq([b.target, c.target], [sk.mechs[1], sk.mechs[1]], "an arc lures nobody: its blow alone")
 
 
 # ---------------------------------------------------------------- the Giant Petrel
@@ -436,8 +457,12 @@ func test_the_validator_holds_the_petrels_fields_to_their_kinds() -> void:
 	db.load_dir(ContentDB.DIR)
 	var base: Dictionary = db.components["twin_autoguns"].duplicate(true)
 	var cases := {
-		"bad_regen": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "regenerates": {"status": "regenerating", "stacks": 3}}, "printed on no entry"],
-		"bad_self_printed": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "self_statuses": [{"status": "hardened"}]}, "printed on no entry"],
+		"bad_regen": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "regenerates": {"status": "regenerating", "stacks": 3}}, "regenerates"],
+		"bad_self_kind": [{"kind": "buff", "status": "overcharged", "self_statuses": [{"status": "hardened"}]}, "self_statuses"],
+		"bad_self_status": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "self_statuses": [{"status": "barrier"}]}, "self_statuses"],
+		"bad_self_stacks": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "self_statuses": [{"status": "hardened", "stacks": 0}]}, "self_statuses"],
+		"bad_self_cap": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "self_statuses": [{"status": "hardened", "stacks": 2, "cap": 1}]}, "self_statuses"],
+		"bad_self_key": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "self_statuses": [{"status": "hardened", "rounds": 2}]}, "self_statuses"],
 		"bad_debuff_chain": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "chain"]}, "chain"],
 		"bad_price": [{"kind": "attack", "reach": "direct", "power": 2, "ally_action": {"rerolls": 3}}, "ally_action"],
 		"bad_price_self": [{"kind": "buff", "team_rerolls": 1, "targets": "self", "ally_action": {"rerolls": 3}}, "ally_action"],
@@ -453,24 +478,27 @@ func test_the_validator_holds_the_petrels_fields_to_their_kinds() -> void:
 	for cid in cases.keys():
 		assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component %s" % cid) and e.contains(str(cases[cid][1]))), "%s is refused" % cid)
 	var good := base.duplicate(true)
-	good["face"] = {"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "chain"], "chain": 3, "heat": 3}
+	good["face"] = {"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "chain"], "chain": 3, "heat": 3,
+		"self_statuses": [{"status": "hardened", "stacks": 1, "cap": 3}, {"status": "ward"}]}
 	good["tier"] = 2
 	db.components["good_lure"] = good
 	for e in db.validate():
-		assert_false(e.begins_with("component good_lure"), "a hot lure with Chain 3 passes: %s" % e)
+		assert_false(e.begins_with("component good_lure"), "a hot lure with Chain 3 that hardens itself up to 3 and wards itself passes: %s" % e)
 	var grants := {"id": "g", "name": "G", "description": "", "effects": [
 		{"trigger": "static", "effect": "self_status", "status": "barrier", "value": 1},
 		{"trigger": "static", "effect": "self_status", "status": "hardened", "value": 0},
-		{"trigger": "static", "effect": "self_status", "status": "charged", "value": 2, "per_foe": "yes"}]}
+		{"trigger": "static", "effect": "self_status", "status": "charged", "value": 2, "per_foe": "yes", "cap": 1}]}
 	var gerrs: Array[String] = []
 	db._validate_passive("passive g", grants, gerrs)
 	assert_true(gerrs.any(func(e: String) -> bool: return e.contains("self_status lays one of")), "a Barrier keeps its pieces: %s" % str(gerrs))
 	assert_true(gerrs.any(func(e: String) -> bool: return e.contains("the stacks it lays")), "a grant of nothing is refused")
 	assert_true(gerrs.any(func(e: String) -> bool: return e.contains("per_foe is true or false")), "per_foe is a switch")
+	assert_true(gerrs.any(func(e: String) -> bool: return e.contains("cap is the most stacks")), "and a cap under the grant is refused")
 	var fine: Array[String] = []
 	db.components["test_lure"] = good.duplicate(true)   # the piece the grants are scoped to
 	db._validate_passive("passive h", HARDEN, fine)
 	db._validate_passive("passive c", CHARGE, fine)
+	db._validate_passive("passive w", WARD, fine)
 	assert_eq(fine, [] as Array[String], "Hardened for each foe and Charged 2 pass")
 	var p := {"id": "p", "name": "P", "description": "", "effects": [{"trigger": "static", "effect": "shield_per_heat", "value": 1}, {"trigger": "on_heat_gain", "effect": "shield_per_heat", "value": 0}, {"trigger": "static", "effect": "bank_rerolls", "value": 0}]}
 	var perrs: Array[String] = []

@@ -3287,6 +3287,10 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			struck_once[foe] = true
 			var into_mine := foe == target   # the blow on the spend's target: its riders are the Mine's too
 			var struck := foe == target or everyone   # a strike aimed at this foe, never a blow that only reaches it
+			# A Chain's arc is its blow alone (Ryan, 18 November: "take riders off chain. Thematically
+			# it's a lightning arc, not part of the impact"): no rider of the entry, its primers or a
+			# passive lands on a conductor, and no Shock, Expose, Lure or Disrupt after the blow.
+			var arc := int(shapes.get(foe, 0)) == AREA_CHAIN
 			if not h.reached.has(foe):
 				h.reached.append(foe)
 			if int(shapes.get(foe, 0)) == AREA_CHAIN:
@@ -3344,7 +3348,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# A hit lays what the passives lay on this foe, a stack per strike, a debuff's included,
 			# unless the passive asks for a weapon's hit (the Ambush's Vitriol, its text says so:
 			# Ryan, 25 October).
-			if lays.has(foe):
+			if lays.has(foe) and not arc:
 				for pair in lays[foe]:
 					if bool(pair[2]) and f.is_debuff():
 						continue
@@ -3359,14 +3363,16 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# Every rider lands on the foe its strike struck, felled or not (Ryan, 3 November: "the
 			# point is to show that the riders hit, AND it dies"; death is the spend's last check, so
 			# the preview shows them beside the skull and no trigger goes unfired).
-			if f.has(Face.Keyword.ABLATE):
+			if f.has(Face.Keyword.ABLATE) and not arc:
 				# Ablate is a numbered keyword (Ryan, 18 October): the stacks it says, whatever the
 				# blow dealt (it was a stack per 10 of the damage, rounded up, until then).
 				var ablate_laid := _stacks_from(ms, "ablating", f.ablate) * doubled
 				riders.append(func() -> void: _land_rider(foe, "ablating", ablate_laid, gained, turned))
 				if into_mine:
 					h.mine_stack("ablating", ablate_laid)
-			if f.has(Face.Keyword.SUPPRESS) and shut.get(foe, []).has(Face.Keyword.SUPPRESS):
+			if arc:
+				pass   # an arc carries no stun
+			elif f.has(Face.Keyword.SUPPRESS) and shut.get(foe, []).has(Face.Keyword.SUPPRESS):
 				if foe.alive() and not told_shut.has(foe):
 					told_shut[foe] = true
 					log.append("%s's suppress does not land on %s (%s)" % [ms.unit.display_name, foe.display_name, Effects.gate_text(f.gates.get("suppress", {}))])
@@ -3380,7 +3386,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# its mark, one web however often it is webbed, and the skirmish bursts it as the round
 			# ends (_burst_webs). No Mine carries it: a rule one piece prints is that
 			# piece's.
-			if f.webs:
+			if f.webs and not arc:
 				riders.append(func() -> void: _land_web(foe, gained, turned, webbed))
 			# Cryo (20 October): a weapon's hit spends every stack the foe carries (Ryan, 25
 			# October), and the hitter cools for them once the spend's own heat has landed (below);
@@ -3389,7 +3395,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			if was_alive and not f.is_debuff() and Effects.has(foe, "cryoed"):
 				h.thawed += Effects.stacks_of(foe, "cryoed")
 				Effects.remove(foe, "cryoed")
-			if f.has(Face.Keyword.CRYO):
+			if f.has(Face.Keyword.CRYO) and not arc:
 				var cryo_laid := _stacks_from(ms, "cryoed", f.cryo) * doubled
 				riders.append(func() -> void: _land_rider(foe, "cryoed", cryo_laid, gained, turned))
 				if into_mine:
@@ -3398,12 +3404,12 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# number in stacks a strike, with the riders, so no strike of the spend feeds on what
 			# it lays (Ryan, 3 November: "5,5,5 makes way more sense to me").
 			# Sap (the Baboon's Redshift Emitter, 11 November): Sapped laid as Brittle is, with the riders.
-			if f.has(Face.Keyword.SAP):
+			if f.has(Face.Keyword.SAP) and not arc:
 				var sap_laid := _stacks_from(ms, "sapped", f.sap) * doubled
 				riders.append(func() -> void: _land_rider(foe, "sapped", sap_laid, gained, turned))
 				if into_mine:
 					h.mine_stack("sapped", sap_laid)
-			if f.has(Face.Keyword.BRITTLE):
+			if f.has(Face.Keyword.BRITTLE) and not arc:
 				var brittle_laid := _stacks_from(ms, "brittled", f.brittle) * doubled
 				riders.append(func() -> void: _land_rider(foe, "brittled", brittle_laid, gained, turned))
 				if into_mine:
@@ -3411,7 +3417,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# A pin (the Hollow-point Harpoon's; Ryan, 16 November: "the next time it would decay, it
 			# doesn't"; a status for the round until then): laid after what the spend lays, standing
 			# until the decay it stops, which spends it (Effects.spend_hold).
-			if not f.holds.is_empty():
+			if not f.holds.is_empty() and not arc:
 				var held_id := f.holds
 				riders.append(func() -> void:
 					var holder: String = Effects.HOLDERS[held_id]
@@ -3421,15 +3427,15 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# Purge (the player's, 28 October): every buff the foe carries but Numbed and Guarded,
 			# with the riders, equipment's included; a foe the blow killed loses its Getting Back
 			# Up, so it stays down.
-			if f.has(Face.Keyword.DISPEL):
+			if f.has(Face.Keyword.DISPEL) and not arc:
 				var purged := maxi(1, f.dispel)
 				riders.append(func() -> void: _purge_foe(ms.unit.display_name, foe, purged, turned))
 				if into_mine:
 					h.mine["dispel"] = int(h.mine["dispel"]) + purged
 			if into_mine and f.has(Face.Keyword.CHAIN) and not f.is_debuff():
 				h.mine["chain"] = int(h.mine["chain"]) + maxi(0, f.chain)   # every hit's arc number
-			if not touched.has(foe):
-				touched.append(foe)   # every foe the blows reached, felled or not: Shock, Expose, Lure and Disrupt land on it below
+			if not touched.has(foe) and not arc:
+				touched.append(foe)   # every foe the blows reached, felled or not, but a Chain's conductors: Shock, Expose, Lure and Disrupt land on it below
 		h.total += landed
 	# Riders land after the hits (Ryan, 3 November: "a multi-hit weapon with Shock would apply it
 	# after both hits ... Cryo should work the same way, resulting in 2 applications, not
@@ -3708,7 +3714,7 @@ func _lured(ms: MechState, aimed: Foe) -> Array[Foe]:
 	var ef := Effects.effective_face(ms.unit, f, aimed)
 	if not ef.has(Face.Keyword.LURE):
 		return out
-	for foe in reached_by(ef, aimed):
+	for foe in ridden_by(ef, aimed):
 		if not foe.fresh:
 			out.append(foe)
 	return out
@@ -3719,6 +3725,18 @@ func _lured(ms: MechState, aimed: Foe) -> Array[Foe]:
 ## still standing in its slot included, as the strikes find it. A foe out of the team's reach
 ## (out_of_reach: Aloft) is passed over by all of it. The resolver and the bot read the same
 ## list.
+## The foes a spend's riders land on (Ryan, 18 November: "take riders off chain. Thematically it's a
+## lightning arc, not part of the impact"): every foe it reaches but Chain's conductors, which take
+## the arc's blow alone. What a lure's turn, a Shock, a mark and a passive's lay are read over.
+func ridden_by(f: Face, target: Foe) -> Array[Foe]:
+	var shapes := area_shapes(f, target)
+	var out: Array[Foe] = []
+	for foe in reached_by(f, target):
+		if foe == target or int(shapes.get(foe, AREA_ALL)) != AREA_CHAIN:
+			out.append(foe)
+	return out
+
+
 func reached_by(f: Face, target: Foe) -> Array[Foe]:
 	var hit: Array[Foe] = [target]
 	# A reach over every foe in the fight (the Shift Whistle, a lure-all), front and back.
@@ -4982,10 +5000,10 @@ func _spend_primers(ms: MechState) -> void:
 		log.append("%s: %s spent on the fire (%d left)" % [ms.unit.display_name, str(Effects.STATUS[id]["name"]), Effects.stacks_of(ms.unit, id)])
 
 
-## What a spend at a foe lays on its own machine (Face.self_statuses; the Storm Petrel's lure and its
-## branches, Ryan, 17 November: "adds a self-buff that increases shield armour for a turn to the
-## lure", "a self-grant of Charged stacks"): each status its stacks, or its stacks for every foe the
-## spend reached when it says per_foe (a Spread's neighbours among them), on the clock its definition
+## What a spend at a foe lays on its own machine (Face.self_statuses as its machine's branches make
+## it: the Hardlight Pulse's Hardened Light, the Defence direction's Ward, the Striker's Charged;
+## Ryan, 18 November): each status its stacks, or its stacks for every foe the spend reached when it
+## says per_foe (a Spread's neighbours among them), up to its cap, on the clock its definition
 ## names. A machine's Regenerating is the status in a machine's words (shield). Bought by a die
 ## entry, so a foe's Purge takes it.
 func _self_grants(ms: MechState, f: Face, reached: int) -> void:
@@ -4994,6 +5012,9 @@ func _self_grants(ms: MechState, f: Face, reached: int) -> void:
 		if not Effects.STATUS.has(id):
 			continue
 		var n := maxi(1, int(g.get("stacks", 1))) * (maxi(0, reached) if bool(g.get("per_foe", false)) else 1)
+		var cap := int(g.get("cap", 0))
+		if cap > 0:
+			n = mini(n, maxi(0, cap - Effects.stacks_of(ms.unit, id)))   # up to its cap (Hardened Light's 3, 4 or 5)
 		if n <= 0:
 			continue
 		var def: Dictionary = Effects.regenerating_mech() if id == "regenerating" else Effects.STATUS[id]
@@ -5417,6 +5438,11 @@ func _note_break(ms: MechState) -> void:
 	ms.shield_broken = true
 	if not ms.rebooting:
 		log.append("%s's shield is broken: no shield until it reboots" % ms.unit.display_name)
+	# What lasts until the shield breaks goes with it, every stack, a reboot's drop included
+	# (Hardened Light: Ryan, 18 November, "The reboot breaks it yes. When it breaks, it loses all
+	# of them").
+	for name in Effects.clear_on_break(ms.unit):
+		log.append("%s's %s goes with its shield" % [ms.unit.display_name, name])
 
 
 ## Whether machine `mech_index` may give its turn to a reboot now (Ryan, 13

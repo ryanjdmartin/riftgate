@@ -11103,6 +11103,41 @@ A row is twenty fights and a direction; the means, over 200 fights and 140, are 
   weight is a blow that gathers, read the same without a Barrier at any count. So the
   blows' numbers are sized after the split, never by it.
 
+## 18 November: the Storm Petrel on its Pulse's Hardened Light, and its four builds
+
+Ryan, 18 November: "no innate shield armour. The Pulse grants one Hardened Light at tier 1.
+Hardened Light only decays when the shield breaks, and has a cap of 3 stacks"; "If it's weak,
+we'll buff it". The decision it informs: none yet; the first read of his shape, the bot's play of
+it a first heuristic (a stack read to stand two rounds, a Ward by the Ward pieces' worth).
+
+`tools/reboot_probe.gd`, as the entry of 17 November on the landed Petrel: first in a squad
+beside the Honey Badger, the Prairie Dog and the Cassowary, the greedy bot; tier one's formations
+and elites, 21 compositions at 8 seeds (168 fights), and its bosses alone, 13 at 6 seeds (78), on
+`ccr-178e0404-ptuh2m` over main at `66c0a63` (main's tier-one sizing of the same day in, so beside
+the entry of the 17th it reads across two commits: a direction only).
+
+| The build | Formations: rebooted, bare, own hull | Bosses: rounds, won | Bosses: rebooted, bare | Bosses: own hull, wrecked, squad |
+|---|---|---|---|---|
+| None (the Pulse's Hardened Light, up to 3) | 21%, 23%, 4% | 9.8, 77 of 78 | 26%, 30% | 25%, 3 fights, 23% |
+| Defence twice (Ward, then Spread, up to 5) | 21%, 23%, 5% | 9.6, 78 of 78 | 26%, 29% | 25%, 2 fights, 22% |
+| Striker twice (Chain 2 and Charged 1, then 3 and 2) | 20%, 21%, 5% | 9.1, 77 of 78 | 24%, 27% | 30%, 8 fights, 24% |
+| Mixed (Ward and a cap of 4, Chain 2 and Charged 1) | 21%, 22%, 4% | 9.4, 77 of 78 | 25%, 29% | 29%, 6 fights, 26% |
+
+What it says, at 78 fights a build against the bosses. The plate's loss costs the stock nothing
+the probe can see: beside the 17th's form (its own hull 28% and 5 wrecks of 78) it loses 25% and
+is wrecked 3 times, Hardened Light standing in for the plate between reboots, the reboot (a
+quarter of its turns) wiping it each time. Defence twice is the sturdiest build, 2 wrecks. The
+Striker's two end a boss fight two thirds of a round sooner and pay for it on the Petrel itself,
+8 wrecks of 78 to Defence's 2, a gap of about two standard errors at this sample. Every formation
+was won, in five rounds or so. A pick share or a band waits for the runner and his play.
+
+A correction, the same day. This entry first put the Striker's wrecks down to the Pulse's arcs
+carrying its lure. Read again with riders off Chain (Ryan's call of the 18th), both Striker builds
+return the same numbers to the digit, and they must: a boss here fights alone, so the Pulse finds
+no other Shocked foe to arc to, and in the formations the arcs never moved a result at these seeds.
+The Striker's wrecks come from something else in its kit or its play by the bot (it carries the
+base cap of 3 and no Ward, and Charged weighs the Pulse higher); unread.
+
 ## 18 November: a foe's adds on every strike, and the Barrier basic machine by machine
 
 Ryan, of a foe's Empowered as the engine had it, an add before the move's factor: "That

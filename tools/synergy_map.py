@@ -100,7 +100,7 @@ FACE_FIELDS = {
     "fires_hopper": [("hopper", "reads")], "detonates": [("mine", "reads")],
     "gathers_mines": [("mine", "reads")], "vents_all": [("heat", "reads")], "power_per_heat": [("heat", "reads")],
     "power_per_missing": [("missing_hp", "reads")], "finisher": [("missing_hp", "reads")],
-    "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")],
+    "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "self_statuses": [],
     "spends": [("essence", "reads")], "spends_up_to": [], "holds_all": [("overcharged", "reads")],   # the Quintessence Tap: it consumes Essence, and holds every Empowered a round
     "spends_magazine": [("ammo", "reads")], "magazine_min": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
     "self_ablate": [("ablating_mech", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
@@ -161,7 +161,7 @@ ENGINE_READERS = {
     "ricochet": ["a strike of 1 more a stack at the target once a weapon has fired: most on riders a strike and on flat buffs; hull damage halves it"],
     "phased": ["granted as the round ends: out of reach of both sides through the next, and it acts"],
     "sealed": ["armour +3, cooling stopped, 3 heat a turn"],
-    "hardened": ["while its shield stands, every blow on it loses 1 a stack; a stack goes as each of its turns starts"],
+    "hardened": ["while its shield stands, every blow on it loses 1 a stack, up to its cap; every stack goes when the shield breaks"],
     "regenerating": ["a point of shield a stack as its turn ends, then a stack fades"],
     "charged": ["its weapons fire with Shock, a stack a fire"],
     "ablating_mech": ["its tick: 1 shield a stack at the turn's end, then hull, past armour and a Barrier"],
@@ -242,6 +242,8 @@ class Map:
                     self.add(cur, how, p)
             if f.get("kind") == "buff":
                 self.add(f.get("status"), "sets", p)
+            for g in f.get("self_statuses") or []:   # what a spend lays on its own machine (the Hardlight Pulse's Hardened Light, 18 November)
+                self.add(g.get("status"), "sets", p)
             charged = f.get("charged") or {}
             if charged.get("status"):
                 self.add(charged["status"], "sets", dict(p, how="charged"))
