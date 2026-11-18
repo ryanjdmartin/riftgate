@@ -1603,6 +1603,9 @@ static func intent_riders(foe: Foe, inert: Array = [], idle: Array = []) -> Arra
 			out.append([Terms.glyph("expose"), "", Terms.colour("expose")])
 		out.append_array(_step_marks(foe.action, out, idle))
 		return out
+	# What the blow does before it lands (18 November: the Pilgrim's knife purges first) wears
+	# its mark ahead of the blow's riders, in the order it happens.
+	out.append_array(_step_marks(foe.action, out, idle, "before"))
 	for k in foe.action.get("keywords", []):
 		var id := str(k)
 		if not Terms.has(id) or Terms.glyph(id).is_empty() or inert.has(id):
@@ -1619,10 +1622,10 @@ static func intent_riders(foe: Foe, inert: Array = [], idle: Array = []) -> Arra
 ## `idle` shows none either (it lays nothing this round: a fade on a foe Phased already).
 const STEP_TERMS := {"ablate": "ablate", "jam": "jam", "expose": "expose", "dispel": "dispel", "swallow": "swallow",
 	"scorch_all": "scorch", "corrupt_all": "corrupt", "appropriate": "appropriated", "phase": "phased"}
-static func _step_marks(a: Dictionary, shown: Array = [], idle: Array = []) -> Array:
+static func _step_marks(a: Dictionary, shown: Array = [], idle: Array = [], list: String = "also") -> Array:
 	var out: Array = []
 	var seen: Array = shown.map(func(row) -> String: return str(row[0]))
-	for st in a.get("also", []):
+	for st in a.get(list, []):
 		var term := str(STEP_TERMS.get(str(st.get("effect", "")), ""))
 		if term.is_empty() or idle.has(str(st.get("effect", ""))) or not Terms.has(term) or Terms.glyph(term).is_empty() or seen.has(Terms.glyph(term)):
 			continue

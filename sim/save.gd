@@ -794,17 +794,20 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 		for key in ["strikes", "weight", "swarm", "value", "count", "countdown"]:
 			if act.has(key):
 				act[key] = int(act[key])
-		if act.get("also", null) is Array:
-			# What the move does also (16 November): each step's numbers whole again.
-			var also: Array = []
-			for st in act["also"]:
+		for list in ["before", "also"]:
+			if not (act.get(list, null) is Array):
+				continue
+			# What the move does also (16 November) and what its blow does before it lands (18
+			# November): each step's numbers whole again.
+			var steps: Array = []
+			for st in act[list]:
 				if st is Dictionary:
 					var step: Dictionary = (st as Dictionary).duplicate()
 					for key in ["value", "count", "rounds"]:
 						if step.has(key):
 							step[key] = int(step[key])
-					also.append(step)
-			act["also"] = also
+					steps.append(step)
+			act[list] = steps
 		if str(act.get("effect", "")) == "enrage":
 			# A Bellow saved before the Nob's rage was its own (8 November): the rage it gave, now
 			# the foe's from the start, and the move gone.

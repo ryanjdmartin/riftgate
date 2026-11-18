@@ -11375,3 +11375,25 @@ single blows are back where content had them, a Scythe of 12 and a Knell of 18 f
 
 The squad without the Barrier pays what it paid and the piece's edge falls from two thirds
 to under a half. With it the elites' mean is 24.6% without the Barrier and 13.1% with it.
+
+## 18 November: the Pilgrim's knife purges before it lands
+
+Ryan, of the Pilgrim: "should the knife attack purge before hitting or something? Or
+otherwise break barrier? thematically, that's kind of its gimmick, right?" And of the form:
+"Do we make the exception for purge itself, or just the pilgrim with the attack sequencing?"
+Built as the Pilgrim's own order: its Chef's Knife is Purge 1 and then the blow, a step
+ahead of the blow that the move says. The knife is named two rounds out, so a squad with a
+Barrier always had one ready and the knife never landed. Every squad of the pool, the
+greedy bot, the Pilgrim as sized (an attack of 11, a knife of 22, a Karma of 2 a kill),
+sixty fights a cell for the knife and thirty before it:
+
+| The Pilgrim's wake | Without the Barrier | With the Barrier basic |
+|---|---|---|
+| The knife a plain blow | 5.9 rounds, 17.4% | 7.6% |
+| The knife purging first | 6.4, 19.2%, 0.13 wrecks | 6.3, 16.0%, 0.05 wrecks |
+
+The squad without the Barrier pays a little more, a stack of its Armoured going with the
+purge. The squad with it pays twice what it did and near what the other pays: what is left
+of the gap is the lantern and the Karma, which a Barrier still takes. So the Pilgrim's
+weight is the knife, damage a Barrier does not take, and its numbers stand. The elites'
+mean is 24.8% without the Barrier and 13.9% with it.

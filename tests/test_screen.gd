@@ -554,6 +554,13 @@ func test_a_foe_aloft_is_drawn_out_of_reach_and_is_no_drop_target() -> void:
 	assert_true(SkirmishScreen.intent_riders(foe, [], ["phase"]).filter(func(row) -> bool: return str(row[0]) == mark).is_empty(), "idle, the step wears no mark")
 	assert_eq(SkirmishScreen.intent_riders(foe).filter(func(row) -> bool: return str(row[0]) == mark).size(), 1, "live, it wears it once")
 	assert_false(Skirmish.fade_lands(foe), "and the engine says a Phased foe's fade is idle")
+	# What a blow does before it lands wears its mark first (18 November: a purge ahead of
+	# the Pilgrim's knife), in the order it happens.
+	foe.action = {"kind": "attack", "value": 3, "name": "Test Knife", "keywords": ["scorch"], "scorch": 1, "before": [{"effect": "dispel", "value": 1}]}
+	var ahead: Array = SkirmishScreen.intent_riders(foe)
+	assert_eq([str(ahead[0][0]), str(ahead[0][1])], [Terms.glyph("dispel"), "1"], "a purge ahead of the blow wears Purge's mark first, with its number")
+	assert_eq(str(ahead[1][0]), Terms.glyph("scorch"), "and the blow's own rider after it")
+	foe.action = bolt
 	assert_true(s._intent_read(foe)[2].filter(func(row) -> bool: return str(row[0]) == mark).is_empty(), "so the chip of a foe out already shows none")
 	Effects.remove(foe, "phased")
 	assert_true(Skirmish.fade_lands(foe), "back in reach, its fade would land")

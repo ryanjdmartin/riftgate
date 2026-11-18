@@ -1917,7 +1917,7 @@ static func steps_threat(f: Foe, sk: Skirmish) -> float:
 	var cost := 0.0
 	if not Foe.is_attack_action(f.action) and not PRICED_MOVES.has(str(f.action.get("effect", ""))):
 		cost += effect_cost(sk, f, f.action, pick)
-	for st in f.action.get("also", []):
+	for st in Foe.extra_steps(f.action):
 		cost += effect_cost(sk, f, st, pick)
 	return cost / HULL_WEIGHT
 
