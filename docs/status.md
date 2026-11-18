@@ -20,9 +20,6 @@ document's job and every command are in `README.md`.
   a regen or a cooling (the validator refuses both keys), and what a machine has of either is
   what a passive, a module, a status or a component grants it. Read both before any work on a
   machine, a component, a module or a foe.
-- **A machine's Regenerating stands with no piece granting it**, on Ryan's word (17 November:
-  "put machine regeneration back, that will literally be added in this session probably"), so
-  it is no leftover to cut while its piece is written.
 - **A reboot's heat goes as its shield drops.** It vents at once, its turn has nothing to
   burn, the shield is back as the next round opens, and heat laid on the machine after the
   vent stays. Another session's branch, `ccr-c1cf6f73-ql6n4q` (commits `d26e462` and
@@ -46,7 +43,8 @@ document's job and every command are in `README.md`.
   a branch: the desk machine's folder stays on `main`, and a session that needs another branch
   works in a worktree under `.claude/worktrees/` (`CLAUDE.md`, Session handoff). A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word.
-- Branches. Main holds everything this file describes. Not on main: `ccr-c1cf6f73-ql6n4q`
+- Branches. Main holds everything this file describes but the Buzzard (18 November), which
+  waits on `ccr-178e0404-ptuh2m` for Ryan's word to land it. Not on main: `ccr-c1cf6f73-ql6n4q`
   (above), and `claude/gameplay-terminology-tooltips-rug879`, a remote branch whose commits
   were unread when this file was written: read it before taking main for the whole of the
   work. `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on
@@ -63,8 +61,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1310 tests, 375,444 checks, green on `ccr-722ca9f0-yj8na3` (18 November, tier one's
-  elites and bosses sized, over main at `288de9a`). The runner fails a run whose tests never ran, so read the checks' count, never
+- Tests: 1319 tests, 375,501 checks, green on `ccr-178e0404-ptuh2m` (18 November, the
+  Buzzard, over main at `4ae57e4`). The runner fails a run whose tests never ran, so read the checks' count, never
   the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
   purpose. About four minutes in a cloud session; words after `--` run only the files whose
   names hold one (`-- loot rig`).
@@ -127,15 +125,18 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   locked pieces: the basic guns deal 3 for 4 heat and the Laser Carbine 4 for 5, the Halo
   Projector lays a Barrier and the Shoring Jack Armoured 2, and every piece that grants a
   Barrier sits out a round after. A machine moves 3 to 6 hexes. A machine holds a tier, and
-  an upgrade branch is a passive scoped to a locked piece (the rules' Branches;
-  `docs/locked_pieces_proposal.md`; the bible's locked and tiers rows): the Storm Petrel
-  carries the first two, the harness's UPG line fields a build, and a run buys none yet. The
-  machines the reboot broke are another session's line (`docs/reboot_machines_proposal.md`,
-  read with `tools/reboot_probe.gd`): the Storm Petrel landed from it on 17 November and took
-  Ryan's shape of the 18th (no shield armour on its passive; its Hardlight Pulse lays Hardened
-  Light, up to 3, every stack gone when the shield breaks, the reboot included), and its
-  first round on the Buzzard, the Kite, the Puffin, the Swallowtail and the Needletail waits
-  on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
+  an upgrade branch is a passive scoped to a locked piece, or a step on the passive where its
+  numbers warrant one (the rules' Branches; `docs/locked_pieces_proposal.md`; the bible's
+  locked and tiers rows): the Storm Petrel carries the first two, the Buzzard two more, the
+  harness's UPG line fields a build, and a run buys none yet. The machines the reboot broke
+  are another session's line (`docs/reboot_machines_proposal.md`, read with
+  `tools/reboot_probe.gd`): the Storm Petrel landed from it on 17 November and took Ryan's
+  shape of the 18th (no shield armour on its passive; its Hardlight Pulse lays Hardened Light,
+  up to 3, every stack gone when the shield breaks, the reboot included); the Buzzard landed
+  on the 18th in his carrion form (every foe that falls in its fight gives it shield, every
+  weapon it fires pays a zap of shield for a flat add, its Afterburner Cannon fires the whole
+  shield; Sustain on its passive and Burst on its cannon its branches); its first round on
+  the Kite, the Puffin, the Swallowtail and the Needletail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis, the Polar Bear
   (a reboot opens its seal), the Whip Scorpion (its reboot's vent blasts every foe), the
   Lammergeier, the Wild Boar, the Baboon, the Stingray. The Giant Petrel's kit, the Musk Ox
@@ -299,7 +300,7 @@ publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   The last publish known is v0.619 (17 November, from `ccr-178e0404-ptuh2m`); main's file is
-  v0.627 (the deaths' branch's rows with it, 18 November), unpublished. Before republishing, read the live page; if another session moved it,
+  v0.630 (18 November) and the Buzzard's branch's v0.631, both unpublished. Before republishing, read the live page; if another session moved it,
   publish a three-way merge onto it row by row (`tools/pages/bible_merge.py`: BASE the last
   publish both started from, OURS this branch's file, THEIRS the saved live source with the
   tool's wrapper line, its trailing newline and `</body></html>` stripped). BASE is likely

@@ -11295,3 +11295,41 @@ as two of 6 for one of 11.
 
 A pair leaves the squad without the Barrier where it was and takes half the piece's edge:
 the Mantis Ant's gap goes from 18 points to 11, the King's from 10 to 6.
+
+## 18 November: the Buzzard in its carrion form, and its two builds
+
+`tools/reboot_probe.gd`, as the Storm Petrel's entry of the same day: first in a squad beside
+the Honey Badger, the Prairie Dog and the Cassowary, the greedy bot; tier one's formations and
+elites, 21 compositions at 8 seeds (168 fights), and its bosses alone, 13 at 6 seeds (78), the
+foes as main sized them that day. The carrion form on `ccr-178e0404-ptuh2m` at `777b6d0`; the
+form it replaced (the Thermal Recoupler's heat regen, the cannon firing its whole heat, the
+Overclocked Railgun and the Shoring Jack in its stock) on main at `4ae57e4`, the same foes. The
+probe counts a machine's zaps and its shots of the whole shield since this entry.
+
+| The build | Formations: rebooted, bare, own hull | Bosses: rounds, won | Bosses: rebooted, bare | Bosses: own hull, wrecked, squad |
+|---|---|---|---|---|
+| The form it replaced (main) | 11%, 12%, 2% | 7.2, 78 of 78 | 15%, 18% | 7%, 1 fight, 12% |
+| Stock (2 shield a fall; a zap of 2 for +2) | 17%, 29%, 4% | 7.3, 78 of 78 | 23%, 40% | 11%, 1 fight, 13% |
+| Sustain (the zap +3; a fall Regenerating 2) | 17%, 27%, 2% | 7.1, 78 of 78 | 22%, 35% | 12%, none, 13% |
+| Burst (the cannon Spread 2, Penetrate 2, +2) | 18%, 44%, 4% | 6.7, 78 of 78 | 22%, 48% | 13%, none, 12% |
+
+| The build | Zaps a fight: formations, bosses | Cannon shots a fight (shield each): formations, bosses |
+|---|---|---|
+| Stock | 2.46, 3.17 | 0.34 (11.0), 0.72 (10.9) |
+| Sustain | 2.50, 3.47 | 0.30 (11.2), 0.49 (10.2) |
+| Burst | 1.73, 2.51 | 0.71 (11.3), 1.09 (10.2) |
+
+What it says. The carrion form reboots like the rest: the form it replaced gave a reboot 11%
+of its turns in the formations and 15% against a boss, its heat regen standing the shield up
+between, where this one gives 17% and 23%, near the Storm Petrel's (21% and 26% in its entry
+above, on the foes before that day's sizing). It stands bare more than twice as often (29% and
+40% of its turns, against 12% and 18%), and its own hull pays for it (4% and 11%, against 2%
+and 7%); the fights take as long and the squad loses the same. The bot fires the cannon nearly
+full, 10 or 11 of its 12 shield, 0.34 times a fight in the formations and 0.72 against a boss,
+and pays the zap two or three times a fight, how the greedy bot splits the shield and not
+necessarily how his play will. Sustain changes little the probe
+can see: its gain is a point a zap, and its Regenerating comes off falls, which a boss alone
+gives only through its parts and summons. Burst ends a boss fight more than half a round
+sooner, fires the cannon twice as often in the formations and half again as often against a
+boss, and stands bare on half its turns, with no wreck in 78. A direction at 78 fights a build; a pick share or a band waits for the runner and his
+play.

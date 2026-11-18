@@ -1491,8 +1491,7 @@ func start_round() -> void:
 	# The shield regen a machine is granted (a chassis has none of its own since the reboot):
 	# up to its maximum, after the cooling and before the round-start passives, a shield gain
 	# like any other (on_shield_gain fires), one log line for all. A sealed machine's regen runs:
-	# nothing stops it, where the seal stops its cooling. What its heat adds to the regen (the
-	# Buzzard's Thermal Recoupler) is read here with it, the heat as the cooling left it.
+	# nothing stops it, where the seal stops its cooling.
 	var regened: Array[String] = []
 	for ms in live_mechs():
 		var gained := 0 if paused(ms) else _gain_shield(ms, shield_regen_of(ms))   # a broken shield takes none
