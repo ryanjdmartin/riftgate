@@ -2092,6 +2092,20 @@ func test_an_aim_is_a_moves_word_on_a_move_aimed_at_one_machine() -> void:
 	f["actions"][0]["also"] = [{"effect": "rally", "value": 2}]
 	for e in db.validate():
 		assert_false(e.begins_with("foe test_seeker"), "a step on its own side is no pick: %s" % e)
+	# What a blow does before it lands (18 November: the Pilgrim's knife purges first): a list
+	# shaped as `also` is, on an attack aimed at one machine.
+	f["actions"] = [{"id": "knife", "name": "Knife", "kind": "attack", "weight": 1, "text": "", "status": "implemented", "before": [{"effect": "dispel", "value": 1}]}]
+	for e in db.validate():
+		assert_false(e.begins_with("foe test_seeker"), "a purge ahead of a blow validates clean: %s" % e)
+	assert_eq(Foe.before_of(db.make_foe("test_seeker").actions[0]).size(), 1, "and the move carries it into the fight")
+	f["actions"][0]["before"] = []
+	assert_true(_refused(db, "foe test_seeker", "before lists what the move does before its blow lands"), "an empty list is refused")
+	f["actions"][0]["before"] = [{"effect": "dispel", "value": 1}]
+	f["actions"][0]["keywords"] = ["all"]
+	assert_true(_refused(db, "foe test_seeker", "no step of it may be aimed at one machine"), "a blow at every machine takes no step aimed at one, before it or after")
+	f["actions"] = [{"id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "text": "", "status": "implemented", "before": [{"effect": "dispel", "value": 1}]},
+		{"id": "claw", "name": "Claw", "kind": "attack", "weight": 1, "text": "", "status": "implemented"}]
+	assert_true(_refused(db, "foe test_seeker", "it belongs to an attack action"), "and a special has no blow to come before")
 	f["actions"] = [{"id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "aim": "strongest", "text": "", "status": "implemented"},
 		{"id": "claw", "name": "Claw", "kind": "attack", "weight": 1, "text": "", "status": "implemented"}]
 	assert_true(_refused(db, "foe test_seeker", "aim is for a move aimed at one machine"), "and a move at nobody takes no word")

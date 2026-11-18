@@ -1261,7 +1261,14 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   last machine, a second Expose. A foe left with nothing to announce takes a blow whose own
   condition holds before any other, so the Thief's Mug lands when the round's rerolls are
   spoken for and what it takes past them is nothing. One blow a move, and that its first
-  step. One pair of steps reads as one act: a cleanse that follows a heal lands on the foe
+  step, unless the move says what the blow does before it lands: each such step is a
+  special's effect on the move's own pick, in the order written, and the blow meets the
+  machine as they leave it. The Pilgrim's knife purges first, Purge 1 and then the blow, so
+  a Barrier is gone before the knife arrives and a stack of every other buff with it; a Ward
+  turns the purge away and the Barrier behind it takes the knife. The intent wears such a
+  step's mark ahead of the blow's riders, and the preview of the round reads the blow as it
+  will land. A rider is no such step: riders land after the hits, on either side. One pair
+  of steps reads as one act: a cleanse that follows a heal lands on the foe
   the heal mended, whoever else carries more marks (the Cleric's Cure, one patient).
 - **A take** (Gilgamesh's Collect): a blow that Jams the entry its machine shows, then a step
   of his own: he gains Appropriated, that entry's number, a weapon's printed blow and 1 for

@@ -812,6 +812,28 @@ func test_greedy_values_a_barrier_by_the_blow_it_takes_and_a_ward_by_what_it_tur
 ## one nothing, a stoker 2 a stack on every other foe it primes, a knitter its value for each of
 ## three actions, a primed foe its blow and 2 a stack; a Barrier eats a weapon's first blow in the
 ## damage read, and a Ward leaves the marks a blow would lay worth nothing.
+func test_greedy_gives_a_barrier_nothing_against_a_blow_that_purges_first() -> void:
+	# A blow may purge before it lands (18 November: the Pilgrim's knife). The bot's Barrier is
+	# worth what the forecast says it keeps off the hull, and the forecast reads the purge.
+	var pol := Policy.make(Policy.GREEDY)
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.of([Face.buff("barrier"), Face.attack(10, L)]), 20, 100)
+	sk.add_mech(m)
+	var walker := _ghoul(500, 60)
+	sk.add_foes([walker])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	walker.target = ms
+	assert_true(pol.barrier_score(sk, ms) > 0.0, "against a plain blow of sixty a Barrier is worth the forty it keeps off the hull")
+	var knife: Dictionary = walker.action.duplicate(true)
+	knife["before"] = Foe.also_from([{"effect": "dispel", "value": 1}], "Knife")
+	walker.action = knife
+	assert_eq(pol.barrier_score(sk, ms), 0.0, "and against one that purges first, nothing: the Barrier is gone before the blow")
+	Effects.grant_buff(m, "ward", 1, "test", sk.round)
+	assert_true(pol.barrier_score(sk, ms) > 0.0, "behind a Ward the purge is turned away and the Barrier is worth its blow again")
+
+
 func test_the_bot_reads_a_foes_barrier_ward_priming_and_regrowth() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var sk := Skirmish.new(1, 3)

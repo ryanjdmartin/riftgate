@@ -224,7 +224,7 @@ def tally(words):
                     t.grant(FOE_KEYWORDS[k], "machine", move, "foe", planned, foe["id"], whom)
             # The move's own special and what it does also (16 November: a move is a short list
             # of steps), each effect counted where it lands.
-            for e in [a.get("effect")] + [st.get("effect") for st in a.get("also") or []]:
+            for e in [a.get("effect")] + [st.get("effect") for st in (a.get("before") or []) + (a.get("also") or [])]:
                 if e in FOE_EFFECTS_ON_MACHINES:
                     t.grant(FOE_EFFECTS_ON_MACHINES[e], "machine", move, "foe", planned, foe["id"], whom)
                 if e in FOE_EFFECTS_ON_FOES:

@@ -291,7 +291,7 @@ class Map:
                 for kw in a.get("keywords", []):
                     if kw in FOE_RIDERS:
                         self.add(FOE_RIDERS[kw], "sets", dict(p, who="%s's %s" % (f["name"], a["name"])))
-                for e in [a.get("effect")] + [st.get("effect") for st in a.get("also") or []]:   # its own special and what it does also
+                for e in [a.get("effect")] + [st.get("effect") for st in (a.get("before") or []) + (a.get("also") or [])]:   # its own special, what its blow does before it lands and what it does also
                     if e in FOE_EFFECTS:
                         self.add(FOE_EFFECTS[e], "sets", dict(p, who="%s's %s" % (f["name"], a["name"])))
             # Its fall, a death blow or one special in its place, and what that does also (17

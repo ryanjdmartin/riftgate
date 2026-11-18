@@ -268,10 +268,32 @@ static func power_status(a: Dictionary) -> String:
 ## steps where it was one effect: "Yes, go with the steps if you think that's best"): the move
 ## itself, its first step as a move has always been written, a blow with its riders or one
 ## special, then what it does also (`also`), each a special's effect with the fields it reads.
-## So a spell may strike and curse, or mend one foe and call another. One blow a move, and that
-## its first step, for now.
+## So a spell may strike and curse, or mend one foe and call another. One blow a move. A blow
+## may say what it does before it lands (`before`, Ryan, 18 November, of the Pilgrim's knife:
+## "should the knife attack purge before hitting"): each a special's effect on the move's own
+## pick, in order, and the blow after them. A foe's Purge is a step of a move and never a
+## rider, so this is the move's own order and no exception to the riders' (they land after
+## the hits, on either side).
 static func steps_of(a: Dictionary) -> Array:
-	var out: Array = [a]
+	var out: Array = before_of(a)
+	out.append(a)
+	for st in a.get("also", []):
+		out.append(st)
+	return out
+
+
+## What a blow does before it lands, in order (`before`); nothing for a move with none.
+static func before_of(a: Dictionary) -> Array:
+	var out: Array = []
+	for st in a.get("before", []):
+		out.append(st)
+	return out
+
+
+## Every step of a move beside the move itself: what its blow does before it lands, then what
+## the move does also.
+static func extra_steps(a: Dictionary) -> Array:
+	var out: Array = before_of(a)
 	for st in a.get("also", []):
 		out.append(st)
 	return out

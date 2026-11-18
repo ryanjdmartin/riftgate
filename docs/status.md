@@ -41,14 +41,14 @@ document's job and every command are in `README.md`.
   a branch: the desk machine's folder stays on `main`, and a session that needs another branch
   works in a worktree under `.claude/worktrees/` (`CLAUDE.md`, Session handoff). A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word.
-- Branches. Main holds everything this file describes but the Buzzard (18 November), which
-  waits on `ccr-178e0404-ptuh2m` for Ryan's word to land it. Not on main:
+- Branches. Main holds everything this file describes. Not on main:
   `claude/gameplay-terminology-tooltips-rug879`, a remote branch whose commits were unread
   when this file was written: read it before taking main for the whole of the work.
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
   (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks
-  great. Lets land it". A session's hangar
+  great. Lets land it", and `ccr-178e0404-ptuh2m` (the Buzzard) on his "ok, merge into
+  main". A session's hangar
   publish runs ahead of main (Pages).
   Every other branch on GitHub but the lines' own working branches is merged and to delete
   (`git push origin --delete`, then `git fetch --prune`); a cloud session may not delete one.
@@ -61,8 +61,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1320 tests, 376,822 checks, green on `ccr-178e0404-ptuh2m` (18 November, the
-  Buzzard's cannon renamed and in the shield's light, over main at `f692dbc`). The runner fails a run whose tests never ran, so read the checks' count, never
+- Tests: 1323 tests, 376,844 checks, green on main (18 November, the Buzzard landed over the Pilgrim's
+  knife). The runner fails a run whose tests never ran, so read the checks' count, never
   the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
   purpose. About four minutes in a cloud session; words after `--` run only the files whose
   names hold one (`-- loot rig`).
@@ -157,12 +157,14 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   to 9.3% by formation, every fight won. The elites and the bosses are sized since 18
   November for a squad without the Barrier, on his word ("sizing it without means that if
   it does prove toxic after all, in my play, then it's relatively easy to remove"): an
-  elite costs it 24.6% and a boss 29.8%. The Barrier basic stays on the starting dice ("one
+  elite costs it 24.8% and a boss 29.8%. The Barrier basic stays on the starting dice ("one
   of the two sides of the defensive coin"), and the squad with it pays about half, an elite
-  13.1% and a boss 19.2%: whether that proves toxic is his play's to say, on BARRIER BASIC. How the leaders strike is his lean of the
+  13.9% and a boss 19.2%: whether that proves toxic is his play's to say, on BARRIER BASIC. How the leaders strike is his lean of the
   same day (the bible's section 9): whole blows the norm, slightly towards strikes so plate
   earns in their fights; two pairs wait on his marks, the Reaper's Harvest is a sweep at
-  every machine on his word, and the Pilgrim's knife against a Barrier is his to settle. A foe's adds, its Empowered first,
+  every machine on his word, and the Pilgrim's knife purges before it lands, a step ahead
+  of its blow that the move says (whether that stays one move's order or becomes Purge's
+  rule is his). A foe's adds, its Empowered first,
   land on every strike of a move since then, the machines' formula. This pass's leans on the
   dials stand in the brief's section 7, each his.
   Tiers two and three and the first battle are unsized, their foes still the ones sized
@@ -260,9 +262,8 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
 
 1. **The foes' line** (`ccr-722ca9f0-yj8na3`; `docs/briefs/numbers_pass.md`), in this order:
    - The defence side's rest, this line free to adjust content when it is ready (Ryan, 17
-     November): the Pilgrim's knife, a purge ahead of its blow, on his word; a kit for the
-     Waste now that Breach is cut, proposed in chat first; the scorches on every machine
-     above tier one.
+     November): a kit for the Waste now that Breach is cut, proposed in chat first; the
+     scorches on every machine above tier one.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
      his picks on RANK AND FILE, HEAT and TOP BASIC: its prices are read from the vanilla he
      settles on.
@@ -308,7 +309,7 @@ publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   The last publish known is v0.619 (17 November, from `ccr-178e0404-ptuh2m`); main's file is
-  v0.631 (the deaths' branch's rows and the Mole's branch's with it, 18 November) and the Buzzard's branch's v0.632, both unpublished. Before republishing, read the live page; if another session moved it,
+  v0.632 (the deaths' branch's rows, the Mole's branch's and the Buzzard's with it, 18 November), unpublished. Before republishing, read the live page; if another session moved it,
   publish a three-way merge onto it row by row (`tools/pages/bible_merge.py`: BASE the last
   publish both started from, OURS this branch's file, THEIRS the saved live source with the
   tool's wrapper line, its trailing newline and `</body></html>` stripped). BASE is likely
@@ -323,9 +324,9 @@ publish; the commands are in `README.md`.
   Designs and Text inventories, the pins and foes manifests, the Goblin Warchief's sprite, the
   Storm Petrel's sidecar, and the Badger's and the Wild Boar's models and sidecars with their
   Minervan vents). The page itself was unchanged.
-  The Buzzard's branch is not up: its content (the passive, the branches, the cannon's id),
-  its texts, and its model and sidecar (the Shield-burner Cannon in the shield's light) go
-  up with its landing.
+  The Buzzard, landed after that publish, is not up: its content (the passive, the
+  branches, the cannon's id), its texts, and its model and sidecar (the Shield-burner Cannon
+  in the shield's light) go up with the next.
   `build/hangar/designs.json` is one 795 KB line: write it indented before reading it whole.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their

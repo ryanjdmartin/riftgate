@@ -1169,15 +1169,55 @@ func destroys(f: Foe, ms: MechState) -> bool:
 ## carries the shield and the Barrier from blow to blow, and from foe to foe for a caller
 ## walking every attacker: {"shield": int, "barrier": bool}, updated.
 ## Returns each blow's arithmetic (_blow_on's).
+## A purge its move lays before the blow (purge_ahead) is read as landed: the machine's
+## buffs are held, purged for the reckoning and given back before this returns, and the walk
+## carries the stacks taken (`purged`) to the foes after it.
 func blows_on(ms: MechState, f: Foe, walk: Dictionary) -> Array:
 	var out: Array = []
+	var purged := int(walk.get("purged", 0)) + purge_ahead(f, ms)
+	var held: Array = []
+	if purged > 0:
+		held = _hold_buffs(ms.unit)
+		Effects.purge(ms.unit, purged)
+		walk["purged"] = purged
+		walk["barrier"] = bool(walk.get("barrier", false)) and Effects.has(ms.unit, "barrier")
 	for s in range(f.strikes()):
 		var r := _blow_on(ms, foe_blow(f), f, int(walk["shield"]), bool(walk.get("barrier", false)))
 		if bool(r["barred"]):
 			walk["barrier"] = false
 		walk["shield"] = r["shield"]
 		out.append(r)
+	if purged > 0:
+		_give_back(ms.unit, held)
 	return out
+
+
+## The stacks a foe's move purges from this machine before its blow lands (its `before`
+## steps: the Pilgrim's knife, 18 November), nothing where a Ward turns a purge away.
+func purge_ahead(f: Foe, ms: MechState) -> int:
+	if f == null or ms == null or Effects.has(ms.unit, "ward"):
+		return 0
+	var n := 0
+	for st in Foe.before_of(f.action):
+		if str(st.get("effect", "")) == "dispel":
+			n += maxi(1, int(st.get("value", 0)))
+	return n
+
+
+## A unit's modifiers and their stacks as they stand, for a reckoning that changes them and
+## gives them back (blows_on's purge ahead of a blow): the list and each stack count.
+static func _hold_buffs(u) -> Array:
+	var stacks: Array = []
+	for m in u.modifiers:
+		stacks.append(m.stacks)
+	return [u.modifiers.duplicate(), stacks]
+
+
+static func _give_back(u, held: Array) -> void:
+	var mods: Array = held[0]
+	for i in mods.size():
+		mods[i].stacks = int(held[1][i])
+	u.modifiers = mods
 
 
 ## One foe's blow on a machine, the arithmetic the blow that lands (_damage_mech) and the
@@ -2767,6 +2807,14 @@ func _foe_turn(f: Foe) -> void:
 			return
 		f.pending = {}   # it lands now
 		Effects.remove(f, "aloft")   # and a foe that climbed for it is back in reach
+	# What its blow does before it lands (`before`, 18 November: the Pilgrim's knife purges
+	# first), each step in order on the move's own pick: the blow meets the machine as they
+	# leave it. A blow with no machine to strike does none of them.
+	if f.attacks() and (t != null or f.hits_all()):
+		for st in Foe.before_of(f.action):
+			if not f.alive():
+				break
+			_foe_acts(f, t, st)
 	# The move's first step: its blow, or its one special in a blow's place.
 	var swung := false
 	if not f.attacks():

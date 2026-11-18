@@ -471,6 +471,11 @@ func make_foe(foe_id: String) -> Foe:
 		var also := Foe.also_from(a.get("also", null), str(act["name"]))
 		if not also.is_empty():
 			act["also"] = also
+		# What its blow does before it lands (18 November), an attack's alone.
+		if kind == "attack":
+			var before := Foe.also_from(a.get("before", null), str(act["name"]))
+			if not before.is_empty():
+				act["before"] = before
 		# The move's own word for whom it goes for (17 November) and its condition (2 October),
 		# when it has them.
 		if a.has("aim"):
@@ -2562,13 +2567,16 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 		# of the attack, not the dragon itself") and its condition (2 October), checked whatever
 		# its status. The word is for a move aimed at one machine; and a blow at every machine
 		# takes no step aimed at one, since it draws no pick and nothing would show whom.
-		var steps_read: bool = not a.has("also") or (a["also"] is Array and (a["also"] as Array).all(func(st) -> bool: return st is Dictionary))
+		var steps_read := true
+		for list in STEP_LISTS:
+			if a.has(list) and not (a[list] is Array and (a[list] as Array).all(func(st) -> bool: return st is Dictionary)):
+				steps_read = false
 		if a.has("aim") and not Foe.AIMS.has(str(a["aim"])):
 			errs.append("%s: aim must be one of %s, got '%s'" % [aw, ", ".join(Foe.AIMS), str(a["aim"])])
 		elif a.has("aim") and steps_read and not Foe.lands_on_one(a):
 			errs.append("%s: aim is for a move aimed at one machine; a move at every machine or at nobody draws no pick" % aw)
 		if steps_read and str(a.get("kind", "")) == "attack" and Array(a.get("keywords", [])).has("all"):
-			for st in a.get("also", []):
+			for st in Foe.extra_steps(a):
 				if not Foe.UNTARGETED_EFFECTS.has(str(st.get("effect", ""))) and not Foe.effect_kind(str(st.get("effect", ""))).is_empty():
 					errs.append("%s: a blow at every machine draws no pick, so no step of it may be aimed at one machine (%s)" % [aw, str(st.get("effect", ""))])
 		if a.has("when"):
@@ -2619,16 +2627,22 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 				if not taken_by:
 					errs.append("%s: a borrowed swing (power %s) is the follow-up of a move that takes (%s among its steps); name it in that move's then" % [aw, held, str(POWER_STATUSES[held])])
 		# What a move does also (16 November: a move is a short list of steps): each a special's
-		# effect with the fields it reads, after the move's first step, whatever that is.
-		if a.has("also"):
-			if not (a["also"] is Array) or (a["also"] as Array).is_empty():
-				errs.append("%s: also lists what the move does after its first step, each an object with its effect" % aw)
+		# effect with the fields it reads, after the move's first step, whatever that is. And
+		# what a blow does before it lands (`before`, 18 November: the Pilgrim's knife purges
+		# first), a list of the same shape on an attack alone.
+		if a.has("before") and str(a.get("kind", "")) != "attack":
+			errs.append("%s: before lists what a blow does before it lands; it belongs to an attack action" % aw)
+		for list in STEP_LISTS:
+			if not a.has(list):
+				continue
+			if not (a[list] is Array) or (a[list] as Array).is_empty():
+				errs.append("%s: %s lists what the move does %s, each an object with its effect" % [aw, list, "before its blow lands" if list == "before" else "after its first step"])
 			else:
-				for st in a["also"]:
+				for st in a[list]:
 					if not (st is Dictionary) or str(st.get("effect", "")).is_empty():
-						errs.append("%s: each step of also is an object that names its effect" % aw)
+						errs.append("%s: each step of %s is an object that names its effect" % [aw, list])
 						continue
-					var sw := "%s also %s" % [aw, str(st["effect"])]
+					var sw := "%s %s %s" % [aw, list, str(st["effect"])]
 					for key in (st as Dictionary).keys():
 						if not ALSO_KEYS.has(str(key)):
 							errs.append("%s: a step knows %s, got '%s'" % [sw, ", ".join(ALSO_KEYS), str(key)])
@@ -2729,6 +2743,9 @@ func _validate_fall_steps(aw: String, a: Dictionary, errs: Array[String]) -> voi
 const POWER_STATUSES := {"appropriated": "appropriate"}
 ## What a step of `also` may carry beside its effect.
 const ALSO_KEYS := ["effect", "value", "foe", "count", "rounds"]
+## The lists of steps a move may carry beside itself: what its blow does before it lands, and
+## what the move does also.
+const STEP_LISTS := ["before", "also"]
 
 
 ## Every effect a special or a step may name, across the kinds.
