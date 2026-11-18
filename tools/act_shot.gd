@@ -12,7 +12,9 @@ extends SceneTree
 ## it is lost (MechView3D.lose: its lights out and its slump). RIFTGATE_FORM=<name> holds
 ## that form first, all the way in, so the act is one of its own (the sealed Polar Bear's) or
 ## "-" its held pose; RIFTGATE_FORM_AT=<seconds> stops it that far into its turn instead, to see
-## a frame of the form going in (the Mole's burrow). RIFTGATE_FIT="1:rivet_gun,2:shotfire_rack" hangs
+## a frame of the form going in (the Mole's burrow); RIFTGATE_FORM_FIRST=<name> holds that form all the way in
+## before it, so the frame shows one form letting another go (the Mole's burrow docking its drill
+## out of Drill Out). RIFTGATE_FIT="1:rivet_gun,2:shotfire_rack" hangs
 ## those components' classes on the mounts in place of the stock parts, as tools/hero_shot.gd does,
 ## to see a swap through an act or a form (a machine whose guns stow). RIFTGATE_PITCH=<degrees> tilts
 ## the camera down that far in place of the view's own (0 level, to see under a machine). An act of "fire:<component>" fires that weapon (MechView3D.strike: a fixed one
@@ -47,6 +49,10 @@ func _init() -> void:
 		_view.pitch = float(pitch)   # framed as it enters the tree
 	root.add_child(_view)
 	_view.set_process(false)
+	var first := OS.get_environment("RIFTGATE_FORM_FIRST")
+	if not first.is_empty():
+		_view.rig.set_form(first, true)
+		_view.rig.tick(float(_view.rig.forms.get(first, {}).get("duration", 1.0)) + 0.05)
 	var form := OS.get_environment("RIFTGATE_FORM")
 	if not form.is_empty():
 		_view.rig.set_form(form, true)

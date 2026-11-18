@@ -518,15 +518,17 @@ class Rig {
       for (const [jn, keys] of Object.entries(f.tracks || {})) if (this.joints[jn]) curves[jn] = curve(keys, duration, "smooth");
       if ((f.body || []).length) curves["@body"] = curve(f.body, duration, "smooth");
       for (const g of f.glow || []) for (const part of g.parts || []) for (const m of this.litMaterials(part)) glow.push([m, restOf(m), g.k ?? -1]);
-      this.forms[name] = {duration, curves, glow, acts: (f.acts || []).filter(a => a && a.name)};
+      this.forms[name] = {duration, curves, glow, acts: (f.acts || []).filter(a => a && a.name), releases: (f.releases || []).map(String)};
       this.formOn[name] = false; this.formT[name] = 0;
     }
   }
   // Hold a form or let it go (MechRig.set_form): it turns in over its duration and back out the
-  // same way, from wherever it is; while a form turns no act starts, and one playing stops.
+  // same way, from wherever it is; while a form turns no act starts, and one playing stops. Held,
+  // it lets go the forms it releases, as the statuses would end.
   setForm(name, on) {
     if (!this.forms[name] || this.formOn[name] === on) return;
     this.formOn[name] = on;
+    if (on) for (const other of this.forms[name].releases || []) if (this.forms[other]) this.formOn[other] = false;
     if (this.current) this.endAct();
   }
   formHeld(name) { return !!this.formOn[name]; }

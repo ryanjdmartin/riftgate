@@ -454,6 +454,37 @@ func test_a_form_is_held_while_set_and_let_go_after() -> void:
 	pair[1].free()
 
 
+func test_a_held_form_lets_go_the_forms_it_releases() -> void:
+	# A form may end others as it is held, as its status ends theirs (the Mole's burrow takes its
+	# drill back: Burrowed lets Drill Out go, so the drill docks as it digs), and letting it go
+	# holds none of them again.
+	var id := ""
+	var name := ""
+	for m in MACHINES:
+		var forms: Dictionary = MechRig.load_sidecar(m).get("forms", {})
+		for f in forms.keys():
+			if not (forms[f].get("releases", []) as Array).is_empty():
+				id = m
+				name = str(f)
+				break
+		if not id.is_empty():
+			break
+	assert_false(id.is_empty(), "a model's form releases another")
+	var pair := _rig_for(id)
+	var rig: MechRig = pair[0]
+	var other := str(rig.forms[name]["releases"][0])
+	assert_true(rig.forms.has(other), "%s: %s releases a form it has (%s)" % [id, name, other])
+	rig.set_form(other, true)
+	rig.tick(float(rig.forms[other]["duration"]) + 0.3)
+	assert_true(rig.form_held(other), "%s: %s is held" % [id, other])
+	rig.set_form(name, true)
+	assert_true(rig.form_held(name), "%s: %s is held" % [id, name])
+	assert_false(rig.form_held(other), "%s: holding %s lets %s go" % [id, name, other])
+	rig.set_form(name, false)
+	assert_false(rig.form_held(other), "%s: letting %s go holds nothing it released" % [id, name])
+	pair[1].free()
+
+
 func test_a_held_form_may_move_the_body_and_its_own_acts_play_over_it() -> void:
 	# The sealed Polar Bear hunkers (Ryan, 29 October: "its base pose should be hunkered down
 	# in a defensive position"): a form may carry the whole machine with it, and an act of

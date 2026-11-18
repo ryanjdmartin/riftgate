@@ -725,7 +725,10 @@ func _setup_forms(fs: Dictionary) -> void:
 		for a in f.get("acts", []):
 			if a is Dictionary and a.has("name"):
 				own.append(a)
-		forms[name] = {"duration": duration, "curves": curves, "glow": glow, "acts": own}
+		var releases: Array = []
+		for r in f.get("releases", []):
+			releases.append(str(r))
+		forms[name] = {"duration": duration, "curves": curves, "glow": glow, "acts": own, "releases": releases}
 		_form_on[name] = false
 		_form_t[name] = 0.0
 	_form_body_rot = Vector3.ZERO
@@ -737,11 +740,16 @@ func _setup_forms(fs: Dictionary) -> void:
 ## opens in the reverse). While a form turns no act starts, and one playing stops: held, the
 ## machine plays the form's own acts, from its held pose (Ryan, 29 October: sealed, "the
 ## animations set shouldn't be the same"), or else its own, less any that moves a joint the
-## form keeps.
+## form keeps. Held, it lets go the forms it releases (the Mole's Burrowed, its Drill Out: the
+## drill docks as it digs), as the statuses would end.
 func set_form(name: String, on: bool) -> void:
 	if not forms.has(name) or bool(_form_on[name]) == on:
 		return
 	_form_on[name] = on
+	if on:
+		for other in forms[name].get("releases", []):
+			if forms.has(other):
+				_form_on[other] = false
 	if not _current.is_empty():
 		_end_act()
 

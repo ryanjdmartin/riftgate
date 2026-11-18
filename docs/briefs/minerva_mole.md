@@ -730,7 +730,31 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    does; the model's firing act still brings the tip home two seconds after it fires, a stand-in,
    since nothing marks the Mole while its drill is out. The kit's session gives the Mole that mark,
    and the model a form it holds while the mark is on, the bore empty, let go as it burrows so the
-   tip slides home as it digs.
+   tip slides home as it digs. His notes on that, 18 November: "Build the toggle, and the burrow
+   animation will need to show the docking if the drill is out. The cockpit side cut is shoddy.
+   There shouldn't be any gaps when burrowed. I'd also rather make the whole cockpit area thinner
+   instead of cutting out of the main body, shrinking the cockpit gun smaller if we have to. The
+   hinges are nice. Can we put it on the front-port mount as well? for the front-rear port, maybe
+   the port should be on the front of the rising section instead of the side, it looks like it
+   clears the drill well enough to me." So, the hangar's next version: the model's half of the
+   drill out, a form (Drill Out, on the Models tab's statuses) holding the bore empty, the tip run
+   back out of sight in it; a form may now name forms it releases, as the statuses would end
+   theirs, so holding Burrowed lets Drill Out go and the tip docks as the machine digs, back along
+   the bore turning a turn, past its seat a hair and home before the drill revs, and holding Drill
+   Out lets Burrowed go, as the Drill's firing brings it up. The firing act alone still slides the
+   tip home after it flies; the kit's session marks the Mole while its drill is out and drops
+   that. The dock is gone: the cab is 7.75 wide (from 10.5) and as long as the breech (y -27 to
+   -14, from -30 to -10), so burrowed it stands flush with the cowl's foot a hair off the breech's
+   flank, with no gap at its ends where the barrel and the engine deck stand narrower, a notch in
+   its inboard front corner for the breech's band; its face, brow, slit, periscopes and port
+   repacked into it, the locker ahead of it run back to its face; its gun on a narrow yoke in a
+   port 3.25 across, at 0.41. The fore block's gun tips on a yoke too, the yoke's plate on the
+   arm's end: burrowing, it tips muzzle-up on its axle and the yoke rolls over on the arm's end
+   until the gun points out of the port along its line, then runs in (its port's bore 4.2, the
+   gun at 0.55). The rear block's gun is in a port in its front face, above the ring head on, and
+   burrowing it runs straight back 19.2 into the block before the block sinks; to fit the block's
+   length it is at 0.45, and its side port is gone. Rendered with each class on all four mounts
+   through the burrow, level from both sides: nothing shows outside the hull.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike

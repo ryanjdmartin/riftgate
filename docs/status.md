@@ -1949,13 +1949,15 @@ section 12 lists what is built and what waits. The campaign's rules run headless
   took it back to Version 289 ("Each step takes us farther away from good"), and on his word it
   is that model with its cheeks, barrel and breech grown together by 1.2 about the bore's axis
   ("Yes, better"), and since, the vent hoods, every gun port irised, the top gun on the breech
-  (four hardpoints), every gun in its port form out of a housing on its mount, the top gun's and
-  the cab's on hinged yokes, the port blocks flush with the cowl with their guns facing forward
-  just out of side ports ("The sensible thing") and the rear one, clear of the breech, rising on
-  rams like the cab's to fire over the fore one, the cab seating flush in a dock cut out of the
-  centre body and running out level only, the drill revving hard as it digs in, and every vent
-  glowing as it vents; his to judge in action (his first read, "flimsy"). The Polar Bear's
-  designation is the XE-22S Extreme Environment Walker, his pick. The hangar's Version 302 is the
+  (four hardpoints), every gun in its port form, the top gun's, the cab's and the fore block's on
+  hinged yokes out of housings, the port blocks flush with the cowl, the fore one's gun facing
+  forward just out of a side port ("The sensible thing") and the rear one, clear of the breech,
+  rising on rams like the cab's and firing from a port in its front over the fore one, the cab
+  thinner and as long as the breech, flush beside it burrowed, running out level only, the drill
+  revving hard as it digs in and docking as it burrows when it is out (a status pose, Drill Out,
+  and forms that release forms), and every vent glowing as it vents; his to judge in action (his
+  first read, "flimsy"). The Polar Bear's
+  designation is the XE-22S Extreme Environment Walker, his pick. The hangar's Version 303 is the
   death session's page and files (`ccr-bd73687d`,
   unlanded) with the Mole added to them, so the two Minervan vents show there once the
   branches meet. A
