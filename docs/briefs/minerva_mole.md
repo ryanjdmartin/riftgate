@@ -677,9 +677,17 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    and over the frames; now the back vent is as deep as the rest, every halo is drawn 0.8 toward the
    eye, the tail vents' grown less, and the chamfer vents 8 along so their halos stay inside the
    breech's ends. Rendered with each class on all four mounts through the burrow, level from both
-   sides: nothing shows outside the hull. His to settle: what the rear block clears. Facing port, the
-   fore block stands in no gun's line, so the rise clears it in height only; if he meant the ports to
-   face forward, the rise is what lets the rear gun fire over the fore block.
+   sides: nothing shows outside the hull. Claude asked what the rear block's rise clears, the fore
+   block standing in no port-facing gun's line. His answer, 18 November, on that version: "No, guns
+   facing forward, just out of side mounted ports. The sensible thing." So, the hangar's next
+   version: each block's gun faces forward on a short arm 4 out of its port, the port still irised
+   in the block's outboard face, and the rear block's rise is what lets its gun fire over the fore
+   block's. No gun there hangs on a joint about the up axis, so the machine turns its nose to aim
+   them, as it does any fixed gun. Burrowing, each tips muzzle-up and rolls over until it points out
+   of its port (half a second), then runs 29.4 in through the floor into the hull, the fore one at
+   once and the rear one once its block has sunk on its cams; the burrow is 2.85 seconds, a quarter
+   longer for the fold. Rendered with each class on all four mounts through the burrow, level from
+   both sides: nothing shows outside the hull.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike
