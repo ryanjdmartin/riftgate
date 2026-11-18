@@ -85,6 +85,7 @@ class MechState:
 	var ammo_max: int = 0       # its size; 0 for a machine that forges nothing
 	var hot_entry: int = -1     # the entry whose spend last took the gauge past its maximum this turn (the overheat's what-ifs)
 	var spends: int = 0             # the entries it has spent this turn: a reboot is for a machine that has spent nothing
+	var relay_spent: int = 0        # the Quick-turn Avionics Relay's actions spent this round (the Needletail's): 1 its weapon's, 2 its equipment's
 	var rebooting: bool = false     # it gave this turn to a reboot: its heat went as its shield dropped, it is bare through the enemy's turn, and its shield is back as the next round opens
 	var shield_broken: bool = false # its shield has stood at nothing since its last reboot: it gains none by any method until the reboot's recovery
 	var overheated: bool = false    # it has overheated since its last reboot: one overheat, and one shield broken by it, between reboots
@@ -1502,6 +1503,7 @@ func start_round() -> void:
 		# A swallowed machine cannot act while it is out (30 October): its die is spent before it rolls.
 		ms.assigned = is_swallowed(ms)
 		ms.spends = 0
+		ms.relay_spent = 0
 		if not ms.alive():
 			continue
 		# A reboot's recovery: the machine that gave its last turn to one opens the round with its
@@ -1986,7 +1988,7 @@ func _reroll(mech_indices: Array) -> bool:
 ## die (the Clydesdale's) rerolls among its live entries, the battery up and its fixed pieces.
 func _reroll_die(ms: MechState) -> void:
 	_rolled()
-	ms.face_index = _step(ms) if Effects.steps_die(ms.unit) else ms.die.reroll_among(rng, Effects.live_entries(ms.unit, ms.die), ms.face_index)
+	ms.face_index = _step(ms) if Effects.steps_die(ms.unit) else ms.die.reroll_among(rng, _roll_pool(ms), ms.face_index)
 
 
 ## A die rolling (Ryan's wording for the Cassowary, 12 October: "Whenever its die rolls, it
@@ -1999,7 +2001,32 @@ func _roll(ms: MechState) -> int:
 	_rolled()
 	if ms.face_index >= 0 and Effects.steps_die(ms.unit):
 		return _step(ms)
-	return ms.die.roll_among(rng, Effects.live_entries(ms.unit, ms.die))
+	return ms.die.roll_among(rng, _roll_pool(ms))
+
+
+## The entries a die may land on as it rolls, rerolls or acts again: a folded die's live ones
+## (Effects.live_entries, the Clydesdale's), the whole die otherwise (an empty list, as the die's
+## own helpers read it). On a one-of-each machine (the Needletail's Quick-turn Avionics Relay)
+## never an entry of a kind whose action it has spent this round, so no roll, reroll or Rapid
+## brings a spent kind back (Ryan, 18 November: "The gun entries would be dark"); an entry of
+## neither kind (a blank) may come up as ever. Empty with nothing left to land on
+## (_has_pool says which).
+func _roll_pool(ms: MechState) -> Array:
+	var live := Effects.live_entries(ms.unit, ms.die)
+	if ms.relay_spent == 0 or not Effects.one_of_each(ms.unit):
+		return live
+	var base: Array = live if not live.is_empty() else range(ms.die.faces.size())
+	var out: Array = []
+	for at in base:
+		if (_turn_kind(ms, ms.die.faces[int(at)]) & ms.relay_spent) == 0:
+			out.append(int(at))
+	return out
+
+
+## Whether a die has anything left to roll onto: a one-of-each machine with both kinds spent, or
+## a spent kind and nothing else on its die, has none.
+func _has_pool(ms: MechState) -> bool:
+	return ms.relay_spent == 0 or not Effects.one_of_each(ms.unit) or not _roll_pool(ms).is_empty()
 
 
 ## The entry after the one showing, past the last back to the first.
@@ -2209,6 +2236,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	var raw := spend_face(ms)   # the entry as spent, its charged form when a muster pays for it
 	f = raw
 	var turn := turn_entries(ms, f)   # where a one-of-each machine's die may turn once this is out (the Needletail's), read before the spend
+	var spent_kind := _turn_kind(ms, f) if Effects.one_of_each(ms.unit) and not f.acts_again() else 0   # the Relay's action it spends: 1 a weapon's, 2 equipment's, 0 none (a free Rapid or Instant spend, a blank)
 	f = Effects.effective_face(ms.unit, f, target if target is Foe else null)   # the entry as this machine's passives make it, over the foe it is aimed at
 	if f.is_attack() and (not (target is Foe) or not targets_for_face(ms, raw).has(target)):
 		return false
@@ -2485,25 +2513,33 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	# costs and the odds (the Knuckle of Fury's five rage, the cylinder's sixth). A fight already
 	# won, or a machine its own spend wrecked, rolls nothing.
 	if f.acts_again() and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty()):
+		# On a one-of-each machine a Rapid or Instant spend uses neither of its two actions (Ryan,
+		# 18 November: "rapid does not consume any of the spends"), and its roll lands only on the
+		# kinds it may still act with (_roll_pool).
 		var instant := f.has(Face.Keyword.INSTANT)
-		_act_again(ms, instant)
-		var how := "rapid, rolls again"
-		if instant:
-			how = "the cylinder spins" if Effects.steps_die(ms.unit) else "instant, rolls again"
-		log.append("%s: %s" % [ms.unit.display_name, how])
-	# Two things a round (the Needletail's Quick-turn Avionics Relay, Ryan, 11 November): its
-	# first spend of a weapon or of equipment turns its die to a live entry of the other kind and
-	# it acts again, once a round. A spend that acts again of its own (Rapid or Instant) leaves
-	# the turn for the next; a fight already won turns nothing.
-	elif not turn.is_empty() and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty()):
-		var lit: Array[int] = []
-		for at in turn:
-			if not Effects.is_entry_disabled(ms.unit, at):
-				lit.append(at)   # still lit once the spend is done
-		if not lit.is_empty():
-			Effects.grant_for_rounds(ms.unit, Effects.STATUS["quick_turned"], "gate", round)
-			_turn_die(ms, lit)
-			log.append("%s: a quick turn, and it acts again" % ms.unit.display_name)
+		if _act_again(ms, instant):
+			var how := "rapid, rolls again"
+			if instant:
+				how = "the cylinder spins" if Effects.steps_die(ms.unit) else "instant, rolls again"
+			log.append("%s: %s" % [ms.unit.display_name, how])
+	# Two things a round (the Needletail's Quick-turn Avionics Relay, Ryan, 11 November; rewritten
+	# by kind on 18 November): a spend of a weapon spends its weapon's action and one of equipment
+	# its equipment's, and every entry of that kind goes dark for the round (no cleanse lifts it),
+	# so no roll, reroll or turn brings it back; while the other kind's action is open its die turns
+	# to a lit entry of it and it acts again. A fight already won turns nothing.
+	elif spent_kind != 0 and ms.alive():
+		ms.relay_spent |= spent_kind
+		for at in range(ms.die.faces.size()):
+			if _turn_kind(ms, ms.die.faces[at]) == spent_kind and not Effects.is_entry_disabled(ms.unit, at):
+				Effects.disable_entry(ms.unit, at, "relay", round)
+		if not turn.is_empty() and not (field_foes().is_empty() and reinforcements.is_empty()):
+			var lit: Array[int] = []
+			for at in turn:
+				if not Effects.is_entry_disabled(ms.unit, at):
+					lit.append(at)   # still lit once the spend is done
+			if not lit.is_empty():
+				_turn_die(ms, lit)
+				log.append("%s: a quick turn, and it acts again" % ms.unit.display_name)
 	# The fight ends the moment it is decided (Ryan, 22 September): the last foe down, or
 	# the last machine burnt out by its own heat, and nobody waits for End turn.
 	_refresh_allies()
@@ -4284,32 +4320,38 @@ func _roll_again(ms: MechState) -> void:
 ## just spent (a copy of it may come up), a stepping die stepping; a folded die among its live
 ## entries, so a Changeover's roll lands on the battery it raised. Instant's roll (`itself`) is a
 ## true roll over every live entry, itself included, a spin on a stepping die.
-func _act_again(ms: MechState, itself := false) -> void:
+func _act_again(ms: MechState, itself := false) -> bool:
+	if not _has_pool(ms):
+		return false   # every kind it may still act with spent: its die is done
 	if previewing:
 		ms.assigned = false   # it acts again; the copy's die keeps its entry, a roll never promised
-		return
+		return true
 	_rolled()
-	var live := Effects.live_entries(ms.unit, ms.die)
+	var live := _roll_pool(ms)
 	if itself:
 		ms.face_index = ms.die.roll_among(rng, live)
 	elif Effects.steps_die(ms.unit):
 		ms.face_index = _step(ms)
 	else:
+		if live.size() == 1 and int(live[0]) == ms.face_index:
+			return false   # the entry just spent is all that is left of the kinds it may act with: nothing else to land on
 		ms.face_index = ms.die.reroll_among(rng, live, ms.face_index)
 	ms.assigned = false
+	return true
 
 
 ## The entries a one-of-each machine's die may turn to once `spent` is out (Effects.one_of_each,
 ## the Needletail's Quick-turn Avionics Relay): its lit entries of the other kind, equipment for
-## a weapon and weapons for equipment, each read as the machine has it. None while its second
-## action this round is spent, on a machine without the rule, or for a spend that is neither
-## kind (a shield, a vent, a blank).
+## a weapon and weapons for equipment, each read as the machine has it, while that kind's action
+## is open. None once the other kind's action is spent, on a machine without the rule, for a
+## Rapid or Instant spend (it rolls, using no action), or for a spend that is neither kind (a
+## shield, a vent, a blank).
 func turn_entries(ms: MechState, spent: Face) -> Array[int]:
 	var out: Array[int] = []
-	if ms == null or spent == null or not ms.alive() or not Effects.one_of_each(ms.unit) or Effects.has(ms.unit, "quick_turned"):
+	if ms == null or spent == null or not ms.alive() or not Effects.one_of_each(ms.unit) or spent.acts_again():
 		return out
 	var kind := _turn_kind(ms, spent)
-	if kind == 0:
+	if kind == 0 or (ms.relay_spent & (3 - kind)) != 0:
 		return out
 	for at in range(ms.die.faces.size()):
 		if not Effects.is_entry_disabled(ms.unit, at) and _turn_kind(ms, ms.die.faces[at]) == 3 - kind:
@@ -5561,14 +5603,20 @@ func can_reboot(mech_index: int) -> bool:
 	return (not ms.assigned and ms.spends == 0) or quick_reboot(ms)
 
 
-## Whether a machine may reboot as the second spend of its turn (the Needletail's Quick-turn
+## Whether a machine may reboot as the second action of its turn (the Needletail's Quick-turn
 ## Avionics Relay, a one-of-each machine; Ryan, 18 November: "So it may act, and then the second
 ## spend needs to be on the reboot. Doesn't matter what the action is. It's pure tempo and
-## flexibility"): one spend made this turn, of any kind, and whatever that spend left its die
-## (a turn to the other kind, or none to turn to). Its reboot vents that spend's heat with the
-## rest; after two spends it has no reboot this turn.
+## flexibility"): something spent this turn and at most one of its two actions, whatever that left
+## its die (a turn to the other kind, or none to turn to). A Rapid or Instant spend is no action,
+## so it counts none. Its reboot vents what it spent's heat with the rest; with both actions
+## spent it has no reboot this turn.
 static func quick_reboot(ms: MechState) -> bool:
-	return ms != null and ms.spends == 1 and Effects.one_of_each(ms.unit)
+	return ms != null and ms.spends > 0 and actions_spent(ms) <= 1 and Effects.one_of_each(ms.unit)
+
+
+## How many of its two actions a one-of-each machine has spent this round: 0, 1 or 2.
+static func actions_spent(ms: MechState) -> int:
+	return 0 if ms == null else (ms.relay_spent & 1) + ((ms.relay_spent >> 1) & 1)
 
 
 ## The reboot: the machine gives its whole turn, or the rest of it as its second spend

@@ -287,7 +287,7 @@ func _best_score(sk: Skirmish, i: int) -> float:
 ## Whether this machine's next spend is the one before a reboot it owes as its second spend
 ## (_owed): its heat is vented with the rest, so it costs nothing.
 func _vents_after(sk: Skirmish, ms: Skirmish.MechState) -> bool:
-	if _owed.is_empty() or ms.spends != 0:
+	if _owed.is_empty() or ms.rebooting or Skirmish.actions_spent(ms) != 0:
 		return false
 	var i := sk.mechs.find(ms)
 	return i >= 0 and _owed.has(i)
@@ -297,8 +297,8 @@ func _vents_after(sk: Skirmish, ms: Skirmish.MechState) -> bool:
 ## reboot as the turn began (_reboot_first), or wants one now, the spend's heat on it.
 func _reboots_second(sk: Skirmish, i: int) -> bool:
 	var ms: Skirmish.MechState = sk.mechs[i]
-	if ms.spends != 1 or not sk.can_reboot(i):
-		return false
+	if ms.spends == 0 or Skirmish.actions_spent(ms) != 1 or not sk.can_reboot(i):
+		return false   # its second action the reboot: one action spent (a free Rapid spend is none)
 	return _owed.has(i) or _wants_reboot(sk, ms)
 
 

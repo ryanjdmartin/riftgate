@@ -68,7 +68,7 @@ func test_every_status_says_whether_a_purge_reaches_it() -> void:
 	for id in ["ablating", "ablating_mech", "scorched", "brittled_mech", "swallowed", "shocked", "exposure", "brittled", "cryoed", "suppressed", "webbed"]:
 		assert_eq(Effects.status_kind(id), "debuff", "%s is a debuff" % id)
 	assert_eq([Effects.status_kind("disabled_0"), Effects.status_kind("corrupted_2")], ["debuff", "debuff"], "an entry's Disabled and Corrupted are debuffs")
-	assert_eq(Effects.status_kind("quick_turned"), "", "a marker the engine keeps is none of them")
+	assert_eq(Effects.status_kind("no_such_status"), "", "an id the engine does not know is none of them")
 	var u := _unit()
 	Effects.grant_buff(u, "overcharged", 2, "buff", 1)
 	Effects.stack(u, Effects.STATUS["scorched"], Effects.SKIRMISH, "foe", 2, Effects.DECAY_TURN_ALL)

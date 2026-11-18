@@ -2026,7 +2026,7 @@ func _mech_rows(i: int) -> Array:
 		var id := str(d[5])
 		if int(d[3]) < Effects.SKIRMISH and not Effects.is_status(id):
 			continue
-		if id == "shots" or id == "quick_turned" or id == "muster" or Effects.store_cap(ms.unit, id) > 0:
+		if id == "shots" or id == "muster" or Effects.store_cap(ms.unit, id) > 0:
 			continue   # a count shows as pips under the heat bar (the Cassowary's sixth shot), a capped store as its bar, and the gate by the Rapid it grants, never a chip
 		if not first.has(id):
 			order.append(id)
@@ -2088,7 +2088,7 @@ func _mech_rows(i: int) -> Array:
 		# chips should appear as pulsing opacity versions"), beside the skull when the round wrecks
 		# it (one may be the cause: an Ablating it lit on itself), the counts and stores that are no
 		# chip left out.
-		var skip: Array = ["shots", "quick_turned", "muster"]
+		var skip: Array = ["shots", "muster"]
 		for id in fc.get("coming", {}).keys():
 			if Effects.store_cap(ms.unit, id) > 0:
 				skip.append(id)
@@ -2250,7 +2250,10 @@ func _entry_states(ms: Skirmish.MechState, i: int) -> Array:
 	if i < 0 or i >= ms.die.faces.size():
 		return out
 	var f: Face = ms.die.faces[i]
-	if Effects.is_entry_disabled(ms.unit, i):
+	if Effects.relay_dark(ms.unit, i) and not Effects.cleansable_disable(ms.unit, i):
+		# Its kind's action spent this round (the Needletail's Relay): dark until the round ends.
+		out.append(["Spent this round: its %s action is used" % ("weapon" if f.is_weapon() else "equipment"), EntryReadout.mark("cooldown", Palette.INK, false)])
+	elif Effects.is_entry_disabled(ms.unit, i):
 		# By the clock the die shows along its foot with the turns left (Ryan, 2 November).
 		var dark := Effects.dark_rounds(ms.unit, i, sk.round)
 		out.append([("Jammed" if Effects.cleansable_disable(ms.unit, i) else "On Cooldown") \

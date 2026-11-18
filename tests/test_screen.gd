@@ -2922,8 +2922,8 @@ func test_a_status_row_says_buff_or_debuff_and_its_chip_carries_it() -> void:
 	var debuff := SkirmishScreen.status_row("ablating", "ablate", "2", "Ablating ×2", Palette.HEAT)
 	assert_eq(str(debuff[2]), "Debuff, Ablating ×2", "a debuff's line")
 	assert_eq(str(debuff[5]), "debuff", "and its chip's mark")
-	var plain := SkirmishScreen.status_row("quick_turned", "rapid", "", "Quick turn spent", Palette.INK)
-	assert_eq([str(plain[2]), str(plain[5])], ["Quick turn spent", ""], "one that is neither keeps its words and wears no mark")
+	var plain := SkirmishScreen.status_row("no_such_status", "rapid", "", "Neither", Palette.INK)
+	assert_eq([str(plain[2]), str(plain[5])], ["Neither", ""], "one that is neither keeps its words and wears no mark")
 	var s := _screen()
 	var m: Unit = s.sk.mechs[0].unit
 	Effects.grant_buff(m, "overcharged", 2, "buff", s.sk.round)

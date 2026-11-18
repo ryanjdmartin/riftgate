@@ -228,16 +228,21 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   its damage and the stacks it lays; the count shows as six cells under the heat bar, as a
   store's are, the sixth apart by its shape (a heavier border, a diamond set in it) and
   lit in the heat's colour when it is next, and a shield, a vent, a buff and a spin are no shots.
-- **The Quick-turn Avionics Relay** (the Needletail's passive): each round it acts twice, once
-  with a weapon and once with equipment (a buff or a debuff). After its first spend of either
-  kind its die turns to a lit entry of the other kind and it acts again, once a round. One entry
-  to turn to is no draw: the die shows it in its passive box beforehand, and an undo reaches
-  past the turn; several are a draw among them. With no lit entry of the other kind it has no
-  second action, and a spend that is neither kind (a blank) gives none. A piece that acts
-  again of its own, Rapid or Instant, does so by its own rule and leaves the turn for the next spend. Its second
-  spend may be its reboot (The reboot, below): after one spend of either kind, whatever that
-  spend left its die, its die may go onto REBOOT, so its reboot turn keeps one action, and the
-  vent takes that action's heat with the rest; after two spends it has no reboot that turn. It
+- **The Quick-turn Avionics Relay** (the Needletail's passive): each round it has two
+  actions, one with a weapon and one with equipment (a buff or a debuff), in either order.
+  Spending an entry of a kind spends that kind's action, and every entry of that kind on its
+  die goes dark for the rest of the round (no cleanse lifts it), so no roll, reroll or turn
+  brings it back: its die rolls and rerolls onto the kinds it may still act with alone. While
+  the other kind's action is open its die turns to a lit entry of it and it acts again. One
+  entry to turn to is no draw: the die shows it in its passive box beforehand, and an undo
+  reaches past the turn; several are a draw among them. With no lit entry of the other kind it
+  has no second action, and a spend that is neither kind (a blank) ends its turn. A Rapid or
+  Instant spend uses neither action: it acts again by its own rule, onto the kinds still open,
+  so a Rapid piece is a free spend beside its two actions and an Instant one may come up again
+  and again, paying its own limit each time. Its second action may be its reboot (The reboot,
+  below): with at most one action spent and something spent this turn, whatever that left its
+  die, its die may go onto REBOOT, its reboot turn keeping that action, and the vent takes the
+  heat of what it spent with the rest; with both actions spent it has no reboot that turn. It
   is the machine's own rule and no keyword.
 - **Maverick's Playbook** (the Giant Petrel's passive): the team's rerolls unspent as the
   player's turn ends are banked, up to three, and come back at the next round's start beside
@@ -1093,8 +1098,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   turn: on the player's turn a machine that has spent nothing this turn may reboot, its die
   dragged onto REBOOT, the target in the middle of the bottom row. It is its whole turn: a
   machine that could act more than once, by Rapid, Instant or a grant, gives all of it up. The
-  one exception is the Needletail's Quick-turn Avionics Relay: one spend made, of any kind, it
-  may reboot as its second (above), the vent taking that spend's heat with the rest.
+  one exception is the Needletail's Quick-turn Avionics Relay: one of its two actions spent, it
+  may reboot as its second (above), the vent taking that action's heat with the rest.
 - At once its shield goes to nothing and its heat with it, Overheated's stacks too, and it is
   free to overheat again; it is Rebooting through the enemy's turn. As the next round opens,
   before the roll and before the foes pick, its shield is whole and Broken is gone. Heat laid
