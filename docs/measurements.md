@@ -11397,3 +11397,17 @@ purge. The squad with it pays twice what it did and near what the other pays: wh
 of the gap is the lantern and the Karma, which a Barrier still takes. So the Pilgrim's
 weight is the knife, damage a Barrier does not take, and its numbers stand. The elites'
 mean is 24.8% without the Barrier and 13.9% with it.
+
+## 18 November: the two pairs again, on every squad
+
+Ryan: "Agreed on pilgrim-only. which pairs?" The two this pass proposed, read again on the
+even draw, content edited for the read and put back; every squad of the pool, sixty fights
+a cell.
+
+| Boss | Without the Barrier, whole | A pair | With the Barrier basic, whole | A pair |
+|---|---|---|---|---|
+| The Mantis Ant, its Mandibles two strikes of 7 for one of 13 | 25.9% | 26.1% | 7.8% | 13.8% |
+| The Gargantuan King, its Gore two strikes of 6 for one of 11 | 31.6% | 33.4% | 23.1% | 27.4% |
+
+The five-squad read of the same pairs said the same: a pair costs the squad without the
+Barrier nothing and takes half the piece's edge.
