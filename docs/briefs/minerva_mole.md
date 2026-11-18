@@ -709,7 +709,28 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    on its rim, and on the cab gun's column. For each class's widest root to sit inside its housing,
    the guns are smaller: the blocks' and the top gun's at 0.6 (from 0.65 and 0.72), the cab's at
    0.55 (from 0.68). Rendered with each class on all four mounts through the burrow, level from both
-   sides: nothing shows outside the hull.
+   sides: nothing shows outside the hull. His notes on that, 18 November: "The portside gun ram
+   clips through the center body section. The cockpit side needs a cut out of the center body for it
+   to sit in when collapsed, or else be thinner itself. The gun mounts could be improved. The side
+   ones work ok, but the top and cockpit ones just look like two cylinders resting on each other, and
+   not like something that actually would hinge." So, the hangar's next version: the rear block
+   stood 1.4 inside the breech's flank and slid through it and its chamfer as it rose; it is 7.6
+   wide now (from 9.2), its inboard face a hair clear of the flank, the fore block beside the
+   narrower barrel as wide as it was. The cab sat 2.7 inside the breech and 1 inside the barrel
+   when seated; it sits in a dock now, cut out of the breech, its band and the barrel, 3.5 deep, its
+   rams' collars on the dock's back wall, stepped up where its gun's yoke stands on the seated cab
+   before it sinks, and under the chamfer vent's box. The top gun and the cab's gun tip on yokes: a
+   round plate on the mount, two cheek plates either side of the housing up to the pivot, a boss on
+   each and the trunnion's axle through them, capped. Through their ports, the yokes want the ports'
+   bore 4.25 (the top's from 3.7, the cab's from 3.4, the cab's port nearer its middle) and the guns
+   at 0.55 (the top's from 0.6); the top gun stands on its yoke's plate in the mouth, its drum gone.
+   Rendered with each class on all four mounts through the burrow, level from both sides: nothing
+   shows outside the hull. His question the same day: "Does the drill stay out after firing, and
+   return only on burrow?" By his rule (16 November: "It returns to the Mole when it burrows") it
+   does; the model's firing act still brings the tip home two seconds after it fires, a stand-in,
+   since nothing marks the Mole while its drill is out. The kit's session gives the Mole that mark,
+   and the model a form it holds while the mark is on, the bore empty, let go as it burrows so the
+   tip slides home as it digs.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike
