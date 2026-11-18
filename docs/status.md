@@ -311,16 +311,16 @@ with it, on his word. A page's link goes into this file in the same commit as it
 publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  The last publish known is v0.619 (17 November, from `ccr-178e0404-ptuh2m`); main's file is
-  v0.634 (18 November: the deaths' branch's rows, the Mole's and the Buzzard's, and the foes'
-  line's on the Barrier's place, how the leaders strike, a foe's adds on every strike and
-  the Pilgrim's step ahead of its blow), unpublished. Before republishing, read the live page; if another session moved it,
-  publish a three-way merge onto it row by row (`tools/pages/bible_merge.py`: BASE the last
-  publish both started from, OURS this branch's file, THEIRS the saved live source with the
-  tool's wrapper line, its trailing newline and `</body></html>` stripped). BASE is likely
-  the file of `a5e8c29`: check it against the live page byte for byte first. After main
-  merges in, check the tables script's run against the file's tables before keeping it: a
-  row it reverts belongs to a branch not yet landed.
+  Published at v0.634 on 18 November from main's file at `1383f11` (the page's Version 513),
+  every line of the file read first; the page it replaced was v0.564 of 13 November, the
+  file of `620c717`, an ancestor of main, so main's file went up whole. Before republishing,
+  read the live page; if another session moved it, publish a three-way merge onto it row by
+  row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
+  `1383f11` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  live source with the tool's wrapper line, its trailing newline and `</body></html>`
+  stripped): check BASE against the live page byte for byte first. After main merges in,
+  check the tables script's run against the file's tables before keeping it: a row it
+  reverts belongs to a branch not yet landed.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each live copy read first, with `edits`, `designs` and `text` read first. Main went up whole
