@@ -501,7 +501,7 @@
    "design": {
     "fantasy": "The larger cousin of the Kite, trades explosiveness for longevity. Wide downturned wings evoking a hovering predator, weapon mounts mounted under the wings. Double boosters mounted on top of the tail section (similar to an A10 warthog).",
     "niche": "A scavenger striker (Ryan, 18 November: \"Do the carrion-style\"): every foe that falls in its fight, whoever felled it, feeds its shield, and its guns spend the shield into their blows, a flat cost for a flat add where Empowered's goes, paid unasked when the shield holds it (11 November: \"Automatically paid\"), plain when it does not; its cannon fires the whole field. Its shield is its ammunition: keep it and live, or burn it into the shot. A lone boss feeds it nothing, its clear weakness.",
-    "notes": "Reworked 18 November on his calls of 11 and 18 November (its brief: git show 288de9a:docs/briefs/kestrel_buzzard.md; the bible's Buzzard row): the Thermal Recoupler's heat regen went, its last carrier, the Storm Petrel's hook having taken heat into shield; the fuel is carrion, 2 a fall (his \"I'd only give it 1 or 2 on death though, if the kills are coming from any source\"); a zap or the cannon may break its own shield (\"being able to break its own shield is fine\"). The stock: the Shoring Jack's slot to a Barrier piece (\"It should have a barrier piece instad of an armour piece\"): the Blast Door, Minerva's tier-one Barrier at cooldown 1, the session's pick over the basic Halo Projector, which prints the same; the Overclocked Railgun's to a lesser warm gun (\"It has a big spend with the cannon, so the railgun can be another, lesser, warm gun\"), the Laser Carbine. Its branches are his (one step a direction at tier two). Numbers are placeholders."
+    "notes": "Reworked 18 November on his calls of 11 and 18 November (its brief: git show 288de9a:docs/briefs/kestrel_buzzard.md; the bible's Buzzard row): the Thermal Recoupler's heat regen went, its last carrier, the Storm Petrel's hook having taken heat into shield; the fuel is carrion, 2 a fall (his \"I'd only give it 1 or 2 on death though, if the kills are coming from any source\"); a zap or the cannon may break its own shield (\"being able to break its own shield is fine\"). The stock: the Shoring Jack's slot to a Barrier piece (\"It should have a barrier piece instad of an armour piece\"): the Blast Door, Minerva's tier-one Barrier at cooldown 1, the session's pick over the basic Halo Projector, which prints the same; the Overclocked Railgun's to a lesser warm gun (\"It has a big spend with the cannon, so the railgun can be another, lesser, warm gun\"), the Laser Carbine. Its branches are his (one step a direction at tier two). The passive's name is his, the same day (\"The passive name needs to fit the damage-add more than the recovery portion\"; \"Field-Recoupling Injectors\"), its line leading with the zap to match. Numbers are placeholders."
    },
    "codex": "",
    "hull": 28,
@@ -526,9 +526,9 @@
     "twin_autoguns"
    ],
    "passive": {
-    "id": "carrion_recoupler",
-    "name": "Carrion Recoupler",
-    "description": "Every foe that falls in its fight gives the Buzzard 2 shield. Each weapon it fires pays 2 shield, when it holds that much, for +2 on its every blow.",
+    "id": "field_recoupling_injectors",
+    "name": "Field-Recoupling Injectors",
+    "description": "Each weapon the Buzzard fires pays 2 shield, when it holds that much, for +2 on its every blow. Every foe that falls in its fight gives it 2 shield.",
     "effects": [
      {
       "trigger": "on_foe_killed",
