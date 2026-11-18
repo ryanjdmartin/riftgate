@@ -35,9 +35,50 @@ and the cruiser could be the two tier 3s, one the capstone treaded unit, one the
 that it seems like every maker is going to end up getting."
 
 What it settles: two locked turrets, front and rear, the rear superfiring over the front; four
-hardpoints, the gimbaled mounts on the four armoured panels; the slowest machine in the game;
-the turrets' balance is a charge that asks when, never a cooldown that asks how often; no charge
-from shields spent on it.
+hardpoints, whose place is open again and which need not swivel (his note of 15 November on the
+first look test, below; the pitch had them gimbaled on the four armoured panels); the slowest
+machine in the game; the turrets' balance is a charge that asks when, never a cooldown that asks
+how often; no charge from shields spent on it.
+
+**The look tests** (15 November, on his ask of that day for the chassis with a direction: "let's
+see what you come up with for all of these. Doesn't have to be too detailed since none are
+finalized"; built by `tools/lowforge/looks/siege_looks.py`, never content until the chassis
+lands). The first round (`docs/looks/minerva_siege.png`) drew the pitch as he wrote it: four
+track pods at the corners, each under a bevelled armoured panel, a hull slung between them that
+stops short of the pods at both ends, so from above the pods stand proud as the letter's
+strokes; a twin-gun turret on each of two decks, the rear one's guns lying over the front one's
+roof; a gimbal on each panel. About 168 wide and 216 long over the tracks (257 with the guns),
+roughly 2.2 times the Wild Boar's width and 2.8 times its length. To clear the gimbals the front
+deck stood at 48 over tread tops of 32, and the rear at 72.
+
+His read of it, the same day: "H tank - detail is good, the body is too high for the treads. I
+get that you're trying to clear the mounts on top of the treads, and I didn't think of that when
+I dictated it. Maybe they need to go somewhere else, not sure where. Don't necessarily need to
+be able to swivel, so that could help."
+
+The second round (`docs/looks/minerva_siege2.png`, the module's `SHEET2`) sits the hull down
+between its treads: the low deck at 35, a lip over the panels' tops, and the high deck at 54,
+the floor while the rear guns lie over the front turret's roof (they clear it by 2); the
+turrets a little flatter, the rear roof at 74 where it was 94. The mounts are fixed, the whole
+tank turning to aim as tracks do, in three places for his pick:
+
+- **A, on the pods' flanks**: a sponson on each pod's outer flank, the rear pair hung higher so
+  they fire over the front pair; any class at full size; about 20 wider, 190 across.
+- **B, low on the panels**: a low hood at each front panel's outer front corner and a canted
+  cradle at each rear panel's outer rear corner; the hoods sit under the front guns' sweep, so a
+  twin, a rack or a dish there is at seven tenths of its size.
+- **C, in the hull**: a port in each corner of the nose plate and a casemate on each shoulder of
+  the high deck (no room was left aft of the rear turret).
+
+Claude's pick is B: nearest his pitch, the mounts show from above and from behind, and it adds
+no width. A row sets B beside the Wild Boar at one scale and a row keeps round one for the
+height. Claude's choices where his words were silent, each his to change: a rangefinder bar
+with lit ends on the rear turret's roof (the front turret lost its bar to the rear guns, its
+cupola and sight moved outboard), a visor slit on the glacis as the cab, the engine's grille and
+two stacks at the tail, ladders, olive skirts and hazard tips. The turrets are built by hand as
+locked pieces and take no pin. His to judge: whether the rear half is still too tall, since
+superfiring sets its floor; A's width and its low front boxes among the road wheels; C's bow
+guns under the main guns; the front guns' overhang, about 41 past the tracks.
 
 ## How it got here
 
@@ -187,8 +228,11 @@ weapon's keywords and number by steps, which is the new piece.
 3. The passive: ~~Ryan's "Massive Chassis: terrain penalties don't apply", its worth at the
    slowest move~~ no penalties remain (the movement proposal, 28 October: ground is ground and
    water the one priced hex); the charge as the passive stands.
-4. Its size: gargantuan, drawn bigger than the assault class (the Carrier's question too).
+4. Its size: gargantuan, drawn bigger than the assault class (the Carrier's question too); the
+   look tests of 15 November draw it at 168 by 216, beside the Wild Boar.
 5. Its numbers and its way of moving.
+6. Its look: where its four fixed mounts go, from the second round's three (15 November), and
+   whether the rear half still stands too tall; or another round.
 
 ## What the session hands back
 

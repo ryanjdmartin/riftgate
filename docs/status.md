@@ -25,10 +25,8 @@ document's job and every command are in `README.md`.
   it is no leftover to cut while its piece is written.
 - **A reboot's heat goes as its shield drops.** It vents at once, its turn has nothing to
   burn, the shield is back as the next round opens, and heat laid on the machine after the
-  vent stays. Another session's branch, `ccr-c1cf6f73-ql6n4q` (commits `d26e462` and
-  `beaa206`), carries the ruling this replaced, that the reboot's turn burns all the same.
-  Whoever merges it keeps main's side: the burn in `sim/skirmish.gd`, the rules' END TURN, the
-  brief's line 8, the Rebooting term and `tests/test_reboot.gd`.
+  vent stays. The ruling it replaced, that the reboot's turn burns all the same, came in on
+  `ccr-c1cf6f73-ql6n4q` and was dropped as that branch landed, main's side kept.
 - **The vocabulary moved on 15 and 16 November.** Burn is Ablate; Flak and Crushed are
   Brittle; Breach, Splash, Silence, Overshield, Retaliate and Rallied are cut; every status
   ends on one of four clocks (the rules' When a status ends). `docs/vocabulary.md` is the
@@ -46,11 +44,13 @@ document's job and every command are in `README.md`.
   a branch: the desk machine's folder stays on `main`, and a session that needs another branch
   works in a worktree under `.claude/worktrees/` (`CLAUDE.md`, Session handoff). A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word.
-- Branches. Main holds everything this file describes. Not on main: `ccr-c1cf6f73-ql6n4q`
-  (above), and `claude/gameplay-terminology-tooltips-rug879`, a remote branch whose commits
-  were unread when this file was written: read it before taking main for the whole of the
-  work. `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on
-  18 November on Ryan's "You're good to clean up and merge into main". A session's hangar
+- Branches. Main holds everything this file describes. Not on main:
+  `claude/gameplay-terminology-tooltips-rug879`, a remote branch whose commits were unread
+  when this file was written: read it before taking main for the whole of the work.
+  `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
+  November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
+  (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks
+  great. Lets land it". A session's hangar
   publish runs ahead of main (Pages).
   Every other branch on GitHub but the lines' own working branches is merged and to delete
   (`git push origin --delete`, then `git fetch --prune`); a cloud session may not delete one.
@@ -63,8 +63,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1310 tests, 375,444 checks, green on `ccr-722ca9f0-yj8na3` (18 November, tier one's
-  elites and bosses sized, over main at `288de9a`). The runner fails a run whose tests never ran, so read the checks' count, never
+- Tests: 1311 tests, 376,766 checks, green on `ccr-722ca9f0-yj8na3` (18 November, the anchor
+  on every squad and the Reaper's sweep, over main at `ec5fb7b`). The runner fails a run whose tests never ran, so read the checks' count, never
   the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
   purpose. About four minutes in a cloud session; words after `--` run only the files whose
   names hold one (`-- loot rig`).
@@ -119,11 +119,11 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   for an aim and the term Immune are a session's drafts for Ryan's codex and terminology
   pass. No foe number is sized for the reboot (The numbers, below). Detail: the rules' Foes;
   the bible's rows on the foes' rule set, targeting, Exposed and Phased.
-- **The machines.** Five makers and 24 chassis, 22 of them dealt (nine at tier one, nine at
-  two, four at three); the Puffin and the Swallowtail are back in design, undealt
-  (`"status": "planned"`), a brief each. 87 components, 14 of them planned drafts nothing
+- **The machines.** Five makers and 25 chassis, 22 of them dealt (nine at tier one, nine at
+  two, four at three); the Puffin and the Swallowtail are back in design and the Mole is a
+  planned draft with its model, all three undealt (`"status": "planned"`), a brief each. 88 components, 15 of them planned drafts nothing
   deals (the slottable shields and vents, the Gravity Knuckles and the Tesla Gauntlets, the
-  Retribution Thurible, the Solar Flare Array); 20 modules. A stock die is basics beside its
+  Retribution Thurible, the Solar Flare Array, the Mole's Inertia Drill); 20 modules. A stock die is basics beside its
   locked pieces: the basic guns deal 3 for 4 heat and the Laser Carbine 4 for 5, the Halo
   Projector lays a Barrier and the Shoring Jack Armoured 2, and every piece that grants a
   Barrier sits out a round after. A machine moves 3 to 6 hexes. A machine holds a tier, and
@@ -141,7 +141,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Lammergeier, the Wild Boar, the Baboon, the Stingray. The Giant Petrel's kit, the Musk Ox
   and the gunship are unfinished by his own notes. Four tier ones a maker (4-4-2) is his lean
   (the refit brief's section 13); the six certain ones are the Honey Badger, the Skua, the
-  Storm Petrel, the Prairie Dog, the Cassowary and the Cottonmouth. The designs still to come
+  Storm Petrel, the Prairie Dog, the Cassowary and the Cottonmouth, and Minerva's four are his
+  (16 November: the Honey Badger, the Wild Boar, the Mole and the lure tank), so the Polar
+  Bear is tier two in content and the Wild Boar tier one, its numbers still its tier two's. The designs still to come
   are briefs: `docs/briefs/README.md` says what each waits on.
 - **The numbers.** Tier one alone is tuned (Ryan, 11 November), on the anchor: the second
   battle, four tier ones against a tier-one rift. The hull budget is a formation's fight a
@@ -221,7 +223,12 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   (the bible's death row; `tools/death_floor.gd` reads each). Ryan has passed the Nemesis's
   kneel, the Clydesdale's face-plant, the Funnel-web, the Cassowary, the Whip Scorpion and the
   Ammit; the rest wait on his read, and some still cross parts as they lie (the to-do). The
-  Cottonmouth fires every weapon from its drum.
+  Cottonmouth fires every weapon from its drum. The Honey Badger and the Wild Boar wear
+  Minerva's vent, the Polar Bear's (16 and 17 November). The Mole is a model, its look his
+  ("looks great", 18 November; the brief's look item), with two status forms, Burrowed and
+  Drill Out: a form may let others go as it is held (`releases`), as the statuses would end, so
+  a burrow docks a drill that is out. Look tests of six chassis are stills in `docs/looks/`, their
+  choices in their briefs, never content.
 - **Audio.** Three pairs play in the game (Hold The Line, Night Shift, The Far Bank;
   `Sound.PAIRS`): a battle picks one as it starts and loops it, the map half on the field and
   the battle half in a fight. Low Ground, The Crossing and Full Bore play nowhere until their
@@ -300,7 +307,7 @@ publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   The last publish known is v0.619 (17 November, from `ccr-178e0404-ptuh2m`); main's file is
-  v0.627 (the deaths' branch's rows with it, 18 November), unpublished. Before republishing, read the live page; if another session moved it,
+  v0.631 (the deaths' branch's rows and the Mole's branch's with it, 18 November), unpublished. Before republishing, read the live page; if another session moved it,
   publish a three-way merge onto it row by row (`tools/pages/bible_merge.py`: BASE the last
   publish both started from, OURS this branch's file, THEIRS the saved live source with the
   tool's wrapper line, its trailing newline and `</body></html>` stripped). BASE is likely
@@ -310,17 +317,11 @@ publish; the commands are in `README.md`.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each live copy read first, with `edits`, `designs` and `text` read first. Main went up whole
-  last at Version 280 (15 November, `4514a2c`). Since then the deaths' branch sent its death
-  files round by round, the last its Version 297 (17 November): `motion.js` and every
-  machine's sidecar, which match main byte for byte since it landed, but the Storm Petrel's;
-  other sessions' publishes between were kept, and the Mole's session published after it
-  (the live version on 18 November, its Mole model, rig and chassis). **The rest of main is
-  not up**: the live `content/chassis.json` and `components.json` carry a Mole chassis and
-  an Inertia Drill that main does not, from that session's publishes ahead of main, so a
-  publish from main would drop them. The next one keeps those entries or waits for that
-  branch to land; until then the Text tab lacks the Storm Petrel's and the foes' newest
-  texts, and the Storm Petrel's sidecar waits with them (main's fires `hardlight_pulse`; the
-  live one fires `st_elmos_regenerator`, the id the live content still has).
+  at Version 306 (18 November, `aeeed09`, the Mole's branch landed): every file of the map
+  checked against the live copy by hash, and the fifteen that differed sent (the content, the
+  Designs and Text inventories, the pins and foes manifests, the Goblin Warchief's sprite, the
+  Storm Petrel's sidecar, and the Badger's and the Wild Boar's models and sidecars with their
+  Minervan vents). The page itself was unchanged.
   `build/hangar/designs.json` is one 795 KB line: write it indented before reading it whole.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their

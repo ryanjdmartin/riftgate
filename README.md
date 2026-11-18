@@ -499,6 +499,11 @@ godot --path . --resolution 360x640 --position 2000,2000 -s tools/fit_sheet.gd -
 # set yaw and pitch, then its art/models/ files deleted again
 $BPY_PYTHON tools/lowforge/looks/build_look.py -- --model wslook_deck --out art/models/wslook_deck.glb --tiles /tmp/tiles
 godot --path . --resolution 360x640 -s tools/lowforge/looks/look_shot.gd -- wslook_deck wainwright_sutler deck.png 180 75 520 520
+# a look round's sheet in one command (15 November): each model a look module's SHEET names is built, imported and rendered at
+# each view it lists, laid out under its labels into the module's sheet under docs/looks/, and the built models deleted again; a
+# new round is a new file in that folder (its LOOKS and its SHEET), found by build_look.py itself. --project <a copy of the
+# project> builds, imports and renders there, so several rounds built side by side never meet in one import
+$BPY_PYTHON tools/lowforge/looks/sheet.py siege_looks
 
 # the map tokens and the contact sheet from the grids in docs/sprites-enemies.html into art/foes, then the import
 tools/spriter/.venv/bin/python tools/sheet_export.py

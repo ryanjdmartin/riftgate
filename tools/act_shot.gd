@@ -11,7 +11,13 @@ extends SceneTree
 ## into a straight run at its full speed on the map (its stride); "lose" that many seconds after
 ## it is lost (MechView3D.lose: its lights out and its slump). RIFTGATE_FORM=<name> holds
 ## that form first, all the way in, so the act is one of its own (the sealed Polar Bear's) or
-## "-" its held pose. An act of "fire:<component>" fires that weapon (MechView3D.strike: a fixed one
+## "-" its held pose; RIFTGATE_FORM_AT=<seconds> stops it that far into its turn instead, to see
+## a frame of the form going in (the Mole's burrow); RIFTGATE_FORM_FIRST=<name> holds that form all the way in
+## before it, so the frame shows one form letting another go (the Mole's burrow docking its drill
+## out of Drill Out). RIFTGATE_FIT="1:rivet_gun,2:shotfire_rack" hangs
+## those components' classes on the mounts in place of the stock parts, as tools/hero_shot.gd does,
+## to see a swap through an act or a form (a machine whose guns stow). RIFTGATE_PITCH=<degrees> tilts
+## the camera down that far in place of the view's own (0 level, to see under a machine). An act of "fire:<component>" fires that weapon (MechView3D.strike: a fixed one
 ## with its act's slice and what it fires out of the machine, lowforge's launches) and renders it that
 ## many seconds on. Needs a window (xvfb-run does, on a Linux box).
 
@@ -35,13 +41,23 @@ func _init() -> void:
 	if args.size() >= 7 and args[6].contains("x"):
 		frame = Vector2i(int(args[6].get_slice("x", 0)), int(args[6].get_slice("x", 1)))
 	_out = args[4]
-	_view = MechView3D.make(args[0], args[1], "clean", "badger", yaw, frame, false, {}, [])
+	var fit := OS.get_environment("RIFTGATE_FIT")
+	var plan: Array = MechView3D.plan_from_spec(fit, ContentDB.load_default()) if not fit.is_empty() else []
+	_view = MechView3D.make(args[0], args[1], "clean", "badger", yaw, frame, false, {}, plan)
+	var pitch := OS.get_environment("RIFTGATE_PITCH")
+	if pitch.is_valid_float():
+		_view.pitch = float(pitch)   # framed as it enters the tree
 	root.add_child(_view)
 	_view.set_process(false)
+	var first := OS.get_environment("RIFTGATE_FORM_FIRST")
+	if not first.is_empty():
+		_view.rig.set_form(first, true)
+		_view.rig.tick(float(_view.rig.forms.get(first, {}).get("duration", 1.0)) + 0.05)
 	var form := OS.get_environment("RIFTGATE_FORM")
 	if not form.is_empty():
 		_view.rig.set_form(form, true)
-		_view.rig.tick(float(_view.rig.forms.get(form, {}).get("duration", 1.0)) + 0.05)
+		var at := OS.get_environment("RIFTGATE_FORM_AT")
+		_view.rig.tick(float(at) if at.is_valid_float() else float(_view.rig.forms.get(form, {}).get("duration", 1.0)) + 0.05)
 	if args[2] == "gait":
 		# Under way at its own full speed on the map for that long, frame by frame: a stride's pose.
 		var t := 0.0
