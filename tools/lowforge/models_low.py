@@ -1732,19 +1732,21 @@ MOLE_FOOT = 20.5 * MOLE_GROW                        # the cowl's foot across, th
 MOLE_SEAT = MOLE_TH + 2.5                           # the skirts' tops, which the cab and the blocks stand on
 MOLE_PIECE_W, MOLE_CAB_H = 7.75, 10.5               # the cab's width and height: burrowed, flush with the cowl's foot and a hair off the breech's flank (Ryan, 18 November, on Version 302: "I'd also rather make the whole cockpit area thinner instead of cutting out of the main body")
 MOLE_CAB_X = (MOLE_FOOT - MOLE_PIECE_W / 2.0, 24.7) # the cab's centre across: burrowed, flush with the cowl's foot; out of the burrow, its slit just clear of the ring head on
-MOLE_CAB_Y, MOLE_CAB_RAKE = (-27.0, -14.0), 1.11    # its back and front along y, the breech's length, so no gap opens beside it burrowed; its face's rake, up over along
-MOLE_CAB_RAMS = (-24.0, -17.0)                      # its rams along y, out of the breech's flank
+MOLE_CAB_Y, MOLE_CAB_RAKE, MOLE_CAB_FACE = (-30.0, -10.0), 1.1, 5.5   # its back and front along y (Ryan, 18 November, on Version 303: "Make the cab longer again"); its face's rake, up over along, and how far it falls
+MOLE_CAB_RAMS = (-25.0, -13.0)                      # its rams along y, out of the hull's flank
+MOLE_FLANK = 14.0 * MOLE_GROW                       # the breech's flank across: the cab and the rear block seat a hair off it, and fairings carry it on beside the engine deck and the barrel so no gap opens at their ends burrowed
 MOLE_BLOCK_X, MOLE_BLOCK_H = (-15.4, -MOLE_FOOT), 10.5   # the port blocks' inboard and outboard faces, flush with the cowl's foot, and their height, a port in each's outboard face its gun stands just out of
 MOLE_REAR_IN = -17.0                                # the rear block's inboard face, a hair clear of the breech's flank it rises beside
 MOLE_RISE = 9.6                                     # out of the burrow, how far the rear block stands up on its rams, its forward gun's line clear over the fore block
 MOLE_RAM_R, MOLE_RAM_L = 1.3, 7.0                   # the rams', the cab's and the rear block's: their rods' radius, and the cab's rods' length
-MOLE_BLOCK_RAMS, MOLE_BLOCK_ROD = (-29.5, -18.5), 10.7   # the rear block's two rams along y under its middle, and their rods' length, inside their collars at the check's top
+MOLE_BLOCK_RAMS, MOLE_BLOCK_ROD = (-28.5, -18.5), 10.7   # the rear block's two rams along y under its middle, and their rods' length, inside their collars at the check's top
+MOLE_REAR_Y, MOLE_FORE_Y = (-32.0, -14.0), (-13.95, -1.95)   # the port blocks along y: the rear one's back at the skirt's end (on Version 303: "The aft port gun block is too long in the back, its overhanging the tread and it doesn't need to"), the fore one flush against its front ("The forward port gun block can move back so it ends up flush against the rear block")
 MOLE_CHECK = 2.0                                    # the ram check: how far the rear block runs up past its rest and back
 MOLE_FORE_S, MOLE_REAR_S = 0.55, 0.45               # the port blocks' guns' scales: the fore one's on its yoke, the rear one's in its front port, short enough to run back into the block
 MOLE_SIDE_R, MOLE_SIDE_WELL = 4.2, 3.0              # the fore block's side port's bore (its gun's yoke through it) and a port's floor in from its face
 MOLE_SIDE_ARM, MOLE_SIDE_RUN, MOLE_ROLL_OUT = 4.6, 30.3, -90.0            # how far out of its port the fore block's arm stands, its gun's yoke on its end; how far it runs in burrowing, the gun pointing out of the port (the longest port model's muzzle behind the iris's rest); the roll that points it out
-MOLE_REAR_PORT = (2.4, 19.2)                        # the rear block's front port: its bore, and how far its gun runs back into the block burrowing, the longest's muzzle behind the iris's rest
-MOLE_CAB_PORT = (0.0, -23.25, 3.25, 0.41)           # the cab's roof port: how far outboard of the cab's centre, along y, its bore (its gun's yoke through it), its gun's scale
+MOLE_REAR_PORT = (2.4, 17.1, 1.2)                   # the rear block's front port: its bore, how far its gun runs back into the block burrowing (the longest's muzzle behind the iris's rest, its root inside the block's back), and its well's floor in from the face, shallow so the iris rests close
+MOLE_CAB_PORT = (0.0, -25.0, 3.25, 0.41)            # the cab's roof port: how far outboard of the cab's centre, along y, its bore (its gun's yoke through it, the cab's width allowing no more), its gun's scale
 MOLE_HOUSING = (1.0, 1.6)                           # a port gun's housing on its mount: how far behind its pin and before it
 MOLE_PORT_WELL = 3.0                                # a roof port's floor under its rim's top
 MOLE_PORT_FITS = {"barrel": "barrel_port", "rack": "rack_port", "twin_barrel": "twin_barrel_round", "dish": "dish_port"}   # every class in its port form
@@ -1968,18 +1970,19 @@ def _mole_front_port(b, tag, hp, x, z, y_face, body, shape, carries):
     """The rear block's gun in an irised port in its front face (Ryan, 18 November, on Version 302:
     "for the front-rear port, maybe the port should be on the front of the rising section instead of
     the side, it looks like it clears the drill well enough to me"): a stripe rim round a round mouth
-    MOLE_REAR_PORT[0] across centred at (`x`, `z`) on the face at `y_face`, a dark well
-    MOLE_SIDE_WELL in, cut into `body`, the iris plug resting behind the well's floor (shutter_<tag>),
+    MOLE_REAR_PORT[0] across centred at (`x`, `z`) on the face at `y_face`, sunk flush, a dark well
+    MOLE_REAR_PORT[2] in, cut into `body`, the iris plug resting behind the well's floor (shutter_<tag>),
     and the gun's root in the well, any class in its port form at MOLE_REAR_S, as a port gun sits in
     its port, on a slide along the machine (run_<tag>). Burrowing, it runs straight back into the
     block, its muzzle behind the iris's rest, and the iris shuts. Returns the iris's joint and its
     slide home."""
-    r, axis = MOLE_REAR_PORT[0], (0.0, 1.0, 0.0)
-    floor = y_face - MOLE_SIDE_WELL
-    b.cut([body], (x, floor - 0.3, z), (x, y_face, z), r + 0.1, 12)
+    r, axis, well = MOLE_REAR_PORT[0], (0.0, 1.0, 0.0), MOLE_REAR_PORT[2]
+    floor = y_face - well
+    b.cut([body], (x, floor - 0.3, z), (x, y_face + 0.1, z), r + 0.1, 12)
     _tube(b, (x, floor - 0.3, z), (x, y_face, z), r + 0.15, r, 12, "steel.dark", tag + "_port", floor_depth=0.3)
-    _tube(b, (x, y_face - 0.1, z), (x, y_face + 0.5, z), r + 0.8, r, 12, "steel.stripe", tag + "_port_rim", floor=False)
-    iris = _plug(b, tag, (x, y_face - 0.45, z), axis, r + 0.05, MOLE_SIDE_WELL + 0.75)
+    b.cut([body], (x, y_face - 0.35, z), (x, y_face + 0.1, z), r + 0.85, 12)   # the rim sunk flush, so the fore block can stand against the face
+    _tube(b, (x, y_face - 0.35, z), (x, y_face - 0.02, z), r + 0.8, r, 12, "steel.stripe", tag + "_port_rim", floor=False)
+    iris = _plug(b, tag, (x, y_face - 0.45, z), axis, r + 0.05, well + 0.75)
     socket = (x, y_face - 0.5, z)
     with b.joint("run_" + tag, socket, slide=axis):
         b.stock(hp, socket, shape, scale=MOLE_REAR_S, carries=carries, fits=MOLE_PORT_FITS)
@@ -2001,17 +2004,20 @@ def _mole_blocks(b):
     x0, x1, h = MOLE_BLOCK_X[1], MOLE_REAR_IN, MOLE_BLOCK_H
     zr = MOLE_SEAT + MOLE_RISE
     xm = (x0 + x1) / 2.0
-    with b.joint("sponson_deploy", (xm, -24.0, zr)):
-        body = b.box(x0, x1, -34.0, -14.0, zr, zr + h, "steel.panel", "sponson")
-        b.box(x0 - 0.4, x1 + 0.3, -17.4, -16.0, zr + h - 0.6, zr + h + 0.3, "steel.stripe", "sponson_band")
-        rear = _mole_front_port(b, "aft", "hp_2", xm, zr + h / 2.0, -14.0, body, "barrel", "slugthrower")
+    yb, yf = MOLE_REAR_Y
+    with b.joint("sponson_deploy", (xm, (yb + yf) / 2.0, zr)):
+        body = b.box(x0, x1, yb, yf, zr, zr + h, "steel.panel", "sponson")
+        band = b.box(x0 - 0.4, x1 + 0.3, -17.4, -16.0, zr + h - 0.6, zr + h + 0.3, "steel.stripe", "sponson_band")
+        b.cut_box([body, band], x1 - 0.45, x1 + 0.5, -15.7, yf + 0.1, zr - 0.5, zr + h + 1.0)   # its inboard front corner notched for the breech's band, which stands 0.4 proud of its flank
+        rear = _mole_front_port(b, "aft", "hp_2", xm, zr + h / 2.0, yf, body, "barrel", "slugthrower")
         for y in MOLE_BLOCK_RAMS:   # its rams, the cab's rods, the hazard band just under the block
             _beam(b, (xm, y, zr - MOLE_BLOCK_ROD), (xm, y, zr + 0.5), _poly(MOLE_RAM_R, 8), _poly(MOLE_RAM_R, 8), "steel.plate", "ram")
             _beam(b, (xm, y, zr - 1.4), (xm, y, zr - 0.5), _poly(MOLE_RAM_R + 0.25, 8), _poly(MOLE_RAM_R + 0.25, 8), "steel.hazard", "ram_band")
     x1 = MOLE_BLOCK_X[0]   # the fore block, beside the narrower barrel, as wide as it was
-    body = b.box(x0, x1, -12.0, 0.0, MOLE_SEAT, MOLE_SEAT + h, "steel.panel", "fore_box")
-    b.box(x0 - 0.4, x1 + 0.4, -3.4, -2.0, MOLE_SEAT + h - 0.6, MOLE_SEAT + h + 0.3, "steel.stripe", "fore_box_band")
-    fore = _mole_fore_mount(b, "hp_3", -6.0, MOLE_SEAT + h / 2.0, body)
+    fb, ff = MOLE_FORE_Y
+    body = b.box(x0, x1, fb, ff, MOLE_SEAT, MOLE_SEAT + h, "steel.panel", "fore_box")
+    b.box(x0 - 0.4, x1 + 0.4, ff - 3.4, ff - 2.0, MOLE_SEAT + h - 0.6, MOLE_SEAT + h + 0.3, "steel.stripe", "fore_box_band")
+    fore = _mole_fore_mount(b, "hp_3", (fb + ff) / 2.0, MOLE_SEAT + h / 2.0, body)
     for y in MOLE_BLOCK_RAMS:   # the rams' collars on the bay's floor, under the block when it sits
         _beam(b, (xm, y, MOLE_DECK - 0.2), (xm, y, MOLE_DECK + 1.2), _poly(MOLE_RAM_R + 0.6, 8), _poly(MOLE_RAM_R + 0.6, 8), "steel.dark", "ram_collar")
     return rear, fore
@@ -2087,44 +2093,45 @@ def _mole_cab(b):
     of the burrow: run out level from its seat just far enough that head on its slit clears the ring
     (Ryan, 18 November: "The cockpit section should tuck in horizontally more so that it ends up flush
     with the cowl, and it only needs to extend in the horizontal direction"), seated burrowed flush
-    with the cowl's foot and a hair off the breech's flank, as long as the breech, so no gap opens
-    beside it (on Version 302: "There shouldn't be any gaps when burrowed. I'd also rather make the
-    whole cockpit area thinner instead of cutting out of the main body, shrinking the cockpit gun
-    smaller if we have to"), a notch in its inboard front corner for the breech's band: a sealed
+    with the cowl's foot and a hair off the hull's flank, the breech's and the fairings' that carry
+    it on beside the engine deck and the barrel, so no gap opens beside it (on Version 302: "There
+    shouldn't be any gaps when burrowed. I'd also rather make the whole cockpit area thinner instead
+    of cutting out of the main body, shrinking the cockpit gun smaller if we have to"; on Version
+    303, "Make the cab longer again"), a notch in its inboard side for the breech's band: a sealed
     cupola raked at its face under a peaked brow, a flange on the face's outboard side, a slit and a
     floodlight under it, the slit's shutter up under the brow like a raised visor (shutter), two
     periscopes on the brow (periscopes), the gun on a narrow yoke on its column in an irised port in
     the roof behind the brow, its class in its port form at MOLE_CAB_PORT[3]; and two short rams out
-    of the breech's flank under its inboard side. Returns its port's iris."""
+    of the hull's flank under its inboard side. Returns its port's iris."""
     w = MOLE_PIECE_W
     cx, z0 = MOLE_CAB_X[1], MOLE_SEAT
     top, hw = z0 + MOLE_CAB_H, w / 2.0
     yb, yf = MOLE_CAB_Y
-    k = MOLE_CAB_RAKE
-    yr = yf - 5.0 / k   # where the raked face meets the roof
+    k, fall = MOLE_CAB_RAKE, MOLE_CAB_FACE
+    yr = yf - fall / k   # where the raked face meets the roof
     with b.joint("cab_deploy", (cx, (yb + yf) / 2.0, z0)):
-        body = b.loft([(yb, rect(cx, w, z0, top)), (yr, rect(cx, w, z0, top)), (yf, rect(cx, w, z0, top - 5.0))], "steel.panel", "cab")
-        brow = b.loft([(yr - 1.0, rect(cx + 0.25, w + 0.5, top - 0.8, top + 1.4)), (yr + 2.0, rect(cx + 0.25, w + 0.5, top - 0.2, top + 3.0)),
-                       (yf + 0.4, rect(cx + 0.25, w + 0.5, top - 1.2, top + 0.6))], "steel.plate", "brow")
-        lip = b.box(cx - hw, cx + hw + 0.5, yf - 0.1, yf + 0.7, top - 1.6, top - 0.5, "steel.stripe", "brow_lip")
-        b.box(cx + hw, cx + hw + 0.6, yr + 1.0, yf + 0.4, z0 + 4.0, top - 0.8, "steel.plate", "cab_flange")   # the face's outboard flange, under the brow's end
+        body = b.loft([(yb, rect(cx, w, z0, top)), (yr, rect(cx, w, z0, top)), (yf, rect(cx, w, z0, top - fall))], "steel.panel", "cab")
+        brow = b.loft([(yr - 3.0, rect(cx + 0.25, w + 0.5, top - 0.8, top + 1.4)), (yr + 1.5, rect(cx + 0.25, w + 0.5, top - 0.2, top + 3.0)),
+                       (yf + 0.8, rect(cx + 0.25, w + 0.5, top - 1.2, top + 0.6))], "steel.plate", "brow")
+        lip = b.box(cx - hw, cx + hw + 0.5, yf - 0.2, yf + 1.0, top - 1.6, top - 0.5, "steel.stripe", "brow_lip")
+        b.box(cx + hw, cx + hw + 0.6, yr + 1.0, yf + 0.8, z0 + 4.0, top - 0.8, "steel.plate", "cab_flange")   # the face's outboard flange, under the brow's end
         # The notch for the breech's band (its flank 0.4 proud of the breech's), the cab seated.
-        b.cut_box([body, brow, lip], cx - hw - 0.1, cx - hw + 0.45, -15.7, yf + 1.0, z0 - 0.5, top + 4.0)
+        b.cut_box([body, brow], cx - hw - 0.1, cx - hw + 0.45, -15.7, -13.9, z0 - 0.5, top + 4.0)
         # The raked face: z = top - k (y - yr) from yr to the front; the slit just under the brow.
         face_n = Vector((0.0, k, 1.0)).normalized()
         on = lambda x, z, lift: tuple(Vector((x, yr + (top - z) / k, z)) + face_n * lift)
         x0, x1 = cx - 1.6, cx + 2.2
-        _slab(b, [on(x0 - 0.8, top - 4.9, 0.12), on(x1 + 0.8, top - 4.9, 0.12), on(x1 + 0.8, top - 2.8, 0.12), on(x0 - 0.8, top - 2.8, 0.12)], tuple(face_n), 0.3, "steel.dark", "slit_frame")
-        _slab(b, [on(x0, top - 4.6, 0.3), on(x1, top - 4.6, 0.3), on(x1, top - 3.2, 0.3), on(x0, top - 3.2, 0.3)], tuple(face_n), 0.4, "glass.glass", "vision_slit")
-        b.box(cx - 3.0, cx - 1.0, yf - 0.05, yf + 0.6, top - 7.3, top - 5.7, "amber.light", "floodlight")
+        _slab(b, [on(x0 - 0.8, top - 5.4, 0.12), on(x1 + 0.8, top - 5.4, 0.12), on(x1 + 0.8, top - 3.1, 0.12), on(x0 - 0.8, top - 3.1, 0.12)], tuple(face_n), 0.3, "steel.dark", "slit_frame")
+        _slab(b, [on(x0, top - 5.1, 0.3), on(x1, top - 5.1, 0.3), on(x1, top - 3.6, 0.3), on(x0, top - 3.6, 0.3)], tuple(face_n), 0.4, "glass.glass", "vision_slit")
+        b.box(cx - 3.0, cx - 1.0, yf - 0.05, yf + 0.6, top - 7.8, top - 6.2, "amber.light", "floodlight")
         up = lambda x, z, lift: on(x, z + MOLE_SHUTTER, lift)
-        with b.joint("shutter", (cx, yr + 2.0, top - 2.0)):
-            _slab(b, [up(x0 - 1.0, top - 4.95, 0.6), up(x1 + 1.0, top - 4.95, 0.6), up(x1 + 1.0, top - 2.65, 0.6), up(x0 - 1.0, top - 2.65, 0.6)], tuple(face_n), 0.6, "steel.plate", "shutter")
-            _slab(b, [up(x0 - 1.0, top - 3.25, 0.85), up(x1 + 1.0, top - 3.25, 0.85), up(x1 + 1.0, top - 2.65, 0.85), up(x0 - 1.0, top - 2.65, 0.85)], tuple(face_n), 0.3, "steel.stripe", "shutter_edge")
-        with b.joint("periscopes", (cx, yr + 0.3, top + 0.6)):   # two on the brow's back, their glass forward over its peak
+        with b.joint("shutter", (cx, yr, top - 2.0)):
+            _slab(b, [up(x0 - 1.0, top - 5.45, 0.6), up(x1 + 1.0, top - 5.45, 0.6), up(x1 + 1.0, top - 3.0, 0.6), up(x0 - 1.0, top - 3.0, 0.6)], tuple(face_n), 0.6, "steel.plate", "shutter")
+            _slab(b, [up(x0 - 1.0, top - 3.6, 0.85), up(x1 + 1.0, top - 3.6, 0.85), up(x1 + 1.0, top - 3.0, 0.85), up(x0 - 1.0, top - 3.0, 0.85)], tuple(face_n), 0.3, "steel.stripe", "shutter_edge")
+        with b.joint("periscopes", (cx, yr - 1.5, top + 0.6)):   # two on the brow's back, their glass forward over its peak
             for px in (cx - 1.4, cx + 1.8):
-                b.box(px - 1.2, px + 1.2, yr - 0.8, yr + 1.4, top + 0.6, top + 4.2, "steel.dark", "periscope")
-                b.box(px - 0.8, px + 0.8, yr + 1.3, yr + 1.6, top + 2.4, top + 3.7, "glass.glass", "periscope_glass")
+                b.box(px - 1.2, px + 1.2, yr - 2.6, yr - 0.4, top + 0.6, top + 4.2, "steel.dark", "periscope")
+                b.box(px - 0.8, px + 0.8, yr - 0.5, yr - 0.2, top + 2.4, top + 3.7, "glass.glass", "periscope_glass")
         wx, wy = cx + MOLE_CAB_PORT[0], MOLE_CAB_PORT[1]
         iris = _mole_port(b, "gun", wx, wy, top, body, MOLE_CAB_PORT[2])
         _mole_mount(b, "gun", "hp_1", wx, wy, top, top + 2.6, 1.6, MOLE_CAB_PORT[3], "barrel", "rivet_gun", fits=MOLE_PORT_FITS, narrow=True)
@@ -2263,14 +2270,21 @@ def mole(b):
         b.prism("z", s * 8.6, -33.6, 34.0, 2.4, 12.0, "steel.dark", 6, "stack")
     # The bays the cab stands out of and the rear block rises from, bare in a hazard rim: the cab's
     # between the breech and where the cab stands out, the rear block's under it, its rams' collars in it.
-    for x0, x1, y0, y1, label in ((MOLE_FOOT - MOLE_PIECE_W + 0.1, MOLE_FOOT) + MOLE_CAB_Y + ("cab",), (MOLE_BLOCK_X[1], MOLE_REAR_IN, -34.0, -14.0, "sponson")):
+    for x0, x1, y0, y1, label in ((MOLE_FOOT - MOLE_PIECE_W + 0.1, MOLE_FOOT) + MOLE_CAB_Y + ("cab",), (MOLE_BLOCK_X[1], MOLE_REAR_IN) + MOLE_REAR_Y + ("sponson",)):
         b.box(x0 - 0.9, x1 + 0.9, y0 - 0.9, y1 + 0.9, MOLE_DECK - 0.5, MOLE_DECK + 0.15, "steel.stripe", label + "_bay_rim")
         b.box(x0, x1, y0, y1, MOLE_DECK - 0.4, MOLE_DECK + 0.3, "bore.void", label + "_bay")
     cab_iris = _mole_cab(b)
     rear_iris, fore_iris = _mole_blocks(b)
-    # The cab's rams' collars on the breech's flank.
+    # Fairings carrying the breech's flank on beside the engine deck and, on the cab's side, beside
+    # the barrel to the cab's face, so the cab and the rear block seat burrowed against one flat flank
+    # with no gap at their ends (Ryan, 18 November: "There shouldn't be any gaps when burrowed"; on
+    # Version 303, "Make the cab longer again").
+    for x0, x1, y0, y1 in ((12.4, MOLE_FLANK, MOLE_CAB_Y[0], -27.0), (-MOLE_FLANK, -12.4, MOLE_REAR_Y[0], -27.0)):
+        b.box(x0, x1, y0, y1, MOLE_SEAT, 28.5, "steel.panel", "flank_fairing")
+    b.box(13.2, MOLE_FLANK, -14.0, MOLE_CAB_Y[1] + 0.8, MOLE_SEAT, MOLE_SEAT + MOLE_CAB_H + 3.0, "steel.panel", "flank_fairing")
+    # The cab's rams' collars on the flank.
     for y in MOLE_CAB_RAMS:
-        xh = 14.0 * G
+        xh = MOLE_FLANK
         _beam(b, (xh - 0.8, y, MOLE_SEAT + 2.5), (xh + 0.6, y, MOLE_SEAT + 2.5), _poly(MOLE_RAM_R + 0.6, 8), _poly(MOLE_RAM_R + 0.6, 8), "steel.dark", "ram_collar")
     # The locker ahead of the cab's bay, up to the cab's face.
     b.box(13.6, 21.6, MOLE_CAB_Y[1] + 1.0, 0.0, TH + 0.5, TH + 5.0, "steel.plate", "locker")

@@ -754,7 +754,19 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    gun at 0.55). The rear block's gun is in a port in its front face, above the ring head on, and
    burrowing it runs straight back 19.2 into the block before the block sinks; to fit the block's
    length it is at 0.45, and its side port is gone. Rendered with each class on all four mounts
-   through the burrow, level from both sides: nothing shows outside the hull.
+   through the burrow, level from both sides: nothing shows outside the hull. His notes on that,
+   18 November: "Make the cab longer again. The aft port gun block is too long in the back, its
+   overhanging the tread and it doesn't need to. The forward port gun block can move back so it
+   ends up flush against the rear block." So, the hangar's next version: the cab is its old length
+   again (y -30 to -10) at its new width, and the hull's flank, the breech's, runs on as fairings
+   beside the engine deck behind the breech (on both sides) and beside the barrel ahead of it (on
+   the cab's side), so the cab and the rear block still seat against one flat flank with no gap at
+   their ends; the cab's rams come out of that flank. The rear block ends at the skirt's end (y -32,
+   from -34), its front port sunk flush with a shallower well so its gun, still at 0.45, runs back
+   17.1 inside it, and its inboard front corner notched for the breech's band. The fore block is 2
+   further back, its back against the rear block's front (y -13.95 to -1.95), its gun's yoke with
+   it. Rendered with each class on all four mounts through the burrow, level from both sides:
+   nothing shows outside the hull.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike
