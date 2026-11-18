@@ -32,6 +32,15 @@ them after. Numbers in content are placeholders until then, as ever.
 - The Barrier (15 November): "I don't want the existence of barrier as an accessible-to-all
   tool, to justify the existence of massive enemy strikes. That's my main concern,
   degenerate or not. I think that's why I lean towards not having it as a basic."
+- How the leaders strike (17 November, of tuning for a block that exists: "large blows should
+  be multi-strikes except where particularly thematic or the whole point is to suppress,
+  disrupt, or block it ... Just a thought, not an instruction"; 18 November, the read in
+  hand): "I don't think I'd go so far as to make everything a multi-hit. Barrier can still
+  have a niche, as an alternative to suppress, basically. Plus, if everything is a 2x it can
+  get pretty cluttered and clunky with too much head math. And we have to watch not only
+  riders, as you said, but also brittle and empowered, which scale hard on multi. But
+  leaning slightly towards multi to gently boost armour in boss and elite fights seems
+  worthwhile. Not so much that an armoured tank is just best in every fight, though."
 - The defence side (14 November): "How are we going to approach enemy kits and damage in
   relation to the various shield and hull values we have? Since our shield and hull values
   are, bluntly, pretty completely random, so there's no reason to keep those locked either."
@@ -125,6 +134,11 @@ point under it, and a wall is a kit's own state, the seal or the loaded hopper. 
 nothing while a shield takes the blow whole, so under the reboot it is the cover of the bare
 turn against a swarm, as a Barrier is against a spike.
 
+Plate against a leader's blow, by how it lands: of a blow of 16 that reaches the hull,
+plate 2, the Shoring Jack's round, takes an eighth whole, a quarter in two strikes and
+three eighths in three; plate 4, the Polar Bear sealed, a quarter, a half and three
+quarters. A pair is a gentle lift for plate; three strikes and more are a wall's fight.
+
 ## 5. The defence side: the approach
 
 The machine is fixed first and the foes' blows measured against it, the mirror of the guns.
@@ -194,8 +208,8 @@ two entries):
 
 | The call | The lean | Why |
 |---|---|---|
-| The Barrier's place | No basic, his own lean ("I think no barrier basic", 17 November) | Tune for a squad with none, and hold every boss to a test that a block is a bounded edge: no more than about half its damage in one blow at one machine. One Barrier in a squad takes a quarter off a boss on the mean, half off the four whose kit is one great blow, nothing off the four that strike every machine. With none, the bosses' blows at four fifths cost a squad what they cost today |
-| Large blows as strikes | His thought, no instruction: "large blows should be multi-strikes except where particularly thematic or the whole point is to suppress, disrupt, or block it. Makes armour more valuable which too, is a bonus. A barrier is just another mitigation tool then, not a free pass. Just a thought, not an instruction" (17 November). This pass's lean: yes, a leader's plain blow as two strikes | It is the bounded-edge test with its fix. A Barrier takes one strike, so its worth on a boss falls from 27 points of a four's hull to 16 at two strikes and 4 at three. Three is no default: there the Armoured basic, which has no cooldown, is worth what the Barrier is, and a kit of small strikes starves on plate (the Vampire Lord 49.6% to 15.5%), so three or more is a kit's own shape, sized against plate and a walled tank. A blow that gathers stays whole, the one built to be answered. A split sizes nothing (the Nob 59.2%, 54.2% and 56.2% with no Barrier), so the blows' numbers follow it, and a rider lands once a strike, so a split blow's rider is sized again. Read by the anchor read's `split=`, which leaves with the question |
+| The Barrier's place | No basic, his own lean ("I think no barrier basic", 17 November), and a niche it keeps: "an alternative to suppress, basically" (18 November) | Tune for a squad with none. A found Barrier is then an edge on the leaders whose kit is a great blow, as a Suppress is: one in a squad takes a quarter off a boss on the mean, half off the four whose kit is one great blow, nothing off the four that strike every machine. This pass's test of 17 November, no boss with more than half its damage in one blow, is retired by his word: a great blow whole is the niche. With none, the bosses' blows at four fifths cost a squad what they cost today |
+| How the leaders strike | His lean, 18 November (section 1; the bible's section 9): whole blows the norm, "leaning slightly towards multi to gently boost armour in boss and elite fights", never so "an armoured tank is just best in every fight" | A pair is the gentle setting and three strikes or more a wall's fight (section 4's plate arithmetic), so three and more stay the rare kit shape. Today one boss a domain carries a move of strikes (Floraison's three and five, the Emperor Scorpion's pair, the Matador's four, the Fiend of Fire's six) and one elite fight of tier one's eleven (the Thunder Ape's three). The lean's room is a pair on a few leaders' plain blows, most of it among the elites, each a proposal in chat by the kit's fantasy. A move of strikes is sized with what lands once a strike: its riders, and a machine's Brittle (the World Eater its one layer, so it keeps whole blows). A foe's Empowered goes through the move's multiplier, so a pair at the same total takes a rally as the whole blow did, and it grows on a move whose strikes add up to more than its attack (Full Bloom, five strikes at half, takes two and a half of one). This pass's lean of 17 November, every plain blow as two strikes, is retired; its read stands, and the anchor read's `split=` leaves with the leader pass |
 | Where the Halo Projector goes | A tier-one find beside the Blast Door, or locked to a machine: his | It is a tier-zero blueprint today, so off the starting dice is not out of every squad's reach |
 | HEAT | −1: a vanilla 3 for 3 | Four shots a gauge for three; a formation 0.7 rounds shorter and a point of hull lighter, a quarter fewer reboots; "I just know I overheated a lot" |
 | TOP BASIC | +2: the Carbine 4 for 6 | Its point is paid in heat: two shots a gauge for the vanilla's four |
@@ -215,10 +229,11 @@ Leans not yet built, each a number this pass may land with its read:
 - The Overcharge Coil at one stack, or tier two.
 - The ten planned shields and vents: retire the seven at tiers zero and one, the three at
   tier two waiting for a kit that wants one.
-- The kits a block takes half of: the Mantis Ant, the Phantom Train, the Gargantuan King,
-  the Emperor Scorpion, Gilgamesh and the Nob. Each a proposal in chat, a second blow, a
-  rider that lands through a Barrier or a blow at every machine; or its plain blow as two
-  strikes, if his thought lands (the table's row).
+- The leaders a Barrier takes half of, the Mantis Ant, the Phantom Train, the Gargantuan
+  King, the Emperor Scorpion, Gilgamesh and the Nob, are its niche by his word of 18
+  November and no hole to design out. What is left there is their numbers, the Nob's first,
+  and a pair where a kit's own words have one (the Mantis Ant's mandibles, the Gargantuan
+  King's horns), each a proposal in chat.
 
 ## 8. What landed, 17 November
 
