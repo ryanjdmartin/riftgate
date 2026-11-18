@@ -56,6 +56,7 @@ const NAMES := [
 	"step_tracked", "step_legged", "step_wheeled", "step_flyer",
 	# the rift and the red
 	"reveal", "arrival", "contact", "engage", "cut", "gate_hit", "victory", "defeat", "withdraw",
+	"peak_sweep", "tear_open",   # the peak's two (16 November): the seam's sweep and a tear opening; a hunter's roar is its family's (family)
 	"music_far_bank", "music_hold_the_line", "music_low_ground", "music_night_shift", "music_crossing", "music_full_bore",
 	"music_hold_the_line_map", "music_night_shift_battle", "music_far_bank_map",
 ]
@@ -166,7 +167,7 @@ static func all_names() -> Array:
 		for k in ["hit", "block", "kill"]:
 			out.append("%s_%s" % [k, m])
 	for f in FAMILIES:
-		out.append_array(["foe_%s_hit" % f, "foe_%s_heavy" % f, "spawn_%s" % f])
+		out.append_array(["foe_%s_hit" % f, "foe_%s_heavy" % f, "spawn_%s" % f, "roar_%s" % f])
 	return out
 
 
@@ -195,7 +196,9 @@ static func struck(kind: String, maker: String) -> String:
 ## A family's blow ("hit", "heavy") or arrival ("spawn"); the Risen's for an unknown family.
 static func family(kind: String, faction: String) -> String:
 	var f := faction if FAMILIES.has(faction) else str(DOMAIN_FAMILY.get(faction, "undead"))
-	return "spawn_" + f if kind == "spawn" else "foe_%s_%s" % [f, kind]
+	if kind == "spawn" or kind == "roar":
+		return "%s_%s" % [kind, f]   # its arrival; a hunter's roar as it turns on a machine (16 November)
+	return "foe_%s_%s" % [f, kind]
 
 
 ## Where her line falls in a maker's death, and how long the death holds the stage.

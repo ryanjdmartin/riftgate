@@ -10141,6 +10141,60 @@ flankers and the antlion trio read the same to the decimal (4.5 rounds and 5.1%;
 the next one's opening, and no piece of the six grants Phased. Not read: the Warg's pack at
 tier two and the Captain's formations at tier three, where the same change lands.
 
+## 16 November, the runner's player that musters: the second battle whole under both rules, and the campaign
+
+Built on Ryan's word ("go ahead with all 5", of the to-do's engine line): `BattleBot.Rule.MUSTER`
+and the runners' switches, the battle runner (`tools/battle_run.gd`, the anchor's second battle
+whole and its ledger as a tool) and the rating read (`tools/balance.gd --packs rating`). Content
+as main at `d1b6827` has it (the reboot the rule, the vanilla at 3, Ablate in Burn's place, Breach
+cut), the foes still the numbers sized against a shield that refilled. Branch
+`ccr-bd73687d-w8qox1`. Each a direction at twenty seeds.
+
+**The second battle whole.** `tools/battle_run.gd -- --seeds 20` and `--rule defence`: tier one at
+Convergence 1, the three squads of 12 November (the Honey Badger, the Skua, the Cassowary and the
+Storm Petrel; the Honey Badger, the Storm Petrel, the Prairie Dog and the Cottonmouth; the Honey
+Badger, the Skua, the Cottonmouth and the Cassowary), twenty seeds a domain and squad, 240 battles
+a rule, the fights by the greedy rung. A cell is the range over the three squads; hull is a share
+of the squad's full hull at the battle's end.
+
+| Domain | The defence rule: won, the gate fell, wiped | Hull at the end | Wrecks | The player that musters: won, the gate fell, wiped | Hull at the end | Wrecks |
+|---|---|---|---|---|---|---|
+| The Meadow | 5 to 20%, 25 to 35%, 55 to 60% | 10 to 12% | 3.1 to 3.2 | 5 to 10%, 60 to 85%, 10 to 35% | 24 to 37% | 1.4 to 2.4 |
+| The Waste | 0 to 5%, 35 to 45%, 55 to 60% | 9 to 14% | 3.4 to 3.5 | 10 to 25%, 70 to 80%, 5 to 15% | 56 to 63% | 0.5 to 0.8 |
+| The Marsh | 10 to 25%, 35 to 80%, 10 to 40% | 29 to 33% | 2.4 to 2.5 | 0 to 30%, 40 to 65%, 5 to 45% | 25 to 47% | 1.4 to 2.9 |
+| The Peak | 0%, 55 to 75%, 25 to 45% | 18 to 19% | 3.2 | 5 to 10%, 60 to 70%, 20 to 35% | 21 to 25% | 2.6 to 3.0 |
+
+The elite by the ledger, the machines in its fight and the share of those fights lost: under the
+defence rule 1.4 to 2.1 machines and 47 to 87% lost; mustered, 2.5 to 3.3 machines and 7 to 18%
+lost, the Peak's 64%. The boss is fought 0.2 to 0.3 times a battle under either rule. Two cuts of
+the rule before the one built moved this: the packs alone in the order they reach the wall, with
+no race for the unsealed boss, never fought it and won no battle (the gate fell in 65 to 95% of
+them); and a gathering held off its own pack until the next turn read within a few points of the
+one built, which lets it fight the pack the same turn once it stands beside it. The scratch rule
+of 12 November won the Meadow and the Marsh 65 to 85% on that day's content, before the reboot
+and the basics' cut. The read as built is `docs/battle_run.md`.
+
+**The campaign.** `tools/campaign_run.gd -- --runs 40`, and with `--muster`: no run is won under
+either rule, every city falls, the first on the run's first turn (0.07 and 0.00 a run): three
+machines at Convergence 0 lose the first battle whichever player plays it. Mustered, the
+formations are fought by three in 44 fights of 221 and won every time, by two 67 times and won
+58%; the elites by three 11 times, won 81%, by two 24 times, won 41%. A lone machine fighting a
+formation (110 times, won 10%) is one of the last one or two standing: the rule caps a pack's
+count at the machines left and fights one short at the wall.
+
+Read.
+
+- The player that musters wins the fights it musters for: the elite at its rating is lost one
+  time in ten (the Peak's two in three), where the defence rule's one or two machines lost half
+  to nine in ten, and it ends a battle with two to five times the hull and half the wrecks.
+- It loses the battle at the gate instead: the machines held back to gather let the packs
+  strike, and the race for the boss takes the squad off the wall. On today's content the second
+  battle is a wall for either player (the gate falls in half to most of them, the boss fought
+  in a battle in four); the foes' numbers are the defence side's pass, so this is the content's
+  reading more than the rule's.
+- So a read of the battle measures the orders less than it did: the elite is fought at its
+  rating. The first battle is lost before either rule plays (the first battle's block, his call).
+
 **The same day, on his four places.** The clocks moved to the four places a status ends (the
 bible's row, section 5): a foe's Ablating and Vitriol tick after its blow, its Empowered
 halves as its own turn ends, so a rally stands whole on the next blow of a foe that had acted,

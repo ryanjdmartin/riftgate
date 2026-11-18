@@ -1,7 +1,8 @@
 # Status
 
 How things stand, for the next session, and the order of work. Facts and the state as left;
-history lives in git (the long form of this file to 17 November: `git show 07f01fb:docs/status.md`;
+history lives in git (the long form of this file to 17 November: `git show 07f01fb:docs/status.md`,
+and the deaths' branch's to 18 November, as it landed: `git show e0dd995:docs/status.md`;
 to 4 November: `git show 1fa1155:docs/status.md`; its changelog to 23 October:
 `git show 9bec2ba:docs/status.md`). The rules are `docs/rules.md`; the why and the questions
 only Ryan can settle are the bible (`docs/design-bible.html`, its first row first); the tasks
@@ -46,9 +47,11 @@ document's job and every command are in `README.md`.
   works in a worktree under `.claude/worktrees/` (`CLAUDE.md`, Session handoff). A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word.
 - Branches. Main holds everything this file describes. Not on main: `ccr-c1cf6f73-ql6n4q`
-  (above), and two remote branches whose commits were unread when this file was written,
-  `ccr-bd73687d-w8qox1` and `claude/gameplay-terminology-tooltips-rug879`: read each before
-  taking main for the whole of the work. A session's hangar publish runs ahead of main (Pages).
+  (above), and `claude/gameplay-terminology-tooltips-rug879`, a remote branch whose commits
+  were unread when this file was written: read it before taking main for the whole of the
+  work. `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on
+  18 November on Ryan's "You're good to clean up and merge into main". A session's hangar
+  publish runs ahead of main (Pages).
   Every other branch on GitHub but the lines' own working branches is merged and to delete
   (`git push origin --delete`, then `git fetch --prune`); a cloud session may not delete one.
 - The desk machine is a Windows PC (`C:\Users\jam82\Desktop\Code\riftgate`; the README's
@@ -60,8 +63,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1274 tests, 373,537 checks, green on `ccr-178e0404-ptuh2m` (18 November, the Storm
-  Petrel's Hardened Light on its Pulse, over main at `66c0a63`). The runner fails a run whose tests never ran, so read the checks' count, never
+- Tests: 1308 tests, 375,397 checks, green on main as `ccr-bd73687d-w8qox1` landed (18
+  November, the deaths' branch over main at `66c0a63`). The runner fails a run whose tests never ran, so read the checks' count, never
   the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
   purpose. About four minutes in a cloud session; words after `--` run only the files whose
   names hold one (`-- loot rig`).
@@ -151,9 +154,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   no barrier basic"; the lean and its reads are the numbers brief's section 7): an elite
   costs 10.9% with the Barrier basic on the starting dice and 22.7% without it, a boss 32.5%
   and 52.8%, and with none the bosses' blows at four fifths cost a squad what they cost
-  today. His thought since, no instruction, that a large blow land as strikes was read: a
-  Barrier's worth on a boss falls from 27 points of a four's hull to 16 at two strikes and 4
-  at three. This pass's leans on the dials stand in the same section, each his to take.
+  today. How the leaders strike is his lean of 18 November (the bible's section 9): whole
+  blows the norm, a Suppress's and a Barrier's niche, and slightly towards strikes so plate
+  earns in their fights. This pass's leans on the dials stand in the same section, each his.
   Tiers two and three and the first battle are unsized, their foes still the ones sized
   against a shield that refilled. On a debug
   build's SETTINGS, TRIALS, each a number still to be picked: HEAT, TOP BASIC, RANK AND FILE
@@ -175,13 +178,19 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   its machine's action unless an order stands, and UNDO gives it back. Six shapes by the
   seed: the river, the river delta, the gorge, the ruined city, the badlands and the steppe;
   the painted world stands at the 3D map's heights, each domain in its own tileset and rock.
-  A machine standing on a cache claims it. Decided and not built: the fourth machine comes
+  A machine standing on a cache claims it. A lost machine's wreck holds its hex for the
+  battle: walks pass it and none ends on it, its model dark and slumped where it fell. The
+  rift's shell walls the seven hexes beside it, closed to the machines while the seal stands,
+  a stretch cracking at each Fracture and the whole bursting at the Rupture, a cache behind
+  it. Decided and not built: the fourth machine comes
   with the first battle, a choice from the host maker's catalogue (the bible's squad row).
   Detail: the rules' The battlefield; the bible's section 4.
 - **The campaign.** Its rules run headless only (`sim/campaign.gd`); no screen shows them.
-  The campaign runner's player fights alone and never musters, so its battles measure its
-  orders: the defence rule is the floor the reads stand on, and a player that musters is a
-  scratch probe, built on Ryan's word (the to-do). The quick campaign is an experiment (Ryan,
+  The campaign runner's player fights alone by the map's defence rule, the floor the reads
+  stand on; `--muster` plays the player that gathers (`BattleBot.Rule.MUSTER`: each pack its
+  rating's count of the nearest machines, the unsealed boss first), which wins the elite at
+  its rating and still loses the second battle at the gate on today's foes
+  (`docs/measurements.md`, 16 November). The quick campaign is an experiment (Ryan,
   28 October): no decision reads its runs, and it follows the main content and code on one
   tree, its fights built by the battle's own builders.
 - **The screens.** The harness (`godot --path .`) launches a battle as a run deals it, a lone
@@ -200,17 +209,28 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   each model's pins to its chassis's hardpoints. Every foe has art, a placeholder stamped "?"
   where no pick exists, and each boss a 48-pixel picture for the map. The hangar's live view
   can be driven headless in a cloud session (three.js 0.128.0 from npm in place of its CDN,
-  the page served locally, Playwright aiming its camera); no script for it is kept.
+  the page served locally, Playwright aiming its camera); no script for it is kept. A lost
+  machine goes down its own way, a death in its sidecar (`b.death`) for most of the roster
+  and the slump for the rest: falling slow then hard, on the floor every frame, its body only
+  ever going down, resting on what touches it and kept on its hex, its lights stuttering out
+  (the bible's death row; `tools/death_floor.gd` reads each). Ryan has passed the Nemesis's
+  kneel, the Clydesdale's face-plant, the Funnel-web, the Cassowary, the Whip Scorpion and the
+  Ammit; the rest wait on his read, and some still cross parts as they lie (the to-do). The
+  Cottonmouth fires every weapon from its drum.
 - **Audio.** Three pairs play in the game (Hold The Line, Night Shift, The Far Bank;
   `Sound.PAIRS`): a battle picks one as it starts and loops it, the map half on the field and
   the battle half in a fight. Low Ground, The Crossing and Full Bore play nowhere until their
-  pairs pass, in a music session of Ryan's own. No domain has a boss theme.
+  pairs pass, in a music session of Ryan's own. No domain has a boss theme. The peak's sweep
+  and a tear opening have their own sounds, and a hunter roars by its family as it turns on a
+  machine (first cuts, unheard).
 - **The runners and tools.** `tools/balance.gd` plays the skirmish with `sim/policy.gd`'s
   ladder and `tools/campaign_run.gd` whole runs (the README has every command). The bot has
   a first play of the reboot, and prices every step of a foe's move and of its fall by one
   table (`Policy.effect_cost`); a brace, a summon, a revival, a swallow, a purge and a merge
   it still counts as nothing. `tools/anchor_read.gd` reads every fight of a tier at its
-  rating, the measure the sizing stands on. `tools/budget_model.py` and
+  rating, the measure the sizing stands on. `tools/battle_run.gd` plays one battle of a run
+  whole by squads, and `tools/balance.gd --packs rating` fights every composition with squads
+  of its rating. `tools/budget_model.py` and
   `tools/basics_model.py` are the small models apart from content.
   `tests/test_leftovers.gd` fails the build for a rule no piece prints, and
   `tools/behaviour_trace.gd` checks that a refactor changes no fight.
@@ -274,7 +294,7 @@ publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   The last publish known is v0.619 (17 November, from `ccr-178e0404-ptuh2m`); main's file is
-  v0.622, unpublished. Before republishing, read the live page; if another session moved it,
+  v0.627 (the deaths' branch's rows with it, 18 November), unpublished. Before republishing, read the live page; if another session moved it,
   publish a three-way merge onto it row by row (`tools/pages/bible_merge.py`: BASE the last
   publish both started from, OURS this branch's file, THEIRS the saved live source with the
   tool's wrapper line, its trailing newline and `</body></html>` stripped). BASE is likely
@@ -282,13 +302,19 @@ publish; the commands are in `README.md`.
   merges in, check the tables script's run against the file's tables before keeping it: a
   row it reverts belongs to a branch not yet landed.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
-  files from `tools/hangar_data.py`'s printed map, at its Version 280 (15 November, from main
-  at `4514a2c`). A publish sends only the files that moved, each live copy read first, with
-  `edits`, `designs` and `text` read first. **Not republished since**: the live
-  `content/chassis.json` and `components.json` carry a Mole chassis and an Inertia Drill that
-  main does not, from another session's publish ahead of main, so a publish from main would
-  drop them. The next one keeps those entries or waits for that branch to land; until then
-  the Text tab lacks the Storm Petrel's and the foes' newest texts.
+  files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
+  each live copy read first, with `edits`, `designs` and `text` read first. Main went up whole
+  last at Version 280 (15 November, `4514a2c`). Since then the deaths' branch sent its death
+  files round by round, the last its Version 297 (17 November): `motion.js` and every
+  machine's sidecar, which match main byte for byte since it landed, but the Storm Petrel's;
+  other sessions' publishes between were kept, and the Mole's session published after it
+  (the live version on 18 November, its Mole model, rig and chassis). **The rest of main is
+  not up**: the live `content/chassis.json` and `components.json` carry a Mole chassis and
+  an Inertia Drill that main does not, from that session's publishes ahead of main, so a
+  publish from main would drop them. The next one keeps those entries or waits for that
+  branch to land; until then the Text tab lacks the Storm Petrel's and the foes' newest
+  texts, and the Storm Petrel's sidecar waits with them (main's fires `hardlight_pulse`; the
+  live one fires `st_elmos_regenerator`, the id the live content still has).
   `build/hangar/designs.json` is one 795 KB line: write it indented before reading it whole.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their

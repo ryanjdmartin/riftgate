@@ -42,12 +42,15 @@ func test_the_caches_lie_on_the_field_from_the_start_short_of_the_wall() -> void
 		var b := Battle.new(sd)
 		b.setup(_team(), "marsh", Battle.DEFAULT_WIDTH, Battle.DEFAULT_HEIGHT)
 		var f := b.field
-		assert_true(f.caches.size() > 0 and f.caches.size() <= per, "seed %d: the field holds its caches from the first turn (%d)" % [sd, f.caches.size()])
+		var behind := int(db.loot_rules.get("behind_shell", 0))
+		assert_true(f.caches.size() > 0 and f.caches.size() <= per + behind, "seed %d: the field holds its caches from the first turn (%d)" % [sd, f.caches.size()])
 		var lo := int(db.loot_rules["rift_gap"])
 		var hi := f.apron_row() - int(db.loot_rules["wall_gap"])
 		for c in f.caches:
 			var h: Vector2i = c["pos"]
 			var row := Hex.axial_to_offset(h).y
+			if f.map.shell_hexes().has(h):
+				continue   # the one behind the rift's shell (test_shell.gd), the rest in the field's rows
 			assert_true(row >= lo and row <= hi, "seed %d: a cache in the rows %d to %d, never that close to the wall (row %d)" % [sd, lo, hi, row])
 			assert_true(f.map.has(h) and not f.map.is_structure(h), "on the field")
 			assert_eq(BattleMap.step_cost(int(f.map.terrain[h]), []), BattleMap.STEP, "on open ground a machine can end a move on")

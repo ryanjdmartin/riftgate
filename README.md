@@ -78,9 +78,10 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
 - `tools/`: each script carries its own usage notes at its head; the commands are below.
   - Generated documents: `export_vocabulary.gd`, `pages/bible_tables.py`,
     `pages/bible_merge.py`, `pages/roster_analysis_page.py`, `synergy_map.py`
-  - Runners: `balance.gd`, `anchor_read.gd`, `campaign_run.gd`, `quick_run.gd`, `map_survey.gd`
+  - Runners: `balance.gd`, `anchor_read.gd`, `campaign_run.gd`, `battle_run.gd`, `quick_run.gd`,
+    `map_survey.gd`
   - Probes: `special_probe.gd` and `chain_probe.gd` (each with a `_read.py`),
-    `reboot_probe.gd`, `behaviour_trace.gd`
+    `reboot_probe.gd`, `behaviour_trace.gd`, `death_floor.gd` (where each lost machine lies)
   - Drivers over the balance runner: `stock_loop.py`, `endgame_fours.py`, `pricing_run.py`
   - Models apart from content: `turn_loop.py`, `basics_model.py`, `budget_model.py`
   - Pictures: `screenshot.gd`, `die_sheet.gd`, `hero_shot.gd`, `act_shot.gd`, `gait_clip.gd`,
@@ -112,8 +113,8 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     every run a decision cites.
   - Generated: `vocabulary.md` (from the vocabulary), `voice.md` (every shown text Ryan has
     signed as his own, read before a session drafts shown text), `synergy_map.md` (who sets
-    and who reads every status and resource), `balance.md`, `campaign_run.md`, `quick_run.md`
-    and `map_survey.md` (the runners').
+    and who reads every status and resource), `balance.md`, `campaign_run.md`, `battle_run.md`,
+    `quick_run.md` and `map_survey.md` (the runners').
   - Proposals and briefs, each a design's one home until its decisions are rows and content,
     then retired to git: `briefs/` (its README says what each waits on), among them
     `briefs/refit_pass.md` (the reboot's rules, its section 22) and `briefs/numbers_pass.md`
@@ -255,13 +256,27 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/balance.gd --
 #   --packs curve     the same against the four cut to every size from one to four: each cell's
 #     band (free, a decision, a wall), hull lost, rounds and stalls (two minutes a seed); --team
 #     reads another team in that cut order, and --tiers, --sizes, --domains and --ids narrow it
+#   --packs rating    every patrol, formation and elite composition and every boss with its escort
+#     at the --tiers given (one by default), each fought by squads of exactly its rating, every run
+#     of that many in the --team pool's order; each cell won, rounds and hull lost as a share of a
+#     four's hull beside the budget for its rating (about a minute a domain at 5 seeds, greedy)
 perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs promise --seeds 30 --policies greedy --out /tmp/promise.md
 perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs curve --seeds 30 --out /tmp/curve.md
+perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --packs rating --seeds 5 --policies greedy --out /tmp/rating.md
 
 # the campaign runner into docs/campaign_run.md: whole runs played headless by a plain player
 # (the front nearest to falling, the map's defence rule, the greedy rung). --runs N, --seed S,
-# --policy random, --shape KIND, --out path, --refit and --guard as above; --trace SEED prints one run
+# --policy random, --shape KIND, --out path, --refit and --guard as above; --trace SEED prints one run;
+# --muster plays the map by the player that gathers instead (BattleBot.Rule.MUSTER): each pack, in the
+# order it reaches the wall, its threat rating's count of the nearest machines, the unsealed boss first
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run.gd -- --runs 40
+
+# the battle runner into docs/battle_run.md: one battle of a run (--convergence 1, the second, by
+# default; --tier 1) played whole by squads (--squad a,b,c,d, repeatable), --seeds a domain and squad,
+# the map by the player that gathers (--rule muster, or defence), --domains to narrow; each cell won,
+# the gate fallen, wiped, the Rupture reached, the hull and the wrecks, and a ledger of every fight
+# (about twelve minutes on one core)
+perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/battle_run.gd -- --seeds 20
 
 # the quick campaign's runner into docs/quick_run.md: whole quick campaigns played headless
 # by a plain player. --runs N, --seed S, --policy random|planner, --team a,b,c, --out path;
@@ -433,6 +448,8 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_ESSENCE_DEBUG=12 that much Essence on every machine that banks it (skirmish)
 #   RIFTGATE_PEAK_DEBUG       Rift Pressure peaking every enemy turn (battle)
 #   RIFTGATE_CACHE_DEBUG      a cache of every kind beside the team and by the rift (a new battle)
+#   RIFTGATE_WRECK_DEBUG      a wreck of each of the team's chassis beside it, let go every four seconds (a new battle)
+#   RIFTGATE_SHELL_DEBUG      the rift's shell cracking a stretch every 1.2 s through all seven, then bursting (battle)
 #   RIFTGATE_BLEED_DEBUG      the whole field given to the painted world (any run)
 #   RIFTGATE_ACTS_DEBUG       every act of a model back to back (=<act name> loops one)
 #   RIFTGATE_MOVE_DEBUG       every machine driven constantly: walks, wheels, treads, held poses
@@ -465,6 +482,11 @@ tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /t
 # Joints, acts, gaits, counts, spins, hidden mounts and launches are code in models_low.py
 # (`b.joint`, `b.act`, `b.gait`, `b.count`, `b.spin`, `b.pin`, `b.launch`); all of it lands in
 # art/models/<id>.rig.json.
+# A machine's own way down is `b.death(seconds, tracks, body=, glow=, ease=, hang=, plant=)` at the
+# end of its recipe, in place of the slump (the bible's death row; act_shot's "lose 3" shows it).
+# Where each lost machine lies and whether it rests; --slide how far its standing feet move along the
+# floor, --clip the parts that cross as it lies, --try pose variants over its death without a rebuild
+perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/death_floor.gd -- [badger,nemesis] [--joints] [--slide] [--clip] [--try variants.json]
 
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva hero.png front 480 480   # one unit large: front, rear, or a yaw in degrees
 RIFTGATE_FIT="1:photosphere_lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480   # wearing swapped components on its mounts ("2:" bares one); RIFTGATE_FORM=<form> holds a form the model has

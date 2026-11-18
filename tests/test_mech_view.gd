@@ -508,6 +508,78 @@ func test_a_blow_flashes_the_hull_on_a_beat_and_the_shield_takes_its_own() -> vo
 	assert_eq(SkirmishScreen.blow_took(false, false, 0), "block", "the armour turning it")
 
 
+func test_a_lost_machines_lit_parts_go_dark_and_a_revive_gives_them_back() -> void:
+	# Ryan, 16 November: "Boosters should go dark, if possible": a lost machine's lit parts lose
+	# their paint with their light, a dead booster dark rather than its hot colour.
+	var view := MechView3D.make("kite", "kestrel", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64), false, {}, [])
+	var lit: Array = []
+	view.rig._lit_under(view._model, lit)
+	assert_true(lit.size() > 0, "the Kite has lit parts")
+	var paint := {}
+	for m in lit:
+		paint[m] = (m as StandardMaterial3D).albedo_color
+	view.lose()
+	view._process(MechRig.GUTTER + 0.01)
+	for m in lit:
+		var was: Color = paint[m]
+		var now: Color = (m as StandardMaterial3D).albedo_color
+		assert_true(absf(now.r - was.r * MechRig.DEAD_PAINT) < 0.01 and absf(now.g - was.g * MechRig.DEAD_PAINT) < 0.01, "its lit paint went dark (%s from %s)" % [now, was])
+		assert_true((m as StandardMaterial3D).emission_energy_multiplier < 0.001, "and its light is out")
+	view.rig.revive()
+	for m in lit:
+		assert_eq((m as StandardMaterial3D).albedo_color, paint[m], "a revive gives its paint back")
+	view.free()
+
+
+func test_a_lost_machines_lights_flicker_out_and_a_keyed_one_goes_last() -> void:
+	# Ryan, 16 November, the fourth notes: "All of these had a cool flickering animation previously ...
+	# all the lit elements on say, the badger would flicker before": a dying part's paint stutters out
+	# with its light. And "Open the vents as it settles, then have them flicker out": the Polar Bear's
+	# vents, keyed by its death, burn as it goes down and gutter once it has landed.
+	var badger := MechView3D.make("badger", "minerva", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64), false, {}, [])
+	var lit: Array = []
+	badger.rig._lit_under(badger._model, lit)
+	var m: StandardMaterial3D = lit[0]
+	badger.lose()
+	var rises := 0
+	var was := m.albedo_color.r
+	for _k in range(int(MechRig.GUTTER / 0.01) + 2):
+		badger._process(0.01)
+		if m.albedo_color.r > was + 0.001:
+			rises += 1
+		was = m.albedo_color.r
+	assert_true(rises >= 2, "its paint flickers as it goes out (%d catches)" % rises)
+	badger.free()
+	var bear := MechView3D.make("polar_bear", "minerva", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64), false, {}, [])
+	var vents: Array = []
+	for gk in bear.rig.forms[MechRig.DEATH].get("glow_keys", []):
+		vents.append(gk[0])
+	assert_true(vents.size() >= 2, "its death keys its vents")
+	var others: Array = []
+	bear.rig._lit_under(bear._model, others)
+	others = others.filter(func(x): return not vents.has(x))
+	bear.lose()
+	var d := float(bear.rig.forms[MechRig.DEATH]["duration"])
+	var t := 0.0
+	while t < MechRig.GUTTER + 0.05:
+		bear._process(0.05)
+		t += 0.05
+	assert_true(t < d, "the test reads before it lands")
+	for x in others:
+		assert_true((x as StandardMaterial3D).emission_energy_multiplier < 0.001, "its other lights are out")
+	var burning := 0
+	for x in vents:
+		if (x as StandardMaterial3D).emission_energy_multiplier > MechRig._rest_of(x) * 1.5:
+			burning += 1
+	assert_true(burning > 0, "while its vents burn on")
+	while t < d + MechRig.GUTTER + 0.1:
+		bear._process(0.05)
+		t += 0.05
+	for x in vents:
+		assert_true((x as StandardMaterial3D).emission_energy_multiplier < 0.001, "and they gutter out once it is down")
+	bear.free()
+
+
 func test_a_struck_machine_wears_heats_flash_and_a_lost_one_dims() -> void:
 	var db := ContentDB.load_default()
 	var view := MechView3D.make("polar_bear", "minerva", "clean", "", MechView3D.YAW_FRONT, Vector2i(96, 96), false, {}, [])
@@ -604,9 +676,25 @@ func test_a_lost_flyer_comes_down_onto_its_lowest_point() -> void:
 		assert_true(view.rig.airborne, "a machine off the floor is airborne (%s)" % id)
 		assert_true(absf(view._stage.position.y - lands) < 0.001, "it comes down until its lowest point rests on the floor (%s: %.3f, %.3f)" % [id, view._stage.position.y, lands])
 		if id == "buzzard":
-			assert_true(lands > 0.0, "a flyer's wings below its origin hold it short of the floor under that origin")
+			# A death pose of its own (16 November): the stage comes down to the floor and the pose
+			# sets its own lowest point there (MechRig._settle_death).
+			assert_eq(lands, 0.0, "with a death of its own the stage lands on the floor")
+			var low := INF
+			for mi in view.rig.model.find_children("*", "MeshInstance3D", true, false):
+				var shown := true
+				var n: Node = mi
+				while n != null and n != view.rig.model:
+					shown = shown and (not (n is Node3D) or (n as Node3D).visible)
+					n = n.get_parent()
+				if shown and (mi as MeshInstance3D).mesh != null and not mi.has_meta("halo") and not mi.has_meta("plume") and not mi.has_meta("is_trace"):
+					var xf := view.rig.body.transform * view.rig._in_model(mi)
+					var mesh: Mesh = (mi as MeshInstance3D).mesh
+					for si in range(mesh.get_surface_count()):
+						for v in (mesh.surface_get_arrays(si)[Mesh.ARRAY_VERTEX] as PackedVector3Array):
+							low = minf(low, (xf * v).y)   # the parts themselves, never their boxes
+			assert_true(absf(low - view.rig._body_rest_pos.y) < 0.05, "and its pose rests its lowest point on it (%.2f)" % low)
 		else:
-			assert_true(lands < 0.0, "a hover settles past its origin onto its skirt")
+			assert_true(lands < 0.0, "a hover with none settles past its origin onto its skirt")
 		view.free()
 
 
@@ -745,3 +833,50 @@ func _run_view(view: MechView3D, from: float, until: float) -> float:
 		view._fly(1.0 / 60.0)
 		now += 1.0 / 60.0
 	return now
+
+
+func test_a_weapon_on_a_hidden_mount_fires_as_the_drum() -> void:
+	# The Cottonmouth's guns sit inside its drum, hidden mounts: each fires as the drum's shot, a
+	# chamber's worth of the ranging turning two chambers on (Ryan, 3 November: "Shots moving two
+	# makes sense"), and no flare or fire hangs at a hidden mount (2 November: "I'd rather suppress
+	# them to avoid any clipping or effects bleed through the drum"); built 16 November.
+	var db := ContentDB.load_default()
+	var side := MechRig.load_sidecar("cottonmouth")
+	var f: Dictionary = side.get("hidden_fire", {})
+	assert_false(f.is_empty(), "the Cottonmouth names its hidden mounts' slice")
+	if f.is_empty():
+		return
+	var act := {}
+	for a in side.get("acts", []):
+		if str(a["name"]) == str(f.get("act", "")):
+			act = a
+	assert_false(act.is_empty(), "an act of its own")
+	assert_false(bool(act.get("idle", true)), "never played at rest")
+	var drum: Array = act["tracks"]["drum"]
+	var turned := float(drum[drum.size() - 1][3]) - float(drum[0][3])
+	assert_eq(roundi(turned), roundi(2.0 * float(side["spin_step"]["drum"])), "the drum turns two chambers on")
+	assert_true(float(f["from"]) <= float(f["blow"]) and float(f["blow"]) <= float(f["to"]), "its blow inside its slice")
+	var view := MechView3D.make("cottonmouth", db.maker_of("cottonmouth"), "clean", "cottonmouth", MechView3D.YAW_FRONT, Vector2i(96, 96), false, {}, [])
+	var fired := 0
+	for key in (side.get("pins", {}) as Dictionary).keys():
+		var cid := str(side["pins"][key])
+		var c: Dictionary = db.components.get(cid, {})
+		if cid.is_empty() or str((c.get("face", {}) as Dictionary).get("kind", "")) != "attack":
+			continue
+		assert_true(view.fires_hidden(cid), "%s on a hidden mount fires as the drum" % cid)
+		assert_true(absf(view.fire_wind(cid) - (float(f["blow"]) - float(f["from"]))) < 0.001, "%s winds up to the drum's blow" % cid)
+		assert_true(absf(view.fire_span(cid) - (float(f["to"]) - float(f["from"]))) < 0.001, "%s's aim holds through the slice" % cid)
+		fired += 1
+	assert_true(fired > 0, "its stock carries a weapon in its drum")
+	assert_true(view.rig.fire_hidden(0.0), "the slice plays")
+	assert_eq(str(view.rig._current.get("name", "")), str(f["act"]), "its own act")
+	for fl in view._flares:
+		for n in MechView3D.hidden_pins("cottonmouth").keys():
+			assert_ne((fl[0] as Node).get_parent(), view.hardpoints.get(n), "no flare hangs on its hidden hp_%d" % int(n))
+	# A gun fitted to a hidden mount wears no flare and no fire there either.
+	var gun := "twin_autoguns"
+	var fitted := [[1, gun, str(db.components[gun].get("shape", "")), str(db.components[gun].get("maker", ""))]]
+	for row in MechView3D.flare_rows("cottonmouth", fitted, db, false) + MechView3D.burn_rows("cottonmouth", fitted, db, false):
+		assert_ne(int(row[0]), 1, "nothing at the hidden hp_1 a refit fills")
+	assert_false(MechView3D.flare_rows("badger", fitted, db, false).is_empty(), "the same gun fitted where a mount shows flares as before")
+	view.free()

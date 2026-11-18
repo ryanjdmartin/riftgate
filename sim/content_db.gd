@@ -42,7 +42,7 @@ var chassis: Dictionary = {}
 var components: Dictionary = {}
 var modules: Dictionary = {}
 ## The caches a battle's field holds (content/loot.json, built 7 November): kind id -> entry,
-## and the file's rules (per_battle, rift_gap, wall_gap).
+## and the file's rules (per_battle, rift_gap, wall_gap, behind_shell).
 var loot: Dictionary = {}
 var loot_rules: Dictionary = {}
 var makers: Dictionary = {}
@@ -84,7 +84,7 @@ func load_dir(dir: String) -> void:
 	modules = _index(_read(dir + "modules.json"))
 	var lf := _read(dir + "loot.json")
 	loot = _index(lf)
-	loot_rules = {"per_battle": int(lf.get("per_battle", 0)), "rift_gap": int(lf.get("rift_gap", 3)), "wall_gap": int(lf.get("wall_gap", 2))}
+	loot_rules = {"per_battle": int(lf.get("per_battle", 0)), "rift_gap": int(lf.get("rift_gap", 3)), "wall_gap": int(lf.get("wall_gap", 2)), "behind_shell": int(lf.get("behind_shell", 0))}
 	reserved_names = {}
 	var reserved := _read(dir + "reserved_names.json")
 	var sources: Dictionary = reserved.get("sources", {})
@@ -1421,7 +1421,7 @@ func _validate_loot(errs: Array[String]) -> void:
 	for k in range(1, tiers.size() + 1):
 		if not tiers.has(k):
 			errs.append("loot: the kinds' tiers run from 1 with none missing (no tier %d)" % k)
-	for key in ["per_battle", "rift_gap", "wall_gap"]:
+	for key in ["per_battle", "rift_gap", "wall_gap", "behind_shell"]:
 		if int(loot_rules.get(key, 0)) < 0:
 			errs.append("loot: %s is 0 or more" % key)
 

@@ -540,7 +540,7 @@ func _fielded(b: Battle, uid: int) -> Unit:
 	var u := b.field.unit_by_id(uid)
 	if u != null and u.is_player():
 		return u
-	for w in b.wrecks:
+	for w in b.field.wrecks:
 		if w.id == uid:
 			return w
 	return null

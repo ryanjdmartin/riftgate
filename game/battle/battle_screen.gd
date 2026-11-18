@@ -114,8 +114,37 @@ func setup(b: Battle) -> void:
 	battle = b
 	if CACHE_DEBUG and b.field.phase == 0:
 		_debug_caches(b)
+	if Map3D.WRECK_DEBUG and b.field.phase == 0:
+		_debug_wrecks(b)
 	_build()
 	_refresh()
+
+
+## RIFTGATE_WRECK_DEBUG=1: a new battle lays a wreck of each of the team's chassis two hexes and
+## more from the team (copies: the team stays whole), each lying a different way, and the map
+## drops them again every few seconds (Map3D.WRECK_DEBUG), so a wreck's look, its fall and its
+## smoke are judged running without losing a fight. A battle read back from a save keeps its own.
+func _debug_wrecks(b: Battle) -> void:
+	var f := b.field
+	if b.mechs().is_empty():
+		return
+	var from: Vector2i = b.mechs()[0].pos
+	var open: Array = f.map.all_hexes().filter(func(h: Vector2i) -> bool: return Hex.distance(h, from) >= 2 and Hex.distance(h, from) <= 4)
+	open.sort_custom(func(x: Vector2i, y: Vector2i) -> bool: return Hex.distance(x, from) < Hex.distance(y, from))
+	var k := 0
+	for m in b.mechs():
+		var copy: Unit = b.db.make_mech(m.chassis_id)
+		copy.traits = m.traits.duplicate()
+		for h in open:
+			if f.can_stand(copy, h) and f.cache_at(h).is_empty():
+				copy.id = f._next_id
+				f._next_id += 1
+				copy.pos = h
+				copy.facing = (k * 2 + 1) % 6
+				copy.hull = 0
+				f.wrecks.append(copy)
+				k += 1
+				break
 
 
 func _debug_caches(b: Battle) -> void:
@@ -464,6 +493,9 @@ func _refresh() -> void:
 		_map.shown = battle.shown_positions() if planning else {}
 	_map.attack = _fight_preview() if planning and not playing else {}
 	_map.route_drawing = planning and not playing
+	# The rift's shell over the seven beside it: a plate cracked for each Fracture earned, burst at
+	# the Rupture (BattleMapView.set_shell).
+	_map.set_shell(battle.fractures, battle.is_sealed())
 	_map.queue_redraw()
 	_refresh_log()
 	# The one button: ENGAGE while a fight is ready (a catch, or a machine ordered onto a pack),
@@ -1127,10 +1159,7 @@ func _on_cutscene(playing: bool) -> void:
 ## A beat of the peak's cutscene, heard: the seam's creep starting, a tear opening. Borrowed
 ## sounds until each has its own (the audio to-do).
 func _on_peak_beat(what: String) -> void:
-	if what == "tear":
-		Sound.play("reveal")
-	else:
-		Sound.play("contact", -4.0)
+	Sound.play("tear_open" if what == "tear" else "peak_sweep")   # each its own since 16 November (the reveal and the alarm before)
 	_top.flash("rift")
 
 
@@ -1161,9 +1190,15 @@ func _after_locks() -> void:
 ## zoom on it and declare the target on screen"; 10 November: "We should pan and zoom to hunters
 ## when they acquire as well"): the map has glided in on the hunter (play_locks) and the band
 ## says who turns on whom, the catch's band in its shape; every lock of the turn in its turn,
-## each in the log too. A roar from the enemy belongs here (noted, not made: the audio to-do).
+## each in the log too. The hunter roars as the band comes up, its family's roar (Ryan, 8
+## November: "a good place for a sound effect from the enemy, a roar or whatever"; built 16
+## November), over the band's alarm a little down.
+const ROAR_AFTER := 0.18   # seconds into the band's alarm the roar comes in
+
 func _show_lock(hunter: Unit, prey: Unit) -> void:
-	_warn_band("HUNTED", "%s TURNS ON %s" % [hunter.display_name.to_upper(), prey.display_name.to_upper()], false)
+	_warn_band("HUNTED", "%s TURNS ON %s" % [hunter.display_name.to_upper(), prey.display_name.to_upper()], false, "")
+	Sound.play("contact", -5.0)
+	Sound.play_after(ROAR_AFTER, Sound.family("roar", hunter.faction if not hunter.faction.is_empty() else battle.faction))
 
 
 ## A hunter has caught a machine (bible section 5): the warning, big and in the enemy's violet over
@@ -1219,7 +1254,8 @@ func _warn_band(title: String, sub_text: String, catch: bool, sound: String = "c
 	warn.add_child(sub)
 	warn.modulate = Color(1, 1, 1, 0)
 	add_child(warn)
-	Sound.play(sound)
+	if not sound.is_empty():
+		Sound.play(sound)
 	if catch:
 		Sound.play_after(1.02, "contact", -2.0)   # the second beat, with the blink
 		Sound.say("contact")

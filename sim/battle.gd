@@ -157,9 +157,6 @@ var meter_held: int = 0           # hundredths of menace the fodder's trial has 
 ## hexes its machines move on the map, and each fight's own (Skirmish.sponsorship), added up.
 var sponsorship := {"hexes_moved": 0, "guarded": 0, "damaging_spends": 0, "quiet_spends": 0}   # ContentDB.SPONSORSHIP_MEASURES
 var action_hexes: Dictionary = {}   # mech id -> hexes moved in its current action, taken back with an undo
-## The machines wrecked this battle, as they fell: the map lets go of them, the campaign
-## still reads their dice (a wreck loses its destroyed components).
-var wrecks: Array[Unit] = []
 ## The caches claimed this battle, in the order claimed (the bible's loot rows; built 7
 ## November): each {"kind", "tier", "salvage", "components": [ids], "blueprint": an id or "",
 ## "by": the machine's id}. The campaign banks them as the battle ends, as it banks the kills.
@@ -312,6 +309,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 			thresholds.append(maxi(1, roundi(float(size) * float(steps[k]) / total)))
 	if boss != null and not thresholds.is_empty():
 		boss.sealed = true
+	field.set_shell(is_sealed())   # the seven beside the rift closed to the machines while the seal stands
 	state = State.PLAN
 	_new_turn()
 
@@ -395,6 +393,7 @@ func rupture() -> void:
 		return
 	boss.sealed = false
 	rupture_turn = field.phase
+	field.set_shell(false)   # the shell bursts with the seal: the seven open to the machines
 	field.log.append("THE RUPTURE: the seal breaks")
 	# The tide quickens (the long wall brief 3.8; Ryan, 6 November, of a re-seal: "Isn't that just
 	# a feel-bad, or a non-choice?"): nothing re-seals, and the beat halves once, so each turn of
@@ -580,14 +579,16 @@ func draft_landing(u: Unit, draft: Array) -> Dictionary:
 	return landing(u, riders, draft[draft.size() - 1])
 
 
-## Whether rider `r` could land on `h`: on the map, no structure, ground it stands on, and no
-## unit there but the block itself (the carrier and the riders are lifted).
+## Whether rider `r` could land on `h`: on the map, no structure, ground it stands on, no wreck,
+## and no unit there but the block itself (the carrier and the riders are lifted).
 func _lands_on(r: Unit, h: Vector2i, u: Unit, riders: Array[Unit]) -> bool:
 	for o in r.footprint:
 		var at: Vector2i = h + o
 		if not field.map.has(at) or field.map.is_structure(at):
 			return false
 		if not BattleMap.passable(field.map.terrain[at], r.traits):
+			return false
+		if field.wreck_at(at) != null or (r.is_player() and field.shell.has(at)):
 			return false
 		var occ := field.unit_at(at)
 		if occ != null and occ != r and occ != u and not riders.has(occ):
@@ -1572,16 +1573,15 @@ func _build_skirmish(group: Array) -> Skirmish:
 	return sk
 
 
-## Apply the finished skirmish: wrecks leave the map, packs shrink or vanish. Rift Pressure
-## ticks on the map's enemy turns only, never per round fought (Ryan, 13 October). Every
-## machine in it is spent, however the fight ended (bible section 4); a forced fight comes off
-## the list. Shields do not refill here.
+## Apply the finished skirmish: a wrecked machine lies where it fell (Battlefield.wrecks, which
+## the campaign reads its die from), packs shrink or vanish. Rift Pressure ticks on the map's
+## enemy turns only, never per round fought (Ryan, 13 October). Every machine in it is spent,
+## however the fight ended (bible section 4); a forced fight comes off the list. Shields do not
+## refill here.
 func finish_skirmish() -> void:
 	if current == null:
 		return
 	for ms in current.mechs:
-		if ms.unit.hull <= 0 and not wrecks.has(ms.unit):
-			wrecks.append(ms.unit)
 		spent[ms.unit.id] = int(spent.get(ms.unit.id, 0)) + 1
 		moved.erase(ms.unit.id)
 		played.erase(ms.unit.id)
