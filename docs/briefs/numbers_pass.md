@@ -96,7 +96,7 @@ is a share of a four's, 96 points for this pool.
 | A hunter's pack | 4.8 | 8.9% | 10% | 12.7% |
 | A formation | 5.7 | 4.5% | 5% | 8.3% |
 | An elite, the squad without the Barrier | 6.5 | 24.8% | 25% | 23.6%, the Nob at 65.1% |
-| A boss, the squad without the Barrier | 8.9 | 29.8%, a wreck in a fight of five | what is left | 53.2%, 86% won |
+| A boss, the squad without the Barrier | 8.9 | 29.9%, a wreck in a fight of five | what is left | 53.2%, 86% won |
 
 By formation: the needler thicket 1.3%, the sandworm's ambush 1.5%, the knights' vigil 2.4%,
 the magma vent 2.7%, the goblin horde 3.3%, the gel wall 4.9%, the barrow mound 6.2%, the
@@ -107,7 +107,7 @@ The elites and the bosses are sized for a squad without the Barrier (section 8),
 Armoured basic in the Halo Projector's slot: an elite from about 15% (the shaman's warband)
 to 27%, every fight won, and a boss from 21% (the Vampire Lord) to 42% (the Obsidian
 Tyrant), a row a direction at thirty fights. The squad as the dice deal it, the Barrier
-basic on them, pays about half: an elite 13.9%, a boss 19.2%. The piece stays on the
+basic on them, pays about half: an elite 13.9%, a boss 20.1%. The piece stays on the
 starting dice on his word, his play to say whether it proves toxic; the game is sized for
 the day it leaves.
 
@@ -221,7 +221,6 @@ two entries):
 |---|---|---|
 | Whether the Barrier basic proves toxic | His play's to say (18 November: "if it does prove toxic after all, in my play, then it's relatively easy to remove"); it stays on the starting dice until then, on BARRIER BASIC | The leaders are sized for a squad without it, so taking it off moves no number. With it a squad pays about half, and the leaders whose weight is one great blow cost it least: the Vampire Lord 7.1%, the Fell Rider and the Rust Monster 7.4%, the Mantis Ant 7.8%, the Marsh Serpent 8.3%, the Nob 9.6%. A second round of cooldown is 3.5 points on a boss where the piece itself is 20 |
 | How the leaders strike | His lean, 18 November (section 1; the bible's section 9): whole blows the norm, "leaning slightly towards multi to gently boost armour in boss and elite fights", never so "an armoured tank is just best in every fight" | A pair is the gentle setting and three strikes or more a wall's fight (section 4's plate arithmetic), so three and more stay the rare kit shape. Today one boss a domain carries a move of strikes (Floraison's three and five, the Emperor Scorpion's pair, the Matador's four, the Fiend of Fire's six) and one elite fight of tier one's eleven (the Thunder Ape's three). The lean's room is a pair on a few leaders' plain blows, most of it among the elites, each a proposal in chat by the kit's fantasy. A move of strikes is sized with what lands once a strike: its riders, and a machine's Brittle (the World Eater its one layer, so it keeps whole blows). A foe's Empowered goes through the move's multiplier, so a pair at the same total takes a rally as the whole blow did, and it grows on a move whose strikes add up to more than its attack (Full Bloom, five strikes at half, takes two and a half of one). This pass's lean of 17 November, every plain blow as two strikes, is retired; its read stands, and the what-if that made it, the anchor read's `split=`, left with the leader pass (`git show 4ae57e4:tools/anchor_read.gd`) |
-| A pair on two bosses | This pass's proposal, by the kits' own words, for his marks: the Mantis Ant's Mandibles as two strikes of 7 for one of 13, the Gargantuan King's Gore as two of 6 for one of 11 | Read as a what-if on every squad, sixty fights a cell: a pair leaves the squad without the Barrier where it was (the Mantis Ant 25.9% to 26.1%, the King 31.6% to 33.4%) and takes half the piece's edge with it (7.8% to 13.8%, 23.1% to 27.4%). Each boss keeps a whole blow beside the pair, the Ant's Upheaval and the King's Charge |
 | HEAT | −1: a vanilla 3 for 3 | Four shots a gauge for three; a formation 0.7 rounds shorter and a point of hull lighter, a quarter fewer reboots; "I just know I overheated a lot" |
 | TOP BASIC | +2: the Carbine 4 for 6 | Its point is paid in heat: two shots a gauge for the vanilla's four |
 | RANK AND FILE | As built: a standard foe of 4 | At 5 a formation runs a round longer and costs half again as much, so the blows would be sized again. The room 5 was to buy, a point between the Carbine and the kill, is bought by the Carbine's heat. Loosely held; tier two's standard is 5 already |
@@ -292,6 +291,12 @@ squads, is `docs/measurements.md` under that date. The rules the moves follow:
   sweep seems like a good idea"), 9 at each and corrupting 1, drawn as often as its scythe,
   and its Scythe and Knell are 12 and 18 again. It costs a squad without the Barrier what
   it did, 24.3%, and one with it 13.5% for 7.8%.
+- Two bosses strike in pairs since 18 November, on his go ("go ahead with both"), the first
+  carriers of his lean that the leaders strike slightly towards multi: the Mantis Ant's
+  Mandibles are two strikes of 7 for one of 13 and the Gargantuan King's Gore two of 6 for
+  one of 11, each beside a whole blow, the Upheaval and the Charge. A pair cost the squad
+  without the Barrier nothing (26.1% for 25.9%, 33.4% for 31.6%) and took half the piece's
+  edge (13.8% for 7.8%, 27.4% for 23.1%).
 - No one action takes the lightest machine from full, the scale row's cap, 26 points on the
   Cottonmouth: the Thunder Ape's Rampage is three strikes of 6 for 8, so gold it lands 24
   where the foes' adds on every strike had made it 30, and the Ape has 54 hit points for 48.

@@ -61,8 +61,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1323 tests, 376,844 checks, green on main (18 November, the Buzzard landed over the Pilgrim's
-  knife). The runner fails a run whose tests never ran, so read the checks' count, never
+- Tests: 1323 tests, 376,844 checks, green on `ccr-722ca9f0-yj8na3` (18 November, the Mantis
+  Ant's and the Gargantuan King's pairs, over main at `f167af8`). The runner fails a run whose tests never ran, so read the checks' count, never
   the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
   purpose. About four minutes in a cloud session; words after `--` run only the files whose
   names hold one (`-- loot rig`).
@@ -157,12 +157,12 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   to 9.3% by formation, every fight won. The elites and the bosses are sized since 18
   November for a squad without the Barrier, on his word ("sizing it without means that if
   it does prove toxic after all, in my play, then it's relatively easy to remove"): an
-  elite costs it 24.8% and a boss 29.8%. The Barrier basic stays on the starting dice ("one
+  elite costs it 24.8% and a boss 29.9%. The Barrier basic stays on the starting dice ("one
   of the two sides of the defensive coin"), and the squad with it pays about half, an elite
-  13.9% and a boss 19.2%: whether that proves toxic is his play's to say, on BARRIER BASIC. How the leaders strike is his lean of the
+  13.9% and a boss 20.1%: whether that proves toxic is his play's to say, on BARRIER BASIC. How the leaders strike is his lean of the
   same day (the bible's section 9): whole blows the norm, slightly towards strikes so plate
-  earns in their fights; two pairs wait on his marks, the Reaper's Harvest is a sweep at
-  every machine on his word, and the Pilgrim's knife purges before it lands, a step ahead
+  earns in their fights; the Mantis Ant's Mandibles and the Gargantuan King's Gore are
+  pairs on his go, the Reaper's Harvest is a sweep at every machine on his word, and the Pilgrim's knife purges before it lands, a step ahead
   of its blow that the move says and the Pilgrim's alone ("Agreed on pilgrim-only"). A foe's adds, its Empowered first,
   land on every strike of a move since then, the machines' formula. This pass's leans on the
   dials stand in the brief's section 7, each his.

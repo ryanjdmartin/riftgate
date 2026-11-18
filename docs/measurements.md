@@ -11449,3 +11449,11 @@ a cell.
 
 The five-squad read of the same pairs said the same: a pair costs the squad without the
 Barrier nothing and takes half the piece's edge.
+
+## 18 November: the two pairs landed
+
+Ryan: "go ahead with both." The Mantis Ant's Mandibles are two strikes of 7 and the
+Gargantuan King's Gore two of 6, in content. Read as landed, every squad of the pool, sixty
+fights a cell: the Mantis Ant 26.1% without the Barrier and 13.8% with it, the King 33.4%
+and 27.4%, the what-if's numbers to the decimal. With them a boss costs 29.9% without the
+Barrier and 20.1% with it on the mean.
