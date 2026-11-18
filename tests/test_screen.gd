@@ -234,28 +234,15 @@ func test_the_main_mark_holds_what_an_entry_delivers() -> void:
 
 ## What a machine's passive adds to an entry stands in its passive box at the rail's foot (Ryan, 4
 ## November: "Can't we just put the number in the cassowary-type box, call that the 'passive helper
-## box' for all these types of effects?"): a blow added after the strikes as "+N", no mark (the
-## Storm Petrel's), a stepping die's next entry by its main mark (the Cassowary's); never beside the
-## main mark, never joined to its number.
+## box' for all these types of effects?"): a stepping die's next entry by its main mark (the
+## Cassowary's), the Skua's Ricochet strikes; never beside the main mark, never joined to its number.
+## The Storm Petrel's zap stood there until its rework of 17 November.
 func test_a_passive_adds_its_box_at_the_rails_foot() -> void:
 	var picked := func(d: DieFaceView) -> Array:
 		return d.passive_marks().map(func(m: Array) -> Array: return [m[0], DieFaceView.passive_plain(m[1])])
 	var d := DieFaceView.new()
 	d.set_face(Face.attack(4))
 	assert_eq(picked.call(d), [], "a plain weapon: no box")
-	var hot := Face.attack(4)
-	hot.burns = 3
-	d.set_face(hot)
-	assert_eq(picked.call(d), [["shield", "3"]], "a weapon whose shield pays its heat: what the shield pays, a blow after the strikes, beside the shield's mark")
-	var lines := EntryReadout.effects_of(hot)
-	var boxed := lines.filter(func(l: Dictionary) -> bool: return (l.get("marks", []) as Array).any(func(m: Dictionary) -> bool: return m.has("passive")))
-	assert_eq(boxed.size(), 1, "the readout says it on one line")
-	assert_eq(str(boxed[0]["text"]), "Its shield pays 3 of the heat, and the target takes as much after the strikes", "the tap popup clarifies the number, both the spend and the blow")
-	assert_false(lines.any(func(l: Dictionary) -> bool: return (l.get("marks", []) as Array).any(func(m: Dictionary) -> bool: return str(m.get("glyph", "")) == "shield")), "and no shield cost line: the passive's payment is no cost")
-	assert_eq((boxed[0]["marks"] as Array)[0]["passive"], ["shield", "3"], "headed by the box the die shows")
-	d.after_blow = 2
-	assert_eq(picked.call(d), [["shield", "2"]], "over a foe, that foe's share")
-	d.after_blow = -1
 	d.set_face(Face.attack(3))
 	d.next_face = Face.shield(5)
 	assert_eq(picked.call(d), [["shield", "5"]], "a stepping die's next entry by its mark and its number (Ryan, 4 November: \"Maybe icon+face number?\")")
@@ -425,6 +412,183 @@ func test_reroll_goes_dark_with_every_die_spent_or_locked() -> void:
 	s._on_reroll()
 	assert_eq(s.sk.rerolls_left, before, "and a press spends nothing")
 	s.free()
+
+
+## A drain shows on REROLL (Ryan, 15 November: "There should be an effect on the reroll button
+## when this happens"): a note under the badge says what next round stands to lose while a foe
+## announces it, its rings closing in while the loss can still be stopped; the note settles as
+## the drain lands, and the round it took from says what it took.
+func test_reroll_wears_a_drain_announced_landed_and_taken() -> void:
+	var s := _screen(5)
+	var sk: Skirmish = s.sk
+	s._refresh()
+	assert_eq([s._reroll_btn.note, s._reroll_btn.draining], ["", false], "no drain out: no note")
+	var roarer: Foe = sk.field_foes()[0]
+	roarer.actions.append({"id": "roar", "name": "Roar", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "text": ""})
+	roarer.action = roarer.actions[roarer.actions.size() - 1]
+	s._refresh()
+	assert_eq([s._reroll_btn.note, s._reroll_btn.draining], ["NEXT -1", true], "a drain announced: what next round stands to lose, the rings closing in")
+	assert_eq(s._reroll_btn.badge, "×%d" % sk.rerolls_left, "this round's count stands")
+	Effects.grant_for_rounds(roarer, Effects.STATUS["suppressed"], "mech", sk.round)
+	s._refresh()
+	assert_eq(s._reroll_btn.note, "", "its foe Suppressed, the drain is stopped and the note goes")
+	Effects.remove(roarer, "suppressed")
+	# Two foes draining two apiece: the note never says more than a round gives.
+	roarer.action["value"] = 2
+	assert_eq(SkirmishScreen.drain_note(sk)[0], "NEXT -2", "two announced")
+	roarer.action["value"] = 1
+	# The replay: the note stands, announced, until the drain lands, then settles.
+	assert_eq(SkirmishScreen.drain_note(sk, 0, 1), ["NEXT -1", true], "in the enemy's turn, before it lands")
+	assert_eq(SkirmishScreen.drain_note(sk, 1, 0), ["NEXT -1", false], "landed: the same words, settled")
+	for f in sk.field_foes():
+		f.target = sk.mechs[0]
+	sk.end_round()
+	assert_eq(sk.turn_drains.size(), 1, "the engine tells the screen the drain that landed")
+	assert_eq(int(sk.turn_drains[0]["value"]), 1, "and its size")
+	sk.start_round()
+	assert_eq([sk.rerolls_left, sk.drained], [Skirmish.REROLLS_PER_ROUND - 1, 1], "the round it took from opens a reroll short, and says so")
+	for f in sk.field_foes():
+		f.action = f.actions[0]
+	s._refresh()
+	assert_eq([s._reroll_btn.note, s._reroll_btn.draining], ["DRAINED -1", false], "the button says what was taken, with nothing more announced")
+	assert_eq(s._reroll_btn.badge, "×%d" % (Skirmish.REROLLS_PER_ROUND - 1), "beside the count it left")
+	var copy: Skirmish = SaveGame.clone_skirmish(sk)
+	assert_eq(copy.drained, 1, "a save keeps the round's note")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(sk.drained, 0, "and the round after is whole")
+	s.free()
+
+
+## A fall that takes a reroll (16 November: a fall is a short list of steps) lands in the
+## player's own turn: its foe wears the fall as an Ability from the start, the note counts what
+## it took at once, settled, and the button is struck as the fall is named.
+func test_a_fall_that_drains_shows_on_its_foe_and_on_reroll() -> void:
+	var s := _screen(5)
+	var sk: Skirmish = s.sk
+	var root: Foe = sk.field_foes()[0]
+	root.on_death = {"act": Foe.fall_act_from({"name": "Last Scream", "effect": "drain_rerolls", "value": 1})}
+	s._refresh()
+	var rows: Array = s._foe_rows(root).filter(func(row) -> bool: return row.size() >= 5 and str(row[4]) == "ability")
+	assert_eq(rows.size(), 1, "its fall is its ability")
+	if rows.size() == 1:
+		assert_eq([str(rows[0][0]), str(rows[0][1]), str(rows[0][2])], ["skull", "", "Ability, Last Act: Last Scream"], "the skull, no number, and the fall's name")
+	assert_eq(s._reroll_btn.note, "", "nothing is owed yet")
+	root.hp = 0
+	sk.reroll_debt = 0
+	sk._last_act(root)
+	assert_eq(int(sk.last_acts.back()["drained"]), 1, "the engine says what the fall took")
+	assert_eq(SkirmishScreen.drain_note(sk), ["NEXT -1", false], "the note counts it at once, settled: nothing can stop it now")
+	s._reroll_btn._strike_t = -1.0
+	s._land_last_act(sk.last_acts.back())
+	assert_true(s._reroll_btn._strike_t >= 0.0, "and the button is struck as the fall is named")
+	assert_eq(int(s._before_enemy_turn().get("debt", 0)), 1, "the enemy's turn's replay starts from what the fall took")
+	s.free()
+
+
+## RIFTGATE_DRAIN_DEBUG=1: the button wears a drain announced the whole fight and flashes on
+## its three seconds, so the note, the rings and the flash are judged running.
+func test_the_drain_debug_switch_holds_the_note_and_flashes_the_button() -> void:
+	var s := _screen()
+	var was := SkirmishScreen.DRAIN_DEBUG
+	SkirmishScreen.DRAIN_DEBUG = true
+	s._refresh()
+	assert_eq([s._reroll_btn.note, s._reroll_btn.draining], ["NEXT -1", true], "the note stands, announced")
+	s._reroll_btn._strike_t = -1.0
+	s._process(3.1)
+	assert_true(s._reroll_btn._strike_t >= 0.0, "and the button flashes on its three seconds")
+	SkirmishScreen.DRAIN_DEBUG = was
+	s._refresh()
+	assert_eq(s._reroll_btn.note, "", "off, nothing is worn")
+	s.free()
+
+
+## A foe Aloft (the Roc while its Stoop gathers, 16 November) reads as out of the dice's reach:
+## drawn as a faint ghost under a dashed edge, higher over its shadow, wearing its chip, and no
+## target of the die in hand.
+func test_a_foe_aloft_is_drawn_out_of_reach_and_is_no_drop_target() -> void:
+	var s := _screen(5)
+	var sk: Skirmish = s.sk
+	var foe: Foe = sk.field_foes()[0]
+	s._refresh()
+	var view: UnitView = null
+	for v in s._view_foe.keys():
+		if s._view_foe[v] == foe:
+			view = v
+	assert_true(view != null, "its view is found")
+	if view == null:
+		s.free()
+		return
+	assert_false(view.away, "on the ground it is drawn whole")
+	var grounded := view.hover
+	Effects.stack(foe, Effects.STATUS["aloft"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	s._refresh()
+	assert_true(view.away, "aloft, it is drawn as what no die reaches")
+	assert_true(view.hover > grounded, "and higher over its shadow")
+	var rows: Array = s._foe_rows(foe).filter(func(row) -> bool: return str(row[2]).contains("Aloft"))
+	assert_eq(rows.size(), 1, "it wears the buff's chip")
+	if rows.size() == 1:
+		assert_eq(str(rows[0][0]), "aloft", "with its own mark")
+	for i in range(sk.mechs.size()):
+		assert_false(sk.targets_for(i).has(foe), "no machine's die may be dropped on it")
+	Effects.remove(foe, "aloft")
+	s._refresh()
+	assert_false(view.away, "back on the ground, it is drawn whole again")
+	# A Phased foe (17 November) is out of reach the same way and drawn the same, where it
+	# stands, under the chip a Phased machine wears.
+	Effects.grant_for_rounds(foe, Effects.STATUS["phased"], "test", sk.round + 1)
+	s._refresh()
+	assert_true(view.away, "Phased, it is drawn as what no die reaches")
+	assert_eq(view.hover, grounded, "and no higher: it has not climbed")
+	var faded: Array = s._foe_rows(foe).filter(func(row) -> bool: return str(row[2]).contains("Phased"))
+	assert_eq(faded.size(), 1, "it wears Phased's chip")
+	for i in range(sk.mechs.size()):
+		assert_false(sk.targets_for(i).has(foe), "no machine's die may be dropped on it")
+	# A blow that fades its foe wears Phased's mark on its intent, and never on a round the
+	# fade would lay nothing: the foe is Phased already, and none is out two rounds running.
+	var bolt := {"kind": "attack", "value": 3, "name": "Test Bolt", "also": [{"effect": "phase"}]}
+	var held: Dictionary = foe.action
+	foe.action = bolt
+	var mark := Terms.glyph("phased")
+	assert_false(mark.is_empty(), "Phased has a mark to wear")
+	assert_true(SkirmishScreen.intent_riders(foe, [], ["phase"]).filter(func(row) -> bool: return str(row[0]) == mark).is_empty(), "idle, the step wears no mark")
+	assert_eq(SkirmishScreen.intent_riders(foe).filter(func(row) -> bool: return str(row[0]) == mark).size(), 1, "live, it wears it once")
+	assert_false(Skirmish.fade_lands(foe), "and the engine says a Phased foe's fade is idle")
+	assert_true(s._intent_read(foe)[2].filter(func(row) -> bool: return str(row[0]) == mark).is_empty(), "so the chip of a foe out already shows none")
+	Effects.remove(foe, "phased")
+	assert_true(Skirmish.fade_lands(foe), "back in reach, its fade would land")
+	assert_eq(s._intent_read(foe)[2].filter(func(row) -> bool: return str(row[0]) == mark).size(), 1, "and its chip says so")
+	foe.action = held
+	s._refresh()
+	assert_false(view.away, "and it is drawn whole again once it is back")
+	# An immunity (17 November) is an Ability's chip on the foe, saying what never lands.
+	assert_true(s._foe_abilities(foe).filter(func(row) -> bool: return str(row[2]).contains("Immune")).is_empty(), "no immunity, no chip")
+	foe.immune = {"suppress": true}
+	var said: Array = s._foe_abilities(foe).filter(func(row) -> bool: return str(row[2]).contains("Immune"))
+	assert_eq(said.size(), 1, "immune, it wears the Ability's chip")
+	if said.size() == 1:
+		assert_true(str(said[0][2]).contains("no Suppress lands on it") and str(said[0][4]) == "ability", "which says what never lands: %s" % str(said[0][2]))
+	foe.immune = {}
+	s.free()
+
+
+## A stat too long for its column takes a row of its own (16 November: on a phone a long value
+## ran into the size drawn beside it), so no value is drawn over the next.
+func test_a_long_stat_takes_a_row_of_its_own() -> void:
+	var sb := StatBlock.new()
+	sb.custom_minimum_size = Vector2(330, 0)
+	sb.set_items([["hp", "48"], ["attack", "18"], ["armour", "1"], ["rank", "FRONT"], ["note", "A VALUE FAR TOO LONG"], ["size", "MASSIVE"]])
+	var lay: Array = sb._layout(330.0)
+	assert_eq(lay[0][3], [1, 1], "short values sit two to a row")
+	assert_eq(lay[0][4], [2, 0], "the long one starts a row")
+	assert_eq(lay[0][5], [3, 0], "and what follows starts the next, never beside it")
+	assert_eq(int(lay[1]), 4, "four rows, where three had the two overlapping")
+	assert_eq(sb.custom_minimum_size.y, StatBlock.ROW_H * 4.0, "and its height follows")
+	sb.set_items([["hp", "48"], ["attack", "18"], ["note", "A VALUE FAR TOO LONG"]])
+	assert_eq(sb._layout(330.0)[0][2], [1, 0], "a long one last is alone on its row too")
+	sb.set_items([["hp", "48"], ["attack", "18"]])
+	assert_eq(int(sb._layout(330.0)[1]), 1, "and two short values are one row")
+	sb.free()
 
 
 ## REROLL lights while the die in hand would bring the team a reroll, and its badge shows the
@@ -1577,8 +1741,8 @@ func test_a_foes_four_buffs_wear_their_own_chips() -> void:
 		assert_eq(str(by["primed"][1]), "×2", "Primed counts its stacks")
 		assert_eq(str(by["primed"][2]), "Buff, Primed ×2", "and the readout names it with them, a buff")
 	if by.has("regenerating"):
-		assert_eq(str(by["regenerating"][1]), "×4", "Regenerating counts its stacks, a point each at its action")
-		assert_true(str(by["regenerating"][2]).contains("+4 at its action, then a stack fades"), "and the readout says what they do and how they run down")
+		assert_eq(str(by["regenerating"][1]), "×4", "Regenerating counts its stacks, a point each as its turn ends")
+		assert_true(str(by["regenerating"][2]).contains("+4 as its turn ends, then a stack fades"), "and the readout says what they do and how they run down")
 	if by.has("barrier"):
 		assert_eq(str(by["barrier"][2]), "Buff, Barrier", "a foe's Barrier by its name alone, a buff, its meaning the term's")
 	assert_eq(SkirmishScreen.status_glyph("primed"), "primed", "the same chip on a machine")
@@ -1873,6 +2037,19 @@ func test_the_predator_sense_marks_the_foes_looking_away_while_the_die_is_read_o
 			assert_eq(r[1], "2", "Cryo's chip counts its stacks (21 October: it had none)")
 	assert_true(glyphs.has("web") and glyphs.has("vitriol"), "a webbed, acid-eaten foe wears both chips: %s" % str(glyphs))
 	assert_true(glyphs.has("brittle") and glyphs.has("cryo"), "and Brittle and Cryo wear theirs: %s" % str(glyphs))
+	# A foe that takes wears its Ability from the start, its number the piece it holds (Ryan, 16
+	# November: "make it his ability, a number that fluctuates depending on what he's currently
+	# holding"): no number while it holds none.
+	assert_false(glyphs.has("taken"), "a foe that takes nothing wears none")
+	foe.actions.append({"id": "take", "name": "Take", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": [], "text": "", "also": [{"effect": "appropriate"}]})
+	var held: Array = s._foe_rows(foe).filter(func(r) -> bool: return r[0] == "taken")
+	assert_eq(held.size(), 1, "one chip for the rule it plays by")
+	assert_eq([str(held[0][1]), str(held[0][4])], ["", "ability"], "an Ability, and no number while it holds nothing")
+	assert_true(str(held[0][2]).begins_with("Ability, Appropriated: it takes the piece a machine shows"), "its readout says the rule")
+	Effects.stack(foe, Effects.STATUS["appropriated"], Effects.SKIRMISH, "test", 6, Effects.DECAY_NONE)
+	held = s._foe_rows(foe).filter(func(r) -> bool: return r[0] == "taken")
+	assert_eq(str(held[0][1]), "6", "holding a piece, the chip is its number")
+	assert_true(str(held[0][2]).begins_with("Ability, Appropriated 6:"), "and the readout says it")
 	s.free()
 
 
@@ -2749,30 +2926,33 @@ func test_a_status_row_says_buff_or_debuff_and_its_chip_carries_it() -> void:
 	s.free()
 
 
-## A release plays on the screen (the Whip Scorpion's valves, 11 November): a machine that ends
-## its turn with an entry it could have spent fires its heat once the enemy's turn has played, and
-## the screen takes the fight as it stands after; its model fires it with the act keyed by the
-## passive (release_key). Synthetic passive.
-func test_a_passed_turns_release_plays_after_the_enemy_turn() -> void:
+## A release plays on the screen (the Whip Scorpion's valves; on its reboot since 17 November,
+## Ryan: "the reboot vent is the one that explodes"): a machine whose die is dropped on REBOOT
+## holding its gate's heat fires what it vents at once, and the screen takes the fight as it
+## stands after; its model fires it with the act keyed by the passive (release_key). Synthetic
+## passive.
+func test_a_reboots_blast_plays_as_the_die_is_dropped() -> void:
 	var s := _screen(5)
 	var ms: Skirmish.MechState = s.sk.mechs[0]
-	ms.unit.grant_passive({"id": "boiler", "name": "Boiler", "description": "", "effects": [{"trigger": "static", "effect": "pass_release", "value": 1, "gate": 4}]})
+	ms.unit.grant_passive({"id": "boiler", "name": "Boiler", "description": "", "effects": [{"trigger": "static", "effect": "reboot_release", "value": 1, "per": 2}]})
 	ms.heat = 6
 	assert_eq(SkirmishScreen.release_key(ms), "boiler", "its model's firing for the release is keyed by the passive (the broadside, 12 November)")
-	assert_eq(SkirmishScreen.release_key(s.sk.mechs[1]), "", "a machine whose pass releases nothing has none")
-	assert_true(s.sk.can_spend(0), "its die has somewhere to go, and is left")
+	assert_eq(SkirmishScreen.release_key(s.sk.mechs[1]), "", "a machine whose vent blasts nothing has none")
 	var hp := 0
 	for foe in s.sk.field_foes():
 		hp += foe.hp
 	var standing := s.sk.field_foes().size()
-	s._end_turn_now()
+	assert_true(s._do_reboot(0), "its die dropped on REBOOT")
 	assert_eq(s.sk.releases.size(), 1, "it released")
 	assert_eq((s.sk.releases[0]["blows"] as Array).size(), standing, "a blow on every foe that stood")
 	var after := 0
 	for foe in s.sk.field_foes():
 		after += foe.hp
 	assert_true(after < hp, "the pack took it")
+	assert_eq(ms.heat, 0, "and the machine is cold")
 	assert_true(s._shown_hp.is_empty(), "no gauge is left held off the tree")
+	s._end_turn_now()
+	assert_true(s.sk.releases.is_empty(), "the round's end releases nothing more")
 	s.free()
 
 

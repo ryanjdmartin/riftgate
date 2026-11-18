@@ -274,7 +274,7 @@ func test_no_empowered_decays_in_the_taps_round_on_either_side() -> void:
 	assert_eq(Effects.stacks_of(late, "kindled"), 2, "and what came after the spend")
 	assert_eq(Effects.stacks_of(rallied, "brittled"), 2, "nothing else is held: Brittle halves as ever")
 	assert_false(Effects.has(m, "essence_flare"), "the buff is the round's, and over with it")
-	assert_true(sk.round_holds.is_empty() and sk.field_holds().is_empty(), "and the hold with it")
+	assert_true(sk.field_holds().is_empty(), "and the hold with it")
 	sk.start_round()
 	sk.end_round()
 	assert_eq([Effects.stacks_of(m, "overcharged"), Effects.stacks_of(ally, "overcharged"), Effects.stacks_of(rallied, "kindled")], [3, 2, 2], "the round after, everything halves again")

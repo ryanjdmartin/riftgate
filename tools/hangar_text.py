@@ -28,7 +28,7 @@ slot: a new text, a mark, a note) until a session folds it in:
     python3 tools/hangar_text.py --fold DIR         # write content/*.json, the ledger and docs/voice.md; print the batch that clears the documents
     python3 tools/hangar_text.py --corpus           # docs/voice.md again, from the ledger
 
-Text the code composes (a status's line in sim/effects.gd, a foe's aim and condition words in
+Text the code composes (a status's line in sim/effects.gd, a move's aim and condition words in
 sim/foe.gd) is listed read-only, so it can be seen, compared and noted on; the fold changes no
 code. What it does not list at all is said in NOT_LISTED, which the page prints.
 """
@@ -55,6 +55,9 @@ KINDS = [
     {"id": "passive", "label": "Passives", "group": "maker",
      "what": "What a machine's passive does, after its name.",
      "where": "The codex and the quick campaign's hangar: NAME: description."},
+    {"id": "upgrade", "label": "Upgrades", "group": "maker",
+     "what": "What one step of an upgrade's branch does to its machine's locked piece.",
+     "where": "The codex, on the locked piece's row, for a machine that has taken the step: DIRECTION I: its line. The harness picks them; a run buys none until a machine's tier is built."},
     {"id": "component_codex", "label": "Component codex", "group": "maker",
      "what": "One or two lines on a piece of kit.",
      "where": "The die's readout (a tap on a die) and the codex's entry list, under the component's name."},
@@ -89,8 +92,8 @@ KINDS = [
      "what": "A status's one-line description, written in sim/effects.gd.",
      "where": "Only the codex's KEPT FOR THE BATTLE row, for a status a battle keeps (the Ammit's Souls). Since 2 November a chip says its name and count and a tap opens the term's entry, so nothing else draws these."},
     {"id": "intent_words", "label": "Aims and conditions (in code)", "group": "",
-     "what": "How a foe's aim and a move's condition are said, written in sim/foe.gd.",
-     "where": "A foe's codex: its sense (AIMS AT THE EXPOSED) and the condition after a move's name (when below half)."},
+     "what": "How a move's word for whom it goes for and a move's condition are said, written in sim/foe.gd.",
+     "where": "A move's lines, in a foe's codex and its intent: its target (The hottest machine) and its condition (When below half)."},
 ]
 
 # What the page says it does not carry, so the gap is seen and not guessed at.
@@ -111,7 +114,7 @@ OTHER_KEYS = {
     "chassis.makers": {"id", "name", "style", "voice", "sponsorship"},
     "components.entries": {"id", "name", "maker", "shape", "sound", "status"},
     "modules.entries": {"id", "name", "maker"},
-    "foes.entries": {"id", "name", "faction", "rank", "aim", "promotes", "guard", "role"},   # role: a pusher's, a hunter's or a flanker's (10 November), read by the validator and never shown
+    "foes.entries": {"id", "name", "faction", "rank", "promotes", "guard", "role"},   # role: a pusher's, a hunter's or a flanker's (10 November), read by the validator and never shown
     "factions.entries": {"id", "name", "bleed", "reward_bias"},
     "loot.entries": {"id", "name"},
 }
@@ -306,6 +309,19 @@ def content_slots():
         add("chassis.entries", e["id"], "flavour", "chassis_flavour", e.get("flavour", ""), e["name"], g, shown=shown, why=why, facts=facts, pitch=pitch)
         add("chassis.entries", e["id"], "designation", "title", e.get("designation", ""), e["name"], g, shown=shown, why=why, sub="designation", facts=pitch)
         passive_slots("chassis.entries", e, g, shown, why, e["name"])
+        # An upgrade's branches (the Storm Petrel's first, 17 November): a direction's name heads
+        # each of its steps' lines, I and II.
+        for b in e.get("branches") or []:
+            if not isinstance(b, dict):
+                continue
+            bid = str(b.get("id", ""))
+            add("chassis.entries", e["id"], "branches.%s.name" % bid, "title", b.get("name", ""), e["name"], g, shown=shown, why=why,
+                sub="upgrade direction", facts=" / ".join(str(st.get("description", "")) for st in b.get("steps") or [] if isinstance(st, dict)))
+            for i, st in enumerate(b.get("steps") or []):
+                if isinstance(st, dict):
+                    add("chassis.entries", e["id"], "branches.%s.steps.%d.description" % (bid, i), "upgrade", st.get("description", ""), e["name"], g,
+                        shown=shown, why=why, sub="%s %s" % (b.get("name", ""), "I" if i == 0 else "II"), facts=effect_words(st.get("effects")),
+                        mech=canon(st.get("effects", [])))
 
     # Components.
     for e in docs["components"]["entries"]:
@@ -362,14 +378,16 @@ def content_slots():
             add("foes.entries", e["id"], "actions.%s.name" % a["id"], "title", a.get("name", ""), name, g, shown=sh, why=wy, sub="move", facts=a.get("text", ""))
             add("foes.entries", e["id"], "actions.%s.text" % a["id"], "foe_move", a.get("text", ""), name, g, shown=sh, why=wy,
                 sub=a.get("name", ""), facts=move_words(a), mech=mech)
-        blow = e.get("on_death", {}).get("blow") if isinstance(e.get("on_death"), dict) else None
-        if isinstance(blow, dict):
-            mech = canon({k: v for k, v in blow.items() if k not in ("name", "text")})
-            if "name" in blow:
-                add("foes.entries", e["id"], "on_death.blow.name", "title", blow["name"], name, g, shown=shown, why=why, sub="last act", facts=blow.get("text", ""))
-            if "text" in blow:
-                add("foes.entries", e["id"], "on_death.blow.text", "foe_move", blow["text"], name, g, shown=shown, why=why,
-                    sub=blow.get("name", "last act"), facts="last act, " + move_words(blow), mech=mech)
+        # A fall: a last act's blow, or one special in its place (16 November), either with steps.
+        for key in ("blow", "act"):
+            blow = e.get("on_death", {}).get(key) if isinstance(e.get("on_death"), dict) else None
+            if isinstance(blow, dict):
+                mech = canon({k: v for k, v in blow.items() if k not in ("name", "text")})
+                if "name" in blow:
+                    add("foes.entries", e["id"], "on_death.%s.name" % key, "title", blow["name"], name, g, shown=shown, why=why, sub="last act", facts=blow.get("text", ""))
+                if "text" in blow:
+                    add("foes.entries", e["id"], "on_death.%s.text" % key, "foe_move", blow["text"], name, g, shown=shown, why=why,
+                        sub=blow.get("name", "last act"), facts="last act, " + move_words(blow), mech=mech)
 
     # Domains and caches.
     for e in docs["factions"]["entries"]:
@@ -390,7 +408,7 @@ def gd_string(s):
 
 
 def code_slots():
-    """The shown text two tables in the code hold, read-only: a status's line and a foe's aim
+    """The shown text two tables in the code hold, read-only: a status's line and a move's aim
     and condition words. A table that moves or changes shape is a problem, never a silent gap."""
     slots, problems = [], []
     src = read("sim/effects.gd")
@@ -602,18 +620,24 @@ def load_inbox(path):
     return [n for n in out if n.get("slot")]
 
 
+def _down(node, part):
+    """One step along a slot's path: an object's key, or a list's item by its id (a foe's move, a
+    machine's branch) or by its place (a branch's step)."""
+    if isinstance(node, dict):
+        return node.get(part)
+    if isinstance(node, list):
+        if part.isdigit():
+            return node[int(part)] if int(part) < len(node) else None
+        return next((a for a in node if isinstance(a, dict) and a.get("id") == part), None)
+    return None
+
+
 def get_at(entry, path):
-    """A slot's value inside its entry: a dotted path, a foe's move by its id."""
-    parts = path.split(".")
+    """A slot's value inside its entry: a dotted path, a foe's move and a branch by its id, a step
+    by its place."""
     node = entry
-    k = 0
-    while k < len(parts):
-        if parts[k] == "actions" and isinstance(node, dict) and isinstance(node.get("actions"), list):
-            node = next((a for a in node["actions"] if a.get("id") == parts[k + 1]), None)
-            k += 2
-        else:
-            node = node.get(parts[k]) if isinstance(node, dict) else None
-            k += 1
+    for part in path.split("."):
+        node = _down(node, part)
         if node is None:
             return None
     return node
@@ -622,14 +646,8 @@ def get_at(entry, path):
 def set_at(entry, path, value):
     parts = path.split(".")
     node = entry
-    k = 0
-    while k < len(parts) - 1:
-        if parts[k] == "actions":
-            node = next(a for a in node["actions"] if a.get("id") == parts[k + 1])
-            k += 2
-        else:
-            node = node[parts[k]]
-            k += 1
+    for part in parts[:-1]:
+        node = _down(node, part)
     node[parts[-1]] = value
 
 

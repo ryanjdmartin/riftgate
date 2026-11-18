@@ -82,7 +82,7 @@ func _init() -> void:
 
 
 ## The trios a tender can deal: three of the city makers in file order, a runnable tier-one
-## machine of each (tools/target_probe.gd's).
+## machine of each.
 func _starters() -> Array:
 	var makers: Array = db.city_makers()
 	var ones := {}

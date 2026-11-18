@@ -1374,12 +1374,18 @@ var _queue_pulse := false  # back from a fight with orders still waiting: the bu
 ## EXECUTE: the planned moves play on the map and the turn goes on, with no enemy turn (Ryan, 2
 ## November: "Movement should be able to be executed in sequence if the player wants, and
 ## undone"). UNDO still takes them back, in order, each machine set back where it stood
-## (Battle.take_plan). What is in hand stays in hand, to pick a target from where it now stands.
+## (Battle.take_plan). A move that plays ends its machine's action, its attack ordered before it or
+## never (Ryan, 16 November: "if an attack wasn't ordered, it cannot attack ... Once execute is run,
+## the action is forfeit (barring undo, of course)"), so the machine in hand is let go as EXECUTE is
+## pressed, its reach dark at once ("When Execute is clicked, the movement range overlay should turn
+## off if visible").
 func _execute() -> void:
 	var plan := battle.take_plan()
 	if plan.is_empty():
 		return
 	_details.visible = false
+	_select(null)
+	_map.queue_redraw()
 	Sound.say("resolve_move")   # "in transit", "moving to intercept"
 	_autosave()   # the battle has every machine where its plan ends already
 	_executing = true

@@ -39,12 +39,13 @@ PASSIVE_EFFECTS = {"seal_form": ("sealed", "machine"),
                    "paradox": ("paradox", "foe"), "muster": ("muster", "machine"),
                    "fill_hopper": ("hopper", "machine"), "hopper_plate": ("braced", "machine"),
                    "mine_on_spend": ("mine", "foe")}   # stack_status names its own, on the machine; the Reverberant Payload's Mine (9 November)
-FOE_KEYWORDS = {"scorch": "scorched", "ablate": "ablating", "jam": "jammed", "corrupt": "corrupted", "brittle": "brittled", "steal": "jammed", "expose": "exposure"}
+FOE_KEYWORDS = {"scorch": "scorched", "ablate": "ablating", "jam": "jammed", "corrupt": "corrupted", "brittle": "brittled", "expose": "exposure"}
 FOE_EFFECTS_ON_MACHINES = {"ablate": "ablating", "scorch_all": "scorched", "corrupt_all": "corrupted",
                            "jam": "jammed", "swallow": "swallowed", "expose": "exposure"}
 FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
                        "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen",
-                       "prime": "primed", "barrier": "barrier", "ward_all": "ward", "regenerate": "regenerating", "golden": "golden"}   # the ladder's (28 October); golden the Thunder Ape's (4 November)
+                       "prime": "primed", "barrier": "barrier", "ward_all": "ward", "regenerate": "regenerating", "golden": "golden",
+                       "appropriate": "appropriated", "phase": "phased"}   # the ladder's (28 October); golden the Thunder Ape's (4 November)
 # A special that is a rider's own mechanic, played as a whole move, counts under the rider.
 MOVE_AS_KEYWORD = {"ablate": "ablate", "jam": "jam", "scorch_all": "scorch", "corrupt_all": "corrupt", "swallow": "swallow", "merge": "merge", "dispel": "dispel", "golden": "golden_rage"}
 VIA_STATUS = {"primed": [("ablating", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
@@ -67,7 +68,6 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("gather", "Gather", lambda f: bool(f.get("gathers_mines"))),
            ("detonate", "Detonate", lambda f: bool(f.get("detonates"))),
            # The Petrels' locked pieces (built 30 October).
-           ("regenerates", "Regenerates", lambda f: bool(f.get("regenerates"))),
            ("ally_action", "An ally's action", lambda f: bool(f.get("ally_action"))),
            ("rolls_target", "Rolls its die", lambda f: bool(f.get("rolls_target"))),
            ("kill_rerolls", "Rerolls a kill", lambda f: int(f.get("kill_rerolls", 0) or 0) > 0),
@@ -75,7 +75,7 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            # A printed cooldown: the rounds an entry sits out after its spend (12 November); Rapid's own
            # switch-off is never printed.
            ("cooldown", "Cooldown", lambda f: "cooldown" in f)]
-FOE_ONLY = ["scorch", "ablate", "jam", "corrupt", "brittle", "steal", "destroy", "drain", "dispel", "swallow", "merge", "golden_rage", "self_destruct", "all", "countdown", "grudge", "last_act", "parts"]
+FOE_ONLY = ["scorch", "ablate", "jam", "corrupt", "brittle", "destroy", "drain", "dispel", "swallow", "merge", "golden_rage", "self_destruct", "all", "countdown", "grudge", "last_act", "parts"]
 FOE_ONLY_TEXT = {"ablate": "Keyword with a number on a foe's attack: each blow that lands leaves that many stacks of Ablating on the machine it hits (Ablating, above).",
                  "brittle": "Keyword with a number on a foe's attack: each blow that lands leaves that many stacks of Brittle on the machine it hits (Brittle, above).",
                  "dispel": "A foe's move of its own, never a rider on a blow and never a last act's: Purge N, the rule ours runs, N stacks off every buff the machine it lands on carries, for good, whatever granted it; its Abilities and its stores stay; a Ward turns it away."}
@@ -148,8 +148,6 @@ def tally(words):
         for field, status in FACE_FIELDS.items():
             if f.get(field):
                 t.grant(status, "machine", label, how, planned, who=who)
-        if isinstance(f.get("regenerates"), dict):   # a regen on its own spender (the Storm Petrel's St. Elmo's Regenerator)
-            t.grant(f["regenerates"].get("status", ""), "machine", label, how, planned, who=who)
         for field, statuses in FACE_FIELDS_ON_FOES.items():
             if f.get(field):
                 for status in statuses:
@@ -187,6 +185,8 @@ def tally(words):
                 t.grant(str(eff.get("value")), "machine", label, how, planned, who=who)
             elif e == "lay_status":   # laid on each foe the blow hits (the funnel-web's Ambush)
                 t.grant(str(eff.get("value")), "foe", label, how, planned, who=who)
+            elif e == "self_status":   # laid on its own machine by a spend at a foe (an upgrade's branch)
+                t.grant(str(eff.get("status")), "machine", label, how, planned, who=who)
             elif e in PASSIVE_EFFECTS:
                 status, on = PASSIVE_EFFECTS[e]
                 t.grant(status, on, label, how, planned, who=who)
@@ -194,6 +194,11 @@ def tally(words):
     for c in chassis:
         p = c.get("passive") or {}
         passive(p, "%s's %s" % (the(c["name"]), p.get("name", "passive")), "passive", the(c["name"]))
+        # Its upgrades' branches (the Storm Petrel's first, 17 November): each step a passive's worth
+        # of effects on its locked piece, counted as a passive's are, the step named.
+        for b in c.get("branches") or []:
+            for i, step in enumerate(b.get("steps") or []):
+                passive(step, "%s's %s %s" % (the(c["name"]), b.get("name", b.get("id", "")), "I" if i == 0 else "II"), "passive", the(c["name"]))
     for m in load("modules.json")["entries"]:
         if m.get("text"):
             passive(m["text"], "%s (module)" % m["name"], "module", None)
@@ -214,16 +219,20 @@ def tally(words):
                 t.count(k, "foe", planned, name)
                 if k in FOE_KEYWORDS:
                     t.grant(FOE_KEYWORDS[k], "machine", move, "foe", planned, foe["id"], whom)
-            e = a.get("effect")
-            if e in FOE_EFFECTS_ON_MACHINES:
-                t.grant(FOE_EFFECTS_ON_MACHINES[e], "machine", move, "foe", planned, foe["id"], whom)
-            if e in FOE_EFFECTS_ON_FOES:
-                t.grant(FOE_EFFECTS_ON_FOES[e], "foe", move, "foe", planned, foe["id"], whom)
-            if e in MOVE_AS_KEYWORD:
-                row = t.count(MOVE_AS_KEYWORD[e], "foe", planned, name)
-                row["moves"][1 if planned else 0] += 1
+            # The move's own special and what it does also (16 November: a move is a short list
+            # of steps), each effect counted where it lands.
+            for e in [a.get("effect")] + [st.get("effect") for st in a.get("also") or []]:
+                if e in FOE_EFFECTS_ON_MACHINES:
+                    t.grant(FOE_EFFECTS_ON_MACHINES[e], "machine", move, "foe", planned, foe["id"], whom)
+                if e in FOE_EFFECTS_ON_FOES:
+                    t.grant(FOE_EFFECTS_ON_FOES[e], "foe", move, "foe", planned, foe["id"], whom)
+                if e in MOVE_AS_KEYWORD:
+                    row = t.count(MOVE_AS_KEYWORD[e], "foe", planned, name)
+                    row["moves"][1 if planned else 0] += 1
             if int(a.get("countdown", 0)) > 0:
                 t.count("countdown", "foe", planned, name)
+            if a.get("aloft"):
+                t.grant("aloft", "foe", move, "foe", planned, foe["id"], whom)   # worn while the move gathers (the Roc's Stoop, 16 November)
             if int(a.get("per_kill", 0)) > 0:
                 t.count("grudge", "foe", planned, name)
         if int(foe.get("rage", 0) or 0) > 0:
@@ -233,8 +242,8 @@ def tally(words):
         if foe.get("parts"):
             t.grant("guarded", "foe", "%s's parts" % whom, "foe", False, foe["id"], whom)
             t.count("parts", "foe", False, name)
-        if isinstance((foe.get("on_death") or {}).get("blow"), dict):
-            t.count("last_act", "foe", False, name)
+        if isinstance((foe.get("on_death") or {}).get("blow"), dict) or isinstance((foe.get("on_death") or {}).get("act"), dict):
+            t.count("last_act", "foe", False, name)   # a fall: a blow, or one special in its place (16 November)
     for status, lays in VIA_STATUS.items():
         for target, on in lays:
             t.grant(target, on, "via %s" % words.get(status, {}).get("name", status), "via")

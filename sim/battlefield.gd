@@ -463,8 +463,6 @@ func _taste(sq: Unit, m: Unit, at: Vector2i) -> int:
 			return -(m.hull + m.shield)
 		"slowest":
 			return m.movespeed
-		"fastest":
-			return -m.movespeed
 	return _distance_from(sq, at, m)
 
 

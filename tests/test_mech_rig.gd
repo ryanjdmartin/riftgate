@@ -292,7 +292,7 @@ func test_a_fixed_weapon_fires_with_a_slice_of_its_own_act() -> void:
 		var fixed: Array = db.chassis.get(id, {}).get("fixed", [])
 		var passive = db.chassis.get(id, {}).get("passive", null)
 		var passive_id := str(passive.get("id", "")) if passive is Dictionary else ""
-		var releases := passive is Dictionary and (passive.get("effects", []) as Array).any(func(e) -> bool: return e is Dictionary and str(e.get("effect", "")) == "pass_release")
+		var releases := passive is Dictionary and (passive.get("effects", []) as Array).any(func(e) -> bool: return e is Dictionary and str(e.get("effect", "")) == "reboot_release")
 		var acts := {}
 		for a in side.get("acts", []):
 			acts[str(a["name"])] = float(a.get("duration", 0.0))

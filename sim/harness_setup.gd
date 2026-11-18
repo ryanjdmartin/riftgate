@@ -3,7 +3,7 @@ extends RefCounted
 
 ## What the harness launches (game/harness.gd is its view), a battle and a fight apart (Ryan, 7
 ## November: "battle and fight are two seperate things that need two separate tabs in the
-## harness"): the team in the order it deploys, each machine's hardpoints and modules; a BATTLE as
+## harness"): the team in the order it deploys, each machine's hardpoints, modules and upgrades; a BATTLE as
 ## a run deals it, its domain, a guest, the tier, the ramp and which of the domain's bosses ("The
 ## Battle from the harness should be a battle, as it will be in the final game"); a FIGHT, a
 ## composition picked by its domain, tier and threat rating, or packs and a boss by hand; the seed
@@ -23,6 +23,10 @@ var loadouts: Dictionary = {}
 ## Chassis id -> one pick per module slot, a module id or "" for a slot left empty. A machine
 ## with no entry wears none (modules are never stock).
 var modules: Dictionary = {}
+## Chassis id -> its upgrades' picks along its chassis's branches, the direction ids in the order
+## taken (ContentDB.branch_error), as a run's upgrades will buy them. A machine with no entry
+## stands at its chassis's own tier.
+var branches: Dictionary = {}
 var seed_value: int = 7         # the battle's map and every fight's dice
 var map_kind: String = ""        # a map shape (BattleMap.KINDS), or "" for the one the seed draws
 # ---- the BATTLE tab: a battle as a run deals it
@@ -200,6 +204,23 @@ func set_module(chassis_id: String, slot: int, module_id: String) -> void:
 		modules[chassis_id] = p
 
 
+## A machine's upgrades' picks: the direction ids in the order taken, none at its chassis's tier.
+func branch_picks(chassis_id: String) -> Array:
+	return (branches[chassis_id] as Array).duplicate() if branches.has(chassis_id) else []
+
+
+## Set a machine's picks (ContentDB.branch_builds offers them); picks its chassis does not allow,
+## or none, forget the edit.
+func set_branches(chassis_id: String, picks: Array) -> void:
+	var p: Array = []
+	for d in picks:
+		p.append(str(d))
+	if p.is_empty() or not db.chassis.has(chassis_id) or not db.branch_error(chassis_id, p).is_empty():
+		branches.erase(chassis_id)
+	else:
+		branches[chassis_id] = p
+
+
 ## The modules make_mech takes: the picks in slot order, the empty ones left out.
 func fitted_modules(chassis_id: String) -> Array:
 	return module_picks(chassis_id).filter(func(m) -> bool: return not str(m).is_empty())
@@ -228,7 +249,7 @@ func make_team() -> Array:
 	var uid := 1
 	for id in fielded():
 		if db.chassis.has(id):
-			out.append(db.make_mech(str(id), uid, Vector2i.ZERO, fitted(str(id)), fitted_modules(str(id))))
+			out.append(db.make_mech(str(id), uid, Vector2i.ZERO, fitted(str(id)), fitted_modules(str(id)), branch_picks(str(id))))
 			uid += 1
 	return out
 
@@ -310,7 +331,7 @@ func make_battle() -> Battle:
 # ---------------------------------------------------------------- keeping
 
 func to_dict() -> Dictionary:
-	return {"team": team, "loadouts": loadouts, "modules": modules, "seed": seed_value, "map_kind": map_kind,
+	return {"team": team, "loadouts": loadouts, "modules": modules, "branches": branches, "seed": seed_value, "map_kind": map_kind,
 		"battle_faction": battle_faction, "battle_boss": battle_boss, "guest": guest, "battle_tier": battle_tier, "ramp": ramp,
 		"composition": composition, "comp_faction": comp_faction, "fight_tier": fight_tier, "rating": rating, "packs": packs, "boss": boss}
 
@@ -344,6 +365,11 @@ static func from_dict(d: Dictionary, content: ContentDB = null) -> HarnessSetup:
 			if s.db.chassis.has(str(id)) and mo[id] is Array:
 				for k in range((mo[id] as Array).size()):
 					s.set_module(str(id), k, str(mo[id][k]))
+	var br = d.get("branches", {})
+	if br is Dictionary:
+		for id in br.keys():
+			if br[id] is Array:
+				s.set_branches(str(id), br[id])
 	var foes := s.pack_foes()
 	for p in d.get("packs", []):
 		if p is Array and p.size() >= 2 and foes.has(str(p[0])):

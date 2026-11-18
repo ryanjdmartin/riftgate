@@ -51,8 +51,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "pass_release", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "burn_shield", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status"],
-	"on_round_start": ["add_shield", "vent_heat", "stack_status"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "shield_regen_per_heat", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "reboot_release", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status", "self_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
 	"on_blocked": ["stack_status"],
@@ -60,7 +59,7 @@ const SUPPORTED_EFFECTS := {
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
 	"on_shield_gain": ["vent_heat", "stack_status"],
 	"on_shield_granted": ["vent_heat", "stack_status", "shield_per_ally_heat"],
-	"on_heat_gain": ["add_shield", "stack_status"],
+	"on_heat_gain": ["add_shield", "shield_per_heat", "stack_status"],
 	"status": ["tick_hp", "tick_hp_share", "skip_action", "disable_entry", "corrupt_entry", "regrow"],
 	"on_foe_status": ["paradox"],
 	"on_stack": ["add_stacks"],
@@ -70,12 +69,14 @@ const SUPPORTED_EFFECTS := {
 	"on_foe_killed": ["stack_status"],   # every kill in this machine's fight, whoever made it, once for each foe (the Ammit's Essence, 12 November)
 }
 const DECAY_NONE := 0    # lives until its scope ends
-const DECAY_TICK := 1    # loses a stack each tick, gone at zero
+const DECAY_TICK := 1    # loses a stack as its carrier's turn ends, gone at zero: a foe's stacks at the end of its own action (Ablating, Vitriol, Regenerating), since 16 November; at its start until then
 const DECAY_ROUND := 2   # gone as its side's next turn begins, every stack at once (Armoured: Ryan, 15 November, "The common \"end\" state between both sides is \"start of their next turn.\""): a machine's as the round opens, a foe's as the enemy's turn opens (turn_opens, both)
 const DECAY_TURN := 3    # ticks at the end of its owner's turn and loses a stack there, not at the round's end (a machine's Ablating, 13 October)
 const DECAY_TURN_ALL := 4    # lasts until the end of its owner's turn, every stack going there at once (a machine's Scorched, 13 October: it never piles up)
-const DECAY_HALF := 5    # halves, rounded down, gone at zero (Empowered, 18 October: a halving rule has no duration): a buff as its side's turn ends (a machine's at END TURN, halve_buffs; a foe's at the round's end, halve), a debuff at the round's end on either side (Brittle: tick, halve)
+const DECAY_HALF := 5    # halves, rounded down, gone at zero (Empowered, 18 October: a halving rule has no duration): a buff as its carrier's turn ends, where it has worked (Empowered: a machine's at END TURN, a foe's as its own action ends: halve_buffs); a debuff as its carrier's turn starts, where the other side's blows have used it (Brittle: turn_opens)
 const DECAY_AFTER_TURN := 6    # gone after its owner's next turn, every stack at once: a foe's at the end of its next action, a machine's at the end of the player's turn (Sapped, 11 November)
+const DECAY_START := 7   # a timed mark that falls as its carrier's turn starts, the first one after the round it names (Exposed: Ryan, 16 November, "Exposed on next turn start"); the round's end leaves it alone
+const DECAY_START_TICK := 8   # loses a stack as its carrier's turn starts, gone at zero (Hardened Light: Ryan, 17 November, "decay by a stack at start of Petrel's turn, not all at once"): a machine's as the round opens (turn_opens)
 
 ## The tag a cleanse clears (decided 25 September): what a foe did to a machine, never what
 ## the machine did to itself (a component's own cooldown, the price a Rapid piece pays).
@@ -97,7 +98,7 @@ const STATUS := {
 	# Ablating on a foe (Ryan, 15 November: Ablate, his word, in Burn's place; "evokes eating
 	# though armour to me"). A damage point a stack since 18 October (in the spirit of flattening
 	# the numbers; 5 before), the stacks the Ablate keyword's own number.
-	"ablating": {"id": "ablating", "name": "Ablating", "description": "Loses {value} HP per stack at the start of its action, then loses a stack.",
+	"ablating": {"id": "ablating", "name": "Ablating", "description": "Loses {value} HP per stack as its turn ends, then loses a stack.",
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp", "value": 1}]},
 	# The Nemesis's rage (Ryan, 12 October, in place of the Crucible): its passive banks a
 	# stack for every hull hit, its own included, for the skirmish (`decay` none overrides a
@@ -114,40 +115,40 @@ const STATUS := {
 	# the foes' tax on heat: every weapon and equipment aimed at a foe runs hotter until the
 	# turn's end, when every stack goes, so it never piles up under several scorchers, and a hold,
 	# a buff or a cool weapon plays round it.
-	"ablating_mech": {"id": "ablating_mech", "name": "Ablating", "description": "Loses {value} shield per stack at the end of the player's turn, then hull, past armour and a Barrier; then loses a stack.", "decay": "turn",
+	"ablating_mech": {"id": "ablating_mech", "name": "Ablating", "description": "Loses {value} shield per stack as its turn ends, then hull, past armour and a Barrier; then loses a stack.", "decay": "turn",
 		"tags": ["dot", CLEANSABLE], "effects": [{"trigger": "status", "effect": "tick_hp", "value": 1}]},
-	"scorched": {"id": "scorched", "name": "Scorched", "description": "Every weapon and equipment it aims at a foe runs {value} hotter per stack, until the end of the player's turn, when every stack goes.", "decay": "turn_all",
+	"scorched": {"id": "scorched", "name": "Scorched", "description": "Every weapon and equipment it aims at a foe runs {value} hotter per stack, until its turn ends, when every stack goes.", "decay": "turn_all",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 1}]},
-	"suppressed": {"id": "suppressed", "name": "Suppressed", "description": "Skips its telegraphed action this round.", "stacking": "renew",
+	"suppressed": {"id": "suppressed", "name": "Suppressed", "description": "Skips its next turn.", "stacking": "renew",
 		"effects": [{"trigger": "status", "effect": "skip_action", "value": 1}]},
 	# Numbed (Ryan, 2 November, in place of the ten per cent a stack of 10 October): a foe buff, the
 	# rounds until one stun lands. A stun on a Numbed foe strips a stack and lands nothing; the foe
 	# gains its stun resist in stacks as it recovers from a stun, after the round's decay, and a
 	# stack goes at the end of each round (Skirmish._enemy_turn). A Purge strips it like any buff.
-	"numbed": {"id": "numbed", "name": "Numbed", "description": "A stun on it strips a stack and lands nothing; a stack goes at the end of each round, so the count is the rounds until one stun lands.", "decay": "none",
+	"numbed": {"id": "numbed", "name": "Numbed", "description": "A stun on it strips a stack and lands nothing; a stack goes as each of its turns ends, so the count is the rounds until one stun lands.", "decay": "none",
 		"tags": ["buff"], "effects": []},
 	# The Baboon's Pocket Paradox as a meter (Ryan, 10 October): a status like any other, and
 	# it never decays; at the machine's count the foe is Suppressed and the Paradox clears.
 	"paradox": {"id": "paradox", "name": "Paradox", "description": "A paradox building, a stack for every debuff stack it gains: at the count every stack is consumed and it is Suppressed.",
 		"effects": []},
 	# The funnel-web's acid (Ryan's go, 18 October; Vitriol his word): a share of the foe's
-	# current hull a stack at its action, past armour, after Ablating's flat tick, rounded down
+	# current hull a stack as its turn ends, past armour, after Ablating's flat tick, rounded down
 	# and never the last hit point, then a stack fades (Ablating's shape, stacking add): it
 	# opens on a boss, finishes no foe and so sets off no last act. Its passive lays it a stack
 	# per hit on a foe showing no intent on it (lay_status on on_attack, when target_no_intent).
-	"vitriol": {"id": "vitriol", "name": "Vitriol", "description": "Loses {value}% of its current HP per stack at its action, past armour, after Ablating, rounded down, then loses a stack. It never finishes a foe.",
+	"vitriol": {"id": "vitriol", "name": "Vitriol", "description": "Loses {value}% of its current HP per stack as its turn ends, past armour, after Ablating, rounded down, then loses a stack. It never finishes a foe.",
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp_share", "value": 10}]},
 	# The funnel-web's web (18 October): the mark its Web Bomb leaves, named for the piece since
 	# 15 November (Ryan: "the debuff can be renamed \"web bomb.\""; the id is the engine's). The
-	# skirmish bursts it at the end of the foe's action (Skirmish._web_burst): a Suppress on it
-	# and on the next foe to act beside it, each for itself. One web on a foe, however often it
-	# is webbed.
-	"webbed": {"id": "webbed", "name": "Web Bomb", "description": "At the end of its action the web bursts: it and the next foe to act beside it are Suppressed.", "stacking": "renew", "decay": "none",
+	# skirmish bursts it as the round ends (Skirmish._burst_webs; at the end of the foe's own
+	# action until 16 November): a Suppress on it and on the foe beside it, each for its next
+	# turn, each for itself. One web on a foe, however often it is webbed.
+	"webbed": {"id": "webbed", "name": "Web Bomb", "description": "As the round ends the web bursts: it and the foe beside it are Suppressed, each losing its next turn.", "stacking": "renew", "decay": "none",
 		"tags": ["web"], "effects": []},
 	# The machines' buffs (29 September): what buff equipment grants. Names are placeholders
 	# for Ryan. Flat since 2 October (the damage scale: a tenth of a blow of 10 to 20 is nothing
 	# to read). A damage point a stack since 18 October (Ryan: the count is the bonus, read at a
-	# glance), and it halves as its carrier's side's turn ends, rounded down, whatever granted it
+	# glance), and it halves as its carrier's turn ends, rounded down, whatever granted it
 	# (a machine's at END TURN since 16 November, Ryan: "Empowered should decay at the end of
 	# turn, clearly, not end of round"; at the round's end until then, where a stack gained in
 	# the enemy's turn halved away before its machine could spend it): a
@@ -156,7 +157,7 @@ const STATUS := {
 	# No machine keeps it: the Ammit's Tap held every stack for the battle until its rework (12
 	# November), and that keep left the engine with it. Its battle-long part is its Essence, below,
 	# and what they grant is this, halving like any.
-	"overcharged": {"id": "overcharged", "name": "Empowered", "description": "Attacks deal +1 damage a stack. Halves as its side's turn ends, rounded down.", "decay": "half",
+	"overcharged": {"id": "overcharged", "name": "Empowered", "description": "Attacks deal +1 damage a stack. Halves as its turn ends, rounded down.", "decay": "half",
 		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 1}]},
 	# Armoured (Braced until 18 October; the engine id stays) is temporary armour (2 October):
 	# flat off every blow, the same word and icon as the chassis stat, never a percentage, and
@@ -166,8 +167,16 @@ const STATUS := {
 	# there is), every stack going at once at its owner's turn: a machine's at the round's
 	# end, a foe's at its next action. A foe's brace grants it too (Ryan, 16 October: a
 	# keyword or an effect and the buff it creates share a name), its value its stacks.
-	"braced": {"id": "braced", "name": "Armoured", "description": "Armour +1 a stack, every stack at once, until its side's next turn begins.", "decay": "round",
+	"braced": {"id": "braced", "name": "Armoured", "description": "Armour +1 a stack, every stack at once, until its next turn starts.", "decay": "round",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
+	# Hardened Light, the shield armour (the Storm Petrel's Defence branch, Ryan, 17 November: "adds a
+	# self-buff that increases shield armour for a turn to the lure", then "increasing shield armour
+	# by foes lured"; his name and his clock the same day: "The shield armour buff is called
+	# Hardened Light. Make it decay by a stack at start of Petrel's turn, not all at once"): a point
+	# more off every blow a stack while its shield stands, the plate's own rule, a stack going as
+	# each of its turns starts, so three take 3, 2 and 1 off through three enemy turns.
+	"hardened": {"id": "hardened", "name": "Hardened Light", "description": "While its shield stands, every blow on it loses 1 a stack. A stack goes as each of its turns starts.", "decay": "start_tick",
+		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": -1, "when": "shield_up"}]},
 	# Primed, the third primer since 15 November (Ryan's mark: "give it the same format as cryo
 	# ... use a stack on firing"; "Primed - agreed, how many Ablate stacks does each Primed stack
 	# apply? Just one, like supercooled?"; one): the primers below have its rule, and a foe's is
@@ -188,17 +197,18 @@ const STATUS := {
 	# armour counts for nothing, its own and any Armoured (Foe.armour_total), through the next
 	# round, refreshed and never added. The formation's exposed back rank is reach only, and the
 	# id is "exposure" since "exposed" names that formation word and the foes' default aim.
-	# Pinned (the Hollow-point Harpoon's, Ryan, 11 November): a status of its own for the round,
-	# holding the foe's Brittle from halving at the round's end. HOLDERS names the holder of each
+	# Pinned (the Hollow-point Harpoon's, Ryan, 11 November): a status of its own, holding the
+	# foe's Brittle from its next halving and spent by it (16 November: "the next time it would
+	# decay, it doesn't"; a status for the round until then). HOLDERS names the holder of each
 	# status a piece may hold, so a like one for Ablating is a row there and a status here.
-	"pinned": {"id": "pinned", "name": "Pinned", "description": "Its Brittle does not decay this round.", "stacking": "renew",
+	"pinned": {"id": "pinned", "name": "Pinned", "description": "The next time its Brittle would halve, it does not.", "stacking": "renew",
 		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "brittled"}]},
 	# Ablating's pin, Seared (Ryan, 11 November: "Might as well code it in since the Mastema will
 	# want it as a fitted piece, if nothing else"; its name his, 15 November: "Rename 'Seared.'"):
 	# its Ablating takes its points and loses no stack this round. No piece lays it yet.
-	"seared": {"id": "seared", "name": "Seared", "description": "Its Ablating loses no stack this round.", "stacking": "renew",
+	"seared": {"id": "seared", "name": "Seared", "description": "The next time its Ablating would lose a stack, it does not.", "stacking": "renew",
 		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "ablating"}]},
-	"exposure": {"id": "exposure", "name": "Exposed", "description": "In Direct reach of every machine, and its armour counts for nothing. Until the end of the next round.", "stacking": "renew",
+	"exposure": {"id": "exposure", "name": "Exposed", "description": "In Direct reach of every machine, and its armour counts for nothing. Lasts through your next turn.", "stacking": "renew", "decay": "turn_start",
 		"tags": ["expose"], "effects": []},
 	# Exposed on a machine (Ryan, 15 November, the vocabulary pass's fourth and fifth rounds;
 	# built 16 November), from a foe's Expose: the armour half is the foe's rule whole, "all
@@ -209,7 +219,7 @@ const STATUS := {
 	# the machine until the blows already drawn would wreck it (Skirmish._pick_mech_target). It
 	# lands in the enemy's turn and stands through the round after, refreshed and never added;
 	# an ally's Cleanse gives the armour back and leaves the intents where they turned.
-	"exposure_mech": {"id": "exposure_mech", "name": "Exposed", "description": "Its armour counts for nothing, and as the round opens every foe's targeted move turns on it, up to the blows that would wreck it. Lasts the round after it lands.", "stacking": "renew",
+	"exposure_mech": {"id": "exposure_mech", "name": "Exposed", "description": "Its armour counts for nothing, and as the round opens every foe's targeted move turns on it, up to the blows that would wreck it. Lasts the round after it lands.", "stacking": "renew", "decay": "turn_start",
 		"tags": ["expose", "cleansable"], "effects": [{"trigger": "static", "effect": "multiply_stat", "stat": "armour", "value": 0}]},
 	# The Mine (the Lammergeier's Reverberant Payload, Ryan, 9 November: "the lammergeier basically
 	# converts all hits to AoE hits, at the cost of a delay until Death"): a spend of its weapons and
@@ -270,7 +280,7 @@ const STATUS := {
 	# (Skirmish.incoming_rally), so no foe strikes above the number it showed. An add before the
 	# factor, one damage formula for the whole game (Ryan, 26 October), as Empowered is on the
 	# machines' side. Each grant is its rally's value; the stacks add.
-	"kindled": {"id": "kindled", "name": "Empowered", "description": "Its blows hit +1 harder a stack. Halves as its side's turn ends, rounded down.", "decay": "half",
+	"kindled": {"id": "kindled", "name": "Empowered", "description": "Its blows hit +1 harder a stack. Halves as its turn ends, rounded down.", "decay": "half",
 		"tags": ["buff", "rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 1}]},
 	# Enraged (3 November, the Goblin Nob's): a stack for every shield, vent or equipment entry
 	# the team spends while the foe stands and rages (Foe.rage, its own from the fight's start
@@ -290,6 +300,26 @@ const STATUS := {
 		"tags": ["ability"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 2}, {"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
 	"risen": {"id": "risen", "name": "Undying", "description": "Returns from the pool once after dying.", "stacking": "renew",
 		"tags": ["buff", "revive"], "effects": []},
+	# Appropriated (Gilgamesh's; Ryan's mark of 15 November on the steal: "It grants Jammed on the
+	# target, and Gilgamesh gains Appropriated with the value"): what a foe took off a machine,
+	# the number its borrowed swing lands, a point a stack, and the swing spends it (a move whose
+	# `power` names it: Foe.power_status). His Ability, a count on his own chip (Ryan, 16
+	# November, of the purgeable buff a session had read from "gains Appropriated": "I think
+	# Appropriated is a balance read. Maybe make it his ability, a number that fluctuates
+	# depending on what he's currently holding"), so no Purge reaches it.
+	# One hold at a time: what it takes next replaces what it held. The steal's own field on the
+	# foe until 16 November.
+	# Aloft (the Roc's climb; Ryan, 16 November: "the stoop can make it untargetable, yes. I don't
+	# think I'd call it phased though, it should still take damage from its riders, unlike phased.
+	# So it's different, should be a different buff, could be unique to the Roc for now if nothing
+	# else has that shape"): worn while a move that climbs gathers (Foe.climbs). No die may be
+	# dropped on it and nothing a spend lands with no aim reaches it (17 November: "the roc
+	# doesn't get splashed while aloft"); what it carries still wears at it
+	# (Skirmish.out_of_reach). The name is a working one, his to change.
+	"aloft": {"id": "aloft", "name": "Aloft", "description": "Out of reach while it climbs: no die can be dropped on it, and nothing aimed elsewhere reaches it. What it carries still wears at it. It comes down as it strikes.", "decay": "none", "stacking": "renew",
+		"tags": ["buff"], "effects": []},
+	"appropriated": {"id": "appropriated", "name": "Appropriated", "description": "The number of the piece it took off a machine: its borrowed swing lands it, and spends it.", "decay": "none", "stacking": "renew", "counted": true,
+		"tags": ["ability"], "effects": []},
 	# The Honey Badger's hopper (Ryan, 11 October; its Ore Hopper since 31 October): loads every
 	# foe its weapons damage puts in, which the Bullion Fragmenter fires a few a shot. A store on
 	# the machine with no effect of its own (the weapon that fires it reads it, and what the loads
@@ -336,7 +366,7 @@ const STATUS := {
 	# machine spends, equipment leaving it standing; a buff, so a purge takes it.
 	"juggernaut": {"id": "juggernaut", "name": "Juggernaut Drive", "description": "Its next weapon attack ignores armour.", "decay": "none", "spent_by": "weapon", "single": true, "stacking": "renew",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "ignore_armour", "value": 1}]},
-	"sapped": {"id": "sapped", "name": "Sapped", "description": "Its attacks deal 1 less damage a stack. Every stack goes after its next turn.", "decay": "after_turn",
+	"sapped": {"id": "sapped", "name": "Sapped", "description": "Its attacks deal 1 less damage a stack. Every stack goes as its next turn ends.", "decay": "after_turn",
 		"tags": ["sap", CLEANSABLE], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": -1}, {"trigger": "static", "effect": "add_attack", "value": -1}]},
 	# Brittle, one state on either body (Ryan, 15 November: "Crushed and flak - agreed, brittle";
 	# his mark on the crush: "We could consider making this one symmetrical and folding it into
@@ -354,7 +384,7 @@ const STATUS := {
 	# six and a boss never ramps. The clock is this entry's decay, read where Brittle is laid, by
 	# the bot and by the hold (stacks_next_round), so the stock pass's loop can read a stack a
 	# round against it (Ryan's question, 22 October).
-	"brittled": {"id": "brittled", "name": "Brittle", "description": "Every blow of a weapon it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.", "decay": "half",
+	"brittled": {"id": "brittled", "name": "Brittle", "description": "Every blow of a weapon it takes deals a point more a stack. Halves as its turn starts, rounded down.", "decay": "half",
 		"tags": ["brittle"], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
 	# On a machine ("brittled_mech"), laid by a foe's Brittle rider, its number a blow: the same
 	# point a stack on every blow it takes, the shield taking the extra first as it takes any
@@ -362,7 +392,7 @@ const STATUS := {
 	# round ends (tick). So it stands whole for the foes still to strike this turn and half for
 	# the next: a Brittle 1 is the pack's this turn and gone by the next. An ally's Cleanse
 	# lifts it; a Ward turns the rider away as it turns any.
-	"brittled_mech": {"id": "brittled_mech", "name": "Brittle", "description": "Every blow it takes deals a point more a stack. At the end of each round the stacks halve, rounded down.", "decay": "half",
+	"brittled_mech": {"id": "brittled_mech", "name": "Brittle", "description": "Every blow it takes deals a point more a stack. Halves as its turn starts, rounded down.", "decay": "half",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
 	# The Cassowary's Spun Up (Ryan's go, 19 October; built 21 October): the Spin-Up's buff, its
 	# number a stack on the next weapon the machine spends, stacking, carried between turns until
@@ -388,26 +418,28 @@ const STATUS := {
 	# foe lands on it deals nothing, so a rider that reads the hull (Destroy) finds none, its riders landing, and a blow of
 	# nothing leaves it standing (Skirmish._damage_mech spends it). A Ward turns away every rider
 	# a foe's blows lay on it that round; the
-	# damage lands. Neither stacks, and both go at the round's end (a buff's grant). On a foe
-	# (28 October), from its own specials, they last until the end of the player's next turn in
+	# damage lands. Neither stacks, and both go as their carrier's next turn starts (16 November,
+	# his four places; a machine's at the round's end and a foe's at END TURN until then, neither
+	# a blow apart). A foe's (28 October), from its own specials, reads in
 	# its own words (foe_barrier, foe_ward): its Barrier pops on a weapon's blow alone, and its
 	# Ward turns the team's marks (TEAM_MARKS, turns_mark), Suppressed excepted.
-	"barrier": {"id": "barrier", "name": "Barrier", "description": "The next blow a foe lands on it deals no damage; its riders land. Until the round's end.", "stacking": "renew", "single": true,
+	"barrier": {"id": "barrier", "name": "Barrier", "description": "The next blow a foe lands on it deals no damage; its riders land. Until its next turn starts.", "stacking": "renew", "single": true, "decay": "round",
 		"tags": ["buff"], "effects": []},
 	# Regenerating (28 October; one clock on both sides since 15 November, Ryan's mark: "These
 	# are structured as 'Regen 1 per stack' and I'd give all sources either a fixed duration, say
 	# 2 or 3 turns, or have it decay one stack at a time"; "Regenerating - agreed"): a point a
 	# stack as its unit's turn comes round, then a stack fades, Ablating's clock turned round, so
-	# Regenerating 3 gives 3, 2 and 1 and grants add their stacks. A foe's is hit points at its
-	# action, after its Ablating and Vitriol have ticked, so an Ablate is a race and never a wall
-	# (regrowth() below; the Marsh's by lean). A machine's is shield as the round opens, a point
-	# of shield regen a stack (regenerating_shield: the Storm Petrel's, built 30 October), a
-	# stack fading once the regen has run (Skirmish.start_round). Until 15 November a foe's was
-	# its value at each of three actions and a machine's a number a round for the rounds it
-	# said, each grant its own clock. A buff a Purge lowers, on either side.
-	"regenerating": {"id": "regenerating", "name": "Regenerating", "description": "Regrows {value} HP a stack at its action, after its Ablating and Vitriol, then loses a stack.",
+	# Regenerating 3 gives 3, 2 and 1 and grants add their stacks. A foe's is hit points as its
+	# turn ends, after its Ablating and Vitriol have ticked, so an Ablate is a race and never a
+	# wall (regrowth() below; the Marsh's by lean). A machine's is shield as its turn ends, after
+	# its Ablating the same (regenerating_mech; built 30 October for the Storm Petrel's lock, which
+	# no longer grants it, and kept on Ryan's word of 17 November with no piece granting it yet:
+	# "put machine regeneration back, that will literally be added in this session probably").
+	# Until 15 November a foe's was its value at each of three actions. A buff a Purge lowers, on
+	# either side.
+	"regenerating": {"id": "regenerating", "name": "Regenerating", "description": "Regrows {value} HP a stack as its turn ends, after its Ablating and Vitriol, then loses a stack.",
 		"tags": ["buff"], "effects": [{"trigger": "status", "effect": "regrow", "value": 1}]},
-	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (ablate, scorch, jam, corrupt, purge); a blow's damage lands. Until the round's end.", "stacking": "renew",
+	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (ablate, scorch, jam, corrupt, purge); a blow's damage lands. Until its next turn starts.", "stacking": "renew", "decay": "round",
 		"tags": ["buff"], "effects": []},
 	# The Ammit's Essence (Ryan, 12 November, its rework: "Kills grant one Soul"; "Souls granted by
 	# any kill"; "The souls last the battle"; "I wasn't going to cap it, as part of the fantasy"):
@@ -473,8 +505,9 @@ static func golden_value(f) -> int:
 	return 0
 
 
-## The HP a foe regrows at its action: a point for every stack of Regenerating it carries (the
-## status's own number a stack), read before the tick that fades one.
+## What a unit regrows as its turn ends: a point for every stack of Regenerating it carries (the
+## status's own number a stack), a foe's HP and a machine's shield, read before the tick that
+## fades one.
 static func regrowth(u) -> int:
 	var n := 0
 	for m in live(u):
@@ -503,24 +536,18 @@ static func primed_foe() -> Dictionary:
 
 
 ## A Barrier and a Ward on a foe (28 October): the machines' statuses in the foe's own words,
-## since a foe's lasts until the end of the player's next turn, its Barrier pops on a weapon's
-## blow alone and its Ward turns the team's marks, Suppressed excepted.
+## since its Barrier pops on a weapon's blow alone and its Ward turns the team's marks,
+## Suppressed excepted. Each lasts until its next turn starts, as a machine's does (16 November).
 static func foe_barrier() -> Dictionary:
 	var d: Dictionary = STATUS["barrier"].duplicate(true)
-	d["description"] = "The next blow of a weapon it takes deals no damage; the blow's riders land, and equipment pops nothing. Until it pops or the player's turn ends."
+	d["description"] = "The next blow of a weapon it takes deals no damage; the blow's riders land, and equipment pops nothing. Until it pops or its next turn starts."
 	return d
 
 
 static func foe_ward() -> Dictionary:
 	var d: Dictionary = STATUS["ward"].duplicate(true)
-	d["description"] = "No mark the team lays lands on it but Suppressed: no Ablating, Brittle, Cryo, Vitriol, Shock, Expose, Web Bomb, Paradox or drone. Damage lands. Until the player's turn ends."
+	d["description"] = "No mark the team lays lands on it but Suppressed: no Ablating, Brittle, Cryo, Vitriol, Shock, Expose, Web Bomb, Paradox or drone. Damage lands. Until its next turn starts."
 	return d
-
-
-## The end of the player's turn for a foe (28 October): what lasts until the end of the player's
-## next turn (a foe's Barrier and Ward, granted in the enemy's turn, decaying with the turn) goes.
-static func player_turn_end_foe(u) -> void:
-	u.modifiers = u.modifiers.filter(func(m) -> bool: return m.decay != DECAY_TURN_ALL)
 
 
 ## Does a Ward turn this mark away (28 October)? A foe under a Ward takes none of the team's
@@ -662,6 +689,8 @@ static func grant_for_rounds(u, passive: Dictionary, source: String, round: int)
 	var m := make(passive, ROUNDS, source)
 	if m != null:
 		m.expires_round = round
+		if status_decay(passive) == DECAY_START:
+			m.decay = DECAY_START   # it falls as its carrier's turn starts, the first after `round` (turn_opens); the round's end leaves it alone
 	return grant(u, m)
 
 
@@ -840,24 +869,24 @@ static func ends_with_turn(m) -> bool:
 	return m.decay == DECAY_TURN or m.decay == DECAY_TURN_ALL
 
 
-## The decay a status names in its definition ("none", "round", "turn", "turn_all", "half"),
-## a stack a tick when it names none.
+## The decay a status names in its definition ("none", "round", "turn", "turn_all", "half",
+## "after_turn", "turn_start"), a stack a tick when it names none.
 static func status_decay(def: Dictionary) -> int:
-	return {"none": DECAY_NONE, "round": DECAY_ROUND, "turn": DECAY_TURN, "turn_all": DECAY_TURN_ALL, "half": DECAY_HALF, "after_turn": DECAY_AFTER_TURN}.get(str(def.get("decay", "")), DECAY_TICK)
+	return {"none": DECAY_NONE, "round": DECAY_ROUND, "turn": DECAY_TURN, "turn_all": DECAY_TURN_ALL, "half": DECAY_HALF, "after_turn": DECAY_AFTER_TURN, "turn_start": DECAY_START, "start_tick": DECAY_START_TICK}.get(str(def.get("decay", "")), DECAY_TICK)
 
 
 ## What a foe's status keeps into the next round on the clock its definition names (the bot's
 ## look a round on, the hold's line): half, rounded down, on a halving clock; a stack less on a
-## stack a tick (a foe's statuses tick at its action); nothing on a round's; all of it on none.
+## stack a turn (a foe's fade as its own turn ends); nothing on a turn-start's; all of it on none.
 static func stacks_next_round(def: Dictionary, n: int) -> int:
 	match status_decay(def):
 		DECAY_HALF:
 			return int(n / 2.0)
-		DECAY_TICK, DECAY_TURN:
+		DECAY_TICK, DECAY_TURN, DECAY_START_TICK:
 			return maxi(0, n - 1)
 		DECAY_ROUND, DECAY_TURN_ALL, DECAY_AFTER_TURN:
 			return 0
-	return n
+	return n   # none, and a mark timed to a turn start (Exposed), which stands through the next
 
 
 ## Does the status run down to zero on its own clock (halving each tick), rather than end
@@ -869,12 +898,20 @@ static func decays_to_zero(def: Dictionary) -> bool:
 	return str(def.get("decay", "")) == "half"
 
 
-## The end of a machine's turn (the player's, 13 October): its turn statuses tick, Ablating's
-## points for the caller to take before the overheat, then Ablating loses a stack, Scorched goes
-## whole and the empty ones go. The round's tick leaves them alone. `spared`: nothing damages
-## the machine (Phased), so its Ablating takes no point, and fades a stack all the same (Ryan,
-## 16 November: "Everything ticks during phased. It doesn't take damage but it's a way of
-## waiting out a debuff"). A Swallowed machine is never asked: everything on it pauses.
+## The four places a status decays, ticks or falls off (Ryan, 16 November: "I see four places
+## things should decay, tick, or fall off"): its carrier's turn start, its turn end, the round's
+## end, and when it is spent. A machine's turn is the player's: it starts as the round opens and
+## ends at END TURN. A foe's turn starts as the foes' turn opens, since what one foe lays on
+## another must outlast that other's own action that round (a guard on every foe would fall off
+## the foes still to act before the player ever met it), and ends as its own action does.
+
+## A machine's turn ends (END TURN): its turn statuses tick, Ablating's points for the caller to
+## take before the overheat, then every stack that fades a turn loses one (Ablating,
+## Regenerating, whose regrowth the caller reads first: regrowth), Scorched and Sapped go whole,
+## and the empty ones go. `spared`: nothing damages the machine (Phased), so its Ablating takes
+## no point, and fades a stack all the same (Ryan, 16 November: "Everything ticks during
+## phased. It doesn't take damage but it's a way of waiting out a debuff"). A Swallowed machine
+## is never asked: everything on it pauses.
 static func turn_tick(u, spared: bool = false) -> Dictionary:
 	var out := tick_preview(u, true)
 	if spared:
@@ -883,7 +920,7 @@ static func turn_tick(u, spared: bool = false) -> Dictionary:
 	for m in u.modifiers:
 		if m.decay == DECAY_TURN_ALL or m.decay == DECAY_AFTER_TURN:
 			continue
-		if m.decay == DECAY_TURN:
+		if m.decay == DECAY_TURN or m.decay == DECAY_TICK:   # a stack a turn, whichever way it was granted: a status that names no clock fades here on a machine as it does at a foe's turn's end
 			m.stacks -= 1
 			if m.stacks <= 0:
 				continue
@@ -892,30 +929,55 @@ static func turn_tick(u, spared: bool = false) -> Dictionary:
 	return out
 
 
-## The owner's turn comes: apply this tick (the caller subtracts hp), then
-## every tick-decaying status loses a stack and the empty ones go. A machine's comes at the
-## round's end, so a debuff that halves on it halves here too (Brittle; its buffs halve at END
-## TURN, halve_buffs); a foe's comes at its action, so it
-## passes `halving` false and its halving statuses wait for the round's end (halve: Brittle on
-## Empowered's clock, 21 October). `held_round`: the statuses the round itself holds from
-## decaying on every unit (Essence Flare's "No Empowered decays this round"), beside a pin's.
-static func tick(u, halving: bool = true, held_round: Array = []) -> Dictionary:
+## A foe's turn ends, its own action done or lost: apply this tick (the caller subtracts hp,
+## and reads the regrowth first), then every stack that fades a turn loses one and the empty
+## ones go (Ablating, Vitriol, Regenerating). A pin on one is spent in its place: "the next
+## time it would decay, it doesn't" (Ryan, 16 November; Seared holds Ablating's fade, its
+## points still taken). `round_end` is a machine's call instead, as the round ends: its
+## once-a-round notes go, and nothing else of its is on this clock.
+static func tick(u, round_end: bool = false) -> Dictionary:
 	var out := tick_preview(u)
-	var held := held_statuses(u)   # a pin's: the status ticks and loses no stack (Seared)
-	held.append_array(held_round)  # and the field's (Skirmish.round_holds: Essence Flare's hold on Empowered)
+	var held: Array = []
+	if not round_end:
+		for m in u.modifiers.duplicate():   # a pin spent leaves the list as it is read
+			if m.decay == DECAY_TICK and not held.has(m.id) and spend_hold(u, m.id):
+				held.append(m.id)
 	var keep: Array = []
 	for m in u.modifiers:
-		if m.decay == DECAY_ROUND and halving and m.tags.has(ONCE):
-			continue   # a once-a-round gate's own note goes with the round; what lasts until its side's next turn (Armoured) waits for it (turn_opens)
-		if m.decay == DECAY_TICK and held.has(m.id):
-			pass
-		elif m.decay == DECAY_TICK:
+		if m.decay == DECAY_ROUND and round_end and m.tags.has(ONCE):
+			continue   # a once-a-round gate's own note goes with the round
+		if m.decay == DECAY_TICK and not round_end and not held.has(m.id):
 			m.stacks -= 1
 			if m.stacks <= 0:
 				continue
-		elif m.decay == DECAY_HALF and halving and (held.has(m.id) or m.tags.has("buff")):
-			pass   # held from this round's halving; or a buff, which halves as its side's turn ends (halve_buffs: a machine's Empowered at END TURN)
-		elif m.decay == DECAY_HALF and halving:
+		keep.append(m)
+	u.modifiers = keep
+	return out
+
+
+## A unit's turn starts (Ryan, 15 November: "The common "end" state between both sides is
+## "start of their next turn""; 16 November, his four places): what lasts until then goes, every
+## stack at once (Armoured, a Barrier, a Ward); a debuff that halves does, the other side's
+## blows having used it (Brittle), unless a pin holds it, which is spent in its place; and a
+## mark timed to a turn start falls once the round it names is past (Exposed; `round` the
+## round this turn belongs to). A machine's as the round opens, before the foes announce; a
+## foe's as the foes' turn opens, before the first of them acts.
+static func turn_opens(u, round: int = -1) -> void:
+	var held: Array = []
+	for m in u.modifiers.duplicate():
+		if m.decay == DECAY_HALF and not m.tags.has("buff") and not held.has(m.id) and spend_hold(u, m.id):
+			held.append(m.id)
+	var keep: Array = []
+	for m in u.modifiers:
+		if m.decay == DECAY_ROUND and not m.tags.has(ONCE):
+			continue
+		if m.decay == DECAY_START and round >= 0 and m.expires_round < round:
+			continue
+		if m.decay == DECAY_START_TICK:
+			m.stacks -= 1   # a stack as its turn starts (Hardened Light), gone at zero
+			if m.stacks <= 0:
+				continue
+		if m.decay == DECAY_HALF and not m.tags.has("buff") and not held.has(m.id):
 			# Rounded down, so it reaches zero on its own (one stack halves to none). Its grants
 			# are one modifier, whatever granted each stack (stack), so it halves as one number.
 			m.stacks = int(m.stacks / 2.0)
@@ -923,24 +985,13 @@ static func tick(u, halving: bool = true, held_round: Array = []) -> Dictionary:
 				continue
 		keep.append(m)
 	u.modifiers = keep
-	return out
 
 
-## A unit's side's turn opens: every status that lasts until then goes, every stack at once
-## (Armoured, from a brace, a buff, a Protect or the hopper alike; Ryan, 15 November: "The common
-## "end" state between both sides is "start of their next turn""). A foe's as the enemy's turn
-## opens (it went at the foe's own action until 15 November, so a foe acting late wore its plate
-## through the blasts of the foes before it); a machine's as the round opens, before the foes
-## announce (16 November: "Armoured we should change so its end is symmetrical on both sides";
-## it went at the round's end until then, a moment earlier and no blow apart).
-static func turn_opens(u) -> void:
-	u.modifiers = u.modifiers.filter(func(m) -> bool: return m.decay != DECAY_ROUND)
-
-
-## A machine's side's turn ends: the buffs it carries that halve do, rounded down, and the
-## empty ones go (Empowered; Ryan, 16 November: "Empowered should decay at the end of turn,
-## clearly, not end of round"), each but what the field holds this round (Essence Flare). A
-## debuff that halves on it (Brittle) keeps the round's end, where the foes' blows have used it.
+## A unit's turn ends: the buffs it carries that halve do, rounded down, and the empty ones go
+## (Empowered; Ryan, 16 November: "Empowered should decay at the end of turn, clearly, not end
+## of round"), each but what the field holds this round (Essence Flare). A machine's at END
+## TURN; a foe's as its own action ends, so a rally stands whole on the next blow of a foe that
+## had already acted when it landed.
 static func halve_buffs(u, held: Array = []) -> void:
 	var keep: Array = []
 	for m in u.modifiers:
@@ -952,29 +1003,37 @@ static func halve_buffs(u, held: Array = []) -> void:
 	u.modifiers = keep
 
 
-## The round's end for a foe, which is its side's turn's end (Brittle, 21 October: it halves at
-## the end of each round, rounded down; its Empowered with it): every halving status halves and
-## the empty ones go. Its other statuses tick at its action (tick).
-static func halve(u, held: Array = []) -> void:
+## A machine's turn ends: every dark entry whose rounds are done lights again, a cooldown's, a
+## jam's and Rapid's own switch-off alike (16 November: with Jammed, at its turn's end). The
+## die is not read between here and the round's end, so nothing moves in play.
+static func entries_relight(u, round: int) -> void:
 	var keep: Array = []
 	for m in u.modifiers:
-		if m.decay == DECAY_HALF and not held.has(m.id):
-			m.stacks = int(m.stacks / 2.0)
-			if m.stacks <= 0:
-				continue
+		if m.scope == ROUNDS and m.expires_round <= round and m.effects.any(func(eff) -> bool: return str(eff.get("effect", "")) == "disable_entry"):
+			continue
 		keep.append(m)
 	u.modifiers = keep
 
 
-## The statuses `u` holds from decaying right now (Pinned holds Brittle; Ryan, 11 November: "The
-## Flak pin should be its own status that gets applied for one turn. I assume we're going to want
-## a similar one for burning as well"): every status id a live hold_status names.
-static func held_statuses(u) -> Array:
-	var out: Array = []
+## The pin on `u` that holds `status_id` from decaying, spent: "the next time it would decay,
+## it doesn't" (Ryan, 16 November; the pin's own status for a round until then). True when one
+## held it, and that pin is gone. Pinned holds Brittle's halving; Seared holds Ablating's fade.
+static func spend_hold(u, status_id: String) -> bool:
+	for m in u.modifiers:
+		for eff in m.effects:
+			if str(eff.get("trigger", "")) == "static" and str(eff.get("effect", "")) == "hold_status" and str(eff.get("value", "")) == status_id:
+				u.modifiers.erase(m)
+				return true
+	return false
+
+
+## Does a pin on `u` hold `status_id` from its next decay (the chip's lock, the bot's look a
+## round on)?
+static func holds(u, status_id: String) -> bool:
 	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "hold_status" and not out.has(str(pair[0].get("value", ""))):
-			out.append(str(pair[0].get("value", "")))
-	return out
+		if str(pair[0].get("effect", "")) == "hold_status" and str(pair[0].get("value", "")) == status_id:
+			return true
+	return false
 
 
 ## The statuses `u` holds from decaying on every unit in its fight right now, either side's (a
@@ -1048,8 +1107,8 @@ static func supports_when(when: String) -> bool:
 static func end_round(u, round: int) -> void:
 	var keep: Array = []
 	for m in u.modifiers:
-		if not (m.scope == ROUNDS and m.expires_round <= round):
-			keep.append(m)
+		if not (m.scope == ROUNDS and m.expires_round <= round and m.decay != DECAY_START):
+			keep.append(m)   # a mark timed to a turn start (Exposed) falls there, never here (turn_opens)
 	u.modifiers = keep
 
 
@@ -1401,6 +1460,36 @@ static func granted_numbers(u, face: Face, target = null) -> Dictionary:
 	return out
 
 
+## What a spend of this entry at a foe lays on its own machine (self_status, static, scoped to its
+## piece by `entry`, its `when` honoured: the Storm Petrel's branches, Ryan, 17 November, "adds a
+## self-buff that increases shield armour for a turn to the lure", "adds a self-grant of Charged
+## stacks to the lure"), as [{status, stacks, per_foe}, ...]: each status once, its stacks the most
+## any grant says and a stack set for every foe the spend reached if any grant says per_foe, so a
+## direction's deeper step takes its first step's buff further (the Defence direction's Hardened Light,
+## a stack for each foe lured once the lure spreads). An attack's alone; the skirmish lays them
+## once the spend's hits are done (Skirmish._self_grants).
+static func self_grants(u, face: Face, target = null) -> Array:
+	var out: Array = []
+	if face == null or not face.is_attack():
+		return out
+	var at := {}
+	for pair in _taking_part(u, "static", face, target):
+		var eff: Dictionary = pair[0]
+		var id := str(eff.get("status", ""))
+		if str(eff.get("effect", "")) != "self_status" or not STATUS.has(id):
+			continue
+		var n := maxi(1, int(eff.get("value", 1)))
+		var each := bool(eff.get("per_foe", false))
+		if at.has(id):
+			var g: Dictionary = out[int(at[id])]
+			g["stacks"] = maxi(int(g["stacks"]), n)
+			g["per_foe"] = bool(g["per_foe"]) or each
+		else:
+			at[id] = out.size()
+			out.append({"status": id, "stacks": n, "per_foe": each})
+	return out
+
+
 ## The statuses this machine's live passives lay on one foe its blow reaches (lay_status on
 ## on_attack, its `when` read against that foe: the funnel-web's Ambush, 18 October), as
 ## [[status id, stacks a hit, damaging], ...]. The skirmish asks once a foe at the spend,
@@ -1468,7 +1557,10 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	# Damage past a kill spilling behind by a rule its machine wears (the Overrun Gearing's, a
 	# module's; a written rule since 15 November, no keyword): every entry aimed at a foe.
 	var spills := base.is_attack() and not base.spills and grants_spill(u, base, target)
-	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not spills:
+	# What its spend lays on its own machine, by an upgrade's branch (self_status: the Storm
+	# Petrel's lure, 17 November), the copy's to carry, never the die's.
+	var grants := self_grants(u, base, target)
+	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not spills and grants.is_empty():
 		return face
 	var c := base.duplicate_face() if base == face else base
 	c.reach = r
@@ -1495,6 +1587,8 @@ static func effective_face(u, face: Face, target = null) -> Face:
 		c.ignores_armour = true
 	if spills:
 		c.spills = true
+	if not grants.is_empty():
+		c.self_statuses = grants
 	return c
 
 
@@ -1732,8 +1826,8 @@ static func blow_blocked(u) -> Dictionary:
 	return fire(u, "on_blocked")
 
 
-## An event on a machine (on_skirmish_start as the fight begins, on_round_start after the
-## roll, on_shield_gain and on_heat_gain as the gauges move, on_hull_damage on a hit): every
+## An event on a machine (on_skirmish_start as the fight begins, on_shield_gain and
+## on_heat_gain as the gauges move, on_hull_damage on a hit): every
 ## passive on that trigger fires. `amount` is what the event carried (the shield or heat
 ## gained). Returns {shield, vent, statuses}: shield to gain and heat to shed,
 ## for the caller to apply where the gauges live, and the names of the statuses granted
@@ -1761,6 +1855,11 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 		match str(eff.get("effect", "")):
 			"add_shield":
 				out["shield"] += v
+			"shield_per_heat":
+				# Shield for every point of heat gained (the Storm Petrel's Hardlight Generator since 17
+				# November, Ryan: "gaining shield when it gains heat is a really solid hook"; "I did mean
+				# any source"): the trigger's amount, the points the gauge just climbed.
+				out["shield"] += v * maxi(0, amount)
 			"refill_shield":
 				# The shield back whole (the Kite's kill, Ryan, 11 November: "kills recharge it's
 				# shield completely"): what it is short of its maximum, no more.
@@ -1935,8 +2034,8 @@ static func spend_loads(u, n: int) -> int:
 ## November: "The funnel fill is tracked by the resource bar. The buff he gets from it is
 ## Armoured, not an ability. Its purgeable, but returns at the start of his turn since its
 ## granted by the funnel bar"; an ability of its own, the Ore Plate, from 8 November until then).
-## A buff like any Armoured: a Purge strips it, and it goes whole at the round's end as every
-## machine's Armoured does. The hopper grants it again as each round opens, to what the loads
+## A buff like any Armoured: a Purge strips it, and it goes whole as its machine's turn starts,
+## as every machine's Armoured does. The hopper grants it again as each round opens, to what the loads
 ## held are worth (plate_round), and between rounds it follows the loads by the change in their
 ## worth alone (_plate), so a load gained after a Purge brings back only its own point and the
 ## rest waits for the machine's next turn. The loads are the store's, on the resource bar, and
@@ -2000,15 +2099,26 @@ static func free_rerolls(u) -> int:
 	return maxi(0, n)
 
 
-## Does this machine's shield pay its weapons' heat (burn_shield, static; the Storm Petrel's Riot
-## Field Generator, Ryan's go of 21 October, built 30 October)? While its shield stands, the gun's
-## own heat a weapon's spend would add comes off the shield instead, as far as it holds, and the
-## target takes a blow of what the shield paid (Skirmish._zap).
-static func burns_shield(u) -> bool:
-	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "burn_shield":
-			return true
-	return false
+## A machine's Regenerating: the status in the machine's own words, the one rule on either body:
+## a point a stack as its turn ends, after its Ablating, then a stack fades (16 November, his four
+## places). Shield where a foe's is hit points, a shield gain like any other, so a broken shield
+## takes none. Stacked, never timed: grants add. No piece grants it today (the Storm Petrel's lock
+## did until 17 November); kept on Ryan's word for the one to come.
+static func regenerating_mech() -> Dictionary:
+	var d: Dictionary = STATUS["regenerating"].duplicate(true)
+	d["description"] = "Regains {value} shield a stack as its turn ends, after its Ablating, then loses a stack."
+	d["decay"] = "turn"
+	return d
+
+
+## The shield a point of heat gained stands up on this machine (shield_per_heat, on_heat_gain; the
+## Storm Petrel's Hardlight Generator since 17 November): the bot's and the die's read of the hook.
+static func shield_per_heat(u) -> int:
+	var n := 0
+	for pair in _taking_part(u, "on_heat_gain", null):
+		if str(pair[0].get("effect", "")) == "shield_per_heat":
+			n += int(pair[0].get("value", 0)) * pair[1].stacks
+	return maxi(0, n)
 
 
 ## The most of the team's unspent rerolls this machine banks at the round's end (bank_rerolls,
@@ -2020,23 +2130,6 @@ static func bank_cap(u) -> int:
 		if str(pair[0].get("effect", "")) == "bank_rerolls":
 			cap = maxi(cap, int(pair[0].get("value", 0)))
 	return cap
-
-
-## A machine's Regenerating (the Storm Petrel's St. Elmo's Regenerator, built 30 October): the
-## status in the machine's own words, a point of shield a stack as the round opens (on_round_start
-## add_shield, round_start below: a shield gain like any other, a broken shield taking none), and
-## the skirmish fades a stack once it has fired. Stacked, never timed: grants add.
-static func regenerating_shield() -> Dictionary:
-	var d: Dictionary = STATUS["regenerating"].duplicate(true)
-	d["description"] = "Regains 1 shield a stack as the round opens, then loses a stack."
-	d["effects"] = [{"trigger": "on_round_start", "effect": "add_shield", "value": 1}]
-	return d
-
-
-## What the start of a round does for this machine (on_round_start, after the roll), with
-## the heat it carries: a machine's Regenerating.
-static func round_start(u, heat: int) -> Dictionary:
-	return fire(u, "on_round_start", heat)
 
 
 ## What this machine's passives do to an ally it shields (on_shield_granted; the Puffin's
@@ -2298,16 +2391,17 @@ static func heat_per_blow(u) -> int:
 	return n
 
 
-## What a machine's passed turn releases (pass_release, static; the Whip Scorpion's Thermal
-## Ejection Manifold, Ryan, 12 November: "1 damage to each enemy, increased by 1 for each heat
-## over 8"): {value: what every foe takes at the gate, gate: the heat it needs to fire, id: the
-## passive's, which its model's firing is keyed by (the broadside, MechRig.fire_act)}, a point
-## more for each heat past the gate (Skirmish.release_shot). Empty for a machine whose pass
-## releases nothing.
-static func pass_release(u) -> Dictionary:
+## What a machine's reboot blasts as its heat vents (reboot_release, static; the Whip Scorpion's
+## Thermal Ejection Manifold, Ryan, 12 November: "1 damage to each enemy, increased by 1 for each
+## heat over 8"; 17 November, on the reboot's vent in place of a passed turn: "the reboot vent is
+## the one that explodes"; no gate since the same day, "1 damage to all enemies for every X
+## heat"): {value: what every foe takes a step, per: the heat a step, id: the passive's, which
+## its model's firing is keyed by (the broadside, MechRig.fire_act)} (Skirmish.release_shot).
+## Empty for a machine whose vent blasts nothing.
+static func reboot_release(u) -> Dictionary:
 	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "pass_release":
-			return {"value": int(pair[0].get("value", 1)), "gate": int(pair[0].get("gate", 1)), "id": str(pair[1].id)}
+		if str(pair[0].get("effect", "")) == "reboot_release":
+			return {"value": int(pair[0].get("value", 1)), "per": maxi(1, int(pair[0].get("per", 1))), "id": str(pair[1].id)}
 	return {}
 
 
@@ -2505,6 +2599,8 @@ static func grant_def(u, def: Dictionary, stacks: int, source: String, until_rou
 	# it and whatever round the grant names: its end is the turn's opening, no round's.
 	if status_decay(def) == DECAY_ROUND:
 		return stack(u, def, SKIRMISH, source, stacks, DECAY_ROUND)
+	if status_decay(def) == DECAY_START_TICK:
+		return stack(u, def, SKIRMISH, source, stacks, DECAY_START_TICK)   # its clock is its stacks, a stack a turn start (Hardened Light)
 	if decays_to_zero(def):
 		return stack(u, def, SKIRMISH, source, stacks, status_decay(def))
 	# One a use spends (Spun Up, spent whole by the next weapon; a primer, a stack a weapon
@@ -2588,6 +2684,9 @@ static func effect_text(eff: Dictionary) -> String:
 			body = "gains %s" % (Face.keyword_label(kw) if kw > 0 else str(v))
 			if eff.has("number"):
 				body += " %d" % int(eff["number"])   # a numbered grant says its number (the drum's Spread 2)
+		"self_status":
+			var sn := str(STATUS.get(str(eff.get("status", "")), {}).get("name", str(eff.get("status", ""))))
+			body = "spent on a foe, lays %s %s on its own machine%s" % [sn, vs, " for each foe it reaches" if bool(eff.get("per_foe", false)) else ""]
 		"seal_form": body = "equipment it spends on itself seals it: armour +%s, its own cooling stopped, %s hotter at the end of each turn; a weapon it fires opens it" % [vs, str(eff.get("heat", 0))]
 		"stack_status":
 			var nm := str(STATUS.get(str(v), {}).get("name", str(v)))
@@ -2602,7 +2701,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
 		"fold_die": body = "its die is two batteries of %s, one up at a time with its fixed pieces; the battery up stays up from fight to fight, and a battle opens on the first" % vs
 		"rewrite_weapon": body = "every weapon and equipment it aims at a foe fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
-		"pass_release": body = "a turn it ends with an entry it could have spent and %d heat or more releases its heat once the enemy has acted: %s on every foe, 1 more for each heat over %d" % [int(eff.get("gate", 1)), vs, int(eff.get("gate", 1))]
+		"reboot_release": body = "a reboot blasts what it vents: %s on every foe for every %d heat" % [vs, maxi(1, int(eff.get("per", 1)))]
 		"shove_behind": body = "damaging a foe in the front rank deals %s%% of its maximum HP, rounded up, to the foe behind it" % vs
 		"hold_status": body = "its %s does not decay" % str(STATUS.get(str(v), {}).get("name", v))
 		"hold_all": body = "no %s decays this round, any unit's" % str(STATUS.get(str(v), {}).get("name", v))
@@ -2613,6 +2712,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"shield_regen_per_heat": body = "shield regen +%s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
 		"shield_per_ally_heat": body = "the shield grows by %s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
 		"add_shield": body = "+%s shield" % vs
+		"shield_per_heat": body = "+%s shield for each point" % vs
 		"refill_shield": body = "its shield recharges whole"
 		"tick_hp": body = "%s damage per stack each turn" % vs
 		"tick_hp_share": body = "loses %s%% of its current HP per stack each turn" % vs
@@ -2635,7 +2735,6 @@ static func effect_text(eff: Dictionary) -> String:
 	var lead := ""
 	match str(eff.get("trigger", "")):
 		"on_injury": lead = "on an injury: "
-		"on_round_start": lead = "at the start of the round: "
 		"on_hull_damage": lead = "on losing hull: "
 		"on_shield_hit": lead = "on a foe's blow its shield takes, none on its hull: "
 		"on_blocked": lead = "on each blow of its weapons a foe's armour or Barrier takes whole: "
@@ -2754,5 +2853,5 @@ static func describe(u) -> Array:
 	for m in live(u):
 		if m.tags.has(ONCE):
 			continue   # a once-a-round gate's mark: the engine's own note
-		out.append([m.name, m.description, m.source, m.scope, m.stacks, m.id])
+		out.append([m.name, m.description, m.source, m.scope, m.stacks, m.id, m.component])
 	return out

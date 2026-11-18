@@ -93,7 +93,7 @@ var members: Array = []
 var composition: String = ""       # the composition it emerged as (content's id), "" for a one-type pack
 var composition_size: String = ""  # its size: patrol, formation, elite or escort (ContentDB.COMPOSITION_SIZES); "" for a one-type pack
 var behaviour: String = "push"   # push: walks toward the gate; hunt: walks toward one machine, its prey (bible section 5), when its composition says so (`hunts`; Battlefield.pack_of)
-var hunts: String = "nearest"    # a hunter's caveat: nearest, weakest, strongest, slowest or fastest
+var hunts: String = "nearest"    # a hunter's caveat: nearest, weakest, strongest or slowest
 var prey: int = 0                # a hunter's locked machine, by unit id; 0 until it has picked one
 var layout: Array = []           # a dealt composition's grid, eight cells (the front rank's four, then the back's), each a foe id or "" (the long wall brief, section 6; ContentDB.resolve_layout); [] for none
 var squad: int = 3               # the threat rating, the machines the pack is intended for, 1 to 4 (the long wall brief 3.7; ContentDB.squad_of)
@@ -126,6 +126,10 @@ var damaged_faces: Dictionary = {}
 ## Modules fitted (content ids, in slot order), for the codex and the hangar; the engine runs
 ## them as loadout modifiers sourced "module" (ContentDB.fit_module).
 var modules: Array[String] = []
+## Its upgrades' picks along its chassis's branches, the direction ids in the order taken
+## (ContentDB.branch_error), for the codex, the save and the hangar; the engine runs each step as a
+## loadout modifier sourced "branch" (ContentDB.fit_branches).
+var branches: Array[String] = []
 
 
 static func mech(uid: int, name: String, at: Vector2i, speed: int = MECH_MOVE) -> Unit:

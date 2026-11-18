@@ -49,6 +49,15 @@ const TERRAIN := {
 ## the spikes on top.
 const STEP := 7.0
 const WATER_DROP := -5.0
+const CHASM_DROP := -42.0   # a chasm's floor (the gorge's, 16 November): six steps down, out of sight of most of it
+## A chasm has a bottom (Ryan, 16 November: "for the machine world there should be like a barely
+## visible bottom. Maybe some little rivers down there ... its not just a hole into nothing"): its
+## rock darkens down its walls to a gravel floor at CHASM_FLOOR_SHADE of its lit tone, and a stream a
+## few units wide winds along the floor from each chasm hex into the next, a little brighter so it
+## reads. The painting keeps its black pit.
+const CHASM_FLOOR_SHADE := 0.3
+const CHASM_STREAM_SHADE := 0.55
+const CHASM_STREAM_WIDTH := 3.5
 
 ## The tile each terrain's top wears (art/terrain/<name>.png); sides wear rock.
 const TILE := {
@@ -216,9 +225,14 @@ func _to_units_layer(n: Node) -> void:
 
 
 ## One sun from the north-west, casting shadows, and a little ambient; the mechs and
-## structures carry their own toon light on top.
+## structures carry their own toon light on top. The sun stands on the machines' layer too: a
+## camera's cull mask hides the lights off its layers as well, and the machines' own camera (the
+## one that draws them over the painting) saw no sun, so a machine walking into the painting went
+## dark as if in shadow (Ryan, 16 November: "There's weird shadows on mechs that move into the
+## painted area").
 func _build_light() -> void:
 	var sun := DirectionalLight3D.new()
+	sun.layers = 1 | (1 << (UNITS_LAYER - 1))
 	sun.light_energy = 2.4
 	sun.rotation_degrees = Vector3(-52.0, 35.0, 0.0)
 	sun.shadow_enabled = true
@@ -264,7 +278,14 @@ func lift(h: Vector2i) -> float:
 
 ## A hex's ground height in model units, from the map's relief (margin hexes included).
 func _height_of(h: Vector2i) -> float:
-	var e: int = field.map.elevation.get(h, 0)
+	return height_of_step(field.map.elevation.get(h, 0))
+
+
+## A relief step's height in model units: a step up STEP each, water sunk, a chasm's floor deep
+## (BattleMap.elevation); the painted world stands at the same (DomainGround.lift_of).
+static func height_of_step(e: int) -> float:
+	if e <= -2:
+		return CHASM_DROP
 	return WATER_DROP if e < 0 else float(e) * STEP
 
 
@@ -315,6 +336,109 @@ func _terrain_material(tile: String, ripple: float = 0.0, by_uv: bool = false, s
 	m.set_shader_parameter("by_uv", 1.0 if by_uv else 0.0)
 	_materials[tile] = m
 	return m
+
+
+## A tile's material darkening with depth down a chasm (terrain.gdshader's fade): its lit tone at
+## the ground, `floor_shade` of it at the chasm's floor.
+func _chasm_material(tile: String, ripple: float = 0.0, floor_shade: float = CHASM_FLOOR_SHADE) -> ShaderMaterial:
+	var key := "%s/chasm/%.2f" % [tile, floor_shade]
+	if not _materials.has(key):
+		var m: ShaderMaterial = _terrain_material(tile, ripple).duplicate()
+		m.set_shader_parameter("fade_below", CHASM_DROP)
+		m.set_shader_parameter("fade_floor", floor_shade)
+		_materials[key] = m
+	return _materials[key]
+
+
+const NO_HEX := Vector2i(-99999, -99999)
+
+
+## Whether a hex is a chasm: a wall of the chasms' look, sunk deep.
+func _is_chasm(h: Vector2i) -> bool:
+	return field.map.terrain_of(h) == BattleMap.Terrain.MOUNTAIN and str(field.map.wall_look.get(h, "")) == "chasms"
+
+
+## The waterfalls down a chasm's walls where a flooded stretch beside it spills in: on each edge in
+## `edges` (_column_geo's order), a sheet from the water's level down to the floor at `floor_h`, its
+## UV along the lip and down the fall for waterfall.gdshader, facing into the chasm.
+func _falls_geo(edges: Array, floor_h: float) -> Dictionary:
+	var corners := MapOrient.corners(Vector2.ZERO, hex_px - 0.75)
+	var n := corners.size()
+	var v := PackedVector3Array()
+	var nn := PackedVector3Array()
+	var uv := PackedVector2Array()
+	for i in edges:
+		var a := _world(corners[i], 0.0)
+		var b := _world(corners[(i + 1) % n], 0.0)
+		var mid := (a + b) * 0.5
+		var nrm := -Vector3(mid.x, 0.0, mid.z).normalized()
+		var at_top := Vector3(a.x, WATER_DROP, a.z)
+		var bt_top := Vector3(b.x, WATER_DROP, b.z)
+		var a_foot := Vector3(a.x, floor_h, a.z)
+		var b_foot := Vector3(b.x, floor_h, b.z)
+		var quad := [[at_top, Vector2(0, 0)], [bt_top, Vector2(1, 0)], [b_foot, Vector2(1, 1)], [at_top, Vector2(0, 0)], [b_foot, Vector2(1, 1)], [a_foot, Vector2(0, 1)]]
+		for q in quad:
+			v.append(q[0])
+			uv.append(q[1])
+			nn.append(nrm)
+	return {"v": v, "n": nn, "uv": uv}
+
+
+var _falls_mat: ShaderMaterial = null
+
+func _falls_material() -> ShaderMaterial:
+	if _falls_mat == null:
+		_falls_mat = ShaderMaterial.new()
+		_falls_mat.shader = load("res://game/battle/waterfall.gdshader")
+		var path := "res://art/terrain/%s.png" % TILE[BattleMap.Terrain.WATER]
+		if ResourceLoader.exists(path):
+			_falls_mat.set_shader_parameter("tile", load(path))
+	return _falls_mat
+
+
+## The stream on a chasm's floor, about the hex's middle: a ribbon CHASM_STREAM_WIDTH across from
+## the middle to the edge it shares with each neighbouring chasm (or a flooded stretch of one),
+## bending a little on the way and straight again at the edge so the next hex's half meets it, and
+## a pool at the middle where they join (the whole of it in a lone hex).
+func _stream_geo(h: Vector2i) -> Dictionary:
+	var map := field.map
+	var v := PackedVector3Array()
+	var y := CHASM_DROP + 0.4
+	var here := _hex_world(h)
+	var half := CHASM_STREAM_WIDTH * 0.5
+	var links := 0
+	for d in Hex.DIRECTIONS:
+		var nb: Vector2i = h + d
+		var wet: bool = map.terrain_of(nb) == BattleMap.Terrain.WATER
+		if not (wet or _is_chasm(nb)):
+			continue
+		links += 1
+		var to := _hex_world(nb) - here
+		var end := Vector2(to.x, to.z) * 0.5
+		var along := end.normalized()
+		var side := Vector2(-along.y, along.x)
+		var bend := (2.0 + float(absi(h.x * 31 + h.y * 17 + d.x * 7 + d.y * 3) % 3)) * (1.0 if (h.x + h.y + d.x) % 2 == 0 else -1.0)
+		var steps := 6
+		var prev_l := Vector2.ZERO
+		var prev_r := Vector2.ZERO
+		for i in range(steps + 1):
+			var t := float(i) / float(steps)
+			var at := end * t + side * sin(PI * t) * bend
+			var l := at + side * half
+			var r := at - side * half
+			if i > 0:
+				for p in [prev_l, prev_r, r, prev_l, r, l]:
+					v.append(Vector3(p.x, y, p.y))
+			prev_l = l
+			prev_r = r
+	var pool := half * (1.6 if links > 0 else 2.6)
+	for i in range(6):
+		var a := TAU * float(i) / 6.0
+		var b := TAU * float(i + 1) / 6.0
+		v.append(Vector3(0.0, y, 0.0))
+		v.append(Vector3(cos(a) * pool, y, sin(a) * pool))
+		v.append(Vector3(cos(b) * pool, y, sin(b) * pool))
+	return {"v": v, "n": _filled3(v.size(), Vector3.UP)}
 
 
 ## Which neighbours of a road hex are road too (the gate counts, so the road runs into
@@ -1242,15 +1366,19 @@ func _build_ground() -> void:
 		var hgt := _height_of(h)
 		# Which edges need a wall: those facing a neighbour at another height, or none.
 		var sides: Array = []
+		var beyond: Array = []   # the hex across each edge, or NO_HEX past the scenery
 		var here := MapOrient.to_pixel(h, hex_px)
 		for i in range(corners.size()):
 			var mid: Vector2 = (corners[i] + corners[(i + 1) % corners.size()]) * 0.5
 			var across := here + mid * 2.0
 			var other: float = -999.0
+			var who := NO_HEX
 			for nb in Hex.neighbors(h):
 				if (map.has(nb) or map.margin.has(nb)) and MapOrient.to_pixel(nb, hex_px).distance_to(across) < hex_px * 0.5:
 					other = _height_of(nb)
+					who = nb
 			sides.append(absf(other - hgt) > 0.01)
+			beyond.append(who)
 		var band := _band(h)
 		_bake(rim, Transform3D(Basis.IDENTITY, at + Vector3(0, minf(0.0, hgt) - 0.2, 0)), rim_mat, band, false)
 		# One node at ground level per hex: the marks hang off it.
@@ -1266,8 +1394,29 @@ func _build_ground() -> void:
 		var ground_t: int = map.crag_base.get(h, t) if t == BattleMap.Terrain.MOUNTAIN else t
 		var at_xf := Transform3D(Basis.IDENTITY, at)
 		var shaded: bool = scenery.has(h)   # past the field: in shade (SCENERY_SHADE)
+		var pit: bool = _is_chasm(h)
+		# A flooded stretch beside a chasm spills into it: the chasm's wall on that edge is a
+		# waterfall from the water's level to its floor, and the water keeps no bank there.
+		var falls: Array = []
+		for i in range(sides.size()):
+			var nb: Vector2i = beyond[i]
+			if nb == NO_HEX:
+				continue
+			if pit and map.terrain_of(nb) == BattleMap.Terrain.WATER:
+				falls.append(i)
+				sides[i] = false
+			elif t == BattleMap.Terrain.WATER and _is_chasm(nb):
+				sides[i] = false
 		var column: Array
-		if ground_t == BattleMap.Terrain.ROAD:
+		if pit:
+			# A chasm: the column sunk deep, its own walls rock from the ground down darkening as
+			# they go, its floor gravel in the dark and a stream along it.
+			column = _column_geo(hgt, sides)
+			_bake(column[0], at_xf, _chasm_material("gravel"), band, true)
+			_bake(_stream_geo(h), at_xf, _chasm_material("water", 1.0, CHASM_STREAM_SHADE), band, false)
+			if not falls.is_empty():
+				_bake(_falls_geo(falls, hgt), at_xf, _falls_material(), band, false)
+		elif ground_t == BattleMap.Terrain.ROAD:
 			# The road's links and its seed ride in the vertex colour (road.gdshader), so
 			# road hexes bake like any other and need nothing per instance.
 			var seed_f := fmod(float(h.x * 131 + h.y * 7919) * 0.0137, 1.0)
@@ -1276,11 +1425,12 @@ func _build_ground() -> void:
 		else:
 			column = _column_geo(hgt, sides)
 			_bake(column[0], at_xf, _terrain_material(TILE[ground_t], 1.0 if ground_t == BattleMap.Terrain.WATER else 0.0, false, SCENERY_SHADE if shaded else 1.0), band, true)
-		_bake(column[1], at_xf, _terrain_material("rock", 0.0, false, SCENERY_SHADE) if shaded else rock, band, true)
-		if in_field and not (map.gate_hexes.has(h) or map.wall_hexes.has(h)):
+		var walls: Material = _chasm_material("rock") if pit else (_terrain_material("rock", 0.0, false, SCENERY_SHADE) if shaded else rock)
+		_bake(column[1], at_xf, walls, band, true)
+		if in_field and not pit and not (map.gate_hexes.has(h) or map.wall_hexes.has(h)):
 			# The grid is the display's own light, drawn on the ground in the scene so a
 			# raised hex hides the lines behind it; the wall and the machines hide it the
-			# same way, by standing on it.
+			# same way, by standing on it. Never down a chasm.
 			_bake(_grid_geo(hgt + 0.35), at_xf, _grid_material(), band, false)
 		rng.seed = h.x * 131 + h.y * 7919
 		if map.city.has(h) or _city_row(h):
@@ -1439,40 +1589,82 @@ func _stone_material() -> StandardMaterial3D:
 ## and cliffs a wall of rock. Every one overflows its tile and stands WALL_MIN at least, well
 ## over the decoration, so it reads as a thing a flyer goes over. Returns how tall it stands
 ## above the ground, so a flyer clears it and no more.
-func _wall_model(col: Node3D, look: String, hgt: float, rng: RandomNumberGenerator) -> float:
+## What stands on a badland's wall hex (mesas) or a ruined city's (towers), as the reconstruction
+## builds it and the painted world draws it (DomainGround), so the two meet where the painting
+## takes the ground (Ryan, 16 November: "In Badlands, the connected mesas of the painted and the
+## rock features of the 3D don't really mesh"). Each piece a prism in model units about its hex's
+## middle on its ground: {"x", "z": its middle, "from", "to": its foot and top above the ground,
+## "r0", "r1": its radius at the foot and at the top, "sides": 6, a pillar turned `turn` radians,
+## or 4, a box square to the view with `depth` its depth as a share of its width, "windows": the
+## heights, as shares of the piece, of the lit bands across a box's face}. Drawn from `rng` as it
+## stands seeded by the hex, so both worlds draw the same pieces.
+static func wall_pieces(look: String, rng: RandomNumberGenerator) -> Array:
+	var out: Array = []
 	match look:
-		"towers":
-			# Dead skyscrapers: tall thin shells stepping down as they rise, a few dim
-			# windows still lit on the tallest, far above anything else on the field.
-			var rubble := _terrain_material("rubble")
-			for k in range(4):
-				var w := rng.randf_range(8.0, 12.0)
-				var tall := rng.randf_range(70.0, 96.0) if k == 0 else rng.randf_range(WALL_MIN, 62.0)
-				var ox := 0.0 if k == 0 else rng.randf_range(-17.0, 17.0)
-				var oz := 0.0 if k == 0 else rng.randf_range(-13.0, 13.0)
-				for step in range(3):
-					var frac := 1.0 - 0.22 * step
-					var size := Vector3(w * frac, tall / 3.0, w * frac * rng.randf_range(0.7, 1.0))
-					_box(col, size, rubble, Vector3(ox + rng.randf_range(-1.0, 1.0), hgt + tall / 6.0 + step * tall / 3.0, oz + rng.randf_range(-1.0, 1.0)))
-				if k == 0:
-					var wm := _window_material("dim", Color(0.9, 0.7, 0.35), 1.2)
-					for wz in [tall * 0.35, tall * 0.55]:
-						_box(col, Vector3(w * 0.7, 2.0, 0.6), wm, Vector3(ox, hgt + wz, oz - w * 0.5 * rng.randf_range(0.8, 1.0)), Vector3.ZERO, false)
-			return 96.0
 		"mesas":
-			# Mesas: flat-topped blocks stacked and offset, a badland.
-			var rock := _terrain_material("rock")
+			# Mesas: flat-topped pillars of rock, a great one and two lower, each stacked from two
+			# slabs and narrowing, a badland's spires (Ryan, 10 November: "can use more spires").
 			for k in range(3):
 				var tall := rng.randf_range(44.0, 54.0) if k == 0 else rng.randf_range(28.0, 38.0)
 				var ox := 0.0 if k == 0 else rng.randf_range(-16.0, 16.0)
 				var oz := 0.0 if k == 0 else rng.randf_range(-12.0, 12.0)
 				for step in range(2):
 					var top := rng.randf_range(10.0, 15.0) * (0.8 if step == 1 else 1.0)
-					var slab_h := tall * (0.6 if step == 0 else 0.4)
-					_cyl(col, top, top * 1.15, slab_h, 6, rock, Vector3(ox, hgt + slab_h * 0.5 + (tall * 0.6 if step == 1 else 0.0), oz), Vector3(0.0, rng.randf_range(0, TAU), 0.0))
-			return 54.0
+					var from := 0.0 if step == 0 else tall * 0.6
+					var slab := tall * (0.6 if step == 0 else 0.4)
+					out.append({"x": ox, "z": oz, "from": from, "to": from + slab, "r0": top * 1.15, "r1": top, "sides": 6, "turn": rng.randf_range(0.0, TAU), "depth": 1.0})
+		"towers":
+			# Fewer, larger towers (Ryan, 16 November: "pull the scale back a bit and make the city
+			# relatively larger than the machines. So less buildings in each hex, but they're
+			# larger"; four slim shells stood on a hex): one great tower filling most of its hex,
+			# stepping in twice as it rises, or two side by side, the second lower. Each a box
+			# square to the view, the great tower's face keeping a few lit window bands.
+			var pair := rng.randf() < 0.45
+			var side := 1.0 if rng.randf() < 0.5 else -1.0
+			for k in range(2 if pair else 1):
+				var w := rng.randf_range(22.0, 26.0) if not pair else (rng.randf_range(14.0, 17.0) if k == 0 else rng.randf_range(11.0, 13.0))
+				var depth := rng.randf_range(0.8, 1.0)
+				var tall := rng.randf_range(80.0, 110.0) if k == 0 else rng.randf_range(46.0, 66.0)
+				var x := 0.0
+				if pair:
+					x = side * rng.randf_range(12.0, 14.0) if k == 0 else -side * rng.randf_range(15.0, 17.0)
+				var z := rng.randf_range(-3.0, 3.0)
+				var tiers := 3 if k == 0 else 2
+				for step in range(tiers):
+					var frac := 1.0 - 0.16 * step
+					var windows: Array = [0.35, 0.7] if k == 0 and step < tiers - 1 else []
+					out.append({"x": x, "z": z, "from": tall * float(step) / tiers, "to": tall * float(step + 1) / tiers, "r0": w * frac, "r1": w * frac, "sides": 4, "turn": 0.0, "depth": depth, "windows": windows})
+	return out
+
+
+func _wall_model(col: Node3D, look: String, hgt: float, rng: RandomNumberGenerator) -> float:
+	match look:
+		"towers", "mesas":
+			# Dead skyscrapers or a badland's stacked mesas, the pieces the painted world draws too
+			# (wall_pieces); the great tower keeps a few dim windows lit.
+			var skin := _terrain_material("rubble" if look == "towers" else "rock")
+			var wm := _window_material("dim", Color(0.9, 0.7, 0.35), 1.2)
+			var top := 0.0
+			for p in wall_pieces(look, rng):
+				var x: float = p["x"]
+				var z: float = p["z"]
+				var from: float = p["from"]
+				var to: float = p["to"]
+				top = maxf(top, to)
+				if int(p["sides"]) == 4:
+					var w: float = p["r0"]
+					var d := w * float(p["depth"])
+					_box(col, Vector3(w * 2.0, to - from, d * 2.0), skin, Vector3(x, hgt + (from + to) * 0.5, z))
+					for frac in p.get("windows", []):
+						var wy := from + (to - from) * float(frac)
+						_box(col, Vector3(w * 1.4, 2.0, 0.6), wm, Vector3(x, hgt + wy, z + d + 0.2), Vector3.ZERO, false)
+				else:
+					_cyl(col, p["r1"], p["r0"], to - from, int(p["sides"]), skin, Vector3(x, hgt + (from + to) * 0.5, z), Vector3(0.0, float(p["turn"]), 0.0))
+			return top
 		"cliffs":
 			return _cliff(col, hgt, rng)
+		"chasms":
+			return 0.0   # a chasm is its column, sunk: nothing stands in it
 	# Crags: rock spikes, leaning, filling the tile.
 	var rock_dark := _terrain_material("rock")
 	for k in range(6):
@@ -1715,7 +1907,9 @@ func _build_camera() -> void:
 	_camera.near = 1.0
 	_camera.far = 4000.0
 	add_child(_camera)
-	_camera.add_child(MechView3D.sheen_light())   # one world: the units' camera shares it
+	var sheen := MechView3D.sheen_light()
+	sheen.layers |= 1 << (UNITS_LAYER - 1)   # seen by the machines' camera too, as the sun is (_build_light)
+	_camera.add_child(sheen)   # one world: the units' camera shares it
 	_aim()
 
 
@@ -1752,20 +1946,15 @@ func sync() -> void:
 		var ground_y := y
 		if u.traits.has("flyer"):
 			# A flyer rides over whatever stands on its hex (Ryan, 22 September: no clipping
-			# through a mesa), just clear of the tallest thing there. Over ground the other
-			# world has taken, the painting is flat, so it flies level with it, and the
-			# height it flies at eases between hexes rather than stepping (Ryan, the same day).
-			var under_px: Vector2 = _origin + (_anim_px[u.id] if _anim_px.has(u.id) else MapOrient.to_pixel(_hex_of(u), hex_px))
-			# Whether the ground here is still the reconstruction's: the same threshold the
-			# compositor paints at, so the flyer clears the geometry wherever it can be seen
-			# and flies level only where the painting has taken it.
-			var solid := Bleed.solid(under_px, grad, src)
+			# through a mesa), just clear of the tallest thing there, in either world (the
+			# painting stands at the same heights), and the height it flies at eases between
+			# hexes rather than stepping (Ryan, the same day).
 			var clear := maxf(0.0, float(_top.get(under, 0.0)) - _height_of(under) + 6.0 - HOVER)
-			var want := (_height_of(under) + clear) * solid
+			var want := _height_of(under) + clear
 			var prev: float = _fly_y.get(u.id, want)
 			y = lerpf(prev, want, 1.0 - exp(-_dt * 7.0))
 			_fly_y[u.id] = y
-			ground_y = _height_of(under) * solid
+			ground_y = _height_of(under)
 		if _anim_px.has(u.id):
 			_base[u.id] = _world(_anim_px[u.id], y)
 			if _shadows.has(u.id):

@@ -1490,8 +1490,8 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "A canister of wire and resin lobbed at a foe's feet (Ryan's working name). It bursts after the foe has moved, and the foe beside it is caught in the same net.",
-    "niche": "The funnel-web's locked control, kept as hard control under the stun row (Ryan, 17 October: it fits the kit): a delayed Suppress on the webbed foe (its next action) and the next foe to act beside it (this one), no damage, no cooldown. Web the foe left of the threat for safety now; web the boss to open a window on it next round."
+    "fantasy": "A canister of wire and resin lobbed at a foe's feet (Ryan's working name). It bursts as the round ends, and the foe beside it is caught in the same net.",
+    "niche": "The funnel-web's locked control, kept as hard control under the stun row (Ryan, 17 October: it fits the kit): a double Suppress on a delay, the webbed foe and the foe beside it each losing its next turn as the round ends, no damage, no cooldown (Ryan, 16 November: \"moved to End of Round and be repositioned as a double suppress on a delay, not suppress one this turn and one the next\"; \"The spider is a planner, so removing the reactive tool and rewarding it for thinking ahead is good\"). It stops nothing already announced: it buys two silent foes for the next round, which the ambush bites. Until then it burst at the end of the webbed foe's own action, the foe beside it losing that round's action: \"almost-not-quite an unconditional suppress on one foe\", his."
    },
    "face": {
     "kind": "attack",
@@ -1563,7 +1563,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The signal mirror on its mast, turned on one foe with the whole boiler behind it. Ryan, 11 November: the locked piece \"takes the buzzards old form. Cools completely, damage per heat spent. Low base damage\"; \"The heliograph term can go on the new locked piece\" (his name of 20 October: \"Keep heliographic cause its dumber\"). The name is a session's draft he kept (11 November: \"Heliographic death ray is a great name. Kept\"), and its gun his the same day: \"an actual gun. Pipes connecting it to the boiler, steampunk style. Mirror or mirrors as part of it because weird future nonsense tech. Like a steam powered mirrored laser railgun.\"",
-    "niche": "The Whip Scorpion's answer to one big foe: it fires every point of heat the machine holds as one blow and leaves it cold, a low base and a point for every 2 heat. The same gauge feeds its passive's release, which lands on every foe once it holds 8 heat (Ryan, 11 November, of the release as a Sweep: \"I'd keep the sweep the more attractive option in terms of raw power\"; a blow on every foe since the 12th), so each round is the ray on one foe now or the valves on the whole pack after the enemy's turn. The Buzzard's Afterburner Cannon held this form until its rework of 11 November."
+    "niche": "The Whip Scorpion's answer to one big foe: it fires every point of heat the machine holds as one blow and leaves it cold, a low base and a point for every 2 heat. The same gauge feeds its passive's release, which lands on every foe as it reboots, 1 for every 2 heat (Ryan, 11 November, of the release as a Sweep: \"I'd keep the sweep the more attractive option in terms of raw power\"; a blow on every foe since the 12th, on the reboot's vent since the 17th), so its heat is the ray on one foe now, its shield kept, or the valves on the whole pack for its turn and a round bare. The Buzzard's Afterburner Cannon held this form until its rework of 11 November."
    },
    "face": {
     "kind": "attack",
@@ -1619,7 +1619,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A heat ray in the old sense, the one that walks across a field on three legs (Ryan, 20 October: \"Thermal Ray gives me war-of-the-worlds vibes\"). The hottest shot a spend can make, and the pressure it leaves is the point.",
-    "niche": "The Whip Scorpion's stock gun and fuel: Direct, flat and hot, so one shot banks the heat its passed turn's release fires. A hot slot-in for any machine that runs hot on purpose."
+    "niche": "The Whip Scorpion's stock gun and fuel: Direct, flat and hot, so one shot banks the heat its reboot's vent fires. A hot slot-in for any machine that runs hot on purpose."
    },
    "face": {
     "kind": "attack",
@@ -1925,17 +1925,17 @@
    ]
   },
   {
-   "id": "st_elmos_regenerator",
-   "name": "St. Elmo's Regenerator",
+   "id": "hardlight_pulse",
+   "name": "Hardlight Pulse",
    "maker": "kestrel",
    "shape": "dish",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "St. Elmo's fire on the mast (Ryan named it 21 October): a beacon that draws the foe's eye, and the glow that mends the shield.",
-    "niche": "The Storm Petrel's lock, the lure that regens itself (Ryan, 19 October): a debuff, Indirect, no heat; the foe it is spent on is Lured for the round, and its machine gains Regenerating 3: a point of shield a stack as each round opens, a stack fading then, so 3, 2 and 1 (2 a round for three rounds until 15 November, the same six), a second spend adding its stacks. Self only, never Rapid, no cooldown: the die is its brake.",
-    "notes": "Built 30 October, in stacks since 15 November: the rider on its own spender (regenerates) grants its machine Regenerating's stacks, the shield as each round opens after the spend, a second spend adding to the count; a foe's purge takes it, a die entry having bought it."
+    "fantasy": "The Hardlight Pulse, Ryan's name of 17 November beside the Hardlight Generator, its machine's passive; the St. Elmo's Regenerator until then (his of 21 October: St. Elmo's fire on the mast, a beacon that draws the foe's eye).",
+    "niche": "The Storm Petrel's lock since its rework of 17 November: a debuff, Indirect, heat 3; the foe it is spent on is Lured for the round, and its heat stands up shield through the Hardlight Generator, so the taunt is its own mending. Its branches tweak it (the chassis's branches): the Defence direction's Hardened Light and then Spread with a stack for each foe lured, the Striker's Charged and then Chain 3.",
+    "notes": "Built 30 October as a lure of no heat laying Regenerating 3 on its own machine (regenerates), the rider that left the engine with it on 17 November; a lure that runs hot in its place, his \"Your verdict leans are solid\" to the lean of the same day."
    },
    "face": {
     "kind": "attack",
@@ -1944,11 +1944,7 @@
     "keywords": [
      "lure"
     ],
-    "heat": 0,
-    "regenerates": {
-     "status": "regenerating",
-     "stacks": 3
-    }
+    "heat": 3
    },
    "passive": null,
    "tags": []

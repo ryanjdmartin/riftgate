@@ -78,6 +78,10 @@ const MECH_FILL := 0.96     # a machine's size in hexes at its class's full shar
 const FLYER_LIFT := 0.4     # hexes a flyer stands off the floor, and a hovercraft
 const HOVER_LIFT := 0.06
 const WINGED_LIFT := 16.0   # design pixels a winged foe floats over its feet line
+const ALOFT_LIFT := 34.0    # and how much higher a foe that has climbed out of reach rides (Aloft, 16 November)
+## RIFTGATE_ALOFT_DEBUG=1: every foe is drawn as one that has climbed out of reach, to judge the look
+## running; the engine is untouched, so the dice still land.
+static var ALOFT_DEBUG := OS.get_environment("RIFTGATE_ALOFT_DEBUG") == "1"
 const FIELD_TURN := 15.0    # degrees a machine turns toward the middle, those left of it to the right and those right of it to the left
 var _cam := {}              # _field_camera
 const BOTTOM_BTN := Vector2(210, 60)
@@ -234,6 +238,9 @@ func _process(delta: float) -> void:
 	if HIT_DEBUG and _fight_t - _hit_debug_at > 1.5 and not _mech_views.is_empty():
 		_hit_debug_at = _fight_t
 		_hit_debug()
+	if DRAIN_DEBUG and _reroll_btn != null and _fight_t - _drain_debug_at > 3.0:
+		_drain_debug_at = _fight_t
+		_reroll_btn.strike()   # the landing's flash, every three seconds beside the standing rings
 	if _undo_waiting and Time.get_ticks_msec() >= _undo_from:
 		_undo_waiting = false
 		_refresh_undo()   # the spend's blow has played: the undo opens
@@ -1292,7 +1299,6 @@ func _refresh(save: bool = true) -> void:
 		d.charged = not ms.assigned and sk.charge_lands(ms)
 		var sf := sk.shown_face(ms, sk.spend_face(ms))   # reach as the passive reads it now, the charged form when it goes out charged
 		d.set_face(sf, sk.shown_number_text(ms, sf))   # and the number the blow will deal
-		d.after_blow = -1   # the blow its passive adds after the strikes, as the entry carries it (no foe in hand)
 		d.ricochet = _ricochets(ms, sf) if not ms.assigned and ms.alive() else 0   # the strikes of 1 its Ricochet adds after each shot
 		d.form_mark = form_mark(ms, sf) if not ms.assigned and ms.alive() else ""   # it seals its machine or opens it
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
@@ -1322,6 +1328,8 @@ func _refresh(save: bool = true) -> void:
 	_reroll_btn.badge = "×%d" % sk.rerolls_left if gained <= 0 else "×%d+%d" % [sk.rerolls_left, gained]
 	_reroll_btn.set_granting(gained > 0)
 	_reroll_btn.set_enabled(assigning and sk.can_reroll() and not _reroll_indices().is_empty())
+	var note := drain_note(sk, _drain_landed, _drain_pending)
+	_reroll_btn.set_draining(str(note[0]), bool(note[1]))
 	if _reboot_btn != null:
 		var may := assigning and _pending.is_empty() and _any_may_reboot()
 		if _drag_from >= 0:
@@ -1484,6 +1492,13 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	var entry: Dictionary = ContentDB.load_default().foes.get(foe.content_id, {})
 	v.flip_h = bool(entry.get("flip", false))
 	v.hover = WINGED_LIFT if bool(entry.get("winged", false)) else 0.0   # what flies floats over its shadow
+	# Aloft (the Roc while its Stoop gathers, 16 November): no die may be dropped on it, so it is
+	# drawn as what is out of the fight is, a faint ghost under a dashed edge, and higher over its
+	# shadow. A first cut, to judge running (RIFTGATE_ALOFT_DEBUG=1 holds every foe so). A Phased
+	# foe (17 November) is out of reach the same way and drawn the same, where it stands.
+	v.away = Skirmish.out_of_reach(foe) or ALOFT_DEBUG
+	if Effects.has(foe, "aloft") or ALOFT_DEBUG:
+		v.hover = maxf(v.hover, WINGED_LIFT) + ALOFT_LIFT
 	v.breathe = true
 	# Breathing spread by slot at the golden angle, so no two neighbours are near in phase
 	# (Ryan, 23 September: the instance-id phases read as in step).
@@ -1503,7 +1518,7 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	# The intent is this round's chosen attack: a sword, its damage, and a mark for a double
 	# strike; a suppressed foe shows no intent, only the status; a dead one
 	# threatens nothing.
-	v.intent_kind = "" if (foe.is_suppressed() or foe.target == null or not foe.alive()) else Foe.kind_of(foe.action)
+	v.intent_kind = "" if (foe.is_suppressed() or not foe.intends()) else Foe.kind_of(foe.action)
 	# A move still gathering (a countdown) shows the blow it will land; its rounds are a chip.
 	var read := _intent_read(foe)   # the readout's chip is _intent_chip's, the same read
 	v.intent_value = read[0]
@@ -1575,7 +1590,9 @@ static func form_mark(ms: Skirmish.MechState, f: Face) -> String:
 ## intents with a rider need to show that rider as part of the intent chip"): each keyword its
 ## move carries by its term's mark in its term's colour (Terms), a numbered one with its stacks
 ## (Scorch 2: two), so a scorch or a blow at every machine is read off the chip itself.
-static func intent_riders(foe: Foe) -> Array:
+## `inert` names the riders, and `idle` the steps by their effect, that lay nothing this round:
+## neither wears a mark, so the chip never promises what will not land.
+static func intent_riders(foe: Foe, inert: Array = [], idle: Array = []) -> Array:
 	var out: Array = []
 	if foe == null:
 		return out
@@ -1584,12 +1601,34 @@ static func intent_riders(foe: Foe) -> Array:
 		# intent is the first of its two warnings, and a bare debuff mark would not say which.
 		if Foe.exposes(foe.action) and Terms.has("expose"):
 			out.append([Terms.glyph("expose"), "", Terms.colour("expose")])
+		out.append_array(_step_marks(foe.action, out, idle))
 		return out
 	for k in foe.action.get("keywords", []):
 		var id := str(k)
-		if not Terms.has(id) or Terms.glyph(id).is_empty():
-			continue
+		if not Terms.has(id) or Terms.glyph(id).is_empty() or inert.has(id):
+			continue   # a rider that will lay nothing this round wears no mark (`inert`: a blow's Expose while a machine stands Exposed)
 		out.append([Terms.glyph(id), str(foe.rider(foe.action, id)) if Foe.NUMBERED_RIDERS.has(id) else "", Terms.colour(id)])
+	out.append_array(_step_marks(foe.action, out, idle))
+	return out
+
+
+## The marks of what a move does also (16 November: a move is a short list of steps), beside
+## its blow's own: each step's effect by the term it reads as, the word a rider of the same
+## effect wears or the status it grants, once each and never a mark the blow already shows.
+## A step with no term of its own shows none: the move's text says it, and a step named in
+## `idle` shows none either (it lays nothing this round: a fade on a foe Phased already).
+const STEP_TERMS := {"ablate": "ablate", "jam": "jam", "expose": "expose", "dispel": "dispel", "swallow": "swallow",
+	"scorch_all": "scorch", "corrupt_all": "corrupt", "appropriate": "appropriated", "phase": "phased"}
+static func _step_marks(a: Dictionary, shown: Array = [], idle: Array = []) -> Array:
+	var out: Array = []
+	var seen: Array = shown.map(func(row) -> String: return str(row[0]))
+	for st in a.get("also", []):
+		var term := str(STEP_TERMS.get(str(st.get("effect", "")), ""))
+		if term.is_empty() or idle.has(str(st.get("effect", ""))) or not Terms.has(term) or Terms.glyph(term).is_empty() or seen.has(Terms.glyph(term)):
+			continue
+		seen.append(Terms.glyph(term))
+		var n := int(st.get("value", 0))
+		out.append([Terms.glyph(term), str(n) if n > 0 and ["ablate", "scorch_all", "corrupt_all", "dispel"].has(str(st.get("effect", ""))) else "", Terms.colour(term)])
 	return out
 
 
@@ -1607,16 +1646,40 @@ func _foe_abilities(foe: Foe) -> Array:
 		# The Vampire Lord's (Ryan, 15 November: "This should be moved to an ability on the unit
 		# since it's on every attack. Like the Nob"): the rule its every blow plays by.
 		rows.append([Terms.glyph("drain"), "", "Ability, Drain: every blow it lands heals it by what the blow took from the hull", Terms.colour("drain"), "ability"])
+	if foe.takes() or Effects.has(foe, "appropriated"):
+		# Gilgamesh's (Ryan, 16 November: "make it his ability, a number that fluctuates depending
+		# on what he's currently holding"): the rule he plays by from the fight's start, its
+		# number the piece he holds and nothing while he holds none. No Purge reaches it.
+		var taken := Effects.stacks_of(foe, "appropriated")
+		var word := str(Effects.STATUS["appropriated"]["name"])
+		rows.append([_foe_glyph("appropriated"), str(taken) if taken > 0 else "",
+			("Ability, %s %d: its borrowed swing lands the number of the piece it took, and spends it" % [word, taken]) if taken > 0
+			else "Ability, %s: it takes the piece a machine shows, and its borrowed swing lands that piece's number" % word,
+			_foe_chip_colour("appropriated"), "ability"])
+	for what in Foe.IMMUNITIES:
+		# An immunity (17 November): what of the team's never lands on it, always or while the
+		# move it names gathers, so a die's struck chip has its reason on the foe itself.
+		if not foe.immune.has(what):
+			continue
+		var held = foe.immune[what]
+		var tail := "" if held is bool else " while %s gathers" % EntryReadout._move_name(foe, str(held))
+		rows.append(["lock", "", ("Ability, Immune: no Suppress lands on it%s" if what == "suppress" else "Ability, Immune: no Disrupt turns it%s") % tail, _foe_chip_colour("guarded"), "ability"])
 	if Effects.has(foe, "guarded"):
 		# A boss in parts (15 October): the lock while its parts stand, so the zero its die
 		# shows has a reason on the foe itself.
 		rows.append(["lock", "", "Ability, Guarded: no damage while its parts stand", _foe_chip_colour("guarded"), "ability"])
 	if foe.on_death.has("summon"):
 		rows.append(["splits", "", "Ability: it splits in two when it falls", Palette.ENEMY, "ability"])
-	if not foe.last_act().is_empty():
-		# A last act (15 October): the skull and what it lands the moment the foe falls.
-		var la := foe.last_act()
-		rows.append(["skull", str(foe.damage_of(la)), "Ability, Last Act: %s, %d%s" % [str(la.get("name", "")), foe.damage_of(la), " at Every Machine" if Array(la.get("keywords", [])).has("all") else ""], Palette.ENEMY, "ability"])
+	if not foe.fall().is_empty():
+		# A last act (15 October): the skull and what the foe does the moment it falls, its
+		# blow's number where it strikes; a fall that only curses or blesses says its name (16
+		# November: a fall is a short list of steps), and the foe's own page says the rest.
+		var la := foe.fall()
+		var strikes := Foe.is_attack_action(la)
+		var said := "Ability, Last Act: %s" % str(la.get("name", ""))
+		if strikes:
+			said += ", %d%s" % [foe.damage_of(la), " at Every Machine" if Array(la.get("keywords", [])).has("all") else ""]
+		rows.append(["skull", str(foe.damage_of(la)) if strikes else "", said, Palette.ENEMY, "ability"])
 	if Effects.has(foe, "golden"):
 		# A golden rage (4 November): the add it carries, the rounds left and the damage that
 		# breaks it, so burst-or-shield reads off the chip.
@@ -1655,7 +1718,7 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(status_row("ablating", "ablate", str(foe.ablate_stacks()), "Ablating ×%d" % foe.ablate_stacks(), _foe_chip_colour("ablating")))
 	var vitriol := Effects.stacks_of(foe, "vitriol")
 	if vitriol > 0:
-		# The funnel-web's acid (18 October): its stacks, and the share they eat at its action.
+		# The funnel-web's acid (18 October): its stacks, and the share they eat as its turn ends.
 		rows.append(status_row("vitriol", "vitriol", str(vitriol), "Vitriol ×%d" % vitriol, _foe_chip_colour("vitriol")))
 	var brittle := Effects.stacks_of(foe, "brittled")
 	if brittle > 0:
@@ -1669,7 +1732,7 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(status_row("cryoed", "cryo", str(cryo), "Cryo ×%d" % cryo, _foe_chip_colour("cryoed")))
 	if Effects.has(foe, "webbed"):
 		# The funnel-web's web (18 October): the chip points at the neighbour the burst catches
-		# (> the right-hand one, which acts after it; < the left-hand one, which has acted).
+		# as the round ends (> the right-hand one; < the left-hand one, with none to its right).
 		var caught := sk.web_catch(foe)
 		var mark := "" if caught == null else (">" if caught.column > foe.column else "<")
 		rows.append(status_row("webbed", "web", mark, "Web Bomb" + ("" if caught == null else ": bursts on %s too" % caught.display_name), _foe_chip_colour("webbed")))
@@ -1685,6 +1748,14 @@ func _foe_rows(foe: Foe) -> Array:
 		# A countdown (15 October): the warning glyph and the rounds before it lands.
 		var when := "next round" if foe.charge == 1 else "in %d rounds" % foe.charge
 		rows.append(["warning", str(foe.charge), "Countdown: %s lands %s" % [str(foe.pending.get("name", "")), when], Palette.ENEMY])
+	if Effects.has(foe, "aloft"):
+		# Aloft (the Roc while its Stoop gathers, 16 November): no die may be dropped on it. The
+		# chip beside its countdown says why the foe is no target; a Purge that reaches it takes it.
+		rows.append(status_row("aloft", _foe_glyph("aloft"), "", str(Effects.STATUS["aloft"]["name"]), _foe_chip_colour("aloft")))
+	if Skirmish.foe_phased(foe):
+		# A foe's Phased (17 November): out of the team's reach until the round's end, on the
+		# chip a Phased machine wears.
+		rows.append(status_row("phased", status_glyph("phased"), "", str(Effects.STATUS["phased"]["name"]), _foe_chip_colour("phased")))
 	if foe.committed:
 		# An announced follow-up (2 November): committed, so no Disrupt turns it; a Suppress still takes
 		# it. The chip says what the player may do about it and names no term: the pattern is the
@@ -1710,7 +1781,7 @@ func _foe_rows(foe: Foe) -> Array:
 	# shows. The chip pulses on a dashed edge until the rally lands, so it never reads as one
 	# the foe carries by hue alone; a foe showing no blow wears none, its move gaining nothing.
 	var coming := sk.incoming_rally(foe)
-	var shows_blow := foe.alive() and not foe.is_suppressed() and foe.target != null and (foe.attacks() or foe.gathering())
+	var shows_blow := foe.intends() and not foe.is_suppressed() and (foe.attacks() or foe.gathering())
 	var rally_chip := shows_blow and coming > 0
 	if shows_blow and (coming > 0 or PREVIEW_DEBUG):
 		var who: Array[String] = []
@@ -1731,9 +1802,9 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(status_row("ward", _foe_glyph("ward"), "", "Ward", _foe_chip_colour("ward")))
 	var regrow := Effects.regrowth(foe)
 	if regrow > 0:
-		# A point a stack at its action, then a stack fades (15 November): the chip is the count.
+		# A point a stack as its turn ends, then a stack fades (15 and 16 November): the chip is the count.
 		var mending := Effects.stacks_of(foe, "regenerating")
-		rows.append(status_row("regenerating", _foe_glyph("regenerating"), "×%d" % mending, "Regenerating ×%d: +%d at its action, then a stack fades" % [mending, regrow], _foe_chip_colour("regenerating")))
+		rows.append(status_row("regenerating", _foe_glyph("regenerating"), "×%d" % mending, "Regenerating ×%d: +%d as its turn ends, then a stack fades" % [mending, regrow], _foe_chip_colour("regenerating")))
 	var paradox := Effects.stacks_of(foe, "paradox")
 	if paradox > 0:
 		var at := sk.paradox_count()
@@ -1828,7 +1899,9 @@ static func _foe_glyph(id: String) -> String:
 			return "star"
 		"exposure":
 			return "exposed"
-		"vitriol", "paradox", "shocked", "numbed", "mine":
+		"appropriated":
+			return "taken"
+		"vitriol", "paradox", "shocked", "numbed", "mine", "aloft":
 			return id
 	return status_glyph(id)
 
@@ -1980,7 +2053,7 @@ func _mech_rows(i: int) -> Array:
 	if stacks > 0:
 		rows.append(["heat", "×%d" % stacks, "Debuff, Overheated ×%d: hull -%d every turn until it reboots" % [stacks, stacks * Skirmish.overheat_scale], Palette.HEAT, "status", "debuff"])
 	if ms.rebooting:
-		rows.append(["shield_vent", "", "Rebooting: bare this turn, cold and whole the next", Palette.HUD])
+		rows.append(["shield_vent", "", "Rebooting: vented and bare this turn, its shield whole the next", Palette.HUD])
 	elif ms.shield_broken:
 		rows.append(["shieldbreak", "", "Debuff, Broken: no shield until it reboots", Palette.SHIELD, "status", "debuff"])
 	if sk.state == Skirmish.State.ASSIGN:
@@ -2035,8 +2108,8 @@ func _refresh_arrows() -> void:
 	var lurer := (_drag_from if _drag_from >= 0 else _read_die()) if not _turns.is_empty() else -1
 	for foe in sk.field_foes():
 		# A foe on a special that acts on nobody in particular (a regrow, a rally) has no arrow:
-		# its pick means nothing, and the ambush read says so too (Foe.intent_on, 18 October).
-		if foe.target == null or foe.is_suppressed() or not foe.alive() or foe.acts_on_nobody():
+		# it holds no pick, and the ambush read says so too (Foe.intent_on, 18 October).
+		if not foe.intends() or foe.is_suppressed() or foe.acts_on_nobody():
 			continue
 		if _turns.has(foe):
 			continue   # its arrow is the lure preview's, below
@@ -2405,7 +2478,7 @@ func _foe_hold_lines(foe: Foe) -> Array:
 	if foe.is_suppressed() or foe.action.is_empty():
 		return out
 	var target := ""
-	if foe.target != null and not foe.acts_on_nobody() and not foe.reaches_every_machine():
+	if foe.target != null and foe.aims_at_one():
 		target = foe.target.unit.display_name
 	out.append({"style": "caption", "text": "INTENT", "parts": [], "place": ""})
 	var move := EntryReadout.move_lines(foe, foe.action, db, true, target)
@@ -2425,7 +2498,7 @@ func _foe_hold_lines(foe: Foe) -> Array:
 ## or empty when it shows none: its move's kind, its blow (or a special's value) with its strikes,
 ## its riders.
 func _intent_chip(foe: Foe) -> Array:
-	if foe.is_suppressed() or foe.target == null or not foe.alive() or foe.action.is_empty():
+	if foe.is_suppressed() or not foe.intends():
 		return []
 	var read := _intent_read(foe)
 	var value: int = read[0]
@@ -2438,7 +2511,13 @@ func _intent_chip(foe: Foe) -> Array:
 ## alone.
 func _intent_read(foe: Foe) -> Array:
 	var blow := foe.attacks() or foe.gathering()
-	return [sk.intent_value(foe), ("×%d" % foe.strikes()) if blow and foe.strikes() > 1 else "", intent_riders(foe) if blow or Foe.exposes(foe.action) else []]
+	# A blow's Expose lays nothing while a machine stands Exposed or another's is out ahead of it
+	# (Skirmish.expose_rider_lands): its mark is off the chip for that round.
+	var inert: Array = ["expose"] if Foe.is_attack_action(foe.action) and foe.has_keyword(foe.action, "expose") and not sk.expose_rider_lands(foe) else []
+	# And a step that fades a foe lays nothing on one Phased already (Skirmish.fade_lands): a
+	# ghost is out one round in two, and the round it is out its bolt wears no Phased mark.
+	var idle: Array = [] if Skirmish.fade_lands(foe) else ["phase"]
+	return [sk.intent_value(foe), ("×%d" % foe.strikes()) if blow and foe.strikes() > 1 else "", intent_riders(foe, inert, idle) if blow or Foe.exposes(foe.action) or foe.action.has("also") else []]
 
 
 ## A stat in a hold, as the codex has it: its label, its base in ink and the change in a
@@ -2574,7 +2653,6 @@ func _on_drag_started(i: int) -> void:
 	var sf := sk.shown_face(sk.mechs[i], sk.spend_face(sk.mechs[i]))
 	_ghost.shut = []   # no foe in hand yet: every chip as printed
 	_ghost.set_face(sf, sk.shown_number_text(sk.mechs[i], sf))
-	_ghost.after_blow = -1
 	_ghost.ricochet = _ricochets(sk.mechs[i], sf)
 	_ghost.form_mark = form_mark(sk.mechs[i], sf)
 	_ghost.cooldown = sf.cooldown_rounds() if sf != null else 0
@@ -2624,9 +2702,6 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 			_ghost.set_face(sf, str(sk.shield_amount(ms, sf, target)))
 		else:
 			_ghost.set_face(sf, sk.shown_number_text(ms, sf, over_foe))
-		# The blow its passive adds after the strikes, over the foe through its armour, in the
-		# passive's box (the Storm Petrel's; Ryan, 4 November).
-		_ghost.after_blow = Skirmish.after_blow(ms, sf, over_foe) if over_foe != null else -1
 		# The heat bar reads the net over a Cryo foe (Ryan, 16 October: on the bar, never the die)
 		# through the forecast the refresh above reads (_forecast_for).
 
@@ -2761,7 +2836,6 @@ func _send_second_home() -> void:
 	fly.set_face(d.face, d.shown_number)
 	fly.slot = d.slot
 	fly.corrupted = d.corrupted
-	fly.after_blow = d.after_blow
 	fly.ricochet = d.ricochet
 	fly.charged = d.charged
 	fly.dark = d.dark
@@ -3123,7 +3197,7 @@ func _form_shift_at(t: float, i: int, sealing: bool) -> void:
 static func _strikes_of(blows: Array) -> int:
 	var n := 1
 	for b in blows:
-		if str(b["kind"]) != "zap" and str(b["kind"]) != "mine" and str(b["kind"]) != "shove":
+		if str(b["kind"]) != "mine" and str(b["kind"]) != "shove":
 			n = maxi(n, int(b["strike"]) + 1)
 	return n
 
@@ -3322,6 +3396,8 @@ func _land_last_act(act: Dictionary) -> void:
 		if int(mi) >= 0 and int(mi) < _mech_views.size():
 			_shown_gauges.erase(int(mi))
 			_animate_hit(_mech_views[int(mi)], 0.1)
+	if int(act.get("drained", 0)) > 0:
+		_reroll_btn.strike()   # a fall that takes a reroll strikes the button as a drain landing does
 	_refresh(false)
 
 
@@ -3607,7 +3683,7 @@ func _before_enemy_turn() -> Dictionary:
 	var gauges: Array = []
 	for ms in sk.mechs:
 		gauges.append([ms.unit.shield, ms.unit.hull])
-	return {"views": views, "gauges": gauges}
+	return {"views": views, "gauges": gauges, "debt": sk.reroll_debt}   # and the rerolls a fall took in the player's own turn
 
 
 ## Seconds between the enemy's blows: the ENEMY PACE setting divides the beat, so its top
@@ -3623,12 +3699,16 @@ func _enemy_beat() -> float:
 func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	var steps := _replay_steps(before)
 	var hits: Array = []
+	_drain_landed = int(before.get("debt", 0))   # what a fall took before the turn ended has landed already
+	_drain_pending = 0
 	for st in steps:
 		if not (st["blow"] as Array).is_empty():
 			hits.append(st["blow"])
 	if not is_inside_tree() or (steps.is_empty() and sk.overheats.is_empty() and sk.ablations.is_empty()):
 		then.call()
 		return
+	for st in steps:
+		_drain_pending += int(st.get("drain", 0))   # the note stands, its rings closing, until each has landed
 	# The burn is the end of the player's own turn (11 October), and so is what a machine's
 	# Ablating takes (15 November): both land before the phase turns over to the enemy.
 	var own_end: bool = not sk.overheats.is_empty() or not sk.ablations.is_empty()
@@ -3692,6 +3772,9 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 		if not (st["blow"] as Array).is_empty():
 			tw.tween_callback(_land_blow.bind(st["blow"]))
 			tw.tween_interval(beat - lead if switching else beat)
+		if int(st.get("drain", 0)) > 0:
+			tw.tween_callback(_land_drain.bind(int(st["drain"])))
+			tw.tween_interval(beat * 0.5)
 		if switching:
 			# The next foe lights while this one's move settles, its lead out of the beat.
 			tw.tween_callback(_spotlight.bind(before["views"].get(steps[k + 1]["foe"])))
@@ -3703,6 +3786,8 @@ func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	tw.tween_interval(0.25)
 	tw.tween_callback(func() -> void:
 		_replay_shade.visible = false
+		_drain_landed = 0   # the next round's own note takes over: what the drains took of it (Skirmish.drained)
+		_drain_pending = 0
 		then.call())
 
 
@@ -3728,10 +3813,15 @@ func _replay_steps(before: Dictionary) -> Array:
 	for sp in sk.turn_specials:
 		steps.append({"seq": int(sp.get("seq", 0)), "foe": sp["foe"], "name": str(sp.get("name", "")),
 			"named": true, "announce": "", "blow": []})
+	for dr in sk.turn_drains:
+		# A drain landing, its own beat after its move is named: the REROLL button is struck.
+		steps.append({"seq": int(dr.get("seq", 0)), "foe": dr["foe"], "name": "", "named": false, "announce": "", "blow": [], "drain": int(dr.get("value", 0))})
 	steps.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a["seq"]) < int(b["seq"]))
 	var last_foe = null
 	var last_name := ""
 	for st in steps:
+		if st.has("drain"):
+			continue   # a landing, no move of its own: the names either side of it read as one
 		if bool(st["named"]) and not (st["foe"] == last_foe and str(st["name"]) == last_name):
 			st["announce"] = str(st["name"])
 		last_foe = st["foe"]
@@ -3740,6 +3830,49 @@ func _replay_steps(before: Dictionary) -> Array:
 
 
 var _lit: UnitView = null   # the foe lit as it acts in the enemy's turn
+var _drain_landed := 0    # the rerolls the drains have taken so far in the enemy's turn being replayed
+var _drain_pending := 0   # and those still to land in it
+
+
+## RIFTGATE_DRAIN_DEBUG=1: the REROLL button wears a drain announced the whole fight, its rings
+## closing in, and flashes as if one landed every three seconds, to judge the effect running.
+static var DRAIN_DEBUG := OS.get_environment("RIFTGATE_DRAIN_DEBUG") == "1"
+var _drain_debug_at := 0.0
+
+
+## What the REROLL button says of a drain (Ryan, 15 November: "There should be an effect on the
+## reroll button when this happens"), as [the note, whether any of it is only announced]. While
+## a foe announces a drain, what next round stands to lose, never more than a round gives, and
+## the loss can still be stopped (a kill, a Suppress, a Disrupt): announced. In the enemy's
+## turn's replay the same words stand, announced until the last drain has landed (`landed` and
+## `pending`, as the replay reaches them), then settled. In a round a drain took from, with
+## none announced, what it took.
+static func drain_note(sk: Skirmish, landed: int = 0, pending: int = 0) -> Array:
+	if sk == null:
+		return ["", false]
+	if DRAIN_DEBUG:
+		return ["NEXT -1", true]
+	if landed + pending > 0:
+		return ["NEXT -%d" % mini(landed + pending, Skirmish.REROLLS_PER_ROUND), pending > 0]
+	# What a fall has taken already this turn (a drain as a foe falls lands in the player's own
+	# turn), and what the foes still standing announce.
+	var owed := sk.reroll_debt if sk.state == Skirmish.State.ASSIGN else 0
+	var coming := sk.drain_announced(null) if sk.state == Skirmish.State.ASSIGN else 0
+	if owed + coming > 0:
+		return ["NEXT -%d" % mini(owed + coming, Skirmish.REROLLS_PER_ROUND), coming > 0]
+	if sk.drained > 0:
+		return ["DRAINED -%d" % sk.drained, false]
+	return ["", false]
+
+
+## A drain lands in the enemy's turn's replay: the button is struck, and its note settles once
+## the last has landed.
+func _land_drain(n: int) -> void:
+	_drain_landed += n
+	_drain_pending = maxi(0, _drain_pending - n)
+	_reroll_btn.strike()
+	var landed_note := drain_note(sk, _drain_landed, _drain_pending)
+	_reroll_btn.set_draining(str(landed_note[0]), bool(landed_note[1]))
 
 
 ## Light `v` as the foe acting now, and put out the one lit before; null puts it out.
@@ -3957,17 +4090,44 @@ func _on_reroll() -> void:
 
 
 ## Machine `i` gives its turn to a reboot, if it may (its die dropped on REBOOT): its shield
-## drops at once, the round preview plays it bare, and UNDO takes it back. False when it may not,
+## drops and its heat vents at once, the round preview plays it bare, and UNDO takes it back. A
+## vent that explodes (the Whip Scorpion's valves, Ryan, 17 November: "the reboot vent is the one
+## that explodes") plays its blast from what stood there, the foes it fells and what they do as
+## they fall after it, and the fight it decides ends once it has played. False when it may not,
 ## and nothing changes.
 func _do_reboot(i: int) -> bool:
 	if _replay_shade.visible or not _pending.is_empty() or not sk.can_reboot(i):
 		return false
 	_flush_blows()   # whatever of the last spend is still landing lands first
+	var was: Dictionary = {}   # every foe's view and look before the vent, for a blast's shots and deaths
+	for foe in sk.field_foes():
+		var fv := _foe_view_for(foe)
+		if fv != null:
+			was[foe] = [fv, fv.look(), _home.get(fv, fv.position)]
+	var sealed_before := Effects.is_sealed(sk.mechs[i].unit)
 	if not sk.reboot_mech(i):
 		return false
+	var released: Array = sk.releases.duplicate(true)
 	_close_pop()
 	Sound.play("vent")
+	if sealed_before and not Effects.is_sealed(sk.mechs[i].unit):
+		_form_shift_at(0.0, i, false)   # a reboot opens a sealed machine: its shell bursts as the die drops
+	var valves := _hold_releases(released)
+	if is_inside_tree():
+		for act in sk.last_acts:   # a machine a last act struck holds its gauges until the act lands
+			var g: Array = act.get("gauges", [])
+			for k in range(mini(g.size(), (act["mechs"] as Array).size())):
+				if not _shown_gauges.has(int(act["mechs"][k])):
+					_shown_gauges[int(act["mechs"][k])] = g[k]
 	_refresh()
+	var over := _play_releases(released, was, valves)
+	if sk.outcome != Skirmish.Outcome.NONE:
+		if over > 0.0 and is_inside_tree():
+			var ow := create_tween()
+			ow.tween_interval(over + 0.75)
+			ow.tween_callback(_show_outcome.bind(sk.outcome))
+		else:
+			_show_outcome(sk.outcome)
 	return true
 
 
@@ -4117,16 +4277,8 @@ func _end_turn_now() -> void:
 		var rv := _foe_view_for(foe)
 		if Effects.has(foe, "risen") and rv != null:
 			readied[foe] = [rv, rv.sprite, rv.sprite_frame(), rv.flip_h, _home.get(rv, rv.position)]
-	# Every foe's view and look before the turn ends, for a release's shots and deaths (the Whip
-	# Scorpion's valves, 11 November): they play once the enemy's turn has, from what stood there.
-	var was: Dictionary = {}
-	for foe in field_before:
-		var fv := _foe_view_for(foe)
-		if fv != null:
-			was[foe] = [fv, fv.look(), _home.get(fv, fv.position)]
 	var returns_before := sk.returned.size()
 	var outcome := sk.end_round()
-	var released: Array = sk.releases.duplicate(true)
 	var rose_in_turn := _risen_since(returns_before)   # read before the next round's start clears the returns
 	if outcome == Skirmish.Outcome.NONE:
 		sk.start_round()
@@ -4135,18 +4287,10 @@ func _end_turn_now() -> void:
 			locked[i] = false
 	_refresh_log()   # the blows type into the log as they play
 	_play_enemy_turn(before, func() -> void:
-		var valves := _hold_releases(released)
 		if outcome != Skirmish.Outcome.NONE:
-			var over := _play_releases(released, was, valves)
-			if over > 0.0 and is_inside_tree():
-				var ow := create_tween()
-				ow.tween_interval(over + 0.75)
-				ow.tween_callback(_show_outcome.bind(outcome))
-			else:
-				_show_outcome(outcome)
+			_show_outcome(outcome)
 			return
 		_refresh()
-		_play_releases(released, was, valves)
 		_acquire_intents()
 		# A foe that got back up in the enemy's turn falls on screen, then stands again.
 		var rose := 0
@@ -4167,8 +4311,9 @@ func _end_turn_now() -> void:
 				arrived += 1)
 
 
-## What every foe a release struck had before it (the Whip Scorpion's valves): Foe -> its HP as
-## the enemy's turn left it, read off its first blow, and its gauge held there until the blow lands.
+## What every foe a release struck had before it (the Whip Scorpion's valves, on its reboot):
+## Foe -> its HP as the blast met it, read off its first blow, and its gauge held there until the
+## blow lands.
 func _hold_releases(released: Array) -> Dictionary:
 	var hp_before := {}
 	for r in released:
@@ -4183,7 +4328,8 @@ func _hold_releases(released: Array) -> Dictionary:
 	return hp_before
 
 
-## The releases played, once the enemy's turn has (a first cut, to judge running): each machine
+## The releases played, as the reboot that vents them is declared (a first cut, to judge running;
+## after the enemy's turn until 17 November, when the release was a passed turn's): each machine
 ## fires once and its blow lands on every foe at a beat, each its own flash and number, and the
 ## foes it felled die after it. A machine whose model fires its release with an act (the Whip
 ## Scorpion's broadside, keyed by the passive's id: Ryan, 12 November, "the blast should be hooked
@@ -4222,12 +4368,12 @@ func _play_releases(released: Array, was: Dictionary, hp_before: Dictionary) -> 
 	return ends
 
 
-## What a machine's release fires with on its model: its releasing passive's id (Effects.pass_release),
-## the key its sidecar's `fires` names the act's slice by; "" for a machine whose pass releases nothing.
+## What a machine's release fires with on its model: its releasing passive's id (Effects.reboot_release),
+## the key its sidecar's `fires` names the act's slice by; "" for a machine whose vent blasts nothing.
 static func release_key(ms: Skirmish.MechState) -> String:
 	if ms == null or ms.unit == null:
 		return ""
-	return str(Effects.pass_release(ms.unit).get("id", ""))
+	return str(Effects.reboot_release(ms.unit).get("id", ""))
 
 
 func _show_outcome(outcome: int) -> void:

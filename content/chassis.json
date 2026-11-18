@@ -274,7 +274,7 @@
    "passive": {
     "id": "lockdown",
     "name": "Lockdown",
-    "description": "Equipment it spends on itself seals it: armour +3, its own cooling stopped, 3 hotter at the end of each turn, and its Cryo Flinger gains Spread. A weapon it fires opens it. Its weapons deal 1 more to a foe carrying Cryo.",
+    "description": "Equipment it spends on itself seals it: armour +3, its own cooling stopped, 3 hotter at the end of each turn, and its Cryo Flinger gains Spread. A weapon it fires opens it, and so does a reboot. Its weapons deal 1 more to a foe carrying Cryo.",
     "effects": [
      {
       "trigger": "static",
@@ -894,7 +894,7 @@
    "tier": 2,
    "design": {
     "fantasy": "Ryan's boiler (12 and 13 October: \"a crazy steampunk machine venting everywhere\"; 20 October: \"it doesn't actually use steam to run, its a future-tech machine. it just kind of behaves like a steampunk device\"). The whip scorpion sprays when provoked. Named by Ryan, 20 October; 11 November: \"this is a scorpion, so it's probably not a frontliner, thematically\", and it \"goes all in with the weird and wonderful, along with the cassowary and cottonmouth\".",
-    "niche": "The tier-two formation breaker (Ryan, 11 November, from the role map in its brief): heat is its ammunition and nothing cools it. A turn it ends with an entry it could have spent is a pass, and as the enemy's turn ends, holding 8 heat or more, it opens its valves on every foe: 1 each, and 1 more for each heat over 8 (Ryan, 12 November, in place of the Sweep of a shot a heat: \"1 damage to each enemy, increased by 1 for each heat over 8\"); under 8 it keeps its heat. Every blow a foe lands on it banks heat, so the best release ends the turn just under the maximum and lets the foes push it over. Its locked ray fires the same heat at one foe, the weaker spend. A bruiser's body, \"since it's not a burst machine\". Rapid and a granted action let it fire and release in one round."
+    "niche": "The tier-two formation breaker (Ryan, 11 November, from the role map in its brief): heat is its ammunition. Its reboot's vent is the one that explodes (Ryan, 17 November: \"Whip scorpion needs a rework, and honestly, I think you just found it: the reboot vent is the one that explodes. It's an easy swap in\"): the heat it sheds as its shield drops lands on every foe, 1 each for every 2 heat (the same day, of the gate of 8 it had from 12 November: \"remove the 8 heat minimum. Set it to 1 damage to all enemies for every X heat, your call. Far more intuitive I think, and more flexible\"; 2 a point is a session's pick, 7 on every foe at its maximum of 14 as the gate gave, and its ray's own rate). Every blow a foe lands on it banks heat, the blows it takes bare while it reboots among them, the next blast's first fuel. Heat past its maximum burns it every turn and feeds the blast, so how long it rides is its choice. Its locked ray fires the same heat at one foe and keeps its shield, the weaker spend. Until 17 November the release was a passed turn's, once the enemy had acted, a sustained blow each round it held its die; this is a burst a reboot (\"Unfortunately it changes it's profile from sustained damage to huge burst, but I think it's ok. It was headed that way anyway\"). Numbers placeholders."
    },
    "codex": "",
    "hull": 40,
@@ -920,13 +920,13 @@
    "passive": {
     "id": "thermal_ejection_manifold",
     "name": "Thermal Ejection Manifold",
-    "description": "Nothing cools it. A turn it ends with an entry it could have spent and 8 heat or more opens its valves once the enemy has acted: every foe takes 1, and 1 more for each heat over 8, and it is left cold. Every blow a foe lands on it adds 2 heat.",
+    "description": "A reboot opens its valves as its heat vents: every foe takes 1 for every 2 heat it sheds. Every blow a foe lands on it adds 2 heat.",
     "effects": [
      {
       "trigger": "static",
-      "effect": "pass_release",
+      "effect": "reboot_release",
       "value": 1,
-      "gate": 8
+      "per": 2
      },
      {
       "trigger": "static",
@@ -1144,8 +1144,8 @@
    "tier": 1,
    "design": {
     "fantasy": "The off-tank, a fast hovercraft (Ryan, 20 October: since the Puffin is slow, the shield-burner should be fast, so Kestrel is seen to make a fast hover), the Storm Petrel since 21 October, the small sea bird that patters across the water; its hard shields used both for defence and for whacking things with (Ryan, 21 October).",
-    "niche": "Kestrel's tier-one body, a body from a second maker for the tender: while its shield stands every blow on it loses a point, and its weapons burn shield in place of heat, the target taking a zap of what the shield paid; its lock lures a foe and regenerates its own shield for three rounds, stacking. A generalist that can zoom off and fight a pack (Ryan, 20 October).",
-    "notes": "Ryan's go, 21 October (the bible's Kestrel row; its brief, retired 30 October as its engine landed, holds the rounds: git show d84ad16:docs/briefs/kestrel_shield_spender.md). Landed 23 October as planned; its engine built 30 October (the burn and its zap, the plate, Regenerating's machine half and the rider), so it is dealt since. Numbers are placeholders at the stock pass's scale: a medium hover at 24 hull and the scale's top shield, 16, its shield its gauge and its plate; the plate 1 and the regen 2 a round from the brief's 5 and 10. The stock by kind from the basics, a tier one stocking tier zero: the Laser Carbine, the hottest basic at 2, for the brief's big hot gun; the Ankle Mortar for its mid-heat gun; the Twin Autoguns, cold; the Canopy, a self shield. With basics alone its burn is 2 a spend at most, a hole for Ryan (the bible's section 12). Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, storm_petrel), Ryan's to judge running."
+    "niche": "Kestrel's tier-one tank by shield (Ryan, 11 November, locked 17 November): while its shield stands every blow on it loses a point (the plate), and every point of heat it gains, from any source, stands up a point of shield, so its heat is its fuel and its clock at once and the overheat it walks toward breaks the shield it built. Its passive the Hardlight Generator and its lock the Hardlight Pulse (Ryan's names of 17 November, the Riot Field Generator and the St. Elmo's Regenerator until then), a lure that runs hot, so its taunt raises its shield through the hook. A generalist that can zoom off and fight a pack (Ryan, 20 October), the tank since its rework and no longer the striker.",
+    "notes": "Reworked 17 November on his direction of 11 November, locked that day (\"That direction is locked, or should be locked. It just needs to be finalized and landed\"; the bible's Storm Petrel row; docs/reboot_machines_proposal.md): the plate kept, the hook (on_heat_gain shield_per_heat, a point a point), the shield burn and its zap cut with their last carrier, the zap the Buzzard's to take; the lock a lure of heat 3, its Regenerating gone (\"Your verdict leans are solid\"); the passive and the lock renamed the same day, his. The stock's Shoring Jack, Armoured that came off only what reached its hull and made no heat for the hook, gave its slot to the Arc Fault Cannon, Kestrel's Chain gun, warm and the Striker branch's partner; the session's pick on his \"Adjust the stock as you see fit\". Its branches are his of the same day (branches, below). Numbers are placeholders: a medium hover at 24 hull and tier one's top shield, 12. Its model is Claude's first cut of 23 October (tools/lowforge/models_low.py, storm_petrel), the Arc Fault Cannon worn on its fourth mount as a refit wears a class."
    },
    "codex": "",
    "hull": 24,
@@ -1160,18 +1160,18 @@
    ],
    "size": "medium",
    "fixed": [
-    "st_elmos_regenerator"
+    "hardlight_pulse"
    ],
    "loadout": [
     "laser_carbine",
     "ankle_mortar",
     "twin_autoguns",
-    "shoring_jack"
+    "arc_fault_cannon"
    ],
    "passive": {
-    "id": "riot_field_generator",
-    "name": "Riot Field Generator",
-    "description": "While its shield stands, every blow on the Storm Petrel loses 1, and its weapons burn shield in place of heat; after a weapon's strikes, its target takes a blow of what the shield paid.",
+    "id": "hardlight_generator",
+    "name": "Hardlight Generator",
+    "description": "While its shield stands, every blow on the Storm Petrel loses 1, and every point of heat it gains stands up a point of shield.",
     "effects": [
      {
       "trigger": "static",
@@ -1180,12 +1180,87 @@
       "when": "shield_up"
      },
      {
-      "trigger": "static",
-      "effect": "burn_shield",
+      "trigger": "on_heat_gain",
+      "effect": "shield_per_heat",
       "value": 1
      }
     ]
    },
+   "branches": [
+    {
+     "id": "defence",
+     "name": "Defence",
+     "design": {
+      "notes": "Ryan, 17 November: \"Defense branch: 1st upgrade adds a self-buff that increases shield armour for a turn to the lure. 2nd upgrade adds spread to the lure, increasing shield armour by foes lured.\" Hardened Light is that self-buff (his name of the same day, Hardened the session's until then), the plate's rule losing a stack as each of its turns starts (his clock of the same day: \"decay by a stack at start of Petrel's turn, not all at once\"); its second step's per_foe reads \"increasing shield armour by foes lured\", the stacks the foes the spread lures."
+     },
+     "steps": [
+      {
+       "description": "Its Hardlight Pulse also lays Hardened Light 1 on the Storm Petrel.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "self_status",
+         "status": "hardened",
+         "value": 1,
+         "entry": "hardlight_pulse"
+        }
+       ]
+      },
+      {
+       "description": "Its Hardlight Pulse gains Spread, and lays Hardened Light 1 for each foe it lures.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "grant_keyword",
+         "value": "cleave",
+         "entry": "hardlight_pulse"
+        },
+        {
+         "trigger": "static",
+         "effect": "self_status",
+         "status": "hardened",
+         "value": 1,
+         "per_foe": true,
+         "entry": "hardlight_pulse"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "striker",
+     "name": "Striker",
+     "design": {
+      "notes": "Ryan, 17 November: \"Striker branch: 1st upgrade adds a self-grant of Charged stacks to the lure. 2nd upgrade adds Chain 3 to the lure.\" The stacks, 2, are the session's placeholder. The lure's Chain is a debuff's, its arcs a blow of 3 that carries the lure to every other Shocked foe, a session's read of his words (the Chain term)."
+     },
+     "steps": [
+      {
+       "description": "Its Hardlight Pulse also lays Charged 2 on the Storm Petrel.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "self_status",
+         "status": "charged",
+         "value": 2,
+         "entry": "hardlight_pulse"
+        }
+       ]
+      },
+      {
+       "description": "Its Hardlight Pulse gains Chain 3.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "grant_keyword",
+         "value": "chain",
+         "number": 3,
+         "entry": "hardlight_pulse"
+        }
+       ]
+      }
+     ]
+    }
+   ],
    "flavour": ""
   },
   {

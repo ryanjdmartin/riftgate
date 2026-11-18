@@ -21,9 +21,6 @@ extends SceneTree
 ## chassis's own; "cooling=N" an offset; "hotter=N" every weapon N heat more; "barrier=cooldownN" or
 ## "barrier=heatN" a price on the Barrier basic, "barrier=none" the Armoured basic in its slot on
 ## every stock die; comma-separated),
-## --targeting aim|lowest (the foes' targeting rule for the matrix: the aims as shipped, or
-## the lowest-shield rule from before 2 October; the team cells are always run under both
-## and compared in their own section, since a single machine cannot see targeting),
 ## --damage F (every machine's blows scaled by F through a loadout modifier, to read a
 ## damage scale before the content is rewritten to it; 1.0 is the content as it stands),
 ## --rows id,id (only these rows, by the ids the JSON names: a chassis id, "team", "minerva
@@ -89,7 +86,6 @@ var cool_above := 0
 var shield_ahead := false
 var guard_weight := 1.0   # --guard: a block's worth to the bot, as a share (Policy.guard_weight); 0.05 is the aggressor
 var trace := ""
-var targeting := ""   # "" is the aims; "lowest" the rule before 2 October
 var damage_scale := 1.0   # the player's blows, scaled; a question asked of the matrix, never written to content here
 var only_rows: Array = []   # --rows: the row ids to run, all when empty
 var boss_tiers := false     # --boss-tiers: every boss at tiers two and three, with its escort and alone (2 November)
@@ -117,7 +113,6 @@ var db: ContentDB
 var rows: Array = []      # {id, name, chassis: [ids]}
 var packs: Array = []     # {id, name, foe, strength}
 var cells: Dictionary = {}   # "row|pack|policy" -> aggregate
-var compare: Dictionary = {}   # the team row under the other targeting rule, same keys
 
 
 func _init() -> void:
@@ -201,18 +196,6 @@ func _init() -> void:
 				for k in policies:
 					cells[_key(r, p, k)] = _run_cell(r, p, k)
 					fights += seeds
-		# The team row again under the other targeting rule, for the comparison section.
-		var other := "lowest" if targeting.is_empty() else ""
-		for r in rows:
-			if r["id"] != "team":
-				continue
-			for p in packs:
-				at += 1
-				if part >= 0 and at % parts != part:
-					continue
-				for k in policies:
-					compare[_key(r, p, k)] = _run_cell(r, p, k, other)
-					fights += seeds
 		secs = (Time.get_ticks_msec() - t0) / 1000.0
 	if part >= 0:
 		var pj := FileAccess.open(json_path, FileAccess.WRITE)
@@ -220,7 +203,7 @@ func _init() -> void:
 			push_error("--part writes its cells to --json, and cannot write '%s'" % json_path)
 			quit(1)
 			return
-		pj.store_string(JSON.stringify({"seeds": seeds, "part": "%d/%d" % [part, parts], "fights": fights, "secs": secs, "cells": cells, "compare": compare}, "  "))
+		pj.store_string(JSON.stringify({"seeds": seeds, "part": "%d/%d" % [part, parts], "fights": fights, "secs": secs, "cells": cells}, "  "))
 		pj.close()
 		print("wrote part %d/%d to %s: %d fights in %.1f s" % [part, parts, json_path, fights, secs])
 		quit(0)
@@ -265,9 +248,6 @@ func _parse_args() -> void:
 				i += 1
 			"--json":
 				json_path = v
-				i += 1
-			"--targeting":
-				targeting = "" if v == "aim" else v
 				i += 1
 			"--damage":
 				damage_scale = maxf(0.05, float(v))
@@ -373,10 +353,9 @@ func _merge_parts() -> Dictionary:
 		if int(data.get("seeds", 0)) != seeds:
 			push_error("--merge: '%s' ran %d seeds a cell, this run %d" % [path, int(data.get("seeds", 0)), seeds])
 			return {}
-		for which in [["cells", cells], ["compare", compare]]:
-			var src: Dictionary = data.get(which[0], {})
-			for key in src.keys():
-				which[1][key] = _whole(src[key])
+		var src: Dictionary = data.get("cells", {})
+		for key in src.keys():
+			cells[key] = _whole(src[key])
 		fights += int(data.get("fights", 0))
 		secs = maxf(secs, float(data.get("secs", 0.0)))
 	for r in rows:
@@ -577,11 +556,9 @@ static func _key(r: Dictionary, p: Dictionary, k: int) -> String:
 	return "%s|%s|%s" % [r["id"], p["id"], Policy.kind_name(k)]
 
 
-## One fight, played to its end: {sk, pol, hull_max, foes, outcome}. `rule` is the targeting
-## rule, the runner's unless the comparison asks for the other.
-func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int, rule: String = "\u0001") -> Dictionary:
+## One fight, played to its end: {sk, pol, hull_max, foes, outcome}.
+func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int) -> Dictionary:
 	var sk := Skirmish.new(seed_value)
-	sk.targeting_override = targeting if rule == "\u0001" else rule
 	var hull_max := 0
 	var uid := 0
 	for cid in r["chassis"]:
@@ -947,7 +924,7 @@ static func _ids(list: Array) -> String:
 
 
 ## One cell: `seeds` fights of a row against a pack under one policy, summed.
-func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") -> Dictionary:
+func _run_cell(r: Dictionary, p: Dictionary, k: int) -> Dictionary:
 	var agg := {"fights": 0, "victory": 0, "defeat": 0, "stalled": 0,
 		"rounds": 0, "rounds_won": 0, "hull_lost_pct": 0.0, "mechs_lost": 0, "foes_killed_pct": 0.0,
 		"overheat_hull": 0, "rerolls": 0, "spends": {}, "destroyed": 0, "destroyed_won": 0, "reach": {}, "taken": {},
@@ -955,7 +932,7 @@ func _run_cell(r: Dictionary, p: Dictionary, k: int, rule: String = "\u0001") ->
 		"plans": 0, "plan_changes": 0, "actions": 0, "banked": 0, "gate_free": 0, "paints": 0, "paints_cashed": 0,
 		"hull_lost_sq": 0.0}   # the squares, so a cell's spread of hull lost reads beside its mean (a swing, 3 November)
 	for s in range(seeds):
-		var fight := _fight(r, p, k, s + 1, rule)
+		var fight := _fight(r, p, k, s + 1)
 		var sk: Skirmish = fight["sk"]
 		var pol: Policy = fight["pol"]
 		var hull_max: int = fight["hull_max"]
@@ -1111,26 +1088,6 @@ func _report(fights: int, secs: float) -> String:
 	L.append_array(_heat_report(top))
 	if not fit_module.is_empty():
 		L.append_array(_module_report())
-	L.append("## Targeting rules on the team cells, %s" % " / ".join(_policy_names()))
-	L.append("")
-	L.append("The team against every pack under the shipped rule (every foe picks its own target by its aim, 2 October) and under the rule before it (every foe on the machine with the lowest shield): win rate per policy, then mean rounds and mean hull lost under %s. A single machine cannot see targeting, so this is the only place the rule reads. The matrix above ran under %s." % [Policy.kind_name(top), "the aims" if targeting.is_empty() else "the lowest-shield rule"])
-	L.append("")
-	L.append(_header())
-	for r in rows:
-		if r["id"] != "team":
-			continue
-		for pair in [["aims", cells if targeting.is_empty() else compare], ["lowest shield", compare if targeting.is_empty() else cells]]:
-			var cell: Array[String] = ["**%s**" % pair[0]]
-			for p in packs:
-				var parts: Array[String] = []
-				for k in policies:
-					var a: Dictionary = pair[1][_key(r, p, k)]
-					parts.append("%d" % _pct(a["victory"], a["fights"]))
-				var t: Dictionary = pair[1][_key(r, p, top)]
-				var n: int = maxi(1, t["fights"])
-				cell.append("%s; %.1f r, %d%% hull" % [" / ".join(parts), float(t["rounds"]) / n, int(roundf(t["hull_lost_pct"] / n))])
-			L.append("| " + " | ".join(cell) + " |")
-	L.append("")
 	L.append("## Pick share, %s" % Policy.kind_name(top))
 	L.append("")
 	L.append("How each row's spends divide between its components over every pack: the die's entries as the bot actually uses them. Blank spends (an empty hardpoint, a destroyed or disabled component) are listed last. Rerolls are per round.")

@@ -46,6 +46,12 @@ var spent: Dictionary = {}       # mech id -> actions spent this turn (a fight s
 ## The machines that have moved this action (Ryan, 28 October: a move is given in one go): mech
 ## id -> true. A fight's spent action clears it, so a second action moves again.
 var moved: Dictionary = {}
+## The machines whose move this action has played on the map with an order standing (Ryan, 16
+## November: "if an attack wasn't ordered, it cannot attack. What is allowed, is plotting a path,
+## THEN selecting an attack in range. Once execute is run, the action is forfeit (barring undo, of
+## course)"): mech id -> true. Its order stands as given: it takes no other, and taking it back
+## ends the action. A move that plays with no order standing ends the action there (take_plan).
+var played: Dictionary = {}
 var last_carry: Array = []       # the last move's riders, [[rider id, hex, hex set down], ...], for the map's ring; never saved
 ## The turn's undo, in the order things were done (Ryan, 25 October: "undo should happen in
 ## global order, not on a per-unit basis"): one entry a move or an order (an order's move into
@@ -507,7 +513,7 @@ func destinations_for(u: Unit) -> Dictionary:
 ## not one of those, and not a structure. A pack standing in it can be ordered on. Empty
 ## with no action left; with no move left, the ring of its range round where it stands.
 func threat_for(u: Unit) -> Dictionary:
-	if u == null or state != State.PLAN or actions_left(u) <= 0:
+	if u == null or state != State.PLAN or actions_left(u) <= 0 or played.has(u.id):
 		return {}
 	var dests := destinations_for(u)
 	var out := {}
@@ -686,7 +692,13 @@ func _snapshot(who: Unit = null) -> Dictionary:
 	var ords := {}
 	for uid in orders.keys():
 		ords[str(uid)] = (orders[uid] as Unit).id
-	return {"who": who.id if who != null else 0, "units": units, "moved": who_moved,
+	var spends := {}
+	for uid in spent.keys():
+		spends[str(uid)] = int(spent[uid])
+	var who_played: Array = []
+	for uid in played.keys():
+		who_played.append(int(uid))
+	return {"who": who.id if who != null else 0, "units": units, "moved": who_moved, "spent": spends, "played": who_played,
 		"action_hexes": hexes, "orders": ords, "hexes_moved": int(sponsorship["hexes_moved"]), "planned": planned.duplicate(true)}
 
 
@@ -701,6 +713,16 @@ func _restore(snap: Dictionary) -> void:
 	moved.clear()
 	for uid in snap.get("moved", []):
 		moved[int(uid)] = true
+	# No fight lies between a snapshot and now (a fight empties the undo), so the actions it
+	# held spent are the fights before it and the moves played before it.
+	if snap.has("spent"):
+		spent.clear()
+		var spends: Dictionary = snap["spent"]
+		for k in spends.keys():
+			spent[int(str(k))] = int(spends[k])
+	played.clear()
+	for uid in snap.get("played", []):
+		played[int(uid)] = true
 	action_hexes.clear()
 	var hexes: Dictionary = snap.get("action_hexes", {})
 	for k in hexes.keys():
@@ -812,6 +834,8 @@ func _retake(u: Unit) -> void:
 		moved.erase(u.id)
 	planned = kept
 	orders.erase(u.id)
+	if played.has(u.id):
+		_end_action(u.id)   # its move has played: its order taken back, its action is over
 	last_carry = []
 	_prune_orders()
 
@@ -950,12 +974,64 @@ func shown_positions() -> Dictionary:
 ## executed in sequence if the player wants, and undone"): every snapshot on the undo holds
 ## pieces of this plan alone, so each forgets them, and an undo after it puts the machine back
 ## where it stood with nothing planned to play a second time.
+##
+## A machine's move played ends its action unless an order stands (Ryan, 16 November: "if an
+## attack wasn't ordered, it cannot attack"): with one it is played, its order kept as given; with
+## none its action is spent as a fight spends it. Every step on the undo taken after its move
+## learns the same, so an UNDO of a later step leaves it spent and only an UNDO past its own move
+## gives the action back. A machine it carried keeps its action and its move (the carrier's move is
+## not its own: "let the swallow carry, then it can drive and fight").
 func take_plan() -> Array:
 	var out := plan_pieces()
 	planned.clear()
+	var ids: Array = []
+	for p in out:
+		if not ids.has(int(p["unit"])):
+			ids.append(int(p["unit"]))
+	for uid in ids:
+		if orders.has(uid):
+			played[uid] = true
+		else:
+			_end_action(uid)
 	for snap in history:
 		(snap as Dictionary)["planned"] = []
+		for uid in ids:
+			_played_in(snap, uid)
 	return out
+
+
+## A machine's action over without a fight (its move played with no order standing, or its order
+## taken back once its move had played): spent as a fight spends one, its move with it, so a second
+## action (the Dingo's) moves again.
+func _end_action(uid: int) -> void:
+	spent[uid] = int(spent.get(uid, 0)) + 1
+	moved.erase(uid)
+	played.erase(uid)
+	action_hexes.erase(uid)
+
+
+## A step's snapshot as it stands once a machine's move has played: a step taken after its move
+## (the snapshot holds it moved) holds it played if its order stood then, else its action spent; a
+## step taken before its move is left as it was, so an UNDO back to it gives the action back.
+static func _played_in(snap: Dictionary, uid: int) -> void:
+	var who_moved: Array = snap.get("moved", [])
+	if not (who_moved.has(uid) or who_moved.has(float(uid))):
+		return
+	var who_played: Array = snap.get("played", [])
+	if (snap.get("orders", {}) as Dictionary).has(str(uid)):
+		if not who_played.has(uid):
+			who_played.append(uid)
+		snap["played"] = who_played
+		return
+	var spends: Dictionary = snap.get("spent", {})
+	spends[str(uid)] = int(spends.get(str(uid), 0)) + 1
+	snap["spent"] = spends
+	who_moved.erase(uid)
+	who_moved.erase(float(uid))   # a snapshot read back from a save holds floats
+	who_played.erase(uid)
+	who_played.erase(float(uid))
+	snap["played"] = who_played
+	(snap.get("action_hexes", {}) as Dictionary).erase(str(uid))
 
 
 ## One step of drawing a route by hand: `draft` is the route so far (hexes after the
@@ -996,7 +1072,7 @@ func still_to_act() -> Array[Unit]:
 	if state != State.PLAN:
 		return out
 	for m in mechs():
-		if m.is_static() or not m.alive() or actions_left(m) <= 0 or orders.has(m.id) or is_pinned(m):
+		if m.is_static() or not m.alive() or actions_left(m) <= 0 or orders.has(m.id) or played.has(m.id) or is_pinned(m):
 			continue
 		if can_move(m):
 			out.append(m)
@@ -1168,15 +1244,20 @@ func order(m: Unit, target: Unit) -> bool:
 		return false
 	if orders.get(m.id, null) == target:
 		return true
+	if played.has(m.id):
+		return false   # once its move has played its order stands as given
 	_push(m)
 	orders[m.id] = target
 	return true
 
 
+## Take an order back; once the machine's move has played that ends its action (take_plan).
 func cancel_order(m: Unit) -> void:
 	if m != null and orders.has(m.id):
 		_push(m)
 		orders.erase(m.id)
+		if played.has(m.id):
+			_end_action(m.id)
 
 
 ## A tap or a drag onto a pack (bible section 5), as one step and one undo: along a drawn route
@@ -1192,7 +1273,7 @@ func order_onto(m: Unit, target: Unit, draft: Array = []) -> String:
 	if draft.is_empty() and order_of(m) == target:
 		cancel_order(m)
 		return "cancelled"
-	if not can_target(target) or actions_left(m) <= 0:
+	if not can_target(target) or actions_left(m) <= 0 or played.has(m.id):
 		return "refused"
 	var snap := _snapshot(m)
 	_batch += 1
@@ -1306,6 +1387,8 @@ func _prune_orders() -> void:
 		var target: Unit = orders[uid]
 		if m == null or actions_left(m) <= 0 or not can_target(target) or not in_range_from(m, m.pos, target):
 			orders.erase(uid)
+			if m != null and played.has(m.id):
+				_end_action(m.id)
 
 
 ## End the player's turn (bible section 4): the enemy's turn plays (packs walk round the
@@ -1397,6 +1480,7 @@ func take_locks() -> Array:
 func _new_turn() -> void:
 	spent.clear()
 	moved.clear()
+	played.clear()
 	action_hexes.clear()
 	orders.clear()
 	history.clear()
@@ -1500,6 +1584,7 @@ func finish_skirmish() -> void:
 	for ms in current.mechs:
 		spent[ms.unit.id] = int(spent.get(ms.unit.id, 0)) + 1
 		moved.erase(ms.unit.id)
+		played.erase(ms.unit.id)
 		action_hexes.erase(ms.unit.id)
 	var tallied: Array[Unit] = []
 	for sq in current.packs:
