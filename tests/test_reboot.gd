@@ -744,17 +744,26 @@ func test_a_one_of_each_machine_acts_and_then_reboots_as_its_second_spend() -> v
 	assert_false(other.can_reboot(0), "and has given up its reboot")
 
 
-func test_a_spend_that_leaves_nothing_to_turn_to_still_leaves_the_reboot() -> void:
+func test_a_spend_that_leaves_nothing_to_flip_to_ends_its_die_and_the_reboot_with_it() -> void:
 	var m := _mech(1, "Spotter", Die.of([Face.attack(5, L, [], 10), Face.attack(5, L, [], 10)]))
 	m.grant_passive(RELAY)
 	var sk := _fight([m], [Foe.make("dummy", 900, 0)])
 	sk.start_round()
-	assert_true(sk.assign(0, sk.front[0]), "a gun, and no equipment to turn to")
+	assert_true(sk.assign(0, sk.front[0]), "a gun, and no equipment to flip to")
 	var ms: Skirmish.MechState = sk.mechs[0]
-	assert_true(ms.assigned, "its die spent: no second action")
-	assert_true(sk.can_reboot(0), "the reboot is its second spend whatever the first left")
-	assert_true(sk.reboot_mech(0), "rebooted")
-	assert_eq(ms.heat, 0, "vented")
+	assert_true(ms.assigned, "its die done: no second action")
+	assert_false(sk.can_reboot(0), "it reboots while its die is in play alone")
+
+
+func test_no_machine_but_the_needletail_reboots_after_a_rapid_spend() -> void:
+	var m := _mech(1, "Plain", Die.of([Face.attack(3, L, [K.RAPID], 2), Face.attack(3, L, [], 2)]))
+	var sk := _fight([m], [Foe.make("dummy", 900, 0)])
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	assert_true(sk.assign(0, sk.front[0]), "a Rapid gun")
+	assert_false(ms.assigned, "it acts again")
+	assert_false(sk.can_reboot(0), "but a Rapid spend is a spend: no reboot after it (Ryan, 18 November: \"Normal units cannot even rapid before rebooting\")")
 
 
 func test_the_bot_spends_before_a_reboot_it_owes_and_reboots_as_its_second() -> void:

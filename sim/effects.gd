@@ -2503,24 +2503,11 @@ static func ordinal(n: int) -> String:
 ## piece's price, and a cleanse that lifted a Rapid piece's would start an infinite turn).
 static func disable_entry(u, index: int, source: String, until_round: int) -> Modifier:
 	var cooldown := source == "cooldown"
-	var relay := source == "relay"   # its kind's action spent this round (the Needletail's Relay): no foe's, so no cleanse lifts it
-	var status := {"id": "disabled_%d" % index, "name": "Cooldown" if cooldown else ("Spent" if relay else "Jammed"),
-		"description": "This component is dark, cooling down." if cooldown else ("Its machine's action of this kind is spent this round." if relay else "This component is jammed: it comes up blank."),
-		"tags": [] if cooldown or relay else [CLEANSABLE],
+	var status := {"id": "disabled_%d" % index, "name": "Cooldown" if cooldown else "Jammed",
+		"description": "This component is dark, cooling down." if cooldown else "This component is jammed: it comes up blank.",
+		"tags": [] if cooldown else [CLEANSABLE],
 		"effects": [{"trigger": "status", "effect": "disable_entry", "value": index}]}
 	return grant_for_rounds(u, status, source, until_round)
-
-
-## Is entry `index` dark because its kind's action is spent this round (the Relay's "relay"
-## source: disable_entry), and not by a cooldown or a foe's switch-off?
-static func relay_dark(u, index: int) -> bool:
-	for m in live(u):
-		if m.source != "relay":
-			continue
-		for eff in m.effects:
-			if str(eff.get("effect", "")) == "disable_entry" and int(eff.get("value", -1)) == index:
-				return true
-	return false
 
 
 ## The machine's muster rule (static muster, the Swallowtail's Muster Deck, 21 October): its
@@ -2595,12 +2582,12 @@ static func refills_on_kill(u) -> bool:
 
 ## Does the machine act twice a round, once with a weapon and once with equipment (static
 ## one_of_each, the Needletail's Quick-turn Avionics Relay; Ryan, 11 November: "using two things a
-## round is very Kestrel and deserves a chassis")? Its two actions are by kind (rewritten 18
-## November, Ryan: "This doesn't need a "fix," this needs a rewrite"): spending an entry of a kind
-## spends that kind's action and darkens every entry of it for the round (disable_entry's "relay"
-## source), so no roll, reroll or turn brings it back; a Rapid or Instant spend uses no action
-## (Ryan: "rapid does not consume any of the spends"). MechState.relay_spent holds what it has
-## spent; Skirmish.turn_entries the turn. The machine's own rule and no keyword.
+## round is very Kestrel and deserves a chassis")? Rewritten on 18 November (Ryan: "just to
+## send the 'unlit' kinds onto cooldown. There's no special cases or states then"): spending a
+## weapon sends every weapon on its die onto cooldown for the round, equipment the same, and its
+## die flips to a lit entry of the other kind (Skirmish.turn_entries); a Rapid or Instant spend
+## sends nothing but itself (Ryan: "rapid does not consume any of the spends"). While its die is
+## in play it may reboot (Skirmish.can_reboot). The machine's own rule and no keyword.
 static func one_of_each(u) -> bool:
 	for pair in _taking_part(u, "static", null):
 		if str(pair[0].get("effect", "")) == "one_of_each":

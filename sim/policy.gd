@@ -260,14 +260,15 @@ func play_round(sk: Skirmish, rerolls: bool = true) -> void:
 ## machines that owe one give their turn before any die is spent.
 ## A first cut, no weighing against the spend it gives up, so the runners still play a fight under
 ## the rule and its reads are a floor: a bot that reads the foes' picks reboots where no blow would
-## cost it a shield worth keeping. A machine whose reboot may be its second spend (the Needletail's,
-## Skirmish.quick_reboot) spends first where it has a spend worth making, and owes the reboot
-## after it (_owed): the vent takes that spend's heat with the rest.
+## cost it a shield worth keeping. A machine that may reboot while its die is in play (the
+## Needletail's, Skirmish.can_reboot) spends first where it has a spend worth making and a flip
+## after it whatever it spends, and owes the reboot after it (_owed): the vent takes that spend's
+## heat with the rest.
 func _reboot_first(sk: Skirmish) -> void:
 	_owed.clear()
 	for i in range(sk.mechs.size()):
 		if sk.can_reboot(i) and _wants_reboot(sk, sk.mechs[i]):
-			if Effects.one_of_each(sk.mechs[i].unit):
+			if Effects.one_of_each(sk.mechs[i].unit) and _flips_either_way(sk, sk.mechs[i]):
 				_owed.append(i)   # its spend's heat is free before the reboot (heat_cost), so it is weighed so
 				if _best_score(sk, i) > 0.0:
 					continue
@@ -284,10 +285,22 @@ func _best_score(sk: Skirmish, i: int) -> float:
 	return best
 
 
-## Whether this machine's next spend is the one before a reboot it owes as its second spend
-## (_owed): its heat is vented with the rest, so it costs nothing.
+## Whether a one-of-each machine's die would still be in play after its first spend, whichever
+## kind it spends: a lit weapon and a lit piece of equipment on it, so the flip finds the other.
+func _flips_either_way(sk: Skirmish, ms: Skirmish.MechState) -> bool:
+	var kinds := 0
+	for at in range(ms.die.faces.size()):
+		var f: Face = ms.die.faces[at]
+		if Effects.is_entry_disabled(ms.unit, at) or f.kind == Face.Kind.BLANK:
+			continue
+		kinds |= 1 if f.is_weapon() else (2 if f.is_equipment() else 0)
+	return kinds == 3
+
+
+## Whether this machine's next spend comes before a reboot it owes (_owed): its heat is vented
+## with the rest, so it costs nothing.
 func _vents_after(sk: Skirmish, ms: Skirmish.MechState) -> bool:
-	if _owed.is_empty() or ms.rebooting or Skirmish.actions_spent(ms) != 0:
+	if _owed.is_empty() or ms.rebooting:
 		return false
 	var i := sk.mechs.find(ms)
 	return i >= 0 and _owed.has(i)
@@ -297,8 +310,8 @@ func _vents_after(sk: Skirmish, ms: Skirmish.MechState) -> bool:
 ## reboot as the turn began (_reboot_first), or wants one now, the spend's heat on it.
 func _reboots_second(sk: Skirmish, i: int) -> bool:
 	var ms: Skirmish.MechState = sk.mechs[i]
-	if ms.spends == 0 or Skirmish.actions_spent(ms) != 1 or not sk.can_reboot(i):
-		return false   # its second action the reboot: one action spent (a free Rapid spend is none)
+	if ms.spends == 0 or not sk.can_reboot(i):
+		return false   # a reboot after a spend, its die still in play (the Needletail's)
 	return _owed.has(i) or _wants_reboot(sk, ms)
 
 
