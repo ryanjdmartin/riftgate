@@ -11102,3 +11102,67 @@ A row is twenty fights and a direction; the means, over 200 fights and 140, are 
   18.9% to 43.3%. The Obsidian Tyrant, the Ruby Colossus and the Marsh Serpent, whose
   weight is a blow that gathers, read the same without a Barrier at any count. So the
   blows' numbers are sized after the split, never by it.
+
+## 18 November: a foe's adds on every strike, and the Barrier basic machine by machine
+
+Ryan, of a foe's Empowered as the engine had it, an add before the move's factor: "That
+seems very unintuitive for Empowered. Should work the same as the machines do, as I thought
+the damage formulas were the same on both sides." Built that day: a move's number is its
+own and every add lands on each strike (the rules' enemy turn; the bible's row on the
+rally). And of the Barrier: "I think it can stay on the starting dice, with this change to
+hit counts, and possibly with giving it cooldown 1. It's one of the two sides of the
+defensive coin, and without it the starting draft leans towards taking units that are ok
+with hull hits, and not ones that actually need their shield for stuff. Makes sense or no?"
+Every read is `tools/anchor_read.gd` on the six certain tier ones, the greedy bot, the new
+formula, twenty fights a row for the leaders; hull is a share of a four's.
+
+**What the formula moved.** Nothing among tier one's flankers, hunters, formations and
+bosses: every row came back the same to the decimal (3.2%, 8.9%, 5.0% over 5.9 rounds, and
+32.5%), since every rallied move there strikes at its foe's whole attack. Three elite fights
+moved, the ones with an add on a move at a share of the attack: the shaman's warband 20.1%
+to 23.4% (its Bloodlust on a Chain Lightning at half, at every machine), the Nob 18.9% to
+18.7% and the Thunder Ape's rampage 16.1% to 15.7% (a rage on moves over and under the
+attack, a wash). The elites' mean went from 10.9% to 11.1%.
+
+**The Barrier basic by its cooldown.** `refit=barrier=cooldownN` and `refit=barrier=none`.
+
+| The Barrier basic | An elite | A boss |
+|---|---|---|
+| No cooldown | 6.5 rounds, 7.9%, 0.02 wrecks | 95% won, 11.3 rounds, 26.8%, 0.30 wrecks, 6 fights stalled |
+| A cooldown of 1, as content has it | 6.3, 11.1%, 0.04 | 97%, 10.4, 32.5%, 0.40 |
+| A cooldown of 2 | 6.2, 13.4%, 0.07 | 97%, 9.6, 35.5%, 0.44 |
+| Off the dice, the Armoured basic in its slot | 98% won, 6.1, 23.3%, 0.25 | 87%, 10.1, 52.4%, 1.08 |
+| Off the dice, the leaders' blows at four fifths | 5.9, 14.1%, 0.12 | 98%, 9.2, 31.9%, 0.34 |
+
+The cooldown is a weak dial and the piece's presence the strong one: a second round sat out
+is 3 points on a boss, the piece itself 20. By fight the Nob reads 10.9%, 18.7%, 30.6% and
+62.4% down the first four rows, a great blow every round; the Fiend of Fire 53.6%, 62.2%,
+57.1% and 47.2%, the one boss cheaper with plate in the slot than with the Barrier, its
+weight six strikes of 4.
+
+**Who pays, machine by machine.** Each machine's own hull lost a fight it stood in and how
+often it was wrecked, the read's new lines under its means.
+
+| Machine, hull and shield | A boss, the Barrier basic | A boss, none | A boss, none, blows at four fifths | An elite, the Barrier basic | An elite, none | An elite, none, four fifths |
+|---|---|---|---|---|---|---|
+| Honey Badger, 36 and 6, plate 1 | 19.4%, 0.03 wrecks | 34.3%, 0.09 | 15.5%, 0.01 | 4.8% | 14.2% | 6.8% |
+| Storm Petrel, 24 and 12 | 32.9%, 0.11 | 55.0%, 0.26 | 25.0%, 0.05 | 13.3% | 23.4% | 11.0% |
+| Skua, 20 and 9 | 32.4%, 0.07 | 51.6%, 0.28 | 34.9%, 0.08 | 15.4% | 26.7% | 17.5% |
+| Prairie Dog, 20 and 8, a Halo Projector | 41.4%, 0.17 | 53.9%, 0.28 | 36.7%, 0.08 | 12.2% | 23.4% | 15.1% |
+| Cassowary, 24 and 6, a Halo Projector | 39.3%, 0.11 | 61.7%, 0.34 | 44.3%, 0.13 | 14.9% | 28.3% | 19.6% |
+| Cottonmouth, 20 and 6, a Halo Projector | 34.8%, 0.11 | 72.8%, 0.47 | 50.3%, 0.20 | 9.1% | 31.4% | 22.0% |
+| The squad, of a four's hull | 32.5% | 52.4% | 31.9% | 11.1% | 23.3% | 14.1% |
+
+Read the first boss column against the third, the same cost to the squad. With no Barrier
+and lighter blows the Honey Badger pays less (19% of its hull to 16%) and so does the Storm
+Petrel (33% to 25%, its Hardlight a point off every blow while its shield stands); the thin
+machines that carried the piece pay more, the Cassowary 39% to 44% and the Cottonmouth 35%
+to 50%. So his premise holds in its direction, the squad's cost moving onto the machines
+least able to take a hull hit, with one correction: the machine whose kit needs its shield
+does better without the Barrier at lighter blows, and the ones the piece keeps standing are
+the lightest. From the sturdiest machine to the thinnest the spread is two to one with the
+Barrier basic and three to one without it.
+
+What stays against it is his own point of 15 November: a squad with no Barrier pays a boss
+52.4% for 32.5% and the Nob 62.4% for 18.7%, so while the piece is a basic the leaders are
+sized so that a squad without one still stands, and none is sized up to it.

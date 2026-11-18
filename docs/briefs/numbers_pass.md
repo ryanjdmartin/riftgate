@@ -31,7 +31,12 @@ them after. Numbers in content are placeholders until then, as ever.
   exceed base armour of 2 in tier 1, I think it'll be fine."
 - The Barrier (15 November): "I don't want the existence of barrier as an accessible-to-all
   tool, to justify the existence of massive enemy strikes. That's my main concern,
-  degenerate or not. I think that's why I lean towards not having it as a basic."
+  degenerate or not. I think that's why I lean towards not having it as a basic." And 18
+  November, his lean on the strikes said: "I think it can stay on the starting dice, with
+  this change to hit counts, and possibly with giving it cooldown 1. It's one of the two
+  sides of the defensive coin, and without it the starting draft leans towards taking units
+  that are ok with hull hits, and not ones that actually need their shield for stuff. Makes
+  sense or no?"
 - How the leaders strike (17 November, of tuning for a block that exists: "large blows should
   be multi-strikes except where particularly thematic or the whole point is to suppress,
   disrupt, or block it ... Just a thought, not an instruction"; 18 November, the read in
@@ -84,7 +89,7 @@ machine, a hunter's pack two, a formation three, an elite and a boss four), the 
 | A lone flanker | 5.2 | 3.2% | 3.3% or less | 5.9% |
 | A hunter's pack | 5.1 | 8.9% | 10% | 12.7% |
 | A formation | 5.9 | 5.0% | 5% | 8.3% |
-| An elite | 6.3 | 10.9% | 25% | 10.9% |
+| An elite | 6.3 | 11.1% | 25% | 10.9% |
 | A boss | 10.4 | 32.5%, a wreck in two fights of five | what is left | 32.6% |
 
 By formation: the sandworm's ambush 1.9%, the knights' vigil 2.4%, the needler thicket 2.8%,
@@ -93,12 +98,13 @@ grave throng 7.6%, the treant's grove 7.7%, the ember pyre 7.7%. The flankers co
 3.8%; the wolf pack 7.4% and the antlion trio 10.3%. Every one is won in every fight.
 
 The elites and the bosses are unsized, and the Barrier's place decides how. With the Barrier
-basic on the starting dice an elite costs 10.9%, under half his quarter, and a boss 32.5%.
-With the Armoured basic in its slot an elite costs 22.7%, on the quarter but for the two
-whose kit is one great blow a round (the Nob 59.2%, the Cinder Tortoise's brood 40.2%), and
-a boss 52.8% with a wreck a fight and 87% won. So the elites are sized for a squad with no
+basic on the starting dice an elite costs 11.1%, under half his quarter, and a boss 32.5%.
+With the Armoured basic in its slot an elite costs 23.3%, on the quarter but for the two
+whose kit is one great blow a round (the Nob 62.4%, the Cinder Tortoise's brood 40.2%), and
+a boss 52.4% with a wreck a fight and 87% won. So the elites are sized for a squad with no
 Barrier and the bosses for a squad with one. The bosses run from 8.9% (the Mantis Ant) to
-62.2% (the Fiend of Fire) today.
+62.2% (the Fiend of Fire) today. The same reads by machine and by the piece's cooldown are
+`docs/measurements.md`, 18 November.
 
 ## 4. What a point is worth
 
@@ -208,9 +214,9 @@ two entries):
 
 | The call | The lean | Why |
 |---|---|---|
-| The Barrier's place | No basic, his own lean ("I think no barrier basic", 17 November), and a niche it keeps: "an alternative to suppress, basically" (18 November) | Tune for a squad with none. A found Barrier is then an edge on the leaders whose kit is a great blow, as a Suppress is: one in a squad takes a quarter off a boss on the mean, half off the four whose kit is one great blow, nothing off the four that strike every machine. This pass's test of 17 November, no boss with more than half its damage in one blow, is retired by his word: a great blow whole is the niche. With none, the bosses' blows at four fifths cost a squad what they cost today |
+| The Barrier's place | His lean of 18 November: it stays on the starting dice, "with this change to hit counts, and possibly with giving it cooldown 1", as "one of the two sides of the defensive coin" (section 1); no basic until then (15 and 17 November). This pass's answer: yes, with his point of 15 November kept | It has its cooldown of 1 already, and a second round sat out is 3 points on a boss where the piece itself is 20. The read by machine backs him in its direction: with no Barrier and the bosses resized to cost the squad the same, the cost moves onto the thinnest machines (the Cottonmouth 35% of its hull to 50%) and off the Honey Badger (19% to 16%); the Storm Petrel, the kit that needs its shield, does better without it (33% to 25%). What it brings back is the squad with none, a boss at 52.4% for 32.5% and the Nob at 62.4% for 18.7%. So the leaders are sized so a squad with none still stands, none is sized up to the piece, and what weight a leader gains goes into damage a Barrier does not take whole. The budget's anchor is his to say: an elite costs 11.1% with the piece on the dice and his quarter without it |
 | How the leaders strike | His lean, 18 November (section 1; the bible's section 9): whole blows the norm, "leaning slightly towards multi to gently boost armour in boss and elite fights", never so "an armoured tank is just best in every fight" | A pair is the gentle setting and three strikes or more a wall's fight (section 4's plate arithmetic), so three and more stay the rare kit shape. Today one boss a domain carries a move of strikes (Floraison's three and five, the Emperor Scorpion's pair, the Matador's four, the Fiend of Fire's six) and one elite fight of tier one's eleven (the Thunder Ape's three). The lean's room is a pair on a few leaders' plain blows, most of it among the elites, each a proposal in chat by the kit's fantasy. A move of strikes is sized with what lands once a strike: its riders, and a machine's Brittle (the World Eater its one layer, so it keeps whole blows). A foe's Empowered goes through the move's multiplier, so a pair at the same total takes a rally as the whole blow did, and it grows on a move whose strikes add up to more than its attack (Full Bloom, five strikes at half, takes two and a half of one). This pass's lean of 17 November, every plain blow as two strikes, is retired; its read stands, and the anchor read's `split=` leaves with the leader pass |
-| Where the Halo Projector goes | A tier-one find beside the Blast Door, or locked to a machine: his | It is a tier-zero blueprint today, so off the starting dice is not out of every squad's reach |
+| Where the Halo Projector goes | Where it is, if his lean of 18 November stands: a tier-zero basic on five of tier one's nine stock dice | The Shoring Jack is the coin's other side, on the Honey Badger's and the Polar Bear's; the Skua and the Storm Petrel carry neither |
 | HEAT | −1: a vanilla 3 for 3 | Four shots a gauge for three; a formation 0.7 rounds shorter and a point of hull lighter, a quarter fewer reboots; "I just know I overheated a lot" |
 | TOP BASIC | +2: the Carbine 4 for 6 | Its point is paid in heat: two shots a gauge for the vanilla's four |
 | RANK AND FILE | As built: a standard foe of 4 | At 5 a formation runs a round longer and costs half again as much, so the blows would be sized again. The room 5 was to buy, a point between the Carbine and the kill, is bought by the Carbine's heat. Loosely held; tier two's standard is 5 already |

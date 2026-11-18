@@ -8,8 +8,9 @@ extends SceneTree
 ## and fought by squads drawn from a pool of chassis, each as large as the fight is rated (a
 ## patrol one machine, a hunter's pack two, a formation three, an elite and a boss four), by
 ## the greedy bot. Hull lost is a share of a squad of four's: the pool's mean machine, four
-## times. A cell is a direction; a kind's mean is a band. It prints markdown and writes no
-## file: a read a decision cites is copied into docs/measurements.md.
+## times. A cell is a direction; a kind's mean is a band. Under the means it says who paid:
+## each machine's own hull lost a fight it stood in, and how often it was wrecked. It prints
+## markdown and writes no file: a read a decision cites is copied into docs/measurements.md.
 ##
 ## usage: godot --headless --path . -s tools/anchor_read.gd -- pool=a,b,c,d,e,f [seeds=5]
 ##        [squads=6] [tier=1] [ramp=1] [kinds=patrol,formation,elite,boss] [only=id,id]
@@ -127,6 +128,7 @@ func _init() -> void:
 				f.action = f.actions[0]
 		return f
 	var sums := {}
+	var by_machine := {}   # kind, then chassis: [fights, the share of its own hull lost, wrecks]
 	for row in rows:
 		if not only.is_empty() and not only.has(str(row[2])):
 			continue
@@ -135,6 +137,12 @@ func _init() -> void:
 			var probe_pack: Unit = Battlefield.pack_of(row[3], str(row[1]))
 			rated = probe_pack.squad
 		var n := clampi(rated, 1, mini(4, pool.size()))
+		var kind_label := str(row[0])
+		if kind_label == "patrol" and rated >= 2:
+			kind_label = "hunter"
+		if not by_machine.has(kind_label):
+			by_machine[kind_label] = {}
+		var tally: Dictionary = by_machine[kind_label]
 		var wins := 0; var fights := 0; var rounds := 0; var stalls := 0; var wrecks := 0
 		var lost := 0.0; var reboots := 0; var burn := 0
 		var all_squads: Array = combos(pool, n)
@@ -178,14 +186,19 @@ func _init() -> void:
 				rounds += pol.rounds
 				reboots += pol.reboots
 				burn += pol.overheat_hull
-				for u2 in units:
-					lost += float((u2 as Unit).hull_max - maxi(0, (u2 as Unit).hull))
-					if (u2 as Unit).hull <= 0:
+				for i in units.size():
+					var u2: Unit = units[i]
+					var gone := float(u2.hull_max - maxi(0, u2.hull))
+					lost += gone
+					if not tally.has(str(squad[i])):
+						tally[str(squad[i])] = [0, 0.0, 0]
+					var t: Array = tally[str(squad[i])]
+					t[0] += 1
+					t[1] += gone / float(maxi(1, u2.hull_max))
+					if u2.hull <= 0:
 						wrecks += 1
+						t[2] += 1
 		var fn := float(maxi(1, fights))
-		var kind_label := str(row[0])
-		if kind_label == "patrol" and rated >= 2:
-			kind_label = "hunter"
 		print("| %s | %s | %s | %d | %d%% | %.1f | %.1f%% | %.2f | %.2f | %.1f | %d |" % [str(db.factions[row[1]].get("name", row[1])), kind_label, row[2], n,
 			roundi(100.0 * wins / fn), float(rounds) / fn, 100.0 * lost / fn / four, float(wrecks) / fn, float(reboots) / fn / float(n), float(burn) / fn, stalls])
 		if not sums.has(kind_label):
@@ -203,6 +216,14 @@ func _init() -> void:
 	for key in sums.keys():
 		var v: Array = sums[key]
 		print("mean, %s (%d rows, %d fights): won %d%%, %.1f rounds, %.1f%% of a four's hull, %.2f wrecks a fight, %.2f reboots a machine a fight, the burn %.1f hull a fight, %d stalled" % [key, v[0], v[7], roundi(v[1] / v[0]), v[2] / v[0], v[3] / v[0], v[4] / v[0], v[5] / v[0], v[6] / v[0], v[8]])
+	# Who paid: each machine's own hull lost a fight it stood in, and how often it was wrecked.
+	for key in by_machine.keys():
+		var said: Array = []
+		for cid in pool:
+			if by_machine[key].has(str(cid)):
+				var t: Array = by_machine[key][str(cid)]
+				said.append("%s %.1f%% of its hull, %.2f wrecks" % [str(db.chassis[cid]["name"]), 100.0 * float(t[1]) / float(maxi(1, t[0])), float(t[2]) / float(maxi(1, t[0]))])
+		print("by machine, %s: %s" % [key, "; ".join(said)])
 	if not cut.is_empty():
 		var said: Array = []
 		for key in cut.keys():

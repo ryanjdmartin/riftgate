@@ -212,19 +212,22 @@ static func whens_of(a: Dictionary) -> Array:
 	return Array(w) if w is Array else []
 
 
-## What one blow of an action does: base attack, plus what its statuses add (a rally's Empowered),
+## What one blow of an action does: the move's number (base_damage_of: the foe's attack at the
+## move's factor, rounded to the nearest whole number, what the codex shows), plus every add, a
+## point on each strike: what its statuses add (a rally's Empowered, a rage, a Sapped's less),
 ## `extra` (the rallies the skirmish sees on their way to it, Skirmish.foe_blow), its swarm and
 ## its grudge (`per_kill`, a point a foe the team has killed this fight: the Pilgrim's Karma, 30
-## October), times its factor, rounded to the nearest whole number: the adds, then the multiplies, one
-## damage formula for the whole game (Ryan, 26 October: "One formula means one damage formula
-## followed by the whole game"). A defend, buff or debuff action deals nothing.
+## October). The machines' formula on the foes' side (Ryan, 26 October: "One formula means one
+## damage formula followed by the whole game"; 18 November, of an add the move's factor scaled:
+## "Should work the same as the machines do"): a move's number is its own, as a weapon's printed
+## number is, and no add is scaled by the factor. A defend, buff or debuff action deals nothing.
 func damage_of(a: Dictionary, extra: int = 0) -> int:
 	if not is_attack_action(a):
 		return 0
 	# A swarm blow grows with the foe's kin on the field: the ghoul's threat is its numbers.
 	var swarm := int(a.get("swarm", 0)) * kin
 	var grudged := int(a.get("per_kill", 0)) * grudge
-	return maxi(0, int(roundf((base_number(a) + Effects.foe_attack_bonus(self) + extra + swarm + grudged) * float(a.get("factor", 1.0)))))   # never below nothing (a Weakened foe's)
+	return maxi(0, base_damage_of(a) + Effects.foe_attack_bonus(self) + extra + swarm + grudged)   # never below nothing (a Sapped foe's)
 
 
 ## The number a move's blow starts from: the foe's attack, or for a move whose `power` names a
@@ -312,8 +315,9 @@ static func follow_ups(list: Array) -> Array:
 	return out
 
 
-## One blow of an action at the foe's own numbers: its attack times the move's factor, with no
-## kin and no rally (the codex's number, and what the hold reads a live blow against).
+## One blow of an action at the foe's own numbers, the move's number: its attack times the
+## move's factor, with no kin and no rally (the codex's number, what every add lands on, and
+## what the hold reads a live blow against).
 func base_damage_of(a: Dictionary) -> int:
 	if not is_attack_action(a):
 		return 0

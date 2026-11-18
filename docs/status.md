@@ -63,8 +63,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1308 tests, 375,397 checks, green on main as `ccr-bd73687d-w8qox1` landed (18
-  November, the deaths' branch over main at `66c0a63`). The runner fails a run whose tests never ran, so read the checks' count, never
+- Tests: 1309 tests, 375,408 checks, green on `ccr-722ca9f0-yj8na3` (18 November, a foe's
+  adds on every strike, over main at `15d6679`). The runner fails a run whose tests never ran, so read the checks' count, never
   the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
   purpose. About four minutes in a cloud session; words after `--` run only the files whose
   names hold one (`-- loot rig`).
@@ -149,13 +149,15 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   are sized to it since 17 November (`docs/briefs/numbers_pass.md`, section 8; the reads
   `docs/measurements.md`): a lone flanker 3.2% of a four's hull, a hunter's pack 8.9%, a
   formation 5.0% over 5.9 rounds, from 1.9% to 7.7% by formation, every fight won. The
-  elites and the bosses are not, and wait on his go for the Barrier (17 November: "I think
-  no barrier basic"; the lean and its reads are the numbers brief's section 7): an elite
-  costs 10.9% with the Barrier basic on the starting dice and 22.7% without it, a boss 32.5%
-  and 52.8%, and with none the bosses' blows at four fifths cost a squad what they cost
-  today. How the leaders strike is his lean of 18 November (the bible's section 9): whole
-  blows the norm, a Suppress's and a Barrier's niche, and slightly towards strikes so plate
-  earns in their fights. This pass's leans on the dials stand in the same section, each his.
+  elites and the bosses are not, and wait on the Barrier's place: his lean of 18 November is
+  that it stays on the starting dice ("one of the two sides of the defensive coin"; no basic
+  until then), answered in chat with the read (the numbers brief's section 7), and what he
+  has still to say is the squad the budget is read on. An elite costs 11.1% with the Barrier
+  basic and 23.3% without it, a boss 32.5% and 52.4%. How the leaders strike is his lean of
+  the same day (the bible's section 9): whole blows the norm, slightly towards strikes so
+  plate earns in their fights. A foe's adds, its Empowered first, land on every strike of a
+  move since then, the machines' formula. This pass's leans on the dials stand in the same
+  section, each his.
   Tiers two and three and the first battle are unsized, their foes still the ones sized
   against a shield that refilled. On a debug
   build's SETTINGS, TRIALS, each a number still to be picked: HEAT, TOP BASIC, RANK AND FILE

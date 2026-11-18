@@ -836,7 +836,7 @@ func incoming_for(ms: MechState) -> int:
 
 ## The blow a foe's move lands, as its intent shows it (Ryan, 26 October: "The intents should
 ## take into account incoming buffs"): its own statuses and the rallies on their way to it
-## (rallies_on), one damage formula, every add before the factor (Foe.damage_of).
+## (rallies_on), one damage formula, every add on the move's own number (Foe.damage_of).
 func foe_blow(f: Foe) -> int:
 	return f.damage_of(f.action, incoming_rally(f))
 

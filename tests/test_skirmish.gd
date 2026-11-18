@@ -4358,6 +4358,45 @@ func test_a_rally_reaches_every_foe_after_it_at_its_value_and_two_rallies_add() 
 	assert_eq(Effects.stacks_of(c, "kindled") + Effects.stacks_of(d, "kindled"), 4, "the blows spend nothing: five halve to two each")
 
 
+func test_a_foes_adds_land_on_every_strike_of_a_move_whatever_its_factor() -> void:
+	# The machines' formula on the foes' side (Ryan, 18 November, of an Empowered the move's
+	# factor scaled: "Should work the same as the machines do"): a move's number is its own, the
+	# foe's attack at the move's factor, and every add is a point on each strike. A flurry of
+	# half-strength strikes takes a rally whole on every strike, a great blow takes it once, and
+	# a swarm, a grudge and a Sapped's less land the same way.
+	var sk := Skirmish.new(3, 4)
+	var m := _mech("A", Die.single(Face.blank()), 0, 500)
+	sk.add_mech(m)
+	var r := _ghoul(500, 40)
+	var f := _ghoul(500, 10)
+	r.actions = [Foe.basic_action(), _special("buff", "rally", {"value": 2})]
+	var flurry := {"id": "flurry", "name": "Flurry", "kind": "attack", "factor": 0.5, "strikes": 3, "weight": 1, "keywords": [], "text": ""}
+	var great := {"id": "great", "name": "Great Blow", "kind": "attack", "factor": 1.5, "strikes": 1, "weight": 1, "keywords": [], "text": ""}
+	var pack := {"id": "pack", "name": "Pack Bite", "kind": "attack", "factor": 0.5, "strikes": 2, "weight": 1, "keywords": [], "text": "", "swarm": 3, "per_kill": 1}
+	f.actions = [flurry, great, pack]
+	sk.add_foes([r, f])
+	sk.begin()
+	assert_eq(sk.front[0], r, "the rallier stands left and acts first")
+	sk.start_round()
+	assert_eq(f.base_damage_of(flurry), 5, "the move's number: 10 at half")
+	assert_eq(f.base_damage_of(great), 15, "and 10 at half again as much")
+	r.action = r.actions[1]
+	f.action = great
+	assert_eq(sk.foe_blow(f), 17, "a rally of 2 on its way is 2 on the great blow, never 3 for its factor")
+	f.action = flurry
+	assert_eq(sk.foe_blow(f), 7, "and 2 on each strike of 5, never 1 for the half")
+	sk.end_round()
+	assert_eq(m.hull, 500 - 7 * 3, "three strikes of 7 landed")
+	assert_eq(Effects.stacks_of(f, "kindled"), 1, "the rally halved as its turn ended")
+	assert_eq(f.damage_of(flurry), 6, "what is left is a point a strike")
+	f.kin = 2
+	f.grudge = 1
+	assert_eq(f.damage_of(pack), 5 + 1 + 3 * 2 + 1, "a swarm and a grudge are adds on the move's number as the rally is")
+	Effects.grant_buff(f, "sapped", 2, "test", 99)
+	assert_eq(f.damage_of(flurry), 5 + 1 - 2, "a Sapped's less comes off each strike whole")
+	assert_eq(f.damage_of({"id": "tap", "name": "Tap", "kind": "attack", "factor": 0.1, "strikes": 1, "weight": 1, "keywords": [], "text": ""}), 0, "and never below nothing")
+
+
 func test_a_suppress_takes_a_kindled_move_and_a_countdown_carries_its_rally_to_the_blow() -> void:
 	# A Suppress spends none of a foe's Empowered, which halves on its own clock (4 November); a
 	# countdown gathering carries what stands to the blow it lands, and its intent shows what it

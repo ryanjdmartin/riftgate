@@ -277,9 +277,10 @@ const STATUS := {
 	# to the next. It halves as the foes' turn ends, which is the round's end, the machines'
 	# clock on the other side (4 November; a machine's at its own turn's end since 16 November):
 	# no move spends it and a Suppress takes none of it. The intents read a rally on its way
-	# (Skirmish.incoming_rally), so no foe strikes above the number it showed. An add before the
-	# factor, one damage formula for the whole game (Ryan, 26 October), as Empowered is on the
-	# machines' side. Each grant is its rally's value; the stacks add.
+	# (Skirmish.incoming_rally), so no foe strikes above the number it showed. A point a stack
+	# on every strike of its move, on the move's own number (Foe.damage_of; 18 November), one
+	# damage formula for the whole game (Ryan, 26 October), as Empowered is on the machines'
+	# side. Each grant is its rally's value; the stacks add.
 	"kindled": {"id": "kindled", "name": "Empowered", "description": "Its blows hit +1 harder a stack. Halves as its turn ends, rounded down.", "decay": "half",
 		"tags": ["buff", "rally"], "effects": [{"trigger": "static", "effect": "add_attack", "value": 1}]},
 	# Enraged (3 November, the Goblin Nob's): a stack for every shield, vent or equipment entry

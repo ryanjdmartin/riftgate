@@ -975,8 +975,8 @@ On a foe:
 - **Juggernaut Drive** (buff, the Wild Boar's passive waiting): gained as it gains a Barrier, one at a time; its
   next weapon attack ignores armour and lifts it, equipment leaving it standing. A purge takes it.
 - **Empowered** (buff, Rally): lands on every foe on the field the moment the rally does, its
-  rallier too, the rally's value in stacks, and every blow the foe lands hits a point harder a stack, an add
-  before the move's factor as every add is. It halves as its own turn ends, its action done, rounded down,
+  rallier too, the rally's value in stacks, and every blow the foe lands hits a point harder a stack, each
+  strike of its move, as a machine's weapon does. It halves as its own turn ends, its action done, rounded down,
   as a machine's does at the player's, and skips the halving while a machine carries Essence Flare, as a machine's
   does: no move spends it, a special or a Suppress takes none of it, and a
   countdown still gathering carries what stands to the blow it lands. A foe acting after the
@@ -991,12 +991,12 @@ On a foe:
 - **Enraged** (buff, a rage: the Goblin Nob's, its own from the fight's start): while the foe
   stands, every shield, vent or equipment entry the team spends lays its rage in stacks on it,
   before the entry acts, and each stack is a point on every blow it lands for the rest of the
-  fight, an add before the factor; a weapon or a blank feeds nothing, and no move spends it.
+  fight, each strike of a move; a weapon or a blank feeds nothing, and no move spends it.
   Its chip climbs with the stacks, so the number an intent shows is the number that lands. A
   Purge lowers the stacks by its number and the rage goes on: the rage is the Nob's Ability,
   its chip the rule (Enrage), and what it has gathered a buff.
 - **Golden** (Ability, a golden rage: the Thunder Ape's): for the rounds its move says its blows
-  hit the move's value harder, an add before the factor, and it wears a point of armour. A
+  hit the move's value harder, each strike of a move, and it wears a point of armour. A
   quarter of its HP lost since it went gold breaks it and it staggers: the gold goes and it
   loses its next action (never Numbed: a stagger is no stun piece's, and one already
   suppressed loses nothing more). A Suppress that lands breaks it too, one a Numbed stack
@@ -1198,10 +1198,12 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   so the player can tell the pick it
   will make, and the round preview shows it. The preview never moves a pick: a foe aimed at a machine the round will wreck stays
   aimed at it, and the preview shows where its blow lands after.
-- **A blow** is its base attack, plus its Empowered, its swarm for each other live foe of its
+- **A blow** is the move's number, the foe's base attack times the move's factor, rounded to
+  the nearest whole, plus its adds: its Empowered, its swarm for each other live foe of its
   type and its grudge (its number for every foe the team has killed this fight, every fall but a
-  foe gone whole, a burst or a part falling with its core, and one taken in by a merge), times
-  the move's factor: the adds, then the multiplies, the one damage formula on both
+  foe gone whole, a burst or a part falling with its core, and one taken in by a merge), less
+  its Sapped, never below nothing. A move's number is its own, as a weapon's is, and an add is
+  a point on every strike whatever the factor: the one damage formula on both
   sides; strikes are separate blows. Riders (a Ward turns away all but the last
   three): scorch (stacks of Scorched), ablate (stacks of
   Ablating), jam (the entry the machine shows is Jammed), corrupt (Corrupted stacks on it), brittle
