@@ -11048,3 +11048,32 @@ A row is twenty fights and a direction; the means, over 200 fights and 140, are 
   18.9% to 43.3%. The Obsidian Tyrant, the Ruby Colossus and the Marsh Serpent, whose
   weight is a blow that gathers, read the same without a Barrier at any count. So the
   blows' numbers are sized after the split, never by it.
+
+## 18 November: the Storm Petrel on its Pulse's Hardened Light, and its four builds
+
+Ryan, 18 November: "no innate shield armour. The Pulse grants one Hardened Light at tier 1.
+Hardened Light only decays when the shield breaks, and has a cap of 3 stacks"; "If it's weak,
+we'll buff it". The decision it informs: none yet; the first read of his shape, the bot's play of
+it a first heuristic (a stack read to stand two rounds, a Ward by the Ward pieces' worth).
+
+`tools/reboot_probe.gd`, as the entry of 17 November on the landed Petrel: first in a squad
+beside the Honey Badger, the Prairie Dog and the Cassowary, the greedy bot; tier one's formations
+and elites, 21 compositions at 8 seeds (168 fights), and its bosses alone, 13 at 6 seeds (78), on
+`ccr-178e0404-ptuh2m` over main at `66c0a63` (main's tier-one sizing of the same day in, so beside
+the entry of the 17th it reads across two commits: a direction only).
+
+| The build | Formations: rebooted, bare, own hull | Bosses: rounds, won | Bosses: rebooted, bare | Bosses: own hull, wrecked, squad |
+|---|---|---|---|---|
+| None (the Pulse's Hardened Light, up to 3) | 21%, 23%, 4% | 9.8, 77 of 78 | 26%, 30% | 25%, 3 fights, 23% |
+| Defence twice (Ward, then Spread, up to 5) | 21%, 23%, 5% | 9.6, 78 of 78 | 26%, 29% | 25%, 2 fights, 22% |
+| Striker twice (Chain 2 and Charged 1, then 3 and 2) | 20%, 21%, 5% | 9.1, 77 of 78 | 24%, 27% | 30%, 8 fights, 24% |
+| Mixed (Ward and a cap of 4, Chain 2 and Charged 1) | 21%, 22%, 4% | 9.4, 77 of 78 | 25%, 29% | 29%, 6 fights, 26% |
+
+What it says, at 78 fights a build against the bosses. The plate's loss costs the stock nothing
+the probe can see: beside the 17th's form (its own hull 28% and 5 wrecks of 78) it loses 25% and
+is wrecked 3 times, Hardened Light standing in for the plate between reboots, the reboot (a
+quarter of its turns) wiping it each time. Defence twice is the sturdiest build, 2 wrecks. The
+Striker's two end a boss fight two thirds of a round sooner and pay for it on the Petrel itself,
+8 wrecks of 78 to Defence's 2: the Pulse's arcs carry its lure to every Shocked foe (the open
+question of section 12), so the Striker draws more blows on its base cap of 3 and no Ward. Every
+formation was won, in five rounds or so. A pick share or a band waits for the runner and his play.
