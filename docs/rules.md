@@ -87,9 +87,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   to that piece, so the die keeps the piece as printed and the entry as spent carries the
   tweak, and a destroyed piece takes its tweaks with it. The codex says each step taken on its
   piece's row, its direction's name and numeral first (DEFENCE I). The Storm Petrel's are the
-  first: Defence, its lure laying Hardened Light 1 on it and then gaining Spread with a stack of
-  Hardened Light for each foe it lures; Striker, its lure laying Charged 2 on it and then
-  gaining Chain 3.
+  first, on its Hardlight Pulse: Defence, a Ward on itself and its Hardened Light held up to 4,
+  then Spread with a stack for each foe hit, up to 5; Striker, Chain 2 and Charged 1 on itself,
+  then Chain 3 and Charged 2.
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
@@ -176,8 +176,8 @@ A status decays, ticks or falls off in one of four places. A machine's turn is t
 turn: it starts as the round opens and ends at END TURN. A foe's turn starts as the foes' turn
 opens, after END TURN and before the first of them acts, and ends as its own action does,
 landed, lost to a stun or skipped.
-- **Its turn starts**: Armoured, a Barrier and a Ward go, every stack; Hardened Light loses a
-  stack; Brittle halves, rounded down; Exposed falls, at the turn start after the next one.
+- **Its turn starts**: Armoured, a Barrier and a Ward go, every stack; Brittle halves, rounded
+  down; Exposed falls, at the turn start after the next one.
 - **Its turn ends**: Ablating and Vitriol take their points and lose a stack; Regenerating
   pays after them and loses one; Empowered halves, rounded down; Scorched and Sapped go; a
   cooldown and a jam whose rounds are done light again; a Suppress is spent with the turn it
@@ -655,10 +655,11 @@ again, while the Booster's own Rapid gives the Petrel its turn back. **The Spind
 Giant Petrel's): a spend of it that kills gives the team two rerolls this round, once however
 many fell, banked if unspent. **The Reheat Uplink** (the Giant Petrel's, allies only): the ally
 gains Empowered 2 and its die rolls again, never onto the entry showing; a spent die rolls
-nothing. **On itself** (an upgrade's rule on a locked piece, the Storm Petrel's lure in its
-branches): spent on a foe, its own machine gains the status it says, after the spend's hits
-and its primers, so a fire never spends a Charged it has just laid; a stack set for every foe
-the spend reached where it says so, a foe its Spread lures among them. **The spill** (the Overrun Gearing's, a Minerva module, on
+nothing. **On itself** (the Storm Petrel's Hardlight Pulse, a lure, and its branches): spent on
+a foe, its own machine gains the status it says, after the spend's hits and its primers, so a
+fire never spends a Charged it has just laid; a stack set for every foe the spend reached where
+it says so, a foe its Spread reaches among them; never past the most it names, the highest of
+the piece's own and its branches'. **The spill** (the Overrun Gearing's, a Minerva module, on
 every weapon its machine fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
 strike of the spend whole, aimed at nobody, so a Shock behind neither doubles it nor is
@@ -726,12 +727,12 @@ On a machine:
   round opens, before the foes announce, and a foe's (from its brace or another's) stands
   through the player's turn and goes as the foes' next turn opens, before the first of them
   acts. It takes no rounds: no grant holds it longer.
-- **Hardened Light** (a machine's buff; the Storm Petrel's Hardlight Pulse in its Defence
-  branch): while its shield stands, every blow on it loses 1 a stack, beside any plate of its
-  own, a damage-taken effect read on the shield the blow meets, so it takes nothing off a blow
-  on bare hull and an Expose leaves it. A stack goes as each of its turns starts, so Hardened
-  Light 3 takes 3 off every blow through the enemy's next turn, then 2, then 1; a second grant
-  adds its stacks to what is left.
+- **Hardened Light** (a machine's buff; the Storm Petrel's Hardlight Pulse): while its shield
+  stands, every blow on it loses 1 a stack, a damage-taken effect read on the shield the blow
+  meets, so it takes nothing off a blow on bare hull, a tick or a burn, and an Expose leaves it.
+  It stays until the shield breaks, whatever breaks it, a reboot's drop included, and then every
+  stack goes. A grant stops at the most its machine holds: 3, and 4 and then 5 in the Storm
+  Petrel's Defence branch. A Purge takes stacks as any buff's.
 - **Phased** (buff): cannot be damaged or targeted by anything until the end of the round, and
   it acts. Granted as the round ends: a source lays the wait for it (Phasing, a buff, a chip on
   a dashed edge), on a machine that has acted or not, and as the enemy's turn ends every machine
@@ -1104,9 +1105,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   the gauge climbs, on a shield that stands and up to its maximum; a Broken shield gains none
   until the reboot, so its heat is its fuel and its clock at once, and the overheat it walks
   toward breaks the shield it built. A shield cost is paid first as the entry is spent, and the
-  heat stands shield back from what the cost leaves. And while its shield stands, every blow on
-  it loses 1, a damage-taken effect read on the shield the blow meets. Its lock, the Hardlight
-  Pulse, is a lure of heat 3, so its taunt stands up its shield.
+  heat stands shield back from what the cost leaves. It has no shield armour of its own: its
+  lock, the Hardlight Pulse, a lure of heat 3, lays Hardened Light 1 on it, up to 3, so its
+  taunt stands up its shield and hardens it, and heat is the one gate to both.
 - **Ammo** (the Musk Ox's Desublimation Forge): its weapons spend ammo instead
   of heating it, 1 for every 2 heat a gun's own spend would make, rounded up, at least 1, the
   price printed on the die where the gun's heat would be; its debuffs, buffs and shields and

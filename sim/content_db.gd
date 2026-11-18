@@ -10,9 +10,9 @@ const DIR := "res://content/"
 # Design knobs. Loosen or tighten here; the validator and the bible should agree.
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
 ## The machine buffs a spend at a foe may lay on its own machine (Face.self_statuses; the Storm
-## Petrel's lure and its branches, 17 November). A Barrier and a Ward stay their pieces' own, each
-## with its clock and its cooldown.
-const SELF_GRANTS := ["hardened", "charged", "supercooled", "primed", "overcharged", "braced", "regenerating"]
+## Petrel's Hardlight Pulse and its branches, a Ward on itself in its Defence direction since 18
+## November). A Barrier stays its pieces' own, with its cooldown.
+const SELF_GRANTS := ["hardened", "ward", "charged", "supercooled", "primed", "overcharged", "braced", "regenerating"]
 const MAX_MOVE := 6                 # a move in hexes, chassis or foe, is 1 to this (a placeholder bound, 28 October)
 ## The caveats a hunting composition may name (`hunts`): whom its pack locks. The fastest left on
 ## 16 November with nothing hunting by it (the rule of 12 November).
@@ -1810,14 +1810,27 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# Rapid buff on itself, its free roll landing on the battery it raised.
 	if fd.has("turns_die") and (not (fd["turns_die"] is bool) or kind != "buff" or not rapid or str(fd.get("targets", "")) != "self"):
 		errs.append("%s: turns_die (true) is a Rapid buff on itself that turns a folded die" % where)
-	# What a spend at a foe lays on its own machine is no printed key since 17 November: the St.
-	# Elmo's Regenerator's Regenerating (`regenerates`) left with its rework, and an upgrade's
-	# branch lays a status on its spender as a passive's effect (self_status). The Petrels' other
-	# locked pieces: an ally's action bought with the team's rerolls (the Immelmann Booster), a roll
-	# on the machine a buff lands on (the Reheat Uplink), and the rerolls a kill brings (the
-	# Spindrift Salvo).
-	if fd.has("regenerates") or fd.has("self_statuses"):
-		errs.append("%s: a status a spend lays on its own machine is printed on no entry (regenerates left with the Storm Petrel's lock's Regenerating, 17 November): a branch's or a passive's self_status lays one" % where)
+	# What a spend at a foe lays on its own machine (the Hardlight Pulse's Hardened Light 1, up to
+	# 3: Ryan, 18 November): an attack's, each a machine buff from the engine's table, its stacks,
+	# per_foe for a set of them for every foe the spend reached, and the most its machine holds
+	# (cap, 0 or none for no cap); an upgrade's branch takes it further (self_status). The St.
+	# Elmo's Regenerator's own key, `regenerates`, left with its rework of 17 November. The
+	# Petrels' other locked pieces: an ally's action bought with the team's rerolls (the Immelmann
+	# Booster), a roll on the machine a buff lands on (the Reheat Uplink), and the rerolls a kill
+	# brings (the Spindrift Salvo).
+	if fd.has("regenerates"):
+		errs.append("%s: regenerates left the engine with the Storm Petrel's lock's Regenerating (17 November): a status on its own machine is self_statuses" % where)
+	if fd.has("self_statuses"):
+		var grants = fd["self_statuses"]
+		if kind != "attack" or not (grants is Array) or (grants as Array).is_empty():
+			errs.append("%s: self_statuses is an attack's: a list of {status, stacks, per_foe, cap}, what the spend lays on its own machine" % where)
+		else:
+			for g in grants:
+				var sid := str(g.get("status", "")) if g is Dictionary else ""
+				if not (g is Dictionary) or not SELF_GRANTS.has(sid) or int(g.get("stacks", 1)) < 1 \
+						or (g.has("per_foe") and not (g["per_foe"] is bool)) or (g.has("cap") and int(g["cap"]) < int(g.get("stacks", 1))) \
+						or (g as Dictionary).keys().any(func(k) -> bool: return not ["status", "stacks", "per_foe", "cap"].has(str(k))):
+					errs.append("%s: a self_statuses grant is {status, stacks (1 or more), per_foe (true or false), cap (its stacks or more)}, its status one of %s" % [where, ", ".join(SELF_GRANTS)])
 	if fd.has("ally_action"):
 		var deal = fd["ally_action"]
 		if kind != "buff" or not (deal is Dictionary) or int(deal.get("rerolls", 0)) <= 0:
@@ -1965,6 +1978,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 				errs.append("%s: self_status's value is the stacks it lays, 1 or more" % where)
 			if eff.has("per_foe") and not (eff["per_foe"] is bool):
 				errs.append("%s: self_status's per_foe is true or false (a set of stacks for every foe the spend reached)" % where)
+			if eff.has("cap") and int(eff["cap"]) < maxi(1, int(eff.get("value", 1))):
+				errs.append("%s: self_status's cap is the most stacks its machine holds, its value or more" % where)
 		# An effect scaled by a status the machine carries may count it in steps (the Ammit's flare,
 		# 12 November: an Empowered for every five Essence).
 		if eff.has("stack_step") and (not eff.has("per_stack") or int(eff["stack_step"]) < 1):

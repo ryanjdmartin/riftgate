@@ -9,27 +9,39 @@ extends TestCase
 const K := Face.Keyword
 
 
-## A tier-`tier` frame of the content's own shape: its lure the locked piece, a gun on its one
-## hardpoint, two directions as deep as the tier picks (Guard: Hardened Light, then Spread with a stack
-## for each foe lured; Spark: Charged 2, then Chain 3).
+## A tier-`tier` frame of the content's own shape (the Storm Petrel's of 18 November): its lure the
+## locked piece, laying Hardened Light 1 up to 3, a gun on its one hardpoint, two directions as deep
+## as the tier picks (Guard: a Ward and a cap of 4, then Spread with a stack for each foe hit and a
+## cap of 5; Spark: Chain 2 and Charged 1, then Chain 3 and Charged 2).
 func _db(tier: int = 1) -> ContentDB:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	db.components["test_lure"] = {"id": "test_lure", "name": "Test Lure", "face": {"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "heat": 3}}
+	db.components["test_lure"] = {"id": "test_lure", "name": "Test Lure", "face": {"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "heat": 3,
+		"self_statuses": [{"status": "hardened", "stacks": 1, "cap": 3}]}}
 	db.components["test_gun"] = {"id": "test_gun", "name": "Test Gun", "face": {"kind": "attack", "reach": "direct", "power": 3, "heat": 1}}
-	var hard := {"trigger": "static", "effect": "self_status", "status": "hardened", "value": 1, "entry": "test_lure"}
+	var ward := {"trigger": "static", "effect": "self_status", "status": "ward", "value": 1, "entry": "test_lure"}
+	var hold := {"trigger": "static", "effect": "self_status", "status": "hardened", "value": 1, "cap": 4, "entry": "test_lure"}
 	var wide := {"trigger": "static", "effect": "grant_keyword", "value": "cleave", "entry": "test_lure"}
-	var each := {"trigger": "static", "effect": "self_status", "status": "hardened", "value": 1, "per_foe": true, "entry": "test_lure"}
-	var charge := {"trigger": "static", "effect": "self_status", "status": "charged", "value": 2, "entry": "test_lure"}
-	var chain := {"trigger": "static", "effect": "grant_keyword", "value": "chain", "number": 3, "entry": "test_lure"}
+	var each := {"trigger": "static", "effect": "self_status", "status": "hardened", "value": 1, "per_foe": true, "cap": 5, "entry": "test_lure"}
+	var chain2 := {"trigger": "static", "effect": "grant_keyword", "value": "chain", "number": 2, "entry": "test_lure"}
+	var charge1 := {"trigger": "static", "effect": "self_status", "status": "charged", "value": 1, "entry": "test_lure"}
+	var chain3 := {"trigger": "static", "effect": "grant_keyword", "value": "chain", "number": 3, "entry": "test_lure"}
+	var charge2 := {"trigger": "static", "effect": "self_status", "status": "charged", "value": 2, "entry": "test_lure"}
 	var deep := maxi(0, 3 - tier)
 	db.chassis["test_frame"] = {"id": "test_frame", "name": "Test Frame", "designation": "TF-1", "codex": "", "flavour": "", "tier": tier,
 		"hull": 20, "shield": 10, "armour": 0, "heat_max": 12, "movespeed": 3, "size": "medium", "traits": ["hover"],
 		"hardpoints": 1, "module_slots": 0, "fixed": ["test_lure"], "loadout": ["test_gun"], "passive": null,
 		"branches": [
-			{"id": "guard", "name": "Guard", "steps": [{"description": "Guard one.", "effects": [hard]}, {"description": "Guard two.", "effects": [wide, each]}].slice(0, deep)},
-			{"id": "spark", "name": "Spark", "steps": [{"description": "Spark one.", "effects": [charge]}, {"description": "Spark two.", "effects": [chain]}].slice(0, deep)}]}
+			{"id": "guard", "name": "Guard", "steps": [{"description": "Guard one.", "effects": [ward, hold]}, {"description": "Guard two.", "effects": [wide, each]}].slice(0, deep)},
+			{"id": "spark", "name": "Spark", "steps": [{"description": "Spark one.", "effects": [chain2, charge1]}, {"description": "Spark two.", "effects": [chain3, charge2]}].slice(0, deep)}]}
 	return db
+
+
+## Grants in status order, so a check reads what is laid and not the order it was gathered in.
+func _sorted(grants: Array) -> Array:
+	var out := grants.duplicate(true)
+	out.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a["status"]) < str(b["status"]))
+	return out
 
 
 func _fight(units: Array, foes: Array) -> Skirmish:
@@ -69,19 +81,21 @@ func test_each_step_tweaks_its_locked_piece_through_the_pipeline_and_the_die_kee
 	var lure: Face = u.die.faces[0]
 	var gun: Face = u.die.faces[1]
 	assert_false(lure.has(K.CLEAVE), "the die keeps the piece as printed")
+	assert_eq(lure.self_statuses, [{"status": "hardened", "stacks": 1, "per_foe": false, "cap": 3}], "the piece prints its own grant")
 	var spent := Effects.effective_face(u, lure)
 	assert_true(spent.has(K.CLEAVE), "the lure as spent spreads")
-	assert_eq(spent.self_statuses, [{"status": "hardened", "stacks": 1, "per_foe": true}], "and lays Hardened Light, a stack for each foe lured: the deeper step takes the first further")
+	assert_eq(_sorted(spent.self_statuses), [{"status": "hardened", "stacks": 1, "per_foe": true, "cap": 5}, {"status": "ward", "stacks": 1, "per_foe": false, "cap": 0}],
+		"and lays Hardened Light a stack for each foe hit up to 5, and its Ward: each step takes the piece's own grant further")
 	assert_true(Effects.effective_face(u, gun).self_statuses.is_empty() and not Effects.effective_face(u, gun).has(K.CLEAVE), "the gun beside it untouched")
 	var mixed := db.make_mech("test_frame", 2, Vector2i.ZERO, null, [], ["guard", "spark"])
 	var m := Effects.effective_face(mixed, mixed.die.faces[0])
-	var laid: Array = m.self_statuses.duplicate()
-	laid.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a["status"]) < str(b["status"]))
-	assert_eq(laid, [{"status": "charged", "stacks": 2, "per_foe": false}, {"status": "hardened", "stacks": 1, "per_foe": false}], "a mixed build lays both first steps")
-	assert_false(m.has(K.CLEAVE) or m.has(K.CHAIN), "and neither deeper step's keyword")
+	assert_eq(_sorted(m.self_statuses), [{"status": "charged", "stacks": 1, "per_foe": false, "cap": 0}, {"status": "hardened", "stacks": 1, "per_foe": false, "cap": 4},
+		{"status": "ward", "stacks": 1, "per_foe": false, "cap": 0}], "a mixed build: the Ward and a cap of 4, and Charged 1")
+	assert_true(m.has(K.CHAIN) and m.chain == 2 and not m.has(K.CLEAVE), "its Chain 2, and no Spread")
 	var striker := db.make_mech("test_frame", 3, Vector2i.ZERO, null, [], ["spark", "spark"])
 	var s := Effects.effective_face(striker, striker.die.faces[0])
-	assert_true(s.has(K.CHAIN) and s.chain == 3, "the deeper Spark step: the lure arcs, Chain 3")
+	assert_true(s.has(K.CHAIN) and s.chain == 3, "the deeper Spark step: Chain 3 in place of 2")
+	assert_eq(_sorted(s.self_statuses)[0], {"status": "charged", "stacks": 2, "per_foe": false, "cap": 0}, "and Charged 2 in place of 1")
 	assert_true(db.make_mech("test_frame", 4, Vector2i.ZERO, null, [], ["guard", "guard", "guard"]).branches.is_empty(), "picks its chassis does not allow lay nothing")
 	assert_true(db.make_mech("test_frame").branches.is_empty(), "a machine at its chassis's tier has none")
 
@@ -93,7 +107,8 @@ func test_a_built_machine_lures_three_and_hardens_for_each_and_its_striker_arcs_
 	var ms: Skirmish.MechState = sk.mechs[0]
 	ms.face_index = 0
 	assert_true(sk.assign(0, sk.foe_at(0, 1)), "the lure at the middle foe")
-	assert_eq(Effects.stacks_of(u, "hardened"), 3, "Hardened Light 3: a stack for each foe its Spread lured")
+	assert_eq(Effects.stacks_of(u, "hardened"), 3, "Hardened Light 3: a stack for each foe its Spread hit")
+	assert_true(Effects.has(u, "ward"), "and its Ward")
 	assert_true(sk.field_foes().all(func(f: Foe) -> bool: return f.target == ms), "all three turn on it")
 	var v := db.make_mech("test_frame", 1, Vector2i.ZERO, null, [], ["spark", "spark"])
 	var s2 := _fight([v], [Foe.make("revenant", 30, 2), Foe.make("revenant", 30, 2), Foe.make("revenant", 30, 2)])
@@ -104,7 +119,8 @@ func test_a_built_machine_lures_three_and_hardens_for_each_and_its_striker_arcs_
 	assert_true(s2.assign(0, s2.foe_at(0, 0)), "the lure at a foe that carries no Shock")
 	assert_eq(c.hp, 27, "its arc lands 3 on the Shocked foe")
 	assert_eq(c.target, vs, "and lures it")
-	assert_eq(Effects.stacks_of(v, "charged"), 2, "the first step's Charged 2 on itself, the lure spending none")
+	assert_eq(Effects.stacks_of(v, "charged"), 2, "Charged 2 on itself, the lure spending none")
+	assert_eq(Effects.stacks_of(v, "hardened"), 1, "and the piece's own Hardened Light 1")
 
 
 func test_the_codex_a_save_and_the_harness_keep_the_picks() -> void:

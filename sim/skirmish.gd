@@ -4982,10 +4982,10 @@ func _spend_primers(ms: MechState) -> void:
 		log.append("%s: %s spent on the fire (%d left)" % [ms.unit.display_name, str(Effects.STATUS[id]["name"]), Effects.stacks_of(ms.unit, id)])
 
 
-## What a spend at a foe lays on its own machine (Face.self_statuses; the Storm Petrel's lure and its
-## branches, Ryan, 17 November: "adds a self-buff that increases shield armour for a turn to the
-## lure", "a self-grant of Charged stacks"): each status its stacks, or its stacks for every foe the
-## spend reached when it says per_foe (a Spread's neighbours among them), on the clock its definition
+## What a spend at a foe lays on its own machine (Face.self_statuses as its machine's branches make
+## it: the Hardlight Pulse's Hardened Light, the Defence direction's Ward, the Striker's Charged;
+## Ryan, 18 November): each status its stacks, or its stacks for every foe the spend reached when it
+## says per_foe (a Spread's neighbours among them), up to its cap, on the clock its definition
 ## names. A machine's Regenerating is the status in a machine's words (shield). Bought by a die
 ## entry, so a foe's Purge takes it.
 func _self_grants(ms: MechState, f: Face, reached: int) -> void:
@@ -4994,6 +4994,9 @@ func _self_grants(ms: MechState, f: Face, reached: int) -> void:
 		if not Effects.STATUS.has(id):
 			continue
 		var n := maxi(1, int(g.get("stacks", 1))) * (maxi(0, reached) if bool(g.get("per_foe", false)) else 1)
+		var cap := int(g.get("cap", 0))
+		if cap > 0:
+			n = mini(n, maxi(0, cap - Effects.stacks_of(ms.unit, id)))   # up to its cap (Hardened Light's 3, 4 or 5)
 		if n <= 0:
 			continue
 		var def: Dictionary = Effects.regenerating_mech() if id == "regenerating" else Effects.STATUS[id]
@@ -5417,6 +5420,11 @@ func _note_break(ms: MechState) -> void:
 	ms.shield_broken = true
 	if not ms.rebooting:
 		log.append("%s's shield is broken: no shield until it reboots" % ms.unit.display_name)
+	# What lasts until the shield breaks goes with it, every stack, a reboot's drop included
+	# (Hardened Light: Ryan, 18 November, "The reboot breaks it yes. When it breaks, it loses all
+	# of them").
+	for name in Effects.clear_on_break(ms.unit):
+		log.append("%s's %s goes with its shield" % [ms.unit.display_name, name])
 
 
 ## Whether machine `mech_index` may give its turn to a reboot now (Ryan, 13

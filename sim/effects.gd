@@ -76,7 +76,7 @@ const DECAY_TURN_ALL := 4    # lasts until the end of its owner's turn, every st
 const DECAY_HALF := 5    # halves, rounded down, gone at zero (Empowered, 18 October: a halving rule has no duration): a buff as its carrier's turn ends, where it has worked (Empowered: a machine's at END TURN, a foe's as its own action ends: halve_buffs); a debuff as its carrier's turn starts, where the other side's blows have used it (Brittle: turn_opens)
 const DECAY_AFTER_TURN := 6    # gone after its owner's next turn, every stack at once: a foe's at the end of its next action, a machine's at the end of the player's turn (Sapped, 11 November)
 const DECAY_START := 7   # a timed mark that falls as its carrier's turn starts, the first one after the round it names (Exposed: Ryan, 16 November, "Exposed on next turn start"); the round's end leaves it alone
-const DECAY_START_TICK := 8   # loses a stack as its carrier's turn starts, gone at zero (Hardened Light: Ryan, 17 November, "decay by a stack at start of Petrel's turn, not all at once"): a machine's as the round opens (turn_opens)
+const DECAY_BREAK := 8   # lasts until its machine's shield breaks, every stack going then, a reboot's drop included (Hardened Light: Ryan, 18 November, "The reboot breaks it yes. When it breaks, it loses all of them"); no turn and no round touches it (clear_on_break)
 
 ## The tag a cleanse clears (decided 25 September): what a foe did to a machine, never what
 ## the machine did to itself (a component's own cooldown, the price a Rapid piece pays).
@@ -169,13 +169,15 @@ const STATUS := {
 	# keyword or an effect and the buff it creates share a name), its value its stacks.
 	"braced": {"id": "braced", "name": "Armoured", "description": "Armour +1 a stack, every stack at once, until its next turn starts.", "decay": "round",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
-	# Hardened Light, the shield armour (the Storm Petrel's Defence branch, Ryan, 17 November: "adds a
-	# self-buff that increases shield armour for a turn to the lure", then "increasing shield armour
-	# by foes lured"; his name and his clock the same day: "The shield armour buff is called
-	# Hardened Light. Make it decay by a stack at start of Petrel's turn, not all at once"): a point
-	# more off every blow a stack while its shield stands, the plate's own rule, a stack going as
-	# each of its turns starts, so three take 3, 2 and 1 off through three enemy turns.
-	"hardened": {"id": "hardened", "name": "Hardened Light", "description": "While its shield stands, every blow on it loses 1 a stack. A stack goes as each of its turns starts.", "decay": "start_tick",
+	# Hardened Light, the Storm Petrel's shield armour (Ryan, 18 November: "no innate shield
+	# armour. The Pulse grants one Hardened Light at tier 1. Hardened Light only decays when the
+	# shield breaks, and has a cap of 3 stacks"; "The reboot breaks it yes. When it breaks, it loses
+	# all of them"): a point off every blow a stack while its shield stands, every stack going when
+	# the shield breaks, a reboot's drop among the breaks. The cap is the grant's (Skirmish._self_grants),
+	# its machine's branches raising it. Shield armour, never armour: an Expose leaves it ("It's the
+	# only tank not weak to Expose"); a Purge takes stacks as any buff's, a bar of its own the move
+	# if that proves too threatening (his word of the same day).
+	"hardened": {"id": "hardened", "name": "Hardened Light", "description": "While its shield stands, every blow on it loses 1 a stack. Every stack goes when its shield breaks.", "decay": "break",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": -1, "when": "shield_up"}]},
 	# Primed, the third primer since 15 November (Ryan's mark: "give it the same format as cryo
 	# ... use a stack on firing"; "Primed - agreed, how many Ablate stacks does each Primed stack
@@ -872,7 +874,7 @@ static func ends_with_turn(m) -> bool:
 ## The decay a status names in its definition ("none", "round", "turn", "turn_all", "half",
 ## "after_turn", "turn_start"), a stack a tick when it names none.
 static func status_decay(def: Dictionary) -> int:
-	return {"none": DECAY_NONE, "round": DECAY_ROUND, "turn": DECAY_TURN, "turn_all": DECAY_TURN_ALL, "half": DECAY_HALF, "after_turn": DECAY_AFTER_TURN, "turn_start": DECAY_START, "start_tick": DECAY_START_TICK}.get(str(def.get("decay", "")), DECAY_TICK)
+	return {"none": DECAY_NONE, "round": DECAY_ROUND, "turn": DECAY_TURN, "turn_all": DECAY_TURN_ALL, "half": DECAY_HALF, "after_turn": DECAY_AFTER_TURN, "turn_start": DECAY_START, "break": DECAY_BREAK}.get(str(def.get("decay", "")), DECAY_TICK)
 
 
 ## What a foe's status keeps into the next round on the clock its definition names (the bot's
@@ -882,7 +884,7 @@ static func stacks_next_round(def: Dictionary, n: int) -> int:
 	match status_decay(def):
 		DECAY_HALF:
 			return int(n / 2.0)
-		DECAY_TICK, DECAY_TURN, DECAY_START_TICK:
+		DECAY_TICK, DECAY_TURN:
 			return maxi(0, n - 1)
 		DECAY_ROUND, DECAY_TURN_ALL, DECAY_AFTER_TURN:
 			return 0
@@ -973,10 +975,6 @@ static func turn_opens(u, round: int = -1) -> void:
 			continue
 		if m.decay == DECAY_START and round >= 0 and m.expires_round < round:
 			continue
-		if m.decay == DECAY_START_TICK:
-			m.stacks -= 1   # a stack as its turn starts (Hardened Light), gone at zero
-			if m.stacks <= 0:
-				continue
 		if m.decay == DECAY_HALF and not m.tags.has("buff") and not held.has(m.id):
 			# Rounded down, so it reaches zero on its own (one stack halves to none). Its grants
 			# are one modifier, whatever granted each stack (stack), so it halves as one number.
@@ -1460,34 +1458,59 @@ static func granted_numbers(u, face: Face, target = null) -> Dictionary:
 	return out
 
 
-## What a spend of this entry at a foe lays on its own machine (self_status, static, scoped to its
-## piece by `entry`, its `when` honoured: the Storm Petrel's branches, Ryan, 17 November, "adds a
-## self-buff that increases shield armour for a turn to the lure", "adds a self-grant of Charged
-## stacks to the lure"), as [{status, stacks, per_foe}, ...]: each status once, its stacks the most
-## any grant says and a stack set for every foe the spend reached if any grant says per_foe, so a
-## direction's deeper step takes its first step's buff further (the Defence direction's Hardened Light,
-## a stack for each foe lured once the lure spreads). An attack's alone; the skirmish lays them
-## once the spend's hits are done (Skirmish._self_grants).
+## What a spend of this entry at a foe lays on its own machine, as [{status, stacks, per_foe, cap},
+## ...]: what the piece prints (Face.self_statuses: the Hardlight Pulse's Hardened Light, 18
+## November) and what a live effect adds to it (self_status, static, scoped to its piece by
+## `entry`, its `when` honoured: the Storm Petrel's branches). Each status once: its stacks the
+## most any grant says, a stack set for every foe the spend reached if any says per_foe, and its
+## cap the highest any names (0 for none), so a direction's step takes the piece's own grant
+## further (Ryan, 18 November: "max stacks raised to 4"; "grants 1 Hardened Light per target hit
+## instead of a flat 1. Max stacks raised to 5"). An attack's alone; the skirmish lays them once
+## the spend's hits are done (Skirmish._self_grants).
 static func self_grants(u, face: Face, target = null) -> Array:
 	var out: Array = []
 	if face == null or not face.is_attack():
 		return out
 	var at := {}
+	var grants: Array = []
+	for g in face.self_statuses:
+		grants.append(g)
 	for pair in _taking_part(u, "static", face, target):
 		var eff: Dictionary = pair[0]
-		var id := str(eff.get("status", ""))
-		if str(eff.get("effect", "")) != "self_status" or not STATUS.has(id):
+		if str(eff.get("effect", "")) == "self_status":
+			grants.append({"status": str(eff.get("status", "")), "stacks": int(eff.get("value", 1)), "per_foe": bool(eff.get("per_foe", false)), "cap": int(eff.get("cap", 0))})
+	for g in grants:
+		var id := str(g.get("status", ""))
+		if not STATUS.has(id):
 			continue
-		var n := maxi(1, int(eff.get("value", 1)))
-		var each := bool(eff.get("per_foe", false))
+		var n := maxi(1, int(g.get("stacks", 1)))
+		var each := bool(g.get("per_foe", false))
+		var cap := maxi(0, int(g.get("cap", 0)))
 		if at.has(id):
-			var g: Dictionary = out[int(at[id])]
-			g["stacks"] = maxi(int(g["stacks"]), n)
-			g["per_foe"] = bool(g["per_foe"]) or each
+			var have: Dictionary = out[int(at[id])]
+			have["stacks"] = maxi(int(have["stacks"]), n)
+			have["per_foe"] = bool(have["per_foe"]) or each
+			have["cap"] = maxi(int(have["cap"]), cap)
 		else:
 			at[id] = out.size()
-			out.append({"status": id, "stacks": n, "per_foe": each})
+			out.append({"status": id, "stacks": n, "per_foe": each, "cap": cap})
 	return out
+
+
+## A machine's shield breaks (Skirmish._note_break: a blow, the overheat, a shield cost, the
+## reboot's drop): every status held until then goes whole (DECAY_BREAK: Hardened Light). The
+## names of what went, for the log.
+static func clear_on_break(u) -> Array[String]:
+	var gone: Array[String] = []
+	var keep: Array = []
+	for m in u.modifiers:
+		if m.decay == DECAY_BREAK:
+			if not gone.has(m.name):
+				gone.append(m.name)
+			continue
+		keep.append(m)
+	u.modifiers = keep
+	return gone
 
 
 ## The statuses this machine's live passives lay on one foe its blow reaches (lay_status on
@@ -1560,7 +1583,8 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	# What its spend lays on its own machine, by an upgrade's branch (self_status: the Storm
 	# Petrel's lure, 17 November), the copy's to carry, never the die's.
 	var grants := self_grants(u, base, target)
-	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not spills and grants.is_empty():
+	var regranted := grants != base.self_statuses   # a branch takes the piece's own grant further, or adds one
+	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not spills and not regranted:
 		return face
 	var c := base.duplicate_face() if base == face else base
 	c.reach = r
@@ -1587,7 +1611,7 @@ static func effective_face(u, face: Face, target = null) -> Face:
 		c.ignores_armour = true
 	if spills:
 		c.spills = true
-	if not grants.is_empty():
+	if regranted:
 		c.self_statuses = grants
 	return c
 
@@ -2599,8 +2623,8 @@ static func grant_def(u, def: Dictionary, stacks: int, source: String, until_rou
 	# it and whatever round the grant names: its end is the turn's opening, no round's.
 	if status_decay(def) == DECAY_ROUND:
 		return stack(u, def, SKIRMISH, source, stacks, DECAY_ROUND)
-	if status_decay(def) == DECAY_START_TICK:
-		return stack(u, def, SKIRMISH, source, stacks, DECAY_START_TICK)   # its clock is its stacks, a stack a turn start (Hardened Light)
+	if status_decay(def) == DECAY_BREAK:
+		return stack(u, def, SKIRMISH, source, stacks, DECAY_BREAK)   # held until its machine's shield breaks (Hardened Light)
 	if decays_to_zero(def):
 		return stack(u, def, SKIRMISH, source, stacks, status_decay(def))
 	# One a use spends (Spun Up, spent whole by the next weapon; a primer, a stack a weapon
@@ -2686,7 +2710,7 @@ static func effect_text(eff: Dictionary) -> String:
 				body += " %d" % int(eff["number"])   # a numbered grant says its number (the drum's Spread 2)
 		"self_status":
 			var sn := str(STATUS.get(str(eff.get("status", "")), {}).get("name", str(eff.get("status", ""))))
-			body = "spent on a foe, lays %s %s on its own machine%s" % [sn, vs, " for each foe it reaches" if bool(eff.get("per_foe", false)) else ""]
+			body = "spent on a foe, lays %s %s on its own machine%s%s" % [sn, vs, " for each foe it reaches" if bool(eff.get("per_foe", false)) else "", (", up to %d" % int(eff["cap"])) if int(eff.get("cap", 0)) > 0 else ""]
 		"seal_form": body = "equipment it spends on itself seals it: armour +%s, its own cooling stopped, %s hotter at the end of each turn; a weapon it fires opens it" % [vs, str(eff.get("heat", 0))]
 		"stack_status":
 			var nm := str(STATUS.get(str(v), {}).get("name", str(v)))

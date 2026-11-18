@@ -58,6 +58,7 @@ const CLEANSE_ROUNDS := 2.0      # rounds a cleansed status would otherwise have
 const EXPOSED_SHARE := 0.5       # what standing Exposed next round would cost, at a share: it is a round away and answered there too (a Lure, a Cleanse, a kill, a reboot the turn before); a placeholder
 const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it adds when a later shot fires it
 const PLATE_ROUNDS := 2.0        # rounds a held load's Armoured is likely to stand (this round's blows and the next's), for the hull its armour keeps
+const HARDENED_ROUNDS := 2.0     # rounds a stack of Hardened Light is read to stand (the Storm Petrel's, 18 November): it lasts until its shield breaks, a reboot's drop among the breaks, so about half a reboot's cycle; a placeholder
 const RICOCHET_WORTH := 2.0      # a stack of Ricochet (the Skua's, 11 November), in foe hit points: about two shots' worth before the fight ends or a blow halves it; a placeholder, as every weight
 const ROLL_AGAIN_WEIGHT := 1.0   # another action of the die (Rapid, Instant, the reset gun, the Horn's), as the die's own average blow
 const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Ablate's does
@@ -784,26 +785,36 @@ static func heat_shield_gain(ms: Skirmish.MechState, f: Face) -> int:
 	return mini(per * maxi(0, heat_of(ms, f)), maxi(0, ms.unit.shield_max - ms.unit.shield))
 
 
-## What a spend lays on its own machine is worth (the effective entry's self_statuses, by an
-## upgrade's branch; the Storm Petrel's lure, 17 November): Hardened a point off every blow it meets this round while its shield stands, read as
-## that much shield stood up against the foes aiming at it once the spend has turned the ones it
-## reaches; Charged a Shock on each of its next fires, its own blow again as a Charged buff is worth.
-## Placeholders, as every weight.
+## What a spend lays on its own machine is worth (the entry's self_statuses as its machine's
+## branches make it: the Hardlight Pulse's Hardened Light, a Ward, Charged; Ryan, 18 November):
+## Hardened Light a point off every blow it meets while its shield stands, read as that much
+## shield stood up against the foes aiming at it once the spend has turned the ones it reaches,
+## over the rounds a stack is read to stand until the shield breaks (HARDENED_ROUNDS), nothing past
+## its cap; a Ward as a Ward piece is (ward_score); Charged a Shock on each of its next fires, its
+## own blow again as a Charged buff is worth. Placeholders, as every weight.
 func self_grant_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
 	if f == null or f.self_statuses.is_empty() or target == null:
 		return 0.0
 	var reached := sk.reached_by(f, target)
 	var worth := 0.0
 	for g in f.self_statuses:
+		var id := str(g.get("status", ""))
 		var n := maxi(1, int(g.get("stacks", 1))) * (reached.size() if bool(g.get("per_foe", false)) else 1)
-		match str(g.get("status", "")):
+		if int(g.get("cap", 0)) > 0:
+			n = mini(n, maxi(0, int(g["cap"]) - Effects.stacks_of(ms.unit, id)))
+		if n <= 0:
+			continue
+		match id:
 			"hardened":
 				var blows := 0
 				for foe in sk.field_foes():
 					if foe.alive() and foe.attacks() and not foe.is_suppressed() and (foe.target == ms or (f.has(Face.Keyword.LURE) and reached.has(foe))):
 						blows += maxi(1, foe.strikes())
 				if ms.unit.shield > 0 and not ms.shield_broken:
-					worth += shield_gain_worth(sk, ms, mini(blows * n, ms.unit.shield_max))
+					worth += shield_gain_worth(sk, ms, mini(blows * n, ms.unit.shield_max)) * HARDENED_ROUNDS
+			"ward":
+				if not Effects.has(ms.unit, "ward"):
+					worth += ward_score(sk, ms)
 			"charged":
 				worth += float(n) * _raw_attack_mean(ms)
 	return worth

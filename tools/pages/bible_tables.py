@@ -148,6 +148,8 @@ def tally(words):
         for field, status in FACE_FIELDS.items():
             if f.get(field):
                 t.grant(status, "machine", label, how, planned, who=who)
+        for g in f.get("self_statuses") or []:   # what a spend lays on its own machine (the Hardlight Pulse's Hardened Light, 18 November)
+            t.grant(g.get("status", ""), "machine", label, how, planned, who=who)
         for field, statuses in FACE_FIELDS_ON_FOES.items():
             if f.get(field):
                 for status in statuses:
