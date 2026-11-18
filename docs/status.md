@@ -134,7 +134,7 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   shape of the 18th (no shield armour on its passive; its Hardlight Pulse lays Hardened Light,
   up to 3, every stack gone when the shield breaks, the reboot included); the Buzzard landed
   on the 18th in his carrion form (every foe that falls in its fight gives it shield, every
-  weapon it fires pays a zap of shield for a flat add, its Afterburner Cannon fires the whole
+  weapon it fires pays a zap of shield for a flat add, its Shield-burner Cannon fires the whole
   shield; Sustain on its passive and Burst on its cannon its branches); its first round on
   the Kite, the Puffin, the Swallowtail and the Needletail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis, the Polar Bear
@@ -320,7 +320,8 @@ publish; the commands are in `README.md`.
   publish from main would drop them. The next one keeps those entries or waits for that
   branch to land; until then the Text tab lacks the Storm Petrel's and the foes' newest
   texts, and the Storm Petrel's sidecar waits with them (main's fires `hardlight_pulse`; the
-  live one fires `st_elmos_regenerator`, the id the live content still has).
+  live one fires `st_elmos_regenerator`, the id the live content still has), as does the
+  Buzzard's (its cannon `shield_burner_cannon` and in the shield's light on its branch).
   `build/hangar/designs.json` is one 795 KB line: write it indented before reading it whole.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their

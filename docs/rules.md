@@ -94,7 +94,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   4, then Spread with a stack for each foe hit, up to 5; Striker, Chain 2 and Charged 1 on
   itself, then Chain 3 and Charged 2. The Buzzard's, a tier two's single pick: Sustain, on its
   passive, its zap adding 3 for the same 2 shield and every foe that falls laying Regenerating 2
-  on it in place of the 2 shield; Burst, on its Afterburner Cannon, Spread 2 and Penetrate 2 and
+  on it in place of the 2 shield; Burst, on its Shield-burner Cannon, Spread 2 and Penetrate 2 and
   its own number 2 higher.
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
@@ -618,7 +618,7 @@ Component properties, printed on the entry rather than learned as keywords (the 
 them with a star): **Vents all** fires the whole heat gauge into the shot, adding its
 bonus per step of heat fired, the step printed on the entry (the Heliographic Death Ray: +1 per
 2), then its own heat lands. **Fires the shield** fires the whole shield into the shot, adding
-its bonus per step of shield fired, the step printed on the entry (the Afterburner Cannon: +1
+its bonus per step of shield fired, the step printed on the entry (the Shield-burner Cannon: +1
 per 2), and leaves the shield at nothing, Broken until the reboot (Shields, below), so no zap
 rides it; a broken shield adds nothing. **Missing HP** adds its bonus for every
 step of HP the foe struck is missing, each foe its own, on each blow after the attacker's

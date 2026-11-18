@@ -740,7 +740,7 @@ func test_the_shown_number_is_what_the_blow_will_deal() -> void:
 	assert_eq(sk.shown_number_text(ms, rifle, hard), "25", "over the wounded foe: 10, +20 for its missing hull, -5 armour")
 	assert_eq(sk.shown_number_text(ms, gun, hard), "5", "armour comes off it too")
 	ms.heat = 30
-	assert_eq(sk.shown_number_text(ms, cannon), "50", "the Afterburner shows what its heat will add: 20, +10 a 10 heat")
+	assert_eq(sk.shown_number_text(ms, cannon), "50", "a gun that vents all shows what its heat will add: 20, +10 a 10 heat")
 	Effects.stack(m, Effects.STATUS["overcharged"], Effects.SKIRMISH, "test", 5)   # five stacks, a point each (18 October)
 	assert_eq(sk.shown_number_text(ms, rifle), "15", "a buff on the machine shows on the face")
 	assert_eq(sk.shown_number_text(ms, rifle, hard), "30", "and over the foe")

@@ -740,7 +740,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 
 
 ## What a spend's own shield costs its machine (the Buzzard's, 18 November): a zap's cost where its
-## shield pays one, the whole shield for a gun that fires it (the Afterburner Cannon), read as
+## shield pays one, the whole shield for a gun that fires it (the Shield-burner Cannon), read as
 ## burn_cost reads shield gone this turn. A placeholder, as every weight: the regrowth a break shuts
 ## off until the reboot (its carrion) is not counted.
 func shield_spend_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
@@ -1357,7 +1357,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 	else:
 		rolls.append(f.power)
 	var fired := Skirmish.heat_bonus(ms, f)   # what the heat it fires adds
-	fired += Skirmish.shield_bonus(ms, f)   # what the shield it fires adds (the Afterburner Cannon's)
+	fired += Skirmish.shield_bonus(ms, f)   # what the shield it fires adds (the Shield-burner Cannon's)
 	fired += Skirmish.hopper_bonus(ms.unit, f)   # and what the loads it fires add
 	var zap := Skirmish.zap_ready(ms, f)   # the Buzzard's zap, where Empowered's add goes, when its shield pays
 	var zctx := {"zap": zap} if zap > 0 else {}

@@ -3779,25 +3779,28 @@ def buzzard(b):
     canopy, weapons clear of the wings, no traditional tail: the boosters ride the aft
     fuselage's shoulders as nacelles, each carrying a fin canted outward, and the cannon is
     a wide short bore tucked under the nose in a fairing that runs back along the belly to
-    the engines it draws heat from (the Afterburner Cannon, fixed, no pin). Pins under the
-    wings: hp_1 left inner (the Overclocked Railgun) and hp_2 right inner (the Transonic Rifle),
+    the engines (the Shield-burner Cannon, fixed, no pin; the Afterburner Cannon, fed by the
+    engines' heat, until 18 November). Pins under the
+    wings: hp_1 left inner (the Laser Carbine) and hp_2 right inner (the Transonic Rifle),
     each a gun in its pod, hp_3 left outer (the Arc-fault Cannon, two prongs), hp_4 right
-    outer an empty pod (the stock's Canopy shows nowhere; its Deflector's dish went with the
+    outer an empty pod (the stock's Blast Door shows nowhere; its Deflector's dish went with the
     old stock, Ryan's go of 28 October); hp_5 bare under the belly aft of the cannon (the Ram-air Scoop is the dorsal intake,
     detail, no mount). Ryan, 30 September: the cannon recessed behind the nose, a wide low
     oval bore, its fairing blended into the fuselage. Centred on z = 0 like the Kite."""
     # Fuselage: short and deep, a blunt nose.
     b.loft([(44.0, _fuse(6.0, 2.2, 2.4)), (34.0, _fuse(12.0, 4.4, 4.2)), (18.0, _fuse(17.0, 5.8, 5.2)),
             (0.0, _fuse(20.0, 6.8, 5.8)), (-18.0, _fuse(20.0, 6.6, 5.6)), (-34.0, _fuse(14.0, 4.6, 4.0)), (-42.0, _fuse(8.0, 2.6, 2.4))], "steel.plate", "fuselage")
-    # The Afterburner Cannon: a wide short bore under the nose, its fairing lofted out of
+    # The Shield-burner Cannon: a wide short bore under the nose, its fairing lofted out of
     # the belly and running back to the engines.
     # The whole grey chunk under the fuselage is the cannon (Ryan, 1 October), so it is
     # decorated along its length: vents cut into the fairing's flanks as pockets (b.cut_box)
     # with a glow at their floors, running back from the muzzle; one glowing groove inset
     # in the barrel; the muzzle open with a rim (an annulus, no cap), the bore tapering
-    # inward with glowing walls and a hot floor just inside. Every one of its lights banked
-    # down at rest (amber.ember) so the charge lights them hot against it (Ryan, 6 October,
-    # the eighth notes: the resting glow dimmed, the active one brought up, more contrast).
+    # inward with glowing walls and a lit floor just inside. Every one of its lights banked
+    # down at rest so the charge lights them against it (Ryan, 6 October, the eighth notes: the
+    # resting glow dimmed, the active one brought up, more contrast), in the shield's light
+    # since it fires the shield (amber.shield; Ryan, 18 November: "the cannon currently glows
+    # hot, it needs to glow in shield colours like the storm petrel and Puffin do").
     fairing = b.loft([(-22.0, hexagon(0.0, -5.6, 8.0, 3.0)), (0.0, hexagon(0.0, -6.6, 14.0, 4.6)), (24.0, hexagon(0.0, -6.4, 13.0, 4.2)),
                       (30.0, hexagon(0.0, -5.9, 10.5, 3.4))], "steel.dark", "cannon_fairing")
     for s in (-1.0, 1.0):
@@ -3806,13 +3809,13 @@ def buzzard(b):
             hw = 7.0 - abs(y0 + 2.0 - 12.0) * 0.02   # the flank's half width near the pocket
             x_in, x_out = s * (hw - 1.6), s * (hw + 1.0)   # deeper, longer, the glow a small strip at the floor so it reads as a light inside, not a slab (Ryan, 1 October)
             b.cut_box([fairing], min(x_in, x_out), max(x_in, x_out), y0, y0 + 4.4, -7.3, -5.3)
-            b.box(min(x_in, x_in + s * 0.2), max(x_in, x_in + s * 0.2), y0 + 0.1, y0 + 4.3, -7.2, -5.4, "amber.ember", "vent_glow")   # the whole floor of the cut (Ryan, 1 October)
+            b.box(min(x_in, x_in + s * 0.2), max(x_in, x_in + s * 0.2), y0 + 0.1, y0 + 4.3, -7.2, -5.4, "amber.shield", "vent_glow")   # the whole floor of the cut (Ryan, 1 October)
     b.loft([(29.0, hexagon(0.0, -6.0, 9.0, 3.0)), (33.4, hexagon(0.0, -6.0, 8.6, 2.85))], "steel.dark", "cannon_barrel", cap=False)
-    b.loft([(33.4, hexagon(0.0, -6.0, 7.8, 2.4)), (34.6, hexagon(0.0, -6.0, 7.8, 2.4))], "amber.ember", "barrel_groove", cap=False)
+    b.loft([(33.4, hexagon(0.0, -6.0, 7.8, 2.4)), (34.6, hexagon(0.0, -6.0, 7.8, 2.4))], "amber.shield", "barrel_groove", cap=False)
     b.loft([(34.6, hexagon(0.0, -6.0, 8.5, 2.8)), (40.0, hexagon(0.0, -6.0, 8.0, 2.6))], "steel.dark", "cannon_barrel", cap=False)
     _rings(b, [[(x, 40.0, z) for x, z in hexagon(0.0, -6.0, 8.0, 2.6)], [(x, 40.0, z) for x, z in hexagon(0.0, -6.0, 6.8, 2.1)]], "steel.dark", "cannon_rim", cap=False)
-    b.loft([(40.0, hexagon(0.0, -6.0, 6.8, 2.1)), (38.0, hexagon(0.0, -6.0, 5.6, 1.75))], "amber.ember", "cannon_bore", cap=False)
-    b.loft([(38.1, hexagon(0.0, -6.0, 5.6, 1.75)), (38.4, hexagon(0.0, -6.0, 5.6, 1.75))], "amber.ember", "cannon_glow")   # a touch back in from the tenth round (Ryan, 1 October)
+    b.loft([(40.0, hexagon(0.0, -6.0, 6.8, 2.1)), (38.0, hexagon(0.0, -6.0, 5.6, 1.75))], "amber.shield", "cannon_bore", cap=False)
+    b.loft([(38.1, hexagon(0.0, -6.0, 5.6, 1.75)), (38.4, hexagon(0.0, -6.0, 5.6, 1.75))], "amber.shield", "cannon_glow")   # a touch back in from the tenth round (Ryan, 1 October)
     # Canopy: small and faired, forward.
     b.loft([(22.0, hexagon(0.0, 6.0, 6.0, 0.5)), (14.0, hexagon(0.0, 7.0, 7.4, 2.4)), (4.0, hexagon(0.0, 7.0, 7.4, 2.4)), (-2.0, hexagon(0.0, 6.6, 7.0, 1.8))], "glass.glass", "canopy")
     # The dorsal intake behind it (hp_5), its mouth forward.
@@ -3851,7 +3854,7 @@ def buzzard(b):
                 b.pin("hp_4", nose, scale=0.7, carries="", fits=POD_FITS)
                 continue
             # Each stock gun is its class on the nose (Ryan, 11 November: no stock gun is built by hand).
-            b.stock("hp_%d" % n, nose, {1: "barrel", 2: "barrel", 3: "twin_barrel"}[n], scale=0.7, carries={1: "overclocked_railgun", 2: "transonic_rifle", 3: "arc_fault_cannon"}[n], fits=POD_FITS)
+            b.stock("hp_%d" % n, nose, {1: "barrel", 2: "barrel", 3: "twin_barrel"}[n], scale=0.7, carries={1: "laser_carbine", 2: "transonic_rifle", 3: "arc_fault_cannon"}[n], fits=POD_FITS)
     # The nacelles: two boosters on the aft shoulders, their mouths dark, exhausts lit, and a
     # fin canted outward off each nacelle's top; a short ventral strake under the tail.
     for s in (-1.0, 1.0):
@@ -3872,7 +3875,7 @@ def buzzard(b):
             _wing(b, root, tip, "livery.livery", "fin")
     b.loft([(-42.0, rect(0.0, 1.2, -6.0, -2.4)), (-30.0, rect(0.0, 1.6, -7.5, -3.5))], "steel.dark", "strake")
     b.box(-2.0, 2.0, -15.0, 22.0, 6.8, 7.4, "livery.livery", "spine_stripe")
-    # The heat spine (Ryan, 5 October: "let's try it"): the cannon draws its heat from the
+    # The spine (Ryan, 5 October: "let's try it"): the cannon draws its charge back from the
     # engines, and the line it draws it along now runs on top, where the game's cameras look:
     # a dark channel between two rails from the nacelles forward to the intake, and again
     # over the nose ahead of the canopy, its floor a row of cells (heat_1 at the tail to
@@ -3893,7 +3896,7 @@ def buzzard(b):
         for s in (-1.0, 1.0):
             along(y_front, y_back, lambda z: rect(s * (half - 0.5), 1.0, z + 0.45, z + 0.95), "steel.dark", "heat_rail")
         for c0, c1 in sorted(cells, key=lambda c: c[0]):
-            along(c0, c1, lambda z: rect(0.0, 2.0 * half - 2.0, z + 0.45, z + 0.72), "amber.glow", "heat_%d" % cell)
+            along(c0, c1, lambda z: rect(0.0, 2.0 * half - 2.0, z + 0.45, z + 0.72), "amber.shield", "heat_%d" % cell)   # the shield's light with the cannon it feeds (18 November)
             cell += 1
 
     # Idle acts, third pass (Ryan, 4 October: the nacelle check was smooth; some others
@@ -3934,7 +3937,8 @@ def buzzard(b):
             for i in range(9)]
     # The halo's trial machine (Ryan, 30 October, of a real bloom for lit parts: "Sure, let's try
     # it"): the nacelles' boosters, hot as every machine's are, and the cannon, its vents and bore
-    # (31 October: "the cannon is hot since it's a heat cannon"; the spine's cells "aren't vents").
+    # (31 October, of its first form: "the cannon is hot since it's a heat cannon"; the spine's
+    # cells "aren't vents"), its halo in the shield's light since the cannon fires the shield.
     b.halo = ["vent_glow", "barrel_groove", "cannon_bore", "cannon_glow", ("joint_nacelle_l", KESTREL_HALO), ("joint_nacelle_r", KESTREL_HALO)]
     b.act("charge_cannon", 6.0, glow=heat + [
         (["vent_glow", "barrel_groove", "cannon_bore", "cannon_glow"], [(1.6, 0.0), (2.2, 5.0), (2.5, 1.5), (2.8, 11.0), (3.1, 4.0), (3.6, 26.0), (4.5, 26.0), (5.4, 0.0)]),
@@ -3975,7 +3979,7 @@ def buzzard(b):
         (["vent_glow", "barrel_groove", "cannon_bore", "cannon_glow"], [(0.7, 0.0), (0.85, 5.0), (0.95, 1.5), (1.05, 11.0), (1.15, 4.0), (1.4, 26.0),
                                                                         (blow, 26.0), (blow + 0.12, 7.0), (blow + 0.35, 0.0)])],
         body=[(blow, 0.0, 0.0, 0.0), (blow + 0.06, 0.0, -1.5, 0.0), (2.4, 0.0, 0.0, 0.0)], idle=False)
-    b.fires = {"afterburner_cannon": ("fire_cannon", 0.0, 2.4, blow)}
+    b.fires = {"shield_burner_cannon": ("fire_cannon", 0.0, 2.4, blow)}
     b.move(slide=0.3, bank=36.0, accel=0.9, heft=0.12, oversteer=0.3)   # larger and slower than the Kite: slides less, banks well (Ryan, 5 October: more); the nose a little into its corners (the fifth notes)
     # Its death: down flat on its belly, slewed, the nacelles knocked to odd angles.
     b.death(0.9, {"nacelle_l": [(0.9, 36.0)], "nacelle_r": [(0.9, -14.0)]}, body=[(0.9, 0.0, 0.0, 0.0, -5.0, -2.0, 0.0)])

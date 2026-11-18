@@ -675,7 +675,7 @@ static func plain_blow_on(foe: Foe, amount: int, by: MechState) -> int:
 
 
 ## What a vent-on-fire attack adds to every blow from the heat it fires: its power_per_heat
-## for each `per_heat` the machine carries right now (the Afterburner Cannon, 28 September;
+## for each `per_heat` the machine carries right now (the Heliographic Death Ray; the Buzzard's cannon first, 28 September;
 ## the step a field since the stock pass, 22 October).
 static func heat_bonus(ms: MechState, f: Face) -> int:
 	if f == null or not f.vents_all:
@@ -685,7 +685,7 @@ static func heat_bonus(ms: MechState, f: Face) -> int:
 
 ## What a gun that fires its machine's whole shield adds to every blow from the shield it fires: its
 ## power_per_shield for each `per_shield` the shield holds right now, nothing on a shield at nothing
-## (the Afterburner Cannon since 18 November, Ryan: "the cannon fires its whole field").
+## (the Shield-burner Cannon since 18 November, Ryan: "the cannon fires its whole field").
 static func shield_bonus(ms: MechState, f: Face) -> int:
 	if f == null or not f.spends_shield or ms.shield_broken:
 		return 0
@@ -3238,7 +3238,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	h.vented_all = ms.heat if f.vents_all else 0
 	if f.vents_all:
 		ms.heat = 0
-	# A gun that fires its whole shield (the Afterburner Cannon since 18 November): the shield goes to
+	# A gun that fires its whole shield (the Shield-burner Cannon since 18 November): the shield goes to
 	# nothing before the strikes, broken, as any shield a spend of its own takes to nothing is (Ryan:
 	# "Yes, same answer as 1 now. Breaks the shield").
 	if f.spends_shield and ms.unit.shield > 0:

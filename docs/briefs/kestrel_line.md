@@ -67,7 +67,7 @@ content:
 | one | The Puffin, a light hovercraft | his direction: it moves heat (`kestrel_puffin.md`) | back in design, undealt |
 | two | The Kite, a light flyer | the opener and the finisher, above | dealt; his play |
 | two | The Needletail, a light flyer | two things a round; the Fovea Designator Exposes | dealt; his play |
-| two | The Buzzard, a medium flyer | every foe that falls gives it shield, every weapon it fires pays a zap, its Afterburner Cannon fires the whole shield; two upgrade branches, Sustain and Burst | landed 18 November; his play |
+| two | The Buzzard, a medium flyer | every foe that falls gives it shield, every weapon it fires pays a zap, its Shield-burner Cannon fires the whole shield; two upgrade branches, Sustain and Burst | landed 18 November; his play |
 | three | The Lammergeier, a heavy flyer | a Mine on every foe it aims at, blowing round the foe as it falls; the Lorentz Contractor gathers, the Syrinx Drone sets one off | dealt; his play |
 | three | The Giant Petrel, an assault hovercraft | the team's unspent rerolls banked; three locks around rerolls and actions | dealt; its kit open, below |
 | open | The Magpie | a support engine (`kestrel_magpie.md`) | his pick of a direction |

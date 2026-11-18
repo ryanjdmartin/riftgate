@@ -1447,7 +1447,7 @@
   "vent_glow"
  ],
  "pins": {
-  "hp_1": "overclocked_railgun",
+  "hp_1": "laser_carbine",
   "hp_2": "transonic_rifle",
   "hp_3": "arc_fault_cannon",
   "hp_4": "",
@@ -1508,7 +1508,7 @@
   ]
  ],
  "fires": {
-  "afterburner_cannon": {
+  "shield_burner_cannon": {
    "act": "fire_cannon",
    "from": 0.0,
    "to": 2.4,

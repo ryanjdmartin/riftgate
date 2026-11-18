@@ -1570,7 +1570,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: power_per_heat cannot be negative" % where)
 	if fd.has("per_heat") and (not fd.has("power_per_heat") or int(fd["per_heat"]) <= 0):
 		errs.append("%s: per_heat is the heat a step of power_per_heat stands for: positive, and only beside power_per_heat" % where)
-	# A gun that fires its machine's whole shield (the Afterburner Cannon since 18 November): an
+	# A gun that fires its machine's whole shield (the Shield-burner Cannon since 18 November): an
 	# attack's, a step of power_per_shield for every per_shield it fires, never beside vents_all
 	# (one whole gauge a gun).
 	if (fd.has("spends_shield") or fd.has("power_per_shield")) and kind != "attack":

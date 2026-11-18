@@ -1814,7 +1814,7 @@ static func seal_form(u) -> Dictionary:
 ## attack", "Automatically paid"; 18 November: "Put the bonus damage where Empowered goes in the
 ## damage calculation"): what each weapon it fires at a foe pays in shield, `cost`, and adds to its
 ## every blow, `value`, as {cost, damage}, or {} for an entry that pays none: equipment, and a gun
-## that fires the whole shield (the Afterburner Cannon, which leaves nothing to pay). A later grant
+## that fires the whole shield (the Shield-burner Cannon, which leaves nothing to pay). A later grant
 ## in the same slot replaces the passive's (its Sustain branch's 3); otherwise the most of each.
 static func zap_of(u, face: Face) -> Dictionary:
 	if face == null or not face.is_weapon() or face.spends_shield:

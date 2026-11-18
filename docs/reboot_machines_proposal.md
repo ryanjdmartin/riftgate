@@ -20,7 +20,7 @@ too). It retires once its calls are rows and content.
 | The machine | The kit as a whole, under the system | Open |
 |---|---|---|
 | Storm Petrel | Landed 17 November (the bible's row): the Hardlight Generator, a point of shield a point of heat; its lock the Hardlight Pulse, a lure run hot; the Arc Fault Cannon in the Shoring Jack's slot; his branches Defence and Striker | His play of it, and his marks on its texts |
-| Buzzard | Landed 18 November (the bible's row): the Carrion Recoupler, 2 shield for every foe that falls and a zap on every weapon it fires; its Afterburner Cannon fires the whole shield; a Barrier piece and a warm gun in its stock; his branches Sustain and Burst | His play of it, and his marks on its texts |
+| Buzzard | Landed 18 November (the bible's row): the Carrion Recoupler, 2 shield for every foe that falls and a zap on every weapon it fires; its Shield-burner Cannon fires the whole shield; a Barrier piece and a warm gun in its stock; his branches Sustain and Burst | His play of it, and his marks on its texts |
 | Needletail | Two actions a round cost two actions' heat and the reboot takes both: it fires less than a plain machine | Its heat budget for two actions, and his "dull" |
 | Skua | Its ramp lives behind a shield that lasts a cycle, and every cycle ends bare | Whether its ramp is for a cycle or a fight |
 | Kite | Holds in short fights; its refill dies with a break, its reboot is the frailest bare turn | A kill mends a broken shield, or as it is |

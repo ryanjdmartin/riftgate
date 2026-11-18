@@ -99,7 +99,7 @@ FACE_FIELDS = {
     "braces": [("braced", "sets")], "fills_hopper": [("hopper", "sets")],
     "fires_hopper": [("hopper", "reads")], "detonates": [("mine", "reads")],
     "gathers_mines": [("mine", "reads")], "vents_all": [("heat", "reads")], "power_per_heat": [("heat", "reads")],
-    "spends_shield": [], "power_per_shield": [],   # the Afterburner Cannon's whole shield into the shot (18 November): no currency of this map's
+    "spends_shield": [], "power_per_shield": [],   # the Shield-burner Cannon's whole shield into the shot (18 November): no currency of this map's
     "power_per_missing": [("missing_hp", "reads")], "finisher": [("missing_hp", "reads")],
     "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "self_statuses": [],
     "spends": [("essence", "reads")], "spends_up_to": [], "holds_all": [("overcharged", "reads")],   # the Quintessence Tap: it consumes Essence, and holds every Empowered a round

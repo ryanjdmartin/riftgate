@@ -764,8 +764,8 @@
    ]
   },
   {
-   "id": "afterburner_cannon",
-   "name": "Afterburner Cannon",
+   "id": "shield_burner_cannon",
+   "name": "Shield-burner Cannon",
    "maker": "kestrel",
    "shape": "barrel",
    "codex": "",
@@ -773,7 +773,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The Buzzard's engines fire forward for one shot, fed by the field instead of the airframe's heat (the brief's, 11 November; his \"the cannon fires its whole field\"); the fuller the shield, the bigger the shot, and the shield is gone afterwards.",
-    "niche": "The Buzzard's burst since 18 November: it fires the whole shield, 2 and a point for every 2 shield, the shield to nothing and broken, so it is the shot before a reboot; the zap cannot ride it, the shield being empty (his \"It can't, since the shield will be empty\"). Its Burst branch gives it Spread, Penetrate and a higher number. Until then it fired its whole heat, the form the Whip Scorpion's Heliographic Death Ray keeps."
+    "niche": "The Buzzard's burst since 18 November: it fires the whole shield, 2 and a point for every 2 shield, the shield to nothing and broken, so it is the shot before a reboot; the zap cannot ride it, the shield being empty (his \"It can't, since the shield will be empty\"). Its Burst branch gives it Spread, Penetrate and a higher number. Until then it fired its whole heat, the form the Whip Scorpion's Heliographic Death Ray keeps. Named for the shield it burns on 18 November (Ryan: \"the afterburner cannon should be renamed to Shield-burner cannon\"), the Afterburner Cannon before."
    },
    "face": {
     "kind": "attack",

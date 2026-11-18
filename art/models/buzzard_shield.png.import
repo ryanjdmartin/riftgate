@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dlj8u3x81xe05"
-path="res://.godot/imported/buzzard_glow.png-b906e05f91dc7486eee27278734c6cc4.ctex"
+uid="uid://ypioxyk2cggn"
+path="res://.godot/imported/buzzard_shield.png-0695cdbd15b63a54e007e439938014dd.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "fcc6a3a882efe9a5f50ac918697720fb"
+"md5": "17f8a684906f3157a7eb731bddca401e"
 }
 
 [deps]
 
-source_file="res://art/models/buzzard_glow.png"
-dest_files=["res://.godot/imported/buzzard_glow.png-b906e05f91dc7486eee27278734c6cc4.ctex"]
+source_file="res://art/models/buzzard_shield.png"
+dest_files=["res://.godot/imported/buzzard_shield.png-0695cdbd15b63a54e007e439938014dd.ctex"]
 
 [params]
 

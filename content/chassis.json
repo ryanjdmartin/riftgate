@@ -474,7 +474,7 @@
    ],
    "size": "medium",
    "fixed": [
-    "afterburner_cannon"
+    "shield_burner_cannon"
    ],
    "loadout": [
     "laser_carbine",
@@ -540,27 +540,27 @@
      },
      "steps": [
       {
-       "description": "Its Afterburner Cannon gains Spread 2 and Penetrate 2, and its own number is 2 higher.",
+       "description": "Its Shield-burner Cannon gains Spread 2 and Penetrate 2, and its own number is 2 higher.",
        "effects": [
         {
          "trigger": "static",
          "effect": "grant_keyword",
          "value": "cleave",
          "number": 2,
-         "entry": "afterburner_cannon"
+         "entry": "shield_burner_cannon"
         },
         {
          "trigger": "static",
          "effect": "grant_keyword",
          "value": "penetrate",
          "number": 2,
-         "entry": "afterburner_cannon"
+         "entry": "shield_burner_cannon"
         },
         {
          "trigger": "static",
          "effect": "add_power",
          "value": 2,
-         "entry": "afterburner_cannon"
+         "entry": "shield_burner_cannon"
         }
        ]
       }
