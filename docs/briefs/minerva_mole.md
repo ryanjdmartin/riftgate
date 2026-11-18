@@ -687,7 +687,29 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    of its port (half a second), then runs 29.4 in through the floor into the hull, the fore one at
    once and the rear one once its block has sunk on its cams; the burrow is 2.85 seconds, a quarter
    longer for the fold. Rendered with each class on all four mounts through the burrow, level from
-   both sides: nothing shows outside the hull.
+   both sides: nothing shows outside the hull. His notes on that, 18 November: "I guess I didn't
+   mean cams. Pistons, the same thing the cockpit side is using. I can't see the glow on the
+   rearmost vents, nor on the little vent between the stacks. I think it's the slats position.
+   You'll need to give a base on the mounts for the port models to sit on, since they don't have
+   one. Everything is floating when extended." So, the hangar's next version: the rear block stands
+   9.6 up on two rams under its middle, the cab's rods and hazard bands, upright out of dark collars
+   on its bay's floor, its rods running down into the tread as it sinks; the ram check now runs it 2
+   up and back, since its gun's line over the fore block leaves it no room to sink (the cams' check
+   had dipped the gun through the fore block). The tail vents' boxes stood a hand in front of the
+   lower hull's tail, which plugged them behind their louvres, so no heat showed whatever the slats
+   did; now they cut through it too. The vent between the stacks was the slats, and its depth: its
+   louvres lifted their front edges, standing in the way of a camera behind, and from 30 or 40
+   degrees up the floor of a box as deep as the rest lay wholly behind its front wall; now it is
+   10 by 8 (from 8 by 6), half as deep, with three thinner louvres that lift their back edges, so
+   they open toward the tail. Every mount's gun comes out of a housing, a drum round the port
+   model's root a hair under its port's bore, a hazard band round its back and a dark mouth in its
+   face, built on the gun's tilt so it turns and stows with the gun: on the block guns' arms (the
+   side ports' bore 3.8 from 3.3 to pass it, the arm 4.9 so it stands clear of the face, the rear
+   block's port 1 forward so the housing stows inside the breech), on the top gun's drum, sitting
+   on its rim, and on the cab gun's column. For each class's widest root to sit inside its housing,
+   the guns are smaller: the blocks' and the top gun's at 0.6 (from 0.65 and 0.72), the cab's at
+   0.55 (from 0.68). Rendered with each class on all four mounts through the burrow, level from both
+   sides: nothing shows outside the hull.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike
