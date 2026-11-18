@@ -766,7 +766,18 @@ more than doubles the one before at the cap: Seared is the step to watch if it r
    17.1 inside it, and its inboard front corner notched for the breech's band. The fore block is 2
    further back, its back against the rear block's front (y -13.95 to -1.95), its gun's yoke with
    it. Rendered with each class on all four mounts through the burrow, level from both sides:
-   nothing shows outside the hull.
+   nothing shows outside the hull. His notes on that, 18 November: "rear gun's little platform still
+   overhangs both the back and side. Cab clips through its little platform, needs to come up so it
+   sits on top of it. Cab's platform also overhangs the side. In the burrow/unburrow, I feel like
+   there's one too many steps, the cab cover opening and closing seems like it could be during
+   another step, instead of its own sequenced step?" So, the hangar's next version: every pad and
+   its hazard rim stay inside the skirt's edges, and the fore block has a pad of its own beside the
+   rear one's; the cab and both blocks sit on top of their pads, 0.7 higher. The cab closes up as it
+   runs in, its slit's shutter down, its periscopes sunk and its gun tipped upright before it seats;
+   its gun sinks once it is over the tread, and the machine digs in as the last iris shuts. The
+   burrow is 2.3 seconds (from 2.85), the drill's docking 0.8, done as the drill starts to rev.
+   Rendered with each class on all four mounts through the burrow, level from both sides: nothing
+   shows outside the hull.
 4. Its name (the mole a working label) and its texts, his. On his ask of 16 November ("any ideas
    for a true burrower?"), Claude's candidates, each checked against the reserved names: the
    Aardvark (Claude's pick: the earth pig, among the fastest diggers alive, and a heavy strike
