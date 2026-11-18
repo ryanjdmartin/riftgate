@@ -63,8 +63,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1308 tests, 375,397 checks, green on main as `ccr-bd73687d-w8qox1` landed (18
-  November, the deaths' branch over main at `66c0a63`). The runner fails a run whose tests never ran, so read the checks' count, never
+- Tests: 1309 tests, 375,427 checks, green on `ccr-178e0404-ptuh2m` (18 November, a Chain's arc
+  its blow alone, over main at `15d6679`). The runner fails a run whose tests never ran, so read the checks' count, never
   the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
   purpose. About four minutes in a cloud session; words after `--` run only the files whose
   names hold one (`-- loot rig`).
