@@ -309,6 +309,12 @@ Waiting on his marks ("give me your waste take since that seems important"). Not
 is in content but the Needler's body (section 8). The reads are `docs/measurements.md`, 18
 November.
 
+How it is put to him, his word the same day: "I have only really been playtesting the meadow
+so you'll have to break down your proposals for me explicitly." So a domain's kit is laid
+out against the Meadow's fights, the ones his play knows, piece for piece, with its fights'
+screens and a round worked through (the thicket beside the goblin horde, the sandworm's
+ambush beside the Treant's grove).
+
 **What Breach left.** It was the bite of three of the Waste's five tier-one foes, the
 Needler, the Sandworm and the Antlion, and the first half of the domain's signature, "fixed
 damage no shield answers". All three are plain blows on the budget now. What is missing is
@@ -325,9 +331,9 @@ Unmake and its mirage, the pit's Barrier, Thousand Needles, the Gorgon's dying g
    to anything but shooting. Its damage is plain and steady, the needles' count. Nothing in
    it goes round a shield and nothing should: the reboot made the shield a pool bought with
    a turn, and turns are what the Waste takes. The table's cells, drafts for his words: its
-   signature "theft of entries, rerolls and buffs; needles that count every idle die"; the
-   build must answer "redundancy on the die, reach to the gazers, a die for every needle,
-   a Ward".
+   signature "theft of entries and buffs; needles that count every idle die"; the build
+   must answer "redundancy on the die, reach to the gazers, a die for every needle, a
+   Ward".
 2. The Needler's own rule, Watched (a working name): it does nothing in a round a machine
    has aimed a die at it. Any die, the worst as well as the best; an area that only reaches
    it is no aim. Its own Ability and no Suppress: no Numbed follows, and a countdown it
@@ -351,9 +357,15 @@ it, so it is tier one's lesson and the Barbed and the Great Needler carry it up.
 with a die to spare holds every cactus: beside an elite the escort is three dice a round
 for two rounds and no threat. The bot plays it shallowly, so his play is its judge.
 
-**What its signature says and its ranks lack**: a reroll thief. The Thief, a hero, is the
-Waste's one drain, and the Meadow's Mandragora line screams more rerolls away than the
-whole Waste. His: a carrier at tier two, or the word off the signature.
+**The reroll thief.** The signature says theft of rerolls, and no Waste rank steals one:
+the Thief, a hero, is its one drain. His word, 18 November: "Not that we need to bucket
+mechanics to one domain specifically, but the mandragoras are pretty common in the
+meadow." They are its whole back rank: nine stand in tier one's three formations, four
+behind the goblin horde, three in the Treant's grove and two behind the gel wall, each
+taking a reroll off the next round as it falls. So the thief is the Meadow's in play. The
+lean, no bucket: the word comes off the Waste's signature and no second thief is added,
+the Meadow taking the reroll and the Waste the entry. Whether the screams are too many is
+the Meadow's kit's to ask.
 
 **The bench**, each killed by a rule he may overrule:
 
