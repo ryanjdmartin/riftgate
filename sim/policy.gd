@@ -564,8 +564,9 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 			# A weapon over every foe strikes each as its own target (12 November), a Shock read on each.
 			score += _capped(damage_outcomes(ms, f, n) if f.reach == Face.Reach.EVERY_FOE else damage_outcomes(ms, f, n, int(shapes.get(n, Skirmish.AREA_ALL))), n.hp)
 	# A kill ends the countdown it gathers, opens the core its fall unguards, and sets off its
-	# last act (the boss mechanics of 15 October; valued 22 October).
-	score += p_kill * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_cost(sk, target, ms))
+	# last act (the boss mechanics of 15 October; valued 22 October), of which only what a
+	# round's wait could save argues against the kill (last_act_deterrent, 18 November).
+	score += p_kill * (KILL_BONUS + (_threat_now(target, sk) + countdown_threat(target, sk)) * HULL_WEIGHT + core_opening(sk, target) - last_act_deterrent(sk, target, ms))
 	if f.has(Face.Keyword.LURE) or f.has(Face.Keyword.DISRUPT) or f.has(Face.Keyword.SHOCK):
 		# Every foe the riders reach: the target, the neighbours of a spread, the column of a
 		# penetrate, never a Chain's conductor (an arc is its blow alone, 18 November); a lure, a
@@ -1743,6 +1744,25 @@ static func last_act_cost(sk: Skirmish, f: Foe, killer: Skirmish.MechState = nul
 	var blow := f.last_act()
 	if blow.is_empty():
 		return fall_steps_cost(sk, f, killer)
+	return _last_blow_cost(sk, f, blow, killer, false) + fall_steps_cost(sk, f, killer)
+
+
+## What a foe's last act argues against killing it this round: the part of its blow that waiting
+## could save, its cost on the team as it stands less its cost on the same machines with their
+## shields whole (a reboot's worth), and its fall's steps. The rest is paid whenever it falls,
+## and a foe has to fall for the fight to be won: the whole blow weighed against one round's
+## worth of the kill had the bot nursing a boss it could finish (18 November, the Gargantuan
+## King at 33 rounds with a Meteor of 12, its squad rebooting five times a machine).
+static func last_act_deterrent(sk: Skirmish, f: Foe, killer: Skirmish.MechState = null) -> float:
+	var blow := f.last_act()
+	if blow.is_empty():
+		return fall_steps_cost(sk, f, killer)
+	return maxf(0.0, _last_blow_cost(sk, f, blow, killer, false) - _last_blow_cost(sk, f, blow, killer, true)) + fall_steps_cost(sk, f, killer)
+
+
+## A last act's blow on the machines it reaches, each through its shield and armour: as they
+## stand, or `whole`, every shield at its maximum.
+static func _last_blow_cost(sk: Skirmish, f: Foe, blow: Dictionary, killer: Skirmish.MechState, whole: bool) -> float:
 	var amount := f.damage_of(blow)
 	var whom: Array = []
 	if f.has_keyword(blow, "all"):
@@ -1751,7 +1771,7 @@ static func last_act_cost(sk: Skirmish, f: Foe, killer: Skirmish.MechState = nul
 		whom = [killer]   # a single death blow lands on the machine that made the kill, and on nobody when none did
 	var cost := 0.0
 	for m in whom:
-		var shield: int = m.unit.shield
+		var shield: int = maxi(m.unit.shield, m.unit.shield_max) if whole else m.unit.shield
 		var hull: int = m.unit.hull
 		for s in range(maxi(1, int(blow.get("strikes", 1)))):
 			var r := Skirmish._blow(shield, m.unit.armour, Effects.damage_taken(m.unit, amount, f))
@@ -1760,7 +1780,7 @@ static func last_act_cost(sk: Skirmish, f: Foe, killer: Skirmish.MechState = nul
 			hull -= int(r["through"])
 		if hull <= 0:
 			cost += DEATH_WEIGHT
-	return cost + fall_steps_cost(sk, f, killer)
+	return cost
 
 
 ## What the steps of a foe's fall cost the team beside its blow (16 November: a fall is a short
