@@ -157,8 +157,12 @@ A cloud session sets nothing up by hand: the session-start hook
 (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`) fetches Godot
 4.8-beta2's Linux build into `~/bin` and runs the first import, once in a container. Anything
 that needs a window runs under `xvfb-run -a` with `--rendering-method gl_compatibility`
-there. The first import rewrites the Prairie Dog's four textures on any machine: restore them
-(`git checkout -- art/models/prairie_dog_*`), never commit them.
+there. A model's textures ride in its `.glb`, and the import copies each out beside it
+(`art/models/<id>_<texture>.png`, its fingerprint in the `.import`) as the file the game
+draws, on any machine: a model is committed with the copies the import then writes, and a
+texture a fresh import rewrites is one a model left behind, to commit and never to restore
+(`tests/test_model_textures.gd` fails the build until it is committed, and on a copy whose
+model no longer has its texture).
 
 If a headless tool script errors before it calls `quit()`, Godot keeps running, so every
 headless run sits in a watchdog: `perl -e 'alarm N; exec @ARGV'`.
@@ -478,6 +482,8 @@ tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build cache_derelict cache_carcass cache_relic
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes   # the silhouette classes a swapped component wears, in every maker's metal
 perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
+# commit the model with the texture copies the import wrote beside it (art/models/<id>_*.png and
+# their .import), and delete a copy of a texture the model no longer has; tests/test_model_textures.gd checks both
 # with no Blender installed (a cloud session): a python3.11 venv with `pip install bpy==5.0.1`, then
 BPY_PYTHON=.bpy/bin/python tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger
 tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /tmp/badger.glb   # a rebuild's geometry against the committed file

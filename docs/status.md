@@ -61,20 +61,22 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1323 tests, 376,844 checks, green on main (18 November, the Buzzard landed over the Pilgrim's
-  knife). The runner fails a run whose tests never ran, so read the checks' count, never
-  the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
-  purpose. About four minutes in a cloud session; words after `--` run only the files whose
-  names hold one (`-- loot rig`).
+- Tests: 1326 tests, 379,536 checks, green (18 November, the model texture copies' test on
+  `ccr-64b5deec-lunnff`, over main's Buzzard and the Pilgrim's knife). The runner fails a run
+  whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
+  ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
+  cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
 - A cloud session gets Godot and the first import from the session-start hook
   (`.claude/hooks/session-start.sh`); without it, fetch `Godot_v4.8-beta2_linux.x86_64.zip`
   from `godotengine/godot-builds` in one command and unpack and run it in another. The hook
   imports only a checkout with no `.godot`: a suite failing on a class name not declared means
-  run `--import` first. The first `--import` may rewrite four Prairie Dog textures, and a
-  model build the maker's review tiles: restore both
-  (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`), never commit them.
-  Screenshots there need `xvfb-run -a` and `--rendering-method gl_compatibility`; models build
-  with `BPY_PYTHON` set to a python3.11 venv holding `bpy==5.0.1`.
+  run `--import` first. A model's textures ride in its `.glb` and the import copies each out
+  beside it as the PNG the game draws, so a model is committed with the copies the import then
+  writes, and a texture a fresh import rewrites is one a model left behind: commit it, never
+  restore it (`tests/test_model_textures.gd`). A model build rewrites the maker's review tiles
+  (`tools/lowforge/tiles/`) too: restore those. Screenshots there need `xvfb-run -a` and
+  `--rendering-method gl_compatibility`; models build with `BPY_PYTHON` set to a python3.11
+  venv holding `bpy==5.0.1`.
 - Saves: the battle's version is 40, the run's 33 and the quick run's 16 (`sim/save.gd`). A
   save from an older version is set aside, so a change to what a save holds moves its version.
 
