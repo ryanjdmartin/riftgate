@@ -160,13 +160,13 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   are sized to it since 17 November (`docs/briefs/numbers_pass.md`, sections 3 and 8; the
   reads `docs/measurements.md`), read on every squad of the six certain tier ones since 18
   November (a count of them had the Honey Badger in four fours of five): a lone flanker
-  3.4% of a four's hull, a hunter's pack 8.9%, a formation 5.4% over 5.8 rounds, from 2.4%
-  to 9.3% by formation, every fight won. The elites and the bosses are sized since 18
+  3.4% of a four's hull, a hunter's pack 8.9%, a formation 5.5% over 5.8 rounds, from 3.3%
+  to 6.9% by formation since the baseline pass of 19 November, every fight won. The elites and the bosses are sized since 18
   November for a squad without the Barrier, on his word ("sizing it without means that if
   it does prove toxic after all, in my play, then it's relatively easy to remove"): an
-  elite costs it 25.0% and a boss 29.9%. The Barrier basic stays on the starting dice ("one
+  elite costs it 24.4%, from 20.3% to 27.7%, and a boss 29.5%, from 25.1% to 36.1%. The Barrier basic stays on the starting dice ("one
   of the two sides of the defensive coin"), and the squad with it pays about half, an elite
-  14.6% and a boss 20.1%: whether that proves toxic is his play's to say, on BARRIER BASIC.
+  15.9% and a boss 20.4%: whether that proves toxic is his play's to say, on BARRIER BASIC.
   How the leaders strike is his lean of the same day (the bible's section 9): whole blows
   the norm, slightly towards strikes so plate earns in their fights. On his go the Mantis
   Ant's Mandibles and the Gargantuan King's Gore are pairs, the Reaper's Harvest is a sweep
@@ -279,11 +279,11 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    that one). Finish the first battle build and bot fixes too." The baseline is the anchor,
    the second battle with four machines (his Convergence 2; the code's ramp 1). The first
    battle's sizing is his; its build is this line's. In this order:
-   - Every domain's kit and sizing at the baseline, this line free to adjust content (17
-     November): the Waste's landed on 19 November on his go (the brief's section 9; the
-     bible's levers row), a Purge ahead of the blow on the needler line's Needles and the Old
-     Man of the Desert's Maw; then the Meadow's, the Marsh's and the Peak's, each reported
-     broken down against the Meadow's fights; the scorches on every machine above tier one.
+   - Every domain's kit and sizing at the baseline, landed 19 November (the brief's
+     sections 9 and 10; the bible's levers row): the Waste's purge ahead of the blow, the
+     Peak's Bomb as its hard hit on a telegraph, the Marsh's knight and its Serpent's fangs,
+     and every outlier of tier one sized into the band. Left: the scorches on every machine
+     above tier one.
    - The first battle as decided (the bible's squad row), in `sim/campaign.gd`, and the
      campaign bot taking its offer.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
@@ -331,7 +331,7 @@ publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   Published at v0.634 on 18 November from main's file at `1383f11` (the page's Version 513).
-  Main's file is v0.639, unpublished: the step ahead of a blow, the first battle as he
+  Main's file is v0.640, unpublished: the step ahead of a blow, the first battle as he
   decided it, the Needletail's rows and the Waste's kit are in it since. The hangar's
   `text` collection was empty on 19 November, so no writing of his waits. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by

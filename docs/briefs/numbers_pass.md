@@ -96,30 +96,32 @@ sizing held when it was read again on all fifteen (`docs/measurements.md`, that 
 is a share of a four's, 96 points for this pool. The squad on the field is four in every
 row: a formation's fight is three of it by its rating, the fourth on a flank (his split of
 6 November), and all four on a formation cost a fifth of its price or less, the Waste's two
-0.8% and 1.5% for 6.3% and 5.4% (18 November). The trio's battle is the first alone, and
+0.8% and 1.5% for 6.9% and 5.4% (18 November). The trio's battle is the first alone, and
 the Meadow's alone on his word of that day.
 
 | Kind of fight | Rounds | Hull lost | The budget | Before the sizing |
 |---|---|---|---|---|
 | A lone flanker | 5.3 | 3.4% | 3.3% or less | 5.9% |
 | A hunter's pack | 4.8 | 8.9% | 10% | 12.7% |
-| A formation | 5.8 | 5.4% | 5% | 8.3% |
-| An elite, the squad without the Barrier | 6.6 | 25.0% | 25% | 23.6%, the Nob at 65.1% |
-| A boss, the squad without the Barrier | 8.9 | 29.9%, a wreck in a fight of five | what is left | 53.2%, 86% won |
+| A formation | 5.8 | 5.5% | 5% | 8.3% |
+| An elite, the squad without the Barrier | 6.6 | 24.4% | 25% | 23.6%, the Nob at 65.1% |
+| A boss, the squad without the Barrier | 9.1 | 29.5%, a wreck in a fight of five | what is left | 53.2%, 86% won |
 
-By formation: the knights' vigil 2.4%, the magma vent 2.7%, the goblin horde 3.3%, the gel
-wall 4.9%, the sandworm's ambush 5.4%, the barrow mound 6.2%, the needler thicket 6.3%, the
-ember pyre 6.5%, the grave throng 6.6%, the treant's grove 9.3%. The flankers cost 2.5% to
-4.1%; the wolf pack 7.1% and the antlion trio 10.7%. Every one is won in every fight.
+By formation, since the baseline pass of 19 November (section 10): the goblin horde 3.3%,
+the knights' vigil 3.6%, the gel wall 4.9%, the treant's grove 5.2%, the sandworm's ambush
+5.4%, the magma vent 6.1%, the barrow mound 6.2%, the grave throng 6.6%, the ember pyre
+6.7%, the needler thicket 6.9%. The flankers cost 2.5% to 4.1%; the wolf pack 7.1% and the
+antlion trio 10.7%. Every one is won in every fight.
 
 The elites and the bosses are sized for a squad without the Barrier (section 8), the
-Armoured basic in the Halo Projector's slot: an elite from about 15% (the shaman's warband)
-to 27%, every fight won, and a boss from 21% (the Vampire Lord) to 42% (the Obsidian
-Tyrant), a row a direction at thirty fights. The squad as the dice deal it, the Barrier
-basic on them, pays about half: an elite 14.6%, a boss 20.1%, and in the Waste what the other pays, its
-leaders' blows purging first (section 9). The piece stays on the
-starting dice on his word, his play to say whether it proves toxic; the game is sized for
-the day it leaves.
+Armoured basic in the Halo Projector's slot: an elite from 20.3% (the Thunder Ape) to 27.7%
+(Gilgamesh), every fight won, and a boss from 25.1% (the Mantis Ant, the Matador) to 36.1%
+(the Marsh Serpent), a row a direction at thirty fights. The squad as the dice deal it,
+the Barrier basic on them, pays an elite 15.9% and a boss 20.4%: a third to a half where a
+leader's weight is one great blow, and what the other squad pays or more where it is
+strikes, a purge ahead of the blow or a blow at every machine (`docs/measurements.md`, 19
+November, has every row). The piece stays on the starting dice on his word, his play to say
+whether it proves toxic; the game is sized for the day it leaves.
 
 ## 4. What a point is worth
 
@@ -324,7 +326,8 @@ this section holds what landed, its reads and what is still open.
 
 - A Purge ahead of the blow, the knife's own order (section 8), on the needler line's
   Needles, every rung ("Purge 1, then exactly 4"; Thousand Needles is the Great Needler's
-  own move and unmoved), and on the Old Man of the Desert's Maw. His question set it, 18
+  own move and unmoved), on the Old Man of the Desert's Maw, and since the baseline pass
+  on the Rust Monster's Rusting Bite (section 10). His question set it, 18
   November, on this pass's first lean of a new rule for the Needler: "Doesn't purge make
   the most thematic sense for the waste based on your reasoning?" A buff is a thing bought
   with a die, and the Purge takes it with a rule the game already ran.
@@ -406,3 +409,44 @@ rating, and shown against all four beside it.
 - The Needler holds still in a round a machine has aimed a die at it, this pass's first
   lean. No rule's kill: set aside for the purge, a foe carrying one twist. Its read moved
   no number.
+
+## 10. Every domain at the baseline, 19 November
+
+On his word: "Keep going on all domains, adjusting kits and sizing for convergence 2 as our
+baseline." Landed in `content/foes.json` and two grids of `content/factions.json`; every
+row before and after is `docs/measurements.md` under that date. What each domain asked
+without Breach, and what moved:
+
+**The Meadow.** Breach took nothing of its ranks: its question is numbers, and its ranks
+teach a wall, a howl, a split, a mend and a scream. The silence's place is the command its
+pieces already carry. Sizing: the Treant has 14 hit points for 16 and the grove two
+Mandragoras for three (9.3% to 5.2%); the shaman strikes for 12, his Chain Lightning 6 at
+every machine (15.0% to 24.6%); the King Gel for 11 (37.0% to 30.7%). The Nob's rage at 2 a
+spend was read and taken back. Open, his: whether nine screams in tier one's three
+formations are too many, the Mandragora being the Meadow's whole back rank.
+
+**The Waste** (section 9), and since: a Purge 1 ahead of the Rust Monster's Rusting Bite,
+the leader whose weight is one great bite and whose fantasy is eating what a machine put
+up, so the squad with the Barrier basic pays 28.6% where it paid 7.4%. Sizing: Gilgamesh
+strikes for 16 (33.5% to 27.7%), the Emperor Scorpion for 10 (37.8% to 27.2%), the Ruby
+Colossus for 10 (20.8% to 30.1%), the Fallen Weapon for 11 (22.2% to 29.0%).
+
+**The Marsh.** Breach was the Zombie Knight's cleaver, and its 4 hit points were the
+price: at 5 a hurt knight lives to ready its rising, the Marsh's lesson, and the vigil
+costs 3.6% for 2.4%. The Marsh Serpent's Bite is two fangs of 7, a pair by its fantasy on
+his lean that a leader strikes slightly towards strikes, its Coil left whole (the squad
+with the Barrier basic 12.8% for 8.3%). Sizing: a Wild Hunt rider strikes for 8 (37.3% to
+23.9%); the Vampire Lord has 56 hit points (20.6% to 26.4%), its attack left alone since
+at 11 and 12 its drain out-heals a squad.
+
+**The Peak.** Its signature is the hard hit on a telegraph, and at tier one no rank
+carried one once the Magma Elemental's breach and its countdown had gone. The Bomb's burst
+is that hit now, half again its number, 6, shown a round ahead by a hurt bomb: kill it
+outright, leave it alone or shield what it picked. A shield for the telegraph is the
+Peak's own answer, so a Barrier's work there is by design. Sizing: the magma vent fields
+two Drakes behind for one (2.7% to 6.1%); the Obsidian Tyrant strikes for 10 and its
+Saurian Queen for 10 (41.5% to 31.4%).
+
+The notes that still said breach are rewritten in every domain, and the drafts of the two
+kit changes (the Serpent's fangs, the Rust Monster's bite and codex) are his to write.
+

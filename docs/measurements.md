@@ -11680,3 +11680,74 @@ again, every squad of the pool, forty fights a formation's cell and thirty an el
 A point at the most: the bot gives a little hull to keep its stacks, and the fights stand
 where they were sized. 1332 tests, green.
 
+## 19 November: every domain's kit and sizing at the baseline
+
+Ryan: "Keep going on all domains, adjusting kits and sizing for convergence 2 as our baseline
+(since convergence 1 is always going to be 3 machines on the meadow - I'll handle that one)."
+The baseline is the anchor: the second battle, four machines, a fight read at its rating.
+Every squad of the six certain tier ones, the greedy bot with its price for a purge; forty
+fights a formation's row, thirty a leader's, a patrol's a hundred and fifty or thirty by its
+squads; hull a share of a four's. A leader is read without the Barrier, as it is sized, and
+with the Barrier basic beside it.
+
+**What moved, and what it read.**
+
+| Fight | What moved | Without the Barrier, before | After | With the Barrier basic, before | After |
+|---|---|---|---|---|---|
+| The treant's grove | The Treant 14 hit points for 16, two Mandragoras behind for three | | | 9.3% | 5.2% |
+| The shaman's warband | His attack 12 for 10: Chain Lightning 6 at every machine for 5 | 15.0% | 24.6% | 15.6% | 19.0% |
+| The King Gel | Its attack 11 for 12 | 37.0% | 30.7% | 18.0% | 15.2% |
+| Gilgamesh | His attack 16 for 18 | 33.5% | 27.7% | 11.1% | 8.9% |
+| The Rust Monster | A Purge 1 ahead of its Rusting Bite | 22.4% | 25.4% | 7.4% | 28.6% |
+| The Ruby Colossus | Its attack 10 for 9 | 20.8% | 30.1% | 18.0% | 21.9% |
+| The Fallen Weapon | Its attack 11 for 10 | 22.2% | 29.0% | 13.9% | 14.6% |
+| The Emperor Scorpion | Its attack 10 for 11 | 37.8% | 27.2% | 23.8% | 22.2% |
+| The knights' vigil | The Zombie Knight 5 hit points for 4 | | | 2.4% | 3.6% |
+| The Wild Hunt | A rider's attack 8 for 10 | 37.3% | 23.9% | 24.5% | 18.0% |
+| The Vampire Lord | 56 hit points for 50 | 20.6% | 26.4% | 7.1% | 10.0% |
+| The Marsh Serpent | Its Bite two fangs of 7 for one of 14 | 35.6% | 36.1% | 8.3% | 12.8% |
+| The ember pyre | The Bomb's burst 6 for 4 | | | 6.5% | 6.7% |
+| The magma vent | The burst, and two Drakes behind for one | | | 2.7% | 6.1% |
+| The Obsidian Tyrant | Its attack 10 for 11, the Saurian Queen's 10 for 12 | 41.5% | 31.4% | 23.4% | 17.4% |
+
+**Tried and taken back.** The Nob's rage at 2 a spend with its attack at 10: 21.0% without
+the Barrier and 10.7% with, for 27.4% and 9.6%, so the rage did not close the Barrier's gap
+and the Nob stands as it was. The Vampire Lord's attack at 12 and at 11: 40.2% and 31.8%,
+won nine fights in ten, its drain out-healing a squad, so the weight went on its hit points.
+The Zombie Knight at 6 hit points: the vigil 7.0%. The shaman at 34 hit points with the bolt
+at 6: 32.4%.
+
+**The baseline as it stands.**
+
+| Kind of fight | Rounds | Hull lost | The rows' span | Before this pass |
+|---|---|---|---|---|
+| A lone flanker | 5.3 | 3.4% | 2.5% to 4.1% | the same |
+| A hunter's pack | 4.8 | 8.9% | 7.1% and 10.7% | the same |
+| A formation | 5.8 | 5.5% | 3.3% to 6.9% | 5.4%, 2.4% to 9.3% |
+| An elite, without the Barrier | 6.6 | 24.4% | 20.3% to 27.7% | 25.0%, 15.0% to 37.3% |
+| An elite, with the Barrier basic | 6.6 | 15.9% | 7.4% to 28.6% | 14.5% |
+| A boss, without the Barrier | 9.1 | 29.5% | 25.1% to 36.1% | 29.9%, 20.6% to 41.5% |
+| A boss, with the Barrier basic | 9.0 | 20.4% | 10.0% to 37.1% | 20.2% |
+
+By formation: the goblin horde 3.3%, the knights' vigil 3.6%, the gel wall 4.9%, the
+treant's grove 5.2%, the sandworm's ambush 5.4%, the magma vent 6.1%, the barrow mound 6.2%,
+the grave throng 6.6%, the ember pyre 6.7%, the needler thicket 6.9%. By elite, without the
+Barrier and with: the Thunder Ape 20.3% and 18.0%, the Fell Rider 20.6% and 7.4%, the
+Pilgrim's wake 22.7% and 15.9%, the old man's rising 23.9% and 23.6%, the Wild Hunt 23.9%
+and 18.0%, the Reaper 24.3% and 13.5%, the shaman's warband 24.6% and 19.0%, the Rust Monster
+25.4% and 28.6%, the Nob 27.4% and 9.6%, the Cinder Tortoise 27.5% and 12.8%, Gilgamesh
+27.7% and 8.9%. By boss: the Mantis Ant 25.1% and 13.7%, the Matador 25.1% and 20.6%, the
+Vampire Lord 26.4% and 10.0%, the Emperor Scorpion 27.2% and 22.2%, Floraison 28.5% and
+37.1%, the Fallen Weapon 29.0% and 14.6%, the Phantom Train 29.8% and 15.5%, the Ruby
+Colossus 30.1% and 21.9%, the Fiend of Fire 30.3% and 35.2%, the King Gel 30.7% and 15.2%,
+the Obsidian Tyrant 31.4% and 17.4%, the Gargantuan King 34.9% and 28.3%, the Marsh Serpent
+36.1% and 12.8%. Every fight is won nineteen times in twenty or more.
+
+What it says. The spans are half what they were: no formation costs a squad twice another,
+no elite stands a fifth under its quarter or half over it. The Barrier's gap is its own
+question still: where a leader's weight is one great blow the squad with the piece pays a
+third to a half (the Nob, Gilgamesh, the Fell Rider, the Vampire Lord, the Marsh Serpent),
+and where it is strikes, a purge ahead of the blow, or a blow at every machine, it pays what
+the other pays or more (Floraison, the Fiend of Fire, the Rust Monster, the old man's
+rising). 1332 tests, green.
+
