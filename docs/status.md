@@ -144,7 +144,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   his rewrite of its Relay (a kind spent goes on cooldown for the round; its die flips to the
   other kind, rolls land anywhere; a Rapid or Instant spend leaves its kind lit; it reboots
   after one action whatever its die shows, the one machine that may after a Rapid spend; its branches, one on
-  the spotter and one turning the Designator into a weapon, wait on Kestrel's tier one); the Skua, the Kite and the Cottonmouth stand as built (19 November, his "Leave it"); its first round
+  the spotter and one turning the Designator into a weapon, wait on Kestrel's tier one); the Skua, the Kite, the Cottonmouth and the Polar Bear stand as built (19 November, his
+  "Leave it"); its first round
   on the Puffin and the Swallowtail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis, the Polar Bear
   (a reboot opens its seal), the Whip Scorpion (its reboot's vent blasts every foe), the

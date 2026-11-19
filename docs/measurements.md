@@ -11959,3 +11959,17 @@ fights. The Reaper read 15.8% without the Barrier at thirty and 30.5% at ninety 
 it), so its first row was grain; the Thunder Ape reads 17.4% and 16.2% at ninety, at the low
 edge of the elites. Every fight is won nineteen times in twenty or more. Read: the squad is a
 point or two stronger against the leaders and no fight leaves its band, so nothing is resized.
+
+## 19 November: the Polar Bear beside the Honey Badger, on the sized foes
+
+`tools/reboot_probe.gd` as the entries above, 168 formation and elite fights and 78 boss fights,
+each machine read first in the squad, on main at `0c6dfc7` with this branch's records.
+
+| The machine | Formations: rounds, sealed, own hull, squad | Bosses: rounds, sealed, own hull, squad |
+|---|---|---|
+| The Polar Bear (tier two) | 5.9, 4% of its turns, 7%, 9% | 10.0, 5%, 17%, 21% |
+| The Honey Badger (tier one) | 5.0, none, 5%, 7% | 7.6, none, 9%, 15% |
+
+What it says. The bot seals it on a twentieth of its turns: it seals only by spending
+equipment on itself, and the bot spends its Shoring Jack on its allies. So this is a read of an
+open bear, three basic guns on 40 hull, and says little of its shell. Ryan left it as built.
