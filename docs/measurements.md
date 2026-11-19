@@ -11730,3 +11730,23 @@ What it says. The mend moves nothing: a boss fights alone, so there is almost no
 and in the formations the Kite is whole already. Its losses against a boss are its design, a
 glass cannon in a long fight. Ryan left it as built ("Leave it. Move on."), and the probe's
 what-ifs for the Kite and the Skua went with their leans.
+
+## 19 November: the Cottonmouth's pace under the reboot
+
+`tools/reboot_probe.gd` as the entries above, 168 formation and elite fights and 78 boss
+fights, the machine read first in the squad: the Cottonmouth and the Storm Petrel on
+`ccr-178e0404-ptuh2m` over main at `0c6dfc7`; then the Cottonmouth with its drum's shot at heat
+4 in place of 6 (content edited for the read and put back), the lever the proposal named.
+
+| The machine | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, wrecked, squad |
+|---|---|---|
+| The Cottonmouth as built | 5.4, 21%, 8%, 7% | 9.3, 20%, 22%, 1 of 78, 21% |
+| Its drum at heat 4 | 5.1, 15%, 8%, 7% | 9.1, 16%, 22%, 3 of 78, 20% |
+| The Storm Petrel | 5.6, 22%, 3%, 6% | 9.3, 24%, 11%, 1 of 78, 15% |
+
+What it says. It reboots on a fifth of its turns, the roster's ordinary pace (the Storm Petrel
+22% to 24%, the Kite 21% to 25%), so the reboot did not break its pace; a drum at heat 4 brings
+it to the Skua's 15% and its fights a third of a round shorter. Against a boss alone it is the
+weakest squad read, the squad losing 21% over 9.3 rounds: its shot's Spread and Penetrate find
+no neighbour there, so it is a flat 4 at heat 6, an area machine's design. In the formations, its
+home, it reads level with the rest.
