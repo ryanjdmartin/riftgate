@@ -11680,3 +11680,35 @@ again, every squad of the pool, forty fights a formation's cell and thirty an el
 A point at the most: the bot gives a little hull to keep its stacks, and the fights stand
 where they were sized. 1332 tests, green.
 
+
+## 19 November: the Skua's ramp under the reboot, and what it is worth
+
+`tools/reboot_probe.gd`, as the entries above: the Skua first in a squad beside the Honey
+Badger, the Prairie Dog and the Cassowary, the greedy bot; tier one's formations and elites, 21
+compositions at 8 seeds (168 fights), and its bosses alone, 13 at 6 seeds (78), on main at
+`0c6dfc7`. The probe counts Ricochet since this entry: its peak stacks a fight and its halvings
+(hull damage halving the stacks), and lays the what-ifs over its fight loop: `ricochet_spared`
+(no halving while it reboots), `ricochet_kept` (none at all), `no_ricochet` (no stack held into
+a round, so what the ramp is worth). The two rider guns are content edited for the read and put
+back: each in the Twin Autoguns' slot of its stock.
+
+| The Skua | Formations: rounds, own hull, squad | Bosses: rounds, own hull, squad | Peak stacks: formations, bosses | Halvings a fight (while rebooting): formations, bosses |
+|---|---|---|---|---|
+| As built | 5.0, 7%, 7% | 7.3, 20%, 18% | 3.4, 5.0 | 0.29 (0.03), 0.67 (0.09) |
+| Spared while it reboots | 5.0, 7%, 7% | 7.3, 19%, 18% | 3.4, 5.1 | as built |
+| Never halved | 5.0, 7%, 7% | 7.2, 20%, 18% | 3.6, 5.5 | as built |
+| No ramp at all | 5.2, 8%, 8% | 8.0, 20%, 19% | 1.4, 1.8 | |
+| The Incendiary Shells (Ablate 2) in stock | 4.7, 7%, 7% | 6.4, 16%, 15% | 3.3, 4.5 | 0.43, 0.85 |
+| The Airburst Shell (Brittle 1, Spread 1) in stock | 4.8, 6%, 7% | 6.7, 15%, 14% | 3.2, 4.5 | 0.28, 0.67 |
+
+What it says. The reboot does not break its ramp, against the proposal's read of 17 November:
+the bot halves its stacks a third of a time in a formation fight and two thirds against a boss,
+almost never while it reboots (it reboots when no blow is coming), and sparing the stacks, or
+never halving them, moves nothing. What caps the ramp is how little it is worth as stocked: with
+every stack stripped each round it loses 0.2 rounds of a formation fight and 0.7 of a boss
+fight. Its fights end near its peak (3.4 stacks in five rounds, 5 in seven), its stock guns lay
+no rider, so a bounce is a bare point, and plate stops a bounce: 5 of tier one's 13 bosses carry
+a point of armour. One rider gun in its stock does more than the whole ramp as built, a boss
+fight 0.6 to 0.9 rounds shorter and the squad 3 to 4 points of hull better off, every bounce
+laying the rider again (Ryan's "applying all effects"); Ablating passes plate besides. A
+direction at 78 fights a build; his call on the kit.
