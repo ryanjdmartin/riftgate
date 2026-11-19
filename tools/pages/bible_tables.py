@@ -41,7 +41,7 @@ PASSIVE_EFFECTS = {"seal_form": ("sealed", "machine"),
                    "mine_on_spend": ("mine", "foe")}   # stack_status names its own, on the machine; the Reverberant Payload's Mine (9 November)
 FOE_KEYWORDS = {"scorch": "scorched", "ablate": "ablating", "jam": "jammed", "corrupt": "corrupted", "brittle": "brittled", "expose": "exposure"}
 FOE_EFFECTS_ON_MACHINES = {"ablate": "ablating", "scorch_all": "scorched", "corrupt_all": "corrupted",
-                           "jam": "jammed", "swallow": "swallowed", "expose": "exposure"}
+                           "jam": "jammed", "brittle": "brittled", "brittle_all": "brittled", "swallow": "swallowed", "expose": "exposure"}
 FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
                        "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen",
                        "prime": "primed", "barrier": "barrier", "ward_all": "ward", "regenerate": "regenerating", "golden": "golden",
@@ -247,8 +247,20 @@ def tally(words):
         if foe.get("parts"):
             t.grant("guarded", "foe", "%s's parts" % whom, "foe", False, foe["id"], whom)
             t.count("parts", "foe", False, name)
-        if isinstance((foe.get("on_death") or {}).get("blow"), dict) or isinstance((foe.get("on_death") or {}).get("act"), dict):
+        fall = (foe.get("on_death") or {}).get("blow") or (foe.get("on_death") or {}).get("act")
+        if isinstance(fall, dict):
             t.count("last_act", "foe", False, name)   # a fall: a blow, or one special in its place (16 November)
+            # What the fall lays, its blow's riders and each effect of its steps, granted where it
+            # lands (19 November: the roots' Brittle, the Gorgon's gaze, the Salamander's embers).
+            move = "%s's %s (its fall)" % (whom, fall.get("name", "fall"))
+            for k in fall.get("keywords") or []:
+                if k in FOE_KEYWORDS:
+                    t.grant(FOE_KEYWORDS[k], "machine", move, "foe", False, foe["id"], whom)
+            for e in [fall.get("effect")] + [st.get("effect") for st in (fall.get("also") or [])]:
+                if e in FOE_EFFECTS_ON_MACHINES:
+                    t.grant(FOE_EFFECTS_ON_MACHINES[e], "machine", move, "foe", False, foe["id"], whom)
+                if e in FOE_EFFECTS_ON_FOES:
+                    t.grant(FOE_EFFECTS_ON_FOES[e], "foe", move, "foe", False, foe["id"], whom)
     for status, lays in VIA_STATUS.items():
         for target, on in lays:
             t.grant(target, on, "via %s" % words.get(status, {}).get("name", status), "via")

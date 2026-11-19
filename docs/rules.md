@@ -615,7 +615,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   carries it leaves its number on the machine it hits.
 - **A pin** (the Dingo's Hollow-point Harpoon): its target is Pinned, a status of its own:
   the next time its Brittle would halve, what the spend lays and what stood there, it does
-  not, and the pin is spent; it halves again the time after. A pin with nothing to hold waits.
+  not, and the pin is spent; it halves again the time after. A pin with nothing to hold goes as
+  its foe's turn ends.
   A Ward turns it away. Ablating has a pin of its own, Seared: the next time the foe's Ablating
   would lose a stack it takes its points and loses none (no piece lays it yet). Each wears the
   lock on the status it holds. Empowered has no
@@ -858,9 +859,7 @@ On a machine:
   a drain that will not land (its foe destroyed or Suppressed, its move changed) leaves the
   note. As each lands in the enemy's turn the button flashes, and the rings stop with the
   last. The round a drain shortened wears what it took ("DRAINED -1") for as long as it lasts.
-  A reroll taken as a foe falls (A last act, below) lands in the player's own turn: the
-  button flashes as the fall is named, and the note counts it at once, with no rings, since
-  nothing can stop it now.
+  A drain is a move's alone: no fall takes a reroll.
 - **Charged** (buff): while it lasts the machine's weapons fire with Shock, shown on the die
   and landing as the keyword does, after the blows; a weapon fired spends a stack (a Rapid's
   or an Instant's second fire is a second fire, a salvo one, a reboot's blast none; equipment carries it not and spends
@@ -1349,7 +1348,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   revive an ally (Undying on one of its own, never itself, not readied already: a
   party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,
-  rally (Empowered at its value on every foe on the field, itself too, at once), golden (the rage: Golden for the rounds it says, 1 to 5 and three unsaid, its value the add; only while calm), drain rerolls, ablate (stacks of Ablating on one machine), scorch all (stacks of
+  rally (Empowered at its value on every foe on the field, itself too, at once), golden (the rage: Golden for the rounds it says, 1 to 5 and three unsaid, its value the add; only while calm), drain rerolls, ablate (stacks of Ablating on one machine), Brittle (stacks of Brittle on one
+  machine), Brittle on all (the same on every machine), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted stacks on the entry every machine shows),
   jam, purge (Purge N: N stacks off every buff, for good, whatever
   granted it; the Djinn's Unmake at 1; never a last act's), cleanse
@@ -1383,18 +1383,18 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   takes nothing, and a Ward on it turns the curse and the blow's riders away. A blow at
   every machine lands on each. What a fall lays on its own side reaches the foes still
   standing, never itself.
-  A fall may heal, armour, cleanse, ward, prime, ready or rally its own, take rerolls from
-  the next round, ablate or jam its pick, scorch or corrupt every machine, and take back the
+  A fall may heal, armour, cleanse, ward, prime, ready or rally its own, ablate, jam or lay
+  Brittle on its pick, lay Brittle on, scorch or corrupt every machine, and take back the
   readiness to rise its kind gave: every other foe still standing loses the Undying it
   readied, what a foe readied for itself staying its own, and a foe felled by the same blow
   fell readied and gets up. It does
   nothing its own body would carry, summons nothing (a split is the fall's own summon),
-  swallows nothing, never purges, and lays no Expose, which is announced. A reroll a fall
-  takes in the player's own turn is owed at once, and the REROLL button counts it (A drained
-  reroll, above). The foe wears its fall as an Ability from the fight's start, its blow's
+  swallows nothing, never purges, takes no reroll, and lays no Expose, which is announced.
+  Brittle a fall lays in the player's own turn stands through the enemy's turn after it, and
+  halves as the next round opens. The foe wears its fall as an Ability from the fight's start, its blow's
   number on the chip where it strikes. In content the Dread Knight's Death Throes and the
-  Gargantuan King's Meteor are blows; the Mandragora, the Mandrake and the Alraune scream a
-  reroll off the next round, the Gorgon's dying gaze Jams the entry its killer shows, the
+  Gargantuan King's Meteor are blows; the Mandragora screams Brittle 2 onto its killer, the
+  Mandrake and the Alraune Brittle 2 onto every machine, the Gorgon's dying gaze Jams the entry its killer shows, the
   Salamander's embers Scorch every machine, and the Lich's fall takes back what it readied.
 - **A foe in parts**: a core and the parts of its pack that stand with it. A guard keeps the
   core from taking any damage while all its parts stand, or while any does (Guarded, an Ability), its

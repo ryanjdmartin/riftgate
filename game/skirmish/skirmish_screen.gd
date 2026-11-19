@@ -1654,7 +1654,7 @@ static func intent_riders(foe: Foe, inert: Array = [], idle: Array = []) -> Arra
 ## A step with no term of its own shows none: the move's text says it, and a step named in
 ## `idle` shows none either (it lays nothing this round: a fade on a foe Phased already).
 const STEP_TERMS := {"ablate": "ablate", "jam": "jam", "expose": "expose", "dispel": "dispel", "swallow": "swallow",
-	"scorch_all": "scorch", "corrupt_all": "corrupt", "appropriate": "appropriated", "phase": "phased"}
+	"brittle": "brittle", "brittle_all": "brittle", "scorch_all": "scorch", "corrupt_all": "corrupt", "appropriate": "appropriated", "phase": "phased"}
 static func _step_marks(a: Dictionary, shown: Array = [], idle: Array = [], list: String = "also") -> Array:
 	var out: Array = []
 	var seen: Array = shown.map(func(row) -> String: return str(row[0]))
@@ -1664,7 +1664,7 @@ static func _step_marks(a: Dictionary, shown: Array = [], idle: Array = [], list
 			continue
 		seen.append(Terms.glyph(term))
 		var n := int(st.get("value", 0))
-		out.append([Terms.glyph(term), str(n) if n > 0 and ["ablate", "scorch_all", "corrupt_all", "dispel"].has(str(st.get("effect", ""))) else "", Terms.colour(term)])
+		out.append([Terms.glyph(term), str(n) if n > 0 and ["ablate", "brittle", "brittle_all", "scorch_all", "corrupt_all", "dispel"].has(str(st.get("effect", ""))) else "", Terms.colour(term)])
 	return out
 
 
@@ -3458,8 +3458,6 @@ func _land_last_act(act: Dictionary) -> void:
 		if int(mi) >= 0 and int(mi) < _mech_views.size():
 			_shown_gauges.erase(int(mi))
 			_animate_hit(_mech_views[int(mi)], 0.1)
-	if int(act.get("drained", 0)) > 0:
-		_reroll_btn.strike()   # a fall that takes a reroll strikes the button as a drain landing does
 	_refresh(false)
 
 
@@ -3745,7 +3743,7 @@ func _before_enemy_turn() -> Dictionary:
 	var gauges: Array = []
 	for ms in sk.mechs:
 		gauges.append([ms.unit.shield, ms.unit.hull])
-	return {"views": views, "gauges": gauges, "debt": sk.reroll_debt}   # and the rerolls a fall took in the player's own turn
+	return {"views": views, "gauges": gauges}
 
 
 ## Seconds between the enemy's blows: the ENEMY PACE setting divides the beat, so its top
@@ -3761,7 +3759,7 @@ func _enemy_beat() -> float:
 func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	var steps := _replay_steps(before)
 	var hits: Array = []
-	_drain_landed = int(before.get("debt", 0))   # what a fall took before the turn ended has landed already
+	_drain_landed = 0
 	_drain_pending = 0
 	for st in steps:
 		if not (st["blow"] as Array).is_empty():
@@ -3916,12 +3914,11 @@ static func drain_note(sk: Skirmish, landed: int = 0, pending: int = 0) -> Array
 		return ["NEXT -1", true]
 	if landed + pending > 0:
 		return ["NEXT -%d" % mini(landed + pending, Skirmish.REROLLS_PER_ROUND), pending > 0]
-	# What a fall has taken already this turn (a drain as a foe falls lands in the player's own
-	# turn), and what the foes still standing announce.
-	var owed := sk.reroll_debt if sk.state == Skirmish.State.ASSIGN else 0
+	# What the foes standing announce: a drain lands in the enemy's turn alone, since no fall
+	# takes a reroll (19 November).
 	var coming := sk.drain_announced(null) if sk.state == Skirmish.State.ASSIGN else 0
-	if owed + coming > 0:
-		return ["NEXT -%d" % mini(owed + coming, Skirmish.REROLLS_PER_ROUND), coming > 0]
+	if coming > 0:
+		return ["NEXT -%d" % mini(coming, Skirmish.REROLLS_PER_ROUND), true]
 	if sk.drained > 0:
 		return ["DRAINED -%d" % sk.drained, false]
 	return ["", false]

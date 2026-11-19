@@ -574,7 +574,7 @@
    "id": "pinned",
    "category": "status",
    "name": "Pinned",
-   "codex": "Foe status, from the Hollow-point Harpoon. The next time its Brittle would halve, it does not, and the pin is spent. Refreshed, never added.",
+   "codex": "Foe status, from the Hollow-point Harpoon. The next time its Brittle would halve, it does not, and the pin is spent; with no Brittle to hold, it goes as the foe's turn ends. Refreshed, never added.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 11 November: \"The Flak pin should be its own status that gets applied for one turn. I assume we're going to want a similar one for burning as well.\" Pinned Flak until 15 November, and what it holds Brittle since; the name is his (\"Just \\\"Pinned.\\\"\").",
@@ -590,7 +590,7 @@
    "id": "seared",
    "category": "status",
    "name": "Seared",
-   "codex": "Foe status. The next time its Ablating would lose a stack, it takes its points and loses none, and the pin is spent. Refreshed, never added.",
+   "codex": "Foe status. The next time its Ablating would lose a stack, it takes its points and loses none, and the pin is spent; with no Ablating to hold, it goes as the foe's turn ends all the same. Refreshed, never added.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 11 November: coded in beside Brittle's pin, \"since the Mastema will want it as a fitted piece, if nothing else\". No piece lays it yet. The name is his, 15 November: \"Rename 'Seared.'\"",
@@ -1824,7 +1824,7 @@
    "id": "last_act",
    "category": "foe",
    "name": "Last Act",
-   "codex": "What a foe does the moment it falls, shown on it by the skull, with its number where it strikes. A blow or a curse aimed at one machine lands on the machine that made the kill, at once, even when the foe was the last one standing; a kill no machine made, a tick's, lands it on nobody. A blow at every machine lands on each, and what a fall does to its own side or to the team's rerolls happens whoever made the kill.",
+   "codex": "What a foe does the moment it falls, shown on it by the skull, with its number where it strikes. A blow or a curse aimed at one machine lands on the machine that made the kill, at once, even when the foe was the last one standing; a kill no machine made, a tick's, lands it on nobody. A blow or a curse at every machine lands on each, and what a fall does to its own side happens whoever made the kill.",
    "status": "implemented",
    "design": {
     "holes": "Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. The Gargantuan King's Meteor (30 October). A short list of steps since 16 November, on Ryan's mark of 15 November ('foes who, say buff others on death, or debuff on death'): the blow may carry also, and on_death.act is one special in a blow's place with its own also, each an effect a fall may do (Foe.FALL_EFFECTS). Carriers of more than a blow since 17 November, on his yes to the bench: the Mandragora line's scream, the Gorgon's dying gaze, the Salamander's embers and the Lich's, which takes back the readiness it gave (unready_all, a fall's by sense). The codex is a session's draft for them; it and the term's word are his ('maybe rename to something more interesting'). A single blow lands on the machine that made the kill since 17 November, as a curse does (Ryan, of the Dread Knight's Death Throes: 'yes, hit its killer, if it has one'); it followed the foe's own pick until then."

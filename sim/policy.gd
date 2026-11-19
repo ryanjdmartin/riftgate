@@ -1714,7 +1714,7 @@ func cleanse_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	var brittle := Effects.stacks_of(who.unit, "brittled_mech")
 	if brittle > 0:
 		# A point more a stack on every blow it takes this round, and the half that would stand the next.
-		score += float(brittle + Effects.stacks_next_round(Effects.STATUS["brittled_mech"], brittle)) * HULL_WEIGHT
+		score += _brittle_cost(brittle)
 	var n := who.die.faces.size()
 	if n > 0:
 		for i in range(n):
@@ -1929,6 +1929,12 @@ static func fall_steps_cost(sk: Skirmish, f: Foe, killer: Skirmish.MechState = n
 	return cost
 
 
+## What a Brittle laid on a machine costs it: a point more a stack on every blow it takes this
+## round, and the half that stands the next.
+static func _brittle_cost(stacks: int) -> float:
+	return float(stacks + Effects.stacks_next_round(Effects.STATUS["brittled_mech"], stacks)) * HULL_WEIGHT
+
+
 ## What one effect of a foe's costs the team, in the score's points: the one table for a
 ## fall's steps, a move's own special and the steps a move does also (a move and a fall are
 ## short lists of steps since 16 November; a move's priced 17 November, as the bench's rows
@@ -1952,6 +1958,15 @@ static func effect_cost(sk: Skirmish, by: Foe, st: Dictionary, pick: Skirmish.Me
 		"jam":
 			if lands:
 				cost += _raw_attack_mean(pick) / float(maxi(1, pick.die.faces.size()))
+		"brittle":
+			# A point more a stack on every blow it takes, this round and the half that stands
+			# the next, as the bot prices a Brittle a Cleanse would lift.
+			if lands:
+				cost += _brittle_cost(value)
+		"brittle_all":
+			for m in sk.live_mechs():
+				if not Effects.has(m.unit, "ward") and not Skirmish.is_out(m):
+					cost += _brittle_cost(value)
 		"dispel":
 			# A purge, a move of its own or a step of one (19 November, as the Waste's needles
 			# came to carry it): what it takes off its machine.

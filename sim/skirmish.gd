@@ -3584,13 +3584,13 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				if into_mine:
 					h.mine_stack("brittled", brittle_laid)
 			# A pin (the Hollow-point Harpoon's; Ryan, 16 November: "the next time it would decay, it
-			# doesn't"; a status for the round until then): laid after what the spend lays, standing
-			# until the decay it stops, which spends it (Effects.spend_hold).
+			# doesn't"): laid after what the spend lays, spent by the decay it stops (Effects.spend_hold)
+			# or gone as its foe's turn ends where it held nothing (19 November).
 			if not f.holds.is_empty() and not arc:
 				var held_id := f.holds
 				riders.append(func() -> void:
 					var holder: String = Effects.HOLDERS[held_id]
-					if foe.alive() and Effects.stack(foe, Effects.STATUS[holder], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE) != null:
+					if foe.alive() and Effects.stack(foe, Effects.STATUS[holder], Effects.SKIRMISH, "mech", 1, Effects.status_decay(Effects.STATUS[holder])) != null:
 						log.append("%s is %s: the next time its %s would decay, it does not" % [foe.display_name, str(Effects.STATUS[holder]["name"]), str(Effects.STATUS[held_id]["name"])])
 						_foe_gained_status(foe, holder))
 			# Purge (the player's, 28 October): every buff the foe carries but Numbed and Guarded,
@@ -4126,7 +4126,7 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 		a["name"] = f.action["name"]
 	var effect := str(a.get("effect", ""))
 	var value := int(a.get("value", 0))
-	if effect in ["ablate", "jam", "dispel", "swallow", "expose", "appropriate"] and (t == null or (not first and (not t.alive() or is_out(t)))):
+	if effect in ["ablate", "jam", "brittle", "dispel", "swallow", "expose", "appropriate"] and (t == null or (not first and (not t.alive() or is_out(t)))):
 		log.append("%s: %s, and no machine stands to take it" % [f.display_name, str(a.get("name", effect))])
 		return
 	if first:
@@ -4222,12 +4222,11 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 					rallied += 1
 			log.append("%s: %s, %d hit %d harder, halving each turn" % [f.display_name, str(a.get("name", "rallies")), rallied, value])
 		"drain_rerolls":
+			# A move's, in the enemy's turn (a fall's drain left with the roots' scream, 19
+			# November): the screen strikes the REROLL button as each lands.
 			reroll_debt += maxi(0, value)
-			if _enemy_acting:
-				# The screen strikes the REROLL button as each lands in the enemy's turn; a
-				# fall's, in the player's own turn, is told with its last act.
-				turn_drains.append({"foe": f, "value": maxi(0, value), "seq": _seq})
-				_seq += 1
+			turn_drains.append({"foe": f, "value": maxi(0, value), "seq": _seq})
+			_seq += 1
 			log.append("%s: %s, the team loses %d reroll%s next round" % [f.display_name, str(a.get("name", "roars")), value, "" if value == 1 else "s"])
 		"golden":
 			# The Thunder Ape's Golden Rage (4 November): a mode for the rounds the move says, its
@@ -4245,6 +4244,24 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			else:
 				_fire_on(t, "ablating_mech", maxi(1, value), f)
 				log.append("%s: %s, Ablating ×%d on %s" % [f.display_name, str(a.get("name", "stokes")), maxi(1, value), t.unit.display_name])
+		"brittle":
+			# Brittle on its target, a curse (the Mandragora's scream on its killer, 19 November):
+			# a point more on every blow a foe lands on it a stack, halving as its turn starts.
+			if Effects.has(t.unit, "ward"):
+				log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "curses")), t.unit.display_name])
+			else:
+				_fire_on(t, "brittled_mech", maxi(1, value), f)
+				log.append("%s: %s, Brittle ×%d on %s" % [f.display_name, str(a.get("name", "curses")), maxi(1, value), t.unit.display_name])
+		"brittle_all":
+			# Brittle on every machine in the fight (the higher roots' scream, 19 November).
+			var cracked: Array[String] = []
+			for ms in targetable_mechs():
+				if Effects.has(ms.unit, "ward"):
+					log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "curses")), ms.unit.display_name])
+					continue
+				_fire_on(ms, "brittled_mech", maxi(1, value), f)
+				cracked.append(ms.unit.display_name)
+			log.append("%s: %s, %s Brittle ×%d" % [f.display_name, str(a.get("name", "curses")), ", ".join(cracked) if not cracked.is_empty() else "nobody", maxi(1, value)])
 		"swallow":
 			_swallow(f, t, maxi(1, value))
 		"expose":
@@ -6167,13 +6184,12 @@ func _last_act(f: Foe) -> void:
 			_strike(f, cursed)
 		else:
 			log.append("%s lands on nobody: no machine made the kill" % str(fall.get("name", "")))
-	var owed := reroll_debt
 	var did: Array = []
 	for st in Foe.effects_of(fall):
 		_foe_acts(f, cursed, st)   # an effect aimed at nobody reads no machine at all
 		did.append(str(st.get("effect", "")))
 	last_acts.append({"foe": f, "name": str(fall.get("name", "")), "mechs": struck, "gauges": gauges, "effects": did,
-		"drained": reroll_debt - owed, "cursed": mechs.find(cursed) if cursed != null else -1})
+		"cursed": mechs.find(cursed) if cursed != null else -1})
 
 
 ## A core that falls for good takes its parts with it, on the field and waiting alike.

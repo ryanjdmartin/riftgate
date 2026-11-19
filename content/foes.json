@@ -124,10 +124,10 @@
     },
     {
       "id": "mandragora", "name": "Mandragora", "faction": "meadow",
-      "design": { "sprite": "a gnarled root creature with a screaming human face, root legs, leaves sprouting from its head", "variants": ["a gnarled pale root creature with clods of soil still clinging to its root legs, arched back mid-scream with its root arms flung wide and the mouth of its human face stretched open, leaves sprouting from its head", "a gnarled dark brown root creature crouched low on splayed root legs, lashing a long whip of root out ahead of it, its screaming human face twisted with fury, leaves sprouting from its head", "a gnarled root creature wreathed in trailing ivy with a crown of wilted purple flowers, hunched forward with its long root fingers clawed, its human face screaming", "a gnarled root creature with bark like old weathered skin and clusters of blood-red berries among the leaves on its head, lunging forward on its root legs with its root arms thrown back, its human face screaming"], "fantasy": "The screaming root, pulled up and furious.", "niche": "Back rank. Its scream costs the team a reroll, which is the Meadow's one attack on the die." },
-      "codex": "A root with a face, and it screams. It stands behind the crowd and lashes, and it saves the scream for when it is pulled up: kill one and the team loses a reroll next round.",
+      "design": { "sprite": "a gnarled root creature with a screaming human face, root legs, leaves sprouting from its head", "variants": ["a gnarled pale root creature with clods of soil still clinging to its root legs, arched back mid-scream with its root arms flung wide and the mouth of its human face stretched open, leaves sprouting from its head", "a gnarled dark brown root creature crouched low on splayed root legs, lashing a long whip of root out ahead of it, its screaming human face twisted with fury, leaves sprouting from its head", "a gnarled root creature wreathed in trailing ivy with a crown of wilted purple flowers, hunched forward with its long root fingers clawed, its human face screaming", "a gnarled root creature with bark like old weathered skin and clusters of blood-red berries among the leaves on its head, lunging forward on its root legs with its root arms thrown back, its human face screaming"], "fantasy": "The screaming root, pulled up and furious.", "niche": "Back rank. Its scream leaves its killer Brittle (Ryan, 19 November: \"Mandragora can be brittle on killer for t1\"; the reroll it took until then went since \"denying rerolls is not the meadow's job, at least not on a ubiquitous enemy at a trigger you can't avoid\"), so who pulls it up is the choice: a machine no blow is drawn on this round, or one with plate to spare. Brittle 2, the least a status that halves may lay." },
+      "codex": "A root with a face, and it screams. It stands behind the crowd and lashes, and it saves the scream for when it is pulled up: the machine that kills one is left Brittle, and every blow it takes lands harder.",
       "hp": 4, "attack": 2, "rank": "back", "movespeed": 2,
-      "on_death": { "act": { "name": "Scream", "effect": "drain_rerolls", "value": 1, "text": "Pulled up, it screams: the team loses one reroll next round." } },
+      "on_death": { "act": { "name": "Scream", "effect": "brittle", "value": 2, "text": "Pulled up, it screams at its killer: Brittle ×{value}." } },
       "actions": [
         { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "text": "A whip of root for {damage}.", "status": "implemented" }
       ],
@@ -135,10 +135,10 @@
     },
     {
       "id": "mandrake", "name": "Mandrake", "faction": "meadow", "tier": 2,
-      "design": { "fantasy": "The mandrake, the louder root. Tier two of the mandragora line." },
-      "codex": "A mandragora with lungs. Its dying scream costs the team a reroll.",
+      "design": { "fantasy": "The mandrake, the louder root. Tier two of the mandragora line: its scream reaches every machine (Ryan, 19 November: \"it's higher variations can brittle the whole team\")." },
+      "codex": "A mandragora with lungs. Its dying scream leaves every machine Brittle.",
       "hp": 4, "attack": 3, "rank": "back", "movespeed": 2,
-      "on_death": { "act": { "name": "Scream", "effect": "drain_rerolls", "value": 1, "text": "Pulled up, it screams: the team loses a reroll next round." } },
+      "on_death": { "act": { "name": "Scream", "effect": "brittle_all", "value": 2, "text": "Pulled up, it screams: every machine Brittle ×{value}." } },
       "actions": [
         { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "text": "A whip of root for {damage}.", "status": "implemented" }
       ],
@@ -146,10 +146,10 @@
     },
     {
       "id": "alraune", "name": "Alraune", "faction": "meadow", "tier": 3,
-      "design": { "fantasy": "The alraune, the genre's flower woman, here a root that steals an entry. Tier three of the mandragora line." },
-      "codex": "The flowering root. Its shriek jams the component a machine's die is showing, and it screams as it dies: a reroll off the team next round.",
+      "design": { "fantasy": "The alraune, the genre's flower woman, here a root that steals an entry. Tier three of the mandragora line, its scream on every machine as the Mandrake's is." },
+      "codex": "The flowering root. Its shriek jams the component a machine's die is showing, and it screams as it dies: every machine left Brittle.",
       "hp": 5, "attack": 5, "rank": "back", "movespeed": 2,
-      "on_death": { "act": { "name": "Scream", "effect": "drain_rerolls", "value": 1, "text": "Pulled up, it screams: the team loses a reroll next round." } },
+      "on_death": { "act": { "name": "Scream", "effect": "brittle_all", "value": 2, "text": "Pulled up, it screams: every machine Brittle ×{value}." } },
       "actions": [
         { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "text": "A whip of root for {damage}.", "status": "implemented" },
         { "id": "shriek", "name": "Shriek", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to wood, until that machine reboots.", "status": "implemented" }
@@ -773,7 +773,7 @@
     },
     {
       "id": "elder_treant", "name": "Elder Treant", "faction": "meadow", "elite": true,
-      "design": { "fantasy": "The beefed-up alpha of the walking tree (Ryan, 24 October: the harder-fight elite; the ent is Tolkien's coinage and the treant D&D's rename, so the name is ours). It comes with two mandragoras, whose screams cost the rerolls the storm wants.", "niche": "A column that regrows faster than a trio cuts it, and a storm below half. Burst, and keep the rerolls for the storm.", "notes": "Proposed 26 October; landed 30 October as a placeholder kit for Ryan's marks. No art yet: the views' placeholder shape until a recolour or a pick is cut." },
+      "design": { "fantasy": "The beefed-up alpha of the walking tree (Ryan, 24 October: the harder-fight elite; the ent is Tolkien's coinage and the treant D&D's rename, so the name is ours). It comes with two mandragoras, whose screams leave their killers Brittle under the storm.", "niche": "A column that regrows faster than a trio cuts it, and a storm below half. Burst, and pull the roots up with the machines that can stand a harder blow, before the storm comes.", "notes": "Proposed 26 October; landed 30 October as a placeholder kit for Ryan's marks. No art yet: the views' placeholder shape until a recolour or a pick is cut." },
       "codex": "Older than the Treant, and it has learned to hate the saw. Fills a whole column and grows back five of what you cut each time it stops to think; badly hurt, the roots come up under every machine.",
       "hp": 50, "attack": 16, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [

@@ -2497,7 +2497,8 @@ func test_a_fall_is_validated_as_steps_and_read_into_the_foe() -> void:
 		var f: Dictionary = base.duplicate(true)
 		f["on_death"] = od
 		return f
-	assert_eq(said.call(with.call({"act": {"name": "Last Scream", "effect": "drain_rerolls", "value": 1, "text": "x"}})), "", "a fall that is one special validates")
+	assert_eq(said.call(with.call({"act": {"name": "Last Scream", "effect": "brittle", "value": 2, "text": "x"}})), "", "a fall that is one special validates")
+	assert_true(str(said.call(with.call({"act": {"name": "Last Scream", "effect": "drain_rerolls", "value": 1}}))).contains("a fall may do one of"), "a fall takes no reroll (19 November): a drain is a move's")
 	assert_eq(said.call(with.call({"blow": {"name": "Throes", "factor": 1, "also": [{"effect": "scorch_all", "value": 1}, {"effect": "rally", "value": 2}]}})), "", "and a blow with what it does also")
 	assert_true(str(said.call(with.call({"act": {"name": "Rites", "effect": "dispel", "value": 1}}))).contains("a fall may do one of"), "a fall never purges")
 	for effect in ["summon", "swallow", "expose", "recover", "brace", "revive_once", "regenerate", "barrier", "merge", "golden", "appropriate"]:
@@ -2507,13 +2508,14 @@ func test_a_fall_is_validated_as_steps_and_read_into_the_foe() -> void:
 	assert_true(str(said.call(with.call({"blow": {"name": "Throes", "factor": 1}, "act": {"name": "Rites", "effect": "rally", "value": 2}}))).contains("never both"), "a blow or an act, the fall's first step")
 	assert_true(str(said.call(with.call({"act": {"effect": "rally", "value": 2}}))).contains("a name and an effect"), "an act says its name")
 	assert_true(str(said.call(with.call({"act": {"name": "Howl", "effect": "rally", "value": 1}}))).contains("at the least"), "an effect keeps its own rules: a rally says 2")
-	assert_true(str(said.call(with.call({"act": {"name": "Scream", "effect": "drain_rerolls"}}))).contains("says what it lays"), "and a drain its number")
+	assert_true(str(said.call(with.call({"act": {"name": "Scream", "effect": "brittle_all"}}))).contains("says what it lays"), "and a Brittle its number")
+	assert_true(str(said.call(with.call({"act": {"name": "Scream", "effect": "brittle", "value": 1}}))).contains("at the least"), "2 at the least, since Brittle halves")
 	assert_true(str(said.call(with.call({"act": {"name": "Howl", "effect": "rally", "value": 2, "weight": 3}}))).contains("got 'weight'"), "an act carries no key the engine does not read")
 	assert_true(str(said.call(with.call({"act": {"name": "Howl", "effect": "rally", "value": 2, "also": [{"effect": "heal", "value": 2, "when": "hurt"}]}}))).contains("got 'when'"), "nor a step")
-	db.foes["fall_test"] = with.call({"act": {"name": "Last Scream", "effect": "drain_rerolls", "value": 1, "text": "It screams.", "also": [{"effect": "rally", "value": 2}]}})
+	db.foes["fall_test"] = with.call({"act": {"name": "Last Scream", "effect": "brittle", "value": 2, "text": "It screams.", "also": [{"effect": "rally", "value": 2}]}})
 	var f := db.make_foe("fall_test")
-	assert_eq([str(f.fall().get("name", "")), str(f.fall().get("effect", "")), str(f.fall().get("kind", ""))], ["Last Scream", "drain_rerolls", "debuff"], "read into the foe as a special")
-	assert_eq(Foe.effects_of(f.fall()).map(func(st) -> String: return str(st["effect"])), ["drain_rerolls", "rally"], "its steps in order")
+	assert_eq([str(f.fall().get("name", "")), str(f.fall().get("effect", "")), str(f.fall().get("kind", ""))], ["Last Scream", "brittle", "debuff"], "read into the foe as a special")
+	assert_eq(Foe.effects_of(f.fall()).map(func(st) -> String: return str(st["effect"])), ["brittle", "rally"], "its steps in order")
 	assert_true(f.last_act().is_empty(), "it has no blow")
 	assert_eq(str((db.codex_for_foe(f)["moves"] as Array).back().get("name", "")), "Last Scream", "and its page lists the fall after its moves")
 	db.foes.erase("fall_test")

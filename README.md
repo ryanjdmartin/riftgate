@@ -122,7 +122,8 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     approach, the tier-one bench); `economy_pass.md`; `formation_proposal.md` (kept for the
     bosses' stat blocks and the flankers' slate); `locked_pieces_proposal.md`;
     `reboot_machines_proposal.md` (the machines the reboot broke); `bosses_proposal.md` (the
-    bosses' and elites' slate); `heroes_proposal.md`; `mechanics_audit.md`;
+    bosses' and elites' slate); `heroes_proposal.md`; `domain_statuses_proposal.md` (the
+    domains' buffs and debuffs, the purging leaders, Phased by source); `mechanics_audit.md`;
     `skirmish_audit.md` (the code audit and its order of work); `roster_analysis.md`.
   - Retired, in git: the vocabulary pass's proposal and its table of marks
     (`git show 07f01fb:docs/vocabulary_pass_proposal.md`,

@@ -2860,7 +2860,7 @@ func _validate_effect(aw: String, a: Dictionary, effect: String, errs: Array[Str
 	if int(a.get("value", 0)) < 0 or int(a.get("count", 1)) < 1:
 		errs.append("%s: value cannot be negative; count and weight are at least 1" % aw)
 	# What an effect lays, it says: the stacks, or the rerolls a theft takes (24 October).
-	if ["ablate", "scorch_all", "corrupt_all", "drain_rerolls"].has(effect) and int(a.get("value", 0)) <= 0:
+	if ["ablate", "brittle", "brittle_all", "scorch_all", "corrupt_all", "drain_rerolls"].has(effect) and int(a.get("value", 0)) <= 0:
 		errs.append("%s: %s says what it lays: value, a positive number" % [aw, effect])
 	# A swallow (30 October) says the rounds its machine is out, 1 to 3: hard control on
 	# the team, held short.
@@ -2877,7 +2877,7 @@ func _validate_effect(aw: String, a: Dictionary, effect: String, errs: Array[Str
 ## and a Brittle 1 were gone before the foes' next turn. His exit, for a move several foes may
 ## roll at once: "we just tweak the ability to say something like "apply 2 if none, otherwise
 ## 1."" Read off the status's own clock, so a status that stops halving leaves the rule.
-const HALVING_LAID := {"brittle": "brittled_mech", "rally": "kindled"}
+const HALVING_LAID := {"brittle": "brittled_mech", "brittle_all": "brittled_mech", "rally": "kindled"}
 const HALVING_MINIMUM := 2
 static func _halves(move: String) -> bool:
 	return HALVING_LAID.has(move) and Effects.decays_to_zero(Effects.STATUS.get(str(HALVING_LAID[move]), {}))

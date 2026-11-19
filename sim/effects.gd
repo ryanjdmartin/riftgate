@@ -201,14 +201,17 @@ const STATUS := {
 	# id is "exposure" since "exposed" names that formation word and the foes' default aim.
 	# Pinned (the Hollow-point Harpoon's, Ryan, 11 November): a status of its own, holding the
 	# foe's Brittle from its next halving and spent by it (16 November: "the next time it would
-	# decay, it doesn't"; a status for the round until then). HOLDERS names the holder of each
-	# status a piece may hold, so a like one for Ablating is a row there and a status here.
-	"pinned": {"id": "pinned", "name": "Pinned", "description": "The next time its Brittle would halve, it does not.", "stacking": "renew",
+	# decay, it doesn't"; a status for the round until then), and gone as its turn ends where it
+	# held nothing (19 November: "It should get spent when the next decay happens, or the end of
+	# the target's turn where it has none"). HOLDERS names the holder of each status a piece may
+	# hold, so a like one for Ablating is a row there and a status here.
+	"pinned": {"id": "pinned", "name": "Pinned", "description": "The next time its Brittle would halve, it does not. Gone as its turn ends if it held none.", "stacking": "renew", "decay": "after_turn",
 		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "brittled"}]},
 	# Ablating's pin, Seared (Ryan, 11 November: "Might as well code it in since the Mastema will
 	# want it as a fitted piece, if nothing else"; its name his, 15 November: "Rename 'Seared.'"):
-	# its Ablating takes its points and loses no stack this round. No piece lays it yet.
-	"seared": {"id": "seared", "name": "Seared", "description": "The next time its Ablating would lose a stack, it does not.", "stacking": "renew",
+	# its Ablating takes its points and loses no stack as its turn ends, and the pin goes there
+	# either way, by the same rule as Pinned's. No piece lays it yet.
+	"seared": {"id": "seared", "name": "Seared", "description": "The next time its Ablating would lose a stack, it does not. Gone as its turn ends either way.", "stacking": "renew", "decay": "after_turn",
 		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "ablating"}]},
 	"exposure": {"id": "exposure", "name": "Exposed", "description": "In Direct reach of every machine, and its armour counts for nothing. Lasts through your next turn.", "stacking": "renew", "decay": "turn_start",
 		"tags": ["expose"], "effects": []},

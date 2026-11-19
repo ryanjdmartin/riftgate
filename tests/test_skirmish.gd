@@ -6319,7 +6319,7 @@ func test_a_fall_strikes_and_then_does_the_rest() -> void:
 	sk.add_mech(c)
 	var beast := Foe.make("gargantuan_king", 30, 20)
 	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 0.5, "keywords": ["all"],
-		"also": [{"effect": "scorch_all", "value": 2}, {"effect": "drain_rerolls", "value": 1}]})}
+		"also": [{"effect": "scorch_all", "value": 2}, {"effect": "brittle_all", "value": 2}]})}
 	assert_eq(Foe.steps_of(beast.fall()).size(), 3, "its blow and two steps after")
 	sk.add_foes([beast, _ghoul(500, 0)])
 	sk.begin()
@@ -6328,12 +6328,11 @@ func test_a_fall_strikes_and_then_does_the_rest() -> void:
 	assert_true(sk.assign(0, beast), "the beast falls")
 	assert_eq([a.hull, b.hull, c.hull], [90, 90, 100], "its blow lands on every machine in the fight")
 	assert_eq([Effects.stacks_of(a, "scorched"), Effects.stacks_of(b, "scorched"), Effects.stacks_of(c, "scorched")], [2, 2, 0], "then its scorch, the Phased machine passed by")
-	assert_eq(sk.reroll_debt, 1, "then its drain")
-	assert_eq(sk.last_acts[0]["effects"], ["scorch_all", "drain_rerolls"], "in the order written")
+	assert_eq([Effects.stacks_of(a, "brittled_mech"), Effects.stacks_of(b, "brittled_mech"), Effects.stacks_of(c, "brittled_mech")], [2, 2, 0], "then its Brittle, the Phased machine passed by again")
+	assert_eq(sk.last_acts[0]["effects"], ["scorch_all", "brittle_all"], "in the order written")
 	assert_eq(sk.last_acts[0]["mechs"], [0, 1], "the machines its blow struck")
-	assert_eq(int(sk.last_acts[0]["drained"]), 1, "and the rerolls it took, for the REROLL button")
 	var trip := SaveGame._foe_from(JSON.parse_string(JSON.stringify(SaveGame._foe_dict(beast, sk))), sk)
-	assert_eq(Foe.effects_of(trip.fall()).map(func(st) -> String: return str(st["effect"])), ["scorch_all", "drain_rerolls"], "a save keeps a fall's steps")
+	assert_eq(Foe.effects_of(trip.fall()).map(func(st) -> String: return str(st["effect"])), ["scorch_all", "brittle_all"], "a save keeps a fall's steps")
 	assert_eq(int(Foe.effects_of(trip.fall())[0]["value"]), 2, "their numbers whole")
 
 
@@ -6360,31 +6359,38 @@ func test_the_round_preview_plays_a_falls_steps() -> void:
 	assert_eq(m.hull, said, "and the turn lands as the preview said")
 
 
-## A fall that drains lands in the player's own turn: the debt stands at once, the next round
-## opens short, and nothing is written into the enemy's turn's replay. One that falls in the
-## enemy's turn (a tick fells it) is replayed there.
-func test_a_fall_that_drains_takes_a_reroll_from_the_next_round() -> void:
-	var sk := Skirmish.new(1, 3)
+## A root's scream (Ryan, 19 November: "Mandragora can be brittle on killer for t1, and it's
+## higher variations can brittle the whole team"): a curse lands on the machine that made the
+## kill, a Ward turning it away and a tick's kill landing it on nobody; the scream at every
+## machine lands on each in the fight. Either is Brittle through the enemy's turn after it, halved
+## as the next round opens. No fall takes a reroll: the drain is a move's alone.
+func test_a_roots_scream_leaves_its_killer_brittle_and_a_higher_roots_every_machine() -> void:
+	var sk := Skirmish.new(1, 4)
 	var a := _mech("A", Die.single(Face.attack(40, I)), 0, 100)
+	var b := _mech("B", Die.single(Face.attack(40, I)), 0, 100)
+	var c := _mech("C", Die.single(Face.blank()), 0, 100)
 	sk.add_mech(a)
-	var root := _falls_with("drain_rerolls", 1)
-	var burning := _falls_with("drain_rerolls", 1)
-	burning.hp = 2
-	sk.add_foes([root, burning, _ghoul(500, 0)])
+	sk.add_mech(b)
+	sk.add_mech(c)
+	var root := _falls_with("brittle", 2)
+	var warded := _falls_with("brittle", 2)
+	var loud := _falls_with("brittle_all", 2)
+	sk.add_foes([root, warded, loud, _ghoul(500, 0)])
 	sk.begin()
 	sk.start_round()
-	assert_true(sk.assign(0, root), "the root is pulled")
-	assert_eq(sk.reroll_debt, 1, "the team owes a reroll at once")
-	assert_true(sk.turn_drains.is_empty(), "and the enemy's turn's replay holds none of it")
-	var trip := SaveGame._foe_from(JSON.parse_string(JSON.stringify(SaveGame._foe_dict(_falls_with("drain_rerolls", 1), sk))), sk)
-	assert_eq(str(trip.fall().get("effect", "")), "drain_rerolls", "a save keeps a fall that is a special")
-	assert_eq(str(trip.fall().get("name", "")), "Last Word", "under its name")
-	Effects.stack(burning, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 5)
+	assert_true(sk.assign(0, root), "A pulls the root")
+	assert_eq([Effects.stacks_of(a, "brittled_mech"), Effects.stacks_of(b, "brittled_mech"), Effects.stacks_of(c, "brittled_mech")], [2, 0, 0], "its killer alone is Brittle")
+	assert_eq(sk.reroll_debt, 0, "and no reroll is owed")
+	Effects.grant_for_rounds(b, Effects.STATUS["ward"], "test", sk.round)
+	assert_true(sk.assign(1, warded), "B pulls the second under a Ward")
+	assert_eq(Effects.stacks_of(b, "brittled_mech"), 0, "the Ward turns the curse away")
+	loud.hp = 2
+	Effects.stack(loud, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 5)
 	sk.end_round()
-	assert_false(burning.alive(), "the second burns down as its turn ends")
-	assert_eq(sk.turn_drains.size(), 1, "its fall, in the enemy's turn, is replayed there")
+	assert_false(loud.alive(), "the loud one burns down as its turn ends")
+	assert_eq(Effects.stacks_of(c, "brittled_mech"), 2, "its scream reaches every machine, whoever made the kill")
 	sk.start_round()
-	assert_eq([sk.rerolls_left, sk.drained], [0, 2], "two falls, two rerolls: the next round opens with none, and says why")
+	assert_eq([Effects.stacks_of(a, "brittled_mech"), Effects.stacks_of(c, "brittled_mech")], [2, 1], "A's halves as the round opens, 2 with the loud one's to 4 and then 2; C's 2 to 1")
 
 
 func test_a_splitting_foe_steps_its_halves_up_in_its_place_at_once() -> void:
@@ -11063,8 +11069,9 @@ func test_a_spent_die_or_an_unspent_one_releases_nothing() -> void:
 ## The Hollow-point Harpoon's pin (Ryan, 11 November: "Applies 1 flak and the target's flak does
 ## not decay this round"; 16 November: "the next time it would decay, it doesn't"): the Brittle on
 ## its target, its own and what stood there, skips its next halving, as the foes' turn opens, and
-## the pin is spent by it; it halves again the time after. A pin with nothing to hold waits.
-## Synthetic piece.
+## the pin is spent by it; it halves again the time after. A pin with nothing to hold goes as its
+## foe's turn ends (19 November: "It should get spent when the next decay happens, or the end of
+## the target's turn where it has none"). Synthetic piece.
 func test_a_pin_holds_its_targets_brittle_through_its_next_halving() -> void:
 	var sk := Skirmish.new(1)
 	var pin := Face.from_dict({"kind": "attack", "reach": "direct", "power": 1, "keywords": ["brittle"], "brittle": 1, "holds": "brittled"})
@@ -11087,17 +11094,16 @@ func test_a_pin_holds_its_targets_brittle_through_its_next_halving() -> void:
 	sk.start_round()
 	sk.end_round()
 	assert_eq(Effects.stacks_of(a, "brittled"), 2, "and it halves the time after")
-	# A pin with nothing to hold waits: it is spent by a decay, never by a clock.
+	# A pin with nothing to hold stands through its foe's turn and goes as that turn ends.
 	var c := _ghoul(500, 0)
-	Effects.stack(c, Effects.STATUS["pinned"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	Effects.stack(c, Effects.STATUS["pinned"], Effects.SKIRMISH, "mech", 1, Effects.status_decay(Effects.STATUS["pinned"]))
 	Effects.turn_opens(c, 3)
-	Effects.end_round(c, 3)
-	assert_true(Effects.has(c, "pinned"), "no Brittle to halve: the pin waits, through a turn's start and a round's end")
+	assert_true(Effects.has(c, "pinned"), "no Brittle to halve as its turn opens: the pin stands")
+	Effects.foe_turn_end(c)
+	assert_false(Effects.has(c, "pinned"), "and goes as the turn ends, having held nothing")
 	Effects.stack(c, Effects.STATUS["brittled"], Effects.SKIRMISH, "test", 4, Effects.DECAY_HALF)
 	Effects.turn_opens(c, 4)
-	assert_eq([Effects.stacks_of(c, "brittled"), Effects.has(c, "pinned")], [4, false], "the next halving is the one it stops")
-	Effects.turn_opens(c, 5)
-	assert_eq(Effects.stacks_of(c, "brittled"), 2, "and one pin stops one")
+	assert_eq(Effects.stacks_of(c, "brittled"), 2, "so a Brittle laid after it halves as ever")
 
 
 ## The Combat Translocator's Shock (Ryan, 11 November: "not dead versus only frontliners and
@@ -11149,21 +11155,25 @@ func test_a_swap_that_shocks_marks_both_and_a_massive_foe_named_stays_put() -> v
 ## Ablating's pin (Ryan, 11 November: "a similar one for burning as well ... Might as well code it
 ## in"; 16 November: "the next time it would decay, it doesn't"): a foe under it burns for every
 ## stack as its turn ends and loses none, the pin spent by the fade it stopped, and its Ablating
-## fades again the turn after. No piece lays it yet: granted here.
+## fades again the turn after; on a foe with no Ablating it goes as that turn ends all the same.
+## No piece lays it yet: granted here.
 func test_pinned_burning_burns_and_loses_no_stack_the_next_time() -> void:
 	var sk := Skirmish.new(1)
 	sk.add_mech(_mech("A", Die.single(Face.blank()), 40, 1000))
 	var a := _ghoul(500, 0)
 	var b := _ghoul(500, 0)
-	sk.add_foes([a, b])
+	var c := _ghoul(500, 0)
+	sk.add_foes([a, b, c])
 	sk.begin()
 	sk.start_round()
 	for foe in [a, b]:
 		Effects.stack(foe, Effects.STATUS["ablating"], Effects.SKIRMISH, "test", 3, Effects.DECAY_TICK)
 	assert_eq(str(Effects.HOLDERS["ablating"]), "seared", "Ablating has a holder of its own")
-	Effects.stack(a, Effects.STATUS["seared"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	for foe in [a, c]:
+		Effects.stack(foe, Effects.STATUS["seared"], Effects.SKIRMISH, "test", 1, Effects.status_decay(Effects.STATUS["seared"]))
 	assert_true(Effects.holds(a, "ablating"), "the pin holds its Ablating")
 	sk.end_round()
+	assert_false(Effects.has(c, "seared"), "a pin with no Ablating to hold goes as its foe's turn ends")
 	assert_eq(Effects.stacks_of(a, "ablating"), 3, "pinned: it burned and lost no stack")
 	assert_eq(Effects.stacks_of(b, "ablating"), 2, "the other's fades a stack as ever")
 	assert_eq(a.hp, b.hp, "both burned alike this turn")

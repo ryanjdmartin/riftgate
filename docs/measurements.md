@@ -12022,3 +12022,23 @@ Read: a purge on a boss's main blow costs the squad the leaders are sized for fo
 points, what it puts up being Armoured and a Ricochet's stacks, and the squad with the
 Barrier basic pays what that squad pays, so where a boss purges the Barrier is no pass. Each
 would want its blow a point lower to stay in band. Not landed: which leaders purge is his.
+
+## 19 November: the roots' scream as Brittle 2 on its killer
+
+On Ryan's "Mandragora can be brittle on killer for t1, and it's higher variations can brittle
+the whole team": the Mandragora's reroll drain against Brittle 2 on its killer, 2 the least a
+status that halves may lay (`tools/anchor_read.gd`, the pool of the six real tier ones, every
+squad of three, six seeds, 120 fights a formation; main at `473a135` before, the change after).
+Hull a share of a four's; every fight won in both.
+
+| Formation (its roots) | The drain | Brittle 2 on its killer |
+|---|---|---|
+| The goblin horde (four) | 3.0% | 4.9% |
+| The treant grove (two) | 5.1% | 5.5% |
+| The gel wall (two) | 5.7% | 6.2% |
+| The mean | 4.6% | 5.5% |
+
+Read: about a point of a four's hull a formation, most where the roots are most, the horde
+staying inside a formation's twentieth and the mean half a point past it. Four roots pulled by
+one machine leave it Brittle 8; the bot prices the curse on the killer as it weighs each kill. The first battle's sizing is his; the higher roots, at tiers two and three,
+wait for the numbers pass.

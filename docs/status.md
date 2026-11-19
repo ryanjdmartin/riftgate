@@ -65,7 +65,7 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1365 tests, 387,009 checks, green (19 November, main with the Macaque's branch landed). The runner fails a run
+- Tests: 1365 tests, 387,011 checks, green (19 November, the roots' Brittle and the pin's end). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -190,8 +190,12 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   two; the slottable shields and vents of tiers zero and one retired, a vent's shield half
   leaving the engine with them), the Cassowary's Laser Carbine and the Cottonmouth's
   Incendiary Shells, and a foe's jam waiting for its machine's reboot; read, the baseline
-  moved by a point or two. Read and his to pick: the pickets' count, which leaders purge, and
-  the Mandragora's scream (the to-do). The
+  moved by a point or two. His second answers of 19 November: the roots scream Brittle 2,
+  the Mandragora on its killer and the higher two on every machine (a fall takes no reroll
+  since, a drain a move's alone), which costs the Meadow's formations about a point of a
+  four's hull; a pin with nothing to hold goes as its foe's turn ends. His to pick: the
+  pickets' count, and `docs/domain_statuses_proposal.md` (the domains' statuses, which
+  leaders purge, Phased by source). The
   battle whole is the open question (the brief's section 11): at their ratings a second
   battle's fights come to three fifths to nine tenths of a squad's hull, and a fight met a
   machine short costs four to six times its price. Tiers two and three are unsized, their
@@ -307,6 +311,9 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    November is done: every domain's kit and sizing at the baseline (the second battle, four
    machines; the code's ramp 1), the first battle built, the bot pricing a purge. In this
    order from here:
+   - His marks on `docs/domain_statuses_proposal.md`, then its rows built and read: a foe's
+     Sap rider the one new engine piece, and Phased by source with his ruling on a ghost's
+     own side, in one pass.
    - His play of a second battle, which says whether the budget's shares stand (the brief's
      section 11): the fights are even across the domains, and the battle whole is tight.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after

@@ -459,29 +459,26 @@ func test_reroll_wears_a_drain_announced_landed_and_taken() -> void:
 	s.free()
 
 
-## A fall that takes a reroll (16 November: a fall is a short list of steps) lands in the
-## player's own turn: its foe wears the fall as an Ability from the start, the note counts what
-## it took at once, settled, and the button is struck as the fall is named.
-func test_a_fall_that_drains_shows_on_its_foe_and_on_reroll() -> void:
+## A fall (16 November: a fall is a short list of steps) is its foe's Ability from the start:
+## the skull, and its name. A curse at its killer lands on nobody when no machine made the kill,
+## and no fall touches the REROLL button: a drain is a move's alone (19 November).
+func test_a_fall_shows_on_its_foe_and_leaves_reroll_alone() -> void:
 	var s := _screen(5)
 	var sk: Skirmish = s.sk
 	var root: Foe = sk.field_foes()[0]
-	root.on_death = {"act": Foe.fall_act_from({"name": "Last Scream", "effect": "drain_rerolls", "value": 1})}
+	root.on_death = {"act": Foe.fall_act_from({"name": "Last Scream", "effect": "brittle", "value": 2})}
 	s._refresh()
 	var rows: Array = s._foe_rows(root).filter(func(row) -> bool: return row.size() >= 5 and str(row[4]) == "ability")
 	assert_eq(rows.size(), 1, "its fall is its ability")
 	if rows.size() == 1:
 		assert_eq([str(rows[0][0]), str(rows[0][1]), str(rows[0][2])], ["skull", "", "Ability, Last Act: Last Scream"], "the skull, no number, and the fall's name")
-	assert_eq(s._reroll_btn.note, "", "nothing is owed yet")
 	root.hp = 0
-	sk.reroll_debt = 0
 	sk._last_act(root)
-	assert_eq(int(sk.last_acts.back()["drained"]), 1, "the engine says what the fall took")
-	assert_eq(SkirmishScreen.drain_note(sk), ["NEXT -1", false], "the note counts it at once, settled: nothing can stop it now")
+	assert_eq(int(sk.last_acts.back()["cursed"]), -1, "no machine made the kill, so the curse lands on nobody")
+	assert_eq(SkirmishScreen.drain_note(sk), ["", false], "and the REROLL button has nothing to say")
 	s._reroll_btn._strike_t = -1.0
 	s._land_last_act(sk.last_acts.back())
-	assert_true(s._reroll_btn._strike_t >= 0.0, "and the button is struck as the fall is named")
-	assert_eq(int(s._before_enemy_turn().get("debt", 0)), 1, "the enemy's turn's replay starts from what the fall took")
+	assert_true(s._reroll_btn._strike_t < 0.0, "nor is it struck as the fall is named")
 	s.free()
 
 
