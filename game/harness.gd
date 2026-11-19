@@ -12,6 +12,10 @@ const SKIRMISH_SCENE := preload("res://game/skirmish/skirmish_screen.tscn")
 const BATTLE_SCENE := preload("res://game/battle/battle_screen.tscn")
 const TABS := ["TEAM", "BATTLE", "FIGHT", "SETUP"]
 const ROW_H := 48.0
+## What the Convergence is shown from: Ryan counts a run's first battle as Convergence 1 (19
+## November), where the engine's count starts at nothing, so every place this screen shows one
+## adds this. A label only: the setup keeps the engine's number.
+const SHOWN_FROM := 1
 
 var db: ContentDB
 var setup: HarnessSetup
@@ -497,9 +501,11 @@ func _build_battle(page: VBoxContainer) -> void:
 	page.add_child(_section("Tier and ramp"))
 	var knobs := HBoxContainer.new()
 	knobs.add_theme_constant_override("separation", 12)
+	# The Convergence is shown as Ryan counts it, the first battle Convergence 1 (19 November: "Shouldn't
+	# it be T1/C1 three, T1/C2 four?"); the engine's own count starts at nothing (SHOWN_FROM).
 	var ramp_knob := _stepper(setup.battle_ramp(), 0, Ramp.TOP, func(v: int) -> void:
 		setup.ramp = v
-		_refresh_summary(), "C", func() -> int: return ContentDB.first_ramp_of(setup.battle_tier))
+		_refresh_summary(), "C", func() -> int: return ContentDB.first_ramp_of(setup.battle_tier), SHOWN_FROM)
 	knobs.add_child(_stepper(setup.battle_tier, 1, 3, func(v: int) -> void:
 		setup.battle_tier = v
 		setup.ramp = setup.battle_ramp()   # a tier is never fought under its first Convergence
@@ -507,7 +513,7 @@ func _build_battle(page: VBoxContainer) -> void:
 		_refresh_summary(), "T"))
 	knobs.add_child(ramp_knob)
 	page.add_child(knobs)
-	page.add_child(_hint("T the tier, who comes and the boss's numbers; C the Convergence, the ramp: the field's size, the opening's count, the beat and the compositions its gates hold. A tier is never fought under its first Convergence (4 for T2, 8 for T3), so C rises to it."))
+	page.add_child(_hint("T the tier, who comes and the boss's numbers; C the Convergence, the ramp, counted from a run's first battle (C1 the first, fought by three machines; C2 the second, by four): the field's size, the opening's count, the beat and the compositions its gates hold. A tier is never fought under its first Convergence (5 for T2, 9 for T3), so C rises to it."))
 
 
 ## The battle domain's bosses, its first first; the pick kept while it is still the domain's.
@@ -604,7 +610,7 @@ func _fill_compositions() -> void:
 	for c in setup.compositions_listed():
 		var lead: Dictionary = db.foes.get(str((c["members"] as Array)[0][0]), {})
 		var gate = c.get("ramp", null)
-		var at := (", C%d to %d" % [int(gate[0]), int(gate[1])]) if gate is Array and (gate as Array).size() == 2 else ""
+		var at := (", C%d to %d" % [int(gate[0]) + SHOWN_FROM, int(gate[1]) + SHOWN_FROM]) if gate is Array and (gate as Array).size() == 2 else ""
 		_comp.add_item("%s  (%s, for %d, %s%s)" % [str(c["id"]), str(c["size"]), ContentDB.squad_of(c), str(lead.get("name", "")), at])
 		_comp.set_item_metadata(_comp.item_count - 1, str(c["id"]))
 	if setup.picked_composition().is_empty():
@@ -750,7 +756,7 @@ func _refresh_summary() -> void:
 	for id in setup.fielded():
 		team.append(str(db.chassis[id]["name"]) + (" (refit)" if setup.is_refit(str(id)) or not setup.fitted_modules(str(id)).is_empty() or not setup.branch_picks(str(id)).is_empty() else ""))
 	var dom := setup.battle_domain()
-	var battle := "%s T%d C%d" % [str(db.factions[dom].get("name", dom)), setup.battle_tier, setup.battle_ramp()]
+	var battle := "%s T%d C%d" % [str(db.factions[dom].get("name", dom)), setup.battle_tier, setup.battle_ramp() + SHOWN_FROM]
 	var bid := setup.battle_boss_id()
 	if not bid.is_empty():
 		battle += " · " + str(db.foes[bid]["name"])
@@ -801,24 +807,26 @@ func _index_of(ob: OptionButton, value: String) -> int:
 	return 0
 
 
-## A number with buttons a thumb can hit: − value +. `floor`, when given, is read at every press:
+## A number with buttons a thumb can hit: − value +. `shown_from` is added to what it shows and
+## never to its value (the Convergence, SHOWN_FROM). `floor`, when given, is read at every press:
 ## a lower bound that moves (the battle's Convergence under its tier's first).
-func _stepper(value: int, lo: int, hi: int, on_change: Callable, prefix: String = "", floor: Callable = Callable()) -> HBoxContainer:
+func _stepper(value: int, lo: int, hi: int, on_change: Callable, prefix: String = "", floor: Callable = Callable(), shown_from: int = 0) -> HBoxContainer:
 	var box := HBoxContainer.new()
 	box.add_theme_constant_override("separation", 4)
-	var shown := _label("%s%d" % [prefix, value], 20, Palette.INK)
+	var shown := _label("%s%d" % [prefix, value + shown_from], 20, Palette.INK)
 	shown.custom_minimum_size = Vector2(52, 0)
 	shown.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var v := [value]
 	box.set_meta("shown", shown)
 	box.set_meta("value", v)
+	box.set_meta("shown_from", shown_from)
 	for step in [-1, 1]:
 		var b := _button("−" if step < 0 else "+", func() -> void:
 			var nv := clampi(int(v[0]) + step, maxi(lo, int(floor.call()) if floor.is_valid() else lo), hi)
 			if nv == int(v[0]):
 				return
 			v[0] = nv
-			shown.text = "%s%d" % [prefix, nv]
+			shown.text = "%s%d" % [prefix, nv + shown_from]
 			on_change.call(nv), ROW_H, 22)
 		b.custom_minimum_size.x = ROW_H
 		box.add_child(b)
@@ -830,7 +838,7 @@ func _stepper(value: int, lo: int, hi: int, on_change: Callable, prefix: String 
 ## A stepper's number set from outside (the Convergence knob following the tier).
 func _set_stepper(box: HBoxContainer, value: int, prefix: String) -> void:
 	(box.get_meta("value") as Array)[0] = value
-	(box.get_meta("shown") as Label).text = "%s%d" % [prefix, value]
+	(box.get_meta("shown") as Label).text = "%s%d" % [prefix, value + int(box.get_meta("shown_from", 0))]
 
 
 func _label(text: String, size_px: int, color: Color) -> Label:

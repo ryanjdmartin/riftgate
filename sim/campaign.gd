@@ -36,11 +36,12 @@ extends RefCounted
 ##   end of a turn  (after a battle, or a turn passed) open rifts bleed their cities, a gate
 ##                  at zero falls unfought, fallen cities drain the capital, the capital at
 ##                  zero loses the run, the Convergence rises, rifts open up to the tier's count
-##   first battle   until a run's first battle is fought every rift that opens is the opening
-##                  domain's (content's mark, ContentDB.opening_faction); it is fought by the
-##                  draft's machines and brings the fourth: won, a choice of one of
-##                  OFFER_MACHINES of the host maker's machines, taken before the next battle
-##                  or pass (take_machine); not won, the machine left on the tender
+##   first battle   a run opens on a forced choice of city: its first rifts are the opening
+##                  domain's (content's mark, ContentDB.opening_faction) and no turn passes
+##                  until one is fought; it is fought by the draft's machines and brings the
+##                  fourth: won, a choice of one of OFFER_MACHINES of the host maker's
+##                  machines, taken before the next battle or pass (take_machine); not won,
+##                  the machine left on the tender
 ##   the party      dealt as the run starts, one hero to each domain from its bench, the front
 ##                  jobs and the back as even as the benches allow; a domain's final is fought
 ##                  against its hero with its wildlife and counts when the hero falls; the
@@ -706,10 +707,12 @@ func _fall(c: City) -> void:
 ## Spend the turn without a battle (6 October: waiting a cycle for the shop is a choice), never
 ## once the finale is due (Ryan, 8 November: "you can't pass a turn when the finale is due. That
 ## gate at the capital needs to be fought right now, the Council demands it"), so the Convergence
-## never runs past the finale's; nor while the first battle's machine is still to be taken.
-## False when refused.
+## never runs past the finale's; nor before the run's first battle is fought (Ryan, 19 November:
+## "there being nothing to do initially, I feel like the first battle in a campaign should just
+## be a forced city choice with no option to pass"); nor while the first battle's machine is
+## still to be taken. False when refused.
 func pass_turn() -> bool:
-	if state != PICK or finale_due() or not machine_offer.is_empty():
+	if state != PICK or finale_due() or history.is_empty() or not machine_offer.is_empty():
 		return false
 	_end_turn("")
 	return true
@@ -780,10 +783,11 @@ func _open_rifts() -> void:
 
 ## A rift's factions (6 October: rolled when the rift opens, never fixed to a city). The
 ## lead is any faction not yet beaten; a guest, from GUEST_TIER, any other faction not beaten
-## (Ryan, 26 October: a beaten domain "should stop being a guest in new rifts"). Until the run's
-## first battle is fought the lead is the opening domain, where content marks one (Ryan, 19
-## November: the first battle is the Meadow's, the one fought by three machines), so which city
-## to defend first chooses the maker whose machines are offered and never the foe.
+## (Ryan, 26 October: a beaten domain "should stop being a guest in new rifts"). A run's first
+## rifts, the ones open before its first battle is fought, are the opening domain's where
+## content marks one (Ryan, 19 November: the first battle is the Meadow's, the one fought by
+## three machines), so which city to defend first chooses the maker whose machines are offered
+## and never the foe; no turn passes before that battle (pass_turn), so no other rift opens.
 func _roll_rift() -> Dictionary:
 	var all: Array = db.factions.keys()
 	var leads: Array = []

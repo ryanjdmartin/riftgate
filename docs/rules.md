@@ -1834,17 +1834,18 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   squad slots; the first battle is fought by those three and brings the fourth machine (The
   first battle, below). 0 salvage, 100 Favour, a blueprint for every basic, the six of tier
   zero the game deals.
-- **The first battle** is the Meadow's: until a run's first battle is fought, every rift that
-  opens is the opening domain's, the one content marks (a domain's `opening`; with none marked
-  the first rifts roll as any other). So the two first fronts differ by their city, and the
-  city defended chooses the maker. Won, that maker puts up three of its machines and one is
+- **The first battle** is the Meadow's, and a run opens on it: a forced choice of city, no
+  turn passed before it is fought. The first rifts are the opening domain's, the one content
+  marks (a domain's `opening`; with none marked they roll as any other), so the two first
+  fronts differ by their city, and the city defended chooses the maker. Won, that maker puts up three of its machines and one is
   taken free: its chassis of the battle's tier or under that the engine fields and the roster
   lacks, drawn by the seed, fewer when it has fewer; no battle starts and no turn passes until
   one is taken. Not won, or a maker with none to put up, the draft's missing pick comes
   unasked, the machine left on the tender (and with nothing left there, content's first
   tier-one machine the roster lacks). Either way it arrives ready, in its stock. Every battle
   after is fought with four.
-- **A turn** is one battle at a front, with one to four ready machines, or a pass; once the
+- **A turn** is one battle at a front, with one to four ready machines, or a pass; no turn is
+  passed before the run's first battle, and once the
   finale is due no turn is passed (the Council demands the capital fought now), so the
   Convergence never runs past the finale's. The whole
   roster goes to the one front; the open fronts left alone bleed (below). A battle is played
@@ -1872,7 +1873,7 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   rift never hardens by waiting; the ramp a battle reads is the Convergence as it stands when
   the battle starts, the same for every open front, never shown and never reset.
 - **Domains**: a rift rolls its lead domain (Meadow, Waste, Marsh, Peak; never a beaten one;
-  the Meadow alone until the first battle is fought)
+  a run's first rifts the Meadow's)
   and from tier 1 a guest, another domain not beaten, whose compositions alternate with the lead's on the field at the start and in
   the rift's cycle.
 - **The party**: dealt as the run starts, one hero to each domain from its bench, the front
