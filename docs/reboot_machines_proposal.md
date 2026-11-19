@@ -24,7 +24,7 @@ too), and the Needletail the same day. It retires once its calls are rows and co
 | Needletail | Landed 18 November on his two calls (the bible's Kestrel row): its Designator makes no heat, and its reboot may be its second spend, after one action of either kind | His play of it, and his "dull" |
 | Skua | Stands as built (19 November): the reboot leaves its ramp alone, and it reads level with the tier twos | Settled, his "Leave it as is" |
 | Kite | Stands as built (19 November): a kill that mends a broken shield changed nothing on the read | Settled, his "Leave it" |
-| Cottonmouth | The drum's shape holds; at 6 heat it is two shots a cycle on the lightest frame | The drum's heat or its gauge; a keyword shell in stock |
+| Cottonmouth | Stands as built (19 November): it reboots at the roster's pace; a lone boss leaves its area nothing to reach | Settled, his "Leave it" |
 | Puffin, in design | Nothing of the old kit survives; his direction, moving heat, is the system's dearest verb | Its session now or after the heat prices |
 | Swallowtail, in design | Two dead plain forms; the system hands it a niche, the team's pit crew | His session |
 | Polar Bear | Holds: a timed shell, a bare exit, and a Cryo that is now team cooling | Its text clause; the wall at tier one |
@@ -103,28 +103,13 @@ boss fights alone, so there is almost nothing to kill, and in formations the Kit
 whole. Its losses against a boss are its design, a glass cannon in a long fight. Its kit as this
 proposal read it is in git: `git show 90d15e4:docs/reboot_machines_proposal.md`.
 
-### Cottonmouth
+### Cottonmouth, settled
 
-Wainwright & Sutler, tier 1, light hover. *Context*: versatility of reach, "a tier one that plugs
-holes in many draft compositions"; every weapon through the drum.
-
-*Kit*: hull 20, shield 6, armour 0, heat 12, move 6, 4 hardpoints.
-- Adaptive Munitions Drum: every weapon and equipment it aims at a foe leaves as the drum's shot,
-  Indirect, 4, heat 6, with its own keywords; Penetrate 2 into the back rank, Spread 2 on the
-  front.
-- Ankle Mortar, Twin Autoguns twice (each the drum's shot); Halo Projector, a Barrier, not drummed.
-
-*As a whole.* Three of its four entries are one shot, 4 on the target and 2 on its neighbours or
-on the foe in front of it. At 6 a shot it is two shots a cycle (a third overshoots by 6, a burn
-of 6 a turn and the shield broken), so it reboots every third turn on the lightest frame; the 6
-was set against its old cooling of 3, four shots to a gauge. It still deals about twice the
-vanilla's damage a round when its area finds foes, so the shot is paid in tempo and exposure now,
-not in heat. Its identity, a keyword shell of any maker made an area shot, never shows in its
-stock (the basics carry none); its Halo is now cover for an ally's reboot.
-
-*Verdict.* The shape holds, a row or a column every shot; the pace does not fit. The levers are
-the drum's heat (4 is three shots a cycle) or its gauge, and a keyword shell in its stock (the
-placeholder slot's mark).
+Left as built on 19 November (Ryan: "Leave it."). The read of that day (`docs/measurements.md`)
+found it rebooting at the roster's ordinary pace, a fifth of its turns, and the drum at heat 4
+moving its fights a third of a round; against a lone boss its area finds no neighbour, an area
+machine's design. Its kit as this proposal read it is in git:
+`git show 90d15e4:docs/reboot_machines_proposal.md`.
 
 ### Puffin, in design
 
@@ -432,6 +417,6 @@ in formations and nothing against a lone boss.
    second spend (the bible's Kestrel row); his "dull" waits on his play.
 4. Skua: settled 19 November, left as built ("Leave it as is and move on").
 5. Kite: settled 19 November, left as built, the kill that mends refused ("Leave it").
-6. Cottonmouth: the drum's heat or its gauge, and a keyword shell in its stock.
+6. Cottonmouth: settled 19 November, left as built ("Leave it").
 7. Puffin and Swallowtail: their sessions now, or as set.
 8. Polar Bear: "its own cooling stopped" off its text; the wall at tier one stays with the bench.
