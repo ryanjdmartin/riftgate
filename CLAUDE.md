@@ -143,6 +143,13 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
 - Canadian/British spelling everywhere (Ryan, 17 November: "yes we're using Canadian/British
   spelling everywhere"): armour, colour, centre, tunneller, in shown text, content, docs and
   comments alike. Engine and library names keep their own spelling (Godot's `Color`).
+- A limit on design space is never written as a rule (Ryan, 19 November, of a branch step held to
+  one locked piece, a session's reading of his words: "I would never have declared that a 'rule.'
+  Things that limit design space should never be a rule"). A session's own limit on what a piece,
+  a step or a machine may do is its lean, written as Claude's, and goes to Ryan in chat. Every rule
+  a session writes or changes in `docs/rules.md`, the bible or a brief is named to him in that
+  session's report with the words it stands on, his or the session's ("We need to make sure I'm
+  being notified when 'rules' are being written without me knowing").
 - When Ryan suggests a rule or a change, look for holes in the argument and discuss them in
   chat before building. A suggestion opens a discussion; it is not a spec. If he reaffirms
   after hearing the holes, build it as he said. A consequence that follows from a rule as he

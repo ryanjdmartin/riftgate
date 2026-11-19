@@ -82,9 +82,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   own, and the harness fields them): a chassis of tier one or two may carry two directions,
   each a step a pick, as deep as its machine picks, a tier one twice and a tier two once. A
   machine's first pick takes a direction's first step and its second the same direction's
-  deeper step or the other's first, so a tier one ends specialized or mixed. A step tweaks one
-  locked piece or the machine's passive, never a stat: its effects ride the machine as a
-  passive of their own, scoped to that piece where it names one, so the die keeps the piece as
+  deeper step or the other's first, so a tier one ends specialized or mixed. A step tweaks the
+  machine's locked pieces or its passive, as many as it needs, never a stat: its effects ride the
+  machine as a passive of their own, each scoped to its piece where it names one, so the die keeps the piece as
   printed and the entry as spent carries the tweak, and a destroyed piece takes its tweaks with
   it. A step on the passive takes over the effect it names in place: an effect that names a
   slot gives way to a later grant in the same slot, so the step's number or form replaces the
