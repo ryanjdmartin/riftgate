@@ -11680,6 +11680,77 @@ again, every squad of the pool, forty fights a formation's cell and thirty an el
 A point at the most: the bot gives a little hull to keep its stacks, and the fights stand
 where they were sized. 1332 tests, green.
 
+
+## 19 November: the Skua's ramp under the reboot, and what it is worth
+
+`tools/reboot_probe.gd`, as the entries above: the Skua first in a squad beside the Honey
+Badger, the Prairie Dog and the Cassowary, the greedy bot; tier one's formations and elites, 21
+compositions at 8 seeds (168 fights), and its bosses alone, 13 at 6 seeds (78), on main at
+`0c6dfc7`. The probe counts Ricochet since this entry: its peak stacks a fight and its halvings
+(hull damage halving the stacks), and lays the what-ifs over its fight loop: `ricochet_spared`
+(no halving while it reboots), `ricochet_kept` (none at all), `no_ricochet` (no stack held into
+a round, so what the ramp is worth). The two rider guns are content edited for the read and put
+back: each in the Twin Autoguns' slot of its stock.
+
+| The Skua | Formations: rounds, own hull, squad | Bosses: rounds, own hull, squad | Peak stacks: formations, bosses | Halvings a fight (while rebooting): formations, bosses |
+|---|---|---|---|---|
+| As built | 5.0, 7%, 7% | 7.3, 20%, 18% | 3.4, 5.0 | 0.29 (0.03), 0.67 (0.09) |
+| Spared while it reboots | 5.0, 7%, 7% | 7.3, 19%, 18% | 3.4, 5.1 | as built |
+| Never halved | 5.0, 7%, 7% | 7.2, 20%, 18% | 3.6, 5.5 | as built |
+| No ramp at all | 5.2, 8%, 8% | 8.0, 20%, 19% | 1.4, 1.8 | |
+| The Incendiary Shells (Ablate 2) in stock | 4.7, 7%, 7% | 6.4, 16%, 15% | 3.3, 4.5 | 0.43, 0.85 |
+| The Airburst Shell (Brittle 1, Spread 1) in stock | 4.8, 6%, 7% | 6.7, 15%, 14% | 3.2, 4.5 | 0.28, 0.67 |
+
+What it says. The reboot does not break its ramp, against the proposal's read of 17 November:
+the bot halves its stacks a third of a time in a formation fight and two thirds against a boss,
+almost never while it reboots (it reboots when no blow is coming), and sparing the stacks, or
+never halving them, moves nothing. What caps the ramp is how little it is worth as stocked: with
+every stack stripped each round it loses 0.2 rounds of a formation fight and 0.7 of a boss
+fight. Its fights end near its peak (3.4 stacks in five rounds, 5 in seven), its stock guns lay
+no rider, so a bounce is a bare point, and plate stops a bounce: 5 of tier one's 13 bosses carry
+a point of armour. One rider gun in its stock does more than the whole ramp as built, a boss
+fight 0.6 to 0.9 rounds shorter and the squad 3 to 4 points of hull better off, every bounce
+laying the rider again (Ryan's "applying all effects"); Ablating passes plate besides. A
+direction at 78 fights a build; his call on the kit.
+
+## 19 November: the Kite's kill that mends, on the sized foes
+
+`tools/reboot_probe.gd` as the entries above, the Kite first in the squad, 168 formation and
+elite fights and 78 boss fights, with the two what-ifs the probe carried for its lean: a bot
+that fights a broken Kite on when its die would fell a foe, and that bot with a kill of its own
+mending a broken shield. On `ccr-178e0404-ptuh2m` over main at `0c6dfc7`.
+
+| The Kite | Formations: rounds, own hull, wrecked, squad | Bosses: rounds, own hull, wrecked, squad |
+|---|---|---|
+| As built | 4.7, 8%, 2%, 7% | 7.2, 30%, 6 of 78, 19% |
+| Fights on with its shield broken | 4.7, 9%, 2%, 8% | 7.1, 30%, 6 of 78, 19% |
+| That, and a kill mends a broken shield | 4.7, 9%, 2%, 7% | 7.1, 30%, 6 of 78, 19% |
+
+What it says. The mend moves nothing: a boss fights alone, so there is almost nothing to kill,
+and in the formations the Kite is whole already. Its losses against a boss are its design, a
+glass cannon in a long fight. Ryan left it as built ("Leave it. Move on."), and the probe's
+what-ifs for the Kite and the Skua went with their leans.
+
+## 19 November: the Cottonmouth's pace under the reboot
+
+`tools/reboot_probe.gd` as the entries above, 168 formation and elite fights and 78 boss
+fights, the machine read first in the squad: the Cottonmouth and the Storm Petrel on
+`ccr-178e0404-ptuh2m` over main at `0c6dfc7`; then the Cottonmouth with its drum's shot at heat
+4 in place of 6 (content edited for the read and put back), the lever the proposal named.
+
+| The machine | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, wrecked, squad |
+|---|---|---|
+| The Cottonmouth as built | 5.4, 21%, 8%, 7% | 9.3, 20%, 22%, 1 of 78, 21% |
+| Its drum at heat 4 | 5.1, 15%, 8%, 7% | 9.1, 16%, 22%, 3 of 78, 20% |
+| The Storm Petrel | 5.6, 22%, 3%, 6% | 9.3, 24%, 11%, 1 of 78, 15% |
+
+What it says. It reboots on a fifth of its turns, the roster's ordinary pace (the Storm Petrel
+22% to 24%, the Kite 21% to 25%), so the reboot did not break its pace; a drum at heat 4 brings
+it to the Skua's 15% and its fights a third of a round shorter. Against a boss alone it is the
+weakest squad read, the squad losing 21% over 9.3 rounds: its shot's Spread and Penetrate find
+no neighbour there, so it is a flat 4 at heat 6, an area machine's design. In the formations, its
+home, it reads level with the rest.
+
 ## 19 November: every domain's kit and sizing at the baseline
 
 Ryan: "Keep going on all domains, adjusting kits and sizing for convergence 2 as our baseline

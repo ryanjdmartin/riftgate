@@ -9,46 +9,29 @@ extends SceneTree
 ## and vents that blast (the Whip Scorpion's); its own hull lost (percent of its own), its fights wrecked,
 ## and the squad's hull lost; under the table, a machine that spends its shield into its blows (the
 ## Buzzard's zap and its cannon, 18 November): its zaps a fight, its shots of the whole shield and
-## the shield each fired; and one whose reboot may be its second spend (the Needletail's, the same
-## day): how many of its reboots came after a spend of its own. A direction, never a gate: the bot's play of the reboot is a first
+## the shield each fired; one whose reboot may be its second spend (the Needletail's, the same
+## day): how many of its reboots came after a spend of its own; and one that ramps Ricochet (the
+## Skua's, 19 November): its peak stacks a fight and its halvings. A direction, never a gate: the bot's play of the reboot is a first
 ## heuristic, so its losses are a floor of skill. A fight still standing at forty rounds (CAP)
 ## ends there as it stands.
 ##   perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/reboot_probe.gd -- --seeds 8
 ##   perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/reboot_probe.gd -- --bosses --seeds 6 --only kite,badger
-## Options: --seeds N (6), --only <chassis ids>, --bosses, --whatif <lean>, --branches <picks> (the
+## Options: --seeds N (6), --only <chassis ids>, --bosses, --branches <picks> (the
 ## machine read's upgrades, its directions in the order taken: --branches defence,defence; each
 ## machine read takes those its chassis allows). Four in parallel, a part of the roster each, read
 ## the whole roster in about seven minutes.
 ##
-## --whatif lays one of the proposal's leans over the fight loop, where the engine has no switch
-## for it, the machine first in the squad the one it reads:
-## `kite_bot`, a
-## bot that fights a broken Kite on when the die it shows would fell a foe, and `kite_mends`, that
-## bot and a kill of its own mending a broken shield. Each is cut here once its lean is built or
-## refused: the Polar Bear's, a reboot opening its seal, and the Storm Petrel's, its heat standing
-## up its shield, were built on his word the same day.
+## The proposal's leans it laid over its fight loop went with their calls: the Polar Bear's and
+## the Storm Petrel's built (17 November), the Kite's kill that mends and the Skua's spared stacks
+## refused (19 November: "Leave it"); a lean to come gets its what-if again (git keeps the form).
 
 var db: ContentDB
 var seeds := 6
 var only: Array = []
 var bosses := false
-var whatif := ""
 var picks: Array = []   # the machine read's branch picks (--branches)
 
 const CAP := 40   # a fight still standing at forty rounds ends there as it stands, the bot stalled
-
-
-## The bot of the Kite's lean (kite_bot, kite_mends): a broken Kite whose die shows a weapon that
-## would fell a foe standing fights for the kill instead of rebooting.
-class KiteBot extends Policy:
-	func _wants_reboot(sk: Skirmish, ms: Skirmish.MechState) -> bool:
-		if ms.shield_broken and ms.overheat_stacks() <= 0 and Effects.refills_on_kill(ms.unit):
-			var f := ms.face()
-			if f != null and f.is_weapon():
-				for foe in sk.field_foes():
-					if foe.alive() and sk.shown_number(ms, f, foe) >= foe.hp:
-						return false
-		return super._wants_reboot(sk, ms)
 
 
 func _init() -> void:
@@ -62,8 +45,6 @@ func _init() -> void:
 				only = Array(v.split(","))
 			"--bosses":
 				bosses = true
-			"--whatif":
-				whatif = v
 			"--branches":
 				picks = Array(v.split(","))
 	db = ContentDB.load_default()
@@ -81,8 +62,8 @@ func _init() -> void:
 		for size in ["formation", "elite"]:
 			for c in db.compositions(str(fac), 1, size):
 				comps.append(c)
-	print("%d %s, %d seeds, the squad's three: %s%s%s" % [comps.size(), "bosses" if bosses else "compositions", seeds, ", ".join(mates),
-		"" if whatif.is_empty() else ", what-if " + whatif, "" if picks.is_empty() else ", upgrades " + ",".join(picks)])
+	print("%d %s, %d seeds, the squad's three: %s%s" % [comps.size(), "bosses" if bosses else "compositions", seeds, ", ".join(mates),
+		"" if picks.is_empty() else ", upgrades " + ",".join(picks)])
 	var t0 := Time.get_ticks_msec()
 	print("| Machine | Fights | Won | Rounds | Spent | Rebooted | Held | Rounds a reboot | Overheats a fight | Burn a fight | Bare turns | Sealed | Blasts a fight | Own hull lost | Wrecked | Squad hull lost |")
 	print("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
@@ -94,7 +75,8 @@ func _init() -> void:
 			continue
 		var agg := {"fights": 0, "won": 0, "rounds": 0, "turns": 0, "spent": 0, "reboot": 0, "held": 0, "overheats": 0, "burn": 0,
 			"bare": 0, "sealed": 0, "blasts": 0, "hull_lost": 0.0, "wrecked": 0, "squad_lost": 0.0,
-			"zaps": 0, "whole": 0, "whole_shield": 0, "spend_reboot": 0}
+			"zaps": 0, "whole": 0, "whole_shield": 0, "spend_reboot": 0,
+			"peak": 0, "halvings": 0, "halved_rebooting": 0, "stacks_lost": 0}
 		for ci in range(comps.size()):
 			for s in range(seeds):
 				_fight(str(cid), mates, comps[ci], 1000 + s * 7919 + ci * 104729, agg)
@@ -106,6 +88,9 @@ func _init() -> void:
 			("%.1f" % (t / float(agg["reboot"]))) if int(agg["reboot"]) > 0 else "never",
 			agg["overheats"] / n, agg["burn"] / n, int(round(100.0 * agg["bare"] / t)), int(round(100.0 * agg["sealed"] / t)),
 			agg["blasts"] / n, int(round(agg["hull_lost"] / n)), int(round(100.0 * agg["wrecked"] / n)), int(round(agg["squad_lost"] / n))])
+		if int(agg["peak"]) > 0:
+			spent_shield.append("%s: Ricochet at its peak %.1f stacks a fight; %.2f halvings a fight, %.2f of them while it rebooted, %.1f stacks lost" % [
+				str(db.chassis[cid].get("name", cid)), agg["peak"] / n, agg["halvings"] / n, agg["halved_rebooting"] / n, agg["stacks_lost"] / n])
 		if int(agg["spend_reboot"]) > 0:
 			spent_shield.append("%s: %d of its %d reboots after a spend of its own (its second spend the reboot)" % [
 				str(db.chassis[cid].get("name", cid)), int(agg["spend_reboot"]), int(agg["reboot"])])
@@ -148,12 +133,9 @@ func _fight(cid: String, mates: Array, c: Dictionary, seed_value: int, agg: Dict
 		sk.layout = Array(c["layout"]).duplicate()
 	sk.begin()
 	var pol: Policy = Policy.make(Policy.GREEDY, seed_value)
-	if whatif == "kite_bot" or whatif == "kite_mends":
-		pol = KiteBot.new()
-		pol.kind = Policy.GREEDY
-		pol.rng.seed = seed_value
 	var me: Skirmish.MechState = sk.mechs[0]
 	var rounds := 0
+	var peak := 0   # the most Ricochet it held this fight (the Skua's)
 	while sk.outcome == Skirmish.Outcome.NONE and rounds < CAP:
 		sk.start_round()
 		rounds += 1
@@ -172,9 +154,6 @@ func _fight(cid: String, mates: Array, c: Dictionary, seed_value: int, agg: Dict
 			elif said.begins_with(whole):
 				agg["whole"] += 1
 				agg["whole_shield"] += int(said.substr(whole.length()).get_slice(",", 0))
-		if whatif == "kite_mends" and me.alive() and me.killed_round and me.shield_broken:
-			me.shield_broken = false
-			me.unit.shield = me.unit.shield_max
 		if alive:
 			agg["turns"] += 1
 			if me.rebooting:
@@ -189,14 +168,24 @@ func _fight(cid: String, mates: Array, c: Dictionary, seed_value: int, agg: Dict
 				agg["bare"] += 1
 			if Effects.is_sealed(me.unit):
 				agg["sealed"] += 1
+		peak = maxi(peak, Effects.stacks_of(me.unit, "ricochet"))
 		if sk.outcome != Skirmish.Outcome.NONE:
 			break
+		var held_stacks := Effects.stacks_of(me.unit, "ricochet")
+		var was_rebooting := me.rebooting
 		sk.end_round()
+		var left_stacks := Effects.stacks_of(me.unit, "ricochet")
+		if left_stacks < held_stacks and me.alive():
+			agg["halvings"] += 1
+			agg["stacks_lost"] += held_stacks - left_stacks
+			if was_rebooting:
+				agg["halved_rebooting"] += 1
 		for o in sk.overheats:
 			if int(o["mech"]) == 0:
 				agg["burn"] += int(o.get("burn", o["over"]))
 				if bool(o.get("first", false)):
 					agg["overheats"] += 1
+	agg["peak"] += maxi(peak, Effects.stacks_of(me.unit, "ricochet"))
 	agg["fights"] += 1
 	agg["rounds"] += rounds
 	if sk.outcome == Skirmish.Outcome.VICTORY:

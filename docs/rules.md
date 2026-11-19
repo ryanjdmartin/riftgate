@@ -898,7 +898,7 @@ On a machine:
   and leaves the loads, so what a Purge took comes back at the machine's next turn and no
   sooner.
 - **Sealed** (Ability, the Polar Bear's form): equipment it spends on itself (a buff dropped on
-  itself) seals it: armour +3, its own cooling stopped, 3 heat more at the end of each turn
+  itself) seals it: armour +3, any cooling it is granted stopped (a chassis has none of its own), 3 heat more at the end of each turn
   before the overheat, and its Cryo Flinger gains Spread (one foe open, its rank's three sealed);
   a weapon it fires opens it, and so does a reboot: the shell and its armour go as the die
   drops, so the seal's clock adds nothing that turn and it stands bare and open through the
@@ -1455,7 +1455,7 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   keywords and effects it lacks). The
   Cottonmouth's replaces the shot of every weapon and equipment it aims at a foe whole, first,
   under every other change (Indirect,
-  a flat 4, heat 3, one blow, Ballistic, the entry's keywords, rules and tags kept),
+  a flat 4, heat 6, one blow, Ballistic, the entry's keywords, rules and tags kept),
   Penetrate 2 when aimed at the back rank and Spread 2 at the front, shown on the die over the foe
   it is dragged to. The Whip Scorpion's Thermal Ejection Manifold is its boiler: every blow a
   foe lands on it adds 2 heat (in the enemy's turn, after the overheat, so the gauge may

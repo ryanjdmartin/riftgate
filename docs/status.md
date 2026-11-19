@@ -63,8 +63,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1338 tests, 378,012 checks, green on main (19 November, the summon texts'
-  landing). The runner fails a run whose tests never ran, so read the checks' count, never
+- Tests: 1338 tests, 378,012 checks, green on main (19 November, the reboot list's settled
+  machines and the Polar Bear's clause, over the summon texts' landing). The runner fails a run whose tests never ran, so read the checks' count, never
   the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
   purpose. About four minutes in a cloud session; words after `--` run only the files whose
   names hold one (`-- loot rig`).
@@ -144,8 +144,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   his rewrite of its Relay (a kind spent goes on cooldown for the round; its die flips to the
   other kind, rolls land anywhere; a Rapid or Instant spend leaves its kind lit; it reboots
   after one action whatever its die shows, the one machine that may after a Rapid spend; its branches, one on
-  the spotter and one turning the Designator into a weapon, wait on Kestrel's tier one); its first round on the Kite, the Puffin and the Swallowtail
-  waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
+  the spotter and one turning the Designator into a weapon, wait on Kestrel's tier one); the Skua, the Kite and the Cottonmouth stand as built (19 November, his "Leave it"); its first round
+  on the Puffin and the Swallowtail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis, the Polar Bear
   (a reboot opens its seal), the Whip Scorpion (its reboot's vent blasts every foe), the
   Lammergeier, the Wild Boar, the Baboon, the Stingray. The Giant Petrel's kit, the Musk Ox
@@ -331,9 +331,9 @@ publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   Published at v0.634 on 18 November from main's file at `1383f11` (the page's Version 513).
-  Main's file is v0.643, unpublished: the step ahead of a blow, the first battle decided and
-  built, the Needletail's rows, every domain's kit and the battle's open question are in it
-  since. The hangar's
+  Main's file is v0.646, unpublished: the step ahead of a blow, the first battle decided and
+  built, the Needletail's rows, every domain's kit, the battle's open question, and the Skua,
+  the Kite and the Cottonmouth left as built under the reboot are in it since. The hangar's
   `text` collection was empty on 19 November, so no writing of his waits. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of

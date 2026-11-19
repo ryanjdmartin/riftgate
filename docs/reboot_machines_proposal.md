@@ -22,9 +22,9 @@ too), and the Needletail the same day. It retires once its calls are rows and co
 | Storm Petrel | Landed 17 November (the bible's row): the Hardlight Generator, a point of shield a point of heat; its lock the Hardlight Pulse, a lure run hot; the Arc Fault Cannon in the Shoring Jack's slot; his branches Defence and Striker | His play of it, and his marks on its texts |
 | Buzzard | Landed 18 November (the bible's row): the Field-Recoupling Injectors, a zap on every weapon it fires and 2 shield for every foe that falls; its Shield-burner Cannon fires the whole shield; a Barrier piece and a warm gun in its stock; his branches Sustain and Burst | His play of it, and his marks on its texts |
 | Needletail | Landed 18 November on his two calls (the bible's Kestrel row): its Designator makes no heat, and its reboot may be its second spend, after one action of either kind | His play of it, and his "dull" |
-| Skua | Its ramp lives behind a shield that lasts a cycle, and every cycle ends bare | Whether its ramp is for a cycle or a fight |
-| Kite | Holds in short fights; its refill dies with a break, its reboot is the frailest bare turn | A kill mends a broken shield, or as it is |
-| Cottonmouth | The drum's shape holds; at 6 heat it is two shots a cycle on the lightest frame | The drum's heat or its gauge; a keyword shell in stock |
+| Skua | Stands as built (19 November): the reboot leaves its ramp alone, and it reads level with the tier twos | Settled, his "Leave it as is" |
+| Kite | Stands as built (19 November): a kill that mends a broken shield changed nothing on the read | Settled, his "Leave it" |
+| Cottonmouth | Stands as built (19 November): it reboots at the roster's pace; a lone boss leaves its area nothing to reach | Settled, his "Leave it" |
 | Puffin, in design | Nothing of the old kit survives; his direction, moving heat, is the system's dearest verb | Its session now or after the heat prices |
 | Swallowtail, in design | Two dead plain forms; the system hands it a niche, the team's pit crew | His session |
 | Polar Bear | Holds: a timed shell, a bare exit, and a Cryo that is now team cooling | Its text clause; the wall at tier one |
@@ -87,75 +87,29 @@ Landed 18 November on his two calls, the Designator at no heat and its reboot it
 the bible's Kestrel row says what it is and why, and `docs/measurements.md` the same day reads
 it. Its kit as this proposal read it is in git: `git show f167af8:docs/reboot_machines_proposal.md`.
 
-### Skua
+### Skua, settled
 
-Kestrel, tier 1, light flyer. *Context*: Ramping Dakka (11 November), "the long fight's hitter,
-weak in its first round and a storm by its fifth"; "it ramps only while its shield holds:
-Kestrel's risk".
+Left as built on 19 November (Ryan: "Leave it as is and move on"). The read of that day
+(`docs/measurements.md`) found the reboot does not break its ramp: the bot halves its stacks
+rarely and almost never while it reboots, and sparing them changes nothing. It reads level
+with the Kite and the Needletail, a tier above it. Its kit as this proposal read it is in git:
+`git show 90d15e4:docs/reboot_machines_proposal.md`.
 
-*Kit*: hull 20, shield 9, armour 0, heat 12, move 6, 3 hardpoints.
-- Carom Field: once a round, damaging a foe with a weapon gains it a stack of Ricochet (after a
-  weapon fires, a strike of 1 a stack through the foe's Brittle and armour); hull damage halves
-  the stacks.
-- Hypersonic Swoop (fixed): Ricochet 1 on itself, Rapid: the one way to a second stack a round.
-- Laser Carbine 4 for 5; Twin Autoguns 3 for 4; Flechette Pod 1 four times for 4.
+### Kite, settled
 
-*As a whole.* A stack a round (two with the Swoop), each an extra strike after every gun, about
-three shots a cycle and the Swoop free. The shield it ramps behind lasts a cycle at most, and
-every cycle ends in a reboot whose bare turn makes any blow hull damage, halving the stacks; a
-burn halves them too. So the ramp tops out around one cycle, three or four stacks, likely halves
-at the reboot and climbs again. A storm by the fifth round needs the team to cover its reboot.
+Left as built on 19 November (Ryan: "Leave it. Move on."). The read of that day
+(`docs/measurements.md`) found the lean, a kill that mends a broken shield, moves nothing: a
+boss fights alone, so there is almost nothing to kill, and in formations the Kite is already
+whole. Its losses against a boss are its design, a glass cannon in a long fight. Its kit as this
+proposal read it is in git: `git show 90d15e4:docs/reboot_machines_proposal.md`.
 
-*Verdict.* It collides with the system on length. If its ramp is meant for a cycle, it stands as
-built; if for a fight, the halving wants another trigger (a foe's blow alone, its own reboot's
-bare turn spared, or the stacks kept through the reboot). His: which it is for.
+### Cottonmouth, settled
 
-### Kite
-
-Kestrel, tier 2, light flyer. *Context*: the burst glass cannon (11 November); its shield comes
-back by killing (his: "What exactly is wrong from a shield refill if the max shield is small?");
-"anything big after its first shot, and a long fight, are another machine's".
-
-*Kit*: hull 12, shield 8, armour 0, heat 12, move 6, 3 hardpoints.
-- Disabled Weapon Regulators: every weapon hits an unhurt foe at double its printed number; a
-  kill recharges its shield.
-- Pinion Driver (fixed): 2 twice for 3, Finisher (double on a foe at half its HP or less).
-- Transonic Rifle 5 for 7 (10 opening); Twin Autoguns 3 for 4 (6); Laser Carbine 4 for 5 (8).
-
-*As a whole.* Every entry is a gun, so every turn is a shot, an opener on a whole foe or the
-finisher on a half-dead one; two or three shots a cycle on 12. Its only defence and its only
-sustain is a shield a kill refills, and the Broken rule cuts that: once its 8 breaks, in two or
-three tier-one blows, kills refill nothing until the reboot. Its reboot is the most dangerous
-bare turn in the game, 12 hull, no armour and nothing on its die to cover itself; and since 17
-November a dying foe's blow lands on its killer, most often the Kite.
-
-*Verdict.* Its identity holds where it plays, short fights full of foes; the system costs it the
-refill past a break and a bare turn every short cycle. The lean is that a kill mends a broken
-shield, its passive breaking the rule as a one-off; the read has it small at tier one, so it is
-a design call.
-
-### Cottonmouth
-
-Wainwright & Sutler, tier 1, light hover. *Context*: versatility of reach, "a tier one that plugs
-holes in many draft compositions"; every weapon through the drum.
-
-*Kit*: hull 20, shield 6, armour 0, heat 12, move 6, 4 hardpoints.
-- Adaptive Munitions Drum: every weapon and equipment it aims at a foe leaves as the drum's shot,
-  Indirect, 4, heat 6, with its own keywords; Penetrate 2 into the back rank, Spread 2 on the
-  front.
-- Ankle Mortar, Twin Autoguns twice (each the drum's shot); Halo Projector, a Barrier, not drummed.
-
-*As a whole.* Three of its four entries are one shot, 4 on the target and 2 on its neighbours or
-on the foe in front of it. At 6 a shot it is two shots a cycle (a third overshoots by 6, a burn
-of 6 a turn and the shield broken), so it reboots every third turn on the lightest frame; the 6
-was set against its old cooling of 3, four shots to a gauge. It still deals about twice the
-vanilla's damage a round when its area finds foes, so the shot is paid in tempo and exposure now,
-not in heat. Its identity, a keyword shell of any maker made an area shot, never shows in its
-stock (the basics carry none); its Halo is now cover for an ally's reboot.
-
-*Verdict.* The shape holds, a row or a column every shot; the pace does not fit. The levers are
-the drum's heat (4 is three shots a cycle) or its gauge, and a keyword shell in its stock (the
-placeholder slot's mark).
+Left as built on 19 November (Ryan: "Leave it."). The read of that day (`docs/measurements.md`)
+found it rebooting at the roster's ordinary pace, a fifth of its turns, and the drum at heat 4
+moving its fights a third of a round; against a lone boss its area finds no neighbour, an area
+machine's design. Its kit as this proposal read it is in git:
+`git show 90d15e4:docs/reboot_machines_proposal.md`.
 
 ### Puffin, in design
 
@@ -217,7 +171,8 @@ unseals when rebooting"; "probably too much of a wall for tier 1".
 *Kit*: hull 40, shield 6, armour 1 (4 sealed), heat 12, move 3, 4 hardpoints.
 - Lockdown: equipment it spends on itself seals it, armour +3, 3 hotter at each END TURN, its
   Cryo Flinger gaining Spread; a weapon it fires opens it, and so does a reboot; its weapons deal 1
-  more to a foe carrying Cryo. Its text still says "its own cooling stopped".
+  more to a foe carrying Cryo. Its text said "its own cooling stopped" until 19 November; it
+  says "its cooling stopped" now, a module's cooling still stopping while it is sealed.
 - Cryo Flinger (fixed): Lure and Cryo 1, Indirect, heat 1; sealed, the foes beside the target too.
 - Rivet Gun 3 for 4; Twin Autoguns 3 for 4, twice; Shoring Jack, Armoured 2 (on itself, it seals).
 
@@ -461,8 +416,9 @@ in formations and nothing against a lone boss.
    three builds).
 3. Needletail: landed 18 November on his calls, its Designator at no heat and its reboot its
    second spend (the bible's Kestrel row); his "dull" waits on his play.
-4. Skua: its ramp for a cycle or for a fight.
-5. Kite: a kill mends a broken shield (lean), or left as it is.
-6. Cottonmouth: the drum's heat or its gauge, and a keyword shell in its stock.
+4. Skua: settled 19 November, left as built ("Leave it as is and move on").
+5. Kite: settled 19 November, left as built, the kill that mends refused ("Leave it").
+6. Cottonmouth: settled 19 November, left as built ("Leave it").
 7. Puffin and Swallowtail: their sessions now, or as set.
-8. Polar Bear: "its own cooling stopped" off its text; the wall at tier one stays with the bench.
+8. Polar Bear: its text's clause fixed 19 November ("its cooling stopped"); the wall at tier one
+   moot, the chassis tier two since; its kit his to leave or move.
