@@ -38,6 +38,13 @@ func _end(b: Battle, outcome: int) -> void:
 	b.state = Battle.State.DONE
 
 
+## A run with its first battle behind it and nothing else moved: no turn passes before that
+## battle is fought, so the tests of what a pass does start from here.
+func _past_the_first(c: Campaign) -> Campaign:
+	c.history.append({"turn": 0, "result": "held"})
+	return c
+
+
 ## Wreck a machine the way a skirmish does: hull to zero, off the map, kept by the battle.
 func _wreck(b: Battle, u: Unit) -> void:
 	u.hull = 0
@@ -238,7 +245,7 @@ func test_a_won_battle_lifts_the_siege_and_banks_its_salvage() -> void:
 ## The first battle (the bible's squad row; Ryan, 19 November: "First battle, meadow, 3 machines
 ## from the draft, reward is a choice of 1 of 3 machines from the maker, or the missing 4th draft
 ## pick on loss"). The opening domain is content's mark, never an id here.
-func test_until_the_first_battle_every_rift_is_the_opening_domains() -> void:
+func test_a_run_opens_on_a_forced_choice_of_city_in_the_opening_domain() -> void:
 	var db := ContentDB.load_default()
 	var opening := db.opening_faction()
 	assert_true(db.factions.has(opening), "content marks the domain a run opens against")
@@ -249,17 +256,17 @@ func test_until_the_first_battle_every_rift_is_the_opening_domains() -> void:
 		assert_eq(c.fronts().size(), Campaign.RIFTS_BASE, "the first fronts: a choice of city")
 		for f in c.fronts():
 			assert_eq(str(c.cities[f].rift["faction"]), opening, "seed %d: a first rift is the opening domain's" % seed_value)
-		# A rift that opens before a battle is fought is its too, however the turns went.
-		for city in c.cities.values():
-			city.rift = {}
-			city.quiet = 0
-		c.pass_turn()
-		for f in c.fronts():
-			assert_eq(str(c.cities[f].rift["faction"]), opening, "a rift opened before the first battle too")
-		# Once the first battle is fought the rifts roll among every domain.
+		# No turn passes before the first battle (Ryan, 19 November: "a forced city choice with no
+		# option to pass"), so no other rift opens before it and the clock does not move.
+		assert_false(c.pass_turn(), "no pass before the first battle")
+		assert_eq(c.turn, 0, "the turn stands")
+		assert_eq(c.convergence, 0, "and the Convergence")
+		# Once the first battle is fought the rifts roll among every domain, and a turn may pass.
 		var b := _battle(c)
 		_end(b, Battle.Outcome.VICTORY)
 		c.finish_battle()
+		c.take_machine(0)
+		assert_true(c.pass_turn(), "a turn passes once the first battle is behind the run")
 		for i in range(12):
 			later[str(c._roll_rift()["faction"])] = true
 	assert_true(later.size() > 1, "after the first battle a rift's lead is any domain")
@@ -542,7 +549,7 @@ func test_a_wreck_loses_what_was_destroyed_and_sits_out_a_battle() -> void:
 ## finale is due ... the Council demands it"): a pass is refused, so the Convergence never runs
 ## past the finale's; with nobody to field and no rush, the runner forfeits it and the capital falls.
 func test_the_finale_cannot_be_passed() -> void:
-	var c := _run()
+	var c := _past_the_first(_run())
 	assert_true(c.pass_turn(), "a turn may be passed before it")
 	c.convergence = Campaign.FINALE_AT
 	c._open_rifts()
@@ -580,7 +587,7 @@ func test_the_capitals_gate_is_the_one_priced_repair() -> void:
 
 
 func test_an_undefended_gate_bleeds_and_falls_unfought() -> void:
-	var c := _run()
+	var c := _past_the_first(_run())
 	var front := str(c.fronts()[0])
 	var turns := c.turns_to_fall(front)
 	for i in range(turns - 1):
@@ -592,7 +599,7 @@ func test_an_undefended_gate_bleeds_and_falls_unfought() -> void:
 
 
 func test_rifts_open_with_the_tier_and_a_guest_joins_from_its_tier() -> void:
-	var c := _run()
+	var c := _past_the_first(_run())
 	c.convergence = Campaign.TIER_EVERY * Campaign.GUEST_TIER - 1
 	for city in c.cities.values():
 		city.rift = {}
@@ -662,7 +669,7 @@ func test_a_guests_spawns_join_the_rifts_cycle() -> void:
 
 
 func test_the_finale_is_due_at_the_threshold_and_fought_at_the_capital() -> void:
-	var c := _run()
+	var c := _past_the_first(_run())
 	c.convergence = Campaign.FINALE_AT - 1
 	c.pass_turn()
 	assert_true(c.finale_due(), "due")
@@ -684,7 +691,7 @@ func test_a_fallen_city_brings_the_finale_sooner() -> void:
 
 
 func test_the_capital_at_zero_loses_the_run() -> void:
-	var c := _run()
+	var c := _past_the_first(_run())
 	c.cities[str(c.fronts()[0])].fallen = true
 	c.capital().gate = Campaign.DRAIN
 	c.pass_turn()
@@ -1212,7 +1219,7 @@ func test_a_won_final_closes_its_domains_other_rifts() -> void:
 ## The finale (the bible's section 9): the dealt party promoted, a column a domain, and a domain
 ## whose final was won leaves its column to a standing domain's boss.
 func test_the_finale_is_the_party_promoted_a_beaten_heros_column_to_a_standing_boss() -> void:
-	var c := _run()
+	var c := _past_the_first(_run())
 	var line := c.finale_line()
 	var want: Array = []
 	for fid in c.db.factions.keys():

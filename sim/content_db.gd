@@ -1820,8 +1820,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: magazine_min is the ammo a piece that spends the magazine needs to fire: 1 or more, beside spends_magazine" % where)
 	if fd.has("reloads_ammo") and (kind == "attack" or kind == "blank" or int(fd["reloads_ammo"]) <= 0):
 		errs.append("%s: reloads_ammo is a machine piece's: the ammo it adds to its forging machine, a positive number" % where)
-	if fd.has("shields") and (kind != "vent" or int(fd["shields"]) <= 0):
-		errs.append("%s: shields is a vent's shield half (the combined entry): the shield it gives after its vent, a positive number" % where)
+	if fd.has("shields"):
+		errs.append("%s: shields left the entry with the Wake Diffuser, its last piece (19 November): a vent vents, and a shield that cools is a shield with vents" % where)
 	if fd.has("gathers_mines") and (kind != "attack" or not (fd["gathers_mines"] is bool)):
 		errs.append("%s: gathers_mines (true) is an attack's, a weapon's or a debuff's: every Mine on the field's other foes joins its target's" % where)
 	if fd.has("detonates") and (kind != "attack" or not (fd["detonates"] is bool)):

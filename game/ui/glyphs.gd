@@ -697,7 +697,7 @@ static func primary_for(face: Face) -> String:
 		Face.Kind.VENT:
 			if face.power <= 0 and face.reloads_ammo > 0:
 				return "ammo"
-			return "shield_vent" if face.shields > 0 else "vent"
+			return "vent"
 		Face.Kind.BLANK:
 			return "blank"
 		Face.Kind.BUFF:

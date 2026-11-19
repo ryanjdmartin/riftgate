@@ -215,9 +215,9 @@ against the vanilla he settles on. Five things keep it small:
   machine, since the reason to slot a find is what a unit does with it.
 - Read by the kind of formation, by the bot's pick share and by his play.
 
-Where the pieces live is his: content with working names, or rows a debug dial deals with no
-name, text or model owed until one is kept. The lean is the second for the grid and the
-first for what survives it.
+Where the pieces live, his direction of 19 November: the hangar's Bench, for his review
+("Placeholder pieces can go in the Hangar Bench for my review?"), content with working names
+for what survives it.
 
 Tier one's finds as built are what it replaces: eleven of fourteen slottable tier-one guns
 deal 4 or more, where a find in a tier-one rift "is a new trick and never a bigger number".
@@ -236,20 +236,20 @@ His, each with this pass's lean and its read (`docs/measurements.md`, 17 and 18 
 | TOP BASIC | +2: the Carbine 4 for 6 | Its point is paid in heat: two shots a gauge for the vanilla's four |
 | RANK AND FILE | As built: a standard foe of 4 | At 5 a formation runs a round longer and costs half again as much, so the blows would be sized again. The room 5 was to buy, a point between the Carbine and the kill, is bought by the Carbine's heat. Loosely held; tier two's standard is 5 already |
 | OVERHEAT | ×1, and the dial cut | A stack burns every turn until the reboot, so one compounds; the bot reboots before it burns |
-| The walled tank | His to say | Whether a machine that reboots for nothing under a formation is its identity or a hole |
-| Where the bench's pieces live | Rows a debug dial deals for the grid, content for what survives | A name and a line are his to write |
 
-Leans not yet built, each a number this pass may land with its read:
+Landed on 19 November on his "Agreed on all, send Coil to T2", read at the baseline
+(`docs/measurements.md`, that day): the Field Radiators and the Boundary-layer Bleed lose their
+point of cooling, the Radiators keeping their maximum, so no piece grants a cooling or a shield
+regen today (the engine keeps both, the reboot's rulings on a granted one standing); Cryo cools
+1 a stack; the Ankle Mortar deals 3 for 5, Indirect a point of heat over Direct (the bench prices
+the finds by the same trade); the Overcharge Coil is tier two, at its two stacks; the seven
+planned shields and vents of tiers zero and one are retired, the three of tier two kept as
+drafts until a kit wants one. The Wake Diffuser was the last piece of a vent's shield half, so
+that half left the engine with it. Beside them, his yes to the refit brief's placeholder slots:
+the Cassowary's second Twin Autoguns is a Laser Carbine and the Cottonmouth's the Incendiary
+Shells. His answers on the rest of this table: the walled tank is an identity ("Reboot for free
+is an identity"), and the bench's pieces go on the hangar's Bench for his review (section 6).
 
-- The Field Radiators and the Boundary-layer Bleed still grant a point of cooling from a
-  slot, against his expectation that cooling is a kit's or gated; the lean is to drop the
-  cooling and keep the Radiators' maximum.
-- Cryo's stack cools 2, two thirds of a vanilla's heat at 3; the lean is 1 if the vanilla's
-  heat lands at 3, with the Polar Bear's session.
-- Indirect a point of heat over Direct.
-- The Overcharge Coil at one stack, or tier two.
-- The ten planned shields and vents: retire the seven at tiers zero and one, the three at
-  tier two waiting for a kit that wants one.
 - Tiers two and three scale from the same attacks, so the leaders there came down with tier
   one's and are unsized as before.
 

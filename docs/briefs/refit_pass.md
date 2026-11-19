@@ -72,10 +72,10 @@ superseded by the baseline of 16 November (the numbers brief, section 3). The wh
 ## 6. The audit: what the model breaks, touches and leaves (9 November, on main's content)
 
 A stub. Its list of machines is superseded by section 22's and `docs/reboot_machines_proposal.md`.
-Still to come from it, the component pass (the to-do's refit line): the ten planned shields and
-vents, each with its fate under its `design` in `content/components.json` (four to retire; the
-Laminar Deflector, the Corona Shield and the Phased Sublimator to be made equipment; three back
-in design); the Blast Door, a Barrier at tier one beside a Barrier basic, which waits on section
+Still to come from it, the component pass (the to-do's refit line): the planned shields and
+vents of tier two, the Laminar Deflector, the Corona Shield and the Entropy Condenser, kept until
+a kit wants one (the seven of tiers zero and one retired on 19 November on Ryan's yes, the Phased
+Sublimator among them, which this section had marked to be made equipment; git keeps it); the Blast Door, a Barrier at tier one beside a Barrier basic, which waits on section
 14; and two modules whose rules do nothing today, the Reinforced Skeleton (nothing destroys a
 component) and the Phase Conjugator (nothing dealt shields an ally).
 
@@ -517,8 +517,9 @@ of it. Two things recur across the machines, with his word on each (13 November)
   don't want to make a strict rule about anything, but I would expect that anything that grants
   Regen, cooling, flat shield or flat heat reduction, would probably be part of a kit or locked
   piece. Or gated behind a synergy. Bring the dearest pieces, as you say, they should be
-  something special." An expectation, not a rule. From a slot today: the Boundary-layer Bleed,
-  the Spall Liner, the Field Radiators and the ten planned shields and vents (the numbers brief).
+  something special." An expectation, not a rule. From a slot today: the Spall
+  Liner's heat and the three planned shields and vents of tier two; the Boundary-layer Bleed's
+  and the Field Radiators' point of cooling went on 19 November (the numbers brief, section 7).
 - What pays in shield pays with a budget that comes back once a reboot. "Shield spend also is
   something I'm not certain will be standard fare, because it's so expensive."
 

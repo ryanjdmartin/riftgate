@@ -11861,3 +11861,30 @@ Read.
 - What it does not say: whether the second battle is fair. The map's player is a rule and
   reaches the boss one battle in ten or two; Ryan's play of a second battle with four machines is the
   judge, and the dials are his.
+
+## 19 November: the numbers pass's leans and the placeholder slots, read at the baseline
+
+On Ryan's "Agreed on all, send Coil to T2" and his yes to the placeholder slots. What moved
+for the squads: the Cassowary's second Twin Autoguns is a Laser Carbine, the Cottonmouth's the
+Incendiary Shells, and the Ankle Mortar deals 3 for 5 (on the Cassowary's and the Cottonmouth's
+stocks); Cryo cools 1 a stack (no machine of the pool carries it). The modules' cooling, the
+Overcharge Coil's tier and the retired shields and vents touch no machine of the pool. The
+anchor read as the entry before this one, every squad of the six certain tier ones; hull a
+share of a four's.
+
+| Kind of fight | Before | After |
+|---|---|---|
+| A lone flanker | 3.4% | 3.3% |
+| A hunter's pack | 8.9% | 8.0% |
+| A formation | 5.5% (3.3% to 6.9%) | 5.7% (3.2% to 7.3%) |
+| An elite, without the Barrier | 24.4% | 22.9% |
+| An elite, with the Barrier basic | 15.9% | 15.9% |
+| A boss, without the Barrier | 29.5% | 28.0% |
+| A boss, with the Barrier basic | 20.4% | 19.5% |
+
+By machine the Cottonmouth pays least for the change: an elite 21.7% of its own hull for
+26.7%, a hunter's pack 16.3% for 23.7%. The rows move by a few points either way at thirty
+fights. The Reaper read 15.8% without the Barrier at thirty and 30.5% at ninety (25.8% with
+it), so its first row was grain; the Thunder Ape reads 17.4% and 16.2% at ninety, at the low
+edge of the elites. Every fight is won nineteen times in twenty or more. Read: the squad is a
+point or two stronger against the leaders and no fight leaves its band, so nothing is resized.
