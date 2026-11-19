@@ -11751,3 +11751,113 @@ and where it is strikes, a purge ahead of the blow, or a blow at every machine, 
 the other pays or more (Floraison, the Fiend of Fire, the Rust Monster, the old man's
 rising). 1332 tests, green.
 
+## 19 November: the second battle whole at the baseline, its fights a machine short, and the field's dials
+
+The close of the baseline pass: with every fight of tier one on the budget at its rating
+(the entry before this), what the second battle whole reads as. Content as main at
+`df212cfc` has it. The map's player is the runner's, never Ryan's play: the player that
+gathers (`BattleBot.Rule.MUSTER`), every fight by the greedy rung, the anchor's three squads
+of 12 November, twenty seeds a domain and squad, 240 battles a read. A cell is the range over
+the three squads; twenty seeds is a direction. `docs/battle_run.md` is the read as built.
+
+**The battle whole** (`tools/battle_run.gd -- --seeds 20`), and 16 November's beside it:
+
+| Domain | Won | The gate fell | Wiped | Hull at the end | Wrecks | 16 November: won, the gate fell, wiped, hull, wrecks |
+|---|---|---|---|---|---|---|
+| The Meadow | 0 to 25% | 60 to 75% | 10 to 30% | 34 to 41% | 1.6 to 1.8 | 5 to 10%, 60 to 85%, 10 to 35%, 24 to 37%, 1.4 to 2.4 |
+| The Waste | 5 to 10% | 40 to 55% | 40 to 50% | 21 to 26% | 2.3 to 2.6 | 10 to 25%, 70 to 80%, 5 to 15%, 56 to 63%, 0.5 to 0.8 |
+| The Marsh | 5% | 60 to 80% | 15 to 35% | 26 to 39% | 1.9 to 2.6 | 0 to 30%, 40 to 65%, 5 to 45%, 25 to 47%, 1.4 to 2.9 |
+| The Peak | 10 to 20% | 55 to 80% | 10 to 25% | 36 to 44% | 1.9 to 2.0 | 5 to 10%, 60 to 70%, 20 to 35%, 21 to 25%, 2.6 to 3.0 |
+
+The ledger, a fight by its kind: how many a battle, the machines in it, the hull it cost (a
+share of the squad's), the share lost.
+
+| Domain | A patrol for one | A hunter's pack | A formation | An elite | The boss |
+|---|---|---|---|---|---|
+| The Meadow | 3.6, 1.0, 2.3%, 1% | 1.5, 2.5, 6.8%, 22% | 1.9, 2.7, 5.8%, 10% | 1.1, 2.7, 28.4%, 36% | 0.1, 3.6, 17.8%, 13% |
+| The Waste | 4.3, 1.0, 3.4%, 3% | 0.7, 2.2, 6.3%, 23% | 2.2, 2.5, 12.3%, 19% | 1.0, 2.0, 26.6%, 64% | 0.2, 2.7, 27.1%, 55% |
+| The Marsh | 3.9, 1.0, 3.6%, 11% | none | 2.4, 2.4, 12.8%, 27% | 1.1, 2.8, 20.8%, 34% | 0.1, 3.0, 28.5%, 40% |
+| The Peak | 5.8, 1.0, 2.1%, 3% | none | 2.0, 2.6, 11.4%, 13% | 0.8, 2.6, 22.6%, 54% | 0.2, 2.8, 34.3%, 25% |
+
+**A fight one machine short** (`tools/anchor_read.gd -- machines=2 kinds=formation`,
+`machines=3 kinds=elite`, `machines=2 kinds=elite`; every squad of the pool of that size, two
+seeds, the stock dice; hull a share of a four's, so 50% is two machines wrecked):
+
+| Formation | At its rating, three: hull | With two: won, hull |
+|---|---|---|
+| The goblin horde | 3.3% | 97%, 21.5% |
+| The treant's grove | 5.2% | 90%, 20.7% |
+| The gel wall | 4.9% | 97%, 17.9% |
+| The needler thicket | 6.9% | 77%, 29.5% |
+| The sandworm's ambush | 5.4% | 73%, 30.5% |
+| The grave throng | 6.6% | 57%, 35.5% |
+| The barrow mound | 6.2% | 67%, 34.1% |
+| The knights' vigil | 3.6% | 87%, 20.9% |
+| The ember pyre | 6.7% | 80%, 26.9% |
+| The magma vent | 6.1% | 70%, 29.5% |
+
+| Elite | At its rating, four: hull | With three: won, hull | With two: won, hull |
+|---|---|---|---|
+| The shaman's warband | 19.0% | 90%, 36.9% | 37%, 44.8% |
+| The Nob | 9.6% | 98%, 24.1% | 33%, 44.7% |
+| The old man's rising | 23.6% | 93%, 37.6% | 13%, 49.0% |
+| The Pilgrim's wake | 15.9% | 98%, 29.2% | 10%, 49.0% |
+| The Rust Monster | 28.6% | 68%, 48.5% | 0%, 50.0% |
+| Gilgamesh | 8.9% | 100%, 17.1% | 60%, 33.9% |
+| The Fell Rider | 7.4% | 100%, 18.0% | 37%, 43.9% |
+| The Reaper | 13.5% | 85%, 28.1% | 40%, 39.4% |
+| The Wild Hunt | 18.0% | 95%, 28.4% | 7%, 49.7% |
+| The Cinder Tortoise | 12.8% | 95%, 31.1% | 13%, 47.8% |
+| The Thunder Ape | 18.0% | 85%, 38.9% | 7%, 48.7% |
+
+**The field's dials and the player's rule**, each a what-if (the battle runner reads the
+field's trial dials from the environment since this day, and `--whole` is a player that never
+fights a pack one short at the wall: it gathers its rating and lets the strike land). Won,
+the gate fell, wiped, by domain:
+
+| Read | The Meadow | The Waste | The Marsh | The Peak |
+|---|---|---|---|---|
+| As the game has it | 0 to 25%, 60 to 75%, 10 to 30% | 5 to 10%, 40 to 55%, 40 to 50% | 5%, 60 to 80%, 15 to 35% | 10 to 20%, 55 to 80%, 10 to 25% |
+| The wall struck for 7 a pip | 0 to 25%, 55 to 60%, 15 to 40% | 5 to 20%, 25 to 30%, 50 to 70% | 5 to 20%, 35 to 45%, 40 to 60% | 25%, 50%, 25% |
+| For 5 a pip | 0 to 25%, 40 to 55%, 35 to 50% | 10 to 20%, 20 to 30%, 50 to 70% | 5 to 25%, 25 to 35%, 45 to 70% | 25 to 35%, 25 to 40%, 35 to 45% |
+| For 3 a pip | 0 to 25%, 30 to 50%, 40 to 55% | 15 to 25%, 10 to 20%, 55 to 75% | 5 to 30%, 15 to 30%, 50 to 80% | 30 to 50%, 10 to 25%, 40 to 45% |
+| The Rupture one beat | 15 to 35%, 50 to 60%, 5 to 35% | 10 to 25%, 30 to 50%, 40 to 45% | 15 to 30%, 40 to 50%, 20 to 35% | 15 to 35%, 50 to 75%, 10 to 15% |
+| Never short at the wall | 0 to 25%, 75 to 85%, 0 to 15% | 5 to 10%, 55 to 65%, 30 to 40% | 5 to 10%, 70 to 80%, 10 to 25% | 10 to 20%, 70 to 80%, 10 to 15% |
+| Never short, 5 a pip | 0 to 25%, 65 to 85%, 5 to 25% | 5 to 15%, 35 to 40%, 45 to 55% | 10 to 30%, 45 to 50%, 20 to 40% | 20 to 35%, 50 to 55%, 15 to 25% |
+| Never short, one beat | 10 to 35%, 65 to 70%, 0 to 20% | 10 to 25%, 50 to 55%, 20 to 40% | 15 to 30%, 50 to 60%, 15 to 25% | 15 to 35%, 55 to 75%, 10% |
+
+The player that never fights short ends with 59 to 63% of its hull in the Meadow (34 to 41%
+as the game's player), 27 to 37% in the Waste, 39 to 55% in the Marsh, 47 to 52% on the Peak,
+and its ledger reads a formation fought by 2.7 to 2.9 machines at 4.1% in the Meadow, 7.8% in
+the Marsh, 10.4% on the Peak and 10.7% in the Waste, lost 2 to 7% of the time (the Waste's
+13%). Under every read the boss is fought in one battle in two at most, in one or two in ten
+as the game has it, though the Rupture is reached in half to nine in ten.
+
+Read.
+
+- The fights are sized. Held to its ratings in a battle, a squad pays for a formation about
+  what the anchor says, and wins it.
+- One machine short is a cliff, by the same sizing: a formation costs four to six times its
+  price with two machines on it and is lost up to four times in ten, an elite with three
+  costs about twice and one with two is lost. The Meadow's formations are the gentlest
+  short (18 to 22% of a four's hull), the Marsh's throng and mound the harshest (34 to 36%).
+- The runner's player fights short: 2.4 to 2.7 machines on a formation rated for three, 2.0
+  to 2.8 on an elite rated for four. So the battle it plays is the short-handed one, and the
+  sizing of the fights at their ratings did not move what it wins.
+- It is the hull that runs out, more than the gate: a lighter strike turns the gate's falls
+  into wipes and moves the wins by ten points or so; a shorter Rupture moves them as far with
+  the squad whole. A player that never fights short keeps its hull and loses the gate
+  instead, three battles in four. No dial read here takes the runner's player past a third.
+- The Waste was the lightest battle for this player on 16 November and is the heaviest now.
+  Its fights were under the budget then and are on it now, its formations are among the
+  harshest short, and its player brings two machines to its elite where the others bring
+  nearly three.
+- The budget's own sum, a count from battles that mostly ended early and so an underestimate:
+  the fights a second battle holds, at their ratings, come to 58 to 75% of a squad's hull with
+  the Barrier basic in the stock (the Marsh 58%, the Peak 67%, the Meadow 69%, the Waste 75%)
+  and to 79 to 89% without it. So a battle fought at its ratings throughout is won with a
+  quarter to two fifths of the hull left with the piece and a tenth to a fifth without, and one
+  formation met a machine short spends that.
+- What it does not say: whether the second battle is fair. The map's player is a rule and
+  reaches the boss one battle in ten or two; Ryan's play of a second battle with four machines is the
+  judge, and the dials are his.

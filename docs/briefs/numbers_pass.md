@@ -450,3 +450,38 @@ Saurian Queen for 10 (41.5% to 31.4%).
 The notes that still said breach are rewritten in every domain, and the drafts of the two
 kit changes (the Serpent's fangs, the Rust Monster's bite and codex) are his to write.
 
+## 11. The battle whole at the baseline, 19 November
+
+The close of section 10: with every fight on the budget at its rating, the second battle
+read whole in every domain (`docs/measurements.md`, 19 November; `docs/battle_run.md`). The
+map's player is the runner's, a rule and never his play.
+
+- **The fights hold inside a battle.** A player kept to its ratings pays for a formation
+  about what the anchor says and wins it.
+- **One machine short is a cliff.** A formation with two machines on it costs four to six
+  times its price (18 to 36% of a four's hull for 3 to 7%) and is lost up to four times in
+  ten; an elite with three costs about twice; one with two is lost. The Meadow's formations
+  are the gentlest short, the Marsh's throng and mound the harshest. This is the squad row's
+  lead as a number: splitting up against staying together.
+- **The runner's player fights short**, 2.4 to 2.7 machines on a formation and 2.0 to 2.8 on
+  an elite, and wins 0 to 25% of second battles in every domain, as it did before the
+  sizing. Its hull runs out more than its gate: the wall struck for half turns the gate's
+  falls into wipes, a one-beat Rupture adds ten points or so, and a player that never fights
+  short keeps half its hull and loses the gate three times in four. No dial read takes it
+  past a third. It fights the boss in one battle in ten or two.
+- **The Waste is the heaviest battle for it now**, where it was the lightest: its fights were
+  under the budget on 16 November and are on it, and its formations are among the harshest
+  short.
+- **The budget's sum.** The fights a second battle holds, at their ratings, come to 58 to
+  75% of a squad's hull with the Barrier basic and 79 to 89% without it, counted on battles
+  that mostly ended early, so an underestimate. A battle fought at its ratings throughout
+  is won with a tenth to a fifth of the hull left by the squad the leaders are sized for,
+  and one formation met a machine short spends that.
+
+**Open, his:** what a battle should leave a squad with, and so whether the budget's shares
+stand. This pass's lean: leave the fights as they are, even across the domains, until he
+has played a second battle with four machines; if it reads as too tight, the first lever is
+the count of fights a battle holds (the tide, the Rupture's length: his dials) and the
+second the elite's and the boss's shares, since a formation's twentieth is already small.
+The runner cannot settle it: its map player needs a rule for when a strike is worth taking,
+and that rule would be a guess at his play.
