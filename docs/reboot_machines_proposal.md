@@ -22,7 +22,7 @@ too), and the Needletail the same day. It retires once its calls are rows and co
 | Storm Petrel | Landed 17 November (the bible's row): the Hardlight Generator, a point of shield a point of heat; its lock the Hardlight Pulse, a lure run hot; the Arc Fault Cannon in the Shoring Jack's slot; his branches Defence and Striker | His play of it, and his marks on its texts |
 | Buzzard | Landed 18 November (the bible's row): the Field-Recoupling Injectors, a zap on every weapon it fires and 2 shield for every foe that falls; its Shield-burner Cannon fires the whole shield; a Barrier piece and a warm gun in its stock; his branches Sustain and Burst | His play of it, and his marks on its texts |
 | Needletail | Landed 18 November on his two calls (the bible's Kestrel row): its Designator makes no heat, and its reboot may be its second spend, after one action of either kind | His play of it, and his "dull" |
-| Skua | Its ramp lives behind a shield that lasts a cycle, and every cycle ends bare | Whether its ramp is for a cycle or a fight |
+| Skua | Stands as built (19 November): the reboot leaves its ramp alone, and it reads level with the tier twos | Settled, his "Leave it as is" |
 | Kite | Holds in short fights; its refill dies with a break, its reboot is the frailest bare turn | A kill mends a broken shield, or as it is |
 | Cottonmouth | The drum's shape holds; at 6 heat it is two shots a cycle on the lightest frame | The drum's heat or its gauge; a keyword shell in stock |
 | Puffin, in design | Nothing of the old kit survives; his direction, moving heat, is the system's dearest verb | Its session now or after the heat prices |
@@ -87,28 +87,13 @@ Landed 18 November on his two calls, the Designator at no heat and its reboot it
 the bible's Kestrel row says what it is and why, and `docs/measurements.md` the same day reads
 it. Its kit as this proposal read it is in git: `git show f167af8:docs/reboot_machines_proposal.md`.
 
-### Skua
+### Skua, settled
 
-Kestrel, tier 1, light flyer. *Context*: Ramping Dakka (11 November), "the long fight's hitter,
-weak in its first round and a storm by its fifth"; "it ramps only while its shield holds:
-Kestrel's risk".
-
-*Kit*: hull 20, shield 9, armour 0, heat 12, move 6, 3 hardpoints.
-- Carom Field: once a round, damaging a foe with a weapon gains it a stack of Ricochet (after a
-  weapon fires, a strike of 1 a stack through the foe's Brittle and armour); hull damage halves
-  the stacks.
-- Hypersonic Swoop (fixed): Ricochet 1 on itself, Rapid: the one way to a second stack a round.
-- Laser Carbine 4 for 5; Twin Autoguns 3 for 4; Flechette Pod 1 four times for 4.
-
-*As a whole.* A stack a round (two with the Swoop), each an extra strike after every gun, about
-three shots a cycle and the Swoop free. The shield it ramps behind lasts a cycle at most, and
-every cycle ends in a reboot whose bare turn makes any blow hull damage, halving the stacks; a
-burn halves them too. So the ramp tops out around one cycle, three or four stacks, likely halves
-at the reboot and climbs again. A storm by the fifth round needs the team to cover its reboot.
-
-*Verdict.* It collides with the system on length. If its ramp is meant for a cycle, it stands as
-built; if for a fight, the halving wants another trigger (a foe's blow alone, its own reboot's
-bare turn spared, or the stacks kept through the reboot). His: which it is for.
+Left as built on 19 November (Ryan: "Leave it as is and move on"). The read of that day
+(`docs/measurements.md`) found the reboot does not break its ramp: the bot halves its stacks
+rarely and almost never while it reboots, and sparing them changes nothing. It reads level
+with the Kite and the Needletail, a tier above it. Its kit as this proposal read it is in git:
+`git show 90d15e4:docs/reboot_machines_proposal.md`.
 
 ### Kite
 
@@ -461,7 +446,7 @@ in formations and nothing against a lone boss.
    three builds).
 3. Needletail: landed 18 November on his calls, its Designator at no heat and its reboot its
    second spend (the bible's Kestrel row); his "dull" waits on his play.
-4. Skua: its ramp for a cycle or for a fight.
+4. Skua: settled 19 November, left as built ("Leave it as is and move on").
 5. Kite: a kill mends a broken shield (lean), or left as it is.
 6. Cottonmouth: the drum's heat or its gauge, and a keyword shell in its stock.
 7. Puffin and Swallowtail: their sessions now, or as set.
