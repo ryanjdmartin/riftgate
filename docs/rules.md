@@ -896,7 +896,7 @@ On a machine:
   and leaves the loads, so what a Purge took comes back at the machine's next turn and no
   sooner.
 - **Sealed** (Ability, the Polar Bear's form): equipment it spends on itself (a buff dropped on
-  itself) seals it: armour +3, its own cooling stopped, 3 heat more at the end of each turn
+  itself) seals it: armour +3, any cooling it is granted stopped (a chassis has none of its own), 3 heat more at the end of each turn
   before the overheat, and its Cryo Flinger gains Spread (one foe open, its rank's three sealed);
   a weapon it fires opens it, and so does a reboot: the shell and its armour go as the die
   drops, so the seal's clock adds nothing that turn and it stands bare and open through the

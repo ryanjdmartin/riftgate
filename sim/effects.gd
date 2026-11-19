@@ -340,7 +340,7 @@ const STATUS := {
 	# buff, so nothing purges it; the model holds the form of the same name (the second battery up).
 	"changed_over": {"id": "changed_over", "name": "Changed Over", "description": "Its second battery is up and its first stowed: its die rolls the second battery and its fixed pieces.", "decay": "none", "stacking": "renew",
 		"tags": ["ability", "form"], "effects": []},
-	"sealed": {"id": "sealed", "name": "Sealed", "description": "Sealed: armour up, its own cooling stopped, hotter at the end of each turn. A weapon it fires opens it.", "decay": "none", "stacking": "renew",
+	"sealed": {"id": "sealed", "name": "Sealed", "description": "Sealed: armour up, its cooling stopped, hotter at the end of each turn. A weapon it fires opens it.", "decay": "none", "stacking": "renew",
 		"tags": ["ability", "form"], "effects": []},
 	# Cryo (Ryan, 20 October: the Polar Bear's Cryo Flinger, the debuff called Cryo too, marked
 	# for reuse as the healthier way to cool an ally): a foe mark that pays in cooling. Any
@@ -1831,7 +1831,7 @@ static func zap_of(u, face: Face) -> Dictionary:
 ## sealed, carrying the armour as its one effect (the stat pipeline reads it like any add).
 static func sealed_status(armour: int, heat: int) -> Dictionary:
 	var d: Dictionary = STATUS["sealed"].duplicate(true)
-	d["description"] = "Sealed: armour +%d, its own cooling stopped, %d hotter at the end of each turn. A weapon it fires opens it." % [armour, heat]
+	d["description"] = "Sealed: armour +%d, its cooling stopped, %d hotter at the end of each turn. A weapon it fires opens it." % [armour, heat]
 	d["effects"] = [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": armour}]
 	return d
 
@@ -2752,7 +2752,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"self_status":
 			var sn := str(STATUS.get(str(eff.get("status", "")), {}).get("name", str(eff.get("status", ""))))
 			body = "spent on a foe, lays %s %s on its own machine%s%s" % [sn, vs, " for each foe it reaches" if bool(eff.get("per_foe", false)) else "", (", up to %d" % int(eff["cap"])) if int(eff.get("cap", 0)) > 0 else ""]
-		"seal_form": body = "equipment it spends on itself seals it: armour +%s, its own cooling stopped, %s hotter at the end of each turn; a weapon it fires opens it" % [vs, str(eff.get("heat", 0))]
+		"seal_form": body = "equipment it spends on itself seals it: armour +%s, its cooling stopped, %s hotter at the end of each turn; a weapon it fires opens it" % [vs, str(eff.get("heat", 0))]
 		"stack_status":
 			var nm := str(STATUS.get(str(v), {}).get("name", str(v)))
 			var k := maxi(1, int(eff.get("stacks", 1)))

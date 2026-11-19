@@ -171,7 +171,8 @@ unseals when rebooting"; "probably too much of a wall for tier 1".
 *Kit*: hull 40, shield 6, armour 1 (4 sealed), heat 12, move 3, 4 hardpoints.
 - Lockdown: equipment it spends on itself seals it, armour +3, 3 hotter at each END TURN, its
   Cryo Flinger gaining Spread; a weapon it fires opens it, and so does a reboot; its weapons deal 1
-  more to a foe carrying Cryo. Its text still says "its own cooling stopped".
+  more to a foe carrying Cryo. Its text said "its own cooling stopped" until 19 November; it
+  says "its cooling stopped" now, a module's cooling still stopping while it is sealed.
 - Cryo Flinger (fixed): Lure and Cryo 1, Indirect, heat 1; sealed, the foes beside the target too.
 - Rivet Gun 3 for 4; Twin Autoguns 3 for 4, twice; Shoring Jack, Armoured 2 (on itself, it seals).
 
@@ -419,4 +420,5 @@ in formations and nothing against a lone boss.
 5. Kite: settled 19 November, left as built, the kill that mends refused ("Leave it").
 6. Cottonmouth: settled 19 November, left as built ("Leave it").
 7. Puffin and Swallowtail: their sessions now, or as set.
-8. Polar Bear: "its own cooling stopped" off its text; the wall at tier one stays with the bench.
+8. Polar Bear: its text's clause fixed 19 November ("its cooling stopped"); the wall at tier one
+   moot, the chassis tier two since; its kit his to leave or move.

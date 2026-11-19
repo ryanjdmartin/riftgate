@@ -7112,7 +7112,7 @@ func test_a_buff_on_itself_seals_the_machine_and_a_weapon_opens_it() -> void:
 	assert_eq(ms.heat, 15, "sealed, it ran 15 hotter at the end of its turn")
 	assert_true(Effects.is_sealed(m), "and stays sealed through the enemy's turn")
 	sk.start_round()
-	assert_eq(ms.heat, 15, "its own cooling stopped: nothing shed at the round's start")
+	assert_eq(ms.heat, 15, "its cooling stopped: nothing shed at the round's start")
 	ms.face_index = 3
 	assert_true(sk.assign(0, sk.front[0]), "a lure, a debuff")
 	assert_true(Effects.is_sealed(m), "keeps the seal")
