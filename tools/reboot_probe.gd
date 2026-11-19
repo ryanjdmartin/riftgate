@@ -23,7 +23,9 @@ extends SceneTree
 ## machine read's upgrades, its directions in the order taken: --branches defence,defence; each
 ## machine read takes those its chassis allows), --dump-per N (a what-if: the heat a stack of a
 ## dump's buff stands for, on every piece that passes heat; 0 grants none: the Puffin's Empowered for
-## every 2, Ryan, 19 November: "We can try empowered for 2 but that needs data"). Four in parallel, a part of the roster each, read
+## every 2, Ryan, 19 November: "We can try empowered for 2 but that needs data"), --pull N (a
+## what-if: the most of an ally's heat a pull takes, on every passive that pulls; his 4 as built),
+## --stock <component ids> (a what-if: the read machine's stock in place of its own, in order). Four in parallel, a part of the roster each, read
 ## the whole roster in about seven minutes.
 ##
 ## The proposal's leans it laid over its fight loop went with their calls: the Polar Bear's and
@@ -36,6 +38,8 @@ var only: Array = []
 var bosses := false
 var picks: Array = []   # the machine read's branch picks (--branches)
 var dump_per := -1      # --dump-per: the dump's step as a what-if; -1 leaves content's
+var pull := -1          # --pull: the pull's most as a what-if; -1 leaves content's
+var stock: Array = []   # --stock: the read machine's stock as a what-if; empty leaves content's
 
 const CAP := 40   # a fight still standing at forty rounds ends there as it stands, the bot stalled
 
@@ -55,6 +59,10 @@ func _init() -> void:
 				picks = Array(v.split(","))
 			"--dump-per":
 				dump_per = maxi(0, int(v))
+			"--pull":
+				pull = maxi(1, int(v))
+			"--stock":
+				stock = Array(v.split(","))
 	db = ContentDB.load_default()
 	if not db.load_errors.is_empty():
 		push_error("content did not load: " + "\n".join(db.load_errors))
@@ -65,6 +73,16 @@ func _init() -> void:
 			var face: Dictionary = db.components[cid].get("face", {})
 			if bool(face.get("passes_heat", false)):
 				face["heat_per_stack"] = dump_per if dump_per > 0 else 1000   # a step no gauge reaches: no stack
+	if not stock.is_empty():
+		for cid in only:
+			db.chassis[cid]["loadout"] = stock.duplicate()
+	if pull > 0:
+		for cid in db.chassis.keys():
+			var p = db.chassis[cid].get("passive", null)
+			if p is Dictionary:
+				for eff in p.get("effects", []):
+					if str(eff.get("effect", "")) == "pull_heat":
+						eff["value"] = pull
 	var mates := ["badger", "prairie_dog", "cassowary"]
 	var comps: Array = []
 	for fac in db.factions.keys():
@@ -76,7 +94,7 @@ func _init() -> void:
 			for c in db.compositions(str(fac), 1, size):
 				comps.append(c)
 	print("%d %s, %d seeds, the squad's three: %s%s%s" % [comps.size(), "bosses" if bosses else "compositions", seeds, ", ".join(mates),
-		"" if picks.is_empty() else ", upgrades " + ",".join(picks), "" if dump_per < 0 else ", a dump's stack every %s" % (str(dump_per) if dump_per > 0 else "never")])
+		"" if picks.is_empty() else ", upgrades " + ",".join(picks), ("" if dump_per < 0 else ", a dump's stack every %s" % (str(dump_per) if dump_per > 0 else "never")) + ("" if pull < 0 else ", a pull of %d" % pull) + ("" if stock.is_empty() else ", its stock " + ",".join(stock))])
 	var t0 := Time.get_ticks_msec()
 	print("| Machine | Fights | Won | Rounds | Spent | Rebooted | Held | Rounds a reboot | Overheats a fight | Burn a fight | Bare turns | Sealed | Blasts a fight | Own hull lost | Wrecked | Squad hull lost | Mates rebooted |")
 	print("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")

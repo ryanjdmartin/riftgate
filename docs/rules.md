@@ -17,9 +17,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 ## Machines
 
 - **Chassis**: hull, shield, heat maximum, armour, move, size class, one way of moving, hardpoints, fixed components, module
-  slots (two; the Clydesdale three) and one passive. Twenty-four chassis from five makers
-  (`content/chassis.json`), one of them back in design and dealt by nothing until its
-  session hands it back (the Swallowtail: a chassis whose entry
+  slots (two; the Clydesdale three) and one passive. Twenty-five chassis from five makers
+  (`content/chassis.json`), two of them dealt by nothing until their sessions hand them over
+  (the Swallowtail, back in design, and the Mole, a draft: a chassis whose entry
   says `"status": "planned"`). A run has four squad slots and starts with three
   machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in

@@ -3,14 +3,13 @@
 <!-- hangar: {"kind": "hub", "maker": "kestrel", "tier": null, "status": "hub", "slot": false, "name": "the Kestrel line"} -->
 
 The hub of Kestrel's ten. It holds the map of what each fast flyer is for, the two slots
-still open, and what is Ryan's to call. Eight machines are in content: seven dealt and
-the Puffin back in design, undealt. Each one's decisions are the bible's Kestrel rows (section 7) and content. The
+still open, and what is Ryan's to call. Eight machines are in content, all dealt. Each one's decisions are the bible's Kestrel rows (section 7) and content. The
 review this file began as, with the kits written out and the names round, is in git: `git
 show 084500a7:docs/briefs/kestrel_line.md`.
 
 **Maker**: Kestrel. **Read first**: `docs/briefs/README.md`; `docs/briefs/refit_pass.md`,
-section 22, the reboot; the bible's Kestrel rows and its leans row; the three live Kestrel
-briefs (`kestrel_puffin.md`, `kestrel_magpie.md`, `kestrel_owl.md`);
+section 22, the reboot; the bible's Kestrel rows and its leans row; the two live Kestrel
+briefs (`kestrel_magpie.md`, `kestrel_owl.md`);
 `content/chassis.json` and `content/components.json` (maker `kestrel`).
 
 ## The fast flyers, under the long wall (11 November)
@@ -57,17 +56,17 @@ each is a line of the to-do's.
 
 ## The line as it stands
 
-Eight machines, 3-3-2 across the tiers, and two slots marked. What each is today, by
+Eight machines, 2-4-2 across the tiers, and two slots marked. What each is today, by
 content:
 
 | Tier | Machine | What it is | Its state |
 |---|---|---|---|
 | one | The Skua, a light flyer | Ricochet, above; the Hypersonic Swoop its Rapid lock | dealt; his play |
 | one | The Storm Petrel, a medium hovercraft | its heat stands up its shield, every blow on a standing shield loses 1, and its Hardlight Pulse lures; two upgrade branches, Defence and Striker | landed 17 November; his play |
-| one | The Puffin, a light hovercraft | his direction: it moves heat (`kestrel_puffin.md`) | back in design, undealt |
 | two | The Kite, a light flyer | the opener and the finisher, above | dealt; his play |
 | two | The Needletail, a light flyer | two things a round; the Fovea Designator Exposes | dealt; his play |
 | two | The Buzzard, a medium flyer | every foe that falls gives it shield, every weapon it fires pays a zap, its Shield-burner Cannon fires the whole shield; two upgrade branches, Sustain and Burst | landed 18 November; his play |
+| two | The Puffin, a light hovercraft | it moves heat: equipment it spends on an ally takes up to 4 of that ally's heat onto it, and its Overdrive Injector passes its whole heat to an ally for Empowered 1 for every 2 (both names working ones) | landed 19 November, up from tier one; his play and his names |
 | three | The Lammergeier, a heavy flyer | a Mine on every foe it aims at, blowing round the foe as it falls; the Lorentz Contractor gathers, the Syrinx Drone sets one off | dealt; his play |
 | three | The Giant Petrel, an assault hovercraft | the team's unspent rerolls banked; three locks around rerolls and actions | dealt; its kit open, below |
 | open | The Magpie | a support engine (`kestrel_magpie.md`) | his pick of a direction |
@@ -81,21 +80,22 @@ predate four reworks and are in git.
 ## Each chassis: where it stands, what would improve it
 
 A stub. Every machine the review read has since landed, been reworked or taken a brief of
-its own: the bible's rows and the three live briefs hold where each stands.
+its own: the bible's rows and the two live briefs hold where each stands.
 
 ## The Buzzard's and the Puffin's kits, as the stock pass would leave them
 
 A stub. Both kits were written on the old scale, with a chassis's own cooling and with
-shields and vents on the die. The Buzzard's rework landed on 18 November (the bible's row);
-the Puffin's brief holds its own. The
+shields and vents on the die. The Buzzard's rework landed on 18 November and the Puffin's on
+19 November (the bible's rows). The
 stock holes the review named are content: the Cyclic Cannon, the Transonic Rifle and Trim
 Tabs.
 
 ## The last two slots
 
 The Magpie and the Snowy Owl, marked by Ryan on 21 October and each briefed. Both are mediums
-by his word of 11 November (above), and their tiers are open: both at tier two under 3-5-2,
-or the support engine at tier one under 4-4-2.
+by his word of 11 November (above), and their tiers are open. With the Puffin at tier two (19
+November) Kestrel's tier one is the Skua and the Storm Petrel alone: one of the two there makes
+3-5-2, both 4-4-2 (and the Needletail "could very well move down", his word of 18 November).
 
 What either session must hold:
 

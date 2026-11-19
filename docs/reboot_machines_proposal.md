@@ -25,7 +25,7 @@ too), and the Needletail the same day. It retires once its calls are rows and co
 | Skua | Stands as built (19 November): the reboot leaves its ramp alone, and it reads level with the tier twos | Settled, his "Leave it as is" |
 | Kite | Stands as built (19 November): a kill that mends a broken shield changed nothing on the read | Settled, his "Leave it" |
 | Cottonmouth | Stands as built (19 November): it reboots at the roster's pace; a lone boss leaves its area nothing to reach | Settled, his "Leave it" |
-| Puffin, in design | Nothing of the old kit survives; his direction, moving heat, is the system's dearest verb | Its session now or after the heat prices |
+| Puffin | Landed 19 November at tier two (the bible's row): equipment it spends on an ally takes up to 4 of that ally's heat onto it, and its lock passes its whole heat to an ally for Empowered 1 for every 2 | His names; the dump's rate, which read as none on the day's read |
 | Swallowtail, in design | Two dead plain forms; the system hands it a niche, the team's pit crew | His session |
 | Polar Bear | Stands as built (19 November): its text's clause fixed, the wall at tier one moot at tier two | Settled, his "Leave the bear" |
 | Whip Scorpion | His rework: the one kit built on the system | Its strength; the Ray a dump that keeps the shield |
@@ -111,28 +111,16 @@ moving its fights a third of a round; against a lone boss its area finds no neig
 machine's design. Its kit as this proposal read it is in git:
 `git show 90d15e4:docs/reboot_machines_proposal.md`.
 
-### Puffin, in design
+### Puffin, built
 
-Kestrel, pegged for tier 2, light hover. *Context*: his 9 November instinct, "the only unit able
-to cool its allies"; his 11 November direction, it moves heat: equipment it spends on an ally
-pulls some of that ally's heat onto it, and a locked piece passes the Puffin's heat to another
-unit with a buff by the heat moved, allies only; its session set for after the heat prices.
-
-*Kit as it stands, undealt*: hull 20, shield 6, armour 0, heat 12, move 5, 4 hardpoints; the
-Slipstream Projector (a shield it gives grows with the ally's heat) and the Backwash Ionizer
-(shield 3 on an ally) are both shield kinds no die is dealt; the rest is a Halo Projector, two
-Twin Autoguns and a Laser Carbine.
-
-*As a whole.* Nothing of the old kit survives the system, and the direction is now its dearest
-verb: a pull is an ally's cooling paid on the Puffin's own clock, so its reboot is the team's
-vent, and the dump turns heat into a payoff for the machines that read it (the Stingray, the
-Storm Petrel, the Whip Scorpion, the Buzzard). The first round as a kit: the pull rides any
-equipment it spends on an ally (3 heat to start, the stacks past the ally's maximum first); the
-dump is its lock, with Empowered by the heat moved; its stock carries two pieces of equipment,
-so the pull has carriers.
-
-*Verdict.* The direction fits the system better than any kit on the list; whether its session
-runs now or after the heat prices is his.
+Built 19 November at tier two on his calls ("I think 4 for the Puffin. We can try empowered for
+2 but that needs data"; the bible's row): a pull of 4 on every piece of equipment it spends on an
+ally, and its lock passing its whole heat to one ally for Empowered 1 for every 2 heat passed,
+both under working names. The read of that day (`docs/measurements.md`) found the team rebooting
+at the same pace beside it as beside any other machine, a pull of 8 and a third ally buff
+included, and the dump's Empowered at 1 for every 2 reading as none, at 1 for every 1 a round
+off a boss fight. Its kit as this proposal read it is in git:
+`git show 361095c:docs/reboot_machines_proposal.md`.
 
 ### Swallowtail, in design
 
@@ -401,5 +389,6 @@ in formations and nothing against a lone boss.
 4. Skua: settled 19 November, left as built ("Leave it as is and move on").
 5. Kite: settled 19 November, left as built, the kill that mends refused ("Leave it").
 6. Cottonmouth: settled 19 November, left as built ("Leave it").
-7. Puffin and Swallowtail: their sessions now, or as set.
+7. Puffin: built 19 November on his calls at tier two (the bible's row); his names and the
+   dump's rate after the read. Swallowtail: its session as set.
 8. Polar Bear: settled 19 November, left as built ("Leave the bear"), its text's clause fixed.
