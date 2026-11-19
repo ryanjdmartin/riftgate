@@ -197,7 +197,6 @@ var reaches_all: bool:
 				targets = Target.SELF_ALLY
 			elif not on and targets == Target.EVERY_OTHER_ALLY:
 				targets = Target.ALLY
-var shields: int = 0          # a vent: the shield it also gives the machine it cools, after the vent (the combined entry, Ryan's go of 20 October: the Wake Diffuser)
 var gathers_mines: bool = false   # an attack: every Mine on the field's other foes joins its target's (the Lammergeier's Lorentz Contractor, Ryan, 9 November)
 var detonates: bool = false   # an attack: its target's Mine blows now, on it and every foe round it, after the spend's own Mine joined it (the Lammergeier's Syrinx Drone, Ryan, 9 November)
 # The Swallowtail's locked pieces (Ryan's go, 21 October; built that day):
@@ -398,7 +397,6 @@ static func from_dict(d: Dictionary) -> Face:
 	f.cooldown = maxi(0, int(d["cooldown"])) if d.has("cooldown") else -1
 	f.turns_die = bool(d.get("turns_die", false)) and f.kind == Kind.BUFF
 	f.team_rerolls = maxi(0, int(d.get("team_rerolls", 0))) if f.kind == Kind.BUFF else 0
-	f.shields = maxi(0, int(d.get("shields", 0))) if f.kind == Kind.VENT else 0
 	f.gathers_mines = bool(d.get("gathers_mines", false)) and f.kind == Kind.ATTACK
 	f.detonates = bool(d.get("detonates", false)) and f.kind == Kind.ATTACK
 	f.vents = maxi(0, int(d.get("vents", 0))) if f.kind == Kind.SHIELD and not (d.get("vents") is String) else 0
@@ -515,8 +513,6 @@ func to_dict() -> Dictionary:
 		d["turns_die"] = true
 	if team_rerolls > 0:
 		d["team_rerolls"] = team_rerolls
-	if shields > 0:
-		d["shields"] = shields
 	if gathers_mines:
 		d["gathers_mines"] = true
 	if detonates:
@@ -649,11 +645,11 @@ func is_attack() -> bool:
 	return kind == Kind.ATTACK
 
 
-## Does the entry shield the machine it lands on: a shield, or a vent that shields too (the
-## combined entry, the Wake Diffuser)? A shield that cools is a shield and a vent at once (Ryan, 8
-## November: "The venting shield is both types at once"), whichever way it is written.
+## Does the entry shield the machine it lands on: a shield. A shield that cools is a shield and a
+## vent at once (Ryan, 8 November: "The venting shield is both types at once"); a vent that also
+## shielded left with the Wake Diffuser, its last piece (19 November).
 func shields_machine() -> bool:
-	return kind == Kind.SHIELD or (kind == Kind.VENT and shields > 0)
+	return kind == Kind.SHIELD
 
 
 ## Does the entry cool the machine it lands on: a vent (the quick reload's, which cools nothing,
@@ -781,7 +777,6 @@ func duplicate_face() -> Face:
 	f.cooldown = cooldown
 	f.turns_die = turns_die
 	f.team_rerolls = team_rerolls
-	f.shields = shields
 	f.gathers_mines = gathers_mines
 	f.detonates = detonates
 	f.vents = vents
@@ -1048,8 +1043,6 @@ func describe() -> String:
 				s = "shield to its maximum"
 			else:
 				s = "%s %d" % ["shield" if kind == Kind.SHIELD else "vent", power]
-				if shields > 0:
-					s += " shield %d" % shields   # the combined entry: both halves, the vent first
 			if reloads_ammo > 0:
 				s += " reloads %d ammo" % reloads_ammo
 			if vents > 0:

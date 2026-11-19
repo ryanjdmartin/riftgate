@@ -10,7 +10,10 @@ extends SceneTree
 ## --squad a,b,c,d (repeatable: a squad of those chassis; by default the anchor's three of four
 ## tier ones), --rule muster|defence (the map's player, BattleBot.Rule: muster by default, the
 ## player that gathers; defence the floor), --policy greedy|random (the fight bot, greedy), --out
-## path (docs/battle_run.md).
+## path (docs/battle_run.md). The field's trial dials are read from the environment as the game
+## reads them (Settings.field_trial: RIFTGATE_STRIKE, RIFTGATE_TIDE, RIFTGATE_BEATS,
+## RIFTGATE_OPENING, RIFTGATE_FODDER, RIFTGATE_FIELD_DEPTH, RIFTGATE_OVERHEAT), a what-if the
+## report names under its first line; with none set it is the game's own field.
 ##
 ## A battle is set up as a run sets one up (Battle.setup at the tier and the Convergence, the boss
 ## one of its domain's drawn by the seed), the squad stock and whole, and played by BattleBot to
@@ -33,6 +36,7 @@ var squads: Array = []
 var rule: int = BattleBot.Rule.MUSTER
 var policy := Policy.GREEDY
 var out_path := OUT
+var whole := false   # --whole: the mustering player never fights a pack one short at the wall (BattleBot.short_at_wall off)
 var db: ContentDB
 
 
@@ -61,8 +65,12 @@ func _init() -> void:
 				policy = Policy.RANDOM if v == "random" else Policy.GREEDY
 			"--out":
 				out_path = v
+			"--whole":
+				whole = true
+				i -= 1   # a switch: it takes no value
 		i += 2
 	db = ContentDB.load_default()
+	Settings.field_trial()   # the field's trial dials from the environment, as the game reads them
 	if squads.is_empty():
 		squads = SQUADS.duplicate(true)
 	for sq in squads:
@@ -99,6 +107,7 @@ func play(fac: String, squad: Array, seed_value: int) -> Dictionary:
 		b.lineup = [bosses[seed_value % bosses.size()]]
 	b.setup(team, fac)
 	var bot := BattleBot.make(policy, seed_value, rule)
+	bot.short_at_wall = not whole
 	var out := {"outcome": Battle.Outcome.NONE, "turns": 0, "rupture": -1, "hull_rupture": -1.0, "hull_end": 0.0, "wrecks": 0, "fights": [], "stalled": false}
 	while b.state == Battle.State.PLAN:
 		if bot.phases >= BattleBot.MAX_PHASES:
@@ -202,6 +211,16 @@ func report() -> String:
 		"the player that gathers (BattleBot.Rule.MUSTER: each pack its threat rating's count of machines, the packs in the order they reach the wall, one short at the wall, gathered on otherwise, the unsealed boss first)" if rule == BattleBot.Rule.MUSTER else "the defence rule (BattleBot.Rule.DEFENCE: every machine onto the pack it can reach that reaches the wall soonest)",
 		Policy.kind_name(policy)])
 	L.append("")
+	var trials: Array[String] = []
+	for key in ["RIFTGATE_STRIKE", "RIFTGATE_TIDE", "RIFTGATE_BEATS", "RIFTGATE_OPENING", "RIFTGATE_FODDER", "RIFTGATE_FIELD_DEPTH", "RIFTGATE_OVERHEAT"]:
+		if not OS.get_environment(key).is_empty():
+			trials.append("%s=%s" % [key, OS.get_environment(key)])
+	if not trials.is_empty():
+		L.append("A what-if on the field, never the game's own numbers: %s." % ", ".join(trials))
+		L.append("")
+	if whole:
+		L.append("A what-if on the map's player (`--whole`): it never fights a pack one short at the wall; it gathers its rating and lets the strike land.")
+		L.append("")
 	L.append("Each battle as a run sets one up: the tier's compositions, the boss one of its domain's drawn by the seed, the squad stock and whole. A cell is a domain and a squad. Hull is a share of the squad's full hull, at the Rupture (the battles that reached it) and at the end (every battle). Read the bands; twenty seeds is a direction.")
 	L.append("")
 	L.append("| Domain | Squad | Won | The gate fell | Wiped | Rupture reached | Its turn | Hull then | Hull at the end | Wrecks |")

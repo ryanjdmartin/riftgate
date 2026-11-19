@@ -236,8 +236,6 @@ const STATUS := {
 	# The Needletail's second action spent (the Quick-turn Avionics Relay as Ryan settled it on 11
 	# November: two things a round, a weapon and an equipment): its die has turned once this
 	# round. A marker, never a chip: the die shows the turn it still has in its passive box.
-	"quick_turned": {"id": "quick_turned", "name": "Quick turn spent", "description": "Its second action this round is spent.", "stacking": "renew",
-		"tags": ["marker"], "effects": []},
 	# The Swallowtail's (Ryan's go, 21 October; built that day). The Muster: a store of points,
 	# every die's roll a point and a kill by its own guns more, a charge every so many (the
 	# passive's muster rule), spent by its locked pieces' charged forms; never decays, and a
@@ -342,7 +340,7 @@ const STATUS := {
 	# buff, so nothing purges it; the model holds the form of the same name (the second battery up).
 	"changed_over": {"id": "changed_over", "name": "Changed Over", "description": "Its second battery is up and its first stowed: its die rolls the second battery and its fixed pieces.", "decay": "none", "stacking": "renew",
 		"tags": ["ability", "form"], "effects": []},
-	"sealed": {"id": "sealed", "name": "Sealed", "description": "Sealed: armour up, its own cooling stopped, hotter at the end of each turn. A weapon it fires opens it.", "decay": "none", "stacking": "renew",
+	"sealed": {"id": "sealed", "name": "Sealed", "description": "Sealed: armour up, its cooling stopped, hotter at the end of each turn. A weapon it fires opens it.", "decay": "none", "stacking": "renew",
 		"tags": ["ability", "form"], "effects": []},
 	# Cryo (Ryan, 20 October: the Polar Bear's Cryo Flinger, the debuff called Cryo too, marked
 	# for reuse as the healthier way to cool an ally): a foe mark that pays in cooling. Any
@@ -350,7 +348,7 @@ const STATUS := {
 	# the cool_hitter number here (Skirmish.cryo_cool; a field since the stock pass's engine, 22
 	# October). It never fades on its own: the canister sticks.
 	"cryoed": {"id": "cryoed", "name": "Cryo", "description": "A hit on it with a weapon spends every stack and cools the hitter {value} a stack.", "decay": "none",
-		"tags": ["mark"], "effects": [{"trigger": "status", "effect": "cool_hitter", "value": 2}]},
+		"tags": ["mark"], "effects": [{"trigger": "status", "effect": "cool_hitter", "value": 1}]},
 	# Corrupted (the foes' Corrupt, 25 September): the definition each entry's own status is built
 	# from (corrupt_entry, one an entry), and the bite a stack takes from its owner each time the
 	# entry is spent, shield first (Skirmish.corrupt_bite; a field since the stock pass's engine,
@@ -2085,7 +2083,7 @@ static func zap_of(u, face: Face) -> Dictionary:
 ## sealed, carrying the armour as its one effect (the stat pipeline reads it like any add).
 static func sealed_status(armour: int, heat: int) -> Dictionary:
 	var d: Dictionary = STATUS["sealed"].duplicate(true)
-	d["description"] = "Sealed: armour +%d, its own cooling stopped, %d hotter at the end of each turn. A weapon it fires opens it." % [armour, heat]
+	d["description"] = "Sealed: armour +%d, its cooling stopped, %d hotter at the end of each turn. A weapon it fires opens it." % [armour, heat]
 	d["effects"] = [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": armour}]
 	return d
 
@@ -2625,8 +2623,6 @@ static func status_kind(status_id: String) -> String:
 		return "buff"
 	if tags.has("store") or tags.has("count"):
 		return "store"
-	if tags.has("marker"):
-		return ""
 	return "debuff"
 
 
@@ -2757,6 +2753,39 @@ static func ordinal(n: int) -> String:
 ## rest of the round of the spend and the rounds it prints after it; Rapid's own switch-off, the
 ## rest of the round alone). A foe's jam can be cleansed; a cooldown cannot (it is the
 ## piece's price, and a cleanse that lifted a Rapid piece's would start an infinite turn).
+## The round a foe's jam names as its end: never reached, so only its machine's reboot lights it
+## (Ryan, 19 November: "Lets change Jammed to lasting until Reboot, that closes the cockatrice
+## hole"), or a Cleanse. A cooldown keeps its rounds.
+const JAM_REBOOT := 1 << 29
+## What dark_rounds says of an entry a jam holds until the reboot: no count, the die's foot showing
+## the reboot's mark in its place.
+const DARK_REBOOT := 99
+
+
+## The foes' jams on `u`, each waiting for its reboot: how many entries they hold dark.
+static func jams_waiting(u) -> int:
+	var n := 0
+	for m in u.modifiers:
+		if m.scope == ROUNDS and m.expires_round >= JAM_REBOOT and m.source.begins_with("foe:") \
+				and m.effects.any(func(eff) -> bool: return str(eff.get("effect", "")) == "disable_entry"):
+			n += 1
+	return n
+
+
+## Light every entry a foe's jam holds dark (the reboot's drop): how many.
+static func clear_waiting_jams(u) -> int:
+	var keep: Array = []
+	var n := 0
+	for m in u.modifiers:
+		if m.scope == ROUNDS and m.expires_round >= JAM_REBOOT and m.source.begins_with("foe:") \
+				and m.effects.any(func(eff) -> bool: return str(eff.get("effect", "")) == "disable_entry"):
+			n += 1
+			continue
+		keep.append(m)
+	u.modifiers = keep
+	return n
+
+
 static func disable_entry(u, index: int, source: String, until_round: int) -> Modifier:
 	var cooldown := source == "cooldown"
 	var status := {"id": "disabled_%d" % index, "name": "Cooldown" if cooldown else "Jammed",
@@ -2838,9 +2867,12 @@ static func refills_on_kill(u) -> bool:
 
 ## Does the machine act twice a round, once with a weapon and once with equipment (static
 ## one_of_each, the Needletail's Quick-turn Avionics Relay; Ryan, 11 November: "using two things a
-## round is very Kestrel and deserves a chassis")? After its first spend of either kind its die
-## turns to a live entry of the other kind and it acts again, once a round (the quick_turned
-## marker; Skirmish.turn_entries). The machine's own rule and no keyword.
+## round is very Kestrel and deserves a chassis")? Rewritten on 18 November (Ryan: "just to
+## send the 'unlit' kinds onto cooldown. There's no special cases or states then"): spending a
+## weapon sends every weapon on its die onto cooldown for the round, equipment the same, and its
+## die flips to a lit entry of the other kind (Skirmish.turn_entries); a Rapid or Instant spend
+## sends nothing but itself (Ryan: "rapid does not consume any of the spends"). While its die is
+## in play it may reboot (Skirmish.can_reboot). The machine's own rule and no keyword.
 static func one_of_each(u) -> bool:
 	for pair in _taking_part(u, "static", null):
 		if str(pair[0].get("effect", "")) == "one_of_each":
@@ -2861,8 +2893,9 @@ static func mine_damage(u) -> int:
 
 
 ## The rounds an entry stays dark, this one included: the latest end of whatever switched it
-## off (a cooldown, a foe's disable) less `round`, plus one; 0 for a lit entry. The die shows
-## it on the dark entry (the cooldown row: dark with the rounds left).
+## off (a cooldown) less `round`, plus one; DARK_REBOOT for one a foe's jam holds, which waits
+## for the reboot; 0 for a lit entry. The die shows it on the dark entry (the cooldown row: dark
+## with the rounds left, or the reboot's mark).
 static func dark_rounds(u, index: int, round: int) -> int:
 	var until := -1
 	for m in live(u):
@@ -2871,6 +2904,8 @@ static func dark_rounds(u, index: int, round: int) -> int:
 		for eff in m.effects:
 			if str(eff.get("effect", "")) == "disable_entry" and int(eff.get("value", -1)) == index:
 				until = maxi(until, m.expires_round)
+	if until >= JAM_REBOOT:
+		return DARK_REBOOT
 	return maxi(0, until - round + 1) if until >= 0 else 0
 
 
@@ -3005,7 +3040,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"self_status":
 			var sn := str(STATUS.get(str(eff.get("status", "")), {}).get("name", str(eff.get("status", ""))))
 			body = "spent on a foe, lays %s %s on its own machine%s%s" % [sn, vs, " for each foe it reaches" if bool(eff.get("per_foe", false)) else "", (", up to %d" % int(eff["cap"])) if int(eff.get("cap", 0)) > 0 else ""]
-		"seal_form": body = "equipment it spends on itself seals it: armour +%s, its own cooling stopped, %s hotter at the end of each turn; a weapon it fires opens it" % [vs, str(eff.get("heat", 0))]
+		"seal_form": body = "equipment it spends on itself seals it: armour +%s, its cooling stopped, %s hotter at the end of each turn; a weapon it fires opens it" % [vs, str(eff.get("heat", 0))]
 		"stack_status":
 			var nm := str(STATUS.get(str(v), {}).get("name", str(v)))
 			var k := maxi(1, int(eff.get("stacks", 1)))

@@ -140,8 +140,8 @@ The bible's rows hold them (the stun row, section 5; the identity row, section 7
   already learned; the rest is tier two, where the supports and the machines that are only
   good together belong.
 - As dealt: a run starts from a tender of one tier-one machine of each city maker by seed,
-  and the player takes three; the fourth is the first battle's offer from the host maker's
-  catalogue (decided, not built). So each maker's tier-one line should vary, and more than
+  and the player takes three; the fourth is the first battle's offer, one of three of the host
+  maker's machines (built 19 November; the rules' The first battle). So each maker's tier-one line should vary, and more than
   one maker's should hold a front; Wainwright & Sutler's holds none, accepted. The economy's
   items are `docs/economy_pass.md`.
 

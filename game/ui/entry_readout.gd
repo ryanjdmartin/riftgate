@@ -179,10 +179,6 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 				out.append(marked(parts_line("effect", [word("Vent"), num(str(f.power), f.power, base.power)], "attr"), [main]))
 				if f.reloads_ammo > 0:
 					out.append(loads)
-			if f.shields > 0:
-				# The combined entry's second half, after the vent (the Wake Diffuser), by the
-				# shield's mark: the die prints it in the shield's half of its mark.
-				out.append(marked(parts_line("effect", [word("Shield"), num(str(f.shields), f.shields, base.shields)], "attr"), [mark("shield", Palette.SHIELD, false)]))
 	if f.ammo > 0:
 		# A forging machine's gun (the Musk Ox's): its price in ammo, by the shells' mark.
 		var ammo := [word("Ammo"), num(str(f.ammo), f.ammo, base.ammo, true)]
@@ -436,7 +432,7 @@ const MOVE_TARGETS := {
 	"brace": "Self", "recover": "Self", "revive_once": "Self", "barrier": "Self", "regenerate": "Self", "golden": "Self",
 	"heal": "The most hurt of its own", "brace_all": "Every foe", "revive_once_ally": "One of its own",
 	"cleanse": "The most-marked of its own", "prime": "Every other foe", "ward_all": "Every foe",
-	"summon": "The waiting pool", "rally": "Every foe", "merge": "Its kinds on the field", "appropriate": "Any machine",
+	"summon": "Empty places", "rally": "Every foe", "merge": "Its kinds on the field", "appropriate": "Any machine",
 	"drain_rerolls": "The team's rerolls", "scorch_all": "Every machine", "corrupt_all": "Every machine",
 	"unready_all": "Every foe it readied", "phase": "Self",
 }

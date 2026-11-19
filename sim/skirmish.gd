@@ -773,22 +773,21 @@ func shown_number(ms: MechState, f: Face, target: Foe = null) -> int:
 	return d
 
 
-## The shield an entry gives the machine it is spent on: its number (a shield's, or a vent's
-## shield half, the combined entry), and on an ally what the spender's passives add from the
-## heat that ally carries at the spend (shield_per_ally_heat; the Puffin's Slipstream
-## Projector, 21 October), after the vent's half for a combined entry (the vent first, the
-## shield reading what is left). The spend, the die dragged over the ally and the bot all
-## read it here.
+## The shield an entry gives the machine it is spent on: a shield's number, and on an ally what
+## the spender's passives add from the heat that ally carries at the spend (shield_per_ally_heat;
+## the Puffin's Slipstream Projector, 21 October), after a shield's own cooling (the Sutler's
+## Hoist: the cooling first, the shield reading what is left). The spend, the die dragged over
+## the ally and the bot all read it here.
 func shield_amount(ms: MechState, f: Face, who: MechState) -> int:
 	if f == null:
 		return 0
 	if f.kind == Face.Kind.SHIELD and f.fills_shield:
 		return maxi(0, who.unit.shield_max - who.unit.shield) if who != null else 0   # the Hoist's full reset
-	var n := f.power if f.kind == Face.Kind.SHIELD else (f.shields if f.kind == Face.Kind.VENT else 0)
+	var n := f.power if f.kind == Face.Kind.SHIELD else 0
 	if n <= 0:
 		return 0
 	if who != null and who != ms:
-		var left := maxi(0, who.heat - f.vents) if f.kind == Face.Kind.SHIELD else maxi(0, who.heat - f.power)
+		var left := maxi(0, who.heat - f.vents)
 		if f.cools_all:
 			left = 0
 		n += Effects.granted_shield(ms.unit, left)
@@ -2221,6 +2220,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	var raw := spend_face(ms)   # the entry as spent, its charged form when a muster pays for it
 	f = raw
 	var turn := turn_entries(ms, f)   # where a one-of-each machine's die may turn once this is out (the Needletail's), read before the spend
+	var spent_kind := _turn_kind(ms, f) if Effects.one_of_each(ms.unit) and not f.acts_again() else 0   # the kind the Relay sends onto cooldown: 1 the weapons, 2 the equipment, 0 none (a Rapid or Instant spend, a blank)
 	f = Effects.effective_face(ms.unit, f, target if target is Foe else null)   # the entry as this machine's passives make it, over the foe it is aimed at
 	if f.is_attack() and (not (target is Foe) or not targets_for_face(ms, raw).has(target)):
 		return false
@@ -2314,17 +2314,8 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				_cleanse_with(ms, w, f)
 		Face.Kind.VENT:
 			var who: MechState = target if target is MechState else ms
-			var shield_half := shield_amount(ms, f, who)   # sized at the spend, on what the vent will leave
 			who.heat = maxi(0, who.heat - f.power)
 			log.append("%s vents %s by %d" % [ms.unit.display_name, who.unit.display_name, f.power])
-			# The combined entry (Ryan's go, 20 October, the Wake Diffuser): the vent, then the
-			# shield on the same machine, through its shield gain and the spender's passives
-			# for an ally it shields, sized on the heat the vent left.
-			if shield_half > 0 and who.alive():
-				_gain_shield(who, shield_half)
-				log.append("%s shields %s for %d%s" % [ms.unit.display_name, who.unit.display_name, shield_half, " (past its maximum)" if who.unit.shield > who.unit.shield_max else ""])
-				if who != ms:
-					_shield_granted(ms, who, shield_half)
 			_cleanse_with(ms, who, f)
 		Face.Kind.BUFF:
 			# Equipment that grants a status for the round (or more): the pipeline reads it
@@ -2494,7 +2485,8 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		var measure := "damaging_spends" if deals else "quiet_spends"
 		sponsorship[measure] = int(sponsorship[measure]) + 1
 	ms.assigned = true
-	ms.spends += 1
+	if not (f.acts_again() and Effects.one_of_each(ms.unit)):
+		ms.spends += 1   # on a one-of-each machine (the Needletail's) a Rapid or Instant spend is none of its spends (Ryan, 18 November: "rapid does not consume any of the spends")
 	# A cooldown (Ryan, 14 October; counted after the round of the spend since 12 November:
 	# "change the count so 1 is how I intended"): the entry is dark for the rest of this round and
 	# for the rounds it prints after it, shown on the die with the rounds left. Rapid's own
@@ -2519,19 +2511,25 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		if instant:
 			how = "the cylinder spins" if Effects.steps_die(ms.unit) else "instant, rolls again"
 		log.append("%s: %s" % [ms.unit.display_name, how])
-	# Two things a round (the Needletail's Quick-turn Avionics Relay, Ryan, 11 November): its
-	# first spend of a weapon or of equipment turns its die to a live entry of the other kind and
-	# it acts again, once a round. A spend that acts again of its own (Rapid or Instant) leaves
-	# the turn for the next; a fight already won turns nothing.
-	elif not turn.is_empty() and ms.alive() and not (field_foes().is_empty() and reinforcements.is_empty()):
-		var lit: Array[int] = []
-		for at in turn:
-			if not Effects.is_entry_disabled(ms.unit, at):
-				lit.append(at)   # still lit once the spend is done
-		if not lit.is_empty():
-			Effects.grant_for_rounds(ms.unit, Effects.STATUS["quick_turned"], "gate", round)
-			_turn_die(ms, lit)
-			log.append("%s: a quick turn, and it acts again" % ms.unit.display_name)
+	# Two things a round (the Needletail's Quick-turn Avionics Relay, Ryan, 11 November; rewritten
+	# on 18 November: "just to send the 'unlit' kinds onto cooldown. There's no special cases or
+	# states then"): a spend of a weapon sends every weapon on its die onto cooldown for the rest
+	# of the round, one of equipment its equipment, and while a lit entry of the other kind stands
+	# its die flips to one and it acts again. A Rapid or Instant spend sends nothing but itself
+	# (its own rule), so its kind stays lit (his ruling: "rapid does not consume any of the
+	# spends"). A fight already won flips nothing.
+	elif spent_kind != 0 and ms.alive():
+		for at in range(ms.die.faces.size()):
+			if _turn_kind(ms, ms.die.faces[at]) == spent_kind:
+				Effects.disable_entry(ms.unit, at, "cooldown", round)
+		if not turn.is_empty() and not (field_foes().is_empty() and reinforcements.is_empty()):
+			var lit: Array[int] = []
+			for at in turn:
+				if not Effects.is_entry_disabled(ms.unit, at):
+					lit.append(at)   # still lit once the spend is done
+			if not lit.is_empty():
+				_turn_die(ms, lit)
+				log.append("%s: a quick turn, and it acts again" % ms.unit.display_name)
 	# The fight ends the moment it is decided (Ryan, 22 September): the last foe down, or
 	# the last machine burnt out by its own heat, and nobody waits for End turn.
 	_refresh_allies()
@@ -2970,8 +2968,8 @@ func _strike(f: Foe, t: MechState) -> void:
 			_fire_on(t, "ablating_mech", 1, f)
 			log.append("%s, primed, lays Ablating ×1 on %s" % [f.display_name, t.unit.display_name])
 		if f.has_keyword(f.action, "jam") and t.alive() and t.face_index >= 0:
-			# Jam: the entry the die shows is Jammed, switched off through the mech's next turn.
-			Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
+			# Jam: the entry the die shows is Jammed, switched off until the machine reboots.
+			Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, Effects.JAM_REBOOT)
 			log.append("%s jams %s's %s" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe()])
 		if f.has_keyword(f.action, "corrupt") and t.alive() and t.face_index >= 0:
 			# The entry the die shows is corrupted for the fight: it bites when spent.
@@ -3138,7 +3136,7 @@ func _shift_form(ms: MechState, f: Face, target) -> void:
 		"seal":
 			var seal := Effects.seal_form(ms.unit)
 			Effects.stack(ms.unit, Effects.sealed_status(int(seal["armour"]), int(seal["heat"])), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
-			log.append("%s seals: armour +%d, its own cooling stopped, +%d heat a turn" % [ms.unit.display_name, int(seal["armour"]), int(seal["heat"])])
+			log.append("%s seals: armour +%d, its cooling stopped, +%d heat a turn" % [ms.unit.display_name, int(seal["armour"]), int(seal["heat"])])
 		"open":
 			Effects.remove(ms.unit, "sealed")
 			log.append("%s opens" % ms.unit.display_name)
@@ -4257,11 +4255,11 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			else:
 				_expose_mech(f, t, str(a.get("name", "exposes")))
 		"jam":
-			# The entry the die shows is Jammed, switched off through the machine's next turn, no blow.
+			# The entry the die shows is Jammed, switched off until the machine reboots, no blow.
 			if Effects.has(t.unit, "ward"):
 				log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "hushes")), t.unit.display_name])
 			elif t.face_index >= 0:
-				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
+				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, Effects.JAM_REBOOT)
 				log.append("%s: %s, %s's %s is jammed" % [f.display_name, str(a.get("name", "hushes")), t.unit.display_name, t.die.faces[t.face_index].describe()])
 		"appropriate":
 			# Gilgamesh's own rule (30 October, the slate's signature: "takes the weapon a machine
@@ -4430,14 +4428,15 @@ func _act_again(ms: MechState, itself := false) -> void:
 	ms.assigned = false
 
 
-## The entries a one-of-each machine's die may turn to once `spent` is out (Effects.one_of_each,
+## The entries a one-of-each machine's die may flip to once `spent` is out (Effects.one_of_each,
 ## the Needletail's Quick-turn Avionics Relay): its lit entries of the other kind, equipment for
-## a weapon and weapons for equipment, each read as the machine has it. None while its second
-## action this round is spent, on a machine without the rule, or for a spend that is neither
-## kind (a shield, a vent, a blank).
+## a weapon and weapons for equipment, each read as the machine has it; once the other kind has
+## been spent this round it is on cooldown, so there is none. None on a machine without the
+## rule, for a Rapid or Instant spend (it acts again by its own rule), or for a spend that is
+## neither kind (a shield, a vent, a blank).
 func turn_entries(ms: MechState, spent: Face) -> Array[int]:
 	var out: Array[int] = []
-	if ms == null or spent == null or not ms.alive() or not Effects.one_of_each(ms.unit) or Effects.has(ms.unit, "quick_turned"):
+	if ms == null or spent == null or not ms.alive() or not Effects.one_of_each(ms.unit) or spent.acts_again():
 		return out
 	var kind := _turn_kind(ms, spent)
 	if kind == 0:
@@ -5724,15 +5723,26 @@ func _note_break(ms: MechState) -> void:
 ## Whether machine `mech_index` may give its turn to a reboot now (Ryan, 13
 ## November: "they have had to 'spent nothing' to smash the Reboot button"): on the player's
 ## turn, alive and in the fight, its die unspent and nothing spent by it this turn, whatever
-## would let it act more than once (Rapid, Instant, a second thing a round, a grant).
+## would let it act more than once (Rapid, Instant, a second thing a round, a grant), so no
+## machine plays a Rapid piece before its reboot. A die showing nothing lit is no spend: a machine
+## whose whole die is dark may reboot, the very moment to (Ryan, 18 November). The one exception is
+## a one-of-each machine (the Needletail's Quick-turn Avionics Relay; the same day: "Gaming the
+## reboot is the Needletail's niche"): with one spend made at most, a Rapid or Instant spend none
+## of them, it may reboot whatever its die shows, a die left with nothing lit to flip to included
+## ("That would be the exact time a player would want to reboot"); after both, never.
 func can_reboot(mech_index: int) -> bool:
 	if state != State.ASSIGN or mech_index < 0 or mech_index >= mechs.size():
 		return false
 	var ms := mechs[mech_index]
-	return ms.alive() and not is_swallowed(ms) and not ms.assigned and not ms.rebooting and ms.spends == 0   # a Phased machine may: the safe reboot (Ryan, 15 November)
+	if not ms.alive() or is_swallowed(ms) or ms.rebooting:
+		return false   # a Phased machine may: the safe reboot (Ryan, 15 November)
+	if Effects.one_of_each(ms.unit):
+		return ms.spends <= 1
+	return not ms.assigned and ms.spends == 0
 
 
-## The reboot: the machine gives its whole turn. At once its shield goes to nothing and its
+## The reboot: the machine gives its whole turn, or the rest of it after one action (the
+## Needletail's, can_reboot). At once its shield goes to nothing and its
 ## heat with it, what stood past the maximum too (Ryan, 17 November, of the heat that stayed on
 ## the gauge until the recovery: "it didn't make sense to have that overheat hanging around and
 ## not hurting the mech"; "Maybe the heat gets shunted when the shield gets taken down?"), and it
@@ -5762,11 +5772,16 @@ func reboot_mech(mech_index: int) -> bool:
 	if Effects.is_sealed(ms.unit):
 		Effects.remove(ms.unit, "sealed")
 		log.append("%s opens as it reboots" % ms.unit.display_name)
+	# Every entry a foe jammed lights (Ryan, 19 November: "Lets change Jammed to lasting until
+	# Reboot"): a jam waits for its machine's reboot, and the drop is that reboot.
+	var lit := Effects.clear_waiting_jams(ms.unit)
+	if lit > 0:
+		log.append("%s's reboot clears %d jammed entr%s" % [ms.unit.display_name, lit, "y" if lit == 1 else "ies"])
 	var vented := ms.heat
 	var shot := release_shot(ms)   # read while it holds its heat
 	ms.heat = 0
 	ms.overheated = false
-	log.append("%s reboots: %sheat -%d, back next round" % [ms.unit.display_name, "shield -%d, " % dropped if dropped > 0 else "", vented])
+	log.append("%s reboots%s: %sheat -%d, back next round" % [ms.unit.display_name, " after its action" if ms.spends > 0 else "", "shield -%d, " % dropped if dropped > 0 else "", vented])
 	_vent_blast(mech_index, ms, shot, vented)
 	if not snap.is_empty():
 		history.append(snap)

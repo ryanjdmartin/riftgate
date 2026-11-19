@@ -347,6 +347,49 @@ func test_the_offer_is_one_makers_its_chassis_at_or_under_the_tier() -> void:
 	assert_true(any_upper, "a late offer can bring an upper-tier chassis (every maker, the capital's too)")
 
 
+## The campaign's first battle, here too (Ryan, 19 November; one code tree): the opening
+## domain's, fought by the draft's three, its offer the fourth machine.
+func test_the_first_battle_is_the_opening_domains_and_its_offer_the_fourth_machine() -> void:
+	var opening := ContentDB.load_default().opening_faction()
+	assert_true(not opening.is_empty(), "content marks the opening domain")
+	var later := {}
+	for seed_value in range(1, 13):
+		var r := _run(seed_value)
+		assert_eq(r.battle, 1, "the first battle")
+		assert_eq(r.lead, opening, "seed %d: the first battle is the opening domain's" % seed_value)
+		for e in r.encounters:
+			assert_eq(str(e["domain"]), opening, "every fight of it")
+		r.start_battle()
+		assert_eq(r.units.size(), QuickRun.START_MACHINES, "fought by the draft's three")
+		for i in range(r.encounters.size()):
+			_end(r, Skirmish.Outcome.VICTORY)
+		var offer: Dictionary = r.rewards[r.rewards.size() - 1]
+		assert_eq(str(offer["kind"]), "offer", "the offer comes last")
+		var choices: Array = offer["choices"]
+		var held: Array = r.roster.map(func(m) -> String: return m.chassis)
+		assert_eq(choices.size(), mini(QuickRun.CHOICES, Campaign.machines_open(r.db, str(offer["maker"]), 0, held).size()), "three of the maker's machines, or as many as it has")
+		assert_true(choices.size() >= 1, "a maker with a machine to put up")
+		for it in choices:
+			assert_eq(str(it["kind"]), "chassis", "machines alone: the fourth is never weighed against kit")
+			assert_eq(str(r.db.chassis[it["id"]]["maker"]), str(offer["maker"]), "one maker's")
+			assert_eq(r.db.chassis_tier(it["id"]), 1, "tier one")
+			assert_true(r.db.chassis_runnable(it["id"]), "one the engine fields")
+			assert_false(held.has(it["id"]), "one the roster lacks")
+		while r.rewards.size() > 1:
+			r.take(0)
+		assert_true(r.take(0), "the machine taken")
+		assert_eq(r.roster.size(), QuickRun.SQUAD, "the fourth machine")
+		assert_eq(r.squad.size(), QuickRun.SQUAD, "in the squad")
+		later[r.lead] = true
+		# The second battle's offer is the catalogue's again: a chassis, a component, a module.
+		r.start_battle()
+		for i in range(r.encounters.size()):
+			_end(r, Skirmish.Outcome.VICTORY)
+		var second: Array = r.rewards[r.rewards.size() - 1]["choices"]
+		assert_true(second.filter(func(it) -> bool: return it["kind"] == "chassis").size() <= 1, "a later offer holds one machine at most")
+	assert_true(later.size() > 1, "the second battle's domain is drawn at random")
+
+
 func test_taking_the_rewards_stocks_them_and_opens_the_hangar_on_the_next_battle() -> void:
 	var r := _run()
 	r.start_battle()

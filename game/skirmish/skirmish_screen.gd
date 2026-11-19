@@ -1323,7 +1323,9 @@ func _refresh(save: bool = true) -> void:
 		d.dead = not ms.alive()
 		d.locked = locked[i]
 		d.can_tap = ms.alive() and _pending.get("mech", -1) != i   # a tap reads the die, spent too; the pending one's is its ghost's
-		d.can_drag = assigning and ms.alive() and not ms.assigned and _pending.get("mech", -1) != i
+		# A die done still lifts while its machine may reboot (the Needletail's, after its one action
+		# with nothing lit to flip to): REBOOT is the one place it lands.
+		d.can_drag = assigning and ms.alive() and (not ms.assigned or sk.can_reboot(i)) and _pending.get("mech", -1) != i
 		# While a die is dragged, the one under the finger is the die: its slot goes empty
 		# (Ryan, 26 September: a copy dragged beside the original read as a copy). Modulate,
 		# not visible: the view must keep receiving the drag's motion.
@@ -2047,7 +2049,7 @@ func _mech_rows(i: int) -> Array:
 		var id := str(d[5])
 		if int(d[3]) < Effects.SKIRMISH and not Effects.is_status(id):
 			continue
-		if id == "shots" or id == "quick_turned" or id == "muster" or Effects.store_cap(ms.unit, id) > 0:
+		if id == "shots" or id == "muster" or Effects.store_cap(ms.unit, id) > 0:
 			continue   # a count shows as pips under the heat bar (the Cassowary's sixth shot), a capped store as its bar, and the gate by the Rapid it grants, never a chip
 		if not first.has(id):
 			order.append(id)
@@ -2109,7 +2111,7 @@ func _mech_rows(i: int) -> Array:
 		# chips should appear as pulsing opacity versions"), beside the skull when the round wrecks
 		# it (one may be the cause: an Ablating it lit on itself), the counts and stores that are no
 		# chip left out.
-		var skip: Array = ["shots", "quick_turned", "muster"]
+		var skip: Array = ["shots", "muster"]
 		for id in fc.get("coming", {}).keys():
 			if Effects.store_cap(ms.unit, id) > 0:
 				skip.append(id)
@@ -2274,8 +2276,11 @@ func _entry_states(ms: Skirmish.MechState, i: int) -> Array:
 	if Effects.is_entry_disabled(ms.unit, i):
 		# By the clock the die shows along its foot with the turns left (Ryan, 2 November).
 		var dark := Effects.dark_rounds(ms.unit, i, sk.round)
-		out.append([("Jammed" if Effects.cleansable_disable(ms.unit, i) else "On Cooldown") \
-			+ (" (%d turn%s left)" % [dark, "" if dark == 1 else "s"] if dark > 0 else ""), EntryReadout.mark("cooldown", Palette.INK, false)])
+		if dark >= Effects.DARK_REBOOT:
+			out.append(["Jammed until it reboots", EntryReadout.mark("shield_vent", Palette.INK, false)])
+		else:
+			out.append([("Jammed" if Effects.cleansable_disable(ms.unit, i) else "On Cooldown") \
+				+ (" (%d turn%s left)" % [dark, "" if dark == 1 else "s"] if dark > 0 else ""), EntryReadout.mark("cooldown", Palette.INK, false)])
 	return out
 
 

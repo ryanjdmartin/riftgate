@@ -48,8 +48,12 @@ document's job and every command are in `README.md`.
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
   (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks
   great. Lets land it", and `ccr-178e0404-ptuh2m` (the Buzzard) on his "ok, merge into
-  main". A session's hangar
-  publish runs ahead of main (Pages).
+  main", then the Needletail on 19 November on his "I think what we've got can merge into main",
+  and `claude/laughing-gates-p2633f` (the summon texts with no pool, the Text tab's target
+  words) the same day on his "Ok merge in", and `ccr-64b5deec-lunnff` (the Macaque, the line
+  frame until its naming: its model, its kit and the offhand's engines, the strike order, the
+  upgrade chevrons, the models' texture copies' test) the same day on his "Send it to Main". A
+  session's hangar publish runs ahead of main (Pages).
   Every other branch on GitHub but the lines' own working branches is merged and to delete
   (`git push origin --delete`, then `git fetch --prune`); a cloud session may not delete one.
 - The desk machine is a Windows PC (`C:\Users\jam82\Desktop\Code\riftgate`; the README's
@@ -61,8 +65,7 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1350 tests, 385,803 checks, green (19 November, the Macaque's kit landed on
-  `ccr-64b5deec-lunnff`, over main's Buzzard and the Pilgrim's knife). The runner fails a run
+- Tests: 1365 tests, 387,009 checks, green (19 November, main with the Macaque's branch landed). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -108,7 +111,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Basilisk, the Alpha Warg, the Lich, the Rider of the Wild Hunt and the Piercing Eye lay it.
   The Roc is Aloft while its Stoop gathers and nothing reaches it; the Spectre and the Wraith
   fade after their Hex Bolt, Phased through the next round and still acting; the Pilgrim is
-  immune to Suppress, and the Obsidian Tyrant and the Ruby Colossus to Disrupt while Firestorm
+  immune to Suppress and its knife purges before it lands, the one move with a step ahead of
+  its blow, and the Obsidian Tyrant and the Ruby Colossus to Disrupt while Firestorm
   and Ultima gather. Four falls do more than strike: the root line's scream, the Gorgon's
   gaze, the Salamander's embers, the Lich's. The Red Dragon keeps its Crush on Ryan's word, so
   the Peak has no foe that Exposes. Content: four domains, 118 compositions as grids in
@@ -117,7 +121,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   129 foes, 21 of them elites and 8 heroes; thirteen bosses; two moves planned (the Warrior's
   Cover, the Martial Artist's Counter). The names of the newest moves and falls, the words
   for an aim and the term Immune are a session's drafts for Ryan's codex and terminology
-  pass. No foe number is sized for the reboot (The numbers, below). Detail: the rules' Foes;
+  pass. Tier one's foes are sized for the reboot and the higher tiers' are not (The numbers,
+  below). Detail: the rules' Foes;
   the bible's rows on the foes' rule set, targeting, Exposed and Phased.
 - **The machines.** Five makers and 25 chassis, 22 of them dealt (nine at tier one, nine at
   two, four at three); the Puffin and the Swallowtail are back in design and the Mole is a
@@ -141,8 +146,13 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   up to 3, every stack gone when the shield breaks, the reboot included); the Buzzard landed
   on the 18th in his carrion form (every foe that falls in its fight gives it shield, every
   weapon it fires pays a zap of shield for a flat add, its Shield-burner Cannon fires the whole
-  shield; Sustain on its passive and Burst on its cannon its branches); its first round on
-  the Kite, the Puffin, the Swallowtail and the Needletail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
+  shield; Sustain on its passive and Burst on its cannon its branches); the Needletail the
+  same day on his two calls (its Designator at no heat, and its reboot its second action) and
+  his rewrite of its Relay (a kind spent goes on cooldown for the round; its die flips to the
+  other kind, rolls land anywhere; a Rapid or Instant spend leaves its kind lit; it reboots
+  after one action whatever its die shows, the one machine that may after a Rapid spend; its branches, one on
+  the spotter and one turning the Designator into a weapon, wait on Kestrel's tier one); the Skua, the Kite and the Cottonmouth stand as built (19 November, his "Leave it"); its first round
+  on the Puffin and the Swallowtail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis, the Polar Bear
   (a reboot opens its seal), the Whip Scorpion (its reboot's vent blasts every foe), the
   Lammergeier, the Wild Boar, the Baboon, the Stingray, and the Macaque, landed 19 November
@@ -157,28 +167,36 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   (16 November: the Honey Badger, the Wild Boar, the Mole and the lure tank), so the Polar
   Bear is tier two in content and the Wild Boar tier one, its numbers still its tier two's. The designs still to come
   are briefs: `docs/briefs/README.md` says what each waits on.
-- **The numbers.** Tier one alone is tuned (Ryan, 11 November), on the anchor: the second
-  battle, four tier ones against a tier-one rift. The hull budget is a formation's fight a
-  twentieth of a squad's hull at its rating, a flanker's a thirtieth, a hunter's a tenth, an
-  elite's a quarter and the boss what is left. Tier one's flankers, hunters and formations
-  are sized to it since 17 November (`docs/briefs/numbers_pass.md`, sections 3 and 8; the
-  reads `docs/measurements.md`), read on every squad of the six certain tier ones since 18
-  November (a count of them had the Honey Badger in four fours of five): a lone flanker
-  3.4% of a four's hull, a hunter's pack 8.9%, a formation 4.5% over 5.7 rounds, from 1.3%
-  to 9.3% by formation, every fight won. The elites and the bosses are sized since 18
-  November for a squad without the Barrier, on his word ("sizing it without means that if
-  it does prove toxic after all, in my play, then it's relatively easy to remove"): an
-  elite costs it 24.8% and a boss 29.8%. The Barrier basic stays on the starting dice ("one
-  of the two sides of the defensive coin"), and the squad with it pays about half, an elite
-  13.9% and a boss 19.2%: whether that proves toxic is his play's to say, on BARRIER BASIC. How the leaders strike is his lean of the
-  same day (the bible's section 9): whole blows the norm, slightly towards strikes so plate
-  earns in their fights; two pairs wait on his marks, the Reaper's Harvest is a sweep at
-  every machine on his word, and the Pilgrim's knife purges before it lands, a step ahead
-  of its blow that the move says and the Pilgrim's alone ("Agreed on pilgrim-only"). A foe's adds, its Empowered first,
-  land on every strike of a move since then, the machines' formula. This pass's leans on the
-  dials stand in the brief's section 7, each his.
-  Tiers two and three and the first battle are unsized, their foes still the ones sized
-  against a shield that refilled. On a debug
+- **The numbers.** Tier one alone is tuned (Ryan, 11 November), on the baseline: the second
+  battle, four tier ones against a tier-one rift, a fight read at its rating (a flanker one
+  machine, a hunter's pack two, a formation three, an elite and a boss four). The hull budget
+  is a formation's fight a twentieth of a squad's hull, a flanker's a thirtieth, a hunter's a
+  tenth, an elite's a quarter and the boss what is left. Every domain is on it since 19
+  November (`docs/briefs/numbers_pass.md`, sections 3, 9 and 10; the reads
+  `docs/measurements.md`), read on every squad of the six certain tier ones: a lone flanker
+  3.4% of a four's hull, a hunter's pack 8.9%, a formation 5.5% (3.3% to 6.9%), every fight
+  won. The elites and the bosses are sized for a squad without the Barrier, on his word
+  ("sizing it without means that if it does prove toxic after all, in my play, then it's
+  relatively easy to remove"): an elite 24.4% (20.3% to 27.7%), a boss 29.5% (25.1% to
+  36.1%). The Barrier basic stays on the starting dice ("one of the two sides of the
+  defensive coin"); the squad with it pays an elite 15.9% and a boss 20.4%, and whether that
+  proves toxic is his play's to say, on BARRIER BASIC. Each domain's kit without Breach
+  landed with its sizing (the bible's levers row): the Waste's purge ahead of the blow, a
+  move's own order and no rule of Purge; the Peak's Bomb as its hard hit on a telegraph; the
+  Marsh's knight and its Serpent's fangs; the Meadow's as it was. How the leaders strike is
+  his lean (the bible's section 9): whole blows the norm, slightly towards strikes. His
+  answers of 19 November landed the same day: the numbers pass's leans (no piece grants a
+  cooling or a shield regen now; Cryo 1; the Ankle Mortar 3 for 5; the Overcharge Coil tier
+  two; the slottable shields and vents of tiers zero and one retired, a vent's shield half
+  leaving the engine with them), the Cassowary's Laser Carbine and the Cottonmouth's
+  Incendiary Shells, and a foe's jam waiting for its machine's reboot; read, the baseline
+  moved by a point or two. Read and his to pick: the pickets' count, which leaders purge, and
+  the Mandragora's scream (the to-do). The
+  battle whole is the open question (the brief's section 11): at their ratings a second
+  battle's fights come to three fifths to nine tenths of a squad's hull, and a fight met a
+  machine short costs four to six times its price. Tiers two and three are unsized, their
+  foes still the ones sized against a shield that refilled; the first battle, the Meadow's
+  alone and the one a trio fights, is built and its sizing his. On a debug
   build's SETTINGS, TRIALS, each a number still to be picked: HEAT, TOP BASIC, RANK AND FILE
   and BARRIER BASIC (read at the next launch), OVERHEAT, FIELD DEPTH, OPENING, FODDER,
   RUPTURE, TIDE and STRIKE (read as the next battle starts). A dial leaves the page with its
@@ -202,15 +220,22 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   battle: walks pass it and none ends on it, its model dark and slumped where it fell. The
   rift's shell walls the seven hexes beside it, closed to the machines while the seal stands,
   a stretch cracking at each Fracture and the whole bursting at the Rupture, a cache behind
-  it. Decided and not built: the fourth machine comes
-  with the first battle, a choice from the host maker's catalogue (the bible's squad row).
-  Detail: the rules' The battlefield; the bible's section 4.
+  it. Detail: the rules' The battlefield; the bible's section 4.
 - **The campaign.** Its rules run headless only (`sim/campaign.gd`); no screen shows them.
+  The first battle is built as he decided it (the bible's squad row; the rules' The first
+  battle): every rift is the Meadow's until it is fought, by content's mark (a domain's
+  `opening`); won, one of three of the host maker's machines is taken before anything else;
+  lost, the machine left on the tender comes. The quick campaign's first battle follows it.
+  Today's makers field two tier ones or three, so the choice is of one or two until 4-4-2
+  lands, and the runner's plain player loses that battle in every run as tier one is sized
+  (`docs/campaign_run.md`), so the won branch is the tests'.
   The campaign runner's player fights alone by the map's defence rule, the floor the reads
   stand on; `--muster` plays the player that gathers (`BattleBot.Rule.MUSTER`: each pack its
-  rating's count of the nearest machines, the unsealed boss first), which wins the elite at
-  its rating and still loses the second battle at the gate on today's foes
-  (`docs/measurements.md`, 16 November). The quick campaign is an experiment (Ryan,
+  rating's count of the nearest machines, the unsealed boss first). With every fight on the
+  budget it still wins a quarter of second battles at best in any domain: it fights a
+  machine short, a formation then costing four to six times its price, and no dial read
+  moves it past a third (`docs/measurements.md`, 19 November; the numbers brief's section
+  11). What a battle should leave a squad with is his, by his play of a second battle. The quick campaign is an experiment (Ryan,
   28 October): no decision reads its runs, and it follows the main content and code on one
   tree, its fights built by the battle's own builders.
 - **The screens.** The harness (`godot --path .`) launches a battle as a run deals it, a lone
@@ -257,9 +282,12 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   ladder and `tools/campaign_run.gd` whole runs (the README has every command). The bot has
   a first play of the reboot, and prices every step of a foe's move and of its fall by one
   table (`Policy.effect_cost`); a brace, a summon, a revival, a swallow, a purge and a merge
-  it still counts as nothing. `tools/anchor_read.gd` reads every fight of a tier at its
-  rating, the measure the sizing stands on. `tools/battle_run.gd` plays one battle of a run
-  whole by squads, and `tools/balance.gd --packs rating` fights every composition with squads
+  it still counts as nothing; it reads a purge ahead of a blow, and holds a kill only for
+  what a round's wait would save of a death blow. `tools/anchor_read.gd` reads every fight
+  of a tier at its rating on every squad of its pool, and says who paid by machine: the
+  measure the sizing stands on. `tools/battle_run.gd` plays one battle of a run
+  whole by squads, reads the field's trial dials from the environment as the game does, and
+  with `--whole` plays a player that never fights a pack short at the wall; and `tools/balance.gd --packs rating` fights every composition with squads
   of its rating. `tools/budget_model.py` and
   `tools/basics_model.py` are the small models apart from content.
   `tests/test_leftovers.gd` fails the build for a rule no piece prints, and
@@ -275,14 +303,17 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
 
 Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
 
-1. **The foes' line** (`ccr-722ca9f0-yj8na3`; `docs/briefs/numbers_pass.md`), in this order:
-   - The defence side's rest, this line free to adjust content when it is ready (Ryan, 17
-     November): a kit for the Waste now that Breach is cut, proposed in chat first; the
-     scorches on every machine above tier one.
+1. **The foes' line** (`ccr-722ca9f0-yj8na3`; `docs/briefs/numbers_pass.md`). His word of 19
+   November is done: every domain's kit and sizing at the baseline (the second battle, four
+   machines; the code's ramp 1), the first battle built, the bot pricing a purge. In this
+   order from here:
+   - His play of a second battle, which says whether the budget's shares stand (the brief's
+     section 11): the fights are even across the domains, and the battle whole is tight.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
      his picks on RANK AND FILE, HEAT and TOP BASIC: its prices are read from the vanilla he
      settles on.
-   - The scaling from the anchor: the first battle down, tiers two and three up.
+   - The scorches on every machine above tier one, then the scaling from the baseline: the
+     first battle down, its sizing his ("I'll handle that one"), tiers two and three up.
 2. **The machines the reboot broke** (another session's line, beside the first): each fix
    built on Ryan's marks, in its own commit, at placeholder numbers.
 3. **The design sessions, from the briefs**: each decision a bible row, each brief retired
@@ -323,27 +354,33 @@ with it, on his word. A page's link goes into this file in the same commit as it
 publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  The last publish known is v0.619 (17 November, from `ccr-178e0404-ptuh2m`); main's file is
-  v0.632 (the deaths' branch's rows, the Mole's branch's and the Buzzard's with it, 18 November), unpublished. Before republishing, read the live page; if another session moved it,
-  publish a three-way merge onto it row by row (`tools/pages/bible_merge.py`: BASE the last
-  publish both started from, OURS this branch's file, THEIRS the saved live source with the
-  tool's wrapper line, its trailing newline and `</body></html>` stripped). BASE is likely
-  the file of `a5e8c29`: check it against the live page byte for byte first. After main
-  merges in, check the tables script's run against the file's tables before keeping it: a
-  row it reverts belongs to a branch not yet landed.
+  Published at v0.634 on 18 November from main's file at `1383f11` (the page's Version 513).
+  Main's file is v0.647, unpublished: Ryan said yes to republishing it and the hangar on 19
+  November, and the session's permission check refused the publish, so it waits on his
+  approval of the action. In it since: the step ahead of a blow, the first battle decided and
+  built, the Needletail's rows, every domain's kit, the battle's open question, the Skua, the
+  Kite and the Cottonmouth left as built under the reboot, the leans of 19 November and a
+  foe's jam waiting for the reboot. The hangar's `text` collection was empty on 19 November,
+  so no writing of his waits. Before republishing,
+  read the live page; if another session moved it, publish a three-way merge onto it row by
+  row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
+  `1383f11` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  live source with the tool's wrapper line, its trailing newline and `</body></html>`
+  stripped): check BASE against the live page byte for byte first. After main merges in,
+  check the tables script's run against the file's tables before keeping it: a row it
+  reverts belongs to a branch not yet landed.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
-  each live copy read first, with `edits`, `designs` and `text` read first. Main went up whole
-  at Version 306 (18 November, `aeeed09`, the Mole's branch landed): every file of the map
-  checked against the live copy by hash, and the fifteen that differed sent (the content, the
-  Designs and Text inventories, the pins and foes manifests, the Goblin Warchief's sprite, the
-  Storm Petrel's sidecar, and the Badger's and the Wild Boar's models and sidecars with their
-  Minervan vents). The page itself was unchanged.
-  The Buzzard and the Macaque, landed after that publish, are not up: their content (the
-  Buzzard's passive, branches and cannon's id; the Macaque whole, its Aile Booster and its
-  terms), their texts, and their models and sidecars (the Shield-burner Cannon in the shield's
-  light; the Macaque's held armaments and dash) go up with the next, and the motion script's
-  parts made of light (`tools/hangar_motion.js`, the Macaque's beams).
+  each live copy read first, with `edits`, `designs` and `text` read first. Version 307 (19
+  November, `f05bbdc`: main at `a1f3a45` and the summon texts' branch): every file of the map
+  checked against the live copy by hash, and the nine that differed sent (five content files,
+  the Designs and Text inventories, and the Buzzard's model and sidecar). The page itself was
+  unchanged. The numbers pass's leans (`6a10dca`) and a foe's jam waiting for the reboot
+  (`645d690`), landed after that publish, are not up: their content, briefs and texts go up
+  with the next, which waits with the bible's on Ryan's approval of the action.
+  The Macaque (`ccr-64b5deec-lunnff`, landed after it) is not up either: its content whole (the
+  chassis, its Aile Booster, its terms), its texts, its model and sidecar (its held armaments and
+  its dash) and the motion script's parts made of light (`tools/hangar_motion.js`).
   `build/hangar/designs.json` is one 795 KB line: write it indented before reading it whole.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their

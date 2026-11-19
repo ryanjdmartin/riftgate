@@ -233,7 +233,7 @@
    "id": "cryo",
    "category": "keyword",
    "name": "Cryo",
-   "codex": "Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo a strike (Cryo 1: one stack), laid once the strikes are done, so a fire never cashes its own frost. Any machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 2 a stack.",
+   "codex": "Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo a strike (Cryo 1: one stack), laid once the strikes are done, so a fire never cashes its own frost. Any machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 1 a stack.",
    "status": "implemented",
    "design": {
     "holes": "Other pieces may lay it (marked for reuse as a healthier ally cooling than a vent). A rider on the mark is benched until the roster has room. The cooling a stack is a placeholder."
@@ -442,7 +442,7 @@
    "id": "jam",
    "category": "keyword",
    "name": "Jam",
-   "codex": "Enemy keyword. The component the target's die is showing is Jammed through the target's next turn: if the die lands on it, it comes up blank.",
+   "codex": "Enemy keyword. The component the target's die is showing is Jammed until the target reboots: if the die lands on it, it comes up blank.",
    "status": "implemented",
    "design": {
     "holes": "Disable until 15 November (Ryan: \"Rename to Jammed\"); the rider follows the pattern, Jam lays Jammed."
@@ -654,7 +654,7 @@
    "id": "sealed",
    "category": "status",
    "name": "Sealed",
-   "codex": "Ability, the Polar Bear's form. Equipment it spends on itself seals it: armour up by its Lockdown's number, its own cooling stopped, its Cryo Flinger gaining Spread, and it runs hotter at the end of each turn. A weapon it fires opens it; equipment on an ally and a debuff, its lure among them, leave it as it is. No Purge touches it.",
+   "codex": "Ability, the Polar Bear's form. Equipment it spends on itself seals it: armour up by its Lockdown's number, its cooling stopped, its Cryo Flinger gaining Spread, and it runs hotter at the end of each turn. A weapon it fires opens it; equipment on an ally and a debuff, its lure among them, leave it as it is. No Purge touches it.",
    "status": "implemented",
    "design": {
     "holes": "One chip, renewing, never stacking: the armour it grants is tied to the form. The numbers are placeholders.",
@@ -686,7 +686,7 @@
    "id": "cryoed",
    "category": "status",
    "name": "Cryo",
-   "codex": "Foe status, the mark the Cryo keyword leaves. Any machine's hit on it with a weapon spends every stack and cools the hitter 2 a stack; equipment spends none. It never fades on its own.",
+   "codex": "Foe status, the mark the Cryo keyword leaves. Any machine's hit on it with a weapon spends every stack and cools the hitter 1 a stack; equipment spends none. It never fades on its own.",
    "status": "implemented",
    "design": {
     "holes": "Engine id cryoed, since the keyword holds cryo; the player reads Cryo on both.",
@@ -750,7 +750,7 @@
    "id": "jammed",
    "category": "status",
    "name": "Jammed",
-   "codex": "Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's jam lasts through the machine's next turn and can be cleansed; a rapid component's own switch-off ends with the round, and is no jam.",
+   "codex": "Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's jam lasts until the machine reboots and can be cleansed; a rapid component's own switch-off ends with the round, and is no jam.",
    "status": "implemented",
    "design": {
     "holes": "Disabled until 15 November (Ryan: \"Rename to Jammed\"). The engine's own name for an entry switched off, by a jam or by a cooldown, stays disabled.",
@@ -1015,22 +1015,6 @@
      "on": "machine",
      "stacks": "Yes: one a weapon or equipment aimed at a foe",
      "lasts": "The skirmish; never decays"
-    }
-   }
-  },
-  {
-   "id": "quick_turned",
-   "category": "status",
-   "name": "Quick turn spent",
-   "codex": "Machine marker, the Needletail's: its die has turned once this round, so the spend it holds is its last. Never a chip: the die shows the turn it still has in its passive box. Gone at the round's end.",
-   "status": "implemented",
-   "design": {
-    "holes": "Set by the static one_of_each (the Needletail's relay): two things a round, a weapon and an equipment.",
-    "table": {
-     "kind": "buff",
-     "on": "machine",
-     "stacks": "No",
-     "lasts": "The round"
     }
    }
   },
@@ -2206,7 +2190,7 @@
    "id": "appropriated",
    "category": "status",
    "name": "Appropriated",
-   "codex": "Ability, Gilgamesh's: the number of the piece he holds. His Collect knocks loose the component a machine's die is showing, Jams it through that machine's next turn, and leaves him Appropriated at its number: a weapon's printed blow, and 1 for anything that is no weapon, a fake. His Borrowed Blade lands that number next round and spends it. One piece at a time, what he takes next replacing it. No Purge reaches it; a Ward on the machine turns the taking away.",
+   "codex": "Ability, Gilgamesh's: the number of the piece he holds. His Collect knocks loose the component a machine's die is showing, Jams it until that machine reboots, and leaves him Appropriated at its number: a weapon's printed blow, and 1 for anything that is no weapon, a fake. His Borrowed Blade lands that number next round and spends it. One piece at a time, what he takes next replacing it. No Purge reaches it; a Ward on the machine turns the taking away.",
    "status": "implemented",
    "design": {
     "holes": "Ryan's mark of 15 November on the steal rider: \"Doesn't need to be it's own rider. It grants Jammed on the target, and Gilgamesh gains Appropriated with the value. The ability should be renamed to Collect.\" Built 16 November as the first move written in steps: a blow that jams, then a step of its own (appropriate). His Ability, a count on his chip that follows what he holds (Ryan, the same day, of the purgeable buff a session had read from \"gains\": \"I think Appropriated is a balance read. Maybe make it his ability, a number that fluctuates depending on what he's currently holding\"). The swing is one strike at the piece's number, whatever strikes the piece had, and no keyword of the piece rides it. The steal rider and the foe's own field for what it held left the engine with it. The text is a session's draft.",

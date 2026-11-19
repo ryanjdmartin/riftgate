@@ -19,8 +19,9 @@ they run are `docs/rules.md`, and every run named here is in `docs/measurements.
   its roles. The reboot is the game's rule since 15 November, on his "Go ahead on the fold and
   build": no chassis regenerates or cools, and the validator refuses both keys.
 - **Still this pass's.** The numbers sized against the reboot (the numbers brief, whose head has
-  his word on who moves them); the Barrier's place (section 14); the first battle scaled down and
-  tiers two and three up (sections 10 and 13); the component pass (section 6).
+  his word on who moves them: tier one is sized, its elites and bosses for a squad without the
+  Barrier); the first battle scaled down and tiers two and three up (sections 10 and 13); the
+  component pass (section 6).
 - **His to play or mark.** The dials (sections 11 and 23), 4-4-2's open places (section 13) and
   the machines the rule reaches (`docs/reboot_machines_proposal.md`).
 
@@ -28,7 +29,7 @@ they run are `docs/rules.md`, and every run named here is in `docs/measurements.
 
 A stub: the calls of 9 to 11 November that set the pass, each a bible row now. Shields and
 vents off the die, a component a weapon or equipment: the component row and the shield row,
-which hold why the entries left (section 14). Two rerolls: the rerolls row. Component
+which hold why the entries left. Two rerolls: the rerolls row. Component
 destruction off: no blow destroys a component by its size, and Destroy is a rider no foe
 carries yet (`docs/rules.md`, Destroy). The shield and vent entries as "perfect commander
 actions": the Open row on a command die. An innate shield with a regen, his second shape of
@@ -71,10 +72,10 @@ superseded by the baseline of 16 November (the numbers brief, section 3). The wh
 ## 6. The audit: what the model breaks, touches and leaves (9 November, on main's content)
 
 A stub. Its list of machines is superseded by section 22's and `docs/reboot_machines_proposal.md`.
-Still to come from it, the component pass (the to-do's refit line): the ten planned shields and
-vents, each with its fate under its `design` in `content/components.json` (four to retire; the
-Laminar Deflector, the Corona Shield and the Phased Sublimator to be made equipment; three back
-in design); the Blast Door, a Barrier at tier one beside a Barrier basic, which waits on section
+Still to come from it, the component pass (the to-do's refit line): the planned shields and
+vents of tier two, the Laminar Deflector, the Corona Shield and the Entropy Condenser, kept until
+a kit wants one (the seven of tiers zero and one retired on 19 November on Ryan's yes, the Phased
+Sublimator among them, which this section had marked to be made equipment; git keeps it); the Blast Door, a Barrier at tier one beside a Barrier basic, which waits on section
 14; and two modules whose rules do nothing today, the Reinforced Skeleton (nothing destroys a
 component) and the Phase Conjugator (nothing dealt shields an ally).
 
@@ -86,9 +87,10 @@ flanker's a thirtieth or less, a hunter's a tenth, an elite's a quarter, the bos
 The bible's scale row holds it; the numbers brief has his words and where tier one stands.
 
 Closed since: the regen's size and heat as a pace (section 22), breach (cut on both sides), the
-roles (section 4), the four machines' sessions (`docs/reboot_machines_proposal.md`). Still his:
+roles (section 4), the four machines' sessions (`docs/reboot_machines_proposal.md`), and how
+common the Barrier is (a basic on the starting dice, 18 November: section 14). Still his:
 
-1. **How common the Barrier is**: section 14.
+1. **Whether the Barrier basic proves toxic** in his play: section 14.
 2. **What prices a round.** A block trades rounds for hull, and little in a tier-one fight makes
    its seventh round worse than its third. On the bench: a rising threat in every formation, a
    pack's strike at the wall while a fight runs, heat that bites. Parked on his word (12
@@ -120,11 +122,20 @@ significantly affects boss scaling, since the whole team is brought in. Second, 
 battlefield power a fourth unit gets is being able to reliably cover a flank, and stay out
 there without presumably needing to come back to reinforce for an elite, most of the time anyway."
 
-**Settled the same day** (the bible's squad row; not built): the fourth machine is owed after
-the first battle, a choice from the maker whose city was defended. So tier one has two bands,
-the first battle at three machines and every battle after at four, and a fight is read at its
-rating: a lone patrol one, a pair or a hunting pack two, a formation three, an elite and a boss
-four. Unmarked, Claude's lean: a first battle lost sends the machine left on the tender.
+**Settled** (the bible's squad row; built 19 November): the first battle is the Meadow's, fought by the
+three machines of the draft, and it brings the fourth: won, a choice of one of three machines
+from the maker whose city was defended; lost, the draft's missing pick. So tier one has two
+bands, the Meadow's first battle at three machines and every battle after at four, and a fight
+is read at its rating: a lone patrol one, a pair or a hunting pack two, a formation three, an
+elite and a boss four. His words: 11 November, "if the choice is in which city to defend in
+order to get a guaranteed choice from that maker, then that works"; 18 November, "the waste
+will only ever be fought with 4 machines. It's just the meadow at level 1 that gets 3"; and 19
+November, of what he had held settled since the 11th, when this brief asked "Meadow first, yes
+or no?" and wrote down no answer: "First battle, meadow, 3 machines from the draft, reward is a
+choice of 1 of 3 machines from the maker, or the missing 4th draft pick on loss. I'm ok with
+first battle being from any domain, really, but it's a whole other thing to balance, right?"
+The opening domain is content's mark (a domain's `opening`), and the rules' The first battle
+has the rule as it runs.
 
 **His scope: tier one only.** "Let's focus only on balancing tier 1 fights for now. If you've
 read the other work done then you'll know that we're considering tier 3 machines to have higher
@@ -140,13 +151,23 @@ easy and not the Waste's or the Peak's; hull and the wall lose it separately, si
 asks three machines for a formation and two flank patrols (`Ramp.formations_at`,
 `Ramp.patrols_at`); and the boss wants a block of its own, where `ContentDB.BOSS_TIERS` is by tier.
 
+**What a trio pays today** (19 November, `tools/anchor_read.gd` with `machines=3`, tier one as
+sized for four, the dice as dealt; `docs/measurements.md`). A formation is rated three, so a
+trio pays the anchor's rows, 2.4% to 9.3% of a four's hull. A leader is a true four: an elite
+fight costs a trio 24% to 35% by domain, and a boss 42% in the Meadow, won four fights in
+five, 38% and 40% in the Marsh and the Peak, and 56% in the Waste, won one in two. So the
+Meadow's first battle is still to be sized, its three bosses and two elite fights (Floraison
+a coin's toss for three), and the first battle in any domain would be thirteen bosses and
+eleven elite fights that do not take one cut: his "it's a whole other thing to balance".
+
 **Open, his:**
 
 1. What easy is read as. Lean: no fight of the first battle costs the worst trio more than a
    tenth of its hull and none wrecks a machine, the bot playing.
 2. How it is made easy. Lean: a block at Convergence 0, the first rift's foes at a share of
-   their hit points and blows, and one flank patrol at its opening where there are two. On the
-   bench: the first rifts always the Meadow's, or a first battle written by hand.
+   their hit points and blows, and one flank patrol at its opening where there are two. Only
+   the Meadow's needs it, the first rifts being the Meadow's on his word of 18 November
+   (above). On the bench: a first battle written by hand.
 3. Whether three machines are meant to leave a flank open and pay at the wall; and the heavy
    elites in the first two battles (the Old Man's rising, the Wild Hunt), gated or left.
 
@@ -182,7 +203,18 @@ damage, buffs the whole field, that kind of thing)." The shape: a picket, two or
 domain's own front-rank pushers, rated one, so the die that answers a duelist is the wrong die
 for it: three Goblins in the Meadow, two Needlers in the Waste, three Revenants in the Marsh.
 
-**Open, his:** his play of the four dials; the pickets, and the Peak's; the first wave
+**The pickets, read 19 November** (his yes, standardized: "lets just standardize it to 3 of the
+default frontliner for each domain (goblin, needler, revenant, salamander?)"; the commonest
+front-liner of each domain's tier-one formations, the Salamander included; `docs/measurements.md`,
+that day). Three of each on one machine: the Revenants 4.1% of a four's hull, on a lone
+flanker's thirtieth; the Goblins 7.6%, won 93%; the Needlers 13.1%, won 83%; the Salamanders
+16.7%, won 70%. Two of each: 1.7%, 2.6%, 0.0% and 4.6%, every fight won. Three of each with two
+machines on it: 0.0% to 1.6%. So three fits the budget rated one in the Marsh alone, and rated
+two each is nearly free. Not in content until he picks: three of each rated one as he said,
+the count by the budget (two Goblins, two Needlers, three Revenants, two Salamanders; this
+brief's lean), or three of each rated two.
+
+**Open, his:** his play of the four dials; the pickets' count; the first wave
 repeating the opening's formation (left, the list's second, or drawn by the seed); and what
 measures a battle's minutes against his ten to thirty, which nothing does yet.
 
@@ -214,8 +246,9 @@ with four machines. Six tier ones stand in for the roster: the Honey Badger, the
 Storm Petrel, the Prairie Dog, the Cassowary and the Cottonmouth. Every fight is read at its
 rating (a lone flanker, a hunter's pack, a formation, an elite, a boss) and the battle whole by
 a scratch player that musters, the runner's own player being no measure. The baseline is the
-numbers brief's section 3. What landed at the anchor on 12 November, heat's prices, tier one's
-shields at 6 to 12 and its foes fight by fight, was sized against a shield that refilled.
+numbers brief's section 3. What landed at the anchor on 12 November, heat's prices and tier
+one's shields at 6 to 12, was sized against a shield that refilled; its foes are sized against
+the reboot since 17 and 18 November (the numbers brief's section 8).
 
 **4-4-2, with his marks of 12 November** ("That's probably fine for 4-4-2 for now"). Four tier
 ones a city maker, none for the Arsenal by its rule.
@@ -238,62 +271,26 @@ the Dingo once it is down. Each open place is its chassis's session's.
    similar to Numbed, where they can't get barrier twice in a row." It bites only where the
    same machine is named two rounds running, a rule about the tank and the lure. Unsettled: what
    starts the rest; the Wild Boar, whose Plow feeds on a Barrier; a foe's own Barrier; the word
-   and the chip. If the Barrier is no basic (section 14) the rest is not needed.
+   and the chip. The Barrier stays a basic (section 14), so the form is still his to take up.
 2. The Waste's bosses and the Peak's clock, which kept those domains under the others at the
    anchor: the bosses' session, and the pacing dials.
-3. The elites a number cannot move (the Pilgrim, the Reaper, Gilgamesh): their sessions'.
+3. The elites a number cannot move: the Pilgrim's knife purges before it lands and the
+   Reaper's Harvest sweeps every machine since 18 November (the numbers brief's section 8);
+   Gilgamesh is his session's.
 
 **The plan from here**: the sizing against the reboot at this anchor (the numbers brief); the
 first battle scaled down from it (section 10); then tiers two and three scaled up with the
 levels' ladder. Unread at the higher tiers since the anchor moved them: the goblin, the wolf,
 the gel, the zombie knight, the bomb and the salamander, with the elites and the bosses.
 
-## 14. The Barrier's place (12 November, a discussion; nothing built)
+## 14. The Barrier's place (decided 18 November)
 
-His question: "So lets discuss Barrier, then. Is it toxic? Is it worse than giving numerical
-shield? Should it be rare or locked? An argument could be made that a chassis with barrier is a
-sub for a Tank on a team, and thus it's not widely available. One thing we could do, which
-sounds terrible, is have a difference between shield and temporary shield. Or, we go back to
-some shield-granting pieces, as a keyword on Equipment so its not ubiquitous as a component
-type, but still exists. Armour grants and Barrier grants are very binary, shield is a buffer. I
-liked our simplification, but maybe we went too far. I'm really not sure. What do you think?"
-
-**His lean since** (15 November; his words are in the numbers brief, section 1): the Barrier is
-no basic, so that no massive strike is justified by it. It covers a machine that reboots.
-
-**What stands in the Barrier basic's slot**, read under the reboot (`docs/measurements.md`, 15
-November; a share of a four's hull; a direction):
-
-| In the slot | A formation: rounds, hull | An elite: hull, wrecks | A boss: hull, won, wrecks |
-|---|---|---|---|
-| The Barrier, as built | 4.7, 8.1% | 11.1%, 0.03 | 26.5%, 99%, 0.22 |
-| The Armoured basic, which is BARRIER BASIC on NONE | 4.7, 9.1% | 24.6%, 0.23 | 46.8%, 92%, 0.90 |
-| A plain gun of 3 | 4.5, 8.7% | 22.5%, 0.21 | 47.3%, 94%, 0.87 |
-| A Ward | 4.8, 9.3% | 24.2%, 0.28 | 52.7%, 91%, 1.08 |
-
-A Barrier's worth is the blow it meets: about one blow in eight in a formation, two in five
-from an elite or a boss, seven in ten from a foe whose kit is one blow a round.
-
-**The bench.** Standing: a basic with its cooldown, as content has it, which fails the test of
-14 October (a block worth the biggest blow it meets, on seven dealt stock dice, so no foe's
-number tunes against it); that with the machine's rest (section 13); and rare or locked, the
-Halo's slot taking the Shoring Jack or a gun, which is Claude's lean. Closed, each a shield
-entry back on the die: a shield grant with Overshield, a plain shield grant, a second gauge.
-Claude leaned to the first of those for a day and withdrew it on his words: "I fail to see how
-what you proposed is any different than what we had before when we had shield faces. It kind of
-just sounds like you're trying to bring shield faces back. But we cut that for a reason, because
-it wasn't working for balance. Go over our notes again and refresh on why we got rid of it in
-the first place."
-
-**Why shield entries left the die**, the test any proposal for the slot is held to (the bible's
-shield row has his words): the loop, a rolled defence taking the dice before offence does; a
-buffer that has to be found in the roll; the die's verbs, weapons and equipment and no more; no
-recovery entry on the die; and numbers that never found a place, whole block or honest number.
-
-The holes in rare or locked: a starting die's one defensive basic is then Armoured, partial
-against a single blow over its number, so whether the big blow at tier one plays as a choice or
-as the tank needed again is his play's to say; and the bosses' numbers were set with a Barrier
-on the dice. Nothing is built: a debug build's BARRIER BASIC plays the dice without it.
+The Halo Projector stays a basic on the starting dice, its cooldown 1, and the leaders are
+sized for a squad without it: his words, the reason and the exit are the bible's Barrier row
+(section 5), the reads the numbers brief's section 3 and `docs/measurements.md`, 18
+November. Whether it proves toxic is his play's to say, on BARRIER BASIC. The discussion of
+12 November, his question, the bench and the read of what stands in its slot, is `git show
+5d22273:docs/briefs/refit_pass.md`.
 
 ## 15. The breaking shield (13 November, his idea read; nothing decided)
 
@@ -531,8 +528,9 @@ of it. Two things recur across the machines, with his word on each (13 November)
   don't want to make a strict rule about anything, but I would expect that anything that grants
   Regen, cooling, flat shield or flat heat reduction, would probably be part of a kit or locked
   piece. Or gated behind a synergy. Bring the dearest pieces, as you say, they should be
-  something special." An expectation, not a rule. From a slot today: the Boundary-layer Bleed,
-  the Spall Liner, the Field Radiators and the ten planned shields and vents (the numbers brief).
+  something special." An expectation, not a rule. From a slot today: the Spall
+  Liner's heat and the three planned shields and vents of tier two; the Boundary-layer Bleed's
+  and the Field Radiators' point of cooling went on 19 November (the numbers brief, section 7).
 - What pays in shield pays with a budget that comes back once a reboot. "Shield spend also is
   something I'm not certain will be standard fare, because it's so expensive."
 

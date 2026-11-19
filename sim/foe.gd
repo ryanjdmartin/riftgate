@@ -495,12 +495,14 @@ func strikes() -> int:
 ##           running (Ryan, 15 November: "I think we give this to the foes too"; "Phased on
 ##           foes can be less strict since it's balanced around their kit and theme"; the
 ##           Spectre's and the Wraith's, a step after their Hex Bolt, 17 November)
-##   buff    revive_once: comes back from the pool once after dying (Get Back Up); Suppress and
-##           Disrupt answer the telegraphed move, kill order the rest
+##   buff    revive_once: it gets back up once the next time it falls, whole, in its own slot
+##           (Reraise); Suppress and Disrupt answer the telegraphed move, kill order the rest
 ##           revive_once_ally: one of its own, never itself, not yet readied, comes back once
 ##           the next time it falls (Reraise, the promoted Cleric's, 16 October): a party
 ##           member first, the heaviest hitter among them, then the rest of its own the same way
-##           summon: `count` foes of `foe` join the pool at the round's end (Raise)
+##           summon: `count` foes of `foe` take empty slots of their rank at once, the nearest
+##           its column, their round over; a call for several stands as many as fit, and a
+##           summoner with room for none never picks it (Raise; Skirmish.legal_actions)
 ##           rally: every foe on the field, itself too, is Empowered `value`, at once (Kindle)
 ##           prime: Primed `value` on every other foe on the field, its next move's blows each
 ##           leaving that much Ablating on the machine they hit (28 October)

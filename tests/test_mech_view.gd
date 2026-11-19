@@ -156,9 +156,11 @@ func test_mount_plan_names_only_the_mounts_that_differ_from_stock() -> void:
 	var stock := ["slugthrower", "shotfire_rack", "twin_autoguns", "shoring_jack"]
 	var die := db.build_die(["chainsaw_claw", "chainsaw_claw"], stock, 4)
 	assert_eq(MechView3D.mount_plan(die, stock, db), [], "the stock kit changes nothing")
-	# The jack swapped for a vent: still no mount touched.
-	die.faces[5] = db.build_face(db.components["coolant_jacket"]["face"])
-	die.faces[5].component = "coolant_jacket"
+	# The jack swapped for another piece that takes no mount: still no mount touched.
+	var bare := _shapeless(db, stock)
+	assert_ne(bare, "", "content holds a dealt piece with no shape")
+	die.faces[5] = db.build_face(db.components[bare]["face"])
+	die.faces[5].component = bare
 	assert_eq(MechView3D.mount_plan(die, stock, db), [], "a component without a shape shows nowhere")
 	# The rack (die entry 4, mount 2) refitted with a Kestrel gun, the autoguns emptied: the
 	# next shaped entry is the vent, which takes no mount, so mount 3 goes bare.
@@ -206,7 +208,7 @@ func test_plan_for_reads_the_models_record_else_contents_stock() -> void:
 		var v := db.make_mech(without)
 		assert_eq(MechView3D.pin_record(without), null, "a chassis with no model has no record")
 		assert_eq(MechView3D.plan_for(v, db), [], "with none, a fresh machine plans against content's stock and wears it")
-	assert_eq(MechView3D.plan_from_spec("1:enfilade_beam, 2:, x:y, 3:no_such, 4:coolant_jacket", db), [[1, "enfilade_beam", "barrel", "wainwright_sutler"], [2, "", "", ""]], "the debug spec: a fit, a bared mount, junk and unshaped equipment skipped")
+	assert_eq(MechView3D.plan_from_spec("1:enfilade_beam, 2:, x:y, 3:no_such, 4:%s" % _shapeless(db, []), db), [[1, "enfilade_beam", "barrel", "wainwright_sutler"], [2, "", "", ""]], "the debug spec: a fit, a bared mount, junk and unshaped equipment skipped")
 
 
 func test_every_model_names_what_each_of_its_pins_carries() -> void:
@@ -880,3 +882,13 @@ func test_a_weapon_on_a_hidden_mount_fires_as_the_drum() -> void:
 		assert_ne(int(row[0]), 1, "nothing at the hidden hp_1 a refit fills")
 	assert_false(MechView3D.flare_rows("badger", fitted, db, false).is_empty(), "the same gun fitted where a mount shows flares as before")
 	view.free()
+
+
+## A dealt piece that takes no mount (its shape "none"), unlocked and none of `skip`: the first
+## content holds, so a test needs no id of its own.
+func _shapeless(db: ContentDB, skip: Array) -> String:
+	for id in db.components.keys():
+		var c: Dictionary = db.components[id]
+		if str(c.get("shape", "")) == "none" and db.component_dealt(str(id)) and not db.is_fixed(str(id)) and not skip.has(str(id)):
+			return str(id)
+	return ""

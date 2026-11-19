@@ -63,7 +63,6 @@ const TABLE := {
 	"appropriated": ["taken", "enemy"],   # what a foe took off a machine (Gilgamesh's, 16 November; the steal's mark until then)
 	"aloft": ["aloft", "guard"],   # a foe climbed out of the dice's reach while its move gathers (the Roc's, 16 November), with what keeps a blow off
 	"ability": ["", "plain"],   # a unit's own mechanic, no buff or debuff (8 November): its chips carry their own marks
-	"quick_turned": ["rapid", "plain"],
 	"overheated": ["heat", "heat"], "broken": ["shieldbreak", "guard"], "rebooting": ["shield_vent", "plain"],   # the reboot's three states (13 November), read off the gauges: no status of the engine's table
 	# A foe's moves: the keywords they carry, the list's last heading. A foe-side word without a row
 	# here (its aim, its menace, the seal) is the engine's and stays out of the list.

@@ -35,6 +35,7 @@ enum Rule { DEFENCE, MUSTER }
 var rule: int = Rule.DEFENCE
 var kind: int = Policy.GREEDY
 var guard_weight: float = 1.0   # the fight bot's habit, passed to every fight (Policy.guard_weight: the aggressor, near nothing)
+var short_at_wall := true       # the mustering player fights a pack one short when it strikes the wall this coming turn; off, it gathers its rating and lets the strike land (a what-if of 19 November)
 var rng := RandomNumberGenerator.new()
 var phases: int = 0
 var fights: int = 0
@@ -180,7 +181,7 @@ func muster_orders(b: Battle, gathering: Dictionary = {}) -> void:
 				reach.append(m)
 		reach.sort_custom(func(x: Unit, y: Unit) -> bool: return Battlefield.unit_distance(x, p) < Battlefield.unit_distance(y, p))
 		var strikes := turns_to_wall(b, p, walks.get(p.id, null)) <= 1
-		if reach.size() >= need or (strikes and not reach.is_empty() and reach.size() >= need - 1):
+		if reach.size() >= need or (short_at_wall and strikes and not reach.is_empty() and reach.size() >= need - 1):
 			for m in reach.slice(0, need):
 				b.order_onto(m, p)
 				free.erase(m)

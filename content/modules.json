@@ -135,9 +135,7 @@
    "tier": 1,
    "codex": "",
    "flavour": "",
-   "stats": {
-    "cooling": 1
-   },
+   "stats": {},
    "text": {
     "description": "Each time its heat climbs, it stands up 1 shield.",
     "effects": [
@@ -151,7 +149,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "Bleed air off the hot skin and blow it across the hull as a cushion.",
-    "niche": "A kit: a small stat and a small rule; a hot machine is a shielded one."
+    "niche": "A kit: a small rule; a hot machine is a shielded one. Its point of cooling went on 19 November (Ryan's yes: cooling is a kit's or a locked piece's, never a slot's)."
    }
   },
   {
@@ -232,14 +230,13 @@
    "codex": "",
    "flavour": "",
    "stats": {
-    "heat": 4,
-    "cooling": 1
+    "heat": 4
    },
    "text": null,
    "design": {
     "stage": "draft",
     "fantasy": "Radiator grilles off a field kitchen, bolted wherever they fit.",
-    "niche": "A plate for heat: a hotter, cooler machine."
+    "niche": "A plate for heat: a hotter machine. Its point of cooling went on 19 November (Ryan's yes: cooling is a kit's or a locked piece's, never a slot's); the maximum stays."
    }
   },
   {

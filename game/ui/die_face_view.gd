@@ -393,7 +393,7 @@ func _draw() -> void:
 					beside.append(["", "×%d" % face.buff_stacks, faded.call(col)])
 		"shield_vent":
 			if not dark_now:
-				var held := [str(face.power if face.kind == Face.Kind.SHIELD else face.shields), str(face.vents if face.kind == Face.Kind.SHIELD else face.power)]
+				var held := [str(face.power), str(face.vents)]   # a shield that cools: the shield | the cooling
 				var half := COMBO_W * 0.5
 				var px: int = mini(mono_px.call(held[0], half * 0.75, COMBO_SIZE), mono_px.call(held[1], half * 0.75, COMBO_SIZE))
 				var at := mc + Vector2(0.0, COMBO_DY + 3.0)
@@ -600,7 +600,10 @@ func cost_marks() -> Array:
 	if face == null or dead:
 		return costs
 	if face.disabled and dark > 0:
-		costs.append(["cooldown", dark, Palette.INK, false])
+		if dark >= Effects.DARK_REBOOT:
+			costs.append(["shield_vent", "", Palette.INK, false])   # a foe's jam: dark until the reboot, its mark and no count
+		else:
+			costs.append(["cooldown", dark, Palette.INK, false])
 		return costs
 	if face.ammo > 0:
 		costs.append(["ammo", face.ammo, Palette.LOSS if face.dry else Palette.SELECT, face.dry])
@@ -676,7 +679,7 @@ static func next_mark(nf: Face, shown: String = "") -> Array:
 		"shield":
 			return ["shield", die_number(nf), Palette.SHIELD]
 		"shield_vent":
-			var held := [str(nf.power if nf.kind == Face.Kind.SHIELD else nf.shields), str(nf.vents if nf.kind == Face.Kind.SHIELD else nf.power)]
+			var held := [str(nf.power), str(nf.vents)]
 			return ["", [[held[0], Palette.SHIELD], ["|", Palette.MUTED], [held[1], Palette.HEAT]], Palette.HUD]
 		"vent":
 			return ["vent", die_number(nf), Palette.HEAT]

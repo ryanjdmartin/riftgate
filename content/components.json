@@ -170,41 +170,19 @@
    "design": {
     "stage": "draft",
     "fantasy": "Small, rude, lands behind the front rank.",
-    "niche": ""
+    "niche": "Indirect for a point of heat: 3 for 5, where the plain Direct guns deal 3 for 4 (the bench's trade, Ryan's yes of 19 November)."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
     "power": 3,
     "keywords": [],
-    "heat": 4
+    "heat": 5
    },
    "passive": null,
    "tags": [
     "ballistic"
    ]
-  },
-  {
-   "id": "coolant_jacket",
-   "name": "Coolant Jacket",
-   "maker": "wainwright_sutler",
-   "tier": 0,
-   "status": "planned",
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "Fins. Lots of fins.",
-    "niche": "",
-    "refit": "Retired by the refit pass (landed 10 November): no pure recovery entry stays on the die, cooling is the chassis's. Kept as a draft, undealt; the engine's plain vent until the kinds go."
-   },
-   "face": {
-    "kind": "vent",
-    "power": 4
-   },
-   "passive": null,
-   "tags": []
   },
   {
    "id": "howitzer",
@@ -988,29 +966,6 @@
    ]
   },
   {
-   "id": "bleed_valve",
-   "name": "Bleed Valve",
-   "maker": "kestrel",
-   "tier": 0,
-   "status": "planned",
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "A jet's bleed-air valve thrown wide open: the engine dumps its own heat overboard. The jet's brake.",
-    "niche": "Kestrel's basic self vent, the bigger number of the two basic vents, self only.",
-    "refit": "Retired by the refit pass (landed 10 November): no pure recovery entry stays on the die. Kept as a draft, undealt."
-   },
-   "face": {
-    "kind": "vent",
-    "power": 6,
-    "targets": "self"
-   },
-   "passive": null,
-   "tags": []
-  },
-  {
    "id": "halo_projector",
    "name": "Halo Projector",
    "maker": "aphelion",
@@ -1037,42 +992,19 @@
    "id": "overcharge_coil",
    "name": "Overcharge Coil",
    "maker": "kestrel",
-   "tier": 1,
+   "tier": 2,
    "shape": "dish",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "Kestrel's answer to a regulator: a coil that pushes an ally's guns past the line for one round.",
-    "niche": "The first buff component: two stacks of Empowered on a machine for the round."
+    "niche": "The first buff component: two stacks of Empowered on a machine for the round. Tier two since 19 November (Ryan: \"send Coil to T2\"), at its two stacks."
    },
    "face": {
     "kind": "buff",
     "status": "overcharged",
     "stacks": 2
-   },
-   "passive": null,
-   "tags": []
-  },
-  {
-   "id": "radiator_sail",
-   "name": "Radiator Sail",
-   "maker": "aphelion",
-   "tier": 1,
-   "status": "planned",
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "A deep-space radiator, unfolded. Heat goes where it always went: out.",
-    "niche": "Aphelion's ally vent at tier one.",
-    "refit": "Retired by the refit pass (landed 10 November): cooling an ally is the Puffin's by Ryan's direction. Kept as a draft, undealt."
-   },
-   "face": {
-    "kind": "vent",
-    "power": 5,
-    "targets": "ally"
    },
    "passive": null,
    "tags": []
@@ -1307,31 +1239,6 @@
    ]
   },
   {
-   "id": "phased_sublimator",
-   "name": "Phased Sublimator",
-   "maker": "aphelion",
-   "tier": 1,
-   "status": "planned",
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "Whatever the rift left on the metal goes straight from solid to gone, with the heat.",
-    "niche": "Aphelion's cleanse vent at tier one, where the Corona Shield is the tier-two cleanse shield.",
-    "refit": "Undealt since the refit pass landed (10 November), until the component pass makes it what the audit says: a Cleanse on itself or an ally, equipment (the engine's Cleanse rides only a shield or a vent today)."
-   },
-   "face": {
-    "kind": "vent",
-    "power": 4,
-    "keywords": [
-     "cleanse"
-    ]
-   },
-   "passive": null,
-   "tags": []
-  },
-  {
    "id": "polarity_projector",
    "name": "Polarity Projector",
    "maker": "aphelion",
@@ -1381,29 +1288,6 @@
    "tags": []
   },
   {
-   "id": "canopy",
-   "name": "Canopy",
-   "maker": "minerva",
-   "tier": 0,
-   "status": "planned",
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "The falling-object guard over a mining machine's cab, swung down to cover the frame: what keeps a cave-in off the pilot keeps a blow off the hull.",
-    "niche": "Minerva's basic self shield, the bigger number of the two basic shields, self only.",
-    "refit": "Retired by the refit pass (landed 10 November): shields left the die and the Shoring Jack took its place among the basics. Kept as a draft, undealt, until the component pass removes it (Ryan: 'Canopy was always a little lame')."
-   },
-   "face": {
-    "kind": "shield",
-    "power": 8,
-    "targets": "self"
-   },
-   "passive": null,
-   "tags": []
-  },
-  {
    "id": "tesla_gauntlets",
    "name": "Tesla Gauntlets",
    "maker": "minerva",
@@ -1432,30 +1316,6 @@
     "arc",
     "melee"
    ]
-  },
-  {
-   "id": "oblation_mantle",
-   "name": "Oblation Mantle",
-   "maker": "arsenal",
-   "tier": 1,
-   "status": "planned",
-   "shape": "dish",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "A ward projected from the machine's own reactor, paid for out of its frame. The manual calls it devotion.",
-    "niche": "The biggest shield in the pool, paid in the spender's hull: raised on an ally, the Arsenal machine bleeds to cover a friend.",
-    "refit": "Back in design with the Arsenal's sessions since the refit pass landed (10 November), undealt: what its hull buys when it is no shield (Claude's lean: a Barrier on an ally that holds until it is struck)."
-   },
-   "face": {
-    "kind": "shield",
-    "power": 10,
-    "keywords": [],
-    "volatile": 3
-   },
-   "passive": null,
-   "tags": []
   },
   {
    "id": "retribution_thurible",
@@ -1505,30 +1365,6 @@
    "tags": [
     "ballistic"
    ]
-  },
-  {
-   "id": "wake_diffuser",
-   "name": "Wake Diffuser",
-   "maker": "kestrel",
-   "tier": 1,
-   "status": "planned",
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "A diffuser on the exhaust that spreads the wake thin. It runs cooler, and somehow faster.",
-    "niche": "A combined entry: a vent that also shields, so a support entry is never a dead roll and costs its turn like any other.",
-    "refit": "Back in design since the refit pass landed (10 November), undealt: two recoveries on one piece; its own line points at heat turned into tempo, a payoff vent as equipment."
-   },
-   "face": {
-    "kind": "vent",
-    "power": 3,
-    "shields": 3,
-    "keywords": []
-   },
-   "passive": null,
-   "tags": []
   },
   {
    "id": "web_bomb",
@@ -2015,7 +1851,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A falcon's eye has two foveae, the deep one for distance (Ryan named it 21 October): the spotter's sensor ball, lit as it paints.",
-    "niche": "The Needletail's lock: a debuff, Indirect, that Exposes the foe it reaches through the next round (in every machine's Direct reach, its armour counting for nothing; refreshed, never added). A setup, so Rapid on its machine once a round, and the paint the team's Direct guns cash."
+    "niche": "The Needletail's lock: a debuff, Indirect, that Exposes the foe it reaches through the next round (in every machine's Direct reach, its armour counting for nothing; refreshed, never added). A setup, its machine's equipment action every round, and the paint the team's Direct guns cash. No heat since 18 November (Ryan: \"2 heat for an indirect expose and nothing else is pretty underpowered. It could safely go to zero heat.\")."
    },
    "face": {
     "kind": "attack",
@@ -2024,7 +1860,7 @@
     "keywords": [
      "expose"
     ],
-    "heat": 2
+    "heat": 0
    },
    "passive": null,
    "tags": []

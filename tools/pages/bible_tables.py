@@ -80,7 +80,7 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
 FOE_ONLY = ["scorch", "ablate", "jam", "corrupt", "brittle", "destroy", "drain", "dispel", "swallow", "merge", "golden_rage", "self_destruct", "all", "countdown", "grudge", "last_act", "parts"]
 FOE_ONLY_TEXT = {"ablate": "Keyword with a number on a foe's attack: each blow that lands leaves that many stacks of Ablating on the machine it hits (Ablating, above).",
                  "brittle": "Keyword with a number on a foe's attack: each blow that lands leaves that many stacks of Brittle on the machine it hits (Brittle, above).",
-                 "dispel": "A foe's move of its own, never a rider on a blow and never a last act's: Purge N, the rule ours runs, N stacks off every buff the machine it lands on carries, for good, whatever granted it; its Abilities and its stores stay; a Ward turns it away."}
+                 "dispel": "A foe's move of its own, or a step of a move ahead of its blow where the move says so; never a rider on a blow and never a last act's: Purge N, the rule ours runs, N stacks off every buff the machine it lands on carries, for good, whatever granted it; its Abilities and its stores stay; a Ward turns it away."}
 SHARED = ["ablate", "brittle", "dispel"]   # our keyword and the foes' word share it, each with a row (Purge on both sides, 28 October; Brittle, 15 November)
 KIND_ORDER = {"buff": 0, "debuff": 1, "ability": 2, "store": 3}   # a store is a capped resource, its own kind (Ryan, 21 October); an ability a unit's own mechanic, no buff or debuff (8 November)
 ON_ORDER = {"machine": 0, "both": 1, "foe": 2}
@@ -115,7 +115,7 @@ class Tally:
 
     def count(self, key, column, planned, foe=None):
         row = self.keywords.setdefault(key, {"unlocked": [0, 0], "locked": [0, 0], "passive": [0, 0],
-                                             "foe": [0, 0], "moves": [0, 0], "foes": set()})
+                                             "foe": [0, 0], "moves": [0, 0], "ahead": [0, 0], "foes": set()})
         row[column][1 if planned else 0] += 1
         if foe and not planned:
             row["foes"].add(foe)
@@ -181,8 +181,6 @@ def tally(words):
             if eff.get("when") == "nth_shot" and not counted:   # a rule on every n-th shot keeps the count
                 t.grant("shots", "machine", label, how, planned, who=who)
                 counted = True
-            if e == "one_of_each":   # two things a round marks the round's turn spent (the Needletail's relay)
-                t.grant("quick_turned", "machine", label, how, planned, who=who)
             if e == "grant_keyword":
                 t.count(str(eff.get("value")), "passive", planned)
             elif e == "stack_status":
@@ -225,14 +223,17 @@ def tally(words):
                     t.grant(FOE_KEYWORDS[k], "machine", move, "foe", planned, foe["id"], whom)
             # The move's own special and what it does also (16 November: a move is a short list
             # of steps), each effect counted where it lands.
-            for e in [a.get("effect")] + [st.get("effect") for st in (a.get("before") or []) + (a.get("also") or [])]:
+            # A step ahead of the blow (the Pilgrim's knife, 18 November) is counted apart from a
+            # move of its own: the row says how many of each.
+            ahead = [st.get("effect") for st in (a.get("before") or [])]
+            for n, e in enumerate([a.get("effect")] + [st.get("effect") for st in (a.get("also") or [])] + ahead):
                 if e in FOE_EFFECTS_ON_MACHINES:
                     t.grant(FOE_EFFECTS_ON_MACHINES[e], "machine", move, "foe", planned, foe["id"], whom)
                 if e in FOE_EFFECTS_ON_FOES:
                     t.grant(FOE_EFFECTS_ON_FOES[e], "foe", move, "foe", planned, foe["id"], whom)
                 if e in MOVE_AS_KEYWORD:
                     row = t.count(MOVE_AS_KEYWORD[e], "foe", planned, name)
-                    row["moves"][1 if planned else 0] += 1
+                    row["ahead" if n > len(a.get("also") or []) else "moves"][1 if planned else 0] += 1
             if int(a.get("countdown", 0)) > 0:
                 t.count("countdown", "foe", planned, name)
             if a.get("aloft"):
@@ -300,7 +301,7 @@ def status_rows(t, vocab):
 
 
 def keyword_rows(t, vocab, words):
-    empty = {"unlocked": [0, 0], "locked": [0, 0], "passive": [0, 0], "foe": [0, 0], "moves": [0, 0], "foes": set()}
+    empty = {"unlocked": [0, 0], "locked": [0, 0], "passive": [0, 0], "foe": [0, 0], "moves": [0, 0], "ahead": [0, 0], "foes": set()}
     line = "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>"
     rows = ['<tr><td colspan="6"><em>On our components</em></td></tr>']
     # Our Ablate and Purge share their words with the foes', which have rows of their own below.
@@ -324,6 +325,8 @@ def keyword_rows(t, vocab, words):
         note = cell(c["foe"]) + (" (%s)" % who if who else "")
         if c["moves"][0]:
             note += "; %d of them a move of its own" % c["moves"][0]
+        if c["ahead"][0]:
+            note += "; %d a step ahead of a blow" % c["ahead"][0]
         rows.append(line % (esc(name), esc(FOE_ONLY_TEXT.get(key) or word.get("codex", "")), "&mdash;", "&mdash;", "&mdash;", esc(note)))
     return rows
 
