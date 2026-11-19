@@ -203,10 +203,11 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				var back := (tail - tip).normalized() * s * 0.45
 				ci.draw_line(c + tail, c + tip, color, width)
 				ci.draw_colored_polygon(PackedVector2Array([c + tip + back + Vector2(0.0, -s * 0.45), c + tip, c + tip + back + Vector2(0.0, s * 0.45)]), color)   # a solid head, so it holds at a chip's size
-		"barrier", "ward":
+		"barrier", "ward", "hardened":
 			# The block as a buff (21 October): the shield's outline, and inside it a wall for a
-			# Barrier (a solid bar: the next blow stops there) or a ring struck through for a
-			# Ward (no rider gets in). One colour, parted by what sits inside.
+			# Barrier (a solid bar: the next blow stops there), a ring struck through for a
+			# Ward (no rider gets in), or a chevron pointing up for Hardened (17 November, the
+			# Storm Petrel's: every blow meets a harder face). One colour, parted by what sits inside.
 			var pts := PackedVector2Array([
 				c + Vector2(-s, -s * 0.85), c + Vector2(s, -s * 0.85), c + Vector2(s, s * 0.1),
 				c + Vector2(0, s), c + Vector2(-s, s * 0.1), c + Vector2(-s, -s * 0.85),
@@ -214,6 +215,8 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_polyline(pts, color, width)
 			if id == "barrier":
 				ci.draw_rect(Rect2(c + Vector2(-s * 0.62, -s * 0.38), Vector2(s * 1.24, s * 0.42)), color, true)
+			elif id == "hardened":
+				ci.draw_polyline(PackedVector2Array([c + Vector2(-s * 0.5, s * 0.3), c + Vector2(0.0, -s * 0.35), c + Vector2(s * 0.5, s * 0.3)]), color, width * 1.2)
 			else:
 				var o := c + Vector2(0, -s * 0.12)
 				ci.draw_arc(o, s * 0.42, 0.0, TAU, 18, color, width * 0.85)
@@ -694,7 +697,7 @@ static func primary_for(face: Face) -> String:
 		Face.Kind.VENT:
 			if face.power <= 0 and face.reloads_ammo > 0:
 				return "ammo"
-			return "shield_vent" if face.shields > 0 else "vent"
+			return "vent"
 		Face.Kind.BLANK:
 			return "blank"
 		Face.Kind.BUFF:

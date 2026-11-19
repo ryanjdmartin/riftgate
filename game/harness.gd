@@ -12,6 +12,10 @@ const SKIRMISH_SCENE := preload("res://game/skirmish/skirmish_screen.tscn")
 const BATTLE_SCENE := preload("res://game/battle/battle_screen.tscn")
 const TABS := ["TEAM", "BATTLE", "FIGHT", "SETUP"]
 const ROW_H := 48.0
+## What the Convergence is shown from: Ryan counts a run's first battle as Convergence 1 (19
+## November), where the engine's count starts at nothing, so every place this screen shows one
+## adds this. A label only: the setup keeps the engine's number.
+const SHOWN_FROM := 1
 
 var db: ContentDB
 var setup: HarnessSetup
@@ -270,9 +274,10 @@ func _refresh_row(id: String) -> void:
 	var mods: Array = []
 	for mid in setup.fitted_modules(id):
 		mods.append(db.module_name(str(mid)))
-	var refit := setup.is_refit(id) or not mods.is_empty()
+	var ups := setup.branch_picks(id)
+	var refit := setup.is_refit(id) or not mods.is_empty() or not ups.is_empty()
 	var status: Label = row["status"]
-	status.text = ("REFIT  " if refit else "stock  ") + (", ".join(names) if not names.is_empty() else "no hardpoints") + ("  ·  modules: " + ", ".join(mods) if not mods.is_empty() else "")
+	status.text = ("REFIT  " if refit else "stock  ") + (", ".join(names) if not names.is_empty() else "no hardpoints") + ("  ·  modules: " + ", ".join(mods) if not mods.is_empty() else "") + ("  ·  upgrades: " + _build_name(id, ups) if not ups.is_empty() else "")
 	status.add_theme_color_override("font_color", Palette.HUD if refit else Palette.MUTED)
 	(row["toggle"] as Button).text = "CLOSE" if _open == id else "HARDPOINTS"
 
@@ -341,11 +346,36 @@ func _fill_editor(id: String) -> void:
 		ob.item_selected.connect(_on_module_pick.bind(ob, id, slot))
 		line.add_child(ob)
 		editor.add_child(line)
+	# Its upgrades' picks along its branches (the Storm Petrel's first, 17 November), as a run's
+	# upgrades will buy them: every build the chassis allows, one pick.
+	var builds := db.branch_builds(id)
+	if builds.size() > 1:
+		var line := HBoxContainer.new()
+		line.add_theme_constant_override("separation", 10)
+		var n := _label("UPG", 16, Palette.MUTED)
+		n.custom_minimum_size = Vector2(64, 0)
+		line.add_child(n)
+		var ob := _picker()
+		var mine := setup.branch_picks(id)
+		var at := 0
+		for b in builds:
+			ob.add_item(_build_name(id, b) if not (b as Array).is_empty() else "— at its tier, no upgrade —")
+			ob.set_item_metadata(ob.item_count - 1, b)
+			if b == mine:
+				at = ob.item_count - 1
+		ob.select(at)
+		ob.item_selected.connect(func(index: int) -> void:
+			setup.set_branches(id, ob.get_item_metadata(index))
+			_refresh_row(id)
+			_refresh_summary())
+		line.add_child(ob)
+		editor.add_child(line)
 	var tools := HBoxContainer.new()
 	tools.add_theme_constant_override("separation", 12)
 	tools.add_child(_button("Stock", func() -> void:
 		setup.reset_loadout(id)
 		setup.modules.erase(id)
+		setup.branches.erase(id)
 		_fill_editor(id)
 		_refresh_row(id)
 		_refresh_summary(), ROW_H, 16))
@@ -388,6 +418,14 @@ func _component_picker(selected: String) -> OptionButton:
 			ob.set_item_metadata(ob.item_count - 1, cid)
 	ob.select(_index_of(ob, selected))
 	return ob
+
+
+## A build's steps by name, in the order taken: "Defence I, Defence II".
+func _build_name(id: String, picks: Array) -> String:
+	var names: Array = []
+	for s in db.branch_steps(id, picks):
+		names.append(str(s["name"]))
+	return ", ".join(names)
 
 
 ## Every module, grouped by maker, with its tier and what it does on one line.
@@ -463,9 +501,11 @@ func _build_battle(page: VBoxContainer) -> void:
 	page.add_child(_section("Tier and ramp"))
 	var knobs := HBoxContainer.new()
 	knobs.add_theme_constant_override("separation", 12)
+	# The Convergence is shown as Ryan counts it, the first battle Convergence 1 (19 November: "Shouldn't
+	# it be T1/C1 three, T1/C2 four?"); the engine's own count starts at nothing (SHOWN_FROM).
 	var ramp_knob := _stepper(setup.battle_ramp(), 0, Ramp.TOP, func(v: int) -> void:
 		setup.ramp = v
-		_refresh_summary(), "C", func() -> int: return ContentDB.first_ramp_of(setup.battle_tier))
+		_refresh_summary(), "C", func() -> int: return ContentDB.first_ramp_of(setup.battle_tier), SHOWN_FROM)
 	knobs.add_child(_stepper(setup.battle_tier, 1, 3, func(v: int) -> void:
 		setup.battle_tier = v
 		setup.ramp = setup.battle_ramp()   # a tier is never fought under its first Convergence
@@ -473,7 +513,7 @@ func _build_battle(page: VBoxContainer) -> void:
 		_refresh_summary(), "T"))
 	knobs.add_child(ramp_knob)
 	page.add_child(knobs)
-	page.add_child(_hint("T the tier, who comes and the boss's numbers; C the Convergence, the ramp: the field's size, the opening's count, the beat and the compositions its gates hold. A tier is never fought under its first Convergence (4 for T2, 8 for T3), so C rises to it."))
+	page.add_child(_hint("T the tier, who comes and the boss's numbers; C the Convergence, the ramp, counted from a run's first battle (C1 the first, fought by three machines; C2 the second, by four): the field's size, the opening's count, the beat and the compositions its gates hold. A tier is never fought under its first Convergence (5 for T2, 9 for T3), so C rises to it."))
 
 
 ## The battle domain's bosses, its first first; the pick kept while it is still the domain's.
@@ -570,7 +610,7 @@ func _fill_compositions() -> void:
 	for c in setup.compositions_listed():
 		var lead: Dictionary = db.foes.get(str((c["members"] as Array)[0][0]), {})
 		var gate = c.get("ramp", null)
-		var at := (", C%d to %d" % [int(gate[0]), int(gate[1])]) if gate is Array and (gate as Array).size() == 2 else ""
+		var at := (", C%d to %d" % [int(gate[0]) + SHOWN_FROM, int(gate[1]) + SHOWN_FROM]) if gate is Array and (gate as Array).size() == 2 else ""
 		_comp.add_item("%s  (%s, for %d, %s%s)" % [str(c["id"]), str(c["size"]), ContentDB.squad_of(c), str(lead.get("name", "")), at])
 		_comp.set_item_metadata(_comp.item_count - 1, str(c["id"]))
 	if setup.picked_composition().is_empty():
@@ -714,9 +754,9 @@ func _refresh_summary() -> void:
 		return   # the pages are built before the summary and the launch buttons
 	var team: Array = []
 	for id in setup.fielded():
-		team.append(str(db.chassis[id]["name"]) + (" (refit)" if setup.is_refit(str(id)) or not setup.fitted_modules(str(id)).is_empty() else ""))
+		team.append(str(db.chassis[id]["name"]) + (" (refit)" if setup.is_refit(str(id)) or not setup.fitted_modules(str(id)).is_empty() or not setup.branch_picks(str(id)).is_empty() else ""))
 	var dom := setup.battle_domain()
-	var battle := "%s T%d C%d" % [str(db.factions[dom].get("name", dom)), setup.battle_tier, setup.battle_ramp()]
+	var battle := "%s T%d C%d" % [str(db.factions[dom].get("name", dom)), setup.battle_tier, setup.battle_ramp() + SHOWN_FROM]
 	var bid := setup.battle_boss_id()
 	if not bid.is_empty():
 		battle += " · " + str(db.foes[bid]["name"])
@@ -767,24 +807,26 @@ func _index_of(ob: OptionButton, value: String) -> int:
 	return 0
 
 
-## A number with buttons a thumb can hit: − value +. `floor`, when given, is read at every press:
+## A number with buttons a thumb can hit: − value +. `shown_from` is added to what it shows and
+## never to its value (the Convergence, SHOWN_FROM). `floor`, when given, is read at every press:
 ## a lower bound that moves (the battle's Convergence under its tier's first).
-func _stepper(value: int, lo: int, hi: int, on_change: Callable, prefix: String = "", floor: Callable = Callable()) -> HBoxContainer:
+func _stepper(value: int, lo: int, hi: int, on_change: Callable, prefix: String = "", floor: Callable = Callable(), shown_from: int = 0) -> HBoxContainer:
 	var box := HBoxContainer.new()
 	box.add_theme_constant_override("separation", 4)
-	var shown := _label("%s%d" % [prefix, value], 20, Palette.INK)
+	var shown := _label("%s%d" % [prefix, value + shown_from], 20, Palette.INK)
 	shown.custom_minimum_size = Vector2(52, 0)
 	shown.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var v := [value]
 	box.set_meta("shown", shown)
 	box.set_meta("value", v)
+	box.set_meta("shown_from", shown_from)
 	for step in [-1, 1]:
 		var b := _button("−" if step < 0 else "+", func() -> void:
 			var nv := clampi(int(v[0]) + step, maxi(lo, int(floor.call()) if floor.is_valid() else lo), hi)
 			if nv == int(v[0]):
 				return
 			v[0] = nv
-			shown.text = "%s%d" % [prefix, nv]
+			shown.text = "%s%d" % [prefix, nv + shown_from]
 			on_change.call(nv), ROW_H, 22)
 		b.custom_minimum_size.x = ROW_H
 		box.add_child(b)
@@ -796,7 +838,7 @@ func _stepper(value: int, lo: int, hi: int, on_change: Callable, prefix: String 
 ## A stepper's number set from outside (the Convergence knob following the tier).
 func _set_stepper(box: HBoxContainer, value: int, prefix: String) -> void:
 	(box.get_meta("value") as Array)[0] = value
-	(box.get_meta("shown") as Label).text = "%s%d" % [prefix, value]
+	(box.get_meta("shown") as Label).text = "%s%d" % [prefix, value + int(box.get_meta("shown_from", 0))]
 
 
 func _label(text: String, size_px: int, color: Color) -> Label:
@@ -833,7 +875,7 @@ func _button(text: String, on_pressed: Callable, h: float = 60, size_px: int = 2
 # ---------------------------------------------------------------- launching
 
 func _on_fight() -> void:
-	Settings.field_trial(true)   # the fight's trials as the settings stand now (the block, the overheat's burn): a lone fight reads them as a battle does
+	Settings.field_trial(true)   # the fight's trials as the settings stand now (the overheat's burn): a lone fight reads them as a battle does
 	var sk := setup.make_skirmish()
 	if sk == null:
 		return

@@ -16,9 +16,9 @@ const MENDER := {"id": "mender", "name": "Mender", "description": "", "effects":
 ## A hull hit that stands a shield up, a gain by another road than the regen.
 const LINER := {"id": "liner", "name": "Liner", "description": "", "effects": [
 	{"trigger": "on_hull_damage", "effect": "add_shield", "value": 10}]}
-## A reboot at 8 heat or more blasts what it vents on every foe.
+## A reboot blasts what it vents on every foe, 1 for every 2 heat.
 const BOILER := {"id": "boiler", "name": "Boiler", "description": "", "effects": [
-	{"trigger": "static", "effect": "reboot_release", "value": 1, "gate": 8}]}
+	{"trigger": "static", "effect": "reboot_release", "value": 1, "per": 2}]}
 
 
 func _mech(id: int, name: String, d: Die, shield: int = 40, hull: int = 100, heat_max: int = 30) -> Unit:
@@ -222,6 +222,36 @@ func test_a_reboot_vents_what_stood_past_the_maximum_so_its_turn_burns_nothing()
 	assert_eq([ms.heat, ms.overheat_stacks(), m.shield], [0, 0, 40], "back cold and whole")
 
 
+## A reboot opens a sealed machine (Ryan, 17 November: "Polar bear unseals when rebooting. It's
+## a good change because you're never accidentally stuck sealed, and a weaponless build is
+## possible if you wanted it for some reason"): the seal and its armour go as the die drops, so
+## the seal's clock adds nothing that turn, and it comes back open. Synthetic passive.
+func test_a_reboot_opens_a_sealed_machine() -> void:
+	var m := _mech(1, "A", Die.single(Face.buff("overcharged", 1)), 40, 200, 30)
+	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
+		{"trigger": "static", "effect": "seal_form", "value": 10, "heat": 15}]})
+	var sk := _fight([m], [Foe.make("brute", 900, 25)])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	sk.start_round()
+	assert_true(sk.assign(0, null), "a buff on itself")
+	assert_true(Effects.is_sealed(m), "seals it")
+	sk.end_round()
+	assert_eq(ms.heat, 15, "sealed, it ran 15 hotter as its turn ended")
+	var hull := m.hull
+	sk.start_round()
+	assert_true(sk.can_reboot(0), "sealed, it may reboot: it is never stuck in its shell")
+	assert_true(sk.reboot_mech(0), "and does")
+	assert_false(Effects.is_sealed(m), "the reboot opens it")
+	assert_eq(m.armour, 0, "the seal's armour gone with it")
+	assert_true("\n".join(sk.log).contains("A opens as it reboots"), "the log says so")
+	sk.end_round()
+	assert_eq(ms.heat, 0, "open, the seal's clock adds nothing to the gauge it vented")
+	assert_eq(m.hull, hull - 25, "and the blow lands whole: bare, and behind no shell")
+	sk.start_round()
+	assert_false(Effects.is_sealed(m), "it comes back open")
+	assert_eq(m.shield, 40, "and whole")
+
+
 ## One vent, at the drop: heat that lands on a machine while it reboots is its own, there as the
 ## next round opens, and what it carries past its maximum as the turn ends burns like any
 ## machine's. A session's read where his words give none (17 November), his to overrule.
@@ -371,13 +401,13 @@ func test_a_reboots_vent_explodes_and_an_unspent_die_releases_nothing() -> void:
 	sk.end_round()
 	var hp := foe.hp
 	sk.start_round()
-	assert_eq(ms.heat, 10, "ten held, past its valve's gate")
+	assert_eq(ms.heat, 10, "ten held")
 	sk.end_round()
 	assert_eq(foe.hp, hp, "a turn it ends with its die unspent opens no valve")
 	assert_true(sk.releases.is_empty(), "nothing released")
 	sk.start_round()
 	assert_true(sk.reboot_mech(0), "it reboots")
-	assert_eq(foe.hp, hp - 3, "and its vent lands on the foe at once: 1 at eight and 1 more for each heat over")
+	assert_eq(foe.hp, hp - 5, "and its vent lands on the foe at once: 1 for every 2 heat it sheds")
 	assert_eq(ms.heat, 0, "left cold")
 	assert_eq(sk.releases.size(), 1, "the screen is told")
 
@@ -668,3 +698,137 @@ func _slide(vp: Viewport, a: Vector2, b: Vector2, steps: int = 8) -> void:
 		vp.push_input(sd)
 
 
+
+
+## The quick turn's reboot (the Needletail's Quick-turn Avionics Relay; Ryan, 18 November: "So it
+## may act, and then the second spend needs to be on the reboot. Doesn't matter what the action
+## is. It's pure tempo and flexibility"), on a synthetic one-of-each passive: one spend of either
+## kind, then the reboot as its second, the vent taking that spend's heat with the rest; none after
+## two spends; and the reboot standing whatever the first spend left its die.
+const RELAY := {"id": "relay", "name": "Relay", "description": "", "effects": [{"trigger": "static", "effect": "one_of_each"}]}
+
+
+func test_a_one_of_each_machine_acts_and_then_reboots_as_its_second_spend() -> void:
+	var gun := Face.attack(5, L, [], 20)
+	var mark := Face.attack(0, Face.Reach.INDIRECT, [K.EXPOSE], 0)
+	var m := _mech(1, "Spotter", Die.of([gun, mark]))
+	m.grant_passive(RELAY)
+	var foe := Foe.make("dummy", 900, 0)
+	var sk := _fight([m], [foe])
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	assert_true(sk.can_reboot(0), "nothing spent: it may reboot as any machine may")
+	assert_true(sk.assign(0, foe), "the gun first")
+	assert_eq(ms.heat, 20, "its heat on the gauge")
+	assert_true(sk.can_reboot(0), "one spend made: its second may be the reboot")
+	assert_true(sk.reboot_mech(0), "rebooted as its second spend")
+	assert_eq([ms.heat, m.shield, foe.hp], [0, 0, 895], "the gun landed, and the vent took its heat with the rest as the shield dropped")
+	assert_true(ms.assigned and ms.rebooting, "its turn is done")
+	assert_true("\n".join(sk.log).contains("reboots after its action"), "the log says so")
+	assert_true(sk.undo(), "the undo takes the reboot back")
+	ms = sk.mechs[0]
+	assert_true(not ms.rebooting and ms.heat == 20 and not ms.assigned, "back at its second action: %s" % str([ms.rebooting, ms.heat, ms.assigned]))
+	assert_true(sk.assign(0, sk.front[0]), "the mark as its second action instead")
+	assert_false(sk.can_reboot(0), "two spends made: no reboot this turn")
+	sk.end_round()
+	sk.start_round()
+	ms = sk.mechs[0]
+	ms.face_index = 1
+	assert_true(sk.assign(0, sk.front[0]), "equipment first this round")
+	assert_true(sk.can_reboot(0), "and the reboot as its second all the same: whatever the action")
+	var plain := _mech(2, "Plain", _gun(10))
+	var other := _fight([plain], [Foe.make("dummy", 900, 0)])
+	other.start_round()
+	assert_true(other.assign(0, other.front[0]), "a machine without the rule spends")
+	assert_false(other.can_reboot(0), "and has given up its reboot")
+
+
+## A die left with nothing lit to flip to keeps the reboot (Ryan, 18 November: "The dark-die no
+## reboot is unintuitive. That would be the exact time a player would want to reboot. And it
+## limits a build that only has weapons, just to leverage the reboot turn"): a weapons-only die,
+## its one action then the reboot, on the engine and on the screen.
+func test_a_die_with_nothing_to_flip_to_after_its_action_still_reboots() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	sk.keeps_undo = true
+	var m := db.make_mech(_a_chassis(db))
+	m.die = Die.of([Face.attack(5, L, [], 10), Face.attack(5, L, [], 10)])
+	m.grant_passive(RELAY)
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("dummy", 900, 0)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_true(sk.assign(0, sk.front[0]), "a gun, and no equipment to flip to")
+	assert_true(ms.assigned, "its die done: no second action")
+	assert_true(sk.can_reboot(0), "and still it may reboot: one action made")
+	s._refresh()
+	assert_true(s._dice[0].can_drag, "its done die lifts for REBOOT")
+	assert_true(s._do_reboot(0), "its die dropped on REBOOT, it reboots")
+	assert_eq(ms.heat, 0, "the vent took the gun's heat")
+	s.free()
+
+
+func test_no_machine_but_the_needletail_reboots_after_a_rapid_spend() -> void:
+	var m := _mech(1, "Plain", Die.of([Face.attack(3, L, [K.RAPID], 2), Face.attack(3, L, [], 2)]))
+	var sk := _fight([m], [Foe.make("dummy", 900, 0)])
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	assert_true(sk.assign(0, sk.front[0]), "a Rapid gun")
+	assert_false(ms.assigned, "it acts again")
+	assert_false(sk.can_reboot(0), "but a Rapid spend is a spend: no reboot after it (Ryan, 18 November: \"Normal units cannot even rapid before rebooting\")")
+
+
+func test_the_bot_spends_before_a_reboot_it_owes_and_reboots_as_its_second() -> void:
+	var gun := Face.attack(5, L, [], 4)
+	var mark := Face.attack(0, Face.Reach.INDIRECT, [K.EXPOSE], 0)
+	var m := _mech(1, "Spotter", Die.of([gun, mark]), 40, 100, 30)
+	m.grant_passive(RELAY)
+	var foe := Foe.make("dummy", 900, 0)
+	var sk := _fight([m], [foe])
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.heat = 34   # past its maximum: it owes a reboot
+	ms.face_index = 0
+	var bot := Policy.make(Policy.GREEDY, 1)
+	bot.play_round(sk, false)
+	assert_true(ms.rebooting, "it rebooted")
+	assert_eq(ms.spends, 1, "after one spend: the gun it showed, its heat free before the vent")
+	assert_eq([foe.hp, ms.heat], [895, 0], "the gun landed, and the vent took the heat")
+	var plain := _mech(2, "Plain", _gun(4, 5), 40, 100, 30)
+	var other := _fight([plain], [Foe.make("dummy", 900, 0)])
+	other.start_round()
+	other.mechs[0].heat = 34
+	Policy.make(Policy.GREEDY, 1).play_round(other, false)
+	assert_eq(other.mechs[0].spends, 0, "a machine without the rule reboots first and spends nothing")
+	assert_true(other.mechs[0].rebooting, "rebooted")
+
+
+## A die with nothing lit is the very moment to reboot (Ryan, 18 November: "If somehow all the
+## machine's faces were jammed or on cooldown - which is a legitimate situation ... that's the
+## exact time to want to reboot"): a dark entry is no spend, so the machine has spent nothing,
+## its die is in play, and it may reboot, on the engine and on the screen.
+func test_a_machine_whose_whole_die_is_dark_may_reboot() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	sk.keeps_undo = true
+	var m := db.make_mech(_a_chassis(db))
+	m.die = Die.of([Face.attack(3, L, [], 4), Face.attack(0, Face.Reach.INDIRECT, [K.EXPOSE], 0)])
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("dummy", 900, 0)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	var ms: Skirmish.MechState = sk.mechs[0]
+	Effects.disable_entry(m, 0, "cooldown", sk.round + 1)   # one on a cooldown
+	Effects.disable_entry(m, 1, "foe:x", sk.round)          # the other jammed by a foe
+	ms.heat = 9
+	s._refresh()
+	assert_false(sk.can_spend(0), "nothing on its die to spend")
+	assert_true(sk.can_reboot(0), "and still it may reboot: a dark entry is no spend")
+	assert_true(s._dice[0].can_drag, "its die lifts")
+	assert_false(s._reboot_btn.disabled, "and REBOOT takes it")
+	assert_true(s._do_reboot(0), "its die dropped on REBOOT, it reboots")
+	assert_eq([ms.heat, m.shield], [0, 0], "vented, the shield down")
+	s.free()

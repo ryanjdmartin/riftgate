@@ -477,6 +477,8 @@ class Build:
         self.halo = []         # the lit parts a glow names that wear a soft halo when they flare, the hot ones; (part, scale) for one larger, (part, scale, ahead) for one drawn its own way toward the eye (MechRig's halos)
         self.standing = {}     # lit part -> the glow it holds always, over its rest, an act's flare rising past it (MechRig's standing glow)
         self.fires = {}        # a fixed component (or the chassis's passive, for what it fires: the Whip Scorpion's release) -> (act, from, to[, blow]) or a list of them taking turns: the slices of acts that are its firing, played on the spend (MechRig.fire_act)
+        self.death_pose = None   # the pose it goes to when lost, in place of the baseline slump (see death())
+        self.hidden_fire = None  # (act, from, to[, blow]): the slice every weapon on a hidden mount fires with (the Cottonmouth's drum turning two chambers, 16 November), the sidecar's hidden_fire (MechRig.fire_hidden)
         self.aims = {}         # a fixed component -> the joint that turns to aim it, when it is no waist (MechView3D.aim_joint_for)
         self.pivots = False    # whether the whole machine turns on the spot to aim (a tank's tracks, a castered chassis), as a hover does
         self.fx_sizes = {}     # a fixed weapon -> its muzzle flare's size: an fx_<component> Empty at its business end (fx())
@@ -920,7 +922,7 @@ class Build:
                 raise ValueError("%s %r of %s asks %s for %s %g, outside its limits %g..%g" % (kind, name, self.name, jn, ax, v, lo, hi))
         return row
 
-    def form(self, name, duration, tracks, glow=None, body=None):
+    def form(self, name, duration, tracks, glow=None, body=None, releases=None):
         """A pose the machine holds while it carries the status of the same name (the
         Polar Bear's seal, 28 October: its guns sink and its ports shut while Sealed). `tracks`
         map a joint to keys as an act's do, from rest at 0 to the held pose at `duration` (a
@@ -929,9 +931,13 @@ class Build:
         while it is in. `glow` is a list of (parts, k): lit parts named by label and their
         light's offset at the held pose (-1 dark, as an act's glow keys), eased in with the
         turn. `body` moves the whole machine as an act's body keys do, to the held pose (the
-        sealed Polar Bear hunkers down: Ryan, 29 October). Its own acts are act()'s with
-        `form` naming it."""
+        sealed Polar Bear hunkers down: Ryan, 29 October). `releases` names the forms this one
+        lets go as it is held, the statuses its own ends (the Mole's burrow takes its drill
+        back, so Burrowed lets Drill Out go and the drill docks as it digs), so the hangar's
+        toggles turn as the statuses would. Its own acts are act()'s with `form` naming it."""
         out = {"duration": float(duration), "tracks": {}, "glow": []}
+        if releases:
+            out["releases"] = [str(r) for r in releases]
         if body:
             rows = []
             for key in body:
@@ -953,9 +959,58 @@ class Build:
             out["tracks"][jn] = rows
         for parts, k in glow or []:
             parts = [parts] if isinstance(parts, str) else list(parts)
-            out["glow"].append({"parts": parts, "k": float(k)})
+            if isinstance(k, (list, tuple)):
+                # Keys over the turn, (t, k) as an act's glow keys: the light rides them as the form
+                # turns (a death's: then it gutters out once it lands; the Polar Bear's vents).
+                out["glow"].append({"parts": parts, "keys": [[float(t), float(v)] for t, v in k]})
+            else:
+                out["glow"].append({"parts": parts, "k": float(k)})
         self.forms[name] = out
         return out
+
+    def death(self, duration, tracks=None, body=None, glow=None, ease="fall", hang=None, plant=None):
+        """The pose the machine goes to when it is lost (MechRig.kill), in place of the baseline
+        slump every model shares (Ryan, 16 November: "The slump was supposed to be a general
+        guideline so that everything got an adequate baseline death animation and pose. There's
+        nothing to say that they can't be improved on a case by case basis, like the Clydesdale
+        falling onto its face like the AT-AT that influenced it"). `tracks`, `body` and `glow` as a
+        form's: from rest at 0 to the held pose at `duration`, eased; the rig turns it in as the
+        lights go and holds it, and sets the pose down on its own lowest point (MechRig's death
+        floor), so a pose tipped forward or onto its side rests on the ground, never floating and
+        never through it. Keep it on its hex: a fall that throws the machine across into the next
+        is the pose Ryan sent back (16 November). It falls (`ease` "fall": it starts slow and lands
+        at speed, a hop and a rock as it hits; Ryan, the fourth notes: "start slower and hit
+        harder"), its lowest point held on the floor every frame of the way down; a joint in `hang`
+        goes limp, the rig turning it where its weight takes it once the rest of the pose lies
+        where it ends (an arm "slumped down by the elbows", never placed under its own power); a
+        glow given keys rides them as it goes down and gutters out once it lands.
+        It pivots and slides where a body would (Ryan, 17 November: "make sure the animations follow
+        the laws of physics and pivot or slide in correct, plausible places"): a foot carrying the
+        machine turns on its heel or its toes and does not slide, and slides once the weight is off it.
+        `plant` names the feet held while they carry it, a joint alone for the whole fall or (joint,
+        from, to) for a stretch of it, a foot that steps planted anew where it comes down; the rig moves
+        the body along the floor over them, each leg reaching for its own, a planted hand catching
+        without steering it. A pose that ends where it cannot stand goes on falling, tipped over the
+        edge it would go across until it rests (MechRig._topple_death)."""
+        self.form("@death", duration, tracks or {}, glow=glow, body=body)
+        self.death_pose = self.forms.pop("@death")
+        self.death_pose["ease"] = str(ease)
+        for jn in hang or []:
+            if jn not in self.joint_meta:
+                raise ValueError("the death of %s hangs a joint the model has not got: %s" % (self.name, jn))
+        if hang:
+            self.death_pose["hang"] = list(hang)
+        rows = []
+        for p in plant or []:
+            jn, t0, t1 = (p, 0.0, duration) if isinstance(p, str) else (p[0], float(p[1]), float(p[2]))
+            if jn not in self.joint_meta:
+                raise ValueError("the death of %s plants a joint the model has not got: %s" % (self.name, jn))
+            if not 0.0 <= t0 < t1 <= duration + 1e-6:
+                raise ValueError("the death of %s plants %s over %s to %s, outside its %s seconds" % (self.name, jn, t0, t1, duration))
+            rows.append([jn, round(t0, 3), round(t1, 3)])
+        if rows:
+            self.death_pose["plant"] = rows
+        return self.death_pose
 
     def ajar(self, unless, joints):
         """A pose the machine stands in while the form `unless` is not held (the Polar Bear's vents
@@ -1197,6 +1252,10 @@ class Build:
         for fname in self.form_acts:
             if fname not in self.forms:
                 raise ValueError("%s: acts are given to a form it has not got: %s" % (self.name, fname))
+        for fname, f in self.forms.items():
+            for other in f.get("releases", []):
+                if other not in self.forms or other == fname:
+                    raise ValueError("%s: form %r releases a form it has not got: %s" % (self.name, fname, other))
         every_act = self.acts + [a for acts in self.form_acts.values() for a in acts]
         lit_parts = ({p for a in every_act for g in a["glow"] for p in g["parts"]}
                      | {p for f in self.forms.values() for g in f["glow"] for p in g["parts"]}
@@ -1260,6 +1319,8 @@ class Build:
             out["counts"] = self.counts
         if self.forms:
             out["forms"] = {n: dict(f, acts=self.form_acts.get(n, [])) if self.form_acts.get(n) else f for n, f in self.forms.items()}
+        if self.death_pose:
+            out["death"] = self.death_pose   # its death pose (death()), in place of the baseline slump
         if self.ajar_spec:
             out["ajar"] = self.ajar_spec
         # A halo is the glow's own bloom, so it names only parts a glow lights, or a lit part a launch
@@ -1282,26 +1343,33 @@ class Build:
         # list of slices takes turns (Ryan, 3 November: the Ammit "can also afford two different
         # Claw animations since it's got 4 and will use them often"). A key is a fixed component's
         # id, or the chassis's passive's for what the passive fires (the Whip Scorpion's release).
+        def fire_slice(cid, sl):
+            name, t0, t1 = sl[0], sl[1], sl[2]
+            blow = sl[3] if len(sl) > 3 else None
+            act = next((a for a in self.acts if a["name"] == name), None)
+            if act is None:
+                raise ValueError("%s: %s fires with an act it has not got, %r" % (self.name, cid, name))
+            if not (0.0 <= t0 < t1 <= act["duration"]):
+                raise ValueError("%s: %s fires from %.2f to %.2f, outside %r's %.2f seconds" % (self.name, cid, t0, t1, name, act["duration"]))
+            if blow is not None and not (t0 <= blow <= t1):
+                raise ValueError("%s: %s's blow at %.2f lies outside its slice of %r, %.2f to %.2f" % (self.name, cid, blow, name, t0, t1))
+            d = {"act": name, "from": t0, "to": t1}
+            if blow is not None:
+                d["blow"] = blow
+            return d
         fires = {}
         for cid, spec in self.fires.items():
-            out_slices = []
-            for sl in (spec if isinstance(spec, list) else [spec]):
-                name, t0, t1 = sl[0], sl[1], sl[2]
-                blow = sl[3] if len(sl) > 3 else None
-                act = next((a for a in self.acts if a["name"] == name), None)
-                if act is None:
-                    raise ValueError("%s: %s fires with an act it has not got, %r" % (self.name, cid, name))
-                if not (0.0 <= t0 < t1 <= act["duration"]):
-                    raise ValueError("%s: %s fires from %.2f to %.2f, outside %r's %.2f seconds" % (self.name, cid, t0, t1, name, act["duration"]))
-                if blow is not None and not (t0 <= blow <= t1):
-                    raise ValueError("%s: %s's blow at %.2f lies outside its slice of %r, %.2f to %.2f" % (self.name, cid, blow, name, t0, t1))
-                d = {"act": name, "from": t0, "to": t1}
-                if blow is not None:
-                    d["blow"] = blow
-                out_slices.append(d)
+            out_slices = [fire_slice(cid, sl) for sl in (spec if isinstance(spec, list) else [spec])]
             fires[cid] = out_slices[0] if len(out_slices) == 1 else out_slices
         if fires:
             out["fires"] = fires
+        # Every weapon on a hidden mount fires with one slice (16 November: the Cottonmouth's guns,
+        # hidden inside its drum, fire as the drum's shot turning two chambers on; Ryan, 2 and 3
+        # November: no effect at a hidden pin, "Shots moving two makes sense").
+        if self.hidden_fire:
+            if not self.hidden:
+                raise ValueError("%s: a hidden mount's firing slice with no hidden mount" % self.name)
+            out["hidden_fire"] = fire_slice("a hidden mount", self.hidden_fire)
         for cid, name in self.aims.items():
             if self.joint_meta.get(name, {}).get("axis") != "yaw":
                 raise ValueError("%s: %s aims with %r, which is no joint turning about its up axis" % (self.name, cid, name))

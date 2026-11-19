@@ -30,7 +30,7 @@ const KEPT_TRIGGERS := {
 }
 ## Keys a die entry reads that no piece prints.
 const KEPT_KEYS := {
-	"shield_cost": "the Buzzard's and the Storm Petrel's settled briefs pay in shield (docs/briefs/kestrel_buzzard.md), and the to-do's Ryan list asks which piece carries it",
+	"shield_cost": "the Buzzard's settled brief pays in shield (docs/briefs/kestrel_buzzard.md; the Storm Petrel's left it with its rework of 17 November), and the to-do's Ryan list asks which piece carries it",
 	"cools_all": "set by the engine: a charged form's vents all (the Sutler's Hoist), read back from a save",
 	"fills_shield": "set by the engine: a charged form's shield full (the Sutler's Hoist), read back from a save",
 }
@@ -161,19 +161,22 @@ func test_every_tool_script_parses_against_the_engine() -> void:
 
 
 ## The foes' targeting lists, held to content both ways (16 November, on Ryan's "We need to look
-## at foe targeting rules now, I think. Clean that up"): an aim no foe or move carries, or a
-## caveat no pack hunts by, has lost its last piece. The fastest hunt went that day.
-const KEPT_AIMS := {}
+## at foe targeting rules now, I think. Clean that up"): a word no move carries, or a caveat no
+## pack hunts by, has lost its last piece. The fastest hunt went that day; every aim of a foe's
+## own went on 17 November, with the exposed, the armed and fires as one.
+const KEPT_AIMS := {
+	"strongest": "Ryan's settled answer of 17 November names it (the bible's targeting row: \"if it's the strongest/weakest/hottest table from above, then yes I agree and you can go ahead\"); its carriers come move by move, in the tiers' pass and each elite's, boss's and hero's session",
+	"weakest": "the same settled answer's second word, the least hull and shield; its carriers come with the strongest's",
+}
 const KEPT_HUNTS := {}
 
 
 func test_every_aim_and_every_hunt_has_a_carrier_or_a_reason() -> void:
 	var db := ContentDB.load_default()
-	var aims := {Foe.AIM_ANYTHING: true}   # the default: every foe's that names none
+	var aims := {}
 	for id in db.foes.keys():
 		var f: Dictionary = db.foes[id]
-		if f.has("aim"):
-			aims[str(f["aim"])] = true
+		assert_false(f.has("aim"), "%s: a foe has no aim of its own, the word is its move's" % str(id))
 		for a in f.get("actions", []):
 			if a is Dictionary and a.has("aim"):
 				aims[str(a["aim"])] = true
@@ -190,7 +193,7 @@ func test_every_aim_and_every_hunt_has_a_carrier_or_a_reason() -> void:
 
 ## A foe's rider no move carries, as a keyword of ours no piece prints.
 const KEPT_RIDERS := {
-	"destroy": "the vocabulary pass's settled answer (docs/vocabulary_pass_proposal.md, section 18; Ryan, 15 November: \"This can be a boss-level rider, that destroys the visible face if it damages hull at all. Only promoted form or superboss-level\"): the injury rule's one form, its carrier the foes' pass's",
+	"destroy": "the vocabulary pass's settled answer (the bible's Destroy row; Ryan, 15 November: \"This can be a boss-level rider, that destroys the visible face if it damages hull at all. Only promoted form or superboss-level\"): the injury rule's one form, its carrier the foes' pass's",
 }
 
 

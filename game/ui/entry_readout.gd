@@ -183,10 +183,6 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 				out.append(marked(parts_line("effect", [word("Vent"), num(str(f.power), f.power, base.power)], "attr"), [main]))
 				if f.reloads_ammo > 0:
 					out.append(loads)
-			if f.shields > 0:
-				# The combined entry's second half, after the vent (the Wake Diffuser), by the
-				# shield's mark: the die prints it in the shield's half of its mark.
-				out.append(marked(parts_line("effect", [word("Shield"), num(str(f.shields), f.shields, base.shields)], "attr"), [mark("shield", Palette.SHIELD, false)]))
 	if f.ammo > 0:
 		# A forging machine's gun (the Musk Ox's): its price in ammo, by the shells' mark.
 		var ammo := [word("Ammo"), num(str(f.ammo), f.ammo, base.ammo, true)]
@@ -196,12 +192,6 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 	if f.heat > 0 or base.heat > 0:
 		# The costs, each by the mark the die prints it with along its foot (Ryan, 2 November).
 		out.append(marked(parts_line("effect", [word("Heat"), num(str(f.heat), f.heat, base.heat, true)], "attr"), [mark("heat", Palette.HEAT, false)]))
-	if f.burns > 0:
-		# The Storm Petrel's Riot Field Generator (30 October): its shield pays the weapon's heat as
-		# it is spent, and the target takes as much after the strikes; one number, both the spend
-		# and the blow (Ryan, 4 November: "it's both a spend and an add"), the die's passive box,
-		# never a cost along its foot, since the spend goes ahead without it.
-		out.append(marked(parts_line("effect", [word("Its shield pays"), num(str(f.burns), f.burns, base.burns), word("of the heat, and the target takes as much after the strikes")], "attr"), [passive_mark("shield", str(f.burns), Palette.SHIELD)]))
 	# The entry's costs past heat, beside it as the die prints them (Ryan, 26 October: Volatile a
 	# cost printed beside the heat, a keyword with a chip until then, and a shield cost beside it):
 	# the hull a spend bites, the shield it takes first. Less is the gain.
@@ -356,8 +346,12 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 	out.append({"style": "title", "text": name, "parts": [word(name)], "place": ""})
 	var own := f.base_damage_of(a)
 	var dmg := f.damage_of(a) if live else own
+	# The word an attack carries for whom it goes for (17 November): in the codex it is the
+	# target's line whole, and in a fight it follows the machine it picked.
 	var aim := f.aim_of(a)
-	var aimed := "" if aim == Foe.AIM_ANYTHING else ", " + str(Foe.AIM_TEXT.get(aim, aim))
+	var word_for := "" if aim.is_empty() else str(Foe.AIM_TEXT.get(aim, aim))
+	var aimed := "" if word_for.is_empty() else ", " + word_for
+	var anyone := "Any machine" if word_for.is_empty() else capital(word_for)
 	if Foe.is_attack_action(a):
 		var line := [word("Attack"), num(str(dmg), dmg, own) if live else word(str(dmg))]
 		if not Foe.power_status(a).is_empty() and (not live or not Effects.has(f, Foe.power_status(a))):
@@ -373,16 +367,18 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 		if Array(a.get("keywords", [])).has("all"):
 			out.append(text_line("effect", "Target: %s" % str(db.vocabulary.get("all", {}).get("name", "Every machine")), "attr"))   # the term, so it reads as one (Terms)
 		else:
-			out.append(text_line("effect", "Target: %s%s" % [target if live and not target.is_empty() else "Any machine", aimed], "attr"))
+			out.append(text_line("effect", "Target: %s" % ((target + aimed) if live and not target.is_empty() else anyone), "attr"))
 	else:
 		var kind := capital(Foe.kind_of(a))
 		var whom := str(MOVE_TARGETS.get(str(a.get("effect", "")), "Any machine"))
 		if whom == "Every machine":
 			whom = str(db.vocabulary.get("all", {}).get("name", whom))   # the term, as a blow at every machine says it
 		if live and whom == "Any machine" and not target.is_empty():
-			whom = target
+			whom = target + aimed
+		elif whom == "Any machine":
+			whom = anyone
 		out.append(text_line("effect", kind, "attr"))
-		out.append(text_line("effect", "Target: %s%s" % [whom, aimed if whom == "Any machine" or whom == target else ""], "attr"))
+		out.append(text_line("effect", "Target: %s" % whom, "attr"))
 	if str(a.get("id", "")) == "last_act":
 		out.append(text_line("effect", "Lands the moment it falls", "attr"))   # its last act (15 October)
 	if bool(a.get("once", false)):
@@ -440,8 +436,9 @@ const MOVE_TARGETS := {
 	"brace": "Self", "recover": "Self", "revive_once": "Self", "barrier": "Self", "regenerate": "Self", "golden": "Self",
 	"heal": "The most hurt of its own", "brace_all": "Every foe", "revive_once_ally": "One of its own",
 	"cleanse": "The most-marked of its own", "prime": "Every other foe", "ward_all": "Every foe",
-	"summon": "The waiting pool", "rally": "Every foe", "merge": "Its kinds on the field", "appropriate": "Any machine",
+	"summon": "Empty places", "rally": "Every foe", "merge": "Its kinds on the field", "appropriate": "Any machine",
 	"drain_rerolls": "The team's rerolls", "scorch_all": "Every machine", "corrupt_all": "Every machine",
+	"unready_all": "Every foe it readied", "phase": "Self",
 }
 
 
@@ -922,6 +919,13 @@ static func turn_line(next: Face, place: int, db: ContentDB) -> Dictionary:
 static func ricochet_line(stacks: int) -> Dictionary:
 	var said := "Ricochet: after it fires it hits its target %d more time%s for 1" % [stacks, "" if stacks == 1 else "s"]
 	return marked(text_line("effect", said, "rule"), [passive_mark("ricochet", "+%d" % stacks, Glyphs.colour_for("ricochet"))])
+
+
+## The shield its machine's zap pays as this weapon fires, and the add it buys (the Buzzard's, 18
+## November), headed by the mark the die's passive box shows for it; the number has the add in.
+static func zap_line(cost: int, add: int) -> Dictionary:
+	var said := "Zap: pays %d shield as it fires, +%d on its every blow" % [cost, add]
+	return marked(text_line("effect", said, "rule"), [passive_mark("shield", "-%d" % cost, Palette.SHIELD)])
 
 
 ## The terms under `point`, in the readout's own space; none off them.

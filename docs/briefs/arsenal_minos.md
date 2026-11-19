@@ -82,12 +82,38 @@ and brings the one behind forward. A Penetrate or a Spillover through a kill bri
 behind into the empty front at once, and the enemy's order changes with every turn.
 
 **The look**, on Ryan's calls (Claude's detail): tall, thin and long-limbed; digitigrade legs
-on hoverjets; an Aile-style pack with two short swept wings and twin thrusters; the V-fin
+on hoverjets; an Aile-style pack with two swept wings (short in his first call, bumped up on
+his word of 15 November, below) and twin thrusters; the V-fin
 crest grown into horns, twin eyes in red glass, one wing notched shorter, seams lit red like
 cracks. Mounts: hp_1 and hp_2 pods beside the thrusters, hp_3 the left forearm, hp_4 the right
 hip. Acts: a predator at rest (flares the pack, crouches and rises on its digitigrade legs,
 uncoils the whip, turns its horned head and holds); it hovers, balancing like a platform on
 water. Its model is a new lowforge kind: digitigrade legs on hoverjets under a winged pack.
+
+A first look test of it, 15 November, on Ryan's ask of that day for the chassis with a
+direction ("let's see what you come up with for all of these. Doesn't have to be too detailed
+since none are finalized"): `docs/looks/arsenal_minos.png`, built by
+`tools/lowforge/looks/minos_looks.py`, never content until the chassis lands. The figure as
+above, 126 tall with its horns and 77 across the wings, taller than the Nemesis: hunched
+forward over a bare red-lit spine, a keeled chest with three lit ribs a side, shoulder blades
+swept back, a low wedge head with two slit eyes, the winged pack with twin thrusters blowing
+down and back, and digitigrade legs that hang and trail, a hoverjet at each hock. A homage in
+its cues alone, no one suit's or unit's head, chest or colours. Claude's choices, his to
+change: an uneven stance, its left arm raised and its right hanging to the shin; the corruption
+as the left wing broken short and uneven horns, the right longer with a second tine; the locked
+piece a plain drum on the right forearm, since its kit is in question; hp_1 and hp_2 as racks
+on the wing roots over the shoulders, where the proposal had them beside the thrusters, hp_3 a
+barrel along the left forearm and hp_4 a twin barrel on the right hip. Its second row wore a
+segmented tail, the judge's tail of its name, which nobody had asked for.
+
+Ryan, 15 November, on that sheet: "Minos is actually pretty close to what I thought. No tail.
+Maybe bump up the wings so it's more obvious in the silhouette." So the figure stands, the tail
+is struck, and the pack's wings are no longer short. The second round
+(`docs/looks/arsenal_minos2.png`, the same module's `SHEET2`) grows them two ways for his pick:
+half as long again and deeper (about 116 across where round one was 77), and twice round one's
+span (about 148); each cranked at mid-span, the outer panel raked back to a narrow tip with two
+blades off its trailing edge, the left wing still broken short on the slant. His to judge:
+which size, or past either; the codex angle is still dark on dark.
 
 **Engine and tests**, as proposed: medium. A turn of the ranks after `_resolve_attack`,
 collected across the Chain's recursive calls (its list of foes touched is local today); the
@@ -150,6 +176,7 @@ The first round's answer is above; Ryan has given none.
    foes' formations to be worth its slot (the round: as written, decided now, built after).
 2. A human-sized boss: whether Minos turns it as it turns any foe (the rule as written does),
    and a boss in parts.
+3. Its look: the wings' size, from the second round's two (15 November), or another round.
 
 ## Holes already raised
 

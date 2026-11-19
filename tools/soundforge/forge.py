@@ -798,6 +798,111 @@ _E_MINOR = [0, 2, 3, 5, 7, 8, 10]
 _SPELL = {v: k for k, v in NOTE.items()}
 
 
+# ---------------------------------------------------------------- the peak and the hunt
+# Three moments that borrowed another sound until 16 November (the audio to-do): the seam's
+# sweep at a peak (it played `contact`, the alarm, 4 dB down), a tear opening (the boss's
+# `reveal`), and a hunter turning on a machine (Ryan, 8 November: "a good place for a sound
+# effect from the enemy, a roar or whatever"), which played the band's alarm alone. In the rift's
+# register (fx_sketches.py's header): violet, the other side, nothing sweeping in pitch (a filter
+# may move, a loudness or a rate may grow), weight in the band a phone plays. The roar is each
+# family's, as a blow is (Sound.family). First cuts, unheard, for Ryan's ear.
+
+def peak_sweep():
+    """The seam's sweep at a peak: the other world's edge washing south over the field. A wash
+    of the rift's static whose band opens and closes over the sweep, the Chorus's cluster
+    faint under it, a low E swell, and the ground settling as the seam lands on its row."""
+    import fx_sketches as FX
+    dur = 1.7
+    n = n_of(dur)
+    t = t_of(n)
+    shape = env_pts(n, [(0.0, 0.0), (0.25, 0.7), (1.0, 1.0), (1.45, 0.55), (dur, 0.0)])
+    cut = 500.0 + 4500.0 * np.sin(math.pi * np.clip(t / 1.5, 0.0, 1.0)) ** 1.5
+    wash = lp_var(hp(noise(n), 200.0), cut) * shape * 0.7
+    cluster = FX.chorus_cluster(dur, 0.32) * shape
+    swell = lp(sat(harmonics(41.2, n, [1.0, 0.7, 0.5, 0.35]), 2.5), 600.0) * env_pts(n, [(0.0, 0.0), (0.6, 0.5), (1.3, 0.6), (dur, 0.0)]) * 0.5
+    b = mix(wash, cluster, swell)
+    b = at(b, thud(120.0, 40.0, 0.4, click=0.4, drive=2.5, body_gain=1.2) * 0.6, 1.25)
+    return room(b, decay=0.3, mix=0.16)
+
+
+def tear_open():
+    """A tear opening on the seam: the feed ripping (a crushed, gated tear of static), the
+    vortex catching (a band of wind whose stutter quickens: a rate, never a pitch), a low boom
+    under it, and the spin settling into the cluster's hum."""
+    import fx_sketches as FX
+    rip_n = n_of(0.2)
+    rip = FX.gate(crush(bp(noise(rip_n), 400.0, 7000.0), bits=5, hold=6), 60.0, 0.5) * env_ad(rip_n, 0.001, 0.08)
+    dur = 1.25
+    n = n_of(dur)
+    t = t_of(n)
+    rate = 5.0 + 25.0 * (t / dur) ** 1.5
+    ph = 2.0 * math.pi * np.cumsum(rate) / SR
+    stutter = 0.4 + 0.6 * (np.sin(ph) * 0.5 + 0.5)
+    wind = bp(noise(n), 300.0, 2500.0) * stutter * env_pts(n, [(0.0, 0.0), (0.15, 1.0), (0.85, 0.75), (dur, 0.0)]) * 0.6
+    hum = FX.chorus_cluster(dur, 0.3) * env_pts(n, [(0.0, 0.0), (0.4, 0.3), (1.0, 0.8), (dur, 0.0)])
+    b = mix(rip, knock([420.0, 700.0], [0.016, 0.01], [1.0, 0.5], noise_gain=0.3) * 0.7)
+    b = at(b, mix(wind, hum), 0.08)
+    b = at(b, explosion(0.6, 32.0, 0.8, debris=0), 0.1)
+    return room(FX.heft(b, 0.4), decay=0.28, mix=0.15)
+
+
+def _howl_mouth(n, opens):
+    """A mouth that opens and closes over a breath: the breath's top cutoff following `opens`
+    (0 shut to 1 wide), a formant's move and never a pitch."""
+    return lp_var(hp(noise(n), 250.0), 600.0 + 2600.0 * np.clip(opens, 0.0, 1.0))
+
+
+def roar_undead():
+    """A Risen hunter turning on a machine: a dry, breathy howl through a mouth that opens and
+    shuts, a rasp in it (a low E gated hard, flat), bone rattling under it, the grave-light's
+    cold hum behind."""
+    import fx_sketches as FX
+    dur = 1.15
+    n = n_of(dur)
+    t = t_of(n)
+    opens = np.interp(t, [0.0, 0.12, 0.55, 0.9, dur], [0.1, 0.95, 0.8, 0.35, 0.0])
+    breath = sat(_howl_mouth(n, opens) * 2.0, 2.0) * env_pts(n, [(0.0, 0.0), (0.08, 1.0), (0.8, 0.8), (dur, 0.0)]) * 0.6
+    rasp = FX.gate(lp(sat(harmonics(82.41, n, [1.0, 0.8, 0.6, 0.4, 0.3]), 3.0), 1400.0), 24.0, 0.4) * env_pts(n, [(0.0, 0.0), (0.1, 0.8), (0.75, 0.6), (dur, 0.0)]) * 0.5
+    b = mix(breath, rasp, FX.cold_hum(dur, 0.22))
+    b = at(b, ratchet(9, 0.5, 1600.0, 0.5, jitter=0.4) * 0.45, 0.15)
+    b = at(b, FX.bone_crack(0.7), 0.02)
+    return room(FX.heft(b, 0.5), decay=0.24, mix=0.15)
+
+
+def roar_demonic():
+    """An Infernal hunter turning on a machine: the furnace roar, loud and telegraphed, a growl
+    shaking it (its loudness at 28 Hz), a whoomp of fire as it opens and embers after."""
+    import fx_sketches as FX
+    dur = 1.3
+    n = n_of(dur)
+    t = t_of(n)
+    growl = 0.65 + 0.35 * np.sin(2.0 * math.pi * 28.0 * t)
+    body = FX.roar(dur, 0.9) * growl * env_pts(n, [(0.0, 0.0), (0.1, 1.0), (0.7, 0.85), (dur, 0.0)])
+    throat = lp(sat(harmonics(55.0, n, [1.0, 0.9, 0.7, 0.5, 0.35, 0.25]), 3.5), 1100.0) * growl * env_pts(n, [(0.0, 0.0), (0.12, 0.7), (0.9, 0.5), (dur, 0.0)]) * 0.45
+    b = mix(body, throat, FX.whoomp(0.35, 500.0, 0.8))
+    b = at(b, FX.embers(0.6, 0.55), 0.5)
+    return room(FX.heft(b, 0.5), decay=0.26, mix=0.15)
+
+
+def roar_eldritch():
+    """A Chorus hunter turning on a machine: the choir's cluster swelling into a shriek it
+    cannot hold, crushed and gated, the stutter quickening (a rate), a crushed screech over it
+    and the console flinching, two of its own ticks."""
+    import fx_sketches as FX
+    dur = 1.1
+    n = n_of(dur)
+    t = t_of(n)
+    rate = 10.0 + 30.0 * (t / dur) ** 1.4
+    ph = 2.0 * math.pi * np.cumsum(rate) / SR
+    stutter = (np.sign(np.sin(ph)) + 1.0) * 0.5
+    choir_ = FX.chorus_cluster(dur, 0.9) * (0.35 + 0.65 * stutter) * env_pts(n, [(0.0, 0.0), (0.2, 0.8), (0.85, 1.0), (dur, 0.0)])
+    screech = crush(bp(noise(n), 1800.0, 6000.0), bits=5, hold=5) * env_pts(n, [(0.0, 0.0), (0.3, 0.15), (0.85, 0.45), (dur, 0.0)]) * 0.5
+    b = mix(choir_, screech, thud(140.0, 45.0, 0.3, click=0.6, drive=3.0) * 0.5)
+    b = at(b, mix(tick_click() * 1.2, glitch_perc() * 0.6), 0.9)
+    b = at(b, mix(tick_click() * 1.2, glitch_perc() * 0.6), 0.97)
+    return room(FX.heft(b, 0.45), decay=0.2, mix=0.13)
+
+
 def _harmony(pat, steps, min_hold=1):
     """A riff pattern's notes moved `steps` degrees along E natural minor, holds kept: a diatonic
     harmony line under a tune. `min_hold` keeps only notes held that many steps, so a harmony
@@ -3473,6 +3578,9 @@ LEVELS = {
     "contact": -10, "engage": -13, "cut": -8, "gate_hit": -8, "spawn": -12,
     "victory": -10, "defeat": -10, "withdraw": -11, "overheat": -12,
     "laser": -11, "gunfire": -11, "cannon": -8, "slash": -12, "slam": -9,
+    # the peak and the hunt (16 November): the sweep under the alarm it replaced (contact 4 dB
+    # down), the tear at the boss reveal's level it borrowed, the roar a moment of its own
+    "peak_sweep": -14, "tear_open": -11, "roar_undead": -11, "roar_demonic": -11, "roar_eldritch": -11,
     # Mean RMS dB, pinned where Ryan judged them. The rift tracks sit half their phone gap
     # above where they were (Ryan, 28 September, a quarter from the phone sketches; 29
     # September, in the game: the quarter was wrong, back to the half): the gap is how far a
@@ -3577,6 +3685,11 @@ SHIP["kill_aphelion"] = _death("death5_aphelion", 5)   # the Science Vessel: dis
 SHIP["kill_kestrel"] = _death("death6_kestrel", 6)   # falling, the air rushing, the crash catching as an ignition, the fire crackling down
 SHIP["kill_minerva"] = _death("death10_minerva", 10)   # boom... BOOM at either end of the machine, both soft-fronted and low, the second the bigger
 SHIP["kill_arsenal"] = _death("death11_arsenal", 11)   # a deep soft blast, the fire roaring up over a ghost breathing out in its own hall, breaking into static, crackles and sputters
+# The peak and the hunt (16 November): first cuts of their own, levelled at LEVELS.
+SHIP["peak_sweep"] = lambda: write_level(peak_sweep(), "peak_sweep", LEVELS["peak_sweep"])
+SHIP["tear_open"] = lambda: write_level(tear_open(), "tear_open", LEVELS["tear_open"])
+for _f in FAMILIES:
+    SHIP["roar_%s" % _f] = (lambda f=_f: write_level(globals()["roar_" + f](), "roar_" + f, LEVELS["roar_" + f]))
 for _f in FAMILIES:
     SHIP["foe_%s_hit" % _f] = _third_cut("foe_%s_hit" % _f)
     SHIP["foe_%s_heavy" % _f] = _third_cut("foe_%s_heavy" % _f)

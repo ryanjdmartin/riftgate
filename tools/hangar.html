@@ -2849,7 +2849,9 @@ function paintMotion(force) {
     for (const a of set) acts.append(el("button", {class: "fchip", id: "mo-act-" + safeId(a.name), "aria-pressed": String(st.loop === a.name), onclick: () => st.setLoop(a.name),
       title: a.places && a.places.length ? "Plays on the " + a.places.join(" and the ") + " only" : ""}, actWords(a.name), a.places && a.places.length ? el("span", {class: "n"}, a.places.join("/")) : null));
     const label = set.length ? `Acts${own ? " · " + actWords(own) : ""} · ${set.length}` : "Acts";
-    panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, label), set.length ? acts : el("p", {class: "mhelp"}, turning ? "The form is turning…" : "This machine has no acts yet.")));
+    // Lost, it plays nothing (MechRig): its own death holds until Revive.
+    const quiet = rig.dead ? "Lost: it plays nothing while it lies there; Revive stands it up." : turning ? "The form is turning…" : "This machine has no acts yet.";
+    panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, label), set.length && !rig.dead ? acts : el("p", {class: "mhelp"}, quiet)));
     if (rig.current) {
       const r = el("input", {type: "range", id: "mo-scrub", min: "0", max: String(rig.current.duration), step: "0.01", value: String(rig.t), "aria-label": "Time into " + actWords(rig.current.name)});
       r.addEventListener("input", () => { st.playing = false; st.seek(Number(r.value)); });
@@ -2859,7 +2861,7 @@ function paintMotion(force) {
     panel.append(el("div", {class: "mgroup"}, el("span", {class: "glabel"}, "Blows"), el("div", {class: "seg"},
       el("button", {class: "btn", id: "mo-shot", title: "Fires the machine's weapons one press at a time, each fixed one with its own act", onclick: () => st.strike(true)}, "Fire"),
       el("button", {class: "btn", id: "mo-hit", title: "A blow lands on the machine: a hull hit from the left, then its armour turning one from the right", onclick: () => st.hit()}, "Hit"),
-      el("button", {class: "btn", id: "mo-lose", "aria-pressed": String(!!rig.dead), title: "The machine is lost: its lit parts gutter out; press again to light it", onclick: () => st.lose()}, rig.dead ? "Revive" : "Lose"))));
+      el("button", {class: "btn", id: "mo-lose", "aria-pressed": String(!!rig.dead), title: "The machine is lost: it goes down its own way where it has one, else it slumps, and its lit parts gutter out; press again to stand it up", onclick: () => st.lose()}, rig.dead ? "Revive" : "Lose"))));
     // The plume trial (3 November): a booster's flame along its thrust in place of its halo's ring.
     if (((st.side || {}).plumes || []).length) {
       const on = window.HangarMotion.plumes();
@@ -2871,7 +2873,8 @@ function paintMotion(force) {
   // What a status holds while the machine carries it (MechView3D.hold_statuses): a form, a pose
   // (the Polar Bear's seal), or a spin (the Cassowary's capacitor while Spun Up); held here as the
   // status would hold it, in any mode.
-  const statusNames = [...new Set([...Object.keys(rig.forms || {}), ...Object.keys(rig.heldSpins || {})])];
+  // A form named with an @ is the rig's own, never a status's (its death, MechRig.DEATH: Lose plays it).
+  const statusNames = [...new Set([...Object.keys(rig.forms || {}).filter(n => !n.startsWith("@")), ...Object.keys(rig.heldSpins || {})])];
   if (statusNames.length) {
     const fg = el("div", {class: "acts"});
     for (const name of statusNames) {

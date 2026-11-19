@@ -111,14 +111,12 @@ func _kinds() -> Array:
 	var burst := Face.attack(2)
 	burst.strikes = 4
 	var every := Face.attack(2, Face.Reach.EVERY_FOE)
-	var petrel := Face.attack(4)
-	petrel.burns = 2
-	var zap := _die(petrel)
-	zap.after_blow = 2
+	var bouncing := _die(Face.attack(4))
+	bouncing.ricochet = 2
 	var reload := Face.vent(0)
 	reload.reloads_ammo = 2
-	var wake := Face.vent(3)
-	wake.shields = 3
+	var cooling := Face.shield(3)
+	cooling.vents = 3
 	var hoist := Face.shield(3)
 	hoist.vents = 2
 	hoist.targets = Face.Target.ALLY
@@ -133,7 +131,7 @@ func _kinds() -> Array:
 		["Weapon, indirect", "the line lobbed:\nIndirect, any foe", _die(Face.attack(4, Face.Reach.INDIRECT))],
 		["Weapon, every foe", "the formation lit:\nits blow on every foe", _die(every)],
 		["Weapon, strikes", "a strike's blow inside,\nits strikes beside", _die(burst)],
-		["Weapon, over a foe", "its passive's box: the Storm\nPetrel's blow after it", zap],
+		["Weapon, a passive's box", "the Skua's Ricochet: its\nstrikes after each shot", bouncing],
 		["Debuff, direct", "gear, what it lays inside\n(Suppress): no number", _die(Face.attack(0, Face.Reach.DIRECT, [Face.Keyword.SUPPRESS]))],
 		["Debuff, indirect", "the gear holding Lure,\nthe line lobbed", _die(Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE]))],
 		["Debuff, every foe", "the enemy's formation lit:\nevery foe (the Shift Whistle)", _die(Face.attack(0, Face.Reach.EVERY_FOE, [Face.Keyword.LURE]))],
@@ -142,7 +140,7 @@ func _kinds() -> Array:
 		["Shield, every ally", "the arch, its own cell\nlit: the whole team", _die(team)],
 		["Shield, every other", "its own dark: every other\nmachine (the Screens)", _die(screens)],
 		["Vent", "its plate holding the heat\noff, steam rising off it", _die(Face.vent(3))],
-		["Shield and vent", "both at once (the Wake\nDiffuser): shield | cool", _die(wake)],
+		["Shield and vent", "a shield that cools:\nshield | cool", _die(cooling)],
 		["Shield and vent, ally", "the Sutler's Hoist: the\nsteam over the cooling", _die(hoist)],
 		["Reload", "cools nothing: its shells\nand its ammo (the Musk Ox)", _die(reload)],
 		["Blank", "an empty hardpoint, or\na destroyed component", _die(Face.empty_slot())],
@@ -185,8 +183,6 @@ func _rest() -> Array:
 	# A count it spends for its stacks (the Ammit's Quintessence Tap, 12 November): three Essence held.
 	var spender := Face.from_dict({"kind": "buff", "status": "overcharged", "targets": "self", "spends": "essence", "spends_up_to": 5, "holds_all": "overcharged", "cooldown": 3})
 	spender.buff_stacks = 3
-	var burn := Face.attack(4)
-	burn.burns = 2
 	var locked := _die(Face.attack(4))
 	locked.locked = true
 	var charged := _die(Face.shield(4))
@@ -215,7 +211,6 @@ func _rest() -> Array:
 		["Short", "the shield cannot pay:\nstruck through", _die(short)],
 		["Ammo, dry", "a forging gun's price;\nthe magazine cannot pay", _die(dry)],
 		["A count spent", "the Souls it would take\nnow, a stack each", _die(spender)],
-		["Burn", "the Storm Petrel's: its box\nthe shield paid, no cost", _die(burn)],
 		["LOCKED", "a reroll skips it", locked],
 		["CHARGED", "armed for its charged\nform (the Swallowtail)", charged],
 		["Dark", "a cooldown or a switch-\noff: the clock, its turns", dark],

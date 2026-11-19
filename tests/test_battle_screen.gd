@@ -1159,6 +1159,31 @@ func test_engage_counts_the_fights_waiting() -> void:
 	s.free()
 
 
+func test_the_rift_shell_cracks_a_plate_a_fracture_and_bursts_at_the_rupture() -> void:
+	# The rift's shell over the seven hexes beside it (the bible's pacing row; built 16 November): a
+	# plate cracked for each Fracture earned, the shell burst at the Rupture. What the map finds
+	# already cracked or broken shows as it is; what changes while it watches plays.
+	var b := Battle.new(3)
+	var db := ContentDB.load_default()
+	b.setup([db.make_mech("badger"), db.make_mech("kite")], "meadow")
+	var screen: BattleScreen = load("res://game/battle/battle_screen.tscn").instantiate()
+	screen.setup(b)
+	var map: BattleMapView = screen._map
+	assert_true(map._shell_up and map._shell_cracked == 0, "whole and standing as the battle opens")
+	assert_true(map._shell_crack_at.is_empty() and map._shell_burst_at < 0.0, "nothing played for what it found")
+	b.fractures = 1
+	screen._refresh()
+	assert_eq(map._shell_cracked, 1, "a Fracture cracks a plate")
+	assert_true(map._shell_crack_at.has(0), "and its crack plays")
+	b.fractures = b.thresholds.size()
+	b.rupture()
+	screen._refresh()
+	assert_false(map._shell_up, "the Rupture breaks the shell")
+	assert_true(map._shell_burst_at >= 0.0, "and its burst plays")
+	assert_true(b.field.shell.is_empty(), "and the seven are open to the machines")
+	screen.free()
+
+
 ## EXECUTE ends the action of every machine it moves (Ryan, 16 November: "if an attack wasn't
 ## ordered, it cannot attack ... Once execute is run, the action is forfeit (barring undo, of
 ## course)"): the machine in hand is let go, a pack beside where it stopped cannot be ordered on,

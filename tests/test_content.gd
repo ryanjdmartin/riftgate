@@ -10,6 +10,19 @@ func _piece(db: ContentDB, id: String) -> Dictionary:
 	c.erase("status")
 	return c
 
+
+## A plain vent and a plain shield, built here: the slottable ones at tiers zero and one left
+## content on 19 November (Ryan's yes), and these tests use one only to observe something else.
+## A basic's tier and no shape, as the Coolant Jacket and the Canopy stood.
+func _plain_vent(db: ContentDB) -> Dictionary:
+	return {"name": "Plain Vent", "maker": str(db.city_makers()[0]), "tier": 0, "shape": "none", "codex": "", "flavour": "",
+		"design": {"stage": "draft", "fantasy": "", "niche": ""}, "face": {"kind": "vent", "power": 4}, "passive": null, "tags": []}
+
+
+func _plain_shield(db: ContentDB) -> Dictionary:
+	return {"name": "Plain Shield", "maker": str(db.city_makers()[0]), "tier": 0, "shape": "none", "codex": "", "flavour": "",
+		"design": {"stage": "draft", "fantasy": "", "niche": ""}, "face": {"kind": "shield", "power": 8, "targets": "self"}, "passive": null, "tags": []}
+
 func _db() -> ContentDB:
 	return ContentDB.load_default()
 
@@ -953,7 +966,7 @@ func test_breach_is_gone_and_ignoring_armour_is_a_rule_written_on_a_weapon() -> 
 	gun["tier"] = 1
 	gun["face"]["ignores_armour"] = true
 	db.components["piercer"] = gun
-	var plate: Dictionary = _piece(db, "canopy")
+	var plate: Dictionary = _plain_shield(db)
 	plate["tier"] = 1
 	plate["face"]["ignores_armour"] = true
 	db.components["piercing_plate"] = plate
@@ -1000,7 +1013,7 @@ func test_swap_web_and_spillover_are_rules_written_on_their_pieces() -> void:
 		for k in (cases[id][0] as Dictionary).keys():
 			c["face"][k] = cases[id][0][k]
 		db.components[id] = c
-	var plate: Dictionary = _piece(db, "canopy")
+	var plate: Dictionary = _plain_shield(db)
 	plate["tier"] = 1
 	plate["face"]["swaps"] = true
 	db.components["swap_plate"] = plate
@@ -1454,11 +1467,11 @@ func test_support_keywords_ride_on_shields_and_vents_only() -> void:
 func test_a_component_passive_from_content_lands_on_the_mech() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var fins: Dictionary = _piece(db, "coolant_jacket")
+	var fins: Dictionary = _plain_vent(db)
 	fins["name"] = "Finned Sink"
 	fins["passive"] = {"id": "fins", "name": "Fins", "description": "Cooling +5.",
 		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 5}]}
-	db.components["fins_pack"] = fins   # the jacket's own tier, a basic, below the chassis that stocks it
+	db.components["fins_pack"] = fins   # a basic's tier, below the chassis that stocks it
 	var c: Dictionary = db.chassis["clydesdale"].duplicate(true)
 	c["fixed"] = []   # nothing built in, so the component is the die's first entry
 	c["loadout"] = ["fins_pack"]
@@ -1528,7 +1541,7 @@ func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
 	gun["face"]["shield_cost"] = 2
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_gun"] = gun
-	var fins: Dictionary = _piece(db, "coolant_jacket")
+	var fins: Dictionary = _plain_vent(db)
 	fins["face"]["volatile"] = 3
 	fins["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_fins"] = fins
@@ -1643,7 +1656,7 @@ func test_a_reach_beside_the_rank_is_an_attacks_and_a_real_reach() -> void:
 ## fields on their keyword, their face or their status, so the content and the landing set them.
 func test_the_rule_numbers_are_fields_on_their_keyword_their_face_or_their_status() -> void:
 	var db := _fresh()
-	var base: Dictionary = _piece(db, "coolant_jacket")
+	var base: Dictionary = _plain_vent(db)
 	base["tier"] = 1
 	var cases := {
 		"test_keyword": [{"keywords": ["volatile"]}, "Volatile is a cost, not a keyword"],
@@ -1939,7 +1952,8 @@ func test_every_component_names_a_silhouette_class() -> void:
 
 func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 	# The set of 2 October (the bible, section 9): rank and file carry one or two moves and a
-	# boss three; every foe reads an aim the engine knows; the ghoul's claw is a swarm blow; a
+	# boss three; a move's word for whom it goes for is one the engine knows, on a move aimed at
+	# one machine; the ghoul's claw is a swarm blow; a
 	# boss wears armour only where its kit is armour (Ryan, 2 November), a point or two, and one
 	# whose armour steps by the tier starts from at least a point.
 	var db := ContentDB.new()
@@ -1947,7 +1961,8 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 	assert_true(db.validate().is_empty(), "the set validates: %s" % str(db.validate()))
 	for id in db.foes.keys():
 		var f := db.make_foe(id)
-		assert_true(Foe.AIMS.has(f.aim), "%s aims by a word the engine knows" % id)
+		for a in f.actions:
+			assert_true(f.aim_of(a).is_empty() or (Foe.AIMS.has(f.aim_of(a)) and Foe.lands_on_one(a)), "%s's %s goes for whom by a word the engine knows, on a move aimed at one machine" % [id, str(a.get("id", ""))])
 		if f.boss:
 			assert_eq(f.actions.size(), 3, "%s, a boss, has three moves" % id)
 			assert_true(f.armour >= 0 and f.armour <= 2, "%s, a boss, wears no armour or a point or two" % id)
@@ -2062,6 +2077,92 @@ func test_a_foes_stacking_rider_says_its_number() -> void:
 	f["actions"][0].erase("corrupt")
 	f["actions"].append({"id": "frost", "name": "Frost", "kind": "debuff", "effect": "corrupt_all", "weight": 1, "text": "", "status": "implemented"})
 	assert_true(_refused(db, "foe test_licker", "says what it lays"), "an effect that lays stacks says how many")
+
+
+## The word for whom an attack goes for is its move's (Ryan, 17 November: "the heat target is a
+## property of the attack, not the dragon itself"): a foe carries no aim of its own, the word
+## is one the engine knows, it sits on a move aimed at one machine alone, and a blow at every
+## machine takes no step aimed at one, since it draws no pick.
+func test_an_aim_is_a_moves_word_on_a_move_aimed_at_one_machine() -> void:
+	var db := _fresh()
+	var f: Dictionary = db.foes["revenant"].duplicate(true)
+	f["actions"] = [{"id": "breath", "name": "Breath", "kind": "attack", "weight": 1, "aim": "hottest", "text": "", "status": "implemented"}]
+	db.foes["test_seeker"] = f
+	for e in db.validate():
+		assert_false(e.begins_with("foe test_seeker"), "a word on a blow at one machine validates clean: %s" % e)
+	assert_eq(db.make_foe("test_seeker").aim_of(), "hottest", "and the move carries it into the fight")
+	f["aim"] = "hottest"
+	assert_true(_refused(db, "foe test_seeker", "a foe has no aim of its own"), "an aim on the foe is refused")
+	f.erase("aim")
+	f["actions"][0]["aim"] = "exposed"
+	assert_true(_refused(db, "foe test_seeker", "aim must be one of"), "and a word the engine does not know")
+	f["actions"][0]["aim"] = "weakest"
+	f["actions"][0]["keywords"] = ["all"]
+	assert_true(_refused(db, "foe test_seeker", "aim is for a move aimed at one machine"), "a blow at every machine takes no word")
+	f["actions"][0].erase("aim")
+	f["actions"][0]["also"] = [{"effect": "jam"}]
+	assert_true(_refused(db, "foe test_seeker", "no step of it may be aimed at one machine"), "nor a step aimed at one machine")
+	f["actions"][0]["also"] = [{"effect": "rally", "value": 2}]
+	for e in db.validate():
+		assert_false(e.begins_with("foe test_seeker"), "a step on its own side is no pick: %s" % e)
+	# What a blow does before it lands (18 November: the Pilgrim's knife purges first): a list
+	# shaped as `also` is, on an attack aimed at one machine.
+	f["actions"] = [{"id": "knife", "name": "Knife", "kind": "attack", "weight": 1, "text": "", "status": "implemented", "before": [{"effect": "dispel", "value": 1}]}]
+	for e in db.validate():
+		assert_false(e.begins_with("foe test_seeker"), "a purge ahead of a blow validates clean: %s" % e)
+	assert_eq(Foe.before_of(db.make_foe("test_seeker").actions[0]).size(), 1, "and the move carries it into the fight")
+	f["actions"][0]["before"] = []
+	assert_true(_refused(db, "foe test_seeker", "before lists what the move does before its blow lands"), "an empty list is refused")
+	f["actions"][0]["before"] = [{"effect": "dispel", "value": 1}]
+	f["actions"][0]["keywords"] = ["all"]
+	assert_true(_refused(db, "foe test_seeker", "no step of it may be aimed at one machine"), "a blow at every machine takes no step aimed at one, before it or after")
+	f["actions"] = [{"id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "text": "", "status": "implemented", "before": [{"effect": "dispel", "value": 1}]},
+		{"id": "claw", "name": "Claw", "kind": "attack", "weight": 1, "text": "", "status": "implemented"}]
+	assert_true(_refused(db, "foe test_seeker", "it belongs to an attack action"), "and a special has no blow to come before")
+	f["actions"] = [{"id": "howl", "name": "Howl", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "aim": "strongest", "text": "", "status": "implemented"},
+		{"id": "claw", "name": "Claw", "kind": "attack", "weight": 1, "text": "", "status": "implemented"}]
+	assert_true(_refused(db, "foe test_seeker", "aim is for a move aimed at one machine"), "and a move at nobody takes no word")
+	# The move's target line says the word: whole in the codex, after the machine in a fight.
+	f["actions"] = [{"id": "breath", "name": "Breath", "kind": "attack", "weight": 1, "aim": "hottest", "text": "", "status": "implemented"},
+		{"id": "claw", "name": "Claw", "kind": "attack", "weight": 1, "text": "", "status": "implemented"},
+		{"id": "undo", "name": "Undo", "kind": "debuff", "effect": "dispel", "value": 1, "weight": 1, "aim": "buffed", "text": "", "status": "implemented"}]
+	var foe := db.make_foe("test_seeker")
+	var said := func(a: Dictionary, live: bool, target: String) -> String:
+		var out: Array[String] = []
+		for l in EntryReadout.move_lines(foe, a, db, live, target):
+			out.append(str(l["text"]))
+		return "\n".join(out)
+	assert_true(str(said.call(foe.actions[0], false, "")).contains("Target: The hottest machine"), "the codex: its word is the target's line (%s)" % str(said.call(foe.actions[0], false, "")))
+	assert_true(str(said.call(foe.actions[0], true, "Skua")).contains("Target: Skua, the hottest machine"), "a fight: the machine it picked, then its word")
+	assert_true(str(said.call(foe.actions[1], false, "")).contains("Target: Any machine"), "a blow with no word says any machine")
+	assert_true(str(said.call(foe.actions[1], true, "Skua")).contains("Target: Skua") and not str(said.call(foe.actions[1], true, "Skua")).contains("Skua,"), "and in a fight the machine alone")
+	assert_true(str(said.call(foe.actions[2], false, "")).contains("Target: The most buffed machine"), "a special aimed at one machine says its word the same way")
+
+
+## An immunity is a foe's own Ability (17 November): a Suppress or a Disrupt, each always or
+## while a move of its own that gathers is named.
+func test_an_immunity_names_what_never_lands_and_a_move_that_gathers() -> void:
+	var db := _fresh()
+	var f: Dictionary = db.foes["revenant"].duplicate(true)
+	f["actions"] = [{"id": "claw", "name": "Claw", "kind": "attack", "weight": 1, "text": "", "status": "implemented"},
+		{"id": "storm", "name": "Storm", "kind": "attack", "countdown": 3, "weight": 1, "text": "", "status": "implemented"}]
+	f["immune"] = {"suppress": true, "disrupt": "storm"}
+	db.foes["test_walker"] = f
+	for e in db.validate():
+		assert_false(e.begins_with("foe test_walker"), "both forms validate clean: %s" % e)
+	var made := db.make_foe("test_walker")
+	assert_true(made.immune_to("suppress"), "always immune to the stun")
+	assert_false(made.immune_to("disrupt"), "and to a Disrupt only while its storm gathers")
+	made.pending = made.actions[1]
+	assert_true(made.immune_to("disrupt"), "which it then is")
+	f["immune"] = {"purge": true}
+	assert_true(_refused(db, "foe test_walker", "immune knows"), "an immunity the engine does not know is refused")
+	f["immune"] = {"disrupt": "claw"}
+	assert_true(_refused(db, "foe test_walker", "a move of its own that gathers"), "and a move that does not gather")
+	f["immune"] = {"suppress": false}
+	assert_true(_refused(db, "foe test_walker", "a move of its own that gathers"), "and a false, which says nothing")
+	f["immune"] = {}
+	assert_true(_refused(db, "foe test_walker", "immune is an object"), "and an empty one")
 
 
 ## What a foe lays that halves says 2 at the least (Ryan, 16 November: "Buffs and debuffs that
@@ -2181,7 +2282,7 @@ func test_rapid_rides_on_anything_and_shock_on_weapons_only() -> void:
 	# 9 October: rapid joined volatile as a keyword about the spend, so a vent may carry it;
 	# shock is a weapon's.
 	var db := _fresh()
-	var vent: Dictionary = _piece(db, "coolant_jacket")
+	var vent: Dictionary = _plain_vent(db)
 	vent["face"]["keywords"] = ["rapid"]
 	vent["face"]["cooldown"] = 1   # its limiter, printed (Rapid carries none of its own, 2 November)
 	vent["tier"] = 1
@@ -2743,7 +2844,7 @@ func test_the_flakshot_lays_flak_and_the_validator_asks_for_its_stacks() -> void
 ## spend; and an entry is Rapid or Instant, never both, its charged form included.
 func test_a_cooldown_is_whole_rounds_and_every_instant_entry_carries_a_limiter() -> void:
 	var db := _fresh()
-	var base: Dictionary = _piece(db, "coolant_jacket")
+	var base: Dictionary = _plain_vent(db)
 	base["tier"] = 1
 	var cases := {
 		"test_rapid_cold": [{"keywords": ["rapid"]}, ""],
@@ -2824,7 +2925,7 @@ func test_a_rewrite_says_its_shot_and_a_rank_condition_its_rank() -> void:
 ## passive's now) and the vent blast, an effect the engine no longer runs.
 func test_a_vent_never_reaches_every_ally_and_the_siphons_leavings_are_refused() -> void:
 	var db := _fresh()
-	var plate: Dictionary = _piece(db, "coolant_jacket")
+	var plate: Dictionary = _plain_vent(db)
 	plate["tier"] = 1
 	plate["face"]["targets"] = "every_ally"
 	plate["face"]["heat_per_blow"] = 2
@@ -2852,7 +2953,7 @@ func test_a_promoted_form_takes_its_heros_kit_and_adds_its_own() -> void:
 	db.load_dir(ContentDB.DIR)
 	var fid := str(db.factions.keys()[0])
 	db.foes["test_hero"] = {"id": "test_hero", "name": "The Tester", "faction": fid, "hero": true,
-		"design": {"fantasy": "a test"}, "codex": "c", "flavour": "f", "hp": 70, "attack": 15, "rank": "back", "aim": "focus",
+		"design": {"fantasy": "a test"}, "codex": "c", "flavour": "f", "hp": 70, "attack": 15, "rank": "back",
 		"actions": [{"id": "jab", "name": "Jab", "kind": "attack", "weight": 2, "text": "", "status": "implemented"},
 			{"id": "guard", "name": "Guard", "kind": "defend", "effect": "brace", "value": 5, "weight": 1, "text": "", "status": "implemented"}]}
 	db.foes["test_hero_up"] = {"id": "test_hero_up", "promotes": "test_hero", "size": 2, "rank": "front", "armour": 5,
@@ -2862,7 +2963,7 @@ func test_a_promoted_form_takes_its_heros_kit_and_adds_its_own() -> void:
 	db._resolve_promotions()
 	var whole: Dictionary = db.foes["test_hero_up"]
 	assert_eq(str(whole["name"]), "The Tester", "the same name, its hero's")
-	assert_eq([int(whole["hp"]), int(whole["attack"]), str(whole["aim"]), str(whole["faction"])], [70, 15, "focus", fid], "its hero's numbers, sense and domain")
+	assert_eq([int(whole["hp"]), int(whole["attack"]), str(whole["faction"])], [70, 15, fid], "its hero's numbers and domain")
 	assert_eq([int(whole["size"]), str(whole["rank"]), int(whole["armour"])], [2, "front", 5], "massive, front, armour 5: its own")
 	assert_eq(whole["actions"].map(func(a): return str(a["id"])), ["jab", "guard", "ready"], "its hero's moves, then its own")
 	assert_eq(int(whole["actions"][1]["value"]), 10, "a move of its own with a hero's id takes that move's place")
@@ -2986,7 +3087,8 @@ func test_chain_says_its_number_and_rides_a_weapon() -> void:
 		"test_chain_bare": [{"keywords": ["chain"]}, "Chain says the number every other Shocked foe takes"],
 		"test_chain_n": [{"keywords": ["chain"], "chain": 2}, ""],
 		"test_chain_stray": [{"chain": 2}, "chain (the number) rides with the Chain keyword"],
-		"test_chain_debuff": [{"power": 0, "keywords": ["chain"], "chain": 2}, "Chain is a weapon's keyword"],
+		"test_chain_debuff": [{"power": 0, "keywords": ["chain"], "chain": 2}, ""],
+		"test_chain_debuff_bare": [{"power": 0, "keywords": ["chain"]}, "Chain says the number every other Shocked foe takes"],
 	}
 	for id in cases:
 		var c: Dictionary = base.duplicate(true)

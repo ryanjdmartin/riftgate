@@ -9,6 +9,10 @@ const DIR := "res://content/"
 
 # Design knobs. Loosen or tighten here; the validator and the bible should agree.
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
+## The machine buffs a spend at a foe may lay on its own machine (Face.self_statuses; the Storm
+## Petrel's Hardlight Pulse and its branches, a Ward on itself in its Defence direction since 18
+## November). A Barrier stays its pieces' own, with its cooldown.
+const SELF_GRANTS := ["hardened", "ward", "charged", "supercooled", "primed", "overcharged", "braced", "regenerating"]
 const MAX_MOVE := 6                 # a move in hexes, chassis or foe, is 1 to this (a placeholder bound, 28 October)
 ## The caveats a hunting composition may name (`hunts`): whom its pack locks. The fastest left on
 ## 16 November with nothing hunting by it (the rule of 12 November).
@@ -38,7 +42,7 @@ var chassis: Dictionary = {}
 var components: Dictionary = {}
 var modules: Dictionary = {}
 ## The caches a battle's field holds (content/loot.json, built 7 November): kind id -> entry,
-## and the file's rules (per_battle, rift_gap, wall_gap).
+## and the file's rules (per_battle, rift_gap, wall_gap, behind_shell).
 var loot: Dictionary = {}
 var loot_rules: Dictionary = {}
 var makers: Dictionary = {}
@@ -80,7 +84,7 @@ func load_dir(dir: String) -> void:
 	modules = _index(_read(dir + "modules.json"))
 	var lf := _read(dir + "loot.json")
 	loot = _index(lf)
-	loot_rules = {"per_battle": int(lf.get("per_battle", 0)), "rift_gap": int(lf.get("rift_gap", 3)), "wall_gap": int(lf.get("wall_gap", 2))}
+	loot_rules = {"per_battle": int(lf.get("per_battle", 0)), "rift_gap": int(lf.get("rift_gap", 3)), "wall_gap": int(lf.get("wall_gap", 2)), "behind_shell": int(lf.get("behind_shell", 0))}
 	reserved_names = {}
 	var reserved := _read(dir + "reserved_names.json")
 	var sources: Dictionary = reserved.get("sources", {})
@@ -189,7 +193,9 @@ func build_die(fixed_ids: Array, loadout_ids: Array, hardpoints: int) -> Die:
 
 ## A machine as the content builds it. `loadout` is the hardpoint components fitted, in
 ## order; null means the chassis's stock loadout (the campaign passes its roster's own).
-func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, loadout = null, fitted_modules: Array = []) -> Unit:
+## `branch_picks` are its upgrades' picks along its chassis's branches (branch_error), none for a
+## machine at its chassis's own tier.
+func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, loadout = null, fitted_modules: Array = [], branch_picks: Array = []) -> Unit:
 	var c: Dictionary = chassis[chassis_id]
 	var fitted: Array = c.get("loadout", []) if loadout == null else loadout
 	var u := Unit.mech(uid, str(c["name"]), at, int(c.get("movespeed", Unit.MECH_MOVE)))
@@ -213,6 +219,7 @@ func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, l
 		var cp = components.get(cid, {}).get("passive", null)
 		if cp is Dictionary:
 			u.grant_passive(cp, cid, cid)
+	fit_branches(u, branch_picks)
 	# Modules, as many as the chassis has slots; then the machine starts whole on the numbers
 	# they made.
 	for mid in fitted_modules.slice(0, int(c.get("module_slots", 0))):
@@ -220,6 +227,105 @@ func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, l
 	u.hull = u.hull_max
 	u.shield = u.shield_max
 	return u
+
+
+## A machine's picks along its chassis's branches (the bible's tiers row: an upgrade's branch is a
+## pick of one from two that tweaks a locked piece, two directions each two steps deep, Ryan's
+## shape; the Storm Petrel the first to carry them, 17 November): the direction ids in the order
+## taken, a direction's first pick its first step and its second its deeper one, so [a, a] is
+## specialized and [a, b] or [b, a] mixed, the deeper step only ever offered to a machine that took
+## the first. A tier one picks twice, a tier two once and a tier three never (3 less its tier). ""
+## when the picks are legal, else what is wrong.
+func branch_error(chassis_id: String, picks: Array) -> String:
+	if picks.is_empty():
+		return ""
+	var c: Dictionary = chassis.get(chassis_id, {})
+	var dirs: Array = c.get("branches", []) if c.get("branches", []) is Array else []
+	if dirs.is_empty():
+		return "%s has no branches" % chassis_id
+	var most := maxi(0, 3 - int(c.get("tier", 1)))
+	if picks.size() > most:
+		return "a tier %d machine picks %d time%s, not %d" % [int(c.get("tier", 1)), most, "" if most == 1 else "s", picks.size()]
+	var taken := {}
+	for p in picks:
+		var d := _direction(c, str(p))
+		if d.is_empty():
+			return "%s has no direction %s" % [chassis_id, str(p)]
+		taken[str(p)] = int(taken.get(str(p), 0)) + 1
+		if int(taken[str(p)]) > (d.get("steps", []) as Array).size():
+			return "the %s direction is %d step%s deep" % [str(p), (d.get("steps", []) as Array).size(), "" if (d.get("steps", []) as Array).size() == 1 else "s"]
+	return ""
+
+
+## The steps a machine's legal picks have taken, in order: each {direction, step (0 its first),
+## name (the direction's, with the step's numeral: Defence I), description, effects}.
+func branch_steps(chassis_id: String, picks: Array) -> Array:
+	var out: Array = []
+	if not branch_error(chassis_id, picks).is_empty():
+		return out
+	var c: Dictionary = chassis.get(chassis_id, {})
+	var taken := {}
+	for p in picks:
+		var d := _direction(c, str(p))
+		var at := int(taken.get(str(p), 0))
+		taken[str(p)] = at + 1
+		var step: Dictionary = d["steps"][at]
+		out.append({"direction": str(p), "step": at, "name": "%s %s" % [str(d.get("name", p)), "I" if at == 0 else "II"],
+			"description": str(step.get("description", "")), "effects": step.get("effects", [])})
+	return out
+
+
+## Every set of picks a machine of this chassis may hold, the empty one first, then each in the
+## order a machine reaches it: what the harness offers.
+func branch_builds(chassis_id: String) -> Array:
+	var c: Dictionary = chassis.get(chassis_id, {})
+	var dirs: Array = c.get("branches", []) if c.get("branches", []) is Array else []
+	var out: Array = [[]]
+	var most := maxi(0, 3 - int(c.get("tier", 1)))
+	var frontier: Array = [[]]
+	for i in range(most):
+		var next: Array = []
+		for picks in frontier:
+			for d in dirs:
+				var more: Array = (picks as Array) + [str(d.get("id", ""))]
+				if branch_error(chassis_id, more).is_empty() and not _has_build(out, more):
+					next.append(more)
+					out.append(more)
+		frontier = next
+	return out
+
+
+## Is this build already listed, its picks in any order (a mixed build is one build either way)?
+static func _has_build(builds: Array, picks: Array) -> bool:
+	var want := picks.duplicate()
+	want.sort()
+	for b in builds:
+		var have: Array = (b as Array).duplicate()
+		have.sort()
+		if have == want:
+			return true
+	return false
+
+
+func _direction(c: Dictionary, id: String) -> Dictionary:
+	for d in c.get("branches", []):
+		if d is Dictionary and str(d.get("id", "")) == id:
+			return d
+	return {}
+
+
+## A machine's picks laid on it: each step's effects one passive sourced "branch", tied to the
+## piece it tweaks, read through the pipeline like a module's (never written to a stat or a
+## component), so a destroyed piece takes its tweaks with it. Illegal picks lay nothing.
+func fit_branches(u: Unit, picks: Array) -> void:
+	for s in branch_steps(u.chassis_id, picks):
+		var entry := ""
+		for eff in s["effects"]:
+			if eff is Dictionary and eff.has("entry"):
+				entry = str(eff["entry"])
+		u.grant_passive({"id": "branch:%s:%s:%d" % [u.chassis_id, s["direction"], int(s["step"]) + 1], "name": s["name"],
+			"description": s["description"], "effects": (s["effects"] as Array).duplicate(true)}, "branch", entry)
+		u.branches.append(str(s["direction"]))
 
 
 ## A module fitted to a machine: its stat lines and its text as one passive, a loadout-long
@@ -298,8 +404,13 @@ func make_foe(foe_id: String) -> Foe:
 	f.armour_step = maxi(0, int(d.get("armour_step", 0)))
 	f.rage = maxi(0, int(d.get("rage", 0)))   # its own from the fight's start (the Goblin Nob's, Ryan, 8 November: "It's not innate? ... unbelievably incorrect")
 	f.drains = bool(d.get("drains", false))   # its own too: every blow of its regrows what it took from the hull (the Vampire Lord's, 16 November)
+	# What never lands on it (17 November, on Ryan's yes to the bench's rows): a Suppress or a
+	# Disrupt, always (true) or while the move it names gathers.
+	var im = d.get("immune", null)
+	if im is Dictionary:
+		for k in (im as Dictionary).keys():
+			f.immune[str(k)] = true if im[k] is bool else str(im[k])
 	f.wanders = bool(d.get("wanders", false))
-	f.aim = str(d.get("aim", Foe.AIM_ANYTHING))
 	f.hero = bool(d.get("hero", false)) or d.has("promotes")   # one of the party: a hero, or its promoted form
 	f.boss = is_boss(foe_id)
 	f.elite = is_elite(foe_id)   # a mini-boss: its stun resist is a boss's (3 November)
@@ -360,7 +471,13 @@ func make_foe(foe_id: String) -> Foe:
 		var also := Foe.also_from(a.get("also", null), str(act["name"]))
 		if not also.is_empty():
 			act["also"] = also
-		# The move's own sense and condition (2 October), when it has them.
+		# What its blow does before it lands (18 November), an attack's alone.
+		if kind == "attack":
+			var before := Foe.also_from(a.get("before", null), str(act["name"]))
+			if not before.is_empty():
+				act["before"] = before
+		# The move's own word for whom it goes for (17 November) and its condition (2 October),
+		# when it has them.
 		if a.has("aim"):
 			act["aim"] = str(a["aim"])
 		if a.has("when"):
@@ -414,8 +531,6 @@ func codex_for_foe(f: Foe) -> Dictionary:
 			arm.append({"text": "+%d A TIER" % f.armour_step, "trend": 0, "gain": false})
 		items.append(["armour", arm])
 	items.append(["rank", "BACK" if f.prefers_back else "FRONT"])
-	if f.aim != Foe.AIM_ANYTHING:
-		items.append(["sense", str(Foe.AIM_TEXT.get(f.aim, f.aim)).to_upper()])
 	if f.is_massive():
 		items.append(["size", "MASSIVE"])
 	return {
@@ -521,6 +636,12 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		elif components.has(d[2]):
 			for i in range(faces.size()):
 				if faces[i].component == d[2]:
+					face_rules[i].append("%s: %s" % [str(d[0]), d[1]])
+		elif d[2] == "branch":
+			# An upgrade's step (the Storm Petrel's branches, 17 November): on the row of the piece
+			# it tweaks, as that piece's own passive rides there.
+			for i in range(faces.size()):
+				if faces[i].component == str(d[6]):
 					face_rules[i].append("%s: %s" % [str(d[0]), d[1]])
 		elif d[2] == "module":
 			effects.append({"name": head, "text": str(d[1]), "kind": "module", "note": "MODULE"})
@@ -842,6 +963,19 @@ func component_dealt(component_id: String) -> bool:
 
 func default_faction() -> String:
 	return str(factions.keys()[0]) if not factions.is_empty() else ""
+
+
+## The domain a run opens against (its `opening`; Ryan, 19 November: the first battle is the
+## Meadow's, the one battle fought by the draft's three machines, so one domain's first battle
+## alone is sized for a trio): until a run's first battle is fought every rift that opens is its
+## (Campaign._roll_rift; the quick campaign's first battle too). "" when content marks none, and
+## the first rifts roll as any other: the mark is the whole rule, so dropping it is how the
+## first battle from any domain is reopened.
+func opening_faction() -> String:
+	for id in factions.keys():
+		if factions[id].get("opening", false) is bool and bool(factions[id].get("opening", false)):
+			return str(id)
+	return ""
 
 
 ## The distinct foe ids in a faction's spawn list at a tier, in order: rank and file first.
@@ -1305,7 +1439,7 @@ func _validate_loot(errs: Array[String]) -> void:
 	for k in range(1, tiers.size() + 1):
 		if not tiers.has(k):
 			errs.append("loot: the kinds' tiers run from 1 with none missing (no tier %d)" % k)
-	for key in ["per_battle", "rift_gap", "wall_gap"]:
+	for key in ["per_battle", "rift_gap", "wall_gap", "behind_shell"]:
 		if int(loot_rules.get(key, 0)) < 0:
 			errs.append("loot: %s is 0 or more" % key)
 
@@ -1454,6 +1588,17 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: power_per_heat cannot be negative" % where)
 	if fd.has("per_heat") and (not fd.has("power_per_heat") or int(fd["per_heat"]) <= 0):
 		errs.append("%s: per_heat is the heat a step of power_per_heat stands for: positive, and only beside power_per_heat" % where)
+	# A gun that fires its machine's whole shield (the Shield-burner Cannon since 18 November): an
+	# attack's, a step of power_per_shield for every per_shield it fires, never beside vents_all
+	# (one whole gauge a gun).
+	if (fd.has("spends_shield") or fd.has("power_per_shield")) and kind != "attack":
+		errs.append("%s: spends_shield and power_per_shield belong to an attack" % where)
+	if fd.has("power_per_shield") and not bool(fd.get("spends_shield", false)):
+		errs.append("%s: power_per_shield needs spends_shield (the shield it adds for is the shield it fires)" % where)
+	if fd.has("per_shield") and (not fd.has("power_per_shield") or int(fd["per_shield"]) <= 0):
+		errs.append("%s: per_shield is the shield a step of power_per_shield stands for: positive, and only beside power_per_shield" % where)
+	if bool(fd.get("spends_shield", false)) and bool(fd.get("vents_all", false)):
+		errs.append("%s: a gun fires its whole heat or its whole shield, never both" % where)
 	if fd.has("power_per_missing") and (kind != "attack" or int(fd["power_per_missing"]) <= 0):
 		errs.append("%s: power_per_missing is a positive number on an attack" % where)
 	if fd.has("per_missing") and (not fd.has("power_per_missing") or int(fd["per_missing"]) <= 0):
@@ -1522,11 +1667,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: %s (the number) rides with the %s keyword" % [where, name, label])
 		if fd.has(name) and debuff:
 			errs.append("%s: a debuff's %s deals nothing, so it carries no number (%s)" % [where, label, name])
-	# Chain (Ryan, 28 October; the kill and repeat retired): a weapon's keyword with a number, the
-	# blow every other Shocked foe on the field takes; a debuff's arc would carry its riders to
-	# every conductor for no blow, so a debuff carries none.
-	if kw_names.has("chain") and kind == "attack" and debuff:
-		errs.append("%s: Chain is a weapon's keyword, an arc of a blow; a debuff carries none" % where)
+	# Chain (Ryan, 28 October; the kill and repeat retired): a keyword with a number, the blow every
+	# other Shocked foe on the field takes. A debuff's carries its number too since 17 November (the
+	# Storm Petrel's lure, its Striker branch: "adds Chain 3 to the lure"): its arcs are blows, so
+	# its riders reach every conductor with one, as any area carries a debuff's riders.
 	# Purge is numbered (Ryan, 2 November: "lower everything by N"): the stacks every buff of each
 	# foe reached loses, on a weapon or equipment alike.
 	if kw_names.has("dispel") and int(fd.get("dispel", 0)) <= 0:
@@ -1676,8 +1820,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: magazine_min is the ammo a piece that spends the magazine needs to fire: 1 or more, beside spends_magazine" % where)
 	if fd.has("reloads_ammo") and (kind == "attack" or kind == "blank" or int(fd["reloads_ammo"]) <= 0):
 		errs.append("%s: reloads_ammo is a machine piece's: the ammo it adds to its forging machine, a positive number" % where)
-	if fd.has("shields") and (kind != "vent" or int(fd["shields"]) <= 0):
-		errs.append("%s: shields is a vent's shield half (the combined entry): the shield it gives after its vent, a positive number" % where)
+	if fd.has("shields"):
+		errs.append("%s: shields left the entry with the Wake Diffuser, its last piece (19 November): a vent vents, and a shield that cools is a shield with vents" % where)
 	if fd.has("gathers_mines") and (kind != "attack" or not (fd["gathers_mines"] is bool)):
 		errs.append("%s: gathers_mines (true) is an attack's, a weapon's or a debuff's: every Mine on the field's other foes joins its target's" % where)
 	if fd.has("detonates") and (kind != "attack" or not (fd["detonates"] is bool)):
@@ -1695,15 +1839,27 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# Rapid buff on itself, its free roll landing on the battery it raised.
 	if fd.has("turns_die") and (not (fd["turns_die"] is bool) or kind != "buff" or not rapid or str(fd.get("targets", "")) != "self"):
 		errs.append("%s: turns_die (true) is a Rapid buff on itself that turns a folded die" % where)
-	# The Petrels' locked pieces (Ryan's go, 21 October; built 30 October): the rider on its own
-	# spender (the St. Elmo's Regenerator), an ally's action bought with the team's rerolls (the
-	# Immelmann Booster), a roll on the machine a buff lands on (the Reheat Uplink), and the rerolls
-	# a kill brings (the Spindrift Salvo).
+	# What a spend at a foe lays on its own machine (the Hardlight Pulse's Hardened Light 1, up to
+	# 3: Ryan, 18 November): an attack's, each a machine buff from the engine's table, its stacks,
+	# per_foe for a set of them for every foe the spend reached, and the most its machine holds
+	# (cap, 0 or none for no cap); an upgrade's branch takes it further (self_status). The St.
+	# Elmo's Regenerator's own key, `regenerates`, left with its rework of 17 November. The
+	# Petrels' other locked pieces: an ally's action bought with the team's rerolls (the Immelmann
+	# Booster), a roll on the machine a buff lands on (the Reheat Uplink), and the rerolls a kill
+	# brings (the Spindrift Salvo).
 	if fd.has("regenerates"):
-		var rg = fd["regenerates"]
-		if kind != "attack" or not (rg is Dictionary) or str(rg.get("status", "")) != "regenerating" \
-				or int(rg.get("stacks", 0)) <= 0 or rg.has("shield") or rg.has("rounds"):
-			errs.append("%s: regenerates is an attack's rider on its own machine: {status: regenerating, stacks, positive}: a point of shield a stack as each of its turns ends, a stack fading then (its shield a round and its rounds went on 15 November)" % where)
+		errs.append("%s: regenerates left the engine with the Storm Petrel's lock's Regenerating (17 November): a status on its own machine is self_statuses" % where)
+	if fd.has("self_statuses"):
+		var grants = fd["self_statuses"]
+		if kind != "attack" or not (grants is Array) or (grants as Array).is_empty():
+			errs.append("%s: self_statuses is an attack's: a list of {status, stacks, per_foe, cap}, what the spend lays on its own machine" % where)
+		else:
+			for g in grants:
+				var sid := str(g.get("status", "")) if g is Dictionary else ""
+				if not (g is Dictionary) or not SELF_GRANTS.has(sid) or int(g.get("stacks", 1)) < 1 \
+						or (g.has("per_foe") and not (g["per_foe"] is bool)) or (g.has("cap") and int(g["cap"]) < int(g.get("stacks", 1))) \
+						or (g as Dictionary).keys().any(func(k) -> bool: return not ["status", "stacks", "per_foe", "cap"].has(str(k))):
+					errs.append("%s: a self_statuses grant is {status, stacks (1 or more), per_foe (true or false), cap (its stacks or more)}, its status one of %s" % [where, ", ".join(SELF_GRANTS)])
 	if fd.has("ally_action"):
 		var deal = fd["ally_action"]
 		if kind != "buff" or not (deal is Dictionary) or int(deal.get("rerolls", 0)) <= 0:
@@ -1841,6 +1997,27 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: lay_status lays at least one stack a hit" % where)
 		if effect == "stack_status" and eff.has("cap") and int(eff["cap"]) < 1:
 			errs.append("%s: stack_status's cap is the most stacks it banks, at least 1" % where)
+		# A status a spend at a foe lays on its own machine (the Storm Petrel's branches, 17
+		# November): a machine buff from the table, its stacks, and per_foe for a set of them for
+		# every foe the spend reached. A Barrier and a Ward keep their pieces and their cooldowns.
+		# The Buzzard's zap (18 November): what each weapon it fires pays in shield and adds to every
+		# blow, both whole numbers, 1 or more.
+		if effect == "shield_zap" and (trig != "static" or int(eff.get("value", 0)) < 1 or int(eff.get("cost", 0)) < 1):
+			errs.append("%s: shield_zap is static: cost, the shield each weapon pays, and value, what it adds to every blow, each 1 or more" % where)
+		if effect == "add_power" and (trig != "static" or int(eff.get("value", 0)) < 1):
+			errs.append("%s: add_power is static: value, what a weapon's own number gains, 1 or more" % where)
+		# A slot (18 November): an effect a later grant in the same slot replaces, its name a word.
+		if eff.has("slot") and (not (eff["slot"] is String) or str(eff["slot"]).strip_edges().is_empty()):
+			errs.append("%s: slot names the place a later grant replaces this effect in: a word" % where)
+		if effect == "self_status":
+			if not SELF_GRANTS.has(str(eff.get("status", ""))):
+				errs.append("%s: self_status lays one of %s" % [where, ", ".join(SELF_GRANTS)])
+			if not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1:
+				errs.append("%s: self_status's value is the stacks it lays, 1 or more" % where)
+			if eff.has("per_foe") and not (eff["per_foe"] is bool):
+				errs.append("%s: self_status's per_foe is true or false (a set of stacks for every foe the spend reached)" % where)
+			if eff.has("cap") and int(eff["cap"]) < maxi(1, int(eff.get("value", 1))):
+				errs.append("%s: self_status's cap is the most stacks its machine holds, its value or more" % where)
 		# An effect scaled by a status the machine carries may count it in steps (the Ammit's flare,
 		# 12 November: an Empowered for every five Essence).
 		if eff.has("stack_step") and (not eff.has("per_stack") or int(eff["stack_step"]) < 1):
@@ -1877,14 +2054,14 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		# every spend aimed at a foe leaves, a whole number, 1 or more.
 		if effect == "mine_on_spend" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or float(eff["value"]) != floorf(float(eff["value"]))):
 			errs.append("%s: mine_on_spend is the Mine's flat damage a spend: a whole number, 1 or more" % where)
-		if effect == "reboot_release" and (int(eff.get("value", 0)) < 1 or int(eff.get("gate", 0)) < 1):
-			errs.append("%s: reboot_release is what every foe takes from a reboot's vent at its gate: value and gate (the heat it needs), whole numbers, 1 or more" % where)
+		if effect == "reboot_release" and (int(eff.get("value", 0)) < 1 or int(eff.get("per", 0)) < 1 or eff.has("gate")):
+			errs.append("%s: reboot_release is what every foe takes from a reboot's vent for every so much heat: value and per (the heat a step), whole numbers, 1 or more; it has no gate" % where)
 		if effect == "shove_behind" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or int(eff["value"]) > 100 or float(eff["value"]) != floorf(float(eff["value"]))):
 			errs.append("%s: shove_behind is the share of a front foe's maximum HP its damaging blow drives into the foe behind, in percent: a whole number, 1 to 100" % where)
-		# The Petrels' passives (built 30 October): the shield paying a weapon's heat point for
-		# point (the Storm Petrel's), and the most rerolls a bank carries (the Giant Petrel's).
-		if effect == "burn_shield" and int(eff.get("value", 0)) != 1:
-			errs.append("%s: burn_shield's value is 1: a point of shield for each point of heat" % where)
+		# The Petrels' passives: shield for every point of heat gained (the Storm Petrel's since 17
+		# November), and the most rerolls a bank carries (the Giant Petrel's, built 30 October).
+		if effect == "shield_per_heat" and (int(eff.get("value", 0)) < 1 or trig != "on_heat_gain"):
+			errs.append("%s: shield_per_heat is on_heat_gain's: value, the shield a point of heat gained stands up, 1 or more" % where)
 		if effect == "bank_rerolls" and int(eff.get("value", 0)) < 1:
 			errs.append("%s: bank_rerolls's value is the most rerolls the bank carries, at least 1" % where)
 		# The Honey Badger's Ore Hopper (31 October): the loads a foe damaged puts in and the most
@@ -1959,7 +2136,7 @@ func _entry_is_debuff(eff: Dictionary) -> bool:
 		return false
 	var fd = components[cid].get("face", {})
 	return fd is Dictionary and str(fd.get("kind", "")) == "attack" and int(fd.get("power", 0)) <= 0 \
-		and not bool(fd.get("vents_all", false)) and int(fd.get("fires_hopper", 0)) <= 0 and int(fd.get("power_per_missing", 0)) <= 0
+		and not bool(fd.get("vents_all", false)) and not bool(fd.get("spends_shield", false)) and int(fd.get("fires_hopper", 0)) <= 0 and int(fd.get("power_per_missing", 0)) <= 0
 
 
 ## Every entry keeps its internal text under `design` (fantasy at least) and nothing
@@ -2291,6 +2468,68 @@ func _validate_chassis(errs: Array[String]) -> void:
 			errs.append("%s: use 'passive' (zero or one), not 'passives'" % where)
 		var one_off := str(c.get("design", {}).get("one_off", "")) if c.get("design", {}) is Dictionary else ""
 		_validate_passive(where, c.get("passive", null), errs, not one_off.is_empty())
+		if c.has("branches"):
+			_validate_branches(where, c, errs)
+
+
+## An upgrade's branches (the bible's tiers row; the Storm Petrel the first to carry them, Ryan,
+## 17 November): two directions, each a step a pick, as deep as the machine picks (a tier one's
+## two steps, a tier two's one, a tier three none). A step is a description and the effects it
+## lays, one passive's worth: a tweak to one locked piece, every effect scoped to it (`entry`,
+## one of the chassis's fixed pieces; a chassis with none branches on what stands in their place,
+## when one is written), and never a stat ("more the job for Modules").
+func _validate_branches(where: String, c: Dictionary, errs: Array[String]) -> void:
+	var dirs = c["branches"]
+	var tier := int(c.get("tier", 1))
+	var deep := 3 - tier
+	if not (dirs is Array) or (dirs as Array).size() != 2:
+		errs.append("%s: branches are two directions (Ryan's shape: two directions, each a step a pick)" % where)
+		return
+	if deep <= 0:
+		errs.append("%s: a tier %d chassis arrives at the top tier and picks no branch" % [where, tier])
+		return
+	var fixed: Array = c.get("fixed", [])
+	var ids := {}
+	for d in dirs:
+		if not (d is Dictionary) or str(d.get("id", "")).is_empty() or str(d.get("name", "")).strip_edges().is_empty() or not (d.get("steps") is Array):
+			errs.append("%s: a direction is {id, name, steps}" % where)
+			continue
+		var dw := "%s branch %s" % [where, str(d["id"])]
+		if ids.has(str(d["id"])):
+			errs.append("%s: two directions share the id" % dw)
+		ids[str(d["id"])] = true
+		for k in (d as Dictionary).keys():
+			if not ["id", "name", "steps", "design"].has(str(k)):
+				errs.append("%s: '%s' is no key of a direction (id, name, steps, design)" % [dw, str(k)])
+		var steps: Array = d["steps"]
+		if steps.size() != deep:
+			errs.append("%s: a tier %d machine picks %d time%s, so a direction is %d step%s deep, not %d" % [dw, tier, deep, "" if deep == 1 else "s", deep, "" if deep == 1 else "s", steps.size()])
+		for i in range(steps.size()):
+			var st = steps[i]
+			var sw := "%s step %d" % [dw, i + 1]
+			if not (st is Dictionary):
+				errs.append("%s: a step is {description, effects}" % sw)
+				continue
+			for k in (st as Dictionary).keys():
+				if not ["description", "effects", "design"].has(str(k)):
+					errs.append("%s: '%s' is no key of a step (description, effects, design)" % [sw, str(k)])
+			_validate_passive(sw, {"id": "branch", "name": str(d["name"]), "description": st.get("description", ""), "effects": st.get("effects", [])}, errs)
+			if str(st.get("description", "")).strip_edges().is_empty():
+				errs.append("%s: a step says what it does (description)" % sw)
+			var on := {}
+			for eff in st.get("effects", []):
+				if not (eff is Dictionary):
+					continue
+				if ["add_stat", "multiply_stat"].has(str(eff.get("effect", ""))):
+					errs.append("%s: a branch is never a stat (Ryan: \"more the job for Modules\")" % sw)
+				# A step tweaks a locked piece (`entry`), or the passive where the passive carries the
+				# numbers (no entry: Ryan, 18 November, of the Buzzard, "since this passive has numbers
+				# in it, I think one direction buffs the passive, one buffs the cannon").
+				if eff.has("entry") and not fixed.has(str(eff["entry"])):
+					errs.append("%s: a step tweaks a locked piece, %s, or the passive: an entry names one of them" % [sw, ", ".join(fixed) if not fixed.is_empty() else "none on this chassis"])
+				on[str(eff.get("entry", ""))] = true
+			if on.size() > 1:
+				errs.append("%s: a step tweaks one piece or the passive, its effects all on it" % sw)
 
 
 ## A chassis nickname (or id) that is a machine's name in BattleTech, Heavy Gear, Warhammer
@@ -2337,9 +2576,22 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 			errs.append("%s: kind must be one of %s" % [aw, ", ".join(ACTION_KINDS)])
 		if not ACTION_STATUSES.has(str(a.get("status", ""))):
 			errs.append("%s: status must be implemented or planned" % aw)
-		# A move's own sense and its condition (2 October), checked whatever its status.
+		# A move's word for whom it goes for (Ryan, 17 November: "the heat target is a property
+		# of the attack, not the dragon itself") and its condition (2 October), checked whatever
+		# its status. The word is for a move aimed at one machine; and a blow at every machine
+		# takes no step aimed at one, since it draws no pick and nothing would show whom.
+		var steps_read := true
+		for list in STEP_LISTS:
+			if a.has(list) and not (a[list] is Array and (a[list] as Array).all(func(st) -> bool: return st is Dictionary)):
+				steps_read = false
 		if a.has("aim") and not Foe.AIMS.has(str(a["aim"])):
 			errs.append("%s: aim must be one of %s, got '%s'" % [aw, ", ".join(Foe.AIMS), str(a["aim"])])
+		elif a.has("aim") and steps_read and not Foe.lands_on_one(a):
+			errs.append("%s: aim is for a move aimed at one machine; a move at every machine or at nobody draws no pick" % aw)
+		if steps_read and str(a.get("kind", "")) == "attack" and Array(a.get("keywords", [])).has("all"):
+			for st in Foe.extra_steps(a):
+				if not Foe.UNTARGETED_EFFECTS.has(str(st.get("effect", ""))) and not Foe.effect_kind(str(st.get("effect", ""))).is_empty():
+					errs.append("%s: a blow at every machine draws no pick, so no step of it may be aimed at one machine (%s)" % [aw, str(st.get("effect", ""))])
 		if a.has("when"):
 			var whens := Foe.whens_of(a)
 			if whens.is_empty():
@@ -2388,16 +2640,22 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 				if not taken_by:
 					errs.append("%s: a borrowed swing (power %s) is the follow-up of a move that takes (%s among its steps); name it in that move's then" % [aw, held, str(POWER_STATUSES[held])])
 		# What a move does also (16 November: a move is a short list of steps): each a special's
-		# effect with the fields it reads, after the move's first step, whatever that is.
-		if a.has("also"):
-			if not (a["also"] is Array) or (a["also"] as Array).is_empty():
-				errs.append("%s: also lists what the move does after its first step, each an object with its effect" % aw)
+		# effect with the fields it reads, after the move's first step, whatever that is. And
+		# what a blow does before it lands (`before`, 18 November: the Pilgrim's knife purges
+		# first), a list of the same shape on an attack alone.
+		if a.has("before") and str(a.get("kind", "")) != "attack":
+			errs.append("%s: before lists what a blow does before it lands; it belongs to an attack action" % aw)
+		for list in STEP_LISTS:
+			if not a.has(list):
+				continue
+			if not (a[list] is Array) or (a[list] as Array).is_empty():
+				errs.append("%s: %s lists what the move does %s, each an object with its effect" % [aw, list, "before its blow lands" if list == "before" else "after its first step"])
 			else:
-				for st in a["also"]:
+				for st in a[list]:
 					if not (st is Dictionary) or str(st.get("effect", "")).is_empty():
-						errs.append("%s: each step of also is an object that names its effect" % aw)
+						errs.append("%s: each step of %s is an object that names its effect" % [aw, list])
 						continue
-					var sw := "%s also %s" % [aw, str(st["effect"])]
+					var sw := "%s %s %s" % [aw, list, str(st["effect"])]
 					for key in (st as Dictionary).keys():
 						if not ALSO_KEYS.has(str(key)):
 							errs.append("%s: a step knows %s, got '%s'" % [sw, ", ".join(ALSO_KEYS), str(key)])
@@ -2498,6 +2756,9 @@ func _validate_fall_steps(aw: String, a: Dictionary, errs: Array[String]) -> voi
 const POWER_STATUSES := {"appropriated": "appropriate"}
 ## What a step of `also` may carry beside its effect.
 const ALSO_KEYS := ["effect", "value", "foe", "count", "rounds"]
+## The lists of steps a move may carry beside itself: what its blow does before it lands, and
+## what the move does also.
+const STEP_LISTS := ["before", "also"]
 
 
 ## Every effect a special or a step may name, across the kinds.
@@ -2517,7 +2778,7 @@ func _validate_effect(aw: String, a: Dictionary, effect: String, errs: Array[Str
 	# A golden rage (4 November) lasts the rounds it says, 1 to 5, three unsaid.
 	if effect == "golden" and a.has("rounds") and (int(a["rounds"]) < 1 or int(a["rounds"]) > 5):
 		errs.append("%s: golden's rounds are the rounds the rage lasts, 1 to 5" % aw)
-	if (effect == "barrier" or effect == "ward_all" or effect == "appropriate") and a.has("value"):
+	if (effect == "barrier" or effect == "ward_all" or effect == "appropriate" or effect == "phase" or effect == "unready_all") and a.has("value"):
 		errs.append("%s: %s takes no value" % [aw, effect])
 	# A cleanse (28 October) takes every mark the team laid, so it says no number.
 	if effect == "cleanse" and a.has("value"):
@@ -2658,8 +2919,28 @@ func _validate_foes(errs: Array[String]) -> void:
 		# what it took from the hull; a rider on a blow until 16 November.
 		if f.has("drains") and not (f["drains"] is bool and f["drains"]):
 			errs.append("%s: drains is true or left out: every blow of the foe's regrows what it takes from a hull" % where)
-		if f.has("aim") and not Foe.AIMS.has(str(f["aim"])):
-			errs.append("%s: aim must be one of %s, got '%s'" % [where, ", ".join(Foe.AIMS), str(f["aim"])])
+		# An immunity (Ryan, 15 November: "not as a blanket for all bosses, but for ones who need
+		# it for their fight to actually do something"): an Ability on the unit, a Suppress or a
+		# Disrupt that never lands on it, always or while the move it names gathers.
+		if f.has("immune"):
+			var im = f["immune"]
+			if not (im is Dictionary) or (im as Dictionary).is_empty():
+				errs.append("%s: immune is an object: %s, each true or the id of a move of its own that gathers" % [where, " or ".join(Foe.IMMUNITIES)])
+			else:
+				for k in (im as Dictionary).keys():
+					if not Foe.IMMUNITIES.has(str(k)):
+						errs.append("%s: immune knows %s, got '%s'" % [where, ", ".join(Foe.IMMUNITIES), str(k)])
+					elif not (im[k] is bool and im[k]):
+						var gathers := false
+						for a in f.get("actions", []):
+							if a is Dictionary and str(a.get("id", "")) == str(im[k]) and int(a.get("countdown", 0)) > 0 and str(a.get("status", "")) == "implemented":
+								gathers = true
+						if not gathers:
+							errs.append("%s: immune %s is true, or the id of a move of its own that gathers (a countdown), got '%s'" % [where, str(k), str(im[k])])
+		# A foe has no aim of its own (Ryan, 17 November: "the heat target is a property of the
+		# attack, not the dragon itself"): the word goes on the move.
+		if f.has("aim"):
+			errs.append("%s: a foe has no aim of its own; the word for whom an attack goes for is its move's (aim on the action)" % where)
 		_validate_actions(where, f, errs)
 		if not ["front", "back"].has(str(f.get("rank", ""))):
 			errs.append("%s: rank must be front or back" % where)
@@ -2785,6 +3066,7 @@ func _validate_foes(errs: Array[String]) -> void:
 
 func _validate_factions(errs: Array[String]) -> void:
 	_validate_ramp_gates(errs)
+	var opening: Array = []
 	for id in factions.keys():
 		var f: Dictionary = factions[id]
 		var where := "faction %s" % id
@@ -2916,3 +3198,11 @@ func _validate_factions(errs: Array[String]) -> void:
 				# The finale fields the dealt party promoted (the bible's section 9: a job costs
 				# two drawings), so a hero the run may deal needs its class change.
 				errs.append("%s: bench hero %s has no promoted form (an entry whose promotes names it)" % [where, str(h)])
+		# The domain a run opens against (19 November): a mark, and one domain's at most.
+		if f.has("opening"):
+			if not (f["opening"] is bool):
+				errs.append("%s: opening is true or false: the domain a run's first battle is fought against" % where)
+			elif bool(f["opening"]):
+				opening.append(str(id))
+	if opening.size() > 1:
+		errs.append("factions: one domain at most is a run's opening (\"opening\": true); %s are" % ", ".join(opening))

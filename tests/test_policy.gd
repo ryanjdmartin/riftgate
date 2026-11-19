@@ -812,6 +812,72 @@ func test_greedy_values_a_barrier_by_the_blow_it_takes_and_a_ward_by_what_it_tur
 ## one nothing, a stoker 2 a stack on every other foe it primes, a knitter its value for each of
 ## three actions, a primed foe its blow and 2 a stack; a Barrier eats a weapon's first blow in the
 ## damage read, and a Ward leaves the marks a blow would lay worth nothing.
+func test_greedy_gives_a_barrier_nothing_against_a_blow_that_purges_first() -> void:
+	# A blow may purge before it lands (18 November: the Pilgrim's knife). The bot's Barrier is
+	# worth what the forecast says it keeps off the hull, and the forecast reads the purge.
+	var pol := Policy.make(Policy.GREEDY)
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.of([Face.buff("barrier"), Face.attack(10, L)]), 20, 100)
+	sk.add_mech(m)
+	var walker := _ghoul(500, 60)
+	sk.add_foes([walker])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	walker.target = ms
+	assert_true(pol.barrier_score(sk, ms) > 0.0, "against a plain blow of sixty a Barrier is worth the forty it keeps off the hull")
+	var knife: Dictionary = walker.action.duplicate(true)
+	knife["before"] = Foe.also_from([{"effect": "dispel", "value": 1}], "Knife")
+	walker.action = knife
+	assert_eq(pol.barrier_score(sk, ms), 0.0, "and against one that purges first, nothing: the Barrier is gone before the blow")
+	Effects.grant_buff(m, "ward", 1, "test", sk.round)
+	assert_true(pol.barrier_score(sk, ms) > 0.0, "behind a Ward the purge is turned away and the Barrier is worth its blow again")
+
+
+func test_the_bot_prices_what_a_purge_takes_and_a_brace_it_thins() -> void:
+	# A foe's Purge had no price (19 November: the Waste's needles carry one ahead of the blow), so
+	# no read saw the stack it took. A purge is a threat by what its machine carries, a brace a
+	# purging blow strips is worth less, and a stack gained under a purge is worth what is left.
+	var pol := Policy.make(Policy.GREEDY)
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.of([Face.buff("ricochet"), Face.attack(10, L)]), 0, 100)
+	sk.add_mech(m)
+	var needle := _ghoul(500, 6)
+	sk.add_foes([needle])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	needle.target = ms
+	var plain := Policy._threat_now(needle, sk)
+	var purging: Dictionary = needle.action.duplicate(true)
+	purging["before"] = Foe.also_from([{"effect": "dispel", "value": 1}], "Needles")
+	var plain_action: Dictionary = needle.action
+	needle.action = purging
+	assert_eq(Policy._threat_now(needle, sk), plain, "a purge on a machine that carries nothing costs nothing more than the blow")
+	Effects.grant_buff(m, "ricochet", 3, "test", sk.round)
+	assert_eq(Policy.purge_cost(ms, 1), Policy.RICOCHET_WORTH, "a Purge 1 takes one stack of Ricochet, at what the bot pays to gain one")
+	assert_eq(Policy.purge_cost(ms, 5), 3.0 * Policy.RICOCHET_WORTH, "and never more stacks than the machine carries")
+	assert_true(Policy._threat_now(needle, sk) > plain, "so the foe whose blow purges is the greater threat to a machine with stacks to lose")
+	assert_eq(Policy.purges_coming(sk, ms), 1, "the bot counts the purges aimed at a machine this round")
+	# A stack gained under the purge: three held and one gained, one purged, is one more than
+	# without it; with every stack going, a stack more is still gone.
+	var swoop := Face.buff("ricochet")
+	assert_eq(pol.buff_score(sk, ms, swoop), Policy.RICOCHET_WORTH, "a stack gained still stands after the purge takes one of four")
+	Effects.remove(m, "ricochet")
+	assert_eq(pol.buff_score(sk, ms, swoop), 0.0, "and one gained alone is the one the purge takes")
+	# A brace: two stacks against a blow of six on a bare hull keep two points off it; a purge
+	# ahead of the blow takes one of the two first.
+	needle.action = plain_action
+	var whole := pol.brace_score(sk, ms, 2)
+	needle.action = purging
+	var thinned := pol.brace_score(sk, ms, 2)
+	assert_true(whole > 0.0, "a brace keeps hull against a plain blow")
+	assert_eq(thinned, whole / 2.0, "and half of it against a blow that purges first, a stack of the two gone before it lands")
+	Effects.grant_buff(m, "ward", 1, "test", sk.round)
+	assert_eq(Policy.purges_coming(sk, ms), 0, "behind a Ward no purge is coming")
+	assert_eq(Policy._threat_now(needle, sk), plain, "and the purge costs nothing")
+
+
 func test_the_bot_reads_a_foes_barrier_ward_priming_and_regrowth() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var sk := Skirmish.new(1, 3)
@@ -1202,6 +1268,16 @@ func test_greedy_reads_a_countdown_a_core_and_a_last_act() -> void:
 	s3.start_round()
 	assert_true(is_equal_approx(Policy.last_act_cost(s3, beast), 20.0 * Policy.HULL_WEIGHT), "its Meteor's twenty on the bare machine")
 	assert_eq(Policy.last_act_cost(s3, calm), 0.0, "a foe without one costs nothing")
+	# What argues against the kill is what a wait could save (18 November): the blow is paid
+	# whenever the foe falls, so only the share a raised shield would take holds the bot back.
+	assert_eq(Policy.last_act_deterrent(s3, beast), 0.0, "a machine with no shield to raise saves nothing by waiting")
+	s3.mechs[0].unit.shield_max = 12
+	assert_true(is_equal_approx(Policy.last_act_deterrent(s3, beast), 12.0 * (Policy.HULL_WEIGHT - Policy.SHIELD_LOSS_WEIGHT)), "a shield of 12 down: a reboot first would put twelve of the twenty on the shield")
+	s3.mechs[0].unit.shield = 12
+	assert_eq(Policy.last_act_deterrent(s3, beast), 0.0, "and with it whole the kill waits on nothing")
+	assert_true(is_equal_approx(Policy.last_act_cost(s3, beast), 12.0 * Policy.SHIELD_LOSS_WEIGHT + 8.0 * Policy.HULL_WEIGHT), "the blow's whole price stands beside it")
+	s3.mechs[0].unit.shield = 0
+	s3.mechs[0].unit.shield_max = 0
 	# A fall's steps (16 November), each at the price the same effect has from a move.
 	var howler := Foe.make("gargantuan_king", 30, 20)
 	howler.on_death = {"act": Foe.fall_act_from({"name": "Last Howl", "effect": "rally", "value": 2})}
@@ -1219,13 +1295,28 @@ func test_greedy_reads_a_countdown_a_core_and_a_last_act() -> void:
 	gazer.on_death = {"act": Foe.fall_act_from({"name": "Last Gaze", "effect": "jam"})}
 	assert_eq(Policy.last_act_cost(s4, gazer), 0.0, "a curse with no killer costs nothing: a tick's kill dodges it")
 	assert_true(is_equal_approx(Policy.last_act_cost(s4, gazer, s4.mechs[0]), 40.0), "and with one, the entry it would lose")
+	# The one fall that pays (17 November): a foe whose fall takes back the readiness it gave is
+	# worth the second kill it spares, the whole HP of each foe it readied.
+	var binder := Foe.make("binder", 30, 20)
+	binder.content_id = "binder"
+	binder.on_death = {"act": Foe.fall_act_from({"name": "Unbound", "effect": "unready_all"})}
+	assert_eq(Policy.last_act_cost(s4, binder), 0.0, "nothing readied: its fall is worth nothing either way")
+	Effects.stack(howler, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:binder", 1, Effects.DECAY_NONE)
+	Effects.stack(root, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:other", 1, Effects.DECAY_NONE)
+	assert_true(is_equal_approx(Policy.last_act_cost(s4, binder), -30.0), "one foe it readied stands: its fall pays that foe's HP, and no other's")
+	Effects.remove(howler, "risen")
+	Effects.remove(root, "risen")
 	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"], "also": [{"effect": "drain_rerolls", "value": 1}]})}
 	assert_true(is_equal_approx(Policy.last_act_cost(s3, beast), 20.0 * Policy.HULL_WEIGHT + Policy.REROLL_SHARE * 40.0), "and a blow's steps add to its blow")
 	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}
 	beast.target = s3.mechs[0]
 	calm.target = s3.mechs[0]
 	var f40 := Face.attack(40, I)
-	assert_true(pol.attack_score(s3, s3.mechs[0], f40, beast) < pol.attack_score(s3, s3.mechs[0], f40, calm), "the kill that sets off a Meteor is worth less")
+	assert_true(is_equal_approx(pol.attack_score(s3, s3.mechs[0], f40, beast), pol.attack_score(s3, s3.mechs[0], f40, calm)), "with no shield to raise, the kill that sets off a Meteor is worth what any kill is: the blow is paid whenever it falls")
+	s3.mechs[0].unit.shield_max = 12
+	assert_true(pol.attack_score(s3, s3.mechs[0], f40, beast) < pol.attack_score(s3, s3.mechs[0], f40, calm), "with a shield down that a reboot would raise, it is worth less this round")
+	s3.mechs[0].unit.shield = 12
+	assert_true(is_equal_approx(pol.attack_score(s3, s3.mechs[0], f40, beast), pol.attack_score(s3, s3.mechs[0], f40, calm)), "and with the shield whole it is worth the same again")
 
 
 ## The Lammergeier's Mines for the bot (9 November), on a synthetic passive: a spend that leaves a
@@ -1262,6 +1353,89 @@ func test_greedy_weighs_a_mine_its_blast_on_a_kill_the_detonation_and_the_gather
 	sk._add_mine(a, 6, {})
 	assert_true(pol.mine_worth(sk, bomber, gather, b, 0.0) > 0.0, "gathering the end foe's Mine onto the middle foe adds a neighbour to its blast")
 	assert_true(pol.mine_worth(sk, bomber, gather, c, 0.0) < pol.mine_worth(sk, bomber, gather, b, 0.0), "onto the other end, less")
+
+
+## A move's steps (17 November): the bot's read of a foe's threat counts what the move it
+## shows does beside its blow, and what a special of its own costs, each by the one table a
+## fall's steps use (Policy.effect_cost). Synthetic foes; the lone machine's die is one 40.
+func test_a_foes_threat_counts_every_step_of_its_move() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(40, I)), 0, 100))
+	var thief := Foe.make("mugger", 30, 20)
+	var plain := Foe.make("mugger", 30, 20)
+	var ally := Foe.make("mugger", 30, 20)
+	sk.add_foes([thief, plain, ally])
+	sk.begin()
+	sk.start_round()
+	var me: Skirmish.MechState = sk.mechs[0]
+	var blow := Foe.basic_action()
+	for f in [thief, plain, ally]:
+		f.action = blow
+		f.target = me
+	var base := Policy._threat_now(plain, sk)
+	assert_true(is_equal_approx(base, 20.0), "a plain blow threatens its number: %s" % base)
+	# A blow and then a stolen reroll, one move (the Thief's Mug).
+	var mug := blow.duplicate()
+	mug["also"] = [{"effect": "drain_rerolls", "value": 1}]
+	thief.action = mug
+	var reroll := Policy.REROLL_SHARE * 40.0 / Policy.HULL_WEIGHT
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), base + reroll), "a blow that steals a reroll threatens both: %s" % Policy._threat_now(thief, sk))
+	var pol := Policy.make(Policy.GREEDY)
+	var f40 := Face.attack(40, I)
+	assert_true(pol.attack_score(sk, me, f40, thief) > pol.attack_score(sk, me, f40, plain), "so the kill that stops it is worth more than the same kill beside it")
+	assert_true(is_equal_approx(Policy.suppress_worth(sk, thief), base + reroll), "and a stun stops the whole move, its step with it")
+	Effects.stack(thief, Effects.STATUS["suppressed"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_eq(Policy._threat_now(thief, sk), 0.0, "a foe held this round threatens nothing, by blow or by step")
+	Effects.remove(thief, "suppressed")
+	# A bite that feeds its foe: the points it regrows are points of ours undone.
+	var devour := blow.duplicate()
+	devour["also"] = [{"effect": "recover", "value": 3}]
+	thief.action = devour
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), base), "whole, it regrows nothing")
+	thief.hp -= 5
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), base + 3.0 / Policy.HULL_WEIGHT), "hurt, its three: %s" % Policy._threat_now(thief, sk))
+	thief.hp = thief.hp_max
+	# A bolt that fades its foe: next round's blow, the one nothing can answer.
+	var bolt := blow.duplicate()
+	bolt["also"] = [{"effect": "phase"}]
+	thief.action = bolt
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), base + 20.0 * Policy.AHEAD_SHARE), "a fade adds its next blow at a round ahead's share: %s" % Policy._threat_now(thief, sk))
+	Effects.grant_for_rounds(thief, Effects.STATUS["phased"], "test", sk.round + 1)
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), base), "a foe Phased already fades no further, so the step is worth nothing")
+	Effects.remove(thief, "phased")
+	plain.hp = 0
+	ally.hp = 0
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), base), "nor does the last foe standing fade")
+	plain.hp = plain.hp_max
+	ally.hp = ally.hp_max
+	# A special of its own is priced by the same table, where it counted nothing.
+	thief.action = {"id": "scream", "name": "Scream", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "text": ""}
+	thief.target = null
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), reroll), "a scream of its own, a reroll's worth: %s" % Policy._threat_now(thief, sk))
+	thief.action = {"id": "gaze", "name": "Gaze", "kind": "debuff", "effect": "jam", "weight": 1, "text": ""}
+	thief.target = me
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), 40.0 / Policy.HULL_WEIGHT), "a jam, the entry its machine would lose")
+	Effects.grant_buff(me.unit, "ward", 1, "test", sk.round)
+	assert_eq(Policy._threat_now(thief, sk), 0.0, "and nothing where a Ward turns it")
+	Effects.remove(me.unit, "ward")
+	# A heal and then a cleanse of the same foe (the Cleric's Cure): the points it gives
+	# back, and the team's marks on its patient.
+	thief.action = {"id": "cure", "name": "Cure", "kind": "defend", "effect": "heal", "value": 4, "weight": 1, "text": "", "also": [{"effect": "cleanse"}]}
+	thief.target = null
+	assert_eq(Policy._threat_now(thief, sk), 0.0, "nobody hurt, nobody marked: a cure with no patient")
+	ally.hp -= 10
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), 4.0 / Policy.HULL_WEIGHT), "its four on the hurt one")
+	Effects.stack(ally, Effects.STATUS["ablating"], Effects.SKIRMISH, "test", 2, Effects.status_decay(Effects.STATUS["ablating"]))
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), (4.0 + 2.0) / Policy.HULL_WEIGHT), "and the two stacks it would lift off the same foe: %s" % Policy._threat_now(thief, sk))
+	# A move still gathering lands its steps with its blow: nothing now but the countdown.
+	var slow := mug.duplicate()
+	slow["countdown"] = 1
+	thief.action = slow
+	thief.pending = slow
+	thief.charge = 1
+	thief.target = me
+	assert_eq(Policy.steps_threat(thief, sk), 0.0, "a gathering move's steps wait for its blow")
+
 
 
 ## The Swallowtail for the bot (21 October; the charge never primed since 22 October), synthetic:

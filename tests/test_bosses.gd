@@ -289,6 +289,61 @@ func test_a_move_strikes_and_then_does_what_it_does_also_in_order() -> void:
 	assert_eq(sk.turn_specials.size(), 0, "a blow's steps add no announcement of their own: the blow named the move")
 
 
+func _knife_fight(warded: bool) -> Array:
+	var sk := Skirmish.new(1, 3)
+	var a := _mech("A", Die.single(Face.blank()), 10, 100)
+	sk.add_mech(a)
+	var f := Foe.make("walker", 900, 20)
+	f.actions = [{"id": "knife", "name": "Knife", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": [], "text": "",
+		"before": Foe.also_from([{"effect": "dispel", "value": 1}], "Knife")}]
+	sk.add_foes([f])
+	sk.begin()
+	sk.start_round()
+	f.action = f.actions[0]
+	f.target = sk.mechs[0]
+	Effects.grant_buff(a, "barrier", 1, "test", sk.round)
+	Effects.grant_buff(a, "braced", 2, "test", sk.round)
+	if warded:
+		Effects.grant_buff(a, "ward", 1, "test", sk.round)
+	return [sk, a, f]
+
+
+func test_a_blows_purge_lands_before_it_and_the_forecast_reads_it() -> void:
+	# A blow may say what it does before it lands (Ryan, 18 November, of the Pilgrim's knife:
+	# "should the knife attack purge before hitting"): its Purge 1 takes the Barrier and a stack
+	# of the Armoured, and the blow lands on what is left. The forecast reads the same blow and
+	# gives the machine's buffs back untouched.
+	var got := _knife_fight(false)
+	var sk: Skirmish = got[0]
+	var a: Unit = got[1]
+	var f: Foe = got[2]
+	assert_eq(Foe.steps_of(f.action).size(), 2, "two steps: the purge, then the blow")
+	assert_eq(str(Foe.steps_of(f.action)[0].get("effect", "")), "dispel", "the purge the first of them")
+	assert_true(f.attacks() and Foe.does(f.action, "dispel"), "a blow that purges")
+	assert_eq(sk.purge_ahead(f, sk.mechs[0]), 1, "a stack of every buff, ahead of the blow")
+	var fc := sk.forecast(sk.mechs[0])
+	assert_eq([int(fc["shield_after"]), int(fc["hull_after"])], [0, 91], "the forecast: no Barrier in the way, 20 on a shield of 10 and the rest past a point of armour")
+	assert_true(Effects.has(a, "barrier"), "and the forecast took nothing: the Barrier stands")
+	assert_eq(Effects.stacks_of(a, "braced"), 2, "nor a stack of its armour")
+	sk.end_round()
+	assert_eq([a.shield, a.hull], [0, 91], "the blow lands as forecast")
+	assert_false(Effects.has(a, "barrier"), "its Barrier purged before the blow, never spent on it")
+	var said := "\n".join(sk.log)
+	assert_true(said.find("purges A") >= 0 and said.find("purges A") < said.find("hits A"), "the purge logged ahead of the blow")
+
+
+func test_a_ward_turns_a_blows_purge_away_and_the_barrier_takes_the_blow() -> void:
+	var got := _knife_fight(true)
+	var sk: Skirmish = got[0]
+	var a: Unit = got[1]
+	var f: Foe = got[2]
+	assert_eq(sk.purge_ahead(f, sk.mechs[0]), 0, "a Ward turns the purge away")
+	var fc := sk.forecast(sk.mechs[0])
+	assert_eq([int(fc["shield_after"]), int(fc["hull_after"])], [10, 100], "so the forecast has the Barrier take the blow whole")
+	sk.end_round()
+	assert_eq([a.shield, a.hull], [10, 100], "and it does")
+
+
 func test_a_special_may_do_more_and_is_announced_once() -> void:
 	var sk := Skirmish.new(1, 3)
 	sk.add_mech(_mech("A", Die.single(Face.attack(9, L))))

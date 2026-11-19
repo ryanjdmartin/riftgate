@@ -410,9 +410,7 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	var tide_was = Settings.display.get("tide_density", "100")
 	var strike_was = Settings.display.get("wall_strike", "10")
 	var burn_was = Settings.display.get("overheat_burn", "1")
-	var break_was = Settings.display.get("shield_break", "off")
 	Settings.display["overheat_burn"] = "2"
-	Settings.display["shield_break"] = "on"
 	Settings.display["tide_density"] = "150"
 	Settings.display["wall_strike"] = "5"
 	Settings.display["field_depth"] = "16"
@@ -423,13 +421,11 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [0, 0, 100, 0], "run alone, the saved settings move nothing")
 	assert_eq([Ramp.tide_trial, Battlefield.strike_trial], [100, 0], "nor the tide's density or the wall strike")
 	assert_eq(Skirmish.overheat_scale, 1, "nor the overheat's burn")
-	assert_false(Skirmish.shield_break, "nor the block")
 	Settings.field_trial(true)
 	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [16, 2, 50, 3] if OS.is_debug_build() else [0, 0, 100, 0], "where the game starts a battle, a debug build's settings are the trial")
 	assert_eq([Ramp.tide_trial, Battlefield.strike_trial], [150, 5] if OS.is_debug_build() else [100, 0], "the tide's density and the wall strike with them")
 	assert_eq(Battlefield.strike_per_pip(), 5 if OS.is_debug_build() else Battlefield.STRIKE_PER_PIP, "and the field answers with the strike")
 	assert_eq(Skirmish.overheat_scale, 2 if OS.is_debug_build() else 1, "the overheat's burn with them")
-	assert_eq(Skirmish.shield_break, OS.is_debug_build(), "and the block, a break stopping the blow whole")
 	assert_eq(Ramp.beats_at(0), 3 if OS.is_debug_build() else Ramp.BEATS, "and the ramp answers with the beats")
 	assert_eq(Ramp.depth_at(0), 16 if OS.is_debug_build() else 12, "and the ramp answers with it")
 	Settings.display["field_depth"] = "a mile"
@@ -439,15 +435,10 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	Settings.display["tide_density"] = "a flood"
 	Settings.display["wall_strike"] = "a tap"
 	Settings.display["overheat_burn"] = "a furnace"
-	Settings.display["shield_break"] = "a wall"
 	Settings.field_trial(true)
 	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [0, 0, 100, 0], "a value that is no option asks for nothing")
 	assert_eq([Ramp.tide_trial, Battlefield.strike_trial], [100, 0], "of the tide or the strike either")
 	assert_eq(Skirmish.overheat_scale, 1, "or of the overheat")
-	assert_false(Skirmish.shield_break, "or of the shield")
-	Settings.display["shield_break"] = "off"
-	Settings.field_trial(true)
-	assert_false(Skirmish.shield_break, "and the game's own shield is no trial")
 	Settings.display["wall_strike"] = str(Battlefield.STRIKE_PER_PIP)
 	Settings.field_trial(true)
 	assert_eq(Battlefield.strike_trial, 0, "and the game's own strike is no trial")
@@ -458,10 +449,7 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	Settings.display["tide_density"] = tide_was
 	Settings.display["wall_strike"] = strike_was
 	Settings.display["overheat_burn"] = burn_was
-	Settings.display["shield_break"] = break_was
-	assert_eq(str(Settings.DISPLAY_DEFAULTS["shield_break"]), "off", "the shield ships honest, its number and the rest on the hull")
-	assert_true(Settings.SHIELD_BREAKS.has("off"), "which is among its options")
-	assert_false(Settings.DISPLAY_DEFAULTS.has("reboot") or Settings.DISPLAY_DEFAULTS.has("shield_regen"), "the reboot is the rule and no dial (folded in 15 November), and the regen's dial went with the regen")
+	assert_false(Settings.DISPLAY_DEFAULTS.has("reboot") or Settings.DISPLAY_DEFAULTS.has("shield_regen") or Settings.DISPLAY_DEFAULTS.has("shield_break"), "the reboot is the rule and no dial (folded in 15 November), the regen's dial went with the regen, and the block's with the rule that a blow past the shield reaches the hull")
 	assert_eq(str(Settings.DISPLAY_DEFAULTS["overheat_burn"]), "1", "the overheat ships at one hull a point")
 	assert_eq([str(Settings.DISPLAY_DEFAULTS["tide_density"]), str(Settings.DISPLAY_DEFAULTS["wall_strike"])], ["100", str(Battlefield.STRIKE_PER_PIP)], "the tide and the strike ship on the game's own")
 	assert_true(Settings.TIDES.has("100") and Settings.STRIKES.has(str(Battlefield.STRIKE_PER_PIP)), "which are among their options")
@@ -474,7 +462,6 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	Ramp.tide_trial = 100
 	Battlefield.strike_trial = 0
 	Skirmish.overheat_scale = 1
-	Skirmish.shield_break = false
 	if OS.is_debug_build():
 		var menu := PauseMenu.new()
 		menu._show_page("settings")
@@ -499,25 +486,25 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 		menu.free()
 
 
-## A lone fight from the menu reads the fight's trials as a battle does (the block and the
-## overheat's burn are a fight's): a dial set inside one fight is the next one's, with no
-## relaunch. The launch here has nobody to fight, so it stops before it saves or shows.
+## A lone fight from the menu reads the fight's trials as a battle does (the overheat's burn
+## is a fight's): a dial set inside one fight is the next one's, with no relaunch. The launch
+## here has nobody to fight, so it stops before it saves or shows.
 func test_a_lone_fight_from_the_menu_reads_the_trials() -> void:
-	if not OS.get_environment("RIFTGATE_SHIELD_BREAK").is_empty():
+	if not OS.get_environment("RIFTGATE_OVERHEAT").is_empty():
 		return
-	var break_was = Settings.display.get("shield_break", "off")
+	var burn_was = Settings.display.get("overheat_burn", "1")
 	var h: Control = HARNESS.new()
 	var hs := HarnessSetup.defaults(_db())
 	hs.team = []
 	h.setup = hs
-	Settings.display["shield_break"] = "on"
-	Skirmish.shield_break = false
+	Settings.display["overheat_burn"] = "2"
+	Skirmish.overheat_scale = 1
 	h._on_fight()
-	assert_eq(Skirmish.shield_break, OS.is_debug_build(), "a debug build's SHIELD BREAK is the next lone fight's")
-	Settings.display["shield_break"] = "off"
+	assert_eq(Skirmish.overheat_scale, 2 if OS.is_debug_build() else 1, "a debug build's OVERHEAT is the next lone fight's")
+	Settings.display["overheat_burn"] = "1"
 	h._on_fight()
-	assert_false(Skirmish.shield_break, "and off again with the dial")
-	Settings.display["shield_break"] = break_was
+	assert_eq(Skirmish.overheat_scale, 1, "and the game's own again with the dial")
+	Settings.display["overheat_burn"] = burn_was
 	Settings.field_trial()
 	h.free()
 
@@ -687,12 +674,10 @@ func test_the_refit_what_if_is_off_until_the_setting_or_the_environment_asks() -
 		assert_true(menu._list != null and menu._list.is_ancestor_of(menu._rows.find_children("*", "BaseButton", true, false)[0]), "the dials stand in a scroller, so a short glass holds them")
 		for burn in Settings.OVERHEATS:
 			assert_true(labels.has(str(Settings.OVERHEAT_LABELS[burn])), "and the overheat's burn %s" % Settings.OVERHEAT_LABELS[burn])
-		for block in Settings.SHIELD_BREAKS:
-			assert_true(labels.has(str(Settings.SHIELD_BREAK_LABELS[block])), "and the block %s" % Settings.SHIELD_BREAK_LABELS[block])
 		var rows: Array = []
 		for l in menu._rows.find_children("*", "Label", true, false):
 			rows.append(str((l as Label).text))
-		assert_false(rows.has("REBOOT") or rows.has("SHIELD REGEN"), "the reboot is the rule and the regen is gone: neither has a row")
+		assert_false(rows.has("REBOOT") or rows.has("SHIELD REGEN") or rows.has("SHIELD BREAK"), "the reboot is the rule, the regen is gone and a blow past the shield reaches the hull: none has a row")
 		for deal in Settings.BARRIER_BASICS:
 			assert_true(labels.has(str(Settings.BARRIER_BASIC_LABELS[deal])), "and the Barrier basic's place %s" % Settings.BARRIER_BASIC_LABELS[deal])
 		menu.free()

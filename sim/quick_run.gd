@@ -14,11 +14,12 @@ extends RefCounted
 ## Rules, in one place (every number a placeholder):
 ##   the start     three different tier-one chassis, picked freely, in their stock; the party
 ##                 dealt as the campaign deals it; the basics free and without limit
-##   a battle      a domain drawn at random, and from GUEST_TIER a guest; as many fights before
-##                 the boss as the Rupture's Fractures at its tier, ELITES of them elites, then
-##                 the boss's fight (the boss and its curated escort, as on the map); BATTLES
-##                 of them, a tier every TIER_EVERY, then the finale, whose last fight is the
-##                 party's line alone
+##   a battle      the first the opening domain's (content's mark, the campaign's rule: the one
+##                 battle a trio fights), the rest a domain drawn at random, and from GUEST_TIER
+##                 a guest; as many fights before the boss as the Rupture's Fractures at its
+##                 tier, ELITES of them elites, then the boss's fight (the boss and its curated
+##                 escort, as on the map); BATTLES of them, a tier every TIER_EVERY, then the
+##                 finale, whose last fight is the party's line alone
 ##   a formation   one of a domain's formation compositions at the tier, in turn, dealt as a
 ##                 battle deals it, the lead's and the guest's in turn; an elite's slot holds the
 ##                 lead's next elite composition or a wanderer, else the lead's formation
@@ -28,7 +29,8 @@ extends RefCounted
 ##   the boss dead the campaign's after-battle rule without the shop (hull mends; a destroyed
 ##                 hardpoint piece is gone, a destroyed fixed one rebuilt); then a loot pick for
 ##                 each fight before the boss, the token and a maker's offer, each one of
-##                 CHOICES, one taken
+##                 CHOICES, one taken; the first battle's offer is the fourth machine, CHOICES
+##                 of one maker's machines (the campaign's rule, Campaign.machines_of)
 ##   the hangar    up to SQUAD machines of the roster; any piece from the stores on any
 ##                 hardpoint and any module in any slot, what comes off going back to the stores
 
@@ -278,11 +280,17 @@ func start_battle() -> bool:
 
 # ---------------------------------------------------------------- a battle
 
-## The next battle: its lead domain at random, a guest from GUEST_TIER, its encounters.
+## The next battle: its lead domain at random, a guest from GUEST_TIER, its encounters. The
+## first battle's lead is the opening domain, where content marks one (the campaign's rule;
+## Ryan, 19 November: the first battle is the Meadow's, the one fought by three machines).
 func _roll_battle() -> void:
 	battle += 1
 	var all: Array = db.factions.keys()
-	lead = str(all[rng.randi_range(0, all.size() - 1)]) if not all.is_empty() else ""
+	var opening := db.opening_faction()
+	if battle == 1 and all.has(opening):
+		lead = opening
+	else:
+		lead = str(all[rng.randi_range(0, all.size() - 1)]) if not all.is_empty() else ""
 	guest = ""
 	if tier() >= GUEST_TIER:
 		var others: Array = all.filter(func(f) -> bool: return str(f) != lead)
@@ -562,8 +570,11 @@ func _battle_won() -> void:
 	var token := _token_choices()
 	if not token.is_empty():
 		rewards.append({"kind": "token", "choices": token})
+	var fourth := _fourth_machine() if battle == 1 else {}
 	var makers: Array = db.makers.keys()
-	if not makers.is_empty():
+	if not fourth.is_empty():
+		rewards.append(fourth)
+	elif not makers.is_empty():
 		var mk := str(makers[rng.randi_range(0, makers.size() - 1)])
 		var offer := _offer_choices(mk)
 		if not offer.is_empty():
@@ -687,6 +698,25 @@ func _offer_choices(maker: String) -> Array:
 	if not mods.is_empty():
 		out.append(mods[rng.randi_range(0, mods.size() - 1)])
 	return out
+
+
+## The first battle's offer (the campaign's rule; Ryan, 19 November: "a choice of 1 of 3
+## machines from the maker"): the fourth machine, CHOICES of one maker's machines the roster
+## lacks, dealt as the campaign deals them (Campaign.machines_of). With no city here to host
+## the battle the maker is drawn among those with a machine to put up. Empty when none has one.
+func _fourth_machine() -> Dictionary:
+	var held: Array = roster.map(func(m) -> String: return m.chassis)
+	var able: Array = []
+	for mk in db.makers.keys():
+		if not Campaign.machines_open(db, str(mk), tier(), held).is_empty():
+			able.append(str(mk))
+	if able.is_empty():
+		return {}
+	var maker := str(able[rng.randi_range(0, able.size() - 1)])
+	var choices: Array = []
+	for id in Campaign.machines_of(db, maker, tier(), held, CHOICES, rng):
+		choices.append({"kind": "chassis", "id": str(id)})
+	return {"kind": "offer", "maker": maker, "choices": choices}
 
 
 func _shuffle(a: Array) -> void:

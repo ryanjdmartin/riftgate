@@ -220,11 +220,10 @@ func test_the_main_mark_holds_what_an_entry_delivers() -> void:
 	assert_false(d.rail_tags().has("star"), "and the rail does not star it again")
 	assert_eq(DieFaceView.inside_effect(Face.attack(4, Face.Reach.DIRECT, [Face.Keyword.ABLATE])), "", "a weapon holds its number, never a keyword")
 	d.free()
-	var wake := Face.vent(3)
-	wake.shields = 3
 	var hoist := Face.shield(3)
 	hoist.vents = 2
-	assert_eq([Glyphs.primary_for(wake), Glyphs.primary_for(hoist)], ["shield_vent", "shield_vent"], "a shield and a vent in one entry: one mark, the shield and the steam, whichever half leads")
+	assert_eq(Glyphs.primary_for(hoist), "shield_vent", "a shield that cools: one mark, the shield and the steam")
+	assert_eq(Glyphs.primary_for(Face.vent(3)), "vent", "a vent: the steam alone")
 	assert_false(hoist.has_unique_rule(), "the Hoist's cooling is a number the die prints, never the star")
 	assert_false(hoist.rule_phrases().has("cools 2"), "nor a rule the hold lists")
 	var reload := Face.vent(0)
@@ -234,28 +233,15 @@ func test_the_main_mark_holds_what_an_entry_delivers() -> void:
 
 ## What a machine's passive adds to an entry stands in its passive box at the rail's foot (Ryan, 4
 ## November: "Can't we just put the number in the cassowary-type box, call that the 'passive helper
-## box' for all these types of effects?"): a blow added after the strikes as "+N", no mark (the
-## Storm Petrel's), a stepping die's next entry by its main mark (the Cassowary's); never beside the
-## main mark, never joined to its number.
+## box' for all these types of effects?"): a stepping die's next entry by its main mark (the
+## Cassowary's), the Skua's Ricochet strikes; never beside the main mark, never joined to its number.
+## The Storm Petrel's zap stood there until its rework of 17 November.
 func test_a_passive_adds_its_box_at_the_rails_foot() -> void:
 	var picked := func(d: DieFaceView) -> Array:
 		return d.passive_marks().map(func(m: Array) -> Array: return [m[0], DieFaceView.passive_plain(m[1])])
 	var d := DieFaceView.new()
 	d.set_face(Face.attack(4))
 	assert_eq(picked.call(d), [], "a plain weapon: no box")
-	var hot := Face.attack(4)
-	hot.burns = 3
-	d.set_face(hot)
-	assert_eq(picked.call(d), [["shield", "3"]], "a weapon whose shield pays its heat: what the shield pays, a blow after the strikes, beside the shield's mark")
-	var lines := EntryReadout.effects_of(hot)
-	var boxed := lines.filter(func(l: Dictionary) -> bool: return (l.get("marks", []) as Array).any(func(m: Dictionary) -> bool: return m.has("passive")))
-	assert_eq(boxed.size(), 1, "the readout says it on one line")
-	assert_eq(str(boxed[0]["text"]), "Its shield pays 3 of the heat, and the target takes as much after the strikes", "the tap popup clarifies the number, both the spend and the blow")
-	assert_false(lines.any(func(l: Dictionary) -> bool: return (l.get("marks", []) as Array).any(func(m: Dictionary) -> bool: return str(m.get("glyph", "")) == "shield")), "and no shield cost line: the passive's payment is no cost")
-	assert_eq((boxed[0]["marks"] as Array)[0]["passive"], ["shield", "3"], "headed by the box the die shows")
-	d.after_blow = 2
-	assert_eq(picked.call(d), [["shield", "2"]], "over a foe, that foe's share")
-	d.after_blow = -1
 	d.set_face(Face.attack(3))
 	d.next_face = Face.shield(5)
 	assert_eq(picked.call(d), [["shield", "5"]], "a stepping die's next entry by its mark and its number (Ryan, 4 November: \"Maybe icon+face number?\")")
@@ -267,10 +253,10 @@ func test_a_passive_adds_its_box_at_the_rails_foot() -> void:
 	d.next_face = Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE])
 	assert_eq(picked.call(d), [["equipment", ""]], "equipment: its gear, no number (Ryan, 4 November: \"Why drop the equipment gear icon?\")")
 	assert_eq((d.passive_marks()[0][1] as Array)[0][2], "lure", "and what it lays where a number would stand")
-	var wake := Face.vent(3)
-	wake.shields = 2
-	d.next_face = wake
-	assert_eq(picked.call(d), [["", "2|3"]], "a shield and a vent in one: the two numbers alone, shield | cool (Ryan, 4 November)")
+	var cooling := Face.shield(2)
+	cooling.vents = 3
+	d.next_face = cooling
+	assert_eq(picked.call(d), [["", "2|3"]], "a shield that cools: the two numbers alone, shield | cool (Ryan, 4 November)")
 	assert_eq((d.passive_marks()[0][1] as Array).map(func(r: Array) -> Color: return r[1]), [Palette.SHIELD, Palette.MUTED, Palette.HEAT], "each in its colour")
 	d.free()
 	var db := ContentDB.load_default()
@@ -547,22 +533,64 @@ func test_a_foe_aloft_is_drawn_out_of_reach_and_is_no_drop_target() -> void:
 	Effects.remove(foe, "aloft")
 	s._refresh()
 	assert_false(view.away, "back on the ground, it is drawn whole again")
+	# A Phased foe (17 November) is out of reach the same way and drawn the same, where it
+	# stands, under the chip a Phased machine wears.
+	Effects.grant_for_rounds(foe, Effects.STATUS["phased"], "test", sk.round + 1)
+	s._refresh()
+	assert_true(view.away, "Phased, it is drawn as what no die reaches")
+	assert_eq(view.hover, grounded, "and no higher: it has not climbed")
+	var faded: Array = s._foe_rows(foe).filter(func(row) -> bool: return str(row[2]).contains("Phased"))
+	assert_eq(faded.size(), 1, "it wears Phased's chip")
+	for i in range(sk.mechs.size()):
+		assert_false(sk.targets_for(i).has(foe), "no machine's die may be dropped on it")
+	# A blow that fades its foe wears Phased's mark on its intent, and never on a round the
+	# fade would lay nothing: the foe is Phased already, and none is out two rounds running.
+	var bolt := {"kind": "attack", "value": 3, "name": "Test Bolt", "also": [{"effect": "phase"}]}
+	var held: Dictionary = foe.action
+	foe.action = bolt
+	var mark := Terms.glyph("phased")
+	assert_false(mark.is_empty(), "Phased has a mark to wear")
+	assert_true(SkirmishScreen.intent_riders(foe, [], ["phase"]).filter(func(row) -> bool: return str(row[0]) == mark).is_empty(), "idle, the step wears no mark")
+	assert_eq(SkirmishScreen.intent_riders(foe).filter(func(row) -> bool: return str(row[0]) == mark).size(), 1, "live, it wears it once")
+	assert_false(Skirmish.fade_lands(foe), "and the engine says a Phased foe's fade is idle")
+	# What a blow does before it lands wears its mark first (18 November: a purge ahead of
+	# the Pilgrim's knife), in the order it happens.
+	foe.action = {"kind": "attack", "value": 3, "name": "Test Knife", "keywords": ["scorch"], "scorch": 1, "before": [{"effect": "dispel", "value": 1}]}
+	var ahead: Array = SkirmishScreen.intent_riders(foe)
+	assert_eq([str(ahead[0][0]), str(ahead[0][1])], [Terms.glyph("dispel"), "1"], "a purge ahead of the blow wears Purge's mark first, with its number")
+	assert_eq(str(ahead[1][0]), Terms.glyph("scorch"), "and the blow's own rider after it")
+	foe.action = bolt
+	assert_true(s._intent_read(foe)[2].filter(func(row) -> bool: return str(row[0]) == mark).is_empty(), "so the chip of a foe out already shows none")
+	Effects.remove(foe, "phased")
+	assert_true(Skirmish.fade_lands(foe), "back in reach, its fade would land")
+	assert_eq(s._intent_read(foe)[2].filter(func(row) -> bool: return str(row[0]) == mark).size(), 1, "and its chip says so")
+	foe.action = held
+	s._refresh()
+	assert_false(view.away, "and it is drawn whole again once it is back")
+	# An immunity (17 November) is an Ability's chip on the foe, saying what never lands.
+	assert_true(s._foe_abilities(foe).filter(func(row) -> bool: return str(row[2]).contains("Immune")).is_empty(), "no immunity, no chip")
+	foe.immune = {"suppress": true}
+	var said: Array = s._foe_abilities(foe).filter(func(row) -> bool: return str(row[2]).contains("Immune"))
+	assert_eq(said.size(), 1, "immune, it wears the Ability's chip")
+	if said.size() == 1:
+		assert_true(str(said[0][2]).contains("no Suppress lands on it") and str(said[0][4]) == "ability", "which says what never lands: %s" % str(said[0][2]))
+	foe.immune = {}
 	s.free()
 
 
-## A stat too long for its column takes a row of its own (16 November: on a phone a foe's aim,
-## "AIMS AT THE EXPOSED", ran into the size drawn beside it), so no value is drawn over the next.
+## A stat too long for its column takes a row of its own (16 November: on a phone a long value
+## ran into the size drawn beside it), so no value is drawn over the next.
 func test_a_long_stat_takes_a_row_of_its_own() -> void:
 	var sb := StatBlock.new()
 	sb.custom_minimum_size = Vector2(330, 0)
-	sb.set_items([["hp", "48"], ["attack", "18"], ["armour", "1"], ["rank", "FRONT"], ["sense", "AIMS AT THE EXPOSED"], ["size", "MASSIVE"]])
+	sb.set_items([["hp", "48"], ["attack", "18"], ["armour", "1"], ["rank", "FRONT"], ["note", "A VALUE FAR TOO LONG"], ["size", "MASSIVE"]])
 	var lay: Array = sb._layout(330.0)
 	assert_eq(lay[0][3], [1, 1], "short values sit two to a row")
 	assert_eq(lay[0][4], [2, 0], "the long one starts a row")
 	assert_eq(lay[0][5], [3, 0], "and what follows starts the next, never beside it")
 	assert_eq(int(lay[1]), 4, "four rows, where three had the two overlapping")
 	assert_eq(sb.custom_minimum_size.y, StatBlock.ROW_H * 4.0, "and its height follows")
-	sb.set_items([["hp", "48"], ["attack", "18"], ["sense", "AIMS AT THE EXPOSED"]])
+	sb.set_items([["hp", "48"], ["attack", "18"], ["note", "A VALUE FAR TOO LONG"]])
 	assert_eq(sb._layout(330.0)[0][2], [1, 0], "a long one last is alone on its row too")
 	sb.set_items([["hp", "48"], ["attack", "18"]])
 	assert_eq(int(sb._layout(330.0)[1]), 1, "and two short values are one row")
@@ -2444,8 +2472,6 @@ func test_every_mark_on_a_die_face_heads_a_line_of_its_readout() -> void:
 			wanted.append(Terms.glyph(granted))   # equipment's status, inside its gear
 		if f.vents > 0:
 			wanted.append("vent")     # a shield's cooling, under the steam off its top (3 November)
-		if f.shields > 0:
-			wanted.append("shield")   # a vent's shield, in the shield's half of its mark
 		# The costs along the foot, each a mark and a number (Ryan, 2 November).
 		if f.heat > 0:
 			wanted.append("heat")
@@ -2900,8 +2926,8 @@ func test_a_status_row_says_buff_or_debuff_and_its_chip_carries_it() -> void:
 	var debuff := SkirmishScreen.status_row("ablating", "ablate", "2", "Ablating ×2", Palette.HEAT)
 	assert_eq(str(debuff[2]), "Debuff, Ablating ×2", "a debuff's line")
 	assert_eq(str(debuff[5]), "debuff", "and its chip's mark")
-	var plain := SkirmishScreen.status_row("quick_turned", "rapid", "", "Quick turn spent", Palette.INK)
-	assert_eq([str(plain[2]), str(plain[5])], ["Quick turn spent", ""], "one that is neither keeps its words and wears no mark")
+	var plain := SkirmishScreen.status_row("no_such_status", "rapid", "", "Neither", Palette.INK)
+	assert_eq([str(plain[2]), str(plain[5])], ["Neither", ""], "one that is neither keeps its words and wears no mark")
 	var s := _screen()
 	var m: Unit = s.sk.mechs[0].unit
 	Effects.grant_buff(m, "overcharged", 2, "buff", s.sk.round)
@@ -2919,7 +2945,7 @@ func test_a_status_row_says_buff_or_debuff_and_its_chip_carries_it() -> void:
 func test_a_reboots_blast_plays_as_the_die_is_dropped() -> void:
 	var s := _screen(5)
 	var ms: Skirmish.MechState = s.sk.mechs[0]
-	ms.unit.grant_passive({"id": "boiler", "name": "Boiler", "description": "", "effects": [{"trigger": "static", "effect": "reboot_release", "value": 1, "gate": 4}]})
+	ms.unit.grant_passive({"id": "boiler", "name": "Boiler", "description": "", "effects": [{"trigger": "static", "effect": "reboot_release", "value": 1, "per": 2}]})
 	ms.heat = 6
 	assert_eq(SkirmishScreen.release_key(ms), "boiler", "its model's firing for the release is keyed by the passive (the broadside, 12 November)")
 	assert_eq(SkirmishScreen.release_key(s.sk.mechs[1]), "", "a machine whose vent blasts nothing has none")

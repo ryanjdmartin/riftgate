@@ -170,41 +170,19 @@
    "design": {
     "stage": "draft",
     "fantasy": "Small, rude, lands behind the front rank.",
-    "niche": ""
+    "niche": "Indirect for a point of heat: 3 for 5, where the plain Direct guns deal 3 for 4 (the bench's trade, Ryan's yes of 19 November)."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
     "power": 3,
     "keywords": [],
-    "heat": 4
+    "heat": 5
    },
    "passive": null,
    "tags": [
     "ballistic"
    ]
-  },
-  {
-   "id": "coolant_jacket",
-   "name": "Coolant Jacket",
-   "maker": "wainwright_sutler",
-   "tier": 0,
-   "status": "planned",
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "Fins. Lots of fins.",
-    "niche": "",
-    "refit": "Retired by the refit pass (landed 10 November): no pure recovery entry stays on the die, cooling is the chassis's. Kept as a draft, undealt; the engine's plain vent until the kinds go."
-   },
-   "face": {
-    "kind": "vent",
-    "power": 4
-   },
-   "passive": null,
-   "tags": []
   },
   {
    "id": "howitzer",
@@ -649,6 +627,30 @@
    ]
   },
   {
+   "id": "inertia_drill",
+   "name": "Inertia Drill",
+   "maker": "minerva",
+   "status": "planned",
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A rocket drill (Ryan, 16 November: \"Thematically, it's a rocket drill. It returns to the Mole when it burrows, taking the debuff with it\"): fired out of the Mole's bore, it tunnels to its foe, Indirect (\"Makes sense cause it tunnels\"), and stays in it until the Mole goes under again.",
+    "niche": "The Mole's locked piece, every entry on its die while it is burrowed and none above ground: equipment, Indirect. It turns all the Mole's Conserved Momentum into as many stacks of Applied Momentum on the foe, and the Mole comes up; at the start of each of that foe's turns Applied Momentum lands a plain blow of 2, then a stack decays. Its branches: Ablate 2 in the blow's place, then Seared; or Brittle 1 and Pinned with the blow, then Exposed (docs/briefs/minerva_mole.md, The kit as he set it). Its heat is the session's."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "power": 0,
+    "keywords": []
+   },
+   "passive": null,
+   "tags": [
+    "missile"
+   ]
+  },
+  {
    "id": "breaching_plow",
    "name": "Breaching Plow",
    "maker": "minerva",
@@ -764,16 +766,16 @@
    ]
   },
   {
-   "id": "afterburner_cannon",
-   "name": "Afterburner Cannon",
+   "id": "shield_burner_cannon",
+   "name": "Shield-burner Cannon",
    "maker": "kestrel",
    "shape": "barrel",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "The Buzzard's engines fire forward for one shot. The hotter the airframe, the bigger the shot, and the airframe is cold afterwards.",
-    "niche": "The Buzzard's burst: spend the heat the passive was living on."
+    "fantasy": "The Buzzard's engines fire forward for one shot, fed by the field instead of the airframe's heat (the brief's, 11 November; his \"the cannon fires its whole field\"); the fuller the shield, the bigger the shot, and the shield is gone afterwards.",
+    "niche": "The Buzzard's burst since 18 November: it fires the whole shield, 2 and a point for every 2 shield, the shield to nothing and broken, so it is the shot before a reboot; the zap cannot ride it, the shield being empty (his \"It can't, since the shield will be empty\"). Its Burst branch gives it Spread, Penetrate and a higher number. Until then it fired its whole heat, the form the Whip Scorpion's Heliographic Death Ray keeps. Named for the shield it burns on 18 November (Ryan: \"the afterburner cannon should be renamed to Shield-burner cannon\"), the Afterburner Cannon before."
    },
    "face": {
     "kind": "attack",
@@ -781,9 +783,9 @@
     "power": 2,
     "keywords": [],
     "heat": 3,
-    "vents_all": true,
-    "power_per_heat": 1,
-    "per_heat": 2
+    "spends_shield": true,
+    "power_per_shield": 1,
+    "per_shield": 2
    },
    "passive": null,
    "tags": [
@@ -964,29 +966,6 @@
    ]
   },
   {
-   "id": "bleed_valve",
-   "name": "Bleed Valve",
-   "maker": "kestrel",
-   "tier": 0,
-   "status": "planned",
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "A jet's bleed-air valve thrown wide open: the engine dumps its own heat overboard. The jet's brake.",
-    "niche": "Kestrel's basic self vent, the bigger number of the two basic vents, self only.",
-    "refit": "Retired by the refit pass (landed 10 November): no pure recovery entry stays on the die. Kept as a draft, undealt."
-   },
-   "face": {
-    "kind": "vent",
-    "power": 6,
-    "targets": "self"
-   },
-   "passive": null,
-   "tags": []
-  },
-  {
    "id": "halo_projector",
    "name": "Halo Projector",
    "maker": "aphelion",
@@ -1013,42 +992,19 @@
    "id": "overcharge_coil",
    "name": "Overcharge Coil",
    "maker": "kestrel",
-   "tier": 1,
+   "tier": 2,
    "shape": "dish",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "Kestrel's answer to a regulator: a coil that pushes an ally's guns past the line for one round.",
-    "niche": "The first buff component: two stacks of Empowered on a machine for the round."
+    "niche": "The first buff component: two stacks of Empowered on a machine for the round. Tier two since 19 November (Ryan: \"send Coil to T2\"), at its two stacks."
    },
    "face": {
     "kind": "buff",
     "status": "overcharged",
     "stacks": 2
-   },
-   "passive": null,
-   "tags": []
-  },
-  {
-   "id": "radiator_sail",
-   "name": "Radiator Sail",
-   "maker": "aphelion",
-   "tier": 1,
-   "status": "planned",
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "A deep-space radiator, unfolded. Heat goes where it always went: out.",
-    "niche": "Aphelion's ally vent at tier one.",
-    "refit": "Retired by the refit pass (landed 10 November): cooling an ally is the Puffin's by Ryan's direction. Kept as a draft, undealt."
-   },
-   "face": {
-    "kind": "vent",
-    "power": 5,
-    "targets": "ally"
    },
    "passive": null,
    "tags": []
@@ -1258,31 +1214,6 @@
    ]
   },
   {
-   "id": "phased_sublimator",
-   "name": "Phased Sublimator",
-   "maker": "aphelion",
-   "tier": 1,
-   "status": "planned",
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "Whatever the rift left on the metal goes straight from solid to gone, with the heat.",
-    "niche": "Aphelion's cleanse vent at tier one, where the Corona Shield is the tier-two cleanse shield.",
-    "refit": "Undealt since the refit pass landed (10 November), until the component pass makes it what the audit says: a Cleanse on itself or an ally, equipment (the engine's Cleanse rides only a shield or a vent today)."
-   },
-   "face": {
-    "kind": "vent",
-    "power": 4,
-    "keywords": [
-     "cleanse"
-    ]
-   },
-   "passive": null,
-   "tags": []
-  },
-  {
    "id": "polarity_projector",
    "name": "Polarity Projector",
    "maker": "aphelion",
@@ -1332,29 +1263,6 @@
    "tags": []
   },
   {
-   "id": "canopy",
-   "name": "Canopy",
-   "maker": "minerva",
-   "tier": 0,
-   "status": "planned",
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "The falling-object guard over a mining machine's cab, swung down to cover the frame: what keeps a cave-in off the pilot keeps a blow off the hull.",
-    "niche": "Minerva's basic self shield, the bigger number of the two basic shields, self only.",
-    "refit": "Retired by the refit pass (landed 10 November): shields left the die and the Shoring Jack took its place among the basics. Kept as a draft, undealt, until the component pass removes it (Ryan: 'Canopy was always a little lame')."
-   },
-   "face": {
-    "kind": "shield",
-    "power": 8,
-    "targets": "self"
-   },
-   "passive": null,
-   "tags": []
-  },
-  {
    "id": "tesla_gauntlets",
    "name": "Tesla Gauntlets",
    "maker": "minerva",
@@ -1383,30 +1291,6 @@
     "arc",
     "melee"
    ]
-  },
-  {
-   "id": "oblation_mantle",
-   "name": "Oblation Mantle",
-   "maker": "arsenal",
-   "tier": 1,
-   "status": "planned",
-   "shape": "dish",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "A ward projected from the machine's own reactor, paid for out of its frame. The manual calls it devotion.",
-    "niche": "The biggest shield in the pool, paid in the spender's hull: raised on an ally, the Arsenal machine bleeds to cover a friend.",
-    "refit": "Back in design with the Arsenal's sessions since the refit pass landed (10 November), undealt: what its hull buys when it is no shield (Claude's lean: a Barrier on an ally that holds until it is struck)."
-   },
-   "face": {
-    "kind": "shield",
-    "power": 10,
-    "keywords": [],
-    "volatile": 3
-   },
-   "passive": null,
-   "tags": []
   },
   {
    "id": "retribution_thurible",
@@ -1456,30 +1340,6 @@
    "tags": [
     "ballistic"
    ]
-  },
-  {
-   "id": "wake_diffuser",
-   "name": "Wake Diffuser",
-   "maker": "kestrel",
-   "tier": 1,
-   "status": "planned",
-   "shape": "none",
-   "codex": "",
-   "flavour": "",
-   "design": {
-    "stage": "draft",
-    "fantasy": "A diffuser on the exhaust that spreads the wake thin. It runs cooler, and somehow faster.",
-    "niche": "A combined entry: a vent that also shields, so a support entry is never a dead roll and costs its turn like any other.",
-    "refit": "Back in design since the refit pass landed (10 November), undealt: two recoveries on one piece; its own line points at heat turned into tempo, a payoff vent as equipment."
-   },
-   "face": {
-    "kind": "vent",
-    "power": 3,
-    "shields": 3,
-    "keywords": []
-   },
-   "passive": null,
-   "tags": []
   },
   {
    "id": "web_bomb",
@@ -1563,7 +1423,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "The signal mirror on its mast, turned on one foe with the whole boiler behind it. Ryan, 11 November: the locked piece \"takes the buzzards old form. Cools completely, damage per heat spent. Low base damage\"; \"The heliograph term can go on the new locked piece\" (his name of 20 October: \"Keep heliographic cause its dumber\"). The name is a session's draft he kept (11 November: \"Heliographic death ray is a great name. Kept\"), and its gun his the same day: \"an actual gun. Pipes connecting it to the boiler, steampunk style. Mirror or mirrors as part of it because weird future nonsense tech. Like a steam powered mirrored laser railgun.\"",
-    "niche": "The Whip Scorpion's answer to one big foe: it fires every point of heat the machine holds as one blow and leaves it cold, a low base and a point for every 2 heat. The same gauge feeds its passive's release, which lands on every foe as it reboots holding 8 heat or more (Ryan, 11 November, of the release as a Sweep: \"I'd keep the sweep the more attractive option in terms of raw power\"; a blow on every foe since the 12th, on the reboot's vent since the 17th), so its heat is the ray on one foe now, its shield kept, or the valves on the whole pack for its turn and a round bare. The Buzzard's Afterburner Cannon held this form until its rework of 11 November."
+    "niche": "The Whip Scorpion's answer to one big foe: it fires every point of heat the machine holds as one blow and leaves it cold, a low base and a point for every 2 heat. The same gauge feeds its passive's release, which lands on every foe as it reboots, 1 for every 2 heat (Ryan, 11 November, of the release as a Sweep: \"I'd keep the sweep the more attractive option in terms of raw power\"; a blow on every foe since the 12th, on the reboot's vent since the 17th), so its heat is the ray on one foe now, its shield kept, or the valves on the whole pack for its turn and a round bare. The Buzzard's Afterburner Cannon held this form until its rework of 11 November."
    },
    "face": {
     "kind": "attack",
@@ -1925,17 +1785,17 @@
    ]
   },
   {
-   "id": "st_elmos_regenerator",
-   "name": "St. Elmo's Regenerator",
+   "id": "hardlight_pulse",
+   "name": "Hardlight Pulse",
    "maker": "kestrel",
    "shape": "dish",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "St. Elmo's fire on the mast (Ryan named it 21 October): a beacon that draws the foe's eye, and the glow that mends the shield.",
-    "niche": "The Storm Petrel's lock, the lure that regens itself (Ryan, 19 October): a debuff, Indirect, no heat; the foe it is spent on is Lured for the round, and its machine gains Regenerating 3: a point of shield a stack as each round opens, a stack fading then, so 3, 2 and 1 (2 a round for three rounds until 15 November, the same six), a second spend adding its stacks. Self only, never Rapid, no cooldown: the die is its brake.",
-    "notes": "Built 30 October, in stacks since 15 November: the rider on its own spender (regenerates) grants its machine Regenerating's stacks, the shield as each round opens after the spend, a second spend adding to the count; a foe's purge takes it, a die entry having bought it."
+    "fantasy": "The Hardlight Pulse, Ryan's name of 17 November beside the Hardlight Generator, its machine's passive; the St. Elmo's Regenerator until then (his of 21 October: St. Elmo's fire on the mast, a beacon that draws the foe's eye).",
+    "niche": "The Storm Petrel's lock since its rework of 17 November: a debuff, Indirect, heat 3; the foe it is spent on is Lured for the round, its heat stands up shield through the Hardlight Generator, so the taunt is its own mending, and it lays Hardened Light 1 on its machine, up to 3, the machine's only shield armour since 18 November (Ryan: \"no innate shield armour. The Pulse grants one Hardened Light at tier 1. Hardened Light only decays when the shield breaks, and has a cap of 3 stacks\"). Its branches tweak it (the chassis's branches): the Defence direction's Ward and a cap of 4, then Spread with a stack for each foe hit and a cap of 5; the Striker's Chain 2 and Charged 1, then Chain 3 and Charged 2.",
+    "notes": "Built 30 October as a lure of no heat laying Regenerating 3 on its own machine (regenerates), the rider that left the engine with it on 17 November; a lure that runs hot in its place, his \"Your verdict leans are solid\" to the lean of the same day."
    },
    "face": {
     "kind": "attack",
@@ -1944,11 +1804,14 @@
     "keywords": [
      "lure"
     ],
-    "heat": 0,
-    "regenerates": {
-     "status": "regenerating",
-     "stacks": 3
-    }
+    "heat": 3,
+    "self_statuses": [
+     {
+      "status": "hardened",
+      "stacks": 1,
+      "cap": 3
+     }
+    ]
    },
    "passive": null,
    "tags": []
@@ -1963,7 +1826,7 @@
    "design": {
     "stage": "draft",
     "fantasy": "A falcon's eye has two foveae, the deep one for distance (Ryan named it 21 October): the spotter's sensor ball, lit as it paints.",
-    "niche": "The Needletail's lock: a debuff, Indirect, that Exposes the foe it reaches through the next round (in every machine's Direct reach, its armour counting for nothing; refreshed, never added). A setup, so Rapid on its machine once a round, and the paint the team's Direct guns cash."
+    "niche": "The Needletail's lock: a debuff, Indirect, that Exposes the foe it reaches through the next round (in every machine's Direct reach, its armour counting for nothing; refreshed, never added). A setup, its machine's equipment action every round, and the paint the team's Direct guns cash. No heat since 18 November (Ryan: \"2 heat for an indirect expose and nothing else is pretty underpowered. It could safely go to zero heat.\")."
    },
    "face": {
     "kind": "attack",
@@ -1972,7 +1835,7 @@
     "keywords": [
      "expose"
     ],
-    "heat": 2
+    "heat": 0
    },
    "passive": null,
    "tags": []

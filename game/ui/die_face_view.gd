@@ -83,8 +83,8 @@ var dark: int = 0            # a dark entry (a cooldown, a foe's jam): the round
 var cooldown: int = -1       # the rounds a spend darkens it, its machine's passives in (Skirmish.cooldown_of); -1 reads the entry's own
 var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), in the passive box at the rail's foot; null for a die that rolls
 var next_number: String = "" # the blow that next entry will deal now, as the screen reads it (Skirmish.shown_number_text); "" reads its own
-var after_blow: int = -1     # the blow its machine's passive adds after the strikes (the Storm Petrel's), its number in the passive box; -1 reads the entry's own (Skirmish.after_blow off a foe)
 var ricochet: int = 0        # the strikes of 1 its machine's Ricochet adds after each shot of a weapon (the Skua's), in the passive box
+var zap_cost: int = 0        # the shield its machine's zap will pay for this weapon's spend (the Buzzard's), in the passive box; its damage is in the main number
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var locked: bool = false
 var charged: bool = false      # armed for its charged form, a muster paid at the spend (the Swallowtail's): a double frame and the word above
@@ -373,7 +373,7 @@ func _draw() -> void:
 					beside.append(["", "×%d" % face.buff_stacks, faded.call(col)])
 		"shield_vent":
 			if not dark_now:
-				var held := [str(face.power if face.kind == Face.Kind.SHIELD else face.shields), str(face.vents if face.kind == Face.Kind.SHIELD else face.power)]
+				var held := [str(face.power), str(face.vents)]   # a shield that cools: the shield | the cooling
 				var half := COMBO_W * 0.5
 				var px: int = mini(mono_px.call(held[0], half * 0.75, COMBO_SIZE), mono_px.call(held[1], half * 0.75, COMBO_SIZE))
 				var at := mc + Vector2(0.0, COMBO_DY + 3.0)
@@ -616,11 +616,10 @@ func passive_marks() -> Array:
 		return out
 	var dark_now := face.disabled and dark > 0
 	if not dark_now:
-		var after := after_blow if after_blow >= 0 else Skirmish.after_blow(null, face)
-		if after > 0 and face.is_weapon():
-			out.append(["shield", str(after), Palette.SHIELD])   # by the shield's mark, in its colour, no sign (Ryan, 4 November: "can we fit the number inside, or next to, a shield icon in the helper box? or at least colour the number shield colour?")
 		if ricochet > 0 and face.is_weapon():
 			out.append(["ricochet", "+%d" % ricochet, Glyphs.colour_for("ricochet")])   # a strike of 1 more a stack after each shot (the Skua's)
+		if zap_cost > 0 and face.is_weapon():
+			out.append(["shield", "-%d" % zap_cost, Palette.SHIELD])   # the shield its zap pays, by the shield's mark in its colour (the Buzzard's); the blow it buys is in the number
 	if next_face != null:
 		out.append(next_mark(next_face, next_number))
 	return out
@@ -653,7 +652,7 @@ static func next_mark(nf: Face, shown: String = "") -> Array:
 		"shield":
 			return ["shield", die_number(nf), Palette.SHIELD]
 		"shield_vent":
-			var held := [str(nf.power if nf.kind == Face.Kind.SHIELD else nf.shields), str(nf.vents if nf.kind == Face.Kind.SHIELD else nf.power)]
+			var held := [str(nf.power), str(nf.vents)]
 			return ["", [[held[0], Palette.SHIELD], ["|", Palette.MUTED], [held[1], Palette.HEAT]], Palette.HUD]
 		"vent":
 			return ["vent", die_number(nf), Palette.HEAT]

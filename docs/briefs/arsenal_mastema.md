@@ -118,16 +118,37 @@ is the bridge: the burning foe in the middle of a rank is worth more dead than t
 end, and more again once the Ewer has doubled it. Every burn on the team counts, not only its
 own.
 
-**The look**, on Ryan's call (Claude's detail): a hunched torso and a horned head with a long
-jaw, broad bat wings of black chrome panels ribbed in red glass that tilt and vector and never
-flap, two long arms ending in claws, and nothing below the ribs but a tapering keel; boosters
-under the wing roots. The Ewer is a long spout under its right wrist; the Screen a rack of
-votive lights in its open chest, one lit for each Burning foe, a count read without hue. The
-homage: the Stryge, Viollet-le-Duc's chimera on Notre-Dame, off its perch. Mounts: hp_1 and
-hp_2 on the wing roots, hp_3 and hp_4 on the shoulders. Acts: a thing on a wire (spreads its
-wings and holds, flexes its claws as embers spit from its forearms, wraps its wings round
-itself like a cloak, tilts its head down along its arms). Its model is a new lowforge kind, a
-legless winged flyer.
+**The look**, Ryan's (15 November): "My vision was like a Batman Batwing with arms underneath,
+not really humanoid. Pokemon's Roaring Moon isn't a terrible example either." A flying wing
+with arms slung under it: the body is the wing, with no torso, no head and no face; black chrome
+panels ribbed in red glass that tilt and vector and never flap, boosters under the roots, two
+long arms ending in claws hanging forward under it, no feet. Both of his references are for the
+shape alone, never a copy of either. It replaces Claude's detail of 12 October on his first call
+("a bat-winged flyer with arms is plenty of visual, no feet, a creepy hovering flying thing"), a
+hunched torso under a horned head after the Stryge of Notre-Dame, which the first look test
+built (`docs/looks/arsenal_mastema.png`) and he read as "too gargoyle. Doesn't need such an
+explicit face"; git keeps that paragraph, its acts and the Ewer's and the Screen's places on it.
+Its model is a new lowforge kind, a legless winged flyer.
+
+The second look test (`docs/looks/arsenal_mastema2.png`, the `SHEET2` of
+`tools/lowforge/looks/mastema_looks.py`; look tests, never content until the chassis lands) has
+it two ways, both with the arms rooted in a fairing under each wing root, the upper arm down and
+out to a spurred elbow, the forearm forward and in, three claws and a thumb hanging ahead of the
+prow:
+
+- **A, the flying wing**: a swept bat plan with drooped tips and four trailing points a side;
+  about 176 wide, 111 deep with the hands and 65 tall.
+- **B, the crescent**: past the wrist each wing hooks forward and inward and rises to a horn,
+  long spines off its outer edge; about 200 wide with the spines, 125 deep and 72 tall.
+
+Shared: a slim ridged spine to a blank prow, a thin strip of red glass along the ridge, fire
+slits and three low blades on the back. The locked pieces are left out, as its kit is
+unanswered. The mounts: racks on top of the wing roots (hp_1, hp_2) and barrels on top of the
+wrists (hp_3, hp_4), nothing under the wing but the arms. What did not work on the way: a glass
+wedge by the prow read as an eye in profile, so it became the ridge's strip; flat panels flashed
+white in the Arsenal's chrome, so every panel is pleated. His to judge: the prow still glints
+white from the side, the hands show pale from above, B's side view is busy, and the spine is
+slim, about 20 of 166 wide.
 
 **Engine and tests**, as proposed: small, three pieces. The Bellows: a hook at a foe's death
 (the tick kill in `_enemy_turn`, the kills in `_resolve_attack`, Spillover), reading the foe's
@@ -292,6 +313,8 @@ The first round's answers and the review's corrections are above; Ryan has given
    proposal's reading gave Scorched no meaning on a foe.
 7. Whether Mastema still waits on the foes' fresh start once its own kit lights the fire (the
    README's order and the to-do say it does).
+8. Its look: the flying wing or the crescent, from the second look test (15 November), or
+   another round.
 
 ## Holes already raised
 

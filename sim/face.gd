@@ -154,8 +154,11 @@ var buff_rounds: int = 1      # ...through the end of this many rounds (1: this 
 var front_status: String = "" # a buff: the foe status it lays on the foe in front of the machine it lands on (the Photosphere Lance's Weakened), with...
 var front_stacks: int = 0     # ...this many stacks
 var vents_all: bool = false   # an attack that fires the machine's whole heat: the gauge is empty after the shot...
-var power_per_heat: int = 0   # ...and each `per_heat` heat it fired adds this to the blow (the Afterburner Cannon, 28 September)
+var power_per_heat: int = 0   # ...and each `per_heat` heat it fired adds this to the blow (the Heliographic Death Ray; the Buzzard's cannon first, 28 September)
 var per_heat: int = 10        # ...the heat a step of power_per_heat stands for (the stock pass, 22 October: a field, 10 until the content landing)
+var spends_shield: bool = false   # an attack that fires its machine's whole shield, leaving it at nothing, broken (the Shield-burner Cannon since 18 November: Ryan, "the cannon fires its whole field")...
+var power_per_shield: int = 0   # ...and each `per_shield` shield it fired adds this to the blow, as power_per_heat does for heat
+var per_shield: int = 2       # ...the shield a step of power_per_shield stands for
 var power_per_missing: int = 0   # an attack: added for every per_missing HP its target is missing (10 October; flat, shown on the hover)...
 var per_missing: int = 20     # ...the HP a step of power_per_missing stands for (the stock pass, 22 October: a field, 20 until the content landing)
 var finisher: int = 0         # an attack: its number times this against a foe at half its HP or less, read as the hit judges the foe (the Kite's Pinion Driver, 11 November: the Coriolis's slope as one step); 0 for none
@@ -193,7 +196,6 @@ var reaches_all: bool:
 				targets = Target.SELF_ALLY
 			elif not on and targets == Target.EVERY_OTHER_ALLY:
 				targets = Target.ALLY
-var shields: int = 0          # a vent: the shield it also gives the machine it cools, after the vent (the combined entry, Ryan's go of 20 October: the Wake Diffuser)
 var gathers_mines: bool = false   # an attack: every Mine on the field's other foes joins its target's (the Lammergeier's Lorentz Contractor, Ryan, 9 November)
 var detonates: bool = false   # an attack: its target's Mine blows now, on it and every foe round it, after the spend's own Mine joined it (the Lammergeier's Syrinx Drone, Ryan, 9 November)
 # The Swallowtail's locked pieces (Ryan's go, 21 October; built that day):
@@ -211,12 +213,15 @@ var split: int = 1            # the effective entry only, never printed: each ro
 var reloads_ammo: int = 0     # a vent: ammo it adds to its forging machine as it is spent (the quick reload; the Forge counts it as no vent)
 var ammo: int = 0             # shown only: what a forging machine's gun costs it in ammo now (Skirmish.shown_face), its heat slot's place on the die
 var dry: bool = false         # shown only: the magazine cannot pay that price, so the gun cannot be spent
-# The Storm Petrel's and the Giant Petrel's locked pieces (Ryan's go, 21 October; built 30 October):
-var regen_stacks: int = 0     # an attack: spent on a foe, its machine gains Regenerating, this many stacks, a point of shield a stack as each round opens and a stack fading then (the St. Elmo's Regenerator; a number a round for so many rounds until 15 November)
+# What a spend at a foe lays on its own machine: each {status, stacks, per_foe, cap}, a machine
+# buff, its stacks once or once for every foe the spend reached, up to the cap it names (0 for
+# none). Printed on a piece (the Hardlight Pulse's Hardened Light 1, up to 3: Ryan, 18 November)
+# and taken further on the entry as spent by an upgrade's branch (Effects.self_grants).
+var self_statuses: Array = []
+# The Giant Petrel's locked pieces (Ryan's go, 21 October; built 30 October):
 var action_price: int = 0     # a buff: on an ally whose die is spent, the team's rerolls it pays, and the ally's die rolls again, never onto the entry it showed, and it acts again (the Immelmann Booster); on itself, its status
 var rolls_target: bool = false   # a buff: the die of the machine it lands on rolls again, never onto the entry showing; nothing on a spent die (the Reheat Uplink)
 var kill_rerolls: int = 0     # an attack: if its spend kills, the team gains this many rerolls this round, banked if unspent (the Spindrift Salvo)
-var burns: int = 0            # shown only: the shield the spend burns in place of heat now (the Storm Petrel's Riot Field Generator, Skirmish.shown_face), drawn in the heat slot
 var tags: Array[String] = []  # its component's tags (10 October): build flavour that never carries a rule; a passive may read one
 
 
@@ -359,6 +364,9 @@ static func from_dict(d: Dictionary) -> Face:
 		f.vents_all = bool(d.get("vents_all", false))
 		f.power_per_heat = maxi(0, int(d.get("power_per_heat", 0))) if f.vents_all else 0
 		f.per_heat = maxi(1, int(d.get("per_heat", 10)))
+		f.spends_shield = bool(d.get("spends_shield", false))
+		f.power_per_shield = maxi(0, int(d.get("power_per_shield", 0))) if f.spends_shield else 0
+		f.per_shield = maxi(1, int(d.get("per_shield", 2)))
 		f.power_per_missing = maxi(0, int(d.get("power_per_missing", 0)))
 		f.per_missing = maxi(1, int(d.get("per_missing", 20)))
 		f.finisher = maxi(0, int(d.get("finisher", 0)))
@@ -388,7 +396,6 @@ static func from_dict(d: Dictionary) -> Face:
 	f.cooldown = maxi(0, int(d["cooldown"])) if d.has("cooldown") else -1
 	f.turns_die = bool(d.get("turns_die", false)) and f.kind == Kind.BUFF
 	f.team_rerolls = maxi(0, int(d.get("team_rerolls", 0))) if f.kind == Kind.BUFF else 0
-	f.shields = maxi(0, int(d.get("shields", 0))) if f.kind == Kind.VENT else 0
 	f.gathers_mines = bool(d.get("gathers_mines", false)) and f.kind == Kind.ATTACK
 	f.detonates = bool(d.get("detonates", false)) and f.kind == Kind.ATTACK
 	f.vents = maxi(0, int(d.get("vents", 0))) if f.kind == Kind.SHIELD and not (d.get("vents") is String) else 0
@@ -402,13 +409,14 @@ static func from_dict(d: Dictionary) -> Face:
 	f.spends_magazine = bool(d.get("spends_magazine", false)) and f.kind == Kind.ATTACK
 	f.magazine_min = maxi(0, int(d.get("magazine_min", 0))) if f.spends_magazine else 0
 	f.reloads_ammo = maxi(0, int(d.get("reloads_ammo", 0))) if f.kind != Kind.ATTACK and f.kind != Kind.BLANK else 0
-	var regen = d.get("regenerates", {})
-	if f.kind == Kind.ATTACK and regen is Dictionary:
-		f.regen_stacks = maxi(0, int((regen as Dictionary).get("stacks", 0)))
 	var deal = d.get("ally_action", {})
 	f.action_price = maxi(0, int((deal as Dictionary).get("rerolls", 0))) if f.kind == Kind.BUFF and deal is Dictionary else 0
 	f.rolls_target = bool(d.get("rolls_target", false)) and f.kind == Kind.BUFF
 	f.kill_rerolls = maxi(0, int(d.get("kill_rerolls", 0))) if f.kind == Kind.ATTACK else 0
+	if f.kind == Kind.ATTACK and d.get("self_statuses", null) is Array:
+		for g in d["self_statuses"]:
+			if g is Dictionary and not str(g.get("status", "")).is_empty():
+				f.self_statuses.append({"status": str(g["status"]), "stacks": maxi(1, int(g.get("stacks", 1))), "per_foe": bool(g.get("per_foe", false)), "cap": maxi(0, int(g.get("cap", 0)))})
 	for name in d.get("keywords", []):
 		var kw := keyword_from_name(str(name))
 		if kw > 0:
@@ -444,6 +452,11 @@ func to_dict() -> Dictionary:
 		if power_per_heat > 0:
 			d["power_per_heat"] = power_per_heat
 			d["per_heat"] = per_heat
+	if spends_shield:
+		d["spends_shield"] = true
+		if power_per_shield > 0:
+			d["power_per_shield"] = power_per_shield
+			d["per_shield"] = per_shield
 	if power_per_missing > 0:
 		d["power_per_missing"] = power_per_missing
 		d["per_missing"] = per_missing
@@ -499,8 +512,6 @@ func to_dict() -> Dictionary:
 		d["turns_die"] = true
 	if team_rerolls > 0:
 		d["team_rerolls"] = team_rerolls
-	if shields > 0:
-		d["shields"] = shields
 	if gathers_mines:
 		d["gathers_mines"] = true
 	if detonates:
@@ -525,14 +536,14 @@ func to_dict() -> Dictionary:
 		d["magazine_min"] = magazine_min
 	if reloads_ammo > 0:
 		d["reloads_ammo"] = reloads_ammo
-	if regen_stacks > 0:
-		d["regenerates"] = {"status": "regenerating", "stacks": regen_stacks}
 	if action_price > 0:
 		d["ally_action"] = {"rerolls": action_price}
 	if rolls_target:
 		d["rolls_target"] = true
 	if kill_rerolls > 0:
 		d["kill_rerolls"] = kill_rerolls
+	if not self_statuses.is_empty():
+		d["self_statuses"] = self_statuses.duplicate(true)
 	return d
 
 
@@ -616,11 +627,11 @@ func acts_again() -> bool:
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or ignores_armour or swaps or webs or spills or fills_hopper > 0 or fires_hopper > 0 or braces > 0 \
+	return vents_all or spends_shield or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or ignores_armour or swaps or webs or spills or fills_hopper > 0 or fires_hopper > 0 or braces > 0 \
 		or turns_die or team_rerolls > 0 or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
-		or regen_stacks > 0 or action_price > 0 or rolls_target or kill_rerolls > 0 \
+		or not self_statuses.is_empty() or action_price > 0 or rolls_target or kill_rerolls > 0 \
 		or not spends.is_empty() or not holds_all.is_empty()
 
 
@@ -633,11 +644,11 @@ func is_attack() -> bool:
 	return kind == Kind.ATTACK
 
 
-## Does the entry shield the machine it lands on: a shield, or a vent that shields too (the
-## combined entry, the Wake Diffuser)? A shield that cools is a shield and a vent at once (Ryan, 8
-## November: "The venting shield is both types at once"), whichever way it is written.
+## Does the entry shield the machine it lands on: a shield. A shield that cools is a shield and a
+## vent at once (Ryan, 8 November: "The venting shield is both types at once"); a vent that also
+## shielded left with the Wake Diffuser, its last piece (19 November).
 func shields_machine() -> bool:
-	return kind == Kind.SHIELD or (kind == Kind.VENT and shields > 0)
+	return kind == Kind.SHIELD
 
 
 ## Does the entry cool the machine it lands on: a vent (the quick reload's, which cools nothing,
@@ -659,7 +670,7 @@ func is_weapon() -> bool:
 ## effect; the die draws its reach frame with the status mark inside. A gun whose blow is
 ## nothing here (its 5 against armour 5) is no debuff: it prints "0".
 func is_debuff() -> bool:
-	return kind == Kind.ATTACK and power <= 0 and not vents_all and fires_hopper <= 0 and power_per_missing <= 0
+	return kind == Kind.ATTACK and power <= 0 and not vents_all and not spends_shield and fires_hopper <= 0 and power_per_missing <= 0
 
 
 ## Equipment (Ryan, 26 October: "the label for all 4 forms of buff and debuff faces"): a buff,
@@ -725,6 +736,9 @@ func duplicate_face() -> Face:
 	f.front_status = front_status
 	f.front_stacks = front_stacks
 	f.vents_all = vents_all
+	f.spends_shield = spends_shield
+	f.power_per_shield = power_per_shield
+	f.per_shield = per_shield
 	f.power_per_heat = power_per_heat
 	f.per_heat = per_heat
 	f.power_per_missing = power_per_missing
@@ -761,7 +775,6 @@ func duplicate_face() -> Face:
 	f.cooldown = cooldown
 	f.turns_die = turns_die
 	f.team_rerolls = team_rerolls
-	f.shields = shields
 	f.gathers_mines = gathers_mines
 	f.detonates = detonates
 	f.vents = vents
@@ -777,11 +790,10 @@ func duplicate_face() -> Face:
 	f.reloads_ammo = reloads_ammo
 	f.ammo = ammo
 	f.dry = dry
-	f.regen_stacks = regen_stacks
+	f.self_statuses = self_statuses.duplicate(true)
 	f.action_price = action_price
 	f.rolls_target = rolls_target
 	f.kill_rerolls = kill_rerolls
-	f.burns = burns
 	f.tags = tags.duplicate()
 	for k in keywords:
 		f.keywords.append(k)
@@ -865,6 +877,8 @@ func rule_phrases() -> Array[String]:
 	if kind == Kind.ATTACK:
 		if vents_all:
 			out.append("vents all" + (", +%d per %d heat" % [power_per_heat, per_heat] if power_per_heat > 0 else ""))
+		if spends_shield:
+			out.append("fires the shield" + (", +%d per %d shield" % [power_per_shield, per_shield] if power_per_shield > 0 else ""))   # its term's name, so the readout links it
 		if power_per_missing > 0:
 			out.append("+%d per %d HP missing" % [power_per_missing, per_missing])
 		if finisher > 1:
@@ -900,8 +914,8 @@ func rule_phrases() -> Array[String]:
 			out.append("+%d ammo a foe hit" % ammo_per_foe_hit)
 		if kill_rerolls > 0:
 			out.append(_kill_rerolls_text())
-		if regen_stacks > 0:
-			out.append(_regen_text())
+		if not self_statuses.is_empty():
+			out.append(_self_text())
 	else:
 		if team_rerolls > 0:
 			out.append(_team_rerolls_text())
@@ -947,8 +961,20 @@ func _kill_rerolls_text() -> String:
 	return "a kill brings %d reroll%s" % [kill_rerolls, "" if kill_rerolls == 1 else "s"]
 
 
-func _regen_text() -> String:
-	return "Regenerating %d on itself" % regen_stacks
+## What a spend at a foe lays on its own machine, in the codex's words: "Hardened Light 1 on itself for each
+## foe reached", "Charged 2 on itself". The status's name is the vocabulary's, read off the engine's
+## table so a rename follows.
+func _self_text() -> String:
+	var parts: Array[String] = []
+	for g in self_statuses:
+		var id := str(g.get("status", ""))
+		var def: Dictionary = Effects.STATUS.get(id, {})
+		var name := str(def.get("name", id.capitalize()))
+		var one := Effects.status_stacking(def) == "renew"   # a Ward is one, whatever lays it: no number
+		var cap := int(g.get("cap", 0))
+		parts.append("%s on itself%s%s" % [name if one else "%s %d" % [name, int(g.get("stacks", 1))],
+			" for each foe reached" if bool(g.get("per_foe", false)) else "", (", up to %d" % cap) if cap > 0 else ""])
+	return ", ".join(parts)
 
 
 func _action_text() -> String:
@@ -1015,8 +1041,6 @@ func describe() -> String:
 				s = "shield to its maximum"
 			else:
 				s = "%s %d" % ["shield" if kind == Kind.SHIELD else "vent", power]
-				if shields > 0:
-					s += " shield %d" % shields   # the combined entry: both halves, the vent first
 			if reloads_ammo > 0:
 				s += " reloads %d ammo" % reloads_ammo
 			if vents > 0:
@@ -1074,6 +1098,8 @@ func describe() -> String:
 					s += " (%s)" % Effects.gate_text(gates[KEYWORD_NAMES[k]])   # a gated keyword says where it lands
 			if vents_all:
 				s += " vents all" + (", +%d per %d heat" % [power_per_heat, per_heat] if power_per_heat > 0 else "")
+			if spends_shield:
+				s += " fires the shield" + (", +%d per %d shield" % [power_per_shield, per_shield] if power_per_shield > 0 else "")
 			if power_per_missing > 0:
 				s += " +%d per %d HP missing" % [power_per_missing, per_missing]
 			if finisher > 1:
@@ -1102,8 +1128,8 @@ func describe() -> String:
 				s += " +%d ammo a foe hit" % ammo_per_foe_hit
 			if kill_rerolls > 0:
 				s += " " + _kill_rerolls_text()   # the Spindrift Salvo's kill rider
-			if regen_stacks > 0:
-				s += " " + _regen_text()   # the St. Elmo's Regenerator's rider on its own spender
+			if not self_statuses.is_empty():
+				s += " " + _self_text()   # what the spend lays on its own machine (the Storm Petrel's lure)
 			if not holds_all.is_empty():
 				s += " " + _holds_all_text()
 			s += cooldown_text()

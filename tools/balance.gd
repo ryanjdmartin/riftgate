@@ -27,7 +27,11 @@ extends SceneTree
 ## team", "team:badger+kite"), --packs id,id (only these packs, by the ids the JSON
 ## names, "treant x1", "meadow formation" (tier one's; "meadow formation tier 2" and "tier 3"
 ## the ladder's, beside a cell for every recolour, "goblin_guard x4", since 28 October),
-## "finale", --packs promise (the promise read, the long wall brief section 5: every patrol, formation and
+## "finale", --packs rating (the rating read, 16 November: every composition and boss at the --tiers
+## given, tier one by default, fought by squads of exactly its threat rating drawn in turn from the
+## --team pool, the six certain tier ones by default, its hull lost a share of a four's hull beside
+## the budget; --seeds a squad, --domains narrows; printed or written to --out; no matrix),
+## --packs promise (the promise read, the long wall brief section 5: every patrol, formation and
 ## elite composition at each tier it names, fought by the default four machines cut to its threat rating, one
 ## short and one over, into its own report, printed or written to --out; no matrix), --packs curve (the
 ## curve read for the formation pass, 7 November: every such composition against the four cut to every
@@ -137,6 +141,9 @@ func _init() -> void:
 		return
 	if only_packs.has("curve"):
 		quit(_curve())
+		return
+	if only_packs.has("rating"):
+		quit(_rating())
 		return
 	_build_matrix()
 	if not fit_module.is_empty() and not db.modules.has(fit_module):
@@ -661,6 +668,107 @@ func _promise() -> int:
 			return 1
 		f.store_string(text)
 		f.close()
+	return 0
+
+
+## The rating read (--packs rating; the anchor's every-fight-at-its-rating probe of 12 November,
+## a tool beside the balance report since 16 November): every patrol, formation and elite
+## composition of every domain at the tiers given (--tiers; tier one alone by default) and each
+## boss with its escort at them, fought by squads of exactly as many machines as it is rated,
+## drawn from a pool (--team, in the order given; by default the six tier ones every reading of
+## 4-4-2 holds, the anchor's): every run of that many in the pool's order, wrapping round, so
+## each machine stands in as many squads of a size as any other (six a size from a pool of six),
+## each squad at the seeds given (--seeds, a squad). Each cell the win rate, the mean rounds and
+## the mean hull lost as a share of a four's hull (four times the pool's mean), the hull budget's
+## measure (the refit brief's section 7: a lone flanker a thirtieth or less, a hunter a tenth, a
+## pusher's formation a twentieth, an elite a quarter), with the budget beside it. --domains
+## narrows the domains. Printed, and written to --out when one is given. A direction.
+const RATING_POOL := ["badger", "skua", "storm_petrel", "prairie_dog", "cassowary", "cottonmouth"]
+const RATING_BUDGET := {1: 100.0 / 30.0, 2: 10.0, 3: 5.0, 4: 25.0}   # percent of a four's hull, by the rating (the boss's is the elite's until its own)
+
+func _rating() -> int:
+	var pool: Array = custom_teams[0] if not custom_teams.is_empty() else RATING_POOL
+	for cid in pool:
+		if not db.chassis.has(str(cid)):
+			push_error("--team: no chassis '%s'" % str(cid))
+			return 1
+	var four := 0.0
+	for cid in pool:
+		four += float(db.make_mech(str(cid)).hull_max)
+	four = 4.0 * four / float(maxi(1, pool.size()))
+	var tiers: Array = only_tiers if not only_tiers.is_empty() else [1]
+	var t0 := Time.get_ticks_msec()
+	var fights := 0
+	var cells: Array = []   # [domain name, what, tier, rating, {policy: [won, fights, rounds, hull pct]}]
+	for fac in db.factions.keys():
+		if not only_domains.is_empty() and not only_domains.has(str(fac)):
+			continue
+		for t in tiers:
+			var fights_of: Array = []   # [what, rating, pack]
+			for size in ["patrol", "formation", "elite"]:
+				for c in db.compositions(str(fac), int(t), size):
+					fights_of.append([str(c["id"]), ContentDB.squad_of(c),
+						{"id": "%s tier %d" % [str(c["id"]), int(t)], "name": str(c["id"]), "foe": "", "strength": 0, "mix": c["members"].duplicate(true), "tier": int(t) - 1, "layout": c["layout"]}])
+			for boss_id in db.bosses_of(str(fac)):
+				var mix: Array = [[boss_id, 1]]
+				for m in db.escort_composition(str(fac), int(t), boss_id).get("members", []):
+					mix.append([str(m[0]), int(m[1])])
+				fights_of.append(["%s (boss)" % boss_id, ContentDB.SQUAD_BY_SIZE.get("elite", 4),
+					{"id": "%s tier %d" % [boss_id, int(t)], "name": boss_id, "foe": "", "strength": 0, "mix": mix, "tier": int(t) - 1}])
+			for f in fights_of:
+				var n := clampi(int(f[1]), 1, mini(4, pool.size()))
+				var by := {}
+				for k in policies:
+					var won := 0
+					var played := 0
+					var rounds := 0.0
+					var hull := 0.0
+					for start in range(pool.size()):
+						var squad: Array = []
+						for j in range(n):
+							squad.append(pool[(start + j) % pool.size()])
+						var row := {"id": "+".join(squad), "name": "+".join(squad), "chassis": squad}
+						for sd in range(seeds):
+							var fight := _fight(row, f[2], k, 1000 * (start + 1) + sd + 1)
+							var sk: Skirmish = fight["sk"]
+							var pol: Policy = fight["pol"]
+							var left := 0
+							for ms in sk.mechs:
+								left += maxi(0, ms.unit.hull)
+							played += 1
+							fights += 1
+							if fight["outcome"] == Skirmish.Outcome.VICTORY and not pol.stalled:
+								won += 1
+							rounds += pol.rounds
+							hull += 100.0 * float(int(fight["hull_max"]) - left) / maxf(1.0, four)
+					by[k] = [won, played, rounds, hull]
+				cells.append([str(db.factions[fac].get("name", fac)), str(f[0]), int(t), n, by])
+	var secs := (Time.get_ticks_msec() - t0) / 1000.0
+	var L: Array[String] = []
+	L.append("# The rating read")
+	L.append("")
+	L.append("Generated by `tools/balance.gd --packs rating` on %s: %d fights in %.0f s, %d seeds a squad, policies %s, tiers %s. Every composition and every boss with its escort fought by squads of exactly as many machines as it is rated, each run of that many in the pool's order (%s), wrapping; hull lost is a share of a four's hull (%.0f, four times the pool's mean), beside the budget for its rating (a lone flanker a thirtieth, a hunter's pair a tenth, a formation a twentieth, an elite or a boss a quarter). Each cell: won, rounds, hull lost, one set a policy. A direction." % [
+		Time.get_date_string_from_system(), fights, secs, seeds, ", ".join(_policy_names()), ", ".join(PackedStringArray(tiers.map(func(x) -> String: return str(x)))), ", ".join(_names(pool)), four])
+	L.append("")
+	L.append("| Domain | The fight | Tier | Rated | Budget | %s |" % " | ".join(_policy_names()))
+	L.append("|---|---|---|---|---|%s" % "---|".repeat(policies.size()))
+	for c in cells:
+		var parts: Array[String] = []
+		for k in policies:
+			var e: Array = c[4][k]
+			var nf := maxi(1, int(e[1]))
+			parts.append("%d%% · %.1f r · %.1f%%" % [_pct(int(e[0]), nf), float(e[2]) / nf, float(e[3]) / nf])
+		L.append("| %s | %s | %d | %d | %.1f%% | %s |" % [c[0], c[1], int(c[2]), int(c[3]), float(RATING_BUDGET.get(int(c[3]), 25.0)), " | ".join(parts)])
+	L.append("")
+	var text := "\n".join(L)
+	print(text)
+	if out_path != OUT:
+		var fo := FileAccess.open(out_path, FileAccess.WRITE)
+		if fo == null:
+			push_error("cannot write %s" % out_path)
+			return 1
+		fo.store_string(text)
+		fo.close()
 	return 0
 
 

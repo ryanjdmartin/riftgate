@@ -534,6 +534,35 @@
   "hp_3": "polarity_projector",
   "hp_4": "arc_fault_cannon"
  },
+ "death": {
+  "duration": 0.9,
+  "tracks": {
+   "sensor_contractor": [
+    [
+     0.9,
+     0.0,
+     70.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   ]
+  },
+  "glow": [],
+  "body": [
+   [
+    0.9,
+    0.0,
+    0.0,
+    0.0,
+    -6.0,
+    -3.0,
+    -8.0
+   ]
+  ],
+  "ease": "fall"
+ },
  "halo": [
   [
    "booster_ring",

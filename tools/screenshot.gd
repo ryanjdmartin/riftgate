@@ -375,7 +375,7 @@ func _apply_pose() -> void:
 ## (two machines ordered onto two packs: the numbered fights and ENGAGE 1 OF 2), draft (a
 ## route drawn by hand, about halfway through the move), carry (a
 ## carrier's route drawn to a stop where its rider cannot land: NO ROOM), hold (a
-## pack's readout; boss and ground the others'), fracture (a Fracture announced), rift (the rift's end: the vortex and the boss), codex / foecodex (a machine's or a pack's entry), resolve (one turn
+## pack's readout; boss and ground the others'), fracture (a Fracture announced), rift (the rift's end: the vortex and the boss), shell (the rift's shell, two stretches cracked), wrecks (a wreck, with RIFTGATE_WRECK_DEBUG=1), codex / foecodex (a machine's or a pack's entry), resolve (one turn
 ## ended), attack (a fight set up beside a pack), caught (a hunter's forced fight), engage
 ## (the handover into a fight), bosscontact (the boss's reveal).
 func _apply_battle_pose() -> void:
@@ -575,6 +575,25 @@ func _apply_battle_pose() -> void:
 				var on: Vector2i = cs[0 if _pose == "caches" else cs.size() - 1]["pos"]
 				s._map.zoom_at(s._map.size * 0.5, 2.0)
 				var p: Vector2 = s._map.center(on)
+				s._map.scroll_x = s._map.size.x * 0.5 - p.x * s._map.zoom
+				s._map.scroll_y = s._map.size.y * 0.5 - p.y * s._map.zoom
+				s._map._clamp_scroll()
+				s._map.queue_redraw()
+		"shell":
+			# The rift's shell, the wall on the seven's outer edges with two stretches cracked (16
+			# November; RIFTGATE_SHELL_DEBUG=1 runs it through all seven cracks and its burst instead),
+			# the rift's end in view.
+			s._map.set_shell(0, true)
+			s._map.set_shell(2, true)
+			s._map._shell_crack_at = {0: -100.0, 1: -100.0}   # landed long since: the cracks whole, no flash
+			s._map.scroll_to_top()
+			s._map.queue_redraw()
+		"wrecks":
+			# Zoomed in on the first wreck (with RIFTGATE_WRECK_DEBUG=1 one of each of the team's
+			# chassis lies beside it, 16 November).
+			if not b.field.wrecks.is_empty():
+				s._map.zoom_at(s._map.size * 0.5, 2.0)
+				var p: Vector2 = s._map.center(b.field.wrecks[0].pos)
 				s._map.scroll_x = s._map.size.x * 0.5 - p.x * s._map.zoom
 				s._map.scroll_y = s._map.size.y * 0.5 - p.y * s._map.zoom
 				s._map._clamp_scroll()

@@ -1,13 +1,14 @@
-# Gameplay text: one set of words (17 November, the first round)
+# Gameplay text: one set of words (17 November; his marks in chat from 19 November)
 
 Ryan, 17 November: "I want to standardize and clean up the terms we use and the way we write
 tooltip text. So how we refer to units, targets and effect times, how we label gameplay
 elements, the language we use in gameplay descriptions, and so on. This is not a lore pass,
 this is about gameplay information for the player, and how it is presented."
 
-This is the codex cleanup and terminology pass the to-do kept for him (16 November). This first
-round counts what the text says today and proposes a standard for him to mark. Nothing in it is
-built except one bug fix (section 5). Every rule here is a lean unless it quotes him.
+This is the codex cleanup and terminology pass the to-do kept for him (16 November). Its first
+round counted what the text says and proposed a standard for him to mark; he is marking it in
+chat (section 8). Nothing in it is built except one bug fix (section 5). Every rule here is a
+lean unless it quotes him or section 8 says he marked it.
 
 **What it covers.** Every line that tells the player how the game works: the die's readout and
 the codex's rows (the code composes both), a term's tip and the keywords list, a foe move's lines
@@ -19,17 +20,17 @@ readouts, the plates' labels and the battle log.
 (section 4); and what shown text calls the die, which is section 12's question and a session of
 its own.
 
-**What was counted.** 2,767 lines a player can read. 623 are shown drafts in content, from
-`tools/hangar_text.py`'s inventory. 2,144 are lines the code composes: the 73 dealt components'
-readouts, every foe's moves, the plates and the chips, taken from a scratch dump of
-`EntryReadout`, `Face.describe`, `Effects.effect_text` and the chip rows. None of it is his: the
-ledger has nothing signed and the Text tab has nothing waiting to be folded, so no text of his
-would move.
+**What was counted.** 2,797 lines a player can read, counted again on 19 November over main at
+`946c2ed`. 651 are shown drafts in content, from `tools/hangar_text.py`'s inventory. 2,146 are
+lines the code composes: the 73 dealt components' readouts, every foe's moves, the plates and the
+chips, taken from a scratch dump of `EntryReadout`, `Face.describe`, `Effects.effect_text` and
+the chip rows. None of it is his: the ledger has nothing signed and the Text tab had nothing
+waiting to be folded, so no text of his would move.
 
 ## 1. What the text does today
 
 **Units.**
-- Ours is a machine (414 times) and theirs a foe (241), but also an enemy (68). 51 of those are
+- Ours is a machine (452 times) and theirs a foe (262), but also an enemy (65). 51 of those are
   on the die's own target line, "Target: Enemy, Direct", while the next piece reads "Target:
   Every Foe".
 - "Ally" means two things. "Any other ally", "an ally whose die is spent" and a passive's "with
@@ -42,12 +43,13 @@ would move.
   tips). A foe's own side is "its own", "one of its own" or "the others".
 
 **Targets.**
-- The die's target line has eight forms in the code, and a foe move's has eleven. Among the
+- The die's target line has eight forms in the code, and a foe move's has fourteen. Among the
   foe's: "Every Machine" in the term's capitals beside "Every foe" without them, plus "The most
-  hurt of its own", "One of its own", "The most-marked of its own", "The waiting pool" and "The
+  hurt of its own", "One of its own", "The most-marked of its own", "Empty places" and "The
   team's rerolls".
-- 39 moves add their aim after the target, "Target: Any machine, aims at the exposed". The page
-  on targeting retires those aims.
+- The targeting build (17 November) put an attack's word on its target line: "Target: The
+  hottest machine" on 5 moves and "The most buffed machine" on 1. The words are a session's
+  drafts.
 - Whoever a spend reached is called the target, each foe hit, every foe the entry reaches, the
   foe aimed at, the machine it hit, or the machine it lands on.
 - Area is beside, behind, round its slot, a neighbour's, or the other rank of its column.
@@ -63,8 +65,9 @@ would move.
 - A text that lays a status repeats the status's clock, and drifts from it. Bloodlust's
   Empowered is "fading by half each round"; the rule is that it halves as each foe's own turn
   ends.
-- A fight is "the fight" 31 times and "the skirmish" 5 times (the Nemesis's and the Ammit's
-  passives, and the map's "%d skirmishes").
+- One pack fought is "the fight" 27 times and "the skirmish" in the Nemesis's and the Ammit's
+  passives and the map's end text ("%d skirmishes"), and the vocabulary's term for it is
+  Fight (a map term, not in the keywords list).
 - A stack runs down in seven verbs: halves, decays, fades, falls off, runs down, lifts, clears.
 
 **Labels and numbers.**
@@ -74,19 +77,19 @@ would move.
   ("Grants Empowered ×2"), repeats ("Fills the hopper ×2") and a multiplier ("×2 on a foe at
   half its HP or less").
 - A term reads in its colour and taps only when written with its capital (`Terms.split`). The
-  moves and foe pages write 74 status and keyword words in lower case (scorches, scorched,
+  moves and foe pages write 84 status and keyword words in lower case (scorches, scorched,
   corrupted, jams, frostbitten, readied), so none of those tap.
 - A keyword's line on the die reads "Apply Ablate 2 on hit" or "Apply Expose on hit" (19
   lines): the keyword's own verb inside a second verb, next to a chip that just says "Ablate 2".
 - A foe's plate says ATK and ARM where a machine's says ARMOUR.
-- 66 of 110 tips open by saying what kind of term they are, in a dozen forms: "Keyword with a
+- 67 of 112 tips open by saying what kind of term they are, in a dozen forms: "Keyword with a
   number.", "Player keyword, on any entry aimed at a foe.", "Enemy keyword.", "Foe attack
   keyword with a number.", "Machine status.", "Foe buff:", "Status, on either side:". The heading
   above each one already says KEYWORD, BUFF or DEBUFF.
 
 **Language.**
-- The median tip is 58 words long. 34 of 110 run past 70 and 11 past 100 (Foe action 172,
-  Primed 129, Exposed 128).
+- The median tip is 60 words long. 36 of 112 run past 70 and 11 past 100 (Foe action 182,
+  Phased 173, Aim 161).
 - Ten tips name the piece that carries their rule ("the Dingo's Combat Translocator"), so the
   tip goes stale every time a piece is renamed or moved.
 - Rates use the sessions' idiom, "a point a stack", "2 a stack", "+2 a load", where his own
@@ -132,8 +135,9 @@ to mark. "Now" is what it replaces.
 6. **One target line.** "Target:" then the set; for a weapon, its reach after a comma. Ours: Foe,
    Direct; Foe, Indirect; Every Foe; Self; Any machine; Another machine; Every Machine. A foe's:
    Any machine; Every Machine; Self; Another foe; Every Foe; The most hurt foe; The most-marked
-   foe. Terms keep their capitals and the rest is sentence case. A move aimed at no unit (a
-   summon, a drain) shows no target line.
+   foe; Every foe it readied. Terms keep their capitals and the rest is sentence case. A move
+   aimed at a place and not a unit keeps its plain words: "Empty places" (a summon, since 19
+   November) and "The team's rerolls" (a drain).
 7. **The target, and each unit hit.** The target is the one unit a spend or a move is aimed at.
    Each foe hit (or each machine hit) is every unit its strikes or effects land on: the target,
    plus whatever its area reaches. Now: every foe the entry reaches, the foe aimed at, the
@@ -141,9 +145,10 @@ to mark. "Now" is what it replaces.
 8. **Beside, behind, in front of, around.** Beside is either side of it in its rank. Behind and
    in front of are the other rank of its column. Around is all three. Now: round its slot, a
    neighbour's, the other rank of its column.
-9. **The attack's word goes on its target line** (this waits on the page on targeting): "Target:
-   The hottest machine", "The weakest machine", "The strongest machine", in place of "Target: Any
-   machine, aims at heat". A foe's page then carries no sense line.
+9. **The attack's word goes on its target line.** Built by the targeting build (17 November):
+   "Target: The hottest machine" and "Target: The most buffed machine" show today, "The strongest
+   machine" and "The weakest machine" wait for moves that carry them, and a foe's page carries no
+   sense line. The four words are a session's drafts, his to sign or to change.
 
 ### When
 
@@ -154,14 +159,18 @@ to mark. "Now" is what it replaces.
     turn". *Or*: the rules' own wording, as its turn starts, as its turn ends, as the round ends.
 11. **A status's clock lives in its tip.** Whatever lays a status names it and its stacks
     ("Armoured 2", "Jams the entry its die shows"). It gives a time only where the source sets
-    one ("for 2 rounds"). Now: about 45 moves restate the clock of what they lay, in seven
-    forms.
+    one ("for 2 rounds"). Now: about 55 moves restate the clock of what they lay, in seven
+    forms, the six that Expose each restating Exposed's whole rule ("it stands Exposed through
+    the next round, its armour counting for nothing and every foe's targeted move turned on it").
 12. **Rounds ahead.** This round, next round, "in 2 rounds" for what lands later, "for 2
     rounds" for what lasts. Now also: two rounds on, two rounds later, through the round after,
     the rest of the round.
-13. **Round, fight, battle.** A round is your turn plus the foes' turn. A fight is one pack
-    fought. A battle is the whole field. "Skirmish" leaves shown text; the map's turn keeps its
-    name.
+13. **Round, skirmish, battle** (marked 19 November: "I want to keep skirmish"). A round is your
+    turn plus the foes' turn. A skirmish is one pack fought to the end. A battle is the whole
+    field. The map's turn keeps its name. *A*: skirmish is the noun, and fight stays a verb alone
+    ("move or fight", "machines that fought"): "Once a fight" becomes "Once a skirmish", and the
+    vocabulary's term Fight becomes Skirmish. *Or B*: fight stays a noun beside skirmish, two
+    words for one thing.
 14. **Five verbs for running down.** Halves (rounded down), loses a stack, ends, is spent, is
     removed (by a Cleanse or a Purge). "Decays" covers the first two, where a rule stops both.
     Now also: fades, runs down, falls off, lifts, clears, goes.
@@ -170,7 +179,7 @@ to mark. "Now" is what it replaces.
 
 15. **A term keeps its capitals, with its number after it**: "Scorched 4", "Exposed", "Every
     Machine". That way it reads in its colour and taps. A keyword's verb form counts as the
-    keyword ("Jams", "Exposes"). A plain word stays lower case. Now: 74 lower-case uses in
+    keyword ("Jams", "Exposes"). A plain word stays lower case. Now: 84 lower-case uses in
     moves and foe pages.
 16. **Stacks are written Name N**: Empowered 2, Ablating 3, Armoured 1, the same way a numbered
     keyword is written (Ablate 2). × only means times: a weapon's strikes (Attack 3 ×2) and a
@@ -190,7 +199,7 @@ to mark. "Now" is what it replaces.
 21. **Attack, strike, hit.** An attack is one spend of a weapon or one attack move. A strike is
     one of its blows (the Strikes term). A strike that lands hits. "Blow" and "shot" leave shown
     text, with Shots kept as the Cassowary's count. This is the biggest rewrite on the list
-    (blow appears 141 times). *Or*: keep blow next to strike, as one word in two forms.
+    (blow appears 145 times). *Or*: keep blow next to strike, as one word in two forms.
 22. **Falls, kills, wrecked, destroyed.** A foe falls at 0 HP, and the unit that took it there
     kills it. A machine is wrecked. A component is destroyed. Now also: felled, dies, dead.
 23. **The die's words stay as they are.** The die rolls and shows an entry. An entry holds a
@@ -205,8 +214,9 @@ to mark. "Now" is what it replaces.
     (Ryan, 7 November: "things should just work how they should intuitively"). A tip never
     repeats its heading. It says who carries it only where both sides can ("On a foe: … On a
     machine: …"). It names no piece that carries it. It stays under about 60 words.
-25. **Digits, and "per".** Every gameplay number is in digits, and a rate uses per: "1 damage per
-    stack", "+2 per load". Now: a point a stack, 2 a stack, two stacks.
+25. **Digits, and "per".** Every number in a rule is in digits, and a rate uses per: "1 damage
+    per stack", "+2 per load". Now: a point a stack, 2 a stack, two stacks. A move's flavour may
+    keep its words ("Three heads bite"), since its readout lines carry the numbers (rule 27).
 26. **Say the noun again.** No possessive that drops its noun.
 27. **A move's line keeps its voice.** The flavour is the foe's and stays. Any rule it states
     uses the standard's words, with its numbers as {damage} and {value}: "every machine
@@ -216,7 +226,7 @@ to mark. "Now" is what it replaces.
     rules make it true. Every "shield up" goes.
 29. **The retired words leave**: a shield or a vent as a piece (except the Musk Ox's reload, and
     the machines in design while they stay in design), overshield, Retaliate, a chassis's
-    cooling, "braces" (it means the Plow's Armoured), "burning" for Ablating, skirmish, enemy.
+    cooling, "braces" (it means the Plow's Armoured), "burning" for Ablating, enemy.
     These follow from rulings already made (the refit pass, the vocabulary pass), so they need
     no mark. They go out with each text's rewrite.
 
@@ -246,9 +256,10 @@ Drafts, for the eye; none lands before the marks.
 2. **What an ally is** (rule 2). Today's text gives both answers: another machine, and any
    machine of the team. The lean drops the word from the labels and names the sets by machine.
    The other way keeps "ally" as the whole team.
-3. **A status's clock in its tip alone** (rule 11). About 45 move lines lose their time, and the
+3. **A status's clock in its tip alone** (rule 11). About 55 move lines lose their time, and the
    player taps the status to read it. *Or*: every text keeps its clock, in rule 10's phrase.
 4. **Blow** (rule 21): one word for a strike, or two.
+   **Fight** (rule 13, after his mark): a verb alone beside skirmish the noun, or a second noun.
 5. **The time phrases** (rule 10): the usual game wording, "at the end of its turn", or the
    rules', "as its turn ends".
 6. **Advice on a foe's page** (rule 28): kept where it is true, or cut back to how the foe fights
@@ -259,8 +270,15 @@ Drafts, for the eye; none lands before the marks.
    - Last Act, for what a foe does as it falls ("maybe rename to something more interesting").
      Candidates: Swan Song, Parting Shot, Last Gasp. Parting Shot suits a blow but not a curse or
      a buff for the others; Swan Song suits all three.
-   - The attack's word (rule 9): The strongest, The weakest, The hottest, as the page on
-     targeting has them.
+   - The attack's words (rule 9), drafts on the target line since 17 November: the strongest
+     machine, the weakest machine, the hottest machine, the most buffed machine.
+   - Immune, the term for a foe's ability that one thing of the team's never lands on (a
+     session's draft name).
+   - The drafted names of four falls (Scream, Dying Gaze, Unbound, Embers) and of the moves
+     that Expose (Kill Order, Mark Prey, Transfix, Command, Name the Quarry).
+   - Two module names that hold a keyword's word: Ablative Plating beside Ablate (the to-do's)
+     and Ward Plate beside Ward. A name is never matched as a term, so neither breaks a tap;
+     the question is only whether the player reads them as the keyword.
 
 ## 5. What this round changed
 
@@ -285,14 +303,15 @@ Drafts, for the eye; none lands before the marks.
    ("face", "damaging weapon"), so the Text tab flags any text that breaks the standard. They
    would catch the words that left (rules 1, 4, 5, 13, 22, 29), a bare "until its next turn",
    ×N after a status, "Apply … on hit", the distributive "a", a term in lower case, and a tip's
-   opening kind and its length. The code's composed lines would also be listed on the Text tab,
-   read-only like the status lines, so he can see what the die says.
+   opening kind and its length. The code's other composed lines would also be listed on the
+   Text tab, read-only as the status lines and (since 19 November) a move's target words are,
+   so he can see what the die says.
 3. **The drafts**, kind by kind, one commit each: the tips, the moves' rule clauses, the
    how-it-fights sentences on foe pages, the passives, the module rules. `docs/vocabulary.md` and
    the bible's tables are regenerated after each.
-4. **The renames he takes** (rule 2's two, rule 5's one): names only, ids kept.
-5. **The attack's word**, with the targeting build.
-6. **Where the standard lives.** Lean: the rules as a short list in `docs/rules.md`'s Content
+4. **The renames he takes** (rule 2's two, rule 5's one, rule 13's Fight): names only, ids
+   kept.
+5. **Where the standard lives.** Lean: the rules as a short list in `docs/rules.md`'s Content
    conventions, next to "shown text never says face"; the reasons in one bible row; and
    `CLAUDE.md`'s shown-text rule pointing at both.
 
@@ -309,7 +328,19 @@ Drafts, for the eye; none lands before the marks.
   learnable row: "Tooltips and an in-game cheat sheet, never a wiki".
 - A tip that opens with its kind, so the list reads top to bottom. Killed by rule 24: the list's
   headings already file each term.
-- Numbers in words where the voice wants them ("two blows"). Killed by rule 25.
+- Numbers in words in a rule ("two stacks"). Killed by rule 25; a move's flavour keeps its own.
+- "Fight" as the one noun, and "skirmish" out of shown text. Overruled by his mark of 19
+  November (rule 13).
 - One grammar for every keyword, a verb plus its participle (Embrittle for Brittle, Chill for
   Cryo). Set aside: Brittle and Cryo are his picks, and each already serves as both the keyword
   and the status (the bible's shared-name row).
+
+## 8. His marks
+
+**19 November, in chat.** On the first round's summary: "I need the rules spelled out, yeah. We
+can do it in chat." On the list spelled out: "Pull in main and adjust this list accordingly. I
+want to keep skirmish." Main was taken in at `946c2ed` and every count read again (section 1);
+the rules main had moved were changed with it: rule 6 keeps the summons' "Empty places", rule 9
+is built, rule 11's count grew with the moves that Expose, and section 4's names took in the
+drafts the to-do routes here. Rule 13 is his: skirmish stays, the word for one pack fought,
+with fight's place beside it the choice left (section 4). Rule 29 no longer lists it.

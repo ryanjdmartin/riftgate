@@ -425,7 +425,7 @@ static func plan_for(u: Unit, db: ContentDB) -> Array:
 	return mount_plan(u.die, stock, db)
 
 
-## A plan from a debug spec, "1:enfilade_beam,4:coolant_jacket" (RIFTGATE_FIT in tools/hero_shot.gd):
+## A plan from a debug spec, "1:enfilade_beam,4:halo_projector" (RIFTGATE_FIT in tools/hero_shot.gd):
 ## the pin's number and the component to hang there, or "1:" to empty a socket.
 static func plan_from_spec(spec: String, db: ContentDB) -> Array:
 	var out: Array = []
@@ -509,6 +509,7 @@ static func burn_rows(model_name: String, rows: Array, db: ContentDB, stock_too:
 ## variant, or the class itself).
 static func shaped_rows(model_name: String, rows: Array, db: ContentDB, stock_too: bool = true) -> Array:
 	var out: Array = []
+	var hidden := hidden_pins(model_name)   # a hidden mount shows no class, so it wears no flare and no fire (Ryan, 2 November: "I'd rather suppress them to avoid any clipping or effects bleed through the drum")
 	var swapped := {}
 	for row in rows:
 		if row.size() >= 4:
@@ -528,7 +529,7 @@ static func shaped_rows(model_name: String, rows: Array, db: ContentDB, stock_to
 		elif stock is Array and n <= (stock as Array).size() and shapes is Dictionary:
 			cid = str(stock[n - 1])
 			shape = str((shapes as Dictionary).get("hp_%d" % n, ""))
-		if cid.is_empty() or shape.is_empty():
+		if cid.is_empty() or shape.is_empty() or hidden.has(n):
 			continue
 		var fit := fit_in(side, n, shape)
 		out.append([n, cid, shape, str(fit[0]), float(fit[1]), float(fit[2])])
@@ -1218,16 +1219,39 @@ func revive() -> void:
 ## slice names its blow, the caller holding the blow's sound and its landing until then; nought for
 ## a gun on a mount or a marked business end, which fire on the blow.
 func fire_wind(cid: String) -> float:
-	if rig == null or not carrying(cid).is_empty() or fx_nodes.has(cid):
+	if rig == null:
+		return 0.0
+	if fires_hidden(cid):
+		return rig.hidden_wind()
+	if not carrying(cid).is_empty() or fx_nodes.has(cid):
 		return 0.0
 	return rig.fire_wind(cid)
 
 
 ## How long a spend's firing slice plays (MechRig.fire_span), for an aim held until it ends.
 func fire_span(cid: String) -> float:
-	if rig == null or not carrying(cid).is_empty() or fx_nodes.has(cid):
+	if rig == null:
+		return 0.0
+	if fires_hidden(cid):
+		return rig.hidden_span()
+	if not carrying(cid).is_empty() or fx_nodes.has(cid):
 		return 0.0
 	return rig.fire_span(cid)
+
+
+## Whether component `cid` fires from hidden mounts alone and the model fires them with a slice of
+## its own (MechRig.fire_hidden: the Cottonmouth's drum turning two chambers on, 16 November).
+func fires_hidden(cid: String) -> bool:
+	if rig == null or rig.hidden_fire.is_empty():
+		return false
+	var mounts := carrying(cid)
+	if mounts.is_empty():
+		return false
+	var hidden := hidden_pins(model_id)
+	for n in mounts:
+		if not hidden.has(int(n)):
+			return false
+	return true
 
 
 func _outline_to(k: float) -> void:
@@ -1283,6 +1307,8 @@ func strike(ranged: bool, cid: String = "") -> void:
 		if not rig.fire_act(cid, lead):   # a fixed weapon fires with its own act where the model names one
 			rig.strike(ranged, [], Vector3.ZERO, lead)
 		launch(cid, lead)   # and what it fires out of the machine flies (the Lammergeier's drones)
+	elif fires_hidden(cid) and rig.fire_hidden(lead):
+		pass   # a weapon on a hidden mount fires as the model's slice for them (the Cottonmouth's drum), no kick or flare at the mount
 	else:
 		var only: Array = []
 		var recoil := Vector3.ZERO

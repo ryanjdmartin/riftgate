@@ -18,7 +18,7 @@ extends RefCounted
 ##   won battle     the city's gate is restored to full (the siege is lifted) and its rift
 ##                  closes; the city opens no new rift for QUIET_TURNS; the battle's salvage
 ##                  banks; the boss drops a research token of its faction; the host maker
-##                  owes an offer
+##                  owes an offer (the first battle's is the fourth machine, below)
 ##   third boss     a domain's FINAL_AFTER-th boss beaten sets its final: every standing
 ##                  city's rift it leads turns final at once, its hero the boss, and so does
 ##                  every rift it leads after
@@ -36,6 +36,12 @@ extends RefCounted
 ##   end of a turn  (after a battle, or a turn passed) open rifts bleed their cities, a gate
 ##                  at zero falls unfought, fallen cities drain the capital, the capital at
 ##                  zero loses the run, the Convergence rises, rifts open up to the tier's count
+##   first battle   a run opens on a forced choice of city: its first rifts are the opening
+##                  domain's (content's mark, ContentDB.opening_faction) and no turn passes
+##                  until one is fought; it is fought by the draft's machines and brings the
+##                  fourth: won, a choice of one of OFFER_MACHINES of the host maker's
+##                  machines, taken before the next battle or pass (take_machine); not won,
+##                  the machine left on the tender
 ##   the party      dealt as the run starts, one hero to each domain from its bench, the front
 ##                  jobs and the back as even as the benches allow; a domain's final is fought
 ##                  against its hero with its wildlife and counts when the hero falls; the
@@ -60,7 +66,8 @@ const FAVOUR_DOCK := 1        # Favour docked per point of gate damage the city 
 const START_FAVOUR := 100     # enough for one rush
 const RUSH_PRICE := 100       # Favour to bring a wreck out of the shop now (6 October: a choice after a wreck, never routine repair)
 const REPAIR_COST := 5        # salvage a point of the capital's gate costs (the one priced repair, section 3; materials, so salvage)
-const START_MACHINES := 3     # a run starts with three machines and all SQUAD slots; the fourth is the first battle's offer, a choice among the host maker's chassis (Ryan, 11 November; bought when the player chose, 7 October, until then; offers are not built)
+const START_MACHINES := 3     # a run starts with three machines and all SQUAD slots; the fourth is the first battle's offer, a choice among the host maker's chassis (Ryan, 11 November; bought when the player chose, 7 October, until then)
+const OFFER_MACHINES := 3     # the first battle's offer: a choice of one of this many of the host maker's machines (Ryan, 19 November: "a choice of 1 of 3 machines from the maker")
 const CONVERGENCE_PER_TURN := 1   # a turn passed raises it too, so waiting never stops the clock
 const TIER_EVERY := 4         # Convergence per tier
 const FINALE_AT := 12         # the Convergence that makes the finale due (twelve battles, section 3); each fallen city brings it one sooner
@@ -107,7 +114,8 @@ var salvage: int = 0             # materials, earned by fighting (kills, loot); 
 var favour: int = 0              # the Council's Favour, earned by results (a won battle, docked for gate damage); spent on procurement and rushes
 var blueprints: Array = []        # component ids the run can build without limit: the tier-one blueprints at the start (7 October), more from loot, offers and research
 var tokens: Array = []            # research tokens, by the faction whose boss dropped them (unpacked in the hangar, not built)
-var offers: Array = []            # city ids whose maker owes an offer (the offer itself waits on the catalogues)
+var offers: Array = []            # city ids whose maker owes an offer (the offer itself waits on the catalogues); the first battle's is `machine_offer`
+var machine_offer: Dictionary = {}   # the first battle's fourth machine while its choice waits: {"maker", "choices": [chassis ids]}, empty for none; no battle starts and no turn passes until one is taken (take_machine)
 var bosses_beaten: Dictionary = {}   # faction id -> bosses beaten this run
 var anathema: Dictionary = {}        # faction id -> the menace of its foes killed this run, every battle however it ended (the Rupture meter's weight; recorded beside the count of three bosses, which still decides the final)
 var bosses_ended: Dictionary = {}    # faction id -> the bosses its battles ended on this run, by foe id, so the next draws another
@@ -216,7 +224,7 @@ static func deal_party(content: ContentDB, seed_arg: int) -> Dictionary:
 	return out
 
 
-func _shuffle(a: Array, r: RandomNumberGenerator) -> void:
+static func _shuffle(a: Array, r: RandomNumberGenerator) -> void:
 	for i in range(a.size() - 1, 0, -1):
 		var j := r.randi_range(0, i)
 		var t = a[i]
@@ -317,9 +325,10 @@ static func salvage_for(menace_killed: int) -> int:
 
 
 ## Open a battle at `city_id` with the ready machines `uids` (one to SQUAD). Null when the
-## run is not between battles, the city is no front, or the squad is not ready.
+## run is not between battles, the first battle's machine is still to be taken, the city is no
+## front, or the squad is not ready.
 func start_battle(city_id: String, uids: Array) -> Battle:
-	if state != PICK or not fronts().has(city_id) or uids.is_empty() or uids.size() > SQUAD:
+	if state != PICK or not machine_offer.is_empty() or not fronts().has(city_id) or uids.is_empty() or uids.size() > SQUAD:
 		return null
 	var team: Array = []
 	for uid in uids:
@@ -364,13 +373,15 @@ func start_battle(city_id: String, uids: Array) -> Battle:
 
 ## Apply a finished battle to the run, end the turn, and report what happened:
 ## {"turn", "city", "faction", "guest", "result" ("won", "held" or "fell"), "wiped",
-##  "gate_left", "salvage", "favour", "lost" (component ids gone for good), "wrecked" (uids), "phases"}.
-## Empty when no battle has finished.
+##  "gate_left", "salvage", "favour", "lost" (component ids gone for good), "wrecked" (uids), "phases"},
+## and after the run's first battle "offer" (the machines its maker puts up, one to be taken) or
+## "sent" (the machine that came unasked). Empty when no battle has finished.
 func finish_battle() -> Dictionary:
 	if state != BATTLE or battle == null or battle.state != Battle.State.DONE:
 		return {}
 	var b := battle
 	var c: City = cities[battle_city]
+	var first := history.is_empty() and not c.capital   # the run's first battle: it brings the fourth machine
 	var wiped := b.outcome == Battle.Outcome.WRECKED
 	if wiped:
 		# Nobody stands in the way: the horde walks on and strikes the gate (6 October).
@@ -421,7 +432,8 @@ func finish_battle() -> Dictionary:
 		favour += fee
 		report["favour"] = fee
 		tokens.append(faction)
-		offers.append(c.id)
+		if not first:
+			offers.append(c.id)   # the first battle's offer is the fourth machine (below)
 		bosses_beaten[faction] = int(bosses_beaten.get(faction, 0)) + 1
 		if not final and not c.capital and b.lineup.size() == 1:
 			var ended: Array = bosses_ended.get(faction, [])
@@ -443,6 +455,8 @@ func finish_battle() -> Dictionary:
 		salvage += banked
 		report["salvage"] = banked
 	report["gate_left"] = c.gate
+	if first:
+		_bring_the_fourth(c.id, b.outcome == Battle.Outcome.VICTORY, b.tier, report)
 	for k in b.sponsorship.keys():
 		sponsorship[k] = int(sponsorship.get(k, 0)) + int(b.sponsorship[k])
 	history.append(report)
@@ -480,6 +494,82 @@ func _bank_loot(b: Battle, report: Dictionary) -> int:
 			blueprints.append(bp)
 	report["loot_salvage"] = got
 	return got
+
+
+## The first battle brings the fourth machine (the bible's squad row; Ryan, 19 November: "First
+## battle, meadow, 3 machines from the draft, reward is a choice of 1 of 3 machines from the
+## maker, or the missing 4th draft pick on loss"). Won, the host maker puts up OFFER_MACHINES of
+## its machines and the choice waits (machine_offer, take_machine), on a stream of its own as
+## the tender's is. Not won, or a maker with none the roster lacks, the draft's missing pick
+## comes unasked: the machine left on the tender, and with nothing left there (a tender shorter
+## than a squad) content's first tier-one machine the engine fields and the roster lacks, so no
+## run is left a machine short of the fights sized for four.
+func _bring_the_fourth(maker: String, battle_won: bool, battle_tier: int, report: Dictionary) -> void:
+	if battle_won:
+		var r := RandomNumberGenerator.new()
+		r.seed = seed_value * 9173 + 61
+		var picks := machines_of(db, maker, battle_tier, held_chassis(), OFFER_MACHINES, r)
+		if not picks.is_empty():
+			machine_offer = {"maker": maker, "choices": picks}
+			report["offer"] = picks.duplicate()
+			return
+	var left := tender_left()
+	if left.is_empty():
+		var held := held_chassis()
+		for id in db.chassis_of_tier(1):
+			if db.chassis_runnable(str(id)) and not held.has(str(id)):
+				left.append(str(id))
+				break
+	if not left.is_empty():
+		report["sent"] = add_machine(str(left[0])).chassis
+
+
+## The machines a maker puts up after a battle: up to `count` of those it could (machines_open),
+## drawn by `r`; fewer when the maker has fewer and none when it has none. The quick campaign's
+## first offer is dealt here too (one code tree, 7 November).
+static func machines_of(content: ContentDB, maker: String, battle_tier: int, held: Array, count: int, r: RandomNumberGenerator) -> Array:
+	var open := machines_open(content, maker, battle_tier, held)
+	_shuffle(open, r)
+	return open.slice(0, maxi(0, count))
+
+
+## Every machine a maker could put up after a battle, in content order: its chassis the engine
+## can field, of the battle's tier or under (`battle_tier` counts from 0), that the roster does
+## not hold (`held`, chassis ids).
+static func machines_open(content: ContentDB, maker: String, battle_tier: int, held: Array) -> Array:
+	var open: Array = []
+	for id in content.chassis.keys():
+		var ch: Dictionary = content.chassis[id]
+		if str(ch.get("maker", "")) == maker and int(ch.get("tier", 0)) <= battle_tier + 1 \
+				and content.chassis_runnable(str(id)) and not held.has(str(id)):
+			open.append(str(id))
+	return open
+
+
+## The chassis the roster holds, one id a machine.
+func held_chassis() -> Array:
+	var out: Array = []
+	for m in roster:
+		out.append(m.chassis)
+	return out
+
+
+## The machines left on the tender (the draft's missing pick): what the run's tender offered
+## that the roster does not hold, in the tender's order.
+func tender_left() -> Array:
+	var held := held_chassis()
+	return tender(db, seed_value).filter(func(id) -> bool: return not held.has(str(id)))
+
+
+## Take one of the machines the first battle's offer holds: it joins the roster in its stock
+## loadout, ready. Null when no offer waits or `index` names none of its choices.
+func take_machine(index: int) -> Machine:
+	var choices: Array = machine_offer.get("choices", [])
+	if state != PICK or index < 0 or index >= choices.size():
+		return null
+	var m := add_machine(str(choices[index]))
+	machine_offer = {}
+	return m
 
 
 ## The boss a domain's next battle brings (the bible's section 9, decided 15 October; built 22
@@ -540,7 +630,7 @@ func _fielded(b: Battle, uid: int) -> Unit:
 	var u := b.field.unit_by_id(uid)
 	if u != null and u.is_player():
 		return u
-	for w in b.wrecks:
+	for w in b.field.wrecks:
 		if w.id == uid:
 			return w
 	return null
@@ -617,9 +707,12 @@ func _fall(c: City) -> void:
 ## Spend the turn without a battle (6 October: waiting a cycle for the shop is a choice), never
 ## once the finale is due (Ryan, 8 November: "you can't pass a turn when the finale is due. That
 ## gate at the capital needs to be fought right now, the Council demands it"), so the Convergence
-## never runs past the finale's. False when refused.
+## never runs past the finale's; nor before the run's first battle is fought (Ryan, 19 November:
+## "there being nothing to do initially, I feel like the first battle in a campaign should just
+## be a forced city choice with no option to pass"); nor while the first battle's machine is
+## still to be taken. False when refused.
 func pass_turn() -> bool:
-	if state != PICK or finale_due():
+	if state != PICK or finale_due() or history.is_empty() or not machine_offer.is_empty():
 		return false
 	_end_turn("")
 	return true
@@ -690,7 +783,11 @@ func _open_rifts() -> void:
 
 ## A rift's factions (6 October: rolled when the rift opens, never fixed to a city). The
 ## lead is any faction not yet beaten; a guest, from GUEST_TIER, any other faction not beaten
-## (Ryan, 26 October: a beaten domain "should stop being a guest in new rifts").
+## (Ryan, 26 October: a beaten domain "should stop being a guest in new rifts"). A run's first
+## rifts, the ones open before its first battle is fought, are the opening domain's where
+## content marks one (Ryan, 19 November: the first battle is the Meadow's, the one fought by
+## three machines), so which city to defend first chooses the maker whose machines are offered
+## and never the foe; no turn passes before that battle (pass_turn), so no other rift opens.
 func _roll_rift() -> Dictionary:
 	var all: Array = db.factions.keys()
 	var leads: Array = []
@@ -699,7 +796,12 @@ func _roll_rift() -> Dictionary:
 			leads.append(f)
 	if leads.is_empty():
 		leads = all
-	var lead := str(leads[rng.randi_range(0, leads.size() - 1)]) if not leads.is_empty() else ""
+	var opening := db.opening_faction()
+	var lead := ""
+	if history.is_empty() and leads.has(opening):
+		lead = opening
+	elif not leads.is_empty():
+		lead = str(leads[rng.randi_range(0, leads.size() - 1)])
 	var guest := ""
 	if tier() >= GUEST_TIER:
 		var others: Array = []

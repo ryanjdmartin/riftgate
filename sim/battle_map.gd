@@ -134,6 +134,41 @@ func _span(col: int, row: int) -> Array[Vector2i]:
 
 ## Gate, rift and wall hexes are structures: nobody stands on them. Packs strike the gate;
 ## the walls cannot be hurt.
+## The rift's shell (Ryan, 16 November: "The shell only needs to cover the 7 hexes in front of the
+## rift ... The result should be that the 7 hexes next to the rift are inaccessible to player
+## units. That also gives us a potential 7 cracks if we ever need it"): every hex beside the rift's
+## five that is not one of them, the boss's hex among them, in order round the rift from one end of
+## its row to the other. Seven on every field (the rift's row is the map's first). The battle holds
+## them while the seal stands (Battlefield.shell).
+func shell_hexes() -> Array[Vector2i]:
+	if not _shell.is_empty():
+		return _shell
+	var out: Array[Vector2i] = []
+	for r in rift_hexes:
+		for n in Hex.neighbors(r):
+			if has(n) and not rift_hexes.has(n) and not out.has(n):
+				out.append(n)
+	var mid := Vector2.ZERO
+	for r in rift_hexes:
+		mid += _plane(r)
+	mid /= float(maxi(1, rift_hexes.size()))
+	out.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
+		var da := _plane(a) - mid
+		var db := _plane(b) - mid
+		return atan2(da.x, da.y) < atan2(db.x, db.y))   # round the front from one end of the rift's row to the other: nothing of the ring lies straight behind it
+	_shell = out
+	return out
+
+
+var _shell: Array[Vector2i] = []   # shell_hexes, read once: the rift's five never move
+
+
+## A hex's centre on a plain axial plane (pointy-top, unit size): an order round the rift, the
+## same whichever way the view lays the field.
+static func _plane(h: Vector2i) -> Vector2:
+	return Vector2(sqrt(3.0) * (float(h.x) + float(h.y) * 0.5), 1.5 * float(h.y))
+
+
 func is_structure(h: Vector2i) -> bool:
 	return gate_hexes.has(h) or rift_hexes.has(h) or wall_hexes.has(h)
 

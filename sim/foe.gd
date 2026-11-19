@@ -7,10 +7,13 @@ extends RefCounted
 ## of attack actions that scale it: {id, name, factor, strikes, weight, keywords, text}.
 ## Each round it picks one by weight before the player acts, so the intent shown is exact.
 ##
-## Targeting: machines do not taunt (2 October), and a foe draws its target at random unless it
-## or its move carries an `aim` (Ryan, 24 October: random is the baseline balanced on, and an
-## aim serves a foe's threat, any foe's); the skirmish makes the pick (`Skirmish._pick_mech_target`), shown before the
-## player acts, and the foes never over-commit to a machine already doomed.
+## Targeting (Ryan, 17 November, after Slice and Dice: "random, don't overkill, and a
+## spattering of 'target highest HP' and 'target lowest HP'"): machines do not taunt, and a move
+## aimed at one machine picks any of them as the round opens, unless the move carries a word for
+## whom it goes for (`aim`: the strongest, the weakest, the hottest). The word is the attack's:
+## a foe has no aim of its own. The skirmish makes the pick (`Skirmish._pick_mech_target`), shown
+## before the player acts; the foes never over-commit to a machine already doomed, and a move
+## at every machine or at nobody draws no pick at all.
 ## A move may carry a `when`, the condition that lets the foe pick it this round, and a
 ## special never fires twice running (`last_special`). A blow may carry `swarm`: so much more
 ## per other foe of its type on the field (`kin`, kept by the skirmish), the ghoul's threat.
@@ -25,7 +28,6 @@ var hp_max: int = 30
 var attack: int = 10             # base attack: the number the player reads as "how hard it hits"
 var armour: int = 0              # flat off every blow that lands on it (content; 2 October: the one enemy mitigation besides recovery)
 var armour_step: int = 0         # armour more a tier above one, a boss whose kit is armour (content `armour_step`; Ryan, 31 October)
-var aim: String = AIM_ANYTHING   # the sense its target pick follows (content; a move may override it)
 var prefers_back: bool = false   # ranged types hold the back rank and never step up
 var pack_id: int = 0            # which battlefield pack this foe came from
 var size: int = 1                # 2 = massive: fills both slots of a column
@@ -36,7 +38,7 @@ var actions: Array = []          # implemented attack actions; at least the basi
 # Live state.
 var rank: int = -1               # 0 front, 1 back, -1 in reserve
 var column: int = -1
-var target: RefCounted = null    # Skirmish.MechState, set when intents are telegraphed
+var target: RefCounted = null    # Skirmish.MechState, its pick, drawn as intents are telegraphed for a move aimed at one machine; null for any other move (intends)
 var action: Dictionary = {}      # this round's chosen action
 var modifiers: Array = []        # statuses on this foe (ablating, suppressed, numbed...): Effects.Modifier list
 var recorder = null              # the round preview's copy alone (Skirmish.preview_round): an Array every grant and stack this foe gains is noted in (Effects._record); null in any fight that plays
@@ -66,15 +68,33 @@ var swallow_mark: int = -1       # its HP as it swallowed a machine, -1 holding 
 var wanders: bool = false        # an elite any domain's Fracture may send, drawn by chance (Gilgamesh, 31 October and 2 November)
 var rage: int = 0                # what every shield, vent or equipment entry the team spends adds to its blows while it stands, its own from the fight's start (content's `rage`: the Goblin Nob, 3 November; innate since 8 November)
 var golden_mark: int = -1        # its HP as it went gold (golden, 4 November: the Thunder Ape), -1 while calm: a quarter of its HP lost since breaks the rage
+var immune: Dictionary = {}      # what of the team's never lands on it (content's `immune`; Ryan, 15 November: "not as a blanket for all bosses, but for ones who need it for their fight to actually do something"): "suppress" or "disrupt" (IMMUNITIES), each true, always, or the id of a move of its own, while that move gathers
 var drains: bool = false         # every blow of its own regrows it by what the blow took from the hull (content's `drains`: the Vampire Lord's, an Ability on the unit since 16 November, Ryan: "This should be moved to an ability on the unit since it's on every attack. Like the Nob"; a rider on its blows until then)
 
-## The aims a foe type or a move may name, and how the codex says each.
-const AIM_EXPOSED := "exposed"
-const AIM_ANYTHING := "anything"   # at random: the default
-const AIMS := ["exposed", "anything", "heat", "armed", "focus", "buffed"]
+## What a foe may be immune to, an Ability said on its chip (immune_to).
+const IMMUNITIES := ["suppress", "disrupt"]
+
+
+## Is it immune to this (IMMUNITIES) right now: always, or while the move its immunity names
+## gathers, from the round that move is announced to the round it lands?
+func immune_to(what: String) -> bool:
+	if not immune.has(what):
+		return false
+	var held = immune[what]
+	if held is bool:
+		return held
+	return not pending.is_empty() and str(pending.get("id", "")) == str(held)
+
+
+## The words a move aimed at one machine may carry for whom it goes for (`aim`), and how its
+## target line says each: the most or the least of one thing the screen shows, a tie drawn at
+## random, so a field that is level picks anyone and no word needs a fallback. A move that
+## names none picks any machine. Hull and shield together are the strongest's and the weakest's
+## measure, as the map's hunts read them.
+const AIMS := ["strongest", "weakest", "hottest", "buffed"]
 const AIM_TEXT := {
-	"exposed": "aims at the exposed", "anything": "aims at anything", "heat": "aims at heat",
-	"armed": "aims at the armed", "focus": "fires as one", "buffed": "aims at the buffed",
+	"strongest": "the strongest machine", "weakest": "the weakest machine",
+	"hottest": "the hottest machine", "buffed": "the most buffed machine",
 }
 ## The conditions a move may carry (`when`, one word or a list meaning any), and how the
 ## codex says each. The skirmish reads them (`Skirmish._when_holds`).
@@ -179,9 +199,9 @@ func choose_from(legal: Array, rng: RandomNumberGenerator) -> void:
 	action = legal[legal.size() - 1]
 
 
-## The sense a move's pick follows: its own, else the foe's.
+## The word a move's pick follows (AIMS), or "" for a move that picks any machine.
 func aim_of(a: Dictionary = action) -> String:
-	return str(a.get("aim", aim))
+	return str(a.get("aim", ""))
 
 
 ## The conditions on a move, as a list (content writes one word or a list meaning any).
@@ -192,19 +212,22 @@ static func whens_of(a: Dictionary) -> Array:
 	return Array(w) if w is Array else []
 
 
-## What one blow of an action does: base attack, plus what its statuses add (a rally's Empowered),
+## What one blow of an action does: the move's number (base_damage_of: the foe's attack at the
+## move's factor, rounded to the nearest whole number, what the codex shows), plus every add, a
+## point on each strike: what its statuses add (a rally's Empowered, a rage, a Sapped's less),
 ## `extra` (the rallies the skirmish sees on their way to it, Skirmish.foe_blow), its swarm and
 ## its grudge (`per_kill`, a point a foe the team has killed this fight: the Pilgrim's Karma, 30
-## October), times its factor, rounded to the nearest whole number: the adds, then the multiplies, one
-## damage formula for the whole game (Ryan, 26 October: "One formula means one damage formula
-## followed by the whole game"). A defend, buff or debuff action deals nothing.
+## October). The machines' formula on the foes' side (Ryan, 26 October: "One formula means one
+## damage formula followed by the whole game"; 18 November, of an add the move's factor scaled:
+## "Should work the same as the machines do"): a move's number is its own, as a weapon's printed
+## number is, and no add is scaled by the factor. A defend, buff or debuff action deals nothing.
 func damage_of(a: Dictionary, extra: int = 0) -> int:
 	if not is_attack_action(a):
 		return 0
 	# A swarm blow grows with the foe's kin on the field: the ghoul's threat is its numbers.
 	var swarm := int(a.get("swarm", 0)) * kin
 	var grudged := int(a.get("per_kill", 0)) * grudge
-	return maxi(0, int(roundf((base_number(a) + Effects.foe_attack_bonus(self) + extra + swarm + grudged) * float(a.get("factor", 1.0)))))   # never below nothing (a Weakened foe's)
+	return maxi(0, base_damage_of(a) + Effects.foe_attack_bonus(self) + extra + swarm + grudged)   # never below nothing (a Sapped foe's)
 
 
 ## The number a move's blow starts from: the foe's attack, or for a move whose `power` names a
@@ -245,10 +268,32 @@ static func power_status(a: Dictionary) -> String:
 ## steps where it was one effect: "Yes, go with the steps if you think that's best"): the move
 ## itself, its first step as a move has always been written, a blow with its riders or one
 ## special, then what it does also (`also`), each a special's effect with the fields it reads.
-## So a spell may strike and curse, or mend one foe and call another. One blow a move, and that
-## its first step, for now.
+## So a spell may strike and curse, or mend one foe and call another. One blow a move. A blow
+## may say what it does before it lands (`before`, Ryan, 18 November, of the Pilgrim's knife:
+## "should the knife attack purge before hitting"): each a special's effect on the move's own
+## pick, in order, and the blow after them. A foe's Purge is a step of a move and never a
+## rider, so this is the move's own order and no exception to the riders' (they land after
+## the hits, on either side).
 static func steps_of(a: Dictionary) -> Array:
-	var out: Array = [a]
+	var out: Array = before_of(a)
+	out.append(a)
+	for st in a.get("also", []):
+		out.append(st)
+	return out
+
+
+## What a blow does before it lands, in order (`before`); nothing for a move with none.
+static func before_of(a: Dictionary) -> Array:
+	var out: Array = []
+	for st in a.get("before", []):
+		out.append(st)
+	return out
+
+
+## Every step of a move beside the move itself: what its blow does before it lands, then what
+## the move does also.
+static func extra_steps(a: Dictionary) -> Array:
+	var out: Array = before_of(a)
 	for st in a.get("also", []):
 		out.append(st)
 	return out
@@ -292,8 +337,9 @@ static func follow_ups(list: Array) -> Array:
 	return out
 
 
-## One blow of an action at the foe's own numbers: its attack times the move's factor, with no
-## kin and no rally (the codex's number, and what the hold reads a live blow against).
+## One blow of an action at the foe's own numbers, the move's number: its attack times the
+## move's factor, with no kin and no rally (the codex's number, what every add lands on, and
+## what the hold reads a live blow against).
 func base_damage_of(a: Dictionary) -> int:
 	if not is_attack_action(a):
 		return 0
@@ -385,7 +431,7 @@ static func _also_onto(move: Dictionary, raw: Dictionary) -> void:
 ## October: a fall lands in the player's turn and would hold through the whole enemy turn
 ## after) and never an Expose, which is announced, one machine at a time.
 const FALL_EFFECTS := ["heal", "brace_all", "cleanse", "revive_once_ally", "rally", "prime", "ward_all",
-	"drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all"]
+	"drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all", "unready_all"]
 
 
 ## Its fall, if it has one: what it does the moment it falls. A last act was one blow (15
@@ -443,12 +489,20 @@ func strikes() -> int:
 ##           popped or the end of the player's next turn (28 October)
 ##           regenerate: Regenerating `value` on itself, a regrowth at each of its next three
 ##           actions after its ticks (28 October)
-##   buff    revive_once: comes back from the pool once after dying (Get Back Up); Suppress and
-##           Disrupt answer the telegraphed move, kill order the rest
+##           phase: it fades as the round ends, Phased through the round after: out of the
+##           team's reach and damaged by nothing, acting all the same; never while it is the
+##           last foe standing, and never a foe Phased already, so none is out two rounds
+##           running (Ryan, 15 November: "I think we give this to the foes too"; "Phased on
+##           foes can be less strict since it's balanced around their kit and theme"; the
+##           Spectre's and the Wraith's, a step after their Hex Bolt, 17 November)
+##   buff    revive_once: it gets back up once the next time it falls, whole, in its own slot
+##           (Reraise); Suppress and Disrupt answer the telegraphed move, kill order the rest
 ##           revive_once_ally: one of its own, never itself, not yet readied, comes back once
 ##           the next time it falls (Reraise, the promoted Cleric's, 16 October): a party
 ##           member first, the heaviest hitter among them, then the rest of its own the same way
-##           summon: `count` foes of `foe` join the pool at the round's end (Raise)
+##           summon: `count` foes of `foe` take empty slots of their rank at once, the nearest
+##           its column, their round over; a call for several stands as many as fit, and a
+##           summoner with room for none never picks it (Raise; Skirmish.legal_actions)
 ##           rally: every foe on the field, itself too, is Empowered `value`, at once (Kindle)
 ##           prime: Primed `value` on every other foe on the field, its next move's blows each
 ##           leaving that much Ablating on the machine they hit (28 October)
@@ -480,28 +534,56 @@ func strikes() -> int:
 ##           Ability, a count no Purge reaches. Gilgamesh's own rule, a step of his
 ##           Collect after the blow that jams the entry (Ryan's mark of 15 November: "It grants
 ##           Jammed on the target, and Gilgamesh gains Appropriated with the value")
+##           unready_all: every other foe standing loses the readiness to rise this foe's kind
+##           gave it, what a foe readied for itself staying its own (the Lich's fall, Ryan's
+##           yes of 17 November: "Killed, every foe it readied loses its readiness to rise");
+##           a fall's by sense, the one fall that pays the team
 ## A move may do more than one of these: its first step is the move as written, and `also`
 ## lists what it does after, each an effect from these lists with its own fields (steps_of).
+## A cleanse that follows a heal in one move lands on the foe the heal mended (the Cleric's
+## Cure, one patient: Skirmish._foe_acts).
 const ACTION_EFFECTS := {
-	"defend": ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate"],
+	"defend": ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "phase"],
 	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "golden", "appropriate"],
-	"debuff": ["drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all", "dispel", "swallow", "expose"],
+	"debuff": ["drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all", "dispel", "swallow", "expose", "unready_all"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
 ## is shown intent (the ambush read below).
-const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all", "merge", "golden"]
+const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all", "merge", "golden", "unready_all", "phase"]
 
 
-## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? Its pick
-## is drawn like any foe's, and means nothing: no arrow, no intent on anyone.
+## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? It draws
+## no pick: no arrow, no intent on anyone.
 func acts_on_nobody() -> bool:
-	if is_attack_action(action):
-		return false
-	for st in effects_of(action):
+	return not lands_on_one(action) and not is_attack_action(action)
+
+
+## Is a move aimed at one machine: a blow that is no blow at every machine, or a special with
+## a step that lands on its pick? Only such a move draws a pick, and only such a move may carry
+## a word for whom it goes for.
+static func lands_on_one(a: Dictionary) -> bool:
+	if is_attack_action(a):
+		return not Array(a.get("keywords", [])).has("all")
+	for st in effects_of(a):
 		if not UNTARGETED_EFFECTS.has(str(st.get("effect", ""))):
-			return false   # one step of it lands on its pick: the move is aimed
-	return true
+			return true   # one step of it lands on its pick: the move is aimed
+	return false
+
+
+## Is this round's move aimed at one machine (lands_on_one)? Its pick is its `target`.
+func aims_at_one() -> bool:
+	return lands_on_one(action)
+
+
+## Does it show a move this round: alive, on its own round (one that stepped up mid-round has
+## had its), and with a machine to land it on when it is aimed at one? A move at every machine
+## or at nobody holds no pick and is an intent all the same. The screen's and the bot's read of
+## "is there anything to show"; whether a Suppress has taken it is the caller's.
+func intends() -> bool:
+	if not alive() or fresh or action.is_empty():
+		return false
+	return target != null or not aims_at_one()
 
 
 ## Does this foe show intent on a machine (the funnel-web's ambush read, 18 October, as the
@@ -509,13 +591,11 @@ func acts_on_nobody() -> bool:
 ## every machine, a gathering countdown included. A foe on a special that acts on nobody in
 ## particular shows intent on no machine, whatever its pick. `u` is the machine's Unit.
 func intent_on(u) -> bool:
-	if u == null or not alive() or is_suppressed() or target == null:
+	if u == null or not intends() or is_suppressed():
 		return false
 	if reaches_every_machine():
 		return true
-	if acts_on_nobody():
-		return false
-	return target.get("unit") == u
+	return target != null and aims_at_one() and target.get("unit") == u
 
 
 ## Tags an attack action may carry. Anything true or false about a blow is a tag here, never
