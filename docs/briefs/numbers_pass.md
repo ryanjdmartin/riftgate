@@ -56,6 +56,11 @@ them after. Numbers in content are placeholders until then, as ever.
   without a ton of work ... placeholder weapons and equipment for a variety of combinations
   of riders, damage, heat, and hit counts, and then see what sticks and is interesting and
   what is redundant enough to cut."
+- The baseline (19 November): "Keep going on all domains, adjusting kits and sizing for
+  convergence 2 as our baseline (since convergence 1 is always going to be 3 machines on
+  the meadow - I'll handle that one). Finish the first battle build and bot fixes too." His
+  Convergence 2 is the second battle, four machines, the anchor of section 3 (the code's
+  ramp 1). The first battle's sizing is his; this pass sizes nothing for a trio.
 - The kits are not a menu (15 November): a foe's move need not fit a component's format;
   the units below measure a kit and never write one (the bible's row on the foes' rule set).
 
@@ -367,8 +372,8 @@ more than half, the knife's read again. So in the Waste the Barrier basic is no 
 - The second lever, held until his play says the stare reads as nothing: the Cockatrice's
   Stone holding until that Cockatrice falls, one stone a machine, a new stare moving it.
 - His play of the kit: whether a standing stack going for good is a question or a tax
-  (the Skua's Ricochet a stack a needle; the bot puts no price on a stack taken, so no read
-  shows it), and whether four purges a round in the thicket read as his "flat tax on every
+  (the Skua's Ricochet a stack a needle; the bot prices a stack taken since 19 November,
+  at what it pays to gain one, and reads the kill order, a Lure and where a buff goes by it), and whether four purges a round in the thicket read as his "flat tax on every
   foe of a formation" of Breach's second form. It falls on what the player chose to put up,
   and the intents show where.
 - The Waste's two cells in his words, and the texts.

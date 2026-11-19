@@ -61,8 +61,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1331 tests, 376,896 checks, green on main (19 November, the Needletail landed
-  over the Waste's purge). The runner fails a run whose tests never ran, so read the checks' count, never
+- Tests: 1332 tests, 376,907 checks, green on main (19 November, the bot's price for what
+  a purge takes). The runner fails a run whose tests never ran, so read the checks' count, never
   the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
   purpose. About four minutes in a cloud session; words after `--` run only the files whose
   names hold one (`-- loot rig`).
@@ -273,14 +273,19 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
 
 Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
 
-1. **The foes' line** (`ccr-722ca9f0-yj8na3`; `docs/briefs/numbers_pass.md`), in this order:
-   - The defence side's rest, this line free to adjust content when it is ready (Ryan, 17
-     November): the Waste's kit now that Breach is cut landed on 19 November on his go
-     (the brief's section 9; the bible's levers row): a Purge ahead of the blow on the
-     needler line's Needles and the Old Man of the Desert's Maw, the knife's own order, so
-     nothing a machine puts up answers them, and its signature restated. Its bosses' blows
-     that lost their breach are his calls, one at a time; then the other domains' kits, each
+1. **The foes' line** (`ccr-722ca9f0-yj8na3`; `docs/briefs/numbers_pass.md`), on his word of 19
+   November: "Keep going on all domains, adjusting kits and sizing for convergence 2 as our
+   baseline (since convergence 1 is always going to be 3 machines on the meadow - I'll handle
+   that one). Finish the first battle build and bot fixes too." The baseline is the anchor,
+   the second battle with four machines (his Convergence 2; the code's ramp 1). The first
+   battle's sizing is his; its build is this line's. In this order:
+   - Every domain's kit and sizing at the baseline, this line free to adjust content (17
+     November): the Waste's landed on 19 November on his go (the brief's section 9; the
+     bible's levers row), a Purge ahead of the blow on the needler line's Needles and the Old
+     Man of the Desert's Maw; then the Meadow's, the Marsh's and the Peak's, each reported
      broken down against the Meadow's fights; the scorches on every machine above tier one.
+   - The first battle as decided (the bible's squad row), in `sim/campaign.gd`, and the
+     campaign bot taking its offer.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
      his picks on RANK AND FILE, HEAT and TOP BASIC: its prices are read from the vanilla he
      settles on.

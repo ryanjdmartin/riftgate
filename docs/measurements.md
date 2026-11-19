@@ -11660,3 +11660,23 @@ its Ultima at every machine, so the purge costs the squad with the Barrier a poi
 half and the squad with a brace in that slot three and a half: it taxes the plate more
 than the piece it was meant to answer. This pass's lean is to leave the tentacle plain.
 
+## 19 November: the bot prices what a purge takes
+
+The fight bot put no price on a stack a foe's Purge took, so no read saw the Skua's
+Ricochet go. Since this day a purge, a move of its own or a step of one, is a threat by
+what its machine carries (a stack of Ricochet at what the bot pays to gain one, a stack of
+Hardened Light at a blow's point, a stack that adds to a blow at what it adds), a brace a
+purging blow strips is worth what is left of it, a stack gained under a purge is worth
+what will still stand, and a Lure moves a purge with its blow. The Waste's four fights
+again, every squad of the pool, forty fights a formation's cell and thirty an elite's:
+
+| Fight | Without the Barrier | With the Barrier basic | Before the bot's price |
+|---|---|---|---|
+| The needler thicket | | 4.5, 6.9% | 6.3% |
+| The sandworm's ambush | | 6.0, 5.4% | 5.4% |
+| The old man's rising | 7.7, 23.9% | 8.2, 23.6% | 24.9%, 23.5% |
+| The Pilgrim's wake | 6.9, 22.7% | 6.8, 15.9% | 20.7%, 16.3% |
+
+A point at the most: the bot gives a little hull to keep its stacks, and the fights stand
+where they were sized. 1332 tests, green.
+

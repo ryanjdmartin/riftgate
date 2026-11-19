@@ -834,6 +834,50 @@ func test_greedy_gives_a_barrier_nothing_against_a_blow_that_purges_first() -> v
 	assert_true(pol.barrier_score(sk, ms) > 0.0, "behind a Ward the purge is turned away and the Barrier is worth its blow again")
 
 
+func test_the_bot_prices_what_a_purge_takes_and_a_brace_it_thins() -> void:
+	# A foe's Purge had no price (19 November: the Waste's needles carry one ahead of the blow), so
+	# no read saw the stack it took. A purge is a threat by what its machine carries, a brace a
+	# purging blow strips is worth less, and a stack gained under a purge is worth what is left.
+	var pol := Policy.make(Policy.GREEDY)
+	var sk := Skirmish.new(1)
+	var m := _mech("A", Die.of([Face.buff("ricochet"), Face.attack(10, L)]), 0, 100)
+	sk.add_mech(m)
+	var needle := _ghoul(500, 6)
+	sk.add_foes([needle])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	needle.target = ms
+	var plain := Policy._threat_now(needle, sk)
+	var purging: Dictionary = needle.action.duplicate(true)
+	purging["before"] = Foe.also_from([{"effect": "dispel", "value": 1}], "Needles")
+	var plain_action: Dictionary = needle.action
+	needle.action = purging
+	assert_eq(Policy._threat_now(needle, sk), plain, "a purge on a machine that carries nothing costs nothing more than the blow")
+	Effects.grant_buff(m, "ricochet", 3, "test", sk.round)
+	assert_eq(Policy.purge_cost(ms, 1), Policy.RICOCHET_WORTH, "a Purge 1 takes one stack of Ricochet, at what the bot pays to gain one")
+	assert_eq(Policy.purge_cost(ms, 5), 3.0 * Policy.RICOCHET_WORTH, "and never more stacks than the machine carries")
+	assert_true(Policy._threat_now(needle, sk) > plain, "so the foe whose blow purges is the greater threat to a machine with stacks to lose")
+	assert_eq(Policy.purges_coming(sk, ms), 1, "the bot counts the purges aimed at a machine this round")
+	# A stack gained under the purge: three held and one gained, one purged, is one more than
+	# without it; with every stack going, a stack more is still gone.
+	var swoop := Face.buff("ricochet")
+	assert_eq(pol.buff_score(sk, ms, swoop), Policy.RICOCHET_WORTH, "a stack gained still stands after the purge takes one of four")
+	Effects.remove(m, "ricochet")
+	assert_eq(pol.buff_score(sk, ms, swoop), 0.0, "and one gained alone is the one the purge takes")
+	# A brace: two stacks against a blow of six on a bare hull keep two points off it; a purge
+	# ahead of the blow takes one of the two first.
+	needle.action = plain_action
+	var whole := pol.brace_score(sk, ms, 2)
+	needle.action = purging
+	var thinned := pol.brace_score(sk, ms, 2)
+	assert_true(whole > 0.0, "a brace keeps hull against a plain blow")
+	assert_eq(thinned, whole / 2.0, "and half of it against a blow that purges first, a stack of the two gone before it lands")
+	Effects.grant_buff(m, "ward", 1, "test", sk.round)
+	assert_eq(Policy.purges_coming(sk, ms), 0, "behind a Ward no purge is coming")
+	assert_eq(Policy._threat_now(needle, sk), plain, "and the purge costs nothing")
+
+
 func test_the_bot_reads_a_foes_barrier_ward_priming_and_regrowth() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var sk := Skirmish.new(1, 3)
