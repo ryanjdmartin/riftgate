@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 193 implemented, 6 planned, 0 idea.
+Status: 195 implemented, 6 planned, 0 idea.
 
 ## Resource
 
@@ -62,6 +62,7 @@ Status: 193 implemented, 6 planned, 0 idea.
 | **Grants a reroll** | A rule printed on equipment (the Swallowtail's Reveille Horn, the Giant Petrel's Immelmann Booster): spending it gives the team the rerolls it says, at once and past the round's two. While the die is held over its target, the REROLL button lights and shows the count it would leave. | implemented |
 | **Vents all** | An attack that fires the machine's whole heat as it is spent: the heat gauge is empty after the shot, and every step of heat fired, the step printed on the entry, adds the component's bonus to the blow before the passives. The shot's own heat cost still lands. | implemented |
 | **Fires the shield** | An attack that fires the machine's whole shield as it is spent: every step of shield fired, the step printed on the entry, adds the component's bonus to the blow before the passives, and the shield is left at nothing, Broken until the machine reboots. A broken shield fires nothing. | implemented |
+| **Passes heat** | Equipment that passes its machine's whole heat onto the ally it is spent on, past that ally's maximum too, and grants its status for the heat passed: a stack for every step of heat printed on the entry, rounded down. Its machine's gauge is empty after the spend, and the die shows the stacks it would grant now. | implemented |
 | **Grows with missing HP** | A flat blow that grows with its target's lost HP: it adds its bonus for every step of HP the target is missing, both numbers printed on the entry, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target. | implemented |
 | **Finisher** | A rule printed on a weapon: against a foe at half its HP or less its number is doubled, read as the die is spent, so every strike of the spend takes it or none does. The die shows the doubled number while held over such a foe. The Kite's Pinion Driver. | implemented |
 | **Gated** | A keyword printed with a condition, such as a Suppress on a foe carrying Brittle or on a foe carrying two Ablating or more: it lands only on a foe that meets the condition, read as the die is spent and before the blow's own riders, so a spend never opens its own gate. Held over a foe where the condition does not hold, the die shows the keyword's chip struck through. | implemented |
@@ -223,6 +224,7 @@ Status: 193 implemented, 6 planned, 0 idea.
 | **On attack** | Passive trigger. Fires on every attack, after its number is read. Effects: multiply or add damage or heat, multiply the printed number alone before any buff (the Kite's double, on an unhurt foe), or set a minimum damage. | implemented |
 | **On shield gain** | Passive trigger. Fires when this machine gains shield from any source, with the amount gained; it may shed heat or grant a status, never raise more shield. | implemented |
 | **On shielding an ally** | Passive trigger. Fires when this machine spends a shield component on an ally, with the shield's size; it may shed the ally's heat or grant the ally a status, never raise more shield. It never fires for a shield on itself. | implemented |
+| **On buffing an ally** | Passive trigger. Fires when this machine spends a piece of equipment on an ally, once for each ally it lands on, whatever the equipment did; it may take some of the ally's heat onto this machine. It never fires for equipment on itself. | implemented |
 | **On heat gain** | Passive trigger. Fires when this machine gains heat, with the amount; it may raise shield or grant a status, never add heat. | implemented |
 | **On skirmish start** | Passive trigger. Fires once as the skirmish begins, before the first roll: a shield, a vent, a status. | implemented |
 | **On foe status** | Passive trigger. Fires when any foe gains a status, whoever applied it: once for each status a spend puts on a foe, however many strikes or stacks (an application, not a stack). Never for Paradox, nor for the Suppressed a Paradox causes, and Numbed is no status. Effects: paradox (the foe gains a stack of Paradox; at the count it is Suppressed and the Paradox clears). | implemented |
@@ -367,6 +369,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **City defense** (planned): No die and no rule yet: how gate defences work is section 12's question.
 - **On shield gain** (implemented): No content uses it yet.
 - **On shielding an ally** (implemented): Fires on the spend, whatever the shield gained, so a shield die on a topped-up ally still does its other work.
+- **On buffing an ally** (implemented): Its carrier the Puffin's pull (Ryan, 11 November: "Using an equipment on an ally moves some of its heat to the Puffin"; 19 November: "I think 4 for the Puffin"). The piece that passes heat fires none: its heat goes the other way. The codex is a session's draft.
 - **On skirmish start** (implemented): No content uses it yet.
 - **On applying stacks** (implemented): Shocked and Suppressed are not stacks, so it never touches them.
 - **On hull damage** (implemented): The hook for the pinned berserker idea too.
@@ -402,6 +405,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Foe action** (implemented): A foe's whole brain is its weighted draw and its pick; none plans ahead.
 - **Vents all** (implemented): Only the first shot of a chain fires the heat.
 - **Fires the shield** (implemented): Its carrier the Buzzard's Shield-burner Cannon (Ryan, 18 November: it breaks the shield, and no zap rides it: "It can't, since the shield will be empty"). Never beside Vents all on one entry (the validator). The codex is a session's draft.
+- **Passes heat** (implemented): Its carrier the Puffin's dump (Ryan, 11 November: "A locked piece can transfer the Puffins heat to another unit along with a buff based on heat moved"; "just allies"; 19 November, Empowered for every 2: "that needs data"). An ally its heat takes past the maximum burns as the turn ends, his "forcing an overheat". The codex is a session's draft.
 - **Grows with missing HP** (implemented): Both numbers are the entry's own (power_per_missing and per_missing), placeholders.
 - **Finisher** (implemented): A working name. The Coriolis Accelerator's slope as one step (Ryan, 11 November: "is there a way to make the pinion driver simpler but fill the same purpose"); its factor is the entry's own (finisher), a placeholder.
 - **Gated** (implemented): Suppress alone carries a gate today. A working name for Ryan's name pass.

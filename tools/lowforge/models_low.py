@@ -8330,7 +8330,7 @@ def puffin(b):
     stern, a wave-piercing bow carrying the prow's band of light; the hull thicker amidships
     and its bottom rising to the prow and the stern (the boat's curve, the belly flat between
     for the cushion); a fighter canopy; one booster astern drawn in over the afterdeck, a tall
-    swept fin on it; the Backwash Ionizer (fixed, no pin) a dish on a short mast amidships,
+    swept fin on it; the Overdrive Injector (fixed, no pin; the Backwash Ionizer until 19 November) a dish on a short mast amidships,
     sitting on the mast's yoke, that turns (joint projector). The side plates are repulsors
     and shield amplifiers both: hinged low on the flanks at the chine, they lie level under
     way as the lift surfaces that steer it, their outside faces (the undersides, level) carrying
@@ -8483,9 +8483,10 @@ def puffin(b):
     b.standing = {"repulsor_l": 4.0, "repulsor_r": 4.0}
     b.gait(hold={"plate_l": 0.0, "plate_r": 0.0}, body_hold=(0.0, 0.0, 0.0, 0.0, -5.0, 0.0), glow={"parts": boosters + reps, "k": KESTREL_BURN}, rock=3.0)
     b.move(slide=0.3, bank=14.0, accel=0.8, heft=0.13, oversteer=1.5)   # a little bank in its turns (Ryan, 3 November: "since it's more speedboat-ey now")
-    # Its fixed equipment moves as it is used (Ryan's go of 3 November): the Ionizer's dish sweeping
-    # round and back as its core blazes, a slice of its backwash.
-    b.fires = {"backwash_ionizer": ("backwash", 1.0, 3.0)}
+    # Its fixed equipment moves as it is used (Ryan's go of 3 November): the projector's dish sweeping
+    # round and back as its core blazes, a slice of its backwash (the Overdrive Injector's since 19
+    # November, the heat it passes thrown at the ally).
+    b.fires = {"overdrive_injector": ("backwash", 1.0, 3.0)}
 
 puffin.maker = "kestrel"
 

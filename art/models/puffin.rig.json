@@ -952,7 +952,7 @@
   "repulsor_r": 4.0
  },
  "fires": {
-  "backwash_ionizer": {
+  "overdrive_injector": {
    "act": "backwash",
    "from": 1.0,
    "to": 3.0

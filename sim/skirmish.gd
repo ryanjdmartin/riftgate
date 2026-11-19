@@ -762,25 +762,15 @@ func shown_number(ms: MechState, f: Face, target: Foe = null) -> int:
 	return d
 
 
-## The shield an entry gives the machine it is spent on: a shield's number, and on an ally what
-## the spender's passives add from the heat that ally carries at the spend (shield_per_ally_heat;
-## the Puffin's Slipstream Projector, 21 October), after a shield's own cooling (the Sutler's
-## Hoist: the cooling first, the shield reading what is left). The spend, the die dragged over
-## the ally and the bot all read it here.
-func shield_amount(ms: MechState, f: Face, who: MechState) -> int:
+## The shield an entry gives the machine it is spent on: a shield's number, or what takes it to its
+## maximum (the Sutler's Hoist's full reset). The spend, the die dragged over the machine and the
+## bot all read it here.
+func shield_amount(_ms: MechState, f: Face, who: MechState) -> int:
 	if f == null:
 		return 0
 	if f.kind == Face.Kind.SHIELD and f.fills_shield:
 		return maxi(0, who.unit.shield_max - who.unit.shield) if who != null else 0   # the Hoist's full reset
-	var n := f.power if f.kind == Face.Kind.SHIELD else 0
-	if n <= 0:
-		return 0
-	if who != null and who != ms:
-		var left := maxi(0, who.heat - f.vents)
-		if f.cools_all:
-			left = 0
-		n += Effects.granted_shield(ms.unit, left)
-	return n
+	return maxi(0, f.power) if f.kind == Face.Kind.SHIELD else 0
 
 
 ## The shown number as the die prints it: one number, or the range; a debuff prints none (a
@@ -1447,6 +1437,12 @@ func shown_face(ms: MechState, f: Face, target: Foe = null) -> Face:
 		if sf == f:
 			sf = f.duplicate_face()
 		sf.buff_stacks = spend_take(ms, sf)
+	if sf != null and sf.passes_heat:
+		# An entry that passes its machine's heat for its stacks (the Puffin's dump): what the heat it
+		# carries now would grant.
+		if sf == f:
+			sf = f.duplicate_face()
+		sf.buff_stacks = ms.heat / maxi(1, sf.heat_per_stack)
 	if sf == null or not sf.is_attack():
 		return sf
 	var heat := int(Effects.attack(ms.unit, sf, 0, sf.heat)["heat"])
@@ -2309,6 +2305,9 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 			# Equipment that grants a status for the round (or more): the pipeline reads it
 			# like any modifier, and end_round lets it go.
 			var who: MechState = target if target is MechState else ms
+			var landed: Array[MechState] = [who]   # whom it lands on, read before it does: the allies a pull reads
+			if f.reaches_all:
+				landed = reached_machines(ms, f)
 			if f.act_again:
 				# The Reveille Horn's charged form (the gun platform's engine): the ally's spent die
 				# rolls again by the reroll rule, never onto the entry it spent (Ryan, 8 November:
@@ -2354,6 +2353,8 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 					grants = Effects.spend_stacks(ms.unit, f.spends, f.spends_up_to)
 					var spent_name := str(Effects.STATUS.get(f.spends, {}).get("name", f.spends))
 					log.append("%s consumes %d %s: %d left" % [ms.unit.display_name, grants, spent_name, Effects.stacks_of(ms.unit, f.spends)])
+				elif f.passes_heat:
+					grants = _pass_heat(ms, who, f)
 				for w in whom:
 					if f.buff_status == "phased":
 						# Phased is granted as the round ends (Ryan, 15 November: "all sources of
@@ -2364,6 +2365,8 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 						_lay_in_front(ms, w, f)
 						continue
 					var stacks := _stacks_from(ms, f.buff_status, grants)
+					if stacks <= 0:
+						continue   # a dump of too little heat for a stack grants nothing
 					var m := Effects.grant_buff(w.unit, f.buff_status, stacks, src, until)
 					if m == null:
 						continue
@@ -2378,6 +2381,13 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 						_roll_again(w)
 						log.append("%s's die rolls again" % w.unit.display_name)
 			_cleanse_with(ms, who, f)
+			# The Puffin's pull: equipment spent on an ally takes some of its heat onto the spender,
+			# once for each ally it lands on; the piece that passes heat pulls none, its heat going the
+			# other way.
+			if not f.passes_heat and ms.alive():
+				for w in landed:
+					if w != ms and w.alive():
+						_pull_heat(ms, w)
 			# The Retrocausal Shroud (the Baboon's, Ryan, 11 November: "Cleanse an ally. Disrupt all
 			# enemies targeting it"; "Targeting all means targeting the ally"): every foe showing intent
 			# on the machine, its pick or a blow at every machine, takes Disrupt, the keyword's effect.
@@ -5446,8 +5456,8 @@ func _gain_shield(ms: MechState, amount: int) -> int:
 
 
 ## A shield component spent on an ally fires the spender's on_shield_granted passives on
-## that ally (the Puffin's escort passive, 5 October): heat the ally sheds, statuses it
-## gains. Fires on the spend, whatever the shield gained.
+## that ally (the Phase Conjugator's Armoured): heat the ally sheds, statuses it gains. Fires
+## on the spend, whatever the shield gained.
 func _shield_granted(ms: MechState, who: MechState, amount: int) -> void:
 	var r := Effects.shield_granted(ms.unit, who.unit, amount)
 	var parts: Array[String] = []
@@ -5459,6 +5469,38 @@ func _shield_granted(ms: MechState, who: MechState, amount: int) -> void:
 		parts.append(str(name))
 	if not parts.is_empty():
 		log.append("%s: %s's escort, %s" % [who.unit.display_name, ms.unit.display_name, ", ".join(parts)])
+
+
+## The Puffin's pull (on_buff_granted's pull_heat; Ryan, 11 November: "Using an equipment on an
+## ally moves some of its heat to the Puffin"; 19 November, "I think 4 for the Puffin"): a piece of
+## equipment spent on an ally takes up to the passive's number of that ally's heat, the stacks past
+## its maximum first (heat is one gauge), onto the spender, through the heat path, so a passive
+## on heat gained answers it and the spender may pass its own maximum. Fires on the spend, whatever
+## the equipment did.
+func _pull_heat(ms: MechState, who: MechState) -> void:
+	var r := Effects.fire(ms.unit, "on_buff_granted", 0, who.unit)
+	var pulled := mini(who.heat, int(r["pull"]))
+	if pulled <= 0:
+		return
+	who.heat -= pulled
+	_add_heat(ms, pulled, ms.face_index)
+	log.append("%s takes %d heat off %s" % [ms.unit.display_name, pulled, who.unit.display_name])
+
+
+## The Puffin's dump (Face.passes_heat; Ryan, 11 November: "A locked piece can transfer the
+## Puffins heat to another unit along with a buff based on heat moved", "just allies", "forcing an
+## overheat for hull damage"): its machine's whole heat, its overheat with it, passes onto the ally
+## it is spent on, through the heat path (the ally's on_heat_gain answers it: the Storm Petrel's
+## shield) and past that ally's maximum too. Returns the stacks it grants: one for every
+## heat_per_stack passed, rounded down.
+func _pass_heat(ms: MechState, who: MechState, f: Face) -> int:
+	var passed := ms.heat
+	if passed <= 0 or who == ms:
+		return 0
+	ms.heat = 0
+	log.append("%s passes %d heat to %s" % [ms.unit.display_name, passed, who.unit.display_name])
+	_add_heat(who, passed)
+	return passed / maxi(1, f.heat_per_stack)
 
 
 ## Apply what a trigger's passives gave a machine: shield up (which is a shield gain of its

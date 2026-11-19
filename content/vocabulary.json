@@ -1371,6 +1371,16 @@
    }
   },
   {
+   "id": "on_buff_granted",
+   "category": "trigger",
+   "name": "On buffing an ally",
+   "codex": "Passive trigger. Fires when this machine spends a piece of equipment on an ally, once for each ally it lands on, whatever the equipment did; it may take some of the ally's heat onto this machine. It never fires for equipment on itself.",
+   "status": "implemented",
+   "design": {
+    "holes": "Its carrier the Puffin's pull (Ryan, 11 November: \"Using an equipment on an ally moves some of its heat to the Puffin\"; 19 November: \"I think 4 for the Puffin\"). The piece that passes heat fires none: its heat goes the other way. The codex is a session's draft."
+   }
+  },
+  {
    "id": "on_heat_gain",
    "category": "trigger",
    "name": "On heat gain",
@@ -1818,6 +1828,16 @@
    "status": "implemented",
    "design": {
     "holes": "Its carrier the Buzzard's Shield-burner Cannon (Ryan, 18 November: it breaks the shield, and no zap rides it: \"It can't, since the shield will be empty\"). Never beside Vents all on one entry (the validator). The codex is a session's draft."
+   }
+  },
+  {
+   "id": "passes_heat",
+   "category": "component_property",
+   "name": "Passes heat",
+   "codex": "Equipment that passes its machine's whole heat onto the ally it is spent on, past that ally's maximum too, and grants its status for the heat passed: a stack for every step of heat printed on the entry, rounded down. Its machine's gauge is empty after the spend, and the die shows the stacks it would grant now.",
+   "status": "implemented",
+   "design": {
+    "holes": "Its carrier the Puffin's dump (Ryan, 11 November: \"A locked piece can transfer the Puffins heat to another unit along with a buff based on heat moved\"; \"just allies\"; 19 November, Empowered for every 2: \"that needs data\"). An ally its heat takes past the maximum burns as the turn ends, his \"forcing an overheat\". The codex is a session's draft."
    }
   },
   {

@@ -2481,13 +2481,12 @@ func test_every_mark_on_a_die_face_heads_a_line_of_its_readout() -> void:
 			assert_true(heads.has(aim), "%s: the die's hexes head its target line (%s)" % [cid, str(heads)])
 
 
-## The die's readout lines each with the mark it says: the Puffin's projector, an ally's shield,
-## its glyph on its number, the three hexes on its target, and a lock and a corruption on their
-## states.
+## The die's readout lines each with the mark it says: a synthetic shield for an ally (the Puffin's
+## Backwash Ionizer until its rework of 19 November), its glyph on its number, the three hexes on its
+## target, and a lock and a corruption on their states.
 func test_a_dies_readout_heads_each_line_with_its_mark() -> void:
 	var db := ContentDB.load_default()
-	var f := db.build_face(db.components["backwash_ionizer"]["face"])
-	f.component = "backwash_ionizer"
+	var f := db.build_face({"kind": "shield", "power": 3, "targets": "ally", "keywords": []})
 	var lines := EntryReadout.lines_for(f, 1, -1, f, [["Locked: a reroll skips it", EntryReadout.mark("lock", Palette.HUD, false)]], [], db)
 	var by := {}
 	for l in lines:

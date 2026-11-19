@@ -58,7 +58,8 @@ const SUPPORTED_EFFECTS := {
 	"on_barrier": ["stack_status"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
 	"on_shield_gain": ["vent_heat", "stack_status"],
-	"on_shield_granted": ["vent_heat", "stack_status", "shield_per_ally_heat"],
+	"on_shield_granted": ["vent_heat", "stack_status"],
+	"on_buff_granted": ["pull_heat"],   # equipment this machine spends on an ally, once for each ally it lands on (the Puffin's pull, 19 November)
 	"on_heat_gain": ["add_shield", "shield_per_heat", "stack_status"],
 	"status": ["tick_hp", "tick_hp_share", "skip_action", "disable_entry", "corrupt_entry", "regrow"],
 	"on_foe_status": ["paradox"],
@@ -1904,7 +1905,7 @@ static func blow_blocked(u) -> Dictionary:
 ## Nothing here can fire itself: a shield gained here grants no more shield, heat shed here
 ## grants no heat.
 static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary:
-	var out := {"shield": 0, "vent": 0, "statuses": [] as Array[String]}
+	var out := {"shield": 0, "vent": 0, "pull": 0, "statuses": [] as Array[String]}
 	for pair in _taking_part(u, trigger, null):
 		var eff: Dictionary = pair[0]
 		# An effect that fires once a round (its `once`: "round"; the Skua's stack of Ricochet for
@@ -1927,6 +1928,11 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 				out["shield"] += maxi(0, int(u.shield_max) - int(u.shield))
 			"vent_heat":
 				out["vent"] += v
+			"pull_heat":
+				# The Puffin's pull (Ryan, 11 November: "Using an equipment on an ally moves some of its
+				# heat to the Puffin"; 19 November, "I think 4 for the Puffin"): the most of the ally's
+				# heat it takes onto itself, for the caller to move.
+				out["pull"] += v
 			"stack_status":
 				var id := str(eff.get("value", ""))
 				if STATUS.has(id):
@@ -2204,19 +2210,16 @@ static func shield_granted(u, ally, amount: int) -> Dictionary:
 	return fire(u, "on_shield_granted", amount, ally)
 
 
-## The shield this machine's spend gives an ally beyond the entry's own number: its passives'
-## shield_per_ally_heat (on_shield_granted; the Puffin's Slipstream Projector, 21 October),
-## `value` for every `per_heat` (10 until the stock pass's landing) the ally carries, pro rata
-## and rounded down, so a value of 2 per 10 is a fifth of the ally's heat. Read at the spend,
-## before the shield lands, from the heat the ally
-## carries then; never on the machine itself, since the trigger is for allies (the caller asks
-## only for an ally). The die dragged over the ally and the bot read the same number.
-static func granted_shield(u, ally_heat: int) -> int:
-	var n := 0.0
-	for pair in _taking_part(u, "on_shield_granted", null):
-		if str(pair[0].get("effect", "")) == "shield_per_ally_heat":
-			n += float(int(pair[0].get("value", 0)) * int(pair[1].stacks) * maxi(0, ally_heat)) / float(maxi(1, int(pair[0].get("per_heat", 10))))
-	return maxi(0, floori(n + 0.000001))
+## The most of an ally's heat a piece of equipment this machine spends on it takes onto this
+## machine (on_buff_granted's pull_heat; the Puffin's, 19 November), for the bot and the readout to
+## read before the spend: the fire is the spend's own (Skirmish._pull_heat). 0 for a machine that
+## pulls none.
+static func granted_pull(u) -> int:
+	var n := 0
+	for pair in _taking_part(u, "on_buff_granted", null):
+		if str(pair[0].get("effect", "")) == "pull_heat":
+			n += int(pair[0].get("value", 0)) * int(pair[1].stacks)
+	return maxi(0, n)
 
 
 ## The heat an ally this machine shields would shed (on_shield_granted vent_heat), for the
@@ -2776,7 +2779,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
 		"shield_zap": body = "each weapon it fires pays %d shield, when it holds that much, for +%s on its every blow" % [int(eff.get("cost", 0)), vs]
 		"add_power": body = "its own number +%s" % vs
-		"shield_per_ally_heat": body = "the shield grows by %s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
+		"pull_heat": body = "takes up to %s of its heat onto this machine" % vs
 		"add_shield": body = "+%s shield" % vs
 		"shield_per_heat": body = "+%s shield for each point" % vs
 		"refill_shield": body = "its shield recharges whole"
@@ -2808,6 +2811,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"on_skirmish_start": lead = "as the fight begins: "
 		"on_shield_gain": lead = "on gaining shield: "
 		"on_shield_granted": lead = "an ally this machine shields: "
+		"on_buff_granted": lead = "an ally this machine spends equipment on: "
 		"on_heat_gain": lead = "on gaining heat: "
 		"on_kill": lead = "after an attack that killed: "
 		"on_round_kill": lead = "at the end of a round in which it killed: "

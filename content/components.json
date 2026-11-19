@@ -1166,22 +1166,23 @@
    "tags": []
   },
   {
-   "id": "backwash_ionizer",
-   "name": "Backwash Ionizer",
+   "id": "overdrive_injector",
+   "name": "Overdrive Injector",
    "maker": "kestrel",
    "shape": "dish",
-   "codex": "Ionizes the target's backwash, temporarily increasing the target's shield capacity until round end.",
+   "codex": "Dumps the heat the Puffin has soaked up into one ally's systems, driving its guns harder for every bit of it.",
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "The whole front of the Puffin is one shield projector, and it only points outward.",
-    "niche": "The Puffin's locked shield: a big bubble it can only raise on an ally, and the game's first Overshield, so it may lift the ally past its maximum for the round (Ryan, 2 October: a shield specialist, not a shield-bot; 5 October: overshield a rare keyword, the projector first). Overshield was cut as a keyword on 15 November (Ryan's mark), so it raises no shield past the maximum: its session finds it another rule."
+    "fantasy": "The whole front of the Puffin is one projector, and it only points outward: what it has soaked up off its team goes out of it in one hot shove, into an ally's guns.",
+    "niche": "The Puffin's locked dump (Ryan, 11 November: \"A locked piece can transfer the Puffins heat to another unit along with a buff based on heat moved, so it gets along with the Buzzard and stingray, and other niche interactions like forcing an overheat for hull damage\"; \"just allies\"; 19 November, Empowered 1 for every 2 heat passed: \"We can try empowered for 2 but that needs data\"). Its whole heat goes, so the gauge it fills with its pulls empties with it; it fires no pull of its own, since its heat goes the other way. A working name, as is its passive's (19 November: \"I think we should revisit the kit names\")."
    },
    "face": {
-    "kind": "shield",
-    "power": 3,
+    "kind": "buff",
+    "status": "overcharged",
     "targets": "ally",
-    "keywords": []
+    "passes_heat": true,
+    "heat_per_stack": 2
    },
    "passive": null,
    "tags": []

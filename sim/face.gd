@@ -165,6 +165,9 @@ var finisher: int = 0         # an attack: its number times this against a foe a
 # The Quintessence Tap's (the Ammit's, Ryan, 12 November: "Consume up to 5 souls, granting 1 Empowered per soul"; "No Empowered decays this round. And I mean none, not ally or enemy"):
 var spends: String = ""       # a buff: the status of its own machine it spends for its stacks, a stack granted a stack spent (its Essence); with none to spend the entry cannot be played
 var spends_up_to: int = 0     # ...the most it spends, and so the most it grants (five); buff_stacks holds it as built, and what it would take now on the die as shown (Skirmish.shown_face)
+# The Puffin's dump (Ryan, 11 November: "A locked piece can transfer the Puffins heat to another unit along with a buff based on heat moved"; "just allies"):
+var passes_heat: bool = false  # a buff on an ally: its machine's whole heat, its overheat with it, passes onto the ally it is spent on, past that ally's maximum too...
+var heat_per_stack: int = 0    # ...and the ally gains a stack of its status for every this many heat passed, rounded down (2); buff_stacks holds what it would grant now on the die as shown (Skirmish.shown_face)
 var holds_all: String = ""    # any entry: once it is spent, no unit's stacks of this status run down at this round's end, either side's (Skirmish.round_holds)
 var fills_hopper: int = 0     # an attack: loads it puts in its machine's hopper for each foe its blows reach (the Chainsaw Claw, 11 October)
 var fires_hopper: int = 0     # an attack: the most loads one shot fires from the hopper...
@@ -359,6 +362,12 @@ static func from_dict(d: Dictionary) -> Face:
 		if not f.spends.is_empty():
 			f.spends_up_to = maxi(1, int(d.get("spends_up_to", 1)))
 			f.buff_stacks = f.spends_up_to
+		# A buff that passes its machine's heat for its stacks (the Puffin's dump): as built it grants
+		# none, its stacks what the heat passed makes, and a save's `stacks` beside it says what it showed.
+		f.passes_heat = bool(d.get("passes_heat", false))
+		if f.passes_heat:
+			f.heat_per_stack = maxi(1, int(d.get("heat_per_stack", 1)))
+			f.buff_stacks = maxi(0, int(d.get("stacks", 0)))
 	f.holds_all = str(d.get("holds_all", ""))
 	if f.kind == Kind.ATTACK:
 		f.vents_all = bool(d.get("vents_all", false))
@@ -445,6 +454,9 @@ func to_dict() -> Dictionary:
 		if not spends.is_empty():
 			d["spends"] = spends
 			d["spends_up_to"] = spends_up_to
+		if passes_heat:
+			d["passes_heat"] = true
+			d["heat_per_stack"] = heat_per_stack
 	if not holds_all.is_empty():
 		d["holds_all"] = holds_all
 	if vents_all:
@@ -622,7 +634,7 @@ func acts_again() -> bool:
 
 ## A rule printed on the entry rather than a keyword (bible section 6: the die's star chip):
 ## Vents all, the missing-hull bonus, the hopper, the brace, a count it spends for its stacks or
-## a status it holds on every unit (the Quintessence Tap's). A roll that may land on itself is Instant's, a
+## a status it holds on every unit (the Quintessence Tap's), the heat it passes (the Puffin's dump). A roll that may land on itself is Instant's, a
 ## keyword since 12 November, never the star. A cooldown is a cost the die prints with its clock, a reload the ammo the die
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
@@ -632,7 +644,7 @@ func has_unique_rule() -> bool:
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
 		or not self_statuses.is_empty() or action_price > 0 or rolls_target or kill_rerolls > 0 \
-		or not spends.is_empty() or not holds_all.is_empty()
+		or not spends.is_empty() or not holds_all.is_empty() or passes_heat
 
 
 ## Whether the entry prints a cooldown: one round or more.
@@ -746,6 +758,8 @@ func duplicate_face() -> Face:
 	f.finisher = finisher
 	f.spends = spends
 	f.spends_up_to = spends_up_to
+	f.passes_heat = passes_heat
+	f.heat_per_stack = heat_per_stack
 	f.holds_all = holds_all
 	f.ablate = ablate
 	f.cryo = cryo
@@ -929,6 +943,8 @@ func rule_phrases() -> Array[String]:
 			out.append(DISRUPTS_TEXT)
 		if not spends.is_empty():
 			out.append(_spends_text())
+		if passes_heat:
+			out.append(passes_text())
 	if not holds_all.is_empty():
 		out.append(_holds_all_text())
 	if not charged.is_empty():
@@ -988,6 +1004,12 @@ func _spends_text() -> String:
 	return "consumes up to %d %s, 1 %s each" % [spends_up_to, str(Effects.STATUS.get(spends, {}).get("name", spends)), str(Effects.STATUS.get(buff_status, {}).get("name", buff_status))]
 
 
+## The Puffin's dump as the entry's text says it: the heat it passes and the stacks that makes,
+## its term's name first so the readout links it.
+func passes_text() -> String:
+	return "passes heat, %s 1 per %d heat" % [str(Effects.STATUS.get(buff_status, {}).get("name", buff_status)), heat_per_stack]
+
+
 func _holds_all_text() -> String:
 	var held := str(Effects.STATUS.get(holds_all, {}).get("name", holds_all))
 	var flare := str(Effects.STATUS.get(str(Effects.ROUND_HOLDERS.get(holds_all, "")), {}).get("name", ""))
@@ -1030,6 +1052,8 @@ func describe() -> String:
 				s = _team_rerolls_text()   # the Horn's and the Booster's: no status, the reroll its whole effect
 			elif kind == Kind.BUFF and not spends.is_empty():
 				s = _spends_text()   # the Quintessence Tap's: what it grants is what it consumes, said once
+			elif kind == Kind.BUFF and passes_heat:
+				s = passes_text()   # the Puffin's dump: what it grants is what the heat it passes makes, said once
 			elif kind == Kind.BUFF and buff_status.is_empty():
 				s = ""   # a buff that grants nothing (the Retrocausal Shroud): its keywords and its rule say what it does
 			elif kind == Kind.BUFF:

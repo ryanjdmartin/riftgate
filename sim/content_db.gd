@@ -1628,6 +1628,20 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: a buff that spends a count grants a stack for each one spent, so it says spends_up_to and no stacks" % where)
 		if str(fd.get("targets", "")) != "self":
 			errs.append("%s: a buff that spends its own machine's count lands on itself (targets self)" % where)
+	# A buff that passes its machine's heat for its stacks (the Puffin's dump, 19 November): a status
+	# the engine knows, the heat a stack stands for, and one ally to pass it to (Ryan, 11 November:
+	# "just allies"), so it says no stacks of its own and reaches no team; it consumes nothing else.
+	if fd.has("passes_heat") or fd.has("heat_per_stack"):
+		if kind != "buff" or not bool(fd.get("passes_heat", false)) or not Effects.STATUS.has(str(fd.get("status", ""))):
+			errs.append("%s: passes_heat is a buff's, granting a status of the engine's for the heat it passes" % where)
+		if int(fd.get("heat_per_stack", 0)) < 1:
+			errs.append("%s: heat_per_stack is the heat a stack of its status stands for: 1 or more, beside passes_heat" % where)
+		if fd.has("stacks"):
+			errs.append("%s: a buff that passes heat grants what the heat makes, so it says heat_per_stack and no stacks" % where)
+		if str(fd.get("targets", "")) != "ally":
+			errs.append("%s: a buff that passes its machine's heat lands on one ally (targets ally)" % where)
+		if fd.has("spends"):
+			errs.append("%s: a buff passes heat or spends a count for its stacks, never both" % where)
 	# A hold on the whole field (the Quintessence Tap's "No Empowered decays this round"): a status that
 	# halves on its own clock, held on every unit through the round's end.
 	if fd.has("holds_all") and (not Effects.decays_to_zero(Effects.STATUS.get(str(fd["holds_all"]), {})) or not Effects.ROUND_HOLDERS.has(str(fd["holds_all"]))):
@@ -2006,6 +2020,10 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: shield_zap is static: cost, the shield each weapon pays, and value, what it adds to every blow, each 1 or more" % where)
 		if effect == "add_power" and (trig != "static" or int(eff.get("value", 0)) < 1):
 			errs.append("%s: add_power is static: value, what a weapon's own number gains, 1 or more" % where)
+		# The Puffin's pull (19 November): the most of an ally's heat a piece of equipment spent on it
+		# takes onto this machine, a whole number, 1 or more.
+		if effect == "pull_heat" and (trig != "on_buff_granted" or int(eff.get("value", 0)) < 1):
+			errs.append("%s: pull_heat is on_buff_granted's: value, the most of the ally's heat it takes, 1 or more" % where)
 		# A slot (18 November): an effect a later grant in the same slot replaces, its name a word.
 		if eff.has("slot") and (not (eff["slot"] is String) or str(eff["slot"]).strip_edges().is_empty()):
 			errs.append("%s: slot names the place a later grant replaces this effect in: a word" % where)

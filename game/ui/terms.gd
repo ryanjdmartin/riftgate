@@ -39,6 +39,7 @@ const TABLE := {
 	"volatile": ["hull", "hull"], "shield_cost": ["shield", "guard"], "brace_property": ["shield", "guard"],
 	"self_ablate": ["ablate", "heat"], "ignores_armour": ["", "plain"], "vents_all": ["vent", "heat"],
 	"spends_shield": ["shield", "guard"],   # the Buzzard's Shield-burner Cannon (18 November): the whole shield into the shot
+	"passes_heat": ["heat", "heat"],   # the Puffin's dump (19 November): its whole heat onto an ally
 	"gather": ["mine", "heat"], "detonate": ["mine", "heat"],
 	"swap": ["swap", "guard"],   # the Combat Translocator's rule, its own text since 15 November, its mark kept
 	"self_statuses": ["buff", "plain"], "ally_action": ["reroll", "plain"], "rolls_target": ["reroll", "plain"],

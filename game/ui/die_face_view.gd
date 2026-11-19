@@ -85,6 +85,7 @@ var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), 
 var next_number: String = "" # the blow that next entry will deal now, as the screen reads it (Skirmish.shown_number_text); "" reads its own
 var ricochet: int = 0        # the strikes of 1 its machine's Ricochet adds after each shot of a weapon (the Skua's), in the passive box
 var zap_cost: int = 0        # the shield its machine's zap will pay for this weapon's spend (the Buzzard's), in the passive box; its damage is in the main number
+var passing: int = 0         # the heat its machine would pass now (the Puffin's dump), beside the stacks that heat makes
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var locked: bool = false
 var charged: bool = false      # armed for its charged form, a muster paid at the spend (the Swallowtail's): a double frame and the word above
@@ -371,6 +372,8 @@ func _draw() -> void:
 				Glyphs.draw(self, chip_glyph(inside), mc, 22, faded.call(col), 2.2)
 				if face.kind == Face.Kind.BUFF and face.buff_stacks > 1:
 					beside.append(["", "×%d" % face.buff_stacks, faded.call(col)])
+			if face.passes_heat and passing > 0 and not dark_now:
+				beside.append(["heat", str(passing), faded.call(Palette.HEAT)])   # the heat it would pass, by heat's mark
 		"shield_vent":
 			if not dark_now:
 				var held := [str(face.power), str(face.vents)]   # a shield that cools: the shield | the cooling

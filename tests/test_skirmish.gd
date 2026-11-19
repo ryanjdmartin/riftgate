@@ -3821,8 +3821,9 @@ func test_a_vent_on_fire_attack_fires_the_heat_into_the_blow_and_empties_the_gau
 	assert_eq(s2.mechs[0].heat, 15, "emptied, then the shot's own heat")
 
 
-## The converters' steps are fields (the stock pass, 22 October), at today's ten until the
-## content landing: the vent-on-fire face's per_heat and the ally-heat shield's.
+## The converter's step is a field (the stock pass, 22 October), at today's ten until the content
+## landing: the vent-on-fire face's per_heat (the ally-heat shield's went with the Slipstream
+## Projector, 19 November).
 func test_a_heat_converter_reads_its_step_from_its_field() -> void:
 	var cannon := Face.attack(10, L)
 	cannon.vents_all = true
@@ -3836,14 +3837,6 @@ func test_a_heat_converter_reads_its_step_from_its_field() -> void:
 	sk.mechs[0].heat = 9
 	assert_eq(Skirmish.heat_bonus(sk.mechs[0], cannon), 4, "+1 for every 2 heat: four steps in nine")
 	assert_eq(Face.from_dict(cannon.to_dict()).per_heat, 2, "the step survives the save")
-	var puff := _mech("D", Die.single(Face.shield(10)), 0, 100)
-	puff.grant_passive({"id": "slip", "name": "Slip", "description": "", "effects": [
-		{"trigger": "on_shield_granted", "effect": "shield_per_ally_heat", "value": 1, "per_heat": 2}]})
-	assert_eq(Effects.granted_shield(puff, 7), 3, "1 for every 2 heat the ally carries, rounded down")
-	var puff10 := _mech("E", Die.single(Face.shield(10)), 0, 100)
-	puff10.grant_passive({"id": "slip10", "name": "Slip", "description": "", "effects": [
-		{"trigger": "on_shield_granted", "effect": "shield_per_ally_heat", "value": 2}]})
-	assert_eq(Effects.granted_shield(puff10, 25), 5, "without the field, 2 for each 10: a fifth")
 
 
 ## The ally condition reads allies.
@@ -4880,50 +4873,6 @@ func test_shielding_an_ally_fires_the_escorts_passive_on_the_ally() -> void:
 	assert_true(sk.assign(0, sk.mechs[1]), "shield a full ally")
 	assert_eq(taker.shield, taker.shield_max, "the plain shield is capped")
 	assert_eq(sk.mechs[1].heat, 20, "but the escort's vent still fires on the spend")
-
-
-func test_a_shield_on_an_ally_grows_by_the_heat_it_carries() -> void:
-	# The Puffin's Slipstream Projector (Ryan's go, 21 October), on a synthetic passive: a shield
-	# spent on an ally grows by `value` for every 10 heat that ally carries, pro rata and rounded
-	# down, read at the spend; never on the spender itself, and the ally keeps its heat.
-	var slip := {"id": "slip", "name": "Slip", "description": "", "effects": [
-		{"trigger": "on_shield_granted", "effect": "shield_per_ally_heat", "value": 2}]}
-	var sk := Skirmish.new(1)
-	var ov := Face.shield(10)
-	var giver := _mech("Giver", Die.of([ov, Face.shield(10)]), 40, 100)
-	var taker := _mech("Taker", Die.single(Face.attack(10, L)), 50, 100)
-	giver.grant_passive(slip)
-	sk.add_mech(giver)
-	sk.add_mech(taker)
-	sk.add_foes([_ghoul(500, 10)])
-	sk.begin()
-	sk.start_round()
-	taker.shield = 10
-	sk.mechs[1].heat = 35
-	sk.mechs[0].face_index = 0
-	assert_eq(sk.shield_amount(sk.mechs[0], ov, sk.mechs[1]), 17, "10 and a fifth of 35, rounded down")
-	assert_eq(sk.shield_amount(sk.mechs[0], ov, sk.mechs[0]), 10, "on itself, the number alone")
-	assert_eq(sk.shield_amount(sk.mechs[1], ov, sk.mechs[0]), 10, "a machine without the passive gives the number alone")
-	assert_true(sk.assign(0, sk.mechs[1]), "shield the hot ally")
-	assert_eq(taker.shield, 10 + 17, "up by the grown number")
-	assert_eq(sk.mechs[1].heat, 35, "the shield reads the heat and never sheds it")
-	assert_true("\n".join(sk.log).contains("Giver shields Taker for 17"), "the log says the grown number")
-	assert_eq(Effects.effect_text(slip["effects"][0]), "an ally this machine shields: the shield grows by 2 for every 10 heat it carries", "reads as a sentence")
-	# A cold ally gets the number alone; on a hot one a plain shield grows too, to the maximum.
-	sk.end_round()
-	sk.start_round()
-	taker.shield = 20
-	sk.mechs[1].heat = 0
-	sk.mechs[0].face_index = 1
-	assert_true(sk.assign(0, sk.mechs[1]), "a plain shield on a cold ally")
-	assert_eq(taker.shield, 30, "the number alone")
-	sk.end_round()
-	sk.start_round()
-	taker.shield = 45
-	sk.mechs[1].heat = 60
-	sk.mechs[0].face_index = 1
-	assert_true(sk.assign(0, sk.mechs[1]), "a plain shield on a hot ally")
-	assert_eq(taker.shield, 50, "grown to 22 and held at the maximum")
 
 
 func test_the_gauge_triggers_fire_and_never_feed_themselves() -> void:
