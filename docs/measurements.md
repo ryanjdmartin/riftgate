@@ -11888,3 +11888,24 @@ fights. The Reaper read 15.8% without the Barrier at thirty and 30.5% at ninety 
 it), so its first row was grain; the Thunder Ape reads 17.4% and 16.2% at ninety, at the low
 edge of the elites. Every fight is won nineteen times in twenty or more. Read: the squad is a
 point or two stronger against the leaders and no fight leaves its band, so nothing is resized.
+
+## 19 November: the pickets, three and two of each domain's commonest front-liner
+
+On Ryan's "lets just standardize it to 3 of the default frontliner for each domain (goblin,
+needler, revenant, salamander?)": a flank patrol of the domain's commonest tier-one
+front-liner, read as scratch compositions beside the lone duelists (`tools/anchor_read.gd`,
+every squad of the pool of the size asked, five seeds, the greedy bot; hull a share of a
+four's). The Barrier basic changes no row by more than half a point.
+
+| Picket | Three, one machine on it | Three, two on it | Two, one on it |
+|---|---|---|---|
+| Goblins | 7.6%, won 93% | 0.1% | 1.7% |
+| Needlers | 13.1%, won 83% | 0.5% | 2.6% |
+| Revenants | 4.1% | 0.0% | 0.0% |
+| Salamanders | 16.7%, won 70%, 2.3 reboots | 1.6% | 4.6% |
+| The lone duelists beside them | 2.6% to 3.8% | 0.0% | |
+
+Read: three of each fits a lone flanker's thirtieth in the Marsh alone, and the Needlers and
+the Salamanders, the heavy front-liners, cost a lone machine four and five times it and lose
+it a fight in six and three in ten. With two machines on them every picket is nearly free, so
+a rating of two would ask for a machine it does not need. Not landed: the count is his.

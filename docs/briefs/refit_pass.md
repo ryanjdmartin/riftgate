@@ -203,7 +203,18 @@ damage, buffs the whole field, that kind of thing)." The shape: a picket, two or
 domain's own front-rank pushers, rated one, so the die that answers a duelist is the wrong die
 for it: three Goblins in the Meadow, two Needlers in the Waste, three Revenants in the Marsh.
 
-**Open, his:** his play of the four dials; the pickets, and the Peak's; the first wave
+**The pickets, read 19 November** (his yes, standardized: "lets just standardize it to 3 of the
+default frontliner for each domain (goblin, needler, revenant, salamander?)"; the commonest
+front-liner of each domain's tier-one formations, the Salamander included; `docs/measurements.md`,
+that day). Three of each on one machine: the Revenants 4.1% of a four's hull, on a lone
+flanker's thirtieth; the Goblins 7.6%, won 93%; the Needlers 13.1%, won 83%; the Salamanders
+16.7%, won 70%. Two of each: 1.7%, 2.6%, 0.0% and 4.6%, every fight won. Three of each with two
+machines on it: 0.0% to 1.6%. So three fits the budget rated one in the Marsh alone, and rated
+two each is nearly free. Not in content until he picks: three of each rated one as he said,
+the count by the budget (two Goblins, two Needlers, three Revenants, two Salamanders; this
+brief's lean), or three of each rated two.
+
+**Open, his:** his play of the four dials; the pickets' count; the first wave
 repeating the opening's formation (left, the list's second, or drawn by the seed); and what
 measures a battle's minutes against his ten to thirty, which nothing does yet.
 
