@@ -338,10 +338,13 @@ publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   Published at v0.634 on 18 November from main's file at `1383f11` (the page's Version 513).
-  Main's file is v0.647, unpublished: the step ahead of a blow, the first battle decided and
-  built, the Needletail's rows, every domain's kit, the battle's open question, and the Skua,
-  the Kite and the Cottonmouth left as built under the reboot are in it since. The hangar's
-  `text` collection was empty on 19 November, so no writing of his waits. Before republishing,
+  Main's file is v0.647, unpublished: Ryan said yes to republishing it and the hangar on 19
+  November, and the session's permission check refused the publish, so it waits on his
+  approval of the action. In it since: the step ahead of a blow, the first battle decided and
+  built, the Needletail's rows, every domain's kit, the battle's open question, the Skua, the
+  Kite and the Cottonmouth left as built under the reboot, the leans of 19 November and a
+  foe's jam waiting for the reboot. The hangar's `text` collection was empty on 19 November,
+  so no writing of his waits. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
   `1383f11` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
@@ -355,8 +358,9 @@ publish; the commands are in `README.md`.
   November, `f05bbdc`: main at `a1f3a45` and the summon texts' branch): every file of the map
   checked against the live copy by hash, and the nine that differed sent (five content files,
   the Designs and Text inventories, and the Buzzard's model and sidecar). The page itself was
-  unchanged. The numbers pass's leans (`6a10dca`), landed after that publish, are not up: its
-  content, its briefs and its texts go up with the next.
+  unchanged. The numbers pass's leans (`6a10dca`) and a foe's jam waiting for the reboot
+  (`645d690`), landed after that publish, are not up: their content, briefs and texts go up
+  with the next, which waits with the bible's on Ryan's approval of the action.
   `build/hangar/designs.json` is one 795 KB line: write it indented before reading it whole.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their
