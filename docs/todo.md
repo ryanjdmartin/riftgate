@@ -191,7 +191,7 @@ pieces, so each stands on the footing in the first line.
 
 ### The other design sessions
 
-- [ ] The tier-one bench (Ryan's proposal of 14 November, agreed; `docs/briefs/numbers_pass.md`, section 6): placeholder guns and equipment, each the vanilla with one thing traded and priced to read as the vanilla alone. It waits on his dial picks and on where its pieces live; then the grid as a table in chat, built and read
+- [ ] The tier-one bench (Ryan's proposal of 14 November, agreed; `docs/briefs/numbers_pass.md`, section 6): placeholder guns and equipment, each the vanilla with one thing traded and priced to read as the vanilla alone. Its pieces go on the hangar's Bench for his review (19 November), once his dial picks price the vanilla; then the grid as a table in chat, built and read
 - [ ] The pieces the refit pass sent back to design (its brief's section 6), each proposed in chat first: the Arsenal's Oblation Mantle and Entropy Condenser, which pay in hull; the Wake Diffuser; the Blast Door, the Halo Projector's twin today; the Reinforced Skeleton and the Phase Conjugator, whose rules stopped firing; and the stock re-deal as a table in chat
 - [ ] The component pass (Ryan, 4 November: the roster's unsupported archetypes and holes, a fifth basic gun, Indirect, among them; about 50 to 75 blueprints his lean), not before more is settled; every piece proposed in chat first
 - [ ] The roster's synergy holes (`docs/synergy_map.md`), each a piece proposed in chat first: a second payoff for Ablating beyond the Backdraft's stun, a slottable Cryo setter (Aphelion's by his lean), Purge as the counter every setup status shares, and a slottable Expose piece (Kestrel's lean)
