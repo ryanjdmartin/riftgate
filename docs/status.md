@@ -48,8 +48,10 @@ document's job and every command are in `README.md`.
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
   (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks
   great. Lets land it", and `ccr-178e0404-ptuh2m` (the Buzzard) on his "ok, merge into
-  main", then the Needletail on 19 November on his "I think what we've got can merge into main". A session's hangar
-  publish runs ahead of main (Pages).
+  main", then the Needletail on 19 November on his "I think what we've got can merge into main",
+  and `claude/laughing-gates-p2633f` (the summon texts with no pool, the Text tab's target
+  words) the same day on his "Ok merge in". A session's hangar publish runs ahead of main
+  (Pages).
   Every other branch on GitHub but the lines' own working branches is merged and to delete
   (`git push origin --delete`, then `git fetch --prune`); a cloud session may not delete one.
 - The desk machine is a Windows PC (`C:\Users\jam82\Desktop\Code\riftgate`; the README's
@@ -61,8 +63,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1332 tests, 376,907 checks, green on main (19 November, the bot's price for what
-  a purge takes). The runner fails a run whose tests never ran, so read the checks' count, never
+- Tests: 1338 tests, 378,012 checks, green on main (19 November, the summon texts'
+  landing). The runner fails a run whose tests never ran, so read the checks' count, never
   the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
   purpose. About four minutes in a cloud session; words after `--` run only the files whose
   names hold one (`-- loot rig`).
@@ -342,15 +344,12 @@ publish; the commands are in `README.md`.
   reverts belongs to a branch not yet landed.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
-  each live copy read first, with `edits`, `designs` and `text` read first. Main went up whole
-  at Version 306 (18 November, `aeeed09`, the Mole's branch landed): every file of the map
-  checked against the live copy by hash, and the fifteen that differed sent (the content, the
-  Designs and Text inventories, the pins and foes manifests, the Goblin Warchief's sprite, the
-  Storm Petrel's sidecar, and the Badger's and the Wild Boar's models and sidecars with their
-  Minervan vents). The page itself was unchanged.
-  The Buzzard, landed after that publish, is not up: its content (the passive, the
-  branches, the cannon's id), its texts, and its model and sidecar (the Shield-burner Cannon
-  in the shield's light) go up with the next.
+  each live copy read first, with `edits`, `designs` and `text` read first. Version 307 (19
+  November, `f05bbdc`: main at `a1f3a45` and the summon texts' branch): every file of the map
+  checked against the live copy by hash, and the nine that differed sent (five content files,
+  the Designs and Text inventories, and the Buzzard's model and sidecar). The page itself was
+  unchanged. The numbers pass's leans (`6a10dca`), landed after that publish, are not up: its
+  content, its briefs and its texts go up with the next.
   `build/hangar/designs.json` is one 795 KB line: write it indented before reading it whole.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their
