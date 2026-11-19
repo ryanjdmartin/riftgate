@@ -327,11 +327,12 @@ Every foe a strike reaches takes a blow of its own, read in one order:
    armour comes off. A weapon's blow takes them whatever it deals, a 0 included; a debuff's
    blow stays nothing. Its riders land on every foe struck, after its
    weapon's hits (below).
-- **The strike order**: a strike's blows land in one order, the target's first, then Spread's
-  left and then its right, then Penetrate's other rank, a twin slot's other half with its
-  pair, then the Beam Rifle's foe to the right, then Chain's arcs. What waits on a machine's
-  next strike lands on its spend's first blow alone, its first strike's on its target, and on
-  none of that strike's area (the Parry's return).
+- **The strike order**: a strike's blows are resolved in one order, the target's first, then
+  Spread's left and then its right, then Penetrate's other rank, a twin slot's other half with
+  its pair, then the Beam Rifle's foe to the right, then Chain's arcs. It is the calculation's
+  alone: the screen shows a strike's blows landing together, on its beat. What waits on a
+  machine's next strike lands on its spend's first blow alone, its first strike's on its target,
+  and on none of that strike's area (the Parry's return).
 - **Riders land after the hits**: each hit's Cryo and Brittle gather on its own foe and land
   once its weapon's hits are done, an application a hit, so no hit of a single-target weapon
   cashes or feeds on what the weapon lays (a ×2 Cryo 1 leaves Cryo 2 and cools nothing; a ×3
