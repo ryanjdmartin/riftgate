@@ -295,6 +295,18 @@ def content_slots():
         add(key, e["id"], "passive.name", "title", p.get("name", ""), owner, group, shown=sh, why=wy, sub="passive", facts=p.get("description", ""))
         add(key, e["id"], "passive.description", "passive", p.get("description", ""), owner, group, shown=sh, why=wy,
             sub=p.get("name", ""), facts=effect_words(p.get("effects")), mech=mech)
+        form_slots(key, e["id"], "passive.effects", p.get("effects"), "passive", owner, group, sh, wy)
+
+    def form_slots(key, entry, at, effects, kind, owner, group, shown, why):
+        """An offhand's forms (the line frame's, 19 November): each form's name, on its chip and
+        the die's rider, and its line, the rider as the player reads it; a step's forms as upgrades."""
+        for eff in effects or []:
+            if not isinstance(eff, dict) or eff.get("effect") != "offhand" or not eff.get("id"):
+                continue
+            path = "%s.%s" % (at, eff["id"])
+            add(key, entry, path + ".name", "title", eff.get("name", ""), owner, group, shown=shown, why=why, sub="offhand form", facts=eff.get("description", ""))
+            add(key, entry, path + ".description", kind, eff.get("description", ""), owner, group, shown=shown, why=why,
+                sub=eff.get("name", ""), facts=effect_words(eff.get("riders")), mech=canon(eff.get("riders", [])))
 
     # Chassis.
     for e in docs["chassis"]["entries"]:
@@ -322,6 +334,7 @@ def content_slots():
                     add("chassis.entries", e["id"], "branches.%s.steps.%d.description" % (bid, i), "upgrade", st.get("description", ""), e["name"], g,
                         shown=shown, why=why, sub="%s %s" % (b.get("name", ""), "I" if i == 0 else "II"), facts=effect_words(st.get("effects")),
                         mech=canon(st.get("effects", [])))
+                    form_slots("chassis.entries", e["id"], "branches.%s.steps.%d.effects" % (bid, i), st.get("effects"), "upgrade", e["name"], g, shown, why)
 
     # Components.
     for e in docs["components"]["entries"]:

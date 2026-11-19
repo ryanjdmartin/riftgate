@@ -197,7 +197,7 @@ var _form_rot: Dictionary = {}     # joint -> degrees the forms add
 var _form_slide: Dictionary = {}   # joint -> world-unit slide the forms add
 var _form_body_rot := Vector3.ZERO   # degrees (pitch, yaw, roll) the forms add to the body (the seal's hunker)
 var _form_body_slide := Vector3.ZERO
-var form_debug: bool = false       # RIFTGATE_SEAL_DEBUG: every form held and let go in turn, to judge running
+var form_debug: bool = false       # RIFTGATE_SEAL_DEBUG: every form held and let go in turn, to judge running (forms that release each other one at a time)
 ## The pose a machine stands in while a form is not held (the Polar Bear's vents ajar while its shell
 ## is open; Ryan, 2 November: "When unsealed, the vents should be open, and then more open during
 ## the vent animation"): joint -> [degrees, slide] over its built rest, fading out as the form named
@@ -828,6 +828,19 @@ func form_held(name: String) -> bool:
 	return bool(_form_on.get(name, false))
 
 
+## The forms named for an offhand's slot (the line frame's armament: offhand_rifle, offhand_sword,
+## offhand_shield), held while the offhand's form up is in that slot.
+const OFFHAND_FORM := "offhand_"
+
+
+## Whether a machine holds the form of this name: the status of the same name, or its offhand's
+## armament in the slot the form names.
+static func holds_form(u, name: String) -> bool:
+	if Effects.has(u, name):
+		return true
+	return name.begins_with(OFFHAND_FORM) and Effects.held_slot(u) == name.substr(OFFHAND_FORM.length())
+
+
 ## Hold a status's spin or let it go (the Cassowary's capacitor turns while it is Spun Up, Ryan,
 ## 2 November): the joints it names come up to speed and run down again over SPIN_HELD_EASE,
 ## stopping wherever they are. True when it changes.
@@ -1085,8 +1098,16 @@ func tick(delta: float) -> void:
 	# every one and lets it go in turn.
 	if form_debug and not forms.is_empty():
 		_form_debug_t += delta
-		for name in forms.keys():
-			set_form(name, fmod(_form_debug_t, FORM_DEBUG_PERIOD * 2.0) >= FORM_DEBUG_PERIOD)
+		# Forms that let each other go (the line frame's armaments, the Mole's burrow and drill) are
+		# held one at a time, each in turn and then none; any other is held and let go with the rest.
+		var names: Array = forms.keys().filter(func(n) -> bool: return str(n) != DEATH)
+		if names.any(func(n) -> bool: return not (forms[n].get("releases", []) as Array).is_empty()):
+			var k := int(_form_debug_t / FORM_DEBUG_PERIOD) % (names.size() + 1)
+			for i in range(names.size()):
+				set_form(str(names[i]), i == k)
+		else:
+			for name in forms.keys():
+				set_form(name, fmod(_form_debug_t, FORM_DEBUG_PERIOD * 2.0) >= FORM_DEBUG_PERIOD)
 	if _forms_step(delta):
 		moved = true
 	# A status's spin (the capacitor while Spun Up) and the count displays run on their own

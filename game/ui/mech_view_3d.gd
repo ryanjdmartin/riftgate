@@ -449,7 +449,7 @@ func hold_statuses(u: Unit) -> void:
 	if u == null or rig == null or model_id != u.chassis_id:
 		return
 	for name in rig.forms.keys():
-		rig.set_form(str(name), Effects.has(u, str(name)))
+		rig.set_form(str(name), MechRig.holds_form(u, str(name)))
 	for status in rig.held_spins.keys():
 		if rig.hold_spin(str(status), Effects.has(u, str(status))) and is_inside_tree():
 			set_process(true)

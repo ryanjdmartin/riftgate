@@ -61,8 +61,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1329 tests, 381,489 checks, green (18 November, the line frame's model and the model
-  texture copies' test on `ccr-64b5deec-lunnff`, over main's Buzzard and the Pilgrim's knife). The runner fails a run
+- Tests: 1347 tests, 385,771 checks, green (19 November, the line frame's kit landed on
+  `ccr-64b5deec-lunnff`, over main's Buzzard and the Pilgrim's knife). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -130,7 +130,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   an upgrade branch is a passive scoped to a locked piece, or a step on the passive where its
   numbers warrant one (the rules' Branches; `docs/locked_pieces_proposal.md`; the bible's
   locked and tiers rows): the Storm Petrel carries the first two, the Buzzard two more, the
-  harness's UPG line fields a build, and a run buys none yet. The machines the reboot broke
+  harness's UPG line fields a build, and a run buys none yet. A step may tweak as many pieces as
+  it needs (Ryan, 19 November); the line frame's second steps touch its offhand and its Aile
+  Booster. The machines the reboot broke
   are another session's line (`docs/reboot_machines_proposal.md`, read with
   `tools/reboot_probe.gd`): the Storm Petrel landed from it on 17 November and took Ryan's
   shape of the 18th (no shield armour on its passive; its Hardlight Pulse lays Hardened Light,
@@ -141,7 +143,12 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   the Kite, the Puffin, the Swallowtail and the Needletail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis, the Polar Bear
   (a reboot opens its seal), the Whip Scorpion (its reboot's vent blasts every foe), the
-  Lammergeier, the Wild Boar, the Baboon, the Stingray. The Giant Petrel's kit, the Musk Ox
+  Lammergeier, the Wild Boar, the Baboon, the Stingray, and the line frame, landed 19 November
+  on `ccr-64b5deec-lunnff` from Ryan's kit (Aphelion's agile duelist at tier one: its offhand
+  cycles the Beam Rifle, the Beam Sword and the Beam Shield after every spend at a foe, a rider
+  on what it aims at foes, its Aile Booster a Rapid lunge to Indirect; Duelist and Valkyrie its
+  directions, the Parry the Duelist's capstone; its name and designation working drafts, the
+  bible's section 12). The Giant Petrel's kit, the Musk Ox
   and the gunship are unfinished by his own notes. Four tier ones a maker (4-4-2) is his lean
   (the refit brief's section 13); the six certain ones are the Honey Badger, the Skua, the
   Storm Petrel, the Prairie Dog, the Cassowary and the Cottonmouth, and Minerva's four are his
@@ -231,12 +238,12 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Minerva's vent, the Polar Bear's (16 and 17 November). The Mole is a model, its look his
   ("looks great", 18 November; the brief's look item), with two status forms, Burrowed and
   Drill Out: a form may let others go as it is held (`releases`), as the statuses would end, so
-  a burrow docks a drill that is out. The line frame is a model from its third look round (18
-  November, on `ccr-64b5deec-lunnff`; its brief's model paragraph), in no content, so no hangar
-  tab shows it (`RIFTGATE_MECH3D_MODEL=line_frame` in a fight does). Since Ryan's notes of 19
-  November its main hand is a mount over its fist and its offhand carries the rifle, the blade
-  and the kite of light, the last two made of light (`b.beams`), seen only while an act lights
-  them; its kit is his of 19 November, in its brief, its open points in chat. Look tests of four chassis are stills in `docs/looks/`, their
+  a burrow docks a drill that is out. The line frame is a model from its third look round,
+  reworked on Ryan's notes of 19 November: its main hand a mount over its fist, its offhand
+  carrying the rifle, the blade and the kite of light, the last two made of light (`b.beams`),
+  seen only while lit. In a fight it holds its offhand's armament (a form a slot, held while its
+  offhand's form is in that slot) and dashes as its Aile Booster fires; off the field its idle
+  runs the cycle. Look tests of four chassis are stills in `docs/looks/`, their
   choices in their briefs, never content.
 - **Audio.** Three pairs play in the game (Hold The Line, Night Shift, The Far Bank;
   `Sound.PAIRS`): a battle picks one as it starts and loops it, the map half on the field and
@@ -330,10 +337,11 @@ publish; the commands are in `README.md`.
   Designs and Text inventories, the pins and foes manifests, the Goblin Warchief's sprite, the
   Storm Petrel's sidecar, and the Badger's and the Wild Boar's models and sidecars with their
   Minervan vents). The page itself was unchanged.
-  The Buzzard, landed after that publish, is not up: its content (the passive, the
-  branches, the cannon's id), its texts, and its model and sidecar (the Shield-burner Cannon
-  in the shield's light) go up with the next, and the motion script's parts made of light
-  (`tools/hangar_motion.js`, the line frame's beams; no model on the page carries one yet).
+  The Buzzard and the line frame, landed after that publish, are not up: their content (the
+  Buzzard's passive, branches and cannon's id; the line frame whole, its Aile Booster and its
+  terms), their texts, and their models and sidecars (the Shield-burner Cannon in the shield's
+  light; the line frame's held armaments and dash) go up with the next, and the motion script's
+  parts made of light (`tools/hangar_motion.js`, the line frame's beams).
   `build/hangar/designs.json` is one 795 KB line: write it indented before reading it whole.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their

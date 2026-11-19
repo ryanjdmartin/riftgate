@@ -1300,6 +1300,8 @@ func _refresh(save: bool = true) -> void:
 		var sf := sk.shown_face(ms, sk.spend_face(ms))   # reach as the passive reads it now, the charged form when it goes out charged
 		d.set_face(sf, sk.shown_number_text(ms, sf))   # and the number the blow will deal
 		d.ricochet = _ricochets(ms, sf) if not ms.assigned and ms.alive() else 0   # the strikes of 1 its Ricochet adds after each shot
+		var held := _offhand_of(ms, sf) if not ms.assigned and ms.alive() else []
+		d.offhand = str(held[0]) if not held.is_empty() else ""   # its offhand's armament riding it (the line frame's)
 		d.zap_cost = _zap_cost(ms, sf) if not ms.assigned and ms.alive() else 0   # the shield its zap will pay (the Buzzard's)
 		d.form_mark = form_mark(ms, sf) if not ms.assigned and ms.alive() else ""   # it seals its machine or opens it
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
@@ -1572,6 +1574,13 @@ static func charge_chunks(ms: Skirmish.MechState) -> Dictionary:
 ## readout's line read it.
 static func _ricochets(ms: Skirmish.MechState, f: Face) -> int:
 	return Effects.stacks_of(ms.unit, "ricochet") if ms != null and f != null and f.is_weapon() else 0
+
+
+## The armament its machine's offhand holds, riding the entry when it is a weapon or equipment aimed
+## at a foe (the line frame's, 19 November): [its name, its line], empty for anything else. The die's
+## passive box and the readout's line read it.
+static func _offhand_of(ms: Skirmish.MechState, f: Face) -> Array:
+	return Effects.held_form_line(ms.unit) if ms != null and f != null and f.is_attack() else []
 
 
 ## The shield a machine's zap will pay for the weapon it shows (the Buzzard's, 18 November): its cost
@@ -1962,8 +1971,10 @@ static func status_glyph(id: String) -> String:
 			return "barrier"
 		"ward":
 			return "ward"
-		"spun_up":
-			return "spin"
+		"spun_up", "parry", "parry_strike":
+			return "spin"   # the Parry's return is Spun Up's kind: the next weapon deals more
+		"aile_boost", "aile_blitz", "aile_assault":
+			return "rapid"   # the Aile Booster's dash
 		"ricochet":
 			return "ricochet"
 		"essence":
@@ -2314,6 +2325,11 @@ func _show_die(i: int) -> bool:
 		var bounced := _ricochets(ms, sf) if not ms.assigned else 0
 		if bounced > 0:
 			extra.append(EntryReadout.ricochet_line(bounced))
+		# The armament its offhand holds, riding a weapon or equipment aimed at a foe (the line
+		# frame's), by the star the die shows for it.
+		var rides := _offhand_of(ms, sf) if not ms.assigned else []
+		if not rides.is_empty():
+			extra.append(EntryReadout.offhand_line(str(rides[0]), str(rides[1])))
 		# The shield its zap pays for a weapon (the Buzzard's), by the same box.
 		var zap := _zap_cost(ms, sf) if not ms.assigned else 0
 		if zap > 0:
@@ -2671,6 +2687,8 @@ func _on_drag_started(i: int) -> void:
 	_ghost.shut = []   # no foe in hand yet: every chip as printed
 	_ghost.set_face(sf, sk.shown_number_text(sk.mechs[i], sf))
 	_ghost.ricochet = _ricochets(sk.mechs[i], sf)
+	var held := _offhand_of(sk.mechs[i], sf)
+	_ghost.offhand = str(held[0]) if not held.is_empty() else ""
 	_ghost.zap_cost = _zap_cost(sk.mechs[i], sf)
 	_ghost.form_mark = form_mark(sk.mechs[i], sf)
 	_ghost.cooldown = sf.cooldown_rounds() if sf != null else 0
@@ -2855,6 +2873,7 @@ func _send_second_home() -> void:
 	fly.slot = d.slot
 	fly.corrupted = d.corrupted
 	fly.ricochet = d.ricochet
+	fly.offhand = d.offhand
 	fly.zap_cost = d.zap_cost
 	fly.charged = d.charged
 	fly.dark = d.dark
@@ -3248,8 +3267,8 @@ static func _beat(beats: Array[float], k: int) -> float:
 ## Is strike `k` of the spend a Ricochet's (its blow's kind)?
 static func _is_ricochet(blows: Array, k: int) -> bool:
 	for b in blows:
-		if int(b["strike"]) == k and str(b["kind"]) == "ricochet":
-			return true
+		if int(b["strike"]) == k and (str(b["kind"]) == "ricochet" or str(b["kind"]) == "again"):
+			return true   # a Ricochet's, or the Beam Sword's hit again on the heels of its strike
 	return false
 
 
@@ -3259,7 +3278,7 @@ func _view_struck(blows: Array, k: int, was: Dictionary, fallback) -> UnitView:
 	for b in blows:
 		if int(b["strike"]) != k:
 			continue
-		if str(b["kind"]) in ["strike", "ricochet", "mine"]:
+		if str(b["kind"]) in ["strike", "ricochet", "again", "mine"]:
 			var foe: Foe = b["foe"]
 			if was.has(foe):
 				return was[foe][0]

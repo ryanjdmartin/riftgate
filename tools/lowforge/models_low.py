@@ -7020,8 +7020,8 @@ def _lf_leg(b, side):
 def line_frame(b):
     """Aphelion's line frame (a working label; the name and the look are Ryan's), its Gundam
     homage: "a homage not a clone" (16 November), its model from the third look round
-    (docs/looks/aphelion_line_frame3.png, docs/briefs/aphelion_line_frame.md) on his notes of 19
-    November, a design with no kit in content yet. A lean frame on long legs, a dark inner frame bare
+    (docs/looks/aphelion_line_frame3.png) on his notes of 19 November, its kit in content since that
+    day (the bible's row; its brief retired with the landing, in git). A lean frame on long legs, a dark inner frame bare
     at the waist, a compact wedge of a chest in Aphelion's pearl with its red, a small helm under a
     red V-crest, standing in an A with its offhand's foot a little ahead. Its main hand (right) is a
     normal mount on its forearm, a gun at the ready over its fist; its offhand (left) holds its
@@ -7235,6 +7235,35 @@ def _line_frame_motion(b, legs):
         "waist": _dense([(0.2, 0.0, 0.0, 0.0), (1.3, 2.5, 0.0, 0.0), (2.5, 2.5, 0.0, 0.0), (3.7, 0.0, 0.0, 0.0)]),
     })
     b.act("shift_weight", 4.0, tracks, body=body, ease="linear")
+    # The booster's dash, its firing (the Aile Booster, Ryan, 19 November: "Rapid. Next weapon
+    # strike gains Indirect reach"; "Go for the lunge"): a short burst along the ground, the crouch
+    # dropped onto the boosters and the lean thrown forward, the wings flung open and every booster
+    # flaring, then back up into its stance. The offhand's arm keeps its armament (the forms below),
+    # so the dash plays whatever it holds.
+    tracks, body = _planted(feet, [(0.05, 0.0, 0.0, 0.0), (0.3, -1.0, -3.5, -9.0), (0.75, -1.2, -4.5, -11.0), (1.3, 0.0, 0.0, 0.0)])
+    arm(tracks, "r", [(0.1, rest), (0.35, (-18.0, 0.0, -6.0, -20.0)), (0.8, (-20.0, 0.0, -6.0, -22.0)), (1.25, rest)])
+    tracks["head"] = [(0.05, 0.0, 0.0, 0.0), (0.3, 6.0, 0.0, 0.0), (0.85, 7.0, 0.0, 0.0), (1.25, 0.0, 0.0, 0.0)]
+    for side, sgn in (("r", -1.0), ("l", 1.0)):
+        tracks["wing_" + side] = [(0.08, 0.0), (0.3, sgn * 26.0), (0.85, sgn * 24.0), (1.3, 0.0)]
+        tracks["vane_" + side] = [(0.1, 0.0), (0.32, sgn * 22.0), (0.85, sgn * 20.0), (1.3, 0.0)]
+    b.act("dash", 1.4, tracks, body=body, heft=0.08, idle=False,
+          glow=[(["booster_floor", "booster_rim", "calf_booster_floor"], [(0.05, 0.0), (0.25, 12.0), (0.55, 7.0), (0.9, 10.0), (1.3, 0.0)])])
+    b.fires = {"aile_booster": ("dash", 0.0, 1.4)}
+    # The offhand's armament held through a fight (the engine's offhand, by its slot: Ryan, 19
+    # November, "It cycles after a spend"), the arm's own joints alone, so a look round and the dash
+    # play over it, and the forms trade places as the cycle turns: the rifle run out level beside the
+    # main gun, its lens lit; the blade lit in a guard before it; the kite of light up across the
+    # body. Off the field (the map, the hangar) no form is held and its idle runs the cycle (16
+    # November: "It cycles through weapon combinations as it idles and as it fights").
+    def held(pose, more=None):
+        out = {"shoulder_l": [(0.55, *pose[:3])], "elbow_l": [(0.55, pose[3])]}
+        out.update(more or {})
+        return out
+    others = lambda me: [f for f in ("offhand_rifle", "offhand_sword", "offhand_shield") if f != me]   # one armament at a time, the hangar's toggles and the debug switch too
+    b.form("offhand_rifle", 0.55, held(LF_L_AIM, {"fist_l": [slide(0.3, -LF_FIST_IN)], "rifle_l": [slide(0.1, 0.0), slide(0.55, LF_RIFLE_OUT)]}),
+           glow=[(["rifle_lens_l"], 1.5)], releases=others("offhand_rifle"))
+    b.form("offhand_sword", 0.55, held(LF_L_THRUST), glow=[(["blade_l"], BLADE[0])], releases=others("offhand_sword"))
+    b.form("offhand_shield", 0.55, held(LF_L_GUARD), glow=[(["shield_l"], SHIELD[0])], releases=others("offhand_shield"))
     # The boosters and the beams bloom (MechRig's halos); the beams are made of light.
     b.halo = ["booster_floor", "calf_booster_floor", ("blade_l", 1.5), "shield_l"]
     b.beams = ["blade_l", "shield_l"]

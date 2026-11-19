@@ -17,11 +17,11 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 ## Machines
 
 - **Chassis**: hull, shield, heat maximum, armour, move, size class, one way of moving, hardpoints, fixed components, module
-  slots (two; the Clydesdale three) and one passive. Twenty-four chassis from five makers
-  (`content/chassis.json`), two of them back in design and dealt by nothing until their
-  sessions hand them back (the Puffin and the Swallowtail: a chassis whose entry
-  says `"status": "planned"`). A run has four squad slots and starts with three
-  machines.
+  slots (two; the Clydesdale three) and one passive. Twenty-six chassis from five makers
+  (`content/chassis.json`), three of them dealt by nothing yet (a chassis whose entry says
+  `"status": "planned"`): the Puffin and the Swallowtail, back in design until their sessions
+  hand them back, and the Mole, a draft whose engine is still to come. A run has four squad
+  slots and starts with three machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die,
   beside its name in its readout, and down the codex. An empty hardpoint is a blank entry; nothing fills it. A full,
@@ -95,7 +95,11 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   itself, then Chain 3 and Charged 2. The Buzzard's, a tier two's single pick: Sustain, on its
   passive, its zap adding 3 for the same 2 shield and every foe that falls laying Regenerating 2
   on it in place of the 2 shield; Burst, on its Shield-burner Cannon, Spread 2 and Penetrate 2 and
-  its own number 2 higher.
+  its own number 2 higher. The line frame's, a tier one's, each touch its offhand's forms (a form
+  a step names takes its slot's place in the cycle) and its second steps its Aile Booster too:
+  Duelist, the Beam Sword's slot holding the Beam Saber, then the shield's the Beam Buckler and the
+  Booster granting Aile Blitz; Valkyrie, the rifle's slot holding the Beam Bazooka, then the shield's
+  the Beam Pavise and the Booster granting Aile Assault with 1 Empowered.
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
@@ -189,9 +193,9 @@ landed, lost to a stun or skipped.
   cost; Numbed loses a stack, or lands on a foe that lost this turn to a stun.
 - **The round ends**: Phased is granted or lost, Essence Flare goes, a swallow's and a
   golden rage's rounds run, and a web bursts.
-- **It is spent**: the primers by a weapon fired, Spun Up and the Juggernaut Drive by the next
-  weapon, Shocked and Cryo by the weapon's hit that cashes them, Undying by its fall, a Mine by
-  its foe's fall, and a pin by the decay it stops.
+- **It is spent**: the primers by a weapon fired, Spun Up, the Juggernaut Drive, the Aile buffs
+  and a Parry's return by the next weapon, Shocked and Cryo by the weapon's hit that cashes them,
+  Undying by its fall, a Mine by its foe's fall, and a pin by the decay it stops.
 What works in the other side's turn ends as its own turn starts, and what works in its own
 turn ends with it. So a stack gained outside its carrier's turn stands whole for its next
 one, and a chip always shows what the next blows will meet. On a Phased machine every clock
@@ -670,8 +674,30 @@ gains Empowered 2 and its die rolls again, never onto the entry showing; a spent
 nothing. **On itself** (the Storm Petrel's Hardlight Pulse, a lure, and its branches): spent on
 a foe, its own machine gains the status it says, after the spend's hits and its primers, so a
 fire never spends a Charged it has just laid; a stack set for every foe the spend reached where
-it says so, a foe its Spread reaches among them; never past the most it names, the highest of
-the piece's own and its branches'. **The spill** (the Overrun Gearing's, a Minerva module, on
+it says so, a foe its Spread reaches among them, beside any flat stacks it names; never past the
+most it names, the highest of the piece's own and its branches'. A buff may lay a status on its
+own spender beside its grant where its piece says so (the Aile Assaulter's Empowered); a Barrier
+laid this way is gained as any other is. **The offhand** (the line frame's passive): its offhand
+holds one form of a cycle at a time, the Beam Rifle, the Beam Sword or the Beam Shield, an
+Ability under the form's name, and every fight opens on the first. The form is a rider on every
+weapon and equipment the machine aims at a foe, and every such spend turns it to the next, the
+first after the last, a Rapid spend's second shot riding the form after; a buff, a reboot or a
+blank turns nothing. The die marks the rider with a star in the entry's passive box, its readout
+reading the form's line. The rifle: each strike also lands a blow of 2 on the foe to the right of
+the target in its rank (a twin's right half beside its left, nothing at the rank's end or past an
+empty slot), its own blow beside any area's, so a Spread's neighbour there takes both, each through
+its armour; it reaches the foe without being aimed at it (no Shock read), and carries the entry's
+riders. The sword: after each strike, a hit again on the target for half the strike's blow,
+rounded down, the blow as it left the gun (the firer's pipeline and the entry's reads of the foe
+in it, so nothing of the firer's is read twice), then the foe's Brittle, Shock and armour on it as
+on any blow, the entry's riders landing with it; the Beam Saber's is the whole blow. A Ricochet's
+hits after the strikes set off neither. On equipment the rifle's and the sword's blows deal nothing
+and their riders land. The shield: once the spend is done, Armoured 2 on its machine. Upgraded
+forms: the Beam Buckler grants Barrier, Ward and Parry (below); the Beam Bazooka gives each strike
+Spread 2 and Penetrate 2, added to any the weapon carries; the Beam Pavise grants 1 Armoured and 1
+more for every foe the spend struck, its area's included. **The Aile Booster** (the line frame's,
+Rapid, on itself): it grants Aile Boost, its Duelist II Aile Blitz and its Valkyrie II Aile
+Assault in its place (Buffs, below). **The spill** (the Overrun Gearing's, a Minerva module, on
 every weapon its machine fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
 strike of the spend whole, aimed at nobody, so a Shock behind neither doubles it nor is
@@ -987,6 +1013,16 @@ On a foe:
   end of the player's turn. A foe's Ward turns it away; a Cleanse clears it from a machine.
 - **Juggernaut Drive** (buff, the Wild Boar's passive waiting): gained as it gains a Barrier, one at a time; its
   next weapon attack ignores armour and lifts it, equipment leaving it standing. A purge takes it.
+- **Aile Boost**, **Aile Blitz**, **Aile Assault** (buffs, the line frame's Aile Booster and its
+  branches'): one at a time, carried between turns until the next weapon its machine fires, which
+  reaches as Indirect for every strike of its spend and lifts it, equipment reaching as its own and
+  leaving it standing. Aile Blitz's weapon ignores armour too.
+- **Parry** (buff, the line frame's Beam Buckler): through the round it is gained, what a Barrier
+  and its machine's armour keep off foes' blows is counted (the whole blow a Barrier takes, what
+  armour takes off what passes the shield; never what the shield soaks). As its machine's next turn
+  starts it goes, and half of that count, rounded down, stands under the same name as the first
+  weapon's add that turn, a point a stack on every strike in Empowered's place in the blow, lifted
+  by that weapon, equipment leaving it, and gone as the turn ends if no weapon fires.
 - **Empowered** (buff, Rally): lands on every foe on the field the moment the rally does, its
   rallier too, the rally's value in stacks, and every blow the foe lands hits a point harder a stack, each
   strike of its move, as a machine's weapon does. It halves as its own turn ends, its action done, rounded down,

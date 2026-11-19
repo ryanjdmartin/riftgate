@@ -60,6 +60,9 @@ const HOPPER_WEIGHT := 0.6       # a load in the hopper, as a share of what it a
 const PLATE_ROUNDS := 2.0        # rounds a held load's Armoured is likely to stand (this round's blows and the next's), for the hull its armour keeps
 const HARDENED_ROUNDS := 2.0     # rounds a stack of Hardened Light is read to stand (the Storm Petrel's, 18 November): it lasts until its shield breaks, a reboot's drop among the breaks, so about half a reboot's cycle; a placeholder
 const RICOCHET_WORTH := 2.0      # a stack of Ricochet (the Skua's, 11 November), in foe hit points: about two shots' worth before the fight ends or a blow halves it; a placeholder, as every weight
+const AILE_REACH_WORTH := 0.3    # an Aile buff's Indirect reach on the next weapon (the line frame's booster, 19 November), as a share of the machine's own average blow: the back rank it opens; a placeholder
+const AILE_ARMOUR_WORTH := 0.5   # and the Blitz's armour ignored, a point of armour off each foe it may strike, a share of it a strike; a placeholder
+const PARRY_STRIKES := 1.5       # the strikes the Parry's add is read to land on, its next weapon's (the Beam Buckler's, 19 November); a placeholder
 const ROLL_AGAIN_WEIGHT := 1.0   # another action of the die (Rapid, Instant, the reset gun, the Horn's), as the die's own average blow
 const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Ablate's does
 const BRITTLE_WEIGHT := 0.5         # a stack of Brittle, as the point it adds to each team blow the foe is likely to take while it lasts
@@ -563,6 +566,12 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		if n != target and n.alive():
 			# A weapon over every foe strikes each as its own target (12 November), a Shock read on each.
 			score += _capped(damage_outcomes(ms, f, n) if f.reach == Face.Reach.EVERY_FOE else damage_outcomes(ms, f, n, int(shapes.get(n, Skirmish.AREA_ALL))), n.hp)
+	# The rifle's blow on the foe to the right with every strike (the line frame's offhand, 19
+	# November), a blow of its own beside an area's, through the same order.
+	if f.reach != Face.Reach.EVERY_FOE and Effects.side_strike(ms.unit, f, target) > 0:
+		var right := sk.right_of(target)
+		if right != null and right.alive():
+			score += _capped(damage_outcomes(ms, f, right, Skirmish.AREA_SIDE), right.hp)
 	# A kill ends the countdown it gathers, opens the core its fall unguards, and sets off its
 	# last act (the boss mechanics of 15 October; valued 22 October), of which only what a
 	# round's wait could save argues against the kill (last_act_deterrent, 18 November).
@@ -834,7 +843,33 @@ func self_grant_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe
 					worth += ward_score(sk, ms)
 			"charged":
 				worth += float(n) * _raw_attack_mean(ms)
+			"parry":
+				if not Effects.has(ms.unit, "parry"):
+					worth += parry_worth(sk, ms)
+			_:
+				# Any other machine status (the line frame's offhand: Armoured, a Barrier, Empowered), at
+				# the price a buff granting it on this machine carries.
+				worth += buff_score(sk, ms, Face.buff(id, n))
 	return worth
+
+
+## What a Parry is worth (the Beam Buckler's, Ryan, 19 November): half, rounded down, of what its
+## Barrier and its armour would keep off this round's blows aimed at it, the Barrier taking the
+## first whole, on every strike of its next weapon (PARRY_STRIKES). Placeholders, as every weight.
+func parry_worth(sk: Skirmish, ms: Skirmish.MechState) -> float:
+	var kept := 0
+	var barred := false
+	for foe in sk.field_foes():
+		if not foe.alive() or not foe.attacks() or foe.is_suppressed() or foe.target != ms:
+			continue
+		for s in range(maxi(1, foe.strikes())):
+			var blow := sk.foe_blow(foe)
+			if not barred:
+				barred = true
+				kept += blow
+			elif ms.unit.shield <= 0:
+				kept += mini(blow, ms.unit.armour)
+	return float(int(kept / 2.0)) * PARRY_STRIKES
 
 
 ## A team reroll's worth, the one yardstick for a reroll gained (equipment's, a kill's), paid (an
@@ -1352,7 +1387,9 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 	if area < 0:
 		f = Effects.effective_face(ms.unit, f, target)
 	var rolls: Array[int] = []
-	if area >= 0:
+	if area == Skirmish.AREA_SIDE:
+		rolls.append(Effects.side_strike(ms.unit, f, target))   # the foe to the right: the rifle's number (the line frame's)
+	elif area >= 0:
 		rolls.append(Skirmish.area_number(f, area))   # a foe past the target: its shape's number
 	else:
 		rolls.append(f.power)
@@ -1391,6 +1428,13 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 		var first := maxi(0, (Effects.damage_taken(target, dmg + eats, ms.unit, damaging) if target != null else dmg + eats) - arm)
 		if barred:
 			first = 0
+		# The sword's hit again after every strike (the line frame's offhand, 19 November): its share
+		# of the strike's blow as it left the gun, rounded down, then the foe's Brittle and armour.
+		var again := Effects.strike_again(ms.unit, f, target) if target != null and f.reach != Face.Reach.EVERY_FOE else 0
+		var echoed := 0.0
+		if again > 0:
+			var echo := floori((dmg + eats) * again / 100.0)
+			echoed = float(maxi(0, (Effects.damage_taken(target, echo, ms.unit, damaging, false) if damaging else 0) - arm)) * n
 		# Ricochet (the Skua's, 12 November): once the weapon's strikes are done, a strike of 1 more
 		# a stack at its target, through the firer's pipeline, the foe's Brittle and its armour.
 		var bounced := 0.0
@@ -1398,7 +1442,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 		if stacks > 0:
 			var one := int(Effects.attack(ms.unit, f, 1, 0, target)["damage"])
 			bounced = float(maxi(0, Effects.damage_taken(target, one, ms.unit, true, false) - arm)) * stacks
-		out.append([float(first) + float(later) * maxf(0.0, n - 1.0) + bounced, w])
+		out.append([float(first) + float(later) * maxf(0.0, n - 1.0) + bounced + echoed, w])
 	return out
 
 
@@ -2070,6 +2114,17 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face) -> float:
 			score += phased_score(sk, who)
 		"ricochet":
 			score += RICOCHET_WORTH * float(n)   # a strike of 1 more after each shot, for the fight
+		"aile_boost", "aile_assault", "aile_blitz":
+			# The Aile Booster's (the line frame's, 19 November): its next weapon reaches as Indirect, the
+			# back rank opened; the Blitz's ignores armour too, a point off each strike it would meet.
+			if not Effects.has(who.unit, f.buff_status):
+				score += AILE_REACH_WORTH * _raw_attack_mean(who)
+				if f.buff_status == "aile_blitz":
+					var armour := 0
+					for foe in sk.field_foes():
+						if foe.alive():
+							armour = maxi(armour, foe.armour_for(Face.attack(1)))
+					score += AILE_ARMOUR_WORTH * float(armour)
 	# The foe in front (the Photosphere Lance's Sapped, 11 November): its blows this round a
 	# point lower a stack on each strike, never more than the blow, if it is to strike at all.
 	if f.front_status == "sapped":

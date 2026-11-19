@@ -43,6 +43,12 @@ const AREA_ROW := 1      # beside the target in its rank: Spread's, Splash's
 const AREA_COLUMN := 2   # the other rank of its column: Penetrate's, Splash's
 const AREA_ALL := 3      # any other foe a reach over every foe adds: nothing
 const AREA_CHAIN := 4    # every other Shocked foe on the field: Chain's conductors (28 October)
+const AREA_SIDE := 5     # the foe to the right of the target in its rank: the line frame's Beam Rifle's blow, beside any area's (19 November)
+## A spend's hits in the order they land (_hit): the entry's strikes, the sword's hit again after
+## each (the line frame's Beam Sword, 19 November), and a Ricochet's after them all.
+const HIT_STRIKE := 0
+const HIT_AGAIN := 1
+const HIT_BOUNCE := 2
 static var overheat_scale: int = 1   # hull an overheat burns a point of heat past the maximum; tools/balance.gd's --overheat sets it for one run's what-if (30 October)
 static var pilot: Dictionary = {}   # chassis id -> heat it gains as each round opens, a what-if for tools/balance.gd's --pilot (the Whip Scorpion's pilot light, 3 November); never content
 # One more what-if on the overheat (Ryan, 30 October), set by tools/balance.gd for one run: every
@@ -89,6 +95,8 @@ class MechState:
 	var shield_broken: bool = false # its shield has stood at nothing since its last reboot: it gains none by any method until the reboot's recovery
 	var overheated: bool = false    # it has overheated since its last reboot: one overheat, and one shield broken by it, between reboots
 	var killed_round: bool = false  # an attack of its own killed this round: what its passive reads as the round ends (on_round_kill: the Ammit's flare)
+	var offhand: int = -1           # the form its offhand holds, by its place in the cycle (Effects.offhand_forms: the line frame's); -1 for none
+	var parried: int = 0            # what a Barrier and its armour have kept off foes' blows while its Parry stands this round (the Beam Buckler's)
 
 	## The heat it carries past its maximum, a stack a point (the reboot's Overheated).
 	func overheat_stacks() -> int:
@@ -369,6 +377,9 @@ func begin() -> void:
 	# Passives that fire once as the fight begins.
 	for ms in live_mechs():
 		_fired(ms, Effects.fire(ms.unit, "on_skirmish_start"), "as the fight begins")
+	# The offhand (the line frame's, Ryan, 19 November): every fight opens on its first form.
+	for ms in live_mechs():
+		_take_up_form(ms, 0)
 
 
 # ---------------------------------------------------------------- queries
@@ -1494,6 +1505,7 @@ func start_round() -> void:
 	# and before the foes announce, so their blows are drawn against the armour that will stand.
 	for ms in mechs:
 		if not paused(ms):
+			_parry_returns(ms)   # what its Parry counted last round stands as the next weapon's add, before the Parry goes with its turn's opening
 			Effects.turn_opens(ms.unit, round)   # its turn starts: Armoured, a Barrier and a Ward go, its Brittle halves, and an Exposed whose round is past falls
 	# The turn begins with what cooling a machine is granted (a module's, a passive's, a
 	# status's: a chassis has none of its own since the reboot), one log line for all.
@@ -2397,6 +2409,10 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				else:
 					log.append("%s disrupts the foes aiming at %s" % [ms.unit.display_name, who.unit.display_name])
 					_disrupt(aiming)
+			# What the buff lays on its own spender beside its grant (the Aile Assaulter's Empowered,
+			# Ryan, 19 November: "Gain 1 Empowered"), once it has landed.
+			if not f.self_statuses.is_empty() and ms.alive():
+				_self_grants(ms, f, 0)
 		Face.Kind.ATTACK:
 			# The sixth shot (the Cassowary's, Ryan's kit of 18 October): the spend the count
 			# lands on doubles its damage and the stacks it lays (an nth_shot rule read through
@@ -2432,6 +2448,18 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				log.append("%s: the spin is spent" % ms.unit.display_name)
 			if f.is_weapon() and Effects.remove(ms.unit, "juggernaut"):
 				log.append("%s: its Juggernaut Drive is spent" % ms.unit.display_name)
+			# What waits on the next weapon fired goes with it, every strike of its spend having had it
+			# (Ryan, 19 November: "Next weapon fired. Applies to the whole spend"): the Aile Booster's
+			# buffs and the Parry's return.
+			if f.is_weapon():
+				for id in ["aile_boost", "aile_blitz", "aile_assault", "parry_strike"]:
+					if Effects.remove(ms.unit, id):
+						log.append("%s: its %s is spent" % [ms.unit.display_name, str(Effects.STATUS[id]["name"])])
+			# The offhand turns (the line frame's, Ryan, 19 November: "It cycles after a spend"; the
+			# spends that carry its rider, his answer that day): every weapon and equipment spent at a
+			# foe takes its next form up, a Rapid second spend riding the form after.
+			if target != null and ms.alive():
+				_turn_offhand(ms)
 	_holding_returns = false
 	_killer = null
 	_release_returns()   # the spend is done with the field: what its kills bring back stands now
@@ -3298,9 +3326,22 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	# spend.
 	var hit := reached_by(f, target)
 	var shapes := area_shapes(f, target)   # the shape each foe past the target stands in, for its number
+	# The offhand's riders (the line frame's, Ryan, 19 November; "I had intended for everything to
+	# apply riders"): the rifle's blow on the foe to the right of the target with every strike, its
+	# own blow beside an area's ("Two spreads on the same weapon would combine, but the rifle buff is
+	# a different form"), and the sword's hit again on the target after every strike, its number the
+	# share it says of the strike's blow, rounded down. A reach over every foe has no one target, so
+	# neither rides it. Neither follows a Ricochet's hit, the entry's strikes alone setting them off.
+	var everyone := f.reach == Face.Reach.EVERY_FOE
+	var side := 0 if everyone else Effects.side_strike(ms.unit, f, target)
+	var right: Foe = right_of(target) if side > 0 else null
+	var again := 0 if everyone else Effects.strike_again(ms.unit, f, target)
 	# What the hit judges on each foe it reaches, before it lands (_judge): its machine's lays,
 	# the foe's own reads and the gates, once, as the die is spent.
-	var judged := _judge(ms, f, hit)
+	var judging: Array[Foe] = hit.duplicate()
+	if right != null and not judging.has(right):
+		judging.append(right)
+	var judged := _judge(ms, f, judging)
 	var lays: Dictionary = judged["lays"]
 	var reads: Dictionary = judged["reads"]
 	var shut: Dictionary = judged["shut"]
@@ -3325,17 +3366,36 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	# A reach over every foe has no one target (Ryan, 12 November: "Target all shouldn't need a
 	# target in the same way that sweep didn't"): every foe is struck, so a Shock on any of them
 	# is doubled and spent, and with no primary target no Ricochet follows it.
-	var everyone := f.reach == Face.Reach.EVERY_FOE
 	var bounces := Effects.stacks_of(ms.unit, "ricochet") if f.is_weapon() and not everyone else 0
-	for at in range(strikes + bounces):
-		var bounce := at >= strikes
-		if bounce and at == strikes:
+	# The hits in the order they land, each a place of its own on the screen: every strike, the
+	# sword's hit again after each, then the Ricochet's.
+	var order: Array[int] = []
+	for s in range(strikes):
+		order.append(HIT_STRIKE)
+		if again > 0:
+			order.append(HIT_AGAIN)
+	for b in range(bounces):
+		order.append(HIT_BOUNCE)
+	var spread := hit                # the foes a strike reaches and the shapes they stand in, for the strikes between the hits on the target alone
+	var spread_shapes := shapes
+	var strike := -1                 # the entry's own strike a hit belongs to
+	var struck_dmg := 0              # the last strike's blow on its target before the foe's own reads of it: what the hit again shares
+	for at in range(order.size()):
+		var step: int = order[at]
+		var bounce := step == HIT_BOUNCE
+		var echo := step == HIT_AGAIN
+		if step == HIT_STRIKE:
+			strike += 1
+		if bounce or echo:
 			var only: Array[Foe] = [target]
 			hit = only
 			shapes = {}
+		else:
+			hit = spread
+			shapes = spread_shapes
 		if bounce:
 			h.base += 1
-		elif at % split == 0:
+		elif step == HIT_STRIKE and strike % split == 0:
 			h.base += f.power + own   # the number before the pipeline, once a split's hits, for the screen's flash
 		var heat := f.heat if at == 0 else 0
 		# The blow's order (Ryan, 28 October), the target first:
@@ -3344,12 +3404,22 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		# weapon damage is halved"), then the firer's pipeline, every live modifier's adds,
 		# multiplies and floors in that order, its conditions read on that foe; then that foe's own
 		# reads, flat (_foe_reads): "the spirit of buffs and riders is they happen after".
-		# A Ricochet's strike is 1 where the entry's number and its reads of the foe would stand.
-		var modded := Effects.attack(ms.unit, f, 1 if bounce else split_share(f.power + own, split), heat, target, _zapped(_judged(judged_hp, target)))
-		var dmg: int = int(modded["damage"]) + (0 if bounce else _foe_reads(f, reads, target, not struck_once.has(target)))
-		if at == 0:
-			h.heat += modded["heat"]   # heat is paid once a spend, every modifier's with it (the rules: a blow)
-		h.vent += modded["vent"]
+		# A Ricochet's strike is 1 where the entry's number and its reads of the foe would stand. The
+		# sword's hit again is its share of the strike's blow as it left the gun, the firer's pipeline
+		# and the entry's reads of the foe already in it, rounded down, so nothing of the firer's is
+		# read twice; the foe's own Brittle, Shock and armour meet it as they meet any blow.
+		var dmg := 0
+		if echo:
+			dmg = floori(struck_dmg * again / 100.0)
+			h.base += dmg
+		else:
+			var modded := Effects.attack(ms.unit, f, 1 if bounce else split_share(f.power + own, split), heat, target, _zapped(_judged(judged_hp, target)))
+			dmg = int(modded["damage"]) + (0 if bounce else _foe_reads(f, reads, target, not struck_once.has(target)))
+			if at == 0:
+				h.heat += modded["heat"]   # heat is paid once a spend, every modifier's with it (the rules: a blow)
+			h.vent += modded["vent"]
+			if not bounce:
+				struck_dmg = dmg
 		var landed := dmg
 		# Area by shape, numbered (Ryan, 28 October; the half retired): every other foe the strike
 		# reaches takes its shape's number (Spread's, Penetrate's, Splash's, Chain's on a Shocked
@@ -3359,7 +3429,18 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		var blows := {}
 		for foe in hit:
 			blows[foe] = dmg if foe == target else _area_blow(ms, f, int(shapes.get(foe, AREA_ALL)), foe, own, split, _zapped(_judged(judged_hp, foe))) + _foe_reads(f, reads, foe, not struck_once.has(foe))
+		# Every blow of the strike in the order it lands, [foe, its blow, the shape it stands in]: the
+		# foes it reaches, then the rifle's blow on the foe to the right, a blow of its own on a foe
+		# an area of the strike reached too.
+		var landings: Array = []
 		for foe in hit:
+			landings.append([foe, blows[foe], int(shapes.get(foe, 0))])
+		if step == HIT_STRIKE and right != null:
+			var first_right := not struck_once.has(right) and not hit.has(right)
+			landings.append([right, _side_blow(ms, f, side, own, split, right, _zapped(_judged(judged_hp, right))) + _foe_reads(f, reads, right, first_right), AREA_SIDE])
+		for landing_at in landings:
+			var foe: Foe = landing_at[0]
+			var shape: int = landing_at[2]
 			var was_alive := foe.alive()
 			var hp_before := foe.hp
 			var first := not struck_once.has(foe)   # the foe's first blow of the spend
@@ -3369,12 +3450,12 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# A Chain's arc is its blow alone (Ryan, 18 November: "take riders off chain. Thematically
 			# it's a lightning arc, not part of the impact"): no rider of the entry, its primers or a
 			# passive lands on a conductor, and no Shock, Expose, Lure or Disrupt after the blow.
-			var arc := int(shapes.get(foe, 0)) == AREA_CHAIN
+			var arc := shape == AREA_CHAIN
 			if not h.reached.has(foe):
 				h.reached.append(foe)
-			if int(shapes.get(foe, 0)) == AREA_CHAIN:
+			if shape == AREA_CHAIN:
 				log.append("%s arcs to %s" % [ms.unit.display_name, foe.display_name])   # Chain (28 October): a conductor's blow
-			var blow: int = blows[foe]
+			var blow: int = landing_at[1]
 			# Spillover (Overwhelm until 6 October): damage past the kill of a front-rank foe carries
 			# into the foe behind it (_spill). A massive foe fills its column: nothing is behind it.
 			var spills := f.spills and foe.rank == 0 and not foe.is_massive()
@@ -3388,7 +3469,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				# (the audit's eighth bug, 8 November: a Wild Boar's ×2 Brittle 1 that kills with its
 				# first strike leaves Brittle 2).
 				if struck:
-					_note_blow(foe, at, 0, "ricochet" if bounce else "strike")   # the shot lands on the corpse before it spills
+					_note_blow(foe, at, 0, "ricochet" if bounce else ("again" if echo else "strike"))   # the shot lands on the corpse before it spills
 				_spill(ms, f, foe, blow, hit, at, not f.is_debuff())
 				if foe == target:
 					landed = blow
@@ -3401,7 +3482,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				# piece that ignores armour meets none (Foe.armour_for). Every blow is recorded, one on a
 				# foe an earlier hit of the spend felled included, so the screen shows every hit and
 				# shot land (Ryan, 7 November: "Anything truncated confuses the player").
-				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), struck, foe.armour_for(f), at, ("ricochet" if bounce else "strike") if struck else ("chain" if int(shapes.get(foe, 0)) == AREA_CHAIN else "area"))
+				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), struck, foe.armour_for(f), at, ("ricochet" if bounce else ("again" if echo else "strike")) if struck else ("chain" if shape == AREA_CHAIN else "area"))
 				taken = int(landing["taken"])
 				var foe_armoured := int(landing["armoured"])
 				var barred := bool(landing["barred"])
@@ -3933,6 +4014,37 @@ static func _foe_reads(f: Face, reads: Dictionary, foe: Foe, first: bool) -> int
 		return 0
 	var r: Array = reads.get(foe, [f.missing_bonus(foe), 0])
 	return int(r[0]) + (int(r[1]) * f.per_consumed if first else 0)
+
+
+## The rifle's blow on the foe to the right of a strike's target (the line frame's Beam Rifle, Ryan,
+## 19 November: "Each strike also strikes the foe to the right for 2"; "The rifle is half of a
+## Spread"), before the foe's own reads, statuses and armour: its number with `prints` (what the
+## entry prints from its firer), a split's halving of that base, through the firer's pipeline with
+## its conditions judged on that foe, as a Spread's blow is; equipment's blow nothing, its riders
+## landing all the same.
+func _side_blow(ms: MechState, f: Face, side: int, prints: int, split: int, foe: Foe, ctx: Dictionary = {}) -> int:
+	if f.is_debuff():
+		return 0
+	return int(Effects.attack(ms.unit, f, split_share(side + prints, split), 0, foe, ctx)["damage"])
+
+
+## The foe to the right of `foe` in its rank (the Beam Rifle's, Ryan, 19 November: "the foe to the
+## right"): a twin slot's right half beside its left, else the next slot's foe, its left half for a
+## twin; none past the rank's end, in an empty slot, or out of the team's reach (Aloft). A foe the
+## spend has felled still stands in its slot until the spend's death check, as an area finds it.
+func right_of(foe: Foe) -> Foe:
+	if foe == null or foe.rank < 0 or foe.column < 0:
+		return null
+	var pair := twin_of(foe)
+	if pair != null and foe == foe_at(foe.rank, foe.column):
+		return null if out_of_reach(pair) else pair
+	var c := foe.column + 1
+	if c >= columns:
+		return null
+	var n := foe_at(foe.rank, c)
+	if n == null or n == foe or out_of_reach(n):
+		return null
+	return n
 
 
 ## One hit's blow on a foe past its own, before the foe's own reads, statuses and armour: its
@@ -5113,7 +5225,10 @@ func _self_grants(ms: MechState, f: Face, reached: int) -> void:
 		var id := str(g.get("status", ""))
 		if not Effects.STATUS.has(id):
 			continue
-		var n := maxi(1, int(g.get("stacks", 1))) * (maxi(0, reached) if bool(g.get("per_foe", false)) else 1)
+		# A set for every foe the spend reached, beside the flat stacks a `plus` says (the Beam
+		# Pavise's "Gain 1 Armoured, plus 1 Armoured for every foe struck").
+		var each := bool(g.get("per_foe", false))
+		var n := maxi(1, int(g.get("stacks", 1))) * (maxi(0, reached) if each else 1) + (maxi(0, int(g.get("plus", 0))) if each else 0)
 		var cap := int(g.get("cap", 0))
 		if cap > 0:
 			n = mini(n, maxi(0, cap - Effects.stacks_of(ms.unit, id)))   # up to its cap (Hardened Light's 3, 4 or 5)
@@ -5122,6 +5237,46 @@ func _self_grants(ms: MechState, f: Face, reached: int) -> void:
 		var def: Dictionary = Effects.regenerating_mech() if id == "regenerating" else Effects.STATUS[id]
 		Effects.stack(ms.unit, def, Effects.status_scope(def), "buff:" + f.component, n, Effects.status_decay(def))
 		log.append("%s gains %s ×%d" % [ms.unit.display_name, str(def["name"]), Effects.stacks_of(ms.unit, id)])
+		if id == "barrier":
+			_fired(ms, Effects.fire(ms.unit, "on_barrier"), "as it gains a Barrier")   # gaining a Barrier, whatever lays it (the Beam Buckler's)
+
+
+## The offhand takes up its form at `at` in the cycle (the line frame's, Ryan, 19 November): its chip
+## and its riders, the form's own (Effects.hold_form). A machine with no offhand takes nothing.
+func _take_up_form(ms: MechState, at: int) -> void:
+	var forms := Effects.offhand_forms(ms.unit)
+	if forms.is_empty():
+		ms.offhand = -1
+		return
+	ms.offhand = posmod(at, forms.size())
+	Effects.hold_form(ms.unit, forms[ms.offhand])
+
+
+## The offhand turns to its next form, the first after the last (Ryan, 19 November: "It cycles after
+## a spend"): after every weapon and equipment the machine spends at a foe, so the next one rides it.
+func _turn_offhand(ms: MechState) -> void:
+	if ms.offhand < 0:
+		return
+	_take_up_form(ms, ms.offhand + 1)
+	log.append("%s's offhand turns: %s" % [ms.unit.display_name, Effects.held_form(ms.unit)])
+
+
+## The Parry's return as its machine's turn opens (the Beam Buckler's, Ryan, 19 November: "The first
+## weapon fired next turn gains bonus damage equal to half of all damage blocked by this machine this
+## round (rounded down)"): half of what it counted, rounded down, stands as the first weapon's add
+## this turn, a point a stack on every strike, lifted by that weapon and gone as the turn ends if
+## none fires; the count starts again with the next Parry. Before the turn's opening takes the Parry.
+func _parry_returns(ms: MechState) -> void:
+	var count := ms.parried
+	ms.parried = 0
+	if not Effects.has(ms.unit, "parry") or not ms.alive():
+		return
+	var back := int(count / 2.0)
+	if back <= 0:
+		log.append("%s's Parry turned nothing aside" % ms.unit.display_name)
+		return
+	Effects.stack(ms.unit, Effects.STATUS["parry_strike"], Effects.SKIRMISH, "parry", back, Effects.DECAY_AFTER_TURN)
+	log.append("%s's Parry returns: its first weapon this turn deals %d more a strike" % [ms.unit.display_name, back])
 
 
 ## A strike's rider landing on its foe once the strikes are done, felled or not (death is the
@@ -5640,6 +5795,15 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 	var barred := bool(r["barred"])
 	if barred:
 		Effects.remove(ms.unit, "barrier")
+	# The Parry's count (the Beam Buckler's, Ryan, 19 November: "half of all damage blocked by this
+	# machine this round"; blocked, his answer that day: what a Barrier and armour keep off it, never
+	# its shield's soak): the whole blow a Barrier took, and what its armour took off what passed the
+	# shield, while the Parry stands.
+	if Effects.has(ms.unit, "parry"):
+		var kept := (brought if barred else 0) + int(r["armoured"])
+		if kept > 0:
+			ms.parried += kept
+			log.append("%s parries %d (%d this round)" % [ms.unit.display_name, kept, ms.parried])
 	var had_shield := ms.unit.shield > 0
 	ms.unit.shield = r["shield"]
 	ms.unit.hull -= r["through"]

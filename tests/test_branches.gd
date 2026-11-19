@@ -172,6 +172,34 @@ func test_the_validator_holds_a_branch_to_a_tweak_of_a_locked_piece() -> void:
 				assert_eq(real.make_mech(str(cid), 1, Vector2i.ZERO, null, [], b).branches.size(), (b as Array).size(), "%s builds with %s" % [cid, str(b)])
 
 
+## A step may tweak as many pieces as it needs (Ryan, 19 November: "Things that limit design space
+## should never be a rule"): one on the passive and a locked piece at once validates, rides the
+## passive, each effect still on its own piece, and its line stands under the passive in the codex.
+func test_a_step_may_tweak_the_passive_and_a_locked_piece_at_once() -> void:
+	var db := _db(1)
+	var c: Dictionary = db.chassis["test_frame"]
+	c["passive"] = {"id": "test_passive", "name": "Test Passive", "description": "Plain.", "effects": [
+		{"trigger": "static", "effect": "shield_zap", "value": 2, "cost": 2, "slot": "zap"}]}
+	c["branches"][0]["steps"][0]["effects"] = [
+		{"trigger": "static", "effect": "shield_zap", "value": 3, "cost": 2, "slot": "zap"},
+		{"trigger": "static", "effect": "self_status", "status": "ward", "value": 1, "entry": "test_lure"}]
+	var errs: Array[String] = []
+	db._validate_branches("chassis test_frame", c, errs)
+	assert_eq(errs, [] as Array[String], "the passive's slot and the lure in one step")
+	var u := db.make_mech("test_frame", 1, Vector2i.ZERO, null, [], ["guard"])
+	var step: Effects.Modifier = null
+	for m in u.modifiers:
+		if m.source == "branch":
+			step = m
+	assert_true(step != null and step.component.is_empty(), "on two pieces, it rides the passive")
+	assert_eq(int(Effects.zap_of(u, u.die.faces[1])["damage"]), 3, "the passive's slot takes the step's number")
+	assert_true(Effects.self_grants(u, u.die.faces[0]).any(func(g: Dictionary) -> bool: return g["status"] == "ward"), "and the lure lays its Ward")
+	var codex := db.codex_for_unit(u)
+	assert_true((codex["passive_rows"] as Array).any(func(r: Array) -> bool: return str(r[0]) == "GUARD I: Guard one."), "its line under the passive: %s" % str(codex["passive_rows"]))
+	for rules in codex["face_rules"]:
+		assert_false((rules as Array).has("Guard I: Guard one."), "and on no piece's row")
+
+
 ## The harness's UPG line (under a machine's hardpoints): every build its chassis allows, one pick,
 ## the setup's and the row's at once; Stock takes it off with the rest.
 func test_the_harness_offers_every_build_and_the_row_names_the_one_picked() -> void:

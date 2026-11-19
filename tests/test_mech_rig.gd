@@ -454,6 +454,50 @@ func test_a_form_is_held_while_set_and_let_go_after() -> void:
 	pair[1].free()
 
 
+func test_an_offhands_armament_holds_its_slots_form_and_its_lunge_plays_over_it() -> void:
+	# A model's forms named for an offhand's slot (offhand_<slot>: the line frame's armament, 19
+	# November) are held while its machine's offhand holds a form in that slot, whichever form a
+	# branch has put there; the Aile Booster's dash, its firing, keys none of the arm the form holds.
+	var u := Unit.mech(0, "Test", Vector2i.ZERO)
+	var form := {"id": "test_blade", "slot": "sword", "name": "Test Blade", "description": "", "riders": [{"trigger": "static", "effect": "strike_again", "value": 50}]}
+	Effects.hold_form(u, form)
+	assert_eq(Effects.held_slot(u), "sword", "the slot of the form up")
+	assert_true(MechRig.holds_form(u, "offhand_sword"), "its slot's form is held")
+	assert_false(MechRig.holds_form(u, "offhand_rifle"), "and no other slot's")
+	assert_false(MechRig.holds_form(Unit.mech(1, "Plain", Vector2i.ZERO), "offhand_sword"), "a machine with no offhand holds none")
+	var side := MechRig.load_sidecar("line_frame")
+	var forms: Dictionary = side.get("forms", {})
+	for slot in ["rifle", "sword", "shield"]:
+		assert_true(forms.has("offhand_" + slot), "the line frame holds its %s" % slot)
+	var beams: Array = side.get("beams", [])
+	for slot in ["sword", "shield"]:
+		var lit: Array = []
+		for g in forms["offhand_" + slot].get("glow", []):
+			lit.append_array(g["parts"])
+		assert_true(lit.any(func(p) -> bool: return beams.has(p)), "its %s's form lights a part made of light: %s" % [slot, str(lit)])
+	var pair := _rig_for("line_frame")
+	var rig: MechRig = pair[0]
+	rig.set_form("offhand_shield", true)
+	rig.tick(float(rig.forms["offhand_shield"]["duration"]) + 0.3)
+	assert_true(rig.act_set().any(func(a: Dictionary) -> bool: return str(a["name"]) == "dash"), "the dash plays over the held armament")
+	assert_true(rig.fire_act("aile_booster"), "and is the booster's firing")
+	pair[1].free()
+	# A form's light holds a part made of light up while it is held, and lets it go with the form.
+	var r := _boxed_rig()
+	var boxed: MechRig = r[0]
+	var kite := _lit_part(r, "kite")
+	boxed._setup_beams({"beams": ["kite"]})
+	boxed._setup_forms({"guard": {"duration": 0.4, "tracks": {}, "glow": [{"parts": ["kite"], "k": 14.0}]}})
+	assert_false(kite.visible, "out at rest")
+	boxed.set_form("guard", true)
+	boxed.tick(0.7)
+	assert_true(kite.visible, "up while its form is held")
+	boxed.set_form("guard", false)
+	boxed.tick(0.7)
+	assert_false(kite.visible, "out once the form lets it go")
+	(r[1] as Node).free()
+
+
 func test_a_held_form_lets_go_the_forms_it_releases() -> void:
 	# A form may end others as it is held, as its status ends theirs (the Mole's burrow takes its
 	# drill back: Burrowed lets Drill Out go, so the drill docks as it digs), and letting it go

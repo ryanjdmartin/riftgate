@@ -459,7 +459,7 @@ func test_the_validator_holds_the_petrels_fields_to_their_kinds() -> void:
 	var cases := {
 		"bad_regen": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "regenerates": {"status": "regenerating", "stacks": 3}}, "regenerates"],
 		"bad_self_kind": [{"kind": "buff", "status": "overcharged", "self_statuses": [{"status": "hardened"}]}, "self_statuses"],
-		"bad_self_status": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "self_statuses": [{"status": "barrier"}]}, "self_statuses"],
+		"bad_self_status": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "self_statuses": [{"status": "phased"}]}, "self_statuses"],
 		"bad_self_stacks": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "self_statuses": [{"status": "hardened", "stacks": 0}]}, "self_statuses"],
 		"bad_self_cap": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "self_statuses": [{"status": "hardened", "stacks": 2, "cap": 1}]}, "self_statuses"],
 		"bad_self_key": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "self_statuses": [{"status": "hardened", "rounds": 2}]}, "self_statuses"],
@@ -485,12 +485,12 @@ func test_the_validator_holds_the_petrels_fields_to_their_kinds() -> void:
 	for e in db.validate():
 		assert_false(e.begins_with("component good_lure"), "a hot lure with Chain 3 that hardens itself up to 3 and wards itself passes: %s" % e)
 	var grants := {"id": "g", "name": "G", "description": "", "effects": [
-		{"trigger": "static", "effect": "self_status", "status": "barrier", "value": 1},
+		{"trigger": "static", "effect": "self_status", "status": "phased", "value": 1},
 		{"trigger": "static", "effect": "self_status", "status": "hardened", "value": 0},
 		{"trigger": "static", "effect": "self_status", "status": "charged", "value": 2, "per_foe": "yes", "cap": 1}]}
 	var gerrs: Array[String] = []
 	db._validate_passive("passive g", grants, gerrs)
-	assert_true(gerrs.any(func(e: String) -> bool: return e.contains("self_status lays one of")), "a Barrier keeps its pieces: %s" % str(gerrs))
+	assert_true(gerrs.any(func(e: String) -> bool: return e.contains("self_status lays one of")), "Phased, granted as the round ends by its own path, is no grant a spend lays: %s" % str(gerrs))
 	assert_true(gerrs.any(func(e: String) -> bool: return e.contains("the stacks it lays")), "a grant of nothing is refused")
 	assert_true(gerrs.any(func(e: String) -> bool: return e.contains("per_foe is true or false")), "per_foe is a switch")
 	assert_true(gerrs.any(func(e: String) -> bool: return e.contains("cap is the most stacks")), "and a cap under the grant is refused")

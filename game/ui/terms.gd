@@ -48,6 +48,9 @@ const TABLE := {
 	"overcharged": ["overcharge", "heat"], "kindled": ["overcharge", "heat"], "enraged": ["overcharge", "heat"], "golden": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
 	"charged": ["shocked", "heat"], "supercooled": ["cryo", "guard"],
 	"brittled": ["brittle", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"], "ricochet": ["ricochet", "heat"],
+	"parry": ["spin", "heat"],   # the Beam Buckler's (19 November): what it blocks, next turn's first weapon's add, in Spun Up's family
+	"offhand": ["star", "plain"],   # the line frame's armament, the star its rider wears on the die (Ryan, 19 November: "a unique (star) effect")
+	"aile_boost": ["rapid", "plain"], "aile_blitz": ["rapid", "plain"], "aile_assault": ["rapid", "plain"],   # the Aile Booster's dash, the Rapid piece's own mark
 	"mine": ["mine", "heat"],
 	"essence": ["essence", "heat"], "essence_flare": ["essence_flare", "heat"],   # the Ammit's count and its Tap's buff (12 and 15 November), with Empowered's group: what hits harder
 	"braced": ["shield", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"], "hardened": ["hardened", "guard"],
@@ -74,7 +77,7 @@ const TABLE := {
 ## A die entry's own mark, by the engine's prefix on its status id, and the term it reads as.
 const ENTRY_MARKS := {"corrupted": "corrupted", "disabled": "jammed"}
 ## An engine status keyed apart from its term: a machine's Ablating, the Badger's hopper.
-const ALIASES := {"ablating_mech": "ablating", "brittled_mech": "brittled", "exposure_mech": "exposure", "phasing": "phased", "hopper": "hopper_property"}
+const ALIASES := {"ablating_mech": "ablating", "brittled_mech": "brittled", "exposure_mech": "exposure", "phasing": "phased", "hopper": "hopper_property", "parry_strike": "parry"}
 
 ## Terms never matched in prose: names a shown text uses as a plain word in their place
 ## ("Targets any front-rank foe", a move that "Strikes twice").

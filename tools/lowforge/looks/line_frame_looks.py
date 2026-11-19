@@ -1,4 +1,4 @@
-"""A look test for the line frame, Aphelion's Gundam-homage walker (docs/briefs/aphelion_line_frame.md;
+"""A look test for the line frame, Aphelion's Gundam-homage walker (its brief retired with its landing, 19 November, in git;
 Ryan, 11 October: "a Gundam-homage walker"; the round-one look he was "fine trying": a V-crest on a
 small head, chest intakes, the kite shield on the forearm, saber hilts on the backpack; pearl and
 red). First round, 15 November, on his word to see what comes of the chassis that have a direction

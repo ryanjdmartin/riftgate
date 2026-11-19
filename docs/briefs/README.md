@@ -89,7 +89,10 @@ proposed in chat first. The long form of this file is `git show cc446826:docs/br
 - No reward for being struck that scales with the enemy's blows; a thorns tank needs a
   drawback on the thorns. What reopens it (20 October): a machine that spends its own turn to
   be struck, deals nothing that turn and is paid later and at random is not a tank doing its
-  job.
+  job. The line frame's Parry pays half of what a Barrier and armour keep off, his call of 19
+  November for a capstone: "The duelist is supposed to be a boss-killer, and this is a tier-3
+  capstone, yes, so it can be powerful. Also, unless it pairs the shield with a slotted lure,
+  and times it perfectly, there's no guarantee it even works."
 - Niches can and should overlap across a larger roster; mechanics should not repeat, and a
   mechanic is its pattern in its context, never one trait it shares ("if you say 'can't do
   this thing because that already kind of does it,' then you quickly run out of things").
@@ -159,7 +162,7 @@ home, is in this file's long form.
 
 ## Ten a maker
 
-The working roster: 24 built, 23 in briefs, 3 open. A design in italics is a brief in the
+The working roster: 25 built, 22 in briefs, 3 open. A design in italics is a brief in the
 table below, under its maker; the rest are built. Ryan's calls moved it this far, and the
 moves he has not marked stand as its plan.
 
@@ -169,7 +172,7 @@ moves he has not marked stand as its plan.
 | Kestrel (10) | Skua; Storm Petrel; Puffin, back in design | Buzzard, its rework settled and unbuilt; Kite; Needletail | Lammergeier; Giant Petrel |
 | Kestrel's two, tiers open | *the Snowy Owl*, leaning to Cryo | *the Magpie*, its slot open to another design | |
 | Wainwright & Sutler (10) | Prairie Dog; Cassowary; Cottonmouth | Dingo; Clydesdale; funnel-web; Whip Scorpion; *the gunship* | Swallowtail, back in design; Musk Ox |
-| Aphelion (9, one open) | Stingray; *the line frame*; *Static*; *the Barrier and Ward support*, the defensive tier one | Baboon, dealt at tier one, its tier placed later; *the jellyfish* with the status detonator; *the time-shifter*; one open, the time area's if it wants it | *the Carrier*; *the Macross* with the aura-shifter |
+| Aphelion (9, one open) | Stingray; the line frame; *Static*; *the Barrier and Ward support*, the defensive tier one | Baboon, dealt at tier one, its tier placed later; *the jellyfish* with the status detonator; *the time-shifter*; one open, the time area's if it wants it | *the Carrier*; *the Macross* with the aura-shifter |
 | The Arsenal (8, two open) | none | Nemesis; *Misharu*; *the Onryō*; *the Zoids walker* | Ammit; *Mastema*; *Minos*; *the thunder figure* |
 
 His calls that shape it, and what each leaves open:
@@ -250,7 +253,6 @@ One row a live brief; the to-do's Design sessions hold each one's task.
 | `minerva_siege_battery.md` | his H-tank, a charge | Minerva | 3 | parked until he picks it up |
 | `minerva_battlecruiser.md` | the capital ship, the broadside | Minerva | 3 | its session |
 | `minerva_shield_bash.md` | his piece: damage equal to armour, then no armour | Minerva | 3, a piece | his call on its form |
-| `aphelion_line_frame.md` | the line frame: an offhand that cycles its rifle, sword and shield, and a boost pack | Aphelion | 1 (or 2) | his answers on its kit's open points, then its engine |
 | `aphelion_static.md` | Static, the shock unit's Aphelion half | Aphelion | 1 | his calls |
 | `aphelion_barrier_ward.md` | the defensive tier one | Aphelion | 1 | his calls |
 | `aphelion_jellyfish.md` | the status payoff carry, no weapons | Aphelion | 2 | Claude's round on his direction |

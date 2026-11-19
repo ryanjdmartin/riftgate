@@ -914,6 +914,12 @@ static func turn_line(next: Face, place: int, db: ContentDB) -> Dictionary:
 	return marked(text_line("effect", "Spent, its die turns to %s, %s, and it acts again" % [Hud.roman(place), named], "rule"), [passive_mark(str(shown[0]), shown[1], shown[2])])
 
 
+## The armament its machine's offhand holds, riding the weapon or equipment showing (the line
+## frame's, Ryan, 19 November): its name and its line, headed by the star the die's passive box shows.
+static func offhand_line(name: String, line: String) -> Dictionary:
+	return marked(text_line("effect", "%s: %s" % [name, line], "rule"), [passive_mark("star", "", Glyphs.colour_for("offhand"))])
+
+
 ## The strikes a machine's Ricochet adds to the weapon showing (the Skua's, 12 November), as a
 ## line headed by the passive box the die shows them in.
 static func ricochet_line(stacks: int) -> Dictionary:

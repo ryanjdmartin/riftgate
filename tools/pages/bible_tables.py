@@ -50,7 +50,8 @@ FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "brac
 MOVE_AS_KEYWORD = {"ablate": "ablate", "jam": "jam", "scorch_all": "scorch", "corrupt_all": "corrupt", "swallow": "swallow", "merge": "merge", "dispel": "dispel", "golden": "golden_rage"}
 VIA_STATUS = {"primed": [("ablating", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
 ENGINE_ALIASES = {"ablating_mech": "ablating", "brittled_mech": "brittled", "exposure_mech": "exposure",   # the same word on the other body
-                  "phasing": "phased"}   # the wait for Phased, which is granted as the round ends (15 November)
+                  "phasing": "phased",   # the wait for Phased, which is granted as the round ends (15 November)
+                  "parry_strike": "parry"}   # the Parry's return, next turn's first weapon's add, under the same name (19 November)
 
 # Printed rules, read off a component's face.
 PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
