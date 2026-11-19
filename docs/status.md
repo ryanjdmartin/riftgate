@@ -325,16 +325,10 @@ with it, on his word. A page's link goes into this file in the same commit as it
 publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.634 on 18 November from main's file at `1383f11` (the page's Version 513),
-  every line of the file read first; the page it replaced was v0.564 of 13 November, the
-  file of `620c717`, an ancestor of main, so main's file went up whole. Main's file is
-  v0.639 since, unpublished: its row on the foes' rule set says a step ahead of a blow is a
-  move's own order and no rule of Purge, his correction of 18 November, its squad row holds
-  the first battle as he decided it (the Meadow's, the draft's three, a choice of one of
-  three from the host maker, the draft's missing pick on a loss), and the Needletail's rows
-  landed on 19 November (its free Designator, its reboot after its action, its Relay
-  rewritten as cooldowns, its branch directions), and the Waste's kit in its levers row
-  and its table. Before republishing,
+  Published at v0.634 on 18 November from main's file at `1383f11` (the page's Version 513).
+  Main's file is v0.639, unpublished: the step ahead of a blow, the first battle as he
+  decided it, the Needletail's rows and the Waste's kit are in it since. The hangar's
+  `text` collection was empty on 19 November, so no writing of his waits. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
   `1383f11` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
