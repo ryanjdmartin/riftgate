@@ -7134,9 +7134,9 @@ func test_a_buff_on_itself_seals_the_machine_and_a_weapon_opens_it() -> void:
 	assert_eq(m.armour, 0, "the seal's armour goes with it")
 	assert_true("\n".join(sk.log).contains("A opens"), "the log says so")
 	sk.end_round()
-	assert_eq(ms.heat, 28, "open, nothing more at the turn's end, and the Cryo its gun met cooled it 2")
+	assert_eq(ms.heat, 30 - Skirmish.cryo_cool(), "open, nothing more at the turn's end, and the Cryo its gun met cooled it")
 	sk.start_round()
-	assert_eq(ms.heat, 23, "and its cooling runs again")
+	assert_eq(ms.heat, 25 - Skirmish.cryo_cool(), "and its cooling runs again")
 	ms.face_index = 0
 	assert_true(sk.assign(0, null), "sealed again")
 	assert_true(Effects.is_sealed(m), "one seal, renewed")
@@ -8714,54 +8714,21 @@ func test_a_debuff_deals_nothing_under_any_effect_and_prints_no_number() -> void
 	assert_eq(sk2.shown_number_text(sk2.mechs[0], gun, plated), "0", "whose blow is nothing here prints 0")
 
 
-## The combined entry (Ryan's go, 20 October, the Wake Diffuser): a vent that also shields, the
-## vent first and then the shield on the same machine, through the spender's passives for an
-## ally, sized on the heat the vent left; the die prints both, the hold says both, and the
-## validator holds the shield half to a vent.
-func test_a_vent_that_shields_cools_first_then_shields_on_what_is_left() -> void:
-	var slip := {"id": "slip", "name": "Slip", "description": "", "effects": [
-		{"trigger": "on_shield_granted", "effect": "shield_per_ally_heat", "value": 2}]}
-	var both := Face.from_dict({"kind": "vent", "power": 10, "shields": 10})
-	assert_eq(both.shields, 10, "the shield half read from content")
-	assert_eq(both.describe(), "vent 10 shield 10", "the hold says both, the vent first")
-	assert_eq(Face.from_dict({"kind": "shield", "power": 10, "shields": 10}).shields, 0, "a shield has no second shield")
-	var sk := Skirmish.new(1)
-	var giver := _mech("Giver", Die.of([both, both.duplicate_face()]), 40, 100)
-	var taker := _mech("Taker", Die.single(Face.attack(10, L)), 50, 100)
-	giver.grant_passive(slip)
-	sk.add_mech(giver)
-	sk.add_mech(taker)
-	sk.add_foes([_ghoul(500, 10)])
-	sk.begin()
-	sk.start_round()
-	taker.shield = 20
-	sk.mechs[1].heat = 30
-	sk.mechs[0].face_index = 0
-	assert_eq(sk.shield_amount(sk.mechs[0], both, sk.mechs[1]), 14, "10 and a fifth of the 20 the vent leaves")
-	assert_true(sk.assign(0, sk.mechs[1]), "spent on the hot ally")
-	assert_eq(sk.mechs[1].heat, 20, "the vent first")
-	assert_eq(taker.shield, 34, "then the shield, grown on what was left")
-	var lines := "\n".join(sk.log)
-	assert_true(lines.contains("Giver vents Taker by 10") and lines.contains("Giver shields Taker for 14"), "the log says both halves")
-	sk.end_round()
-	sk.start_round()
-	giver.shield = 5   # standing: a shield at nothing is broken and takes none
-	sk.mechs[0].heat = 5
-	sk.mechs[0].face_index = 1
-	assert_true(sk.assign(0, sk.mechs[0]), "spent on itself")
-	assert_eq([sk.mechs[0].heat, giver.shield], [0, 15], "its own heat off and the number alone")
-	var bot := Policy.make(Policy.GREEDY, 1)
-	var cold := bot.machine_spend_score(sk, sk.mechs[0], sk.mechs[1], Face.from_dict({"kind": "vent", "power": 10}))
-	assert_true(bot.machine_spend_score(sk, sk.mechs[0], sk.mechs[1], both) >= cold, "the bot weighs the shield half on top of the vent")
+## A vent's shield half left with the Wake Diffuser, its last piece (19 November): the validator
+## refuses the key wherever it stands, and a vent vents alone.
+func test_a_vents_shield_half_is_refused() -> void:
+	var f := Face.from_dict({"kind": "vent", "power": 10, "shields": 10})
+	assert_eq(f.describe(), "vent 10", "a vent says its vent alone")
+	assert_false(f.shields_machine(), "and shields nothing")
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var cid := str(db.components.keys()[0])
-	db.components[cid]["face"] = {"kind": "shield", "power": 10, "shields": 5}
+	db.components[cid]["face"] = {"kind": "vent", "power": 10, "shields": 5}
 	var refused := false
 	for e in db.validate():
-		if e.contains("shields is a vent's shield half"):
+		if e.contains("shields left the entry"):
 			refused = true
-	assert_true(refused, "a shield half on anything but a vent is refused")
+	assert_true(refused, "the key is refused")
 
 
 ## Two pieces the Kite's first rework built (Ryan's go, 21 October) that its second kit and the
@@ -10325,9 +10292,9 @@ func test_the_forge_fires_its_guns_from_ammo_and_a_foes_scorch_still_heats_them(
 	ms.face_index = 4
 	assert_true(sk.assign(0, ms), "a shield on itself")
 	assert_eq(ms.ammo, before + 2, "reloads two")
-	# An entry both a vent and a shield reloads once, the greater (Ryan, 8 November: "Once, take
-	# the greater number"), whichever way it is written.
-	for both in [Face.from_dict({"kind": "vent", "power": 3, "shields": 3}), Face.from_dict({"kind": "shield", "power": 3, "vents": 2})]:
+	# A shield that cools is a vent and a shield at once and reloads once, the greater (Ryan, 8
+	# November: "Once, take the greater number").
+	for both in [Face.from_dict({"kind": "shield", "power": 3, "vents": 2})]:
 		var s2 := Skirmish.new(1, 2)
 		var ox := _mech("Ox", Die.single(both), 40, 200)
 		ox.grant_passive(FORGE)
@@ -10338,7 +10305,7 @@ func test_the_forge_fires_its_guns_from_ammo_and_a_foes_scorch_still_heats_them(
 		var oms: Skirmish.MechState = s2.mechs[0]
 		var had := oms.ammo
 		assert_true(s2.assign(0, oms), "a cool-and-shield entry on itself")
-		assert_eq(oms.ammo, had + 3, "reloads three, once: the vent's number, the greater")
+		assert_eq(oms.ammo, had + 3, "reloads three, once: the shield's number, the greater")
 
 
 ## The Musk Ox's pieces (21 October), synthetic: the cluster cannon gives an ammo back for every

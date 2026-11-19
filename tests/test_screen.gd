@@ -220,11 +220,10 @@ func test_the_main_mark_holds_what_an_entry_delivers() -> void:
 	assert_false(d.rail_tags().has("star"), "and the rail does not star it again")
 	assert_eq(DieFaceView.inside_effect(Face.attack(4, Face.Reach.DIRECT, [Face.Keyword.ABLATE])), "", "a weapon holds its number, never a keyword")
 	d.free()
-	var wake := Face.vent(3)
-	wake.shields = 3
 	var hoist := Face.shield(3)
 	hoist.vents = 2
-	assert_eq([Glyphs.primary_for(wake), Glyphs.primary_for(hoist)], ["shield_vent", "shield_vent"], "a shield and a vent in one entry: one mark, the shield and the steam, whichever half leads")
+	assert_eq(Glyphs.primary_for(hoist), "shield_vent", "a shield that cools: one mark, the shield and the steam")
+	assert_eq(Glyphs.primary_for(Face.vent(3)), "vent", "a vent: the steam alone")
 	assert_false(hoist.has_unique_rule(), "the Hoist's cooling is a number the die prints, never the star")
 	assert_false(hoist.rule_phrases().has("cools 2"), "nor a rule the hold lists")
 	var reload := Face.vent(0)
@@ -254,10 +253,10 @@ func test_a_passive_adds_its_box_at_the_rails_foot() -> void:
 	d.next_face = Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.LURE])
 	assert_eq(picked.call(d), [["equipment", ""]], "equipment: its gear, no number (Ryan, 4 November: \"Why drop the equipment gear icon?\")")
 	assert_eq((d.passive_marks()[0][1] as Array)[0][2], "lure", "and what it lays where a number would stand")
-	var wake := Face.vent(3)
-	wake.shields = 2
-	d.next_face = wake
-	assert_eq(picked.call(d), [["", "2|3"]], "a shield and a vent in one: the two numbers alone, shield | cool (Ryan, 4 November)")
+	var cooling := Face.shield(2)
+	cooling.vents = 3
+	d.next_face = cooling
+	assert_eq(picked.call(d), [["", "2|3"]], "a shield that cools: the two numbers alone, shield | cool (Ryan, 4 November)")
 	assert_eq((d.passive_marks()[0][1] as Array).map(func(r: Array) -> Color: return r[1]), [Palette.SHIELD, Palette.MUTED, Palette.HEAT], "each in its colour")
 	d.free()
 	var db := ContentDB.load_default()
@@ -2466,8 +2465,6 @@ func test_every_mark_on_a_die_face_heads_a_line_of_its_readout() -> void:
 			wanted.append(Terms.glyph(granted))   # equipment's status, inside its gear
 		if f.vents > 0:
 			wanted.append("vent")     # a shield's cooling, under the steam off its top (3 November)
-		if f.shields > 0:
-			wanted.append("shield")   # a vent's shield, in the shield's half of its mark
 		# The costs along the foot, each a mark and a number (Ryan, 2 November).
 		if f.heat > 0:
 			wanted.append("heat")

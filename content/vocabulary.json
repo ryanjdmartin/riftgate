@@ -233,7 +233,7 @@
    "id": "cryo",
    "category": "keyword",
    "name": "Cryo",
-   "codex": "Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo a strike (Cryo 1: one stack), laid once the strikes are done, so a fire never cashes its own frost. Any machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 2 a stack.",
+   "codex": "Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo a strike (Cryo 1: one stack), laid once the strikes are done, so a fire never cashes its own frost. Any machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 1 a stack.",
    "status": "implemented",
    "design": {
     "holes": "Other pieces may lay it (marked for reuse as a healthier ally cooling than a vent). A rider on the mark is benched until the roster has room. The cooling a stack is a placeholder."
@@ -686,7 +686,7 @@
    "id": "cryoed",
    "category": "status",
    "name": "Cryo",
-   "codex": "Foe status, the mark the Cryo keyword leaves. Any machine's hit on it with a weapon spends every stack and cools the hitter 2 a stack; equipment spends none. It never fades on its own.",
+   "codex": "Foe status, the mark the Cryo keyword leaves. Any machine's hit on it with a weapon spends every stack and cools the hitter 1 a stack; equipment spends none. It never fades on its own.",
    "status": "implemented",
    "design": {
     "holes": "Engine id cryoed, since the keyword holds cryo; the player reads Cryo on both.",

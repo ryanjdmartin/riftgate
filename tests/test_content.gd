@@ -10,6 +10,19 @@ func _piece(db: ContentDB, id: String) -> Dictionary:
 	c.erase("status")
 	return c
 
+
+## A plain vent and a plain shield, built here: the slottable ones at tiers zero and one left
+## content on 19 November (Ryan's yes), and these tests use one only to observe something else.
+## A basic's tier and no shape, as the Coolant Jacket and the Canopy stood.
+func _plain_vent(db: ContentDB) -> Dictionary:
+	return {"name": "Plain Vent", "maker": str(db.city_makers()[0]), "tier": 0, "shape": "none", "codex": "", "flavour": "",
+		"design": {"stage": "draft", "fantasy": "", "niche": ""}, "face": {"kind": "vent", "power": 4}, "passive": null, "tags": []}
+
+
+func _plain_shield(db: ContentDB) -> Dictionary:
+	return {"name": "Plain Shield", "maker": str(db.city_makers()[0]), "tier": 0, "shape": "none", "codex": "", "flavour": "",
+		"design": {"stage": "draft", "fantasy": "", "niche": ""}, "face": {"kind": "shield", "power": 8, "targets": "self"}, "passive": null, "tags": []}
+
 func _db() -> ContentDB:
 	return ContentDB.load_default()
 
@@ -953,7 +966,7 @@ func test_breach_is_gone_and_ignoring_armour_is_a_rule_written_on_a_weapon() -> 
 	gun["tier"] = 1
 	gun["face"]["ignores_armour"] = true
 	db.components["piercer"] = gun
-	var plate: Dictionary = _piece(db, "canopy")
+	var plate: Dictionary = _plain_shield(db)
 	plate["tier"] = 1
 	plate["face"]["ignores_armour"] = true
 	db.components["piercing_plate"] = plate
@@ -1000,7 +1013,7 @@ func test_swap_web_and_spillover_are_rules_written_on_their_pieces() -> void:
 		for k in (cases[id][0] as Dictionary).keys():
 			c["face"][k] = cases[id][0][k]
 		db.components[id] = c
-	var plate: Dictionary = _piece(db, "canopy")
+	var plate: Dictionary = _plain_shield(db)
 	plate["tier"] = 1
 	plate["face"]["swaps"] = true
 	db.components["swap_plate"] = plate
@@ -1454,11 +1467,11 @@ func test_support_keywords_ride_on_shields_and_vents_only() -> void:
 func test_a_component_passive_from_content_lands_on_the_mech() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
-	var fins: Dictionary = _piece(db, "coolant_jacket")
+	var fins: Dictionary = _plain_vent(db)
 	fins["name"] = "Finned Sink"
 	fins["passive"] = {"id": "fins", "name": "Fins", "description": "Cooling +5.",
 		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 5}]}
-	db.components["fins_pack"] = fins   # the jacket's own tier, a basic, below the chassis that stocks it
+	db.components["fins_pack"] = fins   # a basic's tier, below the chassis that stocks it
 	var c: Dictionary = db.chassis["clydesdale"].duplicate(true)
 	c["fixed"] = []   # nothing built in, so the component is the die's first entry
 	c["loadout"] = ["fins_pack"]
@@ -1528,7 +1541,7 @@ func test_a_spend_keyword_rides_on_any_kind_of_component() -> void:
 	gun["face"]["shield_cost"] = 2
 	gun["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_gun"] = gun
-	var fins: Dictionary = _piece(db, "coolant_jacket")
+	var fins: Dictionary = _plain_vent(db)
 	fins["face"]["volatile"] = 3
 	fins["tier"] = 1   # a synthetic component no chassis stocks carries its own tier (7 October)
 	db.components["hot_fins"] = fins
@@ -1643,7 +1656,7 @@ func test_a_reach_beside_the_rank_is_an_attacks_and_a_real_reach() -> void:
 ## fields on their keyword, their face or their status, so the content and the landing set them.
 func test_the_rule_numbers_are_fields_on_their_keyword_their_face_or_their_status() -> void:
 	var db := _fresh()
-	var base: Dictionary = _piece(db, "coolant_jacket")
+	var base: Dictionary = _plain_vent(db)
 	base["tier"] = 1
 	var cases := {
 		"test_keyword": [{"keywords": ["volatile"]}, "Volatile is a cost, not a keyword"],
@@ -2269,7 +2282,7 @@ func test_rapid_rides_on_anything_and_shock_on_weapons_only() -> void:
 	# 9 October: rapid joined volatile as a keyword about the spend, so a vent may carry it;
 	# shock is a weapon's.
 	var db := _fresh()
-	var vent: Dictionary = _piece(db, "coolant_jacket")
+	var vent: Dictionary = _plain_vent(db)
 	vent["face"]["keywords"] = ["rapid"]
 	vent["face"]["cooldown"] = 1   # its limiter, printed (Rapid carries none of its own, 2 November)
 	vent["tier"] = 1
@@ -2831,7 +2844,7 @@ func test_the_flakshot_lays_flak_and_the_validator_asks_for_its_stacks() -> void
 ## spend; and an entry is Rapid or Instant, never both, its charged form included.
 func test_a_cooldown_is_whole_rounds_and_every_instant_entry_carries_a_limiter() -> void:
 	var db := _fresh()
-	var base: Dictionary = _piece(db, "coolant_jacket")
+	var base: Dictionary = _plain_vent(db)
 	base["tier"] = 1
 	var cases := {
 		"test_rapid_cold": [{"keywords": ["rapid"]}, ""],
@@ -2912,7 +2925,7 @@ func test_a_rewrite_says_its_shot_and_a_rank_condition_its_rank() -> void:
 ## passive's now) and the vent blast, an effect the engine no longer runs.
 func test_a_vent_never_reaches_every_ally_and_the_siphons_leavings_are_refused() -> void:
 	var db := _fresh()
-	var plate: Dictionary = _piece(db, "coolant_jacket")
+	var plate: Dictionary = _plain_vent(db)
 	plate["tier"] = 1
 	plate["face"]["targets"] = "every_ally"
 	plate["face"]["heat_per_blow"] = 2

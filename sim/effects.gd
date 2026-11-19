@@ -348,7 +348,7 @@ const STATUS := {
 	# the cool_hitter number here (Skirmish.cryo_cool; a field since the stock pass's engine, 22
 	# October). It never fades on its own: the canister sticks.
 	"cryoed": {"id": "cryoed", "name": "Cryo", "description": "A hit on it with a weapon spends every stack and cools the hitter {value} a stack.", "decay": "none",
-		"tags": ["mark"], "effects": [{"trigger": "status", "effect": "cool_hitter", "value": 2}]},
+		"tags": ["mark"], "effects": [{"trigger": "status", "effect": "cool_hitter", "value": 1}]},
 	# Corrupted (the foes' Corrupt, 25 September): the definition each entry's own status is built
 	# from (corrupt_entry, one an entry), and the bite a stack takes from its owner each time the
 	# entry is spent, shield first (Skirmish.corrupt_bite; a field since the stock pass's engine,

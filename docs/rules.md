@@ -75,8 +75,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
   maker) makes no basics and fields no tier-one chassis, though its tier-one components exist
   and its tier-two chassis stock them. The basic kit is six pieces, each a maker's: four
-  guns, three dealing 3 for 4 heat (the Twin Autoguns and the Rivet Gun, Direct; the Ankle Mortar, Indirect) and the Laser
-  Carbine, Direct and warm, 4 for 5, and two defensive pieces, each spent on itself or an ally (the
+  guns, the Twin Autoguns and the Rivet Gun dealing 3 for 4 heat, Direct, the Ankle Mortar 3 for
+  5, Indirect (a point of heat over Direct), and the Laser Carbine, Direct and warm, 4 for 5, and two defensive pieces, each spent on itself or an ally (the
   Halo Projector, a Barrier, cooldown 1; the Shoring Jack, Armoured 2 until its side's next turn).
 - **Branches** (an upgrade's picks; a run buys none yet, since no machine holds a tier of its
   own, and the harness fields them): a chassis of tier one or two may carry two directions,
@@ -100,10 +100,12 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
   is the hold or the reboot (fire the cold entry, keep the hot one, or give the turn and come
-  back cold and whole). The slottable shields and vents are kept in
-  content as drafts nothing deals (no blueprint, no loot, no basic), each until it is made
-  equipment or removed; the engine still runs both kinds, for the locked pieces that are one
-  (the Musk Ox's Quick Reload) and the machines back in design.
+  back cold and whole). The slottable shields and vents of tiers zero
+  and one are retired; the three of tier two are kept in content as drafts nothing deals (no
+  blueprint, no loot, no basic) until a kit wants one; the engine still runs both kinds, for the
+  locked pieces that are one (the Musk Ox's Quick Reload, the Sutler's Hoist) and the machines
+  back in design. No piece grants a cooling or a shield regen today; the engine keeps both, the
+  reboot's rulings on a granted one standing (The reboot, below).
 - **Damage states**: a component is intact or destroyed, for the whole battle (none is destroyed
   until a foe carries the rider that does it: Destroy, below).
 
@@ -254,9 +256,9 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   blow, and a last act lands its damage on the machines as it is named. A new spend or the turn's end lands whatever
   is still waiting at once.
 - **On a machine**: a shield adds its number up to the target's maximum; a vent removes its
-  number in heat; a combined entry spends two halves on one machine (the Wake Diffuser: a vent
-  that shields, the vent first, then the shield, sized on the heat the vent left, so the
-  Puffin's Slipstream grows it on what is left); a buff grants its status, so many stacks, through so many rounds, or with
+  number in heat; a shield that cools spends two halves on one machine (the Sutler's Hoist:
+  the cooling first, then the shield, sized on the heat the cooling left, so the Puffin's
+  Slipstream grows it on what is left); a buff grants its status, so many stacks, through so many rounds, or with
   no rounds when the status runs down on its own (Empowered), waits for the weapon that spends
   it (Spun Up, a primer) or lasts the fight (Ricochet).
 - **A debuff** is equipment aimed at a foe (a setter, a swap), spent on a foe in reach as a
@@ -270,8 +272,8 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   holds what it grants or lays and no number (a buff's status with its stacks beside it, a
   debuff's first keyword that does something to a foe in content's order, or the star for a rule
   of its own; a reach, an area, Rapid and Instant stay on the edge, which never shows a thing twice); a
-  shield its number in the shield's colour; a vent its number in heat's colour; an entry that
-  shields and cools (the Wake Diffuser, the Sutler's Hoist) both numbers in one mark; a reload
+  shield its number in the shield's colour; a vent its number in heat's colour; a shield that
+  cools (the Sutler's Hoist) both numbers in one mark; a reload
   (the Musk Ox's Quick Reload) its shells and the ammo it loads. Whom it reaches stands under
   the mark, the targeting slot: a line of fire, straight for Direct and lobbed for Indirect;
   for Every Foe the enemy's formation, both ranks lit, in square brackets; three
@@ -506,7 +508,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   stacks). The same word on a foe's blow, on the machine it hits.
 - **Cryo** (with a number): every foe the entry reaches gains that many stacks of Cryo a
   strike, laid once its hit's strikes are done, so a hit never cashes its own frost. Any
-  machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 2
+  machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 1
   a stack, after the spend's own heat lands; equipment spends none.
 - **Suppress**: each foe hit is Suppressed; on a Numbed foe the stun strips a stack and lands
   nothing; a Ward turns it away; one already suppressed for that action gains nothing more;
@@ -980,7 +982,7 @@ On a foe:
   Paradox as the Suppress keyword's does. A foe felled before the round ends takes its web
   with it, and a foe's cleanse may lift it first. Its chip points at the neighbour the burst
   catches.
-- **Cryo** (debuff): a weapon's hit on it spends every stack and cools the hitter 2 a stack;
+- **Cryo** (debuff): a weapon's hit on it spends every stack and cools the hitter 1 a stack;
   equipment spends none. It never fades on its own.
 - **Brittle** (debuff): every blow of a weapon it takes deals a point more a stack, before its
   multiplies and its armour (a Shocked foe takes a strike aimed at it plus Brittle, doubled); a
@@ -1276,8 +1278,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   special's effect on the move's own pick, in the order written, and the blow meets the
   machine as they leave it. The Pilgrim's knife purges first, Purge 1 and then the blow, so
   a Barrier is gone before the knife arrives and a stack of every other buff with it; a Ward
-  turns the purge away and the Barrier behind it takes the knife. The needler line's Needles
-  and the Old Man of the Desert's Maw purge first the same way. The intent wears such a
+  turns the purge away and the Barrier behind it takes the knife. The needler line's Needles,
+  the Old Man of the Desert's Maw and the Rust Monster's bite purge first the same way. The intent wears such a
   step's mark ahead of the blow's riders, and the preview of the round reads the blow as it
   will land. A rider is no such step: riders land after the hits, on either side. One pair
   of steps reads as one act: a cleanse that follows a heal lands on the foe
@@ -1313,7 +1315,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   every one of them that lands on its machine, a scorch all's and a corrupt all's share
   included, and a scorch all or a corrupt all passes a machine out of the fight by. No foe in
   content carries a ward all yet; the Djinn's Unmake is the one purge cast as a move, and a Purge 1 stands ahead of
-  the Pilgrim's knife, the needler line's Needles and the Old Man of the Desert's Maw; an Expose of its own
+  the Pilgrim's knife, the needler line's Needles, the Old Man of the Desert's Maw and the
+  Rust Monster's bite; an Expose of its own
   is the Goblin Warchief's, the Basilisk's, the Alpha Warg's, the Lich's and the Rider of the
   Wild Hunt's, each cast while another foe stands to follow it.
 - **A last act**: a foe may act the moment it falls, before anything else and even when it
@@ -1829,9 +1832,22 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   run is lost at zero.
 - **Start**: a tender of one tier-one machine from each city maker (by seed, in stock
   loadout; a chassis whose passive or locked piece is still planned is not dealt, so a maker
-  whose only tier one is a draft offers nothing until it lands); the player takes three. Four squad slots; the first battle is the Meadow's, fought by those three, and brings the fourth machine (below; not built), 0 salvage, 100 Favour, a blueprint for
-  every basic, the eight of tier zero.
-- **A turn** is one battle at a front, with one to four ready machines, or a pass; once the
+  whose only tier one is a draft offers nothing until it lands); the player takes three. Four
+  squad slots; the first battle is fought by those three and brings the fourth machine (The
+  first battle, below). 0 salvage, 100 Favour, a blueprint for every basic, the six of tier
+  zero the game deals.
+- **The first battle** is the Meadow's, and a run opens on it: a forced choice of city, no
+  turn passed before it is fought. The first rifts are the opening domain's, the one content
+  marks (a domain's `opening`; with none marked they roll as any other), so the two first
+  fronts differ by their city, and the city defended chooses the maker. Won, that maker puts up three of its machines and one is
+  taken free: its chassis of the battle's tier or under that the engine fields and the roster
+  lacks, drawn by the seed, fewer when it has fewer; no battle starts and no turn passes until
+  one is taken. Not won, or a maker with none to put up, the draft's missing pick comes
+  unasked, the machine left on the tender (and with nothing left there, content's first
+  tier-one machine the roster lacks). Either way it arrives ready, in its stock. Every battle
+  after is fought with four.
+- **A turn** is one battle at a front, with one to four ready machines, or a pass; no turn is
+  passed before the run's first battle, and once the
   finale is due no turn is passed (the Council demands the capital fought now), so the
   Convergence never runs past the finale's. The whole
   roster goes to the one front; the open fronts left alone bleed (below). A battle is played
@@ -1842,10 +1858,9 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   point the city lost, never below 0; a research
   token of the lead domain and an offer from the host maker are owed (the token a choice of
   three blueprints of the domain's theme at the Convergence's tier; the offer a chassis, a
-  component copy and a module from the maker's catalogue, one taken free; the first battle's
-  offer is the fourth machine, a choice of one of three of the host maker's machines, and a
-  first battle lost sends the draft's missing pick, the machine left on the tender; unpacking
-  and offers not built).
+  component copy and a module from the maker's catalogue, one taken free; unpacking and that
+  offer not built). The first battle's offer is the fourth machine instead (The first battle,
+  above).
 - **Fell** (the gate reached 0): the city falls, the battle's salvage is lost, the rift stays
   open, as art: no front, and nothing reads its domain. **Wiped** (every machine wrecked): the horde strikes the gate for up to six phases;
   the city falls at zero or holds wounded, keeping the salvage; no Favour.
@@ -1859,7 +1874,8 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   opened at, whatever the Convergence does after (the finale's is the Convergence's), so an old
   rift never hardens by waiting; the ramp a battle reads is the Convergence as it stands when
   the battle starts, the same for every open front, never shown and never reset.
-- **Domains**: a rift rolls its lead domain (Meadow, Waste, Marsh, Peak; never a beaten one)
+- **Domains**: a rift rolls its lead domain (Meadow, Waste, Marsh, Peak; never a beaten one;
+  a run's first rifts the Meadow's)
   and from tier 1 a guest, another domain not beaten, whose compositions alternate with the lead's on the field at the start and in
   the rift's cycle.
 - **The party**: dealt as the run starts, one hero to each domain from its bench, the front
@@ -1892,8 +1908,9 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 - **Between runs**: a finished run adds its blueprints to the pool and its chassis and beaten
   domains to the codex; a win clears a difficulty tier (`sim/profile.gd`, run by tests only so
   far).
-- Not built: building from blueprints, offers, procurement, loot on the map, modules in the
-  run, Sponsorship, livery, the mission map, draft and hangar screens.
+- Not built: building from blueprints, the offers after the first battle's, procurement, loot
+  on the map, modules in the run, Sponsorship, livery, the mission map, draft and hangar
+  screens.
 
 ## The quick campaign
 
@@ -1904,10 +1921,11 @@ grid and its lead), a boss's the battle's boss unit,
 and nothing scales a pack.
 
 - **Start**: three different tier-one chassis, picked freely from every one the engine can
-  field, in their stock. Four squad slots, the fourth filled by an offer's chassis. The party is
-  dealt as in the campaign. The six basics are free and without limit.
-- **Battles**: twelve, a tier every four, then the finale. Each is fought against a lead domain
-  drawn at random and, from tier two, a guest. Its fights before the boss are as many as the
+  field, in their stock. Four squad slots, the fourth filled by the first battle's offer. The
+  party is dealt as in the campaign. The six basics are free and without limit.
+- **Battles**: twelve, a tier every four, then the finale. The first is the opening domain's,
+  the Meadow's, as in the campaign; each after is fought against a lead domain drawn at random
+  and, from tier two, a guest. Its fights before the boss are as many as the
   Rupture's Fractures at its tier (three, four, five), and one, two and three of them are
   elites: a formation first, then elites and formations in turn, the elites left over at the
   end. Then the boss's fight, the campaign's boss unit at the tier's numbers with its own escort
@@ -1931,7 +1949,9 @@ and nothing scales a pack.
   battle's tier, its modules filling in where it has fewer than three (tier three has two); and
   an offer from a maker drawn from all five: a chassis of its own at or under the battle's tier
   that the roster lacks (bringing its stock), a component of the tier (else the highest under it
-  the maker makes) and a module at or under it.
+  the maker makes) and a module at or under it. The first battle's offer is the fourth machine
+  instead, as in the campaign: three machines of one maker, dealt by the campaign's rule, the
+  maker drawn among those with a machine to put up since no city hosts the battle.
 - **The hangar**, between battles only: up to four machines of the roster, in the order they
   deploy; any component from the stores on any hardpoint and any module in any slot, what comes
   off going back to the stores.

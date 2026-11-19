@@ -914,7 +914,7 @@ static func campaign_to_dict(c: Campaign) -> Dictionary:
 		"state": c.state, "won": c.won, "turn": c.turn, "convergence": c.convergence,
 		"cities": cities, "roster": roster, "next_uid": c._next_uid,
 		"components": c.components, "salvage": c.salvage, "favour": c.favour, "blueprints": c.blueprints,
-		"tokens": c.tokens, "offers": c.offers, "bosses_beaten": c.bosses_beaten, "bosses_ended": c.bosses_ended, "finals_won": c.finals_won, "party": c.party,
+		"tokens": c.tokens, "offers": c.offers, "machine_offer": c.machine_offer, "bosses_beaten": c.bosses_beaten, "bosses_ended": c.bosses_ended, "finals_won": c.finals_won, "party": c.party,
 		"anathema": c.anathema,
 		"battle": to_dict(c.battle) if c.battle != null else null,
 		"battle_city": c.battle_city, "squad": c.squad,
@@ -961,6 +961,11 @@ static func campaign_from_dict(d: Dictionary) -> Campaign:
 	c.blueprints = _strings(d.get("blueprints", []))
 	c.tokens = _strings(d.get("tokens", []))
 	c.offers = _strings(d.get("offers", []))
+	# The first battle's machines while their choice waits (19 November; a save from before has none).
+	var owed = d.get("machine_offer", {})
+	c.machine_offer = {}
+	if owed is Dictionary and not _strings(owed.get("choices", [])).is_empty():
+		c.machine_offer = {"maker": str(owed.get("maker", "")), "choices": _strings(owed.get("choices", []))}
 	c.bosses_beaten.clear()
 	var beaten: Dictionary = d.get("bosses_beaten", {})
 	for f in beaten.keys():

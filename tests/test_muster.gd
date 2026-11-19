@@ -124,6 +124,16 @@ func test_a_pack_at_the_wall_is_fought_one_short() -> void:
 	assert_eq(BattleBot.turns_to_wall(b, sq, b.field.plan_walks().get(sq.id, null)), 0, "it stands on the apron")
 	bot.muster_orders(b)
 	assert_eq(_on(b, sq).size(), 3, "three of the four it is rated for fight it rather than let it strike")
+	# The what-if of 19 November (the battle runner's --whole): the player that never fights short
+	# gathers its rating and lets the strike land.
+	var b2 := _battle(4)
+	var sq2 := _pack(b2)
+	sq2.pos = spot
+	_send_away(b2, b2.mechs()[3], sq2)
+	var whole := BattleBot.make(Policy.GREEDY, 1, BattleBot.Rule.MUSTER)
+	whole.short_at_wall = false
+	whole.muster_orders(b2)
+	assert_eq(_on(b2, sq2).size(), 0, "with the clause off nobody fights it short")
 
 
 func test_the_packs_are_taken_in_the_order_they_reach_the_wall() -> void:

@@ -22,8 +22,11 @@ func _mixed_chassis(db: ContentDB) -> String:
 	return ""
 
 
-## Start a battle at a front (the first, unless named) with every ready machine.
+## Start a battle at a front (the first, unless named) with every ready machine. The first
+## battle's machine, where its choice still waits, is taken first: no battle starts before it.
 func _battle(c: Campaign, city: String = "") -> Battle:
+	if not c.machine_offer.is_empty():
+		c.take_machine(0)
 	var uids: Array = []
 	for m in c.ready_machines().slice(0, Campaign.SQUAD):
 		uids.append(m.uid)
@@ -33,6 +36,13 @@ func _battle(c: Campaign, city: String = "") -> Battle:
 func _end(b: Battle, outcome: int) -> void:
 	b.outcome = outcome
 	b.state = Battle.State.DONE
+
+
+## A run with its first battle behind it and nothing else moved: no turn passes before that
+## battle is fought, so the tests of what a pass does start from here.
+func _past_the_first(c: Campaign) -> Campaign:
+	c.history.append({"turn": 0, "result": "held"})
+	return c
 
 
 ## Wreck a machine the way a skirmish does: hull to zero, off the map, kept by the battle.
@@ -219,9 +229,206 @@ func test_a_won_battle_lifts_the_siege_and_banks_its_salvage() -> void:
 	assert_eq(Campaign.salvage_for(ContentDB.worth_of(3)), 3 * Campaign.SALVAGE_PER_PIP, "a formation's fall three pips' worth")
 	assert_eq(int(c.anathema.get(faction, 0)), 350, "and Anathema takes the menace")
 	assert_true(c.tokens.has(faction), "the boss drops a research token of its faction")
-	assert_true(c.offers.has(front), "the host maker owes an offer")
+	assert_false(c.offers.has(front), "the first battle's offer is the fourth machine, never the catalogue's")
 	assert_eq(c.turn, 1, "the turn ends")
 	assert_eq(c.state, Campaign.PICK, "back between battles")
+	# A battle after the first: the host maker owes its offer.
+	var b2 := _battle(c)
+	var front2 := c.battle_city
+	_end(b2, Battle.Outcome.VICTORY)
+	var r2 := c.finish_battle()
+	assert_true(c.offers.has(front2), "the host maker owes an offer")
+	assert_false(r2.has("offer") or r2.has("sent"), "and no machine comes with it")
+	assert_true(c.machine_offer.is_empty(), "nothing waits")
+
+
+## The first battle (the bible's squad row; Ryan, 19 November: "First battle, meadow, 3 machines
+## from the draft, reward is a choice of 1 of 3 machines from the maker, or the missing 4th draft
+## pick on loss"). The opening domain is content's mark, never an id here.
+func test_a_run_opens_on_a_forced_choice_of_city_in_the_opening_domain() -> void:
+	var db := ContentDB.load_default()
+	var opening := db.opening_faction()
+	assert_true(db.factions.has(opening), "content marks the domain a run opens against")
+	var later := {}
+	for seed_value in range(1, 13):
+		var c := Campaign.new(seed_value)
+		assert_eq(c.roster.size(), Campaign.START_MACHINES, "three machines from the draft")
+		assert_eq(c.fronts().size(), Campaign.RIFTS_BASE, "the first fronts: a choice of city")
+		for f in c.fronts():
+			assert_eq(str(c.cities[f].rift["faction"]), opening, "seed %d: a first rift is the opening domain's" % seed_value)
+		# No turn passes before the first battle (Ryan, 19 November: "a forced city choice with no
+		# option to pass"), so no other rift opens before it and the clock does not move.
+		assert_false(c.pass_turn(), "no pass before the first battle")
+		assert_eq(c.turn, 0, "the turn stands")
+		assert_eq(c.convergence, 0, "and the Convergence")
+		# Once the first battle is fought the rifts roll among every domain, and a turn may pass.
+		var b := _battle(c)
+		_end(b, Battle.Outcome.VICTORY)
+		c.finish_battle()
+		c.take_machine(0)
+		assert_true(c.pass_turn(), "a turn passes once the first battle is behind the run")
+		for i in range(12):
+			later[str(c._roll_rift()["faction"])] = true
+	assert_true(later.size() > 1, "after the first battle a rift's lead is any domain")
+	# With no domain marked the first rifts roll as any other: the mark is the whole rule.
+	var plain := ContentDB.new()
+	plain.load_dir(ContentDB.DIR)
+	for fid in plain.factions.keys():
+		plain.factions[fid].erase("opening")
+	assert_eq(plain.opening_faction(), "", "no mark, no opening domain")
+	var free := Campaign.new(3)
+	free.db = plain
+	var first := {}
+	for i in range(40):
+		first[str(free._roll_rift()["faction"])] = true
+	assert_true(first.size() > 1, "unmarked, a first rift's lead is any domain")
+
+
+func test_one_domain_at_most_is_the_opening() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	assert_true(db.validate().is_empty(), "the content as written is valid")
+	var other := ""
+	for fid in db.factions.keys():
+		if str(fid) != db.opening_faction():
+			other = str(fid)
+			break
+	db.factions[other]["opening"] = true
+	assert_true(db.validate().any(func(e: String) -> bool: return e.contains("opening")), "two opening domains fail validation")
+	db.factions[other]["opening"] = "yes"
+	assert_true(db.validate().any(func(e: String) -> bool: return e.contains("opening is true or false")), "the mark is a boolean")
+
+
+func test_the_first_battle_won_offers_three_of_the_host_makers_machines() -> void:
+	for seed_value in range(1, 13):
+		var c := Campaign.new(seed_value)
+		var front := str(c.fronts()[seed_value % c.fronts().size()])
+		var held := c.held_chassis()
+		var open: Array = Campaign.machines_open(c.db, front, 0, held)
+		var b := _battle(c, front)
+		_end(b, Battle.Outcome.VICTORY)
+		var r := c.finish_battle()
+		assert_eq(r["result"], "won", "won")
+		var choices: Array = c.machine_offer.get("choices", [])
+		assert_eq(str(c.machine_offer.get("maker", "")), front, "the maker whose city was defended")
+		assert_eq(r["offer"], choices, "the report names them")
+		assert_eq(choices.size(), mini(Campaign.OFFER_MACHINES, open.size()), "three, or as many as the maker has that the roster lacks")
+		assert_true(choices.size() >= 1, "seed %d: every city maker has a machine to put up" % seed_value)
+		var once := {}
+		for id in choices:
+			var ch: Dictionary = c.db.chassis[id]
+			assert_eq(str(ch["maker"]), front, "%s is the host maker's" % id)
+			assert_eq(int(ch["tier"]), 1, "of the battle's tier")
+			assert_true(c.db.chassis_runnable(id), "one the engine fields")
+			assert_false(held.has(id), "one the roster lacks")
+			assert_false(once.has(id), "each once")
+			once[id] = true
+		assert_eq(c.roster.size(), Campaign.START_MACHINES, "nothing joins until one is taken")
+		# The choice comes before anything else: no battle and no pass until it is made.
+		var uids: Array = c.ready_machines().map(func(m) -> int: return m.uid)
+		assert_false(c.fronts().is_empty(), "a front stands open")
+		assert_eq(c.start_battle(str(c.fronts()[0]), uids), null, "no battle before the machine is taken")
+		assert_false(c.pass_turn(), "and no turn passed")
+		assert_eq(c.take_machine(-1), null, "a choice outside the offer takes nothing")
+		assert_eq(c.take_machine(choices.size()), null, "nor one past its end")
+		var pick := seed_value % choices.size()
+		var m := c.take_machine(pick)
+		assert_eq(m.chassis, str(choices[pick]), "the machine chosen")
+		assert_eq(m.loadout, c.db.chassis[m.chassis].get("loadout", []), "in its stock loadout")
+		assert_eq(m.shop, 0, "ready")
+		assert_eq(c.roster.size(), Campaign.SQUAD, "the fourth machine")
+		assert_true(c.machine_offer.is_empty(), "the offer is spent")
+		assert_eq(c.take_machine(0), null, "one machine, once")
+		var b2 := _battle(c)
+		assert_true(b2 != null, "the run goes on")
+		assert_eq(b2.mechs().size(), Campaign.SQUAD, "with four on the field")
+		# The same run offers the same machines.
+		var again := Campaign.new(seed_value)
+		var ba := _battle(again, front)
+		_end(ba, Battle.Outcome.VICTORY)
+		again.finish_battle()
+		assert_eq(again.machine_offer.get("choices", []), choices, "a seed's offer is its own")
+
+
+func test_the_first_battle_lost_sends_the_machine_left_on_the_tender() -> void:
+	for seed_value in range(1, 9):
+		for outcome in [Battle.Outcome.WRECKED, Battle.Outcome.GATE_FALLEN]:
+			var c := Campaign.new(seed_value)
+			var left := c.tender_left()
+			assert_eq(left.size(), 1, "the draft took three of the tender's four")
+			assert_false(c.held_chassis().has(left[0]), "the one not picked")
+			var b := _battle(c)
+			if outcome == Battle.Outcome.WRECKED:
+				for u in b.mechs():
+					_wreck(b, u)
+				_thin(b)
+			else:
+				b.field.gate_hp = 0
+			_end(b, outcome)
+			var r := c.finish_battle()
+			assert_ne(r["result"], "won", "not won")
+			assert_eq(str(r["sent"]), str(left[0]), "the draft's missing pick comes unasked")
+			assert_true(c.machine_offer.is_empty(), "no choice waits")
+			assert_eq(c.roster.size(), Campaign.SQUAD, "the fourth machine")
+			var fourth: Campaign.Machine = c.roster[c.roster.size() - 1]
+			assert_eq(fourth.chassis, str(left[0]), "the machine left on the tender")
+			assert_eq(fourth.shop, 0, "ready, where the three that fought may sit in the shop")
+			assert_true(c.tender_left().is_empty(), "the tender is spent")
+
+
+## A maker with no machine the roster lacks sends the tender's leftover on a win too, and the
+## offer deals what a maker has when it has fewer than three.
+func test_a_maker_with_nothing_to_put_up_sends_the_tenders_leftover() -> void:
+	var db := ContentDB.load_default()
+	var maker := ""
+	var theirs: Array = []
+	for mk in db.city_makers():
+		var open: Array = Campaign.machines_open(db, str(mk), 0, [])
+		if maker.is_empty() or open.size() < theirs.size():
+			maker = str(mk)
+			theirs = open
+	assert_true(not theirs.is_empty(), "a city maker with tier ones")
+	var r := RandomNumberGenerator.new()
+	r.seed = 4
+	assert_eq(Campaign.machines_of(db, maker, 0, theirs, Campaign.OFFER_MACHINES, r).size(), 0, "every one held: nothing to put up")
+	assert_eq(Campaign.machines_of(db, maker, 0, theirs.slice(1), Campaign.OFFER_MACHINES, r), [theirs[0]], "one left: the offer is that one")
+	assert_true(Campaign.machines_open(db, maker, 0, []).all(func(id) -> bool: return db.chassis_tier(str(id)) == 1), "at tier one, tier-one machines alone")
+	# A maker with more than three: three of them, drawn by the seed, each one coming up in turn.
+	var wide := ContentDB.new()
+	wide.load_dir(ContentDB.DIR)
+	var many: Array = Campaign.machines_open(wide, maker, 0, [])
+	var n := 0
+	while many.size() <= Campaign.OFFER_MACHINES:
+		n += 1
+		var copy: Dictionary = wide.chassis[theirs[0]].duplicate(true)
+		copy["name"] = "Copy %d" % n
+		wide.chassis["copy_%d" % n] = copy
+		many = Campaign.machines_open(wide, maker, 0, [])
+	var drawn := {}
+	for seed_value in range(1, 41):
+		r.seed = seed_value
+		var put_up: Array = Campaign.machines_of(wide, maker, 0, [], Campaign.OFFER_MACHINES, r)
+		assert_eq(put_up.size(), Campaign.OFFER_MACHINES, "a choice of three")
+		for id in put_up:
+			assert_true(many.has(id), "the maker's own")
+			assert_eq(put_up.count(id), 1, "each once")
+			drawn[id] = true
+	assert_eq(drawn.size(), many.size(), "across seeds every machine the maker could put up is")
+	# A run whose roster holds every tier one of the maker it defends.
+	var c := Campaign.new(6, theirs)
+	var left := c.tender_left()
+	assert_true(not left.is_empty(), "the tender still holds machines the roster lacks")
+	var rift: Dictionary = c._roll_rift()
+	for city in c.cities.values():
+		city.rift = {}
+	c.cities[maker].rift = rift
+	var b := _battle(c, maker)
+	_end(b, Battle.Outcome.VICTORY)
+	var rep := c.finish_battle()
+	assert_eq(rep["result"], "won", "won")
+	assert_true(c.machine_offer.is_empty(), "the maker has nothing to put up")
+	assert_eq(str(rep["sent"]), str(left[0]), "so the machine left on the tender comes")
+	assert_eq(c.roster.size(), theirs.size() + 1, "one machine more")
 
 
 func test_a_closed_rift_leaves_its_city_quiet_for_a_turn() -> void:
@@ -272,7 +479,8 @@ func test_a_wipe_lets_the_horde_strike_and_the_city_holds_wounded() -> void:
 	assert_true(not c.cities[front].rift.is_empty(), "its rift stays open")
 	assert_eq(c.salvage, Campaign.START_SALVAGE + Campaign.salvage_for(200), "the salvage was in the city and is kept")
 	assert_eq(c.tokens.size(), 0, "no token")
-	assert_eq(c.ready_machines().size(), 0, "every machine is in the shop")
+	assert_eq(c.roster.filter(func(m) -> bool: return m.shop > 0).size(), Campaign.START_MACHINES, "every machine that fought is in the shop")
+	assert_eq(c.ready_machines().size(), 1, "the machine the tender sends after a first battle lost is the one ready")
 
 
 func test_a_wipe_on_a_weak_gate_loses_the_city() -> void:
@@ -332,7 +540,8 @@ func test_a_wreck_loses_what_was_destroyed_and_sits_out_a_battle() -> void:
 	assert_eq(m.loadout, stock.slice(1), "its destroyed component is lost as any machine's, the intact ones kept")
 	assert_eq(m.shop, Campaign.SHOP_BATTLES, "in the shop")
 	assert_true(not c.ready_machines().has(m), "not ready")
-	c.pass_turn()
+	c.take_machine(0)   # the first battle's machine: no turn passes before it is taken
+	assert_true(c.pass_turn(), "a turn passed")
 	assert_eq(m.shop, 0, "back after a battle's time")
 
 
@@ -340,7 +549,7 @@ func test_a_wreck_loses_what_was_destroyed_and_sits_out_a_battle() -> void:
 ## finale is due ... the Council demands it"): a pass is refused, so the Convergence never runs
 ## past the finale's; with nobody to field and no rush, the runner forfeits it and the capital falls.
 func test_the_finale_cannot_be_passed() -> void:
-	var c := _run()
+	var c := _past_the_first(_run())
 	assert_true(c.pass_turn(), "a turn may be passed before it")
 	c.convergence = Campaign.FINALE_AT
 	c._open_rifts()
@@ -378,7 +587,7 @@ func test_the_capitals_gate_is_the_one_priced_repair() -> void:
 
 
 func test_an_undefended_gate_bleeds_and_falls_unfought() -> void:
-	var c := _run()
+	var c := _past_the_first(_run())
 	var front := str(c.fronts()[0])
 	var turns := c.turns_to_fall(front)
 	for i in range(turns - 1):
@@ -390,7 +599,7 @@ func test_an_undefended_gate_bleeds_and_falls_unfought() -> void:
 
 
 func test_rifts_open_with_the_tier_and_a_guest_joins_from_its_tier() -> void:
-	var c := _run()
+	var c := _past_the_first(_run())
 	c.convergence = Campaign.TIER_EVERY * Campaign.GUEST_TIER - 1
 	for city in c.cities.values():
 		city.rift = {}
@@ -460,7 +669,7 @@ func test_a_guests_spawns_join_the_rifts_cycle() -> void:
 
 
 func test_the_finale_is_due_at_the_threshold_and_fought_at_the_capital() -> void:
-	var c := _run()
+	var c := _past_the_first(_run())
 	c.convergence = Campaign.FINALE_AT - 1
 	c.pass_turn()
 	assert_true(c.finale_due(), "due")
@@ -482,7 +691,7 @@ func test_a_fallen_city_brings_the_finale_sooner() -> void:
 
 
 func test_the_capital_at_zero_loses_the_run() -> void:
-	var c := _run()
+	var c := _past_the_first(_run())
 	c.cities[str(c.fronts()[0])].fallen = true
 	c.capital().gate = Campaign.DRAIN
 	c.pass_turn()
@@ -553,12 +762,15 @@ func test_the_run_saves_and_resumes_between_battles_and_mid_battle() -> void:
 	_end(b, Battle.Outcome.VICTORY)
 	c.finish_battle()
 	c.roster[0].shop = 1
+	assert_false(c.machine_offer.is_empty(), "the first battle's machines wait on a choice")
 	assert_true(SaveGame.save_campaign(c, TMP), "saved between battles")
 	var c2 := SaveGame.load_campaign(TMP)
 	assert_true(c2 != null, "loaded")
 	assert_eq(JSON.stringify(SaveGame.campaign_to_dict(c2)), JSON.stringify(SaveGame.campaign_to_dict(c)), "the same run")
+	assert_eq(c2.machine_offer, c.machine_offer, "the waiting machines ride in the save")
 	# Both go on alike: the random stream came back too.
-	c.pass_turn()
+	assert_eq(c2.take_machine(0).chassis, c.take_machine(0).chassis, "the same machine taken")
+	assert_true(c.pass_turn(), "the turn passes once it is")
 	c2.pass_turn()
 	assert_eq(JSON.stringify(SaveGame.campaign_to_dict(c2)), JSON.stringify(SaveGame.campaign_to_dict(c)), "and plays on the same")
 	# Mid-battle, with a wreck on the battle's books.
@@ -1007,7 +1219,7 @@ func test_a_won_final_closes_its_domains_other_rifts() -> void:
 ## The finale (the bible's section 9): the dealt party promoted, a column a domain, and a domain
 ## whose final was won leaves its column to a standing domain's boss.
 func test_the_finale_is_the_party_promoted_a_beaten_heros_column_to_a_standing_boss() -> void:
-	var c := _run()
+	var c := _past_the_first(_run())
 	var line := c.finale_line()
 	var want: Array = []
 	for fid in c.db.factions.keys():

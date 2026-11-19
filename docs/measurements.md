@@ -11750,3 +11750,212 @@ it to the Skua's 15% and its fights a third of a round shorter. Against a boss a
 weakest squad read, the squad losing 21% over 9.3 rounds: its shot's Spread and Penetrate find
 no neighbour there, so it is a flat 4 at heat 6, an area machine's design. In the formations, its
 home, it reads level with the rest.
+
+## 19 November: every domain's kit and sizing at the baseline
+
+Ryan: "Keep going on all domains, adjusting kits and sizing for convergence 2 as our baseline
+(since convergence 1 is always going to be 3 machines on the meadow - I'll handle that one)."
+The baseline is the anchor: the second battle, four machines, a fight read at its rating.
+Every squad of the six certain tier ones, the greedy bot with its price for a purge; forty
+fights a formation's row, thirty a leader's, a patrol's a hundred and fifty or thirty by its
+squads; hull a share of a four's. A leader is read without the Barrier, as it is sized, and
+with the Barrier basic beside it.
+
+**What moved, and what it read.**
+
+| Fight | What moved | Without the Barrier, before | After | With the Barrier basic, before | After |
+|---|---|---|---|---|---|
+| The treant's grove | The Treant 14 hit points for 16, two Mandragoras behind for three | | | 9.3% | 5.2% |
+| The shaman's warband | His attack 12 for 10: Chain Lightning 6 at every machine for 5 | 15.0% | 24.6% | 15.6% | 19.0% |
+| The King Gel | Its attack 11 for 12 | 37.0% | 30.7% | 18.0% | 15.2% |
+| Gilgamesh | His attack 16 for 18 | 33.5% | 27.7% | 11.1% | 8.9% |
+| The Rust Monster | A Purge 1 ahead of its Rusting Bite | 22.4% | 25.4% | 7.4% | 28.6% |
+| The Ruby Colossus | Its attack 10 for 9 | 20.8% | 30.1% | 18.0% | 21.9% |
+| The Fallen Weapon | Its attack 11 for 10 | 22.2% | 29.0% | 13.9% | 14.6% |
+| The Emperor Scorpion | Its attack 10 for 11 | 37.8% | 27.2% | 23.8% | 22.2% |
+| The knights' vigil | The Zombie Knight 5 hit points for 4 | | | 2.4% | 3.6% |
+| The Wild Hunt | A rider's attack 8 for 10 | 37.3% | 23.9% | 24.5% | 18.0% |
+| The Vampire Lord | 56 hit points for 50 | 20.6% | 26.4% | 7.1% | 10.0% |
+| The Marsh Serpent | Its Bite two fangs of 7 for one of 14 | 35.6% | 36.1% | 8.3% | 12.8% |
+| The ember pyre | The Bomb's burst 6 for 4 | | | 6.5% | 6.7% |
+| The magma vent | The burst, and two Drakes behind for one | | | 2.7% | 6.1% |
+| The Obsidian Tyrant | Its attack 10 for 11, the Saurian Queen's 10 for 12 | 41.5% | 31.4% | 23.4% | 17.4% |
+
+**Tried and taken back.** The Nob's rage at 2 a spend with its attack at 10: 21.0% without
+the Barrier and 10.7% with, for 27.4% and 9.6%, so the rage did not close the Barrier's gap
+and the Nob stands as it was. The Vampire Lord's attack at 12 and at 11: 40.2% and 31.8%,
+won nine fights in ten, its drain out-healing a squad, so the weight went on its hit points.
+The Zombie Knight at 6 hit points: the vigil 7.0%. The shaman at 34 hit points with the bolt
+at 6: 32.4%.
+
+**The baseline as it stands.**
+
+| Kind of fight | Rounds | Hull lost | The rows' span | Before this pass |
+|---|---|---|---|---|
+| A lone flanker | 5.3 | 3.4% | 2.5% to 4.1% | the same |
+| A hunter's pack | 4.8 | 8.9% | 7.1% and 10.7% | the same |
+| A formation | 5.8 | 5.5% | 3.3% to 6.9% | 5.4%, 2.4% to 9.3% |
+| An elite, without the Barrier | 6.6 | 24.4% | 20.3% to 27.7% | 25.0%, 15.0% to 37.3% |
+| An elite, with the Barrier basic | 6.6 | 15.9% | 7.4% to 28.6% | 14.5% |
+| A boss, without the Barrier | 9.1 | 29.5% | 25.1% to 36.1% | 29.9%, 20.6% to 41.5% |
+| A boss, with the Barrier basic | 9.0 | 20.4% | 10.0% to 37.1% | 20.2% |
+
+By formation: the goblin horde 3.3%, the knights' vigil 3.6%, the gel wall 4.9%, the
+treant's grove 5.2%, the sandworm's ambush 5.4%, the magma vent 6.1%, the barrow mound 6.2%,
+the grave throng 6.6%, the ember pyre 6.7%, the needler thicket 6.9%. By elite, without the
+Barrier and with: the Thunder Ape 20.3% and 18.0%, the Fell Rider 20.6% and 7.4%, the
+Pilgrim's wake 22.7% and 15.9%, the old man's rising 23.9% and 23.6%, the Wild Hunt 23.9%
+and 18.0%, the Reaper 24.3% and 13.5%, the shaman's warband 24.6% and 19.0%, the Rust Monster
+25.4% and 28.6%, the Nob 27.4% and 9.6%, the Cinder Tortoise 27.5% and 12.8%, Gilgamesh
+27.7% and 8.9%. By boss: the Mantis Ant 25.1% and 13.7%, the Matador 25.1% and 20.6%, the
+Vampire Lord 26.4% and 10.0%, the Emperor Scorpion 27.2% and 22.2%, Floraison 28.5% and
+37.1%, the Fallen Weapon 29.0% and 14.6%, the Phantom Train 29.8% and 15.5%, the Ruby
+Colossus 30.1% and 21.9%, the Fiend of Fire 30.3% and 35.2%, the King Gel 30.7% and 15.2%,
+the Obsidian Tyrant 31.4% and 17.4%, the Gargantuan King 34.9% and 28.3%, the Marsh Serpent
+36.1% and 12.8%. Every fight is won nineteen times in twenty or more.
+
+What it says. The spans are half what they were: no formation costs a squad twice another,
+no elite stands a fifth under its quarter or half over it. The Barrier's gap is its own
+question still: where a leader's weight is one great blow the squad with the piece pays a
+third to a half (the Nob, Gilgamesh, the Fell Rider, the Vampire Lord, the Marsh Serpent),
+and where it is strikes, a purge ahead of the blow, or a blow at every machine, it pays what
+the other pays or more (Floraison, the Fiend of Fire, the Rust Monster, the old man's
+rising). 1332 tests, green.
+
+## 19 November: the second battle whole at the baseline, its fights a machine short, and the field's dials
+
+The close of the baseline pass: with every fight of tier one on the budget at its rating
+(the entry before this), what the second battle whole reads as. Content as main at
+`df212cfc` has it. The map's player is the runner's, never Ryan's play: the player that
+gathers (`BattleBot.Rule.MUSTER`), every fight by the greedy rung, the anchor's three squads
+of 12 November, twenty seeds a domain and squad, 240 battles a read. A cell is the range over
+the three squads; twenty seeds is a direction. `docs/battle_run.md` is the read as built.
+
+**The battle whole** (`tools/battle_run.gd -- --seeds 20`), and 16 November's beside it:
+
+| Domain | Won | The gate fell | Wiped | Hull at the end | Wrecks | 16 November: won, the gate fell, wiped, hull, wrecks |
+|---|---|---|---|---|---|---|
+| The Meadow | 0 to 25% | 60 to 75% | 10 to 30% | 34 to 41% | 1.6 to 1.8 | 5 to 10%, 60 to 85%, 10 to 35%, 24 to 37%, 1.4 to 2.4 |
+| The Waste | 5 to 10% | 40 to 55% | 40 to 50% | 21 to 26% | 2.3 to 2.6 | 10 to 25%, 70 to 80%, 5 to 15%, 56 to 63%, 0.5 to 0.8 |
+| The Marsh | 5% | 60 to 80% | 15 to 35% | 26 to 39% | 1.9 to 2.6 | 0 to 30%, 40 to 65%, 5 to 45%, 25 to 47%, 1.4 to 2.9 |
+| The Peak | 10 to 20% | 55 to 80% | 10 to 25% | 36 to 44% | 1.9 to 2.0 | 5 to 10%, 60 to 70%, 20 to 35%, 21 to 25%, 2.6 to 3.0 |
+
+The ledger, a fight by its kind: how many a battle, the machines in it, the hull it cost (a
+share of the squad's), the share lost.
+
+| Domain | A patrol for one | A hunter's pack | A formation | An elite | The boss |
+|---|---|---|---|---|---|
+| The Meadow | 3.6, 1.0, 2.3%, 1% | 1.5, 2.5, 6.8%, 22% | 1.9, 2.7, 5.8%, 10% | 1.1, 2.7, 28.4%, 36% | 0.1, 3.6, 17.8%, 13% |
+| The Waste | 4.3, 1.0, 3.4%, 3% | 0.7, 2.2, 6.3%, 23% | 2.2, 2.5, 12.3%, 19% | 1.0, 2.0, 26.6%, 64% | 0.2, 2.7, 27.1%, 55% |
+| The Marsh | 3.9, 1.0, 3.6%, 11% | none | 2.4, 2.4, 12.8%, 27% | 1.1, 2.8, 20.8%, 34% | 0.1, 3.0, 28.5%, 40% |
+| The Peak | 5.8, 1.0, 2.1%, 3% | none | 2.0, 2.6, 11.4%, 13% | 0.8, 2.6, 22.6%, 54% | 0.2, 2.8, 34.3%, 25% |
+
+**A fight one machine short** (`tools/anchor_read.gd -- machines=2 kinds=formation`,
+`machines=3 kinds=elite`, `machines=2 kinds=elite`; every squad of the pool of that size, two
+seeds, the stock dice; hull a share of a four's, so 50% is two machines wrecked):
+
+| Formation | At its rating, three: hull | With two: won, hull |
+|---|---|---|
+| The goblin horde | 3.3% | 97%, 21.5% |
+| The treant's grove | 5.2% | 90%, 20.7% |
+| The gel wall | 4.9% | 97%, 17.9% |
+| The needler thicket | 6.9% | 77%, 29.5% |
+| The sandworm's ambush | 5.4% | 73%, 30.5% |
+| The grave throng | 6.6% | 57%, 35.5% |
+| The barrow mound | 6.2% | 67%, 34.1% |
+| The knights' vigil | 3.6% | 87%, 20.9% |
+| The ember pyre | 6.7% | 80%, 26.9% |
+| The magma vent | 6.1% | 70%, 29.5% |
+
+| Elite | At its rating, four: hull | With three: won, hull | With two: won, hull |
+|---|---|---|---|
+| The shaman's warband | 19.0% | 90%, 36.9% | 37%, 44.8% |
+| The Nob | 9.6% | 98%, 24.1% | 33%, 44.7% |
+| The old man's rising | 23.6% | 93%, 37.6% | 13%, 49.0% |
+| The Pilgrim's wake | 15.9% | 98%, 29.2% | 10%, 49.0% |
+| The Rust Monster | 28.6% | 68%, 48.5% | 0%, 50.0% |
+| Gilgamesh | 8.9% | 100%, 17.1% | 60%, 33.9% |
+| The Fell Rider | 7.4% | 100%, 18.0% | 37%, 43.9% |
+| The Reaper | 13.5% | 85%, 28.1% | 40%, 39.4% |
+| The Wild Hunt | 18.0% | 95%, 28.4% | 7%, 49.7% |
+| The Cinder Tortoise | 12.8% | 95%, 31.1% | 13%, 47.8% |
+| The Thunder Ape | 18.0% | 85%, 38.9% | 7%, 48.7% |
+
+**The field's dials and the player's rule**, each a what-if (the battle runner reads the
+field's trial dials from the environment since this day, and `--whole` is a player that never
+fights a pack one short at the wall: it gathers its rating and lets the strike land). Won,
+the gate fell, wiped, by domain:
+
+| Read | The Meadow | The Waste | The Marsh | The Peak |
+|---|---|---|---|---|
+| As the game has it | 0 to 25%, 60 to 75%, 10 to 30% | 5 to 10%, 40 to 55%, 40 to 50% | 5%, 60 to 80%, 15 to 35% | 10 to 20%, 55 to 80%, 10 to 25% |
+| The wall struck for 7 a pip | 0 to 25%, 55 to 60%, 15 to 40% | 5 to 20%, 25 to 30%, 50 to 70% | 5 to 20%, 35 to 45%, 40 to 60% | 25%, 50%, 25% |
+| For 5 a pip | 0 to 25%, 40 to 55%, 35 to 50% | 10 to 20%, 20 to 30%, 50 to 70% | 5 to 25%, 25 to 35%, 45 to 70% | 25 to 35%, 25 to 40%, 35 to 45% |
+| For 3 a pip | 0 to 25%, 30 to 50%, 40 to 55% | 15 to 25%, 10 to 20%, 55 to 75% | 5 to 30%, 15 to 30%, 50 to 80% | 30 to 50%, 10 to 25%, 40 to 45% |
+| The Rupture one beat | 15 to 35%, 50 to 60%, 5 to 35% | 10 to 25%, 30 to 50%, 40 to 45% | 15 to 30%, 40 to 50%, 20 to 35% | 15 to 35%, 50 to 75%, 10 to 15% |
+| Never short at the wall | 0 to 25%, 75 to 85%, 0 to 15% | 5 to 10%, 55 to 65%, 30 to 40% | 5 to 10%, 70 to 80%, 10 to 25% | 10 to 20%, 70 to 80%, 10 to 15% |
+| Never short, 5 a pip | 0 to 25%, 65 to 85%, 5 to 25% | 5 to 15%, 35 to 40%, 45 to 55% | 10 to 30%, 45 to 50%, 20 to 40% | 20 to 35%, 50 to 55%, 15 to 25% |
+| Never short, one beat | 10 to 35%, 65 to 70%, 0 to 20% | 10 to 25%, 50 to 55%, 20 to 40% | 15 to 30%, 50 to 60%, 15 to 25% | 15 to 35%, 55 to 75%, 10% |
+
+The player that never fights short ends with 59 to 63% of its hull in the Meadow (34 to 41%
+as the game's player), 27 to 37% in the Waste, 39 to 55% in the Marsh, 47 to 52% on the Peak,
+and its ledger reads a formation fought by 2.7 to 2.9 machines at 4.1% in the Meadow, 7.8% in
+the Marsh, 10.4% on the Peak and 10.7% in the Waste, lost 2 to 7% of the time (the Waste's
+13%). Under every read the boss is fought in one battle in two at most, in one or two in ten
+as the game has it, though the Rupture is reached in half to nine in ten.
+
+Read.
+
+- The fights are sized. Held to its ratings in a battle, a squad pays for a formation about
+  what the anchor says, and wins it.
+- One machine short is a cliff, by the same sizing: a formation costs four to six times its
+  price with two machines on it and is lost up to four times in ten, an elite with three
+  costs about twice and one with two is lost. The Meadow's formations are the gentlest
+  short (18 to 22% of a four's hull), the Marsh's throng and mound the harshest (34 to 36%).
+- The runner's player fights short: 2.4 to 2.7 machines on a formation rated for three, 2.0
+  to 2.8 on an elite rated for four. So the battle it plays is the short-handed one, and the
+  sizing of the fights at their ratings did not move what it wins.
+- It is the hull that runs out, more than the gate: a lighter strike turns the gate's falls
+  into wipes and moves the wins by ten points or so; a shorter Rupture moves them as far with
+  the squad whole. A player that never fights short keeps its hull and loses the gate
+  instead, three battles in four. No dial read here takes the runner's player past a third.
+- The Waste was the lightest battle for this player on 16 November and is the heaviest now.
+  Its fights were under the budget then and are on it now, its formations are among the
+  harshest short, and its player brings two machines to its elite where the others bring
+  nearly three.
+- The budget's own sum, a count from battles that mostly ended early and so an underestimate:
+  the fights a second battle holds, at their ratings, come to 58 to 75% of a squad's hull with
+  the Barrier basic in the stock (the Marsh 58%, the Peak 67%, the Meadow 69%, the Waste 75%)
+  and to 79 to 89% without it. So a battle fought at its ratings throughout is won with a
+  quarter to two fifths of the hull left with the piece and a tenth to a fifth without, and one
+  formation met a machine short spends that.
+- What it does not say: whether the second battle is fair. The map's player is a rule and
+  reaches the boss one battle in ten or two; Ryan's play of a second battle with four machines is the
+  judge, and the dials are his.
+
+## 19 November: the numbers pass's leans and the placeholder slots, read at the baseline
+
+On Ryan's "Agreed on all, send Coil to T2" and his yes to the placeholder slots. What moved
+for the squads: the Cassowary's second Twin Autoguns is a Laser Carbine, the Cottonmouth's the
+Incendiary Shells, and the Ankle Mortar deals 3 for 5 (on the Cassowary's and the Cottonmouth's
+stocks); Cryo cools 1 a stack (no machine of the pool carries it). The modules' cooling, the
+Overcharge Coil's tier and the retired shields and vents touch no machine of the pool. The
+anchor read as the entry before this one, every squad of the six certain tier ones; hull a
+share of a four's.
+
+| Kind of fight | Before | After |
+|---|---|---|
+| A lone flanker | 3.4% | 3.3% |
+| A hunter's pack | 8.9% | 8.0% |
+| A formation | 5.5% (3.3% to 6.9%) | 5.7% (3.2% to 7.3%) |
+| An elite, without the Barrier | 24.4% | 22.9% |
+| An elite, with the Barrier basic | 15.9% | 15.9% |
+| A boss, without the Barrier | 29.5% | 28.0% |
+| A boss, with the Barrier basic | 20.4% | 19.5% |
+
+By machine the Cottonmouth pays least for the change: an elite 21.7% of its own hull for
+26.7%, a hunter's pack 16.3% for 23.7%. The rows move by a few points either way at thirty
+fights. The Reaper read 15.8% without the Barrier at thirty and 30.5% at ninety (25.8% with
+it), so its first row was grain; the Thunder Ape reads 17.4% and 16.2% at ninety, at the low
+edge of the elites. Every fight is won nineteen times in twenty or more. Read: the squad is a
+point or two stronger against the leaders and no fight leaves its band, so nothing is resized.
