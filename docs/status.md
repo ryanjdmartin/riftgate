@@ -233,9 +233,10 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Drill Out: a form may let others go as it is held (`releases`), as the statuses would end, so
   a burrow docks a drill that is out. The line frame is a model from its third look round (18
   November, on `ccr-64b5deec-lunnff`; its brief's model paragraph), in no content, so no hangar
-  tab shows it (`RIFTGATE_MECH3D_MODEL=line_frame` in a fight does): its fists draw back for
-  rifles on slides, and its blades and kites of light are made of light (`b.beams`), seen only
-  while an act lights them. Look tests of four chassis are stills in `docs/looks/`, their
+  tab shows it (`RIFTGATE_MECH3D_MODEL=line_frame` in a fight does). Since Ryan's notes of 19
+  November its main hand is a mount over its fist and its offhand carries the rifle, the blade
+  and the kite of light, the last two made of light (`b.beams`), seen only while an act lights
+  them; its kit is in chat with him. Look tests of four chassis are stills in `docs/looks/`, their
   choices in their briefs, never content.
 - **Audio.** Three pairs play in the game (Hold The Line, Night Shift, The Far Bank;
   `Sound.PAIRS`): a battle picks one as it starts and loops it, the map half on the field and
