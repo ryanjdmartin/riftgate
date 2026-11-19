@@ -939,22 +939,6 @@
    }
   },
   {
-   "id": "quick_turned",
-   "category": "status",
-   "name": "Quick turn spent",
-   "codex": "Machine marker, the Needletail's: its die has turned once this round, so the spend it holds is its last. Never a chip: the die shows the turn it still has in its passive box. Gone at the round's end.",
-   "status": "implemented",
-   "design": {
-    "holes": "Set by the static one_of_each (the Needletail's relay): two things a round, a weapon and an equipment.",
-    "table": {
-     "kind": "buff",
-     "on": "machine",
-     "stacks": "No",
-     "lasts": "The round"
-    }
-   }
-  },
-  {
    "id": "brittled",
    "category": "status",
    "name": "Brittle",

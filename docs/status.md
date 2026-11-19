@@ -48,7 +48,7 @@ document's job and every command are in `README.md`.
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
   (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks
   great. Lets land it", and `ccr-178e0404-ptuh2m` (the Buzzard) on his "ok, merge into
-  main". A session's hangar
+  main", then the Needletail on 19 November on his "I think what we've got can merge into main". A session's hangar
   publish runs ahead of main (Pages).
   Every other branch on GitHub but the lines' own working branches is merged and to delete
   (`git push origin --delete`, then `git fetch --prune`); a cloud session may not delete one.
@@ -61,8 +61,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1323 tests, 376,844 checks, green on `ccr-722ca9f0-yj8na3` (18 November, the Mantis
-  Ant's and the Gargantuan King's pairs, over main at `f167af8`). The runner fails a run whose tests never ran, so read the checks' count, never
+- Tests: 1331 tests, 376,896 checks, green on main (19 November, the Needletail landed
+  over the Waste's purge). The runner fails a run whose tests never ran, so read the checks' count, never
   the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
   purpose. About four minutes in a cloud session; words after `--` run only the files whose
   names hold one (`-- loot rig`).
@@ -137,8 +137,13 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   up to 3, every stack gone when the shield breaks, the reboot included); the Buzzard landed
   on the 18th in his carrion form (every foe that falls in its fight gives it shield, every
   weapon it fires pays a zap of shield for a flat add, its Shield-burner Cannon fires the whole
-  shield; Sustain on its passive and Burst on its cannon its branches); its first round on
-  the Kite, the Puffin, the Swallowtail and the Needletail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
+  shield; Sustain on its passive and Burst on its cannon its branches); the Needletail the
+  same day on his two calls (its Designator at no heat, and its reboot its second action) and
+  his rewrite of its Relay (a kind spent goes on cooldown for the round; its die flips to the
+  other kind, rolls land anywhere; a Rapid or Instant spend leaves its kind lit; it reboots
+  after one action whatever its die shows, the one machine that may after a Rapid spend; its branches, one on
+  the spotter and one turning the Designator into a weapon, wait on Kestrel's tier one); its first round on the Kite, the Puffin and the Swallowtail
+  waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis, the Polar Bear
   (a reboot opens its seal), the Whip Scorpion (its reboot's vent blasts every foe), the
   Lammergeier, the Wild Boar, the Baboon, the Stingray. The Giant Petrel's kit, the Musk Ox
@@ -321,10 +326,12 @@ publish; the commands are in `README.md`.
   Published at v0.634 on 18 November from main's file at `1383f11` (the page's Version 513),
   every line of the file read first; the page it replaced was v0.564 of 13 November, the
   file of `620c717`, an ancestor of main, so main's file went up whole. Main's file is
-  v0.637 since, unpublished: its row on the foes' rule set says a step ahead of a blow is a
-  move's own order and no rule of Purge, his correction of 18 November, and its squad row holds the
-  first battle as he decided it: the Meadow's, the draft's three, a choice of one of three
-  from the host maker, the draft's missing pick on a loss. Before republishing,
+  v0.638 since, unpublished: its row on the foes' rule set says a step ahead of a blow is a
+  move's own order and no rule of Purge, his correction of 18 November, its squad row holds
+  the first battle as he decided it (the Meadow's, the draft's three, a choice of one of
+  three from the host maker, the draft's missing pick on a loss), and the Needletail's rows
+  landed on 19 November (its free Designator, its reboot after its action, its Relay
+  rewritten as cooldowns, its branch directions). Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
   `1383f11` unless the live page says otherwise, OURS this branch's file, THEIRS the saved

@@ -13,7 +13,7 @@ deltas"). It builds nothing and moves nothing in content; two of its machines we
 main the same day by his own rulings in another session (the Polar Bear, the Whip Scorpion), and
 the Storm Petrel landed the same day on his word, with his upgrade branches (the bible's Storm
 Petrel row; its section is a stub), and the Buzzard on the 18th (its row; its section a stub
-too). It retires once its calls are rows and content.
+too), and the Needletail the same day. It retires once its calls are rows and content.
 
 ## The whole of it
 
@@ -21,7 +21,7 @@ too). It retires once its calls are rows and content.
 |---|---|---|
 | Storm Petrel | Landed 17 November (the bible's row): the Hardlight Generator, a point of shield a point of heat; its lock the Hardlight Pulse, a lure run hot; the Arc Fault Cannon in the Shoring Jack's slot; his branches Defence and Striker | His play of it, and his marks on its texts |
 | Buzzard | Landed 18 November (the bible's row): the Field-Recoupling Injectors, a zap on every weapon it fires and 2 shield for every foe that falls; its Shield-burner Cannon fires the whole shield; a Barrier piece and a warm gun in its stock; his branches Sustain and Burst | His play of it, and his marks on its texts |
-| Needletail | Two actions a round cost two actions' heat and the reboot takes both: it fires less than a plain machine | Its heat budget for two actions, and his "dull" |
+| Needletail | Landed 18 November on his two calls (the bible's Kestrel row): its Designator makes no heat, and its reboot may be its second spend, after one action of either kind | His play of it, and his "dull" |
 | Skua | Its ramp lives behind a shield that lasts a cycle, and every cycle ends bare | Whether its ramp is for a cycle or a fight |
 | Kite | Holds in short fights; its refill dies with a break, its reboot is the frailest bare turn | A kill mends a broken shield, or as it is |
 | Cottonmouth | The drum's shape holds; at 6 heat it is two shots a cycle on the lightest frame | The drum's heat or its gauge; a keyword shell in stock |
@@ -81,30 +81,11 @@ and why. Its kit as this proposal read it is in git: `git show 86234dc:docs/rebo
 Landed 18 November on his word in its carrion form, with his branches; the bible's Buzzard row
 says what it is and why. Its kit as this proposal read it is in git: `git show 288de9a:docs/reboot_machines_proposal.md`.
 
-### Needletail
+### Needletail, landed
 
-Kestrel, tier 2, light flyer. *Context*: the tempo machine ("using two things a round is very
-Kestrel and deserves a chassis", 11 November); its Designator the line's dependable setter, the
-machine that cashes Exposed an unspecced medium; his note of 5 November, before the rework:
-"unrefined, dull, kit, not worthy of tier 2".
-
-*Kit*: hull 20, shield 10, armour 0, heat 12, move 6, 4 hardpoints.
-- Quick-turn Avionics Relay: it acts twice a round, once with a weapon and once with equipment;
-  after its first spend its die turns to an entry of the other kind.
-- Fovea Designator (fixed): Expose, Indirect, heat 2 (the foe's armour counts for nothing and it
-  stands in Direct reach).
-- Transonic Rifle 5 for 7; Laser Carbine 4 for 5, twice; Twin Autoguns 3 for 4.
-
-*As a whole.* With one piece of equipment in its stock, its round is always a gun and the
-Designator, about 7 heat on 12, so it reboots after under two rounds and each reboot gives up
-both actions: a quarter of its turns and more in the read, the most of any machine. Over a cycle
-it fires about 0.6 guns a round, fewer than a plain machine's 0.75; its second action, an Expose
-a round, is paid for in its own shots, and it never varies.
-
-*Verdict.* The system eats its premise: two actions a round cost two actions' heat, and the
-reboot takes both. Its heat budget wants sizing for two actions (its maximum, or its equipment
-making no heat on it), and his "dull" likely wants more than a resize: equipment in its stock
-worth choosing between.
+Landed 18 November on his two calls, the Designator at no heat and its reboot its second spend;
+the bible's Kestrel row says what it is and why, and `docs/measurements.md` the same day reads
+it. Its kit as this proposal read it is in git: `git show f167af8:docs/reboot_machines_proposal.md`.
 
 ### Skua
 
@@ -478,7 +459,8 @@ in formations and nothing against a lone boss.
 2. Buzzard: landed 18 November on his "Do the carrion-style", its own spend free to break its
    shield, with his branches (the bible's row; `docs/measurements.md`, the same day, reads the
    three builds).
-3. Needletail: its heat budget sized for two actions, or the kit rethought.
+3. Needletail: landed 18 November on his calls, its Designator at no heat and its reboot its
+   second spend (the bible's Kestrel row); his "dull" waits on his play.
 4. Skua: its ramp for a cycle or for a fight.
 5. Kite: a kill mends a broken shield (lean), or left as it is.
 6. Cottonmouth: the drum's heat or its gauge, and a keyword shell in its stock.

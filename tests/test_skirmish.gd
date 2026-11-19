@@ -9906,7 +9906,7 @@ func test_a_one_of_each_die_turns_to_the_other_kind_once_a_round() -> void:
 	assert_true(sk.undo(), "with no draw the undo reaches past the turn")
 	ms = sk.mechs[0]   # the undo writes the fight back: its units are read again
 	m = ms.unit
-	assert_true(ms.face_index == 1 and not ms.assigned and not Effects.has(m, "quick_turned"), "the gun showing again, the turn unspent")
+	assert_true(ms.face_index == 1 and not ms.assigned and not Effects.is_entry_disabled(m, 1), "the gun showing again, lit: nothing sent onto cooldown")
 	assert_true(sk.assign(0, sk.front[0]), "spent again")
 	assert_true(sk.assign(0, sk.front[0]), "then the equipment")
 	assert_true(ms.assigned, "a full action: once a round")
@@ -9943,14 +9943,14 @@ func test_a_one_of_each_die_turns_to_the_other_kind_once_a_round() -> void:
 	var ns: Skirmish.MechState = s2.mechs[0]
 	ns.face_index = 0
 	assert_true(s2.assign(0, s2.front[0]), "its own Rapid")
-	assert_true(not ns.assigned and not Effects.has(n, "quick_turned"), "acts again by Rapid, the turn unspent")
+	assert_true(not ns.assigned and not Effects.is_entry_disabled(n, 1), "acts again by Rapid, nothing but itself onto cooldown (Ryan, 18 November: \"rapid does not consume any of the spends\")")
 	var bot := Policy.make(Policy.GREEDY, 1)
 	ns.face_index = 1
 	for held in n.modifiers.duplicate():
 		if held.source == "cooldown":
 			n.modifiers.erase(held)   # its entries lit again, for the read
 	var open := bot.attack_score(s2, ns, ns.face(), s2.front[0])
-	Effects.grant_for_rounds(n, Effects.STATUS["quick_turned"], "test", s2.round)
+	Effects.disable_entry(n, 0, "cooldown", s2.round)   # its equipment spent and on cooldown: the gun's spend has no flip to give
 	assert_true(open > bot.attack_score(s2, ns, ns.face(), s2.front[0]), "the bot weighs the action the turn gives")
 	# A machine without the rule turns nothing.
 	var plain := _mech("Plain", Die.of([probe.duplicate_face(), gun.duplicate_face()]), 40, 100)
@@ -11481,3 +11481,97 @@ func test_sap_lays_sapped_and_rides_beside_a_purge() -> void:
 	assert_eq(Effects.stacks_of(foe, "sapped"), 1, "Sapped 1")
 	assert_eq(Effects.stacks_of(foe, "kindled"), 1, "a stack of its buff purged")
 	assert_eq(sk.foe_blow(foe), blow - 2, "its blow a point lower for each")
+
+
+## The Relay rewritten (Ryan, 18 November: "it was always completely broken ... I spend anything,
+## reroll, and spend whatever I want after"; then "just to send the 'unlit' kinds onto cooldown.
+## There's no special cases or states then"): a weapon spent sends every weapon on its die onto
+## cooldown for the round and its equipment the same, its die flipping to a lit entry of the other
+## kind; a roll or a reroll lands anywhere, a dark entry doing nothing ("don't restrict the die to
+## only lit faces"); a Rapid or Instant spend sends nothing but itself ("rapid does not consume any
+## of the spends"); and the machine may reboot while its die is in play.
+func _relay_fight(faces: Array) -> Skirmish:
+	var sk := Skirmish.new(7, 2)
+	sk.keeps_undo = true
+	var m := _mech("Spotter", Die.of(faces), 40, 100)
+	m.heat_max = 99
+	m.grant_passive(RELAY)
+	sk.add_mech(m)
+	sk.add_foes([_ghoul(900, 0), _ghoul(900, 0)])
+	sk.begin()
+	sk.start_round()
+	return sk
+
+
+func test_a_spent_kind_goes_on_cooldown_and_a_reroll_onto_it_does_nothing() -> void:
+	var sk := _relay_fight([Face.attack(5, L, [], 1), Face.attack(5, L, [], 1), Face.attack(5, L, [], 1), Face.attack(0, I, [K.EXPOSE]), Face.attack(0, I, [K.SHOCK])])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var u := ms.unit
+	ms.face_index = 0
+	assert_true(sk.assign(0, sk.front[0]), "a gun")
+	assert_true(Effects.is_entry_disabled(u, 0) and Effects.is_entry_disabled(u, 1) and Effects.is_entry_disabled(u, 2), "every weapon on its die on cooldown for the round")
+	assert_eq(Effects.dark_rounds(u, 1, sk.round), 1, "this round alone")
+	assert_false(Effects.is_entry_disabled(u, 3) or Effects.is_entry_disabled(u, 4), "its equipment lit")
+	assert_true([3, 4].has(ms.face_index) and not ms.assigned, "its die flipped to equipment")
+	sk.rerolls_left = 60
+	var dud := false
+	for k in range(60):
+		assert_true(sk.reroll([0]), "a team reroll, onto any other entry")
+		if [0, 1, 2].has(ms.face_index):
+			dud = true
+			assert_false(sk.can_spend(0), "a gun it lands on is dark: nothing to spend")
+			break
+	assert_true(dud, "a reroll may land on a spent kind: the die is not narrowed to its lit entries")
+	ms.face_index = 3
+	assert_true(sk.assign(0, sk.front[0]), "its equipment")
+	assert_true(ms.assigned, "both kinds on cooldown: nothing to flip to, its die is done")
+	sk.end_round()
+	sk.start_round()
+	assert_false(Effects.is_entry_disabled(u, 0) or Effects.is_entry_disabled(u, 3), "the next round nothing is dark")
+
+
+func test_a_rapid_spend_sends_only_itself_onto_cooldown_on_the_relay() -> void:
+	var gun := Face.attack(5, L, [], 1)
+	var rapid := Face.attack(0, I, [K.EXPOSE, K.RAPID])
+	var tool := Face.attack(0, I, [K.SHOCK])
+	# The gun first, then the Rapid mark: its kind stays lit, so its equipment is still to spend.
+	var sk := _relay_fight([gun, rapid, tool])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var u := ms.unit
+	ms.face_index = 0
+	assert_true(sk.assign(0, sk.front[0]), "the gun")
+	ms.face_index = 1   # the flip drew among its two equipment: the Rapid one, for the read
+	assert_true(sk.assign(0, sk.front[0]), "the Rapid mark")
+	assert_true(Effects.is_entry_disabled(u, 1) and not Effects.is_entry_disabled(u, 2), "only itself dark: its kind not sent onto cooldown")
+	assert_true(not ms.assigned and sk.can_reboot(0), "its die in play: it may still reboot")
+	ms.face_index = 2
+	assert_true(sk.assign(0, sk.front[0]), "the equipment, after the Rapid mark")
+	assert_true(ms.assigned and not sk.can_reboot(0), "both kinds spent: its die is done, and so is the reboot")
+	# The mark first: nothing on cooldown but itself, and both kinds still to spend.
+	var s2 := _relay_fight([gun.duplicate_face(), rapid.duplicate_face(), tool.duplicate_face()])
+	var m2: Skirmish.MechState = s2.mechs[0]
+	m2.face_index = 1
+	assert_true(s2.assign(0, s2.front[0]), "the Rapid mark first")
+	assert_true(not m2.assigned and [0, 2].has(m2.face_index), "its die rolled onto another entry")
+	m2.face_index = 0
+	assert_true(s2.assign(0, s2.front[0]), "the gun")
+	assert_eq(m2.face_index, 2, "the flip to the equipment still lit")
+	assert_true(s2.can_reboot(0), "its die in play: its second may be the reboot")
+
+
+func test_an_instant_spend_on_the_relay_leaves_its_kind_lit_and_pays_its_limit() -> void:
+	var instant := Face.attack(0, I, [K.EXPOSE, K.INSTANT])
+	instant.heat = 2   # its limiter (the rules: no chain is free)
+	var sk := _relay_fight([Face.attack(5, L, [], 3), instant])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var u := ms.unit
+	ms.face_index = 0
+	assert_true(sk.assign(0, sk.front[0]), "the gun")
+	assert_eq(ms.face_index, 1, "the flip to its one equipment")
+	var spent := 0
+	while ms.face_index == 1 and not ms.assigned and spent < 20:
+		assert_true(sk.assign(0, sk.front[spent % 2]), "the Instant spend")
+		spent += 1
+		assert_false(Effects.is_entry_disabled(u, 1), "its kind never sent onto cooldown")
+	assert_true(spent >= 1 and ms.face_index == 0 and not ms.assigned, "until its roll landed on the dark gun: %d spends" % spent)
+	assert_eq(ms.heat, 3 + 2 * spent, "each paid its heat: the limit of a chain")
