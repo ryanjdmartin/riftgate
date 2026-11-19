@@ -12004,3 +12004,21 @@ fight ends in five to eight rounds and a quiet round's reboot clears it; what it
 reboots, a tenth to a third more a machine. Built the same day as the rule: the reboot's drop
 lights every jammed entry, the die's foot shows the reboot's mark in place of a count, and the
 what-if left with it.
+
+## 19 November: a purging boss, three read
+
+On Ryan's "A purging boss or elite does sound like something we should have, not
+uncommonly": three of the Waste's elites purge ahead of a blow and no boss does. Three
+bosses read with a Purge 1 ahead of their main blow, by fantasy, as scratch content (the
+anchor read, every squad of four of the pool, four seeds; hull a share of a four's).
+
+| Boss, the blow | Without the Barrier, as built and purging | With the Barrier basic |
+|---|---|---|
+| The King Gel, its Body Slam | 26.5%, 31.0% | 14.5%, 29.5% |
+| The Emperor Scorpion, its Twin Shear | 22.1%, 27.7% | 15.4%, 19.7% |
+| The Vampire Lord, its Drain | 27.7%, 31.9% | 10.7%, 31.5%, won 93% |
+
+Read: a purge on a boss's main blow costs the squad the leaders are sized for four to six
+points, what it puts up being Armoured and a Ricochet's stacks, and the squad with the
+Barrier basic pays what that squad pays, so where a boss purges the Barrier is no pass. Each
+would want its blow a point lower to stay in band. Not landed: which leaders purge is his.

@@ -172,7 +172,14 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   landed with its sizing (the bible's levers row): the Waste's purge ahead of the blow, a
   move's own order and no rule of Purge; the Peak's Bomb as its hard hit on a telegraph; the
   Marsh's knight and its Serpent's fangs; the Meadow's as it was. How the leaders strike is
-  his lean (the bible's section 9): whole blows the norm, slightly towards strikes. The
+  his lean (the bible's section 9): whole blows the norm, slightly towards strikes. His
+  answers of 19 November landed the same day: the numbers pass's leans (no piece grants a
+  cooling or a shield regen now; Cryo 1; the Ankle Mortar 3 for 5; the Overcharge Coil tier
+  two; the slottable shields and vents of tiers zero and one retired, a vent's shield half
+  leaving the engine with them), the Cassowary's Laser Carbine and the Cottonmouth's
+  Incendiary Shells, and a foe's jam waiting for its machine's reboot; read, the baseline
+  moved by a point or two. Read and his to pick: the pickets' count, which leaders purge, and
+  the Mandragora's scream (the to-do). The
   battle whole is the open question (the brief's section 11): at their ratings a second
   battle's fights come to three fifths to nine tenths of a squad's hull, and a fight met a
   machine short costs four to six times its price. Tiers two and three are unsized, their
@@ -331,7 +338,7 @@ publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   Published at v0.634 on 18 November from main's file at `1383f11` (the page's Version 513).
-  Main's file is v0.646, unpublished: the step ahead of a blow, the first battle decided and
+  Main's file is v0.647, unpublished: the step ahead of a blow, the first battle decided and
   built, the Needletail's rows, every domain's kit, the battle's open question, and the Skua,
   the Kite and the Cottonmouth left as built under the reboot are in it since. The hangar's
   `text` collection was empty on 19 November, so no writing of his waits. Before republishing,
