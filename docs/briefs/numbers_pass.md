@@ -357,9 +357,13 @@ more than half, the knife's read again. So in the Waste the Barrier basic is no 
 
 **Open, his:**
 
-- The bosses' blows that lost their breach, one at a time, each by its kit: the Ruby
-  Colossus's tentacle from below and the Lancer's Jump the first two. The Fallen Weapon's
-  Piercing Eye lays Exposed already.
+- The bosses' blows that lost their breach, one at a time, each by its kit. The Ruby
+  Colossus's tentacle from below was read on 19 November and the lean is to leave it plain:
+  a small blow of a boss whose weight is elsewhere, its purge costs the squad with the
+  Barrier a point and a half and the squad with a brace three and a half. The Lancer's
+  Jump is a hero's, read with the finals. The Fallen Weapon's Piercing Eye lays Exposed
+  already. So the purge sits where one great blow is the leader's weight, the knife and
+  the Maw, and no boss of tier one's Waste is that shape today.
 - The second lever, held until his play says the stare reads as nothing: the Cockatrice's
   Stone holding until that Cockatrice falls, one stone a machine, a new stare moving it.
 - His play of the kit: whether a standing stack going for good is a question or a tax

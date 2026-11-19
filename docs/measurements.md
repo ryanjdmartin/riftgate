@@ -11646,3 +11646,17 @@ it paid 15.8%. A formation's mean is 5.4% over 5.8 rounds; an elite's is 25.0% w
 Barrier and 14.6% with it. The suite is green, 1331 tests. Tiers two and three field the
 same Needles and are unsized as before.
 
+The first of the bosses' blows that lost a breach, read the same day as a what-if, content
+edited and put back: the Ruby Colossus's tentacle from below with a Purge 1 ahead of its
+lash, thirty fights a cell.
+
+| The Ruby Colossus | Without the Barrier | With the Barrier basic |
+|---|---|---|
+| As landed | 9.7 rounds, 20.8% | 10.5, 18.0% |
+| The tentacle's lash purging first | 10.0, 24.4%, 97% won | 10.2, 19.4% |
+
+Not the Maw's result. The lash is a small blow of a boss whose weight is its swallow and
+its Ultima at every machine, so the purge costs the squad with the Barrier a point and a
+half and the squad with a brace in that slot three and a half: it taxes the plate more
+than the piece it was meant to answer. This pass's lean is to leave the tentacle plain.
+
