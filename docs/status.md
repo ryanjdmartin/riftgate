@@ -140,8 +140,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   same day on his two calls (its Designator at no heat, and its reboot its second action) and
   his rewrite of its Relay (a kind spent goes on cooldown for the round; its die flips to the
   other kind, rolls land anywhere; a Rapid or Instant spend leaves its kind lit; it reboots
-  after one action whatever its die shows, the one machine that may after a Rapid spend; its branches, Rapid
-  and Instant on the Designator, his to settle in the to-do); its first round on the Kite, the Puffin and the Swallowtail
+  after one action whatever its die shows, the one machine that may after a Rapid spend; its branches, one on
+  the spotter and one turning the Designator into a weapon, wait on Kestrel's tier one); its first round on the Kite, the Puffin and the Swallowtail
   waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis, the Polar Bear
   (a reboot opens its seal), the Whip Scorpion (its reboot's vent blasts every foe), the
