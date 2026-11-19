@@ -160,13 +160,13 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   are sized to it since 17 November (`docs/briefs/numbers_pass.md`, sections 3 and 8; the
   reads `docs/measurements.md`), read on every squad of the six certain tier ones since 18
   November (a count of them had the Honey Badger in four fours of five): a lone flanker
-  3.4% of a four's hull, a hunter's pack 8.9%, a formation 5.3% over 5.8 rounds, from 2.4%
+  3.4% of a four's hull, a hunter's pack 8.9%, a formation 5.4% over 5.8 rounds, from 2.4%
   to 9.3% by formation, every fight won. The elites and the bosses are sized since 18
   November for a squad without the Barrier, on his word ("sizing it without means that if
   it does prove toxic after all, in my play, then it's relatively easy to remove"): an
-  elite costs it 25.2% and a boss 29.9%. The Barrier basic stays on the starting dice ("one
+  elite costs it 25.0% and a boss 29.9%. The Barrier basic stays on the starting dice ("one
   of the two sides of the defensive coin"), and the squad with it pays about half, an elite
-  13.8% and a boss 20.1%: whether that proves toxic is his play's to say, on BARRIER BASIC.
+  14.6% and a boss 20.1%: whether that proves toxic is his play's to say, on BARRIER BASIC.
   How the leaders strike is his lean of the same day (the bible's section 9): whole blows
   the norm, slightly towards strikes so plate earns in their fights. On his go the Mantis
   Ant's Mandibles and the Gargantuan King's Gore are pairs, the Reaper's Harvest is a sweep
@@ -275,10 +275,12 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
 
 1. **The foes' line** (`ccr-722ca9f0-yj8na3`; `docs/briefs/numbers_pass.md`), in this order:
    - The defence side's rest, this line free to adjust content when it is ready (Ryan, 17
-     November): the Waste's kit now that Breach is cut, proposed 18 November and waiting
-     on his marks (the brief's section 9; the Needler's body landed with it, 4 hit points
-     for the 2 that were a breach's price, so its two formations cost 5.3% and 5.5%); then
-     the other domains' kits; the scorches on every machine above tier one.
+     November): the Waste's kit now that Breach is cut landed on 19 November on his go
+     (the brief's section 9; the bible's levers row): a Purge ahead of the blow on the
+     needler line's Needles and the Old Man of the Desert's Maw, the knife's own order, so
+     nothing a machine puts up answers them, and its signature restated. Its bosses' blows
+     that lost their breach are his calls, one at a time; then the other domains' kits, each
+     broken down against the Meadow's fights; the scorches on every machine above tier one.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
      his picks on RANK AND FILE, HEAT and TOP BASIC: its prices are read from the vanilla he
      settles on.
@@ -326,12 +328,13 @@ publish; the commands are in `README.md`.
   Published at v0.634 on 18 November from main's file at `1383f11` (the page's Version 513),
   every line of the file read first; the page it replaced was v0.564 of 13 November, the
   file of `620c717`, an ancestor of main, so main's file went up whole. Main's file is
-  v0.638 since, unpublished: its row on the foes' rule set says a step ahead of a blow is a
+  v0.639 since, unpublished: its row on the foes' rule set says a step ahead of a blow is a
   move's own order and no rule of Purge, his correction of 18 November, its squad row holds
   the first battle as he decided it (the Meadow's, the draft's three, a choice of one of
   three from the host maker, the draft's missing pick on a loss), and the Needletail's rows
   landed on 19 November (its free Designator, its reboot after its action, its Relay
-  rewritten as cooldowns, its branch directions). Before republishing,
+  rewritten as cooldowns, its branch directions), and the Waste's kit in its levers row
+  and its table. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
   `1383f11` unless the live page says otherwise, OURS this branch's file, THEIRS the saved

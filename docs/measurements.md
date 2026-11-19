@@ -11624,3 +11624,25 @@ bosses won one fight in two where the others win four in five, so one cut does n
 four domains. The first battle in one domain is three bosses and two elite fights to size
 for a trio; in any domain it is thirteen and eleven.
 
+## 19 November: the Waste's kit as landed
+
+Ryan: "Ok, go ahead with your Waste changes." In content: a Purge 1 ahead of the needler
+line's Needles and of the Old Man of the Desert's Maw, and his attack 11 for 12. Every
+squad of the six certain tier ones, the greedy bot, forty fights a formation's cell and
+thirty an elite's; rounds and hull, a share of a four's.
+
+| Fight | Without the Barrier | With the Barrier basic | Before the kit, without and with |
+|---|---|---|---|
+| The needler thicket | 4.7, 6.4% | 4.5, 6.3% | 5.7%, 5.3% |
+| The sandworm's ambush | 6.5, 7.4% | 6.0, 5.4% | 6.9%, 5.5% |
+| The old man's rising, his attack 12 | 8.1, 29.3% | 7.8, 28.0% | 27.5%, 15.8% |
+| The old man's rising, his attack 11, as landed | 8.0, 24.9% | 8.2, 23.5% | |
+| The Pilgrim's wake | 6.8, 20.7% | 6.8, 16.3% | 20.5%, 15.5% |
+
+The Maw purging first took the old man's rising over its quarter for the squad without the
+Barrier, so the blow that carries the purge pays a point, as a blow under a rider does, and
+at 11 both squads stand on the quarter: the squad with the Barrier basic pays 23.5% where
+it paid 15.8%. A formation's mean is 5.4% over 5.8 rounds; an elite's is 25.0% without the
+Barrier and 14.6% with it. The suite is green, 1331 tests. Tiers two and three field the
+same Needles and are unsized as before.
+

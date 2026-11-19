@@ -101,7 +101,7 @@
     {
       "id": "waste",
       "name": "The Waste",
-      "design": { "fantasy": "Desert and badlands: sand, dunes, bleached bones, and cacti in rows all facing the same way. The genre's fixed-damage country, where the needles ignore your armour and the thieves take what you have.", "signature": "Fixed damage that no shield answers, and theft of what you have.", "answer": "Hull and tempo over shields; redundancy on the die against theft." },
+      "design": { "fantasy": "Desert and badlands: sand, dunes, bleached bones, and cacti in rows all facing the same way. The genre's fixed-damage country, where the needles go through whatever you put up and the thieves take what you have.", "signature": "Needles and great bites that purge before they land, so nothing a machine puts up answers them; theft of entries and of buffs.", "answer": "Hull and tempo over what you put up; redundancy on the die against theft; reach to the gazers; a Ward." },
       "bleed": "sand",
       "reward_bias": "face_modifier",
       "compositions": [
