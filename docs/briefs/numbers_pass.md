@@ -341,7 +341,7 @@ this section holds what landed, its reads and what is still open.
   rising at two Needlers.
 - The Waste's signature and answer, in the faction's notes and the bible's table: this
   pass's words, his to rewrite. The word "rerolls" is off it: the reroll's thief is the
-  Meadow's Mandragora, its whole back rank, nine in tier one's three formations (his word:
+  Meadow's Mandragora, its whole back rank, eight in tier one's three formations (his word:
   "the mandragoras are pretty common in the meadow"), and no second thief is added.
 - The Waste's nine notes that still said breach. The other domains' wait for their kits.
 - Four moves' texts and four codex lines are drafts for his writing.
@@ -422,8 +422,9 @@ teach a wall, a howl, a split, a mend and a scream. The silence's place is the c
 pieces already carry. Sizing: the Treant has 14 hit points for 16 and the grove two
 Mandragoras for three (9.3% to 5.2%); the shaman strikes for 12, his Chain Lightning 6 at
 every machine (15.0% to 24.6%); the King Gel for 11 (37.0% to 30.7%). The Nob's rage at 2 a
-spend was read and taken back. Open, his: whether nine screams in tier one's three
-formations are too many, the Mandragora being the Meadow's whole back rank.
+spend was read and taken back. Open, his: whether eight screams in tier one's three
+formations are too many (four in the horde, two in the grove since this pass, two in the gel
+wall), the Mandragora being the Meadow's whole back rank.
 
 **The Waste** (section 9), and since: a Purge 1 ahead of the Rust Monster's Rusting Bite,
 the leader whose weight is one great bite and whose fantasy is eating what a machine put

@@ -329,7 +329,7 @@ publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   Published at v0.634 on 18 November from main's file at `1383f11` (the page's Version 513).
-  Main's file is v0.642, unpublished: the step ahead of a blow, the first battle decided and
+  Main's file is v0.643, unpublished: the step ahead of a blow, the first battle decided and
   built, the Needletail's rows, every domain's kit and the battle's open question are in it
   since. The hangar's
   `text` collection was empty on 19 November, so no writing of his waits. Before republishing,
