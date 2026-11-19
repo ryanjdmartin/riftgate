@@ -2467,7 +2467,8 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		var measure := "damaging_spends" if deals else "quiet_spends"
 		sponsorship[measure] = int(sponsorship[measure]) + 1
 	ms.assigned = true
-	ms.spends += 1
+	if not (f.acts_again() and Effects.one_of_each(ms.unit)):
+		ms.spends += 1   # on a one-of-each machine (the Needletail's) a Rapid or Instant spend is none of its spends (Ryan, 18 November: "rapid does not consume any of the spends")
 	# A cooldown (Ryan, 14 October; counted after the round of the spend since 12 November:
 	# "change the count so 1 is how I intended"): the entry is dark for the rest of this round and
 	# for the rounds it prints after it, shown on the die with the rounds left. Rapid's own
@@ -5559,21 +5560,25 @@ func _note_break(ms: MechState) -> void:
 ## November: "they have had to 'spent nothing' to smash the Reboot button"): on the player's
 ## turn, alive and in the fight, its die unspent and nothing spent by it this turn, whatever
 ## would let it act more than once (Rapid, Instant, a second thing a round, a grant), so no
-## machine plays a Rapid piece before its reboot. The one exception is a one-of-each machine (the
-## Needletail's Quick-turn Avionics Relay; Ryan, 18 November: "Gaming the reboot is the
-## Needletail's niche"): while its die is in play it may reboot, after one of its two actions or
-## a Rapid or Instant spend, never once its die is done.
+## machine plays a Rapid piece before its reboot. A die showing nothing lit is no spend: a machine
+## whose whole die is dark may reboot, the very moment to (Ryan, 18 November). The one exception is
+## a one-of-each machine (the Needletail's Quick-turn Avionics Relay; the same day: "Gaming the
+## reboot is the Needletail's niche"): with one spend made at most, a Rapid or Instant spend none
+## of them, it may reboot whatever its die shows, a die left with nothing lit to flip to included
+## ("That would be the exact time a player would want to reboot"); after both, never.
 func can_reboot(mech_index: int) -> bool:
 	if state != State.ASSIGN or mech_index < 0 or mech_index >= mechs.size():
 		return false
 	var ms := mechs[mech_index]
-	if not ms.alive() or is_swallowed(ms) or ms.rebooting or ms.assigned:
+	if not ms.alive() or is_swallowed(ms) or ms.rebooting:
 		return false   # a Phased machine may: the safe reboot (Ryan, 15 November)
-	return ms.spends == 0 or Effects.one_of_each(ms.unit)
+	if Effects.one_of_each(ms.unit):
+		return ms.spends <= 1
+	return not ms.assigned and ms.spends == 0
 
 
-## The reboot: the machine gives its whole turn, or the rest of it while its die is in play
-## (the Needletail's, can_reboot). At once its shield goes to nothing and its
+## The reboot: the machine gives its whole turn, or the rest of it after one action (the
+## Needletail's, can_reboot). At once its shield goes to nothing and its
 ## heat with it, what stood past the maximum too (Ryan, 17 November, of the heat that stayed on
 ## the gauge until the recovery: "it didn't make sense to have that overheat hanging around and
 ## not hurting the mech"; "Maybe the heat gets shunted when the shield gets taken down?"), and it
@@ -5607,7 +5612,7 @@ func reboot_mech(mech_index: int) -> bool:
 	var shot := release_shot(ms)   # read while it holds its heat
 	ms.heat = 0
 	ms.overheated = false
-	log.append("%s reboots%s: %sheat -%d, back next round" % [ms.unit.display_name, " as its second spend" if ms.spends > 0 else "", "shield -%d, " % dropped if dropped > 0 else "", vented])
+	log.append("%s reboots%s: %sheat -%d, back next round" % [ms.unit.display_name, " after its action" if ms.spends > 0 else "", "shield -%d, " % dropped if dropped > 0 else "", vented])
 	_vent_blast(mech_index, ms, shot, vented)
 	if not snap.is_empty():
 		history.append(snap)

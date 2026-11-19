@@ -1315,7 +1315,9 @@ func _refresh(save: bool = true) -> void:
 		d.dead = not ms.alive()
 		d.locked = locked[i]
 		d.can_tap = ms.alive() and _pending.get("mech", -1) != i   # a tap reads the die, spent too; the pending one's is its ghost's
-		d.can_drag = assigning and ms.alive() and not ms.assigned and _pending.get("mech", -1) != i
+		# A die done still lifts while its machine may reboot (the Needletail's, after its one action
+		# with nothing lit to flip to): REBOOT is the one place it lands.
+		d.can_drag = assigning and ms.alive() and (not ms.assigned or sk.can_reboot(i)) and _pending.get("mech", -1) != i
 		# While a die is dragged, the one under the finger is the die: its slot goes empty
 		# (Ryan, 26 September: a copy dragged beside the original read as a copy). Modulate,
 		# not visible: the view must keep receiving the drag's motion.
