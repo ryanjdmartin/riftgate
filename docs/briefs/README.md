@@ -197,7 +197,7 @@ His calls that shape it, and what each leaves open:
 - Soft control: Minos, the jellyfish, the echidna's draw.
 - Amplify for others: the echidna's Sonic Needle; the Onryō's curse in another shape, since
   Brittle took the flat on-hit.
-- A read nobody uses yet: the die's own state, on the line frame and the battlecruiser.
+- A read nobody uses yet: the die's own state, on the battlecruiser.
 - The tender: Aphelion's deal with the line frame, and its defensive tier one.
 
 ## Orbits
@@ -250,7 +250,7 @@ One row a live brief; the to-do's Design sessions hold each one's task.
 | `minerva_siege_battery.md` | his H-tank, a charge | Minerva | 3 | parked until he picks it up |
 | `minerva_battlecruiser.md` | the capital ship, the broadside | Minerva | 3 | its session |
 | `minerva_shield_bash.md` | his piece: damage equal to armour, then no armour | Minerva | 3, a piece | his call on its form |
-| `aphelion_line_frame.md` | the line frame, a combo by blows | Aphelion | 1 | his calls |
+| `aphelion_line_frame.md` | the line frame: an offhand that cycles its rifle, sword and shield, and a boost pack | Aphelion | 1 (or 2) | his answers on its kit's open points, then its engine |
 | `aphelion_static.md` | Static, the shock unit's Aphelion half | Aphelion | 1 | his calls |
 | `aphelion_barrier_ward.md` | the defensive tier one | Aphelion | 1 | his calls |
 | `aphelion_jellyfish.md` | the status payoff carry, no weapons | Aphelion | 2 | Claude's round on his direction |
@@ -276,6 +276,12 @@ aside so Ryan can overrule the reason. A chassis's own bench is in its brief.
 
 **Aphelion**
 
+- The combo ramp, the line frame's first kit (11 to 20 October): a stack for every blow its weapons
+  land, broken by a turn without a weapon, paying at thresholds. Set aside for the line frame by
+  Ryan's offhand kit (19 November), and free for Aphelion's open slot (his: "there's space for a
+  mechanic that fits better and still keep the ideas of a combo-ramper, or an aura unit"). Under
+  the reboot it wants paying in heat and offence, never cooling or shield; its long form
+  `git show e285ff51:docs/briefs/aphelion_line_frame.md`.
 - The exposed-rotor helicopter ("they have rotor precedence there"): a shape, no mechanic.
 - The large hovercraft, parked by Ryan: tier two, heavy. It sits against "high-tech suites
   over light hulls", and the Stingray already hovers.
