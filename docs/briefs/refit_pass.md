@@ -122,7 +122,7 @@ significantly affects boss scaling, since the whole team is brought in. Second, 
 battlefield power a fourth unit gets is being able to reliably cover a flank, and stay out
 there without presumably needing to come back to reinforce for an elite, most of the time anyway."
 
-**Settled** (the bible's squad row; not built): the first battle is the Meadow's, fought by the
+**Settled** (the bible's squad row; built 19 November): the first battle is the Meadow's, fought by the
 three machines of the draft, and it brings the fourth: won, a choice of one of three machines
 from the maker whose city was defended; lost, the draft's missing pick. So tier one has two
 bands, the Meadow's first battle at three machines and every battle after at four, and a fight
@@ -134,7 +134,8 @@ November, of what he had held settled since the 11th, when this brief asked "Mea
 or no?" and wrote down no answer: "First battle, meadow, 3 machines from the draft, reward is a
 choice of 1 of 3 machines from the maker, or the missing 4th draft pick on loss. I'm ok with
 first battle being from any domain, really, but it's a whole other thing to balance, right?"
-`Campaign` rolls a first rift's domain as it rolls any rift's, and holds no offer.
+The opening domain is content's mark (a domain's `opening`), and the rules' The first battle
+has the rule as it runs.
 
 **His scope: tier one only.** "Let's focus only on balancing tier 1 fights for now. If you've
 read the other work done then you'll know that we're considering tier 3 machines to have higher

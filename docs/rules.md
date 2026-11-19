@@ -1830,8 +1830,20 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   run is lost at zero.
 - **Start**: a tender of one tier-one machine from each city maker (by seed, in stock
   loadout; a chassis whose passive or locked piece is still planned is not dealt, so a maker
-  whose only tier one is a draft offers nothing until it lands); the player takes three. Four squad slots; the first battle is the Meadow's, fought by those three, and brings the fourth machine (below; not built), 0 salvage, 100 Favour, a blueprint for
-  every basic, the eight of tier zero.
+  whose only tier one is a draft offers nothing until it lands); the player takes three. Four
+  squad slots; the first battle is fought by those three and brings the fourth machine (The
+  first battle, below). 0 salvage, 100 Favour, a blueprint for every basic, the six of tier
+  zero the game deals.
+- **The first battle** is the Meadow's: until a run's first battle is fought, every rift that
+  opens is the opening domain's, the one content marks (a domain's `opening`; with none marked
+  the first rifts roll as any other). So the two first fronts differ by their city, and the
+  city defended chooses the maker. Won, that maker puts up three of its machines and one is
+  taken free: its chassis of the battle's tier or under that the engine fields and the roster
+  lacks, drawn by the seed, fewer when it has fewer; no battle starts and no turn passes until
+  one is taken. Not won, or a maker with none to put up, the draft's missing pick comes
+  unasked, the machine left on the tender (and with nothing left there, content's first
+  tier-one machine the roster lacks). Either way it arrives ready, in its stock. Every battle
+  after is fought with four.
 - **A turn** is one battle at a front, with one to four ready machines, or a pass; once the
   finale is due no turn is passed (the Council demands the capital fought now), so the
   Convergence never runs past the finale's. The whole
@@ -1843,10 +1855,9 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   point the city lost, never below 0; a research
   token of the lead domain and an offer from the host maker are owed (the token a choice of
   three blueprints of the domain's theme at the Convergence's tier; the offer a chassis, a
-  component copy and a module from the maker's catalogue, one taken free; the first battle's
-  offer is the fourth machine, a choice of one of three of the host maker's machines, and a
-  first battle lost sends the draft's missing pick, the machine left on the tender; unpacking
-  and offers not built).
+  component copy and a module from the maker's catalogue, one taken free; unpacking and that
+  offer not built). The first battle's offer is the fourth machine instead (The first battle,
+  above).
 - **Fell** (the gate reached 0): the city falls, the battle's salvage is lost, the rift stays
   open, as art: no front, and nothing reads its domain. **Wiped** (every machine wrecked): the horde strikes the gate for up to six phases;
   the city falls at zero or holds wounded, keeping the salvage; no Favour.
@@ -1860,7 +1871,8 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   opened at, whatever the Convergence does after (the finale's is the Convergence's), so an old
   rift never hardens by waiting; the ramp a battle reads is the Convergence as it stands when
   the battle starts, the same for every open front, never shown and never reset.
-- **Domains**: a rift rolls its lead domain (Meadow, Waste, Marsh, Peak; never a beaten one)
+- **Domains**: a rift rolls its lead domain (Meadow, Waste, Marsh, Peak; never a beaten one;
+  the Meadow alone until the first battle is fought)
   and from tier 1 a guest, another domain not beaten, whose compositions alternate with the lead's on the field at the start and in
   the rift's cycle.
 - **The party**: dealt as the run starts, one hero to each domain from its bench, the front
@@ -1893,8 +1905,9 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
 - **Between runs**: a finished run adds its blueprints to the pool and its chassis and beaten
   domains to the codex; a win clears a difficulty tier (`sim/profile.gd`, run by tests only so
   far).
-- Not built: building from blueprints, offers, procurement, loot on the map, modules in the
-  run, Sponsorship, livery, the mission map, draft and hangar screens.
+- Not built: building from blueprints, the offers after the first battle's, procurement, loot
+  on the map, modules in the run, Sponsorship, livery, the mission map, draft and hangar
+  screens.
 
 ## The quick campaign
 
@@ -1905,10 +1918,11 @@ grid and its lead), a boss's the battle's boss unit,
 and nothing scales a pack.
 
 - **Start**: three different tier-one chassis, picked freely from every one the engine can
-  field, in their stock. Four squad slots, the fourth filled by an offer's chassis. The party is
-  dealt as in the campaign. The six basics are free and without limit.
-- **Battles**: twelve, a tier every four, then the finale. Each is fought against a lead domain
-  drawn at random and, from tier two, a guest. Its fights before the boss are as many as the
+  field, in their stock. Four squad slots, the fourth filled by the first battle's offer. The
+  party is dealt as in the campaign. The six basics are free and without limit.
+- **Battles**: twelve, a tier every four, then the finale. The first is the opening domain's,
+  the Meadow's, as in the campaign; each after is fought against a lead domain drawn at random
+  and, from tier two, a guest. Its fights before the boss are as many as the
   Rupture's Fractures at its tier (three, four, five), and one, two and three of them are
   elites: a formation first, then elites and formations in turn, the elites left over at the
   end. Then the boss's fight, the campaign's boss unit at the tier's numbers with its own escort
@@ -1932,7 +1946,9 @@ and nothing scales a pack.
   battle's tier, its modules filling in where it has fewer than three (tier three has two); and
   an offer from a maker drawn from all five: a chassis of its own at or under the battle's tier
   that the roster lacks (bringing its stock), a component of the tier (else the highest under it
-  the maker makes) and a module at or under it.
+  the maker makes) and a module at or under it. The first battle's offer is the fourth machine
+  instead, as in the campaign: three machines of one maker, dealt by the campaign's rule, the
+  maker drawn among those with a machine to put up since no city hosts the battle.
 - **The hangar**, between battles only: up to four machines of the roster, in the order they
   deploy; any component from the stores on any hardpoint and any module in any slot, what comes
   off going back to the stores.

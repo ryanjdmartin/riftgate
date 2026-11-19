@@ -177,7 +177,7 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   brief's section 7, each his. Tiers two and three and the first battle are unsized, their
   foes still the ones sized against a shield that refilled; the first battle, the one a
   trio fights, is the Meadow's alone ("It's just the meadow at level 1 that gets 3"; the
-  bible's squad row), not built. A formation is read at its rating, three of the four on
+  bible's squad row), built and unsized, its sizing his. A formation is read at its rating, three of the four on
   the field, and all four on one cost a fifth of its price or less. On a debug
   build's SETTINGS, TRIALS, each a number still to be picked: HEAT, TOP BASIC, RANK AND FILE
   and BARRIER BASIC (read at the next launch), OVERHEAT, FIELD DEPTH, OPENING, FODDER,
@@ -202,11 +202,17 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   battle: walks pass it and none ends on it, its model dark and slumped where it fell. The
   rift's shell walls the seven hexes beside it, closed to the machines while the seal stands,
   a stretch cracking at each Fracture and the whole bursting at the Rupture, a cache behind
-  it. Decided and not built: the first battle is the
-  Meadow's, fought by the draft's three, and brings the fourth machine, a choice of one of
-  three from the host maker, or the draft's missing pick on a loss (the bible's squad row).
-  Detail: the rules' The battlefield; the bible's section 4.
+  it. Detail: the rules' The battlefield; the bible's section 4.
 - **The campaign.** Its rules run headless only (`sim/campaign.gd`); no screen shows them.
+  The first battle is built as he decided it (19 November; the bible's squad row, the rules'
+  The first battle): until it is fought every rift is the opening domain's, the Meadow by
+  content's mark (a domain's `opening`), so the first fronts differ by their city; won, the
+  host maker puts up three of its machines and one is taken before anything else; lost, the
+  machine left on the tender comes. The quick campaign's first battle follows it. Today's
+  makers field two tier ones or three, so the choice is of one or two until 4-4-2 lands. The
+  runner's plain player loses that first battle in every run as tier one is sized
+  (`docs/campaign_run.md`, 19 November: 40 of 40), so in its hands the fourth always comes
+  off the tender; the won branch is the tests'.
   The campaign runner's player fights alone by the map's defence rule, the floor the reads
   stand on; `--muster` plays the player that gathers (`BattleBot.Rule.MUSTER`: each pack its
   rating's count of the nearest machines, the unsealed boss first), which wins the elite at
@@ -284,8 +290,8 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
      Peak's Bomb as its hard hit on a telegraph, the Marsh's knight and its Serpent's fangs,
      and every outlier of tier one sized into the band. Left: the scorches on every machine
      above tier one.
-   - The first battle as decided (the bible's squad row), in `sim/campaign.gd`, and the
-     campaign bot taking its offer.
+   - The first battle as decided, built 19 November (the bible's squad row). Left: its
+     sizing, his.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
      his picks on RANK AND FILE, HEAT and TOP BASIC: its prices are read from the vanilla he
      settles on.

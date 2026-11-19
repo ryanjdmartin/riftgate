@@ -965,6 +965,19 @@ func default_faction() -> String:
 	return str(factions.keys()[0]) if not factions.is_empty() else ""
 
 
+## The domain a run opens against (its `opening`; Ryan, 19 November: the first battle is the
+## Meadow's, the one battle fought by the draft's three machines, so one domain's first battle
+## alone is sized for a trio): until a run's first battle is fought every rift that opens is its
+## (Campaign._roll_rift; the quick campaign's first battle too). "" when content marks none, and
+## the first rifts roll as any other: the mark is the whole rule, so dropping it is how the
+## first battle from any domain is reopened.
+func opening_faction() -> String:
+	for id in factions.keys():
+		if factions[id].get("opening", false) is bool and bool(factions[id].get("opening", false)):
+			return str(id)
+	return ""
+
+
 ## The distinct foe ids in a faction's spawn list at a tier, in order: rank and file first.
 func spawn_foes(faction_id: String, tier: int) -> Array:
 	var out: Array = []
@@ -3053,6 +3066,7 @@ func _validate_foes(errs: Array[String]) -> void:
 
 func _validate_factions(errs: Array[String]) -> void:
 	_validate_ramp_gates(errs)
+	var opening: Array = []
 	for id in factions.keys():
 		var f: Dictionary = factions[id]
 		var where := "faction %s" % id
@@ -3184,3 +3198,11 @@ func _validate_factions(errs: Array[String]) -> void:
 				# The finale fields the dealt party promoted (the bible's section 9: a job costs
 				# two drawings), so a hero the run may deal needs its class change.
 				errs.append("%s: bench hero %s has no promoted form (an entry whose promotes names it)" % [where, str(h)])
+		# The domain a run opens against (19 November): a mark, and one domain's at most.
+		if f.has("opening"):
+			if not (f["opening"] is bool):
+				errs.append("%s: opening is true or false: the domain a run's first battle is fought against" % where)
+			elif bool(f["opening"]):
+				opening.append(str(id))
+	if opening.size() > 1:
+		errs.append("factions: one domain at most is a run's opening (\"opening\": true); %s are" % ", ".join(opening))
