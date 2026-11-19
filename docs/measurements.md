@@ -11909,3 +11909,27 @@ Read: three of each fits a lone flanker's thirtieth in the Marsh alone, and the 
 the Salamanders, the heavy front-liners, cost a lone machine four and five times it and lose
 it a fight in six and three in ten. With two machines on them every picket is nearly free, so
 a rating of two would ask for a machine it does not need. Not landed: the count is his.
+
+## 19 November: a foe's jam waiting for the reboot
+
+On Ryan's "Lets change Jammed to lasting until Reboot, that closes the cockatrice hole", read
+as a what-if before it was built (the anchor read, every squad of the pool of the fight's
+rating, four seeds; the bot rebooting for a jam that waits when no blow is coming its way or a
+third of its die is dark). Hull a share of a four's; each cell as built, then waiting.
+
+| Fight | Without the Barrier | With the Barrier basic | Reboots a machine, as built and waiting |
+|---|---|---|---|
+| The lone Whisker Cat | | 3.8%, 3.6% | 0.88, 0.92 |
+| The needler thicket (four Cockatrices) | | 8.3%, 9.7% | 0.91, 1.27 |
+| The sandworm's ambush (two) | | 5.7%, 5.6% | 1.24, 1.26 |
+| The Rust Monster | 24.1%, 24.6% | 25.4%, 24.7% | 1.27, 1.46 |
+| Gilgamesh | 18.3%, 18.7% | 7.6%, 8.0% | 1.54, 1.66 |
+| The Wild Hunt | 13.7%, 14.2% | 9.5%, 11.2% | 0.85, 1.09 |
+| The Thunder Ape | 16.5%, 16.6% | 15.9%, 17.4% | 1.02, 1.14 |
+| The Emperor Scorpion | 24.4%, 22.1% | 16.7%, 15.4% | 1.80, 1.94 |
+
+Read: in hull it costs the thicket a point and a half and the rest nothing, since a tier-one
+fight ends in five to eight rounds and a quiet round's reboot clears it; what it changes is the
+reboots, a tenth to a third more a machine. Built the same day as the rule: the reboot's drop
+lights every jammed entry, the die's foot shows the reboot's mark in place of a count, and the
+what-if left with it.

@@ -2333,25 +2333,43 @@ func test_rapid_rolls_again_for_free_and_switches_itself_off_for_the_round() -> 
 	assert_false(sk.mechs[0].face().disabled, "back next round")
 
 
-func test_a_foe_disable_switches_off_the_showing_entry_through_the_next_turn() -> void:
+## A foe's jam waits for its machine's reboot (Ryan, 19 November: "Lets change Jammed to lasting
+## until Reboot, that closes the cockatrice hole"): the entry it shows is dark on every turn after,
+## the die's foot showing the reboot's mark and no count, until the machine reboots, whose drop
+## lights it; the bot weighs a jam in its reboot.
+func test_a_foes_jam_switches_off_the_showing_entry_until_the_reboot() -> void:
 	var sk := Skirmish.new(1)
-	var m := _mech("A", Die.single(Face.attack(30, L)), 0, 200)
+	var m := _mech("A", Die.of([Face.attack(30, L), Face.attack(30, L), Face.attack(30, L)]), 0, 200)
 	sk.add_mech(m)
-	var jammer := Foe.make("cockatrice", 90, 10)
+	var jammer := Foe.make("cockatrice", 900, 0)
 	jammer.actions[0]["keywords"] = ["jam"]
 	sk.add_foes([jammer])
 	sk.begin()
 	sk.start_round()
+	sk.mechs[0].face_index = 0
 	sk.end_round()
+	assert_eq(Effects.jams_waiting(m), 1, "the jam waits for the reboot")
+	sk._suppress(sk.front[0])   # no second jam
 	sk.start_round()
-	assert_eq(sk.mechs[0].face().describe(), "disabled", "the entry comes up blank on the mech's next turn")
+	sk.mechs[0].face_index = 0
+	assert_eq(sk.mechs[0].face().describe(), "disabled", "dark on its next turn")
 	assert_true(sk.targets_for(0).is_empty(), "no targets from a blank")
-	sk.assign(0, sk.front[0])
-	assert_eq(sk.front[0].hp, 90, "spending a blank does nothing")
-	sk._suppress(sk.front[0])   # or it would disable again
+	assert_eq(Effects.dark_rounds(m, 0, sk.round), Effects.DARK_REBOOT, "no count: it waits for the reboot")
+	sk.end_round()
+	sk._suppress(sk.front[0])
+	sk.start_round()
+	sk.mechs[0].face_index = 0
+	assert_eq(sk.mechs[0].face().describe(), "disabled", "and the turn after: no clock lights it")
+	var bot := Policy.make(Policy.GREEDY, 1)
+	assert_true(bot._wants_reboot(sk, sk.mechs[0]), "the bot wants a reboot for a jam, unpressed")
+	assert_true(sk.reboot_mech(0), "the machine reboots")
+	assert_eq(Effects.jams_waiting(m), 0, "the reboot lights the entry")
+	assert_true("\n".join(sk.log).contains("reboot clears 1 jammed entry"), "the log says so")
+	sk._suppress(sk.front[0])   # no jam on the rebooting machine's turn
 	sk.end_round()
 	sk.start_round()
-	assert_eq(sk.mechs[0].face().describe(), "30", "and it is back the turn after")
+	sk.mechs[0].face_index = 0
+	assert_eq(sk.mechs[0].face().describe(), "30", "back, whole, as the round after the reboot opens")
 
 
 func test_the_die_screen_explains_what_applies_to_a_component() -> void:

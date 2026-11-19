@@ -442,7 +442,7 @@
    "id": "jam",
    "category": "keyword",
    "name": "Jam",
-   "codex": "Enemy keyword. The component the target's die is showing is Jammed through the target's next turn: if the die lands on it, it comes up blank.",
+   "codex": "Enemy keyword. The component the target's die is showing is Jammed until the target reboots: if the die lands on it, it comes up blank.",
    "status": "implemented",
    "design": {
     "holes": "Disable until 15 November (Ryan: \"Rename to Jammed\"); the rider follows the pattern, Jam lays Jammed."
@@ -750,7 +750,7 @@
    "id": "jammed",
    "category": "status",
    "name": "Jammed",
-   "codex": "Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's jam lasts through the machine's next turn and can be cleansed; a rapid component's own switch-off ends with the round, and is no jam.",
+   "codex": "Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's jam lasts until the machine reboots and can be cleansed; a rapid component's own switch-off ends with the round, and is no jam.",
    "status": "implemented",
    "design": {
     "holes": "Disabled until 15 November (Ryan: \"Rename to Jammed\"). The engine's own name for an entry switched off, by a jam or by a cooldown, stays disabled.",
@@ -2110,7 +2110,7 @@
    "id": "appropriated",
    "category": "status",
    "name": "Appropriated",
-   "codex": "Ability, Gilgamesh's: the number of the piece he holds. His Collect knocks loose the component a machine's die is showing, Jams it through that machine's next turn, and leaves him Appropriated at its number: a weapon's printed blow, and 1 for anything that is no weapon, a fake. His Borrowed Blade lands that number next round and spends it. One piece at a time, what he takes next replacing it. No Purge reaches it; a Ward on the machine turns the taking away.",
+   "codex": "Ability, Gilgamesh's: the number of the piece he holds. His Collect knocks loose the component a machine's die is showing, Jams it until that machine reboots, and leaves him Appropriated at its number: a weapon's printed blow, and 1 for anything that is no weapon, a fake. His Borrowed Blade lands that number next round and spends it. One piece at a time, what he takes next replacing it. No Purge reaches it; a Ward on the machine turns the taking away.",
    "status": "implemented",
    "design": {
     "holes": "Ryan's mark of 15 November on the steal rider: \"Doesn't need to be it's own rider. It grants Jammed on the target, and Gilgamesh gains Appropriated with the value. The ability should be renamed to Collect.\" Built 16 November as the first move written in steps: a blow that jams, then a step of its own (appropriate). His Ability, a count on his chip that follows what he holds (Ryan, the same day, of the purgeable buff a session had read from \"gains\": \"I think Appropriated is a balance read. Maybe make it his ability, a number that fluctuates depending on what he's currently holding\"). The swing is one strike at the piece's number, whatever strikes the piece had, and no keyword of the piece rides it. The steal rider and the foe's own field for what it held left the engine with it. The text is a session's draft.",

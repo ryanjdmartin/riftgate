@@ -161,7 +161,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    then heat over a machine's maximum burns hull one for one and stays on the gauge, burning
    again every turn it stands there; the first such turn since the machine's last reboot is
    its overheat, and its shield breaks; then each machine's Empowered halves, and a dark entry
-   whose rounds are done lights again (a cooldown, a jam). A rebooting machine has vented as
+   whose rounds are done lights again (a cooldown). A rebooting machine has vented as
    its shield dropped, so it carries nothing to burn, and no rule spares it. One out of reach
    (Phased, Swallowed) neither burns nor overheats, its heat staying for the turn it is back: a Phased
    machine's stacks tick all the same and take nothing, and everything a Swallowed one carries
@@ -187,13 +187,13 @@ landed, lost to a stun or skipped.
   down; Exposed falls, at the turn start after the next one.
 - **Its turn ends**: Ablating and Vitriol take their points and lose a stack; Regenerating
   pays after them and loses one; Empowered halves, rounded down; Scorched and Sapped go; a
-  cooldown and a jam whose rounds are done light again; a Suppress is spent with the turn it
+  cooldown whose rounds are done lights again; a Suppress is spent with the turn it
   cost; Numbed loses a stack, or lands on a foe that lost this turn to a stun.
 - **The round ends**: Phased is granted or lost, Essence Flare goes, a swallow's and a
   golden rage's rounds run, and a web bursts.
 - **It is spent**: the primers by a weapon fired, Spun Up and the Juggernaut Drive by the next
   weapon, Shocked and Cryo by the weapon's hit that cashes them, Undying by its fall, a Mine by
-  its foe's fall, and a pin by the decay it stops.
+  its foe's fall, a pin by the decay it stops, and a foe's jam by its machine's reboot.
 What works in the other side's turn ends as its own turn starts, and what works in its own
 turn ends with it. So a stack gained outside its carrier's turn stands whole for its next
 one, and a chip always shows what the next blows will meet. On a Phased machine every clock
@@ -917,7 +917,9 @@ On a machine:
 - **Scorched** (debuff, from a foe's scorch): every weapon and equipment the machine aims at a
   foe runs 1 hotter a stack, until its turn ends, when every stack goes, so it never piles up.
   Cleansable.
-- **Jammed** (debuff, a foe's jam): the entry comes up blank until the machine's next turn ends.
+- **Jammed** (debuff, a foe's jam): the entry comes up blank until the machine reboots, the
+  reboot's drop lighting it, or a Cleanse lifts it; no clock ends it, and the die's foot shows
+  the reboot's mark on it in place of a count.
 - **Corrupted** (debuff): each spend of the entry bites its owner 3 a stack, shield first,
   no armour off it; lasts the skirmish.
 - **Brittle** (debuff, from a foe's Brittle rider: the World Eater's pin; a foe's Brittle below
@@ -1101,7 +1103,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   Needletail's Quick-turn Avionics Relay, which may reboot after one action whatever its die
   shows (above), the vent taking the heat of what it spent with the rest. A die showing nothing
   lit, every entry jammed or on cooldown, has spent nothing, so its machine may reboot.
-- At once its shield goes to nothing and its heat with it, Overheated's stacks too, and it is
+- At once its shield goes to nothing and its heat with it, Overheated's stacks too, every entry
+  a foe jammed lights, and it is
   free to overheat again; it is Rebooting through the enemy's turn. As the next round opens,
   before the roll and before the foes pick, its shield is whole and Broken is gone. Heat laid
   on it after the vent stays: one vent, as the shield drops. UNDO takes a reboot back like a

@@ -2253,8 +2253,11 @@ func _entry_states(ms: Skirmish.MechState, i: int) -> Array:
 	if Effects.is_entry_disabled(ms.unit, i):
 		# By the clock the die shows along its foot with the turns left (Ryan, 2 November).
 		var dark := Effects.dark_rounds(ms.unit, i, sk.round)
-		out.append([("Jammed" if Effects.cleansable_disable(ms.unit, i) else "On Cooldown") \
-			+ (" (%d turn%s left)" % [dark, "" if dark == 1 else "s"] if dark > 0 else ""), EntryReadout.mark("cooldown", Palette.INK, false)])
+		if dark >= Effects.DARK_REBOOT:
+			out.append(["Jammed until it reboots", EntryReadout.mark("shield_vent", Palette.INK, false)])
+		else:
+			out.append([("Jammed" if Effects.cleansable_disable(ms.unit, i) else "On Cooldown") \
+				+ (" (%d turn%s left)" % [dark, "" if dark == 1 else "s"] if dark > 0 else ""), EntryReadout.mark("cooldown", Palette.INK, false)])
 	return out
 
 

@@ -580,7 +580,10 @@ func cost_marks() -> Array:
 	if face == null or dead:
 		return costs
 	if face.disabled and dark > 0:
-		costs.append(["cooldown", dark, Palette.INK, false])
+		if dark >= Effects.DARK_REBOOT:
+			costs.append(["shield_vent", "", Palette.INK, false])   # a foe's jam: dark until the reboot, its mark and no count
+		else:
+			costs.append(["cooldown", dark, Palette.INK, false])
 		return costs
 	if face.ammo > 0:
 		costs.append(["ammo", face.ammo, Palette.LOSS if face.dry else Palette.SELECT, face.dry])

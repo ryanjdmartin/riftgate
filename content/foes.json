@@ -152,7 +152,7 @@
       "on_death": { "act": { "name": "Scream", "effect": "drain_rerolls", "value": 1, "text": "Pulled up, it screams: the team loses a reroll next round." } },
       "actions": [
         { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "text": "A whip of root for {damage}.", "status": "implemented" },
-        { "id": "shriek", "name": "Shriek", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to wood, through its next turn.", "status": "implemented" }
+        { "id": "shriek", "name": "Shriek", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to wood, until that machine reboots.", "status": "implemented" }
       ],
       "flavour": "Pretty, from a distance. Keep the distance."
     },
@@ -163,7 +163,7 @@
       "hp": 12, "attack": 4, "rank": "front", "movespeed": 3, "role": "flanker",
       "actions": [
         { "id": "claw", "name": "Claw", "kind": "attack", "weight": 2, "text": "A raking claw for {damage}.", "status": "implemented" },
-        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is Jammed through its next turn.", "status": "implemented" }
+        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is Jammed until its machine reboots.", "status": "implemented" }
       ],
       "flavour": "It is not purring. Check your instruments."
     },
@@ -174,7 +174,7 @@
       "hp": 13, "attack": 6, "rank": "front", "movespeed": 3, "role": "flanker",
       "actions": [
         { "id": "claw", "name": "Claw", "kind": "attack", "weight": 2, "text": "A raking claw for {damage}.", "status": "implemented" },
-        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is Jammed through its next turn.", "status": "implemented" }
+        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is Jammed until its machine reboots.", "status": "implemented" }
       ],
       "flavour": "The first one was the kitten."
     },
@@ -185,7 +185,7 @@
       "hp": 16, "attack": 7, "rank": "front", "movespeed": 3, "role": "flanker",
       "actions": [
         { "id": "claw", "name": "Claw", "kind": "attack", "weight": 2, "text": "A raking claw for {damage}.", "status": "implemented" },
-        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is Jammed through its next turn.", "status": "implemented" }
+        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is Jammed until its machine reboots.", "status": "implemented" }
       ],
       "flavour": "You feel the whiskers before you see the cat."
     },
@@ -297,7 +297,7 @@
       "hp": 4, "attack": 3, "rank": "back", "movespeed": 2, "winged": true,
       "actions": [
         { "id": "peck", "name": "Peck", "kind": "attack", "weight": 2, "text": "A beak like a pick, for {damage}.", "status": "implemented" },
-        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" }
+        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, until that machine reboots.", "status": "implemented" }
       ],
       "flavour": "Don't look at it. No, the other way."
     },
@@ -308,7 +308,7 @@
       "hp": 5, "attack": 4, "rank": "back", "movespeed": 2, "winged": true,
       "actions": [
         { "id": "peck", "name": "Peck", "kind": "attack", "weight": 2, "text": "A beak like a pick, for {damage}.", "status": "implemented" },
-        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" },
+        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, until that machine reboots.", "status": "implemented" },
         { "id": "transfix", "name": "Transfix", "kind": "debuff", "effect": "expose", "weight": 1, "when": "others_on_field", "text": "Its stare holds one machine still: it stands Exposed through the next round, its armour counting for nothing and every foe's targeted move turned on it.", "status": "implemented" }
       ],
       "flavour": "It looks at what you are pointing at it. Then that stops working."
@@ -318,10 +318,10 @@
       "design": { "fantasy": "The gorgon, theft of entries by corruption on the back rank. Tier three of the cockatrice line." },
       "codex": "The gaze that corrupts. Its peck leaves the component a machine is showing biting its owner, and its stone switches one off. Its last look is for whoever kills it: the entry that machine shows turns to stone too.",
       "hp": 6, "attack": 5, "rank": "back", "movespeed": 2, "winged": true,
-      "on_death": { "act": { "name": "Dying Gaze", "effect": "jam", "text": "Her gaze outlives her: what her killer's die is showing turns to stone, through its next turn." } },
+      "on_death": { "act": { "name": "Dying Gaze", "effect": "jam", "text": "Her gaze outlives her: what her killer's die is showing turns to stone, until her killer reboots." } },
       "actions": [
         { "id": "peck", "name": "Peck", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "corrupt": 1, "text": "A beak like a pick, for {damage}; the component the machine is showing bites when spent.", "status": "implemented" },
-        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" }
+        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, until that machine reboots.", "status": "implemented" }
       ],
       "flavour": "The Waste takes what you have. This one takes it and leaves it in you."
     },
@@ -791,7 +791,7 @@
       "actions": [
         { "id": "switch", "name": "Switch", "kind": "attack", "weight": 2, "text": "A whip of green wood for {damage}.", "status": "implemented" },
         { "id": "call_of_the_wild", "name": "Call of the Wild", "kind": "buff", "effect": "summon", "foe": "wolf", "count": 2, "weight": 1, "text": "Two dire wolves come to the call, into empty places at once, or into the pool when the line is full.", "status": "implemented" },
-        { "id": "root_snare", "name": "Root Snare", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Roots take the entry its target shows: Jammed through its next turn.", "status": "implemented" }
+        { "id": "root_snare", "name": "Root Snare", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Roots take the entry its target shows: Jammed until its machine reboots.", "status": "implemented" }
       ],
       "flavour": "The wolves do not run from it. They run for it."
     },
@@ -860,7 +860,7 @@
       "codex": "A horned ape that spits lightning. It picks the strongest machine on the field and goes for it: a beam that jams the entry it shows, a rampage of three fists, and a roar that turns its fur gold. Gold, its blows hit harder and it wears a point of armour for three rounds, until a quarter of its HP is knocked out of it; then it staggers. Shield through the gold, or break it.",
       "hp": 54, "attack": 16, "rank": "front", "movespeed": 3,
       "actions": [
-        {"id": "lightning_beam", "name": "Lightning Beam", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["jam"], "text": "A beam of lightning: {damage}, and the entry it shows is Jammed through its next turn.", "status": "implemented"},
+        {"id": "lightning_beam", "name": "Lightning Beam", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["jam"], "text": "A beam of lightning: {damage}, and the entry it shows is Jammed until its machine reboots.", "status": "implemented"},
         {"id": "rampage", "name": "Rampage", "kind": "attack", "strikes": 3, "factor": 0.4, "weight": 2, "text": "A rampage of fists: {damage}, three times.", "status": "implemented"},
         {"id": "golden_rage", "name": "Golden Rage", "kind": "buff", "effect": "golden", "value": 2, "rounds": 3, "weight": 2, "when": "calm", "text": "It roars and its fur goes gold: its blows hit 2 harder and it wears a point of armour for three rounds, until a quarter of its HP is knocked out of it; then it staggers.", "status": "implemented"}
       ],
@@ -873,7 +873,7 @@
       "hp": 64, "attack": 16, "rank": "front", "movespeed": 2,
       "actions": [
         {"id": "rusting_bite", "name": "Rusting Bite", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "corrupt": 1, "before": [{"effect": "dispel", "value": 1}], "text": "A bite that rusts: Purge 1, then {damage}, and the entry it shows is corrupted.", "status": "implemented"},
-        {"id": "antennae", "name": "Antennae", "kind": "debuff", "effect": "jam", "weight": 1, "text": "The antennae brush a machine: the entry it shows is Jammed through its next turn.", "status": "implemented"},
+        {"id": "antennae", "name": "Antennae", "kind": "debuff", "effect": "jam", "weight": 1, "text": "The antennae brush a machine: the entry it shows is Jammed until its machine reboots.", "status": "implemented"},
         {"id": "feed", "name": "Feed", "kind": "defend", "effect": "recover", "value": 6, "weight": 1, "when": "missing_hull", "text": "It feeds on what it bit off: recovers {value} HP.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K, amended: secure your weapons. Appendix N: from this too."
@@ -933,7 +933,7 @@
       "hp": 20, "attack": 8, "rank": "front", "movespeed": 3, "winged": true,
       "actions": [
         {"id": "lance", "name": "Lance", "kind": "attack", "swarm": 1, "weight": 2, "text": "A lance from the Hunt for {damage}: more for every other rider standing.", "status": "implemented"},
-        {"id": "frost", "name": "Frost", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Frost in its wake: {damage}, and the entry it shows is Jammed through its next turn.", "status": "implemented"},
+        {"id": "frost", "name": "Frost", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Frost in its wake: {damage}, and the entry it shows is Jammed until its machine reboots.", "status": "implemented"},
         {"id": "quarry", "name": "Name the Quarry", "kind": "debuff", "effect": "expose", "weight": 1, "when": "others_on_field", "text": "A rider names the quarry: it stands Exposed through the next round, its armour counting for nothing and every foe's targeted move turned on it.", "status": "implemented"}
       ],
       "flavour": "Gate order four, footnote: they are not from the Marsh. They are not from anywhere."
@@ -1004,7 +1004,7 @@
       "hp": 60, "attack": 16, "armour": 1, "rank": "front", "movespeed": 1,
       "actions": [
         {"id": "blade", "name": "Blade", "kind": "attack", "weight": 2, "text": "His own sword, for {damage}.", "status": "implemented"},
-        {"id": "collect", "name": "Collect", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["jam"], "also": [{"effect": "appropriate"}], "then": "borrowed_blade", "text": "Knocks loose what a machine is showing, for {damage}, and takes it: that entry is Jammed through its next turn, and he is Appropriated at its number, to swing next round.", "status": "implemented"},
+        {"id": "collect", "name": "Collect", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["jam"], "also": [{"effect": "appropriate"}], "then": "borrowed_blade", "text": "Knocks loose what a machine is showing, for {damage}, and takes it: that entry is Jammed until its machine reboots, and he is Appropriated at its number, to swing next round.", "status": "implemented"},
         {"id": "borrowed_blade", "name": "Borrowed Blade", "kind": "attack", "power": "appropriated", "weight": 1, "text": "Swings what he took, at its own number; anything that was no weapon is a fake, for 1.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: secure your weapons. Appendix L: he means all of them."
@@ -1038,7 +1038,7 @@
       "codex": "An eye in the Fallen Weapon's blade. While it and its twin stand, the weapon cannot be hurt. Its stare jams what a machine is showing.",
       "hp": 8, "attack": 8, "rank": "front", "movespeed": 1,
       "actions": [
-        {"id": "gaze", "name": "Gaze", "kind": "attack", "weight": 1, "keywords": ["jam"], "text": "A stare that jams what a machine is showing: {damage}, and that entry is Jammed through its next turn.", "status": "implemented"}
+        {"id": "gaze", "name": "Gaze", "kind": "attack", "weight": 1, "keywords": ["jam"], "text": "A stare that jams what a machine is showing: {damage}, and that entry is Jammed until its machine reboots.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: do not meet its eye. It will meet yours."
     },
@@ -1122,7 +1122,7 @@
       "hp": 60, "attack": 10, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "twin_shear", "name": "Twin Shear", "kind": "attack", "strikes": 2, "factor": 0.6, "weight": 2, "text": "The pincers: {damage}, twice.", "status": "implemented"},
-        {"id": "paralytail", "name": "Paralytail", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["jam"], "text": "The tail: {damage}, and the entry it shows is Jammed through its next turn.", "status": "implemented"},
+        {"id": "paralytail", "name": "Paralytail", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["jam"], "text": "The tail: {damage}, and the entry it shows is Jammed until its machine reboots.", "status": "implemented"},
         {"id": "desert_gasp", "name": "Desert Gasp", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["all", "corrupt"], "corrupt": 1, "when": "below_half", "text": "Desert gasp over every machine: {damage} each, and the entry each shows is corrupted.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix W: if the sand moves and there is no wind, it is not the wind."
@@ -1156,7 +1156,7 @@
       "codex": "The orb that spits lightning. Spark Plasma switches off the entry a machine shows; Shine Plasma reaches everyone for less. It dies easily, so it is usually left for last.",
       "hp": 6, "attack": 5, "rank": "back", "movespeed": 2, "tier": 2,
       "actions": [
-        {"id": "spark_plasma", "name": "Spark Plasma", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["jam"], "text": "Spark Plasma: {damage}, and the entry it shows is Jammed through its next turn.", "status": "implemented"},
+        {"id": "spark_plasma", "name": "Spark Plasma", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["jam"], "text": "Spark Plasma: {damage}, and the entry it shows is Jammed until its machine reboots.", "status": "implemented"},
         {"id": "shine_plasma", "name": "Shine Plasma", "kind": "attack", "factor": 0.4, "weight": 1, "keywords": ["all"], "text": "Shine Plasma: {damage} to every machine.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: it hums before it fires. That is the only warning you get."

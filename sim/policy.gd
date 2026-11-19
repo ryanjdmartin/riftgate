@@ -319,6 +319,11 @@ func _wants_reboot(sk: Skirmish, ms: Skirmish.MechState) -> bool:
 	var fc := sk.forecast(ms)
 	var pressed := int(fc["incoming"]) > 0
 	var kept := maxi(0, ms.unit.shield - int(fc["shield_after"]))   # what its shield would take of this round's blows
+	# A foe's jam waits for the reboot (19 November): its entry is dark until the machine
+	# reboots, so a quiet round, or a die a third dark, is the moment.
+	var waiting := Effects.jams_waiting(ms.unit)
+	if waiting > 0 and (blind or not pressed or waiting * 3 >= maxi(1, ms.unit.die.faces.size())):
+		return true
 	if ms.shield_broken:
 		return blind or pressed or ms.heat * 2 >= ms.heat_max
 	var f := ms.face()

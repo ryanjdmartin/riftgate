@@ -2501,6 +2501,39 @@ static func ordinal(n: int) -> String:
 ## rest of the round of the spend and the rounds it prints after it; Rapid's own switch-off, the
 ## rest of the round alone). A foe's jam can be cleansed; a cooldown cannot (it is the
 ## piece's price, and a cleanse that lifted a Rapid piece's would start an infinite turn).
+## The round a foe's jam names as its end: never reached, so only its machine's reboot lights it
+## (Ryan, 19 November: "Lets change Jammed to lasting until Reboot, that closes the cockatrice
+## hole"), or a Cleanse. A cooldown keeps its rounds.
+const JAM_REBOOT := 1 << 29
+## What dark_rounds says of an entry a jam holds until the reboot: no count, the die's foot showing
+## the reboot's mark in its place.
+const DARK_REBOOT := 99
+
+
+## The foes' jams on `u`, each waiting for its reboot: how many entries they hold dark.
+static func jams_waiting(u) -> int:
+	var n := 0
+	for m in u.modifiers:
+		if m.scope == ROUNDS and m.expires_round >= JAM_REBOOT and m.source.begins_with("foe:") \
+				and m.effects.any(func(eff) -> bool: return str(eff.get("effect", "")) == "disable_entry"):
+			n += 1
+	return n
+
+
+## Light every entry a foe's jam holds dark (the reboot's drop): how many.
+static func clear_waiting_jams(u) -> int:
+	var keep: Array = []
+	var n := 0
+	for m in u.modifiers:
+		if m.scope == ROUNDS and m.expires_round >= JAM_REBOOT and m.source.begins_with("foe:") \
+				and m.effects.any(func(eff) -> bool: return str(eff.get("effect", "")) == "disable_entry"):
+			n += 1
+			continue
+		keep.append(m)
+	u.modifiers = keep
+	return n
+
+
 static func disable_entry(u, index: int, source: String, until_round: int) -> Modifier:
 	var cooldown := source == "cooldown"
 	var status := {"id": "disabled_%d" % index, "name": "Cooldown" if cooldown else "Jammed",
@@ -2608,8 +2641,9 @@ static func mine_damage(u) -> int:
 
 
 ## The rounds an entry stays dark, this one included: the latest end of whatever switched it
-## off (a cooldown, a foe's disable) less `round`, plus one; 0 for a lit entry. The die shows
-## it on the dark entry (the cooldown row: dark with the rounds left).
+## off (a cooldown) less `round`, plus one; DARK_REBOOT for one a foe's jam holds, which waits
+## for the reboot; 0 for a lit entry. The die shows it on the dark entry (the cooldown row: dark
+## with the rounds left, or the reboot's mark).
 static func dark_rounds(u, index: int, round: int) -> int:
 	var until := -1
 	for m in live(u):
@@ -2618,6 +2652,8 @@ static func dark_rounds(u, index: int, round: int) -> int:
 		for eff in m.effects:
 			if str(eff.get("effect", "")) == "disable_entry" and int(eff.get("value", -1)) == index:
 				until = maxi(until, m.expires_round)
+	if until >= JAM_REBOOT:
+		return DARK_REBOOT
 	return maxi(0, until - round + 1) if until >= 0 else 0
 
 

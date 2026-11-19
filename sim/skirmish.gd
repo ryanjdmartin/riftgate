@@ -2940,8 +2940,8 @@ func _strike(f: Foe, t: MechState) -> void:
 			_fire_on(t, "ablating_mech", 1, f)
 			log.append("%s, primed, lays Ablating ×1 on %s" % [f.display_name, t.unit.display_name])
 		if f.has_keyword(f.action, "jam") and t.alive() and t.face_index >= 0:
-			# Jam: the entry the die shows is Jammed, switched off through the mech's next turn.
-			Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
+			# Jam: the entry the die shows is Jammed, switched off until the machine reboots.
+			Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, Effects.JAM_REBOOT)
 			log.append("%s jams %s's %s" % [f.display_name, t.unit.display_name, t.die.faces[t.face_index].describe()])
 		if f.has_keyword(f.action, "corrupt") and t.alive() and t.face_index >= 0:
 			# The entry the die shows is corrupted for the fight: it bites when spent.
@@ -4124,11 +4124,11 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			else:
 				_expose_mech(f, t, str(a.get("name", "exposes")))
 		"jam":
-			# The entry the die shows is Jammed, switched off through the machine's next turn, no blow.
+			# The entry the die shows is Jammed, switched off until the machine reboots, no blow.
 			if Effects.has(t.unit, "ward"):
 				log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "hushes")), t.unit.display_name])
 			elif t.face_index >= 0:
-				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, round + 1)
+				Effects.disable_entry(t.unit, t.face_index, "foe:" + f.content_id, Effects.JAM_REBOOT)
 				log.append("%s: %s, %s's %s is jammed" % [f.display_name, str(a.get("name", "hushes")), t.unit.display_name, t.die.faces[t.face_index].describe()])
 		"appropriate":
 			# Gilgamesh's own rule (30 October, the slate's signature: "takes the weapon a machine
@@ -5598,6 +5598,11 @@ func reboot_mech(mech_index: int) -> bool:
 	if Effects.is_sealed(ms.unit):
 		Effects.remove(ms.unit, "sealed")
 		log.append("%s opens as it reboots" % ms.unit.display_name)
+	# Every entry a foe jammed lights (Ryan, 19 November: "Lets change Jammed to lasting until
+	# Reboot"): a jam waits for its machine's reboot, and the drop is that reboot.
+	var lit := Effects.clear_waiting_jams(ms.unit)
+	if lit > 0:
+		log.append("%s's reboot clears %d jammed entr%s" % [ms.unit.display_name, lit, "y" if lit == 1 else "ies"])
 	var vented := ms.heat
 	var shot := release_shot(ms)   # read while it holds its heat
 	ms.heat = 0
