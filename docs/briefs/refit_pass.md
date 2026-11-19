@@ -508,7 +508,7 @@ in its bible row. Until its session a machine plays as it is built. The designs 
 | The design | As its brief has it | Under the rules |
 |---|---|---|
 | The Snowy Owl, Kestrel | No foe picks it while it carries no heat as the foes pick | Its heat returns to nothing only by a reboot or by Cryo's cooling, so the Cryo lean carries the design, and the round after a reboot it is unseen |
-| The line frame, Aphelion, tier 1 | Its combo pays in cooling and regen by the count; a turn with no weapon breaks it | Its payoffs are two of the few grants of cooling and regen. A reboot is a turn with no weapon, so it costs the whole ramp |
+| The Macaque, Aphelion, tier 1 | Its combo pays in cooling and regen by the count; a turn with no weapon breaks it | Its payoffs are two of the few grants of cooling and regen. A reboot is a turn with no weapon, so it costs the whole ramp |
 | The gunship, Wainwright & Sutler, tier 2 | Its Ballistic guns raise its armour and cooling, its Beams its shield and recharge | The one machine that fits its own cooling and regen, paid in hardpoints: those rows are worth more than any other |
 | Misharu, Arsenal, tier 2 | As drafted, a foe whose blow breaks a shield is punished and every shield on the team is bait | A shield breaks once between reboots and a Broken one takes no bait. His direction of 6 November, marks and delayed judgement, stands apart from the draft |
 | Mastema, Arsenal, tier 3 | It sets its own allies alight, shields by the burning count and moves the fire to a foe | Burn is Ablate: what it lays on an ally wears a shield that does not mend, then hull. Its Screen needs a live shield |

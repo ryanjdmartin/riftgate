@@ -466,7 +466,7 @@ const STATUS := {
 	# form from 12 to 15 November.
 	"essence_flare": {"id": "essence_flare", "name": "Essence Flare", "description": "No Empowered decays this round, its own or any other unit's, on either side.", "stacking": "renew", "single": true,
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "hold_all", "value": "overcharged"}]},
-	# The line frame's offhand (Ryan, 19 November: "Only its offhand swaps"; "It cycles after a
+	# The Macaque's offhand (Ryan, 19 November: "Only its offhand swaps"; "It cycles after a
 	# spend"; "remove the manual weapon cycle"): the form its offhand holds, the machine's own Ability.
 	# The fight opens on its passive's first form and every spend of a weapon or equipment at a foe
 	# turns it to the next (Skirmish._turn_offhand). A form is content's, an `offhand` effect on the
@@ -641,7 +641,7 @@ const ROUND_HOLDERS := {"overcharged": "essence_flare"}
 ## sealed (the Polar Bear's Lockdown, 9 November): the machine wears its seal (is_sealed), so a
 ## grant holds only in the sealed form; with an `entry` beside it (any effect may carry one: a
 ## component id) it holds on that piece's entries alone.
-## weapon (the line frame's Aile Booster, Ryan, 19 November: "Next weapon fired gains Indirect
+## weapon (the Macaque's Aile Booster, Ryan, 19 November: "Next weapon fired gains Indirect
 ## reach"): the entry is a weapon, so a status that waits on the next weapon fired reaches none of
 ## the machine's equipment while it stands.
 ## first_blow (the Parry's return, Ryan, 19 November: "Can we change it to 'next strike'
@@ -1522,7 +1522,7 @@ static func granted_numbers(u, face: Face, target = null) -> Dictionary:
 
 
 ## The numbers a live grant adds to a numbered keyword's own (`adds` beside `number` on a
-## grant_keyword: the line frame's Beam Bazooka, Ryan, 19 November, "Each strike gains Spread 2 and
+## grant_keyword: the Macaque's Beam Bazooka, Ryan, 19 November, "Each strike gains Spread 2 and
 ## Penetrate 2"; "Two spreads on the same weapon would combine"), keyword -> what every such grant
 ## adds, summed: a Spread 1 gun under it is a Spread 3, one with none a Spread 2. A grant that
 ## replaces (the drum's shape) is granted_numbers'.
@@ -1543,7 +1543,7 @@ static func added_numbers(u, face: Face, target = null) -> Dictionary:
 	return out
 
 
-## The offhand's forms (the line frame's, Ryan, 19 November): its passive's `offhand` effects, in
+## The offhand's forms (the Macaque's, Ryan, 19 November): its passive's `offhand` effects, in
 ## their order, each later grant in a slot standing in the place of the one it replaces (a branch's
 ## step: the Beam Saber in the Beam Sword's), so the cycle keeps its order whatever is upgraded.
 ## Each is {name, description, riders}: what its chip says and the effects it carries.
@@ -1707,7 +1707,7 @@ static func buff_rewrite(u, face: Face) -> String:
 ## ...]: what the piece prints (Face.self_statuses: the Hardlight Pulse's Hardened Light, 18
 ## November) and what a live effect adds to it (self_status, static, scoped to its piece by
 ## `entry`, its `when` honoured: the Storm Petrel's branches; on every weapon and equipment it aims
-## at a foe when it names no piece: the line frame's offhand, its Beam Shield's Armoured 2). Each
+## at a foe when it names no piece: the Macaque's offhand, its Beam Shield's Armoured 2). Each
 ## status once: its stacks the most any grant says, a stack set for every foe the spend reached if
 ## any says per_foe, beside the flat stacks any `plus` says (the Beam Pavise's "Gain 1 Armoured,
 ## plus 1 Armoured for every foe struck"), and its cap the highest any names (0 for none), so a

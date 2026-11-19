@@ -61,7 +61,7 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1350 tests, 385,803 checks, green (19 November, the line frame's kit landed on
+- Tests: 1350 tests, 385,803 checks, green (19 November, the Macaque's kit landed on
   `ccr-64b5deec-lunnff`, over main's Buzzard and the Pilgrim's knife). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
@@ -131,10 +131,10 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   numbers warrant one (the rules' Branches; `docs/locked_pieces_proposal.md`; the bible's
   locked and tiers rows): the Storm Petrel carries the first two, the Buzzard two more, the
   harness's UPG line fields a build, and a run buys none yet. A step may tweak as many pieces as
-  it needs (Ryan, 19 November); the line frame's second steps touch its offhand and its Aile
+  it needs (Ryan, 19 November); the Macaque's second steps touch its offhand and its Aile
   Booster. An upgraded piece wears a chevron a step under its place, on the die and down the
   codex, and takes the name its step gives it (the Aile Blitzer); `RIFTGATE_TEAM` fields picks
-  in a standalone fight (`line_frame@duelist+duelist`). The machines the reboot broke
+  in a standalone fight (`macaque@duelist+duelist`). The machines the reboot broke
   are another session's line (`docs/reboot_machines_proposal.md`, read with
   `tools/reboot_probe.gd`): the Storm Petrel landed from it on 17 November and took Ryan's
   shape of the 18th (no shield armour on its passive; its Hardlight Pulse lays Hardened Light,
@@ -145,12 +145,12 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   the Kite, the Puffin, the Swallowtail and the Needletail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis, the Polar Bear
   (a reboot opens its seal), the Whip Scorpion (its reboot's vent blasts every foe), the
-  Lammergeier, the Wild Boar, the Baboon, the Stingray, and the line frame, landed 19 November
+  Lammergeier, the Wild Boar, the Baboon, the Stingray, and the Macaque, landed 19 November
   on `ccr-64b5deec-lunnff` from Ryan's kit (Aphelion's agile duelist at tier one: its offhand
   cycles the Beam Rifle, the Beam Sword and the Beam Shield after every spend at a foe, a rider
   on what it aims at foes, its Aile Booster a Rapid lunge to Indirect; Duelist and Valkyrie its
   directions, the Parry the Duelist's capstone, its return on the next strike alone; its
-  designation Ryan's, its name a working draft, the bible's section 12). The Giant Petrel's kit, the Musk Ox
+  name and designation Ryan's, the Macaque "for now", Capuchin held for a gentler walker). The Giant Petrel's kit, the Musk Ox
   and the gunship are unfinished by his own notes. Four tier ones a maker (4-4-2) is his lean
   (the refit brief's section 13); the six certain ones are the Honey Badger, the Skua, the
   Storm Petrel, the Prairie Dog, the Cassowary and the Cottonmouth, and Minerva's four are his
@@ -240,7 +240,7 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Minerva's vent, the Polar Bear's (16 and 17 November). The Mole is a model, its look his
   ("looks great", 18 November; the brief's look item), with two status forms, Burrowed and
   Drill Out: a form may let others go as it is held (`releases`), as the statuses would end, so
-  a burrow docks a drill that is out. The line frame is a model from its third look round,
+  a burrow docks a drill that is out. The Macaque is a model from its third look round,
   reworked on Ryan's notes of 19 November: its main hand a mount over its fist, its offhand
   carrying the rifle, the blade and the kite of light, the last two made of light (`b.beams`),
   seen only while lit. In a fight it holds its offhand's armament (a form a slot, held while its
@@ -339,11 +339,11 @@ publish; the commands are in `README.md`.
   Designs and Text inventories, the pins and foes manifests, the Goblin Warchief's sprite, the
   Storm Petrel's sidecar, and the Badger's and the Wild Boar's models and sidecars with their
   Minervan vents). The page itself was unchanged.
-  The Buzzard and the line frame, landed after that publish, are not up: their content (the
-  Buzzard's passive, branches and cannon's id; the line frame whole, its Aile Booster and its
+  The Buzzard and the Macaque, landed after that publish, are not up: their content (the
+  Buzzard's passive, branches and cannon's id; the Macaque whole, its Aile Booster and its
   terms), their texts, and their models and sidecars (the Shield-burner Cannon in the shield's
-  light; the line frame's held armaments and dash) go up with the next, and the motion script's
-  parts made of light (`tools/hangar_motion.js`, the line frame's beams).
+  light; the Macaque's held armaments and dash) go up with the next, and the motion script's
+  parts made of light (`tools/hangar_motion.js`, the Macaque's beams).
   `build/hangar/designs.json` is one 795 KB line: write it indented before reading it whole.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their

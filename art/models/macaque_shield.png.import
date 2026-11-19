@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dh8f86oyyog1m"
-path="res://.godot/imported/line_frame_light.png-ee9774136fdcb6785e33301b298d7a3f.ctex"
+uid="uid://dob6smd31lc1f"
+path="res://.godot/imported/macaque_shield.png-b7b54a1d2461ebda756cedef33aae402.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "81df89aa366636e4db137741a537774a"
+"md5": "17f8a684906f3157a7eb731bddca401e"
 }
 
 [deps]
 
-source_file="res://art/models/line_frame_light.png"
-dest_files=["res://.godot/imported/line_frame_light.png-ee9774136fdcb6785e33301b298d7a3f.ctex"]
+source_file="res://art/models/macaque_shield.png"
+dest_files=["res://.godot/imported/macaque_shield.png-b7b54a1d2461ebda756cedef33aae402.ctex"]
 
 [params]
 

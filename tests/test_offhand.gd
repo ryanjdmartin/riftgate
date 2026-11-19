@@ -1,6 +1,6 @@
 extends TestCase
 
-## The line frame's engines (Ryan, 19 November), on synthetic passives and entries: an offhand whose
+## The Macaque's engines (Ryan, 19 November), on synthetic passives and entries: an offhand whose
 ## forms cycle, a rider on every weapon and equipment its machine aims at a foe ("It cycles after a
 ## spend"), each form's rider (a blow on the foe to the right with every strike, beside an area's; a
 ## hit again on the target after every strike for its share of the strike's blow, rounded down; a

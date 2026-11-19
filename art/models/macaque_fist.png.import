@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dnf4tgk02o7oy"
-path="res://.godot/imported/line_frame_glass.png-15cce401418c1ee5d9debd2dd443d04c.ctex"
+uid="uid://d16tb3p0bs3wc"
+path="res://.godot/imported/macaque_fist.png-51bb671212d9d496dd5bf621dca2f04d.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "4cffc5b768b5bb874aa2bc560ae1314e"
+"md5": "425bea06c41481ca4a5fb5cd65454410"
 }
 
 [deps]
 
-source_file="res://art/models/line_frame_glass.png"
-dest_files=["res://.godot/imported/line_frame_glass.png-15cce401418c1ee5d9debd2dd443d04c.ctex"]
+source_file="res://art/models/macaque_fist.png"
+dest_files=["res://.godot/imported/macaque_fist.png-51bb671212d9d496dd5bf621dca2f04d.ctex"]
 
 [params]
 

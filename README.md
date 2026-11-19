@@ -403,7 +403,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 
 ```sh
 # What a standalone run fields
-#   RIFTGATE_TEAM=badger,clydesdale,kite,baboon   the team (the standalone skirmish and battle screens); in a skirmish an id may carry its branch picks, line_frame@duelist+duelist
+#   RIFTGATE_TEAM=badger,clydesdale,kite,baboon   the team (the standalone skirmish and battle screens); in a skirmish an id may carry its branch picks, macaque@duelist+duelist
 #   RIFTGATE_FOES=warrior,goblin:3,cleric         the skirmish's foes by id and count, heroes included
 #   RIFTGATE_BOSS=1                               adds the faction's boss to the skirmish
 #   RIFTGATE_COLUMNS=4                            the width of the skirmish's formation
@@ -440,7 +440,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 # A thing fired constantly, to judge it running (=1 unless a value is shown)
 #   RIFTGATE_FEED_DEBUG       the skirmish feed's analysis events and the ground tears (any run)
 #   RIFTGATE_PULSE_DEBUG      END TURN pulsing, on the map and in a fight (any run)
-#   RIFTGATE_SEAL_DEBUG       a model's form held and let go in turn: the Polar Bear's seal, the Clydesdale's batteries, the line frame's armaments one at a time (any run)
+#   RIFTGATE_SEAL_DEBUG       a model's form held and let go in turn: the Polar Bear's seal, the Clydesdale's batteries, the Macaque's armaments one at a time (any run)
 #   RIFTGATE_ACT_DEBUG        one foe after another lit as the acting foe (skirmish)
 #   RIFTGATE_RAGE_DEBUG       the rage meter filling and emptying on the machine that banks it (skirmish)
 #   RIFTGATE_PREY_DEBUG       the predator sense kept on (skirmish)
@@ -477,7 +477,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 
 ```sh
 # the machines from their code (tools/lowforge/models_low.py), then the import
-tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger kite clydesdale baboon polar_bear wild_boar prairie_dog dingo buzzard nemesis ammit stingray puffin funnel_web skua needletail storm_petrel giant_petrel musk_ox cassowary cottonmouth swallowtail whip_scorpion mole line_frame
+tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger kite clydesdale baboon polar_bear wild_boar prairie_dog dingo buzzard nemesis ammit stingray puffin funnel_web skua needletail storm_petrel giant_petrel musk_ox cassowary cottonmouth swallowtail whip_scorpion mole macaque
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build cache_derelict cache_carcass cache_relic
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes   # the silhouette classes a swapped component wears, in every maker's metal
@@ -489,7 +489,7 @@ BPY_PYTHON=.bpy/bin/python tools/spriter/.venv/bin/python tools/lowforge/forge.p
 tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /tmp/badger.glb   # a rebuild's geometry against the committed file
 # Joints, acts, gaits, counts, spins, hidden mounts and launches are code in models_low.py
 # (`b.joint`, `b.act`, `b.gait`, `b.count`, `b.spin`, `b.pin`, `b.launch`); all of it lands in
-# art/models/<id>.rig.json. `b.beams` names lit parts made of light (the line frame's blades and
+# art/models/<id>.rig.json. `b.beams` names lit parts made of light (the Macaque's blades and
 # kites of light): unseen at rest, shown while an act or a form lights them over their rest.
 # A machine's own way down is `b.death(seconds, tracks, body=, glow=, ease=, hang=, plant=)` at the
 # end of its recipe, in place of the slump (the bible's death row; act_shot's "lose 3" shows it).

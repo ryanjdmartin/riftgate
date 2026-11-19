@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c7fg5afmdel5t"
-path="res://.godot/imported/line_frame_dark.png-38ce2fc88c2e480868323937d758f3b8.ctex"
+uid="uid://588hsj1rrfor"
+path="res://.godot/imported/macaque_dark.png-c4e9fcd8a9afa687a0af35dbaa073e97.ctex"
 metadata={
 "vram_texture": false
 }
@@ -13,8 +13,8 @@ generator_parameters={
 
 [deps]
 
-source_file="res://art/models/line_frame_dark.png"
-dest_files=["res://.godot/imported/line_frame_dark.png-38ce2fc88c2e480868323937d758f3b8.ctex"]
+source_file="res://art/models/macaque_dark.png"
+dest_files=["res://.godot/imported/macaque_dark.png-c4e9fcd8a9afa687a0af35dbaa073e97.ctex"]
 
 [params]
 

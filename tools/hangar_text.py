@@ -298,7 +298,7 @@ def content_slots():
         form_slots(key, e["id"], "passive.effects", p.get("effects"), "passive", owner, group, sh, wy)
 
     def form_slots(key, entry, at, effects, kind, owner, group, shown, why):
-        """An offhand's forms (the line frame's, 19 November): each form's name, on its chip and
+        """An offhand's forms (the Macaque's, 19 November): each form's name, on its chip and
         the die's rider, and its line, the rider as the player reads it; a step's forms as upgrades,
         and the name a step gives the piece it upgrades (the Aile Blitzer), on the die's readout."""
         for i, eff in enumerate(effects or []):

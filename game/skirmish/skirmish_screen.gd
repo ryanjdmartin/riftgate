@@ -382,7 +382,7 @@ func _ready() -> void:
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks): two
 ## chained packs of the first faction in content. RIFTGATE_TEAM=badger,clydesdale,kite,baboon overrides the team,
-## and an id may carry its branch picks for a look (`line_frame@duelist+duelist`, as the harness's UPG fields them);
+## and an id may carry its branch picks for a look (`macaque@duelist+duelist`, as the harness's UPG fields them);
 ## RIFTGATE_BOSS=1 adds the faction's boss as a third unit; RIFTGATE_COLUMNS=4 widens the formation.
 static func _default_skirmish() -> Skirmish:
 	var db := ContentDB.load_default()
@@ -1305,7 +1305,7 @@ func _refresh(save: bool = true) -> void:
 		d.set_face(sf, sk.shown_number_text(ms, sf))   # and the number the blow will deal
 		d.ricochet = _ricochets(ms, sf) if not ms.assigned and ms.alive() else 0   # the strikes of 1 its Ricochet adds after each shot
 		var held := _offhand_of(ms, sf) if not ms.assigned and ms.alive() else []
-		d.offhand = str(held[0]) if not held.is_empty() else ""   # its offhand's armament riding it (the line frame's)
+		d.offhand = str(held[0]) if not held.is_empty() else ""   # its offhand's armament riding it (the Macaque's)
 		d.parry = _parry_of(ms, sf) if not ms.assigned and ms.alive() else 0   # its Parry's return on the next strike
 		d.upgrades = Effects.steps_on(ms.unit, ms.die.faces[ms.face_index]) if ms.face_index >= 0 and ms.face_index < ms.die.faces.size() else 0   # a chevron each step taken on the piece showing
 		d.zap_cost = _zap_cost(ms, sf) if not ms.assigned and ms.alive() else 0   # the shield its zap will pay (the Buzzard's)
@@ -1589,7 +1589,7 @@ static func _parry_of(ms: Skirmish.MechState, f: Face) -> int:
 
 
 ## The armament its machine's offhand holds, riding the entry when it is a weapon or equipment aimed
-## at a foe (the line frame's, 19 November): [its name, its line], empty for anything else. The die's
+## at a foe (the Macaque's, 19 November): [its name, its line], empty for anything else. The die's
 ## passive box and the readout's line read it.
 static func _offhand_of(ms: Skirmish.MechState, f: Face) -> Array:
 	return Effects.held_form_line(ms.unit) if ms != null and f != null and f.is_attack() else []

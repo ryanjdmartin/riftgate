@@ -97,7 +97,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   itself, then Chain 3 and Charged 2. The Buzzard's, a tier two's single pick: Sustain, on its
   passive, its zap adding 3 for the same 2 shield and every foe that falls laying Regenerating 2
   on it in place of the 2 shield; Burst, on its Shield-burner Cannon, Spread 2 and Penetrate 2 and
-  its own number 2 higher. The line frame's, a tier one's, each touch its offhand's forms (a form
+  its own number 2 higher. The Macaque's, a tier one's, each touch its offhand's forms (a form
   a step names takes its slot's place in the cycle) and its second steps its Aile Booster too:
   Duelist, the Beam Sword's slot holding the Beam Saber, then the shield's the Beam Buckler and the
   Booster granting Aile Blitz; Valkyrie, the rifle's slot holding the Beam Bazooka, then the shield's
@@ -687,7 +687,7 @@ fire never spends a Charged it has just laid; a stack set for every foe the spen
 it says so, a foe its Spread reaches among them, beside any flat stacks it names; never past the
 most it names, the highest of the piece's own and its branches'. A buff may lay a status on its
 own spender beside its grant where its piece says so (the Aile Assaulter's Empowered); a Barrier
-laid this way is gained as any other is. **The offhand** (the line frame's passive): its offhand
+laid this way is gained as any other is. **The offhand** (the Macaque's passive): its offhand
 holds one form of a cycle at a time, the Beam Rifle, the Beam Sword or the Beam Shield, an
 Ability under the form's name, and every fight opens on the first. The form is a rider on every
 weapon and equipment the machine aims at a foe, and every such spend turns it to the next, the
@@ -705,7 +705,7 @@ it. A Ricochet's hits come after the spend's strikes and set off neither. On equ
 and the sword's blows deal nothing and their riders land, as an area on equipment does. The shield: once the spend is done, Armoured 2 on its machine. Upgraded
 forms: the Beam Buckler grants Barrier, Ward and Parry (below); the Beam Bazooka gives each strike
 Spread 2 and Penetrate 2, added to any the weapon carries; the Beam Pavise grants 1 Armoured and 1
-more for every foe the spend struck, its area's included. **The Aile Booster** (the line frame's,
+more for every foe the spend struck, its area's included. **The Aile Booster** (the Macaque's,
 Rapid, on itself, heat 1): it grants Aile Boost; its Duelist II makes it the Aile Blitzer,
 granting Aile Blitz, and its Valkyrie II the Aile Assaulter, granting Aile Assault (Buffs, below). **The spill** (the Overrun Gearing's, a Minerva module, on
 every weapon its machine fires): damage past the kill of a front-rank foe
@@ -1023,11 +1023,11 @@ On a foe:
   end of the player's turn. A foe's Ward turns it away; a Cleanse clears it from a machine.
 - **Juggernaut Drive** (buff, the Wild Boar's passive waiting): gained as it gains a Barrier, one at a time; its
   next weapon attack ignores armour and lifts it, equipment leaving it standing. A purge takes it.
-- **Aile Boost**, **Aile Blitz**, **Aile Assault** (buffs, the line frame's Aile Booster and its
+- **Aile Boost**, **Aile Blitz**, **Aile Assault** (buffs, the Macaque's Aile Booster and its
   branches'): one at a time, carried between turns until the next weapon its machine fires, which
   reaches as Indirect for every strike of its spend and lifts it, equipment reaching as its own and
   leaving it standing. Aile Blitz's weapon ignores armour too.
-- **Parry** (buff, the line frame's Beam Buckler): through the round it is gained, what a Barrier
+- **Parry** (buff, the Macaque's Beam Buckler): through the round it is gained, what a Barrier
   and its machine's armour keep off foes' blows is counted (the whole blow a Barrier takes, what
   armour takes off what passes the shield; never what the shield soaks). As its machine's next turn
   starts it goes, and half of that count, rounded down, stands under the same name as its next

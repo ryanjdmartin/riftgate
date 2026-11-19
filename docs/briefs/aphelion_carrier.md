@@ -60,7 +60,7 @@ unless marked Ryan's, and the numbers are the proposal's placeholders.
 
 ## The Aphelion session, first round (15 to 20 October)
 
-Opened by Ryan on 15 October with the line frame, the Baboon and the jellyfish (its record is
+Opened by Ryan on 15 October with the Macaque, the Baboon and the jellyfish (its record is
 in `git show e285ff51:docs/briefs/aphelion_line_frame.md`): Claude's proposal in chat that day, Claude's review of it on 16
 October at Ryan's ask, written down on 20 October. Ryan's call on the battlecruiser came the
 same day (above, under What stands); everything else here is Claude's, for him to move, and

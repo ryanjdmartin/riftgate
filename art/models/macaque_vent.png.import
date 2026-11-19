@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://p2822uoyr6e6"
-path="res://.godot/imported/line_frame_fist.png-491d93aede28a5459536b951607639e1.ctex"
+uid="uid://cnkt5s61otstl"
+path="res://.godot/imported/macaque_vent.png-f220dbab6ec716ccb45c8367e385bcc5.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "425bea06c41481ca4a5fb5cd65454410"
+"md5": "088393a312e977352c7ad24051c07525"
 }
 
 [deps]
 
-source_file="res://art/models/line_frame_fist.png"
-dest_files=["res://.godot/imported/line_frame_fist.png-491d93aede28a5459536b951607639e1.ctex"]
+source_file="res://art/models/macaque_vent.png"
+dest_files=["res://.godot/imported/macaque_vent.png-f220dbab6ec716ccb45c8367e385bcc5.ctex"]
 
 [params]
 

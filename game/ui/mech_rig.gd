@@ -828,7 +828,7 @@ func form_held(name: String) -> bool:
 	return bool(_form_on.get(name, false))
 
 
-## The forms named for an offhand's slot (the line frame's armament: offhand_rifle, offhand_sword,
+## The forms named for an offhand's slot (the Macaque's armament: offhand_rifle, offhand_sword,
 ## offhand_shield), held while the offhand's form up is in that slot.
 const OFFHAND_FORM := "offhand_"
 
@@ -1098,7 +1098,7 @@ func tick(delta: float) -> void:
 	# every one and lets it go in turn.
 	if form_debug and not forms.is_empty():
 		_form_debug_t += delta
-		# Forms that let each other go (the line frame's armaments, the Mole's burrow and drill) are
+		# Forms that let each other go (the Macaque's armaments, the Mole's burrow and drill) are
 		# held one at a time, each in turn and then none; any other is held and let go with the rest.
 		var names: Array = forms.keys().filter(func(n) -> bool: return str(n) != DEATH)
 		if names.any(func(n) -> bool: return not (forms[n].get("releases", []) as Array).is_empty()):
@@ -2811,7 +2811,7 @@ func _light_to(m: StandardMaterial3D, base: float, multiple: float) -> void:
 		(h as ShaderMaterial).set_shader_parameter("presence", clampf((multiple - 1.0) / HALO_FULL, 0.0, 1.0))
 
 
-## The parts made of light a sidecar names (`beams`; Ryan, 16 November, of the line frame: "beam
+## The parts made of light a sidecar names (`beams`; Ryan, 16 November, of the Macaque: "beam
 ## blades mounted on its forearms, that can turn on and off", "a shield made of light"): each lit
 ## material of every mesh a beam labels and the meshes it lights, every one hidden, since a part made
 ## of light is unseen at its light at rest; _light_to shows it while a glow lights it over that

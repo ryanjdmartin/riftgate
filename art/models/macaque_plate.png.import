@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://56lp8bok8q8"
-path="res://.godot/imported/line_frame_missile.png-911ad004992275be53284408e220ba7e.ctex"
+uid="uid://d0ck465ok2i6b"
+path="res://.godot/imported/macaque_plate.png-492109d9ca1e377c564612c4a221cf46.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "69bd46e9c14c7ab47022b0f50c90e6cb"
+"md5": "816ae361b13a25f61b81237d73da26fb"
 }
 
 [deps]
 
-source_file="res://art/models/line_frame_missile.png"
-dest_files=["res://.godot/imported/line_frame_missile.png-911ad004992275be53284408e220ba7e.ctex"]
+source_file="res://art/models/macaque_plate.png"
+dest_files=["res://.godot/imported/macaque_plate.png-492109d9ca1e377c564612c4a221cf46.ctex"]
 
 [params]
 

@@ -104,7 +104,7 @@ already names "variable geometry".
    (`aphelion_carrier.md`).
 8. **The look.** Kestrel's Needletail has two modes in its look queue (wings that fold up to hover,
    or a tail-sitter on its boosters), so the two silhouettes must part, as the two Gundams must.
-   The line frame is Aphelion's other humanoid homage.
+   The Macaque is Aphelion's other humanoid homage.
 
 ## Open for the session
 

@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://mcssmeoq6gle"
-path="res://.godot/imported/line_frame_stripe.png-91506dd9b72430b635e6d229fead573a.ctex"
+uid="uid://bojtk6p5n6kfx"
+path="res://.godot/imported/macaque_glass.png-114f5a9e66f6f0cb72056fef834bbb2c.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "4167136f9a67a9a30bf3b65cc83ede5a"
+"md5": "4cffc5b768b5bb874aa2bc560ae1314e"
 }
 
 [deps]
 
-source_file="res://art/models/line_frame_stripe.png"
-dest_files=["res://.godot/imported/line_frame_stripe.png-91506dd9b72430b635e6d229fead573a.ctex"]
+source_file="res://art/models/macaque_glass.png"
+dest_files=["res://.godot/imported/macaque_glass.png-114f5a9e66f6f0cb72056fef834bbb2c.ctex"]
 
 [params]
 

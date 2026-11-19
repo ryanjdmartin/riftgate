@@ -43,9 +43,9 @@ const AREA_ROW := 1      # beside the target in its rank: Spread's, Splash's
 const AREA_COLUMN := 2   # the other rank of its column: Penetrate's, Splash's
 const AREA_ALL := 3      # any other foe a reach over every foe adds: nothing
 const AREA_CHAIN := 4    # every other Shocked foe on the field: Chain's conductors (28 October)
-const AREA_SIDE := 5     # the foe to the right of the target in its rank: the line frame's Beam Rifle's blow, beside any area's (19 November)
+const AREA_SIDE := 5     # the foe to the right of the target in its rank: the Macaque's Beam Rifle's blow, beside any area's (19 November)
 ## A spend's hits in the order they land (_hit): the entry's strikes, the sword's hit again after
-## each (the line frame's Beam Sword, 19 November), and a Ricochet's after them all.
+## each (the Macaque's Beam Sword, 19 November), and a Ricochet's after them all.
 const HIT_STRIKE := 0
 const HIT_AGAIN := 1
 const HIT_BOUNCE := 2
@@ -95,7 +95,7 @@ class MechState:
 	var shield_broken: bool = false # its shield has stood at nothing since its last reboot: it gains none by any method until the reboot's recovery
 	var overheated: bool = false    # it has overheated since its last reboot: one overheat, and one shield broken by it, between reboots
 	var killed_round: bool = false  # an attack of its own killed this round: what its passive reads as the round ends (on_round_kill: the Ammit's flare)
-	var offhand: int = -1           # the form its offhand holds, by its place in the cycle (Effects.offhand_forms: the line frame's); -1 for none
+	var offhand: int = -1           # the form its offhand holds, by its place in the cycle (Effects.offhand_forms: the Macaque's); -1 for none
 	var parried: int = 0            # what a Barrier and its armour have kept off foes' blows while its Parry stands this round (the Beam Buckler's)
 
 	## The heat it carries past its maximum, a stack a point (the reboot's Overheated).
@@ -377,7 +377,7 @@ func begin() -> void:
 	# Passives that fire once as the fight begins.
 	for ms in live_mechs():
 		_fired(ms, Effects.fire(ms.unit, "on_skirmish_start"), "as the fight begins")
-	# The offhand (the line frame's, Ryan, 19 November): every fight opens on its first form.
+	# The offhand (the Macaque's, Ryan, 19 November): every fight opens on its first form.
 	for ms in live_mechs():
 		_take_up_form(ms, 0)
 
@@ -2455,7 +2455,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				for id in ["aile_boost", "aile_blitz", "aile_assault", "parry_strike"]:
 					if Effects.remove(ms.unit, id):
 						log.append("%s: its %s is spent" % [ms.unit.display_name, str(Effects.STATUS[id]["name"])])
-			# The offhand turns (the line frame's, Ryan, 19 November: "It cycles after a spend"; the
+			# The offhand turns (the Macaque's, Ryan, 19 November: "It cycles after a spend"; the
 			# spends that carry its rider, his answer that day): every weapon and equipment spent at a
 			# foe takes its next form up, a Rapid second spend riding the form after.
 			if target != null and ms.alive():
@@ -3326,7 +3326,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	# spend.
 	var hit := reached_by(f, target)
 	var shapes := area_shapes(f, target)   # the shape each foe past the target stands in, for its number
-	# The offhand's riders (the line frame's, Ryan, 19 November; "I had intended for everything to
+	# The offhand's riders (the Macaque's, Ryan, 19 November; "I had intended for everything to
 	# apply riders"): the rifle's blow on the foe to the right of the target with every strike, its
 	# own blow beside an area's ("Two spreads on the same weapon would combine, but the rifle buff is
 	# a different form"), and the sword's hit again on the target after every strike, its number the
@@ -4036,7 +4036,7 @@ static func _foe_reads(f: Face, reads: Dictionary, foe: Foe, first: bool) -> int
 	return int(r[0]) + (int(r[1]) * f.per_consumed if first else 0)
 
 
-## The rifle's blow on the foe to the right of a strike's target (the line frame's Beam Rifle, Ryan,
+## The rifle's blow on the foe to the right of a strike's target (the Macaque's Beam Rifle, Ryan,
 ## 19 November: "Each strike also strikes the foe to the right for 2"; "The rifle is half of a
 ## Spread"), before the foe's own reads, statuses and armour: its number with `prints` (what the
 ## entry prints from its firer), a split's halving of that base, through the firer's pipeline with
@@ -5260,7 +5260,7 @@ func _self_grants(ms: MechState, f: Face, reached: int) -> void:
 			_fired(ms, Effects.fire(ms.unit, "on_barrier"), "as it gains a Barrier")   # gaining a Barrier, whatever lays it (the Beam Buckler's)
 
 
-## The offhand takes up its form at `at` in the cycle (the line frame's, Ryan, 19 November): its chip
+## The offhand takes up its form at `at` in the cycle (the Macaque's, Ryan, 19 November): its chip
 ## and its riders, the form's own (Effects.hold_form). A machine with no offhand takes nothing.
 func _take_up_form(ms: MechState, at: int) -> void:
 	var forms := Effects.offhand_forms(ms.unit)

@@ -6812,81 +6812,81 @@ def stingray(b):
 stingray.maker = "aphelion"
 
 
-# ---------------------------------------------------------------- the line frame
+# ---------------------------------------------------------------- the Macaque
 
-LF_FOREARM = 15.0     # a forearm, elbow to wrist: the third look round's, two thirds of the second's gauntlet
+MQ_FOREARM = 15.0     # a forearm, elbow to wrist: the third look round's, two thirds of the second's gauntlet
 # Each arm at rest: the shoulder, the elbow, the forearm's line and where its outer face looks. The
 # main hand (right) holds its forearm level before it, the gun on it at the ready; the offhand (left)
 # hangs a little out from the body, its weaponry in its forearm (Ryan, 19 November: "a hint of mecha
 # and a bit less mechwarrior in its posture and movements").
-LF_ARMS = {
+MQ_ARMS = {
     "r": ((18.6, 0.0, 75.0), (21.0, -3.0, 62.5), (-0.06, 0.99, -0.10), (1.0, 0.0, 0.0)),
     "l": ((-18.6, 0.0, 75.0), (-23.2, -2.0, 63.0), (-0.16, 0.45, -0.88), (-1.0, 0.0, 0.0)),
 }
-LF_FIST_IN = 8.2      # how far the offhand's fist draws back into its forearm for the rifle
-LF_RIFLE_OUT = 11.6   # how far its rifle runs out past the wrist, from where it lies inside
+MQ_FIST_IN = 8.2      # how far the offhand's fist draws back into its forearm for the rifle
+MQ_RIFLE_OUT = 11.6   # how far its rifle runs out past the wrist, from where it lies inside
 # The arm poses as the shoulder's (pitch, yaw, roll) and the elbow's pitch, each arm's own, solved from
 # its rest in the engine's order of turns (MechRig: roll, then pitch, then yaw, each in its parent's
 # axes) for its elbow, its forearm's line and its outer face.
-LF_R_AIM = (23.5, 0.5, 2.0, -14.8)        # the main gun laid level on the enemy
-LF_R_PAST = (35.7, 14.5, -0.9, -26.2)     # laid past the shield's edge, across the body a little
-LF_L_AIM = (24.5, -13.4, -4.6, 41.4)      # the offhand's rifle level beside the main gun
-LF_L_THRUST = (26.9, 9.1, 0.5, 59.6)      # the offhand's blade thrust forward, out and up
-LF_L_GUARD = (5.1, -84.7, 16.2, 60.0)     # its forearm level across the body, outer face to the enemy: the kite upright, point down
-LF_L_LOW = (15.3, 13.8, 4.4, 14.3)        # the blade swept low and out
-LF_L_CUT_HI = (58.0, 18.8, 16.7, 59.4)    # the blade raised high outside, to cut
-LF_L_CUT_LO = (36.5, -8.2, -44.2, -8.2)   # and through, low across the front
+MQ_R_AIM = (23.5, 0.5, 2.0, -14.8)        # the main gun laid level on the enemy
+MQ_R_PAST = (35.7, 14.5, -0.9, -26.2)     # laid past the shield's edge, across the body a little
+MQ_L_AIM = (24.5, -13.4, -4.6, 41.4)      # the offhand's rifle level beside the main gun
+MQ_L_THRUST = (26.9, 9.1, 0.5, 59.6)      # the offhand's blade thrust forward, out and up
+MQ_L_GUARD = (5.1, -84.7, 16.2, 60.0)     # its forearm level across the body, outer face to the enemy: the kite upright, point down
+MQ_L_LOW = (15.3, 13.8, 4.4, 14.3)        # the blade swept low and out
+MQ_L_CUT_HI = (58.0, 18.8, 16.7, 59.4)    # the blade raised high outside, to cut
+MQ_L_CUT_LO = (36.5, -8.2, -44.2, -8.2)   # and through, low across the front
 # The legs at rest, an A (Ryan, 19 November: "an A-stance, or one foot slightly forward"): the feet
 # wider than the hips, the offhand's foot a little ahead and the main hand's behind and turned out,
 # the knees soft. Each is the hip, the knee, the ankle and the foot's turn (degrees, + to the left).
-LF_LEGS = {
+MQ_LEGS = {
     "l": ((-6.5, -1.0, 53.5), (-8.6, 4.2, 29.0), (-10.4, 2.5, 6.0), 4.0),
     "r": ((6.5, -1.0, 53.5), (8.6, 0.0, 29.2), (10.4, -4.5, 6.0), -14.0),
 }
 
 
-def _lf_cs(w, h, c):
+def _mq_cs(w, h, c):
     """A chamfered rectangle profile for _beam and a loft: (across, up) pairs, eight points."""
     a, u = w / 2.0, h / 2.0
     return [(-a + c, -u), (a - c, -u), (a, -u + c), (a, u - c), (a - c, u), (-a + c, u), (-a, u - c), (-a, -u + c)]
 
 
-def _lf_along(p0, p1, t):
+def _mq_along(p0, p1, t):
     return tuple(p0[i] + (p1[i] - p0[i]) * t for i in range(3))
 
 
-def _lf_line(side):
+def _mq_line(side):
     """An arm's forearm line at rest, as a unit vector."""
-    return Vector(LF_ARMS[side][2]).normalized()
+    return Vector(MQ_ARMS[side][2]).normalized()
 
 
-def _lf_frame(side):
+def _mq_frame(side):
     """A forearm's own frame at rest as a matrix into the model: +y along the forearm from the
     elbow, +z its top and s * x its outer face, as the look test built it."""
     s = 1.0 if side == "r" else -1.0
-    y = _lf_line(side)
-    o = Vector(LF_ARMS[side][3])
+    y = _mq_line(side)
+    o = Vector(MQ_ARMS[side][3])
     o = (o - y * o.dot(y)).normalized()
     x = o * s
     z = x.cross(y).normalized()
-    e = LF_ARMS[side][1]
+    e = MQ_ARMS[side][1]
     return Matrix(((x.x, y.x, z.x, e[0]), (x.y, y.y, z.y, e[1]), (x.z, y.z, z.z, e[2]), (0.0, 0.0, 0.0, 1.0)))
 
 
-def _lf_lay(b, start, m):
+def _mq_lay(b, start, m):
     """Lay what was built since `start`, in a forearm's own frame, onto the model by `m`."""
     for ob in b.objects[start:]:
         ob.matrix_world = m @ ob.matrix_world
 
 
-def _lf_forearm_shell(b, L):
+def _mq_forearm_shell(b, L):
     """A forearm in its own frame: the forearm with its red band and a dark collar round the wrist."""
-    b.loft([(0.4, _lf_cs(6.0, 6.4, 1.4)), (3.0, _lf_cs(7.8, 8.2, 1.9)), (12.0, _lf_cs(7.8, 8.2, 1.9)), (L, _lf_cs(7.4, 7.8, 1.7))], "steel.plate", "forearm")
-    b.loft([(5.0, _lf_cs(8.3, 8.7, 2.0)), (7.0, _lf_cs(8.3, 8.7, 2.0))], "livery.livery", "forearm_band")
-    b.loft([(L - 0.3, _lf_cs(7.2, 7.6, 1.6)), (L + 0.9, _lf_cs(6.8, 7.2, 1.5))], "steel.dark", "wrist_collar")
+    b.loft([(0.4, _mq_cs(6.0, 6.4, 1.4)), (3.0, _mq_cs(7.8, 8.2, 1.9)), (12.0, _mq_cs(7.8, 8.2, 1.9)), (L, _mq_cs(7.4, 7.8, 1.7))], "steel.plate", "forearm")
+    b.loft([(5.0, _mq_cs(8.3, 8.7, 2.0)), (7.0, _mq_cs(8.3, 8.7, 2.0))], "livery.livery", "forearm_band")
+    b.loft([(L - 0.3, _mq_cs(7.2, 7.6, 1.6)), (L + 0.9, _mq_cs(6.8, 7.2, 1.5))], "steel.dark", "wrist_collar")
 
 
-def _lf_fist(b, s, L):
+def _mq_fist(b, s, L):
     """The Nemesis's fist turned thumb up at a forearm's wrist, in its frame, a size up on round
     three's (his to judge there: "the hands are small at rest")."""
     k = len(b.objects)
@@ -6897,26 +6897,26 @@ def _lf_fist(b, s, L):
         ob.matrix_world = turn @ ob.matrix_world
 
 
-def _lf_main_hand(b):
+def _mq_main_hand(b):
     """The main hand (right): a normal mount (Ryan, 19 November: "the main hand (right) can keep
     its fist, lose the side-projector and internal gun model, and put a mount on top of the fist, or
     the upper face of the forearm"). The forearm and its fist, fixed, and on the forearm's upper face
     a low rail with a ring, the mount (hp_1) laid along the forearm so its gun points over the fist;
     the stock the basic Laser Carbine as its class, a placeholder."""
-    m = _lf_frame("r")
-    L = LF_FOREARM
+    m = _mq_frame("r")
+    L = MQ_FOREARM
     k = len(b.objects)
-    _lf_forearm_shell(b, L)
-    _lf_fist(b, 1.0, L)
+    _mq_forearm_shell(b, L)
+    _mq_fist(b, 1.0, L)
     b.box(-1.6, 1.6, 6.0, 13.6, 4.0, 4.9, "steel.dark", "mount_rail")
     b.prism("z", 0.0, 10.4, 5.1, 2.0, 0.6, "steel.dark", 8, "mount_ring", phase=math.pi / 8)
-    _lf_lay(b, k, m)
+    _mq_lay(b, k, m)
     r3 = m.to_3x3()
     b.stock("hp_1", tuple(m @ Vector((0.0, 9.6, 5.5))), "barrel", forward=tuple(r3 @ Vector((0.0, 1.0, 0.0))), up=tuple(r3 @ Vector((0.0, 0.0, 1.0))),
             scale=0.32, carries="laser_carbine")
 
 
-def _lf_offhand(b):
+def _mq_offhand(b):
     """The offhand (left) and its locked weaponry (Ryan, 16 November: fists "that retract and get
     replaced with guns for its beam rifles", "beam blades mounted on its forearms, that can turn on
     and off", "a shield made of light"), built in its own frame and laid on the arm at rest inside
@@ -6926,32 +6926,32 @@ def _lf_offhand(b):
     the shield's nearer the elbow. The blade (blade_l) and the kite of light (shield_l) are made of
     light (b.beams): unseen until an act lights them."""
     s, side = -1.0, "l"
-    m = _lf_frame(side)
-    L = LF_FOREARM
-    line = tuple(_lf_line(side))
+    m = _mq_frame(side)
+    L = MQ_FOREARM
+    line = tuple(_mq_line(side))
     k = len(b.objects)
-    _lf_forearm_shell(b, L)
+    _mq_forearm_shell(b, L)
     b.box(min(s * 3.7, s * 6.5), max(s * 3.7, s * 6.5), L - 5.0, L + 0.6, -1.8, 1.8, "steel.dark", "blade_emitter")
     b.box(min(s * 4.3, s * 6.1), max(s * 4.3, s * 6.1), L + 0.6, L + 0.9, -1.0, 1.0, "bore.dark", "blade_mouth")
     b.prism("x", s * 4.6, 5.8, 0.0, 1.9, 1.3, "steel.dark", 8, "shield_boss")
     b.prism("x", s * 5.35, 5.8, 0.0, 1.0, 0.3, "bore.dark", 8, "shield_mouth")
-    _lf_lay(b, k, m)
+    _mq_lay(b, k, m)
     wrist = tuple(m @ Vector((0.0, L, 0.0)))
     with b.joint("fist_" + side, wrist, slide=line):
         k = len(b.objects)
-        _lf_fist(b, s, L)
-        _lf_lay(b, k, m)
+        _mq_fist(b, s, L)
+        _mq_lay(b, k, m)
     # The beam rifle, custom and compact: a short shroud, the barrel, a muzzle ring and its lens, a
     # sight on the shroud, lying inside the forearm until it runs out in the fist's place.
     with b.joint("rifle_" + side, wrist, slide=line):
         k = len(b.objects)
-        R = -LF_RIFLE_OUT
-        b.loft([(L + 0.4 + R, _lf_cs(4.8, 5.0, 1.2)), (L + 3.4 + R, _lf_cs(4.0, 4.2, 1.0))], "steel.plate", "rifle_shroud")
+        R = -MQ_RIFLE_OUT
+        b.loft([(L + 0.4 + R, _mq_cs(4.8, 5.0, 1.2)), (L + 3.4 + R, _mq_cs(4.0, 4.2, 1.0))], "steel.plate", "rifle_shroud")
         b.prism("y", 0.0, L + 6.4 + R, 0.0, 1.4, 6.2, "steel.dark", 6, "rifle_barrel")
         b.prism("y", 0.0, L + 9.9 + R, 0.0, 1.9, 1.2, "steel.plate", 6, "rifle_muzzle")
         b.prism("y", 0.0, L + 10.7 + R, 0.0, 1.0, 0.4, "amber.lit", 6, "rifle_lens_" + side)
         b.box(-0.7, 0.7, L + 0.8 + R, L + 3.2 + R, 2.3, 3.2, "livery.livery", "rifle_sight")
-        _lf_lay(b, k, m)
+        _mq_lay(b, k, m)
     # The blade along the outside of the hand, a light at the emitter's mouth, the beam and its point.
     k = len(b.objects)
     ex = 5.2
@@ -6969,31 +6969,31 @@ def _lf_offhand(b):
     for i in range(len(pts)):
         _beam(b, pts[i], pts[(i + 1) % len(pts)], _poly(0.6, 4), _poly(0.6, 4), "amber.shield", "shield_" + side)
     b.prism("x", s * 5.55, 5.8, 0.0, 0.8, 0.2, "amber.shield", 8, "shield_" + side)
-    _lf_lay(b, k, m)
+    _mq_lay(b, k, m)
 
 
-def _lf_leg(b, side):
-    """A long slim leg on its hip, knee and ankle, set in the A of its rest (LF_LEGS): a narrow foot
+def _mq_leg(b, side):
+    """A long slim leg on its hip, knee and ankle, set in the A of its rest (MQ_LEGS): a narrow foot
     turned as the stance has it, a shin with a red blade down its front, a knee guard drawn up to a
     point, a slim thigh to a dark hip, and a booster on the calf, its nozzle down and back at about
     45 degrees under a cowl (Ryan, 19 November: "tilted downwards at more of a 45, without the block
     behind and more of a cowl on top"). Returns its (hip, knee, ankle)."""
-    hip, knee, ankle, turn = LF_LEGS[side]
+    hip, knee, ankle, turn = MQ_LEGS[side]
     cx, ay = ankle[0], ankle[1]
     with b.joint("hip_" + side, hip, limits={"pitch": (-75.0, 100.0), "roll": (-20.0, 20.0), "yaw": (-30.0, 30.0)}):
-        _beam(b, knee, hip, _lf_cs(7.6, 8.6, 2.0), _lf_cs(8.2, 9.4, 2.2), "steel.plate", "thigh")
+        _beam(b, knee, hip, _mq_cs(7.6, 8.6, 2.0), _mq_cs(8.2, 9.4, 2.2), "steel.plate", "thigh")
         b.prism("x", hip[0], hip[1], hip[2], 3.6, 6.4, "steel.dark", 6, "hip")
         with b.joint("knee_" + side, knee, limits=(-125.0, 10.0)):
             b.prism("x", knee[0], knee[1], knee[2], 3.4, 8.6, "steel.dark", 6, "knee")
             b.loft([(knee[1] + 2.6, rect(knee[0], 7.4, knee[2] - 4.6, knee[2] + 4.6)), (knee[1] + 5.4, rect(knee[0], 5.0, knee[2] - 2.8, knee[2] + 3.6))],
                    "steel.plate", "knee_guard")
             _spike(b, (knee[0], knee[1] + 3.8, knee[2] + 3.4), (knee[0], knee[1] + 2.4, knee[2] + 12.5), 1.9, "livery.livery", "knee_point")
-            _beam(b, _lf_along(ankle, knee, 0.07), knee, _lf_cs(7.4, 9.4, 2.0), _lf_cs(8.6, 10.4, 2.2), "steel.panel", "shin")
-            f0, f1 = _lf_along(ankle, knee, 0.18), _lf_along(ankle, knee, 0.82)
-            _beam(b, (f0[0], f0[1] + 4.9, f0[2]), (f1[0], f1[1] + 5.4, f1[2]), _lf_cs(2.6, 1.4, 0.4), _lf_cs(3.4, 1.6, 0.4), "livery.livery", "shin_blade")
+            _beam(b, _mq_along(ankle, knee, 0.07), knee, _mq_cs(7.4, 9.4, 2.0), _mq_cs(8.6, 10.4, 2.2), "steel.panel", "shin")
+            f0, f1 = _mq_along(ankle, knee, 0.18), _mq_along(ankle, knee, 0.82)
+            _beam(b, (f0[0], f0[1] + 4.9, f0[2]), (f1[0], f1[1] + 5.4, f1[2]), _mq_cs(2.6, 1.4, 0.4), _mq_cs(3.4, 1.6, 0.4), "livery.livery", "shin_blade")
             # The calf's booster out of the back of the shin, its mouth down and back, and a cowl
             # over it: an arch of plate along its top, shorter than the tube, so the nozzle shows.
-            c0 = Vector(_lf_along(ankle, knee, 0.6))
+            c0 = Vector(_mq_along(ankle, knee, 0.6))
             d = Vector((0.0, -0.7071, -0.7071))
             top = Vector((0.0, -0.7071, 0.7071))
             x = Vector((1.0, 0.0, 0.0))
@@ -7017,8 +7017,8 @@ def _lf_leg(b, side):
     return hip, knee, ankle
 
 
-def line_frame(b):
-    """Aphelion's line frame (a working label; the name and the look are Ryan's), its Gundam
+def macaque(b):
+    """Aphelion's Macaque (Ryan's name of 19 November; the line frame its working label until then), its Gundam
     homage: "a homage not a clone" (16 November), its model from the third look round
     (docs/looks/aphelion_line_frame3.png) on his notes of 19 November, its kit in content since that
     day (the bible's row; its brief retired with the landing, in git). A lean frame on long legs, a dark inner frame bare
@@ -7032,7 +7032,7 @@ def line_frame(b):
     The pack dashes along the ground on two boosters aft, two pairs of wings swept back flat over them
     ("it's a dash, not a hover"), the calves' boosters down and back: it moves so, skimming on its
     feet, a walk beside it as a gait option to compare."""
-    legs = {side: _lf_leg(b, side) for side in ("l", "r")}
+    legs = {side: _mq_leg(b, side) for side in ("l", "r")}
     # The pelvis: the dark frame, a small plate with a red line down it in front, a tasset over
     # each hip, a plate behind, a belt.
     b.box(-6.0, 6.0, -5.5, 4.0, 50.5, 58.5, "steel.dark", "pelvis")
@@ -7091,10 +7091,10 @@ def line_frame(b):
             b.stock("hp_%d" % n, (s * 18.4, -1.5, 83.0), shape, scale=scale, carries=cid)
     # The arms: a slim upper arm, the inner frame bare, off the shoulder; an elbow drum; the main
     # hand's forearm and its mount, the offhand's and its weaponry.
-    for side, elbow_limits, build in (("r", (-60.0, 90.0), _lf_main_hand), ("l", (-15.0, 120.0), _lf_offhand)):
-        sh, el = LF_ARMS[side][0], LF_ARMS[side][1]
+    for side, elbow_limits, build in (("r", (-60.0, 90.0), _mq_main_hand), ("l", (-15.0, 120.0), _mq_offhand)):
+        sh, el = MQ_ARMS[side][0], MQ_ARMS[side][1]
         with b.joint("shoulder_" + side, sh, limits={"pitch": (-45.0, 100.0), "yaw": (-95.0, 95.0), "roll": (-45.0, 45.0)}):
-            _beam(b, sh, el, _lf_cs(5.6, 6.0, 1.4), _lf_cs(5.0, 5.4, 1.2), "steel.dark", "upper_arm")
+            _beam(b, sh, el, _mq_cs(5.6, 6.0, 1.4), _mq_cs(5.0, 5.4, 1.2), "steel.dark", "upper_arm")
             with b.joint("elbow_" + side, el, limits=elbow_limits):
                 b.prism("x", el[0], el[1], el[2], 3.0, 6.6, "steel.dark", 6, "elbow")
                 build(b)
@@ -7115,21 +7115,21 @@ def line_frame(b):
                 wing = [(s * 5.2, -7.4, z_root), (s * tip[0], tip[1], tip[2]), (s * tip[0], tip[1] - chord_tip, tip[2]), (s * 5.2, -7.4 - chord_root, z_root)]
                 n = (Vector(wing[1]) - Vector(wing[0])).cross(Vector(wing[3]) - Vector(wing[0])).normalized()
                 _slab(b, wing, tuple(n), 1.0, "steel.plate", label)
-                _beam(b, wing[0], wing[1], _lf_cs(1.6, 1.4, 0.3), _lf_cs(1.2, 1.0, 0.2), "livery.livery", label + "_edge")
+                _beam(b, wing[0], wing[1], _mq_cs(1.6, 1.4, 0.3), _mq_cs(1.2, 1.0, 0.2), "livery.livery", label + "_edge")
     waist.__exit__(None, None, None)
-    _line_frame_motion(b, legs)
+    _macaque_motion(b, legs)
 
-line_frame.maker = "aphelion"
+macaque.maker = "aphelion"
 
 
-def _lf_smooth(keys, hz=30.0):
+def _mq_smooth(keys, hz=30.0):
     """Body keys (t, (dx, dy, dz, yaw, pitch, roll)) resampled `hz` a second with a smooth step
     between each pair (_dense), for _footwork, which runs straight between the keys it is given."""
     return [(row[0], tuple(row[1:])) for row in _dense([(t,) + tuple(v) for t, v in keys], hz)]
 
 
-def _line_frame_motion(b, legs):
-    """The line frame's acts, its gait, its weight and its death (line_frame above). Its idle is the
+def _macaque_motion(b, legs):
+    """The Macaque's acts, its gait, its weight and its death (macaque above). Its idle is the
     offhand's cycle Ryan asked for (16 November: "It cycles through weapon combinations as it idles
     and as it fights"; 19 November, the offhand alone swapping), each from rest and back: the rifle
     run out beside the main gun, both laid on the enemy; the blade lit and a cut; the kite of light
@@ -7138,12 +7138,12 @@ def _line_frame_motion(b, legs):
     (Ryan, 19 November: "a hint of mecha ... smoother, less stiff, more organic"): the head leads,
     the torso follows on the waist and the arms after it, each carrying a little past its mark and
     settling, the weight shifting onto the front foot as it commits. A pose is the shoulder's (pitch,
-    yaw, roll) and the elbow's pitch, each arm's own (LF_R_*, LF_L_*)."""
+    yaw, roll) and the elbow's pitch, each arm's own (MQ_R_*, MQ_L_*)."""
     feet = [{"hip": "hip_" + side, "knee": "knee_" + side, "ankle": "ankle_" + side, "at": legs[side]} for side in ("l", "r")]
     limbs = {side: feet[i] for i, side in enumerate(("l", "r"))}
     rest = (0.0, 0.0, 0.0, 0.0)
     zero = (0.0,) * 6
-    line = tuple(_lf_line("l"))
+    line = tuple(_mq_line("l"))
     slide = lambda t, d: (t, 0.0, 0.0, 0.0) + tuple(round(v * d, 3) for v in line)
     past = lambda p, k=1.0: (p[0] + 3.0 * k, p[1], p[2], p[3] + 3.0 * k)   # a pose carried a little past its mark
 
@@ -7157,8 +7157,8 @@ def _line_frame_motion(b, legs):
     def rifle(tracks, t_in, t_out):
         """The offhand's fist drawn back and its rifle run out from `t_in`, then the rifle in and the
         fist out again by `t_out`."""
-        tracks["fist_l"] = [slide(t_in, 0.0), slide(t_in + 0.3, -LF_FIST_IN), slide(t_out - 0.35, -LF_FIST_IN), slide(t_out, 0.0)]
-        tracks["rifle_l"] = [slide(t_in + 0.15, 0.0), slide(t_in + 0.5, LF_RIFLE_OUT), slide(t_out - 0.6, LF_RIFLE_OUT), slide(t_out - 0.3, 0.0)]
+        tracks["fist_l"] = [slide(t_in, 0.0), slide(t_in + 0.3, -MQ_FIST_IN), slide(t_out - 0.35, -MQ_FIST_IN), slide(t_out, 0.0)]
+        tracks["rifle_l"] = [slide(t_in + 0.15, 0.0), slide(t_in + 0.5, MQ_RIFLE_OUT), slide(t_out - 0.6, MQ_RIFLE_OUT), slide(t_out - 0.3, 0.0)]
 
     def lit(t_on, t_off, steady, flash):
         """A beam's light: flashing on at `t_on`, burning `steady` rests over its own, and gone at
@@ -7170,8 +7170,8 @@ def _line_frame_motion(b, legs):
     # rifle runs out as both arms come up level, the weight onto the front foot, the torso sweeping
     # a slow arc as it tracks and the head a beat ahead of it, the lens charging at each end.
     tracks, body = _planted(feet, [(0.25, 0.0, 0.0, 0.0), (0.9, 0.8, -0.8, -1.2), (2.0, 1.0, -1.0, -1.6), (3.4, 0.6, -0.8, -1.0), (4.6, 0.0, 0.0, 0.0)])
-    arm(tracks, "r", [(0.35, rest), (1.0, past(LF_R_AIM)), (1.25, LF_R_AIM), (3.5, LF_R_AIM), (4.1, past(rest, -0.6)), (4.4, rest)])
-    arm(tracks, "l", [(0.5, rest), (1.1, past(LF_L_AIM)), (1.35, LF_L_AIM), (3.4, LF_L_AIM), (4.15, past(rest, -0.6)), (4.45, rest)])
+    arm(tracks, "r", [(0.35, rest), (1.0, past(MQ_R_AIM)), (1.25, MQ_R_AIM), (3.5, MQ_R_AIM), (4.1, past(rest, -0.6)), (4.4, rest)])
+    arm(tracks, "l", [(0.5, rest), (1.1, past(MQ_L_AIM)), (1.35, MQ_L_AIM), (3.4, MQ_L_AIM), (4.15, past(rest, -0.6)), (4.45, rest)])
     rifle(tracks, 0.3, 4.75)
     tracks["head"] = [(0.1, 0.0, 0.0, 0.0), (0.45, 0.0, 9.0, 0.0), (1.55, 0.0, 18.0, 0.0), (2.45, 0.0, -12.0, 0.0), (3.3, 0.0, 2.0, 0.0), (3.8, 0.0, 0.0, 0.0)]
     tracks["waist"] = [(0.25, 0.0, 0.0, 0.0), (0.7, -1.0, 5.0, 0.0), (1.75, -1.0, 14.0, 0.0), (2.65, -1.0, -10.0, 0.0), (3.45, -1.0, 1.0, 0.0), (4.3, 0.0, 0.0, 0.0)]
@@ -7183,9 +7183,9 @@ def _line_frame_motion(b, legs):
     # the ready throughout; then the blade goes out and it stands down.
     tracks, body = _planted(feet, [(0.2, 0.0, 0.0, 0.0), (0.65, -0.6, -0.8, 1.0), (1.15, 1.8, -2.2, -4.0), (1.6, 1.4, -2.0, -3.0), (3.4, 0.6, -1.4, -1.5),
                                    (4.6, 0.0, 0.0, 0.0)])
-    arm(tracks, "l", [(0.3, rest), (0.85, LF_L_CUT_HI)] + _slam(0.85, LF_L_CUT_HI, 1.15, LF_L_CUT_LO) +
-        [(1.4, past(LF_L_CUT_LO)), (1.75, LF_L_CUT_LO), (2.4, LF_L_THRUST), (3.4, LF_L_THRUST), (4.2, past(rest, -0.6)), (4.5, rest)])
-    arm(tracks, "r", [(0.3, rest), (0.9, LF_R_AIM), (3.5, LF_R_AIM), (4.1, rest)])
+    arm(tracks, "l", [(0.3, rest), (0.85, MQ_L_CUT_HI)] + _slam(0.85, MQ_L_CUT_HI, 1.15, MQ_L_CUT_LO) +
+        [(1.4, past(MQ_L_CUT_LO)), (1.75, MQ_L_CUT_LO), (2.4, MQ_L_THRUST), (3.4, MQ_L_THRUST), (4.2, past(rest, -0.6)), (4.5, rest)])
+    arm(tracks, "r", [(0.3, rest), (0.9, MQ_R_AIM), (3.5, MQ_R_AIM), (4.1, rest)])
     tracks["head"] = [(0.05, 0.0, 0.0, 0.0), (0.35, 0.0, 8.0, 0.0), (1.1, -4.0, -6.0, 0.0), (1.6, -2.0, -2.0, 0.0), (3.6, -1.0, 0.0, 0.0), (4.2, 0.0, 0.0, 0.0)]
     tracks["waist"] = [(0.2, 0.0, 0.0, 0.0), (0.7, 1.0, 14.0, 0.0), (1.12, -3.0, -16.0, 0.0), (1.45, -3.0, -19.0, 0.0), (1.9, -2.0, -12.0, 0.0), (3.5, -1.0, -6.0, 0.0),
                        (4.4, 0.0, 0.0, 0.0)]
@@ -7195,9 +7195,9 @@ def _line_frame_motion(b, legs):
     # past its edge; a parry's jolt, the guard pushing back out; then the kite goes and it stands down.
     tracks, body = _planted(feet, [(0.2, 0.0, 0.0, 0.0), (0.9, -0.5, -2.2, 1.5), (2.1, -0.5, -2.2, 1.5), (2.25, -1.6, -2.8, 3.5), (2.65, -0.6, -2.3, 1.6),
                                    (3.8, -0.5, -2.2, 1.5), (4.6, 0.0, 0.0, 0.0)])
-    arm(tracks, "l", [(0.3, rest), (0.95, past(LF_L_GUARD)), (1.15, LF_L_GUARD), (2.1, LF_L_GUARD), (2.25, (LF_L_GUARD[0] + 6.0, LF_L_GUARD[1], LF_L_GUARD[2], LF_L_GUARD[3] - 6.0)),
-                      (2.6, LF_L_GUARD), (3.8, LF_L_GUARD), (4.4, rest)])
-    arm(tracks, "r", [(0.5, rest), (1.15, LF_R_PAST), (3.75, LF_R_PAST), (4.4, rest)])
+    arm(tracks, "l", [(0.3, rest), (0.95, past(MQ_L_GUARD)), (1.15, MQ_L_GUARD), (2.1, MQ_L_GUARD), (2.25, (MQ_L_GUARD[0] + 6.0, MQ_L_GUARD[1], MQ_L_GUARD[2], MQ_L_GUARD[3] - 6.0)),
+                      (2.6, MQ_L_GUARD), (3.8, MQ_L_GUARD), (4.4, rest)])
+    arm(tracks, "r", [(0.5, rest), (1.15, MQ_R_PAST), (3.75, MQ_R_PAST), (4.4, rest)])
     tracks["head"] = [(0.05, 0.0, 0.0, 0.0), (0.3, 0.0, 6.0, 0.0), (0.9, 2.0, 10.0, 0.0), (2.2, 2.0, 10.0, 0.0), (2.3, 6.0, 10.0, 0.0), (2.7, 2.0, 10.0, 0.0), (3.8, 0.0, 6.0, 0.0),
                       (4.4, 0.0, 0.0, 0.0)]
     tracks["waist"] = [(0.2, 0.0, 0.0, 0.0), (0.95, -1.0, 12.0, 0.0), (3.8, -1.0, 12.0, 0.0), (4.5, 0.0, 0.0, 0.0)]
@@ -7216,7 +7216,7 @@ def _line_frame_motion(b, legs):
           glow=[(["booster_floor", "booster_rim", "calf_booster_floor"], [(0.5, 0.0), (0.9, 8.0), (1.3, 5.0), (1.9, 9.0), (2.4, 4.0), (2.9, 0.0)])])
     # A look round: the head turns one way and the other, the torso a beat behind it, the weight
     # easing onto the foot on that side, a shoulder gun lifting as it looks.
-    tracks, body = _footwork(limbs, _lf_smooth([(0.2, zero), (1.0, (-1.2, 0.0, -0.4, 0.0, 0.0, -1.5)), (1.8, (-1.2, 0.0, -0.4, 0.0, 0.0, -1.5)),
+    tracks, body = _footwork(limbs, _mq_smooth([(0.2, zero), (1.0, (-1.2, 0.0, -0.4, 0.0, 0.0, -1.5)), (1.8, (-1.2, 0.0, -0.4, 0.0, 0.0, -1.5)),
                                                 (2.6, (1.0, 0.0, -0.4, 0.0, 0.0, 1.2)), (3.4, (1.0, 0.0, -0.4, 0.0, 0.0, 1.2)), (4.1, zero)]), [], until=4.4)
     tracks.update({
         "head": _dense([(0.2, 0.0, 0.0, 0.0), (0.75, 0.0, 35.0, 0.0), (1.7, -3.0, 35.0, 0.0), (2.4, 0.0, -30.0, 0.0), (3.3, 2.0, -30.0, 0.0), (3.9, 0.0, 0.0, 0.0)]),
@@ -7226,7 +7226,7 @@ def _line_frame_motion(b, legs):
     b.act("look_round", 4.4, tracks, body=body, ease="linear")
     # Its weight shifting: it settles onto its front foot and turns a little into it, the torso
     # breathing on the waist and the head tilting, the arms swinging gently with it, and back.
-    tracks, body = _footwork(limbs, _lf_smooth([(0.2, zero), (1.3, (-0.8, 1.2, -0.8, 3.0, -1.5, -1.0)), (2.5, (-0.8, 1.2, -0.8, 3.0, -1.5, -1.0)), (3.7, zero)]),
+    tracks, body = _footwork(limbs, _mq_smooth([(0.2, zero), (1.3, (-0.8, 1.2, -0.8, 3.0, -1.5, -1.0)), (2.5, (-0.8, 1.2, -0.8, 3.0, -1.5, -1.0)), (3.7, zero)]),
                              [], until=4.0)
     arm(tracks, "r", [(0.3, rest), (1.4, (-5.0, 0.0, 0.0, -4.0)), (2.5, (-5.0, 0.0, 0.0, -4.0)), (3.6, rest)], dense=True)
     arm(tracks, "l", [(0.4, rest), (1.5, (6.0, 0.0, -3.0, 6.0)), (2.6, (5.0, 0.0, -3.0, 5.0)), (3.7, rest)], dense=True)
@@ -7260,10 +7260,10 @@ def _line_frame_motion(b, legs):
         out.update(more or {})
         return out
     others = lambda me: [f for f in ("offhand_rifle", "offhand_sword", "offhand_shield") if f != me]   # one armament at a time, the hangar's toggles and the debug switch too
-    b.form("offhand_rifle", 0.55, held(LF_L_AIM, {"fist_l": [slide(0.3, -LF_FIST_IN)], "rifle_l": [slide(0.1, 0.0), slide(0.55, LF_RIFLE_OUT)]}),
+    b.form("offhand_rifle", 0.55, held(MQ_L_AIM, {"fist_l": [slide(0.3, -MQ_FIST_IN)], "rifle_l": [slide(0.1, 0.0), slide(0.55, MQ_RIFLE_OUT)]}),
            glow=[(["rifle_lens_l"], 1.5)], releases=others("offhand_rifle"))
-    b.form("offhand_sword", 0.55, held(LF_L_THRUST), glow=[(["blade_l"], BLADE[0])], releases=others("offhand_sword"))
-    b.form("offhand_shield", 0.55, held(LF_L_GUARD), glow=[(["shield_l"], SHIELD[0])], releases=others("offhand_shield"))
+    b.form("offhand_sword", 0.55, held(MQ_L_THRUST), glow=[(["blade_l"], BLADE[0])], releases=others("offhand_sword"))
+    b.form("offhand_shield", 0.55, held(MQ_L_GUARD), glow=[(["shield_l"], SHIELD[0])], releases=others("offhand_shield"))
     # The boosters and the beams bloom (MechRig's halos); the beams are made of light.
     b.halo = ["booster_floor", "calf_booster_floor", ("blade_l", 1.5), "shield_l"]
     b.beams = ["blade_l", "shield_l"]

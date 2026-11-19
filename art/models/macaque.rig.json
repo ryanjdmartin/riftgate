@@ -1,5 +1,5 @@
 {
- "_about": "the rig of art/models/line_frame.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
+ "_about": "the rig of art/models/macaque.glb, written by tools/lowforge from models_low.py: joints (axis, limits in degrees, parent), idle acts (seconds, degrees, world units), the gait and the cornering numbers, and what each hardpoint's stock part is; MechRig reads it",
  "joints": {
   "hip_l": {
    "axis": "pitch",

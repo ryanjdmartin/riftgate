@@ -634,7 +634,7 @@ static func _skirmish_into(sk: Skirmish, d: Dictionary, lookup: Callable) -> voi
 		ms.shield_broken = bool(md.get("shield_broken", false))
 		ms.overheated = bool(md.get("overheated", false))
 		ms.killed_round = bool(md.get("killed_round", false))   # an attack of its own killed this round: its passive's flare as the round ends (16 November)
-		ms.offhand = int(md.get("offhand", -1))   # the offhand's form by its place in the cycle (the line frame's, 19 November); its chip rides the unit's modifiers
+		ms.offhand = int(md.get("offhand", -1))   # the offhand's form by its place in the cycle (the Macaque's, 19 November); its chip rides the unit's modifiers
 		ms.parried = int(md.get("parried", 0))    # what its Parry has counted this round
 	sk.packs.clear()
 	for pid in d.get("packs", []):

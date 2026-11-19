@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dyytji14ou6in"
-path="res://.godot/imported/line_frame.glb-a7af9b3f7510a1a1433804f103564d00.scn"
+uid="uid://bg6em35yaip8w"
+path="res://.godot/imported/macaque.glb-959bcb97cacd2c77f53b3d4479c9f434.scn"
 
 [deps]
 
-source_file="res://art/models/line_frame.glb"
-dest_files=["res://.godot/imported/line_frame.glb-a7af9b3f7510a1a1433804f103564d00.scn"]
+source_file="res://art/models/macaque.glb"
+dest_files=["res://.godot/imported/macaque.glb-959bcb97cacd2c77f53b3d4479c9f434.scn"]
 
 [params]
 

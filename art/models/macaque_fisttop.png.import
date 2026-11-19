@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b83n0f1mjfuxr"
-path="res://.godot/imported/line_frame_shield.png-b69d6678ba9b4e2d06ef093105f83151.ctex"
+uid="uid://bdhiyfw4qbxa2"
+path="res://.godot/imported/macaque_fisttop.png-8c31f5b8e5351ced0d0e5321adc856ab.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "17f8a684906f3157a7eb731bddca401e"
+"md5": "cf5e5babd0f2e5e04467d99770d5b768"
 }
 
 [deps]
 
-source_file="res://art/models/line_frame_shield.png"
-dest_files=["res://.godot/imported/line_frame_shield.png-b69d6678ba9b4e2d06ef093105f83151.ctex"]
+source_file="res://art/models/macaque_fisttop.png"
+dest_files=["res://.godot/imported/macaque_fisttop.png-8c31f5b8e5351ced0d0e5321adc856ab.ctex"]
 
 [params]
 

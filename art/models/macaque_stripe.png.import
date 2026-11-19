@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://kfi4jvegqjai"
-path="res://.godot/imported/line_frame_vent.png-98280069135943cccd6b24b19ed5854a.ctex"
+uid="uid://div5gkojmfolr"
+path="res://.godot/imported/macaque_stripe.png-3e0facf8104f403346c9f152d6fdc484.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "088393a312e977352c7ad24051c07525"
+"md5": "4167136f9a67a9a30bf3b65cc83ede5a"
 }
 
 [deps]
 
-source_file="res://art/models/line_frame_vent.png"
-dest_files=["res://.godot/imported/line_frame_vent.png-98280069135943cccd6b24b19ed5854a.ctex"]
+source_file="res://art/models/macaque_stripe.png"
+dest_files=["res://.godot/imported/macaque_stripe.png-3e0facf8104f403346c9f152d6fdc484.ctex"]
 
 [params]
 

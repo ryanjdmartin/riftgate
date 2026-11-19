@@ -89,7 +89,7 @@ proposed in chat first. The long form of this file is `git show cc446826:docs/br
 - No reward for being struck that scales with the enemy's blows; a thorns tank needs a
   drawback on the thorns. What reopens it (20 October): a machine that spends its own turn to
   be struck, deals nothing that turn and is paid later and at random is not a tank doing its
-  job. The line frame's Parry pays half of what a Barrier and armour keep off, his call of 19
+  job. The Macaque's Parry pays half of what a Barrier and armour keep off, his call of 19
   November for a capstone: "The duelist is supposed to be a boss-killer, and this is a tier-3
   capstone, yes, so it can be powerful. Also, unless it pairs the shield with a slotted lure,
   and times it perfectly, there's no guarantee it even works."
@@ -172,7 +172,7 @@ moves he has not marked stand as its plan.
 | Kestrel (10) | Skua; Storm Petrel; Puffin, back in design | Buzzard, its rework settled and unbuilt; Kite; Needletail | Lammergeier; Giant Petrel |
 | Kestrel's two, tiers open | *the Snowy Owl*, leaning to Cryo | *the Magpie*, its slot open to another design | |
 | Wainwright & Sutler (10) | Prairie Dog; Cassowary; Cottonmouth | Dingo; Clydesdale; funnel-web; Whip Scorpion; *the gunship* | Swallowtail, back in design; Musk Ox |
-| Aphelion (9, one open) | Stingray; the line frame; *Static*; *the Barrier and Ward support*, the defensive tier one | Baboon, dealt at tier one, its tier placed later; *the jellyfish* with the status detonator; *the time-shifter*; one open, the time area's if it wants it | *the Carrier*; *the Macross* with the aura-shifter |
+| Aphelion (9, one open) | Stingray; the Macaque; *Static*; *the Barrier and Ward support*, the defensive tier one | Baboon, dealt at tier one, its tier placed later; *the jellyfish* with the status detonator; *the time-shifter*; one open, the time area's if it wants it | *the Carrier*; *the Macross* with the aura-shifter |
 | The Arsenal (8, two open) | none | Nemesis; *Misharu*; *the Onryō*; *the Zoids walker* | Ammit; *Mastema*; *Minos*; *the thunder figure* |
 
 His calls that shape it, and what each leaves open:
@@ -201,7 +201,7 @@ His calls that shape it, and what each leaves open:
 - Amplify for others: the echidna's Sonic Needle; the Onryō's curse in another shape, since
   Brittle took the flat on-hit.
 - A read nobody uses yet: the die's own state, on the battlecruiser.
-- The tender: Aphelion's deal with the line frame, and its defensive tier one.
+- The tender: Aphelion's deal with the Macaque, and its defensive tier one.
 
 ## Orbits
 
@@ -278,8 +278,12 @@ aside so Ryan can overrule the reason. A chassis's own bench is in its brief.
 
 **Aphelion**
 
-- The combo ramp, the line frame's first kit (11 to 20 October): a stack for every blow its weapons
-  land, broken by a turn without a weapon, paying at thresholds. Set aside for the line frame by
+- Capuchin, held for a less aggressive walker (Ryan, 19 November, naming the Macaque: "Let's give
+  it Macaque for now, only because I anticipate another less-aggressive walker that would take
+  Capuchin more. If I'm wrong, then it takes it back"): the tool user, the one that picks up what
+  the job needs. If no such walker comes, the Macaque is renamed the Capuchin.
+- The combo ramp, the Macaque's first kit (11 to 20 October): a stack for every blow its weapons
+  land, broken by a turn without a weapon, paying at thresholds. Set aside for the Macaque by
   Ryan's offhand kit (19 November), and free for Aphelion's open slot (his: "there's space for a
   mechanic that fits better and still keep the ideas of a combo-ramper, or an aura unit"). Under
   the reboot it wants paying in heat and offence, never cooling or shield; its long form

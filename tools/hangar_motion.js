@@ -530,7 +530,7 @@ class Rig {
       h.uniforms.presence.value = clamp((k - 1) / HALO_FULL, 0, 1);
     }
   }
-  // The parts made of light a sidecar names (MechRig._setup_beams: the line frame's blades and kites
+  // The parts made of light a sidecar names (MechRig._setup_beams: the Macaque's blades and kites
   // of light): each hidden, unseen at its light at rest, and shown by lightTo while a glow lights it.
   setupBeams(side) {
     this.beams = new Map(); this.beamLit = new Map();

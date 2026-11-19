@@ -11,7 +11,7 @@ const DIR := "res://content/"
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
 ## The machine buffs a spend may lay on its own machine (Face.self_statuses; the Storm Petrel's
 ## Hardlight Pulse and its branches, a Ward on itself in its Defence direction since 18 November;
-## the line frame's offhand, its Beam Buckler's Barrier, Ward and Parry, Ryan, 19 November).
+## the Macaque's offhand, its Beam Buckler's Barrier, Ward and Parry, Ryan, 19 November).
 const SELF_GRANTS := ["hardened", "ward", "charged", "supercooled", "primed", "overcharged", "braced", "regenerating", "barrier", "parry"]
 const MAX_MOVE := 6                 # a move in hexes, chassis or foe, is 1 to this (a placeholder bound, 28 October)
 ## The caveats a hunting composition may name (`hunts`): whom its pack locks. The fastest left on
@@ -646,7 +646,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 				if faces[i].component == d[2]:
 					face_rules[i].append("%s: %s" % [str(d[0]), d[1]])
 		elif d[2] == "branch" and str(d[6]).is_empty():
-			# A step on the passive, or on more than one piece (the line frame's offhand and its Aile
+			# A step on the passive, or on more than one piece (the Macaque's offhand and its Aile
 			# Booster): under the passive, after it.
 			stepped.push_front(["%s: %s" % [head, d[1]], "chassis"])   # the latest is read first: so I stands before II
 		elif d[2] == "branch":
@@ -2025,7 +2025,7 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			# every foe struck", Ryan, 19 November).
 			if eff.has("plus") and (not bool(eff.get("per_foe", false)) or int(eff["plus"]) < 1):
 				errs.append("%s: self_status's plus is the flat stacks laid beside per_foe's set a foe, 1 or more, with per_foe" % where)
-		# The line frame's offhand (Ryan, 19 November: "Only its offhand swaps"): a form of its cycle,
+		# The Macaque's offhand (Ryan, 19 November: "Only its offhand swaps"): a form of its cycle,
 		# its id a content id, its name and its line shown (its chip, the rider on the die), its riders
 		# the effects the form carries while it is up, read as any status's are.
 		if effect == "offhand":

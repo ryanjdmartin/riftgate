@@ -910,7 +910,7 @@
    "id": "offhand",
    "category": "status",
    "name": "Offhand",
-   "codex": "Ability, the Line Frame's. The armament its offhand holds, named on its chip: a rider on every weapon and equipment it aims at a foe. Each such spend turns it to the next armament in its cycle; a buff, a reboot or a blank entry turns nothing. Every fight opens on the first. No Purge touches it.",
+   "codex": "Ability, the Macaque's. The armament its offhand holds, named on its chip: a rider on every weapon and equipment it aims at a foe. Each such spend turns it to the next armament in its cycle; a buff, a reboot or a blank entry turns nothing. Every fight opens on the first. No Purge touches it.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Only its offhand swaps\"; \"It cycles after a spend\"; \"remove the manual weapon cycle\"; the spends that carry its rider turn it, his answer of the same day. The chip takes its armament's name and line (Beam Rifle, Beam Sword, Beam Shield, and the branches' Saber, Buckler, Bazooka and Pavise), each the passive's or a step's. The text is a session's draft.",
@@ -926,7 +926,7 @@
    "id": "aile_boost",
    "category": "status",
    "name": "Aile Boost",
-   "codex": "Machine status, the Line Frame's Aile Booster. The next weapon it fires reaches as Indirect, every strike of the spend, and that weapon lifts it; equipment leaves it standing. Carried between turns until then; one at a time.",
+   "codex": "Machine status, the Macaque's Aile Booster. The next weapon it fires reaches as Indirect, every strike of the spend, and that weapon lifts it; equipment leaves it standing. Carried between turns until then; one at a time.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Rapid. Next weapon strike gains Indirect reach\"; \"Next weapon strike -> Next weapon fired. Applies to the whole spend\"; \"Booster's buff is the booster's name\". The text is a session's draft.",
@@ -942,7 +942,7 @@
    "id": "aile_blitz",
    "category": "status",
    "name": "Aile Blitz",
-   "codex": "Machine status, the Line Frame's Aile Blitzer (its Duelist II). The next weapon it fires reaches as Indirect and ignores armour, every strike of the spend, and that weapon lifts it; equipment leaves it standing. Carried between turns until then; one at a time.",
+   "codex": "Machine status, the Macaque's Aile Blitzer (its Duelist II). The next weapon it fires reaches as Indirect and ignores armour, every strike of the spend, and that weapon lifts it; equipment leaves it standing. Carried between turns until then; one at a time.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Aile Booster -> Aile Blitzer: 'Rapid. Next weapon strike gains Indirect reach and ignores armour.'\"; its name his (\"'Aile Blitz'\"). The text is a session's draft.",
@@ -958,7 +958,7 @@
    "id": "aile_assault",
    "category": "status",
    "name": "Aile Assault",
-   "codex": "Machine status, the Line Frame's Aile Assaulter (its Valkyrie II), which grants 1 Empowered beside it. The next weapon it fires reaches as Indirect, every strike of the spend, and that weapon lifts it; equipment leaves it standing. Carried between turns until then; one at a time.",
+   "codex": "Machine status, the Macaque's Aile Assaulter (its Valkyrie II), which grants 1 Empowered beside it. The next weapon it fires reaches as Indirect, every strike of the spend, and that weapon lifts it; equipment leaves it standing. Carried between turns until then; one at a time.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Aile Booster -> Aile Assaulter: 'Rapid. Next weapon strike gains Indirect reach. Gain 1 Empowered.'\"; its name his (\"'Aile Assault'\"). The text is a session's draft.",
@@ -974,7 +974,7 @@
    "id": "parry",
    "category": "status",
    "name": "Parry",
-   "codex": "Machine status, the Line Frame's Beam Buckler (its Duelist II). Through the round it is gained, what its Barrier and its armour keep off foes' blows is counted, never what its shield takes. As its next turn opens, half of that, rounded down, is Parry's number: its next strike that turn deals that much more, the first blow of the first weapon it fires, on its target and none of its area; that weapon lifts it. Gone as that turn ends if no weapon fires.",
+   "codex": "Machine status, the Macaque's Beam Buckler (its Duelist II). Through the round it is gained, what its Barrier and its armour keep off foes' blows is counted, never what its shield takes. As its next turn opens, half of that, rounded down, is Parry's number: its next strike that turn deals that much more, the first blow of the first weapon it fires, on its target and none of its area; that weapon lifts it. Gone as that turn ends if no weapon fires.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Parry: 'The first weapon fired next turn gains bonus damage equal to half of all damage blocked by this machine this round (rounded down).'\" What is blocked, his answer that day: what a Barrier and armour keep off, never the shield's soak. His of the same day, on the bonus: \"Can we change it to 'next strike' instead?\" (every strike of the next weapon, his first wording, made a busted area of the rifle that follows the shield), the next strike the spend's first blow by his strike order. Claude's reading: the count runs from the moment it is gained. It pays half the blow a Barrier stops, so a boss's biggest blow pays most, beside his taste of October (\"No reward for being struck that scales with the enemy's blows\"): his of 19 November, \"The duelist is supposed to be a boss-killer, and this is a tier-3 capstone, yes, so it can be powerful\". The text is a session's draft.",

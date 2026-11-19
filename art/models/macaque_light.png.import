@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://u1upso3r57jc"
-path="res://.godot/imported/line_frame_exhaust.png-972df46f4cb87dff8517813bc0f45e45.ctex"
+uid="uid://dxmt5aj82illi"
+path="res://.godot/imported/macaque_light.png-4588bcf72110f67d9c19819f7e113502.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "83e2df5e045de794716967a9648087fe"
+"md5": "81df89aa366636e4db137741a537774a"
 }
 
 [deps]
 
-source_file="res://art/models/line_frame_exhaust.png"
-dest_files=["res://.godot/imported/line_frame_exhaust.png-972df46f4cb87dff8517813bc0f45e45.ctex"]
+source_file="res://art/models/macaque_light.png"
+dest_files=["res://.godot/imported/macaque_light.png-4588bcf72110f67d9c19819f7e113502.ctex"]
 
 [params]
 

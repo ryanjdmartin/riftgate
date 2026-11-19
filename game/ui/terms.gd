@@ -49,7 +49,7 @@ const TABLE := {
 	"charged": ["shocked", "heat"], "supercooled": ["cryo", "guard"],
 	"brittled": ["brittle", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"], "ricochet": ["ricochet", "heat"],
 	"parry": ["spin", "heat"],   # the Beam Buckler's (19 November): what it blocks, next turn's first weapon's add, in Spun Up's family
-	"offhand": ["star", "plain"],   # the line frame's armament, the star its rider wears on the die (Ryan, 19 November: "a unique (star) effect")
+	"offhand": ["star", "plain"],   # the Macaque's armament, the star its rider wears on the die (Ryan, 19 November: "a unique (star) effect")
 	"aile_boost": ["rapid", "plain"], "aile_blitz": ["rapid", "plain"], "aile_assault": ["rapid", "plain"],   # the Aile Booster's dash, the Rapid piece's own mark
 	"mine": ["mine", "heat"],
 	"essence": ["essence", "heat"], "essence_flare": ["essence_flare", "heat"],   # the Ammit's count and its Tap's buff (12 and 15 November), with Empowered's group: what hits harder

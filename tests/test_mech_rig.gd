@@ -7,7 +7,7 @@ extends TestCase
 
 const MACHINES := ["badger", "kite", "clydesdale", "baboon", "polar_bear", "wild_boar", "prairie_dog", "dingo", "buzzard", "nemesis", "ammit", "stingray", "puffin", "funnel_web",
 	"skua", "needletail", "storm_petrel", "giant_petrel", "lammergeier", "musk_ox",
-	"cassowary", "cottonmouth", "swallowtail", "whip_scorpion", "mole", "line_frame"]
+	"cassowary", "cottonmouth", "swallowtail", "whip_scorpion", "mole", "macaque"]
 
 
 func _rig_for(model_id: String, seed_value: int = 1) -> Array:
@@ -455,7 +455,7 @@ func test_a_form_is_held_while_set_and_let_go_after() -> void:
 
 
 func test_an_offhands_armament_holds_its_slots_form_and_its_lunge_plays_over_it() -> void:
-	# A model's forms named for an offhand's slot (offhand_<slot>: the line frame's armament, 19
+	# A model's forms named for an offhand's slot (offhand_<slot>: the Macaque's armament, 19
 	# November) are held while its machine's offhand holds a form in that slot, whichever form a
 	# branch has put there; the Aile Booster's dash, its firing, keys none of the arm the form holds.
 	var u := Unit.mech(0, "Test", Vector2i.ZERO)
@@ -465,17 +465,17 @@ func test_an_offhands_armament_holds_its_slots_form_and_its_lunge_plays_over_it(
 	assert_true(MechRig.holds_form(u, "offhand_sword"), "its slot's form is held")
 	assert_false(MechRig.holds_form(u, "offhand_rifle"), "and no other slot's")
 	assert_false(MechRig.holds_form(Unit.mech(1, "Plain", Vector2i.ZERO), "offhand_sword"), "a machine with no offhand holds none")
-	var side := MechRig.load_sidecar("line_frame")
+	var side := MechRig.load_sidecar("macaque")
 	var forms: Dictionary = side.get("forms", {})
 	for slot in ["rifle", "sword", "shield"]:
-		assert_true(forms.has("offhand_" + slot), "the line frame holds its %s" % slot)
+		assert_true(forms.has("offhand_" + slot), "the Macaque holds its %s" % slot)
 	var beams: Array = side.get("beams", [])
 	for slot in ["sword", "shield"]:
 		var lit: Array = []
 		for g in forms["offhand_" + slot].get("glow", []):
 			lit.append_array(g["parts"])
 		assert_true(lit.any(func(p) -> bool: return beams.has(p)), "its %s's form lights a part made of light: %s" % [slot, str(lit)])
-	var pair := _rig_for("line_frame")
+	var pair := _rig_for("macaque")
 	var rig: MechRig = pair[0]
 	rig.set_form("offhand_shield", true)
 	rig.tick(float(rig.forms["offhand_shield"]["duration"]) + 0.3)
@@ -1655,7 +1655,7 @@ func _lit_part(r: Array, name: String) -> MeshInstance3D:
 
 
 func test_a_part_made_of_light_is_unseen_until_a_glow_lights_it() -> void:
-	# lowforge's b.beams (Ryan, 16 November, of the line frame: "beam blades mounted on its forearms,
+	# lowforge's b.beams (Ryan, 16 November, of the Macaque: "beam blades mounted on its forearms,
 	# that can turn on and off", "a shield made of light"): a part made of light is hidden at its
 	# light at rest, shown while an act lights it over that, and gone again as the act lets it go; a
 	# lit part not made of light shows throughout, whatever its light.
@@ -1721,7 +1721,7 @@ func test_every_beam_names_lit_parts_a_glow_lights_and_is_out_as_its_model_loads
 			for n in meshes:
 				assert_false((n as Node3D).visible, "%s: %s is out as the model loads" % [id, n.name])
 		model.free()
-	assert_true(found > 0, "some model has parts made of light (the line frame's blades and shields)")
+	assert_true(found > 0, "some model has parts made of light (the Macaque's blades and shields)")
 
 
 func test_a_blow_on_the_hull_shoves_the_machine_back_and_settles() -> void:

@@ -591,7 +591,7 @@ static func plume_k(light: float, rest: float) -> float:
 	return clampf((light / rest - 1.0) / maxf(0.01, top - 1.0), 0.0, 1.0)
 
 
-## The parts made of light a sidecar names (`beams`: the line frame's blades and kites of light),
+## The parts made of light a sidecar names (`beams`: the Macaque's blades and kites of light),
 ## hidden as a model loads, before it is measured, framed or welded, so no frame and no fit takes in a
 ## light that is out; the rig shows each while a glow lights it (MechRig._setup_beams).
 static func hide_beams(model: Node, side: Dictionary) -> void:

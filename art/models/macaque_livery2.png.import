@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b8ygu2h4x5d0q"
-path="res://.godot/imported/line_frame_engine.png-1b475f3b95ae777e0c8c2a2aeace3761.ctex"
+uid="uid://c6jajifhe0pb5"
+path="res://.godot/imported/macaque_livery2.png-b7147c3095ff40d8e281a5de428d1339.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "f7b7bc98ae445e85f9ee9adfd9944629"
+"md5": "8817fc3bbac0f58a714eaa7a18ed0b6a"
 }
 
 [deps]
 
-source_file="res://art/models/line_frame_engine.png"
-dest_files=["res://.godot/imported/line_frame_engine.png-1b475f3b95ae777e0c8c2a2aeace3761.ctex"]
+source_file="res://art/models/macaque_livery2.png"
+dest_files=["res://.godot/imported/macaque_livery2.png-b7147c3095ff40d8e281a5de428d1339.ctex"]
 
 [params]
 
