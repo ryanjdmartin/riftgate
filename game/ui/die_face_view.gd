@@ -45,6 +45,10 @@ const CUT := 16.0
 const FLICKER_PERIOD := 4.5   # seconds between dips, per chip
 const SLOT_AT := Vector2(10, 28)   # the place's numeral, its baseline tucked under the cut corner, clear of the main mark
 const SLOT_SIZE := 18
+const CHEVRON_W := 16.0     # an upgrade's chevron under the place's numeral: its width,
+const CHEVRON_H := 6.0      # its rise,
+const CHEVRON_GAP := 7.0    # the step from one to the next, down,
+const CHEVRON_DROP := 9.0   # and the first's apex below the numeral's baseline
 const MAIN_Y := 45.0       # the main mark's centre, what the entry delivers inside it, clear of the place's numeral
 const MAIN_W := 60.0       # the sight's width, its ring holding NUMBER_ROOM, as wide as the gear (a strike's count beside it, not inside)
 const COMBO_W := 60.0      # the shield with the steam, seated COMBO_DY lower (its top clear of the place's numeral)
@@ -88,6 +92,7 @@ var offhand: String = ""     # the armament its machine's offhand holds, riding 
 var parry: int = 0           # what its machine's Parry returns on this weapon's next strike (the Beam Buckler's), in the passive box: one blow's add, so never in the main number
 var zap_cost: int = 0        # the shield its machine's zap will pay for this weapon's spend (the Buzzard's), in the passive box; its damage is in the main number
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
+var upgrades: int = 0        # the branch's steps its machine has taken on this piece (Effects.steps_on): a chevron each under its place
 var locked: bool = false
 var charged: bool = false      # armed for its charged form, a muster paid at the spend (the Swallowtail's): a double frame and the word above
 var form_mark: String = ""     # "seal" or "unseal": spending the entry shuts its machine's shell or opens it (the Polar Bear's Lockdown), a chip on the rail
@@ -279,6 +284,15 @@ func _flicker(i: int) -> float:
 	return 1.0
 
 
+## `n` upgrade chevrons, each a rank's stripe pointing up, the first's apex at `top` (its left
+## edge there), each the next a step below (the die's place and the codex's row both draw them).
+static func draw_chevrons(ci: CanvasItem, top: Vector2, n: int, ink: Color, scale: float = 1.0) -> void:
+	for i in range(maxi(0, n)):
+		var apex := top + Vector2(CHEVRON_W * 0.5, float(i) * CHEVRON_GAP) * scale
+		var half := CHEVRON_W * 0.5 * scale
+		ci.draw_polyline(PackedVector2Array([apex + Vector2(-half, CHEVRON_H * scale), apex, apex + Vector2(half, CHEVRON_H * scale)]), ink, 3.0 * scale, true)
+
+
 func _draw() -> void:
 	var bob := sin(_t * 1.6 + _phase) * BOB_PX if animate else 0.0
 	var rect := Rect2(Vector2(0, bob), Vector2(FACE, FACE))
@@ -311,6 +325,10 @@ func _draw() -> void:
 		# italic: quiet by its colour and its face rather than its size, and never a stat
 		# (Ryan, 15 October). A reroll onto a copy shows by it; so does a stepping die's order.
 		draw_string(Hud.quote(), SLOT_AT + Vector2(0, bob), Hud.roman(slot), HORIZONTAL_ALIGNMENT_LEFT, -1, SLOT_SIZE, Color(Palette.MUTED, alpha))
+		# An upgraded piece (Ryan, 19 November: "I agree on the chevron"): a chevron for each step its
+		# machine has taken on it, stacked under its place as a rank's stripes, in ink, so a step reads
+		# by its count and its shape whatever the colour.
+		draw_chevrons(self, SLOT_AT + Vector2(1.0, CHEVRON_DROP + bob), upgrades, Color(Palette.INK, alpha))
 	if face == null or dead:
 		if dead:
 			Glyphs.draw(self, "blank", Vector2(FACE * 0.5, FACE * 0.5 + bob), 44, Palette.LOSS_DIM, 4.0)

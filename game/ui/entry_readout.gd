@@ -281,8 +281,8 @@ static func _bare(p: Dictionary) -> Dictionary:
 ## type (face_type) and its tags beside it, then the hold's lines joined by group, at the
 ## component's own numbers, and `rules` (its passive's lines) after its own. A line with
 ## nothing to say is left out.
-static func codex_lines(f: Face, db: ContentDB, rules: Array = [], named: String = "") -> Array:
-	var title := "EMPTY HARDPOINT" if f.empty else ((named if not named.is_empty() else db.component_name(f.component)).to_upper() if not f.component.is_empty() else f.describe().to_upper())
+static func codex_lines(f: Face, db: ContentDB, rules: Array = []) -> Array:
+	var title := "EMPTY HARDPOINT" if f.empty else (entry_name(f, db).to_upper() if not f.component.is_empty() else f.describe().to_upper())
 	var tags: Array[String] = []
 	for t in f.tags:
 		tags.append(capital(t))

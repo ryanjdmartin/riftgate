@@ -621,7 +621,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	var face_rules: Array = []   # each entry's component passive, its lines on the component's row
 	if u.die != null:
 		for f in u.die.faces:
-			faces.append(f)
+			faces.append(Effects.upgraded_face(u, f))   # at its own numbers, as its steps make it (the Aile Blitzer)
 			face_rules.append([])
 	# The chassis passive is the passive row; a component's passive rides on its row; everything
 	# else the machine carries between fights (a module, a battle's reward, a status the battle
@@ -629,8 +629,12 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	# not as part of the passive, such as modules, auras, battle effects from fracture rewards").
 	# Each row says where it comes from, and the codex colours it by that.
 	var rows: Array = []
+	var stepped: Array = []   # the steps on the passive, listed after it in the order taken
 	var effects: Array = []
 	var kept := {}   # a kept status's row by its id, its stacks summed
+	var piece_steps: Array = []   # each piece's steps, listed after its own lines in the order taken
+	for i in range(faces.size()):
+		piece_steps.append([])
 	for d in Effects.describe(u):
 		if d[3] != Effects.LOADOUT and d[3] != Effects.BATTLE:
 			continue
@@ -644,13 +648,13 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		elif d[2] == "branch" and str(d[6]).is_empty():
 			# A step on the passive, or on more than one piece (the line frame's offhand and its Aile
 			# Booster): under the passive, after it.
-			rows.append(["%s: %s" % [head, d[1]], "chassis"])
+			stepped.push_front(["%s: %s" % [head, d[1]], "chassis"])   # the latest is read first: so I stands before II
 		elif d[2] == "branch":
 			# An upgrade's step (the Storm Petrel's branches, 17 November): on the row of the piece
-			# it tweaks, as that piece's own passive rides there.
+			# it tweaks, as that piece's own passive rides there, after it, I before II.
 			for i in range(faces.size()):
 				if faces[i].component == str(d[6]):
-					face_rules[i].append("%s: %s" % [str(d[0]), d[1]])
+					(piece_steps[i] as Array).push_front("%s: %s" % [str(d[0]), d[1]])
 		elif d[2] == "module":
 			effects.append({"name": head, "text": str(d[1]), "kind": "module", "note": "MODULE"})
 		elif Effects.is_status(str(d[5])):
@@ -669,6 +673,9 @@ func codex_for_unit(u: Unit) -> Dictionary:
 			effects.append(kept_row)
 		else:
 			effects.append({"name": head, "text": str(d[1]), "kind": "reward", "note": "REWARD"})
+	rows.append_array(stepped)
+	for i in range(faces.size()):
+		(face_rules[i] as Array).append_array(piece_steps[i])
 	var passive_lines: Array[String] = []
 	for r in rows:
 		passive_lines.append(str(r[0]))
@@ -687,7 +694,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		"passive_rows": rows,   # [text, "chassis"]: the chassis's own
 		"effects": effects,     # {name, text, kind ("module" | "reward"), note}: what else it carries between fights
 		"faces": faces,
-		"face_names": faces.map(func(f: Face) -> String: return Effects.entry_name(u, f)),   # the name a branch's step gives a piece (the line frame's Aile Blitzer), "" for its own
+		"face_steps": faces.map(func(f: Face) -> int: return Effects.steps_on(u, f)),   # the branch's steps taken on each piece, a chevron each beside its place
 		"face_rules": face_rules,
 		"current": -1,
 		"steps": Effects.steps_die(u),   # a die that steps (the Cassowary's) shows its chambers as a cylinder

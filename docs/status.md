@@ -61,7 +61,7 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1349 tests, 385,788 checks, green (19 November, the line frame's kit landed on
+- Tests: 1350 tests, 385,803 checks, green (19 November, the line frame's kit landed on
   `ccr-64b5deec-lunnff`, over main's Buzzard and the Pilgrim's knife). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
@@ -132,7 +132,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   locked and tiers rows): the Storm Petrel carries the first two, the Buzzard two more, the
   harness's UPG line fields a build, and a run buys none yet. A step may tweak as many pieces as
   it needs (Ryan, 19 November); the line frame's second steps touch its offhand and its Aile
-  Booster. The machines the reboot broke
+  Booster. An upgraded piece wears a chevron a step under its place, on the die and down the
+  codex, and takes the name its step gives it (the Aile Blitzer); `RIFTGATE_TEAM` fields picks
+  in a standalone fight (`line_frame@duelist+duelist`). The machines the reboot broke
   are another session's line (`docs/reboot_machines_proposal.md`, read with
   `tools/reboot_probe.gd`): the Storm Petrel landed from it on 17 November and took Ryan's
   shape of the 18th (no shield armour on its passive; its Hardlight Pulse lays Hardened Light,

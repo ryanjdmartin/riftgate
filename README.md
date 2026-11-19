@@ -403,7 +403,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 
 ```sh
 # What a standalone run fields
-#   RIFTGATE_TEAM=badger,clydesdale,kite,baboon   the team (the standalone skirmish and battle screens)
+#   RIFTGATE_TEAM=badger,clydesdale,kite,baboon   the team (the standalone skirmish and battle screens); in a skirmish an id may carry its branch picks, line_frame@duelist+duelist
 #   RIFTGATE_FOES=warrior,goblin:3,cleric         the skirmish's foes by id and count, heroes included
 #   RIFTGATE_BOSS=1                               adds the faction's boss to the skirmish
 #   RIFTGATE_COLUMNS=4                            the width of the skirmish's formation

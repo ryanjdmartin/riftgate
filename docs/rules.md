@@ -24,7 +24,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   slots and starts with three machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die,
-  beside its name in its readout, and down the codex. An empty hardpoint is a blank entry; nothing fills it. A full,
+  beside its name in its readout, and down the codex. A piece a branch has upgraded wears a
+  chevron under its place for each step taken on it, on the die and down the codex; a step on
+  the passive alone marks no piece, and a destroyed piece shows none. An empty hardpoint is a blank entry; nothing fills it. A full,
   undamaged machine is reliable. A folded die (the Clydesdale's, below) rolls among some of
   its entries alone.
 - **Components** come in four kinds, as the die's main mark shows them: a **weapon** deals

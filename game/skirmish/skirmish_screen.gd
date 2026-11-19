@@ -381,7 +381,8 @@ func _ready() -> void:
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks): two
-## chained packs of the first faction in content. RIFTGATE_TEAM=badger,clydesdale,kite,baboon overrides the team;
+## chained packs of the first faction in content. RIFTGATE_TEAM=badger,clydesdale,kite,baboon overrides the team,
+## and an id may carry its branch picks for a look (`line_frame@duelist+duelist`, as the harness's UPG fields them);
 ## RIFTGATE_BOSS=1 adds the faction's boss as a third unit; RIFTGATE_COLUMNS=4 widens the formation.
 static func _default_skirmish() -> Skirmish:
 	var db := ContentDB.load_default()
@@ -400,9 +401,12 @@ static func _default_skirmish() -> Skirmish:
 			if cols.size() > 1:
 				pd["secondary"] = Color(cols[1])
 			paints[kv[0]] = pd
-	for id in team:
+	for spec in team:
+		var parts := str(spec).split("@")
+		var id := parts[0]
+		var picks: Array = Array(parts[1].split("+", false)) if parts.size() > 1 else []
 		if db.chassis.has(id):
-			var u := db.make_mech(id)
+			var u := db.make_mech(id, 0, Vector2i.ZERO, null, [], picks)
 			if paints.has(id):
 				u.paint = paints[id]
 			s.add_mech(u)
@@ -1303,6 +1307,7 @@ func _refresh(save: bool = true) -> void:
 		var held := _offhand_of(ms, sf) if not ms.assigned and ms.alive() else []
 		d.offhand = str(held[0]) if not held.is_empty() else ""   # its offhand's armament riding it (the line frame's)
 		d.parry = _parry_of(ms, sf) if not ms.assigned and ms.alive() else 0   # its Parry's return on the next strike
+		d.upgrades = Effects.steps_on(ms.unit, ms.die.faces[ms.face_index]) if ms.face_index >= 0 and ms.face_index < ms.die.faces.size() else 0   # a chevron each step taken on the piece showing
 		d.zap_cost = _zap_cost(ms, sf) if not ms.assigned and ms.alive() else 0   # the shield its zap will pay (the Buzzard's)
 		d.form_mark = form_mark(ms, sf) if not ms.assigned and ms.alive() else ""   # it seals its machine or opens it
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
@@ -2700,6 +2705,7 @@ func _on_drag_started(i: int) -> void:
 	var held := _offhand_of(sk.mechs[i], sf)
 	_ghost.offhand = str(held[0]) if not held.is_empty() else ""
 	_ghost.parry = _parry_of(sk.mechs[i], sf)
+	_ghost.upgrades = _dice[i].upgrades
 	_ghost.zap_cost = _zap_cost(sk.mechs[i], sf)
 	_ghost.form_mark = form_mark(sk.mechs[i], sf)
 	_ghost.cooldown = sf.cooldown_rounds() if sf != null else 0
@@ -2886,6 +2892,7 @@ func _send_second_home() -> void:
 	fly.ricochet = d.ricochet
 	fly.offhand = d.offhand
 	fly.parry = d.parry
+	fly.upgrades = d.upgrades
 	fly.zap_cost = d.zap_cost
 	fly.charged = d.charged
 	fly.dark = d.dark

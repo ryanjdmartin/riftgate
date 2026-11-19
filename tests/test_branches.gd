@@ -200,6 +200,32 @@ func test_a_step_may_tweak_the_passive_and_a_locked_piece_at_once() -> void:
 		assert_false((rules as Array).has("Guard I: Guard one."), "and on no piece's row")
 
 
+## The die shows a piece's upgrades (Ryan, 19 November: "I agree on the chevron"): a chevron for
+## each step taken on it, counted once a step however many of its effects name the piece; a step on
+## the passive alone is on no piece, and a destroyed piece shows none.
+func test_each_step_taken_on_a_piece_is_a_chevron_beside_its_place() -> void:
+	var db := _db(1)
+	for picks in [[], ["guard"], ["guard", "guard"], ["guard", "spark"]]:
+		var u := db.make_mech("test_frame", 1, Vector2i.ZERO, null, [], picks)
+		assert_eq(Effects.steps_on(u, u.die.faces[0]), (picks as Array).size(), "%s: a chevron a step on the lure" % str(picks))
+		assert_eq(Effects.steps_on(u, u.die.faces[1]), 0, "%s: none on the gun" % str(picks))
+		assert_eq(db.codex_for_unit(u)["face_steps"], [(picks as Array).size(), 0], "%s: the codex's rows" % str(picks))
+	var c: Dictionary = db.chassis["test_frame"]
+	c["passive"] = {"id": "test_passive", "name": "Test Passive", "description": "Plain.", "effects": [
+		{"trigger": "static", "effect": "shield_zap", "value": 2, "cost": 2, "slot": "zap"}]}
+	c["branches"][1]["steps"][0]["effects"] = [{"trigger": "static", "effect": "shield_zap", "value": 3, "cost": 2, "slot": "zap"}]
+	var on_passive := db.make_mech("test_frame", 2, Vector2i.ZERO, null, [], ["spark"])
+	assert_eq(Effects.steps_on(on_passive, on_passive.die.faces[0]), 0, "a step on the passive alone is on no piece")
+	var worn := db.make_mech("test_frame", 3, Vector2i.ZERO, null, [], ["guard", "guard"])
+	var sk := Skirmish.new(1, 4)
+	sk.add_mech(worn)
+	sk.add_foes([Foe.make("revenant", 30, 0)])
+	sk.begin()
+	sk.start_round()
+	sk._injure_entry(sk.mechs[0], 0)
+	assert_eq(Effects.steps_on(worn, worn.die.faces[0]), 0, "a destroyed piece shows none")
+
+
 ## A step may name the piece it upgrades (Ryan, 19 November: "I intended the gundam to change its
 ## equipment names for the booster and the offhand"; "the upgrade decisions should be represented on
 ## the die somehow"): the die's readout and the codex call it by the step's name, the die keeping the
@@ -219,7 +245,9 @@ func test_a_step_may_name_the_piece_it_upgrades() -> void:
 	assert_eq(Effects.entry_name(u, u.die.faces[1]), "", "and no other piece takes it")
 	var lines := EntryReadout.lines_for(Effects.effective_face(u, lure), 1, -1, lure, [], [], db)
 	assert_eq(str(lines[0]["text"]), "TEST LANCE", "the readout's title")
-	assert_eq(db.codex_for_unit(u)["face_names"], ["Test Lance", ""], "the codex's rows")
+	var rows: Array = db.codex_for_unit(u)["faces"]
+	assert_eq([(rows[0] as Face).renamed, (rows[1] as Face).renamed], ["Test Lance", ""], "the codex's rows")
+	assert_eq(str(EntryReadout.codex_lines(rows[0], db)[0]["text"]), "TEST LANCE", "and its row's name")
 	var plain := db.make_mech("test_frame", 2, Vector2i.ZERO)
 	assert_eq(Effects.entry_name(plain, plain.die.faces[0]), "", "unpicked, its own")
 	var bad: Array[String] = []

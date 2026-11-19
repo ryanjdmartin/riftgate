@@ -235,9 +235,9 @@ func open(entry: Dictionary) -> void:
 	var rules: Array = entry.get("face_rules", [])
 	var current := int(entry.get("current", -1))
 	var stowed: Array = entry.get("stowed", [])
-	var names: Array = entry.get("face_names", [])
+	var steps: Array = entry.get("face_steps", [])
 	for i in range(faces.size()):
-		var row := _face_row(faces[i], i, i == current, rules[i] if i < rules.size() else [], db, str(names[i]) if i < names.size() else "")
+		var row := _face_row(faces[i], i, i == current, rules[i] if i < rules.size() else [], db, int(steps[i]) if i < steps.size() else 0)
 		if stowed.has(i):
 			row.modulate.a = STOWED_ALPHA   # the battery down (the Clydesdale's): on the die, out of the roll
 		_faces.add_child(row)
@@ -274,19 +274,20 @@ static func effect_lines(effects: Array) -> Array:
 
 ## One component's row: its numeral and tile, bracketed when it is the entry showing, then its
 ## name and its lines at its own numbers (EntryReadout.codex_lines).
-func _face_row(f: Face, i: int, showing: bool, rules: Array, db: ContentDB, named: String = "") -> Control:
+func _face_row(f: Face, i: int, showing: bool, rules: Array, db: ContentDB, upgraded: int = 0) -> Control:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 6)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var tile := FaceListView.new()
 	tile.tiles_only = true
 	tile.first_place = i + 1
+	tile.upgrades = [upgraded]
 	tile.set_faces([f], 0 if showing else -1)
 	tile.custom_minimum_size = Vector2(TILE, FaceListView.ROW)
 	tile.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	row.add_child(tile)
 	var lines := EntryReadout.new()
-	lines.set_lines(EntryReadout.codex_lines(f, db, rules, named), TEXT - TILE - 6.0)
+	lines.set_lines(EntryReadout.codex_lines(f, db, rules), TEXT - TILE - 6.0)
 	lines.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	row.add_child(lines)
 	return row

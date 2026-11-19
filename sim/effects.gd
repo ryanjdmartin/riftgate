@@ -1636,6 +1636,40 @@ static func strike_again(u, face: Face, target = null) -> int:
 	return n
 
 
+## The branch's steps taken on this piece (Ryan, 19 November, of an upgrade shown on the die: "I
+## agree on the chevron"): every step a machine has picked with an effect scoped to the piece by
+## `entry`, each once however many of its effects name it; a step on the passive alone is on no
+## piece. The die and the codex draw a chevron for each beside the entry's place.
+static func steps_on(u, face: Face) -> int:
+	if face == null or face.component.is_empty() or face.kind == Face.Kind.BLANK:
+		return 0   # a destroyed piece takes its tweaks with it, and shows none
+	var n := 0
+	for m in u.modifiers:
+		if m.source != "branch":
+			continue
+		for eff in m.effects:
+			if eff is Dictionary and str(eff.get("entry", "")) == face.component:
+				n += 1
+				break
+	return n
+
+
+## The piece as its branch's steps make it, for the codex, which shows every piece at its own
+## numbers: what the steps turn it into, its name (entry_name) and the status a buff grants in its
+## own's place (buff_rewrite), and nothing a passive, a module or a fight adds. The piece itself
+## when no step turns it into another.
+static func upgraded_face(u, face: Face) -> Face:
+	var named := entry_name(u, face)
+	var buff_to := buff_rewrite(u, face)
+	if named.is_empty() and buff_to.is_empty():
+		return face
+	var c := face.duplicate_face()
+	c.renamed = named
+	if not buff_to.is_empty():
+		c.buff_status = buff_to
+	return c
+
+
 ## The name a live effect gives this piece (`name` on an effect scoped to it by `entry`: the line
 ## frame's Aile Booster as the Aile Blitzer or the Aile Assaulter, Ryan, 19 November: "I intended
 ## the gundam to change its equipment names for the booster and the offhand"; "the upgrade
