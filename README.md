@@ -218,6 +218,7 @@ python3 tools/hangar_designs.py --fold build/hangar/inbox --dry     # what it wo
 perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=5 kinds=patrol
 perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=2 kinds=formation
 perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=2 kinds=elite,boss
+#   machines=3 reads every fight with that many machines whatever it is rated: the first battle's trio against a true four
 #   only=id,id reads those compositions or bosses alone; tier=, ramp=; refit=<spec> lays a
 #   what-if over content for the run (refit=barrier=none, the Barrier basic off the stock dice);
 #   blows=80 sets every elite's and boss's attack to that share of content's, in hundredths

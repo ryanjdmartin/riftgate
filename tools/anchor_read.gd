@@ -14,13 +14,16 @@ extends SceneTree
 ##
 ## usage: godot --headless --path . -s tools/anchor_read.gd -- pool=a,b,c,d,e,f [seeds=5]
 ##        [squads=0] [tier=1] [ramp=1] [kinds=patrol,formation,elite,boss] [only=id,id]
-##        [refit=spec] [blows=percent] [label=text]
+##        [refit=spec] [blows=percent] [machines=n] [label=text]
 ##   pool    the chassis ids the squads are drawn from
 ##   seeds   fights a squad; squads: how many of the pool's squads of that size (0, all:
 ##           the even draw, every machine in as many squads as every other; a count takes
 ##           every k-th squad and is uneven by machine, five of a six's fifteen fours
 ##           holding the first machine four times and the last twice)
 ##   only    the composition or boss ids to read, the rest skipped
+##   machines  a what-if on the squad: every fight read with that many machines, whatever it
+##           is rated (machines=3: the first battle's trio against a true four); a row keeps
+##           the kind its rating gives it, and hull stays a share of a four's
 ##   refit   a what-if laid over content for the run (sim/refit.gd's spec, as --refit takes)
 ##   blows   a what-if on the leaders alone: every elite's, boss's, hero's and commander's
 ##           attack at that share of content's, in hundredths (blows=80), a foe a fight
@@ -51,7 +54,7 @@ func combos(pool: Array, n: int) -> Array:
 
 
 func _init() -> void:
-	var o := {"seeds": "5", "tier": "1", "pool": "", "kinds": "patrol,formation,elite,boss", "ramp": "1", "squads": "0", "label": "", "only": "", "refit": "", "blows": "100"}
+	var o := {"seeds": "5", "tier": "1", "pool": "", "kinds": "patrol,formation,elite,boss", "ramp": "1", "squads": "0", "label": "", "only": "", "refit": "", "blows": "100", "machines": "0"}
 	for arg in OS.get_cmdline_user_args():
 		var kv := str(arg).split("=", true, 1)
 		if kv.size() == 2:
@@ -98,6 +101,8 @@ func _init() -> void:
 		if kinds.has("boss"):
 			for bid in db.bosses_of(str(fid)):
 				rows.append(["boss", str(fid), str(bid), {}])
+	if int(o["machines"]) > 0:
+		print("what-if: every fight read with %d machines, whatever it is rated" % clampi(int(o["machines"]), 1, mini(4, pool.size())))
 	var blows := clampi(int(o["blows"]), 10, 300)
 	if blows != 100:
 		print("what-if: every leader's attack at %d%% of content's" % blows)
@@ -115,7 +120,8 @@ func _init() -> void:
 		if str(row[0]) != "boss":
 			var probe_pack: Unit = Battlefield.pack_of(row[3], str(row[1]))
 			rated = probe_pack.squad
-		var n := clampi(rated, 1, mini(4, pool.size()))
+		var forced := int(o["machines"])
+		var n := clampi(forced if forced > 0 else rated, 1, mini(4, pool.size()))
 		var kind_label := str(row[0])
 		if kind_label == "patrol" and rated >= 2:
 			kind_label = "hunter"

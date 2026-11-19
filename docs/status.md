@@ -171,8 +171,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   move since then, the machines' formula. This pass's leans on the dials stand in the
   brief's section 7, each his. Tiers two and three and the first battle are unsized, their
   foes still the ones sized against a shield that refilled; the first battle, the one a
-  trio fights, is the Meadow's alone on his word of 18 November ("It's just the meadow at
-  level 1 that gets 3"), not built. A formation is read at its rating, three of the four on
+  trio fights, is the Meadow's alone ("It's just the meadow at level 1 that gets 3"; the
+  bible's squad row), not built. A formation is read at its rating, three of the four on
   the field, and all four on one cost a fifth of its price or less. On a debug
   build's SETTINGS, TRIALS, each a number still to be picked: HEAT, TOP BASIC, RANK AND FILE
   and BARRIER BASIC (read at the next launch), OVERHEAT, FIELD DEPTH, OPENING, FODDER,
@@ -197,8 +197,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   battle: walks pass it and none ends on it, its model dark and slumped where it fell. The
   rift's shell walls the seven hexes beside it, closed to the machines while the seal stands,
   a stretch cracking at each Fracture and the whole bursting at the Rupture, a cache behind
-  it. Decided and not built: the fourth machine comes
-  with the first battle, a choice from the host maker's catalogue (the bible's squad row).
+  it. Decided and not built: the first battle is the
+  Meadow's, fought by the draft's three, and brings the fourth machine, a choice of one of
+  three from the host maker, or the draft's missing pick on a loss (the bible's squad row).
   Detail: the rules' The battlefield; the bible's section 4.
 - **The campaign.** Its rules run headless only (`sim/campaign.gd`); no screen shows them.
   The campaign runner's player fights alone by the map's defence rule, the floor the reads
@@ -320,9 +321,10 @@ publish; the commands are in `README.md`.
   Published at v0.634 on 18 November from main's file at `1383f11` (the page's Version 513),
   every line of the file read first; the page it replaced was v0.564 of 13 November, the
   file of `620c717`, an ancestor of main, so main's file went up whole. Main's file is
-  v0.636 since, unpublished: its row on the foes' rule set says a step ahead of a blow is a
-  move's own order and no rule of Purge, his correction of 18 November, and its item on the
-  first battle holds his word that the trio's battle is the Meadow's. Before republishing,
+  v0.637 since, unpublished: its row on the foes' rule set says a step ahead of a blow is a
+  move's own order and no rule of Purge, his correction of 18 November, and its squad row holds the
+  first battle as he decided it: the Meadow's, the draft's three, a choice of one of three
+  from the host maker, the draft's missing pick on a loss. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
   `1383f11` unless the live page says otherwise, OURS this branch's file, THEIRS the saved

@@ -122,16 +122,19 @@ significantly affects boss scaling, since the whole team is brought in. Second, 
 battlefield power a fourth unit gets is being able to reliably cover a flank, and stay out
 there without presumably needing to come back to reinforce for an elite, most of the time anyway."
 
-**Settled the same day** (the bible's squad row; not built): the fourth machine is owed after
-the first battle, a choice from the maker whose city was defended. So tier one has two bands,
-the first battle at three machines and every battle after at four, and a fight is read at its
-rating: a lone patrol one, a pair or a hunting pack two, a formation three, an elite and a boss
-four. Unmarked, Claude's lean: a first battle lost sends the machine left on the tender.
-
-**His word, 18 November**: "the waste will only ever be fought with 4 machines. It's just the
-meadow at level 1 that gets 3." So the band of three is the Meadow's first battle alone, this
-brief's bench idea made his word (the reading, his to correct: a run's first battle is the
-Meadow's). Not built: `Campaign` rolls a first rift's domain as it rolls any rift's.
+**Settled** (the bible's squad row; not built): the first battle is the Meadow's, fought by the
+three machines of the draft, and it brings the fourth: won, a choice of one of three machines
+from the maker whose city was defended; lost, the draft's missing pick. So tier one has two
+bands, the Meadow's first battle at three machines and every battle after at four, and a fight
+is read at its rating: a lone patrol one, a pair or a hunting pack two, a formation three, an
+elite and a boss four. His words: 11 November, "if the choice is in which city to defend in
+order to get a guaranteed choice from that maker, then that works"; 18 November, "the waste
+will only ever be fought with 4 machines. It's just the meadow at level 1 that gets 3"; and 19
+November, of what he had held settled since the 11th, when this brief asked "Meadow first, yes
+or no?" and wrote down no answer: "First battle, meadow, 3 machines from the draft, reward is a
+choice of 1 of 3 machines from the maker, or the missing 4th draft pick on loss. I'm ok with
+first battle being from any domain, really, but it's a whole other thing to balance, right?"
+`Campaign` rolls a first rift's domain as it rolls any rift's, and holds no offer.
 
 **His scope: tier one only.** "Let's focus only on balancing tier 1 fights for now. If you've
 read the other work done then you'll know that we're considering tier 3 machines to have higher
@@ -146,6 +149,15 @@ no shorter. The reads of 11 and 12 November, in kind: a flat cut makes the Meado
 easy and not the Waste's or the Peak's; hull and the wall lose it separately, since the opening
 asks three machines for a formation and two flank patrols (`Ramp.formations_at`,
 `Ramp.patrols_at`); and the boss wants a block of its own, where `ContentDB.BOSS_TIERS` is by tier.
+
+**What a trio pays today** (19 November, `tools/anchor_read.gd` with `machines=3`, tier one as
+sized for four, the dice as dealt; `docs/measurements.md`). A formation is rated three, so a
+trio pays the anchor's rows, 2.4% to 9.3% of a four's hull. A leader is a true four: an elite
+fight costs a trio 24% to 35% by domain, and a boss 42% in the Meadow, won four fights in
+five, 38% and 40% in the Marsh and the Peak, and 56% in the Waste, won one in two. So the
+Meadow's first battle is still to be sized, its three bosses and two elite fights (Floraison
+a coin's toss for three), and the first battle in any domain would be thirteen bosses and
+eleven elite fights that do not take one cut: his "it's a whole other thing to balance".
 
 **Open, his:**
 

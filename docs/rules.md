@@ -1816,7 +1816,7 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   run is lost at zero.
 - **Start**: a tender of one tier-one machine from each city maker (by seed, in stock
   loadout; a chassis whose passive or locked piece is still planned is not dealt, so a maker
-  whose only tier one is a draft offers nothing until it lands); the player takes three. Four squad slots, the fourth machine the first battle's offer (below; not built), 0 salvage, 100 Favour, a blueprint for
+  whose only tier one is a draft offers nothing until it lands); the player takes three. Four squad slots; the first battle is the Meadow's, fought by those three, and brings the fourth machine (below; not built), 0 salvage, 100 Favour, a blueprint for
   every basic, the eight of tier zero.
 - **A turn** is one battle at a front, with one to four ready machines, or a pass; once the
   finale is due no turn is passed (the Council demands the capital fought now), so the
@@ -1830,8 +1830,9 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   token of the lead domain and an offer from the host maker are owed (the token a choice of
   three blueprints of the domain's theme at the Convergence's tier; the offer a chassis, a
   component copy and a module from the maker's catalogue, one taken free; the first battle's
-  offer is the fourth machine, a choice among the host maker's chassis; unpacking and offers
-  not built).
+  offer is the fourth machine, a choice of one of three of the host maker's machines, and a
+  first battle lost sends the draft's missing pick, the machine left on the tender; unpacking
+  and offers not built).
 - **Fell** (the gate reached 0): the city falls, the battle's salvage is lost, the rift stays
   open, as art: no front, and nothing reads its domain. **Wiped** (every machine wrecked): the horde strikes the gate for up to six phases;
   the city falls at zero or holds wounded, keeping the salvage; no Favour.

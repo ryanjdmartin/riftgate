@@ -11561,3 +11561,38 @@ bite. The squad with it pays what the other does, where it paid little more than
 knife's read again (7.6% to 16.0%). So a purge ahead of a leader's blow is what closes the
 Barrier's gap in a Waste fight, and a purge on the Needler is not.
 
+## 19 November: what tier one's leaders cost a trio, by domain
+
+Ryan, of the first battle: "First battle, meadow, 3 machines from the draft, reward is a
+choice of 1 of 3 machines from the maker, or the missing 4th draft pick on loss. I'm ok with
+first battle being from any domain, really, but it's a whole other thing to balance, right?"
+Read with the anchor's new `machines=3`: every tier-one elite fight and boss as sized for
+four, against every trio of the six certain tier ones on the dice as dealt, the Barrier
+basic on them, the greedy bot, forty fights a row. Hull is a share of a four's, 96 points;
+a trio's own is three quarters of that, so a row is a third more of what a trio has.
+
+| Domain | An elite fight | Won | A boss | Won | Wrecks a boss fight |
+|---|---|---|---|---|---|
+| The Meadow | 25.9% | 98% | 41.7% | 81% | 0.91 |
+| The Waste | 24.1% | 99% | 55.5% | 53% | 1.69 |
+| The Marsh | 30.4% | 91% | 37.7% | 84% | 0.75 |
+| The Peak | 35.0% | 90% | 39.6% | 85% | 0.61 |
+
+By boss: Floraison 58.7% and won one fight in two, the King Gel 34.6%, the Mantis Ant
+31.8%; the Ruby Colossus 65.2% and won one in four, the Fallen Weapon 50.3% and 53%, the
+Emperor Scorpion 50.9% and 83%; the Matador 47.6% and 80%, the Phantom Train 51.6% and 63%,
+the Vampire Lord 27.8%, the Marsh Serpent 23.7%; the Gargantuan King 30.0%, the Fiend of
+Fire 55.3% and 55%, the Obsidian Tyrant 33.4%. By elite fight: the shaman's warband 27.7%,
+the Nob 24.1%; the old man's rising 27.0%, the Pilgrim's wake 28.0%, the Rust Monster
+21.0%, Gilgamesh 20.3%; the Fell Rider 18.0%, the Reaper 28.1% and 85%, the Wild Hunt
+45.1% and 88%; the Cinder Tortoise 31.1%, the Thunder Ape 38.9% and 85%. A formation is
+rated three, so a trio pays the anchor's own rows for one, 2.4% to 9.3%.
+
+What it says. No domain's first battle is easy for a trio as tier one is sized: a leader is
+a true four, and a trio pays a third to two thirds of a four's hull for a boss. The Meadow
+is no longer the gentle one it read as on 11 November: Floraison, unmoved by the leaders'
+sizing, is a coin's toss for three. The domains do not scale alike, the Waste's three
+bosses won one fight in two where the others win four in five, so one cut does not fit
+four domains. The first battle in one domain is three bosses and two elite fights to size
+for a trio; in any domain it is thirteen and eleven.
+
