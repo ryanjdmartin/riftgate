@@ -115,8 +115,8 @@ func _kinds() -> Array:
 	bouncing.ricochet = 2
 	var reload := Face.vent(0)
 	reload.reloads_ammo = 2
-	var wake := Face.vent(3)
-	wake.shields = 3
+	var cooling := Face.shield(3)
+	cooling.vents = 3
 	var hoist := Face.shield(3)
 	hoist.vents = 2
 	hoist.targets = Face.Target.ALLY
@@ -140,7 +140,7 @@ func _kinds() -> Array:
 		["Shield, every ally", "the arch, its own cell\nlit: the whole team", _die(team)],
 		["Shield, every other", "its own dark: every other\nmachine (the Screens)", _die(screens)],
 		["Vent", "its plate holding the heat\noff, steam rising off it", _die(Face.vent(3))],
-		["Shield and vent", "both at once (the Wake\nDiffuser): shield | cool", _die(wake)],
+		["Shield and vent", "a shield that cools:\nshield | cool", _die(cooling)],
 		["Shield and vent, ally", "the Sutler's Hoist: the\nsteam over the cooling", _die(hoist)],
 		["Reload", "cools nothing: its shells\nand its ammo (the Musk Ox)", _die(reload)],
 		["Blank", "an empty hardpoint, or\na destroyed component", _die(Face.empty_slot())],

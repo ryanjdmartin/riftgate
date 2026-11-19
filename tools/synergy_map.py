@@ -105,7 +105,7 @@ FACE_FIELDS = {
     "spends": [("essence", "reads")], "spends_up_to": [], "holds_all": [("overcharged", "reads")],   # the Quintessence Tap: it consumes Essence, and holds every Empowered a round
     "spends_magazine": [("ammo", "reads")], "magazine_min": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
     "self_ablate": [("ablating_mech", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
-    "shields": [], "vents": [], "cooldown": [], "charged": [("muster", "reads")],
+    "vents": [], "cooldown": [], "charged": [("muster", "reads")],
     "rolls_target": [],
     # The rules written on their one piece (15 November, keywords before): the Combat Translocator's
     # swap and the Web Bomb's web.

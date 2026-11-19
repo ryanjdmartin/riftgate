@@ -908,7 +908,7 @@
     "rivet_gun",
     "ankle_mortar",
     "halo_projector",
-    "twin_autoguns"
+    "laser_carbine"
    ],
    "passive": {
     "id": "indexed_cylinder",
@@ -965,7 +965,7 @@
     "ankle_mortar",
     "twin_autoguns",
     "halo_projector",
-    "twin_autoguns"
+    "incendiary_shells"
    ],
    "passive": {
     "id": "adaptive_munitions_drum",

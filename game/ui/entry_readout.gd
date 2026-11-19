@@ -179,10 +179,6 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 				out.append(marked(parts_line("effect", [word("Vent"), num(str(f.power), f.power, base.power)], "attr"), [main]))
 				if f.reloads_ammo > 0:
 					out.append(loads)
-			if f.shields > 0:
-				# The combined entry's second half, after the vent (the Wake Diffuser), by the
-				# shield's mark: the die prints it in the shield's half of its mark.
-				out.append(marked(parts_line("effect", [word("Shield"), num(str(f.shields), f.shields, base.shields)], "attr"), [mark("shield", Palette.SHIELD, false)]))
 	if f.ammo > 0:
 		# A forging machine's gun (the Musk Ox's): its price in ammo, by the shells' mark.
 		var ammo := [word("Ammo"), num(str(f.ammo), f.ammo, base.ammo, true)]
