@@ -88,26 +88,30 @@ formation three, an elite and a boss four), the greedy bot (`tools/anchor_read.g
 squad of the pool is read, the even draw: a count of them was uneven by machine until 18
 November, the Honey Badger in four of the five fours the leaders were sized on, and the
 sizing held when it was read again on all fifteen (`docs/measurements.md`, that day). Hull
-is a share of a four's, 96 points for this pool.
+is a share of a four's, 96 points for this pool. The squad on the field is four in every
+row: a formation's fight is three of it by its rating, the fourth on a flank (his split of
+6 November), and all four on a formation cost a fifth of its price or less, the Waste's two
+0.5% and 1.4% for 5.3% and 5.5% (18 November). The trio's battle is the first alone, and
+the Meadow's alone on his word of that day.
 
 | Kind of fight | Rounds | Hull lost | The budget | Before the sizing |
 |---|---|---|---|---|
 | A lone flanker | 5.3 | 3.4% | 3.3% or less | 5.9% |
 | A hunter's pack | 4.8 | 8.9% | 10% | 12.7% |
-| A formation | 5.7 | 4.5% | 5% | 8.3% |
-| An elite, the squad without the Barrier | 6.5 | 24.8% | 25% | 23.6%, the Nob at 65.1% |
-| A boss, the squad without the Barrier | 8.9 | 29.8%, a wreck in a fight of five | what is left | 53.2%, 86% won |
+| A formation | 5.8 | 5.3% | 5% | 8.3% |
+| An elite, the squad without the Barrier | 6.6 | 25.2% | 25% | 23.6%, the Nob at 65.1% |
+| A boss, the squad without the Barrier | 8.9 | 29.9%, a wreck in a fight of five | what is left | 53.2%, 86% won |
 
-By formation: the needler thicket 1.3%, the sandworm's ambush 1.5%, the knights' vigil 2.4%,
-the magma vent 2.7%, the goblin horde 3.3%, the gel wall 4.9%, the barrow mound 6.2%, the
+By formation: the knights' vigil 2.4%, the magma vent 2.7%, the goblin horde 3.3%, the gel
+wall 4.9%, the needler thicket 5.3%, the sandworm's ambush 5.5%, the barrow mound 6.2%, the
 ember pyre 6.5%, the grave throng 6.6%, the treant's grove 9.3%. The flankers cost 2.5% to
 4.1%; the wolf pack 7.1% and the antlion trio 10.7%. Every one is won in every fight.
 
 The elites and the bosses are sized for a squad without the Barrier (section 8), the
 Armoured basic in the Halo Projector's slot: an elite from about 15% (the shaman's warband)
-to 27%, every fight won, and a boss from 21% (the Vampire Lord) to 42% (the Obsidian
+to 28%, every fight won, and a boss from 21% (the Vampire Lord) to 42% (the Obsidian
 Tyrant), a row a direction at thirty fights. The squad as the dice deal it, the Barrier
-basic on them, pays about half: an elite 13.9%, a boss 19.2%. The piece stays on the
+basic on them, pays about half: an elite 13.8%, a boss 20.1%. The piece stays on the
 starting dice on his word, his play to say whether it proves toxic; the game is sized for
 the day it leaves.
 
@@ -214,14 +218,12 @@ tier in the component pass.
 
 ## 7. Open
 
-His, each with this pass's lean and its read (`docs/measurements.md`, 17 November, the last
-two entries):
+His, each with this pass's lean and its read (`docs/measurements.md`, 17 and 18 November):
 
 | The call | The lean | Why |
 |---|---|---|
 | Whether the Barrier basic proves toxic | His play's to say (18 November: "if it does prove toxic after all, in my play, then it's relatively easy to remove"); it stays on the starting dice until then, on BARRIER BASIC | The leaders are sized for a squad without it, so taking it off moves no number. With it a squad pays about half, and the leaders whose weight is one great blow cost it least: the Vampire Lord 7.1%, the Fell Rider and the Rust Monster 7.4%, the Mantis Ant 7.8%, the Marsh Serpent 8.3%, the Nob 9.6%. A second round of cooldown is 3.5 points on a boss where the piece itself is 20 |
-| How the leaders strike | His lean, 18 November (section 1; the bible's section 9): whole blows the norm, "leaning slightly towards multi to gently boost armour in boss and elite fights", never so "an armoured tank is just best in every fight" | A pair is the gentle setting and three strikes or more a wall's fight (section 4's plate arithmetic), so three and more stay the rare kit shape. Today one boss a domain carries a move of strikes (Floraison's three and five, the Emperor Scorpion's pair, the Matador's four, the Fiend of Fire's six) and one elite fight of tier one's eleven (the Thunder Ape's three). The lean's room is a pair on a few leaders' plain blows, most of it among the elites, each a proposal in chat by the kit's fantasy. A move of strikes is sized with what lands once a strike: its riders, and a machine's Brittle (the World Eater its one layer, so it keeps whole blows). A foe's Empowered goes through the move's multiplier, so a pair at the same total takes a rally as the whole blow did, and it grows on a move whose strikes add up to more than its attack (Full Bloom, five strikes at half, takes two and a half of one). This pass's lean of 17 November, every plain blow as two strikes, is retired; its read stands, and the what-if that made it, the anchor read's `split=`, left with the leader pass (`git show 4ae57e4:tools/anchor_read.gd`) |
-| A pair on two bosses | This pass's proposal, by the kits' own words, for his marks: the Mantis Ant's Mandibles as two strikes of 7 for one of 13, the Gargantuan King's Gore as two of 6 for one of 11 | Read as a what-if on every squad, sixty fights a cell: a pair leaves the squad without the Barrier where it was (the Mantis Ant 25.9% to 26.1%, the King 31.6% to 33.4%) and takes half the piece's edge with it (7.8% to 13.8%, 23.1% to 27.4%). Each boss keeps a whole blow beside the pair, the Ant's Upheaval and the King's Charge |
+| How the leaders strike | His lean, 18 November (section 1; the bible's section 9): whole blows the norm, "leaning slightly towards multi to gently boost armour in boss and elite fights", never so "an armoured tank is just best in every fight" | A pair is the gentle setting and three strikes or more a wall's fight (section 4's plate arithmetic), so three and more stay the rare kit shape. Today one boss a domain carries a move of strikes (Floraison's three and five, the Emperor Scorpion's pair, the Matador's four, the Fiend of Fire's six) and one elite fight of tier one's eleven (the Thunder Ape's three). Two more bosses strike in pairs on his go of 18 November, the Mantis Ant and the Gargantuan King (section 8). What room the lean has left is a pair on a few elites' plain blows, each a proposal in chat by the kit's fantasy. A move of strikes is sized with what lands once a strike: its riders, and a machine's Brittle (the World Eater its one layer, so it keeps whole blows). A foe's Empowered goes through the move's multiplier, so a pair at the same total takes a rally as the whole blow did, and it grows on a move whose strikes add up to more than its attack (Full Bloom, five strikes at half, takes two and a half of one). This pass's lean of 17 November, every plain blow as two strikes, is retired; its read stands, and the what-if that made it, the anchor read's `split=`, left with the leader pass (`git show 4ae57e4:tools/anchor_read.gd`) |
 | HEAT | −1: a vanilla 3 for 3 | Four shots a gauge for three; a formation 0.7 rounds shorter and a point of hull lighter, a quarter fewer reboots; "I just know I overheated a lot" |
 | TOP BASIC | +2: the Carbine 4 for 6 | Its point is paid in heat: two shots a gauge for the vanilla's four |
 | RANK AND FILE | As built: a standard foe of 4 | At 5 a formation runs a round longer and costs half again as much, so the blows would be sized again. The room 5 was to buy, a point between the Carbine and the kill, is bought by the Carbine's heat. Loosely held; tier two's standard is 5 already |
@@ -259,15 +261,18 @@ November. The rules the moves follow, each a lean of this pass and his to overru
   round as before.
 - A split conserves the blow: a Half-Gel strikes for 1, half its Gel's 2.
 - A blow that lost Breach takes back what it paid: the Needler and the Zombie Knight strike
-  for 4, and the two massives, the Sandworm and the Magma Elemental, for 6.
+  for 4, and the two massives, the Sandworm and the Magma Elemental, for 6. The Needler's
+  body was the other half of that price, 2 hit points for a needle through the shield: it
+  has the standard foe's 4 since 18 November, and the old man's rising fields two Needlers
+  for three.
 - A scorch on every machine is 2 at tier one: the Magma Elemental's Eruption.
 - The standard blow with a rider on top: the Salamander strikes for 3.
 - The two formations that ran longest and dearest: the Treant strikes for 6 and mends 2, and
   the gel wall fields two mandragoras behind its four gels, not three.
 
-The Waste's two formations stay light, 1.9% and 2.8%. Their foes are thin and lost the
-rider that was their bite; what a domain's kit should be without Breach is a content
-proposal for his marks, the Waste's first, and no number chases it.
+The Waste's two formations cost 1.3% and 1.5% until the Needler's body and 5.3% and 5.5%
+since. What the domain asks without the rider that was its bite is section 9's proposal,
+for his marks.
 
 The elites and the bosses of tier one, 18 November, in `content/foes.json`, read for a
 squad without the Barrier. Every boss and every changed elite, before and after for both
@@ -285,14 +290,137 @@ squads, is `docs/measurements.md` under that date. The rules the moves follow:
   won, so its attack came down and the feast stands.
 - The Pilgrim rose through its blows, and its knife is damage a Barrier does not take since
   18 November, on his thought ("should the knife attack purge before hitting"): Purge 1 and
-  then the blow, a step ahead of the blow that the move says, a Ward the answer, and the
-  Pilgrim's alone ("Agreed on pilgrim-only": the bible's row on the foes' rule set). It costs a
+  then the blow, a step ahead of the blow that the move says, a Ward the answer, and its
+  move's own order, no rule of Purge ("pilgrim-only was in reference to not making it a
+  purge rule, not restricting it to literally just the pilgrim": the bible's row on the
+  foes' rule set), so another move may carry a step ahead where its kit calls for one. It costs a
   squad without the Barrier 19.2% and one with it 16.0% for 7.6%. The Reaper rose the same
   way, for a day: its Harvest is a sweep at every machine since 18 November, on his word ("Reaper
   sweep seems like a good idea"), 9 at each and corrupting 1, drawn as often as its scythe,
   and its Scythe and Knell are 12 and 18 again. It costs a squad without the Barrier what
   it did, 24.3%, and one with it 13.5% for 7.8%.
+- Two bosses strike in pairs since 18 November, on his go ("go ahead with both"), the first
+  carriers of his lean that the leaders strike slightly towards multi: the Mantis Ant's
+  Mandibles are two strikes of 7 for one of 13 and the Gargantuan King's Gore two of 6 for
+  one of 11, each beside a whole blow, the Upheaval and the Charge. A pair cost the squad
+  without the Barrier nothing (26.1% for 25.9%, 33.4% for 31.6%) and took half the piece's
+  edge (13.8% for 7.8%, 27.4% for 23.1%).
 - No one action takes the lightest machine from full, the scale row's cap, 26 points on the
   Cottonmouth: the Thunder Ape's Rampage is three strikes of 6 for 8, so gold it lands 24
   where the foes' adds on every strike had made it 30, and the Ape has 54 hit points for 48.
 
+## 9. The Waste's kit, proposed 18 November
+
+Waiting on his marks ("give me your waste take since that seems important"). Nothing of it
+is in content but the Needler's body (section 8). The reads are `docs/measurements.md`, 18
+November.
+
+How it is put to him, his word the same day: "I have only really been playtesting the meadow
+so you'll have to break down your proposals for me explicitly." So a domain's kit is laid
+out against the Meadow's fights, the ones his play knows, piece for piece, with its fights'
+screens and a round worked through (the thicket beside the goblin horde, the sandworm's
+ambush beside the Treant's grove). And, of that breakdown's three machines: "Also remember
+that the waste will only ever be fought with 4 machines. It's just the meadow at level 1
+that gets 3." Every Waste read is a squad of four on the field, a formation's fight three
+of it by its rating; it is said so from here on, and a Waste fight is shown and read
+against all four beside it. Against all four the needle's rule has nothing to take, the
+Needlers falling before they strike, so it shows where the squad is split and beside the
+knife.
+
+**What Breach left.** It was the bite of three of the Waste's five tier-one foes, the
+Needler, the Sandworm and the Antlion, and the first half of the domain's signature, "fixed
+damage no shield answers". All three are plain blows on the budget now. What is missing is
+a question, not a weight: tier one's Waste teaches one special, the Cockatrice's Stone, a
+tenth of a point on the measure (section 4), where the Meadow's teaches a wall, a howl and
+a split, the Marsh's a rising, a mend and a raising, the Peak's a scorch, a fuse and a
+stoke. Above tier one the hand is there already: the barb (Corrupt: a fixed bite no armour
+and no Barrier takes, paid by the player's own spend), the Basilisk's Transfix, the Djinn's
+Unmake and its mirage, the pit's Barrier, Thousand Needles, the Gorgon's dying gaze.
+
+**The lean**, each a mark of its own:
+
+1. What the Waste is: it takes. Entries and buffs, and every turn a machine gives to
+   anything but shooting (the reroll is the Meadow's to take, below). Its damage is plain and steady, the needles' count. Nothing in
+   it goes round a shield and nothing should: the reboot made the shield a pool bought with
+   a turn, and turns are what the Waste takes. The table's cells, drafts for his words: its
+   signature "theft of entries and buffs; needles nothing you put up answers"; the build
+   must answer "hull and tempo over what you put up; redundancy on the die; reach to the
+   gazers; a Ward".
+2. The Needler's own rule: a Purge ahead of its needles, "Purge 1, then exactly 4". His
+   question, 18 November, on this pass's first lean (a new rule, below on the bench):
+   "Doesn't purge make the most thematic sense for the waste based on your reasoning?" It
+   does: a buff is a thing bought with a die, the turn this pass said the Waste takes, and
+   the Purge takes it with a rule the game already runs. It is the knife's own mechanism,
+   a step ahead of the blow that the move says (section 8), so it is content alone: the
+   intent wears the purge's mark ahead of its number and the round's preview reads the
+   needle as it will land. What the needle meets: a Barrier is gone before it, a brace is
+   a stack thinner for each needle (a braced Honey Badger with its shield down takes 1
+   from a needle today, and 2 from the first and 3 from the second with the purge), the
+   hopper's plate loses a stack a needle until the round turns, and a stack of Ricochet,
+   of Hardened Light or of an unspent Spun Up goes for good. What still answers it: the
+   gauge, the hull, a chassis's own plate, the kill, a Lure and a Ward. So it is "fixed
+   damage no shield answers" in a form the 15 November rule passes, a needle nothing a
+   machine puts up answers, and "hull and tempo" is the Waste's answer again. The Sandworm,
+   the Antlion and the Roc keep plain blows, so the Barrier has work in the Waste and where
+   it goes is the question. The read (`docs/measurements.md`, 18 November): half a point to
+   a point of hull where Needlers live to strike, nothing beside an elite, and the squad
+   with the Barrier basic and the one without pay the same in the thicket, 6.3% and 6.4%.
+3. The second lever, not for the first build: the Cockatrice's Stone holds until that
+   Cockatrice falls, one stone a machine, a new stare moving it. The back rank's bird
+   becomes the thing to reach, and what a machine shows a standing choice. Held until his
+   play says the stare reads as nothing.
+4. With the landing: the faction's signature and answer, and the design notes that still
+   say breach, about twenty across the four domains, never shown.
+5. For the squad of four: the purge on the Waste's leaders, each blow that lost its breach
+   taking a Purge ahead of it where its kit says so. The knife has it. The king sandworm's
+   Maw is the next by its kit, a what-if read on 18 November: the old man's rising costs the
+   squad with the Barrier basic 27.5% for 15.8% and the squad without it 29.3% for 27.5%,
+   so the Barrier's gap closes there as it did under the knife. The bosses' blows that lost
+   theirs (the Colossus's tentacle from below, the Lancer's Jump) are his open calls,
+   proposed one by one.
+
+**Its holes**, this pass's own. It is a step on the whole front rank, four purges a round
+in the thicket, and his word against Breach's second form was "a flat tax on every foe of
+a formation": what differs is that it falls on what the player chose to put up, the
+intents show where, and it reads a point of hull. A standing stack pays for good, the
+Skua's Ricochet a stack a needle: the kill order and a Lure are its answers, and the bot
+puts no price on a stack taken, so no read shows it and his play is its judge. Tier one's
+stock squads carry little to take, so there it is mostly the two defensive basics it
+answers; it grows with what a squad builds, which is the Waste's own scaling. The knife
+stops being singular and becomes the great form of the Needler's lesson. A Ward is the
+answer and no tier-one stock die holds one.
+
+**The reroll thief.** The signature says theft of rerolls, and no Waste rank steals one:
+the Thief, a hero, is its one drain. His word, 18 November: "Not that we need to bucket
+mechanics to one domain specifically, but the mandragoras are pretty common in the
+meadow." They are its whole back rank: nine stand in tier one's three formations, four
+behind the goblin horde, three in the Treant's grove and two behind the gel wall, each
+taking a reroll off the next round as it falls. So the thief is the Meadow's in play. The
+lean, no bucket: the word comes off the Waste's signature and no second thief is added,
+the Meadow taking the reroll and the Waste the entry. Whether the screams are too many is
+the Meadow's kit's to ask.
+
+**The bench**, each killed by a rule he may overrule:
+
+- Needles that armour does not thin, the shield still taking them. The rule: every blow of
+  a foe's meets the shield and then the armour, plate's answers being Exposed and Ablate
+  (15 November). The strongest of the bench: the faction's own pitch says the needles
+  ignore armour, and it would make the Waste the domain where the plated tank is not the
+  answer (in the thicket the Honey Badger pays 1.8% of its hull and the Cottonmouth 15.2%).
+- Needles that hit a shield double. The rule: his second form of Breach, set aside that day
+  as a flat tax on every foe of a formation.
+- The barb at tier one. The rule: a rung's twist is its own (the recolours' row), and the
+  barb is the Barbed Needler's at tier two; its price is the dearest rider's, 1.3 points a
+  blow.
+- The Sandworm swallows. The rule: danger is a leader's (the budget's words), and the
+  swallow is Floraison's and the Colossus's.
+- The whole thicket on one machine. The rule: the field on one machine is Exposed's, tier
+  two and up.
+- The Needler holds still while a die is aimed at it, this pass's first lean for its own
+  rule. Set aside for the purge, no rule's kill: a foe carries one twist, and the purge
+  does what it reached for with a rule the game has. Its read: no number moved, half a
+  point to a point lighter.
+- Thousand Needles at tier one. The rule: a countdown on the rank and file is "too
+  ubiquitous".
+- A Needler that takes 1 from any blow, the genre's metal slime. The rule: his ceiling of 2
+  on tier one's plate; the Metal Gel is that trope at tier three.

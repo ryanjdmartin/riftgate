@@ -11477,3 +11477,115 @@ of its turns, where it acted on 60% to 66%. Its boss fights end in 6.6 rounds, t
 the three, and its squad loses 15% where it lost 18%. Its own hull pays a little more against a
 boss (16% where it paid 12%): it is in the fight more of the time. Every fight was won. A
 direction at 78 fights a build; his play of the two actions decides.
+
+## 18 November: the two pairs landed
+
+Ryan: "go ahead with both." The Mantis Ant's Mandibles are two strikes of 7 and the
+Gargantuan King's Gore two of 6, in content. Read as landed, every squad of the pool, sixty
+fights a cell: the Mantis Ant 26.1% without the Barrier and 13.8% with it, the King 33.4%
+and 27.4%, the what-if's numbers to the decimal. With them a boss costs 29.9% without the
+Barrier and 20.1% with it on the mean.
+
+## 18 November: the Needler's body, and a watch rule as a what-if
+
+Ryan: "give me your waste take since that seems important". The Needler had kept the 2 hit
+points that were the price of a needle through the shield, three days after Breach left,
+so the Waste's two formations cost a squad next to nothing. Every read is
+`tools/anchor_read.gd`, every squad of the six certain tier ones, the greedy bot: forty
+fights a formation's cell and thirty an elite's, each a direction. The elites are read
+without the Barrier (`refit=barrier=none`), as they are sized. A cell is rounds and hull,
+a share of a four's.
+
+| The Needler | The needler thicket | The sandworm's ambush | The old man's rising | The Pilgrim's wake |
+|---|---|---|---|---|
+| 2 hit points, as it was | 3.8, 1.3% | 5.8, 1.5% | 7.6, 25.4% | 5.9, 18.0% |
+| 4 | 4.6, 5.3% | 6.0, 5.5% | 8.3, 30.8% | 6.8, 20.5% |
+| 4, Watched | 4.8, 4.9% | 6.3, 4.4% | 8.3, 29.1% | 6.7, 20.6% |
+| 5 | 5.3, 12.2% | 6.3, 6.3% | | |
+| 5, Watched | 5.5, 8.3% | 6.7, 4.9% | | |
+| 4, two Needlers beside the old man for three | | | 7.9, 27.5% | |
+| The same, Watched | | | 8.5, 28.1% | |
+
+Watched is the proposal of the numbers brief, section 9, built in the working tree for the
+read and taken out again: a Needler does nothing in a round a machine has aimed a die at
+it, and the bot weighs the needles it stops as it weighs a Suppress. At 5 hit points the
+rule held a Needler 2.1 times a fight in the thicket, three holds in four in the first
+round.
+
+What the rows say. The body is the whole of the weight: at the standard foe's 4 both
+formations stand on the budget of a twentieth with nothing else moved. A point past 4 is
+dear where four Needlers stand before four Cockatrices, 5.3% to 12.2%. The watch rule is no
+number: in the bot's hands it takes half a point to a point off a formation at 4 and a
+third off the thicket at 5, and what it changes is which die goes where. Who pays for the
+thicket at 4: the Storm Petrel nothing, the Honey Badger 1.8% of its own hull, the Skua
+6.2%, the Prairie Dog 9.8%, the Cassowary 14.0%, the Cottonmouth 15.2%.
+
+Landed the same day, the sizing's own (a blow that lost Breach takes back what it paid, on
+the other half of the price): the Needler has 4 hit points, and the old man's rising
+fields two Needlers for three. With the Barrier basic the old man's rising costs 15.8% for
+17.0% and the Pilgrim's wake 15.5% for 15.1%. A formation's mean is 5.3% over 5.8 rounds
+for 4.5% over 5.7; an elite's is 25.2% without the Barrier for 24.8%, and 13.8% with it
+for 13.9%. Tiers two and three field the same Needler and are unsized as before.
+
+## 18 November: needles that purge first
+
+Ryan, of the step ahead of a blow: "pilgrim-only was in reference to not making it a purge
+rule, not restricting it to literally just the pilgrim." And of the Waste: "Doesn't purge
+make the most thematic sense for the waste based on your reasoning?" Read as content
+alone, on the knife's own engine: the Needler's Needles with a Purge 1 ahead of the blow,
+a needle of 4 on 4 hit points, content edited for the read and put back. Every squad of
+the pool, the greedy bot, forty fights a formation's cell and thirty an elite's; a cell is
+rounds and hull, a share of a four's.
+
+| Fight | The squad as dealt, plain needles | Purging first | Without the Barrier, plain | Purging first |
+|---|---|---|---|---|
+| The needler thicket | 4.6, 5.3% | 4.5, 6.3% | 4.6, 5.7% | 4.7, 6.4% |
+| The sandworm's ambush | 6.0, 5.5% | 6.0, 5.4% | 6.3, 6.9% | 6.5, 7.4% |
+| The old man's rising | 8.5, 15.8% | 8.5, 15.8% | 7.9, 27.5% | 7.9, 27.5% |
+| The Pilgrim's wake | 6.7, 15.5% | 6.8, 16.3% | 6.8, 20.5% | 6.8, 20.7% |
+
+What it says. The purge costs half a point to a point of hull where Needlers live long
+enough to strike, the thicket and the ambush, and nothing beside an elite, where four
+machines fell its two or three Needlers before they act. In the thicket it levels the two
+squads, 6.3% with the Barrier basic and 6.4% without: the needle is the blow neither
+defensive basic answers. Who pays in the thicket, each machine's own hull: the Prairie Dog
+16.0% for 9.8%, its Barrier going before the needle; the Skua 8.5% for 6.2%; the Honey
+Badger 2.2% for 1.8%, and in the squad without the Barrier 3.3% for 1.7%, its brace and
+its hopper's plate a stack thinner a needle. The bot puts no price on a stack a purge
+takes, so the Skua's Ricochet and the Storm Petrel's Hardened Light going are in no number
+here.
+
+## 18 November: the Waste's formations against all four
+
+Ryan: "Also remember that the waste will only ever be fought with 4 machines. It's just the
+meadow at level 1 that gets 3." The anchor reads a formation at its rating, three machines
+of the four on the field (his split of 6 November: "a 'true' 4 should be reserved for
+elites and bosses, with formations a 3"). Read here with all four on it, the compositions'
+rating set to four for the read and put back: every squad of the pool, the greedy bot,
+thirty fights a cell; rounds and hull, a share of a four's.
+
+| Fight | Three, its rating | All four | All four, without the Barrier | All four, needles purging first |
+|---|---|---|---|---|
+| The needler thicket | 4.6, 5.3% | 3.0, 0.5% | 3.1, 1.0% | 3.0, 0.8% |
+| The sandworm's ambush | 6.0, 5.5% | 4.5, 1.4% | 4.5, 1.3% | 4.5, 1.5% |
+
+A fourth machine on a formation takes three quarters of its price or more, a shield more
+to spread the blows over and the Needlers down a round sooner. The purge has nothing to
+take there: the Needlers fall before they strike, as they do beside an elite. So a
+formation is no threat to a whole squad, which is the rating's meaning, and what a rule on
+the Needler asks is asked of a split squad: three on the formation and one on a flank.
+
+Where a whole squad would meet the Waste's purge, then, is a leader's blow, as it meets the
+Pilgrim's knife. The old man's rising with a Purge 1 ahead of the king sandworm's Maw, the
+same what-if on the blow that lost its breach, thirty fights a cell:
+
+| The old man's rising | Without the Barrier | With the Barrier basic |
+|---|---|---|
+| The Maw a plain blow, as landed | 7.9 rounds, 27.5% | 8.5, 15.8% |
+| The Maw purging first | 8.1, 29.3% | 7.8, 27.5%, 0.17 wrecks |
+
+The squad without the Barrier pays two points more, a stack of its brace going with each
+bite. The squad with it pays what the other does, where it paid little more than half: the
+knife's read again (7.6% to 16.0%). So a purge ahead of a leader's blow is what closes the
+Barrier's gap in a Waste fight, and a purge on the Needler is not.
+

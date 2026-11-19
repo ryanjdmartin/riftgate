@@ -157,7 +157,7 @@
           "front": ["antlion_queen", "pit_antlion", "pit_antlion", null], "back": [null, null, null, null],
           "design": { "question": "The queen and two pits wait for the slowest machine: her Devour feeds her three back a bite, barriers when hurt." } },
         { "id": "old_mans_rising", "size": "elite", "tiers": [1, 2, 3],
-          "front": ["old_man_of_the_desert", "needler", "needler", "needler"], "back": [null, null, null, null] },
+          "front": ["old_man_of_the_desert", "needler", "needler", null], "back": [null, null, null, null] },
         { "id": "fallen_weapons_vigil_2", "size": "escort", "boss": "fallen_weapon", "tiers": [2],
           "front": ["barbed_needler", null, null, null], "back": ["basilisk", null, null, null] },
         { "id": "fallen_weapons_vigil_3", "size": "escort", "boss": "fallen_weapon", "tiers": [3],

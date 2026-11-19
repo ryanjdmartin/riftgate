@@ -41,15 +41,14 @@ document's job and every command are in `README.md`.
   a branch: the desk machine's folder stays on `main`, and a session that needs another branch
   works in a worktree under `.claude/worktrees/` (`CLAUDE.md`, Session handoff). A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word.
-- Branches. Main holds everything this file describes but the Needletail's quick turn and its
-  Relay's rewrite (18 November), which wait on `ccr-178e0404-ptuh2m` for Ryan's word to land them. Not on main:
+- Branches. Main holds everything this file describes. Not on main:
   `claude/gameplay-terminology-tooltips-rug879`, a remote branch whose commits were unread
   when this file was written: read it before taking main for the whole of the work.
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
   (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks
   great. Lets land it", and `ccr-178e0404-ptuh2m` (the Buzzard) on his "ok, merge into
-  main". A session's hangar
+  main", then the Needletail on 19 November on his "I think what we've got can merge into main". A session's hangar
   publish runs ahead of main (Pages).
   Every other branch on GitHub but the lines' own working branches is merged and to delete
   (`git push origin --delete`, then `git fetch --prune`); a cloud session may not delete one.
@@ -62,8 +61,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1331 tests, 376,896 checks, green on `ccr-178e0404-ptuh2m` (19 November, the
-  Needletail's reboot after its action, over main at `f167af8`). The runner fails a run whose tests never ran, so read the checks' count, never
+- Tests: 1331 tests, 376,896 checks, green on main (19 November, the Needletail landed
+  over the Waste's purge). The runner fails a run whose tests never ran, so read the checks' count, never
   the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
   purpose. About four minutes in a cloud session; words after `--` run only the files whose
   names hold one (`-- loot rig`).
@@ -107,7 +106,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Basilisk, the Alpha Warg, the Lich, the Rider of the Wild Hunt and the Piercing Eye lay it.
   The Roc is Aloft while its Stoop gathers and nothing reaches it; the Spectre and the Wraith
   fade after their Hex Bolt, Phased through the next round and still acting; the Pilgrim is
-  immune to Suppress, and the Obsidian Tyrant and the Ruby Colossus to Disrupt while Firestorm
+  immune to Suppress and its knife purges before it lands, the one move with a step ahead of
+  its blow, and the Obsidian Tyrant and the Ruby Colossus to Disrupt while Firestorm
   and Ultima gather. Four falls do more than strike: the root line's scream, the Gorgon's
   gaze, the Salamander's embers, the Lich's. The Red Dragon keeps its Crush on Ryan's word, so
   the Peak has no foe that Exposes. Content: four domains, 118 compositions as grids in
@@ -116,7 +116,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   129 foes, 21 of them elites and 8 heroes; thirteen bosses; two moves planned (the Warrior's
   Cover, the Martial Artist's Counter). The names of the newest moves and falls, the words
   for an aim and the term Immune are a session's drafts for Ryan's codex and terminology
-  pass. No foe number is sized for the reboot (The numbers, below). Detail: the rules' Foes;
+  pass. Tier one's foes are sized for the reboot and the higher tiers' are not (The numbers,
+  below). Detail: the rules' Foes;
   the bible's rows on the foes' rule set, targeting, Exposed and Phased.
 - **The machines.** Five makers and 25 chassis, 22 of them dealt (nine at tier one, nine at
   two, four at three); the Puffin and the Swallowtail are back in design and the Mole is a
@@ -159,21 +160,25 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   are sized to it since 17 November (`docs/briefs/numbers_pass.md`, sections 3 and 8; the
   reads `docs/measurements.md`), read on every squad of the six certain tier ones since 18
   November (a count of them had the Honey Badger in four fours of five): a lone flanker
-  3.4% of a four's hull, a hunter's pack 8.9%, a formation 4.5% over 5.7 rounds, from 1.3%
+  3.4% of a four's hull, a hunter's pack 8.9%, a formation 5.3% over 5.8 rounds, from 2.4%
   to 9.3% by formation, every fight won. The elites and the bosses are sized since 18
   November for a squad without the Barrier, on his word ("sizing it without means that if
   it does prove toxic after all, in my play, then it's relatively easy to remove"): an
-  elite costs it 24.8% and a boss 29.8%. The Barrier basic stays on the starting dice ("one
+  elite costs it 25.2% and a boss 29.9%. The Barrier basic stays on the starting dice ("one
   of the two sides of the defensive coin"), and the squad with it pays about half, an elite
-  13.9% and a boss 19.2%: whether that proves toxic is his play's to say, on BARRIER BASIC. How the leaders strike is his lean of the
-  same day (the bible's section 9): whole blows the norm, slightly towards strikes so plate
-  earns in their fights; two pairs wait on his marks, the Reaper's Harvest is a sweep at
-  every machine on his word, and the Pilgrim's knife purges before it lands, a step ahead
-  of its blow that the move says and the Pilgrim's alone ("Agreed on pilgrim-only"). A foe's adds, its Empowered first,
-  land on every strike of a move since then, the machines' formula. This pass's leans on the
-  dials stand in the brief's section 7, each his.
-  Tiers two and three and the first battle are unsized, their foes still the ones sized
-  against a shield that refilled. On a debug
+  13.8% and a boss 20.1%: whether that proves toxic is his play's to say, on BARRIER BASIC.
+  How the leaders strike is his lean of the same day (the bible's section 9): whole blows
+  the norm, slightly towards strikes so plate earns in their fights. On his go the Mantis
+  Ant's Mandibles and the Gargantuan King's Gore are pairs, the Reaper's Harvest is a sweep
+  at every machine, and the Pilgrim's knife purges before it lands, its move's own order
+  and no rule of Purge ("pilgrim-only was in reference to not making it a purge rule, not
+  restricting it to literally just the pilgrim"). A foe's adds, its Empowered first, land on every strike of a
+  move since then, the machines' formula. This pass's leans on the dials stand in the
+  brief's section 7, each his. Tiers two and three and the first battle are unsized, their
+  foes still the ones sized against a shield that refilled; the first battle, the one a
+  trio fights, is the Meadow's alone on his word of 18 November ("It's just the meadow at
+  level 1 that gets 3"), not built. A formation is read at its rating, three of the four on
+  the field, and all four on one cost a fifth of its price or less. On a debug
   build's SETTINGS, TRIALS, each a number still to be picked: HEAT, TOP BASIC, RANK AND FILE
   and BARRIER BASIC (read at the next launch), OVERHEAT, FIELD DEPTH, OPENING, FODDER,
   RUPTURE, TIDE and STRIKE (read as the next battle starts). A dial leaves the page with its
@@ -247,8 +252,10 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   ladder and `tools/campaign_run.gd` whole runs (the README has every command). The bot has
   a first play of the reboot, and prices every step of a foe's move and of its fall by one
   table (`Policy.effect_cost`); a brace, a summon, a revival, a swallow, a purge and a merge
-  it still counts as nothing. `tools/anchor_read.gd` reads every fight of a tier at its
-  rating, the measure the sizing stands on. `tools/battle_run.gd` plays one battle of a run
+  it still counts as nothing; it reads a purge ahead of a blow, and holds a kill only for
+  what a round's wait would save of a death blow. `tools/anchor_read.gd` reads every fight
+  of a tier at its rating on every squad of its pool, and says who paid by machine: the
+  measure the sizing stands on. `tools/battle_run.gd` plays one battle of a run
   whole by squads, and `tools/balance.gd --packs rating` fights every composition with squads
   of its rating. `tools/budget_model.py` and
   `tools/basics_model.py` are the small models apart from content.
@@ -267,8 +274,10 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
 
 1. **The foes' line** (`ccr-722ca9f0-yj8na3`; `docs/briefs/numbers_pass.md`), in this order:
    - The defence side's rest, this line free to adjust content when it is ready (Ryan, 17
-     November): a kit for the Waste now that Breach is cut, proposed in chat first; the
-     scorches on every machine above tier one.
+     November): the Waste's kit now that Breach is cut, proposed 18 November and waiting
+     on his marks (the brief's section 9; the Needler's body landed with it, 4 hit points
+     for the 2 that were a breach's price, so its two formations cost 5.3% and 5.5%); then
+     the other domains' kits; the scorches on every machine above tier one.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
      his picks on RANK AND FILE, HEAT and TOP BASIC: its prices are read from the vanilla he
      settles on.
@@ -313,14 +322,21 @@ with it, on his word. A page's link goes into this file in the same commit as it
 publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  The last publish known is v0.619 (17 November, from `ccr-178e0404-ptuh2m`); main's file is
-  v0.633 (the deaths' branch's rows, the Mole's branch's and the Buzzard's with it, 18 November) and the Needletail's branch's v0.634, both unpublished. Before republishing, read the live page; if another session moved it,
-  publish a three-way merge onto it row by row (`tools/pages/bible_merge.py`: BASE the last
-  publish both started from, OURS this branch's file, THEIRS the saved live source with the
-  tool's wrapper line, its trailing newline and `</body></html>` stripped). BASE is likely
-  the file of `a5e8c29`: check it against the live page byte for byte first. After main
-  merges in, check the tables script's run against the file's tables before keeping it: a
-  row it reverts belongs to a branch not yet landed.
+  Published at v0.634 on 18 November from main's file at `1383f11` (the page's Version 513),
+  every line of the file read first; the page it replaced was v0.564 of 13 November, the
+  file of `620c717`, an ancestor of main, so main's file went up whole. Main's file is
+  v0.637 since, unpublished: its row on the foes' rule set says a step ahead of a blow is a
+  move's own order and no rule of Purge, his correction of 18 November, its item on the
+  first battle holds his word that the trio's battle is the Meadow's, and the Needletail's
+  rows landed on 19 November (its free Designator, its reboot after its action, its Relay
+  rewritten as cooldowns, its branch directions). Before republishing,
+  read the live page; if another session moved it, publish a three-way merge onto it row by
+  row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
+  `1383f11` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  live source with the tool's wrapper line, its trailing newline and `</body></html>`
+  stripped): check BASE against the live page byte for byte first. After main merges in,
+  check the tables script's run against the file's tables before keeping it: a row it
+  reverts belongs to a branch not yet landed.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each live copy read first, with `edits`, `designs` and `text` read first. Main went up whole
