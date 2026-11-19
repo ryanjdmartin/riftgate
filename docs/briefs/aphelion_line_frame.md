@@ -302,30 +302,40 @@ the first wings, long and narrow, read as spikes, so they gained depth and a sli
 judge: the hands are small at rest, the forward blade shows as a stub from head on, and from
 behind the shield's top shows over the shoulder.
 
-**The model** (18 November, on Ryan's "then we'll do line frame" that day; `line_frame` in
-`tools/lowforge/models_low.py`, `art/models/line_frame.glb`; no content entry, so it shows in no
-hangar tab and no fight deals it). The third round as built, rigged: a waist the upper body turns
-and leans on, a head that turns, hips, knees and ankles, shoulders and elbows, each shoulder gun on
-an elevation of its own and the pack's four wings on pivots at their roots. In each forearm the
-fist and the rifle ride slides along its line: the fist draws back through the wrist's collar and
-the rifle runs out from inside where it lies. The blades and the kites of light are made of light
-(lowforge's `b.beams`, new with it): unseen at rest, they appear as an act lights them and go as it
-lets them go, a beam lit as the machine is lost stuttering out with its lights. The blade in the lit
-tile's white-hot yellow, the kite in the game's shield blue (`amber.shield`, the Storm Petrel's and
-the Puffin's glow), each with its halo. Chosen where his words were silent: the fist a size up on
-round three's (his "the hands are small at rest"); the forward blade's stub head on and the shield
-over the shoulder from behind left as they are, the head-on view no game angle. Its acts are his
-cycling, each a combination from the fists at rest and back: the rifles (both run out, laid level,
-the torso sweeping), a blade and the shield (the right blade thrust out and up, the left forearm
-across the body behind the kite, a parry's jolt), twin blades (a cut across the front), a rifle and
-the shield (the other way round, so each arm shows all three), ready to dash (a crouch onto the
-boosters, the wings spread) and a look round. It moves by the dash, skimming on its feet in a crouch
-with every booster lit and the wings spread, a walk beside it as a gait option to compare. Its death:
-the boosters cut and its knees go, it sits down hard over its planted feet and goes over onto its
-pack, its knees up and its arms limp; falls onto its back or its face from standing drifted half its
+**The model** (18 November, on Ryan's "then we'll do line frame" that day, and reworked on his notes
+of 19 November; `line_frame` in `tools/lowforge/models_low.py`, `art/models/line_frame.glb`; no
+content entry, so it shows in no hangar tab and no fight deals it). The third round, rigged: a waist
+the upper body turns and leans on, a head that turns, hips, knees and ankles, shoulders and elbows,
+each shoulder gun on an elevation of its own and the pack's four wings on pivots at their roots. On
+his notes of 19 November: it stands in an A, its feet wider than its hips, the offhand's foot a
+little ahead and the main hand's behind and turned out, the knees soft ("a hint of mecha and a bit
+less mechwarrior"); the V-crest is back, round one's two red fins sized to this helm; the calves'
+boosters point down and back at about 45 degrees under a cowl, the block behind them gone. The main
+hand (right) is a normal mount: its fist kept, fixed, and the mount (hp_1) on its forearm's upper
+face, its gun over the fist, the forearm held level at the ready; its rifle, blade and kite gone. The
+offhand (left) keeps its weaponry: its fist and rifle on slides along the forearm, the fist drawing
+back through the wrist's collar as the rifle runs out from inside. The blade and the kite of light
+are made of light (lowforge's `b.beams`): unseen at rest, they appear as an act lights them and go as
+it lets them go, a beam lit as the machine is lost stuttering out with its lights; the blade in the
+lit tile's white-hot yellow, the kite in the game's shield blue (`amber.shield`), each with its halo.
+Four placeholder mounts: the main hand (the Laser Carbine), the shoulders (the Rivet Gun, the Twin
+Autoguns) and the helm's pod (the Ankle Mortar). Chosen where his words were silent: the mount on
+the forearm's top rather than the fist's; the offhand's foot ahead; the main hand's forearm level at
+rest, so its gun reads at the ready; the fist a size up on round three's (his "the hands are small
+at rest"). Its acts are the offhand's cycle, each from rest and back, the head leading, the torso a
+beat behind and the arms after it, each carried a little past its mark and settling, the weight
+onto the front foot as it commits: the offhand's rifle run out beside the main gun, both laid level
+and sweeping; its blade lit high outside, a cut across the front and a guard; its kite of light
+thrown up across the body with the main gun laid past its edge, a parry's jolt; ready to dash (a
+crouch onto the boosters, the wings spread); a look round; its weight shifting over its feet. It
+moves by the dash, skimming on its feet in a crouch with every booster lit, the main gun up and the
+torso swaying a little over its feet, a walk beside it as a gait option to compare. Its death: the
+boosters cut and its knees go, it sits down hard over its planted feet and goes over onto its pack,
+its knees up and its arms limp (its middle a little over a quarter of its height off where it stood,
+in the A). Set aside on the way: falls onto its back or its face from standing drifted half its
 height off its hex, and a bow onto its knees folded its limbs through each other. Lying back, it
 falls toward the skirmish's camera, its head and pack at the bottom of its window there. Nothing
-fires as its kit would yet: its locked pieces are this session's open item 7.
+fires as its kit would yet: its kit is this session's open item 7.
 
 ## Open for the session
 
