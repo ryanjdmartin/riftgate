@@ -3379,7 +3379,6 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	var spread := hit                # the foes a strike reaches and the shapes they stand in, for the strikes between the hits on the target alone
 	var spread_shapes := shapes
 	var strike := -1                 # the entry's own strike a hit belongs to
-	var struck_dmg := 0              # the last strike's blow on its target before the foe's own reads of it: what the hit again shares
 	for at in range(order.size()):
 		var step: int = order[at]
 		var bounce := step == HIT_BOUNCE
@@ -3405,21 +3404,25 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		# multiplies and floors in that order, its conditions read on that foe; then that foe's own
 		# reads, flat (_foe_reads): "the spirit of buffs and riders is they happen after".
 		# A Ricochet's strike is 1 where the entry's number and its reads of the foe would stand. The
-		# sword's hit again is its share of the strike's blow as it left the gun, the firer's pipeline
-		# and the entry's reads of the foe already in it, rounded down, so nothing of the firer's is
-		# read twice; the foe's own Brittle, Shock and armour meet it as they meet any blow.
-		var dmg := 0
-		if echo:
-			dmg = floori(struck_dmg * again / 100.0)
-			h.base += dmg
-		else:
-			var modded := Effects.attack(ms.unit, f, 1 if bounce else split_share(f.power + own, split), heat, target, _zapped(_judged(judged_hp, target)))
-			dmg = int(modded["damage"]) + (0 if bounce else _foe_reads(f, reads, target, not struck_once.has(target)))
-			if at == 0:
-				h.heat += modded["heat"]   # heat is paid once a spend, every modifier's with it (the rules: a blow)
-			h.vent += modded["vent"]
-			if not bounce:
-				struck_dmg = dmg
+		# sword's hit again is a strike of its own (Ryan, 19 November: "it should be based on the base
+		# damage, then its own math applied, just like a multi-strike weapon"; "Base 4 -> treat like a
+		# 4,2 weapon (two strikes)", "Base 2x2 -> treat like a 2,1,2,1"): its number the share it says
+		# of the strike's own, rounded down, then the firer's pipeline and the entry's reads of the foe
+		# as any later strike's, so a buff on one strike never lands on the other.
+		var number := split_share(f.power + own, split)
+		if bounce:
+			number = 1
+		elif echo:
+			number = floori(number * again / 100.0)
+			h.base += number
+		var ctx := _zapped(_judged(judged_hp, target))
+		if at == 0:
+			ctx["first_blow"] = true   # the spend's first blow, its first strike's on its target (the strike order): a next strike's add lands on it alone (the Parry's return)
+		var modded := Effects.attack(ms.unit, f, number, heat, target, ctx)
+		var dmg: int = int(modded["damage"]) + (0 if bounce else _foe_reads(f, reads, target, not struck_once.has(target)))
+		if at == 0:
+			h.heat += modded["heat"]   # heat is paid once a spend, every modifier's with it (the rules: a blow)
+		h.vent += modded["vent"]
 		var landed := dmg
 		# Area by shape, numbered (Ryan, 28 October; the half retired): every other foe the strike
 		# reaches takes its shape's number (Spread's, Penetrate's, Splash's, Chain's on a Shocked
@@ -3429,15 +3432,23 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		var blows := {}
 		for foe in hit:
 			blows[foe] = dmg if foe == target else _area_blow(ms, f, int(shapes.get(foe, AREA_ALL)), foe, own, split, _zapped(_judged(judged_hp, foe))) + _foe_reads(f, reads, foe, not struck_once.has(foe))
-		# Every blow of the strike in the order it lands, [foe, its blow, the shape it stands in]: the
-		# foes it reaches, then the rifle's blow on the foe to the right, a blow of its own on a foe
-		# an area of the strike reached too.
+		# Every blow of the strike in the strike order, [foe, its blow, the shape it stands in] (Ryan,
+		# 19 November: "Spread always computes before Penetrate, and Penetrate computes before
+		# Rifle"): the target, Spread's left and right, Penetrate's other rank, then the rifle's blow
+		# on the foe to the right, a blow of its own on a foe an area of the strike reached too, then
+		# Chain's arcs, which follow the impact.
 		var landings: Array = []
+		var arcs: Array = []
 		for foe in hit:
-			landings.append([foe, blows[foe], int(shapes.get(foe, 0))])
+			var row := [foe, blows[foe], int(shapes.get(foe, 0))]
+			if int(row[2]) == AREA_CHAIN:
+				arcs.append(row)
+			else:
+				landings.append(row)
 		if step == HIT_STRIKE and right != null:
 			var first_right := not struck_once.has(right) and not hit.has(right)
 			landings.append([right, _side_blow(ms, f, side, own, split, right, _zapped(_judged(judged_hp, right))) + _foe_reads(f, reads, right, first_right), AREA_SIDE])
+		landings.append_array(arcs)
 		for landing_at in landings:
 			var foe: Foe = landing_at[0]
 			var shape: int = landing_at[2]
@@ -3905,18 +3916,27 @@ func reached_by(f: Face, target: Foe) -> Array[Foe]:
 			if not hit.has(foe) and not out_of_reach(foe):
 				hit.append(foe)
 		return hit
+	# In the strike order (Ryan, 19 November: "Center -> Left -> Right for Spread, and Center ->
+	# Front/Rear for penetrate. Spread always computes before Penetrate"): the target, then Spread's
+	# left and its right, then Penetrate's other rank, each with its twin, an area blow reaching a
+	# twin slot whole; Chain's conductors last.
+	var area := f.has_area()
+	if area:
+		_pair_with(hit, target)
 	if f.reaches_row():
 		for c in [target.column - 1, target.column + 1]:
 			if c >= 0 and c < columns:
 				var n := foe_at(target.rank, c)
 				if n != null and not hit.has(n) and not out_of_reach(n):
 					hit.append(n)
+					if area:
+						_pair_with(hit, n)
 	if f.reaches_column():
 		var other := foe_at(1 - target.rank, target.column)
 		if other != null and not hit.has(other) and not out_of_reach(other):
 			hit.append(other)
-	if f.has_area():
-		_with_twins(hit)   # an area blow reaches a twin slot whole
+			if area:
+				_pair_with(hit, other)
 	# Chain's conductors (28 October): every other Shocked foe on the field, after the shapes, so
 	# a foe both beside the target and Shocked takes one blow, the shape's; a twin's half only if
 	# it carries the charge itself.
@@ -4088,12 +4108,11 @@ func _pay_zap(ms: MechState, f: Face) -> int:
 	return dmg
 
 
-## Every twin of the foes in `hit` joins it, the slot reached whole: an area blow's (26 October).
-func _with_twins(hit: Array[Foe]) -> void:
-	for foe in hit.duplicate():
-		var t := twin_of(foe)
-		if t != null and not hit.has(t):
-			hit.append(t)
+## The twin of `foe` joins `hit` right after it, the slot reached whole: an area blow's (26 October).
+func _pair_with(hit: Array[Foe], foe: Foe) -> void:
+	var t := twin_of(foe)
+	if t != null and not hit.has(t):
+		hit.append(t)
 
 
 ## A foe's defend, buff or debuff action, resolved in its turn in place of a blow (the ten

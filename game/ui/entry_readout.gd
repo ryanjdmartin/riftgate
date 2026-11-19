@@ -75,7 +75,7 @@ static func lines_for(f: Face, place: int, shown: int, base: Face, states: Array
 	if f == null:
 		return out
 	var comp: Dictionary = db.components.get(f.component, {}) if not f.component.is_empty() else {}
-	var title := "EMPTY HARDPOINT" if f.empty else (db.component_name(f.component).to_upper() if not f.component.is_empty() else f.describe().to_upper())
+	var title := "EMPTY HARDPOINT" if f.empty else (entry_name(f, db).to_upper() if not f.component.is_empty() else f.describe().to_upper())
 	out.append({"style": "title", "text": title, "place": Hud.roman(place), "type": ", ".join(PackedStringArray(types))})
 	for st in states:
 		# One line a state, so the mark the die shows for it (the lock, the corruption) stands at its head.
@@ -281,8 +281,8 @@ static func _bare(p: Dictionary) -> Dictionary:
 ## type (face_type) and its tags beside it, then the hold's lines joined by group, at the
 ## component's own numbers, and `rules` (its passive's lines) after its own. A line with
 ## nothing to say is left out.
-static func codex_lines(f: Face, db: ContentDB, rules: Array = []) -> Array:
-	var title := "EMPTY HARDPOINT" if f.empty else (db.component_name(f.component).to_upper() if not f.component.is_empty() else f.describe().to_upper())
+static func codex_lines(f: Face, db: ContentDB, rules: Array = [], named: String = "") -> Array:
+	var title := "EMPTY HARDPOINT" if f.empty else ((named if not named.is_empty() else db.component_name(f.component)).to_upper() if not f.component.is_empty() else f.describe().to_upper())
 	var tags: Array[String] = []
 	for t in f.tags:
 		tags.append(capital(t))
@@ -912,6 +912,18 @@ static func turn_line(next: Face, place: int, db: ContentDB) -> Dictionary:
 	var named := db.component_name(next.component) if next != null and not next.component.is_empty() else (next.describe() if next != null else "")
 	var shown := DieFaceView.next_mark(next)
 	return marked(text_line("effect", "Spent, its die turns to %s, %s, and it acts again" % [Hud.roman(place), named], "rule"), [passive_mark(str(shown[0]), shown[1], shown[2])])
+
+
+## An entry's name as its machine shows it: the name a branch's step gives its piece (the line
+## frame's Aile Blitzer), else its component's.
+static func entry_name(f: Face, db: ContentDB) -> String:
+	return f.renamed if not f.renamed.is_empty() else db.component_name(f.component)
+
+
+## What its machine's Parry returns on the weapon showing (the Beam Buckler's, Ryan, 19 November:
+## "next strike"): the add on its next strike alone, headed by the mark the die's passive box shows.
+static func parry_line(n: int) -> Dictionary:
+	return marked(text_line("effect", "Parry: its next strike deals %d more" % n, "rule"), [passive_mark("spin", "+%d" % n, Glyphs.colour_for("parry"))])
 
 
 ## The armament its machine's offhand holds, riding the weapon or equipment showing (the line

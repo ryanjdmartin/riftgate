@@ -99,7 +99,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   a step names takes its slot's place in the cycle) and its second steps its Aile Booster too:
   Duelist, the Beam Sword's slot holding the Beam Saber, then the shield's the Beam Buckler and the
   Booster granting Aile Blitz; Valkyrie, the rifle's slot holding the Beam Bazooka, then the shield's
-  the Beam Pavise and the Booster granting Aile Assault with 1 Empowered.
+  the Beam Pavise and the Booster granting Aile Assault with 1 Empowered. A step may name the piece
+  it upgrades, and the die's readout and the codex call the piece so (the Aile Blitzer, the Aile
+  Assaulter), the die keeping the piece as printed.
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
@@ -325,6 +327,11 @@ Every foe a strike reaches takes a blow of its own, read in one order:
    armour comes off. A weapon's blow takes them whatever it deals, a 0 included; a debuff's
    blow stays nothing. Its riders land on every foe struck, after its
    weapon's hits (below).
+- **The strike order**: a strike's blows land in one order, the target's first, then Spread's
+  left and then its right, then Penetrate's other rank, a twin slot's other half with its
+  pair, then the Beam Rifle's foe to the right, then Chain's arcs. What waits on a machine's
+  next strike lands on its spend's first blow alone, its first strike's on its target, and on
+  none of that strike's area (the Parry's return).
 - **Riders land after the hits**: each hit's Cryo and Brittle gather on its own foe and land
   once its weapon's hits are done, an application a hit, so no hit of a single-target weapon
   cashes or feeds on what the weapon lays (a ×2 Cryo 1 leaves Cryo 2 and cools nothing; a ×3
@@ -687,17 +694,17 @@ reading the form's line. The rifle: each strike also lands a blow of 2 on the fo
 the target in its rank (a twin's right half beside its left, nothing at the rank's end or past an
 empty slot), its own blow beside any area's, so a Spread's neighbour there takes both, each through
 its armour; it reaches the foe without being aimed at it (no Shock read), and carries the entry's
-riders. The sword: after each strike, a hit again on the target for half the strike's blow,
-rounded down, the blow as it left the gun (the firer's pipeline and the entry's reads of the foe
-in it, so nothing of the firer's is read twice), then the foe's Brittle, Shock and armour on it as
-on any blow, the entry's riders landing with it; the Beam Saber's is the whole blow. A Ricochet's
-hits after the strikes set off neither. On equipment the rifle's and the sword's blows deal nothing
-and their riders land. The shield: once the spend is done, Armoured 2 on its machine. Upgraded
+riders. The sword: after each strike, a hit again on the target, a strike of its own: its number
+half the strike's own, rounded down (the Beam Saber's the whole of it), then the firer's pipeline
+and the entry's reads of the foe as any later strike's, so a 4 strikes as a 4 and a 2 and a 2 ×2
+as 2, 1, 2 and 1, and what buffs one strike never reaches the other; the entry's riders land with
+it. A Ricochet's hits come after the spend's strikes and set off neither. On equipment the rifle's
+and the sword's blows deal nothing and their riders land, as an area on equipment does. The shield: once the spend is done, Armoured 2 on its machine. Upgraded
 forms: the Beam Buckler grants Barrier, Ward and Parry (below); the Beam Bazooka gives each strike
 Spread 2 and Penetrate 2, added to any the weapon carries; the Beam Pavise grants 1 Armoured and 1
 more for every foe the spend struck, its area's included. **The Aile Booster** (the line frame's,
-Rapid, on itself): it grants Aile Boost, its Duelist II Aile Blitz and its Valkyrie II Aile
-Assault in its place (Buffs, below). **The spill** (the Overrun Gearing's, a Minerva module, on
+Rapid, on itself, heat 1): it grants Aile Boost; its Duelist II makes it the Aile Blitzer,
+granting Aile Blitz, and its Valkyrie II the Aile Assaulter, granting Aile Assault (Buffs, below). **The spill** (the Overrun Gearing's, a Minerva module, on
 every weapon its machine fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
 strike of the spend whole, aimed at nobody, so a Shock behind neither doubles it nor is
@@ -1020,9 +1027,11 @@ On a foe:
 - **Parry** (buff, the line frame's Beam Buckler): through the round it is gained, what a Barrier
   and its machine's armour keep off foes' blows is counted (the whole blow a Barrier takes, what
   armour takes off what passes the shield; never what the shield soaks). As its machine's next turn
-  starts it goes, and half of that count, rounded down, stands under the same name as the first
-  weapon's add that turn, a point a stack on every strike in Empowered's place in the blow, lifted
-  by that weapon, equipment leaving it, and gone as the turn ends if no weapon fires.
+  starts it goes, and half of that count, rounded down, stands under the same name as its next
+  strike's add that turn: the first blow of the first weapon it fires, on its target (The strike
+  order, above), in Empowered's place in the blow, a point a stack. That weapon lifts it, equipment
+  leaving it, and it goes as the turn ends if no weapon fires. The die shows it in the weapon's
+  passive box, never in its number.
 - **Empowered** (buff, Rally): lands on every foe on the field the moment the rally does, its
   rallier too, the rally's value in stacks, and every blow the foe lands hits a point harder a stack, each
   strike of its move, as a machine's weapon does. It halves as its own turn ends, its action done, rounded down,

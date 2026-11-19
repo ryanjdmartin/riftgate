@@ -299,8 +299,14 @@ def content_slots():
 
     def form_slots(key, entry, at, effects, kind, owner, group, shown, why):
         """An offhand's forms (the line frame's, 19 November): each form's name, on its chip and
-        the die's rider, and its line, the rider as the player reads it; a step's forms as upgrades."""
-        for eff in effects or []:
+        the die's rider, and its line, the rider as the player reads it; a step's forms as upgrades,
+        and the name a step gives the piece it upgrades (the Aile Blitzer), on the die's readout."""
+        for i, eff in enumerate(effects or []):
+            if isinstance(eff, dict) and eff.get("effect") != "offhand" and eff.get("entry") and "name" in eff:
+                # the name a step gives the piece it upgrades (the Aile Booster as its Blitzer)
+                add(key, entry, "%s.%d.name" % (at, i), "title", eff.get("name", ""), owner, group, shown=shown, why=why, sub="upgraded piece",
+                    facts="%s, %s" % (eff.get("entry", ""), effect_words([eff])))
+                continue
             if not isinstance(eff, dict) or eff.get("effect") != "offhand" or not eff.get("id"):
                 continue
             path = "%s.%s" % (at, eff["id"])

@@ -85,6 +85,7 @@ var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), 
 var next_number: String = "" # the blow that next entry will deal now, as the screen reads it (Skirmish.shown_number_text); "" reads its own
 var ricochet: int = 0        # the strikes of 1 its machine's Ricochet adds after each shot of a weapon (the Skua's), in the passive box
 var offhand: String = ""     # the armament its machine's offhand holds, riding this weapon or equipment aimed at a foe (the line frame's), its star in the passive box
+var parry: int = 0           # what its machine's Parry returns on this weapon's next strike (the Beam Buckler's), in the passive box: one blow's add, so never in the main number
 var zap_cost: int = 0        # the shield its machine's zap will pay for this weapon's spend (the Buzzard's), in the passive box; its damage is in the main number
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var locked: bool = false
@@ -619,6 +620,8 @@ func passive_marks() -> Array:
 	if not dark_now:
 		if ricochet > 0 and face.is_weapon():
 			out.append(["ricochet", "+%d" % ricochet, Glyphs.colour_for("ricochet")])   # a strike of 1 more a stack after each shot (the Skua's)
+		if parry > 0 and face.is_weapon():
+			out.append(["spin", "+%d" % parry, Glyphs.colour_for("parry")])   # the Parry's return on its next strike alone (Ryan, 19 November: "next strike")
 		if not offhand.is_empty() and face.is_attack():
 			out.append(["star", "", Glyphs.colour_for("offhand")])   # its offhand's rider (the line frame's; Ryan, 19 November: "a unique (star) effect attached to weapons and equipment that target foes")
 		if zap_cost > 0 and face.is_weapon():

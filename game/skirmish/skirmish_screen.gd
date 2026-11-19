@@ -1302,6 +1302,7 @@ func _refresh(save: bool = true) -> void:
 		d.ricochet = _ricochets(ms, sf) if not ms.assigned and ms.alive() else 0   # the strikes of 1 its Ricochet adds after each shot
 		var held := _offhand_of(ms, sf) if not ms.assigned and ms.alive() else []
 		d.offhand = str(held[0]) if not held.is_empty() else ""   # its offhand's armament riding it (the line frame's)
+		d.parry = _parry_of(ms, sf) if not ms.assigned and ms.alive() else 0   # its Parry's return on the next strike
 		d.zap_cost = _zap_cost(ms, sf) if not ms.assigned and ms.alive() else 0   # the shield its zap will pay (the Buzzard's)
 		d.form_mark = form_mark(ms, sf) if not ms.assigned and ms.alive() else ""   # it seals its machine or opens it
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
@@ -1574,6 +1575,12 @@ static func charge_chunks(ms: Skirmish.MechState) -> Dictionary:
 ## readout's line read it.
 static func _ricochets(ms: Skirmish.MechState, f: Face) -> int:
 	return Effects.stacks_of(ms.unit, "ricochet") if ms != null and f != null and f.is_weapon() else 0
+
+
+## What a machine's Parry returns on the weapon it shows, on its next strike alone (the Beam
+## Buckler's, 19 November): its stacks for a weapon, none for anything else.
+static func _parry_of(ms: Skirmish.MechState, f: Face) -> int:
+	return Effects.stacks_of(ms.unit, "parry_strike") if ms != null and f != null and f.is_weapon() else 0
 
 
 ## The armament its machine's offhand holds, riding the entry when it is a weapon or equipment aimed
@@ -2330,6 +2337,9 @@ func _show_die(i: int) -> bool:
 		var rides := _offhand_of(ms, sf) if not ms.assigned else []
 		if not rides.is_empty():
 			extra.append(EntryReadout.offhand_line(str(rides[0]), str(rides[1])))
+		var returned := _parry_of(ms, sf) if not ms.assigned else 0
+		if returned > 0:
+			extra.append(EntryReadout.parry_line(returned))
 		# The shield its zap pays for a weapon (the Buzzard's), by the same box.
 		var zap := _zap_cost(ms, sf) if not ms.assigned else 0
 		if zap > 0:
@@ -2689,6 +2699,7 @@ func _on_drag_started(i: int) -> void:
 	_ghost.ricochet = _ricochets(sk.mechs[i], sf)
 	var held := _offhand_of(sk.mechs[i], sf)
 	_ghost.offhand = str(held[0]) if not held.is_empty() else ""
+	_ghost.parry = _parry_of(sk.mechs[i], sf)
 	_ghost.zap_cost = _zap_cost(sk.mechs[i], sf)
 	_ghost.form_mark = form_mark(sk.mechs[i], sf)
 	_ghost.cooldown = sf.cooldown_rounds() if sf != null else 0
@@ -2874,6 +2885,7 @@ func _send_second_home() -> void:
 	fly.corrupted = d.corrupted
 	fly.ricochet = d.ricochet
 	fly.offhand = d.offhand
+	fly.parry = d.parry
 	fly.zap_cost = d.zap_cost
 	fly.charged = d.charged
 	fly.dark = d.dark

@@ -785,13 +785,13 @@
   {
    "id": "line_frame",
    "name": "Line Frame",
-   "designation": "Apoapsis Flight 78 Duelling Frame",
+   "designation": "Apoapsis Flight 78 Partisan Frame",
    "maker": "aphelion",
    "tier": 1,
    "design": {
-    "fantasy": "Ryan's Gundam homage (11 and 12 October: \"a Gundam-homage walker\"; \"Can't be too on point ... as long as it has a shield, a handheld rifle, and a beam sword - it's a Gundam\"; 14 October: \"it combos, it duels other gundams, it usually SLAUGHTERS all the enemy's trash without breaking a sweat, and its theme is Beam weapons\"; 16 November: \"It needs its own identity\", a homage, not a clone). 18 November: \"the macross unit truly changes forms. Whereas the Gundam changes weapons\". Its name and designation are working drafts, his to set: the designation's 78 nods to the RX-78.",
+    "fantasy": "Ryan's Gundam homage (11 and 12 October: \"a Gundam-homage walker\"; \"Can't be too on point ... as long as it has a shield, a handheld rifle, and a beam sword - it's a Gundam\"; 14 October: \"it combos, it duels other gundams, it usually SLAUGHTERS all the enemy's trash without breaking a sweat, and its theme is Beam weapons\"; 16 November: \"It needs its own identity\", a homage, not a clone). 18 November: \"the macross unit truly changes forms. Whereas the Gundam changes weapons\". Its designation is his (19 November: \"Apoapsis Flight 78 Partisan Frame\"), the 78 the RX-78's nod; its name a working draft until he picks one.",
     "niche": "The agile duelist (19 November: \"Its an agile duelist, not a bruiser\"): a flanker that is not the fastest across the map but holds its own once there, the carry, the utility skirmisher. Squishy, its riders its power. Its offhand is the one played around beside the Macross's form, the one played towards (18 November).",
-    "holes": "Every number a placeholder for the numbers pass (squishy: the hull and shield under the Baboon's, its move between the Baboon's and the Stingray's). The Aile Booster prints no heat. Its branches' upgraded booster keeps its printed name on the die; the step's line names the Blitzer and the Assaulter. Its brief retired with the landing (git keeps docs/briefs/aphelion_line_frame.md); the bible's row holds the kit's reasons."
+    "holes": "Every number a placeholder for the numbers pass (squishy: the hull and shield under the Baboon's, its move between the Baboon's and the Stingray's). The Aile Booster runs 1 hot (his of 19 November). Its branches name the booster they upgrade, the Aile Blitzer and the Aile Assaulter, on the die's readout and the codex as on the step's line (his: \"I intended the gundam to change its equipment names for the booster and the offhand\"). Its brief retired with the landing (git keeps docs/briefs/aphelion_line_frame.md); the bible's row holds the kit's reasons."
    },
    "codex": "",
    "hull": 24,
@@ -930,7 +930,8 @@
          "trigger": "static",
          "effect": "buff_status",
          "value": "aile_blitz",
-         "entry": "aile_booster"
+         "entry": "aile_booster",
+         "name": "Aile Blitzer"
         }
        ]
       }
@@ -997,7 +998,8 @@
          "trigger": "static",
          "effect": "buff_status",
          "value": "aile_assault",
-         "entry": "aile_booster"
+         "entry": "aile_booster",
+         "name": "Aile Assaulter"
         },
         {
          "trigger": "static",

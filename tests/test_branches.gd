@@ -200,6 +200,33 @@ func test_a_step_may_tweak_the_passive_and_a_locked_piece_at_once() -> void:
 		assert_false((rules as Array).has("Guard I: Guard one."), "and on no piece's row")
 
 
+## A step may name the piece it upgrades (Ryan, 19 November: "I intended the gundam to change its
+## equipment names for the booster and the offhand"; "the upgrade decisions should be represented on
+## the die somehow"): the die's readout and the codex call it by the step's name, the die keeping the
+## piece as printed.
+func test_a_step_may_name_the_piece_it_upgrades() -> void:
+	var db := _db(1)
+	var c: Dictionary = db.chassis["test_frame"]
+	c["branches"][0]["steps"][0]["effects"] = [{"trigger": "static", "effect": "self_status", "status": "ward", "value": 1, "entry": "test_lure", "name": "Test Lance"}]
+	var errs: Array[String] = []
+	db._validate_branches("chassis test_frame", c, errs)
+	assert_eq(errs, [] as Array[String], "a name on an effect that names its piece")
+	var u := db.make_mech("test_frame", 1, Vector2i.ZERO, null, [], ["guard"])
+	var lure: Face = u.die.faces[0]
+	assert_eq(Effects.entry_name(u, lure), "Test Lance", "the step's name for its piece")
+	assert_eq(Effects.effective_face(u, lure).renamed, "Test Lance", "the entry as shown carries it")
+	assert_eq(lure.renamed, "", "the die keeps the piece as printed")
+	assert_eq(Effects.entry_name(u, u.die.faces[1]), "", "and no other piece takes it")
+	var lines := EntryReadout.lines_for(Effects.effective_face(u, lure), 1, -1, lure, [], [], db)
+	assert_eq(str(lines[0]["text"]), "TEST LANCE", "the readout's title")
+	assert_eq(db.codex_for_unit(u)["face_names"], ["Test Lance", ""], "the codex's rows")
+	var plain := db.make_mech("test_frame", 2, Vector2i.ZERO)
+	assert_eq(Effects.entry_name(plain, plain.die.faces[0]), "", "unpicked, its own")
+	var bad: Array[String] = []
+	db._validate_passive("passive x", {"id": "x", "name": "X", "description": "x", "effects": [{"trigger": "static", "effect": "self_status", "status": "ward", "value": 1, "name": "Stray"}]}, bad)
+	assert_true(bad.any(func(e: String) -> bool: return e.contains("the name its piece takes")), "a name with no piece to name is refused")
+
+
 ## The harness's UPG line (under a machine's hardpoints): every build its chassis allows, one pick,
 ## the setup's and the row's at once; Stock takes it off with the rest.
 func test_the_harness_offers_every_build_and_the_row_names_the_one_picked() -> void:

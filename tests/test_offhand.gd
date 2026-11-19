@@ -150,6 +150,29 @@ func test_the_rifle_strikes_the_foe_to_the_right_with_every_strike_its_own_blow_
 	assert_eq([p.hp, q.hp], [50, 47], "the rifle finds nobody")
 
 
+func test_a_strikes_blows_land_in_the_strike_order() -> void:
+	# Ryan, 19 November: "Center -> Left -> Right for Spread, and Center -> Front/Rear for penetrate.
+	# Spread always computes before Penetrate, and Penetrate computes before Rifle"; Chain's arcs
+	# after them, following the impact.
+	var gun := _gun(3, 1, [K.CLEAVE, K.PENETRATE, K.CHAIN])
+	gun.cleave = 1
+	gun.penetrate = 1
+	gun.chain = 1
+	var u := _mech("Line", Die.single(gun))
+	var a := _dummy(50)
+	var b := _dummy(50)
+	var c := _dummy(50)
+	var d := _dummy(50)
+	var e := Foe.make("archer", 50, 0, true)
+	var g := Foe.make("archer", 50, 0, true)
+	var sk := _fight([u], [a, b, c, d, e, g])
+	assert_eq(sk.foe_at(1, 1), g, "a foe behind the target")
+	Effects.stack(d, Effects.STATUS["shocked"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_true(sk.assign(0, b), "at the second front foe")
+	var order: Array = sk.spend_blows.map(func(bl: Dictionary) -> Foe: return bl["foe"])
+	assert_eq(order, [b, a, c, g, c, d], "the target, Spread's left and right, Penetrate's behind, the rifle's to the right, then the arc")
+
+
 func test_the_rifles_blow_carries_the_entrys_riders_and_a_debuff_rides_it_too() -> void:
 	var gun := _gun(3, 1, [K.BRITTLE])
 	gun.brittle = 1
@@ -170,27 +193,40 @@ func test_the_rifles_blow_carries_the_entrys_riders_and_a_debuff_rides_it_too() 
 	assert_eq(Effects.stacks_of(d, "brittled"), 1, "its rider lands all the same")
 
 
-func test_the_sword_hits_the_target_again_after_each_strike_for_half_the_strikes_blow() -> void:
-	var u := _mech("Line", Die.single(_gun(5, 2)), [SWORD])
+func test_the_sword_hits_the_target_again_after_each_strike_as_a_strike_of_half_its_number() -> void:
+	# Ryan, 19 November: "Base 4 -> treat like a 4,2 weapon (two strikes) ... Base 2x2 -> treat like a
+	# 2,1,2,1 (four strikes)".
+	var u := _mech("Line", Die.single(_gun(4)), [SWORD])
 	var foe := _dummy(100)
 	var sk := _fight([u], [foe])
-	assert_true(sk.assign(0, foe), "two strikes of 5")
-	assert_eq(foe.hp, 100 - (5 + 2) * 2, "each strike, then half of it rounded down: 5, 2, 5, 2")
-	var kinds: Array = sk.spend_blows.map(func(b: Dictionary) -> String: return str(b["kind"]))
+	assert_true(sk.assign(0, foe), "a strike of 4")
+	assert_eq(foe.hp, 100 - 4 - 2, "4, then 2: a 4,2 weapon")
+	var w := _mech("Line", Die.single(_gun(2, 2)), [SWORD])
+	var f1 := _dummy(100)
+	var s1 := _fight([w], [f1])
+	assert_true(s1.assign(0, f1), "two strikes of 2")
+	assert_eq(f1.hp, 100 - (2 + 1) * 2, "2, 1, 2, 1")
+	var kinds: Array = s1.spend_blows.map(func(b: Dictionary) -> String: return str(b["kind"]))
 	assert_eq(kinds, ["strike", "again", "strike", "again"], "each hit its own place, in order")
-	# The strike's blow as it left the gun, the firer's pipeline already in it, so Empowered is never read twice.
-	var v := _mech("Line", Die.single(_gun(5)), [SWORD])
+	# Each its own strike through the pipeline: Empowered on both, a next strike's buff on the first alone.
+	var v := _mech("Line", Die.single(_gun(4)), [SWORD])
 	var f2 := _dummy(100)
 	var s2 := _fight([v], [f2])
 	Effects.stack(v, Effects.STATUS["overcharged"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
 	assert_true(s2.assign(0, f2), "an Empowered strike")
-	assert_eq(f2.hp, 100 - 6 - 3, "6, then half of 6")
+	assert_eq(f2.hp, 100 - 5 - 3, "4 and 1, then 2 and 1")
+	var x := _mech("Line", Die.single(_gun(4)), [SWORD])
+	x.grant_passive({"id": "doubler", "name": "Doubler", "description": "", "effects": [{"trigger": "on_attack", "effect": "multiply_damage", "value": 2, "when": "first_blow"}]})
+	var f3 := _dummy(100)
+	var s3 := _fight([x], [f3])
+	assert_true(s3.assign(0, f3), "a strike its next-strike buff doubles")
+	assert_eq(f3.hp, 100 - 8 - 2, "8, then the hit again's own 2: the buff never reaches it")
 	# The foe's armour meets each hit as its own blow.
-	var w := _mech("Line", Die.single(_gun(5)), [SWORD])
-	var f3 := _dummy(100, 1)
-	var s3 := _fight([w], [f3])
-	assert_true(s3.assign(0, f3), "at armour 1")
-	assert_eq(f3.hp, 100 - 4 - 1, "5 less 1, then 2 less 1")
+	var y := _mech("Line", Die.single(_gun(5)), [SWORD])
+	var f4 := _dummy(100, 1)
+	var s4 := _fight([y], [f4])
+	assert_true(s4.assign(0, f4), "at armour 1")
+	assert_eq(f4.hp, 100 - 4 - 1, "5 less 1, then 2 less 1")
 
 
 func test_a_saber_hits_again_whole_and_a_ricochet_sets_off_no_hit_again() -> void:
@@ -339,7 +375,7 @@ func test_the_parry_counts_what_a_barrier_and_armour_keep_off_and_pays_half_next
 	ms.face_index = 0
 	var before := a.hp
 	assert_true(sk.assign(0, a), "two strikes")
-	assert_eq(before - a.hp, (3 + 4) * 2, "4 more on every strike")
+	assert_eq(before - a.hp, (3 + 4) + 3, "4 more on its next strike alone (19 November: \"Can we change it to 'next strike' instead?\")")
 	assert_eq(Effects.stacks_of(u, "parry_strike"), 0, "lifted by that weapon")
 
 

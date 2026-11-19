@@ -62,7 +62,6 @@ const HARDENED_ROUNDS := 2.0     # rounds a stack of Hardened Light is read to s
 const RICOCHET_WORTH := 2.0      # a stack of Ricochet (the Skua's, 11 November), in foe hit points: about two shots' worth before the fight ends or a blow halves it; a placeholder, as every weight
 const AILE_REACH_WORTH := 0.3    # an Aile buff's Indirect reach on the next weapon (the line frame's booster, 19 November), as a share of the machine's own average blow: the back rank it opens; a placeholder
 const AILE_ARMOUR_WORTH := 0.5   # and the Blitz's armour ignored, a point of armour off each foe it may strike, a share of it a strike; a placeholder
-const PARRY_STRIKES := 1.5       # the strikes the Parry's add is read to land on, its next weapon's (the Beam Buckler's, 19 November); a placeholder
 const ROLL_AGAIN_WEIGHT := 1.0   # another action of the die (Rapid, Instant, the reset gun, the Horn's), as the die's own average blow
 const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Ablate's does
 const BRITTLE_WEIGHT := 0.5         # a stack of Brittle, as the point it adds to each team blow the foe is likely to take while it lasts
@@ -855,7 +854,7 @@ func self_grant_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe
 
 ## What a Parry is worth (the Beam Buckler's, Ryan, 19 November): half, rounded down, of what its
 ## Barrier and its armour would keep off this round's blows aimed at it, the Barrier taking the
-## first whole, on every strike of its next weapon (PARRY_STRIKES). Placeholders, as every weight.
+## first whole, on its next strike alone. Placeholders, as every weight.
 func parry_worth(sk: Skirmish, ms: Skirmish.MechState) -> float:
 	var kept := 0
 	var barred := false
@@ -869,7 +868,7 @@ func parry_worth(sk: Skirmish, ms: Skirmish.MechState) -> float:
 				kept += blow
 			elif ms.unit.shield <= 0:
 				kept += mini(blow, ms.unit.armour)
-	return float(int(kept / 2.0)) * PARRY_STRIKES
+	return float(int(kept / 2.0))
 
 
 ## A team reroll's worth, the one yardstick for a reroll gained (equipment's, a kill's), paid (an
@@ -1425,15 +1424,22 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 		if area >= 0:
 			out.append([float(later) * (maxf(0.0, n - 1.0) if barred else n), w])   # no strike aimed at it: no Shock read
 			continue
-		var first := maxi(0, (Effects.damage_taken(target, dmg + eats, ms.unit, damaging) if target != null else dmg + eats) - arm)
+		# The spend's first blow, its first strike's on its target, reads what waits on the next strike
+		# (the Parry's return, 19 November), as the resolver hands it.
+		var fctx := zctx.duplicate()
+		fctx["first_blow"] = true
+		var opening: int = int(Effects.attack(ms.unit, f, Skirmish.split_share(v + fired, f.split), 0, target, fctx)["damage"]) + own
+		var first := maxi(0, (Effects.damage_taken(target, opening + eats, ms.unit, damaging) if target != null else opening + eats) - arm)
 		if barred:
 			first = 0
-		# The sword's hit again after every strike (the line frame's offhand, 19 November): its share
-		# of the strike's blow as it left the gun, rounded down, then the foe's Brittle and armour.
+		# The sword's hit again after every strike (the line frame's offhand, 19 November): a strike of
+		# its own, its share of the strike's number rounded down, through the firer's pipeline and the
+		# foe's reads, then the foe's Brittle and armour.
 		var again := Effects.strike_again(ms.unit, f, target) if target != null and f.reach != Face.Reach.EVERY_FOE else 0
 		var echoed := 0.0
 		if again > 0:
-			var echo := floori((dmg + eats) * again / 100.0)
+			var echo_base := floori(Skirmish.split_share(v + fired, f.split) * again / 100.0)
+			var echo := int(Effects.attack(ms.unit, f, echo_base, 0, target, zctx.duplicate())["damage"]) + own
 			echoed = float(maxi(0, (Effects.damage_taken(target, echo, ms.unit, damaging, false) if damaging else 0) - arm)) * n
 		# Ricochet (the Skua's, 12 November): once the weapon's strikes are done, a strike of 1 more
 		# a stack at its target, through the firer's pipeline, the foe's Brittle and its armour.

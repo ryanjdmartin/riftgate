@@ -687,6 +687,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		"passive_rows": rows,   # [text, "chassis"]: the chassis's own
 		"effects": effects,     # {name, text, kind ("module" | "reward"), note}: what else it carries between fights
 		"faces": faces,
+		"face_names": faces.map(func(f: Face) -> String: return Effects.entry_name(u, f)),   # the name a branch's step gives a piece (the line frame's Aile Blitzer), "" for its own
 		"face_rules": face_rules,
 		"current": -1,
 		"steps": Effects.steps_die(u),   # a die that steps (the Cassowary's) shows its chambers as a cylinder
@@ -2041,6 +2042,10 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: side_strike is static: value, what the foe to the right of the target takes with every strike, 1 or more" % where)
 		if effect == "strike_again" and (trig != "static" or int(eff.get("value", 0)) < 1):
 			errs.append("%s: strike_again is static: value, the share of each strike's blow its hit again carries, in percent, 1 or more" % where)
+		# The name an effect gives the piece it is scoped to (the Aile Booster as its Blitzer or its
+		# Assaulter, Ryan, 19 November): shown text, on an effect that names its piece.
+		if eff.has("name") and effect != "offhand" and (not eff.has("entry") or str(eff["name"]).strip_edges().is_empty()):
+			errs.append("%s: an effect's name is the name its piece takes: a word or two, beside the entry it names" % where)
 		# A branch's status in a buff piece's own's place (the Aile Booster's Blitzer and Assaulter).
 		if effect == "buff_status":
 			if trig != "static" or not Effects.MECH_STATUSES.has(str(eff.get("value", ""))):

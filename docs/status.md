@@ -61,7 +61,7 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1347 tests, 385,771 checks, green (19 November, the line frame's kit landed on
+- Tests: 1349 tests, 385,788 checks, green (19 November, the line frame's kit landed on
   `ccr-64b5deec-lunnff`, over main's Buzzard and the Pilgrim's knife). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
@@ -147,8 +147,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   on `ccr-64b5deec-lunnff` from Ryan's kit (Aphelion's agile duelist at tier one: its offhand
   cycles the Beam Rifle, the Beam Sword and the Beam Shield after every spend at a foe, a rider
   on what it aims at foes, its Aile Booster a Rapid lunge to Indirect; Duelist and Valkyrie its
-  directions, the Parry the Duelist's capstone; its name and designation working drafts, the
-  bible's section 12). The Giant Petrel's kit, the Musk Ox
+  directions, the Parry the Duelist's capstone, its return on the next strike alone; its
+  designation Ryan's, its name a working draft, the bible's section 12). The Giant Petrel's kit, the Musk Ox
   and the gunship are unfinished by his own notes. Four tier ones a maker (4-4-2) is his lean
   (the refit brief's section 13); the six certain ones are the Honey Badger, the Skua, the
   Storm Petrel, the Prairie Dog, the Cassowary and the Cottonmouth, and Minerva's four are his

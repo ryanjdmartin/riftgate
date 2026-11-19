@@ -494,12 +494,14 @@ const STATUS := {
 	# shield soaks). Two states under one name. Parry, through the round it is gained: the skirmish
 	# counts what a Barrier and its armour keep off each foe's blow on it (MechState.parried), and it
 	# goes as its machine's next turn starts. Then half of that count, rounded down, stands as
-	# parry_strike, a point more on every strike of the first weapon it fires that turn (Spun Up's
-	# add, its place in the blow), lifted by that weapon and gone as the turn ends if none fires.
-	"parry": {"id": "parry", "name": "Parry", "description": "What a Barrier and its armour keep off foes' blows this round is counted; next turn, its first weapon fired deals half of it more, rounded down.", "decay": "round", "single": true, "stacking": "renew",
+	# parry_strike, a point a stack on its next strike (19 November: "Can we change it to 'next
+	# strike' instead?"), the first blow of the first weapon it fires that turn by the strike order,
+	# on its target, in Empowered's place in the blow; that weapon lifts it, and it goes as the turn
+	# ends if none fires.
+	"parry": {"id": "parry", "name": "Parry", "description": "What a Barrier and its armour keep off foes' blows this round is counted; next turn, its next strike deals half of it more, rounded down.", "decay": "round", "single": true, "stacking": "renew",
 		"tags": ["buff"], "effects": []},
-	"parry_strike": {"id": "parry_strike", "name": "Parry", "description": "The first weapon it fires this turn deals {value} more a stack on every strike, and lifts it; equipment leaves it standing. Gone as its turn ends.", "decay": "after_turn", "spent_by": "weapon", "counted": true, "stacking": "renew",
-		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 1, "when": "weapon"}]},
+	"parry_strike": {"id": "parry_strike", "name": "Parry", "description": "Its next strike this turn deals {value} more a stack: the first weapon it fires, its first blow, on its target; that weapon lifts it, equipment leaving it standing. Gone as its turn ends.", "decay": "after_turn", "spent_by": "weapon", "counted": true, "stacking": "renew",
+		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 1, "when": "first_blow"}]},
 }
 ## The statuses a buff component may grant: the machines' own (Braced is a foe's too, from its
 ## brace), never one only a foe carries.
@@ -642,7 +644,11 @@ const ROUND_HOLDERS := {"overcharged": "essence_flare"}
 ## weapon (the line frame's Aile Booster, Ryan, 19 November: "Next weapon fired gains Indirect
 ## reach"): the entry is a weapon, so a status that waits on the next weapon fired reaches none of
 ## the machine's equipment while it stands.
-const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "target_unhurt", "target_half", "shield_up", "sealed", "weapon"]
+## first_blow (the Parry's return, Ryan, 19 November: "Can we change it to 'next strike'
+## instead?"): the blow is its spend's first by the strike order, its first strike's on its target
+## (the skirmish says so in `ctx`), so an add on the next strike lands on that blow alone and on
+## none of its area's; a forecast of the entry's number reads it as no first blow.
+const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "target_unhurt", "target_half", "shield_up", "sealed", "weapon", "first_blow"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "cooling", "shield_regen"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -1248,6 +1254,8 @@ static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionar
 			return is_sealed(u)
 		"weapon":
 			return face != null and face.is_weapon()
+		"first_blow":
+			return bool(ctx.get("first_blow", false))
 		"shield_up":
 			# The machine's own shield stands (the Storm Petrel's plate, 30 October): the shield
 			# the blow meets, before it lands.
@@ -1628,6 +1636,23 @@ static func strike_again(u, face: Face, target = null) -> int:
 	return n
 
 
+## The name a live effect gives this piece (`name` on an effect scoped to it by `entry`: the line
+## frame's Aile Booster as the Aile Blitzer or the Aile Assaulter, Ryan, 19 November: "I intended
+## the gundam to change its equipment names for the booster and the offhand"; "the upgrade
+## decisions should be represented on the die somehow"): the latest grant's, "" for its own.
+static func entry_name(u, face: Face) -> String:
+	if face == null or face.component.is_empty():
+		return ""
+	var out := ""
+	var seq := -1
+	for pair in _taking_part(u, "static", face):
+		var eff: Dictionary = pair[0]
+		if eff.has("name") and str(eff.get("entry", "")) == face.component and (pair[1] as Modifier).seq > seq:
+			seq = (pair[1] as Modifier).seq
+			out = str(eff["name"])
+	return out
+
+
 ## The status a buff entry grants as its machine's live effects make it (buff_status, static, scoped
 ## to its piece by `entry`: the Aile Booster's branches, the Blitzer's Aile Blitz and the
 ## Assaulter's Aile Assault in the Aile Boost's place, Ryan, 19 November): the latest grant's, ""
@@ -1785,7 +1810,8 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	var more := power_added(u, base, target)   # a branch's raise of the piece's own number (the Buzzard's Burst)
 	var added := added_numbers(u, base, target)   # a grant adding to a numbered keyword's own (the Beam Bazooka's Spread 2 on a Spread gun)
 	var buff_to := buff_rewrite(u, base)   # a branch's status in the piece's own's place (the Aile Booster's Blitzer)
-	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not spills and not regranted and more == 0 and added.is_empty() and buff_to.is_empty():
+	var named := entry_name(u, base)   # the name a branch's step gives the piece (the Aile Blitzer)
+	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not spills and not regranted and more == 0 and added.is_empty() and buff_to.is_empty() and named.is_empty():
 		return face
 	var c := base.duplicate_face() if base == face else base
 	c.reach = r
@@ -1801,6 +1827,8 @@ static func effective_face(u, face: Face, target = null) -> Face:
 		c.set_number(kw, had + int(added[kw]))
 	if not buff_to.is_empty():
 		c.buff_status = buff_to
+	if not named.is_empty():
+		c.renamed = named
 	if primed_shock:
 		c.add_keyword(Face.Keyword.SHOCK)
 	if primed_cryo:
