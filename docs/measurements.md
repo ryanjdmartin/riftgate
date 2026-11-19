@@ -11712,3 +11712,21 @@ a point of armour. One rider gun in its stock does more than the whole ramp as b
 fight 0.6 to 0.9 rounds shorter and the squad 3 to 4 points of hull better off, every bounce
 laying the rider again (Ryan's "applying all effects"); Ablating passes plate besides. A
 direction at 78 fights a build; his call on the kit.
+
+## 19 November: the Kite's kill that mends, on the sized foes
+
+`tools/reboot_probe.gd` as the entries above, the Kite first in the squad, 168 formation and
+elite fights and 78 boss fights, with the two what-ifs the probe carried for its lean: a bot
+that fights a broken Kite on when its die would fell a foe, and that bot with a kill of its own
+mending a broken shield. On `ccr-178e0404-ptuh2m` over main at `0c6dfc7`.
+
+| The Kite | Formations: rounds, own hull, wrecked, squad | Bosses: rounds, own hull, wrecked, squad |
+|---|---|---|
+| As built | 4.7, 8%, 2%, 7% | 7.2, 30%, 6 of 78, 19% |
+| Fights on with its shield broken | 4.7, 9%, 2%, 8% | 7.1, 30%, 6 of 78, 19% |
+| That, and a kill mends a broken shield | 4.7, 9%, 2%, 7% | 7.1, 30%, 6 of 78, 19% |
+
+What it says. The mend moves nothing: a boss fights alone, so there is almost nothing to kill,
+and in the formations the Kite is whole already. Its losses against a boss are its design, a
+glass cannon in a long fight. Ryan left it as built ("Leave it. Move on."), and the probe's
+what-ifs for the Kite and the Skua went with their leans.

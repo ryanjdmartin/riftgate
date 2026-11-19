@@ -11,7 +11,7 @@ two files. `README.md`'s Running section says how each switch and pose is run.
 
 Calls and marks:
 
-- [ ] Mark the first round on the machines the reboot broke (17 November; `docs/reboot_machines_proposal.md`): the Kite's kill mending a broken shield; the Puffin's first round; the Swallowtail as the team's pit crew. Each lands on your marks
+- [ ] Mark the first round on the machines the reboot broke (17 November; `docs/reboot_machines_proposal.md`): the Puffin's first round; the Swallowtail as the team's pit crew. Each lands on your marks
 - [ ] Mark the Storm Petrel's new texts on the hangar's Text tab (up since Version 306): the Hardlight Generator's line (its plate gone), the Hardened Light, On itself and Ward terms, the Chain term's arc line (an arc carries no rider), the four steps' lines and the two directions' names, Defence and Striker
 - [ ] Mark the Buzzard's new texts on the hangar's Text tab once the page carries them: the Field-Recoupling Injectors' line (the name is yours), the Fires the shield term, the two steps' lines and the two directions' names, Sustain and Burst; and its stock's two picks, the Blast Door for the Halo Projector (both a Barrier at cooldown 1) and the Laser Carbine for the warm gun
 - [ ] The dials, your picks or your go on the leans (`docs/briefs/numbers_pass.md`, section 7; each read on the sized game): HEAT on −1, a vanilla 3 for 3; TOP BASIC on +2, the Carbine 4 for 6; RANK AND FILE as built, a standard foe of 4; OVERHEAT at ×1 and its dial cut. On the map, from the reads of 10 and 11 November: FIELD DEPTH 14 with OPENING +1, RUPTURE at two beats, TIDE ×1.5 with STRIKE at ten, and FODDER cut as a dial with no job left. A go lands each in content or the engine and cuts its dial

@@ -23,7 +23,7 @@ too), and the Needletail the same day. It retires once its calls are rows and co
 | Buzzard | Landed 18 November (the bible's row): the Field-Recoupling Injectors, a zap on every weapon it fires and 2 shield for every foe that falls; its Shield-burner Cannon fires the whole shield; a Barrier piece and a warm gun in its stock; his branches Sustain and Burst | His play of it, and his marks on its texts |
 | Needletail | Landed 18 November on his two calls (the bible's Kestrel row): its Designator makes no heat, and its reboot may be its second spend, after one action of either kind | His play of it, and his "dull" |
 | Skua | Stands as built (19 November): the reboot leaves its ramp alone, and it reads level with the tier twos | Settled, his "Leave it as is" |
-| Kite | Holds in short fights; its refill dies with a break, its reboot is the frailest bare turn | A kill mends a broken shield, or as it is |
+| Kite | Stands as built (19 November): a kill that mends a broken shield changed nothing on the read | Settled, his "Leave it" |
 | Cottonmouth | The drum's shape holds; at 6 heat it is two shots a cycle on the lightest frame | The drum's heat or its gauge; a keyword shell in stock |
 | Puffin, in design | Nothing of the old kit survives; his direction, moving heat, is the system's dearest verb | Its session now or after the heat prices |
 | Swallowtail, in design | Two dead plain forms; the system hands it a niche, the team's pit crew | His session |
@@ -95,29 +95,13 @@ rarely and almost never while it reboots, and sparing them changes nothing. It r
 with the Kite and the Needletail, a tier above it. Its kit as this proposal read it is in git:
 `git show 90d15e4:docs/reboot_machines_proposal.md`.
 
-### Kite
+### Kite, settled
 
-Kestrel, tier 2, light flyer. *Context*: the burst glass cannon (11 November); its shield comes
-back by killing (his: "What exactly is wrong from a shield refill if the max shield is small?");
-"anything big after its first shot, and a long fight, are another machine's".
-
-*Kit*: hull 12, shield 8, armour 0, heat 12, move 6, 3 hardpoints.
-- Disabled Weapon Regulators: every weapon hits an unhurt foe at double its printed number; a
-  kill recharges its shield.
-- Pinion Driver (fixed): 2 twice for 3, Finisher (double on a foe at half its HP or less).
-- Transonic Rifle 5 for 7 (10 opening); Twin Autoguns 3 for 4 (6); Laser Carbine 4 for 5 (8).
-
-*As a whole.* Every entry is a gun, so every turn is a shot, an opener on a whole foe or the
-finisher on a half-dead one; two or three shots a cycle on 12. Its only defence and its only
-sustain is a shield a kill refills, and the Broken rule cuts that: once its 8 breaks, in two or
-three tier-one blows, kills refill nothing until the reboot. Its reboot is the most dangerous
-bare turn in the game, 12 hull, no armour and nothing on its die to cover itself; and since 17
-November a dying foe's blow lands on its killer, most often the Kite.
-
-*Verdict.* Its identity holds where it plays, short fights full of foes; the system costs it the
-refill past a break and a bare turn every short cycle. The lean is that a kill mends a broken
-shield, its passive breaking the rule as a one-off; the read has it small at tier one, so it is
-a design call.
+Left as built on 19 November (Ryan: "Leave it. Move on."). The read of that day
+(`docs/measurements.md`) found the lean, a kill that mends a broken shield, moves nothing: a
+boss fights alone, so there is almost nothing to kill, and in formations the Kite is already
+whole. Its losses against a boss are its design, a glass cannon in a long fight. Its kit as this
+proposal read it is in git: `git show 90d15e4:docs/reboot_machines_proposal.md`.
 
 ### Cottonmouth
 
@@ -447,7 +431,7 @@ in formations and nothing against a lone boss.
 3. Needletail: landed 18 November on his calls, its Designator at no heat and its reboot its
    second spend (the bible's Kestrel row); his "dull" waits on his play.
 4. Skua: settled 19 November, left as built ("Leave it as is and move on").
-5. Kite: a kill mends a broken shield (lean), or left as it is.
+5. Kite: settled 19 November, left as built, the kill that mends refused ("Leave it").
 6. Cottonmouth: the drum's heat or its gauge, and a keyword shell in its stock.
 7. Puffin and Swallowtail: their sessions now, or as set.
 8. Polar Bear: "its own cooling stopped" off its text; the wall at tier one stays with the bench.
