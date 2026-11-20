@@ -104,7 +104,7 @@ machine" is my redraft.
 | Foe | Today | Proposed | Why |
 |---|---|---|---|
 | Magma Elemental line | Slag Fist, a plain blow | Slag Fist with Brittle 2 | slag cracks plate, and the salamanders' bites after it land harder: the Peak's spike, on the rank and file |
-| Wyvern (t2) | Dive, a plain blow | Dive with an Expose | a diving wyvern marks its prey for the field; two to a formation, one mark a round by the brake |
+| The Bane (elite, t2) | Flame Whip, a blow that ablates | Flame Whip with an Expose | the whip drags its quarry down for the Shadow Blade; one carrier fighting alone, his "the only expose in the formation, so bring him down if you can't handle it" (the Wyvern, two to a formation, was this row until his rule of 20 November) |
 | Firelord (elite) | Submerge, armour 3 | Submerge as Phased: he sinks, the Sons of Flame rise | sunk in the lava he is out of reach; under the source rule a Phased machine can still follow him |
 | Obsidian Tyrant (boss) | Roar, a reroll drained | open: his "Same with Obsidian. But then they're both identical" | my lean: Brittle 2 on every machine, so the Rider's cry saps what you deal and the Tyrant's roar cracks what you take, before its Firestorm |
 
@@ -116,7 +116,7 @@ machine" is my redraft.
 | Ablating | King Gel, waiting | Emperor Scorpion, built | | as today |
 | Brittle | the roots | Antlion line | | Magma Elemental line, World Eater; Obsidian Tyrant, open |
 | Sapped | | | Ghost line; Fell Rider, built | |
-| Exposed | as today | as today | as today | Wyvern |
+| Exposed | as today | as today | as today | the Bane |
 | A foe's Ward | | Warding Orb | Death Knight | |
 | A foe's Barrier | | as today | Matador | |
 | A foe's Phased | | | as today | Firelord |
