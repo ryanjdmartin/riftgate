@@ -65,8 +65,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1375 tests, 387,073 checks, green (20 November, the Puffin's line landed over his kit
-  marks). The runner fails a run
+- Tests: 1384 tests, 387,201 checks, green (20 November, the gel line, the goblins' wall and the
+  content audit over the Puffin's landing). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -332,9 +332,12 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    order from here:
    - His marks on the rest of `docs/domain_statuses_proposal.md`, then its rows built and
      read: a foe's Sap rider for the Ghost line, and Phased by source with his ruling on a
-     ghost's own side, in one pass; his read of the formations that rally.
+     ghost's own side, in one pass; his read of the formations that rally (the hangar's Foes
+     tab shows each formation by name since 20 November); the Wild Hunt's leader on his marks.
+   - Every tier-one leader read again at sixty fights or more (the shaman's warband reads 33%
+     at every commit back to its thirty-fight sizing), then any leader moved into its band.
    - The formation pass (the bible's formation row): every composition given a purpose, a
-     row a formation in chat first, the goblin horde re-sized with its wall.
+     row a formation in chat first; the goblin horde's four roots on his play of it.
    - His play of a second battle, which says whether the budget's shares stand (the brief's
      section 11): the fights are even across the domains, and the battle whole is tight.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
