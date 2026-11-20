@@ -12251,7 +12251,7 @@ every fight won.
 Badger, the Prairie Dog and the Cassowary, the greedy bot, 168 formation and elite fights and 78
 boss fights, on `ccr-178e0404-ptuh2m` at `31d1a556` (main at `33c4cc61` merged in: the foes' kit
 marks and their sizing). The what-ifs are the probe's options: `--heat-max 12`, `--release-per 3`
-(a blast's point every 3 heat), `--stock shoring_jack,twin_autoguns,twin_autoguns,maxigun` (the
+(a blast's point every 3 heat), `--drop-effect heat_per_blow` (no heat for a blow it takes), `--stock shoring_jack,twin_autoguns,twin_autoguns,maxigun` (the
 Shoring Jack in the Thermal Ray's place), `--face-heat knuckle_of_fury=4`.
 
 | The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad |
@@ -12260,6 +12260,7 @@ Shoring Jack in the Thermal Ray's place), `--face-heat knuckle_of_fury=4`.
 | Its heat maximum 12 | 4.1, 24%, 5%, 6% | 6.6, 22%, 6%, 12% |
 | A blast's point every 3 heat | 4.3, 20%, 4%, 6% | 6.5, 18%, 5%, 12% |
 | The Shoring Jack for its Thermal Ray | 4.4, 21%, 4%, 7% | 7.2, 18%, 8%, 13% |
+| Without its heat on being hit | 4.2, 21%, 4%, 6% | 6.5, 18%, 6%, 12% |
 | The Nemesis as built | 5.2, 21%, 5%, 8% | 8.6, 24%, 12%, 17% |
 | Its Knuckles at heat 4 | 5.0, 18%, 5%, 8% | 8.5, 21%, 13%, 16% |
 | The Buzzard | 4.8, 19%, 5%, 7% | 7.7, 23%, 16%, 17% |
@@ -12275,7 +12276,7 @@ rounds with the squad losing 12%, where the other tier twos take 7.7 to 10.6 and
 and its own hull loses 5%. Its die is five weapons, two of them 6s (the Thermal Ray and the
 Maxigun's three 2s), and its reboot, everyone else's lost turn, deals damage to every foe. The
 passive's levers move it little (a lower heat maximum blasts smaller and more often; a thinner
-blast takes 0.2 rounds); its stock moves it most, the Thermal Ray the largest single piece of its
+blast takes 0.2 rounds, and so does going without the heat its blows taken bank); its stock moves it most, the Thermal Ray the largest single piece of its
 edge, and without it it still reads strongest. The Nemesis reads mid-pack, level with the Buzzard
 on hull against the bosses and a round slower. The bot never rides its overheat loop, rebooting
 first, and the Knuckles at heat 4 take three points off its reboots and nothing off its fights; its

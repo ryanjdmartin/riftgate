@@ -29,7 +29,9 @@ extends SceneTree
 ## a piece's printed heat: the Nemesis's Knuckles, Ryan, 20 November: "I suspect that the knuckles
 ## are too hot"), --release-per N (a what-if: the heat a point of a reboot's blast stands for, on
 ## every passive that blasts: the Whip Scorpion's 2), --stock <component ids> (a what-if: the read
-## machine's stock in place of its own, in order). Four in parallel, a part of the roster each, read
+## machine's stock in place of its own, in order), --drop-effect <effect> (a what-if: the read
+## machine's passive without that effect: the Whip Scorpion's heat on being hit, Ryan, 20 November:
+## "What does removing the on-hit gain heat do to its performance?"). Four in parallel, a part of the roster each, read
 ## the whole roster in about seven minutes.
 ##
 ## The proposal's leans it laid over its fight loop went with their calls: the Polar Bear's and
@@ -47,6 +49,7 @@ var heat_max := -1      # --heat-max: the read machine's heat maximum as a what-
 var face_heat := {}     # --face-heat: component id -> its printed heat as a what-if
 var release_per := -1   # --release-per: a reboot blast's heat a point as a what-if; -1 leaves content's
 var stock: Array = []   # --stock: the read machine's stock as a what-if; empty leaves content's
+var drop_effect := ""   # --drop-effect: an effect the read machine's passive goes without, as a what-if
 
 const CAP := 40   # a fight still standing at forty rounds ends there as it stands, the bot stalled
 
@@ -66,6 +69,8 @@ func _init() -> void:
 				picks = Array(v.split(","))
 			"--heat-max":
 				heat_max = maxi(1, int(v))
+			"--drop-effect":
+				drop_effect = v
 			"--release-per":
 				release_per = maxi(1, int(v))
 			"--stock":
@@ -81,6 +86,11 @@ func _init() -> void:
 	for cid in face_heat.keys():
 		if db.components.has(cid):
 			db.components[cid]["face"]["heat"] = int(face_heat[cid])
+	if not drop_effect.is_empty():
+		for cid in only:
+			var dp = db.chassis.get(cid, {}).get("passive", null)
+			if dp is Dictionary:
+				dp["effects"] = (dp.get("effects", []) as Array).filter(func(e) -> bool: return str(e.get("effect", "")) != drop_effect)
 	if not stock.is_empty():
 		for cid in only:
 			if db.chassis.has(cid):
@@ -108,7 +118,7 @@ func _init() -> void:
 				comps.append(c)
 	print("%d %s, %d seeds, the squad's three: %s%s%s%s" % [comps.size(), "bosses" if bosses else "compositions", seeds, ", ".join(mates),
 		"" if picks.is_empty() else ", upgrades " + ",".join(picks), "" if heat_max < 0 else ", its heat maximum %d" % heat_max,
-		("" if face_heat.is_empty() else ", heat " + str(face_heat)) + ("" if release_per < 0 else ", a blast's point every %d heat" % release_per) + ("" if stock.is_empty() else ", its stock " + ",".join(stock))])
+		("" if face_heat.is_empty() else ", heat " + str(face_heat)) + ("" if release_per < 0 else ", a blast's point every %d heat" % release_per) + ("" if stock.is_empty() else ", its stock " + ",".join(stock)) + ("" if drop_effect.is_empty() else ", without its " + drop_effect)])
 	var t0 := Time.get_ticks_msec()
 	print("| Machine | Fights | Won | Rounds | Spent | Rebooted | Held | Rounds a reboot | Overheats a fight | Burn a fight | Bare turns | Sealed | Blasts a fight | Own hull lost | Wrecked | Squad hull lost | Mates rebooted |")
 	print("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
