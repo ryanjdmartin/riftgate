@@ -38,18 +38,20 @@ proposed in chat first. The long form of this file is `git show cc446826:docs/br
   a gate. `docs/vocabulary.md` is the vocabulary as it runs; what became of each word is
   `git show 07f01fb:docs/vocabulary_pass_proposal.md`, sections 18 and 20. A design that
   leans on a word that moved says so as its session opens.
-- Fold in Ryan's corrections first. On the hangar's Designs tab he corrects a paragraph,
-  strikes one, notes a heading, sets a session's direction or leaves an idea with no brief
-  yet; they wait in the page's `designs` collection. Before reading the brief, save it with
-  ArtifactData's `list` (`collection` `designs`, `out_dir` `build/hangar/inbox`) and run
-  `python3 tools/hangar_designs.py --fold build/hangar/inbox` (`--dry` to look first). A
-  correction replaces its block, closed with "(Ryan's correction, <day>.)"; a strike removes
-  its block; a note goes under its heading and a direction under the header, each opening on
-  his name and the day. Read the diff, fold by hand what it could not place and close the
-  numbers of a list it struck from; commit, run `python3 tools/hangar_data.py`, republish the
-  hangar as the status's Pages says, then clear the folded documents with the batch the fold
-  printed. An idea becomes a brief or a bench line and is marked briefed or dropped. A
-  correction is his call at the strength he wrote it: a hole in one is raised in chat.
+- Fold in Ryan's notes first. On the hangar's Bench he reads a brief, read only (a machine's on
+  its sheet, the rest on the Briefs list), notes a heading, sets a session's direction or leaves
+  an idea with no brief yet (20 November: "I'm not going to edit a brief (not anymore), but I
+  will want to make notes on it"); they wait in the page's `designs` collection. Before reading
+  the brief, save it with ArtifactData's `list` (`collection` `designs`, `out_dir`
+  `build/hangar/inbox`) and run `python3 tools/hangar_designs.py --fold build/hangar/inbox`
+  (`--dry` to look first). A note goes under its heading and a direction under the header, each
+  opening on his name and the day; a correction or a strike saved before 20 November still folds
+  (a correction replaces its block, closed with "(Ryan's correction, <day>.)"; a strike removes
+  its block). Read the diff, fold by hand what it could not place and close the numbers of a list
+  it struck from; commit, run `python3 tools/hangar_data.py`, republish the hangar as the
+  status's Pages says, then clear the folded documents with the batch the fold printed. An idea
+  becomes a brief or a bench line and is marked briefed or dropped. A note is his call at the
+  strength he wrote it: a hole in one is raised in chat.
 - One brief a design: every chassis, component, module or rule in design has a file of its
   own here, `<maker>_<label>.md`. Its hangar header stands on a line of its own within the
   five lines after the title, an HTML comment holding one JSON object:
@@ -60,7 +62,7 @@ proposed in chat first. The long form of this file is `git show cc446826:docs/br
   proposal, parked, rework, session, hub, cut). `slot` is true when the design fills one of
   its maker's ten: only a chassis may, and it needs its maker; it is false for a piece, a
   rework of a built machine, a rule or a hub. `name` is its working name. `built` is the
-  content id, on a rework. The Designs tab reads no brief without a sound header:
+  content id, on a rework. The hangar reads no brief without a sound header:
   `python3 tools/hangar_designs.py --check` checks them all and writes nothing.
 - Propose in chat first. A suggestion of Ryan's opens a discussion: look for holes and raise
   them before building, and if he reaffirms after hearing them, build it as he said. His calls

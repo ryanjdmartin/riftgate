@@ -1,4 +1,4 @@
-"""The hangar's Designs tab data: every brief in docs/briefs/, parsed for the page.
+"""The hangar's briefs: every brief in docs/briefs/, parsed for the page's Bench.
 
 Each brief opens with a hangar header under its title, an HTML comment holding a JSON object
 (the briefs README's How a session runs says what each field means):
@@ -9,11 +9,14 @@ Each brief opens with a hangar header under its title, an HTML comment holding a
 
 This reads every brief, checks its header, and splits the body into sections (by heading) and
 blocks (a paragraph, a list item, a quote paragraph, a table, a code fence), each block keeping
-its exact source text so an edit Ryan makes on the page can be folded back into the file by a
-plain text match. It writes build/hangar/designs.json, which tools/hangar_data.py publishes
-beside the page as hangar/designs.json (5 November, Ryan: "I'd like to be able to edit briefs
-and WIP designs in the hangar if possible, so when I start a design session I'm not correcting
-a bunch of bad assumptions in context").
+its exact source text so a note finds its heading and a correction its block by a plain text
+match. It writes build/hangar/designs.json, which tools/hangar_data.py publishes beside the page
+as hangar/designs.json (5 November, Ryan: "I'd like to be able to edit briefs and WIP designs in
+the hangar if possible, so when I start a design session I'm not correcting a bunch of bad
+assumptions in context"). The Bench reads them since 20 November, a machine's on its sheet and
+the rest on its Briefs list, read only with his notes (Ryan: "I'm not going to edit a brief (not
+anymore), but I will want to make notes on it"), so the page writes no correction or strike now;
+one saved before still folds as below.
 
     python3 tools/hangar_designs.py            # write build/hangar/designs.json, print a summary
     python3 tools/hangar_designs.py --check    # check the headers only, write nothing
@@ -128,7 +131,7 @@ def blocks_of(lines):
 
 
 def text_of(kind, lines):
-    """What the page shows and edits: the block's words with its markup of place stripped (a
+    """What the page shows: the block's words with its markup of place stripped (a
     list marker, a quote's '>', the indent), lines joined by a space; a table or code fence raw."""
     if kind in ("table", "code"):
         return "\n".join(lines)
@@ -205,7 +208,7 @@ def build(check_only=False):
             docs.append(d)
     if not check_only and not problems:
         os.makedirs(os.path.dirname(os.path.join(ROOT, OUT)), exist_ok=True)
-        json.dump({"_about": "Every brief in docs/briefs/ as the hangar's Designs tab reads it, written by tools/hangar_designs.py: its header, its sections and its blocks, each block's exact source kept for folding an edit back in.",
+        json.dump({"_about": "Every brief in docs/briefs/ as the hangar's Bench reads it, written by tools/hangar_designs.py: its header, its sections and its blocks, each block's exact source kept for folding a note or a correction back in.",
                    "stamp": stamp(), "docs": docs},
                   open(os.path.join(ROOT, OUT), "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     return docs, problems

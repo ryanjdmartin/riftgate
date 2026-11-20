@@ -1,5 +1,5 @@
-/* The hangar page's Animation tab (3 October): a machine's idle acts, its gait and its
-   cornering, played from the same sidecar the game reads (art/models/<id>.rig.json, written
+/* The hangar page's Models tab (the Animation tab of 3 October, merged into it): a machine's idle
+   acts, its gait and its cornering, played from the same sidecar the game reads (art/models/<id>.rig.json, written
    by tools/lowforge from models_low.py) on the same glTF (art/models/<id>.glb, published as
    JSON). Published beside the page as hangar/motion.js, the models and sidecars as
    hangar/models/<id>.model.json and <id>.rig.json (tools/hangar_data.py prints the map).
@@ -152,7 +152,7 @@ void main() { vec2 p = vUv * 2.0 - 1.0; float r = length(p); float bloom = 1.0 -
 // A booster's plume along its thrust (MechView3D.setup_plumes, plume.gdshader; Ryan, 31 October, of the
 // Stingray's exhaust: "can it be directional?"): a flame out of its plume node's mouth down the node's
 // -z, turned about that line to face the eye, stretching and brightening with its booster's light, in
-// place of that booster's halo; a trial, the Plume button turning it off to compare with the ring.
+// place of that booster's halo (the bible's booster row: Aphelion's burn as plumes, and a shape that wants one).
 const PLUME_VERT = `uniform float strength; uniform float reach; uniform float breadth; varying vec2 vUv;
 void main() { vUv = uv; vec4 origin = modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0);
   vec3 axis = normalize((modelViewMatrix * vec4(0.0, 0.0, -1.0, 0.0)).xyz); float s = length(modelViewMatrix[2].xyz);
@@ -439,10 +439,8 @@ function shownBox(root) {
   return box;
 }
 
-let PLUMES_ON = true;   // the plume trial on (RIFTGATE_PLUME's page twin); the Plume button turns it off to compare with the ring
 class Rig {
   constructor(root, side, rngSeed = 1) {
-    this.plumesOff = !PLUMES_ON;
     this.model = root; this.body = root; this.standing = new Map(); this.halos = new Map(); this.flashes = []; this.haloGrow = 0; this.flares = []; this.aimAt = null;
     this.joints = {}; this.hardpoints = {}; this.rest = {}; this.restPos = {};
     root.traverse(n => {
@@ -506,7 +504,6 @@ class Rig {
   setupPlumes(side) {
     const T = window.THREE;
     this.plumes = [];
-    if (this.plumesOff) return;
     for (const pl of side.plumes || []) {
       const node = this.model.getObjectByName(pl.node), lit = this.litMaterials(pl.part);
       if (!node || !lit.length) continue;
@@ -547,7 +544,7 @@ class Rig {
     this.halos = new Map();
     this.haloGrow = HALO_SPREAD * this.modelSize();
     const named = Array.isArray(side.halo) ? side.halo : [];
-    const plumed = this.plumesOff ? [] : (side.plumes || []).map(pl => pl.part);   // a booster burning as a plume wears no ring (MechRig.halo_skip)
+    const plumed = (side.plumes || []).map(pl => pl.part);   // a booster burning as a plume wears no ring (MechRig.halo_skip)
     for (const entry of named) {
       // A part, [part, scale] or [part, scale, ahead] (MechRig._setup_halos).
       const p = Array.isArray(entry) ? entry[0] : entry, scale = Array.isArray(entry) && entry.length > 1 ? +entry[1] : 1;
@@ -1159,7 +1156,7 @@ class Rig {
   // for a moment as it ends, each turned where its weight takes it, the outermost first, never below the
   // floor the rest of the pose lies on.
   hangDeath(f) {
-    const d = f.duration, T = window.THREE, saved = {};
+    const d = f.duration, saved = {};
     for (const [jn, j] of Object.entries(this.joints)) saved[jn] = j.rotation.clone();
     const savedPos = this.body.position.clone(), savedRot = this.body.rotation.clone();
     let slide = v3(), turn = v3();
@@ -2519,6 +2516,5 @@ class Stage {
   seek(t) { if (this.rig && this.rig.current) { this.rig.seek(t); this.renderer && this.renderer.render(this.scene, this.camera); this.emit(); } }
 }
 
-window.HangarMotion = {Rig, Route, Stage, MovePath, HoverBalance, curve, cycleCurve, curveAt, sample, sampleCycle, clampDegrees, labelled, MOVE_REF_SPEED,
-  plumes: (on) => { if (on !== undefined) PLUMES_ON = !!on; return PLUMES_ON; }};
+window.HangarMotion = {Rig, Route, Stage, MovePath, HoverBalance, curve, cycleCurve, curveAt, sample, sampleCycle, clampDegrees, labelled, MOVE_REF_SPEED};
 })();

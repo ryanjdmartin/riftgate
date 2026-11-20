@@ -91,13 +91,15 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     `sheet_export.py`, `foeforge/`, `placeholder_art.py`, `recolour.py`, `loot_tokens.py`
   - Sound: `soundforge/` builds every sound and the six music tracks from written recipes
   - The phone: `phone.sh` and `android.sh`, with `.cmd` launchers on Windows
-  - The hangar page: `hangar.html`, one artifact with seven tabs (the codex, the bench, the
-    content editor, the text, the names, the designs, the models), its motion script
-    `hangar_motion.js`, and the scripts that write its files: `hangar_data.py` (the files
-    map, the models as glTF JSON into `build/hangar/models`), `hangar_designs.py` (the
-    briefs) and `hangar_text.py` (every shown text). Ryan's saved edits live in its
-    database: `edits` (the content editor and the bench), `candidates` (names), `designs`
-    (his corrections to the briefs) and `text` (his texts, marks and notes).
+  - The hangar page: `hangar.html`, one artifact with five tabs (the codex, the bench with
+    each machine's sheet and the briefs, the content editor, the text, the models), its
+    motion script `hangar_motion.js`, and the scripts that write its files: `hangar_data.py`
+    (the files map, the models as glTF JSON into `build/hangar/models`), `hangar_designs.py`
+    (the briefs) and `hangar_text.py` (every shown text). Ryan's saved edits live in its
+    database: `edits` (the content editor and the bench), `designs` (his notes on the briefs)
+    and `text` (his texts, marks and notes, the bench's codex and flavour among them).
+  - Names: `check_name.py` checks a name against every machine in `content/reserved_names.json`
+    and the names in content; `docs/naming.md` is the kinds of names each maker wants.
   - `spriter/.venv` is the Python the art and sound tools run with.
 - `art/`: `models/` every glTF the engine draws, with a `<id>.rig.json` sidecar beside each
   machine (written by lowforge, read by `mech_rig.gd` and `mech_view_3d.gd`);
@@ -110,7 +112,8 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
   - `rules.md` the rules as they stand; `design-bible.html` the decisions and why, with the
     questions only Ryan can settle in its section 12; `status.md` how things stand and the
     order of work; `todo.md` the tasks, one line each by who moves it; `measurements.md`
-    every run a decision cites.
+    every run a decision cites; `naming.md` the kinds of names each maker wants, a reference
+    and never a list.
   - Generated: `vocabulary.md` (from the vocabulary), `voice.md` (every shown text Ryan has
     signed as his own, read before a session drafts shown text), `synergy_map.md` (who sets
     and who reads every status and resource), `balance.md`, `campaign_run.md`, `battle_run.md`,
@@ -198,16 +201,17 @@ python3 tools/synergy_map.py --write
 python3 tools/pages/roster_analysis_page.py > /tmp/roster_analysis.html
 
 # the hangar page (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH)
-python3 tools/hangar_data.py              # writes docs/hangar/pins.json and build/hangar/designs.json, checks the renders manifest, prints the files map tools/hangar.html is published with
+python3 tools/hangar_data.py              # writes docs/hangar/pins.json, build/hangar/designs.json and build/hangar/text.json, checks the renders manifest, prints the files map tools/hangar.html is published with
 python3 tools/hangar_designs.py --check   # every brief's hangar header, alone
 python3 tools/hangar_text.py              # the Text tab's inventory into build/hangar/text.json, and its counts
 python3 tools/hangar_text.py --check      # every string key in content classified, the ledger sound
-# after Ryan writes on the Text tab: save the `text` collection with ArtifactData's list (out_dir build/hangar/text_inbox), then
+# after Ryan writes on the Text tab or a Bench sheet's codex and flavour: save the `text` collection with ArtifactData's list (out_dir build/hangar/text_inbox), then
 python3 tools/hangar_text.py --fold build/hangar/text_inbox --dry   # what it would change; without --dry it writes his texts into content, his marks into docs/hangar/text.json and docs/voice.md, and prints his notes
-# a design session's first step: save the `designs` collection the same way (out_dir build/hangar/inbox), then
+# a design session's first step: save the `designs` collection (his notes on the Bench's briefs) the same way (out_dir build/hangar/inbox), then
 python3 tools/hangar_designs.py --fold build/hangar/inbox --dry     # what it would fold; without --dry it writes the briefs and prints the batch that clears them
 # a render round: pictures into docs/hangar/renders/<chassis>/, the entry in docs/hangar/renders.json, republish.
-# After Ryan edits on the Content tab: pull `edits`, apply by hand, test, commit, republish, clear the documents.
+# After Ryan edits on the Content tab or the Bench: pull `edits`, apply by hand, test, commit, republish, clear the documents.
+python3 tools/check_name.py "Storm Kite" Dunkleosteus   # a name against the reserved machines and the names in content (docs/naming.md)
 ```
 
 ### The runners
