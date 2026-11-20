@@ -387,12 +387,11 @@ with it, on his word. A page's link goes into this file in the same commit as it
 publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.652 on 20 November from main's file at `364ac091` (the page's Version 516),
-  over the v0.651 the Puffin's line published from main at `56cf31ae`, which the live page
-  matched byte for byte and main's merge already carried. Before republishing,
+  Published at v0.653 on 20 November from main's file at `7a3b8e35` (the page's Version 517),
+  over this line's v0.652, which the live page matched byte for byte. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
-  `364ac091` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  `7a3b8e35` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
   live source with the tool's wrapper line, its trailing newline and `</body></html>`
   stripped): check BASE against the live page byte for byte first. After main merges in,
   check the tables script's run against the file's tables before keeping it: a row it
