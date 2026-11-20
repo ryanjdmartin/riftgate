@@ -37,8 +37,8 @@ func test_no_stock_die_holds_a_shield_or_a_vent_and_none_is_dealt() -> void:
 	for status in ["barrier", "braced"]:
 		var basic := Refit.basic_granting(db, status)
 		assert_true(not basic.is_empty(), "content has a slottable piece granting %s" % status)
-		assert_eq(db.component_tier(basic), 0, "and it is a basic, tier zero, so a tier-one chassis may stock it")
-	for t in [0, 1, 2, 3]:
+		assert_true(db.is_basic(basic), "and it is a basic, a tier-one piece every run starts with")
+	for t in [1, 2, 3]:
 		for cid in db.loot_pool(t):
 			assert_false(_kind(db, cid) in ["shield", "vent"], "no loot pool deals %s" % cid)
 
@@ -55,7 +55,7 @@ func test_no_chassis_regains_or_cools_of_its_own_and_the_basics_make_heat() -> v
 		assert_eq([u.shield_regen, u.cooling], [0, 0], "%s: the machine carries none as stocked" % id)
 	for cid in db.components.keys():
 		var face: Dictionary = db.components[cid].get("face", {})
-		if db.component_tier(str(cid)) == 0 and str(face.get("kind", "")) == "attack" and int(face.get("power", 0)) > 0:
+		if db.is_basic(str(cid)) and str(face.get("kind", "")) == "attack" and int(face.get("power", 0)) > 0:
 			assert_true(int(face.get("heat", 0)) >= 1, "%s is a basic weapon and makes heat" % cid)
 
 
@@ -139,7 +139,7 @@ func test_the_top_basic_runs_hotter_and_the_plain_basics_deal_three() -> void:
 		before[cid] = (db.components[cid].get("face", {}) as Dictionary).duplicate(true)
 	var plain := 99
 	for cid in guns:
-		assert_eq(db.component_tier(cid), 0, "%s is a basic" % cid)
+		assert_true(db.is_basic(cid), "%s is a basic" % cid)
 		plain = mini(plain, int(before[cid]["power"]))
 	assert_eq(plain, 3, "the vanilla is 3 (Ryan, 15 November: \"3 against 5 or 3 against 4 as the options\")")
 	var notes := Refit.apply(db, Refit.parse("top=2"))

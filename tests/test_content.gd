@@ -15,12 +15,12 @@ func _piece(db: ContentDB, id: String) -> Dictionary:
 ## content on 19 November (Ryan's yes), and these tests use one only to observe something else.
 ## A basic's tier and no shape, as the Coolant Jacket and the Canopy stood.
 func _plain_vent(db: ContentDB) -> Dictionary:
-	return {"name": "Plain Vent", "maker": str(db.city_makers()[0]), "tier": 0, "shape": "none", "codex": "", "flavour": "",
+	return {"name": "Plain Vent", "maker": str(db.city_makers()[0]), "tier": 1, "shape": "none", "codex": "", "flavour": "",
 		"design": {"stage": "draft", "fantasy": "", "niche": ""}, "face": {"kind": "vent", "power": 4}, "passive": null, "tags": []}
 
 
 func _plain_shield(db: ContentDB) -> Dictionary:
-	return {"name": "Plain Shield", "maker": str(db.city_makers()[0]), "tier": 0, "shape": "none", "codex": "", "flavour": "",
+	return {"name": "Plain Shield", "maker": str(db.city_makers()[0]), "tier": 1, "shape": "none", "codex": "", "flavour": "",
 		"design": {"stage": "draft", "fantasy": "", "niche": ""}, "face": {"kind": "shield", "power": 8, "targets": "self"}, "passive": null, "tags": []}
 
 func _db() -> ContentDB:
@@ -418,7 +418,7 @@ func test_a_purge_rides_no_blow() -> void:
 	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe rites") and e.contains("on_death blow") and e.contains("never a rider")), "a purge in a last act is reported")
 
 
-## A foe that strikes only when buffed (the goblins' Safety in Numbers, Ryan, 20 November) has a
+## A foe that strikes only when buffed (the goblins' Timid, Ryan, 20 November) has a
 ## blow for the rounds it holds a buff and a move that is no blow for the rest: the validator
 ## refuses the rule on a foe with only one kind of move, and the flag false or not a bool.
 func test_strikes_when_buffed_needs_a_blow_and_a_move_that_is_none() -> void:
@@ -757,6 +757,7 @@ func test_a_built_component_may_carry_a_planned_keyword() -> void:
 	gun["face"] = Dictionary(gun["face"]).duplicate(true)
 	gun["face"]["keywords"] = [planned_kw]
 	gun["tier"] = 2   # no chassis stocks it, so it carries its own tier
+	gun.erase("basic")
 	db.components["ahead_gun"] = gun
 	for e in db.validate():
 		assert_false(e.begins_with("component ahead_gun"), "a built component may carry a planned keyword: %s" % e)
@@ -822,6 +823,7 @@ func test_a_planned_chassis_is_kept_but_never_fielded() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var built: Dictionary = db.chassis["badger"].duplicate(true)
+	built.erase("branches")   # its steps name its own locked pieces
 	built["passive"] = {"id": "built", "name": "Built", "description": "", "effects": [
 		{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 1}]}
 	db.chassis["built"] = built
@@ -1048,8 +1050,8 @@ func test_swap_web_and_spillover_are_rules_written_on_their_pieces() -> void:
 	var webber := db.build_face(db.components["webber"]["face"])
 	assert_true(swapper.swaps and swapper.keywords.is_empty() and swapper.has_unique_rule(), "the swap builds as a rule, no keyword, the die's star")
 	assert_true(webber.webs and webber.keywords.is_empty() and webber.has_unique_rule(), "and the web")
-	assert_true(swapper.rule_phrases().has(Face.SWAPS_TEXT) and swapper.describe().contains(Face.SWAPS_TEXT), "the swap says itself in words: %s" % swapper.describe())
-	assert_true(webber.rule_phrases().has(Face.WEBS_TEXT) and webber.describe().contains(Face.WEBS_TEXT), "and the web: %s" % webber.describe())
+	assert_true(swapper.rule_phrases().has(Templates.say("rule.swaps")) and swapper.describe().contains(Templates.say("rule.swaps")), "the swap says itself in words: %s" % swapper.describe())
+	assert_true(webber.rule_phrases().has(Templates.say("rule.webs")) and webber.describe().contains(Templates.say("rule.webs")), "and the web: %s" % webber.describe())
 	assert_true(bool(swapper.to_dict().get("swaps", false)) and Face.from_dict(swapper.to_dict()).swaps, "a save keeps the swap")
 	assert_true(bool(webber.to_dict().get("webs", false)) and Face.from_dict(webber.to_dict()).webs, "and the web")
 	assert_true(swapper.duplicate_face().swaps and webber.duplicate_face().webs, "and a copy both")
@@ -1489,7 +1491,8 @@ func test_a_component_passive_from_content_lands_on_the_mech() -> void:
 	fins["name"] = "Finned Sink"
 	fins["passive"] = {"id": "fins", "name": "Fins", "description": "Cooling +5.",
 		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 5}]}
-	db.components["fins_pack"] = fins   # a basic's tier, below the chassis that stocks it
+	fins["tier"] = 1   # tier one, at or below the chassis that stocks it
+	db.components["fins_pack"] = fins
 	var c: Dictionary = db.chassis["clydesdale"].duplicate(true)
 	c["fixed"] = []   # nothing built in, so the component is the die's first entry
 	c["loadout"] = ["fins_pack"]
@@ -1866,7 +1869,17 @@ func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
 	var kinds := {}
 	for id in db.foes.keys():
 		var f := db.make_foe(id)
-		assert_true(Foe.is_attack_action(f.action), "%s opens with its blow" % id)
+		if f.actions.any(func(a): return Foe.is_attack_action(a)):
+			assert_true(Foe.is_attack_action(f.action), "%s opens with its blow" % id)
+		else:
+			# A rider-only foe (the Half-Gel's Engulf, 20 November): no blow to lead, so content's
+			# order stands whole and it opens with its first move.
+			var first: Dictionary = {}
+			for a in db.foes[id].get("actions", []):
+				if str(a.get("status", "")) == "implemented":
+					first = a
+					break
+			assert_eq(str(f.action.get("id", "")), str(first.get("id", "")), "%s, with no blow, opens with its first move" % id)
 		for a in f.actions:
 			kinds[Foe.kind_of(a)] = true
 			if not Foe.is_attack_action(a):
@@ -2043,7 +2056,7 @@ func test_the_playtest_set_obeys_the_targeting_rules() -> void:
 				held_when = str(Foe.whens_of(a)[0])
 	assert_ne(held_id, "", "an armoured foe with a condition is in content")
 	var maw := db.codex_for_foe(db.make_foe(held_id))
-	var said := str(Foe.WHEN_TEXT[held_when])
+	var said := Templates.say("when." + held_when)
 	assert_true(_moves_text(db, maw).contains(said.substr(0, 1).to_upper() + said.substr(1)), "the codex says a move's condition: %s" % _moves_text(db, maw))
 	assert_true(str(maw["stats"]).contains("ARM %d" % int(db.foes[held_id]["armour"])), "and its armour")
 
@@ -2061,10 +2074,12 @@ func test_the_codex_plate_lists_the_traits() -> void:
 	db.chassis["plated"] = c
 	var u := db.make_mech("plated")
 	var maker := str(db.makers[c["maker"]]["name"]).to_upper()
-	assert_eq(str(db.codex_for_unit(u)["subtitle"]), "%s // SKIDS, QUIET // D%d" % [maker, u.die.size()], "maker, the traits by name, the die")
+	var t := int(c["tier"])
+	assert_eq(str(db.codex_for_unit(u)["subtitle"]), "%s // SKIDS, QUIET // TIER %d // D%d" % [maker, t, u.die.size()], "maker, the traits by name, the tier, the die")
 	c["traits"] = []
 	db.chassis["bare"] = c
-	assert_eq(str(db.codex_for_unit(db.make_mech("bare"))["subtitle"]), "%s // D%d" % [maker, u.die.size()], "no traits, no traits part")
+	assert_eq(str(db.codex_for_unit(db.make_mech("bare"))["subtitle"]), "%s // TIER %d // D%d" % [maker, t, u.die.size()], "no traits, no traits part")
+	assert_eq(str(db.codex_for_unit(db.make_mech("bare", 1, Vector2i.ZERO, null, [], [], 3))["subtitle"]), "%s // TIER 3 // D%d" % [maker, u.die.size()], "the machine's tier, bought up")
 	for e in db.validate():
 		assert_false(e.contains("silhouette"), "no chassis needs a silhouette: %s" % e)
 
@@ -2183,34 +2198,72 @@ func test_an_immunity_names_what_never_lands_and_a_move_that_gathers() -> void:
 	assert_true(_refused(db, "foe test_walker", "immune is an object"), "and an empty one")
 
 
-## What a foe lays that halves says 2 at the least (Ryan, 16 November: "Buffs and debuffs that
-## decay at end of round should just have a minimum of 2"): one stack is gone at its first
-## halving, so a rally of 1 leaves its rallier nothing and a Brittle 1 is the pack's for one
-## turn alone. A rally's Empowered and a blow's Brittle; a rider that does not
-## halve (a Scorch, an Ablate) may still say 1.
-func test_a_foes_halving_status_is_laid_two_at_the_least() -> void:
+## What a foe's move lays that halves says 2 at the least (Ryan, 16 November: "Buffs and debuffs
+## that decay at end of round should just have a minimum of 2"): one stack is gone at its first
+## halving, so a rally of 1 leaves its rallier nothing. A blow's Brittle is held to no least
+## (Ryan, 20 November, of the gel halves' Brittle 1: "Use the brittle and ablate numbers as I wrote
+## them"): a Brittle 1 still lands on every blow after it in the same enemy turn. A rider that does
+## not halve (a Scorch, an Ablate) says 1 as ever.
+func test_a_foes_halving_move_is_laid_two_at_the_least_and_a_blows_brittle_may_be_one() -> void:
 	var db := _fresh()
 	var f: Dictionary = db.foes["revenant"].duplicate(true)
 	f["actions"] = [
 		{"id": "bite", "name": "Bite", "kind": "attack", "weight": 1, "keywords": ["brittle"], "brittle": 1, "text": "", "status": "implemented"},
 		{"id": "cry", "name": "Cry", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "text": "", "status": "implemented"}]
 	db.foes["test_crier"] = f
-	assert_true(_refused(db, "foe test_crier", "a brittle rider lays a status that halves"), "a Brittle 1 on a foe's blow is refused")
-	assert_true(_refused(db, "foe test_crier", "rally lays a status that halves"), "and a rally of 1")
-	f["actions"][0]["brittle"] = 2
+	assert_false(_refused(db, "foe test_crier", "brittle rider"), "a Brittle 1 on a foe's blow stands")
+	assert_true(_refused(db, "foe test_crier", "rally lays a status that halves"), "a rally of 1 is refused")
 	f["actions"][1]["value"] = 2
 	f["actions"].append({"id": "lick", "name": "Lick", "kind": "attack", "weight": 1, "keywords": ["scorch", "ablate"], "scorch": 1, "ablate": 1, "text": "", "status": "implemented"})
 	for e in db.validate():
-		assert_false(e.begins_with("foe test_crier"), "2 of each validates clean, and a Scorch 1 and an Ablate 1 beside them: %s" % e)
-	# Content holds it: every foe's rally and Brittle says 2 or more.
+		assert_false(e.begins_with("foe test_crier"), "a rally of 2 validates clean, a blow's Brittle 1, a Scorch 1 and an Ablate 1 beside it: %s" % e)
+	# Content holds it: every foe's rally says 2 or more.
 	for id in db.foes.keys():
 		for a in db.foes[id].get("actions", []):
 			if str(a.get("status", "")) != "implemented":
 				continue
 			if str(a.get("effect", "")) == "rally":
 				assert_true(int(a.get("value", 0)) >= ContentDB.HALVING_MINIMUM, "%s's %s rallies at %d or more" % [id, a.get("id"), ContentDB.HALVING_MINIMUM])
-			if Array(a.get("keywords", [])).has("brittle"):
-				assert_true(int(a.get("brittle", 0)) >= ContentDB.HALVING_MINIMUM, "%s's %s lays Brittle %d or more" % [id, a.get("id"), ContentDB.HALVING_MINIMUM])
+
+
+## An attack deals damage (Ryan, 20 November: "We don't need attacks of zero, those fold into rider
+## only hits same as machines fold weapons into equipment at zero damage"): a blow of nothing is
+## refused, and a foe whose one move lays a rider and deals nothing, a debuff, stands.
+## A refill is a summon's (the Wild Huntsman's Horn, 20 November), true or false.
+func test_a_refill_is_a_summons_alone() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var g: Dictionary = db.foes["revenant"].duplicate(true)
+	g["id"] = "test_refiller"
+	g["name"] = "Test Refiller"
+	g["actions"] = [{"id": "claw", "name": "Claw", "kind": "attack", "text": "", "status": "implemented"},
+		{"id": "brace", "name": "Brace", "kind": "defend", "effect": "brace", "value": 2, "refill": true, "text": "", "status": "implemented"},
+		{"id": "call", "name": "Call", "kind": "buff", "effect": "summon", "foe": "revenant", "refill": "yes", "text": "", "status": "implemented"}]
+	db.foes["test_refiller"] = g
+	var hits := 0
+	for e in db.validate():
+		if e.begins_with("foe test_refiller") and e.contains("refill is true on a summon"):
+			hits += 1
+	assert_eq(hits, 2, "a refill on a brace and a refill that is no true or false are each named")
+
+
+func test_an_attack_of_zero_is_refused_and_a_rider_only_hit_stands_alone() -> void:
+	var db := _fresh()
+	var zero: Dictionary = db.foes["revenant"].duplicate(true)
+	zero["attack"] = 0
+	zero["actions"] = [{"id": "touch", "name": "Touch", "kind": "attack", "weight": 1, "keywords": ["ablate"], "ablate": 1, "text": "", "status": "implemented"}]
+	db.foes["test_zero"] = zero
+	var rider: Dictionary = db.foes["revenant"].duplicate(true)
+	rider["attack"] = 0
+	rider["actions"] = [{"id": "touch", "name": "Touch", "kind": "debuff", "effect": "ablate", "value": 1, "weight": 1, "text": "", "status": "implemented"}]
+	db.foes["test_rider"] = rider
+	assert_true(_refused(db, "foe test_zero", "an attack deals damage"), "an attack of zero is refused")
+	for e in db.validate():
+		assert_false(e.begins_with("foe test_rider"), "a foe whose one move is a rider-only hit stands: %s" % e)
+	var idle: Dictionary = db.foes["revenant"].duplicate(true)
+	idle["actions"] = [{"id": "wall", "name": "Wall", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": "", "status": "implemented"}]
+	db.foes["test_idle"] = idle
+	assert_true(_refused(db, "foe test_idle", "needs at least one implemented move that lands on a machine"), "a foe with no blow and no rider-only hit is refused")
 
 
 func _fresh() -> ContentDB:
@@ -2229,24 +2282,31 @@ func _has_error(db: ContentDB, word: String) -> bool:
 func test_a_component_stores_its_tier_and_the_basics_are_the_starting_blueprints() -> void:
 	# 7 October: tier is power and complexity, never the maker. Stored since the stock pass (22
 	# October): a component carries its tier whatever stocks it, and moving a chassis moves
-	# nothing; the basics, tier zero, are the blueprints a run starts with.
+	# nothing. A basic is a tier-one piece with a flag, the blueprints a run starts with (Ryan, 20
+	# November: "Basic is just a flag that says it's in the starting blueprints"), and never a find.
 	var db := _fresh()
 	var stocked := ""
 	var host := ""
 	for id in db.chassis.keys():
 		for cid in db.chassis[id].get("loadout", []):
-			if stocked.is_empty() and db.component_tier(str(cid)) == 0:
+			if stocked.is_empty() and db.is_basic(str(cid)):
 				stocked = str(cid)
 				host = str(id)
 	assert_true(not stocked.is_empty(), "the content stocks a basic")
+	assert_eq(db.component_tier(stocked), 1, "a basic is a tier-one piece")
 	assert_true(db.starting_blueprints().has(stocked), "a basic is a starting blueprint")
+	assert_false(db.loot_pool(1).has(stocked), "and never a find")
 	db.chassis[host]["tier"] = 3
-	assert_eq(db.component_tier(stocked), 0, "a chassis moving tier moves none of its stock")
-	db.components[stocked]["tier"] = 1
+	assert_eq(db.component_tier(stocked), 1, "a chassis moving tier moves none of its stock")
+	db.components[stocked].erase("basic")
 	assert_eq(db.component_tier(stocked), 1, "the tier is the component's own")
-	assert_false(db.starting_blueprints().has(stocked), "and above zero it is found, never started with")
+	assert_false(db.starting_blueprints().has(stocked), "and without the flag it is found, never started with")
+	assert_true(db.loot_pool(1).has(stocked), "a find of tier one")
 	for cid in db.starting_blueprints():
-		assert_eq(db.component_tier(str(cid)), 0, "%s starts the run as a basic" % cid)
+		assert_eq(db.component_tier(str(cid)), 1, "%s starts the run as a basic, tier one" % cid)
+	db = _fresh()
+	db.components[stocked]["tier"] = 2
+	assert_true(_has_error(db, "a basic is a tier-one piece"), "a basic of another tier is refused")
 
 
 func test_the_tier_rules_are_validated() -> void:
@@ -2268,10 +2328,13 @@ func test_the_tier_rules_are_validated() -> void:
 	db = _fresh()
 	var stocked := str(db.chassis[plain]["loadout"][0])
 	db.components[stocked].erase("tier")
-	assert_true(_has_error(db, "component %s: tier must be 0, 1, 2 or 3" % stocked), "a component that is not locked stores its tier")
+	assert_true(_has_error(db, "component %s: tier must be 1, 2 or 3" % stocked), "a component that is not locked stores its tier")
 	db = _fresh()
 	db.components[stocked]["tier"] = 4
-	assert_true(_has_error(db, "component %s: tier must be 0, 1, 2 or 3" % stocked), "and only 0 to 3")
+	assert_true(_has_error(db, "component %s: tier must be 1, 2 or 3" % stocked), "and only 1 to 3")
+	db = _fresh()
+	db.components[stocked]["tier"] = 0
+	assert_true(_has_error(db, "component %s: tier must be 1, 2 or 3" % stocked), "tier zero is no tier: a basic is a flag")
 	# A chassis stocks up to its own tier at tiers one and two, and a tier three to tier two (the
 	# bible's tiers row; the validator's half since 11 November), so a tier-three piece is found.
 	for own in [1, 2, 3]:
@@ -2290,8 +2353,9 @@ func test_the_tier_rules_are_validated() -> void:
 		if cap_piece.is_empty() and str(db.components[cid].get("maker", "")) == capital and not db.is_fixed(str(cid)):
 			cap_piece = str(cid)
 	assert_true(not cap_piece.is_empty(), "the capital's maker makes a component")
-	db.components[cap_piece]["tier"] = 0
-	assert_true(_has_error(db, "the capital's maker makes no basics"), "the capital's maker has no tier zero")
+	db.components[cap_piece]["tier"] = 1
+	db.components[cap_piece]["basic"] = true
+	assert_true(_has_error(db, "the capital's maker makes no basics"), "the capital's maker makes no basic")
 	for e in _fresh().validate():
 		assert_false(e.contains("tier"), "today's content keeps every tier rule: %s" % e)
 

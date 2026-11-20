@@ -138,14 +138,14 @@ static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 	return notes
 
 
-## The basic guns, in content order: every tier-zero piece the engine runs whose entry is a
+## The basic guns, in content order: every basic the engine runs whose entry is a
 ## weapon that deals damage.
 static func basic_guns(db: ContentDB) -> Array[String]:
 	var out: Array[String] = []
 	for cid in db.components.keys():
 		var c: Dictionary = db.components[cid]
 		var face = c.get("face", null)
-		if str(c.get("status", "")) == "planned" or not (face is Dictionary) or db.component_tier(str(cid)) != 0:
+		if str(c.get("status", "")) == "planned" or not (face is Dictionary) or not db.is_basic(str(cid)):
 			continue
 		if str(face.get("kind", "")) == "attack" and int(face.get("power", 0)) > 0:
 			out.append(str(cid))
@@ -185,6 +185,8 @@ static func basic_granting(db: ContentDB, status: String) -> String:
 		var tier := db.component_tier(str(cid))
 		if tier == ContentDB.NO_TIER or not (face is Dictionary) or str(c.get("status", "implemented")) == "planned":
 			continue
+		if db.is_basic(str(cid)):
+			tier = 0   # a basic ahead of the other tier-one pieces
 		if str(face.get("kind", "")) == "buff" and str(face.get("status", "")) == status and tier < best_tier:
 			best = str(cid)
 			best_tier = tier

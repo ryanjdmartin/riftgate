@@ -170,9 +170,7 @@ var spends_up_to: int = 0     # ...the most it spends, and so the most it grants
 var passes_heat: bool = false  # a buff on an ally: its machine's whole heat, its overheat with it, passes onto the ally it is spent on, past that ally's maximum too...
 var heat_per_stack: int = 0    # ...and the ally gains a stack of its status for every this many heat passed, rounded down (2); buff_stacks holds what it would grant now on the die as shown (Skirmish.shown_face)
 var holds_all: String = ""    # any entry: once it is spent, no unit's stacks of this status run down at this round's end, either side's (Skirmish.round_holds)
-var fills_hopper: int = 0     # an attack: loads it puts in its machine's hopper for each foe its blows reach (the Chainsaw Claw, 11 October)
-var fires_hopper: int = 0     # an attack: the most loads one shot fires from the hopper...
-var power_per_load: int = 0   # ...each adding this to the blow (the Bullion Fragmenter, 11 October)
+var empties_hopper: bool = false   # an attack: spent, it empties its machine's hopper and strikes once for every Ore it empties, a dead entry while the hopper is empty; it puts no Ore in (the Bullion Fragmenter, Ryan, 20 November)
 var braces: int = 0           # any entry: spending it Armours its owner, this many stacks, until its side's next turn begins (the Breaching Plow, 12 October)
 var cooldown: int = -1        # any entry: the rounds it sits out once spent, after the round of the spend (Ryan, 14 October; counted so since 12 November: "change the count so 1 is how I intended"), printed on it; -1 or 0, none (Rapid's own switch-off is the keyword's, never printed)
 var team_rerolls: int = 0     # equipment: spending it gives the team this many rerolls this round, at once and past the round's two (the Reveille Horn, the Immelmann Booster; Ryan, 15 November, in the place of the Rallied buff: "This doesn't need to be a temporary buff or a keyword")
@@ -380,7 +378,6 @@ static func from_dict(d: Dictionary) -> Face:
 		f.power_per_missing = maxi(0, int(d.get("power_per_missing", 0)))
 		f.per_missing = maxi(1, int(d.get("per_missing", 20)))
 		f.finisher = maxi(0, int(d.get("finisher", 0)))
-		f.fills_hopper = maxi(0, int(d.get("fills_hopper", 0)))
 		f.ablate = maxi(0, int(d.get("ablate", 0)))   # add_keyword gives an Ablate entry one stack when it says none
 		f.cryo = maxi(0, int(d.get("cryo", 0)))
 		f.brittle = maxi(0, int(d.get("brittle", 0)))
@@ -398,8 +395,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.ignores_armour = d.get("ignores_armour", false) is bool and d.get("ignores_armour", false)
 		f.swaps = d.get("swaps", false) is bool and d.get("swaps", false)
 		f.webs = d.get("webs", false) is bool and d.get("webs", false)
-		f.fires_hopper = maxi(0, int(d.get("fires_hopper", 0)))
-		f.power_per_load = maxi(0, int(d.get("power_per_load", 0))) if f.fires_hopper > 0 else 0
+		f.empties_hopper = d.get("empties_hopper", false) is bool and d.get("empties_hopper", false)
 	f.braces = maxi(0, int(d.get("braces", 0)))
 	f.volatile = maxi(0, int(d.get("volatile", 0)))
 	f.shield_cost = maxi(0, int(d.get("shield_cost", 0)))
@@ -512,11 +508,8 @@ func to_dict() -> Dictionary:
 		d["swaps"] = true
 	if webs:
 		d["webs"] = true
-	if fills_hopper > 0:
-		d["fills_hopper"] = fills_hopper
-	if fires_hopper > 0:
-		d["fires_hopper"] = fires_hopper
-		d["power_per_load"] = power_per_load
+	if empties_hopper:
+		d["empties_hopper"] = true
 	if braces > 0:
 		d["braces"] = braces
 	if cooldown >= 0:
@@ -640,7 +633,7 @@ func acts_again() -> bool:
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or spends_shield or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or ignores_armour or swaps or webs or spills or fills_hopper > 0 or fires_hopper > 0 or braces > 0 \
+	return vents_all or spends_shield or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or ignores_armour or swaps or webs or spills or empties_hopper or braces > 0 \
 		or turns_die or team_rerolls > 0 or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
@@ -683,7 +676,7 @@ func is_weapon() -> bool:
 ## effect; the die draws its reach frame with the status mark inside. A gun whose blow is
 ## nothing here (its 5 against armour 5) is no debuff: it prints "0".
 func is_debuff() -> bool:
-	return kind == Kind.ATTACK and power <= 0 and not vents_all and not spends_shield and fires_hopper <= 0 and power_per_missing <= 0
+	return kind == Kind.ATTACK and power <= 0 and not vents_all and not spends_shield and not empties_hopper and power_per_missing <= 0
 
 
 ## Equipment (Ryan, 26 October: "the label for all 4 forms of buff and debuff faces"): a buff,
@@ -784,9 +777,7 @@ func duplicate_face() -> Face:
 	f.swaps = swaps
 	f.webs = webs
 	f.spills = spills
-	f.fills_hopper = fills_hopper
-	f.fires_hopper = fires_hopper
-	f.power_per_load = power_per_load
+	f.empties_hopper = empties_hopper
 	f.braces = braces
 	f.cooldown = cooldown
 	f.turns_die = turns_die
@@ -878,7 +869,7 @@ func charge_price() -> int:
 ## The entry's costs past heat as its text says them (Ryan, 26 October: Volatile a cost like
 ## heat, and a cost may be shield): the hull a spend bites, the shield it takes first.
 func cost_text() -> String:
-	return (" (-%d hull)" % volatile if volatile > 0 else "") + (" (-%d shield)" % shield_cost if shield_cost > 0 else "")
+	return (" " + Templates.say("entry.hull_cost", {"n": volatile}) if volatile > 0 else "") + (" " + Templates.say("entry.shield_cost", {"n": shield_cost}) if shield_cost > 0 else "")
 
 
 ## The rules an entry prints past its number, its reach, whom it is spent on and its keywords,
@@ -892,57 +883,55 @@ func rule_phrases() -> Array[String]:
 		return out
 	if kind == Kind.ATTACK:
 		if vents_all:
-			out.append("vents all" + (", +%d per %d heat" % [power_per_heat, per_heat] if power_per_heat > 0 else ""))
+			out.append(Templates.say("rule.vents_all_per_heat", {"n": power_per_heat, "per": per_heat}) if power_per_heat > 0 else Templates.say("rule.vents_all"))
 		if spends_shield:
-			out.append("fires the shield" + (", +%d per %d shield" % [power_per_shield, per_shield] if power_per_shield > 0 else ""))   # its term's name, so the readout links it
+			out.append(Templates.say("rule.fires_shield_per_shield", {"n": power_per_shield, "per": per_shield}) if power_per_shield > 0 else Templates.say("rule.fires_shield"))   # its term's name, so the readout links it
 		if power_per_missing > 0:
-			out.append("+%d per %d HP missing" % [power_per_missing, per_missing])
+			out.append(Templates.say("rule.per_missing", {"n": power_per_missing, "per": per_missing}))
 		if finisher > 1:
-			out.append("×%d on a foe at half its HP or less" % finisher)
+			out.append(Templates.say("rule.finisher", {"n": finisher}))
 		if not consumes.is_empty():
-			out.append("consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed])
+			out.append(Templates.say("rule.consumes", {"status": status_name(consumes), "n": per_consumed}))
 		if not holds.is_empty():
-			out.append("its target's %s does not decay this round" % str(Effects.STATUS.get(holds, {}).get("name", holds)))
+			out.append(Templates.say("rule.holds", {"status": status_name(holds)}))
 		if ignores_armour:
-			out.append("ignores armour")
+			out.append(Templates.say("rule.ignores_armour"))
 		if swaps:
-			out.append(SWAPS_TEXT)
+			out.append(Templates.say("rule.swaps"))
 		if webs:
-			out.append(WEBS_TEXT)
+			out.append(Templates.say("rule.webs"))
 		if self_ablate > 0:
-			out.append("Ablating %d on itself" % self_ablate)
-		if fills_hopper > 0:
-			out.append("fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper))
-		if fires_hopper > 0:
-			out.append("fires the hopper, +%d a load (%d a shot)" % [power_per_load, fires_hopper])
+			out.append(Templates.say("rule.self_ablate", {"status": status_name("ablating_mech"), "n": self_ablate}))
+		if empties_hopper:
+			out.append(Templates.say("rule.empties_hopper"))
 	elif cools_all:
-		out.append("cools to nothing")
+		out.append(Templates.say("rule.cools_all"))
 	if braces > 0:
-		out.append("braces" + ("" if braces == 1 else " ×%d" % braces))
+		out.append(Templates.say("rule.braces", {"n": braces}))
 	if kind == Kind.ATTACK:
 		if gathers_mines:
-			out.append("gathers every Mine onto it")
+			out.append(Templates.say("rule.gathers_mines"))
 		if detonates:
-			out.append("detonates its Mine")
+			out.append(Templates.say("rule.detonates"))
 		if spends_magazine:
-			out.append("empties the magazine, %d ammo or more" % magazine_min if magazine_min > 1 else "empties the magazine")
+			out.append(Templates.say("rule.empties_magazine_min", {"n": magazine_min}) if magazine_min > 1 else Templates.say("rule.empties_magazine"))
 		if ammo_per_foe_hit > 0:
-			out.append("+%d ammo a foe hit" % ammo_per_foe_hit)
+			out.append(Templates.say("rule.ammo_per_foe_hit", {"n": ammo_per_foe_hit}))
 		if kill_rerolls > 0:
-			out.append(_kill_rerolls_text())
+			out.append(Templates.say("rule.kill_rerolls", {"n": kill_rerolls}))
 		if not self_statuses.is_empty():
 			out.append(_self_text())
 	else:
 		if team_rerolls > 0:
-			out.append(_team_rerolls_text())
+			out.append(Templates.say("rule.team_rerolls", {"n": team_rerolls}))
 		if action_price > 0:
-			out.append(_action_text())
+			out.append(Templates.say("rule.action_price", {"n": action_price}))
 		if rolls_target:
-			out.append("its die rolls again")
+			out.append(Templates.say("rule.rolls_target"))
 		if not front_status.is_empty():
 			out.append(front_text())
 		if disrupts_attackers:
-			out.append(DISRUPTS_TEXT)
+			out.append(Templates.say("rule.disrupts"))
 		if not spends.is_empty():
 			out.append(_spends_text())
 		if passes_heat:
@@ -950,33 +939,19 @@ func rule_phrases() -> Array[String]:
 	if not holds_all.is_empty():
 		out.append(_holds_all_text())
 	if not charged.is_empty():
-		out.append("%s: %s" % [charge_cost_text(), charged_form().describe()])
+		out.append(Templates.say("rule.charged", {"cost": charge_cost_text(), "form": charged_form().describe()}))
 	return out
 
 
-## The Petrels' rules as the entry's text says them (built 30 October): the Salvo's kill rider,
-## the Regenerator's rider on its own spender, the Booster's price for an ally's action.
-## The Retrocausal Shroud's rule as its text says it.
-const DISRUPTS_TEXT := "disrupts the foes aiming at it"
-## The three rules written on their one piece (15 November), as an entry's text says them: the
-## Combat Translocator's, the Web Bomb's, and the spill a passive lays on its machine's weapons
-## (the Overrun Gearing's, whose own line the die's readout prints: Effects.written_rules).
-const SWAPS_TEXT := "its two targets trade places"
-const WEBS_TEXT := "its web bursts as the round ends, suppressing it and the foe beside it"
-const SPILLS_TEXT := "damage past a kill spills into the foe behind"
+## A status's name as the engine's table holds it (the vocabulary's word), so a rename follows.
+static func status_name(id: String) -> String:
+	return str(Effects.STATUS.get(id, {}).get("name", id))
 
 
-## What an entry lays on the foe in front of the machine it lands on, as its text says it.
+## What an entry lays on the foe in front of the machine it lands on, as its text says it (the
+## Photosphere Lance's).
 func front_text() -> String:
-	return "the foe in front of it gains %s ×%d" % [str(Effects.STATUS.get(front_status, {}).get("name", front_status)), front_stacks]
-
-
-func _team_rerolls_text() -> String:
-	return "the team gains %s" % ("a reroll" if team_rerolls == 1 else "%d rerolls" % team_rerolls)
-
-
-func _kill_rerolls_text() -> String:
-	return "a kill brings %d reroll%s" % [kill_rerolls, "" if kill_rerolls == 1 else "s"]
+	return Templates.say("rule.front_status", {"status": status_name(front_status), "n": front_stacks})
 
 
 ## What a spend at a foe lays on its own machine, in the codex's words: "Hardened Light 1 on itself for each
@@ -990,37 +965,41 @@ func _self_text() -> String:
 		var name := str(def.get("name", id.capitalize()))
 		var one := Effects.status_stacking(def) == "renew"   # a Ward is one, whatever lays it: no number
 		var cap := int(g.get("cap", 0))
-		parts.append("%s on itself%s%s" % [name if one else "%s %d" % [name, int(g.get("stacks", 1))],
-			" for each foe reached" if bool(g.get("per_foe", false)) else "", (", up to %d" % cap) if cap > 0 else ""])
+		var per_foe := bool(g.get("per_foe", false))
+		var said := name if one else Templates.say("term.count", {"term": name, "n": int(g.get("stacks", 1))})
+		var which := "rule.self_status"
+		if per_foe and cap > 0:
+			which = "rule.self_status_per_foe_cap"
+		elif per_foe:
+			which = "rule.self_status_per_foe"
+		elif cap > 0:
+			which = "rule.self_status_cap"
+		parts.append(Templates.say(which, {"status": said, "cap": cap}))
 	return ", ".join(parts)
-
-
-func _action_text() -> String:
-	return "on an ally whose die is spent, %d reroll%s: its die rolls again and it acts again" % [action_price, "" if action_price == 1 else "s"]
 
 
 ## The Quintessence Tap's two rules as the entry's text says them (Ryan, 12 November): the count it
 ## spends for its stacks, the most it takes and a stack a one; and the status no unit's clock runs
 ## down this round, either side's.
 func _spends_text() -> String:
-	return "consumes up to %d %s, 1 %s each" % [spends_up_to, str(Effects.STATUS.get(spends, {}).get("name", spends)), str(Effects.STATUS.get(buff_status, {}).get("name", buff_status))]
+	return Templates.say("rule.spends", {"n": spends_up_to, "spent": status_name(spends), "status": status_name(buff_status)})
 
 
 ## The Puffin's dump as the entry's text says it: the heat it passes and the stacks that makes,
 ## its term's name first so the readout links it.
 func passes_text() -> String:
-	return "passes heat, %s 1 per %d heat" % [str(Effects.STATUS.get(buff_status, {}).get("name", buff_status)), heat_per_stack]
+	return Templates.say("rule.passes_heat", {"status": status_name(buff_status), "per": heat_per_stack})
 
 
 func _holds_all_text() -> String:
-	var held := str(Effects.STATUS.get(holds_all, {}).get("name", holds_all))
+	var held := status_name(holds_all)
 	var flare := str(Effects.STATUS.get(str(Effects.ROUND_HOLDERS.get(holds_all, "")), {}).get("name", ""))
-	return "no %s decays this round" % held if flare.is_empty() else "grants %s: no %s decays this round" % [flare, held]
+	return Templates.say("rule.holds_all", {"status": held}) if flare.is_empty() else Templates.say("rule.holds_all_flare", {"flare": flare, "status": held})
 
 
 ## A printed cooldown as the entry's text says it, " cooldown 2"; nothing for an entry with none.
 func cooldown_text() -> String:
-	return " cooldown %d" % cooldown if printed_cooldown() else ""
+	return " " + Templates.say("entry.cooldown", {"n": cooldown}) if printed_cooldown() else ""
 
 
 func number_text() -> String:
@@ -1043,15 +1022,15 @@ func describe() -> String:
 	match kind:
 		Kind.BLANK:
 			if disabled:
-				return "disabled"
-			return "empty hardpoint" if empty else "destroyed"
+				return Templates.say("entry.disabled")
+			return Templates.say("entry.empty") if empty else Templates.say("entry.destroyed")
 		Kind.SHIELD, Kind.VENT, Kind.BUFF:
 			if kind == Kind.BUFF and act_again:
-				s = "an ally whose die is spent acts again"
+				s = Templates.say("rule.act_again")
 			elif kind == Kind.BUFF and turns_die:
-				s = "turns its die to its other battery"   # the Changeover's: a buff that grants nothing, its turn its whole effect
+				s = Templates.say("rule.turns_die")   # the Changeover's: a buff that grants nothing, its turn its whole effect
 			elif kind == Kind.BUFF and team_rerolls > 0:
-				s = _team_rerolls_text()   # the Horn's and the Booster's: no status, the reroll its whole effect
+				s = Templates.say("rule.team_rerolls", {"n": team_rerolls})   # the Horn's and the Booster's: no status, the reroll its whole effect
 			elif kind == Kind.BUFF and not spends.is_empty():
 				s = _spends_text()   # the Quintessence Tap's: what it grants is what it consumes, said once
 			elif kind == Kind.BUFF and passes_heat:
@@ -1059,114 +1038,118 @@ func describe() -> String:
 			elif kind == Kind.BUFF and buff_status.is_empty():
 				s = ""   # a buff that grants nothing (the Retrocausal Shroud): its keywords and its rule say what it does
 			elif kind == Kind.BUFF:
-				var status_name := str(Effects.STATUS.get(buff_status, {}).get("name", buff_status))
-				s = "%s ×%d" % [status_name, buff_stacks]
+				s = Templates.say("entry.grants", {"status": status_name(buff_status), "n": buff_stacks})
 				if buff_rounds > 1:
-					s += " for %d rounds" % buff_rounds
+					s += " " + Templates.say("count.rounds", {"n": buff_rounds})
 			elif fills_shield:
-				s = "shield to its maximum"
+				s = Templates.say("entry.fills_shield")
 			else:
-				s = "%s %d" % ["shield" if kind == Kind.SHIELD else "vent", power]
+				s = Templates.say("entry.shield" if kind == Kind.SHIELD else "entry.vent", {"n": power})
 			if reloads_ammo > 0:
-				s += " reloads %d ammo" % reloads_ammo
+				s += " " + Templates.say("entry.reloads", {"n": reloads_ammo})
 			if vents > 0:
-				s += " cools %d" % vents
+				s += " " + Templates.say("entry.cools", {"n": vents})
 			if cools_all:
-				s += " cools to nothing"
-			if targets == Target.EVERY_ALLY or targets == Target.EVERY_OTHER_ALLY:
-				s += (" every ally" if targets == Target.EVERY_ALLY else " every other ally") + (" yet to act" if not_acted else "")   # its targeting mode, where its keyword stood
+				s += " " + Templates.say("rule.cools_all")
+			if targets == Target.EVERY_ALLY:
+				s += " " + Templates.say("entry.every_ally_unready" if not_acted else "entry.every_ally")   # its targeting mode, where its keyword stood
+			elif targets == Target.EVERY_OTHER_ALLY:
+				s += " " + Templates.say("entry.every_other_ally_unready" if not_acted else "entry.every_other_ally")
 			for k in keywords:
 				s += " " + keyword_label(k)
 			if action_price > 0:
-				s += " " + _action_text()   # the Immelmann Booster's ally use, after what it does on itself
+				s += " " + Templates.say("rule.action_price", {"n": action_price})   # the Immelmann Booster's ally use, after what it does on itself
 			if rolls_target:
-				s += " its die rolls again"   # the Reheat Uplink's roll on the machine it lands on
+				s += " " + Templates.say("rule.rolls_target")   # the Reheat Uplink's roll on the machine it lands on
 			if not front_status.is_empty():
 				s += " " + front_text()   # the Photosphere Lance's: the foe in front of the machine it lands on
 			if disrupts_attackers:
-				s += " " + DISRUPTS_TEXT   # the Retrocausal Shroud's: the foes aiming at the machine it lands on
+				s += " " + Templates.say("rule.disrupts")   # the Retrocausal Shroud's: the foes aiming at the machine it lands on
 			if braces > 0:
-				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
+				s += " " + Templates.say("rule.braces", {"n": braces})
 			if not holds_all.is_empty():
 				s += " " + _holds_all_text()
 			s += cooldown_text() + cost_text()
 			if targets == Target.SELF:
-				s += " (self only)"
+				s += " " + Templates.say("entry.self_only")
 			elif targets == Target.ALLY and not reaches_all and not act_again:
-				s += " (allies only)"
+				s += " " + Templates.say("entry.allies_only")
 		_:
 			# Direct is the default and goes unsaid; only indirect reach is called out. A debuff
 			# has no number to say, so its reach and keywords are its whole line.
 			s = " ".join(PackedStringArray([reach_label(reach) if reach != Reach.DIRECT else "", number_text()])).strip_edges()
 			if strikes > 1:
-				s += " ×%d" % strikes
+				s += " " + Templates.say("count.strikes", {"n": strikes})
 			if swaps:
-				s += " " + SWAPS_TEXT
+				s += " " + Templates.say("rule.swaps")
 			if webs:
-				s += " " + WEBS_TEXT
+				s += " " + Templates.say("rule.webs")
 			if spills:
-				s += " " + SPILLS_TEXT
+				s += " " + Templates.say("rule.spills")
 			for k in keywords:
-				s += " " + keyword_label(k)
-				if k == Keyword.ABLATE:
-					s += " %d" % ablate   # a numbered keyword: the stacks each blow leaves
-				if k == Keyword.CRYO:
-					s += " %d" % cryo
-				if k == Keyword.BRITTLE:
-					s += " %d" % brittle
-				if k == Keyword.SAP:
-					s += " %d" % sap
-				if k == Keyword.DISPEL:
-					s += " %d" % maxi(1, dispel)   # Purge N: the stacks it takes off each buff (the audit's thirteenth bug, 8 November)
+				# A numbered keyword with its number: the stacks each blow leaves (Ablate, Cryo,
+				# Brittle, Sap), Purge N's stacks off each buff (the audit's thirteenth bug, 8
+				# November), what each foe past the target or each conductor takes (area by shape
+				# and Chain; a debuff's deals nothing).
+				var n := -1
+				match k:
+					Keyword.ABLATE:
+						n = ablate
+					Keyword.CRYO:
+						n = cryo
+					Keyword.BRITTLE:
+						n = brittle
+					Keyword.SAP:
+						n = sap
+					Keyword.DISPEL:
+						n = maxi(1, dispel)
 				if (AREA_KEYWORDS.has(k) or k == Keyword.CHAIN) and not is_debuff():
-					s += " %d" % number_of(k)   # area by shape and Chain, numbered: what each foe past the target or each conductor takes (a debuff's deals nothing)
+					n = number_of(k)
+				s += " " + (Templates.say("term.count", {"term": keyword_label(k), "n": n}) if n >= 0 else keyword_label(k))
 				if gates.has(KEYWORD_NAMES[k]):
-					s += " (%s)" % Effects.gate_text(gates[KEYWORD_NAMES[k]])   # a gated keyword says where it lands
+					s += " " + Templates.say("entry.gated", {"gate": Effects.gate_text(gates[KEYWORD_NAMES[k]])})   # a gated keyword says where it lands
 			if vents_all:
-				s += " vents all" + (", +%d per %d heat" % [power_per_heat, per_heat] if power_per_heat > 0 else "")
+				s += " " + (Templates.say("rule.vents_all_per_heat", {"n": power_per_heat, "per": per_heat}) if power_per_heat > 0 else Templates.say("rule.vents_all"))
 			if spends_shield:
-				s += " fires the shield" + (", +%d per %d shield" % [power_per_shield, per_shield] if power_per_shield > 0 else "")
+				s += " " + (Templates.say("rule.fires_shield_per_shield", {"n": power_per_shield, "per": per_shield}) if power_per_shield > 0 else Templates.say("rule.fires_shield"))
 			if power_per_missing > 0:
-				s += " +%d per %d HP missing" % [power_per_missing, per_missing]
+				s += " " + Templates.say("rule.per_missing", {"n": power_per_missing, "per": per_missing})
 			if finisher > 1:
-				s += " ×%d on a foe at half its HP or less" % finisher
+				s += " " + Templates.say("rule.finisher", {"n": finisher})
 			if not consumes.is_empty():
-				s += " consumes %s, +%d a stack" % [str(Effects.STATUS.get(consumes, {}).get("name", consumes)), per_consumed]
+				s += " " + Templates.say("rule.consumes", {"status": status_name(consumes), "n": per_consumed})
 			if not holds.is_empty():
-				s += " its target's %s does not decay this round" % str(Effects.STATUS.get(holds, {}).get("name", holds))
+				s += " " + Templates.say("rule.holds", {"status": status_name(holds)})
 			if ignores_armour:
-				s += " ignores armour"
+				s += " " + Templates.say("rule.ignores_armour")
 			if self_ablate > 0:
-				s += " Ablating %d on itself" % self_ablate   # the Stoker's: its own machine set ablating as it fires
-			if fills_hopper > 0:
-				s += " fills the hopper" + ("" if fills_hopper == 1 else " ×%d" % fills_hopper)
-			if fires_hopper > 0:
-				s += " fires the hopper, +%d a load (%d a shot)" % [power_per_load, fires_hopper]
+				s += " " + Templates.say("rule.self_ablate", {"status": status_name("ablating_mech"), "n": self_ablate})   # the Stoker's: its own machine set ablating as it fires
+			if empties_hopper:
+				s += " " + Templates.say("rule.empties_hopper")
 			if braces > 0:
-				s += " braces" + ("" if braces == 1 else " ×%d" % braces)
+				s += " " + Templates.say("rule.braces", {"n": braces})
 			if gathers_mines:
-				s += " gathers every Mine onto it"
+				s += " " + Templates.say("rule.gathers_mines")
 			if detonates:
-				s += " detonates its Mine"
+				s += " " + Templates.say("rule.detonates")
 			if spends_magazine:
-				s += (" empties the magazine, %d ammo or more" % magazine_min) if magazine_min > 1 else " empties the magazine"
+				s += " " + (Templates.say("rule.empties_magazine_min", {"n": magazine_min}) if magazine_min > 1 else Templates.say("rule.empties_magazine"))
 			if ammo_per_foe_hit > 0:
-				s += " +%d ammo a foe hit" % ammo_per_foe_hit
+				s += " " + Templates.say("rule.ammo_per_foe_hit", {"n": ammo_per_foe_hit})
 			if kill_rerolls > 0:
-				s += " " + _kill_rerolls_text()   # the Spindrift Salvo's kill rider
+				s += " " + Templates.say("rule.kill_rerolls", {"n": kill_rerolls})   # the Spindrift Salvo's kill rider
 			if not self_statuses.is_empty():
 				s += " " + _self_text()   # what the spend lays on its own machine (the Storm Petrel's lure)
 			if not holds_all.is_empty():
 				s += " " + _holds_all_text()
 			s += cooldown_text()
 			if heat > 0:
-				s += " (+%d heat)" % heat
+				s += " " + Templates.say("entry.heat", {"n": heat})
 			s += cost_text()
 	if not charged.is_empty():
 		# What a store buys (a muster, the Swallowtail's locked pieces; rage, the Nemesis's): the
 		# charged form, after the plain.
-		var cf := charged_form()
-		s += " · %s: %s" % [charge_cost_text(), cf.describe()]
+		s += " · " + Templates.say("rule.charged", {"cost": charge_cost_text(), "form": charged_form().describe()})
 	return s.strip_edges()
 
 
@@ -1174,5 +1157,5 @@ func describe() -> String:
 ## store's stacks by name ("5 rage").
 func charge_cost_text() -> String:
 	if charge_store() == "muster":
-		return "a muster" if muster_price() == 1 else "%d musters" % muster_price()
-	return "%d %s" % [charge_price(), str(Effects.STATUS.get(charge_store(), {}).get("name", charge_store())).to_lower()]
+		return Templates.say("cost.musters", {"n": muster_price()})
+	return Templates.say("cost.store", {"n": charge_price(), "store": status_name(charge_store()).to_lower()})

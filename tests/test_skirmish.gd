@@ -593,59 +593,14 @@ func test_a_blow_grows_with_its_targets_missing_hull() -> void:
 
 ## The face shows the number (10 October, bible section 5): what the blow will deal now, and
 ## held over a foe, what it deals to that foe. Flat means no roll, however much feeds it.
-func test_the_hopper_fills_from_a_claw_and_a_shot_fires_a_few_loads() -> void:
-	# Ryan, 11 October: the Honey Badger's locked pair. A weapon that fills the hopper puts a
-	# load in for each foe its blows reach; one that fires it takes up to its most a shot,
-	# +5 a load, and spends them, so a full hopper feeds several shots rather than one.
-	var sk := Skirmish.new(1)
-	var claw := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "keywords": ["cleave"], "cleave": 5, "fills_hopper": 1})
-	var gun := Face.from_dict({"kind": "attack", "reach": "direct", "power": 20, "fires_hopper": 3, "power_per_load": 5})
-	assert_eq(claw.describe(), "10 spread 5 fills the hopper", "the claw says what it does, its Spread's number with it")
-	assert_eq(gun.describe(), "20 fires the hopper, +5 a load (3 a shot)", "and so does the gun")
-	assert_eq(Face.from_dict(gun.to_dict()).describe(), gun.describe(), "both round-trip")
-	var m := _mech("A", Die.of([claw, gun]), 500, 500)
-	var ms := sk.add_mech(m)
-	sk.add_foes([_ghoul(500, 10), _ghoul(500, 10), _ghoul(500, 10)])
-	sk.begin()
-	sk.start_round()
-	ms.face_index = 1
-	assert_eq(sk.shown_number(ms, gun), 20, "an empty hopper adds nothing")
-	ms.face_index = 0
-	assert_true(sk.assign(0, sk.front[1]), "the claw on the middle foe")
-	assert_eq(Effects.stacks_of(m, "hopper"), 3, "three foes reached: three loads")
-	assert_true("\n".join(sk.log).contains("fills the hopper: +3 (3)"), "the log says so")
-	sk.end_round()
-	assert_eq(Effects.stacks_of(m, "hopper"), 3, "the loads keep through the round")
-	sk.start_round()
-	Effects.stack(m, Effects.STATUS["hopper"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
-	ms.face_index = 1
-	assert_eq(sk.shown_number(ms, gun), 35, "five loads, but three a shot: 20 and 15")
-	var hp: int = sk.front[0].hp
-	assert_true(sk.assign(0, sk.front[0]), "the shot")
-	assert_eq(sk.front[0].hp, hp - 35, "twenty and three loads")
-	assert_eq(Effects.stacks_of(m, "hopper"), 2, "three spent, two left for the next shot")
-	sk.end_round()
-	sk.start_round()
-	ms.face_index = 1
-	assert_eq(sk.shown_number(ms, gun), 30, "the next shot fires the two left")
-
-
-func test_the_bot_fills_the_hopper_before_it_fires_it() -> void:
-	# A claw that reaches three foes is worth its loads to a machine that can fire them.
-	var sk := Skirmish.new(1)
-	var claw := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "keywords": ["cleave"], "fills_hopper": 1})
-	var gun := Face.from_dict({"kind": "attack", "reach": "direct", "power": 20, "fires_hopper": 3, "power_per_load": 5})
-	var m := _mech("A", Die.of([claw, gun]), 500, 500)
-	var ms := sk.add_mech(m)
-	sk.add_foes([_ghoul(500, 10), _ghoul(500, 10), _ghoul(500, 10)])
-	sk.begin()
-	sk.start_round()
-	var pol := Policy.make(Policy.GREEDY, 1)
-	var plain := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "keywords": ["cleave"]})
-	assert_true(pol.attack_score(sk, ms, claw, sk.front[1]) > pol.attack_score(sk, ms, plain, sk.front[1]), "the loads are worth something")
-	assert_eq(pol.hopper_fill_score(sk, ms, claw, sk.front[1]), 3.0 * 5.0 * Policy.HOPPER_WEIGHT, "three loads at five, discounted")
-	Effects.stack(m, Effects.STATUS["hopper"], Effects.SKIRMISH, "test", 6, Effects.DECAY_NONE)
-	assert_eq(pol.hopper_fill_score(sk, ms, claw, sk.front[1]), 0.0, "two shots' worth waiting already: no more value")
+func test_an_emptying_entry_says_what_it_does_and_round_trips() -> void:
+	# Ryan, 20 November: the Bullion Fragmenter empties the hopper, a strike an Ore (its engine in
+	# tests/test_badger.gd).
+	var gun := Face.from_dict({"kind": "attack", "reach": "direct", "power": 2, "empties_hopper": true})
+	assert_eq(gun.describe(), "2 a strike for every Ore it empties", "the entry says what it does")
+	assert_true(gun.has_unique_rule(), "a rule printed on the entry: the star chip")
+	assert_false(gun.is_debuff(), "a weapon")
+	assert_true(Face.from_dict(gun.to_dict()).empties_hopper, "it round-trips")
 
 
 func test_a_bracing_entry_armours_its_owner_until_its_sides_next_turn_begins() -> void:
@@ -3551,7 +3506,7 @@ func test_spillover_carries_the_damage_past_a_kill_into_the_foe_behind() -> void
 	sk.add_foes([_ghoul(20, 10), _ghoul(500, 10), _archer(500, 10), _archer(10, 10)])
 	sk.begin()
 	sk.start_round()
-	assert_eq(ram.describe(), "50 " + Face.SPILLS_TEXT, "the rule reads on the entry, in words: no keyword names it")
+	assert_eq(ram.describe(), "50 " + Templates.say("rule.spills"), "the rule reads on the entry, in words: no keyword names it")
 	# Find the column with the weak ghoul in front and see who stands behind it.
 	var col := 0 if sk.front[0].hp == 20 else 1
 	var behind: Foe = sk.back[col]
@@ -4173,6 +4128,8 @@ func test_purge_says_its_number_and_every_foe_move_says_whom_it_acts_on() -> voi
 	for kind in ["defend", "buff"]:
 		for effect in Foe.ACTION_EFFECTS[kind]:
 			assert_true(EntryReadout.MOVE_TARGETS.has(effect), "the readout names whom %s acts on" % effect)
+			var key := str(EntryReadout.MOVE_TARGETS.get(effect, ""))
+			assert_true(key == "every_machine" or Templates.has("foe_target." + key), "and content says it (foe_target.%s), or the term does (every machine)" % key)
 
 
 func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:
@@ -4241,6 +4198,69 @@ func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:
 	s2.end_round()
 	assert_eq(s2.field_foes().size(), 1, "with no factory, nothing answers")
 	assert_true("\n".join(s2.log).contains("nothing answers"), "and the log says so")
+
+
+## A summon that calls back only what its pack has lost (`refill`, the Wild Huntsman's Horn, Ryan's
+## go of 20 November on "a fallen rider rides back"): no call while every rider stands, room or
+## none; one back once one has fallen; never more of the kind than rode out.
+func test_the_huntsmans_horn_calls_back_only_the_riders_its_pack_has_lost() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var horn: Dictionary = {}
+	for a in db.make_foe("wild_huntsman").actions:
+		if bool(a.get("refill", false)):
+			horn = a
+	assert_false(horn.is_empty(), "the Huntsman carries a summon that refills")
+	var who := str(horn.get("foe", ""))
+	var pack := Unit.pack(9, "The Hunt", Vector2i.ZERO)
+	pack.members = [["wild_huntsman", 1], [who, 2]]
+	var sk := Skirmish.new(11, 4)
+	sk.add_mech(_mech("A", Die.single(Face.blank()), 0, 300))
+	var lineup := db.foes_for(pack)
+	sk.add_foes(lineup, pack)
+	sk.foe_factory = func(id: String) -> Foe: return db.make_foe(id)
+	sk.begin()
+	sk.start_round()
+	var huntsman: Foe = null
+	var riders: Array = []
+	for f in sk.field_foes():
+		if f.content_id == "wild_huntsman":
+			huntsman = f
+		elif f.content_id == who:
+			riders.append(f)
+	assert_eq(riders.size(), 2, "two riders rode out")
+	assert_eq(sk._free_slots_for(db.make_foe(who)), 1, "a front slot stands open")
+	assert_eq(sk.refill_short(huntsman, horn), 0, "nothing lost")
+	assert_false(sk.legal_actions(huntsman).has(horn), "so the horn is no move it may announce, room or none")
+	(riders[0] as Foe).hp = 0
+	sk._clear_dead()
+	assert_eq(sk.refill_short(huntsman, horn), 1, "one rider fallen, one short")
+	assert_true(sk.legal_actions(huntsman).has(horn), "and the horn may sound")
+	huntsman.action = horn
+	sk._foe_acts(huntsman, sk.mechs[0])
+	var standing := 0
+	for f in sk.field_foes():
+		if f.alive() and f.content_id == who:
+			standing += 1
+	assert_eq(standing, 2, "one rides back, two again")
+	assert_eq(sk._free_slots_for(db.make_foe(who)), 1, "and the open slot stays open: never more than rode out")
+	assert_eq(sk.refill_short(huntsman, horn), 0, "nothing short again")
+	assert_false(sk.legal_actions(huntsman).has(horn), "so no second call")
+	# A call for several calls back no more than is short.
+	var two := horn.duplicate(true)
+	two["count"] = 3
+	for f in sk.field_foes():
+		if f.alive() and f.content_id == who:
+			f.hp = 0
+			break
+	sk._clear_dead()
+	huntsman.action = two
+	sk._foe_acts(huntsman, sk.mechs[0])
+	standing = 0
+	for f in sk.field_foes():
+		if f.alive() and f.content_id == who:
+			standing += 1
+	assert_eq(standing, 2, "a call for three brings back the one short")
 
 
 func test_a_rally_lands_at_once_and_a_foe_that_has_acted_carries_it_whole_to_its_next_blow() -> void:

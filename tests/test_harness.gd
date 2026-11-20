@@ -216,6 +216,8 @@ func test_the_harness_drives_the_setup() -> void:
 		for ch in line.get_children():
 			if ch is OptionButton:
 				var tag: String = (line.get_child(0) as Label).text
+				if tag.begins_with("UPG"):
+					continue   # its upgrades' build, beside the hardpoints
 				(module_pickers if tag.begins_with("MOD") else pickers).append(ch)
 	assert_eq(pickers.size(), int(db.chassis[id]["hardpoints"]), "one picker per hardpoint")
 	assert_eq(module_pickers.size(), int(db.chassis[id]["module_slots"]), "and one per module slot")

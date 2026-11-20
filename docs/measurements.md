@@ -12201,6 +12201,50 @@ quarter of a four's hull where it paid a seventh, since a purging boss's Barrier
 horde stays as built: the Goblin's attack 3 moves it by less than a read's spread and the
 warband by nothing, and one root fewer halves it, so its four roots are the question for his play.
 
+## 20 November: the Half-Gel's rider-only Engulf, read after
+
+On Ryan's of 20 November: no attack deals nothing ("We don't need attacks of zero, those fold
+into rider only hits same as machines fold weapons into equipment at zero damage"), so the
+Half-Gel's Engulf is a debuff, Ablating 1 and no blow; and the halves' Brittle is his 1 ("Use
+the brittle and ablate numbers as I wrote them"), a tier-two piece no tier-one read deals.
+`tools/anchor_read.gd` on a frozen copy, the pool of the six real tier ones, every squad of the
+fight's rating, six seeds a formation's and four a leader's. Before is the sized read of the
+entry above.
+
+| Fight | Before | After |
+|---|---|---|
+| The gel wall | 4.1%, 4.3 rounds | 4.2%, 4.3 rounds |
+| The King Gel, without the Barrier basic | 27.9% | 27.5%, 8.7 rounds |
+| The King Gel, with it | 23.6% | 23.8%, 8.4 rounds |
+
+Read: the move's form moves nothing past a read's spread, since the Half-Gel's Ablating 1
+landed the same before and after; every fight won. Landed as built, with no resize.
+
+## 20 November: the Wild Huntsman, read before and after and sized
+
+On Ryan's of 20 November ("Wild huntsman is ok", of the proposal that went to him the same
+day): the Wild Hunt led by the Wild Huntsman, who names the quarry, lances, and sounds a horn
+that calls a fallen rider back where there's room, never more than rode out; the riders keep
+Lance and Frost, two at tier one and three above. `tools/anchor_read.gd` on frozen copies, the
+pool of the six real tier ones, every squad of four, four seeds a squad (sixty fights), the
+elite read without the Barrier basic and with it.
+
+| The Hunt | Without the Barrier basic | With it |
+|---|---|---|
+| Before: three riders, each naming the quarry | 14.2%, 5.0 rounds | 11.2%, 5.0 rounds |
+| The Huntsman at 36 HP, attack 12 | 36.3%, 7.8 rounds, won 97% | 27.8%, 8.1 rounds |
+| At 36 HP, attack 8 | 25.1%, 7.2 rounds | |
+| At 24 HP, attack 12 | 28.2%, 6.2 rounds, won 98% | |
+| At 24 HP, attack 8 | 20.3%, 5.9 rounds | |
+| At 24 HP, attack 10, landed | 25.1%, 6.2 rounds | 16.8%, 6.2 rounds |
+
+Read: the horn is the cost, since every rider it calls back is a fight's worth of HP again
+while the Huntsman stands, so its own HP sets the fight's length and its attack the rest. At 24
+HP a squad that turns on it first ends the calls in about a round, which keeps the leader-first
+plan a plan. Landed at 24 HP and attack 10, an elite's fight at the band's middle (24.4%, 20.3%
+to 27.7%), the squad with the Barrier basic paying about what it pays the other elites (15.9%);
+every fight won.
+
 ## 20 November: the Mole alone, beside the Honey Badger
 
 `tools/balance.gd -- --seeds 30 --rows mole,badger --policies greedy`, every pack of the matrix

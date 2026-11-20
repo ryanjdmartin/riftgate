@@ -38,8 +38,8 @@ proposed in chat first. The long form of this file is `git show cc446826:docs/br
   a gate. `docs/vocabulary.md` is the vocabulary as it runs; what became of each word is
   `git show 07f01fb:docs/vocabulary_pass_proposal.md`, sections 18 and 20. A design that
   leans on a word that moved says so as its session opens.
-- Fold in Ryan's notes first. On the hangar's Bench he reads a brief, read only (a machine's on
-  its sheet, the rest on the Briefs list), notes a heading, sets a session's direction or leaves
+- Fold in Ryan's notes first. On the hangar he reads a brief, read only (a machine's on its
+  Chassis sheet, the rest on a tab's Briefs), notes a heading, sets a session's direction or leaves
   an idea with no brief yet (20 November: "I'm not going to edit a brief (not anymore), but I
   will want to make notes on it"); they wait in the page's `designs` collection. Before reading
   the brief, save it with ArtifactData's `list` (`collection` `designs`, `out_dir`

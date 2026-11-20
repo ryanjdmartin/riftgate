@@ -479,13 +479,13 @@
    }
   },
   {
-   "id": "safety_in_numbers",
+   "id": "timid",
    "category": "foe",
-   "name": "Safety in Numbers",
+   "name": "Timid",
    "codex": "Ability, a foe's own, said on its chip: it strikes only with a buff on it, or one a move its own side has announced will lay on it; with none, it does anything but strike. The goblins', whose Shield Wall covers whoever stands beside them, so a bare goblin walls and a shielded one stabs. No Purge reaches it.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan, 20 November: \"goblins only attack when they have any buff, or are predicted to get one\" and \"If a goblin is getting a shield from its peer in the intent, it should queue an attack\". The foes announce in the order they strike, so a goblin reads the moves already out ahead of it, never one after it. The name and the text are a session's draft, his to settle."
+    "holes": "Ryan, 20 November: \"goblins only attack when they have any buff, or are predicted to get one\" and \"If a goblin is getting a shield from its peer in the intent, it should queue an attack\". The foes announce in the order they strike, so a goblin reads the moves already out ahead of it, never one after it. The name is his (20 November: \"Rename Safety in Numbers to Timid\"); the text a session's draft."
    }
   },
   {
@@ -2003,11 +2003,11 @@
   {
    "id": "hopper_property",
    "category": "component_property",
-   "name": "The hopper",
-   "codex": "A rule printed on a weapon, for a machine with a hopper. One fills it: the loads it prints for each foe its blows damage, after the blow, in place of what the machine's own passive puts in. The other fires it: each load it takes adds its bonus to the blow, up to its most a shot, and the loads it takes are spent, with the Armoured they stood for. The hopper shows under the heat; the die shows what a shot would fire.",
+   "name": "Empties the hopper",
+   "codex": "A rule printed on a weapon, for a machine with a hopper of Ore. Spent, it empties the hopper and strikes once for every Ore it empties, the armour the Ore stood for going with it, and puts no Ore back. With the hopper empty it cannot be spent. The hopper shows under the heat; the die shows how many strikes it would land.",
    "status": "implemented",
    "design": {
-    "holes": "The numbers are placeholders at the stock pass's scale."
+    "holes": "Ryan, 20 November: \"Empties the hopper, striking once for every load emptied. Grants no Ore.\" \"Fragmenter is a dead face with no Ore.\" The numbers are placeholders."
    }
   },
   {
@@ -2069,16 +2069,32 @@
   {
    "id": "hopper",
    "category": "resource",
-   "name": "Hopper",
-   "codex": "Machine store, the Honey Badger's: every foe its weapons damage puts a load in it (its Chainsaw Claw digs two), up to four, and every two loads held are a stack of Armoured, granted as each round opens and following the loads as they come and go. Its Bullion Fragmenter fires two a shot. Lasts the skirmish; never decays, and no cleanse or Purge touches the loads: a Purge strips the Armoured they granted, until the machine's next turn.",
+   "name": "Ore",
+   "codex": "Machine store, the Honey Badger's hopper: every foe its weapons damage puts an Ore in it, up to three, and every raise its upgrades grant adds to that. Its Bullion Fragmenter empties it, a strike for every Ore, and puts none back. Lasts the skirmish; never decays, and no cleanse or Purge touches it.",
    "status": "implemented",
    "design": {
-    "holes": "Its numbers since 31 October (Ryan's go, then his second fallback on the runner's read the same day): a cap of four, a point of armour for every two loads. What the loads are worth is Armoured, a buff a Purge strips, since 10 November (Ryan: \"The buff he gets from it is Armoured, not an ability. Its purgeable, but returns at the start of his turn since its granted by the funnel bar\"); the Ore Plate, an ability of its own, before.",
+    "holes": "Ryan, 20 November: \"Damaging a foe grants one stack of Ore (max 3). At 3, base armour increases by 1 (represented by an ability chip).\" The engine id stays hopper. What the Ore is worth is the Ore chip (ore_plate), an Ability. The four loads and their Armoured of 31 October and 10 November are git's.",
     "table": {
      "kind": "store",
      "on": "machine",
      "stacks": "Yes: a load a foe its weapons damage (the claw's two), up to 4; two spent a shot",
      "lasts": "The skirmish; never decays"
+    }
+   }
+  },
+  {
+   "id": "ore_plate",
+   "category": "status",
+   "name": "Ore",
+   "codex": "Ability, the Honey Badger's: armour from the Ore in its hopper, a point once it holds three (and one more for each Ore past three, from its Miner upgrade). It lands as the Ore that earns it lands and goes as the hopper empties. No Purge touches it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 20 November: \"It's no longer cleansable, represented as an Ore ability chip.\" Its stacks are the armour, set from the Ore held (Effects._plate).",
+    "table": {
+     "kind": "ability",
+     "on": "machine",
+     "stacks": "Yes: its stacks are the armour, set from the Ore held",
+     "lasts": "While the hopper holds the Ore, the skirmish at most"
     }
    }
   },

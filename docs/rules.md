@@ -68,19 +68,29 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   to 3, run as one passive nothing on the die can remove. The same module twice stacks.
   Fitted in the harness and the quick campaign's hangar (not in the campaign yet). Catalogue:
   `content/modules.json`.
-- **Tiers and blueprints**: the basics are tier zero, what comes off the assembly line: a run
-  starts with every basic's blueprint. Every other component carries its tier, one to three,
-  and a chassis stocks components up to its own tier at tiers one and two, a tier three to
-  tier two, so a tier-three component is only ever found. Blueprints
-  of tiers one to three are found; a bought chassis brings one copy of each component it
+- **Tiers and blueprints**: every component that is not fixed carries its tier, one to three, and
+  a chassis stocks components up to its own tier at tiers one and two, a tier three to tier two,
+  so a tier-three component is only ever found. A **basic** is a tier-one piece with a flag, what
+  comes off the assembly line: a run starts with every basic's blueprint, and a basic is never a
+  find. A tier-one chassis may stock found tier-one pieces beside its basics. Blueprints of every
+  piece but the basics are found; a bought chassis brings one copy of each component it
   stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
   maker) makes no basics and fields no tier-one chassis, though its tier-one components exist
   and its tier-two chassis stock them. The basic kit is six pieces, each a maker's: four
   guns, the Twin Autoguns and the Rivet Gun dealing 3 for 4 heat, Direct, the Ankle Mortar 3 for
   5, Indirect (a point of heat over Direct), and the Laser Carbine, Direct and warm, 4 for 5, and two defensive pieces, each spent on itself or an ally (the
   Halo Projector, a Barrier, cooldown 1; the Shoring Jack, Armoured 2 until its side's next turn).
-- **Branches** (an upgrade's picks; a run buys none yet, since no machine holds a tier of its
-  own, and the harness fields them): a chassis of tier one or two may carry two directions,
+- **A machine's tier**: one to three. A machine arrives at its chassis's tier, as stocked, and is
+  bought up a tier at a time between battles (the campaign's hangar, for salvage; the quick
+  campaign's, at no price), a tier opening as the Convergence reaches that tier's rifts. An
+  upgrade lifts the whole machine and carries its branch's pick as the choice where its chassis
+  has branches. The lift is a passive of its own on the machine, a tier at a time, never a write
+  to a stat or a piece: its stat lines rise, and its plate in the codex says its tier. A locked
+  piece's number does not rise with the tier: it grows by the branch's steps or by the kit beside
+  it, and a piece that needs a number of its own a tier is a call for its chassis. Every chassis
+  takes one standard lift for now (`tier_lift` in `content/chassis.json`). A machine keeps its tier and its picks,
+  a wreck included.
+- **Branches** (an upgrade's picks; the harness fields them too): a chassis of tier one or two may carry two directions,
   each a step a pick, as deep as its machine picks, a tier one twice and a tier two once. A
   machine's first pick takes a direction's first step and its second the same direction's
   deeper step or the other's first, so a tier one ends specialized or mixed. A step tweaks the
@@ -102,12 +112,24 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   Booster granting Aile Blitz; Valkyrie, the rifle's slot holding the Beam Bazooka, then the shield's
   the Beam Pavise and the Booster granting Aile Assault with 1 Empowered. A step may name the piece
   it upgrades, and the die's readout and the codex call the piece so (the Aile Blitzer, the Aile
-  Assaulter), the die keeping the piece as printed. The Echidna's, a tier one's: Spiker, its
-  Supersonic Spike Tether as the Hypersonic Spike Tether, Instant at a heat more, then its Sonic
-  Needles taking a point a stack off the attacks of the foe they are in; Chaos, its needles' bolt
-  spending one stack in place of all of them, then its weapons dealing 1 more to a foe for each
-  stack of Sonic Needle in it. A direction may be back in design, a planned draft: kept in
-  content, its depth unchecked, and never offered (the Mole's two since its move to tier two).
+  Assaulter), the die keeping the piece as printed. A step may remake a piece whole, its entry
+  as spent, read and shown the new one under the step's name, the die keeping it as printed;
+  a grant may hold once a round, the first spend that takes it spending it until the next round
+  opens; and a step may have its machine's weapon strikes count a status more. The Honey
+  Badger's, a tier one's: Miner, its Chainsaw Claw gaining Penetrate 2, Ore max +1 and a point of
+  armour for each Ore past three, then Brittle 2 on the Claw, its first spend each turn Instant
+  (two uses a turn, the second if the die finds it again) and Ore max +2; Smelter, its Bullion
+  Fragmenter gaining Spread 2 and Ore max +1, then Ablate 1 and Ore max +3. The Prairie Dog's,
+  a tier one's: Flakker, the first strike of its weapons on a Brittle foe each turn Rapid, then
+  its Flakshot Spreader remade as the Flakshot Disperser (Indirect, Brittle 4, Spread,
+  Penetrate); Harrier, its weapon strikes counting Brittle twice, then the Spreader remade as the
+  Flakshot Repeater (Direct, 1 three times, Brittle 1, Spread 1). Neither form keeps the
+  Spreader's cooldown. The Echidna's, a tier one's: Spiker, its Supersonic Spike Tether as the
+  Hypersonic Spike Tether, Instant at a heat more, then its Sonic Needles taking a point a stack
+  off the attacks of the foe they are in; Chaos, its needles' bolt spending one stack in place
+  of all of them, then its weapons dealing 1 more to a foe for each stack of Sonic Needle in it.
+  A direction may be back in design, a planned draft: kept in content, its depth unchecked, and
+  never offered (the Mole's two since its move to tier two).
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
@@ -152,8 +174,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    reboot recovers: its heat nothing, its shield whole. Every machine sheds what cooling it is
    granted, then regains what shield regen it is granted, up to its maximum (a module's, a
    passive's or a status's: a chassis has neither of its own; a shield gain like any). Every die rolls;
-   entries are equally likely. A store that grants a buff
-   grants it for the round (the Honey Badger's hopper its Armoured), before the foes pick.
+   entries are equally likely.
 2. Every foe picks its move, then its target; both show, exact, before the player acts, its
    intent chip under it: the move's kind, its blow's number and strikes, and each rider by its
    mark, a numbered one with its stacks. A blow's number counts the rallies on their way to it
@@ -338,7 +359,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
    Penetrate's in the other rank of its column); on every other Shocked foe on
    the field, Chain's (a foe in a shape and Shocked takes the shape's, one blow). Then what the
    entry prints from its firer: what heat fired adds (Vents all), what shield fired adds (Fires
-   the shield) and the hopper's loads.
+   the shield).
 2. The attacker's modifiers, on every blow: adds, then multiplies, then floors, a condition on
    the foe read on that foe (a status it carries, its rank). A zap's add is one of the adds,
    beside Empowered's (Passives, below).
@@ -671,11 +692,9 @@ nothing. The Suppression Battery's Suppress is
 gated on Brittle, and the Backdraft Charge consumes Ablating, its Suppress gated at two.
 **Ablates its firer** (the Stoker's): spending it sets its own machine Ablating, the stacks it
 prints, after the blow; the round preview with the die in hand counts the first tick, off its shield as the turn ends.
-**The hopper**: a weapon that fills it puts the loads it prints in its machine's hopper for
-each foe its blows damage, after the blow, in place of what the machine's passive puts in (the
-Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most loads a shot,
-each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
-the armour they stood for going with them. **Braces**:
+**Empties the hopper** (the Honey Badger's Bullion Fragmenter): spent, it empties its machine's
+hopper and strikes once for every Ore it empties, the armour the Ore stood for going with it; it
+puts no Ore in, and with none in the hopper it is a dead entry, nowhere to land. **Braces**:
 spending it Armours its owner, the stacks it says, an armour point each, until its side's
 next turn begins (the Shift Whistle prints it). **The Quintessence Tap** (the Ammit's, equipment spent on
 itself, cooldown 3): it consumes the Ammit's Essence, as much as it holds up to 5, and grants a
@@ -757,7 +776,7 @@ Nob's Enrage, a core's guard (Guarded), a Gel's split, a last act, a golden rage
 lasts. A machine's: the Polar Bear's seal (its form) and the Ammit's Essence (a count with no
 cap, so no store: its chip says the number). What an
 ability, a passive or a store grants beyond itself is a buff like any (the Nob's gathered
-Enraged, a module's Empowered or Armoured, the Armoured the Honey Badger's hopper grants): a
+Enraged, a module's Empowered or Armoured): a
 stack is a stack, whatever granted it.
 
 Every status on a unit says what it is, wherever it shows: a **buff**, which a Purge reaches,
@@ -792,7 +811,7 @@ On a machine:
   codex lists it among what the battle keeps.
 - **Armoured** (buff, on either side): armour +1 a stack, every stack at once, whatever
   granted it, so the count is the armour, until its side's next turn begins: a machine's
-  (from a buff, a brace or the hopper) stands through the enemy's turn and goes as the next
+  (from a buff or a brace) stands through the enemy's turn and goes as the next
   round opens, before the foes announce, and a foe's (from its brace or another's) stands
   through the player's turn and goes as the foes' next turn opens, before the first of them
   acts. It takes no rounds: no grant holds it longer.
@@ -933,18 +952,14 @@ On a machine:
   charged, unasked: they spend the five and are Instant, the die rolling again, itself included,
   so a fist may show again. Lasts the skirmish, never decays, and nothing cleanses it. It shows as a
   meter under the heat in its chip's colour, a notch at five.
-- **Hopper** (store, the Honey Badger's): its Ore Hopper puts a load in for each foe a spend
-  of its weapons damages, after the blow (a weapon that prints its own number puts that in
-  instead), up to four; a weapon that fires
-  the hopper spends them; a Mine's blast fills none. It lasts the skirmish, never decays, nothing cleanses it, and it shows as a row
-  under the heat, in the heat bar's shape, four cells, one lit a load. What the loads are
-  worth is Armoured, a stack for every two held, granted by the hopper: as each round opens it
-  grants the machine Armoured up to that worth, and between rounds the grant follows the loads
-  by the change in their worth alone (a load that makes a pair adds a stack, loads fired take
-  their stacks back, off the hopper's own grant and no other). It is a buff like any Armoured:
-  it goes as the next round opens, the hopper granting it again whole, and a Purge strips it
-  and leaves the loads, so what a Purge took comes back at the machine's next turn and no
-  sooner.
+- **Ore** (store, the Honey Badger's hopper): its Ore Hopper puts one Ore in for each foe a spend
+  of its weapons damages, after the blow, up to its most (three, and every raise a step grants
+  added to it); a weapon that empties the hopper puts none in, and a Mine's blast fills none. It
+  lasts the skirmish, never decays, nothing cleanses it, and it shows as a row under the heat, in
+  the heat bar's shape, a cell an Ore. What the Ore is worth is armour, the **Ore** chip, an
+  Ability: a point once it holds three (a step adds a point for each Ore past three), set the
+  moment the Ore moves, so it lands with the Ore that earns it and goes as the hopper empties;
+  no Purge touches it.
 - **Sealed** (Ability, the Polar Bear's form): equipment it spends on itself (a buff dropped on
   itself) seals it: armour +3, any cooling it is granted stopped (a chassis has none of its own), 3 heat more at the end of each turn
   before the overheat, and its Cryo Flinger gains Spread (one foe open, its rank's three sealed);
@@ -1293,7 +1308,7 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   half, hurt, a foe behind it, another foe on the field, one
   of its own hurt, a machine carrying a buff, one of its own not readied, one of its own
   marked, one of its parts fallen (a part down and not waiting to step in). A move marked once
-  comes once a fight. A foe that strikes only when buffed (the goblins' Safety in Numbers, an
+  comes once a fight. A foe that strikes only when buffed (the goblins' Timid, an
   Ability on its chip) announces its blow alone while a buff stands on it or a move announced
   ahead of it this round will lay one on it (a wall beside it, a brace, a rally or a Ward on
   every foe), and anything but its blow while none does. No foe flees the field but a loot-runner whose prize goes with it (the
@@ -1342,7 +1357,11 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   foe gone whole, a burst or a part falling with its core, and one taken in by a merge), less
   its Sapped, never below nothing. A move's number is its own, as a weapon's is, and an add is
   a point on every strike whatever the factor: the one damage formula on both
-  sides; strikes are separate blows. Riders (a Ward turns away all but the last
+  sides; strikes are separate blows. An attack deals damage, 1 at the least at its foe's base
+  attack: a move that would deal none is a debuff, a rider-only hit with its effect (the
+  Half-Gel's Engulf), as a machine's component that deals none is equipment. A foe carries at
+  least one move that lands on a machine, a blow or a rider-only hit, and opens with its first
+  blow, or with its first move where it has none. Riders (a Ward turns away all but the last
   three): scorch (stacks of Scorched), ablate (stacks of
   Ablating), jam (the entry the machine shows is Jammed), corrupt (Corrupted stacks on it), brittle
   (Brittle stacks on the machine: a point more on every blow it takes a stack, halving as its
@@ -1357,9 +1376,11 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; it holds no
   pick, so no word and no Lure moves it). Scorch, ablate, corrupt and brittle each say their stacks a blow, as the player's
-  Ablate does (Scorch 2: two). What a foe lays that halves says 2 at the
-  least, a blow's Brittle and a rally's Empowered: one stack is gone at its first halving, a
-  machine's Brittle as its next turn starts and the rallier's own share as its turn ends. The validator holds a foe's moves to it. No such floor binds the player's pieces:
+  Ablate does (Scorch 2: two). What a foe's move lays that halves says 2 at the
+  least, a rally's Empowered and a move's Brittle: one stack is gone at its first halving, a
+  machine's Brittle as its next turn starts and the rallier's own share as its turn ends. The validator holds a foe's moves to it. A blow's rider may lay 1 (the
+  halves of a Bubble Gel and a Molten Gel): the foes strike in turn, so a single stack of
+  Brittle a blow lays is on its machine for every blow after it that turn. No such floor binds the player's pieces:
   the player orders the turn's spends, so a single stack is used before it halves.
 - **An immunity** is a foe's own Ability, a chip on it that no Purge reaches, given case by
   case to a foe whose fight needs it: one thing of the team's that never lands on it. A foe
@@ -1431,8 +1452,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   content carries a ward all yet; the Djinn's Unmake is the one purge cast as a move, and a Purge 1 stands ahead of
   the Pilgrim's knife, the needler line's Needles, the Old Man of the Desert's Maw and the
   Rust Monster's bite; an Expose of its own
-  is the Goblin Warchief's, the Basilisk's, the Alpha Warg's, the Lich's and the Rider of the
-  Wild Hunt's, each cast while another foe stands to follow it.
+  is the Goblin Warchief's, the Basilisk's, the Alpha Warg's, the Lich's and the Wild
+  Huntsman's, each cast while another foe stands to follow it.
 - **A last act**: a foe may act the moment it falls, before anything else and even when it
   was the last foe, since damage sticks for the battle. A fall is a short list of steps, as a
   move is: a death blow with its own riders, every machine included, or one special in a
@@ -1490,7 +1511,10 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   one with no room never forms.
 - **A summon** takes an empty slot of its rank at once, the nearest its summoner's column, the
   left on a tie, its round over like a split's half's; a call for several stands as many as fit,
-  and a summoner with room for none never picks the summon.
+  and a summoner with room for none never picks the summon. A summon may call back only what its
+  pack has lost (the Wild Huntsman's Horn): it is picked only while fewer of the kind it calls
+  stand in the fight than rode out with the pack, and calls no more than that, so the pack never
+  grows past its start.
 - **A corpse**: a part that falls and will grow back leaves its corpse in its slot, drawn dimmed
   with the rounds until it regrows, and grows back there; no swap or arrival takes the slot
   meanwhile. A part with no corpse to grow into takes the nearest empty slot of its rank,
@@ -1526,7 +1550,7 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   on: the Echidna's Chaos, 1 more a Sonic Needle, read on every blow of its weapons on that foe,
   an area's and a Chain's arc among them (the needles' bolt is no weapon's and takes none).
 - A passive may double a weapon's printed number before its buffs, on every blow, what the
-  entry prints from its firer included (an area's number, heat fired, hopper loads), the buffs
+  entry prints from its firer included (an area's number, heat fired), the buffs
   added once after it and the struck foe's own reads (its missing HP, the stacks consumed on
   it) after those, undoubled, and under a condition where it carries one (the Kite's, against
   an unhurt foe); it may grant a cooldown to every weapon and equipment its machine aims at a
@@ -1924,7 +1948,7 @@ a stat.
   the tier names (tier one's first; tier two's first and third; tier three's first, second and
   fourth) the lead domain's next own elite composition not yet sent this battle emerges at the
   rift, or a wanderer (`wanders`: Gilgamesh, the Reaper, the Wild Hunt, the World Eater, the
-  Shuffler and the Astromancer, each one composition in one domain's list and every domain's), drawn on the
+  Shuffler and the Astromancer, each written in one domain's list and dealt from every domain's), drawn on the
   Fracture's roll one time in three in place of the domain's own and always once its own are
   spent, the same roll picking which among those not yet sent, so every domain may meet them,
   none waits on them and nobody learns an order. An elite
