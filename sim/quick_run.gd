@@ -184,7 +184,7 @@ func module_slots(m: Machine) -> int:
 ## Basics are free and without limit in the hangar: the run starts with their blueprints and
 ## has no salvage to build with (bible section 3's quick campaign row).
 func is_basic(component_id: String) -> bool:
-	return db.component_tier(component_id) == 0 and db.component_dealt(component_id)
+	return db.is_basic(component_id)
 
 
 # ---------------------------------------------------------------- the hangar
@@ -628,7 +628,7 @@ func take(index: int) -> bool:
 func pool(item_tier: int) -> Array:
 	var out: Array = []
 	for cid in db.components.keys():
-		if db.component_tier(str(cid)) == item_tier and str(db.components[cid].get("status", "")) != "planned":
+		if db.component_tier(str(cid)) == item_tier and str(db.components[cid].get("status", "")) != "planned" and not db.is_basic(str(cid)):
 			out.append({"kind": "component", "id": str(cid)})
 	for mid in db.modules.keys():
 		if int(db.modules[mid].get("tier", 0)) == item_tier:

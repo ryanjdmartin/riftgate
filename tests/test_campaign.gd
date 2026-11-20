@@ -93,7 +93,7 @@ func test_a_new_run_has_a_city_per_maker_around_the_capital() -> void:
 	assert_eq(c.blueprints, db.starting_blueprints(), "the basics' blueprints")
 	assert_true(not c.blueprints.is_empty(), "there are some")
 	for cid in c.blueprints:
-		assert_eq(db.component_tier(cid), 0, "%s is a basic, tier zero" % cid)
+		assert_true(db.is_basic(cid), "%s is a basic" % cid)
 
 
 func test_the_tender_offers_one_tier_one_machine_from_each_city_maker() -> void:

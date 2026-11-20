@@ -895,11 +895,12 @@ func city_makers() -> Array:
 
 
 ## Tiers (bible section 10, the ledger, 7 October; stored since the stock pass, 22 October). A
-## chassis carries its tier, 1 to 3; every component that is not locked carries its own, 0 to
-## 3: 0 the basics, whose blueprints a run starts with, 1 to 3 found or brought by a bought
-## chassis, and a chassis stocks components up to its own tier, a tier three to tier two
-## (stock_tier). A locked component has
-## none (NO_TIER).
+## chassis carries its tier, 1 to 3; every component that is not locked carries its own, 1 to 3,
+## found or brought by a bought chassis, and a chassis stocks components up to its own tier, a
+## tier three to tier two (stock_tier). A basic is a tier-one piece flagged `basic`, its blueprint
+## owned from a run's start (is_basic; Ryan, 20 November: "Basic is just a flag that says it's in
+## the starting blueprints"; tier zero is no longer a tier, one ladder of three). A locked
+## component has none (NO_TIER).
 const NO_TIER := -1
 
 
@@ -961,14 +962,20 @@ func chassis_runnable(chassis_id: String) -> bool:
 	return true
 
 
-## The blueprints a run starts with: every basic, a component of tier zero (Ryan, 7 October:
-## each maker's basic defaults; the basics tier zero since the stock pass, 22 October).
+## The blueprints a run starts with: every basic (Ryan, 7 October: each maker's basic
+## defaults; a flag on a tier-one piece since 20 November, is_basic).
 func starting_blueprints() -> Array:
 	var out: Array = []
 	for cid in components.keys():
-		if component_tier(str(cid)) == 0 and component_dealt(str(cid)):
+		if is_basic(str(cid)):
 			out.append(str(cid))
 	return out
+
+
+## Is this component a basic the game deals: a tier-one piece whose blueprint a run starts with
+## (its `basic` flag), never a planned draft and never locked. A basic is never a find.
+func is_basic(component_id: String) -> bool:
+	return component_dealt(component_id) and not is_fixed(component_id) and bool(components[component_id].get("basic", false))
 
 
 ## Is this component in the game's hands today? Not while it is a planned draft: one the
@@ -1485,11 +1492,12 @@ func loot_top_tier() -> int:
 
 
 ## The components a cache of a battle at `item_tier` (1 to 3) may hold, in content order: the
-## tier's unlocked components the engine runs (a locked one is never loot, as never a blueprint).
+## tier's unlocked components the engine runs (a locked one is never loot, as never a blueprint),
+## and never a basic, whose blueprint the run already holds.
 func loot_pool(item_tier: int) -> Array:
 	var out: Array = []
 	for cid in components.keys():
-		if component_tier(str(cid)) == item_tier and str(components[cid].get("status", "")) != "planned":
+		if component_tier(str(cid)) == item_tier and str(components[cid].get("status", "")) != "planned" and not is_basic(str(cid)):
 			out.append(str(cid))
 	return out
 
@@ -2426,8 +2434,9 @@ func _validate_chassis(errs: Array[String]) -> void:
 		if makers[id].has("sponsorship") and not SPONSORSHIP_MEASURES.has(str(makers[id]["sponsorship"])):
 			errs.append("maker %s: sponsorship names a measure the run tallies, one of %s" % [id, ", ".join(SPONSORSHIP_MEASURES)])
 	# Tiers (7 October; stored since the stock pass, 22 October): every chassis 1 to 3, and the
-	# capital's maker fields no tier one; every component that is not locked stores its tier, 0
-	# to 3, and a locked one none; the capital's maker makes no basics (tier zero); a chassis
+	# capital's maker fields no tier one; every component that is not locked stores its tier, 1
+	# to 3, and a locked one none; a basic is a tier-one piece (its flag, 20 November), and the
+	# capital's maker makes none; a chassis
 	# stocks components up to its own tier at tiers one and two, and a tier three to tier two (the
 	# bible's tiers row; the validator's half since 11 November, with the Skua's Pod), so a
 	# tier-three component is only ever found.
@@ -2451,15 +2460,21 @@ func _validate_chassis(errs: Array[String]) -> void:
 			errs.append("component %s: locked on a chassis, so no hardpoint stocks it (a locked component is never a blueprint)" % cid)
 		if components.get(cid, {}).has("tier"):
 			errs.append("component %s: locked on a chassis, so it carries no tier" % cid)
+		if components.get(cid, {}).has("basic"):
+			errs.append("component %s: locked on a chassis, so it is never a basic (no blueprint)" % cid)
 	for cid in components.keys():
 		var c: Dictionary = components[cid]
 		if fixed_ids.has(cid):
 			continue
 		var ct = c.get("tier", null)
-		if not (ct is float or ct is int) or float(ct) != floorf(float(ct)) or int(ct) < 0 or int(ct) > 3:
-			errs.append("component %s: tier must be 0, 1, 2 or 3 (0 the basics, whose blueprints a run starts with)" % cid)
-		elif not capital.is_empty() and str(c.get("maker", "")) == capital and int(ct) == 0:
-			errs.append("component %s: the capital's maker makes no basics (tier zero)" % cid)
+		if not (ct is float or ct is int) or float(ct) != floorf(float(ct)) or int(ct) < 1 or int(ct) > 3:
+			errs.append("component %s: tier must be 1, 2 or 3 (a basic is a tier-one piece with the basic flag)" % cid)
+		elif c.has("basic") and not (c["basic"] is bool):
+			errs.append("component %s: basic is true or absent" % cid)
+		elif bool(c.get("basic", false)) and int(ct) != 1:
+			errs.append("component %s: a basic is a tier-one piece (tier one's power, only simpler)" % cid)
+		elif not capital.is_empty() and str(c.get("maker", "")) == capital and bool(c.get("basic", false)):
+			errs.append("component %s: the capital's maker makes no basics" % cid)
 	for id in chassis.keys():
 		var own := int(chassis[id].get("tier", 0))
 		for cid in chassis[id].get("loadout", []):

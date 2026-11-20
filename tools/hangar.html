@@ -784,8 +784,8 @@ function dieIds(e) { return [...(e.fixed || []), ...(e.loadout || []).slice(0, N
 function dieComps(e) { return dieIds(e).map(id => ctx().comps.get(id)).filter(Boolean).map(x => x.entry); }
 const faceKeywords = (c) => ((c && c.face) || {}).keywords || [];
 const kindOf = (c) => ((c && c.face) || {}).kind || "";
-// A component's blueprint tier, as ContentDB.component_tier: the tier it stores, 0 the basics
-// (a run starts with their blueprints) to 3; null for a locked one, never a blueprint.
+// A component's blueprint tier, as ContentDB.component_tier: the tier it stores, 1 to 3, a basic
+// a tier-one piece with its flag (a run starts with its blueprint); null for a locked one.
 const compTier = (c) => (!c || ctx().locked.has(c.id) || c.tier === undefined || c.tier === null) ? null : Number(c.tier);
 function makerShort(id) { return MAKER_SHORT[id] || (ctx().makers.get(id) || {}).name || id || ""; }
 const factionName = (id) => (ctx().factions.get(id) || {}).name || id || "";
@@ -833,7 +833,7 @@ const FILTER_SPECS = {
       {id: "reach", label: "Reach", of: e => [(e.face || {}).reach], name: v => REACH[v] || v, order: Object.keys(REACH)},
       {id: "kw", label: "Keywords", of: faceKeywords, name: vocabName},
       {id: "shape", label: "Silhouette", of: e => [e.shape], name: plain},
-      {id: "tier", label: "Tier", of: e => [compTier(e) !== null ? "T" + compTier(e) : "none"], name: v => v === "none" ? "No tier" : v === "T0" ? "T0 (basic)" : v, order: ["T0", "T1", "T2", "T3", "none"]},
+      {id: "tier", label: "Tier", of: e => [compTier(e) !== null ? (e.basic ? "basic" : "T" + compTier(e)) : "none"], name: v => v === "none" ? "No tier" : v === "basic" ? "T1 (basic)" : v, order: ["basic", "T1", "T2", "T3", "none"]},
       {id: "fit", label: "Dice", of: e => [ctx().fitted.get(e.id) ? "fitted" : "spare"], name: v => v === "fitted" ? "On a die" : "On none", order: ["fitted", "spare"]},
       {id: "status", label: "Status", of: e => e.status === "planned" ? ["planned"] : [], keep: true},
       EDITS,
@@ -1133,7 +1133,7 @@ function componentEntry(cid, slot, comps, makers) {
   for (const k of (f.keywords || [])) kws.append(kwChip(k, "kw", kwNumber(f, k)));
   const name = el("div", {class: "cname"}, comp.name || cid);
   const tier = compTier(comp);
-  if (tier !== null) name.append(el("span", {class: "tier", title: tier === 0 ? "Blueprint tier 0: a basic, whose blueprint a run starts with" : "Blueprint tier: its blueprint is found, and a bought chassis that stocks it brings a copy (a chassis stocks up to its own tier, a tier three up to tier two)"}, "T" + tier));
+  if (tier !== null) name.append(el("span", {class: "tier", title: comp.basic ? "Blueprint tier 1, a basic: a run starts with its blueprint" : "Blueprint tier: its blueprint is found, and a bought chassis that stocks it brings a copy (a chassis stocks up to its own tier, a tier three up to tier two)"}, "T" + tier));
   if (planned) name.append(" ", el("span", {class: "tag planned"}, "planned"));
   if (c.st) name.append(" ", el("span", {class: "tag " + c.st}, c.st));
   const row = el("div", {class: "entry" + (planned ? " planned" : ""), tabindex: "0", role: "button", title: "Open in the editor",
