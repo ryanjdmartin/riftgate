@@ -390,6 +390,7 @@ in formations and nothing against a lone boss.
 4. Skua: settled 19 November, left as built ("Leave it as is and move on").
 5. Kite: settled 19 November, left as built, the kill that mends refused ("Leave it").
 6. Cottonmouth: settled 19 November, left as built ("Leave it").
-7. Puffin: built 19 November on his calls at tier two (the bible's row); his names and the
-   dump's rate after the read. Swallowtail: its session as set.
+7. Puffin: built 19 November on his calls at tier two and named on the 20th, the Downwash
+   Exchanger and the Overdrive Injector (the bible's row); its strength his play's in a team that
+   leverages heat. Swallowtail: its session as set.
 8. Polar Bear: settled 19 November, left as built ("Leave the bear"), its text's clause fixed.
