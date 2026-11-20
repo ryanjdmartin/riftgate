@@ -135,7 +135,7 @@ Ryan, 4 November: "I want to target 10 per maker, at least for now." The roster 
 README's "Ten a maker"; a built machine with no line here stands. Each rework designs locked
 pieces, so each stands on the footing in the first line.
 
-- [ ] The locked pieces' footing (`docs/locked_pieces_proposal.md`, section 9): tier one's numbers down to the basics', the stock rule, "tier zero" as a property, a ladder of three numbers for each locked piece and stat line, the machine's tier as a Modifier and in the saves, the hangar's upgrade verb, and each chassis's branches proposed in chat (their engine is built: `docs/rules.md`, Branches)
+- [ ] The locked pieces' footing (`docs/locked_pieces_proposal.md`, section 9), its engine built on `claude/locked-footing` (a basic a flag on tier one, a machine's tier with one standard lift, the hangar's upgrade verb): each chassis's branches proposed in chat, the six certain tier ones without them first (the Honey Badger, the Prairie Dog, the Cassowary, the Cottonmouth, the Skua), then the Wild Boar and the tier twos; a lift of each chassis's own once the scaling is in; tier one's numbers down to the basics', which waits on Ryan's word on the tier-one bench
 
 **Back in design, undealt until its session hands it back:**
 

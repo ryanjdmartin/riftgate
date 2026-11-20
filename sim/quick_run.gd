@@ -64,6 +64,8 @@ class Machine:
 	var chassis: String = ""
 	var loadout: Array = []
 	var modules: Array = []
+	var tier: int = 0               # the machine's tier (ContentDB.machine_tier), 0 its chassis's: bought up in the hangar (upgrade)
+	var branches: Array = []        # its upgrades' picks along its chassis's branches, in the order taken
 
 
 var seed_value: int = 1
@@ -233,6 +235,40 @@ func fit(uid: int, slot: int, component_id: String) -> bool:
 	return true
 
 
+## A machine's tier (ContentDB.machine_tier): its chassis's as it arrives, more for each upgrade.
+func machine_tier(m: Machine) -> int:
+	return db.machine_tier(m.chassis, m.branches, m.tier)
+
+
+## The highest machine tier the next battle's tier opens (the campaign's gate on one tree): its
+## tier counted 0 to 2, shown 1 to 3.
+func open_tier() -> int:
+	return clampi(mini(TOP_TIER, battle / TIER_EVERY) + 1, 1, 3)
+
+
+## Why this machine may not be bought up a tier now with `pick`, "" when it may: in the hangar, the
+## Convergence's gate and its branch's pick (the campaign's verb, ContentDB.upgrade_error). The
+## quick campaign has no salvage, so an upgrade costs nothing here.
+func upgrade_error(uid: int, pick: String = "") -> String:
+	var m := machine(uid)
+	if m == null:
+		return "no machine %d" % uid
+	if state != HANGAR:
+		return "in the hangar only"
+	return db.upgrade_error(m.chassis, m.tier, m.branches, pick, open_tier())
+
+
+## Buy a machine up a tier, its branch's pick with it. False when upgrade_error refuses it.
+func upgrade(uid: int, pick: String = "") -> bool:
+	if not upgrade_error(uid, pick).is_empty():
+		return false
+	var m := machine(uid)
+	m.tier = machine_tier(m) + 1
+	if not pick.is_empty():
+		m.branches.append(pick)
+	return true
+
+
 ## Put a module from the stores in a slot of a machine; the one it replaces goes back. ""
 ## empties the slot.
 func fit_module(uid: int, slot: int, module_id: String) -> bool:
@@ -271,7 +307,7 @@ func start_battle() -> bool:
 	units = []
 	for uid in squad:
 		var m := machine(int(uid))
-		units.append(db.make_mech(m.chassis, m.uid, Vector2i.ZERO, m.loadout.duplicate(), m.modules.duplicate()))
+		units.append(db.make_mech(m.chassis, m.uid, Vector2i.ZERO, m.loadout.duplicate(), m.modules.duplicate(), m.branches.duplicate(), m.tier))
 	fight = 0
 	current = null
 	state = BATTLE

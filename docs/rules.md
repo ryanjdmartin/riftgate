@@ -69,19 +69,29 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   to 3, run as one passive nothing on the die can remove. The same module twice stacks.
   Fitted in the harness and the quick campaign's hangar (not in the campaign yet). Catalogue:
   `content/modules.json`.
-- **Tiers and blueprints**: the basics are tier zero, what comes off the assembly line: a run
-  starts with every basic's blueprint. Every other component carries its tier, one to three,
-  and a chassis stocks components up to its own tier at tiers one and two, a tier three to
-  tier two, so a tier-three component is only ever found. Blueprints
-  of tiers one to three are found; a bought chassis brings one copy of each component it
+- **Tiers and blueprints**: every component that is not fixed carries its tier, one to three, and
+  a chassis stocks components up to its own tier at tiers one and two, a tier three to tier two,
+  so a tier-three component is only ever found. A **basic** is a tier-one piece with a flag, what
+  comes off the assembly line: a run starts with every basic's blueprint, and a basic is never a
+  find. A tier-one chassis may stock found tier-one pieces beside its basics. Blueprints of every
+  piece but the basics are found; a bought chassis brings one copy of each component it
   stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
   maker) makes no basics and fields no tier-one chassis, though its tier-one components exist
   and its tier-two chassis stock them. The basic kit is six pieces, each a maker's: four
   guns, the Twin Autoguns and the Rivet Gun dealing 3 for 4 heat, Direct, the Ankle Mortar 3 for
   5, Indirect (a point of heat over Direct), and the Laser Carbine, Direct and warm, 4 for 5, and two defensive pieces, each spent on itself or an ally (the
   Halo Projector, a Barrier, cooldown 1; the Shoring Jack, Armoured 2 until its side's next turn).
-- **Branches** (an upgrade's picks; a run buys none yet, since no machine holds a tier of its
-  own, and the harness fields them): a chassis of tier one or two may carry two directions,
+- **A machine's tier**: one to three. A machine arrives at its chassis's tier, as stocked, and is
+  bought up a tier at a time between battles (the campaign's hangar, for salvage; the quick
+  campaign's, at no price), a tier opening as the Convergence reaches that tier's rifts. An
+  upgrade lifts the whole machine and carries its branch's pick as the choice where its chassis
+  has branches. The lift is a passive of its own on the machine, a tier at a time, never a write
+  to a stat or a piece: its stat lines rise and every fixed weapon that deals damage deals more,
+  the die keeping each piece as printed, the entry as spent carrying the lift and the codex
+  showing the piece at its machine's tier, its plate the tier. Every chassis takes one standard
+  lift for now (`tier_lift` in `content/chassis.json`). A machine keeps its tier and its picks,
+  a wreck included.
+- **Branches** (an upgrade's picks; the harness fields them too): a chassis of tier one or two may carry two directions,
   each a step a pick, as deep as its machine picks, a tier one twice and a tier two once. A
   machine's first pick takes a direction's first step and its second the same direction's
   deeper step or the other's first, so a tier one ends specialized or mixed. A step tweaks the

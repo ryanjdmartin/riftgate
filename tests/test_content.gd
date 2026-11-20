@@ -2063,10 +2063,12 @@ func test_the_codex_plate_lists_the_traits() -> void:
 	db.chassis["plated"] = c
 	var u := db.make_mech("plated")
 	var maker := str(db.makers[c["maker"]]["name"]).to_upper()
-	assert_eq(str(db.codex_for_unit(u)["subtitle"]), "%s // SKIDS, QUIET // D%d" % [maker, u.die.size()], "maker, the traits by name, the die")
+	var t := int(c["tier"])
+	assert_eq(str(db.codex_for_unit(u)["subtitle"]), "%s // SKIDS, QUIET // TIER %d // D%d" % [maker, t, u.die.size()], "maker, the traits by name, the tier, the die")
 	c["traits"] = []
 	db.chassis["bare"] = c
-	assert_eq(str(db.codex_for_unit(db.make_mech("bare"))["subtitle"]), "%s // D%d" % [maker, u.die.size()], "no traits, no traits part")
+	assert_eq(str(db.codex_for_unit(db.make_mech("bare"))["subtitle"]), "%s // TIER %d // D%d" % [maker, t, u.die.size()], "no traits, no traits part")
+	assert_eq(str(db.codex_for_unit(db.make_mech("bare", 1, Vector2i.ZERO, null, [], [], 3))["subtitle"]), "%s // TIER 3 // D%d" % [maker, u.die.size()], "the machine's tier, bought up")
 	for e in db.validate():
 		assert_false(e.contains("silhouette"), "no chassis needs a silhouette: %s" % e)
 

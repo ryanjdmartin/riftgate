@@ -130,6 +130,10 @@ var modules: Array[String] = []
 ## (ContentDB.branch_error), for the codex, the save and the hangar; the engine runs each step as a
 ## loadout modifier sourced "branch" (ContentDB.fit_branches).
 var branches: Array[String] = []
+## A machine's tier, 1 to 3 (the bible's tiers row: "Machines level is tier. Everything is tier."),
+## its chassis's as it arrives and bought up in the hangar; 0 for a foe. Each tier above its
+## chassis's is a loadout modifier sourced "tier" (ContentDB.fit_tier), never a write to a stat.
+var tier: int = 0
 
 
 static func mech(uid: int, name: String, at: Vector2i, speed: int = MECH_MOVE) -> Unit:

@@ -65,8 +65,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1384 tests, 387,201 checks, green (20 November, the gel line, the goblins' wall and the
-  content audit over the Puffin's landing). The runner fails a run
+- Tests: 1392 tests, 387,285 checks, green (20 November, the locked pieces' footing's engine on
+  `claude/locked-footing`). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -81,7 +81,7 @@ document's job and every command are in `README.md`.
   (`tools/lowforge/tiles/`) too: restore those. Screenshots there need `xvfb-run -a` and
   `--rendering-method gl_compatibility`; models build with `BPY_PYTHON` set to a python3.11
   venv holding `bpy==5.0.1`.
-- Saves: the battle's version is 40, the run's 33 and the quick run's 16 (`sim/save.gd`). A
+- Saves: the battle's version is 42, the run's 34 and the quick run's 17 (`sim/save.gd`). A
   save from an older version is set aside, so a change to what a save holds moves its version.
 
 ## How things stand
@@ -132,11 +132,17 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Retribution Thurible, the Solar Flare Array, the Mole's Inertia Drill); 20 modules. A stock die is basics beside its
   locked pieces: the basic guns deal 3 for 4 heat and the Laser Carbine 4 for 5, the Halo
   Projector lays a Barrier and the Shoring Jack Armoured 2, and every piece that grants a
-  Barrier sits out a round after. A machine moves 3 to 6 hexes. A machine holds a tier, and
-  an upgrade branch is a passive scoped to a locked piece, or a step on the passive where its
+  Barrier sits out a round after. A machine moves 3 to 6 hexes. A basic is a tier-one piece with
+  a flag (its blueprint a run's from the start), never a find. A machine holds a tier, its
+  chassis's as it arrives, bought up between battles once the Convergence opens the next (the
+  campaign for `UPGRADE_PRICE` salvage, a placeholder; the quick campaign free): each tier one
+  standard lift for every chassis for now (`tier_lift`, hull 4, shield 2 and every locked weapon
+  1, placeholders the foes' line sizes), a passive sourced "tier", its branch's pick with it. No
+  screen buys one yet; the campaign runner's plain player buys each as it opens. An
+  upgrade branch is a passive scoped to a locked piece, or a step on the passive where its
   numbers warrant one (the rules' Branches; `docs/locked_pieces_proposal.md`; the bible's
   locked and tiers rows): the Storm Petrel carries the first two, the Buzzard two more, the
-  harness's UPG line fields a build, and a run buys none yet. A step may tweak as many pieces as
+  harness's UPG line fields a build at the tier its picks make. A step may tweak as many pieces as
   it needs (Ryan, 19 November); the Macaque's second steps touch its offhand and its Aile
   Booster. An upgraded piece wears a chevron a step under its place, on the die and down the
   codex, and takes the name its step gives it (the Aile Blitzer); `RIFTGATE_TEAM` fields picks

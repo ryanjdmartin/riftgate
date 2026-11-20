@@ -77,6 +77,7 @@ func load_dir(dir: String) -> void:
 	_resolve_promotions()
 	var c := _read(dir + "chassis.json")
 	chassis = _index(c)
+	tier_lift = c.get("tier_lift", {}) if c.get("tier_lift", {}) is Dictionary else {}
 	makers = {}
 	for m in c.get("makers", []):
 		makers[m["id"]] = m
@@ -194,8 +195,9 @@ func build_die(fixed_ids: Array, loadout_ids: Array, hardpoints: int) -> Die:
 ## A machine as the content builds it. `loadout` is the hardpoint components fitted, in
 ## order; null means the chassis's stock loadout (the campaign passes its roster's own).
 ## `branch_picks` are its upgrades' picks along its chassis's branches (branch_error), none for a
-## machine at its chassis's own tier.
-func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, loadout = null, fitted_modules: Array = [], branch_picks: Array = []) -> Unit:
+## machine at its chassis's own tier. `tier` is the machine's (machine_tier), 0 for the tier its
+## picks make it: its chassis's, and one more for each pick, each upgrade carrying its branch.
+func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, loadout = null, fitted_modules: Array = [], branch_picks: Array = [], tier: int = 0) -> Unit:
 	var c: Dictionary = chassis[chassis_id]
 	var fitted: Array = c.get("loadout", []) if loadout == null else loadout
 	var u := Unit.mech(uid, str(c["name"]), at, int(c.get("movespeed", Unit.MECH_MOVE)))
@@ -219,7 +221,10 @@ func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, l
 		var cp = components.get(cid, {}).get("passive", null)
 		if cp is Dictionary:
 			u.grant_passive(cp, cid, cid)
-	fit_branches(u, branch_picks)
+	var picks: Array = branch_picks if branch_error(chassis_id, branch_picks).is_empty() else []   # illegal picks lay nothing
+	u.tier = machine_tier(chassis_id, picks, tier)
+	fit_tier(u)
+	fit_branches(u, picks.slice(0, u.tier - chassis_tier(chassis_id)))   # a pick a tier bought
 	# Modules, as many as the chassis has slots; then the machine starts whole on the numbers
 	# they made.
 	for mid in fitted_modules.slice(0, int(c.get("module_slots", 0))):
@@ -312,6 +317,84 @@ func _direction(c: Dictionary, id: String) -> Dictionary:
 		if d is Dictionary and str(d.get("id", "")) == id:
 			return d
 	return {}
+
+
+## The tier a machine of this chassis holds (the bible's tiers row): `tier` when it names one from
+## its chassis's to three, else its chassis's and one more for each of its picks.
+func machine_tier(chassis_id: String, picks: Array = [], tier: int = 0) -> int:
+	var own := clampi(chassis_tier(chassis_id), 1, 3)
+	if tier > 0:
+		return clampi(tier, own, 3)
+	return clampi(own + picks.size(), own, 3)
+
+
+## The lift an upgrade buys, a tier at a time, as the passive the engine runs (the bible's tiers row:
+## it "lifts the whole machine at once, its stat line and its locked pieces"). Every chassis takes
+## content's one standard lift for now (`tier_lift` in chassis.json; Ryan, 20 November:
+## "the placeholders can be standard lifts for every chassis for now. After we have scaling in
+## place, we can adjust individual lifts to add character"): its stat lines added a step, and every
+## locked weapon's own number raised by `locked_power`. Empty for a tier no upgrade reaches.
+func tier_step(chassis_id: String, to_tier: int) -> Dictionary:
+	var c: Dictionary = chassis.get(chassis_id, {})
+	if c.is_empty() or to_tier <= chassis_tier(chassis_id) or to_tier > 3:
+		return {}
+	var effects: Array = []
+	var stats: Dictionary = tier_lift.get("stats", {}) if tier_lift.get("stats", {}) is Dictionary else {}
+	for k in stats.keys():
+		effects.append({"trigger": "static", "effect": "add_stat", "stat": str(k), "value": int(stats[k])})
+	var raise := int(tier_lift.get("locked_power", 0))
+	var seen := {}
+	for cid in c.get("fixed", []):
+		var face = components.get(cid, {}).get("face", {})
+		if raise != 0 and not seen.has(cid) and face is Dictionary and str(face.get("kind", "")) == "attack" and int(face.get("power", 0)) > 0:
+			seen[cid] = true
+			effects.append({"trigger": "static", "effect": "add_power", "value": raise, "entry": str(cid)})
+	return {"id": "tier:%s:%d" % [chassis_id, to_tier], "name": "Tier %d" % to_tier, "description": "", "effects": effects}
+
+
+## Why a machine of this chassis, at `tier` with `picks` taken, may not be bought up a tier with
+## `pick` while the Convergence opens machines up to `open_tier` (the hangar's upgrade, Campaign and
+## QuickRun; the bible's tiers row: "you can't upgrade to tier 2 until you reach tier 2 rifts"); ""
+## when it may. Each upgrade carries its branch's pick where the chassis has branches (Ryan, 20
+## November: "Tier step should bring up stats, and then the branch comes with it as the choice"),
+## and none where it has none yet.
+func upgrade_error(chassis_id: String, tier: int, picks: Array, pick: String, open_tier: int) -> String:
+	if not chassis.has(chassis_id):
+		return "no chassis %s" % chassis_id
+	var now := machine_tier(chassis_id, picks, tier)
+	if now >= 3:
+		return "at the top tier"
+	if now + 1 > open_tier:
+		return "tier %d opens with tier-%d rifts" % [now + 1, now + 1]
+	var dirs = chassis[chassis_id].get("branches", [])
+	if dirs is Array and not dirs.is_empty():
+		if pick.is_empty():
+			return "an upgrade takes a branch's pick"
+		var err := branch_error(chassis_id, picks + [pick])
+		if not err.is_empty():
+			return err
+	elif not pick.is_empty():
+		return "%s has no branches" % chassis_id
+	return ""
+
+
+## The picks an upgrade from here may take: each direction whose next step the machine may take
+## (the first, or the deeper once its first is taken); empty for a chassis with no branches.
+func upgrade_picks(chassis_id: String, picks: Array) -> Array:
+	var out: Array = []
+	for d in chassis.get(chassis_id, {}).get("branches", []):
+		if d is Dictionary and branch_error(chassis_id, picks + [str(d.get("id", ""))]).is_empty():
+			out.append(str(d.get("id", "")))
+	return out
+
+
+## A machine's tier laid on it: each tier above its chassis's one passive sourced "tier", read
+## through the pipeline like a module's (never written to a stat or a component).
+func fit_tier(u: Unit) -> void:
+	for t in range(chassis_tier(u.chassis_id) + 1, u.tier + 1):
+		var step := tier_step(u.chassis_id, t)
+		if not step.is_empty():
+			u.grant_passive(step, "tier")
 
 
 ## A machine's picks laid on it: each step's effects one passive sourced "branch", tied to the
@@ -581,6 +664,7 @@ func _plate_parts(c: Dictionary, maker: Dictionary, u: Unit) -> Array[String]:
 		names.append(str(vocabulary.get(str(t), {}).get("name", str(t))).to_upper())
 	if not names.is_empty():
 		parts.append(", ".join(names))
+	parts.append("TIER %d" % maxi(u.tier, int(c.get("tier", 1))))
 	parts.append("D%d" % (u.die.size() if u.die != null else 0))
 	return parts
 
@@ -658,6 +742,8 @@ func codex_for_unit(u: Unit) -> Dictionary:
 					(piece_steps[i] as Array).push_front("%s: %s" % [str(d[0]), d[1]])
 		elif d[2] == "module":
 			effects.append({"name": head, "text": str(d[1]), "kind": "module", "note": "MODULE"})
+		elif d[2] == "tier":
+			continue   # the machine's tier: its plate says it, its numbers and its pieces show it
 		elif Effects.is_status(str(d[5])):
 			# A status the battle keeps (the Ammit's Essence; its Empowered from 16 October until its
 			# rework of 12 November): its count, kept for the battle, one row a status whatever
@@ -902,6 +988,11 @@ func city_makers() -> Array:
 ## the starting blueprints"; tier zero is no longer a tier, one ladder of three). A locked
 ## component has none (NO_TIER).
 const NO_TIER := -1
+
+
+## Content's one standard lift a tier, every chassis's for now (tier_step): {"stats": {stat: n},
+## "locked_power": n}.
+var tier_lift: Dictionary = {}
 
 
 func chassis_tier(chassis_id: String) -> int:
@@ -2440,6 +2531,17 @@ func _validate_chassis(errs: Array[String]) -> void:
 	# stocks components up to its own tier at tiers one and two, and a tier three to tier two (the
 	# bible's tiers row; the validator's half since 11 November, with the Skua's Pod), so a
 	# tier-three component is only ever found.
+	# The standard lift a tier (tier_step): stat lines the engine knows, whole numbers.
+	var lift_stats = tier_lift.get("stats", {})
+	if not (lift_stats is Dictionary):
+		errs.append("tier_lift: stats is a stat -> number map")
+	else:
+		for k in lift_stats.keys():
+			if not Effects.STATS.has(str(k)) or not (lift_stats[k] is float or lift_stats[k] is int) or float(lift_stats[k]) != floorf(float(lift_stats[k])):
+				errs.append("tier_lift: stats %s must be one of %s, a whole number" % [str(k), ", ".join(Effects.STATS)])
+	var lift_power = tier_lift.get("locked_power", 0)
+	if not (lift_power is float or lift_power is int) or float(lift_power) != floorf(float(lift_power)):
+		errs.append("tier_lift: locked_power is a whole number")
 	var capital := capital_maker()
 	var stocked_ids := {}
 	var fixed_ids := {}
