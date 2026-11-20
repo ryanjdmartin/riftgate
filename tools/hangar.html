@@ -586,6 +586,11 @@ button.entry{width:100%;text-align:left;font:inherit;color:var(--ink)}
 .tctx{border-left:3px solid var(--rule-strong);padding:2px 0 2px 10px;margin:6px 0 2px}
 .tctx .piece{font-weight:600;color:var(--ink)}
 .tuse{margin:2px 0 0;font-size:12.5px;color:var(--ink-3)}
+.bwords{margin:8px 0 6px}
+.bwordsd{margin:6px 0 0}
+.bwordsd>summary{cursor:pointer;font:600 12.5px/1.4 var(--display);color:var(--ink-2)}
+.bwordsd .bwg{display:block;margin:10px 0 2px;font:600 11px/1.4 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.tag.shared{border-style:dashed}
 .tuse .piece{font-weight:600;color:var(--ink-2)}
 .tuse .more{color:var(--ink-3)}
 .entry.crow .con{grid-area:on;font-size:12px;color:var(--ink-3)}
@@ -679,7 +684,7 @@ const REACH = {direct: "direct", indirect: "indirect", every_foe: "every foe"};
 const state = {
   shipped: {}, about: {}, edits: {},
   section: "chassis", sub: {chassis: "machines", components: "list", modules: "list", foes: "formations", text: "overview"},
-  open: null, returnTo: null, draft: null, invalid: new Set(), raw: false, fopen: new Set(), fscroll: null, fedit: new Set(),
+  open: null, returnTo: null, draft: null, invalid: new Set(), raw: false, fopen: new Set(), fscroll: null, fedit: new Set(), bwords: {},
   db: null, user: null, dbState: "loading", canWrite: true,
   designs: null, dnotes: [], designState: "connecting", dNote: null, dDir: null, dIdea: null, dAdd: null, bbrief: {},
   pins: null, renders: null,
@@ -2114,6 +2119,7 @@ function sheetBar(c) {
 function renderSheet(main) {
   const {key, id} = state.open, f = FILES.find(x => x.key === key);
   want("text", ensureText);
+  if (key === "components.entries") want("readouts", ensureReadouts);
   if (key === "foes.entries") { want("foeart", ensureFoeArt); want("foerules", ensureFoeRules); }
   const live = liveMap(key).get(id), s = shippedEntry(key, id), st = entryState(key, id), ed = editFor(key, id);
   const e = live ? live.entry : (s || (ed ? ed.data : null));
@@ -2150,8 +2156,8 @@ const SHEETS = {
       for (const k of (f.keywords || [])) kws.append(kwChip(k, "kw", kwNumber(f, k)));
       for (const t of (e.tags || [])) kws.append(el("span", {class: "kw shape", title: "A tag: build flavour, read by a module or passive"}, t));
       sheet.append(kws);
-      const ro = readoutEl(compReadout(id));
-      if (ro) sheet.append(ro);
+      const words = wordsBox(id);
+      if (words) sheet.append(words);
       const cells = numKeys(f, sf).map(k => numCellAt(c, ["face"], k));
       if (compTier(e) !== null || typeof e.tier === "number") cells.unshift(numCellAt(c, [], "tier", "blueprint tier"));
       sheet.append(numsBox(cells), el("p", {class: "shint", style: "margin-top:6px"}, "Clear a number to put it back as the files have it. Its keywords, reach, shape and tags change on the raw view (Every field)."));
@@ -2375,6 +2381,8 @@ function closeText(drop = true) { if (drop && state.topen) keepTyped(state.topen
 // that would change nothing is removed instead.
 async function putText(s, patch) {
   if (!state.db) return false;
+  const stray = typeof patch.text === "string" ? strayBraces(patch.text, s.fills) : [];
+  if (s.key === "templates.entries" && stray.length) { toast(strayWords(stray, s.fills) + ": not saved. A note asks a session for a new slot."); return false; }
   const prev = textDoc(s) || {};
   const d = {text: prev.text, mark: prev.mark, note: prev.note, ...patch};
   if (typeof d.text !== "string" || d.text === s.text) delete d.text;
@@ -2467,7 +2475,7 @@ function textRow(s, opts = {}) {
   ed.append(facts);
   const use = templateUse(s);
   if (use) {
-    const box = el("div", {class: "tctx"}, el("span", {class: "lab"}, use.count ? "Printed on " + use.count + " piece" + (use.count === 1 ? "" : "s") + " at its own numbers · the first " + use.on.length : "No piece prints it at its own numbers today: it prints in a fight (a moved number, a short purse, the die's hold, a live intent), or once a piece carries its rule"));
+    const box = el("div", {class: "tctx"}, el("span", {class: "lab"}, use.count ? "Printed on " + useWords(use) + " at their own numbers · the first " + use.on.length : "No piece prints it at its own numbers today: it prints in a fight (a moved number, a short purse, the die's hold, a live intent), or once a piece carries its rule"));
     for (const o of use.on) box.append(el("p", {class: "rl"}, el("span", {class: "piece"}, o.piece + ": "), o.words));
     ed.append(box);
   }
@@ -2480,9 +2488,12 @@ function textRow(s, opts = {}) {
   if (s.edit) {
     ta = el("textarea", {id: "tx-edit", rows: "3", "aria-label": "The text", disabled: !canText()});
     ta.value = t.text;
-    ta.addEventListener("input", () => { t.text = ta.value; autosize(ta); meter.textContent = wordCount(ta.value); keepTyped(s.id, t); sync(); });
+    const warn = s.key === "templates.entries" ? el("div", {class: "tflagline"}) : null;
+    const check = () => { if (!warn) return; const bad = strayBraces(ta.value, s.fills); warn.hidden = !bad.length; warn.textContent = bad.length ? strayWords(bad, s.fills) + ": it cannot be saved so" : ""; };
+    ta.addEventListener("input", () => { t.text = ta.value; autosize(ta); meter.textContent = wordCount(ta.value); keepTyped(s.id, t); sync(); check(); });
     requestAnimationFrame(() => autosize(ta));
     ed.append(ta, meter);
+    if (warn) { check(); ed.append(warn); }
   }
   const note = el("input", {type: "text", id: "tx-note", value: t.note, placeholder: s.edit ? "A note to the session (optional): what to fix, what to match" : "A note to the session: what it should say", "aria-label": "Note to the session", disabled: !canText()});
   note.addEventListener("input", () => { t.note = note.value; keepTyped(s.id, t); sync(); });
@@ -2748,7 +2759,55 @@ function renderTextOverview(main) {
 function templateUse(s) {
   if (s.key !== "templates.entries" || !state.readouts) return null;
   const u = (state.readouts.templates || {})[s.entry];
-  return u ? {count: u.count || 0, on: u.on || []} : {count: 0, on: []};
+  return u ? {count: u.count || 0, pieces: u.pieces || 0, moves: u.moves || 0, on: u.on || []} : {count: 0, pieces: 0, moves: 0, on: []};
+}
+// How many components and foe moves a template's lines print on, in words.
+const useWords = (u) => [u.pieces ? u.pieces + (u.pieces === 1 ? " piece" : " pieces") : "", u.moves ? u.moves + (u.moves === 1 ? " move" : " moves") : ""].filter(Boolean).join(" and ") || "none";
+// The braces a template's text holds that the game fills nothing into, and how to say so.
+function strayBraces(text, fills) { return [...String(text).matchAll(/\{([^}]*)\}/g)].map(m => m[1]).filter(b => !(fills || []).includes(b)); }
+const fillWords = (fills) => (fills || []).length ? fills.map(f => "{" + f + "}").join(", ") : "nothing";
+const strayWords = (bad, fills) => `{${bad.join("}, {")}} is filled by nothing: the game fills ${fillWords(fills)}`;
+// A piece's words (Ryan, 20 November: "Need to be able to hop to/edit the template from the
+// Chassis tab when viewing a chassis"): its lines as the game prints them, and under them every
+// template those lines are built from, each the Text tab's row in place: typed here, it is his
+// as there, and waits for a session to fold it in; "On the Text tab" opens its row there. A
+// template other pieces' lines share says on how many, since an edit changes them all.
+const WORD_ROWS = [["rule", "Its own rules"], ["attr", "What it is, its costs and its target"], ["kw", "Its keywords"], ["other", "Elsewhere in its lines"]];
+function wordsBox(cid, label) {
+  const ro = compReadout(cid);
+  if (!ro) return state.loaded.readouts ? null : el("p", {class: "hint"}, "Loading what it does…");
+  const box = el("div", {class: "bwords"}), lines = readoutEl(ro, label);
+  if (lines) box.append(lines);
+  const tpl = ro.tpl || {}, ids = WORD_ROWS.flatMap(([g]) => tpl[g] || []);
+  if (!ids.length || !state.text) return box;
+  const det = el("details", {class: "bwordsd", open: state.bwords[cid] || null});
+  det.addEventListener("toggle", () => { state.bwords[cid] = det.open; });
+  det.append(el("summary", {}, `Edit its words: the ${ids.length} template${ids.length === 1 ? "" : "s"} its lines are built from`));
+  det.append(el("p", {class: "hint"}, "A brace is a value the game fills in. What you type is yours, as on the Text tab, and waits there for a session to fold in. Clear a field to put it back as the files have it."));
+  if (!canText()) det.append(el("p", {class: "help"}, state.textState === "connecting" ? "Connecting to the texts…" : "Read only: the texts cannot be saved in this view."));
+  for (const [g, glabel] of WORD_ROWS) {
+    if (!(tpl[g] || []).length) continue;
+    det.append(el("span", {class: "lab bwg"}, glabel));
+    for (const id of tpl[g]) for (const t of textSlots().filter(x => x.key === "templates.entries" && x.entry === id)) det.append(templateField(t));
+  }
+  box.append(det);
+  return box;
+}
+function templateField(s) {
+  const v = textView(s), fid = `tpl.${s.entry}.${s.path}`, use = templateUse(s) || {count: 0};
+  const head = el("div", {class: "thead"}, blabel(fid, s.entry + (s.sub ? " · " + s.sub : "")), stateTag(v.st));
+  if (v.pending) head.append(el("span", {class: "tag pending", title: "Saved here; a session folds it into the files"}, v.newText ? "your text waits" : v.newMark ? "your mark waits" : "your note waits"));
+  if (use.count > 1) head.append(el("span", {class: "tag shared", title: "Other lines are built from it too: an edit here changes them all"}, "on " + useWords(use)));
+  head.append(el("button", {class: "linkbtn", title: "This template's row on the Text tab: every piece it prints on, and a note to the session", onclick: () => openTextAt(s)}, "On the Text tab"));
+  const warn = el("div", {class: "tflagline", hidden: true});
+  const check = (t) => { const bad = strayBraces(t, s.fills); warn.hidden = !bad.length; warn.textContent = bad.length ? strayWords(bad, s.fills) + ": it cannot be saved so" : ""; };
+  const field = bfield("area", fid, v.text, val => { if (!strayBraces(val, s.fills).length) benchTextSave(s, val); }, {placeholder: "Nothing written."}, canText());
+  field.addEventListener("input", () => check(field.value));
+  check(field.value);
+  const box = el("div", {class: "btext"}, head, el("p", {class: "hint", style: "margin:0 0 4px"}, "fills " + fillWords(s.fills)), field, warn);
+  if (v.newText) box.append(el("details", {class: "bfiles"}, el("summary", {}, "As the files have it"), el("p", {class: "old"}, s.text || "(empty)")));
+  if (v.note) box.append(el("div", {class: "tflagline", style: "color:var(--edited)"}, "Your note: " + v.note));
+  return box;
 }
 function textContext(card) {
   if (!state.readouts) return null;
@@ -3156,6 +3215,8 @@ function benchPiece(e, cid, copies) {
   const kws = el("div", {class: "kws"});
   for (const k of (f.keywords || [])) kws.append(kwChip(k, "kw", kwNumber(f, k)));
   if (kws.childElementCount) box.append(kws);
+  const words = wordsBox(cid);
+  if (words) box.append(words);
   const nums = el("div", {class: "bnums"});
   const keys = [...new Set([...Object.keys(sf), ...Object.keys(f)])].filter(k => typeof f[k] === "number" || typeof sf[k] === "number");
   for (const k of keys) nums.append(benchNumCell(`${cid}.face.${k}`, plain(k), f[k], sf[k], v => benchWrite(key, cid, d => { d.face = d.face || {}; benchSetNum(d.face, sf, k, v); })));
@@ -3387,7 +3448,7 @@ function settleBriefLink(main) {
 // The Chassis tab: the machines, a machine's sheet, a briefed machine's brief, the Briefs view and
 // its waiting edits; a chassis's or a maker's raw editor where one is open.
 function renderChassis(main) {
-  want("designs", ensureDesigns); want("text", ensureText);
+  want("designs", ensureDesigns); want("text", ensureText); want("readouts", ensureReadouts);
   if (state.bopen && state.bopen.kind === "link") {
     if (!settleBriefLink(main)) return;
     if (state.section !== "chassis") return render();

@@ -25,6 +25,18 @@ func test_every_component_and_foe_move_reads_as_the_game_prints_it() -> void:
 		var face := db.build_face(db.components[cid].get("face", {}))
 		if not face.rule_phrases().is_empty():
 			assert_false(str((comps[str(cid)] as Dictionary).get("rule", "")).is_empty(), "%s prints its own rule" % cid)
+	# Each row names the templates it is built from, so the Chassis sheet edits them beside it: a
+	# piece's rule row its rule's templates, every one a template content holds.
+	for cid in db.components.keys():
+		var rows: Dictionary = comps[str(cid)]
+		var tpl: Dictionary = rows.get("tpl", {})
+		var face := db.build_face(db.components[cid].get("face", {}))
+		if not face.rule_phrases().is_empty():
+			assert_false((tpl.get("rule", []) as Array).is_empty(), "%s names its rule's templates: %s" % [cid, str(tpl)])
+		assert_false((tpl.get("attr", []) as Array).is_empty(), "%s names its attributes' templates" % cid)
+		for g in tpl.keys():
+			for id in tpl[g]:
+				assert_true(Templates.has(str(id)), "%s's %s row names a template content holds: %s" % [cid, g, id])
 	var foes: Dictionary = data["foes"]
 	assert_eq(foes.size(), db.foes.size(), "every foe has its moves")
 	for fid in db.foes.keys():
