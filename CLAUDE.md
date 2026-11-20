@@ -37,7 +37,9 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   validator, so bad content fails the build. Every entry's internal text lives under `design`
   (`fantasy`, `niche`, `holes`, ...: Ryan's pitch, inspiration and homages) and is never shown;
   the validator refuses those keys at the top level. Shown to the player: `codex` (the inspect
-  entry), `flavour` (the quote), a passive's `name` and `description`, a module's `text.description`, a foe action's `text`.
+  entry), `flavour` (the quote), a passive's `name` and `description`, a module's `text.description`, a foe action's `text`,
+  and a template's `text` (`content/templates.json`: every word the game composes from a piece's numbers, read through
+  `sim/templates.gd`; a line the screen builds says nothing in code but its numbers and the template's id).
   Content ids are Ryan's and may be renamed; runtime code takes defaults from the content,
   never from a hardcoded id (a fallback model, maker or faction is content's first). Code
   names an id only to key an asset to a maker or a domain (a metal, a sound, the gate's
@@ -261,8 +263,8 @@ Sessions have died mid-flight before. To keep the next one cheap to start:
   in order", kept at every handoff; a question only Ryan can answer is the bible's section 12;
   a task is `docs/todo.md`; a run a decision cites is `docs/measurements.md`; a proposal is
   `docs/<topic>_proposal.md` until its evaluation, then a design in progress is its brief in
-  `docs/briefs/` until its session lands (Ryan notes briefs on the hangar's Bench, and a design
-  session folds his notes in first: the briefs README); each retires (git keeps it) once its decisions are
+  `docs/briefs/` until its session lands (Ryan notes briefs on the hangar, a machine's on its Chassis
+  sheet and the rest on a tab's Briefs, and a design session folds his notes in first: the briefs README); each retires (git keeps it) once its decisions are
   rows and content. Never the same item in two files, and no row carries a conversation: a long
   Open row is a paragraph and a pointer to its proposal or brief.
 - Design canvases under `docs/canvas/` are not watched. Ryan says when one changes.

@@ -38,11 +38,10 @@ KINDS = ("combat", "map")
 TABLE = {
     "goblin": [("goblin_guard", 240, 0.80, 0.45), ("goblin_captain", 180, 1.25, 0.45)],
     "wolf": [("warg", 60, 1.25, 0.45), ("alpha_warg", 240, 0.80, 0.45)],
-    # The Molten Gel in the Metal Gel's place (Ryan, 20 November: "Metal gel -> Molten gel"): hue 275
-    # at light 0.70 turns the gel's green to a deep red-orange (13.6 degrees, red-leaning as heat is),
-    # 94 from the Gel and 123 from the Bubble Gel at worst. The halves take their whole's swaps.
-    "gel": [("bubble_gel", 150, 0.80, None), ("molten_gel", 275, 0.70, None)],
-    "gel_half": [("bubble_gel_half", 150, 0.80, None), ("molten_gel_half", 275, 0.70, None)],
+    # The Molten Gel wears the Metal Gel's swap (Ryan, 20 November: "Molten gel I had meant to still
+    # be metal. The colour was fine. Just molten metal"). The halves take their whole's swaps.
+    "gel": [("bubble_gel", 150, 0.80, None), ("molten_gel", 180, 1.25, None)],
+    "gel_half": [("bubble_gel_half", 150, 0.80, None), ("molten_gel_half", 180, 1.25, None)],
     "mandragora": [("mandrake", 210, 1.25, None), ("alraune", 60, 1.25, None)],
     "needler": [("barbed_needler", 180, 0.80, 0.45), ("great_needler", 270, 0.80, 0.45)],
     "antlion": [("pit_antlion", 210, 0.80, None), ("antlion_queen", 150, 1.25, None)],

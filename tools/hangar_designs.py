@@ -1,4 +1,4 @@
-"""The hangar's briefs: every brief in docs/briefs/, parsed for the page's Bench.
+"""The hangar's briefs: every brief in docs/briefs/, parsed for the page (a machine's on its Chassis sheet, the rest on a tab's Briefs).
 
 Each brief opens with a hangar header under its title, an HTML comment holding a JSON object
 (the briefs README's How a session runs says what each field means):
@@ -208,7 +208,7 @@ def build(check_only=False):
             docs.append(d)
     if not check_only and not problems:
         os.makedirs(os.path.dirname(os.path.join(ROOT, OUT)), exist_ok=True)
-        json.dump({"_about": "Every brief in docs/briefs/ as the hangar's Bench reads it, written by tools/hangar_designs.py: its header, its sections and its blocks, each block's exact source kept for folding a note or a correction back in.",
+        json.dump({"_about": "Every brief in docs/briefs/ as the hangar's sheets and Briefs read it, written by tools/hangar_designs.py: its header, its sections and its blocks, each block's exact source kept for folding a note or a correction back in.",
                    "stamp": stamp(), "docs": docs},
                   open(os.path.join(ROOT, OUT), "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     return docs, problems

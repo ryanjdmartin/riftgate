@@ -87,27 +87,15 @@ func immune_to(what: String) -> bool:
 	return not pending.is_empty() and str(pending.get("id", "")) == str(held)
 
 
-## The words a move aimed at one machine may carry for whom it goes for (`aim`), and how its
-## target line says each: the most or the least of one thing the screen shows, a tie drawn at
-## random, so a field that is level picks anyone and no word needs a fallback. A move that
-## names none picks any machine. Hull and shield together are the strongest's and the weakest's
-## measure, as the map's hunts read them.
+## The words a move aimed at one machine may carry for whom it goes for (`aim`): the most or the
+## least of one thing the screen shows, a tie drawn at random, so a field that is level picks
+## anyone and no word needs a fallback. A move that names none picks any machine. Hull and
+## shield together are the strongest's and the weakest's measure, as the map's hunts read them.
+## How its target line says each is its template, aim.<word> (content/templates.json).
 const AIMS := ["strongest", "weakest", "hottest", "buffed"]
-const AIM_TEXT := {
-	"strongest": "the strongest machine", "weakest": "the weakest machine",
-	"hottest": "the hottest machine", "buffed": "the most buffed machine",
-}
-## The conditions a move may carry (`when`, one word or a list meaning any), and how the
-## codex says each. The skirmish reads them (`Skirmish._when_holds`).
+## The conditions a move may carry (`when`, one word or a list meaning any); the codex says each
+## by its template, when.<word>. The skirmish reads them (`Skirmish._when_holds`).
 const WHENS := ["below_half", "missing_hull", "back_behind", "others_on_field", "ally_hurt", "machine_buffed", "ally_unready", "ally_marked", "part_fallen", "calm"]
-const WHEN_TEXT := {
-	"below_half": "when below half", "missing_hull": "when hurt", "calm": "when it is calm",
-	"back_behind": "when something stands behind it",
-	"others_on_field": "when another stands with it", "ally_hurt": "when one of its own is hurt",
-	"machine_buffed": "when a machine carries a buff", "ally_unready": "when one of its own is not readied",
-	"ally_marked": "when one of its own carries a mark the team laid",
-	"part_fallen": "once one of its parts has fallen",
-}
 
 
 func ablate_stacks() -> int:

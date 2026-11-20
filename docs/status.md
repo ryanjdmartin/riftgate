@@ -65,8 +65,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1391 tests, 387,316 checks, green (20 November, the Badger's Ore and the Prairie Dog's Spreader on
-  `claude/locked-footing`). The runner fails a run
+- Tests: 1402 tests, 388,592 checks, green (20 November, the locked pieces' footing merged over the die's and
+  the codex's words as content templates). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -109,7 +109,7 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   itself. A move at every machine or at nobody holds no pick, so `Foe.intends()` is the read
   of "does it show a move", never `target != null`. Exposed on a machine is the foes' mark,
   tier two and up among the rank and file, one machine at a time: the Goblin Warchief, the
-  Basilisk, the Alpha Warg, the Lich, the Rider of the Wild Hunt and the Piercing Eye lay it.
+  Basilisk, the Alpha Warg, the Lich, the Wild Huntsman and the Piercing Eye lay it.
   The Roc is Aloft while its Stoop gathers and nothing reaches it; the Spectre and the Wraith
   fade after their Hex Bolt, Phased through the next round and still acting; the Pilgrim is
   immune to Suppress and its knife purges before it lands, the one move with a step ahead of
@@ -274,13 +274,17 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   skirmish screen, the battle screen, the pause menu and its settings are built; the hangar,
   the mission map and the draft are not. A debug build's settings hold TRIALS and COLOURS
   (`ColourTuner`: Ryan tunes there and sends its COPY text).
-- **The hangar page.** `tools/hangar.html` over `tools/hangar_data.py`'s files: the codex, the
-  Bench (a working sheet a machine, its codex, its flavour and its brief on it, and the Briefs
-  list of the rest; each brief read only, with his notes), the content editor (no chassis tab:
-  a chassis is its Bench sheet's), the Text (every shown text; `tools/hangar_text.py` is its one
-  inventory) and the models. The ledger `docs/hangar/text.json` names nothing as signed, so
+- **The hangar page.** `tools/hangar.html` over `tools/hangar_data.py`'s files, a tab a kind
+  since 20 November: Chassis (the Bench renamed: every machine a card, a tap its working sheet
+  with its codex, flavour and brief, and the Briefs list of the rest; each brief read only, with
+  his notes), Components, Modules and Foes on its pattern (a tight list whose row opens the
+  sheet, the raw editor behind a toggle; Foes formations first), the Text by chunk, a card an
+  entity (`tools/hangar_text.py` is its one inventory), and the models. Since 20 November the
+  words the game composes from a piece's numbers are content (`content/templates.json`, read by
+  `sim/templates.gd`): the Text tab's Templates view, a card a kind, each template beside the
+  pieces that print it, folded like any text. The ledger `docs/hangar/text.json` names nothing as signed, so
   every shown text is a session's draft. His writing waits in the page's `text` collection (the
-  Text tab's and the Bench's codex and flavour) and his notes on the briefs in `designs`: a
+  Text tab's and a Chassis sheet's codex and flavour) and his notes on the briefs in `designs`: a
   session that touches either folds them in first. The Names tab retired on 20 November: the
   makers' kinds of names are `docs/naming.md`, the check `tools/check_name.py`.
 - **Art and models.** Every machine's model is lowforge's with a rig sidecar; a hardpoint
@@ -344,7 +348,8 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    - His marks on the rest of `docs/domain_statuses_proposal.md`, then its rows built and
      read: a foe's Sap rider for the Ghost line, and Phased by source with his ruling on a
      ghost's own side, in one pass; his read of the formations that rally (the hangar's Foes
-     tab shows each formation by name since 20 November); the Wild Hunt's leader on his marks.
+     tab shows each formation by name since 20 November, and the table went to him again by
+     those names the same day).
    - Every tier-one leader read again at sixty fights or more (the shaman's warband reads 33%
      at every commit back to its thirty-fight sizing), then any leader moved into its band.
    - The formation pass (the bible's formation row): every composition given a purpose, a
@@ -396,12 +401,11 @@ with it, on his word. A page's link goes into this file in the same commit as it
 publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.652 on 20 November from main's file at `364ac091` (the page's Version 516),
-  over the v0.651 the Puffin's line published from main at `56cf31ae`, which the live page
-  matched byte for byte and main's merge already carried. Before republishing,
+  Published at v0.655 on 20 November from main's file at `33c4cc61` (the page's Version 519),
+  over this line's v0.654. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
-  `364ac091` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  `33c4cc61` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
   live source with the tool's wrapper line, its trailing newline and `</body></html>`
   stripped): check BASE against the live page byte for byte first. After main merges in,
   check the tables script's run against the file's tables before keeping it: a row it
@@ -409,18 +413,26 @@ publish; the commands are in `README.md`.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 310 (20 November, main at `364ac091`): the
-  Content tab reworked (the Foes tab formations first, every pack a domain deals by tier with
-  its grid as the fight stands and its units' numbers at each tier, `hangar/foe_rules.json` the
-  engine's rules for a pack; every kind on a sheet in the Bench's manner, the raw editor behind
-  a toggle), the eleven files that differed (four content files, the briefs' and the texts'
-  inventories, the foes' art states, the rules file, the three new gel sprites) and
-  `hangar/foes/metal_gel.png` removed; the Puffin's line had published Version 309 over 308, and
-  each file it moved was read and found carried by main's merge first. The `edits` and `text`
-  collections were empty, `designs` held his two notes of 5 November (both already briefed).
+  `edits`, `designs` and `text` read first. Version 316 (20 November): the Text tab's
+  Templates view, the die's and the codex's words as content (`hangar/text.json`,
+  `hangar/readouts.json`, `hangar/foe_rules.json` and the page), over Version 315 the same day
+  (what every piece does in the game's own words) and 314 (a tab a kind). The Mole's line
+  (`ccr-64b5deec-lunnff`) had published Versions 311 to 313 from its branch (its built Mole, its
+  terms, the echidna's brief), so 314 to 316 are a union of main (`dc8ec0d1`, `e71027f7`, then
+  `33c4cc61`) and that line at `fcac1ade`, built in a scratch tree never pushed and imported for
+  Godot; the code merges clean, only the status, the measurements and the bible conflict (main's
+  kept). The generated files' stamp names both commits; `hangar/designs.json` still carries
+  314's, its briefs unchanged since. The page's own source is main's. Until that line lands, a
+  publish from main alone takes its Mole off the page: build the union again. When it lands,
+  its hold line for the drill (`EntryReadout.drill_line`) is code words: it moves into a
+  template as it lands. The `edits` and `text` collections were empty,
+  `designs` held his two notes of 5 November (both already briefed).
   The `candidates` collection (his names, 106 rows) stays in the database unread;
   `docs/name_candidates.md` holds them. The service refuses a republish until the live page's saved source has been
-  read whole, every line: read it before the publish, not after the refusal.
+  read whole, every line: read it before the publish, not after the refusal. A view counts only in
+  the context that read it, so an agent that reads the page for a session reads any moved file
+  and publishes too; a compacted context has lost its views, its own publishes' included, so it
+  reads the page and every file the publish replaces again first (the refusal names them).
   `build/hangar/designs.json` is one line of about 980 KB: write it indented before reading it whole.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their

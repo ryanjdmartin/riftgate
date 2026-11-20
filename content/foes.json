@@ -93,11 +93,11 @@
     },
     {
       "id": "gel_half", "name": "Half-Gel", "faction": "meadow",
-      "design": { "sprite": "a small heap of translucent bright green slime with a sinister face, no arms, no legs, a blob half the size of a man", "variants": ["a small heap of translucent bright green slime rearing up into a curling wave, a sinister face pressed into its crest, no arms, no legs, a blob half the size of a man", "a small quivering dome of translucent bright green slime with a few half-dissolved bones floating inside it, a sinister face of two glowing eyes and a jagged grin in its surface, no arms, no legs, a blob half the size of a man", "a small heap of translucent bright green slime with a few jagged pale crystal shards jutting from its back, swelling upward with a sinister face, no arms, no legs, a blob half the size of a man", "a small lopsided heap of translucent bright green slime with a darker green core and bubbles rising through it, surging forward low to the ground with its sinister face leading, no arms, no legs, a blob half the size of a man"], "fantasy": "What a Gel leaves.", "niche": "Two weak heaps where there was one, no blow in either, only the burn (Ryan, 20 November: \"Half gel change to no damage 1 Ablate\"). They do not split again." },
+      "design": { "sprite": "a small heap of translucent bright green slime with a sinister face, no arms, no legs, a blob half the size of a man", "variants": ["a small heap of translucent bright green slime rearing up into a curling wave, a sinister face pressed into its crest, no arms, no legs, a blob half the size of a man", "a small quivering dome of translucent bright green slime with a few half-dissolved bones floating inside it, a sinister face of two glowing eyes and a jagged grin in its surface, no arms, no legs, a blob half the size of a man", "a small heap of translucent bright green slime with a few jagged pale crystal shards jutting from its back, swelling upward with a sinister face, no arms, no legs, a blob half the size of a man", "a small lopsided heap of translucent bright green slime with a darker green core and bubbles rising through it, surging forward low to the ground with its sinister face leading, no arms, no legs, a blob half the size of a man"], "fantasy": "What a Gel leaves.", "niche": "Two weak heaps where there was one, no blow in either, only the burn (Ryan, 20 November: \"Half gel change to no damage 1 Ablate\"), a rider-only hit and no blow (the same day: \"I didn't mean 'attack of zero' I meant just an ablate\"). They do not split again." },
       "codex": "Half of a Gel. Smaller, weaker, and there are two of them.",
       "hp": 2, "attack": 0, "rank": "front", "movespeed": 2,
       "actions": [
-        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["ablate"], "ablate": 1, "text": "Flows over the hull, and the machine Ablating ×1.", "status": "implemented" }
+        { "id": "engulf", "name": "Engulf", "kind": "debuff", "effect": "ablate", "value": 1, "weight": 2, "text": "Flows over the hull: the machine Ablating ×{value}.", "status": "implemented" }
       ],
       "flavour": "Told you."
     },
@@ -114,18 +114,18 @@
     },
     {
       "id": "bubble_gel_half", "name": "Bubble Half-Gel", "faction": "meadow", "tier": 2,
-      "design": { "fantasy": "What a Bubble Gel leaves.", "niche": "Two halves of a Bubble Gel, each Engulf a point and Brittle (Ryan, 20 November: \"Half bubble gel 3 HP, it's engulf is 1 damage 1 Brittle\"); its Brittle 2, the least a status that halves is laid at (16 November), until he rules on it. They do not split again." },
+      "design": { "fantasy": "What a Bubble Gel leaves.", "niche": "Two halves of a Bubble Gel, each Engulf a point and Brittle (Ryan, 20 November: \"Half bubble gel 3 HP, it's engulf is 1 damage 1 Brittle\"); its Brittle 1 as he wrote it (20 November: \"Use the brittle and ablate numbers as I wrote them\"), a blow's rider held to no least. They do not split again." },
       "codex": "Half of a Bubble Gel. Smaller, and still fizzing.",
       "hp": 3, "attack": 1, "rank": "front", "movespeed": 2,
       "actions": [
-        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["brittle"], "brittle": 2, "text": "Flows over the hull: {damage}, and the machine Brittle ×2.", "status": "implemented" }
+        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["brittle"], "brittle": 1, "text": "Flows over the hull: {damage}, and the machine Brittle ×1.", "status": "implemented" }
       ],
       "flavour": "Two of them now. Both fizzing."
     },
     {
       "id": "molten_gel", "name": "Molten Gel", "faction": "meadow", "tier": 3,
-      "design": { "fantasy": "The gel line's tier three, molten (Ryan, 20 November: \"Metal gel -> Molten gel. 6 HP 2 armour. Engulf 2 damage 2 Brittle 2 ablate\"): a crust of plate, and what it flows over goes brittle and keeps burning. It splits into molten halves; a placeholder until tier three is sized." },
-      "codex": "A gel of molten rock under a crust that turns small blows. What it flows over goes brittle and keeps burning, and it splits into halves like any gel.",
+      "design": { "fantasy": "The gel line's tier three, molten metal (Ryan, 20 November: \"Metal gel -> Molten gel. 6 HP 2 armour. Engulf 2 damage 2 Brittle 2 ablate\"; \"Molten gel I had meant to still be metal. The colour was fine. Just molten metal\"), the Metal Gel's colour: a crust of plate, and what it flows over goes brittle and keeps burning. It splits into molten halves; a placeholder until tier three is sized." },
+      "codex": "A gel of molten metal under a crust that turns small blows. What it flows over goes brittle and keeps burning, and it splits into halves like any gel.",
       "hp": 6, "attack": 2, "armour": 2, "rank": "front", "movespeed": 2,
       "on_death": { "summon": "molten_gel_half", "count": 2, "pair": true },
       "actions": [
@@ -135,11 +135,11 @@
     },
     {
       "id": "molten_gel_half", "name": "Molten Half-Gel", "faction": "meadow", "tier": 3,
-      "design": { "fantasy": "What a Molten Gel leaves.", "niche": "Two halves of a Molten Gel, a point of crust each and an Engulf of a point, Brittle and Ablating (Ryan, 20 November: \"Half molten gel 3 HP 1 armour. 1 damage 1 Brittle 1 Ablate\"); its Brittle 2, the least a status that halves is laid at (16 November), until he rules on it. They do not split again." },
+      "design": { "fantasy": "What a Molten Gel leaves.", "niche": "Two halves of a Molten Gel, a point of crust each and an Engulf of a point, Brittle and Ablating (Ryan, 20 November: \"Half molten gel 3 HP 1 armour. 1 damage 1 Brittle 1 Ablate\"); its Brittle 1 as he wrote it (20 November: \"Use the brittle and ablate numbers as I wrote them\"), a blow's rider held to no least. They do not split again." },
       "codex": "Half of a Molten Gel: a thinner crust, the same burn.",
       "hp": 3, "attack": 1, "armour": 1, "rank": "front", "movespeed": 2,
       "actions": [
-        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["brittle", "ablate"], "brittle": 2, "ablate": 1, "text": "Burns over the hull: {damage}, and the machine Brittle ×2 and Ablating ×1.", "status": "implemented" }
+        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["brittle", "ablate"], "brittle": 1, "ablate": 1, "text": "Burns over the hull: {damage}, and the machine Brittle ×1 and Ablating ×1.", "status": "implemented" }
       ],
       "flavour": "Still hot."
     },
@@ -949,15 +949,26 @@
     },
     {
       "id": "wild_hunt_rider", "name": "Rider of the Wild Hunt", "faction": "marsh", "elite": true, "wanders": true,
-      "design": {"fantasy": "The Wild Hunt, the riders of European folklore that cross the winter sky and take whoever they catch, the Witcher's take the homage (riders in spiked plate on gaunt horses, frost in their wake; the name is folklore's, so it stays). Ryan, 3 November: \"Wild Hunt is better, and this is a good place to make an elite pack of multiple clones instead of a unique unit\", a wanderer: the Hunt rides between worlds, so it rides out of any rift.", "niche": "Three riders, winged, hunting the slowest machine, the one that cannot outrun the Hunt. Each lance is a point harder for every other rider standing, the engine's swarm, so the pack is the threat and thinning it is the answer; Frost switches off the entry its target shows.", "notes": "Landed 3 November as a placeholder kit on Ryan's marks, the first elite composition led by a foe at a strength above one; every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py) until a render is picked.", "sprite": "a gaunt rider in black spiked plate with a horned helm astride a skeletal horse wreathed in frost, a long lance couched, riding on the air, drawn retro"},
-      "codex": "They ride in threes across the sky and take the slowest. Each lance hits harder for every other rider still up, their frost jams whatever a machine is showing, and one of them names the quarry: Exposed, with the Hunt turned on it. Thin them, and the Hunt is only a rider.",
+      "design": {"fantasy": "The Wild Hunt, the riders of European folklore that cross the winter sky and take whoever they catch, the Witcher's take the homage (riders in spiked plate on gaunt horses, frost in their wake; the name is folklore's, so it stays). Ryan, 3 November: \"Wild Hunt is better, and this is a good place to make an elite pack of multiple clones instead of a unique unit\", a wanderer: the Hunt rides between worlds, so it rides out of any rift.", "niche": "The Wild Huntsman's riders, two at tier one and three above, winged, hunting the slowest machine, the one that cannot outrun the Hunt. Each lance is a point harder for every other rider standing, the engine's swarm, so the pack is the threat and thinning it is the answer; Frost switches off the entry its target shows. The quarry's mark is the Huntsman's since 20 November, so one mark stands at a time.", "notes": "Landed 3 November as a placeholder kit on Ryan's marks, the first elite composition of one foe at a strength above one, and led by the Wild Huntsman since 20 November; every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py) until a render is picked.", "sprite": "a gaunt rider in black spiked plate with a horned helm astride a skeletal horse wreathed in frost, a long lance couched, riding on the air, drawn retro"},
+      "codex": "They ride behind the Huntsman across the sky and take the slowest. Each lance hits harder for every other rider still up, and their frost jams whatever a machine is showing. Thin them, and the Hunt is only its Huntsman.",
       "hp": 20, "attack": 8, "rank": "front", "movespeed": 3, "winged": true,
       "actions": [
         {"id": "lance", "name": "Lance", "kind": "attack", "swarm": 1, "weight": 2, "text": "A lance from the Hunt for {damage}: more for every other rider standing.", "status": "implemented"},
-        {"id": "frost", "name": "Frost", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Frost in its wake: {damage}, and the entry it shows is Jammed until its machine reboots.", "status": "implemented"},
-        {"id": "quarry", "name": "Name the Quarry", "kind": "debuff", "effect": "expose", "weight": 1, "when": "others_on_field", "text": "A rider names the quarry: it stands Exposed through the next round, its armour counting for nothing and every foe's targeted move turned on it.", "status": "implemented"}
+        {"id": "frost", "name": "Frost", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Frost in its wake: {damage}, and the entry it shows is Jammed until its machine reboots.", "status": "implemented"}
       ],
       "flavour": "Gate order four, footnote: they are not from the Marsh. They are not from anywhere."
+    },
+    {
+      "id": "wild_huntsman", "name": "The Wild Huntsman", "faction": "marsh", "elite": true, "wanders": true,
+      "design": {"fantasy": "The Wild Hunt's leader, the huntsman at its head in the folklore of the Hunt, its horn the sound of the chase. Ryan, 20 November: \"Wild hunt needs a leader\", and of the proposal, \"Wild huntsman is ok\". Herne and the Erl-King were set aside: Herne is antlered like the Leshy, and three domains already field a king. A wanderer with its riders: the Hunt rides out of any rift.", "niche": "The Hunt's head: it names the quarry, the mark the riders each carried before it, so one mark stands at a time; its horn calls a fallen rider back where there's room, never more than rode out. Kill it first and the Hunt stops coming back; thin the riders and the lances soften. Its numbers are a session's first cut into the elite band.", "sprite": "a tall rider in a long tattered black cloak over spiked plate, a crowned helm with no face, a great curled hunting horn raised in one gauntlet and a long lance in the other, astride a black horse with eyes of pale fire, frost trailing from its hooves, riding on the air, drawn retro"},
+      "codex": "The one at the head of the Hunt. It names the quarry, Exposed, with every lance turned on it, and its horn calls a fallen rider back into the chase. Bring it down and nothing answers the horn.",
+      "hp": 24, "attack": 10, "rank": "front", "movespeed": 3, "winged": true,
+      "actions": [
+        {"id": "lance", "name": "Lance", "kind": "attack", "weight": 2, "text": "The Huntsman's lance for {damage}.", "status": "implemented"},
+        {"id": "quarry", "name": "Name the Quarry", "kind": "debuff", "effect": "expose", "weight": 1, "when": "others_on_field", "text": "The Huntsman names the quarry: it stands Exposed through the next round, its armour counting for nothing and every foe's targeted move turned on it.", "status": "implemented"},
+        {"id": "horn", "name": "Sound the Horn", "kind": "buff", "effect": "summon", "foe": "wild_hunt_rider", "count": 1, "refill": true, "weight": 1, "text": "The horn sounds: a fallen rider rides back where there's room, never more than rode out.", "status": "implemented"}
+      ],
+      "flavour": "Gate order four, second footnote: if you hear the horn, it has already chosen."
     },
     {
       "id": "shuffler", "name": "The Shuffler", "faction": "marsh", "elite": true, "wanders": true,

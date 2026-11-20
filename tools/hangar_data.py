@@ -3,7 +3,7 @@
 The hangar page (tools/hangar.html) renders the codex, the bench, the content editor, the text
 and the models from files published beside it, so one republish refreshes every tab. The
 Bench reads every brief in docs/briefs/, parsed by tools/hangar_designs.py into
-build/hangar/designs.json, and the Text tab (and the Bench's codex and flavour) every shown
+build/hangar/designs.json, and the Text tab (and a Chassis sheet's codex and flavour) every shown
 text, listed by tools/hangar_text.py into build/hangar/text.json. This writes the one piece the
 browser cannot read for itself, the hp_<n> pins each built
 model carries (docs/hangar/pins.json, from art/models/<chassis>.glb), checks the renders
@@ -18,19 +18,24 @@ way (art/models/shapes/<class>_<maker>.glb as hangar/models/shapes/<class>_<make
 and each class's variants beside them, with a manifest naming them (build/hangar/shapes.json as
 hangar/shapes.json: the classes in the engine's order from sim/content_db.gd's SHAPES, the
 variants and their classes from art/models/shapes/variants.json, the makers from the content),
-so the Models tab can show a class or a variant alone or fit a class to any mount. The Content
+so the Models tab can show a class or a variant alone or fit a class to any mount. The Foes
 tab's formations (20 November, Ryan: "we're tuning around the formations, so I need the
 context") read the engine's own rules for a pack, which live in GDScript the browser cannot
 read: the boss tiers that scale a commander and an elite, the threat rating by a composition's
 size, the ramp's span and the words a move's condition and aim are said in. foe_rules() reads
 them out of sim/ into build/hangar/foe_rules.json (hangar/foe_rules.json beside the page) and
 checks that ContentDB.scale_boss and ContentDB.foes_for still scale what the page says they do,
-failing the run when either has moved. Run it after a content, model or render change, then
-publish tools/hangar.html with the printed map to the page's URL.
+failing the run when either has moved. What every piece does, the lines the game's code composes
+from a component's numbers and a foe move's (20 November, Ryan: "Bullion fragmenter, for instance,
+nowhere lists what it actually DOES in the hangar"), is the game's own words too: readouts() runs
+tools/hangar_readouts.gd headless into build/hangar/readouts.json (hangar/readouts.json), so
+Godot must be on the PATH and the project imported once. Run it after a content, model or render
+change, then publish tools/hangar.html with the printed map to the page's URL.
 
     python3 tools/hangar_data.py            # write pins.json and the models' JSON, check the manifest, print the map
     python3 tools/hangar_data.py --check    # check only, no write
 """
+import subprocess
 import base64, json, os, re, struct, sys
 
 import hangar_designs
@@ -43,6 +48,13 @@ FOE_RULES = os.path.join("build", "hangar", "foe_rules.json")
 
 def gd_source(rel):
     return open(os.path.join(ROOT, rel), encoding="utf-8").read()
+
+
+def template_words(prefix):
+    """The templates under one prefix (content/templates.json), by the word after it: how the
+    game says a move's condition (when.) or its aim (aim.)."""
+    entries = json.load(open(os.path.join(ROOT, "content", "templates.json"), encoding="utf-8"))["entries"]
+    return {e["id"][len(prefix):]: e["text"] for e in entries if e["id"].startswith(prefix) and isinstance(e["text"], str)}
 
 
 def gd_const(src, name, rel):
@@ -92,8 +104,33 @@ def gd_func(src, name):
     return m.group(1) if m else ""
 
 
+READOUTS = os.path.join("build", "hangar", "readouts.json")
+
+
+def readouts():
+    """Run tools/hangar_readouts.gd headless into build/hangar/readouts.json: the lines the game's
+    code composes for every component and every foe move. Godot must be on the PATH and the
+    project imported once (`godot --headless --path . --import`, the README's first run); a
+    problem is returned, never a stale file kept."""
+    out = os.path.join(ROOT, READOUTS)
+    if not os.path.isdir(os.path.join(ROOT, ".godot")):
+        return ["readouts: the project has no .godot import yet; run `godot --headless --path . --import` first (README)"]
+    if os.path.exists(out):
+        os.remove(out)
+    try:
+        r = subprocess.run(["godot", "--headless", "--path", ROOT, "-s", "tools/hangar_readouts.gd", "--", out],
+                           cwd=ROOT, capture_output=True, text=True, timeout=300)
+    except FileNotFoundError:
+        return ["readouts: no `godot` on the PATH, so the game's own lines for the pieces cannot be written"]
+    except subprocess.TimeoutExpired:
+        return ["readouts: tools/hangar_readouts.gd ran past five minutes (a script error before quit() hangs Godot)"]
+    if r.returncode != 0 or not os.path.exists(out):
+        return ["readouts: tools/hangar_readouts.gd failed (exit %d):\n%s" % (r.returncode, (r.stdout + r.stderr)[-2000:])]
+    return []
+
+
 def foe_rules():
-    """The engine's rules for a pack as the Content tab's formations show them, read out of
+    """The engine's rules for a pack as the Foes tab's formations show them, read out of
     sim/, with every way the scaling the page assumes no longer matches the code."""
     db, foe = gd_source("sim/content_db.gd"), gd_source("sim/foe.gd")
     problems = []
@@ -119,7 +156,7 @@ def foe_rules():
         problems.append("Battle.make_boss_unit no longer sets its unit's squad: the hangar shows a boss fight's threat rating from it")
     campaign, ramp = gd_source("sim/campaign.gd"), gd_source("sim/ramp.gd")
     rules = {
-        "_about": "The engine's rules for a pack, read out of sim/ by tools/hangar_data.py (20 November) for the hangar's formations: never edited by hand. boss_tiers is ContentDB.BOSS_TIERS, index 0 for tier one (ContentDB.scale_boss: HP times hp rounded, attack plus attack, armour plus armour_step a tier above one); scaled says whom ContentDB.foes_for scales; squad_by_size and squad_default are a composition's threat rating where it writes no squad (ContentDB.squad_of), boss_squad a boss fight's (Battle.make_boss_unit); tier_every and ramp_top place a tier on the Convergences (ContentDB.first_ramp_of, Ramp.TOP); final_escort is the tier's own units beside a final's hero (Campaign: the battle's columns less one); when_text and aim_text are how a move's condition and aim are said (Foe.WHEN_TEXT, Foe.AIM_TEXT).",
+        "_about": "The engine's rules for a pack, read out of sim/ by tools/hangar_data.py (20 November) for the hangar's formations: never edited by hand. boss_tiers is ContentDB.BOSS_TIERS, index 0 for tier one (ContentDB.scale_boss: HP times hp rounded, attack plus attack, armour plus armour_step a tier above one); scaled says whom ContentDB.foes_for scales; squad_by_size and squad_default are a composition's threat rating where it writes no squad (ContentDB.squad_of), boss_squad a boss fight's (Battle.make_boss_unit); tier_every and ramp_top place a tier on the Convergences (ContentDB.first_ramp_of, Ramp.TOP); final_escort is the tier's own units beside a final's hero (Campaign: the battle's columns less one); when_text and aim_text are how a move's condition and aim are said (the when.<word> and aim.<word> templates, content/templates.json).",
         "boss_tiers": gd_const(db, "BOSS_TIERS", "sim/content_db.gd"),
         "scaled": {"commanders": True, "commander_parts": True, "elites": True, "elite_parts": False, "rank_and_file": False},
         "squad_by_size": gd_const(db, "SQUAD_BY_SIZE", "sim/content_db.gd"),
@@ -131,8 +168,8 @@ def foe_rules():
         "tier_every": gd_const(campaign, "TIER_EVERY", "sim/campaign.gd"),
         "final_after": gd_const(campaign, "FINAL_AFTER", "sim/campaign.gd"),
         "ramp_top": gd_const(ramp, "TOP", "sim/ramp.gd"),
-        "when_text": gd_const(foe, "WHEN_TEXT", "sim/foe.gd"),
-        "aim_text": gd_const(foe, "AIM_TEXT", "sim/foe.gd"),
+        "when_text": template_words("when."),
+        "aim_text": template_words("aim."),
         "numbered_riders": gd_const(foe, "NUMBERED_RIDERS", "sim/foe.gd"),
         "action_effects": gd_const(foe, "ACTION_EFFECTS", "sim/foe.gd"),
         "resist": {"default": gd_const(foe, "RESIST_DEFAULT", "sim/foe.gd"), "massive": gd_const(foe, "RESIST_MASSIVE", "sim/foe.gd"),
@@ -188,14 +225,14 @@ def main():
     files["hangar/pins.json"] = "docs/hangar/pins.json"
     files["hangar/renders.json"] = "docs/hangar/renders.json"
     files["hangar/motion.js"] = "tools/hangar_motion.js"
-    # The briefs (5 November; the Bench's since 20 November): every brief in docs/briefs/ parsed
+    # The briefs (5 November; a machine's on its Chassis sheet and the rest on a tab's Briefs since 20 November): every brief in docs/briefs/ parsed
     # by tools/hangar_designs.py into build/hangar/designs.json, a header each checked.
     _docs, problems = hangar_designs.build(check_only)
     if problems:
         print("\n".join(problems), file=sys.stderr)
         sys.exit(1)
     files["hangar/designs.json"] = hangar_designs.OUT
-    # The Text tab's inventory (9 November), the Bench's codex and flavour with it: every shown
+    # The Text tab's inventory (9 November), a Chassis sheet's codex and flavour with it: every shown
     # text as tools/hangar_text.py lists it, with who wrote each from docs/hangar/text.json, into
     # build/hangar/text.json.
     _slots, _groups, problems = hangar_text.build(check_only)
@@ -203,7 +240,7 @@ def main():
         print("\n".join(problems), file=sys.stderr)
         sys.exit(1)
     files["hangar/text.json"] = hangar_text.OUT
-    # The engine's rules for a pack (20 November), for the Content tab's formations: the boss
+    # The engine's rules for a pack (20 November), for the Foes tab's formations: the boss
     # tiers, the threat rating by size, the ramp's span and the move words, read out of sim/.
     rules, problems = foe_rules()
     if problems:
@@ -214,6 +251,16 @@ def main():
         with open(os.path.join(ROOT, FOE_RULES), "w", encoding="utf-8") as f:
             json.dump(rules, f, indent=1, ensure_ascii=False)
     files["hangar/foe_rules.json"] = FOE_RULES
+    # What every piece does as the game's codex prints it (20 November, Ryan: "Bullion fragmenter,
+    # for instance, nowhere lists what it actually DOES in the hangar"): the lines the code
+    # composes from a piece's numbers, written by the game's own code (tools/hangar_readouts.gd,
+    # run headless here) into build/hangar/readouts.json, so the page never words them itself.
+    if not check_only:
+        problems = readouts()
+        if problems:
+            print("\n".join(problems), file=sys.stderr)
+            sys.exit(1)
+    files["hangar/readouts.json"] = READOUTS
     # The foes' combat sprites (4 November, Ryan: the sprites in the hangar's foe list, compared
     # and inventoried): every foe with art, and a manifest saying which sprite is a rough
     # placeholder (tools/placeholder_art.py's table, read as text so no PIL is needed here).

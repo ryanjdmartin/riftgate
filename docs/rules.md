@@ -1262,7 +1262,7 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   half, hurt, a foe behind it, another foe on the field, one
   of its own hurt, a machine carrying a buff, one of its own not readied, one of its own
   marked, one of its parts fallen (a part down and not waiting to step in). A move marked once
-  comes once a fight. A foe that strikes only when buffed (the goblins' Safety in Numbers, an
+  comes once a fight. A foe that strikes only when buffed (the goblins' Timid, an
   Ability on its chip) announces its blow alone while a buff stands on it or a move announced
   ahead of it this round will lay one on it (a wall beside it, a brace, a rally or a Ward on
   every foe), and anything but its blow while none does. No foe flees the field but a loot-runner whose prize goes with it (the
@@ -1311,7 +1311,11 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   foe gone whole, a burst or a part falling with its core, and one taken in by a merge), less
   its Sapped, never below nothing. A move's number is its own, as a weapon's is, and an add is
   a point on every strike whatever the factor: the one damage formula on both
-  sides; strikes are separate blows. Riders (a Ward turns away all but the last
+  sides; strikes are separate blows. An attack deals damage, 1 at the least at its foe's base
+  attack: a move that would deal none is a debuff, a rider-only hit with its effect (the
+  Half-Gel's Engulf), as a machine's component that deals none is equipment. A foe carries at
+  least one move that lands on a machine, a blow or a rider-only hit, and opens with its first
+  blow, or with its first move where it has none. Riders (a Ward turns away all but the last
   three): scorch (stacks of Scorched), ablate (stacks of
   Ablating), jam (the entry the machine shows is Jammed), corrupt (Corrupted stacks on it), brittle
   (Brittle stacks on the machine: a point more on every blow it takes a stack, halving as its
@@ -1326,9 +1330,11 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; it holds no
   pick, so no word and no Lure moves it). Scorch, ablate, corrupt and brittle each say their stacks a blow, as the player's
-  Ablate does (Scorch 2: two). What a foe lays that halves says 2 at the
-  least, a blow's Brittle and a rally's Empowered: one stack is gone at its first halving, a
-  machine's Brittle as its next turn starts and the rallier's own share as its turn ends. The validator holds a foe's moves to it. No such floor binds the player's pieces:
+  Ablate does (Scorch 2: two). What a foe's move lays that halves says 2 at the
+  least, a rally's Empowered and a move's Brittle: one stack is gone at its first halving, a
+  machine's Brittle as its next turn starts and the rallier's own share as its turn ends. The validator holds a foe's moves to it. A blow's rider may lay 1 (the
+  halves of a Bubble Gel and a Molten Gel): the foes strike in turn, so a single stack of
+  Brittle a blow lays is on its machine for every blow after it that turn. No such floor binds the player's pieces:
   the player orders the turn's spends, so a single stack is used before it halves.
 - **An immunity** is a foe's own Ability, a chip on it that no Purge reaches, given case by
   case to a foe whose fight needs it: one thing of the team's that never lands on it. A foe
@@ -1400,8 +1406,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   content carries a ward all yet; the Djinn's Unmake is the one purge cast as a move, and a Purge 1 stands ahead of
   the Pilgrim's knife, the needler line's Needles, the Old Man of the Desert's Maw and the
   Rust Monster's bite; an Expose of its own
-  is the Goblin Warchief's, the Basilisk's, the Alpha Warg's, the Lich's and the Rider of the
-  Wild Hunt's, each cast while another foe stands to follow it.
+  is the Goblin Warchief's, the Basilisk's, the Alpha Warg's, the Lich's and the Wild
+  Huntsman's, each cast while another foe stands to follow it.
 - **A last act**: a foe may act the moment it falls, before anything else and even when it
   was the last foe, since damage sticks for the battle. A fall is a short list of steps, as a
   move is: a death blow with its own riders, every machine included, or one special in a
@@ -1459,7 +1465,10 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   one with no room never forms.
 - **A summon** takes an empty slot of its rank at once, the nearest its summoner's column, the
   left on a tie, its round over like a split's half's; a call for several stands as many as fit,
-  and a summoner with room for none never picks the summon.
+  and a summoner with room for none never picks the summon. A summon may call back only what its
+  pack has lost (the Wild Huntsman's Horn): it is picked only while fewer of the kind it calls
+  stand in the fight than rode out with the pack, and calls no more than that, so the pack never
+  grows past its start.
 - **A corpse**: a part that falls and will grow back leaves its corpse in its slot, drawn dimmed
   with the rounds until it regrows, and grows back there; no swap or arrival takes the slot
   meanwhile. A part with no corpse to grow into takes the nearest empty slot of its rank,
@@ -1889,7 +1898,7 @@ a stat.
   the tier names (tier one's first; tier two's first and third; tier three's first, second and
   fourth) the lead domain's next own elite composition not yet sent this battle emerges at the
   rift, or a wanderer (`wanders`: Gilgamesh, the Reaper, the Wild Hunt, the World Eater, the
-  Shuffler and the Astromancer, each one composition in one domain's list and every domain's), drawn on the
+  Shuffler and the Astromancer, each written in one domain's list and dealt from every domain's), drawn on the
   Fracture's roll one time in three in place of the domain's own and always once its own are
   spent, the same roll picking which among those not yet sent, so every domain may meet them,
   none waits on them and nobody learns an order. An elite
