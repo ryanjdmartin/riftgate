@@ -20,7 +20,8 @@ docs/voice.md is the ledger's "ryan" texts laid out by kind and by voice, for a 
 read before it drafts anything shown.
 
 His work on the page waits in the artifact's database (collection "text", one document a
-slot: a new text, a mark, a note) until a session folds it in:
+slot: a new text, a mark, a note; the Text tab's, and a Chassis sheet's codex and flavour, which
+write the same documents) until a session folds it in:
 
     python3 tools/hangar_text.py                    # write build/hangar/text.json, print the counts
     python3 tools/hangar_text.py --check            # check only: every string key classified, the ledger sound
@@ -28,9 +29,12 @@ slot: a new text, a mark, a note) until a session folds it in:
     python3 tools/hangar_text.py --fold DIR         # write content/*.json, the ledger and docs/voice.md; print the batch that clears the documents
     python3 tools/hangar_text.py --corpus           # docs/voice.md again, from the ledger
 
-Text the code holds in tables (a status's line in sim/effects.gd; a foe move's aim, target and
-condition words in sim/foe.gd and game/ui/entry_readout.gd) is listed read-only, so it can be
-seen, compared and noted on; the fold changes no code. What it does not list at all is said in
+The words the game composes from a piece's numbers are content too (content/templates.json, 20
+November: the die's readout and the codex's rows, a component's own rules, the compact line, the
+hold's lines in a fight, a foe move's words): a slot a template, or one of its forms by a count,
+edited and folded as any other, its braces the values the game fills in (`fills`). Text the code
+still holds in a table (a status's line in sim/effects.gd) is listed read-only, so it can be seen,
+compared and noted on; the fold changes no code. What it does not list at all is said in
 NOT_LISTED, which the page prints.
 """
 import datetime, glob, json, os, re, sys
@@ -39,7 +43,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join("build", "hangar", "text.json")
 LEDGER = os.path.join("docs", "hangar", "text.json")
 CORPUS = os.path.join("docs", "voice.md")
-FILES = ["vocabulary", "chassis", "components", "modules", "foes", "factions", "loot"]
+FILES = ["vocabulary", "chassis", "components", "modules", "foes", "factions", "loot", "templates"]
 
 # The kinds of shown text, in the order the page lists them: what one is, where the game
 # draws it (checked against the code that draws it, 9 November), and what its rows group by.
@@ -91,17 +95,33 @@ KINDS = [
      "where": "Beside the text they head: a machine's designation under its name, a passive's name before its description, a move's name over its line and on the plaque when it lands."},
     {"id": "status_line", "label": "Status lines (in code)", "group": "",
      "what": "A status's one-line description, written in sim/effects.gd.",
-     "where": "Only the codex's KEPT FOR THE BATTLE row, for a status a battle keeps (the Ammit's Souls). Since 2 November a chip says its name and count and a tap opens the term's entry, so nothing else draws these."},
-    {"id": "intent_words", "label": "Aims, targets and conditions (in code)", "group": "",
-     "what": "How a move's target and its condition are said: the word for whom it goes for (its aim, or none), whom a move that is no blow acts on, and its condition; written in sim/foe.gd and game/ui/entry_readout.gd.",
+     "where": "Only the codex's KEPT FOR THE BATTLE row, for a status a battle keeps (the Ammit's Essence). Since 2 November a chip says its name and count and a tap opens the term's entry, so nothing else draws these."},
+    {"id": "die_rule", "label": "Die rules", "group": "",
+     "what": "A component's own rule, a starred line each: a template the game fills with the piece's numbers, a brace a value ({per_load}, {n}), and forms by a count (one, other) where the words change with it. Written lower case, as the compact line runs it on; the readout gives it a capital.",
+     "where": "The die's readout (a tap on a die) and the codex's component rows, a line each; the compact line, run on (the quick campaign's lists, a charged spend's form, the battle log)."},
+    {"id": "die_words", "label": "Die readout words", "group": "",
+     "what": "The words around a component's numbers: what it is (Attack {n}), its costs (Heat {n}), whom it is spent on, its keywords' lines and where a gated one lands, and the compact line's own words (entry.*).",
+     "where": "The die's readout and the codex's component rows; the compact line's in the quick campaign's lists, a charged spend's form and the battle log; kind.* heads a foe move's line too."},
+    {"id": "hold_words", "label": "Die hold in a fight", "group": "",
+     "what": "What a machine's passive does to the entry showing (hold.*), and the entry's state (state.*: jammed, locked, corrupted).",
+     "where": "The die's readout over the tray in a fight (a tap on a die), on the machine whose passive or state it is."},
+    {"id": "intent_words", "label": "Foe move words", "group": "",
+     "what": "How a foe move's lines say it: its aim (aim.*), whom a move that is no blow acts on (foe_target.*), its condition (when.*), its countdown, its follow-up, and how they join (move.*).",
      "where": "A move's lines, in a foe's codex and its intent: its target (The hottest machine, Any machine, Every foe) and its condition (When below half)."},
 ]
 
+# The kind of each template, by its id's prefix (content/templates.json).
+TEMPLATE_KINDS = {"rule": "die_rule", "cost": "die_rule", "hold": "hold_words", "state": "hold_words",
+                  "move": "intent_words", "aim": "intent_words", "when": "intent_words", "foe_target": "intent_words"}
+
+
+def template_kind(tid):
+    return TEMPLATE_KINDS.get(tid.split(".")[0], "die_words")
+
 # What the page says it does not carry, so the gap is seen and not guessed at.
 NOT_LISTED = [
-    "An entry's own name (a machine, a component, a foe, a term): a rename moves ids, models and records, so it is asked for in chat or on the Names tab.",
-    "Lines the code composes from numbers: a component's effect lines and a passive's generic wording (sim/effects.gd's effect_text, sim/face.gd), a chip's readout (Buff, Empowered +2), the battle log, the warning bands, the map's readouts.",
-    "A component's target line, one of its effect lines (game/ui/entry_readout.gd's whom and the reach's line): its reach's or its targeting mode's term (Enemy, Direct; Every Ally yet to act), or Self, Any other ally or Any ally or self for a piece spent on machines.",
+    "An entry's own name (a machine, a component, a foe, a term): a rename moves ids, models and records, so it is asked for in chat (docs/naming.md says what each maker's names are like; tools/check_name.py checks one).",
+    "Words the code still composes in its own: a passive's generic wording (sim/effects.gd's effect_text), a chip's readout (Buff, Empowered +2), the battle log's lines, the warning bands, the map's readouts; and a term's name where the engine holds a copy of the vocabulary's (a status's in sim/effects.gd, a keyword's and a reach's in sim/face.gd).",
     "Screen furniture: buttons, headings, the pause menu, the harness and the quick campaign's screens.",
     "Jenny's lines (art/audio/voice/lines.json): each is a rendered sound, so a new line is a soundforge run.",
     "A maker's style and voice (content/chassis.json's makers): the guide each row shows above its group, never drawn in the game.",
@@ -117,8 +137,9 @@ OTHER_KEYS = {
     "components.entries": {"id", "name", "maker", "shape", "sound", "status"},
     "modules.entries": {"id", "name", "maker"},
     "foes.entries": {"id", "name", "faction", "rank", "promotes", "guard", "role"},   # role: a pusher's, a hunter's or a flanker's (10 November), read by the validator and never shown
-    "factions.entries": {"id", "name", "bleed", "reward_bias"},
+    "factions.entries": {"id", "name", "bleed"},
     "loot.entries": {"id", "name"},
+    "templates.entries": {"id", "count"},
 }
 SLOT_KEYS = {
     "vocabulary.entries": {"codex"},
@@ -129,6 +150,7 @@ SLOT_KEYS = {
     "foes.entries": {"codex", "flavour"},
     "factions.entries": {"flavour"},
     "loot.entries": {"codex"},
+    "templates.entries": {"text"},
 }
 
 
@@ -179,7 +201,7 @@ def face_words(face):
         return ""
     bits = [str(face.get("kind", ""))]
     if "power" in face:
-        bits.append("%s to %s" % (face["power"], face["power_max"]) if "power_max" in face else str(face["power"]))
+        bits.append(str(face["power"]))
     for k in ("shield", "vents"):
         if k in face:
             bits.append("%s %s" % (k, face[k]))
@@ -189,7 +211,7 @@ def face_words(face):
         bits.append(str(face["reach"]))
     for kw in face.get("keywords", []) or []:
         bits.append("%s %s" % (kw, face[kw]) if kw in face and not isinstance(face[kw], (dict, list)) else str(kw))
-    skip = {"kind", "power", "power_max", "shield", "vents", "heat", "reach", "keywords"} | set(face.get("keywords", []) or [])
+    skip = {"kind", "power", "shield", "vents", "heat", "reach", "keywords"} | set(face.get("keywords", []) or [])
     for k, v in face.items():
         if k not in skip:
             bits.append("%s %s" % (k, canon(v) if isinstance(v, (list, dict)) else v))
@@ -297,13 +319,32 @@ def content_slots():
         add(key, e["id"], "passive.name", "title", p.get("name", ""), owner, group, shown=sh, why=wy, sub="passive", facts=p.get("description", ""))
         add(key, e["id"], "passive.description", "passive", p.get("description", ""), owner, group, shown=sh, why=wy,
             sub=p.get("name", ""), facts=effect_words(p.get("effects")), mech=mech)
+        form_slots(key, e["id"], "passive.effects", p.get("effects"), "passive", owner, group, sh, wy)
+
+    def form_slots(key, entry, at, effects, kind, owner, group, shown, why):
+        """An offhand's forms (the Macaque's, 19 November): each form's name, on its chip and
+        the die's rider, and its line, the rider as the player reads it; a step's forms as upgrades,
+        and the name a step gives the piece it upgrades (the Aile Blitzer), on the die's readout."""
+        for i, eff in enumerate(effects or []):
+            if isinstance(eff, dict) and eff.get("effect") != "offhand" and eff.get("entry") and "name" in eff:
+                # the name a step gives the piece it upgrades (the Aile Booster as its Blitzer)
+                add(key, entry, "%s.%d.name" % (at, i), "title", eff.get("name", ""), owner, group, shown=shown, why=why, sub="upgraded piece",
+                    facts="%s, %s" % (eff.get("entry", ""), effect_words([eff])))
+                continue
+            if not isinstance(eff, dict) or eff.get("effect") != "offhand" or not eff.get("id"):
+                continue
+            path = "%s.%s" % (at, eff["id"])
+            add(key, entry, path + ".name", "title", eff.get("name", ""), owner, group, shown=shown, why=why, sub="offhand form", facts=eff.get("description", ""))
+            add(key, entry, path + ".description", kind, eff.get("description", ""), owner, group, shown=shown, why=why,
+                sub=eff.get("name", ""), facts=effect_words(eff.get("riders")), mech=canon(eff.get("riders", [])))
 
     # Chassis.
     for e in docs["chassis"]["entries"]:
         classify("chassis.entries", e)
         g = "maker:" + str(e.get("maker", ""))
         p = e.get("passive")
-        runnable = not (isinstance(p, dict) and p.get("status") == "planned") and all(comps.get(c, {}).get("status") != "planned" for c in e.get("fixed", []))
+        # ContentDB.chassis_runnable: the chassis back in design, its passive or a locked piece a planned draft
+        runnable = e.get("status") != "planned" and not (isinstance(p, dict) and p.get("status") == "planned") and all(comps.get(c, {}).get("status") != "planned" for c in e.get("fixed", []))
         shown, why = (True, "") if runnable else (False, "planned: the machine cannot be fielded yet")
         facts = ", ".join(str(x) for x in [e.get("designation", ""), e.get("size", ""), " ".join(e.get("traits", [])), "tier %s" % e.get("tier", "?")] if x)
         pitch = str(e.get("design", {}).get("fantasy", ""))
@@ -324,6 +365,7 @@ def content_slots():
                     add("chassis.entries", e["id"], "branches.%s.steps.%d.description" % (bid, i), "upgrade", st.get("description", ""), e["name"], g,
                         shown=shown, why=why, sub="%s %s" % (b.get("name", ""), "I" if i == 0 else "II"), facts=effect_words(st.get("effects")),
                         mech=canon(st.get("effects", [])))
+                    form_slots("chassis.entries", e["id"], "branches.%s.steps.%d.effects" % (bid, i), st.get("effects"), "upgrade", e["name"], g, shown, why)
 
     # Components.
     for e in docs["components"]["entries"]:
@@ -401,18 +443,29 @@ def content_slots():
         classify("loot.entries", e)
         add("loot.entries", e["id"], "codex", "loot_codex", e.get("codex", ""), e["name"], "", facts="tier %s, salvage %s to %s" % (e.get("tier"), *e.get("salvage", ["?", "?"])),
             pitch=str(e.get("design", {}).get("holes", "")))
+
+    # The words the game composes (content/templates.json): a slot a template, or each of its forms.
+    drawn = template_drawn(problems)
+    for e in docs["templates"]["entries"]:
+        classify("templates.entries", e)
+        tid, fills = e["id"], [str(x) for x in e.get("fills", [])]
+        facts = ("fills " + ", ".join("{%s}" % f for f in fills)) if fills else "fills nothing"
+        text = e.get("text")
+        if isinstance(text, dict):
+            facts += "; its form by the count {%s}" % e.get("count", "n")
+        shown, why = drawn.get(tid, (True, ""))
+        common = dict(shown=shown, why=why, facts=facts, fills=fills, mech=canon(fills))
+        if isinstance(text, dict):
+            for form, t in text.items():
+                add("templates.entries", tid, "text." + form, template_kind(tid), t, tid, "", sub=form, **common)
+        else:
+            add("templates.entries", tid, "text", template_kind(tid), text, tid, "", **common)
     return slots, groups, problems
 
 
 def gd_string(s):
     """A GDScript string literal's inside, as text."""
     return s.replace('\\"', '"').replace("\\\\", "\\")
-
-
-def word_slot(key, entry, text, sub, facts, shown=True, why=""):
-    """One word a code table holds for a foe move's lines, as a read-only slot."""
-    return {"id": slot_id(key, entry, "text"), "key": key, "entry": entry, "path": "text", "kind": "intent_words", "name": entry.replace("_", " "),
-            "group": "", "text": text, "shown": shown, "why": why, "sub": sub, "facts": facts, "pitch": "", "mech": "", "edit": False}
 
 
 def drawn_moves():
@@ -434,51 +487,48 @@ def of_moves(n):
     return "%d move%s" % (n, "" if n == 1 else "s")
 
 
-def target_slots(problems, moves):
-    """A foe move's target words (game/ui/entry_readout.gd's move_lines), read-only: the word for
-    a move that names no aim, and MOVE_TARGETS, whom a move that is no blow acts on, by the effect
-    its first step names. A move's target line reads its first step alone, so an effect that is
-    only ever a later step is never drawn, and a word the readout swaps for a term's name is drawn
-    as that name, which is the Names tab's."""
+def template_drawn(problems):
+    """Whether a foe move's words are drawn (aim.*, when.*, foe_target.*): carried by a move of a
+    foe the game deals, as (shown, why). Whom a move that is no blow acts on reads its first step
+    alone (game/ui/entry_readout.gd's MOVE_TARGETS, effect -> its template), so an effect only ever
+    a later step's is never drawn; every machine is said by the term's name. Every other template
+    is drawn wherever its piece is (the page reads which from the readouts)."""
     src = read("game/ui/entry_readout.gd")
-    out = []
-    unaimed = re.search(r'var anyone := "((?:[^"\\]|\\.)*)" if word_for\.is_empty\(\)', src)
-    if unaimed:
-        out.append(word_slot("code.target", "no_aim", gd_string(unaimed.group(1)), "target",
-                             "game/ui/entry_readout.gd, move_lines: a blow's target, and a move's aimed at a machine, when it names no aim"))
-    else:
-        problems.append("game/ui/entry_readout.gd: move_lines no longer says the target of a move with no aim as `var anyone := \"...\"`; mend target_slots in tools/hangar_text.py")
     b = re.search(r"^const MOVE_TARGETS := \{\n(.*?)^\}", src, re.M | re.S)
-    pairs = re.findall(r'"([a-z0-9_]+)": "((?:[^"\\]|\\.)*)"', b.group(1) if b else "")
+    pairs = re.findall(r'"([a-z0-9_]+)": "([a-z0-9_]+)"', b.group(1) if b else "")
     if not pairs:
-        problems.append("game/ui/entry_readout.gd: MOVE_TARGETS no longer reads as a table of words; mend target_slots in tools/hangar_text.py")
-    swap = re.search(r'if whom == "((?:[^"\\]|\\.)*)":\s*\n\s*whom = str\(db\.vocabulary\.get\("([a-z0-9_]+)"', src)
-    if not swap:
-        problems.append("game/ui/entry_readout.gd: move_lines no longer reads as swapping a target word for a term's name; mend target_slots in tools/hangar_text.py")
-    opens, later = {}, set()
+        problems.append("game/ui/entry_readout.gd: MOVE_TARGETS no longer reads as a table of effect -> template; mend template_drawn in tools/hangar_text.py")
+    moves = drawn_moves()
+    carry, opens, later = {}, {}, set()
     for a, act in moves:
+        for w in ([a["aim"]] if a.get("aim") else []):
+            carry["aim." + w] = carry.get("aim." + w, 0) + 1
+        for w in (a["when"] if isinstance(a.get("when"), list) else [a["when"]] if a.get("when") else []):
+            carry["when." + w] = carry.get("when." + w, 0) + 1
         # A move is a blow unless it says otherwise (Foe.kind_of); a fall's act is never one.
         if a.get("effect") and (act or a.get("kind", "attack") != "attack"):
             opens[a["effect"]] = opens.get(a["effect"], 0) + 1
         later.update(st.get("effect") for st in a.get("also", []) if isinstance(st, dict))
-    terms = {e["id"]: e.get("name", e["id"]) for e in load("vocabulary")["entries"]}
-    for k, v in pairs:
-        text, facts = gd_string(v), "game/ui/entry_readout.gd, MOVE_TARGETS[\"%s\"]" % k
-        if swap and text == gd_string(swap.group(1)):
-            shown, why = False, "drawn as the term %s's name in its place, as a blow at every machine says it" % terms.get(swap.group(2), swap.group(2))
-        elif k not in opens:
-            shown, why = False, ("only a later step of a move does it, and a move's target line is its first step's" if k in later
-                                 else "no move of a foe the game deals opens with it")
+    for effect, key in pairs:
+        if effect in opens:
+            carry["foe_target." + key] = carry.get("foe_target." + key, 0) + opens[effect]
+    out = {}
+    for e in load("templates")["entries"]:
+        tid = e["id"]
+        if not tid.startswith(("aim.", "when.", "foe_target.")) or tid == "foe_target.any_machine":
+            continue
+        if carry.get(tid):
+            out[tid] = (True, "")
+        elif tid.startswith("foe_target.") and any(k == tid[len("foe_target."):] and eff in later for eff, k in pairs):
+            out[tid] = (False, "only a later step of a move does it, and a move's target line is its first step's")
         else:
-            shown, why = True, ""
-            facts += ": the target of " + of_moves(opens[k])
-        out.append(word_slot("code.target", k, text, "target", facts, shown, why))
+            out[tid] = (False, "no move of a foe the game deals carries it")
     return out
 
 
 def code_slots():
-    """The shown text the code holds in tables, read-only: a status's line, and a foe move's aim,
-    target and condition words. A table that moves or changes shape is a problem, never a silent gap."""
+    """The shown text the code still holds in a table, read-only: a status's line. A table that
+    moves or changes shape is a problem, never a silent gap."""
     slots, problems = [], []
     src = read("sim/effects.gd")
     block = re.search(r"^const STATUS := \{\n(.*?)^\}", src, re.M | re.S)
@@ -490,30 +540,6 @@ def code_slots():
                       "name": gd_string(name), "group": "", "text": gd_string(desc), "shown": False,
                       "why": "drawn only in the codex's KEPT FOR THE BATTLE row; a chip's meaning is its term's entry (Keywords and statuses)",
                       "sub": "", "facts": "sim/effects.gd, STATUS[\"%s\"]" % sid, "pitch": "", "mech": "", "edit": False})
-    foe = read("sim/foe.gd")
-    moves = drawn_moves()
-
-    def table(const, key, label, words_of):
-        b = re.search(r"^const %s := \{\n(.*?)^\}" % const, foe, re.M | re.S)
-        pairs = re.findall(r'"([a-z0-9_]+)": "((?:[^"\\]|\\.)*)"', b.group(1) if b else "")
-        if not pairs:
-            problems.append("sim/foe.gd: %s no longer reads as a table of words; mend code_slots in tools/hangar_text.py" % const)
-        carry = {}
-        for a, _act in moves:
-            for w in words_of(a):
-                carry[w] = carry.get(w, 0) + 1
-        for k, v in pairs:
-            facts = "sim/foe.gd, %s[\"%s\"]" % (const, k)
-            if carry.get(k):
-                slots.append(word_slot(key, k, gd_string(v), label, "%s: the %s of %s" % (facts, label, of_moves(carry[k]))))
-            else:
-                slots.append(word_slot(key, k, gd_string(v), label, facts, False, "no move of a foe the game deals carries it"))
-
-    # In the order a move's lines say them: its target (its aim, or whom it acts on), then its
-    # condition (Foe.aim_of, Foe.whens_of: one word or a list meaning any).
-    table("AIM_TEXT", "code.aim", "aim", lambda a: [a["aim"]] if a.get("aim") else [])
-    slots.extend(target_slots(problems, moves))
-    table("WHEN_TEXT", "code.when", "condition", lambda a: a["when"] if isinstance(a.get("when"), list) else [a["when"]] if a.get("when") else [])
     return slots, problems
 
 
@@ -528,7 +554,7 @@ def lints(s, planned_terms):
         out.append("says \"face\": the player sees no polyhedron, an entry is a component or an entry")
     if re.search(r"damaging weapon", t, re.I):
         out.append("says \"damaging weapon\": a weapon deals damage by definition")
-    allowed = {"damage", "value"} if s["kind"] in ("foe_move", "status_line", "passive", "module_text") else set()
+    allowed = {"damage", "value"} if s["kind"] in ("foe_move", "status_line", "passive", "module_text") else set(s.get("fills") or [])
     for b in re.findall(r"\{([a-z_]+)\}", t):
         if b not in allowed:
             out.append("{%s} is filled by nothing here" % b)

@@ -182,12 +182,14 @@ func test_a_take_holds_the_showing_entrys_number_and_the_borrowed_swing_lands_it
 	sk.start_round()
 	assert_eq(str(g.action.get("id", "")), "borrowed", "the borrowed swing is next round's intent")
 	assert_eq(g.damage(), 30, "at the number it holds")
-	assert_eq(sk.mechs[0].face().describe(), "disabled", "the entry it took is Jammed through the next turn, the blow's own rider")
+	assert_eq(sk.mechs[0].face().describe(), "disabled", "the entry it took is Jammed until its machine reboots, the blow's own rider")
 	sk.end_round()
 	assert_eq(sk.mechs[0].unit.hull, 460, "the swing lands thirty")
 	assert_false(Effects.has(g, "appropriated"), "and spends what it took")
 	sk.start_round()
-	assert_eq(sk.mechs[0].face().describe(), "30", "the entry is back the turn after")
+	assert_eq(sk.mechs[0].face().describe(), "disabled", "and dark the turn after: a jam waits for the reboot")
+	assert_true(sk.reboot_mech(0), "the machine reboots")
+	assert_eq(Effects.jams_waiting(sk.mechs[0].unit), 0, "which lights it")
 
 
 func test_a_taken_weapon_swings_at_its_number_and_anything_else_is_a_fake() -> void:
@@ -1297,12 +1299,14 @@ func test_the_elites_compositions_hold_their_shapes() -> void:
 		for c in db.elite_compositions(str(fid), 1) + db.elite_compositions(str(fid), 2) + db.elite_compositions(str(fid), 3) + db.wandering_compositions(1) + db.wandering_compositions(3):
 			var lead := str(c["members"][0][0])
 			assert_true(db.is_elite(lead), "%s is led by its elite" % str(c["id"]))
-			if int(c["members"][0][1]) > 1:
-				clones += 1
+			for m in c["members"]:
+				if db.is_elite(str(m[0])) and int(m[1]) > 1:
+					clones += 1   # several of one elite in the pack, each scaled (the Wild Hunt's riders behind its Huntsman since 20 November)
+					break
 			if c.has("hunts"):
 				hunters += 1
 				assert_true(ContentDB.HUNT_CAVEATS.has(str(c["hunts"])), "%s hunts by a caveat the engine has" % str(c["id"]))
-	assert_true(clones >= 1, "an elite pack of clones is in content (the Wild Hunt's shape)")
+	assert_true(clones >= 1, "an elite pack holding clones of one elite is in content (the Wild Hunt's riders)")
 	assert_true(hunters >= 3, "hunters among the elites")
 	for fid in db.factions.keys():
 		for t in [1, 2, 3]:

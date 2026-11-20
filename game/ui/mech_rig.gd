@@ -53,6 +53,16 @@ extends RefCounted
 ## counts every display up a part a second until it falls; RIFTGATE_SPIN_DEBUG=1 holds every
 ## status's spin and lets it go in turn; both on both screens, to judge them running.
 ##
+## A heat glow (the sidecar's `heat_glow`, b.heat_glow: the Puffin's shield-lit parts; Ryan, 20
+## November: "Could the Puffin glow change colours based on its heat?") is a gauge in a lit part's
+## colour: the parts it names wear its `cold` tile's colour with their machine's heat at nothing and
+## its `hot` one's (the forge's furnace) at the maximum, a blend between, and their light climbs as
+## it fills, HEAT_GLOW_FULL rests over their own at the maximum, then beats past it, so the load
+## reads by its light and its beat as well as its hue. An act's flare rises past it as past a
+## standing glow. The screen passes the machine's heat over its maximum as it refreshes (show_heat);
+## RIFTGATE_HEAT_GLOW_DEBUG=1 runs every heat glow from nothing to past its maximum and back, on
+## both screens, to judge it running.
+##
 ## An act may lock a spinner with a step (the sidecar's `spin_step` and an act's `locks`, b.spin's
 ## step: the Cottonmouth's drum, its chamber 60 degrees, Ryan, 2 November): as the act starts the
 ## spin parks on its next step ahead, the way it turns, over PARK_TIME, and holds there while the
@@ -70,6 +80,8 @@ const GLOW_BASE := 1.8        # the amber role's emission at rest (MechView3D.to
 const LIGHT_EASE := 1.0 / 2.2 # the power a lit part's light is eased by on the phone's renderer (light())
 static var _eases_light := -1   # whether light() eases: unknown until first asked (the renderer's known once the screen is up)
 const HALO_FULL := 8.0        # a halo is full once its part's light stands this many rests over its own (_light_to)
+const BEAM_SHOWS := 1.05      # a part made of light shows once its light stands this far over its own rest (_light_to), and is unseen at rest
+const BEAM_GUTTER := 0.35     # a lit beam on a lost machine stutters out with the gutter, shown while its light is over this share of what it was
 const HALO_SPREAD := 0.025    # how far a halo stands out, a share of its machine's longest side (_setup_halos)
 const HALO_REACH := 0.45      # the share of its part's colour a halo adds at its fullest (halo.gdshader)
 const HALO_AHEAD := 3.0       # how far toward the eye a halo is drawn, in its part's units: out of a slot over its walls; a part standing proud names its own (_setup_halos)
@@ -158,6 +170,12 @@ const COUNT_FALL := 0.35        # and to go dark again, a flare's fading include
 const COUNT_DEBUG_PERIOD := 1.0 # seconds a step under RIFTGATE_COUNT_DEBUG
 const SPIN_HELD_EASE := 0.45    # seconds a status's spin takes to come up to speed, and to run down
 const SPIN_DEBUG_PERIOD := 3.0  # seconds a status's spin is held, then let go, under RIFTGATE_SPIN_DEBUG
+const HEAT_GLOW_FULL := 10.0   # rests over its own a heat glow burns at with its machine at its maximum (the furnace's burning always, #ff5900)
+const HEAT_GLOW_BEAT := 6.0    # rests more it beats up to past the maximum (to the furnace's flare, #ff6e00)...
+const HEAT_GLOW_HZ := 1.6      # ...beats a second
+const HEAT_GLOW_EASE := 0.25   # seconds a heat glow takes to follow a new heat, its time constant
+const HEAT_GLOW_DEBUG_PERIOD := 12.0   # seconds RIFTGATE_HEAT_GLOW_DEBUG takes from nothing to past the maximum and back
+const HEAT_GLOW_DEBUG_TOP := 1.5       # the heat over its maximum the switch runs up to
 const PARK_TIME := 0.3          # seconds a locked spin takes to park on its next step ahead
 const STEP := 1.0 / 60.0      # the longest step the acts and the servos advance by, so a long tick (a frozen frame) plays the same as frames
 
@@ -188,6 +206,12 @@ var _spin_debug_t := 0.0
 var count_displays: Array = []     # [{"source", "parts": [[[material, its light at rest], ...] a part], "on", "off", "flare", "n", "k": [each part's light now]}]: the sidecar's counts (b.count)
 var count_debug: bool = false      # RIFTGATE_COUNT_DEBUG: every display counts up a part a second until it falls
 var _count_debug_t := 0.0
+var heat_glow: Dictionary = {}     # the sidecar's heat glow: {"mats": [[material, its standing floor]], "cold": Color, "hot": Color, "image": Image, "tile": ImageTexture}, empty for a model with none
+var _heat_want := 0.0              # its machine's heat over its maximum, as the screen passed it (show_heat); past 1 overheated
+var _heat_k := 0.0                 # the gauge shown, following it
+var _heat_beat_t := 0.0
+var heat_glow_debug: bool = false  # RIFTGATE_HEAT_GLOW_DEBUG: every heat glow runs from nothing to past its maximum and back
+var _heat_debug_t := 0.0
 var forms: Dictionary = {}         # name -> {"duration", "curves": {joint: curve, BODY: the body's}, "glow": [[material, its light at rest, k]], "acts": [act]}: poses held while the machine carries the status of the same name, each with the acts it plays while held (the sidecar's forms: the Polar Bear's seal)
 var _form_on: Dictionary = {}      # name -> whether it is held (set_form)
 var _form_t: Dictionary = {}       # name -> seconds into its turn: 0 let go, its duration held
@@ -195,7 +219,7 @@ var _form_rot: Dictionary = {}     # joint -> degrees the forms add
 var _form_slide: Dictionary = {}   # joint -> world-unit slide the forms add
 var _form_body_rot := Vector3.ZERO   # degrees (pitch, yaw, roll) the forms add to the body (the seal's hunker)
 var _form_body_slide := Vector3.ZERO
-var form_debug: bool = false       # RIFTGATE_SEAL_DEBUG: every form held and let go in turn, to judge running
+var form_debug: bool = false       # RIFTGATE_SEAL_DEBUG: every form held and let go in turn, to judge running (forms that release each other one at a time)
 ## The pose a machine stands in while a form is not held (the Polar Bear's vents ajar while its shell
 ## is open; Ryan, 2 November: "When unsealed, the vents should be open, and then more open during
 ## the vent animation"): joint -> [degrees, slide] over its built rest, fading out as the form named
@@ -222,6 +246,8 @@ var _strikes: Array = []           # [{joint, vec (degrees), slide (world units,
 var _glow: Array = []              # [{mats: [StandardMaterial3D], base: [float]}] per glow track of the act playing
 var _glow_cache: Dictionary = {}   # part prefix -> [StandardMaterial3D]
 var _halos: Dictionary = {}        # a lit material -> the halos' ShaderMaterials round its surfaces (_setup_halos)
+var _beams: Dictionary = {}        # a lit material of a part made of light -> the meshes it lights (_setup_beams)
+var _beam_lit: Dictionary = {}     # a beam's lit material -> whether it was lit as the machine was lost (its gutter)
 var _standing: Dictionary = {}     # a lit material -> the multiple of its rest light it never falls under (_setup_standing)
 var _halo_grow := 0.0              # how far a halo stands out on this model (_setup_halos), for hot parts hung later (wear_hot)
 var _flashes: Array = []           # [{mats, base, t}] a weapon's fire flaring (flash)
@@ -681,8 +707,10 @@ func setup(root: Node3D, model_id: String, body_node: Node3D = null, phase: int 
 		_form_on[DEATH] = false
 		_form_t[DEATH] = 0.0
 	_setup_halos(side)
+	_setup_beams(side)
 	_setup_standing(side)
 	_setup_counts(side.get("counts", []))
+	_setup_heat_glow(side.get("heat_glow", {}))
 	_setup_ajar(side.get("ajar", {}) if side.get("ajar", {}) is Dictionary else {})
 	_pose()   # the rest it stands in, ajar included, before anything moves
 
@@ -823,6 +851,19 @@ func form_held(name: String) -> bool:
 	return bool(_form_on.get(name, false))
 
 
+## The forms named for an offhand's slot (the Macaque's armament: offhand_rifle, offhand_sword,
+## offhand_shield), held while the offhand's form up is in that slot.
+const OFFHAND_FORM := "offhand_"
+
+
+## Whether a machine holds the form of this name: the status of the same name, or its offhand's
+## armament in the slot the form names.
+static func holds_form(u, name: String) -> bool:
+	if Effects.has(u, name):
+		return true
+	return name.begins_with(OFFHAND_FORM) and Effects.held_slot(u) == name.substr(OFFHAND_FORM.length())
+
+
 ## Hold a status's spin or let it go (the Cassowary's capacitor turns while it is Spun Up, Ryan,
 ## 2 November): the joints it names come up to speed and run down again over SPIN_HELD_EASE,
 ## stopping wherever they are. True when it changes.
@@ -953,6 +994,115 @@ func _light_counts() -> void:
 				(pair[0] as StandardMaterial3D).emission_energy_multiplier = float(pair[1]) * light(1.0 + float(d["k"][i]))
 
 
+## The heat glow a sidecar names (heat_glow, above), ready to light: one small tile of its own the
+## parts' lit materials and their halos all wear, filled with the blend, its cold end to begin.
+func _setup_heat_glow(hg: Variant) -> void:
+	heat_glow = {}
+	_heat_want = 0.0
+	_heat_k = 0.0
+	_heat_beat_t = 0.0
+	heat_glow_debug = OS.get_environment("RIFTGATE_HEAT_GLOW_DEBUG") == "1"
+	_heat_debug_t = 0.0
+	if not (hg is Dictionary) or not (hg.get("parts", null) is Array) or (hg["parts"] as Array).is_empty():
+		return
+	var image := Image.create(2, 2, false, Image.FORMAT_RGB8)
+	var cold := _tile_colour(hg.get("cold", []))
+	var hot := _tile_colour(hg.get("hot", []))
+	image.fill(cold)
+	var tile := ImageTexture.create_from_image(image)
+	var mats: Array = []
+	for part in hg["parts"]:
+		for m in _lit_materials(str(part)):
+			var lit: StandardMaterial3D = m
+			if lit.albedo_texture == lit.emission_texture:
+				lit.albedo_texture = tile   # the lit role's paint is its light's tile (MechView3D.toon)
+			lit.emission_texture = tile
+			for h in _halos.get(lit, []):
+				(h as ShaderMaterial).set_shader_parameter("tile", tile)
+			mats.append([lit, float(_standing.get(lit, 1.0))])
+	heat_glow = {"mats": mats, "cold": cold, "hot": hot, "image": image, "tile": tile}
+
+
+## A tile's colour as the sidecar writes it ([r, g, b], the forge's even tile, as its pixels hold it).
+static func _tile_colour(c: Variant) -> Color:
+	if c is Array and (c as Array).size() >= 3:
+		return Color(float(c[0]), float(c[1]), float(c[2]))
+	return Color.BLACK
+
+
+## Show the machine's heat over its maximum on its heat glow (past 1 overheated); true when it
+## changes what the glow follows. A machine with none ignores it.
+func show_heat(k: float) -> bool:
+	if heat_glow.is_empty() or heat_glow_debug:
+		return false
+	k = maxf(0.0, k)
+	if is_equal_approx(k, _heat_want):
+		return false
+	_heat_want = k
+	return true
+
+
+## Show a heat at once, the glow settled on it rather than following (a still's, a test's).
+func settle_heat(k: float) -> void:
+	show_heat(k)
+	_heat_k = _heat_want
+	heat_glow.erase("lit")
+	_heat_glow_step(0.0)
+
+
+## The gauge the heat glow shows now (its machine's heat over its maximum, following the last it was
+## shown), its colour and its light over its rest, for the tests and the probes.
+func heat_shown() -> float:
+	return _heat_k
+
+
+func heat_colour() -> Color:
+	return (heat_glow["cold"] as Color).lerp(heat_glow["hot"], clampf(_heat_k, 0.0, 1.0)) if not heat_glow.is_empty() else Color.BLACK
+
+
+func heat_light() -> float:
+	var k := clampf(_heat_k, 0.0, 1.0)
+	var light_k := 1.0 + (HEAT_GLOW_FULL - 1.0) * k
+	var over := clampf((_heat_k - 1.0) * 4.0, 0.0, 1.0)   # the beat comes in as it passes the maximum
+	if over > 0.0:
+		light_k += HEAT_GLOW_BEAT * over * (0.5 + 0.5 * sin(TAU * HEAT_GLOW_HZ * _heat_beat_t))
+	return light_k
+
+
+## The heat glow follows its heat, quick to warm and as quick to cool, and beats while past the
+## maximum: its tile takes the blend and its parts' standing light the gauge's, so an act's flare
+## rises past it. A lost machine's lights are its gutter's, so it shows nothing then.
+func _heat_glow_step(delta: float) -> void:
+	if heat_glow.is_empty() or dead:
+		return
+	var was := _heat_k
+	_heat_k = _heat_want + (_heat_k - _heat_want) * exp(-delta / HEAT_GLOW_EASE)
+	if absf(_heat_k - _heat_want) < 0.002:
+		_heat_k = _heat_want
+	var beating := _heat_k > 1.0
+	if beating:
+		_heat_beat_t += delta
+	if _heat_k == was and not beating and heat_glow.has("lit"):
+		return
+	(heat_glow["image"] as Image).fill(heat_colour())
+	(heat_glow["tile"] as ImageTexture).update(heat_glow["image"])
+	var light_k := heat_light()
+	for pair in heat_glow["mats"]:
+		var m: StandardMaterial3D = pair[0]
+		_standing[m] = maxf(float(pair[1]), light_k)
+		if not _act_lights(m):
+			_light_to(m, _rest_of(m), 1.0)   # an act lighting it takes the standing light into its own each frame
+	heat_glow["lit"] = true
+
+
+## Whether the act playing lights this material (its glow tracks), so its light is the act's now.
+func _act_lights(m: StandardMaterial3D) -> bool:
+	for g in _glow:
+		if (g["mats"] as Array).has(m):
+			return true
+	return false
+
+
 ## Whether an act keys any of these joints.
 static func _keys_any(a: Dictionary, held: Dictionary) -> bool:
 	for jn in (a.get("tracks", {}) as Dictionary).keys():
@@ -1080,8 +1230,16 @@ func tick(delta: float) -> void:
 	# every one and lets it go in turn.
 	if form_debug and not forms.is_empty():
 		_form_debug_t += delta
-		for name in forms.keys():
-			set_form(name, fmod(_form_debug_t, FORM_DEBUG_PERIOD * 2.0) >= FORM_DEBUG_PERIOD)
+		# Forms that let each other go (the Macaque's armaments, the Mole's burrow and drill) are
+		# held one at a time, each in turn and then none; any other is held and let go with the rest.
+		var names: Array = forms.keys().filter(func(n) -> bool: return str(n) != DEATH)
+		if names.any(func(n) -> bool: return not (forms[n].get("releases", []) as Array).is_empty()):
+			var k := int(_form_debug_t / FORM_DEBUG_PERIOD) % (names.size() + 1)
+			for i in range(names.size()):
+				set_form(str(names[i]), i == k)
+		else:
+			for name in forms.keys():
+				set_form(name, fmod(_form_debug_t, FORM_DEBUG_PERIOD * 2.0) >= FORM_DEBUG_PERIOD)
 	if _forms_step(delta):
 		moved = true
 	# A status's spin (the capacitor while Spun Up) and the count displays run on their own
@@ -1101,6 +1259,11 @@ func tick(delta: float) -> void:
 				up[d["source"]] = (maxi(0, int(d["n"])) + 1) % ((d["parts"] as Array).size() + 1)   # up to every part lit, then it falls
 			show_counts(up)
 	_counts_step(delta)
+	if heat_glow_debug and not heat_glow.is_empty():
+		_heat_debug_t = fmod(_heat_debug_t + delta, HEAT_GLOW_DEBUG_PERIOD)
+		var u := _heat_debug_t / HEAT_GLOW_DEBUG_PERIOD
+		_heat_want = HEAT_GLOW_DEBUG_TOP * (1.0 - absf(2.0 * u - 1.0))   # up, then down again
+	_heat_glow_step(delta)
 	# What turns without end turns whatever else is happening, faster as the move blends in,
 	# unless the act playing locks it: then it eases onto its step and holds there.
 	for name in spinners.keys():
@@ -1184,7 +1347,11 @@ func _step(dt: float) -> bool:
 			if not bool(pair[4]):
 				pair[1] = m.emission_energy_multiplier   # its light as its gutter starts
 				pair[4] = true
+				if _beams.has(m):
+					_beam_lit[m] = (_beams[m] as Array).any(func(mi): return (mi as Node3D).visible)
 			var k := gutter_k(local)
+			for mi in _beams.get(m, []):
+				(mi as Node3D).visible = bool(_beam_lit.get(m, false)) and k > BEAM_GUTTER   # a beam lit as it was lost stutters out with its light
 			var paint := DEAD_PAINT + (1.0 - DEAD_PAINT) * k   # the paint stutters out with the light (Ryan, 16 November, the fourth notes: a steady darkening hid the flicker)
 			var e := float(pair[1]) * k
 			m.emission_energy_multiplier = e
@@ -1676,6 +1843,7 @@ func revive() -> void:
 		_light_to(pair[0], _rest_of(pair[0]), 1.0)
 		(pair[0] as StandardMaterial3D).albedo_color = pair[2]   # its paint as it was
 	_gutter_mats.clear()
+	_beam_lit.clear()
 	_death_lift = 0.0
 	_impact = -1.0
 	_collapse = -1.0
@@ -2773,9 +2941,45 @@ func _light_to(m: StandardMaterial3D, base: float, multiple: float) -> void:
 	multiple = maxf(multiple, float(_standing.get(m, 1.0)))
 	var e := base * light(multiple)
 	m.emission_energy_multiplier = e
+	for mi in _beams.get(m, []):
+		(mi as Node3D).visible = multiple > BEAM_SHOWS   # a part made of light is there only while it is lit
 	for h in _halos.get(m, []):
 		(h as ShaderMaterial).set_shader_parameter("light", e)
 		(h as ShaderMaterial).set_shader_parameter("presence", clampf((multiple - 1.0) / HALO_FULL, 0.0, 1.0))
+
+
+## The parts made of light a sidecar names (`beams`; Ryan, 16 November, of the Macaque: "beam
+## blades mounted on its forearms, that can turn on and off", "a shield made of light"): each lit
+## material of every mesh a beam labels and the meshes it lights, every one hidden, since a part made
+## of light is unseen at its light at rest; _light_to shows it while a glow lights it over that
+## (BEAM_SHOWS) and hides it as the glow lets it go. Its halo is its child and goes with it.
+## MechView3D.hide_beams hides them as a model loads, before it is measured; this is the rig's own.
+func _setup_beams(side: Dictionary) -> void:
+	_beams.clear()
+	_beam_lit.clear()
+	var named = side.get("beams", [])
+	if not (named is Array) or model == null:
+		return
+	for part in named:
+		for mi in model.find_children("*", "MeshInstance3D", true, false):
+			if mi.has_meta("halo") or not labelled(str(mi.name), str(part)):
+				continue
+			(mi as Node3D).visible = false
+			for i in range((mi as MeshInstance3D).get_surface_override_material_count()):
+				var sm := (mi as MeshInstance3D).get_surface_override_material(i)
+				if sm is StandardMaterial3D and (sm as StandardMaterial3D).emission_enabled:
+					if not _beams.has(sm):
+						_beams[sm] = []
+					(_beams[sm] as Array).append(mi)
+
+
+## Whether a part made of light shows now (a beam: _setup_beams): any mesh it labels drawn.
+func beam_shown(part: String) -> bool:
+	for m in _beams.keys():
+		for mi in _beams[m]:
+			if labelled(str((mi as Node).name), part) and (mi as Node3D).visible:
+				return true
+	return false
 
 
 ## The glows a sidecar holds always (`standing`: a lit part and how many rests over its own),

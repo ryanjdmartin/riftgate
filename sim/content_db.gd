@@ -9,10 +9,10 @@ const DIR := "res://content/"
 
 # Design knobs. Loosen or tighten here; the validator and the bible should agree.
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
-## The machine buffs a spend at a foe may lay on its own machine (Face.self_statuses; the Storm
-## Petrel's Hardlight Pulse and its branches, a Ward on itself in its Defence direction since 18
-## November). A Barrier stays its pieces' own, with its cooldown.
-const SELF_GRANTS := ["hardened", "ward", "charged", "supercooled", "primed", "overcharged", "braced", "regenerating"]
+## The machine buffs a spend may lay on its own machine (Face.self_statuses; the Storm Petrel's
+## Hardlight Pulse and its branches, a Ward on itself in its Defence direction since 18 November;
+## the Macaque's offhand, its Beam Buckler's Barrier, Ward and Parry, Ryan, 19 November).
+const SELF_GRANTS := ["hardened", "ward", "charged", "supercooled", "primed", "overcharged", "braced", "regenerating", "barrier", "parry"]
 const MAX_MOVE := 6                 # a move in hexes, chassis or foe, is 1 to this (a placeholder bound, 28 October)
 ## The caveats a hunting composition may name (`hunts`): whom its pack locks. The fastest left on
 ## 16 November with nothing hunting by it (the rule of 12 November).
@@ -47,6 +47,9 @@ var loot: Dictionary = {}
 var loot_rules: Dictionary = {}
 var makers: Dictionary = {}
 var categories: Array = []
+## The words the game composes from a piece's numbers (content/templates.json): id -> entry, held
+## here for the validator; the engine reads them through Templates.
+var templates: Dictionary = {}
 ## Machine names from the properties our designs sit nearest (content/reserved_names.json:
 ## every BattleTech 'Mech, Heavy Gear, Warhammer 40k, Halo), keyed by their normalised form
 ## (see normalise_name) with "Name (a BattleTech 'Mech)" for the message. A chassis nickname
@@ -77,6 +80,7 @@ func load_dir(dir: String) -> void:
 	_resolve_promotions()
 	var c := _read(dir + "chassis.json")
 	chassis = _index(c)
+	tier_lift = c.get("tier_lift", {}) if c.get("tier_lift", {}) is Dictionary else {}
 	makers = {}
 	for m in c.get("makers", []):
 		makers[m["id"]] = m
@@ -85,6 +89,7 @@ func load_dir(dir: String) -> void:
 	var lf := _read(dir + "loot.json")
 	loot = _index(lf)
 	loot_rules = {"per_battle": int(lf.get("per_battle", 0)), "rift_gap": int(lf.get("rift_gap", 3)), "wall_gap": int(lf.get("wall_gap", 2)), "behind_shell": int(lf.get("behind_shell", 0))}
+	templates = _index(_read(dir + "templates.json"))
 	reserved_names = {}
 	var reserved := _read(dir + "reserved_names.json")
 	var sources: Dictionary = reserved.get("sources", {})
@@ -194,8 +199,9 @@ func build_die(fixed_ids: Array, loadout_ids: Array, hardpoints: int) -> Die:
 ## A machine as the content builds it. `loadout` is the hardpoint components fitted, in
 ## order; null means the chassis's stock loadout (the campaign passes its roster's own).
 ## `branch_picks` are its upgrades' picks along its chassis's branches (branch_error), none for a
-## machine at its chassis's own tier.
-func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, loadout = null, fitted_modules: Array = [], branch_picks: Array = []) -> Unit:
+## machine at its chassis's own tier. `tier` is the machine's (machine_tier), 0 for the tier its
+## picks make it: its chassis's, and one more for each pick, each upgrade carrying its branch.
+func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, loadout = null, fitted_modules: Array = [], branch_picks: Array = [], tier: int = 0) -> Unit:
 	var c: Dictionary = chassis[chassis_id]
 	var fitted: Array = c.get("loadout", []) if loadout == null else loadout
 	var u := Unit.mech(uid, str(c["name"]), at, int(c.get("movespeed", Unit.MECH_MOVE)))
@@ -219,7 +225,10 @@ func make_mech(chassis_id: String, uid: int = 0, at: Vector2i = Vector2i.ZERO, l
 		var cp = components.get(cid, {}).get("passive", null)
 		if cp is Dictionary:
 			u.grant_passive(cp, cid, cid)
-	fit_branches(u, branch_picks)
+	var picks: Array = branch_picks if branch_error(chassis_id, branch_picks).is_empty() else []   # illegal picks lay nothing
+	u.tier = machine_tier(chassis_id, picks, tier)
+	fit_tier(u)
+	fit_branches(u, picks.slice(0, u.tier - chassis_tier(chassis_id)))   # a pick a tier bought
 	# Modules, as many as the chassis has slots; then the machine starts whole on the numbers
 	# they made.
 	for mid in fitted_modules.slice(0, int(c.get("module_slots", 0))):
@@ -314,15 +323,90 @@ func _direction(c: Dictionary, id: String) -> Dictionary:
 	return {}
 
 
+## The tier a machine of this chassis holds (the bible's tiers row): `tier` when it names one from
+## its chassis's to three, else its chassis's and one more for each of its picks.
+func machine_tier(chassis_id: String, picks: Array = [], tier: int = 0) -> int:
+	var own := clampi(chassis_tier(chassis_id), 1, 3)
+	if tier > 0:
+		return clampi(tier, own, 3)
+	return clampi(own + picks.size(), own, 3)
+
+
+## The lift an upgrade buys, a tier at a time, as the passive the engine runs (the bible's tiers row:
+## it "lifts the whole machine at once"). Every chassis takes content's one standard lift for now
+## (`tier_lift` in chassis.json; Ryan, 20 November: "the placeholders can be standard lifts for
+## every chassis for now. After we have scaling in place, we can adjust individual lifts to add
+## character"): its stat lines added a step. No locked piece's number rises with it ("My hope is
+## that they scale with either the upgrades, or with the kit"). Empty for a tier no upgrade reaches.
+func tier_step(chassis_id: String, to_tier: int) -> Dictionary:
+	var c: Dictionary = chassis.get(chassis_id, {})
+	if c.is_empty() or to_tier <= chassis_tier(chassis_id) or to_tier > 3:
+		return {}
+	var effects: Array = []
+	var stats: Dictionary = tier_lift.get("stats", {}) if tier_lift.get("stats", {}) is Dictionary else {}
+	for k in stats.keys():
+		effects.append({"trigger": "static", "effect": "add_stat", "stat": str(k), "value": int(stats[k])})
+	return {"id": "tier:%s:%d" % [chassis_id, to_tier], "name": "Tier %d" % to_tier, "description": "", "effects": effects}
+
+
+## Why a machine of this chassis, at `tier` with `picks` taken, may not be bought up a tier with
+## `pick` while the Convergence opens machines up to `open_tier` (the hangar's upgrade, Campaign and
+## QuickRun; the bible's tiers row: "you can't upgrade to tier 2 until you reach tier 2 rifts"); ""
+## when it may. Each upgrade carries its branch's pick where the chassis has branches (Ryan, 20
+## November: "Tier step should bring up stats, and then the branch comes with it as the choice"),
+## and none where it has none yet.
+func upgrade_error(chassis_id: String, tier: int, picks: Array, pick: String, open_tier: int) -> String:
+	if not chassis.has(chassis_id):
+		return "no chassis %s" % chassis_id
+	var now := machine_tier(chassis_id, picks, tier)
+	if now >= 3:
+		return "at the top tier"
+	if now + 1 > open_tier:
+		return "tier %d opens with tier-%d rifts" % [now + 1, now + 1]
+	var dirs = chassis[chassis_id].get("branches", [])
+	if dirs is Array and not dirs.is_empty():
+		if pick.is_empty():
+			return "an upgrade takes a branch's pick"
+		var err := branch_error(chassis_id, picks + [pick])
+		if not err.is_empty():
+			return err
+	elif not pick.is_empty():
+		return "%s has no branches" % chassis_id
+	return ""
+
+
+## The picks an upgrade from here may take: each direction whose next step the machine may take
+## (the first, or the deeper once its first is taken); empty for a chassis with no branches.
+func upgrade_picks(chassis_id: String, picks: Array) -> Array:
+	var out: Array = []
+	for d in chassis.get(chassis_id, {}).get("branches", []):
+		if d is Dictionary and branch_error(chassis_id, picks + [str(d.get("id", ""))]).is_empty():
+			out.append(str(d.get("id", "")))
+	return out
+
+
+## A machine's tier laid on it: each tier above its chassis's one passive sourced "tier", read
+## through the pipeline like a module's (never written to a stat or a component).
+func fit_tier(u: Unit) -> void:
+	for t in range(chassis_tier(u.chassis_id) + 1, u.tier + 1):
+		var step := tier_step(u.chassis_id, t)
+		if not step.is_empty():
+			u.grant_passive(step, "tier")
+
+
 ## A machine's picks laid on it: each step's effects one passive sourced "branch", tied to the
 ## piece it tweaks, read through the pipeline like a module's (never written to a stat or a
 ## component), so a destroyed piece takes its tweaks with it. Illegal picks lay nothing.
 func fit_branches(u: Unit, picks: Array) -> void:
 	for s in branch_steps(u.chassis_id, picks):
-		var entry := ""
+		# The piece the step rides: the one every effect names, so a destroyed piece takes its
+		# tweaks with it; a step on the passive, or on more than one piece, rides the passive, each
+		# effect still scoped to its own piece (a destroyed piece's entry is blank, and takes none).
+		var on := {}
 		for eff in s["effects"]:
-			if eff is Dictionary and eff.has("entry"):
-				entry = str(eff["entry"])
+			if eff is Dictionary:
+				on[str(eff.get("entry", ""))] = true
+		var entry: String = str(on.keys()[0]) if on.size() == 1 else ""
 		u.grant_passive({"id": "branch:%s:%s:%d" % [u.chassis_id, s["direction"], int(s["step"]) + 1], "name": s["name"],
 			"description": s["description"], "effects": (s["effects"] as Array).duplicate(true)}, "branch", entry)
 		u.branches.append(str(s["direction"]))
@@ -404,6 +488,7 @@ func make_foe(foe_id: String) -> Foe:
 	f.armour_step = maxi(0, int(d.get("armour_step", 0)))
 	f.rage = maxi(0, int(d.get("rage", 0)))   # its own from the fight's start (the Goblin Nob's, Ryan, 8 November: "It's not innate? ... unbelievably incorrect")
 	f.drains = bool(d.get("drains", false))   # its own too: every blow of its regrows what it took from the hull (the Vampire Lord's, 16 November)
+	f.strikes_when_buffed = bool(d.get("strikes_when_buffed", false))   # it strikes only with a buff on it or coming (the goblins', 20 November)
 	# What never lands on it (17 November, on Ryan's yes to the bench's rows): a Suppress or a
 	# Disrupt, always (true) or while the move it names gathers.
 	var im = d.get("immune", null)
@@ -464,6 +549,8 @@ func make_foe(foe_id: String) -> Foe:
 				act["foe"] = Foe.kinds_named(a) if a["foe"] is Array else str(a["foe"])   # a merge names a list of kinds
 			if a.has("count"):
 				act["count"] = int(a["count"])
+			if bool(a.get("refill", false)):
+				act["refill"] = true   # a summon that calls back only what its pack has lost (the Wild Huntsman's Horn, 20 November)
 			if a.has("rounds"):
 				act["rounds"] = int(a["rounds"])   # a golden rage's rounds
 		# What the move does also (16 November: a move is a short list of steps), each a special's
@@ -488,7 +575,8 @@ func make_foe(foe_id: String) -> Foe:
 			act["once"] = true   # a special used once a fight (30 October)
 		acts.append(act)
 	# The first attack leads, so a foe's opening intent is its blow; the rest keep content's
-	# order, the pattern a Disrupt steps through (Skirmish.disrupt_next).
+	# order, the pattern a Disrupt steps through (Skirmish.disrupt_next). A foe with no blow, a
+	# rider-only foe, keeps content's order whole.
 	for i in range(acts.size()):
 		if str(acts[i].get("kind", "")) == "attack":
 			if i > 0:
@@ -576,6 +664,7 @@ func _plate_parts(c: Dictionary, maker: Dictionary, u: Unit) -> Array[String]:
 		names.append(str(vocabulary.get(str(t), {}).get("name", str(t))).to_upper())
 	if not names.is_empty():
 		parts.append(", ".join(names))
+	parts.append("TIER %d" % maxi(u.tier, int(c.get("tier", 1))))
 	parts.append("D%d" % (u.die.size() if u.die != null else 0))
 	return parts
 
@@ -617,7 +706,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	var face_rules: Array = []   # each entry's component passive, its lines on the component's row
 	if u.die != null:
 		for f in u.die.faces:
-			faces.append(f)
+			faces.append(Effects.upgraded_face(u, f))   # at its own numbers, as its steps make it (the Aile Blitzer)
 			face_rules.append([])
 	# The chassis passive is the passive row; a component's passive rides on its row; everything
 	# else the machine carries between fights (a module, a battle's reward, a status the battle
@@ -625,8 +714,12 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	# not as part of the passive, such as modules, auras, battle effects from fracture rewards").
 	# Each row says where it comes from, and the codex colours it by that.
 	var rows: Array = []
+	var stepped: Array = []   # the steps on the passive, listed after it in the order taken
 	var effects: Array = []
 	var kept := {}   # a kept status's row by its id, its stacks summed
+	var piece_steps: Array = []   # each piece's steps, listed after its own lines in the order taken
+	for i in range(faces.size()):
+		piece_steps.append([])
 	for d in Effects.describe(u):
 		if d[3] != Effects.LOADOUT and d[3] != Effects.BATTLE:
 			continue
@@ -637,14 +730,20 @@ func codex_for_unit(u: Unit) -> Dictionary:
 			for i in range(faces.size()):
 				if faces[i].component == d[2]:
 					face_rules[i].append("%s: %s" % [str(d[0]), d[1]])
+		elif d[2] == "branch" and str(d[6]).is_empty():
+			# A step on the passive, or on more than one piece (the Macaque's offhand and its Aile
+			# Booster): under the passive, after it.
+			stepped.push_front(["%s: %s" % [head, d[1]], "chassis"])   # the latest is read first: so I stands before II
 		elif d[2] == "branch":
 			# An upgrade's step (the Storm Petrel's branches, 17 November): on the row of the piece
-			# it tweaks, as that piece's own passive rides there.
+			# it tweaks, as that piece's own passive rides there, after it, I before II.
 			for i in range(faces.size()):
 				if faces[i].component == str(d[6]):
-					face_rules[i].append("%s: %s" % [str(d[0]), d[1]])
+					(piece_steps[i] as Array).push_front("%s: %s" % [str(d[0]), d[1]])
 		elif d[2] == "module":
 			effects.append({"name": head, "text": str(d[1]), "kind": "module", "note": "MODULE"})
+		elif d[2] == "tier":
+			continue   # the machine's tier: its plate says it, its numbers and its pieces show it
 		elif Effects.is_status(str(d[5])):
 			# A status the battle keeps (the Ammit's Essence; its Empowered from 16 October until its
 			# rework of 12 November): its count, kept for the battle, one row a status whatever
@@ -661,6 +760,9 @@ func codex_for_unit(u: Unit) -> Dictionary:
 			effects.append(kept_row)
 		else:
 			effects.append({"name": head, "text": str(d[1]), "kind": "reward", "note": "REWARD"})
+	rows.append_array(stepped)
+	for i in range(faces.size()):
+		(face_rules[i] as Array).append_array(piece_steps[i])
 	var passive_lines: Array[String] = []
 	for r in rows:
 		passive_lines.append(str(r[0]))
@@ -679,6 +781,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		"passive_rows": rows,   # [text, "chassis"]: the chassis's own
 		"effects": effects,     # {name, text, kind ("module" | "reward"), note}: what else it carries between fights
 		"faces": faces,
+		"face_steps": faces.map(func(f: Face) -> int: return Effects.steps_on(u, f)),   # the branch's steps taken on each piece, a chevron each beside its place
 		"face_rules": face_rules,
 		"current": -1,
 		"steps": Effects.steps_die(u),   # a die that steps (the Cassowary's) shows its chambers as a cylinder
@@ -878,12 +981,17 @@ func city_makers() -> Array:
 
 
 ## Tiers (bible section 10, the ledger, 7 October; stored since the stock pass, 22 October). A
-## chassis carries its tier, 1 to 3; every component that is not locked carries its own, 0 to
-## 3: 0 the basics, whose blueprints a run starts with, 1 to 3 found or brought by a bought
-## chassis, and a chassis stocks components up to its own tier, a tier three to tier two
-## (stock_tier). A locked component has
-## none (NO_TIER).
+## chassis carries its tier, 1 to 3; every component that is not locked carries its own, 1 to 3,
+## found or brought by a bought chassis, and a chassis stocks components up to its own tier, a
+## tier three to tier two (stock_tier). A basic is a tier-one piece flagged `basic`, its blueprint
+## owned from a run's start (is_basic; Ryan, 20 November: "Basic is just a flag that says it's in
+## the starting blueprints"; tier zero is no longer a tier, one ladder of three). A locked
+## component has none (NO_TIER).
 const NO_TIER := -1
+
+
+## Content's one standard lift a tier, every chassis's for now (tier_step): {"stats": {stat: n}}.
+var tier_lift: Dictionary = {}
 
 
 func chassis_tier(chassis_id: String) -> int:
@@ -944,14 +1052,20 @@ func chassis_runnable(chassis_id: String) -> bool:
 	return true
 
 
-## The blueprints a run starts with: every basic, a component of tier zero (Ryan, 7 October:
-## each maker's basic defaults; the basics tier zero since the stock pass, 22 October).
+## The blueprints a run starts with: every basic (Ryan, 7 October: each maker's basic
+## defaults; a flag on a tier-one piece since 20 November, is_basic).
 func starting_blueprints() -> Array:
 	var out: Array = []
 	for cid in components.keys():
-		if component_tier(str(cid)) == 0 and component_dealt(str(cid)):
+		if is_basic(str(cid)):
 			out.append(str(cid))
 	return out
+
+
+## Is this component a basic the game deals: a tier-one piece whose blueprint a run starts with
+## (its `basic` flag), never a planned draft and never locked. A basic is never a find.
+func is_basic(component_id: String) -> bool:
+	return component_dealt(component_id) and not is_fixed(component_id) and bool(components[component_id].get("basic", false))
 
 
 ## Is this component in the game's hands today? Not while it is a planned draft: one the
@@ -1401,7 +1515,53 @@ func validate() -> Array[String]:
 	_validate_foes(errs)
 	_validate_factions(errs)
 	_validate_loot(errs)
+	_validate_templates(errs)
 	return errs
+
+
+## A template's forms by a count: CLDR's plural categories (English uses one and other).
+const PLURAL_FORMS := ["zero", "one", "two", "few", "many", "other"]
+const TEMPLATE_KEYS := ["id", "text", "fills", "count", "design"]
+
+
+## The words the game composes (content/templates.json, read by Templates): each a text, or its
+## forms by a count with the other form among them; every brace one of the names its `fills`
+## says the code gives, so a brace the game would print as it stands fails here; a text in forms
+## names the fill its count is.
+func _validate_templates(errs: Array[String]) -> void:
+	if templates.is_empty():
+		errs.append("content/templates.json holds no templates: every line the die and the codex compose reads from it")
+	for id in templates.keys():
+		var e: Dictionary = templates[id]
+		var w := "template %s" % id
+		for k in e.keys():
+			if not TEMPLATE_KEYS.has(str(k)):
+				errs.append("%s: %s is no key of a template's (%s)" % [w, k, ", ".join(TEMPLATE_KEYS)])
+		var fills = e.get("fills", [])
+		if not (fills is Array):
+			errs.append("%s: fills is the list of names the code fills in" % w)
+			continue
+		var names: Array[String] = []
+		for n in fills:
+			names.append(str(n))
+		var t = e.get("text", null)
+		if t is Dictionary:
+			if not (t as Dictionary).has("other"):
+				errs.append("%s: a text in forms has its other form, the one every count falls back to" % w)
+			for k in (t as Dictionary).keys():
+				if not PLURAL_FORMS.has(str(k)):
+					errs.append("%s: %s is no plural form (%s)" % [w, k, ", ".join(PLURAL_FORMS)])
+			if not names.has(str(e.get("count", ""))):
+				errs.append("%s: a text in forms names the fill its count is (count), one of its fills" % w)
+		elif not (t is String):
+			errs.append("%s: text is a string, or its forms by a count" % w)
+			continue
+		for form in Templates.forms_of(t):
+			if form.strip_edges().is_empty():
+				errs.append("%s: a form is empty" % w)
+			for b in Templates.braces(form):
+				if not names.has(b):
+					errs.append("%s: {%s} is filled by nothing; its fills are %s" % [w, b, ", ".join(names) if not names.is_empty() else "none"])
 
 
 ## The caches' kinds (content/loot.json): one a tier, from 1 up with none missing, each a shown
@@ -1468,11 +1628,12 @@ func loot_top_tier() -> int:
 
 
 ## The components a cache of a battle at `item_tier` (1 to 3) may hold, in content order: the
-## tier's unlocked components the engine runs (a locked one is never loot, as never a blueprint).
+## tier's unlocked components the engine runs (a locked one is never loot, as never a blueprint),
+## and never a basic, whose blueprint the run already holds.
 func loot_pool(item_tier: int) -> Array:
 	var out: Array = []
 	for cid in components.keys():
-		if component_tier(str(cid)) == item_tier and str(components[cid].get("status", "")) != "planned":
+		if component_tier(str(cid)) == item_tier and str(components[cid].get("status", "")) != "planned" and not is_basic(str(cid)):
 			out.append(str(cid))
 	return out
 
@@ -1628,6 +1789,20 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 			errs.append("%s: a buff that spends a count grants a stack for each one spent, so it says spends_up_to and no stacks" % where)
 		if str(fd.get("targets", "")) != "self":
 			errs.append("%s: a buff that spends its own machine's count lands on itself (targets self)" % where)
+	# A buff that passes its machine's heat for its stacks (the Puffin's dump, 19 November): a status
+	# the engine knows, the heat a stack stands for, and one ally to pass it to (Ryan, 11 November:
+	# "just allies"), so it says no stacks of its own and reaches no team; it consumes nothing else.
+	if fd.has("passes_heat") or fd.has("heat_per_stack"):
+		if kind != "buff" or not bool(fd.get("passes_heat", false)) or not Effects.STATUS.has(str(fd.get("status", ""))):
+			errs.append("%s: passes_heat is a buff's, granting a status of the engine's for the heat it passes" % where)
+		if int(fd.get("heat_per_stack", 0)) < 1:
+			errs.append("%s: heat_per_stack is the heat a stack of its status stands for: 1 or more, beside passes_heat" % where)
+		if fd.has("stacks"):
+			errs.append("%s: a buff that passes heat grants what the heat makes, so it says heat_per_stack and no stacks" % where)
+		if str(fd.get("targets", "")) != "ally":
+			errs.append("%s: a buff that passes its machine's heat lands on one ally (targets ally)" % where)
+		if fd.has("spends"):
+			errs.append("%s: a buff passes heat or spends a count for its stacks, never both" % where)
 	# A hold on the whole field (the Quintessence Tap's "No Empowered decays this round"): a status that
 	# halves on its own clock, held on every unit through the round's end.
 	if fd.has("holds_all") and (not Effects.decays_to_zero(Effects.STATUS.get(str(fd["holds_all"]), {})) or not Effects.ROUND_HOLDERS.has(str(fd["holds_all"]))):
@@ -1743,11 +1918,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	for rule in ["swaps", "webs"]:
 		if fd.has(rule) and (not (fd[rule] is bool) or kind != "attack"):
 			errs.append("%s: %s is true or false, on an attack" % [where, rule])
-	for key in ["fills_hopper", "fires_hopper"]:
-		if fd.has(key) and (kind != "attack" or int(fd[key]) <= 0):
-			errs.append("%s: %s is a positive number on an attack" % [where, key])
-	if fd.has("fires_hopper") != fd.has("power_per_load") or (fd.has("power_per_load") and int(fd["power_per_load"]) <= 0):
-		errs.append("%s: fires_hopper and a positive power_per_load go together" % where)
+	if fd.has("empties_hopper") and (not (fd["empties_hopper"] is bool) or kind != "attack" or int(fd.get("power", 0)) <= 0):
+		errs.append("%s: empties_hopper is true or false, on a weapon (a strike for every Ore it empties)" % where)
 	# The brace (12 October): spending the entry Armours its owner until its side's next turn begins.
 	if fd.has("braces") and int(fd["braces"]) <= 0:
 		errs.append("%s: braces is a positive number of stacks of Armoured, an armour point each" % where)
@@ -2006,6 +2178,10 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: shield_zap is static: cost, the shield each weapon pays, and value, what it adds to every blow, each 1 or more" % where)
 		if effect == "add_power" and (trig != "static" or int(eff.get("value", 0)) < 1):
 			errs.append("%s: add_power is static: value, what a weapon's own number gains, 1 or more" % where)
+		# The Puffin's pull (19 November): the most of an ally's heat a piece of equipment spent on it
+		# takes onto this machine, a whole number, 1 or more.
+		if effect == "pull_heat" and (trig != "on_buff_granted" or int(eff.get("value", 0)) < 1):
+			errs.append("%s: pull_heat is on_buff_granted's: value, the most of the ally's heat it takes, 1 or more" % where)
 		# A slot (18 November): an effect a later grant in the same slot replaces, its name a word.
 		if eff.has("slot") and (not (eff["slot"] is String) or str(eff["slot"]).strip_edges().is_empty()):
 			errs.append("%s: slot names the place a later grant replaces this effect in: a word" % where)
@@ -2018,6 +2194,44 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 				errs.append("%s: self_status's per_foe is true or false (a set of stacks for every foe the spend reached)" % where)
 			if eff.has("cap") and int(eff["cap"]) < maxi(1, int(eff.get("value", 1))):
 				errs.append("%s: self_status's cap is the most stacks its machine holds, its value or more" % where)
+			# Flat stacks beside a set a foe (the Beam Pavise's "Gain 1 Armoured, plus 1 Armoured for
+			# every foe struck", Ryan, 19 November).
+			if eff.has("plus") and (not bool(eff.get("per_foe", false)) or int(eff["plus"]) < 1):
+				errs.append("%s: self_status's plus is the flat stacks laid beside per_foe's set a foe, 1 or more, with per_foe" % where)
+		# The Macaque's offhand (Ryan, 19 November: "Only its offhand swaps"): a form of its cycle,
+		# its id a content id, its name and its line shown (its chip, the rider on the die), its riders
+		# the effects the form carries while it is up, read as any status's are.
+		if effect == "offhand":
+			if trig != "static":
+				errs.append("%s: offhand is static: a form of the cycle" % where)
+			if str(eff.get("id", "")).strip_edges().is_empty() or not str(eff.get("id", "")).is_valid_identifier():
+				errs.append("%s: an offhand form has an id, a content id (beam_rifle)" % where)
+			if str(eff.get("name", "")).strip_edges().is_empty() or str(eff.get("description", "")).strip_edges().is_empty():
+				errs.append("%s: an offhand form has a name and a description, its chip's and its rider's line" % where)
+			var riders = eff.get("riders", [])
+			if not (riders is Array) or (riders as Array).is_empty():
+				errs.append("%s: an offhand form carries its riders, one or more effects" % where)
+			else:
+				for r in riders:
+					if not (r is Dictionary) or str((r as Dictionary).get("effect", "")) == "offhand":
+						errs.append("%s: an offhand form's rider is an effect, never a form" % where)
+				_validate_passive("%s form %s" % [where, str(eff.get("id", ""))], {"id": str(eff.get("id", "form")), "name": str(eff.get("name", "")), "description": str(eff.get("description", "")), "effects": riders}, errs)
+		# The Beam Rifle's blow on the foe to the right with every strike, and the Beam Sword's hit again
+		# after each, its share of the strike's blow in percent (the Beam Saber's 100).
+		if effect == "side_strike" and (trig != "static" or int(eff.get("value", 0)) < 1):
+			errs.append("%s: side_strike is static: value, what the foe to the right of the target takes with every strike, 1 or more" % where)
+		if effect == "strike_again" and (trig != "static" or int(eff.get("value", 0)) < 1):
+			errs.append("%s: strike_again is static: value, the share of each strike's blow its hit again carries, in percent, 1 or more" % where)
+		# The name an effect gives the piece it is scoped to (the Aile Booster as its Blitzer or its
+		# Assaulter, Ryan, 19 November): shown text, on an effect that names its piece.
+		if eff.has("name") and effect != "offhand" and (not eff.has("entry") or str(eff["name"]).strip_edges().is_empty()):
+			errs.append("%s: an effect's name is the name its piece takes: a word or two, beside the entry it names" % where)
+		# A branch's status in a buff piece's own's place (the Aile Booster's Blitzer and Assaulter).
+		if effect == "buff_status":
+			if trig != "static" or not Effects.MECH_STATUSES.has(str(eff.get("value", ""))):
+				errs.append("%s: buff_status is static: value, the machine buff its piece grants in place of its own, one of %s" % [where, ", ".join(Effects.MECH_STATUSES)])
+			if not eff.has("entry") or str(components.get(str(eff.get("entry", "")), {}).get("face", {}).get("kind", "")) != "buff":
+				errs.append("%s: buff_status names the buff piece it rewrites (entry)" % where)
 		# An effect scaled by a status the machine carries may count it in steps (the Ammit's flare,
 		# 12 November: an Empowered for every five Essence).
 		if eff.has("stack_step") and (not eff.has("per_stack") or int(eff["stack_step"]) < 1):
@@ -2025,8 +2239,11 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		# An effect that fires once a round (the Skua's stack of Ricochet for damaging a foe, Ryan,
 		# 11 November: "once per turn"): a gate on what an event fires (Effects.fire), which the
 		# pipeline's effects (static, on_attack, on_injury) never pass through.
-		if eff.has("once") and (str(eff["once"]) != "round" or ["static", "on_attack", "on_injury"].has(trig)):
-			errs.append("%s: once is \"round\", on an effect an event fires (never static, on_attack or on_injury)" % where)
+		# Or a static grant held once a round (20 November: the Honey Badger's Claw Instant the first
+		# time each turn, the Prairie Dog's first weapon strike on a Brittle foe Rapid), spent as its
+		# spend is made (Effects.mark_once).
+		if eff.has("once") and (str(eff["once"]) != "round" or ["on_attack", "on_injury"].has(trig) or (trig == "static" and effect != "grant_keyword")):
+			errs.append("%s: once is \"round\", on an effect an event fires or a static grant_keyword (never on_attack or on_injury)" % where)
 		# The Cottonmouth's drum (19 October): every weapon and debuff fired as one shot of a flat number,
 		# a reach and a heat; never keyed on reach, which reads the rewrite.
 		if effect == "rewrite_weapon":
@@ -2064,12 +2281,27 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: shield_per_heat is on_heat_gain's: value, the shield a point of heat gained stands up, 1 or more" % where)
 		if effect == "bank_rerolls" and int(eff.get("value", 0)) < 1:
 			errs.append("%s: bank_rerolls's value is the most rerolls the bank carries, at least 1" % where)
-		# The Honey Badger's Ore Hopper (31 October): the loads a foe damaged puts in and the most
-		# the hopper holds; what the loads held are worth, a value for every `per` loads.
+		# The Honey Badger's Ore Hopper (20 November): the Ore a foe damaged puts in and the most the
+		# hopper holds, a raise of that most, and what the Ore is worth: value at `at` held, and
+		# `past` more for each Ore past it.
 		if effect == "fill_hopper" and (int(eff.get("value", 0)) < 1 or int(eff.get("cap", 0)) < 1):
-			errs.append("%s: fill_hopper needs value (the loads a foe damaged puts in, positive) and cap (the most the hopper holds, positive)" % where)
-		if effect == "hopper_plate" and (int(eff.get("value", 0)) < 1 or int(eff.get("per", 1)) < 1):
-			errs.append("%s: hopper_plate needs value (the armour, positive) for each per loads held (positive, 1 by default)" % where)
+			errs.append("%s: fill_hopper needs value (the Ore a foe damaged puts in, positive) and cap (the most the hopper holds, positive)" % where)
+		if effect == "hopper_max" and int(eff.get("value", 0)) < 1:
+			errs.append("%s: hopper_max's value is the Ore it adds to the hopper's most, 1 or more" % where)
+		if effect == "hopper_plate" and (int(eff.get("value", 0)) < 1 or int(eff.get("at", 1)) < 1 or int(eff.get("past", 0)) < 0 or eff.has("per")):
+			errs.append("%s: hopper_plate needs value (the armour, positive) at `at` Ore held (positive), and past (the armour for each Ore past it, 0 or more)" % where)
+		# A machine's weapon strikes counting a status more (the Prairie Dog's Harrier).
+		if effect == "count_status" and (not Effects.STATUS.has(str(eff.get("value", ""))) or int(eff.get("times", 0)) < 2):
+			errs.append("%s: count_status names a status and how many times its strikes count it, 2 or more" % where)
+		# A piece a step remakes whole (the Prairie Dog's Disperser and Repeater): its own entry,
+		# validated as any face.
+		if effect == "piece_form":
+			if str(eff.get("entry", "")).is_empty() or not (eff.get("face") is Dictionary):
+				errs.append("%s: piece_form names its piece (entry) and the face it becomes" % where)
+			else:
+				_validate_face("%s's form" % where, eff["face"], errs)
+		if eff.has("weapon_only") and not (eff["weapon_only"] is bool):
+			errs.append("%s: weapon_only is true or false" % where)
 		if str(eff.get("when", "")) == "target_rank" and not ["front", "back"].has(str(eff.get("rank", ""))):
 			errs.append("%s: target_rank needs rank, front or back" % where)
 		# A reach beside the rank (the Ram Frame's and the Rangefinder's reads, 22 October) reads
@@ -2097,6 +2329,10 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			var numbered := Face.NUMBER_FIELDS.has(Face.keyword_from_name(kw))
 			if eff.has("number") and (not numbered or int(eff["number"]) <= 0):
 				errs.append("%s: grant_keyword's number is a positive number for a numbered keyword (Ablate, Cryo, Brittle, Spread, Penetrate, Chain, Purge)" % where)
+			# A grant that adds to the entry's own number (the Beam Bazooka's: "Two spreads on the same
+			# weapon would combine", Ryan, 19 November), where a grant's number otherwise replaces it.
+			if eff.has("adds") and (not (eff["adds"] is bool) or not eff.has("number")):
+				errs.append("%s: grant_keyword's adds is true or false, beside its number (what it adds to the entry's own)" % where)
 			# An area granted to one debuff (`entry`: the Cryo Flinger's Spread while sealed) carries
 			# no number, as a debuff's printed one does: its effects reach those foes, and it deals
 			# nothing. Any other area grant says what each foe past the target takes.
@@ -2136,7 +2372,7 @@ func _entry_is_debuff(eff: Dictionary) -> bool:
 		return false
 	var fd = components[cid].get("face", {})
 	return fd is Dictionary and str(fd.get("kind", "")) == "attack" and int(fd.get("power", 0)) <= 0 \
-		and not bool(fd.get("vents_all", false)) and not bool(fd.get("spends_shield", false)) and int(fd.get("fires_hopper", 0)) <= 0 and int(fd.get("power_per_missing", 0)) <= 0
+		and not bool(fd.get("vents_all", false)) and not bool(fd.get("spends_shield", false)) and not bool(fd.get("empties_hopper", false)) and int(fd.get("power_per_missing", 0)) <= 0
 
 
 ## Every entry keeps its internal text under `design` (fantasy at least) and nothing
@@ -2349,11 +2585,20 @@ func _validate_chassis(errs: Array[String]) -> void:
 		if makers[id].has("sponsorship") and not SPONSORSHIP_MEASURES.has(str(makers[id]["sponsorship"])):
 			errs.append("maker %s: sponsorship names a measure the run tallies, one of %s" % [id, ", ".join(SPONSORSHIP_MEASURES)])
 	# Tiers (7 October; stored since the stock pass, 22 October): every chassis 1 to 3, and the
-	# capital's maker fields no tier one; every component that is not locked stores its tier, 0
-	# to 3, and a locked one none; the capital's maker makes no basics (tier zero); a chassis
+	# capital's maker fields no tier one; every component that is not locked stores its tier, 1
+	# to 3, and a locked one none; a basic is a tier-one piece (its flag, 20 November), and the
+	# capital's maker makes none; a chassis
 	# stocks components up to its own tier at tiers one and two, and a tier three to tier two (the
 	# bible's tiers row; the validator's half since 11 November, with the Skua's Pod), so a
 	# tier-three component is only ever found.
+	# The standard lift a tier (tier_step): stat lines the engine knows, whole numbers.
+	var lift_stats = tier_lift.get("stats", {})
+	if not (lift_stats is Dictionary):
+		errs.append("tier_lift: stats is a stat -> number map")
+	else:
+		for k in lift_stats.keys():
+			if not Effects.STATS.has(str(k)) or not (lift_stats[k] is float or lift_stats[k] is int) or float(lift_stats[k]) != floorf(float(lift_stats[k])):
+				errs.append("tier_lift: stats %s must be one of %s, a whole number" % [str(k), ", ".join(Effects.STATS)])
 	var capital := capital_maker()
 	var stocked_ids := {}
 	var fixed_ids := {}
@@ -2374,15 +2619,21 @@ func _validate_chassis(errs: Array[String]) -> void:
 			errs.append("component %s: locked on a chassis, so no hardpoint stocks it (a locked component is never a blueprint)" % cid)
 		if components.get(cid, {}).has("tier"):
 			errs.append("component %s: locked on a chassis, so it carries no tier" % cid)
+		if components.get(cid, {}).has("basic"):
+			errs.append("component %s: locked on a chassis, so it is never a basic (no blueprint)" % cid)
 	for cid in components.keys():
 		var c: Dictionary = components[cid]
 		if fixed_ids.has(cid):
 			continue
 		var ct = c.get("tier", null)
-		if not (ct is float or ct is int) or float(ct) != floorf(float(ct)) or int(ct) < 0 or int(ct) > 3:
-			errs.append("component %s: tier must be 0, 1, 2 or 3 (0 the basics, whose blueprints a run starts with)" % cid)
-		elif not capital.is_empty() and str(c.get("maker", "")) == capital and int(ct) == 0:
-			errs.append("component %s: the capital's maker makes no basics (tier zero)" % cid)
+		if not (ct is float or ct is int) or float(ct) != floorf(float(ct)) or int(ct) < 1 or int(ct) > 3:
+			errs.append("component %s: tier must be 1, 2 or 3 (a basic is a tier-one piece with the basic flag)" % cid)
+		elif c.has("basic") and not (c["basic"] is bool):
+			errs.append("component %s: basic is true or absent" % cid)
+		elif bool(c.get("basic", false)) and int(ct) != 1:
+			errs.append("component %s: a basic is a tier-one piece (tier one's power, only simpler)" % cid)
+		elif not capital.is_empty() and str(c.get("maker", "")) == capital and bool(c.get("basic", false)):
+			errs.append("component %s: the capital's maker makes no basics" % cid)
 	for id in chassis.keys():
 		var own := int(chassis[id].get("tier", 0))
 		for cid in chassis[id].get("loadout", []):
@@ -2475,9 +2726,9 @@ func _validate_chassis(errs: Array[String]) -> void:
 ## An upgrade's branches (the bible's tiers row; the Storm Petrel the first to carry them, Ryan,
 ## 17 November): two directions, each a step a pick, as deep as the machine picks (a tier one's
 ## two steps, a tier two's one, a tier three none). A step is a description and the effects it
-## lays, one passive's worth: a tweak to one locked piece, every effect scoped to it (`entry`,
-## one of the chassis's fixed pieces; a chassis with none branches on what stands in their place,
-## when one is written), and never a stat ("more the job for Modules").
+## lays, one passive's worth: a tweak to the locked pieces or the passive, as many as it needs, each
+## effect on a piece scoped to it (`entry`, one of the chassis's fixed pieces), and never a stat
+## ("more the job for Modules").
 func _validate_branches(where: String, c: Dictionary, errs: Array[String]) -> void:
 	var dirs = c["branches"]
 	var tier := int(c.get("tier", 1))
@@ -2516,20 +2767,17 @@ func _validate_branches(where: String, c: Dictionary, errs: Array[String]) -> vo
 			_validate_passive(sw, {"id": "branch", "name": str(d["name"]), "description": st.get("description", ""), "effects": st.get("effects", [])}, errs)
 			if str(st.get("description", "")).strip_edges().is_empty():
 				errs.append("%s: a step says what it does (description)" % sw)
-			var on := {}
 			for eff in st.get("effects", []):
 				if not (eff is Dictionary):
 					continue
 				if ["add_stat", "multiply_stat"].has(str(eff.get("effect", ""))):
 					errs.append("%s: a branch is never a stat (Ryan: \"more the job for Modules\")" % sw)
-				# A step tweaks a locked piece (`entry`), or the passive where the passive carries the
-				# numbers (no entry: Ryan, 18 November, of the Buzzard, "since this passive has numbers
-				# in it, I think one direction buffs the passive, one buffs the cannon").
+				# A step tweaks the locked pieces (`entry`) or the passive (no entry: Ryan, 18 November,
+				# of the Buzzard, "since this passive has numbers in it, I think one direction buffs the
+				# passive, one buffs the cannon"), as many as it needs (19 November: "Things that limit
+				# design space should never be a rule").
 				if eff.has("entry") and not fixed.has(str(eff["entry"])):
 					errs.append("%s: a step tweaks a locked piece, %s, or the passive: an entry names one of them" % [sw, ", ".join(fixed) if not fixed.is_empty() else "none on this chassis"])
-				on[str(eff.get("entry", ""))] = true
-			if on.size() > 1:
-				errs.append("%s: a step tweaks one piece or the passive, its effects all on it" % sw)
 
 
 ## A chassis nickname (or id) that is a machine's name in BattleTech, Heavy Gear, Warhammer
@@ -2555,15 +2803,17 @@ const ACTION_KINDS := ["attack", "defend", "buff", "debuff"]
 const ACTION_STATUSES := ["implemented", "planned"]
 
 
-## A foe's roster of actions: at least one implemented attack (its blow, and the number the
-## player reads), and any defend, buff or debuff actions the engine runs, each picked by
-## weight in its turn; an action the engine cannot run yet is marked planned.
+## A foe's roster of actions: at least one implemented move that lands on a machine, an attack
+## (its blow, and the number the player reads) or a rider-only hit (a debuff, the Half-Gel's
+## Engulf), and any defend, buff or debuff actions the engine runs, each picked by weight in its
+## turn; an action the engine cannot run yet is marked planned.
 func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> void:
 	var acts = f.get("actions", [])
 	if not (acts is Array):
 		errs.append("%s: actions must be a list" % where)
 		return
 	var implemented_attacks := 0
+	var implemented_hits := 0   # rider-only hits: a debuff move, a blow of nothing folded into its riders
 	for a in acts:
 		if not (a is Dictionary):
 			errs.append("%s: each action must be an object" % where)
@@ -2663,11 +2913,17 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 						errs.append("%s: a step's effect is a special's, one of %s" % [sw, ", ".join(_all_effects())])
 					elif str(a.get("status", "")) == "implemented":
 						_validate_effect(sw, st, str(st["effect"]), errs)
+		# A summon that calls back only what its pack has lost (`refill`, 20 November, the Wild
+		# Huntsman's Horn: "a fallen rider rides back"), never more of the kind than rode out.
+		if a.has("refill") and (not (a["refill"] is bool) or str(a.get("effect", "")) != "summon"):
+			errs.append("%s: refill is true on a summon, which then calls back only what its pack has lost" % aw)
 		if str(a.get("status", "")) == "implemented":
 			if str(a.get("kind", "")) != "attack":
 				# A defend, buff or debuff names an effect the engine runs and the fields it reads.
 				var kind := str(a.get("kind", ""))
 				var effect := str(a.get("effect", ""))
+				if kind == "debuff":
+					implemented_hits += 1
 				if not Foe.ACTION_EFFECTS.get(kind, []).has(effect):
 					errs.append("%s: a %s action's effect must be one of %s, got '%s'" % [aw, kind, ", ".join(Foe.ACTION_EFFECTS.get(kind, [])), effect])
 				_validate_effect(aw, a, effect, errs)
@@ -2683,6 +2939,12 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 						errs.append("%s: '%s' belongs to an attack action" % [aw, key])
 			else:
 				implemented_attacks += 1
+				# An attack deals damage (Ryan, 20 November: "We don't need attacks of zero, those fold
+				# into rider only hits same as machines fold weapons into equipment at zero damage"):
+				# a move that deals nothing is a debuff, its riders its effect. A move whose number is
+				# a status's stacks (power) is read live.
+				if Foe.power_status(a).is_empty() and roundf(float(f.get("attack", 0)) * float(a.get("factor", 1.0))) < 1.0:
+					errs.append("%s: an attack deals damage, at least 1 at its foe's attack; a move that deals none is a rider-only hit, a debuff with its effect" % aw)
 				# An attack scales the foe's base attack: factor, not a value of its own, so the
 				# base number stays the player's read of how hard it hits.
 				if a.has("value"):
@@ -2712,10 +2974,8 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 						errs.append("%s: a %s rider says its stacks: %s, a positive number" % [aw, k, k])
 					if a.has(k) and not carried:
 						errs.append("%s: %s (the stacks) rides with the %s keyword" % [aw, k, k])
-					if carried and _halves(k) and int(a.get(k, 0)) < HALVING_MINIMUM:
-						errs.append("%s: a %s rider lays a status that halves, so it says %d at the least: one stack is gone at its first halving" % [aw, k, HALVING_MINIMUM])
-	if implemented_attacks < 1:
-		errs.append("%s: needs at least one implemented attack action" % where)
+	if implemented_attacks + implemented_hits < 1:
+		errs.append("%s: needs at least one implemented move that lands on a machine, an attack or a rider-only hit (a debuff)" % where)
 
 
 ## What a fall's special (`on_death.act`) may carry.
@@ -2798,14 +3058,14 @@ func _validate_effect(aw: String, a: Dictionary, effect: String, errs: Array[Str
 			errs.append("%s: a merge says how much harder its next move hits a foe taken in: value, 1 or more" % aw)
 	# A brace is armour in stacks of Armoured (16 October), a point a stack since 18
 	# October, so its value is its stacks: a positive number.
-	if effect == "brace" or effect == "brace_all":
+	if effect == "brace" or effect == "brace_all" or effect == "brace_beside":
 		var v := int(a.get("value", 0))
 		if v <= 0:
 			errs.append("%s: a brace's value is the armour it grants, in stacks of Armoured: a positive number, got %d" % [aw, v])
 	if int(a.get("value", 0)) < 0 or int(a.get("count", 1)) < 1:
 		errs.append("%s: value cannot be negative; count and weight are at least 1" % aw)
 	# What an effect lays, it says: the stacks, or the rerolls a theft takes (24 October).
-	if ["ablate", "scorch_all", "corrupt_all", "drain_rerolls"].has(effect) and int(a.get("value", 0)) <= 0:
+	if ["ablate", "brittle", "brittle_all", "sap_all", "scorch_all", "corrupt_all", "drain_rerolls"].has(effect) and int(a.get("value", 0)) <= 0:
 		errs.append("%s: %s says what it lays: value, a positive number" % [aw, effect])
 	# A swallow (30 October) says the rounds its machine is out, 1 to 3: hard control on
 	# the team, held short.
@@ -2822,7 +3082,7 @@ func _validate_effect(aw: String, a: Dictionary, effect: String, errs: Array[Str
 ## and a Brittle 1 were gone before the foes' next turn. His exit, for a move several foes may
 ## roll at once: "we just tweak the ability to say something like "apply 2 if none, otherwise
 ## 1."" Read off the status's own clock, so a status that stops halving leaves the rule.
-const HALVING_LAID := {"brittle": "brittled_mech", "rally": "kindled"}
+const HALVING_LAID := {"brittle": "brittled_mech", "brittle_all": "brittled_mech", "rally": "kindled"}
 const HALVING_MINIMUM := 2
 static func _halves(move: String) -> bool:
 	return HALVING_LAID.has(move) and Effects.decays_to_zero(Effects.STATUS.get(str(HALVING_LAID[move]), {}))
@@ -2919,6 +3179,24 @@ func _validate_foes(errs: Array[String]) -> void:
 		# what it took from the hull; a rider on a blow until 16 November.
 		if f.has("drains") and not (f["drains"] is bool and f["drains"]):
 			errs.append("%s: drains is true or left out: every blow of the foe's regrows what it takes from a hull" % where)
+		# A foe that strikes only when buffed (the goblins', Ryan, 20 November: "goblins only attack
+		# when they have any buff, or are predicted to get one"): an Ability on the unit, so it has
+		# a blow to strike with and a move that is no blow for the rounds it holds no buff.
+		if f.has("strikes_when_buffed"):
+			if not (f["strikes_when_buffed"] is bool and f["strikes_when_buffed"]):
+				errs.append("%s: strikes_when_buffed is true or left out: the foe strikes only with a buff on it or one coming" % where)
+			else:
+				var blows := 0
+				var others := 0
+				for a in f.get("actions", []):
+					if str(a.get("status", "implemented")) == "planned":
+						continue
+					if str(a.get("kind", "attack")) == "attack":
+						blows += 1
+					else:
+						others += 1
+				if blows < 1 or others < 1:
+					errs.append("%s: strikes_when_buffed needs a blow for the rounds it holds a buff and a move that is no blow for the rest" % where)
 		# An immunity (Ryan, 15 November: "not as a blanket for all bosses, but for ones who need
 		# it for their fight to actually do something"): an Ability on the unit, a Suppress or a
 		# Disrupt that never lands on it, always or while the move it names gathers.

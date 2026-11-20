@@ -1282,14 +1282,18 @@ func test_greedy_reads_a_countdown_a_core_and_a_last_act() -> void:
 	var howler := Foe.make("gargantuan_king", 30, 20)
 	howler.on_death = {"act": Foe.fall_act_from({"name": "Last Howl", "effect": "rally", "value": 2})}
 	var root := Foe.make("gargantuan_king", 30, 20)
-	root.on_death = {"act": Foe.fall_act_from({"name": "Last Scream", "effect": "drain_rerolls", "value": 1})}
+	root.on_death = {"act": Foe.fall_act_from({"name": "Last Scream", "effect": "brittle", "value": 2})}
+	var loud := Foe.make("gargantuan_king", 30, 20)
+	loud.on_death = {"act": Foe.fall_act_from({"name": "Loud Scream", "effect": "brittle_all", "value": 2})}
 	var s4 := Skirmish.new(1, 3)
 	s4.add_mech(_mech("A", Die.single(Face.attack(40, I)), 0, 100))
-	s4.add_foes([howler, root, Foe.make("gargantuan_king", 30, 20)])
+	s4.add_foes([howler, root, loud, Foe.make("gargantuan_king", 30, 20)])
 	s4.begin()
 	s4.start_round()
 	assert_true(is_equal_approx(Policy.last_act_cost(s4, howler), 2.0 * 2.0 * Policy.HULL_WEIGHT), "a fall that rallies costs its number on each foe still standing")
-	assert_true(is_equal_approx(Policy.last_act_cost(s4, root), Policy.REROLL_SHARE * 40.0), "one that drains, a reroll's worth")
+	assert_eq(Policy.last_act_cost(s4, root), 0.0, "a scream at its killer, with no killer, costs nothing")
+	assert_true(is_equal_approx(Policy.last_act_cost(s4, root, s4.mechs[0]), 3.0 * Policy.HULL_WEIGHT), "with one, its Brittle 2 and the 1 it halves to, a point a blow")
+	assert_true(is_equal_approx(Policy.last_act_cost(s4, loud), 3.0 * Policy.HULL_WEIGHT), "a scream at every machine costs that on each, whoever kills it")
 	# A curse lands on the machine that makes the kill: the one weighing the spend pays for it.
 	var gazer := Foe.make("gargantuan_king", 30, 20)
 	gazer.on_death = {"act": Foe.fall_act_from({"name": "Last Gaze", "effect": "jam"})}
@@ -1306,8 +1310,8 @@ func test_greedy_reads_a_countdown_a_core_and_a_last_act() -> void:
 	assert_true(is_equal_approx(Policy.last_act_cost(s4, binder), -30.0), "one foe it readied stands: its fall pays that foe's HP, and no other's")
 	Effects.remove(howler, "risen")
 	Effects.remove(root, "risen")
-	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"], "also": [{"effect": "drain_rerolls", "value": 1}]})}
-	assert_true(is_equal_approx(Policy.last_act_cost(s3, beast), 20.0 * Policy.HULL_WEIGHT + Policy.REROLL_SHARE * 40.0), "and a blow's steps add to its blow")
+	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"], "also": [{"effect": "brittle_all", "value": 2}]})}
+	assert_true(is_equal_approx(Policy.last_act_cost(s3, beast), 20.0 * Policy.HULL_WEIGHT + 3.0 * Policy.HULL_WEIGHT * float(s3.live_mechs().size())), "and a blow's steps add to its blow")
 	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}
 	beast.target = s3.mechs[0]
 	calm.target = s3.mechs[0]
@@ -1579,15 +1583,15 @@ func test_blind_play_spends_on_the_nearest_foe_and_its_own_machine() -> void:
 
 
 ## The bot reads a Gel's pair as the resolver does (26 October): a Spread filling the hopper
-## beside a twin slot loads for both halves.
+## beside a twin slot fills for both halves.
 func test_the_bot_counts_both_halves_of_a_pair() -> void:
 	var sk := Skirmish.new(3, 3)
 	var fill := Face.attack(3, L, K.CLEAVE)
-	fill.fills_hopper = 1
 	var fire := Face.attack(3, L)
-	fire.fires_hopper = 6
-	fire.power_per_load = 1
-	sk.add_mech(_mech("A", Die.of([fill, fire])))
+	fire.empties_hopper = true
+	var a := _mech("A", Die.of([fill, fire]))
+	a.grant_passive({"id": "ore", "name": "Ore", "description": "", "effects": [{"trigger": "static", "effect": "fill_hopper", "value": 1, "cap": 6}]})
+	sk.add_mech(a)
 	var target := _ghoul(500, 10)
 	sk.add_foes([target, _ghoul(400, 10)])
 	sk.begin()

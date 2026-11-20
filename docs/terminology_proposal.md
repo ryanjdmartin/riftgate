@@ -355,8 +355,8 @@ Drafts, for the eye; none lands before the marks.
 
 - **One bug, fixed.** The Baboon's Retrocausal Shroud and the Giant Petrel's Immelmann Booster
   are buffs that grant no status. Their readout and codex row said "Grants  ×1", a Grants line
-  with no name. They now say "Buff", the way a debuff says "Debuff" (`EntryReadout.effects_of`;
-  a check in `tests/test_screen.gd`).
+  with no name. They now say "Buff", the way a debuff says "Debuff", from the template a foe's
+  buff move uses (`kind.buff`; `EntryReadout.effects_of`; a check in `tests/test_screen.gd`).
 - **Left for the build**, since the fix needs the standard's words: the Nemesis's Knuckles of
   Fury read "5 rage: 5 instant (+6 heat)", and the Swallowtail's charged forms (in design) read
   "A muster: indirect expose suppress (+1 heat)". In both, a charged form prints the engine's
@@ -365,18 +365,18 @@ Drafts, for the eye; none lands before the marks.
 
 ## 6. The build, once marked
 
-1. **The code's lines**, one commit each, along with the tests that read those strings: the die's
-   readout and the codex's rows (`EntryReadout`, `Face.rule_phrases`, the charged forms); a
-   move's lines (`EntryReadout.move_lines`, `MOVE_TARGETS`, `Foe.WHEN_TEXT`); the passives'
-   generic words (`Effects.effect_text`); the chips (`SkirmishScreen.status_row` and the ability
-   rows); the plates (`ContentDB.codex_for_unit`, `codex_for_foe`); and the log.
+1. **The templates' words.** Since 20 November the die's readout, the codex's rows and a foe
+   move's lines are content (`content/templates.json`, filled by `sim/templates.gd`), and he
+   edits them on the Text tab's Templates view; so the standard reaches them as drafts there,
+   one commit a group, along with the tests that read those strings. What the code still
+   composes on its own follows: the passives' generic words (`Effects.effect_text`), the chips
+   (`SkirmishScreen.status_row` and the ability rows), the charged forms (`Face.describe`) and
+   the log.
 2. **The lints**, added to `tools/hangar_text.py`'s `lints()` beside the two it already has
-   ("face", "damaging weapon"), so the Text tab flags any text that breaks the standard. They
-   would catch the words that left (rules 1, 4, 5, 13, 22, 29), a bare "until its next turn",
-   ×N after a status, "Apply … on hit", the distributive "a", a term in lower case, and a tip's
-   opening kind and its length. The code's other composed lines would also be listed on the
-   Text tab, read-only as the status lines and (since 19 November) a move's target words are,
-   so he can see what the die says.
+   ("face", "damaging weapon"), so the Text tab flags any text or template that breaks the
+   standard. They would catch the words that left (rules 1, 4, 5, 13, 22, 29), a bare "until
+   its next turn", ×N after a status, "Apply … on hit", the distributive "a", a term in lower
+   case, and a tip's opening kind and its length.
 3. **The drafts**, kind by kind, one commit each: the tips, the moves' rule clauses, the
    how-it-fights sentences on foe pages, the passives, the module rules. `docs/vocabulary.md` and
    the bible's tables are regenerated after each.

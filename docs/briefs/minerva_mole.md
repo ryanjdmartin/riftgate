@@ -31,7 +31,7 @@ word above. The other directions stay for the session:
   carries damage past a kill into the foe behind, so the mole parts from it by not needing the
   kill.
 - **Deeper each bite.** A drill that bores: each hit on a foe it has already hit this fight deals a
-  point more. The line frame's combo counts blows on anything; this counts blows on one foe.
+  point more. The Macaque's combo counts blows on anything; this counts blows on one foe.
 - **The burrow** (from the bench, 17 October; Ryan called it "hilarious"). Spent on itself, it goes
   under and every foe aiming at it re-picks. That form was broken on the spider and was a reverse
   Lure without the choice. It was sound only with Phased's rule as it then stood (only before it

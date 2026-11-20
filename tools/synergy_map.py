@@ -96,13 +96,14 @@ KEYWORDS = {
 }
 # A face field and what it sets or reads.
 FACE_FIELDS = {
-    "braces": [("braced", "sets")], "fills_hopper": [("hopper", "sets")],
-    "fires_hopper": [("hopper", "reads")], "detonates": [("mine", "reads")],
+    "braces": [("braced", "sets")],
+    "empties_hopper": [("hopper", "reads")], "detonates": [("mine", "reads")],
     "gathers_mines": [("mine", "reads")], "vents_all": [("heat", "reads")], "power_per_heat": [("heat", "reads")],
     "spends_shield": [], "power_per_shield": [],   # the Shield-burner Cannon's whole shield into the shot (18 November): no currency of this map's
     "power_per_missing": [("missing_hp", "reads")], "finisher": [("missing_hp", "reads")],
     "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "self_statuses": [],
     "spends": [("essence", "reads")], "spends_up_to": [], "holds_all": [("overcharged", "reads")],   # the Quintessence Tap: it consumes Essence, and holds every Empowered a round
+    "passes_heat": [("heat", "reads"), ("ally_heat", "sets")], "heat_per_stack": [],   # the Puffin's dump (19 November): its heat onto an ally, a buff by the heat
     "spends_magazine": [("ammo", "reads")], "magazine_min": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
     "self_ablate": [("ablating_mech", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
     "vents": [], "cooldown": [], "charged": [("muster", "reads")],
@@ -117,7 +118,7 @@ FACE_FIELDS = {
 EFFECTS = {
     "seal_form": [("sealed", "sets"), ("braced", "sets"), ("heat", "sets")],
     "paradox": [("paradox", "sets"), ("suppressed", "sets")], "muster": [("muster", "sets"), ("reroll", "reads")],
-    "shield_per_ally_heat": [("ally_heat", "reads"), ("shield_granted", "reads")],
+    "pull_heat": [("ally_heat", "reads"), ("heat", "sets")],   # the Puffin's pull (19 November): an ally's heat onto its own gauge
     "add_stacks": [], "reboot_release": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
     "heat_per_blow": [("heat", "sets")],
     "step_die": [("reroll", "reads")], "split_strikes": [("strikes", "sets")], "multiply_printed": [], "free_reroll": [("reroll", "sets")],
@@ -129,7 +130,7 @@ EFFECTS = {
     "shield_zap": [], "add_power": [],   # the Buzzard's zap and its Burst's raise of the cannon's number (18 November)
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
 }
-TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_granted": "shield_granted", "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",
+TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_granted": "shield_granted", "on_buff_granted": None, "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",
             "on_foe_status": "paradox_feed", "on_stack": None, "on_attack": None, "static": None,
             "on_injury": None, "on_skirmish_start": None, "on_shield_gain": None, "on_damage": None}
 CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None,
@@ -137,7 +138,7 @@ CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "ra
 # A foe move's riders and effects, on machines.
 FOE_RIDERS = {"ablate": "ablating_mech", "brittle": "brittled_mech", "scorch": "scorched", "jam": "disabled", "corrupt": "corrupted", "expose": "exposure_mech"}
 FOE_EFFECTS = {"ablate": "ablating_mech", "scorch_all": "scorched", "jam": "disabled", "corrupt_all": "corrupted", "expose": "exposure_mech", "drain_rerolls": "reroll",
-               "brace": "foe_buff", "brace_all": "foe_buff", "rally": "foe_buff", "revive_once": "foe_buff", "revive_once_ally": "foe_buff",
+               "brace": "foe_buff", "brace_all": "foe_buff", "brace_beside": "foe_buff", "rally": "foe_buff", "revive_once": "foe_buff", "revive_once_ally": "foe_buff",
                "prime_all": "foe_buff", "barrier": "foe_buff", "ward_all": "foe_buff", "regenerate": "foe_buff", "phase": "foe_buff"}
 
 # The engine's own readers, where a currency pays by itself (the rules, docs/rules.md).
@@ -236,7 +237,7 @@ class Map:
                         self.add(cur, how, p)
             for k, v in f.items():
                 if k in ("kind", "reach", "power", "keywords", "heat", "targets", "status", "stacks", "rounds",
-                         "ablate", "brittle", "cryo", "cleave", "penetrate", "gates", "consumes", "per_consumed", "per_heat", "per_missing", "power_per_load", "per_shield"):
+                         "ablate", "brittle", "cryo", "cleave", "penetrate", "gates", "consumes", "per_consumed", "per_heat", "per_missing", "per_shield"):
                     continue
                 if k not in FACE_FIELDS:
                     self.unmapped.append("%s: face field %s" % (e["name"], k))

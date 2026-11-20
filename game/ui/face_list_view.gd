@@ -19,6 +19,7 @@ var labels: Array = []    # optional, one per face: the component's name above i
 var first_place: int = 1  # the first face's place on its die
 var tiles_only := false   # the numeral and the tile, no description (the codex's rows)
 var numerals: bool = true # each row's place on its die; off for a list of pieces that are no die (the quick campaign's stores and picks)
+var upgrades: Array = []  # optional, one per face: the branch's steps its machine has taken on it, a chevron each under its place (the die's own)
 
 
 func _init() -> void:
@@ -56,6 +57,9 @@ func _draw() -> void:
 		if numerals:
 			draw_string(Hud.quote(), Vector2(x0, y + 5.0 + MINI * 0.5 + 6.0), Hud.roman(i + first_place), HORIZONTAL_ALIGNMENT_RIGHT, GUTTER - 3.0, 17,
 					Color(Palette.MUTED, 1.0 if i == current else 0.75))
+			var steps := int(upgrades[i]) if i < upgrades.size() else 0
+			if steps > 0:
+				DieFaceView.draw_chevrons(self, Vector2(x0 + GUTTER - 3.0 - DieFaceView.CHEVRON_W * 0.8, y + 5.0 + MINI * 0.5 + 12.0), steps, Palette.INK, 0.8)
 		x0 += GUTTER
 		var rect := Rect2(Vector2(x0 + 6.0, y + 5.0), Vector2(MINI, MINI))
 		var cur := i == current

@@ -11680,6 +11680,77 @@ again, every squad of the pool, forty fights a formation's cell and thirty an el
 A point at the most: the bot gives a little hull to keep its stacks, and the fights stand
 where they were sized. 1332 tests, green.
 
+
+## 19 November: the Skua's ramp under the reboot, and what it is worth
+
+`tools/reboot_probe.gd`, as the entries above: the Skua first in a squad beside the Honey
+Badger, the Prairie Dog and the Cassowary, the greedy bot; tier one's formations and elites, 21
+compositions at 8 seeds (168 fights), and its bosses alone, 13 at 6 seeds (78), on main at
+`0c6dfc7`. The probe counts Ricochet since this entry: its peak stacks a fight and its halvings
+(hull damage halving the stacks), and lays the what-ifs over its fight loop: `ricochet_spared`
+(no halving while it reboots), `ricochet_kept` (none at all), `no_ricochet` (no stack held into
+a round, so what the ramp is worth). The two rider guns are content edited for the read and put
+back: each in the Twin Autoguns' slot of its stock.
+
+| The Skua | Formations: rounds, own hull, squad | Bosses: rounds, own hull, squad | Peak stacks: formations, bosses | Halvings a fight (while rebooting): formations, bosses |
+|---|---|---|---|---|
+| As built | 5.0, 7%, 7% | 7.3, 20%, 18% | 3.4, 5.0 | 0.29 (0.03), 0.67 (0.09) |
+| Spared while it reboots | 5.0, 7%, 7% | 7.3, 19%, 18% | 3.4, 5.1 | as built |
+| Never halved | 5.0, 7%, 7% | 7.2, 20%, 18% | 3.6, 5.5 | as built |
+| No ramp at all | 5.2, 8%, 8% | 8.0, 20%, 19% | 1.4, 1.8 | |
+| The Incendiary Shells (Ablate 2) in stock | 4.7, 7%, 7% | 6.4, 16%, 15% | 3.3, 4.5 | 0.43, 0.85 |
+| The Airburst Shell (Brittle 1, Spread 1) in stock | 4.8, 6%, 7% | 6.7, 15%, 14% | 3.2, 4.5 | 0.28, 0.67 |
+
+What it says. The reboot does not break its ramp, against the proposal's read of 17 November:
+the bot halves its stacks a third of a time in a formation fight and two thirds against a boss,
+almost never while it reboots (it reboots when no blow is coming), and sparing the stacks, or
+never halving them, moves nothing. What caps the ramp is how little it is worth as stocked: with
+every stack stripped each round it loses 0.2 rounds of a formation fight and 0.7 of a boss
+fight. Its fights end near its peak (3.4 stacks in five rounds, 5 in seven), its stock guns lay
+no rider, so a bounce is a bare point, and plate stops a bounce: 5 of tier one's 13 bosses carry
+a point of armour. One rider gun in its stock does more than the whole ramp as built, a boss
+fight 0.6 to 0.9 rounds shorter and the squad 3 to 4 points of hull better off, every bounce
+laying the rider again (Ryan's "applying all effects"); Ablating passes plate besides. A
+direction at 78 fights a build; his call on the kit.
+
+## 19 November: the Kite's kill that mends, on the sized foes
+
+`tools/reboot_probe.gd` as the entries above, the Kite first in the squad, 168 formation and
+elite fights and 78 boss fights, with the two what-ifs the probe carried for its lean: a bot
+that fights a broken Kite on when its die would fell a foe, and that bot with a kill of its own
+mending a broken shield. On `ccr-178e0404-ptuh2m` over main at `0c6dfc7`.
+
+| The Kite | Formations: rounds, own hull, wrecked, squad | Bosses: rounds, own hull, wrecked, squad |
+|---|---|---|
+| As built | 4.7, 8%, 2%, 7% | 7.2, 30%, 6 of 78, 19% |
+| Fights on with its shield broken | 4.7, 9%, 2%, 8% | 7.1, 30%, 6 of 78, 19% |
+| That, and a kill mends a broken shield | 4.7, 9%, 2%, 7% | 7.1, 30%, 6 of 78, 19% |
+
+What it says. The mend moves nothing: a boss fights alone, so there is almost nothing to kill,
+and in the formations the Kite is whole already. Its losses against a boss are its design, a
+glass cannon in a long fight. Ryan left it as built ("Leave it. Move on."), and the probe's
+what-ifs for the Kite and the Skua went with their leans.
+
+## 19 November: the Cottonmouth's pace under the reboot
+
+`tools/reboot_probe.gd` as the entries above, 168 formation and elite fights and 78 boss
+fights, the machine read first in the squad: the Cottonmouth and the Storm Petrel on
+`ccr-178e0404-ptuh2m` over main at `0c6dfc7`; then the Cottonmouth with its drum's shot at heat
+4 in place of 6 (content edited for the read and put back), the lever the proposal named.
+
+| The machine | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, wrecked, squad |
+|---|---|---|
+| The Cottonmouth as built | 5.4, 21%, 8%, 7% | 9.3, 20%, 22%, 1 of 78, 21% |
+| Its drum at heat 4 | 5.1, 15%, 8%, 7% | 9.1, 16%, 22%, 3 of 78, 20% |
+| The Storm Petrel | 5.6, 22%, 3%, 6% | 9.3, 24%, 11%, 1 of 78, 15% |
+
+What it says. It reboots on a fifth of its turns, the roster's ordinary pace (the Storm Petrel
+22% to 24%, the Kite 21% to 25%), so the reboot did not break its pace; a drum at heat 4 brings
+it to the Skua's 15% and its fights a third of a round shorter. Against a boss alone it is the
+weakest squad read, the squad losing 21% over 9.3 rounds: its shot's Spread and Penetrate find
+no neighbour there, so it is a flat 4 at heat 6, an area machine's design. In the formations, its
+home, it reads level with the rest.
+
 ## 19 November: every domain's kit and sizing at the baseline
 
 Ryan: "Keep going on all domains, adjusting kits and sizing for convergence 2 as our baseline
@@ -11888,3 +11959,288 @@ fights. The Reaper read 15.8% without the Barrier at thirty and 30.5% at ninety 
 it), so its first row was grain; the Thunder Ape reads 17.4% and 16.2% at ninety, at the low
 edge of the elites. Every fight is won nineteen times in twenty or more. Read: the squad is a
 point or two stronger against the leaders and no fight leaves its band, so nothing is resized.
+
+## 19 November: the pickets, three and two of each domain's commonest front-liner
+
+On Ryan's "lets just standardize it to 3 of the default frontliner for each domain (goblin,
+needler, revenant, salamander?)": a flank patrol of the domain's commonest tier-one
+front-liner, read as scratch compositions beside the lone duelists (`tools/anchor_read.gd`,
+every squad of the pool of the size asked, five seeds, the greedy bot; hull a share of a
+four's). The Barrier basic changes no row by more than half a point.
+
+| Picket | Three, one machine on it | Three, two on it | Two, one on it |
+|---|---|---|---|
+| Goblins | 7.6%, won 93% | 0.1% | 1.7% |
+| Needlers | 13.1%, won 83% | 0.5% | 2.6% |
+| Revenants | 4.1% | 0.0% | 0.0% |
+| Salamanders | 16.7%, won 70%, 2.3 reboots | 1.6% | 4.6% |
+| The lone duelists beside them | 2.6% to 3.8% | 0.0% | |
+
+Read: three of each fits a lone flanker's thirtieth in the Marsh alone, and the Needlers and
+the Salamanders, the heavy front-liners, cost a lone machine four and five times it and lose
+it a fight in six and three in ten. With two machines on them every picket is nearly free, so
+a rating of two would ask for a machine it does not need. Not landed: the count is his.
+
+## 19 November: a foe's jam waiting for the reboot
+
+On Ryan's "Lets change Jammed to lasting until Reboot, that closes the cockatrice hole", read
+as a what-if before it was built (the anchor read, every squad of the pool of the fight's
+rating, four seeds; the bot rebooting for a jam that waits when no blow is coming its way or a
+third of its die is dark). Hull a share of a four's; each cell as built, then waiting.
+
+| Fight | Without the Barrier | With the Barrier basic | Reboots a machine, as built and waiting |
+|---|---|---|---|
+| The lone Whisker Cat | | 3.8%, 3.6% | 0.88, 0.92 |
+| The needler thicket (four Cockatrices) | | 8.3%, 9.7% | 0.91, 1.27 |
+| The sandworm's ambush (two) | | 5.7%, 5.6% | 1.24, 1.26 |
+| The Rust Monster | 24.1%, 24.6% | 25.4%, 24.7% | 1.27, 1.46 |
+| Gilgamesh | 18.3%, 18.7% | 7.6%, 8.0% | 1.54, 1.66 |
+| The Wild Hunt | 13.7%, 14.2% | 9.5%, 11.2% | 0.85, 1.09 |
+| The Thunder Ape | 16.5%, 16.6% | 15.9%, 17.4% | 1.02, 1.14 |
+| The Emperor Scorpion | 24.4%, 22.1% | 16.7%, 15.4% | 1.80, 1.94 |
+
+Read: in hull it costs the thicket a point and a half and the rest nothing, since a tier-one
+fight ends in five to eight rounds and a quiet round's reboot clears it; what it changes is the
+reboots, a tenth to a third more a machine. Built the same day as the rule: the reboot's drop
+lights every jammed entry, the die's foot shows the reboot's mark in place of a count, and the
+what-if left with it.
+
+## 19 November: a purging boss, three read
+
+On Ryan's "A purging boss or elite does sound like something we should have, not
+uncommonly": three of the Waste's elites purge ahead of a blow and no boss does. Three
+bosses read with a Purge 1 ahead of their main blow, by fantasy, as scratch content (the
+anchor read, every squad of four of the pool, four seeds; hull a share of a four's).
+
+| Boss, the blow | Without the Barrier, as built and purging | With the Barrier basic |
+|---|---|---|
+| The King Gel, its Body Slam | 26.5%, 31.0% | 14.5%, 29.5% |
+| The Emperor Scorpion, its Twin Shear | 22.1%, 27.7% | 15.4%, 19.7% |
+| The Vampire Lord, its Drain | 27.7%, 31.9% | 10.7%, 31.5%, won 93% |
+
+Read: a purge on a boss's main blow costs the squad the leaders are sized for four to six
+points, what it puts up being Armoured and a Ricochet's stacks, and the squad with the
+Barrier basic pays what that squad pays, so where a boss purges the Barrier is no pass. Each
+would want its blow a point lower to stay in band. Not landed: which leaders purge is his.
+
+## 19 November: the roots' scream as Brittle 2 on its killer
+
+On Ryan's "Mandragora can be brittle on killer for t1, and it's higher variations can brittle
+the whole team": the Mandragora's reroll drain against Brittle 2 on its killer, 2 the least a
+status that halves may lay (`tools/anchor_read.gd`, the pool of the six real tier ones, every
+squad of three, six seeds, 120 fights a formation; main at `473a135` before, the change after).
+Hull a share of a four's; every fight won in both.
+
+| Formation (its roots) | The drain | Brittle 2 on its killer |
+|---|---|---|
+| The goblin horde (four) | 3.0% | 4.9% |
+| The treant grove (two) | 5.1% | 5.5% |
+| The gel wall (two) | 5.7% | 6.2% |
+| The mean | 4.6% | 5.5% |
+
+Read: about a point of a four's hull a formation, most where the roots are most, the horde
+staying inside a formation's twentieth and the mean half a point past it. Four roots pulled by
+one machine leave it Brittle 8; the bot prices the curse on the killer as it weighs each kill. The first battle's sizing is his; the higher roots, at tiers two and three,
+wait for the numbers pass.
+
+## 20 November: his kit marks, read before and after
+
+On Ryan's marks of 20 November: the roots' Root Lash corrupts ("I'd give them corrupt on every
+blow"), the Emperor Scorpion's Paralytail leaves Ablating 2 ("Sap, brittle or ablate is more
+fitting", the Ablate the session's pick) and the Fell Rider's Shriek Saps every machine ("Fell
+rider shriek probably wants Sap on there, thematically"). `tools/anchor_read.gd`, the pool of the
+six real tier ones, every squad of the fight's rating, six seeds a formation's squad and four a
+leader's; main at `0bfbadf` before. Hull a share of a four's; every fight won.
+
+| Fight | Before | After |
+|---|---|---|
+| The goblin horde, three machines | 4.9% | 9.7% |
+| The treant grove | 5.5% | 6.9% |
+| The gel wall | 6.2% | 12.7% |
+| The Emperor Scorpion, without the Barrier basic | 22.1% | 29.4% |
+| The Emperor Scorpion, with it | 15.4% | 22.8% |
+| The Fell Rider's hunt, without | 20.0% | 20.9% |
+| The Fell Rider's hunt, with | 8.5% | 9.0% |
+
+Read: the corrupting roots double the horde and the gel wall, two formations' twentieth each, the
+bleed growing with the gel wall's longer fight; the Scorpion's venom adds seven points, its
+Paralytail a frequent move; the Shriek's Sap moves the Fell Rider a point at the most.
+
+Sized after: the Mandragora at 3 HP, so one basic shot pulls one, and the Scorpion's Paralytail
+at half its attack where it was three quarters, its venom paid by its blow. The same read on a
+scratch tree with both:
+
+| Fight | His marks | Sized |
+|---|---|---|
+| The goblin horde | 9.7% | 7.3% |
+| The treant grove | 6.9% | 5.9% |
+| The gel wall | 12.7% | 11.0% |
+| The Emperor Scorpion, without the Barrier basic | 29.4% | 23.5% |
+| The Emperor Scorpion, with it | 22.8% | 20.4% |
+
+Read: the Scorpion is back in its band for the squad the leaders are sized for, the venom's
+Ablating passing the Barrier as a tick does; the horde and the gel wall stay over their twentieth,
+the gel wall's long fight feeding the bleed, for the formation pass and the goblins' wall.
+
+## 19 November: the Polar Bear beside the Honey Badger, on the sized foes
+
+`tools/reboot_probe.gd` as the entries above, 168 formation and elite fights and 78 boss fights,
+each machine read first in the squad, on main at `0c6dfc7` with this branch's records.
+
+| The machine | Formations: rounds, sealed, own hull, squad | Bosses: rounds, sealed, own hull, squad |
+|---|---|---|
+| The Polar Bear (tier two) | 5.9, 4% of its turns, 7%, 9% | 10.0, 5%, 17%, 21% |
+| The Honey Badger (tier one) | 5.0, none, 5%, 7% | 7.6, none, 9%, 15% |
+
+What it says. The bot seals it on a twentieth of its turns: it seals only by spending
+equipment on itself, and the bot spends its Shoring Jack on its allies. So this is a read of an
+open bear, three basic guns on 40 hull, and says little of its shell. Ryan left it as built.
+
+## 19 November: the Puffin's pull and dump, with its dump's buff and without
+
+`tools/reboot_probe.gd` as the entries above, 168 formation and elite fights and 78 boss fights,
+each machine read first in the squad beside the Honey Badger, the Prairie Dog and the
+Cassowary, on `ccr-178e0404-ptuh2m` at `361095c` (the Puffin built: a pull of 4 on equipment
+it spends on an ally, its lock passing its whole heat to an ally for Empowered 1 for every 2).
+The what-ifs are the probe's own options: `--dump-per 0` (the dump grants nothing), `--dump-per 1`,
+`--pull 8`, and `--stock` with the Shoring Jack in the Twin Autoguns' place. "Mates" is the share
+of the other three machines' turns given to a reboot.
+
+| The read | Formations: rounds, own hull, squad, mates | Bosses: rounds, own hull, squad, mates | Pulls a fight, heat each (formations; bosses) | Dumps a fight, heat each (formations; bosses) |
+|---|---|---|---|---|
+| The Puffin as built | 6.0, 14%, 11%, 17% | 10.1, 32%, 24%, 17% | 1.04, 3.9; 2.01, 3.9 | 0.51, 6.6; 1.00, 6.6 |
+| Its dump granting nothing | 6.1, 14%, 11%, 16% | 10.1, 31%, 24%, 18% | 1.14, 3.8; 1.85, 3.9 | 0.20, 8.6; 0.58, 8.2 |
+| Its dump at Empowered 1 for every 1 | 5.7, 13%, 11%, 17% | 9.1, 29%, 21%, 18% | 0.98, 3.9; 1.90, 3.9 | 0.71, 6.1; 1.44, 6.3 |
+| A pull of 8 | 6.0, 13%, 11%, 17% | | 0.89, 5.9 | 0.58, 7.4 |
+| A third ally buff (the Shoring Jack for the Twin Autoguns) | 6.1, 13%, 10%, 17% | 10.9, 32%, 23%, 18% | 1.57, 3.9; 3.09, 3.9 | 0.54, 7.0; 1.18, 7.0 |
+| The Storm Petrel | 5.7, 8%, 9%, 17% | 9.3, 10%, 15%, 17% | | |
+| The Giant Petrel | 5.5, 2%, 7%, 17% | 9.1, 5%, 15%, 18% | | |
+| The Buzzard | 4.9, 5%, 7%, 16% | 7.7, 14%, 16%, 17% | | |
+| The Needletail | 4.7, 8%, 9%, 16% | 6.9, 11%, 17%, 17% | | |
+
+What it says. The other three reboot on a sixth of their turns whatever stands first in the
+squad, the Puffin among them, and nothing tried moves it: a pull of 8 takes 5.9 a time, a third
+ally buff pulls half as often again, and the share stays at 17% to 18%. A pull moves an ally's
+reboot onto the Puffin's gauge one for one, its own reboot venting what it took, and a dump moves
+it back onto an ally, so the heat itself is a wash; the worth is in what carries it (the buff a
+pull rides, the dump's Empowered) and in a turn of the Puffin's traded for an ally's. The dump's
+Empowered at 1 for every 2 reads as none: against the bosses 10.1 rounds and 24% lost with it or
+without; at 1 for every 1 the boss fights run a round shorter and the squad loses 21%. The bot
+dumps about once a boss fight at 6.6 heat, Empowered 3. The Puffin's squads are the weakest of
+the reads, 23% to 24% lost against a boss beside 15% to 17%, its own hull 29% to 32%: 20 hull,
+6 shield, no armour and two basic guns. None of the squad's three turns heat into anything
+(the Storm Petrel, the Stingray, the Nemesis and the Whip Scorpion do), and Empowered lands on
+every strike, so its worth rides on who takes it. A bot's read of tier one's foes, for a
+tier-two machine: a direction.
+
+Ryan, 20 November: "since heat is conserved I would expect the total number of reboots to be the
+same, this version of the Puffin really wants a team that can leverage it ... the bot probably has
+no idea how to use it other than the empowered hook, so it makes sense that moves the number. I
+think the empowered scaling is a symptomatic conclusion." No number moves on this read: the bot
+treats a point of heat under the maximum as free and reboots its machines before anything spends,
+so it never puts heat where a reboot, a Cryo cash or a blasting vent takes it off, and the squad
+read has nothing that turns heat into anything.
+
+## 20 November: his gel line, the goblins' wall and two leaders, read before and after
+
+On Ryan's of 20 November: every gel's Engulf a rider in place of a blow ("Honestly I think all
+gels should Ablate instead of attacking as their default"), the Gel at 4 HP, its Engulf 1 and
+Ablating 1, the Half-Gel no blow and Ablating 1; the King Gel's Dissolve in Body Slam's place
+("a suitably souped up version"), Purge 1, then half its attack, Brittle 2 and Ablating 3 as
+first built; the goblins' Shield Wall over themselves and their neighbours, every goblin
+striking only with a buff on it or one coming; the Obsidian Tyrant's Roar leaving Brittle 2 on
+every machine. `tools/anchor_read.gd`, the pool of the six real tier ones, every squad of the
+fight's rating, six seeds a formation's and four a leader's; main at `e6d5bbf` before. Hull a
+share of a four's; every fight won but where it says.
+
+| Fight | Before | After |
+|---|---|---|
+| The goblin horde, three machines | 7.3% | 7.4% |
+| The treant grove | 5.9% | 4.7% |
+| The gel wall | 11.0%, 6.9 rounds | 17.5%, 6.5 rounds, won 98% |
+| The shaman's warband, without the Barrier basic | 33.2% | 32.8% |
+| The shaman's warband, with it | 27.6% | 28.8% |
+| The King Gel, without | 26.5% | 41.2%, won 98% |
+| The King Gel, with | 14.5% | 35.8% |
+| The Obsidian Tyrant, without | 29.3% | 30.3% |
+| The Obsidian Tyrant, with | 16.5% | 16.7% |
+
+Read: the gels' Ablating is what costs. A machine's Ablating takes a point a stack and loses
+one stack a turn, so stacks laid faster than one a turn grow, and a wall that lays them costs
+the square of its length: four gels and their eight halves lay two to three stacks on each
+machine a round, and the fight ran six and a half. The goblins' wall moves the horde by
+nothing, the Roar's Brittle moves the Tyrant by a point, and the Dissolve's Purge takes the
+Barrier before its Ablating, which passes one as a tick does, so the squad with the Barrier
+basic pays nearly what the squad without it pays.
+
+Sized after, each change alone on a scratch tree of the after state; a formation read on the
+stock dice, a leader without the Barrier basic and with it:
+
+| Fight | The change | Read |
+|---|---|---|
+| The gel wall | Four gels, one Mandragora | 9.6%, 6.1 rounds |
+| The gel wall | Three gels, two Mandragoras | 4.1%, 4.3 rounds |
+| The gel wall | Three gels, one Mandragora | 1.6%, 4.1 rounds |
+| The gel wall | Two gels, two Mandragoras | 0.7%, 3.3 rounds |
+| The goblin horde | Three Mandragoras | 2.5%, 3.7 rounds |
+| The goblin horde | The Goblin's attack 3 | 6.8%, 4.5 rounds |
+| The King Gel | Dissolve at Ablating 2 | 27.9% and 23.6% |
+| The King Gel | Two gels in its court | 35.6% and 31.8% |
+| The shaman's warband | The Goblin's attack 3 | 32.8% and 29.3% |
+
+Read: one gel or one root moves a formation by more than its share, since a squad under less
+pressure reboots less and kills sooner, and the stacks follow the length. The warband, read
+the same way at four commits back to its sizing (`d2c3912`, `6a10dca`, `645d690`, `473a135`),
+reads 34.3%, 33.2%, 33.2% and 33.2% without the Barrier basic, so nothing since moved it: the
+24.6% it was sized at was thirty fights, a direction, and every tier-one leader wants a read at
+sixty fights or more before any is moved.
+
+Landed: the gel wall at three gels and two Mandragoras, inside a formation's band, and Dissolve
+at Ablating 2, the King Gel back in its band, the squad with the Barrier basic paying about a
+quarter of a four's hull where it paid a seventh, since a purging boss's Barrier is no pass. The
+horde stays as built: the Goblin's attack 3 moves it by less than a read's spread and the
+warband by nothing, and one root fewer halves it, so its four roots are the question for his play.
+
+## 20 November: the Half-Gel's rider-only Engulf, read after
+
+On Ryan's of 20 November: no attack deals nothing ("We don't need attacks of zero, those fold
+into rider only hits same as machines fold weapons into equipment at zero damage"), so the
+Half-Gel's Engulf is a debuff, Ablating 1 and no blow; and the halves' Brittle is his 1 ("Use
+the brittle and ablate numbers as I wrote them"), a tier-two piece no tier-one read deals.
+`tools/anchor_read.gd` on a frozen copy, the pool of the six real tier ones, every squad of the
+fight's rating, six seeds a formation's and four a leader's. Before is the sized read of the
+entry above.
+
+| Fight | Before | After |
+|---|---|---|
+| The gel wall | 4.1%, 4.3 rounds | 4.2%, 4.3 rounds |
+| The King Gel, without the Barrier basic | 27.9% | 27.5%, 8.7 rounds |
+| The King Gel, with it | 23.6% | 23.8%, 8.4 rounds |
+
+Read: the move's form moves nothing past a read's spread, since the Half-Gel's Ablating 1
+landed the same before and after; every fight won. Landed as built, with no resize.
+
+## 20 November: the Wild Huntsman, read before and after and sized
+
+On Ryan's of 20 November ("Wild huntsman is ok", of the proposal that went to him the same
+day): the Wild Hunt led by the Wild Huntsman, who names the quarry, lances, and sounds a horn
+that calls a fallen rider back where there's room, never more than rode out; the riders keep
+Lance and Frost, two at tier one and three above. `tools/anchor_read.gd` on frozen copies, the
+pool of the six real tier ones, every squad of four, four seeds a squad (sixty fights), the
+elite read without the Barrier basic and with it.
+
+| The Hunt | Without the Barrier basic | With it |
+|---|---|---|
+| Before: three riders, each naming the quarry | 14.2%, 5.0 rounds | 11.2%, 5.0 rounds |
+| The Huntsman at 36 HP, attack 12 | 36.3%, 7.8 rounds, won 97% | 27.8%, 8.1 rounds |
+| At 36 HP, attack 8 | 25.1%, 7.2 rounds | |
+| At 24 HP, attack 12 | 28.2%, 6.2 rounds, won 98% | |
+| At 24 HP, attack 8 | 20.3%, 5.9 rounds | |
+| At 24 HP, attack 10, landed | 25.1%, 6.2 rounds | 16.8%, 6.2 rounds |
+
+Read: the horn is the cost, since every rider it calls back is a fight's worth of HP again
+while the Huntsman stands, so its own HP sets the fight's length and its attack the rest. At 24
+HP a squad that turns on it first ends the calls in about a round, which keeps the leader-first
+plan a plan. Landed at 24 HP and attack 10, an elite's fight at the band's middle (24.4%, 20.3%
+to 27.7%), the squad with the Barrier basic paying about what it pays the other elites (15.9%);
+every fight won.

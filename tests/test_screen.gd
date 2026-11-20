@@ -459,29 +459,26 @@ func test_reroll_wears_a_drain_announced_landed_and_taken() -> void:
 	s.free()
 
 
-## A fall that takes a reroll (16 November: a fall is a short list of steps) lands in the
-## player's own turn: its foe wears the fall as an Ability from the start, the note counts what
-## it took at once, settled, and the button is struck as the fall is named.
-func test_a_fall_that_drains_shows_on_its_foe_and_on_reroll() -> void:
+## A fall (16 November: a fall is a short list of steps) is its foe's Ability from the start:
+## the skull, and its name. A curse at its killer lands on nobody when no machine made the kill,
+## and no fall touches the REROLL button: a drain is a move's alone (19 November).
+func test_a_fall_shows_on_its_foe_and_leaves_reroll_alone() -> void:
 	var s := _screen(5)
 	var sk: Skirmish = s.sk
 	var root: Foe = sk.field_foes()[0]
-	root.on_death = {"act": Foe.fall_act_from({"name": "Last Scream", "effect": "drain_rerolls", "value": 1})}
+	root.on_death = {"act": Foe.fall_act_from({"name": "Last Scream", "effect": "brittle", "value": 2})}
 	s._refresh()
 	var rows: Array = s._foe_rows(root).filter(func(row) -> bool: return row.size() >= 5 and str(row[4]) == "ability")
 	assert_eq(rows.size(), 1, "its fall is its ability")
 	if rows.size() == 1:
 		assert_eq([str(rows[0][0]), str(rows[0][1]), str(rows[0][2])], ["skull", "", "Ability, Last Act: Last Scream"], "the skull, no number, and the fall's name")
-	assert_eq(s._reroll_btn.note, "", "nothing is owed yet")
 	root.hp = 0
-	sk.reroll_debt = 0
 	sk._last_act(root)
-	assert_eq(int(sk.last_acts.back()["drained"]), 1, "the engine says what the fall took")
-	assert_eq(SkirmishScreen.drain_note(sk), ["NEXT -1", false], "the note counts it at once, settled: nothing can stop it now")
+	assert_eq(int(sk.last_acts.back()["cursed"]), -1, "no machine made the kill, so the curse lands on nobody")
+	assert_eq(SkirmishScreen.drain_note(sk), ["", false], "and the REROLL button has nothing to say")
 	s._reroll_btn._strike_t = -1.0
 	s._land_last_act(sk.last_acts.back())
-	assert_true(s._reroll_btn._strike_t >= 0.0, "and the button is struck as the fall is named")
-	assert_eq(int(s._before_enemy_turn().get("debt", 0)), 1, "the enemy's turn's replay starts from what the fall took")
+	assert_true(s._reroll_btn._strike_t < 0.0, "nor is it struck as the fall is named")
 	s.free()
 
 
@@ -647,10 +644,10 @@ func test_attack_then_reroll_flow() -> void:
 	var s := _screen(5)
 	var attacker := -1
 	for i in range(3):
-		if s.sk.mechs[i].face().is_attack():
+		if s.sk.mechs[i].face().is_attack() and not s.sk.targets_for(i).is_empty():
 			attacker = i
 			break
-	assert_true(attacker >= 0, "someone rolled an attack")
+	assert_true(attacker >= 0, "someone rolled an attack it can aim")
 	var target: Foe = s.sk.targets_for(attacker)[0]
 	assert_true(s._use_die(attacker, target), "attack lands first")
 	assert_false(s.sk.spend_blows.is_empty(), "its blows recorded, to land a strike at a time")
@@ -1128,7 +1125,9 @@ func test_end_turn_asks_only_when_dice_would_be_wasted() -> void:
 				continue
 			left = true
 			var f := ms.face()
-			if f.is_attack():
+			if f.is_attack() and s.sk.targets_for(i).is_empty():
+				s._use_die(i, null)   # a dead entry (the Fragmenter with no Ore): passed
+			elif f.is_attack():
 				s._use_die(i, s.sk.targets_for(i)[0])
 			elif f.kind == Face.Kind.BLANK:
 				s._use_die(i, null)
@@ -1382,10 +1381,15 @@ func test_a_capped_store_shows_as_a_segmented_bar_under_the_heat_in_its_chips_pl
 
 ## The Honey Badger's hopper is such a bar, four segments, and what its loads are worth is an
 ## Armoured chip like any buff's, never an ability's (10 November).
-func test_the_badgers_hopper_is_a_bar_of_four_and_its_plate_an_armoured_chip() -> void:
+func test_the_badgers_ore_is_a_bar_and_its_armour_an_ability_chip() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
 	var m := db.make_mech("badger")
+	m.passive = {}
+	m.modifiers.clear()
+	m.grant_passive({"id": "ore", "name": "Ore", "description": "", "effects": [
+		{"trigger": "static", "effect": "fill_hopper", "value": 1, "cap": 4},
+		{"trigger": "static", "effect": "hopper_plate", "value": 1, "at": 3}]})
 	sk.add_mech(m)
 	sk.add_foes([Foe.make("revenant", 300, 10)])
 	var s := SkirmishScreen.new()
@@ -1394,13 +1398,12 @@ func test_the_badgers_hopper_is_a_bar_of_four_and_its_plate_an_armoured_chip() -
 	s._refresh()
 	var v: UnitView = s._mech_views[0]
 	assert_eq([int(v.store[0]), int(v.store[1])], [3, 4], "three of four segments lit")
-	var armoured := 0
+	var chips := 0
 	for r in s._mech_rows(0):
-		assert_ne(str(r[0]), SkirmishScreen.status_glyph("hopper"), "no chip for the loads, and none in the hopper's mark")
-		if str(r[0]) == SkirmishScreen.status_glyph("braced"):
-			armoured += 1
-			assert_eq(str(r[5]) if r.size() > 5 else "", "buff", "a buff's chip, one a Purge takes")
-	assert_eq(armoured, 1, "one Armoured chip for what the loads are worth")
+		if str(r[0]) == SkirmishScreen.status_glyph("ore_plate"):
+			chips += 1
+			assert_ne(str(r[5]) if r.size() > 5 else "", "buff", "no buff's chip: an Ability, which no Purge takes")
+	assert_eq(chips, 1, "one Ore chip for the armour, and none for the store itself")
 	s.free()
 
 
@@ -1693,7 +1696,9 @@ func test_an_ability_wears_its_own_chip_and_no_purge_takes_it() -> void:
 	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}
 	var lord := Foe.make("lord", 30, 5)
 	lord.drains = true   # a drain is its foe's own Ability since 16 November, no rider on a blow
-	sk.add_foes([nob, gel, beast, lord])
+	var wary := Foe.make("wary", 30, 5, true)   # the back rank: the front holds four
+	wary.strikes_when_buffed = true   # the goblins' Timid (20 November), a synthetic carrier
+	sk.add_foes([nob, gel, beast, lord, wary])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
 	Effects.stack(m, Effects.sealed_status(3, 2), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
@@ -1713,6 +1718,7 @@ func test_an_ability_wears_its_own_chip_and_no_purge_takes_it() -> void:
 	assert_true(str(ability.call(s._foe_rows(gel))[0][2]).contains("splits"), "a Gel's split is its ability")
 	assert_true(str(ability.call(s._foe_rows(beast))[0][2]).contains("Last Act: Meteor"), "a last act is the Gargantuan King's")
 	assert_true(str(ability.call(s._foe_rows(lord))[0][2]).begins_with("Ability, Drain"), "a drain is its foe's own, named on its chip")
+	assert_true(str(ability.call(s._foe_rows(wary))[0][2]).begins_with("Ability, Timid"), "a foe that strikes only when buffed says so on its chip")
 	Effects.purge(m, 9)
 	Effects.purge(nob, 9)
 	assert_true(Effects.is_sealed(m), "a Purge leaves the seal")
@@ -2488,13 +2494,12 @@ func test_every_mark_on_a_die_face_heads_a_line_of_its_readout() -> void:
 			assert_true(heads.has(aim), "%s: the die's hexes head its target line (%s)" % [cid, str(heads)])
 
 
-## The die's readout lines each with the mark it says: the Puffin's projector, an ally's shield,
-## its glyph on its number, the three hexes on its target, and a lock and a corruption on their
-## states.
+## The die's readout lines each with the mark it says: a synthetic shield for an ally (the Puffin's
+## Backwash Ionizer until its rework of 19 November), its glyph on its number, the three hexes on its
+## target, and a lock and a corruption on their states.
 func test_a_dies_readout_heads_each_line_with_its_mark() -> void:
 	var db := ContentDB.load_default()
-	var f := db.build_face(db.components["backwash_ionizer"]["face"])
-	f.component = "backwash_ionizer"
+	var f := db.build_face({"kind": "shield", "power": 3, "targets": "ally", "keywords": []})
 	var lines := EntryReadout.lines_for(f, 1, -1, f, [["Locked: a reroll skips it", EntryReadout.mark("lock", Palette.HUD, false)]], [], db)
 	var by := {}
 	for l in lines:

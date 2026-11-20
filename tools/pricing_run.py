@@ -186,10 +186,10 @@ class Content:
         return [e for e in self.components.values() if 'tier' in e and e.get('status') != 'planned' and int(e['tier']) in tiers]
 
     def basic_for(self, e):
-        """The tier-zero piece of a candidate's kind and reach, the floor a ladder is read against: the first in the file."""
+        """The basic of a candidate's kind and reach, the floor a ladder is read against: the first in the file."""
         f = e['face']
         for b in self.components.values():
-            if b.get('tier') != 0 or b.get('status') == 'planned':
+            if not b.get('basic') or b.get('status') == 'planned':
                 continue
             bf = b['face']
             if bf.get('kind') != f.get('kind'):

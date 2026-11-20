@@ -7,7 +7,7 @@ extends TestCase
 
 const MACHINES := ["badger", "kite", "clydesdale", "baboon", "polar_bear", "wild_boar", "prairie_dog", "dingo", "buzzard", "nemesis", "ammit", "stingray", "puffin", "funnel_web",
 	"skua", "needletail", "storm_petrel", "giant_petrel", "lammergeier", "musk_ox",
-	"cassowary", "cottonmouth", "swallowtail", "whip_scorpion", "mole"]
+	"cassowary", "cottonmouth", "swallowtail", "whip_scorpion", "mole", "macaque"]
 
 
 func _rig_for(model_id: String, seed_value: int = 1) -> Array:
@@ -452,6 +452,50 @@ func test_a_form_is_held_while_set_and_let_go_after() -> void:
 		assert_true(mine.has(str(a.get("name", ""))), "%s: let go, the machine's own acts are back (%s)" % [with_form, a.get("name", "?")])
 		rig.last_act = str(a.get("name", ""))
 	pair[1].free()
+
+
+func test_an_offhands_armament_holds_its_slots_form_and_its_lunge_plays_over_it() -> void:
+	# A model's forms named for an offhand's slot (offhand_<slot>: the Macaque's armament, 19
+	# November) are held while its machine's offhand holds a form in that slot, whichever form a
+	# branch has put there; the Aile Booster's dash, its firing, keys none of the arm the form holds.
+	var u := Unit.mech(0, "Test", Vector2i.ZERO)
+	var form := {"id": "test_blade", "slot": "sword", "name": "Test Blade", "description": "", "riders": [{"trigger": "static", "effect": "strike_again", "value": 50}]}
+	Effects.hold_form(u, form)
+	assert_eq(Effects.held_slot(u), "sword", "the slot of the form up")
+	assert_true(MechRig.holds_form(u, "offhand_sword"), "its slot's form is held")
+	assert_false(MechRig.holds_form(u, "offhand_rifle"), "and no other slot's")
+	assert_false(MechRig.holds_form(Unit.mech(1, "Plain", Vector2i.ZERO), "offhand_sword"), "a machine with no offhand holds none")
+	var side := MechRig.load_sidecar("macaque")
+	var forms: Dictionary = side.get("forms", {})
+	for slot in ["rifle", "sword", "shield"]:
+		assert_true(forms.has("offhand_" + slot), "the Macaque holds its %s" % slot)
+	var beams: Array = side.get("beams", [])
+	for slot in ["sword", "shield"]:
+		var lit: Array = []
+		for g in forms["offhand_" + slot].get("glow", []):
+			lit.append_array(g["parts"])
+		assert_true(lit.any(func(p) -> bool: return beams.has(p)), "its %s's form lights a part made of light: %s" % [slot, str(lit)])
+	var pair := _rig_for("macaque")
+	var rig: MechRig = pair[0]
+	rig.set_form("offhand_shield", true)
+	rig.tick(float(rig.forms["offhand_shield"]["duration"]) + 0.3)
+	assert_true(rig.act_set().any(func(a: Dictionary) -> bool: return str(a["name"]) == "dash"), "the dash plays over the held armament")
+	assert_true(rig.fire_act("aile_booster"), "and is the booster's firing")
+	pair[1].free()
+	# A form's light holds a part made of light up while it is held, and lets it go with the form.
+	var r := _boxed_rig()
+	var boxed: MechRig = r[0]
+	var kite := _lit_part(r, "kite")
+	boxed._setup_beams({"beams": ["kite"]})
+	boxed._setup_forms({"guard": {"duration": 0.4, "tracks": {}, "glow": [{"parts": ["kite"], "k": 14.0}]}})
+	assert_false(kite.visible, "out at rest")
+	boxed.set_form("guard", true)
+	boxed.tick(0.7)
+	assert_true(kite.visible, "up while its form is held")
+	boxed.set_form("guard", false)
+	boxed.tick(0.7)
+	assert_false(kite.visible, "out once the form lets it go")
+	(r[1] as Node).free()
 
 
 func test_a_held_form_lets_go_the_forms_it_releases() -> void:
@@ -1354,6 +1398,65 @@ func test_a_hovercraft_eases_down_and_takes_no_gust_through_an_act() -> void:
 	assert_true(worst_jolt < 0.02, "and a gust never changes the attitude's rate at a stroke (%f radians a second in a frame)" % worst_jolt)
 
 
+## A heat glow carries its machine's heat (Ryan, 20 November: "Could the Puffin glow change colours
+## based on its heat?"): the Puffin's shield-lit parts wear the shield's blue with its heat at nothing
+## and the furnace's red-orange at its maximum, a blend between, their light climbing as it fills and
+## beating past the maximum, so the load reads by light and beat as well as hue; their halos wear the
+## same tile. A machine with none shows nothing.
+func test_a_heat_glow_carries_its_machines_heat_in_its_colour_and_its_light() -> void:
+	var side := MechRig.load_sidecar("puffin")
+	var hg: Dictionary = side.get("heat_glow", {})
+	assert_true((hg.get("parts", []) as Array).has("projector_core"), "the Puffin's projector carries its heat")
+	for p in hg.get("parts", []):
+		assert_true((side.get("glow_parts", []) as Array).has(p), "%s is a lit part" % p)
+	var cold := Color(float(hg["cold"][0]), float(hg["cold"][1]), float(hg["cold"][2]))
+	var hot := Color(float(hg["hot"][0]), float(hg["hot"][1]), float(hg["hot"][2]))
+	assert_true(hot.b == 0.0 and hot.r > hot.g, "heat's end is red and green alone, red leading")
+	var view := MechView3D.make("puffin", "kestrel", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64), false, {}, [])
+	var rig: MechRig = view.rig
+	var mats: Array = rig.heat_glow.get("mats", [])
+	assert_true(mats.size() > 0, "its shield-lit parts are lit materials")
+	var m: StandardMaterial3D = mats[0][0]
+	assert_eq(m.emission_texture, rig.heat_glow["tile"], "its lit parts wear the glow's own tile")
+	var shown := func() -> Color: return (rig.heat_glow["image"] as Image).get_pixel(0, 0)   # the tile's image, as it was last filled (a headless texture reads nothing back)
+	var near := func(a: Color, b: Color) -> bool: return absf(a.r - b.r) < 0.01 and absf(a.g - b.g) < 0.01 and absf(a.b - b.b) < 0.01
+	var rest := MechRig._rest_of(m)
+	rig.settle_heat(0.0)
+	assert_true(near.call(shown.call(), cold), "cold, it wears the shield's blue (%s)" % shown.call())
+	assert_true(absf(m.emission_energy_multiplier - rest) < 0.001, "at its rest light")
+	rig.settle_heat(0.5)
+	assert_true(near.call(shown.call(), cold.lerp(hot, 0.5)), "half full, the blend (%s)" % shown.call())
+	rig.settle_heat(1.0)
+	assert_true(near.call(shown.call(), hot), "at its maximum, the furnace's red-orange (%s)" % shown.call())
+	assert_true(absf(m.emission_energy_multiplier - rest * MechRig.light(MechRig.HEAT_GLOW_FULL)) < 0.001, "burning HEAT_GLOW_FULL rests over its own")
+	for h in rig._halos.get(m, []):
+		assert_eq((h as ShaderMaterial).get_shader_parameter("tile"), m.emission_texture, "its halo wears the same tile")
+	# It follows a new heat over a moment, and past the maximum it beats.
+	rig.settle_heat(0.0)
+	assert_true(rig.show_heat(1.0), "a new heat")
+	assert_false(rig.show_heat(1.0), "the same heat changes nothing")
+	rig.tick(0.05)
+	assert_true(rig.heat_shown() > 0.0 and rig.heat_shown() < 1.0, "warming over a moment (%f)" % rig.heat_shown())
+	rig.tick(2.0)
+	assert_true(absf(rig.heat_shown() - 1.0) < 0.01, "and there")
+	rig.settle_heat(1.5)
+	var lights: Array = []
+	for i in range(40):
+		rig.tick(1.0 / 40.0)
+		lights.append(rig.heat_light())
+	assert_true(lights.min() >= MechRig.HEAT_GLOW_FULL - 0.01 and lights.max() > lights.min() + MechRig.HEAT_GLOW_BEAT * 0.5, "past the maximum it beats above its full light (%f to %f)" % [lights.min(), lights.max()])
+	# RIFTGATE_HEAT_GLOW_DEBUG runs it from nothing to past the maximum and back, to judge it running.
+	rig.heat_glow_debug = true
+	rig._heat_debug_t = 0.0
+	rig.tick(MechRig.HEAT_GLOW_DEBUG_PERIOD * 0.5)
+	assert_true(rig._heat_want > 1.0, "the switch takes it past the maximum at its middle (%f)" % rig._heat_want)
+	assert_false(rig.show_heat(0.0), "and the screen's heat waits on it")
+	view.free()
+	var plain := MechView3D.make("kite", "kestrel", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64), false, {}, [])
+	assert_true(plain.rig.heat_glow.is_empty() and not plain.rig.show_heat(1.0), "a machine with no heat glow shows nothing")
+	plain.free()
+
+
 func test_a_count_display_lights_its_first_parts_and_a_fall_flares_them() -> void:
 	# The Cassowary's capacitor (Ryan, 2 November: "charging up for the sixth hit of its passive"):
 	# a cell lights for each counted shot, and the sixth shot, the one that counts double,
@@ -1595,6 +1698,89 @@ func _boxed_rig(lit: bool = false) -> Array:
 	rig.model = root
 	rig.body = body
 	return [rig, root, body, mi]
+
+
+## A lit part on the boxed rig, its own material at rest light 2, named `name` and hung on its body.
+func _lit_part(r: Array, name: String) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	mi.name = name
+	mi.mesh = BoxMesh.new()
+	var m := StandardMaterial3D.new()
+	m.emission_enabled = true
+	m.emission_energy_multiplier = 2.0
+	mi.set_surface_override_material(0, m)
+	(r[2] as Node).add_child(mi)
+	return mi
+
+
+func test_a_part_made_of_light_is_unseen_until_a_glow_lights_it() -> void:
+	# lowforge's b.beams (Ryan, 16 November, of the Macaque: "beam blades mounted on its forearms,
+	# that can turn on and off", "a shield made of light"): a part made of light is hidden at its
+	# light at rest, shown while an act lights it over that, and gone again as the act lets it go; a
+	# lit part not made of light shows throughout, whatever its light.
+	var r := _boxed_rig()
+	var rig: MechRig = r[0]
+	var blade := _lit_part(r, "blade")
+	var lamp := _lit_part(r, "lamp")
+	rig._setup_beams({"beams": ["blade"]})
+	assert_false(blade.visible, "made of light, it is out at rest")
+	assert_false(rig.beam_shown("blade"), "and the rig says so")
+	assert_true(lamp.visible, "a lit part not made of light stands as it is")
+	rig.acts = [{"name": "ignite", "duration": 2.0, "tracks": {}, "body": [],
+		"glow": [{"parts": ["blade", "lamp"], "keys": [[0.4, 0.0], [0.6, 6.0], [1.4, 6.0], [1.6, 0.0]]}]}]
+	assert_true(rig.play("ignite"), "an act that lights it")
+	rig.tick(0.2)
+	assert_false(blade.visible, "still out before its light rises")
+	rig.tick(0.6)
+	assert_true(blade.visible and rig.beam_shown("blade"), "seen while it is lit")
+	rig.tick(1.5)
+	assert_false(blade.visible, "out again once the act lets it go")
+	assert_true(lamp.visible, "the lamp showing all the while")
+	(r[1] as Node).free()
+
+
+func test_a_lit_beam_goes_out_with_a_lost_machine_and_stays_out() -> void:
+	# A beam lit as its machine is lost stutters out with its lights (the gutter) and stays out, and
+	# a machine stood up again stands with its beams out, as at rest.
+	var r := _boxed_rig()
+	var rig: MechRig = r[0]
+	var blade := _lit_part(r, "blade")
+	rig._setup_beams({"beams": ["blade"]})
+	rig.acts = [{"name": "ignite", "duration": 4.0, "tracks": {}, "body": [], "glow": [{"parts": ["blade"], "keys": [[0.3, 0.0], [0.5, 6.0], [3.5, 6.0]]}]}]
+	rig.play("ignite")
+	rig.tick(1.0)
+	assert_true(blade.visible, "lit as the blow lands")
+	rig.kill()
+	rig.tick(MechRig.GUTTER + 0.2)
+	assert_false(blade.visible, "out with its lights once the gutter is done")
+	rig.tick(5.0)
+	assert_false(blade.visible, "and out for good")
+	rig.revive()
+	assert_false(blade.visible, "a machine stood up again stands with its beams out")
+	(r[1] as Node).free()
+
+
+func test_every_beam_names_lit_parts_a_glow_lights_and_is_out_as_its_model_loads() -> void:
+	# The sidecar's beams are parts its acts light (lowforge refuses one no glow lights, or one whose
+	# parts are not all light), and MechView3D.hide_beams has them out as the model loads, before it
+	# is measured, framed or welded.
+	var found := 0
+	for id in MACHINES:
+		var side := MechRig.load_sidecar(id)
+		var beams: Array = side.get("beams", [])
+		if beams.is_empty():
+			continue
+		found += 1
+		var model: Node3D = (load("res://art/models/%s.glb" % id) as PackedScene).instantiate()
+		MechView3D.hide_beams(model, side)
+		for part in beams:
+			assert_true((side.get("glow_parts", []) as Array).has(part), "%s: the beam %s is lit by a glow" % [id, part])
+			var meshes := model.find_children("*", "MeshInstance3D", true, false).filter(func(n): return MechRig.labelled(str(n.name), str(part)))
+			assert_false(meshes.is_empty(), "%s: the beam %s labels parts of the model" % [id, part])
+			for n in meshes:
+				assert_false((n as Node3D).visible, "%s: %s is out as the model loads" % [id, n.name])
+		model.free()
+	assert_true(found > 0, "some model has parts made of light (the Macaque's blades and shields)")
 
 
 func test_a_blow_on_the_hull_shoves_the_machine_back_and_settles() -> void:

@@ -12,16 +12,16 @@
    "design": {
     "stage": "draft",
     "fantasy": "Two swings a round if the dice agree. Ghouls in threes.",
-    "niche": "The chase spend against a boss (Ryan, 15 October: \"keep it as the chase spend for bosses, tuning as necessary\"): two strikes and no area since 31 October, flat 3 a strike, the least that still damages a boss carrying 2; it digs two loads a foe it damages, the most efficient fill and not the most effective weapon."
+    "niche": "The Honey Badger's Ore source that ignores armour (Ryan, 20 November: \"the armour pen from the claw is valuable\"); its branches take it to Penetrate, then Brittle and a second use a turn.",
+    "notes": "Ryan, 20 November: \"Chainsaw Claw: Direct, 2 damage, ignores armour.\" Its heat 3 as it was, a placeholder."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 3,
-    "strikes": 2,
+    "power": 2,
     "keywords": [],
-    "heat": 3,
-    "fills_hopper": 2
+    "ignores_armour": true,
+    "heat": 3
    },
    "passive": null,
    "tags": [
@@ -64,16 +64,16 @@
    "design": {
     "stage": "draft",
     "fantasy": "One big round. Warm barrel.",
-    "niche": "Fires half the hopper (Ryan, 15 October: \"Fragmenter can start by losing 5 stacks, so half of max\"): two loads at +2 since 31 October, 8 with both, the plate they stood for spent with them."
+    "niche": "Cashes the Ore in: a strike a load, the armour the Ore stood for going with it, so firing it trades the plate for damage; its branches take it to Spread, then Ablate.",
+    "notes": "Ryan, 20 November: \"Bullion Fragmenter: Direct. 2 damage. Empties the hopper, striking once for every load emptied. Grants no Ore.\" \"Fragmenter is a dead face with no Ore.\" Its heat 5 as it was, a placeholder."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 4,
+    "power": 2,
     "keywords": [],
     "heat": 5,
-    "fires_hopper": 2,
-    "power_per_load": 2
+    "empties_hopper": true
    },
    "passive": null,
    "tags": [
@@ -110,7 +110,8 @@
    "id": "twin_autoguns",
    "name": "Twin Autoguns",
    "maker": "wainwright_sutler",
-   "tier": 0,
+   "tier": 1,
+   "basic": true,
    "shape": "twin_barrel",
    "codex": "",
    "flavour": "",
@@ -163,7 +164,8 @@
    "id": "ankle_mortar",
    "name": "Ankle Mortar",
    "maker": "wainwright_sutler",
-   "tier": 0,
+   "tier": 1,
+   "basic": true,
    "shape": "rack",
    "codex": "",
    "flavour": "",
@@ -682,7 +684,7 @@
   },
   {
    "id": "flakshot_repeater",
-   "name": "Flakshot Repeater",
+   "name": "Flakshot Spreader",
    "maker": "wainwright_sutler",
    "shape": "barrel",
    "codex": "",
@@ -690,17 +692,17 @@
    "design": {
     "stage": "draft",
     "fantasy": "A drum-fed scattergun on a pintle, its shells bursting into a rank of foes. Fire, and the car is already moving. Ryan, 19 October: \"a low damage, spread, maybe rapid, weapon with a new debuff: flak\".",
-    "niche": "The Prairie Dog's locked gun and the maker's first Brittle piece: a flat low blow that sprays the target's rank and lays Brittle on each foe hit, so the team's many small blows land harder and the car takes less from the foes that carry it (its passive). The softener's round: spray, then the four cash. Ryan, 11 November: \"turn the Flak repeater into a Flak weapon and not a bad spread weapon\"; \"1 damage, Flak 2, cooldown 1. Heat not sure. But that prevents it from being the chase every round and stacking on itself.\" Its Spread kept as it stood, his to cut."
+    "niche": "The Prairie Dog's Brittle synergy piece (Ryan, 20 November: \"it should be the Brittle synergy piece, so there's room to grow\"): a debuff laying Brittle across the rank, which its passive's -1 reads; weaker early, stronger late, its branches remaking it as the Disperser or the Repeater.",
+    "notes": "Ryan, 20 November: \"Flakshot Repeater -> Flakshot Spreader: Direct, 2 brittle, spread, cooldown 1.\" A debuff, dealing nothing (\"I doubt the 1 damage does much at level 1\"). The id stays flakshot_repeater, which the model's rig keys its barrel to. Its heat 3 as it was, a placeholder."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
-    "power": 1,
+    "power": 0,
     "keywords": [
-     "cleave",
-     "brittle"
+     "brittle",
+     "cleave"
     ],
-    "cleave": 1,
     "brittle": 2,
     "heat": 3,
     "cooldown": 1
@@ -919,7 +921,8 @@
    "id": "rivet_gun",
    "name": "Rivet Gun",
    "maker": "minerva",
-   "tier": 0,
+   "tier": 1,
+   "basic": true,
    "shape": "barrel",
    "codex": "",
    "flavour": "",
@@ -944,7 +947,8 @@
    "id": "laser_carbine",
    "name": "Laser Carbine",
    "maker": "kestrel",
-   "tier": 0,
+   "tier": 1,
+   "basic": true,
    "shape": "barrel",
    "codex": "",
    "flavour": "",
@@ -969,7 +973,8 @@
    "id": "halo_projector",
    "name": "Halo Projector",
    "maker": "aphelion",
-   "tier": 0,
+   "tier": 1,
+   "basic": true,
    "shape": "dish",
    "codex": "",
    "flavour": "",
@@ -1145,6 +1150,31 @@
    ]
   },
   {
+   "id": "aile_booster",
+   "name": "Aile Booster",
+   "maker": "aphelion",
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "The Macaque's small winged backpack (Ryan, 16 November: \"A small winged backpack that it uses to boost along the ground, not true flight or hover\"): a burst along the ground that carries its next shot past the front rank.",
+    "niche": "Its locked piece, the lunge (Ryan, 19 November: \"Go for the lunge with rapid, call it 'Aile Booster': 'Rapid. Next weapon strike gains Indirect reach.'\"; \"Next weapon strike -> Next weapon fired. Applies to the whole spend\"; its buff the booster's name, \"Aile Boost\"). Its branches grant Aile Blitz (Duelist II, armour ignored too) and Aile Assault (Valkyrie II, with 1 Empowered) in its place. Heat 1, his of 19 November (\"Give the booster heat 1\")."
+   },
+   "face": {
+    "kind": "buff",
+    "status": "aile_boost",
+    "stacks": 1,
+    "targets": "self",
+    "heat": 1,
+    "keywords": [
+     "rapid"
+    ]
+   },
+   "passive": null,
+   "tags": []
+  },
+  {
    "id": "aurora_lattice",
    "name": "Aurora Lattice",
    "maker": "aphelion",
@@ -1166,22 +1196,23 @@
    "tags": []
   },
   {
-   "id": "backwash_ionizer",
-   "name": "Backwash Ionizer",
+   "id": "overdrive_injector",
+   "name": "Overdrive Injector",
    "maker": "kestrel",
    "shape": "dish",
-   "codex": "Ionizes the target's backwash, temporarily increasing the target's shield capacity until round end.",
+   "codex": "Dumps the heat the Puffin has soaked up into one ally's systems, driving its guns harder for every bit of it.",
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "The whole front of the Puffin is one shield projector, and it only points outward.",
-    "niche": "The Puffin's locked shield: a big bubble it can only raise on an ally, and the game's first Overshield, so it may lift the ally past its maximum for the round (Ryan, 2 October: a shield specialist, not a shield-bot; 5 October: overshield a rare keyword, the projector first). Overshield was cut as a keyword on 15 November (Ryan's mark), so it raises no shield past the maximum: its session finds it another rule."
+    "fantasy": "The whole front of the Puffin is one projector, and it only points outward: what it has soaked up off its team goes out of it in one hot shove, into an ally's guns.",
+    "niche": "The Puffin's locked dump (Ryan, 11 November: \"A locked piece can transfer the Puffins heat to another unit along with a buff based on heat moved, so it gets along with the Buzzard and stingray, and other niche interactions like forcing an overheat for hull damage\"; \"just allies\"; 19 November, Empowered 1 for every 2 heat passed: \"We can try empowered for 2 but that needs data\"). Its whole heat goes, so the gauge it fills with its pulls empties with it; it fires no pull of its own, since its heat goes the other way. Its name and its passive's, the Downwash Exchanger, are Ryan's (20 November), on his \"I think we should revisit the kit names\" of the 19th."
    },
    "face": {
-    "kind": "shield",
-    "power": 3,
+    "kind": "buff",
+    "status": "overcharged",
     "targets": "ally",
-    "keywords": []
+    "passes_heat": true,
+    "heat_per_stack": 2
    },
    "passive": null,
    "tags": []
@@ -1244,14 +1275,15 @@
    "id": "shoring_jack",
    "name": "Shoring Jack",
    "maker": "minerva",
-   "tier": 0,
+   "tier": 1,
+   "basic": true,
    "shape": "none",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
     "fantasy": "A hydraulic pit prop jammed under a machine's plating. It holds the roof up in the mine; it holds the armour on out here.",
-    "niche": "Armoured for the round on itself or an ally: the answer to volume (swarms, multi-strikes, a storm of small blows), nothing against a breach. The Armoured basic at tier zero since the refit pass landed (10 November), in the Canopy's place."
+    "niche": "Armoured for the round on itself or an ally: the answer to volume (swarms, multi-strikes, a storm of small blows), nothing against a breach. The Armoured basic since the refit pass landed (10 November), in the Canopy's place."
    },
    "face": {
     "kind": "buff",
@@ -2132,6 +2164,30 @@
     "status": "ward",
     "stacks": 1,
     "rounds": 1
+   },
+   "passive": null,
+   "tags": []
+  },
+  {
+   "id": "phase_inducer",
+   "name": "Phase Inducer",
+   "maker": "aphelion",
+   "tier": 2,
+   "shape": "dish",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A coil that slips its own machine half a step out of the world: nothing can reach it, and it reaches out all the same.",
+    "niche": "The test piece for Phased (Ryan, 20 November: \"Set the debug toggle for phased. And I need a tier 2 component that sets it for testing\"): Phased on itself alone, his lean of 20 November (\"I would probably only allow self-phased except in very specific circumstances\"), a cooldown of one so it never phases two rounds running; the TRIALS page's PHASED dial says when it lands. A working name, and a slottable Phaser's place at tier two, both his to settle.",
+    "notes": "Its gate is the cooldown and the entry it costs: a machine that phases itself has spent its die, so it cannot reboot that turn (docs/domain_statuses_proposal.md, section 8)."
+   },
+   "face": {
+    "kind": "buff",
+    "status": "phased",
+    "stacks": 1,
+    "targets": "self",
+    "cooldown": 1
    },
    "passive": null,
    "tags": []

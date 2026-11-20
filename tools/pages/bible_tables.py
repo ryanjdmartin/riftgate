@@ -32,7 +32,7 @@ END = "<!-- bible-tables:end -->"
 COMPONENT_KEYWORDS = {"ablate": [("ablating", "foe")], "shock": [("shocked", "foe")],
                       "suppress": [("suppressed", "foe"), ("numbed", "foe")],
                       "cryo": [("cryoed", "foe")], "brittle": [("brittled", "foe")], "expose": [("exposure", "foe")]}
-FACE_FIELDS = {"braces": "braced", "fills_hopper": "hopper",
+FACE_FIELDS = {"braces": "braced",
                "holds_all": "essence_flare"}   # the Quintessence Tap's hold on Empowered, a buff on its machine (Essence Flare, 15 November)
 FACE_FIELDS_ON_FOES = {"webs": ["webbed", "suppressed", "numbed"]}   # the Web Bomb's own rule; the Syrinx Drone's status went with the slot mines (9 November), the Contractor's Expose is its keyword
 PASSIVE_EFFECTS = {"seal_form": ("sealed", "machine"),
@@ -41,8 +41,8 @@ PASSIVE_EFFECTS = {"seal_form": ("sealed", "machine"),
                    "mine_on_spend": ("mine", "foe")}   # stack_status names its own, on the machine; the Reverberant Payload's Mine (9 November)
 FOE_KEYWORDS = {"scorch": "scorched", "ablate": "ablating", "jam": "jammed", "corrupt": "corrupted", "brittle": "brittled", "expose": "exposure"}
 FOE_EFFECTS_ON_MACHINES = {"ablate": "ablating", "scorch_all": "scorched", "corrupt_all": "corrupted",
-                           "jam": "jammed", "swallow": "swallowed", "expose": "exposure"}
-FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
+                           "jam": "jammed", "brittle": "brittled", "brittle_all": "brittled", "sap_all": "sapped", "swallow": "swallowed", "expose": "exposure"}
+FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "brace_beside": "braced", "harden": "braced", "harden_all": "braced",
                        "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen",
                        "prime": "primed", "barrier": "barrier", "ward_all": "ward", "regenerate": "regenerating", "golden": "golden",
                        "appropriate": "appropriated", "phase": "phased"}   # the ladder's (28 October); golden the Thunder Ape's (4 November)
@@ -50,19 +50,21 @@ FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "brac
 MOVE_AS_KEYWORD = {"ablate": "ablate", "jam": "jam", "scorch_all": "scorch", "corrupt_all": "corrupt", "swallow": "swallow", "merge": "merge", "dispel": "dispel", "golden": "golden_rage"}
 VIA_STATUS = {"primed": [("ablating", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
 ENGINE_ALIASES = {"ablating_mech": "ablating", "brittled_mech": "brittled", "exposure_mech": "exposure",   # the same word on the other body
-                  "phasing": "phased"}   # the wait for Phased, which is granted as the round ends (15 November)
+                  "phasing": "phased",   # the wait for Phased, which is granted as the round ends (15 November)
+                  "parry_strike": "parry"}   # the Parry's return, next turn's first weapon's add, under the same name (19 November)
 
 # Printed rules, read off a component's face.
 PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("vents_all", "Vents all", lambda f: bool(f.get("vents_all"))),
            ("spends_shield", "Fires the shield", lambda f: bool(f.get("spends_shield"))),
+           ("passes_heat", "Passes heat", lambda f: bool(f.get("passes_heat"))),
            ("power_per_missing", "Grows with missing HP", lambda f: int(f.get("power_per_missing", 0)) > 0),
            ("finisher", "Finisher", lambda f: int(f.get("finisher", 0) or 0) > 1),
            ("gated", "Gated", lambda f: bool(f.get("gates"))),
            ("consumes", "Consumes", lambda f: bool(f.get("consumes")) or bool(f.get("spends"))),   # a weapon's on its target, or equipment's of its own machine's count (the Quintessence Tap)
            ("self_ablate", "Ablates its firer", lambda f: int(f.get("self_ablate", 0) or 0) > 0),
            ("ignores_armour", "Ignores armour", lambda f: bool(f.get("ignores_armour"))),
-           ("hopper_property", "The hopper", lambda f: int(f.get("fills_hopper", 0)) > 0 or int(f.get("fires_hopper", 0)) > 0),
+           ("hopper_property", "The hopper", lambda f: bool(f.get("empties_hopper"))),
            ("brace_property", "Braces", lambda f: int(f.get("braces", 0)) > 0),
            ("swap", "Swap", lambda f: bool(f.get("swaps"))),
            ("webbed", "Web Bomb", lambda f: bool(f.get("webs"))),   # the piece's own rule: the mark it leaves says it
@@ -246,8 +248,20 @@ def tally(words):
         if foe.get("parts"):
             t.grant("guarded", "foe", "%s's parts" % whom, "foe", False, foe["id"], whom)
             t.count("parts", "foe", False, name)
-        if isinstance((foe.get("on_death") or {}).get("blow"), dict) or isinstance((foe.get("on_death") or {}).get("act"), dict):
+        fall = (foe.get("on_death") or {}).get("blow") or (foe.get("on_death") or {}).get("act")
+        if isinstance(fall, dict):
             t.count("last_act", "foe", False, name)   # a fall: a blow, or one special in its place (16 November)
+            # What the fall lays, its blow's riders and each effect of its steps, granted where it
+            # lands (19 November: the roots' Brittle, the Gorgon's gaze, the Salamander's embers).
+            move = "%s's %s (its fall)" % (whom, fall.get("name", "fall"))
+            for k in fall.get("keywords") or []:
+                if k in FOE_KEYWORDS:
+                    t.grant(FOE_KEYWORDS[k], "machine", move, "foe", False, foe["id"], whom)
+            for e in [fall.get("effect")] + [st.get("effect") for st in (fall.get("also") or [])]:
+                if e in FOE_EFFECTS_ON_MACHINES:
+                    t.grant(FOE_EFFECTS_ON_MACHINES[e], "machine", move, "foe", False, foe["id"], whom)
+                if e in FOE_EFFECTS_ON_FOES:
+                    t.grant(FOE_EFFECTS_ON_FOES[e], "foe", move, "foe", False, foe["id"], whom)
     for status, lays in VIA_STATUS.items():
         for target, on in lays:
             t.grant(target, on, "via %s" % words.get(status, {}).get("name", status), "via")

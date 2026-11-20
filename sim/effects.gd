@@ -51,14 +51,15 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "reboot_release", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status", "self_status", "shield_zap", "add_power"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "reboot_release", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_max", "hopper_plate", "count_status", "piece_form", "hold_status", "self_status", "shield_zap", "add_power", "offhand", "side_strike", "strike_again", "buff_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
 	"on_blocked": ["stack_status"],
 	"on_barrier": ["stack_status"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
 	"on_shield_gain": ["vent_heat", "stack_status"],
-	"on_shield_granted": ["vent_heat", "stack_status", "shield_per_ally_heat"],
+	"on_shield_granted": ["vent_heat", "stack_status"],
+	"on_buff_granted": ["pull_heat"],   # equipment this machine spends on an ally, once for each ally it lands on (the Puffin's pull, 19 November)
 	"on_heat_gain": ["add_shield", "shield_per_heat", "stack_status"],
 	"status": ["tick_hp", "tick_hp_share", "skip_action", "disable_entry", "corrupt_entry", "regrow"],
 	"on_foe_status": ["paradox"],
@@ -201,14 +202,17 @@ const STATUS := {
 	# id is "exposure" since "exposed" names that formation word and the foes' default aim.
 	# Pinned (the Hollow-point Harpoon's, Ryan, 11 November): a status of its own, holding the
 	# foe's Brittle from its next halving and spent by it (16 November: "the next time it would
-	# decay, it doesn't"; a status for the round until then). HOLDERS names the holder of each
-	# status a piece may hold, so a like one for Ablating is a row there and a status here.
-	"pinned": {"id": "pinned", "name": "Pinned", "description": "The next time its Brittle would halve, it does not.", "stacking": "renew",
+	# decay, it doesn't"; a status for the round until then), and gone as its turn ends where it
+	# held nothing (19 November: "It should get spent when the next decay happens, or the end of
+	# the target's turn where it has none"). HOLDERS names the holder of each status a piece may
+	# hold, so a like one for Ablating is a row there and a status here.
+	"pinned": {"id": "pinned", "name": "Pinned", "description": "The next time its Brittle would halve, it does not. Gone as its turn ends if it held none.", "stacking": "renew", "decay": "after_turn",
 		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "brittled"}]},
 	# Ablating's pin, Seared (Ryan, 11 November: "Might as well code it in since the Mastema will
 	# want it as a fitted piece, if nothing else"; its name his, 15 November: "Rename 'Seared.'"):
-	# its Ablating takes its points and loses no stack this round. No piece lays it yet.
-	"seared": {"id": "seared", "name": "Seared", "description": "The next time its Ablating would lose a stack, it does not.", "stacking": "renew",
+	# its Ablating takes its points and loses no stack as its turn ends, and the pin goes there
+	# either way, by the same rule as Pinned's. No piece lays it yet.
+	"seared": {"id": "seared", "name": "Seared", "description": "The next time its Ablating would lose a stack, it does not. Gone as its turn ends either way.", "stacking": "renew", "decay": "after_turn",
 		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "ablating"}]},
 	"exposure": {"id": "exposure", "name": "Exposed", "description": "In Direct reach of every machine, and its armour counts for nothing. Lasts through your next turn.", "stacking": "renew", "decay": "turn_start",
 		"tags": ["expose"], "effects": []},
@@ -321,13 +325,17 @@ const STATUS := {
 		"tags": ["buff"], "effects": []},
 	"appropriated": {"id": "appropriated", "name": "Appropriated", "description": "The number of the piece it took off a machine: its borrowed swing lands it, and spends it.", "decay": "none", "stacking": "renew", "counted": true,
 		"tags": ["ability"], "effects": []},
-	# The Honey Badger's hopper (Ryan, 11 October; its Ore Hopper since 31 October): loads every
-	# foe its weapons damage puts in, which the Bullion Fragmenter fires a few a shot. A store on
-	# the machine with no effect of its own (the weapon that fires it reads it, and what the loads
-	# are worth is granted as Armoured, plate_round); it lasts the skirmish, never decays, and
+	# The Honey Badger's hopper (Ryan, 11 October; its Ore since 20 November): the Ore every foe
+	# its weapons damage puts in, which the Bullion Fragmenter empties for a strike an Ore. A store
+	# on the machine with no effect of its own (the weapon that empties it reads it, and what the
+	# Ore is worth is the Ore chip's armour, _plate); it lasts the skirmish, never decays, and
 	# nothing cleanses it.
-	"hopper": {"id": "hopper", "name": "Hopper", "description": "Loads in the hopper, for a weapon that fires it.", "decay": "none",
+	"hopper": {"id": "hopper", "name": "Ore", "description": "Ore in the hopper, for a weapon that empties it.", "decay": "none",
 		"tags": ["store"], "effects": []},
+	# What the Ore is worth (Ryan, 20 November: "represented as an Ore ability chip"): armour, a
+	# point a stack, an Ability no Purge touches, its stacks set from the Ore held (_plate).
+	"ore_plate": {"id": "ore_plate", "name": "Ore", "description": "Armour from the Ore in its hopper, a point a stack.", "decay": "none", "counted": true,
+		"tags": ["ability"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
 	# The Polar Bear's seal (Ryan's go, 20 October; the form-changing tank of his 15 October
 	# framework): a shield it spends on itself seals it, a vent or a weapon opens it.
 	# One chip while sealed, carrying the armour its Lockdown grants (sealed_status builds it
@@ -340,7 +348,7 @@ const STATUS := {
 	# buff, so nothing purges it; the model holds the form of the same name (the second battery up).
 	"changed_over": {"id": "changed_over", "name": "Changed Over", "description": "Its second battery is up and its first stowed: its die rolls the second battery and its fixed pieces.", "decay": "none", "stacking": "renew",
 		"tags": ["ability", "form"], "effects": []},
-	"sealed": {"id": "sealed", "name": "Sealed", "description": "Sealed: armour up, its own cooling stopped, hotter at the end of each turn. A weapon it fires opens it.", "decay": "none", "stacking": "renew",
+	"sealed": {"id": "sealed", "name": "Sealed", "description": "Sealed: armour up, its cooling stopped, hotter at the end of each turn. A weapon it fires opens it.", "decay": "none", "stacking": "renew",
 		"tags": ["ability", "form"], "effects": []},
 	# Cryo (Ryan, 20 October: the Polar Bear's Cryo Flinger, the debuff called Cryo too, marked
 	# for reuse as the healthier way to cool an ally): a foe mark that pays in cooling. Any
@@ -464,10 +472,46 @@ const STATUS := {
 	# form from 12 to 15 November.
 	"essence_flare": {"id": "essence_flare", "name": "Essence Flare", "description": "No Empowered decays this round, its own or any other unit's, on either side.", "stacking": "renew", "single": true,
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "hold_all", "value": "overcharged"}]},
+	# The Macaque's offhand (Ryan, 19 November: "Only its offhand swaps"; "It cycles after a
+	# spend"; "remove the manual weapon cycle"): the form its offhand holds, the machine's own Ability.
+	# The fight opens on its passive's first form and every spend of a weapon or equipment at a foe
+	# turns it to the next (Skirmish._turn_offhand). A form is content's, an `offhand` effect on the
+	# passive with its name, its line and its riders, so the chip a fight shows is built from it
+	# (hold_form): this entry is the shape every form's chip takes, its name and line the form's own.
+	"offhand": {"id": "offhand", "name": "Offhand", "description": "The form its offhand holds: a rider on every weapon and equipment it aims at a foe, turning to the next form after each.", "decay": "none", "stacking": "renew",
+		"tags": ["ability", "form"], "effects": []},
+	# The Aile Booster's buffs (Ryan, 19 November: "Rapid. Next weapon strike gains Indirect reach";
+	# "Next weapon strike -> Next weapon fired. Applies to the whole spend"; "Booster's buff is the
+	# booster's name, as per the other one-off buffs caused by locked pieces. 'Aile Boost,' 'Aile
+	# Blitz,' 'Aile Assault.'"): the piece's and its two branches' (the Blitzer's and the
+	# Assaulter's, each granted in the Boost's place: buff_status), each waiting on the next weapon
+	# its machine fires and lifted by it, equipment leaving it standing (Juggernaut Drive's shape).
+	# That weapon reaches as Indirect for every strike of its spend; the Blitz's blows ignore armour
+	# too. The Assaulter's Empowered is its piece's own grant beside the buff (self_status).
+	"aile_boost": {"id": "aile_boost", "name": "Aile Boost", "description": "The next weapon it fires reaches as Indirect, every strike of the spend, and lifts it; equipment leaves it standing.", "decay": "none", "spent_by": "weapon", "single": true, "stacking": "renew",
+		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "set_reach", "value": "indirect", "when": "weapon"}]},
+	"aile_blitz": {"id": "aile_blitz", "name": "Aile Blitz", "description": "The next weapon it fires reaches as Indirect and ignores armour, every strike of the spend, and lifts it; equipment leaves it standing.", "decay": "none", "spent_by": "weapon", "single": true, "stacking": "renew",
+		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "set_reach", "value": "indirect", "when": "weapon"}, {"trigger": "static", "effect": "ignore_armour", "value": 1}]},
+	"aile_assault": {"id": "aile_assault", "name": "Aile Assault", "description": "The next weapon it fires reaches as Indirect, every strike of the spend, and lifts it; equipment leaves it standing.", "decay": "none", "spent_by": "weapon", "single": true, "stacking": "renew",
+		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "set_reach", "value": "indirect", "when": "weapon"}]},
+	# The Beam Buckler's Parry (Ryan, 19 November: "The first weapon fired next turn gains bonus
+	# damage equal to half of all damage blocked by this machine this round (rounded down)"; what is
+	# blocked, his answer the same day: what a Barrier and armour keep off a blow, never what its
+	# shield soaks). Two states under one name. Parry, through the round it is gained: the skirmish
+	# counts what a Barrier and its armour keep off each foe's blow on it (MechState.parried), and it
+	# goes as its machine's next turn starts. Then half of that count, rounded down, stands as
+	# parry_strike, a point a stack on its next strike (19 November: "Can we change it to 'next
+	# strike' instead?"), the first blow of the first weapon it fires that turn by the strike order,
+	# on its target, in Empowered's place in the blow; that weapon lifts it, and it goes as the turn
+	# ends if none fires.
+	"parry": {"id": "parry", "name": "Parry", "description": "What a Barrier and its armour keep off foes' blows this round is counted; next turn, its next strike deals half of it more, rounded down.", "decay": "round", "single": true, "stacking": "renew",
+		"tags": ["buff"], "effects": []},
+	"parry_strike": {"id": "parry_strike", "name": "Parry", "description": "Its next strike this turn deals {value} more a stack: the first weapon it fires, its first blow, on its target; that weapon lifts it, equipment leaving it standing. Gone as its turn ends.", "decay": "after_turn", "spent_by": "weapon", "counted": true, "stacking": "renew",
+		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 1, "when": "first_blow"}]},
 }
 ## The statuses a buff component may grant: the machines' own (Braced is a foe's too, from its
 ## brace), never one only a foe carries.
-const MECH_STATUSES := ["overcharged", "braced", "primed", "barrier", "ward", "spun_up", "phased", "ricochet"]
+const MECH_STATUSES := ["overcharged", "braced", "primed", "barrier", "ward", "spun_up", "phased", "ricochet", "aile_boost", "aile_blitz", "aile_assault"]
 
 
 ## Is this id one of the engine's statuses: an id in STATUS, or a die entry's Corrupted or
@@ -603,7 +647,14 @@ const ROUND_HOLDERS := {"overcharged": "essence_flare"}
 ## sealed (the Polar Bear's Lockdown, 9 November): the machine wears its seal (is_sealed), so a
 ## grant holds only in the sealed form; with an `entry` beside it (any effect may carry one: a
 ## component id) it holds on that piece's entries alone.
-const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "target_unhurt", "target_half", "shield_up", "sealed"]
+## weapon (the Macaque's Aile Booster, Ryan, 19 November: "Next weapon fired gains Indirect
+## reach"): the entry is a weapon, so a status that waits on the next weapon fired reaches none of
+## the machine's equipment while it stands.
+## first_blow (the Parry's return, Ryan, 19 November: "Can we change it to 'next strike'
+## instead?"): the blow is its spend's first by the strike order, its first strike's on its target
+## (the skirmish says so in `ctx`), so an add on the next strike lands on that blow alone and on
+## none of its area's; a forecast of the entry's number reads it as no first blow.
+const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "target_unhurt", "target_half", "shield_up", "sealed", "weapon", "first_blow"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "cooling", "shield_regen"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -741,8 +792,6 @@ static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1
 		return held
 	var id := str(passive.get("id", ""))
 	for m in u.modifiers:
-		if m.source == HOPPER_PLATE:
-			continue   # the hopper's grant of Armoured stays its own (_plate), so the loads fired take back only what it gave
 		if m.id == id and m.scope == scope and (scope != ROUNDS or m.expires_round == expires_round):
 			m.stacks += n
 			_record(u, m, n)
@@ -1201,12 +1250,18 @@ static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionar
 	var entry := str(eff.get("entry", ""))
 	if not entry.is_empty() and (face == null or face.component != entry):
 		return false
+	if bool(eff.get("weapon_only", false)) and (face == null or not face.is_weapon()):
+		return false   # the machine's weapons alone (the Prairie Dog's Flakker step: "The first strike")
 	match str(eff.get("when", "")):
 		"":
 			return true
 		"sealed":
 			# The machine's form (the Polar Bear's seal): its Sealed chip stands.
 			return is_sealed(u)
+		"weapon":
+			return face != null and face.is_weapon()
+		"first_blow":
+			return bool(ctx.get("first_blow", false))
 		"shield_up":
 			# The machine's own shield stands (the Storm Petrel's plate, 30 October): the shield
 			# the blow meets, before it lands.
@@ -1271,6 +1326,8 @@ static func _taking_part(u, trigger: String, face: Face, target = null, ctx: Dic
 			var name := str(eff.get("effect", ""))
 			if not _usable(u, m, name) or not _holds(u, eff, face, target, ctx):
 				continue
+			if trigger == "static" and str(eff.get("once", "")) == "round" and _once_marked(u, m, eff):
+				continue   # held once a round, and taken already this one (mark_once)
 			var slot := str(eff.get("slot", ""))
 			if not slot.is_empty():
 				if slotted.has(slot):
@@ -1399,12 +1456,52 @@ static func damage_taken(u, amount: int, source = null, weapon: bool = false, ai
 		if bool(eff.get("aimed_only", false)) and not (aimed and weapon):
 			continue   # Shocked (29 October): read by a weapon's strike aimed at the unit, nothing else
 		var n: int = pair[1].stacks
+		if weapon and source != null and source.get("modifiers") != null:
+			n *= status_weight(source, (pair[1] as Modifier).id)   # its striker counts the status more (the Prairie Dog's Harrier: Brittle twice)
 		match str(eff.get("effect", "")):
 			"add_damage_taken":
 				add += float(eff.get("value", 0)) * n
 			"multiply_damage_taken":
 				mult *= pow(float(eff.get("value", 1)), n)
 	return maxi(0, int(roundf((amount + add) * mult)))
+
+
+## How many times this unit's weapon strikes count each stack of `status_id` on what they hit
+## (count_status, static: the Prairie Dog's Harrier step, Ryan, 20 November: "This machine's
+## weapon strikes count Brittle twice"): the most a live effect says, 1 when none does.
+static func status_weight(u, status_id: String) -> int:
+	var n := 1
+	for pair in _taking_part(u, "static", null):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) == "count_status" and str(eff.get("value", "")) == status_id:
+			n = maxi(n, int(eff.get("times", 1)))
+	return n
+
+
+## The effects a spend takes that hold once a round (`once`: "round"; the Honey Badger's Claw Instant the
+## first time each turn, the Prairie Dog's first weapon strike on a Brittle foe Rapid, Ryan, 20
+## November), read as the spend is aimed, before it lays anything; `face` is the entry as
+## rewritten, `target` the foe it is aimed at. mark_once spends them for the round.
+static func once_taken(u, face: Face, target = null) -> Array:
+	var out: Array = []
+	for pair in _taking_part(u, "static", face, target):
+		if str(pair[0].get("once", "")) == "round":
+			out.append(pair)
+	return out
+
+
+static func mark_once(u, taken: Array) -> void:
+	for pair in taken:
+		_once(u, pair[1], pair[0])
+
+
+## Has this static effect of modifier `m` been taken this round (_once's mark stands)?
+static func _once_marked(u, m, eff: Dictionary) -> bool:
+	var mark := "once:%s:%s:%d" % [str(m.id), str(eff.get("trigger", "")), (m.effects as Array).find(eff)]
+	for held in u.modifiers:
+		if held.id == mark:
+			return true
+	return false
 
 
 ## A component's reach as it is right now: its own, unless a live set_reach holds. Static
@@ -1463,7 +1560,7 @@ static func granted_numbers(u, face: Face, target = null) -> Dictionary:
 		return out
 	for pair in _taking_part(u, "static", face, target):
 		var eff: Dictionary = pair[0]
-		if str(eff.get("effect", "")) != "grant_keyword" or not eff.has("number"):
+		if str(eff.get("effect", "")) != "grant_keyword" or not eff.has("number") or bool(eff.get("adds", false)):
 			continue
 		var kw := Face.keyword_from_name(str(eff.get("value", "")))
 		if kw <= 0 or not Face.NUMBER_FIELDS.has(kw):
@@ -1472,27 +1569,216 @@ static func granted_numbers(u, face: Face, target = null) -> Dictionary:
 	return out
 
 
-## What a spend of this entry at a foe lays on its own machine, as [{status, stacks, per_foe, cap},
-## ...]: what the piece prints (Face.self_statuses: the Hardlight Pulse's Hardened Light, 18
-## November) and what a live effect adds to it (self_status, static, scoped to its piece by
-## `entry`, its `when` honoured: the Storm Petrel's branches). Each status once: its stacks the
-## most any grant says, a stack set for every foe the spend reached if any says per_foe, and its
-## cap the highest any names (0 for none), so a direction's step takes the piece's own grant
-## further (Ryan, 18 November: "max stacks raised to 4"; "grants 1 Hardened Light per target hit
-## instead of a flat 1. Max stacks raised to 5"). An attack's alone; the skirmish lays them once
-## the spend's hits are done (Skirmish._self_grants).
-static func self_grants(u, face: Face, target = null) -> Array:
-	var out: Array = []
-	if face == null or not face.is_attack():
+## The numbers a live grant adds to a numbered keyword's own (`adds` beside `number` on a
+## grant_keyword: the Macaque's Beam Bazooka, Ryan, 19 November, "Each strike gains Spread 2 and
+## Penetrate 2"; "Two spreads on the same weapon would combine"), keyword -> what every such grant
+## adds, summed: a Spread 1 gun under it is a Spread 3, one with none a Spread 2. A grant that
+## replaces (the drum's shape) is granted_numbers'.
+static func added_numbers(u, face: Face, target = null) -> Dictionary:
+	var out := {}
+	if face == null or face.kind == Face.Kind.BLANK:
 		return out
-	var at := {}
-	var grants: Array = []
-	for g in face.self_statuses:
-		grants.append(g)
 	for pair in _taking_part(u, "static", face, target):
 		var eff: Dictionary = pair[0]
-		if str(eff.get("effect", "")) == "self_status":
-			grants.append({"status": str(eff.get("status", "")), "stacks": int(eff.get("value", 1)), "per_foe": bool(eff.get("per_foe", false)), "cap": int(eff.get("cap", 0))})
+		if str(eff.get("effect", "")) != "grant_keyword" or not bool(eff.get("adds", false)) or not eff.has("number"):
+			continue
+		var kw := Face.keyword_from_name(str(eff.get("value", "")))
+		if kw <= 0 or not Face.NUMBER_FIELDS.has(kw):
+			continue
+		var fits := Face.ANY_KEYWORDS.has(kw) or (face.is_attack() != Face.SUPPORT_KEYWORDS.has(kw))
+		if fits:
+			out[kw] = int(out.get(kw, 0)) + maxi(0, int(eff["number"])) * int(pair[1].stacks)
+	return out
+
+
+## The offhand's forms (the Macaque's, Ryan, 19 November): its passive's `offhand` effects, in
+## their order, each later grant in a slot standing in the place of the one it replaces (a branch's
+## step: the Beam Saber in the Beam Sword's), so the cycle keeps its order whatever is upgraded.
+## Each is {name, description, riders}: what its chip says and the effects it carries.
+static func offhand_forms(u) -> Array:
+	var mods: Array = live(u)
+	mods.sort_custom(func(a, b) -> bool: return a.seq < b.seq)   # in grant order: the passive's forms set the cycle, a step's take their slots
+	var out: Array = []
+	var at := {}
+	for m in mods:
+		for eff in m.effects:
+			if str(eff.get("trigger", "")) != "static" or str(eff.get("effect", "")) != "offhand" or not _usable(u, m, "offhand") or not _holds(u, eff, null):
+				continue
+			var slot := str(eff.get("slot", ""))
+			if not slot.is_empty() and at.has(slot):
+				out[int(at[slot])] = eff   # the later grant in the slot, in its place
+				continue
+			if not slot.is_empty():
+				at[slot] = out.size()
+			out.append(eff)
+	return out
+
+
+## The machine's offhand takes `form` up (one of offhand_forms): its chip, an Ability under the
+## form's name and line, carrying the form's riders as its own effects, which the pipeline reads as
+## it reads any status's (side_strike, strike_again, self_status, grant_keyword), until the next
+## form takes its place. A fight's: it goes when the fight ends.
+static func hold_form(u, form: Dictionary) -> Modifier:
+	var def: Dictionary = STATUS["offhand"]
+	u.modifiers = u.modifiers.filter(func(m) -> bool: return m.id != "offhand")
+	var riders = form.get("riders", [])
+	var m := make({"id": "offhand", "name": str(form.get("name", def["name"])), "description": str(form.get("description", def["description"])),
+		"tags": def["tags"], "effects": (riders as Array).duplicate(true) if riders is Array else []}, SKIRMISH, "offhand:" + str(form.get("slot", form.get("id", ""))))
+	if m == null:
+		return null
+	m.decay = DECAY_NONE
+	return grant(u, m)
+
+
+## The offhand's form up now: its chip's name, "" for a machine with none.
+static func held_form(u) -> String:
+	for m in live(u):
+		if m.id == "offhand":
+			return m.name
+	return ""
+
+
+## The slot of the offhand's form up now (rifle, sword, shield: the place in its cycle a branch's
+## form takes over), "" for none: what its model's held armament keys on (MechRig.holds_form).
+static func held_slot(u) -> String:
+	for m in live(u):
+		if m.id == "offhand":
+			return m.source.trim_prefix("offhand:")
+	return ""
+
+
+## The offhand's form up now as the player reads it, [its name, its line]; empty for none.
+static func held_form_line(u) -> Array:
+	for m in live(u):
+		if m.id == "offhand":
+			return [m.name, m.description]
+	return []
+
+
+## What the rifle adds to every strike of an entry aimed at a foe (side_strike, static: the line
+## frame's Beam Rifle, Ryan, 19 November: "Each strike also strikes the foe to the right for 2"):
+## the number the foe to the right of its target takes, its own blow beside any area's ("Two spreads
+## on the same weapon would combine, but the rifle buff is a different form"), summed over every
+## live grant; 0 for none.
+static func side_strike(u, face: Face, target = null) -> int:
+	if face == null or not face.is_attack():
+		return 0
+	var n := 0
+	for pair in _taking_part(u, "static", face, target):
+		if str(pair[0].get("effect", "")) == "side_strike":
+			n += maxi(0, int(pair[0].get("value", 0))) * int(pair[1].stacks)
+	return n
+
+
+## What the sword adds after every strike of an entry aimed at a foe (strike_again, static: the line
+## frame's Beam Sword, Ryan, 19 November: "After each strike, hit the target again for half of the
+## strike's damage (rounded down)"; its Beam Saber's "for full damage"): the share of the strike's
+## blow, in percent, its hit again carries, the most any live grant says; 0 for none.
+static func strike_again(u, face: Face, target = null) -> int:
+	if face == null or not face.is_attack():
+		return 0
+	var n := 0
+	for pair in _taking_part(u, "static", face, target):
+		if str(pair[0].get("effect", "")) == "strike_again":
+			n = maxi(n, int(pair[0].get("value", 0)))
+	return n
+
+
+## The branch's steps taken on this piece (Ryan, 19 November, of an upgrade shown on the die: "I
+## agree on the chevron"): every step a machine has picked with an effect scoped to the piece by
+## `entry`, each once however many of its effects name it; a step on the passive alone is on no
+## piece. The die and the codex draw a chevron for each beside the entry's place.
+static func steps_on(u, face: Face) -> int:
+	if face == null or face.component.is_empty() or face.kind == Face.Kind.BLANK:
+		return 0   # a destroyed piece takes its tweaks with it, and shows none
+	var n := 0
+	for m in u.modifiers:
+		if m.source != "branch":
+			continue
+		for eff in m.effects:
+			if eff is Dictionary and str(eff.get("entry", "")) == face.component:
+				n += 1
+				break
+	return n
+
+
+## The piece as its branch's steps make it, for the codex, which shows every piece at its own
+## numbers: what the steps turn it into, its name (entry_name) and the status a buff grants in its
+## own's place (buff_rewrite), and nothing a passive, a module or a fight adds. The piece itself
+## when no step turns it into another.
+static func upgraded_face(u, face: Face) -> Face:
+	var named := entry_name(u, face)
+	var buff_to := buff_rewrite(u, face)
+	var formed := piece_form(u, face)   # a step that remakes the piece whole (the Prairie Dog's Disperser)
+	if named.is_empty() and buff_to.is_empty() and formed == face:
+		return face
+	var c := formed.duplicate_face() if formed != face else face.duplicate_face()
+	c.renamed = named
+	if not buff_to.is_empty():
+		c.buff_status = buff_to
+	return c
+
+
+## The name a live effect gives this piece (`name` on an effect scoped to it by `entry`: the line
+## frame's Aile Booster as the Aile Blitzer or the Aile Assaulter, Ryan, 19 November: "I intended
+## the gundam to change its equipment names for the booster and the offhand"; "the upgrade
+## decisions should be represented on the die somehow"): the latest grant's, "" for its own.
+static func entry_name(u, face: Face) -> String:
+	if face == null or face.component.is_empty():
+		return ""
+	var out := ""
+	var seq := -1
+	for pair in _taking_part(u, "static", face):
+		var eff: Dictionary = pair[0]
+		if eff.has("name") and str(eff.get("entry", "")) == face.component and (pair[1] as Modifier).seq > seq:
+			seq = (pair[1] as Modifier).seq
+			out = str(eff["name"])
+	return out
+
+
+## The status a buff entry grants as its machine's live effects make it (buff_status, static, scoped
+## to its piece by `entry`: the Aile Booster's branches, the Blitzer's Aile Blitz and the
+## Assaulter's Aile Assault in the Aile Boost's place, Ryan, 19 November): the latest grant's, ""
+## for the piece's own.
+static func buff_rewrite(u, face: Face) -> String:
+	if face == null or face.kind != Face.Kind.BUFF:
+		return ""
+	var out := ""
+	var seq := -1
+	for pair in _taking_part(u, "static", face):
+		if str(pair[0].get("effect", "")) == "buff_status" and (pair[1] as Modifier).seq > seq:
+			seq = (pair[1] as Modifier).seq
+			out = str(pair[0].get("value", ""))
+	return out if STATUS.has(out) else ""
+
+
+## What a spend of this entry lays on its own machine, as [{status, stacks, per_foe, cap, (plus)},
+## ...]: what the piece prints (Face.self_statuses: the Hardlight Pulse's Hardened Light, 18
+## November) and what a live effect adds to it (self_status, static, scoped to its piece by
+## `entry`, its `when` honoured: the Storm Petrel's branches; on every weapon and equipment it aims
+## at a foe when it names no piece: the Macaque's offhand, its Beam Shield's Armoured 2). Each
+## status once: its stacks the most any grant says, a stack set for every foe the spend reached if
+## any says per_foe, beside the flat stacks any `plus` says (the Beam Pavise's "Gain 1 Armoured,
+## plus 1 Armoured for every foe struck"), and its cap the highest any names (0 for none), so a
+## direction's step takes the piece's own grant further (Ryan, 18 November: "max stacks raised to
+## 4"; "grants 1 Hardened Light per target hit instead of a flat 1. Max stacks raised to 5"). An
+## attack's, or a buff's where an effect names its piece (the Aile Assaulter's Empowered, 19
+## November: "Gain 1 Empowered"); the skirmish lays them once the spend is done (Skirmish._self_grants).
+static func self_grants(u, face: Face, target = null) -> Array:
+	var out: Array = []
+	if face == null or face.kind == Face.Kind.BLANK:
+		return out
+	var attack := face.is_attack()
+	var at := {}
+	var grants: Array = []
+	if attack:
+		for g in face.self_statuses:
+			grants.append(g)
+	for pair in _taking_part(u, "static", face, target):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) != "self_status" or (not attack and str(eff.get("entry", "")).is_empty()):
+			continue   # a rider on what it aims at foes rides no buff; a buff's own lay names its piece
+		grants.append({"status": str(eff.get("status", "")), "stacks": int(eff.get("value", 1)), "per_foe": bool(eff.get("per_foe", false)), "cap": int(eff.get("cap", 0)), "plus": int(eff.get("plus", 0))})
 	for g in grants:
 		var id := str(g.get("status", ""))
 		if not STATUS.has(id):
@@ -1500,14 +1786,20 @@ static func self_grants(u, face: Face, target = null) -> Array:
 		var n := maxi(1, int(g.get("stacks", 1)))
 		var each := bool(g.get("per_foe", false))
 		var cap := maxi(0, int(g.get("cap", 0)))
+		var plus := maxi(0, int(g.get("plus", 0)))
 		if at.has(id):
 			var have: Dictionary = out[int(at[id])]
 			have["stacks"] = maxi(int(have["stacks"]), n)
 			have["per_foe"] = bool(have["per_foe"]) or each
 			have["cap"] = maxi(int(have["cap"]), cap)
+			if plus > int(have.get("plus", 0)):
+				have["plus"] = plus
 		else:
 			at[id] = out.size()
-			out.append({"status": id, "stacks": n, "per_foe": each, "cap": cap})
+			var grant := {"status": id, "stacks": n, "per_foe": each, "cap": cap}
+			if plus > 0:
+				grant["plus"] = plus
+			out.append(grant)
 	return out
 
 
@@ -1599,7 +1891,12 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	var grants := self_grants(u, base, target)
 	var regranted := grants != base.self_statuses   # a branch takes the piece's own grant further, or adds one
 	var more := power_added(u, base, target)   # a branch's raise of the piece's own number (the Buzzard's Burst)
-	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not spills and not regranted and more == 0:
+	var added := added_numbers(u, base, target)   # a grant adding to a numbered keyword's own (the Beam Bazooka's Spread 2 on a Spread gun)
+	var buff_to := buff_rewrite(u, base)   # a branch's status in the piece's own's place (the Aile Booster's Blitzer)
+	var named := entry_name(u, base)   # the name a branch's step gives the piece (the Aile Blitzer)
+	# A weapon that empties the hopper strikes once for every Ore it holds (the Bullion Fragmenter).
+	var ore := stacks_of(u, "hopper") if base.empties_hopper else -1
+	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not spills and not regranted and more == 0 and added.is_empty() and buff_to.is_empty() and named.is_empty() and ore < 0:
 		return face
 	var c := base.duplicate_face() if base == face else base
 	c.reach = r
@@ -1609,6 +1906,14 @@ static func effective_face(u, face: Face, target = null) -> Face:
 			c.set_number(kw, int(numbers[kw]))   # the grant's own number (the drum's Spread 2)
 	for kw in raised.keys():
 		c.set_number(kw, int(raised[kw]))
+	for kw in added.keys():
+		var had := int(numbers.get(kw, base.number_of(kw)))   # its own, or what a replacing grant sets it to; nothing on a keyword it lacks
+		c.add_keyword(kw)
+		c.set_number(kw, had + int(added[kw]))
+	if not buff_to.is_empty():
+		c.buff_status = buff_to
+	if not named.is_empty():
+		c.renamed = named
 	if primed_shock:
 		c.add_keyword(Face.Keyword.SHOCK)
 	if primed_cryo:
@@ -1630,6 +1935,8 @@ static func effective_face(u, face: Face, target = null) -> Face:
 		c.self_statuses = grants
 	if more != 0:
 		c.power = maxi(0, c.power + more)
+	if ore >= 0:
+		c.strikes = maxi(1, ore) * (c.split if c.split > 1 else 1)
 	return c
 
 
@@ -1670,6 +1977,7 @@ static func grants_spill(u, face: Face, target = null) -> bool:
 ## the rewrite's, one blow, its tag added, and its keywords, rules and other tags kept. Any
 ## other entry, or none, is the face itself. Read first, under every other passive's change.
 static func rewritten(u, face: Face) -> Face:
+	face = piece_form(u, face)
 	if face == null or not face.is_attack():
 		return face
 	# Read alone, never through every static effect's gate: a reach condition asks the reach,
@@ -1682,6 +1990,31 @@ static func rewritten(u, face: Face) -> Face:
 				continue
 			return _rewrite(face, eff)
 	return face
+
+
+## The piece as a branch's step remakes it whole (piece_form, static, scoped to its piece by
+## `entry`, its new entry in `face`: the Prairie Dog's Flakshot Spreader as its Disperser or its
+## Repeater, Ryan, 20 November), the latest grant's; the piece itself when none holds. The die
+## keeps the piece as printed; the entry as spent, read and shown is the form.
+static func piece_form(u, face: Face) -> Face:
+	if face == null or face.component.is_empty() or face.kind == Face.Kind.BLANK:
+		return face
+	var best: Dictionary = {}
+	var seq := -1
+	for m in live(u):
+		for eff in m.effects:
+			if str(eff.get("trigger", "")) != "static" or str(eff.get("effect", "")) != "piece_form" or str(eff.get("entry", "")) != face.component:
+				continue
+			if eff.get("face") is Dictionary and m.seq > seq:
+				seq = m.seq
+				best = eff["face"]
+	if best.is_empty():
+		return face
+	var c := Face.from_dict(best)
+	c.component = face.component
+	c.fixed = face.fixed
+	c.tags = face.tags.duplicate()
+	return c
 
 
 ## The drum's shot from a weapon or a debuff and the rewrite that fires it.
@@ -1720,14 +2053,13 @@ static func gate_text(g) -> String:
 		"target_status":
 			var st := str(g.get("status", ""))
 			if st.is_empty():
-				return "on a foe carrying a status"
-			var nm := str(STATUS.get(st, {}).get("name", st))
-			var n := maxi(1, int(g.get("stacks", 1)))
-			return ("on a foe carrying %s" % nm) if n == 1 else ("on a foe carrying %d %s or more" % [n, nm])
+				return Templates.say("gate.any_status")
+			return Templates.say("gate.status", {"status": str(STATUS.get(st, {}).get("name", st)), "n": maxi(1, int(g.get("stacks", 1)))})
 		"target_rank":
-			return "aimed at the %s rank" % str(g.get("rank", "front"))
+			var rank := str(g.get("rank", "front"))
+			return Templates.say("gate.rank", {"rank": Templates.say("rank." + rank) if Templates.has("rank." + rank) else rank})
 		"target_no_intent":
-			return "on a foe showing no intent on it"
+			return Templates.say("gate.no_intent")
 	return str(g.get("when", ""))
 
 
@@ -1831,7 +2163,7 @@ static func zap_of(u, face: Face) -> Dictionary:
 ## sealed, carrying the armour as its one effect (the stat pipeline reads it like any add).
 static func sealed_status(armour: int, heat: int) -> Dictionary:
 	var d: Dictionary = STATUS["sealed"].duplicate(true)
-	d["description"] = "Sealed: armour +%d, its own cooling stopped, %d hotter at the end of each turn. A weapon it fires opens it." % [armour, heat]
+	d["description"] = "Sealed: armour +%d, its cooling stopped, %d hotter at the end of each turn. A weapon it fires opens it." % [armour, heat]
 	d["effects"] = [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": armour}]
 	return d
 
@@ -1904,7 +2236,7 @@ static func blow_blocked(u) -> Dictionary:
 ## Nothing here can fire itself: a shield gained here grants no more shield, heat shed here
 ## grants no heat.
 static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary:
-	var out := {"shield": 0, "vent": 0, "statuses": [] as Array[String]}
+	var out := {"shield": 0, "vent": 0, "pull": 0, "statuses": [] as Array[String]}
 	for pair in _taking_part(u, trigger, null):
 		var eff: Dictionary = pair[0]
 		# An effect that fires once a round (its `once`: "round"; the Skua's stack of Ricochet for
@@ -1927,6 +2259,11 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 				out["shield"] += maxi(0, int(u.shield_max) - int(u.shield))
 			"vent_heat":
 				out["vent"] += v
+			"pull_heat":
+				# The Puffin's pull (Ryan, 11 November: "Using an equipment on an ally moves some of its
+				# heat to the Puffin"; 19 November, "I think 4 for the Puffin"): the most of the ally's
+				# heat it takes onto itself, for the caller to move.
+				out["pull"] += v
 			"stack_status":
 				var id := str(eff.get("value", ""))
 				if STATUS.has(id):
@@ -2036,20 +2373,30 @@ static func banked(u, id: String) -> int:
 
 ## The most stacks of a store a live passive lets this machine bank (stack_status's cap, any
 ## trigger; the Nemesis's rage, five, Ryan, 22 October), 0 when nothing caps it: the boxes of
-## its bar under the heat.
+## its bar under the heat. The hopper's is its fill's cap and every raise of it a live effect
+## grants (hopper_max, summed: the Honey Badger's branches, Ryan, 20 November, "Ore max +1",
+## worded "+" so it is cumulative).
 static func store_cap(u, id: String) -> int:
+	if id == "hopper":
+		var cap := 0
+		var more := 0
+		for m in live(u):
+			for eff in m.effects:
+				if str(eff.get("effect", "")) == "fill_hopper" and int(eff.get("cap", 0)) > 0:
+					cap = maxi(cap, int(eff["cap"]))
+				elif str(eff.get("effect", "")) == "hopper_max":
+					more += int(eff.get("value", 0)) * int(m.stacks)
+		return cap + more if cap > 0 else 0
 	for m in live(u):
 		for eff in m.effects:
 			if str(eff.get("effect", "")) == "stack_status" and str(eff.get("value", "")) == id and int(eff.get("cap", 0)) > 0:
 				return int(eff["cap"])
-			if id == "hopper" and str(eff.get("effect", "")) == "fill_hopper" and int(eff.get("cap", 0)) > 0:
-				return int(eff["cap"])
 	return 0
 
 
-## The loads each foe its weapons damage puts in this machine's hopper (fill_hopper, static: the
-## Honey Badger's Ore Hopper, Ryan, 31 October: "per foe damaged"), 0 when nothing fills it. A
-## weapon that fills the hopper itself (the Chainsaw Claw's two) reads its own number instead.
+## The Ore each foe its weapons damage puts in this machine's hopper (fill_hopper, static: the
+## Honey Badger's Ore Hopper, Ryan, 20 November: "Any weapon, only on Damage, not just strike"),
+## 0 when nothing fills it. A weapon that empties the hopper puts none in.
 static func hopper_fill(u) -> int:
 	var n := 0
 	for pair in _taking_part(u, "static", null):
@@ -2058,99 +2405,60 @@ static func hopper_fill(u) -> int:
 	return n
 
 
-## The armour `loads` in this machine's hopper are worth (hopper_plate, static: `value` for each
-## `per` loads held; a point a load, Ryan, 31 October), the loads it holds when none are given;
-## 0 when nothing plates it.
+## The armour `loads` of Ore in this machine's hopper are worth (hopper_plate, static: `value` once
+## it holds `at`, and `past` more for every Ore past `at`; the Ore Hopper's 1 at 3, its Miner step's
+## 1 more for each past 3, Ryan, 20 November), the Ore it holds when none is given; 0 when nothing
+## plates it. A step that names the passive's slot stands in its place.
 static func hopper_plate(u, loads: int = -1) -> int:
 	var held := stacks_of(u, "hopper") if loads < 0 else loads
 	var n := 0
 	for pair in _taking_part(u, "static", null):
 		var eff: Dictionary = pair[0]
-		if str(eff.get("effect", "")) == "hopper_plate":
-			n += int(eff.get("value", 0)) * int(pair[1].stacks) * int(held / maxi(1, int(eff.get("per", 1))))
+		if str(eff.get("effect", "")) != "hopper_plate":
+			continue
+		var at := maxi(1, int(eff.get("at", 1)))
+		if held >= at:
+			n += (int(eff.get("value", 0)) + int(eff.get("past", 0)) * (held - at)) * int(pair[1].stacks)
 	return n
 
 
-## Loads into the hopper, never past its cap, and the hopper's Armoured moved by what the
-## change is worth (_plate). Returns how many went in.
+## Ore into the hopper, never past its cap, and its armour moved with it (_plate). Returns how
+## much went in.
 static func add_loads(u, n: int) -> int:
 	var cap := store_cap(u, "hopper")
 	if cap > 0:
 		n = mini(n, cap - banked(u, "hopper"))
 	if n <= 0:
 		return 0
-	var worth := hopper_plate(u)
 	stack(u, STATUS["hopper"], SKIRMISH, "mech", n, DECAY_NONE)
-	_plate(u, hopper_plate(u) - worth)
+	_plate(u)
 	return n
 
 
-## Loads fired out of the hopper, and the hopper's Armoured brought down by what they were
-## worth. Returns how many.
+## The hopper emptied (the Bullion Fragmenter), its armour going with the Ore. Returns how much.
 static func spend_loads(u, n: int) -> int:
-	var worth := hopper_plate(u)
 	var spent := spend_stacks(u, "hopper", n)
-	_plate(u, hopper_plate(u) - worth)
+	_plate(u)
 	return spent
 
 
-## What the hopper's loads are worth is the game's Armoured, granted by the hopper (Ryan, 10
-## November: "The funnel fill is tracked by the resource bar. The buff he gets from it is
-## Armoured, not an ability. Its purgeable, but returns at the start of his turn since its
-## granted by the funnel bar"; an ability of its own, the Ore Plate, from 8 November until then).
-## A buff like any Armoured: a Purge strips it, and it goes whole as its machine's turn starts,
-## as every machine's Armoured does. The hopper grants it again as each round opens, to what the loads
-## held are worth (plate_round), and between rounds it follows the loads by the change in their
-## worth alone (_plate), so a load gained after a Purge brings back only its own point and the
-## rest waits for the machine's next turn. The loads are the store's, on the resource bar, and
-## no Purge touches them.
-const HOPPER_PLATE := "store:hopper"   # the source its grant of Armoured carries
-
-
-## The stacks of Armoured the hopper's own grant holds now.
-static func plated(u) -> int:
-	var n := 0
+## What the Ore is worth is armour, an Ability of the machine's (Ryan, 20 November: "It's no longer
+## cleansable, represented as an Ore ability chip"; in place of the Armoured the hopper granted
+## from 10 November): the Ore chip, its stacks the armour, set the moment the Ore moves, so it
+## lands as the Ore that earns it lands and goes as the hopper empties. No Purge touches it.
+static func _plate(u) -> void:
+	var want := hopper_plate(u)
 	for m in u.modifiers:
-		if m.id == "braced" and m.source == HOPPER_PLATE:
-			n += m.stacks
-	return n
-
-
-## The round opens: the hopper grants its Armoured afresh, up to what its loads are worth.
-## Returns the stacks it granted.
-static func plate_round(u) -> int:
-	var short := hopper_plate(u) - plated(u)
-	if short > 0:
-		_plate(u, short)
-	return maxi(0, short)
-
-
-## The hopper's grant of Armoured moved by `change` stacks: more as a stack of its own, gone as
-## the next round opens like any Armoured on a machine; fewer off its own grant alone, as far as that
-## still stands (a Purge may have taken it already), never off another source's Armoured.
-static func _plate(u, change: int) -> void:
-	if change > 0:
-		var def: Dictionary = STATUS["braced"]
-		# A grant of its own, never merged into another source's Armoured, so loads fired take
-		# back only what the hopper gave.
-		for m in u.modifiers:
-			if m.id == "braced" and m.source == HOPPER_PLATE:
-				m.stacks += change
-				_record(u, m, change)
-				return
-		var m := make(def, SKIRMISH, HOPPER_PLATE)
+		if m.id == "ore_plate":
+			m.stacks = want
+			break
+	u.modifiers = u.modifiers.filter(func(m) -> bool: return not (m.id == "ore_plate" and m.stacks <= 0))
+	if want > 0 and stacks_of(u, "ore_plate") <= 0:
+		var m := make(STATUS["ore_plate"], SKIRMISH, "store:hopper")
 		if m != null:
-			m.stacks = change
-			m.decay = status_decay(def)
+			m.stacks = want
+			m.decay = DECAY_NONE
 			grant(u, m)
-	elif change < 0:
-		var left := -change
-		for m in u.modifiers:
-			if m.id == "braced" and m.source == HOPPER_PLATE and left > 0:
-				var take := mini(m.stacks, left)
-				m.stacks -= take
-				left -= take
-		u.modifiers = u.modifiers.filter(func(m) -> bool: return not (m.id == "braced" and m.source == HOPPER_PLATE and m.stacks <= 0))
 
 
 ## Free rerolls of this machine's own die each round, on top of the team's (free_reroll,
@@ -2204,19 +2512,16 @@ static func shield_granted(u, ally, amount: int) -> Dictionary:
 	return fire(u, "on_shield_granted", amount, ally)
 
 
-## The shield this machine's spend gives an ally beyond the entry's own number: its passives'
-## shield_per_ally_heat (on_shield_granted; the Puffin's Slipstream Projector, 21 October),
-## `value` for every `per_heat` (10 until the stock pass's landing) the ally carries, pro rata
-## and rounded down, so a value of 2 per 10 is a fifth of the ally's heat. Read at the spend,
-## before the shield lands, from the heat the ally
-## carries then; never on the machine itself, since the trigger is for allies (the caller asks
-## only for an ally). The die dragged over the ally and the bot read the same number.
-static func granted_shield(u, ally_heat: int) -> int:
-	var n := 0.0
-	for pair in _taking_part(u, "on_shield_granted", null):
-		if str(pair[0].get("effect", "")) == "shield_per_ally_heat":
-			n += float(int(pair[0].get("value", 0)) * int(pair[1].stacks) * maxi(0, ally_heat)) / float(maxi(1, int(pair[0].get("per_heat", 10))))
-	return maxi(0, floori(n + 0.000001))
+## The most of an ally's heat a piece of equipment this machine spends on it takes onto this
+## machine (on_buff_granted's pull_heat; the Puffin's, 19 November), for the bot and the readout to
+## read before the spend: the fire is the spend's own (Skirmish._pull_heat). 0 for a machine that
+## pulls none.
+static func granted_pull(u) -> int:
+	var n := 0
+	for pair in _taking_part(u, "on_buff_granted", null):
+		if str(pair[0].get("effect", "")) == "pull_heat":
+			n += int(pair[0].get("value", 0)) * int(pair[1].stacks)
+	return maxi(0, n)
 
 
 ## The heat an ally this machine shields would shed (on_shield_granted vent_heat), for the
@@ -2501,6 +2806,39 @@ static func ordinal(n: int) -> String:
 ## rest of the round of the spend and the rounds it prints after it; Rapid's own switch-off, the
 ## rest of the round alone). A foe's jam can be cleansed; a cooldown cannot (it is the
 ## piece's price, and a cleanse that lifted a Rapid piece's would start an infinite turn).
+## The round a foe's jam names as its end: never reached, so only its machine's reboot lights it
+## (Ryan, 19 November: "Lets change Jammed to lasting until Reboot, that closes the cockatrice
+## hole"), or a Cleanse. A cooldown keeps its rounds.
+const JAM_REBOOT := 1 << 29
+## What dark_rounds says of an entry a jam holds until the reboot: no count, the die's foot showing
+## the reboot's mark in its place.
+const DARK_REBOOT := 99
+
+
+## The foes' jams on `u`, each waiting for its reboot: how many entries they hold dark.
+static func jams_waiting(u) -> int:
+	var n := 0
+	for m in u.modifiers:
+		if m.scope == ROUNDS and m.expires_round >= JAM_REBOOT and m.source.begins_with("foe:") \
+				and m.effects.any(func(eff) -> bool: return str(eff.get("effect", "")) == "disable_entry"):
+			n += 1
+	return n
+
+
+## Light every entry a foe's jam holds dark (the reboot's drop): how many.
+static func clear_waiting_jams(u) -> int:
+	var keep: Array = []
+	var n := 0
+	for m in u.modifiers:
+		if m.scope == ROUNDS and m.expires_round >= JAM_REBOOT and m.source.begins_with("foe:") \
+				and m.effects.any(func(eff) -> bool: return str(eff.get("effect", "")) == "disable_entry"):
+			n += 1
+			continue
+		keep.append(m)
+	u.modifiers = keep
+	return n
+
+
 static func disable_entry(u, index: int, source: String, until_round: int) -> Modifier:
 	var cooldown := source == "cooldown"
 	var status := {"id": "disabled_%d" % index, "name": "Cooldown" if cooldown else "Jammed",
@@ -2608,8 +2946,9 @@ static func mine_damage(u) -> int:
 
 
 ## The rounds an entry stays dark, this one included: the latest end of whatever switched it
-## off (a cooldown, a foe's disable) less `round`, plus one; 0 for a lit entry. The die shows
-## it on the dark entry (the cooldown row: dark with the rounds left).
+## off (a cooldown) less `round`, plus one; DARK_REBOOT for one a foe's jam holds, which waits
+## for the reboot; 0 for a lit entry. The die shows it on the dark entry (the cooldown row: dark
+## with the rounds left, or the reboot's mark).
 static func dark_rounds(u, index: int, round: int) -> int:
 	var until := -1
 	for m in live(u):
@@ -2618,6 +2957,8 @@ static func dark_rounds(u, index: int, round: int) -> int:
 		for eff in m.effects:
 			if str(eff.get("effect", "")) == "disable_entry" and int(eff.get("value", -1)) == index:
 				until = maxi(until, m.expires_round)
+	if until >= JAM_REBOOT:
+		return DARK_REBOOT
 	return maxi(0, until - round + 1) if until >= 0 else 0
 
 
@@ -2724,10 +3065,12 @@ static func effect_text(eff: Dictionary) -> String:
 		"carry": body = "the machines beside it on the map travel with it when it moves"
 		"forge": body = "its weapons spend ammo instead of heating it, 1 for every %d heat, its magazine %s, opening at %d and gaining %d a round" % [int(eff.get("per_heat", 10)), vs, int(eff.get("start", 0)), int(eff.get("per_round", 0))]
 		"muster": body = "every die that rolls fills its Muster a point, %s a charge, a kill by its own guns %d more, up to %d charges" % [vs, int(eff.get("kill", 0)), int(eff.get("cap", 3))]
-		"fill_hopper": body = "every foe its weapons damage puts %s in its hopper, up to %d" % ["a load" if vs == "1" else vs + " loads", int(eff.get("cap", 0))]
+		"fill_hopper": body = "damaging a foe grants %s, up to %d" % ["one Ore" if vs == "1" else vs + " Ore", int(eff.get("cap", 0))]
+		"hopper_max": body = "Ore max +%s" % vs
 		"hopper_plate":
-			var per := int(eff.get("per", 1))
-			body = ("each load held grants %s of Armoured as each round opens" if per <= 1 else "every %d loads held grant %%s of Armoured as each round opens" % per) % ("a stack" if vs == "1" else vs + " stacks")
+			body = "at %d Ore, armour +%s" % [int(eff.get("at", 1)), vs]
+			if int(eff.get("past", 0)) > 0:
+				body += ", and +%d for each Ore past %d" % [int(eff["past"]), int(eff.get("at", 1))]
 		"add_damage": body = "damage %s" % signed
 		"min_damage": body = "damage at least %s" % vs
 		"multiply_heat": body = "heat ×%s" % vs
@@ -2743,7 +3086,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"add_damage_taken": body = "damage taken %s" % signed
 		"multiply_damage_taken": body = "damage taken ×%s" % vs
 		"suppress": body = "turns off %s" % vs
-		"spillover": body = Face.SPILLS_TEXT
+		"spillover": body = Templates.say("rule.spills")
 		"grant_keyword":
 			var kw := Face.keyword_from_name(str(v))
 			body = "gains %s" % (Face.keyword_label(kw) if kw > 0 else str(v))
@@ -2752,7 +3095,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"self_status":
 			var sn := str(STATUS.get(str(eff.get("status", "")), {}).get("name", str(eff.get("status", ""))))
 			body = "spent on a foe, lays %s %s on its own machine%s%s" % [sn, vs, " for each foe it reaches" if bool(eff.get("per_foe", false)) else "", (", up to %d" % int(eff["cap"])) if int(eff.get("cap", 0)) > 0 else ""]
-		"seal_form": body = "equipment it spends on itself seals it: armour +%s, its own cooling stopped, %s hotter at the end of each turn; a weapon it fires opens it" % [vs, str(eff.get("heat", 0))]
+		"seal_form": body = "equipment it spends on itself seals it: armour +%s, its cooling stopped, %s hotter at the end of each turn; a weapon it fires opens it" % [vs, str(eff.get("heat", 0))]
 		"stack_status":
 			var nm := str(STATUS.get(str(v), {}).get("name", str(v)))
 			var k := maxi(1, int(eff.get("stacks", 1)))
@@ -2776,7 +3119,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
 		"shield_zap": body = "each weapon it fires pays %d shield, when it holds that much, for +%s on its every blow" % [int(eff.get("cost", 0)), vs]
 		"add_power": body = "its own number +%s" % vs
-		"shield_per_ally_heat": body = "the shield grows by %s for every %d heat it carries" % [vs, int(eff.get("per_heat", 10))]
+		"pull_heat": body = "takes up to %s of its heat onto this machine" % vs
 		"add_shield": body = "+%s shield" % vs
 		"shield_per_heat": body = "+%s shield for each point" % vs
 		"refill_shield": body = "its shield recharges whole"
@@ -2808,6 +3151,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"on_skirmish_start": lead = "as the fight begins: "
 		"on_shield_gain": lead = "on gaining shield: "
 		"on_shield_granted": lead = "an ally this machine shields: "
+		"on_buff_granted": lead = "an ally this machine spends equipment on: "
 		"on_heat_gain": lead = "on gaining heat: "
 		"on_kill": lead = "after an attack that killed: "
 		"on_round_kill": lead = "at the end of a round in which it killed: "

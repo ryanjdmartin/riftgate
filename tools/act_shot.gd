@@ -17,7 +17,9 @@ extends SceneTree
 ## out of Drill Out). RIFTGATE_FIT="1:rivet_gun,2:shotfire_rack" hangs
 ## those components' classes on the mounts in place of the stock parts, as tools/hero_shot.gd does,
 ## to see a swap through an act or a form (a machine whose guns stow). RIFTGATE_PITCH=<degrees> tilts
-## the camera down that far in place of the view's own (0 level, to see under a machine). An act of "fire:<component>" fires that weapon (MechView3D.strike: a fixed one
+## the camera down that far in place of the view's own (0 level, to see under a machine). RIFTGATE_HEAT=<heat
+## over its maximum> settles its heat glow there first (the Puffin's; 1 its maximum, past it the beat's
+## top). An act of "fire:<component>" fires that weapon (MechView3D.strike: a fixed one
 ## with its act's slice and what it fires out of the machine, lowforge's launches) and renders it that
 ## many seconds on. Needs a window (xvfb-run does, on a Linux box).
 
@@ -53,6 +55,12 @@ func _init() -> void:
 	if not first.is_empty():
 		_view.rig.set_form(first, true)
 		_view.rig.tick(float(_view.rig.forms.get(first, {}).get("duration", 1.0)) + 0.05)
+	var heat := OS.get_environment("RIFTGATE_HEAT")
+	if heat.is_valid_float():
+		_view.rig.settle_heat(float(heat))
+		if float(heat) > 1.0:
+			_view.rig._heat_beat_t = 0.25 / MechRig.HEAT_GLOW_HZ   # the beat at its top
+			_view.rig.settle_heat(float(heat))
 	var form := OS.get_environment("RIFTGATE_FORM")
 	if not form.is_empty():
 		_view.rig.set_form(form, true)

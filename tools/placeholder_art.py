@@ -460,6 +460,23 @@ def wild_hunt_rider(d, w, h):
     d.ellipse((4, 80, 14, 90), fill=frost)
 
 
+def wild_huntsman(d, w, h):
+    horse, plate, cloak, fire, horn = (30, 28, 36, 255), (60, 58, 70, 255), (14, 14, 20, 255), (170, 220, 250, 255), (210, 190, 140, 255)
+    d.ellipse((8, 52, 56, 78), fill=horse)
+    d.polygon([(52, 56), (68, 42), (62, 66)], fill=horse)
+    d.point((63, 49), fill=fire)
+    for x in (12, 24, 38, 48):
+        d.rectangle((x, 76, x + 4, 90), fill=horse)
+        d.ellipse((x - 1, 88, x + 5, 94), fill=fire)   # frost from its hooves
+    d.polygon([(18, 58), (24, 22), (44, 22), (40, 58)], fill=cloak)   # the cloak
+    d.polygon([(26, 52), (28, 24), (40, 24), (42, 52)], fill=plate)
+    d.ellipse((27, 10, 41, 26), fill=plate)
+    for x in (28, 33, 38):
+        d.polygon([(x, 12), (x + 2, 4), (x + 4, 12)], fill=plate)   # the crown
+    d.arc((40, 16, 58, 34), 200, 340, fill=horn, width=4)   # the horn, raised
+    d.line((24, 44, 4, 30), fill=fire, width=3)   # the lance
+
+
 def world_eater(d, w, h):
     hide, belly, teeth = (56, 90, 50, 255), (120, 130, 90, 255), (240, 240, 230, 255)
     d.ellipse((14, 60, 80, 110), fill=hide)
@@ -793,6 +810,7 @@ FOES = {
     "fell_rider": (fell_rider, False),
     "antiquarian": (antiquarian, False),
     "wild_hunt_rider": (wild_hunt_rider, False),
+    "wild_huntsman": (wild_huntsman, False),
     "world_eater": (world_eater, True),
     "shuffler": (shuffler, True),
     "shuffler_spawn": (shuffler_spawn, False),

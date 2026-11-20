@@ -39,6 +39,7 @@ const TABLE := {
 	"volatile": ["hull", "hull"], "shield_cost": ["shield", "guard"], "brace_property": ["shield", "guard"],
 	"self_ablate": ["ablate", "heat"], "ignores_armour": ["", "plain"], "vents_all": ["vent", "heat"],
 	"spends_shield": ["shield", "guard"],   # the Buzzard's Shield-burner Cannon (18 November): the whole shield into the shot
+	"passes_heat": ["heat", "heat"],   # the Puffin's dump (19 November): its whole heat onto an ally
 	"gather": ["mine", "heat"], "detonate": ["mine", "heat"],
 	"swap": ["swap", "guard"],   # the Combat Translocator's rule, its own text since 15 November, its mark kept
 	"self_statuses": ["buff", "plain"], "ally_action": ["reroll", "plain"], "rolls_target": ["reroll", "plain"],
@@ -48,10 +49,13 @@ const TABLE := {
 	"overcharged": ["overcharge", "heat"], "kindled": ["overcharge", "heat"], "enraged": ["overcharge", "heat"], "golden": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
 	"charged": ["shocked", "heat"], "supercooled": ["cryo", "guard"],
 	"brittled": ["brittle", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"], "ricochet": ["ricochet", "heat"],
+	"parry": ["spin", "heat"],   # the Beam Buckler's (19 November): what it blocks, next turn's first weapon's add, in Spun Up's family
+	"offhand": ["star", "plain"],   # the Macaque's armament, the star its rider wears on the die (Ryan, 19 November: "a unique (star) effect")
+	"aile_boost": ["rapid", "plain"], "aile_blitz": ["rapid", "plain"], "aile_assault": ["rapid", "plain"],   # the Aile Booster's dash, the Rapid piece's own mark
 	"mine": ["mine", "heat"],
 	"essence": ["essence", "heat"], "essence_flare": ["essence_flare", "heat"],   # the Ammit's count and its Tap's buff (12 and 15 November), with Empowered's group: what hits harder
 	"braced": ["shield", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"], "hardened": ["hardened", "guard"],
-	"phased": ["phased", "guard"], "guarded": ["lock", "guard"], "sealed": ["seal", "guard"], "changed_over": ["reroll", "plain"],
+	"phased": ["phased", "guard"], "guarded": ["lock", "guard"], "sealed": ["seal", "guard"], "ore_plate": ["hopper", "guard"], "changed_over": ["reroll", "plain"],
 	"suppressed": ["suppress", "guard"], "webbed": ["web", "guard"],
 	"numbed": ["numbed", "guard"], "paradox": ["paradox", "guard"], "cryoed": ["cryo", "guard"],
 	"exposure": ["exposed", "harm"], "pinned": ["pin_brittle", "heat"], "sapped": ["sap", "guard"], "juggernaut": ["juggernaut", "heat"], "seared": ["pin_ablate", "heat"], "destroyed_component": ["crack", "harm"],
@@ -67,13 +71,14 @@ const TABLE := {
 	"self_destruct": ["blast", "enemy"], "all": ["all", "enemy"], "countdown": ["warning", "enemy"],
 	"last_act": ["skull", "enemy"], "parts": ["parts", "enemy"],
 	"drain": ["heart", "enemy"],   # the Vampire Lord's (31 October): a blow that regrows what it took from the hull
+	"timid": ["shield", "enemy"],   # the goblins' (20 November): a foe that strikes only with a buff on it or coming
 	"immune": ["lock", "guard"],   # a foe's own Ability (17 November): a Suppress or a Disrupt that never lands on it
 }
 
 ## A die entry's own mark, by the engine's prefix on its status id, and the term it reads as.
 const ENTRY_MARKS := {"corrupted": "corrupted", "disabled": "jammed"}
 ## An engine status keyed apart from its term: a machine's Ablating, the Badger's hopper.
-const ALIASES := {"ablating_mech": "ablating", "brittled_mech": "brittled", "exposure_mech": "exposure", "phasing": "phased", "hopper": "hopper_property"}
+const ALIASES := {"ablating_mech": "ablating", "brittled_mech": "brittled", "exposure_mech": "exposure", "phasing": "phased", "hopper": "hopper_property", "parry_strike": "parry"}
 
 ## Terms never matched in prose: names a shown text uses as a plain word in their place
 ## ("Targets any front-rank foe", a move that "Strikes twice").

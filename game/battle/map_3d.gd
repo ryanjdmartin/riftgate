@@ -1791,6 +1791,7 @@ func _dead_tree(col: Node3D, at: Vector3, rng: RandomNumberGenerator) -> void:
 func _model(id: String, maker: String, paint: Dictionary = {}, plan: Array = [], own: bool = true) -> Node3D:
 	var scene: PackedScene = load("res://art/models/%s.glb" % id)
 	var node: Node3D = scene.instantiate()
+	MechView3D.hide_beams(node, MechRig.load_sidecar(id))   # a part made of light is out at rest, and the machine's bounds never take it in
 	MechView3D.toon(node, maker, "clean", paint, false)
 	var pins := MechView3D.pins_of(node)
 	MechView3D.wear(pins, plan, "clean", paint, false, true, id)
@@ -1940,7 +1941,7 @@ func sync() -> void:
 			# held on the map as in the fight (MechView3D.hold_statuses).
 			var rig: MechRig = _rigs[u.id]
 			for name in rig.forms.keys():
-				rig.set_form(str(name), Effects.has(u, str(name)))
+				rig.set_form(str(name), MechRig.holds_form(u, str(name)))
 		var under: Vector2i = MapOrient.from_pixel(_anim_px[u.id], hex_px) if _anim_px.has(u.id) else _hex_of(u)
 		var y: float = float(_lift.get(under, 0.0)) / (_cos * _ppu)
 		var ground_y := y
