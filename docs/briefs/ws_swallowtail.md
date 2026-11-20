@@ -55,9 +55,9 @@ would hold them apart. Nothing is decided; it is his session's.
   regen keeps meaningful); charged, Phased on every ally as today.
 - The Hoist: "in-fight refueling" as the model has it: a Cleanse on an ally plain; charged, the
   reset, the ally cleansed and a piece it has spent this round brought back.
-- Cooling an ally: the Hoist does it today. The Puffin's rework would make that the Puffin's
-  alone (`docs/briefs/kestrel_puffin.md`); if the Hoist keeps a cooling, the Puffin is not the
-  only one. His call across the two.
+- Cooling an ally: the Hoist does it today. The Puffin's rework makes that the Puffin's verb
+  (landed 19 November, the bible's Puffin row: its pull takes an ally's heat onto itself); if
+  the Hoist keeps a cooling, the Puffin is not the only one. His call across the two.
 
 ## What the session hands back
 

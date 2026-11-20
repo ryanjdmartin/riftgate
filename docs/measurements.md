@@ -12082,6 +12082,65 @@ Read: the Scorpion is back in its band for the squad the leaders are sized for, 
 Ablating passing the Barrier as a tick does; the horde and the gel wall stay over their twentieth,
 the gel wall's long fight feeding the bleed, for the formation pass and the goblins' wall.
 
+## 19 November: the Polar Bear beside the Honey Badger, on the sized foes
+
+`tools/reboot_probe.gd` as the entries above, 168 formation and elite fights and 78 boss fights,
+each machine read first in the squad, on main at `0c6dfc7` with this branch's records.
+
+| The machine | Formations: rounds, sealed, own hull, squad | Bosses: rounds, sealed, own hull, squad |
+|---|---|---|
+| The Polar Bear (tier two) | 5.9, 4% of its turns, 7%, 9% | 10.0, 5%, 17%, 21% |
+| The Honey Badger (tier one) | 5.0, none, 5%, 7% | 7.6, none, 9%, 15% |
+
+What it says. The bot seals it on a twentieth of its turns: it seals only by spending
+equipment on itself, and the bot spends its Shoring Jack on its allies. So this is a read of an
+open bear, three basic guns on 40 hull, and says little of its shell. Ryan left it as built.
+
+## 19 November: the Puffin's pull and dump, with its dump's buff and without
+
+`tools/reboot_probe.gd` as the entries above, 168 formation and elite fights and 78 boss fights,
+each machine read first in the squad beside the Honey Badger, the Prairie Dog and the
+Cassowary, on `ccr-178e0404-ptuh2m` at `361095c` (the Puffin built: a pull of 4 on equipment
+it spends on an ally, its lock passing its whole heat to an ally for Empowered 1 for every 2).
+The what-ifs are the probe's own options: `--dump-per 0` (the dump grants nothing), `--dump-per 1`,
+`--pull 8`, and `--stock` with the Shoring Jack in the Twin Autoguns' place. "Mates" is the share
+of the other three machines' turns given to a reboot.
+
+| The read | Formations: rounds, own hull, squad, mates | Bosses: rounds, own hull, squad, mates | Pulls a fight, heat each (formations; bosses) | Dumps a fight, heat each (formations; bosses) |
+|---|---|---|---|---|
+| The Puffin as built | 6.0, 14%, 11%, 17% | 10.1, 32%, 24%, 17% | 1.04, 3.9; 2.01, 3.9 | 0.51, 6.6; 1.00, 6.6 |
+| Its dump granting nothing | 6.1, 14%, 11%, 16% | 10.1, 31%, 24%, 18% | 1.14, 3.8; 1.85, 3.9 | 0.20, 8.6; 0.58, 8.2 |
+| Its dump at Empowered 1 for every 1 | 5.7, 13%, 11%, 17% | 9.1, 29%, 21%, 18% | 0.98, 3.9; 1.90, 3.9 | 0.71, 6.1; 1.44, 6.3 |
+| A pull of 8 | 6.0, 13%, 11%, 17% | | 0.89, 5.9 | 0.58, 7.4 |
+| A third ally buff (the Shoring Jack for the Twin Autoguns) | 6.1, 13%, 10%, 17% | 10.9, 32%, 23%, 18% | 1.57, 3.9; 3.09, 3.9 | 0.54, 7.0; 1.18, 7.0 |
+| The Storm Petrel | 5.7, 8%, 9%, 17% | 9.3, 10%, 15%, 17% | | |
+| The Giant Petrel | 5.5, 2%, 7%, 17% | 9.1, 5%, 15%, 18% | | |
+| The Buzzard | 4.9, 5%, 7%, 16% | 7.7, 14%, 16%, 17% | | |
+| The Needletail | 4.7, 8%, 9%, 16% | 6.9, 11%, 17%, 17% | | |
+
+What it says. The other three reboot on a sixth of their turns whatever stands first in the
+squad, the Puffin among them, and nothing tried moves it: a pull of 8 takes 5.9 a time, a third
+ally buff pulls half as often again, and the share stays at 17% to 18%. A pull moves an ally's
+reboot onto the Puffin's gauge one for one, its own reboot venting what it took, and a dump moves
+it back onto an ally, so the heat itself is a wash; the worth is in what carries it (the buff a
+pull rides, the dump's Empowered) and in a turn of the Puffin's traded for an ally's. The dump's
+Empowered at 1 for every 2 reads as none: against the bosses 10.1 rounds and 24% lost with it or
+without; at 1 for every 1 the boss fights run a round shorter and the squad loses 21%. The bot
+dumps about once a boss fight at 6.6 heat, Empowered 3. The Puffin's squads are the weakest of
+the reads, 23% to 24% lost against a boss beside 15% to 17%, its own hull 29% to 32%: 20 hull,
+6 shield, no armour and two basic guns. None of the squad's three turns heat into anything
+(the Storm Petrel, the Stingray, the Nemesis and the Whip Scorpion do), and Empowered lands on
+every strike, so its worth rides on who takes it. A bot's read of tier one's foes, for a
+tier-two machine: a direction.
+
+Ryan, 20 November: "since heat is conserved I would expect the total number of reboots to be the
+same, this version of the Puffin really wants a team that can leverage it ... the bot probably has
+no idea how to use it other than the empowered hook, so it makes sense that moves the number. I
+think the empowered scaling is a symptomatic conclusion." No number moves on this read: the bot
+treats a point of heat under the maximum as free and reboots its machines before anything spends,
+so it never puts heat where a reboot, a Cryo cash or a blasting vent takes it off, and the squad
+read has nothing that turns heat into anything.
+
 ## 20 November: his gel line, the goblins' wall and two leaders, read before and after
 
 On Ryan's of 20 November: every gel's Engulf a rider in place of a blow ("Honestly I think all

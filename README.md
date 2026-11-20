@@ -478,6 +478,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_MOVE_DEBUG       every machine driven constantly: walks, wheels, treads, held poses
 #   RIFTGATE_COUNT_DEBUG      every count display counting up a part a second until it falls
 #   RIFTGATE_SPIN_DEBUG       every status's spin held in turn, then let go
+#   RIFTGATE_HEAT_GLOW_DEBUG  every heat glow (the Puffin's shield-lit parts) run from no heat to past its maximum and back, every 12 s
 # A look compared
 #   RIFTGATE_HALO=off|all     no halo round the lit parts, or one round every lit part
 #   RIFTGATE_PLUME=off        a booster's ring in place of its plume
@@ -516,7 +517,7 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/death_floor.g
 
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva hero.png front 480 480   # one unit large: front, rear, or a yaw in degrees
 RIFTGATE_FIT="1:photosphere_lance,4:blazethrower" godot --path . --resolution 360x640 --position 2000,2000 -s tools/hero_shot.gd -- badger minerva fit.png front 480 480   # wearing swapped components on its mounts ("2:" bares one); RIFTGATE_FORM=<form> holds a form the model has
-godot --path . --resolution 360x640 --position 2000,2000 -s tools/act_shot.gd -- badger minerva test_claw 1.4 claw.png front   # one act frozen 1.4 s in; "gait 0.5" a stride, "lose 3" its slump, "fire:spotting_flare 2.9" that weapon after it fires
+godot --path . --resolution 360x640 --position 2000,2000 -s tools/act_shot.gd -- badger minerva test_claw 1.4 claw.png front   # one act frozen 1.4 s in; "gait 0.5" a stride, "lose 3" its slump, "fire:spotting_flare 2.9" that weapon after it fires; RIFTGATE_HEAT=1 its heat glow at its maximum
 godot --path . --resolution 360x640 -s tools/gait_clip.gd -- clydesdale wainwright_sutler clip/clydesdale 8 front 480x400 trot   # a machine walking at its map pace, every frame a PNG; then ffmpeg -framerate 30 -i clip/clydesdale_%04d.png -pix_fmt yuv420p clydesdale.mp4
 godot --path . --resolution 360x640 --position 2000,2000 -s tools/fit_sheet.gd -- fit_sheet.png [polar_bear buzzard] [--cell 220]   # every machine's stock, then each class on all its mounts; run it after a model's mounts change
 # a proposal's look test (tools/lowforge/looks/, never content): built like a unit, rendered at a

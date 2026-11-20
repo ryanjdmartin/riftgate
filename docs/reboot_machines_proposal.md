@@ -25,9 +25,9 @@ too), and the Needletail the same day. It retires once its calls are rows and co
 | Skua | Stands as built (19 November): the reboot leaves its ramp alone, and it reads level with the tier twos | Settled, his "Leave it as is" |
 | Kite | Stands as built (19 November): a kill that mends a broken shield changed nothing on the read | Settled, his "Leave it" |
 | Cottonmouth | Stands as built (19 November): it reboots at the roster's pace; a lone boss leaves its area nothing to reach | Settled, his "Leave it" |
-| Puffin, in design | Nothing of the old kit survives; his direction, moving heat, is the system's dearest verb | Its session now or after the heat prices |
+| Puffin | Landed 19 November at tier two (the bible's row): equipment it spends on an ally takes up to 4 of that ally's heat onto it, and its lock passes its whole heat to an ally for Empowered 1 for every 2 | His play of it in a team that leverages heat |
 | Swallowtail, in design | Two dead plain forms; the system hands it a niche, the team's pit crew | His session |
-| Polar Bear | Holds: a timed shell, a bare exit, and a Cryo that is now team cooling | Its text clause; the wall at tier one |
+| Polar Bear | Stands as built (19 November): its text's clause fixed, the wall at tier one moot at tier two | Settled, his "Leave the bear" |
 | Whip Scorpion | His rework: the one kit built on the system | Its strength; the Ray a dump that keeps the shield |
 | Stingray | The Suite suits the system; its stock gives it almost nothing to deepen | Its stock; its tier |
 | Nemesis | The system feeds its rage, its overheat included | The rage-and-burn loop; its placeholder slot |
@@ -111,28 +111,17 @@ moving its fights a third of a round; against a lone boss its area finds no neig
 machine's design. Its kit as this proposal read it is in git:
 `git show 90d15e4:docs/reboot_machines_proposal.md`.
 
-### Puffin, in design
+### Puffin, built
 
-Kestrel, pegged for tier 2, light hover. *Context*: his 9 November instinct, "the only unit able
-to cool its allies"; his 11 November direction, it moves heat: equipment it spends on an ally
-pulls some of that ally's heat onto it, and a locked piece passes the Puffin's heat to another
-unit with a buff by the heat moved, allies only; its session set for after the heat prices.
-
-*Kit as it stands, undealt*: hull 20, shield 6, armour 0, heat 12, move 5, 4 hardpoints; the
-Slipstream Projector (a shield it gives grows with the ally's heat) and the Backwash Ionizer
-(shield 3 on an ally) are both shield kinds no die is dealt; the rest is a Halo Projector, two
-Twin Autoguns and a Laser Carbine.
-
-*As a whole.* Nothing of the old kit survives the system, and the direction is now its dearest
-verb: a pull is an ally's cooling paid on the Puffin's own clock, so its reboot is the team's
-vent, and the dump turns heat into a payoff for the machines that read it (the Stingray, the
-Storm Petrel, the Whip Scorpion, the Buzzard). The first round as a kit: the pull rides any
-equipment it spends on an ally (3 heat to start, the stacks past the ally's maximum first); the
-dump is its lock, with Empowered by the heat moved; its stock carries two pieces of equipment,
-so the pull has carriers.
-
-*Verdict.* The direction fits the system better than any kit on the list; whether its session
-runs now or after the heat prices is his.
+Built 19 November at tier two on his calls ("I think 4 for the Puffin. We can try empowered for
+2 but that needs data"; the bible's row): a pull of 4 on every piece of equipment it spends on an
+ally, and its lock passing its whole heat to one ally for Empowered 1 for every 2 heat passed,
+named by him the next day, the Downwash Exchanger and the Overdrive Injector. The read of that day (`docs/measurements.md`) found the team rebooting
+at the same pace beside it as beside any other machine, as heat conserved says it must, and the
+bot moving only on the dump's Empowered; a symptom by his word of the 20th ("I think the empowered
+scaling is a symptomatic conclusion"): it wants a team that leverages heat, its strength his play's.
+Its kit as this proposal read it is in git:
+`git show 361095c:docs/reboot_machines_proposal.md`.
 
 ### Swallowtail, in design
 
@@ -162,31 +151,13 @@ dearest effect in the system behind the Muster's gate.
 *Verdict.* A niche for his session to carve; the pit crew is the offer (the plain forms' bench
 is the Swallowtail's brief).
 
-### Polar Bear
+### Polar Bear, settled
 
-Minerva, tier 1 pegged for tier 2, assault walker. *Context*: Minerva's form-changing tank; his
-rework of 9 November ("The Armadillo is OP"), the trigger of 11 November, and today's "Polar bear
-unseals when rebooting"; "probably too much of a wall for tier 1".
-
-*Kit*: hull 40, shield 6, armour 1 (4 sealed), heat 12, move 3, 4 hardpoints.
-- Lockdown: equipment it spends on itself seals it, armour +3, 3 hotter at each END TURN, its
-  Cryo Flinger gaining Spread; a weapon it fires opens it, and so does a reboot; its weapons deal 1
-  more to a foe carrying Cryo. Its text said "its own cooling stopped" until 19 November; it
-  says "its cooling stopped" now, a module's cooling still stopping while it is sealed.
-- Cryo Flinger (fixed): Lure and Cryo 1, Indirect, heat 1; sealed, the foes beside the target too.
-- Rivet Gun 3 for 4; Twin Autoguns 3 for 4, twice; Shoring Jack, Armoured 2 (on itself, it seals).
-
-*As a whole.* Open, a plain three-gun line with a point more on Cryo. Sealed, a lure sponge at
-armour 4 (6 the round the Jack seals it) on a clock of 4 heat a turn, three turns from cold, the
-shell ending in a reboot that leaves it open and bare. Two things the system moved underneath
-it. Its shield barely matters sealed: it breaks in the first round of luring and stays broken,
-while armour 4 stops tier one's blows of 3 and 4 outright, so the wall is armour against blow
-size, not the shield. And its Cryo is now one of the few coolings in the game: sealed, the
-Flinger lays Cryo 1 on up to three foes a turn, up to 6 cooling for the team's hitters, which
-stretches every other machine's cycle; that may be its real worth to a team now.
-
-*Verdict.* It holds together. Left: the text clause; the wall at tier one (the bench's floor of 1,
-or its move to tier two, both his); and an open form with little reason to open.
+Left as built on 19 November (Ryan: "Leave the bear, agreed"). Its text's clause is fixed ("its
+cooling stopped", a module's cooling still stopping while it is sealed); the wall at tier one is
+moot since it went to tier two; the read of that day (`docs/measurements.md`) is of an open bear,
+the bot sealing it on a twentieth of its turns, so its shell is his play's to read. Its kit as
+this proposal read it is in git: `git show 90d15e4:docs/reboot_machines_proposal.md`.
 
 ### Whip Scorpion
 
@@ -419,6 +390,6 @@ in formations and nothing against a lone boss.
 4. Skua: settled 19 November, left as built ("Leave it as is and move on").
 5. Kite: settled 19 November, left as built, the kill that mends refused ("Leave it").
 6. Cottonmouth: settled 19 November, left as built ("Leave it").
-7. Puffin and Swallowtail: their sessions now, or as set.
-8. Polar Bear: its text's clause fixed 19 November ("its cooling stopped"); the wall at tier one
-   moot, the chassis tier two since; its kit his to leave or move.
+7. Puffin: built 19 November on his calls at tier two (the bible's row); his names and the
+   dump's rate after the read. Swallowtail: its session as set.
+8. Polar Bear: settled 19 November, left as built ("Leave the bear"), its text's clause fixed.

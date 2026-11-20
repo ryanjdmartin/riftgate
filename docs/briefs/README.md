@@ -171,7 +171,7 @@ moves he has not marked stand as its plan.
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
 | Minerva (10) | Honey Badger; the Wild Boar (down, 16 November); *the mole*; *the lure tank* | the Polar Bear (up, 16 November); *the echidna*; *the Cryo party defence*; *the immune one*, the Pangolin his stand-in name | *the siege battery*; *the battlecruiser* |
-| Kestrel (10) | Skua; Storm Petrel; Puffin, back in design | Buzzard, its rework settled and unbuilt; Kite; Needletail | Lammergeier; Giant Petrel |
+| Kestrel (10) | Skua; Storm Petrel | Buzzard; Kite; Needletail; the Puffin (up, 19 November) | Lammergeier; Giant Petrel |
 | Kestrel's two, tiers open | *the Snowy Owl*, leaning to Cryo | *the Magpie*, its slot open to another design | |
 | Wainwright & Sutler (10) | Prairie Dog; Cassowary; Cottonmouth | Dingo; Clydesdale; funnel-web; Whip Scorpion; *the gunship* | Swallowtail, back in design; Musk Ox |
 | Aphelion (9, one open) | Stingray; the Macaque; *Static*; *the Barrier and Ward support*, the defensive tier one | Baboon, dealt at tier one, its tier placed later; *the jellyfish* with the status detonator; *the time-shifter*; one open, the time area's if it wants it | *the Carrier*; *the Macross* with the aura-shifter |
@@ -242,7 +242,6 @@ One row a live brief; the to-do's Design sessions hold each one's task.
 | `numbers_pass.md` | tier one sized against the reboot; the tier-one bench | the battle and the kit | rule | the foes' line's sizing, then his play |
 | `heat_pillar.md` | heat as a pillar: his frame, his overheat calls, what the reboot left open | every maker | rule | the heat session |
 | `kestrel_line.md` | the Kestrel line's hub: what each fast flyer is for | Kestrel | all | the Giant Petrel's kit, the chassis that orbits Exposed, the last two slots |
-| `kestrel_puffin.md` | the Puffin's rework: it moves heat | Kestrel | 1 (two his lean) | his session, after the heat prices |
 | `kestrel_magpie.md` | a support engine: the thief, the mimic, the cache | Kestrel | open | his pick of a direction |
 | `kestrel_owl.md` | the silent hunter, leaning to Cryo | Kestrel | open | his pick of where the stealth lives |
 | `ws_swallowtail.md` | the Swallowtail's rework, three locked pieces open | Wainwright & Sutler | 3 | parked: his session, its niche first |
@@ -332,6 +331,7 @@ Each landed; its decisions are bible rows and content.
 - The Polar Bear's seal: `git show 96fe416:docs/briefs/minerva_polar_bear.md`
 - The Polar Bear's first form: `git show 63487a9:docs/briefs/minerva_armadillo.md`
 - The Honey Badger's Ore Hopper: `git show c05c41b:docs/briefs/minerva_honey_badger.md`
+- The Puffin's heat, moved: `git show 361095c:docs/briefs/kestrel_puffin.md`
 - The Buzzard's carrion and its zap: `git show 288de9a:docs/briefs/kestrel_buzzard.md`
 - The Storm Petrel and the first upgrade branches: `git show ca717bd:docs/briefs/kestrel_storm_petrel.md`
 - The Storm Petrel's first engine: `git show d84ad16:docs/briefs/kestrel_shield_spender.md`

@@ -149,7 +149,7 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 				# What a buff grants against the component's own; one that spends a count for its
 				# stacks (the Quintessence Tap) grants what it would take now, its own rule and no change
 				# a live source made, so its number reads plain.
-				var own_stacks := f.buff_stacks if not f.spends.is_empty() else base.buff_stacks
+				var own_stacks := f.buff_stacks if not f.spends.is_empty() or f.passes_heat else base.buff_stacks
 				var line := [word("Grants %s" % str(st.get("name", f.buff_status))), num("×%d" % f.buff_stacks, f.buff_stacks, own_stacks)]
 				if f.buff_rounds > 1:
 					line.append(word("for %d rounds" % f.buff_rounds))
@@ -940,6 +940,19 @@ static func ricochet_line(stacks: int) -> Dictionary:
 static func zap_line(cost: int, add: int) -> Dictionary:
 	var said := "Zap: pays %d shield as it fires, +%d on its every blow" % [cost, add]
 	return marked(text_line("effect", said, "rule"), [passive_mark("shield", "-%d" % cost, Palette.SHIELD)])
+
+
+## The heat its machine's dump would pass now (the Puffin's, 19 November), by heat's mark as the die
+## shows it beside the stacks.
+static func pass_line(heat: int) -> Dictionary:
+	var said := "Passes %d heat to the ally" % heat if heat > 0 else "Passes no heat: its gauge is empty"
+	return marked(text_line("effect", said, "rule"), [mark("heat", Palette.HEAT, false)])
+
+
+## What its machine's pull takes off an ally this equipment is spent on (the Puffin's, 19 November).
+static func pull_line(most: int) -> Dictionary:
+	var said := "Spent on an ally, takes up to %d of its heat onto this machine" % most
+	return marked(text_line("effect", said, "rule"), [mark("heat", Palette.HEAT, false)])
 
 
 ## The terms under `point`, in the readout's own space; none off them.

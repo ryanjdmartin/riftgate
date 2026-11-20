@@ -1266,6 +1266,7 @@ func _refresh(save: bool = true) -> void:
 		if i < _mech_3d.size() and _mech_3d[i] != null:
 			_mech_3d[i].hold_statuses(ms.unit)
 			_mech_3d[i].show_counts(ms)
+			_mech_3d[i].show_heat(ms)   # its heat glow follows its gauge (the Puffin's)
 		if not SEAL_DEBUG:
 			v.shell = ms.alive() and Effects.is_sealed(ms.unit)   # the sealed form's shell (the Polar Bear's, 2 November)
 		v.away = Skirmish.is_swallowed(ms)   # a foe's swallow (30 October): out of the fight, a ghost of itself
@@ -1309,6 +1310,7 @@ func _refresh(save: bool = true) -> void:
 		d.parry = _parry_of(ms, sf) if not ms.assigned and ms.alive() else 0   # its Parry's return on the next strike
 		d.upgrades = Effects.steps_on(ms.unit, ms.die.faces[ms.face_index]) if ms.face_index >= 0 and ms.face_index < ms.die.faces.size() else 0   # a chevron each step taken on the piece showing
 		d.zap_cost = _zap_cost(ms, sf) if not ms.assigned and ms.alive() else 0   # the shield its zap will pay (the Buzzard's)
+		d.passing = ms.heat if sf != null and sf.passes_heat and not ms.assigned and ms.alive() else 0   # the heat its dump would pass (the Puffin's)
 		d.form_mark = form_mark(ms, sf) if not ms.assigned and ms.alive() else ""   # it seals its machine or opens it
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
 		# A dark entry shows the rounds it has left, this one included (the cooldown row).
@@ -2358,6 +2360,12 @@ func _show_die(i: int) -> bool:
 		var zap := _zap_cost(ms, sf) if not ms.assigned else 0
 		if zap > 0:
 			extra.append(EntryReadout.zap_line(zap, Skirmish.zap_ready(ms, sf)))
+		# The heat its dump would pass now (the Puffin's), by heat's mark beside its stacks; and the
+		# heat its pull takes off an ally for any other equipment.
+		if sf.passes_heat and not ms.assigned:
+			extra.append(EntryReadout.pass_line(ms.heat))
+		elif sf.kind == Face.Kind.BUFF and sf.targets != Face.Target.SELF and Effects.granted_pull(ms.unit) > 0:
+			extra.append(EntryReadout.pull_line(Effects.granted_pull(ms.unit)))
 		# Its machine's form (the Polar Bear's): the seal or the opening this entry brings, by the
 		# chip the die shows for it, Sealed a term a tap opens.
 		var shift := form_mark(ms, sf) if not ms.assigned else ""
@@ -2716,6 +2724,7 @@ func _on_drag_started(i: int) -> void:
 	_ghost.parry = _parry_of(sk.mechs[i], sf)
 	_ghost.upgrades = _dice[i].upgrades
 	_ghost.zap_cost = _zap_cost(sk.mechs[i], sf)
+	_ghost.passing = sk.mechs[i].heat if sf != null and sf.passes_heat else 0
 	_ghost.form_mark = form_mark(sk.mechs[i], sf)
 	_ghost.cooldown = sf.cooldown_rounds() if sf != null else 0
 	_ghost.charged = sk.charge_lands(sk.mechs[i])

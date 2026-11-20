@@ -18,10 +18,10 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 
 - **Chassis**: hull, shield, heat maximum, armour, move, size class, one way of moving, hardpoints, fixed components, module
   slots (two; the Clydesdale three) and one passive. Twenty-six chassis from five makers
-  (`content/chassis.json`), three of them dealt by nothing yet (a chassis whose entry says
-  `"status": "planned"`): the Puffin and the Swallowtail, back in design until their sessions
-  hand them back, and the Mole, a draft whose engine is still to come. A run has four squad
-  slots and starts with three machines.
+  (`content/chassis.json`), two of them dealt by nothing yet (a chassis whose entry says
+  `"status": "planned"`): the Swallowtail, back in design until its session hands it back, and
+  the Mole, a draft whose engine is still to come. A run has four squad slots and starts with
+  three machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die,
   beside its name in its readout, and down the codex. A piece a branch has upgraded wears a
@@ -267,10 +267,16 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   is still waiting at once.
 - **On a machine**: a shield adds its number up to the target's maximum; a vent removes its
   number in heat; a shield that cools spends two halves on one machine (the Sutler's Hoist:
-  the cooling first, then the shield, sized on the heat the cooling left, so the Puffin's
-  Slipstream grows it on what is left); a buff grants its status, so many stacks, through so many rounds, or with
+  the cooling first, then the shield); a buff grants its status, so many stacks, through so many rounds, or with
   no rounds when the status runs down on its own (Empowered), waits for the weapon that spends
   it (Spun Up, a primer) or lasts the fight (Ricochet).
+- **Passes heat** (a rule on a piece of equipment: the Puffin's Overdrive Injector): spent on an
+  ally, it passes its machine's whole heat onto that ally, its overheat with it and past the
+  ally's maximum too, through the heat path (what the ally does with heat gained answers it: the
+  Storm Petrel's shield), and grants its status a stack for every step of heat printed on it,
+  rounded down (Empowered 1 for every 2). Its machine's gauge is empty after it; heat it takes an
+  ally past the maximum burns as the turn ends, and the ally's first such turn is its overheat.
+  The die shows the stacks it would grant now and the heat beside them.
 - **A debuff** is equipment aimed at a foe (a setter, a swap), spent on a foe in reach as a
   weapon is: its keywords are its whole effect, no effect adds damage to it (Empowered, Spun
   Up), no primer rides it, and its heat is paid as a weapon's. A debuff's entry is read as it is
@@ -1179,7 +1185,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   point of its shield or less; one whose vent would blast for more than its best spend; and a
   die left idle, where there is something to get back. A machine that may reboot after an
   action (the Needletail's) spends first where a spend is worth making, its heat free before
-  the vent, and reboots after it.
+  the vent, and reboots after it. It weighs a pull as the ally's cooling less what the heat costs
+  on its own gauge, and a dump as the buff its heat makes and its own gauge emptied, less what
+  the heat costs on the ally's.
 - **The Hardlight Generator** (the Storm Petrel's passive): every point of heat it gains, from
   any source (a spend of its own, a foe's Scorch, a passive's), stands up a point of shield as
   the gauge climbs, on a shield that stands and up to its maximum; a Broken shield gains none
@@ -1451,7 +1459,8 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
 ### Passives: triggers and conditions
 - Triggers: static, on attack, on injury (a blow that would destroy a component), on skirmish start,
   on hull damage (any hull lost: a blow, a bite or an overheat), on shield gain, on shield
-  granted (an ally this machine shields), on heat gain, on foe status (a foe
+  granted (an ally this machine shields), on buffing an ally (equipment this machine spends on an
+  ally, once for each ally it lands on, whatever it did there), on heat gain, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
   this machine's that killed, however many fell to it, arcs and spills included:
   the Kite's shield), at the end of a round it killed in (once as the round ends, after the
@@ -1474,6 +1483,10 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   foe (none does today). On a kill a passive may recharge its machine's shield whole (the
   Kite's), as any shield gained is; on a foe killed it may give its machine shield (the
   Buzzard's, 2 a fall), a shield gain like any, so a broken shield takes none.
+- On buffing an ally a passive may **pull** the ally's heat (the Puffin's Downwash Exchanger:
+  up to 4): that much of what the ally carries, its overheat first, comes off it onto this
+  machine through the heat path, so this machine may pass its own maximum and burns for it as
+  the turn ends. A piece that passes heat pulls none: its heat goes the other way.
 - A passive may charge every weapon its machine spends a **zap**, a cost in shield for a flat
   add (the Buzzard's: 2 shield for +2). It is paid unasked as the spend begins whenever the
   shield holds the cost: short of it the weapon fires plain, and the last point paid breaks

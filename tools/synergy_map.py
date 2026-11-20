@@ -103,6 +103,7 @@ FACE_FIELDS = {
     "power_per_missing": [("missing_hp", "reads")], "finisher": [("missing_hp", "reads")],
     "kill_rerolls": [("kill", "reads"), ("reroll", "sets")], "ally_action": [("reroll", "reads")], "self_statuses": [],
     "spends": [("essence", "reads")], "spends_up_to": [], "holds_all": [("overcharged", "reads")],   # the Quintessence Tap: it consumes Essence, and holds every Empowered a round
+    "passes_heat": [("heat", "reads"), ("ally_heat", "sets")], "heat_per_stack": [],   # the Puffin's dump (19 November): its heat onto an ally, a buff by the heat
     "spends_magazine": [("ammo", "reads")], "magazine_min": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
     "self_ablate": [("ablating_mech", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
     "vents": [], "cooldown": [], "charged": [("muster", "reads")],
@@ -117,7 +118,7 @@ FACE_FIELDS = {
 EFFECTS = {
     "seal_form": [("sealed", "sets"), ("braced", "sets"), ("heat", "sets")],
     "paradox": [("paradox", "sets"), ("suppressed", "sets")], "muster": [("muster", "sets"), ("reroll", "reads")],
-    "shield_per_ally_heat": [("ally_heat", "reads"), ("shield_granted", "reads")],
+    "pull_heat": [("ally_heat", "reads"), ("heat", "sets")],   # the Puffin's pull (19 November): an ally's heat onto its own gauge
     "add_stacks": [], "reboot_release": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
     "heat_per_blow": [("heat", "sets")],
     "step_die": [("reroll", "reads")], "split_strikes": [("strikes", "sets")], "multiply_printed": [], "free_reroll": [("reroll", "sets")],
@@ -129,7 +130,7 @@ EFFECTS = {
     "shield_zap": [], "add_power": [],   # the Buzzard's zap and its Burst's raise of the cannon's number (18 November)
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
 }
-TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_granted": "shield_granted", "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",
+TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_granted": "shield_granted", "on_buff_granted": None, "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",
             "on_foe_status": "paradox_feed", "on_stack": None, "on_attack": None, "static": None,
             "on_injury": None, "on_skirmish_start": None, "on_shield_gain": None, "on_damage": None}
 CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None,

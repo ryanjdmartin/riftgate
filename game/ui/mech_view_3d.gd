@@ -464,6 +464,16 @@ func show_counts(ms: Skirmish.MechState) -> void:
 		set_process(true)
 
 
+## Show its machine's heat on the model's heat glow (the Puffin's shield-lit parts, 20 November:
+## MechRig.show_heat): its heat over its maximum, past one while it overheats. A borrowed model
+## shows none.
+func show_heat(ms: Skirmish.MechState) -> void:
+	if ms == null or rig == null or model_id != ms.unit.chassis_id:
+		return
+	if rig.show_heat(float(ms.heat) / float(maxi(1, ms.heat_max))) and is_inside_tree():
+		set_process(true)
+
+
 ## The numbers a count display may show (MechRig.COUNT_SOURCES), for one machine in a fight:
 ## `shots` its counted shots toward the next that counts (the pips under its heat bar, the
 ## Cassowary's sixth shot), `ammo` its magazine's rounds (the Musk Ox's).

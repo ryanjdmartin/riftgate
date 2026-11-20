@@ -65,7 +65,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1366 tests, 387,016 checks, green (20 November, his kit marks). The runner fails a run
+- Tests: 1375 tests, 387,073 checks, green (20 November, the Puffin's line landed over his kit
+  marks). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -124,9 +125,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   pass. Tier one's foes are sized for the reboot and the higher tiers' are not (The numbers,
   below). Detail: the rules' Foes;
   the bible's rows on the foes' rule set, targeting, Exposed and Phased.
-- **The machines.** Five makers and 25 chassis, 22 of them dealt (nine at tier one, nine at
-  two, four at three); the Puffin and the Swallowtail are back in design and the Mole is a
-  planned draft with its model, all three undealt (`"status": "planned"`), a brief each. 88 components, 15 of them planned drafts nothing
+- **The machines.** Five makers and 26 chassis, 24 of them dealt (ten at tier one, ten at
+  two, four at three); the Swallowtail is back in design and the Mole is a planned draft with
+  its model, both undealt (`"status": "planned"`), a brief each. 88 components, 15 of them planned drafts nothing
   deals (the slottable shields and vents, the Gravity Knuckles and the Tesla Gauntlets, the
   Retribution Thurible, the Solar Flare Array, the Mole's Inertia Drill); 20 modules. A stock die is basics beside its
   locked pieces: the basic guns deal 3 for 4 heat and the Laser Carbine 4 for 5, the Halo
@@ -151,8 +152,13 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   his rewrite of its Relay (a kind spent goes on cooldown for the round; its die flips to the
   other kind, rolls land anywhere; a Rapid or Instant spend leaves its kind lit; it reboots
   after one action whatever its die shows, the one machine that may after a Rapid spend; its branches, one on
-  the spotter and one turning the Designator into a weapon, wait on Kestrel's tier one); the Skua, the Kite and the Cottonmouth stand as built (19 November, his "Leave it"); its first round
-  on the Puffin and the Swallowtail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
+  the spotter and one turning the Designator into a weapon, wait on Kestrel's tier one); the Skua, the Kite, the Cottonmouth and the Polar Bear stand as built (19 November, his
+  "Leave it"); the Puffin landed on the 19th at tier two on his calls (equipment it spends on an
+  ally takes up to 4 of that ally's heat onto it; its lock passes its whole heat to an ally for
+  Empowered 1 for every 2; its kit named on the 20th, the Downwash Exchanger and the Overdrive
+  Injector; its shield-lit parts carry its heat, blue to red-orange, `RIFTGATE_HEAT_GLOW_DEBUG=1`), its strength his play's in
+  a team that leverages heat, since the bot reads only its Empowered (20 November); its first
+  round on the Swallowtail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis, the Polar Bear
   (a reboot opens its seal), the Whip Scorpion (its reboot's vent blasts every foe), the
   Lammergeier, the Wild Boar, the Baboon, the Stingray, and the Macaque, landed 19 November
@@ -340,7 +346,7 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    built on Ryan's marks, in its own commit, at placeholder numbers.
 3. **The design sessions, from the briefs**: each decision a bible row, each brief retired
    once its decisions are rows and content. The locked pieces' footing first, then the
-   machines back in design (the Swallowtail, the Puffin after the heat prices), the built but
+   machine back in design (the Swallowtail), the built but
    unfinished (the Needletail, the Giant Petrel, the Musk Ox) and the gunship, the tier-one
    fronts (Minerva's lure tank, an Aphelion tier one), Claude's first rounds on his directions
    of 5 and 6 November, the rest as its session comes. The to-do's roster is grouped to match.

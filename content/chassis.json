@@ -1020,12 +1020,10 @@
    "name": "Puffin",
    "designation": "K-11 Mk I Ground-Effect Escort",
    "maker": "kestrel",
-   "tier": 1,
-   "status": "planned",
+   "tier": 2,
    "design": {
     "fantasy": "Kestrel's one machine that touches the ground, and so the one Kestrel that can stop a pack. A short deep body in chrome on two boosters far too big for it, stubby wings, tail fins, and the whole front one shield projector, a great faired beak. Kestrel called it a very cool ground-effect escort; pilots took one look and called it the Puffin.",
-    "niche": "shield specialist",
-    "refit": "Back in design since the refit pass landed (10 November): undealt until its session hands it back (its brief). Its stock is the model's mechanical re-deal and waits on that session too."
+    "niche": "The team's heat carrier (Ryan, 11 November: \"it MOVES heat around\"): equipment it spends on an ally takes some of that ally's heat onto it, so its own gauge is the team's clock and its reboot the team's vent; its locked piece passes its heat to an ally as power. Tier two on his lean of the same day (\"I'd probably move it to tier two\"), built 19 November."
    },
    "codex": "",
    "hull": 20,
@@ -1040,24 +1038,23 @@
    ],
    "size": "light",
    "fixed": [
-    "backwash_ionizer"
+    "overdrive_injector"
    ],
    "loadout": [
     "halo_projector",
-    "twin_autoguns",
-    "twin_autoguns",
-    "laser_carbine"
+    "overcharge_coil",
+    "laser_carbine",
+    "twin_autoguns"
    ],
    "passive": {
-    "id": "slipstream_projector",
-    "name": "Slipstream Projector",
-    "description": "A slipstream, projected forward. A shield this machine spends on an ally grows by 1 for every 2 heat that ally carries.",
+    "id": "downwash_exchanger",
+    "name": "Downwash Exchanger",
+    "description": "Every piece of equipment the Puffin spends on an ally takes up to 4 of that ally's heat onto the Puffin.",
     "effects": [
      {
-      "trigger": "on_shield_granted",
-      "effect": "shield_per_ally_heat",
-      "value": 1,
-      "per_heat": 2
+      "trigger": "on_buff_granted",
+      "effect": "pull_heat",
+      "value": 4
      }
     ]
    },

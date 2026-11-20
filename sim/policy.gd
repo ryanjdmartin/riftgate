@@ -1034,10 +1034,15 @@ func purge_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, lives:
 ## over the cap burns hull, and a machine burnt out is the worst trade there is. Asked of the
 ## entry itself, not the one showing, so a reroll can weigh every entry the same way.
 func heat_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: float = 1.0) -> float:
+	return heat_cost_of(sk, ms, int(roundf(heat_of(ms, f) * uses)))
+
+
+## What `added` heat on a machine's gauge costs it, from any source: a spend's own (heat_cost), the
+## heat the Puffin's pull takes onto it or its dump passes onto an ally (19 November).
+func heat_cost_of(sk: Skirmish, ms: Skirmish.MechState, added: int) -> float:
 	if _vents_after(sk, ms):
 		return 0.0   # a spend before the reboot it owes as its second (the Needletail's): the vent takes its heat
 	var fc := sk.forecast(ms)
-	var added := int(roundf(heat_of(ms, f) * uses))
 	var over := maxi(0, int(fc["heat_end"]) + added - ms.heat_max)
 	var burn := (over - int(fc["overheat"])) * Skirmish.overheat_scale   # the hull the added excess burns
 	var cost := float(burn) * HULL_WEIGHT
@@ -1570,6 +1575,8 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 				score = action_value(who) - bank_delta(sk, -f.action_price)
 			elif not f.spends.is_empty() or not f.holds_all.is_empty():
 				score = hold_score(sk, ms, f)   # a buff that spends a count and holds the round (the Quintessence Tap)
+			elif f.passes_heat:
+				score = dump_score(sk, ms, who, f)   # the Puffin's dump: its heat onto the ally, a buff for it
 			else:
 				score = buff_score(sk, who, f)
 				if guard_weight != 1.0 and is_block(f):
@@ -1588,6 +1595,8 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 				score += ROLL_AGAIN_WEIGHT * _raw_attack_mean(ms)   # the Needletail's two things a round: the die turns and it acts again
 			if who == ms:
 				score += seal_score(sk, ms)   # a buff on itself seals a machine with a seal (the Polar Bear's Lockdown)
+			elif not f.passes_heat:
+				score += pull_score(sk, ms, who)   # the Puffin's pull: the ally's heat it takes onto itself
 	if f.has(Face.Keyword.CLEANSE):
 		score += cleanse_score(sk, who)
 	# The Retrocausal Shroud (the Baboon's, 11 November): every foe aiming at the machine Disrupted.
@@ -1607,6 +1616,38 @@ func machine_spend_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.Mec
 	score -= rage_cost(sk)   # a shield, a vent or a buff feeds a raging foe (3 November)
 	score += rapid_worth(ms, f, second_action(sk, ms, f))   # a plain Rapid entry's action again (4 November)
 	return score - volatile_cost(sk, ms, f) - cooldown_cost(ms, f, score)
+
+
+## The Puffin's pull (on_buff_granted's pull_heat, 19 November): equipment it spends on an ally takes
+## up to its number of that ally's heat onto itself. Worth a vent of what it takes on the ally, less
+## what that heat costs on its own gauge; nothing for a machine that pulls none.
+func pull_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechState) -> float:
+	var most := Effects.granted_pull(ms.unit)
+	if most <= 0 or who == ms:
+		return 0.0
+	var taken := mini(who.heat, most)
+	if taken <= 0:
+		return 0.0
+	return vent_score(sk, who, taken) - heat_cost_of(sk, ms, taken)
+
+
+## The Puffin's dump (Face.passes_heat, 19 November): its whole heat onto the ally, and a stack of its
+## status for every heat_per_stack passed. Worth the buff at the stacks the heat makes, a vent of
+## its own gauge, and the shield the ally's passive stands up for heat gained (the Storm Petrel's
+## Hardlight Generator), less what the heat costs on the ally's gauge, its overheat included.
+func dump_score(sk: Skirmish, ms: Skirmish.MechState, who: Skirmish.MechState, f: Face) -> float:
+	var passed := ms.heat
+	if passed <= 0 or who == ms:
+		return 0.0
+	var made := f.duplicate_face()
+	made.passes_heat = false
+	made.buff_stacks = passed / maxi(1, f.heat_per_stack)
+	var score := buff_score(sk, who, made) if made.buff_stacks > 0 else 0.0
+	score += vent_score(sk, ms, passed)
+	var shield := 0 if who.shield_broken else mini(Effects.shield_per_heat(who.unit) * passed, maxi(0, who.unit.shield_max - who.unit.shield))
+	if shield > 0:
+		score += shield_score(sk, who, shield)
+	return score - heat_cost_of(sk, who, passed)
 
 
 ## Does this spend leave its machine a second action by its own rule (Effects.one_of_each, the

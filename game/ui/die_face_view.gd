@@ -91,6 +91,7 @@ var ricochet: int = 0        # the strikes of 1 its machine's Ricochet adds afte
 var offhand: String = ""     # the armament its machine's offhand holds, riding this weapon or equipment aimed at a foe (the Macaque's), its star in the passive box
 var parry: int = 0           # what its machine's Parry returns on this weapon's next strike (the Beam Buckler's), in the passive box: one blow's add, so never in the main number
 var zap_cost: int = 0        # the shield its machine's zap will pay for this weapon's spend (the Buzzard's), in the passive box; its damage is in the main number
+var passing: int = 0         # the heat its machine would pass now (the Puffin's dump), beside the stacks that heat makes
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
 var upgrades: int = 0        # the branch's steps its machine has taken on this piece (Effects.steps_on): a chevron each under its place
 var locked: bool = false
@@ -391,6 +392,8 @@ func _draw() -> void:
 				Glyphs.draw(self, chip_glyph(inside), mc, 22, faded.call(col), 2.2)
 				if face.kind == Face.Kind.BUFF and face.buff_stacks > 1:
 					beside.append(["", "×%d" % face.buff_stacks, faded.call(col)])
+			if face.passes_heat and passing > 0 and not dark_now:
+				beside.append(["heat", str(passing), faded.call(Palette.HEAT)])   # the heat it would pass, by heat's mark
 		"shield_vent":
 			if not dark_now:
 				var held := [str(face.power), str(face.vents)]   # a shield that cools: the shield | the cooling
