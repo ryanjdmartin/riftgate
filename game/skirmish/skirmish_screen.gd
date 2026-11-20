@@ -2356,6 +2356,11 @@ func _show_die(i: int) -> bool:
 		var returned := _parry_of(ms, sf) if not ms.assigned else 0
 		if returned > 0:
 			extra.append(EntryReadout.parry_line(returned))
+		# A burrower's drill (the Mole's): what its Conserved Momentum becomes in the foe, by the
+		# momentum's mark.
+		if not ms.assigned and sf.component != "" and sf.component == str(Effects.burrow_rule(ms.unit).get("piece", "")):
+			var tick := Effects.momentum_of(ms.unit, sf)
+			extra.append(EntryReadout.drill_line(Effects.stacks_of(ms.unit, "conserved_momentum"), int(tick["blow"]), tick["lays"]))
 		# The shield its zap pays for a weapon (the Buzzard's), by the same box.
 		var zap := _zap_cost(ms, sf) if not ms.assigned else 0
 		if zap > 0:
@@ -4239,6 +4244,11 @@ func _dress_reboot() -> void:
 	if _reboot_btn == null:
 		return
 	_reboot_btn.filled = _reboot_hover
+	# A burrower's die in hand burrows there (the Mole's; Ryan, 16 November: "Instead of Reboot, it
+	# Burrows"): the control says so while it is held.
+	var word := "BURROW" if _drag_from >= 0 and _drag_from < sk.mechs.size() and Effects.burrows(sk.mechs[_drag_from].unit) else "REBOOT"
+	if _reboot_btn.text != word:
+		_reboot_btn.text = word
 	_reboot_btn.set_pulse(_drag_from >= 0 and sk.can_reboot(_drag_from))
 	_reboot_btn.queue_redraw()
 

@@ -312,6 +312,10 @@ func _reboots_second(sk: Skirmish, i: int) -> bool:
 ## they reboot at the maximum or on a break, whatever is coming.
 func _wants_reboot(sk: Skirmish, ms: Skirmish.MechState) -> bool:
 	var blind := kind == BLIND or kind == RANDOM
+	# A burrower whose drill still works in a foe (the Mole's) gives it up as it burrows, the burrow
+	# taking it home with what is left: only an overheat takes it under then, and its guns fight on.
+	if drill_working(sk, ms):
+		return ms.overheat_stacks() > 0
 	if ms.overheat_stacks() > 0:
 		# A vent showing that takes it back under its maximum is the cheaper way down: it keeps
 		# the shield a reboot would drop (the kits that still roll a vent).
@@ -351,6 +355,8 @@ func _reboot_idle(sk: Skirmish) -> void:
 		var ms: Skirmish.MechState = sk.mechs[i]
 		if ms.heat <= 0 and ms.unit.shield >= ms.unit.shield_max:
 			continue
+		if drill_working(sk, ms):
+			continue   # a burrow would take its drill home before it has done its work (the Mole's)
 		var fc := sk.forecast(ms)
 		var kept := maxi(0, ms.unit.shield - int(fc["shield_after"]))
 		if kind == BLIND or kind == RANDOM or kept <= REBOOT_KEEP:
@@ -681,6 +687,9 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	if f.webs:
 		# A delayed stun (the funnel-web's web, 18 October): the blows its burst will stop.
 		score += (1.0 - p_kill) * web_score(sk, target)
+	# A burrower's drill (the Mole's Inertia Drill): its turns in the foe (drill_worth).
+	if real.component != "" and real.component == str(Effects.burrow_rule(ms.unit).get("piece", "")):
+		score += drill_worth(sk, ms, real, target)
 	if f.has(Face.Keyword.DISPEL):
 		# Purge (28 October): what every foe the entry reaches carries but Numbed and Guarded,
 		# the target's at the odds it outlives the blow, its Undying whatever.
@@ -805,6 +814,48 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 ## shield pays one, the whole shield for a gun that fires it (the Shield-burner Cannon), read as
 ## burn_cost reads shield gone this turn. A placeholder, as every weight: the regrowth a break shuts
 ## off until the reboot (its carrion) is not counted.
+## Whether a burrower's drill is still at work in a foe standing (the Mole's): Applied Momentum of
+## its own on a live foe, which its next burrow would take home.
+static func drill_working(sk: Skirmish, ms: Skirmish.MechState) -> bool:
+	if not Effects.burrows(ms.unit) or not Effects.has(ms.unit, "drill_out"):
+		return false
+	var source := Skirmish.drill_source(ms)
+	for f in sk.field_foes():
+		if not f.alive():
+			continue
+		for m in f.modifiers:
+			if m.id == "applied_momentum" and m.source == source and m.stacks > 0:
+				return true
+	return false
+
+
+## The Inertia Drill at a foe (the Mole's; a first cut, 20 November): a blow a stack of its
+## Conserved Momentum, each through the foe's armour and capped at what the foe has left, and the
+## Ablating its branch lays, at the payout the bot reads any Ablating at. Under, with stacks still
+## to bank and its shield or heat not yet made good, it is worth waiting a turn: the drill is held
+## (a score below nothing), so a dig runs its two turns and drills whole and cold with the cap, a
+## dig's rhythm in his kit ("a turn more under for 3, whole and cold"). A Ward turns it away.
+func drill_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
+	var rule := Effects.burrow_rule(ms.unit)
+	var n := Effects.stacks_of(ms.unit, "conserved_momentum")
+	if n <= 0 or Effects.turns_mark(target, "applied_momentum"):
+		return 0.0
+	if n < int(rule.get("cap", 3)) and (ms.unit.shield < ms.unit.shield_max or ms.heat > 0):
+		return -1.0
+	var tick := Effects.momentum_of(ms.unit, f)
+	var per := maxi(0, int(tick["blow"]) - target.armour_total())
+	var left := float(target.hp)
+	var worth := 0.0
+	for k in range(n):
+		var d := minf(left, float(per))
+		worth += d
+		left -= d
+	var lays: Dictionary = tick["lays"]
+	if int(lays.get("ablating", 0)) > 0 and left > 0.0:
+		worth += float(n) * dot_payout("ablating", int(lays["ablating"]), int(left)) * ABLATE_WEIGHT
+	return worth
+
+
 func shield_spend_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 	if f == null or ms.shield_broken:
 		return 0.0

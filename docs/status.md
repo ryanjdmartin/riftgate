@@ -52,8 +52,9 @@ document's job and every command are in `README.md`.
   and `claude/laughing-gates-p2633f` (the summon texts with no pool, the Text tab's target
   words) the same day on his "Ok merge in", and `ccr-64b5deec-lunnff` (the Macaque, the line
   frame until its naming: its model, its kit and the offhand's engines, the strike order, the
-  upgrade chevrons, the models' texture copies' test) the same day on his "Send it to Main". A
-  session's hangar publish runs ahead of main (Pages).
+  upgrade chevrons, the models' texture copies' test) the same day on his "Send it to Main"; on
+  it since, not on main: the rules sweep's list for his marks, the echidna's kit round, and the
+  Mole's kit (20 November). A session's hangar publish runs ahead of main (Pages).
   Every other branch on GitHub but the lines' own working branches is merged and to delete
   (`git push origin --delete`, then `git fetch --prune`); a cloud session may not delete one.
 - The desk machine is a Windows PC (`C:\Users\jam82\Desktop\Code\riftgate`; the README's
@@ -65,8 +66,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1384 tests, 387,201 checks, green (20 November, the gel line, the goblins' wall and the
-  content audit over the Puffin's landing). The runner fails a run
+- Tests: 1398 tests, 387,310 checks, green (20 November, the Mole's kit on the Macaque's branch,
+  over main's gel line, goblins' wall and content audit). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -125,11 +126,11 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   pass. Tier one's foes are sized for the reboot and the higher tiers' are not (The numbers,
   below). Detail: the rules' Foes;
   the bible's rows on the foes' rule set, targeting, Exposed and Phased.
-- **The machines.** Five makers and 26 chassis, 24 of them dealt (ten at tier one, ten at
-  two, four at three); the Swallowtail is back in design and the Mole is a planned draft with
-  its model, both undealt (`"status": "planned"`), a brief each. 88 components, 15 of them planned drafts nothing
-  deals (the slottable shields and vents, the Gravity Knuckles and the Tesla Gauntlets, the
-  Retribution Thurible, the Solar Flare Array, the Mole's Inertia Drill); 20 modules. A stock die is basics beside its
+- **The machines.** Five makers and 26 chassis, 25 of them dealt (eleven at tier one, ten at
+  two, four at three); the Swallowtail is back in design, undealt (`"status": "planned"`), its
+  brief open. 83 components, 7 of them planned drafts nothing deals (the slottable shields and
+  vents, the Gravity Knuckles and the Tesla Gauntlets, the Retribution Thurible, the Solar Flare
+  Array); 20 modules. A stock die is basics beside its
   locked pieces: the basic guns deal 3 for 4 heat and the Laser Carbine 4 for 5, the Halo
   Projector lays a Barrier and the Shoring Jack Armoured 2, and every piece that grants a
   Barrier sits out a round after. A machine moves 3 to 6 hexes. A machine holds a tier, and
@@ -285,10 +286,13 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   kneel, the Clydesdale's face-plant, the Funnel-web, the Cassowary, the Whip Scorpion and the
   Ammit; the rest wait on his read, and some still cross parts as they lie (the to-do). The
   Cottonmouth fires every weapon from its drum. The Honey Badger and the Wild Boar wear
-  Minerva's vent, the Polar Bear's (16 and 17 November). The Mole is a model, its look his
-  ("looks great", 18 November; the brief's look item), with two status forms, Burrowed and
-  Drill Out: a form may let others go as it is held (`releases`), as the statuses would end, so
-  a burrow docks a drill that is out. The Macaque is a model from its third look round,
+  Minerva's vent, the Polar Bear's (16 and 17 November). The Mole is built (20 November, on
+  his "Build the mole now", his kit of 16 November; the rules' reboot section, the bible's Mole
+  row): it burrows in its reboot's place, banks Conserved Momentum under, and its Inertia Drill
+  lays Applied Momentum, a blow a turn in its foe until a burrow takes it home. Its model holds
+  Burrowed and Drill Out from the statuses (a form may let others go as it is held, `releases`),
+  and a form asked while a firing slice plays waits for it to land, so the drill launches and
+  then the Mole comes up with its bore empty. The Macaque is a model from its third look round,
   reworked on Ryan's notes of 19 November: its main hand a mount over its fist, its offhand
   carrying the rifle, the blade and the kite of light, the last two made of light (`b.beams`),
   seen only while lit. In a fight it holds its offhand's armament (a form a slot, held while its

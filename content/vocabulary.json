@@ -2419,6 +2419,70 @@
    "design": {
     "holes": "Never a buff, so no Purge reaches it. If ammo runs plentiful, the vents' and shields' reloads or the trickle come down."
    }
+  },
+  {
+   "id": "burrowed",
+   "category": "status",
+   "name": "Burrowed",
+   "codex": "Ability, the Mole's. It burrows in its reboot's place, on a turn it has spent nothing, and stays under until it spends its Inertia Drill: armour +1, its die rolling the Drill alone. Each of its turns under opens with Broken and Overheated cleared, half of what its shield and heat were missing as it burrowed made good, and a stack of Conserved Momentum. No Purge touches it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 16 November: \"Instead of Reboot, it Burrows. While burrowed, it gains a unpurgable buff called 'Burrowed'\"; an unpurgeable buff is labelled an Ability by his rule of 8 November. The text is a session's draft.",
+    "table": {
+     "kind": "ability",
+     "on": "machine",
+     "stacks": "Renews: one, its armour the burrow's",
+     "lasts": "Until it spends the Inertia Drill"
+    }
+   }
+  },
+  {
+   "id": "conserved_momentum",
+   "category": "resource",
+   "name": "Conserved Momentum",
+   "codex": "Machine store, the Mole's: a stack as it burrows and one as each turn under opens, up to 3, and what is left of its Applied Momentum back as it burrows again. Its Inertia Drill spends every stack, laying a stack of Applied Momentum for each. A store, so no Purge touches it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 16 November: \"At the start of every turn while burrowed, it gains a stack of Conserved Momentum\"; \"We can cap it at 3, sure\"; a stack as it burrows, his \"go with 1 and 2\". The text is a session's draft.",
+    "table": {
+     "kind": "store",
+     "on": "machine",
+     "stacks": "Yes: up to 3",
+     "lasts": "Until the Inertia Drill spends it"
+    }
+   }
+  },
+  {
+   "id": "applied_momentum",
+   "category": "status",
+   "name": "Applied Momentum",
+   "codex": "Foe status, from the Mole's Inertia Drill: a stack for each Conserved Momentum it spent. As the foe's turn starts, the drill in it strikes it with a blow of 2, its Brittle adding and its armour taking it, then a stack goes. The Mole's next burrow takes the drill back with what is left. A foe's cleanse takes it, a Ward turns it away, and a foe that falls takes it with it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 16 November: \"Applied Momentum decays 1 at the start of the target's turn\"; \"Base: Flat 2 damage blow a turn ... make the damage a blow since I want it to scale with Brittle\". It strikes before the foes' side opens, so a Pinned it lays holds the Brittle. The text is a session's draft.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Yes: a turn of the drill a stack",
+     "lasts": "A stack each of its turns, or until the Mole burrows"
+    }
+   }
+  },
+  {
+   "id": "drill_out",
+   "category": "status",
+   "name": "Drill Out",
+   "codex": "Ability, the Mole's: its Inertia Drill is out, in its foe or in the ground where its foe fell. Its next burrow brings it home.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 16 November: \"It returns to the Mole when it burrows, taking the debuff with it\"; 18 November, \"Build the toggle\". The text is a session's draft.",
+    "table": {
+     "kind": "ability",
+     "on": "machine",
+     "stacks": "Renews: one",
+     "lasts": "Until its next burrow"
+    }
+   }
   }
  ]
 }

@@ -52,6 +52,8 @@ const TABLE := {
 	"parry": ["spin", "heat"],   # the Beam Buckler's (19 November): what it blocks, next turn's first weapon's add, in Spun Up's family
 	"offhand": ["star", "plain"],   # the Macaque's armament, the star its rider wears on the die (Ryan, 19 November: "a unique (star) effect")
 	"aile_boost": ["rapid", "plain"], "aile_blitz": ["rapid", "plain"], "aile_assault": ["rapid", "plain"],   # the Aile Booster's dash, the Rapid piece's own mark
+	"burrowed": ["seal", "guard"], "drill_out": ["spin", "plain"],   # the Mole's (16 November): its armoured form under, the shell's mark and family; its drill out of its bore
+	"applied_momentum": ["spin", "heat"],   # the Mole's momentum laid in a foe: the drill's turn, with what hits harder later (its Conserved Momentum a store, a bar under the heat as every store is)
 	"mine": ["mine", "heat"],
 	"essence": ["essence", "heat"], "essence_flare": ["essence_flare", "heat"],   # the Ammit's count and its Tap's buff (12 and 15 November), with Empowered's group: what hits harder
 	"braced": ["shield", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"], "hardened": ["hardened", "guard"],

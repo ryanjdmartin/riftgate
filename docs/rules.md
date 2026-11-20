@@ -1174,11 +1174,40 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
 - **Broken** (debuff): a shield at nothing, whatever took it there: a foe's blow, the overheat,
   the machine's own reboot, or a shield spend or cost of its own. A Broken shield gains no
   shield by any method, a grant, a regen, a refill on a kill or a module's, until the reboot's
-  recovery, so a shield breaks once between reboots. No cleanse lifts it. A Barrier is a buff
+  recovery (a turn under, for a burrower), so a shield breaks once between reboots. No cleanse lifts it. A Barrier is a buff
   in front of shield and hull: it touches neither bar and lands on any machine, Broken or
   rebooting.
 - A Swallowed machine cannot reboot: it has no turn to give. A Phased one may, and its reboot
   is the safe one, bare where nothing reaches it.
+- **The burrow** (the Mole's passive, Burrow): it burrows in its reboot's place, its die dragged
+  onto the same target, which reads BURROW while its die is in hand; the reboot's gate, a turn
+  it has spent nothing, and its whole turn. Its shield is never emptied. What stands past its
+  heat's maximum vents at once, as a reboot's does, so nothing burns at its END TURN and it is
+  free to overheat again, and every entry a foe jammed lights. It gains a stack of **Conserved
+  Momentum** (a store, so no Purge touches it, up to 3, a bar under its heat), and its drill
+  comes home with what is left of the Applied Momentum in its foe, back as Conserved up to the
+  cap. It is then **Burrowed** (an ability, so no Purge touches it): armour 1, its die rolling
+  the Inertia Drill alone, which its die never rolls above ground; and each of its turns under
+  opens, before anything cools, with Broken and Overheated cleared and the one overheat between
+  reboots free again, half of what its shield was missing as it burrowed back on it and half of
+  the heat it carried then off it, each rounded up (two turns under is whole and cold, and a
+  blow taken under is not mended), every entry a foe jammed lit, and a stack of Conserved
+  Momentum. It stays under until it spends the Drill, and cannot burrow again while under.
+- **The Inertia Drill** (its locked piece, equipment, Indirect): spent at a foe, it spends every
+  stack of Conserved Momentum, lays as many of **Applied Momentum** on the foe (a mark the team
+  lays: the foe's Ward turns it away, the stacks spent all the same), and brings the Mole up,
+  **Drill Out** (an ability) until its next burrow, its foe felled or not. As the foes' turn
+  starts, before their side's opening, each foe carrying Applied Momentum takes its drill's
+  blow, a plain blow of 2 (its Brittle adds, its armour and a Barrier from its last turn take it,
+  no Shock is read, and a Phased foe takes nothing), then what the drill's branch lays (the
+  Ablate branch: Ablate 2 in the blow's place, then Seared with it; the squad branch: Brittle 1
+  and Pinned, then Exposed), and a stack goes. Before the opening, so a Pinned it lays holds
+  the Brittle the opening would halve. A foe's cleanse takes it, a foe that falls takes it with
+  it, and the Mole's next burrow takes it home. The drill works as its machine stood when it
+  drilled: a branch learned later changes the next drill.
+- The fight bot burrows a burrower by the reboot's reads, but never while its drill still works
+  in a standing foe unless it overheats; under, it holds the drill until it has its cap of
+  Conserved Momentum and is whole and cold, then drills the foe its blows pay most on.
 - The fight bot reboots a machine past its maximum, unless a vent it shows takes it back
   under; one whose shield is broken when a blow is coming or its heat is half spent; one whose
   entry would pass its maximum, where it has heat to shed and this round's blows would take a

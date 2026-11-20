@@ -1,6 +1,6 @@
 """Look tests for Minerva's mole (Ryan, 4 November: "Minerva: Some kind of drill-tank mole
 machine"; 15 November: "The mole is the least far along, maybe just mock that one up a couple
-different ways"; docs/briefs/minerva_mole.md). Three silhouettes meant to differ at a glance, each
+different ways"; its brief, retired: git show f6f11185:docs/briefs/minerva_mole.md). Three silhouettes meant to differ at a glance, each
 a mole machine in Minerva's steel and green, none of them a kit: the drill tank (one great cone for
 a nose), the tunnel-borer (a full-face cutter head on a long segmented body) and the digger (two
 shovel claws flanking a small snout drill, a mole's forepaws). Mounts are placeholders, three a

@@ -643,6 +643,10 @@ file.
 
 ## Corrections the fold makes
 
+The Mole's brief retired on 20 November with its kit built (`git show
+f6f11185:docs/briefs/minerva_mole.md`): S7 and S15 stood wholly in it and left with it, so a mark
+on either needs no fold, and its lines cited in D5, S9 and S13 went with it.
+
 Lines that are false today, made true with the fold unless he says otherwise:
 
 - The bible's line 869 quotes "a chassis stocks only below its own tier"; line 870 and the validator have it stocking up to its own tier at tiers one and two. Line 869 follows.

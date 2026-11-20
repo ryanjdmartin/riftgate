@@ -922,6 +922,20 @@ static func parry_line(n: int) -> Dictionary:
 	return marked(text_line("effect", "Parry: its next strike deals %d more" % n, "rule"), [passive_mark("spin", "+%d" % n, Glyphs.colour_for("parry"))])
 
 
+## What a burrower's drill lays if spent now (the Mole's Inertia Drill; Ryan, 16 November): the
+## Applied Momentum its Conserved stacks become, the drill's blow a turn and what its branch lays
+## after it, headed by the momentum's mark.
+static func drill_line(stacks: int, blow: int, lays: Dictionary) -> Dictionary:
+	var with: Array[String] = []
+	for id in lays:
+		with.append("%s %d" % [str(Effects.STATUS.get(str(id), {}).get("name", str(id))), int(lays[id])])
+	var turn := ("a blow of %d" % blow) if blow > 0 else ""
+	if not with.is_empty():
+		turn = (turn + " and " if not turn.is_empty() else "") + ", ".join(with)
+	var said := "Drill: Applied Momentum %d on its foe, %s as each of its turns starts; it comes up" % [stacks, turn if not turn.is_empty() else "nothing"]
+	return marked(text_line("effect", said, "rule"), [passive_mark("spin", "×%d" % stacks, Glyphs.colour_for("applied_momentum"))])
+
+
 ## The armament its machine's offhand holds, riding the weapon or equipment showing (the line
 ## frame's, Ryan, 19 November): its name and its line, headed by the star the die's passive box shows.
 static func offhand_line(name: String, line: String) -> Dictionary:

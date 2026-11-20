@@ -2081,6 +2081,33 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: side_strike is static: value, what the foe to the right of the target takes with every strike, 1 or more" % where)
 		if effect == "strike_again" and (trig != "static" or int(eff.get("value", 0)) < 1):
 			errs.append("%s: strike_again is static: value, the share of each strike's blow its hit again carries, in percent, 1 or more" % where)
+		# The burrow in a reboot's place (the Mole's, Ryan, 16 November): its piece the locked piece
+		# its die rolls alone while Burrowed (checked against the chassis's fixed pieces below), its cap
+		# on Conserved Momentum, Burrowed's armour, the share a turn under makes good in percent, and the
+		# drill's blow a turn.
+		if effect == "burrow":
+			if trig != "static" or str(eff.get("piece", "")).strip_edges().is_empty():
+				errs.append("%s: burrow is static: piece, the locked piece its die rolls alone while Burrowed" % where)
+			if int(eff.get("cap", 0)) < 1 or int(eff.get("armour", 0)) < 1:
+				errs.append("%s: burrow's cap (Conserved Momentum at most) and armour (Burrowed's) are 1 or more" % where)
+			if int(eff.get("recover", 0)) < 1 or int(eff.get("recover", 0)) > 100:
+				errs.append("%s: burrow's recover is the share of what was missing a turn under makes good, in percent, 1 to 100" % where)
+			if int(eff.get("blow", -1)) < 0:
+				errs.append("%s: burrow's blow is the drill's blow a turn, 0 or more" % where)
+		# A branch's tweak of the drill's turn in its foe (the Mole's Ablate and squad branches, Ryan,
+		# 16 November): a blow in the burrow's blow's place, and the foe statuses it lays after it.
+		if effect == "momentum":
+			if trig != "static" or not eff.has("entry"):
+				errs.append("%s: momentum is static, scoped to the drill it tweaks (entry)" % where)
+			if eff.has("blow") and int(eff["blow"]) < 0:
+				errs.append("%s: momentum's blow takes the drill's blow's place, 0 or more" % where)
+			var lays = eff.get("lays", {})
+			if not (lays is Dictionary) or (not eff.has("blow") and (lays as Dictionary).is_empty()):
+				errs.append("%s: momentum lays {status: stacks} after the drill's blow, or sets its blow" % where)
+			elif lays is Dictionary:
+				for sid in lays:
+					if not Effects.FOE_STATUSES.has(str(sid)) or int(lays[sid]) < 1:
+						errs.append("%s: momentum lays foe statuses, a stack or more each (%s)" % [where, str(sid)])
 		# The name an effect gives the piece it is scoped to (the Aile Booster as its Blitzer or its
 		# Assaulter, Ryan, 19 November): shown text, on an effect that names its piece.
 		if eff.has("name") and effect != "offhand" and (not eff.has("entry") or str(eff["name"]).strip_edges().is_empty()):
@@ -2518,6 +2545,12 @@ func _validate_chassis(errs: Array[String]) -> void:
 			for eff in passive_c.get("effects", []):
 				if eff is Dictionary and str(eff.get("effect", "")) == "fold_die":
 					fold = int(eff.get("value", 0))
+		# A burrow's piece (the Mole's Inertia Drill) is one of its fixed pieces: its die rolls it alone
+		# while Burrowed and never above ground, so it must be on the die.
+		if passive_c is Dictionary:
+			for eff in passive_c.get("effects", []):
+				if eff is Dictionary and str(eff.get("effect", "")) == "burrow" and not fixed.has(str(eff.get("piece", ""))):
+					errs.append("%s: a burrow's piece is one of its fixed pieces (%s)" % [where, str(eff.get("piece", ""))])
 		if fold > 0:
 			if hp != 2 * fold:
 				errs.append("%s: a die folded into batteries of %d takes %d hardpoints, not %d" % [where, fold, 2 * fold, hp])
