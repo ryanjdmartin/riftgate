@@ -387,11 +387,11 @@ with it, on his word. A page's link goes into this file in the same commit as it
 publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.653 on 20 November from main's file at `7a3b8e35` (the page's Version 517),
-  over this line's v0.652, which the live page matched byte for byte. Before republishing,
+  Published at v0.654 on 20 November from main's file at `e71027f7` (the page's Version 518),
+  over this line's v0.653. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
-  `7a3b8e35` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  `e71027f7` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
   live source with the tool's wrapper line, its trailing newline and `</body></html>`
   stripped): check BASE against the live page byte for byte first. After main merges in,
   check the tables script's run against the file's tables before keeping it: a row it
@@ -399,15 +399,17 @@ publish; the commands are in `README.md`.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 314 (20 November): a tab a kind (Chassis,
-  Components, Modules, Foes, the Text by chunk, the Models), the Wild Huntsman and the gels, the
-  nine files that differed. The Mole's line (`ccr-64b5deec-lunnff`) had published Versions 311
-  to 313 from its branch (its built Mole, its terms, the echidna's brief), so 314 is a union of
-  main at `dc8ec0d1` and that line at `fcac1ade`, built in a scratch tree never pushed, each of
-  the three files it had moved read and found carried first; the generated files' stamp names
-  both commits, and the page's own source is main's. Until that line lands, a publish from main
-  alone takes its Mole off the page: build the union again. The `edits` and `text` collections
-  were empty, `designs` held his two notes of 5 November (both already briefed).
+  `edits`, `designs` and `text` read first. Version 315 (20 November): what every piece does in
+  the game's own words (`hangar/readouts.json`, which `tools/hangar_data.py` writes through
+  Godot), over Version 314 the same day: a tab a kind (Chassis, Components, Modules, Foes, the
+  Text by chunk, the Models), the Wild Huntsman and the gels. The Mole's line
+  (`ccr-64b5deec-lunnff`) had published Versions 311 to 313 from its branch (its built Mole, its
+  terms, the echidna's brief), so 314 and 315 are a union of main (`dc8ec0d1`, then `e71027f7`)
+  and that line at `fcac1ade`, built in a scratch tree never pushed and imported for Godot, each
+  file it had moved read and found carried first; the generated files' stamp names both commits,
+  and the page's own source is main's. Until that line lands, a publish from main alone takes its
+  Mole off the page: build the union again. The `edits` and `text` collections were empty,
+  `designs` held his two notes of 5 November (both already briefed).
   The `candidates` collection (his names, 106 rows) stays in the database unread;
   `docs/name_candidates.md` holds them. The service refuses a republish until the live page's saved source has been
   read whole, every line: read it before the publish, not after the refusal. A view counts only in
