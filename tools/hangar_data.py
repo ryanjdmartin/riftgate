@@ -1,12 +1,14 @@
 """The hangar page's generated data and its publish map.
 
-The hangar page (tools/hangar.html) renders the codex, the content editor, the names list
-and the renders from files published beside it, so one republish refreshes every tab.
-The Designs tab reads every brief in docs/briefs/, parsed by tools/hangar_designs.py into
-build/hangar/designs.json. This writes the one piece the browser cannot read for itself, the hp_<n> pins each built
+The hangar page (tools/hangar.html) renders the codex, the bench, the content editor, the text
+and the models from files published beside it, so one republish refreshes every tab. The
+Bench reads every brief in docs/briefs/, parsed by tools/hangar_designs.py into
+build/hangar/designs.json, and the Text tab (and the Bench's codex and flavour) every shown
+text, listed by tools/hangar_text.py into build/hangar/text.json. This writes the one piece the
+browser cannot read for itself, the hp_<n> pins each built
 model carries (docs/hangar/pins.json, from art/models/<chassis>.glb), checks the renders
 manifest (docs/hangar/renders.json) against the files on disk, and prints the `files` map
-to pass to the Artifact tool, published path to source path. The map carries the Animation
+to pass to the Artifact tool, published path to source path. The map carries the Models
 tab too: its script (tools/hangar_motion.js as hangar/motion.js) and every built machine's
 model and rig sidecar. An artifact does not serve .glb files, so each model is written as
 the same glTF in JSON with its binary embedded (build/hangar/models/<id>.model.json, git
@@ -28,7 +30,7 @@ import hangar_designs
 import hangar_text
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CONTENT = ["chassis", "components", "modules", "foes", "factions", "vocabulary", "reserved_names"]
+CONTENT = ["chassis", "components", "modules", "foes", "factions", "vocabulary"]
 
 
 def model_pins(cid):
@@ -77,15 +79,16 @@ def main():
     files["hangar/pins.json"] = "docs/hangar/pins.json"
     files["hangar/renders.json"] = "docs/hangar/renders.json"
     files["hangar/motion.js"] = "tools/hangar_motion.js"
-    # The Designs tab's briefs (5 November): every brief in docs/briefs/ parsed by
-    # tools/hangar_designs.py into build/hangar/designs.json, a header each checked.
+    # The briefs (5 November; the Bench's since 20 November): every brief in docs/briefs/ parsed
+    # by tools/hangar_designs.py into build/hangar/designs.json, a header each checked.
     _docs, problems = hangar_designs.build(check_only)
     if problems:
         print("\n".join(problems), file=sys.stderr)
         sys.exit(1)
     files["hangar/designs.json"] = hangar_designs.OUT
-    # The Text tab's inventory (9 November): every shown text as tools/hangar_text.py lists it,
-    # with who wrote each from docs/hangar/text.json, into build/hangar/text.json.
+    # The Text tab's inventory (9 November), the Bench's codex and flavour with it: every shown
+    # text as tools/hangar_text.py lists it, with who wrote each from docs/hangar/text.json, into
+    # build/hangar/text.json.
     _slots, _groups, problems = hangar_text.build(check_only)
     if problems:
         print("\n".join(problems), file=sys.stderr)
@@ -129,7 +132,7 @@ def main():
     classes = [c for c in json.loads(re.search(r'const SHAPES := (\[[^\]]*\])', shapes_src).group(1)) if c != "none"]
     makers = [m["id"] for m in json.load(open(os.path.join(ROOT, "content", "chassis.json")))["makers"]]
     # A class's variants (art/models/shapes/variants.json, lowforge's VARIANTS), published the
-    # same way, for the mounts whose sidecar `fits` name one and for the Classes tab.
+    # same way, for the mounts whose sidecar `fits` name one and for the Models tab's Classes.
     vpath = os.path.join(ROOT, "art", "models", "shapes", "variants.json")
     variants = {k: v for k, v in json.load(open(vpath)).items() if not k.startswith("_")} if os.path.exists(vpath) else {}
     present = {"classes": [], "makers": [], "variants": {}}

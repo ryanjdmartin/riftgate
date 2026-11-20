@@ -251,12 +251,15 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   skirmish screen, the battle screen, the pause menu and its settings are built; the hangar,
   the mission map and the draft are not. A debug build's settings hold TRIALS and COLOURS
   (`ColourTuner`: Ryan tunes there and sends its COPY text).
-- **The hangar page.** `tools/hangar.html` over `tools/hangar_data.py`'s files: the models,
-  the Bench (a working sheet a machine), the Text (every shown text; `tools/hangar_text.py`
-  is its one inventory) and the Designs (the briefs, for his corrections). The ledger
-  `docs/hangar/text.json` names nothing as signed, so every shown text is a session's draft.
-  His writing waits in the page's `text` collection and his corrections in `designs`: a
-  session that touches either folds them in first.
+- **The hangar page.** `tools/hangar.html` over `tools/hangar_data.py`'s files: the codex, the
+  Bench (a working sheet a machine, its codex, its flavour and its brief on it, and the Briefs
+  list of the rest; each brief read only, with his notes), the content editor (no chassis tab:
+  a chassis is its Bench sheet's), the Text (every shown text; `tools/hangar_text.py` is its one
+  inventory) and the models. The ledger `docs/hangar/text.json` names nothing as signed, so
+  every shown text is a session's draft. His writing waits in the page's `text` collection (the
+  Text tab's and the Bench's codex and flavour) and his notes on the briefs in `designs`: a
+  session that touches either folds them in first. The Names tab retired on 20 November: the
+  makers' kinds of names are `docs/naming.md`, the check `tools/check_name.py`.
 - **Art and models.** Every machine's model is lowforge's with a rig sidecar; a hardpoint
   wears one of four silhouette classes (barrel, twin barrel, rack, dish), and a test holds
   each model's pins to its chassis's hardpoints. Every foe has art, a placeholder stamped "?"
@@ -387,14 +390,18 @@ publish; the commands are in `README.md`.
   each live copy read first, with `edits`, `designs` and `text` read first. Version 307 (19
   November, `f05bbdc`: main at `a1f3a45` and the summon texts' branch): every file of the map
   checked against the live copy by hash, and the nine that differed sent (five content files,
-  the Designs and Text inventories, and the Buzzard's model and sidecar). The page itself was
-  unchanged. The numbers pass's leans (`6a10dca`) and a foe's jam waiting for the reboot
+  the briefs' and the texts' inventories, and the Buzzard's model and sidecar). The page itself
+  was unchanged. The numbers pass's leans (`6a10dca`) and a foe's jam waiting for the reboot
   (`645d690`), landed after that publish, are not up: their content, briefs and texts go up
   with the next, which waits with the bible's on Ryan's approval of the action.
   The Macaque (`ccr-64b5deec-lunnff`, landed after it) is not up either: its content whole (the
   chassis, its Aile Booster, its terms), its texts, its model and sidecar (its held armaments and
-  its dash) and the motion script's parts made of light (`tools/hangar_motion.js`).
-  `build/hangar/designs.json` is one 795 KB line: write it indented before reading it whole.
+  its dash) and the motion script's parts made of light (`tools/hangar_motion.js`). Nor is the
+  page's cleanup of 20 November (the page and the motion script: the Designs tab and the Content
+  tab's chassis folded into the Bench, the Names tab retired); the page reads `candidates` no
+  longer, and the map no longer carries `content/reserved_names.json` (a publish removes it with
+  null).
+  `build/hangar/designs.json` is one line of about 980 KB: write it indented before reading it whole.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their
   record, their fold `git show 07f01fb:docs/vocabulary_pass_proposal.md`, section 18.
