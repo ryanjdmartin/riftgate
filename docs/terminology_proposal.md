@@ -16,7 +16,7 @@ and its intent, the how-it-fights sentences on a foe's page, passives and module
 readouts, the plates' labels and the battle log.
 
 **What it leaves alone.** Lore (a page's history, every flavour quote); the HUD's own voice
-(ENEMY PHASE, SIG LOST, CARE // PROJECTOR LINE); names, except the three the to-do routes here
+(ENEMY PHASE, SIG LOST, CARE // PROJECTOR LINE); names, except the ones the to-do routes here
 (section 4); and what shown text calls the die, which is section 12's question and a session of
 its own.
 
@@ -106,129 +106,208 @@ waiting to be folded, so no text of his would move.
 
 ## 2. The standard
 
-The principle is one word for each thing, and the same word on both sides of the field. A term's
-rule lives in its tip; every other text names the term and its number. Each numbered rule is his
-to mark. "Now" is what it replaces.
+The principle is one word for each thing, and the same word on both sides of the field. A
+term's rule lives in its tip, and every other text names the term and its number. Each rule is
+his to mark by its number; where a rule offers a choice, A is the lean. A rule tagged "changed
+19 November" is one main or his mark moved since the list of 17 November.
+`tools/pages/terminology_marks_page.py` makes this section and section 4 into the page he marks
+on (`docs/status.md`, Pages).
 
 ### Who
 
-1. **Machine, foe, unit.** A machine is ours, a foe is theirs, a unit is either. "Enemy" leaves
-   the explanatory text. Now: the die's "Target: Enemy" (51), "Enemy keyword", "the enemy's
-   turn". The HUD's banners keep their own voice.
-2. **A set is named by who is in it, never by who acts.** Ours: Self, Any machine, Another
-   machine, Every Machine, Every Other Machine. The foes': Another foe, Every Foe, Every other
-   foe. So the buff on the whole team and the foes' blow at the whole team are both Every
-   Machine, one term with one tip. Now: Any ally or self, Any other ally, Every Ally, Every
-   Other Ally, One of its own, Every foe. *Or*: keep "ally", meaning any machine of the team
-   including itself (Any ally, Another ally, Every Ally, Every Other Ally). The foes' Every
-   Machine then keeps its name, and that set keeps two names.
-3. **A piece calls its own machine "this machine"**, in a piece's, a passive's and a module's
-   text. A status's tip calls the unit carrying it "it". Now: its owner, its firer, the attacker,
-   the hitter, the striker, its carrier, whoever spends it, its own machine.
-4. **The player is "you".** The turns are your turn and the foes' turn. Now: the player (10),
-   the player's turn, the enemy's turn.
-5. **A foe makes moves.** Its intent is the move it shows for the round. "Action" leaves (16
-   uses), and the listed term Foe action becomes Foe move.
+**1. Machine, foe, unit.**
+Our side's pieces are *machines*, the other side's are *foes*, and *unit* means either. "Enemy"
+stops appearing in explanations. The HUD banners (ENEMY PHASE and so on) keep their style.
+- "Target: Enemy, Direct" → "Target: Foe, Direct"
+
+**2. Name a group by who is in it, not by who is acting.**
+- **A:** Ours are Self, Any machine, Another machine, Every Machine, Every Other Machine. The
+  foes' are Self, Another foe, Every Foe, Every other foe. A buff on your whole team and a foe's
+  attack on your whole team are then both "Every Machine", one term with one tip.
+  - "Any ally or self" → "Any machine"
+  - "Any other ally" → "Another machine"
+  - "Every Ally" → "Every Machine"
+- **B:** Keep "ally", meaning any machine on your team, itself included: Any ally, Another ally,
+  Every Ally, Every Other Ally. The foes' "Every Machine" keeps its name, so that group has two
+  names.
+
+**3. A piece calls the machine it's on "this machine".**
+That covers components, passives and modules. A status's tip calls the unit carrying it "it",
+and anyone else by what they did.
+- "costs its owner 3 hull" → "costs this machine 3 hull"
+- "cools the hitter 2 a stack" → "cools the machine that hit it 2 per stack"
+
+**4. The player is "you".**
+The two halves of a round are "your turn" and "the foes' turn".
+- "at the end of the player's turn" → "at the end of your turn"
+- "through the enemy's turn" → "through the foes' turn"
+
+**5. A foe makes moves.**
+Its *intent* is the move it's showing this round. The word "action" goes, and the term "Foe
+action" becomes "Foe move".
+- "skips its telegraphed action" → "skips its move"
 
 ### Whom
 
-6. **One target line.** "Target:" then the set; for a weapon, its reach after a comma. Ours: Foe,
-   Direct; Foe, Indirect; Every Foe; Self; Any machine; Another machine; Every Machine. A foe's:
-   Any machine; Every Machine; Self; Another foe; Every Foe; The most hurt foe; The most-marked
-   foe; Every foe it readied. Terms keep their capitals and the rest is sentence case. A move
-   aimed at a place and not a unit keeps its plain words: "Empty places" (a summon, since 19
-   November) and "The team's rerolls" (a drain).
-7. **The target, and each unit hit.** The target is the one unit a spend or a move is aimed at.
-   Each foe hit (or each machine hit) is every unit its strikes or effects land on: the target,
-   plus whatever its area reaches. Now: every foe the entry reaches, the foe aimed at, the
-   machine it lands on, the machine it hit.
-8. **Beside, behind, in front of, around.** Beside is either side of it in its rank. Behind and
-   in front of are the other rank of its column. Around is all three. Now: round its slot, a
-   neighbour's, the other rank of its column.
-9. **The attack's word goes on its target line.** Built by the targeting build (17 November):
-   "Target: The hottest machine" and "Target: The most buffed machine" show today, "The strongest
-   machine" and "The weakest machine" wait for moves that carry them, and a foe's page carries no
-   sense line. The four words are a session's drafts, his to sign or to change.
+**6. One format for the target line.** (changed 19 November: main's summon texts)
+It's "Target:" plus the group, and for a weapon, its reach after a comma. Terms keep their
+capitals and everything else is sentence case. A move aimed at a place rather than a unit keeps
+its plain words: main's summons now say "Target: Empty places", and the reroll drain stays
+"Target: The team's rerolls". Main's new "Every foe it readied" stays as it is.
+- "Every foe" → "Every Foe"
+- "One of its own" → "Another foe"
+- "The most hurt of its own" → "The most hurt foe"
+
+**7. "The target" and "each foe hit".**
+*The target* is the one unit the spend or move is aimed at. *Each foe hit* (or *each machine
+hit*) is every unit it lands on: the target plus anything its area reaches.
+- "every foe the entry reaches is Exposed" → "each foe hit is Exposed"
+
+**8. Area words.**
+*Beside* means left or right in the same rank. *Behind* and *in front of* mean the other rank of
+the same column. *Around* means all of those.
+- "every foe round its slot" → "every foe around it"
+
+**9. The attack's targeting word goes on its target line.** (changed 19 November: already built)
+Main's targeting build did this. "Target: The hottest machine" shows on 5 moves and "Target: The
+most buffed machine" on 1. "The strongest machine" and "The weakest machine" are waiting for
+moves that use them. Foe pages no longer show an aim line. All that's left is his sign-off on
+the four words (section 4, Names).
 
 ### When
 
-10. **Four places, four phrases.** At the start of its turn, at the end of its turn, at the end
-    of the round, when spent. For things that last: until the start of its next turn, until the
-    end of its next turn, until the end of the round, until spent. "Its" means the carrier's; a
-    machine's turn is your turn and a foe's turn is its own move. Never a bare "until its next
-    turn". *Or*: the rules' own wording, as its turn starts, as its turn ends, as the round ends.
-11. **A status's clock lives in its tip.** Whatever lays a status names it and its stacks
-    ("Armoured 2", "Jams the entry its die shows"). It gives a time only where the source sets
-    one ("for 2 rounds"). Now: about 55 moves restate the clock of what they lay, in seven
-    forms, the six that Expose each restating Exposed's whole rule ("it stands Exposed through
-    the next round, its armour counting for nothing and every foe's targeted move turned on it").
-12. **Rounds ahead.** This round, next round, "in 2 rounds" for what lands later, "for 2
-    rounds" for what lasts. Now also: two rounds on, two rounds later, through the round after,
-    the rest of the round.
-13. **Round, skirmish, battle** (marked 19 November: "I want to keep skirmish"). A round is your
-    turn plus the foes' turn. A skirmish is one pack fought to the end. A battle is the whole
-    field. The map's turn keeps its name. *A*: skirmish is the noun, and fight stays a verb alone
-    ("move or fight", "machines that fought"): "Once a fight" becomes "Once a skirmish", and the
-    vocabulary's term Fight becomes Skirmish. *Or B*: fight stays a noun beside skirmish, two
-    words for one thing.
-14. **Five verbs for running down.** Halves (rounded down), loses a stack, ends, is spent, is
-    removed (by a Cleanse or a Purge). "Decays" covers the first two, where a rule stops both.
-    Now also: fades, runs down, falls off, lifts, clears, goes.
+**10. One phrase for each of his four timing points.**
+"Its" means whoever carries it. The bare "until its next turn" goes: today it ends Armoured at
+the start of a turn, but the Cockatrice's jam at the end of one.
+- **A:** "at the start of its turn", "at the end of its turn", "at the end of the round", "when
+  spent". For durations: "until the start of its next turn", "until the end of its next turn",
+  "until the end of the round", "until spent".
+- **B:** The rules doc's wording: "as its turn starts", "as its turn ends", "as the round ends".
 
-### What it is called
+**11. A status's timing lives in its tip.** (changed 19 November: the count and an example)
+- **A:** A text that applies a status gives its name and number, and only states a time when
+  that source changes it ("for 2 rounds"). About 55 move lines get shorter. The six moves that
+  Expose each repeat Exposed's whole rule today.
+  - "Points out one machine: it stands Exposed through the next round, its armour counting for nothing and every foe's targeted move turned on it." → "Points out one machine: it is Exposed."
+  - "Raises a scrap shield: armour +1 until its next turn" → "Raises a scrap shield: Armoured 1"
+- **B:** Every text keeps its timing, in rule 10's wording.
 
-15. **A term keeps its capitals, with its number after it**: "Scorched 4", "Exposed", "Every
-    Machine". That way it reads in its colour and taps. A keyword's verb form counts as the
-    keyword ("Jams", "Exposes"). A plain word stays lower case. Now: 84 lower-case uses in
-    moves and foe pages.
-16. **Stacks are written Name N**: Empowered 2, Ablating 3, Armoured 1, the same way a numbered
-    keyword is written (Ablate 2). × only means times: a weapon's strikes (Attack 3 ×2) and a
-    multiplier (×2 damage). + and − only mean a change (Hull +8, +2 damage, "Empowered +2 on its
-    way").
-17. **A chip's number is its stacks**: 2 where the chip says ×2 today. One stack still shows no
-    number. This one needs his eye on the phone.
-18. **The act line stays Attack, Buff, Debuff and Defend on both sides.** Our buff keeps
-    "Grants" for what it grants, "Grants Empowered 2". (Weapon is the piece's kind; Attack is
-    the act's.) A buff that grants no status says "Buff", the way a debuff says "Debuff" (the
-    bug in section 5).
-19. **A keyword's line is the keyword as the die's chip shows it**: Ablate 2, Shock, Expose, plus
-    its gate where it has one ("Suppress, on a foe carrying Brittle"). Now: Apply Ablate 2 on
-    hit.
-20. **One label per stat, in full**: HP, ATTACK and ARMOUR on a foe's plate, matching SHIELD,
-    HULL, ARMOUR, HEAT and MOVE on a machine's. HP stays the one short form (the bible's HP row).
-21. **Attack, strike, hit.** An attack is one spend of a weapon or one attack move. A strike is
-    one of its blows (the Strikes term). A strike that lands hits. "Blow" and "shot" leave shown
-    text, with Shots kept as the Cassowary's count. This is the biggest rewrite on the list
-    (blow appears 145 times). *Or*: keep blow next to strike, as one word in two forms.
-22. **Falls, kills, wrecked, destroyed.** A foe falls at 0 HP, and the unit that took it there
-    kills it. A machine is wrecked. A component is destroyed. Now also: felled, dies, dead.
-23. **The die's words stay as they are.** The die rolls and shows an entry. An entry holds a
-    component or is blank. A spend drops the die on a target, and an entry that cannot pay
-    cannot be spent (now: "cannot be played"). Section 12's question on the word "die" is not
-    touched.
+**12. Looking ahead.**
+Use "this round" and "next round". Something that lands later is "in 2 rounds"; something that
+lasts is "for 2 rounds".
+- "two rounds on" → "in 2 rounds"
+- "through the round after" → "until the end of next round"
+
+**13. Round, skirmish, battle.** (changed 19 November: his mark)
+His word: "I want to keep skirmish." A *round* is your turn plus the foes' turn. A *skirmish* is
+one pack fought to the end. A *battle* is the whole map. The map's own "turn" stays. Keeping
+skirmish leaves one choice: what happens to "fight", which today names the same thing 27 times.
+- **A:** "Skirmish" is the noun, and "fight" stays only as a verb ("move or fight", "machines
+  that fought").
+  - "Once a fight" → "Once a skirmish"
+  - "It lasts the fight" → "It lasts the skirmish"
+  - "Fight" (the map's term) → "Skirmish"
+- **B:** "Fight" stays a noun too, as a second word for a skirmish.
+
+**14. Five verbs for things running out.**
+The verbs are *halves* (rounded down), *loses a stack*, *ends*, *is spent*, and *is removed* (by
+a Cleanse or a Purge). *Decays* is only the catch-all, for a rule that stops both halving and
+losing stacks. Fades, runs down, falls off, lifts and clears all go.
+- "a stack fades" → "loses a stack"
+
+### What things are called
+
+**15. A term is written with its capitals, followed by its number.**
+That way it shows in its colour and can be tapped. A keyword's verb form counts ("Jams",
+"Exposes"). Ordinary words stay lowercase. Today 84 status words in moves and foe pages are
+lowercase and can't be tapped.
+- "every machine scorched, ×4" → "every machine is Scorched 4"
+- "It scorches." → "It Scorches."
+
+**16. Stacks are always written "Name N".**
+"×" only means times, as in a weapon's strikes or a multiplier. "+" and "−" only mean a change
+to a number. "Attack 3 ×2" stays (two strikes), and so does "Hull +8" (a change).
+- "Grants Empowered ×2" → "Grants Empowered 2"
+- "Debuff, Ablating ×2" → "Debuff, Ablating 2"
+
+**17. A chip shows its stack count as a plain number.**
+It would read "2" instead of "×2", and a single stack still shows no number. This one needs his
+eye on the phone.
+
+**18. A readout's first line says what kind of act it is.**
+It's Attack N, Buff, Debuff or Defend, the same four words on both sides. Our buffs keep
+"Grants" to say what they give. A buff that grants no status reads "Buff": that fix is on the
+branch (section 5).
+- "Grants Empowered ×2" → "Grants Empowered 2"
+
+**19. A keyword's line matches its chip on the die.**
+- "Apply Ablate 2 on hit" → "Ablate 2"
+- "Apply Suppress on a foe carrying Brittle" → "Suppress, on a foe carrying Brittle"
+
+**20. Each stat has one label, spelled out.**
+HP stays the only abbreviation.
+- "ATK 4 // ARM 1" (a foe's plate) → "ATTACK 4 // ARMOUR 1"
+
+**21. Attack, strike, hit.** (changed 19 November: the count)
+An *attack* is one use: one spend of a weapon, or one attack move. A *strike* is one of its
+blows. A strike that lands *hits*.
+- **A:** "Blow" and "shot" leave the text, with Shots kept as the Cassowary's counter. That's
+  145 uses of "blow".
+  - "the next blow a foe lands on it" → "the next strike a foe lands on it"
+- **B:** Keep "blow" as a second word for a strike.
+
+**22. Falls, kills, wrecked, destroyed.**
+A foe *falls* at 0 HP, and whoever got it there *killed* it. A machine is *wrecked*. A component
+is *destroyed*.
+- "a felled one too" → "even one that falls"
+
+**23. The die keeps its current words.**
+The die *rolls* and *shows* an entry. An entry holds a component or is blank. You *spend* a die
+by dropping it on a target. Whether to keep the word "die" at all is still a separate question.
+- "the component the target's die is showing" → "the entry the target's die shows"
+- "cannot be played" → "cannot be spent"
 
 ### How it reads
 
-24. **A tip states the rule, then only what would surprise.** The first sentence is the rule in
-    plain words. After that comes only what a player would get wrong, and nothing that just works
-    (Ryan, 7 November: "things should just work how they should intuitively"). A tip never
-    repeats its heading. It says who carries it only where both sides can ("On a foe: … On a
-    machine: …"). It names no piece that carries it. It stays under about 60 words.
-25. **Digits, and "per".** Every number in a rule is in digits, and a rate uses per: "1 damage
-    per stack", "+2 per load". Now: a point a stack, 2 a stack, two stacks. A move's flavour may
-    keep its words ("Three heads bite"), since its readout lines carry the numbers (rule 27).
-26. **Say the noun again.** No possessive that drops its noun.
-27. **A move's line keeps its voice.** The flavour is the foe's and stays. Any rule it states
-    uses the standard's words, with its numbers as {damage} and {value}: "every machine
-    scorched, ×4" becomes "every machine is Scorched 4".
-28. **A foe's page says what it is, then how it fights.** The first part is lore and stays word
-    for word. The second part uses the standard's words, and gives advice only where today's
-    rules make it true. Every "shield up" goes.
-29. **The retired words leave**: a shield or a vent as a piece (except the Musk Ox's reload, and
-    the machines in design while they stay in design), overshield, Retaliate, a chassis's
-    cooling, "braces" (it means the Plow's Armoured), "burning" for Ablating, enemy.
-    These follow from rulings already made (the refit pass, the vocabulary pass), so they need
-    no mark. They go out with each text's rewrite.
+**24. A tip gives the rule first, then only what would surprise.**
+Today's median tip is 60 words, and the longest are Foe action (182), Phased (173) and Aim (161).
+- The first sentence is the rule in plain words.
+- After that comes only what a player would otherwise get wrong. Anything that just works is
+  left out.
+- It never repeats the heading above it, such as "Machine status." under BUFF.
+- It says which side carries it only when it can be either: "On a foe: … On a machine: …".
+- It doesn't name the pieces that carry it.
+- It stays under about 60 words.
+- "Machine status. Each stack is +1 damage on this machine's attacks, flat, so the count is the bonus. As its turn ends it halves, rounded down, whatever granted it, until it is gone." → "+1 damage per stack on its attacks. Halves at the end of its turn, rounded down."
+
+**25. Rule numbers are digits, and rates use "per".**
+A move's flavour can keep words like "Three heads bite", since its readout lines carry the
+numbers.
+- "a point a stack" → "1 per stack"
+- "+2 a load" → "+2 per load"
+
+**26. Repeat the noun.**
+- "a machine's as the player's turn ends, a foe's as its own turn does" → "a machine's Empowered at the end of your turn, and a foe's Empowered at the end of its own turn"
+
+**27. A move's line keeps its voice.**
+The flavour stays as written. Any rule it states follows these rules.
+- "Bloodlust: every foe on the field hits 2 harder, itself too, fading by half each round." → "Bloodlust: every foe, itself included, gains Empowered 2."
+
+**28. A foe's page says what it is, then how it fights.**
+The lore stays word for word. Either way, every "shield up" goes.
+- **A:** Keep advice where today's rules make it true.
+  - "One round to kill it, suppress it, or shield everyone." → "One round to kill it or Suppress it."
+- **B:** Cut advice entirely.
+
+**29. Retired words leave.** (changed 19 November: skirmish taken off)
+These follow from rulings he has already made, so they need no mark.
+- shields and vents as pieces (except the Musk Ox's reload, and machines still in design)
+- overshield
+- Retaliate
+- a chassis's cooling
+- "braces", which is Armoured now
+- "burning" for Ablating
+- "enemy"
 
 ## 3. Some texts redrawn under the standard
 
@@ -247,38 +326,30 @@ Drafts, for the eye; none lands before the marks.
 | The shaman's Bloodlust | Bloodlust: every foe on the field hits 2 harder, itself too, fading by half each round. | Bloodlust: every foe, itself included, gains Empowered 2. |
 | The Balloon's page | The bomb that swells. Its burst is announced a round ahead, then lands on every machine, scorching. One round to kill it, suppress it, or shield everyone. | The bomb that swells. Its burst is announced a round ahead, then hits every machine and Scorches it. One round to kill it or Suppress it. |
 
-## 4. Where his words leave a choice
+## 4. Calls that aren't rules
 
-1. **Who rewrites.** Shown text is his to write, and the standard reaches about 600 drafts.
-   Lean: once the standard is marked, a session redrafts them kind by kind, the die's lines
-   first. Each kind goes on the Text tab for his marks, and nothing is signed for him. *Or*: he
-   takes the drafts himself against the standard, with the lints flagging what breaks it.
-2. **What an ally is** (rule 2). Today's text gives both answers: another machine, and any
-   machine of the team. The lean drops the word from the labels and names the sets by machine.
-   The other way keeps "ally" as the whole team.
-3. **A status's clock in its tip alone** (rule 11). About 55 move lines lose their time, and the
-   player taps the status to read it. *Or*: every text keeps its clock, in rule 10's phrase.
-4. **Blow** (rule 21): one word for a strike, or two.
-   **Fight** (rule 13, after his mark): a verb alone beside skirmish the noun, or a second noun.
-5. **The time phrases** (rule 10): the usual game wording, "at the end of its turn", or the
-   rules', "as its turn ends".
-6. **Advice on a foe's page** (rule 28): kept where it is true, or cut back to how the foe fights
-   and nothing more.
-7. **The names the to-do routes here**, his to pick or replace:
-   - Aloft, for the Roc's climb out of reach, is a working name. Lean: keep it. Soaring and
-     Airborne are the alternatives.
-   - Last Act, for what a foe does as it falls ("maybe rename to something more interesting").
-     Candidates: Swan Song, Parting Shot, Last Gasp. Parting Shot suits a blow but not a curse or
-     a buff for the others; Swan Song suits all three.
-   - The attack's words (rule 9), drafts on the target line since 17 November: the strongest
-     machine, the weakest machine, the hottest machine, the most buffed machine.
-   - Immune, the term for a foe's ability that one thing of the team's never lands on (a
-     session's draft name).
-   - The drafted names of four falls (Scream, Dying Gaze, Unbound, Embers) and of the moves
-     that Expose (Kill Order, Mark Prey, Transfix, Command, Name the Quarry).
-   - Two module names that hold a keyword's word: Ablative Plating beside Ablate (the to-do's)
-     and Ward Plate beside Ward. A name is never matched as a term, so neither breaks a tap;
-     the question is only whether the player reads them as the keyword.
+**Who rewrites the ~600 texts.**
+- **A:** Once the rules are marked, a session redrafts them type by type, the die's lines first,
+  and puts each type on the Text tab for his marks. Nothing is signed for him.
+- **B:** He writes them himself, with the lints flagging anything that breaks the rules.
+
+**Names.** (changed 19 November: main's to-do routes more here)
+- **Aloft.** The Roc's climb out of reach, a working name. Pick: Keep · Soaring · Airborne
+- **Last Act.** What a foe does as it falls ("maybe rename to something more interesting").
+  Swan Song fits blows, curses and buffs alike; Parting Shot fits only a blow. Pick: Swan Song ·
+  Parting Shot · Last Gasp · Keep
+- **The attack's words.** On the target line since the targeting build (rule 9): "the strongest
+  machine", "the weakest machine", "the hottest machine", "the most buffed machine". Pick: Sign
+  off · Change
+- **Immune.** The drafted name for a foe's ability that one of your effects never lands on.
+  Pick: Sign off · Change
+- **The four falls.** Drafted names: Scream, Dying Gaze, Unbound, Embers. Pick: Sign off ·
+  Change
+- **The moves that Expose.** Drafted names: Kill Order, Mark Prey, Transfix, Command, Name the
+  Quarry. Pick: Sign off · Change
+- **Ablative Plating and Ward Plate.** Module names beside the keywords Ablate and Ward. Neither
+  breaks a tap, since names are never matched as terms; the only question is whether players
+  read them as the keyword. Pick: Keep both · Rename
 
 ## 5. What this round changed
 
@@ -343,4 +414,4 @@ want to keep skirmish." Main was taken in at `946c2ed` and every count read agai
 the rules main had moved were changed with it: rule 6 keeps the summons' "Empty places", rule 9
 is built, rule 11's count grew with the moves that Expose, and section 4's names took in the
 drafts the to-do routes here. Rule 13 is his: skirmish stays, the word for one pack fought,
-with fight's place beside it the choice left (section 4). Rule 29 no longer lists it.
+with fight's place beside it the choice left (rule 13's A and B). Rule 29 no longer lists it.
