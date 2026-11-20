@@ -66,7 +66,7 @@ content:
 | two | The Kite, a light flyer | the opener and the finisher, above | dealt; his play |
 | two | The Needletail, a light flyer | two things a round; the Fovea Designator Exposes | dealt; his play |
 | two | The Buzzard, a medium flyer | every foe that falls gives it shield, every weapon it fires pays a zap, its Shield-burner Cannon fires the whole shield; two upgrade branches, Sustain and Burst | landed 18 November; his play |
-| two | The Puffin, a light hovercraft | it moves heat: equipment it spends on an ally takes up to 4 of that ally's heat onto it, and its Overdrive Injector passes its whole heat to an ally for Empowered 1 for every 2 (both names working ones) | landed 19 November, up from tier one; his play and his names |
+| two | The Puffin, a light hovercraft | it moves heat: equipment it spends on an ally takes up to 4 of that ally's heat onto it, and its Overdrive Injector passes its whole heat to an ally for Empowered 1 for every 2 (its passive the Downwash Exchanger, its lock the Overdrive Injector, his names) | landed 19 November, up from tier one; his play |
 | three | The Lammergeier, a heavy flyer | a Mine on every foe it aims at, blowing round the foe as it falls; the Lorentz Contractor gathers, the Syrinx Drone sets one off | dealt; his play |
 | three | The Giant Petrel, an assault hovercraft | the team's unspent rerolls banked; three locks around rerolls and actions | dealt; its kit open, below |
 | open | The Magpie | a support engine (`kestrel_magpie.md`) | his pick of a direction |

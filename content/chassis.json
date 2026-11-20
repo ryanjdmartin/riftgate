@@ -814,8 +814,8 @@
     "twin_autoguns"
    ],
    "passive": {
-    "id": "bleed_air_intercooler",
-    "name": "Bleed-Air Intercooler",
+    "id": "downwash_exchanger",
+    "name": "Downwash Exchanger",
     "description": "Every piece of equipment the Puffin spends on an ally takes up to 4 of that ally's heat onto the Puffin.",
     "effects": [
      {

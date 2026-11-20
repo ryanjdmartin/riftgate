@@ -26,6 +26,17 @@ sys.path.insert(0, HERE)
 TILE = 64          # texels per tile
 FIST_TIP = 52     # the thumb's tip, rows down the fist's front (Ryan, 1 October: a little shorter)
 TILE_WORLD = 14.0  # world units one tile covers, so a mech gets about four texels per unit
+# The even lit tiles, one colour each, banked as their kinds below say: one table, so a sidecar that
+# blends two of them (a heat glow, MechRig's gauge in a lit part's colour) carries the very colours
+# the tiles are made of.
+EVEN_TILES = {
+    "heat": (0.080, 0.0327, 0.0),
+    "fire": (0.28, 0.062, 0.0),
+    "furnace": (0.26, 0.091, 0.0),
+    "fume": (0.28, 0.168, 0.0),
+    "tesla": (0.095, 0.18, 0.21),
+    "shield": (0.035, 0.074, 0.161),
+}
 
 
 def _args():
@@ -341,7 +352,7 @@ class Tiles:
             # render: the ember's rim showed as 255, 123, 41 at an act's peak, 1.8 times eight),
             # so this is #ff7800 at that peak over 14.4 (red a little past one, for the glow's
             # bloom), a deeper orange halfway up and near black at rest.
-            img = np.tile(np.array([0.080, 0.0327, 0.0], np.float32), (TILE, TILE, 1))
+            img = np.tile(np.array(EVEN_TILES["heat"], np.float32), (TILE, TILE, 1))
         elif kind == "hazard":
             img = self.metal(g, 0.05)
             img[26:38, :, :] = np.array([0.95, 0.75, 0.10], np.float32)
@@ -365,13 +376,13 @@ class Tiles:
             # red glow, not a white one"): one even red-orange, banked so a flare to eight times
             # its rest light shows #ff380d and sixteen still a red-orange, never white; red and
             # green alone, as every red is.
-            img = np.tile(np.array([0.28, 0.062, 0.0], np.float32), (TILE, TILE, 1))
+            img = np.tile(np.array(EVEN_TILES["fire"], np.float32), (TILE, TILE, 1))
         elif kind == "furnace":
             # A furnace seen through its grille (Ryan, 31 October, of the Nemesis's chest: "that
             # thing has to look HOT"): one even orange, no rim to read as a red grille, banked for a
             # part that burns always at ten times its rest light (#ff5900) and flares to sixteen
             # (#ff6e00), red and green alone and short of the orange that reads yellow to Ryan.
-            img = np.tile(np.array([0.26, 0.091, 0.0], np.float32), (TILE, TILE, 1))
+            img = np.tile(np.array(EVEN_TILES["furnace"], np.float32), (TILE, TILE, 1))
         elif kind == "fume":
             # The Arsenal's rear vents, its creepy glowing exhaust (Ryan, 3 November: "The standard
             # vents could use more yellow too, it looked more 'sinister' before when it was more of a
@@ -381,12 +392,12 @@ class Tiles:
             # rest light (the game's render, #ffa?00 in the light: a sickly orange-yellow) and flares to
             # sixteen as a gold short of lemon (a yellow that pale can read green to Ryan, good's
             # colour), never white. Its colour carries nothing in play, so it is free to read yellow.
-            img = np.tile(np.array([0.28, 0.168, 0.0], np.float32), (TILE, TILE, 1))
+            img = np.tile(np.array(EVEN_TILES["fume"], np.float32), (TILE, TILE, 1))
         elif kind == "tesla":
             # Lightning in a coil (Ryan, 31 October, of the Dingo's Translocator: "classic 'tesla
             # lightning blue'"): an electric cyan, banked so its flare to sixteen times its rest
             # light holds the colour; paler and greener than the shield's blue, so the two part.
-            img = np.tile(np.array([0.095, 0.18, 0.21], np.float32), (TILE, TILE, 1))
+            img = np.tile(np.array(EVEN_TILES["tesla"], np.float32), (TILE, TILE, 1))
         elif kind == "rift":
             # The other world's light, for a thing of theirs lying in our ground (the Relic, the
             # field's rarest cache): the enemy's violet, even like the lit tile so a small facet
@@ -406,7 +417,7 @@ class Tiles:
             # field: "since both are related to their shield-related passive, could they glow in a
             # shield-ish colour?"): the game's shield blue (Palette.SHIELD, #2f63d8) brightened,
             # banked so a flare to thirty times its rest light shows #3775ff and a rest reads dark.
-            img = np.tile(np.array([0.035, 0.074, 0.161], np.float32), (TILE, TILE, 1))
+            img = np.tile(np.array(EVEN_TILES["shield"], np.float32), (TILE, TILE, 1))
         else:
             img = self.metal()
         image = bpy.data.images.new(name, TILE, TILE, alpha=True)
@@ -476,6 +487,7 @@ class Build:
         self.form_acts = {}    # form name -> the acts it plays while held (act()'s `form`)
         self.halo = []         # the lit parts a glow names that wear a soft halo when they flare, the hot ones; (part, scale) for one larger, (part, scale, ahead) for one drawn its own way toward the eye (MechRig's halos)
         self.standing = {}     # lit part -> the glow it holds always, over its rest, an act's flare rising past it (MechRig's standing glow)
+        self.heat_glow = {}    # {"parts": lit parts, "cold": an even tile, "hot": an even tile}: a gauge in their colour, their own tile empty and the hot one full (MechRig's heat glow: the Puffin's, 20 November)
         self.fires = {}        # a fixed component (or the chassis's passive, for what it fires: the Whip Scorpion's release) -> (act, from, to[, blow]) or a list of them taking turns: the slices of acts that are its firing, played on the spend (MechRig.fire_act)
         self.death_pose = None   # the pose it goes to when lost, in place of the baseline slump (see death())
         self.hidden_fire = None  # (act, from, to[, blow]): the slice every weapon on a hidden mount fires with (the Cottonmouth's drum turning two chambers, 16 November), the sidecar's hidden_fire (MechRig.fire_hidden)
@@ -1336,6 +1348,18 @@ class Build:
             raise ValueError("%s: a standing glow names %s, which no glow lights" % (self.name, ", ".join(repr(p) for p in stray)))
         if self.standing:
             out["standing"] = dict(self.standing)
+        # A gauge in a lit part's colour (Ryan, 20 November, of the Puffin: "Could the Puffin glow
+        # change colours based on its heat?"): the parts it names, lit, with the two even tiles it
+        # blends between, empty and full.
+        if self.heat_glow:
+            parts = list(self.heat_glow.get("parts", []))
+            stray = [p for p in parts if p not in glow_parts]
+            if stray or not parts:
+                raise ValueError("%s: a heat glow names %s, which no glow lights" % (self.name, ", ".join(repr(p) for p in stray) or "no part"))
+            ends = [self.heat_glow.get("cold"), self.heat_glow.get("hot")]
+            if any(e not in EVEN_TILES for e in ends):
+                raise ValueError("%s: a heat glow blends two even tiles (%s), not %r" % (self.name, ", ".join(sorted(EVEN_TILES)), ends))
+            out["heat_glow"] = {"parts": parts, "cold": list(EVEN_TILES[ends[0]]), "hot": list(EVEN_TILES[ends[1]])}
         # A fixed weapon fires with a slice of one of its acts (Ryan, 31 October: "go for ones that
         # are cheapest to do first, where pre-existing animation work has already been looked at").
         # A slice is (act, from, to), or (act, from, to, blow) when it winds up before its blow (the

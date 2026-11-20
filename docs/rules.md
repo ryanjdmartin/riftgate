@@ -1423,7 +1423,7 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   foe (none does today). On a kill a passive may recharge its machine's shield whole (the
   Kite's), as any shield gained is; on a foe killed it may give its machine shield (the
   Buzzard's, 2 a fall), a shield gain like any, so a broken shield takes none.
-- On buffing an ally a passive may **pull** the ally's heat (the Puffin's Bleed-Air Intercooler:
+- On buffing an ally a passive may **pull** the ally's heat (the Puffin's Downwash Exchanger:
   up to 4): that much of what the ally carries, its overheat first, comes off it onto this
   machine through the heat path, so this machine may pass its own maximum and burns for it as
   the turn ends. A piece that passes heat pulls none: its heat goes the other way.

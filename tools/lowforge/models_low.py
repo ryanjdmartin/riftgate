@@ -8487,6 +8487,10 @@ def puffin(b):
     # round and back as its core blazes, a slice of its backwash (the Overdrive Injector's since 19
     # November, the heat it passes thrown at the ally).
     b.fires = {"overdrive_injector": ("backwash", 1.0, 3.0)}
+    # Its shield-lit parts carry its heat (Ryan, 20 November: "Could the Puffin glow change colours
+    # based on its heat?"): the shield's blue with its gauge empty, the furnace's red-orange full,
+    # climbing in light as it fills and pulsing past the maximum (MechRig's heat glow).
+    b.heat_glow = {"parts": amps + ["amp_rim"], "cold": "shield", "hot": "furnace"}
 
 puffin.maker = "kestrel"
 

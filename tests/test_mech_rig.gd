@@ -1354,6 +1354,65 @@ func test_a_hovercraft_eases_down_and_takes_no_gust_through_an_act() -> void:
 	assert_true(worst_jolt < 0.02, "and a gust never changes the attitude's rate at a stroke (%f radians a second in a frame)" % worst_jolt)
 
 
+## A heat glow carries its machine's heat (Ryan, 20 November: "Could the Puffin glow change colours
+## based on its heat?"): the Puffin's shield-lit parts wear the shield's blue with its heat at nothing
+## and the furnace's red-orange at its maximum, a blend between, their light climbing as it fills and
+## beating past the maximum, so the load reads by light and beat as well as hue; their halos wear the
+## same tile. A machine with none shows nothing.
+func test_a_heat_glow_carries_its_machines_heat_in_its_colour_and_its_light() -> void:
+	var side := MechRig.load_sidecar("puffin")
+	var hg: Dictionary = side.get("heat_glow", {})
+	assert_true((hg.get("parts", []) as Array).has("projector_core"), "the Puffin's projector carries its heat")
+	for p in hg.get("parts", []):
+		assert_true((side.get("glow_parts", []) as Array).has(p), "%s is a lit part" % p)
+	var cold := Color(float(hg["cold"][0]), float(hg["cold"][1]), float(hg["cold"][2]))
+	var hot := Color(float(hg["hot"][0]), float(hg["hot"][1]), float(hg["hot"][2]))
+	assert_true(hot.b == 0.0 and hot.r > hot.g, "heat's end is red and green alone, red leading")
+	var view := MechView3D.make("puffin", "kestrel", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64), false, {}, [])
+	var rig: MechRig = view.rig
+	var mats: Array = rig.heat_glow.get("mats", [])
+	assert_true(mats.size() > 0, "its shield-lit parts are lit materials")
+	var m: StandardMaterial3D = mats[0][0]
+	assert_eq(m.emission_texture, rig.heat_glow["tile"], "its lit parts wear the glow's own tile")
+	var shown := func() -> Color: return (rig.heat_glow["image"] as Image).get_pixel(0, 0)   # the tile's image, as it was last filled (a headless texture reads nothing back)
+	var near := func(a: Color, b: Color) -> bool: return absf(a.r - b.r) < 0.01 and absf(a.g - b.g) < 0.01 and absf(a.b - b.b) < 0.01
+	var rest := MechRig._rest_of(m)
+	rig.settle_heat(0.0)
+	assert_true(near.call(shown.call(), cold), "cold, it wears the shield's blue (%s)" % shown.call())
+	assert_true(absf(m.emission_energy_multiplier - rest) < 0.001, "at its rest light")
+	rig.settle_heat(0.5)
+	assert_true(near.call(shown.call(), cold.lerp(hot, 0.5)), "half full, the blend (%s)" % shown.call())
+	rig.settle_heat(1.0)
+	assert_true(near.call(shown.call(), hot), "at its maximum, the furnace's red-orange (%s)" % shown.call())
+	assert_true(absf(m.emission_energy_multiplier - rest * MechRig.light(MechRig.HEAT_GLOW_FULL)) < 0.001, "burning HEAT_GLOW_FULL rests over its own")
+	for h in rig._halos.get(m, []):
+		assert_eq((h as ShaderMaterial).get_shader_parameter("tile"), m.emission_texture, "its halo wears the same tile")
+	# It follows a new heat over a moment, and past the maximum it beats.
+	rig.settle_heat(0.0)
+	assert_true(rig.show_heat(1.0), "a new heat")
+	assert_false(rig.show_heat(1.0), "the same heat changes nothing")
+	rig.tick(0.05)
+	assert_true(rig.heat_shown() > 0.0 and rig.heat_shown() < 1.0, "warming over a moment (%f)" % rig.heat_shown())
+	rig.tick(2.0)
+	assert_true(absf(rig.heat_shown() - 1.0) < 0.01, "and there")
+	rig.settle_heat(1.5)
+	var lights: Array = []
+	for i in range(40):
+		rig.tick(1.0 / 40.0)
+		lights.append(rig.heat_light())
+	assert_true(lights.min() >= MechRig.HEAT_GLOW_FULL - 0.01 and lights.max() > lights.min() + MechRig.HEAT_GLOW_BEAT * 0.5, "past the maximum it beats above its full light (%f to %f)" % [lights.min(), lights.max()])
+	# RIFTGATE_HEAT_GLOW_DEBUG runs it from nothing to past the maximum and back, to judge it running.
+	rig.heat_glow_debug = true
+	rig._heat_debug_t = 0.0
+	rig.tick(MechRig.HEAT_GLOW_DEBUG_PERIOD * 0.5)
+	assert_true(rig._heat_want > 1.0, "the switch takes it past the maximum at its middle (%f)" % rig._heat_want)
+	assert_false(rig.show_heat(0.0), "and the screen's heat waits on it")
+	view.free()
+	var plain := MechView3D.make("kite", "kestrel", "clean", "", MechView3D.YAW_FRONT, Vector2i(64, 64), false, {}, [])
+	assert_true(plain.rig.heat_glow.is_empty() and not plain.rig.show_heat(1.0), "a machine with no heat glow shows nothing")
+	plain.free()
+
+
 func test_a_count_display_lights_its_first_parts_and_a_fall_flares_them() -> void:
 	# The Cassowary's capacitor (Ryan, 2 November: "charging up for the sixth hit of its passive"):
 	# a cell lights for each counted shot, and the sixth shot, the one that counts double,

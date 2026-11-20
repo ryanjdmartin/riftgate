@@ -25,7 +25,7 @@ too), and the Needletail the same day. It retires once its calls are rows and co
 | Skua | Stands as built (19 November): the reboot leaves its ramp alone, and it reads level with the tier twos | Settled, his "Leave it as is" |
 | Kite | Stands as built (19 November): a kill that mends a broken shield changed nothing on the read | Settled, his "Leave it" |
 | Cottonmouth | Stands as built (19 November): it reboots at the roster's pace; a lone boss leaves its area nothing to reach | Settled, his "Leave it" |
-| Puffin | Landed 19 November at tier two (the bible's row): equipment it spends on an ally takes up to 4 of that ally's heat onto it, and its lock passes its whole heat to an ally for Empowered 1 for every 2 | His names; his play of it in a team that leverages heat |
+| Puffin | Landed 19 November at tier two (the bible's row): equipment it spends on an ally takes up to 4 of that ally's heat onto it, and its lock passes its whole heat to an ally for Empowered 1 for every 2 | His play of it in a team that leverages heat |
 | Swallowtail, in design | Two dead plain forms; the system hands it a niche, the team's pit crew | His session |
 | Polar Bear | Stands as built (19 November): its text's clause fixed, the wall at tier one moot at tier two | Settled, his "Leave the bear" |
 | Whip Scorpion | His rework: the one kit built on the system | Its strength; the Ray a dump that keeps the shield |
@@ -116,7 +116,7 @@ machine's design. Its kit as this proposal read it is in git:
 Built 19 November at tier two on his calls ("I think 4 for the Puffin. We can try empowered for
 2 but that needs data"; the bible's row): a pull of 4 on every piece of equipment it spends on an
 ally, and its lock passing its whole heat to one ally for Empowered 1 for every 2 heat passed,
-both under working names. The read of that day (`docs/measurements.md`) found the team rebooting
+named by him the next day, the Downwash Exchanger and the Overdrive Injector. The read of that day (`docs/measurements.md`) found the team rebooting
 at the same pace beside it as beside any other machine, as heat conserved says it must, and the
 bot moving only on the dump's Empowered; a symptom by his word of the 20th ("I think the empowered
 scaling is a symptomatic conclusion"): it wants a team that leverages heat, its strength his play's.

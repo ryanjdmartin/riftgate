@@ -1262,6 +1262,7 @@ func _refresh(save: bool = true) -> void:
 		if i < _mech_3d.size() and _mech_3d[i] != null:
 			_mech_3d[i].hold_statuses(ms.unit)
 			_mech_3d[i].show_counts(ms)
+			_mech_3d[i].show_heat(ms)   # its heat glow follows its gauge (the Puffin's)
 		if not SEAL_DEBUG:
 			v.shell = ms.alive() and Effects.is_sealed(ms.unit)   # the sealed form's shell (the Polar Bear's, 2 November)
 		v.away = Skirmish.is_swallowed(ms)   # a foe's swallow (30 October): out of the fight, a ghost of itself
