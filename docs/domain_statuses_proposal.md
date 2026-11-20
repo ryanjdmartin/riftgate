@@ -260,8 +260,3 @@ buff, or are predicted to get one"). The bible's goblins' row and gel row hold t
   out for his read; the hangar's Foes tab shows each formation by its name.
 - **The Wild Hunt's leader.** His: "Wild hunt needs a leader." One leader carrying the quarry's mark
   and the riders its lessers, proposed in chat on 20 November.
-- **The gel halves' Brittle.** His Bubble Half-Gel and Molten Half-Gel lay Brittle 1, against the
-  least of 2 a status that halves is laid at (16 November), so both are built at 2 until he rules.
-  His own exit that day was for a move several foes roll at once, "apply 2 if none, otherwise 1",
-  which the halves are; or a blow's rider could be held to no least, since a Brittle 1 still lands
-  on every blow after it in the same enemy turn and a pair of halves supplies them.

@@ -12200,3 +12200,22 @@ at Ablating 2, the King Gel back in its band, the squad with the Barrier basic p
 quarter of a four's hull where it paid a seventh, since a purging boss's Barrier is no pass. The
 horde stays as built: the Goblin's attack 3 moves it by less than a read's spread and the
 warband by nothing, and one root fewer halves it, so its four roots are the question for his play.
+
+## 20 November: the Half-Gel's rider-only Engulf, read after
+
+On Ryan's of 20 November: no attack deals nothing ("We don't need attacks of zero, those fold
+into rider only hits same as machines fold weapons into equipment at zero damage"), so the
+Half-Gel's Engulf is a debuff, Ablating 1 and no blow; and the halves' Brittle is his 1 ("Use
+the brittle and ablate numbers as I wrote them"), a tier-two piece no tier-one read deals.
+`tools/anchor_read.gd` on a frozen copy, the pool of the six real tier ones, every squad of the
+fight's rating, six seeds a formation's and four a leader's. Before is the sized read of the
+entry above.
+
+| Fight | Before | After |
+|---|---|---|
+| The gel wall | 4.1%, 4.3 rounds | 4.2%, 4.3 rounds |
+| The King Gel, without the Barrier basic | 27.9% | 27.5%, 8.7 rounds |
+| The King Gel, with it | 23.6% | 23.8%, 8.4 rounds |
+
+Read: the move's form moves nothing past a read's spread, since the Half-Gel's Ablating 1
+landed the same before and after; every fight won. Landed as built, with no resize.

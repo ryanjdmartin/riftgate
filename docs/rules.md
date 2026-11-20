@@ -1247,7 +1247,7 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   half, hurt, a foe behind it, another foe on the field, one
   of its own hurt, a machine carrying a buff, one of its own not readied, one of its own
   marked, one of its parts fallen (a part down and not waiting to step in). A move marked once
-  comes once a fight. A foe that strikes only when buffed (the goblins' Safety in Numbers, an
+  comes once a fight. A foe that strikes only when buffed (the goblins' Timid, an
   Ability on its chip) announces its blow alone while a buff stands on it or a move announced
   ahead of it this round will lay one on it (a wall beside it, a brace, a rally or a Ward on
   every foe), and anything but its blow while none does. No foe flees the field but a loot-runner whose prize goes with it (the
@@ -1296,7 +1296,11 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   foe gone whole, a burst or a part falling with its core, and one taken in by a merge), less
   its Sapped, never below nothing. A move's number is its own, as a weapon's is, and an add is
   a point on every strike whatever the factor: the one damage formula on both
-  sides; strikes are separate blows. Riders (a Ward turns away all but the last
+  sides; strikes are separate blows. An attack deals damage, 1 at the least at its foe's base
+  attack: a move that would deal none is a debuff, a rider-only hit with its effect (the
+  Half-Gel's Engulf), as a machine's component that deals none is equipment. A foe carries at
+  least one move that lands on a machine, a blow or a rider-only hit, and opens with its first
+  blow, or with its first move where it has none. Riders (a Ward turns away all but the last
   three): scorch (stacks of Scorched), ablate (stacks of
   Ablating), jam (the entry the machine shows is Jammed), corrupt (Corrupted stacks on it), brittle
   (Brittle stacks on the machine: a point more on every blow it takes a stack, halving as its
@@ -1311,9 +1315,11 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; it holds no
   pick, so no word and no Lure moves it). Scorch, ablate, corrupt and brittle each say their stacks a blow, as the player's
-  Ablate does (Scorch 2: two). What a foe lays that halves says 2 at the
-  least, a blow's Brittle and a rally's Empowered: one stack is gone at its first halving, a
-  machine's Brittle as its next turn starts and the rallier's own share as its turn ends. The validator holds a foe's moves to it. No such floor binds the player's pieces:
+  Ablate does (Scorch 2: two). What a foe's move lays that halves says 2 at the
+  least, a rally's Empowered and a move's Brittle: one stack is gone at its first halving, a
+  machine's Brittle as its next turn starts and the rallier's own share as its turn ends. The validator holds a foe's moves to it. A blow's rider may lay 1 (the
+  halves of a Bubble Gel and a Molten Gel): the foes strike in turn, so a single stack of
+  Brittle a blow lays is on its machine for every blow after it that turn. No such floor binds the player's pieces:
   the player orders the turn's spends, so a single stack is used before it halves.
 - **An immunity** is a foe's own Ability, a chip on it that no Purge reaches, given case by
   case to a foe whose fight needs it: one thing of the team's that never lands on it. A foe

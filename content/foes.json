@@ -93,11 +93,11 @@
     },
     {
       "id": "gel_half", "name": "Half-Gel", "faction": "meadow",
-      "design": { "sprite": "a small heap of translucent bright green slime with a sinister face, no arms, no legs, a blob half the size of a man", "variants": ["a small heap of translucent bright green slime rearing up into a curling wave, a sinister face pressed into its crest, no arms, no legs, a blob half the size of a man", "a small quivering dome of translucent bright green slime with a few half-dissolved bones floating inside it, a sinister face of two glowing eyes and a jagged grin in its surface, no arms, no legs, a blob half the size of a man", "a small heap of translucent bright green slime with a few jagged pale crystal shards jutting from its back, swelling upward with a sinister face, no arms, no legs, a blob half the size of a man", "a small lopsided heap of translucent bright green slime with a darker green core and bubbles rising through it, surging forward low to the ground with its sinister face leading, no arms, no legs, a blob half the size of a man"], "fantasy": "What a Gel leaves.", "niche": "Two weak heaps where there was one, no blow in either, only the burn (Ryan, 20 November: \"Half gel change to no damage 1 Ablate\"). They do not split again." },
+      "design": { "sprite": "a small heap of translucent bright green slime with a sinister face, no arms, no legs, a blob half the size of a man", "variants": ["a small heap of translucent bright green slime rearing up into a curling wave, a sinister face pressed into its crest, no arms, no legs, a blob half the size of a man", "a small quivering dome of translucent bright green slime with a few half-dissolved bones floating inside it, a sinister face of two glowing eyes and a jagged grin in its surface, no arms, no legs, a blob half the size of a man", "a small heap of translucent bright green slime with a few jagged pale crystal shards jutting from its back, swelling upward with a sinister face, no arms, no legs, a blob half the size of a man", "a small lopsided heap of translucent bright green slime with a darker green core and bubbles rising through it, surging forward low to the ground with its sinister face leading, no arms, no legs, a blob half the size of a man"], "fantasy": "What a Gel leaves.", "niche": "Two weak heaps where there was one, no blow in either, only the burn (Ryan, 20 November: \"Half gel change to no damage 1 Ablate\"), a rider-only hit and no blow (the same day: \"I didn't mean 'attack of zero' I meant just an ablate\"). They do not split again." },
       "codex": "Half of a Gel. Smaller, weaker, and there are two of them.",
       "hp": 2, "attack": 0, "rank": "front", "movespeed": 2,
       "actions": [
-        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["ablate"], "ablate": 1, "text": "Flows over the hull, and the machine Ablating ×1.", "status": "implemented" }
+        { "id": "engulf", "name": "Engulf", "kind": "debuff", "effect": "ablate", "value": 1, "weight": 2, "text": "Flows over the hull: the machine Ablating ×{value}.", "status": "implemented" }
       ],
       "flavour": "Told you."
     },
@@ -114,18 +114,18 @@
     },
     {
       "id": "bubble_gel_half", "name": "Bubble Half-Gel", "faction": "meadow", "tier": 2,
-      "design": { "fantasy": "What a Bubble Gel leaves.", "niche": "Two halves of a Bubble Gel, each Engulf a point and Brittle (Ryan, 20 November: \"Half bubble gel 3 HP, it's engulf is 1 damage 1 Brittle\"); its Brittle 2, the least a status that halves is laid at (16 November), until he rules on it. They do not split again." },
+      "design": { "fantasy": "What a Bubble Gel leaves.", "niche": "Two halves of a Bubble Gel, each Engulf a point and Brittle (Ryan, 20 November: \"Half bubble gel 3 HP, it's engulf is 1 damage 1 Brittle\"); its Brittle 1 as he wrote it (20 November: \"Use the brittle and ablate numbers as I wrote them\"), a blow's rider held to no least. They do not split again." },
       "codex": "Half of a Bubble Gel. Smaller, and still fizzing.",
       "hp": 3, "attack": 1, "rank": "front", "movespeed": 2,
       "actions": [
-        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["brittle"], "brittle": 2, "text": "Flows over the hull: {damage}, and the machine Brittle ×2.", "status": "implemented" }
+        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["brittle"], "brittle": 1, "text": "Flows over the hull: {damage}, and the machine Brittle ×1.", "status": "implemented" }
       ],
       "flavour": "Two of them now. Both fizzing."
     },
     {
       "id": "molten_gel", "name": "Molten Gel", "faction": "meadow", "tier": 3,
-      "design": { "fantasy": "The gel line's tier three, molten (Ryan, 20 November: \"Metal gel -> Molten gel. 6 HP 2 armour. Engulf 2 damage 2 Brittle 2 ablate\"): a crust of plate, and what it flows over goes brittle and keeps burning. It splits into molten halves; a placeholder until tier three is sized." },
-      "codex": "A gel of molten rock under a crust that turns small blows. What it flows over goes brittle and keeps burning, and it splits into halves like any gel.",
+      "design": { "fantasy": "The gel line's tier three, molten metal (Ryan, 20 November: \"Metal gel -> Molten gel. 6 HP 2 armour. Engulf 2 damage 2 Brittle 2 ablate\"; \"Molten gel I had meant to still be metal. The colour was fine. Just molten metal\"), the Metal Gel's colour: a crust of plate, and what it flows over goes brittle and keeps burning. It splits into molten halves; a placeholder until tier three is sized." },
+      "codex": "A gel of molten metal under a crust that turns small blows. What it flows over goes brittle and keeps burning, and it splits into halves like any gel.",
       "hp": 6, "attack": 2, "armour": 2, "rank": "front", "movespeed": 2,
       "on_death": { "summon": "molten_gel_half", "count": 2, "pair": true },
       "actions": [
@@ -135,11 +135,11 @@
     },
     {
       "id": "molten_gel_half", "name": "Molten Half-Gel", "faction": "meadow", "tier": 3,
-      "design": { "fantasy": "What a Molten Gel leaves.", "niche": "Two halves of a Molten Gel, a point of crust each and an Engulf of a point, Brittle and Ablating (Ryan, 20 November: \"Half molten gel 3 HP 1 armour. 1 damage 1 Brittle 1 Ablate\"); its Brittle 2, the least a status that halves is laid at (16 November), until he rules on it. They do not split again." },
+      "design": { "fantasy": "What a Molten Gel leaves.", "niche": "Two halves of a Molten Gel, a point of crust each and an Engulf of a point, Brittle and Ablating (Ryan, 20 November: \"Half molten gel 3 HP 1 armour. 1 damage 1 Brittle 1 Ablate\"); its Brittle 1 as he wrote it (20 November: \"Use the brittle and ablate numbers as I wrote them\"), a blow's rider held to no least. They do not split again." },
       "codex": "Half of a Molten Gel: a thinner crust, the same burn.",
       "hp": 3, "attack": 1, "armour": 1, "rank": "front", "movespeed": 2,
       "actions": [
-        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["brittle", "ablate"], "brittle": 2, "ablate": 1, "text": "Burns over the hull: {damage}, and the machine Brittle ×2 and Ablating ×1.", "status": "implemented" }
+        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["brittle", "ablate"], "brittle": 1, "ablate": 1, "text": "Burns over the hull: {damage}, and the machine Brittle ×1 and Ablating ×1.", "status": "implemented" }
       ],
       "flavour": "Still hot."
     },

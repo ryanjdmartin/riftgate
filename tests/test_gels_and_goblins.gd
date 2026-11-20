@@ -24,10 +24,13 @@ func _db() -> ContentDB:
 	return ContentDB.load_default()
 
 
-## The rider a content move lays, by its keyword: its own number.
+## The rider a content move lays, by its keyword: its own number, a blow's rider or a rider-only
+## hit's (a debuff of that effect, its value).
 func _rider(db: ContentDB, foe_id: String, move_id: String, kw: String) -> int:
 	for a in db.foes[foe_id]["actions"]:
 		if str(a.get("id", "")) == move_id:
+			if str(a.get("kind", "")) == "debuff":
+				return int(a.get("value", 0)) if str(a.get("effect", "")) == kw else 0
 			return int(a.get(kw, 0)) if Array(a.get("keywords", [])).has(kw) else 0
 	return 0
 
@@ -43,7 +46,7 @@ func _fight(foes: Array, db: ContentDB, columns: int = 4, hull: int = 100) -> Sk
 	return sk
 
 
-func test_every_gel_lays_its_kits_rider_and_the_half_gel_strikes_for_nothing() -> void:
+func test_every_gel_lays_its_kits_rider_and_the_half_gels_engulf_is_a_rider_only_hit() -> void:
 	var db := _db()
 	# Each of the line's Engulfs, on a bare machine: the stacks content names, Ablating on the
 	# machine and Brittle, and the blow its attack says.
@@ -68,8 +71,11 @@ func test_every_gel_lays_its_kits_rider_and_the_half_gel_strikes_for_nothing() -
 			# the stacks before that tick: laid this turn, the stacks stand whole.
 			assert_eq(Effects.stacks_of(m, st), want, "%s lays %s ×%d" % [id, st, want])
 		assert_eq(100 - m.hull, int(db.foes[id]["attack"]), "%s's Engulf is its attack on a bare hull" % id)
-	assert_eq(int(db.foes["gel_half"]["attack"]), 0, "the Half-Gel strikes for nothing (Ryan: \"no damage 1 Ablate\")")
-	assert_true(_rider(db, "gel_half", "engulf", "ablate") > 0, "and still lays its Ablate")
+	# The Half-Gel's Engulf is no blow (Ryan, 20 November: "I didn't mean 'attack of zero' I meant
+	# just an ablate"): a rider-only hit, a debuff with its Ablating.
+	var half_engulf: Dictionary = db.foes["gel_half"]["actions"][0]
+	assert_false(Foe.is_attack_action(half_engulf), "the Half-Gel's Engulf is no blow")
+	assert_true(_rider(db, "gel_half", "engulf", "ablate") > 0, "and lays its Ablate")
 
 
 func test_each_gel_splits_into_its_own_halves_and_the_merge_takes_the_whole_line() -> void:

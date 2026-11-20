@@ -418,7 +418,7 @@ func test_a_purge_rides_no_blow() -> void:
 	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe rites") and e.contains("on_death blow") and e.contains("never a rider")), "a purge in a last act is reported")
 
 
-## A foe that strikes only when buffed (the goblins' Safety in Numbers, Ryan, 20 November) has a
+## A foe that strikes only when buffed (the goblins' Timid, Ryan, 20 November) has a
 ## blow for the rounds it holds a buff and a move that is no blow for the rest: the validator
 ## refuses the rule on a foe with only one kind of move, and the flag false or not a bool.
 func test_strikes_when_buffed_needs_a_blow_and_a_move_that_is_none() -> void:
@@ -1866,7 +1866,17 @@ func test_the_foe_actions_run_and_the_validator_knows_their_shape() -> void:
 	var kinds := {}
 	for id in db.foes.keys():
 		var f := db.make_foe(id)
-		assert_true(Foe.is_attack_action(f.action), "%s opens with its blow" % id)
+		if f.actions.any(func(a): return Foe.is_attack_action(a)):
+			assert_true(Foe.is_attack_action(f.action), "%s opens with its blow" % id)
+		else:
+			# A rider-only foe (the Half-Gel's Engulf, 20 November): no blow to lead, so content's
+			# order stands whole and it opens with its first move.
+			var first: Dictionary = {}
+			for a in db.foes[id].get("actions", []):
+				if str(a.get("status", "")) == "implemented":
+					first = a
+					break
+			assert_eq(str(f.action.get("id", "")), str(first.get("id", "")), "%s, with no blow, opens with its first move" % id)
 		for a in f.actions:
 			kinds[Foe.kind_of(a)] = true
 			if not Foe.is_attack_action(a):
@@ -2183,34 +2193,54 @@ func test_an_immunity_names_what_never_lands_and_a_move_that_gathers() -> void:
 	assert_true(_refused(db, "foe test_walker", "immune is an object"), "and an empty one")
 
 
-## What a foe lays that halves says 2 at the least (Ryan, 16 November: "Buffs and debuffs that
-## decay at end of round should just have a minimum of 2"): one stack is gone at its first
-## halving, so a rally of 1 leaves its rallier nothing and a Brittle 1 is the pack's for one
-## turn alone. A rally's Empowered and a blow's Brittle; a rider that does not
-## halve (a Scorch, an Ablate) may still say 1.
-func test_a_foes_halving_status_is_laid_two_at_the_least() -> void:
+## What a foe's move lays that halves says 2 at the least (Ryan, 16 November: "Buffs and debuffs
+## that decay at end of round should just have a minimum of 2"): one stack is gone at its first
+## halving, so a rally of 1 leaves its rallier nothing. A blow's Brittle is held to no least
+## (Ryan, 20 November, of the gel halves' Brittle 1: "Use the brittle and ablate numbers as I wrote
+## them"): a Brittle 1 still lands on every blow after it in the same enemy turn. A rider that does
+## not halve (a Scorch, an Ablate) says 1 as ever.
+func test_a_foes_halving_move_is_laid_two_at_the_least_and_a_blows_brittle_may_be_one() -> void:
 	var db := _fresh()
 	var f: Dictionary = db.foes["revenant"].duplicate(true)
 	f["actions"] = [
 		{"id": "bite", "name": "Bite", "kind": "attack", "weight": 1, "keywords": ["brittle"], "brittle": 1, "text": "", "status": "implemented"},
 		{"id": "cry", "name": "Cry", "kind": "buff", "effect": "rally", "value": 1, "weight": 1, "text": "", "status": "implemented"}]
 	db.foes["test_crier"] = f
-	assert_true(_refused(db, "foe test_crier", "a brittle rider lays a status that halves"), "a Brittle 1 on a foe's blow is refused")
-	assert_true(_refused(db, "foe test_crier", "rally lays a status that halves"), "and a rally of 1")
-	f["actions"][0]["brittle"] = 2
+	assert_false(_refused(db, "foe test_crier", "brittle rider"), "a Brittle 1 on a foe's blow stands")
+	assert_true(_refused(db, "foe test_crier", "rally lays a status that halves"), "a rally of 1 is refused")
 	f["actions"][1]["value"] = 2
 	f["actions"].append({"id": "lick", "name": "Lick", "kind": "attack", "weight": 1, "keywords": ["scorch", "ablate"], "scorch": 1, "ablate": 1, "text": "", "status": "implemented"})
 	for e in db.validate():
-		assert_false(e.begins_with("foe test_crier"), "2 of each validates clean, and a Scorch 1 and an Ablate 1 beside them: %s" % e)
-	# Content holds it: every foe's rally and Brittle says 2 or more.
+		assert_false(e.begins_with("foe test_crier"), "a rally of 2 validates clean, a blow's Brittle 1, a Scorch 1 and an Ablate 1 beside it: %s" % e)
+	# Content holds it: every foe's rally says 2 or more.
 	for id in db.foes.keys():
 		for a in db.foes[id].get("actions", []):
 			if str(a.get("status", "")) != "implemented":
 				continue
 			if str(a.get("effect", "")) == "rally":
 				assert_true(int(a.get("value", 0)) >= ContentDB.HALVING_MINIMUM, "%s's %s rallies at %d or more" % [id, a.get("id"), ContentDB.HALVING_MINIMUM])
-			if Array(a.get("keywords", [])).has("brittle"):
-				assert_true(int(a.get("brittle", 0)) >= ContentDB.HALVING_MINIMUM, "%s's %s lays Brittle %d or more" % [id, a.get("id"), ContentDB.HALVING_MINIMUM])
+
+
+## An attack deals damage (Ryan, 20 November: "We don't need attacks of zero, those fold into rider
+## only hits same as machines fold weapons into equipment at zero damage"): a blow of nothing is
+## refused, and a foe whose one move lays a rider and deals nothing, a debuff, stands.
+func test_an_attack_of_zero_is_refused_and_a_rider_only_hit_stands_alone() -> void:
+	var db := _fresh()
+	var zero: Dictionary = db.foes["revenant"].duplicate(true)
+	zero["attack"] = 0
+	zero["actions"] = [{"id": "touch", "name": "Touch", "kind": "attack", "weight": 1, "keywords": ["ablate"], "ablate": 1, "text": "", "status": "implemented"}]
+	db.foes["test_zero"] = zero
+	var rider: Dictionary = db.foes["revenant"].duplicate(true)
+	rider["attack"] = 0
+	rider["actions"] = [{"id": "touch", "name": "Touch", "kind": "debuff", "effect": "ablate", "value": 1, "weight": 1, "text": "", "status": "implemented"}]
+	db.foes["test_rider"] = rider
+	assert_true(_refused(db, "foe test_zero", "an attack deals damage"), "an attack of zero is refused")
+	for e in db.validate():
+		assert_false(e.begins_with("foe test_rider"), "a foe whose one move is a rider-only hit stands: %s" % e)
+	var idle: Dictionary = db.foes["revenant"].duplicate(true)
+	idle["actions"] = [{"id": "wall", "name": "Wall", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": "", "status": "implemented"}]
+	db.foes["test_idle"] = idle
+	assert_true(_refused(db, "foe test_idle", "needs at least one implemented move that lands on a machine"), "a foe with no blow and no rider-only hit is refused")
 
 
 func _fresh() -> ContentDB:
