@@ -399,18 +399,20 @@ publish; the commands are in `README.md`.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 310 (20 November, main at `364ac091`): the
-  Content tab reworked (the Foes tab formations first, every pack a domain deals by tier with
-  its grid as the fight stands and its units' numbers at each tier, `hangar/foe_rules.json` the
-  engine's rules for a pack; every kind on a sheet in the Bench's manner, the raw editor behind
-  a toggle), the eleven files that differed (four content files, the briefs' and the texts'
-  inventories, the foes' art states, the rules file, the three new gel sprites) and
-  `hangar/foes/metal_gel.png` removed; the Puffin's line had published Version 309 over 308, and
-  each file it moved was read and found carried by main's merge first. The `edits` and `text`
-  collections were empty, `designs` held his two notes of 5 November (both already briefed).
+  `edits`, `designs` and `text` read first. Version 314 (20 November): a tab a kind (Chassis,
+  Components, Modules, Foes, the Text by chunk, the Models), the Wild Huntsman and the gels, the
+  nine files that differed. The Mole's line (`ccr-64b5deec-lunnff`) had published Versions 311
+  to 313 from its branch (its built Mole, its terms, the echidna's brief), so 314 is a union of
+  main at `dc8ec0d1` and that line at `fcac1ade`, built in a scratch tree never pushed, each of
+  the three files it had moved read and found carried first; the generated files' stamp names
+  both commits, and the page's own source is main's. Until that line lands, a publish from main
+  alone takes its Mole off the page: build the union again. The `edits` and `text` collections
+  were empty, `designs` held his two notes of 5 November (both already briefed).
   The `candidates` collection (his names, 106 rows) stays in the database unread;
   `docs/name_candidates.md` holds them. The service refuses a republish until the live page's saved source has been
-  read whole, every line: read it before the publish, not after the refusal.
+  read whole, every line: read it before the publish, not after the refusal. A view counts only in
+  the context that read it, so an agent that reads the page for a session reads any moved file
+  and publishes too.
   `build/hangar/designs.json` is one line of about 980 KB: write it indented before reading it whole.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their
