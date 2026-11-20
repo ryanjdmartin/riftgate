@@ -2059,7 +2059,7 @@ function termUses() {
   const walk = (v, owner) => {
     if (typeof v === "string") { if (vocab.has(v)) add(v, owner); return; }
     if (Array.isArray(v)) { for (const x of v) walk(x, owner); return; }
-    if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) { if (NOT_TERM_KEYS.has(k)) continue; if (vocab.has(k)) add(k, owner); walk(x, owner); }
+    if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) { if (k === "design" || (NOT_TERM_KEYS.has(k) && typeof x !== "object")) continue; if (vocab.has(k)) add(k, owner); walk(x, owner); }
   };
   for (const key of ["chassis.entries", "components.entries", "modules.entries", "foes.entries", "factions.entries"]) for (const {entry} of liveEntries(key)) walk(entry, {key, id: entry.id, name: entry.name || foeName(entry.id)});
   return TERMS = out;
