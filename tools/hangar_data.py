@@ -18,19 +18,24 @@ way (art/models/shapes/<class>_<maker>.glb as hangar/models/shapes/<class>_<make
 and each class's variants beside them, with a manifest naming them (build/hangar/shapes.json as
 hangar/shapes.json: the classes in the engine's order from sim/content_db.gd's SHAPES, the
 variants and their classes from art/models/shapes/variants.json, the makers from the content),
-so the Models tab can show a class or a variant alone or fit a class to any mount. The Content
+so the Models tab can show a class or a variant alone or fit a class to any mount. The Foes
 tab's formations (20 November, Ryan: "we're tuning around the formations, so I need the
 context") read the engine's own rules for a pack, which live in GDScript the browser cannot
 read: the boss tiers that scale a commander and an elite, the threat rating by a composition's
 size, the ramp's span and the words a move's condition and aim are said in. foe_rules() reads
 them out of sim/ into build/hangar/foe_rules.json (hangar/foe_rules.json beside the page) and
 checks that ContentDB.scale_boss and ContentDB.foes_for still scale what the page says they do,
-failing the run when either has moved. Run it after a content, model or render change, then
-publish tools/hangar.html with the printed map to the page's URL.
+failing the run when either has moved. What every piece does, the lines the game's code composes
+from a component's numbers and a foe move's (20 November, Ryan: "Bullion fragmenter, for instance,
+nowhere lists what it actually DOES in the hangar"), is the game's own words too: readouts() runs
+tools/hangar_readouts.gd headless into build/hangar/readouts.json (hangar/readouts.json), so
+Godot must be on the PATH and the project imported once. Run it after a content, model or render
+change, then publish tools/hangar.html with the printed map to the page's URL.
 
     python3 tools/hangar_data.py            # write pins.json and the models' JSON, check the manifest, print the map
     python3 tools/hangar_data.py --check    # check only, no write
 """
+import subprocess
 import base64, json, os, re, struct, sys
 
 import hangar_designs
@@ -90,6 +95,31 @@ def gd_func(src, name):
     """A GDScript function's body, from its signature to the next top-level line."""
     m = re.search(r"^(?:static )?func %s\(.*?$(.*?)(?=^\S)" % re.escape(name), src, re.M | re.S)
     return m.group(1) if m else ""
+
+
+READOUTS = os.path.join("build", "hangar", "readouts.json")
+
+
+def readouts():
+    """Run tools/hangar_readouts.gd headless into build/hangar/readouts.json: the lines the game's
+    code composes for every component and every foe move. Godot must be on the PATH and the
+    project imported once (`godot --headless --path . --import`, the README's first run); a
+    problem is returned, never a stale file kept."""
+    out = os.path.join(ROOT, READOUTS)
+    if not os.path.isdir(os.path.join(ROOT, ".godot")):
+        return ["readouts: the project has no .godot import yet; run `godot --headless --path . --import` first (README)"]
+    if os.path.exists(out):
+        os.remove(out)
+    try:
+        r = subprocess.run(["godot", "--headless", "--path", ROOT, "-s", "tools/hangar_readouts.gd", "--", out],
+                           cwd=ROOT, capture_output=True, text=True, timeout=300)
+    except FileNotFoundError:
+        return ["readouts: no `godot` on the PATH, so the game's own lines for the pieces cannot be written"]
+    except subprocess.TimeoutExpired:
+        return ["readouts: tools/hangar_readouts.gd ran past five minutes (a script error before quit() hangs Godot)"]
+    if r.returncode != 0 or not os.path.exists(out):
+        return ["readouts: tools/hangar_readouts.gd failed (exit %d):\n%s" % (r.returncode, (r.stdout + r.stderr)[-2000:])]
+    return []
 
 
 def foe_rules():
@@ -214,6 +244,16 @@ def main():
         with open(os.path.join(ROOT, FOE_RULES), "w", encoding="utf-8") as f:
             json.dump(rules, f, indent=1, ensure_ascii=False)
     files["hangar/foe_rules.json"] = FOE_RULES
+    # What every piece does as the game's codex prints it (20 November, Ryan: "Bullion fragmenter,
+    # for instance, nowhere lists what it actually DOES in the hangar"): the lines the code
+    # composes from a piece's numbers, written by the game's own code (tools/hangar_readouts.gd,
+    # run headless here) into build/hangar/readouts.json, so the page never words them itself.
+    if not check_only:
+        problems = readouts()
+        if problems:
+            print("\n".join(problems), file=sys.stderr)
+            sys.exit(1)
+    files["hangar/readouts.json"] = READOUTS
     # The foes' combat sprites (4 November, Ryan: the sprites in the hangar's foe list, compared
     # and inventoried): every foe with art, and a manifest saying which sprite is a rough
     # placeholder (tools/placeholder_art.py's table, read as text so no PIL is needed here).

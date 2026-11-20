@@ -65,8 +65,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1387 tests, 387,232 checks, green (20 November, the Wild Huntsman, the rider-only
-  Half-Gel and the hangar's tabs a kind each). The runner fails a run
+- Tests: 1389 tests, 388,125 checks, green (20 November, the hangar's readouts: what every
+  piece does in the game's own words). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).

@@ -571,7 +571,20 @@ details.fedit .bnums{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
 .mpass b{font:600 11px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-right:6px}
 .clist{display:grid;gap:5px;margin-top:10px}
 button.entry{width:100%;text-align:left;font:inherit;color:var(--ink)}
-.entry.crow{grid-template-columns:auto 1fr auto;grid-template-areas:"kind name maker" "kind nums nums" "kind kws kws" "kind on on"}
+.entry.crow{grid-template-columns:auto 1fr auto;grid-template-areas:"kind name maker" "kind nums nums" "kind kws kws" "kind does does" "kind on on"}
+.entry.crow .cdoes{grid-area:does;font-size:13px;color:var(--ink);margin-top:2px}
+/* ---- what a piece does as the game prints it (20 November): hangar/readouts.json, the game's own
+   lines, read only; a unique rule wears the die's star, so it reads apart by its mark, never a hue */
+.cdoes::before,.drow .ddoes::before,.readout .rl.rule::before,.tctx .rl.rule::before{content:"\2605  ";color:var(--ink-3)}
+.drow .ddoes{grid-column:3 / -1;font-size:12.5px;color:var(--ink)}
+.readout{border-left:3px solid var(--rule-strong);padding:2px 0 2px 10px;margin:4px 0 10px;max-width:76ch}
+.readout .lab,.tctx .lab{display:block;font:600 11px/1.4 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.readout .rl,.tctx .rl{margin:2px 0;font-size:13.5px;color:var(--ink-2)}
+.readout .rl.rule,.tctx .rl.rule{color:var(--ink)}
+.mcard .rlmove{margin:4px 0 0;font-size:12.5px;color:var(--ink-2)}
+.mcard .rlmove b{font:600 10px/1.4 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-right:6px}
+.tctx{border-left:3px solid var(--rule-strong);padding:2px 0 2px 10px;margin:6px 0 2px}
+.tctx .piece{font-weight:600;color:var(--ink)}
 .entry.crow .con{grid-area:on;font-size:12px;color:var(--ink-3)}
 .entry.mrow{grid-template-columns:1fr auto;grid-template-areas:"name maker" "nums nums" "rule rule"}
 .entry.mrow .mrule{grid-area:rule;font-size:13px;color:var(--ink);margin-top:2px}
@@ -587,7 +600,7 @@ button.entry{width:100%;text-align:left;font:inherit;color:var(--ink)}
 .tcard .tchead h3{margin:0;font:700 19px/1.1 var(--display);letter-spacing:.03em;text-transform:uppercase}
 .tcard .trows{margin-top:6px}
 .trow.hit{background:var(--sunk);box-shadow:inset 0 0 0 1px var(--rule-strong)}
-@media (max-width:520px){.drow{grid-template-columns:26px 38px minmax(0,1fr)}.drow .dnum{grid-column:3}.drow .dkws{grid-column:3}.entry.crow{grid-template-columns:auto 1fr;grid-template-areas:"kind name" "kind maker" "kind nums" "kind kws" "kind on"}.entry.mrow{grid-template-columns:1fr;grid-template-areas:"name" "maker" "nums" "rule"}}
+@media (max-width:520px){.drow{grid-template-columns:26px 38px minmax(0,1fr)}.drow .dnum{grid-column:3}.drow .dkws{grid-column:3}.drow .ddoes{grid-column:3}.entry.crow{grid-template-columns:auto 1fr;grid-template-areas:"kind name" "kind maker" "kind nums" "kind kws" "kind does" "kind on"}.entry.mrow{grid-template-columns:1fr;grid-template-areas:"name" "maker" "nums" "rule"}}
 @media (max-width:560px){.sheet .prow{grid-template-columns:1fr}}
 @media (max-width:520px){.fhead{grid-template-columns:1fr}.fhead .fmeta{justify-content:flex-start}.funit{grid-template-columns:1fr}.funit .sprite{display:none}}
 @media (max-width:760px){.motion{grid-template-columns:1fr}}
@@ -1182,6 +1195,21 @@ const stepsDie = (e) => ((e.passive || {}).effects || []).some(x => x.effect ===
 // their parts take the battle's tier (BOSS_TIERS), and so does an elite, its parts left at their own
 // numbers; the rank and file never scale.
 const ensureFoeRules = () => ensure("foerules", "hangar/foe_rules.json", j => { state.foeRules = j; });
+// What every piece does as the game's codex prints it (20 November, Ryan: "Bullion fragmenter, for
+// instance, nowhere lists what it actually DOES in the hangar - the game says 'Fires the hopper, +2
+// a load (2 a shot)'"): hangar/readouts.json, the lines the game's own code composes from a
+// component's numbers (its attributes, its keywords, its own rules) and a foe move's, written by
+// tools/hangar_readouts.gd. Read only: the words are the code's, so the page never words them itself.
+const ensureReadouts = () => ensure("readouts", "hangar/readouts.json", j => { state.readouts = j; });
+const compReadout = (id) => (state.readouts && (state.readouts.components || {})[id]) || null;
+const moveReadout = (fid, mid) => ((state.readouts && (state.readouts.foes || {})[fid]) || []).find(m => m.id === mid) || null;
+// A component's game lines as a block: its attributes, its keywords, its own rules, starred.
+function readoutEl(ro, label = "As the game prints it") {
+  if (!ro || !(ro.attr || ro.kw || ro.rule)) return null;
+  const box = el("div", {class: "readout"}, el("span", {class: "lab"}, label));
+  for (const g of ["attr", "kw", "rule"]) if (ro[g]) box.append(el("p", {class: "rl " + g}, ro[g]));
+  return box;
+}
 const RULES_FALLBACK = {boss_tiers: [{hp: 1, attack: 0}], squad_by_size: {patrol: 1, formation: 3, elite: 4, escort: 4}, squad_default: 3, boss_squad: 4, columns: 4,
   tier_every: 4, ramp_top: 12, final_escort: 3, final_after: 3, when_text: {}, aim_text: {}, numbered_riders: ["scorch", "ablate", "corrupt", "brittle"],
   composition_sizes: ["patrol", "formation", "elite", "escort"], scaled: {commanders: true, commander_parts: true, elites: true, elite_parts: false, rank_and_file: false}};
@@ -1744,7 +1772,9 @@ function componentRow(x, note) {
   return el("button", {class: "entry crow", onclick: () => openSheet("components.entries", comp.id), title: "Its sheet"},
     el("span", {class: "kglyph " + kind, style: "grid-area:kind"}, KIND_GLYPH[kind] || kind.toUpperCase() || "—"),
     name, el("span", {class: "cmaker"}, makerShort(comp.maker), note ? el("span", {class: "sortval", style: "margin-left:6px"}, note) : null),
-    el("span", {class: "nums"}, faceLine(f)), kws.childElementCount ? kws : null, el("span", {class: "con"}, on));
+    el("span", {class: "nums"}, faceLine(f)), kws.childElementCount ? kws : null,
+    compReadout(comp.id) && compReadout(comp.id).rule ? el("span", {class: "cdoes", title: "What it does, as the game prints it"}, compReadout(comp.id).rule) : null,
+    el("span", {class: "con"}, on));
 }
 function moduleRow(x, note) {
   const m = x.entry, rule = m.text && m.text.description ? m.text.description : "";
@@ -2117,6 +2147,8 @@ const SHEETS = {
       for (const k of (f.keywords || [])) kws.append(kwChip(k, "kw", kwNumber(f, k)));
       for (const t of (e.tags || [])) kws.append(el("span", {class: "kw shape", title: "A tag: build flavour, read by a module or passive"}, t));
       sheet.append(kws);
+      const ro = readoutEl(compReadout(id));
+      if (ro) sheet.append(ro);
       const cells = numKeys(f, sf).map(k => numCellAt(c, ["face"], k));
       if (compTier(e) !== null || typeof e.tier === "number") cells.unshift(numCellAt(c, [], "tier", "blueprint tier"));
       sheet.append(numsBox(cells), el("p", {class: "shint", style: "margin-top:6px"}, "Clear a number to put it back as the files have it. Its keywords, reach, shape and tags change on the raw view (Every field)."));
@@ -2195,6 +2227,8 @@ function foeSheetBody(sheet, c) {
   if (scales) sheet.append(el("p", {class: "shint"}, "Each move's number below is tier one's; the table above has the rest."));
   for (const a of (f.actions || [])) {
     const mine = (e.actions || []).some(x => x.id === a.id), card = el("div", {class: "mcard"}, moveEl(f, a, nums));
+    const mr = moveReadout(id, a.id);
+    if (mr && (mr.attr || mr.kw)) card.append(el("p", {class: "rlmove", title: "As the game's codex prints the move, at its own numbers"}, el("b", {}, "In the game"), [mr.attr, mr.kw].filter(Boolean).join(" · ")));
     if (mine) {
       const sa = ((c.s.actions || []).find(x => x.id === a.id)) || {};
       const nk = numKeys(a, sa);
@@ -2692,8 +2726,30 @@ function renderTextOverview(main) {
   main.append(kinds, not);
   main.append(el("p", {class: "help"}, "Read from the files at " + (state.text.stamp || "an unknown commit") + "."));
 }
+// What a Text card's piece does, as the game prints it, read only (20 November): a component's lines;
+// a machine's locked pieces' own rules; a foe's moves, their composed lines. The texts below it are
+// read against what the piece does.
+function textContext(card) {
+  if (!state.readouts) return null;
+  const box = el("div", {class: "tctx"}, el("span", {class: "lab"}, "What it does, as the game prints it · read only"));
+  let any = false;
+  const line = (g, text, piece) => { if (!text) return; any = true; box.append(el("p", {class: "rl " + g}, piece ? el("span", {class: "piece"}, piece + ": ") : null, text)); };
+  if (card.view === "components") { const ro = compReadout(card.entity) || {}; for (const g of ["attr", "kw", "rule"]) line(g, ro[g]); }
+  else if (card.view === "chassis") {
+    const ch = ctx().chassis.get(card.entity) || {};
+    for (const cid of (ch.fixed || [])) { const ro = compReadout(cid) || {}, nm = (ctx().comps.get(cid) || {entry: {}}).entry.name || cid; line("attr", ro.attr, nm); line("kw", ro.kw, nm); line("rule", ro.rule, nm); }
+  } else if (card.view === "foes") {
+    const acts = (foeWhole(card.entity) || {}).actions || [];
+    for (const m of ((state.readouts.foes || {})[card.entity] || [])) {
+      const a = acts.find(x => x.id === m.id);
+      line("attr", [m.attr, m.kw].filter(Boolean).join(" · "), a ? (a.name || plain(a.id)) : m.name.charAt(0) + m.name.slice(1).toLowerCase());
+    }
+  }
+  return any ? box : null;
+}
 function renderTextView(main, view) {
   const f = tfilter(), info = TEXT_VIEWS.find(v => v.id === view);
+  if (["chassis", "components", "foes"].includes(view)) want("readouts", ensureReadouts);
   main.append(el("p", {class: "lede"}, info.what));
   const cards = textCards(view), active = textFiltered(f, view);
   const shown = [];
@@ -2716,6 +2772,8 @@ function renderTextView(main, view) {
     const n = textCounts(c.slots);
     const card = el("section", {class: "tcard", id: "tc-" + safeId(c.id), style: groupVar(c.group)},
       el("div", {class: "tchead"}, el("h3", {}, c.label), el("span", {class: "rcount"}, countWords(n) || "nothing written")));
+    const said = textContext(c);
+    if (said) card.append(said);
     const rows = el("div", {class: "trows"});
     for (const s of c.slots) rows.append(textRow(s, {label: rowLabel(s, c), hit: active && hits.has(s.id)}));
     card.append(rows);
@@ -2979,7 +3037,8 @@ function dieRow(cid, place) {
   const kws = el("span", {class: "dkws"});
   for (const k of (f.keywords || [])) kws.append(kwChip(k, "kw", kwNumber(f, k)));
   return el("div", {class: "drow"}, el("span", {class: "dp"}, place), el("span", {class: "kglyph " + kind}, KIND_GLYPH[kind] || kind.toUpperCase() || "—"),
-    name, el("span", {class: "dnum"}, faceLine(f)), kws.childElementCount ? kws : null);
+    name, el("span", {class: "dnum"}, faceLine(f)), kws.childElementCount ? kws : null,
+    compReadout(cid) && compReadout(cid).rule ? el("span", {class: "ddoes", title: "What it does, as the game prints it"}, compReadout(cid).rule) : null);
 }
 function machineCard(x, compact, sorted) {
   const m = x.m, mk = MAKER_TAB[m.maker] || "other";
@@ -3021,6 +3080,7 @@ function machineCard(x, compact, sorted) {
 }
 function renderMachines(main) {
   want("renders", ensureRenders);
+  want("readouts", ensureReadouts);
   main.append(el("p", {class: "lede"}, "Every machine, built or briefed, by where it stands: its numbers and its die by place, as the codex printed it. Tap one for its sheet, where its codex, flavour, passive, locked pieces, upgrades, stock, your notes and its brief are, each saved as you leave the field."));
   if (!state.loaded.designs) main.append(el("p", {class: "help"}, "Loading the briefs…"));
   const view = runFilter("machines", machineRows());
@@ -3333,6 +3393,7 @@ function renderChassis(main) {
 // brief where one is open, else the tab's view.
 function renderKind(main, tab) {
   if (tab !== "foes") want("designs", ensureDesigns);
+  if (tab === "components" || tab === "foes") want("readouts", ensureReadouts);
   if (tab === "foes") { want("foeart", ensureFoeArt); want("foerules", ensureFoeRules); }
   if (state.open && TAB_OF_KEY[state.open.key] === tab) return state.raw || !SHEETS[state.open.key] ? renderEditor(main) : renderSheet(main);
   const view = kindView(tab);

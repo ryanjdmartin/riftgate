@@ -210,7 +210,7 @@ python3 tools/synergy_map.py --write
 python3 tools/pages/roster_analysis_page.py > /tmp/roster_analysis.html
 
 # the hangar page (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH)
-python3 tools/hangar_data.py              # writes docs/hangar/pins.json, build/hangar/designs.json, build/hangar/text.json and build/hangar/foe_rules.json (failing when ContentDB's scaling moves under the formations), checks the renders manifest, prints the files map tools/hangar.html is published with
+python3 tools/hangar_data.py              # writes docs/hangar/pins.json, build/hangar/designs.json, build/hangar/text.json and build/hangar/foe_rules.json (failing when ContentDB's scaling moves under the formations), and build/hangar/readouts.json (what every piece does as the game's codex prints it, run through Godot headless, so Godot on the PATH and the project imported), checks the renders manifest, prints the files map tools/hangar.html is published with
 python3 tools/hangar_designs.py --check   # every brief's hangar header, alone
 python3 tools/hangar_text.py              # the Text tab's inventory into build/hangar/text.json, and its counts
 python3 tools/hangar_text.py --check      # every string key in content classified, the ledger sound

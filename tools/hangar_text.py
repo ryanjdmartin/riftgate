@@ -101,8 +101,7 @@ KINDS = [
 # What the page says it does not carry, so the gap is seen and not guessed at.
 NOT_LISTED = [
     "An entry's own name (a machine, a component, a foe, a term): a rename moves ids, models and records, so it is asked for in chat (docs/naming.md says what each maker's names are like; tools/check_name.py checks one).",
-    "Lines the code composes from numbers: a component's effect lines and a passive's generic wording (sim/effects.gd's effect_text, sim/face.gd), a chip's readout (Buff, Empowered +2), the battle log, the warning bands, the map's readouts.",
-    "A component's target line, one of its effect lines (game/ui/entry_readout.gd's whom and the reach's line): its reach's or its targeting mode's term (Enemy, Direct; Every Ally yet to act), or Self, Any other ally or Any ally or self for a piece spent on machines.",
+    "Lines the code composes from numbers, as text to write: a component's attribute, keyword and rule lines (its target's among them) and a foe move's are the code's words (sim/face.gd, game/ui/entry_readout.gd), shown read only beside each piece as the game's codex prints them (tools/hangar_readouts.gd, 20 November) and changed in the code; a passive's generic wording (sim/effects.gd's effect_text), a chip's readout (Buff, Empowered +2), the battle log, the warning bands, the map's readouts.",
     "Screen furniture: buttons, headings, the pause menu, the harness and the quick campaign's screens.",
     "Jenny's lines (art/audio/voice/lines.json): each is a rendered sound, so a new line is a soundforge run.",
     "A maker's style and voice (content/chassis.json's makers): the guide each row shows above its group, never drawn in the game.",
