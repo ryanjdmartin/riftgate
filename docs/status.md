@@ -431,22 +431,17 @@ publish; the commands are in `README.md`.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 317 (20 November): a piece's templates on
-  its sheet, and main's locked pieces' footing (the page, `hangar/readouts.json`,
-  `hangar/text.json` and three content files), over 316 the same day (the Text tab's Templates
-  view), 315 (what every piece does in the game's own words) and 314 (a tab a kind). The Mole's
-  line (`ccr-64b5deec-lunnff`) had published Versions 311 to 313 from its branch (its built Mole,
-  its terms, the echidna's brief), so 314 to 317 are a union of main (`dc8ec0d1`, `e71027f7`,
-  `33c4cc61`, then `e8cb132c`) and that line at `fcac1ade`, built in a scratch tree never pushed
-  and imported for Godot. Since main took the locked pieces' footing, `sim/effects.gd` conflicts
-  there too: both lines' static effects kept, and the hopper's cap main's, beside the Mole's
-  momentum cap; the status, the measurements, the bible and `docs/vocabulary.md` keep main's.
-  The generated files' stamp names both commits; `hangar/designs.json` still carries 314's, its
-  briefs unchanged since. The page's own source is main's. Until that line lands, a publish from
-  main alone takes its Mole off the page: build the union again. When it lands, its hold line
-  for the drill (`EntryReadout.drill_line`) is code words: it moves into a
-  template as it lands. The `edits` and `text` collections were empty,
-  `designs` held his two notes of 5 November (both already briefed).
+  `edits`, `designs` and `text` read first. Version 318 (20 November): the Echidna's kit and
+  the Mole at tier two, from `ccr-64b5deec-lunnff` at `d463cd68` once main was taken in (the
+  merge `b693fc8d`), seven files (the chassis, components and vocabulary content, the briefs',
+  the texts' and the readouts' inventories, the pins), the page main's and unchanged; the five
+  files main's 317 had replaced were read by their paths first and found under the branch's.
+  Versions 314 to 317 (20 November, main's: a tab a kind, the readouts, the Templates view, a
+  piece's templates on its sheet) were a union of main and that line at `fcac1ade`. Until the
+  line lands, a publish from main alone takes the Mole's tier two and the Echidna off the page:
+  build from the branch. Its drill line reads templates since the merge (`hold.drill*`). The
+  `edits` and `text` collections were empty, `designs` held his two notes of 5 November (both
+  already briefed).
   The `candidates` collection (his names, 106 rows) stays in the database unread;
   `docs/name_candidates.md` holds them. The service refuses a republish until the live page's saved source has been
   read whole, every line: read it before the publish, not after the refusal. A view counts only in
