@@ -91,19 +91,21 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     `sheet_export.py`, `foeforge/`, `placeholder_art.py`, `recolour.py`, `loot_tokens.py`
   - Sound: `soundforge/` builds every sound and the six music tracks from written recipes
   - The phone: `phone.sh` and `android.sh`, with `.cmd` launchers on Windows
-  - The hangar page: `hangar.html`, one artifact with five tabs (the codex, the bench with
-    each machine's sheet and the briefs, the content, the text, the models), its motion
-    script `hangar_motion.js`, and the scripts that write its files: `hangar_data.py` (the
-    files map, the models as glTF JSON into `build/hangar/models`, and the engine's rules for
-    a pack read out of sim/ into `build/hangar/foe_rules.json`: the boss tiers, the threat
-    rating by size, the ramp's span, a move's condition and aim words), `hangar_designs.py`
-    (the briefs) and `hangar_text.py` (every shown text). The Content tab's Foes are formations
-    first (every pack a domain deals by tier, its grid as the fight stands it and every unit's
-    moves at that tier, the scaled ones at each tier they come at, a composition edited where
-    it is read), with the units alone and the sprites beside them; every entry opens on a sheet in the Bench's manner, the raw
-    every-field editor behind its toggle. Ryan's saved edits live in its database: `edits`
-    (the content's sheets, the raw editor and the bench), `designs` (his notes on the briefs)
-    and `text` (his texts, marks and notes, the sheets' codex, flavour and lines among them).
+  - The hangar page: `hangar.html`, one artifact with six tabs: Chassis, Components, Modules
+    and Foes, each a tight codex-ish list whose entry opens its sheet (the raw every-field
+    editor behind its toggle), with the kind's briefs and its own waiting edits beside it (a
+    machine's brief is on its sheet; the Foes' formations come first: every pack a domain
+    deals by tier, its grid as the fight stands it and every unit's moves at that tier, the
+    scaled ones at each tier they come at, a composition edited where it is read, then the
+    units and the sprites); Text, every shown text, a card an entity in reading order; and
+    Models. Its motion script is `hangar_motion.js`, and the scripts that write its files are
+    `hangar_data.py` (the files map, the models as glTF JSON into `build/hangar/models`, and
+    the engine's rules for a pack read out of sim/ into `build/hangar/foe_rules.json`: the
+    boss tiers, the threat rating by size, the ramp's span, a move's condition and aim words),
+    `hangar_designs.py` (the briefs) and `hangar_text.py` (every shown text). Ryan's saved
+    edits live in its database: `edits` (the sheets and the raw editor), `designs` (his notes
+    on the briefs and his ideas) and `text` (his texts, marks and notes, the sheets' codex,
+    flavour and lines among them).
   - Names: `check_name.py` checks a name against every machine in `content/reserved_names.json`
     and the names in content; `docs/naming.md` is the kinds of names each maker wants.
   - `spriter/.venv` is the Python the art and sound tools run with.
@@ -212,12 +214,12 @@ python3 tools/hangar_data.py              # writes docs/hangar/pins.json, build/
 python3 tools/hangar_designs.py --check   # every brief's hangar header, alone
 python3 tools/hangar_text.py              # the Text tab's inventory into build/hangar/text.json, and its counts
 python3 tools/hangar_text.py --check      # every string key in content classified, the ledger sound
-# after Ryan writes on the Text tab or a Bench sheet's codex and flavour: save the `text` collection with ArtifactData's list (out_dir build/hangar/text_inbox), then
+# after Ryan writes on the Text tab or a sheet's codex and flavour: save the `text` collection with ArtifactData's list (out_dir build/hangar/text_inbox), then
 python3 tools/hangar_text.py --fold build/hangar/text_inbox --dry   # what it would change; without --dry it writes his texts into content, his marks into docs/hangar/text.json and docs/voice.md, and prints his notes
-# a design session's first step: save the `designs` collection (his notes on the Bench's briefs) the same way (out_dir build/hangar/inbox), then
+# a design session's first step: save the `designs` collection (his notes on the briefs, from a tab's Briefs or a machine's sheet, and his ideas) the same way (out_dir build/hangar/inbox), then
 python3 tools/hangar_designs.py --fold build/hangar/inbox --dry     # what it would fold; without --dry it writes the briefs and prints the batch that clears them
 # a render round: pictures into docs/hangar/renders/<chassis>/, the entry in docs/hangar/renders.json, republish.
-# After Ryan edits on the Content tab or the Bench: pull `edits`, apply by hand, test, commit, republish, clear the documents.
+# After Ryan edits on a sheet or the raw editor (each tab's Waiting lists them): pull `edits`, apply by hand, test, commit, republish, clear the documents.
 python3 tools/check_name.py "Storm Kite" Dunkleosteus   # a name against the reserved machines and the names in content (docs/naming.md)
 ```
 
