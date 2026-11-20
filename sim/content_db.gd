@@ -1865,11 +1865,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	for rule in ["swaps", "webs"]:
 		if fd.has(rule) and (not (fd[rule] is bool) or kind != "attack"):
 			errs.append("%s: %s is true or false, on an attack" % [where, rule])
-	for key in ["fills_hopper", "fires_hopper"]:
-		if fd.has(key) and (kind != "attack" or int(fd[key]) <= 0):
-			errs.append("%s: %s is a positive number on an attack" % [where, key])
-	if fd.has("fires_hopper") != fd.has("power_per_load") or (fd.has("power_per_load") and int(fd["power_per_load"]) <= 0):
-		errs.append("%s: fires_hopper and a positive power_per_load go together" % where)
+	if fd.has("empties_hopper") and (not (fd["empties_hopper"] is bool) or kind != "attack" or int(fd.get("power", 0)) <= 0):
+		errs.append("%s: empties_hopper is true or false, on a weapon (a strike for every Ore it empties)" % where)
 	# The brace (12 October): spending the entry Armours its owner until its side's next turn begins.
 	if fd.has("braces") and int(fd["braces"]) <= 0:
 		errs.append("%s: braces is a positive number of stacks of Armoured, an armour point each" % where)
@@ -2189,8 +2186,11 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		# An effect that fires once a round (the Skua's stack of Ricochet for damaging a foe, Ryan,
 		# 11 November: "once per turn"): a gate on what an event fires (Effects.fire), which the
 		# pipeline's effects (static, on_attack, on_injury) never pass through.
-		if eff.has("once") and (str(eff["once"]) != "round" or ["static", "on_attack", "on_injury"].has(trig)):
-			errs.append("%s: once is \"round\", on an effect an event fires (never static, on_attack or on_injury)" % where)
+		# Or a static grant held once a round (20 November: the Honey Badger's Claw Instant the first
+		# time each turn, the Prairie Dog's first weapon strike on a Brittle foe Rapid), spent as its
+		# spend is made (Effects.mark_once).
+		if eff.has("once") and (str(eff["once"]) != "round" or ["on_attack", "on_injury"].has(trig) or (trig == "static" and effect != "grant_keyword")):
+			errs.append("%s: once is \"round\", on an effect an event fires or a static grant_keyword (never on_attack or on_injury)" % where)
 		# The Cottonmouth's drum (19 October): every weapon and debuff fired as one shot of a flat number,
 		# a reach and a heat; never keyed on reach, which reads the rewrite.
 		if effect == "rewrite_weapon":
@@ -2228,12 +2228,27 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: shield_per_heat is on_heat_gain's: value, the shield a point of heat gained stands up, 1 or more" % where)
 		if effect == "bank_rerolls" and int(eff.get("value", 0)) < 1:
 			errs.append("%s: bank_rerolls's value is the most rerolls the bank carries, at least 1" % where)
-		# The Honey Badger's Ore Hopper (31 October): the loads a foe damaged puts in and the most
-		# the hopper holds; what the loads held are worth, a value for every `per` loads.
+		# The Honey Badger's Ore Hopper (20 November): the Ore a foe damaged puts in and the most the
+		# hopper holds, a raise of that most, and what the Ore is worth: value at `at` held, and
+		# `past` more for each Ore past it.
 		if effect == "fill_hopper" and (int(eff.get("value", 0)) < 1 or int(eff.get("cap", 0)) < 1):
-			errs.append("%s: fill_hopper needs value (the loads a foe damaged puts in, positive) and cap (the most the hopper holds, positive)" % where)
-		if effect == "hopper_plate" and (int(eff.get("value", 0)) < 1 or int(eff.get("per", 1)) < 1):
-			errs.append("%s: hopper_plate needs value (the armour, positive) for each per loads held (positive, 1 by default)" % where)
+			errs.append("%s: fill_hopper needs value (the Ore a foe damaged puts in, positive) and cap (the most the hopper holds, positive)" % where)
+		if effect == "hopper_max" and int(eff.get("value", 0)) < 1:
+			errs.append("%s: hopper_max's value is the Ore it adds to the hopper's most, 1 or more" % where)
+		if effect == "hopper_plate" and (int(eff.get("value", 0)) < 1 or int(eff.get("at", 1)) < 1 or int(eff.get("past", 0)) < 0 or eff.has("per")):
+			errs.append("%s: hopper_plate needs value (the armour, positive) at `at` Ore held (positive), and past (the armour for each Ore past it, 0 or more)" % where)
+		# A machine's weapon strikes counting a status more (the Prairie Dog's Harrier).
+		if effect == "count_status" and (not Effects.STATUS.has(str(eff.get("value", ""))) or int(eff.get("times", 0)) < 2):
+			errs.append("%s: count_status names a status and how many times its strikes count it, 2 or more" % where)
+		# A piece a step remakes whole (the Prairie Dog's Disperser and Repeater): its own entry,
+		# validated as any face.
+		if effect == "piece_form":
+			if str(eff.get("entry", "")).is_empty() or not (eff.get("face") is Dictionary):
+				errs.append("%s: piece_form names its piece (entry) and the face it becomes" % where)
+			else:
+				_validate_face("%s's form" % where, eff["face"], errs)
+		if eff.has("weapon_only") and not (eff["weapon_only"] is bool):
+			errs.append("%s: weapon_only is true or false" % where)
 		if str(eff.get("when", "")) == "target_rank" and not ["front", "back"].has(str(eff.get("rank", ""))):
 			errs.append("%s: target_rank needs rank, front or back" % where)
 		# A reach beside the rank (the Ram Frame's and the Rangefinder's reads, 22 October) reads
@@ -2304,7 +2319,7 @@ func _entry_is_debuff(eff: Dictionary) -> bool:
 		return false
 	var fd = components[cid].get("face", {})
 	return fd is Dictionary and str(fd.get("kind", "")) == "attack" and int(fd.get("power", 0)) <= 0 \
-		and not bool(fd.get("vents_all", false)) and not bool(fd.get("spends_shield", false)) and int(fd.get("fires_hopper", 0)) <= 0 and int(fd.get("power_per_missing", 0)) <= 0
+		and not bool(fd.get("vents_all", false)) and not bool(fd.get("spends_shield", false)) and not bool(fd.get("empties_hopper", false)) and int(fd.get("power_per_missing", 0)) <= 0
 
 
 ## Every entry keeps its internal text under `design` (fantasy at least) and nothing

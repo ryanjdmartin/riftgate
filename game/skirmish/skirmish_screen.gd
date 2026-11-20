@@ -1979,8 +1979,8 @@ static func status_glyph(id: String) -> String:
 			return "primed"
 		"regenerating":
 			return "regenerating"
-		"hopper":
-			return "hopper"
+		"hopper", "ore_plate":
+			return "hopper"   # the Ore chip, its armour, wears the hopper's mark (Ryan, 20 November: "an Ore ability chip")
 		"sealed":
 			return "seal"   # the shell's mark, as the die's chip that seals it (2 November)
 		"phased", "phasing":

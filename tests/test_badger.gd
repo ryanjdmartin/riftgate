@@ -1,24 +1,27 @@
 extends TestCase
 
-## The Honey Badger's rework (Ryan's go, 31 October: "agreed on all proposed. Build it"), on
-## synthetic passives and entries: a load for each foe a weapon's spend damages, never past the
-## hopper's cap; a weapon's own number in place of the passive's; what the loads are worth
-## granted as Armoured as each round opens and following the loads between (Ryan, 10 November: a
-## buff a Purge strips, back at the machine's next turn; the Ore Plate, an ability, before), the
-## loads a store no Purge touches; a shot firing loads takes their plate with it; never destroyed
-## as a module's rule; the bot pricing the plate a shot spends.
+## The Honey Badger's Ore (Ryan, 20 November), on synthetic passives and entries: a stack of Ore for
+## each foe a weapon's spend damages, never past the hopper's most, which a step raises and every
+## raise adds to; at its threshold the Ore is armour, the Ore chip, an Ability no Purge touches, set
+## the moment the Ore moves; a weapon that empties the hopper strikes once for every Ore, puts none
+## back and is a dead entry with none; a step's plate for each Ore past the threshold; a grant held
+## once a round (the Claw's Instant); never destroyed as a module's rule; the bot pricing the plate
+## a spend digs and the plate an emptying spend gives up.
 
 const L := Face.Reach.DIRECT
 const K := Face.Keyword
 
-## The Ore Hopper's shape: a load a foe damaged, four at most, a point of armour a load held.
-const HOPPER := {"id": "hop", "name": "Hop", "description": "", "effects": [
-	{"trigger": "static", "effect": "fill_hopper", "value": 1, "cap": 4},
-	{"trigger": "static", "effect": "hopper_plate", "value": 1, "per": 1}]}
-## Ryan's fallback: a point of armour for every two loads.
-const HALF := {"id": "half", "name": "Half", "description": "", "effects": [
-	{"trigger": "static", "effect": "fill_hopper", "value": 1, "cap": 4},
-	{"trigger": "static", "effect": "hopper_plate", "value": 1, "per": 2}]}
+## The Ore Hopper's shape: one Ore a foe damaged, three at most, a point of armour at three.
+const ORE := {"id": "ore", "name": "Ore", "description": "", "effects": [
+	{"trigger": "static", "effect": "fill_hopper", "value": 1, "cap": 3},
+	{"trigger": "static", "effect": "hopper_plate", "value": 1, "at": 3, "slot": "plate"}]}
+## The Miner step's shape: one more Ore, and a point for each Ore past three, in the plate's slot.
+const MINER := {"id": "miner", "name": "Miner", "description": "", "effects": [
+	{"trigger": "static", "effect": "hopper_max", "value": 1},
+	{"trigger": "static", "effect": "hopper_plate", "value": 1, "at": 3, "past": 1, "slot": "plate"}]}
+## Two raises of the most, read together.
+const MORE := {"id": "more", "name": "More", "description": "", "effects": [
+	{"trigger": "static", "effect": "hopper_max", "value": 3}]}
 
 
 func _mech(name: String, d: Die, shield: int = 10, hull: int = 100, armour: int = 1) -> Unit:
@@ -52,49 +55,40 @@ func _spread(power: int, n: int) -> Face:
 	return Face.from_dict({"kind": "attack", "reach": "direct", "power": power, "keywords": ["cleave"], "cleave": n})
 
 
-func _firing(power: int, per_shot: int, per_load: int) -> Face:
-	return Face.from_dict({"kind": "attack", "reach": "direct", "power": power, "fires_hopper": per_shot, "power_per_load": per_load})
+func _emptying(power: int) -> Face:
+	return Face.from_dict({"kind": "attack", "reach": "direct", "power": power, "empties_hopper": true})
 
 
-func test_every_foe_a_weapon_damages_puts_a_load_in_and_the_plate_follows() -> void:
+func test_every_foe_a_weapon_damages_puts_an_ore_in_and_three_is_armour() -> void:
 	var u := _mech("Badger", Die.single(Face.attack(3, L)))
-	u.grant_passive(HOPPER)
-	var sk := _fight([u], [_foe(30)])
-	assert_eq([Effects.store_cap(u, "hopper"), u.armour], [4, 1], "a cap of four, and the base armour before any load")
+	u.grant_passive(ORE)
+	var sk := _fight([u], [_foe(60)])
+	assert_eq([Effects.store_cap(u, "hopper"), u.armour], [3, 1], "a most of three, and the base armour before any Ore")
 	assert_true(sk.assign(0, sk.front[0]), "a plain gun spent")
-	assert_eq(Effects.stacks_of(u, "hopper"), 1, "one foe damaged: a load")
-	assert_eq([Effects.stacks_of(u, "braced"), u.armour], [1, 2], "its plate stands as Armoured, a point of armour")
-	assert_eq(Effects.status_kind("braced"), "buff", "a buff like any Armoured")
+	assert_eq([Effects.stacks_of(u, "hopper"), u.armour], [1, 1], "one foe damaged: an Ore, and no armour short of three")
 	assert_true("\n".join(sk.log).contains("fills the hopper: +1 (1)"), "the log says so")
+	Effects.add_loads(u, 2)
+	assert_eq([Effects.stacks_of(u, "ore_plate"), u.armour], [1, 2], "at three, the Ore chip: a point of armour, at once")
+	assert_true(Effects.is_ability("ore_plate"), "an Ability")
+	Effects.purge(u, 9)
+	assert_eq(u.armour, 2, "no Purge touches it")
 
 
-func test_an_area_weapon_loads_for_each_foe_and_the_cap_holds() -> void:
+func test_an_area_weapon_fills_for_each_foe_and_every_raise_of_the_most_adds() -> void:
 	var u := _mech("Badger", Die.single(_spread(3, 2)))
-	u.grant_passive(HOPPER)
-	var sk := _fight([u], [_foe(30), _foe(30), _foe(30)])
-	assert_true(sk.assign(0, sk.front[1]), "the spread on the middle foe")
-	assert_eq(Effects.stacks_of(u, "hopper"), 3, "three foes damaged, three loads")
-	sk.end_round()
-	sk.start_round()
-	sk.mechs[0].face_index = 0
-	assert_true(sk.assign(0, sk.front[1]), "again")
-	assert_eq(Effects.stacks_of(u, "hopper"), 4, "never past the cap")
-	assert_eq(u.armour, 5, "four loads, four points over the base one")
+	u.grant_passive(ORE)
+	var sk := _fight([u], [_foe(30), _foe(30), _foe(30), _foe(30)])
+	assert_true(sk.assign(0, sk.front[1]), "the spread on a middle foe")
+	assert_eq(Effects.stacks_of(u, "hopper"), 3, "three foes damaged, three Ore")
+	assert_eq(Effects.add_loads(u, 2), 0, "never past the most")
+	u.grant_passive(MINER, "branch")
+	u.grant_passive(MORE, "branch")
+	assert_eq(Effects.store_cap(u, "hopper"), 7, "three, a step's one and another's three: cumulative")
 
 
-func test_a_weapons_own_number_reads_in_place_of_the_passives() -> void:
-	var claw := Face.from_dict({"kind": "attack", "reach": "direct", "power": 3, "strikes": 2, "fills_hopper": 2})
-	var u := _mech("Badger", Die.single(claw))
-	u.grant_passive(HOPPER)
-	var sk := _fight([u], [_foe(30)])
-	assert_true(sk.assign(0, sk.front[0]), "the claw, twice on one foe")
-	assert_eq(Effects.stacks_of(u, "hopper"), 2, "its two a foe, once a spend, never the passive's one beside them or a load a strike")
-	assert_eq(sk.front[0].hp, 30 - 6, "both strikes landed")
-
-
-func test_a_blow_that_deals_nothing_loads_nothing() -> void:
+func test_a_blow_that_deals_nothing_fills_nothing() -> void:
 	var u := _mech("Badger", Die.of([Face.attack(2, L), Face.attack(0, L, [K.SHOCK])]))
-	u.grant_passive(HOPPER)
+	u.grant_passive(ORE)
 	var sk := _fight([u], [_foe(30, 0, 3)])
 	assert_true(sk.assign(0, sk.front[0]), "a 2 into armour 3")
 	assert_eq(Effects.stacks_of(u, "hopper"), 0, "a blow its armour took whole damaged nothing")
@@ -102,103 +96,66 @@ func test_a_blow_that_deals_nothing_loads_nothing() -> void:
 	sk.start_round()
 	sk.mechs[0].face_index = 1
 	assert_true(sk.assign(0, sk.front[0]), "equipment aimed at it")
-	assert_eq(Effects.stacks_of(u, "hopper"), 0, "equipment deals no damage and loads nothing")
+	assert_eq(Effects.stacks_of(u, "hopper"), 0, "equipment deals no damage and fills nothing")
 
 
-func test_a_shot_fires_its_loads_and_their_plate_goes_with_them() -> void:
-	var u := _mech("Badger", Die.single(_firing(4, 2, 2)))
-	u.grant_passive(HOPPER)
+func test_an_emptying_weapon_strikes_once_an_ore_puts_none_back_and_is_dead_with_none() -> void:
+	var u := _mech("Badger", Die.single(_emptying(2)))
+	u.grant_passive(ORE)
 	var sk := _fight([u], [_foe(60)])
-	Effects.add_loads(u, 4)
-	assert_eq(u.armour, 5, "four loads held")
-	assert_eq(sk.shown_number(sk.mechs[0], u.die.faces[0]), 8, "the shot fires two of the four at +2 (one number since rolled damage went, 2 November)")
-	assert_true(sk.assign(0, sk.front[0]), "the shot")
-	assert_eq(sk.front[0].hp, 60 - 8, "four and two loads")
-	assert_eq(Effects.stacks_of(u, "hopper"), 3, "two fired, then its own blow loads one back")
-	assert_eq(u.armour, 4, "the plate follows: three loads, three points")
-
-
-## The plate is Armoured, granted by the hopper (Ryan, 10 November: "The buff he gets from it is
-## Armoured, not an ability. Its purgeable, but returns at the start of his turn since its granted
-## by the funnel bar"): a Purge strips it and leaves the loads (a store's: his row on stores, 21
-## October); a load gained after it brings back its own point and no more; it goes as the next
-## round opens, as every machine's Armoured does (16 November: its end the start of its side's
-## next turn), and the hopper grants it whole then.
-func test_a_purge_strips_the_plate_and_the_next_round_brings_it_back() -> void:
-	var u := _mech("Badger", Die.single(Face.attack(3, L)))
-	u.grant_passive(HOPPER)
-	var sk := _fight([u], [_foe(60)])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_true(sk.cannot_pay(ms, u.die.faces[0]), "no Ore: a dead entry")
+	assert_true(sk.targets_for_face(ms, u.die.faces[0]).is_empty(), "with nowhere to land")
 	Effects.add_loads(u, 3)
-	assert_eq([Effects.stacks_of(u, "braced"), u.armour], [3, 4], "three loads held: Armoured ×3")
-	assert_false(Effects.is_ability("braced"), "no ability")
-	assert_eq(Effects.purge(u, 3), ["Armoured gone"] as Array[String], "a Purge takes it")
-	assert_eq([Effects.stacks_of(u, "hopper"), u.armour], [3, 1], "the loads stay, their armour gone")
-	assert_true(sk.assign(0, sk.front[0]), "a gun spent: a fourth load")
-	assert_eq([Effects.stacks_of(u, "hopper"), Effects.stacks_of(u, "braced")], [4, 1], "the new load's own point, never the purged three")
-	sk.end_round()
-	assert_eq([Effects.stacks_of(u, "hopper"), Effects.stacks_of(u, "braced")], [4, 1], "the round's end leaves the Armoured standing, as any machine's, and the loads")
-	sk.start_round()
-	assert_eq([Effects.stacks_of(u, "braced"), u.armour], [4, 5], "the round's opening takes it, and the hopper grants it whole")
-	assert_true("\n".join(sk.log).contains("hopper plates it: Armoured ×4"), "the log says so")
-	sk.end_round()
-	sk.start_round()
-	assert_eq(Effects.stacks_of(u, "braced"), 4, "and again every round, never piling up")
+	assert_eq(u.armour, 2, "three Ore held, a point of armour")
+	assert_eq(Effects.effective_face(u, u.die.faces[0]).strikes, 3, "a strike for every Ore")
+	assert_true(sk.assign(0, sk.front[0]), "it empties the hopper")
+	assert_eq(sk.front[0].hp, 60 - 6, "three strikes of 2")
+	assert_eq([Effects.stacks_of(u, "hopper"), u.armour], [0, 1], "every Ore spent and none put back, the armour gone with it")
+	assert_true("\n".join(sk.log).contains("empties the hopper: 3 Ore, 3 strikes"), "the log says so")
 
 
-## The hopper takes back only what it gave: loads fired leave another source's Armoured alone,
-## and a plate a Purge already took is not taken twice.
-func test_loads_fired_take_only_the_hoppers_own_armoured() -> void:
+func test_a_step_plates_each_ore_past_three_in_the_passives_place() -> void:
 	var u := _mech("Badger", Die.single(Face.attack(3, L)))
-	u.grant_passive(HOPPER)
-	var sk := _fight([u], [_foe(60)])
+	u.grant_passive(ORE)
+	u.grant_passive(MINER, "branch")
+	u.grant_passive(MORE, "branch")
 	Effects.add_loads(u, 2)
-	Effects.grant_buff(u, "braced", 2, "brace:test", sk.round)
-	assert_eq([Effects.plated(u), Effects.stacks_of(u, "braced")], [2, 4], "the hopper's two beside a component's two")
-	Effects.spend_loads(u, 2)
-	assert_eq([Effects.plated(u), Effects.stacks_of(u, "braced")], [0, 2], "the loads fired: the hopper's two go, the component's stay")
-	Effects.add_loads(u, 2)
-	Effects.purge(u, 9)
-	Effects.spend_loads(u, 2)
-	assert_eq(Effects.stacks_of(u, "braced"), 0, "nothing left to take after a Purge, and nothing goes under")
-
-
-## A battle saved before 10 November may hold the Ore Plate: it loads as the hopper's Armoured,
-## stack for stack, so the old ability never stands beside the new grant.
-func test_a_saved_ore_plate_loads_as_the_hoppers_armoured() -> void:
-	var old := Effects.make({"id": "ore_plate", "name": "Ore Plate", "description": "", "decay": "none", "tags": ["ability"],
-		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]}, Effects.SKIRMISH, "store:hopper")
-	old.stacks = 2
-	var loaded: Array = SaveGame._modifiers_from([SaveGame._modifier_dict(old)])
-	assert_eq(loaded.size(), 1, "one modifier")
-	var m: Effects.Modifier = loaded[0]
-	assert_eq([m.id, m.stacks, m.source, m.decay], ["braced", 2, Effects.HOPPER_PLATE, Effects.DECAY_ROUND], "Armoured, the hopper's grant, two stacks, gone as its side's next turn begins")
-	assert_true(Effects.purgeable(m), "and a Purge reaches it")
-
-
-func test_the_fallback_plates_a_point_for_every_two_loads() -> void:
-	var u := _mech("Badger", Die.single(Face.attack(3, L)), 10, 100, 2)
-	u.grant_passive(HALF)
-	Effects.add_loads(u, 3)
-	assert_eq(u.armour, 3, "three loads, one point over the base two")
+	assert_eq(u.armour, 1, "two Ore: nothing")
 	Effects.add_loads(u, 1)
-	assert_eq(u.armour, 4, "four loads, two points: the total of four")
-	Effects.spend_loads(u, 3)
-	assert_eq([Effects.stacks_of(u, "braced"), u.armour], [0, 2], "one load is worth nothing")
+	assert_eq(u.armour, 2, "three: the point")
+	Effects.add_loads(u, 3)
+	assert_eq([Effects.stacks_of(u, "hopper"), u.armour], [6, 5], "three past it, a point each: four in all and the base one")
+	Effects.spend_loads(u, 6)
+	assert_eq(u.armour, 1, "emptied, gone")
 
 
-func test_a_hopper_with_no_passive_fills_as_its_weapon_says_with_no_cap_or_plate() -> void:
-	var fill := Face.from_dict({"kind": "attack", "reach": "direct", "power": 3, "keywords": ["cleave"], "cleave": 2, "fills_hopper": 2})
-	var u := _mech("Gel", Die.single(fill))
-	var sk := _fight([u], [_foe(30), _foe(30), _foe(30)])
-	assert_true(sk.assign(0, sk.front[1]), "a filling spread")
-	assert_eq(Effects.stacks_of(u, "hopper"), 6, "two a foe, three foes, no cap")
-	assert_eq([Effects.stacks_of(u, "braced"), u.armour], [0, 1], "and no plate without a passive that plates it")
+func test_a_grant_held_once_a_round_is_taken_by_the_first_spend_alone() -> void:
+	var claw := Face.attack(2, L)
+	claw.component = "test_claw"
+	var u := _mech("Badger", Die.of([claw, Face.attack(1, L)]))
+	u.grant_passive({"id": "twice", "name": "Twice", "description": "", "effects": [
+		{"trigger": "static", "effect": "grant_keyword", "value": "instant", "entry": "test_claw", "once": "round"}]}, "branch")
+	var sk := _fight([u], [_foe(60)])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	assert_true(Effects.effective_face(u, claw).has(K.INSTANT), "Instant before its first spend")
+	assert_true(sk.assign(0, sk.front[0]), "the claw")
+	assert_false(ms.assigned, "Instant: it acts again")
+	assert_false(Effects.effective_face(u, claw).has(K.INSTANT), "and the grant is taken for the round")
+	ms.face_index = 0
+	assert_true(sk.assign(0, sk.front[0]), "found again: its second use")
+	assert_true(ms.assigned, "which ends its action")
+	sk.end_round()
+	sk.start_round()
+	assert_true(Effects.effective_face(u, claw).has(K.INSTANT), "a new round, the grant back")
 
 
 func test_the_rules_read_as_sentences() -> void:
-	assert_eq(Effects.effect_text(HOPPER["effects"][0]), "every foe its weapons damage puts a load in its hopper, up to 4", "the fill")
-	assert_eq(Effects.effect_text(HOPPER["effects"][1]), "each load held grants a stack of Armoured as each round opens", "the plate")
-	assert_eq(Effects.effect_text(HALF["effects"][1]), "every 2 loads held grant a stack of Armoured as each round opens", "the fallback's plate")
+	assert_eq(Effects.effect_text(ORE["effects"][0]), "damaging a foe grants one Ore, up to 3", "the fill")
+	assert_eq(Effects.effect_text(ORE["effects"][1]), "at 3 Ore, armour +1", "the plate")
+	assert_eq(Effects.effect_text(MINER["effects"][0]), "Ore max +1", "the raise")
+	assert_eq(Effects.effect_text(MINER["effects"][1]), "at 3 Ore, armour +1, and +1 for each Ore past 3", "the step's plate")
 
 
 func test_never_destroyed_is_a_modules_rule() -> void:
@@ -210,18 +167,18 @@ func test_never_destroyed_is_a_modules_rule() -> void:
 	assert_true("\n".join(sk.log).contains("holds, never destroyed"), "the log says why")
 
 
-func test_the_bot_weighs_the_plate_a_shot_spends_and_the_plate_a_spend_digs() -> void:
-	var gun := _firing(4, 2, 2)
+func test_the_bot_weighs_the_plate_a_spend_digs_and_the_plate_an_emptying_spend_gives_up() -> void:
+	var gun := _emptying(2)
 	var plain := Face.attack(3, L)
 	var u := _mech("Badger", Die.of([gun, plain]), 0, 100)
-	u.grant_passive(HOPPER)
+	u.grant_passive(ORE)
 	var sk := _fight([u], [_foe(60, 6), _foe(60, 6)])
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var pol := Policy.make(Policy.GREEDY, 1)
-	var fill := pol.hopper_fill_score(sk, ms, plain, sk.front[0])
-	assert_true(fill > 1.0 * 2.0 * Policy.HOPPER_WEIGHT, "a plain gun's load is worth what a shot would add and the plate it stands, while foes aim at its bare hull")
-	Effects.add_loads(u, 4)
-	assert_true(pol.hopper_score(sk, ms, gun, sk.front[0]) < pol.hopper_fill_score(sk, ms, gun, sk.front[0], 2), "the plate its fired loads stood for is a price on the shot")
+	assert_true(pol.hopper_fill_score(sk, ms, plain, sk.front[0]) > 0.0, "a plain gun's Ore is worth a strike more of the emptying entry")
+	assert_eq(pol.hopper_fill_score(sk, ms, gun, sk.front[0]), 0.0, "the emptying entry puts none in")
+	Effects.add_loads(u, 3)
+	assert_true(pol.hopper_score(sk, ms, gun, sk.front[0]) < 0.0, "the plate the Ore stood for is a price on emptying it")
 	assert_eq(pol.hopper_fill_score(sk, ms, plain, sk.front[0]), 0.0, "a full hopper takes no more")
 
 
@@ -231,9 +188,12 @@ func test_the_validator_holds_the_hoppers_rules_to_their_numbers() -> void:
 	var errs: Array[String] = []
 	db._validate_passive("passive p", {"id": "p", "name": "P", "description": "", "effects": [
 		{"trigger": "static", "effect": "fill_hopper", "value": 1},
-		{"trigger": "static", "effect": "hopper_plate", "value": 1, "per": 0}]}, errs)
-	assert_true(errs.any(func(e: String) -> bool: return e.contains("fill_hopper")), "a fill with no cap is refused")
-	assert_true(errs.any(func(e: String) -> bool: return e.contains("hopper_plate")), "a plate for every nothing is refused")
-	var ok: Array[String] = []
-	db._validate_passive("passive q", HOPPER, ok)
-	assert_eq(ok, [] as Array[String], "the Ore Hopper's shape passes")
+		{"trigger": "static", "effect": "hopper_plate", "value": 1, "at": 0},
+		{"trigger": "static", "effect": "hopper_max", "value": 0}]}, errs)
+	assert_true(errs.any(func(e: String) -> bool: return e.contains("fill_hopper")), "a fill with no most is refused")
+	assert_true(errs.any(func(e: String) -> bool: return e.contains("hopper_plate")), "a plate at nothing is refused")
+	assert_true(errs.any(func(e: String) -> bool: return e.contains("hopper_max")), "a raise of nothing is refused")
+	for shape in [ORE, MINER, MORE]:
+		var ok: Array[String] = []
+		db._validate_passive("passive q", shape, ok)
+		assert_eq(ok, [] as Array[String], "%s's shape passes" % shape["id"])

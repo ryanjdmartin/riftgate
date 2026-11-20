@@ -722,27 +722,22 @@ static func zap_ready(ms: MechState, f: Face) -> int:
 	return int(z["damage"])
 
 
-## The loads one shot of a hopper-firing attack takes (fires_hopper, the Bullion Fragmenter,
-## 11 October): as many as the machine's hopper holds, up to the shot's most, so a full
-## hopper feeds several shots rather than one. Read as the die is spent.
+## The Ore a spend of a hopper-emptying attack takes (empties_hopper, the Bullion Fragmenter,
+## Ryan, 20 November: "Empties the hopper, striking once for every load emptied"): every Ore the
+## machine holds, a strike each (Effects.effective_face). Read as the die is spent.
 static func hopper_loads(u, f: Face) -> int:
-	if f == null or f.fires_hopper <= 0:
+	if f == null or not f.empties_hopper:
 		return 0
-	return mini(Effects.stacks_of(u, "hopper"), f.fires_hopper)
+	return Effects.stacks_of(u, "hopper")
 
 
-## What the hopper adds to every blow of that shot.
-static func hopper_bonus(u, f: Face) -> int:
-	return hopper_loads(u, f) * f.power_per_load if f != null else 0
-
-
-## The loads each foe a spend of this entry damages puts in its machine's hopper: the weapon's
-## own number where it prints one (the Chainsaw Claw's two), else the machine's passive's for
-## any weapon (the Ore Hopper's one, 31 October); equipment deals no damage and loads nothing.
+## The Ore each foe a spend of this entry damages puts in its machine's hopper: the machine's
+## passive's for any weapon (the Ore Hopper's one), none for a weapon that empties the hopper
+## ("Grants no Ore"); equipment deals no damage and fills nothing.
 static func hopper_fill_of(u, f: Face) -> int:
-	if f == null or not f.is_weapon():
+	if f == null or not f.is_weapon() or f.empties_hopper:
 		return 0
-	return f.fills_hopper if f.fills_hopper > 0 else Effects.hopper_fill(u)
+	return Effects.hopper_fill(u)
 
 
 ## What one blow of an attack entry will deal, as the die shows it (decided 10 October, bible
@@ -768,7 +763,7 @@ static func split_share(roll: int, split: int) -> int:
 func shown_number(ms: MechState, f: Face, target: Foe = null) -> int:
 	if f == null or not f.is_attack():
 		return 0
-	var add := heat_bonus(ms, f) + shield_bonus(ms, f) + hopper_bonus(ms.unit, f)   # what the entry prints from its firer, inside the pipeline
+	var add := heat_bonus(ms, f) + shield_bonus(ms, f)   # what the entry prints from its firer, inside the pipeline
 	var own := (f.missing_bonus(target) + f.consume_bonus(target)) if not f.is_debuff() else 0   # the foe's own reads, flat after it (the blow's order)
 	# A split entry (the Skua's) shows a hit's blow: its base halved, rounded down, never below one, then the buffs.
 	var zap := zap_ready(ms, f) if not ms.assigned else 0   # the zap it would pay for, beside Empowered's add
@@ -1553,14 +1548,6 @@ func start_round() -> void:
 			regened.append("%s +%d" % [ms.unit.display_name, gained])
 	if not regened.is_empty():
 		log.append("shield regen: " + ", ".join(regened))
-	# The hopper grants its Armoured for the round, what the loads it holds are worth (the Honey
-	# Badger's, Ryan, 10 November: "returns at the start of his turn since its granted by the
-	# funnel bar"): last round's went at the round's end as every machine's Armoured does, and a
-	# Purge may have taken it sooner. Before the foes announce, so their blows are drawn against it.
-	for ms in live_mechs():
-		var plated := 0 if paused(ms) else Effects.plate_round(ms.unit)
-		if plated > 0:
-			log.append("%s's hopper plates it: %s ×%d" % [ms.unit.display_name, Effects.STATUS["braced"]["name"], Effects.plated(ms.unit)])
 	# Every foe announces its move for the round: which action, at whom. Chosen now, before
 	# the player acts, so the intent chips and the forecast are exact. The move first, from
 	# the ones its conditions allow (never the same special twice running), then its pick, each
@@ -2259,6 +2246,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	var turn := turn_entries(ms, f)   # where a one-of-each machine's die may turn once this is out (the Needletail's), read before the spend
 	var spent_kind := _turn_kind(ms, f) if Effects.one_of_each(ms.unit) and not f.acts_again() else 0   # the kind the Relay sends onto cooldown: 1 the weapons, 2 the equipment, 0 none (a Rapid or Instant spend, a blank)
 	f = Effects.effective_face(ms.unit, f, target if target is Foe else null)   # the entry as this machine's passives make it, over the foe it is aimed at
+	var once := Effects.once_taken(ms.unit, Effects.rewritten(ms.unit, raw), target if target is Foe else null)   # what holds once a turn, read before the spend lays anything
 	if f.is_attack() and (not (target is Foe) or not targets_for_face(ms, raw).has(target)):
 		return false
 	# A Swap takes its second target with it (Ryan, 21 October: drag to the first, drop, then
@@ -2534,6 +2522,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	if f.self_ablate > 0 and ms.alive():
 		Effects.stack(ms.unit, Effects.STATUS["ablating_mech"], Effects.SKIRMISH, "self:" + f.component, f.self_ablate, Effects.status_decay(Effects.STATUS["ablating_mech"]))
 		log.append("%s: its own fire, %s ×%d" % [ms.unit.display_name, Effects.STATUS["ablating_mech"]["name"], f.self_ablate])
+	Effects.mark_once(ms.unit, once)
 	_shift_form(ms, f, target)
 	if f.kind != Face.Kind.BLANK:
 		var deals := f.is_attack() and f.power > 0
@@ -3379,9 +3368,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	# the gauge emptied before the strikes land.
 	var fired := heat_bonus(ms, f) + shield_bonus(ms, f)
 	h.fired = fired
-	var loads := hopper_loads(ms.unit, f)   # the loads this shot fires from the hopper, read once too
-	var from_hopper := loads * f.power_per_load
-	var own := fired + from_hopper   # what the entry prints from its firer, on every blow of the spend
+	var loads := hopper_loads(ms.unit, f)   # the Ore this spend empties from the hopper, a strike each, read once too
+	var own := fired   # what the entry prints from its firer, on every blow of the spend
 	var damaged: Array = []    # every foe the blows took HP off, for the hopper's loads (Ryan, 31 October: "per foe damaged")
 	h.vented_all = ms.heat if f.vents_all else 0
 	if f.vents_all:
@@ -3695,7 +3683,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	# hopper's Armoured follows the loads' worth both ways (Effects._plate).
 	if loads > 0:
 		Effects.spend_loads(ms.unit, loads)
-		log.append("%s fires the hopper: %d load%s, +%d" % [ms.unit.display_name, loads, "" if loads == 1 else "s", from_hopper])
+		log.append("%s empties the hopper: %d Ore, %d strike%s" % [ms.unit.display_name, loads, loads, "" if loads == 1 else "s"])
 	h.damaged = damaged.size()
 	var per_foe := hopper_fill_of(ms.unit, f)
 	if per_foe > 0 and not damaged.is_empty():
@@ -4631,6 +4619,8 @@ func shield_short(ms: MechState, f: Face) -> bool:
 ## The second: an entry that spends a count of its machine's for what it grants (Face.spends, the
 ## Quintessence Tap's Essence) cannot be played while the machine holds none of it.
 func spend_short(ms: MechState, f: Face) -> bool:
+	if f != null and f.empties_hopper and Effects.stacks_of(ms.unit, "hopper") <= 0:
+		return true   # the Bullion Fragmenter with no Ore: a dead entry (Ryan, 20 November)
 	return f != null and not f.spends.is_empty() and Effects.stacks_of(ms.unit, f.spends) <= 0
 
 

@@ -65,7 +65,7 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1392 tests, 387,284 checks, green (20 November, the locked pieces' footing's engine on
+- Tests: 1391 tests, 387,316 checks, green (20 November, the Badger's Ore and the Prairie Dog's Spreader on
   `claude/locked-footing`). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
@@ -144,6 +144,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   upgrade branch is a passive scoped to a locked piece, or a step on the passive where its
   numbers warrant one (the rules' Branches; `docs/locked_pieces_proposal.md`; the bible's
   locked and tiers rows): the Storm Petrel carries the first two, the Buzzard two more, the
+  Honey Badger (Miner, Smelter) and the Prairie Dog (Flakker, Harrier) theirs from Ryan's kits of
+  20 November (the Badger's Ore, the Spreader; a grant held once a round, a piece remade whole and
+  a strike counting Brittle twice the engine they brought), the
   harness's UPG line fields a build at the tier its picks make. A step may tweak as many pieces as
   it needs (Ryan, 19 November); the Macaque's second steps touch its offhand and its Aile
   Booster. An upgraded piece wears a chevron a step under its place, on the die and down the

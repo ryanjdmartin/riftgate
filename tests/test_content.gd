@@ -823,6 +823,7 @@ func test_a_planned_chassis_is_kept_but_never_fielded() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var built: Dictionary = db.chassis["badger"].duplicate(true)
+	built.erase("branches")   # its steps name its own locked pieces
 	built["passive"] = {"id": "built", "name": "Built", "description": "", "effects": [
 		{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 1}]}
 	db.chassis["built"] = built

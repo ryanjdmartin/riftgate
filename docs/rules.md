@@ -113,7 +113,19 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   Booster granting Aile Blitz; Valkyrie, the rifle's slot holding the Beam Bazooka, then the shield's
   the Beam Pavise and the Booster granting Aile Assault with 1 Empowered. A step may name the piece
   it upgrades, and the die's readout and the codex call the piece so (the Aile Blitzer, the Aile
-  Assaulter), the die keeping the piece as printed.
+  Assaulter), the die keeping the piece as printed. A step may remake a piece whole, its entry
+  as spent, read and shown the new one under the step's name, the die keeping it as printed;
+  a grant may hold once a round, the first spend that takes it spending it until the next round
+  opens; and a step may have its machine's weapon strikes count a status more. The Honey
+  Badger's, a tier one's: Miner, its Chainsaw Claw gaining Penetrate 2, Ore max +1 and a point of
+  armour for each Ore past three, then Brittle 2 on the Claw, its first spend each turn Instant
+  (two uses a turn, the second if the die finds it again) and Ore max +2; Smelter, its Bullion
+  Fragmenter gaining Spread 2 and Ore max +1, then Ablate 1 and Ore max +3. The Prairie Dog's,
+  a tier one's: Flakker, the first strike of its weapons on a Brittle foe each turn Rapid, then
+  its Flakshot Spreader remade as the Flakshot Disperser (Indirect, Brittle 4, Spread,
+  Penetrate); Harrier, its weapon strikes counting Brittle twice, then the Spreader remade as the
+  Flakshot Repeater (Direct, 1 three times, Brittle 1, Spread 1). Neither form keeps the
+  Spreader's cooldown.
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
@@ -158,8 +170,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    reboot recovers: its heat nothing, its shield whole. Every machine sheds what cooling it is
    granted, then regains what shield regen it is granted, up to its maximum (a module's, a
    passive's or a status's: a chassis has neither of its own; a shield gain like any). Every die rolls;
-   entries are equally likely. A store that grants a buff
-   grants it for the round (the Honey Badger's hopper its Armoured), before the foes pick.
+   entries are equally likely.
 2. Every foe picks its move, then its target; both show, exact, before the player acts, its
    intent chip under it: the move's kind, its blow's number and strikes, and each rider by its
    mark, a numbered one with its stacks. A blow's number counts the rallies on their way to it
@@ -344,7 +355,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
    Penetrate's in the other rank of its column); on every other Shocked foe on
    the field, Chain's (a foe in a shape and Shocked takes the shape's, one blow). Then what the
    entry prints from its firer: what heat fired adds (Vents all), what shield fired adds (Fires
-   the shield) and the hopper's loads.
+   the shield).
 2. The attacker's modifiers, on every blow: adds, then multiplies, then floors, a condition on
    the foe read on that foe (a status it carries, its rank). A zap's add is one of the adds,
    beside Empowered's (Passives, below).
@@ -677,11 +688,9 @@ nothing. The Suppression Battery's Suppress is
 gated on Brittle, and the Backdraft Charge consumes Ablating, its Suppress gated at two.
 **Ablates its firer** (the Stoker's): spending it sets its own machine Ablating, the stacks it
 prints, after the blow; the round preview with the die in hand counts the first tick, off its shield as the turn ends.
-**The hopper**: a weapon that fills it puts the loads it prints in its machine's hopper for
-each foe its blows damage, after the blow, in place of what the machine's passive puts in (the
-Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most loads a shot,
-each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
-the armour they stood for going with them. **Braces**:
+**Empties the hopper** (the Honey Badger's Bullion Fragmenter): spent, it empties its machine's
+hopper and strikes once for every Ore it empties, the armour the Ore stood for going with it; it
+puts no Ore in, and with none in the hopper it is a dead entry, nowhere to land. **Braces**:
 spending it Armours its owner, the stacks it says, an armour point each, until its side's
 next turn begins (the Shift Whistle prints it). **The Quintessence Tap** (the Ammit's, equipment spent on
 itself, cooldown 3): it consumes the Ammit's Essence, as much as it holds up to 5, and grants a
@@ -763,7 +772,7 @@ Nob's Enrage, a core's guard (Guarded), a Gel's split, a last act, a golden rage
 lasts. A machine's: the Polar Bear's seal (its form) and the Ammit's Essence (a count with no
 cap, so no store: its chip says the number). What an
 ability, a passive or a store grants beyond itself is a buff like any (the Nob's gathered
-Enraged, a module's Empowered or Armoured, the Armoured the Honey Badger's hopper grants): a
+Enraged, a module's Empowered or Armoured): a
 stack is a stack, whatever granted it.
 
 Every status on a unit says what it is, wherever it shows: a **buff**, which a Purge reaches,
@@ -798,7 +807,7 @@ On a machine:
   codex lists it among what the battle keeps.
 - **Armoured** (buff, on either side): armour +1 a stack, every stack at once, whatever
   granted it, so the count is the armour, until its side's next turn begins: a machine's
-  (from a buff, a brace or the hopper) stands through the enemy's turn and goes as the next
+  (from a buff or a brace) stands through the enemy's turn and goes as the next
   round opens, before the foes announce, and a foe's (from its brace or another's) stands
   through the player's turn and goes as the foes' next turn opens, before the first of them
   acts. It takes no rounds: no grant holds it longer.
@@ -939,18 +948,14 @@ On a machine:
   charged, unasked: they spend the five and are Instant, the die rolling again, itself included,
   so a fist may show again. Lasts the skirmish, never decays, and nothing cleanses it. It shows as a
   meter under the heat in its chip's colour, a notch at five.
-- **Hopper** (store, the Honey Badger's): its Ore Hopper puts a load in for each foe a spend
-  of its weapons damages, after the blow (a weapon that prints its own number puts that in
-  instead), up to four; a weapon that fires
-  the hopper spends them; a Mine's blast fills none. It lasts the skirmish, never decays, nothing cleanses it, and it shows as a row
-  under the heat, in the heat bar's shape, four cells, one lit a load. What the loads are
-  worth is Armoured, a stack for every two held, granted by the hopper: as each round opens it
-  grants the machine Armoured up to that worth, and between rounds the grant follows the loads
-  by the change in their worth alone (a load that makes a pair adds a stack, loads fired take
-  their stacks back, off the hopper's own grant and no other). It is a buff like any Armoured:
-  it goes as the next round opens, the hopper granting it again whole, and a Purge strips it
-  and leaves the loads, so what a Purge took comes back at the machine's next turn and no
-  sooner.
+- **Ore** (store, the Honey Badger's hopper): its Ore Hopper puts one Ore in for each foe a spend
+  of its weapons damages, after the blow, up to its most (three, and every raise a step grants
+  added to it); a weapon that empties the hopper puts none in, and a Mine's blast fills none. It
+  lasts the skirmish, never decays, nothing cleanses it, and it shows as a row under the heat, in
+  the heat bar's shape, a cell an Ore. What the Ore is worth is armour, the **Ore** chip, an
+  Ability: a point once it holds three (a step adds a point for each Ore past three), set the
+  moment the Ore moves, so it lands with the Ore that earns it and goes as the hopper empties;
+  no Purge touches it.
 - **Sealed** (Ability, the Polar Bear's form): equipment it spends on itself (a buff dropped on
   itself) seals it: armour +3, any cooling it is granted stopped (a chassis has none of its own), 3 heat more at the end of each turn
   before the overheat, and its Cryo Flinger gains Spread (one foe open, its rank's three sealed);
@@ -1486,7 +1491,7 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   for every 5 Essence), and a status may name the battle as its scope, kept from fight to fight
   (Essence).
 - A passive may double a weapon's printed number before its buffs, on every blow, what the
-  entry prints from its firer included (an area's number, heat fired, hopper loads), the buffs
+  entry prints from its firer included (an area's number, heat fired), the buffs
   added once after it and the struck foe's own reads (its missing HP, the stacks consumed on
   it) after those, undoubled, and under a condition where it carries one (the Kite's, against
   an unhurt foe); it may grant a cooldown to every weapon and equipment its machine aims at a
