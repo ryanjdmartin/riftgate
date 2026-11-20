@@ -511,6 +511,13 @@ details{margin-top:8px} summary{cursor:pointer;color:var(--ink-3);font-size:13px
 .fbring{margin-top:8px;font-size:13px;color:var(--ink-2)}
 .fbring b{font:600 11px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-right:6px}
 .stands{display:flex;flex-direction:column;gap:3px;margin:0}
+details.fedit{margin-top:12px;border-top:1px dashed var(--rule);padding-top:8px}
+details.fedit>summary{font:600 13px/1.35 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+details.fedit .shint{font-size:12.5px;color:var(--ink-3);margin:6px 0 8px;max-width:72ch}
+details.fedit .lab{margin-top:8px}
+details.fedit .fgrid select{padding:5px 4px;font-size:13px}
+details.fedit .sfield{margin-top:8px}
+details.fedit .bnums{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
 .stands .linkbtn{text-align:left}
 
 /* ---- the Content tab's sheets (21 November): the Bench's sheet for every kind, the raw every-field
@@ -588,7 +595,7 @@ const REACH = {direct: "direct", indirect: "indirect", every_foe: "every foe"};
 const state = {
   shipped: {}, about: {}, edits: {},
   section: "codex", sub: {content: "components.entries", text: "overview", bench: "all"},
-  open: null, returnTo: null, draft: null, invalid: new Set(), raw: false, fopen: new Set(), fscroll: null,
+  open: null, returnTo: null, draft: null, invalid: new Set(), raw: false, fopen: new Set(), fscroll: null, fedit: new Set(),
   db: null, user: null, dbState: "loading", canWrite: true,
   designs: null, dnotes: [], designState: "connecting", dNote: null, dDir: null, dIdea: null, dAdd: null, bbrief: {},
   pins: null, renders: null,
@@ -1612,8 +1619,80 @@ function cardBody(card) {
   for (const b of brought) list.append(unitEl(b.id, {tier: t, scaled: !!(card.commander && b.why.startsWith("a part") && rules().scaled.commander_parts !== false), tags: [b.why]}));
   if (brought.length) body.append(el("p", {class: "fbring"}, el("b", {}, "Brings with it"), brought.map(b => `${foeName(b.id)} (${b.why})`).join("; ")));
   body.append(list);
+  if (comp) body.append(compEditor(card));
   if (comp) body.append(el("div", {class: "toolbar", style: "margin:10px 0 0"}, el("button", {class: "btn", onclick: () => openSheet("factions.entries", card.dom)}, `${factionName(card.dom)}'s sheet`)));
   return body;
+}
+// A composition's fields, edited where they are read: its grid, its tiers, ramp gate, threat
+// rating, hunt, lead and question, each saved as it is left as an edit of its domain's whole entry
+// (collection "edits", saveDoc), the document the domain's raw view writes. The validator holds the
+// grid to its rules when a session applies it.
+function compEditor(card) {
+  const comp = card.comp, dom = card.dom, key = "factions.entries", pre = `fe.${card.key}.`;
+  const scomp = ((shippedEntry(key, dom) || {}).compositions || []).find(x => x && x.id === comp.id) || {};
+  const write = (mutate) => benchWrite(key, dom, d => { const c = (d.compositions || []).find(x => x && x.id === comp.id); if (c) mutate(c); });
+  const open = state.fedit || (state.fedit = new Set());
+  const box = el("details", {class: "fedit bsheet", open: open.has(comp.id) || null});
+  box.addEventListener("toggle", () => { if (box.open) open.add(comp.id); else open.delete(comp.id); });
+  box.append(el("summary", {}, "Edit the composition"));
+  box.append(el("p", {class: "shint"}, `Each field saves as you leave it, as an edit of ${factionName(dom)}'s entry for a session to apply, and the validator holds the grid to its rules then. It is the composition itself, so the change shows under every tier that deals it.`));
+  if (!benchCan()) box.append(el("p", {class: "help"}, state.dbState === "loading" ? "Connecting to the page's database…" : "Read only: the database did not load in this view, so nothing saves from here."));
+  // The grid: a cell takes a foe of its domain whose rank fits its row (a massive foe a front cell,
+  // the back cell behind it left empty), an elite only in an elite composition.
+  const pool = [...ctx().whole.values()].filter(f => f.faction === dom && !ctx().bosses.has(f.id) && !f.hero && !f.promotes && (comp.size === "elite" || !f.elite));
+  const grid = el("div", {class: "fgrid", style: "--cols:4"});
+  grid.append(el("span", {class: "rl", style: "grid-row:1;grid-column:1"}, "front"), el("span", {class: "rl", style: "grid-row:2;grid-column:1"}, "back"));
+  for (const [r, row] of [[0, "front"], [1, "back"]]) for (let col = 0; col < 4; col++) {
+    const cur = (comp[row] || [])[col] || "", fid = `${pre}${row}.${col}`;
+    const under = r === 1 && isMassive(foeWhole((comp.front || [])[col] || ""));
+    const fits = pool.filter(f => r === 0 ? (f.rank !== "back" || isMassive(f)) : (f.rank === "back" && !isMassive(f)));
+    const opts = [["", under ? "filled by the massive foe" : "empty"], ...fits.map(f => [f.id, (f.name || f.id) + (isMassive(f) ? " (massive)" : "") + (f.elite ? " (elite)" : "")])];
+    if (cur && !opts.some(o => o[0] === cur)) opts.push([cur, foeName(cur)]);
+    const sel = bselect(fid, cur, opts, v => write(c => {
+      c[row] = Array.isArray(c[row]) ? c[row].slice(0, 4) : [null, null, null, null];
+      while (c[row].length < 4) c[row].push(null);
+      c[row][col] = v || null;
+      if (r === 0 && v && isMassive(foeWhole(v))) { c.back = Array.isArray(c.back) ? c.back : [null, null, null, null]; c.back[col] = null; }
+    }));
+    if (under) sel.disabled = true;
+    sel.setAttribute("aria-label", `${row} cell ${col + 1}`);
+    grid.append(el("div", {style: `grid-column:${col + 2};grid-row:${r + 1};min-width:0`}, sel));
+  }
+  box.append(el("span", {class: "lab"}, comp.size === "escort" ? "Its grid: who comes (a boss's fight stands by weight)" : "Its grid, as the fight stands it"), grid);
+  // Its tiers, its ramp gate, its threat rating, its hunt and its lead.
+  const tiers = el("div", {class: "seg", role: "group", "aria-label": "The tiers that deal it"});
+  for (const t of [1, 2, 3]) {
+    const id = benchKind(`${pre}tier.${t}`), cb = el("input", {type: "checkbox", id, disabled: !benchCan()});
+    cb.checked = compTiers(comp).includes(t);
+    cb.addEventListener("change", () => write(c => {
+      const on = [1, 2, 3].filter(x => x === t ? cb.checked : compTiers(c).includes(x));
+      if (on.length) c.tiers = on; else if (scomp.tiers !== undefined) c.tiers = scomp.tiers; else delete c.tiers;
+    }));
+    tiers.append(el("label", {for: id, style: "display:inline-flex;gap:5px;align-items:center;margin-right:10px;text-transform:none;letter-spacing:0;font:500 14px/1 var(--body);color:var(--ink)"}, cb, "Tier " + t));
+  }
+  const ramp = (i) => (v) => write(c => {
+    const t = String(v).trim(), n = Number(t);
+    if (t === "" || !Number.isFinite(n)) { delete c.ramp; return; }
+    const g = Array.isArray(c.ramp) && c.ramp.length === 2 ? [...c.ramp] : [firstRampOf(Math.min(...compTiers(c))), rules().ramp_top];
+    g[i] = n; c.ramp = g;
+  });
+  const g = Array.isArray(comp.ramp) ? comp.ramp : [];
+  const lo = `${pre}ramp.0`, hi = `${pre}ramp.1`, sq = `${pre}squad`, hu = `${pre}hunts`, ld = `${pre}lead`, qu = `${pre}question`;
+  const nums = el("div", {class: "bnums tight"},
+    el("div", {}, blabel(lo, "from Convergence"), bfield("num", lo, g[0], ramp(0), {placeholder: "every"})),
+    el("div", {}, blabel(hi, "to Convergence"), bfield("num", hi, g[1], ramp(1), {placeholder: "every"})),
+    el("div", {}, blabel(sq, "threat rating"), bselect(sq, comp.squad === undefined ? "" : String(comp.squad), [["", `by its size, ${rules().squad_by_size[comp.size] ?? rules().squad_default}`], ...["1", "2", "3", "4"].map(n => [n, n])], v => write(c => { if (v) c.squad = Number(v); else delete c.squad; }))));
+  if (comp.size !== "escort") nums.append(el("div", {}, blabel(hu, "on the map"), bselect(hu, comp.hunts || "", [["", "pushes for the wall"], ...(rules().hunt_caveats || []).map(h => [h, "hunts the " + h])], v => write(c => { if (v) c.hunts = v; else delete c.hunts; }))));
+  const leads = [...new Set(gridIds(comp))];
+  nums.append(el("div", {}, blabel(ld, "lead"), bselect(ld, comp.lead || "", [["", "the first in reading order"], ...leads.map(id => [id, foeName(id)])], v => write(c => { if (v) c.lead = v; else delete c.lead; }))));
+  box.append(el("span", {class: "lab", style: "margin-top:10px"}, "The tiers that deal it"), tiers, nums,
+    el("p", {class: "shint", style: "margin-top:6px"}, "Clear a Convergence to deal it at every one of its tiers' Convergences (the ramp gate goes)."));
+  box.append(el("div", {class: "sfield"}, blabel(qu, "its question (internal, never shown)"), bfield("area", qu, (comp.design || {}).question || "", v => write(c => {
+    const t = String(v).replace(/\s+$/, ""), sq2 = (scomp.design || {}).question;
+    if (!t) { if (typeof sq2 === "string") { c.design = c.design || {}; c.design.question = sq2; } else if (c.design) { delete c.design.question; if (!Object.keys(c.design).length) delete c.design; } }
+    else { c.design = c.design || {}; c.design.question = t; }
+  }), {placeholder: "What the player must answer."})));
+  return box;
 }
 function renderFormations(main) {
   want("foerules", ensureFoeRules);
