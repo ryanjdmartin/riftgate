@@ -65,8 +65,7 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1395 tests, 388,479 checks, green (20 November, the die's and the codex's words as
-  content templates). The runner fails a run
+- Tests: 1395 tests, 388,445 checks, green (20 November, the Stingray at tier two). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -125,8 +124,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   pass. Tier one's foes are sized for the reboot and the higher tiers' are not (The numbers,
   below). Detail: the rules' Foes;
   the bible's rows on the foes' rule set, targeting, Exposed and Phased.
-- **The machines.** Five makers and 26 chassis, 24 of them dealt (ten at tier one, ten at
-  two, four at three); the Swallowtail is back in design and the Mole is a planned draft with
+- **The machines.** Five makers and 26 chassis, 24 of them dealt (nine at tier one, eleven at
+  two, four at three; the Stingray up to two on 20 November); the Swallowtail is back in design and the Mole is a planned draft with
   its model, both undealt (`"status": "planned"`), a brief each. 88 components, 15 of them planned drafts nothing
   deals (the slottable shields and vents, the Gravity Knuckles and the Tesla Gauntlets, the
   Retribution Thurible, the Solar Flare Array, the Mole's Inertia Drill); 20 modules. A stock die is basics beside its

@@ -29,9 +29,9 @@ too), and the Needletail the same day. It retires once its calls are rows and co
 | Swallowtail, in design | Two dead plain forms; the system hands it a niche, the team's pit crew | His session |
 | Polar Bear | Stands as built (19 November): its text's clause fixed, the wall at tier one moot at tier two | Settled, his "Leave the bear" |
 | Whip Scorpion | His rework: the one kit built on the system | Its strength; the Ray a dump that keeps the shield |
-| Stingray | The Suite suits the system; its stock gives it almost nothing to deepen | Its stock; its tier |
+| Stingray | The Suite suits the system; its stock gives it almost nothing to deepen; tier two since 20 November | Its stock, the stock re-deal's |
 | Nemesis | The system feeds its rage, its overheat included | The rage-and-burn loop; its placeholder slot |
-| Wild Boar | Lost a stat and nothing else | Nothing |
+| Wild Boar | Stands as built (20 November): it lost a stat and nothing else | Settled, his "Boar seems good to leave as is" |
 | Giant Petrel | Its rerolls stand; its gifts of actions cost their receivers heat | Its unrefined kit, his session |
 | Musk Ox | Its clock is ammo; the reboot is for its shield alone | Its session, the Forge's dead clause |
 | The other nine | Nothing of theirs reads heat, cooling, regen or a shield gain | Nothing |
@@ -184,7 +184,7 @@ lever is his, a lower heat maximum.
 
 ### Stingray
 
-Aphelion, tier unplaced, medium hover. *Context*: the hot status amplifier; the Lance support
+Aphelion, tier 2 since 20 November (Ryan: "Stingray - with the Macaque, move this to tier 2 now"), medium hover. *Context*: the hot status amplifier; the Lance support
 since 11 November ("a defensive debuff plus an offensive buff"); "Upgrades can redirect it to the
 primed+burn abuse".
 
@@ -202,7 +202,7 @@ Its stock is the trouble: the Lance is the only thing it lays, so most turns it 
 whose heat is a timer and not a resource.
 
 *Verdict.* It fits; its stock starves its passive (riders for the Suite to deepen, the stock
-re-deal's), and its tier is his.
+re-deal's). Tier two on his word of 20 November, with the Macaque at Aphelion's tier one.
 
 ### Nemesis
 
@@ -228,22 +228,12 @@ back in rage: "reboot, or die" as a build.
 *Verdict.* It fits. To watch: that loop, rage from its own overheat into more Instant heat; its
 placeholder slot is the stock re-deal's.
 
-### Wild Boar
+### Wild Boar, settled
 
-Minerva, tier 2, heavy tracked. *Context*: the vanguard tank that "dives rather than tanks"; it
-lost its regen stat and nothing else.
-
-*Kit*: hull 36, shield 8, armour 2, heat 12, move 4, 5 hardpoints.
-- Juggernaut Drive: damaging a front-rank foe deals 25% of its maximum HP, rounded up, to the foe
-  behind it; after it gains a Barrier, its next weapon ignores armour.
-- Breaching Plow (fixed): a Barrier on itself and a Cleanse, cooldown 1.
-- Slugthrower 4 for 4, twice; Shotfire Rack 4 for 5; Twin Autoguns 3 for 4; Shoring Jack.
-
-*As a whole.* Guns above the vanilla, a shove that turns front-rank hits into back-rank damage, two
-cool defensive entries that stretch its cycle, and armour 2 that keeps its bare turn survivable. As
-sturdy as the Honey Badger in the read.
-
-*Verdict.* It fits; the reboot leaves it nothing to fix.
+Left as built on 20 November (Ryan: "Boar seems good to leave as is"): it lost its regen stat and
+nothing else, its guns above the vanilla, its shove and its two cool defensive entries stretching
+its cycle, and armour 2 keeping its bare turn survivable. Its kit as this proposal read it is in
+git: `git show 361095c:docs/reboot_machines_proposal.md`.
 
 ### Giant Petrel
 
@@ -394,3 +384,6 @@ in formations and nothing against a lone boss.
    Exchanger and the Overdrive Injector (the bible's row); its strength his play's in a team that
    leverages heat. Swallowtail: its session as set.
 8. Polar Bear: settled 19 November, left as built ("Leave the bear"), its text's clause fixed.
+9. Stingray: tier two on his word of 20 November ("with the Macaque, move this to tier 2 now");
+   its starved stock the stock re-deal's.
+10. Wild Boar: settled 20 November, left as built ("Boar seems good to leave as is").

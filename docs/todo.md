@@ -161,7 +161,7 @@ pieces, so each stands on the footing in the first line.
 - [ ] Minerva's replacement tier-one tank, Ryan's own design: the lure tank (`minerva_lure_tank.md`: "Every hit lures", each hit taken an Armoured until the round's end), the one left of your four of 16 November ("Badger, Boar, Mole, and Lure tank, for 4-4-2"): the Polar Bear is tier two in content and the Wild Boar tier one, its numbers its tier two's until a session moves them
 - [ ] Static, a tier one and Aphelion's shock unit (`aphelion_static.md`: every hit lays Static 1, a damaged Static foe hurting itself and the foes round it, Static conducting Chain): the cascade, and the triangle on strikes, guns and armour
 - [ ] Aphelion's defensive tier one, the Barrier and Ward support (`aphelion_barrier_ward.md`: "Have to make it interesting but not broken"): its three shapes, and in Aphelion's session its Shock, Chain and Cryo setters
-- [ ] The Baboon's and the Stingray's tiers, placed later with Aphelion's tier ones ("Let's just design the best design we can and place it later")
+- [ ] The Baboon's tier, placed later with Aphelion's tier ones ("Let's just design the best design we can and place it later"; the Stingray's placed at two on 20 November, the Macaque at one)
 
 **A new direction of Ryan's, a first round owed in chat** (his notes of 5 and 6 November head each brief):
 

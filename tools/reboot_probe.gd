@@ -12,7 +12,10 @@ extends SceneTree
 ## the shield each fired; one whose reboot may be its second spend (the Needletail's, the same
 ## day): how many of its reboots came after a spend of its own; and one that ramps Ricochet (the
 ## Skua's, 19 November): its peak stacks a fight and its halvings; one that moves heat (the Puffin's,
-## 19 November): its pulls a fight and the heat each took, its dumps and the heat each passed. For
+## 19 November): its pulls a fight and the heat each took, its dumps and the heat each passed; one
+## that fires its heat or blasts it (the Whip Scorpion's, 20 November): its Ray's shots a fight and
+## the heat each fired, its blasts and what each dealt to every foe; one that spends rage (the
+## Nemesis's): its rage spends a fight and its Instant actions. For
 ## every machine, the share of their turns the squad's other three gave to a reboot, since a machine
 ## that takes its allies' heat is read by theirs. A direction, never a gate: the bot's play of the reboot is a first
 ## heuristic, so its losses are a floor of skill. A fight still standing at forty rounds (CAP)
@@ -21,7 +24,12 @@ extends SceneTree
 ##   perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/reboot_probe.gd -- --bosses --seeds 6 --only kite,badger
 ## Options: --seeds N (6), --only <chassis ids>, --bosses, --branches <picks> (the
 ## machine read's upgrades, its directions in the order taken: --branches defence,defence; each
-## machine read takes those its chassis allows). Four in parallel, a part of the roster each, read
+## machine read takes those its chassis allows), --heat-max N (a what-if: the read machine's heat
+## maximum: the Whip Scorpion's lever, Ryan's of 17 November), --face-heat <component>=N (a what-if:
+## a piece's printed heat: the Nemesis's Knuckles, Ryan, 20 November: "I suspect that the knuckles
+## are too hot"), --release-per N (a what-if: the heat a point of a reboot's blast stands for, on
+## every passive that blasts: the Whip Scorpion's 2), --stock <component ids> (a what-if: the read
+## machine's stock in place of its own, in order). Four in parallel, a part of the roster each, read
 ## the whole roster in about seven minutes.
 ##
 ## The proposal's leans it laid over its fight loop went with their calls: the Polar Bear's and
@@ -35,6 +43,10 @@ var seeds := 6
 var only: Array = []
 var bosses := false
 var picks: Array = []   # the machine read's branch picks (--branches)
+var heat_max := -1      # --heat-max: the read machine's heat maximum as a what-if; -1 leaves content's
+var face_heat := {}     # --face-heat: component id -> its printed heat as a what-if
+var release_per := -1   # --release-per: a reboot blast's heat a point as a what-if; -1 leaves content's
+var stock: Array = []   # --stock: the read machine's stock as a what-if; empty leaves content's
 
 const CAP := 40   # a fight still standing at forty rounds ends there as it stands, the bot stalled
 
@@ -52,11 +64,38 @@ func _init() -> void:
 				bosses = true
 			"--branches":
 				picks = Array(v.split(","))
+			"--heat-max":
+				heat_max = maxi(1, int(v))
+			"--release-per":
+				release_per = maxi(1, int(v))
+			"--stock":
+				stock = Array(v.split(","))
+			"--face-heat":
+				for pair in v.split(","):
+					face_heat[pair.get_slice("=", 0)] = maxi(0, int(pair.get_slice("=", 1)))
 	db = ContentDB.load_default()
 	if not db.load_errors.is_empty():
 		push_error("content did not load: " + "\n".join(db.load_errors))
 		quit(1)
 		return
+	for cid in face_heat.keys():
+		if db.components.has(cid):
+			db.components[cid]["face"]["heat"] = int(face_heat[cid])
+	if not stock.is_empty():
+		for cid in only:
+			if db.chassis.has(cid):
+				db.chassis[cid]["loadout"] = stock.duplicate()
+	if release_per > 0:
+		for cid in db.chassis.keys():
+			var p = db.chassis[cid].get("passive", null)
+			if p is Dictionary:
+				for eff in p.get("effects", []):
+					if str(eff.get("effect", "")) == "reboot_release":
+						eff["per"] = release_per
+	if heat_max > 0:
+		for cid in only:
+			if db.chassis.has(cid):
+				db.chassis[cid]["heat_max"] = heat_max
 	var mates := ["badger", "prairie_dog", "cassowary"]
 	var comps: Array = []
 	for fac in db.factions.keys():
@@ -67,8 +106,9 @@ func _init() -> void:
 		for size in ["formation", "elite"]:
 			for c in db.compositions(str(fac), 1, size):
 				comps.append(c)
-	print("%d %s, %d seeds, the squad's three: %s%s" % [comps.size(), "bosses" if bosses else "compositions", seeds, ", ".join(mates),
-		"" if picks.is_empty() else ", upgrades " + ",".join(picks)])
+	print("%d %s, %d seeds, the squad's three: %s%s%s%s" % [comps.size(), "bosses" if bosses else "compositions", seeds, ", ".join(mates),
+		"" if picks.is_empty() else ", upgrades " + ",".join(picks), "" if heat_max < 0 else ", its heat maximum %d" % heat_max,
+		("" if face_heat.is_empty() else ", heat " + str(face_heat)) + ("" if release_per < 0 else ", a blast's point every %d heat" % release_per) + ("" if stock.is_empty() else ", its stock " + ",".join(stock))])
 	var t0 := Time.get_ticks_msec()
 	print("| Machine | Fights | Won | Rounds | Spent | Rebooted | Held | Rounds a reboot | Overheats a fight | Burn a fight | Bare turns | Sealed | Blasts a fight | Own hull lost | Wrecked | Squad hull lost | Mates rebooted |")
 	print("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
@@ -82,7 +122,8 @@ func _init() -> void:
 			"bare": 0, "sealed": 0, "blasts": 0, "hull_lost": 0.0, "wrecked": 0, "squad_lost": 0.0,
 			"zaps": 0, "whole": 0, "whole_shield": 0, "spend_reboot": 0,
 			"peak": 0, "halvings": 0, "halved_rebooting": 0, "stacks_lost": 0,
-			"pulls": 0, "pulled": 0, "dumps": 0, "dumped": 0, "mate_turns": 0, "mate_reboots": 0}
+			"pulls": 0, "pulled": 0, "dumps": 0, "dumped": 0, "mate_turns": 0, "mate_reboots": 0,
+			"rays": 0, "ray_heat": 0, "blast_dealt": 0, "rage_spends": 0, "instants": 0}
 		for ci in range(comps.size()):
 			for s in range(seeds):
 				_fight(str(cid), mates, comps[ci], 1000 + s * 7919 + ci * 104729, agg)
@@ -95,6 +136,13 @@ func _init() -> void:
 			agg["overheats"] / n, agg["burn"] / n, int(round(100.0 * agg["bare"] / t)), int(round(100.0 * agg["sealed"] / t)),
 			agg["blasts"] / n, int(round(agg["hull_lost"] / n)), int(round(100.0 * agg["wrecked"] / n)), int(round(agg["squad_lost"] / n)),
 			int(round(100.0 * agg["mate_reboots"] / maxf(1.0, float(agg["mate_turns"]))))])
+		if int(agg["rays"]) + int(agg["blasts"]) > 0:
+			spent_shield.append("%s: %.2f shots of its whole heat a fight, %s heat each; %.2f blasts a fight, %s on every foe each" % [
+				str(db.chassis[cid].get("name", cid)), agg["rays"] / n, ("%.1f" % (float(agg["ray_heat"]) / float(agg["rays"]))) if int(agg["rays"]) > 0 else "no",
+				agg["blasts"] / n, ("%.1f" % (float(agg["blast_dealt"]) / float(agg["blasts"]))) if int(agg["blasts"]) > 0 else "no"])
+		if int(agg["rage_spends"]) + int(agg["instants"]) > 0:
+			spent_shield.append("%s: %.2f rage spends a fight, %.2f Instant actions a fight" % [
+				str(db.chassis[cid].get("name", cid)), agg["rage_spends"] / n, agg["instants"] / n])
 		if int(agg["pulls"]) + int(agg["dumps"]) > 0:
 			spent_shield.append("%s: %.2f pulls a fight, %s heat each; %.2f dumps a fight, %s heat each" % [
 				str(db.chassis[cid].get("name", cid)), agg["pulls"] / n, ("%.1f" % (float(agg["pulled"]) / float(agg["pulls"]))) if int(agg["pulls"]) > 0 else "no",
@@ -165,6 +213,14 @@ func _fight(cid: String, mates: Array, c: Dictionary, seed_value: int, agg: Dict
 			var said := str(line)
 			if said.begins_with(valves):
 				agg["blasts"] += 1
+				agg["blast_dealt"] += int(said.get_slice(", ", 1).get_slice(" ", 0))   # "N on every foe"
+			elif said.begins_with("%s fires its heat: -" % me.unit.display_name):
+				agg["rays"] += 1
+				agg["ray_heat"] += int(said.get_slice("-", 1).get_slice(",", 0))
+			elif said.begins_with("%s spends " % me.unit.display_name) and said.contains(" rage: "):
+				agg["rage_spends"] += 1
+			elif said.begins_with("%s: instant, rolls again" % me.unit.display_name):
+				agg["instants"] += 1
 			elif said.begins_with(zapped) and said.contains("shield into the blow"):
 				agg["zaps"] += 1
 			elif said.begins_with(whole):
