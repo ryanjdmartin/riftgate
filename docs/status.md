@@ -406,6 +406,15 @@ Every page lives in Ryan's account and is republished by its URL (read first), i
 with it, on his word. A page's link goes into this file in the same commit as its first
 publish; the commands are in `README.md`.
 
+- The terminology pass's rules, for his marks: https://claude.ai/artifact/TXNpkS4zuPJ5c6sEpk9oF4
+  (Version 1, 20 November, from `claude/gameplay-terminology-tooltips-rug879`), made from
+  `docs/terminology_proposal.md`'s sections 2 and 4 by `tools/pages/terminology_marks_page.py` and
+  published with the `db` and `user` capabilities. Each rule, call and name takes a mark and a
+  note, saved in the collection `marks`, a document an item keyed by its id (`rule-13`,
+  `name-aloft`: `title`, `mark`, `note`, `at`). He may mark there or in chat; a session reads
+  `marks` (ArtifactData, `list`) before it folds them into the proposal's section 8, and never
+  republishes while he is on the page.
+
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   Published at v0.655 on 20 November from main's file at `33c4cc61` (the page's Version 519),
   over this line's v0.654. Before republishing,

@@ -80,7 +80,8 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
   routes input as the engine does.
 - `tools/`: each script carries its own usage notes at its head; the commands are below.
   - Generated documents: `export_vocabulary.gd`, `pages/bible_tables.py`,
-    `pages/bible_merge.py`, `pages/roster_analysis_page.py`, `synergy_map.py`
+    `pages/bible_merge.py`, `pages/roster_analysis_page.py`, `pages/terminology_marks_page.py`,
+    `synergy_map.py`
   - Runners: `balance.gd`, `anchor_read.gd`, `campaign_run.gd`, `battle_run.gd`, `quick_run.gd`,
     `map_survey.gd`
   - Probes: `special_probe.gd` and `chain_probe.gd` (each with a `_read.py`),
@@ -213,6 +214,9 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 python3 tools/synergy_map.py --write
 # the roster analysis as its page (status has the link)
 python3 tools/pages/roster_analysis_page.py > /tmp/roster_analysis.html
+# the terminology pass's rules as the page Ryan marks on (status has the link), from docs/terminology_proposal.md's
+# sections 2 and 4; publish with capabilities {"db": {}, "user": {}}, his marks in its collection `marks`
+python3 tools/pages/terminology_marks_page.py > build/terminology_marks.html
 
 # the hangar page (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH)
 python3 tools/hangar_data.py              # writes docs/hangar/pins.json, build/hangar/designs.json, build/hangar/text.json and build/hangar/foe_rules.json (failing when ContentDB's scaling moves under the formations), and build/hangar/readouts.json (what every piece does as the game's codex prints it, and the pieces each template prints on, run through Godot headless, so Godot on the PATH and the project imported), checks the renders manifest, prints the files map tools/hangar.html is published with
