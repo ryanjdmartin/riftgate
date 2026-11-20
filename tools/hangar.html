@@ -437,6 +437,108 @@ details{margin-top:8px} summary{cursor:pointer;color:var(--ink-3);font-size:13px
 .tpin .ex b{color:var(--ink);font-weight:600}
 .thow{font-size:13.5px;color:var(--ink-2);max-width:76ch;margin:10px 0 0}
 .thow li{margin:3px 0}
+/* ---- formations (20 November): each domain's packs by tier, folded to a line a pack; opened, its
+   grid as the fight stands it and every unit with its moves. A rank is drawn by position, a massive
+   foe by spanning both ranks, a scaled number by its tier's mark: structure, never hue alone. */
+.fview{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:12px 0 0}
+.fview .help{margin:0}
+.fdomain{margin-top:22px}
+.fdomain>h3{margin:0;font:700 23px/1.1 var(--display);letter-spacing:.04em;text-transform:uppercase;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.fdomain>h3 .n{font:500 12px/1 var(--mono);color:var(--ink-3);letter-spacing:0;text-transform:none}
+.fdomain .dsub{font-size:13px;color:var(--ink-2);margin:3px 0 0;max-width:76ch}
+.fdomain .dsub .linkbtn{font-size:13px}
+.ftier{margin:16px 0 2px;padding-top:8px;border-top:1px solid var(--rule);display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.ftier h4{margin:0;font:700 15px/1.1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.ftier .n{font:500 12px/1 var(--mono);color:var(--ink-3)}
+.ftier .what{font-size:12.5px;color:var(--ink-3)}
+.fcard{background:var(--paper);border:1px solid var(--rule);border-left:4px solid var(--rule-strong);border-radius:3px;margin-top:6px;scroll-margin-top:150px}
+.fcard.k-formation{border-left-color:var(--ink)}
+.fcard.k-patrol{border-left-style:dashed}
+.fcard.k-elite,.fcard.k-boss,.fcard.k-final,.fcard.k-finale{border-left-width:7px;border-left-style:double;border-left-color:var(--ink)}
+.fcard.open{border-color:var(--ink-3)}
+.fhead{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 10px;align-items:baseline;width:100%;padding:8px 10px;background:none;border:0;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.fhead:hover .fname{text-decoration:underline;text-underline-offset:3px}
+.fhead .fname{font:600 18px/1.15 var(--display);letter-spacing:.02em}
+.fhead .fid{font:400 11.5px/1.3 var(--mono);color:var(--ink-3);margin-left:6px;letter-spacing:0;overflow-wrap:anywhere}
+.fhead .fmeta{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+.fhead .fwho{grid-column:1 / -1;display:flex;gap:4px 10px;flex-wrap:wrap;align-items:center;font-size:12.5px;color:var(--ink-2)}
+.fwho .mini{display:inline-flex;gap:4px;align-items:center}
+.fwho .mini .sprite{width:20px;height:26px}
+.fwho .mini .sprite img{max-width:20px;max-height:26px}
+.fwho .mini .sprite.none{font-size:0}
+.pips{display:inline-flex;gap:2px;align-items:center;vertical-align:-1px}
+.pips i{display:block;width:8px;height:8px;border:1.5px solid var(--ink-2);border-radius:1px}
+.pips i.on{background:var(--ink)}
+.chipline{font:500 11px/1.5 var(--mono);color:var(--ink-2);border:1px solid var(--rule-strong);border-radius:3px;padding:0 5px;white-space:nowrap}
+.fbody{padding:0 10px 12px;border-top:1px dashed var(--rule)}
+.fq{margin:8px 0 0;font-size:14px;color:var(--ink);max-width:76ch}
+.fq b{font:600 11px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-right:6px}
+.ffacts{margin:6px 0 0;font-size:12.5px;color:var(--ink-3);max-width:76ch}
+.fgrid{display:grid;grid-template-columns:16px repeat(var(--cols,4),minmax(0,1fr));gap:4px;margin:10px 0 4px}
+.fgrid .rl{writing-mode:vertical-rl;transform:rotate(180deg);font:600 9px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);text-align:center;align-self:center}
+.fcell{min-width:0;border:1px solid var(--rule-strong);border-radius:3px;background:var(--ground);padding:5px 3px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;color:var(--ink);font:inherit;cursor:pointer}
+.fcell:hover,.fcell:focus-visible{border-color:var(--ink)}
+.fcell.empty{border-style:dashed;border-color:var(--rule);background:transparent;cursor:default;min-height:44px}
+.fcell.massive{border-width:2px}
+.fcell.part{border-style:dotted;border-width:2px}
+.fcell.scaled{box-shadow:inset 0 3px 0 var(--ink)}
+.fcell .cn{font-weight:600;font-size:12px;line-height:1.15;overflow-wrap:anywhere}
+.fcell .cs{font:500 10.5px/1.35 var(--mono);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.fcell .ct{font:600 9px/1.3 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.fgridnote{font-size:12px;color:var(--ink-3);margin:0 0 6px}
+.funits{display:grid;gap:6px;margin-top:8px}
+.funit{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;padding:8px;border:1px solid var(--rule);border-radius:3px;background:var(--ground)}
+.funit .uhead{display:flex;gap:4px 8px;align-items:baseline;flex-wrap:wrap}
+.funit .uname{font-weight:600;font-size:15px}
+.funit .ucount{font:500 12px/1 var(--mono);color:var(--ink-3)}
+.funit .ustats{font:500 12px/1.45 var(--mono);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.funit .uabil{font-size:12.5px;color:var(--ink-2)}
+.funit .moves{grid-column:1 / -1}
+.tiers{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px}
+.tiers span{font:500 11px/1.5 var(--mono);border:1px solid var(--rule-strong);border-radius:3px;padding:0 5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.tiers span.here{border-color:var(--ink);border-width:2px;color:var(--ink);font-weight:600}
+.moves{display:grid;gap:0}
+.move{border-top:1px dashed var(--rule);padding:5px 0 3px;font-size:13.5px}
+.move .mhead{display:flex;gap:4px 8px;align-items:baseline;flex-wrap:wrap}
+.move .mname{font-weight:600}
+.move .mkind{font:600 10px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.move .mline{color:var(--ink);font-variant-numeric:tabular-nums;display:flex;gap:4px 6px;flex-wrap:wrap;align-items:baseline}
+.move .mline .num{font:600 13px/1.3 var(--mono)}
+.move .mline .sep{color:var(--ink-3)}
+.move .mtext{color:var(--ink-2);font-size:13px}
+.move.planned{opacity:.6}
+.move.planned .mname{text-decoration:line-through;text-decoration-color:var(--ink-3)}
+.fbring{margin-top:8px;font-size:13px;color:var(--ink-2)}
+.fbring b{font:600 11px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-right:6px}
+.stands{display:flex;flex-direction:column;gap:3px;margin:0}
+details.fedit{margin-top:12px;border-top:1px dashed var(--rule);padding-top:8px}
+details.fedit>summary{font:600 13px/1.35 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+details.fedit .shint{font-size:12.5px;color:var(--ink-3);margin:6px 0 8px;max-width:72ch}
+details.fedit .lab{margin-top:8px}
+details.fedit .fgrid select{padding:5px 4px;font-size:13px}
+details.fedit .sfield{margin-top:8px}
+details.fedit .bnums{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.stands .linkbtn{text-align:left}
+
+/* ---- the Content tab's sheets (20 November): the Bench's sheet for every kind, the raw every-field
+   editor behind its toggle */
+.sheet .sbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sheet .sbar .sp{flex:1}
+.sheet .bhead .ids{font:400 12px/1.4 var(--mono);color:var(--ink-3);margin:0}
+.sheet .shint{font-size:12.5px;color:var(--ink-3);margin:0 0 8px;max-width:72ch}
+.sheet details.sdesign>summary,.sheet details.sraw>summary{font:600 13px/1.35 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.sheet .sfield{margin-top:8px}
+.sheet .sfacts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 12px;font-size:13.5px;margin:0}
+.sheet .sfacts dt{font:600 11px/1.7 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.sheet .sfacts dd{margin:0;color:var(--ink-2);overflow-wrap:anywhere}
+.sheet .mcard{background:var(--paper);border:1px solid var(--rule);border-radius:3px;padding:8px 12px;margin-top:8px}
+.sheet .mcard .move{border-top:0;padding-top:0}
+.sheet .bnums.tight{grid-template-columns:repeat(auto-fill,minmax(84px,1fr))}
+.sheet .used{display:flex;gap:4px 10px;flex-wrap:wrap;font-size:13.5px}
+.sheet .prow{display:grid;grid-template-columns:minmax(120px,1fr) 2fr;gap:8px}
+.tag.drawn{color:var(--ink-3);border-style:dashed;border-width:1px}
+@media (max-width:560px){.sheet .prow{grid-template-columns:1fr}}
+@media (max-width:520px){.fhead{grid-template-columns:1fr}.fhead .fmeta{justify-content:flex-start}.funit{grid-template-columns:1fr}.funit .sprite{display:none}}
 @media (max-width:760px){.motion{grid-template-columns:1fr}}
 @media (prefers-reduced-motion: reduce){.toast{transition:none}}
 </style>
@@ -493,7 +595,7 @@ const REACH = {direct: "direct", indirect: "indirect", every_foe: "every foe"};
 const state = {
   shipped: {}, about: {}, edits: {},
   section: "codex", sub: {content: "components.entries", text: "overview", bench: "all"},
-  open: null, returnTo: null, draft: null, invalid: new Set(),
+  open: null, returnTo: null, draft: null, invalid: new Set(), raw: false, fopen: new Set(), fscroll: null, fedit: new Set(),
   db: null, user: null, dbState: "loading", canWrite: true,
   designs: null, dnotes: [], designState: "connecting", dNote: null, dDir: null, dIdea: null, dAdd: null, bbrief: {},
   pins: null, renders: null,
@@ -505,6 +607,7 @@ try {
   const s = JSON.parse(localStorage.getItem("hangar.tabs") || "{}");
   if (SECTIONS.some(x => x.id === s.section)) state.section = s.section;
   if (s.sub) Object.assign(state.sub, s.sub);
+  if (s.v !== 2) delete state.sub.foeView;   // the Foes tab opens on its formations since 20 November, whatever view was kept before
   if (state.sub.content !== "changes" && !contentFiles().some(f => f.key === state.sub.content)) state.sub.content = "components.entries";
 } catch (e) {}
 try {
@@ -514,7 +617,7 @@ try {
 // A link to one brief (#br-<its file's name, hyphens for underscores>) opens it on the Bench: a
 // machine's on its sheet, any other on the Briefs list.
 if (location.hash.startsWith("#br-")) { state.section = "bench"; state.bopen = {kind: "link", id: location.hash.slice(4)}; }
-function remember() { try { localStorage.setItem("hangar.tabs", JSON.stringify({section: state.section, sub: state.sub})); } catch (e) {} }
+function remember() { try { localStorage.setItem("hangar.tabs", JSON.stringify({v: 2, section: state.section, sub: state.sub})); } catch (e) {} }
 function rememberFilters() { try { localStorage.setItem("hangar.filters", JSON.stringify(state.filters)); } catch (e) {} }
 
 const $ = (s, root = document) => root.querySelector(s);
@@ -648,8 +751,34 @@ function ctx() {
     byMaker.set(e.maker, (byMaker.get(e.maker) || 0) + 1);
     for (const cid of (e.fixed || [])) locked.add(cid);
   }
-  return CTX = {chassis: byId("chassis.entries"), makers: byId("chassis.makers"), comps: liveMap("components.entries"), factions: byId("factions.entries"), foes: byId("foes.entries"), fitted, byMaker, locked};
+  const foes = byId("foes.entries"), factions = byId("factions.entries");
+  const bosses = new Set(), coreOf = new Map();
+  for (const f of factions.values()) for (const b of [].concat(f.boss || [])) bosses.add(b);
+  for (const f of foes.values()) for (const p of (f.parts || [])) coreOf.set(p, f.id);
+  return CTX = {chassis: byId("chassis.entries"), makers: byId("chassis.makers"), comps: liveMap("components.entries"), factions, foes, fitted, byMaker, locked,
+    whole: resolveFoes(foes), bosses, coreOf};
 }
+// A promoted form as the content loads it (ContentDB._resolve_promotions): its hero's entry with its
+// own fields over it, the hero's moves first (one of its own with a hero move's id in that move's
+// place), `hero` and `design` its own. Every reader of a foe's numbers and moves reads this.
+function resolveFoes(foes) {
+  const out = new Map(foes);
+  for (const [id, e] of foes) {
+    const base = e.promotes ? foes.get(e.promotes) : null;
+    if (!base || base.promotes) continue;
+    const whole = JSON.parse(JSON.stringify(base));
+    delete whole.hero; delete whole.design;
+    for (const [k, v] of Object.entries(e)) if (k !== "actions") whole[k] = v;
+    const own = Array.isArray(e.actions) ? e.actions : [], byId = new Map(own.map(o => [o.id, o])), taken = new Set(), acts = [];
+    for (const a of base.actions || []) { if (byId.has(a.id)) { acts.push(byId.get(a.id)); taken.add(a.id); } else acts.push(a); }
+    for (const o of own) if (!taken.has(o.id)) acts.push(o);
+    whole.actions = acts;
+    out.set(id, whole);
+  }
+  return out;
+}
+const foeWhole = (id) => ctx().whole.get(id) || null;
+const foeName = (id) => { const f = foeWhole(id); return f ? (f.name || plain(id)) + (f.promotes && !(ctx().foes.get(id) || {}).name ? ", promoted" : "") : plain(id); };
 // The components on a chassis's die: fixed first, then one per hardpoint.
 function dieIds(e) { return [...(e.fixed || []), ...(e.loadout || []).slice(0, Number(e.hardpoints || 0))]; }
 function dieComps(e) { return dieIds(e).map(id => ctx().comps.get(id)).filter(Boolean).map(x => x.entry); }
@@ -732,20 +861,22 @@ const FILTER_SPECS = {
   },
   foes: {
     noun: ["foe", "foes"], placeholder: "Name or faction",
-    text: e => [e.name, e.id, factionName(e.faction), e.rank, e.aim, foeKind(e)],
+    text: e => [e.name, e.id, factionName((foeWhole(e.id) || e).faction), (foeWhole(e.id) || e).rank, foeKind(e), ...standsIn(e.id).map(p => p.card.name)],
     groups: [
       {id: "faction", label: "Faction", of: e => [e.faction], name: factionName, order: () => [...ctx().factions.keys()]},
       {id: "kind", label: "Kind", of: e => [foeKind(e)], order: ["rank and file", "elite", "wanderer", "boss", "hero", "promoted", "part"]},
       {id: "tier", label: "Tier", of: e => foeTiers(e), name: v => v === "final" ? "Final" : "T" + v, order: ["1", "2", "3", "final", "1*", "2*", "3*"]},
       {id: "art", label: "Art", of: e => [foeArtState(e.id)], name: v => v === "none" ? "No art" : v === "hero" ? "Hero's" : v[0].toUpperCase() + v.slice(1), order: ["picked", "hero", "placeholder", "none"]},
-      {id: "rank", label: "Rank", of: e => [e.rank], order: ["front", "back"]},
-      {id: "size", label: "Size", of: e => [String(e.size || 1)], name: v => v === "2" ? "Massive" : "Size " + v},
-      {id: "aim", label: "Aim", of: e => [e.aim || "exposed"]},
+      {id: "rank", label: "Rank", of: e => [(foeWhole(e.id) || e).rank], order: ["front", "back"]},
+      {id: "size", label: "Size", of: e => [isMassive(foeWhole(e.id) || e) ? "massive" : "one"], name: v => v === "massive" ? "Massive" : "One slot", order: ["one", "massive"]},
+      // Whether a pack deals it (20 November): in a grid or a fight's line, brought by one (a split, a
+      // summon, a part), or by nothing at all.
+      {id: "packs", label: "In packs", of: e => { const p = standsIn(e.id); return [!p.length ? "none" : p.some(x => !x.how) ? "in" : "brought"]; }, name: v => ({in: "In a pack", brought: "Brought by one", none: "In none"})[v] || v, order: ["in", "brought", "none"]},
       EDITS,
     ],
-    sorts: [BY_ORDER, BY_NAME, stat("hp", "HP", e => e.hp), stat("attack", "Attack", e => e.attack), stat("armour", "Armour", e => e.armour ?? 0),
-      stat("movespeed", "Move", e => e.movespeed), stat("size", "Size", e => e.size ?? 1), stat("stun_resist", "Stun resist", e => e.stun_resist ?? 0)],
-    line: e => [factionName(e.faction), e.rank, `${e.hp} hp`, `attack ${e.attack}`, e.armour ? `armour ${e.armour}${e.armour_step ? ` (+${e.armour_step} a tier)` : ""}` : "", e.movespeed !== undefined ? `move ${e.movespeed}` : ""],
+    sorts: [BY_ORDER, BY_NAME, stat("hp", "HP", e => (foeWhole(e.id) || e).hp), stat("attack", "Attack", e => (foeWhole(e.id) || e).attack), stat("armour", "Armour", e => (foeWhole(e.id) || e).armour ?? 0),
+      stat("movespeed", "Move", e => (foeWhole(e.id) || e).movespeed), stat("packs", "Packs it stands in", e => standsIn(e.id).length)],
+    line: e => { const f = foeWhole(e.id) || e; return [factionName(f.faction), f.rank, `${f.hp} hp`, `attack ${f.attack}`, f.armour ? `armour ${f.armour}${f.armour_step ? ` (+${f.armour_step} a tier)` : ""}` : "", f.movespeed !== undefined ? `move ${f.movespeed}` : ""]; },
   },
   factions: {
     noun: ["faction", "factions"], placeholder: "Name",
@@ -759,15 +890,18 @@ const FILTER_SPECS = {
     line: e => { const n = ctx().byMaker.get(e.id) || 0; return [e.capital ? "the capital" : "", n + " chassis"]; },
   },
   vocabulary: {
-    noun: ["entry", "entries"], placeholder: "Word or category",
-    text: e => [e.name, e.id, plain(e.category)],
+    noun: ["entry", "entries"], placeholder: "Word, category or codex",
+    text: e => [e.name, e.id, plain(e.category), e.codex],
     groups: [
       {id: "category", label: "Category", of: e => [e.category], name: plain},
       {id: "status", label: "Status", of: e => e.status === "planned" ? ["planned"] : [], keep: true},
+      // Whether a screen draws its entry (the Text tab's inventory) and whether content names it (20 November).
+      {id: "drawn", label: "In game", of: e => { const s = state.text && state.text.byId.get(`vocabulary.entries/${e.id}/codex`); return s ? [s.shown ? "drawn" : "not"] : []; }, name: v => v === "drawn" ? "Drawn" : "Not drawn", order: ["drawn", "not"]},
+      {id: "named", label: "In content", of: e => [(termUses().get(e.id) || []).length ? "named" : "none"], name: v => v === "named" ? "Named by a piece" : "Named by none", order: ["named", "none"]},
       EDITS,
     ],
-    sorts: [BY_ORDER, BY_NAME, {id: "category", label: "Category", of: e => plain(e.category)}],
-    line: e => [plain(e.category)],
+    sorts: [BY_ORDER, BY_NAME, {id: "category", label: "Category", of: e => plain(e.category)}, stat("uses", "Pieces naming it", e => (termUses().get(e.id) || []).length)],
+    line: e => { const n = (termUses().get(e.id) || []).length; return [plain(e.category), n ? `named by ${n} ${n === 1 ? "piece" : "pieces"}` : "named by no piece"]; },
   },
 };
 // A module in one line: its stat lines, then its rule (ContentDB.module_description's shape). The
@@ -849,8 +983,8 @@ function filterBar(view, opts = {}) {
   for (const s of spec.sorts) { const o = el("option", {value: s.id}, s.label); if (s === sort) o.selected = true; pick.append(o); }
   pick.addEventListener("change", () => setFilter(kind, f => { f.sort = pick.value; f.dir = (spec.sorts.find(s => s.id === pick.value) || {}).start || 1; }));
   const dirs = sort.dirs || (sort.numeric ? ["Low first", "High first"] : ["A to Z", "Z to A"]);
-  const row = el("div", {class: "frow"}, q,
-    el("label", {class: "fsort", for: "flt-sort-" + kind}, "Sort", pick),
+  const row = el("div", {class: "frow"}, q);
+  if (spec.sorts.length > 1) row.append(el("label", {class: "fsort", for: "flt-sort-" + kind}, "Sort", pick),
     el("button", {class: "btn", id: "flt-dir-" + kind, title: "Reverse the order", onclick: () => setFilter(kind, f => { f.dir = -f.dir; })}, f.dir === 1 ? dirs[0] : dirs[1]));
   if (view.chips.length) row.append(el("button", {class: "btn", id: "flt-open-" + kind, "aria-expanded": String(f.open), "aria-controls": "flt-groups-" + kind,
     onclick: () => setFilter(kind, f => { f.open = !f.open; })}, "Filters" + (view.picked ? " · " + view.picked : "")));
@@ -881,7 +1015,7 @@ function noMatch(view) {
 
 // ------------------------------------------------------------------ render
 function render() {
-  VOCAB = null; CTX = null;
+  VOCAB = null; CTX = null; FCARDS = null; FINDEX = null; TERMS = null;
   // A filter control keeps focus (and the caret) across the redraw it causes.
   const act = document.activeElement;
   const keep = act && act.id && (act.id.startsWith("flt-") || act.id.startsWith("dz-") || act.id.startsWith("tx-") || act.id.startsWith("bn-")) ? {id: act.id, a: act.selectionStart, b: act.selectionEnd} : null;
@@ -900,12 +1034,12 @@ function render() {
 }
 // What a tab leaves behind it: an open entry, a text, a sheet and the notes being written.
 function leaveViews() {
-  state.open = null; state.topen = null; state.tmore = 0; state.bopen = null;
+  state.open = null; state.raw = false; state.topen = null; state.tmore = 0; state.bopen = null;
   state.dNote = null; state.dDir = null; state.dIdea = null;
   if (location.hash.startsWith("#br-")) setHash("");
 }
 function setSection(id) { state.section = id; state.returnTo = null; leaveViews(); remember(); render(); window.scrollTo(0, 0); }
-function setSub(id) { state.sub[state.section] = id; leaveViews(); remember(); render(); }
+function setSub(id) { state.sub[state.section] = id; state.returnTo = null; leaveViews(); remember(); render(); }
 function renderTabs() {
   const tabs = $("#tabs"); tabs.replaceChildren();
   const pending = pendingCount();
@@ -1074,44 +1208,600 @@ function renderCodex(main) {
   }
   if (location.hash && location.hash.startsWith("#cx-")) requestAnimationFrame(() => { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); });
 }
-function openFromCodex(key, id) {
-  state.section = "content"; state.sub.content = key; state.returnTo = "codex";
-  remember(); openEntry(key, id);
+function openFromCodex(key, id) { openSheet(key, id); }
+
+// ------------------------------------------------------------------ formations
+// The Foes tab is formations first (20 November, Ryan: "Independent units don't matter anymore in
+// isolation, we're tuning around the formations, so I need the context"). Every pack a domain
+// deals, by tier, under the name the reports use (its id's words), with its grid as the fight
+// stands it and every unit's numbers and moves at that tier: a formation, a patrol and an elite
+// from content/factions.json's compositions, a boss's fight with its escort (or alone), a final
+// (a bench hero with the tier's own wildlife) and the finale's promoted form. The engine's rules
+// that are no content (the boss tiers, the threat rating by size, the ramp's span, how a move's
+// condition and aim are said) come from hangar/foe_rules.json, read out of sim/ by
+// tools/hangar_data.py, which fails when ContentDB.scale_boss or ContentDB.foes_for move under it.
+// Scaling, as ContentDB.foes_for does it: a boss's (or a final's, or the finale's) commanders and
+// their parts take the battle's tier (BOSS_TIERS), and so does an elite, its parts left at their own
+// numbers; the rank and file never scale.
+const ensureFoeRules = () => ensure("foerules", "hangar/foe_rules.json", j => { state.foeRules = j; });
+const RULES_FALLBACK = {boss_tiers: [{hp: 1, attack: 0}], squad_by_size: {patrol: 1, formation: 3, elite: 4, escort: 4}, squad_default: 3, boss_squad: 4, columns: 4,
+  tier_every: 4, ramp_top: 12, final_escort: 3, final_after: 3, when_text: {}, aim_text: {}, numbered_riders: ["scorch", "ablate", "corrupt", "brittle"],
+  composition_sizes: ["patrol", "formation", "elite", "escort"], scaled: {commanders: true, commander_parts: true, elites: true, elite_parts: false, rank_and_file: false}};
+const rules = () => state.foeRules || RULES_FALLBACK;
+const TIER_LABEL = {1: "Tier one", 2: "Tier two", 3: "Tier three", finale: "The finale"};
+const FKIND = {formation: "formation", patrol: "patrol", elite: "elite", boss: "boss fight", final: "final", finale: "finale"};
+const compTiers = (c) => [].concat(c.tiers === undefined ? [1] : c.tiers).map(Number);
+const gridIds = (c) => [...(c.front || []), ...(c.back || [])].filter(x => typeof x === "string" && x);
+// The lead: content's own, else the first foe in reading order (ContentDB.grid_members).
+const leadOf = (c) => (c.lead && gridIds(c).includes(c.lead)) ? c.lead : gridIds(c)[0] || "";
+// The threat rating (ContentDB.squad_of): its own squad, else its size's.
+function squadOf(c) {
+  if (c.squad !== undefined) return Math.max(1, Math.min(4, Number(c.squad) || 1));
+  const s = rules().squad_by_size[c.size];
+  return s === undefined ? rules().squad_default : s;
+}
+const firstRampOf = (t) => rules().tier_every * (Math.max(1, Math.min(3, t)) - 1);
+// A composition's name as the reports say it: its id's words, a foe's own name where they spell
+// one of its foes (the tail of a foe's id counts, so captains_warband is the Goblin Captain's), an
+// s before another word on the lead's or the boss's name its possessive, on a foe the grid holds
+// more than once a plural's.
+function formationName(c) {
+  const words = String(c.id || "").split("_"), grid = gridIds(c), lead = leadOf(c), keys = new Map(), heads = new Map(), many = new Set();
+  const counts = {}; for (const g of grid) counts[g] = (counts[g] || 0) + 1;
+  for (const fid of new Set([...grid, ...(c.boss ? [c.boss] : [])])) {
+    const f = foeWhole(fid); if (!f) continue;
+    const nw = String(f.name || "").replace(/^The\s+/i, "").split(/\s+/).filter(Boolean), iw = fid.split("_");
+    const letters = (s) => s.toLowerCase().replace(/[^a-z ]/g, "");
+    for (let k = 1; k <= iw.length && k <= nw.length; k++) {
+      const tail = iw.slice(-k).join(" "), head = iw.slice(0, k).join(" ");
+      if (letters(nw.slice(-k).join(" ")) === tail) { keys.set(tail, nw.slice(-k).join(" ")); if (counts[fid] > 1) many.add(tail); if (fid === lead || fid === c.boss) heads.set(tail, nw.slice(-k).join(" ")); }
+      if ((fid === lead || fid === c.boss) && letters(nw.slice(0, k).join(" ")) === head) heads.set(head, nw.slice(0, k).join(" "));
+    }
+  }
+  const out = [];
+  for (let i = 0; i < words.length;) {
+    let hit = false;
+    for (let k = Math.min(4, words.length - i); k >= 1 && !hit; k--) {
+      const ph = words.slice(i, i + k).join(" "), stem = ph.endsWith("s") ? ph.slice(0, -1) : null, next = i + k < words.length;
+      let w = null;
+      if (keys.has(ph)) w = keys.get(ph);
+      else if (stem && next && heads.has(stem)) w = heads.get(stem) + "'s";
+      else if (stem && next && many.has(stem)) w = keys.get(stem) + "s'";
+      else if (stem && !next && keys.has(stem)) w = keys.get(stem) + "s";
+      if (w !== null) { out.push(w); i += k; hit = true; }
+    }
+    if (!hit) out.push(words[i++]);
+  }
+  const s = out.join(" ");
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+// A foe's numbers at a tier: its own, or scaled as a commander and an elite are (ContentDB.scale_boss).
+function atTier(f, t, scaled) {
+  const bt = rules().boss_tiers, k = Math.max(0, Math.min(bt.length - 1, Number(t) - 1)), r = bt[k] || {hp: 1, attack: 0};
+  const hp = Number(f.hp || 0), attack = Number(f.attack || 0), armour = Math.max(0, Number(f.armour || 0)), step = Math.max(0, Number(f.armour_step || 0));
+  if (!scaled) return {hp, attack, armour, scaled: false};
+  return {hp: Math.max(1, Math.round(hp * Number(r.hp))), attack: attack + Number(r.attack || 0), armour: armour + step * k, scaled: true, tier: Number(t)};
+}
+// The moves the engine runs (make_foe: the implemented ones; a foe with none swings its attack).
+function liveMoves(f) {
+  const acts = (f.actions || []).filter(a => a && a.status === "implemented");
+  return acts.length ? acts : [{id: "attack", name: "Attack", kind: "attack", factor: 1, status: "implemented"}];
+}
+const moveNumber = (a, nums) => (a.kind || "attack") === "attack" && !a.power ? Math.round(nums.attack * Number(a.factor ?? 1)) : null;
+// Its weight in the deployment (Foe.threat): its heaviest blow times its strikes, at its numbers.
+const threatOf = (f, nums) => Math.max(0, ...liveMoves(f).map(a => (moveNumber(a, nums) || 0) * Math.max(1, Number(a.strikes || 1))));
+const isMassive = (f) => Number((f || {}).size || 1) >= 2;
+// One step of a move or a fall in words, its number in: what a special does, on whom.
+function stepWords(st, onKiller) {
+  const v = Number(st.value || 0), killer = onKiller ? " on its killer" : "", n = (x) => String(x);
+  const nm = (id) => foeName(id);
+  switch (st.effect) {
+    case "brace": return `${vocabName("braced")} ${n(v)} on itself`;
+    case "recover": return `recovers ${v} HP`;
+    case "heal": return `heals the most hurt of its own ${v} HP`;
+    case "brace_all": return `${vocabName("braced")} ${v} on every foe`;
+    case "cleanse": return "cleanses the most marked of its own";
+    case "barrier": return "a Barrier on itself";
+    case "regenerate": return `${vocabName("regenerating")} ${v} on itself`;
+    case "phase": return "fades: Phased through the next round";
+    case "revive_once": return `${vocabName("risen")}: gets back up once`;
+    case "revive_once_ally": return `${vocabName("risen")} on one of its own`;
+    case "summon": return `summons ${Number(st.count || 1)} × ${[].concat(st.foe || []).map(nm).join(" or ")}`;
+    case "rally": return `${vocabName("kindled")} ${v} on every foe`;
+    case "prime": return `${vocabName("primed")} ${v} on every other foe`;
+    case "ward_all": return "a Ward on every foe";
+    case "merge": return `takes in every ${[].concat(st.foe || []).map(nm).join(", ")} on the field, +${v} a blow for each`;
+    case "golden": return `${vocabName("golden")}: +${v} a blow and a point of armour, ${Number(st.rounds || 0) || "?"} rounds`;
+    case "appropriate": return `takes the shown entry's number (${vocabName("appropriated")})`;
+    case "drain_rerolls": return `the team ${v} reroll${v === 1 ? "" : "s"} short next round`;
+    case "ablate": return `${vocabName("ablating")} ${v}${killer}`;
+    case "jam": return `Jams the entry shown${killer}`;
+    case "brittle": return `${vocabName("brittled")} ${v}${killer}`;
+    case "brittle_all": return `${vocabName("brittled")} ${v} on every machine`;
+    case "sap_all": return `${vocabName("sapped")} ${v} on every machine`;
+    case "scorch_all": return `${vocabName("scorched")} ${v} on every machine`;
+    case "corrupt_all": return `${vocabName("corrupted")} ${v} on every machine's shown entry`;
+    case "dispel": return `${vocabName("dispel")} ${v}`;
+    case "swallow": return `swallows its machine, ${v} rounds`;
+    case "expose": return "Exposes its machine";
+    case "unready_all": return "every foe it readied loses its Undying";
+    default: return plain(st.effect || "?") + (v ? " " + v : "") + (st.foe ? " " + [].concat(st.foe).map(nm).join(", ") : "") + (st.count ? " ×" + st.count : "");
+  }
+}
+// A move as its lines: its name and kind, its number and strikes at these numbers, its riders with
+// their stacks, every step before and after it, its condition, aim, countdown and weight, its text.
+function moveEl(f, a, nums, opts = {}) {
+  const planned = a.status && a.status !== "implemented", kind = a.kind || (a.effect ? "special" : "attack");
+  const head = el("div", {class: "mhead"}, el("span", {class: "mname"}, a.name || plain(a.id || "move")), el("span", {class: "mkind"}, opts.fall ? "last act" : kind));
+  if (planned) head.append(el("span", {class: "tag planned", title: "A planned draft: the engine does not run it, so the codex leaves it out"}, "planned"));
+  if (a.once) head.append(el("span", {class: "tag planned", title: "Used once a fight"}, "once"));
+  const line = el("div", {class: "mline"}), bit = (...xs) => { if (line.childNodes.length) line.append(el("span", {class: "sep"}, "·")); line.append(...xs.map(x => typeof x === "string" ? el("span", {}, x) : x)); };
+  for (const st of (a.before || [])) bit("first " + stepWords(st, opts.fall));
+  const isBlow = !a.effect && (opts.blow || kind === "attack");
+  const number = isBlow && !a.power ? Math.round(nums.attack * Number(a.factor ?? 1)) : null;
+  if (isBlow) {
+    const strikes = Math.max(1, Number(a.strikes || 1));
+    if (a.power) bit(el("span", {class: "num"}, vocabName(a.power)), " its number");
+    else bit(el("span", {class: "num", title: `attack ${nums.attack} × ${Number(a.factor ?? 1)}, rounded`}, String(number) + (strikes > 1 ? " ×" + strikes : "")));
+    const nr = rules().numbered_riders || [];
+    for (const k of (a.keywords || [])) bit(kwChip(k, "kw", nr.includes(k) ? Number(a[k] || 1) : 0));
+    if (a.swarm) bit(`+${a.swarm} for each other of its kind`);
+    if (a.per_kill) bit(`+${a.per_kill} for each foe the team has killed`);
+  } else if (a.effect) bit(stepWords(a, opts.fall));
+  for (const st of (a.also || [])) bit("then " + stepWords(st, opts.fall));
+  if (a.countdown) bit(`gathers ${a.countdown} round${Number(a.countdown) === 1 ? "" : "s"}` + (a.aloft ? ", Aloft" : ""));
+  if (a.aim) bit(rules().aim_text[a.aim] || plain(a.aim));
+  const whens = [].concat(a.when || []);
+  if (whens.length) bit(whens.map(w => rules().when_text[w] || plain(w)).join(" or "));
+  if (a.then) { const nx = (f.actions || []).find(x => x.id === a.then); bit("next round " + (nx ? nx.name : plain(a.then))); }
+  if (!opts.fall && a.weight !== undefined) bit(el("span", {title: "Its weight in the roll: attacks mostly 2, specials 1"}, "weight " + a.weight));
+  const box = el("div", {class: "move" + (planned ? " planned" : "")}, head);
+  if (line.childElementCount) box.append(line);
+  const text = String(a.text || "").replace(/\{damage\}/g, number === null ? "?" : String(number)).replace(/\{value\}/g, String(Number(a.value || 0)));
+  if (text) box.append(el("div", {class: "mtext"}, text));
+  return box;
+}
+// A foe's fall as a move (on_death: a split, a blow, one special), each its own line.
+function fallEls(f, nums) {
+  const od = f.on_death, out = [];
+  if (!od || typeof od !== "object") return out;
+  if (od.summon) out.push(el("div", {class: "move"}, el("div", {class: "mhead"}, el("span", {class: "mname"}, "Split"), el("span", {class: "mkind"}, "on its fall")),
+    el("div", {class: "mline"}, `${Number(od.count || 1)} × ${foeName(od.summon)}` + (od.pair ? ", a pair in its slot" : ", into the nearest empty slots"))));
+  if (od.blow && typeof od.blow === "object") out.push(moveEl(f, {...od.blow, kind: "attack"}, nums, {fall: true, blow: true}));
+  else if (od.act && typeof od.act === "object") out.push(moveEl(f, od.act, nums, {fall: true}));
+  return out;
+}
+// What a foe is beyond its numbers: its Abilities and what it brings.
+function abilityWords(f) {
+  const out = [];
+  if (f.rage) out.push(`${vocabName("enraged")} ${f.rage} a spend`);
+  if (f.drains) out.push(vocabName("drain"));
+  for (const [k, v] of Object.entries(f.immune || {})) out.push(`immune to ${vocabName(k)}` + (v === true ? "" : ` while ${((f.actions || []).find(a => a.id === v) || {}).name || plain(v)} gathers`));
+  if ((f.parts || []).length) out.push(`${vocabName("parts")}: ${f.parts.map(foeName).join(", ")}` + (f.guard ? `, guarded while ${f.guard === "all" ? "all" : "any"} stand` : "") + (f.regrow_parts ? `, a part back in ${f.regrow_parts} rounds` : ""));
+  if (f.wanders) out.push("wanders: any domain's Fracture may send it");
+  if (f.winged) out.push("winged");
+  if (f.role && f.role !== "pusher") out.push(f.role);
+  return out;
+}
+// One foe's block: its sprite, name, numbers (at the tier, scaled or its own), its numbers at every
+// tier where it scales, its Abilities, its moves and its fall. Its name opens its sheet.
+function unitEl(id, opts = {}) {
+  const f = foeWhole(id);
+  if (!f) return el("div", {class: "funit"}, el("div", {}, "unknown foe " + id));
+  const nums = atTier(f, opts.tier || 1, !!opts.scaled);
+  const head = el("div", {class: "uhead"}, el("button", {class: "linkbtn uname", title: "Open its sheet", onclick: () => openFoeSheet(id)}, foeName(id)));
+  if (opts.count > 1) head.append(el("span", {class: "ucount"}, "×" + opts.count));
+  for (const t of (opts.tags || [])) head.append(el("span", {class: "tag planned"}, t));
+  const stats = [`HP ${nums.hp}`, `ATK ${nums.attack}`, nums.armour ? `ARM ${nums.armour}` : "", f.rank === "back" ? "back" : "front", isMassive(f) ? "massive" : "", `move ${f.movespeed ?? 2}`].filter(Boolean).join(" · ");
+  const body = el("div", {}, head, el("div", {class: "ustats"}, stats));
+  if (opts.scaled) {
+    const row = el("div", {class: "tiers", title: "Its numbers at each tier it is dealt at (ContentDB.BOSS_TIERS); the tier of this fight is marked"});
+    for (const t of (opts.dealt || [1, 2, 3])) { const x = atTier(f, t, true); row.append(el("span", {class: t === nums.tier ? "here" : ""}, `T${t} ${x.hp} HP · ATK ${x.attack}` + (x.armour ? ` · ARM ${x.armour}` : ""))); }
+    body.append(row);
+  } else if (opts.unscaledNote) body.append(el("div", {class: "uabil"}, opts.unscaledNote));
+  const ab = abilityWords(f);
+  if (ab.length) body.append(el("div", {class: "uabil"}, ab.join(" · ")));
+  const moves = el("div", {class: "moves"});
+  for (const a of (f.actions || []).length ? f.actions : liveMoves(f)) moves.append(moveEl(f, a, nums));
+  for (const n of fallEls(f, nums)) moves.append(n);
+  return el("div", {class: "funit"}, spriteEl(id), body, moves);
+}
+// The foes a pack brings past its grid: a split, a summon, a core's parts; one level at a time, each once.
+function broughtBy(ids) {
+  const out = [], seen = new Set(ids), queue = [...ids];
+  const add = (id, why) => { if (!id || seen.has(id) || !foeWhole(id)) return; seen.add(id); out.push({id, why}); queue.push(id); };
+  while (queue.length) {
+    const id = queue.shift(), f = foeWhole(id);
+    if (!f) continue;
+    if (f.on_death && f.on_death.summon) add(f.on_death.summon, `split from ${foeName(id)}`);
+    for (const a of (f.actions || [])) for (const st of [a, ...(a.also || [])]) if (st.effect === "summon") for (const s of [].concat(st.foe || [])) add(s, `called by ${foeName(id)}'s ${a.name || plain(a.id)}` + (a.status === "implemented" ? "" : " (planned)"));
+    for (const p of (f.parts || [])) add(p, `a part of ${foeName(id)}`);
+  }
+  return out;
+}
+// A boss fight and a final stand by weight (Skirmish._first_deployment, the pack having no grid):
+// the massive first, a column each from the left, then every slot, front and back a column at a
+// time, takes the heaviest hitter waiting for its rank; ties keep the order they came in.
+function standByWeight(list) {
+  const cols = rules().columns || 4, ranked = list.map((u, i) => ({u, i, t: threatOf(foeWhole(u.id) || {}, u.nums)})).sort((a, b) => b.t - a.t || a.i - b.i).map(x => x.u);
+  const front = Array(cols).fill(null), back = Array(cols).fill(null);
+  for (let c = 0; c < cols; c++) { const i = ranked.findIndex(u => isMassive(foeWhole(u.id))); if (i >= 0 && !front[c]) { front[c] = ranked.splice(i, 1)[0]; back[c] = "massive"; } }
+  for (let c = 0; c < cols; c++) for (const r of [0, 1]) {
+    const row = r ? back : front;
+    if (row[c]) continue;
+    const i = ranked.findIndex(u => { const f = foeWhole(u.id); return !isMassive(f) && (f.rank === "back") === (r === 1); });
+    if (i >= 0) row[c] = ranked.splice(i, 1)[0];
+  }
+  return {front: front.map(u => u === "massive" ? null : u), back: back.map(u => u === "massive" ? null : u), left: ranked};
+}
+// A grid: four columns of two ranks, each cell a foe's sprite, name and numbers; a massive foe
+// spans its column. Cells are {id, nums, scaled, part} or null.
+function gridEl(front, back, tierNow) {
+  const cols = Math.max(front.length, back.length, 1);
+  const g = el("div", {class: "fgrid", style: `--cols:${cols}`});
+  g.append(el("span", {class: "rl", style: "grid-row:1;grid-column:1"}, "front"), el("span", {class: "rl", style: "grid-row:2;grid-column:1"}, "back"));
+  const cell = (u, r, c) => {
+    const pos = `grid-column:${c + 2};grid-row:${r + 1}` + (u && r === 0 && isMassive(foeWhole(u.id)) ? " / span 2" : "");
+    if (!u) return el("div", {class: "fcell empty", style: pos, "aria-label": "empty"});
+    const f = foeWhole(u.id) || {}, n = u.nums;
+    const cls = "fcell" + (isMassive(f) ? " massive" : "") + (u.part ? " part" : "") + (n.scaled ? " scaled" : "");
+    const tag = [n.scaled ? "T" + tierNow : "", f.elite ? "elite" : "", u.commander ? "boss" : "", u.part ? "part" : "", isMassive(f) ? "massive" : ""].filter(Boolean).join(" · ");
+    return el("button", {class: cls, style: pos, title: "Open its sheet" + (n.scaled ? ": its numbers at tier " + tierNow : ""), onclick: () => openFoeSheet(u.id)},
+      spriteEl(u.id), el("span", {class: "cn"}, foeName(u.id)), el("span", {class: "cs"}, `${n.hp}\u00a0HP · ${n.attack}\u00a0ATK` + (n.armour ? ` · ${n.armour}\u00a0ARM` : "")), tag ? el("span", {class: "ct"}, tag) : null);
+  };
+  for (let c = 0; c < cols; c++) {
+    const fu = front[c] || null;
+    g.append(cell(fu, 0, c));
+    if (!(fu && isMassive(foeWhole(fu.id)))) g.append(cell(back[c] || null, 1, c));
+  }
+  return g;
+}
+// A composition's grid as cells at a tier: an elite scaled, its parts and the rest at their own.
+function compCells(c, t) {
+  const cores = new Set(gridIds(c).filter(id => (foeWhole(id) || {}).parts));
+  const partOf = (id) => [...cores].some(core => (foeWhole(core).parts || []).includes(id));
+  const mk = (id) => {
+    if (typeof id !== "string" || !id || !foeWhole(id)) return null;
+    const f = foeWhole(id), scaled = !!f.elite && rules().scaled.elites !== false;
+    return {id, nums: atTier(f, t, scaled), scaled, part: partOf(id)};
+  };
+  return {front: [0, 1, 2, 3].map(i => mk((c.front || [])[i])), back: [0, 1, 2, 3].map(i => mk((c.back || [])[i]))};
+}
+// The units of a fight: each foe once with its count, in the order the grid or the line names them.
+function fightUnits(cells, extra = []) {
+  const order = [], count = {};
+  for (const u of [...cells.front, ...cells.back, ...extra]) if (u) { if (!count[u.id]) order.push(u); count[u.id] = (count[u.id] || 0) + 1; }
+  return order.map(u => ({...u, count: count[u.id]}));
+}
+// Every pack a domain deals, as cards: [{key, kind, dom, tier, id, name, comp, ...}].
+let FCARDS = null;
+function formationCards() {
+  if (FCARDS) return FCARDS;
+  const c = ctx(), out = [];
+  const tiersOfBoss = [1, 2, 3];
+  for (const fac of c.factions.values()) {
+    const comps = (fac.compositions || []).filter(x => x && typeof x === "object");
+    for (const t of tiersOfBoss) {
+      for (const size of ["formation", "patrol", "elite"]) for (const comp of comps) {
+        if (comp.size !== size || !compTiers(comp).includes(t)) continue;
+        out.push({key: `${fac.id}|${t}|${comp.id}`, kind: size, dom: fac.id, tier: t, id: comp.id, name: formationName(comp), comp, squad: squadOf(comp), cells: compCells(comp, t)});
+      }
+      // A boss's fight at the tier: each escort naming it (ContentDB.escort_composition), else one
+      // naming none, else the boss alone.
+      for (const b of [].concat(fac.boss || [])) {
+        let esc = comps.filter(x => x.size === "escort" && x.boss === b && compTiers(x).includes(t));
+        if (!esc.length) esc = comps.filter(x => x.size === "escort" && !x.boss && compTiers(x).includes(t)).slice(0, 1);
+        if (!esc.length) esc = [null];
+        for (const comp of esc) out.push(bossCard(fac, b, t, comp));
+      }
+      for (const h of [].concat(fac.bench || [])) if (foeWhole(h)) out.push(finalCard(fac, h, t));
+    }
+    // An escort whose boss the domain does not list still shows, under its tiers.
+    for (const comp of comps.filter(x => x.size === "escort" && !(x.boss && [].concat(fac.boss || []).includes(x.boss)) && x.boss))
+      for (const t of compTiers(comp)) out.push(bossCard(fac, comp.boss, t, comp));
+    for (const h of [].concat(fac.bench || [])) {
+      const p = [...c.whole.values()].find(f => f.promotes === h);
+      if (p) out.push({key: `${fac.id}|finale|${p.id}`, kind: "finale", dom: fac.id, tier: "finale", id: p.id, name: foeName(p.id), squad: rules().boss_squad, hero: h,
+        cells: standByWeight([{id: p.id, nums: atTier(p, 3, true), scaled: true, commander: true}]), commander: p.id});
+    }
+  }
+  return FCARDS = out.filter(Boolean);
+}
+// A composition's members as the engine counts them (ContentDB.grid_members): each foe once with its
+// cells' count, the lead first, then reading order, a core's parts left out (they come with it).
+function membersOf(comp) {
+  const ids = gridIds(comp), parts = new Set(ids.flatMap(id => (foeWhole(id) || {}).parts || [])), order = [], count = {};
+  for (const id of ids) { if (parts.has(id) || !foeWhole(id)) continue; if (!count[id]) order.push(id); count[id] = (count[id] || 0) + 1; }
+  const lead = leadOf(comp);
+  if (order.includes(lead)) { order.splice(order.indexOf(lead), 1); order.unshift(lead); }
+  return order.map(id => [id, count[id]]);
+}
+function bossCard(fac, b, t, comp) {
+  const boss = foeWhole(b); if (!boss) return null;
+  const partsScale = rules().scaled.commander_parts !== false;
+  // The pack as ContentDB.foes_for lines it up: the boss and its parts at the tier, then its escort
+  // member by member, an elite at the tier and every part at its own numbers.
+  const list = [{id: b, nums: atTier(boss, t, true), scaled: true, commander: true}];
+  for (const p of (boss.parts || [])) if (foeWhole(p)) list.push({id: p, nums: atTier(foeWhole(p), t, partsScale), scaled: partsScale, part: true});
+  if (comp) for (const [id, n] of membersOf(comp)) for (let i = 0; i < n; i++) {
+    const f = foeWhole(id);
+    list.push({id, nums: atTier(f, t, !!f.elite), scaled: !!f.elite});
+    for (const p of (f.parts || [])) if (foeWhole(p)) list.push({id: p, nums: atTier(foeWhole(p), t, false), scaled: false, part: true});
+  }
+  return {key: `${fac.id}|${t}|boss:${b}:${comp ? comp.id : "alone"}`, kind: "boss", dom: fac.id, tier: t, id: comp ? comp.id : b, name: comp ? formationName(comp) : `${foeName(b)} alone`,
+    comp, boss: b, squad: rules().boss_squad, cells: standByWeight(list), commander: b};
+}
+// A domain's final at a tier: its bench hero commands, the tier's own units in the other columns
+// (ContentDB.escort_units: the tier's formations' then patrols' members, each once, never a massive
+// foe or a boss, round robin).
+function finalCard(fac, h, t) {
+  const hero = foeWhole(h), units = [], seen = new Set();
+  for (const size of ["formation", "patrol"]) for (const comp of (fac.compositions || [])) {
+    if (comp.size !== size || !compTiers(comp).includes(t)) continue;
+    for (const [id] of membersOf(comp)) { const f = foeWhole(id); if (!f || seen.has(id)) continue; seen.add(id); if (!isMassive(f) && !ctx().bosses.has(id)) units.push(id); }
+  }
+  const list = [{id: h, nums: atTier(hero, t, true), scaled: true, commander: true}];
+  for (let i = 0; i < (rules().final_escort || 3) && units.length; i++) { const id = units[i % units.length]; list.push({id, nums: atTier(foeWhole(id), t, false), scaled: false}); }
+  return {key: `${fac.id}|${t}|final:${h}`, kind: "final", dom: fac.id, tier: t, id: h, name: `${foeName(h)}'s final`, squad: rules().boss_squad, hero: h, cells: standByWeight(list), commander: h};
+}
+const cardFoes = (card) => fightUnits(card.cells, card.cells.left || []).map(u => u.id);
+// The packs each foe stands in, for a unit's row and its sheet: {foe id: [{card, tiers, how}]}, a
+// pack once with every tier it comes at.
+let FINDEX = null;
+function foeIndex() {
+  if (FINDEX) return FINDEX;
+  const out = new Map(), add = (id, card, how) => {
+    if (!out.has(id)) out.set(id, []);
+    const l = out.get(id), same = l.find(x => x.card.id === card.id && x.card.kind === card.kind && x.card.dom === card.dom);
+    if (same) { if (!same.tiers.includes(card.tier)) same.tiers.push(card.tier); } else l.push({card, tiers: [card.tier], how});
+  };
+  for (const card of formationCards()) {
+    const ids = cardFoes(card);
+    for (const id of ids) add(id, card, "");
+    for (const b of broughtBy(ids)) add(b.id, card, b.why);
+  }
+  return FINDEX = out;
+}
+const standsIn = (id) => foeIndex().get(id) || [];
+FILTER_SPECS.formations = {
+  noun: ["pack", "packs"], placeholder: "Formation, foe or question",
+  text: (e) => [e.name, e.id, FKIND[e.kind], factionName(e.dom), ...cardFoes(e).map(foeName), e.comp && e.comp.design && e.comp.design.question, e.comp && e.comp.hunts],
+  groups: [
+    {id: "dom", label: "Domain", of: e => [e.dom], name: factionName, order: () => [...ctx().factions.keys()]},
+    {id: "tier", label: "Tier", of: e => [String(e.tier)], name: v => v === "finale" ? "Finale" : "T" + v, order: ["1", "2", "3", "finale"]},
+    {id: "kind", label: "Kind", of: e => [e.kind], name: v => FKIND[v] || v, order: Object.keys(FKIND)},
+    {id: "threat", label: "Threat", of: e => [String(e.squad)], name: v => v + (v === "1" ? " machine" : " machines"), order: ["1", "2", "3", "4"]},
+    {id: "walk", label: "On the map", of: e => [e.comp && e.comp.hunts ? "hunts" : e.kind === "boss" || e.kind === "final" || e.kind === "finale" ? "boss" : "pushes"], name: v => ({hunts: "Hunts", pushes: "Pushes", boss: "Holds the rift"})[v] || v, order: ["pushes", "hunts", "boss"]},
+  ],
+  sorts: [BY_ORDER],
+};
+function pipsEl(n) { return el("span", {class: "pips", title: `Threat rating ${n}: the machines it is intended for, and its menace`}, ...[1, 2, 3, 4].map(i => el("i", {class: i <= n ? "on" : ""}))); }
+function rampWords(comp, t) {
+  const g = comp && comp.ramp;
+  if (!Array.isArray(g) || g.length !== 2) return "";
+  return `C${g[0]}–${g[1]}`;
+}
+// The folded line: its name and id, what it is, its threat, tiers and ramp, and who stands in it.
+function cardHead(card, open, toggle) {
+  const comp = card.comp, meta = el("span", {class: "fmeta"});
+  meta.append(el("span", {class: "tag planned"}, FKIND[card.kind]), el("span", {class: "chipline", title: "Its threat rating"}, pipsEl(card.squad), " " + card.squad));
+  if (comp) {
+    meta.append(el("span", {class: "chipline", title: "The tiers that deal it"}, compTiers(comp).map(t => "T" + t).join(" ")));
+    const r = rampWords(comp, card.tier);
+    if (r) meta.append(el("span", {class: "chipline", title: `Dealt at Convergences ${comp.ramp[0]} to ${comp.ramp[1]}; tier ${card.tier === "finale" ? 3 : card.tier} is fought from ${firstRampOf(card.tier === "finale" ? 3 : card.tier)} to ${rules().ramp_top}`}, r));
+    if (comp.hunts) meta.append(el("span", {class: "chipline", title: "The pack hunts one machine (its composition says whom)"}, "hunts the " + comp.hunts));
+  }
+  const who = el("span", {class: "fwho"});
+  for (const u of fightUnits(card.cells, card.cells.left || [])) who.append(el("span", {class: "mini"}, spriteEl(u.id), (u.count > 1 ? u.count + " " : "") + foeName(u.id)));
+  return el("button", {class: "fhead", "aria-expanded": String(open), onclick: toggle},
+    el("span", {}, el("span", {class: "fname"}, card.name), el("span", {class: "fid"}, card.id)), meta, who);
+}
+function cardBody(card) {
+  const body = el("div", {class: "fbody"}), comp = card.comp, t = card.tier === "finale" ? 3 : card.tier;
+  const q = comp && comp.design && comp.design.question;
+  if (q) body.append(el("p", {class: "fq"}, el("b", {}, "Its question"), q));
+  const facts = [];
+  if (card.kind === "boss") facts.push(`The boss holds its hex before the rift, sealed until the Rupture, and fights with ${comp ? "its escort" : "nothing beside it: no escort at this tier"}. A boss's fight has no grid: it stands by weight, the massive first from the left, then the heaviest hitters (the escort's grid names who comes).`);
+  if (card.kind === "final") facts.push(`A final comes after ${rules().final_after || 3} of its domain's bosses: its dealt hero in its rank, ${rules().final_escort || 3} of the tier's own units beside it (the tier's formations' then patrols' foes, each once, never massive), by weight.`);
+  if (card.kind === "finale") facts.push("The finale's line holds a column a domain: the dealt hero's promoted form while its domain stands. Its numbers here are tier three's; it takes the run's tier as the finale is fought.");
+  if (card.kind === "elite") facts.push("A Fracture sends it: the elite takes the battle's tier, the rest of the pack its own numbers.");
+  if (comp && !comp.ramp && card.kind !== "finale") facts.push(`Dealt at every Convergence of its tiers (tier ${t} from ${firstRampOf(t)} to ${rules().ramp_top}).`);
+  if (comp && comp.squad !== undefined) facts.push(`Its squad, ${comp.squad}, sets its threat rating; a ${comp.size} reads ${rules().squad_by_size[comp.size] ?? rules().squad_default} by default.`);
+  if (facts.length) body.append(el("p", {class: "ffacts"}, facts.join(" ")));
+  body.append(gridEl(card.cells.front, card.cells.back, t));
+  if ((card.cells.left || []).length) body.append(el("p", {class: "fgridnote"}, "No slot for: " + card.cells.left.map(u => foeName(u.id)).join(", ") + " (it never stands)."));
+  const units = fightUnits(card.cells, card.cells.left || []);
+  const list = el("div", {class: "funits"});
+  for (const u of units) list.append(unitEl(u.id, {tier: t, scaled: u.scaled, count: u.count, dealt: card.kind === "elite" ? compTiers(comp) : [1, 2, 3],
+    tags: [u.commander ? (card.kind === "boss" ? "boss" : "commander") : "", u.part ? "part" : "", !u.scaled && u.part && card.kind === "elite" ? "own numbers" : ""].filter(Boolean),
+    unscaledNote: u.part && card.kind === "elite" ? "An elite's part stands at its own numbers at every tier (ContentDB.foes_for scales the elite alone)." : ""}));
+  const brought = broughtBy(units.map(u => u.id));
+  for (const b of brought) list.append(unitEl(b.id, {tier: t, scaled: !!(card.commander && b.why.startsWith("a part") && rules().scaled.commander_parts !== false), tags: [b.why]}));
+  if (brought.length) body.append(el("p", {class: "fbring"}, el("b", {}, "Brings with it"), brought.map(b => `${foeName(b.id)} (${b.why})`).join("; ")));
+  body.append(list);
+  if (comp) body.append(compEditor(card));
+  if (comp) body.append(el("div", {class: "toolbar", style: "margin:10px 0 0"}, el("button", {class: "btn", onclick: () => openSheet("factions.entries", card.dom)}, `${factionName(card.dom)}'s sheet`)));
+  return body;
+}
+// A composition's fields, edited where they are read: its grid, its tiers, ramp gate, threat
+// rating, hunt, lead and question, each saved as it is left as an edit of its domain's whole entry
+// (collection "edits", saveDoc), the document the domain's raw view writes. The validator holds the
+// grid to its rules when a session applies it.
+function compEditor(card) {
+  const comp = card.comp, dom = card.dom, key = "factions.entries", pre = `fe.${card.key}.`;
+  const scomp = ((shippedEntry(key, dom) || {}).compositions || []).find(x => x && x.id === comp.id) || {};
+  const write = (mutate) => benchWrite(key, dom, d => { const c = (d.compositions || []).find(x => x && x.id === comp.id); if (c) mutate(c); });
+  const open = state.fedit || (state.fedit = new Set());
+  const box = el("details", {class: "fedit bsheet", open: open.has(comp.id) || null});
+  box.addEventListener("toggle", () => { if (box.open) open.add(comp.id); else open.delete(comp.id); });
+  box.append(el("summary", {}, "Edit the composition"));
+  box.append(el("p", {class: "shint"}, `Each field saves as you leave it, as an edit of ${factionName(dom)}'s entry for a session to apply, and the validator holds the grid to its rules then. It is the composition itself, so the change shows under every tier that deals it.`));
+  if (!benchCan()) box.append(el("p", {class: "help"}, state.dbState === "loading" ? "Connecting to the page's database…" : "Read only: the database did not load in this view, so nothing saves from here."));
+  // The grid: a cell takes a foe of its domain whose rank fits its row (a massive foe a front cell,
+  // the back cell behind it left empty), an elite only in an elite composition.
+  const pool = [...ctx().whole.values()].filter(f => f.faction === dom && !ctx().bosses.has(f.id) && !f.hero && !f.promotes && (comp.size === "elite" || !f.elite));
+  const grid = el("div", {class: "fgrid", style: "--cols:4"});
+  grid.append(el("span", {class: "rl", style: "grid-row:1;grid-column:1"}, "front"), el("span", {class: "rl", style: "grid-row:2;grid-column:1"}, "back"));
+  for (const [r, row] of [[0, "front"], [1, "back"]]) for (let col = 0; col < 4; col++) {
+    const cur = (comp[row] || [])[col] || "", fid = `${pre}${row}.${col}`;
+    const under = r === 1 && isMassive(foeWhole((comp.front || [])[col] || ""));
+    const fits = pool.filter(f => r === 0 ? (f.rank !== "back" || isMassive(f)) : (f.rank === "back" && !isMassive(f)));
+    const opts = [["", under ? "filled by the massive foe" : "empty"], ...fits.map(f => [f.id, (f.name || f.id) + (isMassive(f) ? " (massive)" : "") + (f.elite ? " (elite)" : "")])];
+    if (cur && !opts.some(o => o[0] === cur)) opts.push([cur, foeName(cur)]);
+    const sel = bselect(fid, cur, opts, v => write(c => {
+      c[row] = Array.isArray(c[row]) ? c[row].slice(0, 4) : [null, null, null, null];
+      while (c[row].length < 4) c[row].push(null);
+      c[row][col] = v || null;
+      if (r === 0 && v && isMassive(foeWhole(v))) { c.back = Array.isArray(c.back) ? c.back : [null, null, null, null]; c.back[col] = null; }
+    }));
+    if (under) sel.disabled = true;
+    sel.setAttribute("aria-label", `${row} cell ${col + 1}`);
+    grid.append(el("div", {style: `grid-column:${col + 2};grid-row:${r + 1};min-width:0`}, sel));
+  }
+  box.append(el("span", {class: "lab"}, comp.size === "escort" ? "Its grid: who comes (a boss's fight stands by weight)" : "Its grid, as the fight stands it"), grid);
+  // Its tiers, its ramp gate, its threat rating, its hunt and its lead.
+  const tiers = el("div", {class: "seg", role: "group", "aria-label": "The tiers that deal it"});
+  for (const t of [1, 2, 3]) {
+    const id = benchKind(`${pre}tier.${t}`), cb = el("input", {type: "checkbox", id, disabled: !benchCan()});
+    cb.checked = compTiers(comp).includes(t);
+    cb.addEventListener("change", () => write(c => {
+      const on = [1, 2, 3].filter(x => x === t ? cb.checked : compTiers(c).includes(x));
+      if (on.length) c.tiers = on; else if (scomp.tiers !== undefined) c.tiers = scomp.tiers; else delete c.tiers;
+    }));
+    tiers.append(el("label", {for: id, style: "display:inline-flex;gap:5px;align-items:center;margin-right:10px;text-transform:none;letter-spacing:0;font:500 14px/1 var(--body);color:var(--ink)"}, cb, "Tier " + t));
+  }
+  const ramp = (i) => (v) => write(c => {
+    const t = String(v).trim(), n = Number(t);
+    if (t === "" || !Number.isFinite(n)) { delete c.ramp; return; }
+    const g = Array.isArray(c.ramp) && c.ramp.length === 2 ? [...c.ramp] : [firstRampOf(Math.min(...compTiers(c))), rules().ramp_top];
+    g[i] = n; c.ramp = g;
+  });
+  const g = Array.isArray(comp.ramp) ? comp.ramp : [];
+  const lo = `${pre}ramp.0`, hi = `${pre}ramp.1`, sq = `${pre}squad`, hu = `${pre}hunts`, ld = `${pre}lead`, qu = `${pre}question`;
+  const nums = el("div", {class: "bnums tight"},
+    el("div", {}, blabel(lo, "from Convergence"), bfield("num", lo, g[0], ramp(0), {placeholder: "every"})),
+    el("div", {}, blabel(hi, "to Convergence"), bfield("num", hi, g[1], ramp(1), {placeholder: "every"})),
+    el("div", {}, blabel(sq, "threat rating"), bselect(sq, comp.squad === undefined ? "" : String(comp.squad), [["", `by its size, ${rules().squad_by_size[comp.size] ?? rules().squad_default}`], ...["1", "2", "3", "4"].map(n => [n, n])], v => write(c => { if (v) c.squad = Number(v); else delete c.squad; }))));
+  if (comp.size !== "escort") nums.append(el("div", {}, blabel(hu, "on the map"), bselect(hu, comp.hunts || "", [["", "pushes for the wall"], ...(rules().hunt_caveats || []).map(h => [h, "hunts the " + h])], v => write(c => { if (v) c.hunts = v; else delete c.hunts; }))));
+  const leads = [...new Set(gridIds(comp))];
+  nums.append(el("div", {}, blabel(ld, "lead"), bselect(ld, comp.lead || "", [["", "the first in reading order"], ...leads.map(id => [id, foeName(id)])], v => write(c => { if (v) c.lead = v; else delete c.lead; }))));
+  box.append(el("span", {class: "lab", style: "margin-top:10px"}, "The tiers that deal it"), tiers, nums,
+    el("p", {class: "shint", style: "margin-top:6px"}, "Clear a Convergence to deal it at every one of its tiers' Convergences (the ramp gate goes)."));
+  box.append(el("div", {class: "sfield"}, blabel(qu, "its question (internal, never shown)"), bfield("area", qu, (comp.design || {}).question || "", v => write(c => {
+    const t = String(v).replace(/\s+$/, ""), sq2 = (scomp.design || {}).question;
+    if (!t) { if (typeof sq2 === "string") { c.design = c.design || {}; c.design.question = sq2; } else if (c.design) { delete c.design.question; if (!Object.keys(c.design).length) delete c.design; } }
+    else { c.design = c.design || {}; c.design.question = t; }
+  }), {placeholder: "What the player must answer."})));
+  return box;
+}
+function renderFormations(main) {
+  want("foerules", ensureFoeRules);
+  if (!state.loaded.foerules && !state.foeRules) { main.append(el("p", {class: "help"}, "Loading the engine's rules for a pack…")); return; }
+  if (!state.foeRules) main.append(el("p", {class: "help"}, "The engine's rules for a pack are not published beside this page (hangar/foe_rules.json, tools/hangar_data.py): the scaling shown is a guess."));
+  const cards = formationCards().filter(Boolean);
+  const view = runFilter("formations", cards.map(card => ({entry: card, st: ""})));
+  main.append(filterBar(view));
+  const open = state.fopen || (state.fopen = new Set());
+  const shownKeys = view.shown.map(x => x.entry.key);
+  main.append(el("div", {class: "toolbar", style: "margin-top:0"},
+    el("button", {class: "btn", id: "fo-open-all", disabled: !shownKeys.length || shownKeys.length > 60, title: shownKeys.length > 60 ? "Narrow it to 60 packs or fewer first" : "Open every pack shown", onclick: () => { shownKeys.forEach(k => open.add(k)); render(); }}, "Open all shown"),
+    el("button", {class: "btn", id: "fo-fold-all", disabled: !open.size, onclick: () => { open.clear(); render(); }}, "Fold all")));
+  if (!view.shown.length) { main.append(noMatch(view)); return; }
+  let dom = null, tier = null, domBox = null;
+  const byDomTier = {};
+  for (const {entry: c} of view.shown) { const k = c.dom + "|" + c.tier; byDomTier[k] = (byDomTier[k] || 0) + 1; }
+  for (const {entry: card} of view.shown) {
+    if (card.dom !== dom) {
+      dom = card.dom; tier = null;
+      const fac = ctx().factions.get(dom) || {}, n = view.shown.filter(x => x.entry.dom === dom).length;
+      domBox = el("section", {class: "fdomain", id: "fd-" + dom});
+      const comps = (fac.compositions || []).length;
+      domBox.append(el("h3", {}, fac.name || dom, el("span", {class: "n"}, `${n} shown · ${comps} compositions`)),
+        el("p", {class: "dsub"}, [`Bosses: ${[].concat(fac.boss || []).map(foeName).join(", ") || "none"}.`, ` Bench: ${[].concat(fac.bench || []).map(foeName).join(", ") || "none"}.`, fac.opening ? " The run's first battle is this domain's." : ""].join(""), " ",
+          el("button", {class: "linkbtn", onclick: () => openSheet("factions.entries", dom)}, "Its sheet")));
+      main.append(domBox);
+    }
+    if (card.tier !== tier) {
+      tier = card.tier;
+      const t = tier === "finale" ? null : tier;
+      domBox.append(el("div", {class: "ftier"}, el("h4", {}, TIER_LABEL[tier] || String(tier)), el("span", {class: "n"}, String(byDomTier[dom + "|" + tier])),
+        t ? el("span", {class: "what"}, `fought from Convergence ${firstRampOf(t)} to ${rules().ramp_top}; a commander and an elite at ×${(rules().boss_tiers[t - 1] || {hp: 1}).hp} HP, +${(rules().boss_tiers[t - 1] || {attack: 0}).attack} attack`) : null));
+    }
+    const isOpen = open.has(card.key);
+    const box = el("div", {class: "fcard k-" + card.kind + (isOpen ? " open" : ""), id: "fc-" + safeId(card.key)});
+    box.append(cardHead(card, isOpen, () => { if (open.has(card.key)) open.delete(card.key); else open.add(card.key); render(); }));
+    if (isOpen) box.append(cardBody(card));
+    domBox.append(box);
+  }
+  if (state.fscroll) { const k = state.fscroll; state.fscroll = null; requestAnimationFrame(() => { const n = document.getElementById("fc-" + safeId(k)); if (n) n.scrollIntoView({block: "start"}); }); }
+}
+// A foe's sheet from a formation (or anywhere), coming back to where it was opened.
+const openFoeSheet = (id) => openSheet("foes.entries", id);
+// A formation from a foe's sheet: the Formations view, filtered to nothing, the pack open and in view.
+function openFormation(card) {
+  state.open = null; state.returnTo = null; state.section = "content"; state.sub.content = "foes.entries"; state.sub.foeView = "formations"; remember();
+  const f = fstate("formations"); f.q = ""; f.on = {}; rememberFilters();
+  (state.fopen || (state.fopen = new Set())).add(card.key);
+  state.fscroll = card.key;
+  render();
 }
 
 // ------------------------------------------------------------------ content editor
 function renderContent(main) {
   if (state.sub.content === "changes") return renderChanges(main);
-  if (state.open) return renderEditor(main);
-  renderList(main);
+  if (state.open) return state.raw || !SHEETS[state.open.key] ? renderEditor(main) : renderSheet(main);
+  const f = contentFiles().find(x => x.key === state.sub.content) || contentFiles()[0];
+  contentLede(main, f);
+  if (f.filter === "foes") {
+    want("foeart", ensureFoeArt); want("foerules", ensureFoeRules);
+    foeViews(main);
+    if (foeView() === "formations") return renderFormations(main);
+  }
+  renderList(main, f);
+}
+// What each list is, in a line, and its file's own account folded under it (its `_about`, whole).
+const CONTENT_LEDE = {
+  makers: "The makers: each one's style and voice guide what is written in its name (never drawn in the game), its capital and its Sponsorship. Its machines are on the Bench.",
+  components: "Every component. Its sheet carries its die entry's numbers, its codex and flavour (the Text tab's rows), your notes on the piece and the machines that carry it. A planned draft is kept and dealt by nothing.",
+  modules: "Every module: its stat lines and its rule. Its sheet carries the numbers, the rule's words (the Text tab's) and your notes.",
+  foes: "Formations first: every pack a domain deals, by tier, under the name the reports use. Open one for its grid as the fight stands it and every unit's moves at that tier. Units lists every foe alone, Sprites compares the art.",
+  factions: "The four domains. A domain's sheet carries its flavour, its bosses and bench, and opens its formations; a composition's grid is edited on the raw view.",
+  vocabulary: "Every term the rules use. Its codex is the entry the player reads (the Text tab's row); a term no screen draws is marked, and so is one no content names.",
+};
+function contentLede(main, f) {
+  const about = state.about[f.file] || "";
+  main.append(el("p", {class: "lede"}, CONTENT_LEDE[f.filter] || ""));
+  if (about) main.append(el("details", {class: "was"}, el("summary", {}, "About " + f.file), el("p", {class: "old"}, about)));
+}
+// The Foes tab's three views: the formations, the units alone, the sprites compared (4 November,
+// Ryan: "somewhere that it's easily compared and inventoried").
+const foeView = () => (["formations", "list", "grid"].includes(state.sub.foeView) ? state.sub.foeView : "formations");
+function foeViews(main) {
+  const cur = foeView(), b = (v, label, title) => el("button", {class: "btn", id: "fv-" + v, title, "aria-pressed": String(cur === v), onclick: () => { state.sub.foeView = v; state.open = null; remember(); render(); window.scrollTo(0, 0); }}, label);
+  main.append(el("div", {class: "fview", role: "group", "aria-label": "View"}, b("formations", "Formations", "Every pack by domain and tier"), b("list", "Units", "Every foe alone, with the packs it stands in"), b("grid", "Sprites", "The combat sprites side by side")));
 }
 // An edit opens where it is made: a chassis on its Bench sheet, the rest in the editor.
-function openEdit(key, id) { if (FILES.find(x => x.key === key).bench) openBenchSheet(id); else openEntry(key, id); }
-function renderList(main) {
-  const f = contentFiles().find(x => x.key === state.sub.content) || contentFiles()[0];
+function openEdit(key, id) { if (FILES.find(x => x.key === key).bench) openBenchSheet(id); else openSheet(key, id); }
+// A list's rows read the entry as edited, so the filter and the sort see what the save will ship.
+function listRows(f) {
+  const rows = (state.shipped[f.key] || []).map(s => { const st = entryState(f.key, s.id); return {id: s.id, st, entry: st === "edited" ? editFor(f.key, s.id).data : s}; });
+  for (const e of Object.values(state.edits)) if (e.key === f.key && !shippedEntry(f.key, e.id) && !e.deleted) rows.push({id: e.id, st: "new", entry: e.data || {id: e.id}});
+  return rows;
+}
+function renderList(main, f) {
   const shipped = state.shipped[f.key] || [];
-  const added = Object.values(state.edits).filter(e => e.key === f.key && !shippedEntry(f.key, e.id) && !e.deleted);
-  const about = state.about[f.file] || "";
-  main.append(el("p", {class: "help"}, about.slice(0, 220) + (about.length > 220 ? "…" : "")));
-  // Rows read the entry as edited, so the filter and the sort see what the save will ship.
-  const rows = shipped.map(s => { const st = entryState(f.key, s.id); return {id: s.id, st, entry: st === "edited" ? editFor(f.key, s.id).data : s}; });
-  for (const e of added) rows.push({id: e.id, st: "new", entry: e.data || {id: e.id}});
+  const rows = listRows(f);
   const foes = f.filter === "foes";
-  if (foes) want("foeart", ensureFoeArt);   // the sprites' manifest, once
+  if (f.filter === "vocabulary") want("text", ensureText);   // whether a screen draws each term
   const view = runFilter(f.filter, rows);
   const spec = view.spec;
   main.append(filterBar(view));
-  const grid = foes && state.sub.foeView === "grid";
-  if (foes) {
-    // The sprites compared (4 November, Ryan: "somewhere that it's easily compared and inventoried").
-    const view = (v, label) => el("button", {class: "btn", "aria-pressed": String(grid === (v === "grid")), onclick: () => { state.sub.foeView = v; remember(); render(); }}, label);
-    main.append(el("div", {class: "toolbar", style: "margin-top:0"}, view("list", "List"), view("grid", "Sprites")));
-  }
+  const grid = foes && foeView() === "grid";
   const list = el("div", {class: grid ? "spritegrid" : "list"});
   for (const x of view.shown) {
     const {id, st, entry} = x, note = sortNote(view, x);
     const sub = [id, ...(spec.line ? spec.line(entry, x) : [])].filter(Boolean).join(" · ");
-    const open = () => openEntry(f.key, id);
+    const open = () => openSheet(f.key, id);
     const keys = (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); open(); } };
     const planned = entry.status === "planned" ? el("span", {class: "tag planned", title: "A planned draft: kept, not shown, not run"}, "planned") : null;
     if (grid) {
@@ -1121,13 +1811,21 @@ function renderList(main) {
         st ? el("span", {class: "tag " + st}, st === "del" ? "delete" : st) : null));
       continue;
     }
+    // A unit says the packs it stands in, by the names the formations wear (20 November).
+    const packs = foes ? standsIn(id) : [];
+    const inLine = foes ? (packs.length ? "in " + packs.slice(0, 4).map(p => p.card.name + (p.how ? " (" + (p.how.startsWith("split") ? "split" : p.how.startsWith("called") ? "summoned" : "part") + ")" : "")).join(" · ") + (packs.length > 4 ? ` +${packs.length - 4}` : "") : "in no pack: nothing deals it") : "";
+    const drawn = f.filter === "vocabulary" && state.text ? state.text.byId.get(`vocabulary.entries/${id}/codex`) : null;
     list.append(el("div", {class: "item" + (foes ? " foe" : ""), tabindex: "0", role: "button", onclick: open, onkeydown: keys},
       foes ? spriteEl(id) : null,
-      el("div", {}, el("div", {class: "name"}, entry.name || id), el("div", {class: "id"}, sub)),
-      el("div", {class: "end"}, note ? el("span", {class: "sortval"}, note) : null, planned, st ? el("span", {class: "tag " + st}, st === "del" ? "delete" : st) : null)));
+      el("div", {}, el("div", {class: "name"}, entry.name || id), el("div", {class: "id"}, sub), inLine ? el("div", {class: "id"}, inLine) : null),
+      el("div", {class: "end"}, note ? el("span", {class: "sortval"}, note) : null, planned,
+        drawn && !drawn.shown ? el("span", {class: "tag drawn", title: drawn.why}, "not drawn") : null,
+        st ? el("span", {class: "tag " + st}, st === "del" ? "delete" : st) : null)));
   }
   main.append(list);
   if (!view.shown.length) main.append(noMatch(view));
+  // A new entry, folded away: the rare edit (it saves the last entry's shape under a new id).
+  const add = el("details", {class: "was", style: "margin-top:14px"}, el("summary", {}, "Add an entry"));
   const newrow = el("div", {class: "newrow"});
   const input = el("input", {type: "text", id: "new-id-" + safeId(f.key), placeholder: "new id (snake_case)", "aria-label": "new entry id"});
   const template = shipped[shipped.length - 1];
@@ -1138,9 +1836,10 @@ function renderList(main) {
     const data = template ? JSON.parse(JSON.stringify(template)) : {id};
     data.id = id;
     if ("name" in data) data.name = id.split("_").map(w => w[0].toUpperCase() + w.slice(1)).join(" ");
-    saveDoc(f.key, id, {data, note: "new entry, from the shape of " + (template ? template.id : "nothing")}).then(() => openEntry(f.key, id));
+    saveDoc(f.key, id, {data, note: "new entry, from the shape of " + (template ? template.id : "nothing")}).then(() => { state.raw = true; openEntry(f.key, id); });
   }}, "Add from the last entry's shape"));
-  main.append(newrow);
+  add.append(newrow, el("p", {class: "help"}, "A new entry starts as a copy of the file's last, and opens on the raw view to be written."));
+  main.append(add);
   if (state.dbState === "none") main.append(el("p", {class: "help"}, "Saving is off in this view: the database did not load. Open the page signed in, from the artifact link."));
 }
 function openEntry(key, id) {
@@ -1151,9 +1850,34 @@ function openEntry(key, id) {
   render();
   window.scrollTo(0, 0);
 }
+// An entry's sheet from anywhere (a list, a formation, the codex, another sheet): its own tab's, the
+// way back to where the walk began kept, so Back returns to the list or the formation it came from.
+function openSheet(key, id) {
+  const tab = FILES.find(x => x.key === key);
+  if (tab && tab.bench) return openBenchSheet(id);
+  if (!state.open) state.returnTo = {section: state.section, sub: state.section === "content" ? state.sub.content : null, view: foeView(), scroll: window.scrollY};
+  state.section = "content"; state.sub.content = key; state.raw = false; state.bopen = null; state.topen = null; remember();
+  openEntry(key, id);
+}
+function backLabel() {
+  const r = state.returnTo;
+  if (r && r.section === "codex") return "Codex";
+  if (r && r.section === "bench") return "Bench";
+  const key = r && r.sub ? r.sub : state.sub.content, tab = FILES.find(x => x.key === key);
+  if (key === "foes.entries") return ({formations: "Formations", list: "Units", grid: "Sprites"})[(r && r.view) || foeView()] || "Foes";
+  return tab ? tab.label : "Back";
+}
 function closeEntry() {
-  state.open = null;
-  if (state.returnTo === "codex") { state.returnTo = null; state.section = "codex"; remember(); }
+  const back = state.returnTo;
+  state.open = null; state.raw = false; state.returnTo = null;
+  if (back && typeof back === "object") {
+    state.section = back.section;
+    if (back.sub) state.sub.content = back.sub;
+    if (back.view) state.sub.foeView = back.view;
+    remember(); render();
+    requestAnimationFrame(() => window.scrollTo(0, back.scroll || 0));
+    return;
+  }
   render();
 }
 function renderEditor(main) {
@@ -1163,10 +1887,12 @@ function renderEditor(main) {
   const st = entryState(key, id);
   main.classList.add("editor");
   main.append(el("div", {class: "toolbar"},
-    el("button", {class: "btn", onclick: closeEntry}, "‹ " + (state.returnTo === "codex" ? "Codex" : f.label)),
+    el("button", {class: "btn", onclick: closeEntry}, "‹ " + backLabel()),
+    SHEETS[key] ? el("button", {class: "btn", id: "raw-off", title: "Its sheet: the fields you work on, each saved as you leave it", onclick: () => { state.raw = false; render(); }}, "The sheet") : null,
     st ? el("span", {class: "tag " + st}, st === "del" ? "marked for deletion" : st) : null));
   main.append(el("h2", {}, state.draft.name || id));
   main.append(el("div", {class: "path"}, `${f.file} › ${f.list} › ${id}`));
+  main.append(el("p", {class: "help"}, "Every field of the entry as the file holds it, for the rare edit the sheet does not carry. Nothing here saves until Save edit, and the edit is the whole entry, as a sheet's is."));
   const fields = el("div", {class: "fields"});
   renderObject(fields, state.draft, []);
   main.append(fields);
@@ -1275,6 +2001,321 @@ function diffView(was, now) {
   }
   if (!box.childElementCount) box.append(el("div", {class: "help"}, "No difference."));
   return box;
+}
+// ------------------------------------------------------------------ sheets
+// The Content tab's entries on the Bench's pattern (20 November, Ryan: "The bench is the standard
+// that I'd love if all the content looked like, it's much better UX"): one flat sheet an entry, the
+// fields he works on up front, each saved as it is left or a moment after the typing stops, the
+// internal design notes folded, and the raw every-field editor behind its toggle for the rare edit.
+// A sheet keeps no store of its own: a number or a note is an edit of the whole entry (collection
+// "edits", saveDoc, the document the raw editor and the Bench write), a shown text the Text tab's row
+// (collection "text", putText), so a session applies both as it always has. A field cleared goes
+// back to what the files hold.
+function objAt(root, path, create) {
+  let o = root;
+  for (const p of path) {
+    if (!o || typeof o !== "object") return null;
+    if (typeof p === "object") { o = Array.isArray(o) ? o.find(x => x && x.id === p.id) || null : null; continue; }
+    if (o[p] === undefined || o[p] === null || typeof o[p] !== "object") { if (!create) return null; o[p] = {}; }
+    o = o[p];
+  }
+  return o;
+}
+const numKeys = (a, b) => [...new Set([...Object.keys(a || {}), ...Object.keys(b || {})])].filter(k => typeof (a || {})[k] === "number" || typeof (b || {})[k] === "number");
+// A number at a path in the entry, as the Bench's number cells: what the files hold beside it once moved.
+function numCellAt(c, path, k, label) {
+  const obj = objAt(c.e, path, false), sobj = objAt(c.s, path, false);
+  const fid = `${c.key}.${c.id}.${path.map(p => typeof p === "object" ? p.id : p).join(".")}.${k}`;
+  return benchNumCell(fid, label || plain(k), obj ? obj[k] : undefined, sobj ? sobj[k] : undefined, v => benchWrite(c.key, c.id, d => { const o = objAt(d, path, true); if (o) benchSetNum(o, sobj, k, v); }));
+}
+function numsBox(cells) { const box = el("div", {class: "bnums tight"}); for (const x of cells) if (x) box.append(x); return box; }
+// A plain string field of the entry's own (a maker's guide): cleared, back to the files' words.
+function strCellAt(c, path, k, label, attrs = {}) {
+  const obj = objAt(c.e, path, false), sobj = objAt(c.s, path, false), fid = `${c.key}.${c.id}.${path.join(".")}.${k}`;
+  return el("div", {class: "sfield"}, blabel(fid, label), bfield("area", fid, obj ? obj[k] : "", v => benchWrite(c.key, c.id, d => {
+    const o = objAt(d, path, true), t = String(v).replace(/\s+$/, "");
+    if (!o) return;
+    if (!t) { if (sobj && typeof sobj[k] === "string") o[k] = sobj[k]; else delete o[k]; } else o[k] = t;
+  }), attrs));
+}
+// A shown text: the Text tab's row for it, read and written as that tab does (the Bench's codex and
+// flavour), so a write on either shows on both and tools/hangar_text.py --fold folds it.
+function textField(key, id, path, label, attrs = {}, fallback = "") {
+  const fid = `${key}.${id}.text.${path}`, s = state.text ? state.text.byId.get(`${key}/${id}/${path}`) : null;
+  if (!s) {
+    const box = el("div", {class: "btext"}, el("span", {class: "lab"}, label), el("p", {class: "saved"}, fallback || "Nothing written."));
+    box.append(el("p", {class: "help"}, state.text ? "The Text tab lists no such text (hangar/text.json): it changes on the raw view." : state.loaded.text ? "The text inventory did not load, so this reads as the files have it." : "Loading the texts…"));
+    return box;
+  }
+  const v = textView(s), head = el("div", {class: "thead"}, blabel(fid, label), stateTag(v.st));
+  if (v.pending) head.append(el("span", {class: "tag pending", title: "Saved here; a session folds it into the files"}, v.newText ? "your text waits" : v.newMark ? "your mark waits" : "your note waits"));
+  if (!s.shown) head.append(el("span", {class: "tag unshown", title: s.why}, "not drawn"));
+  head.append(el("button", {class: "linkbtn", title: "This text's row on the Text tab: pass it, note it, compare it", onclick: () => openTextAt(s)}, "On the Text tab"));
+  const box = el("div", {class: "btext"}, head, s.edit ? bfield("area", fid, v.text, val => benchTextSave(s, val), attrs, canText()) : el("p", {class: "saved"}, v.text || "Nothing."));
+  if (v.newText) box.append(el("details", {class: "bfiles"}, el("summary", {}, "As the files have it"), el("p", {class: "old"}, s.text || "(empty)")));
+  if (v.note) box.append(el("div", {class: "tflagline", style: "color:var(--edited)"}, "Your note: " + v.note));
+  return box;
+}
+function textsHint(sheet) {
+  sheet.append(el("p", {class: "shint"}, "The Text tab's rows: what you type is yours, as it is there, and waits for a session to fold in. Clear a field to put it back as the files have it."));
+  if (state.text && !canText()) sheet.append(el("p", {class: "help"}, state.textState === "connecting" ? "Connecting to the texts…" : "Read only: the texts cannot be saved in this view."));
+}
+// The entry's design: internal, read by sessions and by him, never by the game; folded.
+function designFold(sheet, c, open = false) {
+  const d = c.e.design || {}, sd = c.s.design || {}, keys = Object.keys(d).filter(k => k !== "bench");
+  const det = el("details", {class: "sdesign", open: open || null}, el("summary", {}, "Design notes · internal, never shown" + (keys.length ? " · " + keys.length : "")));
+  det.append(el("p", {class: "shint"}, "What it is for and why: read by sessions and by you, never by the game. Each saves as you leave it; clear one to put it back as the files have it."));
+  for (const k of keys) {
+    const v = d[k], fid = `${c.key}.${c.id}.design.${k}`;
+    if (typeof v === "string") det.append(el("div", {class: "sfield"}, blabel(fid, plain(k)), bfield("area", fid, v, val => benchWrite(c.key, c.id, dd => {
+      dd.design = dd.design || {};
+      const t = String(val).replace(/\s+$/, "");
+      if (!t) { if (typeof sd[k] === "string") dd.design[k] = sd[k]; else delete dd.design[k]; } else dd.design[k] = t;
+    }))));
+    else det.append(el("div", {class: "sfield"}, el("span", {class: "lab"}, plain(k)), el("p", {class: "old", style: "white-space:pre-wrap;font:12px/1.45 var(--mono);margin:0"}, Array.isArray(v) && v.every(x => typeof x === "string") ? v.join("\n") : JSON.stringify(v, null, 1)), el("p", {class: "help", style: "margin:2px 0 0"}, "Changed on the raw view.")));
+  }
+  if (!keys.length) det.append(el("p", {class: "help"}, "None written."));
+  sheet.append(det);
+}
+// A passive's or a module's effects in the engine's words, one clause each (tools/hangar_text.py's).
+function effectWordsJs(effects) {
+  return (effects || []).map(e => `${e.trigger || "?"}: ${e.effect || "?"}` + (() => { const rest = Object.entries(e).filter(([k]) => k !== "trigger" && k !== "effect").map(([k, v]) => `${k} ${typeof v === "object" ? JSON.stringify(v) : v}`).join(", "); return rest ? ` (${rest})` : ""; })()).join("; ");
+}
+function factsEl(pairs) {
+  const dl = el("dl", {class: "sfacts"});
+  for (const [k, v] of pairs) if (v !== "" && v !== null && v !== undefined && v !== false) dl.append(el("dt", {}, k), el("dd", {}, ...(Array.isArray(v) ? v : [v])));
+  return dl;
+}
+const linkTo = (label, fn, title) => el("button", {class: "linkbtn", title: title || null, onclick: fn}, label);
+function sheetOrder(key) {
+  const f = FILES.find(x => x.key === key);
+  return f && !f.bench ? runFilter(f.filter, listRows(f)).shown.map(x => x.id) : [];
+}
+function sheetBar(c) {
+  const order = sheetOrder(c.key), i = order.indexOf(c.id), prev = i > 0 ? order[i - 1] : null, next = i >= 0 && i < order.length - 1 ? order[i + 1] : null;
+  const nameOf = (id) => (liveMap(c.key).get(id) || {entry: {}}).entry.name || id;
+  return el("div", {class: "toolbar sbar"},
+    el("button", {class: "btn", onclick: closeEntry}, "‹ " + backLabel()),
+    el("button", {class: "btn", disabled: !prev, title: prev ? nameOf(prev) : "", onclick: () => prev && openEntry(c.key, prev)}, "‹ Prev"),
+    el("button", {class: "btn", disabled: !next, title: next ? nameOf(next) : "", onclick: () => next && openEntry(c.key, next)}, "Next ›"),
+    el("span", {class: "sp"}),
+    el("button", {class: "btn", title: "Every field of the entry as the file holds it, for the rare edit", onclick: () => { state.raw = true; render(); window.scrollTo(0, 0); }}, "Every field"));
+}
+function renderSheet(main) {
+  const {key, id} = state.open, f = FILES.find(x => x.key === key);
+  want("text", ensureText);
+  if (key === "foes.entries") { want("foeart", ensureFoeArt); want("foerules", ensureFoeRules); }
+  const live = liveMap(key).get(id), s = shippedEntry(key, id), st = entryState(key, id), ed = editFor(key, id);
+  const e = live ? live.entry : (s || (ed ? ed.data : null));
+  if (!e) { main.append(el("p", {class: "empty"}, "No such entry: " + id), el("button", {class: "btn", onclick: closeEntry}, "‹ " + backLabel())); return; }
+  const c = {key, id, e, s: s || {}, st, f};
+  const sheet = el("div", {class: "bsheet sheet " + (MAKER_TAB[e.maker] || "")});
+  sheet.append(sheetBar(c));
+  const h2 = el("h2", {}, e.name || foeName(id) || id);
+  if (e.status === "planned") h2.append(" ", el("span", {class: "tag planned", title: "A planned draft: kept, not shown, not run"}, "planned"));
+  if (st) h2.append(" ", el("span", {class: "tag " + st}, st === "del" ? "marked for deletion" : st));
+  sheet.append(el("div", {class: "bhead"}, el("p", {class: "desig"}, SHEETS[key].sub(c)), h2, el("p", {class: "ids"}, `${f.file} › ${f.list} › ${id}`)));
+  if (st === "del") {
+    sheet.append(el("p", {class: "help"}, "Marked for deletion: a session removes it from the file. Keep it to undo that."),
+      el("div", {class: "toolbar"}, el("button", {class: "btn", disabled: !benchCan(), onclick: () => benchRevert(key, id)}, "Keep it")));
+  } else {
+    if (!benchCan()) sheet.append(el("p", {class: "help"}, state.dbState === "loading" ? "Connecting to the page's database…" : "Read only: the database did not load in this view, so nothing saves from here."));
+    SHEETS[key].body(sheet, c);
+    if (st === "edited" && s) sheet.append(el("h3", {}, "Your changes, waiting"), diffView(s, e));
+    sheet.append(el("div", {class: "toolbar", style: "margin-top:22px"},
+      el("button", {class: "btn", disabled: !benchCan() || !ed, onclick: () => benchRevert(key, id)}, s ? "Back to the files" : "Drop this new entry")));
+  }
+  sheet.append(sheetBar(c));
+  main.append(sheet);
+}
+// What content names a term (an id, a key or a value of a piece), for a vocabulary sheet and its list.
+let TERMS = null;
+const NOT_TERM_KEYS = new Set(["id", "name", "codex", "flavour", "text", "description", "design", "designation", "maker", "faction", "promotes"]);
+function termUses() {
+  if (TERMS) return TERMS;
+  const vocab = vocabMap(), out = new Map();
+  const add = (term, owner) => { if (!out.has(term)) out.set(term, []); const l = out.get(term); if (!l.some(o => o.key === owner.key && o.id === owner.id)) l.push(owner); };
+  const walk = (v, owner) => {
+    if (typeof v === "string") { if (vocab.has(v)) add(v, owner); return; }
+    if (Array.isArray(v)) { for (const x of v) walk(x, owner); return; }
+    if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) { if (k === "design" || (NOT_TERM_KEYS.has(k) && typeof x !== "object")) continue; if (vocab.has(k)) add(k, owner); walk(x, owner); }
+  };
+  for (const key of ["chassis.entries", "components.entries", "modules.entries", "foes.entries", "factions.entries"]) for (const {entry} of liveEntries(key)) walk(entry, {key, id: entry.id, name: entry.name || foeName(entry.id)});
+  return TERMS = out;
+}
+function openFormationsFor(dom) {
+  state.open = null; state.raw = false; state.returnTo = null; state.section = "content"; state.sub.content = "foes.entries"; state.sub.foeView = "formations"; remember();
+  const f = fstate("formations"); f.q = ""; f.on = {dom: [dom]}; rememberFilters();
+  render(); window.scrollTo(0, 0);
+}
+const SHEETS = {
+  "components.entries": {
+    sub: (c) => [makerShort(c.e.maker), compTier(c.e) !== null ? "T" + compTier(c.e) + (compTier(c.e) === 0 ? " · a basic" : "") : "locked", KIND_GLYPH[kindOf(c.e)] || kindOf(c.e)].filter(Boolean).join(" · "),
+    body(sheet, c) {
+      const e = c.e, f = e.face || {}, sf = c.s.face || {}, key = c.key, id = c.id;
+      sheet.append(el("h3", {}, "Its die entry"));
+      sheet.append(el("p", {class: "pline", style: "margin:0 0 6px"}, ((KIND_GLYPH[f.kind] || f.kind || "") + " " + faceLine(f)).trim()));
+      const kws = el("div", {class: "kws", style: "margin-bottom:8px"});
+      if (e.shape) kws.append(el("span", {class: "kw shape", title: "Silhouette class: what the model wears at a gun mount"}, plain(e.shape)));
+      for (const k of (f.keywords || [])) kws.append(kwChip(k, "kw", kwNumber(f, k)));
+      for (const t of (e.tags || [])) kws.append(el("span", {class: "kw shape", title: "A tag: build flavour, read by a module or passive"}, t));
+      sheet.append(kws);
+      const cells = numKeys(f, sf).map(k => numCellAt(c, ["face"], k));
+      if (compTier(e) !== null || typeof e.tier === "number") cells.unshift(numCellAt(c, [], "tier", "blueprint tier"));
+      sheet.append(numsBox(cells), el("p", {class: "shint", style: "margin-top:6px"}, "Clear a number to put it back as the files have it. Its keywords, reach, shape and tags change on the raw view (Every field)."));
+      if (e.passive) {
+        sheet.append(el("h3", {}, "Its passive"));
+        const p = e.passive, h4 = el("h4", {}, p.name || "");
+        if (p.status === "planned") h4.append(" ", el("span", {class: "tag planned"}, "planned"));
+        sheet.append(el("div", {class: "passive"}, h4, el("p", {}, p.description || ""), el("p", {class: "help", style: "margin:4px 0 0"}, effectWordsJs(p.effects))));
+      }
+      sheet.append(el("h3", {}, "Codex and flavour"));
+      textsHint(sheet);
+      sheet.append(textField(key, id, "codex", "codex", {placeholder: "Nothing written: one or two lines on the piece."}, e.codex), textField(key, id, "flavour", "flavour", {class: "quote", placeholder: "Nothing written: an in-world quote."}, e.flavour));
+      sheet.append(el("h3", {}, "Your notes on it"));
+      sheet.append(el("p", {class: "shint"}, "The same two fields as its row on a machine's Bench sheet."));
+      const lockId = `${id}.lock`, noteId = `${id}.note`;
+      sheet.append(el("div", {class: "prow"},
+        el("div", {}, blabel(lockId, "its lock"), bselect(lockId, benchGet(e, ["lock"]), BENCH_LOCKS, v => benchWrite(key, id, d => benchSetText(d, ["lock"], v)))),
+        el("div", {}, blabel(noteId, "note on the piece"), bfield("area", noteId, benchGet(e, ["note"]), v => benchWrite(key, id, d => benchSetText(d, ["note"], v)), {placeholder: "What it should do that nobody else does, a tweak, a cut."}))));
+      sheet.append(el("h3", {}, "On the dice"));
+      const on = [...ctx().chassis.values()].filter(ch => dieIds(ch).includes(id));
+      sheet.append(on.length ? el("div", {class: "used"}, ...on.map(ch => linkTo(ch.name + ((ch.fixed || []).includes(id) ? " (locked)" : ""), () => openBenchSheet(ch.id), "Its Bench sheet"))) : el("p", {class: "help"}, "On no machine's die."));
+      designFold(sheet, c);
+    },
+  },
+  "modules.entries": {
+    sub: (c) => [makerShort(c.e.maker), c.e.tier ? "T" + c.e.tier : ""].filter(Boolean).join(" · "),
+    body(sheet, c) {
+      const e = c.e, key = c.key, id = c.id;
+      sheet.append(el("h3", {}, "Numbers"));
+      sheet.append(numsBox([numCellAt(c, [], "tier", "tier"), ...Object.keys(STAT_WORDS).map(k => numCellAt(c, ["stats"], k, STAT_WORDS[k]))]),
+        el("p", {class: "shint", style: "margin-top:6px"}, "Its stat lines: type a number to add one, clear it to put it back as the files have it."));
+      sheet.append(el("h3", {}, "Its rule"));
+      if (e.text) {
+        if (e.text.status === "planned") sheet.append(el("p", {class: "help"}, "A planned rule: the engine does not run it, so only the stat lines show."));
+        sheet.append(textField(key, id, "text.description", "the rule, as the player reads it", {placeholder: "Nothing written."}, e.text.description), el("p", {class: "help"}, effectWordsJs(e.text.effects)));
+      } else sheet.append(el("p", {class: "help"}, "Stats only. A rule is written on the raw view."));
+      sheet.append(el("h3", {}, "Codex and flavour"));
+      textsHint(sheet);
+      sheet.append(textField(key, id, "codex", "codex", {}, e.codex), textField(key, id, "flavour", "flavour", {class: "quote"}, e.flavour));
+      designFold(sheet, c);
+    },
+  },
+  "foes.entries": {
+    sub: (c) => { const f = foeWhole(c.id) || c.e; return [factionName(f.faction), foeKind(c.e), f.rank === "back" ? "back rank" : "front rank", isMassive(f) ? "massive" : "", f.tier ? "T" + f.tier : ""].filter(Boolean).join(" · "); },
+    body(sheet, c) { foeSheetBody(sheet, c); },
+  },
+  "factions.entries": {
+    sub: () => "a domain",
+    body(sheet, c) {
+      const e = c.e, key = c.key, id = c.id, comps = (e.compositions || []).filter(x => x && typeof x === "object");
+      sheet.append(el("h3", {}, "The domain"), factsEl([["bleed", e.bleed], ["rewards lean", plain(e.reward_bias)], ["opening", e.opening ? "the run's first battle is this domain's" : ""]]));
+      sheet.append(el("h3", {}, "Flavour"));
+      textsHint(sheet);
+      sheet.append(textField(key, id, "flavour", "flavour", {class: "quote"}, e.flavour));
+      sheet.append(el("h3", {}, "Its packs"));
+      const tally = el("div", {class: "tbl"}), t = el("table");
+      t.append(el("tr", {}, el("th", {}, ""), ...[1, 2, 3].map(n => el("th", {}, "T" + n))));
+      for (const size of rules().composition_sizes || ["patrol", "formation", "elite", "escort"]) t.append(el("tr", {}, el("th", {}, size), ...[1, 2, 3].map(n => el("td", {}, String(comps.filter(x => x.size === size && compTiers(x).includes(n)).length)))));
+      tally.append(t);
+      sheet.append(tally, el("div", {class: "toolbar"}, el("button", {class: "btn primary", onclick: () => openFormationsFor(id)}, "Its formations")),
+        el("p", {class: "shint"}, "A composition's grid, tiers, ramp and question change on the raw view (Every field: its compositions)."));
+      sheet.append(el("h3", {}, "Bosses and bench"));
+      sheet.append(factsEl([["bosses", [].concat(e.boss || []).map(b => linkTo(foeName(b), () => openFoeSheet(b))).flatMap((x, i) => i ? [", ", x] : [x])],
+        ["bench", [].concat(e.bench || []).map(b => linkTo(foeName(b), () => openFoeSheet(b))).flatMap((x, i) => i ? [", ", x] : [x])]]));
+      designFold(sheet, c, true);
+    },
+  },
+  "chassis.makers": {
+    sub: (c) => c.e.capital ? "the capital's maker" : "a maker",
+    body(sheet, c) {
+      const e = c.e, mine = [...ctx().chassis.values()].filter(ch => ch.maker === c.id);
+      sheet.append(el("h3", {}, "Its voice"), el("p", {class: "shint"}, "The guide each of its rows shows on the Text tab, above its group: read by sessions before they draft its texts, never drawn in the game."));
+      sheet.append(strCellAt(c, [], "style", "style"), strCellAt(c, [], "voice", "voice"));
+      if (e.sponsorship) sheet.append(el("h3", {}, "Sponsorship"), factsEl(Object.entries(e.sponsorship).map(([k, v]) => [plain(k), typeof v === "object" ? JSON.stringify(v) : String(v)])), el("p", {class: "shint"}, "Changed on the raw view."));
+      sheet.append(el("h3", {}, `Its machines · ${mine.length}`));
+      sheet.append(mine.length ? el("div", {class: "used"}, ...mine.map(ch => linkTo(ch.name + (ch.tier ? " T" + ch.tier : ""), () => openBenchSheet(ch.id), "Its Bench sheet"))) : el("p", {class: "help"}, "None yet."));
+    },
+  },
+  "vocabulary.entries": {
+    sub: (c) => [plain(c.e.category), c.e.status !== "implemented" ? c.e.status : ""].filter(Boolean).join(" · "),
+    body(sheet, c) {
+      const e = c.e, key = c.key, id = c.id;
+      sheet.append(el("h3", {}, "Its entry"));
+      textsHint(sheet);
+      sheet.append(textField(key, id, "codex", "codex: the rule as the player reads it", {}, e.codex));
+      sheet.append(el("h3", {}, "Named in content"));
+      const uses = termUses().get(id) || [];
+      if (!uses.length) sheet.append(el("p", {class: "help"}, "No chassis, component, module, foe or domain names it (as an id, a key or a value). The engine may still run it as a rule: the vocabulary's audit says which."));
+      else {
+        const by = {};
+        for (const u of uses) (by[u.key] = by[u.key] || []).push(u);
+        for (const [k, list] of Object.entries(by)) sheet.append(el("p", {class: "used", style: "margin:4px 0"}, el("b", {style: "font:600 11px/1.6 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)"}, (FILES.find(x => x.key === k) || {label: k}).label + " · " + list.length),
+          ...list.slice(0, 40).map(u => linkTo(u.name, () => openSheet(k, u.id))), list.length > 40 ? ` +${list.length - 40}` : ""));
+      }
+      designFold(sheet, c, true);
+    },
+  },
+};
+// A foe's sheet: its numbers (scaled where it scales, a tier a row), its Abilities, every move with
+// its numbers and its line, its fall, its codex and flavour, the packs it stands in and its notes.
+function foeSheetBody(sheet, c) {
+  const e = c.e, key = c.key, id = c.id, f = foeWhole(id) || e, own = (k) => Object.prototype.hasOwnProperty.call(e, k);
+  const kind = foeKind(e), scales = ["boss", "elite", "hero", "promoted"].includes(kind) || (kind === "part" && ctx().bosses.has(ctx().coreOf.get(id)));
+  sheet.append(el("div", {class: "prow", style: "margin-top:12px;align-items:start"}, spriteEl(id, true),
+    factsEl([["domain", factionName(f.faction)], ["kind", kind], ["rank", f.rank], ["size", isMassive(f) ? "massive, a whole column" : "one slot"], ["role", f.role || (kind === "rank and file" ? "pusher" : "")],
+      ["promotes", e.promotes ? linkTo(foeName(e.promotes), () => openFoeSheet(e.promotes)) : ""], ["part of", ctx().coreOf.has(id) ? linkTo(foeName(ctx().coreOf.get(id)), () => openFoeSheet(ctx().coreOf.get(id))) : ""],
+      ["on the map", `move ${f.movespeed ?? 2}` + (f.winged ? ", winged" : "")]])));
+  sheet.append(el("h3", {}, "Numbers"));
+  const cells = [];
+  for (const [k, label] of [["hp", "HP"], ["attack", "attack"], ["armour", "armour"], ["armour_step", "armour a tier"], ["movespeed", "move"], ["tier", "tier"], ["rage", "rage"]]) {
+    if (!own(k) && !(k in (c.s || {})) && !["hp", "attack", "armour", "movespeed"].includes(k)) continue;
+    if (e.promotes && !own(k)) { cells.push(el("div", {}, el("span", {class: "lab"}, label), el("p", {class: "saved", style: "padding:7px 0"}, String(f[k] ?? "—")), el("div", {class: "bwas"}, "its hero's"))); continue; }
+    cells.push(numCellAt(c, [], k, label));
+  }
+  sheet.append(numsBox(cells));
+  if (scales) {
+    const tbl = el("div", {class: "tbl"}), t = el("table"), moves = liveMoves(f).filter(a => (a.kind || "attack") === "attack");
+    t.append(el("tr", {}, el("th", {}, "tier"), el("th", {}, "HP"), el("th", {}, "attack"), el("th", {}, "armour"), ...moves.map(a => el("th", {}, a.name || a.id))));
+    for (const tr of [1, 2, 3]) { const n = atTier(f, tr, true); t.append(el("tr", {}, el("th", {}, "T" + tr), el("td", {}, String(n.hp)), el("td", {}, String(n.attack)), el("td", {}, String(n.armour)), ...moves.map(a => el("td", {}, a.power ? vocabName(a.power) : String(Math.round(n.attack * Number(a.factor ?? 1))) + (Number(a.strikes || 1) > 1 ? " ×" + a.strikes : ""))))); }
+    tbl.append(t);
+    sheet.append(el("p", {class: "shint", style: "margin-top:10px"}, `It scales with the battle's tier, as ${kind === "elite" ? "an elite" : "a commander"} does (ContentDB.BOSS_TIERS: HP ×${rules().boss_tiers.map(r => r.hp).join(", ×")}, attack +${rules().boss_tiers.map(r => r.attack).join(", +")}, armour +armour_step a tier above one).`), tbl);
+  } else if (kind === "part" || kind === "rank and file") sheet.append(el("p", {class: "shint", style: "margin-top:6px"}, kind === "part" ? "A part of an elite stands at its own numbers at every tier." : "The rank and file never scale: the same numbers at every tier."));
+  const ab = abilityWords(f);
+  if (ab.length) sheet.append(el("h3", {}, "Abilities"), el("p", {class: "saved"}, ab.join(" · ")));
+  sheet.append(el("h3", {}, `Moves · ${(f.actions || []).length}`));
+  const nums = atTier(f, 1, scales);
+  if (scales) sheet.append(el("p", {class: "shint"}, "Each move's number below is tier one's; the table above has the rest."));
+  for (const a of (f.actions || [])) {
+    const mine = (e.actions || []).some(x => x.id === a.id), card = el("div", {class: "mcard"}, moveEl(f, a, nums));
+    if (mine) {
+      const sa = ((c.s.actions || []).find(x => x.id === a.id)) || {};
+      const nk = numKeys(a, sa);
+      if (nk.length) card.append(numsBox(nk.map(k => numCellAt(c, ["actions", {id: a.id}], k))));
+      card.append(textField(key, id, `actions.${a.id}.text`, "its line, {damage} and {value} filled in play", {placeholder: "Nothing written."}, a.text));
+    } else card.append(el("p", {class: "help"}, "Its hero's move: ", linkTo(foeName(e.promotes) + "'s sheet", () => openFoeSheet(e.promotes)), "."));
+    sheet.append(card);
+  }
+  const od = e.on_death;
+  if (od && typeof od === "object") {
+    sheet.append(el("h3", {}, "Its fall"));
+    const card = el("div", {class: "mcard"}, ...fallEls(f, nums));
+    const which = od.blow ? "blow" : od.act ? "act" : null;
+    const cells2 = [...numKeys(od, (c.s.on_death || {})).map(k => numCellAt(c, ["on_death"], k)), ...(which ? numKeys(od[which], ((c.s.on_death || {})[which]) || {}).map(k => numCellAt(c, ["on_death", which], k)) : [])];
+    if (cells2.length) card.append(numsBox(cells2));
+    if (which && od[which].text !== undefined) card.append(textField(key, id, `on_death.${which}.text`, "its line", {}, od[which].text));
+    sheet.append(card);
+  }
+  sheet.append(el("h3", {}, "Codex and flavour"));
+  textsHint(sheet);
+  sheet.append(textField(key, id, "codex", "codex", {placeholder: "Nothing written: what it is and how it fights."}, e.codex), textField(key, id, "flavour", "flavour", {class: "quote"}, e.flavour));
+  const packs = standsIn(id);
+  sheet.append(el("h3", {}, `Stands in · ${packs.length}`));
+  if (!packs.length) sheet.append(el("p", {class: "help"}, "No pack deals it: no composition, boss list, bench, summon, split or core names it."));
+  else sheet.append(el("div", {class: "stands"}, ...packs.map(p => el("div", {}, linkTo(p.card.name, () => openFormation(p.card), "Open it in the formations"), " ",
+    el("span", {class: "help"}, [factionName(p.card.dom), FKIND[p.card.kind], p.tiers.map(t => t === "finale" ? "finale" : "T" + t).join(" "), p.how].filter(Boolean).join(" · "))))));
+  designFold(sheet, c);
 }
 function renderChanges(main) {
   const docs = Object.values(state.edits).filter(e => !["", "applied"].includes(entryState(e.key, e.id)));
@@ -2761,7 +3802,7 @@ async function connectDb() {
     for (const d of snap.docs) { const data = d.data(); if (data && data.key) state.edits[d.id] = data; }
     state.dbState = "ready";
     statusLine();
-    if (!state.open) render(); else renderTabs();
+    if (!state.open || !state.raw) render(); else renderTabs();   // a sheet redraws with its fields; the raw editor keeps its draft
   }, (err) => { state.dbState = "none"; setStatus("Edits cannot sync: " + err.code, true); render(); });
   db.collection("designs").onSnapshot((snap) => {
     state.dnotes = snap.docs.map(s => ({id: s.id, ...s.data()})).filter(n => n && n.type);
@@ -2775,7 +3816,7 @@ async function connectDb() {
     for (const d of snap.docs) { const data = d.data(); if (data && data.slot) state.tdocs[d.id] = data; }
     state.textState = "on";
     statusLine();
-    if (state.section === "text" || state.section === "bench") render(); else renderTabs();
+    if (state.section === "text" || state.section === "bench" || (state.section === "content" && state.open && !state.raw)) render(); else renderTabs();
   }, (err) => { state.textState = "off"; render(); });
 }
 

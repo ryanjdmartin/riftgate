@@ -92,12 +92,18 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
   - Sound: `soundforge/` builds every sound and the six music tracks from written recipes
   - The phone: `phone.sh` and `android.sh`, with `.cmd` launchers on Windows
   - The hangar page: `hangar.html`, one artifact with five tabs (the codex, the bench with
-    each machine's sheet and the briefs, the content editor, the text, the models), its
-    motion script `hangar_motion.js`, and the scripts that write its files: `hangar_data.py`
-    (the files map, the models as glTF JSON into `build/hangar/models`), `hangar_designs.py`
-    (the briefs) and `hangar_text.py` (every shown text). Ryan's saved edits live in its
-    database: `edits` (the content editor and the bench), `designs` (his notes on the briefs)
-    and `text` (his texts, marks and notes, the bench's codex and flavour among them).
+    each machine's sheet and the briefs, the content, the text, the models), its motion
+    script `hangar_motion.js`, and the scripts that write its files: `hangar_data.py` (the
+    files map, the models as glTF JSON into `build/hangar/models`, and the engine's rules for
+    a pack read out of sim/ into `build/hangar/foe_rules.json`: the boss tiers, the threat
+    rating by size, the ramp's span, a move's condition and aim words), `hangar_designs.py`
+    (the briefs) and `hangar_text.py` (every shown text). The Content tab's Foes are formations
+    first (every pack a domain deals by tier, its grid as the fight stands it and every unit's
+    moves at that tier, the scaled ones at each tier they come at, a composition edited where
+    it is read), with the units alone and the sprites beside them; every entry opens on a sheet in the Bench's manner, the raw
+    every-field editor behind its toggle. Ryan's saved edits live in its database: `edits`
+    (the content's sheets, the raw editor and the bench), `designs` (his notes on the briefs)
+    and `text` (his texts, marks and notes, the sheets' codex, flavour and lines among them).
   - Names: `check_name.py` checks a name against every machine in `content/reserved_names.json`
     and the names in content; `docs/naming.md` is the kinds of names each maker wants.
   - `spriter/.venv` is the Python the art and sound tools run with.
@@ -202,7 +208,7 @@ python3 tools/synergy_map.py --write
 python3 tools/pages/roster_analysis_page.py > /tmp/roster_analysis.html
 
 # the hangar page (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH)
-python3 tools/hangar_data.py              # writes docs/hangar/pins.json, build/hangar/designs.json and build/hangar/text.json, checks the renders manifest, prints the files map tools/hangar.html is published with
+python3 tools/hangar_data.py              # writes docs/hangar/pins.json, build/hangar/designs.json, build/hangar/text.json and build/hangar/foe_rules.json (failing when ContentDB's scaling moves under the formations), checks the renders manifest, prints the files map tools/hangar.html is published with
 python3 tools/hangar_designs.py --check   # every brief's hangar header, alone
 python3 tools/hangar_text.py              # the Text tab's inventory into build/hangar/text.json, and its counts
 python3 tools/hangar_text.py --check      # every string key in content classified, the ledger sound
