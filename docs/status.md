@@ -376,12 +376,12 @@ with it, on his word. A page's link goes into this file in the same commit as it
 publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.650 on 20 November from main's file at `6bdf0b99` (the page's Version 514),
-  on Ryan's "Go ahead and publish what you need to" of that day; the live page was checked
-  byte for byte against the last publish (`1383f11`'s file) first. Before republishing,
+  Published at v0.651 on 20 November from main's file at `56cf31ae` (the page's Version 515),
+  on Ryan's "Republish" of that day; the live page was checked byte for byte against the last
+  publish (`6bdf0b99`'s file) first. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
-  `6bdf0b99` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  `56cf31ae` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
   live source with the tool's wrapper line, its trailing newline and `</body></html>`
   stripped): check BASE against the live page byte for byte first. After main merges in,
   check the tables script's run against the file's tables before keeping it: a row it
@@ -389,15 +389,14 @@ publish; the commands are in `README.md`.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 308 (20 November, main at `d2eb8fc7`): the
-  page's cleanup (the briefs and the chassis's editing on the Bench, the Designs, Names and
-  Content-chassis tabs gone), the twelve files that differed (the six content files, the pins,
-  the motion script, the briefs' and the texts' inventories, the Macaque's model and sidecar)
-  and `content/reserved_names.json` removed. The `edits` and `text` collections were empty,
-  `designs` held his two notes of 5 November (both already briefed). The `candidates`
-  collection (his names, 106 rows) stays in the database unread; `docs/name_candidates.md`
-  holds them. The service refuses a republish until the live page's saved source has been
-  read whole, every line: read it before the publish, not after the refusal.
+  `edits`, `designs` and `text` read first. Version 309 (20 November, main at `56cf31ae`): the
+  six files that differed (the chassis, components and vocabulary content, the briefs' and the
+  texts' inventories, the Puffin's sidecar), the page itself as it was. The `edits` and `text`
+  collections were empty, `designs` held his two notes of 5 November (both already briefed).
+  The `candidates` collection (his names, 106 rows) stays in the database unread;
+  `docs/name_candidates.md` holds them. The service refuses a republish until the live page's
+  saved source has been read whole, every line: read it before the publish, not after the
+  refusal.
   `build/hangar/designs.json` is one line of about 980 KB: write it indented before reading it whole.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their
