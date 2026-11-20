@@ -6393,6 +6393,36 @@ func test_a_roots_scream_leaves_its_killer_brittle_and_a_higher_roots_every_mach
 	assert_eq([Effects.stacks_of(a, "brittled_mech"), Effects.stacks_of(c, "brittled_mech")], [2, 1], "A's halves as the round opens, 2 with the loud one's to 4 and then 2; C's 2 to 1")
 
 
+## Sap on every machine, a step of a foe's move (the Fell Rider's Shriek, Ryan, 20 November: "Fell
+## rider shriek probably wants Sap on there, thematically"): every machine in the fight is Sapped
+## as the move lands in the enemy's turn, a Ward turning it away, so each hit it lands through its
+## next turn is a point lower, and the stacks go as that turn ends. Synthetic move.
+func test_a_shriek_that_saps_every_machine_lowers_its_next_turns_hits() -> void:
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("A", Die.single(Face.attack(5, I)), 0, 100)
+	var b := _mech("B", Die.single(Face.attack(5, I)), 0, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var rider := _ghoul(500, 0)
+	rider.actions = [_special("debuff", "drain_rerolls", {"value": 1, "also": [{"effect": "sap_all", "value": 1}]})]
+	var target := _ghoul(500, 0)
+	sk.add_foes([rider, target])
+	sk.begin()
+	sk.start_round()
+	rider.action = rider.actions[0]
+	Effects.grant_for_rounds(b, Effects.STATUS["ward"], "test", sk.round)
+	sk.end_round()
+	assert_eq([Effects.stacks_of(a, "sapped"), Effects.stacks_of(b, "sapped")], [1, 0], "every machine Sapped, the Warded one passed by")
+	sk.start_round()
+	rider.actions = [Foe.basic_action()]
+	rider.action = rider.actions[0]
+	var before := target.hp
+	assert_true(sk.assign(0, target), "A fires at the second foe")
+	assert_eq(before - target.hp, 4, "its blow a point lower")
+	sk.end_round()
+	assert_eq(Effects.stacks_of(a, "sapped"), 0, "and the stack goes as its turn ends")
+
+
 func test_a_splitting_foe_steps_its_halves_up_in_its_place_at_once() -> void:
 	# The Gel (Ryan, 25 October: "spawn the half-gel immediately in place, not wait for the
 	# reinforcement phase"): destroyed, its halves step up at once, the first into its slot and

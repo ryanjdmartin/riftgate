@@ -1967,6 +1967,11 @@ static func effect_cost(sk: Skirmish, by: Foe, st: Dictionary, pick: Skirmish.Me
 			for m in sk.live_mechs():
 				if not Effects.has(m.unit, "ward") and not Skirmish.is_out(m):
 					cost += _brittle_cost(value)
+		"sap_all":
+			# A point off each hit a machine lands through its next turn, never more than its blow.
+			for m in sk.live_mechs():
+				if not Effects.has(m.unit, "ward") and not Skirmish.is_out(m):
+					cost += minf(float(value), _raw_attack_mean(m))
 		"dispel":
 			# A purge, a move of its own or a step of one (19 November, as the Waste's needles
 			# came to carry it): what it takes off its machine.
@@ -2365,6 +2370,8 @@ func ward_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 					score += float(scorch * value) * BANK_WEIGHT
 				"corrupt_all":
 					score += float(Skirmish.corrupt_bite() * value) * HULL_WEIGHT * CLEANSE_ROUNDS / float(n)
+				"sap_all":
+					score += minf(float(value), _raw_attack_mean(who))
 	return score
 
 

@@ -68,7 +68,7 @@ more; its purge is a boss's.
 
 | Foe | Today | Proposed | Why |
 |---|---|---|---|
-| King Gel (boss) | Body Slam, Merge, Belly Flop | a move of its own, Dissolve: Purge 1 on the machine carrying the most buffs | a slime digests what a machine put up; standing alone, it costs the boss a blow, so its numbers need no cut |
+| King Gel (boss) | Body Slam, Merge, Belly Flop | a move of its own, Dissolve: Purge 1 and Ablating 2 on the machine carrying the most buffs | his mark, 20 November: "King gel purge is fine but that move also feels like it needs Ablate on it, from the name alone". Waits: a boss carries three moves (section 8) |
 
 The alternative for the Meadow's purge is Floraison's Swallow with a Purge 1 step, his "ride on
 a debuff": the machine comes out stripped.
@@ -80,7 +80,7 @@ The Waste already lays the most kinds, so it changes least.
 | Foe | Today | Proposed | Why |
 |---|---|---|---|
 | Antlion line | Mandibles, a plain blow | Mandibles with Brittle 2 | the trap's jaws crack plate ("pins what it catches", its own niche); the pack's later bites land harder |
-| Emperor Scorpion (boss) | Paralytail, a blow that jams | a Purge 1 step ahead of Paralytail | his "ride on a debuff": the sting strips and stiffens |
+| Emperor Scorpion (boss) | Paralytail, a blow that jams | Paralytail leaves Ablating 2 | built on his mark, 20 November: "Emperor scorpion doesn't need purge on its jam, it doesn't really make sense. Sap, brittle or ablate is more fitting"; Ablate my pick, the venom beside the jam's paralysis |
 | Warding Orb (the Astromancer's, a wanderer) | Guard Aura, armour on every foe | Guard Aura as a Ward on every foe | the warding orb wards; the fight becomes kill the orb before laying marks |
 
 ### The Marsh
@@ -93,7 +93,7 @@ Its lever row already asks for a sanctuary's Ward.
 | Ghost line | Hex Bolt, plain on the Ghost | Hex Bolt with Sap 1 | a hex weakens; it saps the burst the Marsh asks for, so the ghosts at the back are the first kill twice over |
 | Death Knight (t2) | Grave Guard, armour on every foe | Grave Ward, a Ward on every foe | "this guy protects his allies"; the sanctuary's Ward the lever row names |
 | Matador (boss) | Red Capote, armour 3 for a round | Red Capote as a Barrier | the cape turns the first blow aside; a cheap blow pops it, then the big one lands |
-| Fell Rider (elite) | Shriek, a reroll drained | a Purge 1 step after the Shriek | the Nazgûl's cry breaks resolve; his "ride on a debuff" |
+| Fell Rider (elite) | Shriek, a reroll drained | the Shriek Saps every machine | built on his mark, 20 November: "Fell rider shriek probably wants Sap on there, thematically" |
 
 ### The Peak
 
@@ -106,21 +106,24 @@ machine" is my redraft.
 | Magma Elemental line | Slag Fist, a plain blow | Slag Fist with Brittle 2 | slag cracks plate, and the salamanders' bites after it land harder: the Peak's spike, on the rank and file |
 | Wyvern (t2) | Dive, a plain blow | Dive with an Expose | a diving wyvern marks its prey for the field; two to a formation, one mark a round by the brake |
 | Firelord (elite) | Submerge, armour 3 | Submerge as Phased: he sinks, the Sons of Flame rise | sunk in the lava he is out of reach; under the source rule a Phased machine can still follow him |
-| Obsidian Tyrant (boss) | Roar, a reroll drained | a Purge 1 step after the Roar | a roar that blows away what a machine put up |
+| Obsidian Tyrant (boss) | Roar, a reroll drained | open: his "Same with Obsidian. But then they're both identical" | my lean: Brittle 2 on every machine, so the Rider's cry saps what you deal and the Tyrant's roar cracks what you take, before its Firestorm |
 
 ### After the rows
 
 | Status | Meadow | Waste | Marsh | Peak |
 |---|---|---|---|---|
-| Purge | King Gel | as today, and the Emperor Scorpion | Fell Rider | Obsidian Tyrant |
-| Brittle | the roots | Antlion line | | Magma Elemental line, World Eater |
-| Sapped | | | Ghost line | |
+| Purge | King Gel, waiting | as today | | |
+| Ablating | King Gel, waiting | Emperor Scorpion, built | | as today |
+| Brittle | the roots | Antlion line | | Magma Elemental line, World Eater; Obsidian Tyrant, open |
+| Sapped | | | Ghost line; Fell Rider, built | |
 | Exposed | as today | as today | as today | Wyvern |
 | A foe's Ward | | Warding Orb | Death Knight | |
 | A foe's Barrier | | as today | Matador | |
 | A foe's Phased | | | as today | Firelord |
 
-Engine needed: a foe's Sap rider, the one new piece (our Sap keyword lays the same status). The
+Rows not marked "built" or "waiting" are still his to mark. Engine needed: a foe's Sap rider for
+the Ghost line (our Sap keyword lays the same status); Sap on every machine, the Shriek's, is
+built. The
 rest is content on effects the engine runs.
 
 ## 4. Purge's three forms
@@ -232,3 +235,33 @@ reboot is the rule most at stake.
 After his marks: the anchor read of every fight a row touches, before and after, the leaders
 with and without the Barrier basic, and a Phased trial at the Marsh's tier-two formations with
 one Phaser in the squad.
+
+## 8. Open from 20 November
+
+- **A boss's three moves.** "A boss or hero three" is the move count he passed on 24 October
+  ("The rest is fine"), and the content test holds it. King Gel's Dissolve would be a fourth. So
+  either a boss may carry four where its kit wants one, or Dissolve rides a move it has.
+- **A leader's numbers by tier.** He asked whether a boss's step numbers grow with its tier. They
+  do not: a leader's HP grows by a tenth and a quarter, its attack by 1 and 2, and an armoured
+  kit's plate by its step; a Purge 1 or a Sap 1 is 1 at every tier. My lean: content may write a
+  step's number a tier, three numbers where it wants them, read as the leader is scaled.
+- **Phased's granters.** His lean: "I would probably only allow self-phased except in very
+  specific circumstances, like maybe the swallowtail." Self-phased answers the reactive form's
+  third hole, since a machine that phases itself has spent its die and cannot reboot that turn;
+  and it means the reactive form gives no safe reboot at all, where the delayed one gives the
+  phased round to reboot in. His question: Phased is not the only thing on the round's end. That
+  clock also ends Essence Flare and grants the Ammit's new one, runs a swallow's and a Golden
+  Rage's rounds, and bursts the Web Bomb, and a part grows back after it. Phased is the only
+  status another piece queues there.
+- **The rally.** His: "It's a foe move, they're all different. Like if 'rally' always grants 2,
+  it's a nuisance in tier 1 and laughable in tier 2 ... The point of the previous move pass that
+  turned moves into steps was to decouple things like this." The formations that rally, for his
+  read: the wolf, warg and alpha packs; the Captain's warband, the metal drift and the frost and
+  bloom; the shaman's warband and the Leshy's hunt; Floraison's two hunts and the Mantis Ant's
+  tier-three nest; the Fallen Weapon and its vigils; Gilgamesh and Enkidu; the magma forge and
+  the caldera; and the Obsidian Tyrant's Saurian Queen.
+- **The goblins' wall.** His "Give the goblins an aoe shield too". Four goblins each laying armour
+  1 on every foe would stand the formation at armour 4, past the basic gun's 3. So either the wall
+  refreshes rather than adds, armour 1 from walls however many raise one, or one goblin carries
+  it and is the target.
+- **The Wild Hunt.** Three riders, each naming the quarry, is the alpha pack's case in an elite.

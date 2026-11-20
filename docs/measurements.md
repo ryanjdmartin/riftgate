@@ -12042,3 +12042,26 @@ Read: about a point of a four's hull a formation, most where the roots are most,
 staying inside a formation's twentieth and the mean half a point past it. Four roots pulled by
 one machine leave it Brittle 8; the bot prices the curse on the killer as it weighs each kill. The first battle's sizing is his; the higher roots, at tiers two and three,
 wait for the numbers pass.
+
+## 20 November: his kit marks, read before and after
+
+On Ryan's marks of 20 November: the roots' Root Lash corrupts ("I'd give them corrupt on every
+blow"), the Emperor Scorpion's Paralytail leaves Ablating 2 ("Sap, brittle or ablate is more
+fitting", the Ablate the session's pick) and the Fell Rider's Shriek Saps every machine ("Fell
+rider shriek probably wants Sap on there, thematically"). `tools/anchor_read.gd`, the pool of the
+six real tier ones, every squad of the fight's rating, six seeds a formation's squad and four a
+leader's; main at `0bfbadf` before. Hull a share of a four's; every fight won.
+
+| Fight | Before | After |
+|---|---|---|
+| The goblin horde, three machines | 4.9% | 9.7% |
+| The treant grove | 5.5% | 6.9% |
+| The gel wall | 6.2% | 12.7% |
+| The Emperor Scorpion, without the Barrier basic | 22.1% | 29.4% |
+| The Emperor Scorpion, with it | 15.4% | 22.8% |
+| The Fell Rider's hunt, without | 20.0% | 20.9% |
+| The Fell Rider's hunt, with | 8.5% | 9.0% |
+
+Read: the corrupting roots double the horde and the gel wall, two formations' twentieth each, the
+bleed growing with the gel wall's longer fight; the Scorpion's venom adds seven points, its
+Paralytail a frequent move; the Shriek's Sap moves the Fell Rider a point at the most.

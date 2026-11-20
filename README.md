@@ -110,7 +110,8 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
   - `rules.md` the rules as they stand; `design-bible.html` the decisions and why, with the
     questions only Ryan can settle in its section 12; `status.md` how things stand and the
     order of work; `todo.md` the tasks, one line each by who moves it; `measurements.md`
-    every run a decision cites.
+    every run a decision cites; `name_candidates.md` the names floated on the hangar's old
+    Names tab, kept as a record.
   - Generated: `vocabulary.md` (from the vocabulary), `voice.md` (every shown text Ryan has
     signed as his own, read before a session drafts shown text), `synergy_map.md` (who sets
     and who reads every status and resource), `balance.md`, `campaign_run.md`, `battle_run.md`,

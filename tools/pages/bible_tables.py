@@ -41,7 +41,7 @@ PASSIVE_EFFECTS = {"seal_form": ("sealed", "machine"),
                    "mine_on_spend": ("mine", "foe")}   # stack_status names its own, on the machine; the Reverberant Payload's Mine (9 November)
 FOE_KEYWORDS = {"scorch": "scorched", "ablate": "ablating", "jam": "jammed", "corrupt": "corrupted", "brittle": "brittled", "expose": "exposure"}
 FOE_EFFECTS_ON_MACHINES = {"ablate": "ablating", "scorch_all": "scorched", "corrupt_all": "corrupted",
-                           "jam": "jammed", "brittle": "brittled", "brittle_all": "brittled", "swallow": "swallowed", "expose": "exposure"}
+                           "jam": "jammed", "brittle": "brittled", "brittle_all": "brittled", "sap_all": "sapped", "swallow": "swallowed", "expose": "exposure"}
 FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
                        "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen",
                        "prime": "primed", "barrier": "barrier", "ward_all": "ward", "regenerate": "regenerating", "golden": "golden",

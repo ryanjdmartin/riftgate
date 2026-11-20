@@ -518,6 +518,9 @@ func strikes() -> int:
 ##           killer, Ryan, 19 November: "Mandragora can be brittle on killer for t1")
 ##           brittle_all: every machine gains `value` stacks of Brittle (the higher roots' scream:
 ##           "it's higher variations can brittle the whole team"; nobody in particular)
+##           sap_all: every machine gains `value` stacks of Sapped, its attacks a point lower a
+##           stack through its next turn (the Fell Rider's Shriek, Ryan, 20 November: "Fell
+##           rider shriek probably wants Sap on there, thematically"; nobody in particular)
 ##           scorch_all: every machine gains `value` stacks of Scorched, its weapons and debuffs
 ##           running hotter (Eruption; nobody in particular)
 ##           corrupt_all: every machine's showing entry is corrupted (Unravel; nobody in particular)
@@ -550,12 +553,12 @@ func strikes() -> int:
 const ACTION_EFFECTS := {
 	"defend": ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "phase"],
 	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "golden", "appropriate"],
-	"debuff": ["drain_rerolls", "ablate", "jam", "brittle", "brittle_all", "scorch_all", "corrupt_all", "dispel", "swallow", "expose", "unready_all"],
+	"debuff": ["drain_rerolls", "ablate", "jam", "brittle", "brittle_all", "sap_all", "scorch_all", "corrupt_all", "dispel", "swallow", "expose", "unready_all"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
 ## is shown intent (the ambush read below).
-const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "brittle_all", "scorch_all", "corrupt_all", "merge", "golden", "unready_all", "phase"]
+const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "brittle_all", "sap_all", "scorch_all", "corrupt_all", "merge", "golden", "unready_all", "phase"]
 
 
 ## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? It draws

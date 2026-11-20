@@ -2860,7 +2860,7 @@ func _validate_effect(aw: String, a: Dictionary, effect: String, errs: Array[Str
 	if int(a.get("value", 0)) < 0 or int(a.get("count", 1)) < 1:
 		errs.append("%s: value cannot be negative; count and weight are at least 1" % aw)
 	# What an effect lays, it says: the stacks, or the rerolls a theft takes (24 October).
-	if ["ablate", "brittle", "brittle_all", "scorch_all", "corrupt_all", "drain_rerolls"].has(effect) and int(a.get("value", 0)) <= 0:
+	if ["ablate", "brittle", "brittle_all", "sap_all", "scorch_all", "corrupt_all", "drain_rerolls"].has(effect) and int(a.get("value", 0)) <= 0:
 		errs.append("%s: %s says what it lays: value, a positive number" % [aw, effect])
 	# A swallow (30 October) says the rounds its machine is out, 1 to 3: hard control on
 	# the team, held short.

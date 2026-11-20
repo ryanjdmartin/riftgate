@@ -1654,7 +1654,7 @@ static func intent_riders(foe: Foe, inert: Array = [], idle: Array = []) -> Arra
 ## A step with no term of its own shows none: the move's text says it, and a step named in
 ## `idle` shows none either (it lays nothing this round: a fade on a foe Phased already).
 const STEP_TERMS := {"ablate": "ablate", "jam": "jam", "expose": "expose", "dispel": "dispel", "swallow": "swallow",
-	"brittle": "brittle", "brittle_all": "brittle", "scorch_all": "scorch", "corrupt_all": "corrupt", "appropriate": "appropriated", "phase": "phased"}
+	"brittle": "brittle", "brittle_all": "brittle", "sap_all": "sap", "scorch_all": "scorch", "corrupt_all": "corrupt", "appropriate": "appropriated", "phase": "phased"}
 static func _step_marks(a: Dictionary, shown: Array = [], idle: Array = [], list: String = "also") -> Array:
 	var out: Array = []
 	var seen: Array = shown.map(func(row) -> String: return str(row[0]))
@@ -1664,7 +1664,7 @@ static func _step_marks(a: Dictionary, shown: Array = [], idle: Array = [], list
 			continue
 		seen.append(Terms.glyph(term))
 		var n := int(st.get("value", 0))
-		out.append([Terms.glyph(term), str(n) if n > 0 and ["ablate", "brittle", "brittle_all", "scorch_all", "corrupt_all", "dispel"].has(str(st.get("effect", ""))) else "", Terms.colour(term)])
+		out.append([Terms.glyph(term), str(n) if n > 0 and ["ablate", "brittle", "brittle_all", "sap_all", "scorch_all", "corrupt_all", "dispel"].has(str(st.get("effect", ""))) else "", Terms.colour(term)])
 	return out
 
 

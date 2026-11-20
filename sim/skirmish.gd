@@ -4262,6 +4262,17 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 				_fire_on(ms, "brittled_mech", maxi(1, value), f)
 				cracked.append(ms.unit.display_name)
 			log.append("%s: %s, %s Brittle ×%d" % [f.display_name, str(a.get("name", "curses")), ", ".join(cracked) if not cracked.is_empty() else "nobody", maxi(1, value)])
+		"sap_all":
+			# Sapped on every machine in the fight (the Fell Rider's Shriek, 20 November): its
+			# attacks a point lower a stack through its next turn, gone as that turn ends.
+			var sapped: Array[String] = []
+			for ms in targetable_mechs():
+				if Effects.has(ms.unit, "ward"):
+					log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, str(a.get("name", "saps")), ms.unit.display_name])
+					continue
+				_fire_on(ms, "sapped", maxi(1, value), f)
+				sapped.append(ms.unit.display_name)
+			log.append("%s: %s, %s Sapped ×%d" % [f.display_name, str(a.get("name", "saps")), ", ".join(sapped) if not sapped.is_empty() else "nobody", maxi(1, value)])
 		"swallow":
 			_swallow(f, t, maxi(1, value))
 		"expose":

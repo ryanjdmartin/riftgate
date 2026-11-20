@@ -65,7 +65,7 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1365 tests, 387,011 checks, green (19 November, the roots' Brittle and the pin's end). The runner fails a run
+- Tests: 1366 tests, 387,016 checks, green (20 November, his kit marks). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -193,9 +193,12 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   moved by a point or two. His second answers of 19 November: the roots scream Brittle 2,
   the Mandragora on its killer and the higher two on every machine (a fall takes no reroll
   since, a drain a move's alone), which costs the Meadow's formations about a point of a
-  four's hull; a pin with nothing to hold goes as its foe's turn ends. His to pick: the
-  pickets' count, and `docs/domain_statuses_proposal.md` (the domains' statuses, which
-  leaders purge, Phased by source). The
+  four's hull; a pin with nothing to hold goes as its foe's turn ends. His marks of 20
+  November: the roots' lash corrupts (the goblin horde twice a formation's budget until its
+  wall is settled), the Emperor Scorpion's Paralytail leaves Ablating, the Fell Rider's Shriek
+  Saps every machine, and the alpha pack is one alpha and three wargs; King Gel's Dissolve
+  waits on a boss's three moves. His to pick: the pickets' count, and the rest of
+  `docs/domain_statuses_proposal.md` (its section 8 holds this round's open items). The
   battle whole is the open question (the brief's section 11): at their ratings a second
   battle's fights come to three fifths to nine tenths of a squad's hull, and a fight met a
   machine short costs four to six times its price. Tiers two and three are unsized, their
@@ -311,9 +314,11 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    November is done: every domain's kit and sizing at the baseline (the second battle, four
    machines; the code's ramp 1), the first battle built, the bot pricing a purge. In this
    order from here:
-   - His marks on `docs/domain_statuses_proposal.md`, then its rows built and read: a foe's
-     Sap rider the one new engine piece, and Phased by source with his ruling on a ghost's
-     own side, in one pass.
+   - His marks on the rest of `docs/domain_statuses_proposal.md`, then its rows built and
+     read: a foe's Sap rider for the Ghost line, and Phased by source with his ruling on a
+     ghost's own side, in one pass; his read of the formations that rally.
+   - The formation pass (the bible's formation row): every composition given a purpose, a
+     row a formation in chat first, the goblin horde re-sized with its wall.
    - His play of a second battle, which says whether the budget's shares stand (the brief's
      section 11): the fights are even across the domains, and the battle whole is tight.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after

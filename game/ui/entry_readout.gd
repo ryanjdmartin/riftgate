@@ -433,7 +433,7 @@ const MOVE_TARGETS := {
 	"heal": "The most hurt of its own", "brace_all": "Every foe", "revive_once_ally": "One of its own",
 	"cleanse": "The most-marked of its own", "prime": "Every other foe", "ward_all": "Every foe",
 	"summon": "Empty places", "rally": "Every foe", "merge": "Its kinds on the field", "appropriate": "Any machine",
-	"drain_rerolls": "The team's rerolls", "brittle_all": "Every machine", "scorch_all": "Every machine", "corrupt_all": "Every machine",
+	"drain_rerolls": "The team's rerolls", "brittle_all": "Every machine", "sap_all": "Every machine", "scorch_all": "Every machine", "corrupt_all": "Every machine",
 	"unready_all": "Every foe it readied", "phase": "Self",
 }
 

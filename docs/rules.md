@@ -1349,7 +1349,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,
   rally (Empowered at its value on every foe on the field, itself too, at once), golden (the rage: Golden for the rounds it says, 1 to 5 and three unsaid, its value the add; only while calm), drain rerolls, ablate (stacks of Ablating on one machine), Brittle (stacks of Brittle on one
-  machine), Brittle on all (the same on every machine), scorch all (stacks of
+  machine), Brittle on all (the same on every machine), Sap on all (stacks of Sapped on every
+  machine, through its next turn), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted stacks on the entry every machine shows),
   jam, purge (Purge N: N stacks off every buff, for good, whatever
   granted it; the Djinn's Unmake at 1; never a last act's), cleanse
