@@ -118,7 +118,7 @@ OTHER_KEYS = {
     "components.entries": {"id", "name", "maker", "shape", "sound", "status"},
     "modules.entries": {"id", "name", "maker"},
     "foes.entries": {"id", "name", "faction", "rank", "promotes", "guard", "role"},   # role: a pusher's, a hunter's or a flanker's (10 November), read by the validator and never shown
-    "factions.entries": {"id", "name", "bleed", "reward_bias"},
+    "factions.entries": {"id", "name", "bleed"},
     "loot.entries": {"id", "name"},
 }
 SLOT_KEYS = {

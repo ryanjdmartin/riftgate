@@ -128,7 +128,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 - A pack is what its fight's slots hold: nothing waits behind the formation and nothing steps in
   once the fight begins. Every composition fits its slots (Content conventions) and every fight
   holds one pack, a boss's with its escort, so no fight is given more than its slots hold.
-- At the start, foes take their ranks heaviest hitters first from the left (its heaviest
+- At the start, a pack stands as its composition's grid has it; a boss's fight and a final,
+  which carry no grid, take their ranks heaviest hitters first from the left (its heaviest
   move's damage times strikes; ties in arrival order).
 - The squad stands in four spots across the floor, one under each of the foes' columns: a squad
   of three from the left, a squad of one or two in the middle spots, the outer ones empty; a
@@ -633,8 +634,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   condition on its play, and the pattern for any to come; the second is a **count it spends**
   (the Quintessence Tap's Essence, by its mark, the number what it would take now), unplayable and
   struck the same way while its machine holds none.
-- **Cleanse** (on a shield or a vent, today): the machine it lands on loses Ablating, Scorched, Brittle,
-  a foe's Jammed and Corrupted (never a cooldown).
+- **Cleanse** (on a buff or a shield: the Breaching Plow, the Retrocausal Shroud, the Sutler's Hoist
+  Charged): the machine it lands on loses Ablating, Scorched, Brittle, Sapped, Exposed, a foe's
+  Jammed and Corrupted (never a cooldown).
 - No shield passes its maximum: a shield granted to a full machine is lost.
 
 Component properties, printed on the entry rather than learned as keywords (the die marks
@@ -665,7 +667,7 @@ Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most 
 each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
 the armour they stood for going with them. **Braces**:
 spending it Armours its owner, the stacks it says, an armour point each, until its side's
-next turn begins (no dealt piece prints it today; the Wild Boar's Breaching Plow did until 11 November). **The Quintessence Tap** (the Ammit's, equipment spent on
+next turn begins (the Shift Whistle prints it). **The Quintessence Tap** (the Ammit's, equipment spent on
 itself, cooldown 3): it consumes the Ammit's Essence, as much as it holds up to 5, and grants a
 stack of Empowered for each, the die showing what it would take now; and its machine gains
 Essence Flare, a buff, until the round's end. While a live machine carries Essence Flare no
