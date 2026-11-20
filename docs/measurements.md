@@ -12200,3 +12200,25 @@ at Ablating 2, the King Gel back in its band, the squad with the Barrier basic p
 quarter of a four's hull where it paid a seventh, since a purging boss's Barrier is no pass. The
 horde stays as built: the Goblin's attack 3 moves it by less than a read's spread and the
 warband by nothing, and one root fewer halves it, so its four roots are the question for his play.
+
+## 20 November: the Mole alone, beside the Honey Badger
+
+`tools/balance.gd -- --seeds 30 --rows mole,badger --policies greedy`, every pack of the matrix
+(101), each machine alone, on this branch at `4849a7a3` (the Mole's kit as built that day, the
+bot's first cut on it: the drill held until the cap and whole and cold, and no burrow while its
+drill still works in a foe unless it overheats), 6,060 fights.
+
+| The machine | Win rate, the row's mean over 101 packs | Its spends |
+|---|---|---|
+| The Mole (tier one) | 39.9% | Slugthrower 31%, Inertia Drill 29%, Shoring Jack 15%, Rivet Gun 13%, Twin Autoguns 12% |
+| The Honey Badger (tier one) | 53.6% | Chainsaw Claw 41%, Bullion Fragmenter 31%, Rivet Gun 11%, Twin Autoguns 10%, Shoring Jack 7% |
+
+What it says. A row mean at 30 seeds, so the 14 points are real for this bot and this content:
+alone, the Mole is a tier one well under its maker's peer. It gives about three turns in ten to
+the drill (a burrow and two turns under each time), and its numbers and stock are the Honey
+Badger's placeholders with a basic gun where the Badger has its two pieces. Ryan's worry the day
+he set the kit: "My main concern with this design, is that it's SLOW. 3 turns is a LONG time".
+Before the fix of the same day the bot burrowed again as its shield broke, taking the drill
+home after one blow, a loop of 2 damage a cycle (6 seeds, the Mole at 40.4% beside 51.5% and the
+Wild Boar's 52.5%, the loop's own read). A read alone says nothing of the squad branch's Brittle or
+a drill a team cashes; his play decides.
