@@ -12010,3 +12010,11 @@ the reads, 23% to 24% lost against a boss beside 15% to 17%, its own hull 29% to
 (the Storm Petrel, the Stingray, the Nemesis and the Whip Scorpion do), and Empowered lands on
 every strike, so its worth rides on who takes it. A bot's read of tier one's foes, for a
 tier-two machine: a direction.
+
+Ryan, 20 November: "since heat is conserved I would expect the total number of reboots to be the
+same, this version of the Puffin really wants a team that can leverage it ... the bot probably has
+no idea how to use it other than the empowered hook, so it makes sense that moves the number. I
+think the empowered scaling is a symptomatic conclusion." No number moves on this read: the bot
+treats a point of heat under the maximum as free and reboots its machines before anything spends,
+so it never puts heat where a reboot, a Cryo cash or a blasting vent takes it off, and the squad
+read has nothing that turns heat into anything.

@@ -147,8 +147,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   the spotter and one turning the Designator into a weapon, wait on Kestrel's tier one); the Skua, the Kite, the Cottonmouth and the Polar Bear stand as built (19 November, his
   "Leave it"); the Puffin landed on the 19th at tier two on his calls (equipment it spends on an
   ally takes up to 4 of that ally's heat onto it; its lock passes its whole heat to an ally for
-  Empowered 1 for every 2, which read as none on the day's read; its two names working ones, his
-  to revisit); its first round on the Swallowtail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
+  Empowered 1 for every 2; its two names working ones, his to revisit), its strength his play's in
+  a team that leverages heat, since the bot reads only its Empowered (20 November); its first
+  round on the Swallowtail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis, the Polar Bear
   (a reboot opens its seal), the Whip Scorpion (its reboot's vent blasts every foe), the
   Lammergeier, the Wild Boar, the Baboon, the Stingray. The Giant Petrel's kit, the Musk Ox
