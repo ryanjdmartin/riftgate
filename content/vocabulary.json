@@ -412,7 +412,7 @@
    "id": "chain",
    "category": "keyword",
    "name": "Chain",
-   "codex": "Keyword with a number. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the number: a weapon's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. An arc is its blow alone: nothing the entry lays rides it, so a conductor takes the number and no mark, no Lure and no Shock. On a debuff, which deals nothing itself, the arcs land the number plain, through each foe's armour. No strike is aimed at them, so their Shock stands.",
+   "codex": "Keyword with a number. Chain 2 also lands 2 on every other foe on the field that conducts (a Shocked foe, or one carrying a Sonic Needle), wherever it stands, where the target takes the number: a weapon's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. An arc is its blow alone: nothing the entry lays rides it, so a conductor takes the number and no mark, no Lure and no Shock. On a debuff, which deals nothing itself, the arcs land the number plain, through each foe's armour. No strike is aimed at them, so their Shock stands.",
    "status": "implemented",
    "design": {
     "holes": "Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain). Retired 3 November: the charge, one other foe at random after the arcs (Ryan, 2 November: \"Chain just is the situational aoe, and if weak we can either add more things for it to proc on, or give it the self-charge again\"); Charged, the primer, supplies the Shock beside the Shock weapons and Retaliate. A debuff's since 17 November (the Storm Petrel's Pulse, its Striker branch): refused until then, since a debuff's arc would carry its riders to every conductor for no blow; with a number the arc is a blow. Its arcs carry no rider since 18 November (Ryan: \"take riders off chain. Thematically it's a lightning arc, not part of the impact\"): they had carried the entry's riders as any area does, the fourth footprint's rule, which on the Pulse lured every Shocked foe it arced to; the Arc Fault Cannon printed none, so it lost nothing."
@@ -1438,6 +1438,16 @@
    "status": "implemented",
    "design": {
     "holes": ""
+   }
+  },
+  {
+   "id": "on_struck",
+   "category": "trigger",
+   "name": "On struck",
+   "codex": "Passive trigger. Fires when a foe's blow lands on this machine, a time a blow, whatever the blow dealt; it lays a status on the striker. A blow that wrecks the machine lays nothing.",
+   "status": "implemented",
+   "design": {
+    "holes": "Its carrier the Echidna's Sonic Needles (Ryan, 20 November: \"getting struck by one, grants that foe a stack of Sonic Needle\"). The codex is a session's draft."
    }
   },
   {
@@ -2481,6 +2491,22 @@
      "on": "machine",
      "stacks": "Renews: one",
      "lasts": "Until its next burrow"
+    }
+   }
+  },
+  {
+   "id": "sonic_needle",
+   "category": "status",
+   "name": "Sonic Needle",
+   "codex": "Foe status, from the Echidna's Sonic Needles: a stack for every strike of its weapons and equipment that reaches the foe, and for every blow the foe lands on it. It conducts Chain, as Shocked does. On 3 stacks, the Echidna fires Chain 2: 2 on every conductor on the field, this foe included, each its Brittle adding and its armour taking it, no strike aimed at any; then every stack on this foe is consumed. A foe's cleanse takes it, a Ward turns it away, and a foe that falls takes it with it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 20 November: \"Sonic Needle - Conducts Chain. On 3 stacks, the Echidna fires Chain 2, then consume all stacks on this foe\"; his answers that day: the bolt is \"targeted at nothing. So the foe that hit 3 stacks and procced it would take 2 by definition\", and a stack a strike. Its branches tweak it: the Spiker's sap (1 less on the foe's attacks a stack) and Chaos's bolt taking one stack in place of all. The text is a session's draft.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Yes: up to 3",
+     "lasts": "Until a bolt consumes it"
     }
    }
   }

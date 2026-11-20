@@ -53,8 +53,8 @@ document's job and every command are in `README.md`.
   words) the same day on his "Ok merge in", and `ccr-64b5deec-lunnff` (the Macaque, the line
   frame until its naming: its model, its kit and the offhand's engines, the strike order, the
   upgrade chevrons, the models' texture copies' test) the same day on his "Send it to Main"; on
-  it since, not on main: the rules sweep's list for his marks, the echidna's kit round, and the
-  Mole's kit (20 November). A session's hangar publish runs ahead of main (Pages).
+  it since, not on main: the rules sweep's list for his marks, the echidna's kit round, the
+  Mole's kit and its move to tier two, and the Echidna's kit (20 November). A session's hangar publish runs ahead of main (Pages).
   Every other branch on GitHub but the lines' own working branches is merged and to delete
   (`git push origin --delete`, then `git fetch --prune`); a cloud session may not delete one.
 - The desk machine is a Windows PC (`C:\Users\jam82\Desktop\Code\riftgate`; the README's
@@ -66,8 +66,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1398 tests, 387,310 checks, green (20 November, the Mole's kit on the Macaque's branch,
-  over main's gel line, goblins' wall and content audit). The runner fails a run
+- Tests: 1414 tests, 387,428 checks, green (20 November, the Echidna's kit on the Macaque's
+  branch, over main's gel line, goblins' wall and content audit). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -126,9 +126,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   pass. Tier one's foes are sized for the reboot and the higher tiers' are not (The numbers,
   below). Detail: the rules' Foes;
   the bible's rows on the foes' rule set, targeting, Exposed and Phased.
-- **The machines.** Five makers and 26 chassis, 25 of them dealt (eleven at tier one, ten at
+- **The machines.** Five makers and 27 chassis, 26 of them dealt (eleven at tier one, eleven at
   two, four at three); the Swallowtail is back in design, undealt (`"status": "planned"`), its
-  brief open. 83 components, 7 of them planned drafts nothing deals (the slottable shields and
+  brief open. 84 components, 7 of them planned drafts nothing deals (the slottable shields and
   vents, the Gravity Knuckles and the Tesla Gauntlets, the Retribution Thurible, the Solar Flare
   Array); 20 modules. A stock die is basics beside its
   locked pieces: the basic guns deal 3 for 4 heat and the Laser Carbine 4 for 5, the Halo
@@ -171,8 +171,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   and the gunship are unfinished by his own notes. Four tier ones a maker (4-4-2) is his lean
   (the refit brief's section 13); the six certain ones are the Honey Badger, the Skua, the
   Storm Petrel, the Prairie Dog, the Cassowary and the Cottonmouth, and Minerva's four are his
-  (16 November: the Honey Badger, the Wild Boar, the Mole and the lure tank), so the Polar
-  Bear is tier two in content and the Wild Boar tier one, its numbers still its tier two's. The designs still to come
+  (16 November: the Honey Badger, the Wild Boar, the Mole and the lure tank; on 20 November the
+  Echidna took the Mole's place and the Mole went to tier two), so the Polar Bear is tier two in
+  content and the Wild Boar tier one, its numbers still its tier two's. The designs still to come
   are briefs: `docs/briefs/README.md` says what each waits on.
 - **The numbers.** Tier one alone is tuned (Ryan, 11 November), on the baseline: the second
   battle, four tier ones against a tier-one rift, a fight read at its rating (a flanker one
@@ -286,9 +287,14 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   kneel, the Clydesdale's face-plant, the Funnel-web, the Cassowary, the Whip Scorpion and the
   Ammit; the rest wait on his read, and some still cross parts as they lie (the to-do). The
   Cottonmouth fires every weapon from its drum. The Honey Badger and the Wild Boar wear
-  Minerva's vent, the Polar Bear's (16 and 17 November). The Mole is built (20 November, on
-  his "Build the mole now", his kit of 16 November; the rules' reboot section, the bible's Mole
-  row): it burrows in its reboot's place, banks Conserved Momentum under, and its Inertia Drill
+  Minerva's vent, the Polar Bear's (16 and 17 November). The Echidna is built (20 November, his
+  kit that day, at tier one; the rules' Sonic Needle, the bible's Echidna row): every foe it
+  strikes and every foe whose blow lands on it takes a Sonic Needle, a conductor of Chain, and
+  the third in a foe fires Chain 2 on every conductor, that foe included; its Supersonic Spike
+  Tether lures and saps, its directions Spiker and Chaos. Its look waits on his pick of the
+  bristle, the stand-in drawing it meanwhile. The Mole is built (20 November, on
+  his "Build the mole now", his kit of 16 November; at tier two since that day, its tree back in
+  design; the rules' reboot section, the bible's Mole row): it burrows in its reboot's place, banks Conserved Momentum under, and its Inertia Drill
   lays Applied Momentum, a blow a turn in its foe until a burrow takes it home. Its model holds
   Burrowed and Drill Out from the statuses (a form may let others go as it is held, `releases`),
   and a form asked while a firing slice plays waits for it to land, so the drill launches and
@@ -353,8 +359,8 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    built on Ryan's marks, in its own commit, at placeholder numbers.
 3. **The design sessions, from the briefs**: each decision a bible row, each brief retired
    once its decisions are rows and content. The locked pieces' footing first (its own session
-   since 20 November), the echidna's kit beside it (20 November: "We need to set kit first",
-   before its look's bristle), then the machine back in design (the Swallowtail), the built but
+   since 20 November), the Echidna's look beside it (its kit built 20 November; the bristle his
+   pick, then its model), the Mole's tree at tier two, then the machine back in design (the Swallowtail), the built but
    unfinished (the Needletail, the Giant Petrel, the Musk Ox) and the gunship, the tier-one
    fronts (Minerva's lure tank, an Aphelion tier one), Claude's first rounds on his directions
    of 5 and 6 November, the rest as its session comes. The to-do's roster is grouped to match.

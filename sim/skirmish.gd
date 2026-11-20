@@ -1333,7 +1333,7 @@ func spend_face(ms: MechState) -> Face:
 ## carries is its own: its Ablating and Vitriol tick and damage it, a web on it bursts on it
 ## and a Mine on it blows on it. A Phased foe is out of reach the same way (foe_phased), and
 ## nothing damages it besides. Every list of the foes a spend reaches is read through here
-## (reached_by, area_shapes, shocked_foes, mine_reach, web_catch), so the bot and the screen
+## (reached_by, area_shapes, conducting_foes, mine_reach, web_catch), so the bot and the screen
 ## read the same.
 static func out_of_reach(foe: Foe) -> bool:
 	return foe != null and (Effects.has(foe, "aloft") or Effects.has(foe, "phased"))
@@ -3006,9 +3006,12 @@ func foes_beside(f: Foe) -> Array[Foe]:
 ## before left, and each carries the move's riders unless a Ward turns them away.
 func _strike(f: Foe, t: MechState) -> void:
 	var turned := false
+	var standing := f.alive()   # a fall's last act strikes from a foe already down, and strikes whole
 	for s in range(f.strikes()):
 		if not t.alive():
 			break   # the enemy's turn is sequenced as it happens (Ryan, 4 November): a wreck takes no more
+		if standing and not f.alive():
+			break   # felled between its blows (a needle bolt its last blow brought): no zero-HP foe strikes on
 		var hull_before := t.unit.hull
 		var events_before := turn_events.size()
 		_damage_mech(t, f.damage(), f)
@@ -3026,11 +3029,13 @@ func _strike(f: Foe, t: MechState) -> void:
 			f.hp = mini(f.hp_max, f.hp + dealt)
 			if f.hp > had:
 				log.append("%s drains %d" % [f.display_name, f.hp - had])
-		# A Ward turns away every rider a foe's blows lay this round; the damage has landed.
+		# A Ward turns away every rider a foe's blows lay this round; the damage has landed. What the
+		# machine lays on its striker is its own, no rider of the blow, and lands after it either way.
 		if Effects.has(t.unit, "ward"):
 			if t.alive() and _rides(f) and not turned:
 				log.append("%s: the Ward turns %s's riders away" % [t.unit.display_name, f.display_name])
 				turned = true
+			_struck_by(t, f)
 			continue
 		if f.has_keyword(f.action, "scorch") and t.alive():
 			var ns := f.rider(f.action, "scorch")
@@ -3074,6 +3079,9 @@ func _strike(f: Foe, t: MechState) -> void:
 			# says a component was destroyed (Jenny's information lines, 8 October).
 			ev["component"] = apply_injury(t)
 			ev["injured"] = str(ev["component"]) == "destroyed"
+		# The blow and its riders done, what the struck machine lays on its striker (on_struck: the
+		# echidna's needle), whose bolt may fell it before its next blow.
+		_struck_by(t, f)
 
 
 
@@ -4108,24 +4116,25 @@ func reached_by(f: Face, target: Foe) -> Array[Foe]:
 
 
 ## Chain's conductors (Ryan, 28 October; the kill and repeat retired): every other foe on the
-## field alive and Shocked, wherever it stands and whatever the entry's reach, in the field's
-## order. None for an entry without Chain. A debuff's arcs are its Chain's number alone, and they
+## field alive and conducting (Shocked, or a Sonic Needle in it since 20 November), wherever it
+## stands and whatever the entry's reach, in the field's order. None for an entry without Chain. A debuff's arcs are its Chain's number alone, and they
 ## carry its riders as any area of it does (the Storm Petrel's lure since 17 November: every
 ## Shocked foe it arcs to is lured). Read as the die is spent, before any blow lands, so a Shock
 ## the spend lays never conducts its own arc.
 func conductors(f: Face, target: Foe) -> Array[Foe]:
 	if f != null and f.has(Face.Keyword.CHAIN):
-		return shocked_foes(target)
+		return conducting_foes(target)
 	var none: Array[Foe] = []
 	return none
 
 
-## Every foe on the field alive and Shocked but `but`, in the field's order: a Chain's
-## conductors, a Mine's blast's included.
-func shocked_foes(but: Foe) -> Array[Foe]:
+## Every foe on the field alive and conducting Chain but `but` (Effects.conducts: Shocked, a Sonic
+## Needle), in the field's order: a Chain's conductors, a Mine's blast's and a needle bolt's
+## included.
+func conducting_foes(but: Foe) -> Array[Foe]:
 	var out: Array[Foe] = []
 	for foe in field_foes():
-		if foe != but and foe.alive() and Effects.has(foe, "shocked") and not out.has(foe) and not out_of_reach(foe):
+		if foe != but and foe.alive() and Effects.conducts(foe) and not out.has(foe) and not out_of_reach(foe):
 			out.append(foe)
 	return out
 
@@ -5248,7 +5257,7 @@ func _blow_mine(mine: Dictionary, rank: int, col: int, massive: bool, where: Str
 	var arcs: Array[Foe] = []
 	var chain := int(r.get("chain", 0))
 	if chain > 0:
-		for foe in shocked_foes(null):
+		for foe in conducting_foes(null):
 			if not met.has(foe):
 				arcs.append(foe)
 	mine_tally["blasts"] += 1
@@ -5516,13 +5525,98 @@ func _parry_returns(ms: MechState) -> void:
 func _land_rider(foe: Foe, sid: String, n: int, gained: Dictionary, turned: Dictionary, laid = null) -> void:
 	if n <= 0:
 		return
-	Effects.stack(foe, Effects.STATUS[sid], Effects.SKIRMISH, "mech", n, Effects.status_decay(Effects.STATUS[sid]))
+	var needler := needler_of(sid)
+	if needler != null:
+		_lay_needles(needler, foe, n)   # a stack at a time, the bolt at its count
+	else:
+		Effects.stack(foe, Effects.STATUS[sid], Effects.SKIRMISH, "mech", n, Effects.status_decay(Effects.STATUS[sid]))
 	_note_status(gained, foe, sid, turned, n)
 	if laid == null or Effects.turns_mark(foe, sid):
 		return   # its Ward turned the lay away: nothing laid to tell
 	var per: Dictionary = laid.get(foe, {})
 	per[sid] = int(per.get(sid, 0)) + n
 	laid[foe] = per
+
+
+## The machine whose Sonic Needles lay this status (Effects.needle_rule: the echidna's, Ryan, 20
+## November), the first in the team's order still in the fight; null when none does, and the
+## status lands as any rider's.
+func needler_of(sid: String) -> MechState:
+	for ms in mechs:
+		if ms.alive() and not is_out(ms) and str(Effects.needle_rule(ms.unit).get("status", "")) == sid:
+			return ms
+	return null
+
+
+## Needles landing on a foe (Ryan, 20 November: "Striking a foe, or getting struck by one, grants
+## that foe a stack of Sonic Needle"): a stack at a time, each the needle its machine's rule makes
+## (Effects.needle_spec), and the stack that brings the foe to the rule's count fires the bolt
+## (_needle_bolt) before the next lands, so two stacks on a foe at two fire it once and leave one
+## (two under a bolt that spends a stack). A foe's Ward turns them away as any mark. A felled foe
+## takes them as a rider lands on it, and its bolt fires all the same (no trigger goes unfired).
+func _lay_needles(ms: MechState, foe: Foe, n: int) -> void:
+	var rule := Effects.needle_rule(ms.unit)
+	var sid := str(rule["status"])
+	var spec := Effects.needle_spec(rule, ms.unit.display_name)
+	for i in range(n):
+		if Effects.stack(foe, spec, Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE) == null:
+			return   # its Ward turned it away
+		if Effects.stacks_of(foe, sid) >= int(rule["at"]):
+			_needle_bolt(ms, foe, rule)
+
+
+## The bolt the needles bring (Ryan, 20 November: "On 3 stacks, the Echidna fires Chain 2, then
+## consume all stacks on this foe"; his answer that day: "targeted at nothing. So the foe that hit 3
+## stacks and procced it would take 2 by definition"): the Chain's number on every conductor on the
+## field (conducting_foes), the foe it fires from among them while it stands, each a Chain's arc as
+## a Mine's blast lands one (a blow aimed at nobody, so no rider, no needle, no Shock doubled or
+## spent: its Brittle adds, a Barrier takes it, its armour comes off); then the rule spends that
+## foe's stacks, every one, or a step's count (Chaos's "reduce stacks by 1"). In a spend, its blows
+## land a beat after the spend's for the screen; what it fells falls at the death check that follows,
+## the spend's, or in the foes' turn the one after the action whose blow brought it (a striker it
+## fells strikes no more: _strike).
+func _needle_bolt(ms: MechState, foe: Foe, rule: Dictionary) -> void:
+	var sid := str(rule["status"])
+	var chain := int(rule.get("chain", 0))
+	log.append("%s's needles fire in %s: Chain %d" % [ms.unit.display_name, foe.display_name, chain])
+	var beat := _next_beat()
+	for c in conducting_foes(null):
+		var taken := Effects.damage_taken(c, chain, ms.unit, true, false)
+		if _barrier_eats(c, true):
+			taken = 0
+		taken = maxi(0, taken - c.armour_total())
+		c.hp -= taken
+		if not _enemy_acting:
+			_note_blow(c, beat, taken, "chain")   # a spend's blows, for the screen; the foes' turn records none on a foe
+		log.append("the needles arc to %s for %d" % [c.display_name, taken])
+	var spends := int(rule.get("spends", 0))
+	if spends <= 0:
+		Effects.remove(foe, sid)
+	else:
+		Effects.spend_stacks(foe, sid, spends)
+
+
+## A foe's blow landing on a machine (on_struck): what the machine's passives lay on its striker, a
+## blow's worth (the echidna's needle, Ryan, 20 November: "getting struck by one, grants that foe a
+## stack"), whatever the blow dealt (his of 15 October: "I thought mitigation would be ok"). A
+## wreck the blow made lays nothing. Told and gained as a spend's riders are.
+func _struck_by(ms: MechState, f: Foe) -> void:
+	if not ms.alive() or is_out(ms) or not f.alive():
+		return
+	var lays := Effects.struck_lays(ms.unit)
+	if lays.is_empty():
+		return
+	var gained := {}
+	var turned := {}
+	for pair in lays:
+		var sid := str(pair[0])
+		if not Effects.turns_mark(f, sid):
+			log.append("%s, struck, lays %s ×%d on %s" % [ms.unit.display_name, str(Effects.STATUS[sid]["name"]), int(pair[1]), f.display_name])   # told before it lands, so a bolt it brings follows it
+		_land_rider(f, sid, int(pair[1]), gained, turned)
+	_tell_turned(turned)
+	for foe in gained.keys():
+		for status_id in gained[foe]:
+			_foe_gained_status(foe, status_id, int(gained[foe][status_id]))
 
 
 ## A Web landing once the strikes are done: one web however often the foe was webbed.

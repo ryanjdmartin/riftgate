@@ -480,6 +480,136 @@
    ]
   },
   {
+   "id": "echidna",
+   "name": "Echidna",
+   "designation": "SV-6R Seismic Survey Car",
+   "maker": "minerva",
+   "tier": 1,
+   "design": {
+    "fantasy": "Ryan's tank that fights (14 October: a unit that \"still wants to get hit, but actually has to worry slightly about its own hull\"; 15 October: \"We just need to make the tank not only use tank abilities\"): an armoured car on six boxed wheels, his pick of 15 November (\"I like the armoured car\"), turning on the spot as the tracked machines do, nicknamed for how it acts and not drawn as the animal (\"remember the machines were nicknamed after animals they resemble or act like\"). Its spines are the Sonic Needles it leaves in whatever it strikes and whatever strikes it, his of 15 October (\"Sonic Needle (sonic the hedgehog reference)\"), the Knuckles in it the soft reference of his second round. The designation is a session's draft: a seismic survey car drives acoustic spikes into the rock on a line and listens to them, which is the Tether's.",
+    "niche": "tank that punishes (Ryan, 20 November): every foe it strikes and every foe that strikes it takes a Sonic Needle; the needles conduct Chain, and every third in a foe fires Chain 2 through every conductor, that foe included; its Tether lures and saps, so the lured foe's blow is the second needle.",
+    "notes": "His kit of 20 November, built at tier one, where it takes the Mole's place (\"Now leaning T1 with this kit, would bump out the Mole who is admittedly pretty complex and niche\"). Its numbers are his shape and the session's placeholders: armour 0 his, shield 10 above the tier-one mean of 8 and hull 24 the medium's (\"Shield above average, hull average (as you see fit)\"), move 4, fast for a Minerva (his \"relatively fast for a Minerva\" of 15 October). Its stock is placeholders: the Rivet Gun, the Howitzer (Spread 1 and Penetrate 1, up to four needles a spend), the Arc Fault Cannon (its Chain arcs through every needled foe) and the Shoring Jack. Its look waits on his pick of the bristle (docs/briefs/minerva_hedgehog.md); until a model is built it draws the stand-in."
+   },
+   "codex": "",
+   "hull": 24,
+   "shield": 10,
+   "movespeed": 4,
+   "heat_max": 12,
+   "hardpoints": 4,
+   "module_slots": 2,
+   "armour": 0,
+   "traits": [
+    "wheeled"
+   ],
+   "size": "medium",
+   "fixed": [
+    "supersonic_spike_tether"
+   ],
+   "loadout": [
+    "rivet_gun",
+    "howitzer",
+    "arc_fault_cannon",
+    "shoring_jack"
+   ],
+   "passive": {
+    "id": "sonic_needles",
+    "name": "Sonic Needles",
+    "description": "Striking a foe, or getting struck by one, grants that foe a stack of Sonic Needle. Sonic Needle conducts Chain. On 3 stacks, the Echidna fires Chain 2, then every stack on that foe is consumed.",
+    "effects": [
+     {
+      "trigger": "on_attack",
+      "effect": "lay_status",
+      "value": "sonic_needle",
+      "stacks": 1
+     },
+     {
+      "trigger": "on_struck",
+      "effect": "lay_status",
+      "value": "sonic_needle",
+      "stacks": 1
+     },
+     {
+      "trigger": "static",
+      "effect": "needles",
+      "status": "sonic_needle",
+      "at": 3,
+      "chain": 2
+     }
+    ]
+   },
+   "branches": [
+    {
+     "id": "spiker",
+     "name": "Spiker",
+     "design": {
+      "notes": "Ryan, 20 November: \"Spiker 1 - Hypersonic Spike Tether: Indirect, Sap 1, Lure, Instant, 2 Heat. -> Instant allowed since its a Lure, getting hit is the point and the cost. Spiker 2 - Sonic Needle: Conducts Chain. Affected unit deals -1 damage per stack with attacks. On 3 stacks, the Echidna fires Chain 2, then consume all stacks on this foe.\" The Tether's new form is Instant and a heat more, named on the die; the needle's sap is Sapped's two effects on the needle itself, so it goes with the stacks a bolt spends."
+     },
+     "steps": [
+      {
+       "description": "Its Supersonic Spike Tether becomes the Hypersonic Spike Tether: Indirect, Sap 1, Lure, Instant, 2 heat.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "grant_keyword",
+         "value": "instant",
+         "entry": "supersonic_spike_tether",
+         "name": "Hypersonic Spike Tether"
+        },
+        {
+         "trigger": "on_attack",
+         "effect": "add_heat",
+         "value": 1,
+         "entry": "supersonic_spike_tether"
+        }
+       ]
+      },
+      {
+       "description": "Sonic Needle: affected foes deal 1 less damage per stack with attacks.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "needles",
+         "sap": 1
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "chaos",
+     "name": "Chaos",
+     "design": {
+      "notes": "Ryan, 20 November: \"Chaos 1 - Sonic Needle - Conducts Chain. On 3 stacks, the Echidna fires Chain 2, then reduce stacks by 1. Chaos 2 - Attacks by the Echidna on foes deal +1 damage per stack of Sonic Needle.\" Its second step's +1 a stack is the Echidna's own modifier, read on every blow its weapons land on a needled foe, an area's and an arc's among them (the pipeline's reads of a foe); the bolt is the needles' own and takes none."
+     },
+     "steps": [
+      {
+       "description": "Sonic Needle: on 3 stacks, the Echidna fires Chain 2, then reduces that foe's stacks by 1.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "needles",
+         "spends": 1
+        }
+       ]
+      },
+      {
+       "description": "Attacks by the Echidna on foes deal +1 damage per stack of Sonic Needle.",
+       "effects": [
+        {
+         "trigger": "on_attack",
+         "effect": "add_damage",
+         "value": 1,
+         "per_target": "sonic_needle",
+         "when": "weapon"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "flavour": ""
+  },
+  {
    "id": "prairie_dog",
    "name": "Prairie Dog",
    "designation": "Pattern 9 Scout Car",

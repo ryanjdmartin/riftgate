@@ -2018,6 +2018,14 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: suppress needs the id or tag it turns off as its value" % where)
 		if eff.has("per_stack") and not Effects.STATUS.has(str(eff["per_stack"])):
 			errs.append("%s: per_stack names no engine status ('%s')" % [where, eff["per_stack"]])
+		# A number scaled by the stacks the foe it is aimed at carries (the echidna's Chaos: +1 a
+		# Sonic Needle): an attack's effect, on a status a foe carries.
+		if eff.has("per_target") and (trig != "on_attack" or not Effects.FOE_STATUSES.has(str(eff["per_target"]))):
+			errs.append("%s: per_target scales an attack's effect by a foe status on its target ('%s')" % [where, eff["per_target"]])
+		# What a machine lays on a foe whose blow lands on it (on_struck: the echidna's needle) is a
+		# foe status.
+		if trig == "on_struck" and effect == "lay_status" and not Effects.FOE_STATUSES.has(str(eff.get("value", ""))):
+			errs.append("%s: on_struck lays a foe status on the striker, one of %s" % [where, ", ".join(Effects.FOE_STATUSES)])
 		if eff.has("per_heat") and int(eff["per_heat"]) <= 0:
 			errs.append("%s: per_heat is heat per step and must be positive" % where)
 		if (effect == "stack_status" or effect == "lay_status") and not Effects.STATUS.has(str(eff.get("value", ""))):
@@ -2110,6 +2118,22 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 				for sid in lays:
 					if not Effects.FOE_STATUSES.has(str(sid)) or int(lays[sid]) < 1:
 						errs.append("%s: momentum lays foe statuses, a stack or more each (%s)" % [where, str(sid)])
+		# The Sonic Needles (the echidna's, Ryan, 20 November): the foe status they lay (the base rule's;
+		# a step's may leave it to the base), the stacks that fire the bolt, its Chain, the stacks a
+		# bolt spends (every one at 0 or absent) and the sap a stack.
+		if effect == "needles":
+			if trig != "static":
+				errs.append("%s: needles is static: the rule of its machine's needles" % where)
+			if eff.has("status") and not Effects.FOE_STATUSES.has(str(eff["status"])):
+				errs.append("%s: needles lays a foe status ('%s')" % [where, str(eff["status"])])
+			if eff.has("at") and int(eff["at"]) < 2:
+				errs.append("%s: needles' at is the stacks that fire the bolt, 2 or more" % where)
+			if eff.has("chain") and int(eff["chain"]) < 1:
+				errs.append("%s: needles' chain is the bolt's Chain, 1 or more" % where)
+			if eff.has("spends") and (int(eff["spends"]) < 0 or int(eff["spends"]) >= int(eff.get("at", 3))):
+				errs.append("%s: needles' spends is the stacks a bolt takes, fewer than its at (0 or absent: every stack)" % where)
+			if int(eff.get("sap", 0)) < 0:
+				errs.append("%s: needles' sap is the damage a stack takes off its foe's attacks, 0 or more" % where)
 		# The name an effect gives the piece it is scoped to (the Aile Booster as its Blitzer or its
 		# Assaulter, Ryan, 19 November): shown text, on an effect that names its piece.
 		if eff.has("name") and effect != "offhand" and (not eff.has("entry") or str(eff["name"]).strip_edges().is_empty()):
@@ -2547,6 +2571,18 @@ func _validate_chassis(errs: Array[String]) -> void:
 			for eff in passive_c.get("effects", []):
 				if eff is Dictionary and str(eff.get("effect", "")) == "fold_die":
 					fold = int(eff.get("value", 0))
+		# A step that tweaks the Sonic Needles tweaks a rule its passive lays: the passive's needles
+		# name their status, so a branch's needles without one have something to change.
+		var needles := false
+		if passive_c is Dictionary:
+			for eff in passive_c.get("effects", []):
+				if eff is Dictionary and str(eff.get("effect", "")) == "needles" and eff.has("status"):
+					needles = true
+		for b in c.get("branches", []):
+			for st in (b.get("steps", []) if b is Dictionary else []):
+				for eff in (st.get("effects", []) if st is Dictionary else []):
+					if eff is Dictionary and str(eff.get("effect", "")) == "needles" and not needles:
+						errs.append("%s: a branch's needles tweak the passive's, which names their status" % where)
 		# A burrow's piece (the Mole's Inertia Drill) is one of its fixed pieces: its die rolls it alone
 		# while Burrowed and never above ground, so it must be on the die.
 		if passive_c is Dictionary:

@@ -339,6 +339,17 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 				c + Vector2(s * 0.22, s), c + Vector2(-s * 0.22, s), c + Vector2(-s * 0.22, s * 0.15), c + Vector2(-s, -s * 0.8),
 			]), color, width)
 			ci.draw_line(c + Vector2(-s * 0.55, -s * 0.35), c + Vector2(s * 0.55, -s * 0.35), color, width * 0.7)
+		"needle":
+			# A Sonic Needle (the Echidna's, 20 November): a spike driven point down, a narrow head at
+			# its foot, and two rings of sound off either side of its shaft.
+			var foot := c + Vector2(0.0, s * 0.95)
+			var neck := c + Vector2(0.0, s * 0.45)
+			ci.draw_line(c + Vector2(0.0, -s * 0.95), neck, color, width)
+			ci.draw_polyline(PackedVector2Array([neck + Vector2(-s * 0.2, 0.0), foot, neck + Vector2(s * 0.2, 0.0), neck + Vector2(-s * 0.2, 0.0)]), color, width)
+			var ring := c + Vector2(0.0, -s * 0.2)
+			for r in [s * 0.42, s * 0.78]:
+				ci.draw_arc(ring, r, -0.55, 0.55, 8, color, width * 0.8)
+				ci.draw_arc(ring, r, PI - 0.55, PI + 0.55, 8, color, width * 0.8)
 		"chain":
 			ci.draw_arc(c + Vector2(-s * 0.45, 0), s * 0.5, 0.0, TAU, 20, color, width)
 			ci.draw_arc(c + Vector2(s * 0.45, 0), s * 0.5, 0.0, TAU, 20, color, width)

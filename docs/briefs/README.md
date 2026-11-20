@@ -170,7 +170,7 @@ moves he has not marked stand as its plan.
 
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
-| Minerva (10) | Honey Badger; the Wild Boar (down, 16 November); *the echidna* (down, 20 November); *the lure tank* | the Polar Bear (up, 16 November); the Mole (up, 20 November, its tree in design); *the Cryo party defence*; *the immune one*, the Pangolin his stand-in name | *the siege battery*; *the battlecruiser* |
+| Minerva (10) | Honey Badger; the Wild Boar (down, 16 November); the Echidna (down, 20 November); *the lure tank* | the Polar Bear (up, 16 November); the Mole (up, 20 November, its tree in design); *the Cryo party defence*; *the immune one*, the Pangolin his stand-in name | *the siege battery*; *the battlecruiser* |
 | Kestrel (10) | Skua; Storm Petrel | Buzzard; Kite; Needletail; the Puffin (up, 19 November) | Lammergeier; Giant Petrel |
 | Kestrel's two, tiers open | *the Snowy Owl*, leaning to Cryo | *the Magpie*, its slot open to another design | |
 | Wainwright & Sutler (10) | Prairie Dog; Cassowary; Cottonmouth | Dingo; Clydesdale; funnel-web; Whip Scorpion; *the gunship* | Swallowtail, back in design; Musk Ox |
@@ -248,7 +248,7 @@ One row a live brief; the to-do's Design sessions hold each one's task.
 | `ws_gunship.md` | proposal, Claude's first round | Wainwright & Sutler | 2 | his own session |
 | `minerva_lure_tank.md` | the tier-one front: every hit lures | Minerva | 1 | his calls |
 | `minerva_mole.md` | the Mole's upgrade tree, back in design at tier two | Minerva | 2 | its session with him |
-| `minerva_hedgehog.md` | the echidna: strikers hurt themselves after they act | Minerva | 2 | his calls on the new shape |
+| `minerva_hedgehog.md` | the Echidna's look: the armoured car's bristle, its kit built | Minerva | 1 | his pick of the bristle |
 | `minerva_cryo_defence.md` | Cryo for the party, detonated by a locked piece | Minerva | 2 | Claude's round on his direction |
 | `minerva_immune.md` | immune to every buff and debuff, lent to an ally | Minerva | 2 | his calls |
 | `minerva_siege_battery.md` | his H-tank, a charge | Minerva | 3 | parked until he picks it up |

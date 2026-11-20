@@ -5480,7 +5480,7 @@ func test_a_foe_aloft_takes_what_it_carries_and_nothing_that_lands_elsewhere() -
 	var next_to: Foe = s2.front[1]
 	var far: Foe = s2.front[2]
 	Effects.stack(r2, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1)
-	assert_false(s2.shocked_foes(null).has(r2), "Shocked, it conducts no arc")
+	assert_false(s2.conducting_foes(null).has(r2), "Shocked, it conducts no arc")
 	var blast := s2.mine_reach(next_to.rank, next_to.column, false)
 	assert_true(blast.has(next_to) and blast.has(far) and not blast.has(r2), "a Mine blowing beside it reaches the foes in reach and passes it by")
 	assert_true(s2.mine_reach(r2.rank, r2.column, false).has(r2), "a Mine it carries blows on it: what it carries is its own")

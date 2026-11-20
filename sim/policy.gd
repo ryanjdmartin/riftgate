@@ -64,6 +64,7 @@ const AILE_REACH_WORTH := 0.3    # an Aile buff's Indirect reach on the next wea
 const AILE_ARMOUR_WORTH := 0.5   # and the Blitz's armour ignored, a point of armour off each foe it may strike, a share of it a strike; a placeholder
 const ROLL_AGAIN_WEIGHT := 1.0   # another action of the die (Rapid, Instant, the reset gun, the Horn's), as the die's own average blow
 const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Ablate's does
+const NEEDLE_PROGRESS := 0.5     # a Sonic Needle short of its bolt: its share of the bolt, at the odds the bolt still comes (a first cut, 20 November)
 const BRITTLE_WEIGHT := 0.5         # a stack of Brittle, as the point it adds to each team blow the foe is likely to take while it lasts
 const SWAP_WEIGHT := 0.25        # a foe brought into the front rank by a swap, as a share of its kill and its threat: it stands exposed to Direct fire
 const BUNCH_WEIGHT := 0.75       # what a swap adds to an ally's area entry this round, as a share: the ally may still spend elsewhere
@@ -646,6 +647,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 				score += ((1.0 - p_kill) if foe == target else 1.0) * disrupt_score(sk, foe)
 		if f.has(Face.Keyword.LURE):
 			score += (1.0 - p_kill) * lure_score(sk, ms, hit)
+			score += (1.0 - p_kill) * lured_needles(sk, ms, f, hit)   # the blows it turns onto a machine that needles its strikers
 		if f.has(Face.Keyword.SHOCK):
 			# Each foe left standing takes the team's next strike aimed at it double: the blow
 			# shock_cash reads, capped at what the foe will have left. A charge already on a foe
@@ -715,6 +717,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# come on the hull the blow leaves, at the odds the foe outlives the blow. A lay that asks for
 	# a weapon's hit (the Ambush's) gets nothing from equipment.
 	var laid_apps := 0
+	var needled := str(Effects.needle_rule(ms.unit).get("status", ""))
 	for foe in sk.ridden_by(f, target):
 		if not foe.alive():
 			continue
@@ -728,7 +731,10 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 				continue
 			if Effects.turns_mark(foe, str(pair[0])):
 				continue   # its Ward turns the lay away (28 October)
-			score += survives * dot_payout(str(pair[0]), int(pair[1]) * maxi(1, f.strikes), left) * VITRIOL_WEIGHT
+			if str(pair[0]) == needled:
+				score += survives * needle_worth(sk, ms, foe, int(pair[1]) * maxi(1, f.strikes), left)   # the Echidna's needles: the bolt they bring
+			else:
+				score += survives * dot_payout(str(pair[0]), int(pair[1]) * maxi(1, f.strikes), left) * VITRIOL_WEIGHT
 			if foe == target:
 				laid_apps += 1
 	# The statuses this blow applies feed any machine's Paradox meter (the Baboon's Pocket
@@ -853,6 +859,91 @@ func drill_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> 
 	var lays: Dictionary = tick["lays"]
 	if int(lays.get("ablating", 0)) > 0 and left > 0.0:
 		worth += float(n) * dot_payout("ablating", int(lays["ablating"]), int(left)) * ABLATE_WEIGHT
+	return worth
+
+
+## How many bolts `n` more needles fire on a foe holding `have` (Skirmish._lay_needles: a stack at a
+## time, the bolt at the rule's `at`, then every stack spent, or the rule's `spends`), and the
+## stacks it holds after: [bolts, stacks].
+static func needle_bolts(have: int, n: int, at: int, spends: int) -> Array:
+	var bolts := 0
+	var held := have
+	for i in range(maxi(0, n)):
+		held += 1
+		if held >= at:
+			bolts += 1
+			held = 0 if spends <= 0 else maxi(0, held - spends)
+	return [bolts, held]
+
+
+## What laying `n` of this machine's needles on a foe is worth (the Echidna's Sonic Needles; a first
+## cut, 20 November): every bolt they fire (bolt_worth), and what they leave short of the next, its
+## share of a bolt at NEEDLE_PROGRESS; with the Spiker's sap, the points the foe's attacks lose this
+## round. `left` is the HP the foe keeps after the blow that lays them, `already` the needles the
+## same spend lays on it first (a lured foe's own spend). A Ward turns them away.
+func needle_worth(sk: Skirmish, ms: Skirmish.MechState, foe: Foe, n: int, left: int, already: int = 0) -> float:
+	var rule := Effects.needle_rule(ms.unit)
+	if rule.is_empty() or n <= 0:
+		return 0.0
+	var sid := str(rule["status"])
+	if Effects.turns_mark(foe, sid):
+		return 0.0
+	var at := int(rule["at"])
+	var spends := int(rule.get("spends", 0))
+	var start: int = needle_bolts(Effects.stacks_of(foe, sid), already, at, spends)[1]
+	var after := needle_bolts(start, n, at, spends)
+	var bolt := bolt_worth(sk, ms, rule, foe, left)
+	var worth := float(int(after[0])) * bolt
+	var short := int(after[1]) - (start if int(after[0]) == 0 else 0)
+	worth += maxf(0.0, float(short)) / float(at) * bolt * NEEDLE_PROGRESS
+	var sap := int(rule.get("sap", 0))
+	if sap > 0 and left > 0 and foe.attacks() and not foe.is_suppressed():
+		worth += float(mini(sk.foe_blow(foe), sap * n) * foe.strikes()) * HULL_WEIGHT
+	return worth
+
+
+## A needle bolt's worth now (Skirmish._needle_bolt): the Chain's number on every conductor, the foe
+## it fires from among them with the HP it keeps (`left`), each blow through the foe's Brittle and
+## armour and capped at what it has, a kill at its bonus.
+func bolt_worth(sk: Skirmish, ms: Skirmish.MechState, rule: Dictionary, from: Foe, left: int) -> float:
+	var chain := int(rule.get("chain", 0))
+	var foes := sk.conducting_foes(from)
+	if left > 0 and not Skirmish.out_of_reach(from):
+		foes.append(from)
+	var worth := 0.0
+	for c in foes:
+		var hp := left if c == from else c.hp
+		var blow := Skirmish.plain_blow_on(c, chain, ms)
+		worth += float(mini(blow, hp))
+		if blow >= hp:
+			worth += KILL_BONUS + _threat_now(c, sk) * HULL_WEIGHT
+	return worth
+
+
+## What a lure's turned blows lay on their strikers (on_struck: the Echidna's needles, Ryan, 20
+## November: the Tether "theoretically ... should result in 2 stacks on that foe"): every foe it
+## turns onto this machine strikes it this round, a needle a blow, after the needles the spend lays
+## on it.
+func lured_needles(sk: Skirmish, ms: Skirmish.MechState, f: Face, foes: Array) -> float:
+	var rule := Effects.needle_rule(ms.unit)
+	if rule.is_empty():
+		return 0.0
+	var sid := str(rule["status"])
+	var per := 0
+	for pair in Effects.struck_lays(ms.unit):
+		if str(pair[0]) == sid:
+			per += int(pair[1])
+	if per <= 0:
+		return 0.0
+	var worth := 0.0
+	for foe in foes:
+		if not foe.alive() or not foe.aims_at_one() or foe.target == ms or not foe.attacks() or foe.is_suppressed():
+			continue
+		var own := 0
+		for pair in Effects.laid_statuses(ms.unit, f, foe):
+			if str(pair[0]) == sid:
+				own += int(pair[1]) * maxi(1, f.strikes)
+		worth += needle_worth(sk, ms, foe, per * foe.strikes(), foe.hp, own)
 	return worth
 
 

@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 205 implemented, 6 planned, 0 idea.
+Status: 207 implemented, 6 planned, 0 idea.
 
 ## Resource
 
@@ -99,7 +99,7 @@ Status: 205 implemented, 6 planned, 0 idea.
 | **Suppress** | Player keyword. The target skips its telegraphed action this round, and recovers with its stun resist in Numbed. On a Numbed foe the stun strips a stack and lands nothing; a Ward turns it away; a foe already suppressed gains nothing more, and a foe immune to it takes none. | implemented |
 | **Brittle** | Keyword with a number, the same on either side. On a weapon or equipment, Brittle 2 means each foe hit gains two stacks of Brittle a strike, laid once the strikes are done, so no strike of the spend feeds on what it lays. On a foe's attack, each blow that lands leaves that many stacks of Brittle on the machine it hit; a Ward turns it away. | implemented |
 | **Sap** | Sap N: each foe hit gains N stacks of Sapped a strike, laid once the strikes are done, so no strike of the spend feeds on what it lays. | implemented |
-| **Chain** | Keyword with a number. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the number: a weapon's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. An arc is its blow alone: nothing the entry lays rides it, so a conductor takes the number and no mark, no Lure and no Shock. On a debuff, which deals nothing itself, the arcs land the number plain, through each foe's armour. No strike is aimed at them, so their Shock stands. | implemented |
+| **Chain** | Keyword with a number. Chain 2 also lands 2 on every other foe on the field that conducts (a Shocked foe, or one carrying a Sonic Needle), wherever it stands, where the target takes the number: a weapon's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. An arc is its blow alone: nothing the entry lays rides it, so a conductor takes the number and no mark, no Lure and no Shock. On a debuff, which deals nothing itself, the arcs land the number plain, through each foe's armour. No strike is aimed at them, so their Shock stands. | implemented |
 | **Rapid** | After this component is spent the machine acts again: the die rerolls for free onto any other component (a second copy of this one included, so copies chain), and the entry spent stays dark for the rest of the round, its own cooldown, never printed, so each copy acts once a round. Any component may carry it, a vent or a shield as well as a weapon. | implemented |
 | **Instant** | After this component is spent the machine acts again: the die rolls again for free and may land on this one again, so the same component can be spent again. On the Cassowary's die the roll spins the whole cylinder. Nothing goes dark: what it costs and the odds are its limit. Any component may carry it. | implemented |
 | **Jam** | Enemy keyword. The component the target's die is showing is Jammed until the target reboots: if the die lands on it, it comes up blank. | implemented |
@@ -168,6 +168,7 @@ Status: 205 implemented, 6 planned, 0 idea.
 | **Burrowed** | Ability, the Mole's. It burrows in its reboot's place, on a turn it has spent nothing, and stays under until it spends its Inertia Drill: armour +1, its die rolling the Drill alone. Each of its turns under opens with Broken and Overheated cleared, half of what its shield and heat were missing as it burrowed made good, and a stack of Conserved Momentum. No Purge touches it. | implemented |
 | **Applied Momentum** | Foe status, from the Mole's Inertia Drill: a stack for each Conserved Momentum it spent. As the foe's turn starts, the drill in it strikes it with a blow of 2, its Brittle adding and its armour taking it, then a stack goes. The Mole's next burrow takes the drill back with what is left. A foe's cleanse takes it, a Ward turns it away, and a foe that falls takes it with it. | implemented |
 | **Drill Out** | Ability, the Mole's: its Inertia Drill is out, in its foe or in the ground where its foe fell. Its next burrow brings it home. | implemented |
+| **Sonic Needle** | Foe status, from the Echidna's Sonic Needles: a stack for every strike of its weapons and equipment that reaches the foe, and for every blow the foe lands on it. It conducts Chain, as Shocked does. On 3 stacks, the Echidna fires Chain 2: 2 on every conductor on the field, this foe included, each its Brittle adding and its armour taking it, no strike aimed at any; then every stack on this foe is consumed. A foe's cleanse takes it, a Ward turns it away, and a foe that falls takes it with it. | implemented |
 
 ## Formation
 
@@ -231,6 +232,7 @@ Status: 205 implemented, 6 planned, 0 idea.
 | Term | Codex | Status |
 |---|---|---|
 | **On attack** | Passive trigger. Fires on every attack, after its number is read. Effects: multiply or add damage or heat, multiply the printed number alone before any buff (the Kite's double, on an unhurt foe), or set a minimum damage. | implemented |
+| **On struck** | Passive trigger. Fires when a foe's blow lands on this machine, a time a blow, whatever the blow dealt; it lays a status on the striker. A blow that wrecks the machine lays nothing. | implemented |
 | **On shield gain** | Passive trigger. Fires when this machine gains shield from any source, with the amount gained; it may shed heat or grant a status, never raise more shield. | implemented |
 | **On shielding an ally** | Passive trigger. Fires when this machine spends a shield component on an ally, with the shield's size; it may shed the ally's heat or grant the ally a status, never raise more shield. It never fires for a shield on itself. | implemented |
 | **On buffing an ally** | Passive trigger. Fires when this machine spends a piece of equipment on an ally, once for each ally it lands on, whatever the equipment did; it may take some of the ally's heat onto this machine. It never fires for equipment on itself. | implemented |
@@ -383,6 +385,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Ruins** (implemented): No skirmish condition yet; what terrain does in a fight is section 12's question.
 - **Water** (implemented): No skirmish condition yet (section 12). Each map shape lays its own water (a fat river with its narrows, a delta's channels, ponds, a pond, the gorge's flooded channels, or none: the city has none). Since 29 October the horde wades it as the ground machines do, so water slows a crossing and never walls it; the crossing guarantee binds the walls.
 - **City defense** (planned): No die and no rule yet: how gate defences work is section 12's question.
+- **On struck** (implemented): Its carrier the Echidna's Sonic Needles (Ryan, 20 November: "getting struck by one, grants that foe a stack of Sonic Needle"). The codex is a session's draft.
 - **On shield gain** (implemented): No content uses it yet.
 - **On shielding an ally** (implemented): Fires on the spend, whatever the shield gained, so a shield die on a topped-up ally still does its other work.
 - **On buffing an ally** (implemented): Its carrier the Puffin's pull (Ryan, 11 November: "Using an equipment on an ally moves some of its heat to the Puffin"; 19 November: "I think 4 for the Puffin"). The piece that passes heat fires none: its heat goes the other way. The codex is a session's draft.
@@ -459,3 +462,4 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Conserved Momentum** (implemented): Ryan, 16 November: "At the start of every turn while burrowed, it gains a stack of Conserved Momentum"; "We can cap it at 3, sure"; a stack as it burrows, his "go with 1 and 2". The text is a session's draft.
 - **Applied Momentum** (implemented): Ryan, 16 November: "Applied Momentum decays 1 at the start of the target's turn"; "Base: Flat 2 damage blow a turn ... make the damage a blow since I want it to scale with Brittle". It strikes before the foes' side opens, so a Pinned it lays holds the Brittle. The text is a session's draft.
 - **Drill Out** (implemented): Ryan, 16 November: "It returns to the Mole when it burrows, taking the debuff with it"; 18 November, "Build the toggle". The text is a session's draft.
+- **Sonic Needle** (implemented): Ryan, 20 November: "Sonic Needle - Conducts Chain. On 3 stacks, the Echidna fires Chain 2, then consume all stacks on this foe"; his answers that day: the bolt is "targeted at nothing. So the foe that hit 3 stacks and procced it would take 2 by definition", and a stack a strike. Its branches tweak it: the Spiker's sap (1 less on the foe's attacks a stack) and Chaos's bolt taking one stack in place of all. The text is a session's draft.
