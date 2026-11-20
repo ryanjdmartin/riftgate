@@ -403,9 +403,11 @@ publish; the commands are in `README.md`.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Versions 311 and 312 (20 November, the Macaque's
-  branch over main's `364ac091`, docs alone) sent the briefs' inventory: the echidna's brief
-  taking his "We need to set kit first", then Claude's round on its kit. Version 310 (20 November, main at `364ac091`): the
+  `edits`, `designs` and `text` read first. Versions 311 to 313 (20 November, the Macaque's
+  branch over main's `364ac091`): the briefs' inventory twice (the echidna's brief taking his
+  "We need to set kit first", then Claude's round on its kit), then the Mole built at `4849a7a3`,
+  six files (the chassis, components and vocabulary content, the briefs' and the texts'
+  inventories, the Mole's sidecar), the live copies of main's read first and found under it. Version 310 (20 November, main at `364ac091`): the
   Content tab reworked (the Foes tab formations first, every pack a domain deals by tier with
   its grid as the fight stands and its units' numbers at each tier, `hangar/foe_rules.json` the
   engine's rules for a pack; every kind on a sheet in the Bench's manner, the raw editor behind
@@ -419,7 +421,8 @@ publish; the commands are in `README.md`.
   read whole, every line: read it before the publish, not after the refusal.
   `build/hangar/designs.json` is one line of about 980 KB: write it indented before reading it whole.
 - The rules sweep for his marks: https://claude.ai/artifact/LUUwdjFtsqGsVv3NYWzxpN, from
-  `docs/rules_sweep_proposal.md` by `tools/pages/rules_sweep_page.py` (Version 1, 20 November).
+  `docs/rules_sweep_proposal.md` by `tools/pages/rules_sweep_page.py` (Version 2, 20 November:
+  the Mole's brief retired under two of its items).
   His marks are its database's `marks` collection, a document an item (id the item's, `V1`),
   `{item, mark, note, by, day, updated}`: read them with ArtifactData before the fold. The page
   runs contract 0.2.96. Republish it from the script's output when the proposal changes.
