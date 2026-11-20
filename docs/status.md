@@ -52,7 +52,10 @@ document's job and every command are in `README.md`.
   and `claude/laughing-gates-p2633f` (the summon texts with no pool, the Text tab's target
   words) the same day on his "Ok merge in", and `ccr-64b5deec-lunnff` (the Macaque, the line
   frame until its naming: its model, its kit and the offhand's engines, the strike order, the
-  upgrade chevrons, the models' texture copies' test) the same day on his "Send it to Main". A
+  upgrade chevrons, the models' texture copies' test) the same day on his "Send it to Main", and
+  `claude/locked-footing` (a basic a flag on tier one, a machine's tier and the upgrade verb, the
+  Honey Badger's Ore and the Prairie Dog's Spreader with their branches) on 20 November on his
+  "make sure we're cleaned up and merged in". A
   session's hangar publish runs ahead of main (Pages).
   Every other branch on GitHub but the lines' own working branches is merged and to delete
   (`git push origin --delete`, then `git fetch --prune`); a cloud session may not delete one.
