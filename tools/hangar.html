@@ -3046,8 +3046,15 @@ function benchBar(m) {
     el("button", {class: "btn", onclick: closeBench}, m.kind === "doc" ? "‹ Briefs" : "‹ Chassis"),
     el("button", {class: "btn", disabled: !prev, title: prev ? prev.name : "", onclick: () => prev && openBench(prev)}, "‹ Prev"),
     el("button", {class: "btn", disabled: !next, title: next ? next.name : "", onclick: () => next && openBench(next)}, "Next ›"));
-  // A built machine's every field, behind its toggle as on every sheet: the raw editor, Save to write.
-  if (m.kind === "built") bar.append(el("span", {class: "sp"}), el("button", {class: "btn", title: "Every field of the entry as the file holds it, for the rare edit", onclick: () => { openEntry("chassis.entries", m.id); state.raw = true; render(); window.scrollTo(0, 0); }}, "Every field"));
+  // A built machine's model on the Models tab (the codex's thumbnail went there), and its every
+  // field, behind its toggle as on every sheet: the raw editor, Save to write.
+  if (m.kind === "built") {
+    want("pins", ensurePins);
+    const model = state.pins && Array.isArray(state.pins[m.id]);
+    bar.append(el("span", {class: "sp"}),
+      model ? el("button", {class: "btn", id: "bench-model", title: "Its model live on the Models tab", onclick: () => { MOTION.id = m.id; rememberMotion(); setSection("models"); }}, "Model") : null,
+      el("button", {class: "btn", title: "Every field of the entry as the file holds it, for the rare edit", onclick: () => { openEntry("chassis.entries", m.id); state.raw = true; render(); window.scrollTo(0, 0); }}, "Every field"));
+  }
   return bar;
 }
 function benchNumCell(fid, label, live, shipped, commit) {
