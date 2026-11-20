@@ -399,9 +399,9 @@ publish; the commands are in `README.md`.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 311 (20 November, the Macaque's branch at
-  `5f72de0d`, main's `364ac091` with its docs) sent the briefs' inventory alone, the echidna's
-  brief taking his "We need to set kit first". Version 310 (20 November, main at `364ac091`): the
+  `edits`, `designs` and `text` read first. Versions 311 and 312 (20 November, the Macaque's
+  branch over main's `364ac091`, docs alone) sent the briefs' inventory: the echidna's brief
+  taking his "We need to set kit first", then Claude's round on its kit. Version 310 (20 November, main at `364ac091`): the
   Content tab reworked (the Foes tab formations first, every pack a domain deals by tier with
   its grid as the fight stands and its units' numbers at each tier, `hangar/foe_rules.json` the
   engine's rules for a pack; every kind on a sheet in the Bench's manner, the raw editor behind
