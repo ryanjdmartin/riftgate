@@ -370,37 +370,28 @@ with it, on his word. A page's link goes into this file in the same commit as it
 publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.634 on 18 November from main's file at `1383f11` (the page's Version 513).
-  Main's file is v0.647, unpublished: Ryan said yes to republishing it and the hangar on 19
-  November, and the session's permission check refused the publish, so it waits on his
-  approval of the action. In it since: the step ahead of a blow, the first battle decided and
-  built, the Needletail's rows, every domain's kit, the battle's open question, the Skua, the
-  Kite and the Cottonmouth left as built under the reboot, the leans of 19 November and a
-  foe's jam waiting for the reboot. The hangar's `text` collection was empty on 19 November,
-  so no writing of his waits. Before republishing,
+  Published at v0.650 on 20 November from main's file at `6bdf0b99` (the page's Version 514),
+  on Ryan's "Go ahead and publish what you need to" of that day; the live page was checked
+  byte for byte against the last publish (`1383f11`'s file) first. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
-  `1383f11` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  `6bdf0b99` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
   live source with the tool's wrapper line, its trailing newline and `</body></html>`
   stripped): check BASE against the live page byte for byte first. After main merges in,
   check the tables script's run against the file's tables before keeping it: a row it
   reverts belongs to a branch not yet landed.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
-  each live copy read first, with `edits`, `designs` and `text` read first. Version 307 (19
-  November, `f05bbdc`: main at `a1f3a45` and the summon texts' branch): every file of the map
-  checked against the live copy by hash, and the nine that differed sent (five content files,
-  the briefs' and the texts' inventories, and the Buzzard's model and sidecar). The page itself
-  was unchanged. The numbers pass's leans (`6a10dca`) and a foe's jam waiting for the reboot
-  (`645d690`), landed after that publish, are not up: their content, briefs and texts go up
-  with the next, which waits with the bible's on Ryan's approval of the action.
-  The Macaque (`ccr-64b5deec-lunnff`, landed after it) is not up either: its content whole (the
-  chassis, its Aile Booster, its terms), its texts, its model and sidecar (its held armaments and
-  its dash) and the motion script's parts made of light (`tools/hangar_motion.js`). Nor is the
-  page's cleanup of 20 November (the page and the motion script: the Designs tab and the Content
-  tab's chassis folded into the Bench, the Names tab retired); the page reads `candidates` no
-  longer, and the map no longer carries `content/reserved_names.json` (a publish removes it with
-  null).
+  each checked against the live copy by hash (the files listing gives each one's), with
+  `edits`, `designs` and `text` read first. Version 308 (20 November, main at `d2eb8fc7`): the
+  page's cleanup (the briefs and the chassis's editing on the Bench, the Designs, Names and
+  Content-chassis tabs gone), the twelve files that differed (the six content files, the pins,
+  the motion script, the briefs' and the texts' inventories, the Macaque's model and sidecar)
+  and `content/reserved_names.json` removed. The `edits` and `text` collections were empty,
+  `designs` held his two notes of 5 November (both already briefed). The `candidates`
+  collection (his names, 106 rows) stays in the database unread; `docs/name_candidates.md`
+  holds them. The service refuses a republish until the live page's saved source has been
+  read whole, every line: read it before the publish, not after the refusal.
   `build/hangar/designs.json` is one line of about 980 KB: write it indented before reading it whole.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their
