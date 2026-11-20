@@ -2224,6 +2224,24 @@ func test_a_foes_halving_move_is_laid_two_at_the_least_and_a_blows_brittle_may_b
 ## An attack deals damage (Ryan, 20 November: "We don't need attacks of zero, those fold into rider
 ## only hits same as machines fold weapons into equipment at zero damage"): a blow of nothing is
 ## refused, and a foe whose one move lays a rider and deals nothing, a debuff, stands.
+## A refill is a summon's (the Wild Huntsman's Horn, 20 November), true or false.
+func test_a_refill_is_a_summons_alone() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var g: Dictionary = db.foes["revenant"].duplicate(true)
+	g["id"] = "test_refiller"
+	g["name"] = "Test Refiller"
+	g["actions"] = [{"id": "claw", "name": "Claw", "kind": "attack", "text": "", "status": "implemented"},
+		{"id": "brace", "name": "Brace", "kind": "defend", "effect": "brace", "value": 2, "refill": true, "text": "", "status": "implemented"},
+		{"id": "call", "name": "Call", "kind": "buff", "effect": "summon", "foe": "revenant", "refill": "yes", "text": "", "status": "implemented"}]
+	db.foes["test_refiller"] = g
+	var hits := 0
+	for e in db.validate():
+		if e.begins_with("foe test_refiller") and e.contains("refill is true on a summon"):
+			hits += 1
+	assert_eq(hits, 2, "a refill on a brace and a refill that is no true or false are each named")
+
+
 func test_an_attack_of_zero_is_refused_and_a_rider_only_hit_stands_alone() -> void:
 	var db := _fresh()
 	var zero: Dictionary = db.foes["revenant"].duplicate(true)

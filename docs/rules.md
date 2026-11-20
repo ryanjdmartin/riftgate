@@ -1391,8 +1391,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   content carries a ward all yet; the Djinn's Unmake is the one purge cast as a move, and a Purge 1 stands ahead of
   the Pilgrim's knife, the needler line's Needles, the Old Man of the Desert's Maw and the
   Rust Monster's bite; an Expose of its own
-  is the Goblin Warchief's, the Basilisk's, the Alpha Warg's, the Lich's and the Rider of the
-  Wild Hunt's, each cast while another foe stands to follow it.
+  is the Goblin Warchief's, the Basilisk's, the Alpha Warg's, the Lich's and the Wild
+  Huntsman's, each cast while another foe stands to follow it.
 - **A last act**: a foe may act the moment it falls, before anything else and even when it
   was the last foe, since damage sticks for the battle. A fall is a short list of steps, as a
   move is: a death blow with its own riders, every machine included, or one special in a
@@ -1450,7 +1450,10 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   one with no room never forms.
 - **A summon** takes an empty slot of its rank at once, the nearest its summoner's column, the
   left on a tie, its round over like a split's half's; a call for several stands as many as fit,
-  and a summoner with room for none never picks the summon.
+  and a summoner with room for none never picks the summon. A summon may call back only what its
+  pack has lost (the Wild Huntsman's Horn): it is picked only while fewer of the kind it calls
+  stand in the fight than rode out with the pack, and calls no more than that, so the pack never
+  grows past its start.
 - **A corpse**: a part that falls and will grow back leaves its corpse in its slot, drawn dimmed
   with the rounds until it regrows, and grows back there; no swap or arrival takes the slot
   meanwhile. A part with no corpse to grow into takes the nearest empty slot of its rank,
@@ -1880,7 +1883,7 @@ a stat.
   the tier names (tier one's first; tier two's first and third; tier three's first, second and
   fourth) the lead domain's next own elite composition not yet sent this battle emerges at the
   rift, or a wanderer (`wanders`: Gilgamesh, the Reaper, the Wild Hunt, the World Eater, the
-  Shuffler and the Astromancer, each one composition in one domain's list and every domain's), drawn on the
+  Shuffler and the Astromancer, each written in one domain's list and dealt from every domain's), drawn on the
   Fracture's roll one time in three in place of the domain's own and always once its own are
   spent, the same roll picking which among those not yet sent, so every domain may meet them,
   none waits on them and nobody learns an order. An elite

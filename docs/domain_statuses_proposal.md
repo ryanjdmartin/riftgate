@@ -258,5 +258,3 @@ buff, or are predicted to get one"). The bible's goblins' row and gel row hold t
   component that sets it for testing"). The source rule is not built.
 - **The rally.** His: "It's a foe move, they're all different." The formations that rally are laid
   out for his read; the hangar's Foes tab shows each formation by its name.
-- **The Wild Hunt's leader.** His: "Wild hunt needs a leader." One leader carrying the quarry's mark
-  and the riders its lessers, proposed in chat on 20 November.

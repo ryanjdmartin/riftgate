@@ -1640,6 +1640,8 @@ func legal_actions(f: Foe, announced = null) -> Array:
 			continue   # nothing of its kinds stands to take in
 		if str(a.get("effect", "")) == "summon" and not _summon_has_room(f, a):
 			continue   # a summoner never summons with no room (Ryan, 7 November: "a summoner should not summon if there's no space")
+		if bool(a.get("refill", false)) and refill_short(f, a) < 1:
+			continue   # a call back with nothing lost (the Wild Huntsman's Horn): none of its kind has fallen
 		if bool(a.get("once", false)) and f.spent_once.has(str(a.get("id", ""))):
 			continue   # used once this fight already
 		if _when_holds(f, a):
@@ -1700,6 +1702,28 @@ func _summon_has_room(f: Foe, a: Dictionary) -> bool:
 	# Room for one at least (Ryan, 8 November: "Summoner should be able to summon whatever they're
 	# able to", so a slot left just short never shuts it); the call stands as many as fit.
 	return _free_slots_for(probe) >= 1
+
+
+## A summon that calls back only what its pack has lost (`refill`, the Wild Huntsman's Horn, Ryan's
+## go of 20 November on "a fallen rider rides back"): how many of the kind it calls its pack stands
+## short of what rode out, its pack's own lineup less those of the kind standing in the fight. A
+## pack the fight does not hold (a test's bare foes) rode out with none, so nothing is short.
+func refill_short(f: Foe, a: Dictionary) -> int:
+	var who := str(a.get("foe", ""))
+	var rode := 0
+	for sq in packs:
+		if sq.id == f.pack_id:
+			for m in sq.member_list():
+				if str(m[0]) == who:
+					rode += int(m[1])
+	var standing := 0
+	for o in field_foes():
+		if o.alive() and o.pack_id == f.pack_id and o.content_id == who:
+			standing += 1
+	for o in reinforcements:
+		if o.pack_id == f.pack_id and o.content_id == who:
+			standing += 1
+	return maxi(0, rode - standing)
 
 
 ## The slots a foe of `n`'s rank could step into now: its rank's empty slots holding no corpse, a
@@ -4271,6 +4295,8 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 		"summon":
 			var count := maxi(1, int(a.get("count", 1)))
 			var who := str(a.get("foe", ""))
+			if bool(a.get("refill", false)):
+				count = mini(count, refill_short(f, a))   # never more of the kind than rode out
 			if foe_factory.is_valid() and not who.is_empty():
 				# A summon takes an empty slot of its rank at once, the nearest the summoner's
 				# column (Ryan, 26 October), its round over, so it strikes from the next; one with

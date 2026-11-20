@@ -469,6 +469,8 @@ func make_foe(foe_id: String) -> Foe:
 				act["foe"] = Foe.kinds_named(a) if a["foe"] is Array else str(a["foe"])   # a merge names a list of kinds
 			if a.has("count"):
 				act["count"] = int(a["count"])
+			if bool(a.get("refill", false)):
+				act["refill"] = true   # a summon that calls back only what its pack has lost (the Wild Huntsman's Horn, 20 November)
 			if a.has("rounds"):
 				act["rounds"] = int(a["rounds"])   # a golden rage's rounds
 		# What the move does also (16 November: a move is a short list of steps), each a special's
@@ -2740,6 +2742,10 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 						errs.append("%s: a step's effect is a special's, one of %s" % [sw, ", ".join(_all_effects())])
 					elif str(a.get("status", "")) == "implemented":
 						_validate_effect(sw, st, str(st["effect"]), errs)
+		# A summon that calls back only what its pack has lost (`refill`, 20 November, the Wild
+		# Huntsman's Horn: "a fallen rider rides back"), never more of the kind than rode out.
+		if a.has("refill") and (not (a["refill"] is bool) or str(a.get("effect", "")) != "summon"):
+			errs.append("%s: refill is true on a summon, which then calls back only what its pack has lost" % aw)
 		if str(a.get("status", "")) == "implemented":
 			if str(a.get("kind", "")) != "attack":
 				# A defend, buff or debuff names an effect the engine runs and the fields it reads.

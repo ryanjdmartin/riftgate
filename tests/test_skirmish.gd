@@ -4243,6 +4243,69 @@ func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:
 	assert_true("\n".join(s2.log).contains("nothing answers"), "and the log says so")
 
 
+## A summon that calls back only what its pack has lost (`refill`, the Wild Huntsman's Horn, Ryan's
+## go of 20 November on "a fallen rider rides back"): no call while every rider stands, room or
+## none; one back once one has fallen; never more of the kind than rode out.
+func test_the_huntsmans_horn_calls_back_only_the_riders_its_pack_has_lost() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var horn: Dictionary = {}
+	for a in db.make_foe("wild_huntsman").actions:
+		if bool(a.get("refill", false)):
+			horn = a
+	assert_false(horn.is_empty(), "the Huntsman carries a summon that refills")
+	var who := str(horn.get("foe", ""))
+	var pack := Unit.pack(9, "The Hunt", Vector2i.ZERO)
+	pack.members = [["wild_huntsman", 1], [who, 2]]
+	var sk := Skirmish.new(11, 4)
+	sk.add_mech(_mech("A", Die.single(Face.blank()), 0, 300))
+	var lineup := db.foes_for(pack)
+	sk.add_foes(lineup, pack)
+	sk.foe_factory = func(id: String) -> Foe: return db.make_foe(id)
+	sk.begin()
+	sk.start_round()
+	var huntsman: Foe = null
+	var riders: Array = []
+	for f in sk.field_foes():
+		if f.content_id == "wild_huntsman":
+			huntsman = f
+		elif f.content_id == who:
+			riders.append(f)
+	assert_eq(riders.size(), 2, "two riders rode out")
+	assert_eq(sk._free_slots_for(db.make_foe(who)), 1, "a front slot stands open")
+	assert_eq(sk.refill_short(huntsman, horn), 0, "nothing lost")
+	assert_false(sk.legal_actions(huntsman).has(horn), "so the horn is no move it may announce, room or none")
+	(riders[0] as Foe).hp = 0
+	sk._clear_dead()
+	assert_eq(sk.refill_short(huntsman, horn), 1, "one rider fallen, one short")
+	assert_true(sk.legal_actions(huntsman).has(horn), "and the horn may sound")
+	huntsman.action = horn
+	sk._foe_acts(huntsman, sk.mechs[0])
+	var standing := 0
+	for f in sk.field_foes():
+		if f.alive() and f.content_id == who:
+			standing += 1
+	assert_eq(standing, 2, "one rides back, two again")
+	assert_eq(sk._free_slots_for(db.make_foe(who)), 1, "and the open slot stays open: never more than rode out")
+	assert_eq(sk.refill_short(huntsman, horn), 0, "nothing short again")
+	assert_false(sk.legal_actions(huntsman).has(horn), "so no second call")
+	# A call for several calls back no more than is short.
+	var two := horn.duplicate(true)
+	two["count"] = 3
+	for f in sk.field_foes():
+		if f.alive() and f.content_id == who:
+			f.hp = 0
+			break
+	sk._clear_dead()
+	huntsman.action = two
+	sk._foe_acts(huntsman, sk.mechs[0])
+	standing = 0
+	for f in sk.field_foes():
+		if f.alive() and f.content_id == who:
+			standing += 1
+	assert_eq(standing, 2, "a call for three brings back the one short")
+
+
 func test_a_rally_lands_at_once_and_a_foe_that_has_acted_carries_it_whole_to_its_next_blow() -> void:
 	# The rallier strikes nothing, so it stands right of the ghoul and acts after it (Ryan, 26
 	# October: "howl is more clear if it gives kindled for the next action, which could be the
