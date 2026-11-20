@@ -12266,3 +12266,22 @@ Before the fix of the same day the bot burrowed again as its shield broke, takin
 home after one blow, a loop of 2 damage a cycle (6 seeds, the Mole at 40.4% beside 51.5% and the
 Wild Boar's 52.5%, the loop's own read). A read alone says nothing of the squad branch's Brittle or
 a drill a team cashes; his play decides.
+
+## 20 November: the Echidna alone, beside the Honey Badger
+
+`tools/balance.gd -- --seeds 30 --rows echidna,badger --policies greedy`, every pack of the matrix
+(101), each machine alone, on this branch at `0c94d2f8`, before main's merge (the Echidna's kit as
+built that day; the bot's first cut on it: a needle priced by the bolt it brings or its share of
+one, and the Tether's turned blows by the needles they lay), 6,060 fights.
+
+| The machine | Win rate, the row's mean over 101 packs | Its spends |
+|---|---|---|
+| The Echidna (tier one) | 53.6% | Howitzer 35%, Arc Fault Cannon 30%, Rivet Gun 20%, Supersonic Spike Tether 8%, Shoring Jack 7% |
+| The Honey Badger (tier one) | 53.6% | Chainsaw Claw 41%, Bullion Fragmenter 31%, Rivet Gun 11%, Twin Autoguns 10%, Shoring Jack 7% |
+
+What it says, a direction at 30 seeds: alone, the Echidna stands level with its maker's tier one.
+Its spends lean on its placeholder stock's area and Chain pieces (the Howitzer needling up to four
+foes a spend, the Arc Fault Cannon arcing through every needled foe), and the bot spends the
+Tether on one turn in twelve, so a lone read says little of the Tether or of the needles a lure's
+turned blows lay. A trace of one fight (four goblins, seed 1) shows the bolts firing on struck
+blows and the Cannon arcing to needled goblins. The stock is placeholders; his play decides.
