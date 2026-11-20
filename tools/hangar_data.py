@@ -18,8 +18,15 @@ way (art/models/shapes/<class>_<maker>.glb as hangar/models/shapes/<class>_<make
 and each class's variants beside them, with a manifest naming them (build/hangar/shapes.json as
 hangar/shapes.json: the classes in the engine's order from sim/content_db.gd's SHAPES, the
 variants and their classes from art/models/shapes/variants.json, the makers from the content),
-so the Models tab can show a class or a variant alone or fit a class to any mount. Run it after a content, model
-or render change, then publish tools/hangar.html with the printed map to the page's URL.
+so the Models tab can show a class or a variant alone or fit a class to any mount. The Content
+tab's formations (21 November, Ryan: "we're tuning around the formations, so I need the
+context") read the engine's own rules for a pack, which live in GDScript the browser cannot
+read: the boss tiers that scale a commander and an elite, the threat rating by a composition's
+size, the ramp's span and the words a move's condition and aim are said in. foe_rules() reads
+them out of sim/ into build/hangar/foe_rules.json (hangar/foe_rules.json beside the page) and
+checks that ContentDB.scale_boss and ContentDB.foes_for still scale what the page says they do,
+failing the run when either has moved. Run it after a content, model or render change, then
+publish tools/hangar.html with the printed map to the page's URL.
 
     python3 tools/hangar_data.py            # write pins.json and the models' JSON, check the manifest, print the map
     python3 tools/hangar_data.py --check    # check only, no write
@@ -31,6 +38,108 @@ import hangar_text
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONTENT = ["chassis", "components", "modules", "foes", "factions", "vocabulary"]
+FOE_RULES = os.path.join("build", "hangar", "foe_rules.json")
+
+
+def gd_source(rel):
+    return open(os.path.join(ROOT, rel), encoding="utf-8").read()
+
+
+def gd_const(src, name, rel):
+    """A GDScript constant's value, an int, a float, a string or a literal array or dictionary
+    of them, as JSON reads it: the bracketed literal taken whole, its comments and trailing
+    commas dropped."""
+    m = re.search(r"^const %s\s*:?=\s*" % re.escape(name), src, re.M)
+    if not m:
+        raise SystemExit("%s: const %s not found (tools/hangar_data.py reads it for the hangar's formations)" % (rel, name))
+    i = m.end()
+    if src[i] not in "[{":
+        line = src[i:src.index("\n", i)]
+        return json.loads(re.sub(r"\s*#.*$", "", line).strip())
+    depth, j, in_str = 0, i, False
+    while j < len(src):
+        ch = src[j]
+        if in_str:
+            if ch == "\\":
+                j += 1
+            elif ch == '"':
+                in_str = False
+        elif ch == '"':
+            in_str = True
+        elif ch in "[{":
+            depth += 1
+        elif ch in "]}":
+            depth -= 1
+            if depth == 0:
+                break
+        j += 1
+    lines = []
+    for line in src[i:j + 1].split("\n"):
+        out, quoted = "", False
+        for k, ch in enumerate(line):
+            if ch == '"' and (k == 0 or line[k - 1] != "\\"):
+                quoted = not quoted
+            if ch == "#" and not quoted:
+                break
+            out += ch
+        lines.append(out)
+    return json.loads(re.sub(r",(\s*[\]}])", r"\1", "\n".join(lines)))
+
+
+def gd_func(src, name):
+    """A GDScript function's body, from its signature to the next top-level line."""
+    m = re.search(r"^(?:static )?func %s\(.*?$(.*?)(?=^\S)" % re.escape(name), src, re.M | re.S)
+    return m.group(1) if m else ""
+
+
+def foe_rules():
+    """The engine's rules for a pack as the Content tab's formations show them, read out of
+    sim/, with every way the scaling the page assumes no longer matches the code."""
+    db, foe = gd_source("sim/content_db.gd"), gd_source("sim/foe.gd")
+    problems = []
+    scale = gd_func(db, "scale_boss")
+    for what, pat in [("its HP by the tier's hp, rounded", r'f\.hp_max = maxi\(1, roundi\(f\.hp_max \* float\(s\["hp"\]\)\)\)'),
+                      ("its attack by the tier's attack", r'f\.attack \+= int\(s\["attack"\]\)'),
+                      ("its armour by its armour_step a tier above one", r'f\.armour \+= f\.armour_step \* clampi\(t, 0, BOSS_TIERS\.size\(\) - 1\)')]:
+        if not re.search(pat, scale):
+            problems.append("ContentDB.scale_boss no longer scales %s as the hangar's formations show it: update SCALING in tools/hangar.html and foe_rules() in tools/hangar_data.py" % what)
+    packs = gd_func(db, "foes_for")
+    calls = len(re.findall(r"scale_boss\(", packs))
+    for what, pat in [("a boss pack's commanders", r"scale_boss\(b, sq\.boss_tier\)"),
+                      ("a commander's parts", r"for part in parts_for\(b\):\s*scale_boss\(part, sq\.boss_tier\)"),
+                      ("a pack's elite", r"if is_elite\(fid\):\s*scale_boss\(f, sq\.boss_tier\)"),
+                      ("an elite's parts, left at their own numbers", r"out\.append_array\(parts_for\(f\)\)")]:
+        if not re.search(pat, packs):
+            problems.append("ContentDB.foes_for no longer treats %s as the hangar's formations show it: update SCALING in tools/hangar.html and foe_rules() in tools/hangar_data.py" % what)
+    if calls != 3:
+        problems.append("ContentDB.foes_for calls scale_boss %d times where the hangar's formations expect 3 (a commander, its parts, an elite)" % calls)
+    battle = gd_source("sim/battle.gd")
+    boss_squad = re.search(r"func make_boss_unit\(.*?\bu\.squad = (\d+)", battle, re.S)
+    if not boss_squad:
+        problems.append("Battle.make_boss_unit no longer sets its unit's squad: the hangar shows a boss fight's threat rating from it")
+    campaign, ramp = gd_source("sim/campaign.gd"), gd_source("sim/ramp.gd")
+    rules = {
+        "_about": "The engine's rules for a pack, read out of sim/ by tools/hangar_data.py (21 November) for the hangar's formations: never edited by hand. boss_tiers is ContentDB.BOSS_TIERS, index 0 for tier one (ContentDB.scale_boss: HP times hp rounded, attack plus attack, armour plus armour_step a tier above one); scaled says whom ContentDB.foes_for scales; squad_by_size and squad_default are a composition's threat rating where it writes no squad (ContentDB.squad_of), boss_squad a boss fight's (Battle.make_boss_unit); tier_every and ramp_top place a tier on the Convergences (ContentDB.first_ramp_of, Ramp.TOP); final_escort is the tier's own units beside a final's hero (Campaign: the battle's columns less one); when_text and aim_text are how a move's condition and aim are said (Foe.WHEN_TEXT, Foe.AIM_TEXT).",
+        "boss_tiers": gd_const(db, "BOSS_TIERS", "sim/content_db.gd"),
+        "scaled": {"commanders": True, "commander_parts": True, "elites": True, "elite_parts": False, "rank_and_file": False},
+        "squad_by_size": gd_const(db, "SQUAD_BY_SIZE", "sim/content_db.gd"),
+        "squad_default": gd_const(db, "SQUAD_DEFAULT", "sim/content_db.gd"),
+        "boss_squad": int(boss_squad.group(1)) if boss_squad else 4,
+        "composition_sizes": gd_const(db, "COMPOSITION_SIZES", "sim/content_db.gd"),
+        "hunt_caveats": gd_const(db, "HUNT_CAVEATS", "sim/content_db.gd"),
+        "columns": gd_const(gd_source("sim/skirmish.gd"), "DEFAULT_COLUMNS", "sim/skirmish.gd"),
+        "tier_every": gd_const(campaign, "TIER_EVERY", "sim/campaign.gd"),
+        "final_after": gd_const(campaign, "FINAL_AFTER", "sim/campaign.gd"),
+        "ramp_top": gd_const(ramp, "TOP", "sim/ramp.gd"),
+        "when_text": gd_const(foe, "WHEN_TEXT", "sim/foe.gd"),
+        "aim_text": gd_const(foe, "AIM_TEXT", "sim/foe.gd"),
+        "numbered_riders": gd_const(foe, "NUMBERED_RIDERS", "sim/foe.gd"),
+        "action_effects": gd_const(foe, "ACTION_EFFECTS", "sim/foe.gd"),
+        "resist": {"default": gd_const(foe, "RESIST_DEFAULT", "sim/foe.gd"), "massive": gd_const(foe, "RESIST_MASSIVE", "sim/foe.gd"),
+                   "boss": gd_const(foe, "RESIST_BOSS", "sim/foe.gd")},
+    }
+    rules["final_escort"] = rules["columns"] - 1
+    return rules, problems
 
 
 def model_pins(cid):
@@ -94,6 +203,17 @@ def main():
         print("\n".join(problems), file=sys.stderr)
         sys.exit(1)
     files["hangar/text.json"] = hangar_text.OUT
+    # The engine's rules for a pack (21 November), for the Content tab's formations: the boss
+    # tiers, the threat rating by size, the ramp's span and the move words, read out of sim/.
+    rules, problems = foe_rules()
+    if problems:
+        print("\n".join(problems), file=sys.stderr)
+        sys.exit(1)
+    if not check_only:
+        os.makedirs(os.path.dirname(os.path.join(ROOT, FOE_RULES)), exist_ok=True)
+        with open(os.path.join(ROOT, FOE_RULES), "w", encoding="utf-8") as f:
+            json.dump(rules, f, indent=1, ensure_ascii=False)
+    files["hangar/foe_rules.json"] = FOE_RULES
     # The foes' combat sprites (4 November, Ryan: the sprites in the hangar's foe list, compared
     # and inventoried): every foe with art, and a manifest saying which sprite is a rough
     # placeholder (tools/placeholder_art.py's table, read as text so no PIL is needed here).
