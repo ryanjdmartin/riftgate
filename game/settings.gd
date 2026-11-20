@@ -43,6 +43,7 @@ const DISPLAY_DEFAULTS := {
 	"rank_hp": "0",   # RANK_HPS: a debug build's what-if, a hit point more on tier one's rank and file (Refit's foehp), read at the next launch
 	"overheat_burn": "1",   # OVERHEATS: a debug build's trial of the hull an overheat burns a point of excess (Skirmish.overheat_scale), read as a battle starts
 	"barrier_basic": "built",   # BARRIER_BASICS: a debug build's what-if, the Barrier basic off the stock dice with the Armoured basic in its slot (Refit's barrier=none), read at the next launch
+	"phased_form": "round_end",   # PHASED_FORMS: a debug build's trial of when a machine's Phased lands, as the round ends or as its entry is spent (Skirmish.phase_at_once), read as a battle starts
 }
 const DISPLAY_RANGES := {
 	"brightness": Vector2(0.5, 1.5), "pace": Vector2(0.5, 2.0), "enemy_pace": Vector2(0.5, 3.75),
@@ -108,6 +109,12 @@ const OVERHEAT_LABELS := {"1": "×1", "2": "×2", "3": "×3"}
 ## (Harness.refit_trial), so at the next launch.
 const BARRIER_BASICS := ["built", "none"]
 const BARRIER_BASIC_LABELS := {"built": "BUILT", "none": "NONE"}
+## When a machine's Phased lands, a debug build's trial (Ryan, 20 November: "Set the debug toggle
+## for phased"; the reactive form, docs/domain_statuses_proposal.md, section 5): as the round ends,
+## standing through the next, the game's; or at once as its entry is spent, standing until the
+## round ends, the foes whose pick it was picking again (Skirmish.phase_at_once).
+const PHASED_FORMS := ["round_end", "at_once"]
+const PHASED_FORM_LABELS := {"round_end": "ROUND END", "at_once": "AT ONCE"}
 ## The field's trial, a debug build's (Ryan, 10 November, after his play of the long wall: "I think
 ## the map is a bit too shallow ... If the map is a little deeper, and the seam starts a little
 ## farther out, it will feel more like I can actually plan a little bit ahead instead of panicking
@@ -150,9 +157,9 @@ const STRIKES := ["10", "7", "5", "3"]
 
 
 ## Set the field's trial for the battles that start after this: RIFTGATE_FIELD_DEPTH,
-## RIFTGATE_OPENING, RIFTGATE_FODDER, RIFTGATE_BEATS, RIFTGATE_TIDE, RIFTGATE_STRIKE and
-## RIFTGATE_OVERHEAT on
-## any run, else a debug build's seven settings when `saved` (the game's own
+## RIFTGATE_OPENING, RIFTGATE_FODDER, RIFTGATE_BEATS, RIFTGATE_TIDE, RIFTGATE_STRIKE,
+## RIFTGATE_OVERHEAT and RIFTGATE_PHASED (round_end or at_once) on
+## any run, else a debug build's eight settings when `saved` (the game's own
 ## entry points pass it; a scene run alone and the tests read the environment only, so no
 ## machine's saved settings move a test's field). Nothing set is the game's own field, meter,
 ## tide and overheat.
@@ -164,6 +171,7 @@ static func field_trial(saved: bool = false) -> void:
 	var tide := OS.get_environment("RIFTGATE_TIDE")
 	var strike := OS.get_environment("RIFTGATE_STRIKE")
 	var burn := OS.get_environment("RIFTGATE_OVERHEAT")
+	var phased := OS.get_environment("RIFTGATE_PHASED")
 	if saved and OS.is_debug_build():
 		if depth.is_empty() and FIELD_DEPTHS.has(str(display.get("field_depth", ""))):
 			depth = str(display["field_depth"])
@@ -179,6 +187,8 @@ static func field_trial(saved: bool = false) -> void:
 			strike = str(display["wall_strike"])
 		if burn.is_empty() and OVERHEATS.has(str(display.get("overheat_burn", ""))):
 			burn = str(display["overheat_burn"])
+		if phased.is_empty() and PHASED_FORMS.has(str(display.get("phased_form", ""))):
+			phased = str(display["phased_form"])
 	Ramp.depth_trial = clampi(int(depth), 10, 24) if depth.is_valid_int() else 0
 	Battle.opening_trial = clampi(int(opening), 0, 3) if opening.is_valid_int() else 0
 	Battle.fodder_trial = clampi(int(fodder), 10, 100) if fodder.is_valid_int() else 100
@@ -187,6 +197,7 @@ static func field_trial(saved: bool = false) -> void:
 	var pip := clampi(int(strike), 1, 20) if strike.is_valid_int() else 0
 	Battlefield.strike_trial = 0 if pip == Battlefield.STRIKE_PER_PIP else pip
 	Skirmish.overheat_scale = clampi(int(burn), 1, 10) if burn.is_valid_int() else 1
+	Skirmish.phase_at_once = phased == "at_once"
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.

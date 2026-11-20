@@ -2162,6 +2162,30 @@
    "tags": []
   },
   {
+   "id": "phase_inducer",
+   "name": "Phase Inducer",
+   "maker": "aphelion",
+   "tier": 2,
+   "shape": "dish",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A coil that slips its own machine half a step out of the world: nothing can reach it, and it reaches out all the same.",
+    "niche": "The test piece for Phased (Ryan, 20 November: \"Set the debug toggle for phased. And I need a tier 2 component that sets it for testing\"): Phased on itself alone, his lean of 20 November (\"I would probably only allow self-phased except in very specific circumstances\"), a cooldown of one so it never phases two rounds running; the TRIALS page's PHASED dial says when it lands. A working name, and a slottable Phaser's place at tier two, both his to settle.",
+    "notes": "Its gate is the cooldown and the entry it costs: a machine that phases itself has spent its die, so it cannot reboot that turn (docs/domain_statuses_proposal.md, section 8)."
+   },
+   "face": {
+    "kind": "buff",
+    "status": "phased",
+    "stacks": 1,
+    "targets": "self",
+    "cooldown": 1
+   },
+   "passive": null,
+   "tags": []
+  },
+  {
    "id": "null_field_emitter",
    "name": "Null Field Emitter",
    "maker": "aphelion",

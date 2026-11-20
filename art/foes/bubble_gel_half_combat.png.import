@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c5r84glfp35l0"
-path="res://.godot/imported/metal_gel_combat.png-6b70146169f7bf7206e8e690c08f9ec7.ctex"
+uid="uid://dcp600me3f6ls"
+path="res://.godot/imported/bubble_gel_half_combat.png-76e5f506e4a1e157135098dae49c57e8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/foes/metal_gel_combat.png"
-dest_files=["res://.godot/imported/metal_gel_combat.png-6b70146169f7bf7206e8e690c08f9ec7.ctex"]
+source_file="res://art/foes/bubble_gel_half_combat.png"
+dest_files=["res://.godot/imported/bubble_gel_half_combat.png-76e5f506e4a1e157135098dae49c57e8.ctex"]
 
 [params]
 

@@ -68,7 +68,7 @@ more; its purge is a boss's.
 
 | Foe | Today | Proposed | Why |
 |---|---|---|---|
-| King Gel (boss) | Body Slam, Merge, Belly Flop | a move of its own, Dissolve: Purge 1 and Ablating 2 on the machine carrying the most buffs | his mark, 20 November: "King gel purge is fine but that move also feels like it needs Ablate on it, from the name alone". Waits: a boss carries three moves (section 8) |
+| King Gel (boss) | Body Slam, Merge, Belly Flop | Dissolve in Body Slam's place: Purge 1, then a blow with Brittle 2 and Ablating 2 | built on his marks of 20 November: "King gel purge is fine but that move also feels like it needs Ablate on it, from the name alone"; "King gel then loses body slam and gets a suitably souped up version in Dissolve" |
 
 The alternative for the Meadow's purge is Floraison's Swallow with a Purge 1 step, his "ride on
 a debuff": the machine comes out stripped.
@@ -106,15 +106,15 @@ machine" is my redraft.
 | Magma Elemental line | Slag Fist, a plain blow | Slag Fist with Brittle 2 | slag cracks plate, and the salamanders' bites after it land harder: the Peak's spike, on the rank and file |
 | The Bane (elite, t2) | Flame Whip, a blow that ablates | Flame Whip with an Expose | the whip drags its quarry down for the Shadow Blade; one carrier fighting alone, his "the only expose in the formation, so bring him down if you can't handle it" (the Wyvern, two to a formation, was this row until his rule of 20 November) |
 | Firelord (elite) | Submerge, armour 3 | Submerge as Phased: he sinks, the Sons of Flame rise | sunk in the lava he is out of reach; under the source rule a Phased machine can still follow him |
-| Obsidian Tyrant (boss) | Roar, a reroll drained | open: his "Same with Obsidian. But then they're both identical" | my lean: Brittle 2 on every machine, so the Rider's cry saps what you deal and the Tyrant's roar cracks what you take, before its Firestorm |
+| Obsidian Tyrant (boss) | Roar, a reroll drained | the Roar also leaves Brittle 2 on every machine | built on his "Tyrant is good", 20 November: the Rider's cry saps what you deal and the Tyrant's roar cracks what you take, before its Firestorm |
 
 ### After the rows
 
 | Status | Meadow | Waste | Marsh | Peak |
 |---|---|---|---|---|
 | Purge | King Gel, waiting | as today | | |
-| Ablating | King Gel, waiting | Emperor Scorpion, built | | as today |
-| Brittle | the roots | Antlion line | | Magma Elemental line, World Eater; Obsidian Tyrant, open |
+| Ablating | the gel line and King Gel, built | Emperor Scorpion, built | | as today |
+| Brittle | the roots; the Bubble and Molten Gels, built | Antlion line | | Magma Elemental line, World Eater; Obsidian Tyrant, built |
 | Sapped | | | Ghost line; Fell Rider, built | |
 | Exposed | as today | as today | as today | the Bane |
 | A foe's Ward | | Warding Orb | Death Knight | |
@@ -238,30 +238,30 @@ one Phaser in the squad.
 
 ## 8. Open from 20 November
 
-- **A boss's three moves.** "A boss or hero three" is the move count he passed on 24 October
-  ("The rest is fine"), and the content test holds it. King Gel's Dissolve would be a fourth. So
-  either a boss may carry four where its kit wants one, or Dissolve rides a move it has.
+Settled on 20 November and built: the King Gel's Dissolve in Body Slam's place, so it keeps a
+boss's three moves ("King gel then loses body slam and gets a suitably souped up version in
+Dissolve"); the Obsidian Tyrant's Roar leaving Brittle 2 on every machine beside its drain
+("Tyrant is good"); and the goblins' wall over their neighbours, every goblin striking only with a
+buff on it or one coming ("I said neighbors, not all ... goblins only attack when they have any
+buff, or are predicted to get one"). The bible's goblins' row and gel row hold them.
+
 - **A leader's numbers by tier.** He asked whether a boss's step numbers grow with its tier. They
   do not: a leader's HP grows by a tenth and a quarter, its attack by 1 and 2, and an armoured
   kit's plate by its step; a Purge 1 or a Sap 1 is 1 at every tier. My lean: content may write a
   step's number a tier, three numbers where it wants them, read as the leader is scaled.
-- **Phased's granters.** His lean: "I would probably only allow self-phased except in very
-  specific circumstances, like maybe the swallowtail." Self-phased answers the reactive form's
+- **Phased's granters and its form.** His lean: "I would probably only allow self-phased except in
+  very specific circumstances, like maybe the swallowtail." Self-phased answers the reactive form's
   third hole, since a machine that phases itself has spent its die and cannot reboot that turn;
   and it means the reactive form gives no safe reboot at all, where the delayed one gives the
-  phased round to reboot in. His question: Phased is not the only thing on the round's end. That
-  clock also ends Essence Flare and grants the Ammit's new one, runs a swallow's and a Golden
-  Rage's rounds, and bursts the Web Bomb, and a part grows back after it. Phased is the only
-  status another piece queues there.
-- **The rally.** His: "It's a foe move, they're all different. Like if 'rally' always grants 2,
-  it's a nuisance in tier 1 and laughable in tier 2 ... The point of the previous move pass that
-  turned moves into steps was to decouple things like this." The formations that rally, for his
-  read: the wolf, warg and alpha packs; the Captain's warband, the metal drift and the frost and
-  bloom; the shaman's warband and the Leshy's hunt; Floraison's two hunts and the Mantis Ant's
-  tier-three nest; the Fallen Weapon and its vigils; Gilgamesh and Enkidu; the magma forge and
-  the caldera; and the Obsidian Tyrant's Saurian Queen.
-- **The goblins' wall.** His "Give the goblins an aoe shield too". Four goblins each laying armour
-  1 on every foe would stand the formation at armour 4, past the basic gun's 3. So either the wall
-  refreshes rather than adds, armour 1 from walls however many raise one, or one goblin carries
-  it and is the target.
-- **The Wild Hunt.** Three riders, each naming the quarry, is the alpha pack's case in an elite.
+  phased round to reboot in. Both forms are his to play since 20 November: TRIALS → PHASED, and
+  the Phase Inducer, tier two, Phased on itself with a cooldown of one ("I need a tier 2
+  component that sets it for testing"). The source rule is not built.
+- **The rally.** His: "It's a foe move, they're all different." The formations that rally are laid
+  out for his read; the hangar's Foes tab shows each formation by its name.
+- **The Wild Hunt's leader.** His: "Wild hunt needs a leader." One leader carrying the quarry's mark
+  and the riders its lessers, proposed in chat on 20 November.
+- **The gel halves' Brittle.** His Bubble Half-Gel and Molten Half-Gel lay Brittle 1, against the
+  least of 2 a status that halves is laid at (16 November), so both are built at 2 until he rules.
+  His own exit that day was for a move several foes roll at once, "apply 2 if none, otherwise 1",
+  which the halves are; or a blow's rider could be held to no least, since a Brittle 1 still lands
+  on every blow after it in the same enemy turn and a pair of halves supplies them.

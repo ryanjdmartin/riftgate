@@ -42,7 +42,7 @@ PASSIVE_EFFECTS = {"seal_form": ("sealed", "machine"),
 FOE_KEYWORDS = {"scorch": "scorched", "ablate": "ablating", "jam": "jammed", "corrupt": "corrupted", "brittle": "brittled", "expose": "exposure"}
 FOE_EFFECTS_ON_MACHINES = {"ablate": "ablating", "scorch_all": "scorched", "corrupt_all": "corrupted",
                            "jam": "jammed", "brittle": "brittled", "brittle_all": "brittled", "sap_all": "sapped", "swallow": "swallowed", "expose": "exposure"}
-FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "harden": "braced", "harden_all": "braced",
+FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "brace_beside": "braced", "harden": "braced", "harden_all": "braced",
                        "rally": "kindled", "revive_once": "risen", "revive_once_ally": "risen",
                        "prime": "primed", "barrier": "barrier", "ward_all": "ward", "regenerate": "regenerating", "golden": "golden",
                        "appropriate": "appropriated", "phase": "phased"}   # the ladder's (28 October); golden the Thunder Ape's (4 November)

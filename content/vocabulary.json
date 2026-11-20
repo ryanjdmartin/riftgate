@@ -479,6 +479,16 @@
    }
   },
   {
+   "id": "safety_in_numbers",
+   "category": "foe",
+   "name": "Safety in Numbers",
+   "codex": "Ability, a foe's own, said on its chip: it strikes only with a buff on it, or one a move its own side has announced will lay on it; with none, it does anything but strike. The goblins', whose Shield Wall covers whoever stands beside them, so a bare goblin walls and a shielded one stabs. No Purge reaches it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 20 November: \"goblins only attack when they have any buff, or are predicted to get one\" and \"If a goblin is getting a shield from its peer in the intent, it should queue an attack\". The foes announce in the order they strike, so a goblin reads the moves already out ahead of it, never one after it. The name and the text are a session's draft, his to settle."
+   }
+  },
+  {
    "id": "corrupt",
    "category": "keyword",
    "name": "Corrupt",

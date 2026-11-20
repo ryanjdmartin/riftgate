@@ -1237,7 +1237,10 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   half, hurt, a foe behind it, another foe on the field, one
   of its own hurt, a machine carrying a buff, one of its own not readied, one of its own
   marked, one of its parts fallen (a part down and not waiting to step in). A move marked once
-  comes once a fight. No foe flees the field but a loot-runner whose prize goes with it (the
+  comes once a fight. A foe that strikes only when buffed (the goblins' Safety in Numbers, an
+  Ability on its chip) announces its blow alone while a buff stands on it or a move announced
+  ahead of it this round will lay one on it (a wall beside it, a brace, a rally or a Ward on
+  every foe), and anything but its blow while none does. No foe flees the field but a loot-runner whose prize goes with it (the
   one shape a flee may take; none is built, and no move flees). A move may
   carry a countdown: it gathers, landing that many rounds after it is announced, and nothing
   hits meanwhile; its pick holds while the machine stands; Suppress holds it a round, Disrupt
@@ -1344,7 +1347,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   Ward turns the jam and the take away together.
 - **A special** stands in the blow's place as a move's first step, or follows it as a later one: brace (Armoured, its value in stacks, an armour point each, until the
   foes' next turn opens), recover (regains its value, itself), heal (the most hurt of its own, itself included, regains its
-  value), brace all (the same on every foe in the fight, on the same clock), revive once,
+  value), brace all (the same on every foe in the fight, on the same clock), brace beside (the
+  same on itself and on every foe beside it in its rank, a massive foe in a column beside it
+  among them, so walls raised side by side add: the goblins' Shield Wall), revive once,
   revive an ally (Undying on one of its own, never itself, not readied already: a
   party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,

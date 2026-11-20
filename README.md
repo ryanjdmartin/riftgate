@@ -436,6 +436,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_BEATS=3                              the Rupture meter's size in beats of the tide, 1 to 6, 2 the game's
 #   RIFTGATE_TIDE=150                             the packs the opening places and each wave sends, in hundredths, 100 the game's
 #   RIFTGATE_STRIKE=5                             what a pip of threat rating strikes the wall for, 10 the game's
+#   RIFTGATE_PHASED=at_once                       a machine's Phased at once until the round ends, round_end the game's (Phased as the round ends, through the next)
 # The same on the phone, a debug build's SETTINGS, TRIALS (a page that scrolls). Read at the
 # next launch, so pick, close the app, open it and start a new battle or run (a saved one keeps
 # the numbers it was saved with):
@@ -445,7 +446,8 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   BARRIER BASIC (BUILT, NONE)    the Barrier basic on the stock dice, or the Armoured basic in its slot (barrier=none)
 # Read as the next battle starts, or a lone fight for OVERHEAT, with no relaunch:
 #   OVERHEAT (×1, ×2, ×3), FIELD DEPTH (12, 14, 16), OPENING (+0, +1, +2), FODDER (FULL, 3/4, HALF),
-#   RUPTURE (1 BEAT, 2 BEATS, 3 BEATS), TIDE (×1, ×1.5, ×2), STRIKE (10, 7, 5, 3)
+#   RUPTURE (1 BEAT, 2 BEATS, 3 BEATS), TIDE (×1, ×1.5, ×2), STRIKE (10, 7, 5, 3),
+#   PHASED (ROUND END, AT ONCE), with the Phase Inducer, a tier-two component, to set it for testing
 # A thing fired constantly, to judge it running (=1 unless a value is shown)
 #   RIFTGATE_FEED_DEBUG       the skirmish feed's analysis events and the ground tears (any run)
 #   RIFTGATE_PULSE_DEBUG      END TURN pulsing, on the map and in a fight (any run)

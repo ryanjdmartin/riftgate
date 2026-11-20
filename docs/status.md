@@ -194,11 +194,17 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   the Mandragora on its killer and the higher two on every machine (a fall takes no reroll
   since, a drain a move's alone), which costs the Meadow's formations about a point of a
   four's hull; a pin with nothing to hold goes as its foe's turn ends. His marks of 20
-  November: the roots' lash corrupts (the goblin horde half again a formation's budget at the
-  roots' 3 HP, until its wall is settled), the Emperor Scorpion's Paralytail leaves Ablating
-  (its blow lightened to pay for it), the Fell Rider's Shriek
-  Saps every machine, and the alpha pack is one alpha and three wargs; King Gel's Dissolve
-  waits on a boss's three moves. His to pick: the pickets' count, and the rest of
+  November: the roots' lash corrupts, the Emperor Scorpion's Paralytail leaves Ablating
+  (its blow lightened to pay for it), the Fell Rider's Shriek Saps every machine, and the
+  alpha pack is one alpha and three wargs. His second round that day: every gel's Engulf a
+  rider in place of a blow, the gel wall three gels and two roots since (a machine's Ablating
+  grows while stacks come faster than one a turn, so the wall costs the square of its length:
+  four gels read 17.5%, three 4.1%), the King Gel's Dissolve in Body Slam's place at Ablating 2
+  (27.9% without the Barrier, 23.6% with it, its Purge taking the Barrier), the goblins' wall
+  over their neighbours and their knife only with a buff on them or coming, the Tyrant's Roar
+  Brittle 2 on every machine (a point), and the goblin horde as built at 7.4%, its four roots
+  its cost. The shaman's warband reads 33% at sixty fights at every commit back to its sizing,
+  whose thirty read 24.6%, so the leaders want a read at sixty or more (the to-do's defence line). His to pick: the pickets' count, and the rest of
   `docs/domain_statuses_proposal.md` (its section 8 holds this round's open items). The
   battle whole is the open question (the brief's section 11): at their ratings a second
   battle's fights come to three fifths to nine tenths of a squad's hull, and a fight met a
