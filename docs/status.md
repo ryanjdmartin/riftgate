@@ -65,8 +65,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1384 tests, 387,201 checks, green (20 November, the gel line, the goblins' wall and the
-  content audit over the Puffin's landing). The runner fails a run
+- Tests: 1387 tests, 387,232 checks, green (20 November, the Wild Huntsman, the rider-only
+  Half-Gel and the hangar's tabs a kind each). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -270,7 +270,7 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   sheet, the raw editor behind a toggle; Foes formations first), the Text by chunk, a card an
   entity (`tools/hangar_text.py` is its one inventory), and the models. The ledger `docs/hangar/text.json` names nothing as signed, so
   every shown text is a session's draft. His writing waits in the page's `text` collection (the
-  Text tab's and the Bench's codex and flavour) and his notes on the briefs in `designs`: a
+  Text tab's and a Chassis sheet's codex and flavour) and his notes on the briefs in `designs`: a
   session that touches either folds them in first. The Names tab retired on 20 November: the
   makers' kinds of names are `docs/naming.md`, the check `tools/check_name.py`.
 - **Art and models.** Every machine's model is lowforge's with a rig sidecar; a hardpoint

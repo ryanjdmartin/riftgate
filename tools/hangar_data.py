@@ -3,7 +3,7 @@
 The hangar page (tools/hangar.html) renders the codex, the bench, the content editor, the text
 and the models from files published beside it, so one republish refreshes every tab. The
 Bench reads every brief in docs/briefs/, parsed by tools/hangar_designs.py into
-build/hangar/designs.json, and the Text tab (and the Bench's codex and flavour) every shown
+build/hangar/designs.json, and the Text tab (and a Chassis sheet's codex and flavour) every shown
 text, listed by tools/hangar_text.py into build/hangar/text.json. This writes the one piece the
 browser cannot read for itself, the hp_<n> pins each built
 model carries (docs/hangar/pins.json, from art/models/<chassis>.glb), checks the renders
@@ -93,7 +93,7 @@ def gd_func(src, name):
 
 
 def foe_rules():
-    """The engine's rules for a pack as the Content tab's formations show them, read out of
+    """The engine's rules for a pack as the Foes tab's formations show them, read out of
     sim/, with every way the scaling the page assumes no longer matches the code."""
     db, foe = gd_source("sim/content_db.gd"), gd_source("sim/foe.gd")
     problems = []
@@ -188,14 +188,14 @@ def main():
     files["hangar/pins.json"] = "docs/hangar/pins.json"
     files["hangar/renders.json"] = "docs/hangar/renders.json"
     files["hangar/motion.js"] = "tools/hangar_motion.js"
-    # The briefs (5 November; the Bench's since 20 November): every brief in docs/briefs/ parsed
+    # The briefs (5 November; a machine's on its Chassis sheet and the rest on a tab's Briefs since 20 November): every brief in docs/briefs/ parsed
     # by tools/hangar_designs.py into build/hangar/designs.json, a header each checked.
     _docs, problems = hangar_designs.build(check_only)
     if problems:
         print("\n".join(problems), file=sys.stderr)
         sys.exit(1)
     files["hangar/designs.json"] = hangar_designs.OUT
-    # The Text tab's inventory (9 November), the Bench's codex and flavour with it: every shown
+    # The Text tab's inventory (9 November), a Chassis sheet's codex and flavour with it: every shown
     # text as tools/hangar_text.py lists it, with who wrote each from docs/hangar/text.json, into
     # build/hangar/text.json.
     _slots, _groups, problems = hangar_text.build(check_only)
@@ -203,7 +203,7 @@ def main():
         print("\n".join(problems), file=sys.stderr)
         sys.exit(1)
     files["hangar/text.json"] = hangar_text.OUT
-    # The engine's rules for a pack (20 November), for the Content tab's formations: the boss
+    # The engine's rules for a pack (20 November), for the Foes tab's formations: the boss
     # tiers, the threat rating by size, the ramp's span and the move words, read out of sim/.
     rules, problems = foe_rules()
     if problems:

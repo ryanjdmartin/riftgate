@@ -20,7 +20,7 @@ docs/voice.md is the ledger's "ryan" texts laid out by kind and by voice, for a 
 read before it drafts anything shown.
 
 His work on the page waits in the artifact's database (collection "text", one document a
-slot: a new text, a mark, a note; the Text tab's, and a Bench sheet's codex and flavour, which
+slot: a new text, a mark, a note; the Text tab's, and a Chassis sheet's codex and flavour, which
 write the same documents) until a session folds it in:
 
     python3 tools/hangar_text.py                    # write build/hangar/text.json, print the counts
