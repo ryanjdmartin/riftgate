@@ -329,11 +329,11 @@ func machine_tier(chassis_id: String, picks: Array = [], tier: int = 0) -> int:
 
 
 ## The lift an upgrade buys, a tier at a time, as the passive the engine runs (the bible's tiers row:
-## it "lifts the whole machine at once, its stat line and its locked pieces"). Every chassis takes
-## content's one standard lift for now (`tier_lift` in chassis.json; Ryan, 20 November:
-## "the placeholders can be standard lifts for every chassis for now. After we have scaling in
-## place, we can adjust individual lifts to add character"): its stat lines added a step, and every
-## locked weapon's own number raised by `locked_power`. Empty for a tier no upgrade reaches.
+## it "lifts the whole machine at once"). Every chassis takes content's one standard lift for now
+## (`tier_lift` in chassis.json; Ryan, 20 November: "the placeholders can be standard lifts for
+## every chassis for now. After we have scaling in place, we can adjust individual lifts to add
+## character"): its stat lines added a step. No locked piece's number rises with it ("My hope is
+## that they scale with either the upgrades, or with the kit"). Empty for a tier no upgrade reaches.
 func tier_step(chassis_id: String, to_tier: int) -> Dictionary:
 	var c: Dictionary = chassis.get(chassis_id, {})
 	if c.is_empty() or to_tier <= chassis_tier(chassis_id) or to_tier > 3:
@@ -342,13 +342,6 @@ func tier_step(chassis_id: String, to_tier: int) -> Dictionary:
 	var stats: Dictionary = tier_lift.get("stats", {}) if tier_lift.get("stats", {}) is Dictionary else {}
 	for k in stats.keys():
 		effects.append({"trigger": "static", "effect": "add_stat", "stat": str(k), "value": int(stats[k])})
-	var raise := int(tier_lift.get("locked_power", 0))
-	var seen := {}
-	for cid in c.get("fixed", []):
-		var face = components.get(cid, {}).get("face", {})
-		if raise != 0 and not seen.has(cid) and face is Dictionary and str(face.get("kind", "")) == "attack" and int(face.get("power", 0)) > 0:
-			seen[cid] = true
-			effects.append({"trigger": "static", "effect": "add_power", "value": raise, "entry": str(cid)})
 	return {"id": "tier:%s:%d" % [chassis_id, to_tier], "name": "Tier %d" % to_tier, "description": "", "effects": effects}
 
 
@@ -990,8 +983,7 @@ func city_makers() -> Array:
 const NO_TIER := -1
 
 
-## Content's one standard lift a tier, every chassis's for now (tier_step): {"stats": {stat: n},
-## "locked_power": n}.
+## Content's one standard lift a tier, every chassis's for now (tier_step): {"stats": {stat: n}}.
 var tier_lift: Dictionary = {}
 
 
@@ -2539,9 +2531,6 @@ func _validate_chassis(errs: Array[String]) -> void:
 		for k in lift_stats.keys():
 			if not Effects.STATS.has(str(k)) or not (lift_stats[k] is float or lift_stats[k] is int) or float(lift_stats[k]) != floorf(float(lift_stats[k])):
 				errs.append("tier_lift: stats %s must be one of %s, a whole number" % [str(k), ", ".join(Effects.STATS)])
-	var lift_power = tier_lift.get("locked_power", 0)
-	if not (lift_power is float or lift_power is int) or float(lift_power) != floorf(float(lift_power)):
-		errs.append("tier_lift: locked_power is a whole number")
 	var capital := capital_maker()
 	var stocked_ids := {}
 	var fixed_ids := {}

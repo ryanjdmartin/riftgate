@@ -65,7 +65,7 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1392 tests, 387,285 checks, green (20 November, the locked pieces' footing's engine on
+- Tests: 1392 tests, 387,284 checks, green (20 November, the locked pieces' footing's engine on
   `claude/locked-footing`). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
@@ -136,8 +136,10 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   a flag (its blueprint a run's from the start), never a find. A machine holds a tier, its
   chassis's as it arrives, bought up between battles once the Convergence opens the next (the
   campaign for `UPGRADE_PRICE` salvage, a placeholder; the quick campaign free): each tier one
-  standard lift for every chassis for now (`tier_lift`, hull 4, shield 2 and every locked weapon
-  1, placeholders the foes' line sizes), a passive sourced "tier", its branch's pick with it. No
+  standard lift of its stat lines for every chassis for now (`tier_lift`, hull 4 and shield 2,
+  placeholders the foes' line sizes; no locked piece's number rises with the tier, Ryan: "they
+  scale with either the upgrades, or with the kit"), a passive sourced "tier", its branch's pick
+  with it. No
   screen buys one yet; the campaign runner's plain player buys each as it opens. An
   upgrade branch is a passive scoped to a locked piece, or a step on the passive where its
   numbers warrant one (the rules' Branches; `docs/locked_pieces_proposal.md`; the bible's
@@ -177,7 +179,7 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   (the refit brief's section 13); the six certain ones are the Honey Badger, the Skua, the
   Storm Petrel, the Prairie Dog, the Cassowary and the Cottonmouth, and Minerva's four are his
   (16 November: the Honey Badger, the Wild Boar, the Mole and the lure tank), so the Polar
-  Bear is tier two in content and the Wild Boar tier one, its numbers still its tier two's. The designs still to come
+  Bear is tier two in content and the Wild Boar tier one, its numbers still its tier two's but its armour 1 (Ryan, 20 November: "the Boar at tier 1 needs base armour 1, not 2"). The designs still to come
   are briefs: `docs/briefs/README.md` says what each waits on.
 - **The numbers.** Tier one alone is tuned (Ryan, 11 November), on the baseline: the second
   battle, four tier ones against a tier-one rift, a fight read at its rating (a flanker one

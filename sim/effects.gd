@@ -1663,31 +1663,13 @@ static func steps_on(u, face: Face) -> int:
 static func upgraded_face(u, face: Face) -> Face:
 	var named := entry_name(u, face)
 	var buff_to := buff_rewrite(u, face)
-	var lifted := tier_power(u, face)
-	if named.is_empty() and buff_to.is_empty() and lifted == 0:
+	if named.is_empty() and buff_to.is_empty():
 		return face
 	var c := face.duplicate_face()
 	c.renamed = named
 	if not buff_to.is_empty():
 		c.buff_status = buff_to
-	if lifted != 0:
-		c.power = maxi(0, c.power + lifted)   # the piece at its machine's tier
 	return c
-
-
-## What the machine's tier adds to this piece's own number (the standard lift's add_power on a
-## locked weapon, ContentDB.tier_step): the codex shows the piece at its machine's tier.
-static func tier_power(u, face: Face) -> int:
-	if face == null or not face.is_weapon():
-		return 0
-	var n := 0
-	for m in u.modifiers:
-		if m.source != "tier":
-			continue
-		for eff in m.effects:
-			if eff is Dictionary and str(eff.get("effect", "")) == "add_power" and str(eff.get("entry", "")) == face.component:
-				n += int(eff.get("value", 0)) * int(m.stacks)
-	return n
 
 
 ## The name a live effect gives this piece (`name` on an effect scoped to it by `entry`: the line

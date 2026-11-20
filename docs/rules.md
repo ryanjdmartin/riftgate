@@ -86,10 +86,10 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   campaign's, at no price), a tier opening as the Convergence reaches that tier's rifts. An
   upgrade lifts the whole machine and carries its branch's pick as the choice where its chassis
   has branches. The lift is a passive of its own on the machine, a tier at a time, never a write
-  to a stat or a piece: its stat lines rise and every fixed weapon that deals damage deals more,
-  the die keeping each piece as printed, the entry as spent carrying the lift and the codex
-  showing the piece at its machine's tier, its plate the tier. Every chassis takes one standard
-  lift for now (`tier_lift` in `content/chassis.json`). A machine keeps its tier and its picks,
+  to a stat or a piece: its stat lines rise, and its plate in the codex says its tier. A locked
+  piece's number does not rise with the tier: it grows by the branch's steps or by the kit beside
+  it, and a piece that needs a number of its own a tier is a call for its chassis. Every chassis
+  takes one standard lift for now (`tier_lift` in `content/chassis.json`). A machine keeps its tier and its picks,
   a wreck included.
 - **Branches** (an upgrade's picks; the harness fields them too): a chassis of tier one or two may carry two directions,
   each a step a pick, as deep as its machine picks, a tier one twice and a tier two once. A

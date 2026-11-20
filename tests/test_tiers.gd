@@ -3,11 +3,11 @@ extends TestCase
 ## A machine's tier (the bible's tiers row: "Machines level is tier. Everything is tier."; the
 ## locked pieces' footing, 20 November), on a synthetic frame and a synthetic lift: a machine
 ## arrives at its chassis's tier, each tier above it bought with its branch's pick, and each lifts
-## the whole machine, its stat lines and its locked weapons' own numbers, as a modifier sourced
+## its stat lines (never a locked piece's own number), as a modifier sourced
 ## "tier" read through the pipeline, never a write; what the codex, the saves and the runs keep of
 ## it; and the validator's hold on the lift.
 
-const LIFT := {"stats": {"hull": 5, "shield": 3}, "locked_power": 2}
+const LIFT := {"stats": {"hull": 5, "shield": 3}}
 
 
 ## A frame of tier `tier`: a locked gun of 3 and a locked lure of 0, a plain gun on its one
@@ -48,7 +48,7 @@ func test_a_machine_arrives_at_its_chassis_tier_and_lifts_nothing() -> void:
 		assert_eq(Effects.effective_face(u, _face(u, "test_lock_gun")).power, 3, "its locked gun as printed")
 
 
-func test_each_tier_above_lifts_the_stat_line_and_the_locked_weapons() -> void:
+func test_each_tier_above_lifts_the_stat_line_and_never_a_locked_piece() -> void:
 	var db := _db(1)
 	for t in [2, 3]:
 		var u := db.make_mech("test_frame", 1, Vector2i.ZERO, null, [], [], t)
@@ -60,12 +60,12 @@ func test_each_tier_above_lifts_the_stat_line_and_the_locked_weapons() -> void:
 		assert_eq(int(u.base["hull"]), 20, "the base is the chassis's own")
 		var gun := _face(u, "test_lock_gun")
 		assert_eq(gun.power, 3, "the die keeps the locked gun as printed")
-		assert_eq(Effects.effective_face(u, gun).power, 3 + 2 * steps, "the entry as spent at its machine's tier")
+		assert_eq(Effects.effective_face(u, gun).power, 3, "no locked piece's number rises with the tier (Ryan: \"they scale with either the upgrades, or with the kit\")")
 		assert_eq(Effects.effective_face(u, _face(u, "test_lock_lure")).power, 0, "a lure deals nothing at any tier")
 		assert_eq(Effects.effective_face(u, _face(u, "test_plain_gun")).power, 3, "a hardpoint's piece is its own tier's, never lifted")
 		var codex := db.codex_for_unit(u)
 		var shown: Array = (codex["faces"] as Array).filter(func(f: Face) -> bool: return f.component == "test_lock_gun")
-		assert_eq((shown[0] as Face).power, 3 + 2 * steps, "the codex shows the locked gun at its machine's tier")
+		assert_eq((shown[0] as Face).power, 3, "and the codex shows it as printed")
 		assert_true(str(codex["subtitle"]).contains("TIER %d" % t), "the plate says the tier: %s" % codex["subtitle"])
 		for e in codex["effects"]:
 			assert_false(str(e["name"]).begins_with("TIER"), "the lift is no reward row")
@@ -106,12 +106,11 @@ func test_the_validator_holds_the_lift() -> void:
 	var db := _db(1)
 	for e in db.validate():
 		assert_false(e.begins_with("tier_lift"), "the lift validates: %s" % e)
-	db.tier_lift = {"stats": {"luck": 1}, "locked_power": 1}
+	db.tier_lift = {"stats": {"luck": 1}}
 	assert_true(db.validate().any(func(e) -> bool: return str(e).begins_with("tier_lift: stats luck")), "a stat the engine lacks is refused")
-	db.tier_lift = {"stats": {"hull": 1.5}, "locked_power": 0.5}
+	db.tier_lift = {"stats": {"hull": 1.5}}
 	var errs := db.validate()
 	assert_true(errs.any(func(e) -> bool: return str(e).begins_with("tier_lift: stats hull")), "a part number is refused")
-	assert_true(errs.any(func(e) -> bool: return str(e).begins_with("tier_lift: locked_power")), "on the locked power too")
 
 
 func test_the_hangar_buys_a_machine_up_a_tier_with_its_pick_behind_the_convergence() -> void:
