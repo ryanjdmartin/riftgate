@@ -442,7 +442,7 @@
    "id": "jam",
    "category": "keyword",
    "name": "Jam",
-   "codex": "Enemy keyword. The component the target's die is showing is Jammed through the target's next turn: if the die lands on it, it comes up blank.",
+   "codex": "Enemy keyword. The component the target's die is showing is Jammed until the target reboots: if the die lands on it, it comes up blank.",
    "status": "implemented",
    "design": {
     "holes": "Disable until 15 November (Ryan: \"Rename to Jammed\"); the rider follows the pattern, Jam lays Jammed."
@@ -574,7 +574,7 @@
    "id": "pinned",
    "category": "status",
    "name": "Pinned",
-   "codex": "Foe status, from the Hollow-point Harpoon. The next time its Brittle would halve, it does not, and the pin is spent. Refreshed, never added.",
+   "codex": "Foe status, from the Hollow-point Harpoon. The next time its Brittle would halve, it does not, and the pin is spent; with no Brittle to hold, it goes as the foe's turn ends. Refreshed, never added.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 11 November: \"The Flak pin should be its own status that gets applied for one turn. I assume we're going to want a similar one for burning as well.\" Pinned Flak until 15 November, and what it holds Brittle since; the name is his (\"Just \\\"Pinned.\\\"\").",
@@ -590,7 +590,7 @@
    "id": "seared",
    "category": "status",
    "name": "Seared",
-   "codex": "Foe status. The next time its Ablating would lose a stack, it takes its points and loses none, and the pin is spent. Refreshed, never added.",
+   "codex": "Foe status. The next time its Ablating would lose a stack, it takes its points and loses none, and the pin is spent; with no Ablating to hold, it goes as the foe's turn ends all the same. Refreshed, never added.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 11 November: coded in beside Brittle's pin, \"since the Mastema will want it as a fitted piece, if nothing else\". No piece lays it yet. The name is his, 15 November: \"Rename 'Seared.'\"",
@@ -750,7 +750,7 @@
    "id": "jammed",
    "category": "status",
    "name": "Jammed",
-   "codex": "Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's jam lasts through the machine's next turn and can be cleansed; a rapid component's own switch-off ends with the round, and is no jam.",
+   "codex": "Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's jam lasts until the machine reboots and can be cleansed; a rapid component's own switch-off ends with the round, and is no jam.",
    "status": "implemented",
    "design": {
     "holes": "Disabled until 15 November (Ryan: \"Rename to Jammed\"). The engine's own name for an entry switched off, by a jam or by a cooldown, stays disabled.",
@@ -903,6 +903,86 @@
      "on": "machine",
      "stacks": "Yes: one for every foe that falls in its fight, with no cap",
      "lasts": "The battle"
+    }
+   }
+  },
+  {
+   "id": "offhand",
+   "category": "status",
+   "name": "Offhand",
+   "codex": "Ability, the Macaque's. The armament its offhand holds, named on its chip: a rider on every weapon and equipment it aims at a foe. Each such spend turns it to the next armament in its cycle; a buff, a reboot or a blank entry turns nothing. Every fight opens on the first. No Purge touches it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 19 November: \"Only its offhand swaps\"; \"It cycles after a spend\"; \"remove the manual weapon cycle\"; the spends that carry its rider turn it, his answer of the same day. The chip takes its armament's name and line (Beam Rifle, Beam Sword, Beam Shield, and the branches' Saber, Buckler, Bazooka and Pavise), each the passive's or a step's. The text is a session's draft.",
+    "table": {
+     "kind": "ability",
+     "on": "machine",
+     "stacks": "No: one armament at a time",
+     "lasts": "The fight, turning after each weapon or equipment it aims at a foe"
+    }
+   }
+  },
+  {
+   "id": "aile_boost",
+   "category": "status",
+   "name": "Aile Boost",
+   "codex": "Machine status, the Macaque's Aile Booster. The next weapon it fires reaches as Indirect, every strike of the spend, and that weapon lifts it; equipment leaves it standing. Carried between turns until then; one at a time.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 19 November: \"Rapid. Next weapon strike gains Indirect reach\"; \"Next weapon strike -> Next weapon fired. Applies to the whole spend\"; \"Booster's buff is the booster's name\". The text is a session's draft.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "No: one, whatever grants it",
+     "lasts": "Until the next weapon it fires, across turns"
+    }
+   }
+  },
+  {
+   "id": "aile_blitz",
+   "category": "status",
+   "name": "Aile Blitz",
+   "codex": "Machine status, the Macaque's Aile Blitzer (its Duelist II). The next weapon it fires reaches as Indirect and ignores armour, every strike of the spend, and that weapon lifts it; equipment leaves it standing. Carried between turns until then; one at a time.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 19 November: \"Aile Booster -> Aile Blitzer: 'Rapid. Next weapon strike gains Indirect reach and ignores armour.'\"; its name his (\"'Aile Blitz'\"). The text is a session's draft.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "No: one, whatever grants it",
+     "lasts": "Until the next weapon it fires, across turns"
+    }
+   }
+  },
+  {
+   "id": "aile_assault",
+   "category": "status",
+   "name": "Aile Assault",
+   "codex": "Machine status, the Macaque's Aile Assaulter (its Valkyrie II), which grants 1 Empowered beside it. The next weapon it fires reaches as Indirect, every strike of the spend, and that weapon lifts it; equipment leaves it standing. Carried between turns until then; one at a time.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 19 November: \"Aile Booster -> Aile Assaulter: 'Rapid. Next weapon strike gains Indirect reach. Gain 1 Empowered.'\"; its name his (\"'Aile Assault'\"). The text is a session's draft.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "No: one, whatever grants it",
+     "lasts": "Until the next weapon it fires, across turns"
+    }
+   }
+  },
+  {
+   "id": "parry",
+   "category": "status",
+   "name": "Parry",
+   "codex": "Machine status, the Macaque's Beam Buckler (its Duelist II). Through the round it is gained, what its Barrier and its armour keep off foes' blows is counted, never what its shield takes. As its next turn opens, half of that, rounded down, is Parry's number: its next strike that turn deals that much more, the first blow of the first weapon it fires, on its target and none of its area; that weapon lifts it. Gone as that turn ends if no weapon fires.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 19 November: \"Parry: 'The first weapon fired next turn gains bonus damage equal to half of all damage blocked by this machine this round (rounded down).'\" What is blocked, his answer that day: what a Barrier and armour keep off, never the shield's soak. His of the same day, on the bonus: \"Can we change it to 'next strike' instead?\" (every strike of the next weapon, his first wording, made a busted area of the rifle that follows the shield), the next strike the spend's first blow by his strike order. Claude's reading: the count runs from the moment it is gained. It pays half the blow a Barrier stops, so a boss's biggest blow pays most, beside his taste of October (\"No reward for being struck that scales with the enemy's blows\"): his of 19 November, \"The duelist is supposed to be a boss-killer, and this is a tier-3 capstone, yes, so it can be powerful\". The text is a session's draft.",
+    "table": {
+     "kind": "buff",
+     "on": "machine",
+     "stacks": "No: one Parry, counting through its round, then its return, its number half of what it counted, spent whole by the next weapon",
+     "lasts": "Its round, then the next turn until a weapon fires"
     }
    }
   },
@@ -1754,7 +1834,7 @@
    "id": "last_act",
    "category": "foe",
    "name": "Last Act",
-   "codex": "What a foe does the moment it falls, shown on it by the skull, with its number where it strikes. A blow or a curse aimed at one machine lands on the machine that made the kill, at once, even when the foe was the last one standing; a kill no machine made, a tick's, lands it on nobody. A blow at every machine lands on each, and what a fall does to its own side or to the team's rerolls happens whoever made the kill.",
+   "codex": "What a foe does the moment it falls, shown on it by the skull, with its number where it strikes. A blow or a curse aimed at one machine lands on the machine that made the kill, at once, even when the foe was the last one standing; a kill no machine made, a tick's, lands it on nobody. A blow or a curse at every machine lands on each, and what a fall does to its own side happens whoever made the kill.",
    "status": "implemented",
    "design": {
     "holes": "Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. The Gargantuan King's Meteor (30 October). A short list of steps since 16 November, on Ryan's mark of 15 November ('foes who, say buff others on death, or debuff on death'): the blow may carry also, and on_death.act is one special in a blow's place with its own also, each an effect a fall may do (Foe.FALL_EFFECTS). Carriers of more than a blow since 17 November, on his yes to the bench: the Mandragora line's scream, the Gorgon's dying gaze, the Salamander's embers and the Lich's, which takes back the readiness it gave (unready_all, a fall's by sense). The codex is a session's draft for them; it and the term's word are his ('maybe rename to something more interesting'). A single blow lands on the machine that made the kill since 17 November, as a curse does (Ryan, of the Dread Knight's Death Throes: 'yes, hit its killer, if it has one'); it followed the foe's own pick until then."
@@ -2130,7 +2210,7 @@
    "id": "appropriated",
    "category": "status",
    "name": "Appropriated",
-   "codex": "Ability, Gilgamesh's: the number of the piece he holds. His Collect knocks loose the component a machine's die is showing, Jams it through that machine's next turn, and leaves him Appropriated at its number: a weapon's printed blow, and 1 for anything that is no weapon, a fake. His Borrowed Blade lands that number next round and spends it. One piece at a time, what he takes next replacing it. No Purge reaches it; a Ward on the machine turns the taking away.",
+   "codex": "Ability, Gilgamesh's: the number of the piece he holds. His Collect knocks loose the component a machine's die is showing, Jams it until that machine reboots, and leaves him Appropriated at its number: a weapon's printed blow, and 1 for anything that is no weapon, a fake. His Borrowed Blade lands that number next round and spends it. One piece at a time, what he takes next replacing it. No Purge reaches it; a Ward on the machine turns the taking away.",
    "status": "implemented",
    "design": {
     "holes": "Ryan's mark of 15 November on the steal rider: \"Doesn't need to be it's own rider. It grants Jammed on the target, and Gilgamesh gains Appropriated with the value. The ability should be renamed to Collect.\" Built 16 November as the first move written in steps: a blow that jams, then a step of its own (appropriate). His Ability, a count on his chip that follows what he holds (Ryan, the same day, of the purgeable buff a session had read from \"gains\": \"I think Appropriated is a balance read. Maybe make it his ability, a number that fluctuates depending on what he's currently holding\"). The swing is one strike at the piece's number, whatever strikes the piece had, and no keyword of the piece rides it. The steal rider and the foe's own field for what it held left the engine with it. The text is a session's draft.",

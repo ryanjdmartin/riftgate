@@ -203,7 +203,18 @@ damage, buffs the whole field, that kind of thing)." The shape: a picket, two or
 domain's own front-rank pushers, rated one, so the die that answers a duelist is the wrong die
 for it: three Goblins in the Meadow, two Needlers in the Waste, three Revenants in the Marsh.
 
-**Open, his:** his play of the four dials; the pickets, and the Peak's; the first wave
+**The pickets, read 19 November** (his yes, standardized: "lets just standardize it to 3 of the
+default frontliner for each domain (goblin, needler, revenant, salamander?)"; the commonest
+front-liner of each domain's tier-one formations, the Salamander included; `docs/measurements.md`,
+that day). Three of each on one machine: the Revenants 4.1% of a four's hull, on a lone
+flanker's thirtieth; the Goblins 7.6%, won 93%; the Needlers 13.1%, won 83%; the Salamanders
+16.7%, won 70%. Two of each: 1.7%, 2.6%, 0.0% and 4.6%, every fight won. Three of each with two
+machines on it: 0.0% to 1.6%. So three fits the budget rated one in the Marsh alone, and rated
+two each is nearly free. Not in content until he picks: three of each rated one as he said,
+the count by the budget (two Goblins, two Needlers, three Revenants, two Salamanders; this
+brief's lean), or three of each rated two.
+
+**Open, his:** his play of the four dials; the pickets' count; the first wave
 repeating the opening's formation (left, the list's second, or drawn by the seed); and what
 measures a battle's minutes against his ten to thirty, which nothing does yet.
 
@@ -494,7 +505,7 @@ in its bible row. Until its session a machine plays as it is built. The designs 
 | The design | As its brief has it | Under the rules |
 |---|---|---|
 | The Snowy Owl, Kestrel | No foe picks it while it carries no heat as the foes pick | Its heat returns to nothing only by a reboot or by Cryo's cooling, so the Cryo lean carries the design, and the round after a reboot it is unseen |
-| The line frame, Aphelion, tier 1 | Its combo pays in cooling and regen by the count; a turn with no weapon breaks it | Its payoffs are two of the few grants of cooling and regen. A reboot is a turn with no weapon, so it costs the whole ramp |
+| The Macaque, Aphelion, tier 1 | Its combo pays in cooling and regen by the count; a turn with no weapon breaks it | Its payoffs are two of the few grants of cooling and regen. A reboot is a turn with no weapon, so it costs the whole ramp |
 | The gunship, Wainwright & Sutler, tier 2 | Its Ballistic guns raise its armour and cooling, its Beams its shield and recharge | The one machine that fits its own cooling and regen, paid in hardpoints: those rows are worth more than any other |
 | Misharu, Arsenal, tier 2 | As drafted, a foe whose blow breaks a shield is punished and every shield on the team is bait | A shield breaks once between reboots and a Broken one takes no bait. His direction of 6 November, marks and delayed judgement, stands apart from the draft |
 | Mastema, Arsenal, tier 3 | It sets its own allies alight, shields by the burning count and moves the fire to a foe | Burn is Ablate: what it lays on an ally wears a shield that does not mend, then hull. Its Screen needs a live shield |

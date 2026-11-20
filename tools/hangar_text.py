@@ -20,7 +20,8 @@ docs/voice.md is the ledger's "ryan" texts laid out by kind and by voice, for a 
 read before it drafts anything shown.
 
 His work on the page waits in the artifact's database (collection "text", one document a
-slot: a new text, a mark, a note) until a session folds it in:
+slot: a new text, a mark, a note; the Text tab's, and a Bench sheet's codex and flavour, which
+write the same documents) until a session folds it in:
 
     python3 tools/hangar_text.py                    # write build/hangar/text.json, print the counts
     python3 tools/hangar_text.py --check            # check only: every string key classified, the ledger sound
@@ -91,7 +92,7 @@ KINDS = [
      "where": "Beside the text they head: a machine's designation under its name, a passive's name before its description, a move's name over its line and on the plaque when it lands."},
     {"id": "status_line", "label": "Status lines (in code)", "group": "",
      "what": "A status's one-line description, written in sim/effects.gd.",
-     "where": "Only the codex's KEPT FOR THE BATTLE row, for a status a battle keeps (the Ammit's Souls). Since 2 November a chip says its name and count and a tap opens the term's entry, so nothing else draws these."},
+     "where": "Only the codex's KEPT FOR THE BATTLE row, for a status a battle keeps (the Ammit's Essence). Since 2 November a chip says its name and count and a tap opens the term's entry, so nothing else draws these."},
     {"id": "intent_words", "label": "Aims, targets and conditions (in code)", "group": "",
      "what": "How a move's target and its condition are said: the word for whom it goes for (its aim, or none), whom a move that is no blow acts on, and its condition; written in sim/foe.gd and game/ui/entry_readout.gd.",
      "where": "A move's lines, in a foe's codex and its intent: its target (The hottest machine, Any machine, Every foe) and its condition (When below half)."},
@@ -99,7 +100,7 @@ KINDS = [
 
 # What the page says it does not carry, so the gap is seen and not guessed at.
 NOT_LISTED = [
-    "An entry's own name (a machine, a component, a foe, a term): a rename moves ids, models and records, so it is asked for in chat or on the Names tab.",
+    "An entry's own name (a machine, a component, a foe, a term): a rename moves ids, models and records, so it is asked for in chat (docs/naming.md says what each maker's names are like; tools/check_name.py checks one).",
     "Lines the code composes from numbers: a component's effect lines and a passive's generic wording (sim/effects.gd's effect_text, sim/face.gd), a chip's readout (Buff, Empowered +2), the battle log, the warning bands, the map's readouts.",
     "A component's target line, one of its effect lines (game/ui/entry_readout.gd's whom and the reach's line): its reach's or its targeting mode's term (Enemy, Direct; Every Ally yet to act), or Self, Any other ally or Any ally or self for a piece spent on machines.",
     "Screen furniture: buttons, headings, the pause menu, the harness and the quick campaign's screens.",
@@ -179,7 +180,7 @@ def face_words(face):
         return ""
     bits = [str(face.get("kind", ""))]
     if "power" in face:
-        bits.append("%s to %s" % (face["power"], face["power_max"]) if "power_max" in face else str(face["power"]))
+        bits.append(str(face["power"]))
     for k in ("shield", "vents"):
         if k in face:
             bits.append("%s %s" % (k, face[k]))
@@ -189,7 +190,7 @@ def face_words(face):
         bits.append(str(face["reach"]))
     for kw in face.get("keywords", []) or []:
         bits.append("%s %s" % (kw, face[kw]) if kw in face and not isinstance(face[kw], (dict, list)) else str(kw))
-    skip = {"kind", "power", "power_max", "shield", "vents", "heat", "reach", "keywords"} | set(face.get("keywords", []) or [])
+    skip = {"kind", "power", "shield", "vents", "heat", "reach", "keywords"} | set(face.get("keywords", []) or [])
     for k, v in face.items():
         if k not in skip:
             bits.append("%s %s" % (k, canon(v) if isinstance(v, (list, dict)) else v))
@@ -297,13 +298,32 @@ def content_slots():
         add(key, e["id"], "passive.name", "title", p.get("name", ""), owner, group, shown=sh, why=wy, sub="passive", facts=p.get("description", ""))
         add(key, e["id"], "passive.description", "passive", p.get("description", ""), owner, group, shown=sh, why=wy,
             sub=p.get("name", ""), facts=effect_words(p.get("effects")), mech=mech)
+        form_slots(key, e["id"], "passive.effects", p.get("effects"), "passive", owner, group, sh, wy)
+
+    def form_slots(key, entry, at, effects, kind, owner, group, shown, why):
+        """An offhand's forms (the Macaque's, 19 November): each form's name, on its chip and
+        the die's rider, and its line, the rider as the player reads it; a step's forms as upgrades,
+        and the name a step gives the piece it upgrades (the Aile Blitzer), on the die's readout."""
+        for i, eff in enumerate(effects or []):
+            if isinstance(eff, dict) and eff.get("effect") != "offhand" and eff.get("entry") and "name" in eff:
+                # the name a step gives the piece it upgrades (the Aile Booster as its Blitzer)
+                add(key, entry, "%s.%d.name" % (at, i), "title", eff.get("name", ""), owner, group, shown=shown, why=why, sub="upgraded piece",
+                    facts="%s, %s" % (eff.get("entry", ""), effect_words([eff])))
+                continue
+            if not isinstance(eff, dict) or eff.get("effect") != "offhand" or not eff.get("id"):
+                continue
+            path = "%s.%s" % (at, eff["id"])
+            add(key, entry, path + ".name", "title", eff.get("name", ""), owner, group, shown=shown, why=why, sub="offhand form", facts=eff.get("description", ""))
+            add(key, entry, path + ".description", kind, eff.get("description", ""), owner, group, shown=shown, why=why,
+                sub=eff.get("name", ""), facts=effect_words(eff.get("riders")), mech=canon(eff.get("riders", [])))
 
     # Chassis.
     for e in docs["chassis"]["entries"]:
         classify("chassis.entries", e)
         g = "maker:" + str(e.get("maker", ""))
         p = e.get("passive")
-        runnable = not (isinstance(p, dict) and p.get("status") == "planned") and all(comps.get(c, {}).get("status") != "planned" for c in e.get("fixed", []))
+        # ContentDB.chassis_runnable: the chassis back in design, its passive or a locked piece a planned draft
+        runnable = e.get("status") != "planned" and not (isinstance(p, dict) and p.get("status") == "planned") and all(comps.get(c, {}).get("status") != "planned" for c in e.get("fixed", []))
         shown, why = (True, "") if runnable else (False, "planned: the machine cannot be fielded yet")
         facts = ", ".join(str(x) for x in [e.get("designation", ""), e.get("size", ""), " ".join(e.get("traits", [])), "tier %s" % e.get("tier", "?")] if x)
         pitch = str(e.get("design", {}).get("fantasy", ""))
@@ -324,6 +344,7 @@ def content_slots():
                     add("chassis.entries", e["id"], "branches.%s.steps.%d.description" % (bid, i), "upgrade", st.get("description", ""), e["name"], g,
                         shown=shown, why=why, sub="%s %s" % (b.get("name", ""), "I" if i == 0 else "II"), facts=effect_words(st.get("effects")),
                         mech=canon(st.get("effects", [])))
+                    form_slots("chassis.entries", e["id"], "branches.%s.steps.%d.effects" % (bid, i), st.get("effects"), "upgrade", e["name"], g, shown, why)
 
     # Components.
     for e in docs["components"]["entries"]:
@@ -439,7 +460,7 @@ def target_slots(problems, moves):
     a move that names no aim, and MOVE_TARGETS, whom a move that is no blow acts on, by the effect
     its first step names. A move's target line reads its first step alone, so an effect that is
     only ever a later step is never drawn, and a word the readout swaps for a term's name is drawn
-    as that name, which is the Names tab's."""
+    as that name, an entry's own (NOT_LISTED's first line)."""
     src = read("game/ui/entry_readout.gd")
     out = []
     unaimed = re.search(r'var anyone := "((?:[^"\\]|\\.)*)" if word_for\.is_empty\(\)', src)

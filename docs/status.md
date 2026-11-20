@@ -50,8 +50,10 @@ document's job and every command are in `README.md`.
   great. Lets land it", and `ccr-178e0404-ptuh2m` (the Buzzard) on his "ok, merge into
   main", then the Needletail on 19 November on his "I think what we've got can merge into main",
   and `claude/laughing-gates-p2633f` (the summon texts with no pool, the Text tab's target
-  words) the same day on his "Ok merge in". A session's hangar publish runs ahead of main
-  (Pages).
+  words) the same day on his "Ok merge in", and `ccr-64b5deec-lunnff` (the Macaque, the line
+  frame until its naming: its model, its kit and the offhand's engines, the strike order, the
+  upgrade chevrons, the models' texture copies' test) the same day on his "Send it to Main". A
+  session's hangar publish runs ahead of main (Pages).
   Every other branch on GitHub but the lines' own working branches is merged and to delete
   (`git push origin --delete`, then `git fetch --prune`); a cloud session may not delete one.
 - The desk machine is a Windows PC (`C:\Users\jam82\Desktop\Code\riftgate`; the README's
@@ -63,20 +65,22 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1346 tests, 378,047 checks, green on `ccr-178e0404-ptuh2m` (19 November, the Puffin
-  built). The runner fails a run whose tests never ran, so read the checks' count, never
-  the exit code alone. One SCRIPT ERROR in every run's log is the runner's own test, raised on
-  purpose. About four minutes in a cloud session; words after `--` run only the files whose
-  names hold one (`-- loot rig`).
+- Tests: 1375 tests, 387,073 checks, green (20 November, the Puffin's line landed over his kit
+  marks). The runner fails a run
+  whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
+  ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
+  cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
 - A cloud session gets Godot and the first import from the session-start hook
   (`.claude/hooks/session-start.sh`); without it, fetch `Godot_v4.8-beta2_linux.x86_64.zip`
   from `godotengine/godot-builds` in one command and unpack and run it in another. The hook
   imports only a checkout with no `.godot`: a suite failing on a class name not declared means
-  run `--import` first. The first `--import` may rewrite four Prairie Dog textures, and a
-  model build the maker's review tiles: restore both
-  (`git checkout -- art/models/prairie_dog_* tools/lowforge/tiles/`), never commit them.
-  Screenshots there need `xvfb-run -a` and `--rendering-method gl_compatibility`; models build
-  with `BPY_PYTHON` set to a python3.11 venv holding `bpy==5.0.1`.
+  run `--import` first. A model's textures ride in its `.glb` and the import copies each out
+  beside it as the PNG the game draws, so a model is committed with the copies the import then
+  writes, and a texture a fresh import rewrites is one a model left behind: commit it, never
+  restore it (`tests/test_model_textures.gd`). A model build rewrites the maker's review tiles
+  (`tools/lowforge/tiles/`) too: restore those. Screenshots there need `xvfb-run -a` and
+  `--rendering-method gl_compatibility`; models build with `BPY_PYTHON` set to a python3.11
+  venv holding `bpy==5.0.1`.
 - Saves: the battle's version is 40, the run's 33 and the quick run's 16 (`sim/save.gd`). A
   save from an older version is set aside, so a change to what a save holds moves its version.
 
@@ -121,7 +125,7 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   pass. Tier one's foes are sized for the reboot and the higher tiers' are not (The numbers,
   below). Detail: the rules' Foes;
   the bible's rows on the foes' rule set, targeting, Exposed and Phased.
-- **The machines.** Five makers and 25 chassis, 23 of them dealt (nine at tier one, ten at
+- **The machines.** Five makers and 26 chassis, 24 of them dealt (ten at tier one, ten at
   two, four at three); the Swallowtail is back in design and the Mole is a planned draft with
   its model, both undealt (`"status": "planned"`), a brief each. 88 components, 15 of them planned drafts nothing
   deals (the slottable shields and vents, the Gravity Knuckles and the Tesla Gauntlets, the
@@ -132,7 +136,11 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   an upgrade branch is a passive scoped to a locked piece, or a step on the passive where its
   numbers warrant one (the rules' Branches; `docs/locked_pieces_proposal.md`; the bible's
   locked and tiers rows): the Storm Petrel carries the first two, the Buzzard two more, the
-  harness's UPG line fields a build, and a run buys none yet. The machines the reboot broke
+  harness's UPG line fields a build, and a run buys none yet. A step may tweak as many pieces as
+  it needs (Ryan, 19 November); the Macaque's second steps touch its offhand and its Aile
+  Booster. An upgraded piece wears a chevron a step under its place, on the die and down the
+  codex, and takes the name its step gives it (the Aile Blitzer); `RIFTGATE_TEAM` fields picks
+  in a standalone fight (`macaque@duelist+duelist`). The machines the reboot broke
   are another session's line (`docs/reboot_machines_proposal.md`, read with
   `tools/reboot_probe.gd`): the Storm Petrel landed from it on 17 November and took Ryan's
   shape of the 18th (no shield armour on its passive; its Hardlight Pulse lays Hardened Light,
@@ -153,7 +161,12 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   round on the Swallowtail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis, the Polar Bear
   (a reboot opens its seal), the Whip Scorpion (its reboot's vent blasts every foe), the
-  Lammergeier, the Wild Boar, the Baboon, the Stingray. The Giant Petrel's kit, the Musk Ox
+  Lammergeier, the Wild Boar, the Baboon, the Stingray, and the Macaque, landed 19 November
+  on `ccr-64b5deec-lunnff` from Ryan's kit (Aphelion's agile duelist at tier one: its offhand
+  cycles the Beam Rifle, the Beam Sword and the Beam Shield after every spend at a foe, a rider
+  on what it aims at foes, its Aile Booster a Rapid lunge to Indirect; Duelist and Valkyrie its
+  directions, the Parry the Duelist's capstone, its return on the next strike alone; its
+  name and designation Ryan's, the Macaque "for now", Capuchin held for a gentler walker). The Giant Petrel's kit, the Musk Ox
   and the gunship are unfinished by his own notes. Four tier ones a maker (4-4-2) is his lean
   (the refit brief's section 13); the six certain ones are the Honey Badger, the Skua, the
   Storm Petrel, the Prairie Dog, the Cassowary and the Cottonmouth, and Minerva's four are his
@@ -177,7 +190,22 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   landed with its sizing (the bible's levers row): the Waste's purge ahead of the blow, a
   move's own order and no rule of Purge; the Peak's Bomb as its hard hit on a telegraph; the
   Marsh's knight and its Serpent's fangs; the Meadow's as it was. How the leaders strike is
-  his lean (the bible's section 9): whole blows the norm, slightly towards strikes. The
+  his lean (the bible's section 9): whole blows the norm, slightly towards strikes. His
+  answers of 19 November landed the same day: the numbers pass's leans (no piece grants a
+  cooling or a shield regen now; Cryo 1; the Ankle Mortar 3 for 5; the Overcharge Coil tier
+  two; the slottable shields and vents of tiers zero and one retired, a vent's shield half
+  leaving the engine with them), the Cassowary's Laser Carbine and the Cottonmouth's
+  Incendiary Shells, and a foe's jam waiting for its machine's reboot; read, the baseline
+  moved by a point or two. His second answers of 19 November: the roots scream Brittle 2,
+  the Mandragora on its killer and the higher two on every machine (a fall takes no reroll
+  since, a drain a move's alone), which costs the Meadow's formations about a point of a
+  four's hull; a pin with nothing to hold goes as its foe's turn ends. His marks of 20
+  November: the roots' lash corrupts (the goblin horde half again a formation's budget at the
+  roots' 3 HP, until its wall is settled), the Emperor Scorpion's Paralytail leaves Ablating
+  (its blow lightened to pay for it), the Fell Rider's Shriek
+  Saps every machine, and the alpha pack is one alpha and three wargs; King Gel's Dissolve
+  waits on a boss's three moves. His to pick: the pickets' count, and the rest of
+  `docs/domain_statuses_proposal.md` (its section 8 holds this round's open items). The
   battle whole is the open question (the brief's section 11): at their ratings a second
   battle's fights come to three fifths to nine tenths of a squad's hull, and a fight met a
   machine short costs four to six times its price. Tiers two and three are unsized, their
@@ -229,12 +257,15 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   skirmish screen, the battle screen, the pause menu and its settings are built; the hangar,
   the mission map and the draft are not. A debug build's settings hold TRIALS and COLOURS
   (`ColourTuner`: Ryan tunes there and sends its COPY text).
-- **The hangar page.** `tools/hangar.html` over `tools/hangar_data.py`'s files: the models,
-  the Bench (a working sheet a machine), the Text (every shown text; `tools/hangar_text.py`
-  is its one inventory) and the Designs (the briefs, for his corrections). The ledger
-  `docs/hangar/text.json` names nothing as signed, so every shown text is a session's draft.
-  His writing waits in the page's `text` collection and his corrections in `designs`: a
-  session that touches either folds them in first.
+- **The hangar page.** `tools/hangar.html` over `tools/hangar_data.py`'s files: the codex, the
+  Bench (a working sheet a machine, its codex, its flavour and its brief on it, and the Briefs
+  list of the rest; each brief read only, with his notes), the content editor (no chassis tab:
+  a chassis is its Bench sheet's), the Text (every shown text; `tools/hangar_text.py` is its one
+  inventory) and the models. The ledger `docs/hangar/text.json` names nothing as signed, so
+  every shown text is a session's draft. His writing waits in the page's `text` collection (the
+  Text tab's and the Bench's codex and flavour) and his notes on the briefs in `designs`: a
+  session that touches either folds them in first. The Names tab retired on 20 November: the
+  makers' kinds of names are `docs/naming.md`, the check `tools/check_name.py`.
 - **Art and models.** Every machine's model is lowforge's with a rig sidecar; a hardpoint
   wears one of four silhouette classes (barrel, twin barrel, rack, dish), and a test holds
   each model's pins to its chassis's hardpoints. Every foe has art, a placeholder stamped "?"
@@ -251,7 +282,12 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Minerva's vent, the Polar Bear's (16 and 17 November). The Mole is a model, its look his
   ("looks great", 18 November; the brief's look item), with two status forms, Burrowed and
   Drill Out: a form may let others go as it is held (`releases`), as the statuses would end, so
-  a burrow docks a drill that is out. Look tests of six chassis are stills in `docs/looks/`, their
+  a burrow docks a drill that is out. The Macaque is a model from its third look round,
+  reworked on Ryan's notes of 19 November: its main hand a mount over its fist, its offhand
+  carrying the rifle, the blade and the kite of light, the last two made of light (`b.beams`),
+  seen only while lit. In a fight it holds its offhand's armament (a form a slot, held while its
+  offhand's form is in that slot) and dashes as its Aile Booster fires; off the field its idle
+  runs the cycle. Look tests of four chassis are stills in `docs/looks/`, their
   choices in their briefs, never content.
 - **Audio.** Three pairs play in the game (Hold The Line, Night Shift, The Far Bank;
   `Sound.PAIRS`): a battle picks one as it starts and loops it, the map half on the field and
@@ -288,6 +324,11 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    November is done: every domain's kit and sizing at the baseline (the second battle, four
    machines; the code's ramp 1), the first battle built, the bot pricing a purge. In this
    order from here:
+   - His marks on the rest of `docs/domain_statuses_proposal.md`, then its rows built and
+     read: a foe's Sap rider for the Ghost line, and Phased by source with his ruling on a
+     ghost's own side, in one pass; his read of the formations that rally.
+   - The formation pass (the bible's formation row): every composition given a purpose, a
+     row a formation in chat first, the goblin horde re-sized with its wall.
    - His play of a second battle, which says whether the budget's shares stand (the brief's
      section 11): the fights are even across the domains, and the battle whole is tight.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
@@ -335,27 +376,29 @@ with it, on his word. A page's link goes into this file in the same commit as it
 publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.634 on 18 November from main's file at `1383f11` (the page's Version 513).
-  Main's file is v0.646, unpublished: the step ahead of a blow, the first battle decided and
-  built, the Needletail's rows, every domain's kit, the battle's open question, and the Skua,
-  the Kite and the Cottonmouth left as built under the reboot are in it since. The hangar's
-  `text` collection was empty on 19 November, so no writing of his waits. Before republishing,
+  Published at v0.650 on 20 November from main's file at `6bdf0b99` (the page's Version 514),
+  on Ryan's "Go ahead and publish what you need to" of that day; the live page was checked
+  byte for byte against the last publish (`1383f11`'s file) first. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
-  `1383f11` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  `6bdf0b99` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
   live source with the tool's wrapper line, its trailing newline and `</body></html>`
   stripped): check BASE against the live page byte for byte first. After main merges in,
   check the tables script's run against the file's tables before keeping it: a row it
   reverts belongs to a branch not yet landed.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
-  each live copy read first, with `edits`, `designs` and `text` read first. Version 307 (19
-  November, `f05bbdc`: main at `a1f3a45` and the summon texts' branch): every file of the map
-  checked against the live copy by hash, and the nine that differed sent (five content files,
-  the Designs and Text inventories, and the Buzzard's model and sidecar). The page itself was
-  unchanged. The numbers pass's leans (`6a10dca`), landed after that publish, are not up: its
-  content, its briefs and its texts go up with the next.
-  `build/hangar/designs.json` is one 795 KB line: write it indented before reading it whole.
+  each checked against the live copy by hash (the files listing gives each one's), with
+  `edits`, `designs` and `text` read first. Version 308 (20 November, main at `d2eb8fc7`): the
+  page's cleanup (the briefs and the chassis's editing on the Bench, the Designs, Names and
+  Content-chassis tabs gone), the twelve files that differed (the six content files, the pins,
+  the motion script, the briefs' and the texts' inventories, the Macaque's model and sidecar)
+  and `content/reserved_names.json` removed. The `edits` and `text` collections were empty,
+  `designs` held his two notes of 5 November (both already briefed). The `candidates`
+  collection (his names, 106 rows) stays in the database unread; `docs/name_candidates.md`
+  holds them. The service refuses a republish until the live page's saved source has been
+  read whole, every line: read it before the publish, not after the refusal.
+  `build/hangar/designs.json` is one line of about 980 KB: write it indented before reading it whole.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their
   record, their fold `git show 07f01fb:docs/vocabulary_pass_proposal.md`, section 18.

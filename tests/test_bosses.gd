@@ -182,12 +182,14 @@ func test_a_take_holds_the_showing_entrys_number_and_the_borrowed_swing_lands_it
 	sk.start_round()
 	assert_eq(str(g.action.get("id", "")), "borrowed", "the borrowed swing is next round's intent")
 	assert_eq(g.damage(), 30, "at the number it holds")
-	assert_eq(sk.mechs[0].face().describe(), "disabled", "the entry it took is Jammed through the next turn, the blow's own rider")
+	assert_eq(sk.mechs[0].face().describe(), "disabled", "the entry it took is Jammed until its machine reboots, the blow's own rider")
 	sk.end_round()
 	assert_eq(sk.mechs[0].unit.hull, 460, "the swing lands thirty")
 	assert_false(Effects.has(g, "appropriated"), "and spends what it took")
 	sk.start_round()
-	assert_eq(sk.mechs[0].face().describe(), "30", "the entry is back the turn after")
+	assert_eq(sk.mechs[0].face().describe(), "disabled", "and dark the turn after: a jam waits for the reboot")
+	assert_true(sk.reboot_mech(0), "the machine reboots")
+	assert_eq(Effects.jams_waiting(sk.mechs[0].unit), 0, "which lights it")
 
 
 func test_a_taken_weapon_swings_at_its_number_and_anything_else_is_a_fake() -> void:

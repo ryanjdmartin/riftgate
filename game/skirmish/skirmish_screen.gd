@@ -381,7 +381,8 @@ func _ready() -> void:
 
 
 ## Standalone default, used when the scene runs on its own (screenshots, quick checks): two
-## chained packs of the first faction in content. RIFTGATE_TEAM=badger,clydesdale,kite,baboon overrides the team;
+## chained packs of the first faction in content. RIFTGATE_TEAM=badger,clydesdale,kite,baboon overrides the team,
+## and an id may carry its branch picks for a look (`macaque@duelist+duelist`, as the harness's UPG fields them);
 ## RIFTGATE_BOSS=1 adds the faction's boss as a third unit; RIFTGATE_COLUMNS=4 widens the formation.
 static func _default_skirmish() -> Skirmish:
 	var db := ContentDB.load_default()
@@ -400,9 +401,12 @@ static func _default_skirmish() -> Skirmish:
 			if cols.size() > 1:
 				pd["secondary"] = Color(cols[1])
 			paints[kv[0]] = pd
-	for id in team:
+	for spec in team:
+		var parts := str(spec).split("@")
+		var id := parts[0]
+		var picks: Array = Array(parts[1].split("+", false)) if parts.size() > 1 else []
 		if db.chassis.has(id):
-			var u := db.make_mech(id)
+			var u := db.make_mech(id, 0, Vector2i.ZERO, null, [], picks)
 			if paints.has(id):
 				u.paint = paints[id]
 			s.add_mech(u)
@@ -1301,6 +1305,10 @@ func _refresh(save: bool = true) -> void:
 		var sf := sk.shown_face(ms, sk.spend_face(ms))   # reach as the passive reads it now, the charged form when it goes out charged
 		d.set_face(sf, sk.shown_number_text(ms, sf))   # and the number the blow will deal
 		d.ricochet = _ricochets(ms, sf) if not ms.assigned and ms.alive() else 0   # the strikes of 1 its Ricochet adds after each shot
+		var held := _offhand_of(ms, sf) if not ms.assigned and ms.alive() else []
+		d.offhand = str(held[0]) if not held.is_empty() else ""   # its offhand's armament riding it (the Macaque's)
+		d.parry = _parry_of(ms, sf) if not ms.assigned and ms.alive() else 0   # its Parry's return on the next strike
+		d.upgrades = Effects.steps_on(ms.unit, ms.die.faces[ms.face_index]) if ms.face_index >= 0 and ms.face_index < ms.die.faces.size() else 0   # a chevron each step taken on the piece showing
 		d.zap_cost = _zap_cost(ms, sf) if not ms.assigned and ms.alive() else 0   # the shield its zap will pay (the Buzzard's)
 		d.passing = ms.heat if sf != null and sf.passes_heat and not ms.assigned and ms.alive() else 0   # the heat its dump would pass (the Puffin's)
 		d.form_mark = form_mark(ms, sf) if not ms.assigned and ms.alive() else ""   # it seals its machine or opens it
@@ -1578,6 +1586,19 @@ static func _ricochets(ms: Skirmish.MechState, f: Face) -> int:
 	return Effects.stacks_of(ms.unit, "ricochet") if ms != null and f != null and f.is_weapon() else 0
 
 
+## What a machine's Parry returns on the weapon it shows, on its next strike alone (the Beam
+## Buckler's, 19 November): its stacks for a weapon, none for anything else.
+static func _parry_of(ms: Skirmish.MechState, f: Face) -> int:
+	return Effects.stacks_of(ms.unit, "parry_strike") if ms != null and f != null and f.is_weapon() else 0
+
+
+## The armament its machine's offhand holds, riding the entry when it is a weapon or equipment aimed
+## at a foe (the Macaque's, 19 November): [its name, its line], empty for anything else. The die's
+## passive box and the readout's line read it.
+static func _offhand_of(ms: Skirmish.MechState, f: Face) -> Array:
+	return Effects.held_form_line(ms.unit) if ms != null and f != null and f.is_attack() else []
+
+
 ## The shield a machine's zap will pay for the weapon it shows (the Buzzard's, 18 November): its cost
 ## when the shield holds it, none when it would fire plain. The die's passive box reads it beside
 ## the number, which carries the zap's damage already (Skirmish.shown_number).
@@ -1635,7 +1656,7 @@ static func intent_riders(foe: Foe, inert: Array = [], idle: Array = []) -> Arra
 ## A step with no term of its own shows none: the move's text says it, and a step named in
 ## `idle` shows none either (it lays nothing this round: a fade on a foe Phased already).
 const STEP_TERMS := {"ablate": "ablate", "jam": "jam", "expose": "expose", "dispel": "dispel", "swallow": "swallow",
-	"scorch_all": "scorch", "corrupt_all": "corrupt", "appropriate": "appropriated", "phase": "phased"}
+	"brittle": "brittle", "brittle_all": "brittle", "sap_all": "sap", "scorch_all": "scorch", "corrupt_all": "corrupt", "appropriate": "appropriated", "phase": "phased"}
 static func _step_marks(a: Dictionary, shown: Array = [], idle: Array = [], list: String = "also") -> Array:
 	var out: Array = []
 	var seen: Array = shown.map(func(row) -> String: return str(row[0]))
@@ -1645,7 +1666,7 @@ static func _step_marks(a: Dictionary, shown: Array = [], idle: Array = [], list
 			continue
 		seen.append(Terms.glyph(term))
 		var n := int(st.get("value", 0))
-		out.append([Terms.glyph(term), str(n) if n > 0 and ["ablate", "scorch_all", "corrupt_all", "dispel"].has(str(st.get("effect", ""))) else "", Terms.colour(term)])
+		out.append([Terms.glyph(term), str(n) if n > 0 and ["ablate", "brittle", "brittle_all", "sap_all", "scorch_all", "corrupt_all", "dispel"].has(str(st.get("effect", ""))) else "", Terms.colour(term)])
 	return out
 
 
@@ -1966,8 +1987,10 @@ static func status_glyph(id: String) -> String:
 			return "barrier"
 		"ward":
 			return "ward"
-		"spun_up":
-			return "spin"
+		"spun_up", "parry", "parry_strike":
+			return "spin"   # the Parry's return is Spun Up's kind: the next weapon deals more
+		"aile_boost", "aile_blitz", "aile_assault":
+			return "rapid"   # the Aile Booster's dash
 		"ricochet":
 			return "ricochet"
 		"essence":
@@ -2255,8 +2278,11 @@ func _entry_states(ms: Skirmish.MechState, i: int) -> Array:
 	if Effects.is_entry_disabled(ms.unit, i):
 		# By the clock the die shows along its foot with the turns left (Ryan, 2 November).
 		var dark := Effects.dark_rounds(ms.unit, i, sk.round)
-		out.append([("Jammed" if Effects.cleansable_disable(ms.unit, i) else "On Cooldown") \
-			+ (" (%d turn%s left)" % [dark, "" if dark == 1 else "s"] if dark > 0 else ""), EntryReadout.mark("cooldown", Palette.INK, false)])
+		if dark >= Effects.DARK_REBOOT:
+			out.append(["Jammed until it reboots", EntryReadout.mark("shield_vent", Palette.INK, false)])
+		else:
+			out.append([("Jammed" if Effects.cleansable_disable(ms.unit, i) else "On Cooldown") \
+				+ (" (%d turn%s left)" % [dark, "" if dark == 1 else "s"] if dark > 0 else ""), EntryReadout.mark("cooldown", Palette.INK, false)])
 	return out
 
 
@@ -2318,6 +2344,14 @@ func _show_die(i: int) -> bool:
 		var bounced := _ricochets(ms, sf) if not ms.assigned else 0
 		if bounced > 0:
 			extra.append(EntryReadout.ricochet_line(bounced))
+		# The armament its offhand holds, riding a weapon or equipment aimed at a foe (the line
+		# frame's), by the star the die shows for it.
+		var rides := _offhand_of(ms, sf) if not ms.assigned else []
+		if not rides.is_empty():
+			extra.append(EntryReadout.offhand_line(str(rides[0]), str(rides[1])))
+		var returned := _parry_of(ms, sf) if not ms.assigned else 0
+		if returned > 0:
+			extra.append(EntryReadout.parry_line(returned))
 		# The shield its zap pays for a weapon (the Buzzard's), by the same box.
 		var zap := _zap_cost(ms, sf) if not ms.assigned else 0
 		if zap > 0:
@@ -2681,6 +2715,10 @@ func _on_drag_started(i: int) -> void:
 	_ghost.shut = []   # no foe in hand yet: every chip as printed
 	_ghost.set_face(sf, sk.shown_number_text(sk.mechs[i], sf))
 	_ghost.ricochet = _ricochets(sk.mechs[i], sf)
+	var held := _offhand_of(sk.mechs[i], sf)
+	_ghost.offhand = str(held[0]) if not held.is_empty() else ""
+	_ghost.parry = _parry_of(sk.mechs[i], sf)
+	_ghost.upgrades = _dice[i].upgrades
 	_ghost.zap_cost = _zap_cost(sk.mechs[i], sf)
 	_ghost.passing = sk.mechs[i].heat if sf != null and sf.passes_heat else 0
 	_ghost.form_mark = form_mark(sk.mechs[i], sf)
@@ -2866,6 +2904,9 @@ func _send_second_home() -> void:
 	fly.slot = d.slot
 	fly.corrupted = d.corrupted
 	fly.ricochet = d.ricochet
+	fly.offhand = d.offhand
+	fly.parry = d.parry
+	fly.upgrades = d.upgrades
 	fly.zap_cost = d.zap_cost
 	fly.charged = d.charged
 	fly.dark = d.dark
@@ -3259,8 +3300,8 @@ static func _beat(beats: Array[float], k: int) -> float:
 ## Is strike `k` of the spend a Ricochet's (its blow's kind)?
 static func _is_ricochet(blows: Array, k: int) -> bool:
 	for b in blows:
-		if int(b["strike"]) == k and str(b["kind"]) == "ricochet":
-			return true
+		if int(b["strike"]) == k and (str(b["kind"]) == "ricochet" or str(b["kind"]) == "again"):
+			return true   # a Ricochet's, or the Beam Sword's hit again on the heels of its strike
 	return false
 
 
@@ -3270,7 +3311,7 @@ func _view_struck(blows: Array, k: int, was: Dictionary, fallback) -> UnitView:
 	for b in blows:
 		if int(b["strike"]) != k:
 			continue
-		if str(b["kind"]) in ["strike", "ricochet", "mine"]:
+		if str(b["kind"]) in ["strike", "ricochet", "again", "mine"]:
 			var foe: Foe = b["foe"]
 			if was.has(foe):
 				return was[foe][0]
@@ -3426,8 +3467,6 @@ func _land_last_act(act: Dictionary) -> void:
 		if int(mi) >= 0 and int(mi) < _mech_views.size():
 			_shown_gauges.erase(int(mi))
 			_animate_hit(_mech_views[int(mi)], 0.1)
-	if int(act.get("drained", 0)) > 0:
-		_reroll_btn.strike()   # a fall that takes a reroll strikes the button as a drain landing does
 	_refresh(false)
 
 
@@ -3713,7 +3752,7 @@ func _before_enemy_turn() -> Dictionary:
 	var gauges: Array = []
 	for ms in sk.mechs:
 		gauges.append([ms.unit.shield, ms.unit.hull])
-	return {"views": views, "gauges": gauges, "debt": sk.reroll_debt}   # and the rerolls a fall took in the player's own turn
+	return {"views": views, "gauges": gauges}
 
 
 ## Seconds between the enemy's blows: the ENEMY PACE setting divides the beat, so its top
@@ -3729,7 +3768,7 @@ func _enemy_beat() -> float:
 func _play_enemy_turn(before: Dictionary, then: Callable) -> void:
 	var steps := _replay_steps(before)
 	var hits: Array = []
-	_drain_landed = int(before.get("debt", 0))   # what a fall took before the turn ended has landed already
+	_drain_landed = 0
 	_drain_pending = 0
 	for st in steps:
 		if not (st["blow"] as Array).is_empty():
@@ -3884,12 +3923,11 @@ static func drain_note(sk: Skirmish, landed: int = 0, pending: int = 0) -> Array
 		return ["NEXT -1", true]
 	if landed + pending > 0:
 		return ["NEXT -%d" % mini(landed + pending, Skirmish.REROLLS_PER_ROUND), pending > 0]
-	# What a fall has taken already this turn (a drain as a foe falls lands in the player's own
-	# turn), and what the foes still standing announce.
-	var owed := sk.reroll_debt if sk.state == Skirmish.State.ASSIGN else 0
+	# What the foes standing announce: a drain lands in the enemy's turn alone, since no fall
+	# takes a reroll (19 November).
 	var coming := sk.drain_announced(null) if sk.state == Skirmish.State.ASSIGN else 0
-	if owed + coming > 0:
-		return ["NEXT -%d" % mini(owed + coming, Skirmish.REROLLS_PER_ROUND), coming > 0]
+	if coming > 0:
+		return ["NEXT -%d" % mini(coming, Skirmish.REROLLS_PER_ROUND), true]
 	if sk.drained > 0:
 		return ["DRAINED -%d" % sk.drained, false]
 	return ["", false]

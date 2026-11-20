@@ -21,7 +21,6 @@ extends TestCase
 const KEPT_EFFECTS := {
 	"suppress": "the pipeline's step 0, a live effect turning another off (the Effects header, decided 18 September): the general path, no piece's rule",
 	"min_damage": "the pipeline's floor: the general path",
-	"set_reach": "the pipeline's override: the general path",
 	"vent_heat": "one of the three plain things an event may grant, beside a status and a shield: the table's general path",
 }
 ## Events that fire for no piece.

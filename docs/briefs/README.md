@@ -38,18 +38,20 @@ proposed in chat first. The long form of this file is `git show cc446826:docs/br
   a gate. `docs/vocabulary.md` is the vocabulary as it runs; what became of each word is
   `git show 07f01fb:docs/vocabulary_pass_proposal.md`, sections 18 and 20. A design that
   leans on a word that moved says so as its session opens.
-- Fold in Ryan's corrections first. On the hangar's Designs tab he corrects a paragraph,
-  strikes one, notes a heading, sets a session's direction or leaves an idea with no brief
-  yet; they wait in the page's `designs` collection. Before reading the brief, save it with
-  ArtifactData's `list` (`collection` `designs`, `out_dir` `build/hangar/inbox`) and run
-  `python3 tools/hangar_designs.py --fold build/hangar/inbox` (`--dry` to look first). A
-  correction replaces its block, closed with "(Ryan's correction, <day>.)"; a strike removes
-  its block; a note goes under its heading and a direction under the header, each opening on
-  his name and the day. Read the diff, fold by hand what it could not place and close the
-  numbers of a list it struck from; commit, run `python3 tools/hangar_data.py`, republish the
-  hangar as the status's Pages says, then clear the folded documents with the batch the fold
-  printed. An idea becomes a brief or a bench line and is marked briefed or dropped. A
-  correction is his call at the strength he wrote it: a hole in one is raised in chat.
+- Fold in Ryan's notes first. On the hangar's Bench he reads a brief, read only (a machine's on
+  its sheet, the rest on the Briefs list), notes a heading, sets a session's direction or leaves
+  an idea with no brief yet (20 November: "I'm not going to edit a brief (not anymore), but I
+  will want to make notes on it"); they wait in the page's `designs` collection. Before reading
+  the brief, save it with ArtifactData's `list` (`collection` `designs`, `out_dir`
+  `build/hangar/inbox`) and run `python3 tools/hangar_designs.py --fold build/hangar/inbox`
+  (`--dry` to look first). A note goes under its heading and a direction under the header, each
+  opening on his name and the day; a correction or a strike saved before 20 November still folds
+  (a correction replaces its block, closed with "(Ryan's correction, <day>.)"; a strike removes
+  its block). Read the diff, fold by hand what it could not place and close the numbers of a list
+  it struck from; commit, run `python3 tools/hangar_data.py`, republish the hangar as the
+  status's Pages says, then clear the folded documents with the batch the fold printed. An idea
+  becomes a brief or a bench line and is marked briefed or dropped. A note is his call at the
+  strength he wrote it: a hole in one is raised in chat.
 - One brief a design: every chassis, component, module or rule in design has a file of its
   own here, `<maker>_<label>.md`. Its hangar header stands on a line of its own within the
   five lines after the title, an HTML comment holding one JSON object:
@@ -60,7 +62,7 @@ proposed in chat first. The long form of this file is `git show cc446826:docs/br
   proposal, parked, rework, session, hub, cut). `slot` is true when the design fills one of
   its maker's ten: only a chassis may, and it needs its maker; it is false for a piece, a
   rework of a built machine, a rule or a hub. `name` is its working name. `built` is the
-  content id, on a rework. The Designs tab reads no brief without a sound header:
+  content id, on a rework. The hangar reads no brief without a sound header:
   `python3 tools/hangar_designs.py --check` checks them all and writes nothing.
 - Propose in chat first. A suggestion of Ryan's opens a discussion: look for holes and raise
   them before building, and if he reaffirms after hearing them, build it as he said. His calls
@@ -89,7 +91,10 @@ proposed in chat first. The long form of this file is `git show cc446826:docs/br
 - No reward for being struck that scales with the enemy's blows; a thorns tank needs a
   drawback on the thorns. What reopens it (20 October): a machine that spends its own turn to
   be struck, deals nothing that turn and is paid later and at random is not a tank doing its
-  job.
+  job. The Macaque's Parry pays half of what a Barrier and armour keep off, his call of 19
+  November for a capstone: "The duelist is supposed to be a boss-killer, and this is a tier-3
+  capstone, yes, so it can be powerful. Also, unless it pairs the shield with a slotted lure,
+  and times it perfectly, there's no guarantee it even works."
 - Niches can and should overlap across a larger roster; mechanics should not repeat, and a
   mechanic is its pattern in its context, never one trait it shares ("if you say 'can't do
   this thing because that already kind of does it,' then you quickly run out of things").
@@ -159,7 +164,7 @@ home, is in this file's long form.
 
 ## Ten a maker
 
-The working roster: 24 built, 23 in briefs, 3 open. A design in italics is a brief in the
+The working roster: 25 built, 22 in briefs, 3 open. A design in italics is a brief in the
 table below, under its maker; the rest are built. Ryan's calls moved it this far, and the
 moves he has not marked stand as its plan.
 
@@ -169,7 +174,7 @@ moves he has not marked stand as its plan.
 | Kestrel (10) | Skua; Storm Petrel | Buzzard; Kite; Needletail; the Puffin (up, 19 November) | Lammergeier; Giant Petrel |
 | Kestrel's two, tiers open | *the Snowy Owl*, leaning to Cryo | *the Magpie*, its slot open to another design | |
 | Wainwright & Sutler (10) | Prairie Dog; Cassowary; Cottonmouth | Dingo; Clydesdale; funnel-web; Whip Scorpion; *the gunship* | Swallowtail, back in design; Musk Ox |
-| Aphelion (9, one open) | Stingray; *the line frame*; *Static*; *the Barrier and Ward support*, the defensive tier one | Baboon, dealt at tier one, its tier placed later; *the jellyfish* with the status detonator; *the time-shifter*; one open, the time area's if it wants it | *the Carrier*; *the Macross* with the aura-shifter |
+| Aphelion (9, one open) | Stingray; the Macaque; *Static*; *the Barrier and Ward support*, the defensive tier one | Baboon, dealt at tier one, its tier placed later; *the jellyfish* with the status detonator; *the time-shifter*; one open, the time area's if it wants it | *the Carrier*; *the Macross* with the aura-shifter |
 | The Arsenal (8, two open) | none | Nemesis; *Misharu*; *the Onryō*; *the Zoids walker* | Ammit; *Mastema*; *Minos*; *the thunder figure* |
 
 His calls that shape it, and what each leaves open:
@@ -197,8 +202,8 @@ His calls that shape it, and what each leaves open:
 - Soft control: Minos, the jellyfish, the echidna's draw.
 - Amplify for others: the echidna's Sonic Needle; the Onryō's curse in another shape, since
   Brittle took the flat on-hit.
-- A read nobody uses yet: the die's own state, on the line frame and the battlecruiser.
-- The tender: Aphelion's deal with the line frame, and its defensive tier one.
+- A read nobody uses yet: the die's own state, on the battlecruiser.
+- The tender: Aphelion's deal with the Macaque, and its defensive tier one.
 
 ## Orbits
 
@@ -249,7 +254,6 @@ One row a live brief; the to-do's Design sessions hold each one's task.
 | `minerva_siege_battery.md` | his H-tank, a charge | Minerva | 3 | parked until he picks it up |
 | `minerva_battlecruiser.md` | the capital ship, the broadside | Minerva | 3 | its session |
 | `minerva_shield_bash.md` | his piece: damage equal to armour, then no armour | Minerva | 3, a piece | his call on its form |
-| `aphelion_line_frame.md` | the line frame, a combo by blows | Aphelion | 1 | his calls |
 | `aphelion_static.md` | Static, the shock unit's Aphelion half | Aphelion | 1 | his calls |
 | `aphelion_barrier_ward.md` | the defensive tier one | Aphelion | 1 | his calls |
 | `aphelion_jellyfish.md` | the status payoff carry, no weapons | Aphelion | 2 | Claude's round on his direction |
@@ -275,6 +279,16 @@ aside so Ryan can overrule the reason. A chassis's own bench is in its brief.
 
 **Aphelion**
 
+- Capuchin, held for a less aggressive walker (Ryan, 19 November, naming the Macaque: "Let's give
+  it Macaque for now, only because I anticipate another less-aggressive walker that would take
+  Capuchin more. If I'm wrong, then it takes it back"): the tool user, the one that picks up what
+  the job needs. If no such walker comes, the Macaque is renamed the Capuchin.
+- The combo ramp, the Macaque's first kit (11 to 20 October): a stack for every blow its weapons
+  land, broken by a turn without a weapon, paying at thresholds. Set aside for the Macaque by
+  Ryan's offhand kit (19 November), and free for Aphelion's open slot (his: "there's space for a
+  mechanic that fits better and still keep the ideas of a combo-ramper, or an aura unit"). Under
+  the reboot it wants paying in heat and offence, never cooling or shield; its long form
+  `git show e285ff51:docs/briefs/aphelion_line_frame.md`.
 - The exposed-rotor helicopter ("they have rotor precedence there"): a shape, no mechanic.
 - The large hovercraft, parked by Ryan: tier two, heavy. It sits against "high-tech suites
   over light hulls", and the Stingray already hovers.

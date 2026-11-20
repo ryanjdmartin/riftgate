@@ -783,6 +783,239 @@
    "flavour": ""
   },
   {
+   "id": "macaque",
+   "name": "Macaque",
+   "designation": "Apoapsis Flight 78 Partisan Frame",
+   "maker": "aphelion",
+   "tier": 1,
+   "design": {
+    "fantasy": "Ryan's Gundam homage (11 and 12 October: \"a Gundam-homage walker\"; \"Can't be too on point ... as long as it has a shield, a handheld rifle, and a beam sword - it's a Gundam\"; 14 October: \"it combos, it duels other gundams, it usually SLAUGHTERS all the enemy's trash without breaking a sweat, and its theme is Beam weapons\"; 16 November: \"It needs its own identity\", a homage, not a clone). 18 November: \"the macross unit truly changes forms. Whereas the Gundam changes weapons\". Its designation is his (19 November: \"Apoapsis Flight 78 Partisan Frame\"), the 78 the RX-78's nod, and its name (\"Let's give it Macaque for now, only because I anticipate another less-aggressive walker that would take Capuchin more. If I'm wrong, then it takes it back\"); the line frame was its working label.",
+    "niche": "The agile duelist (19 November: \"Its an agile duelist, not a bruiser\"): a flanker that is not the fastest across the map but holds its own once there, the carry, the utility skirmisher. Squishy, its riders its power. Its offhand is the one played around beside the Macross's form, the one played towards (18 November).",
+    "holes": "Every number a placeholder for the numbers pass (squishy: the hull and shield under the Baboon's, its move between the Baboon's and the Stingray's). The Aile Booster runs 1 hot (his of 19 November). Its branches name the booster they upgrade, the Aile Blitzer and the Aile Assaulter, on the die's readout and the codex as on the step's line (his: \"I intended the gundam to change its equipment names for the booster and the offhand\"). Its brief retired with the landing (git keeps docs/briefs/aphelion_line_frame.md); the bible's row holds the kit's reasons."
+   },
+   "codex": "",
+   "hull": 24,
+   "shield": 8,
+   "movespeed": 4,
+   "heat_max": 14,
+   "hardpoints": 4,
+   "module_slots": 2,
+   "armour": 0,
+   "traits": [
+    "walker"
+   ],
+   "size": "medium",
+   "fixed": [
+    "aile_booster"
+   ],
+   "loadout": [
+    "laser_carbine",
+    "rivet_gun",
+    "twin_autoguns",
+    "ankle_mortar"
+   ],
+   "passive": {
+    "id": "beam_armament_sequencer",
+    "name": "Beam Armament Sequencer",
+    "description": "Three armaments of light, sequenced. Its offhand holds the Beam Rifle, the Beam Sword or the Beam Shield, a rider on every weapon and equipment it aims at a foe, and turns to the next after each; every fight opens on the rifle. Beam Rifle: each strike also strikes the foe to the right for 2. Beam Sword: after each strike, it hits the target again for half the strike's damage, rounded down. Beam Shield: it gains Armoured 2.",
+    "effects": [
+     {
+      "trigger": "static",
+      "effect": "offhand",
+      "id": "beam_rifle",
+      "slot": "rifle",
+      "name": "Beam Rifle",
+      "description": "Each strike also strikes the foe to the right for 2.",
+      "riders": [
+       {
+        "trigger": "static",
+        "effect": "side_strike",
+        "value": 2
+       }
+      ]
+     },
+     {
+      "trigger": "static",
+      "effect": "offhand",
+      "id": "beam_sword",
+      "slot": "sword",
+      "name": "Beam Sword",
+      "description": "After each strike, hit the target again for half of the strike's damage (rounded down).",
+      "riders": [
+       {
+        "trigger": "static",
+        "effect": "strike_again",
+        "value": 50
+       }
+      ]
+     },
+     {
+      "trigger": "static",
+      "effect": "offhand",
+      "id": "beam_shield",
+      "slot": "shield",
+      "name": "Beam Shield",
+      "description": "Gain Armoured 2.",
+      "riders": [
+       {
+        "trigger": "static",
+        "effect": "self_status",
+        "status": "braced",
+        "value": 2
+       }
+      ]
+     }
+    ]
+   },
+   "branches": [
+    {
+     "id": "duelist",
+     "name": "Duelist",
+     "design": {
+      "notes": "Ryan, 19 November: \"Duelist 1: Beam Sword -> Beam Saber: 'After each strike, hit the target again for full damage.' Duelist 2: Beam Shield -> Beam Buckler: 'Gain Barrier, Ward, and Parry.' ... Aile Booster -> Aile Blitzer: 'Rapid. Next weapon strike gains Indirect reach and ignores armour.'\" The boss-killer, a tier-three capstone (\"so it can be powerful. Also, unless it pairs the shield with a slotted lure, and times it perfectly, there's no guarantee it even works\"). Each form a later grant in its slot, in its place in the cycle; the Blitzer's buff in the Boost's place (buff_status)."
+     },
+     "steps": [
+      {
+       "description": "Its Beam Sword becomes the Beam Saber: after each strike, it hits the target again for the strike's full damage.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "offhand",
+         "id": "beam_saber",
+         "slot": "sword",
+         "name": "Beam Saber",
+         "description": "After each strike, hit the target again for full damage.",
+         "riders": [
+          {
+           "trigger": "static",
+           "effect": "strike_again",
+           "value": 100
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "description": "Its Beam Shield becomes the Beam Buckler, granting Barrier, Ward and Parry; its Aile Booster becomes the Aile Blitzer, its next weapon fired ignoring armour as well.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "offhand",
+         "id": "beam_buckler",
+         "slot": "shield",
+         "name": "Beam Buckler",
+         "description": "Gain Barrier, Ward, and Parry.",
+         "riders": [
+          {
+           "trigger": "static",
+           "effect": "self_status",
+           "status": "barrier",
+           "value": 1
+          },
+          {
+           "trigger": "static",
+           "effect": "self_status",
+           "status": "ward",
+           "value": 1
+          },
+          {
+           "trigger": "static",
+           "effect": "self_status",
+           "status": "parry",
+           "value": 1
+          }
+         ]
+        },
+        {
+         "trigger": "static",
+         "effect": "buff_status",
+         "value": "aile_blitz",
+         "entry": "aile_booster",
+         "name": "Aile Blitzer"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "valkyrie",
+     "name": "Valkyrie",
+     "design": {
+      "notes": "Ryan, 19 November: \"Valkyrie 1: Beam Rifle -> Beam Bazooka: 'Each strike gains Spread 2 and Penetrate 2.' Valkyrie 2: Beam Shield -> Beam Pavise: 'Gain 1 Armoured, plus 1 Armoured for every foe struck.' Aile Booster -> Aile Assaulter: 'Rapid. Next weapon strike gains Indirect reach. Gain 1 Empowered.'\" The Bazooka's numbers add to a gun's own (\"Two spreads on the same weapon would combine\"); every foe struck is every foe the spend's blows met, its area's included (the Storm Petrel's per target hit), since a spend aimed at one foe strikes one."
+     },
+     "steps": [
+      {
+       "description": "Its Beam Rifle becomes the Beam Bazooka: each strike gains Spread 2 and Penetrate 2, added to any the weapon carries.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "offhand",
+         "id": "beam_bazooka",
+         "slot": "rifle",
+         "name": "Beam Bazooka",
+         "description": "Each strike gains Spread 2 and Penetrate 2.",
+         "riders": [
+          {
+           "trigger": "static",
+           "effect": "grant_keyword",
+           "value": "cleave",
+           "number": 2,
+           "adds": true
+          },
+          {
+           "trigger": "static",
+           "effect": "grant_keyword",
+           "value": "penetrate",
+           "number": 2,
+           "adds": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "description": "Its Beam Shield becomes the Beam Pavise, granting 1 Armoured and 1 more for every foe struck; its Aile Booster becomes the Aile Assaulter, granting 1 Empowered with its Aile Assault.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "offhand",
+         "id": "beam_pavise",
+         "slot": "shield",
+         "name": "Beam Pavise",
+         "description": "Gain 1 Armoured, plus 1 Armoured for every foe struck.",
+         "riders": [
+          {
+           "trigger": "static",
+           "effect": "self_status",
+           "status": "braced",
+           "value": 1,
+           "per_foe": true,
+           "plus": 1
+          }
+         ]
+        },
+        {
+         "trigger": "static",
+         "effect": "buff_status",
+         "value": "aile_assault",
+         "entry": "aile_booster",
+         "name": "Aile Assaulter"
+        },
+        {
+         "trigger": "static",
+         "effect": "self_status",
+         "status": "overcharged",
+         "value": 1,
+         "entry": "aile_booster"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "flavour": ""
+  },
+  {
    "id": "puffin",
    "name": "Puffin",
    "designation": "K-11 Mk I Ground-Effect Escort",

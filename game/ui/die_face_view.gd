@@ -45,6 +45,10 @@ const CUT := 16.0
 const FLICKER_PERIOD := 4.5   # seconds between dips, per chip
 const SLOT_AT := Vector2(10, 28)   # the place's numeral, its baseline tucked under the cut corner, clear of the main mark
 const SLOT_SIZE := 18
+const CHEVRON_W := 16.0     # an upgrade's chevron under the place's numeral: its width,
+const CHEVRON_H := 6.0      # its rise,
+const CHEVRON_GAP := 7.0    # the step from one to the next, down,
+const CHEVRON_DROP := 9.0   # and the first's apex below the numeral's baseline
 const MAIN_Y := 45.0       # the main mark's centre, what the entry delivers inside it, clear of the place's numeral
 const MAIN_W := 60.0       # the sight's width, its ring holding NUMBER_ROOM, as wide as the gear (a strike's count beside it, not inside)
 const COMBO_W := 60.0      # the shield with the steam, seated COMBO_DY lower (its top clear of the place's numeral)
@@ -84,9 +88,12 @@ var cooldown: int = -1       # the rounds a spend darkens it, its machine's pass
 var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), in the passive box at the rail's foot; null for a die that rolls
 var next_number: String = "" # the blow that next entry will deal now, as the screen reads it (Skirmish.shown_number_text); "" reads its own
 var ricochet: int = 0        # the strikes of 1 its machine's Ricochet adds after each shot of a weapon (the Skua's), in the passive box
+var offhand: String = ""     # the armament its machine's offhand holds, riding this weapon or equipment aimed at a foe (the Macaque's), its star in the passive box
+var parry: int = 0           # what its machine's Parry returns on this weapon's next strike (the Beam Buckler's), in the passive box: one blow's add, so never in the main number
 var zap_cost: int = 0        # the shield its machine's zap will pay for this weapon's spend (the Buzzard's), in the passive box; its damage is in the main number
 var passing: int = 0         # the heat its machine would pass now (the Puffin's dump), beside the stacks that heat makes
 var slot: int = 0            # the entry's place on its die, from one; 0 draws none
+var upgrades: int = 0        # the branch's steps its machine has taken on this piece (Effects.steps_on): a chevron each under its place
 var locked: bool = false
 var charged: bool = false      # armed for its charged form, a muster paid at the spend (the Swallowtail's): a double frame and the word above
 var form_mark: String = ""     # "seal" or "unseal": spending the entry shuts its machine's shell or opens it (the Polar Bear's Lockdown), a chip on the rail
@@ -278,6 +285,15 @@ func _flicker(i: int) -> float:
 	return 1.0
 
 
+## `n` upgrade chevrons, each a rank's stripe pointing up, the first's apex at `top` (its left
+## edge there), each the next a step below (the die's place and the codex's row both draw them).
+static func draw_chevrons(ci: CanvasItem, top: Vector2, n: int, ink: Color, scale: float = 1.0) -> void:
+	for i in range(maxi(0, n)):
+		var apex := top + Vector2(CHEVRON_W * 0.5, float(i) * CHEVRON_GAP) * scale
+		var half := CHEVRON_W * 0.5 * scale
+		ci.draw_polyline(PackedVector2Array([apex + Vector2(-half, CHEVRON_H * scale), apex, apex + Vector2(half, CHEVRON_H * scale)]), ink, 3.0 * scale, true)
+
+
 func _draw() -> void:
 	var bob := sin(_t * 1.6 + _phase) * BOB_PX if animate else 0.0
 	var rect := Rect2(Vector2(0, bob), Vector2(FACE, FACE))
@@ -310,6 +326,10 @@ func _draw() -> void:
 		# italic: quiet by its colour and its face rather than its size, and never a stat
 		# (Ryan, 15 October). A reroll onto a copy shows by it; so does a stepping die's order.
 		draw_string(Hud.quote(), SLOT_AT + Vector2(0, bob), Hud.roman(slot), HORIZONTAL_ALIGNMENT_LEFT, -1, SLOT_SIZE, Color(Palette.MUTED, alpha))
+		# An upgraded piece (Ryan, 19 November: "I agree on the chevron"): a chevron for each step its
+		# machine has taken on it, stacked under its place as a rank's stripes, in ink, so a step reads
+		# by its count and its shape whatever the colour.
+		draw_chevrons(self, SLOT_AT + Vector2(1.0, CHEVRON_DROP + bob), upgrades, Color(Palette.INK, alpha))
 	if face == null or dead:
 		if dead:
 			Glyphs.draw(self, "blank", Vector2(FACE * 0.5, FACE * 0.5 + bob), 44, Palette.LOSS_DIM, 4.0)
@@ -583,7 +603,10 @@ func cost_marks() -> Array:
 	if face == null or dead:
 		return costs
 	if face.disabled and dark > 0:
-		costs.append(["cooldown", dark, Palette.INK, false])
+		if dark >= Effects.DARK_REBOOT:
+			costs.append(["shield_vent", "", Palette.INK, false])   # a foe's jam: dark until the reboot, its mark and no count
+		else:
+			costs.append(["cooldown", dark, Palette.INK, false])
 		return costs
 	if face.ammo > 0:
 		costs.append(["ammo", face.ammo, Palette.LOSS if face.dry else Palette.SELECT, face.dry])
@@ -621,6 +644,10 @@ func passive_marks() -> Array:
 	if not dark_now:
 		if ricochet > 0 and face.is_weapon():
 			out.append(["ricochet", "+%d" % ricochet, Glyphs.colour_for("ricochet")])   # a strike of 1 more a stack after each shot (the Skua's)
+		if parry > 0 and face.is_weapon():
+			out.append(["spin", "+%d" % parry, Glyphs.colour_for("parry")])   # the Parry's return on its next strike alone (Ryan, 19 November: "next strike")
+		if not offhand.is_empty() and face.is_attack():
+			out.append(["star", "", Glyphs.colour_for("offhand")])   # its offhand's rider (the Macaque's; Ryan, 19 November: "a unique (star) effect attached to weapons and equipment that target foes")
 		if zap_cost > 0 and face.is_weapon():
 			out.append(["shield", "-%d" % zap_cost, Palette.SHIELD])   # the shield its zap pays, by the shield's mark in its colour (the Buzzard's); the blow it buys is in the number
 	if next_face != null:

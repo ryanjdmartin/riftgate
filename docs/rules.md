@@ -17,14 +17,16 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 ## Machines
 
 - **Chassis**: hull, shield, heat maximum, armour, move, size class, one way of moving, hardpoints, fixed components, module
-  slots (two; the Clydesdale three) and one passive. Twenty-five chassis from five makers
-  (`content/chassis.json`), two of them dealt by nothing until their sessions hand them over
-  (the Swallowtail, back in design, and the Mole, a draft: a chassis whose entry
-  says `"status": "planned"`). A run has four squad slots and starts with three
-  machines.
+  slots (two; the Clydesdale three) and one passive. Twenty-six chassis from five makers
+  (`content/chassis.json`), two of them dealt by nothing yet (a chassis whose entry says
+  `"status": "planned"`): the Swallowtail, back in design until its session hands it back, and
+  the Mole, a draft whose engine is still to come. A run has four squad slots and starts with
+  three machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die,
-  beside its name in its readout, and down the codex. An empty hardpoint is a blank entry; nothing fills it. A full,
+  beside its name in its readout, and down the codex. A piece a branch has upgraded wears a
+  chevron under its place for each step taken on it, on the die and down the codex; a step on
+  the passive alone marks no piece, and a destroyed piece shows none. An empty hardpoint is a blank entry; nothing fills it. A full,
   undamaged machine is reliable. A folded die (the Clydesdale's, below) rolls among some of
   its entries alone.
 - **Components** come in four kinds, as the die's main mark shows them: a **weapon** deals
@@ -82,9 +84,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   own, and the harness fields them): a chassis of tier one or two may carry two directions,
   each a step a pick, as deep as its machine picks, a tier one twice and a tier two once. A
   machine's first pick takes a direction's first step and its second the same direction's
-  deeper step or the other's first, so a tier one ends specialized or mixed. A step tweaks one
-  locked piece or the machine's passive, never a stat: its effects ride the machine as a
-  passive of their own, scoped to that piece where it names one, so the die keeps the piece as
+  deeper step or the other's first, so a tier one ends specialized or mixed. A step tweaks the
+  machine's locked pieces or its passive, as many as it needs, never a stat: its effects ride the
+  machine as a passive of their own, each scoped to its piece where it names one, so the die keeps the piece as
   printed and the entry as spent carries the tweak, and a destroyed piece takes its tweaks with
   it. A step on the passive takes over the effect it names in place: an effect that names a
   slot gives way to a later grant in the same slot, so the step's number or form replaces the
@@ -95,7 +97,13 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   itself, then Chain 3 and Charged 2. The Buzzard's, a tier two's single pick: Sustain, on its
   passive, its zap adding 3 for the same 2 shield and every foe that falls laying Regenerating 2
   on it in place of the 2 shield; Burst, on its Shield-burner Cannon, Spread 2 and Penetrate 2 and
-  its own number 2 higher.
+  its own number 2 higher. The Macaque's, a tier one's, each touch its offhand's forms (a form
+  a step names takes its slot's place in the cycle) and its second steps its Aile Booster too:
+  Duelist, the Beam Sword's slot holding the Beam Saber, then the shield's the Beam Buckler and the
+  Booster granting Aile Blitz; Valkyrie, the rifle's slot holding the Beam Bazooka, then the shield's
+  the Beam Pavise and the Booster granting Aile Assault with 1 Empowered. A step may name the piece
+  it upgrades, and the die's readout and the codex call the piece so (the Aile Blitzer, the Aile
+  Assaulter), the die keeping the piece as printed.
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
@@ -161,7 +169,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    then heat over a machine's maximum burns hull one for one and stays on the gauge, burning
    again every turn it stands there; the first such turn since the machine's last reboot is
    its overheat, and its shield breaks; then each machine's Empowered halves, and a dark entry
-   whose rounds are done lights again (a cooldown, a jam). A rebooting machine has vented as
+   whose rounds are done lights again (a cooldown). A rebooting machine has vented as
    its shield dropped, so it carries nothing to burn, and no rule spares it. One out of reach
    (Phased, Swallowed) neither burns nor overheats, its heat staying for the turn it is back: a Phased
    machine's stacks tick all the same and take nothing, and everything a Swallowed one carries
@@ -187,13 +195,14 @@ landed, lost to a stun or skipped.
   down; Exposed falls, at the turn start after the next one.
 - **Its turn ends**: Ablating and Vitriol take their points and lose a stack; Regenerating
   pays after them and loses one; Empowered halves, rounded down; Scorched and Sapped go; a
-  cooldown and a jam whose rounds are done light again; a Suppress is spent with the turn it
+  cooldown whose rounds are done lights again; a Suppress is spent with the turn it
   cost; Numbed loses a stack, or lands on a foe that lost this turn to a stun.
 - **The round ends**: Phased is granted or lost, Essence Flare goes, a swallow's and a
   golden rage's rounds run, and a web bursts.
-- **It is spent**: the primers by a weapon fired, Spun Up and the Juggernaut Drive by the next
-  weapon, Shocked and Cryo by the weapon's hit that cashes them, Undying by its fall, a Mine by
-  its foe's fall, and a pin by the decay it stops.
+- **It is spent**: the primers by a weapon fired, Spun Up, the Juggernaut Drive, the Aile buffs
+  and a Parry's return by the next weapon, Shocked and Cryo by the weapon's hit that cashes them,
+  Undying by its fall, a Mine by its foe's fall, a pin by the decay it stops, and a foe's jam by
+  its machine's reboot.
 What works in the other side's turn ends as its own turn starts, and what works in its own
 turn ends with it. So a stack gained outside its carrier's turn stands whole for its next
 one, and a chip always shows what the next blows will meet. On a Phased machine every clock
@@ -334,6 +343,12 @@ Every foe a strike reaches takes a blow of its own, read in one order:
    armour comes off. A weapon's blow takes them whatever it deals, a 0 included; a debuff's
    blow stays nothing. Its riders land on every foe struck, after its
    weapon's hits (below).
+- **The strike order**: a strike's blows are resolved in one order, the target's first, then
+  Spread's left and then its right, then Penetrate's other rank, a twin slot's other half with
+  its pair, then the Beam Rifle's foe to the right, then Chain's arcs. It is the calculation's
+  alone: the screen shows a strike's blows landing together, on its beat. What waits on a
+  machine's next strike lands on its spend's first blow alone, its first strike's on its target,
+  and on none of that strike's area (the Parry's return).
 - **Riders land after the hits**: each hit's Cryo and Brittle gather on its own foe and land
   once its weapon's hits are done, an application a hit, so no hit of a single-target weapon
   cashes or feeds on what the weapon lays (a ×2 Cryo 1 leaves Cryo 2 and cools nothing; a ×3
@@ -606,7 +621,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   carries it leaves its number on the machine it hits.
 - **A pin** (the Dingo's Hollow-point Harpoon): its target is Pinned, a status of its own:
   the next time its Brittle would halve, what the spend lays and what stood there, it does
-  not, and the pin is spent; it halves again the time after. A pin with nothing to hold waits.
+  not, and the pin is spent; it halves again the time after. A pin with nothing to hold goes as
+  its foe's turn ends.
   A Ward turns it away. Ablating has a pin of its own, Seared: the next time the foe's Ablating
   would lose a stack it takes its points and loses none (no piece lays it yet). Each wears the
   lock on the status it holds. Empowered has no
@@ -683,8 +699,30 @@ gains Empowered 2 and its die rolls again, never onto the entry showing; a spent
 nothing. **On itself** (the Storm Petrel's Hardlight Pulse, a lure, and its branches): spent on
 a foe, its own machine gains the status it says, after the spend's hits and its primers, so a
 fire never spends a Charged it has just laid; a stack set for every foe the spend reached where
-it says so, a foe its Spread reaches among them; never past the most it names, the highest of
-the piece's own and its branches'. **The spill** (the Overrun Gearing's, a Minerva module, on
+it says so, a foe its Spread reaches among them, beside any flat stacks it names; never past the
+most it names, the highest of the piece's own and its branches'. A buff may lay a status on its
+own spender beside its grant where its piece says so (the Aile Assaulter's Empowered); a Barrier
+laid this way is gained as any other is. **The offhand** (the Macaque's passive): its offhand
+holds one form of a cycle at a time, the Beam Rifle, the Beam Sword or the Beam Shield, an
+Ability under the form's name, and every fight opens on the first. The form is a rider on every
+weapon and equipment the machine aims at a foe, and every such spend turns it to the next, the
+first after the last, a Rapid spend's second shot riding the form after; a buff, a reboot or a
+blank turns nothing. The die marks the rider with a star in the entry's passive box, its readout
+reading the form's line. The rifle: each strike also lands a blow of 2 on the foe to the right of
+the target in its rank (a twin's right half beside its left, nothing at the rank's end or past an
+empty slot), its own blow beside any area's, so a Spread's neighbour there takes both, each through
+its armour; it reaches the foe without being aimed at it (no Shock read), and carries the entry's
+riders. The sword: after each strike, a hit again on the target, a strike of its own: its number
+half the strike's own, rounded down (the Beam Saber's the whole of it), then the firer's pipeline
+and the entry's reads of the foe as any later strike's, so a 4 strikes as a 4 and a 2 and a 2 ×2
+as 2, 1, 2 and 1, and what buffs one strike never reaches the other; the entry's riders land with
+it. A Ricochet's hits come after the spend's strikes and set off neither. On equipment the rifle's
+and the sword's blows deal nothing and their riders land, as an area on equipment does. The shield: once the spend is done, Armoured 2 on its machine. Upgraded
+forms: the Beam Buckler grants Barrier, Ward and Parry (below); the Beam Bazooka gives each strike
+Spread 2 and Penetrate 2, added to any the weapon carries; the Beam Pavise grants 1 Armoured and 1
+more for every foe the spend struck, its area's included. **The Aile Booster** (the Macaque's,
+Rapid, on itself, heat 1): it grants Aile Boost; its Duelist II makes it the Aile Blitzer,
+granting Aile Blitz, and its Valkyrie II the Aile Assaulter, granting Aile Assault (Buffs, below). **The spill** (the Overrun Gearing's, a Minerva module, on
 every weapon its machine fires): damage past the kill of a front-rank foe
 carries into the foe behind it as plain damage, the killing strike's excess and every later
 strike of the spend whole, aimed at nobody, so a Shock behind neither doubles it nor is
@@ -827,9 +865,7 @@ On a machine:
   a drain that will not land (its foe destroyed or Suppressed, its move changed) leaves the
   note. As each lands in the enemy's turn the button flashes, and the rings stop with the
   last. The round a drain shortened wears what it took ("DRAINED -1") for as long as it lasts.
-  A reroll taken as a foe falls (A last act, below) lands in the player's own turn: the
-  button flashes as the fall is named, and the note counts it at once, with no rings, since
-  nothing can stop it now.
+  A drain is a move's alone: no fall takes a reroll.
 - **Charged** (buff): while it lasts the machine's weapons fire with Shock, shown on the die
   and landing as the keyword does, after the blows; a weapon fired spends a stack (a Rapid's
   or an Instant's second fire is a second fire, a salvo one, a reboot's blast none; equipment carries it not and spends
@@ -923,7 +959,9 @@ On a machine:
 - **Scorched** (debuff, from a foe's scorch): every weapon and equipment the machine aims at a
   foe runs 1 hotter a stack, until its turn ends, when every stack goes, so it never piles up.
   Cleansable.
-- **Jammed** (debuff, a foe's jam): the entry comes up blank until the machine's next turn ends.
+- **Jammed** (debuff, a foe's jam): the entry comes up blank until the machine reboots, the
+  reboot's drop lighting it, or a Cleanse lifts it; no clock ends it, and the die's foot shows
+  the reboot's mark on it in place of a count.
 - **Corrupted** (debuff): each spend of the entry bites its owner 3 a stack, shield first,
   no armour off it; lasts the skirmish.
 - **Brittle** (debuff, from a foe's Brittle rider: the World Eater's pin; a foe's Brittle below
@@ -1000,6 +1038,18 @@ On a foe:
   end of the player's turn. A foe's Ward turns it away; a Cleanse clears it from a machine.
 - **Juggernaut Drive** (buff, the Wild Boar's passive waiting): gained as it gains a Barrier, one at a time; its
   next weapon attack ignores armour and lifts it, equipment leaving it standing. A purge takes it.
+- **Aile Boost**, **Aile Blitz**, **Aile Assault** (buffs, the Macaque's Aile Booster and its
+  branches'): one at a time, carried between turns until the next weapon its machine fires, which
+  reaches as Indirect for every strike of its spend and lifts it, equipment reaching as its own and
+  leaving it standing. Aile Blitz's weapon ignores armour too.
+- **Parry** (buff, the Macaque's Beam Buckler): through the round it is gained, what a Barrier
+  and its machine's armour keep off foes' blows is counted (the whole blow a Barrier takes, what
+  armour takes off what passes the shield; never what the shield soaks). As its machine's next turn
+  starts it goes, and half of that count, rounded down, stands under the same name as its next
+  strike's add that turn: the first blow of the first weapon it fires, on its target (The strike
+  order, above), in Empowered's place in the blow, a point a stack. That weapon lifts it, equipment
+  leaving it, and it goes as the turn ends if no weapon fires. The die shows it in the weapon's
+  passive box, never in its number.
 - **Empowered** (buff, Rally): lands on every foe on the field the moment the rally does, its
   rallier too, the rally's value in stacks, and every blow the foe lands hits a point harder a stack, each
   strike of its move, as a machine's weapon does. It halves as its own turn ends, its action done, rounded down,
@@ -1107,7 +1157,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   Needletail's Quick-turn Avionics Relay, which may reboot after one action whatever its die
   shows (above), the vent taking the heat of what it spent with the rest. A die showing nothing
   lit, every entry jammed or on cooldown, has spent nothing, so its machine may reboot.
-- At once its shield goes to nothing and its heat with it, Overheated's stacks too, and it is
+- At once its shield goes to nothing and its heat with it, Overheated's stacks too, every entry
+  a foe jammed lights, and it is
   free to overheat again; it is Rebooting through the enemy's turn. As the next round opens,
   before the roll and before the foes pick, its shield is whole and Broken is gone. Heat laid
   on it after the vent stays: one vent, as the shield drops. UNDO takes a reboot back like a
@@ -1305,7 +1356,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   revive an ally (Undying on one of its own, never itself, not readied already: a
   party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,
-  rally (Empowered at its value on every foe on the field, itself too, at once), golden (the rage: Golden for the rounds it says, 1 to 5 and three unsaid, its value the add; only while calm), drain rerolls, ablate (stacks of Ablating on one machine), scorch all (stacks of
+  rally (Empowered at its value on every foe on the field, itself too, at once), golden (the rage: Golden for the rounds it says, 1 to 5 and three unsaid, its value the add; only while calm), drain rerolls, ablate (stacks of Ablating on one machine), Brittle (stacks of Brittle on one
+  machine), Brittle on all (the same on every machine), Sap on all (stacks of Sapped on every
+  machine, through its next turn), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted stacks on the entry every machine shows),
   jam, purge (Purge N: N stacks off every buff, for good, whatever
   granted it; the Djinn's Unmake at 1; never a last act's), cleanse
@@ -1339,18 +1392,18 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   takes nothing, and a Ward on it turns the curse and the blow's riders away. A blow at
   every machine lands on each. What a fall lays on its own side reaches the foes still
   standing, never itself.
-  A fall may heal, armour, cleanse, ward, prime, ready or rally its own, take rerolls from
-  the next round, ablate or jam its pick, scorch or corrupt every machine, and take back the
+  A fall may heal, armour, cleanse, ward, prime, ready or rally its own, ablate, jam or lay
+  Brittle on its pick, lay Brittle on, scorch or corrupt every machine, and take back the
   readiness to rise its kind gave: every other foe still standing loses the Undying it
   readied, what a foe readied for itself staying its own, and a foe felled by the same blow
   fell readied and gets up. It does
   nothing its own body would carry, summons nothing (a split is the fall's own summon),
-  swallows nothing, never purges, and lays no Expose, which is announced. A reroll a fall
-  takes in the player's own turn is owed at once, and the REROLL button counts it (A drained
-  reroll, above). The foe wears its fall as an Ability from the fight's start, its blow's
+  swallows nothing, never purges, takes no reroll, and lays no Expose, which is announced.
+  Brittle a fall lays in the player's own turn stands through the enemy's turn after it, and
+  halves as the next round opens. The foe wears its fall as an Ability from the fight's start, its blow's
   number on the chip where it strikes. In content the Dread Knight's Death Throes and the
-  Gargantuan King's Meteor are blows; the Mandragora, the Mandrake and the Alraune scream a
-  reroll off the next round, the Gorgon's dying gaze Jams the entry its killer shows, the
+  Gargantuan King's Meteor are blows; the Mandragora screams Brittle 2 onto its killer, the
+  Mandrake and the Alraune Brittle 2 onto every machine, the Gorgon's dying gaze Jams the entry its killer shows, the
   Salamander's embers Scorch every machine, and the Lich's fall takes back what it readied.
 - **A foe in parts**: a core and the parts of its pack that stand with it. A guard keeps the
   core from taking any damage while all its parts stand, or while any does (Guarded, an Ability), its

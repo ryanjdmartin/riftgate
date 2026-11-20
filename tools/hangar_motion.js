@@ -1,5 +1,5 @@
-/* The hangar page's Animation tab (3 October): a machine's idle acts, its gait and its
-   cornering, played from the same sidecar the game reads (art/models/<id>.rig.json, written
+/* The hangar page's Models tab (the Animation tab of 3 October, merged into it): a machine's idle
+   acts, its gait and its cornering, played from the same sidecar the game reads (art/models/<id>.rig.json, written
    by tools/lowforge from models_low.py) on the same glTF (art/models/<id>.glb, published as
    JSON). Published beside the page as hangar/motion.js, the models and sidecars as
    hangar/models/<id>.model.json and <id>.rig.json (tools/hangar_data.py prints the map).
@@ -78,6 +78,7 @@ const PHONE_GLOW = `#ifdef USE_EMISSIVEMAP
 // colour times the alpha, the root of the strength in each); written as it is, not re-encoded,
 // so it shows the game's colour.
 const HALO_FULL = 8, HALO_REACH = 0.45, HALO_AHEAD = 3, HALO_SPREAD = 0.025;
+const BEAM_SHOWS = 1.05, BEAM_GUTTER = 0.35;   // a part made of light shows once lit this far over its rest, and a lit one on a lost machine stutters out under this share (MechRig)
 // A weapon's fire flaring as it fires (MechRig.flash_k): up to `peak` rests over its own in `up`
 // seconds, held `hold`, gone in `down`, easing out.
 const FLASH = {peak: 12, up: 0.05, hold: 0.15, down: 0.6};
@@ -151,7 +152,7 @@ void main() { vec2 p = vUv * 2.0 - 1.0; float r = length(p); float bloom = 1.0 -
 // A booster's plume along its thrust (MechView3D.setup_plumes, plume.gdshader; Ryan, 31 October, of the
 // Stingray's exhaust: "can it be directional?"): a flame out of its plume node's mouth down the node's
 // -z, turned about that line to face the eye, stretching and brightening with its booster's light, in
-// place of that booster's halo; a trial, the Plume button turning it off to compare with the ring.
+// place of that booster's halo (the bible's booster row: Aphelion's burn as plumes, and a shape that wants one).
 const PLUME_VERT = `uniform float strength; uniform float reach; uniform float breadth; varying vec2 vUv;
 void main() { vUv = uv; vec4 origin = modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0);
   vec3 axis = normalize((modelViewMatrix * vec4(0.0, 0.0, -1.0, 0.0)).xyz); float s = length(modelViewMatrix[2].xyz);
@@ -425,10 +426,21 @@ function labelled(name, part) {
   return /^[._]?\d+$/.test(name.slice(part.length));
 }
 
-let PLUMES_ON = true;   // the plume trial on (RIFTGATE_PLUME's page twin); the Plume button turns it off to compare with the ring
+// A model's bounds over what it shows (Box3.setFromObject takes in hidden parts too): a part made of
+// light, hidden at rest, stays out of the frame, as MechView3D's corners leave it out.
+function shownBox(root) {
+  const T = window.THREE, box = new T.Box3(), part = new T.Box3();
+  root.updateWorldMatrix(true, true);
+  root.traverseVisible(n => {
+    if (!n.geometry) return;
+    if (!n.geometry.boundingBox) n.geometry.computeBoundingBox();
+    box.union(part.copy(n.geometry.boundingBox).applyMatrix4(n.matrixWorld));
+  });
+  return box;
+}
+
 class Rig {
   constructor(root, side, rngSeed = 1) {
-    this.plumesOff = !PLUMES_ON;
     this.model = root; this.body = root; this.standing = new Map(); this.halos = new Map(); this.flashes = []; this.haloGrow = 0; this.flares = []; this.aimAt = null;
     this.joints = {}; this.hardpoints = {}; this.rest = {}; this.restPos = {};
     root.traverse(n => {
@@ -484,6 +496,7 @@ class Rig {
     if (side.death && Object.keys(side.death).length) { this.forms["@death"] = this.formEntry(side.death); this.formOn["@death"] = false; this.formT["@death"] = 0; }   // MechRig.DEATH: its own death in place of the slump
     this.setupCounts(side.counts || []);
     this.setupHalos(side);
+    this.setupBeams(side);
     this.setupStanding(side);
     this.setupPlumes(side);
   }
@@ -491,7 +504,6 @@ class Rig {
   setupPlumes(side) {
     const T = window.THREE;
     this.plumes = [];
-    if (this.plumesOff) return;
     for (const pl of side.plumes || []) {
       const node = this.model.getObjectByName(pl.node), lit = this.litMaterials(pl.part);
       if (!node || !lit.length) continue;
@@ -509,10 +521,21 @@ class Rig {
   lightTo(m, base, k) {
     k = Math.max(k, this.standing.get(m) || 1);
     m.emissiveIntensity = base * Math.max(0, k);
+    for (const n of (this.beams && this.beams.get(m)) || []) n.visible = k > BEAM_SHOWS;   // a part made of light is there only while it is lit (MechRig._light_to)
     for (const h of this.halos.get(m) || []) {
       h.uniforms.light.value = Math.pow(m.emissiveIntensity, 1 / 2.2);
       h.uniforms.presence.value = clamp((k - 1) / HALO_FULL, 0, 1);
     }
+  }
+  // The parts made of light a sidecar names (MechRig._setup_beams: the Macaque's blades and kites
+  // of light): each hidden, unseen at its light at rest, and shown by lightTo while a glow lights it.
+  setupBeams(side) {
+    this.beams = new Map(); this.beamLit = new Map();
+    for (const part of side.beams || []) this.model.traverse(n => {
+      if (!n.isMesh || n.userData.halo || !labelled(n.name, part)) return;
+      n.visible = false;
+      for (const m of [].concat(n.material)) if (m.userData.lit) { if (!this.beams.has(m)) this.beams.set(m, []); this.beams.get(m).push(n); }
+    });
   }
   // The halos (MechRig._setup_halos): round each lit surface of the hot parts a sidecar names
   // (`halo`), a soft shell standing out a share of the machine's size, a part named with a scale
@@ -521,7 +544,7 @@ class Rig {
     this.halos = new Map();
     this.haloGrow = HALO_SPREAD * this.modelSize();
     const named = Array.isArray(side.halo) ? side.halo : [];
-    const plumed = this.plumesOff ? [] : (side.plumes || []).map(pl => pl.part);   // a booster burning as a plume wears no ring (MechRig.halo_skip)
+    const plumed = (side.plumes || []).map(pl => pl.part);   // a booster burning as a plume wears no ring (MechRig.halo_skip)
     for (const entry of named) {
       // A part, [part, scale] or [part, scale, ahead] (MechRig._setup_halos).
       const p = Array.isArray(entry) ? entry[0] : entry, scale = Array.isArray(entry) && entry.length > 1 ? +entry[1] : 1;
@@ -1133,7 +1156,7 @@ class Rig {
   // for a moment as it ends, each turned where its weight takes it, the outermost first, never below the
   // floor the rest of the pose lies on.
   hangDeath(f) {
-    const d = f.duration, T = window.THREE, saved = {};
+    const d = f.duration, saved = {};
     for (const [jn, j] of Object.entries(this.joints)) saved[jn] = j.rotation.clone();
     const savedPos = this.body.position.clone(), savedRot = this.body.rotation.clone();
     let slide = v3(), turn = v3();
@@ -1183,7 +1206,7 @@ class Rig {
     if (!this.dead) return;
     this.dead = false;
     for (const [m, , c] of (this.gutter || {mats: []}).mats) { this.lightTo(m, restOf(m), 1); m.color.copy(c); }   // its light and its paint as they were
-    this.gutter = null; this.deathLift = 0; this.impact = -1;
+    this.gutter = null; this.deathLift = 0; this.impact = -1; this.beamLit = new Map();
     this.collapse = -1; this.collapseFloor = 0; this.spinK = 1; this.wantRot = {}; this.bodyWantRot = v3(); this.bodyWantSlide = v3();
     if (this.forms["@death"]) { this.formOn["@death"] = false; this.formT["@death"] = 0; this.formsApply(); }   // stood up at once (MechRig.revive)
   }
@@ -1386,8 +1409,9 @@ class Rig {
     for (const g of this.gutter.mats) {
       const [m, , c, start] = g, local = this.gutter.t - start;   // a part its death keys gutters once it has landed
       if (local < 0) continue;
-      if (!g[4]) { g[1] = m.emissiveIntensity; g[4] = true; }   // its light as its gutter starts
+      if (!g[4]) { g[1] = m.emissiveIntensity; g[4] = true; if (this.beams.has(m)) this.beamLit.set(m, this.beams.get(m).some(n => n.visible)); }   // its light as its gutter starts
       const k = gutterK(local), paint = DEAD_PAINT + (1 - DEAD_PAINT) * k;   // the paint stutters out with the light (MechRig)
+      for (const n of this.beams.get(m) || []) n.visible = !!this.beamLit.get(m) && k > BEAM_GUTTER;   // a beam lit as it was lost stutters out with its light
       m.emissiveIntensity = g[1] * k;
       m.color.copy(c).multiplyScalar(paint);
       for (const h of this.halos.get(m) || []) { h.uniforms.light.value = Math.pow(m.emissiveIntensity, 1 / 2.2); h.uniforms.presence.value = 0; }
@@ -2101,9 +2125,11 @@ class Stage {
     if (this.modelRoot) this.pivot.remove(this.modelRoot);
     const root = gltf.scene;   // a fresh parse each time, so materials are never shared between visits
     prepareMaterials(root);
+    // A part made of light is out at rest, and the bounds never take it in (MechView3D.hide_beams).
+    for (const part of sidecar.beams || []) root.traverse(n => { if (n.isMesh && labelled(n.name, part)) n.visible = false; });
     // Hang the model off the pivot centred by its bounds, the ground at its own y = 0 (a class
     // sits on the ground by its lowest point, since it has no ground of its own).
-    const box = new T.Box3().setFromObject(root), c = box.getCenter(new T.Vector3()), s = box.getSize(new T.Vector3());
+    const box = shownBox(root), c = box.getCenter(new T.Vector3()), s = box.getSize(new T.Vector3());
     root.position.set(-c.x, shape ? -box.min.y : 0, -c.z);
     this.sizeClass = typeof this.size === "string" ? this.size : (this.sizeClass || "heavy");   // the page sets its class by mass as size; the numbers take the name below
     this.size = Math.max(s.x, s.y, s.z);
@@ -2490,6 +2516,5 @@ class Stage {
   seek(t) { if (this.rig && this.rig.current) { this.rig.seek(t); this.renderer && this.renderer.render(this.scene, this.camera); this.emit(); } }
 }
 
-window.HangarMotion = {Rig, Route, Stage, MovePath, HoverBalance, curve, cycleCurve, curveAt, sample, sampleCycle, clampDegrees, labelled, MOVE_REF_SPEED,
-  plumes: (on) => { if (on !== undefined) PLUMES_ON = !!on; return PLUMES_ON; }};
+window.HangarMotion = {Rig, Route, Stage, MovePath, HoverBalance, curve, cycleCurve, curveAt, sample, sampleCycle, clampDegrees, labelled, MOVE_REF_SPEED};
 })();

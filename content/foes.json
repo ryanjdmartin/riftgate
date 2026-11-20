@@ -124,35 +124,35 @@
     },
     {
       "id": "mandragora", "name": "Mandragora", "faction": "meadow",
-      "design": { "sprite": "a gnarled root creature with a screaming human face, root legs, leaves sprouting from its head", "variants": ["a gnarled pale root creature with clods of soil still clinging to its root legs, arched back mid-scream with its root arms flung wide and the mouth of its human face stretched open, leaves sprouting from its head", "a gnarled dark brown root creature crouched low on splayed root legs, lashing a long whip of root out ahead of it, its screaming human face twisted with fury, leaves sprouting from its head", "a gnarled root creature wreathed in trailing ivy with a crown of wilted purple flowers, hunched forward with its long root fingers clawed, its human face screaming", "a gnarled root creature with bark like old weathered skin and clusters of blood-red berries among the leaves on its head, lunging forward on its root legs with its root arms thrown back, its human face screaming"], "fantasy": "The screaming root, pulled up and furious.", "niche": "Back rank. Its scream costs the team a reroll, which is the Meadow's one attack on the die." },
-      "codex": "A root with a face, and it screams. It stands behind the crowd and lashes, and it saves the scream for when it is pulled up: kill one and the team loses a reroll next round.",
-      "hp": 4, "attack": 2, "rank": "back", "movespeed": 2,
-      "on_death": { "act": { "name": "Scream", "effect": "drain_rerolls", "value": 1, "text": "Pulled up, it screams: the team loses one reroll next round." } },
+      "design": { "sprite": "a gnarled root creature with a screaming human face, root legs, leaves sprouting from its head", "variants": ["a gnarled pale root creature with clods of soil still clinging to its root legs, arched back mid-scream with its root arms flung wide and the mouth of its human face stretched open, leaves sprouting from its head", "a gnarled dark brown root creature crouched low on splayed root legs, lashing a long whip of root out ahead of it, its screaming human face twisted with fury, leaves sprouting from its head", "a gnarled root creature wreathed in trailing ivy with a crown of wilted purple flowers, hunched forward with its long root fingers clawed, its human face screaming", "a gnarled root creature with bark like old weathered skin and clusters of blood-red berries among the leaves on its head, lunging forward on its root legs with its root arms thrown back, its human face screaming"], "fantasy": "The screaming root, pulled up and furious.", "niche": "Back rank. Its scream leaves its killer Brittle (Ryan, 19 November: \"Mandragora can be brittle on killer for t1\"; the reroll it took until then went since \"denying rerolls is not the meadow's job, at least not on a ubiquitous enemy at a trigger you can't avoid\"), so who pulls it up is the choice: a machine no blow is drawn on this round, or one with plate to spare. Brittle 2, the least a status that halves may lay. Its lash corrupts (Ryan, 20 November: \"I'd give them corrupt on every blow. Then you have a decision to make: time the mandragora kills well to prevent the corruption bleed, or try and clear the goblins first so you're not worried about the brittle\"), the line's whole Root Lash with it." },
+      "codex": "A root with a face, and it screams. It stands behind the crowd, and its lash corrupts the entry a machine is showing; it saves the scream for when it is pulled up: the machine that kills one is left Brittle, and every blow it takes lands harder.",
+      "hp": 3, "attack": 2, "rank": "back", "movespeed": 2,
+      "on_death": { "act": { "name": "Scream", "effect": "brittle", "value": 2, "text": "Pulled up, it screams at its killer: Brittle ×{value}." } },
       "actions": [
-        { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "text": "A whip of root for {damage}.", "status": "implemented" }
+        { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "corrupt": 1, "text": "A whip of root for {damage}; the component the machine is showing bites when spent.", "status": "implemented" }
       ],
       "flavour": "Earplugs are issued. Earplugs do not help."
     },
     {
       "id": "mandrake", "name": "Mandrake", "faction": "meadow", "tier": 2,
-      "design": { "fantasy": "The mandrake, the louder root. Tier two of the mandragora line." },
-      "codex": "A mandragora with lungs. Its dying scream costs the team a reroll.",
+      "design": { "fantasy": "The mandrake, the louder root. Tier two of the mandragora line: its scream reaches every machine (Ryan, 19 November: \"it's higher variations can brittle the whole team\")." },
+      "codex": "A mandragora with lungs. Its lash corrupts the entry a machine is showing, and its dying scream leaves every machine Brittle.",
       "hp": 4, "attack": 3, "rank": "back", "movespeed": 2,
-      "on_death": { "act": { "name": "Scream", "effect": "drain_rerolls", "value": 1, "text": "Pulled up, it screams: the team loses a reroll next round." } },
+      "on_death": { "act": { "name": "Scream", "effect": "brittle_all", "value": 2, "text": "Pulled up, it screams: every machine Brittle ×{value}." } },
       "actions": [
-        { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "text": "A whip of root for {damage}.", "status": "implemented" }
+        { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "corrupt": 1, "text": "A whip of root for {damage}; the component the machine is showing bites when spent.", "status": "implemented" }
       ],
       "flavour": "The screaming is not the attack. The screaming is what it does to your plan."
     },
     {
       "id": "alraune", "name": "Alraune", "faction": "meadow", "tier": 3,
-      "design": { "fantasy": "The alraune, the genre's flower woman, here a root that steals an entry. Tier three of the mandragora line." },
-      "codex": "The flowering root. Its shriek jams the component a machine's die is showing, and it screams as it dies: a reroll off the team next round.",
+      "design": { "fantasy": "The alraune, the genre's flower woman, here a root that steals an entry. Tier three of the mandragora line, its scream on every machine as the Mandrake's is." },
+      "codex": "The flowering root. Its lash corrupts and its shriek jams the component a machine's die is showing, and it screams as it dies: every machine left Brittle.",
       "hp": 5, "attack": 5, "rank": "back", "movespeed": 2,
-      "on_death": { "act": { "name": "Scream", "effect": "drain_rerolls", "value": 1, "text": "Pulled up, it screams: the team loses a reroll next round." } },
+      "on_death": { "act": { "name": "Scream", "effect": "brittle_all", "value": 2, "text": "Pulled up, it screams: every machine Brittle ×{value}." } },
       "actions": [
-        { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "text": "A whip of root for {damage}.", "status": "implemented" },
-        { "id": "shriek", "name": "Shriek", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to wood, through its next turn.", "status": "implemented" }
+        { "id": "root_lash", "name": "Root Lash", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "corrupt": 1, "text": "A whip of root for {damage}; the component the machine is showing bites when spent.", "status": "implemented" },
+        { "id": "shriek", "name": "Shriek", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to wood, until that machine reboots.", "status": "implemented" }
       ],
       "flavour": "Pretty, from a distance. Keep the distance."
     },
@@ -163,7 +163,7 @@
       "hp": 12, "attack": 4, "rank": "front", "movespeed": 3, "role": "flanker",
       "actions": [
         { "id": "claw", "name": "Claw", "kind": "attack", "weight": 2, "text": "A raking claw for {damage}.", "status": "implemented" },
-        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is Jammed through its next turn.", "status": "implemented" }
+        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is Jammed until its machine reboots.", "status": "implemented" }
       ],
       "flavour": "It is not purring. Check your instruments."
     },
@@ -174,7 +174,7 @@
       "hp": 13, "attack": 6, "rank": "front", "movespeed": 3, "role": "flanker",
       "actions": [
         { "id": "claw", "name": "Claw", "kind": "attack", "weight": 2, "text": "A raking claw for {damage}.", "status": "implemented" },
-        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is Jammed through its next turn.", "status": "implemented" }
+        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is Jammed until its machine reboots.", "status": "implemented" }
       ],
       "flavour": "The first one was the kitten."
     },
@@ -185,7 +185,7 @@
       "hp": 16, "attack": 7, "rank": "front", "movespeed": 3, "role": "flanker",
       "actions": [
         { "id": "claw", "name": "Claw", "kind": "attack", "weight": 2, "text": "A raking claw for {damage}.", "status": "implemented" },
-        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is Jammed through its next turn.", "status": "implemented" }
+        { "id": "whisker_lash", "name": "Whisker Lash", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Its whiskers crack for {damage}, and the entry the machine shows is Jammed until its machine reboots.", "status": "implemented" }
       ],
       "flavour": "You feel the whiskers before you see the cat."
     },
@@ -297,7 +297,7 @@
       "hp": 4, "attack": 3, "rank": "back", "movespeed": 2, "winged": true,
       "actions": [
         { "id": "peck", "name": "Peck", "kind": "attack", "weight": 2, "text": "A beak like a pick, for {damage}.", "status": "implemented" },
-        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" }
+        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, until that machine reboots.", "status": "implemented" }
       ],
       "flavour": "Don't look at it. No, the other way."
     },
@@ -308,7 +308,7 @@
       "hp": 5, "attack": 4, "rank": "back", "movespeed": 2, "winged": true,
       "actions": [
         { "id": "peck", "name": "Peck", "kind": "attack", "weight": 2, "text": "A beak like a pick, for {damage}.", "status": "implemented" },
-        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" },
+        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, until that machine reboots.", "status": "implemented" },
         { "id": "transfix", "name": "Transfix", "kind": "debuff", "effect": "expose", "weight": 1, "when": "others_on_field", "text": "Its stare holds one machine still: it stands Exposed through the next round, its armour counting for nothing and every foe's targeted move turned on it.", "status": "implemented" }
       ],
       "flavour": "It looks at what you are pointing at it. Then that stops working."
@@ -318,10 +318,10 @@
       "design": { "fantasy": "The gorgon, theft of entries by corruption on the back rank. Tier three of the cockatrice line." },
       "codex": "The gaze that corrupts. Its peck leaves the component a machine is showing biting its owner, and its stone switches one off. Its last look is for whoever kills it: the entry that machine shows turns to stone too.",
       "hp": 6, "attack": 5, "rank": "back", "movespeed": 2, "winged": true,
-      "on_death": { "act": { "name": "Dying Gaze", "effect": "jam", "text": "Her gaze outlives her: what her killer's die is showing turns to stone, through its next turn." } },
+      "on_death": { "act": { "name": "Dying Gaze", "effect": "jam", "text": "Her gaze outlives her: what her killer's die is showing turns to stone, until her killer reboots." } },
       "actions": [
         { "id": "peck", "name": "Peck", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "corrupt": 1, "text": "A beak like a pick, for {damage}; the component the machine is showing bites when spent.", "status": "implemented" },
-        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, through its next turn.", "status": "implemented" }
+        { "id": "stone", "name": "Stone", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Turns what one machine's die is showing to stone, until that machine reboots.", "status": "implemented" }
       ],
       "flavour": "The Waste takes what you have. This one takes it and leaves it in you."
     },
@@ -773,7 +773,7 @@
     },
     {
       "id": "elder_treant", "name": "Elder Treant", "faction": "meadow", "elite": true,
-      "design": { "fantasy": "The beefed-up alpha of the walking tree (Ryan, 24 October: the harder-fight elite; the ent is Tolkien's coinage and the treant D&D's rename, so the name is ours). It comes with two mandragoras, whose screams cost the rerolls the storm wants.", "niche": "A column that regrows faster than a trio cuts it, and a storm below half. Burst, and keep the rerolls for the storm.", "notes": "Proposed 26 October; landed 30 October as a placeholder kit for Ryan's marks. No art yet: the views' placeholder shape until a recolour or a pick is cut." },
+      "design": { "fantasy": "The beefed-up alpha of the walking tree (Ryan, 24 October: the harder-fight elite; the ent is Tolkien's coinage and the treant D&D's rename, so the name is ours). It comes with two mandragoras, whose screams leave their killers Brittle under the storm.", "niche": "A column that regrows faster than a trio cuts it, and a storm below half. Burst, and pull the roots up with the machines that can stand a harder blow, before the storm comes.", "notes": "Proposed 26 October; landed 30 October as a placeholder kit for Ryan's marks. No art yet: the views' placeholder shape until a recolour or a pick is cut." },
       "codex": "Older than the Treant, and it has learned to hate the saw. Fills a whole column and grows back five of what you cut each time it stops to think; badly hurt, the roots come up under every machine.",
       "hp": 50, "attack": 16, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
@@ -791,7 +791,7 @@
       "actions": [
         { "id": "switch", "name": "Switch", "kind": "attack", "weight": 2, "text": "A whip of green wood for {damage}.", "status": "implemented" },
         { "id": "call_of_the_wild", "name": "Call of the Wild", "kind": "buff", "effect": "summon", "foe": "wolf", "count": 2, "weight": 1, "text": "Two dire wolves come to the call, into empty places at once, as many as there is room for.", "status": "implemented" },
-        { "id": "root_snare", "name": "Root Snare", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Roots take the entry its target shows: Jammed through its next turn.", "status": "implemented" }
+        { "id": "root_snare", "name": "Root Snare", "kind": "debuff", "effect": "jam", "weight": 1, "text": "Roots take the entry its target shows: Jammed until its machine reboots.", "status": "implemented" }
       ],
       "flavour": "The wolves do not run from it. They run for it."
     },
@@ -860,7 +860,7 @@
       "codex": "A horned ape that spits lightning. It picks the strongest machine on the field and goes for it: a beam that jams the entry it shows, a rampage of three fists, and a roar that turns its fur gold. Gold, its blows hit harder and it wears a point of armour for three rounds, until a quarter of its HP is knocked out of it; then it staggers. Shield through the gold, or break it.",
       "hp": 54, "attack": 16, "rank": "front", "movespeed": 3,
       "actions": [
-        {"id": "lightning_beam", "name": "Lightning Beam", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["jam"], "text": "A beam of lightning: {damage}, and the entry it shows is Jammed through its next turn.", "status": "implemented"},
+        {"id": "lightning_beam", "name": "Lightning Beam", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["jam"], "text": "A beam of lightning: {damage}, and the entry it shows is Jammed until its machine reboots.", "status": "implemented"},
         {"id": "rampage", "name": "Rampage", "kind": "attack", "strikes": 3, "factor": 0.4, "weight": 2, "text": "A rampage of fists: {damage}, three times.", "status": "implemented"},
         {"id": "golden_rage", "name": "Golden Rage", "kind": "buff", "effect": "golden", "value": 2, "rounds": 3, "weight": 2, "when": "calm", "text": "It roars and its fur goes gold: its blows hit 2 harder and it wears a point of armour for three rounds, until a quarter of its HP is knocked out of it; then it staggers.", "status": "implemented"}
       ],
@@ -873,7 +873,7 @@
       "hp": 64, "attack": 16, "rank": "front", "movespeed": 2,
       "actions": [
         {"id": "rusting_bite", "name": "Rusting Bite", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "corrupt": 1, "before": [{"effect": "dispel", "value": 1}], "text": "A bite that rusts: Purge 1, then {damage}, and the entry it shows is corrupted.", "status": "implemented"},
-        {"id": "antennae", "name": "Antennae", "kind": "debuff", "effect": "jam", "weight": 1, "text": "The antennae brush a machine: the entry it shows is Jammed through its next turn.", "status": "implemented"},
+        {"id": "antennae", "name": "Antennae", "kind": "debuff", "effect": "jam", "weight": 1, "text": "The antennae brush a machine: the entry it shows is Jammed until its machine reboots.", "status": "implemented"},
         {"id": "feed", "name": "Feed", "kind": "defend", "effect": "recover", "value": 6, "weight": 1, "when": "missing_hull", "text": "It feeds on what it bit off: recovers {value} HP.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K, amended: secure your weapons. Appendix N: from this too."
@@ -893,11 +893,11 @@
     {
       "id": "fell_rider", "name": "The Fell Rider", "faction": "marsh", "elite": true,
       "design": {"fantasy": "Tolkien's Nazgûl on the fell beast by archetype (his coinages, so a name of ours; Ryan, 3 November: \"Nazgul is good\", the mount his to settle: the fell beast is Claude's lean, winged, so the Marsh has a hunter that crosses the walls the team holds; the horse at tier one would be a second entry with the same kit, and neither mount the Witch-king at the gate, a blitz rather than a hunt). The Marsh's hunter now the Reaper wanders. The Black Rider was its working name until it met Megami Tensei's Fiend of that name.", "niche": "Winged, it crosses walls and water, and it hunts the strongest machine, the bearer. Its blade corrupts the entry shown, its shriek costs the team a reroll, and below half the Black Breath lands on every machine. A wall is no answer to it; the kill is.", "notes": "Landed 3 November as a placeholder kit on Ryan's marks; every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py) until a render is picked. The mount settled 4 November (Ryan): the fell beast at every tier, since flying is its map identity, no horse at the lower tiers, and no Witch-king, whose silhouette is the Skeleton King's.", "sprite": "a black-cloaked rider with no face in its hood astride a vast leathery winged beast with a long neck and a toothed maw, a long pale blade in its hand, drawn retro"},
-      "codex": "A rider with no face on a beast with wings. Walls and water are nothing to it, and it comes for the strongest machine on the field: a blade that corrupts the entry it shows, a shriek that takes a reroll from the team, and below half a breath that reaches everything. There is no hiding from it; kill it.",
+      "codex": "A rider with no face on a beast with wings. Walls and water are nothing to it, and it comes for the strongest machine on the field: a blade that corrupts the entry it shows, a shriek that takes a reroll from the team and saps every machine, and below half a breath that reaches everything. There is no hiding from it; kill it.",
       "hp": 48, "attack": 16, "rank": "front", "movespeed": 3, "winged": true,
       "actions": [
         {"id": "fell_blade", "name": "Fell Blade", "kind": "attack", "weight": 2, "keywords": ["corrupt"], "corrupt": 1, "text": "A pale blade: {damage}, and the entry it shows is corrupted.", "status": "implemented"},
-        {"id": "shriek", "name": "Shriek", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "text": "A shriek that stops the heart: the team has {value} fewer reroll next round.", "status": "implemented"},
+        {"id": "shriek", "name": "Shriek", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "also": [{"effect": "sap_all", "value": 1}], "text": "A shriek that stops the heart: the team has {value} fewer reroll next round, and every machine is Sapped, each hit a point lower through its next turn.", "status": "implemented"},
         {"id": "black_breath", "name": "Black Breath", "kind": "attack", "factor": 0.4, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "The Black Breath: {damage} to every machine.", "status": "implemented"}
       ],
       "flavour": "Gate order four, footnote: it did not come over the wall. It came over the wall's wall."
@@ -933,7 +933,7 @@
       "hp": 20, "attack": 8, "rank": "front", "movespeed": 3, "winged": true,
       "actions": [
         {"id": "lance", "name": "Lance", "kind": "attack", "swarm": 1, "weight": 2, "text": "A lance from the Hunt for {damage}: more for every other rider standing.", "status": "implemented"},
-        {"id": "frost", "name": "Frost", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Frost in its wake: {damage}, and the entry it shows is Jammed through its next turn.", "status": "implemented"},
+        {"id": "frost", "name": "Frost", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Frost in its wake: {damage}, and the entry it shows is Jammed until its machine reboots.", "status": "implemented"},
         {"id": "quarry", "name": "Name the Quarry", "kind": "debuff", "effect": "expose", "weight": 1, "when": "others_on_field", "text": "A rider names the quarry: it stands Exposed through the next round, its armour counting for nothing and every foe's targeted move turned on it.", "status": "implemented"}
       ],
       "flavour": "Gate order four, footnote: they are not from the Marsh. They are not from anywhere."
@@ -1004,7 +1004,7 @@
       "hp": 60, "attack": 16, "armour": 1, "rank": "front", "movespeed": 1,
       "actions": [
         {"id": "blade", "name": "Blade", "kind": "attack", "weight": 2, "text": "His own sword, for {damage}.", "status": "implemented"},
-        {"id": "collect", "name": "Collect", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["jam"], "also": [{"effect": "appropriate"}], "then": "borrowed_blade", "text": "Knocks loose what a machine is showing, for {damage}, and takes it: that entry is Jammed through its next turn, and he is Appropriated at its number, to swing next round.", "status": "implemented"},
+        {"id": "collect", "name": "Collect", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["jam"], "also": [{"effect": "appropriate"}], "then": "borrowed_blade", "text": "Knocks loose what a machine is showing, for {damage}, and takes it: that entry is Jammed until its machine reboots, and he is Appropriated at its number, to swing next round.", "status": "implemented"},
         {"id": "borrowed_blade", "name": "Borrowed Blade", "kind": "attack", "power": "appropriated", "weight": 1, "text": "Swings what he took, at its own number; anything that was no weapon is a fake, for 1.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: secure your weapons. Appendix L: he means all of them."
@@ -1038,7 +1038,7 @@
       "codex": "An eye in the Fallen Weapon's blade. While it and its twin stand, the weapon cannot be hurt. Its stare jams what a machine is showing.",
       "hp": 8, "attack": 8, "rank": "front", "movespeed": 1,
       "actions": [
-        {"id": "gaze", "name": "Gaze", "kind": "attack", "weight": 1, "keywords": ["jam"], "text": "A stare that jams what a machine is showing: {damage}, and that entry is Jammed through its next turn.", "status": "implemented"}
+        {"id": "gaze", "name": "Gaze", "kind": "attack", "weight": 1, "keywords": ["jam"], "text": "A stare that jams what a machine is showing: {damage}, and that entry is Jammed until its machine reboots.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: do not meet its eye. It will meet yours."
     },
@@ -1118,11 +1118,11 @@
     {
       "id": "emperor_scorpion", "name": "The Emperor Scorpion", "faction": "waste",
       "design": {"fantasy": "Golden Sun: The Lost Age's King Scorpion by archetype, the Yampi Desert's boss (Camelot's, so a name of ours: the emperor scorpion is the real animal, and the king of the sand reads through it); the first Golden Sun homage on the foes' side, on Ryan's word of 4 November (\"If there's an iconic golden sun boss or elite candidate, we should include it. Whether that's the waste boss or something else\"), in the desert it came from. Its moves by the original's: Twin Shear, Paralytail (the paralysis a disable, the Waste's interrupt on the die) and Desert Gasp (its breath over the party), its Poison Tail folded into the gasp's corrupt; its burrow and the Scoop that drops the party into its lair left out, since the Mantis Ant and the Sandworm line burrow already.", "niche": "The Waste's third boss: fixed pressure on the die (a disable, then corrupt on every entry shown) under two pincers, a point of plate by its carapace (a boss's armour by its fantasy, 2 November), no countdown and no parts, so it is the Waste's plain brawl beside the Colossus's swallow and the Weapon's eyes.", "notes": "Numbers placeholders: 48 HP and attack 7 as the slate's bosses at tier one, scaled by the tier. Escorts the tier's Antlions and Needlers (its brood; a scorpion carries its young on its back). The name is Claude's pick for Ryan's name pass; The King Scorpion straight is the other option. Its art a rough placeholder (tools/placeholder_art.py) until a render is picked.", "sprite": "a huge armoured desert scorpion, dun and black, pincers raised wide, the segmented tail curled high over its back with a glistening sting, half risen out of a dune"},
-      "codex": "The sand's own emperor, a scorpion the size of a gatehouse. Its pincers shear twice; its tail stings the entry you show into silence; below half it gasps the desert over every machine, and the gasp corrupts. Shield the stung, and kill it before the sand turns.",
+      "codex": "The sand's own emperor, a scorpion the size of a gatehouse. Its pincers shear twice; its tail stings the entry you show into silence and leaves its venom burning; below half it gasps the desert over every machine, and the gasp corrupts. Shield the stung, and kill it before the sand turns.",
       "hp": 60, "attack": 10, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "twin_shear", "name": "Twin Shear", "kind": "attack", "strikes": 2, "factor": 0.6, "weight": 2, "text": "The pincers: {damage}, twice.", "status": "implemented"},
-        {"id": "paralytail", "name": "Paralytail", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["jam"], "text": "The tail: {damage}, and the entry it shows is Jammed through its next turn.", "status": "implemented"},
+        {"id": "paralytail", "name": "Paralytail", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["jam", "ablate"], "ablate": 2, "text": "The tail: {damage}, the entry it shows Jammed until its machine reboots, and the machine Ablating ×2.", "status": "implemented"},
         {"id": "desert_gasp", "name": "Desert Gasp", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["all", "corrupt"], "corrupt": 1, "when": "below_half", "text": "Desert gasp over every machine: {damage} each, and the entry each shows is corrupted.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix W: if the sand moves and there is no wind, it is not the wind."
@@ -1156,7 +1156,7 @@
       "codex": "The orb that spits lightning. Spark Plasma switches off the entry a machine shows; Shine Plasma reaches everyone for less. It dies easily, so it is usually left for last.",
       "hp": 6, "attack": 5, "rank": "back", "movespeed": 2, "tier": 2,
       "actions": [
-        {"id": "spark_plasma", "name": "Spark Plasma", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["jam"], "text": "Spark Plasma: {damage}, and the entry it shows is Jammed through its next turn.", "status": "implemented"},
+        {"id": "spark_plasma", "name": "Spark Plasma", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["jam"], "text": "Spark Plasma: {damage}, and the entry it shows is Jammed until its machine reboots.", "status": "implemented"},
         {"id": "shine_plasma", "name": "Shine Plasma", "kind": "attack", "factor": 0.4, "weight": 1, "keywords": ["all"], "text": "Shine Plasma: {damage} to every machine.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: it hums before it fires. That is the only warning you get."

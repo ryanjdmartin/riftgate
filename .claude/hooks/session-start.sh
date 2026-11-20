@@ -3,9 +3,10 @@
 # MSAA fix until 4.8 ships, 30 October) and the project's first import, so the tests, the runners
 # and the screenshots run as the README writes them from the first command. Runs only in a Claude
 # Code cloud session (the desk machine has its own Godot); idempotent, so a resumed session costs
-# nothing; the container's state is cached once it has run. The import rewrites four Prairie Dog
-# textures and the maker's review tiles (the status's cloud note): they are restored when they
-# were clean before it.
+# nothing; the container's state is cached once it has run. The import copies each model's
+# textures out of its .glb as the PNGs the game draws, and rewrites a copy only when its model was
+# committed without it (the README's cloud note): such a copy is the one to commit, so the hook
+# keeps it and says so, where it once restored it.
 set -euo pipefail
 
 if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
@@ -39,13 +40,11 @@ fi
 PROJECT="${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "$0")/../.." && pwd)}"
 cd "$PROJECT"
 if [ ! -d .godot ]; then
-  touched="art/models/prairie_dog_* tools/lowforge/tiles/"
-  # shellcheck disable=SC2086
-  dirty="$(git status --porcelain -- $touched 2>/dev/null || true)"
+  before="$(git status --porcelain -- art/models 2>/dev/null || true)"
   perl -e 'alarm 600; exec @ARGV' "$BIN" --headless --path . --import > /dev/null 2>&1 || true
-  if [ -z "$dirty" ]; then
-    # shellcheck disable=SC2086
-    git checkout -- $touched 2>/dev/null || true
-  fi
   echo "project imported ($(ls .godot 2>/dev/null | wc -l) entries in .godot)"
+  after="$(git status --porcelain -- art/models 2>/dev/null || true)"
+  if [ "$after" != "$before" ]; then
+    echo "the import rewrote texture copies a model left behind under art/models: commit them, never restore them (tests/test_model_textures.gd)"
+  fi
 fi

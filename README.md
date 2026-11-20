@@ -91,13 +91,15 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     `sheet_export.py`, `foeforge/`, `placeholder_art.py`, `recolour.py`, `loot_tokens.py`
   - Sound: `soundforge/` builds every sound and the six music tracks from written recipes
   - The phone: `phone.sh` and `android.sh`, with `.cmd` launchers on Windows
-  - The hangar page: `hangar.html`, one artifact with seven tabs (the codex, the bench, the
-    content editor, the text, the names, the designs, the models), its motion script
-    `hangar_motion.js`, and the scripts that write its files: `hangar_data.py` (the files
-    map, the models as glTF JSON into `build/hangar/models`), `hangar_designs.py` (the
-    briefs) and `hangar_text.py` (every shown text). Ryan's saved edits live in its
-    database: `edits` (the content editor and the bench), `candidates` (names), `designs`
-    (his corrections to the briefs) and `text` (his texts, marks and notes).
+  - The hangar page: `hangar.html`, one artifact with five tabs (the codex, the bench with
+    each machine's sheet and the briefs, the content editor, the text, the models), its
+    motion script `hangar_motion.js`, and the scripts that write its files: `hangar_data.py`
+    (the files map, the models as glTF JSON into `build/hangar/models`), `hangar_designs.py`
+    (the briefs) and `hangar_text.py` (every shown text). Ryan's saved edits live in its
+    database: `edits` (the content editor and the bench), `designs` (his notes on the briefs)
+    and `text` (his texts, marks and notes, the bench's codex and flavour among them).
+  - Names: `check_name.py` checks a name against every machine in `content/reserved_names.json`
+    and the names in content; `docs/naming.md` is the kinds of names each maker wants.
   - `spriter/.venv` is the Python the art and sound tools run with.
 - `art/`: `models/` every glTF the engine draws, with a `<id>.rig.json` sidecar beside each
   machine (written by lowforge, read by `mech_rig.gd` and `mech_view_3d.gd`);
@@ -110,7 +112,9 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
   - `rules.md` the rules as they stand; `design-bible.html` the decisions and why, with the
     questions only Ryan can settle in its section 12; `status.md` how things stand and the
     order of work; `todo.md` the tasks, one line each by who moves it; `measurements.md`
-    every run a decision cites.
+    every run a decision cites; `naming.md` the kinds of names each maker wants, a reference
+    and never a list; `name_candidates.md` the names floated on the hangar's old Names tab,
+    kept as a record.
   - Generated: `vocabulary.md` (from the vocabulary), `voice.md` (every shown text Ryan has
     signed as his own, read before a session drafts shown text), `synergy_map.md` (who sets
     and who reads every status and resource), `balance.md`, `campaign_run.md`, `battle_run.md`,
@@ -122,7 +126,8 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     approach, the tier-one bench); `economy_pass.md`; `formation_proposal.md` (kept for the
     bosses' stat blocks and the flankers' slate); `locked_pieces_proposal.md`;
     `reboot_machines_proposal.md` (the machines the reboot broke); `bosses_proposal.md` (the
-    bosses' and elites' slate); `heroes_proposal.md`; `mechanics_audit.md`;
+    bosses' and elites' slate); `heroes_proposal.md`; `domain_statuses_proposal.md` (the
+    domains' buffs and debuffs, the purging leaders, Phased by source); `mechanics_audit.md`;
     `skirmish_audit.md` (the code audit and its order of work); `roster_analysis.md`.
   - Retired, in git: the vocabulary pass's proposal and its table of marks
     (`git show 07f01fb:docs/vocabulary_pass_proposal.md`,
@@ -157,8 +162,12 @@ A cloud session sets nothing up by hand: the session-start hook
 (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`) fetches Godot
 4.8-beta2's Linux build into `~/bin` and runs the first import, once in a container. Anything
 that needs a window runs under `xvfb-run -a` with `--rendering-method gl_compatibility`
-there. The first import rewrites the Prairie Dog's four textures on any machine: restore them
-(`git checkout -- art/models/prairie_dog_*`), never commit them.
+there. A model's textures ride in its `.glb`, and the import copies each out beside it
+(`art/models/<id>_<texture>.png`, its fingerprint in the `.import`) as the file the game
+draws, on any machine: a model is committed with the copies the import then writes, and a
+texture a fresh import rewrites is one a model left behind, to commit and never to restore
+(`tests/test_model_textures.gd` fails the build until it is committed, and on a copy whose
+model no longer has its texture).
 
 If a headless tool script errors before it calls `quit()`, Godot keeps running, so every
 headless run sits in a watchdog: `perl -e 'alarm N; exec @ARGV'`.
@@ -193,16 +202,17 @@ python3 tools/synergy_map.py --write
 python3 tools/pages/roster_analysis_page.py > /tmp/roster_analysis.html
 
 # the hangar page (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH)
-python3 tools/hangar_data.py              # writes docs/hangar/pins.json and build/hangar/designs.json, checks the renders manifest, prints the files map tools/hangar.html is published with
+python3 tools/hangar_data.py              # writes docs/hangar/pins.json, build/hangar/designs.json and build/hangar/text.json, checks the renders manifest, prints the files map tools/hangar.html is published with
 python3 tools/hangar_designs.py --check   # every brief's hangar header, alone
 python3 tools/hangar_text.py              # the Text tab's inventory into build/hangar/text.json, and its counts
 python3 tools/hangar_text.py --check      # every string key in content classified, the ledger sound
-# after Ryan writes on the Text tab: save the `text` collection with ArtifactData's list (out_dir build/hangar/text_inbox), then
+# after Ryan writes on the Text tab or a Bench sheet's codex and flavour: save the `text` collection with ArtifactData's list (out_dir build/hangar/text_inbox), then
 python3 tools/hangar_text.py --fold build/hangar/text_inbox --dry   # what it would change; without --dry it writes his texts into content, his marks into docs/hangar/text.json and docs/voice.md, and prints his notes
-# a design session's first step: save the `designs` collection the same way (out_dir build/hangar/inbox), then
+# a design session's first step: save the `designs` collection (his notes on the Bench's briefs) the same way (out_dir build/hangar/inbox), then
 python3 tools/hangar_designs.py --fold build/hangar/inbox --dry     # what it would fold; without --dry it writes the briefs and prints the batch that clears them
 # a render round: pictures into docs/hangar/renders/<chassis>/, the entry in docs/hangar/renders.json, republish.
-# After Ryan edits on the Content tab: pull `edits`, apply by hand, test, commit, republish, clear the documents.
+# After Ryan edits on the Content tab or the Bench: pull `edits`, apply by hand, test, commit, republish, clear the documents.
+python3 tools/check_name.py "Storm Kite" Dunkleosteus   # a name against the reserved machines and the names in content (docs/naming.md)
 ```
 
 ### The runners
@@ -402,7 +412,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 
 ```sh
 # What a standalone run fields
-#   RIFTGATE_TEAM=badger,clydesdale,kite,baboon   the team (the standalone skirmish and battle screens)
+#   RIFTGATE_TEAM=badger,clydesdale,kite,baboon   the team (the standalone skirmish and battle screens); in a skirmish an id may carry its branch picks, macaque@duelist+duelist
 #   RIFTGATE_FOES=warrior,goblin:3,cleric         the skirmish's foes by id and count, heroes included
 #   RIFTGATE_BOSS=1                               adds the faction's boss to the skirmish
 #   RIFTGATE_COLUMNS=4                            the width of the skirmish's formation
@@ -439,7 +449,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 # A thing fired constantly, to judge it running (=1 unless a value is shown)
 #   RIFTGATE_FEED_DEBUG       the skirmish feed's analysis events and the ground tears (any run)
 #   RIFTGATE_PULSE_DEBUG      END TURN pulsing, on the map and in a fight (any run)
-#   RIFTGATE_SEAL_DEBUG       a model's form held and let go in turn: the Polar Bear's seal, the Clydesdale's batteries (any run)
+#   RIFTGATE_SEAL_DEBUG       a model's form held and let go in turn: the Polar Bear's seal, the Clydesdale's batteries, the Macaque's armaments one at a time (any run)
 #   RIFTGATE_ACT_DEBUG        one foe after another lit as the acting foe (skirmish)
 #   RIFTGATE_RAGE_DEBUG       the rage meter filling and emptying on the machine that banks it (skirmish)
 #   RIFTGATE_PREY_DEBUG       the predator sense kept on (skirmish)
@@ -477,17 +487,20 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 
 ```sh
 # the machines from their code (tools/lowforge/models_low.py), then the import
-tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger kite clydesdale baboon polar_bear wild_boar prairie_dog dingo buzzard nemesis ammit stingray puffin funnel_web skua needletail storm_petrel giant_petrel musk_ox cassowary cottonmouth swallowtail whip_scorpion
+tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger kite clydesdale baboon polar_bear wild_boar prairie_dog dingo buzzard nemesis ammit stingray puffin funnel_web skua needletail storm_petrel giant_petrel musk_ox cassowary cottonmouth swallowtail whip_scorpion mole macaque
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build gate wall
 tools/spriter/.venv/bin/python tools/lowforge/forge.py build cache_derelict cache_carcass cache_relic
 tools/spriter/.venv/bin/python tools/lowforge/forge.py shapes   # the silhouette classes a swapped component wears, in every maker's metal
 perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
+# commit the model with the texture copies the import wrote beside it (art/models/<id>_*.png and
+# their .import), and delete a copy of a texture the model no longer has; tests/test_model_textures.gd checks both
 # with no Blender installed (a cloud session): a python3.11 venv with `pip install bpy==5.0.1`, then
 BPY_PYTHON=.bpy/bin/python tools/spriter/.venv/bin/python tools/lowforge/forge.py build badger
 tools/spriter/.venv/bin/python tools/lowforge/glbcmp.py art/models/badger.glb /tmp/badger.glb   # a rebuild's geometry against the committed file
 # Joints, acts, gaits, counts, spins, hidden mounts and launches are code in models_low.py
 # (`b.joint`, `b.act`, `b.gait`, `b.count`, `b.spin`, `b.pin`, `b.launch`); all of it lands in
-# art/models/<id>.rig.json.
+# art/models/<id>.rig.json. `b.beams` names lit parts made of light (the Macaque's blades and
+# kites of light): unseen at rest, shown while an act or a form lights them over their rest.
 # A machine's own way down is `b.death(seconds, tracks, body=, glow=, ease=, hang=, plant=)` at the
 # end of its recipe, in place of the slump (the bible's death row; act_shot's "lose 3" shows it).
 # Where each lost machine lies and whether it rests; --slide how far its standing feet move along the

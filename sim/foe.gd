@@ -431,7 +431,7 @@ static func _also_onto(move: Dictionary, raw: Dictionary) -> void:
 ## October: a fall lands in the player's turn and would hold through the whole enemy turn
 ## after) and never an Expose, which is announced, one machine at a time.
 const FALL_EFFECTS := ["heal", "brace_all", "cleanse", "revive_once_ally", "rally", "prime", "ward_all",
-	"drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all", "unready_all"]
+	"ablate", "jam", "brittle", "brittle_all", "scorch_all", "corrupt_all", "unready_all"]
 
 
 ## Its fall, if it has one: what it does the moment it falls. A last act was one blow (15
@@ -511,8 +511,16 @@ func strikes() -> int:
 ##   debuff  drain_rerolls: the team has `value` fewer rerolls next round (Roar)
 ##           ablate: its target gains `value` stacks of Ablating, a point a stack off its shield
 ##           and then its hull as the player's turn ends (Stoke; Burning as heat until 15 November)
-##           jam: its target's showing entry is Jammed, switched off through its next turn
+##           jam: its target's showing entry is Jammed, switched off until its machine reboots
 ##           (Hush; "disable" until 15 November, Ryan: "Rename to Jammed")
+##           brittle: its target gains `value` stacks of Brittle, a point more on every blow a foe
+##           lands on it a stack, halving as its turn starts (the Mandragora's scream on its
+##           killer, Ryan, 19 November: "Mandragora can be brittle on killer for t1")
+##           brittle_all: every machine gains `value` stacks of Brittle (the higher roots' scream:
+##           "it's higher variations can brittle the whole team"; nobody in particular)
+##           sap_all: every machine gains `value` stacks of Sapped, its attacks a point lower a
+##           stack through its next turn (the Fell Rider's Shriek, Ryan, 20 November: "Fell
+##           rider shriek probably wants Sap on there, thematically"; nobody in particular)
 ##           scorch_all: every machine gains `value` stacks of Scorched, its weapons and debuffs
 ##           running hotter (Eruption; nobody in particular)
 ##           corrupt_all: every machine's showing entry is corrupted (Unravel; nobody in particular)
@@ -545,12 +553,12 @@ func strikes() -> int:
 const ACTION_EFFECTS := {
 	"defend": ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "phase"],
 	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "golden", "appropriate"],
-	"debuff": ["drain_rerolls", "ablate", "jam", "scorch_all", "corrupt_all", "dispel", "swallow", "expose", "unready_all"],
+	"debuff": ["drain_rerolls", "ablate", "jam", "brittle", "brittle_all", "sap_all", "scorch_all", "corrupt_all", "dispel", "swallow", "expose", "unready_all"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
 ## is shown intent (the ambush read below).
-const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "scorch_all", "corrupt_all", "merge", "golden", "unready_all", "phase"]
+const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "brittle_all", "sap_all", "scorch_all", "corrupt_all", "merge", "golden", "unready_all", "phase"]
 
 
 ## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? It draws

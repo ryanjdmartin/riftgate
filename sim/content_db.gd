@@ -9,10 +9,10 @@ const DIR := "res://content/"
 
 # Design knobs. Loosen or tighten here; the validator and the bible should agree.
 const MAX_AUTHORED_KEYWORDS := 3    # per authored face; upgrades may exceed this at runtime
-## The machine buffs a spend at a foe may lay on its own machine (Face.self_statuses; the Storm
-## Petrel's Hardlight Pulse and its branches, a Ward on itself in its Defence direction since 18
-## November). A Barrier stays its pieces' own, with its cooldown.
-const SELF_GRANTS := ["hardened", "ward", "charged", "supercooled", "primed", "overcharged", "braced", "regenerating"]
+## The machine buffs a spend may lay on its own machine (Face.self_statuses; the Storm Petrel's
+## Hardlight Pulse and its branches, a Ward on itself in its Defence direction since 18 November;
+## the Macaque's offhand, its Beam Buckler's Barrier, Ward and Parry, Ryan, 19 November).
+const SELF_GRANTS := ["hardened", "ward", "charged", "supercooled", "primed", "overcharged", "braced", "regenerating", "barrier", "parry"]
 const MAX_MOVE := 6                 # a move in hexes, chassis or foe, is 1 to this (a placeholder bound, 28 October)
 ## The caveats a hunting composition may name (`hunts`): whom its pack locks. The fastest left on
 ## 16 November with nothing hunting by it (the rule of 12 November).
@@ -319,10 +319,14 @@ func _direction(c: Dictionary, id: String) -> Dictionary:
 ## component), so a destroyed piece takes its tweaks with it. Illegal picks lay nothing.
 func fit_branches(u: Unit, picks: Array) -> void:
 	for s in branch_steps(u.chassis_id, picks):
-		var entry := ""
+		# The piece the step rides: the one every effect names, so a destroyed piece takes its
+		# tweaks with it; a step on the passive, or on more than one piece, rides the passive, each
+		# effect still scoped to its own piece (a destroyed piece's entry is blank, and takes none).
+		var on := {}
 		for eff in s["effects"]:
-			if eff is Dictionary and eff.has("entry"):
-				entry = str(eff["entry"])
+			if eff is Dictionary:
+				on[str(eff.get("entry", ""))] = true
+		var entry: String = str(on.keys()[0]) if on.size() == 1 else ""
 		u.grant_passive({"id": "branch:%s:%s:%d" % [u.chassis_id, s["direction"], int(s["step"]) + 1], "name": s["name"],
 			"description": s["description"], "effects": (s["effects"] as Array).duplicate(true)}, "branch", entry)
 		u.branches.append(str(s["direction"]))
@@ -617,7 +621,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	var face_rules: Array = []   # each entry's component passive, its lines on the component's row
 	if u.die != null:
 		for f in u.die.faces:
-			faces.append(f)
+			faces.append(Effects.upgraded_face(u, f))   # at its own numbers, as its steps make it (the Aile Blitzer)
 			face_rules.append([])
 	# The chassis passive is the passive row; a component's passive rides on its row; everything
 	# else the machine carries between fights (a module, a battle's reward, a status the battle
@@ -625,8 +629,12 @@ func codex_for_unit(u: Unit) -> Dictionary:
 	# not as part of the passive, such as modules, auras, battle effects from fracture rewards").
 	# Each row says where it comes from, and the codex colours it by that.
 	var rows: Array = []
+	var stepped: Array = []   # the steps on the passive, listed after it in the order taken
 	var effects: Array = []
 	var kept := {}   # a kept status's row by its id, its stacks summed
+	var piece_steps: Array = []   # each piece's steps, listed after its own lines in the order taken
+	for i in range(faces.size()):
+		piece_steps.append([])
 	for d in Effects.describe(u):
 		if d[3] != Effects.LOADOUT and d[3] != Effects.BATTLE:
 			continue
@@ -637,12 +645,16 @@ func codex_for_unit(u: Unit) -> Dictionary:
 			for i in range(faces.size()):
 				if faces[i].component == d[2]:
 					face_rules[i].append("%s: %s" % [str(d[0]), d[1]])
+		elif d[2] == "branch" and str(d[6]).is_empty():
+			# A step on the passive, or on more than one piece (the Macaque's offhand and its Aile
+			# Booster): under the passive, after it.
+			stepped.push_front(["%s: %s" % [head, d[1]], "chassis"])   # the latest is read first: so I stands before II
 		elif d[2] == "branch":
 			# An upgrade's step (the Storm Petrel's branches, 17 November): on the row of the piece
-			# it tweaks, as that piece's own passive rides there.
+			# it tweaks, as that piece's own passive rides there, after it, I before II.
 			for i in range(faces.size()):
 				if faces[i].component == str(d[6]):
-					face_rules[i].append("%s: %s" % [str(d[0]), d[1]])
+					(piece_steps[i] as Array).push_front("%s: %s" % [str(d[0]), d[1]])
 		elif d[2] == "module":
 			effects.append({"name": head, "text": str(d[1]), "kind": "module", "note": "MODULE"})
 		elif Effects.is_status(str(d[5])):
@@ -661,6 +673,9 @@ func codex_for_unit(u: Unit) -> Dictionary:
 			effects.append(kept_row)
 		else:
 			effects.append({"name": head, "text": str(d[1]), "kind": "reward", "note": "REWARD"})
+	rows.append_array(stepped)
+	for i in range(faces.size()):
+		(face_rules[i] as Array).append_array(piece_steps[i])
 	var passive_lines: Array[String] = []
 	for r in rows:
 		passive_lines.append(str(r[0]))
@@ -679,6 +694,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		"passive_rows": rows,   # [text, "chassis"]: the chassis's own
 		"effects": effects,     # {name, text, kind ("module" | "reward"), note}: what else it carries between fights
 		"faces": faces,
+		"face_steps": faces.map(func(f: Face) -> int: return Effects.steps_on(u, f)),   # the branch's steps taken on each piece, a chevron each beside its place
 		"face_rules": face_rules,
 		"current": -1,
 		"steps": Effects.steps_die(u),   # a die that steps (the Cassowary's) shows its chambers as a cylinder
@@ -2036,6 +2052,44 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 				errs.append("%s: self_status's per_foe is true or false (a set of stacks for every foe the spend reached)" % where)
 			if eff.has("cap") and int(eff["cap"]) < maxi(1, int(eff.get("value", 1))):
 				errs.append("%s: self_status's cap is the most stacks its machine holds, its value or more" % where)
+			# Flat stacks beside a set a foe (the Beam Pavise's "Gain 1 Armoured, plus 1 Armoured for
+			# every foe struck", Ryan, 19 November).
+			if eff.has("plus") and (not bool(eff.get("per_foe", false)) or int(eff["plus"]) < 1):
+				errs.append("%s: self_status's plus is the flat stacks laid beside per_foe's set a foe, 1 or more, with per_foe" % where)
+		# The Macaque's offhand (Ryan, 19 November: "Only its offhand swaps"): a form of its cycle,
+		# its id a content id, its name and its line shown (its chip, the rider on the die), its riders
+		# the effects the form carries while it is up, read as any status's are.
+		if effect == "offhand":
+			if trig != "static":
+				errs.append("%s: offhand is static: a form of the cycle" % where)
+			if str(eff.get("id", "")).strip_edges().is_empty() or not str(eff.get("id", "")).is_valid_identifier():
+				errs.append("%s: an offhand form has an id, a content id (beam_rifle)" % where)
+			if str(eff.get("name", "")).strip_edges().is_empty() or str(eff.get("description", "")).strip_edges().is_empty():
+				errs.append("%s: an offhand form has a name and a description, its chip's and its rider's line" % where)
+			var riders = eff.get("riders", [])
+			if not (riders is Array) or (riders as Array).is_empty():
+				errs.append("%s: an offhand form carries its riders, one or more effects" % where)
+			else:
+				for r in riders:
+					if not (r is Dictionary) or str((r as Dictionary).get("effect", "")) == "offhand":
+						errs.append("%s: an offhand form's rider is an effect, never a form" % where)
+				_validate_passive("%s form %s" % [where, str(eff.get("id", ""))], {"id": str(eff.get("id", "form")), "name": str(eff.get("name", "")), "description": str(eff.get("description", "")), "effects": riders}, errs)
+		# The Beam Rifle's blow on the foe to the right with every strike, and the Beam Sword's hit again
+		# after each, its share of the strike's blow in percent (the Beam Saber's 100).
+		if effect == "side_strike" and (trig != "static" or int(eff.get("value", 0)) < 1):
+			errs.append("%s: side_strike is static: value, what the foe to the right of the target takes with every strike, 1 or more" % where)
+		if effect == "strike_again" and (trig != "static" or int(eff.get("value", 0)) < 1):
+			errs.append("%s: strike_again is static: value, the share of each strike's blow its hit again carries, in percent, 1 or more" % where)
+		# The name an effect gives the piece it is scoped to (the Aile Booster as its Blitzer or its
+		# Assaulter, Ryan, 19 November): shown text, on an effect that names its piece.
+		if eff.has("name") and effect != "offhand" and (not eff.has("entry") or str(eff["name"]).strip_edges().is_empty()):
+			errs.append("%s: an effect's name is the name its piece takes: a word or two, beside the entry it names" % where)
+		# A branch's status in a buff piece's own's place (the Aile Booster's Blitzer and Assaulter).
+		if effect == "buff_status":
+			if trig != "static" or not Effects.MECH_STATUSES.has(str(eff.get("value", ""))):
+				errs.append("%s: buff_status is static: value, the machine buff its piece grants in place of its own, one of %s" % [where, ", ".join(Effects.MECH_STATUSES)])
+			if not eff.has("entry") or str(components.get(str(eff.get("entry", "")), {}).get("face", {}).get("kind", "")) != "buff":
+				errs.append("%s: buff_status names the buff piece it rewrites (entry)" % where)
 		# An effect scaled by a status the machine carries may count it in steps (the Ammit's flare,
 		# 12 November: an Empowered for every five Essence).
 		if eff.has("stack_step") and (not eff.has("per_stack") or int(eff["stack_step"]) < 1):
@@ -2115,6 +2169,10 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			var numbered := Face.NUMBER_FIELDS.has(Face.keyword_from_name(kw))
 			if eff.has("number") and (not numbered or int(eff["number"]) <= 0):
 				errs.append("%s: grant_keyword's number is a positive number for a numbered keyword (Ablate, Cryo, Brittle, Spread, Penetrate, Chain, Purge)" % where)
+			# A grant that adds to the entry's own number (the Beam Bazooka's: "Two spreads on the same
+			# weapon would combine", Ryan, 19 November), where a grant's number otherwise replaces it.
+			if eff.has("adds") and (not (eff["adds"] is bool) or not eff.has("number")):
+				errs.append("%s: grant_keyword's adds is true or false, beside its number (what it adds to the entry's own)" % where)
 			# An area granted to one debuff (`entry`: the Cryo Flinger's Spread while sealed) carries
 			# no number, as a debuff's printed one does: its effects reach those foes, and it deals
 			# nothing. Any other area grant says what each foe past the target takes.
@@ -2493,9 +2551,9 @@ func _validate_chassis(errs: Array[String]) -> void:
 ## An upgrade's branches (the bible's tiers row; the Storm Petrel the first to carry them, Ryan,
 ## 17 November): two directions, each a step a pick, as deep as the machine picks (a tier one's
 ## two steps, a tier two's one, a tier three none). A step is a description and the effects it
-## lays, one passive's worth: a tweak to one locked piece, every effect scoped to it (`entry`,
-## one of the chassis's fixed pieces; a chassis with none branches on what stands in their place,
-## when one is written), and never a stat ("more the job for Modules").
+## lays, one passive's worth: a tweak to the locked pieces or the passive, as many as it needs, each
+## effect on a piece scoped to it (`entry`, one of the chassis's fixed pieces), and never a stat
+## ("more the job for Modules").
 func _validate_branches(where: String, c: Dictionary, errs: Array[String]) -> void:
 	var dirs = c["branches"]
 	var tier := int(c.get("tier", 1))
@@ -2534,20 +2592,17 @@ func _validate_branches(where: String, c: Dictionary, errs: Array[String]) -> vo
 			_validate_passive(sw, {"id": "branch", "name": str(d["name"]), "description": st.get("description", ""), "effects": st.get("effects", [])}, errs)
 			if str(st.get("description", "")).strip_edges().is_empty():
 				errs.append("%s: a step says what it does (description)" % sw)
-			var on := {}
 			for eff in st.get("effects", []):
 				if not (eff is Dictionary):
 					continue
 				if ["add_stat", "multiply_stat"].has(str(eff.get("effect", ""))):
 					errs.append("%s: a branch is never a stat (Ryan: \"more the job for Modules\")" % sw)
-				# A step tweaks a locked piece (`entry`), or the passive where the passive carries the
-				# numbers (no entry: Ryan, 18 November, of the Buzzard, "since this passive has numbers
-				# in it, I think one direction buffs the passive, one buffs the cannon").
+				# A step tweaks the locked pieces (`entry`) or the passive (no entry: Ryan, 18 November,
+				# of the Buzzard, "since this passive has numbers in it, I think one direction buffs the
+				# passive, one buffs the cannon"), as many as it needs (19 November: "Things that limit
+				# design space should never be a rule").
 				if eff.has("entry") and not fixed.has(str(eff["entry"])):
 					errs.append("%s: a step tweaks a locked piece, %s, or the passive: an entry names one of them" % [sw, ", ".join(fixed) if not fixed.is_empty() else "none on this chassis"])
-				on[str(eff.get("entry", ""))] = true
-			if on.size() > 1:
-				errs.append("%s: a step tweaks one piece or the passive, its effects all on it" % sw)
 
 
 ## A chassis nickname (or id) that is a machine's name in BattleTech, Heavy Gear, Warhammer
@@ -2823,7 +2878,7 @@ func _validate_effect(aw: String, a: Dictionary, effect: String, errs: Array[Str
 	if int(a.get("value", 0)) < 0 or int(a.get("count", 1)) < 1:
 		errs.append("%s: value cannot be negative; count and weight are at least 1" % aw)
 	# What an effect lays, it says: the stacks, or the rerolls a theft takes (24 October).
-	if ["ablate", "scorch_all", "corrupt_all", "drain_rerolls"].has(effect) and int(a.get("value", 0)) <= 0:
+	if ["ablate", "brittle", "brittle_all", "sap_all", "scorch_all", "corrupt_all", "drain_rerolls"].has(effect) and int(a.get("value", 0)) <= 0:
 		errs.append("%s: %s says what it lays: value, a positive number" % [aw, effect])
 	# A swallow (30 October) says the rounds its machine is out, 1 to 3: hard control on
 	# the team, held short.
@@ -2840,7 +2895,7 @@ func _validate_effect(aw: String, a: Dictionary, effect: String, errs: Array[Str
 ## and a Brittle 1 were gone before the foes' next turn. His exit, for a move several foes may
 ## roll at once: "we just tweak the ability to say something like "apply 2 if none, otherwise
 ## 1."" Read off the status's own clock, so a status that stops halving leaves the rule.
-const HALVING_LAID := {"brittle": "brittled_mech", "rally": "kindled"}
+const HALVING_LAID := {"brittle": "brittled_mech", "brittle_all": "brittled_mech", "rally": "kindled"}
 const HALVING_MINIMUM := 2
 static func _halves(move: String) -> bool:
 	return HALVING_LAID.has(move) and Effects.decays_to_zero(Effects.STATUS.get(str(HALVING_LAID[move]), {}))

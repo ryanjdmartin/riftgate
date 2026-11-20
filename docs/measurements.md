@@ -11960,6 +11960,128 @@ it), so its first row was grain; the Thunder Ape reads 17.4% and 16.2% at ninety
 edge of the elites. Every fight is won nineteen times in twenty or more. Read: the squad is a
 point or two stronger against the leaders and no fight leaves its band, so nothing is resized.
 
+## 19 November: the pickets, three and two of each domain's commonest front-liner
+
+On Ryan's "lets just standardize it to 3 of the default frontliner for each domain (goblin,
+needler, revenant, salamander?)": a flank patrol of the domain's commonest tier-one
+front-liner, read as scratch compositions beside the lone duelists (`tools/anchor_read.gd`,
+every squad of the pool of the size asked, five seeds, the greedy bot; hull a share of a
+four's). The Barrier basic changes no row by more than half a point.
+
+| Picket | Three, one machine on it | Three, two on it | Two, one on it |
+|---|---|---|---|
+| Goblins | 7.6%, won 93% | 0.1% | 1.7% |
+| Needlers | 13.1%, won 83% | 0.5% | 2.6% |
+| Revenants | 4.1% | 0.0% | 0.0% |
+| Salamanders | 16.7%, won 70%, 2.3 reboots | 1.6% | 4.6% |
+| The lone duelists beside them | 2.6% to 3.8% | 0.0% | |
+
+Read: three of each fits a lone flanker's thirtieth in the Marsh alone, and the Needlers and
+the Salamanders, the heavy front-liners, cost a lone machine four and five times it and lose
+it a fight in six and three in ten. With two machines on them every picket is nearly free, so
+a rating of two would ask for a machine it does not need. Not landed: the count is his.
+
+## 19 November: a foe's jam waiting for the reboot
+
+On Ryan's "Lets change Jammed to lasting until Reboot, that closes the cockatrice hole", read
+as a what-if before it was built (the anchor read, every squad of the pool of the fight's
+rating, four seeds; the bot rebooting for a jam that waits when no blow is coming its way or a
+third of its die is dark). Hull a share of a four's; each cell as built, then waiting.
+
+| Fight | Without the Barrier | With the Barrier basic | Reboots a machine, as built and waiting |
+|---|---|---|---|
+| The lone Whisker Cat | | 3.8%, 3.6% | 0.88, 0.92 |
+| The needler thicket (four Cockatrices) | | 8.3%, 9.7% | 0.91, 1.27 |
+| The sandworm's ambush (two) | | 5.7%, 5.6% | 1.24, 1.26 |
+| The Rust Monster | 24.1%, 24.6% | 25.4%, 24.7% | 1.27, 1.46 |
+| Gilgamesh | 18.3%, 18.7% | 7.6%, 8.0% | 1.54, 1.66 |
+| The Wild Hunt | 13.7%, 14.2% | 9.5%, 11.2% | 0.85, 1.09 |
+| The Thunder Ape | 16.5%, 16.6% | 15.9%, 17.4% | 1.02, 1.14 |
+| The Emperor Scorpion | 24.4%, 22.1% | 16.7%, 15.4% | 1.80, 1.94 |
+
+Read: in hull it costs the thicket a point and a half and the rest nothing, since a tier-one
+fight ends in five to eight rounds and a quiet round's reboot clears it; what it changes is the
+reboots, a tenth to a third more a machine. Built the same day as the rule: the reboot's drop
+lights every jammed entry, the die's foot shows the reboot's mark in place of a count, and the
+what-if left with it.
+
+## 19 November: a purging boss, three read
+
+On Ryan's "A purging boss or elite does sound like something we should have, not
+uncommonly": three of the Waste's elites purge ahead of a blow and no boss does. Three
+bosses read with a Purge 1 ahead of their main blow, by fantasy, as scratch content (the
+anchor read, every squad of four of the pool, four seeds; hull a share of a four's).
+
+| Boss, the blow | Without the Barrier, as built and purging | With the Barrier basic |
+|---|---|---|
+| The King Gel, its Body Slam | 26.5%, 31.0% | 14.5%, 29.5% |
+| The Emperor Scorpion, its Twin Shear | 22.1%, 27.7% | 15.4%, 19.7% |
+| The Vampire Lord, its Drain | 27.7%, 31.9% | 10.7%, 31.5%, won 93% |
+
+Read: a purge on a boss's main blow costs the squad the leaders are sized for four to six
+points, what it puts up being Armoured and a Ricochet's stacks, and the squad with the
+Barrier basic pays what that squad pays, so where a boss purges the Barrier is no pass. Each
+would want its blow a point lower to stay in band. Not landed: which leaders purge is his.
+
+## 19 November: the roots' scream as Brittle 2 on its killer
+
+On Ryan's "Mandragora can be brittle on killer for t1, and it's higher variations can brittle
+the whole team": the Mandragora's reroll drain against Brittle 2 on its killer, 2 the least a
+status that halves may lay (`tools/anchor_read.gd`, the pool of the six real tier ones, every
+squad of three, six seeds, 120 fights a formation; main at `473a135` before, the change after).
+Hull a share of a four's; every fight won in both.
+
+| Formation (its roots) | The drain | Brittle 2 on its killer |
+|---|---|---|
+| The goblin horde (four) | 3.0% | 4.9% |
+| The treant grove (two) | 5.1% | 5.5% |
+| The gel wall (two) | 5.7% | 6.2% |
+| The mean | 4.6% | 5.5% |
+
+Read: about a point of a four's hull a formation, most where the roots are most, the horde
+staying inside a formation's twentieth and the mean half a point past it. Four roots pulled by
+one machine leave it Brittle 8; the bot prices the curse on the killer as it weighs each kill. The first battle's sizing is his; the higher roots, at tiers two and three,
+wait for the numbers pass.
+
+## 20 November: his kit marks, read before and after
+
+On Ryan's marks of 20 November: the roots' Root Lash corrupts ("I'd give them corrupt on every
+blow"), the Emperor Scorpion's Paralytail leaves Ablating 2 ("Sap, brittle or ablate is more
+fitting", the Ablate the session's pick) and the Fell Rider's Shriek Saps every machine ("Fell
+rider shriek probably wants Sap on there, thematically"). `tools/anchor_read.gd`, the pool of the
+six real tier ones, every squad of the fight's rating, six seeds a formation's squad and four a
+leader's; main at `0bfbadf` before. Hull a share of a four's; every fight won.
+
+| Fight | Before | After |
+|---|---|---|
+| The goblin horde, three machines | 4.9% | 9.7% |
+| The treant grove | 5.5% | 6.9% |
+| The gel wall | 6.2% | 12.7% |
+| The Emperor Scorpion, without the Barrier basic | 22.1% | 29.4% |
+| The Emperor Scorpion, with it | 15.4% | 22.8% |
+| The Fell Rider's hunt, without | 20.0% | 20.9% |
+| The Fell Rider's hunt, with | 8.5% | 9.0% |
+
+Read: the corrupting roots double the horde and the gel wall, two formations' twentieth each, the
+bleed growing with the gel wall's longer fight; the Scorpion's venom adds seven points, its
+Paralytail a frequent move; the Shriek's Sap moves the Fell Rider a point at the most.
+
+Sized after: the Mandragora at 3 HP, so one basic shot pulls one, and the Scorpion's Paralytail
+at half its attack where it was three quarters, its venom paid by its blow. The same read on a
+scratch tree with both:
+
+| Fight | His marks | Sized |
+|---|---|---|
+| The goblin horde | 9.7% | 7.3% |
+| The treant grove | 6.9% | 5.9% |
+| The gel wall | 12.7% | 11.0% |
+| The Emperor Scorpion, without the Barrier basic | 29.4% | 23.5% |
+| The Emperor Scorpion, with it | 22.8% | 20.4% |
+
+Read: the Scorpion is back in its band for the squad the leaders are sized for, the venom's
+Ablating passing the Barrier as a tick does; the horde and the gel wall stay over their twentieth,
+the gel wall's long fight feeding the bleed, for the formation pass and the goblins' wall.
+
 ## 19 November: the Polar Bear beside the Honey Badger, on the sized foes
 
 `tools/reboot_probe.gd` as the entries above, 168 formation and elite fights and 78 boss fights,
