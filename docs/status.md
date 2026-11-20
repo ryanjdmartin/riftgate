@@ -263,11 +263,12 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   skirmish screen, the battle screen, the pause menu and its settings are built; the hangar,
   the mission map and the draft are not. A debug build's settings hold TRIALS and COLOURS
   (`ColourTuner`: Ryan tunes there and sends its COPY text).
-- **The hangar page.** `tools/hangar.html` over `tools/hangar_data.py`'s files: the codex, the
-  Bench (a working sheet a machine, its codex, its flavour and its brief on it, and the Briefs
-  list of the rest; each brief read only, with his notes), the content editor (no chassis tab:
-  a chassis is its Bench sheet's), the Text (every shown text; `tools/hangar_text.py` is its one
-  inventory) and the models. The ledger `docs/hangar/text.json` names nothing as signed, so
+- **The hangar page.** `tools/hangar.html` over `tools/hangar_data.py`'s files, a tab a kind
+  since 20 November: Chassis (the Bench renamed: every machine a card, a tap its working sheet
+  with its codex, flavour and brief, and the Briefs list of the rest; each brief read only, with
+  his notes), Components, Modules and Foes on its pattern (a tight list whose row opens the
+  sheet, the raw editor behind a toggle; Foes formations first), the Text by chunk, a card an
+  entity (`tools/hangar_text.py` is its one inventory), and the models. The ledger `docs/hangar/text.json` names nothing as signed, so
   every shown text is a session's draft. His writing waits in the page's `text` collection (the
   Text tab's and the Bench's codex and flavour) and his notes on the briefs in `designs`: a
   session that touches either folds them in first. The Names tab retired on 20 November: the
