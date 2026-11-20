@@ -418,6 +418,24 @@ func test_a_purge_rides_no_blow() -> void:
 	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe rites") and e.contains("on_death blow") and e.contains("never a rider")), "a purge in a last act is reported")
 
 
+## A foe that strikes only when buffed (the goblins' Safety in Numbers, Ryan, 20 November) has a
+## blow for the rounds it holds a buff and a move that is no blow for the rest: the validator
+## refuses the rule on a foe with only one kind of move, and the flag false or not a bool.
+func test_strikes_when_buffed_needs_a_blow_and_a_move_that_is_none() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var lone: Dictionary = db.foes["revenant"].duplicate(true)
+	lone["strikes_when_buffed"] = true
+	lone["actions"] = [lone["actions"][0]]
+	db.foes["lone_striker"] = lone
+	var off: Dictionary = db.foes["revenant"].duplicate(true)
+	off["strikes_when_buffed"] = false
+	db.foes["false_striker"] = off
+	var errs := db.validate()
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe lone_striker") and e.contains("strikes_when_buffed needs a blow")), "a foe with blows alone is refused the rule")
+	assert_true(errs.any(func(e) -> bool: return e.begins_with("foe false_striker") and e.contains("strikes_when_buffed is true or left out")), "the flag set false is refused")
+
+
 ## A hero only commands the boss unit, which holds its hex and never hunts (Ryan, 28
 ## October, of the Thief's move: "it's a boss so it doesn't need it"): the validator refuses a map
 ## move on a hero, and the rank and file keep theirs. A hunt it refuses on every foe (the next test).

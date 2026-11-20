@@ -50,6 +50,13 @@ const HIT_STRIKE := 0
 const HIT_AGAIN := 1
 const HIT_BOUNCE := 2
 static var overheat_scale: int = 1   # hull an overheat burns a point of heat past the maximum; tools/balance.gd's --overheat sets it for one run's what-if (30 October)
+## The Phased trial (Ryan, 20 November: "Set the debug toggle for phased"; the reactive form of
+## docs/domain_statuses_proposal.md, section 5): a debug build's TRIALS → PHASED and RIFTGATE_PHASED
+## set it (Settings.field_trial). At once, a machine's Phased lands as its entry is spent and stands
+## until the round ends, and every foe whose pick it was picks again (_phase_at_once); off, it lands
+## as the round ends and stands through the next, the game's. A foe's Phased lands as the round
+## ends either way: the proposal's reading, under which a ghost plays as it does today.
+static var phase_at_once: bool = false
 static var pilot: Dictionary = {}   # chassis id -> heat it gains as each round opens, a what-if for tools/balance.gd's --pilot (the Whip Scorpion's pilot light, 3 November); never content
 # One more what-if on the overheat (Ryan, 30 October), set by tools/balance.gd for one run: every
 # overheat Corrupts the component that took the gauge past the maximum, so many stacks
@@ -1637,6 +1644,18 @@ func legal_actions(f: Foe, announced = null) -> Array:
 			continue   # used once this fight already
 		if _when_holds(f, a):
 			legal.append(a)
+	if f.strikes_when_buffed and not legal.is_empty():
+		# The goblins (Ryan, 20 November: "goblins only attack when they have any buff, or are
+		# predicted to get one"; "If a goblin is getting a shield from its peer in the intent, it
+		# should queue an attack"): with a buff on it, or one a move announced ahead of it lays on
+		# it, its blows alone; with none, anything but a blow, where it has one open.
+		var buffed := buffed_or_coming(f, announced)
+		var kept_buffed: Array = []
+		for a in legal:
+			if Foe.is_attack_action(a) == buffed:
+				kept_buffed.append(a)
+		if not kept_buffed.is_empty():
+			legal = kept_buffed
 	if legal.size() > 1 and not f.last_special.is_empty():
 		var kept: Array = []
 		for a in legal:
@@ -1715,6 +1734,28 @@ func drain_announced(f: Foe, announced = null) -> int:
 			if str(st.get("effect", "")) == "drain_rerolls":
 				out += maxi(0, int(st.get("value", 0)))
 	return out
+
+
+## Whether a foe holds a buff (what a Purge would reach, Effects.buff_stacks), or one a move of its
+## own side announced ahead of it this round will lay on it: a wall beside it, a brace or a rally
+## on every foe, a Ward on every foe. What a foe that strikes only when buffed reads (the goblins'
+## rule). `announced` as legal_actions takes it: unsaid, every foe on the field.
+func buffed_or_coming(f: Foe, announced = null) -> bool:
+	if Effects.buff_stacks(f) > 0:
+		return true
+	var said: Array = announced if announced is Array else Array(field_foes())
+	for o in said:
+		if o == f or not o.alive() or not o.on_field():
+			continue
+		if o.fresh or o.is_suppressed() or (not o.pending.is_empty() and o.charge > 0):
+			continue   # stepped up with no move out, held this round, or still gathering: it lays nothing yet
+		for st in Foe.effects_of(o.action):
+			var e := str(st.get("effect", ""))
+			if e in ["brace_all", "rally", "ward_all"]:
+				return true
+			if e == "brace_beside" and foes_beside(o).has(f):
+				return true
+	return false
 
 
 func _choose_foe_action(f: Foe, announced = null) -> void:
@@ -2368,6 +2409,10 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 				elif f.passes_heat:
 					grants = _pass_heat(ms, who, f)
 				for w in whom:
+					if f.buff_status == "phased" and phase_at_once:
+						_phase_at_once(w, src)
+						_lay_in_front(ms, w, f)
+						continue
 					if f.buff_status == "phased":
 						# Phased is granted as the round ends (Ryan, 15 November: "all sources of
 						# Phased should say "at the end of this round, grant Phased""): what lands
@@ -2931,6 +2976,25 @@ func web_catch(f: Foe) -> Foe:
 		if absi(n.column - f.column) <= 1 and n != f and n.alive() and not out_of_reach(n):
 			return n   # one out of the team's reach (Aloft) is no catch: the other side is tried
 	return null
+
+
+## The foes beside `f` (the goblins' Shield Wall, Ryan, 20 November: "I said neighbors, not all, so
+## it would be 3 max if they all rolled it at the same time"): every live foe in its rank one column
+## to its left or right, a twin slot's other half with it, and a massive foe in a column beside it,
+## which stands in both ranks; a massive `f` has those of both ranks beside it. Never itself.
+func foes_beside(f: Foe) -> Array[Foe]:
+	var out: Array[Foe] = []
+	if f == null or f.column < 0 or f.rank < 0:
+		return out
+	var ranks: Array = [0, 1] if f.is_massive() else [f.rank]
+	for r in ranks:
+		for c in [f.column - 1, f.column, f.column + 1]:
+			if c < 0 or c >= columns:
+				continue
+			for o in slot_foes(int(r), int(c)):
+				if o != f and o.alive() and not out.has(o):
+					out.append(o)
+	return out
 
 
 ## A foe's blows on one machine: each strike lands on its own, against the shield the one
@@ -4181,6 +4245,17 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 					Effects.stack(other, Effects.STATUS["braced"], Effects.SKIRMISH, "foe:" + f.content_id, n, Effects.status_decay(Effects.STATUS["braced"]))
 					braced += 1
 			log.append("%s: %s, %d of its own %s ×%d (armour +%d until their next turn)" % [f.display_name, str(a.get("name", "protects")), braced, Effects.STATUS["braced"]["name"], n, n * Effects.braced_armour()])
+		"brace_beside":
+			# Armoured on itself and on every foe beside it (the goblins' Shield Wall, Ryan, 21
+			# November: "neighbors, not all"), on the one clock every Armoured runs, so walls
+			# raised side by side add: three at the most on a goblin between two that wall.
+			var n := Effects.brace_stacks(value)
+			var walled: Array[Foe] = [f]
+			walled.append_array(foes_beside(f))
+			if n > 0:
+				for o in walled:
+					Effects.stack(o, Effects.STATUS["braced"], Effects.SKIRMISH, "foe:" + f.content_id, n, Effects.status_decay(Effects.STATUS["braced"]))
+			log.append("%s: %s, %s ×%d on itself and %d beside it (armour +%d until their next turn)" % [f.display_name, str(a.get("name", "walls")), Effects.STATUS["braced"]["name"], n, walled.size() - 1, n * Effects.braced_armour()])
 		"revive_once":
 			Effects.stack(f, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_NONE)
 			log.append("%s: %s (it will return once)" % [f.display_name, str(a.get("name", "readies"))])
@@ -4633,6 +4708,17 @@ func rage_on_field() -> int:
 
 
 # ---------------------------------------------------------------- the Swallowtail's
+
+## The Phased trial's grant (phase_at_once): Phased now, out of reach of both sides until the round
+## ends, and every foe whose pick it was draws its pick again from the machines in reach, as the
+## round's opening draws one, so its intent moves under the player's eyes.
+func _phase_at_once(w: MechState, src: String) -> void:
+	Effects.grant_for_rounds(w.unit, Effects.STATUS["phased"], src, round)
+	log.append("%s is Phased: out of reach until the round ends" % w.unit.display_name)
+	for foe in field_foes():
+		if foe.alive() and foe.target == w and foe.aims_at_one():
+			foe.target = _pick_mech_target(foe)
+
 
 ## Phased lands (Ryan, 15 November: granted "at the end of this round", "with the caveat that
 ## you have to survive the current round"): as the enemy's turn ends, every machine that waits

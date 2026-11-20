@@ -65,8 +65,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1375 tests, 387,073 checks, green (20 November, the Puffin's line landed over his kit
-  marks). The runner fails a run
+- Tests: 1384 tests, 387,201 checks, green (20 November, the gel line, the goblins' wall and the
+  content audit over the Puffin's landing). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -200,11 +200,17 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   the Mandragora on its killer and the higher two on every machine (a fall takes no reroll
   since, a drain a move's alone), which costs the Meadow's formations about a point of a
   four's hull; a pin with nothing to hold goes as its foe's turn ends. His marks of 20
-  November: the roots' lash corrupts (the goblin horde half again a formation's budget at the
-  roots' 3 HP, until its wall is settled), the Emperor Scorpion's Paralytail leaves Ablating
-  (its blow lightened to pay for it), the Fell Rider's Shriek
-  Saps every machine, and the alpha pack is one alpha and three wargs; King Gel's Dissolve
-  waits on a boss's three moves. His to pick: the pickets' count, and the rest of
+  November: the roots' lash corrupts, the Emperor Scorpion's Paralytail leaves Ablating
+  (its blow lightened to pay for it), the Fell Rider's Shriek Saps every machine, and the
+  alpha pack is one alpha and three wargs. His second round that day: every gel's Engulf a
+  rider in place of a blow, the gel wall three gels and two roots since (a machine's Ablating
+  grows while stacks come faster than one a turn, so the wall costs the square of its length:
+  four gels read 17.5%, three 4.1%), the King Gel's Dissolve in Body Slam's place at Ablating 2
+  (27.9% without the Barrier, 23.6% with it, its Purge taking the Barrier), the goblins' wall
+  over their neighbours and their knife only with a buff on them or coming, the Tyrant's Roar
+  Brittle 2 on every machine (a point), and the goblin horde as built at 7.4%, its four roots
+  its cost. The shaman's warband reads 33% at sixty fights at every commit back to its sizing,
+  whose thirty read 24.6%, so the leaders want a read at sixty or more (the to-do's defence line). His to pick: the pickets' count, and the rest of
   `docs/domain_statuses_proposal.md` (its section 8 holds this round's open items). The
   battle whole is the open question (the brief's section 11): at their ratings a second
   battle's fights come to three fifths to nine tenths of a squad's hull, and a fight met a
@@ -326,9 +332,12 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    order from here:
    - His marks on the rest of `docs/domain_statuses_proposal.md`, then its rows built and
      read: a foe's Sap rider for the Ghost line, and Phased by source with his ruling on a
-     ghost's own side, in one pass; his read of the formations that rally.
+     ghost's own side, in one pass; his read of the formations that rally (the hangar's Foes
+     tab shows each formation by name since 20 November); the Wild Hunt's leader on his marks.
+   - Every tier-one leader read again at sixty fights or more (the shaman's warband reads 33%
+     at every commit back to its thirty-fight sizing), then any leader moved into its band.
    - The formation pass (the bible's formation row): every composition given a purpose, a
-     row a formation in chat first, the goblin horde re-sized with its wall.
+     row a formation in chat first; the goblin horde's four roots on his play of it.
    - His play of a second battle, which says whether the budget's shares stand (the brief's
      section 11): the fights are even across the domains, and the battle whole is tight.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
@@ -377,12 +386,12 @@ with it, on his word. A page's link goes into this file in the same commit as it
 publish; the commands are in `README.md`.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.651 on 20 November from main's file at `56cf31ae` (the page's Version 515),
-  on Ryan's "Republish" of that day; the live page was checked byte for byte against the last
-  publish (`6bdf0b99`'s file) first. Before republishing,
+  Published at v0.652 on 20 November from main's file at `364ac091` (the page's Version 516),
+  over the v0.651 the Puffin's line published from main at `56cf31ae`, which the live page
+  matched byte for byte and main's merge already carried. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
-  `56cf31ae` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  `364ac091` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
   live source with the tool's wrapper line, its trailing newline and `</body></html>`
   stripped): check BASE against the live page byte for byte first. After main merges in,
   check the tables script's run against the file's tables before keeping it: a row it
@@ -390,14 +399,18 @@ publish; the commands are in `README.md`.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 309 (20 November, main at `56cf31ae`): the
-  six files that differed (the chassis, components and vocabulary content, the briefs' and the
-  texts' inventories, the Puffin's sidecar), the page itself as it was. The `edits` and `text`
+  `edits`, `designs` and `text` read first. Version 310 (20 November, main at `364ac091`): the
+  Content tab reworked (the Foes tab formations first, every pack a domain deals by tier with
+  its grid as the fight stands and its units' numbers at each tier, `hangar/foe_rules.json` the
+  engine's rules for a pack; every kind on a sheet in the Bench's manner, the raw editor behind
+  a toggle), the eleven files that differed (four content files, the briefs' and the texts'
+  inventories, the foes' art states, the rules file, the three new gel sprites) and
+  `hangar/foes/metal_gel.png` removed; the Puffin's line had published Version 309 over 308, and
+  each file it moved was read and found carried by main's merge first. The `edits` and `text`
   collections were empty, `designs` held his two notes of 5 November (both already briefed).
   The `candidates` collection (his names, 106 rows) stays in the database unread;
-  `docs/name_candidates.md` holds them. The service refuses a republish until the live page's
-  saved source has been read whole, every line: read it before the publish, not after the
-  refusal.
+  `docs/name_candidates.md` holds them. The service refuses a republish until the live page's saved source has been
+  read whole, every line: read it before the publish, not after the refusal.
   `build/hangar/designs.json` is one line of about 980 KB: write it indented before reading it whole.
 - The rules sweep for his marks: https://claude.ai/artifact/LUUwdjFtsqGsVv3NYWzxpN, from
   `docs/rules_sweep_proposal.md` by `tools/pages/rules_sweep_page.py` (Version 1, 20 November).

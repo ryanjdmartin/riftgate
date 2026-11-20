@@ -70,6 +70,7 @@ var rage: int = 0                # what every shield, vent or equipment entry th
 var golden_mark: int = -1        # its HP as it went gold (golden, 4 November: the Thunder Ape), -1 while calm: a quarter of its HP lost since breaks the rage
 var immune: Dictionary = {}      # what of the team's never lands on it (content's `immune`; Ryan, 15 November: "not as a blanket for all bosses, but for ones who need it for their fight to actually do something"): "suppress" or "disrupt" (IMMUNITIES), each true, always, or the id of a move of its own, while that move gathers
 var drains: bool = false         # every blow of its own regrows it by what the blow took from the hull (content's `drains`: the Vampire Lord's, an Ability on the unit since 16 November, Ryan: "This should be moved to an ability on the unit since it's on every attack. Like the Nob"; a rider on its blows until then)
+var strikes_when_buffed: bool = false   # it strikes only with a buff on it or one coming, and with none does anything but strike (content's `strikes_when_buffed`: the goblins', Ryan, 20 November: "goblins only attack when they have any buff, or are predicted to get one"), an Ability on its chip
 
 ## What a foe may be immune to, an Ability said on its chip (immune_to).
 const IMMUNITIES := ["suppress", "disrupt"]
@@ -482,6 +483,9 @@ func strikes() -> int:
 ##           "regrow_ally" until then)
 ##           brace_all: Armoured, `value` stacks, on every foe in the fight, on the same clock
 ##           (Protect, 15 October): until the foes' next turn opens
+##           brace_beside: Armoured, `value` stacks, on itself and every foe beside it in its rank
+##           (Skirmish.foes_beside), on the same clock (the goblins' Shield Wall, 20 November:
+##           "I said neighbors, not all"), so walls side by side add
 ##           cleanse: every mark the team laid (Effects.TEAM_MARKS) off the most-marked of its
 ##           own, itself included (Hallow, 28 October: the Marsh's lever); never Numbed, never
 ##           Suppressed, never a buff
@@ -551,14 +555,14 @@ func strikes() -> int:
 ## A cleanse that follows a heal in one move lands on the foe the heal mended (the Cleric's
 ## Cure, one patient: Skirmish._foe_acts).
 const ACTION_EFFECTS := {
-	"defend": ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "phase"],
+	"defend": ["brace", "recover", "heal", "brace_all", "brace_beside", "cleanse", "barrier", "regenerate", "phase"],
 	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "golden", "appropriate"],
 	"debuff": ["drain_rerolls", "ablate", "jam", "brittle", "brittle_all", "sap_all", "scorch_all", "corrupt_all", "dispel", "swallow", "expose", "unready_all"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
 ## is shown intent (the ambush read below).
-const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "brittle_all", "sap_all", "scorch_all", "corrupt_all", "merge", "golden", "unready_all", "phase"]
+const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "brace_beside", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "brittle_all", "sap_all", "scorch_all", "corrupt_all", "merge", "golden", "unready_all", "phase"]
 
 
 ## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? It draws

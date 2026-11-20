@@ -128,7 +128,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 - A pack is what its fight's slots hold: nothing waits behind the formation and nothing steps in
   once the fight begins. Every composition fits its slots (Content conventions) and every fight
   holds one pack, a boss's with its escort, so no fight is given more than its slots hold.
-- At the start, foes take their ranks heaviest hitters first from the left (its heaviest
+- At the start, a pack stands as its composition's grid has it; a boss's fight and a final,
+  which carry no grid, take their ranks heaviest hitters first from the left (its heaviest
   move's damage times strikes; ties in arrival order).
 - The squad stands in four spots across the floor, one under each of the foes' columns: a squad
   of three from the left, a squad of one or two in the middle spots, the outer ones empty; a
@@ -639,8 +640,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   condition on its play, and the pattern for any to come; the second is a **count it spends**
   (the Quintessence Tap's Essence, by its mark, the number what it would take now), unplayable and
   struck the same way while its machine holds none.
-- **Cleanse** (on a shield or a vent, today): the machine it lands on loses Ablating, Scorched, Brittle,
-  a foe's Jammed and Corrupted (never a cooldown).
+- **Cleanse** (on a buff or a shield: the Breaching Plow, the Retrocausal Shroud, the Sutler's Hoist
+  Charged): the machine it lands on loses Ablating, Scorched, Brittle, Sapped, Exposed, a foe's
+  Jammed and Corrupted (never a cooldown).
 - No shield passes its maximum: a shield granted to a full machine is lost.
 
 Component properties, printed on the entry rather than learned as keywords (the die marks
@@ -671,7 +673,7 @@ Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most 
 each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
 the armour they stood for going with them. **Braces**:
 spending it Armours its owner, the stacks it says, an armour point each, until its side's
-next turn begins (no dealt piece prints it today; the Wild Boar's Breaching Plow did until 11 November). **The Quintessence Tap** (the Ammit's, equipment spent on
+next turn begins (the Shift Whistle prints it). **The Quintessence Tap** (the Ammit's, equipment spent on
 itself, cooldown 3): it consumes the Ammit's Essence, as much as it holds up to 5, and grants a
 stack of Empowered for each, the die showing what it would take now; and its machine gains
 Essence Flare, a buff, until the round's end. While a live machine carries Essence Flare no
@@ -1245,7 +1247,10 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   half, hurt, a foe behind it, another foe on the field, one
   of its own hurt, a machine carrying a buff, one of its own not readied, one of its own
   marked, one of its parts fallen (a part down and not waiting to step in). A move marked once
-  comes once a fight. No foe flees the field but a loot-runner whose prize goes with it (the
+  comes once a fight. A foe that strikes only when buffed (the goblins' Safety in Numbers, an
+  Ability on its chip) announces its blow alone while a buff stands on it or a move announced
+  ahead of it this round will lay one on it (a wall beside it, a brace, a rally or a Ward on
+  every foe), and anything but its blow while none does. No foe flees the field but a loot-runner whose prize goes with it (the
   one shape a flee may take; none is built, and no move flees). A move may
   carry a countdown: it gathers, landing that many rounds after it is announced, and nothing
   hits meanwhile; its pick holds while the machine stands; Suppress holds it a round, Disrupt
@@ -1352,7 +1357,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   Ward turns the jam and the take away together.
 - **A special** stands in the blow's place as a move's first step, or follows it as a later one: brace (Armoured, its value in stacks, an armour point each, until the
   foes' next turn opens), recover (regains its value, itself), heal (the most hurt of its own, itself included, regains its
-  value), brace all (the same on every foe in the fight, on the same clock), revive once,
+  value), brace all (the same on every foe in the fight, on the same clock), brace beside (the
+  same on itself and on every foe beside it in its rank, a massive foe in a column beside it
+  among them, so walls raised side by side add: the goblins' Shield Wall), revive once,
   revive an ally (Undying on one of its own, never itself, not readied already: a
   party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,

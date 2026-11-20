@@ -12140,3 +12140,63 @@ think the empowered scaling is a symptomatic conclusion." No number moves on thi
 treats a point of heat under the maximum as free and reboots its machines before anything spends,
 so it never puts heat where a reboot, a Cryo cash or a blasting vent takes it off, and the squad
 read has nothing that turns heat into anything.
+
+## 20 November: his gel line, the goblins' wall and two leaders, read before and after
+
+On Ryan's of 20 November: every gel's Engulf a rider in place of a blow ("Honestly I think all
+gels should Ablate instead of attacking as their default"), the Gel at 4 HP, its Engulf 1 and
+Ablating 1, the Half-Gel no blow and Ablating 1; the King Gel's Dissolve in Body Slam's place
+("a suitably souped up version"), Purge 1, then half its attack, Brittle 2 and Ablating 3 as
+first built; the goblins' Shield Wall over themselves and their neighbours, every goblin
+striking only with a buff on it or one coming; the Obsidian Tyrant's Roar leaving Brittle 2 on
+every machine. `tools/anchor_read.gd`, the pool of the six real tier ones, every squad of the
+fight's rating, six seeds a formation's and four a leader's; main at `e6d5bbf` before. Hull a
+share of a four's; every fight won but where it says.
+
+| Fight | Before | After |
+|---|---|---|
+| The goblin horde, three machines | 7.3% | 7.4% |
+| The treant grove | 5.9% | 4.7% |
+| The gel wall | 11.0%, 6.9 rounds | 17.5%, 6.5 rounds, won 98% |
+| The shaman's warband, without the Barrier basic | 33.2% | 32.8% |
+| The shaman's warband, with it | 27.6% | 28.8% |
+| The King Gel, without | 26.5% | 41.2%, won 98% |
+| The King Gel, with | 14.5% | 35.8% |
+| The Obsidian Tyrant, without | 29.3% | 30.3% |
+| The Obsidian Tyrant, with | 16.5% | 16.7% |
+
+Read: the gels' Ablating is what costs. A machine's Ablating takes a point a stack and loses
+one stack a turn, so stacks laid faster than one a turn grow, and a wall that lays them costs
+the square of its length: four gels and their eight halves lay two to three stacks on each
+machine a round, and the fight ran six and a half. The goblins' wall moves the horde by
+nothing, the Roar's Brittle moves the Tyrant by a point, and the Dissolve's Purge takes the
+Barrier before its Ablating, which passes one as a tick does, so the squad with the Barrier
+basic pays nearly what the squad without it pays.
+
+Sized after, each change alone on a scratch tree of the after state; a formation read on the
+stock dice, a leader without the Barrier basic and with it:
+
+| Fight | The change | Read |
+|---|---|---|
+| The gel wall | Four gels, one Mandragora | 9.6%, 6.1 rounds |
+| The gel wall | Three gels, two Mandragoras | 4.1%, 4.3 rounds |
+| The gel wall | Three gels, one Mandragora | 1.6%, 4.1 rounds |
+| The gel wall | Two gels, two Mandragoras | 0.7%, 3.3 rounds |
+| The goblin horde | Three Mandragoras | 2.5%, 3.7 rounds |
+| The goblin horde | The Goblin's attack 3 | 6.8%, 4.5 rounds |
+| The King Gel | Dissolve at Ablating 2 | 27.9% and 23.6% |
+| The King Gel | Two gels in its court | 35.6% and 31.8% |
+| The shaman's warband | The Goblin's attack 3 | 32.8% and 29.3% |
+
+Read: one gel or one root moves a formation by more than its share, since a squad under less
+pressure reboots less and kills sooner, and the stacks follow the length. The warband, read
+the same way at four commits back to its sizing (`d2c3912`, `6a10dca`, `645d690`, `473a135`),
+reads 34.3%, 33.2%, 33.2% and 33.2% without the Barrier basic, so nothing since moved it: the
+24.6% it was sized at was thirty fights, a direction, and every tier-one leader wants a read at
+sixty fights or more before any is moved.
+
+Landed: the gel wall at three gels and two Mandragoras, inside a formation's band, and Dissolve
+at Ablating 2, the King Gel back in its band, the squad with the Barrier basic paying about a
+quarter of a four's hull where it paid a seventh, since a purging boss's Barrier is no pass. The
+horde stays as built: the Goblin's attack 3 moves it by less than a read's spread and the
+warband by nothing, and one root fewer halves it, so its four roots are the question for his play.

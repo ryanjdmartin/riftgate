@@ -177,6 +177,8 @@ func _show_page(page: String) -> void:
 			_credit("Tier one's rank and file: hit points as built, or one more. Next launch.")
 			_choice_row("OVERHEAT", "overheat_burn", Settings.OVERHEATS, Settings.OVERHEAT_LABELS)   # the hull a point of heat past the gauge burns as the turn ends, one the game's (Skirmish.overheat_scale)
 			_credit("Hull an overheat burns a point past the gauge. Next battle.")
+			_choice_row("PHASED", "phased_form", Settings.PHASED_FORMS, Settings.PHASED_FORM_LABELS)   # when a machine's Phased lands (Skirmish.phase_at_once; Ryan, 20 November: "Set the debug toggle for phased")
+			_credit("A machine's Phased as the round ends, through the next; or at once, until the round ends. Next battle.")
 			_choice_row("BARRIER BASIC", "barrier_basic", Settings.BARRIER_BASICS, Settings.BARRIER_BASIC_LABELS)   # the Barrier basic on the stock dice as built, or off them with the Armoured basic in its slot (Refit's barrier=none; its place is open since 12 November)
 			_credit("The Barrier on the starting dice, or the Armoured basic in its slot. Next launch.")
 			_choice_row("FIELD DEPTH", "field_depth", Settings.FIELD_DEPTHS)   # the field's depth in rows, twelve the game's (Ramp.depth_trial; Ryan, 10 November: "I think the map is a bit too shallow")

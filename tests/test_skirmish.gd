@@ -10124,6 +10124,43 @@ func test_phased_waits_for_the_rounds_end_and_a_wrecked_or_purged_machine_never_
 	assert_true("\n".join(s3.log).contains("L lures nothing"), "and the log says so")
 
 
+## The Phased trial at once (Ryan, 20 November: "Set the debug toggle for phased"; the TRIALS
+## page's PHASED, Skirmish.phase_at_once): a machine's Phased lands as its entry is spent, out of
+## reach until the round ends, and the foe whose pick it was draws again; off, it waits for the
+## round's end as built.
+func test_phased_at_once_lands_as_it_is_spent_and_the_foes_pick_again() -> void:
+	var veil := Face.buff("phased")
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("A", Die.single(veil), 0, 100)
+	var b := _mech("B", Die.single(Face.blank()), 0, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var g := _ghoul(300, 10)
+	sk.add_foes([g])
+	sk.begin()
+	Skirmish.phase_at_once = true
+	sk.start_round()
+	g.target = sk.mechs[0]
+	assert_true(sk.assign(0, null), "A spends its Phase on itself")
+	Skirmish.phase_at_once = false   # the switch is read as the entry is spent; the rest of the test runs the game's own
+	assert_true(Skirmish.is_phased(sk.mechs[0]) and not Effects.has(a, "phasing"), "Phased at once, with no wait")
+	assert_eq(g.target, sk.mechs[1], "the foe that picked it picks again, the next machine in line")
+	sk.end_round()
+	assert_eq(a.hull, 100, "nothing reaches A in the foes' turn")
+	assert_true(b.hull < 100, "the blow lands on B")
+	sk.start_round()
+	assert_false(Skirmish.is_phased(sk.mechs[0]), "and it is back in reach as the next round opens")
+	# Off, the game's own: the wait, then Phased as the round ends.
+	var s2 := Skirmish.new(2, 2)
+	var c := _mech("C", Die.single(veil.duplicate_face()), 0, 100)
+	s2.add_mech(c)
+	s2.add_foes([_ghoul(300, 10)])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.assign(0, null), "C spends its Phase")
+	assert_true(Effects.has(c, "phasing") and not Skirmish.is_phased(s2.mechs[0]), "the wait, and no Phased yet")
+
+
 ## The Sutler's Hoist and the Reveille Horn (21 October), synthetic: the Hoist cools an ally and
 ## shields it, the shield sized on the heat its cooling leaves; charged, the full reset (the
 ## shield to its maximum, the heat to nothing, a cleanse). The Horn gives the team a reroll more

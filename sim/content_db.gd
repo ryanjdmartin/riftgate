@@ -408,6 +408,7 @@ func make_foe(foe_id: String) -> Foe:
 	f.armour_step = maxi(0, int(d.get("armour_step", 0)))
 	f.rage = maxi(0, int(d.get("rage", 0)))   # its own from the fight's start (the Goblin Nob's, Ryan, 8 November: "It's not innate? ... unbelievably incorrect")
 	f.drains = bool(d.get("drains", false))   # its own too: every blow of its regrows what it took from the hull (the Vampire Lord's, 16 November)
+	f.strikes_when_buffed = bool(d.get("strikes_when_buffed", false))   # it strikes only with a buff on it or coming (the goblins', 20 November)
 	# What never lands on it (17 November, on Ryan's yes to the bench's rows): a Suppress or a
 	# Disrupt, always (true) or while the move it names gathers.
 	var im = d.get("immune", null)
@@ -2871,7 +2872,7 @@ func _validate_effect(aw: String, a: Dictionary, effect: String, errs: Array[Str
 			errs.append("%s: a merge says how much harder its next move hits a foe taken in: value, 1 or more" % aw)
 	# A brace is armour in stacks of Armoured (16 October), a point a stack since 18
 	# October, so its value is its stacks: a positive number.
-	if effect == "brace" or effect == "brace_all":
+	if effect == "brace" or effect == "brace_all" or effect == "brace_beside":
 		var v := int(a.get("value", 0))
 		if v <= 0:
 			errs.append("%s: a brace's value is the armour it grants, in stacks of Armoured: a positive number, got %d" % [aw, v])
@@ -2992,6 +2993,24 @@ func _validate_foes(errs: Array[String]) -> void:
 		# what it took from the hull; a rider on a blow until 16 November.
 		if f.has("drains") and not (f["drains"] is bool and f["drains"]):
 			errs.append("%s: drains is true or left out: every blow of the foe's regrows what it takes from a hull" % where)
+		# A foe that strikes only when buffed (the goblins', Ryan, 20 November: "goblins only attack
+		# when they have any buff, or are predicted to get one"): an Ability on the unit, so it has
+		# a blow to strike with and a move that is no blow for the rounds it holds no buff.
+		if f.has("strikes_when_buffed"):
+			if not (f["strikes_when_buffed"] is bool and f["strikes_when_buffed"]):
+				errs.append("%s: strikes_when_buffed is true or left out: the foe strikes only with a buff on it or one coming" % where)
+			else:
+				var blows := 0
+				var others := 0
+				for a in f.get("actions", []):
+					if str(a.get("status", "implemented")) == "planned":
+						continue
+					if str(a.get("kind", "attack")) == "attack":
+						blows += 1
+					else:
+						others += 1
+				if blows < 1 or others < 1:
+					errs.append("%s: strikes_when_buffed needs a blow for the rounds it holds a buff and a move that is no blow for the rest" % where)
 		# An immunity (Ryan, 15 November: "not as a blanket for all bosses, but for ones who need
 		# it for their fight to actually do something"): an Ability on the unit, a Suppress or a
 		# Disrupt that never lands on it, always or while the move it names gathers.

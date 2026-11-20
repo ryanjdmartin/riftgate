@@ -1684,6 +1684,10 @@ func _foe_abilities(foe: Foe) -> Array:
 		# The Vampire Lord's (Ryan, 15 November: "This should be moved to an ability on the unit
 		# since it's on every attack. Like the Nob"): the rule its every blow plays by.
 		rows.append([Terms.glyph("drain"), "", "Ability, Drain: every blow it lands heals it by what the blow took from the hull", Terms.colour("drain"), "ability"])
+	if foe.strikes_when_buffed:
+		# The goblins' (Ryan, 20 November: "goblins only attack when they have any buff, or are
+		# predicted to get one"): the rule its every round's move is chosen by, said on its chip.
+		rows.append([Terms.glyph("safety_in_numbers"), "", "Ability, Safety in Numbers: it strikes only with a buff on it, or one a move of its own side has announced for it; with none, it does anything but strike", Terms.colour("safety_in_numbers"), "ability"])
 	if foe.takes() or Effects.has(foe, "appropriated"):
 		# Gilgamesh's (Ryan, 16 November: "make it his ability, a number that fluctuates depending
 		# on what he's currently holding"): the rule he plays by from the fight's start, its
