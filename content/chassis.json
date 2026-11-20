@@ -358,7 +358,7 @@
    "name": "Mole",
    "designation": "TB-2FAB Tunnel Borer",
    "maker": "minerva",
-   "tier": 1,
+   "tier": 2,
    "design": {
     "fantasy": "Ryan's drill-tank mole (4 November: \"Some kind of drill-tank mole machine\"): a low, narrow tank behind one great drill, a ring cutter turning round a rocket tip that it fires into a foe, tunnelling to it, and takes back as it burrows. Out of the burrow its cab runs out level to see past the drill's face and the fore weapon block's gun faces forward on a yoke just out of a side port and the rear block, raised on rams, fires from a port in its front over the fore one; burrowed, they tuck in behind it and every gun retracts. The name is the Thunderbirds' Mole, and the designation carries the nod (TB-2 for Thunderbird 2, FAB the sign-off): his call of 17 November, \"Designation and name are good\".",
     "niche": "tempo bruiser (Ryan, 16 November): it burrows in its reboot's place, banks momentum underground and drills a foe with it",
@@ -407,7 +407,7 @@
      "id": "ablate",
      "name": "Ablate",
      "design": {
-      "notes": "Ryan, 16 November: \"Ablate branch: Change damage to Ablate 2 (but it decays), and then second upgrade adds Seared.\" The drill lays Ablate 2 in its blow's place, the Ablating decaying as Ablating does; Seared with it at the second step."
+      "notes": "Ryan, 16 November: \"Ablate branch: Change damage to Ablate 2 (but it decays), and then second upgrade adds Seared.\" The drill lays Ablate 2 in its blow's place, the Ablating decaying as Ablating does; Seared with it at the second step. Back in design 20 November with the Mole's move to tier two, where a machine picks once (Ryan: \"Send the Mole's current Upgrade tree back to design, though, and we can fix it\")."
      },
      "steps": [
       {
@@ -437,13 +437,14 @@
         }
        ]
       }
-     ]
+     ],
+     "status": "planned"
     },
     {
      "id": "squad",
      "name": "Squad",
      "design": {
-      "notes": "Ryan, 16 November: \"Squad branch: ADDS brittle 1 and pinned to the blow. Second upgrade adds exposed.\" Each turn's blow carries the Brittle the turns before laid, the pin holding it while the drill is in."
+      "notes": "Ryan, 16 November: \"Squad branch: ADDS brittle 1 and pinned to the blow. Second upgrade adds exposed.\" Each turn's blow carries the Brittle the turns before laid, the pin holding it while the drill is in. Back in design 20 November with the Mole's move to tier two, where a machine picks once (Ryan: \"Send the Mole's current Upgrade tree back to design, though, and we can fix it\")."
      },
      "steps": [
       {
@@ -473,7 +474,8 @@
         }
        ]
       }
-     ]
+     ],
+     "status": "planned"
     }
    ]
   },

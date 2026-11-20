@@ -103,7 +103,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   Booster granting Aile Blitz; Valkyrie, the rifle's slot holding the Beam Bazooka, then the shield's
   the Beam Pavise and the Booster granting Aile Assault with 1 Empowered. A step may name the piece
   it upgrades, and the die's readout and the codex call the piece so (the Aile Blitzer, the Aile
-  Assaulter), the die keeping the piece as printed.
+  Assaulter), the die keeping the piece as printed. A direction may be back in design, a
+  planned draft: kept in content, its depth unchecked, and never offered (the Mole's two since
+  its move to tier two).
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
@@ -1199,9 +1201,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   **Drill Out** (an ability) until its next burrow, its foe felled or not. As the foes' turn
   starts, before their side's opening, each foe carrying Applied Momentum takes its drill's
   blow, a plain blow of 2 (its Brittle adds, its armour and a Barrier from its last turn take it,
-  no Shock is read, and a Phased foe takes nothing), then what the drill's branch lays (the
-  Ablate branch: Ablate 2 in the blow's place, then Seared with it; the squad branch: Brittle 1
-  and Pinned, then Exposed), and a stack goes. Before the opening, so a Pinned it lays holds
+  no Shock is read, and a Phased foe takes nothing), then what a branch of its drill lays (the
+  Mole's two are back in design and offered nowhere: Ablate, Ablate 2 in the blow's place, then
+  Seared with it; Squad, Brittle 1 and Pinned, then Exposed), and a stack goes. Before the opening, so a Pinned it lays holds
   the Brittle the opening would halve. A foe's cleanse takes it, a foe that falls takes it with
   it, and the Mole's next burrow takes it home. The drill works as its machine stood when it
   drilled: a branch learned later changes the next drill.

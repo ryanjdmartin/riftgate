@@ -188,6 +188,7 @@ pieces, so each stands on the footing in the first line.
 - [ ] The siege battery, Ryan's H-tank (`minerva_siege_battery.md`), parked until he picks it up
 - [ ] The time-shifter (`aphelion_time_shifter.md`: "delaying and redirecting blows", "an entire unexplored area"): the delay, the bank, stasis; Aphelion's open tenth if it wants it
 - [x] The Mole's kit, built 20 November on your "Build the mole now" (its brief retired: `git show f6f11185:docs/briefs/minerva_mole.md`; the bible's Mole row)
+- [ ] The Mole's upgrade tree at tier two (`minerva_mole.md`, 20 November: "Send the Mole's current Upgrade tree back to design, though, and we can fix it"): one pick from two directions, each a step; its Ablate and Squad stand as planned drafts nothing offers
 - [ ] The Magpie, a working name, Kestrel's support engine (`kestrel_magpie.md`: the thief, the mimic, the cache), its tier open and its slot open to another design
 - [ ] The Snowy Owl, Kestrel's stealth unit (`kestrel_owl.md`), leaning to Cryo; whether stealth is a new rule or Phased's, which now acts while out of both sides' reach
 - [ ] The shield bash, a Minerva tier-three weapon or module (`minerva_shield_bash.md`: "bonus damage equal to armour, then armour zero until end of round"): its form and numbers, then content as planned

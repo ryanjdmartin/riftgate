@@ -251,6 +251,8 @@ func branch_error(chassis_id: String, picks: Array) -> String:
 		var d := _direction(c, str(p))
 		if d.is_empty():
 			return "%s has no direction %s" % [chassis_id, str(p)]
+		if str(d.get("status", "")) == "planned":
+			return "the %s direction is back in design" % str(p)   # a planned draft: kept, never offered
 		taken[str(p)] = int(taken.get(str(p), 0)) + 1
 		if int(taken[str(p)]) > (d.get("steps", []) as Array).size():
 			return "the %s direction is %d step%s deep" % [str(p), (d.get("steps", []) as Array).size(), "" if (d.get("steps", []) as Array).size() == 1 else "s"]
@@ -2609,10 +2611,16 @@ func _validate_branches(where: String, c: Dictionary, errs: Array[String]) -> vo
 			errs.append("%s: two directions share the id" % dw)
 		ids[str(d["id"])] = true
 		for k in (d as Dictionary).keys():
-			if not ["id", "name", "steps", "design"].has(str(k)):
-				errs.append("%s: '%s' is no key of a direction (id, name, steps, design)" % [dw, str(k)])
+			if not ["id", "name", "steps", "design", "status"].has(str(k)):
+				errs.append("%s: '%s' is no key of a direction (id, name, steps, design, status)" % [dw, str(k)])
+		# A direction back in design (the Mole's, Ryan, 20 November: "Send the Mole's current Upgrade
+		# tree back to design"): a planned draft, kept and never offered (branch_error), so its depth
+		# waits on its session.
+		var planned_dir := str(d.get("status", "")) == "planned"
+		if d.has("status") and not planned_dir:
+			errs.append("%s: a direction's status is planned, or it has none" % dw)
 		var steps: Array = d["steps"]
-		if steps.size() != deep:
+		if steps.size() != deep and not planned_dir:
 			errs.append("%s: a tier %d machine picks %d time%s, so a direction is %d step%s deep, not %d" % [dw, tier, deep, "" if deep == 1 else "s", deep, "" if deep == 1 else "s", steps.size()])
 		for i in range(steps.size()):
 			var st = steps[i]
