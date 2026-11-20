@@ -437,7 +437,7 @@ details{margin-top:8px} summary{cursor:pointer;color:var(--ink-3);font-size:13px
 .tpin .ex b{color:var(--ink);font-weight:600}
 .thow{font-size:13.5px;color:var(--ink-2);max-width:76ch;margin:10px 0 0}
 .thow li{margin:3px 0}
-/* ---- formations (21 November): each domain's packs by tier, folded to a line a pack; opened, its
+/* ---- formations (20 November): each domain's packs by tier, folded to a line a pack; opened, its
    grid as the fight stands it and every unit with its moves. A rank is drawn by position, a massive
    foe by spanning both ranks, a scaled number by its tier's mark: structure, never hue alone. */
 .fview{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:12px 0 0}
@@ -520,7 +520,7 @@ details.fedit .sfield{margin-top:8px}
 details.fedit .bnums{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
 .stands .linkbtn{text-align:left}
 
-/* ---- the Content tab's sheets (21 November): the Bench's sheet for every kind, the raw every-field
+/* ---- the Content tab's sheets (20 November): the Bench's sheet for every kind, the raw every-field
    editor behind its toggle */
 .sheet .sbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .sheet .sbar .sp{flex:1}
@@ -607,7 +607,7 @@ try {
   const s = JSON.parse(localStorage.getItem("hangar.tabs") || "{}");
   if (SECTIONS.some(x => x.id === s.section)) state.section = s.section;
   if (s.sub) Object.assign(state.sub, s.sub);
-  if (s.v !== 2) delete state.sub.foeView;   // the Foes tab opens on its formations since 21 November, whatever view was kept before
+  if (s.v !== 2) delete state.sub.foeView;   // the Foes tab opens on its formations since 20 November, whatever view was kept before
   if (state.sub.content !== "changes" && !contentFiles().some(f => f.key === state.sub.content)) state.sub.content = "components.entries";
 } catch (e) {}
 try {
@@ -869,7 +869,7 @@ const FILTER_SPECS = {
       {id: "art", label: "Art", of: e => [foeArtState(e.id)], name: v => v === "none" ? "No art" : v === "hero" ? "Hero's" : v[0].toUpperCase() + v.slice(1), order: ["picked", "hero", "placeholder", "none"]},
       {id: "rank", label: "Rank", of: e => [(foeWhole(e.id) || e).rank], order: ["front", "back"]},
       {id: "size", label: "Size", of: e => [isMassive(foeWhole(e.id) || e) ? "massive" : "one"], name: v => v === "massive" ? "Massive" : "One slot", order: ["one", "massive"]},
-      // Whether a pack deals it (21 November): in a grid or a fight's line, brought by one (a split, a
+      // Whether a pack deals it (20 November): in a grid or a fight's line, brought by one (a split, a
       // summon, a part), or by nothing at all.
       {id: "packs", label: "In packs", of: e => { const p = standsIn(e.id); return [!p.length ? "none" : p.some(x => !x.how) ? "in" : "brought"]; }, name: v => ({in: "In a pack", brought: "Brought by one", none: "In none"})[v] || v, order: ["in", "brought", "none"]},
       EDITS,
@@ -895,7 +895,7 @@ const FILTER_SPECS = {
     groups: [
       {id: "category", label: "Category", of: e => [e.category], name: plain},
       {id: "status", label: "Status", of: e => e.status === "planned" ? ["planned"] : [], keep: true},
-      // Whether a screen draws its entry (the Text tab's inventory) and whether content names it (21 November).
+      // Whether a screen draws its entry (the Text tab's inventory) and whether content names it (20 November).
       {id: "drawn", label: "In game", of: e => { const s = state.text && state.text.byId.get(`vocabulary.entries/${e.id}/codex`); return s ? [s.shown ? "drawn" : "not"] : []; }, name: v => v === "drawn" ? "Drawn" : "Not drawn", order: ["drawn", "not"]},
       {id: "named", label: "In content", of: e => [(termUses().get(e.id) || []).length ? "named" : "none"], name: v => v === "named" ? "Named by a piece" : "Named by none", order: ["named", "none"]},
       EDITS,
@@ -1211,7 +1211,7 @@ function renderCodex(main) {
 function openFromCodex(key, id) { openSheet(key, id); }
 
 // ------------------------------------------------------------------ formations
-// The Foes tab is formations first (21 November, Ryan: "Independent units don't matter anymore in
+// The Foes tab is formations first (20 November, Ryan: "Independent units don't matter anymore in
 // isolation, we're tuning around the formations, so I need the context"). Every pack a domain
 // deals, by tier, under the name the reports use (its id's words), with its grid as the fight
 // stands it and every unit's numbers and moves at that tier: a formation, a patrol and an elite
@@ -1811,9 +1811,9 @@ function renderList(main, f) {
         st ? el("span", {class: "tag " + st}, st === "del" ? "delete" : st) : null));
       continue;
     }
-    // A unit says the packs it stands in, by the names the formations wear (21 November).
+    // A unit says the packs it stands in, by the names the formations wear (20 November).
     const packs = foes ? standsIn(id) : [];
-    const inLine = foes ? (packs.length ? "in " + packs.slice(0, 4).map(p => p.card.name + (p.how ? " (" + p.how.split(" ")[0] + ")" : "")).join(" · ") + (packs.length > 4 ? ` +${packs.length - 4}` : "") : "in no pack: nothing deals it") : "";
+    const inLine = foes ? (packs.length ? "in " + packs.slice(0, 4).map(p => p.card.name + (p.how ? " (" + (p.how.startsWith("split") ? "split" : p.how.startsWith("called") ? "summoned" : "part") + ")" : "")).join(" · ") + (packs.length > 4 ? ` +${packs.length - 4}` : "") : "in no pack: nothing deals it") : "";
     const drawn = f.filter === "vocabulary" && state.text ? state.text.byId.get(`vocabulary.entries/${id}/codex`) : null;
     list.append(el("div", {class: "item" + (foes ? " foe" : ""), tabindex: "0", role: "button", onclick: open, onkeydown: keys},
       foes ? spriteEl(id) : null,
@@ -2003,7 +2003,7 @@ function diffView(was, now) {
   return box;
 }
 // ------------------------------------------------------------------ sheets
-// The Content tab's entries on the Bench's pattern (21 November, Ryan: "The bench is the standard
+// The Content tab's entries on the Bench's pattern (20 November, Ryan: "The bench is the standard
 // that I'd love if all the content looked like, it's much better UX"): one flat sheet an entry, the
 // fields he works on up front, each saved as it is left or a moment after the typing stops, the
 // internal design notes folded, and the raw every-field editor behind its toggle for the rare edit.

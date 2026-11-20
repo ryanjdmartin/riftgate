@@ -19,7 +19,7 @@ and each class's variants beside them, with a manifest naming them (build/hangar
 hangar/shapes.json: the classes in the engine's order from sim/content_db.gd's SHAPES, the
 variants and their classes from art/models/shapes/variants.json, the makers from the content),
 so the Models tab can show a class or a variant alone or fit a class to any mount. The Content
-tab's formations (21 November, Ryan: "we're tuning around the formations, so I need the
+tab's formations (20 November, Ryan: "we're tuning around the formations, so I need the
 context") read the engine's own rules for a pack, which live in GDScript the browser cannot
 read: the boss tiers that scale a commander and an elite, the threat rating by a composition's
 size, the ramp's span and the words a move's condition and aim are said in. foe_rules() reads
@@ -119,7 +119,7 @@ def foe_rules():
         problems.append("Battle.make_boss_unit no longer sets its unit's squad: the hangar shows a boss fight's threat rating from it")
     campaign, ramp = gd_source("sim/campaign.gd"), gd_source("sim/ramp.gd")
     rules = {
-        "_about": "The engine's rules for a pack, read out of sim/ by tools/hangar_data.py (21 November) for the hangar's formations: never edited by hand. boss_tiers is ContentDB.BOSS_TIERS, index 0 for tier one (ContentDB.scale_boss: HP times hp rounded, attack plus attack, armour plus armour_step a tier above one); scaled says whom ContentDB.foes_for scales; squad_by_size and squad_default are a composition's threat rating where it writes no squad (ContentDB.squad_of), boss_squad a boss fight's (Battle.make_boss_unit); tier_every and ramp_top place a tier on the Convergences (ContentDB.first_ramp_of, Ramp.TOP); final_escort is the tier's own units beside a final's hero (Campaign: the battle's columns less one); when_text and aim_text are how a move's condition and aim are said (Foe.WHEN_TEXT, Foe.AIM_TEXT).",
+        "_about": "The engine's rules for a pack, read out of sim/ by tools/hangar_data.py (20 November) for the hangar's formations: never edited by hand. boss_tiers is ContentDB.BOSS_TIERS, index 0 for tier one (ContentDB.scale_boss: HP times hp rounded, attack plus attack, armour plus armour_step a tier above one); scaled says whom ContentDB.foes_for scales; squad_by_size and squad_default are a composition's threat rating where it writes no squad (ContentDB.squad_of), boss_squad a boss fight's (Battle.make_boss_unit); tier_every and ramp_top place a tier on the Convergences (ContentDB.first_ramp_of, Ramp.TOP); final_escort is the tier's own units beside a final's hero (Campaign: the battle's columns less one); when_text and aim_text are how a move's condition and aim are said (Foe.WHEN_TEXT, Foe.AIM_TEXT).",
         "boss_tiers": gd_const(db, "BOSS_TIERS", "sim/content_db.gd"),
         "scaled": {"commanders": True, "commander_parts": True, "elites": True, "elite_parts": False, "rank_and_file": False},
         "squad_by_size": gd_const(db, "SQUAD_BY_SIZE", "sim/content_db.gd"),
@@ -203,7 +203,7 @@ def main():
         print("\n".join(problems), file=sys.stderr)
         sys.exit(1)
     files["hangar/text.json"] = hangar_text.OUT
-    # The engine's rules for a pack (21 November), for the Content tab's formations: the boss
+    # The engine's rules for a pack (20 November), for the Content tab's formations: the boss
     # tiers, the threat rating by size, the ramp's span and the move words, read out of sim/.
     rules, problems = foe_rules()
     if problems:

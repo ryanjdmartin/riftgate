@@ -99,8 +99,8 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     rating by size, the ramp's span, a move's condition and aim words), `hangar_designs.py`
     (the briefs) and `hangar_text.py` (every shown text). The Content tab's Foes are formations
     first (every pack a domain deals by tier, its grid as the fight stands it and every unit's
-    moves at that tier, the scaled ones at each tier they come at), with the units alone and
-    the sprites beside them; every entry opens on a sheet in the Bench's manner, the raw
+    moves at that tier, the scaled ones at each tier they come at, a composition edited where
+    it is read), with the units alone and the sprites beside them; every entry opens on a sheet in the Bench's manner, the raw
     every-field editor behind its toggle. Ryan's saved edits live in its database: `edits`
     (the content's sheets, the raw editor and the bench), `designs` (his notes on the briefs)
     and `text` (his texts, marks and notes, the sheets' codex, flavour and lines among them).
