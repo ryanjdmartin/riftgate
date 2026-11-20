@@ -12065,3 +12065,19 @@ leader's; main at `0bfbadf` before. Hull a share of a four's; every fight won.
 Read: the corrupting roots double the horde and the gel wall, two formations' twentieth each, the
 bleed growing with the gel wall's longer fight; the Scorpion's venom adds seven points, its
 Paralytail a frequent move; the Shriek's Sap moves the Fell Rider a point at the most.
+
+Sized after: the Mandragora at 3 HP, so one basic shot pulls one, and the Scorpion's Paralytail
+at half its attack where it was three quarters, its venom paid by its blow. The same read on a
+scratch tree with both:
+
+| Fight | His marks | Sized |
+|---|---|---|
+| The goblin horde | 9.7% | 7.3% |
+| The treant grove | 6.9% | 5.9% |
+| The gel wall | 12.7% | 11.0% |
+| The Emperor Scorpion, without the Barrier basic | 29.4% | 23.5% |
+| The Emperor Scorpion, with it | 22.8% | 20.4% |
+
+Read: the Scorpion is back in its band for the squad the leaders are sized for, the venom's
+Ablating passing the Barrier as a tick does; the horde and the gel wall stay over their twentieth,
+the gel wall's long fight feeding the bleed, for the formation pass and the goblins' wall.

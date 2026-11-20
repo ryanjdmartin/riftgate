@@ -194,8 +194,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   the Mandragora on its killer and the higher two on every machine (a fall takes no reroll
   since, a drain a move's alone), which costs the Meadow's formations about a point of a
   four's hull; a pin with nothing to hold goes as its foe's turn ends. His marks of 20
-  November: the roots' lash corrupts (the goblin horde twice a formation's budget until its
-  wall is settled), the Emperor Scorpion's Paralytail leaves Ablating, the Fell Rider's Shriek
+  November: the roots' lash corrupts (the goblin horde half again a formation's budget at the
+  roots' 3 HP, until its wall is settled), the Emperor Scorpion's Paralytail leaves Ablating
+  (its blow lightened to pay for it), the Fell Rider's Shriek
   Saps every machine, and the alpha pack is one alpha and three wargs; King Gel's Dissolve
   waits on a boss's three moves. His to pick: the pickets' count, and the rest of
   `docs/domain_statuses_proposal.md` (its section 8 holds this round's open items). The
