@@ -753,7 +753,7 @@ static func _foe_dict(f: Foe, sk: Skirmish) -> Dictionary:
 		"pending": f.actions.find(f.pending) if not f.pending.is_empty() else -1, "charge": f.charge,
 		"part_ids": f.part_ids, "guard": f.guard, "regrow_parts": f.regrow_parts, "regrow_due": f.regrow_due,
 		"next_move": f.next_move, "committed": f.committed, "grudge": f.grudge, "spent_once": f.spent_once, "swallow_mark": f.swallow_mark,
-		"rage": f.rage, "golden_mark": f.golden_mark, "drains": f.drains, "immune": f.immune,
+		"rage": f.rage, "golden_mark": f.golden_mark, "drains": f.drains, "strikes_when_buffed": f.strikes_when_buffed, "immune": f.immune,
 	}
 
 
@@ -839,6 +839,7 @@ static func _foe_from(d: Dictionary, sk: Skirmish) -> Foe:
 	f.rage = maxi(int(d.get("rage", 0)), bellowed)   # what the team's safe spends add to its blows while it stands (3 November; its own from the start since 8 November)
 	f.golden_mark = int(d.get("golden_mark", -1))   # its HP as it went gold, -1 while calm (4 November)
 	f.drains = bool(d.get("drains", false))   # its blows regrow what they take from a hull, its own Ability (16 November)
+	f.strikes_when_buffed = bool(d.get("strikes_when_buffed", false))   # it strikes only with a buff on it or coming, its own Ability (20 November)
 	var im = d.get("immune", null)   # what never lands on it, its own Ability (17 November)
 	if im is Dictionary:
 		for k in (im as Dictionary).keys():

@@ -135,8 +135,8 @@ func _fight(cid: String, mates: Array, c: Dictionary, seed_value: int, agg: Dict
 				db.scale_boss(f, 0)   # tier one's numbers, as the runner fields them
 			fielded.append(f)
 			for part in db.parts_for(f):
-				if scaled:
-					db.scale_boss(part, 0)
+				if db.is_boss(str(entry[0])):
+					db.scale_boss(part, 0)   # a boss's parts with it; an elite's at their own (ContentDB.foes_for)
 				fielded.append(part)
 	sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
 	sk.add_foes(fielded)

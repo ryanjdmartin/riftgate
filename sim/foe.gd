@@ -70,6 +70,7 @@ var rage: int = 0                # what every shield, vent or equipment entry th
 var golden_mark: int = -1        # its HP as it went gold (golden, 4 November: the Thunder Ape), -1 while calm: a quarter of its HP lost since breaks the rage
 var immune: Dictionary = {}      # what of the team's never lands on it (content's `immune`; Ryan, 15 November: "not as a blanket for all bosses, but for ones who need it for their fight to actually do something"): "suppress" or "disrupt" (IMMUNITIES), each true, always, or the id of a move of its own, while that move gathers
 var drains: bool = false         # every blow of its own regrows it by what the blow took from the hull (content's `drains`: the Vampire Lord's, an Ability on the unit since 16 November, Ryan: "This should be moved to an ability on the unit since it's on every attack. Like the Nob"; a rider on its blows until then)
+var strikes_when_buffed: bool = false   # it strikes only with a buff on it or one coming, and with none does anything but strike (content's `strikes_when_buffed`: the goblins', Ryan, 20 November: "goblins only attack when they have any buff, or are predicted to get one"), an Ability on its chip
 
 ## What a foe may be immune to, an Ability said on its chip (immune_to).
 const IMMUNITIES := ["suppress", "disrupt"]
@@ -86,27 +87,15 @@ func immune_to(what: String) -> bool:
 	return not pending.is_empty() and str(pending.get("id", "")) == str(held)
 
 
-## The words a move aimed at one machine may carry for whom it goes for (`aim`), and how its
-## target line says each: the most or the least of one thing the screen shows, a tie drawn at
-## random, so a field that is level picks anyone and no word needs a fallback. A move that
-## names none picks any machine. Hull and shield together are the strongest's and the weakest's
-## measure, as the map's hunts read them.
+## The words a move aimed at one machine may carry for whom it goes for (`aim`): the most or the
+## least of one thing the screen shows, a tie drawn at random, so a field that is level picks
+## anyone and no word needs a fallback. A move that names none picks any machine. Hull and
+## shield together are the strongest's and the weakest's measure, as the map's hunts read them.
+## How its target line says each is its template, aim.<word> (content/templates.json).
 const AIMS := ["strongest", "weakest", "hottest", "buffed"]
-const AIM_TEXT := {
-	"strongest": "the strongest machine", "weakest": "the weakest machine",
-	"hottest": "the hottest machine", "buffed": "the most buffed machine",
-}
-## The conditions a move may carry (`when`, one word or a list meaning any), and how the
-## codex says each. The skirmish reads them (`Skirmish._when_holds`).
+## The conditions a move may carry (`when`, one word or a list meaning any); the codex says each
+## by its template, when.<word>. The skirmish reads them (`Skirmish._when_holds`).
 const WHENS := ["below_half", "missing_hull", "back_behind", "others_on_field", "ally_hurt", "machine_buffed", "ally_unready", "ally_marked", "part_fallen", "calm"]
-const WHEN_TEXT := {
-	"below_half": "when below half", "missing_hull": "when hurt", "calm": "when it is calm",
-	"back_behind": "when something stands behind it",
-	"others_on_field": "when another stands with it", "ally_hurt": "when one of its own is hurt",
-	"machine_buffed": "when a machine carries a buff", "ally_unready": "when one of its own is not readied",
-	"ally_marked": "when one of its own carries a mark the team laid",
-	"part_fallen": "once one of its parts has fallen",
-}
 
 
 func ablate_stacks() -> int:
@@ -482,6 +471,9 @@ func strikes() -> int:
 ##           "regrow_ally" until then)
 ##           brace_all: Armoured, `value` stacks, on every foe in the fight, on the same clock
 ##           (Protect, 15 October): until the foes' next turn opens
+##           brace_beside: Armoured, `value` stacks, on itself and every foe beside it in its rank
+##           (Skirmish.foes_beside), on the same clock (the goblins' Shield Wall, 20 November:
+##           "I said neighbors, not all"), so walls side by side add
 ##           cleanse: every mark the team laid (Effects.TEAM_MARKS) off the most-marked of its
 ##           own, itself included (Hallow, 28 October: the Marsh's lever); never Numbed, never
 ##           Suppressed, never a buff
@@ -551,14 +543,14 @@ func strikes() -> int:
 ## A cleanse that follows a heal in one move lands on the foe the heal mended (the Cleric's
 ## Cure, one patient: Skirmish._foe_acts).
 const ACTION_EFFECTS := {
-	"defend": ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "phase"],
+	"defend": ["brace", "recover", "heal", "brace_all", "brace_beside", "cleanse", "barrier", "regenerate", "phase"],
 	"buff": ["revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "merge", "golden", "appropriate"],
 	"debuff": ["drain_rerolls", "ablate", "jam", "brittle", "brittle_all", "sap_all", "scorch_all", "corrupt_all", "dispel", "swallow", "expose", "unready_all"],
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
 ## is shown intent (the ambush read below).
-const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "brittle_all", "sap_all", "scorch_all", "corrupt_all", "merge", "golden", "unready_all", "phase"]
+const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "brace_beside", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "brittle_all", "sap_all", "scorch_all", "corrupt_all", "merge", "golden", "unready_all", "phase"]
 
 
 ## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? It draws

@@ -3551,7 +3551,7 @@ func test_spillover_carries_the_damage_past_a_kill_into_the_foe_behind() -> void
 	sk.add_foes([_ghoul(20, 10), _ghoul(500, 10), _archer(500, 10), _archer(10, 10)])
 	sk.begin()
 	sk.start_round()
-	assert_eq(ram.describe(), "50 " + Face.SPILLS_TEXT, "the rule reads on the entry, in words: no keyword names it")
+	assert_eq(ram.describe(), "50 " + Templates.say("rule.spills"), "the rule reads on the entry, in words: no keyword names it")
 	# Find the column with the weak ghoul in front and see who stands behind it.
 	var col := 0 if sk.front[0].hp == 20 else 1
 	var behind: Foe = sk.back[col]
@@ -4173,6 +4173,8 @@ func test_purge_says_its_number_and_every_foe_move_says_whom_it_acts_on() -> voi
 	for kind in ["defend", "buff"]:
 		for effect in Foe.ACTION_EFFECTS[kind]:
 			assert_true(EntryReadout.MOVE_TARGETS.has(effect), "the readout names whom %s acts on" % effect)
+			var key := str(EntryReadout.MOVE_TARGETS.get(effect, ""))
+			assert_true(key == "every_machine" or Templates.has("foe_target." + key), "and content says it (foe_target.%s), or the term does (every machine)" % key)
 
 
 func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:
@@ -4241,6 +4243,69 @@ func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:
 	s2.end_round()
 	assert_eq(s2.field_foes().size(), 1, "with no factory, nothing answers")
 	assert_true("\n".join(s2.log).contains("nothing answers"), "and the log says so")
+
+
+## A summon that calls back only what its pack has lost (`refill`, the Wild Huntsman's Horn, Ryan's
+## go of 20 November on "a fallen rider rides back"): no call while every rider stands, room or
+## none; one back once one has fallen; never more of the kind than rode out.
+func test_the_huntsmans_horn_calls_back_only_the_riders_its_pack_has_lost() -> void:
+	var db := ContentDB.new()
+	db.load_dir(ContentDB.DIR)
+	var horn: Dictionary = {}
+	for a in db.make_foe("wild_huntsman").actions:
+		if bool(a.get("refill", false)):
+			horn = a
+	assert_false(horn.is_empty(), "the Huntsman carries a summon that refills")
+	var who := str(horn.get("foe", ""))
+	var pack := Unit.pack(9, "The Hunt", Vector2i.ZERO)
+	pack.members = [["wild_huntsman", 1], [who, 2]]
+	var sk := Skirmish.new(11, 4)
+	sk.add_mech(_mech("A", Die.single(Face.blank()), 0, 300))
+	var lineup := db.foes_for(pack)
+	sk.add_foes(lineup, pack)
+	sk.foe_factory = func(id: String) -> Foe: return db.make_foe(id)
+	sk.begin()
+	sk.start_round()
+	var huntsman: Foe = null
+	var riders: Array = []
+	for f in sk.field_foes():
+		if f.content_id == "wild_huntsman":
+			huntsman = f
+		elif f.content_id == who:
+			riders.append(f)
+	assert_eq(riders.size(), 2, "two riders rode out")
+	assert_eq(sk._free_slots_for(db.make_foe(who)), 1, "a front slot stands open")
+	assert_eq(sk.refill_short(huntsman, horn), 0, "nothing lost")
+	assert_false(sk.legal_actions(huntsman).has(horn), "so the horn is no move it may announce, room or none")
+	(riders[0] as Foe).hp = 0
+	sk._clear_dead()
+	assert_eq(sk.refill_short(huntsman, horn), 1, "one rider fallen, one short")
+	assert_true(sk.legal_actions(huntsman).has(horn), "and the horn may sound")
+	huntsman.action = horn
+	sk._foe_acts(huntsman, sk.mechs[0])
+	var standing := 0
+	for f in sk.field_foes():
+		if f.alive() and f.content_id == who:
+			standing += 1
+	assert_eq(standing, 2, "one rides back, two again")
+	assert_eq(sk._free_slots_for(db.make_foe(who)), 1, "and the open slot stays open: never more than rode out")
+	assert_eq(sk.refill_short(huntsman, horn), 0, "nothing short again")
+	assert_false(sk.legal_actions(huntsman).has(horn), "so no second call")
+	# A call for several calls back no more than is short.
+	var two := horn.duplicate(true)
+	two["count"] = 3
+	for f in sk.field_foes():
+		if f.alive() and f.content_id == who:
+			f.hp = 0
+			break
+	sk._clear_dead()
+	huntsman.action = two
+	sk._foe_acts(huntsman, sk.mechs[0])
+	standing = 0
+	for f in sk.field_foes():
+		if f.alive() and f.content_id == who:
+			standing += 1
+	assert_eq(standing, 2, "a call for three brings back the one short")
 
 
 func test_a_rally_lands_at_once_and_a_foe_that_has_acted_carries_it_whole_to_its_next_blow() -> void:
@@ -10122,6 +10187,43 @@ func test_phased_waits_for_the_rounds_end_and_a_wrecked_or_purged_machine_never_
 	assert_true(s3.assign(0, hunter), "the lure spent")
 	assert_eq(hunter.target, s3.mechs[1], "the foe keeps its pick: nothing may target a Phased machine")
 	assert_true("\n".join(s3.log).contains("L lures nothing"), "and the log says so")
+
+
+## The Phased trial at once (Ryan, 20 November: "Set the debug toggle for phased"; the TRIALS
+## page's PHASED, Skirmish.phase_at_once): a machine's Phased lands as its entry is spent, out of
+## reach until the round ends, and the foe whose pick it was draws again; off, it waits for the
+## round's end as built.
+func test_phased_at_once_lands_as_it_is_spent_and_the_foes_pick_again() -> void:
+	var veil := Face.buff("phased")
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("A", Die.single(veil), 0, 100)
+	var b := _mech("B", Die.single(Face.blank()), 0, 100)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var g := _ghoul(300, 10)
+	sk.add_foes([g])
+	sk.begin()
+	Skirmish.phase_at_once = true
+	sk.start_round()
+	g.target = sk.mechs[0]
+	assert_true(sk.assign(0, null), "A spends its Phase on itself")
+	Skirmish.phase_at_once = false   # the switch is read as the entry is spent; the rest of the test runs the game's own
+	assert_true(Skirmish.is_phased(sk.mechs[0]) and not Effects.has(a, "phasing"), "Phased at once, with no wait")
+	assert_eq(g.target, sk.mechs[1], "the foe that picked it picks again, the next machine in line")
+	sk.end_round()
+	assert_eq(a.hull, 100, "nothing reaches A in the foes' turn")
+	assert_true(b.hull < 100, "the blow lands on B")
+	sk.start_round()
+	assert_false(Skirmish.is_phased(sk.mechs[0]), "and it is back in reach as the next round opens")
+	# Off, the game's own: the wait, then Phased as the round ends.
+	var s2 := Skirmish.new(2, 2)
+	var c := _mech("C", Die.single(veil.duplicate_face()), 0, 100)
+	s2.add_mech(c)
+	s2.add_foes([_ghoul(300, 10)])
+	s2.begin()
+	s2.start_round()
+	assert_true(s2.assign(0, null), "C spends its Phase")
+	assert_true(Effects.has(c, "phasing") and not Skirmish.is_phased(s2.mechs[0]), "the wait, and no Phased yet")
 
 
 ## The Sutler's Hoist and the Reveille Horn (21 October), synthetic: the Hoist cools an ally and

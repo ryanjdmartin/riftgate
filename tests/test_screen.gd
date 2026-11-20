@@ -1683,7 +1683,9 @@ func test_an_ability_wears_its_own_chip_and_no_purge_takes_it() -> void:
 	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}
 	var lord := Foe.make("lord", 30, 5)
 	lord.drains = true   # a drain is its foe's own Ability since 16 November, no rider on a blow
-	sk.add_foes([nob, gel, beast, lord])
+	var wary := Foe.make("wary", 30, 5, true)   # the back rank: the front holds four
+	wary.strikes_when_buffed = true   # the goblins' Timid (20 November), a synthetic carrier
+	sk.add_foes([nob, gel, beast, lord, wary])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
 	Effects.stack(m, Effects.sealed_status(3, 2), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
@@ -1703,6 +1705,7 @@ func test_an_ability_wears_its_own_chip_and_no_purge_takes_it() -> void:
 	assert_true(str(ability.call(s._foe_rows(gel))[0][2]).contains("splits"), "a Gel's split is its ability")
 	assert_true(str(ability.call(s._foe_rows(beast))[0][2]).contains("Last Act: Meteor"), "a last act is the Gargantuan King's")
 	assert_true(str(ability.call(s._foe_rows(lord))[0][2]).begins_with("Ability, Drain"), "a drain is its foe's own, named on its chip")
+	assert_true(str(ability.call(s._foe_rows(wary))[0][2]).begins_with("Ability, Timid"), "a foe that strikes only when buffed says so on its chip")
 	Effects.purge(m, 9)
 	Effects.purge(nob, 9)
 	assert_true(Effects.is_sealed(m), "a Purge leaves the seal")

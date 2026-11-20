@@ -128,7 +128,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 - A pack is what its fight's slots hold: nothing waits behind the formation and nothing steps in
   once the fight begins. Every composition fits its slots (Content conventions) and every fight
   holds one pack, a boss's with its escort, so no fight is given more than its slots hold.
-- At the start, foes take their ranks heaviest hitters first from the left (its heaviest
+- At the start, a pack stands as its composition's grid has it; a boss's fight and a final,
+  which carry no grid, take their ranks heaviest hitters first from the left (its heaviest
   move's damage times strikes; ties in arrival order).
 - The squad stands in four spots across the floor, one under each of the foes' columns: a squad
   of three from the left, a squad of one or two in the middle spots, the outer ones empty; a
@@ -639,8 +640,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   condition on its play, and the pattern for any to come; the second is a **count it spends**
   (the Quintessence Tap's Essence, by its mark, the number what it would take now), unplayable and
   struck the same way while its machine holds none.
-- **Cleanse** (on a shield or a vent, today): the machine it lands on loses Ablating, Scorched, Brittle,
-  a foe's Jammed and Corrupted (never a cooldown).
+- **Cleanse** (on a buff or a shield: the Breaching Plow, the Retrocausal Shroud, the Sutler's Hoist
+  Charged): the machine it lands on loses Ablating, Scorched, Brittle, Sapped, Exposed, a foe's
+  Jammed and Corrupted (never a cooldown).
 - No shield passes its maximum: a shield granted to a full machine is lost.
 
 Component properties, printed on the entry rather than learned as keywords (the die marks
@@ -671,7 +673,7 @@ Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most 
 each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
 the armour they stood for going with them. **Braces**:
 spending it Armours its owner, the stacks it says, an armour point each, until its side's
-next turn begins (no dealt piece prints it today; the Wild Boar's Breaching Plow did until 11 November). **The Quintessence Tap** (the Ammit's, equipment spent on
+next turn begins (the Shift Whistle prints it). **The Quintessence Tap** (the Ammit's, equipment spent on
 itself, cooldown 3): it consumes the Ammit's Essence, as much as it holds up to 5, and grants a
 stack of Empowered for each, the die showing what it would take now; and its machine gains
 Essence Flare, a buff, until the round's end. While a live machine carries Essence Flare no
@@ -1245,7 +1247,10 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   half, hurt, a foe behind it, another foe on the field, one
   of its own hurt, a machine carrying a buff, one of its own not readied, one of its own
   marked, one of its parts fallen (a part down and not waiting to step in). A move marked once
-  comes once a fight. No foe flees the field but a loot-runner whose prize goes with it (the
+  comes once a fight. A foe that strikes only when buffed (the goblins' Timid, an
+  Ability on its chip) announces its blow alone while a buff stands on it or a move announced
+  ahead of it this round will lay one on it (a wall beside it, a brace, a rally or a Ward on
+  every foe), and anything but its blow while none does. No foe flees the field but a loot-runner whose prize goes with it (the
   one shape a flee may take; none is built, and no move flees). A move may
   carry a countdown: it gathers, landing that many rounds after it is announced, and nothing
   hits meanwhile; its pick holds while the machine stands; Suppress holds it a round, Disrupt
@@ -1291,7 +1296,11 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   foe gone whole, a burst or a part falling with its core, and one taken in by a merge), less
   its Sapped, never below nothing. A move's number is its own, as a weapon's is, and an add is
   a point on every strike whatever the factor: the one damage formula on both
-  sides; strikes are separate blows. Riders (a Ward turns away all but the last
+  sides; strikes are separate blows. An attack deals damage, 1 at the least at its foe's base
+  attack: a move that would deal none is a debuff, a rider-only hit with its effect (the
+  Half-Gel's Engulf), as a machine's component that deals none is equipment. A foe carries at
+  least one move that lands on a machine, a blow or a rider-only hit, and opens with its first
+  blow, or with its first move where it has none. Riders (a Ward turns away all but the last
   three): scorch (stacks of Scorched), ablate (stacks of
   Ablating), jam (the entry the machine shows is Jammed), corrupt (Corrupted stacks on it), brittle
   (Brittle stacks on the machine: a point more on every blow it takes a stack, halving as its
@@ -1306,9 +1315,11 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   self-destruct (the striker dies after, for good), every machine
   (each strike lands on every live machine in turn, its number what each takes; it holds no
   pick, so no word and no Lure moves it). Scorch, ablate, corrupt and brittle each say their stacks a blow, as the player's
-  Ablate does (Scorch 2: two). What a foe lays that halves says 2 at the
-  least, a blow's Brittle and a rally's Empowered: one stack is gone at its first halving, a
-  machine's Brittle as its next turn starts and the rallier's own share as its turn ends. The validator holds a foe's moves to it. No such floor binds the player's pieces:
+  Ablate does (Scorch 2: two). What a foe's move lays that halves says 2 at the
+  least, a rally's Empowered and a move's Brittle: one stack is gone at its first halving, a
+  machine's Brittle as its next turn starts and the rallier's own share as its turn ends. The validator holds a foe's moves to it. A blow's rider may lay 1 (the
+  halves of a Bubble Gel and a Molten Gel): the foes strike in turn, so a single stack of
+  Brittle a blow lays is on its machine for every blow after it that turn. No such floor binds the player's pieces:
   the player orders the turn's spends, so a single stack is used before it halves.
 - **An immunity** is a foe's own Ability, a chip on it that no Purge reaches, given case by
   case to a foe whose fight needs it: one thing of the team's that never lands on it. A foe
@@ -1352,7 +1363,9 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   Ward turns the jam and the take away together.
 - **A special** stands in the blow's place as a move's first step, or follows it as a later one: brace (Armoured, its value in stacks, an armour point each, until the
   foes' next turn opens), recover (regains its value, itself), heal (the most hurt of its own, itself included, regains its
-  value), brace all (the same on every foe in the fight, on the same clock), revive once,
+  value), brace all (the same on every foe in the fight, on the same clock), brace beside (the
+  same on itself and on every foe beside it in its rank, a massive foe in a column beside it
+  among them, so walls raised side by side add: the goblins' Shield Wall), revive once,
   revive an ally (Undying on one of its own, never itself, not readied already: a
   party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,
@@ -1378,8 +1391,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   content carries a ward all yet; the Djinn's Unmake is the one purge cast as a move, and a Purge 1 stands ahead of
   the Pilgrim's knife, the needler line's Needles, the Old Man of the Desert's Maw and the
   Rust Monster's bite; an Expose of its own
-  is the Goblin Warchief's, the Basilisk's, the Alpha Warg's, the Lich's and the Rider of the
-  Wild Hunt's, each cast while another foe stands to follow it.
+  is the Goblin Warchief's, the Basilisk's, the Alpha Warg's, the Lich's and the Wild
+  Huntsman's, each cast while another foe stands to follow it.
 - **A last act**: a foe may act the moment it falls, before anything else and even when it
   was the last foe, since damage sticks for the battle. A fall is a short list of steps, as a
   move is: a death blow with its own riders, every machine included, or one special in a
@@ -1437,7 +1450,10 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   one with no room never forms.
 - **A summon** takes an empty slot of its rank at once, the nearest its summoner's column, the
   left on a tie, its round over like a split's half's; a call for several stands as many as fit,
-  and a summoner with room for none never picks the summon.
+  and a summoner with room for none never picks the summon. A summon may call back only what its
+  pack has lost (the Wild Huntsman's Horn): it is picked only while fewer of the kind it calls
+  stand in the fight than rode out with the pack, and calls no more than that, so the pack never
+  grows past its start.
 - **A corpse**: a part that falls and will grow back leaves its corpse in its slot, drawn dimmed
   with the rounds until it regrows, and grows back there; no swap or arrival takes the slot
   meanwhile. A part with no corpse to grow into takes the nearest empty slot of its rank,
@@ -1867,7 +1883,7 @@ a stat.
   the tier names (tier one's first; tier two's first and third; tier three's first, second and
   fourth) the lead domain's next own elite composition not yet sent this battle emerges at the
   rift, or a wanderer (`wanders`: Gilgamesh, the Reaper, the Wild Hunt, the World Eater, the
-  Shuffler and the Astromancer, each one composition in one domain's list and every domain's), drawn on the
+  Shuffler and the Astromancer, each written in one domain's list and dealt from every domain's), drawn on the
   Fracture's roll one time in three in place of the domain's own and always once its own are
   spent, the same roll picking which among those not yet sent, so every domain may meet them,
   none waits on them and nobody learns an order. An elite

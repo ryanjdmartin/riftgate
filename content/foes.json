@@ -4,11 +4,11 @@
     {
       "id": "goblin", "name": "Goblin", "faction": "meadow",
       "design": { "sprite": "a hunched green goblin with a rusty knife, ragged loincloth and leather straps, snarling", "variants": ["a green-skinned goblin shaman in a tattered feathered cloak and a bone necklace, hunched forward mid-incantation, its crooked staff thrust out and its free hand clawed and raised, its small head set low between hunched shoulders", "a green-skinned goblin in a dented iron helm and a scavenged mail shirt, crouched low behind a round wooden buckler with a short blade drawn back to stab, its small head set low between hunched shoulders", "a green-skinned goblin in a patched leather apron hung with stolen trinkets and keys, lunging forward mid-stride and swinging a lantern out ahead of it, its small head set low between hunched shoulders", "a green-skinned goblin chieftain in a crown of bent nails and a cape of stitched hides, rearing back with both arms flung wide and its mouth open in a war cry, the cape flaring, its small head set low between hunched shoulders", "a green-skinned goblin in a ragged loincloth and leather straps, leaping forward with a rusty knife raised overhead in both hands and its mouth open in a snarl, its small head set low between hunched shoulders", "a green-skinned goblin in a wolf-pelt hood and armour of lashed bones, crouched low and coiled to spring with a jagged cleaver held back, its small head set low between hunched shoulders", "a green-skinned goblin in a rusted half-helm and a torn tabard over scavenged chain, charging forward with a broken spear levelled, its small head set low between hunched shoulders", "a green-skinned goblin in a cloak of crow feathers, sidestepping low with one hooked knife held back and another thrust forward, its small head set low between hunched shoulders"], "fantasy": "The genre's first fight, with a knife. Every JRPG opens on one.", "niche": "The Meadow's front: a straight knife and a scrap shield, a line that holds while the back rank works (Ryan, 10 November: 'A straight attack, and a block of some kind, so they're a true frontliner and not a lame not-really-damage-threat'; 'I think the earlier goblin can have shield wall as well'). Until then its knife counted its peers, 2 and one more for every other goblin standing, and the first kill took the formation apart. The knife's 4 is a placeholder: with the wall it costs two lights about what the old knife did, and any higher out-hits the Guard as it stands." },
-      "codex": "The Meadow's rank and file. Small, loud and never alone: they come in sixes, straight at the nearest thing with a heartbeat, a knife in one hand and a scrap shield in the other.",
-      "hp": 4, "attack": 4, "rank": "front", "movespeed": 2,
+      "codex": "The Meadow's rank and file. Small, loud and never alone: they lock scrap shields with whatever stands beside them, and a goblin only stabs from behind one.",
+      "hp": 4, "attack": 4, "rank": "front", "movespeed": 2, "strikes_when_buffed": true,
       "actions": [
         { "id": "stab", "name": "Stab", "kind": "attack", "weight": 2, "text": "A knife from the crowd for {damage}.", "status": "implemented" },
-        { "id": "shield_wall", "name": "Shield Wall", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": "Raises a scrap shield: armour +{value} until its next turn.", "status": "implemented" }
+        { "id": "shield_wall", "name": "Shield Wall", "kind": "defend", "effect": "brace_beside", "value": 1, "weight": 1, "text": "Raises a scrap shield over its neighbours: armour +{value} on itself and every foe beside it, until their next turn.", "status": "implemented" }
       ],
       "flavour": "They don't run. They don't have to. You'll get tired first."
     },
@@ -16,10 +16,10 @@
       "id": "goblin_guard", "name": "Goblin Guard", "faction": "meadow", "tier": 2,
       "design": { "fantasy": "The genre's second goblin, the one with the shield. Tier two of the goblin line: the goblin's knife and wall at tier two's numbers, no twist of its own since the Goblin took the wall (Ryan, 10 November: a recolour keeps its archetype). Its knife's 5 is a placeholder, a step over the Goblin's." },
       "codex": "A bigger goblin with a harder knife. It braces when it is not stabbing, so the line takes a blow more to clear.",
-      "hp": 3, "attack": 5, "rank": "front", "movespeed": 2,
+      "hp": 3, "attack": 5, "rank": "front", "movespeed": 2, "strikes_when_buffed": true,
       "actions": [
         { "id": "stab", "name": "Stab", "kind": "attack", "weight": 2, "text": "A knife from the crowd for {damage}.", "status": "implemented" },
-        { "id": "shield_wall", "name": "Shield Wall", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": "Raises a scrap shield: armour +{value} until its next turn.", "status": "implemented" }
+        { "id": "shield_wall", "name": "Shield Wall", "kind": "defend", "effect": "brace_beside", "value": 1, "weight": 1, "text": "Raises a scrap shield over its neighbours: armour +{value} on itself and every foe beside it, until their next turn.", "status": "implemented" }
       ],
       "flavour": "Gate order one still stands. Add: some of the green ones carry doors now."
     },
@@ -27,10 +27,10 @@
       "id": "goblin_captain", "name": "Goblin Captain", "faction": "meadow", "tier": 3,
       "design": { "fantasy": "The goblin chieftain, the commander in the crowd. Tier three of the goblin line, in the front rank since 10 November (Ryan: 'Put the captain in front, yeah'; 'I didn't think the recolours changed like, the archetype of the foes?'): the goblin's knife and wall at tier three's numbers, its Warcry the twist, the third move. Its knife's 6 is a placeholder, a step over the Guard's." },
       "codex": "The goblin that shouts. It stands in the front and rallies the rest, so the line hits harder while it lives.",
-      "hp": 4, "attack": 6, "rank": "front", "movespeed": 2,
+      "hp": 4, "attack": 6, "rank": "front", "movespeed": 2, "strikes_when_buffed": true,
       "actions": [
         { "id": "stab", "name": "Stab", "kind": "attack", "weight": 2, "text": "A knife from the crowd for {damage}.", "status": "implemented" },
-        { "id": "shield_wall", "name": "Shield Wall", "kind": "defend", "effect": "brace", "value": 1, "weight": 1, "text": "Raises a scrap shield: armour +{value} until its next turn.", "status": "implemented" },
+        { "id": "shield_wall", "name": "Shield Wall", "kind": "defend", "effect": "brace_beside", "value": 1, "weight": 1, "text": "Raises a scrap shield over its neighbours: armour +{value} on itself and every foe beside it, until their next turn.", "status": "implemented" },
         { "id": "warcry", "name": "Warcry", "kind": "buff", "effect": "rally", "value": 2, "weight": 1, "when": "others_on_field", "text": "Every foe on the field hits {value} harder, itself too, fading by half each round.", "status": "implemented" }
       ],
       "flavour": "They have ranks. We do not know how they decide them. We suspect volume."
@@ -82,45 +82,66 @@
     },
     {
       "id": "gel", "name": "Gel", "faction": "meadow",
-      "design": { "sprite": "a heap of translucent bright green slime with a sinister face in it, no arms, no legs, no body, a puddle-shaped blob", "variants": ["a heap of translucent bright green slime rearing up into a curling wave about to crash down, a sinister face pressed into its crest, no arms, no legs, no body", "a wide quivering dome of translucent bright green slime with half-dissolved bones and a rusted helm floating inside it, a sinister face of two glowing eyes and a jagged grin in its surface, no arms, no legs, no body", "a heap of translucent bright green slime with jagged pale crystal shards jutting from its back, swelling upward with a sinister face, no arms, no legs, no body", "a lopsided heap of translucent bright green slime with a darker green core and bubbles rising through it, surging forward low to the ground with its sinister face leading, no arms, no legs, no body"], "fantasy": "The genre's first monster, a blob: Dragon Quest's slime and Final Fantasy's flan in one, ours bright green and faintly wrong.", "niche": "A wall, not an attacker (Ryan, 25 October): kill it and two halves step up in its place at once, so the hole it leaves never opens. Volume is the answer, or leave it for last." },
+      "design": { "sprite": "a heap of translucent bright green slime with a sinister face in it, no arms, no legs, no body, a puddle-shaped blob", "variants": ["a heap of translucent bright green slime rearing up into a curling wave about to crash down, a sinister face pressed into its crest, no arms, no legs, no body", "a wide quivering dome of translucent bright green slime with half-dissolved bones and a rusted helm floating inside it, a sinister face of two glowing eyes and a jagged grin in its surface, no arms, no legs, no body", "a heap of translucent bright green slime with jagged pale crystal shards jutting from its back, swelling upward with a sinister face, no arms, no legs, no body", "a lopsided heap of translucent bright green slime with a darker green core and bubbles rising through it, surging forward low to the ground with its sinister face leading, no arms, no legs, no body"], "fantasy": "The genre's first monster, a blob: Dragon Quest's slime and Final Fantasy's flan in one, ours bright green and faintly wrong.", "niche": "A wall that wears the hull down (Ryan, 20 November: \"Honestly I think all gels should Ablate instead of attacking as their default. Right now, they aren't fun to fight. They're HP sponges that don't threaten anything\"): every Engulf leaves Ablating on its machine, and stacks laid on one machine add up, so \"the play is to spread around the hits so they don't stack\". Kill it and two halves step up in its place at once, so the hole it leaves never opens." },
       "codex": "A heap of something bright that moves on its own. Hit it and it hits back; kill it and it comes apart into two smaller heaps that step up in its place.",
-      "hp": 5, "attack": 2, "rank": "front", "movespeed": 2,
+      "hp": 4, "attack": 1, "rank": "front", "movespeed": 2,
       "on_death": { "summon": "gel_half", "count": 2, "pair": true },
       "actions": [
-        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "text": "Flows over the hull for {damage}.", "status": "implemented" }
+        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["ablate"], "ablate": 1, "text": "Flows over the hull: {damage}, and the machine Ablating ×1.", "status": "implemented" }
       ],
       "flavour": "Count them after, not before."
     },
     {
       "id": "gel_half", "name": "Half-Gel", "faction": "meadow",
-      "design": { "sprite": "a small heap of translucent bright green slime with a sinister face, no arms, no legs, a blob half the size of a man", "variants": ["a small heap of translucent bright green slime rearing up into a curling wave, a sinister face pressed into its crest, no arms, no legs, a blob half the size of a man", "a small quivering dome of translucent bright green slime with a few half-dissolved bones floating inside it, a sinister face of two glowing eyes and a jagged grin in its surface, no arms, no legs, a blob half the size of a man", "a small heap of translucent bright green slime with a few jagged pale crystal shards jutting from its back, swelling upward with a sinister face, no arms, no legs, a blob half the size of a man", "a small lopsided heap of translucent bright green slime with a darker green core and bubbles rising through it, surging forward low to the ground with its sinister face leading, no arms, no legs, a blob half the size of a man"], "fantasy": "What a Gel leaves.", "niche": "Two weak heaps where there was one. They do not split again." },
+      "design": { "sprite": "a small heap of translucent bright green slime with a sinister face, no arms, no legs, a blob half the size of a man", "variants": ["a small heap of translucent bright green slime rearing up into a curling wave, a sinister face pressed into its crest, no arms, no legs, a blob half the size of a man", "a small quivering dome of translucent bright green slime with a few half-dissolved bones floating inside it, a sinister face of two glowing eyes and a jagged grin in its surface, no arms, no legs, a blob half the size of a man", "a small heap of translucent bright green slime with a few jagged pale crystal shards jutting from its back, swelling upward with a sinister face, no arms, no legs, a blob half the size of a man", "a small lopsided heap of translucent bright green slime with a darker green core and bubbles rising through it, surging forward low to the ground with its sinister face leading, no arms, no legs, a blob half the size of a man"], "fantasy": "What a Gel leaves.", "niche": "Two weak heaps where there was one, no blow in either, only the burn (Ryan, 20 November: \"Half gel change to no damage 1 Ablate\"), a rider-only hit and no blow (the same day: \"I didn't mean 'attack of zero' I meant just an ablate\"). They do not split again." },
       "codex": "Half of a Gel. Smaller, weaker, and there are two of them.",
-      "hp": 2, "attack": 1, "rank": "front", "movespeed": 2,
+      "hp": 2, "attack": 0, "rank": "front", "movespeed": 2,
       "actions": [
-        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "text": "Flows over the hull for {damage}.", "status": "implemented" }
+        { "id": "engulf", "name": "Engulf", "kind": "debuff", "effect": "ablate", "value": 1, "weight": 2, "text": "Flows over the hull: the machine Ablating ×{value}.", "status": "implemented" }
       ],
       "flavour": "Told you."
     },
     {
       "id": "bubble_gel", "name": "Bubble Gel", "faction": "meadow", "tier": 2,
-      "design": { "fantasy": "The genre's second slime, the bubbly one. Tier two of the gel line: a wall that walls small blows." },
-      "codex": "A gel with a skin. Small blows slide off it, and it splits into halves like any gel.",
-      "hp": 5, "attack": 4, "armour": 1, "rank": "front", "movespeed": 2,
-      "on_death": { "summon": "gel_half", "count": 2, "pair": true },
+      "design": { "fantasy": "The genre's second slime, the bubbly one. Tier two of the gel line: its Engulf leaves the machine Brittle, so the blows after it land harder (Ryan, 20 November: \"Bubble gel 6 HP no armour. Engulf is 2 damage 2 Brittle\"), its halves its own; a placeholder until tier two is sized (\"Higher tiers are obviously placeholder since we don't have scaling. But that's the direction\")." },
+      "codex": "A gel that fizzes. What it flows over comes away brittle, so every blow after it lands harder, and it splits into halves like any gel.",
+      "hp": 6, "attack": 2, "rank": "front", "movespeed": 2,
+      "on_death": { "summon": "bubble_gel_half", "count": 2, "pair": true },
       "actions": [
-        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "text": "Flows over the hull for {damage}.", "status": "implemented" }
+        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["brittle"], "brittle": 2, "text": "Flows over the hull: {damage}, and the machine Brittle ×2.", "status": "implemented" }
       ],
-      "flavour": "It is not harder to kill. It is harder to scratch."
+      "flavour": "It does not hurt much. It makes the next thing hurt."
     },
     {
-      "id": "metal_gel", "name": "Metal Gel", "faction": "meadow", "tier": 3,
-      "design": { "fantasy": "The metal slime, the genre's armoured joke made a wall. Tier three of the gel line; no split, since the plate is the whole of it." },
-      "codex": "A gel of living metal: little inside it, but three points of plate on every blow. Brittle and Empowered are the answer, or one big blow.",
-      "hp": 3, "attack": 5, "armour": 3, "rank": "front", "movespeed": 2,
+      "id": "bubble_gel_half", "name": "Bubble Half-Gel", "faction": "meadow", "tier": 2,
+      "design": { "fantasy": "What a Bubble Gel leaves.", "niche": "Two halves of a Bubble Gel, each Engulf a point and Brittle (Ryan, 20 November: \"Half bubble gel 3 HP, it's engulf is 1 damage 1 Brittle\"); its Brittle 1 as he wrote it (20 November: \"Use the brittle and ablate numbers as I wrote them\"), a blow's rider held to no least. They do not split again." },
+      "codex": "Half of a Bubble Gel. Smaller, and still fizzing.",
+      "hp": 3, "attack": 1, "rank": "front", "movespeed": 2,
       "actions": [
-        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "text": "Flows over the hull for {damage}.", "status": "implemented" }
+        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["brittle"], "brittle": 1, "text": "Flows over the hull: {damage}, and the machine Brittle ×1.", "status": "implemented" }
       ],
-      "flavour": "Field note: shooting it is like shooting the gate. Hit it with something that counts."
+      "flavour": "Two of them now. Both fizzing."
+    },
+    {
+      "id": "molten_gel", "name": "Molten Gel", "faction": "meadow", "tier": 3,
+      "design": { "fantasy": "The gel line's tier three, molten metal (Ryan, 20 November: \"Metal gel -> Molten gel. 6 HP 2 armour. Engulf 2 damage 2 Brittle 2 ablate\"; \"Molten gel I had meant to still be metal. The colour was fine. Just molten metal\"), the Metal Gel's colour: a crust of plate, and what it flows over goes brittle and keeps burning. It splits into molten halves; a placeholder until tier three is sized." },
+      "codex": "A gel of molten metal under a crust that turns small blows. What it flows over goes brittle and keeps burning, and it splits into halves like any gel.",
+      "hp": 6, "attack": 2, "armour": 2, "rank": "front", "movespeed": 2,
+      "on_death": { "summon": "molten_gel_half", "count": 2, "pair": true },
+      "actions": [
+        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["brittle", "ablate"], "brittle": 2, "ablate": 2, "text": "Burns over the hull: {damage}, and the machine Brittle ×2 and Ablating ×2.", "status": "implemented" }
+      ],
+      "flavour": "Field note: the crust is the easy part."
+    },
+    {
+      "id": "molten_gel_half", "name": "Molten Half-Gel", "faction": "meadow", "tier": 3,
+      "design": { "fantasy": "What a Molten Gel leaves.", "niche": "Two halves of a Molten Gel, a point of crust each and an Engulf of a point, Brittle and Ablating (Ryan, 20 November: \"Half molten gel 3 HP 1 armour. 1 damage 1 Brittle 1 Ablate\"); its Brittle 1 as he wrote it (20 November: \"Use the brittle and ablate numbers as I wrote them\"), a blow's rider held to no least. They do not split again." },
+      "codex": "Half of a Molten Gel: a thinner crust, the same burn.",
+      "hp": 3, "attack": 1, "armour": 1, "rank": "front", "movespeed": 2,
+      "actions": [
+        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["brittle", "ablate"], "brittle": 1, "ablate": 1, "text": "Burns over the hull: {damage}, and the machine Brittle ×1 and Ablating ×1.", "status": "implemented" }
+      ],
+      "flavour": "Still hot."
     },
     {
       "id": "mandragora", "name": "Mandragora", "faction": "meadow",
@@ -928,15 +949,26 @@
     },
     {
       "id": "wild_hunt_rider", "name": "Rider of the Wild Hunt", "faction": "marsh", "elite": true, "wanders": true,
-      "design": {"fantasy": "The Wild Hunt, the riders of European folklore that cross the winter sky and take whoever they catch, the Witcher's take the homage (riders in spiked plate on gaunt horses, frost in their wake; the name is folklore's, so it stays). Ryan, 3 November: \"Wild Hunt is better, and this is a good place to make an elite pack of multiple clones instead of a unique unit\", a wanderer: the Hunt rides between worlds, so it rides out of any rift.", "niche": "Three riders, winged, hunting the slowest machine, the one that cannot outrun the Hunt. Each lance is a point harder for every other rider standing, the engine's swarm, so the pack is the threat and thinning it is the answer; Frost switches off the entry its target shows.", "notes": "Landed 3 November as a placeholder kit on Ryan's marks, the first elite composition led by a foe at a strength above one; every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py) until a render is picked.", "sprite": "a gaunt rider in black spiked plate with a horned helm astride a skeletal horse wreathed in frost, a long lance couched, riding on the air, drawn retro"},
-      "codex": "They ride in threes across the sky and take the slowest. Each lance hits harder for every other rider still up, their frost jams whatever a machine is showing, and one of them names the quarry: Exposed, with the Hunt turned on it. Thin them, and the Hunt is only a rider.",
+      "design": {"fantasy": "The Wild Hunt, the riders of European folklore that cross the winter sky and take whoever they catch, the Witcher's take the homage (riders in spiked plate on gaunt horses, frost in their wake; the name is folklore's, so it stays). Ryan, 3 November: \"Wild Hunt is better, and this is a good place to make an elite pack of multiple clones instead of a unique unit\", a wanderer: the Hunt rides between worlds, so it rides out of any rift.", "niche": "The Wild Huntsman's riders, two at tier one and three above, winged, hunting the slowest machine, the one that cannot outrun the Hunt. Each lance is a point harder for every other rider standing, the engine's swarm, so the pack is the threat and thinning it is the answer; Frost switches off the entry its target shows. The quarry's mark is the Huntsman's since 20 November, so one mark stands at a time.", "notes": "Landed 3 November as a placeholder kit on Ryan's marks, the first elite composition of one foe at a strength above one, and led by the Wild Huntsman since 20 November; every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py) until a render is picked.", "sprite": "a gaunt rider in black spiked plate with a horned helm astride a skeletal horse wreathed in frost, a long lance couched, riding on the air, drawn retro"},
+      "codex": "They ride behind the Huntsman across the sky and take the slowest. Each lance hits harder for every other rider still up, and their frost jams whatever a machine is showing. Thin them, and the Hunt is only its Huntsman.",
       "hp": 20, "attack": 8, "rank": "front", "movespeed": 3, "winged": true,
       "actions": [
         {"id": "lance", "name": "Lance", "kind": "attack", "swarm": 1, "weight": 2, "text": "A lance from the Hunt for {damage}: more for every other rider standing.", "status": "implemented"},
-        {"id": "frost", "name": "Frost", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Frost in its wake: {damage}, and the entry it shows is Jammed until its machine reboots.", "status": "implemented"},
-        {"id": "quarry", "name": "Name the Quarry", "kind": "debuff", "effect": "expose", "weight": 1, "when": "others_on_field", "text": "A rider names the quarry: it stands Exposed through the next round, its armour counting for nothing and every foe's targeted move turned on it.", "status": "implemented"}
+        {"id": "frost", "name": "Frost", "kind": "attack", "factor": 0.5, "weight": 1, "keywords": ["jam"], "text": "Frost in its wake: {damage}, and the entry it shows is Jammed until its machine reboots.", "status": "implemented"}
       ],
       "flavour": "Gate order four, footnote: they are not from the Marsh. They are not from anywhere."
+    },
+    {
+      "id": "wild_huntsman", "name": "The Wild Huntsman", "faction": "marsh", "elite": true, "wanders": true,
+      "design": {"fantasy": "The Wild Hunt's leader, the huntsman at its head in the folklore of the Hunt, its horn the sound of the chase. Ryan, 20 November: \"Wild hunt needs a leader\", and of the proposal, \"Wild huntsman is ok\". Herne and the Erl-King were set aside: Herne is antlered like the Leshy, and three domains already field a king. A wanderer with its riders: the Hunt rides out of any rift.", "niche": "The Hunt's head: it names the quarry, the mark the riders each carried before it, so one mark stands at a time; its horn calls a fallen rider back where there's room, never more than rode out. Kill it first and the Hunt stops coming back; thin the riders and the lances soften. Its numbers are a session's first cut into the elite band.", "sprite": "a tall rider in a long tattered black cloak over spiked plate, a crowned helm with no face, a great curled hunting horn raised in one gauntlet and a long lance in the other, astride a black horse with eyes of pale fire, frost trailing from its hooves, riding on the air, drawn retro"},
+      "codex": "The one at the head of the Hunt. It names the quarry, Exposed, with every lance turned on it, and its horn calls a fallen rider back into the chase. Bring it down and nothing answers the horn.",
+      "hp": 24, "attack": 10, "rank": "front", "movespeed": 3, "winged": true,
+      "actions": [
+        {"id": "lance", "name": "Lance", "kind": "attack", "weight": 2, "text": "The Huntsman's lance for {damage}.", "status": "implemented"},
+        {"id": "quarry", "name": "Name the Quarry", "kind": "debuff", "effect": "expose", "weight": 1, "when": "others_on_field", "text": "The Huntsman names the quarry: it stands Exposed through the next round, its armour counting for nothing and every foe's targeted move turned on it.", "status": "implemented"},
+        {"id": "horn", "name": "Sound the Horn", "kind": "buff", "effect": "summon", "foe": "wild_hunt_rider", "count": 1, "refill": true, "weight": 1, "text": "The horn sounds: a fallen rider rides back where there's room, never more than rode out.", "status": "implemented"}
+      ],
+      "flavour": "Gate order four, second footnote: if you hear the horn, it has already chosen."
     },
     {
       "id": "shuffler", "name": "The Shuffler", "faction": "marsh", "elite": true, "wanders": true,
@@ -1186,12 +1218,12 @@
 
     {
       "id": "king_gel", "name": "King Gel", "faction": "meadow",
-      "design": {"fantasy": "Dragon Quest's King Slime by archetype, the slime that wears the crown (the genre's coinage, so the King Gel, by our Gel; Ryan, 15 October: a mark, and yes to the slate's last five, 30 October).", "niche": "It stands with Gels round it, and Merge takes every Gel and half on the field into itself, regrowing what they had left and hitting harder for each: kill order against a heal, the Meadow's numbers poured into one body. Thin the Gels first, or stop the merge; once its court is gone it only slams.", "notes": "Landed 30 October as a runnable placeholder kit (Ryan: \"Yes to all waiting bosses\"); every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py), a reminder until a render is picked. Its escort is its own (an escort composition that names it), Gels at every tier, so its merge has something to take in.", "sprite": "an enormous round blue gel slime wearing a small golden jewelled crown, a wide toothless grin, two smaller gels clinging to its sides like courtiers", "variants": ["an enormous round blue gel slime wearing a small golden jewelled crown, a wide toothless grin, two smaller gels clinging to its sides like courtiers"]},
+      "design": {"fantasy": "Dragon Quest's King Slime by archetype, the slime that wears the crown (the genre's coinage, so the King Gel, by our Gel; Ryan, 15 October: a mark, and yes to the slate's last five, 30 October).", "niche": "It stands with Gels round it, and Merge takes every Gel and half on the field into itself, regrowing what they had left and hitting harder for each: kill order against a heal, the Meadow's numbers poured into one body. Thin the Gels first, or stop the merge. Its own blow is the line's Engulf made a king's, Dissolve, a Purge first and then Brittle and Ablating on the machine (Ryan, 20 November: \"King gel then loses body slam and gets a suitably souped up version in Dissolve\").", "notes": "Landed 30 October as a runnable placeholder kit (Ryan: \"Yes to all waiting bosses\"); every number a placeholder. Its art a rough placeholder (tools/placeholder_art.py), a reminder until a render is picked. Its escort is its own (an escort composition that names it), Gels at every tier, so its merge has something to take in.", "sprite": "an enormous round blue gel slime wearing a small golden jewelled crown, a wide toothless grin, two smaller gels clinging to its sides like courtiers", "variants": ["an enormous round blue gel slime wearing a small golden jewelled crown, a wide toothless grin, two smaller gels clinging to its sides like courtiers"]},
       "codex": "The Gels' king, and it eats its own. It calls every Gel on the field into itself, healing what they had left and hitting harder for each one, so kill the Gels before it does. Below half it simply falls on everything.",
       "hp": 72, "attack": 11, "armour": 0, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
-        {"id": "body_slam", "name": "Body Slam", "kind": "attack", "weight": 2, "text": "Its whole weight, for {damage}.", "status": "implemented"},
-        {"id": "merge", "name": "Merge", "kind": "buff", "effect": "merge", "foe": ["gel", "gel_half", "bubble_gel", "metal_gel"], "value": 1, "weight": 2, "text": "Every Gel on the field is taken in: it regrows the HP they had left, and its next move hits {value} harder for each.", "status": "implemented"},
+        {"id": "dissolve", "name": "Dissolve", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["brittle", "ablate"], "brittle": 2, "ablate": 2, "before": [{"effect": "dispel", "value": 1}], "text": "Purge 1, then it dissolves into the hull: {damage}, and the machine Brittle ×2 and Ablating ×2.", "status": "implemented"},
+        {"id": "merge", "name": "Merge", "kind": "buff", "effect": "merge", "foe": ["gel", "gel_half", "bubble_gel", "bubble_gel_half", "molten_gel", "molten_gel_half"], "value": 1, "weight": 2, "text": "Every Gel on the field is taken in: it regrows the HP they had left, and its next move hits {value} harder for each.", "status": "implemented"},
         {"id": "belly_flop", "name": "Belly Flop", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "It falls on everything: {damage} to every machine.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: the big one is not a different species. It is all the small ones you missed."
@@ -1285,7 +1317,7 @@
       "parts": ["saurian_queen"], "guard": "all", "immune": {"disrupt": "firestorm"},
       "actions": [
         {"id": "crunch", "name": "Crunch", "kind": "attack", "weight": 2, "text": "Jaws, for {damage}.", "status": "implemented"},
-        {"id": "roar", "name": "Roar", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "text": "Costs the team one reroll next round.", "status": "implemented"},
+        {"id": "roar", "name": "Roar", "kind": "debuff", "effect": "drain_rerolls", "value": 1, "weight": 1, "also": [{"effect": "brittle_all", "value": 2}], "text": "A roar that shakes the plate loose: the team has {value} fewer reroll next round, and every machine Brittle ×2.", "status": "implemented"},
         {"id": "firestorm", "name": "Firestorm", "kind": "attack", "factor": 1.5, "countdown": 5, "weight": 12, "keywords": ["all", "scorch"], "scorch": 2, "when": "part_fallen", "text": "Its rider down, it counts from five: at nought, {damage} to every machine, each one scorched ×2.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix K: the countdown is not a bluff. Count with it."

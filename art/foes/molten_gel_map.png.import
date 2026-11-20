@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://86ha2mojv87a"
-path="res://.godot/imported/metal_gel_map.png-dc484d1cc066a71bc89dcfa4e4c2691e.ctex"
+uid="uid://dfqfpkcnf1dgf"
+path="res://.godot/imported/molten_gel_map.png-5d4c94d5f347b3e777d42a1e21adf83d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/foes/metal_gel_map.png"
-dest_files=["res://.godot/imported/metal_gel_map.png-dc484d1cc066a71bc89dcfa4e4c2691e.ctex"]
+source_file="res://art/foes/molten_gel_map.png"
+dest_files=["res://.godot/imported/molten_gel_map.png-5d4c94d5f347b3e777d42a1e21adf83d.ctex"]
 
 [params]
 

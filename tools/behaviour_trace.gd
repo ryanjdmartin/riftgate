@@ -283,8 +283,8 @@ func _fight(db: ContentDB, team: Array, p: Dictionary, k: int, seed_value: int, 
 	for fo in foes:
 		fielded.append(fo)
 		for pt in db.parts_for(fo):
-			if int(p.get("tier", 0)) > 0 and (db.is_boss(fo.content_id) or db.is_elite(fo.content_id)):
-				db.scale_boss(pt, int(p["tier"]))
+			if int(p.get("tier", 0)) > 0 and db.is_boss(fo.content_id):
+				db.scale_boss(pt, int(p["tier"]))   # a boss's parts at its tier; an elite's at their own (ContentDB.foes_for)
 			fielded.append(pt)
 	sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
 	sk.add_foes(fielded)

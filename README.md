@@ -45,7 +45,10 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     the quick campaign to `user://quick_run.json`, the profile to `user://profile.json`
 - `content/`: game data. `vocabulary.json` (every mechanic term; `codex` is the rule as the
   player reads it), `factions.json`, `foes.json`, `chassis.json`, `components.json`,
-  `modules.json`, `loot.json` (the field's caches). Placeholder numbers. `reserved_names.json`
+  `modules.json`, `loot.json` (the field's caches), `templates.json` (the words the game composes
+  from a piece's numbers: the die's readout and the codex's rows, a component's own rules, the
+  compact line, the hold's lines in a fight, a foe move's words; a brace a value the game fills,
+  read by `sim/templates.gd`, edited on the hangar's Text tab). Placeholder numbers. `reserved_names.json`
   is every machine name in BattleTech, Heavy Gear, Warhammer 40k and Halo: a chassis nickname
   or id on it fails the validator unless the entry records the clash under `design.name_clash`.
 - `game/`: scenes and presentation.
@@ -91,13 +94,21 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     `sheet_export.py`, `foeforge/`, `placeholder_art.py`, `recolour.py`, `loot_tokens.py`
   - Sound: `soundforge/` builds every sound and the six music tracks from written recipes
   - The phone: `phone.sh` and `android.sh`, with `.cmd` launchers on Windows
-  - The hangar page: `hangar.html`, one artifact with five tabs (the codex, the bench with
-    each machine's sheet and the briefs, the content editor, the text, the models), its
-    motion script `hangar_motion.js`, and the scripts that write its files: `hangar_data.py`
-    (the files map, the models as glTF JSON into `build/hangar/models`), `hangar_designs.py`
-    (the briefs) and `hangar_text.py` (every shown text). Ryan's saved edits live in its
-    database: `edits` (the content editor and the bench), `designs` (his notes on the briefs)
-    and `text` (his texts, marks and notes, the bench's codex and flavour among them).
+  - The hangar page: `hangar.html`, one artifact with six tabs: Chassis, Components, Modules
+    and Foes, each a tight codex-ish list whose entry opens its sheet (the raw every-field
+    editor behind its toggle), with the kind's briefs and its own waiting edits beside it (a
+    machine's brief is on its sheet; the Foes' formations come first: every pack a domain
+    deals by tier, its grid as the fight stands it and every unit's moves at that tier, the
+    scaled ones at each tier they come at, a composition edited where it is read, then the
+    units and the sprites); Text, every shown text, a card an entity in reading order; and
+    Models. Its motion script is `hangar_motion.js`, and the scripts that write its files are
+    `hangar_data.py` (the files map, the models as glTF JSON into `build/hangar/models`, and
+    the engine's rules for a pack read out of sim/ into `build/hangar/foe_rules.json`: the
+    boss tiers, the threat rating by size, the ramp's span, a move's condition and aim words),
+    `hangar_designs.py` (the briefs) and `hangar_text.py` (every shown text). Ryan's saved
+    edits live in its database: `edits` (the sheets and the raw editor), `designs` (his notes
+    on the briefs and his ideas) and `text` (his texts, marks and notes, the sheets' codex,
+    flavour and lines among them).
   - Names: `check_name.py` checks a name against every machine in `content/reserved_names.json`
     and the names in content; `docs/naming.md` is the kinds of names each maker wants.
   - `spriter/.venv` is the Python the art and sound tools run with.
@@ -202,16 +213,16 @@ python3 tools/synergy_map.py --write
 python3 tools/pages/roster_analysis_page.py > /tmp/roster_analysis.html
 
 # the hangar page (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH)
-python3 tools/hangar_data.py              # writes docs/hangar/pins.json, build/hangar/designs.json and build/hangar/text.json, checks the renders manifest, prints the files map tools/hangar.html is published with
+python3 tools/hangar_data.py              # writes docs/hangar/pins.json, build/hangar/designs.json, build/hangar/text.json and build/hangar/foe_rules.json (failing when ContentDB's scaling moves under the formations), and build/hangar/readouts.json (what every piece does as the game's codex prints it, and the pieces each template prints on, run through Godot headless, so Godot on the PATH and the project imported), checks the renders manifest, prints the files map tools/hangar.html is published with
 python3 tools/hangar_designs.py --check   # every brief's hangar header, alone
 python3 tools/hangar_text.py              # the Text tab's inventory into build/hangar/text.json, and its counts
 python3 tools/hangar_text.py --check      # every string key in content classified, the ledger sound
-# after Ryan writes on the Text tab or a Bench sheet's codex and flavour: save the `text` collection with ArtifactData's list (out_dir build/hangar/text_inbox), then
+# after Ryan writes on the Text tab or a sheet's codex and flavour: save the `text` collection with ArtifactData's list (out_dir build/hangar/text_inbox), then
 python3 tools/hangar_text.py --fold build/hangar/text_inbox --dry   # what it would change; without --dry it writes his texts into content, his marks into docs/hangar/text.json and docs/voice.md, and prints his notes
-# a design session's first step: save the `designs` collection (his notes on the Bench's briefs) the same way (out_dir build/hangar/inbox), then
+# a design session's first step: save the `designs` collection (his notes on the briefs, from a tab's Briefs or a machine's sheet, and his ideas) the same way (out_dir build/hangar/inbox), then
 python3 tools/hangar_designs.py --fold build/hangar/inbox --dry     # what it would fold; without --dry it writes the briefs and prints the batch that clears them
 # a render round: pictures into docs/hangar/renders/<chassis>/, the entry in docs/hangar/renders.json, republish.
-# After Ryan edits on the Content tab or the Bench: pull `edits`, apply by hand, test, commit, republish, clear the documents.
+# After Ryan edits on a sheet or the raw editor (each tab's Waiting lists them): pull `edits`, apply by hand, test, commit, republish, clear the documents.
 python3 tools/check_name.py "Storm Kite" Dunkleosteus   # a name against the reserved machines and the names in content (docs/naming.md)
 ```
 
@@ -436,6 +447,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_BEATS=3                              the Rupture meter's size in beats of the tide, 1 to 6, 2 the game's
 #   RIFTGATE_TIDE=150                             the packs the opening places and each wave sends, in hundredths, 100 the game's
 #   RIFTGATE_STRIKE=5                             what a pip of threat rating strikes the wall for, 10 the game's
+#   RIFTGATE_PHASED=at_once                       a machine's Phased at once until the round ends, round_end the game's (Phased as the round ends, through the next)
 # The same on the phone, a debug build's SETTINGS, TRIALS (a page that scrolls). Read at the
 # next launch, so pick, close the app, open it and start a new battle or run (a saved one keeps
 # the numbers it was saved with):
@@ -445,7 +457,8 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   BARRIER BASIC (BUILT, NONE)    the Barrier basic on the stock dice, or the Armoured basic in its slot (barrier=none)
 # Read as the next battle starts, or a lone fight for OVERHEAT, with no relaunch:
 #   OVERHEAT (×1, ×2, ×3), FIELD DEPTH (12, 14, 16), OPENING (+0, +1, +2), FODDER (FULL, 3/4, HALF),
-#   RUPTURE (1 BEAT, 2 BEATS, 3 BEATS), TIDE (×1, ×1.5, ×2), STRIKE (10, 7, 5, 3)
+#   RUPTURE (1 BEAT, 2 BEATS, 3 BEATS), TIDE (×1, ×1.5, ×2), STRIKE (10, 7, 5, 3),
+#   PHASED (ROUND END, AT ONCE), with the Phase Inducer, a tier-two component, to set it for testing
 # A thing fired constantly, to judge it running (=1 unless a value is shown)
 #   RIFTGATE_FEED_DEBUG       the skirmish feed's analysis events and the ground tears (any run)
 #   RIFTGATE_PULSE_DEBUG      END TURN pulsing, on the map and in a fight (any run)

@@ -75,7 +75,7 @@ static func lines_for(f: Face, place: int, shown: int, base: Face, states: Array
 	if f == null:
 		return out
 	var comp: Dictionary = db.components.get(f.component, {}) if not f.component.is_empty() else {}
-	var title := "EMPTY HARDPOINT" if f.empty else (entry_name(f, db).to_upper() if not f.component.is_empty() else f.describe().to_upper())
+	var title := Templates.say("entry.empty").to_upper() if f.empty else (entry_name(f, db).to_upper() if not f.component.is_empty() else f.describe().to_upper())
 	out.append({"style": "title", "text": title, "place": Hud.roman(place), "type": ", ".join(PackedStringArray(types))})
 	for st in states:
 		# One line a state, so the mark the die shows for it (the lock, the corruption) stands at its head.
@@ -94,7 +94,7 @@ static func lines_for(f: Face, place: int, shown: int, base: Face, states: Array
 		var names: Array[String] = []
 		for t in f.tags:
 			names.append(capital(t))
-		out.append(text_line("tags", "Tags: " + ", ".join(names)))
+		out.append(text_line("tags", Templates.say("readout.tags", {"tags": ", ".join(names)})))
 	return out
 
 
@@ -120,39 +120,39 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 	if f.kind == Face.Kind.BLANK:
 		# The title names what was there; the line says what the blank does.
 		if f.empty:
-			out.append(marked(text_line("effect", "Comes up blank: nothing fills it", "attr"), [main]))
+			out.append(marked(text_line("effect", Templates.say("readout.blank_empty"), "attr"), [main]))
 		elif not f.disabled and not f.component.is_empty():
-			out.append(marked(text_line("effect", "Destroyed: comes up blank for the rest of the battle", "attr"), [main]))
+			out.append(marked(text_line("effect", Templates.say("readout.blank_destroyed"), "attr"), [main]))
 		else:
 			out.append(marked(text_line("effect", capital(f.describe()), "attr"), [main]))
 		return out
 	# The strikes, read against the component's own: a split weapon's extra strike is a gain
 	# beside its smaller blow (Ryan, 26 October).
-	var strikes: Array = [num("×%d" % f.strikes, f.strikes, base.strikes)] if f.strikes > 1 or base.strikes > 1 else []
+	var strikes: Array = Templates.parts("count.strikes", {"n": num(str(f.strikes), f.strikes, base.strikes)}) if f.strikes > 1 or base.strikes > 1 else []
 	match f.kind:
 		Face.Kind.ATTACK:
 			if f.is_debuff():
-				out.append(marked(parts_line("effect", [word("Debuff")] + strikes, "attr"), [main]))
+				out.append(marked(parts_line("effect", Templates.parts("kind.debuff") + strikes, "attr"), [main]))
 			else:
 				var n: int = shown if shown >= 0 else f.power
 				# A strike's blow against the component's own: more is the gain.
 				var blow := word(str(n))
 				_trend(blow, n, base.power)
-				out.append(marked(parts_line("effect", [word("Attack"), blow] + strikes, "attr"), [main]))
+				out.append(marked(parts_line("effect", Templates.parts("kind.attack", {"n": blow}) + strikes, "attr"), [main]))
 		Face.Kind.BUFF:
 			if f.act_again:
-				out.append(marked(text_line("effect", "An ally whose die is spent acts again", "attr"), [main, star]))
+				out.append(marked(text_line("effect", capital(Templates.say("rule.act_again")), "attr"), [main, star]))
 			elif f.turns_die:
-				out.append(marked(text_line("effect", "Turns its die to its other battery", "attr"), [main, star]))
+				out.append(marked(text_line("effect", capital(Templates.say("rule.turns_die")), "attr"), [main, star]))
 			else:
 				var st: Dictionary = Effects.STATUS.get(f.buff_status, {})
 				# What a buff grants against the component's own; one that spends a count for its
 				# stacks (the Quintessence Tap) grants what it would take now, its own rule and no change
 				# a live source made, so its number reads plain.
 				var own_stacks := f.buff_stacks if not f.spends.is_empty() or f.passes_heat else base.buff_stacks
-				var line := [word("Grants %s" % str(st.get("name", f.buff_status))), num("×%d" % f.buff_stacks, f.buff_stacks, own_stacks)]
+				var line := Templates.parts("readout.grants", {"status": str(st.get("name", f.buff_status)), "n": num(str(f.buff_stacks), f.buff_stacks, own_stacks)})
 				if f.buff_rounds > 1:
-					line.append(word("for %d rounds" % f.buff_rounds))
+					line.append(word(Templates.say("count.rounds", {"n": f.buff_rounds})))
 				# The status's chip beside the equipment's mark, as the die's rail carries it with its
 				# stacks (DieFaceView.status_chip): the word itself wears no second icon.
 				var granted := DieFaceView.status_chip(f)
@@ -162,55 +162,51 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 				out.append(marked(parts_line("effect", line, "attr"), heads))
 		Face.Kind.SHIELD:
 			if f.fills_shield:
-				out.append(marked(text_line("effect", "Shield to its maximum", "attr"), [main, star]))
+				out.append(marked(text_line("effect", capital(Templates.say("entry.fills_shield")), "attr"), [main, star]))
 			else:
-				out.append(marked(parts_line("effect", [word("Shield"), num(str(f.power), f.power, base.power)], "attr"), [main]))
+				out.append(marked(parts_line("effect", _capital_first(Templates.parts("entry.shield", {"n": num(str(f.power), f.power, base.power)})), "attr"), [main]))
 			if f.vents > 0:
 				# A shield that also cools (the Sutler's Hoist), the cooling first: its number under
 				# the steam the die draws off the shield's top (Ryan, 3 November).
-				out.append(marked(parts_line("effect", [word("Vent"), num(str(f.vents), f.vents, base.vents), word("before the shield")], "attr"), [mark("vent", Palette.HUD, false)]))
+				out.append(marked(parts_line("effect", Templates.parts("readout.vent_first", {"n": num(str(f.vents), f.vents, base.vents)}), "attr"), [mark("vent", Palette.HUD, false)]))
 		Face.Kind.VENT:
 			# A reload is a vent that cools nothing, its ammo its number, the shells' mark its whole
 			# main mark (Ryan, 2 November: one piece on one machine wears no main mark of its own).
-			var loads := marked(parts_line("effect", [word("Reloads"), num(str(f.reloads_ammo), f.reloads_ammo, base.reloads_ammo), word("ammo")], "attr"), [mark("ammo", Palette.SELECT, false)])
+			var loads := marked(parts_line("effect", _capital_first(Templates.parts("entry.reloads", {"n": num(str(f.reloads_ammo), f.reloads_ammo, base.reloads_ammo)})), "attr"), [mark("ammo", Palette.SELECT, false)])
 			if f.power <= 0 and f.reloads_ammo > 0:
 				out.append(loads)
 			else:
-				out.append(marked(parts_line("effect", [word("Vent"), num(str(f.power), f.power, base.power)], "attr"), [main]))
+				out.append(marked(parts_line("effect", _capital_first(Templates.parts("entry.vent", {"n": num(str(f.power), f.power, base.power)})), "attr"), [main]))
 				if f.reloads_ammo > 0:
 					out.append(loads)
 	if f.ammo > 0:
 		# A forging machine's gun (the Musk Ox's): its price in ammo, by the shells' mark.
-		var ammo := [word("Ammo"), num(str(f.ammo), f.ammo, base.ammo, true)]
-		if f.dry:
-			ammo.append(word("(the magazine cannot pay it)"))
+		var ammo := Templates.parts("readout.ammo_dry" if f.dry else "readout.ammo", {"n": num(str(f.ammo), f.ammo, base.ammo, true)})
 		out.append(marked(parts_line("effect", ammo, "attr"), [mark("ammo", Palette.LOSS if f.dry else Palette.SELECT, false)]))
 	if f.heat > 0 or base.heat > 0:
 		# The costs, each by the mark the die prints it with along its foot (Ryan, 2 November).
-		out.append(marked(parts_line("effect", [word("Heat"), num(str(f.heat), f.heat, base.heat, true)], "attr"), [mark("heat", Palette.HEAT, false)]))
+		out.append(marked(parts_line("effect", Templates.parts("readout.heat", {"n": num(str(f.heat), f.heat, base.heat, true)}), "attr"), [mark("heat", Palette.HEAT, false)]))
 	# The entry's costs past heat, beside it as the die prints them (Ryan, 26 October: Volatile a
 	# cost printed beside the heat, a keyword with a chip until then, and a shield cost beside it):
 	# the hull a spend bites, the shield it takes first. Less is the gain.
 	if f.volatile > 0 or base.volatile > 0:
-		out.append(marked(parts_line("effect", [word("Costs"), num(str(f.volatile), f.volatile, base.volatile, true), word("hull")], "attr"), [mark("hull", Palette.HULL, false)]))
+		out.append(marked(parts_line("effect", Templates.parts("readout.hull_cost", {"n": num(str(f.volatile), f.volatile, base.volatile, true)}), "attr"), [mark("hull", Palette.HULL, false)]))
 	if f.shield_cost > 0 or base.shield_cost > 0:
-		var shield_cost := [word("Costs"), num(str(f.shield_cost), f.shield_cost, base.shield_cost, true), word("shield")]
-		if f.short:
-			shield_cost.append(word("(the shield cannot pay it)"))
+		var shield_cost := Templates.parts("readout.shield_cost_short" if f.short else "readout.shield_cost", {"n": num(str(f.shield_cost), f.shield_cost, base.shield_cost, true)})
 		out.append(marked(parts_line("effect", shield_cost, "attr"), [mark("shield", Palette.LOSS if f.short else Palette.SHIELD, false)]))
 	if not f.spends.is_empty():
 		# A count its machine spends for its stacks (the Quintessence Tap's Essence): what it would take
 		# now, by the count's own mark, as the die prints it along its foot.
 		var spent_term := Terms.of_status(f.spends)
-		var spent := [word("Consumes"), word(str(f.buff_stacks)), word(str(Effects.STATUS.get(f.spends, {}).get("name", f.spends)))]
-		if f.short:
-			spent.append(word("(it holds none)"))
+		var spent := Templates.parts("readout.consumes_short" if f.short else "readout.consumes", {"n": f.buff_stacks, "status": Face.status_name(f.spends)})
 		out.append(marked(parts_line("effect", spent, "attr"), [mark(Terms.glyph(spent_term) if not spent_term.is_empty() else "star", Palette.LOSS if f.short else Terms.status_colour(f.spends), false)]))
 	# The rounds it goes dark once spent, a cost by its clock along the die's foot (Ryan, 2
 	# November: "Cooldown should be a cost in the bottom section as well").
 	var cd := cooldown if cooldown >= 0 else f.cooldown_rounds()
 	if cd > 0:
-		out.append(marked(parts_line("effect", [_bare(word("Cooldown")), num(str(cd), cd, base.cooldown_rounds(), true)], "attr"), [mark("cooldown", Palette.INK, false)]))
+		var clock := Templates.parts("readout.cooldown", {"n": num(str(cd), cd, base.cooldown_rounds(), true)})
+		_bare(clock[0])
+		out.append(marked(parts_line("effect", clock, "attr"), [mark("cooldown", Palette.INK, false)]))
 	# Whom it is aimed at, headed by the targeting mark the die draws under its number
 	# (Glyphs.aim_for: a line of fire for Direct, lobbed for Indirect, the enemy's formation lit for
 	# Every Foe; the three hexes for a piece spent
@@ -218,7 +214,7 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 	# target is its keyword's line (Spread, Penetrate, Splash), as the die chips it.
 	# The words bare: the reach's term stays a term (tap it), its icon the line's own mark, never
 	# a second one shrunk into the words (the formation reads as a blob at the text's size).
-	var aimed := ("Target: Every Foe" if f.reach == Face.Reach.EVERY_FOE else "Target: Enemy, %s" % capital(Face.REACH_NAMES[f.reach])) if f.kind == Face.Kind.ATTACK else whom(f)
+	var aimed := (Templates.say("target.every_foe") if f.reach == Face.Reach.EVERY_FOE else Templates.say("target.enemy", {"reach": capital(Face.REACH_NAMES[f.reach])})) if f.kind == Face.Kind.ATTACK else whom(f)
 	var target := parts_line("effect", [_bare(word(aimed))], "attr")
 	var aim := Glyphs.aim_for(f)
 	if not aim.is_empty():
@@ -236,11 +232,12 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 		var chip := [mark(Face.KEYWORD_NAMES[k], Glyphs.colour_for(Face.KEYWORD_NAMES[k]))] + ([star] if not gate.is_empty() else [])
 		var line: Dictionary
 		if Face.KEYWORD_STATUS.has(k):
-			var parts := [_bare(word("Apply %s" % label))]
 			var field: String = {Face.Keyword.ABLATE: "ablate", Face.Keyword.CRYO: "cryo", Face.Keyword.BRITTLE: "brittle", Face.Keyword.SAP: "sap"}.get(k, "")
-			if not field.is_empty() and int(f.get(field)) > 0:
-				parts.append(num(str(f.get(field)), int(f.get(field)), int(base.get(field))))
-			parts.append(word(gate if not gate.is_empty() else "on hit"))
+			var numbered := not field.is_empty() and int(f.get(field)) > 0
+			var where := word(gate if not gate.is_empty() else Templates.say("readout.on_hit"))
+			var parts := Templates.parts("readout.apply_n", {"keyword": label, "n": num(str(f.get(field)), int(f.get(field)), int(base.get(field))), "where": where}) if numbered \
+				else Templates.parts("readout.apply", {"keyword": label, "where": where})
+			_bare(parts[0])
 			lays.append(marked(parts_line("effect", parts, "kw"), chip))
 		elif Face.ACT_AGAIN_KEYWORDS.has(k):
 			after.append(marked(parts_line("effect", [_bare(word(label))], "kw"), chip))
@@ -251,7 +248,9 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 			# change from the component's own marked as every number's is (the drum's Spread 2);
 			# Chain's the same, what each Shocked conductor takes, plain (29 October: no strike is
 			# aimed at it, so its charge stands).
-			land.append(marked(parts_line("effect", [_bare(word(label)), num(str(f.number_of(k)), f.number_of(k), base.number_of(k))], "kw"), chip))
+			var counted := Templates.parts("term.count", {"term": label, "n": num(str(f.number_of(k)), f.number_of(k), base.number_of(k))})
+			_bare(counted[0])
+			land.append(marked(parts_line("effect", counted, "kw"), chip))
 		else:
 			land.append(marked(parts_line("effect", [_bare(word(label))], "kw"), chip))
 	out.append_array(land)
@@ -266,6 +265,14 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 	return out
 
 
+## Parts with the first one's first letter a capital: a template the compact line runs on in
+## lower case ("shield {n}") heading a readout's line.
+static func _capital_first(parts: Array) -> Array:
+	if not parts.is_empty():
+		parts[0]["text"] = capital(str(parts[0]["text"]))
+	return parts
+
+
 ## A part whose terms wear no icon of their own: its line's mark is the icon.
 static func _bare(p: Dictionary) -> Dictionary:
 	p["icon"] = false
@@ -278,7 +285,7 @@ static func _bare(p: Dictionary) -> Dictionary:
 ## component's own numbers, and `rules` (its passive's lines) after its own. A line with
 ## nothing to say is left out.
 static func codex_lines(f: Face, db: ContentDB, rules: Array = []) -> Array:
-	var title := "EMPTY HARDPOINT" if f.empty else (entry_name(f, db).to_upper() if not f.component.is_empty() else f.describe().to_upper())
+	var title := Templates.say("entry.empty").to_upper() if f.empty else (entry_name(f, db).to_upper() if not f.component.is_empty() else f.describe().to_upper())
 	var tags: Array[String] = []
 	for t in f.tags:
 		tags.append(capital(t))
@@ -345,63 +352,66 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 	# The word an attack carries for whom it goes for (17 November): in the codex it is the
 	# target's line whole, and in a fight it follows the machine it picked.
 	var aim := f.aim_of(a)
-	var word_for := "" if aim.is_empty() else str(Foe.AIM_TEXT.get(aim, aim))
-	var aimed := "" if word_for.is_empty() else ", " + word_for
-	var anyone := "Any machine" if word_for.is_empty() else capital(word_for)
+	var word_for := "" if aim.is_empty() else (Templates.say("aim." + aim) if Templates.has("aim." + aim) else aim)
+	var anyone := Templates.say("foe_target.any_machine") if word_for.is_empty() else capital(word_for)
+	var at_target := "" if target.is_empty() else (Templates.say("move.target_aimed", {"target": target, "aim": word_for}) if not word_for.is_empty() else target)
+	var everyone := str(db.vocabulary.get("all", {}).get("name", "all"))   # the term, so it reads as one (Terms)
 	if Foe.is_attack_action(a):
-		var line := [word("Attack"), num(str(dmg), dmg, own) if live else word(str(dmg))]
+		var line := Templates.parts("kind.attack", {"n": num(str(dmg), dmg, own) if live else str(dmg)})
 		if not Foe.power_status(a).is_empty() and (not live or not Effects.has(f, Foe.power_status(a))):
-			line = [word("Attack: what it took")]   # a borrowed swing (30 October): its number is the piece it took
+			line = [word(Templates.say("move.attack_borrowed"))]   # a borrowed swing (30 October): its number is the piece it took
 		var n := maxi(1, int(a.get("strikes", 1)))
 		if n > 1:
-			line.append(word("×%d" % n))
+			line.append(word(Templates.say("count.strikes", {"n": n})))
 		if int(a.get("swarm", 0)) > 0 and not live:
-			line.append(word("(+%d a kin standing)" % int(a["swarm"])))
+			line.append(word(Templates.say("move.swarm", {"n": int(a["swarm"])})))
 		if int(a.get("per_kill", 0)) > 0 and not live:
-			line.append(word("(+%d a foe the team has killed)" % int(a["per_kill"])))   # a grudge (30 October)
+			line.append(word(Templates.say("move.per_kill", {"n": int(a["per_kill"])})))   # a grudge (30 October)
 		out.append(parts_line("effect", line, "attr"))
 		if Array(a.get("keywords", [])).has("all"):
-			out.append(text_line("effect", "Target: %s" % str(db.vocabulary.get("all", {}).get("name", "Every machine")), "attr"))   # the term, so it reads as one (Terms)
+			out.append(text_line("effect", Templates.say("move.target", {"whom": everyone}), "attr"))
 		else:
-			out.append(text_line("effect", "Target: %s" % ((target + aimed) if live and not target.is_empty() else anyone), "attr"))
+			out.append(text_line("effect", Templates.say("move.target", {"whom": at_target if live and not target.is_empty() else anyone}), "attr"))
 	else:
-		var kind := capital(Foe.kind_of(a))
-		var whom := str(MOVE_TARGETS.get(str(a.get("effect", "")), "Any machine"))
-		if whom == "Every machine":
-			whom = str(db.vocabulary.get("all", {}).get("name", whom))   # the term, as a blow at every machine says it
-		if live and whom == "Any machine" and not target.is_empty():
-			whom = target + aimed
-		elif whom == "Any machine":
-			whom = anyone
+		var kind := Templates.say("kind." + Foe.kind_of(a)) if Templates.has("kind." + Foe.kind_of(a)) else capital(Foe.kind_of(a))
+		var key := str(MOVE_TARGETS.get(str(a.get("effect", "")), "any_machine"))
+		var whom := ""
+		if key == "every_machine":
+			whom = everyone   # the term, as a blow at every machine says it
+		elif key == "any_machine":
+			whom = at_target if live and not target.is_empty() else anyone
+		else:
+			whom = Templates.say("foe_target." + key)
 		out.append(text_line("effect", kind, "attr"))
-		out.append(text_line("effect", "Target: %s" % whom, "attr"))
+		out.append(text_line("effect", Templates.say("move.target", {"whom": whom}), "attr"))
 	if str(a.get("id", "")) == "last_act":
-		out.append(text_line("effect", "Lands the moment it falls", "attr"))   # its last act (15 October)
+		out.append(text_line("effect", Templates.say("move.last_act"), "attr"))   # its last act (15 October)
 	if bool(a.get("once", false)):
-		out.append(text_line("effect", "Once a fight", "attr"))   # a special used once (30 October)
+		out.append(text_line("effect", Templates.say("move.once"), "attr"))   # a special used once (30 October)
 	var count := Foe.countdown_of(a)
 	if count > 0:
 		var left := f.charge if live and f.gathering() and f.pending.get("id", "") == a.get("id", "") else count
-		out.append(text_line("effect", "Lands next round" if left == 1 else "Lands in %d rounds" % left, "attr"))
+		out.append(text_line("effect", Templates.say("move.countdown", {"n": left}), "attr"))
 	# A follow-up (30 October): the pair says itself, so the second never reads as a move of the roll.
 	var follows := str(a.get("then", ""))
 	if not follows.is_empty():
-		out.append(text_line("effect", "Then %s, next round" % _move_name(f, follows), "attr"))
+		out.append(text_line("effect", Templates.say("move.then", {"move": _move_name(f, follows)}), "attr"))
 	for o in f.actions:
 		if str(o.get("then", "")) == str(a.get("id", "")) and not str(a.get("id", "")).is_empty():
-			out.append(text_line("effect", "Only after %s" % str(o.get("name", "")), "attr"))
+			out.append(text_line("effect", Templates.say("move.only_after", {"move": str(o.get("name", ""))}), "attr"))
 	var whens := Foe.whens_of(a)
 	if not whens.is_empty():
-		var said: Array[String] = []
+		var said := ""
 		for w in whens:
-			said.append(str(Foe.WHEN_TEXT.get(str(w), str(w))))
-		out.append(text_line("effect", capital(" or ".join(said)), "attr"))
+			var one := Templates.say("when." + str(w)) if Templates.has("when." + str(w)) else str(w)
+			said = one if said.is_empty() else Templates.say("move.or", {"first": said, "next": one})
+		out.append(text_line("effect", capital(said), "attr"))
 	for k in a.get("keywords", []):
 		if str(k) == "all":
 			continue   # its target says it
 		var label := str(db.vocabulary.get(str(k), {}).get("name", str(k)))
 		if Foe.NUMBERED_RIDERS.has(str(k)):
-			label += " %d" % f.rider(a, str(k))
+			label = Templates.say("term.count", {"term": label, "n": f.rider(a, str(k))})
 		out.append(text_line("effect", label, "kw"))
 	var text := str(a.get("text", "")).replace("{damage}", str(dmg)).replace("{value}", str(int(a.get("value", 0))))
 	if not text.is_empty():
@@ -426,15 +436,16 @@ static func codex_move_lines(f: Foe, a: Dictionary, db: ContentDB) -> Array:
 	return [head] + joined(marks)
 
 
-## Whom a foe's move that is no blow acts on, by its effect (Foe.ACTION_EFFECTS); a debuff aimed at
-## a machine is "Any machine", as a blow is.
+## Whom a foe's move that is no blow acts on, by its effect (Foe.ACTION_EFFECTS): the template
+## that says it (foe_target.<key>, content/templates.json); a debuff aimed at a machine is any
+## machine, as a blow is, and one at every machine is said by the term's name (Every Machine).
 const MOVE_TARGETS := {
-	"brace": "Self", "recover": "Self", "revive_once": "Self", "barrier": "Self", "regenerate": "Self", "golden": "Self",
-	"heal": "The most hurt of its own", "brace_all": "Every foe", "revive_once_ally": "One of its own",
-	"cleanse": "The most-marked of its own", "prime": "Every other foe", "ward_all": "Every foe",
-	"summon": "Empty places", "rally": "Every foe", "merge": "Its kinds on the field", "appropriate": "Any machine",
-	"drain_rerolls": "The team's rerolls", "brittle_all": "Every machine", "sap_all": "Every machine", "scorch_all": "Every machine", "corrupt_all": "Every machine",
-	"unready_all": "Every foe it readied", "phase": "Self",
+	"brace": "self", "recover": "self", "revive_once": "self", "barrier": "self", "regenerate": "self", "golden": "self",
+	"heal": "most_hurt_own", "brace_all": "every_foe", "brace_beside": "beside", "revive_once_ally": "one_of_own",
+	"cleanse": "most_marked_own", "prime": "every_other_foe", "ward_all": "every_foe",
+	"summon": "empty_places", "rally": "every_foe", "merge": "kinds_on_field", "appropriate": "any_machine",
+	"drain_rerolls": "team_rerolls", "brittle_all": "every_machine", "sap_all": "every_machine", "scorch_all": "every_machine", "corrupt_all": "every_machine",
+	"unready_all": "every_foe_readied", "phase": "self",
 }
 
 
@@ -443,14 +454,14 @@ const MOVE_TARGETS := {
 static func whom(f: Face) -> String:
 	match f.targets:
 		Face.Target.SELF:
-			return "Target: Self"
+			return Templates.say("target.self")
 		Face.Target.ALLY:
-			return "Target: Any other ally"
+			return Templates.say("target.other_ally")
 		Face.Target.EVERY_ALLY:
-			return "Target: Every Ally" + (" yet to act" if f.not_acted else "")
+			return Templates.say("target.every_ally_unready" if f.not_acted else "target.every_ally")
 		Face.Target.EVERY_OTHER_ALLY:
-			return "Target: Every Other Ally" + (" yet to act" if f.not_acted else "")
-	return "Target: Any ally or self"
+			return Templates.say("target.every_other_ally_unready" if f.not_acted else "target.every_other_ally")
+	return Templates.say("target.ally_or_self")
 
 
 static func capital(s: String) -> String:
@@ -898,7 +909,7 @@ func _draw_passive(r: Rect2, held: Array, ink: Color) -> void:
 static func next_chamber_line(next: Face, place: int, db: ContentDB) -> Dictionary:
 	var named := db.component_name(next.component) if next != null and not next.component.is_empty() else (next.describe() if next != null else "")
 	var shown := DieFaceView.next_mark(next)
-	return marked(text_line("effect", "A roll or reroll steps it to %s, %s" % [Hud.roman(place), named], "rule"), [passive_mark(str(shown[0]), shown[1], shown[2])])
+	return marked(text_line("effect", Templates.say("hold.next_chamber", {"place": Hud.roman(place), "name": named}), "rule"), [passive_mark(str(shown[0]), shown[1], shown[2])])
 
 
 ## The entry a one-of-each die turns to once the one showing is spent (the Needletail's Quick-turn
@@ -907,7 +918,7 @@ static func next_chamber_line(next: Face, place: int, db: ContentDB) -> Dictiona
 static func turn_line(next: Face, place: int, db: ContentDB) -> Dictionary:
 	var named := db.component_name(next.component) if next != null and not next.component.is_empty() else (next.describe() if next != null else "")
 	var shown := DieFaceView.next_mark(next)
-	return marked(text_line("effect", "Spent, its die turns to %s, %s, and it acts again" % [Hud.roman(place), named], "rule"), [passive_mark(str(shown[0]), shown[1], shown[2])])
+	return marked(text_line("effect", Templates.say("hold.turns_to", {"place": Hud.roman(place), "name": named}), "rule"), [passive_mark(str(shown[0]), shown[1], shown[2])])
 
 
 ## An entry's name as its machine shows it: the name a branch's step gives its piece (the line
@@ -919,39 +930,39 @@ static func entry_name(f: Face, db: ContentDB) -> String:
 ## What its machine's Parry returns on the weapon showing (the Beam Buckler's, Ryan, 19 November:
 ## "next strike"): the add on its next strike alone, headed by the mark the die's passive box shows.
 static func parry_line(n: int) -> Dictionary:
-	return marked(text_line("effect", "Parry: its next strike deals %d more" % n, "rule"), [passive_mark("spin", "+%d" % n, Glyphs.colour_for("parry"))])
+	return marked(text_line("effect", Templates.say("hold.parry", {"n": n}), "rule"), [passive_mark("spin", "+%d" % n, Glyphs.colour_for("parry"))])
 
 
 ## The armament its machine's offhand holds, riding the weapon or equipment showing (the line
 ## frame's, Ryan, 19 November): its name and its line, headed by the star the die's passive box shows.
 static func offhand_line(name: String, line: String) -> Dictionary:
-	return marked(text_line("effect", "%s: %s" % [name, line], "rule"), [passive_mark("star", "", Glyphs.colour_for("offhand"))])
+	return marked(text_line("effect", Templates.say("hold.offhand", {"name": name, "line": line}), "rule"), [passive_mark("star", "", Glyphs.colour_for("offhand"))])
 
 
 ## The strikes a machine's Ricochet adds to the weapon showing (the Skua's, 12 November), as a
 ## line headed by the passive box the die shows them in.
 static func ricochet_line(stacks: int) -> Dictionary:
-	var said := "Ricochet: after it fires it hits its target %d more time%s for 1" % [stacks, "" if stacks == 1 else "s"]
+	var said := Templates.say("hold.ricochet", {"n": stacks})
 	return marked(text_line("effect", said, "rule"), [passive_mark("ricochet", "+%d" % stacks, Glyphs.colour_for("ricochet"))])
 
 
 ## The shield its machine's zap pays as this weapon fires, and the add it buys (the Buzzard's, 18
 ## November), headed by the mark the die's passive box shows for it; the number has the add in.
 static func zap_line(cost: int, add: int) -> Dictionary:
-	var said := "Zap: pays %d shield as it fires, +%d on its every blow" % [cost, add]
+	var said := Templates.say("hold.zap", {"cost": cost, "add": add})
 	return marked(text_line("effect", said, "rule"), [passive_mark("shield", "-%d" % cost, Palette.SHIELD)])
 
 
 ## The heat its machine's dump would pass now (the Puffin's, 19 November), by heat's mark as the die
 ## shows it beside the stacks.
 static func pass_line(heat: int) -> Dictionary:
-	var said := "Passes %d heat to the ally" % heat if heat > 0 else "Passes no heat: its gauge is empty"
+	var said := Templates.say("hold.passes", {"n": heat}) if heat > 0 else Templates.say("hold.passes_none")
 	return marked(text_line("effect", said, "rule"), [mark("heat", Palette.HEAT, false)])
 
 
 ## What its machine's pull takes off an ally this equipment is spent on (the Puffin's, 19 November).
 static func pull_line(most: int) -> Dictionary:
-	var said := "Spent on an ally, takes up to %d of its heat onto this machine" % most
+	var said := Templates.say("hold.pull", {"n": most})
 	return marked(text_line("effect", said, "rule"), [mark("heat", Palette.HEAT, false)])
 
 

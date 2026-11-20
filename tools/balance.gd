@@ -600,8 +600,8 @@ func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int) -> Dictionary
 	for f in foes:
 		fielded.append(f)
 		for part in db.parts_for(f):
-			if p.has("tier") and (db.is_boss(f.content_id) or db.is_elite(f.content_id)):
-				db.scale_boss(part, int(p["tier"]))   # a core's parts at its tier, as a battle's
+			if p.has("tier") and db.is_boss(f.content_id):
+				db.scale_boss(part, int(p["tier"]))   # a boss's parts at its tier, as a battle's; an elite's stand at their own (ContentDB.foes_for)
 			fielded.append(part)
 	sk.foe_factory = func(foe_id: String) -> Foe: return db.make_foe(foe_id) if db.foes.has(foe_id) else null
 	sk.add_foes(fielded)

@@ -47,6 +47,9 @@ var loot: Dictionary = {}
 var loot_rules: Dictionary = {}
 var makers: Dictionary = {}
 var categories: Array = []
+## The words the game composes from a piece's numbers (content/templates.json): id -> entry, held
+## here for the validator; the engine reads them through Templates.
+var templates: Dictionary = {}
 ## Machine names from the properties our designs sit nearest (content/reserved_names.json:
 ## every BattleTech 'Mech, Heavy Gear, Warhammer 40k, Halo), keyed by their normalised form
 ## (see normalise_name) with "Name (a BattleTech 'Mech)" for the message. A chassis nickname
@@ -85,6 +88,7 @@ func load_dir(dir: String) -> void:
 	var lf := _read(dir + "loot.json")
 	loot = _index(lf)
 	loot_rules = {"per_battle": int(lf.get("per_battle", 0)), "rift_gap": int(lf.get("rift_gap", 3)), "wall_gap": int(lf.get("wall_gap", 2)), "behind_shell": int(lf.get("behind_shell", 0))}
+	templates = _index(_read(dir + "templates.json"))
 	reserved_names = {}
 	var reserved := _read(dir + "reserved_names.json")
 	var sources: Dictionary = reserved.get("sources", {})
@@ -408,6 +412,7 @@ func make_foe(foe_id: String) -> Foe:
 	f.armour_step = maxi(0, int(d.get("armour_step", 0)))
 	f.rage = maxi(0, int(d.get("rage", 0)))   # its own from the fight's start (the Goblin Nob's, Ryan, 8 November: "It's not innate? ... unbelievably incorrect")
 	f.drains = bool(d.get("drains", false))   # its own too: every blow of its regrows what it took from the hull (the Vampire Lord's, 16 November)
+	f.strikes_when_buffed = bool(d.get("strikes_when_buffed", false))   # it strikes only with a buff on it or coming (the goblins', 20 November)
 	# What never lands on it (17 November, on Ryan's yes to the bench's rows): a Suppress or a
 	# Disrupt, always (true) or while the move it names gathers.
 	var im = d.get("immune", null)
@@ -468,6 +473,8 @@ func make_foe(foe_id: String) -> Foe:
 				act["foe"] = Foe.kinds_named(a) if a["foe"] is Array else str(a["foe"])   # a merge names a list of kinds
 			if a.has("count"):
 				act["count"] = int(a["count"])
+			if bool(a.get("refill", false)):
+				act["refill"] = true   # a summon that calls back only what its pack has lost (the Wild Huntsman's Horn, 20 November)
 			if a.has("rounds"):
 				act["rounds"] = int(a["rounds"])   # a golden rage's rounds
 		# What the move does also (16 November: a move is a short list of steps), each a special's
@@ -492,7 +499,8 @@ func make_foe(foe_id: String) -> Foe:
 			act["once"] = true   # a special used once a fight (30 October)
 		acts.append(act)
 	# The first attack leads, so a foe's opening intent is its blow; the rest keep content's
-	# order, the pattern a Disrupt steps through (Skirmish.disrupt_next).
+	# order, the pattern a Disrupt steps through (Skirmish.disrupt_next). A foe with no blow, a
+	# rider-only foe, keeps content's order whole.
 	for i in range(acts.size()):
 		if str(acts[i].get("kind", "")) == "attack":
 			if i > 0:
@@ -1417,7 +1425,53 @@ func validate() -> Array[String]:
 	_validate_foes(errs)
 	_validate_factions(errs)
 	_validate_loot(errs)
+	_validate_templates(errs)
 	return errs
+
+
+## A template's forms by a count: CLDR's plural categories (English uses one and other).
+const PLURAL_FORMS := ["zero", "one", "two", "few", "many", "other"]
+const TEMPLATE_KEYS := ["id", "text", "fills", "count", "design"]
+
+
+## The words the game composes (content/templates.json, read by Templates): each a text, or its
+## forms by a count with the other form among them; every brace one of the names its `fills`
+## says the code gives, so a brace the game would print as it stands fails here; a text in forms
+## names the fill its count is.
+func _validate_templates(errs: Array[String]) -> void:
+	if templates.is_empty():
+		errs.append("content/templates.json holds no templates: every line the die and the codex compose reads from it")
+	for id in templates.keys():
+		var e: Dictionary = templates[id]
+		var w := "template %s" % id
+		for k in e.keys():
+			if not TEMPLATE_KEYS.has(str(k)):
+				errs.append("%s: %s is no key of a template's (%s)" % [w, k, ", ".join(TEMPLATE_KEYS)])
+		var fills = e.get("fills", [])
+		if not (fills is Array):
+			errs.append("%s: fills is the list of names the code fills in" % w)
+			continue
+		var names: Array[String] = []
+		for n in fills:
+			names.append(str(n))
+		var t = e.get("text", null)
+		if t is Dictionary:
+			if not (t as Dictionary).has("other"):
+				errs.append("%s: a text in forms has its other form, the one every count falls back to" % w)
+			for k in (t as Dictionary).keys():
+				if not PLURAL_FORMS.has(str(k)):
+					errs.append("%s: %s is no plural form (%s)" % [w, k, ", ".join(PLURAL_FORMS)])
+			if not names.has(str(e.get("count", ""))):
+				errs.append("%s: a text in forms names the fill its count is (count), one of its fills" % w)
+		elif not (t is String):
+			errs.append("%s: text is a string, or its forms by a count" % w)
+			continue
+		for form in Templates.forms_of(t):
+			if form.strip_edges().is_empty():
+				errs.append("%s: a form is empty" % w)
+			for b in Templates.braces(form):
+				if not names.has(b):
+					errs.append("%s: {%s} is filled by nothing; its fills are %s" % [w, b, ", ".join(names) if not names.is_empty() else "none"])
 
 
 ## The caches' kinds (content/loot.json): one a tier, from 1 up with none missing, each a shown
@@ -2628,15 +2682,17 @@ const ACTION_KINDS := ["attack", "defend", "buff", "debuff"]
 const ACTION_STATUSES := ["implemented", "planned"]
 
 
-## A foe's roster of actions: at least one implemented attack (its blow, and the number the
-## player reads), and any defend, buff or debuff actions the engine runs, each picked by
-## weight in its turn; an action the engine cannot run yet is marked planned.
+## A foe's roster of actions: at least one implemented move that lands on a machine, an attack
+## (its blow, and the number the player reads) or a rider-only hit (a debuff, the Half-Gel's
+## Engulf), and any defend, buff or debuff actions the engine runs, each picked by weight in its
+## turn; an action the engine cannot run yet is marked planned.
 func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> void:
 	var acts = f.get("actions", [])
 	if not (acts is Array):
 		errs.append("%s: actions must be a list" % where)
 		return
 	var implemented_attacks := 0
+	var implemented_hits := 0   # rider-only hits: a debuff move, a blow of nothing folded into its riders
 	for a in acts:
 		if not (a is Dictionary):
 			errs.append("%s: each action must be an object" % where)
@@ -2736,11 +2792,17 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 						errs.append("%s: a step's effect is a special's, one of %s" % [sw, ", ".join(_all_effects())])
 					elif str(a.get("status", "")) == "implemented":
 						_validate_effect(sw, st, str(st["effect"]), errs)
+		# A summon that calls back only what its pack has lost (`refill`, 20 November, the Wild
+		# Huntsman's Horn: "a fallen rider rides back"), never more of the kind than rode out.
+		if a.has("refill") and (not (a["refill"] is bool) or str(a.get("effect", "")) != "summon"):
+			errs.append("%s: refill is true on a summon, which then calls back only what its pack has lost" % aw)
 		if str(a.get("status", "")) == "implemented":
 			if str(a.get("kind", "")) != "attack":
 				# A defend, buff or debuff names an effect the engine runs and the fields it reads.
 				var kind := str(a.get("kind", ""))
 				var effect := str(a.get("effect", ""))
+				if kind == "debuff":
+					implemented_hits += 1
 				if not Foe.ACTION_EFFECTS.get(kind, []).has(effect):
 					errs.append("%s: a %s action's effect must be one of %s, got '%s'" % [aw, kind, ", ".join(Foe.ACTION_EFFECTS.get(kind, [])), effect])
 				_validate_effect(aw, a, effect, errs)
@@ -2756,6 +2818,12 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 						errs.append("%s: '%s' belongs to an attack action" % [aw, key])
 			else:
 				implemented_attacks += 1
+				# An attack deals damage (Ryan, 20 November: "We don't need attacks of zero, those fold
+				# into rider only hits same as machines fold weapons into equipment at zero damage"):
+				# a move that deals nothing is a debuff, its riders its effect. A move whose number is
+				# a status's stacks (power) is read live.
+				if Foe.power_status(a).is_empty() and roundf(float(f.get("attack", 0)) * float(a.get("factor", 1.0))) < 1.0:
+					errs.append("%s: an attack deals damage, at least 1 at its foe's attack; a move that deals none is a rider-only hit, a debuff with its effect" % aw)
 				# An attack scales the foe's base attack: factor, not a value of its own, so the
 				# base number stays the player's read of how hard it hits.
 				if a.has("value"):
@@ -2785,10 +2853,8 @@ func _validate_actions(where: String, f: Dictionary, errs: Array[String]) -> voi
 						errs.append("%s: a %s rider says its stacks: %s, a positive number" % [aw, k, k])
 					if a.has(k) and not carried:
 						errs.append("%s: %s (the stacks) rides with the %s keyword" % [aw, k, k])
-					if carried and _halves(k) and int(a.get(k, 0)) < HALVING_MINIMUM:
-						errs.append("%s: a %s rider lays a status that halves, so it says %d at the least: one stack is gone at its first halving" % [aw, k, HALVING_MINIMUM])
-	if implemented_attacks < 1:
-		errs.append("%s: needs at least one implemented attack action" % where)
+	if implemented_attacks + implemented_hits < 1:
+		errs.append("%s: needs at least one implemented move that lands on a machine, an attack or a rider-only hit (a debuff)" % where)
 
 
 ## What a fall's special (`on_death.act`) may carry.
@@ -2871,7 +2937,7 @@ func _validate_effect(aw: String, a: Dictionary, effect: String, errs: Array[Str
 			errs.append("%s: a merge says how much harder its next move hits a foe taken in: value, 1 or more" % aw)
 	# A brace is armour in stacks of Armoured (16 October), a point a stack since 18
 	# October, so its value is its stacks: a positive number.
-	if effect == "brace" or effect == "brace_all":
+	if effect == "brace" or effect == "brace_all" or effect == "brace_beside":
 		var v := int(a.get("value", 0))
 		if v <= 0:
 			errs.append("%s: a brace's value is the armour it grants, in stacks of Armoured: a positive number, got %d" % [aw, v])
@@ -2992,6 +3058,24 @@ func _validate_foes(errs: Array[String]) -> void:
 		# what it took from the hull; a rider on a blow until 16 November.
 		if f.has("drains") and not (f["drains"] is bool and f["drains"]):
 			errs.append("%s: drains is true or left out: every blow of the foe's regrows what it takes from a hull" % where)
+		# A foe that strikes only when buffed (the goblins', Ryan, 20 November: "goblins only attack
+		# when they have any buff, or are predicted to get one"): an Ability on the unit, so it has
+		# a blow to strike with and a move that is no blow for the rounds it holds no buff.
+		if f.has("strikes_when_buffed"):
+			if not (f["strikes_when_buffed"] is bool and f["strikes_when_buffed"]):
+				errs.append("%s: strikes_when_buffed is true or left out: the foe strikes only with a buff on it or one coming" % where)
+			else:
+				var blows := 0
+				var others := 0
+				for a in f.get("actions", []):
+					if str(a.get("status", "implemented")) == "planned":
+						continue
+					if str(a.get("kind", "attack")) == "attack":
+						blows += 1
+					else:
+						others += 1
+				if blows < 1 or others < 1:
+					errs.append("%s: strikes_when_buffed needs a blow for the rounds it holds a buff and a move that is no blow for the rest" % where)
 		# An immunity (Ryan, 15 November: "not as a blanket for all bosses, but for ones who need
 		# it for their fight to actually do something"): an Ability on the unit, a Suppress or a
 		# Disrupt that never lands on it, always or while the move it names gathers.

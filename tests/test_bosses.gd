@@ -1299,12 +1299,14 @@ func test_the_elites_compositions_hold_their_shapes() -> void:
 		for c in db.elite_compositions(str(fid), 1) + db.elite_compositions(str(fid), 2) + db.elite_compositions(str(fid), 3) + db.wandering_compositions(1) + db.wandering_compositions(3):
 			var lead := str(c["members"][0][0])
 			assert_true(db.is_elite(lead), "%s is led by its elite" % str(c["id"]))
-			if int(c["members"][0][1]) > 1:
-				clones += 1
+			for m in c["members"]:
+				if db.is_elite(str(m[0])) and int(m[1]) > 1:
+					clones += 1   # several of one elite in the pack, each scaled (the Wild Hunt's riders behind its Huntsman since 20 November)
+					break
 			if c.has("hunts"):
 				hunters += 1
 				assert_true(ContentDB.HUNT_CAVEATS.has(str(c["hunts"])), "%s hunts by a caveat the engine has" % str(c["id"]))
-	assert_true(clones >= 1, "an elite pack of clones is in content (the Wild Hunt's shape)")
+	assert_true(clones >= 1, "an elite pack holding clones of one elite is in content (the Wild Hunt's riders)")
 	assert_true(hunters >= 3, "hunters among the elites")
 	for fid in db.factions.keys():
 		for t in [1, 2, 3]:
