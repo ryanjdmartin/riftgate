@@ -2283,10 +2283,11 @@ func _entry_states(ms: Skirmish.MechState, i: int) -> Array:
 		# By the clock the die shows along its foot with the turns left (Ryan, 2 November).
 		var dark := Effects.dark_rounds(ms.unit, i, sk.round)
 		if dark >= Effects.DARK_REBOOT:
-			out.append(["Jammed until it reboots", EntryReadout.mark("shield_vent", Palette.INK, false)])
+			out.append([Templates.say("state.jammed_reboot"), EntryReadout.mark("shield_vent", Palette.INK, false)])
 		else:
-			out.append([("Jammed" if Effects.cleansable_disable(ms.unit, i) else "On Cooldown") \
-				+ (" (%d turn%s left)" % [dark, "" if dark == 1 else "s"] if dark > 0 else ""), EntryReadout.mark("cooldown", Palette.INK, false)])
+			var jammed := Effects.cleansable_disable(ms.unit, i)
+			var said := Templates.say("state.jammed_left" if jammed else "state.cooldown_left", {"n": dark}) if dark > 0 else Templates.say("state.jammed" if jammed else "state.cooldown")
+			out.append([said, EntryReadout.mark("cooldown", Palette.INK, false)])
 	return out
 
 
@@ -2296,10 +2297,10 @@ func _entry_states(ms: Skirmish.MechState, i: int) -> Array:
 func _entry_marks(ms: Skirmish.MechState, i: int, die: int) -> Array:
 	var out: Array = []
 	if die >= 0 and die < locked.size() and locked[die] and not ms.assigned:
-		out.append(["Locked: a reroll skips it", EntryReadout.mark("lock", Palette.HUD, false)])
+		out.append([Templates.say("state.locked"), EntryReadout.mark("lock", Palette.HUD, false)])
 	var rot := Effects.corrupt_stacks(ms.unit, i) if i >= 0 else 0
 	if rot > 0:
-		out.append(["Corrupted" + (" ×%d" % rot if rot > 1 else ""), EntryReadout.mark("corrupt", Glyphs.colour_for("corrupt"))])
+		out.append([Templates.say("state.corrupted", {"n": rot}), EntryReadout.mark("corrupt", Glyphs.colour_for("corrupt"))])
 	return out
 
 

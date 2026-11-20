@@ -1976,14 +1976,13 @@ static func gate_text(g) -> String:
 		"target_status":
 			var st := str(g.get("status", ""))
 			if st.is_empty():
-				return "on a foe carrying a status"
-			var nm := str(STATUS.get(st, {}).get("name", st))
-			var n := maxi(1, int(g.get("stacks", 1)))
-			return ("on a foe carrying %s" % nm) if n == 1 else ("on a foe carrying %d %s or more" % [n, nm])
+				return Templates.say("gate.any_status")
+			return Templates.say("gate.status", {"status": str(STATUS.get(st, {}).get("name", st)), "n": maxi(1, int(g.get("stacks", 1)))})
 		"target_rank":
-			return "aimed at the %s rank" % str(g.get("rank", "front"))
+			var rank := str(g.get("rank", "front"))
+			return Templates.say("gate.rank", {"rank": Templates.say("rank." + rank) if Templates.has("rank." + rank) else rank})
 		"target_no_intent":
-			return "on a foe showing no intent on it"
+			return Templates.say("gate.no_intent")
 	return str(g.get("when", ""))
 
 
@@ -3037,7 +3036,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"add_damage_taken": body = "damage taken %s" % signed
 		"multiply_damage_taken": body = "damage taken ×%s" % vs
 		"suppress": body = "turns off %s" % vs
-		"spillover": body = Face.SPILLS_TEXT
+		"spillover": body = Templates.say("rule.spills")
 		"grant_keyword":
 			var kw := Face.keyword_from_name(str(v))
 			body = "gains %s" % (Face.keyword_label(kw) if kw > 0 else str(v))

@@ -45,7 +45,10 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     the quick campaign to `user://quick_run.json`, the profile to `user://profile.json`
 - `content/`: game data. `vocabulary.json` (every mechanic term; `codex` is the rule as the
   player reads it), `factions.json`, `foes.json`, `chassis.json`, `components.json`,
-  `modules.json`, `loot.json` (the field's caches). Placeholder numbers. `reserved_names.json`
+  `modules.json`, `loot.json` (the field's caches), `templates.json` (the words the game composes
+  from a piece's numbers: the die's readout and the codex's rows, a component's own rules, the
+  compact line, the hold's lines in a fight, a foe move's words; a brace a value the game fills,
+  read by `sim/templates.gd`, edited on the hangar's Text tab). Placeholder numbers. `reserved_names.json`
   is every machine name in BattleTech, Heavy Gear, Warhammer 40k and Halo: a chassis nickname
   or id on it fails the validator unless the entry records the clash under `design.name_clash`.
 - `game/`: scenes and presentation.
@@ -210,7 +213,7 @@ python3 tools/synergy_map.py --write
 python3 tools/pages/roster_analysis_page.py > /tmp/roster_analysis.html
 
 # the hangar page (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH)
-python3 tools/hangar_data.py              # writes docs/hangar/pins.json, build/hangar/designs.json, build/hangar/text.json and build/hangar/foe_rules.json (failing when ContentDB's scaling moves under the formations), and build/hangar/readouts.json (what every piece does as the game's codex prints it, run through Godot headless, so Godot on the PATH and the project imported), checks the renders manifest, prints the files map tools/hangar.html is published with
+python3 tools/hangar_data.py              # writes docs/hangar/pins.json, build/hangar/designs.json, build/hangar/text.json and build/hangar/foe_rules.json (failing when ContentDB's scaling moves under the formations), and build/hangar/readouts.json (what every piece does as the game's codex prints it, and the pieces each template prints on, run through Godot headless, so Godot on the PATH and the project imported), checks the renders manifest, prints the files map tools/hangar.html is published with
 python3 tools/hangar_designs.py --check   # every brief's hangar header, alone
 python3 tools/hangar_text.py              # the Text tab's inventory into build/hangar/text.json, and its counts
 python3 tools/hangar_text.py --check      # every string key in content classified, the ledger sound

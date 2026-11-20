@@ -47,6 +47,9 @@ var loot: Dictionary = {}
 var loot_rules: Dictionary = {}
 var makers: Dictionary = {}
 var categories: Array = []
+## The words the game composes from a piece's numbers (content/templates.json): id -> entry, held
+## here for the validator; the engine reads them through Templates.
+var templates: Dictionary = {}
 ## Machine names from the properties our designs sit nearest (content/reserved_names.json:
 ## every BattleTech 'Mech, Heavy Gear, Warhammer 40k, Halo), keyed by their normalised form
 ## (see normalise_name) with "Name (a BattleTech 'Mech)" for the message. A chassis nickname
@@ -85,6 +88,7 @@ func load_dir(dir: String) -> void:
 	var lf := _read(dir + "loot.json")
 	loot = _index(lf)
 	loot_rules = {"per_battle": int(lf.get("per_battle", 0)), "rift_gap": int(lf.get("rift_gap", 3)), "wall_gap": int(lf.get("wall_gap", 2)), "behind_shell": int(lf.get("behind_shell", 0))}
+	templates = _index(_read(dir + "templates.json"))
 	reserved_names = {}
 	var reserved := _read(dir + "reserved_names.json")
 	var sources: Dictionary = reserved.get("sources", {})
@@ -1421,7 +1425,53 @@ func validate() -> Array[String]:
 	_validate_foes(errs)
 	_validate_factions(errs)
 	_validate_loot(errs)
+	_validate_templates(errs)
 	return errs
+
+
+## A template's forms by a count: CLDR's plural categories (English uses one and other).
+const PLURAL_FORMS := ["zero", "one", "two", "few", "many", "other"]
+const TEMPLATE_KEYS := ["id", "text", "fills", "count", "design"]
+
+
+## The words the game composes (content/templates.json, read by Templates): each a text, or its
+## forms by a count with the other form among them; every brace one of the names its `fills`
+## says the code gives, so a brace the game would print as it stands fails here; a text in forms
+## names the fill its count is.
+func _validate_templates(errs: Array[String]) -> void:
+	if templates.is_empty():
+		errs.append("content/templates.json holds no templates: every line the die and the codex compose reads from it")
+	for id in templates.keys():
+		var e: Dictionary = templates[id]
+		var w := "template %s" % id
+		for k in e.keys():
+			if not TEMPLATE_KEYS.has(str(k)):
+				errs.append("%s: %s is no key of a template's (%s)" % [w, k, ", ".join(TEMPLATE_KEYS)])
+		var fills = e.get("fills", [])
+		if not (fills is Array):
+			errs.append("%s: fills is the list of names the code fills in" % w)
+			continue
+		var names: Array[String] = []
+		for n in fills:
+			names.append(str(n))
+		var t = e.get("text", null)
+		if t is Dictionary:
+			if not (t as Dictionary).has("other"):
+				errs.append("%s: a text in forms has its other form, the one every count falls back to" % w)
+			for k in (t as Dictionary).keys():
+				if not PLURAL_FORMS.has(str(k)):
+					errs.append("%s: %s is no plural form (%s)" % [w, k, ", ".join(PLURAL_FORMS)])
+			if not names.has(str(e.get("count", ""))):
+				errs.append("%s: a text in forms names the fill its count is (count), one of its fills" % w)
+		elif not (t is String):
+			errs.append("%s: text is a string, or its forms by a count" % w)
+			continue
+		for form in Templates.forms_of(t):
+			if form.strip_edges().is_empty():
+				errs.append("%s: a form is empty" % w)
+			for b in Templates.braces(form):
+				if not names.has(b):
+					errs.append("%s: {%s} is filled by nothing; its fills are %s" % [w, b, ", ".join(names) if not names.is_empty() else "none"])
 
 
 ## The caches' kinds (content/loot.json): one a tier, from 1 up with none missing, each a shown

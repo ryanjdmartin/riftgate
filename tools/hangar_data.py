@@ -50,6 +50,13 @@ def gd_source(rel):
     return open(os.path.join(ROOT, rel), encoding="utf-8").read()
 
 
+def template_words(prefix):
+    """The templates under one prefix (content/templates.json), by the word after it: how the
+    game says a move's condition (when.) or its aim (aim.)."""
+    entries = json.load(open(os.path.join(ROOT, "content", "templates.json"), encoding="utf-8"))["entries"]
+    return {e["id"][len(prefix):]: e["text"] for e in entries if e["id"].startswith(prefix) and isinstance(e["text"], str)}
+
+
 def gd_const(src, name, rel):
     """A GDScript constant's value, an int, a float, a string or a literal array or dictionary
     of them, as JSON reads it: the bracketed literal taken whole, its comments and trailing
@@ -149,7 +156,7 @@ def foe_rules():
         problems.append("Battle.make_boss_unit no longer sets its unit's squad: the hangar shows a boss fight's threat rating from it")
     campaign, ramp = gd_source("sim/campaign.gd"), gd_source("sim/ramp.gd")
     rules = {
-        "_about": "The engine's rules for a pack, read out of sim/ by tools/hangar_data.py (20 November) for the hangar's formations: never edited by hand. boss_tiers is ContentDB.BOSS_TIERS, index 0 for tier one (ContentDB.scale_boss: HP times hp rounded, attack plus attack, armour plus armour_step a tier above one); scaled says whom ContentDB.foes_for scales; squad_by_size and squad_default are a composition's threat rating where it writes no squad (ContentDB.squad_of), boss_squad a boss fight's (Battle.make_boss_unit); tier_every and ramp_top place a tier on the Convergences (ContentDB.first_ramp_of, Ramp.TOP); final_escort is the tier's own units beside a final's hero (Campaign: the battle's columns less one); when_text and aim_text are how a move's condition and aim are said (Foe.WHEN_TEXT, Foe.AIM_TEXT).",
+        "_about": "The engine's rules for a pack, read out of sim/ by tools/hangar_data.py (20 November) for the hangar's formations: never edited by hand. boss_tiers is ContentDB.BOSS_TIERS, index 0 for tier one (ContentDB.scale_boss: HP times hp rounded, attack plus attack, armour plus armour_step a tier above one); scaled says whom ContentDB.foes_for scales; squad_by_size and squad_default are a composition's threat rating where it writes no squad (ContentDB.squad_of), boss_squad a boss fight's (Battle.make_boss_unit); tier_every and ramp_top place a tier on the Convergences (ContentDB.first_ramp_of, Ramp.TOP); final_escort is the tier's own units beside a final's hero (Campaign: the battle's columns less one); when_text and aim_text are how a move's condition and aim are said (the when.<word> and aim.<word> templates, content/templates.json).",
         "boss_tiers": gd_const(db, "BOSS_TIERS", "sim/content_db.gd"),
         "scaled": {"commanders": True, "commander_parts": True, "elites": True, "elite_parts": False, "rank_and_file": False},
         "squad_by_size": gd_const(db, "SQUAD_BY_SIZE", "sim/content_db.gd"),
@@ -161,8 +168,8 @@ def foe_rules():
         "tier_every": gd_const(campaign, "TIER_EVERY", "sim/campaign.gd"),
         "final_after": gd_const(campaign, "FINAL_AFTER", "sim/campaign.gd"),
         "ramp_top": gd_const(ramp, "TOP", "sim/ramp.gd"),
-        "when_text": gd_const(foe, "WHEN_TEXT", "sim/foe.gd"),
-        "aim_text": gd_const(foe, "AIM_TEXT", "sim/foe.gd"),
+        "when_text": template_words("when."),
+        "aim_text": template_words("aim."),
         "numbered_riders": gd_const(foe, "NUMBERED_RIDERS", "sim/foe.gd"),
         "action_effects": gd_const(foe, "ACTION_EFFECTS", "sim/foe.gd"),
         "resist": {"default": gd_const(foe, "RESIST_DEFAULT", "sim/foe.gd"), "massive": gd_const(foe, "RESIST_MASSIVE", "sim/foe.gd"),

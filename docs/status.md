@@ -65,8 +65,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1389 tests, 388,125 checks, green (20 November, the hangar's readouts: what every
-  piece does in the game's own words). The runner fails a run
+- Tests: 1395 tests, 388,479 checks, green (20 November, the die's and the codex's words as
+  content templates). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -268,7 +268,10 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   with its codex, flavour and brief, and the Briefs list of the rest; each brief read only, with
   his notes), Components, Modules and Foes on its pattern (a tight list whose row opens the
   sheet, the raw editor behind a toggle; Foes formations first), the Text by chunk, a card an
-  entity (`tools/hangar_text.py` is its one inventory), and the models. The ledger `docs/hangar/text.json` names nothing as signed, so
+  entity (`tools/hangar_text.py` is its one inventory), and the models. Since 20 November the
+  words the game composes from a piece's numbers are content (`content/templates.json`, read by
+  `sim/templates.gd`): the Text tab's Templates view, a card a kind, each template beside the
+  pieces that print it, folded like any text. The ledger `docs/hangar/text.json` names nothing as signed, so
   every shown text is a session's draft. His writing waits in the page's `text` collection (the
   Text tab's and a Chassis sheet's codex and flavour) and his notes on the briefs in `designs`: a
   session that touches either folds them in first. The Names tab retired on 20 November: the

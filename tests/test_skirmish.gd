@@ -3551,7 +3551,7 @@ func test_spillover_carries_the_damage_past_a_kill_into_the_foe_behind() -> void
 	sk.add_foes([_ghoul(20, 10), _ghoul(500, 10), _archer(500, 10), _archer(10, 10)])
 	sk.begin()
 	sk.start_round()
-	assert_eq(ram.describe(), "50 " + Face.SPILLS_TEXT, "the rule reads on the entry, in words: no keyword names it")
+	assert_eq(ram.describe(), "50 " + Templates.say("rule.spills"), "the rule reads on the entry, in words: no keyword names it")
 	# Find the column with the weak ghoul in front and see who stands behind it.
 	var col := 0 if sk.front[0].hp == 20 else 1
 	var behind: Foe = sk.back[col]
@@ -4173,6 +4173,8 @@ func test_purge_says_its_number_and_every_foe_move_says_whom_it_acts_on() -> voi
 	for kind in ["defend", "buff"]:
 		for effect in Foe.ACTION_EFFECTS[kind]:
 			assert_true(EntryReadout.MOVE_TARGETS.has(effect), "the readout names whom %s acts on" % effect)
+			var key := str(EntryReadout.MOVE_TARGETS.get(effect, ""))
+			assert_true(key == "every_machine" or Templates.has("foe_target." + key), "and content says it (foe_target.%s), or the term does (every machine)" % key)
 
 
 func test_a_summoning_foe_calls_up_reinforcements_through_the_factory() -> void:

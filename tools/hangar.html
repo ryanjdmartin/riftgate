@@ -585,6 +585,9 @@ button.entry{width:100%;text-align:left;font:inherit;color:var(--ink)}
 .mcard .rlmove b{font:600 10px/1.4 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-right:6px}
 .tctx{border-left:3px solid var(--rule-strong);padding:2px 0 2px 10px;margin:6px 0 2px}
 .tctx .piece{font-weight:600;color:var(--ink)}
+.tuse{margin:2px 0 0;font-size:12.5px;color:var(--ink-3)}
+.tuse .piece{font-weight:600;color:var(--ink-2)}
+.tuse .more{color:var(--ink-3)}
 .entry.crow .con{grid-area:on;font-size:12px;color:var(--ink-3)}
 .entry.mrow{grid-template-columns:1fr auto;grid-template-areas:"name maker" "nums nums" "rule rule"}
 .entry.mrow .mrule{grid-area:rule;font-size:13px;color:var(--ink);margin-top:2px}
@@ -2449,6 +2452,8 @@ function textRow(s, opts = {}) {
     body.addEventListener("click", () => { if (String(window.getSelection() || "").trim()) return; openText(s.id); });
     body.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); openText(s.id); } });
     row.append(body);
+    const ex = templateUse(s);
+    if (ex && ex.on.length) row.append(el("div", {class: "tuse"}, el("span", {class: "piece"}, ex.on[0].piece + ": "), ex.on[0].words, ex.count > 1 ? el("span", {class: "more"}, " · and " + (ex.count - 1) + " more") : null));
     if (v.note) row.append(el("div", {class: "tflagline", style: "color:var(--edited)"}, "Your note: " + v.note));
     return row;
   }
@@ -2460,6 +2465,12 @@ function textRow(s, opts = {}) {
   fact("Pitch", s.pitch);
   fact("Slot", s.id, true);
   ed.append(facts);
+  const use = templateUse(s);
+  if (use) {
+    const box = el("div", {class: "tctx"}, el("span", {class: "lab"}, use.count ? "Printed on " + use.count + " piece" + (use.count === 1 ? "" : "s") + " at its own numbers · the first " + use.on.length : "No piece prints it at its own numbers today: it prints in a fight (a moved number, a short purse, the die's hold, a live intent), or once a piece carries its rule"));
+    for (const o of use.on) box.append(el("p", {class: "rl"}, el("span", {class: "piece"}, o.piece + ": "), o.words));
+    ed.append(box);
+  }
   for (const l of s.lints) ed.append(el("div", {class: "tflagline"}, "Flag: " + l));
   if (v.st === "moved") ed.append(el("div", {class: "tthen"}, el("span", {class: "lab"}, "As you signed it" + (s.on ? ", " + s.on : "")), s.signed));
   if (v.st === "stale") ed.append(el("div", {class: "tthen"}, el("span", {class: "lab"}, "Its mechanics when you signed it" + (s.on ? ", " + s.on : "")), s.mech_was || "none", el("span", {class: "lab", style: "margin-top:4px"}, "Now"), s.mech || "none"));
@@ -2531,7 +2542,8 @@ const TEXT_VIEWS = [
   {id: "foes", label: "Foes", what: "A foe's every text: its codex and flavour, then each move's name and line, then its fall's.", group: "Domain"},
   {id: "vocabulary", label: "Vocabulary", what: "Every term's entry, the rule as the player reads it, a card a category.", group: ""},
   {id: "domains", label: "Domains", what: "A domain's flavour beside its name, and the caches' lines.", group: ""},
-  {id: "code", label: "In code", what: "The texts the code holds: the status lines, and how a move's aim, target and condition are said. Read only here: a note asks a session to change one.", group: ""},
+  {id: "templates", label: "Templates", what: "The words the game composes from a piece's numbers: a component's own rules, its readout's words, its lines on the die's hold in a fight, and a foe move's words. A brace is a value the game fills in ({n}, {per_load}); a template written in forms (one, other) picks one by its count. Under each, the pieces that print it, in the game's words.", group: ""},
+  {id: "code", label: "In code", what: "The texts the code still holds: the status lines. Read only here: a note asks a session to change one.", group: ""},
   {id: "waiting", label: "Waiting"},
 ];
 const ENTITY_VIEWS = TEXT_VIEWS.filter(v => !["overview", "waiting"].includes(v.id));
@@ -2546,15 +2558,17 @@ function textViewOf(s, locked = lockedOn()) {
   if (s.key === "foes.entries") return "foes";
   if (s.key === "vocabulary.entries") return "vocabulary";
   if (s.key === "factions.entries" || s.key === "loot.entries") return "domains";
+  if (s.key === "templates.entries") return "templates";
   return "code";
 }
-const CODE_CARD = {"code.status": "Status lines", "code.aim": "Aims", "code.target": "Targets", "code.when": "Conditions"};
+const CODE_CARD = {"code.status": "Status lines"};
 // The card a text belongs to: {id, label, group}, a machine's holding its locked pieces' texts.
 function cardOf(s, view, locked) {
   if (view === "chassis") { const id = s.key === "chassis.entries" ? s.entry : locked.get(s.entry), ch = ctx().chassis.get(id) || {}; return {id: "c:" + id, entity: id, label: ch.name || s.name, group: "maker:" + (ch.maker || "")}; }
   if (view === "components" || view === "modules" || view === "foes") return {id: view[0] + ":" + s.entry, entity: s.entry, label: s.name, group: s.group};
   if (view === "vocabulary") return {id: "v:" + s.group, entity: s.group, label: groupInfo(s.group).label, group: s.group};
   if (view === "domains") return s.key === "loot.entries" ? {id: "d:caches", entity: "caches", label: "The caches", group: ""} : {id: "d:" + s.entry, entity: s.entry, label: s.name, group: ""};
+  if (view === "templates") return {id: "t:" + s.kind, entity: s.kind, label: (textKinds().find(k => k.id === s.kind) || {}).label || s.kind, group: ""};
   return {id: "k:" + s.key, entity: s.key, label: CODE_CARD[s.key] || s.key, group: ""};
 }
 // A text's place in its card: a chassis's own in reading order, then each locked piece's in its die
@@ -2590,7 +2604,7 @@ const KIND_ROLE = {chassis_codex: "Codex", chassis_flavour: "Flavour", component
 const TITLE_ROLE = {designation: "Designation", passive: "Passive's name", move: "Move's name", "last act": "Last act's name", "upgrade direction": "Upgrade direction's name",
   "offhand form": "Offhand form's name", "upgraded piece": "Upgraded piece's name"};
 function rowLabel(s, card) {
-  if (card.view === "vocabulary" || card.view === "code" || s.key === "loot.entries") return s.name + (card.view === "code" && s.sub ? " · " + s.sub : "");
+  if (card.view === "vocabulary" || card.view === "code" || card.view === "templates" || s.key === "loot.entries") return s.name + ((card.view === "code" || card.view === "templates") && s.sub ? " · " + s.sub : "");
   const piece = card.view === "chassis" && s.key === "components.entries" ? s.name + " · " : "";
   let role = s.kind === "title" ? (TITLE_ROLE[s.sub] || (s.sub ? s.sub + " (a name)" : "Name")) : (KIND_ROLE[s.kind] || s.kind);
   if (s.kind === "foe_move" && s.path.startsWith("on_death.")) role = "Last act";
@@ -2729,6 +2743,13 @@ function renderTextOverview(main) {
 // What a Text card's piece does, as the game prints it, read only (20 November): a component's lines;
 // a machine's locked pieces' own rules; a foe's moves, their composed lines. The texts below it are
 // read against what the piece does.
+// The pieces a template's lines print on (tools/hangar_readouts.gd), for a template's slot: null
+// for any other slot, or before the readouts arrive.
+function templateUse(s) {
+  if (s.key !== "templates.entries" || !state.readouts) return null;
+  const u = (state.readouts.templates || {})[s.entry];
+  return u ? {count: u.count || 0, on: u.on || []} : {count: 0, on: []};
+}
 function textContext(card) {
   if (!state.readouts) return null;
   const box = el("div", {class: "tctx"}, el("span", {class: "lab"}, "What it does, as the game prints it · read only"));
@@ -2749,7 +2770,7 @@ function textContext(card) {
 }
 function renderTextView(main, view) {
   const f = tfilter(), info = TEXT_VIEWS.find(v => v.id === view);
-  if (["chassis", "components", "foes"].includes(view)) want("readouts", ensureReadouts);
+  if (["chassis", "components", "foes", "templates"].includes(view)) want("readouts", ensureReadouts);
   main.append(el("p", {class: "lede"}, info.what));
   const cards = textCards(view), active = textFiltered(f, view);
   const shown = [];
