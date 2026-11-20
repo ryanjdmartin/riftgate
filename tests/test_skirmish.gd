@@ -593,59 +593,14 @@ func test_a_blow_grows_with_its_targets_missing_hull() -> void:
 
 ## The face shows the number (10 October, bible section 5): what the blow will deal now, and
 ## held over a foe, what it deals to that foe. Flat means no roll, however much feeds it.
-func test_the_hopper_fills_from_a_claw_and_a_shot_fires_a_few_loads() -> void:
-	# Ryan, 11 October: the Honey Badger's locked pair. A weapon that fills the hopper puts a
-	# load in for each foe its blows reach; one that fires it takes up to its most a shot,
-	# +5 a load, and spends them, so a full hopper feeds several shots rather than one.
-	var sk := Skirmish.new(1)
-	var claw := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "keywords": ["cleave"], "cleave": 5, "fills_hopper": 1})
-	var gun := Face.from_dict({"kind": "attack", "reach": "direct", "power": 20, "fires_hopper": 3, "power_per_load": 5})
-	assert_eq(claw.describe(), "10 spread 5 fills the hopper", "the claw says what it does, its Spread's number with it")
-	assert_eq(gun.describe(), "20 fires the hopper, +5 a load (3 a shot)", "and so does the gun")
-	assert_eq(Face.from_dict(gun.to_dict()).describe(), gun.describe(), "both round-trip")
-	var m := _mech("A", Die.of([claw, gun]), 500, 500)
-	var ms := sk.add_mech(m)
-	sk.add_foes([_ghoul(500, 10), _ghoul(500, 10), _ghoul(500, 10)])
-	sk.begin()
-	sk.start_round()
-	ms.face_index = 1
-	assert_eq(sk.shown_number(ms, gun), 20, "an empty hopper adds nothing")
-	ms.face_index = 0
-	assert_true(sk.assign(0, sk.front[1]), "the claw on the middle foe")
-	assert_eq(Effects.stacks_of(m, "hopper"), 3, "three foes reached: three loads")
-	assert_true("\n".join(sk.log).contains("fills the hopper: +3 (3)"), "the log says so")
-	sk.end_round()
-	assert_eq(Effects.stacks_of(m, "hopper"), 3, "the loads keep through the round")
-	sk.start_round()
-	Effects.stack(m, Effects.STATUS["hopper"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
-	ms.face_index = 1
-	assert_eq(sk.shown_number(ms, gun), 35, "five loads, but three a shot: 20 and 15")
-	var hp: int = sk.front[0].hp
-	assert_true(sk.assign(0, sk.front[0]), "the shot")
-	assert_eq(sk.front[0].hp, hp - 35, "twenty and three loads")
-	assert_eq(Effects.stacks_of(m, "hopper"), 2, "three spent, two left for the next shot")
-	sk.end_round()
-	sk.start_round()
-	ms.face_index = 1
-	assert_eq(sk.shown_number(ms, gun), 30, "the next shot fires the two left")
-
-
-func test_the_bot_fills_the_hopper_before_it_fires_it() -> void:
-	# A claw that reaches three foes is worth its loads to a machine that can fire them.
-	var sk := Skirmish.new(1)
-	var claw := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "keywords": ["cleave"], "fills_hopper": 1})
-	var gun := Face.from_dict({"kind": "attack", "reach": "direct", "power": 20, "fires_hopper": 3, "power_per_load": 5})
-	var m := _mech("A", Die.of([claw, gun]), 500, 500)
-	var ms := sk.add_mech(m)
-	sk.add_foes([_ghoul(500, 10), _ghoul(500, 10), _ghoul(500, 10)])
-	sk.begin()
-	sk.start_round()
-	var pol := Policy.make(Policy.GREEDY, 1)
-	var plain := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "keywords": ["cleave"]})
-	assert_true(pol.attack_score(sk, ms, claw, sk.front[1]) > pol.attack_score(sk, ms, plain, sk.front[1]), "the loads are worth something")
-	assert_eq(pol.hopper_fill_score(sk, ms, claw, sk.front[1]), 3.0 * 5.0 * Policy.HOPPER_WEIGHT, "three loads at five, discounted")
-	Effects.stack(m, Effects.STATUS["hopper"], Effects.SKIRMISH, "test", 6, Effects.DECAY_NONE)
-	assert_eq(pol.hopper_fill_score(sk, ms, claw, sk.front[1]), 0.0, "two shots' worth waiting already: no more value")
+func test_an_emptying_entry_says_what_it_does_and_round_trips() -> void:
+	# Ryan, 20 November: the Bullion Fragmenter empties the hopper, a strike an Ore (its engine in
+	# tests/test_badger.gd).
+	var gun := Face.from_dict({"kind": "attack", "reach": "direct", "power": 2, "empties_hopper": true})
+	assert_eq(gun.describe(), "2 a strike for every Ore it empties", "the entry says what it does")
+	assert_true(gun.has_unique_rule(), "a rule printed on the entry: the star chip")
+	assert_false(gun.is_debuff(), "a weapon")
+	assert_true(Face.from_dict(gun.to_dict()).empties_hopper, "it round-trips")
 
 
 func test_a_bracing_entry_armours_its_owner_until_its_sides_next_turn_begins() -> void:

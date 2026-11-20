@@ -119,9 +119,9 @@ func test_a_readout_keeps_its_parts() -> void:
 func test_the_die_readout_reads_its_words_from_content() -> void:
 	# A rule line is the template's words at the piece's numbers, capitalised as the readout heads it.
 	var f := Face.attack(4, Face.Reach.DIRECT)
-	f.fires_hopper = 2
-	f.power_per_load = 3
-	var said := Templates.say("rule.fires_hopper", {"per_load": 3, "loads": 2})
+	f.power_per_missing = 3
+	f.per_missing = 2
+	var said := Templates.say("rule.per_missing", {"n": 3, "per": 2})
 	assert_true(f.rule_phrases().has(said), "the rule phrase is the template filled: %s" % str(f.rule_phrases()))
 	var rules := EntryReadout.effects_of(f).filter(func(l: Dictionary) -> bool: return str(l.get("group", "")) == "rule")
 	assert_true(rules.any(func(l: Dictionary) -> bool: return str(l["text"]) == EntryReadout.capital(said)), "and the readout prints it: %s" % str(rules))

@@ -65,6 +65,7 @@ const FAVOUR_PER_WIN := 100   # the Council's Favour for a won battle (7 October
 const FAVOUR_DOCK := 1        # Favour docked per point of gate damage the city took in that battle; never below nothing
 const START_FAVOUR := 100     # enough for one rush
 const RUSH_PRICE := 100       # Favour to bring a wreck out of the shop now (6 October: a choice after a wreck, never routine repair)
+const UPGRADE_PRICE := 60     # salvage to buy a machine up a tier (the bible's tiers row: "cheap", the Convergence its gate); a placeholder, the economy pass's to price
 const REPAIR_COST := 5        # salvage a point of the capital's gate costs (the one priced repair, section 3; materials, so salvage)
 const START_MACHINES := 3     # a run starts with three machines and all SQUAD slots; the fourth is the first battle's offer, a choice among the host maker's chassis (Ryan, 11 November; bought when the player chose, 7 October, until then)
 const OFFER_MACHINES := 3     # the first battle's offer: a choice of one of this many of the host maker's machines (Ryan, 19 November: "a choice of 1 of 3 machines from the maker")
@@ -95,6 +96,8 @@ class Machine:
 	var chassis: String = ""
 	var loadout: Array = []         # hardpoint components fitted, in die order; fixed ones are the chassis's
 	var shop: int = 0               # battles left in the shop; 0 is ready
+	var tier: int = 0               # the machine's tier (ContentDB.machine_tier), 0 its chassis's: bought up in the hangar (upgrade); a wreck keeps it
+	var branches: Array = []        # its upgrades' picks along its chassis's branches, in the order taken
 
 
 var seed_value: int = 1
@@ -335,7 +338,7 @@ func start_battle(city_id: String, uids: Array) -> Battle:
 		var m := machine(int(uid))
 		if m == null or m.shop > 0:
 			return null
-		team.append(db.make_mech(m.chassis, m.uid, Vector2i.ZERO, m.loadout))
+		team.append(db.make_mech(m.chassis, m.uid, Vector2i.ZERO, m.loadout, [], m.branches.duplicate(), m.tier))
 	var c: City = cities[city_id]
 	var b := Battle.new(rng.randi_range(1, 1 << 30))
 	# The tier is the rift's, locked as it opened and shown on its card (Ryan's form, the curve
@@ -815,6 +818,46 @@ func _roll_rift() -> Dictionary:
 
 
 # ---------------------------------------------------------------- the hangar
+
+## A machine's tier (ContentDB.machine_tier): its chassis's as it arrives, more for each upgrade.
+func machine_tier(m: Machine) -> int:
+	return db.machine_tier(m.chassis, m.branches, m.tier)
+
+
+## The highest machine tier the Convergence opens: a tier's rifts open its machines' upgrades.
+func open_tier() -> int:
+	return clampi(tier() + 1, 1, 3)
+
+
+## Why this machine may not be bought up a tier now with `pick`, "" when it may: between battles,
+## the Convergence's gate, its branch's pick where its chassis has branches, and UPGRADE_PRICE
+## salvage. A wreck in the shop may be bought up (it keeps its tier: "It's baked into the chassis").
+func upgrade_error(uid: int, pick: String = "") -> String:
+	var m := machine(uid)
+	if m == null:
+		return "no machine %d" % uid
+	if state != PICK:
+		return "between battles only"
+	var err := db.upgrade_error(m.chassis, m.tier, m.branches, pick, open_tier())
+	if not err.is_empty():
+		return err
+	if salvage < UPGRADE_PRICE:
+		return "%d salvage" % UPGRADE_PRICE
+	return ""
+
+
+## Buy a machine up a tier, its branch's pick with it (the hangar's upgrade verb). False and
+## nothing spent when upgrade_error refuses it.
+func upgrade(uid: int, pick: String = "") -> bool:
+	if not upgrade_error(uid, pick).is_empty():
+		return false
+	var m := machine(uid)
+	m.tier = machine_tier(m) + 1
+	if not pick.is_empty():
+		m.branches.append(pick)
+	salvage -= UPGRADE_PRICE
+	return true
+
 
 ## Bring a wreck out of the shop now, for RUSH_PRICE Favour (each wreck its own cost).
 func rush(uid: int) -> bool:

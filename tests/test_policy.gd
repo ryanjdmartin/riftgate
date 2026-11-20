@@ -1583,15 +1583,15 @@ func test_blind_play_spends_on_the_nearest_foe_and_its_own_machine() -> void:
 
 
 ## The bot reads a Gel's pair as the resolver does (26 October): a Spread filling the hopper
-## beside a twin slot loads for both halves.
+## beside a twin slot fills for both halves.
 func test_the_bot_counts_both_halves_of_a_pair() -> void:
 	var sk := Skirmish.new(3, 3)
 	var fill := Face.attack(3, L, K.CLEAVE)
-	fill.fills_hopper = 1
 	var fire := Face.attack(3, L)
-	fire.fires_hopper = 6
-	fire.power_per_load = 1
-	sk.add_mech(_mech("A", Die.of([fill, fire])))
+	fire.empties_hopper = true
+	var a := _mech("A", Die.of([fill, fire]))
+	a.grant_passive({"id": "ore", "name": "Ore", "description": "", "effects": [{"trigger": "static", "effect": "fill_hopper", "value": 1, "cap": 6}]})
+	sk.add_mech(a)
 	var target := _ghoul(500, 10)
 	sk.add_foes([target, _ghoul(400, 10)])
 	sk.begin()

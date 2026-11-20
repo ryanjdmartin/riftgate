@@ -15,12 +15,12 @@ func _piece(db: ContentDB, id: String) -> Dictionary:
 ## content on 19 November (Ryan's yes), and these tests use one only to observe something else.
 ## A basic's tier and no shape, as the Coolant Jacket and the Canopy stood.
 func _plain_vent(db: ContentDB) -> Dictionary:
-	return {"name": "Plain Vent", "maker": str(db.city_makers()[0]), "tier": 0, "shape": "none", "codex": "", "flavour": "",
+	return {"name": "Plain Vent", "maker": str(db.city_makers()[0]), "tier": 1, "shape": "none", "codex": "", "flavour": "",
 		"design": {"stage": "draft", "fantasy": "", "niche": ""}, "face": {"kind": "vent", "power": 4}, "passive": null, "tags": []}
 
 
 func _plain_shield(db: ContentDB) -> Dictionary:
-	return {"name": "Plain Shield", "maker": str(db.city_makers()[0]), "tier": 0, "shape": "none", "codex": "", "flavour": "",
+	return {"name": "Plain Shield", "maker": str(db.city_makers()[0]), "tier": 1, "shape": "none", "codex": "", "flavour": "",
 		"design": {"stage": "draft", "fantasy": "", "niche": ""}, "face": {"kind": "shield", "power": 8, "targets": "self"}, "passive": null, "tags": []}
 
 func _db() -> ContentDB:
@@ -757,6 +757,7 @@ func test_a_built_component_may_carry_a_planned_keyword() -> void:
 	gun["face"] = Dictionary(gun["face"]).duplicate(true)
 	gun["face"]["keywords"] = [planned_kw]
 	gun["tier"] = 2   # no chassis stocks it, so it carries its own tier
+	gun.erase("basic")
 	db.components["ahead_gun"] = gun
 	for e in db.validate():
 		assert_false(e.begins_with("component ahead_gun"), "a built component may carry a planned keyword: %s" % e)
@@ -822,6 +823,7 @@ func test_a_planned_chassis_is_kept_but_never_fielded() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var built: Dictionary = db.chassis["badger"].duplicate(true)
+	built.erase("branches")   # its steps name its own locked pieces
 	built["passive"] = {"id": "built", "name": "Built", "description": "", "effects": [
 		{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 1}]}
 	db.chassis["built"] = built
@@ -1489,7 +1491,8 @@ func test_a_component_passive_from_content_lands_on_the_mech() -> void:
 	fins["name"] = "Finned Sink"
 	fins["passive"] = {"id": "fins", "name": "Fins", "description": "Cooling +5.",
 		"effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 5}]}
-	db.components["fins_pack"] = fins   # a basic's tier, below the chassis that stocks it
+	fins["tier"] = 1   # tier one, at or below the chassis that stocks it
+	db.components["fins_pack"] = fins
 	var c: Dictionary = db.chassis["clydesdale"].duplicate(true)
 	c["fixed"] = []   # nothing built in, so the component is the die's first entry
 	c["loadout"] = ["fins_pack"]
@@ -2071,10 +2074,12 @@ func test_the_codex_plate_lists_the_traits() -> void:
 	db.chassis["plated"] = c
 	var u := db.make_mech("plated")
 	var maker := str(db.makers[c["maker"]]["name"]).to_upper()
-	assert_eq(str(db.codex_for_unit(u)["subtitle"]), "%s // SKIDS, QUIET // D%d" % [maker, u.die.size()], "maker, the traits by name, the die")
+	var t := int(c["tier"])
+	assert_eq(str(db.codex_for_unit(u)["subtitle"]), "%s // SKIDS, QUIET // TIER %d // D%d" % [maker, t, u.die.size()], "maker, the traits by name, the tier, the die")
 	c["traits"] = []
 	db.chassis["bare"] = c
-	assert_eq(str(db.codex_for_unit(db.make_mech("bare"))["subtitle"]), "%s // D%d" % [maker, u.die.size()], "no traits, no traits part")
+	assert_eq(str(db.codex_for_unit(db.make_mech("bare"))["subtitle"]), "%s // TIER %d // D%d" % [maker, t, u.die.size()], "no traits, no traits part")
+	assert_eq(str(db.codex_for_unit(db.make_mech("bare", 1, Vector2i.ZERO, null, [], [], 3))["subtitle"]), "%s // TIER 3 // D%d" % [maker, u.die.size()], "the machine's tier, bought up")
 	for e in db.validate():
 		assert_false(e.contains("silhouette"), "no chassis needs a silhouette: %s" % e)
 
@@ -2277,24 +2282,31 @@ func _has_error(db: ContentDB, word: String) -> bool:
 func test_a_component_stores_its_tier_and_the_basics_are_the_starting_blueprints() -> void:
 	# 7 October: tier is power and complexity, never the maker. Stored since the stock pass (22
 	# October): a component carries its tier whatever stocks it, and moving a chassis moves
-	# nothing; the basics, tier zero, are the blueprints a run starts with.
+	# nothing. A basic is a tier-one piece with a flag, the blueprints a run starts with (Ryan, 20
+	# November: "Basic is just a flag that says it's in the starting blueprints"), and never a find.
 	var db := _fresh()
 	var stocked := ""
 	var host := ""
 	for id in db.chassis.keys():
 		for cid in db.chassis[id].get("loadout", []):
-			if stocked.is_empty() and db.component_tier(str(cid)) == 0:
+			if stocked.is_empty() and db.is_basic(str(cid)):
 				stocked = str(cid)
 				host = str(id)
 	assert_true(not stocked.is_empty(), "the content stocks a basic")
+	assert_eq(db.component_tier(stocked), 1, "a basic is a tier-one piece")
 	assert_true(db.starting_blueprints().has(stocked), "a basic is a starting blueprint")
+	assert_false(db.loot_pool(1).has(stocked), "and never a find")
 	db.chassis[host]["tier"] = 3
-	assert_eq(db.component_tier(stocked), 0, "a chassis moving tier moves none of its stock")
-	db.components[stocked]["tier"] = 1
+	assert_eq(db.component_tier(stocked), 1, "a chassis moving tier moves none of its stock")
+	db.components[stocked].erase("basic")
 	assert_eq(db.component_tier(stocked), 1, "the tier is the component's own")
-	assert_false(db.starting_blueprints().has(stocked), "and above zero it is found, never started with")
+	assert_false(db.starting_blueprints().has(stocked), "and without the flag it is found, never started with")
+	assert_true(db.loot_pool(1).has(stocked), "a find of tier one")
 	for cid in db.starting_blueprints():
-		assert_eq(db.component_tier(str(cid)), 0, "%s starts the run as a basic" % cid)
+		assert_eq(db.component_tier(str(cid)), 1, "%s starts the run as a basic, tier one" % cid)
+	db = _fresh()
+	db.components[stocked]["tier"] = 2
+	assert_true(_has_error(db, "a basic is a tier-one piece"), "a basic of another tier is refused")
 
 
 func test_the_tier_rules_are_validated() -> void:
@@ -2316,10 +2328,13 @@ func test_the_tier_rules_are_validated() -> void:
 	db = _fresh()
 	var stocked := str(db.chassis[plain]["loadout"][0])
 	db.components[stocked].erase("tier")
-	assert_true(_has_error(db, "component %s: tier must be 0, 1, 2 or 3" % stocked), "a component that is not locked stores its tier")
+	assert_true(_has_error(db, "component %s: tier must be 1, 2 or 3" % stocked), "a component that is not locked stores its tier")
 	db = _fresh()
 	db.components[stocked]["tier"] = 4
-	assert_true(_has_error(db, "component %s: tier must be 0, 1, 2 or 3" % stocked), "and only 0 to 3")
+	assert_true(_has_error(db, "component %s: tier must be 1, 2 or 3" % stocked), "and only 1 to 3")
+	db = _fresh()
+	db.components[stocked]["tier"] = 0
+	assert_true(_has_error(db, "component %s: tier must be 1, 2 or 3" % stocked), "tier zero is no tier: a basic is a flag")
 	# A chassis stocks up to its own tier at tiers one and two, and a tier three to tier two (the
 	# bible's tiers row; the validator's half since 11 November), so a tier-three piece is found.
 	for own in [1, 2, 3]:
@@ -2338,8 +2353,9 @@ func test_the_tier_rules_are_validated() -> void:
 		if cap_piece.is_empty() and str(db.components[cid].get("maker", "")) == capital and not db.is_fixed(str(cid)):
 			cap_piece = str(cid)
 	assert_true(not cap_piece.is_empty(), "the capital's maker makes a component")
-	db.components[cap_piece]["tier"] = 0
-	assert_true(_has_error(db, "the capital's maker makes no basics"), "the capital's maker has no tier zero")
+	db.components[cap_piece]["tier"] = 1
+	db.components[cap_piece]["basic"] = true
+	assert_true(_has_error(db, "the capital's maker makes no basics"), "the capital's maker makes no basic")
 	for e in _fresh().validate():
 		assert_false(e.contains("tier"), "today's content keeps every tier rule: %s" % e)
 

@@ -1,5 +1,12 @@
 {
- "_about": "Chassis. Not classes: any silhouette, any component in any slot. Every number inside a fight is single digits or low tens since the stock pass's landing (22 October: hull 20 to 50 by size, shield 6 to 16, armour 0 to 2 by role; docs/rules.md; the brief retired: git show a550c2e:docs/briefs/stock_pass.md): magnitudes, not steps, any whole number. movespeed is the move in hexes, a step a hex; water costs a ground machine two and a hovercraft or a flyer one, walls (crags, mesas, towers, cliffs) are the flyer's alone, and the way of moving among traits (tracked, walker, wheeled, hover, flyer; exactly one) is the model, the footfall and a word a passive may read, never a rule (bible section 4). size is the machine's class by mass (light, medium, heavy, assault), which sets how big it is drawn on the map and in the skirmish (bible section 7). shield absorbs a blow up to its number and the excess reaches the hull; no blow of a foe's passes it. armour is taken off every blow that reaches the hull, flat, what passes a shield included, so small hits bounce off a heavy machine; it is set by role (a tank, a heavy worker, the rest), never by size. shield_regen (optional, 0 to 9, 0 when absent) is shield regained at the start of every skirmish round, before the roll, up to the maximum, beside cooling (the long wall brief, docs/briefs/long_wall_build.md 3.6: a slot no chassis fills yet). The shield is full as every fight opens and nothing returns on the map; recharge_field is gone and the validator refuses it. cooling is heat shed at the start of every skirmish turn (0 if absent): venting is a tactic, but a round of ballistics or shields is a way of cooling too. tier is the chassis's tier, 1 to 3 (bible section 10): complexity, never more power and never the maker, so any maker may field a tier three and the capital's maker fields no tier one; a run starts with tier-one chassis, and a chassis stocks only components below its own tier (each component carries its own, 0 the basics; the validator checks it). hardpoints is the number of free slots (and of hp_<n> pins on the model); module_slots is how many modules the chassis carries (bible section 10: a number of the chassis, never bought; two as a rule, three on the Clydesdale as its identifying feature; the runner may move the baseline for some or all); fixed lists the components built into the chassis (always on the die, never removed, no hardpoint used); loadout is the components fitted to the hardpoints by default, and a hardpoint left empty is an entry on the die that does nothing. Every component is one entry, so die size is fixed count plus hardpoints. passive is zero or one object: name and description are shown (the codex prints NAME: description), effects are what the engine runs, at most three, one idea (an upside and its cost count as one passive); the validator refuses effects the engine cannot execute. Shown to the player: codex (the inspect entry, combat and hangar), flavour (an in-world quote), the passive's name and description. design is internal and never shown: fantasy (pitch, inspiration, homages), niche (the role it is meant to fill), and notes only where the engine or a brief still owes something; the decisions and their reasons are the bible's.",
+ "_about": "Chassis. Not classes: any silhouette, any component in any slot. Every number inside a fight is single digits or low tens since the stock pass's landing (22 October: hull 20 to 50 by size, shield 6 to 16, armour 0 to 2 by role; docs/rules.md; the brief retired: git show a550c2e:docs/briefs/stock_pass.md): magnitudes, not steps, any whole number. movespeed is the move in hexes, a step a hex; water costs a ground machine two and a hovercraft or a flyer one, walls (crags, mesas, towers, cliffs) are the flyer's alone, and the way of moving among traits (tracked, walker, wheeled, hover, flyer; exactly one) is the model, the footfall and a word a passive may read, never a rule (bible section 4). size is the machine's class by mass (light, medium, heavy, assault), which sets how big it is drawn on the map and in the skirmish (bible section 7). shield absorbs a blow up to its number and the excess reaches the hull; no blow of a foe's passes it. armour is taken off every blow that reaches the hull, flat, what passes a shield included, so small hits bounce off a heavy machine; it is set by role (a tank, a heavy worker, the rest), never by size. shield_regen (optional, 0 to 9, 0 when absent) is shield regained at the start of every skirmish round, before the roll, up to the maximum, beside cooling (the long wall brief, docs/briefs/long_wall_build.md 3.6: a slot no chassis fills yet). The shield is full as every fight opens and nothing returns on the map; recharge_field is gone and the validator refuses it. cooling is heat shed at the start of every skirmish turn (0 if absent): venting is a tactic, but a round of ballistics or shields is a way of cooling too. tier is the chassis's tier, 1 to 3 (bible section 10): complexity, never more power and never the maker, so any maker may field a tier three and the capital's maker fields no tier one; a run starts with tier-one chassis, and a chassis stocks components up to its own tier, a tier three up to tier two (each component carries its own, 1 to 3, a basic a tier-one piece with its flag; the validator checks it). hardpoints is the number of free slots (and of hp_<n> pins on the model); module_slots is how many modules the chassis carries (bible section 10: a number of the chassis, never bought; two as a rule, three on the Clydesdale as its identifying feature; the runner may move the baseline for some or all); fixed lists the components built into the chassis (always on the die, never removed, no hardpoint used); loadout is the components fitted to the hardpoints by default, and a hardpoint left empty is an entry on the die that does nothing. Every component is one entry, so die size is fixed count plus hardpoints. passive is zero or one object: name and description are shown (the codex prints NAME: description), effects are what the engine runs, at most three, one idea (an upside and its cost count as one passive); the validator refuses effects the engine cannot execute. Shown to the player: codex (the inspect entry, combat and hangar), flavour (an in-world quote), the passive's name and description. design is internal and never shown: fantasy (pitch, inspiration, homages), niche (the role it is meant to fill), and notes only where the engine or a brief still owes something; the decisions and their reasons are the bible's.",
+ "tier_lift": {
+  "_about": "What an upgrade buys a machine, a tier at a time (the bible's tiers row), its branch's pick coming with it as the choice. One standard lift of the stat lines for every chassis for now, placeholders (Ryan, 20 November: \"the placeholders can be standard lifts for every chassis for now. After we have scaling in place, we can adjust individual lifts to add character\"). No locked piece's number rises with the tier (Ryan, 20 November: \"My hope is that they scale with either the upgrades, or with the kit. Maybe some need numbers automatically but that will be a case-by-case assesment\"). The foes' line sizes tiers two and three, and these with them.",
+  "stats": {
+   "hull": 4,
+   "shield": 2
+  }
+ },
  "makers": [
   {
    "id": "minerva",
@@ -74,23 +81,127 @@
    "passive": {
     "id": "ore_hopper",
     "name": "Ore Hopper",
-    "description": "Every foe its weapons damage puts a load in its hopper, up to four. Every two loads held are a stack of Armoured, granted as each round opens.",
+    "description": "Damaging a foe grants one stack of Ore (max 3). At 3, base armour increases by 1.",
     "effects": [
      {
       "trigger": "static",
       "effect": "fill_hopper",
       "value": 1,
-      "cap": 4
+      "cap": 3
      },
      {
       "trigger": "static",
       "effect": "hopper_plate",
       "value": 1,
-      "per": 2
+      "at": 3,
+      "slot": "plate"
      }
     ]
    },
-   "flavour": "Hey Russ, ain't that yer Badger over there, covered in demon innards? I thought they retired the ol' girl!"
+   "flavour": "Hey Russ, ain't that yer Badger over there, covered in demon innards? I thought they retired the ol' girl!",
+   "branches": [
+    {
+     "id": "miner",
+     "name": "Miner",
+     "design": {
+      "notes": "Ryan, 20 November: \"Miner 1 - Chainsaw claw gains Penetrate. Ore max +1. Each point of ore past 3 grants an additional +1 armour. Miner 2 - Chainsaw claw gains Brittle 2, and can be used twice a turn. Ore max +2.\" Penetrate 2 (\"2s all around\"). Twice a turn, \"two independent uses a turn. Its a tempo play, if the player can find the claw again\": the session's reading, its first spend each turn Instant, the die rolling again, itself included."
+     },
+     "steps": [
+      {
+       "description": "Chainsaw Claw gains Penetrate 2. Ore max +1. Each point of Ore past 3 grants an additional +1 armour.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "grant_keyword",
+         "value": "penetrate",
+         "number": 2,
+         "entry": "chainsaw_claw"
+        },
+        {
+         "trigger": "static",
+         "effect": "hopper_max",
+         "value": 1
+        },
+        {
+         "trigger": "static",
+         "effect": "hopper_plate",
+         "value": 1,
+         "at": 3,
+         "past": 1,
+         "slot": "plate"
+        }
+       ]
+      },
+      {
+       "description": "Chainsaw Claw gains Brittle 2, and can be used twice a turn. Ore max +2.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "grant_keyword",
+         "value": "brittle",
+         "number": 2,
+         "entry": "chainsaw_claw"
+        },
+        {
+         "trigger": "static",
+         "effect": "grant_keyword",
+         "value": "instant",
+         "entry": "chainsaw_claw",
+         "once": "round"
+        },
+        {
+         "trigger": "static",
+         "effect": "hopper_max",
+         "value": 2
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "smelter",
+     "name": "Smelter",
+     "design": {
+      "notes": "Ryan, 20 November: \"Smelter 1 - Fragmenter gains Spread. Ore max +1. Smelter 2 - Fragmenter gains Ablate 1. Ore max +3.\" Spread 2 (\"2s all around\"). \"Smelter 2 is a LOT of potential ablate on a spread, but thats a long slog to get 7 stacks and then wait for 7 ablate to tick down, so its a real long game chase.\" \"The main tuning lever in my design here is Ore stacks.\""
+     },
+     "steps": [
+      {
+       "description": "Bullion Fragmenter gains Spread 2. Ore max +1.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "grant_keyword",
+         "value": "cleave",
+         "number": 2,
+         "entry": "bullion_fragmenter"
+        },
+        {
+         "trigger": "static",
+         "effect": "hopper_max",
+         "value": 1
+        }
+       ]
+      },
+      {
+       "description": "Bullion Fragmenter gains Ablate 1. Ore max +3.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "grant_keyword",
+         "value": "ablate",
+         "number": 1,
+         "entry": "bullion_fragmenter"
+        },
+        {
+         "trigger": "static",
+         "effect": "hopper_max",
+         "value": 3
+        }
+       ]
+      }
+     ]
+    }
+   ]
   },
   {
    "id": "clydesdale",
@@ -317,7 +428,7 @@
    "heat_max": 12,
    "hardpoints": 5,
    "module_slots": 2,
-   "armour": 2,
+   "armour": 1,
    "traits": [
     "tracked"
    ],
@@ -428,7 +539,7 @@
    "passive": {
     "id": "track_dispersing_tyres",
     "name": "Track-Dispersing Tyres",
-    "description": "Treads cut to scuff out their own trail as they roll. No hunter ever picks the Prairie Dog as its prey, and a foe carrying Brittle hits it 1 lighter.",
+    "description": "Cannot be Hunted on the map. Hits from Brittle foes deal -1 damage.",
     "effects": [
      {
       "trigger": "static",
@@ -444,7 +555,99 @@
      }
     ]
    },
-   "flavour": ""
+   "flavour": "",
+   "branches": [
+    {
+     "id": "flakker",
+     "name": "Flakker",
+     "design": {
+      "notes": "Ryan, 20 November: \"Flakker 1 - Strikes on a Brittle foe are Rapid.\" changed the same day to \"The first strike from this machine on a Brittle foe each turn is Rapid\" (\"I forgot that rapid guaranteed an active face\"); a weapon's spend, its own. \"Flakker 2 - Flakshot Spreader -> Flakshot Disperser: Indirect, 4 Brittle, spread, penetrate\", no cooldown (\"They do not keep the cooldown\")."
+     },
+     "steps": [
+      {
+       "description": "The first strike from this machine on a Brittle foe each turn is Rapid.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "grant_keyword",
+         "value": "rapid",
+         "when": "target_status",
+         "status": "brittled",
+         "weapon_only": true,
+         "once": "round"
+        }
+       ]
+      },
+      {
+       "description": "Flakshot Spreader becomes the Flakshot Disperser: Indirect, Brittle 4, Spread, Penetrate.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "piece_form",
+         "entry": "flakshot_repeater",
+         "name": "Flakshot Disperser",
+         "face": {
+          "kind": "attack",
+          "reach": "indirect",
+          "power": 0,
+          "keywords": [
+           "brittle",
+           "cleave",
+           "penetrate"
+          ],
+          "brittle": 4,
+          "heat": 3
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "harrier",
+     "name": "Harrier",
+     "design": {
+      "notes": "Ryan, 20 November: \"Harrier 1 - Weapon strikes count Brittle twice.\" made \"This machine's weapon strikes count Brittle twice.\" \"Harrier 2 - Flakshot Spreader -> Flakshot Repeater: Direct, 1x3 damage, 1 brittle, spread\", Spread 1, no cooldown. \"Weaker early, stronger late.\""
+     },
+     "steps": [
+      {
+       "description": "This machine's weapon strikes count Brittle twice.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "count_status",
+         "value": "brittled",
+         "times": 2
+        }
+       ]
+      },
+      {
+       "description": "Flakshot Spreader becomes the Flakshot Repeater: Direct, 1×3, Brittle 1, Spread 1.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "piece_form",
+         "entry": "flakshot_repeater",
+         "name": "Flakshot Repeater",
+         "face": {
+          "kind": "attack",
+          "reach": "direct",
+          "power": 1,
+          "strikes": 3,
+          "keywords": [
+           "brittle",
+           "cleave"
+          ],
+          "brittle": 1,
+          "cleave": 1,
+          "heat": 3
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ]
   },
   {
    "id": "dingo",

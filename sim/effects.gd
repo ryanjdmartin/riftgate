@@ -51,7 +51,7 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "reboot_release", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_plate", "hold_status", "self_status", "shield_zap", "add_power", "offhand", "side_strike", "strike_again", "buff_status"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "reboot_release", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_max", "hopper_plate", "count_status", "piece_form", "hold_status", "self_status", "shield_zap", "add_power", "offhand", "side_strike", "strike_again", "buff_status"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
 	"on_blocked": ["stack_status"],
@@ -325,13 +325,17 @@ const STATUS := {
 		"tags": ["buff"], "effects": []},
 	"appropriated": {"id": "appropriated", "name": "Appropriated", "description": "The number of the piece it took off a machine: its borrowed swing lands it, and spends it.", "decay": "none", "stacking": "renew", "counted": true,
 		"tags": ["ability"], "effects": []},
-	# The Honey Badger's hopper (Ryan, 11 October; its Ore Hopper since 31 October): loads every
-	# foe its weapons damage puts in, which the Bullion Fragmenter fires a few a shot. A store on
-	# the machine with no effect of its own (the weapon that fires it reads it, and what the loads
-	# are worth is granted as Armoured, plate_round); it lasts the skirmish, never decays, and
+	# The Honey Badger's hopper (Ryan, 11 October; its Ore since 20 November): the Ore every foe
+	# its weapons damage puts in, which the Bullion Fragmenter empties for a strike an Ore. A store
+	# on the machine with no effect of its own (the weapon that empties it reads it, and what the
+	# Ore is worth is the Ore chip's armour, _plate); it lasts the skirmish, never decays, and
 	# nothing cleanses it.
-	"hopper": {"id": "hopper", "name": "Hopper", "description": "Loads in the hopper, for a weapon that fires it.", "decay": "none",
+	"hopper": {"id": "hopper", "name": "Ore", "description": "Ore in the hopper, for a weapon that empties it.", "decay": "none",
 		"tags": ["store"], "effects": []},
+	# What the Ore is worth (Ryan, 20 November: "represented as an Ore ability chip"): armour, a
+	# point a stack, an Ability no Purge touches, its stacks set from the Ore held (_plate).
+	"ore_plate": {"id": "ore_plate", "name": "Ore", "description": "Armour from the Ore in its hopper, a point a stack.", "decay": "none", "counted": true,
+		"tags": ["ability"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
 	# The Polar Bear's seal (Ryan's go, 20 October; the form-changing tank of his 15 October
 	# framework): a shield it spends on itself seals it, a vent or a weapon opens it.
 	# One chip while sealed, carrying the armour its Lockdown grants (sealed_status builds it
@@ -788,8 +792,6 @@ static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1
 		return held
 	var id := str(passive.get("id", ""))
 	for m in u.modifiers:
-		if m.source == HOPPER_PLATE:
-			continue   # the hopper's grant of Armoured stays its own (_plate), so the loads fired take back only what it gave
 		if m.id == id and m.scope == scope and (scope != ROUNDS or m.expires_round == expires_round):
 			m.stacks += n
 			_record(u, m, n)
@@ -1248,6 +1250,8 @@ static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionar
 	var entry := str(eff.get("entry", ""))
 	if not entry.is_empty() and (face == null or face.component != entry):
 		return false
+	if bool(eff.get("weapon_only", false)) and (face == null or not face.is_weapon()):
+		return false   # the machine's weapons alone (the Prairie Dog's Flakker step: "The first strike")
 	match str(eff.get("when", "")):
 		"":
 			return true
@@ -1322,6 +1326,8 @@ static func _taking_part(u, trigger: String, face: Face, target = null, ctx: Dic
 			var name := str(eff.get("effect", ""))
 			if not _usable(u, m, name) or not _holds(u, eff, face, target, ctx):
 				continue
+			if trigger == "static" and str(eff.get("once", "")) == "round" and _once_marked(u, m, eff):
+				continue   # held once a round, and taken already this one (mark_once)
 			var slot := str(eff.get("slot", ""))
 			if not slot.is_empty():
 				if slotted.has(slot):
@@ -1450,12 +1456,52 @@ static func damage_taken(u, amount: int, source = null, weapon: bool = false, ai
 		if bool(eff.get("aimed_only", false)) and not (aimed and weapon):
 			continue   # Shocked (29 October): read by a weapon's strike aimed at the unit, nothing else
 		var n: int = pair[1].stacks
+		if weapon and source != null and source.get("modifiers") != null:
+			n *= status_weight(source, (pair[1] as Modifier).id)   # its striker counts the status more (the Prairie Dog's Harrier: Brittle twice)
 		match str(eff.get("effect", "")):
 			"add_damage_taken":
 				add += float(eff.get("value", 0)) * n
 			"multiply_damage_taken":
 				mult *= pow(float(eff.get("value", 1)), n)
 	return maxi(0, int(roundf((amount + add) * mult)))
+
+
+## How many times this unit's weapon strikes count each stack of `status_id` on what they hit
+## (count_status, static: the Prairie Dog's Harrier step, Ryan, 20 November: "This machine's
+## weapon strikes count Brittle twice"): the most a live effect says, 1 when none does.
+static func status_weight(u, status_id: String) -> int:
+	var n := 1
+	for pair in _taking_part(u, "static", null):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) == "count_status" and str(eff.get("value", "")) == status_id:
+			n = maxi(n, int(eff.get("times", 1)))
+	return n
+
+
+## The effects a spend takes that hold once a round (`once`: "round"; the Honey Badger's Claw Instant the
+## first time each turn, the Prairie Dog's first weapon strike on a Brittle foe Rapid, Ryan, 20
+## November), read as the spend is aimed, before it lays anything; `face` is the entry as
+## rewritten, `target` the foe it is aimed at. mark_once spends them for the round.
+static func once_taken(u, face: Face, target = null) -> Array:
+	var out: Array = []
+	for pair in _taking_part(u, "static", face, target):
+		if str(pair[0].get("once", "")) == "round":
+			out.append(pair)
+	return out
+
+
+static func mark_once(u, taken: Array) -> void:
+	for pair in taken:
+		_once(u, pair[1], pair[0])
+
+
+## Has this static effect of modifier `m` been taken this round (_once's mark stands)?
+static func _once_marked(u, m, eff: Dictionary) -> bool:
+	var mark := "once:%s:%s:%d" % [str(m.id), str(eff.get("trigger", "")), (m.effects as Array).find(eff)]
+	for held in u.modifiers:
+		if held.id == mark:
+			return true
+	return false
 
 
 ## A component's reach as it is right now: its own, unless a live set_reach holds. Static
@@ -1663,9 +1709,10 @@ static func steps_on(u, face: Face) -> int:
 static func upgraded_face(u, face: Face) -> Face:
 	var named := entry_name(u, face)
 	var buff_to := buff_rewrite(u, face)
-	if named.is_empty() and buff_to.is_empty():
+	var formed := piece_form(u, face)   # a step that remakes the piece whole (the Prairie Dog's Disperser)
+	if named.is_empty() and buff_to.is_empty() and formed == face:
 		return face
-	var c := face.duplicate_face()
+	var c := formed.duplicate_face() if formed != face else face.duplicate_face()
 	c.renamed = named
 	if not buff_to.is_empty():
 		c.buff_status = buff_to
@@ -1847,7 +1894,9 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	var added := added_numbers(u, base, target)   # a grant adding to a numbered keyword's own (the Beam Bazooka's Spread 2 on a Spread gun)
 	var buff_to := buff_rewrite(u, base)   # a branch's status in the piece's own's place (the Aile Booster's Blitzer)
 	var named := entry_name(u, base)   # the name a branch's step gives the piece (the Aile Blitzer)
-	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not spills and not regranted and more == 0 and added.is_empty() and buff_to.is_empty() and named.is_empty():
+	# A weapon that empties the hopper strikes once for every Ore it holds (the Bullion Fragmenter).
+	var ore := stacks_of(u, "hopper") if base.empties_hopper else -1
+	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not spills and not regranted and more == 0 and added.is_empty() and buff_to.is_empty() and named.is_empty() and ore < 0:
 		return face
 	var c := base.duplicate_face() if base == face else base
 	c.reach = r
@@ -1886,6 +1935,8 @@ static func effective_face(u, face: Face, target = null) -> Face:
 		c.self_statuses = grants
 	if more != 0:
 		c.power = maxi(0, c.power + more)
+	if ore >= 0:
+		c.strikes = maxi(1, ore) * (c.split if c.split > 1 else 1)
 	return c
 
 
@@ -1926,6 +1977,7 @@ static func grants_spill(u, face: Face, target = null) -> bool:
 ## the rewrite's, one blow, its tag added, and its keywords, rules and other tags kept. Any
 ## other entry, or none, is the face itself. Read first, under every other passive's change.
 static func rewritten(u, face: Face) -> Face:
+	face = piece_form(u, face)
 	if face == null or not face.is_attack():
 		return face
 	# Read alone, never through every static effect's gate: a reach condition asks the reach,
@@ -1938,6 +1990,31 @@ static func rewritten(u, face: Face) -> Face:
 				continue
 			return _rewrite(face, eff)
 	return face
+
+
+## The piece as a branch's step remakes it whole (piece_form, static, scoped to its piece by
+## `entry`, its new entry in `face`: the Prairie Dog's Flakshot Spreader as its Disperser or its
+## Repeater, Ryan, 20 November), the latest grant's; the piece itself when none holds. The die
+## keeps the piece as printed; the entry as spent, read and shown is the form.
+static func piece_form(u, face: Face) -> Face:
+	if face == null or face.component.is_empty() or face.kind == Face.Kind.BLANK:
+		return face
+	var best: Dictionary = {}
+	var seq := -1
+	for m in live(u):
+		for eff in m.effects:
+			if str(eff.get("trigger", "")) != "static" or str(eff.get("effect", "")) != "piece_form" or str(eff.get("entry", "")) != face.component:
+				continue
+			if eff.get("face") is Dictionary and m.seq > seq:
+				seq = m.seq
+				best = eff["face"]
+	if best.is_empty():
+		return face
+	var c := Face.from_dict(best)
+	c.component = face.component
+	c.fixed = face.fixed
+	c.tags = face.tags.duplicate()
+	return c
 
 
 ## The drum's shot from a weapon or a debuff and the rewrite that fires it.
@@ -2296,20 +2373,30 @@ static func banked(u, id: String) -> int:
 
 ## The most stacks of a store a live passive lets this machine bank (stack_status's cap, any
 ## trigger; the Nemesis's rage, five, Ryan, 22 October), 0 when nothing caps it: the boxes of
-## its bar under the heat.
+## its bar under the heat. The hopper's is its fill's cap and every raise of it a live effect
+## grants (hopper_max, summed: the Honey Badger's branches, Ryan, 20 November, "Ore max +1",
+## worded "+" so it is cumulative).
 static func store_cap(u, id: String) -> int:
+	if id == "hopper":
+		var cap := 0
+		var more := 0
+		for m in live(u):
+			for eff in m.effects:
+				if str(eff.get("effect", "")) == "fill_hopper" and int(eff.get("cap", 0)) > 0:
+					cap = maxi(cap, int(eff["cap"]))
+				elif str(eff.get("effect", "")) == "hopper_max":
+					more += int(eff.get("value", 0)) * int(m.stacks)
+		return cap + more if cap > 0 else 0
 	for m in live(u):
 		for eff in m.effects:
 			if str(eff.get("effect", "")) == "stack_status" and str(eff.get("value", "")) == id and int(eff.get("cap", 0)) > 0:
 				return int(eff["cap"])
-			if id == "hopper" and str(eff.get("effect", "")) == "fill_hopper" and int(eff.get("cap", 0)) > 0:
-				return int(eff["cap"])
 	return 0
 
 
-## The loads each foe its weapons damage puts in this machine's hopper (fill_hopper, static: the
-## Honey Badger's Ore Hopper, Ryan, 31 October: "per foe damaged"), 0 when nothing fills it. A
-## weapon that fills the hopper itself (the Chainsaw Claw's two) reads its own number instead.
+## The Ore each foe its weapons damage puts in this machine's hopper (fill_hopper, static: the
+## Honey Badger's Ore Hopper, Ryan, 20 November: "Any weapon, only on Damage, not just strike"),
+## 0 when nothing fills it. A weapon that empties the hopper puts none in.
 static func hopper_fill(u) -> int:
 	var n := 0
 	for pair in _taking_part(u, "static", null):
@@ -2318,99 +2405,60 @@ static func hopper_fill(u) -> int:
 	return n
 
 
-## The armour `loads` in this machine's hopper are worth (hopper_plate, static: `value` for each
-## `per` loads held; a point a load, Ryan, 31 October), the loads it holds when none are given;
-## 0 when nothing plates it.
+## The armour `loads` of Ore in this machine's hopper are worth (hopper_plate, static: `value` once
+## it holds `at`, and `past` more for every Ore past `at`; the Ore Hopper's 1 at 3, its Miner step's
+## 1 more for each past 3, Ryan, 20 November), the Ore it holds when none is given; 0 when nothing
+## plates it. A step that names the passive's slot stands in its place.
 static func hopper_plate(u, loads: int = -1) -> int:
 	var held := stacks_of(u, "hopper") if loads < 0 else loads
 	var n := 0
 	for pair in _taking_part(u, "static", null):
 		var eff: Dictionary = pair[0]
-		if str(eff.get("effect", "")) == "hopper_plate":
-			n += int(eff.get("value", 0)) * int(pair[1].stacks) * int(held / maxi(1, int(eff.get("per", 1))))
+		if str(eff.get("effect", "")) != "hopper_plate":
+			continue
+		var at := maxi(1, int(eff.get("at", 1)))
+		if held >= at:
+			n += (int(eff.get("value", 0)) + int(eff.get("past", 0)) * (held - at)) * int(pair[1].stacks)
 	return n
 
 
-## Loads into the hopper, never past its cap, and the hopper's Armoured moved by what the
-## change is worth (_plate). Returns how many went in.
+## Ore into the hopper, never past its cap, and its armour moved with it (_plate). Returns how
+## much went in.
 static func add_loads(u, n: int) -> int:
 	var cap := store_cap(u, "hopper")
 	if cap > 0:
 		n = mini(n, cap - banked(u, "hopper"))
 	if n <= 0:
 		return 0
-	var worth := hopper_plate(u)
 	stack(u, STATUS["hopper"], SKIRMISH, "mech", n, DECAY_NONE)
-	_plate(u, hopper_plate(u) - worth)
+	_plate(u)
 	return n
 
 
-## Loads fired out of the hopper, and the hopper's Armoured brought down by what they were
-## worth. Returns how many.
+## The hopper emptied (the Bullion Fragmenter), its armour going with the Ore. Returns how much.
 static func spend_loads(u, n: int) -> int:
-	var worth := hopper_plate(u)
 	var spent := spend_stacks(u, "hopper", n)
-	_plate(u, hopper_plate(u) - worth)
+	_plate(u)
 	return spent
 
 
-## What the hopper's loads are worth is the game's Armoured, granted by the hopper (Ryan, 10
-## November: "The funnel fill is tracked by the resource bar. The buff he gets from it is
-## Armoured, not an ability. Its purgeable, but returns at the start of his turn since its
-## granted by the funnel bar"; an ability of its own, the Ore Plate, from 8 November until then).
-## A buff like any Armoured: a Purge strips it, and it goes whole as its machine's turn starts,
-## as every machine's Armoured does. The hopper grants it again as each round opens, to what the loads
-## held are worth (plate_round), and between rounds it follows the loads by the change in their
-## worth alone (_plate), so a load gained after a Purge brings back only its own point and the
-## rest waits for the machine's next turn. The loads are the store's, on the resource bar, and
-## no Purge touches them.
-const HOPPER_PLATE := "store:hopper"   # the source its grant of Armoured carries
-
-
-## The stacks of Armoured the hopper's own grant holds now.
-static func plated(u) -> int:
-	var n := 0
+## What the Ore is worth is armour, an Ability of the machine's (Ryan, 20 November: "It's no longer
+## cleansable, represented as an Ore ability chip"; in place of the Armoured the hopper granted
+## from 10 November): the Ore chip, its stacks the armour, set the moment the Ore moves, so it
+## lands as the Ore that earns it lands and goes as the hopper empties. No Purge touches it.
+static func _plate(u) -> void:
+	var want := hopper_plate(u)
 	for m in u.modifiers:
-		if m.id == "braced" and m.source == HOPPER_PLATE:
-			n += m.stacks
-	return n
-
-
-## The round opens: the hopper grants its Armoured afresh, up to what its loads are worth.
-## Returns the stacks it granted.
-static func plate_round(u) -> int:
-	var short := hopper_plate(u) - plated(u)
-	if short > 0:
-		_plate(u, short)
-	return maxi(0, short)
-
-
-## The hopper's grant of Armoured moved by `change` stacks: more as a stack of its own, gone as
-## the next round opens like any Armoured on a machine; fewer off its own grant alone, as far as that
-## still stands (a Purge may have taken it already), never off another source's Armoured.
-static func _plate(u, change: int) -> void:
-	if change > 0:
-		var def: Dictionary = STATUS["braced"]
-		# A grant of its own, never merged into another source's Armoured, so loads fired take
-		# back only what the hopper gave.
-		for m in u.modifiers:
-			if m.id == "braced" and m.source == HOPPER_PLATE:
-				m.stacks += change
-				_record(u, m, change)
-				return
-		var m := make(def, SKIRMISH, HOPPER_PLATE)
+		if m.id == "ore_plate":
+			m.stacks = want
+			break
+	u.modifiers = u.modifiers.filter(func(m) -> bool: return not (m.id == "ore_plate" and m.stacks <= 0))
+	if want > 0 and stacks_of(u, "ore_plate") <= 0:
+		var m := make(STATUS["ore_plate"], SKIRMISH, "store:hopper")
 		if m != null:
-			m.stacks = change
-			m.decay = status_decay(def)
+			m.stacks = want
+			m.decay = DECAY_NONE
 			grant(u, m)
-	elif change < 0:
-		var left := -change
-		for m in u.modifiers:
-			if m.id == "braced" and m.source == HOPPER_PLATE and left > 0:
-				var take := mini(m.stacks, left)
-				m.stacks -= take
-				left -= take
-		u.modifiers = u.modifiers.filter(func(m) -> bool: return not (m.id == "braced" and m.source == HOPPER_PLATE and m.stacks <= 0))
 
 
 ## Free rerolls of this machine's own die each round, on top of the team's (free_reroll,
@@ -3017,10 +3065,12 @@ static func effect_text(eff: Dictionary) -> String:
 		"carry": body = "the machines beside it on the map travel with it when it moves"
 		"forge": body = "its weapons spend ammo instead of heating it, 1 for every %d heat, its magazine %s, opening at %d and gaining %d a round" % [int(eff.get("per_heat", 10)), vs, int(eff.get("start", 0)), int(eff.get("per_round", 0))]
 		"muster": body = "every die that rolls fills its Muster a point, %s a charge, a kill by its own guns %d more, up to %d charges" % [vs, int(eff.get("kill", 0)), int(eff.get("cap", 3))]
-		"fill_hopper": body = "every foe its weapons damage puts %s in its hopper, up to %d" % ["a load" if vs == "1" else vs + " loads", int(eff.get("cap", 0))]
+		"fill_hopper": body = "damaging a foe grants %s, up to %d" % ["one Ore" if vs == "1" else vs + " Ore", int(eff.get("cap", 0))]
+		"hopper_max": body = "Ore max +%s" % vs
 		"hopper_plate":
-			var per := int(eff.get("per", 1))
-			body = ("each load held grants %s of Armoured as each round opens" if per <= 1 else "every %d loads held grant %%s of Armoured as each round opens" % per) % ("a stack" if vs == "1" else vs + " stacks")
+			body = "at %d Ore, armour +%s" % [int(eff.get("at", 1)), vs]
+			if int(eff.get("past", 0)) > 0:
+				body += ", and +%d for each Ore past %d" % [int(eff["past"]), int(eff.get("at", 1))]
 		"add_damage": body = "damage %s" % signed
 		"min_damage": body = "damage at least %s" % vs
 		"multiply_heat": body = "heat ×%s" % vs

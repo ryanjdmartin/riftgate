@@ -52,7 +52,10 @@ document's job and every command are in `README.md`.
   and `claude/laughing-gates-p2633f` (the summon texts with no pool, the Text tab's target
   words) the same day on his "Ok merge in", and `ccr-64b5deec-lunnff` (the Macaque, the line
   frame until its naming: its model, its kit and the offhand's engines, the strike order, the
-  upgrade chevrons, the models' texture copies' test) the same day on his "Send it to Main". A
+  upgrade chevrons, the models' texture copies' test) the same day on his "Send it to Main", and
+  `claude/locked-footing` (a basic a flag on tier one, a machine's tier and the upgrade verb, the
+  Honey Badger's Ore and the Prairie Dog's Spreader with their branches) on 20 November on his
+  "make sure we're cleaned up and merged in". A
   session's hangar publish runs ahead of main (Pages).
   Every other branch on GitHub but the lines' own working branches is merged and to delete
   (`git push origin --delete`, then `git fetch --prune`); a cloud session may not delete one.
@@ -65,8 +68,8 @@ document's job and every command are in `README.md`.
   7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
   out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
   after each.
-- Tests: 1395 tests, 388,931 checks, green (20 November, a piece's templates on its hangar
-  sheet). The runner fails a run
+- Tests: 1402 tests, 389,042 checks, green (20 November, a piece's templates on its hangar sheet, over the
+  locked pieces' footing). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -81,7 +84,7 @@ document's job and every command are in `README.md`.
   (`tools/lowforge/tiles/`) too: restore those. Screenshots there need `xvfb-run -a` and
   `--rendering-method gl_compatibility`; models build with `BPY_PYTHON` set to a python3.11
   venv holding `bpy==5.0.1`.
-- Saves: the battle's version is 40, the run's 33 and the quick run's 16 (`sim/save.gd`). A
+- Saves: the battle's version is 42, the run's 34 and the quick run's 17 (`sim/save.gd`). A
   save from an older version is set aside, so a change to what a save holds moves its version.
 
 ## How things stand
@@ -132,11 +135,22 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Retribution Thurible, the Solar Flare Array, the Mole's Inertia Drill); 20 modules. A stock die is basics beside its
   locked pieces: the basic guns deal 3 for 4 heat and the Laser Carbine 4 for 5, the Halo
   Projector lays a Barrier and the Shoring Jack Armoured 2, and every piece that grants a
-  Barrier sits out a round after. A machine moves 3 to 6 hexes. A machine holds a tier, and
-  an upgrade branch is a passive scoped to a locked piece, or a step on the passive where its
+  Barrier sits out a round after. A machine moves 3 to 6 hexes. A basic is a tier-one piece with
+  a flag (its blueprint a run's from the start), never a find. A machine holds a tier, its
+  chassis's as it arrives, bought up between battles once the Convergence opens the next (the
+  campaign for `UPGRADE_PRICE` salvage, a placeholder; the quick campaign free): each tier one
+  standard lift of its stat lines for every chassis for now (`tier_lift`, hull 4 and shield 2,
+  placeholders the foes' line sizes; no locked piece's number rises with the tier, Ryan: "they
+  scale with either the upgrades, or with the kit"), a passive sourced "tier", its branch's pick
+  with it. No
+  screen buys one yet; the campaign runner's plain player buys each as it opens. An
+  upgrade branch is a passive scoped to a locked piece, or a step on the passive where its
   numbers warrant one (the rules' Branches; `docs/locked_pieces_proposal.md`; the bible's
   locked and tiers rows): the Storm Petrel carries the first two, the Buzzard two more, the
-  harness's UPG line fields a build, and a run buys none yet. A step may tweak as many pieces as
+  Honey Badger (Miner, Smelter) and the Prairie Dog (Flakker, Harrier) theirs from Ryan's kits of
+  20 November (the Badger's Ore, the Spreader; a grant held once a round, a piece remade whole and
+  a strike counting Brittle twice the engine they brought), the
+  harness's UPG line fields a build at the tier its picks make. A step may tweak as many pieces as
   it needs (Ryan, 19 November); the Macaque's second steps touch its offhand and its Aile
   Booster. An upgraded piece wears a chevron a step under its place, on the die and down the
   codex, and takes the name its step gives it (the Aile Blitzer); `RIFTGATE_TEAM` fields picks
@@ -171,7 +185,7 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   (the refit brief's section 13); the six certain ones are the Honey Badger, the Skua, the
   Storm Petrel, the Prairie Dog, the Cassowary and the Cottonmouth, and Minerva's four are his
   (16 November: the Honey Badger, the Wild Boar, the Mole and the lure tank), so the Polar
-  Bear is tier two in content and the Wild Boar tier one, its numbers still its tier two's. The designs still to come
+  Bear is tier two in content and the Wild Boar tier one, its numbers still its tier two's but its armour 1 (Ryan, 20 November: "the Boar at tier 1 needs base armour 1, not 2"). The designs still to come
   are briefs: `docs/briefs/README.md` says what each waits on.
 - **The numbers.** Tier one alone is tuned (Ryan, 11 November), on the baseline: the second
   battle, four tier ones against a tier-one rift, a fight read at its rating (a flanker one

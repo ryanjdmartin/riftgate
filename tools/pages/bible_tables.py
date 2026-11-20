@@ -32,7 +32,7 @@ END = "<!-- bible-tables:end -->"
 COMPONENT_KEYWORDS = {"ablate": [("ablating", "foe")], "shock": [("shocked", "foe")],
                       "suppress": [("suppressed", "foe"), ("numbed", "foe")],
                       "cryo": [("cryoed", "foe")], "brittle": [("brittled", "foe")], "expose": [("exposure", "foe")]}
-FACE_FIELDS = {"braces": "braced", "fills_hopper": "hopper",
+FACE_FIELDS = {"braces": "braced",
                "holds_all": "essence_flare"}   # the Quintessence Tap's hold on Empowered, a buff on its machine (Essence Flare, 15 November)
 FACE_FIELDS_ON_FOES = {"webs": ["webbed", "suppressed", "numbed"]}   # the Web Bomb's own rule; the Syrinx Drone's status went with the slot mines (9 November), the Contractor's Expose is its keyword
 PASSIVE_EFFECTS = {"seal_form": ("sealed", "machine"),
@@ -64,7 +64,7 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("consumes", "Consumes", lambda f: bool(f.get("consumes")) or bool(f.get("spends"))),   # a weapon's on its target, or equipment's of its own machine's count (the Quintessence Tap)
            ("self_ablate", "Ablates its firer", lambda f: int(f.get("self_ablate", 0) or 0) > 0),
            ("ignores_armour", "Ignores armour", lambda f: bool(f.get("ignores_armour"))),
-           ("hopper_property", "The hopper", lambda f: int(f.get("fills_hopper", 0)) > 0 or int(f.get("fires_hopper", 0)) > 0),
+           ("hopper_property", "The hopper", lambda f: bool(f.get("empties_hopper"))),
            ("brace_property", "Braces", lambda f: int(f.get("braces", 0)) > 0),
            ("swap", "Swap", lambda f: bool(f.get("swaps"))),
            ("webbed", "Web Bomb", lambda f: bool(f.get("webs"))),   # the piece's own rule: the mark it leaves says it

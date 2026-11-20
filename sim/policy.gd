@@ -1287,9 +1287,9 @@ func hopper_fill_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Fo
 	var per_shot := 0
 	for e in ms.die.faces:
 		var ef := Effects.effective_face(ms.unit, e)
-		if ef.fires_hopper > 0 and ef.power_per_load > per_load:
-			per_load = ef.power_per_load
-			per_shot = ef.fires_hopper
+		if ef.empties_hopper and ef.power > per_load:
+			per_load = ef.power   # a strike more of the entry that empties it (the Bullion Fragmenter)
+			per_shot = maxi(1, Effects.store_cap(ms.unit, "hopper"))
 	var have := Effects.stacks_of(ms.unit, "hopper") if held < 0 else held
 	var cap := Effects.store_cap(ms.unit, "hopper")
 	var room := cap - have if cap > 0 else per_shot * 2 - have
@@ -1458,7 +1458,6 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 		rolls.append(f.power)
 	var fired := Skirmish.heat_bonus(ms, f)   # what the heat it fires adds
 	fired += Skirmish.shield_bonus(ms, f)   # what the shield it fires adds (the Shield-burner Cannon's)
-	fired += Skirmish.hopper_bonus(ms.unit, f)   # and what the loads it fires add
 	var zap := Skirmish.zap_ready(ms, f)   # the Buzzard's zap, where Empowered's add goes, when its shield pays
 	var zctx := {"zap": zap} if zap > 0 else {}
 	# The foe's own reads (the blow's order, 28 October): its missing hull on every blow, and the
@@ -2573,7 +2572,7 @@ static func _widest(sk: Skirmish, areas: Array) -> float:
 ## that foe: the shape's number with what the entry prints from its firer (heat fired, the
 ## hopper), a split's halving of that base, through its machine's modifiers with no foe in hand.
 static func _area_mean(m: Skirmish.MechState, f: Face, shape: int) -> float:
-	var n := Skirmish.split_share(Skirmish.area_number(f, shape) + Skirmish.heat_bonus(m, f) + Skirmish.shield_bonus(m, f) + Skirmish.hopper_bonus(m.unit, f), f.split)
+	var n := Skirmish.split_share(Skirmish.area_number(f, shape) + Skirmish.heat_bonus(m, f) + Skirmish.shield_bonus(m, f), f.split)
 	var zap := Skirmish.zap_ready(m, f)
 	return float(Effects.attack(m.unit, f, n, 0, null, {"zap": zap} if zap > 0 else {})["damage"]) * float(maxi(1, f.strikes))
 
