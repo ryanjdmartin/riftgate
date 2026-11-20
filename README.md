@@ -77,7 +77,7 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
   routes input as the engine does.
 - `tools/`: each script carries its own usage notes at its head; the commands are below.
   - Generated documents: `export_vocabulary.gd`, `pages/bible_tables.py`,
-    `pages/bible_merge.py`, `pages/roster_analysis_page.py`, `synergy_map.py`
+    `pages/bible_merge.py`, `pages/roster_analysis_page.py`, `pages/rules_sweep_page.py`, `synergy_map.py`
   - Runners: `balance.gd`, `anchor_read.gd`, `campaign_run.gd`, `battle_run.gd`, `quick_run.gd`,
     `map_survey.gd`
   - Probes: `special_probe.gd` and `chain_probe.gd` (each with a `_read.py`),
@@ -125,7 +125,8 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     (tier one sized against the reboot: the yardsticks, the baseline, the defence side's
     approach, the tier-one bench); `economy_pass.md`; `formation_proposal.md` (kept for the
     bosses' stat blocks and the flankers' slate); `locked_pieces_proposal.md`;
-    `reboot_machines_proposal.md` (the machines the reboot broke); `bosses_proposal.md` (the
+    `reboot_machines_proposal.md` (the machines the reboot broke); `rules_sweep_proposal.md` (the
+    rules sweep's limits on design space, for his marks); `bosses_proposal.md` (the
     bosses' and elites' slate); `heroes_proposal.md`; `domain_statuses_proposal.md` (the
     domains' buffs and debuffs, the purging leaders, Phased by source); `mechanics_audit.md`;
     `skirmish_audit.md` (the code audit and its order of work); `roster_analysis.md`.
@@ -200,6 +201,7 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 python3 tools/synergy_map.py --write
 # the roster analysis as its page (status has the link)
 python3 tools/pages/roster_analysis_page.py > /tmp/roster_analysis.html
+python3 tools/pages/rules_sweep_page.py > /tmp/rules_sweep.html   # the rules sweep's page for his marks, from docs/rules_sweep_proposal.md
 
 # the hangar page (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH)
 python3 tools/hangar_data.py              # writes docs/hangar/pins.json, build/hangar/designs.json and build/hangar/text.json, checks the renders manifest, prints the files map tools/hangar.html is published with

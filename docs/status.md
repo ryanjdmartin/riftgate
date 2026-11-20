@@ -339,8 +339,9 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
 2. **The machines the reboot broke** (another session's line, beside the first): each fix
    built on Ryan's marks, in its own commit, at placeholder numbers.
 3. **The design sessions, from the briefs**: each decision a bible row, each brief retired
-   once its decisions are rows and content. The locked pieces' footing first, then the
-   machine back in design (the Swallowtail), the built but
+   once its decisions are rows and content. The locked pieces' footing first (its own session
+   since 20 November), the echidna's kit beside it (20 November: "We need to set kit first",
+   before its look's bristle), then the machine back in design (the Swallowtail), the built but
    unfinished (the Needletail, the Giant Petrel, the Musk Ox) and the gunship, the tier-one
    fronts (Minerva's lure tank, an Aphelion tier one), Claude's first rounds on his directions
    of 5 and 6 November, the rest as its session comes. The to-do's roster is grouped to match.
@@ -398,6 +399,11 @@ publish; the commands are in `README.md`.
   saved source has been read whole, every line: read it before the publish, not after the
   refusal.
   `build/hangar/designs.json` is one line of about 980 KB: write it indented before reading it whole.
+- The rules sweep for his marks: https://claude.ai/artifact/LUUwdjFtsqGsVv3NYWzxpN, from
+  `docs/rules_sweep_proposal.md` by `tools/pages/rules_sweep_page.py` (Version 1, 20 November).
+  His marks are its database's `marks` collection, a document an item (id the item's, `V1`),
+  `{item, mark, note, by, day, updated}`: read them with ArtifactData before the fold. The page
+  runs contract 0.2.96. Republish it from the script's output when the proposal changes.
 - The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
   (collection `marks`, a document a row). His marks are complete and built; the page is their
   record, their fold `git show 07f01fb:docs/vocabulary_pass_proposal.md`, section 18.

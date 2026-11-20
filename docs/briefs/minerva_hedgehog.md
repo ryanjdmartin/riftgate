@@ -217,7 +217,9 @@ above only their lit tips show; the engine cover is still green.
    piece's setup.
 3. Its numbers, and a locked piece if the silhouette has a signature.
 4. Its look: the armoured car, his pick (15 November); the bristle's treatment, from the second
-   round's three, or another round.
+   round's three, or another round. Asked for the bristle on 20 November, Ryan: "We need to set
+   kit first." So the kit is settled first and the bristle is picked to fit it (A's rods were a
+   guess at the Sonic Needle's emitters).
 5. The Faraday Hull and Sealed Live retiring, now that the needle takes the Hull's place.
 6. The Thurible module's numbers, and its condition read as hull damage past armour.
 7. Its name (Ryan's; Hedgehog is a BattleTech 'Mech's, on the reserved list, and Echidna is free).
