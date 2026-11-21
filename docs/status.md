@@ -365,7 +365,7 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
      section 11): the fights are even across the domains, and the battle whole is tight.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
      his picks on RANK AND FILE, HEAT and TOP BASIC: its prices are read from the vanilla he
-     settles on.
+     settles on. It brings tier one's slottable numbers down to the basics' (Ryan, 21 November).
    - The scorches on every machine above tier one, then the scaling from the baseline: the
      first battle down, its sizing his ("I'll handle that one"), tiers two and three up.
 2. **The machines the reboot broke** (another session's line, beside the first): each fix
