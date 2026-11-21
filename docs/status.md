@@ -420,21 +420,15 @@ publish; the commands are in `README.md`.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 317 (20 November): a piece's templates on
-  its sheet, and main's locked pieces' footing (the page, `hangar/readouts.json`,
-  `hangar/text.json` and three content files), over 316 the same day (the Text tab's Templates
-  view), 315 (what every piece does in the game's own words) and 314 (a tab a kind). The Mole's
-  line (`ccr-64b5deec-lunnff`) had published Versions 311 to 313 from its branch (its built Mole,
-  its terms, the echidna's brief), so 314 to 317 are a union of main (`dc8ec0d1`, `e71027f7`,
-  `33c4cc61`, then `e8cb132c`) and that line at `fcac1ade`, built in a scratch tree never pushed
-  and imported for Godot. Since main took the locked pieces' footing, `sim/effects.gd` conflicts
-  there too: both lines' static effects kept, and the hopper's cap main's, beside the Mole's
-  momentum cap; the status, the measurements, the bible and `docs/vocabulary.md` keep main's.
-  The generated files' stamp names both commits; `hangar/designs.json` still carries 314's, its
-  briefs unchanged since. The page's own source is main's. Until that line lands, a publish from
-  main alone takes its Mole off the page: build the union again. When it lands, its hold line
-  for the drill (`EntryReadout.drill_line`) is code words: it moves into a
-  template as it lands. The `edits` and `text` collections were empty,
+  `edits`, `designs` and `text` read first. The live page runs ahead of main: the Mole's line
+  (`ccr-64b5deec-lunnff`) published Versions 318 and 319 from its branch (20 and 21 November:
+  the Echidna's kit, the Mole at tier two, Chaos I), main's 317 taken in, and its own status
+  says what each moved. Until that line lands, build a publish from that branch merged with
+  main, never from main alone, which would take its machines off the page. Main's own last,
+  Version 317 (20 November): a piece's templates on its sheet and the locked pieces' footing,
+  over 316 (the Text tab's Templates view), 315 (what every piece does in the game's own words)
+  and 314 (a tab a kind), each a union of main and that line built in a scratch tree never
+  pushed. The page's own source is main's. The `edits` and `text` collections were empty,
   `designs` held his two notes of 5 November (both already briefed).
   The `candidates` collection (his names, 106 rows) stays in the database unread;
   `docs/name_candidates.md` holds them. The service refuses a republish until the live page's saved source has been
