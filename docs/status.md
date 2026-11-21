@@ -437,8 +437,9 @@ publish; the commands are in `README.md`.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 318 (20 November): the Echidna's kit and
-  the Mole at tier two, from `ccr-64b5deec-lunnff` at `d463cd68` once main was taken in (the
+  `edits`, `designs` and `text` read first. Version 319 (21 November): Chaos I as "reduce
+  stacks to 1", four files (the chassis and vocabulary content, the briefs' and the texts'
+  inventories) over 318. Version 318 (20 November): the Echidna's kit and the Mole at tier two, from `ccr-64b5deec-lunnff` at `d463cd68` once main was taken in (the
   merge `b693fc8d`), seven files (the chassis, components and vocabulary content, the briefs',
   the texts' and the readouts' inventories, the pins), the page main's and unchanged; the five
   files main's 317 had replaced were read by their paths first and found under the branch's.
