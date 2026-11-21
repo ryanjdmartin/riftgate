@@ -152,7 +152,7 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
 
 ## Running
 
-Open the folder in Godot 4.8 (4.8-beta2 until 4.8 ships, for its MSAA fix), or run from a
+Open the folder in Godot 4.8 (4.8-beta4 until 4.8 ships, for its MSAA fix), or run from a
 terminal. The screens are laid out for 720 by 1280 and the window expands its height to the
 phone's (stretch aspect `expand`); the project draws with `gl_compatibility`, the phone's
 renderer. How each screen plays is in `docs/rules.md`.
@@ -161,7 +161,7 @@ The desk machine is a Windows PC. Every command below runs as written from Git B
 repo folder (`cd ~/Desktop/Code/riftgate` first); from PowerShell, wrap one as
 `& 'C:\Program Files\Git\bin\bash.exe' -lc '<command>'`, and the phone scripts have
 launchers, `tools\android` and `tools\phone`. Set up there: `godot` and `python3` as shims in
-`~/bin` (Godot 4.8-beta2 self-contained under `%LOCALAPPDATA%\Programs\Godot`, its settings,
+`~/bin` (Godot 4.8-beta4 self-contained under `%LOCALAPPDATA%\Programs\Godot`, its settings,
 export templates and debug keystore in `editor_data` beside it; Python 3.13); a `bin`
 junction in each venv, so `.venv/bin/python` resolves; `BPY_PYTHON` at `.bpy` (Python 3.11
 with `bpy==5.0.1`); `PYTHONUTF8=1`; `core.autocrlf=input`. The tests take about a minute
@@ -172,7 +172,7 @@ shared tools live elsewhere and an install is checked from a terminal tab.
 
 A cloud session sets nothing up by hand: the session-start hook
 (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`) fetches Godot
-4.8-beta2's Linux build into `~/bin` and runs the first import, once in a container. Anything
+4.8-beta4's Linux build into `~/bin` and runs the first import, once in a container. Anything
 that needs a window runs under `xvfb-run -a` with `--rendering-method gl_compatibility`
 there. A model's textures ride in its `.glb`, and the import copies each out beside it
 (`art/models/<id>_<texture>.png`, its fingerprint in the `.import`) as the file the game
@@ -591,9 +591,9 @@ tools/spriter/.venv/bin/python tools/soundforge/desk_parts.py [track]       # ev
 ```sh
 # a Web build served over the LAN (https, with a certificate the script makes: accept the
 # browser's warning once); open the printed address in the phone's browser on the same Wi-Fi.
-# Needs the 4.8-beta2 export templates once (Godot_v4.8-beta2_export_templates.tpz from
-# github.com/godotengine/godot-builds/releases/tag/4.8-beta2, its `templates` folder at
-# editor_data\export_templates\4.8.beta2 beside the Godot executable). The first serve asks
+# Needs the 4.8-beta4 export templates once (Godot_v4.8-beta4_export_templates.tpz from
+# github.com/godotengine/godot-builds/releases/tag/4.8-beta4, its `templates` folder at
+# editor_data\export_templates\4.8.beta4 beside the Godot executable). The first serve asks
 # Windows Firewall to let Python take connections: allow it on private networks
 tools/phone.sh          # export then serve; `tools/phone.sh serve` serves the last export
 

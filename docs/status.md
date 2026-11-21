@@ -66,15 +66,17 @@ document's job and every command are in `README.md`.
   (gl_compatibility), so a lit part's colour there is the phone's. The Mac is out of reach:
   of the foeforge renders only the Augur's survive (`tools/foeforge/out/`; the rest
   `git show fb45141`), and its `generate` and `fix` have no machine (the to-do's Art line).
-- Godot: the project runs 4.8-beta2 (published 29 October). The check of 21 November found
-  4.8-beta3 (9 November) and 4.8-beta4 (18 November) on github.com/godotengine/godot-builds/releases,
-  both regression fixes, beta4 saying a release candidate is imminent; for the game, beta4 fixes
-  the Android SDK Manager's setup on Windows (the desk's export), fails an invalid dynamic font's
-  import where it passed, and bumps the text format of saved scenes with metadata or embedded
-  scenes (a scene the desk saves on it may not open on an older build). Nothing on the
-  Compatibility renderer, GDScript at run time or MSAA in either's highlights. The notes are
-  godotengine.org's (blocked here; read from the godot-website repository's article sources on
-  GitHub). The move is Ryan's; 4.8 stable is already agreed. The next check is due 5 December
+- Godot: the project runs 4.8-beta4 (published 18 November) since 21 November, on Ryan's "Go
+  ahead with the Godot update": the cloud hook installs it, the suite passes on it as on beta2,
+  the import rewrote nothing, and the skirmish draws under gl_compatibility. The desk's install
+  and the phone's export templates follow it: Godot_v4.8-beta4_win64 under
+  `%LOCALAPPDATA%\Programs\Godot` and the beta4 templates at
+  `editor_data\export_templates\4.8.beta4` (the README's Running and phone notes), his to install.
+  Beta4 over beta2: the Android SDK Manager's setup fixed on Windows (the desk's export), an
+  invalid dynamic font's import failed where it passed (ours import clean), and the text format
+  of saved scenes with metadata or embedded scenes bumped (a scene saved on it may not open on
+  beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
+  the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
 - Tests: 1432 tests, 389,288 checks, green (21 November, Chaos I as "reduce stacks to 1", on the Macaque's branch, over main's
   locked pieces' footing and a piece's templates). The runner fails a run
