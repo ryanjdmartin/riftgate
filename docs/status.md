@@ -64,10 +64,12 @@ document's job and every command are in `README.md`.
   (gl_compatibility), so a lit part's colour there is the phone's. The Mac is out of reach:
   of the foeforge renders only the Augur's survive (`tools/foeforge/out/`; the rest
   `git show fb45141`), and its `generate` and `fix` have no machine (the to-do's Art line).
-- Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
-  7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
-  out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
-  after each.
+- Godot: the project runs 4.8-beta2 (published 29 October). At the check of 21 November two
+  betas had followed it on github.com/godotengine/godot-builds/releases, 4.8-beta3 (9 November)
+  and 4.8-beta4 (18 November), and no release candidate; their notes are on godotengine.org,
+  which this cloud environment's network does not reach, so what they fix for the game is
+  unread. The move is Ryan's call; 4.8 stable is not out. The next check is due 5 December
+  (`CLAUDE.md`, Session handoff); date this line again after each.
 - Tests: 1402 tests, 389,042 checks, green (20 November, a piece's templates on its hangar sheet, over the
   locked pieces' footing). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
@@ -363,7 +365,7 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
      section 11): the fights are even across the domains, and the battle whole is tight.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
      his picks on RANK AND FILE, HEAT and TOP BASIC: its prices are read from the vanilla he
-     settles on.
+     settles on. It brings tier one's slottable numbers down to the basics' (Ryan, 21 November).
    - The scorches on every machine above tier one, then the scaling from the baseline: the
      first battle down, its sizing his ("I'll handle that one"), tiers two and three up.
 2. **The machines the reboot broke** (another session's line, beside the first): each fix
@@ -421,21 +423,15 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 317 (20 November): a piece's templates on
-  its sheet, and main's locked pieces' footing (the page, `hangar/readouts.json`,
-  `hangar/text.json` and three content files), over 316 the same day (the Text tab's Templates
-  view), 315 (what every piece does in the game's own words) and 314 (a tab a kind). The Mole's
-  line (`ccr-64b5deec-lunnff`) had published Versions 311 to 313 from its branch (its built Mole,
-  its terms, the echidna's brief), so 314 to 317 are a union of main (`dc8ec0d1`, `e71027f7`,
-  `33c4cc61`, then `e8cb132c`) and that line at `fcac1ade`, built in a scratch tree never pushed
-  and imported for Godot. Since main took the locked pieces' footing, `sim/effects.gd` conflicts
-  there too: both lines' static effects kept, and the hopper's cap main's, beside the Mole's
-  momentum cap; the status, the measurements, the bible and `docs/vocabulary.md` keep main's.
-  The generated files' stamp names both commits; `hangar/designs.json` still carries 314's, its
-  briefs unchanged since. The page's own source is main's. Until that line lands, a publish from
-  main alone takes its Mole off the page: build the union again. When it lands, its hold line
-  for the drill (`EntryReadout.drill_line`) is code words: it moves into a
-  template as it lands. The `edits` and `text` collections were empty,
+  `edits`, `designs` and `text` read first. The live page runs ahead of main: the Mole's line
+  (`ccr-64b5deec-lunnff`) published Versions 318 and 319 from its branch (20 and 21 November:
+  the Echidna's kit, the Mole at tier two, Chaos I), main's 317 taken in, and its own status
+  says what each moved. Until that line lands, build a publish from that branch merged with
+  main, never from main alone, which would take its machines off the page. Main's own last,
+  Version 317 (20 November): a piece's templates on its sheet and the locked pieces' footing,
+  over 316 (the Text tab's Templates view), 315 (what every piece does in the game's own words)
+  and 314 (a tab a kind), each a union of main and that line built in a scratch tree never
+  pushed. The page's own source is main's. The `edits` and `text` collections were empty,
   `designs` held his two notes of 5 November (both already briefed).
   The `candidates` collection (his names, 106 rows) stays in the database unread;
   `docs/name_candidates.md` holds them. The service refuses a republish until the live page's saved source has been
