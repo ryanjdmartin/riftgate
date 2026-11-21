@@ -12285,3 +12285,34 @@ foes a spend, the Arc Fault Cannon arcing through every needled foe), and the bo
 Tether on one turn in twelve, so a lone read says little of the Tether or of the needles a lure's
 turned blows lay. A trace of one fight (four goblins, seed 1) shows the bolts firing on struck
 blows and the Cannon arcing to needled goblins. The stock is placeholders; his play decides.
+
+## 21 November: enemy armour at tier one, and Chain's arcs as a strike or a flat ping
+
+For Ryan's pick of Chain's arc form (the bible's section 12: "I need more data to make this
+decision. How threatening is enemy armour, how many counters do we need?"). A scratch probe, never
+committed: a Skirmish subclass tallying what `_land_blow` reports (every strike, area blow, arc,
+spill and bounce), driving fights as `tools/anchor_read.gd` and `tools/battle_run.gd` build them,
+the greedy bot, the six certain tier ones on stock dice, at `9caa64c6` on Godot 4.8-beta4; two to
+four seeds a squad in the fight reads, ten to fifteen in the battle reads, so every figure is a
+direction. "Took" counts the HP that counted (no overkill).
+
+- Whole tier-one battles (the battle runner's three squads): armour stood in 16% of the fights at
+  Convergence 1 (180 battles) and 23% at Convergence 3 (120), and took 4.5% and 5.1% of the
+  squad's damage, 7.5% and 7.6% counting one boss fight a battle. The armoured anchors arrive
+  with each domain's second formation, from Convergence 3.
+- Every tier-one fight at its rating (2,136 fights): armour took 11.7% unweighted, 21.8% in the 19
+  that field it; base armour 84% of it, braces and walls 16%; a third of it off 1-point blows (the
+  Skua's Ricochet), so squads with the Skua lost 27.6% on the armoured leaders, squads without 14.7%.
+- The same 19 fights with no armour met (660 fights each way): formations +24% rounds and +20%
+  hull with it, elites +34% and +41%, bosses +33% and +55% (the Ruby Colossus won 87% with its
+  point, 100% without). Every armoured fight was won 87% to 100% of the time.
+- Counters at tier one: 7 (the Claw, the Boar's Drive, a found Railgun, two Brittle pieces, the
+  Baboon's Purge 1, the Thermal Ray), none a basic, no Expose before tier two; 13 open by tier two,
+  20 by tier three. Brittle adds before armour and leaves its subtraction standing: zero, one and two
+  layers each left armour's cost at about a fifth more rounds on the leaders (+19%, +20%, +22%); the
+  Claw kept off 6.5% of armour's take in its squads.
+- Chain's arcs, with the Echidna and the Storm Petrel's Arc Fault Cannon in every fight (468
+  fights, 2,116 arcs): as built (a), armour took 17.6% of the arcs' damage over every fight, 34.8%
+  in the armoured ones and 43% to 61% on the armoured leaders; scored flat (b), the same arcs deal
+  20% more (52% more in the armoured fights). The arcs were 13.1% of those squads' damage (a), 15.3%
+  (b). No foe Barrier at tier one; Brittle stood on 36 arcs into armour.
