@@ -80,7 +80,7 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
   routes input as the engine does.
 - `tools/`: each script carries its own usage notes at its head; the commands are below.
   - Generated documents: `export_vocabulary.gd`, `pages/bible_tables.py`,
-    `pages/bible_merge.py`, `pages/roster_analysis_page.py`, `synergy_map.py`
+    `pages/bible_merge.py`, `synergy_map.py`
   - Runners: `balance.gd`, `anchor_read.gd`, `campaign_run.gd`, `battle_run.gd`, `quick_run.gd`,
     `map_survey.gd`
   - Probes: `special_probe.gd` and `chain_probe.gd` (each with a `_read.py`),
@@ -139,12 +139,15 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     `reboot_machines_proposal.md` (the machines the reboot broke); `bosses_proposal.md` (the
     bosses' and elites' slate); `heroes_proposal.md`; `domain_statuses_proposal.md` (the
     domains' buffs and debuffs, the purging leaders, Phased by source); `mechanics_audit.md`;
-    `skirmish_audit.md` (the code audit and its order of work); `roster_analysis.md`.
+    `skirmish_audit.md` (the code audit and its order of work).
   - Retired, in git: the vocabulary pass's proposal and its table of marks
     (`git show 07f01fb:docs/vocabulary_pass_proposal.md`,
     `git show 07f01fb:docs/vocabulary_table.md`), which is what "the proposal's section N" in
-    a bible row or a code comment points at; the targeting page
-    (`git show d657a206:docs/targeting_proposal.md`).
+    a bible row or a code comment points at, and his marks and notes on the table, copied from
+    its page (`git show a0fafbc1:docs/vocabulary_marks.json`); the targeting page
+    (`git show d657a206:docs/targeting_proposal.md`) and its scenes as published
+    (`git show a0fafbc1:docs/targeting_in_context.html`); the roster analysis of 14 October,
+    background to some briefs (`git show a95e0a1f:docs/roster_analysis.md`).
   - `sprites-enemies.html` is the sheet the map tokens are exported from; `hangar/` holds
     the hangar page's renders, pins and the text ledger (`text.json`); `looks/` look tests;
     `canvas/` design canvases.
@@ -209,8 +212,6 @@ python3 tools/pages/bible_tables.py
 python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html > merged.html
 # who sets and who reads every status and resource, from content (--write rewrites docs/synergy_map.md)
 python3 tools/synergy_map.py --write
-# the roster analysis as its page (status has the link)
-python3 tools/pages/roster_analysis_page.py > /tmp/roster_analysis.html
 
 # the hangar page (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH)
 python3 tools/hangar_data.py              # writes docs/hangar/pins.json, build/hangar/designs.json, build/hangar/text.json and build/hangar/foe_rules.json (failing when ContentDB's scaling moves under the formations), and build/hangar/readouts.json (what every piece does as the game's codex prints it, and the pieces each template prints on, run through Godot headless, so Godot on the PATH and the project imported), checks the renders manifest, prints the files map tools/hangar.html is published with
@@ -579,7 +580,7 @@ tools/spriter/.venv/bin/python tools/soundforge/pair_sketches.py [all]      # ev
 tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py [set ...]  # Hold The Line's pair and its A/B sets
 tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py [set ...] # Night Shift's
 tools/spriter/.venv/bin/python tools/soundforge/far_sketches.py             # The Far Bank's map half
-tools/spriter/.venv/bin/python tools/soundforge/fx_sketches.py [singles|sequences]   # every effect beside the shipped one, into out/fx/ for the listening page
+tools/spriter/.venv/bin/python tools/soundforge/fx_sketches.py [singles|sequences]   # every effect beside the shipped one, into out/fx/ with its listening page (`fx_page.html`), unpublished
 tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [set]     # A/B sketches of one change for the phone's speaker, into out/phone/
 tools/spriter/.venv/bin/python tools/soundforge/desk_parts.py [track]       # every track's melodic parts as notes into out/desk/, for the Melody Desk page's `parts`
 ```

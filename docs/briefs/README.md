@@ -266,7 +266,6 @@ One row a live brief; the to-do's Design sessions hold each one's task.
 | `arsenal_thunder.md` | the soft Archon homage, much shield | the Arsenal | 3 | Claude's round on his direction |
 | `arsenal_mastema.md` | fire through the team | the Arsenal | 3 | his calls |
 | `arsenal_minos.md` | the mover; "It needs something else" | the Arsenal | 3 | the something else, in chat |
-| `arsenal_frost.md` | cut by Ryan: a stub of what the Cryo round takes | the Arsenal | none | retires with `minerva_cryo_defence.md`'s round |
 
 Not briefed: the empty slots toward each maker's ten; cantrips, his idea of small Rapid
 pieces with no cooldown, a combined entry before a Rapid one; the economy's items
@@ -328,6 +327,7 @@ aside so Ryan can overrule the reason. A chassis's own bench is in its brief.
 
 Each landed; its decisions are bible rows and content.
 
+- The frost figure, cut, its round folded into `minerva_cryo_defence.md`: `git show 9d604ce3:docs/briefs/arsenal_frost.md`
 - The Polar Bear's seal: `git show 96fe416:docs/briefs/minerva_polar_bear.md`
 - The Polar Bear's first form: `git show 63487a9:docs/briefs/minerva_armadillo.md`
 - The Honey Badger's Ore Hopper: `git show c05c41b:docs/briefs/minerva_honey_badger.md`

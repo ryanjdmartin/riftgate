@@ -12,7 +12,7 @@ settles when it is worth its slot.
 **Status**: proposal with a place, as proposed (the analysis, 14 October); in session since 15
 October (Claude's first round and its review, below; Ryan has answered none of it). **Maker**:
 the Arsenal. **Proposed tier**: three. **Read first**: `docs/briefs/README.md`; "The design as
-proposed" below, with Ryan's calls; `docs/roster_analysis.md` section 4; `docs/rules.md` on the
+proposed" below, with Ryan's calls; `git show a95e0a1f:docs/roster_analysis.md`, section 4; `docs/rules.md` on the
 formation and reach.
 
 ## The design (the proposal, with Ryan's calls of 12 October)

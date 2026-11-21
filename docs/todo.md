@@ -167,7 +167,7 @@ pieces, so each stands on the footing in the first line.
 
 **A new direction of Ryan's, a first round owed in chat** (his notes of 5 and 6 November head each brief):
 
-- [ ] The Cryo party defence (`minerva_cryo_defence.md`: "The cryo is the payoff ... no free cryo on the passive", a locked piece that detonates the Cryo everywhere), the Arsenal's frost figure merged into it (`arsenal_frost.md` retires as this takes its round)
+- [ ] The Cryo party defence (`minerva_cryo_defence.md`: "The cryo is the payoff ... no free cryo on the passive", a locked piece that detonates the Cryo everywhere), the Arsenal's frost figure merged into it (its round's four points in this brief since 21 November)
 - [ ] The jellyfish (`aphelion_jellyfish.md`: "This one should be our Status Payoff Carry. It's not allowed to carry weapons"), its identity in its locked pieces
 - [ ] Misharu (`arsenal_misharu.md`: "delayed judgement. It reads enemy 'sins,' marking them, and then cashes those in for effects")
 - [ ] The Onryō (`arsenal_onryo.md`: its own hull as a resource, draining foes to heal, "the one unit that actually wants a fight to go long")

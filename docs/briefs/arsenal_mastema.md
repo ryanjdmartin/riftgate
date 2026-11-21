@@ -8,7 +8,7 @@ free, around Ryan's idea of setting its own allies alight.
 **Status**: direction (14 October); in session since 15 October (Claude's first round and its
 review, below; Ryan has answered none of it). **Maker**: the Arsenal. **Proposed tier**: three.
 **Read first**: `docs/briefs/README.md`; "The design as proposed" and "The Scapegoat Brand"
-below; `docs/roster_analysis.md` section 4; the bible's rows on Burning and Scorched and on
+below; `git show a95e0a1f:docs/roster_analysis.md`, section 4; the bible's rows on Burning and Scorched and on
 buffs and debuffs (section 5); `docs/rules.md`, "Heat" and "Buffs, debuffs and resistance".
 
 ## The design (the proposal)

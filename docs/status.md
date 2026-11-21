@@ -404,6 +404,9 @@ never appended to, and what a line replaced stays in git.
 Every page lives in Ryan's account and is republished by its URL (read first), its database
 with it, on his word. A page's link goes into this file in the same commit as its first
 publish; the commands are in `README.md`.
+Deleted on his word of 20 November: the vocabulary marks, the targeting scenes, the roster
+analysis, the effects listening page and the engagement sandbox (the README's docs line has the
+copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   Published at v0.655 on 20 November from main's file at `33c4cc61` (the page's Version 519),
@@ -441,23 +444,11 @@ publish; the commands are in `README.md`.
   and publishes too; a compacted context has lost its views, its own publishes' included, so it
   reads the page and every file the publish replaces again first (the refusal names them).
   `build/hangar/designs.json` is one line of about 980 KB: write it indented before reading it whole.
-- The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
-  (collection `marks`, a document a row). His marks are complete and built; the page is their
-  record, their fold `git show 07f01fb:docs/vocabulary_pass_proposal.md`, section 18.
-- The targeting scenes: https://claude.ai/artifact/9UTL3VqdoHVVGfodtBv124. It shows the aims
-  the targeting of 17 November replaced, and says so at its head.
-- The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, from
-  `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background, retired once
-  the last brief that cites it lands.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (collection `picks`); the
   fix order that worked is the bible's art row.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV
   (`tools/soundforge/melody_desk.html`; collections `parts` and `melodies`), at its version 8.
-- The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9
-  (`tools/soundforge/out/fx/`); its source lost one foe-down line on 9 November, unpublished.
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW
   (`tools/soundforge/out/pairs/`, built by `pair_sketches.py`), at its version 88. A version
   holds at most 256 MiB of files and a publish 64 MB, so a round's new files go up with the
   old round's removals, in two publishes when they pass the limit.
-- The engagement sandbox: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
-  (`docs/canvas/engagement-sandbox.html`).

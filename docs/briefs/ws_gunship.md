@@ -11,7 +11,7 @@ for the stock pass and number rescaling, since that's its whole deal"), which la
 so its session is free to run. **Maker**:
 Wainwright & Sutler. **Proposed tier**: two. **Read first**: `docs/briefs/README.md`;
 `docs/measurements.md` (13 October, the gunship's stand-in: its measured table and the recipe);
-`docs/roster_analysis.md` section 4; the bible's tags rows (section 7).
+`git show a95e0a1f:docs/roster_analysis.md`, section 4; the bible's tags rows (section 7).
 
 ## The design (the proposal; Ryan's shape, 13 October)
 
