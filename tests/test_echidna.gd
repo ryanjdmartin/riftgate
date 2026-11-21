@@ -9,8 +9,8 @@ extends TestCase
 ## would take 2 by definition"), each an arc that lays nothing and spends no Shock, through each
 ## foe's Brittle, Barrier and armour, then the foe's stacks spent; a bolt from a foe the strike
 ## felled; a striker its own blow's bolt fells striking no more; a Ward turning the needles away;
-## and the branches' tweaks (a bolt that spends one stack, a sap a stack, a weapon's add a stack on
-## its target). The status is the engine's; the passive and its numbers are the test's.
+## and the branches' tweaks (a bolt that leaves its foe a stack, a sap a stack, a weapon's add a
+## stack on its target). The status is the engine's; the passive and its numbers are the test's.
 
 const L := Face.Reach.DIRECT
 const I := Face.Reach.INDIRECT
@@ -205,15 +205,17 @@ func test_a_ward_turns_the_needles_away_and_a_cleanse_counts_them() -> void:
 	assert_eq(Effects.team_marks(b), 1, "a team's mark, which a foe's cleanse takes")
 
 
-func test_a_bolt_that_spends_a_stack_fires_again_on_the_next() -> void:
-	var u := _mech(Die.single(Face.attack(0, I, [K.LURE])), [{"trigger": "static", "effect": "needles", "spends": 1}])
+func test_a_bolt_that_leaves_a_stack_fires_again_two_needles_on() -> void:
+	var u := _mech(Die.single(Face.attack(0, I, [K.LURE])), [{"trigger": "static", "effect": "needles", "keeps": 1}])
 	var a := _foe()
 	var sk := _fight([u], [a])
 	_needle(a, 2)
 	assert_true(sk.assign(0, a), "the third needle")
-	assert_eq([a.hp, Effects.stacks_of(a, NEEDLE)], [28, 2], "the bolt, and a stack spent of three")
+	assert_eq([a.hp, Effects.stacks_of(a, NEEDLE)], [28, 1], "the bolt, and its stacks down to one")
 	sk._land_rider(a, NEEDLE, 1, {}, {})
-	assert_eq([a.hp, Effects.stacks_of(a, NEEDLE)], [26, 2], "so the next needle fires it again")
+	assert_eq([a.hp, Effects.stacks_of(a, NEEDLE)], [28, 2], "the next needle short of the count")
+	sk._land_rider(a, NEEDLE, 1, {}, {})
+	assert_eq([a.hp, Effects.stacks_of(a, NEEDLE)], [26, 1], "and the one after fires it again")
 
 
 func test_a_sapping_needle_takes_its_number_off_the_foes_blow_a_stack() -> void:
@@ -266,4 +268,5 @@ func test_the_bot_prices_the_bolt_a_needle_brings() -> void:
 	var brings := bot.needle_worth(sk, ms, a, 1, a.hp)
 	assert_true(brings > short, "the needle that fires the bolt is worth more than one short of it")
 	assert_eq(Policy.needle_bolts(2, 2, 3, 0), [1, 1], "two on a foe at two: one bolt, one left")
-	assert_eq(Policy.needle_bolts(2, 2, 3, 1), [2, 2], "a bolt that spends one fires on each")
+	assert_eq(Policy.needle_bolts(2, 2, 3, 1), [1, 2], "a bolt that leaves one: the first fires it, the second stands")
+	assert_eq(Policy.needle_bolts(2, 3, 3, 1), [2, 1], "and every second needle after fires it again")

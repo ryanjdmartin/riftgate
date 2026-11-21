@@ -5568,7 +5568,7 @@ func needler_of(sid: String) -> MechState:
 ## that foe a stack of Sonic Needle"): a stack at a time, each the needle its machine's rule makes
 ## (Effects.needle_spec), and the stack that brings the foe to the rule's count fires the bolt
 ## (_needle_bolt) before the next lands, so two stacks on a foe at two fire it once and leave one
-## (two under a bolt that spends a stack). A foe's Ward turns them away as any mark. A felled foe
+## (two under a bolt that leaves a stack). A foe's Ward turns them away as any mark. A felled foe
 ## takes them as a rider lands on it, and its bolt fires all the same (no trigger goes unfired).
 func _lay_needles(ms: MechState, foe: Foe, n: int) -> void:
 	var rule := Effects.needle_rule(ms.unit)
@@ -5586,8 +5586,9 @@ func _lay_needles(ms: MechState, foe: Foe, n: int) -> void:
 ## stacks and procced it would take 2 by definition"): the Chain's number on every conductor on the
 ## field (conducting_foes), the foe it fires from among them while it stands, each a Chain's arc as
 ## a Mine's blast lands one (a blow aimed at nobody, so no rider, no needle, no Shock doubled or
-## spent: its Brittle adds, a Barrier takes it, its armour comes off); then the rule spends that
-## foe's stacks, every one, or a step's count (Chaos's "reduce stacks by 1"). In a spend, its blows
+## spent: its Brittle adds, a Barrier takes it, its armour comes off); then the rule takes that
+## foe's stacks, every one, or down to a step's count (Chaos's, Ryan, 21 November: "reduce stacks
+## to 1"). In a spend, its blows
 ## land a beat after the spend's for the screen; what it fells falls at the death check that follows,
 ## the spend's, or in the foes' turn the one after the action whose blow brought it (a striker it
 ## fells strikes no more: _strike).
@@ -5605,11 +5606,11 @@ func _needle_bolt(ms: MechState, foe: Foe, rule: Dictionary) -> void:
 		if not _enemy_acting:
 			_note_blow(c, beat, taken, "chain")   # a spend's blows, for the screen; the foes' turn records none on a foe
 		log.append("the needles arc to %s for %d" % [c.display_name, taken])
-	var spends := int(rule.get("spends", 0))
-	if spends <= 0:
+	var keeps := int(rule.get("keeps", 0))
+	if keeps <= 0:
 		Effects.remove(foe, sid)
 	else:
-		Effects.spend_stacks(foe, sid, spends)
+		Effects.spend_stacks(foe, sid, maxi(0, Effects.stacks_of(foe, sid) - keeps))
 
 
 ## A foe's blow landing on a machine (on_struck): what the machine's passives lay on its striker, a

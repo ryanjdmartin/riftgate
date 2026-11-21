@@ -126,8 +126,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   Flakshot Repeater (Direct, 1 three times, Brittle 1, Spread 1). Neither form keeps the
   Spreader's cooldown. The Echidna's, a tier one's: Spiker, its Supersonic Spike Tether as the
   Hypersonic Spike Tether, Instant at a heat more, then its Sonic Needles taking a point a stack
-  off the attacks of the foe they are in; Chaos, its needles' bolt spending one stack in place
-  of all of them, then its weapons dealing 1 more to a foe for each stack of Sonic Needle in it.
+  off the attacks of the foe they are in; Chaos, its needles' bolt leaving its foe one stack in
+  place of none, then its weapons dealing 1 more to a foe for each stack of Sonic Needle in it.
   A direction may be back in design, a planned draft: kept in content, its depth unchecked, and
   never offered (the Mole's two since its move to tier two).
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a

@@ -1904,10 +1904,10 @@ static func struck_lays(u) -> Array:
 
 ## A machine's Sonic Needles as its live effects make them (needles, static: the echidna's, Ryan,
 ## 20 November): the status they lay, the stacks that bring the bolt (`at`), the bolt's Chain
-## (`chain`) and the stacks it spends (`spends`, every one when absent or 0), each the latest
-## grant's that names it (a step's: Chaos's "reduce stacks by 1"); and `sap`, every grant's added
-## (Spiker's "Affected unit deals -1 damage per stack with attacks"). Empty for a machine that
-## carries none.
+## (`chain`) and the stacks a bolt leaves on its foe (`keeps`, none when absent or 0), each the
+## latest grant's that names it (a step's: Chaos's, Ryan, 21 November, "reduce stacks to 1"); and
+## `sap`, every grant's added (Spiker's "Affected unit deals -1 damage per stack with attacks").
+## Empty for a machine that carries none.
 static func needle_rule(u) -> Dictionary:
 	var parts: Array = []
 	for pair in _taking_part(u, "static", null):
@@ -1916,10 +1916,10 @@ static func needle_rule(u) -> Dictionary:
 	if parts.is_empty():
 		return {}
 	parts.sort_custom(func(a, b) -> bool: return (a[1] as Modifier).seq < (b[1] as Modifier).seq)
-	var out := {"at": 3, "chain": 0, "spends": 0, "sap": 0}
+	var out := {"at": 3, "chain": 0, "keeps": 0, "sap": 0}
 	for pair in parts:
 		var eff: Dictionary = pair[0]
-		for k in ["status", "at", "chain", "spends"]:
+		for k in ["status", "at", "chain", "keeps"]:
 			if eff.has(k):
 				out[k] = eff[k]
 		out["sap"] = int(out["sap"]) + int(eff.get("sap", 0))
@@ -1937,8 +1937,8 @@ static func needle_spec(rule: Dictionary, by: String = "") -> Dictionary:
 	if not STATUS.has(sid):
 		return {}
 	var spec: Dictionary = STATUS[sid].duplicate(true)
-	var spends := int(rule.get("spends", 0))
-	var gone := "every stack goes" if spends <= 0 else ("a stack goes" if spends == 1 else "%d stacks go" % spends)
+	var keeps := int(rule.get("keeps", 0))
+	var gone := "every stack goes" if keeps <= 0 else ("its stacks fall to %d" % keeps)
 	var text := "Conducts Chain. On %d stacks, %s fires Chain %d, then %s." % [int(rule.get("at", 3)), by if not by.is_empty() else "its machine", int(rule.get("chain", 0)), gone]
 	var sap := int(rule.get("sap", 0))
 	if sap > 0:
@@ -3300,9 +3300,9 @@ static func effect_text(eff: Dictionary) -> String:
 			var nm := str(STATUS.get(str(eff.get("status", "")), {}).get("name", "its needle"))
 			if eff.has("at") or eff.has("chain"):
 				parts.append("%s conducts Chain, and at %d stacks fires Chain %d on every conductor, that foe included" % [nm, int(eff.get("at", 3)), int(eff.get("chain", 0))])
-			if eff.has("spends"):
-				var sp := int(eff["spends"])
-				parts.append("the bolt spends %s" % ("every stack" if sp <= 0 else ("a stack" if sp == 1 else "%d stacks" % sp)))
+			if eff.has("keeps"):
+				var kp := int(eff["keeps"])
+				parts.append("the bolt leaves %s" % ("no stack" if kp <= 0 else ("a stack" if kp == 1 else "%d stacks" % kp)))
 			elif eff.has("at"):
 				parts.append("then every stack on that foe goes")
 			if int(eff.get("sap", 0)) > 0:

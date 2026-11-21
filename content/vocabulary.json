@@ -2517,7 +2517,7 @@
    "codex": "Foe status, from the Echidna's Sonic Needles: a stack for every strike of its weapons and equipment that reaches the foe, and for every blow the foe lands on it. It conducts Chain, as Shocked does. On 3 stacks, the Echidna fires Chain 2: 2 on every conductor on the field, this foe included, each its Brittle adding and its armour taking it, no strike aimed at any; then every stack on this foe is consumed. A foe's cleanse takes it, a Ward turns it away, and a foe that falls takes it with it.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan, 20 November: \"Sonic Needle - Conducts Chain. On 3 stacks, the Echidna fires Chain 2, then consume all stacks on this foe\"; his answers that day: the bolt is \"targeted at nothing. So the foe that hit 3 stacks and procced it would take 2 by definition\", and a stack a strike. Its branches tweak it: the Spiker's sap (1 less on the foe's attacks a stack) and Chaos's bolt taking one stack in place of all. The text is a session's draft.",
+    "holes": "Ryan, 20 November: \"Sonic Needle - Conducts Chain. On 3 stacks, the Echidna fires Chain 2, then consume all stacks on this foe\"; his answers that day: the bolt is \"targeted at nothing. So the foe that hit 3 stacks and procced it would take 2 by definition\", and a stack a strike. Its branches tweak it: the Spiker's sap (1 less on the foe's attacks a stack) and Chaos's bolt leaving its foe one stack in place of none (Ryan, 21 November: \"reduce stacks to 1\"). The text is a session's draft.",
     "table": {
      "kind": "debuff",
      "on": "foe",

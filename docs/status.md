@@ -66,11 +66,17 @@ document's job and every command are in `README.md`.
   (gl_compatibility), so a lit part's colour there is the phone's. The Mac is out of reach:
   of the foeforge renders only the Augur's survive (`tools/foeforge/out/`; the rest
   `git show fb45141`), and its `generate` and `fix` have no machine (the to-do's Art line).
-- Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
-  7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
-  out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
-  after each.
-- Tests: 1432 tests, 389,286 checks, green (20 November, the Echidna's kit on the Macaque's branch, over main's
+- Godot: the project runs 4.8-beta2 (published 29 October). The check of 21 November found
+  4.8-beta3 (9 November) and 4.8-beta4 (18 November) on github.com/godotengine/godot-builds/releases,
+  both regression fixes, beta4 saying a release candidate is imminent; for the game, beta4 fixes
+  the Android SDK Manager's setup on Windows (the desk's export), fails an invalid dynamic font's
+  import where it passed, and bumps the text format of saved scenes with metadata or embedded
+  scenes (a scene the desk saves on it may not open on an older build). Nothing on the
+  Compatibility renderer, GDScript at run time or MSAA in either's highlights. The notes are
+  godotengine.org's (blocked here; read from the godot-website repository's article sources on
+  GitHub). The move is Ryan's; 4.8 stable is already agreed. The next check is due 5 December
+  (`CLAUDE.md`, Session handoff); date this line again after each.
+- Tests: 1432 tests, 389,288 checks, green (21 November, Chaos I as "reduce stacks to 1", on the Macaque's branch, over main's
   locked pieces' footing and a piece's templates). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a

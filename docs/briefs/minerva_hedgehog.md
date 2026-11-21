@@ -18,8 +18,8 @@ November, the Faraday Hull's story and Claude's round on the kit are in
   then consume all stacks on this foe."
 - **The Supersonic Spike Tether**, the locked piece: "Indirect, Sap 1, Lure, 1 Heat."
 - **Spiker**: first the Hypersonic Spike Tether, Instant at 2 heat; then the needle saps 1 a
-  stack. **Chaos**: first a bolt reduces the stacks by 1; then its attacks deal +1 per stack of
-  Sonic Needle.
+  stack. **Chaos**: first a bolt reduces the stacks to 1 (his change of 21 November: "reduce
+  stacks to 1"); then its attacks deal +1 per stack of Sonic Needle.
 
 ## The look so far
 

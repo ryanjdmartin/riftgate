@@ -863,16 +863,16 @@ func drill_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> 
 
 
 ## How many bolts `n` more needles fire on a foe holding `have` (Skirmish._lay_needles: a stack at a
-## time, the bolt at the rule's `at`, then every stack spent, or the rule's `spends`), and the
-## stacks it holds after: [bolts, stacks].
-static func needle_bolts(have: int, n: int, at: int, spends: int) -> Array:
+## time, the bolt at the rule's `at`, then the stacks down to the rule's `keeps`, none by default),
+## and the stacks it holds after: [bolts, stacks].
+static func needle_bolts(have: int, n: int, at: int, keeps: int) -> Array:
 	var bolts := 0
 	var held := have
 	for i in range(maxi(0, n)):
 		held += 1
 		if held >= at:
 			bolts += 1
-			held = 0 if spends <= 0 else maxi(0, held - spends)
+			held = clampi(keeps, 0, held)
 	return [bolts, held]
 
 
@@ -889,9 +889,9 @@ func needle_worth(sk: Skirmish, ms: Skirmish.MechState, foe: Foe, n: int, left: 
 	if Effects.turns_mark(foe, sid):
 		return 0.0
 	var at := int(rule["at"])
-	var spends := int(rule.get("spends", 0))
-	var start: int = needle_bolts(Effects.stacks_of(foe, sid), already, at, spends)[1]
-	var after := needle_bolts(start, n, at, spends)
+	var keeps := int(rule.get("keeps", 0))
+	var start: int = needle_bolts(Effects.stacks_of(foe, sid), already, at, keeps)[1]
+	var after := needle_bolts(start, n, at, keeps)
 	var bolt := bolt_worth(sk, ms, rule, foe, left)
 	var worth := float(int(after[0])) * bolt
 	var short := int(after[1]) - (start if int(after[0]) == 0 else 0)

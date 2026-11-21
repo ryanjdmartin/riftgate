@@ -2261,7 +2261,7 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 						errs.append("%s: momentum lays foe statuses, a stack or more each (%s)" % [where, str(sid)])
 		# The Sonic Needles (the echidna's, Ryan, 20 November): the foe status they lay (the base rule's;
 		# a step's may leave it to the base), the stacks that fire the bolt, its Chain, the stacks a
-		# bolt spends (every one at 0 or absent) and the sap a stack.
+		# bolt leaves on its foe (none at 0 or absent) and the sap a stack.
 		if effect == "needles":
 			if trig != "static":
 				errs.append("%s: needles is static: the rule of its machine's needles" % where)
@@ -2271,8 +2271,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 				errs.append("%s: needles' at is the stacks that fire the bolt, 2 or more" % where)
 			if eff.has("chain") and int(eff["chain"]) < 1:
 				errs.append("%s: needles' chain is the bolt's Chain, 1 or more" % where)
-			if eff.has("spends") and (int(eff["spends"]) < 0 or int(eff["spends"]) >= int(eff.get("at", 3))):
-				errs.append("%s: needles' spends is the stacks a bolt takes, fewer than its at (0 or absent: every stack)" % where)
+			if eff.has("keeps") and (int(eff["keeps"]) < 0 or int(eff["keeps"]) >= int(eff.get("at", 3))):
+				errs.append("%s: needles' keeps is the stacks a bolt leaves on its foe, fewer than its at (0 or absent: none)" % where)
 			if int(eff.get("sap", 0)) < 0:
 				errs.append("%s: needles' sap is the damage a stack takes off its foe's attacks, 0 or more" % where)
 		# The name an effect gives the piece it is scoped to (the Aile Booster as its Blitzer or its
