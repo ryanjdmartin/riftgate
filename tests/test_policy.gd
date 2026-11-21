@@ -1605,8 +1605,8 @@ func test_the_bot_counts_both_halves_of_a_pair() -> void:
 
 
 ## The bot reads Chain as the resolver deals it (the conductor, 28 October; its charge, and a Shock
-## read by an aimed strike alone, 29 October): each Shocked foe on the field past the target takes
-## Chain's number plain, the conductors' charges standing; with no conductor the Chain gun is a
+## read by an aimed strike alone, 29 October): each Shocked foe on the field takes Chain's number
+## flat (21 November), the conductors' charges standing; with no conductor the Chain gun is a
 ## plain gun (the charge retired 3 November: Chain is the arcs alone).
 func test_the_bot_reads_a_chains_arcs() -> void:
 	var sk := Skirmish.new(1, 3)
@@ -1627,7 +1627,7 @@ func test_the_bot_reads_a_chains_arcs() -> void:
 	assert_true(absf(lead) < 0.001, "with no conductor the Chain gun is a plain gun: %f" % lead)
 	for foe in [a, b]:
 		Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
-	assert_eq(pol.damage_outcomes(ms, gun, a, Skirmish.AREA_CHAIN), [[2.0, 1.0]], "a conductor: Chain 2 plain, no strike aimed at it")
+	assert_true(absf(pol.arcs_worth(sk, ms, gun, aim, 0.0) - 4.0) < 0.001, "two conductors: Chain 2 flat each, no strike aimed at them (21 November: the arcs read apart)")
 	assert_eq(pol.damage_outcomes(ms, gun, a), [[8.0, 1.0]], "the same foe aimed at: the blow doubled")
 	lead = pol.attack_score(sk, ms, gun, aim) - pol.attack_score(sk, ms, plain, aim)
 	assert_true(absf(lead - 4.0) < 0.001, "two conductors, Chain 2 each: %f" % lead)

@@ -78,7 +78,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1432 tests, 389,288 checks, green (21 November, Chaos I as "reduce stacks to 1", on the Macaque's branch, over main's
+- Tests: 1434 tests, 389,302 checks, green (21 November, Chain's arcs flat and on any conductor, on Godot 4.8-beta4, on the Macaque's branch, over main's
   locked pieces' footing and a piece's templates). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a

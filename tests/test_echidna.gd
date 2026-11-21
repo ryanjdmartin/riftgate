@@ -270,3 +270,19 @@ func test_the_bot_prices_the_bolt_a_needle_brings() -> void:
 	assert_eq(Policy.needle_bolts(2, 2, 3, 0), [1, 1], "two on a foe at two: one bolt, one left")
 	assert_eq(Policy.needle_bolts(2, 2, 3, 1), [1, 2], "a bolt that leaves one: the first fires it, the second stands")
 	assert_eq(Policy.needle_bolts(2, 3, 3, 1), [2, 1], "and every second needle after fires it again")
+
+
+func test_chain_strikes_a_needled_target_too() -> void:
+	# Chain strikes every conductor (Ryan, 21 November: "Any conductor"): a needle in its own target
+	# stays through the strike, so the arc strikes it as well.
+	var arc := Face.attack(3, L, [K.CHAIN])
+	arc.chain = 2
+	var u := _mech(Die.single(arc))
+	var a := _foe()
+	var b := _foe()
+	var sk := _fight([u], [a, b])
+	_needle(a, 1)
+	assert_eq(Array(sk.conductors(arc, a)), [a], "its needled target conducts its own arc")
+	assert_true(sk.assign(0, a), "the Chain gun at the needled foe")
+	assert_eq(a.hp, 30 - 3 - 2, "the strike, then the arc")
+	assert_eq(b.hp, 30, "and nothing on a foe that conducts nothing")

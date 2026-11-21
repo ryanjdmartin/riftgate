@@ -42,7 +42,7 @@ const REROLLS_PER_ROUND := 2   # two since 6 November (Ryan: a reroll gained is 
 const AREA_ROW := 1      # beside the target in its rank: Spread's, Splash's
 const AREA_COLUMN := 2   # the other rank of its column: Penetrate's, Splash's
 const AREA_ALL := 3      # any other foe a reach over every foe adds: nothing
-const AREA_CHAIN := 4    # every other Shocked foe on the field: Chain's conductors (28 October)
+const AREA_CHAIN := 4    # a Chain's arc: a conductor's blow, struck apart from the strike's own footprint (21 November)
 const AREA_SIDE := 5     # the foe to the right of the target in its rank: the Macaque's Beam Rifle's blow, beside any area's (19 November)
 ## A spend's hits in the order they land (_hit): the entry's strikes, the sword's hit again after
 ## each (the Macaque's Beam Sword, 19 November), and a Ricochet's after them all.
@@ -3505,7 +3505,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	# Every foe one strike reaches (a Spread's neighbours, a Penetrate's column, every foe for a
 	# reach over them all), the same for each strike, since a kill clears its slot only after the
 	# spend.
-	var hit := reached_by(f, target)
+	var hit := ridden_by(f, target)   # the strike's own footprint: Chain's conductors are struck apart, after it (below)
 	var shapes := area_shapes(f, target)   # the shape each foe past the target stands in, for its number
 	# The offhand's riders (the Macaque's, Ryan, 19 November; "I had intended for everything to
 	# apply riders"): the rifle's blow on the foe to the right of the target with every strike, its
@@ -3619,30 +3619,42 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		# on the foe to the right, a blow of its own on a foe an area of the strike reached too, then
 		# Chain's arcs, which follow the impact.
 		var landings: Array = []
-		var arcs: Array = []
 		for foe in hit:
-			var row := [foe, blows[foe], int(shapes.get(foe, 0))]
-			if int(row[2]) == AREA_CHAIN:
-				arcs.append(row)
-			else:
-				landings.append(row)
+			landings.append([foe, blows[foe], int(shapes.get(foe, 0))])
 		if step == HIT_STRIKE and right != null:
 			var first_right := not struck_once.has(right) and not hit.has(right)
 			landings.append([right, _side_blow(ms, f, side, own, split, right, _zapped(_judged(judged_hp, right))) + _foe_reads(f, reads, right, first_right), AREA_SIDE])
-		landings.append_array(arcs)
-		for landing_at in landings:
+		# Chain's arcs (Ryan, 21 November: "All foes on the field with Shock are struck for {value}.
+		# Does not use or consume Shock"; "It should stack with spread and penetrate"; of its own
+		# target, "Any conductor"): read once the strike's own blows have landed, so a Shock the
+		# strike spent on its target conducts nothing and a needle there, or a Shock equipment leaves
+		# standing, does; a conductor an area of the strike reached takes the area's blow and the arc.
+		# Each is the Chain's number flat ("If Chain doesn't carry the riders, it shouldn't carry the
+		# unit's or weapon's buffs either"), the entry's own strikes alone arcing, never a Ricochet's or
+		# a hit again.
+		var arcs_read := not (step == HIT_STRIKE and f.has(Face.Keyword.CHAIN))
+		var li := 0
+		while li < landings.size() or not arcs_read:
+			if li >= landings.size():
+				arcs_read = true
+				for c in conducting_foes(null):
+					landings.append([c, f.number_of(Face.Keyword.CHAIN), AREA_CHAIN])
+				continue
+			var landing_at: Array = landings[li]
+			li += 1
 			var foe: Foe = landing_at[0]
 			var shape: int = landing_at[2]
+			# A Chain's arc is its blow alone (Ryan, 18 November: "take riders off chain. Thematically
+			# it's a lightning arc, not part of the impact"): no rider of the entry, its primers or a
+			# passive lands on a conductor, and no Shock, Expose, Lure or Disrupt after the blow; no
+			# strike is aimed at it, even on the spend's own target.
+			var arc := shape == AREA_CHAIN
 			var was_alive := foe.alive()
 			var hp_before := foe.hp
 			var first := not struck_once.has(foe)   # the foe's first blow of the spend
 			struck_once[foe] = true
-			var into_mine := foe == target   # the blow on the spend's target: its riders are the Mine's too
-			var struck := foe == target or everyone   # a strike aimed at this foe, never a blow that only reaches it
-			# A Chain's arc is its blow alone (Ryan, 18 November: "take riders off chain. Thematically
-			# it's a lightning arc, not part of the impact"): no rider of the entry, its primers or a
-			# passive lands on a conductor, and no Shock, Expose, Lure or Disrupt after the blow.
-			var arc := shape == AREA_CHAIN
+			var into_mine := foe == target and not arc   # the blow on the spend's target: its riders are the Mine's too
+			var struck := (foe == target or everyone) and not arc   # a strike aimed at this foe, never a blow that only reaches it
 			if not h.reached.has(foe):
 				h.reached.append(foe)
 			if shape == AREA_CHAIN:
@@ -3650,7 +3662,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			var blow: int = landing_at[1]
 			# Spillover (Overwhelm until 6 October): damage past the kill of a front-rank foe carries
 			# into the foe behind it (_spill). A massive foe fills its column: nothing is behind it.
-			var spills := f.spills and foe.rank == 0 and not foe.is_massive()
+			var spills := f.spills and not arc and foe.rank == 0 and not foe.is_massive()
 			var taken := 0   # what the foe takes of the blow, nothing for a corpse a later strike spills past
 			if spills and not was_alive:
 				# A later strike on a foe an earlier strike of this spend killed (Ryan, 15 October:
@@ -3674,7 +3686,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				# piece that ignores armour meets none (Foe.armour_for). Every blow is recorded, one on a
 				# foe an earlier hit of the spend felled included, so the screen shows every hit and
 				# shot land (Ryan, 7 November: "Anything truncated confuses the player").
-				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), struck, foe.armour_for(f), at, ("ricochet" if bounce else ("again" if echo else "strike")) if struck else ("chain" if shape == AREA_CHAIN else "area"))
+				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), struck, foe.armour_total() if arc else foe.armour_for(f), at, ("ricochet" if bounce else ("again" if echo else "strike")) if struck else ("chain" if shape == AREA_CHAIN else "area"))   # an arc meets the foe's own armour, no piece's rule of the entry's
 				taken = int(landing["taken"])
 				var foe_armoured := int(landing["armoured"])
 				var barred := bool(landing["barred"])
@@ -3688,7 +3700,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 					log.append("%s consumes %s ×%d on %s, +%d" % [ms.unit.display_name, str(Effects.STATUS.get(f.consumes, {}).get("name", f.consumes)), eaten, foe.display_name, eaten * f.per_consumed])
 				if was_alive:
 					h.dealt += clampi(taken, 0, maxi(0, hp_before))
-				if foe == target:
+				if foe == target and not arc:
 					landed = taken
 					h.armoured += foe_armoured
 				# A weapon's strike aimed at the foe spends a shock, even one that deals nothing (Ryan,
@@ -3744,7 +3756,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# October), and the hitter cools for them once the spend's own heat has landed (below);
 			# equipment spends none. The blow's own Cryo lands with the riders, so a spend never
 			# eats what it lays.
-			if was_alive and not f.is_debuff() and Effects.has(foe, "cryoed"):
+			if was_alive and not f.is_debuff() and not arc and Effects.has(foe, "cryoed"):   # the weapon's own hit cashes it; a Chain's arc is no hit of the weapon's
 				h.thawed += Effects.stacks_of(foe, "cryoed")
 				Effects.remove(foe, "cryoed")
 			if f.has(Face.Keyword.CRYO) and not arc:
@@ -4077,14 +4089,16 @@ func _lured(ms: MechState, aimed: Foe) -> Array[Foe]:
 ## still standing in its slot included, as the strikes find it. A foe out of the team's reach
 ## (out_of_reach: Aloft) is passed over by all of it. The resolver and the bot read the same
 ## list.
-## The foes a spend's riders land on (Ryan, 18 November: "take riders off chain. Thematically it's a
-## lightning arc, not part of the impact"): every foe it reaches but Chain's conductors, which take
-## the arc's blow alone. What a lure's turn, a Shock, a mark and a passive's lay are read over.
+## The strike's own footprint, the foes a spend's riders land on (Ryan, 18 November: "take riders
+## off chain. Thematically it's a lightning arc, not part of the impact"): its target and every foe
+## an area of it reaches (area_shapes), never a foe Chain's arc alone strikes; a conductor an area
+## reaches is in it, and takes the arc besides (21 November). What a lure's turn, a Shock, a mark
+## and a passive's lay are read over, and the blows the resolver lands before the arcs.
 func ridden_by(f: Face, target: Foe) -> Array[Foe]:
 	var shapes := area_shapes(f, target)
 	var out: Array[Foe] = []
 	for foe in reached_by(f, target):
-		if foe == target or int(shapes.get(foe, AREA_ALL)) != AREA_CHAIN:
+		if foe == target or shapes.has(foe):
 			out.append(foe)
 	return out
 
@@ -4118,26 +4132,33 @@ func reached_by(f: Face, target: Foe) -> Array[Foe]:
 			hit.append(other)
 			if area:
 				_pair_with(hit, other)
-	# Chain's conductors (28 October): every other Shocked foe on the field, after the shapes, so
-	# a foe both beside the target and Shocked takes one blow, the shape's; a twin's half only if
-	# it carries the charge itself.
+	# Chain's conductors last (conductors), each once in the list a spend counts its foes by; a
+	# conductor a shape reached is struck by both (21 November), the arc apart (_hit).
 	for foe in conductors(f, target):
 		if not hit.has(foe):
 			hit.append(foe)
 	return hit
 
 
-## Chain's conductors (Ryan, 28 October; the kill and repeat retired): every other foe on the
-## field alive and conducting (Shocked, or a Sonic Needle in it since 20 November), wherever it
-## stands and whatever the entry's reach, in the field's order. None for an entry without Chain. A debuff's arcs are its Chain's number alone, and they
-## carry its riders as any area of it does (the Storm Petrel's lure since 17 November: every
-## Shocked foe it arcs to is lured). Read as the die is spent, before any blow lands, so a Shock
-## the spend lays never conducts its own arc.
+## Chain's conductors, the foes a spend's arcs will strike (Ryan, 21 November: "All foes on the
+## field with Shock are struck for {value}. Does not use or consume Shock"; "Any conductor"): every
+## foe on the field alive and conducting (Shocked, or a Sonic Needle in it), wherever it stands and
+## whatever the entry's reach, in the field's order; its own target too unless the strike's own
+## blow takes away what it conducts by, which a weapon's strike aimed at it does to a Shock alone
+## (a needle stays, and equipment spends no Shock). None for an entry without Chain. Read as the
+## die is spent; the resolver reads the field again once the strike's own blows have landed, and a
+## Shock or a needle the spend lays lands after its arcs, so it never conducts its own.
 func conductors(f: Face, target: Foe) -> Array[Foe]:
-	if f != null and f.has(Face.Keyword.CHAIN):
-		return conducting_foes(target)
-	var none: Array[Foe] = []
-	return none
+	var out: Array[Foe] = []
+	if f == null or not f.has(Face.Keyword.CHAIN):
+		return out
+	var spends := not f.is_debuff()   # a weapon's strike aimed at a foe spends its Shock before the arcs
+	for foe in conducting_foes(null):
+		var aimed := foe == target or f.reaches_all
+		if aimed and spends and not Effects.conducts_but(foe, "shocked"):
+			continue
+		out.append(foe)
+	return out
 
 
 ## Every foe on the field alive and conducting Chain but `but` (Effects.conducts: Shocked, a Sonic
@@ -4155,9 +4176,9 @@ func conducting_foes(but: Foe) -> Array[Foe]:
 ## Ryan, 28 October), for the number it takes in place of the roll: AREA_ROW beside the target
 ## in its rank (Spread's, Splash's), AREA_COLUMN the other rank of its column (Penetrate's,
 ## Splash's), a twin slot's other half as the half it pairs with (the target's own twin beside it
-## in the row, or the column's when the entry reaches no row), AREA_CHAIN every other Shocked foe
-## on the field (Chain's conductors), AREA_ALL any other foe a reach over every foe adds. The
-## target is not in it. The resolver and the bot read the same map.
+## in the row, or the column's when the entry reaches no row), AREA_ALL any other foe a reach over
+## every foe adds. Chain's conductors are struck apart (conductors), never a shape of the strike.
+## The target is not in it. The resolver and the bot read the same map.
 func area_shapes(f: Face, target: Foe) -> Dictionary:
 	var out := {}
 	if f == null or target == null:
@@ -4180,9 +4201,6 @@ func area_shapes(f: Face, target: Foe) -> Dictionary:
 		var pair := twin_of(target)
 		if pair != null and not out.has(pair):
 			out[pair] = AREA_ROW if f.reaches_row() else AREA_COLUMN
-	for foe in conductors(f, target):
-		if not out.has(foe):
-			out[foe] = AREA_CHAIN
 	if f.reaches_all:
 		for foe in field_foes():
 			if foe != target and not out.has(foe) and not out_of_reach(foe):
@@ -4191,7 +4209,7 @@ func area_shapes(f: Face, target: Foe) -> Dictionary:
 
 
 ## The number a foe in a shape takes in place of the roll: the row's (Spread's or Splash's),
-## the column's (Penetrate's or Splash's), Chain's on a conductor, and the entry's own for a foe
+## the column's (Penetrate's or Splash's), and the entry's own for a foe
 ## a reach over every foe adds (a weapon's strikes each whole, the Whip Scorpion's release's;
 ## equipment's blow is nothing, the Shift Whistle's lure-all's).
 static func area_number(f: Face, shape: int) -> int:
@@ -4200,8 +4218,6 @@ static func area_number(f: Face, shape: int) -> int:
 			return f.row_number()
 		AREA_COLUMN:
 			return f.column_number()
-		AREA_CHAIN:
-			return f.number_of(Face.Keyword.CHAIN)
 		AREA_ALL:
 			return f.power
 	return 0
@@ -4254,10 +4270,7 @@ func right_of(foe: Foe) -> Foe:
 ## base, through the firer's pipeline with its conditions judged on that foe.
 func _area_blow(ms: MechState, f: Face, shape: int, foe: Foe, prints: int, split: int, ctx: Dictionary = {}) -> int:
 	if f.is_debuff():
-		# A debuff deals nothing under any effect (Effects.attack); its Chain's arcs land the number
-		# it prints, plain, no add or multiply (the Storm Petrel's lure, its Striker branch, 17
-		# November: "adds Chain 3 to the lure"), and every other area of it nothing.
-		return area_number(f, shape) if shape == AREA_CHAIN else 0
+		return 0   # a debuff deals nothing under any effect (Effects.attack), its areas' blows included
 	return int(Effects.attack(ms.unit, f, split_share(area_number(f, shape) + prints, split), 0, foe, ctx)["damage"])
 
 
@@ -5270,29 +5283,19 @@ func _blow_mine(mine: Dictionary, rank: int, col: int, massive: bool, where: Str
 	var r: Dictionary = mine.get("riders", {})
 	var kws: Array = r.get("keywords", [])
 	var met := mine_reach(rank, col, massive)
-	var arcs: Array[Foe] = []
 	var chain := int(r.get("chain", 0))
-	if chain > 0:
-		for foe in conducting_foes(null):
-			if not met.has(foe):
-				arcs.append(foe)
 	mine_tally["blasts"] += 1
 	log.append("the Mine on %s blows: %s" % [where, mine_text(mine)])
 	var beat := _next_beat()
-	var all: Array[Foe] = []
-	all.append_array(met)
-	all.append_array(arcs)
-	for foe in all:
-		var blow := chain if arcs.has(foe) else dmg
-		var hp_before := foe.hp
-		var taken := Effects.damage_taken(foe, blow, null, true, false)
-		if _barrier_eats(foe, true):
-			taken = 0   # its riders land all the same
-		taken = maxi(0, taken - foe.armour_total())
-		foe.hp -= taken
-		_note_blow(foe, beat, taken, "mine")
-		mine_tally["damage"] += clampi(taken, 0, maxi(0, hp_before))
-		log.append("the Mine %s %s for %d" % ["arcs to" if arcs.has(foe) else "hits", foe.display_name, taken])
+	for foe in met:
+		_mine_blow(foe, dmg, beat, "hits")
+	# Its Chain's arcs once the blast has landed (Ryan, 21 November: Chain "should stack with spread
+	# and penetrate"): the number flat on every foe on the field that conducts, a foe it met among
+	# them, each a blow alone, so no rider of the Mine rides an arc (18 November).
+	if chain > 0:
+		for foe in conducting_foes(null):
+			_mine_blow(foe, chain, beat, "arcs to")
+	var all: Array[Foe] = met   # the foes its riders land on: the blast's, never an arc's
 	var gained := {}
 	var turned := {}
 	var stacks: Dictionary = r.get("stacks", {})
@@ -5317,6 +5320,20 @@ func _blow_mine(mine: Dictionary, rank: int, col: int, massive: bool, where: Str
 	for foe in gained.keys():
 		for status_id in gained[foe]:
 			_foe_gained_status(foe, status_id, int(gained[foe][status_id]))
+
+
+## One blow of a Mine's blast or of its Chain's arc on a foe: through its Brittle, a Barrier and its
+## armour, aimed at nobody (so no Shock is read or spent), for the screen a "mine" blow of the beat.
+func _mine_blow(foe: Foe, blow: int, beat: int, verb: String) -> void:
+	var hp_before := foe.hp
+	var taken := Effects.damage_taken(foe, blow, null, true, false)
+	if _barrier_eats(foe, true):
+		taken = 0   # its riders land all the same
+	taken = maxi(0, taken - foe.armour_total())
+	foe.hp -= taken
+	_note_blow(foe, beat, taken, "mine")
+	mine_tally["damage"] += clampi(taken, 0, maxi(0, hp_before))
+	log.append("the Mine %s %s for %d" % [verb, foe.display_name, taken])
 
 
 ## A mark a Mine's blast lays after its blow, Shocked or Exposed (through the player's next

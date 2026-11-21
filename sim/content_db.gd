@@ -1855,7 +1855,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if fd.has("dispel") and not kw_names.has("dispel"):
 		errs.append("%s: dispel (the stacks) rides with the Purge keyword" % where)
 	elif kw_names.has("chain") and kind == "attack" and int(fd.get("chain", 0)) <= 0:
-		errs.append("%s: Chain says the number every other Shocked foe takes: chain, a positive number" % where)
+		errs.append("%s: Chain says the number every foe that conducts is struck for: chain, a positive number" % where)
 	if fd.has("chain") and not kw_names.has("chain"):
 		errs.append("%s: chain (the number) rides with the Chain keyword" % where)
 	# Every Foe on a weapon lands its number whole on every foe (12 November, the two gated

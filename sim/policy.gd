@@ -617,15 +617,16 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	var mean := _mean(outcomes)
 	var p_kill := _kill_odds(outcomes, target.hp)
 	var score := _capped(outcomes, target.hp)
-	# Every other foe the blow reaches (a Spread's neighbours, a Penetrate's column,
-	# a Chain's Shocked conductors, a reach over every foe): its shape's number through the
-	# firer's modifiers and its own reads, statuses (a Shock never, no strike being aimed at it:
-	# 29 October) and armour, capped at what it has left (area by shape, numbered, and Chain).
+	# Every other foe the strike's own footprint reaches (a Spread's neighbours, a Penetrate's
+	# column, a reach over every foe): its shape's number through the firer's modifiers and its own
+	# reads, statuses (a Shock never, no strike being aimed at it: 29 October) and armour, capped at
+	# what it has left (area by shape, numbered).
 	var shapes := sk.area_shapes(f, target)
-	for n in sk.reached_by(f, target):
+	for n in sk.ridden_by(f, target):
 		if n != target and n.alive():
 			# A weapon over every foe strikes each as its own target (12 November), a Shock read on each.
 			score += _capped(damage_outcomes(ms, f, n) if f.reach == Face.Reach.EVERY_FOE else damage_outcomes(ms, f, n, int(shapes.get(n, Skirmish.AREA_ALL))), n.hp)
+	score += arcs_worth(sk, ms, f, target, mean)
 	# The rifle's blow on the foe to the right with every strike (the Macaque's offhand, 19
 	# November), a blow of its own beside an area's, through the same order.
 	if f.reach != Face.Reach.EVERY_FOE and Effects.side_strike(ms.unit, f, target) > 0:
@@ -859,6 +860,29 @@ func drill_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> 
 	var lays: Dictionary = tick["lays"]
 	if int(lays.get("ablating", 0)) > 0 and left > 0.0:
 		worth += float(n) * dot_payout("ablating", int(lays["ablating"]), int(left)) * ABLATE_WEIGHT
+	return worth
+
+
+## A Chain spend's arcs (Ryan, 21 November: "All foes on the field with Shock are struck for
+## {value}. Does not use or consume Shock"): the number flat on every conductor the arcs will strike
+## (Skirmish.conductors: its own target among them while it still conducts), with every strike of
+## the entry, no buff of the machine's or the piece's; each through the foe's own Brittle and
+## armour, a Barrier eating a weapon's first, capped at what the foe keeps (the target's after the
+## strike's mean).
+func arcs_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe, mean: float) -> float:
+	var arcs := sk.conductors(f, target)
+	if arcs.is_empty():
+		return 0.0
+	var n := f.number_of(Face.Keyword.CHAIN)
+	var strikes := maxi(1, f.strikes)
+	var worth := 0.0
+	for c in arcs:
+		if not c.alive():
+			continue
+		var per := float(maxi(0, Effects.damage_taken(c, n, ms.unit, true, false) - c.armour_total()))
+		var landing := strikes - (1 if not f.is_debuff() and c != target and Effects.has(c, "barrier") else 0)
+		var left := maxf(0.0, float(c.hp) - (mean if c == target else 0.0))
+		worth += minf(left, per * float(maxi(0, landing)))
 	return worth
 
 
@@ -1614,11 +1638,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 	var barred := damaging and target != null and Effects.has(target, "barrier")
 	for v in rolls:
 		# A split's halving of the base (rounded down, never below one), then the firer's modifiers
-		# judged on this foe, then its own reads. A debuff's Chain arc is its printed number plain
-		# (Skirmish._area_blow), its armour off.
-		if area == Skirmish.AREA_CHAIN and not damaging:
-			out.append([float(maxi(0, v - (target.armour_for(f) if target != null else 0))), w])
-			continue
+		# judged on this foe, then its own reads.
 		var dmg: int = int(Effects.attack(ms.unit, f, Skirmish.split_share(v + fired, f.split), 0, target, zctx.duplicate())["damage"]) + own
 		# The foe's own statuses read last: a Shocked foe takes the first blow aimed at it double
 		# (a foe past the target, an area's or an arc's, never: 29 October), and its Brittle adds to
@@ -2702,7 +2722,7 @@ static func _widest(sk: Skirmish, areas: Array) -> float:
 				continue
 			var shapes := sk.area_shapes(ef, t)
 			var past := 0.0
-			for foe in sk.reached_by(ef, t):
+			for foe in sk.ridden_by(ef, t):
 				if foe != t and foe.alive():
 					past += minf(maxf(0.0, _area_mean(m, ef, int(shapes.get(foe, Skirmish.AREA_ALL))) - float(foe.armour_total())), float(foe.hp))
 			most = maxf(most, past)

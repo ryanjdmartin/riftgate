@@ -1451,7 +1451,8 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dicti
 			n *= stack_steps(u, eff)
 		# `per_target` scales it by the stacks of a status the foe it is aimed at carries (the
 		# echidna's Chaos, Ryan, 20 November: "Attacks by the Echidna on foes deal +1 damage per stack
-		# of Sonic Needle"): every blow the pipeline reads on a foe, an area's and an arc's among them.
+		# of Sonic Needle"): every blow the pipeline reads on a foe, an area's among them (a Chain's arc
+		# carries no buff of the machine's since 21 November, and never comes here).
 		if eff.has("per_target"):
 			n *= stacks_of(target, str(eff["per_target"])) if target != null and target.get("modifiers") != null else 0
 		match str(eff.get("effect", "")):
@@ -1952,8 +1953,14 @@ static func needle_spec(rule: Dictionary, by: String = "") -> Dictionary:
 ## October; a Sonic Needle, 20 November)? Read on the table, so a status restored from a save
 ## conducts as a fresh one does.
 static func conducts(u) -> bool:
+	return conducts_but(u, "")
+
+
+## Does this foe conduct Chain by a status other than `but` (a Chain spend's own target, whose Shock
+## the weapon's strike spends before the arcs: a needle in it still conducts)?
+static func conducts_but(u, but: String) -> bool:
 	for m in live(u):
-		if m.stacks > 0 and (STATUS.get(m.id, {}).get("tags", []) as Array).has("conducts"):
+		if m.stacks > 0 and m.id != but and (STATUS.get(m.id, {}).get("tags", []) as Array).has("conducts"):
 			return true
 	return false
 

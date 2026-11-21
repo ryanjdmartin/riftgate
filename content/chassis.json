@@ -690,7 +690,7 @@
      "id": "chaos",
      "name": "Chaos",
      "design": {
-      "notes": "Ryan, 20 November: \"Chaos 1 - Sonic Needle - Conducts Chain. On 3 stacks, the Echidna fires Chain 2, then reduce stacks by 1. Chaos 2 - Attacks by the Echidna on foes deal +1 damage per stack of Sonic Needle.\" On 21 November, of the first step: \"Change chaos 1 to 'reduce stacks to 1.'\" Its second step's +1 a stack is the Echidna's own modifier, read on every blow its weapons land on a needled foe, an area's and an arc's among them (the pipeline's reads of a foe); the bolt is the needles' own and takes none."
+      "notes": "Ryan, 20 November: \"Chaos 1 - Sonic Needle - Conducts Chain. On 3 stacks, the Echidna fires Chain 2, then reduce stacks by 1. Chaos 2 - Attacks by the Echidna on foes deal +1 damage per stack of Sonic Needle.\" On 21 November, of the first step: \"Change chaos 1 to 'reduce stacks to 1.'\" Its second step's +1 a stack is the Echidna's own modifier, read on every blow its weapons land on a needled foe, an area's among them (the pipeline's reads of a foe); a Chain's arc is flat since 21 November, and the bolt is the needles' own, so neither takes it."
      },
      "steps": [
       {
