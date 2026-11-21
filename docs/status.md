@@ -64,10 +64,12 @@ document's job and every command are in `README.md`.
   (gl_compatibility), so a lit part's colour there is the phone's. The Mac is out of reach:
   of the foeforge renders only the Augur's survive (`tools/foeforge/out/`; the rest
   `git show fb45141`), and its `generate` and `fix` have no machine (the to-do's Art line).
-- Godot: the project runs 4.8-beta2 (published 29 October), the newest build at the last check,
-  7 November (nothing newer on github.com/godotengine/godot-builds/releases); 4.8 stable is not
-  out. The next check is due 21 November (`CLAUDE.md`, Session handoff); date this line again
-  after each.
+- Godot: the project runs 4.8-beta2 (published 29 October). At the check of 21 November two
+  betas had followed it on github.com/godotengine/godot-builds/releases, 4.8-beta3 (9 November)
+  and 4.8-beta4 (18 November), and no release candidate; their notes are on godotengine.org,
+  which this cloud environment's network does not reach, so what they fix for the game is
+  unread. The move is Ryan's call; 4.8 stable is not out. The next check is due 5 December
+  (`CLAUDE.md`, Session handoff); date this line again after each.
 - Tests: 1402 tests, 389,042 checks, green (20 November, a piece's templates on its hangar sheet, over the
   locked pieces' footing). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
