@@ -443,8 +443,9 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 320 (21 November): Chain's arcs flat and on
-  any conductor, its text and Spread's and Penetrate's, over 319 (Chaos I as "reduce stacks to
+  `edits`, `designs` and `text` read first. Version 321 (21 November): main at `8b5a027d`, the
+  Echidna's line landed (the briefs' and the texts' inventories). Version 320 the same day: Chain's
+  arcs flat and on any conductor, its text and Spread's and Penetrate's, over 319 (Chaos I as "reduce stacks to
   1") and 318 (the Echidna's kit and the Mole at tier two), each from `ccr-64b5deec-lunnff` with
   main taken in, the page main's and unchanged; that line landed on main on 21 November, so a
   publish from main carries its machines again. Versions 314 to 317 (20 November, main's: a tab a
