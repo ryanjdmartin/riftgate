@@ -55,9 +55,10 @@ document's job and every command are in `README.md`.
   upgrade chevrons, the models' texture copies' test) the same day on his "Send it to Main", and
   `claude/locked-footing` (a basic a flag on tier one, a machine's tier and the upgrade verb, the
   Honey Badger's Ore and the Prairie Dog's Spreader with their branches) on 20 November on his
-  "make sure we're cleaned up and merged in". On `ccr-64b5deec-lunnff` since, not on main (main
-  taken in on 20 November): the rules sweep's list for his marks, the echidna's kit round, the
-  Mole's kit and its move to tier two, and the Echidna's kit. A session's hangar publish runs
+  "make sure we're cleaned up and merged in", and `ccr-64b5deec-lunnff` again on 21 November (the
+  rules sweep's list for his marks, the Mole's kit and its move to tier two, the Echidna's kit,
+  Chain's arcs flat, Godot 4.8-beta4) on his "The model is not finalized but the kit is good to
+  test, so we can merge in now". A session's hangar publish runs
   ahead of main (Pages).
   Every other branch on GitHub but the lines' own working branches is merged and to delete
   (`git push origin --delete`, then `git fetch --prune`); a cloud session may not delete one.
@@ -383,7 +384,7 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
      section 11): the fights are even across the domains, and the battle whole is tight.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
      his picks on RANK AND FILE, HEAT and TOP BASIC: its prices are read from the vanilla he
-     settles on.
+     settles on. It brings tier one's slottable numbers down to the basics' (Ryan, 21 November).
    - The scorches on every machine above tier one, then the scaling from the baseline: the
      first battle down, its sizing his ("I'll handle that one"), tiers two and three up.
 2. **The machines the reboot broke** (another session's line, beside the first): each fix
@@ -425,6 +426,9 @@ never appended to, and what a line replaced stays in git.
 Every page lives in Ryan's account and is republished by its URL (read first), its database
 with it, on his word. A page's link goes into this file in the same commit as its first
 publish; the commands are in `README.md`.
+Deleted on his word of 20 November: the vocabulary marks, the targeting scenes, the roster
+analysis, the effects listening page and the engagement sandbox (the README's docs line has the
+copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   Published at v0.655 on 20 November from main's file at `33c4cc61` (the page's Version 519),
@@ -440,18 +444,13 @@ publish; the commands are in `README.md`.
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
   `edits`, `designs` and `text` read first. Version 320 (21 November): Chain's arcs flat and on
-  any conductor, its text and Spread's and Penetrate's (the same four files) over 319 (Chaos I as
-  "reduce stacks to 1": the chassis and vocabulary content, the briefs' and the texts'
-  inventories). Version 318 (20 November): the Echidna's kit and the Mole at tier two, from `ccr-64b5deec-lunnff` at `d463cd68` once main was taken in (the
-  merge `b693fc8d`), seven files (the chassis, components and vocabulary content, the briefs',
-  the texts' and the readouts' inventories, the pins), the page main's and unchanged; the five
-  files main's 317 had replaced were read by their paths first and found under the branch's.
-  Versions 314 to 317 (20 November, main's: a tab a kind, the readouts, the Templates view, a
-  piece's templates on its sheet) were a union of main and that line at `fcac1ade`. Until the
-  line lands, a publish from main alone takes the Mole's tier two and the Echidna off the page:
-  build from the branch. Its drill line reads templates since the merge (`hold.drill*`). The
-  `edits` and `text` collections were empty, `designs` held his two notes of 5 November (both
-  already briefed).
+  any conductor, its text and Spread's and Penetrate's, over 319 (Chaos I as "reduce stacks to
+  1") and 318 (the Echidna's kit and the Mole at tier two), each from `ccr-64b5deec-lunnff` with
+  main taken in, the page main's and unchanged; that line landed on main on 21 November, so a
+  publish from main carries its machines again. Versions 314 to 317 (20 November, main's: a tab a
+  kind, the readouts, the Templates view, a piece's templates on its sheet) were a union of main
+  and that line built in a scratch tree. The `edits` and `text` collections were empty,
+  `designs` held his two notes of 5 November (both already briefed).
   The `candidates` collection (his names, 106 rows) stays in the database unread;
   `docs/name_candidates.md` holds them. The service refuses a republish until the live page's saved source has been
   read whole, every line: read it before the publish, not after the refusal. A view counts only in
@@ -465,23 +464,11 @@ publish; the commands are in `README.md`.
   His marks are its database's `marks` collection, a document an item (id the item's, `V1`),
   `{item, mark, note, by, day, updated}`: read them with ArtifactData before the fold. The page
   runs contract 0.2.96. Republish it from the script's output when the proposal changes.
-- The vocabulary pass's table with his marks: https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko
-  (collection `marks`, a document a row). His marks are complete and built; the page is their
-  record, their fold `git show 07f01fb:docs/vocabulary_pass_proposal.md`, section 18.
-- The targeting scenes: https://claude.ai/artifact/9UTL3VqdoHVVGfodtBv124. It shows the aims
-  the targeting of 17 November replaced, and says so at its head.
-- The roster analysis: https://claude.ai/artifact/QVLRVD8YXsK8ZUKY3A1vxo, from
-  `docs/roster_analysis.md` by `tools/pages/roster_analysis_page.py`; background, retired once
-  the last brief that cites it lands.
 - The foe picker: https://claude.ai/artifact/1a2yJbdRMfdpJDYXYQoTei (collection `picks`); the
   fix order that worked is the bible's art row.
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV
   (`tools/soundforge/melody_desk.html`; collections `parts` and `melodies`), at its version 8.
-- The listening page: https://claude.ai/artifact/52qg7kVfAsANgURn98r9d9
-  (`tools/soundforge/out/fx/`); its source lost one foe-down line on 9 November, unpublished.
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW
   (`tools/soundforge/out/pairs/`, built by `pair_sketches.py`), at its version 88. A version
   holds at most 256 MiB of files and a publish 64 MB, so a round's new files go up with the
   old round's removals, in two publishes when they pass the limit.
-- The engagement sandbox: https://claude.ai/artifact/VfmMXTs5w7itJUQRtCLCmg
-  (`docs/canvas/engagement-sandbox.html`).

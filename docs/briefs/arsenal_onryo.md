@@ -15,7 +15,7 @@ Ryan, 31 October: "Onryo will not land on Grudge for its effect. That was a work
 on the mythology, not for a machine." Grudge below is that working term; the effect takes a word
 of its own (the slate's Pilgrim carries a foe's Grudge, a blow growing with the team's kills).
 **Maker**: the Arsenal. **Proposed tier**: two. **Read first**: `docs/briefs/README.md`; "The
-design as proposed" below, with Ryan's calls and the Pall in full; `docs/roster_analysis.md`
+design as proposed" below, with Ryan's calls and the Pall in full; `git show a95e0a1f:docs/roster_analysis.md`,
 section 4 (its rating); the bible's rows on retaliation and thorns, and on damage redirection
 (section 5).
 
