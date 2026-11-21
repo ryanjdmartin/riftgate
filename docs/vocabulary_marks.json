@@ -1,0 +1,580 @@
+{
+  "page": "Vocabulary Marks (https://claude.ai/artifact/Bmq4rxZEpFZznLJ8cLmtko), deleted 21 November",
+  "what": "Ryan's marks and notes on docs/vocabulary_table.md's rows (git show 07f01fb:docs/vocabulary_table.md), 15 November, as the page's marks collection held them",
+  "rows": [
+    {
+      "id": "ablate-lays-ablating",
+      "name": "Ablate, lays Ablating",
+      "mark": "keep",
+      "note": "Your word and form of 15 November. A tick ignores a Barrier, by your fourth round. Still yours: its size.",
+      "at": "2026-11-15T06:30:00.000Z"
+    },
+    {
+      "id": "armoured",
+      "name": "Armoured",
+      "mark": "change",
+      "note": "The common \"end\" state between both sides is \"start of their next turn.\"",
+      "at": "2026-11-15T09:46:33.473Z"
+    },
+    {
+      "id": "barrier",
+      "name": "Barrier",
+      "mark": "change",
+      "note": "From your message of 15 November: your lean is that it is no basic.",
+      "at": "2026-11-15T05:00:00.000Z"
+    },
+    {
+      "id": "brace",
+      "name": "Brace",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T19:38:29.113Z"
+    },
+    {
+      "id": "breach-ours",
+      "name": "Breach, ours",
+      "mark": "cut",
+      "note": "From your fourth round, 15 November: \"I would remove Breach from the player's side. Ignores armour can be an explicitly written out property.\"",
+      "at": "2026-11-15T06:30:00.000Z"
+    },
+    {
+      "id": "breach-the-foes-as-shield-damage",
+      "name": "Breach, the foes', as shield damage",
+      "mark": "cut",
+      "note": "Your proposal of the third round, set aside with the word: \"Sure, let's cut breach.\" Its reads stay in the proposal, on the shelf as one domain's identity.",
+      "at": "2026-11-15T09:25:00.000Z"
+    },
+    {
+      "id": "breach-the-foes",
+      "name": "Breach, the foes'",
+      "mark": "cut",
+      "note": "From your message of 15 November: \"Sure, let's cut breach.\" It leaves the engine and content with the fold-in. Until then FOE BREACH on a debug build's trials plays the foes without it.",
+      "at": "2026-11-15T09:25:00.000Z"
+    },
+    {
+      "id": "broken",
+      "name": "Broken",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T19:48:59.480Z"
+    },
+    {
+      "id": "burn-lays-burning-on-a-machine",
+      "name": "Burn, lays Burning, on a machine",
+      "mark": "change",
+      "note": "From your message of 15 November: hits the shield first, bypasses armour on the hull, and takes the word Ablate.",
+      "at": "2026-11-15T05:00:00.000Z"
+    },
+    {
+      "id": "burn-lays-burning",
+      "name": "Burn, lays Burning",
+      "mark": "change",
+      "note": "From your message of 15 November: becomes Ablate, one rule on both sides.",
+      "at": "2026-11-15T05:00:00.000Z"
+    },
+    {
+      "id": "chain",
+      "name": "Chain",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:19:04.444Z"
+    },
+    {
+      "id": "charged",
+      "name": "Charged",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T13:40:28.866Z"
+    },
+    {
+      "id": "cleanse",
+      "name": "Cleanse",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:33:52.946Z"
+    },
+    {
+      "id": "corrupt-lays-corrupted",
+      "name": "Corrupt, lays Corrupted",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:37:10.563Z"
+    },
+    {
+      "id": "countdown",
+      "name": "Countdown",
+      "mark": "change",
+      "note": "This is too ubiquitous. Should be primarily an elite or boss mechanic. Causes a lot of mental overhead.",
+      "at": "2026-11-15T17:17:26.817Z"
+    },
+    {
+      "id": "crush-lays-crushed",
+      "name": "Crush, lays Crushed",
+      "mark": "change",
+      "note": "If this is meant to homage Jho's defense down debuff, then that was caused by its saliva. So this could be our Corrode, Brittle, or Blight, and I would consider expanding it to other foes as their Flak equivalent, a soft armour counter and swarm multiplier. We could consider making this one symmetrical and folding it into Flak as well, changing the name so it works on both sides. I don't mind changing the existing Flak pieces so their name evokes more of a chemical warfare angle, if we need to.",
+      "at": "2026-11-15T09:44:30.021Z"
+    },
+    {
+      "id": "cryo",
+      "name": "Cryo",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:21:19.500Z"
+    },
+    {
+      "id": "destroyed-component",
+      "name": "Destroyed component",
+      "mark": "change",
+      "note": "This can be a boss-level rider, that destroys the visible face if it damages hull at all. Only promoted form or superboss-level so we're not tuning the economy around it. No longer a general rule.",
+      "at": "2026-11-15T15:57:15.691Z"
+    },
+    {
+      "id": "disable-lays-disabled",
+      "name": "Disable, lays Disabled",
+      "mark": "change",
+      "note": "Rename to Jammed",
+      "at": "2026-11-15T15:40:09.551Z"
+    },
+    {
+      "id": "disrupt",
+      "name": "Disrupt",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:21:27.032Z"
+    },
+    {
+      "id": "drain",
+      "name": "Drain",
+      "mark": "change",
+      "note": "This should be moved to an ability on the unit since it's on every attack. Like the Nob.",
+      "at": "2026-11-15T15:47:36.818Z"
+    },
+    {
+      "id": "drained-rerolls",
+      "name": "Drained rerolls",
+      "mark": "",
+      "note": "From your fourth round: \"mandragoras shouldn't try to scream away 3 rerolls\". Built: the foes never announce more of it in a round than a round's two rerolls.\n\nThere should be an effect on the reroll button when this happens. It can be unique text on the ability and not a keyword.",
+      "at": "2026-11-15T15:52:33.802Z"
+    },
+    {
+      "id": "empowered",
+      "name": "Empowered",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:46:51.999Z"
+    },
+    {
+      "id": "enraged",
+      "name": "Enraged",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T19:48:13.451Z"
+    },
+    {
+      "id": "every-machine",
+      "name": "Every Machine",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T15:57:21.758Z"
+    },
+    {
+      "id": "expose-lays-exposed",
+      "name": "Expose, lays Exposed",
+      "mark": "keep",
+      "note": "From your message of 15 November: it lasts until the end of the next round. The texts now say so.",
+      "at": "2026-11-15T05:00:00.000Z"
+    },
+    {
+      "id": "exposed-on-a-machine",
+      "name": "Exposed, on a machine",
+      "mark": "keep",
+      "note": "From your rounds of 15 November: the whole field up to its predicted death (\"keep the logic where enemies don't try and overkill\"), tier two and up, one machine at a time, a Lure wins, armour of every kind. Still yours: whether a machine that stands Exposed may be marked again.",
+      "at": "2026-11-15T09:25:00.000Z"
+    },
+    {
+      "id": "flak",
+      "name": "Flak",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:20:59.777Z"
+    },
+    {
+      "id": "follow-up",
+      "name": "Follow-up",
+      "mark": "change",
+      "note": "I don't think we need to explicitly spell this out for the player. A backend pattern is ok, and it will become obvious through play and mastery by the player. I think there might be a case that for some or all elites or bosses, since their patterns kind of define them, we should give some or all of them innate resistances, like Immune to Disrupt, Immune to Exposed, Immune to Purge, Immune to Suppress...not as a blanket for all bosses, but for ones who need it for their fight to actually do something. It also can be somewhat thematic. There's a fine line between a weakness left open, and a weakness that's exploitable in a way that turns the whole fight into a damage sponge with no danger.",
+      "at": "2026-11-15T19:35:57.867Z"
+    },
+    {
+      "id": "golden",
+      "name": "Golden",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T19:48:19.994Z"
+    },
+    {
+      "id": "grudge",
+      "name": "Grudge",
+      "mark": "keep",
+      "note": "Might not be threatening enough, depends on its escort.",
+      "at": "2026-11-15T18:54:57.542Z"
+    },
+    {
+      "id": "guarded-and-parts",
+      "name": "Guarded, and parts",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T19:48:22.684Z"
+    },
+    {
+      "id": "ignores-armour",
+      "name": "Ignores armour",
+      "mark": "keep",
+      "note": "From your rounds of 15 November: a written property, on pieces of a higher tier or behind a gate. The Ammit's Talons and the Wild Boar's charge already are. The Overclocked Railgun, a tier-one find, is the one open piece: its place is yours.",
+      "at": "2026-11-15T09:25:00.000Z"
+    },
+    {
+      "id": "instant",
+      "name": "Instant",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:33:40.660Z"
+    },
+    {
+      "id": "juggernaut-breach",
+      "name": "Juggernaut Breach",
+      "mark": "",
+      "note": "Change to explicit \"ignores armour.\"",
+      "at": "2026-11-15T13:47:15.299Z"
+    },
+    {
+      "id": "last-act",
+      "name": "Last Act",
+      "mark": "change",
+      "note": "We could probably make more use of this. A common strategy trope is foes who, say buff others on death, or debuff on death, which makes kill sequencing more interesting in normal formations. It's a good domain identity, too. So change to not just damage effects, and maybe rename to something more interesting, but these last breath / death rattle effects are so common in games that I'm not sure what words are used and what's appropriate for our game.",
+      "at": "2026-11-15T17:29:51.043Z"
+    },
+    {
+      "id": "lure",
+      "name": "Lure",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:21:29.214Z"
+    },
+    {
+      "id": "merge",
+      "name": "Merge",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T19:47:57.244Z"
+    },
+    {
+      "id": "mine",
+      "name": "Mine",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:27:09.801Z"
+    },
+    {
+      "id": "numbed",
+      "name": "Numbed",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T19:48:03.953Z"
+    },
+    {
+      "id": "overheated",
+      "name": "Overheated",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T19:48:55.651Z"
+    },
+    {
+      "id": "overshield",
+      "name": "Overshield",
+      "mark": "cut",
+      "note": "",
+      "at": "2026-11-15T09:34:49.425Z"
+    },
+    {
+      "id": "paradox",
+      "name": "Paradox",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:27:25.740Z"
+    },
+    {
+      "id": "penetrate",
+      "name": "Penetrate",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:18:47.229Z"
+    },
+    {
+      "id": "phased",
+      "name": "Phased",
+      "mark": "change",
+      "note": "I think we give this to the foes too. New effect:\n\"Cannot be damaged or targeted by anything until the end of this round.\" We remove the awkward act clause, but still ensure that it cannot be buffed or interacted with by allies until it unphases. \n\nThe thing that makes it work with that wording, is that all sources of Phased should say \"at the end of this round, grant Phased.\" For the foes that's irrelevant, but for the player it turns it into a proactive tool instead of a reactive one. They queue up a phased for end of round, and it lasts for a whole round, where they cannot be interacted with by either side.\n\nIt also gains a niche as a setup or recovery tool. If that's too strong, I would add \"Remove all buffs and debuffs. Cannot gain any buffs or debuffs while Phased.\" The debuff clause isn't strictly necessary, but it makes the buff-negation feel less arbitrary.",
+      "at": "2026-11-15T14:26:49.892Z"
+    },
+    {
+      "id": "pinned-burning",
+      "name": "Pinned Burning",
+      "mark": "change",
+      "note": "Rename \"Seared.\"",
+      "at": "2026-11-15T09:29:23.841Z"
+    },
+    {
+      "id": "pinned-empowered",
+      "name": "Pinned Empowered",
+      "mark": "change",
+      "note": "This is not pinned empowered, this is an Ammit specific buff. I would give it to the Ammit only, even though it affects the whole battlefield.\n\nI propose some Ammit content renames:\nPassive: Quintessence Reactor. Rename souls to Essence \nSoul Siphon -> Quintessence Tap. Grants the no-decay state which is represented as a buff on the Ammit called Essence Flare.",
+      "at": "2026-11-15T15:39:20.168Z"
+    },
+    {
+      "id": "pinned-flak",
+      "name": "Pinned Flak",
+      "mark": "change",
+      "note": "Just \"Pinned.\"",
+      "at": "2026-11-15T09:28:38.945Z"
+    },
+    {
+      "id": "primed",
+      "name": "Primed",
+      "mark": "change",
+      "note": "Lays 1 per stack, and it needs either a standard time, or make it decay 1 a round.\n\nOr, give it the same format as cryo: applies ablate 2, use a stack on firing.",
+      "at": "2026-11-15T13:42:43.688Z"
+    },
+    {
+      "id": "purge-ours",
+      "name": "Purge, ours",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:22:52.596Z"
+    },
+    {
+      "id": "purge-the-foes",
+      "name": "Purge, the foes'",
+      "mark": "change",
+      "note": "This should be symmetrical with machine side Purge. This is confusing.",
+      "at": "2026-11-15T16:04:14.392Z"
+    },
+    {
+      "id": "rallied",
+      "name": "Rallied",
+      "mark": "cut",
+      "note": "This doesn't need to be a temporary buff or a keyword. If there's room for a reroll, grant one, otherwise it's wasted. We can communicate by highlighting the reroll button as part of the preview, if one will be granted.",
+      "at": "2026-11-15T15:04:45.895Z"
+    },
+    {
+      "id": "rally",
+      "name": "Rally",
+      "mark": "change",
+      "note": "Buff itself too. Helps with low foe counts.",
+      "at": "2026-11-15T19:42:54.455Z"
+    },
+    {
+      "id": "rapid",
+      "name": "Rapid",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:33:34.832Z"
+    },
+    {
+      "id": "rebooting",
+      "name": "Rebooting",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T19:48:50.100Z"
+    },
+    {
+      "id": "regenerating",
+      "name": "Regenerating",
+      "mark": "change",
+      "note": "These are structured as 'Regen 1 per stack' and I'd give all sources either a fixed duration, say 2 or 3 turns, or have it decay one stack at a time.",
+      "at": "2026-11-15T09:51:08.140Z"
+    },
+    {
+      "id": "regrow",
+      "name": "Regrow",
+      "mark": "change",
+      "note": "If this is a flat HP recovery, it can just be named Heal, or Recover if it's self-only.",
+      "at": "2026-11-15T19:47:41.442Z"
+    },
+    {
+      "id": "retaliate",
+      "name": "Retaliate",
+      "mark": "cut",
+      "note": "",
+      "at": "2026-11-15T13:39:23.098Z"
+    },
+    {
+      "id": "ricochet",
+      "name": "Ricochet",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T13:44:39.503Z"
+    },
+    {
+      "id": "sap-lays-sapped",
+      "name": "Sap, lays Sapped",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:21:14.491Z"
+    },
+    {
+      "id": "scorch-lays-scorched",
+      "name": "Scorch, lays Scorched",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:36:43.932Z"
+    },
+    {
+      "id": "sealed-changed-over-souls-quick-turn-spent",
+      "name": "Sealed, Changed Over, Souls, Quick turn spent",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T19:48:37.842Z"
+    },
+    {
+      "id": "self-destruct",
+      "name": "Self-Destruct",
+      "mark": "",
+      "note": "This is a good place for Countdown on a rank and file monster.",
+      "at": "2026-11-15T17:18:11.838Z"
+    },
+    {
+      "id": "several-strikes",
+      "name": "Several strikes",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T16:04:26.568Z"
+    },
+    {
+      "id": "shock-lays-shocked",
+      "name": "Shock, lays Shocked",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:21:05.260Z"
+    },
+    {
+      "id": "silence-lays-silenced",
+      "name": "Silence, lays Silenced",
+      "mark": "cut",
+      "note": "Honestly I think that this just causes more confusion and potential bugs than it grants gameplay. Ward exists, Jammed exists, that's plenty of disruption. Plus, the counterplay is \"bring vanilla guns\" and that's lame.",
+      "at": "2026-11-15T15:50:25.844Z"
+    },
+    {
+      "id": "spillover",
+      "name": "Spillover",
+      "mark": "change",
+      "note": "As a module only effect, this does not need to be a keyword. It can be unique text.",
+      "at": "2026-11-15T09:20:27.669Z"
+    },
+    {
+      "id": "splash",
+      "name": "Splash",
+      "mark": "cut",
+      "note": "It might be a more interesting game with only the other area shapes, with a few select pieces carrying both spread and penetrate together.",
+      "at": "2026-11-15T09:19:35.277Z"
+    },
+    {
+      "id": "splits-as-it-falls",
+      "name": "Splits as it falls",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T19:47:59.726Z"
+    },
+    {
+      "id": "spread",
+      "name": "Spread",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:11:14.840Z"
+    },
+    {
+      "id": "spun-up",
+      "name": "Spun Up",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T13:44:31.688Z"
+    },
+    {
+      "id": "steal",
+      "name": "Steal",
+      "mark": "change",
+      "note": "Doesn't need to be it's own rider. It grants Jammed on the target, and Gilgamesh gains Appropriated with the value. The ability should be renamed to Collect.",
+      "at": "2026-11-15T15:46:07.192Z"
+    },
+    {
+      "id": "summon",
+      "name": "Summon",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T19:47:54.566Z"
+    },
+    {
+      "id": "supercooled",
+      "name": "Supercooled",
+      "mark": "keep",
+      "note": "Specify \"1\" cryo in tooltip",
+      "at": "2026-11-15T13:41:54.099Z"
+    },
+    {
+      "id": "suppress-lays-suppressed",
+      "name": "Suppress, lays Suppressed",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:21:24.200Z"
+    },
+    {
+      "id": "swallow-lays-swallowed",
+      "name": "Swallow, lays Swallowed",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T15:50:29.469Z"
+    },
+    {
+      "id": "swap",
+      "name": "Swap",
+      "mark": "change",
+      "note": "Can be unique text, not a keyworded rider.",
+      "at": "2026-11-15T09:26:59.393Z"
+    },
+    {
+      "id": "the-aims",
+      "name": "The aims",
+      "mark": "change",
+      "note": "These need to be audited separately as an entire subsystem. Not immediately, but needs to get looked at as part of higher tier difficulty at least.",
+      "at": "2026-11-15T19:37:47.973Z"
+    },
+    {
+      "id": "undying",
+      "name": "Undying",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T19:47:47.518Z"
+    },
+    {
+      "id": "vitriol",
+      "name": "Vitriol",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:26:08.552Z"
+    },
+    {
+      "id": "ward",
+      "name": "Ward",
+      "mark": "keep",
+      "note": "",
+      "at": "2026-11-15T09:45:22.049Z"
+    },
+    {
+      "id": "web-lays-webbed",
+      "name": "Web, lays Webbed",
+      "mark": "change",
+      "note": "I don't think the rider needs to be listed as a keyword. It's a unique effect, and the debuff can be renamed \"web bomb.\"",
+      "at": "2026-11-15T09:28:02.994Z"
+    }
+  ]
+}
