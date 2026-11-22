@@ -834,23 +834,88 @@ func test_route_to_reaches_every_reachable_hex() -> void:
 
 ## A move is given in one go (Ryan, 28 October): one move an action, the whole of it, so a
 ## machine that moved short of its move cannot move again until a fight spends the action.
-func test_a_machine_moves_once_an_action() -> void:
+## A move is laid a waypoint at a time (Ryan, 22 November: "If points remain, re-draw reachable
+## hexes from the waypoint ... until movement points are emptied"): each leg spends its cost, the
+## reach is read from the leg's end with what is left, and once the move is spent nothing is lit.
+func test_a_move_is_laid_in_waypoints_until_it_is_spent() -> void:
 	var b := _battle()
 	var m: Unit = b.mechs()[0]
 	assert_true(b.move_to(m, b.map.rift).is_empty(), "the rift is out of reach")
 	var near := Vector2i(-99, -99)
 	for h in b.destinations_for(m).keys():
-		if int(b.destinations_for(m)[h]) < m.movespeed:
+		if int(b.destinations_for(m)[h]) == 1:
 			near = h
 			break
-	assert_true(near != Vector2i(-99, -99), "a hex short of its whole move")
+	assert_true(near != Vector2i(-99, -99), "a hex a step away")
 	var route := b.move_to(m, near)
-	assert_false(route.is_empty(), "the move is taken")
+	assert_false(route.is_empty(), "the first waypoint is laid")
 	assert_eq(m.pos, near, "it is there at once")
-	assert_true(b.moved.has(m.id), "and it has moved this action")
-	assert_false(b.can_move(m), "so it cannot move again")
+	assert_eq(b.move_left(m), m.movespeed - 1, "its step off the move")
+	assert_true(b.can_move(m), "so it may lay another")
+	assert_eq(b.waypoints(m), [near] as Array[Vector2i], "one waypoint")
+	for h in b.destinations_for(m).keys():
+		assert_true(Hex.distance(h, near) <= b.move_left(m), "the reach is read from the waypoint with what is left")
+	while b.can_move(m):
+		var next: Vector2i = b.destinations_for(m).keys()[0]
+		assert_false(b.move_to(m, next).is_empty(), "another waypoint")
+	assert_eq(b.move_left(m), 0, "until the move is spent")
 	assert_true(b.destinations_for(m).is_empty(), "nothing is lit")
+	assert_eq(b.plan_pieces().size(), b.waypoints(m).size(), "a leg a waypoint")
 	assert_eq(b.actions_left(m), 1, "a move spends no action: it may still fight")
+	assert_true(b.pending(m), "the plan in hand")
+
+
+## A previous waypoint takes back every step after it; a cancel takes the whole plan and its
+## steps off the undo; an execute plays it as one step, and its undo puts the plan back as it was
+## (Ryan, 22 November).
+func test_waypoints_are_cut_back_cancelled_and_executed() -> void:
+	var b := _battle()
+	var m: Unit = b.mechs()[0]
+	var start := m.pos
+	var steps := 0
+	while b.can_move(m) and b.waypoints(m).size() < 3:
+		b.move_to(m, b.destinations_for(m).keys()[0])
+		steps += 1
+	assert_true(steps >= 2, "two waypoints at least")
+	var wps := b.waypoints(m)
+	assert_eq(b.history.size(), wps.size(), "a step a waypoint")
+	assert_true(b.back_to_waypoint(m, 1), "cut back to the first")
+	assert_eq(b.waypoints(m), [wps[0]] as Array[Vector2i], "only it left")
+	assert_eq(m.pos, wps[0], "the machine there")
+	assert_eq(b.history.size(), 1, "the later steps off the undo")
+	assert_true(b.cancel(m), "cancelled")
+	assert_eq(m.pos, start, "back where it stood")
+	assert_false(b.pending(m), "nothing in hand")
+	assert_false(b.can_undo(), "and nothing on the undo")
+	b.move_to(m, b.destinations_for(m).keys()[0])
+	var at := m.pos
+	var played := b.execute(m)
+	assert_eq(played.size(), 1, "the execute hands over its leg")
+	assert_false(b.pending(m), "nothing left to play")
+	assert_eq(b.actions_left(m), 0, "no order stood: its action is over")
+	assert_eq(b.history.size(), 2, "the execute a step of its own")
+	assert_eq(b.undo(), m, "its undo is about the machine")
+	assert_true(b.pending(m), "the plan back in hand, to play again")
+	assert_eq(b.waypoints(m), [at] as Array[Vector2i], "its waypoint as it was")
+	assert_eq(b.shown_positions()[m.id][0], start, "shown where it stood")
+	assert_eq(b.actions_left(m), 1, "its action whole")
+
+
+## An order onto a pack, then its execute: the order stands as given, the machine played.
+func test_an_executed_order_stands() -> void:
+	var b := _battle()
+	var a: Unit = b.mechs()[0]
+	var pack := _a_pack_in_reach(b, a)
+	assert_true(pack != null, "a pack the machine can reach this turn")
+	assert_eq(b.order_onto(a, pack), "ordered", "ordered, moving into range")
+	assert_eq(b.order_onto(a, pack), "ordered", "a second order onto it changes nothing")
+	assert_eq(b.history.size(), 1, "one step")
+	assert_true(b.pending(a), "in hand")
+	b.execute(a)
+	assert_true(b.played.has(a.id), "played")
+	assert_eq(b.order_of(a), pack, "its order kept")
+	assert_false(b.can_move(a), "it moves no more")
+	assert_false(b.cancel(a), "and no cancel takes a played move back")
 
 
 func test_undo_puts_a_machine_back_with_its_whole_move() -> void:
@@ -901,14 +966,7 @@ func test_undo_takes_back_moves_and_orders_in_the_order_they_were_made() -> void
 	b.undo()
 	assert_eq(b.order_of(a), null, "the order taken back")
 	assert_eq(a.pos, a0, "and the move with it")
-	# A second tap takes the order back, and an undo puts it back.
-	b.order_onto(a, pack)
-	assert_eq(b.order_onto(a, pack), "cancelled", "the second tap cancels it")
-	assert_eq(b.order_of(a), null, "no order")
-	b.undo()
-	assert_eq(b.order_of(a), pack, "the undo puts the order back")
-	b.undo()
-	assert_eq([b.order_of(a), a.pos], [null, a0], "and the next takes the first order back")
+	assert_true(b.can_undo() == false, "nothing more")
 
 
 ## A move is planned on the map (Ryan, 25 October: shown, then played on ENGAGE or END TURN):
@@ -1103,6 +1161,7 @@ func test_nothing_is_left_once_every_machine_has_done_what_it_can() -> void:
 	b.spent.clear()
 	for m in b.mechs():
 		b.moved[m.id] = true
+		b.move_used[m.id] = m.movespeed   # every move spent
 	var a: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
 	_engage(b, sq, a)
@@ -1558,8 +1617,8 @@ func test_a_drawn_route_is_walked_as_drawn() -> void:
 	assert_true(b.draft_step(m, draft, m.pos).is_empty(), "back onto the machine clears it")
 	assert_true(b.move_along(m, draft), "the drawn route is walked")
 	assert_eq(m.pos, dest, "to its end")
-	assert_true(b.moved.has(m.id), "and that is its move this action")
-	assert_false(b.can_move(m), "in one go")
+	assert_true(b.moved.has(m.id), "and that is a waypoint laid this action")
+	assert_eq(b.move_left(m), m.movespeed - b.field.route_cost(m, draft, m.movespeed), "its cost off the move")
 
 
 func test_a_draft_never_outruns_the_move() -> void:

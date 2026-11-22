@@ -157,6 +157,11 @@ var meter_held: int = 0           # hundredths of menace the fodder's trial has 
 ## hexes its machines move on the map, and each fight's own (Skirmish.sponsorship), added up.
 var sponsorship := {"hexes_moved": 0, "guarded": 0, "damaging_spends": 0, "quiet_spends": 0}   # ContentDB.SPONSORSHIP_MEASURES
 var action_hexes: Dictionary = {}   # mech id -> hexes moved in its current action, taken back with an undo
+## The move points a machine has spent on its waypoints this action (Ryan, 22 November: "If
+## points remain, re-draw reachable hexes from the waypoint ... until movement points are
+## emptied"): mech id -> the cost walked, water's two included. A move is laid a waypoint at a
+## time until it plays (execute) or the move is spent.
+var move_used: Dictionary = {}
 ## The caches claimed this battle, in the order claimed (the bible's loot rows; built 7
 ## November): each {"kind", "tier", "salvage", "components": [ids], "blueprint": an id or "",
 ## "by": the machine's id}. The campaign banks them as the battle ends, as it banks the kills.
@@ -486,19 +491,25 @@ func catchers_of(u: Unit) -> Array:
 	return out
 
 
-## Whether a machine may move now: the player's turn, an action left, not moved this action
-## (one move an action, in one go), a move to give, not caught.
+## Whether a machine may move now: the player's turn, an action left, its move not yet played
+## this action, move points left to lay a waypoint with, not caught.
 func can_move(u: Unit) -> bool:
-	return state == State.PLAN and actions_left(u) > 0 and not moved.has(u.id) and u.movespeed > 0 and not is_pinned(u)
+	return state == State.PLAN and actions_left(u) > 0 and not played.has(u.id) and move_left(u) > 0 and not is_pinned(u)
 
 
-## Hexes a machine may move to now, with its whole move; a carrier only where the block it
-## carries fits (the Swallowtail's carry), its riders lifted off its way.
+## The move points a machine has left this action: its move less what its waypoints have spent.
+func move_left(u: Unit) -> int:
+	return maxi(0, u.movespeed - int(move_used.get(u.id, 0))) if u != null else 0
+
+
+## Hexes a machine may move to now, from its latest waypoint with the move it has left; a
+## carrier only where the block it carries fits (the Swallowtail's carry), its riders lifted off
+## its way.
 func destinations_for(u: Unit) -> Dictionary:
 	if u == null or not can_move(u):
 		return {}
 	var riders := _lift(u)
-	var out := field.reachable(u, u.movespeed)
+	var out := field.reachable(u, move_left(u))
 	_set_down()
 	if not riders.is_empty():
 		for h in out.keys():
@@ -619,7 +630,7 @@ func move_to(u: Unit, to: Vector2i) -> Array[Vector2i]:
 	if not destinations_for(u).has(to):
 		return none
 	_lift(u)
-	var route := field.route_to(u, to, u.movespeed)
+	var route := field.route_to(u, to, move_left(u))
 	_set_down()
 	if route.is_empty():
 		return none
@@ -633,7 +644,7 @@ func move_along(u: Unit, route: Array) -> bool:
 	if not can_move(u) or route.is_empty():
 		return false
 	var riders := _lift(u)
-	var cost := field.route_cost(u, route, u.movespeed)
+	var cost := field.route_cost(u, route, move_left(u))
 	_set_down()
 	if cost < 0:
 		return false
@@ -648,13 +659,15 @@ func move_along(u: Unit, route: Array) -> bool:
 
 func _walk_machine(u: Unit, route: Array[Vector2i]) -> void:
 	var riders := _lift(u)   # who rides, read where it stood
+	var cost := maxi(0, field.route_cost(u, route, move_left(u)))
 	_set_down()
 	var lands: Dictionary = landing(u, riders, route[route.size() - 1])["to"] if not riders.is_empty() else {}
 	_push(u)
 	var piece := {"unit": u.id, "from": _arr(u.pos), "facing": u.facing, "path": route.map(func(h): return _arr(h)), "riders": []}
 	for r in riders:
 		(piece["riders"] as Array).append([r.id, r.pos.x, r.pos.y, r.facing, (lands[r] as Vector2i).x, (lands[r] as Vector2i).y])
-	moved[u.id] = true   # one move an action, the whole of it
+	moved[u.id] = true   # it has moved this action: a waypoint laid
+	move_used[u.id] = int(move_used.get(u.id, 0)) + cost
 	var before: Vector2i = route[route.size() - 2] if route.size() >= 2 else u.pos
 	u.facing = field._direction_index(before, route[route.size() - 1])
 	u.pos = route[route.size() - 1]
@@ -698,7 +711,10 @@ func _snapshot(who: Unit = null) -> Dictionary:
 	var who_played: Array = []
 	for uid in played.keys():
 		who_played.append(int(uid))
-	return {"who": who.id if who != null else 0, "units": units, "moved": who_moved, "spent": spends, "played": who_played,
+	var used := {}
+	for uid in move_used.keys():
+		used[str(uid)] = int(move_used[uid])
+	return {"who": who.id if who != null else 0, "units": units, "moved": who_moved, "spent": spends, "played": who_played, "move_used": used,
 		"action_hexes": hexes, "orders": ords, "hexes_moved": int(sponsorship["hexes_moved"]), "planned": planned.duplicate(true)}
 
 
@@ -723,6 +739,10 @@ func _restore(snap: Dictionary) -> void:
 	played.clear()
 	for uid in snap.get("played", []):
 		played[int(uid)] = true
+	move_used.clear()
+	var used: Dictionary = snap.get("move_used", {})
+	for k in used.keys():
+		move_used[int(str(k))] = int(used[k])
 	action_hexes.clear()
 	var hexes: Dictionary = snap.get("action_hexes", {})
 	for k in hexes.keys():
@@ -832,6 +852,7 @@ func _retake(u: Unit) -> void:
 			kept.append(p)
 	if kept.size() != planned.size():
 		moved.erase(u.id)
+		move_used.erase(u.id)
 	planned = kept
 	orders.erase(u.id)
 	if played.has(u.id):
@@ -910,41 +931,115 @@ func _forget_plan(snap: Dictionary, u: Unit, before: Dictionary, back: Dictionar
 			hexes[str(u.id)] = was
 		else:
 			hexes.erase(str(u.id))
+		var used: Dictionary = snap.get("move_used", {})
+		var was_used := int((before.get("move_used", {}) as Dictionary).get(str(u.id), 0))
+		if was_used > 0:
+			used[str(u.id)] = was_used
+		else:
+			used.erase(str(u.id))
 		if not (before.get("moved", []) as Array).has(u.id):
 			var who_moved: Array = snap.get("moved", [])
 			who_moved.erase(u.id)
 			who_moved.erase(float(u.id))   # a snapshot read back from a save holds floats
 
 
-## What a machine could do with its plan taken back, for the map to show while it is in hand:
-## [destinations, threat], read on the turn as it would stand and the turn put back as it was.
-func reach_if_retaken(u: Unit) -> Array:
-	if not can_retake(u):
-		return [destinations_for(u), threat_for(u)]
-	var snap := _snapshot(u)
-	_retake(u)
-	var out := [destinations_for(u), threat_for(u)]
-	_restore(snap)
+## Whether a machine has a plan in hand that has not played: waypoints laid, or an order given
+## and its move not yet executed. What EXECUTE plays and a cancel takes back.
+func pending(u: Unit) -> bool:
+	if u == null or state != State.PLAN:
+		return false
+	if orders.has(u.id) and not played.has(u.id):
+		return true
+	for p in planned:
+		if int(p["unit"]) == u.id:
+			return true
+	return false
+
+
+static func _snap_pending(snap: Dictionary, uid: int) -> bool:
+	var who_played: Array = snap.get("played", [])
+	if (snap.get("orders", {}) as Dictionary).has(str(uid)) and not (who_played.has(uid) or who_played.has(float(uid))):
+		return true
+	for p in snap.get("planned", []):
+		if int(p["unit"]) == uid:
+			return true
+	return false
+
+
+## A machine's waypoints, in the order laid: where each of its planned legs ends (Ryan, 22
+## November: "Waypoints stay lit"). The last is where its move ends.
+func waypoints(u: Unit) -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	if u == null:
+		return out
+	for p in planned:
+		if int(p["unit"]) == u.id and not (p["path"] as Array).is_empty():
+			var last: Array = (p["path"] as Array)[(p["path"] as Array).size() - 1]
+			out.append(Vector2i(int(last[0]), int(last[1])))
 	return out
 
 
-## A move for a machine that may already have one planned: its plan taken back first (its steps
-## off the undo), then the move, one step. The route walked; empty when refused, the turn as it
-## was.
-func move_again(u: Unit, to: Vector2i) -> Array[Vector2i]:
-	if not can_retake(u):
-		return move_to(u, to)
-	var none: Array[Vector2i] = []
-	if not (reach_if_retaken(u)[0] as Dictionary).has(to):
-		return none
-	retake(u)
-	return move_to(u, to)
+## Play one machine's plan now (Ryan, 22 November: "Tapping the most recent waypoint, or tapping a
+## pack that was already queued with an attack order, executes that move immediately"): its legs
+## come off the plan for the screen to play, one step on the undo (an UNDO puts the machine back
+## where it stood with its waypoints and its order as they were). With an order standing its move
+## has played and the order stands as given; with none its action is over (take_plan's rule).
+## The legs, as plan_pieces gives them; empty when it has nothing to play.
+func execute(u: Unit) -> Array:
+	if not pending(u):
+		return []
+	_push(u)
+	var mine: Array = []
+	var kept: Array = []
+	for p in planned:
+		if int(p["unit"]) == u.id:
+			mine.append(p)
+		else:
+			kept.append(p)
+	planned = kept
+	if orders.has(u.id):
+		played[u.id] = true
+	else:
+		_end_action(u.id)
+	last_carry = []
+	return _pieces(mine)
+
+
+## Cancel a machine's plan in hand (Ryan, 22 November: "Tapping outside the movement range, or
+## tapping the unit itself, cancels ... anything queued to undo by that order is removed"): its
+## waypoints and its order go, and so do their steps on the undo. A plan in hand is the newest
+## thing on the undo, so its steps come off the top; one laid under somebody else's steps (a save
+## from before) comes off as retake takes it. False when it has nothing to cancel.
+func cancel(u: Unit) -> bool:
+	if not pending(u):
+		return false
+	var i := history.size() - 1
+	while i >= 0 and int((history[i] as Dictionary).get("who", 0)) == u.id and _snap_pending(history[i], u.id):
+		i -= 1
+	if i >= 0 and int((history[i] as Dictionary).get("who", 0)) == u.id:
+		_restore(history[i])
+		history.resize(i)
+		return true
+	return retake(u)
+
+
+## Take a machine's plan back to its `keep`th waypoint (Ryan, 22 November: "Tapping a previous
+## waypoint undoes every [waypoint] past that waypoint"): its steps after that waypoint come off
+## the undo, as UNDO would take them. False when they are not the newest steps on the undo.
+func back_to_waypoint(u: Unit, keep: int) -> bool:
+	while waypoints(u).size() > keep and not history.is_empty() and int((history.back() as Dictionary).get("who", 0)) == u.id:
+		_restore(history.pop_back())
+	return waypoints(u).size() == keep
 
 
 ## The plan as the map draws it: each piece with hexes, in the order made.
 func plan_pieces() -> Array:
+	return _pieces(planned)
+
+
+static func _pieces(from: Array) -> Array:
 	var out: Array = []
-	for p in planned:
+	for p in from:
 		var path: Array[Vector2i] = []
 		for h in p["path"]:
 			path.append(Vector2i(int(h[0]), int(h[1])))
@@ -993,6 +1088,8 @@ func take_plan() -> Array:
 			played[uid] = true
 		else:
 			_end_action(uid)
+	if ids.is_empty():
+		return out
 	for snap in history:
 		(snap as Dictionary)["planned"] = []
 		for uid in ids:
@@ -1006,6 +1103,7 @@ func take_plan() -> Array:
 func _end_action(uid: int) -> void:
 	spent[uid] = int(spent.get(uid, 0)) + 1
 	moved.erase(uid)
+	move_used.erase(uid)
 	played.erase(uid)
 	action_hexes.erase(uid)
 
@@ -1032,6 +1130,7 @@ static func _played_in(snap: Dictionary, uid: int) -> void:
 	who_played.erase(float(uid))
 	snap["played"] = who_played
 	(snap.get("action_hexes", {}) as Dictionary).erase(str(uid))
+	(snap.get("move_used", {}) as Dictionary).erase(str(uid))
 
 
 ## One step of drawing a route by hand: `draft` is the route so far (hexes after the
@@ -1051,10 +1150,10 @@ func draft_step(u: Unit, draft: Array, h: Vector2i) -> Array:
 		return draft.slice(0, at + 1) if stops else draft
 	var end: Vector2i = draft[draft.size() - 1] if not draft.is_empty() else u.pos
 	_lift(u)
-	var spent_move := field.route_cost(u, draft, u.movespeed)
+	var spent_move := field.route_cost(u, draft, move_left(u))
 	var ext: Array[Vector2i] = []
 	if spent_move >= 0:
-		ext = field.route_from(u, end, u.movespeed - spent_move, h)
+		ext = field.route_from(u, end, move_left(u) - spent_move, h)
 	_set_down()
 	if spent_move < 0 or ext.is_empty():
 		return draft
@@ -1262,17 +1361,16 @@ func cancel_order(m: Unit) -> void:
 
 ## A tap or a drag onto a pack (bible section 5), as one step and one undo: along a drawn route
 ## first if one was drawn, then the order from its end if the pack is in range there; with no
-## route, from the farthest hex in range its move left reaches, or where it stands. A second tap
-## on the pack it is already ordered onto takes the order back. What happened: "ordered",
-## "moved" (the route ended out of range: it moved, and no order), "cancelled", "refused" (not
+## route, from the farthest hex in range its move left reaches from its latest waypoint, or where
+## it stands. An order onto another pack replaces the one standing. What happened: "ordered",
+## "moved" (the route ended out of range: it moved, and no order), "refused" (not
 ## a pack that may be fought now, or no action left), "out_of_reach", "no_room" (a carrier's
 ## block does not fit where the route ends) or "blocked" (the route cannot be walked).
 func order_onto(m: Unit, target: Unit, draft: Array = []) -> String:
 	if m == null or state != State.PLAN:
 		return "refused"
 	if draft.is_empty() and order_of(m) == target:
-		cancel_order(m)
-		return "cancelled"
+		return "ordered"
 	if not can_target(target) or actions_left(m) <= 0 or played.has(m.id):
 		return "refused"
 	var snap := _snapshot(m)
@@ -1280,21 +1378,6 @@ func order_onto(m: Unit, target: Unit, draft: Array = []) -> String:
 	_batch_dirty = false
 	var out := _order_onto(m, target, draft)
 	_batch -= 1
-	if out == "out_of_reach" and draft.is_empty() and can_retake(m):
-		# Out of reach from where its plan leaves it: the order given again from where it started
-		# (10 November). Tried first on the turn as it would stand; where it reaches, the old plan
-		# comes off the undo and the new order goes on it as its one step.
-		var dirty := _batch_dirty
-		_batch += 1
-		_retake(m)
-		var again := _order_onto(m, target, draft)
-		_batch -= 1
-		_restore(snap)
-		_batch_dirty = false
-		if again == "ordered":
-			retake(m)
-			return order_onto(m, target, draft)
-		_batch_dirty = dirty
 	if _batch_dirty:
 		history.append(snap)
 	return out
@@ -1480,6 +1563,7 @@ func take_locks() -> Array:
 func _new_turn() -> void:
 	spent.clear()
 	moved.clear()
+	move_used.clear()
 	played.clear()
 	action_hexes.clear()
 	orders.clear()
@@ -1584,6 +1668,7 @@ func finish_skirmish() -> void:
 	for ms in current.mechs:
 		spent[ms.unit.id] = int(spent.get(ms.unit.id, 0)) + 1
 		moved.erase(ms.unit.id)
+		move_used.erase(ms.unit.id)
 		played.erase(ms.unit.id)
 		action_hexes.erase(ms.unit.id)
 	var tallied: Array[Unit] = []
