@@ -575,6 +575,8 @@ func rail_tags() -> Array[String]:
 			tags.append(Face.KEYWORD_NAMES[k])
 	if face.has_unique_rule() and inside != "star":
 		tags.append("star")      # a rule printed on the entry: the hold reads it out
+	if not offhand.is_empty() and face.is_attack():
+		tags.append("offhand")   # its offhand's rider, a chip on the entry (the Macaque's; Ryan, 19 November: "a unique (star) effect attached to weapons and equipment that target foes"; 22 November: on the face, not the passive box)
 	if not form_mark.is_empty():
 		tags.append(form_mark)   # it seals its machine, or opens it (the Polar Bear's, 2 November)
 	if corrupted > 0 and face.kind != Face.Kind.BLANK:
@@ -646,8 +648,6 @@ func passive_marks() -> Array:
 			out.append(["ricochet", "+%d" % ricochet, Glyphs.colour_for("ricochet")])   # a strike of 1 more a stack after each shot (the Skua's)
 		if parry > 0 and face.is_weapon():
 			out.append(["spin", "+%d" % parry, Glyphs.colour_for("parry")])   # the Parry's return on its next strike alone (Ryan, 19 November: "next strike")
-		if not offhand.is_empty() and face.is_attack():
-			out.append(["star", "", Glyphs.colour_for("offhand")])   # its offhand's rider (the Macaque's; Ryan, 19 November: "a unique (star) effect attached to weapons and equipment that target foes")
 		if zap_cost > 0 and face.is_weapon():
 			out.append(["shield", "-%d" % zap_cost, Palette.SHIELD])   # the shield its zap pays, by the shield's mark in its colour (the Buzzard's); the blow it buys is in the number
 	if next_face != null:
