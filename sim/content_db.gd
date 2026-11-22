@@ -996,6 +996,21 @@ const NO_TIER := -1
 var tier_lift: Dictionary = {}
 
 
+## The burrow rule that names this component as its drill (the Mole's Inertia Drill), from any
+## chassis's passive; empty for any other piece. The codex says the drill's work on its own row.
+func burrow_of_piece(component_id: String) -> Dictionary:
+	if component_id.is_empty():
+		return {}
+	for cid in chassis.keys():
+		var p = chassis[cid].get("passive", null)
+		if not (p is Dictionary):
+			continue
+		for eff in p.get("effects", []):
+			if eff is Dictionary and str(eff.get("effect", "")) == "burrow" and str(eff.get("piece", "")) == component_id:
+				return eff
+	return {}
+
+
 func chassis_tier(chassis_id: String) -> int:
 	return int(chassis.get(chassis_id, {}).get("tier", 0))
 

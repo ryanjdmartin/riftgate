@@ -78,7 +78,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1434 tests, 389,305 checks, green on Godot 4.8-beta4 (22 November, the terminology
+- Tests: 1434 tests, 389,308 checks, green on Godot 4.8-beta4 (22 November, the Inertia Drill's rule a template, over the terminology
   pass's branch landed over main's Chain arcs and the Macaque's branch). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a

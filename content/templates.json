@@ -109,6 +109,7 @@
   {"id": "hold.passes", "text": "Passes {n} heat to the ally", "fills": ["n"]},
   {"id": "hold.passes_none", "text": "Passes no heat: its gauge is empty", "fills": []},
   {"id": "hold.pull", "text": "Spent on an ally, takes up to {n} of its heat onto this machine", "fills": ["n"]},
+  {"id": "rule.drill", "text": "spends every {spent}, a stack of {laid} on its foe for each, a blow of {blow} as each of the foe's turns starts; its machine comes up", "fills": ["spent", "laid", "blow"]},
   {"id": "hold.drill", "text": "Drill: Applied Momentum {n} on its foe, {turn} as each of its turns starts; it comes up", "fills": ["n", "turn"]},
   {"id": "hold.drill_blow", "text": "a blow of {n}", "fills": ["n"]},
   {"id": "hold.drill_lay", "text": "{status} {n}", "fills": ["status", "n"]},
