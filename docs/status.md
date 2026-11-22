@@ -78,8 +78,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1434 tests, 389,308 checks, green on Godot 4.8-beta4 (22 November, the Inertia Drill's rule a template, over the terminology
-  pass's branch landed over main's Chain arcs and the Macaque's branch). The runner fails a run
+- Tests: 1436 tests, 389,369 checks, green on Godot 4.8-beta4 (22 November, every foe status's chip on its term's mark). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -321,7 +320,11 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   kit that day, at tier one; the rules' Sonic Needle, the bible's Echidna row): every foe it
   strikes and every foe whose blow lands on it takes a Sonic Needle, a conductor of Chain, and
   the third in a foe fires Chain 2 on every conductor, that foe included; its Supersonic Spike
-  Tether lures and saps, its directions Spiker and Chaos. Its look waits on his pick of the
+  Tether lures and saps, its directions Spiker and Chaos. A foe wears its needles on a chip
+  counting toward the bolt ("1/3"), and the Mole's Applied Momentum on one (22 November, on his
+  report that the Howitzer's needles showed on its target alone: laid on every foe it hit, worn by
+  none); a status no chip line names wears its term's mark, never a star, on a foe or a machine
+  (`test_screen.gd` holds both). Its look waits on his pick of the
   bristle, the stand-in drawing it meanwhile. The Mole is built (20 November, on
   his "Build the mole now", his kit of 16 November; at tier two since that day, its tree back in
   design; the rules' reboot section, the bible's Mole row): it burrows in its reboot's place, banks Conserved Momentum under, and its Inertia Drill
@@ -451,7 +454,7 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 324 (22 November): a machine's sheet lists every term it orbits, its own first,
+  `edits`, `designs` and `text` read first. Version 325 (22 November): the Inertia Drill's rule line, data only over 324's page. Version 324 (22 November): a machine's sheet lists every term it orbits, its own first,
   each editable in place; 323 the same day, a dealt machine with an open brief under Unfinished.
   Version 322 (22 November): Version 321's files, the Text
   tab's Vocabulary view with its category filter again, from `claude/gameplay-terminology-tooltips-rug879`. Version 321 (21 November): main at `8b5a027d`, the

@@ -1853,6 +1853,14 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(status_row("paradox", "paradox", "%d/%d" % [paradox, at] if at > 0 else str(paradox), "Paradox %d%s" % [paradox, " of %d" % at if at > 0 else ""], _foe_chip_colour("paradox")))
 	if Effects.has(foe, "shocked"):
 		rows.append(status_row("shocked", "shocked", "×2", "Shocked", _foe_chip_colour("shocked")))
+	var needles := Effects.stacks_of(foe, "sonic_needle")
+	if needles > 0:
+		# The Echidna's needles (20 November), counted toward the stacks its machine's rule fires
+		# them at, as Paradox counts toward its gate; the stacks alone when no machine standing
+		# fires them.
+		var fires := sk.needler_of("sonic_needle")
+		var at := int(Effects.needle_rule(fires.unit)["at"]) if fires != null else 0
+		rows.append(status_row("sonic_needle", _foe_glyph("sonic_needle"), "%d/%d" % [needles, at] if at > 0 else str(needles), "%s %d%s" % [str(Effects.STATUS["sonic_needle"]["name"]), needles, " of %d" % at if at > 0 else ""], _foe_chip_colour("sonic_needle")))
 	var numbed := Effects.stacks_of(foe, "numbed")
 	if numbed > 0:
 		rows.append(status_row("numbed", "numbed", "×%d" % numbed, "Numbed ×%d" % numbed, _foe_chip_colour("numbed")))
@@ -1865,6 +1873,10 @@ func _foe_rows(foe: Foe) -> Array:
 	var sap := Effects.stacks_of(foe, "sapped")
 	if sap > 0:
 		rows.append(status_row("sapped", "sap", "-%d" % sap, "Sapped ×%d: its blows %d lower until after its next turn" % [sap, sap], _foe_chip_colour("sapped")))
+	var drilled := Effects.stacks_of(foe, "applied_momentum")
+	if drilled > 0:
+		# The Mole's drill in it (18 November): a stack for each of the foe's turns it still strikes.
+		rows.append(status_row("applied_momentum", _foe_glyph("applied_momentum"), "×%d" % drilled, "%s ×%d" % [str(Effects.STATUS["applied_momentum"]["name"]), drilled], _foe_chip_colour("applied_momentum")))
 	for pin in Effects.HOLDERS.values():   # a pin's chip: the lock on the status it holds
 		if Effects.has(foe, pin):
 			rows.append(status_row(pin, Terms.glyph(pin), "", str(Effects.STATUS[pin]["name"]), _foe_chip_colour(pin)))
@@ -2003,7 +2015,12 @@ static func status_glyph(id: String) -> String:
 			return "essence_flare"   # the Tap's hold, a buff on its machine (15 November)
 		"cryoed":
 			return "cryo"
-	return "star"
+	# Any other status wears its term's mark (Terms, the one table the die, the chips and the text
+	# read), so a status no line above names never wears a mark its tip does not (22 November: the
+	# Echidna's needles on their way, the Mole's Burrowed and Drill Out, each a star); the star is
+	# for one whose term names none.
+	var termed := Terms.glyph(Terms.of_status(id))
+	return termed if not termed.is_empty() else "star"
 
 
 ## Statuses and warnings on a mech as [glyph, chip text, readout text, colour], the readout text

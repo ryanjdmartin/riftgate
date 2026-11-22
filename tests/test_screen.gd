@@ -2986,3 +2986,68 @@ func test_a_sapped_foe_wears_its_chip() -> void:
 			found = true
 	assert_true(found, "the chip: the sap glyph and -2")
 	s.free()
+
+
+## Every status the team lays on a foe wears its chip there, on its term's mark, and the same mark
+## on its way (22 November: the Echidna's needles were laid on every foe its Howitzer hit and worn
+## by none, its chip never written, and on its way a needle, a Pin, a Sear and the Mole's drill
+## each wore a star). A status the chips forget fails here, not on the phone.
+func test_every_status_the_team_lays_wears_its_chip_on_its_terms_mark() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	sk.add_mech(db.make_mech("badger"))
+	var foe := Foe.make("revenant", 300, 10)
+	sk.add_foes([foe])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	for id in Effects.FOE_STATUSES:
+		foe.modifiers.clear()
+		Effects.stack(foe, Effects.STATUS[id], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
+		var mark := Terms.glyph(Terms.of_status(id))
+		assert_false(mark.is_empty(), "%s is a term with a mark" % id)
+		var worn: Array = s._foe_rows(foe).filter(func(r) -> bool: return str(r[0]) == mark and (r.size() < 5 or str(r[4]) != "preview"))
+		assert_eq(worn.size(), 1, "a foe carrying %s wears its chip, on its term's mark" % id)
+		var coming: Array = SkirmishScreen._coming_rows({id: {"stacks": 1, "name": str(Effects.STATUS[id]["name"])}}, [], func(i: String) -> String: return SkirmishScreen._foe_glyph(i), func(i: String) -> Color: return SkirmishScreen._foe_chip_colour(i))
+		assert_eq(str(coming[0][0]), mark, "and %s on its way wears the same mark" % id)
+	s.free()
+
+
+## The Howitzer's case (Ryan, 22 November: "Echidna howitzer didn't apply needle to all foes hit,
+## just the target ... Or it did but it doesn't show it, actually"): a Spread and Penetrate strike
+## from a machine whose passive lays a needle on every foe it reaches shows a needle's chip on all
+## four, each counting toward the stacks its rule fires them at. The passive is the test's.
+func test_a_spread_strike_shows_its_needles_on_every_foe_it_reached() -> void:
+	var u := Unit.mech(0, "Needler", Vector2i.ZERO)
+	u.shield = 10
+	u.shield_max = 10
+	u.hull = 100
+	u.hull_max = 100
+	var gun := Face.attack(4, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.PENETRATE])
+	gun.cleave = 1
+	gun.penetrate = 1
+	u.die = Die.single(gun)
+	u.grant_passive({"id": "test_needles", "name": "Test Needles", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "lay_status", "value": "sonic_needle", "stacks": 1},
+		{"trigger": "static", "effect": "needles", "status": "sonic_needle", "at": 3, "chain": 2}]})
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(u)
+	var foes: Array = []
+	for i in range(6):
+		foes.append(Foe.make("revenant", 30, 0, i >= 3))
+	sk.add_foes(foes)
+	sk.begin()
+	sk.start_round()
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	assert_true(sk.assign(0, sk.front[1]), "the gun at the front rank's middle foe")
+	var shown := 0
+	for f in sk.field_foes():
+		var laid := Effects.stacks_of(f, "sonic_needle")
+		var chips: Array = s._foe_rows(f).filter(func(r) -> bool: return str(r[0]) == Terms.glyph("sonic_needle"))
+		assert_eq(chips.size(), 1 if laid > 0 else 0, "a foe wears the needle's chip exactly when it carries a needle")
+		if laid > 0 and chips.size() == 1:
+			shown += 1
+			assert_eq(str(chips[0][1]), "1/3", "its chip counts the stack toward the three that fire it")
+			assert_eq(str(chips[0][2]), "Debuff, Sonic Needle 1 of 3", "and its readout names it with them, a debuff")
+	assert_eq(shown, 4, "the target, the two beside it and the one behind it each show theirs")
+	s.free()
