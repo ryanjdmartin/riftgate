@@ -43,6 +43,8 @@ const DISPLAY_DEFAULTS := {
 	"rank_hp": "0",   # RANK_HPS: a debug build's what-if, a hit point more on tier one's rank and file (Refit's foehp), read at the next launch
 	"overheat_burn": "1",   # OVERHEATS: a debug build's trial of the hull an overheat burns a point of excess (Skirmish.overheat_scale), read as a battle starts
 	"barrier_basic": "built",   # BARRIER_BASICS: a debug build's what-if, the Barrier basic off the stock dice with the Armoured basic in its slot (Refit's barrier=none), read at the next launch
+	"intent_style": "solid",   # UnitView.INTENT_STYLES: a debug build's comparison of the intent plate's look
+	"ability_place": "row",   # UnitView.ABILITY_PLACES: a debug build's comparison of where an ability's chip stands
 	"chip_style": "corner",   # UnitView.CHIP_STYLES: a debug build's comparison of how a status chip carries its number, read as the field draws
 	"phased_form": "round_end",   # PHASED_FORMS: a debug build's trial of when a machine's Phased lands, as the round ends or as its entry is spent (Skirmish.phase_at_once), read as a battle starts
 }
