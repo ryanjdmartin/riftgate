@@ -176,7 +176,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    passive's or a status's: a chassis has neither of its own; a shield gain like any). Every die rolls;
    entries are equally likely.
 2. Every foe picks its move, then its target; both show, exact, before the player acts, its
-   intent chip under it: the move's kind, its blow's number and strikes, and each rider by its
+   intent plate above it: the move's kind, its blow's number and strikes, and each rider by its
    mark, a numbered one with its stacks. A blow's number counts the rallies on their way to it
    this round (Empowered, below).
 3. The player's turn: spend, lock and reroll in any order. Each spend resolves fully before
@@ -282,7 +282,8 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   player's turn ends are banked, up to three, and come back at the next round's start beside
   its two, spent like any reroll; a roar's cost comes off the whole. It banks while the
   Giant Petrel fights: wrecked by the next round's start, it carries nothing.
-- **Spending**: drag a die onto a target: a weapon or a debuff onto a foe in reach, a shield, a
+- **Spending**: aim a die at a target, its crosshair dragged from the die (the die stays in its
+  tray, showing what it will deal there) and let go there: a weapon or a debuff onto a foe in reach, a shield, a
   vent or a buff onto a machine it may reach. Each die is spent once a round (Rapid and Instant excepted). A blank does
   nothing; an unspent die is lost. On screen a spend's hits and shots land one at a time, a beat
   apart, every one of them: each foe a hit reaches flashes, its gauge steps down to what the blow
@@ -441,7 +442,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   nothing); every modifier and the foe's own reads then count on each hit. A machine carrying
   Ricochet strikes again after each shot (Ricochet, below).
 - **The die shows the number** one blow will deal after every modifier; a debuff shows none,
-  and a gun whose blow is nothing here shows 0. Dragged over a foe it may strike,
+  and a gun whose blow is nothing here shows 0. Aimed at a foe it may strike,
   it shows that foe's number: its missing hull, conditions on it, its Brittle, its armour off. A
   Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
@@ -643,9 +644,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   fells its first target moves the corpse, which dies in the slot it was moved to and gets back
   up or splits there. A Mine moves with its foe.
   A foe keeps its pick and its move, from the rank it now stands in (a back foe pulled into the
-  front stands exposed to Direct fire). On the screen: drag the die to the first target and
-  drop it; the second targets light; tap one to spend it; a tap or a hold on the die reads it; drag the die
-  again to move it or set it back. A tap on the ground sets it back too, the die flying home,
+  front stands exposed to Direct fire). On the screen: aim the die at the first target and
+  let go; the crosshair stays pinned there and the second targets light; tap one to spend it; a tap or a hold on the die reads it; drag from the die
+  again to aim anew or set it back. A tap on the ground sets it back too,
   once no readout is open: the first such tap closes the open readout.
 - **Sap** (with a number; the Baboon's Redshift Emitter, beside a Purge 1): each foe hit gains
   that many stacks of Sapped a strike, laid once the strikes are done.

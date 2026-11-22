@@ -78,7 +78,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1436 tests, 389,369 checks, green on Godot 4.8-beta4 (22 November, every foe status's chip on its term's mark). The runner fails a run
+- Tests: 1436 tests, 389,371 checks, green on Godot 4.8-beta4 (22 November, the battle UI pass: the intent plate, square chips, the crosshair aim). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -286,7 +286,11 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
 - **The screens.** The harness (`godot --path .`) launches a battle as a run deals it, a lone
   fight, a saved battle and the quick campaign, and picks a machine's upgrade build. The
   skirmish screen, the battle screen, the pause menu and its settings are built; the hangar,
-  the mission map and the draft are not. A debug build's settings hold TRIALS and COLOURS
+  the mission map and the draft are not. In a fight (22 November, on the branch
+  `claude/battle-ui-intents-status-6hgoi0` until Ryan lands it) a foe's intent is a plate above
+  it, a status chip a square tile with its number at its corner (Settings → CHIPS on a debug
+  build compares the corner, the tab and the old chip), and a die is spent by dragging a
+  crosshair from it (`AimLayer`), the die staying in its tray. A debug build's settings hold TRIALS and COLOURS
   (`ColourTuner`: Ryan tunes there and sends its COPY text).
 - **The hangar page.** `tools/hangar.html` over `tools/hangar_data.py`'s files, a tab a kind
   since 20 November: Chassis (the Bench renamed: every machine a card, a tap its working sheet

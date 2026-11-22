@@ -143,13 +143,21 @@ func _apply_pose() -> void:
 			# as the die's target and filled under it.
 			s._on_drag_started(0)
 			s._on_drag_moved(s._reboot_btn.get_global_rect().get_center())
+		"aim", "aimfree":
+			# A die in hand (22 November): the die stays in its tray, the crosshair on the first
+			# foe ("aim", locked, the die reading what it deals there) or in the open sky
+			# ("aimfree"), a dashed tether between them.
+			s._on_drag_started(1)
+			var fv := s._foe_view_for(s.sk.front[0])
+			var at := fv.get_global_transform() * fv.drawing_rect().get_center() if _pose == "aim" else Vector2(s.size.x * 0.55, s.size.y * 0.2)
+			s._on_drag_moved(at)
 		"touch":
 			# The first die lit as its tap waits out the double-tap window (30 October).
 			s._dice[0]._tap_due = 1.0e12
 			s._dice[0].queue_redraw()
 		"swaphome":
-			# A Swap waiting on its first target, then a tap on nothing sending it home (30 October):
-			# RIFTGATE_SHOT_FRAME=6 or so catches the die in flight.
+			# A Swap waiting on its first target, its crosshair pinned there, then a tap on nothing
+			# setting it back (30 October): RIFTGATE_SHOT_FRAME=2 catches it pinned.
 			var ms: Skirmish.MechState = s.sk.mechs[0]
 			ms.die.faces[ms.face_index] = Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "swaps": true})
 			s._refresh()
