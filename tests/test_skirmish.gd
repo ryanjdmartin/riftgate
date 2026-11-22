@@ -8543,6 +8543,7 @@ func test_a_players_purge_lowers_every_buff_a_foe_carries_by_its_number_but_guar
 	act.call(g, "rally", "buff", 3)
 	caster.rage = 1   # the Nob's rage (3 November; its own since 8 November): the stacks the team's safe spends feed, laid here by hand
 	act.call(caster, "golden", "buff", 2)   # a golden rage (4 November): an ability since 8 November, no Purge's
+	sk._gold_lands(caster)   # Golden lands as its turn ends (a timer, 22 November)
 	Effects.stack(caster, Effects.STATUS["enraged"], Effects.SKIRMISH, "foe:caster", 2, Effects.DECAY_NONE)
 	Effects.stack(caster, Effects.STATUS["numbed"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
 	Effects.stack(caster, Effects.STATUS["guarded"], Effects.SKIRMISH, "foe:caster", 1, Effects.DECAY_NONE)

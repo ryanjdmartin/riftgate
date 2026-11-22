@@ -289,7 +289,7 @@ func test_a_machine_out_of_reach_does_not_burn_and_a_phased_one_may_reboot() -> 
 	sk.end_round()
 	assert_eq(m.hull, 190, "it burns the turn it passes its maximum")
 	sk.start_round()
-	Effects.grant_for_rounds(m, Effects.STATUS["swallowed"], "test", sk.round)
+	Effects.lay_timer(m, Effects.STATUS["swallowed"], "test", 1)
 	assert_true(Skirmish.is_out(ms), "Swallowed, it is out of the fight this round")
 	assert_false(sk.can_reboot(0), "and cannot reboot")
 	sk.end_round()

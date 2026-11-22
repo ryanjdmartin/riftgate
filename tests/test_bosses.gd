@@ -473,7 +473,7 @@ func test_a_swallow_takes_a_machine_out_of_the_fight_for_its_rounds() -> void:
 	flo.target = sk.mechs[0]
 	sk.end_round()
 	assert_true(Skirmish.is_swallowed(sk.mechs[0]), "A is swallowed")
-	assert_true("\n".join(sk.log).contains("swallowed: out of the fight for 2 rounds"), "the log says for how long")
+	assert_true("\n".join(sk.log).contains("A is Swallowed 2"), "the log says for how long")
 	sk.start_round()
 	assert_true(sk.mechs[0].assigned, "it cannot act")
 	assert_false(sk.can_spend(0), "its die is no spend")
@@ -1332,7 +1332,8 @@ func test_a_golden_rage_is_a_mode_that_a_quarter_of_its_hp_or_a_stun_breaks() ->
 	ape.action = rage
 	sk.end_round()
 	assert_true(Effects.has(ape, "golden"), "it is gold")
-	assert_eq(ape.damage_of(ape.actions[0]), 9, "its blows two harder")
+	assert_eq(Effects.stacks_of(ape, "golden"), 3, "Golden 3, laid as its turn ended, after that turn's tick (a timer, 22 November)")
+	assert_eq(ape.damage_of(ape.actions[0]), 9, "its blows two harder, whatever its count: a timer's stacks are its clock")
 	assert_eq(ape.armour_total(), 1, "and a point of plate")
 	assert_eq(ape.golden_mark, 24, "it marks its HP as it goes gold")
 	assert_eq(Skirmish.golden_left(ape), 6, "a quarter of its 24 breaks it")

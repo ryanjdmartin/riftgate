@@ -164,7 +164,7 @@ func test_a_phased_machines_stacks_fade_and_take_nothing_and_a_swallowed_ones_wa
 	var sk2 := _fight([v, _mech(2, "B", 10, 100)], [Foe.make("dummy", 900, 0)])
 	sk2.start_round()
 	_ablating(v, 2)
-	Effects.grant_for_rounds(v, Effects.STATUS["swallowed"], "test", sk2.round + 1)
+	Effects.lay_timer(v, Effects.STATUS["swallowed"], "test", 2)
 	assert_eq(int(sk2.forecast(sk2.mechs[0])["ablated"]), 0, "the forecast counts none while it is Swallowed")
 	sk2.end_round()
 	sk2.start_round()

@@ -40,7 +40,7 @@ const ACT_RATE := 9.0      # the acting foe's breath, radians a second: quick, i
 var display_name: String = ""     # for the codex and readouts; never drawn here
 var is_enemy: bool = false
 var massive: bool = false
-var bars: Array = []              # [[value, max, Color, (pending), (points a notch), (rounds at rest)], ...]
+var bars: Array = []              # [[value, max, Color, (pending), (points a notch), (broken), (a break point)], ...]
 var bars_above: bool = false      # true: full-width gauges above the sprite; false: floating
 var pips: Array = []              # [count, of]: a count toward a shot drawn as cells under the gauges (the Cassowary's sixth shot), the last lit when it is next; empty for none
 var store: Array = []             # [count, cap, colour, glyph]: a capped store's bar under the heat, a segment a stack up to its cap, lit to its count (the Honey Badger's hopper, the Nemesis's rage); empty for none
@@ -999,6 +999,22 @@ func _store_cell(k: int, row: Rect2 = Rect2()) -> Rect2:
 	return _cell_rect(k, maxi(1, int(store[1])), row)
 
 
+## A break point on a bar (a swallow's release, a golden rage's break: 22 November): a thick
+## notch through the bar, past both its edges, on a dark ground, and a caret over it pointing down,
+## so it reads by structure on any bar colour. Hot to start: it comes down once judged on a phone.
+func _break_notch(rect: Rect2, at: float) -> void:
+	var x := rect.position.x + rect.size.x * at
+	var top := Vector2(x + 2.4, rect.position.y - 4.0)
+	var foot := Vector2(x - 2.4, rect.end.y + 4.0)
+	draw_line(top, foot, Color(Palette.BG, 0.95), 6.0)
+	draw_line(top, foot, Color(Palette.INK, 1.0), 3.0)
+	var tip := Vector2(x + 2.4, rect.position.y - 4.0)
+	var caret := PackedVector2Array([tip, tip + Vector2(-5.0, -7.0), tip + Vector2(5.0, -7.0)])
+	draw_colored_polygon(caret, Color(Palette.BG, 0.95))
+	var inner := PackedVector2Array([tip + Vector2(0, -1.5), tip + Vector2(-3.0, -5.5), tip + Vector2(3.0, -5.5)])
+	draw_colored_polygon(inner, Palette.INK)
+
+
 func _gauge(rect: Rect2, b: Array) -> void:
 	if b.size() >= 5 and int(b[4]) == 1:
 		# A bar whose every unit is its own notch holds whole units (the Musk Ox's ammo): cells,
@@ -1040,6 +1056,8 @@ func _gauge(rect: Rect2, b: Array) -> void:
 			at += step
 	elif b.size() < 4 or int(b[3]) == int(b[0]):
 		Hud.ticks(self, rect.grow(-2.0), int(b[0]), int(b[1]), col, 2.4)
+	if b.size() >= 7 and int(b[6]) > 0:
+		_break_notch(rect, clampf(float(b[6]) / mx, 0.0, 1.0))
 	if b.size() < 4 or int(b[3]) == int(b[0]):
 		return
 	var pending: float = clampf(float(b[3]) / mx, 0.0, 1.0)

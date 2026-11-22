@@ -470,3 +470,14 @@ one (rule 33). The tip headings are Property, Buff, Debuff, Ability and Resource
 Unpurgeable" and "Debuff, Uncleanseable" (rule 24). His wording of Spread and Penetrate takes in
 the half-slots on purpose, and a tip names no gauge: "Ablate just says take 1 damage ... It's
 precise." Rule 24 now carries his words on precision and the semicolon.
+
+**22 November, in chat**, the second round. Marks: 2-A, 11-A, 13-A, 28-B. Rule 10 is neither A
+nor B: a timed line is written as the timing events are, a label then the text ("Turn Start:
+{text}", "Turn End: {text}", "Round End: {text}"), so "its" never needs to say whose; the
+labels are Turn Start, Turn End and Round End. A consumption is an event too ("When Hit:
+Consumed to double damage received, after all flat modifiers are applied"; "After Use: Consume
+1 stack ..."). The use's two events are Commit and Resolve, in place of On use and After use.
+The statuses on a clock became stacks that count it down ("could we just switch them to Stacks
+and use that as the timer?"): Exposed 2, Golden and Swallowed are timers, built that day (the
+bible's timers row, `docs/rules.md`, When a status ends); a hit is "hit", never "struck".
+

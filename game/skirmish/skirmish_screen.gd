@@ -104,6 +104,9 @@ var _act_debug_at := 0.0
 ## Nemesis's since 11 November) and empties at its cap, so its notches, the die's charged mark
 ## at five and the bar's colour are judged running.
 static var RAGE_DEBUG := OS.get_environment("RIFTGATE_RAGE_DEBUG") == "1"
+## RIFTGATE_BREAK_DEBUG=1 draws a break point at three quarters of every foe's HP (the swallow's
+## release, the golden rage's break), to judge the notch on a phone.
+static var BREAK_DEBUG := OS.get_environment("RIFTGATE_BREAK_DEBUG") == "1"
 ## RIFTGATE_PREY_DEBUG=1: the predator sense stays on, over the foes the first ambusher's entry
 ## showing marks (or, with no ambusher on the team, the first machine's, the read forced), to
 ## judge it running.
@@ -1524,6 +1527,18 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	if _shown_hp.has(foe):
 		# A spend's blows still landing: the gauge shows what they have left so far, no forecast.
 		v.bars = [[int(_shown_hp[foe]), foe.hp_max, Palette.HUD, int(_shown_hp[foe])]]
+	# Its break point (Ryan, 22 November: "Swallowed's threshold can be shown on the HP bar"): the
+	# HP its swallow lets go at, or its golden rage breaks at, a notch across the bar.
+	var breaks := -1
+	if foe.swallow_mark >= 0 and sk.swallowed_by(foe) != null:
+		breaks = Skirmish.swallow_release_at(foe)
+	elif foe.golden_mark >= 0 and Effects.has(foe, "golden"):
+		breaks = Skirmish.golden_break_at(foe)
+	elif BREAK_DEBUG:
+		breaks = foe.hp_max * 3 / 4
+	if breaks > 0:
+		var bar: Array = v.bars[0]
+		v.bars = [[bar[0], bar[1], bar[2], bar[3], 0, 0, breaks]]
 	v.dead = not foe.alive()
 	v.highlight = targets.has(foe)
 	v.intent = ""
@@ -1997,8 +2012,8 @@ static func status_glyph(id: String) -> String:
 			return "seal"   # the shell's mark, as the die's chip that seals it (2 November)
 		"phased", "phasing":
 			return "phased"   # the wait for it wears its mark, on a preview's dashed edge (_mech_rows)
-		"swallowed":
-			return "swallowed"
+		"swallowed", "swallowing":
+			return "swallowed"   # the wait for it wears its mark, as a preview chip (_mech_rows)
 		"barrier":
 			return "barrier"
 		"ward":
@@ -2100,6 +2115,9 @@ func _mech_rows(i: int) -> Array:
 			# Phased on its way (15 November: granted as the round ends): a status to come, so a
 			# preview chip, as a rally's Empowered is on a foe.
 			rows.append(status_row(id, glyph, "", "Phased as this round ends, if it stands", colour, "preview"))
+		elif id == "swallowing":
+			# Swallowed on its way (22 November: it lands as the round ends): a preview chip, its count the rounds it will be out.
+			rows.append(status_row(id, glyph, str(stacks), "Swallowed %d as this round ends" % stacks, colour, "preview"))
 		else:
 			rows.append(status_row(id, glyph, count, named, colour))
 	if ABILITY_DEBUG and abilities.is_empty():

@@ -169,8 +169,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 
 ### The round
 1. Rerolls reset to two (less any a foe drained). The machines' turn starts: a
-   machine's Armoured, its Barrier and its Ward go, its Brittle halves, and an Exposed whose
-   round is past falls (When a status ends, below). A machine that gave its last turn to a
+   machine's Armoured, its Barrier and its Ward go, its Brittle halves, and its Exposed loses a
+   stack (When a status ends, below). A machine that gave its last turn to a
    reboot recovers: its heat nothing, its shield whole. Every machine sheds what cooling it is
    granted, then regains what shield regen it is granted, up to its maximum (a module's, a
    passive's or a status's: a chassis has neither of its own; a shield gain like any). Every die rolls;
@@ -201,10 +201,11 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    machine's stacks tick all the same and take nothing, and everything a Swallowed one carries
    waits. A machine the tick or the burn wrecks is lost on its own turn, before the enemy acts.
 5. The enemy's turn (below). It starts with every foe's Armoured, Barrier and Ward going, its
-   Brittle halving and its Exposed falling once its round is past; each foe's own turn then
-   ends with its ticks, its action done or lost.
-6. The round's end: round-timed effects end (Phased and the wait for it, Essence Flare, a
-   swallow's and a golden rage's rounds), a web on a foe bursts (the Web Bomb, below), and a
+   Brittle halving and its Exposed losing a stack; each foe's own turn then
+   ends with its ticks and its Golden losing a stack, its action done or lost.
+6. The round's end: round-timed effects end (Phased and the wait for it, Essence Flare), a
+   Swallowed machine's Swallowed loses a stack, then a swallow taken this round lands as
+   Swallowed, a web on a foe bursts (the Web Bomb, below), and a
    machine whose own attack killed in the round fires what its passive grants for it (the
    Ammit's flare). Nothing ticks or halves here.
 7. A part due to grow back does, in its corpse's slot (below). Next round.
@@ -218,13 +219,14 @@ turn: it starts as the round opens and ends at END TURN. A foe's turn starts as 
 opens, after END TURN and before the first of them acts, and ends as its own action does,
 landed, lost to a stun or skipped.
 - **Its turn starts**: Armoured, a Barrier and a Ward go, every stack; Brittle halves, rounded
-  down; Exposed falls, at the turn start after the next one.
+  down; Exposed loses a stack.
 - **Its turn ends**: Ablating and Vitriol take their points and lose a stack; Regenerating
   pays after them and loses one; Empowered halves, rounded down; Scorched and Sapped go; a
   cooldown whose rounds are done lights again; a Suppress is spent with the turn it
-  cost; Numbed loses a stack, or lands on a foe that lost this turn to a stun.
-- **The round ends**: Phased is granted or lost, Essence Flare goes, a swallow's and a
-  golden rage's rounds run, and a web bursts.
+  cost; Numbed loses a stack, or lands on a foe that lost this turn to a stun; Golden loses a
+  stack, and a foe that went gold this turn gains it after.
+- **The round ends**: Phased is granted or lost, Essence Flare goes, Swallowed loses a
+  stack and a swallow taken this round lands after, and a web bursts.
 - **It is spent**: the primers by a weapon fired, Spun Up, the Juggernaut Drive, the Aile buffs
   and a Parry's return by the next weapon, Shocked and Cryo by the weapon's hit that cashes them,
   Undying by its fall, a Mine by its foe's fall, a pin by the decay it stops, and a foe's jam by
@@ -233,6 +235,10 @@ What works in the other side's turn ends as its own turn starts, and what works 
 turn ends with it. So a stack gained outside its carrier's turn stands whole for its next
 one, and a chip always shows what the next blows will meet. On a Phased machine every clock
 runs and nothing damages it; on a Swallowed one none runs but the swallow's.
+Exposed, Golden and Swallowed are timers: their stacks are the turns or rounds they have left,
+counted down where they decay, gone at none, and never their strength (Golden 3 hits no harder
+than Golden 1). A timer laid where it counts down lands after that count, so its number is
+whole. A second one renews to the larger count, never adds.
 
 ### Dice
 - **Rerolls**: two a round for the team, never banked (Maverick's Playbook, the Giant
@@ -582,8 +588,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Lure**: every foe reached turns on the spender for the round, a felled one too. A move at
   every machine or at nobody holds no pick, so it has nothing to turn.
 - **Expose** (the Needletail's Fovea Designator, the Swallowtail's Spotting Flare, the Lammergeier's Lorentz Contractor): every foe reached
-  is Exposed through the next round, a felled one too; a second Expose refreshes it, never
-  adds.
+  gains Exposed 2, a felled one too, so it stands through the next round; a second Expose
+  renews it to 2, never adds.
 - **Disrupt**: every foe reached takes the next move in its list that its
   conditions allow, keeping its pick while the machine stands and is in the fight; the next
   machine in line otherwise, and when the move it leaves held no pick (a brace, a blow at
@@ -853,12 +859,16 @@ On a machine:
   Empowered or a mend. Two guards: the last foe standing does not fade, so a fight has a foe
   to end on, and a foe Phased already gains no wait, so none is out two rounds running, and
   its intent wears Phased's mark only on a round the fade would land.
-- **Swallowed** (debuff, from a foe's swallow): out of the fight (it
+- **Swallowed** (debuff, from a foe's swallow): the swallow lands as the round it is taken
+  in ends, after that round's count, the machine in the fight and hittable until then (its
+  chip the wait, the count to come); then Swallowed at the swallow's rounds, a stack going as
+  each round ends: out of the fight (it
   cannot act, take damage or be targeted, a foe's intent on it re-picks, and a blow or a special
-  at every machine passes it by) for the swallow's
-  rounds, its die standing down as each round opens, until its swallower falls, or until its
+  at every machine passes it by), its die standing down as each round opens, until its stacks
+  run out, its swallower falls, or its
   swallower has lost a quarter of its maximum HP since the swallow (its chip counting the damage
-  still to deal, never more than the swallower has left; a second machine taken while it holds
+  still to deal, never more than the swallower has left, and a notch on its HP bar where it
+  lets go; a second machine taken while it holds
   one joins that count, and the quarter lets both go); either lets it go at once, and in the
   player's turn it acts that round. The swallower loses nothing else. Nothing cleanses it.
   Out of play, so everything it carries waits where a Phased machine's ticks: no stack fades,
@@ -1000,15 +1010,16 @@ On a machine:
   and half for the next, and a Brittle 1 is gone by then. A Ward turns the rider away.
   Cleansable.
 - **Exposed** (debuff, from a foe's Expose; a foe's Exposed below is the armour rule on the
-  other body): its armour counts for nothing, its own, any Armoured and what a kit grants,
-  from the moment it lands through the round after. Armour it gains meanwhile is gained and
+  other body): Exposed 2, a stack going as each of its turns starts, so, laid in the foes'
+  turn, it stands through the round after; its armour counts for nothing, its own, any
+  Armoured and what a kit grants. Armour it gains meanwhile is gained and
   does nothing until the mark ends; its shield, and a reduction that is no armour, are
   untouched. As that round opens every foe's targeted move turns on it, whatever the move's
   word, in the order they strike, until the blows already drawn would wreck it; from there the
   rest pick as they would. A move at every machine or at none is unmoved, a countdown's pick
   carried from the round before holds, and a machine out of reach as the round opens (Phased)
   draws nothing. Everything after is as ever: a Lure pulls a blow off it, and a foe that picks
-  again mid-round takes the next machine in line. Refreshed, never added. Cleansable: a
+  again mid-round takes the next machine in line. Renewed to its count, never added. Cleansable: a
   Cleanse gives the armour back and leaves the intents where they turned.
 - **A foe's purge** is Purge N, the rule ours runs: N stacks off every buff the machine carries,
   for good, whatever granted it (a stack is a stack); its Abilities and its stores stay (the
@@ -1041,8 +1052,8 @@ On a foe:
   Echidna in the fight they land as any status and fire nothing.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
-  Through the player's next turn: it falls as the foe's turn starts in the next round;
-  refreshed, never added.
+  Exposed 2, a stack going as each of its turns starts, so, laid in the player's turn, it
+  stands through the player's next; renewed to its count, never added.
 - **Mine** (debuff, the Lammergeier's): its damage, the spends that fed it added, and their
   keywords, one Mine a foe; when the foe falls it blows on every foe round its slot (A Mine,
   under A blow). It lasts the skirmish, until its foe falls or the Syrinx Drone detonates it.
@@ -1113,13 +1124,15 @@ On a foe:
   Its chip climbs with the stacks, so the number an intent shows is the number that lands. A
   Purge lowers the stacks by its number and the rage goes on: the rage is the Nob's Ability,
   its chip the rule (Enrage), and what it has gathered a buff.
-- **Golden** (Ability, a golden rage: the Thunder Ape's): for the rounds its move says its blows
-  hit the move's value harder, each strike of a move, and it wears a point of armour. A
+- **Golden** (Ability, a golden rage: the Thunder Ape's): a timer, at the rounds its move says,
+  laid as the turn it went gold ends, after that turn's ticks, a stack going as each of its turns
+  ends; while it stands its blows hit the move's value harder, each strike of a move, and it
+  wears a point of armour. A
   quarter of its HP lost since it went gold breaks it and it staggers: the gold goes and it
   loses its next action (never Numbed: a stagger is no stun piece's, and one already
   suppressed loses nothing more). A Suppress that lands breaks it too, one a Numbed stack
   absorbs does not; no Purge strips it, an Ability. Its chip counts
-  the rounds left and the damage that breaks it. It goes gold only while calm (the `calm`
+  the rounds left and the damage that breaks it, and its HP bar wears a notch where it breaks. It goes gold only while calm (the `calm`
   condition: not gold), so one rage at a time.
 - **Appropriated** (an Ability, a take's: Gilgamesh's): the number of the entry he holds, which
   his borrowed swing lands in place of his attack and spends. One piece at a time, what he
@@ -1375,7 +1388,7 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   (Brittle stacks on the machine: a point more on every blow it takes a stack, halving as its
   next turn starts), destroy (any of the blow on the hull destroys
   the entry the machine shows: Destroy, above; no foe carries it yet), expose (the machine is
-  Exposed through the round after: Exposed, above; among the rank and file a tier-two foe's at
+  Exposed 2, through the round after: Exposed, above; among the rank and file a tier-two foe's at
   the least, the validator refusing it on a foe of the line dealt at tier one, while an elite
   and a boss may hold any mechanic at any tier; a blow's Expose lays nothing while a machine
   stands Exposed, never a second mark and never the first renewed, and its intent wears no

@@ -78,7 +78,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1436 tests, 389,369 checks, green on Godot 4.8-beta4 (22 November, every foe status's chip on its term's mark). The runner fails a run
+- Tests: 1438 tests, 389,390 checks, green on Godot 4.8-beta4 (22 November, Exposed, Golden and Swallowed as stack timers). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
