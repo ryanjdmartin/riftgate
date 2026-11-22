@@ -299,6 +299,11 @@ static func codex_lines(f: Face, db: ContentDB, rules: Array = []) -> Array:
 		tags.append(capital(t))
 	var out: Array = [{"style": "name", "text": title, "type": face_type(f), "tags": ", ".join(tags), "parts": [word(title)], "place": ""}]
 	var marks := effects_of(f)
+	# A burrower's drill (the Mole's Inertia Drill): what it does is its machine's burrow rule,
+	# said on its own row in the templates' words, at the rule's numbers.
+	var burrow := db.burrow_of_piece(f.component) if db != null else {}
+	if not burrow.is_empty():
+		marks.append(text_line("rule", capital(Templates.say("rule.drill", {"spent": str(Effects.STATUS["conserved_momentum"]["name"]), "laid": str(Effects.STATUS["applied_momentum"]["name"]), "blow": int(burrow.get("blow", 0))})), "rule"))
 	for r in rules:
 		marks.append(text_line("rule", str(r), "rule"))
 	out.append_array(joined(marks))
