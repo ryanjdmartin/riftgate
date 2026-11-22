@@ -43,9 +43,8 @@ const DISPLAY_DEFAULTS := {
 	"rank_hp": "0",   # RANK_HPS: a debug build's what-if, a hit point more on tier one's rank and file (Refit's foehp), read at the next launch
 	"overheat_burn": "1",   # OVERHEATS: a debug build's trial of the hull an overheat burns a point of excess (Skirmish.overheat_scale), read as a battle starts
 	"barrier_basic": "built",   # BARRIER_BASICS: a debug build's what-if, the Barrier basic off the stock dice with the Armoured basic in its slot (Refit's barrier=none), read at the next launch
-	"intent_style": "solid",   # UnitView.INTENT_STYLES: a debug build's comparison of the intent plate's look
-	"ability_place": "row",   # UnitView.ABILITY_PLACES: a debug build's comparison of where an ability's chip stands
-	"chip_style": "corner",   # UnitView.CHIP_STYLES: a debug build's comparison of how a status chip carries its number, read as the field draws
+	"chip_style": "corner",
+	"aim_tether": "edge",   # AimLayer.TETHERS: a debug build's comparison of the aim's tether, from the die's edge or over it from its middle   # UnitView.CHIP_STYLES: a debug build's comparison of how a status chip carries its number, read as the field draws
 	"phased_form": "round_end",   # PHASED_FORMS: a debug build's trial of when a machine's Phased lands, as the round ends or as its entry is spent (Skirmish.phase_at_once), read as a battle starts
 }
 const DISPLAY_RANGES := {
@@ -201,6 +200,19 @@ static func field_trial(saved: bool = false) -> void:
 	Battlefield.strike_trial = 0 if pip == Battlefield.STRIKE_PER_PIP else pip
 	Skirmish.overheat_scale = clampi(int(burn), 1, 10) if burn.is_valid_int() else 1
 	Skirmish.phase_at_once = phased == "at_once"
+
+
+static var _env := {}
+
+## A look a debug build compares (the chips, the aim's tether): its environment variable when set
+## to one of `options`, else the setting `key`, else the first option.
+static func look(env: String, key: String, options: Array) -> String:
+	if not _env.has(env):
+		_env[env] = OS.get_environment(env)
+	if options.has(_env[env]):
+		return str(_env[env])
+	var st := str(display.get(key, options[0]))
+	return st if options.has(st) else str(options[0])
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.

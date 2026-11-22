@@ -175,7 +175,6 @@ class PairMarks extends Control:
 var _view_foe: Dictionary = {}       # UnitView -> Foe
 var _mech_views: Array[UnitView] = []
 var _dice: Array[DieFaceView] = []
-var _abilities: Control               # every unit's abilities off its row, over the units and under the arrows (UnitView.draw_abilities)
 var _aim: AimLayer                    # the die in hand's crosshair and its tether to the die (AimLayer)
 ## A spend waiting on its second target (a Swap, the Dingo's Combat Translocator; Ryan, 21
 ## October: drag to the first target, drop, the seconds light, tap one): {"mech", "primary"}.
@@ -209,8 +208,6 @@ func _process(delta: float) -> void:
 	if _bg == null:
 		return
 	_fight_t += delta
-	if _abilities != null and UnitView.ability_place() != "row":
-		_abilities.queue_redraw()   # they follow their units' breath and pulse
 	if RAGE_DEBUG and _fight_t - _rage_debug_at > 1.6:
 		_rage_debug_at = _fight_t
 		_rage_debug()
@@ -529,7 +526,6 @@ func _build() -> void:
 	for col in range(sk.columns):
 		for rank in range(2):
 			var v := UnitView.new()
-			v.abilities_hosted = true   # its abilities off the row on the layer over every unit (_draw_abilities)
 			v.is_enemy = true
 			var y := FRONT_Y if rank == 0 else BACK_Y
 			_stand(v, y, SLOT_SIZE.y)
@@ -543,7 +539,6 @@ func _build() -> void:
 			# A twin slot's right-hand half (26 October): the slot's right half while the pair
 			# stands, the left half's view taking the other.
 			var tv := UnitView.new()
-			tv.abilities_hosted = true   # its abilities off the row on the layer over every unit (_draw_abilities)
 			tv.is_enemy = true
 			_stand(tv, y, SLOT_SIZE.y)
 			tv.visible = false
@@ -553,7 +548,6 @@ func _build() -> void:
 			tv.tapped.connect(_on_foe_tapped.bind(tv, rank, col, true))
 			_twin_views[rank][col] = tv
 		var mv := UnitView.new()
-		mv.abilities_hosted = true   # its abilities off the row on the layer over every unit (_draw_abilities)
 		mv.is_enemy = true
 		mv.massive = true
 		_stand(mv, BACK_Y, MASSIVE_SIZE.y)
@@ -650,7 +644,6 @@ func _build() -> void:
 		var hex_x := _slot_hex_x(_mech_slot(i))
 		var ms: Skirmish.MechState = sk.mechs[i]
 		var v := UnitView.new()
-		v.abilities_hosted = true   # its abilities off the row on the layer over every unit (_draw_abilities)
 		v.display_name = ms.unit.display_name
 		v.bars_above = true
 		var db := ContentDB.load_default()
@@ -748,12 +741,7 @@ func _build() -> void:
 	_fx.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_fx)
 
-	# Overlays: the abilities off the units' rows, arrows, the aim, details, codex, confirm, outcome.
-	_abilities = Control.new()
-	_abilities.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_abilities.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_abilities.draw.connect(_draw_abilities)
-	add_child(_abilities)
+	# Overlays: arrows, the aim, details, codex, confirm, outcome.
 	_arrows = ArrowLayer.new()
 	_arrows.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_arrows)
@@ -2765,14 +2753,6 @@ func _on_drag_started(i: int) -> void:
 	Sound.play("die_pick")
 	_aim_at(_dice[i].get_global_rect().get_center(), false)
 	_refresh()
-
-
-## Every unit's abilities off its row (UnitView.ability_place), on the layer over them all.
-func _draw_abilities() -> void:
-	for v in _view_foe.keys() + _mech_views:
-		var uv := v as UnitView
-		if uv.visible and uv.abilities_hosted:
-			uv.draw_abilities(_abilities)
 
 
 ## The aim drawn from the die in hand's middle to a global point, locked over somewhere it may be

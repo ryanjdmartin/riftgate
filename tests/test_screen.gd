@@ -2915,7 +2915,7 @@ func test_an_intent_arrow_leaves_its_chips_middle_and_the_ranks_stand_slightly_a
 	var plate := fv.intent_rect()
 	assert_true(plate.size.x > 0.0 and plate.end.y <= fv.drawing_rect().position.y, "the intent stands above the foe, apart from its chips")
 	assert_false(fv.chip_layout().any(func(c: Array) -> bool: return str((c[1] as Array)[3]) == "intent"), "no intent among the chips under it")
-	assert_eq(fv.intent_anchor_global(), fv.get_global_transform() * plate.get_center(), "its arrow leaves the plate's middle")
+	assert_eq(fv.intent_anchor_global(), fv.anchor_global(), "its arrow leaves the middle of its drawing")
 	s._toggle_all_arrows(true)
 	var inv := s._arrows.get_global_transform().affine_inverse()
 	var from := inv * fv.intent_anchor_global()
