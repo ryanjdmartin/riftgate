@@ -41,11 +41,8 @@ document's job and every command are in `README.md`.
   a branch: the desk machine's folder stays on `main`, and a session that needs another branch
   works in a worktree under `.claude/worktrees/` (`CLAUDE.md`, Session handoff). A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word.
-- Branches. Main holds everything this file describes. Not on main:
-  `claude/gameplay-terminology-tooltips-rug879`, the terminology pass: the gameplay text
-  counted and one standard for it put to Ryan (`docs/terminology_proposal.md`), which he is
-  marking in chat, and one readout fix (a buff that grants no status reads Buff, where it
-  read "Grants  ×1"); main taken into it on 22 November, and it lands on his word.
+- Branches. Main holds everything this file describes, the terminology pass's branch
+  (`claude/gameplay-terminology-tooltips-rug879`) landed on 22 November on Ryan's "Ok push to main".
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
   (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks
@@ -81,8 +78,8 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1434 tests, 389,302 checks, green (21 November, Chain's arcs flat and on any conductor, on Godot 4.8-beta4, on the Macaque's branch, over main's
-  locked pieces' footing and a piece's templates). The runner fails a run
+- Tests: 1434 tests, 389,305 checks, green on Godot 4.8-beta4 (22 November, the terminology
+  pass's branch landed over main's Chain arcs and the Macaque's branch). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
