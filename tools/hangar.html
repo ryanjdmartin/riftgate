@@ -3298,6 +3298,75 @@ function benchStock(sheet, e) {
 }
 // Its codex and its flavour: the Text tab's two rows for the machine, read and written as that tab
 // does, so a write on either shows on both.
+// Every term a machine orbits (Ryan, 22 November: "all ability, keywords, status chips, etc. in the
+// chassis edit sections, so that I can see everything a chassis orbits and edit it together.
+// Especially ones unique to that chassis"): the terms its own words name, its passive, its upgrades
+// and its locked pieces, by a term's name as the game's text writes it (its capital) or its id where
+// a field holds one, and the locked pieces' readouts as the game prints them. A term no other
+// machine names is its own; the rest are shared. Design notes are never read.
+let ORBITS = null;
+function orbitStrings(x, out) {
+  if (typeof x === "string") out.push(x);
+  else if (Array.isArray(x)) for (const v of x) orbitStrings(v, out);
+  else if (x && typeof x === "object") for (const k of Object.keys(x)) if (k !== "design") orbitStrings(x[k], out);
+  return out;
+}
+function machineOrbit(e, vocab, rx) {
+  const strs = orbitStrings({passive: e.passive, branches: e.branches, upgrades: e.upgrades, traits: e.traits, codex: e.codex}, []);
+  for (const cid of new Set(e.fixed || [])) {
+    const c = ctx().comps.get(cid);
+    if (c) orbitStrings({face: c.face, passive: c.passive, codex: c.codex}, strs);
+    const r = compReadout(cid);
+    if (r) strs.push(r.attr || "", r.kw || "", ...(r.rule ? [].concat(r.rule) : []));
+  }
+  const ids = new Set();
+  for (const s of strs) {
+    if (vocab.has(s)) ids.add(s);
+    for (const m of s.matchAll(rx)) for (const id of (rx.byName.get(m[1]) || [])) ids.add(id);
+  }
+  // A term whose entry names the machine or one of its locked pieces is its too (the Mole's Drill Out).
+  const own = [e.name, ...[...new Set(e.fixed || [])].map(cid => (ctx().comps.get(cid) || {}).name)].filter(Boolean)
+    .map(n => new RegExp("(?<![A-Za-z])" + n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?![a-z])"));
+  for (const t of vocab.values()) if (t.codex && own.some(r => r.test(t.codex))) ids.add(t.id);
+  return ids;
+}
+function machineTerms(e) {
+  if (!ORBITS || ORBITS.ctx !== ctx() || ORBITS.readouts !== state.readouts) {
+    const vocab = vocabMap(), byName = new Map();
+    for (const t of vocab.values()) if (t.name) { const a = byName.get(t.name) || []; a.push(t.id); byName.set(t.name, a); }
+    const names = [...byName.keys()].sort((a, b) => b.length - a.length).map(n => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+    const rx = new RegExp("(?<![A-Za-z])(" + names.join("|") + ")(?![a-z])", "g");
+    rx.byName = byName;
+    const of = new Map(), count = new Map();
+    for (const m of ctx().chassis.values()) {
+      const ids = machineOrbit(m, vocab, rx);
+      of.set(m.id, ids);
+      for (const id of ids) count.set(id, (count.get(id) || 0) + 1);
+    }
+    ORBITS = {ctx: ctx(), readouts: state.readouts, of, count};
+  }
+  const vocab = vocabMap(), cats = liveEntries("vocabulary.entries").map(x => x.entry.id);
+  return [...(ORBITS.of.get(e.id) || [])].map(id => ({term: vocab.get(id), own: (ORBITS.count.get(id) || 0) === 1}))
+    .filter(x => x.term).sort((a, b) => (b.own - a.own) || cats.indexOf(a.term.id) - cats.indexOf(b.term.id));
+}
+function benchTerms(sheet, e) {
+  sheet.append(el("h3", {}, "Its terms"));
+  const terms = machineTerms(e);
+  if (!state.readouts) sheet.append(el("p", {class: "help"}, state.loaded.readouts ? "The readouts did not load, so the locked pieces' printed words are left out." : "Loading the readouts…"));
+  sheet.append(el("p", {class: "hint"}, "Every keyword, status, ability and resource its passive, its upgrades and its locked pieces name, its own first. Each is the term's entry on the Text tab, edited here as there."));
+  const row = (x) => {
+    const t = x.term, label = [t.name, plain(t.category), t.status === "planned" ? "planned" : ""].filter(Boolean).join(" · ");
+    return textField("vocabulary.entries", t.id, "codex", label, {}, t.codex);
+  };
+  const own = terms.filter(x => x.own), shared = terms.filter(x => !x.own);
+  if (!own.length) sheet.append(el("p", {class: "hint"}, "None of its own: every term it names, another machine names too."));
+  for (const x of own) sheet.append(row(x));
+  if (shared.length) {
+    const box = el("details", {class: "bbrief"}, el("summary", {}, `Shared with other machines · ${shared.length}`));
+    for (const x of shared) box.append(row(x));
+    sheet.append(box);
+  }
+}
 function benchTexts(sheet, e) {
   sheet.append(el("h3", {}, "Codex and flavour"));
   const slots = [["codex", "codex"], ["flavour", "flavour"]];
@@ -3372,6 +3441,7 @@ function renderBenchSheet(main, m) {
   if (!uniq.length) sheet.append(el("p", {class: "hint"}, "None: its identity is its passive and its numbers."));
   for (const cid of uniq) sheet.append(benchPiece(e, cid, fixed.filter(x => x === cid).length));
   benchUpgrades(sheet, e);
+  benchTerms(sheet, e);
   benchStock(sheet, e);
   if (brief) benchBrief(sheet, brief, false);
   sheet.append(el("div", {class: "toolbar", style: "margin-top:22px"},
