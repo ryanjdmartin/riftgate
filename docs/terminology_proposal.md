@@ -248,37 +248,42 @@ branch (section 5).
 HP stays the only abbreviation.
 - "ATK 4 // ARM 1" (a foe's plate) → "ATTACK 4 // ARMOUR 1"
 
-**21. Attack, strike, hit.** (changed 19 November: the count)
-An *attack* is one use: one spend of a weapon, or one attack move. A *strike* is one of its
-blows. A strike that lands *hits*.
-- **A:** "Blow" and "shot" leave the text, with Shots kept as the Cassowary's counter. That's
-  145 uses of "blow".
-  - "the next blow a foe lands on it" → "the next strike a foe lands on it"
-- **B:** Keep "blow" as a second word for a strike.
+**21. Attack and hit.** (changed 22 November: his word)
+His word: "I don't know that we need to separate hit and strike." An *attack* is one use of a
+weapon, or one attack move. A *hit* is one of its blows landing on a unit, so "Attack 3 ×2" is two
+hits, and equipment hits too. "Weapon hit" or "equipment hit" says which, where a rule needs it.
+"Blow", "strike" and "shot" leave the text, with Shots kept as the Cassowary's counter.
+- "the next blow a foe lands on it" → "the next hit a foe lands on it"
+- "Strike once for each Ore consumed" → "Hit once for each Ore consumed"
 
 **22. Falls, kills, wrecked, destroyed.**
 A foe *falls* at 0 HP, and whoever got it there *killed* it. A machine is *wrecked*. A component
 is *destroyed*.
 - "a felled one too" → "even one that falls"
 
-**23. The die keeps its current words.**
-The die *rolls* and *shows* an entry. An entry holds a component or is blank. You *spend* a die
-by dropping it on a target. Whether to keep the word "die" at all is still a separate question.
+**23. A component is used, not spent.** (changed 22 November: his word)
+His word: "'Spend' to me as a player implies use of a resource I'm not getting back ... we
+'use' or 'cast' those." The die *rolls* and *shows* an entry. An entry holds a component or is
+blank. You *use* a component by dropping its die on a target. "Spend" stays the engine's word and
+the word for a resource that is gone once paid (rerolls, Ore). Whether to keep the word "die" at
+all is still a separate question.
 - "the component the target's die is showing" → "the entry the target's die shows"
-- "cannot be played" → "cannot be spent"
+- "cannot be played" → "cannot be used"
+- "a machine that has spent nothing this turn" → "a machine that has used nothing this turn"
 
 ### How it reads
 
-**24. A tip gives the rule first, then only what would surprise.**
-Today's median tip is 60 words, and the longest are Foe action (182), Phased (173) and Aim (161).
-- The first sentence is the rule in plain words.
-- After that comes only what a player would otherwise get wrong. Anything that just works is
-  left out.
-- It never repeats the heading above it, such as "Machine status." under BUFF.
-- It says which side carries it only when it can be either: "On a foe: … On a machine: …".
-- It doesn't name the pieces that carry it.
-- It stays under about 60 words.
-- "Machine status. Each stack is +1 damage on this machine's attacks, flat, so the count is the bonus. As its turn ends it halves, rounded down, whatever granted it, until it is gone." → "+1 damage per stack on its attacks. Halves at the end of its turn, rounded down."
+**24. A tip is precise and succinct.** (changed 22 November: his words)
+His words: "Tooltips should be precise and succinct ... No mechanic explanation should ever have a
+need to include a semicolon." Today's median tip is 60 words, and the longest are Foe action
+(182), Phased (173) and Aim (161).
+- It says what happens in the game's terms and nothing more: "Take 1 damage per stack", never which
+  gauge the damage comes off, since the damage rule already says.
+- It never has a semicolon, and never repeats its heading.
+- It names no piece that carries it.
+- Its heading says what it is: Property, Buff, Debuff, Ability or Resource, and for the rare
+  status a purge or a cleanse can't touch, "Buff, Unpurgeable" or "Debuff, Uncleanseable".
+- "Machine status. Each stack is +1 damage on this machine's attacks, flat, so the count is the bonus. As its turn ends it halves, rounded down, whatever granted it, until it is gone." → "On hit: +1 damage per stack. End of turn: halve the stacks, rounded down."
 
 **25. Rule numbers are digits, and rates use "per".**
 A move's flavour can keep words like "Three heads bite", since its readout lines carry the
@@ -308,6 +313,45 @@ These follow from rulings he has already made, so they need no mark.
 - "braces", which is Armoured now
 - "burning" for Ablating
 - "enemy"
+
+### Timing
+
+His proposal of 22 November, for design and for the player alike: a use split into events, so a
+rule says exactly when it acts. "These are not replacements for actual code hooks." The events
+below are his examples made to fit how the game works; the list may grow or lose one.
+
+**30. A property has no event.**
+Spread, Penetrate, Instant and "Ignores armour" are always on, so they are written bare.
+- "Penetrate 2" (Property): "This component also hits all other foes in the same column for 2 damage. This does not count as targeting those foes."
+
+**31. A use's events, in order.**
+- *On use*: once the target is chosen, before any hit. Conditions that change the whole use act
+  here ("On use: if first use this turn, gain Instant").
+- *On hit* and *When hit*: as each hit lands, during the damage ("When hit: +1 damage received per
+  stack").
+- *After hit* and *After being hit*: once that hit's damage is known ("After hit: if damage dealt,
+  gain 1 Ore").
+- *After use*: every hit resolved. Riders are laid here, so no hit of a use feeds on what the use
+  lays, and the deaths are checked here.
+
+**32. The four times a status acts.**
+*Start of turn*, *End of turn*, *End of round*, and *When consumed*. Brittle halves at the start
+of its carrier's turn; Ablate deals its damage at the end of it.
+- "Brittle" (Debuff): "When hit: +1 damage received per stack. Start of turn: halve the stacks, rounded down."
+- "Ablate" (Debuff): "End of turn: take 1 damage per stack, then lose 1 stack. Ignores Armour and Barrier."
+
+**33. Conditions.**
+*On kill* (any foe this use hit fell), *On target killed*, *On damage dealt* (any foe this use hit
+took damage) and *On damage dealt to target*. The extra hits of Spread and Penetrate fire On hit,
+After hit, On kill and On damage dealt, never the "target" ones; the main hit fires them all. The
+engine keeps its own triggers where the player has no need of them, and the player's text stays
+simple.
+
+**34. The Honey Badger, written so** (your worked example, its timing fixed)
+- "Ore" (Resource): "Maximum 3. Consumed by Bullion Fragmenter. At 3 Ore, base Armour increases by 1."
+- "Ore Hopper" (passive): "After hit: if damage dealt, gain 1 Ore."
+- "Chainsaw Claw" (star): "Ignores Armour. After hit: if damage dealt, gain 1 Ore."
+- "Bullion Fragmenter" (star): "On use: consume all Ore. Hit once for each Ore consumed. No Ore is gained from these hits."
 
 ## 3. Some texts redrawn under the standard
 
@@ -415,3 +459,14 @@ the rules main had moved were changed with it: rule 6 keeps the summons' "Empty 
 is built, rule 11's count grew with the moves that Expose, and section 4's names took in the
 drafts the to-do routes here. Rule 13 is his: skirmish stays, the word for one pack fought,
 with fight's place beside it the choice left (rule 13's A and B). Rule 29 no longer lists it.
+
+**22 November, in chat**, on his timing events and the questions they raised. "You're right on
+all of 1, 2, 3. I was imprecise. Go with how the game works": riders land after the hits (rule
+31), Brittle halves as its carrier's turn starts (rule 32), and "if damage dealt" is an After
+hit condition. Area hits fire every event but the "target" ones (rule 33). One word for a hit,
+weapon or equipment (rule 21). "Spend" is the design's word and not the player's: a component is
+used (rule 23). The events line up with the engine's triggers except where only the engine needs
+one (rule 33). The tip headings are Property, Buff, Debuff, Ability and Resource, with "Buff,
+Unpurgeable" and "Debuff, Uncleanseable" (rule 24). His wording of Spread and Penetrate takes in
+the half-slots on purpose, and a tip names no gauge: "Ablate just says take 1 damage ... It's
+precise." Rule 24 now carries his words on precision and the semicolon.

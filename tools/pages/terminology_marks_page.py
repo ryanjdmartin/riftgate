@@ -147,6 +147,8 @@ TO_HIM = [
     ("This one needs his\neye", "This one needs your\neye"), ("rulings he has already made", "rulings you've already made"),
     ("on the Text tab for his marks. Nothing is signed for him.", "on the Text tab for your marks. Nothing is signed for you."),
     ("**B:** He writes them himself", "**B:** You write them yourself"),
+    ("(changed 22 November: his word)", "(changed 22 November: your word)"), ("(changed 22 November: his words)", "(changed 22 November: your words)"),
+    ("His words:", "Your words:"), ("His proposal of 22 November", "Your proposal of 22 November"),
 ]
 
 

@@ -45,7 +45,7 @@ document's job and every command are in `README.md`.
   `claude/gameplay-terminology-tooltips-rug879`, the terminology pass: the gameplay text
   counted and one standard for it put to Ryan (`docs/terminology_proposal.md`), which he is
   marking in chat, and one readout fix (a buff that grants no status reads Buff, where it
-  read "Grants  ×1"); main taken into it on 20 November, and it lands on his word.
+  read "Grants  ×1"); main taken into it on 22 November, and it lands on his word.
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
   (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks
@@ -433,7 +433,7 @@ analysis, the effects listening page and the engagement sandbox (the README's do
 copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 
 - The terminology pass's rules, for his marks: https://claude.ai/artifact/TXNpkS4zuPJ5c6sEpk9oF4
-  (Version 1, 20 November, from `claude/gameplay-terminology-tooltips-rug879`), made from
+  (Version 2, 22 November, from `claude/gameplay-terminology-tooltips-rug879`, the timing rules added), made from
   `docs/terminology_proposal.md`'s sections 2 and 4 by `tools/pages/terminology_marks_page.py` and
   published with the `db` and `user` capabilities. Each rule, call and name takes a mark and a
   note, saved in the collection `marks`, a document an item keyed by its id (`rule-13`,
@@ -454,7 +454,8 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 321 (21 November): main at `8b5a027d`, the
+  `edits`, `designs` and `text` read first. Version 322 (22 November): Version 321's files, the Text
+  tab's Vocabulary view with its category filter again, from `claude/gameplay-terminology-tooltips-rug879`. Version 321 (21 November): main at `8b5a027d`, the
   Echidna's line landed (the briefs' and the texts' inventories). Version 320 the same day: Chain's
   arcs flat and on any conductor, its text and Spread's and Penetrate's, over 319 (Chaos I as "reduce stacks to
   1") and 318 (the Echidna's kit and the Mole at tier two), each from `ccr-64b5deec-lunnff` with
