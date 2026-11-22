@@ -80,7 +80,7 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
   routes input as the engine does.
 - `tools/`: each script carries its own usage notes at its head; the commands are below.
   - Generated documents: `export_vocabulary.gd`, `pages/bible_tables.py`,
-    `pages/bible_merge.py`, `pages/roster_analysis_page.py`, `pages/terminology_marks_page.py`,
+    `pages/bible_merge.py`, `pages/rules_sweep_page.py`, `pages/terminology_marks_page.py`,
     `synergy_map.py`
   - Runners: `balance.gd`, `anchor_read.gd`, `campaign_run.gd`, `battle_run.gd`, `quick_run.gd`,
     `map_survey.gd`
@@ -137,24 +137,28 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     (tier one sized against the reboot: the yardsticks, the baseline, the defence side's
     approach, the tier-one bench); `economy_pass.md`; `formation_proposal.md` (kept for the
     bosses' stat blocks and the flankers' slate); `locked_pieces_proposal.md`;
-    `reboot_machines_proposal.md` (the machines the reboot broke); `bosses_proposal.md` (the
+    `reboot_machines_proposal.md` (the machines the reboot broke); `rules_sweep_proposal.md` (the
+    rules sweep's limits on design space, for his marks); `bosses_proposal.md` (the
     bosses' and elites' slate); `heroes_proposal.md`; `domain_statuses_proposal.md` (the
     domains' buffs and debuffs, the purging leaders, Phased by source); `mechanics_audit.md`;
-    `skirmish_audit.md` (the code audit and its order of work); `roster_analysis.md`;
+    `skirmish_audit.md` (the code audit and its order of work);
     `terminology_proposal.md` (the terminology pass: one standard for the gameplay text, marked
     by Ryan in chat and on its page).
   - Retired, in git: the vocabulary pass's proposal and its table of marks
     (`git show 07f01fb:docs/vocabulary_pass_proposal.md`,
     `git show 07f01fb:docs/vocabulary_table.md`), which is what "the proposal's section N" in
-    a bible row or a code comment points at; the targeting page
-    (`git show d657a206:docs/targeting_proposal.md`).
+    a bible row or a code comment points at, and his marks and notes on the table, copied from
+    its page (`git show a0fafbc1:docs/vocabulary_marks.json`); the targeting page
+    (`git show d657a206:docs/targeting_proposal.md`) and its scenes as published
+    (`git show a0fafbc1:docs/targeting_in_context.html`); the roster analysis of 14 October,
+    background to some briefs (`git show a95e0a1f:docs/roster_analysis.md`).
   - `sprites-enemies.html` is the sheet the map tokens are exported from; `hangar/` holds
     the hangar page's renders, pins and the text ledger (`text.json`); `looks/` look tests;
     `canvas/` design canvases.
 
 ## Running
 
-Open the folder in Godot 4.8 (4.8-beta2 until 4.8 ships, for its MSAA fix), or run from a
+Open the folder in Godot 4.8 (4.8-beta4 until 4.8 ships, for its MSAA fix), or run from a
 terminal. The screens are laid out for 720 by 1280 and the window expands its height to the
 phone's (stretch aspect `expand`); the project draws with `gl_compatibility`, the phone's
 renderer. How each screen plays is in `docs/rules.md`.
@@ -163,7 +167,7 @@ The desk machine is a Windows PC. Every command below runs as written from Git B
 repo folder (`cd ~/Desktop/Code/riftgate` first); from PowerShell, wrap one as
 `& 'C:\Program Files\Git\bin\bash.exe' -lc '<command>'`, and the phone scripts have
 launchers, `tools\android` and `tools\phone`. Set up there: `godot` and `python3` as shims in
-`~/bin` (Godot 4.8-beta2 self-contained under `%LOCALAPPDATA%\Programs\Godot`, its settings,
+`~/bin` (Godot 4.8-beta4 self-contained under `%LOCALAPPDATA%\Programs\Godot`, its settings,
 export templates and debug keystore in `editor_data` beside it; Python 3.13); a `bin`
 junction in each venv, so `.venv/bin/python` resolves; `BPY_PYTHON` at `.bpy` (Python 3.11
 with `bpy==5.0.1`); `PYTHONUTF8=1`; `core.autocrlf=input`. The tests take about a minute
@@ -174,7 +178,7 @@ shared tools live elsewhere and an install is checked from a terminal tab.
 
 A cloud session sets nothing up by hand: the session-start hook
 (`.claude/hooks/session-start.sh`, registered in `.claude/settings.json`) fetches Godot
-4.8-beta2's Linux build into `~/bin` and runs the first import, once in a container. Anything
+4.8-beta4's Linux build into `~/bin` and runs the first import, once in a container. Anything
 that needs a window runs under `xvfb-run -a` with `--rendering-method gl_compatibility`
 there. A model's textures ride in its `.glb`, and the import copies each out beside it
 (`art/models/<id>_<texture>.png`, its fingerprint in the `.import`) as the file the game
@@ -217,6 +221,7 @@ python3 tools/pages/roster_analysis_page.py > /tmp/roster_analysis.html
 # the terminology pass's rules as the page Ryan marks on (status has the link), from docs/terminology_proposal.md's
 # sections 2 and 4; publish with capabilities {"db": {}, "user": {}}, his marks in its collection `marks`
 python3 tools/pages/terminology_marks_page.py > build/terminology_marks.html
+python3 tools/pages/rules_sweep_page.py > /tmp/rules_sweep.html   # the rules sweep's page for his marks, from docs/rules_sweep_proposal.md
 
 # the hangar page (https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH)
 python3 tools/hangar_data.py              # writes docs/hangar/pins.json, build/hangar/designs.json, build/hangar/text.json and build/hangar/foe_rules.json (failing when ContentDB's scaling moves under the formations), and build/hangar/readouts.json (what every piece does as the game's codex prints it, and the pieces each template prints on, run through Godot headless, so Godot on the PATH and the project imported), checks the renders manifest, prints the files map tools/hangar.html is published with
@@ -585,7 +590,7 @@ tools/spriter/.venv/bin/python tools/soundforge/pair_sketches.py [all]      # ev
 tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py [set ...]  # Hold The Line's pair and its A/B sets
 tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py [set ...] # Night Shift's
 tools/spriter/.venv/bin/python tools/soundforge/far_sketches.py             # The Far Bank's map half
-tools/spriter/.venv/bin/python tools/soundforge/fx_sketches.py [singles|sequences]   # every effect beside the shipped one, into out/fx/ for the listening page
+tools/spriter/.venv/bin/python tools/soundforge/fx_sketches.py [singles|sequences]   # every effect beside the shipped one, into out/fx/ with its listening page (`fx_page.html`), unpublished
 tools/spriter/.venv/bin/python tools/soundforge/phone_sketches.py [set]     # A/B sketches of one change for the phone's speaker, into out/phone/
 tools/spriter/.venv/bin/python tools/soundforge/desk_parts.py [track]       # every track's melodic parts as notes into out/desk/, for the Melody Desk page's `parts`
 ```
@@ -595,9 +600,9 @@ tools/spriter/.venv/bin/python tools/soundforge/desk_parts.py [track]       # ev
 ```sh
 # a Web build served over the LAN (https, with a certificate the script makes: accept the
 # browser's warning once); open the printed address in the phone's browser on the same Wi-Fi.
-# Needs the 4.8-beta2 export templates once (Godot_v4.8-beta2_export_templates.tpz from
-# github.com/godotengine/godot-builds/releases/tag/4.8-beta2, its `templates` folder at
-# editor_data\export_templates\4.8.beta2 beside the Godot executable). The first serve asks
+# Needs the 4.8-beta4 export templates once (Godot_v4.8-beta4_export_templates.tpz from
+# github.com/godotengine/godot-builds/releases/tag/4.8-beta4, its `templates` folder at
+# editor_data\export_templates\4.8.beta4 beside the Godot executable). The first serve asks
 # Windows Firewall to let Python take connections: allow it on private networks
 tools/phone.sh          # export then serve; `tools/phone.sh serve` serves the last export
 

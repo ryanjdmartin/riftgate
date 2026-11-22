@@ -214,6 +214,7 @@ var heat_glow_debug: bool = false  # RIFTGATE_HEAT_GLOW_DEBUG: every heat glow r
 var _heat_debug_t := 0.0
 var forms: Dictionary = {}         # name -> {"duration", "curves": {joint: curve, BODY: the body's}, "glow": [[material, its light at rest, k]], "acts": [act]}: poses held while the machine carries the status of the same name, each with the acts it plays while held (the sidecar's forms: the Polar Bear's seal)
 var _form_on: Dictionary = {}      # name -> whether it is held (set_form)
+var _form_after: Dictionary = {}   # name -> on: a form asked while a firing slice plays, held once the slice lands (set_form)
 var _form_t: Dictionary = {}       # name -> seconds into its turn: 0 let go, its duration held
 var _form_rot: Dictionary = {}     # joint -> degrees the forms add
 var _form_slide: Dictionary = {}   # joint -> world-unit slide the forms add
@@ -835,7 +836,18 @@ func _form_entry(f: Dictionary) -> Dictionary:
 func set_form(name: String, on: bool) -> void:
 	if dead or name == DEATH:
 		return   # a lost machine's forms stay as they were, and its death pose is kill()'s alone
-	if not forms.has(name) or bool(_form_on[name]) == on:
+	if not forms.has(name):
+		return
+	# A form asked while a firing slice plays waits for the slice to land, never cutting it (the
+	# Mole's drill launches from the burrow, then it comes up with its bore empty: the spend lays
+	# both statuses at once); an idle act is cut as ever.
+	if _until >= 0.0 and not _current.is_empty():
+		if bool(_form_on[name]) == on:
+			_form_after.erase(name)
+		else:
+			_form_after[name] = on
+		return
+	if bool(_form_on[name]) == on:
 		return
 	_form_on[name] = on
 	if on:
@@ -2572,6 +2584,11 @@ func _end_act() -> void:
 	_body_want_rot = Vector3.ZERO
 	_body_want_slide = Vector3.ZERO
 	_wait = GAP_DEBUG if not debug.is_empty() else _rng.randf_range(GAP_MIN, GAP_MAX)
+	# The forms a firing slice kept waiting, held now it has landed (set_form).
+	var waiting := _form_after
+	_form_after = {}
+	for name in waiting:
+		set_form(str(name), bool(waiting[name]))
 
 
 ## Park every spinner the act locks (its `locks`): from where its turn stands to its next step

@@ -128,9 +128,9 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 		return out
 	# The strikes, read against the component's own: a split weapon's extra strike is a gain
 	# beside its smaller blow (Ryan, 26 October).
-	var strikes: Array = Templates.parts("count.strikes", {"n": num(str(f.strikes), f.strikes, base.strikes)}) if f.strikes > 1 or base.strikes > 1 else []
 	match f.kind:
 		Face.Kind.ATTACK:
+			var strikes: Array = Templates.parts("count.strikes", {"n": num(str(f.strikes), f.strikes, base.strikes)}) if f.strikes > 1 or base.strikes > 1 else []
 			if f.is_debuff():
 				out.append(marked(parts_line("effect", Templates.parts("kind.debuff") + strikes, "attr"), [main]))
 			else:
@@ -176,13 +176,12 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 		Face.Kind.VENT:
 			# A reload is a vent that cools nothing, its ammo its number, the shells' mark its whole
 			# main mark (Ryan, 2 November: one piece on one machine wears no main mark of its own).
-			var loads := marked(parts_line("effect", _capital_first(Templates.parts("entry.reloads", {"n": num(str(f.reloads_ammo), f.reloads_ammo, base.reloads_ammo)})), "attr"), [mark("ammo", Palette.SELECT, false)])
 			if f.power <= 0 and f.reloads_ammo > 0:
-				out.append(loads)
+				out.append(_loads_line(f, base))
 			else:
 				out.append(marked(parts_line("effect", _capital_first(Templates.parts("entry.vent", {"n": num(str(f.power), f.power, base.power)})), "attr"), [main]))
 				if f.reloads_ammo > 0:
-					out.append(loads)
+					out.append(_loads_line(f, base))
 	if f.ammo > 0:
 		# A forging machine's gun (the Musk Ox's): its price in ammo, by the shells' mark.
 		var ammo := Templates.parts("readout.ammo_dry" if f.dry else "readout.ammo", {"n": num(str(f.ammo), f.ammo, base.ammo, true)})
@@ -267,6 +266,11 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 	if f.has_unique_rule() and not out.any(func(l: Dictionary) -> bool: return (l.get("marks", []) as Array).any(func(m: Dictionary) -> bool: return str(m.get("glyph", "")) == "star")):
 		marked(out[0], [star])
 	return out
+
+
+## A reload's line: the ammo it adds, by the shells' mark.
+static func _loads_line(f: Face, base: Face) -> Dictionary:
+	return marked(parts_line("effect", _capital_first(Templates.parts("entry.reloads", {"n": num(str(f.reloads_ammo), f.reloads_ammo, base.reloads_ammo)})), "attr"), [mark("ammo", Palette.SELECT, false)])
 
 
 ## Parts with the first one's first letter a capital: a template the compact line runs on in
@@ -357,7 +361,6 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 	# target's line whole, and in a fight it follows the machine it picked.
 	var aim := f.aim_of(a)
 	var word_for := "" if aim.is_empty() else (Templates.say("aim." + aim) if Templates.has("aim." + aim) else aim)
-	var anyone := Templates.say("foe_target.any_machine") if word_for.is_empty() else capital(word_for)
 	var at_target := "" if target.is_empty() else (Templates.say("move.target_aimed", {"target": target, "aim": word_for}) if not word_for.is_empty() else target)
 	var everyone := str(db.vocabulary.get("all", {}).get("name", "all"))   # the term, so it reads as one (Terms)
 	if Foe.is_attack_action(a):
@@ -375,7 +378,7 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 		if Array(a.get("keywords", [])).has("all"):
 			out.append(text_line("effect", Templates.say("move.target", {"whom": everyone}), "attr"))
 		else:
-			out.append(text_line("effect", Templates.say("move.target", {"whom": at_target if live and not target.is_empty() else anyone}), "attr"))
+			out.append(text_line("effect", Templates.say("move.target", {"whom": at_target if live and not target.is_empty() else _anyone(word_for)}), "attr"))
 	else:
 		var kind := Templates.say("kind." + Foe.kind_of(a)) if Templates.has("kind." + Foe.kind_of(a)) else capital(Foe.kind_of(a))
 		var key := str(MOVE_TARGETS.get(str(a.get("effect", "")), "any_machine"))
@@ -383,7 +386,7 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 		if key == "every_machine":
 			whom = everyone   # the term, as a blow at every machine says it
 		elif key == "any_machine":
-			whom = at_target if live and not target.is_empty() else anyone
+			whom = at_target if live and not target.is_empty() else _anyone(word_for)
 		else:
 			whom = Templates.say("foe_target." + key)
 		out.append(text_line("effect", kind, "attr"))
@@ -421,6 +424,11 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 	if not text.is_empty():
 		out.append(text_line("rule", text, "rule"))
 	return out
+
+
+## Whom a move aimed at any machine says it goes for: its aim's words, or any machine.
+static func _anyone(word_for: String) -> String:
+	return Templates.say("foe_target.any_machine") if word_for.is_empty() else capital(word_for)
 
 
 ## A foe's move's name by its id, or the id when it has none.
@@ -935,6 +943,20 @@ static func entry_name(f: Face, db: ContentDB) -> String:
 ## "next strike"): the add on its next strike alone, headed by the mark the die's passive box shows.
 static func parry_line(n: int) -> Dictionary:
 	return marked(text_line("effect", Templates.say("hold.parry", {"n": n}), "rule"), [passive_mark("spin", "+%d" % n, Glyphs.colour_for("parry"))])
+
+
+## What a burrower's drill lays if spent now (the Mole's Inertia Drill; Ryan, 16 November): the
+## Applied Momentum its Conserved stacks become, the drill's blow a turn and what its branch lays
+## after it, headed by the momentum's mark.
+static func drill_line(stacks: int, blow: int, lays: Dictionary) -> Dictionary:
+	var with: Array[String] = []
+	for id in lays:
+		with.append(Templates.say("hold.drill_lay", {"status": str(Effects.STATUS.get(str(id), {}).get("name", str(id))), "n": int(lays[id])}))
+	var turn := Templates.say("hold.drill_blow", {"n": blow}) if blow > 0 else ""
+	if not with.is_empty():
+		turn = Templates.say("hold.drill_both", {"blow": turn, "lays": ", ".join(with)}) if not turn.is_empty() else ", ".join(with)
+	var said := Templates.say("hold.drill", {"n": stacks, "turn": turn if not turn.is_empty() else Templates.say("hold.drill_nothing")})
+	return marked(text_line("effect", said, "rule"), [passive_mark("spin", "×%d" % stacks, Glyphs.colour_for("applied_momentum"))])
 
 
 ## The armament its machine's offhand holds, riding the weapon or equipment showing (the line

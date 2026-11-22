@@ -1675,8 +1675,11 @@ func test_chain_never_arcs_to_the_foe_it_is_aimed_at() -> void:
 	assert_eq("\n".join(sk.log).count("arcs to"), 1, "one arc")
 
 
-func test_the_firers_modifiers_ride_every_arc() -> void:
-	for amp in [["add_damage", 1, 3, "2 + 1"], ["multiply_damage", 2, 4, "2 x 2"]]:
+## An arc is the Chain's number flat (Ryan, 21 November: "If Chain doesn't carry the riders, it
+## shouldn't carry the unit's or weapon's buffs either. It's flat damage that strikes"): no add or
+## multiply of the machine's lands on it, where the strike itself takes them.
+func test_no_buff_of_the_machines_rides_an_arc() -> void:
+	for amp in [["add_damage", 1, 2, "2, flat"], ["multiply_damage", 2, 2, "2, flat"]]:
 		var sk := Skirmish.new(1, 2)
 		var m := _mech("A", Die.single(_chain_gun()))
 		m.grant_passive({"id": "test_amp", "name": "Amp", "description": "", "effects": [{"trigger": "on_attack", "effect": str(amp[0]), "value": amp[1]}]})
@@ -1689,6 +1692,7 @@ func test_the_firers_modifiers_ride_every_arc() -> void:
 		_shock_on(other)
 		assert_true(sk.assign(0, target), "the Chain gun spent")
 		assert_eq(30 - other.hp, int(amp[2]), "%s: the conductor takes %s" % [str(amp[0]), str(amp[3])])
+		assert_true(30 - target.hp > 4, "%s: the strike itself takes the buff" % str(amp[0]))
 
 
 func test_a_kill_by_an_arc_fires_the_kill_rules() -> void:
@@ -1707,7 +1711,9 @@ func test_a_kill_by_an_arc_fires_the_kill_rules() -> void:
 	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "and the kill is its attack's: its kill trigger fires")
 
 
-func test_an_arc_meets_armour_unless_its_gun_ignores_it() -> void:
+## An arc meets the foe's own armour whatever its gun's rules (21 November: no rule of the piece's
+## rides an arc), a gun that ignores armour included; only the foe's own statuses read it.
+func test_an_arc_meets_armour_whatever_its_gun_ignores() -> void:
 	for ignores in [false, true]:
 		var sk := Skirmish.new(1, 2)
 		var gun := _chain_gun(4, 2, 3)
@@ -1721,7 +1727,7 @@ func test_an_arc_meets_armour_unless_its_gun_ignores_it() -> void:
 		sk.start_round()
 		_shock_on(plated)
 		assert_true(sk.assign(0, target), "the Chain gun spent")
-		assert_eq(30 - plated.hp, 2 if ignores else 1, "a gun that ignores armour arcs past it" if ignores else "Chain 2, plain, less armour 1")
+		assert_eq(30 - plated.hp, 1, "Chain 2, flat, less armour 1, %s" % ("its gun's own rule left behind" if ignores else "a plain gun's"))
 
 
 ## The primers (Ryan, 2 November; as keywords since 3 November: "a multi-hit weapon with Shock
@@ -1895,24 +1901,25 @@ func test_the_maps_list_the_conductors() -> void:
 	sk.begin()
 	sk.start_round()
 	_shock_on(behind)
-	var shapes := sk.area_shapes(gun, target)
-	assert_eq(shapes.size(), 1, "one foe past the target")
-	assert_eq(int(shapes.get(behind, 0)), Skirmish.AREA_CHAIN, "the Shocked foe, a conductor")
+	assert_true(sk.area_shapes(gun, target).is_empty(), "Chain is no shape of the strike: its conductors are struck apart")
+	assert_eq(Array(sk.ridden_by(gun, target)), [target], "the strike's own footprint, its riders' foes: the target alone")
 	var hit := sk.reached_by(gun, target)
-	assert_eq(hit.size(), 2, "the target and its conductor")
+	assert_eq(hit.size(), 2, "every foe the spend reaches: the target and its conductor")
 	assert_true(hit.has(target) and hit.has(behind), "both")
 	assert_false(hit.has(beside) or hit.has(other_back), "no foe without a charge")
-	assert_eq(Skirmish.area_number(gun, Skirmish.AREA_CHAIN), 2, "a conductor's number is Chain's")
+	assert_eq(Array(sk.conductors(gun, target)), [behind], "the arcs' foes: the conductor")
+	_shock_on(target)
+	assert_eq(Array(sk.conductors(gun, target)), [behind], "a Shocked target is out: the gun's strike spends its Shock first")
 	var probe := Face.attack(0, L, [K.CHAIN])
 	probe.chain = 2
-	assert_eq(Array(sk.conductors(probe, target)), [behind], "a debuff's Chain conducts too, its arcs carrying its riders (the Storm Petrel's lure, 17 November)")
+	assert_eq(Array(sk.conductors(probe, target)), [target, behind], "equipment spends no Shock, so its Shocked target is struck too (Ryan, 21 November: \"Any conductor\")")
 	assert_true(sk.conductors(Face.attack(0, L, [K.LURE]), target).is_empty(), "an entry without Chain conducts nothing")
 
 
-## Chain's footprint beside an area's (Ryan, 29 October: "Chain is an AoE shape, so it doesn't proc
-## on spread/penetrate/splash procs, right?"): both are read from the strike's own foe, so an arc
-## spreads nowhere, and a foe both beside the target and Shocked takes one blow, the area's.
-func test_chain_and_spread_each_reach_from_the_target_alone() -> void:
+## Chain beside an area (Ryan, 21 November: "It should stack with spread and penetrate"): a Shocked
+## foe beside the target takes Spread's blow and the arc, the area's blow spending no Shock, and an
+## arc spreads nowhere.
+func test_chain_stacks_with_spread_and_spreads_nowhere() -> void:
 	var sk := Skirmish.new(1, 3)
 	var gun := _chain_gun(4, 2, 3, [K.CLEAVE])
 	gun.cleave = 1
@@ -1932,11 +1939,12 @@ func test_chain_and_spread_each_reach_from_the_target_alone() -> void:
 	assert_true(sk.assign(0, target), "the Chain and Spread gun spent")
 	assert_eq(target.hp, 26, "the target takes the roll")
 	assert_eq(left.hp, 29, "the foe beside it takes Spread 1")
-	assert_eq(right.hp, 29, "the Shocked foe beside it takes one blow, the area's: Spread 1, never Chain's 2 too")
+	assert_eq(right.hp, 27, "the Shocked foe beside it takes Spread 1 and Chain's 2")
+	assert_true(Effects.has(right, "shocked"), "an area's blow spends no Shock, nor an arc")
 	assert_eq(far.hp, 28, "the Shocked foe out of the row takes Chain 2")
 	assert_eq(mid_back.hp, 30, "the arc spreads nowhere: the conductor's neighbour takes nothing")
-	assert_eq(right_back.hp, 30, "and nothing arcs from the area's foe")
-	assert_eq("\n".join(sk.log).count("arcs to"), 1, "one arc, to the one conductor out of the area")
+	assert_eq(right_back.hp, 30, "and nothing arcs on from the area's foe")
+	assert_eq("\n".join(sk.log).count("arcs to"), 2, "two arcs, one to each conductor")
 
 
 ## Shocked (Ryan, 29 October: "when targeted and struck by a weapon, double the damage received
@@ -5500,7 +5508,7 @@ func test_a_foe_aloft_takes_what_it_carries_and_nothing_that_lands_elsewhere() -
 	var next_to: Foe = s2.front[1]
 	var far: Foe = s2.front[2]
 	Effects.stack(r2, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1)
-	assert_false(s2.shocked_foes(null).has(r2), "Shocked, it conducts no arc")
+	assert_false(s2.conducting_foes(null).has(r2), "Shocked, it conducts no arc")
 	var blast := s2.mine_reach(next_to.rank, next_to.column, false)
 	assert_true(blast.has(next_to) and blast.has(far) and not blast.has(r2), "a Mine blowing beside it reaches the foes in reach and passes it by")
 	assert_true(s2.mine_reach(r2.rank, r2.column, false).has(r2), "a Mine it carries blows on it: what it carries is its own")
@@ -9397,6 +9405,30 @@ func test_mines_blow_in_strike_order_and_a_blast_that_fells_a_mined_foe_blows_it
 ## add up, the rest ride once; a gated keyword rides only where its gate held on the hit; nothing
 ## a hit reads off its foe rides, and a rule written on a piece's own blows (ignores armour, where
 ## Breach rode until 15 November) stays with the piece: the blast always meets armour.
+## A Mine's Chain stacks with its blast (Ryan, 21 November: Chain "should stack with spread and
+## penetrate"): a conductor the blast meets takes the blast and the arc, one out of its reach the arc
+## alone, and no rider of the Mine rides an arc (18 November: "take riders off chain").
+func test_a_mines_chain_stacks_with_its_blast_and_carries_no_rider() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.blank()), 40, 100))
+	var a := _ghoul(100, 0)
+	var b := _ghoul(100, 0)
+	var c := _ghoul(100, 0)
+	var far := _archer(100, 0)
+	sk.add_foes([a, b, c, far])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.front[1] == b and sk.back[0] == far, "b mid-front, the archer behind a")
+	_shock_on(a)
+	_shock_on(far)
+	sk._blow_mine({"damage": 3, "riders": {"chain": 2, "stacks": {"brittled": 1}, "keywords": []}}, 0, 1, false, "b")
+	assert_eq(a.hp, 100 - 3 - 2, "a Shocked foe beside it takes the blast and the arc")
+	assert_eq(c.hp, 100 - 3, "a plain one beside it, the blast alone")
+	assert_eq(far.hp, 100 - 2, "a conductor out of its reach, the arc alone")
+	assert_eq(Effects.stacks_of(far, "brittled"), 0, "and no rider rides the arc")
+	assert_eq([Effects.stacks_of(a, "brittled"), Effects.stacks_of(c, "brittled")], [1, 1], "the riders on each foe the blast met")
+
+
 func test_a_mines_keywords_add_up_and_its_blast_meets_armour() -> void:
 	var merged := Skirmish.mine_riders_merged({"stacks": {"ablating": 2}, "keywords": ["shock"]}, {"stacks": {"ablating": 3}, "chain": 1, "keywords": ["shock", "expose"]})
 	assert_eq([int(merged["stacks"]["ablating"]), int(merged["chain"])], [5, 1], "Ablating 2 and Ablating 3 are Ablating 5")

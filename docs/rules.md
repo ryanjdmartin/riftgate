@@ -17,11 +17,10 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 ## Machines
 
 - **Chassis**: hull, shield, heat maximum, armour, move, size class, one way of moving, hardpoints, fixed components, module
-  slots (two; the Clydesdale three) and one passive. Twenty-six chassis from five makers
-  (`content/chassis.json`), two of them dealt by nothing yet (a chassis whose entry says
-  `"status": "planned"`): the Swallowtail, back in design until its session hands it back, and
-  the Mole, a draft whose engine is still to come. A run has four squad slots and starts with
-  three machines.
+  slots (two; the Clydesdale three) and one passive. Twenty-seven chassis from five makers
+  (`content/chassis.json`), one of them dealt by nothing yet (a chassis whose entry says
+  `"status": "planned"`): the Swallowtail, back in design until its session hands it back. A
+  run has four squad slots and starts with three machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die,
   beside its name in its readout, and down the codex. A piece a branch has upgraded wears a
@@ -125,7 +124,12 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   its Flakshot Spreader remade as the Flakshot Disperser (Indirect, Brittle 4, Spread,
   Penetrate); Harrier, its weapon strikes counting Brittle twice, then the Spreader remade as the
   Flakshot Repeater (Direct, 1 three times, Brittle 1, Spread 1). Neither form keeps the
-  Spreader's cooldown.
+  Spreader's cooldown. The Echidna's, a tier one's: Spiker, its Supersonic Spike Tether as the
+  Hypersonic Spike Tether, Instant at a heat more, then its Sonic Needles taking a point a stack
+  off the attacks of the foe they are in; Chaos, its needles' bolt leaving its foe one stack in
+  place of none, then its weapons dealing 1 more to a foe for each stack of Sonic Needle in it.
+  A direction may be back in design, a planned draft: kept in content, its depth unchecked, and
+  never offered (the Mole's two since its move to tier two).
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
@@ -340,8 +344,8 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   blast as it reboots and the Musk Ox's salvo, and one debuff, the Shift Whistle's lure (Minerva, tier
   three). A
   weapon reaches wide by Spread or Penetrate, or lands on every foe.
-- Chain's arcs read no reach: they land on every Shocked foe on the field, front or back,
-  whatever the gun's reach.
+- Chain's arcs read no reach: they strike every foe on the field that conducts (a Shocked
+  foe, or one carrying a Sonic Needle), front or back, whatever the gun's reach.
 - A kill clears its slot at its spend's death check, so a hole in the front opens that
   column's back to Direct; what a kill brings back (a foe getting back up, a Gel's halves)
   stands once the spend is done (A spend's order, below), and otherwise the hole stays open:
@@ -352,13 +356,13 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
 Every foe a strike reaches takes a blow of its own, read in one order:
 1. The number: on the foe the strike is aimed at, the weapon's number; on every other
    foe its area reaches, the number of the shape it stands in (Spread's beside the target,
-   Penetrate's in the other rank of its column); on every other Shocked foe on
-   the field, Chain's (a foe in a shape and Shocked takes the shape's, one blow). Then what the
-   entry prints from its firer: what heat fired adds (Vents all), what shield fired adds (Fires
-   the shield).
-2. The attacker's modifiers, on every blow: adds, then multiplies, then floors, a condition on
-   the foe read on that foe (a status it carries, its rank). A zap's add is one of the adds,
-   beside Empowered's (Passives, below).
+   Penetrate's in the other rank of its column). Then what the entry prints from its firer:
+   what heat fired adds (Vents all), what shield fired adds (Fires the shield). A Chain's arc
+   is its own blow, struck apart once the strike's have landed (Chain N, under Player keywords),
+   its number flat: steps 1 and 2 give it nothing more.
+2. The attacker's modifiers, on every blow of the strike: adds, then multiplies, then floors, a
+   condition on the foe read on that foe (a status it carries, its rank). A zap's add is one of
+   the adds, beside Empowered's (Passives, below).
 3. The foe's own, flat first: what the entry reads off it (the hull it is missing on every
    blow, the stacks a consumer eats on it on its first blow) and its Brittle; then its multiplies
    (Shocked doubles a weapon's strike aimed at it, never a blow that only reaches it); then its
@@ -367,7 +371,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
    weapon's hits (below).
 - **The strike order**: a strike's blows are resolved in one order, the target's first, then
   Spread's left and then its right, then Penetrate's other rank, a twin slot's other half with
-  its pair, then the Beam Rifle's foe to the right, then Chain's arcs. It is the calculation's
+  its pair, then the Beam Rifle's foe to the right, then Chain's arcs, read once those have
+  landed. It is the calculation's
   alone: the screen shows a strike's blows landing together, on its beat. What waits on a
   machine's next strike lands on its spend's first blow alone, its first strike's on its target,
   and on none of that strike's area (the Parry's return).
@@ -420,8 +425,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   its damage on every foe round its slot (the slot's other half, the foes beside it in its rank
   and the other rank of its column; a massive foe's, the front-rank foes in the columns either
   side), each through its own Brittle, a Barrier and its armour, aimed at nobody
-  so a Shock neither doubles it nor is spent; Chain's number on every other Shocked foe on the
-  field; then its keywords on each foe it met, felled or not, as a hit's riders land, Shock and
+  so a Shock neither doubles it nor is spent; then Chain's number, flat, on every foe on the field
+  that conducts, a foe the blast met among them, each a blow alone that no rider rides; then its
+  keywords on each foe it met, felled or not, as a hit's riders land, Shock and
   Expose after its blow, Disrupt only in the player's turn. Several Mines due at one death check
   blow in strike order, front left to right, then the back, and a blast that fells a mined foe
   blows that one's Mine in turn. A blast set off in a spend is part of it, so what its falls
@@ -558,15 +564,21 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   and a foe immune to it (An immunity, under Foes) takes none.
 - **Shock**: every foe the hit reaches is Shocked after its blow, the ones it fells included, so
   a hit never spends its own Shock.
-- **Chain N**: the blow also lands N on every other Shocked foe on the field, each arc a blow
-  alone: no strike is aimed at it, so its Shock stands, it adds no heat, and no rider rides it,
-  the entry's, its primers' or a passive's (a lightning arc, never part of the impact), so a
-  conductor takes the arc's number through its own statuses and armour and nothing else. On a
-  debuff, which deals nothing itself (the Storm Petrel's Pulse in its Striker branch), each arc
-  lands N plain, no add or multiply of the machine's, and its lure stays on what its strike and
-  its area reach. Its footprint, like an area's, is read from the strike's own foe: an arc
-  spreads nowhere, a foe an area reaches never arcs, and a foe both beside the target and
-  Shocked takes one blow, the area's, with the area's riders.
+- **Chain N**: all foes on the field that conduct (a Shocked foe, or one carrying a Sonic Needle)
+  are struck for N, front or back, whatever the reach, with every strike of the entry (a
+  Ricochet's strikes and a hit again arc none). The arcs are read once the strike's own blows
+  have landed, so its own target is struck too while it still conducts: a weapon's strike aimed
+  at it spends a Shock first, so a Shocked target is out, but a needle stays, and equipment spends
+  no Shock. Each arc is N flat: no add or multiply of the machine's, no rule of the piece's (a
+  gun that ignores armour, a spill), no rider (the entry's, its primers' or a passive's: no mark,
+  no Lure, no Shock, no needle), no heat, and it does not use or consume a Shock. The conductor's
+  own statuses and armour read it (its Brittle adds, Armoured and armour come off, Exposed takes
+  them away), and a Barrier takes a weapon's arc; whether an arc stays a strike they read or
+  becomes a flat ping they never touch waits on Ryan (the bible's section 12). It stacks with an
+  area: a conductor Spread or Penetrate reaches takes the area's blow, with its riders, and the
+  arc. An arc spreads nowhere and cashes no Cryo; a kill by an arc is still its machine's (the
+  kill rules read it), and a foe it damages counts where a rule counts the foes a spend damaged
+  (the Honey Badger's Ore).
 - **Lure**: every foe reached turns on the spender for the round, a felled one too. A move at
   every machine or at nobody holds no pick, so it has nothing to turn.
 - **Expose** (the Needletail's Fovea Designator, the Swallowtail's Spotting Flare, the Lammergeier's Lorentz Contractor): every foe reached
@@ -1014,6 +1026,19 @@ On a foe:
   shock is spent. A strike is aimed at the foe it resolves on: the player's pick, or each foe a
   weapon over every foe strikes, which the game targets rather than the player. A blow that
   only reaches it (an area's, a Chain's arc, a spill, a Mine's blast) neither doubles nor spends it, and equipment leaves it standing; it never stacks.
+  It conducts Chain.
+- **Sonic Needle** (debuff, the Echidna's): a stack for every strike of the Echidna's weapons and
+  equipment that reaches the foe, an area's neighbours included and a Chain's arc never, and a
+  stack for every blow the foe lands on the Echidna, whatever the blow dealt; a blow that wrecks
+  it lays none. It conducts Chain. The stacks land one at a time, and the one that brings the foe
+  to 3 fires the bolt before the next lands: the Echidna fires Chain 2, aimed at nothing, so 2
+  lands on every foe on the field that conducts, that foe included while it stands, each a blow
+  alone as a Chain's arc is (no rider and no needle, a Shock neither doubled nor spent, through
+  its own Brittle, a Barrier and its armour); then every stack on that foe is consumed. A foe the
+  strike fells takes its riders as any does, and its bolt fires on the others all the same; a
+  foe whose own blow brings its bolt and fells it strikes no more that turn. A foe's cleanse
+  takes the needles, a Ward turns them away, and they last until a bolt spends them. With no
+  Echidna in the fight they land as any status and fire nothing.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
   Through the player's next turn: it falls as the foe's turn starts in the next round;
@@ -1189,11 +1214,40 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
 - **Broken** (debuff): a shield at nothing, whatever took it there: a foe's blow, the overheat,
   the machine's own reboot, or a shield spend or cost of its own. A Broken shield gains no
   shield by any method, a grant, a regen, a refill on a kill or a module's, until the reboot's
-  recovery, so a shield breaks once between reboots. No cleanse lifts it. A Barrier is a buff
+  recovery (a turn under, for a burrower), so a shield breaks once between reboots. No cleanse lifts it. A Barrier is a buff
   in front of shield and hull: it touches neither bar and lands on any machine, Broken or
   rebooting.
 - A Swallowed machine cannot reboot: it has no turn to give. A Phased one may, and its reboot
   is the safe one, bare where nothing reaches it.
+- **The burrow** (the Mole's passive, Burrow): it burrows in its reboot's place, its die dragged
+  onto the same target, which reads BURROW while its die is in hand; the reboot's gate, a turn
+  it has spent nothing, and its whole turn. Its shield is never emptied. What stands past its
+  heat's maximum vents at once, as a reboot's does, so nothing burns at its END TURN and it is
+  free to overheat again, and every entry a foe jammed lights. It gains a stack of **Conserved
+  Momentum** (a store, so no Purge touches it, up to 3, a bar under its heat), and its drill
+  comes home with what is left of the Applied Momentum in its foe, back as Conserved up to the
+  cap. It is then **Burrowed** (an ability, so no Purge touches it): armour 1, its die rolling
+  the Inertia Drill alone, which its die never rolls above ground; and each of its turns under
+  opens, before anything cools, with Broken and Overheated cleared and the one overheat between
+  reboots free again, half of what its shield was missing as it burrowed back on it and half of
+  the heat it carried then off it, each rounded up (two turns under is whole and cold, and a
+  blow taken under is not mended), every entry a foe jammed lit, and a stack of Conserved
+  Momentum. It stays under until it spends the Drill, and cannot burrow again while under.
+- **The Inertia Drill** (its locked piece, equipment, Indirect): spent at a foe, it spends every
+  stack of Conserved Momentum, lays as many of **Applied Momentum** on the foe (a mark the team
+  lays: the foe's Ward turns it away, the stacks spent all the same), and brings the Mole up,
+  **Drill Out** (an ability) until its next burrow, its foe felled or not. As the foes' turn
+  starts, before their side's opening, each foe carrying Applied Momentum takes its drill's
+  blow, a plain blow of 2 (its Brittle adds, its armour and a Barrier from its last turn take it,
+  no Shock is read, and a Phased foe takes nothing), then what a branch of its drill lays (the
+  Mole's two are back in design and offered nowhere: Ablate, Ablate 2 in the blow's place, then
+  Seared with it; Squad, Brittle 1 and Pinned, then Exposed), and a stack goes. Before the opening, so a Pinned it lays holds
+  the Brittle the opening would halve. A foe's cleanse takes it, a foe that falls takes it with
+  it, and the Mole's next burrow takes it home. The drill works as its machine stood when it
+  drilled: a branch learned later changes the next drill.
+- The fight bot burrows a burrower by the reboot's reads, but never while its drill still works
+  in a standing foe unless it overheats; under, it holds the drill until it has its cap of
+  Conserved Momentum and is whole and cold, then drills the foe its blows pay most on.
 - The fight bot reboots a machine past its maximum, unless a vent it shows takes it back
   under; one whose shield is broken when a blow is coming or its heat is half spent; one whose
   entry would pass its maximum, where it has heat to shed and this round's blows would take a
@@ -1481,7 +1535,9 @@ who return whole (a foe that joined it in the fight, a Gel's half, a raised Reve
 is no survivor, and each of them counts as a kill as any foe does: A kill, above).
 
 ### Passives: triggers and conditions
-- Triggers: static, on attack, on injury (a blow that would destroy a component), on skirmish start,
+- Triggers: static, on attack, on struck (a foe's blow landing on this machine, a time a blow
+  whatever it dealt, laying a status on the striker: the Echidna's needle; a blow that wrecks it
+  lays nothing), on injury (a blow that would destroy a component), on skirmish start,
   on hull damage (any hull lost: a blow, a bite or an overheat), on shield gain, on shield
   granted (an ally this machine shields), on buffing an ally (equipment this machine spends on an
   ally, once for each ally it lands on, whatever it did there), on heat gain, on foe status (a foe
@@ -1498,7 +1554,9 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   feeds itself.
 - A passive may count a grant off a status its machine carries, in steps (a stack of Empowered
   for every 5 Essence), and a status may name the battle as its scope, kept from fight to fight
-  (Essence).
+  (Essence). It may count an attack's add off the stacks of a status in the foe the blow lands
+  on: the Echidna's Chaos, 1 more a Sonic Needle, read on every blow of its weapons on that foe,
+  an area's among them (a Chain's arc and the needles' bolt are flat and take none).
 - A passive may double a weapon's printed number before its buffs, on every blow, what the
   entry prints from its firer included (an area's number, heat fired), the buffs
   added once after it and the struck foe's own reads (its missing HP, the stacks consumed on
@@ -1515,8 +1573,8 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   add (the Buzzard's: 2 shield for +2). It is paid unasked as the spend begins whenever the
   shield holds the cost: short of it the weapon fires plain, and the last point paid breaks
   the shield. The add is the attacker's, beside Empowered's, wherever Empowered's goes: every
-  strike of the spend, every foe its area reaches, a Chain's arcs and a Ricochet's strikes, the
-  cost paid once a spend. Equipment pays none, nor an entry that fires the whole shield. The
+  strike of the spend, every foe its area reaches and a Ricochet's strikes, never a Chain's arc,
+  the cost paid once a spend. Equipment pays none, nor an entry that fires the whole shield. The
   die's number carries the add while the zap is ready, and its passive box shows the cost. A passive or a module may split every weapon and equipment aimed at a foe instead (the Split-cycle Breech, a module; a second adds nothing):
   each hits twice as often, and each hit's base weapon damage
   (its number and what the entry prints) is halved, rounded down and never below one, every

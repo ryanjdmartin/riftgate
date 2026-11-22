@@ -260,6 +260,8 @@ func branch_error(chassis_id: String, picks: Array) -> String:
 		var d := _direction(c, str(p))
 		if d.is_empty():
 			return "%s has no direction %s" % [chassis_id, str(p)]
+		if str(d.get("status", "")) == "planned":
+			return "the %s direction is back in design" % str(p)   # a planned draft: kept, never offered
 		taken[str(p)] = int(taken.get(str(p), 0)) + 1
 		if int(taken[str(p)]) > (d.get("steps", []) as Array).size():
 			return "the %s direction is %d step%s deep" % [str(p), (d.get("steps", []) as Array).size(), "" if (d.get("steps", []) as Array).size() == 1 else "s"]
@@ -1853,7 +1855,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if fd.has("dispel") and not kw_names.has("dispel"):
 		errs.append("%s: dispel (the stacks) rides with the Purge keyword" % where)
 	elif kw_names.has("chain") and kind == "attack" and int(fd.get("chain", 0)) <= 0:
-		errs.append("%s: Chain says the number every other Shocked foe takes: chain, a positive number" % where)
+		errs.append("%s: Chain says the number every foe that conducts is struck for: chain, a positive number" % where)
 	if fd.has("chain") and not kw_names.has("chain"):
 		errs.append("%s: chain (the number) rides with the Chain keyword" % where)
 	# Every Foe on a weapon lands its number whole on every foe (12 November, the two gated
@@ -2157,6 +2159,14 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: suppress needs the id or tag it turns off as its value" % where)
 		if eff.has("per_stack") and not Effects.STATUS.has(str(eff["per_stack"])):
 			errs.append("%s: per_stack names no engine status ('%s')" % [where, eff["per_stack"]])
+		# A number scaled by the stacks the foe it is aimed at carries (the echidna's Chaos: +1 a
+		# Sonic Needle): an attack's effect, on a status a foe carries.
+		if eff.has("per_target") and (trig != "on_attack" or not Effects.FOE_STATUSES.has(str(eff["per_target"]))):
+			errs.append("%s: per_target scales an attack's effect by a foe status on its target ('%s')" % [where, eff["per_target"]])
+		# What a machine lays on a foe whose blow lands on it (on_struck: the echidna's needle) is a
+		# foe status.
+		if trig == "on_struck" and effect == "lay_status" and not Effects.FOE_STATUSES.has(str(eff.get("value", ""))):
+			errs.append("%s: on_struck lays a foe status on the striker, one of %s" % [where, ", ".join(Effects.FOE_STATUSES)])
 		if eff.has("per_heat") and int(eff["per_heat"]) <= 0:
 			errs.append("%s: per_heat is heat per step and must be positive" % where)
 		if (effect == "stack_status" or effect == "lay_status") and not Effects.STATUS.has(str(eff.get("value", ""))):
@@ -2222,6 +2232,49 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: side_strike is static: value, what the foe to the right of the target takes with every strike, 1 or more" % where)
 		if effect == "strike_again" and (trig != "static" or int(eff.get("value", 0)) < 1):
 			errs.append("%s: strike_again is static: value, the share of each strike's blow its hit again carries, in percent, 1 or more" % where)
+		# The burrow in a reboot's place (the Mole's, Ryan, 16 November): its piece the locked piece
+		# its die rolls alone while Burrowed (checked against the chassis's fixed pieces below), its cap
+		# on Conserved Momentum, Burrowed's armour, the share a turn under makes good in percent, and the
+		# drill's blow a turn.
+		if effect == "burrow":
+			if trig != "static" or str(eff.get("piece", "")).strip_edges().is_empty():
+				errs.append("%s: burrow is static: piece, the locked piece its die rolls alone while Burrowed" % where)
+			if int(eff.get("cap", 0)) < 1 or int(eff.get("armour", 0)) < 1:
+				errs.append("%s: burrow's cap (Conserved Momentum at most) and armour (Burrowed's) are 1 or more" % where)
+			if int(eff.get("recover", 0)) < 1 or int(eff.get("recover", 0)) > 100:
+				errs.append("%s: burrow's recover is the share of what was missing a turn under makes good, in percent, 1 to 100" % where)
+			if int(eff.get("blow", -1)) < 0:
+				errs.append("%s: burrow's blow is the drill's blow a turn, 0 or more" % where)
+		# A branch's tweak of the drill's turn in its foe (the Mole's Ablate and squad branches, Ryan,
+		# 16 November): a blow in the burrow's blow's place, and the foe statuses it lays after it.
+		if effect == "momentum":
+			if trig != "static" or not eff.has("entry"):
+				errs.append("%s: momentum is static, scoped to the drill it tweaks (entry)" % where)
+			if eff.has("blow") and int(eff["blow"]) < 0:
+				errs.append("%s: momentum's blow takes the drill's blow's place, 0 or more" % where)
+			var lays = eff.get("lays", {})
+			if not (lays is Dictionary) or (not eff.has("blow") and (lays as Dictionary).is_empty()):
+				errs.append("%s: momentum lays {status: stacks} after the drill's blow, or sets its blow" % where)
+			elif lays is Dictionary:
+				for sid in lays:
+					if not Effects.FOE_STATUSES.has(str(sid)) or int(lays[sid]) < 1:
+						errs.append("%s: momentum lays foe statuses, a stack or more each (%s)" % [where, str(sid)])
+		# The Sonic Needles (the echidna's, Ryan, 20 November): the foe status they lay (the base rule's;
+		# a step's may leave it to the base), the stacks that fire the bolt, its Chain, the stacks a
+		# bolt leaves on its foe (none at 0 or absent) and the sap a stack.
+		if effect == "needles":
+			if trig != "static":
+				errs.append("%s: needles is static: the rule of its machine's needles" % where)
+			if eff.has("status") and not Effects.FOE_STATUSES.has(str(eff["status"])):
+				errs.append("%s: needles lays a foe status ('%s')" % [where, str(eff["status"])])
+			if eff.has("at") and int(eff["at"]) < 2:
+				errs.append("%s: needles' at is the stacks that fire the bolt, 2 or more" % where)
+			if eff.has("chain") and int(eff["chain"]) < 1:
+				errs.append("%s: needles' chain is the bolt's Chain, 1 or more" % where)
+			if eff.has("keeps") and (int(eff["keeps"]) < 0 or int(eff["keeps"]) >= int(eff.get("at", 3))):
+				errs.append("%s: needles' keeps is the stacks a bolt leaves on its foe, fewer than its at (0 or absent: none)" % where)
+			if int(eff.get("sap", 0)) < 0:
+				errs.append("%s: needles' sap is the damage a stack takes off its foe's attacks, 0 or more" % where)
 		# The name an effect gives the piece it is scoped to (the Aile Booster as its Blitzer or its
 		# Assaulter, Ryan, 19 November): shown text, on an effect that names its piece.
 		if eff.has("name") and effect != "offhand" and (not eff.has("entry") or str(eff["name"]).strip_edges().is_empty()):
@@ -2692,6 +2745,24 @@ func _validate_chassis(errs: Array[String]) -> void:
 			for eff in passive_c.get("effects", []):
 				if eff is Dictionary and str(eff.get("effect", "")) == "fold_die":
 					fold = int(eff.get("value", 0))
+		# A step that tweaks the Sonic Needles tweaks a rule its passive lays: the passive's needles
+		# name their status, so a branch's needles without one have something to change.
+		var needles := false
+		if passive_c is Dictionary:
+			for eff in passive_c.get("effects", []):
+				if eff is Dictionary and str(eff.get("effect", "")) == "needles" and eff.has("status"):
+					needles = true
+		for b in c.get("branches", []):
+			for st in (b.get("steps", []) if b is Dictionary else []):
+				for eff in (st.get("effects", []) if st is Dictionary else []):
+					if eff is Dictionary and str(eff.get("effect", "")) == "needles" and not needles:
+						errs.append("%s: a branch's needles tweak the passive's, which names their status" % where)
+		# A burrow's piece (the Mole's Inertia Drill) is one of its fixed pieces: its die rolls it alone
+		# while Burrowed and never above ground, so it must be on the die.
+		if passive_c is Dictionary:
+			for eff in passive_c.get("effects", []):
+				if eff is Dictionary and str(eff.get("effect", "")) == "burrow" and not fixed.has(str(eff.get("piece", ""))):
+					errs.append("%s: a burrow's piece is one of its fixed pieces (%s)" % [where, str(eff.get("piece", ""))])
 		if fold > 0:
 			if hp != 2 * fold:
 				errs.append("%s: a die folded into batteries of %d takes %d hardpoints, not %d" % [where, fold, 2 * fold, hp])
@@ -2750,10 +2821,16 @@ func _validate_branches(where: String, c: Dictionary, errs: Array[String]) -> vo
 			errs.append("%s: two directions share the id" % dw)
 		ids[str(d["id"])] = true
 		for k in (d as Dictionary).keys():
-			if not ["id", "name", "steps", "design"].has(str(k)):
-				errs.append("%s: '%s' is no key of a direction (id, name, steps, design)" % [dw, str(k)])
+			if not ["id", "name", "steps", "design", "status"].has(str(k)):
+				errs.append("%s: '%s' is no key of a direction (id, name, steps, design, status)" % [dw, str(k)])
+		# A direction back in design (the Mole's, Ryan, 20 November: "Send the Mole's current Upgrade
+		# tree back to design"): a planned draft, kept and never offered (branch_error), so its depth
+		# waits on its session.
+		var planned_dir := str(d.get("status", "")) == "planned"
+		if d.has("status") and not planned_dir:
+			errs.append("%s: a direction's status is planned, or it has none" % dw)
 		var steps: Array = d["steps"]
-		if steps.size() != deep:
+		if steps.size() != deep and not planned_dir:
 			errs.append("%s: a tier %d machine picks %d time%s, so a direction is %d step%s deep, not %d" % [dw, tier, deep, "" if deep == 1 else "s", deep, "" if deep == 1 else "s", steps.size()])
 		for i in range(steps.size()):
 			var st = steps[i]

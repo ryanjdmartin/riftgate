@@ -632,7 +632,6 @@
    "id": "inertia_drill",
    "name": "Inertia Drill",
    "maker": "minerva",
-   "status": "planned",
    "shape": "none",
    "codex": "",
    "flavour": "",
@@ -650,6 +649,34 @@
    "passive": null,
    "tags": [
     "missile"
+   ]
+  },
+  {
+   "id": "supersonic_spike_tether",
+   "name": "Supersonic Spike Tether",
+   "maker": "minerva",
+   "shape": "barrel",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "A spike on a line, fired supersonic into a foe and left ringing in it, so the foe comes at the machine that tethered it (Ryan, 20 November: \"Locked Piece: Supersonic Spike Tether - Indirect, Sap 1, Lure, 1 Heat\").",
+    "niche": "The echidna's locked piece, equipment: Indirect, Sap 1 and Lure, heat 1. Its hit lays a Sonic Needle, and the foe it lures strikes it for a second (his note that day: \"theoretically this should result in 2 stacks on that foe\"), the Sap taking 1 off that blow. The Spiker's first step makes it the Hypersonic Spike Tether, Instant at heat 2 (\"Instant allowed since its a Lure, getting hit is the point and the cost\"). The shape and the tag are the session's."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "power": 0,
+    "keywords": [
+     "lure",
+     "sap"
+    ],
+    "sap": 1,
+    "heat": 1
+   },
+   "passive": null,
+   "tags": [
+    "ballistic"
    ]
   },
   {

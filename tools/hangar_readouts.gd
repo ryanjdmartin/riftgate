@@ -8,7 +8,8 @@ extends SceneTree
 ## page's text inventory leaves them out; this writes them as the game's own code composes them,
 ## so the page shows them beside the texts and never drifts from the game:
 ##   every component, its codex row at its own numbers (EntryReadout.codex_lines): its attributes
-##   (what it is, its number, heat, costs, cooldown and target), its keywords and its own rules;
+##   (what it is, its number, heat, costs, cooldown and target), its keywords and its own rules,
+##   and the templates each row is built from (tpl), for the Chassis sheet to edit beside them;
 ##   every foe, each move the codex lists, its last act after (EntryReadout.codex_move_lines);
 ##   every template (content/templates.json) those lines and a component's compact line filled,
 ##   with the pieces that print it and its words there, so the Text tab shows each template beside
@@ -58,9 +59,10 @@ static func build(db: ContentDB) -> Dictionary:
 			var g := str(l.get("group", ""))
 			if g in ["attr", "kw", "rule"]:
 				rows[g] = words(l)
+		rows["tpl"] = by_row(rows, Templates.traced)
 		comps[str(cid)] = rows
 		face.describe()   # its compact line's words too (the quick campaign's lists, a charged form, the log)
-		_note(used, db.component_name(str(cid)))
+		_note(used, db.component_name(str(cid)), "pieces")
 	var foes := {}
 	for fid in db.foes.keys():
 		var foe := db.make_foe(str(fid))
@@ -74,16 +76,43 @@ static func build(db: ContentDB) -> Dictionary:
 				if g in ["attr", "kw", "rule"]:
 					move[g] = words(l)
 			moves.append(move)
-			_note(used, "%s, %s" % [str(db.foes[fid].get("name", fid)), str(a.get("name", move["id"]))])
+			_note(used, "%s, %s" % [str(db.foes[fid].get("name", fid)), str(a.get("name", move["id"]))], "moves")
 		foes[str(fid)] = moves
 	Templates.tracing = false
 	Templates.traced.clear()
 	return {
-		"_about": "What every piece does as the game's codex prints it, composed by the game's own code from content (EntryReadout.codex_lines for a component at its own numbers: its attributes, its keywords, its own rules; EntryReadout.codex_move_lines for each foe move and its last act), its words the templates' (content/templates.json); templates is each template those lines and a component's compact line (Face.describe) filled: how many pieces print it and the first few, with its words there. Written by tools/hangar_readouts.gd, which tools/hangar_data.py runs; the page shows the lines beside each piece and each template's beside it on the Text tab, where the templates are edited.",
+		"_about": "What every piece does as the game's codex prints it, composed by the game's own code from content (EntryReadout.codex_lines for a component at its own numbers: its attributes, its keywords, its own rules; EntryReadout.codex_move_lines for each foe move and its last act), its words the templates' (content/templates.json); templates is each template those lines and a component's compact line (Face.describe) filled: how many components (pieces) and foe moves (moves) print it, count the two together, and the first few, with its words there. Written by tools/hangar_readouts.gd, which tools/hangar_data.py runs; the page shows the lines beside each piece and each template's beside it on the Text tab, where the templates are edited.",
 		"components": comps,
 		"foes": foes,
 		"templates": used,
 	}
+
+
+## Which of a piece's rows each template its codex lines filled builds (Ryan, 20 November: "Need
+## to be able to hop to/edit the template from the Chassis tab when viewing a chassis"): a row's
+## templates are those whose words stand in its words, read in the order attributes, keywords,
+## rules, a template going to the first row holding it; one in none of them is "other".
+static func by_row(rows: Dictionary, traced: Array) -> Dictionary:
+	var out := {}
+	for t in traced:
+		var said := _plain(str(t[1]))
+		if said.is_empty():
+			continue
+		var at := "other"
+		for g in ["attr", "kw", "rule"]:
+			if _plain(str(rows.get(g, ""))).contains(said):
+				at = g
+				break
+		var list: Array = out.get(at, [])
+		if not list.has(str(t[0])):
+			list.append(str(t[0]))
+		out[at] = list
+	return out
+
+
+## Words as a row is matched: lower case, one space between words.
+static func _plain(t: String) -> String:
+	return " ".join(t.to_lower().split(" ", false))
 
 
 ## The templates one piece's lines filled (Templates.traced), noted against it: each template's
@@ -91,15 +120,16 @@ static func build(db: ContentDB) -> Dictionary:
 const EXAMPLES := 6
 
 
-static func _note(used: Dictionary, piece: String) -> void:
+static func _note(used: Dictionary, piece: String, side: String) -> void:
 	var seen := {}
 	for t in Templates.traced:
 		var id := str(t[0])
 		if seen.has(id):
 			continue
 		seen[id] = true
-		var u: Dictionary = used.get(id, {"count": 0, "on": []})
+		var u: Dictionary = used.get(id, {"count": 0, "pieces": 0, "moves": 0, "on": []})
 		u["count"] = int(u["count"]) + 1
+		u[side] = int(u[side]) + 1
 		if (u["on"] as Array).size() < EXAMPLES:
 			(u["on"] as Array).append({"piece": piece, "words": str(t[1])})
 		used[id] = u

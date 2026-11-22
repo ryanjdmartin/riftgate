@@ -77,7 +77,7 @@ shape) can join B to A or C.
 
 Ryan, 5 November: the Magpie and the Snowy Owl are "completely unspecced other than general
 directions and names". Claude's note the same day, from his chassis ideas of 4 November
-(the briefs README's "Ten a maker"; the frost figure's brief, `arsenal_frost.md`): of the ideas
+(the briefs README's "Ten a maker"; the frost figure's brief, `git show 084500a7:docs/briefs/arsenal_frost.md`): of the ideas
 folded or moved to fit ten a maker, one fits this slot. A, cold is quiet, meets Cryo. A weapon hit on a foe carrying Cryo cools the
 hitter, so an owl that frosts its prey and strikes it stays cold and unseen. The Cryo detonator's
 Suppress at enough stacks reads as the prey frozen in place. The Arsenal's frost figure could keep

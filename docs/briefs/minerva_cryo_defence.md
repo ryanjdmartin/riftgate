@@ -25,6 +25,9 @@ bible's Polar Bear row (Cryo, the cooling the team contends for), retaliation an
   to be unique. Mastodon/Mammoth type unit."
 - 20 October, of the Polar Bear's Cryo: marked for reuse ("probably a healthier way to grant ally
   cooling than venting directly"), with "a minor rider later, only if the roster has room".
+- 4 November, the frost figure he later cut and merged here: "Aphelion/Arsenal: Plants cryo and
+  somehow blows the cryo for damage, adding Suppress if enough stacks consumed. Arsenal version
+  more of a Frost demon/god homage."
 
 ## Claude's first round (4 and 5 November)
 
@@ -57,13 +60,33 @@ a debuff the team must lay and keep on the foe, and any weapon hit cashes it awa
    struck orbit, the briefs README).
 5. **Cryo's orbit.** With the Snowy Owl on Cryo (Ryan, 5 November), four machines orbit it: the
    Polar Bear lays it, this one keeps it, the Owl cashes it to stay hidden, the Arsenal's frost
-   figure blows it up. This machine is the one that wants the frost left in place.
+   figure blows it up. This machine is the one that wants the frost left in place. (The frost
+   figure is cut since: its detonation is this machine's locked piece, the next section.)
+
+## The detonation, from the frost figure's round
+
+Ryan cut the frost figure on 5 November ("Cut. Moved onto Minerva") and merged its detonation
+here. Claude's first round on the Arsenal's machine is `git show 084500a7:docs/briefs/arsenal_frost.md`;
+what this round takes from it:
+
+1. **The pattern is built.** The detonation is the Backdraft Charge's with Cryo: a piece that
+   consumes a status for a point a stack, on each foe it hits alone, with its Suppress gated
+   at a count of stacks (the bible's stun row, section 5).
+2. **The cooling.** A detonation that eats the stacks leaves Cryo's own cash, 2 heat a stack
+   to the hitter, nothing. The trade is then the team's cooling for damage and the stun, a
+   real price; if the blow cools as well, the damage is free. Claude's lean: the trade.
+3. **The gate's number**: the stacks that Suppress.
+4. **Where the Cryo comes from.** A weapon's hit spends every stack, so Cryo piles up only on
+   a foe nobody shoots, from equipment or from a gun's riders, which land after its hits. The
+   to-do's synergy line asks for a slottable Cryo setter, the Cryo Flinger's shape without its
+   lure.
 
 ## Open for the session
 
 1. Its trigger: party-wide, clear of Misharu's shield layer and the echidna's hull.
 2. The point off, and its scale against armour.
 3. Its numbers, stock, locked piece and name.
+4. The detonation's four points, the section above.
 
 ## What the session hands back
 

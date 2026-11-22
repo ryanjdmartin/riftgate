@@ -1,6 +1,6 @@
 # Riftgate
 
-Godot 4.8 (4.8-beta2 until 4.8 ships, for its MSAA fix) / GDScript. Portrait tactical hex battler for Android. `docs/rules.md` states the game's
+Godot 4.8 (4.8-beta4 until 4.8 ships, for its MSAA fix) / GDScript. Portrait tactical hex battler for Android. `docs/rules.md` states the game's
 rules as they are now: read it first. `docs/design-bible.html` records every decision and why
 (its first row says how to read a row; section 12 holds the questions only Ryan can settle);
 `docs/status.md` says how things stand and the order of work; `docs/todo.md` holds the tasks;

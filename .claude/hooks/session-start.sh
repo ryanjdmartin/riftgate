@@ -1,6 +1,6 @@
 #!/bin/bash
-# The cloud session's start (27 October): Godot 4.8-beta2 into ~/bin (the project runs it for its
-# MSAA fix until 4.8 ships, 30 October) and the project's first import, so the tests, the runners
+# The cloud session's start (27 October): Godot 4.8-beta4 into ~/bin (the project runs a 4.8 beta for
+# its MSAA fix until 4.8 ships, 30 October; beta4 since 21 November) and the project's first import, so the tests, the runners
 # and the screenshots run as the README writes them from the first command. Runs only in a Claude
 # Code cloud session (the desk machine has its own Godot); idempotent, so a resumed session costs
 # nothing; the container's state is cached once it has run. The import copies each model's
@@ -13,12 +13,12 @@ if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
   exit 0
 fi
 
-VERSION="4.8-beta2"
+VERSION="4.8-beta4"
 BIN="$HOME/bin/godot"
 ASSET="Godot_v${VERSION}_linux.x86_64"
 
 mkdir -p "$HOME/bin"
-if ! "$BIN" --version 2>/dev/null | grep -q "^4\.8\.beta2\."; then
+if ! "$BIN" --version 2>/dev/null | grep -q "^4\.8\.beta4\."; then
   tmp="$(mktemp -d)"
   curl -sSL --retry 3 --max-time 900 -o "$tmp/godot.zip" \
     "https://github.com/godotengine/godot-builds/releases/download/${VERSION}/${ASSET}.zip"
