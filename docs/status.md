@@ -451,7 +451,9 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 322 (22 November): Version 321's files, the Text
+  `edits`, `designs` and `text` read first. Version 324 (22 November): a machine's sheet lists every term it orbits, its own first,
+  each editable in place; 323 the same day, a dealt machine with an open brief under Unfinished.
+  Version 322 (22 November): Version 321's files, the Text
   tab's Vocabulary view with its category filter again, from `claude/gameplay-terminology-tooltips-rug879`. Version 321 (21 November): main at `8b5a027d`, the
   Echidna's line landed (the briefs' and the texts' inventories). Version 320 the same day: Chain's
   arcs flat and on any conductor, its text and Spread's and Penetrate's, over 319 (Chaos I as "reduce stacks to
