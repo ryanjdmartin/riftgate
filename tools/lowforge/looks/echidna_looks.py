@@ -417,17 +417,19 @@ def _spine(b, base, d, length, half=1.5, bead=1.3):
     _beam(b, tuple(tip - d * 0.2), tuple(tip + d * (bead * 1.6)), _sq(bead * 2.0, bead * 2.0), _sq(bead * 1.2, bead * 1.2), BEAD, "emitter_tip")
 
 
-def _bristle3(b, side_lean):
-    """Round three's A: round two's car, driver box and prow emitter, its two banks four short
-    thick spines each on a broader rail, leaning back as before and out to their flank by
-    `side_lean` degrees; no tie bar, since thick short spines read as no rack of rockets."""
+def _bristle3(b, side_lean, count=4, first=-12.5, last=-35.3):
+    """Round three's A: round two's car, driver box and prow emitter, its two banks of `count`
+    short thick spines each on a broader rail, from `first` to `last` along it, leaning back as
+    before and out to their flank by `side_lean` degrees, 6.5 long at the front to 8 at the tail;
+    no tie bar, since thick short spines read as no rack of rockets."""
     _car2(b)
     for s in (-1.0, 1.0):
         x = s * 12.5
         b.box(x - 2.4, x + 2.4, -39.0, -9.0, 30.4, 33.0, "steel.dark", "emitter_rail")
         d = _leaned(BACK_LEAN, side_lean, s)
-        for k in range(4):
-            _spine(b, (x, -12.5 - 7.6 * k, 33.0), d, 6.5 + 0.5 * k)
+        for k in range(count):
+            t = k / (count - 1)
+            _spine(b, (x, first + (last - first) * t, 33.0), d, 6.5 + 1.5 * t)
     b.box(-5.0, 5.0, -33.0, -17.0, 31.0, 34.4, "steel.dark", "emitter_driver")
     b.box(-3.6, 3.6, -31.5, -18.5, 34.4, 34.9, "steel.vent", "driver_grille")
     _rod(b, (0.0, 46.3, 13.5), (0.0, math.cos(math.radians(6.0)), math.sin(math.radians(6.0))), 8.0, collar="y")
@@ -448,8 +450,21 @@ def mnlook_echidna3_a55(b):
 
 mnlook_echidna3_a55.maker = MN
 
+# ---------------------------------------------------------------- the fourth round (22 November)
+
+# Ryan, the same day, of round three: "I like the 35. Can we squeeze in 5 a bank?" So the 35
+# degree splay with five spines a bank, the bank a little longer down the rail.
+
+
+def mnlook_echidna4_a35x5(b):
+    """A, splayed 35 degrees, five spines a bank."""
+    _bristle3(b, 35.0, count=5, first=-11.5, last=-36.5)
+
+
+mnlook_echidna4_a35x5.maker = MN
+
 LOOKS = ["mnlook_echidna_halftrack", "mnlook_echidna_car", "mnlook_echidna2_a", "mnlook_echidna2_b", "mnlook_echidna2_c",
-         "mnlook_echidna3_a35", "mnlook_echidna3_a55"]
+         "mnlook_echidna3_a35", "mnlook_echidna3_a55", "mnlook_echidna4_a35x5"]
 
 SHEET = {
     "title": "The echidna, two ways, 15 November (look tests, not content)",
@@ -484,5 +499,16 @@ SHEET3 = {
         {"model": "mnlook_echidna2_a", "label": "A as it was (15 November)", "views": _VIEWS3},
         {"model": "mnlook_echidna3_a35", "label": "A, splayed 35 degrees", "views": _VIEWS3},
         {"model": "mnlook_echidna3_a55", "label": "A, splayed 55 degrees", "views": _VIEWS3},
+    ],
+}
+
+
+SHEET4 = {
+    "title": "The echidna, A at 35 degrees, 22 November: four spines a bank or five (look tests, not content)",
+    "out": "docs/looks/minerva_echidna4.png",
+    "cell": (320, 320),
+    "rows": [
+        {"model": "mnlook_echidna3_a35", "label": "A, four a bank", "views": _VIEWS3},
+        {"model": "mnlook_echidna4_a35x5", "label": "A, five a bank", "views": _VIEWS3},
     ],
 }

@@ -48,7 +48,11 @@ the sides of the vehicle (keeping their backwards slant)?" Each bank now has fou
 of six. They are about three fifths the length and twice as thick, keep round two's lean toward
 the tail (31 degrees off upright, as the side view shows it), and lean out to their flank, 35
 degrees in one version and 55 in the other. The tie bar is gone. The sheet shows A as it was
-beside them, with a view from behind for the splay. With the kit set, A now has a reading it lacked before: the needles and the Tether
+beside them, with a view from behind for the splay.
+
+He picked the 35-degree splay the same day: "I like the 35. Can we squeeze in 5 a bank?" The
+fourth round (`docs/looks/minerva_echidna4.png`, `SHEET4`) puts five spines in each bank, the bank
+running a little further along the rail (from 11.5 to 36.5 back), beside the four-a-bank version. With the kit set, A now has a reading it lacked before: the needles and the Tether
 mounted on the car. His caution on A was that the rods can read as a rocket rack from the side.
 
 ## Open for the session
