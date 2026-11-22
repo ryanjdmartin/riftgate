@@ -193,7 +193,7 @@
    "id": "penetrate",
    "category": "keyword",
    "name": "Penetrate",
-   "codex": "Keyword with a number. Penetrate 3: the weapon or equipment also strikes the other rank of the target's column, which takes 3 where the target takes the number: the attacker's bonuses land on that 3 as on the blow, then the foe's own statuses and armour. A massive foe fills its column, so it is hit once. On a debuff it carries no number.",
+   "codex": "Penetrate N: this component also hits all other foes in the target's column for N damage. This does not count as targeting those foes. On a debuff it carries no number and deals nothing.",
    "status": "implemented",
    "design": {
     "holes": "Its number rides on the entry beside the keyword (penetrate), and the validator asks for it on a weapon."
@@ -568,7 +568,7 @@
    "id": "shocked",
    "category": "status",
    "name": "Shocked",
-   "codex": "Foe status. When a weapon's strike aimed at this foe lands, it deals double damage and the status clears. A blow that only reaches it (an area, a Chain's arc, a spill, a Mine's blast) neither doubles nor clears it, and equipment (a lure, a probe) leaves it standing. Never stacks. Laid by the Shock keyword and by a Charged machine's weapon.",
+   "codex": "When Hit by a weapon as the target: Consumed to double damage received, after Brittle and before Armour.",
    "status": "implemented",
    "design": {
     "holes": "",
@@ -632,7 +632,7 @@
    "id": "exposure",
    "category": "status",
    "name": "Exposed",
-   "codex": "Status, on either side: its armour counts for nothing, its own and any Armoured. On a foe: in Direct reach of every machine as if its column's front were empty, through your next turn, falling as the foes' turn starts in the round after it landed; refreshed, never added. On a machine, from a foe's Expose: through the round after it lands, and as that round opens every foe's targeted move turns on it, whatever the move's word, until the blows already drawn would wreck it, the rest picking as they would. Armour it gains while Exposed does nothing until the mark ends; its shield is untouched. A Lure pulls a blow off it, and a Cleanse gives the armour back and leaves the intents where they turned.",
+   "codex": "Armour counts for nothing. A foe stands in Direct reach of every machine. Turn Start: lose 1 stack, then a machine draws every targeted foe move, until the hits drawn would wreck it.",
    "status": "implemented",
    "design": {
     "holes": "The id is exposure, since exposed names the formation word (and named an aim of the foes' until 17 November); a machine's is exposure_mech in the engine. The machine's half is Ryan's of 15 November, built 16 November: \"all armour of all kinds\"; \"Exposed does not strip the petrel's resistant shield\"; \"keep the logic where enemies don't try and overkill. That helps keep it fair. So the whole field targets up until predicted death, then the rest pick intent targets as normal\"; \"Exposed sets the intents, everything after proceeds as normal\"; \"Lure wins\". A session's reads where his words give none: a countdown's pick carried from the round before holds, and a machine out of reach (Phased as the round ended) draws nothing. Still his: whether a machine that stands Exposed may be marked again; built as no, so the whole field's fire comes every other round at most. The aim content called exposed went on 17 November with every aim of a foe's own. The machine's text is a session's draft, his to write.",
@@ -648,7 +648,7 @@
    "id": "overcharged",
    "category": "status",
    "name": "Empowered",
-   "codex": "Machine status. Each stack is +1 damage on this machine's attacks, flat, so the count is the bonus. As its turn ends it halves, rounded down, whatever granted it, until it is gone.",
+   "codex": "On Hit: +1 damage per stack. Turn End: halve the stacks, rounded down.",
    "status": "implemented",
    "design": {
     "holes": "Every grant is one status on the machine and the stacks add up. A halving rule has no duration, so a buff component grants stacks and no rounds. The name is a placeholder. It halves at END TURN since 16 November (Ryan: \"Empowered should decay at the end of turn, clearly, not end of round\"), so what a machine gains in the enemy's turn it carries whole into its next; at the round's end until then.",
@@ -712,7 +712,7 @@
    "id": "braced",
    "category": "status",
    "name": "Armoured",
-   "codex": "Status, on either side. Armour +1 a stack: that much off every blow that reaches it, flat, every stack at once, whatever granted it, so the count is the armour. It lasts until its next turn starts: a machine's (a buff, an armouring component, a passive) through the enemy's turn, coming off blows on bare hull, and a foe's, from its brace or another's, through the player's.",
+   "codex": "+1 Armour per stack. Turn Start: lose every stack.",
    "status": "implemented",
    "design": {
     "holes": "The engine id stays braced. One clock on both sides, the opening of its side's next turn (Ryan, 15 November: \"The common \"end\" state between both sides is \"start of their next turn.\"\"; 16 November, of a machine's, which went at the round's end until then: \"Armoured we should change so its end is symmetrical on both sides. Probably means until \"start of its next turn.\"\"). A machine's goes as the round opens, before the foes announce, so no blow lands between its old end and its new one. It takes no rounds from any grant.",
@@ -744,7 +744,7 @@
    "id": "primed",
    "category": "status",
    "name": "Primed",
-   "codex": "Status, on either side: a stack a weapon fired, each lending Ablate 1. While a machine carries it its weapons fire with Ablate 1, a stack of Ablating a strike on each foe hit, one more than its own on a gun that carries Ablate, shown on the die and laid after the hits; a weapon fired spends a stack, equipment carries it not and spends nothing, and a Purge lowers it. On a foe, a stoker's move primes every other foe on the field, its value in stacks: each blow of a move that strikes leaves Ablating 1 on the machine it hits and that move spends a stack, a move that strikes nobody spending none. A machine's Ward turns the Ablating away, as it does any rider.",
+   "codex": "Attacks gain Ablate 1. Resolve: an attack consumes 1 stack.",
    "status": "implemented",
    "design": {
     "holes": "The third primer since 15 November, beside Charged and Supercooled (Ryan: \"give it the same format as cryo ... use a stack on firing\"; \"Primed - agreed, how many Ablate stacks does each Primed stack apply? Just one, like supercooled?\"; one, since Ablate 1 on a gun measures as about the point a Charged stack's Shock does). Until then every blow left a stack of Ablating a stack of Primed, for a buff's rounds on a machine and one move on a foe. A placeholder name.",
@@ -808,7 +808,7 @@
    "id": "ablating",
    "category": "status",
    "name": "Ablating",
-   "codex": "Status, the same on either side: it takes a point a stack, then loses a stack. On a foe: its HP, past armour, as its turn ends, so a burning foe strikes before it burns. On a machine: its shield first, then its hull past armour, at the end of the player's turn, before the overheat, so a Cleanse that turn takes it off. A tick is no blow: a Barrier neither stops it nor is spent on it.",
+   "codex": "Turn End: take 1 damage per stack, then lose 1 stack. Ignores Armour and Barrier.",
    "status": "implemented",
    "design": {
     "holes": "Engine ids ablating (a foe's) and ablating_mech (a machine's). Ryan's rule, 15 November, in the place of Burning as heat on a machine: \"hits shield first, I think. Pretty deadly otherwise. Bypasses armour when damaging hull\"; \"Tick of ablate ignores barrier yes\". A Phased machine takes no point and its stack fades all the same, and a Swallowed one's stacks wait (Ryan, 16 November: \"Everything ticks during phased. It doesn't take damage but it's a way of waiting out a debuff\"; \"Swallowed it's out of play so everything should pause\"). The foes' numbers are still the ones sized as heat, his to set. A session's draft, his to write.",
@@ -1032,7 +1032,7 @@
    "id": "brittled",
    "category": "status",
    "name": "Brittle",
-   "codex": "Status, the same on either side: every blow its carrier takes deals a point more a stack, and the stacks halve as its turn starts, rounded down, the other side's blows behind it. On a foe: every blow of a weapon, one of 0 included, added before its armour comes off. On a machine: every blow a foe lands, the shield taking the extra first as it takes any blow; an ally's Cleanse lifts it.",
+   "codex": "When Hit by a weapon: +1 damage received per stack, before Armour. Turn Start: halve the stacks, rounded down.",
    "status": "implemented",
    "design": {
     "holes": "Engine ids brittled (a foe's) and brittled_mech (a machine's). Flak on a foe (Wainwright & Sutler's on-hit, 19 October) and Crushed on a machine (the World Eater's pin, 4 November, Monster Hunter's Defense Down by archetype; Ryan: \"that inflicts Defense Down in game, something we don't have\") until 15 November, folded on Ryan's mark (\"We could consider making this one symmetrical and folding it into Flak as well, changing the name so it works on both sides\") and his \"agreed, brittle\". One clock, the halving: a machine's stood whole through the next round until then, so a foe's Brittle 1 was the pack's for the turn it was laid in and gone by the next, and a foe lays 2 at the least since 16 November (Ryan: \"Buffs and debuffs that decay at end of round should just have a minimum of 2\"; the validator holds a foe's moves to it, and our own pieces are not held to it: \"The minimum 2 is different for the player since they can sequence. So I wouldn't make it a blanket rule\"). Adds before multiplies and before armour, to a weapon's blow of 0 too (Ryan, 25 October: \"Flak and overcharge exist in part to get past armour\"), so a Shocked foe carrying Brittle takes blow plus Brittle, doubled. Numbers are placeholders; Brittle beside Empowered at a point a stack each may read too strong, the two read together on the Prairie Dog's rows. A session's draft, his to write. It halves as its carrier's turn starts since 16 November (his four places, Brittle with what ends at a turn's start; at the round's end until then, no blow apart).",
@@ -2182,7 +2182,7 @@
    "id": "golden",
    "category": "status",
    "name": "Golden",
-   "codex": "Foe ability, from a golden rage (the Thunder Ape's). Its blows hit its rage's value harder and it wears a point of armour for the rounds its rage says, its chip counting them down with the damage that breaks it. A quarter of its HP lost since it went gold breaks the rage and it staggers: the gold goes and it loses its next action. A Suppress breaks it too; no Purge strips it, an Ability. Calm again, it may go gold again.",
+   "codex": "Its hits deal extra damage, the number its Golden Rage gave, and it has +1 Armour. Turn End: lose 1 stack. If it loses a quarter of its HP after gaining Golden, or is Suppressed, Golden ends and it skips its next move.",
    "status": "implemented",
    "design": {
     "holes": "Monster Hunter's Rajang by archetype, Ryan's read of 4 November (the golden rage \"is a mode, not an attack ... a cycle that forces the player into a cycle of attack and defense, broken by a bold player with great timing\"). Claude's translation: the window is the decision, shield through its rounds or burst a quarter of its HP through the extra plate to stagger it; the lost action is the bold play's pay, where the swallow's release loses none (the stun row's care; the exit if it reads as a free stun). The add is the move's value and the plate a point; numbers placeholders.",
@@ -2262,7 +2262,7 @@
    "id": "swallowed",
    "category": "status",
    "name": "Swallowed",
-   "codex": "Machine status, from a foe's swallow. It cannot act, take damage or be targeted: a blow or a move at every machine passes it by, and no ally can shield, vent or buff it. Everything it carries waits: no stack fades, halves or pays, and no timed status runs out, until it is back. It comes back when its rounds run out, the moment its swallower falls, or once its swallower has lost a quarter of its HP since the swallow; let go in the player's turn, it acts that round.",
+   "codex": "It cannot act, take damage or be targeted, and its other statuses and cooldowns wait. Round End: lose 1 stack. Ends at once if its swallower falls, or loses a quarter of its HP after the swallow.",
    "status": "implemented",
    "design": {
     "holes": "Out of play, so everything it carries pauses (Ryan, 16 November: \"Swallowed it's out of play so everything should pause\"), where a Phased machine's ticks on: its Ablating, Scorched and Sapped wait, its Empowered and Brittle do not halve, its Regenerating pays nothing, it neither cools nor regenerates, a buff of its own holds nothing on the field (Essence Flare), and every timed status on it, a cooldown and a jam among them, moves a round later for each round's end it sits out: the rounds it sat out never came for it. Let go as its swallow's rounds run out, it is back before that round's end is read, the end it was owed from the round it was taken in; let go sooner, it goes on from where it stood. The swallow's own rounds run. It burns nothing while it is out and burns the turn it is back. A session's reads: an event of its fight still reaches it (a foe felled banks an Ammit's Essence), and a reboot it had begun before it was taken still recovers as the next round opens, the second half of a turn already given. Nothing cleanses it.",
