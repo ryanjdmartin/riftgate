@@ -610,7 +610,7 @@ func live_test_a_die_dragged_onto_reboot_is_the_one_way_in() -> void:
 	assert_true(s._reboot_btn.filled, "filled with the die over it")
 	_finger(vp, drop, false)
 	assert_eq(_rebooting(sk), [false, false, true], "a die dropped on REBOOT gives its machine's turn")
-	assert_false(s._ghost.visible, "the die in hand set down")
+	assert_false(s._aim.active, "the die in hand set down")
 	assert_false(s._reboot_btn.filled or (s._reboot_btn.pulse and not HudButton.PULSE_DEBUG), "and the control at rest")
 	_undo(s)
 	assert_false(_rebooting(sk).has(true), "UNDO takes it back")

@@ -614,7 +614,7 @@ func set_lines(list: Array, width: float = WIDTH) -> void:
 					var tall := CHIP
 					for m in marks:
 						var chip: Array = m.get("chip", [])
-						var sz := Vector2(UnitView.chip_width(Hud.mono(), chip), UnitView.CHIP_H) if not chip.is_empty() else Vector2(CHIP, CHIP)
+						var sz := UnitView.chip_size(Hud.mono(), chip) if not chip.is_empty() else Vector2(CHIP, CHIP)
 						if m.has("passive"):
 							sz = Vector2(passive_width(m), CHIP)
 						_chips.append({"rect": Rect2(Vector2(x, y), sz), "glyph": str(m.get("glyph", "")),
