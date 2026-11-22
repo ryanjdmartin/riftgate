@@ -68,10 +68,10 @@ document's job and every command are in `README.md`.
   `git show fb45141`), and its `generate` and `fix` have no machine (the to-do's Art line).
 - Godot: the project runs 4.8-beta4 (published 18 November) since 21 November, on Ryan's "Go
   ahead with the Godot update": the cloud hook installs it, the suite passes on it as on beta2,
-  the import rewrote nothing, and the skirmish draws under gl_compatibility. The desk's install
-  and the phone's export templates follow it: Godot_v4.8-beta4_win64 under
-  `%LOCALAPPDATA%\Programs\Godot` and the beta4 templates at
-  `editor_data\export_templates\4.8.beta4` (the README's Running and phone notes), his to install.
+  the import rewrote nothing, and the skirmish draws under gl_compatibility. The desk runs it
+  since 22 November (Godot_v4.8-beta4_win64 under `%LOCALAPPDATA%\Programs\Godot`, the `~/bin`
+  shim on it, the beta4 templates at `editor_data\export_templates\4.8.beta4`): the import
+  rewrote nothing there, the suite is green, and `tools/android.sh` put a beta4 build on the phone.
   Beta4 over beta2: the Android SDK Manager's setup fixed on Windows (the desk's export), an
   invalid dynamic font's import failed where it passed (ours import clean), and the text format
   of saved scenes with metadata or embedded scenes bumped (a scene saved on it may not open on
@@ -84,7 +84,7 @@ document's job and every command are in `README.md`.
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
 - A cloud session gets Godot and the first import from the session-start hook
-  (`.claude/hooks/session-start.sh`); without it, fetch `Godot_v4.8-beta2_linux.x86_64.zip`
+  (`.claude/hooks/session-start.sh`); without it, fetch `Godot_v4.8-beta4_linux.x86_64.zip`
   from `godotengine/godot-builds` in one command and unpack and run it in another. The hook
   imports only a checkout with no `.godot`: a suite failing on a class name not declared means
   run `--import` first. A model's textures ride in its `.glb` and the import copies each out
