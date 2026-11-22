@@ -389,7 +389,67 @@ def mnlook_echidna2_c(b):
 
 mnlook_echidna2_c.maker = MN
 
-LOOKS = ["mnlook_echidna_halftrack", "mnlook_echidna_car", "mnlook_echidna2_a", "mnlook_echidna2_b", "mnlook_echidna2_c"]
+# ---------------------------------------------------------------- the third round (22 November)
+
+# Ryan, 22 November, of A: "can we make the spines shorter, thicker (means less probably), and more
+# slanted to the sides of the vehicle (keeping their backwards slant)?" So four spines a bank in
+# place of six, about three fifths the length and twice the thickness, each keeping round two's
+# lean toward the tail as the side view shows it (31 degrees off upright) and leaning out to its
+# flank besides, two ways: 35 and 55 degrees.
+
+BACK_LEAN = 31.0   # round two's rods' lean toward the tail, off upright, as the side view shows it
+
+
+def _leaned(back, side, s):
+    """A direction leaning `back` degrees off upright toward the tail and `side` degrees out to
+    the flank (`s` the side's sign), each lean read on its own plane, so a spine splayed to the
+    side keeps the backward lean the side view shows."""
+    return Vector((s * math.tan(math.radians(side)), -math.tan(math.radians(back)), 1.0)).normalized()
+
+
+def _spine(b, base, d, length, half=1.5, bead=1.3):
+    """Round three's spine: a thick dark emitter rooted in a broad collar, tapering to a lit
+    bead on its tip."""
+    p, d = Vector(base), Vector(d).normalized()
+    b.prism("z", p.x, p.y, p.z + 0.8, half * 1.6, 1.6, "steel.plate", 6, "emitter_collar")
+    tip = p + d * length
+    _beam(b, tuple(p - d * 0.6), tuple(tip), _sq(half * 2.0, half * 2.0), _sq(half * 1.2, half * 1.2), "steel.dark", "emitter")
+    _beam(b, tuple(tip - d * 0.2), tuple(tip + d * (bead * 1.6)), _sq(bead * 2.0, bead * 2.0), _sq(bead * 1.2, bead * 1.2), BEAD, "emitter_tip")
+
+
+def _bristle3(b, side_lean):
+    """Round three's A: round two's car, driver box and prow emitter, its two banks four short
+    thick spines each on a broader rail, leaning back as before and out to their flank by
+    `side_lean` degrees; no tie bar, since thick short spines read as no rack of rockets."""
+    _car2(b)
+    for s in (-1.0, 1.0):
+        x = s * 12.5
+        b.box(x - 2.4, x + 2.4, -39.0, -9.0, 30.4, 33.0, "steel.dark", "emitter_rail")
+        d = _leaned(BACK_LEAN, side_lean, s)
+        for k in range(4):
+            _spine(b, (x, -12.5 - 7.6 * k, 33.0), d, 6.5 + 0.5 * k)
+    b.box(-5.0, 5.0, -33.0, -17.0, 31.0, 34.4, "steel.dark", "emitter_driver")
+    b.box(-3.6, 3.6, -31.5, -18.5, 34.4, 34.9, "steel.vent", "driver_grille")
+    _rod(b, (0.0, 46.3, 13.5), (0.0, math.cos(math.radians(6.0)), math.sin(math.radians(6.0))), 8.0, collar="y")
+
+
+def mnlook_echidna3_a35(b):
+    """A, its spines shorter and thicker, four a bank, splayed 35 degrees to the flank."""
+    _bristle3(b, 35.0)
+
+
+mnlook_echidna3_a35.maker = MN
+
+
+def mnlook_echidna3_a55(b):
+    """A, its spines shorter and thicker, four a bank, splayed 55 degrees to the flank."""
+    _bristle3(b, 55.0)
+
+
+mnlook_echidna3_a55.maker = MN
+
+LOOKS = ["mnlook_echidna_halftrack", "mnlook_echidna_car", "mnlook_echidna2_a", "mnlook_echidna2_b", "mnlook_echidna2_c",
+         "mnlook_echidna3_a35", "mnlook_echidna3_a55"]
 
 SHEET = {
     "title": "The echidna, two ways, 15 November (look tests, not content)",
@@ -411,5 +471,18 @@ SHEET2 = {
         {"model": "mnlook_echidna2_a", "label": "A, the bristle as its kit", "views": _VIEWS2},
         {"model": "mnlook_echidna2_b", "label": "B, the bristle as its armour", "views": _VIEWS2},
         {"model": "mnlook_echidna2_c", "label": "C, barely there", "views": _VIEWS2},
+    ],
+}
+
+
+_VIEWS3 = ["codex", "above", "skirmish", ("from the side", 90, 8), ("from behind", 180, 12)]
+SHEET3 = {
+    "title": "The echidna, A again, 22 November: its spines shorter and thicker, four a bank, leaning back as before and out to the flank (look tests, not content)",
+    "out": "docs/looks/minerva_echidna3.png",
+    "cell": (320, 320),
+    "rows": [
+        {"model": "mnlook_echidna2_a", "label": "A as it was (15 November)", "views": _VIEWS3},
+        {"model": "mnlook_echidna3_a35", "label": "A, splayed 35 degrees", "views": _VIEWS3},
+        {"model": "mnlook_echidna3_a55", "label": "A, splayed 55 degrees", "views": _VIEWS3},
     ],
 }

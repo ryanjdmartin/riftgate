@@ -40,7 +40,15 @@ The second sheet (`docs/looks/minerva_echidna2.png`, built by
 - **C, barely there**: the plain car, with two grilles, a spine rib and three whip aerials.
 
 Claude picked B on 15 November, because its side silhouette is the bristle and it reads from
-behind. With the kit set, A now has a reading it lacked before: the needles and the Tether
+behind.
+
+The third round (`docs/looks/minerva_echidna3.png`, the module's `SHEET3`) reworks A on his note
+of 22 November: "can we make the spines shorter, thicker (means less probably), and more slanted to
+the sides of the vehicle (keeping their backwards slant)?" Each bank now has four spines instead
+of six. They are about three fifths the length and twice as thick, keep round two's lean toward
+the tail (31 degrees off upright, as the side view shows it), and lean out to their flank, 35
+degrees in one version and 55 in the other. The tie bar is gone. The sheet shows A as it was
+beside them, with a view from behind for the splay. With the kit set, A now has a reading it lacked before: the needles and the Tether
 mounted on the car. His caution on A was that the rods can read as a rocket rack from the side.
 
 ## Open for the session
