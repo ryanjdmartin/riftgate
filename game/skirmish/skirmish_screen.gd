@@ -2077,8 +2077,8 @@ func _mech_rows(i: int) -> Array:
 		var id := str(d[5])
 		if int(d[3]) < Effects.SKIRMISH and not Effects.is_status(id):
 			continue
-		if id == "shots" or id == "muster" or Effects.store_cap(ms.unit, id) > 0:
-			continue   # a count shows as pips under the heat bar (the Cassowary's sixth shot), a capped store as its bar, and the gate by the Rapid it grants, never a chip
+		if id == "shots" or id == "muster" or id == "offhand" or Effects.store_cap(ms.unit, id) > 0:
+			continue   # the offhand's form rides its die's entries, never a chip on the machine (Ryan, 22 November);  a count shows as pips under the heat bar (the Cassowary's sixth shot), a capped store as its bar, and the gate by the Rapid it grants, never a chip
 		if not first.has(id):
 			order.append(id)
 			first[id] = d
