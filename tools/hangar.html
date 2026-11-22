@@ -2948,8 +2948,10 @@ const benchOf = (e) => ((e && e.design) || {}).bench || {};
 const benchCan = () => state.dbState === "ready" && state.canWrite;
 const benchKind = (id) => "bn-" + safeId(id);
 function reworkBriefOf(id) { return designDocs().find(d => (d.header || {}).kind === "chassis" && d.header.built === id) || null; }
-// A built machine's state: the one he set, else in design where a brief reworks it, else in game.
-const benchDefault = (e) => (reworkBriefOf(e.id) ? "design" : "game");
+// A built machine's state: the one he set, else in design where it is back in design (planned, a
+// brief reworking it), unfinished where it is dealt and a brief still holds something of it open
+// (the Echidna's look, the Mole's tree, the Buzzard's direction), else in game.
+const benchDefault = (e) => (!reworkBriefOf(e.id) ? "game" : e.status === "planned" ? "design" : "unfinished");
 const benchState = (e) => benchOf(e).state || benchDefault(e);
 // The upgrade steps a machine's tier leaves it: four at tier one, two at tier two, none at three.
 const benchSteps = (tier) => (Number(tier) === 1 ? [["a", "s1"], ["a", "s2"], ["b", "s1"], ["b", "s2"]] : Number(tier) === 2 ? [["a", "s1"], ["b", "s1"]] : []);
