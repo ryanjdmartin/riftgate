@@ -3051,3 +3051,26 @@ func test_a_spread_strike_shows_its_needles_on_every_foe_it_reached() -> void:
 			assert_eq(str(chips[0][2]), "Debuff, Sonic Needle 1 of 3", "and its readout names it with them, a debuff")
 	assert_eq(shown, 4, "the target, the two beside it and the one behind it each show theirs")
 	s.free()
+
+
+## The offhand's rider is a chip on the entry it rides, on the face's rail, never in the passive
+## box beside it, and the machine wears no chip for it (Ryan, 22 November: "it's ability does not
+## need to appear as a chip on the unit. The ability should appear as a chip on its die faces").
+func test_an_offhand_rides_its_entry_as_a_rail_chip_and_wears_none_on_its_machine() -> void:
+	var d := DieFaceView.new()
+	d.face = Face.attack(4)
+	d.offhand = "offhand_rifle"
+	assert_true(d.rail_tags().has("offhand"), "its rider is a chip on the entry's rail")
+	assert_false(d.passive_marks().any(func(m) -> bool: return str(m[0]) == "star"), "and nothing in the passive box")
+	assert_eq(DieFaceView.chip_glyph("offhand"), "star", "on its term's star")
+	d.free()
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var u := db.make_mech(db.chassis.keys()[0])
+	Effects.stack(u, Effects.STATUS["offhand"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	sk.add_mech(u)
+	sk.add_foes([Foe.make("revenant", 30, 0)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	assert_false(s._mech_rows(0).any(func(r) -> bool: return str(r[2]).contains(str(Effects.STATUS["offhand"]["name"]))), "the machine wears no chip for its offhand")
+	s.free()
