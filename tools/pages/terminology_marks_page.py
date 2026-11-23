@@ -139,25 +139,11 @@ HEAD = re.compile(r"^\*\*(?:(\d+)\. )?(.+?)\*\*(?:\s*\((.+)\))?\s*$")
 PICK = re.compile(r"^\*\*(.+?)\*\*\s*(.*?)\s*Pick:\s*(.+)$")
 
 
-# The proposal speaks of Ryan in the third person; the page speaks to him. Each phrase must be
-# found, so a rewording in the proposal fails here rather than leaving "his" on his page.
-TO_HIM = [
-    ("his sign-off", "your sign-off"), ("his four timing points", "your four timing points"),
-    ("(changed 19 November: his mark)", "(changed 19 November: your mark)"), ("His word:", "Your word:"),
-    ("This one needs his\neye", "This one needs your\neye"), ("rulings he has already made", "rulings you've already made"),
-    ("on the Text tab for his marks. Nothing is signed for him.", "on the Text tab for your marks. Nothing is signed for you."),
-    ("**B:** He writes them himself", "**B:** You write them yourself"),
-    ("(changed 22 November: his word)", "(changed 22 November: your word)"), ("(changed 22 November: his words)", "(changed 22 November: your words)"),
-    ("His words:", "Your words:"), ("His proposal of 22 November", "Your proposal of 22 November"),
-]
-
-
+# The proposal speaks of Ryan in the third person; the page speaks to him.
 def to_him(text: str) -> str:
-    for old, new in TO_HIM:
-        if old not in text:
-            raise SystemExit("the proposal no longer says %r: mend TO_HIM" % old)
-        text = text.replace(old, new)
-    return text
+    text = text.replace("rulings he has already made", "rulings you've already made")
+    text = re.sub(r"\bHis\b", "Your", text)
+    return re.sub(r"\bhis\b", "your", text)
 
 
 def items_of(lines: list) -> list:
@@ -198,12 +184,16 @@ def items_of(lines: list) -> list:
                     raise SystemExit("a name without its picks: " + b["li"][:80])
                 title = m.group(1).rstrip(".")
                 picks = [p.strip() for p in m.group(3).split("\u00b7") if p.strip()]
-                items.append({"id": "name-" + slug(title), "group": it["title"], "grouptag": it["tag"], "num": "", "title": title, "tag": "",
+                items.append({"id": "name-" + slug(title), "group": it["title"], "grouptag": it["tag"], "num": "", "title": title, "tag": "", "settled": False,
                               "html": "<p>%s</p>" % inline(m.group(2)) if m.group(2) else "",
                               "marks": [["pick:" + p, p, "solid"] for p in picks] + [["ask", "Ask", "dotted"]]})
             continue
         body, options = render(bs)
-        if n < first_call:
+        settled = it["tag"].startswith("settled")
+        if settled:
+            iid = "rule-" + it["num"] if it["num"] else "call-" + slug(it["title"])
+            marks = []
+        elif n < first_call:
             if not it["num"]:
                 raise SystemExit("a rule without its number: " + it["title"])
             iid = "rule-" + it["num"]
@@ -212,7 +202,7 @@ def items_of(lines: list) -> list:
             iid = "call-" + slug(it["title"])
             marks = ([[k, k, "solid"] for k in options] or [["agree", "Agree", "solid"]]) + [["ask", "Ask", "dotted"]]
         items.append({"id": iid, "group": it["group"], "grouptag": "", "num": it["num"], "title": it["title"], "tag": it["tag"],
-                      "html": body, "marks": marks, "lean": "A" if "A" in options else ""})
+                      "html": body, "marks": marks, "lean": "A" if "A" in options else "", "settled": settled})
     ids = [i["id"] for i in items]
     if len(ids) != len(set(ids)):
         raise SystemExit("two items share an id")
@@ -261,6 +251,8 @@ h2 { font: 600 21px/1.2 var(--head); margin: 26px 0 0; padding-bottom: 6px; bord
 h2 span { font: 13px var(--mono); color: var(--muted); letter-spacing: .03em; }
 .item { display: grid; grid-template-columns: minmax(0, 1fr) 236px; gap: 10px 28px; padding-block: 16px; border-bottom: 1px solid var(--rule); scroll-margin-top: 96px; }
 .item[data-mark]:not([data-mark=""]) { background: linear-gradient(90deg, var(--tint), transparent 70%); }
+.item.settled { grid-template-columns: minmax(0, 1fr); }
+.item.settled .tag { border-style: solid; }
 .words { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
 .head { display: grid; grid-template-columns: 2.6ch minmax(0, 1fr); align-items: baseline; gap: 4px 10px; }
 .head.nonum { grid-template-columns: minmax(0, 1fr); }
@@ -303,7 +295,7 @@ textarea { font: 15px/1.35 var(--body); color: var(--ink); background: var(--pan
 </style>
 <div class="wrap">
   <h1>Terminology Marks</h1>
-  <p class="lede">Every rule for how Riftgate's gameplay text names units, targets and timing, with today's words beside the rule's. Tap A or B where a rule offers a choice, or Agree; Change and Ask want a note. Marks save as you go and Claude reads them back, so marking here and in chat both work.</p>
+  <p class="lede">How Riftgate's gameplay text is written. It opens on what is still yours to mark: the rules the tips follow as Claude's leans, the questions the tips raised, and the names. What you've settled is under Settled, for reference. Tap A or B, or Agree; Change and Ask want a note. Marks save as you go and Claude reads them back.</p>
   <p class="meta">__META__</p>
   <div class="strip">
     <div class="filters" id="filters" role="group" aria-label="Show"></div>
@@ -316,9 +308,9 @@ textarea { font: 15px/1.35 var(--body); color: var(--ink); background: var(--pan
 </div>
 <script>
 const ITEMS = __ITEMS__;
-const FILTERS = [["all", "All"], ["none", "Unmarked"], ["choice", "A or B"], ["changed", "Changed"], ["noted", "Noted"]];
+const FILTERS = [["open", "To mark"], ["none", "Unmarked"], ["choice", "A or B"], ["noted", "Noted"], ["settled", "Settled"], ["all", "All"]];
 let marks = {};          // id -> {mark, note}
-let db = null, local = false, readOnly = false, filter = "all";
+let db = null, local = false, readOnly = false, filter = "open";
 const queues = {}, timers = {};
 const $ = id => document.getElementById(id);
 function el(tag, attrs, kids) {
@@ -333,6 +325,9 @@ function label(it) { return (it.num ? it.num + ". " : "") + it.title; }
 function shows(it) {
   const m = of(it.id);
   if (filter === "all") return true;
+  if (filter === "settled") return it.settled;
+  if (it.settled) return false;
+  if (filter === "open") return true;
   if (filter === "none") return !m.mark && !m.note;
   if (filter === "noted") return !!m.note;
   if (filter === "choice") return it.marks.some(x => x[0] === "A");
@@ -366,6 +361,7 @@ function build() {
     const note = el("textarea", {id: "n-" + it.id, rows: "1", placeholder: "Note", "aria-label": "Note on " + label(it)});
     note.addEventListener("input", () => { clearTimeout(timers[it.id]); timers[it.id] = setTimeout(() => keep(it, note), 900); });
     note.addEventListener("blur", () => { clearTimeout(timers[it.id]); keep(it, note); });
+    if (it.settled) { group.appendChild(el("article", {class: "item settled", id: it.id, "data-mark": ""}, [words])); continue; }
     group.appendChild(el("article", {class: "item", id: it.id, "data-mark": ""}, [words, el("div", {class: "act"}, [bar, note])]));
   }
   list.appendChild(el("div", {class: "empty", id: "empty", hidden: ""}, [document.createTextNode("Nothing here carries that yet.")]));
@@ -383,11 +379,13 @@ function markText(it, m) {
   return found ? found[1] : "";
 }
 function paint() {
-  const tally = {all: ITEMS.length, none: 0, choice: 0, changed: 0, noted: 0};
+  const open = ITEMS.filter(x => !x.settled).length;
+  const tally = {all: ITEMS.length, open: open, settled: ITEMS.length - open, none: 0, choice: 0, noted: 0};
   let shown = 0;
   for (const it of ITEMS) {
     const m = of(it.id), row = $(it.id);
     row.dataset.mark = m.mark;
+    if (it.settled) { const on = shows(it); row.hidden = !on; if (on) shown++; continue; }
     for (const [key] of it.marks) {
       const b = $("m-" + it.id + "-" + key.replace(/[^a-z0-9]+/gi, "-"));
       b.setAttribute("aria-pressed", String(m.mark === key));
@@ -399,7 +397,6 @@ function paint() {
     if (!m.mark && !m.note) tally.none++;
     if (m.note) tally.noted++;
     if (it.marks.some(x => x[0] === "A")) tally.choice++;
-    if (it.tag || it.grouptag) tally.changed++;
     const on = shows(it);
     row.hidden = !on;
     if (on) shown++;
@@ -412,7 +409,7 @@ function paint() {
   }
   for (const [id] of FILTERS) { const b = $("f-" + id); b.setAttribute("aria-pressed", String(id === filter)); b.querySelector("span").textContent = tally[id]; }
   $("empty").hidden = shown > 0;
-  $("count").textContent = "Marked " + (ITEMS.length - tally.none) + " of " + ITEMS.length;
+  $("count").textContent = "Marked " + (open - tally.none) + " of " + open;
 }
 function summary() {
   const lines = [];
@@ -497,8 +494,9 @@ def main() -> None:
     lines = open(DOC, encoding="utf-8").read().splitlines()
     items = items_of(lines)
     rules = sum(1 for i in items if i["id"].startswith("rule-"))
-    meta = ("%d rules, %d calls and names \u00b7 from docs/terminology_proposal.md \u00b7 A is Claude's lean"
-            % (rules, len(items) - rules))
+    settled = sum(1 for i in items if i["settled"])
+    meta = ("%d to mark, %d settled \u00b7 from docs/terminology_proposal.md \u00b7 A is Claude's lean"
+            % (len(items) - settled, settled))
     page = PAGE.replace("__META__", html.escape(meta)).replace("__ITEMS__", json.dumps(items, ensure_ascii=False).replace("</", "<\\/"))
     sys.stdout.write(page)
 
