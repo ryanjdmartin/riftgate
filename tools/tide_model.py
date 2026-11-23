@@ -26,6 +26,10 @@ The model plays that and nothing else:
     moves out on each flank, then a peak every third turn, the rift sending the next of its
     cycle and every open tear a patrol, a tear opening a peak on a row that steps toward the
     wall. No hunters, no elites, no boss, no Rupture: twelve turns of the tide and its count.
+  - Its last table is a tide with no middle (the rethink, docs/tide_proposal.md, section 4):
+    packs for one machine through tears across the whole width with the rift sending none,
+    against the same packs through the rift, for a squad free to go where it will and one
+    that holds a post.
 
 What it cannot say: what a fight costs, so whether a pack is worth a machine; how long a fight
 takes to play; what a hunter does to a squad spread this thin. Read a column against its
@@ -86,10 +90,12 @@ class Pack:
 
 
 class Field:
-    def __init__(self, depth, rng):
+    def __init__(self, depth, rng, leash=0, camp="gate"):
         self.depth = depth
         self.apron = depth - 3
         self.rng = rng
+        self.leash = leash   # the hexes from its post the squad keeps within; 0 for a free squad
+        self.home = (WALL // 2, self.apron if camp == "gate" else 3)   # the post: the gate's front, or the rift's
         self.packs = []
         self.tears = []
         self.tear_row = min(4, max(2, math.ceil(depth / 5))) + 1
@@ -133,6 +139,8 @@ class Field:
         that is the nearer meeting or the pack strikes next turn, else to the pack itself."""
         free = list(range(4))
         urgent = sorted(self.packs, key=lambda q: (self.turns_to_strike(q), -q.rating))
+        if self.leash:   # a squad that holds the middle answers only what comes inside its leash
+            urgent = [q for q in urgent if dist(q.at, self.home) <= self.leash]
         for p in urgent:
             near = sorted((i for i in free if dist(self.machines[i], p.at) - 1 <= MOVES[i]), key=lambda i: MOVES[i])
             if len(near) < p.rating:
@@ -151,6 +159,8 @@ class Field:
             for i in sorted(free, key=lambda j: dist(self.machines[j], wall) / MOVES[j])[:p.rating]:
                 at = self.machines[i]
                 meet = wall if dist(at, wall) > dist(at, p.at) or self.turns_to_strike(p) <= 1 else p.at
+                if self.leash and dist(meet, self.home) > self.leash:
+                    meet = p.at
                 self.machines[i] = toward(at, meet, MOVES[i])
                 free.remove(i)
 
@@ -162,6 +172,32 @@ class Field:
                 if not p.struck:
                     p.struck = True
                     self.struck_packs += 1
+
+
+def front(rng, depth=14, pace=3, mouths=6, rate=3, leash=0, camp="gate", through_rift=False):
+    """A tide with no middle: `mouths` tears stand open across the width from the first turn, on
+    the tears' row, and `rate` packs for one machine come a turn, each through the next mouth
+    in turn, standing the turn they land; the rift sends nothing. `through_rift` sends the same
+    packs through the rift instead, to read the same count with a middle. `leash` keeps the
+    squad within that many hexes of its post, `camp` the gate's front or the rift's."""
+    f = Field(depth, rng, leash, camp)
+    if leash and camp == "rift":
+        f.machines = [(8 + i, 3) for i in range(4)]
+    at = [((WALL * (2 * k + 1)) // (2 * mouths), f.tear_row) for k in range(mouths)]
+    for k in range(mouths):   # the siege under way: a pack a mouth, two moves out (down the middle when the rift sends all)
+        col = WALL // 2 - mouths // 2 + k if through_rift else at[k][0]
+        f.deal((col, max(1, f.apron - 2 * pace)), 1, pace)
+    turn_mouth = 0
+    for turn in range(TURNS):
+        f.player()
+        f.enemy()
+        for i in range(rate):
+            if through_rift:
+                f.deal((WALL // 2, 2), 1, pace, i, rate)
+            else:
+                f.deal(at[turn_mouth % mouths], 1, pace)
+                turn_mouth += 1
+    return f
 
 
 def battle(rng, depth=12, pace=2, tide=1, split=False, flank_tears=0, rift_sends=1, opening=1, spawn_first=0):
@@ -217,10 +253,10 @@ def battle(rng, depth=12, pace=2, tide=1, split=False, flank_tears=0, rift_sends
     return f
 
 
-def read(trials, seed, **kw):
+def read(trials, seed, play=None, **kw):
     tot = {"packs": 0.0, "pips": 0.0, "killed": 0.0, "struck": 0.0, "gate": 0.0, "busy": 0.0}
     for t in range(trials):
-        f = battle(random.Random(seed * 7919 + t), **kw)
+        f = (play or battle)(random.Random(seed * 7919 + t), **kw)
         tot["packs"] += f.sent
         tot["pips"] += f.pips_sent
         tot["killed"] += f.pips_killed / max(1, f.pips_sent)
@@ -275,6 +311,17 @@ def main():
         ("TIDE ×1, the rift alone sends before the walk", {"spawn_first": 2}),
     ]:
         print(row(label, read(n, s, depth=14, pace=3, split=True, opening=2, **kw)))
+    print("\n**A tide with no middle.** Three packs for one machine a turn, fourteen deep at pace 3: through the rift, or through six tears across the width with the rift sending none; a squad free to go where it will, one camped within four hexes of the rift, or one holding within four of the gate. (A squad camped on a rift that sends everything is his play's to say, 23 November: it won; this model has no fight to cost the squad that splits.)\n")
+    print(HEAD)
+    for label, kw in [
+        ("Through the rift, the squad free", {"through_rift": True}),
+        ("Through six tears, the squad free", {}),
+        ("Through six tears, the squad camped on the rift", {"leash": 4, "camp": "rift"}),
+        ("Through six tears, the squad holding the gate", {"leash": 4}),
+        ("Through six tears, four packs a turn, the squad free", {"rate": 4}),
+        ("Through four tears, the squad free", {"mouths": 4}),
+    ]:
+        print(row(label, read(n, s, play=front, **kw)))
 
 
 if __name__ == "__main__":

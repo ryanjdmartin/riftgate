@@ -41,10 +41,18 @@ document's job and every command are in `README.md`.
   a branch: the desk machine's folder stays on `main`, and a session that needs another branch
   works in a worktree under `.claude/worktrees/` (`CLAUDE.md`, Session handoff). A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word.
+- **The battle's enemy side is being rethought** (Ryan, 23 November, from his play: "Any time
+  I tried splitting my forces, I lost the battle. Any time I stayed in the middle, I won ... I
+  don't want 'tweak what's there,' I want 'rethink how we're doing formations and spawns
+  entirely'"; and of the Convergence, "A set form of each formation, for each C. Bosses too ...
+  It's fundamental for balance"). `docs/tide_proposal.md` is the proposal: the tide through a
+  front of tears, a formation as a wave of packs for one machine, the elite sent at the
+  machines, a set form for each Convergence. Nothing of it is decided. Until he marks it, no
+  session writes a formation, an elite's or a boss's numbers, or a rule of the tide.
 - Branches. `claude/formation-pass-feedback-rlvx5x` (23 November, Ryan's play of the field's
-  dials: the seam a circle, the round's view, the zoom's floor, the pushers' segments, five
-  trial dials, four tier-one stock dice back to basics, the tide's proposal) runs ahead of main
-  until he lands it; this file describes it. Main holds everything else here, the terminology pass's branch
+  dials: the seam a circle, the round's view, the zoom's floor, the pushers' segments, the
+  tears' row slower and off the wall, six trial dials, four tier-one stock dice back to basics,
+  the tide's proposal and its reads) runs ahead of main until he lands it; this file describes it. Main holds everything else here, the terminology pass's branch
   (`claude/gameplay-terminology-tooltips-rug879`) landed on 22 November on Ryan's "Ok push to main".
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
@@ -81,7 +89,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1447 tests, 389,576 checks, green on Godot 4.8-beta4 (23 November, the seam, the round's view, the pushers' segments and the five dials). The runner fails a run
+- Tests: 1448 tests, 389,604 checks, green on Godot 4.8-beta4 (23 November, the seam, the round's view, the pushers' segments, the tears' row and the six dials). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -249,7 +257,12 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Brittle 2 on every machine (a point), and the goblin horde as built at 7.4%, its four roots
   its cost. The shaman's warband reads 33% at sixty fights at every commit back to its sizing,
   whose thirty read 24.6%, so the leaders want a read at sixty or more (the to-do's defence line). His to pick: the pickets' count, and the rest of
-  `docs/domain_statuses_proposal.md` (its section 8 holds this round's open items). The
+  `docs/domain_statuses_proposal.md` (its section 8 holds this round's open items). Inside a tier nothing steps by the
+  Convergence but the opening's count: the variants by Convergence his design of 7 November
+  called for were pruned on a read from before the reboot, and the bosses' entries by tier and
+  ramp were never written. Read on 23 November, a squad two battles into tier one pays an
+  elite and a boss a third less, and half again their hit points puts the price back (the
+  tide proposal's section 5; `docs/measurements.md`). The
   battle whole is the open question (the brief's section 11): at their ratings a second
   battle's fights come to three fifths to nine tenths of a squad's hull, and a fight met a
   machine short costs four to six times its price. Tiers two and three are unsized, their
@@ -257,8 +270,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   alone and the one a trio fights, is built and its sizing his. On a debug
   build's SETTINGS, TRIALS, each a number still to be picked: HEAT, TOP BASIC, RANK AND FILE
   and BARRIER BASIC (read at the next launch), OVERHEAT, FIELD DEPTH, OPENING, FODDER,
-  RUPTURE, TIDE, STRIKE, PACE, SPAWNS, RIFT SENDS, FLANK TEARS and FORMATIONS (read as the next
-  battle starts; the last five are his play's of 23 November, `docs/tide_proposal.md`). A dial leaves the page with its
+  RUPTURE, TIDE, STRIKE, PACE, SPAWNS, RIFT SENDS, FLANK TEARS, FORMATIONS and LEADERS (read as
+  the next battle starts; the last six are his play's of 23 November, `docs/tide_proposal.md`). A dial leaves the page with its
   question; the block is cut, a blow past a shield reaching the hull. The runners lay the
   same what-ifs with `--refit` (`sim/refit.gd`). `docs/balance.md` is the matrix of 27
   October, older than every rule since, and still prints the old aims' cells and a
@@ -270,7 +283,7 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   field. A pack pushes for the stretch of wall it reaches soonest, flanks or hunts one machine;
   a pack is one fight, a hunter's catch first; nobody blocks a move and nobody ends on
   another's hex. The tide comes on a beat, a peak of Rift Pressure opening tears on a row of
-  their own that steps toward the wall; the seam is a circle about the rift that grows a round,
+  their own that steps a row toward the wall and stops four rows short of it; the seam is a circle about the rift that grows a round,
   a picture alone, and a tear paints its own ground. As a turn ends the map glides out to the
   whole field, ROUND N over it while the packs walk and the seam grows, then back, then the
   tears open one by one. The Rupture meter is two beats of the tide, filled by menace,
@@ -376,7 +389,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   measure the sizing stands on. `tools/battle_run.gd` plays one battle of a run
   whole by squads, reads the field's trial dials from the environment as the game does, and
   with `--whole` plays a player that never fights a pack short at the wall; and `tools/balance.gd --packs rating` fights every composition with squads
-  of its rating. `tools/budget_model.py`,
+  of its rating; its `refit=finds=N` reads a squad a few battles into its tier and its `life=`
+  and `blows=` a leader's block. `tools/budget_model.py`,
   `tools/basics_model.py` and `tools/tide_model.py` (what the tide asks of four machines on
   the wall, fights for free) are the small models apart from content.
   `tests/test_leftovers.gd` fails the build for a rule no piece prints, and
@@ -403,12 +417,11 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
      those names the same day).
    - Every tier-one leader read again at sixty fights or more (the shaman's warband reads 33%
      at every commit back to its thirty-fight sizing), then any leader moved into its band.
-   - The formation pass (the bible's formation row), under his direction of 23 November
-     (`docs/tide_proposal.md`: fodder the wall's threat by count and a fight for one machine,
-     the fights that matter the hunters', the elites' and the boss's, the elites hunting the
-     closest with a ring). It waits on his play of the five dials and his answers to the
-     proposal's six questions; then the elites' rule on a dial, then the Meadow's fodder slate
-     in chat, a row a pack. The goblin horde's four roots on his play of it.
+   - The rethink of formations and spawns (`docs/tide_proposal.md`; the formation pass runs
+     inside it). It waits on his answers to the proposal's four questions; then the engine on
+     dials (the front of tears with the rift quiet, a wave dealt as its packs, the elite's
+     arrival, a leader's block by tier and Convergence), then the Meadow's fodder and waves in
+     chat, a row a pack and a row a form, and the leaders' blocks as a table for his marks.
    - His play of a second battle, which says whether the budget's shares stand (the brief's
      section 11): the fights are even across the domains, and the battle whole is tight.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after

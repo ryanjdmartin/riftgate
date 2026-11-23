@@ -12377,3 +12377,56 @@ and a rout is narrow (twice to three times today's pips, lower for a squad whose
 turns); a hex more of pace changes little with the opening a move farther out and two more is a
 cliff at twelve deep; and the tide sent before the walk is the largest lever of all, nearly all
 of it the tears' packs near the wall, which is why the SPAWNS dial has a middle choice.
+
+## 23 November: a kit's growth inside tier one, and the leaders' block that answers it
+
+For Ryan's "if they don't scale with me they'll become a joke at C4" and the forms by
+Convergence (`docs/tide_proposal.md`, section 5). `tools/anchor_read.gd`, tier one at Convergence
+1 (the second battle), the six certain tier ones on the stock dice of that day (basics on every
+die but the Cottonmouth's shell), every squad of the pool at each fight's rating, three fights a
+squad, the greedy bot, at `bb536910` with the what-ifs of this entry; a kind's mean is a band, a
+cell a direction. `refit=finds=N` swaps up to N basic guns a tier-one die for the tier's found
+guns of their reach, dealt round them in content order (the Shotfire Rack, the Howitzer, the
+Incendiary Shells and the Airburst Shell; the Slugthrower, the Enfilade Beam, the Overclocked
+Railgun, the Arc Fault Cannon, the Plasma Arquebus, the Blazethrower, the Maxigun, the Thermal
+Ray, the Flechette Pod and the Transonic Rifle), so a squad carries a spread and never the best.
+A battle's caches hold five to eight components against about fifteen weapon slots in a squad of
+four, so two a die is a squad one or two battles in. Of a four's hull:
+
+| The squad | A patrol | A hunter's pack | A formation | An elite | A boss |
+|---|---|---|---|---|---|
+| Stock, basics | 3.9%, 5.8 rounds, won 100% | 9.4%, 5.1 rounds, won 100% | 8.0%, 6.1 rounds, won 100% | 21.5%, 7.8 rounds, won 99% | 27.0%, 10.6 rounds, won 99% |
+| One find a die | 3.7%, 5.3 rounds, won 100% | 7.9%, 4.8 rounds, won 100% | 6.4%, 5.8 rounds, won 100% | 18.8%, 7.2 rounds, won 99% | 24.0%, 9.6 rounds, won 99% |
+| Two finds a die | 2.5%, 4.7 rounds, won 100% | 5.0%, 4.2 rounds, won 100% | 5.5%, 5.2 rounds, won 100% | 13.7%, 5.6 rounds, won 100% | 16.9%, 7.1 rounds, won 100% |
+| Every basic gun a find | 2.9%, 4.4 rounds, won 100% | 6.8%, 4.5 rounds, won 100% | 4.9%, 4.9 rounds, won 100% | 15.2%, 5.9 rounds, won 100% | 17.6%, 7.6 rounds, won 100% |
+
+Every gun a find reads no better than two a die: the spread deals the hot guns and the weak
+ones with the rest. Then the same squad with two finds a die against leaders at a share of
+content's hit points (`life=`) and attack (`blows=`), the rank and file beside them as written:
+
+| The leaders' block | An elite | A boss |
+|---|---|---|
+| Hit points ×1.25 | 18.1%, 6.8 rounds, won 99%, 0.09 wrecks a fight | 21.6%, 8.8 rounds, won 100%, 0.11 wrecks a fight |
+| Hit points ×1.5 | 23.0%, 8.0 rounds, won 99%, 0.14 wrecks a fight | 26.7%, 10.5 rounds, won 98%, 0.18 wrecks a fight |
+| Hit points ×1.25, blows ×1.15 | 25.2%, 7.0 rounds, won 99%, 0.23 wrecks a fight | 30.3%, 9.1 rounds, won 96%, 0.35 wrecks a fight |
+| Hit points ×1.4, blows ×1.25 | 34.0%, 7.9 rounds, won 97%, 0.46 wrecks a fight | 40.6%, 10.5 rounds, won 91%, 0.65 wrecks a fight |
+
+So two battles of today's finds take a third off an elite's and a boss's price and a quarter off
+their length, and half again the hit points at the same blows puts both back (the stock squad's
+21.5% and 7.8 rounds, 27.0% and 10.6). The stock baseline itself reads a formation at 8.0% where
+the sizing of 19 November read 5.5%: the four dice that went back to basics that day.
+
+The coverage model's last table the same day, the tide with no middle (`tools/tide_model.py`,
+400 battles a row, seed 1; three packs for one machine a turn, fourteen deep at pace 3):
+
+| The tide | Packs sent | Pips sent | Pips killed | Packs that struck | Gate lost | Actions spent fighting |
+|---|---|---|---|---|---|---|
+| Through the rift, the squad free | 42 | 42 | 93% | 2% | 7 | 81% |
+| Through six tears, the squad free | 42 | 42 | 93% | 3% | 15 | 81% |
+| Through six tears, the squad camped on the rift | 42 | 42 | 32% | 52% | 1328 | 28% |
+| Through six tears, the squad holding the gate | 42 | 42 | 53% | 39% | 861 | 47% |
+| Through six tears, four packs a turn, the squad free | 54 | 54 | 81% | 10% | 66 | 91% |
+| Through four tears, the squad free | 40 | 40 | 92% | 0% | 5 | 77% |
+
+The same packs cost a squad that spreads the same through the rift as through six tears across
+the width; a squad that holds the middle against the tears loses the wall four times over.

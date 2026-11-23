@@ -253,6 +253,7 @@ perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.
 perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=2 kinds=formation
 perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=2 kinds=elite,boss
 #   machines=3 reads every fight with that many machines whatever it is rated: the first battle's trio against a true four
+#   refit=finds=2 reads a squad a few battles into its tier (two basic guns a die swapped for tier-one finds); life=150 and blows=115 a leader's hit points and attack at that share of content's: the block a leader would stand at a Convergence on
 #   only=id,id reads those compositions or bosses alone; tier=, ramp=; refit=<spec> lays a
 #   what-if over content for the run (refit=barrier=none, the Barrier basic off the stock dice);
 #   blows=80 sets every elite's and boss's attack to that share of content's, in hundredths
@@ -465,6 +466,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_SPAWN_FIRST=rift|all                 the tide sends before the packs walk, so the rift's packs (or every mouth's) leave at once; a hunter stands
 #   RIFTGATE_RIFT_SENDS=2                         the compositions the rift sends a peak, 1 to 4, each to its own stretch of wall
 #   RIFTGATE_FLANK_TEARS=2                        tears open at the wall's ends from the first turn, 0 the game's
+#   RIFTGATE_LEADERS=20                           an elite's and a boss's hit points that many hundredths more for each Convergence past its tier's first, three steps at most, 0 the game's
 #   RIFTGATE_PICKETS=2                            every formation dealt as a pack rated one for each of its pips, that many of the domain's commonest front-liner each (2 or 3), 0 the game's
 #   RIFTGATE_PHASED=at_once                       a machine's Phased at once until the round ends, round_end the game's (Phased as the round ends, through the next)
 # The same on the phone, a debug build's SETTINGS, TRIALS (a page that scrolls). Read at the
@@ -478,7 +480,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   OVERHEAT (×1, ×2, ×3), FIELD DEPTH (12, 14, 16), OPENING (+0, +1, +2), FODDER (FULL, 3/4, HALF),
 #   RUPTURE (1 BEAT, 2 BEATS, 3 BEATS), TIDE (×1, ×1.5, ×2), STRIKE (10, 7, 5, 3),
 #   PACE (BUILT, +1, +2), SPAWNS (STAND, RIFT WALKS, ALL WALK), RIFT SENDS (×1, ×2, ×3), FLANK TEARS (NONE, TWO),
-#   FORMATIONS (BUILT, PICKETS ×2, PICKETS ×3),
+#   FORMATIONS (BUILT, PICKETS ×2, PICKETS ×3), LEADERS (BUILT, +10% A C, +20% A C),
 #   PHASED (ROUND END, AT ONCE), with the Phase Inducer, a tier-two component, to set it for testing
 # A thing fired constantly, to judge it running (=1 unless a value is shown)
 #   RIFTGATE_FEED_DEBUG       the skirmish feed's analysis events and the ground tears (any run)
