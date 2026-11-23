@@ -49,118 +49,157 @@ Status: 208 implemented, 6 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Swap** | A rule printed on a component (the Dingo's Combat Translocator, a debuff): the spend takes two targets, a foe and then another foe or an empty slot, and the two trade places; no damage. A massive foe does not move. Drag the die to the first, drop it, then tap the second; drag it again to move it, or tap the ground to set it back. | implemented |
-| **Volatile** | A cost printed on any kind of component, along its foot beside its heat, the hull's mark (a machine's body) and a number. Volatile 3 means spending it costs its owner 3 hull, past shield and armour, before the component acts, and a machine it leaves at nothing is wrecked. A blank is never spent, so a jammed entry costs nothing. | implemented |
-| **Shield cost** | A cost printed on any kind of component, along its foot beside its heat, the shield's mark and a number: spending it takes that much shield from its owner first. Short of it, the entry cannot be played: the die shows the cost struck through, and it has nowhere to land. | implemented |
-| **Targets** | Whom a shield, a vent or a buff may be spent on: any ally or itself (the default), itself only, any other ally, or every machine at once: the whole team (Every Ally) or every machine but its own (Every Other Ally). On the die three connected hexes stand under its main mark, the middle its own machine and the two beside it its allies, a filled one a machine it may be spent on: all three for either, the middle alone for itself only, the two beside it for allies only. | implemented |
-| **Cooldown** | A cost on a component, printed along its foot as a clock and a number: once spent, its entry goes dark for the rest of the round and sits out that many rounds after it, and the die shows it dark with the clock and the rounds left; the die can still land on it, and nothing in it acts. Rapid's own, the rest of the round, is never printed. No cleanse lifts a cooldown. | implemented |
-| **Gather** | A rule printed on a component (the Lammergeier's Lorentz Contractor, a debuff): every Mine the field's other foes carry joins the one its target carries, their damage added and their keywords as one. | implemented |
-| **Detonate** | A rule printed on a component (the Lammergeier's Syrinx Drone, a weapon): after the spend's own Mine joins its target's, the target's Mine blows now, on it and every foe round its slot. | implemented |
-| **On itself** | A rule printed on a component (the Storm Petrel's Hardlight Pulse, a lure): spent on a foe, its own machine gains the status it says, the stacks it says, or that many for every foe the spend reached, up to the most it names. An upgrade's branch may take it further or add another. | implemented |
-| **An ally's action** | A rule printed on a buff (the Giant Petrel's Immelmann Booster): spent on an ally whose die is spent, the team pays the rerolls it says, banked or fresh, and the ally's die rolls again, never onto the entry it showed, and it acts again. Spent on its own machine it grants what it says. | implemented |
-| **Rolls its die** | A rule printed on a buff (the Giant Petrel's Reheat Uplink): the die of the machine it lands on rolls again, never onto the entry showing. A die already spent rolls nothing. | implemented |
-| **Rerolls a kill** | A rule printed on a weapon (the Giant Petrel's Spindrift Salvo): if its spend kills, the team gains the rerolls it says this round, once however many fell. | implemented |
-| **Grants a reroll** | A rule printed on equipment (the Swallowtail's Reveille Horn, the Giant Petrel's Immelmann Booster): spending it gives the team the rerolls it says, at once and past the round's two. While the die is held over its target, the REROLL button lights and shows the count it would leave. | implemented |
-| **Vents all** | An attack that fires the machine's whole heat as it is spent: the heat gauge is empty after the shot, and every step of heat fired, the step printed on the entry, adds the component's bonus to the blow before the passives. The shot's own heat cost still lands. | implemented |
-| **Fires the shield** | An attack that fires the machine's whole shield as it is spent: every step of shield fired, the step printed on the entry, adds the component's bonus to the blow before the passives, and the shield is left at nothing, Broken until the machine reboots. A broken shield fires nothing. | implemented |
-| **Passes heat** | Equipment that passes its machine's whole heat onto the ally it is spent on, past that ally's maximum too, and grants its status for the heat passed: a stack for every step of heat printed on the entry, rounded down. Its machine's gauge is empty after the spend, and the die shows the stacks it would grant now. | implemented |
-| **Grows with missing HP** | A flat blow that grows with its target's lost HP: it adds its bonus for every step of HP the target is missing, both numbers printed on the entry, read as the die is spent. No roll is involved, so the number is known before the spend, and the die shows it while held over a target. | implemented |
-| **Finisher** | A rule printed on a weapon: against a foe at half its HP or less its number is doubled, read as the die is spent, so every strike of the spend takes it or none does. The die shows the doubled number while held over such a foe. The Kite's Pinion Driver. | implemented |
-| **Gated** | A keyword printed with a condition, such as a Suppress on a foe carrying Brittle or on a foe carrying two Ablate or more: it lands only on a foe that meets the condition, read as the die is spent and before the blow's own riders, so a spend never opens its own gate. Held over a foe where the condition does not hold, the die shows the keyword's chip struck through. | implemented |
-| **Consumes** | A rule printed on a component. A weapon's blow consumes every stack of the status it names on its target and deals a point more for each stack consumed, before the multiplies; the die held over the foe shows the number with the stacks in. Equipment consumes a count its own machine holds, up to the number it prints, and grants a stack for each one consumed (the Ammit's Quintessence Tap and its Essence): the die shows what it would take now, and with nothing to consume it cannot be played. | implemented |
-| **Ablates its firer** | A rule printed on a weapon: spending it sets its own machine Ablate, the stacks it says, after the blow. At the end of the player's turn the machine loses a point of shield a stack, then hull, and a stack fades; a Cleanse takes it off. A price paid in its own shield. | implemented |
-| **Ignores armour** | A rule printed on a weapon: its blows take nothing off for a foe's armour, its own or Armoured. A Barrier still takes the blow. Written on few pieces, each of a higher tier or behind a gate. | implemented |
-| **Empties the hopper** | A rule printed on a weapon, for a machine with a hopper of Ore. Spent, it empties the hopper and strikes once for every Ore it empties, the armour the Ore stood for going with it, and puts no Ore back. With the hopper empty it cannot be spent. The hopper shows under the heat; the die shows how many strikes it would land. | implemented |
-| **Braces** | A rule printed on a component (the Shift Whistle's). Spending it Armours its owner, the stacks it says (an armour point each), until its next turn starts: the armour stands behind the blow through the enemy's turn. | implemented |
-| **Strikes** | An attack's blows per use. A weapon with three strikes lands three separate hits: each lands its own number and carries its own effects, so a rapid-fire weapon procs often; their riders land once all of them have. Against a shield, each strike is its own blow, so once one breaks the shield the next reaches the hull; against armour, every small strike loses the armour, so many small hits are the wrong tool for a heavy target and the right one for a soft one. Foe attacks have strikes too. | implemented |
+| **Swap** | Commit: Choose another foe or an empty slot. The target and that choice trade places.
+Massive foes cannot be moved. | implemented |
+| **Volatile** | Commit: Lose {N} hull. Ignores shield and Armour. | implemented |
+| **Shield cost** | Commit: Lose {N} shield.
+Cannot be used without enough shield. | implemented |
+| **Targets** | Who this component can be used on. Under its mark, the middle hex is this machine and the side hexes are the other machines. A filled hex can be chosen. | implemented |
+| **Cooldown** | Resolve: This entry is unavailable for the rest of the round and the next {N} rounds. | implemented |
+| **Gather** | Resolve: Every other foe's Mine joins the target's Mine. | implemented |
+| **Detonate** | Resolve: The target's Mine triggers now. | implemented |
+| **On itself** | Resolve: This machine gains the status printed on the entry. | implemented |
+| **An ally's action** | Resolve: If the target's die is used, spend {N} rerolls. Its die rerolls onto a different entry, and it can act again. | implemented |
+| **Rolls its die** | Resolve: The target's die rerolls onto a different entry. A used die does not reroll. | implemented |
+| **Rerolls a kill** | Resolve: If any foe hit fell, gain {N} rerolls. | implemented |
+| **Grants a reroll** | Resolve: Gain {N} rerolls. | implemented |
+| **Vents all** | Commit: Reduce heat to 0. Damage increases per step of heat vented, as printed. | implemented |
+| **Fires the shield** | Commit: Reduce shield to 0. Damage increases per step of shield spent, as printed. | implemented |
+| **Passes heat** | Resolve: Move all of this machine's heat to the target. The target gains the printed status per step of heat moved. | implemented |
+| **Grows with missing HP** | Damage increases per step of the target's missing HP, as printed. | implemented |
+| **Finisher** | Commit: If the target is at or below half Max HP, double base damage. | implemented |
+| **Gated** | The keyword applies only to a foe that meets its condition at Commit. | implemented |
+| **Consumes** | On Hit: Consume all stacks of the named status on the foe hit. +1 damage per stack consumed.
+On equipment: Consume up to the printed number from this machine. Gain 1 stack of the granted status per one consumed. | implemented |
+| **Ablates its firer** | Resolve: Apply {N} Ablate to this machine. | implemented |
+| **Ignores armour** | Hits ignore Armour. | implemented |
+| **Empties the hopper** | Commit: Consume all Ore. Hit once per Ore consumed. No Ore is gained from these hits.
+Cannot be used without Ore. | implemented |
+| **Braces** | Resolve: Apply {N} Armoured to this machine. | implemented |
+| **Strikes** | Hits per use. Each hit deals the full number, and Armour reduces each hit. | implemented |
 
 ## Reach
 
 | Term | Codex | Status |
 |---|---|---|
-| **Direct** | Targets any front-rank foe, any back-rank foe whose column's front slot is empty, and any foe carrying Exposed. | implemented |
-| **Indirect** | Targets any foe in either rank, at no cost to its firer. | implemented |
-| **Every Foe** | Targeting mode. Dropped on any foe, the entry lands on every foe in the fight, front rank and back, and none is its one target: a debuff's effects on each, or a weapon's strike on each for its whole number, so a Shock on any of them is doubled and spent. | implemented |
-| **Every Ally** | Targeting mode, a shield's or a buff's. Spent on any machine, the entry lands on the whole team, its own machine among them, each taking all of it. | implemented |
-| **Every Other Ally** | Targeting mode, a shield's or a buff's. Spent on an ally, the entry lands on every machine but its own, each taking all of it. | implemented |
+| **Direct** | Can target any front-rank foe, any back-rank foe with an empty slot in front of it, and any Exposed foe. | implemented |
+| **Indirect** | Can target any foe. | implemented |
+| **Every Foe** | Hits every foe. Each hit counts as Targeted. | implemented |
+| **Every Ally** | Applies to every machine, this machine included. | implemented |
+| **Every Other Ally** | Applies to every machine except this one. | implemented |
 
 ## Keyword
 
 | Term | Codex | Status |
 |---|---|---|
-| **Spread** | Keyword with a number. Spread 2: the weapon or equipment also strikes the foes beside the target in its rank, each taking 2 where the target takes the number: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. On a debuff it carries no number: its effects reach those foes, and it deals nothing. | implemented |
+| **Spread** | Also hits all other foes beside the target in the same rank, dealing {N} damage. The extra hits are not Targeted. | implemented |
 | **Penetrate** | Also hits all other foes in the same column, dealing {N} damage. The extra hits are not Targeted. | implemented |
-| **Cryo** | Keyword with a number. Every foe the entry reaches gains that many stacks of Cryo a strike (Cryo 1: one stack), laid once the strikes are done, so a fire never cashes its own frost. Any machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 1 a stack. | implemented |
-| **Ablate** | Keyword with a number, the same on either side. On a weapon or equipment, Ablate 3 means each foe hit gains three stacks of Ablate. On a foe's attack, each blow that lands leaves that many stacks of Ablate on the machine it hit. | implemented |
-| **Lure** | Player keyword, on any entry aimed at a foe, a weapon or equipment. Every foe the entry reaches turns on this machine for the round, a felled one too, intents and all; reach and area decide who and how many. A lured foe whose move has no target keeps doing it. | implemented |
-| **Shock** | Player keyword, on any entry aimed at a foe. Every foe the entry reaches is Shocked, a felled one too: the next weapon strike aimed at it deals double. The entry's own blow never spends the shock it leaves. | implemented |
-| **Expose** | Keyword, on either side. On an entry of ours aimed at a foe: every foe the entry reaches is Exposed through your next turn, a felled one too: in Direct reach of every machine, and its armour counts for nothing. A second Expose refreshes it, never adds. On a foe's move, a rider on its blow or a move of its own: the machine it lands on is Exposed through the round after, its armour counting for nothing, and as that round opens every foe's targeted move turns on it, up to the blows that would wreck it. A Lure turns the move and a Ward turns it away; no foe announces one while another's is out or a machine stands Exposed. | implemented |
-| **Disrupt** | Player keyword, on any entry aimed at a foe. The foe does the next move in its list its conditions allow instead, this round, keeping its pick while that machine stands, and its new intent shows at once. A foe with nothing else open is not moved, nor a gather it is immune through, and a follow-up it announced is not either: the move it came after was the window. | implemented |
-| **Suppress** | Player keyword. The target skips its telegraphed action this round, and recovers with its stun resist in Numbed. On a Numbed foe the stun strips a stack and lands nothing; a Ward turns it away; a foe already suppressed gains nothing more, and a foe immune to it takes none. | implemented |
-| **Brittle** | Keyword with a number, the same on either side. On a weapon or equipment, Brittle 2 means each foe hit gains two stacks of Brittle a strike, laid once the strikes are done, so no strike of the spend feeds on what it lays. On a foe's attack, each blow that lands leaves that many stacks of Brittle on the machine it hit; a Ward turns it away. | implemented |
-| **Sap** | Sap N: each foe hit gains N stacks of Sapped a strike, laid once the strikes are done, so no strike of the spend feeds on what it lays. | implemented |
-| **Chain** | Keyword with a number. Chain 2: all foes on the field with Shock are struck for 2. Does not use or consume Shock. | implemented |
-| **Rapid** | After this component is spent the machine acts again: the die rerolls for free onto any other component (a second copy of this one included, so copies chain), and the entry spent stays dark for the rest of the round, its own cooldown, never printed, so each copy acts once a round. Any component may carry it, a vent or a shield as well as a weapon. | implemented |
-| **Instant** | After this component is spent the machine acts again: the die rolls again for free and may land on this one again, so the same component can be spent again. On the Cassowary's die the roll spins the whole cylinder. Nothing goes dark: what it costs and the odds are its limit. Any component may carry it. | implemented |
-| **Jam** | Enemy keyword. The component the target's die is showing is Jammed until the target reboots: if the die lands on it, it comes up blank. | implemented |
-| **Destroy** | Enemy keyword. If any of the blow reaches the hull, the component the target's die is showing is destroyed: blank for the rest of the battle, and after it a hardpoint's is gone for good and a built-in one is rebuilt. A shield that takes the whole blow, a Barrier or a Ward keeps it, and a blank or a broken entry showing has nothing left to break. | implemented |
-| **Corrupt** | Foe attack keyword with a number. Each blow that lands leaves that many stacks of Corrupted on the component the target's die is showing (Corrupt 2: two): it deals damage to its owner whenever spent, a bite a stack. | implemented |
-| **Purge** | Purge N, on either side. On a player's entry aimed at a foe, a weapon or equipment, every foe it reaches loses N stacks of every buff it carries (an unstackable one is a stack of one), after the blow, so a foe the blow kills stays down. On a foe's move of its own, never a rider on a blow and never a last act's, the machine it lands on loses N stacks of every buff it carries, for good. A stack is a stack, whatever granted it; an Ability is no buff and stays, and so do the stores. A Ward turns it away and stands, on either side. | implemented |
-| **Cleanse** | Player keyword, on a buff or a shield. Whoever the component is spent on also loses every Ablate, Scorched, Brittle, Sapped, Exposed, Jammed and Corrupted status. A rapid component's own switch-off is not a status a cleanse touches. On a foe's move of its own, the same word: every mark the team laid (Ablate, Brittle, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox, a Mine) comes off the most-marked of its own, never Numbed or Suppressed. | implemented |
+| **Cryo** | Resolve: Apply {N} Cryo per hit. | implemented |
+| **Ablate** | Resolve: Apply {N} Ablate per hit. | implemented |
+| **Lure** | Each foe hit targets this machine this round. | implemented |
+| **Shock** | Resolve: Apply Shocked to each foe hit. | implemented |
+| **Expose** | Resolve: Apply 2 Exposed to each unit hit. | implemented |
+| **Disrupt** | Each foe hit switches to the next move in its list it can use this round. | implemented |
+| **Suppress** | Resolve: Apply Suppressed to each foe hit. | implemented |
+| **Brittle** | Resolve: Apply {N} Brittle per hit. | implemented |
+| **Sap** | Resolve: Apply {N} Sapped per hit. | implemented |
+| **Chain** | Resolve: Hit every Shocked foe for {N} damage. These hits are not Targeted and do not consume Shocked. | implemented |
+| **Rapid** | Resolve: Reroll this die for free. This entry is unavailable for the rest of the round. | implemented |
+| **Instant** | Resolve: Reroll this die for free. | implemented |
+| **Jam** | Apply Jammed to the entry the target's die shows. | implemented |
+| **Destroy** | After Hit: If hull damage was dealt, destroy the entry the target's die shows. | implemented |
+| **Corrupt** | Resolve: Apply {N} Corrupted per hit to the entry the target's die shows. | implemented |
+| **Purge** | Resolve: Reduce stacks of every buff on each unit hit by {N}. | implemented |
+| **Cleanse** | Remove every debuff from the target.
+A foe's Cleanse targets the foe carrying the most debuffs. | implemented |
 
 ## Status
 
 | Term | Codex | Status |
 |---|---|---|
-| **Juggernaut Drive** | Machine status, the Wild Boar's passive waiting. Its next weapon attack ignores armour, and that attack lifts it; equipment leaves it standing. Gained with a Barrier; one at a time. A purge takes it. | implemented |
-| **Numbed** | Foe buff: the rounds until one stun lands. A stun on it strips a stack and lands nothing, so a foe with Numbed N takes N+1 stuns in a round. A stunned foe gains its stun resist in stacks (1 for most, 2 for a massive foe, 3 for an elite, a hero or a boss) as the turn it lost ends; a stack goes as each of its turns ends after that. A Purge lowers it like any buff; nothing deepens, spreads or cleanses it. | implemented |
-| **Paradox** | Foe status. While a machine runs the Paradox meter (the Baboon's Pocket Paradox), a foe gains a stack of Paradox for every stack of another debuff it gains; a debuff that never stacks, as Shocked or Suppressed, is one. At the machine's count (five) or more its past self knocks it out: every stack is consumed and it is Suppressed. | implemented |
+| **Juggernaut Drive** | Weapon hits ignore Armour.
+Resolve: If triggered, reduce stacks to 0. | implemented |
+| **Numbed** | When Suppressed: Prevent it, then reduce stacks by 1.
+Turn End: Reduce stacks by 1. | implemented |
+| **Paradox** | When it gains another debuff: Gain 1 stack per stack gained.
+At 5 stacks: Reduce stacks to 0 and gain Suppressed. | implemented |
 | **Retaliate** | Machine status. While it lasts, a foe that strikes this machine's bare hull is Shocked. It lasts the rounds the component that grants it says. | planned |
 | **Shocked** | When Hit: If targeted, consume to double damage received, before applying defensive effects. | implemented |
-| **Pinned** | Foe status, from the Hollow-point Harpoon. The next time its Brittle would halve, it does not, and the pin is spent; with no Brittle to hold, it goes as the foe's turn ends. Refreshed, never added. | implemented |
-| **Seared** | Foe status. The next time its Ablate would lose a stack, it takes its points and loses none, and the pin is spent; with no Ablate to hold, it goes as the foe's turn ends all the same. Refreshed, never added. | implemented |
-| **Sapped** | Status, on a foe or a machine. Its attacks deal 1 less damage a stack, never below nothing. Every stack goes after its next turn: a foe's after its next action, a machine's after your next turn. A foe's Ward turns it away; a Cleanse clears it from a machine. | implemented |
+| **Pinned** | When Brittle would be reduced: Prevent it, then reduce stacks to 0.
+Turn End: If it carries no Brittle, reduce stacks to 0. | implemented |
+| **Seared** | Turn End: Ablate deals its damage but is not reduced. Reduce stacks to 0. | implemented |
+| **Sapped** | On Hit: -1 damage dealt per stack ({N}).
+Turn End: Reduce stacks to 0. | implemented |
 | **Exposed** | All armour is negated.
 Exposed foes can be targeted regardless of reach.
 Foes are forced to target an Exposed machine at round start.
 Turn Start: Reduce stacks by 1. | implemented |
 | **Empowered** | On Hit: +1 damage per stack ({N}).
 Turn End: Reduce stacks by half, rounded down. | implemented |
-| **Sealed** | Ability, the Polar Bear's form. Equipment it spends on itself seals it: armour up by its Lockdown's number, any cooling it is granted stopped, its Cryo Flinger gaining Spread, and it runs hotter at the end of each turn. A weapon it fires opens it, and so does a reboot; equipment on an ally and a debuff, its lure among them, leave it as it is. No Purge touches it. | implemented |
-| **Changed Over** | Ability, the Clydesdale's batteries. Its second battery is up and its first stowed, so its die rolls the second battery and its Changeover; with no chip, the first battery is up. It stays from fight to fight through a battle, and no Purge touches it. | implemented |
-| **Cryo** | Foe status, the mark the Cryo keyword leaves. Any machine's hit on it with a weapon spends every stack and cools the hitter 1 a stack; equipment spends none. It never fades on its own. | implemented |
+| **Sealed** | +Armour from its passive. Cooling is stopped. Its Cryo Flinger gains Spread.
+Turn End: Gain heat from its passive.
+Using a weapon or rebooting removes it. | implemented |
+| **Changed Over** | Its second battery is up and its first is stowed. Lasts the battle. | implemented |
+| **Cryo** | When Hit: If by a weapon, consume all stacks. The machine that hit it loses 1 heat per stack ({N}). | implemented |
 | **Armoured** | +1 Armour per stack ({N}).
 Turn Start: Reduce stacks to 0. | implemented |
-| **Hardened Light** | Machine buff. While its shield stands, every blow on it loses 1 a stack. It stays until the shield breaks, a reboot's drop included, and then every stack goes. The Storm Petrel's Hardlight Pulse lays it, a stack a spend up to 3, and up to 4 and then 5 in its Defence branch, where the Pulse's Spread lays a stack for each foe it hits. | implemented |
+| **Hardened Light** | When Hit: If its shield is up, -1 damage received per stack ({N}).
+When Broken: Reduce stacks to 0. | implemented |
 | **Primed** | After Hit: Apply 1 Ablate.
 Resolve: If triggered, reduce stacks by 1. | implemented |
-| **Jammed** | Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's jam lasts until the machine reboots and can be cleansed; a rapid component's own switch-off ends with the round, and is no jam. | implemented |
-| **Corrupted** | Component status. Every time this die entry is spent it bites its owner for 3 per stack, shield first, before the component acts. A blank is never spent, so a jammed entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed. | implemented |
-| **Phased** | Status, on either side. On a machine: it cannot be damaged or targeted by anything until the end of the round, by either side, and it acts: no foe picks it, a blow or a move at every machine passes it by, no ally may spend on it, and nothing of its own damages it either, its heat past the maximum or a Volatile bite. Everything it carries ticks all the same, so a debuff runs down while it waits; the heat stays, and burns the turn it is back in reach. It is granted at the end of the round, to a machine that still stands, so it is queued a round ahead and lasts the whole of the next. On a foe: it fades as the round its move lands in ends, and through the next no die can be dropped on it, nothing aimed elsewhere reaches it and nothing it carries damages it. It acts all the same. The round it makes the move is the round to reach it. | implemented |
+| **Jammed** | This entry comes up blank.
+On Reboot: Reduce stacks to 0. | implemented |
+| **Corrupted** | Commit: This machine takes 3 damage per stack ({N}).
+Lasts the skirmish. | implemented |
+| **Phased** | Cannot be damaged, targeted or hit. Can still act. Its other effects continue.
+Round End: Reduce stacks to 0. | implemented |
 | **Ablate** | Turn End: Take 1 damage per stack ({N}), then reduce stacks by 1.
 Ignores Armour and Barrier. | implemented |
-| **Suppressed** | Foe status. Skips its next turn, and is spent with it. | implemented |
-| **Vitriol** | Foe status, the funnel-web's acid. As its turn ends it loses 10% of its current HP a stack, past armour, after Ablate, rounded down, then a stack fades. A share of what is left: it opens on a boss and never finishes a foe. | implemented |
-| **Web Bomb** | Foe status, the mark the Funnel-web's Web Bomb leaves on the foe it hits, the piece's own rule. As the round ends the web bursts: it and the foe beside it are Suppressed, each losing its next turn, each a stun like any other (a Numbed foe strips a stack instead, a Warded one turns it). Every foe still acts in the round the web is laid. Felled before the round ends, it takes its web with it; one the team has stunned this round has just gained its Numbed, so the burst strips a stack of that and stuns nothing. | implemented |
-| **Spun Up** | Machine status, the Cassowary's. The next weapon it spends deals 2 more a stack and takes every stack; equipment leaves them standing. Carried between turns until then. | implemented |
-| **Ricochet** | Machine status, the Skua's. After a weapon fires, it hits its target again for 1, once a stack, with every effect of the weapon but its area. Each is a strike of its own, so armour comes off it and a flat buff adds to it. Hull damage halves the stacks, rounded down. It lasts the fight. | implemented |
-| **Essence** | Ability, the Ammit's. 1 Essence for every foe that falls in a fight it is in, whoever fells it, kept from fight to fight through the battle, with no limit. As each fight opens, and at the end of a round in which the Ammit killed, it gains 1 Empowered for every 5 Essence it holds; its Quintessence Tap consumes it. No Purge or Cleanse touches it. | implemented |
-| **Offhand** | Ability, the Macaque's. The armament its offhand holds, named on its chip: a rider on every weapon and equipment it aims at a foe. Each such spend turns it to the next armament in its cycle; a buff, a reboot or a blank entry turns nothing. Every fight opens on the first. No Purge touches it. | implemented |
-| **Aile Boost** | Machine status, the Macaque's Aile Booster. The next weapon it fires reaches as Indirect, every strike of the spend, and that weapon lifts it; equipment leaves it standing. Carried between turns until then; one at a time. | implemented |
-| **Aile Blitz** | Machine status, the Macaque's Aile Blitzer (its Duelist II). The next weapon it fires reaches as Indirect and ignores armour, every strike of the spend, and that weapon lifts it; equipment leaves it standing. Carried between turns until then; one at a time. | implemented |
-| **Aile Assault** | Machine status, the Macaque's Aile Assaulter (its Valkyrie II), which grants 1 Empowered beside it. The next weapon it fires reaches as Indirect, every strike of the spend, and that weapon lifts it; equipment leaves it standing. Carried between turns until then; one at a time. | implemented |
-| **Parry** | Machine status, the Macaque's Beam Buckler (its Duelist II). Through the round it is gained, what its Barrier and its armour keep off foes' blows is counted, never what its shield takes. As its next turn opens, half of that, rounded down, is Parry's number: its next strike that turn deals that much more, the first blow of the first weapon it fires, on its target and none of its area; that weapon lifts it. Gone as that turn ends if no weapon fires. | implemented |
-| **Essence Flare** | Machine status, from the Ammit's Quintessence Tap, on the machine that spent it. While it lasts no Empowered halves this round, its own or any other unit's, machine and foe alike: a machine's as the player's turn ends, a foe's as its own turn does. Until the round's end. A buff like any: a Purge takes it and the hold with it, and a wreck holds nothing. | implemented |
+| **Suppressed** | Skips its next turn.
+Turn End: Reduce stacks to 0. Gain Numbed equal to its stun resist: 1, 2 if massive, 3 if an elite, a hero or a boss. | implemented |
+| **Vitriol** | Turn End: Lose 10% of current HP per stack ({N}), rounded down, then reduce stacks by 1. Ignores Armour.
+Never reduces HP to 0. | implemented |
+| **Web Bomb** | Round End: Apply Suppressed to this foe and each foe beside it. Reduce stacks to 0. | implemented |
+| **Spun Up** | Weapon hits deal +2 damage per stack ({N}).
+Resolve: If triggered, reduce stacks to 0. | implemented |
+| **Ricochet** | Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage, with every effect of the weapon except its area.
+After Being Hit: If hull damage was taken, reduce stacks by half, rounded down.
+Lasts the skirmish. | implemented |
+| **Essence** | Gain 1 whenever any foe falls. Lasts the battle.
+Skirmish Start: Gain 1 Empowered per 5 Essence.
+Round End: If this machine killed this round, gain 1 Empowered per 5 Essence. | implemented |
+| **Offhand** | Its weapons and equipment aimed at a foe carry the armament shown.
+Resolve: Switch to the next armament. | implemented |
+| **Aile Boost** | Weapons gain Indirect reach.
+Resolve: If triggered, reduce stacks to 0. | implemented |
+| **Aile Blitz** | Weapons gain Indirect reach and ignore Armour.
+Resolve: If triggered, reduce stacks to 0. | implemented |
+| **Aile Assault** | Weapons gain Indirect reach.
+Resolve: If triggered, reduce stacks to 0. | implemented |
+| **Parry** | Counts the damage its Armour and Barrier prevent from foe hits this round.
+Turn Start: Its next weapon hit this turn deals +damage equal to half the count, rounded down.
+Turn End: Reduce stacks to 0. | implemented |
+| **Essence Flare** | Empowered on any unit is not reduced.
+Round End: Reduce stacks to 0. | implemented |
 | **Brittle** | When Hit: +1 damage received per stack ({N}).
 Turn Start: Reduce stacks by half, rounded down. | implemented |
-| **Destroyed component** | Machine status. A destroyed component is blank: it does nothing when it comes up, and provides its passive bonuses but not passive abilities, for the rest of the battle; after it, a hardpoint's is gone for good and a built-in one is rebuilt. One thing destroys a component, a foe's blow that carries Destroy, when any of it reaches the hull, and it destroys the entry the die shows: one that lands on a destroyed component or an empty hardpoint finds nothing to break, so what faces the enemy is the player's choice. No blow destroys one by its size. | implemented |
-| **Mine** | Foe status, the Lammergeier's: every weapon and equipment it aims at a foe adds its flat damage to a Mine on that foe, with what the spend fired at it: every hit's stacks and its other keywords, one Mine a foe however many spends feed it. When the foe falls, even one that gets back up or splits, the Mine blows: its damage on every foe round its slot, each through its own Brittle and armour, then its keywords as on a blow. Spread, Penetrate, a spill behind and Lure stay with the spend, and its damage never grows with the spend's. The chip shows its damage; its readout, its keywords. | implemented |
-| **Ore** | Ability, the Honey Badger's: armour from the Ore in its hopper, a point once it holds three (and one more for each Ore past three, from its Miner upgrade). It lands as the Ore that earns it lands and goes as the hopper empties. No Purge touches it. | implemented |
-| **Scorched** | Machine status, from a foe's scorch: every weapon and equipment it aims at a foe runs 1 hotter per stack, until the end of the player's turn, when every stack goes. A buff on itself or an ally, a cool weapon or a held die plays round it. Can be cleansed. | implemented |
-| **Overheated** | Machine debuff, a stack for every point of heat past the maximum. At the end of the player's turn it burns a point of hull a stack, every turn it stands, and every spend adds to it. The first such turn since the machine's last reboot is its overheat: its shield breaks. Whatever cools takes these stacks first. No Cleanse lifts it; a reboot clears it. | implemented |
-| **Broken** | Machine debuff. A shield at nothing is Broken, whatever took it there: a foe's blow, the overheat, a reboot, or a cost of the machine's own. A Broken shield gains none by any method until its machine reboots. A Barrier is no shield and lands all the same. No Cleanse lifts it. | implemented |
-| **Rebooting** | Machine status. A machine that has spent nothing this turn may give the turn to a reboot: drag its die onto REBOOT. At once its shield drops to nothing and its heat vents, Overheated with it, and it stands bare through the enemy's turn; as the next round opens its shield is whole and Broken is gone. Nothing forces one, and UNDO takes it back like a spend. | implemented |
-| **Enraged** | Foe status, from a rage (the Goblin Nob's, its own from the fight's start). While the foe stands, every shield, vent or equipment entry the team spends lays a stack on it, and each stack is a point on every blow it lands for the rest of the fight; a weapon feeds nothing. Never spent by a move. Its chip climbs as the stacks do, so the number an intent shows is the number that lands. A Purge lowers the stacks by its number; the rage goes on, so they gather again. | implemented |
+| **Destroyed component** | This entry is blank for the rest of the battle. Its passive bonuses still apply, its passive abilities do not.
+After the battle, a fixed component is rebuilt and a hardpoint's is lost. | implemented |
+| **Mine** | Uses aimed at this foe add their damage and keywords to the Mine.
+When this foe falls: Hit every foe around it for the Mine's damage ({N}), with its keywords. | implemented |
+| **Ore** | At 3 Ore, base Armour increases by 1. | implemented |
+| **Scorched** | Its uses aimed at a foe cost +1 heat per stack ({N}).
+Turn End: Reduce stacks to 0. | implemented |
+| **Overheated** | Stacks equal heat above Max Heat.
+Turn End: Take 1 hull damage per stack ({N}). The first since its last reboot also breaks its shield.
+On Reboot: Reduce stacks to 0. | implemented |
+| **Broken** | Cannot gain shield. Gained when shield reaches 0.
+On Reboot: Reduce stacks to 0. | implemented |
+| **Rebooting** | Gained by dragging an unused die onto REBOOT. Shield and heat are reduced to 0.
+Turn Start: Restore shield to max and remove Broken. Reduce stacks to 0. | implemented |
+| **Enraged** | On Hit: +1 damage per stack ({N}).
+When you use a component that is not a weapon: Gain 1 stack.
+Lasts the skirmish. | implemented |
 | **Golden** | On Hit: +2 damage dealt.
 +1 Armour.
 Gain Suppressed upon losing 25% Max HP since the start of the effect.
@@ -168,24 +207,33 @@ On Suppressed: Reduce stacks to 0.
 Turn End: Reduce stacks by 1. | implemented |
 | **Empowered** | On Hit: +1 damage per stack ({N}).
 Turn End: Reduce stacks by half, rounded down. | implemented |
-| **Undying** | Foe status, from a Reraise, its own or an ally's. After it falls it gets back up once, whole, in its own slot and at once, unless it self-destructed; it strikes from the next round. | implemented |
-| **Aloft** | Foe status, the Roc's. While its Stoop gathers it has climbed out of reach: no die can be dropped on it, and nothing aimed elsewhere reaches it either, a neighbour's Spread, a blow at every foe, a Mine's blast. It is not out of the fight. What it carries still wears at it, Ablate and Vitriol taking their points. It comes down as it strikes, so the round the climb is announced is the window. | implemented |
-| **Appropriated** | Ability, Gilgamesh's: the number of the piece he holds. His Collect knocks loose the component a machine's die is showing, Jams it until that machine reboots, and leaves him Appropriated at its number: a weapon's printed blow, and 1 for anything that is no weapon, a fake. His Borrowed Blade lands that number next round and spends it. One piece at a time, what he takes next replacing it. No Purge reaches it; a Ward on the machine turns the taking away. | implemented |
+| **Undying** | When it falls: Return with full HP, acting from next round. Reduce stacks to 0. | implemented |
+| **Aloft** | Cannot be targeted or hit. Its other effects continue.
+Ends when its gathered move lands. | implemented |
+| **Appropriated** | Holds the number of the component it took: a weapon's damage, otherwise 1.
+Its next Borrowed Blade deals this number. | implemented |
 | **Swallowed** | Cannot act. All ongoing effects are paused.
 Immune to all damage. Cannot be targeted or hit by anything.
 Round End: Reduce stacks by 1.
 Reduce stacks to 0 upon {caster} losing 25% Max HP since the start of the effect. | implemented |
-| **Guarded** | Foe ability, a core's. It takes no damage while its parts stand, all of them or any, by the foe, its Ablate and Vitriol included. No Purge touches it. | implemented |
-| **Ability** | A unit's own mechanic, the rule it plays by: never a buff or a debuff, so no Purge or Cleanse touches it. Its chip shows its mark cut out of a solid tile: the Goblin Nob's Enrage, a core's guard, a Gel's split, a last act, the Thunder Ape's golden rage; the Polar Bear's seal, the Ammit's Essence. | implemented |
-| **Barrier** | Status, on either side. The next blow it takes deals no damage; the blow's riders land. On a machine, the next blow a foe lands on it, until its next turn starts, so a Destroy on that blow finds no hull damage to read; never granted to every ally at once. On a foe, from its own move, the next blow of a weapon the team lands on it, equipment popping nothing, until it pops or its next turn starts. | implemented |
-| **Ward** | Status, on either side; a blow's damage lands. On a machine, no rider a foe lays lands on it this round, from a blow or from a move of its own (ablate, scorch, jam, corrupt, purge), until its next turn starts: the Decoherence Veil grants it, and the Storm Petrel's Hardlight Pulse lays it on itself in its Defence branch. On a foe, from a move that wards every foe on the field, no mark the team lays lands on it (Ablate, Brittle, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox and a Mine), nor a stun, nor a Purge, and a turned mark feeds no Paradox, until its next turn starts. | implemented |
-| **Charged** | Machine buff. While it lasts the machine's weapons fire with Shock, shown on the die: every foe a fire reaches is Shocked after the blows, a felled one too. A weapon fired spends a stack: a Rapid's second fire is a second fire, a salvo one, a passive's own fire none, and equipment carries it not and spends nothing. A laid shot spends the stack as it is laid and carries the Shock. A Purge lowers it. | implemented |
-| **Supercooled** | Machine buff. While it lasts the machine's weapons fire with Cryo 1: a stack a strike on each foe hit, one more than its own on a gun that carries Cryo, shown on the die and laid after the hits, so a fire never cashes its own frost. A weapon fired spends a stack: a Rapid's second fire is a second fire, a salvo one, a passive's own fire none, and equipment carries it not and spends nothing. A laid shot spends the stack as it is laid and carries the frost. A Purge lowers it. | implemented |
-| **Regenerating** | Status, on either side: a point a stack as its turn ends, then a stack fades, so Regenerating 3 gives 3, 2 and 1, the first as the turn it was gained in ends, and a second grant adds its stacks. A foe's, from its own move, is hit points, after its Ablate and Vitriol have ticked, so an Ablate is a race and never a wall. A machine's is shield at the end of the player's turn, after its Ablate and before the foes strike, up to its maximum, and a broken shield takes none though the stack fades. | implemented |
-| **Burrowed** | Ability, the Mole's. It burrows in its reboot's place, on a turn it has spent nothing, and stays under until it spends its Inertia Drill: armour +1, its die rolling the Drill alone. Each of its turns under opens with Broken and Overheated cleared, half of what its shield and heat were missing as it burrowed made good, and a stack of Conserved Momentum. No Purge touches it. | implemented |
-| **Applied Momentum** | Foe status, from the Mole's Inertia Drill: a stack for each Conserved Momentum it spent. As the foe's turn starts, the drill in it strikes it with a blow of 2, its Brittle adding and its armour taking it, then a stack goes. The Mole's next burrow takes the drill back with what is left. A foe's cleanse takes it, a Ward turns it away, and a foe that falls takes it with it. | implemented |
-| **Drill Out** | Ability, the Mole's: its Inertia Drill is out, in its foe or in the ground where its foe fell. Its next burrow brings it home. | implemented |
-| **Sonic Needle** | Foe status, from the Echidna's Sonic Needles: a stack for every strike of its weapons and equipment that reaches the foe, and for every blow the foe lands on it. It conducts Chain, as Shocked does. On 3 stacks, the Echidna fires Chain 2: 2 on every conductor on the field, this foe included, each its Brittle adding and its armour taking it, no strike aimed at any; then every stack on this foe is consumed. A foe's cleanse takes it, a Ward turns it away, and a foe that falls takes it with it. | implemented |
+| **Guarded** | Immune to all damage while its parts stand. | implemented |
+| **Ability** | A unit's own rule. Not a buff or a debuff, so no Purge or Cleanse removes it. | implemented |
+| **Barrier** | When Hit: If damage would be dealt, prevent it and reduce stacks to 0. Riders still apply.
+Turn Start: Reduce stacks to 0. | implemented |
+| **Ward** | Blocks every debuff and Purge from the other side. Damage still applies.
+Turn Start: Reduce stacks to 0. | implemented |
+| **Charged** | Weapons gain Shock.
+Resolve: If triggered, reduce stacks by 1. | implemented |
+| **Supercooled** | Weapons gain Cryo 1.
+Resolve: If triggered, reduce stacks by 1. | implemented |
+| **Regenerating** | Turn End: Heal 1 per stack ({N}), then reduce stacks by 1. A machine heals shield, a foe heals HP. | implemented |
+| **Burrowed** | +1 Armour. Its die rolls only its Inertia Drill.
+Turn Start: Remove Broken and Overheated. Regain half the shield and vent half the heat it was missing when it burrowed. Gain 1 Conserved Momentum.
+Ends when the Inertia Drill is used. | implemented |
+| **Applied Momentum** | Turn Start: Take a hit of 2 damage, then reduce stacks by 1. | implemented |
+| **Drill Out** | Its Inertia Drill is out. Its next burrow brings it back. | implemented |
+| **Sonic Needle** | Gain 1 stack per hit from the Echidna, and per hit this foe lands on the Echidna. Conducts Chain like Shocked.
+At 3 stacks: Chain 2 hits every foe that conducts. Reduce stacks to 0. | implemented |
 
 ## Formation
 
@@ -288,25 +336,29 @@ Reduce stacks to 0 upon {caster} losing 25% Max HP since the start of the effect
 
 | Term | Codex | Status |
 |---|---|---|
-| **Immune** | Ability, a foe's own, said on its chip: one thing of yours that never lands on it. A foe immune to Suppress is never stunned, and the stun a Paradox or a web ends in lands nothing on it. A foe immune to Disrupt while a move gathers cannot be turned from that move, from the round it is announced to the round it lands; a stun still holds it a round. The die's own mark is struck over a foe it will do nothing to. No Purge reaches it. | implemented |
-| **Drain** | Ability, the Vampire Lord's own: every blow it lands heals it by what the blow took from the hull, no more than the machine had, so a shield starves it. It lays nothing on the machine, so no Ward turns it away; a Barrier's blow deals nothing to drain, and Ablate on the foe takes back what it heals. No Purge reaches it. | implemented |
-| **Timid** | Ability, a foe's own, said on its chip: it strikes only with a buff on it, or one a move its own side has announced will lay on it; with none, it does anything but strike. The goblins', whose Shield Wall covers whoever stands beside them, so a bare goblin walls and a shielded one stabs. No Purge reaches it. | implemented |
-| **Swallow** | Foe move of its own, never a rider on a blow. The machine it lands on is Swallowed: out of the fight for the rounds it says, until the swallower falls, or until the swallower has lost a quarter of its HP since the swallow, the damage still to deal counting down on its chip. It never takes the last machine able to act. A Ward turns it away; a Lure turns it, and a Suppress or a Disrupt stops it, as any move. | implemented |
-| **Golden Rage** | Foe move of its own, never a rider on a blow: the foe goes gold (Golden) for the rounds it says, so the round it roars is the window to shield up or to start the burst. It goes gold only while calm, so one rage at a time; a Suppress or a Disrupt stops the roar, as any move. | implemented |
-| **Merge** | Foe move of its own. Every other foe on the field of the kinds it names is taken into it, gone without falling: it regrows the HP they had left, and its next move hits harder for each one. Thin them first; a Suppress or a Disrupt stops it, as any move. | implemented |
-| **Aim** | Whom a foe strikes, picked for every foe on its own as the round opens and shown as its arrow before you act. An attack at one machine picks any of them, unless it carries a word for whom it goes for, said on its target line. The strongest: the machine with the most hull and shield together. The weakest: the one with the least. The hottest: the one carrying the most heat. The most buffed: the one carrying the most stacks of buffs. A tie is drawn among the tied, so when every machine is level it is any of them. The word is the attack's, so a foe may seek with one move and not with another. The foes never pile onto a machine their blows would already wreck while another stands, and a move at every machine or at nobody picks no one. The pick is a commitment: a foe whose target shields up still swings at it. | implemented |
-| **Self-Destruct** | A blow that spends the striker: after it lands the foe is gone, whole, and nothing brings it back. The blow is the foe's whole life, so it is announced like any other and the answer is to kill it first or to shield what it has picked. | implemented |
-| **Every Machine** | A blow at every machine: each of its strikes lands on every machine in the fight in turn, so it picks no one and no lure moves it, and the number shown is what each machine takes. A shield saves only the machine it stands on; the answers that stop the whole blow are aimed at the striker: kill it, suppress it, disrupt it. | implemented |
-| **Last Act** | What a foe does the moment it falls, shown on it by the skull, with its number where it strikes. A blow or a curse aimed at one machine lands on the machine that made the kill, at once, even when the foe was the last one standing; a kill no machine made, a tick's, lands it on nobody. A blow or a curse at every machine lands on each, and what a fall does to its own side happens whoever made the kill. | implemented |
-| **Parts** | A foe in parts: a core and the parts that stand with it. While its parts stand (all of them, or any, by the foe) the core is Guarded and takes no damage; a fallen part may grow back after a few rounds; when the core falls, its parts fall with it. Choose what to focus: a part to open the core, or the core to end them all. | implemented |
-| **Countdown** | A move that gathers before it lands: announced as the round opens, it lands the stated number of rounds later, its warning chip counting down the whole time. Nothing hits while it gathers. Suppress holds it a round, Disrupt breaks it off unless its foe is immune through the gather, and killing the foe ends it. | implemented |
-| **Follow-up** | A move that names the move its foe announces next round. The first lands, and the second is the next round's intent, so the warning comes a round ahead: Red Capote, then Andalucia. A Suppress on the first, or a Disrupt that turns it, and the second never comes; once announced, the second cannot be Disrupted, only Suppressed. | implemented |
-| **Grudge** | A blow that grows with the fight: a point heavier for every foe the team has killed this fight, its intent showing the number as it stands. Kill order answers it: the grudge-bearer first, the rest after. | implemented |
-| **Foe action** | A foe has a base attack, the quick read of how hard it hits, and a list of actions: attacks that scale it, and defends, buffs and debuffs it does instead of a blow (bracing against damage, sheltering behind a Barrier, recovering or healing one of its own, regenerating over its next actions, cleansing the team's marks off its own, warding its side against them, readying to get back up, calling up a foe, rallying or priming the others, costing the team a reroll, setting a machine Ablate, purging one, jamming the entry a die shows, scorching or corrupting every machine). A move may do more than one thing, its blow or its special first and then what it does also, unless its text says a step comes before the blow, and its own text says all of it. Each round every foe on the field picks one by weight before the player acts, so what it will do and to whom is announced exactly. An attack's damage is the base times its factor, and the help text shows the resulting number. | implemented |
-| **Scorch** | Foe attack keyword with a number. Each blow that lands leaves that many stacks of Scorched on the machine it hit (Scorch 2: two): every weapon and equipment it aims at a foe runs hotter. | implemented |
-| **Menace** | A pack's worth, its threat rating: a lone patrol 1, a heavier patrol 2, a formation 3, an elite or a boss 4, in every domain and at every tier. The Rupture meter, Anathema and salvage count by it. A pack's fall pays it whole. A pack a fight wore down and left standing has paid for the heads it lost, and its fall pays the rest. | implemented |
-| **Elite** | A unique foe leading its own composition, its pack rated four, emerging at the rift at a Fracture. Each tier names which Fractures bring one; the lead domain's elites come in turn and never twice in a battle, or a wanderer, drawn on the Fracture's roll one time in three and always once the domain's own are spent. An elite stands at the battle's tier as a boss does. | implemented |
-| **Seal** | The boss's seal holds until the Rupture: while it does the boss cannot be attacked and joins no fight, the rift's shell walling the hexes about it, SEALED on its readout. The Rupture breaks it, the last Fracture, and nothing else. | implemented |
+| **Immune** | The effect named on its chip never applies to it. | implemented |
+| **Drain** | After Hit: Heal HP equal to the hull damage dealt. | implemented |
+| **Timid** | Attacks only while it carries a buff, or one is announced for it. Otherwise it uses another move. | implemented |
+| **Swallow** | Round End: Apply {N} Swallowed to the target.
+Cannot target the last machine able to act. | implemented |
+| **Golden Rage** | Turn End: Gain {N} Golden.
+Only usable while not Golden. | implemented |
+| **Merge** | Absorbs every other foe of the named kinds and heals the HP they had left. Its next move deals more per foe absorbed. | implemented |
+| **Aim** | How a foe picks its target at round start, shown as its arrow. Strongest: most hull plus shield. Weakest: least hull plus shield. Hottest: most heat. Most buffed: most buff stacks. With no word, any machine. Ties are random.
+Foes do not target a machine their hits would already wreck while another stands. | implemented |
+| **Self-Destruct** | Resolve: This foe is removed. It cannot return. | implemented |
+| **Every Machine** | Hits every machine. It has no target, so Lure does not move it. | implemented |
+| **Last Act** | When it falls: Use this move at once. A single-target move hits the machine that killed it, or nothing if no machine did. | implemented |
+| **Parts** | A core and its parts. While its parts stand, the core is Guarded. A fallen part may grow back. When the core falls, its parts fall. | implemented |
+| **Countdown** | Lands {N} rounds after it is announced. Nothing hits while it gathers.
+Suppress delays it 1 round. Disrupt cancels it. | implemented |
+| **Follow-up** | Names the move its foe announces next round. Suppress or Disrupt on the first cancels the second. Once announced, the second can be Suppressed but not Disrupted. | implemented |
+| **Grudge** | +1 damage per foe the team has killed this skirmish. | implemented |
+| **Foe action** | Each round every foe picks a move and a target before your turn, shown on its intent chip. An attack's damage is the foe's attack times the move's factor. | implemented |
+| **Scorch** | Resolve: Apply {N} Scorched per hit. | implemented |
+| **Menace** | A pack's threat rating: a patrol 1 or 2, a formation 3, an elite or a boss 4. The Rupture meter, Anathema and salvage count it. Killing a pack pays its remaining Menace. | implemented |
+| **Elite** | A unique foe leading its own pack, rated 4 Menace, arriving at a Fracture. It stands at the battle's tier. | implemented |
+| **Seal** | The boss cannot be attacked or join a skirmish until the Rupture breaks its seal. | implemented |
 
 ## Rules
 
