@@ -144,12 +144,12 @@ Using a weapon or rebooting removes it. | implemented |
 | **Armoured** | +1 Armour per stack ({N}).
 Turn Start: Reduce stacks to 0. | implemented |
 | **Hardened Light** | When Hit: If its shield is up, -1 damage received per stack ({N}).
-When Broken: Reduce stacks to 0. | implemented |
+Shield Broken: Reduce stacks to 0. | implemented |
 | **Primed** | Resolve: Apply 1 Ablate per hit. If triggered, reduce stacks by 1. | implemented |
 | **Jammed** | This entry comes up blank.
 On Reboot: Reduce stacks to 0. | implemented |
 | **Corrupted** | Commit: This machine takes 3 damage per stack ({N}).
-Lasts the skirmish. | implemented |
+On Reboot: Reduce stacks to 0. | implemented |
 | **Phased** | Cannot be damaged, targeted or hit. Can still act. Its other effects continue.
 Round End: Reduce stacks to 0. | implemented |
 | **Ablate** | Turn End: Take 1 damage per stack ({N}), then reduce stacks by 1.
