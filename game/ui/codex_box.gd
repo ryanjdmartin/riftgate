@@ -12,14 +12,15 @@ extends Control
 ## the die, one column, each component a row: its tile, its name with its tags, and the
 ## hold's lines joined into three, its attributes, its keywords and its own rules, at the
 ## component's own numbers (a foe's moves the same way, with no tile); then its lore. A long
-## plate scrolls under a CLOSE that stays in view.
+## plate scrolls; a tap outside shuts it, and BACK, when it was opened from another plate, returns there.
 ##
 ## Entry keys (see `ContentDB.codex_for_unit` / `codex_for_foe`): title, designation,
 ## subtitle, body, stat_items, passive, passive_rows ([text, source] pairs), effects ({name,
 ## text, kind, note}), faces (Array of Face), face_rules (each face's
 ## component passive lines), current (index), steps (a die that steps: its chambers as a
 ## cylinder above them), moves and foe (a foe's moves), flavour, sprite_id (a chassis or foe
-## id), paint and unit (the machine, so the model can wear its fitted loadout).
+## id), paint and unit (the machine, so the model can wear its fitted loadout), back (a Callable:
+## the plate it was opened from, which BACK reopens).
 
 const STOWED_ALPHA := 0.4   # a folded die's stowed battery in the die's rows: there, and out of the roll
 const WIDTH := 640.0
@@ -46,6 +47,16 @@ var _moves: EntryReadout       # a foe's moves, each a name and its lines
 var _faces: VBoxContainer      # the die, a row a component: its tile and its lines
 var _ring: CylinderView        # a die that steps (the Cassowary's): its order as a cylinder
 var _flavour: Label
+var _back_btn: HudButton
+var _back: Callable = Callable()   # the plate it was opened from, reopened by BACK; none for a codex opened on its own
+
+
+## BACK: this shut and the plate it was opened from shown again.
+func _go_back() -> void:
+	var to := _back
+	close()
+	if to.is_valid():
+		to.call()
 
 
 ## A wrapping label needs a width before its first layout pass, or it reports the height
@@ -162,14 +173,20 @@ func _init() -> void:
 	_flavour = Hud.label("", 18, Palette.MUTED, Hud.quote())
 	_wrap(_flavour)
 	cv.add_child(_flavour)
-	var close_btn := HudButton.new("CLOSE", close)
-	close_btn.sound = ""   # the codex closing is its own figure
-	close_btn.custom_minimum_size = Vector2(0, 52)
-	outer.add_child(close_btn)
+	# No CLOSE (Ryan, 23 November: "We don't need close buttons. Waste of space on a mobile
+	# format"): a tap outside shuts it. A codex opened from another plate (a foe from its pack's
+	# formation) takes BACK to it ("the codex-from-formation can use a 'back.'"), the entry's `back`.
+	_back_btn = HudButton.new("BACK", _go_back)
+	_back_btn.sound = ""
+	_back_btn.custom_minimum_size = Vector2(0, 52)
+	_back_btn.visible = false
+	outer.add_child(_back_btn)
 
 
 ## Fill and show the codex.
 func open(entry: Dictionary) -> void:
+	_back = entry.get("back", Callable())
+	_back_btn.visible = _back.is_valid()
 	var designation := str(entry.get("designation", "")).to_upper()
 	# A mech with a designation gets its nickname in quotes; a foe or a die keeps its name plain.
 	_title.text = ("“%s”" % str(entry.get("title", ""))) if not designation.is_empty() else str(entry.get("title", ""))
@@ -297,7 +314,7 @@ func _fit() -> void:
 	# The plate as tall as its contents, up to what the screen leaves under the panel's top; past
 	# that it scrolls.
 	var screen := size.y if size.y > 0.0 else (get_viewport_rect().size.y if is_inside_tree() else 1280.0)
-	var room := screen - TOP - BOTTOM - MARGIN * 2.0 - 52.0 - 14.0
+	var room := screen - TOP - BOTTOM - MARGIN * 2.0 - (52.0 + 14.0 if _back_btn.visible else 0.0)
 	var content := _scroll.get_child(0) as Control
 	var wanted := content.get_combined_minimum_size().y if content != null else 0.0
 	_scroll.custom_minimum_size = Vector2(0, minf(wanted, maxf(200.0, room)))
@@ -309,6 +326,7 @@ func close() -> void:
 	if visible:
 		Sound.play("codex_close")
 	visible = false
+	_back = Callable()
 	if _view != null:
 		_view.queue_free()
 		_view = null

@@ -245,7 +245,7 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   Reveille Horn), but Instant's, kept on purpose and shown on the die by its keyword: it rolls as
   the round's opening roll does, itself included, and spins every chamber on the Cassowary's
   die. Hold a die to lock it, and again to unlock it; spending
-  unlocks it; locks clear each round. A double-tap shows the whole die, every entry at its
+  unlocks it; locks clear each round. A double-tap shows the whole die, its loadout, every entry at its
   live numbers, the one showing marked.
 - **A folded die** (the Clydesdale's Disappearing Carriages): its hardpoints are two batteries
   of four, one up at a time, and every roll and reroll lands among the battery up and its fixed
@@ -1790,7 +1790,8 @@ a stat.
   stands, the button pulses while no machine is in hand.
 - **A tap and a double-tap** on the map work as a die's do in a fight: a double-tap on a
   machine, the boss or a cache opens its codex, and on a pack its formation, the grid the fight
-  will deal, back rank over front, a double-tap on a foe there opening that foe's codex; a tap
+  will deal, back rank over front, a double-tap on a foe there opening that foe's codex in its
+  place, BACK returning to it; a codex or a formation shuts on a tap outside it, with no CLOSE; a tap
   on one lands only once the double-tap window
   (0.1 s on the map, from the tap's release to a second touch; a die's is 0.15) has passed with no second touch, its hex
   bracketed from the touch until it does, so a double-tap never selects first; a tap on bare

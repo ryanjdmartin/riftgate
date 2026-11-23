@@ -2658,7 +2658,7 @@ func _open_die_view(i: int) -> void:
 	var ms: Skirmish.MechState = sk.mechs[i]
 	var base := ContentDB.load_default().codex_for_unit(ms.unit)
 	_open_codex({
-		"title": ms.unit.display_name, "subtitle": "THE DIE",
+		"title": ms.unit.display_name, "subtitle": "LOADOUT",   # Ryan's word, 23 November
 		"faces": _shown_faces(ms), "face_rules": base.get("face_rules", []), "face_steps": base.get("face_steps", []),
 		"current": ms.face_index, "steps": base.get("steps", false), "stowed": base.get("stowed", []),
 	})

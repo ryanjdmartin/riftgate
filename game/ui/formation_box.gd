@@ -6,8 +6,8 @@ extends Control
 ## opens it's codex entry"): the pack's name and what it is, then its grid as the fight will deal it,
 ## the back rank over the front as the skirmish stands them, each foe its picture on a plate and an
 ## empty cell a dashed one. A double-tap on a foe asks for its codex (`foe_double_tapped`), which
-## the screen opens over this. A shade over the whole screen, the panel over it; a tap outside or
-## CLOSE shuts it. Its rank labels are the codex's words for a rank.
+## the screen opens in its place, BACK on it returning here. A shade over the whole screen, the
+## panel over it; a tap outside shuts it (no CLOSE: Ryan, 23 November). Its rank labels are the codex's words for a rank.
 
 signal foe_double_tapped(foe_id: String)
 
@@ -112,9 +112,6 @@ func _init() -> void:
 	_grid.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_grid.cell_double_tapped.connect(func(i: int) -> void: foe_double_tapped.emit(str(_grid.cells[i])))
 	col.add_child(_grid)
-	var close_btn := HudButton.new("CLOSE", close)
-	close_btn.custom_minimum_size = Vector2(0, 52)
-	col.add_child(close_btn)
 
 
 ## Show `cells` (eight foe ids or "", the front rank's four then the back's) under `title` and

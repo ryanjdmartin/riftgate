@@ -972,8 +972,10 @@ func test_double_tap_opens_a_machines_codex_a_packs_formation_and_a_caches_codex
 	s._formation.foe_double_tapped.emit(fid)
 	assert_true(s._codex.visible, "a foe double-tapped there opens its codex")
 	assert_eq(s._codex._title.text, str(ContentDB.load_default().foes[fid]["name"]), "that foe's")
-	s._codex.close()
-	assert_true(s._formation.visible, "the formation still under it")
+	assert_false(s._formation.visible, "in the formation's place: one shade, never two")
+	assert_true(s._codex._back_btn.visible, "with BACK")
+	s._codex._go_back()
+	assert_true(s._formation.visible and not s._codex.visible, "BACK returns to the formation")
 	s._formation.close()
 	if not s.battle.field.caches.is_empty():
 		var c: Dictionary = s.battle.field.caches[0]

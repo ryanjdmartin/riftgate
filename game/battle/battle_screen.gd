@@ -1062,13 +1062,19 @@ func _on_hex_double_tapped(h: Vector2i) -> void:
 	_codex.open(codex_entry_for(u))
 
 
-## A foe in an open formation double-tapped: its codex, over the formation.
+## A foe in an open formation double-tapped: its codex in the formation's place, one shade on the
+## screen (Ryan, 23 November: the two plates' shades doubled), BACK returning to the formation.
 func _on_formation_foe(fid: String) -> void:
 	var db := ContentDB.load_default()
 	if not db.foes.has(fid):
 		return
+	_formation.visible = false   # set aside as it stands, not closed: BACK shows it again
+	var entry := db.codex_for_foe(db.make_foe(fid))
+	entry["back"] = func() -> void:
+		_formation.move_to_front()
+		_formation.visible = true
 	_codex.move_to_front()
-	_codex.open(db.codex_for_foe(db.make_foe(fid)))
+	_codex.open(entry)
 
 
 ## A cache's codex: its kind's name, its tier, what such a kind holds by its numbers, its codex
