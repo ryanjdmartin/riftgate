@@ -145,8 +145,7 @@ Using a weapon or rebooting removes it. | implemented |
 Turn Start: Reduce stacks to 0. | implemented |
 | **Hardened Light** | When Hit: If its shield is up, -1 damage received per stack ({N}).
 When Broken: Reduce stacks to 0. | implemented |
-| **Primed** | After Hit: Apply 1 Ablate.
-Resolve: If triggered, reduce stacks by 1. | implemented |
+| **Primed** | Resolve: Apply 1 Ablate per hit. If triggered, reduce stacks by 1. | implemented |
 | **Jammed** | This entry comes up blank.
 On Reboot: Reduce stacks to 0. | implemented |
 | **Corrupted** | Commit: This machine takes 3 damage per stack ({N}).

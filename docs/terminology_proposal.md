@@ -195,8 +195,8 @@ That way it shows in its colour and can be tapped. Ordinary words stay lowercase
 
 **16. Stacks are written "Name N" on a chip, a readout and a move line.**
 "×" only means times, as in a weapon's hits or a multiplier. "+" and "−" only mean a change to a
-number. A tip's sentence puts the number first, as his texts do ("Apply 1 Ablate", "Gain 3
-Golden"): section 4's question is whether that holds everywhere.
+number. A sentence that lays stacks puts the number first ("Apply 1 Ablate", "Gain 3 Golden"), his word
+of 23 November.
 - "Grants Empowered ×2" → "Grants Empowered 2"
 
 **17. A chip shows its stack count as a plain number.**
@@ -295,11 +295,9 @@ templates, the passives and the modules follow, kind by kind.
 
 Questions the tips' drafts raised (23 November), then the names the to-do routes here.
 
-**A rider's event.**
-The engine lays every rider per hit and lands them all once the hits are done, so the keyword
-tips say "Resolve: Apply {N} Brittle per hit". His Primed says "After Hit: Apply 1 Ablate".
-- **A:** Resolve everywhere, Primed's line too.
-- **B:** After Hit everywhere, and the engine moves each rider to land as its hit does, so a later hit of the same use meets it.
+**A rider's event.** (settled 23 November: his word)
+Resolve, Primed's line too: "Riders can be resolve, you're correct that matches better to what
+actually happens."
 
 **The labels the tips added.**
 Past rule 10's and rule 31's: When Suppressed, When Broken, On Reboot, Skirmish Start, When
@@ -308,15 +306,12 @@ what never counts down.
 - **A:** Keep them, each a label in the same form.
 - **B:** Fold them into the fixed labels where one fits, and say the rest in the line.
 
-**The number in a sentence.**
-A chip and a readout say "Ablate 2". His tips say "Apply 1 Ablate" and "Gain 3 Golden".
-- **A:** Number first in a tip's sentence, "Name N" on chips, readouts and move lines.
-- **B:** "Name N" everywhere, so a tip says "Apply Ablate 1".
+**The number in a sentence.** (settled 23 November: his word)
+"Apply N Ablate, yes. Not Ablate 1. It's shorthand for 'Apply N stacks of Ablate.'" A sentence
+that lays stacks puts the number first; a chip and a keyword on the die say "Ablate 2".
 
-**A capital after a label.**
-His texts wrote both ("Turn Start: Reduce ..." and "Turn End: reduce ...").
-- **A:** A capital, as a sentence starts.
-- **B:** Lowercase, as the line continues the label.
+**A capital after a label.** (settled 23 November: his word)
+"Capitalize after a colon, yes."
 
 **Names.**
 - **Aloft.** The Roc's climb out of reach, a working name. Pick: Keep · Soaring · Airborne

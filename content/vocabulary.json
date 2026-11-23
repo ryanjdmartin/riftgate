@@ -744,7 +744,7 @@
    "id": "primed",
    "category": "status",
    "name": "Primed",
-   "codex": "After Hit: Apply 1 Ablate.\nResolve: If triggered, reduce stacks by 1.",
+   "codex": "Resolve: Apply 1 Ablate per hit. If triggered, reduce stacks by 1.",
    "status": "implemented",
    "design": {
     "holes": "The third primer since 15 November, beside Charged and Supercooled (Ryan: \"give it the same format as cryo ... use a stack on firing\"; \"Primed - agreed, how many Ablate stacks does each Primed stack apply? Just one, like supercooled?\"; one, since Ablate 1 on a gun measures as about the point a Charged stack's Shock does). Until then every blow left a stack of Ablating a stack of Primed, for a buff's rounds on a machine and one move on a foe. A placeholder name.",

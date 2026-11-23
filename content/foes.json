@@ -883,7 +883,7 @@
       "actions": [
         {"id": "lightning_beam", "name": "Lightning Beam", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["jam"], "text": "A beam of lightning: {damage}, and the entry it shows is Jammed until its machine reboots.", "status": "implemented"},
         {"id": "rampage", "name": "Rampage", "kind": "attack", "strikes": 3, "factor": 0.4, "weight": 2, "text": "A rampage of fists: {damage}, three times.", "status": "implemented"},
-        {"id": "golden_rage", "name": "Golden Rage", "kind": "buff", "effect": "golden", "rounds": 3, "weight": 2, "when": "calm", "text": "It roars and its fur goes gold: Golden 3.", "status": "implemented"}
+        {"id": "golden_rage", "name": "Golden Rage", "kind": "buff", "effect": "golden", "rounds": 3, "weight": 2, "when": "calm", "text": "It roars and its fur goes gold: Gain 3 Golden.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix M: it is not a monkey. Do not call it a monkey."
     },
