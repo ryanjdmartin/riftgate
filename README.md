@@ -136,8 +136,9 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     `briefs/refit_pass.md` (the reboot's rules, its section 22) and `briefs/numbers_pass.md`
     (tier one sized against the reboot: the yardsticks, the baseline, the defence side's
     approach, the tier-one bench); `economy_pass.md`; `formation_proposal.md` (kept for the
-    bosses' stat blocks and the flankers' slate); `tide_proposal.md` (fodder by count and the
-    fights that matter by the hunt, Ryan's direction of 23 November, for his marks);
+    bosses' stat blocks and the flankers' slate); `tide_proposal.md` (the tide as fodder, Ryan's
+    paradigm of 23 November on trial: his words, the dials, the reads, the forms by
+    Convergence still to write and his questions);
     `locked_pieces_proposal.md`;
     `reboot_machines_proposal.md` (the machines the reboot broke); `rules_sweep_proposal.md` (the
     rules sweep's limits on design space, for his marks); `bosses_proposal.md` (the
@@ -254,6 +255,7 @@ perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.
 perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=2 kinds=elite,boss
 #   machines=3 reads every fight with that many machines whatever it is rated: the first battle's trio against a true four
 #   refit=finds=2 reads a squad a few battles into its tier (two basic guns a die swapped for tier-one finds); life=150 and blows=115 a leader's hit points and attack at that share of content's: the block a leader would stand at a Convergence on
+#   refit=face=<id>:power=2:strikes=2:heat=5 rewrites one piece's entry for the run (its numbers, a keyword's, its tier), a part a piece: the tier-one bench's spec is docs/briefs/numbers_pass.md, section 6
 #   kinds=fodder reads every pack the tier's formations may come apart into under the fodder's trial, each at its rating (machines=1: each met by one machine); "packs=goblin*2;goblin*3+mandragora@2" reads hand-made packs, a rating after @
 #   only=id,id reads those compositions or bosses alone; tier=, ramp=; refit=<spec> lays a
 #   what-if over content for the run (refit=barrier=none, the Barrier basic off the stock dice);

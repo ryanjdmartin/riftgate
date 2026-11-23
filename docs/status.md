@@ -41,18 +41,22 @@ document's job and every command are in `README.md`.
   a branch: the desk machine's folder stays on `main`, and a session that needs another branch
   works in a worktree under `.claude/worktrees/` (`CLAUDE.md`, Session handoff). A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word.
-- **The battle's enemy side is being rethought** (Ryan, 23 November, from his play: "Any time
-  I tried splitting my forces, I lost the battle. Any time I stayed in the middle, I won ... I
-  don't want 'tweak what's there,' I want 'rethink how we're doing formations and spawns
-  entirely'"; and of the Convergence, "A set form of each formation, for each C. Bosses too ...
-  It's fundamental for balance"). `docs/tide_proposal.md` is the proposal: the tide through a
-  front of tears, a formation as a wave of packs for one machine, the elite sent at the
-  machines, a set form for each Convergence. Nothing of it is decided. Until he marks it, no
-  session writes a formation, an elite's or a boss's numbers, or a rule of the tide.
+- **The battle's enemy side is on trial as a tide of fodder** (Ryan, 23 November, from his
+  play: "Any time I tried splitting my forces, I lost the battle. Any time I stayed in the
+  middle, I won"; then "we just needed a paradigm shift: All fodder safer to fight ... 'where
+  do I put my forces.' More fodder overall, with choices of pack sizes and pack types"; and of
+  the Convergence, "A set form of each formation, for each C. Bosses too ... It's fundamental
+  for balance"). `docs/tide_proposal.md` has his words, the dials that make his first set
+  playable (SETTINGS, TRIALS, SET: FODDER TIDE), the reads, the holes and five questions for
+  him. The fodder is a stand-in drawn by rule from today's formations (`ContentDB.fodder_of`),
+  nothing of it content. Until he has played it and answered, no session writes a formation,
+  fodder, an elite's or a boss's numbers, or a rule of the tide; the hunters' role is tabled on
+  his word.
 - Branches. `claude/formation-pass-feedback-rlvx5x` (23 November, Ryan's play of the field's
   dials: the seam a circle, the round's view, the zoom's floor, the pushers' segments, the
-  tears' row slower and off the wall, six trial dials, four tier-one stock dice back to basics,
-  the tide's proposal and its reads) runs ahead of main until he lands it; this file describes it. Main holds everything else here, the terminology pass's branch
+  tears' row slower and off the wall, four tier-one stock dice back to basics, the basics'
+  five dials settled and cut, the tide as fodder on trial with its reads, the tier-one bench
+  as a grid) runs ahead of main until he lands it; this file describes it. Main holds everything else here, the terminology pass's branch
   (`claude/gameplay-terminology-tooltips-rug879`) landed on 22 November on Ryan's "Ok push to main".
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
@@ -89,7 +93,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1448 tests, 389,604 checks, green on Godot 4.8-beta4 (23 November, the seam, the round's view, the pushers' segments, the tears' row and the six dials). The runner fails a run
+- Tests: 1455 tests, 394,233 checks, green on Godot 4.8-beta4 (23 November, the tide as fodder on trial and the bench's what-if). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -270,8 +274,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   foes still the ones sized against a shield that refilled; the first battle, the Meadow's
   alone and the one a trio fights, is built and its sizing his. On a debug
   build's SETTINGS, TRIALS, each a number still to be picked: FIELD DEPTH, OPENING, FODDER,
-  RUPTURE, TIDE, STRIKE, PACE, RIFT SENDS, FLANK TEARS, FORMATIONS and LEADERS (read as the
-  next battle starts; the last five are his play's of 23 November, `docs/tide_proposal.md`). A
+  RUPTURE, TIDE, STRIKE, PACE, RIFT SENDS, START TEARS, FORMATIONS, PACK BONUS and LEADERS
+  (read as the next battle starts; the last six are his play's of 23 November, and SET lays
+  his first set of that day at once: `docs/tide_proposal.md`). A
   dial leaves the page with its question: the basics' four and the overheat's left that day,
   each settled as built (the vanilla 3 for 4 heat against a standard foe of 4, the Carbine 4
   for 5, the Barrier basic on the starting dice, a point of hull a point of heat past the
@@ -420,16 +425,17 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
      those names the same day).
    - Every tier-one leader read again at sixty fights or more (the shaman's warband reads 33%
      at every commit back to its thirty-fight sizing), then any leader moved into its band.
-   - The rethink of formations and spawns (`docs/tide_proposal.md`; the formation pass runs
-     inside it). It waits on his answers to the proposal's four questions; then the engine on
-     dials (the front of tears with the rift quiet, a wave dealt as its packs, the elite's
-     arrival, a leader's block by tier and Convergence), then the Meadow's fodder and waves in
-     chat, a row a pack and a row a form, and the leaders' blocks as a table for his marks.
+   - The tide as fodder (`docs/tide_proposal.md`; the formation pass runs inside it). It
+     waits on his play of the set and his answers to the proposal's five questions; then each
+     value that settles lands and its dial is cut, the Meadow's fodder goes to chat, a row a
+     pack and a row a form by Convergence, then content a domain at a time (the stand-in
+     leaving with the last), and the leaders' blocks as a table for his marks.
    - His play of a second battle, which says whether the budget's shares stand (the brief's
      section 11): the fights are even across the domains, and the battle whole is tight.
-   - The tier-one bench, placeholder pieces each the vanilla with one thing traded, priced
-     from the vanilla he settled on 23 November. It brings tier one's slottable numbers down to
-     the basics' (Ryan, 21 November).
+   - The tier-one bench (`docs/briefs/numbers_pass.md`, section 6): a grid for his marks since
+     23 November, each find the vanilla with one thing traded, priced from the vanilla he
+     settled that day; its survivors to the hangar as placeholders, then content. It brings
+     tier one's slottable numbers down to the basics' (Ryan, 21 November).
    - The scorches on every machine above tier one, then the scaling from the baseline: the
      first battle down, its sizing his ("I'll handle that one"), tiers two and three up.
 2. **The machines the reboot broke** (another session's line, beside the first): each fix
@@ -486,9 +492,10 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   Published at v0.655 on 20 November from main's file at `33c4cc61` (the page's Version 519),
-  over this line's v0.654. The file is at v0.657 on `claude/formation-pass-feedback-rlvx5x`
-  (the wall, tears and seam rows, section 12's tide item), unpublished: the session that wrote
-  it had no room left to read the live page whole. Before republishing,
+  over this line's v0.654. The file is at v0.659 on `claude/formation-pass-feedback-rlvx5x`
+  (the wall, tears and seam rows, the vanilla, reboot, Barrier and hunters rows, section 12's
+  tide item), unpublished: the session that wrote it had no room left to read the live page
+  whole. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
   `33c4cc61` unless the live page says otherwise, OURS this branch's file, THEIRS the saved

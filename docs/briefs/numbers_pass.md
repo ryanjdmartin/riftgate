@@ -202,28 +202,105 @@ three up.
 
 ## 6. The offence side: the bench
 
-His proposal, agreed. It waits on his picks of the dials, since every piece is priced
-against the vanilla he settles on. Five things keep it small:
+His proposal, agreed, and priced from the vanilla he settled on 23 November. The grid below
+is the session's lean for his marks: nothing of it is content, and each piece goes to the
+hangar's Components tab as a placeholder once he has marked it ("Placeholder pieces can go in
+the Hangar Bench for my review?"), then to content with working names for what survives.
+
+Five things keep it small:
 
 - One trade a piece: the vanilla with one thing traded, named. A point more for heat, a
   point more split in two, a point less for a rider, the rider kept for a point of heat,
   Indirect for a point of heat.
 - A kill signature: a gun's spends to kill five marks (a plain 4, a 3 behind a point of
-  plate, a thin 3, a thick 6, a 4 behind plate; `tools/basics_model.py`). Two guns with the
-  same row and heat are one gun.
+  plate, a thin 3, a thick 6, a 4 behind plate; `tools/basics_model.py`, section 8). Two guns
+  with the same row and heat are one gun.
 - Marks as well as guns: a placeholder formation is one standard foe eight times.
 - Par, then the unit: a piece is priced to read as the vanilla alone, then read on each
   machine, since the reason to slot a find is what a unit does with it.
 - Read by the kind of formation, by the bot's pick share and by his play.
 
-Where the pieces live, his direction of 19 November: the hangar's Bench, for his review
-("Placeholder pieces can go in the Hangar Bench for my review?"), content with working names
-for what survives it.
+**The ladder the basics set.** A whole shot: 3 for 4 heat (the vanilla), 4 for 5 (the Laser
+Carbine), and from there two points of heat a point, 5 for 7 and 6 for 9; Indirect a point of
+heat on top (the Ankle Mortar, 3 for 5). Each step ends one more mark in one shot and holds
+one shot fewer in a gauge of 12: three, two, one and a second past it, one. A split reads as
+its flat number less a little (2 twice as 3.8, 1 four times as 3.7) and far less into plate; a
+rider as its points (section 4).
 
-Tier one's finds as built are what it replaces: eleven of fourteen slottable tier-one guns
-deal 4 or more, where a find in a tier-one rift "is a new trick and never a bigger number".
-The Overclocked Railgun, the one open tier-one piece that ignores armour, may move up a
-tier in the component pass.
+**Tier one's fourteen against it**, as built:
+
+| The gun | As built | Reads as | The ladder's heat for that | Under by |
+|---|---|---|---|---|
+| The Plasma Arquebus | Direct 4 for 5 | 4 | 5 | par: it is the Carbine |
+| The Transonic Rifle | Direct 5 for 7 | 5 | 7 | par |
+| The Thermal Ray | Direct 6 for 9 | 6 | 9 | par |
+| The Arc Fault Cannon | Direct 4 for 5, Chain 2 | 4 alone | 5 | par alone: the Carbine with a hook |
+| The Slugthrower | Direct 4 for 4 | 4 | 5 | 1 |
+| The Shotfire Rack | Indirect 4 for 5 | 4 | 6 | 1 |
+| The Flechette Pod | Direct 1 four times for 4 | 3.7, and 2 to 2.6 into plate | 5 | 1, and plate stops it |
+| The Blazethrower | Direct 3 for 6, Ablate 2 | about 5 | 7 | 1 |
+| The Airburst Shell | Indirect 2 for 4, Spread 1, Brittle 1 | about 3.5 | 5 to 6 | 1 to 2 |
+| The Incendiary Shells | Indirect 2 for 4, Ablate 2 | about 4 | 6 | 2 |
+| The Overclocked Railgun | Direct 8 for 11, ignores armour | 8 and more | 13 | 2 and more |
+| The Enfilade Beam | Direct 4 for 5, Penetrate 3 | 5.5 and more | 8 to 9 | 3 to 4 |
+| The Howitzer | Indirect 4 for 4, Spread 1, Penetrate 1 | about 5.6 | 9 to 10 | 5 |
+| The Maxigun | Direct 2 three times for 4 | about 5.7, half of it into plate | 9 | 5 |
+
+Three stand on the ladder already; ten are under it, by one point of heat to five. Eleven of
+the fourteen deal 4 or more, where a find in a tier-one rift "is a new trick and never a
+bigger number".
+
+**The bench**, a piece a line, each a trade from the vanilla or from the basic of its reach.
+Spends to kill, in order: a plain 4, a 3 behind plate, a thin 3, a thick 6, a 4 behind plate.
+
+| The gun | On the bench | The trade | Spends to kill | What it is for |
+|---|---|---|---|---|
+| The Slugthrower | Direct 2 twice for 5 | A point more, split in two, at the Carbine's price | 1, 2, 1, 2, 2 | Whatever fires a strike; as built it is the Carbine a point cooler, so it changes or goes |
+| The Plasma Arquebus | Cut, or a trade of its own | None: it is the Carbine by another maker | as the Carbine | One machine's passive reads a tag today, so the tag alone is no trick |
+| The Transonic Rifle | As built, 5 for 7 | Two more | 1, 1, 1, 2, 1 | Ends a 4 behind plate in one; a shot a gauge and a second past it |
+| The Thermal Ray | As built, 6 for 9 | Three more | 1, 1, 1, 1, 1 | Ends a thick 6 in one; a shot a gauge |
+| The Overclocked Railgun | Up a tier, with the component pass | | | The one open tier-one piece that ignores armour |
+| The Maxigun | Direct 2 three times for 8 | Three more, split: a point cooler than the Thermal Ray for what plate takes | 1, 1, 1, 1, 2 | The horde gun and three triggers a spend; a shot a gauge |
+| The Flechette Pod | As built, 1 four times for 4 | A point more, split fine | 1, never, 1, 2, never | Four triggers a spend at the vanilla's heat; nothing behind plate, which is the trade |
+| The Enfilade Beam | Direct 3 for 5, Penetrate 2 | The rider kept for a point of heat | 2, 2, 1, 2, 2, and 2 behind | A column: a front and what stands behind it |
+| The Arc Fault Cannon | Direct 3 for 4, Chain 2 | None alone: the vanilla with a hook | 2, 2, 1, 2, 2 | Chain reads nothing until something Shocks; the find that starts a synergy |
+| The Blazethrower | As built, 3 for 6, Ablate 2 | The rider kept, a point of heat a stack | 2, 2, 1, 2, 2, and 3 more over two turns | Past plate, slowly; two shots a gauge |
+| The Shotfire Rack | Indirect 4 for 6 | The Carbine's point on the Mortar | 1, 1, 1, 2, 2 | The back rank's 4 in one; two shots a gauge |
+| The Howitzer | Indirect 3 for 6, Spread 1 | The Mortar, the rider kept for a point of heat | 2, 2, 1, 2, 2, and 1 beside | A rank. Its Penetrate goes |
+| The Incendiary Shells | Indirect 2 for 6, Ablate 2 | The Blazethrower's trade on the Mortar, Indirect paid in the point of damage | 2, 3, 2, 3, 4, and 3 more over two turns | Past plate from the back, slowly |
+| The Airburst Shell | Indirect 2 for 5, Spread 1 | The Mortar, a point less for the rider | 2, 3, 2, 3, 4, and 1 beside | A rank, cool. Its Brittle goes, or stays for a point of heat |
+
+After it three finds deal 4 or more in one strike (the Shotfire Rack, the Transonic Rifle, the
+Thermal Ray), each paid in shots a gauge; the split guns reach it across their strikes and pay
+in plate. The spec that lays the bench over content for a read, the pieces by today's ids
+(`sim/refit.gd`'s `face=`):
+
+```
+face=slugthrower:power=2:strikes=2:heat=5,face=plasma_arquebus:tier=2,face=overclocked_railgun:tier=2,face=maxigun:heat=8,face=enfilade_beam:power=3:penetrate=2,face=arc_fault_cannon:power=3:heat=4,face=shotfire_rack:heat=6,face=howitzer:power=3:heat=6:penetrate=0,face=incendiary_shells:heat=6,face=airburst_shell:heat=5:brittle=0
+```
+
+Its read at the anchor (`docs/measurements.md`, 23 November; tier one's second battle, every
+squad of the six certain tier ones, of a four's hull):
+
+| The squad | A lone flanker | A hunter's pack | A formation | An elite | A boss |
+|---|---|---|---|---|---|
+| Stock, basics | 3.9%, 5.8 rounds | 9.4%, 5.1 rounds | 8.0%, 6.1 rounds | 21.5%, 7.8 rounds | 27.0%, 10.6 rounds |
+| Two of today's finds a die | 2.5%, 4.7 rounds | 5.0%, 4.2 rounds | 5.5%, 5.2 rounds | 13.7%, 5.6 rounds | 16.9%, 7.1 rounds |
+| Two of the bench's finds a die | 3.4%, 5.3 rounds | 7.4%, 4.8 rounds | 6.2%, 5.6 rounds | 18.1%, 6.8 rounds | 21.6%, 9.1 rounds |
+
+Two bench finds a die take a sixth off an elite's price and a fifth off a boss's, where two of
+today's take more than a third. What is left is about what a quarter more of a leader's hit
+points answers across the tier, half of what today's finds ask (`docs/tide_proposal.md`,
+section 5): the bench and the leaders' forms are sized together.
+
+The equipment is no part of the grid, with one line for him: the Blast Door is the Halo
+Projector's entry under another name, a Barrier with a round's cooldown, so it is one piece
+twice. And the Shoring Jack, of which he said on 23 November "a dead face most of the time,
+but that's possibly because I felt I couldn't afford any break in my shield": its Armoured
+lasts until its machine's next turn starts and a reboot is that whole turn, so a machine's own
+Jack never covers its own bare turn. Alone it pays only on a turn fought on a broken shield;
+in a pair it covers a partner's reboot. The fodder tide makes the pair's case more often and
+the lone one no better.
 
 ## 7. Open
 

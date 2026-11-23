@@ -36,13 +36,18 @@ extends RefCounted
 ##              they outfit their units ... if they don't scale with me they'll become a joke at
 ##              C4"). A read of what a kit's growth inside a tier is worth against foes that hold
 ##              still, so the forms a Convergence apart can be sized to it
+##   face=ID:KEY=N:KEY=N   one piece's entry rewritten for the run, as many parts as pieces: its
+##              power, strikes, heat or reach, a keyword with its number (penetrate=2; =0 takes
+##              the keyword off), or its tier (tier=2, out of tier one's finds). The id is the
+##              spec's, so the tier-one bench can be read at the anchor before a piece of it is
+##              content (docs/briefs/numbers_pass.md, section 6, has the spec)
 
 const BARRIER := "barrier"   # the status the Barrier basic grants (the engine's word)
 const ARMOURED := "braced"   # the status the Armoured basic grants
 
 
 static func parse(text: String) -> Dictionary:
-	var spec := {"hotter": 0, "top": 0, "foehp": 0, "barrier": "", "finds": 0}
+	var spec := {"hotter": 0, "top": 0, "foehp": 0, "barrier": "", "finds": 0, "faces": []}
 	for part in text.split(",", false):
 		var p := part.strip_edges()
 		if p.begins_with("hotter="):
@@ -55,8 +60,10 @@ static func parse(text: String) -> Dictionary:
 			spec["barrier"] = p.trim_prefix("barrier=")
 		elif p.begins_with("finds="):
 			spec["finds"] = int(p.trim_prefix("finds="))
+		elif p.begins_with("face="):
+			(spec["faces"] as Array).append(p.trim_prefix("face="))
 		elif not p.is_empty():
-			push_error("--refit: no part '%s' (hotter=N, top=N, foehp=N, finds=N, barrier=cooldownN|heatN|none; the model's die and the basics' heat are content since 10 November, regen= and cooling= left with the chassis's own on 15 November, and basics= and breach= with the vanilla's 3 and breach's cut the same day)" % p)
+			push_error("--refit: no part '%s' (hotter=N, top=N, foehp=N, finds=N, face=ID:KEY=N, barrier=cooldownN|heatN|none; the model's die and the basics' heat are content since 10 November, regen= and cooling= left with the chassis's own on 15 November, and basics= and breach= with the vanilla's 3 and breach's cut the same day)" % p)
 	return spec
 
 
@@ -64,6 +71,40 @@ static func parse(text: String) -> Dictionary:
 ## head.
 static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 	var notes: Array[String] = []
+	# face=: a piece's entry rewritten, before anything reads the pieces (the finds' pool is by
+	# tier and reach).
+	for text in spec.get("faces", []):
+		var bits := str(text).split(":", false)
+		var cid := str(bits[0]) if bits.size() > 0 else ""
+		if not db.components.has(cid) or not (db.components[cid].get("face", null) is Dictionary):
+			push_error("--refit: face= names no component '%s'" % cid)
+			continue
+		var piece: Dictionary = db.components[cid]
+		var entry: Dictionary = piece["face"]
+		var said: Array[String] = []
+		for i in range(1, bits.size()):
+			var kv := str(bits[i]).split("=", true, 1)
+			if kv.size() != 2:
+				continue
+			var key := str(kv[0])
+			if key == "tier":
+				piece["tier"] = int(kv[1])
+			elif key == "reach":
+				entry["reach"] = str(kv[1])
+			elif ["power", "strikes", "heat"].has(key):
+				entry[key] = int(kv[1])
+			else:   # a keyword with its number; none takes the keyword off
+				var words: Array = Array(entry.get("keywords", [])).duplicate()
+				if int(kv[1]) > 0:
+					entry[key] = int(kv[1])
+					if not words.has(key):
+						words.append(key)
+				else:
+					entry.erase(key)
+					words.erase(key)
+				entry["keywords"] = words
+			said.append("%s %s" % [key, str(kv[1])])
+		notes.append("%s: %s" % [str(piece.get("name", cid)), ", ".join(said)])
 	var hotter := int(spec.get("hotter", 0))
 	if hotter != 0:
 		var n := 0

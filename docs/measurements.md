@@ -12537,3 +12537,27 @@ A squad that spreads holds the wall under the set as it did as built, at three f
 actions where it spent two fifths; a squad that holds the gate or the rift loses the wall twice
 over. Four tears from the start is three quarters of its actions; twice the tide on top is a
 rout.
+
+## 23 November: the tier-one bench at the anchor
+
+For the bench's grid (`docs/briefs/numbers_pass.md`, section 6): whether the finds priced from
+the vanilla he settled that day flatten a kit's growth inside tier one. `tools/anchor_read.gd`
+as the entry of the same day on a kit's growth (tier one at Convergence 1, the six certain tier
+ones, every squad of the pool at each fight's rating, three fights a squad, the greedy bot),
+with `refit=<the bench's spec>,finds=2`: `sim/refit.gd`'s `face=` of this entry rewrites ten
+pieces for the run (the Slugthrower 2 twice for 5, the Maxigun at 8 heat, the Enfilade Beam 3
+with Penetrate 2, the Arc Fault Cannon 3 for 4, the Shotfire Rack at 6 heat, the Howitzer 3 for
+6 without its Penetrate, the Incendiary Shells at 6 heat, the Airburst Shell at 5 without its
+Brittle, the Plasma Arquebus and the Overclocked Railgun out of the tier), and `finds=2` deals
+what is left round the dice. Of a four's hull:
+
+| The squad | A lone flanker | A hunter's pack | A formation | An elite | A boss |
+|---|---|---|---|---|---|
+| Stock, basics | 3.9%, 5.8 rounds | 9.4%, 5.1 rounds | 8.0%, 6.1 rounds | 21.5%, 7.8 rounds | 27.0%, 10.6 rounds |
+| Two of today's finds a die | 2.5%, 4.7 rounds | 5.0%, 4.2 rounds | 5.5%, 5.2 rounds | 13.7%, 5.6 rounds | 16.9%, 7.1 rounds |
+| Two of the bench's finds a die | 3.4%, 5.3 rounds | 7.4%, 4.8 rounds | 6.2%, 5.6 rounds | 18.1%, 6.8 rounds | 21.6%, 9.1 rounds |
+
+Every fight won but an elite's and a boss's on stock dice (99%). The bench's finds leave a
+squad between stock and today's finds: a sixth off an elite's price and a fifth off a boss's,
+where today's take 36% and 37%. A boss against the bench reads what a boss with a quarter more
+hit points reads against today's finds (21.6% in both, 9.1 rounds and 8.8).
