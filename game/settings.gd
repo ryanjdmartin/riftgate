@@ -42,6 +42,7 @@ const DISPLAY_DEFAULTS := {
 	"spawn_order": "stand",   # SPAWN_ORDERS: a debug build's trial of whether a pack the tide sends walks the turn it lands, none, the rift's or all (Battlefield.spawn_walk_trial), read as a battle starts
 	"rift_sends": "1",   # RIFT_SENDS: a debug build's trial of the compositions the rift sends a peak, each leaving in its own direction (Battlefield.rift_sends_trial), read as a battle starts
 	"flank_tears": "0",   # FLANK_TEARS: a debug build's trial of tears open at the wall's two ends from the first turn (Battlefield.flank_tears_trial), read as a battle starts
+	"leader_step": "0",   # LEADER_STEPS: a debug build's trial of an elite's and a boss's hit points more for each Convergence past its tier's first, in hundredths (ContentDB.leader_step_trial), read as a battle starts
 	"formation_form": "0",   # FORMATION_FORMS: a debug build's trial of every formation dealt as pickets rated one, two or three heads each (Battlefield.pickets_trial), read as a battle starts
 	"heat_trial": "0",   # HEATS: a debug build's what-if, every weapon a point or two cooler than content prices it, or a point hotter (HEAT_SPECS, Refit's hotter and cooling), read at the next launch
 	"top_basic_heat": "0",   # TOP_BASIC_HEATS: a debug build's what-if, more heat on the basic guns that deal more than the plainest (Refit's top), read at the next launch
@@ -182,6 +183,11 @@ const FLANK_TEARS_LABELS := {"0": "NONE", "2": "TWO"}
 ## should pose a threat by quantity, not by hard hits"; Battlefield.pickets_trial): every formation
 ## as a pack rated one for each of its pips, each two or three of the domain's commonest
 ## front-liner.
+## And the leaders by the Convergence (the same day: "if they don't scale with me they'll become a
+## joke at C4"; ContentDB.leader_step_trial): an elite's and a boss's hit points a tenth or a
+## fifth more for each battle into its tier, the fifth what a read of a squad carrying finds asks.
+const LEADER_STEPS := ["0", "10", "20"]
+const LEADER_STEP_LABELS := {"0": "BUILT", "10": "+10% A C", "20": "+20% A C"}
 const FORMATION_FORMS := ["0", "2", "3"]
 const FORMATION_FORM_LABELS := {"0": "BUILT", "2": "PICKETS ×2", "3": "PICKETS ×3"}
 
@@ -189,8 +195,8 @@ const FORMATION_FORM_LABELS := {"0": "BUILT", "2": "PICKETS ×2", "3": "PICKETS 
 ## Set the field's trial for the battles that start after this: RIFTGATE_FIELD_DEPTH,
 ## RIFTGATE_OPENING, RIFTGATE_FODDER, RIFTGATE_BEATS, RIFTGATE_TIDE, RIFTGATE_STRIKE,
 ## RIFTGATE_PACE, RIFTGATE_SPAWN_FIRST (rift or all), RIFTGATE_RIFT_SENDS, RIFTGATE_FLANK_TEARS,
-## RIFTGATE_PICKETS, RIFTGATE_OVERHEAT and RIFTGATE_PHASED (round_end or at_once) on
-## any run, else a debug build's thirteen settings when `saved` (the game's own
+## RIFTGATE_PICKETS, RIFTGATE_LEADERS, RIFTGATE_OVERHEAT and RIFTGATE_PHASED (round_end or
+## at_once) on any run, else a debug build's fourteen settings when `saved` (the game's own
 ## entry points pass it; a scene run alone and the tests read the environment only, so no
 ## machine's saved settings move a test's field). Nothing set is the game's own field, meter,
 ## tide and overheat.
@@ -208,7 +214,10 @@ static func field_trial(saved: bool = false) -> void:
 	var sends := OS.get_environment("RIFTGATE_RIFT_SENDS")
 	var flank := OS.get_environment("RIFTGATE_FLANK_TEARS")
 	var pickets := OS.get_environment("RIFTGATE_PICKETS")
+	var leaders := OS.get_environment("RIFTGATE_LEADERS")
 	if saved and OS.is_debug_build():
+		if leaders.is_empty() and LEADER_STEPS.has(str(display.get("leader_step", ""))):
+			leaders = str(display["leader_step"])
 		if pickets.is_empty() and FORMATION_FORMS.has(str(display.get("formation_form", ""))):
 			pickets = str(display["formation_form"])
 		if pace.is_empty() and PACES.has(str(display.get("pack_pace", ""))):
@@ -249,6 +258,7 @@ static func field_trial(saved: bool = false) -> void:
 	Battlefield.rift_sends_trial = clampi(int(sends), 1, 4) if sends.is_valid_int() else 1
 	Battlefield.flank_tears_trial = clampi(int(flank), 0, 6) if flank.is_valid_int() else 0
 	Battlefield.pickets_trial = clampi(int(pickets), 0, 4) if pickets.is_valid_int() else 0
+	ContentDB.leader_step_trial = clampi(int(leaders), 0, 100) if leaders.is_valid_int() else 0
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.

@@ -14,7 +14,7 @@ extends SceneTree
 ##
 ## usage: godot --headless --path . -s tools/anchor_read.gd -- pool=a,b,c,d,e,f [seeds=5]
 ##        [squads=0] [tier=1] [ramp=1] [kinds=patrol,formation,elite,boss] [only=id,id]
-##        [refit=spec] [blows=percent] [machines=n] [label=text]
+##        [refit=spec] [blows=percent] [life=percent] [machines=n] [label=text]
 ##   pool    the chassis ids the squads are drawn from
 ##   seeds   fights a squad; squads: how many of the pool's squads of that size (0, all:
 ##           the even draw, every machine in as many squads as every other; a count takes
@@ -28,6 +28,8 @@ extends SceneTree
 ##   blows   a what-if on the leaders alone: every elite's, boss's, hero's and commander's
 ##           attack at that share of content's, in hundredths (blows=80), a foe a fight
 ##           fields or a foe it makes later; the rank and file beside them as content has it
+##   life    the same on their hit points (life=120): with blows, a read of the block a leader
+##           would stand at a Convergence on (the forms by Convergence, docs/formation_proposal.md)
 
 
 func combos(pool: Array, n: int) -> Array:
@@ -54,7 +56,7 @@ func combos(pool: Array, n: int) -> Array:
 
 
 func _init() -> void:
-	var o := {"seeds": "5", "tier": "1", "pool": "", "kinds": "patrol,formation,elite,boss", "ramp": "1", "squads": "0", "label": "", "only": "", "refit": "", "blows": "100", "machines": "0"}
+	var o := {"seeds": "5", "tier": "1", "pool": "", "kinds": "patrol,formation,elite,boss", "ramp": "1", "squads": "0", "label": "", "only": "", "refit": "", "blows": "100", "life": "100", "machines": "0"}
 	for arg in OS.get_cmdline_user_args():
 		var kv := str(arg).split("=", true, 1)
 		if kv.size() == 2:
@@ -106,10 +108,18 @@ func _init() -> void:
 	var blows := clampi(int(o["blows"]), 10, 300)
 	if blows != 100:
 		print("what-if: every leader's attack at %d%% of content's" % blows)
-	# A foe as content makes it, a leader's attack at the what-if's share (never under one).
+	var life := clampi(int(o["life"]), 10, 400)
+	if life != 100:
+		print("what-if: every leader's hit points at %d%% of content's" % life)
+	# A foe as content makes it, a leader's attack and hit points at the what-ifs' shares (never
+	# under one).
 	var lead := func(f: Foe) -> Foe:
-		if f != null and blows != 100 and (f.boss or f.elite or f.hero or f.commands):
-			f.attack = maxi(1, roundi(float(f.attack) * float(blows) / 100.0))
+		if f != null and (f.boss or f.elite or f.hero or f.commands):
+			if blows != 100:
+				f.attack = maxi(1, roundi(float(f.attack) * float(blows) / 100.0))
+			if life != 100:
+				f.hp_max = maxi(1, roundi(float(f.hp_max) * float(life) / 100.0))
+				f.hp = f.hp_max
 		return f
 	var sums := {}
 	var by_machine := {}   # kind, then chassis: [fights, the share of its own hull lost, wrecks]

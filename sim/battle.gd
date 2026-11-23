@@ -352,6 +352,7 @@ static func make_boss_unit(content: ContentDB, faction_id: String, t: int, boss_
 	u.squad = 4
 	u.lineup = lineup_ids.duplicate()
 	u.boss_tier = t
+	u.boss_step = ContentDB.step_in_tier(t, ramp_at)
 	if escort_spec.size() >= 2:
 		if content.foes.has(str(escort_spec[0])):
 			u.foe_id = str(escort_spec[0])
@@ -453,6 +454,7 @@ func _spawn_elite() -> void:
 	if sq == null:
 		return
 	sq.boss_tier = tier   # a wandering elite stands at the battle's tier (31 October)
+	sq.boss_step = ContentDB.step_in_tier(tier, ramp)
 	elites_spawned.append(str(c["id"]))
 	field.log.append("An elite emerges at the rift: %s" % sq.display_name)
 

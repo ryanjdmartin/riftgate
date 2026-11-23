@@ -202,6 +202,8 @@ func _show_page(page: String) -> void:
 			_credit("Packs the rift sends a wave, each its own way; the Rupture asks no more. Next battle.")
 			_choice_row("FLANK TEARS", "flank_tears", Settings.FLANK_TEARS, Settings.FLANK_TEARS_LABELS)   # tears open at the wall's two ends from the first turn (Battlefield.flank_tears_trial; the same day: "starting tears at the top and bottom")
 			_credit("Tears open at the wall's two ends from turn one; the Rupture asks no more. Next battle.")
+			_choice_row("LEADERS", "leader_step", Settings.LEADER_STEPS, Settings.LEADER_STEP_LABELS)   # an elite's and a boss's hit points more for each Convergence past its tier's first (ContentDB.leader_step_trial; Ryan, 23 November: "if they don't scale with me they'll become a joke at C4")
+			_credit("An elite's and a boss's hit points more each battle into a tier: C2 one step, C4 three. Next battle.")
 			_choice_row("FORMATIONS", "formation_form", Settings.FORMATION_FORMS, Settings.FORMATION_FORM_LABELS)   # every formation as pickets rated one, two or three of the domain's front-liner each (Battlefield.pickets_trial; the same day: "Fodder should pose a threat by quantity, not by hard hits")
 			_credit("Every formation as three small packs for one machine each, the same worth on the Rupture. Next battle.")
 			_rows = page_rows

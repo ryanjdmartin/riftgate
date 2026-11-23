@@ -2191,3 +2191,44 @@ func test_the_pickets_trial_deals_a_formation_as_its_pips_in_small_packs() -> vo
 	var again := Battle.new(8)
 	again.setup(_team(), "meadow")
 	assert_true(again.field.picket_foe.is_empty(), "no trial: no picket")
+
+
+## The leaders' step on trial (Ryan, 23 November: "A set form of each formation, for each C. Bosses
+## too ... if they don't scale with me they'll become a joke at C4"): an elite's and a boss's hit
+## points so many hundredths more for each Convergence its battle stands past its tier's first,
+## three steps at most, the rank and file beside them as content has them; nothing with no trial.
+func test_the_leaders_trial_steps_a_bosss_and_an_elites_hit_points_by_the_convergence() -> void:
+	var db := ContentDB.load_default()
+	assert_eq(ContentDB.step_in_tier(0, 0), 0, "a tier's first Convergence is no step")
+	assert_eq(ContentDB.step_in_tier(0, 2), 2, "two battles in, two")
+	assert_eq(ContentDB.step_in_tier(0, 9), Campaign.TIER_EVERY - 1, "a rift fought late holds its tier's last step")
+	assert_eq(ContentDB.step_in_tier(1, 5), 1, "tier two's count from its own first")
+	var hp := {}
+	for trial in [0, 20]:
+		ContentDB.leader_step_trial = trial
+		for ramp in [0, 2]:
+			var b := Battle.new(9)
+			b.ramp = ramp
+			b.setup(_team(), "meadow")
+			assert_eq(b.boss.boss_step, ramp, "the boss's unit knows its battle's place in the tier")
+			var foes: Array = b.db.foes_for(b.boss)
+			hp[[trial, ramp, "boss"]] = (foes[0] as Foe).hp_max
+			b._spawn_elite()
+			var elite: Unit = b.field.packs()[b.field.packs().size() - 1]
+			assert_eq(elite.composition_size, "elite", "an elite sent")
+			assert_eq(elite.boss_step, ramp, "and it knows the same")
+			var led := 0
+			var file := 0
+			for f in b.db.foes_for(elite):
+				if b.db.is_elite((f as Foe).content_id):
+					led += (f as Foe).hp_max
+				else:
+					file += (f as Foe).hp_max
+			hp[[trial, ramp, "elite"]] = led
+			hp[[trial, ramp, "file"]] = file
+	ContentDB.leader_step_trial = 0
+	for who in ["boss", "elite"]:
+		assert_eq(hp[[0, 2, who]], hp[[0, 0, who]], "no trial: a %s's hit points the same at every Convergence of its tier" % who)
+		assert_eq(hp[[20, 0, who]], hp[[0, 0, who]], "the trial at the tier's first Convergence: as content has it")
+		assert_eq(hp[[20, 2, who]], roundi(float(hp[[0, 0, who]]) * 1.4), "two Convergences in at a fifth a step: two fifths more")
+	assert_eq(hp[[20, 2, "file"]], hp[[0, 2, "file"]], "the rank and file beside an elite as content has them")

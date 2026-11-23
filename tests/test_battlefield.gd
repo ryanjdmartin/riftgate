@@ -451,9 +451,13 @@ func test_a_peak_sends_from_the_rift_and_a_tear_sends_from_the_peak_after_it_ope
 	assert_true(Hex.distance(first, second) >= 3, "spread away from the first")
 	for i in range(12):
 		f.peak()
-	assert_eq(f.tear_row, f.apron_row(), "the tears' row steps as far as the apron and no further")
+	assert_eq(f.tear_row, f.tear_row_stop(), "the tears' row steps as far as its stop and no further")
+	assert_eq(f.tear_row_stop(), f.apron_row() - Battlefield.TEAR_STOP_ROWS, "four rows short of the row before the wall")
+	assert_eq(Ramp.tear_creep_at(0), 1, "a row a peak")
 	for t in f.tears:
-		assert_true(Hex.axial_to_offset(t["pos"]).y <= f.apron_row(), "a tear opens no further south than the apron")
+		assert_true(Hex.axial_to_offset(t["pos"]).y <= f.tear_row_stop() + 1, "no tear opens beside the wall")
+	var shallow := _field(9, 8)
+	assert_eq(shallow.tear_row_stop(), shallow.tear_row_start(), "on a field too shallow for the stop, the row never leaves its start")
 	assert_true(f.units.has(m), "the machine still stands")
 
 

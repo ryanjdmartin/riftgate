@@ -213,7 +213,7 @@ func report() -> String:
 		Policy.kind_name(policy)])
 	L.append("")
 	var trials: Array[String] = []
-	for key in ["RIFTGATE_STRIKE", "RIFTGATE_TIDE", "RIFTGATE_BEATS", "RIFTGATE_OPENING", "RIFTGATE_FODDER", "RIFTGATE_FIELD_DEPTH", "RIFTGATE_OVERHEAT", "RIFTGATE_PACE", "RIFTGATE_SPAWN_FIRST", "RIFTGATE_RIFT_SENDS", "RIFTGATE_FLANK_TEARS", "RIFTGATE_PICKETS"]:
+	for key in ["RIFTGATE_STRIKE", "RIFTGATE_TIDE", "RIFTGATE_BEATS", "RIFTGATE_OPENING", "RIFTGATE_FODDER", "RIFTGATE_FIELD_DEPTH", "RIFTGATE_OVERHEAT", "RIFTGATE_PACE", "RIFTGATE_SPAWN_FIRST", "RIFTGATE_RIFT_SENDS", "RIFTGATE_FLANK_TEARS", "RIFTGATE_PICKETS", "RIFTGATE_LEADERS"]:
 		if not OS.get_environment(key).is_empty():
 			trials.append("%s=%s" % [key, OS.get_environment(key)])
 	if not trials.is_empty():

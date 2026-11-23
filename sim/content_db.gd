@@ -827,10 +827,10 @@ func foes_for(sq: Unit) -> Array[Foe]:
 			var b := make_foe(str(cid))
 			b.pack_id = sq.id
 			b.commands = true
-			scale_boss(b, sq.boss_tier)
+			scale_boss(b, sq.boss_tier, sq.boss_step)
 			out.append(b)
 			for part in parts_for(b):
-				scale_boss(part, sq.boss_tier)
+				scale_boss(part, sq.boss_tier, sq.boss_step)
 				out.append(part)
 		if sq.foe_id.is_empty() and sq.members.is_empty():
 			# Its escort unnamed, the tier's own units of its domain (escort_units).
@@ -852,7 +852,7 @@ func foes_for(sq: Unit) -> Array[Foe]:
 		for i in range(int(e[1])):
 			var f := make_foe(fid)
 			if is_elite(fid):
-				scale_boss(f, sq.boss_tier)   # every elite stands at its battle's tier as a boss does (Ryan, 2 November)
+				scale_boss(f, sq.boss_tier, sq.boss_step)   # every elite stands at its battle's tier as a boss does (Ryan, 2 November)
 			f.pack_id = sq.id
 			f.escorts = sq.is_boss
 			out.append(f)
@@ -878,6 +878,24 @@ const BOSS_TIERS := [
 
 static func boss_tier(t: int) -> Dictionary:
 	return BOSS_TIERS[clampi(t, 0, BOSS_TIERS.size() - 1)]
+
+
+## The leaders' step on trial, hundredths of an elite's and a boss's hit points more for each
+## Convergence its battle stands past its tier's first, three steps at most, 0 the game's (Ryan,
+## 23 November: "A set form of each formation, for each C. Bosses too ... I'm barely scraping by
+## some of these fights at C2 with stock units, if they don't scale with me they'll become a joke
+## at C4"). A first number from a read, never his form, which is a fixed entry a Convergence
+## (docs/tide_proposal.md, section 5): a squad carrying two of tier one's finds a die pays a
+## leader a third less, and half again the hit points puts the price back, so a fifth a
+## Convergence. A debug build's SETTINGS → TRIALS → LEADERS and RIFTGATE_LEADERS set it
+## (Settings.field_trial).
+static var leader_step_trial: int = 0
+
+
+## A battle's place in its tier: the Convergences past the tier's first, none before it and three
+## at most, so a tier's last step holds for a rift fought late (`tier` counts from 0).
+static func step_in_tier(tier: int, ramp: int) -> int:
+	return clampi(ramp - first_ramp_of(tier + 1), 0, Campaign.TIER_EVERY - 1)
 
 
 ## A fight's slots: four columns of two ranks, the ranks holding (a front foe never stands in the
@@ -911,9 +929,9 @@ static func fit_grid(list: Array[Foe]) -> Array[Foe]:
 ## so the plaque, the codex and a save read them as its own. A boss whose kit is armour grows it
 ## by its `armour_step` a tier above one, from a lighter start (Ryan, 31 October: "just the ones
 ## that have it", since a tier-one team has little against armour; the Cinder Tortoise's 1, 2, 3).
-func scale_boss(f: Foe, t: int) -> void:
+func scale_boss(f: Foe, t: int, step: int = 0) -> void:
 	var s := boss_tier(t)
-	f.hp_max = maxi(1, roundi(f.hp_max * float(s["hp"])))
+	f.hp_max = maxi(1, roundi(f.hp_max * float(s["hp"]) * (1.0 + float(leader_step_trial * clampi(step, 0, Campaign.TIER_EVERY - 1)) / 100.0)))
 	f.hp = f.hp_max
 	f.attack += int(s["attack"])
 	f.armour += f.armour_step * clampi(t, 0, BOSS_TIERS.size() - 1)

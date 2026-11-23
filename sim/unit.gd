@@ -82,6 +82,7 @@ var faction: String = ""
 var foe_id: String = ""      # content id of the foe this pack is made of (a boss's escort)
 var strength: int = 6        # how many foes the pack holds (a boss: its escort, none for a boss alone)
 var lineup: Array = []       # a boss unit's commanders, foe ids in order (a final's hero, the finale's line); empty for the faction's boss
+var boss_step: int = 0       # a leader's battle's place in its tier, the Convergences past the tier's first (0 to 3): its hit points follow it under the leaders' trial (ContentDB.leader_step_trial); set as the battle fields it, a boss unit's and an elite's
 var boss_tier: int = 0       # a boss unit's battle tier, 0 to 2: its commanders' numbers and its escort follow it (ContentDB.BOSS_TIERS); an elite's too, for a wandering elite's numbers (31 October)
 ## The pack's members (the foes' fresh start, 30 October): [[foe_id, strength], ...] in content
 ## order, the first the lead, whose sprite the pack wears; `foe_id` is the lead's

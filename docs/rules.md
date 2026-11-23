@@ -1906,9 +1906,10 @@ a stat.
   never inside a fight), a turn short of its peak as the battle opens. When it fills it resets and peaks: the rift
   sends the next composition of its cycle (the tier's formations and patrols in turn, the
   lead's and the guest's in turn); every tear open before this peak sends the next patrol of
-  the patrol cycle; the tears' row steps two rows toward the gate (as far as the row before the
-  wall; it starts a row for every five of the field's depth and one more, row 4 at twelve deep,
-  5 at sixteen, and is drawn nowhere); the ramp's count of tears (one; two from Convergence 8)
+  the patrol cycle; the tears' row steps a row toward the gate (as far as four rows short of
+  the row before the wall, so no tear opens beside it; it starts a row for every five of the
+  field's depth and one more, row 4 at twelve deep, 5 at sixteen, and is drawn nowhere); the
+  ramp's count of tears (one; two from Convergence 8)
   open on that row, each
   on a free land hex with no unit on it and no machine beside it, the farthest from the rift
   and the other tears, so the mouths spread across the width; and the interval shortens by the

@@ -58,8 +58,8 @@ var patrol_cycle: Array = []
 var _cycle_index: int = 0
 var _patrol_index: int = 0
 ## The row the next tears open on (the pacing session, 30 October): tear_row_start() at the start,
-## two rows nearer the wall a peak (Ramp.tear_creep_at), as far as the apron, so each peak's tears
-## open nearer the wall. It was the seam's row until 23 November, the painting's edge drawn on it;
+## a row nearer the wall a peak (Ramp.tear_creep_at), as far as tear_row_stop(), so each peak's
+## tears open a little nearer the wall and never beside it. It was the seam's row until 23 November, the painting's edge drawn on it;
 ## the seam is a picture alone since (Ryan: "The seam is visual only. Tears are still spawned by
 ## the same logic they are now"; Bleed.seam_radius), and this row is the tears' own, drawn nowhere.
 var tear_row: int = 0   # tear_row_start(), set as the field takes its map
@@ -70,6 +70,17 @@ var tear_row: int = 0   # tear_row_start(), set as the field takes its map
 ## deep, 5 at sixteen. A placeholder.
 func tear_row_start() -> int:
 	return clampi(ceili(float(map.height) / 5.0), 2, 4) + 1
+
+
+## Where the tears' row stops: TEAR_STOP_ROWS short of the row before the wall, never short of its
+## start (Ryan, 23 November: "not putting tears so close to the wall, at least so quickly"). Four
+## rows is two walks at a move of two and more than one at three, so a patrol that walks as it
+## lands (the spawn order's trial) is seen a turn before it strikes; it ran to the row before the
+## wall itself, reached by the third peak at twelve deep. A placeholder.
+const TEAR_STOP_ROWS := 4
+
+func tear_row_stop() -> int:
+	return maxi(tear_row_start(), apron_row() - TEAR_STOP_ROWS)
 
 
 ## The tears (Ryan's name, 30 October): the mouths beside the rift's, each {"pos": Vector2i,
@@ -921,7 +932,7 @@ func peak() -> void:
 			tear_spawns += 1
 			fresh[sq.id] = "tear"
 			log.append("A tear sends %s at %s" % [sq.display_name, str(sq.pos)])
-	tear_row = mini(tear_row + Ramp.tear_creep_at(ramp), apron_row())
+	tear_row = mini(tear_row + Ramp.tear_creep_at(ramp), tear_row_stop())
 	for i in range(Ramp.tears_at(ramp) * times):
 		var at := tear_hex()
 		if at == NO_HEX:
