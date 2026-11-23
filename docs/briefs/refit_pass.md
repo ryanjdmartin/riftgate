@@ -188,6 +188,9 @@ numbers pass's, and what a boss pays and salvage's growth by tier are the econom
 | STRIKE | 10, 7, 5 or 3 a pip, ten the game's | His "each needs to do less to the wall" |
 | FODDER | 100, 75 or 50 | A rank-and-file kill's worth on the meter. With the size in beats it may have no job left |
 
+Five more since 23 November, from his play of these (PACE, SPAWNS, RIFT SENDS, FLANK TEARS and
+FORMATIONS as pickets): `docs/tide_proposal.md`, section 2, has each with the words it answers.
+
 The tide and the strike are his direction for "noticeably more spawns then the minimum number
 required" (the pacing row). Claude's lean for his first play: TIDE on ×1.5 with the strike at
 ten, about one pack in three left standing for the same meter. Its holes: the bot declines no
@@ -220,8 +223,11 @@ measures a battle's minutes against his ten to thirty, which nothing does yet.
 
 ## 12. The player's side at tier one (12 November)
 
-Every tier-one stock die is basics beside its locked pieces. The slots still holding a
-placeholder gun, a second Twin Autoguns where a vent stood, with Claude's leans, his to mark:
+Every tier-one stock die is basics beside its locked pieces: four that had drifted went back on
+23 November, each piece to the basic of its reach (the Wild Boar, the Echidna, the Skua, the
+Storm Petrel; his "just basic pieces"). One is left, his pick of 19 November below: the
+Cottonmouth's Incendiary Shells, his to keep or turn. The slots that held a
+placeholder gun, a second Twin Autoguns where a vent stood, with Claude's leans as he marked them:
 
 | The machine | Lean | Why |
 |---|---|---|

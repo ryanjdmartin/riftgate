@@ -87,7 +87,7 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
   - Probes: `special_probe.gd` and `chain_probe.gd` (each with a `_read.py`),
     `reboot_probe.gd`, `behaviour_trace.gd`, `death_floor.gd` (where each lost machine lies)
   - Drivers over the balance runner: `stock_loop.py`, `endgame_fours.py`, `pricing_run.py`
-  - Models apart from content: `turn_loop.py`, `basics_model.py`, `budget_model.py`
+  - Models apart from content: `turn_loop.py`, `basics_model.py`, `budget_model.py`, `tide_model.py`
   - Pictures: `screenshot.gd`, `die_sheet.gd`, `hero_shot.gd`, `act_shot.gd`, `gait_clip.gd`,
     `fit_sheet.gd`, `tileset_shot.gd`, `backdrop_shot.gd`, `perf_probe.gd`, `sound_smoke.gd`
   - Art: `lowforge/` builds the machines, the gate, the wall and the caches by code
@@ -136,7 +136,9 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     `briefs/refit_pass.md` (the reboot's rules, its section 22) and `briefs/numbers_pass.md`
     (tier one sized against the reboot: the yardsticks, the baseline, the defence side's
     approach, the tier-one bench); `economy_pass.md`; `formation_proposal.md` (kept for the
-    bosses' stat blocks and the flankers' slate); `locked_pieces_proposal.md`;
+    bosses' stat blocks and the flankers' slate); `tide_proposal.md` (fodder by count and the
+    fights that matter by the hunt, Ryan's direction of 23 November, for his marks);
+    `locked_pieces_proposal.md`;
     `reboot_machines_proposal.md` (the machines the reboot broke); `rules_sweep_proposal.md` (the
     rules sweep's limits on design space, for his marks); `bosses_proposal.md` (the
     bosses' and elites' slate); `heroes_proposal.md`; `domain_statuses_proposal.md` (the
@@ -361,6 +363,7 @@ python3 tools/pricing_run.py run vanilla --parts vanilla,vanillaheat,ladders --b
 python3 tools/turn_loop.py --seeds 2000            # the campaign's turn loop from sim/campaign.gd's constants, every battle won: the pressure the fronts put on the cities
 python3 tools/turn_loop.py --seeds 2000 --widen 3  # with a rift that steps a tier up once it has bled its city three times
 python3 tools/basics_model.py                      # the stock guns against rank and file: shots to kill, the gun that deals one more by its heat, the rider ladder, a bench of guns by its spends to kill five marks
+python3 tools/tide_model.py                        # what the tide asks of four machines on the long wall: packs sent, packs that struck and gate lost by the count, the pace, the depth, the mouths and the order, fights for free (the coverage behind docs/tide_proposal.md)
 python3 tools/budget_model.py                      # what a fight costs a squad under the reboot, as the hull budget counts it: a horde, a massive in front, a lone flanker, a pack and an elite by blow and hit points, and how far it tracks the bot
 
 # how often each foe special fires: every third starter trio against each domain's formation,
@@ -459,9 +462,10 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_TIDE=150                             the packs the opening places and each wave sends, in hundredths, 100 the game's
 #   RIFTGATE_STRIKE=5                             what a pip of threat rating strikes the wall for, 10 the game's
 #   RIFTGATE_PACE=1                               hexes added to every pack's move, 0 to 4, 0 the game's
-#   RIFTGATE_SPAWN_FIRST=1                        the tide sends before the packs walk, so a spawn leaves its mouth at once (a hunter aside)
+#   RIFTGATE_SPAWN_FIRST=rift|all                 the tide sends before the packs walk, so the rift's packs (or every mouth's) leave at once; a hunter stands
 #   RIFTGATE_RIFT_SENDS=2                         the compositions the rift sends a peak, 1 to 4, each to its own stretch of wall
 #   RIFTGATE_FLANK_TEARS=2                        tears open at the wall's ends from the first turn, 0 the game's
+#   RIFTGATE_PICKETS=2                            every formation dealt as a pack rated one for each of its pips, that many of the domain's commonest front-liner each (2 or 3), 0 the game's
 #   RIFTGATE_PHASED=at_once                       a machine's Phased at once until the round ends, round_end the game's (Phased as the round ends, through the next)
 # The same on the phone, a debug build's SETTINGS, TRIALS (a page that scrolls). Read at the
 # next launch, so pick, close the app, open it and start a new battle or run (a saved one keeps
@@ -473,7 +477,8 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 # Read as the next battle starts, or a lone fight for OVERHEAT, with no relaunch:
 #   OVERHEAT (×1, ×2, ×3), FIELD DEPTH (12, 14, 16), OPENING (+0, +1, +2), FODDER (FULL, 3/4, HALF),
 #   RUPTURE (1 BEAT, 2 BEATS, 3 BEATS), TIDE (×1, ×1.5, ×2), STRIKE (10, 7, 5, 3),
-#   PACE (BUILT, +1, +2), SPAWNS (AFTER WALK, BEFORE WALK), RIFT SENDS (×1, ×2, ×3), FLANK TEARS (NONE, TWO),
+#   PACE (BUILT, +1, +2), SPAWNS (STAND, RIFT WALKS, ALL WALK), RIFT SENDS (×1, ×2, ×3), FLANK TEARS (NONE, TWO),
+#   FORMATIONS (BUILT, PICKETS ×2, PICKETS ×3),
 #   PHASED (ROUND END, AT ONCE), with the Phase Inducer, a tier-two component, to set it for testing
 # A thing fired constantly, to judge it running (=1 unless a value is shown)
 #   RIFTGATE_FEED_DEBUG       the skirmish feed's analysis events and the ground tears (any run)

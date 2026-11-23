@@ -12316,3 +12316,64 @@ direction. "Took" counts the HP that counted (no overkill).
   in the armoured ones and 43% to 61% on the armoured leaders; scored flat (b), the same arcs deal
   20% more (52% more in the armoured fights). The arcs were 13.1% of those squads' damage (a), 15.3%
   (b). No foe Barrier at tier one; Brittle stood on 36 arcs into armour.
+
+## 23 November: the tide against four machines, a coverage model apart from content
+
+For Ryan's direction of that day (fodder by count, "so that I can choose where to attack and
+what to let through"; `docs/tide_proposal.md`) and for the five dials built with it. No game
+content and no fight: `tools/tide_model.py`, 400 battles a row, seed 1. Twelve turns of the tide
+on a bare field twenty wide: an opening of a formation and two flank patrols, a peak every third
+turn (the rift's cycle of a formation and a patrol, a patrol from every open tear, a tear a
+peak), packs walking to the stretch of wall they reach soonest and striking for ten a pip a
+turn. Four machines of move 3, 4, 5 and 6, one action a turn, a pack falling the turn as many
+machines as its rating stand beside it; a greedy player that sees everything and whose fights
+cost nothing. No hunters, elites, boss or Rupture. So every cell is the tide at its kindest and
+is read against its neighbours, never as a number: a real squad loses more.
+
+**The count.** The game's tide, then more of it, then every formation dealt as three packs rated one.
+
+| The tide | Packs sent | Pips sent | Pips killed | Packs that struck | Gate lost | Actions spent fighting |
+|---|---|---|---|---|---|---|
+| As built | 13 | 19 | 100% | 11% | 15 | 40% |
+| TIDE ×2 | 26 | 38 | 85% | 24% | 275 | 67% |
+| TIDE ×3 | 39 | 57 | 73% | 50% | 745 | 87% |
+| As built, formations split | 19 | 19 | 100% | 10% | 34 | 40% |
+| TIDE ×2, formations split | 38 | 38 | 93% | 15% | 96 | 74% |
+| TIDE ×3, formations split | 57 | 57 | 79% | 50% | 487 | 94% |
+
+**The pace and the depth.** At TIDE ×2 with formations split, the opening a move farther out.
+
+| The tide | Packs sent | Pips sent | Pips killed | Packs that struck | Gate lost | Actions spent fighting |
+|---|---|---|---|---|---|---|
+| 12 deep, pace 2 | 38 | 38 | 93% | 14% | 67 | 74% |
+| 12 deep, pace 3 | 38 | 38 | 93% | 15% | 65 | 74% |
+| 12 deep, pace 4 | 38 | 38 | 93% | 51% | 283 | 73% |
+| 14 deep, pace 2 | 38 | 38 | 93% | 10% | 50 | 74% |
+| 14 deep, pace 3 | 38 | 38 | 93% | 12% | 53 | 74% |
+| 14 deep, pace 4 | 38 | 38 | 93% | 23% | 129 | 73% |
+| 16 deep, pace 2 | 38 | 38 | 91% | 10% | 47 | 72% |
+| 16 deep, pace 3 | 38 | 38 | 92% | 8% | 41 | 73% |
+| 16 deep, pace 4 | 38 | 38 | 91% | 26% | 142 | 72% |
+
+**The mouths and the order.** Fourteen deep at pace 3, formations split, the opening a move farther out.
+
+| The tide | Packs sent | Pips sent | Pips killed | Packs that struck | Gate lost | Actions spent fighting |
+|---|---|---|---|---|---|---|
+| TIDE ×1 | 19 | 19 | 100% | 5% | 10 | 40% |
+| TIDE ×1, two flank tears | 27 | 27 | 97% | 8% | 28 | 55% |
+| TIDE ×1, the rift sends 2 | 27 | 27 | 96% | 4% | 17 | 54% |
+| TIDE ×1, the rift sends 2, two flank tears | 35 | 35 | 94% | 7% | 31 | 69% |
+| TIDE ×2 | 38 | 38 | 93% | 12% | 53 | 74% |
+| TIDE ×2, two flank tears | 46 | 46 | 89% | 16% | 85 | 86% |
+| TIDE ×2, two flank tears, the tide sends before the walk | 46 | 46 | 90% | 55% | 324 | 86% |
+| TIDE ×2, two flank tears, the rift alone sends before the walk | 46 | 46 | 89% | 33% | 183 | 85% |
+| TIDE ×1, the tide sends before the walk | 19 | 19 | 100% | 24% | 49 | 40% |
+| TIDE ×1, the rift alone sends before the walk | 19 | 19 | 100% | 8% | 16 | 40% |
+
+What it says: as built the squad spends two actions in five; twice the tide with formations
+still fights for three loses the wall, the same pips as packs for one machine do not, so the
+count becomes a choice only with packs one machine answers; the band between a squad at work
+and a rout is narrow (twice to three times today's pips, lower for a squad whose fights cost
+turns); a hex more of pace changes little with the opening a move farther out and two more is a
+cliff at twelve deep; and the tide sent before the walk is the largest lever of all, nearly all
+of it the tears' packs near the wall, which is why the SPAWNS dial has a middle choice.

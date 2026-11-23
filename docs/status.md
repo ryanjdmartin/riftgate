@@ -41,7 +41,10 @@ document's job and every command are in `README.md`.
   a branch: the desk machine's folder stays on `main`, and a session that needs another branch
   works in a worktree under `.claude/worktrees/` (`CLAUDE.md`, Session handoff). A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word.
-- Branches. Main holds everything this file describes, the terminology pass's branch
+- Branches. `claude/formation-pass-feedback-rlvx5x` (23 November, Ryan's play of the field's
+  dials: the seam a circle, the round's view, the zoom's floor, the pushers' segments, five
+  trial dials, four tier-one stock dice back to basics, the tide's proposal) runs ahead of main
+  until he lands it; this file describes it. Main holds everything else here, the terminology pass's branch
   (`claude/gameplay-terminology-tooltips-rug879`) landed on 22 November on Ryan's "Ok push to main".
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
@@ -78,7 +81,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1439 tests, 389,431 checks, green on Godot 4.8-beta4 (22 November, the map's waypoint input, the battle UI pass and the Macaque's offhand on its die's rail). The runner fails a run
+- Tests: 1447 tests, 389,576 checks, green on Godot 4.8-beta4 (23 November, the seam, the round's view, the pushers' segments and the five dials). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -149,7 +152,10 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   brief open. 84 components, 7 of them planned drafts nothing deals (the slottable shields and
   vents, the Gravity Knuckles and the Tesla Gauntlets, the Retribution Thurible, the Solar Flare
   Array); 20 modules. A stock die is basics beside its
-  locked pieces: the basic guns deal 3 for 4 heat and the Laser Carbine 4 for 5, the Halo
+  locked pieces, at tier one on every die but the Cottonmouth's, whose Incendiary Shells are
+  his pick of 19 November (the Wild Boar, the Echidna, the Skua and the Storm Petrel went back
+  to basics on 23 November, on his "just basic pieces"; the sizing's reads of 17 to 20 November
+  were on their old dice): the basic guns deal 3 for 4 heat and the Laser Carbine 4 for 5, the Halo
   Projector lays a Barrier and the Shoring Jack Armoured 2, and every piece that grants a
   Barrier sits out a round after. A machine moves 3 to 6 hexes. A basic is a tier-one piece with
   a flag (its blueprint a run's from the start), never a find. A machine holds a tier, its
@@ -251,7 +257,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   alone and the one a trio fights, is built and its sizing his. On a debug
   build's SETTINGS, TRIALS, each a number still to be picked: HEAT, TOP BASIC, RANK AND FILE
   and BARRIER BASIC (read at the next launch), OVERHEAT, FIELD DEPTH, OPENING, FODDER,
-  RUPTURE, TIDE and STRIKE (read as the next battle starts). A dial leaves the page with its
+  RUPTURE, TIDE, STRIKE, PACE, SPAWNS, RIFT SENDS, FLANK TEARS and FORMATIONS (read as the next
+  battle starts; the last five are his play's of 23 November, `docs/tide_proposal.md`). A dial leaves the page with its
   question; the block is cut, a blow past a shield reaching the hull. The runners lay the
   same what-ifs with `--refit` (`sim/refit.gd`). `docs/balance.md` is the matrix of 27
   October, older than every rule since, and still prints the old aims' cells and a
@@ -259,10 +266,14 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   brief's sections 13, 22 and 23; the bible's scale row and section 12.
 - **The battle and its map.** A battle is the defence of a long wall: a field 20 by 12, the
   wall along one edge and the rift opposite, the siege under way as it opens; MAP VIEW turns
-  it (the wall at the left, the default, or at the bottom). A pack pushes for its own stretch
-  of wall, flanks or hunts one machine; a pack is one fight, a hunter's catch first; nobody
-  blocks a move and nobody ends on another's hex. The tide comes on a beat, a peak of Rift
-  Pressure opening tears on the seam; the Rupture meter is two beats of it, filled by menace,
+  it (the wall at the left, the default, or at the bottom), and a pinch zooms out to the whole
+  field. A pack pushes for the stretch of wall it reaches soonest, flanks or hunts one machine;
+  a pack is one fight, a hunter's catch first; nobody blocks a move and nobody ends on
+  another's hex. The tide comes on a beat, a peak of Rift Pressure opening tears on a row of
+  their own that steps toward the wall; the seam is a circle about the rift that grows a round,
+  a picture alone, and a tear paints its own ground. As a turn ends the map glides out to the
+  whole field, ROUND N over it while the packs walk and the seam grows, then back, then the
+  tears open one by one. The Rupture meter is two beats of the tide, filled by menace,
   its Fractures calling the elites; the boss holds its hex before the rift's five, sealed
   until the Rupture. A pip of threat rating strikes the wall for ten. A move that plays ends
   its machine's action unless an order stands, and UNDO gives it back. Six shapes by the
@@ -365,8 +376,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   measure the sizing stands on. `tools/battle_run.gd` plays one battle of a run
   whole by squads, reads the field's trial dials from the environment as the game does, and
   with `--whole` plays a player that never fights a pack short at the wall; and `tools/balance.gd --packs rating` fights every composition with squads
-  of its rating. `tools/budget_model.py` and
-  `tools/basics_model.py` are the small models apart from content.
+  of its rating. `tools/budget_model.py`,
+  `tools/basics_model.py` and `tools/tide_model.py` (what the tide asks of four machines on
+  the wall, fights for free) are the small models apart from content.
   `tests/test_leftovers.gd` fails the build for a rule no piece prints, and
   `tools/behaviour_trace.gd` checks that a refactor changes no fight.
 - **The phone.** A Pixel on a debug build (the README's phone commands). Ryan's reads arrive
@@ -391,8 +403,12 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
      those names the same day).
    - Every tier-one leader read again at sixty fights or more (the shaman's warband reads 33%
      at every commit back to its thirty-fight sizing), then any leader moved into its band.
-   - The formation pass (the bible's formation row): every composition given a purpose, a
-     row a formation in chat first; the goblin horde's four roots on his play of it.
+   - The formation pass (the bible's formation row), under his direction of 23 November
+     (`docs/tide_proposal.md`: fodder the wall's threat by count and a fight for one machine,
+     the fights that matter the hunters', the elites' and the boss's, the elites hunting the
+     closest with a ring). It waits on his play of the five dials and his answers to the
+     proposal's six questions; then the elites' rule on a dial, then the Meadow's fodder slate
+     in chat, a row a pack. The goblin horde's four roots on his play of it.
    - His play of a second battle, which says whether the budget's shares stand (the brief's
      section 11): the fights are even across the domains, and the battle whole is tight.
    - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
@@ -454,7 +470,9 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   Published at v0.655 on 20 November from main's file at `33c4cc61` (the page's Version 519),
-  over this line's v0.654. Before republishing,
+  over this line's v0.654. The file is at v0.657 on `claude/formation-pass-feedback-rlvx5x`
+  (the wall, tears and seam rows, section 12's tide item), unpublished: the session that wrote
+  it had no room left to read the live page whole. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
   `33c4cc61` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
@@ -463,7 +481,10 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   check the tables script's run against the file's tables before keeping it: a row it
   reverts belongs to a branch not yet landed.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
-  files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
+  files from `tools/hangar_data.py`'s printed map. Unpublished from
+  `claude/formation-pass-feedback-rlvx5x`: four tier-one stock dice and the vocabulary's Seam,
+  Tear, Rift Pressure and Ramp lines moved on 23 November (its `text` and `edits` collections
+  were empty that day, `designs` his two notes of 5 November). A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
   `edits`, `designs` and `text` read first. Version 325 (22 November): the Inertia Drill's rule line, data only over 324's page. Version 324 (22 November): a machine's sheet lists every term it orbits, its own first,
   each editable in place; 323 the same day, a dealt machine with an open brief under Unfinished.
