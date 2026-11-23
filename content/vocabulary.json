@@ -163,7 +163,7 @@
    "id": "direct",
    "category": "reach",
    "name": "Direct",
-   "codex": "Can target any front-rank Sprite, any back-rank Sprite with an empty slot in front of it, and any Exposed Sprite.",
+   "codex": "Can target any front-rank Sprite, any back-rank Sprite with no Sprite in front of it, and any Exposed Sprite.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -183,7 +183,7 @@
    "id": "cleave",
    "category": "keyword",
    "name": "Spread",
-   "codex": "Also hits all other Sprites beside the target in the same rank, dealing {N} damage. The extra hits are not Targeted.",
+   "codex": "Also hits all Sprites beside the target, dealing {N} damage. The extra hits are not Targeted.",
    "status": "implemented",
    "design": {
     "holes": "Its number rides on the entry beside the keyword (cleave), and the validator asks for it on a weapon. The half it dealt from 26 October retired 28 October (Ryan): at single digits a neighbour's half killed no rank and file. A piece may carry it beside Penetrate, the plus round its target; Splash, the two under one word, was cut on 15 November (Ryan: \"It might be a more interesting game with only the other area shapes, with a few select pieces carrying both spread and penetrate together\")."
@@ -203,7 +203,7 @@
    "id": "every_foe",
    "category": "reach",
    "name": "Every Sprite",
-   "codex": "Hits every Sprite. Each hit counts as Targeted.",
+   "codex": "Hits every Sprite for full damage. Each hit counts as Targeted.",
    "status": "implemented",
    "design": {
     "holes": "A keyword from 2 November (Ryan: 'Every foe is a targeting mode, just like spread, penetrate, and splash, it should be listed as such and given a keyword'), a targeting mode in its own right since 4 November ('Silence should not narrow targeting modes, that's why I'm switching them to targeting modes'), drawn in the die's targeting slot. A working name, the foes' Every Machine mirrored. A weapon's too since 12 November, when Sweep went (Ryan: the Whip Scorpion's and the Musk Ox's specials \"a 'target all'\"): it strikes every foe for its whole number and none is its one target (Ryan, 12 November: \"Target all shouldn't need a target in the same way that sweep didn't. Why would only the first target pop shock? That's weird and useless\"), so a Shock is doubled and spent on each and, with no primary target, no Ricochet follows it. No area keyword rides it."
@@ -253,7 +253,7 @@
    "id": "lure",
    "category": "keyword",
    "name": "Lure",
-   "codex": "Each Sprite hit targets this Frame this round.",
+   "codex": "Resolve: Each Sprite hit retargets its move to this Frame this round.",
    "status": "implemented",
    "design": {
     "holes": "No status and no chip: the arrow is the record. A draw by an ally is parked (the bible's redirection row)."
@@ -283,7 +283,7 @@
    "id": "disrupt",
    "category": "keyword",
    "name": "Disrupt",
-   "codex": "Each Sprite hit switches to the next move in its list it can use this round.",
+   "codex": "Resolve: Each Sprite hit switches to the next move in its list it can use. It keeps its target.",
    "status": "implemented",
    "design": {
     "holes": "Deterministic: the next move in the foe's list that its conditions allow, so a boss steps through its pattern."
@@ -303,7 +303,7 @@
    "id": "swap",
    "category": "component_property",
    "name": "Swap",
-   "codex": "Commit: Choose another Sprite or an empty slot. The target and that choice trade places.\nMassive Sprites cannot be moved.",
+   "codex": "Takes a second target: another Sprite or an empty slot.\nResolve: The target and the second target trade places. A massive Sprite does not move.",
    "status": "implemented",
    "design": {
     "holes": "A keyword until 15 November (Ryan: \"Can be unique text, not a keyworded rider\"): the piece's own rule, `swaps` on its entry, its mark kept on the die."
@@ -333,7 +333,7 @@
    "id": "juggernaut",
    "category": "status",
    "name": "Juggernaut Drive",
-   "codex": "Weapon hits ignore Armour.\nResolve: If triggered, reduce stacks to 0.",
+   "codex": "Weapon hits ignore Armour.\nResolve: If a weapon was used, reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 11 November: \"After gaining Barrier, its next weapon attack gains Breach. The next attack breach will need to be represented by a purgeable buff, I'd just call it 'Juggernaut Breach.'\" 15 November, Breach cut on our side: 'Change to explicit \"ignores armour.\"', so the state shows under the passive's own name and the word Breach is gone from the game.",
@@ -349,7 +349,7 @@
    "id": "numbed",
    "category": "status",
    "name": "Numbed",
-   "codex": "When Suppressed: Prevent it, then reduce stacks by 1.\nTurn End: Reduce stacks by 1.",
+   "codex": "When it would gain Suppressed: Prevent it, then reduce stacks by 1.\nTurn End: Reduce stacks by 1.",
    "status": "implemented",
    "design": {
     "holes": "Ryan's clock (2 November): the chip reads as the rounds until it can be stunned again, so the stacks land after the decay phase; a stun lock costs its resist and one every round, so an all-in stun team can brute-force a boss at a price, and a Purge is the other key. The resist numbers are placeholders (content's resist; the bosses' by hand).",
@@ -365,7 +365,7 @@
    "id": "paradox",
    "category": "status",
    "name": "Paradox",
-   "codex": "When it gains another debuff: Gain 1 stack per stack gained.\nAt 5 stacks: Reduce stacks to 0 and gain Suppressed.",
+   "codex": "When it gains another debuff: Gain 1 stack per stack gained.\nAt 5 or more stacks: Reduce stacks to 0 and gain Suppressed.",
    "status": "implemented",
    "design": {
     "holes": "The count is a placeholder (Ryan, 11 November: \"we have no idea how many paradox stacks is balanced, we just decided on 3 or whatever as a placeholder without knowing how much status chips were going to get thrown around in the game as a whole\"); a stack a debuff stack since that day, at five.",
@@ -402,7 +402,7 @@
    "id": "targets",
    "category": "component_property",
    "name": "Targets",
-   "codex": "Who this component can be used on. Under its mark, the middle hex is this Frame and the side hexes are the other Frames. A filled hex can be chosen.",
+   "codex": "Which Frames this component can be used on, shown as three hexes under its mark: the middle hex is this Frame, the side hexes are the other Frames. A filled hex can be chosen.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -412,7 +412,7 @@
    "id": "chain",
    "category": "keyword",
    "name": "Chain",
-   "codex": "Resolve: Hit every Shocked Sprite for {N} damage. These hits are not Targeted and do not consume Shocked.",
+   "codex": "After Hit: If targeted, hit every Sprite that conducts Chain for {N} damage. These hits are not Targeted and gain no bonuses or riders.",
    "status": "implemented",
    "design": {
     "holes": "Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain). Retired 3 November: the charge, one other foe at random after the arcs (Ryan, 2 November: \"Chain just is the situational aoe, and if weak we can either add more things for it to proc on, or give it the self-charge again\"); Charged, the primer, supplies the Shock beside the Shock weapons and Retaliate. A debuff's since 17 November (the Storm Petrel's Pulse, its Striker branch): refused until then, since a debuff's arc would carry its riders to every conductor for no blow; with a number the arc is a blow. Its arcs carry no rider since 18 November (Ryan: \"take riders off chain. Thematically it's a lightning arc, not part of the impact\"): they had carried the entry's riders as any area does, the fourth footprint's rule, which on the Pulse lured every Shocked foe it arced to; the Arc Fault Cannon printed none, so it lost nothing. Since 21 November (Ryan: \"All foes on the field with Shock are struck for {value}. Does not use or consume Shock\"; \"If Chain doesn't carry the riders, it shouldn't carry the unit's or weapon's buffs either\"; \"It should stack with spread and penetrate\"; of its own target, \"Any conductor\"): each arc is the number flat, no buff of the machine's or the piece's, on every conductor, its own target too while it still conducts after the strike (a weapon's strike spends a Shock first; a needle stays, and equipment spends none), and a conductor an area reaches takes the area's blow and the arc. Retired that day: the firer's modifiers riding each arc (28 October to 21 November), and a foe an area reached never arcing (29 October to 21 November). Whether an arc is a strike the foe's own statuses, armour and Barrier read (as built) or a flat ping that ignores them waits on his read of the armour data (the bible's section 12)."
@@ -422,7 +422,7 @@
    "id": "rapid",
    "category": "keyword",
    "name": "Rapid",
-   "codex": "Resolve: Reroll this die for free. This entry is unavailable for the rest of the round.",
+   "codex": "Resolve: This entry goes dark for the rest of the round. Reroll this die for free onto a different entry.",
    "status": "implemented",
    "design": {
     "holes": "Its limiter is its own switch-off, the entry dark for the rest of the round (Ryan, 12 November: \"rapid gets its innate cooldown zero back without the explicit display\"), which no cleanse lifts; a Rapid vent is never below tier three and a Rapid shield never below tier two (the bible's Rapid row)."
@@ -432,7 +432,7 @@
    "id": "instant",
    "category": "keyword",
    "name": "Instant",
-   "codex": "Resolve: Reroll this die for free.",
+   "codex": "Resolve: Reroll this die for free. It can land on this entry again.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 12 November: \"the rapid no cooldown pieces change to a new keyword: Instant (reroll after use, can land on itself)\". Every Instant piece carries a limiter, which the validator holds content to: a cooldown, heat, Volatile or a shield cost, or the store a charged form spends (the Knuckle of Fury's five rage); a piece locked on a stepping die has the cylinder's odds (the Spin-Up's). An entry is Rapid or Instant, never both."
@@ -442,7 +442,7 @@
    "id": "jam",
    "category": "keyword",
    "name": "Jam",
-   "codex": "Apply Jammed to the entry the target's die shows.",
+   "codex": "Resolve: Apply Jammed to the entry the target's die shows.",
    "status": "implemented",
    "design": {
     "holes": "Disable until 15 November (Ryan: \"Rename to Jammed\"); the rider follows the pattern, Jam lays Jammed."
@@ -462,7 +462,7 @@
    "id": "immune",
    "category": "foe",
    "name": "Immune",
-   "codex": "The effect named on its chip never applies to it.",
+   "codex": "Immune to the effect named on its chip.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 15 November: \"not as a blanket for all bosses, but for ones who need it for their fight to actually do something.\" Content: immune on a foe, suppress or disrupt, each true or the id of a move of its own that gathers. Three carriers since 17 November, on his yes to the bench's rows: the Pilgrim, Suppress, whose dread is that it keeps coming; the Obsidian Tyrant, Disrupt while Firestorm gathers, and the Ruby Colossus, Disrupt while Ultima gathers, whose rounds of warning are the fight. A session's draft, his to write."
@@ -482,7 +482,7 @@
    "id": "timid",
    "category": "foe",
    "name": "Timid",
-   "codex": "Attacks only while it carries a buff, or one is announced for it. Otherwise it uses another move.",
+   "codex": "Uses an attack only while it carries a buff, or a buff is announced for it.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 20 November: \"goblins only attack when they have any buff, or are predicted to get one\" and \"If a goblin is getting a shield from its peer in the intent, it should queue an attack\". The foes announce in the order they strike, so a goblin reads the moves already out ahead of it, never one after it. The name is his (20 November: \"Rename Safety in Numbers to Timid\"); the text a session's draft."
@@ -522,7 +522,7 @@
    "id": "merge",
    "category": "foe",
    "name": "Merge",
-   "codex": "Absorbs every other Sprite of the named kinds and heals the HP they had left. Its next move deals more per Sprite absorbed.",
+   "codex": "Absorbs every other Sprite of the named kinds. Heals the HP they had left, up to its Max HP.\nGain {N} Empowered per Sprite absorbed.",
    "status": "implemented",
    "design": {
     "holes": "The King Gel's (30 October): every Gel, Bubble Gel, Metal Gel and half on the field. Content: effect merge, foe (an id or a list), value (the lift a foe taken in). A foe taken in leaves no last act and no split and is no kill of the team's; its pack's tally still counts it gone. It needs its kinds beside it, so the King Gel's escort is its own (an escort that names its boss)."
@@ -532,7 +532,7 @@
    "id": "dispel",
    "category": "keyword",
    "name": "Purge",
-   "codex": "Resolve: Reduce stacks of every buff on each unit hit by {N}.",
+   "codex": "Resolve: Reduce the stacks of every buff on each unit hit by {N}.",
    "status": "implemented",
    "design": {
     "holes": "One id, dispel, on both sides (28 October); numbered 2 November (Ryan: \"lower everything by N and price accordingly\", a softer answer to armour and damage stacking that prices cheap and common; the Null Field Emitter at Purge 2, a placeholder). One purge on either side (Effects.purge): N stacks off every buff, whatever granted it (Ryan, 8 November: \"A stack is a stack, doesn't matter where it came from\"); retired with it the purge by source of 28 October (a die entry's stacks gone for good, a store's, a form's or a passive's put to sleep until the player's turn), which he called cryptic. What the unit is, its form or its passive mechanic, is an Ability and no buff, so no purge reaches it (the same day)."
@@ -542,7 +542,7 @@
    "id": "cleanse",
    "category": "keyword",
    "name": "Cleanse",
-   "codex": "Remove every debuff from the target.\nA Sprite's Cleanse targets the Sprite carrying the most debuffs.",
+   "codex": "Resolve: Remove every debuff from the target, except those that cannot be cleansed.\nA Sprite's Cleanse removes every debuff but Suppressed from the Sprite carrying the most kinds of debuff.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -568,7 +568,7 @@
    "id": "shocked",
    "category": "status",
    "name": "Shocked",
-   "codex": "When Hit: If targeted, consume to double damage received, before applying defensive effects.",
+   "codex": "When Hit: If targeted, consume to double damage received, before applying defensive effects.\nConducts Chain.",
    "status": "implemented",
    "design": {
     "holes": "",
@@ -600,7 +600,7 @@
    "id": "seared",
    "category": "status",
    "name": "Seared",
-   "codex": "Turn End: Ablate deals its damage but is not reduced. Reduce stacks to 0.",
+   "codex": "When Ablate would be reduced: Prevent it, then reduce stacks to 0.\nTurn End: Reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 11 November: coded in beside Brittle's pin, \"since the Mastema will want it as a fitted piece, if nothing else\". No piece lays it yet. The name is his, 15 November: \"Rename 'Seared.'\"",
@@ -664,7 +664,7 @@
    "id": "sealed",
    "category": "status",
    "name": "Sealed",
-   "codex": "+3 Armour. Cooling is stopped.\nTurn End: Gain 3 heat.\nUsing a weapon or rebooting removes it.",
+   "codex": "+3 Armour. Cooling is stopped.\nTurn End: Gain 3 heat.\nResolve: If a weapon was used, reduce stacks to 0.\nOn Reboot: Reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "One chip, renewing, never stacking: the armour it grants is tied to the form. The numbers are placeholders.",
@@ -680,7 +680,7 @@
    "id": "changed_over",
    "category": "status",
    "name": "Changed Over",
-   "codex": "Its second battery is up and its first is stowed. Lasts the battle.",
+   "codex": "Its die rolls its second battery, not its first.\nLasts the battle.",
    "status": "implemented",
    "design": {
     "holes": "A working name and text, Claude's drafts of 11 November for Ryan to rewrite. One chip for the second battery, none for the first.",
@@ -728,7 +728,7 @@
    "id": "hardened",
    "category": "status",
    "name": "Hardened Light",
-   "codex": "When Hit: If its shield is up, -1 damage received per stack ({N}).\nShield Broken: Reduce stacks to 0.",
+   "codex": "When Hit: If it has shield, -1 damage received per stack ({N}).\nShield Broken: Reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 18 November: \"no innate shield armour. The Pulse grants one Hardened Light at tier 1. Hardened Light only decays when the shield breaks, and has a cap of 3 stacks\"; \"The reboot breaks it yes. When it breaks, it loses all of them. If it's weak, we'll buff it, but this is the best shape that doesn't add any weird exceptions. It contains high points and low points and that makes it interesting and healthy\". Shield armour, never armour, so an Expose leaves it (\"It's the only tank not weak to Expose\"), and it takes nothing off a blow on bare hull, a tick or a burn. What reopens it: a Purge proving too threatening, which moves it to a resource bar in place of a buff (his word the same day). His name of 17 November; the session's Hardened before it, a stack off each turn start for a day.",
@@ -744,7 +744,7 @@
    "id": "primed",
    "category": "status",
    "name": "Primed",
-   "codex": "Resolve: Apply 1 Ablate per hit. If triggered, reduce stacks by 1.",
+   "codex": "Resolve: If this was an attack, apply 1 Ablate per hit, then reduce stacks by 1.",
    "status": "implemented",
    "design": {
     "holes": "The third primer since 15 November, beside Charged and Supercooled (Ryan: \"give it the same format as cryo ... use a stack on firing\"; \"Primed - agreed, how many Ablate stacks does each Primed stack apply? Just one, like supercooled?\"; one, since Ablate 1 on a gun measures as about the point a Charged stack's Shock does). Until then every blow left a stack of Ablating a stack of Primed, for a buff's rounds on a machine and one move on a foe. A placeholder name.",
@@ -792,7 +792,7 @@
    "id": "phased",
    "category": "status",
    "name": "Phased",
-   "codex": "Cannot be damaged, targeted or hit. Can still act. Its other effects continue.\nRound End: Reduce stacks to 0.",
+   "codex": "Cannot be damaged, targeted or hit. Can still act. Its other statuses still count down.\nRound End: Reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "Ryan's mark, 15 November: \"New effect: \"Cannot be damaged or targeted by anything until the end of this round.\" We remove the awkward act clause, but still ensure that it cannot be buffed or interacted with by allies until it unphases\"; \"all sources of Phased should say \"at the end of this round, grant Phased.\"\"; and his answer: \"it's a safe reboot if you can pull it off. All phased granters need to be gated, it should be earned, with the caveat that you have to survive the current round\". Engine ids phased and phasing, the wait a source lays, a buff a Purge takes. Its own heat does not burn it (his ruling, 16 November, on a session's read that had the burn land: \"it shouldn't take damage from overheating since we don't need the exception. It does accumulate the stacks, though, which it will feel the round after\"). Everything it carries ticks (16 November: \"Everything ticks during phased. It doesn't take damage but it's a way of waiting out a debuff. That's why my clause of the self-cleanse and self-purge is our way out if it's broken\"), so its Ablating fades a stack a turn and takes nothing, and its Regenerating runs. A Volatile bite and a corrupted entry's bite are blocked with the rest (\"I think we block the damage as a feature, and see how bad it is once we have real hull cost pieces that matter\"). A session's reads of his words: it may spend on itself, and its Lure turns no pick. His spare clause is held until play asks for it (\"If that's too strong, I would add \"Remove all buffs and debuffs. Cannot gain any buffs or debuffs while Phased.\"\"). A foe's Phased is built since 17 November, on his yes to the bench's row for the Spectre and the Wraith (\"Phased on foes can be less strict since it's balanced around their kit and theme\"; 16 November: \"Phased foes act\"): the engine's effect phase, a move of a foe's own or a step of one, the wait landing as the round ends. Less strict in one way, a session's read: its own side still reaches it. Never the last foe standing, never two rounds running. Until 15 November: cannot act, take damage or be targeted until the round's end, granted at once to a machine yet to act. A session's draft, his to write.",
@@ -840,7 +840,7 @@
    "id": "vitriol",
    "category": "status",
    "name": "Vitriol",
-   "codex": "Turn End: Lose 10% of current HP per stack ({N}), rounded down, then reduce stacks by 1. Ignores Armour.\nNever reduces HP to 0.",
+   "codex": "Turn End: Lose 10% of current HP per stack ({N}), rounded down, then reduce stacks by 1.\nIgnores Armour and Barrier. Cannot reduce HP below 1.",
    "status": "implemented",
    "design": {
     "holes": "Only the funnel-web's passive lays it; a keyword that ever carries it shares the word. Whether a tick passes Guarded is the parts' question, as Ablating's is. The word Corroded is kept for a foe's damage over time on machines.",
@@ -856,7 +856,7 @@
    "id": "webbed",
    "category": "status",
    "name": "Web Bomb",
-   "codex": "Round End: Apply Suppressed to this Sprite and each Sprite beside it. Reduce stacks to 0.",
+   "codex": "Round End: Apply Suppressed to this Sprite and to the next Sprite on its right in its rank, or on its left if there is none. Reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "The burst catches the next foe to act beside it in its rank, the one to its left when none stands to its right; on a foe already suppressed it is wasted, and each half feeds the Paradox as the Suppress keyword's does. Named for its piece and its rider no keyword since 15 November (Ryan: \"I don't think the rider needs to be listed as a keyword. It's a unique effect, and the debuff can be renamed \\\"web bomb.\\\"\"); the id is the engine's.",
@@ -872,7 +872,7 @@
    "id": "spun_up",
    "category": "status",
    "name": "Spun Up",
-   "codex": "Weapon hits deal +2 damage per stack ({N}).\nResolve: If triggered, reduce stacks to 0.",
+   "codex": "Weapon hits deal +2 damage per stack ({N}).\nResolve: If a weapon was used, reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "Spent whole by the next weapon, equipment leaving it: weapon only until balance says otherwise (Ryan, 26 October).",
@@ -904,7 +904,7 @@
    "id": "essence",
    "category": "status",
    "name": "Essence",
-   "codex": "Gain 1 whenever any Sprite is defeated. Lasts the battle.\nSkirmish Start: Gain 1 Empowered per 5 Essence.\nRound End: If this Frame killed this round, gain 1 Empowered per 5 Essence.",
+   "codex": "When any Sprite is defeated: Gain 1 Essence.\nSkirmish Start: Gain 1 Empowered per 5 Essence.\nRound End: If this Frame killed a Sprite this round, gain 1 Empowered per 5 Essence.\nLasts the battle.",
    "status": "implemented",
    "design": {
     "holes": "Ryan's rework of 12 November, Souls then; Essence his name of 15 November (\"Rename souls to Essence\"). No cap by his call (\"as part of the fantasy\"), so it is no store, which is capped and wears a bar: an Ability, a chip with its count. The kill's flare is once a round, as it ends, when an attack of the Ammit's killed in it (Ryan, 16 November: \"at the end of a round where the Ammit killed at least one enemy\"); once an attack that killed from 12 November until then (\"Flaring twice for an AoE is probably wrong, let's make it 'one of more killed' by an attack\"), and once for each foe in the first build. The text is a session's draft.",
@@ -920,7 +920,7 @@
    "id": "offhand",
    "category": "status",
    "name": "Offhand",
-   "codex": "Its weapons and equipment aimed at a Sprite carry the armament shown.\nResolve: Switch to the next armament.",
+   "codex": "Its weapons and equipment used on a Sprite gain the effect of the armament shown.\nResolve: If used on a Sprite, switch to the next armament.\nSkirmish Start: Switch to the first armament.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Only its offhand swaps\"; \"It cycles after a spend\"; \"remove the manual weapon cycle\"; the spends that carry its rider turn it, his answer of the same day. The chip takes its armament's name and line (Beam Rifle, Beam Sword, Beam Shield, and the branches' Saber, Buckler, Bazooka and Pavise), each the passive's or a step's. The text is a session's draft.",
@@ -936,7 +936,7 @@
    "id": "aile_boost",
    "category": "status",
    "name": "Aile Boost",
-   "codex": "Weapons gain Indirect reach.\nResolve: If triggered, reduce stacks to 0.",
+   "codex": "Weapons gain Indirect reach.\nResolve: If a weapon was used, reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Rapid. Next weapon strike gains Indirect reach\"; \"Next weapon strike -> Next weapon fired. Applies to the whole spend\"; \"Booster's buff is the booster's name\". The text is a session's draft.",
@@ -952,7 +952,7 @@
    "id": "aile_blitz",
    "category": "status",
    "name": "Aile Blitz",
-   "codex": "Weapons gain Indirect reach and ignore Armour.\nResolve: If triggered, reduce stacks to 0.",
+   "codex": "Weapons gain Indirect reach and ignore Armour.\nResolve: If a weapon was used, reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Aile Booster -> Aile Blitzer: 'Rapid. Next weapon strike gains Indirect reach and ignores armour.'\"; its name his (\"'Aile Blitz'\"). The text is a session's draft.",
@@ -968,7 +968,7 @@
    "id": "aile_assault",
    "category": "status",
    "name": "Aile Assault",
-   "codex": "Weapons gain Indirect reach.\nResolve: If triggered, reduce stacks to 0.",
+   "codex": "Weapons gain Indirect reach.\nResolve: If a weapon was used, reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Aile Booster -> Aile Assaulter: 'Rapid. Next weapon strike gains Indirect reach. Gain 1 Empowered.'\"; its name his (\"'Aile Assault'\"). The text is a session's draft.",
@@ -984,7 +984,7 @@
    "id": "parry",
    "category": "status",
    "name": "Parry",
-   "codex": "Counts the damage its Armour and Barrier prevent from Sprite hits this round.\nTurn Start: Its next weapon hit this turn deals +damage equal to half the count, rounded down.\nTurn End: Reduce stacks to 0.",
+   "codex": "Counts the damage its Armour and Barrier prevent from Sprite hits this round.\nTurn Start: Its first weapon hit this turn gains +1 damage per 2 damage counted.\nResolve: If a weapon was used, reduce stacks to 0.\nTurn End: Reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Parry: 'The first weapon fired next turn gains bonus damage equal to half of all damage blocked by this machine this round (rounded down).'\" What is blocked, his answer that day: what a Barrier and armour keep off, never the shield's soak. His of the same day, on the bonus: \"Can we change it to 'next strike' instead?\" (every strike of the next weapon, his first wording, made a busted area of the rifle that follows the shield), the next strike the spend's first blow by his strike order. Claude's reading: the count runs from the moment it is gained. It pays half the blow a Barrier stops, so a boss's biggest blow pays most, beside his taste of October (\"No reward for being struck that scales with the enemy's blows\"): his of 19 November, \"The duelist is supposed to be a boss-killer, and this is a tier-3 capstone, yes, so it can be powerful\". The text is a session's draft.",
@@ -1048,7 +1048,7 @@
    "id": "destroyed_component",
    "category": "status",
    "name": "Destroyed component",
-   "codex": "This entry is blank for the rest of the battle. Its passive bonuses still apply, its passive abilities do not.\nAfter the battle, a fixed component is rebuilt and a hardpoint's is lost.",
+   "codex": "This entry is blank for the rest of the battle. Its passive bonuses still apply. Its passive abilities do not.\nAfter the battle, a fixed component is rebuilt and a hardpoint's component is lost.",
    "status": "implemented",
    "design": {
     "holes": "No foe carries Destroy yet, so nothing is destroyed in play (Ryan, 15 November: \"Only promoted form or superboss-level so we're not tuning the economy around it. No longer a general rule\"). The campaign's hangar screen is not built."
@@ -1078,7 +1078,7 @@
    "id": "mine",
    "category": "status",
    "name": "Mine",
-   "codex": "Uses aimed at this Sprite add their damage and keywords to the Mine.\nWhen defeated: Hit every Sprite around it for the Mine's damage ({N}), with its keywords.",
+   "codex": "Each use the Frame that laid it aims at this Sprite adds its damage and riders to the Mine.\nWhen defeated: The Mine goes off, hitting every Sprite around it for 1 damage per stack ({N}), with its riders.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 9 November: \"the lammergeier basically converts all hits to AoE hits, at the cost of a delay until Death\". One Mine a spend at a flat 2 (\"then look at per hit later if it's weak\"); its riders the spend's whole result on the foe (\"the mine should take the entire result of the spend, then apply it. So a 3-hit flak that burns 1 per hit if the target is under 50% HP, would result in adding a 2 damage mine with 3 flak, and 0-3 burn\"), every hit's stacks as its machine deepened and doubled them and a gated keyword where its gate held (\"if a gate is met when fired only, then apply it\"); the numbered ones add up and the rest ride once; Chain rides as its arcs (Claude's lean, which he took); in the enemy's turn a Mine's Disrupt does nothing; a Suppress rides as fired, each foe the blast meets judging its own Numbed (Claude's read; Ryan: \"Your reads are correct\"). A mark the team laid: a Ward turns it away, a foe's cleanse takes it, the Paradox counts it. A foe taken into a merge hands its Mine to the merger.",
@@ -1664,7 +1664,7 @@
    "id": "cooldown",
    "category": "component_property",
    "name": "Cooldown",
-   "codex": "Resolve: This entry is unavailable for the rest of the round and the next {N} rounds.",
+   "codex": "Resolve: This entry goes dark for the rest of the round and the next {N} rounds.\nA dark entry can be rolled but not used.",
    "status": "implemented",
    "design": {
     "holes": "A price as heat is. Counted after the round of the spend since 12 November (Ryan: \"change the count so 1 is how I intended\"; the round of the spend counted from 14 October, when a weapon's 1 cost nothing, the die spent for the round anyway). The city's battlefield abilities count their own cooldowns in phases."
@@ -1674,7 +1674,7 @@
    "id": "gather",
    "category": "component_property",
    "name": "Gather",
-   "codex": "Resolve: Every other Sprite's Mine joins the target's Mine.",
+   "codex": "Resolve: Every other Sprite's Mine merges into the target's Mine.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 9 November: \"moves all mines to a single target, and Exposes that target. The Expose rider will effectively create an AoE expose mine, which we can try and see if it's dangerous.\" Its Expose is its keyword, so the Mine it gathers carries Expose. A Ward on the target turns the gather away."
@@ -1684,7 +1684,7 @@
    "id": "detonate",
    "category": "component_property",
    "name": "Detonate",
-   "codex": "Resolve: The target's Mine triggers now.",
+   "codex": "Resolve: The target's Mine goes off, this use's addition included.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 9 November: \"Deals a small amount of damage and detonates a foe's combined mine immediately ... The small chip damage makes it add a stack first. Try without a cooldown first.\" Its chip strike spends a Shock on the target, so a Shock doubles the chip, never the Mine."
@@ -1694,7 +1694,7 @@
    "id": "self_statuses",
    "category": "component_property",
    "name": "On itself",
-   "codex": "Resolve: This Frame gains the status printed on the entry.",
+   "codex": "Resolve: This Frame gains the status shown. Where shown, it gains it once per Sprite hit, up to the cap shown.",
    "status": "implemented",
    "design": {
     "holes": "Its carrier the Storm Petrel's Hardlight Pulse (Ryan, 18 November): Hardened Light 1, up to 3, printed on the piece; its branches take it further through the pipeline (self_status): the Defence direction a Ward and a cap of 4, then a stack for each foe hit and a cap of 5, the Striker's Charged 1 and then 2. Its first form the lock's own Regenerating on itself (regenerates, 30 October to 17 November). Machine buffs and a Ward, never a Barrier, which keeps its pieces and its cooldown."
@@ -1704,7 +1704,7 @@
    "id": "ally_action",
    "category": "component_property",
    "name": "An ally's action",
-   "codex": "Resolve: If the target's die is used, spend {N} rerolls. Its die rerolls onto a different entry, and it can act again.",
+   "codex": "Resolve: If the target Frame's die is used, spend {N} rerolls. Its die rerolls onto a different entry and can be used again.",
    "status": "implemented",
    "design": {
     "holes": "Its price is the lever if it reads as Rapid embodied in a machine (the bible's Kestrel row); the order is the play, the ally spending first."
@@ -1864,7 +1864,7 @@
    "id": "parts",
    "category": "foe",
    "name": "Parts",
-   "codex": "A core and its parts. While its parts stand, the core is Guarded. A defeated part may grow back. When the core is defeated, its parts are defeated.",
+   "codex": "A core and its parts. While every part stands, the core is Guarded. A defeated part may grow back. When the core is defeated, its parts are defeated.",
    "status": "implemented",
    "design": {
     "holes": "Content: parts (foe ids), guard (all or any), regrow_parts (rounds). Parts are found by pack and type, one deep, and each takes a cell of its pack's grid. The Fallen Weapon's two eyes and the Obsidian Tyrant's rider (30 October); a move may open once a part has fallen (part_fallen)."
@@ -1914,7 +1914,7 @@
    "id": "vents_all",
    "category": "component_property",
    "name": "Vents all",
-   "codex": "Commit: Reduce heat to 0. Damage increases per step of heat vented, as printed.",
+   "codex": "Commit: Reduce heat to 0. +X damage per Y heat vented, X and Y shown on the entry.",
    "status": "implemented",
    "design": {
     "holes": "Only the first shot of a chain fires the heat."
@@ -1924,7 +1924,7 @@
    "id": "spends_shield",
    "category": "component_property",
    "name": "Fires the shield",
-   "codex": "Commit: Reduce shield to 0. Damage increases per step of shield spent, as printed.",
+   "codex": "Commit: Reduce shield to 0. +X damage per Y shield spent, X and Y shown on the entry.",
    "status": "implemented",
    "design": {
     "holes": "Its carrier the Buzzard's Shield-burner Cannon (Ryan, 18 November: it breaks the shield, and no zap rides it: \"It can't, since the shield will be empty\"). Never beside Vents all on one entry (the validator). The codex is a session's draft."
@@ -1934,7 +1934,7 @@
    "id": "passes_heat",
    "category": "component_property",
    "name": "Passes heat",
-   "codex": "Resolve: Move all of this Frame's heat to the target. The target gains the printed status per step of heat moved.",
+   "codex": "Resolve: Move all of this Frame's heat to the target. The target gains 1 stack of the shown status per Y heat moved, Y shown on the entry, rounded down.",
    "status": "implemented",
    "design": {
     "holes": "Its carrier the Puffin's dump (Ryan, 11 November: \"A locked piece can transfer the Puffins heat to another unit along with a buff based on heat moved\"; \"just allies\"; 19 November, Empowered for every 2: \"that needs data\"). An ally its heat takes past the maximum burns as the turn ends, his \"forcing an overheat\". The codex is a session's draft."
@@ -1944,7 +1944,7 @@
    "id": "power_per_missing",
    "category": "component_property",
    "name": "Grows with missing HP",
-   "codex": "Damage increases per step of the target's missing HP, as printed.",
+   "codex": "Commit: +X damage per Y HP the target is missing, X and Y shown on the entry.",
    "status": "implemented",
    "design": {
     "holes": "Both numbers are the entry's own (power_per_missing and per_missing), placeholders."
@@ -1954,7 +1954,7 @@
    "id": "finisher",
    "category": "component_property",
    "name": "Finisher",
-   "codex": "Commit: If the target is at or below half Max HP, double base damage.",
+   "codex": "Commit: If the target is at or below half its Max HP, double base damage.",
    "status": "implemented",
    "design": {
     "holes": "A working name. The Coriolis Accelerator's slope as one step (Ryan, 11 November: \"is there a way to make the pinion driver simpler but fill the same purpose\"); its factor is the entry's own (finisher), a placeholder."
@@ -1974,7 +1974,7 @@
    "id": "consumes",
    "category": "component_property",
    "name": "Consumes",
-   "codex": "On Hit: Consume all stacks of the named status on the Sprite hit. +1 damage per stack consumed.\nOn equipment: Consume up to the printed number from this Frame. Gain 1 stack of the granted status per one consumed.",
+   "codex": "On Hit: If a weapon, consume every stack of the named status on the Sprite hit. +{N} damage per stack consumed.\nCommit: If equipment, consume up to {N} of the named count from this Frame. Gain 1 stack of the granted status per one consumed.\nEquipment cannot be used with none to consume.",
    "status": "implemented",
    "design": {
     "holes": "A mine laid from it eats its arrival's stacks. The equipment's form is the Quintessence Tap's (12 November, the Soul Siphon then), the engine's spends and spends_up_to; its text is a session's draft."
@@ -2024,7 +2024,7 @@
    "id": "strikes",
    "category": "component_property",
    "name": "Strikes",
-   "codex": "Hits per use. Each hit deals the full number, and Armour reduces each hit.",
+   "codex": "Hits per use. Each hit deals the full number, and Armour reduces each one.",
    "status": "implemented",
    "design": {
     "holes": "Heat is paid once per use, not per strike."
@@ -2118,7 +2118,7 @@
    "id": "overheated",
    "category": "status",
    "name": "Overheated",
-   "codex": "Stacks equal heat above Max Heat.\nTurn End: Take 1 hull damage per stack ({N}). The first since its last reboot also breaks its shield.\nOn Reboot: Reduce stacks to 0.",
+   "codex": "Stacks equal heat above Max Heat.\nTurn End: Take 1 hull damage per stack ({N}), ignoring shield and Armour. The first time since its last reboot, reduce shield to 0.\nOn Reboot: Reduce stacks to 0.\nCannot be cleansed.",
    "status": "implemented",
    "design": {
     "holes": "The reboot's (Ryan, 13 November: \"an uncleanseable debuff on the unit, a stack for every point of heat\"), read off the gauge and no status of the engine's table. A session's draft, his to write. The hull a stack burns is the trial's OVERHEAT dial, one the game's.",
@@ -2134,7 +2134,7 @@
    "id": "broken",
    "category": "status",
    "name": "Broken",
-   "codex": "Cannot gain shield. Gained when shield reaches 0.\nOn Reboot: Reduce stacks to 0.",
+   "codex": "Gained when shield reaches 0. Cannot gain shield.\nRemoved when a reboot restores its shield.\nCannot be cleansed.",
    "status": "implemented",
    "design": {
     "holes": "The reboot's (Ryan, 13 November: \"the unit cannot gain shield by any method\"; \"you can break yourself\"), a state of the machine and no status of the engine's table. A session's draft, his to write.",
@@ -2150,7 +2150,7 @@
    "id": "rebooting",
    "category": "status",
    "name": "Rebooting",
-   "codex": "Gained by dragging an unused die onto REBOOT. Shield and heat are reduced to 0.\nTurn Start: Restore shield to max and remove Broken. Reduce stacks to 0.",
+   "codex": "Gained by dragging the die of a Frame that has used nothing this turn onto REBOOT. Its shield and heat drop to 0 at once.\nTurn Start: Restore shield to max and remove Broken. Reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "The reboot (Ryan, 13 November; folded in 15 November), a state of the machine and no status of the engine's table. A session's draft, his to write.",
@@ -2230,7 +2230,7 @@
    "id": "aloft",
    "category": "status",
    "name": "Aloft",
-   "codex": "Cannot be targeted or hit. Its other effects continue.\nEnds when its gathered move lands.",
+   "codex": "Cannot be targeted or hit. Its other statuses still count down.\nEnds when its gathered move lands.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 16 November: \"I think the stoop can make it untargetable, yes. I don't think I'd call it phased though, it should still take damage from its riders, unlike phased. So it's different, should be a different buff, could be unique to the Roc for now if nothing else has that shape.\" And 17 November: \"I'd say the roc doesn't get splashed while aloft.\" Content: aloft on a blow that gathers one round. Built on his second ruling as nothing new reaching it at all, with an aim or without, so equipment over every foe passes it by as a blast does and nothing breaks off a climb once it is up; what it carries is its own, a web and a Mine on it included. The name is a working one, his to change.",
@@ -2262,7 +2262,7 @@
    "id": "swallowed",
    "category": "status",
    "name": "Swallowed",
-   "codex": "Cannot act. All ongoing effects are paused.\nImmune to all damage. Cannot be targeted or hit by anything.\nRound End: Reduce stacks by 1.\nReduce stacks to 0 upon {caster} losing 25% Max HP since the start of the effect.",
+   "codex": "Cannot act. All ongoing effects are paused.\nImmune to all damage. Cannot be targeted or hit by anything.\nRound End: Reduce stacks by 1.\nReduce stacks to 0 upon {caster} losing 25% Max HP since the start of the effect.\nCannot be cleansed.",
    "status": "implemented",
    "design": {
     "holes": "Out of play, so everything it carries pauses (Ryan, 16 November: \"Swallowed it's out of play so everything should pause\"), where a Phased machine's ticks on: its Ablating, Scorched and Sapped wait, its Empowered and Brittle do not halve, its Regenerating pays nothing, it neither cools nor regenerates, a buff of its own holds nothing on the field (Essence Flare), and every timed status on it, a cooldown and a jam among them, moves a round later for each round's end it sits out: the rounds it sat out never came for it. Let go as its swallow's rounds run out, it is back before that round's end is read, the end it was owed from the round it was taken in; let go sooner, it goes on from where it stood. The swallow's own rounds run. It burns nothing while it is out and burns the turn it is back. A session's reads: an event of its fight still reaches it (a foe felled banks an Ammit's Essence), and a reboot it had begun before it was taken still recovers as the next round opens, the second half of a turn already given. Nothing cleanses it.",
@@ -2278,7 +2278,7 @@
    "id": "guarded",
    "category": "status",
    "name": "Guarded",
-   "codex": "Immune to all damage while its parts stand.",
+   "codex": "Immune to all damage while every one of its parts stands.",
    "status": "implemented",
    "design": {
     "holes": "",
@@ -2392,7 +2392,7 @@
    "id": "charged",
    "category": "status",
    "name": "Charged",
-   "codex": "Weapons gain Shock.\nResolve: If triggered, reduce stacks by 1.",
+   "codex": "Weapons gain Shock.\nResolve: If a weapon was used, reduce stacks by 1.",
    "status": "implemented",
    "design": {
     "holes": "The Shock primer (Ryan, 2 November), Primed's cousin, so Chain is the arcs alone and the Shock supply is a kit choice; a keyword on the weapon fired, never a mark per hit (3 November: \"a multi-hit weapon with Shock would apply it after both hits\"), so a strikes gun never cashes what it just laid. Its first granter is the Storm Petrel's lure in its Striker branch (17 November: \"adds a self-grant of Charged stacks to the lure\"), two stacks a spend.",
@@ -2408,7 +2408,7 @@
    "id": "supercooled",
    "category": "status",
    "name": "Supercooled",
-   "codex": "Weapons gain Cryo 1.\nResolve: If triggered, reduce stacks by 1.",
+   "codex": "Weapons gain Cryo 1.\nResolve: If a weapon was used, reduce stacks by 1.",
    "status": "implemented",
    "design": {
     "holes": "The Cryo primer (Ryan, 2 November: \"laying 1 cryo at a time makes sense, keeps it a little unique, and avoids massive cooling spikes\"; the name his pick), so any gun is a Cryo setter for a turn and the Cryo synergies open past the Cryo Flinger; a stack a strike after the hits (3 November: \"resulting in 2 applications, not apply-cash-apply-cash, and not hit-hit-apply once\"). No piece grants it yet.",
@@ -2424,7 +2424,7 @@
    "id": "regenerating",
    "category": "status",
    "name": "Regenerating",
-   "codex": "Turn End: Heal 1 per stack ({N}), then reduce stacks by 1. A Frame heals shield, a Sprite heals HP.",
+   "codex": "Turn End: Gain 1 shield per stack ({N}) on a Frame, or 1 HP per stack on a Sprite, then reduce stacks by 1.",
    "status": "implemented",
    "design": {
     "holes": "One clock on both sides since 15 November (Ryan: \"These are structured as 'Regen 1 per stack' and I'd give all sources either a fixed duration, say 2 or 3 turns, or have it decay one stack at a time\"; \"Regenerating - agreed\"), Ablating's turned round; a value at each of three turns until then. The machine half, built 30 October for the Storm Petrel's lock, which lays it no longer since its rework of 17 November, is kept with no piece granting it on Ryan's word of that day: \"put machine regeneration back, that will literally be added in this session probably\". Bought by whatever grants it, so a foe's purge takes it. The numbers are placeholders, the foes' unmoved by the new clock.",
@@ -2450,7 +2450,7 @@
    "id": "burrowed",
    "category": "status",
    "name": "Burrowed",
-   "codex": "+1 Armour. Its die rolls only its Inertia Drill.\nTurn Start: Remove Broken and Overheated. Regain half the shield and vent half the heat it was missing when it burrowed. Gain 1 Conserved Momentum.\nEnds when the Inertia Drill is used.",
+   "codex": "Gained in place of Rebooting. +1 Armour. Its die rolls only its Inertia Drill.\nTurn Start: Remove Broken, Overheated, Jammed and Corrupted. Regain half the shield it was missing when it burrowed, and lose half the heat it had then, rounded up. Gain 1 Conserved Momentum, up to 3.\nResolve: If the Inertia Drill was used, reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 16 November: \"Instead of Reboot, it Burrows. While burrowed, it gains a unpurgable buff called 'Burrowed'\"; an unpurgeable buff is labelled an Ability by his rule of 8 November. The text is a session's draft.",
@@ -2482,7 +2482,7 @@
    "id": "applied_momentum",
    "category": "status",
    "name": "Applied Momentum",
-   "codex": "Turn Start: Take a hit of 2 damage, then reduce stacks by 1.",
+   "codex": "Turn Start: Take a hit of 2 damage, then reduce stacks by 1.\nRemoved when the Frame that laid it burrows again.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 16 November: \"Applied Momentum decays 1 at the start of the target's turn\"; \"Base: Flat 2 damage blow a turn ... make the damage a blow since I want it to scale with Brittle\". It strikes before the foes' side opens, so a Pinned it lays holds the Brittle. The text is a session's draft.",
@@ -2514,7 +2514,7 @@
    "id": "sonic_needle",
    "category": "status",
    "name": "Sonic Needle",
-   "codex": "Gain 1 stack per hit from the Echidna, and per hit this Sprite lands on the Echidna. Conducts Chain like Shocked.\nAt 3 stacks: Chain 2 hits every Sprite that conducts. Reduce stacks to 0.",
+   "codex": "Gain 1 stack per hit from the Frame that laid it, and per hit this Sprite lands on that Frame.\nConducts Chain.\nAt 3 or more stacks: Chain 2 fires. Reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 20 November: \"Sonic Needle - Conducts Chain. On 3 stacks, the Echidna fires Chain 2, then consume all stacks on this foe\"; his answers that day: the bolt is \"targeted at nothing. So the foe that hit 3 stacks and procced it would take 2 by definition\", and a stack a strike. Its branches tweak it: the Spiker's sap (1 less on the foe's attacks a stack) and Chaos's bolt leaving its foe one stack in place of none (Ryan, 21 November: \"reduce stacks to 1\"). The text is a session's draft.",
