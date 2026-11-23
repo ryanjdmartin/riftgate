@@ -91,12 +91,12 @@ func test_screen_builds_and_starts_round_one() -> void:
 	s.free()
 
 
-## A die takes a unit's gestures (Ryan, 30 October: "change lock/unlock to hold and double-tap,
-## and tap to inspect for dice ... That way it's standard across the board"): a tap opens its
-## readout and a tap again closes it, one readout at a time with the units'; a double-tap or a
-## hold locks or unlocks it, the readouts left as they stand (its tap waits out the double-tap
-## window, so a double-tap's first tap never lands); no codex.
-func test_a_tap_reads_a_die_and_a_double_tap_or_a_hold_locks_it() -> void:
+## A die's gestures (Ryan, 30 October: "tap to inspect for dice"; 23 November: "Die face double
+## tap needs to open a display of the whole die, with current buffs and debuffs applied to all
+## faces. That leaves only hold to lock the die"): a tap opens its readout and a tap again closes
+## it, one readout at a time with the units'; a double-tap opens the whole die at its live
+## numbers, the one showing marked; a hold locks or unlocks it, the readouts left as they stand.
+func test_a_tap_reads_a_die_a_double_tap_shows_the_die_and_a_hold_locks_it() -> void:
 	var s := _screen()
 	var d: DieFaceView = s._dice[0]
 	assert_true(d.confirm_taps, "the tray's dice wait out the double-tap window")
@@ -108,21 +108,17 @@ func test_a_tap_reads_a_die_and_a_double_tap_or_a_hold_locks_it() -> void:
 	d.tapped.emit()
 	assert_true(s._pop.is_empty() and not s._details.visible, "a tap on it again closes it")
 	d.double_tapped.emit()
-	assert_true(s.locked[0], "a double-tap locks")
-	assert_true(d.locked, "the view shows the lock")
-	assert_true(s._pop.is_empty() and not s._details.visible, "and opens no readout")
-	assert_false(s._codex.visible, "no codex: the whole die is the machine's double-tap")
-	d.double_tapped.emit()
-	assert_false(s.locked[0], "a double-tap again unlocks")
+	assert_false(s.locked[0], "a double-tap locks nothing")
+	assert_true(s._codex.visible, "it opens the whole die")
+	assert_eq(s._codex._faces.get_child_count(), s.sk.mechs[0].die.faces.size(), "every entry a row")
+	s._close_codex()
 	s._on_mech_tapped(1)
-	d.double_tapped.emit()
-	assert_eq(s._pop, {"mech": 1}, "a double-tap leaves the machine's readout open")
-	assert_true(s.locked[0], "and locks")
 	d.held.emit()
-	assert_false(s.locked[0], "a hold unlocks")
+	assert_true(s.locked[0], "a hold locks")
+	assert_true(d.locked, "the view shows the lock")
 	assert_eq(s._pop, {"mech": 1}, "and leaves the readout open")
 	d.held.emit()
-	assert_true(s.locked[0], "a hold again locks")
+	assert_false(s.locked[0], "a hold again unlocks")
 	s._close_pop()
 	s._replay_shade.visible = true
 	d.tapped.emit()
@@ -2189,9 +2185,10 @@ func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	var first: Foe = s.sk.targets_for(0)[0]
 	s._begin_second(0, first)
 	assert_eq(s._pending["primary"], first, "the die waits on its first target")
-	assert_true(s._ghost.visible and s._ghost.can_drag, "shown there, and it can be picked back up")
+	assert_true(s._aim.active and s._aim.pinned, "the crosshair pinned there")
+	assert_true(s._dice[0].can_drag, "and the die can be picked back up")
 	assert_true(s._forecast_for(0).has("coming"), "the gauges still read the round preview while it waits, the die uncounted (the audit's Bug 16: the bot's estimate stood in here)")
-	assert_eq(s._dice[0].modulate.a, 0.0, "its tray slot stands empty")
+	assert_eq(s._dice[0].modulate.a, 1.0, "the die stays in its tray, tethered to the crosshair")
 	var second = null
 	for x in s.sk.swap_targets(first):
 		if x is Foe:
@@ -2208,19 +2205,19 @@ func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	s._on_slot_tapped(b.x, b.y)
 	assert_true(s._pending.is_empty(), "a tap on the second spends it")
 	assert_eq(Vector2i(first.rank, first.column), b, "and they trade places")
-	assert_false(s._ghost.visible, "the die is gone from the field")
+	assert_false(s._aim.active, "the crosshair let go")
 	s.free()
 	var t := _screen()
 	var tm: Skirmish.MechState = t.sk.mechs[0]
 	tm.die.faces[tm.face_index] = Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "swaps": true})
 	t._begin_second(0, t.sk.targets_for(0)[0])
-	t._ghost.tapped.emit()
+	t._on_die_tapped(0)
 	assert_eq(t._pop, {"die": 0}, "a tap on the waiting die reads it")
 	assert_true(t._details.visible and t._details_entry.visible, "its readout shown")
 	assert_false(t._pending.is_empty(), "and the Swap still waits")
-	t._ghost.tapped.emit()
+	t._on_die_tapped(0)
 	assert_true(t._pop.is_empty(), "a tap again closes it")
-	t._ghost.held.emit()
+	t._dice[0].held.emit()
 	assert_eq(t._pop, {"die": 0}, "a hold opens it too: a die being spent has nothing to lock")
 	assert_false(t.locked[0], "and locks nothing")
 	var nothing := InputEventMouseButton.new()
@@ -2230,11 +2227,11 @@ func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	assert_true(t._pop.is_empty() and not t._pending.is_empty(), "a tap on nothing closes the readout first, the Swap still waiting")
 	t._gui_input(nothing)
 	assert_true(t._pending.is_empty(), "a second sets the Swap back")
-	assert_false(t._ghost.visible, "the die gone from its first target")
+	assert_false(t._aim.active, "the crosshair gone from its first target")
 	assert_false(tm.assigned, "home in the tray, unspent")
 	assert_eq(t._dice[0].modulate.a, 1.0, "and shown there")
 	t._begin_second(0, t.sk.targets_for(0)[0])
-	t._on_ghost_drag_started()
+	t._dice[0].drag_started.emit()
 	assert_true(t._pending.is_empty() and t._drag_from == 0, "dragging it again picks it back up")
 	assert_true(t._pop.is_empty() and not t._details.visible, "and the die in hand closes its readout")
 	t._on_drag_ended(Vector2(-100, -100))
@@ -2911,9 +2908,10 @@ func test_an_intent_arrow_leaves_its_chips_middle_and_the_ranks_stand_slightly_a
 	var inner_end := inner.position.x + inner.size.x * 0.5 + inner.chip_wrap * 0.5
 	assert_true(start - inner_end >= 6.0 - 0.01, "the back rank's last foe's widest row keeps its gap to its neighbour's")
 	var fv := s._foe_view_for(s.sk.front[0])
-	var laid := fv.chip_layout()
-	assert_eq(str((laid[0][1] as Array)[3]), "intent", "the first chip is the intent's")
-	assert_eq(fv.intent_anchor_global(), fv.get_global_transform() * (laid[0][0] as Rect2).get_center(), "its arrow leaves the chip's middle")
+	var plate := fv.intent_rect()
+	assert_true(plate.size.x > 0.0 and plate.end.y <= fv.drawing_rect().position.y, "the intent stands above the foe, apart from its chips")
+	assert_false(fv.chip_layout().any(func(c: Array) -> bool: return str((c[1] as Array)[3]) == "intent"), "no intent among the chips under it")
+	assert_eq(fv.intent_anchor_global(), fv.anchor_global(), "its arrow leaves the middle of its drawing")
 	s._toggle_all_arrows(true)
 	var inv := s._arrows.get_global_transform().affine_inverse()
 	var from := inv * fv.intent_anchor_global()
@@ -3050,4 +3048,27 @@ func test_a_spread_strike_shows_its_needles_on_every_foe_it_reached() -> void:
 			assert_eq(str(chips[0][1]), "1/3", "its chip counts the stack toward the three that fire it")
 			assert_eq(str(chips[0][2]), "Debuff, Sonic Needle 1 of 3", "and its readout names it with them, a debuff")
 	assert_eq(shown, 4, "the target, the two beside it and the one behind it each show theirs")
+	s.free()
+
+
+## The offhand's rider is a chip on the entry it rides, on the face's rail, never in the passive
+## box beside it, and the machine wears no chip for it (Ryan, 22 November: "it's ability does not
+## need to appear as a chip on the unit. The ability should appear as a chip on its die faces").
+func test_an_offhand_rides_its_entry_as_a_rail_chip_and_wears_none_on_its_machine() -> void:
+	var d := DieFaceView.new()
+	d.face = Face.attack(4)
+	d.offhand = "offhand_rifle"
+	assert_true(d.rail_tags().has("offhand"), "its rider is a chip on the entry's rail")
+	assert_false(d.passive_marks().any(func(m) -> bool: return str(m[0]) == "star"), "and nothing in the passive box")
+	assert_eq(DieFaceView.chip_glyph("offhand"), "star", "on its term's star")
+	d.free()
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var u := db.make_mech(db.chassis.keys()[0])
+	Effects.stack(u, Effects.STATUS["offhand"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	sk.add_mech(u)
+	sk.add_foes([Foe.make("revenant", 30, 0)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	assert_false(s._mech_rows(0).any(func(r) -> bool: return str(r[2]).contains(str(Effects.STATUS["offhand"]["name"]))), "the machine wears no chip for its offhand")
 	s.free()

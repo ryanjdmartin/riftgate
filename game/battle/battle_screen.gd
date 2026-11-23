@@ -235,6 +235,7 @@ static func _default_battle() -> Battle:
 # ---------------------------------------------------------------- build
 
 var _codex: CodexBox = null
+var _formation: FormationBox = null   # a pack's grid, a double-tap on the pack (FormationBox)
 
 
 func _build() -> void:
@@ -343,6 +344,9 @@ func _build() -> void:
 	_build_log_full()
 	# One scan bar over the whole screen, on the top layer: it crosses the map and the
 	# controls alike, and whatever geometry lies under it lights (Ryan, 21 September).
+	_formation = FormationBox.new()
+	_formation.foe_double_tapped.connect(_on_formation_foe)
+	add_child(_formation)
 	_codex = CodexBox.new()
 	add_child(_codex)
 	_scan = ScanBar.new()
@@ -498,26 +502,27 @@ func _refresh() -> void:
 	_map.set_shell(battle.fractures, battle.is_sealed())
 	_map.queue_redraw()
 	_refresh_log()
-	# The one button: ENGAGE while a fight is ready (a catch, or a machine ordered onto a pack),
-	# EXECUTE while planned moves wait to play (Ryan, 2 November: "It should show "execute" when
-	# a move command is entered, and only end turn if no order is entered"), and while the moves
-	# it took play; END TURN otherwise.
+	# The one button (Ryan, 22 November): EXECUTE while a machine is in hand, lit while it has
+	# waypoints or an order to play and dim otherwise, and while the move it took plays; with none
+	# in hand, ENGAGE while a fight is ready (a catch, or a machine ordered onto a pack), else END
+	# TURN.
 	var fight := battle.next_fight() if planning else {}
 	var waiting: Array = battle.fights_waiting() if planning else []
 	_map.queue = waiting
-	if not fight.is_empty():
+	var held: Unit = _map.selected if planning else null
+	if held != null or _executing:
+		_resolve_btn.text = "EXECUTE"
+	elif not fight.is_empty():
 		# One button for the queue (the long wall brief 7.4): it says how many fights wait, the
 		# next first; no dialog on a split, nothing about staying grouped.
 		_resolve_btn.text = "ENGAGE" if waiting.size() <= 1 else "ENGAGE 1 OF %d" % waiting.size()
-	elif _executing or (planning and not battle.planned.is_empty()):
-		_resolve_btn.text = "EXECUTE"
 	else:
 		_resolve_btn.text = "END TURN"
 	_resolve_btn.queue_redraw()
-	_resolve_btn.set_enabled(planning and not playing)
+	_resolve_btn.set_enabled(planning and not playing and (held == null or battle.pending(held)))
 	if waiting.is_empty() or not planning:
 		_queue_pulse = false
-	_resolve_btn.set_pulse(planning and not playing and (battle.nothing_left() or _queue_pulse))   # every machine done, or back from a fight with more waiting: the button is next
+	_resolve_btn.set_pulse(planning and not playing and held == null and (battle.nothing_left() or _queue_pulse))   # every machine done, or back from a fight with more waiting: the button is next
 	_clear_btn.set_enabled(planning and not playing and battle.can_undo())
 	_clear_btn.badge = "×%d" % battle.history.size() if planning and battle.can_undo() else ""   # how far it reaches, as the fight's says
 
@@ -596,12 +601,10 @@ func _toggle_log_full() -> void:
 func _select(u: Unit) -> void:
 	_queue_pulse = false   # the player is doing something else: the queue waits quietly
 	_map.selected = u
-	# A machine with a move planned or an order given shows what it could do instead (Ryan, 10
-	# November: "I should be able to re-order them by tapping on them again"): its reach from
-	# where it started, as if its plan were taken back; a move or an order given there replaces it.
-	var reach: Array = battle.reach_if_retaken(u) if u != null else [{}, {}]
-	_map.destinations = reach[0]
-	_map.threat = reach[1]
+	# Its reach from its latest waypoint with the move it has left (Ryan, 22 November: "If points
+	# remain, re-draw reachable hexes from the waypoint"), and the packs it could be ordered onto.
+	_map.destinations = battle.destinations_for(u) if u != null else {}
+	_map.threat = battle.threat_for(u) if u != null else {}
 
 
 # ---------------------------------------------------------------- gestures
@@ -611,12 +614,13 @@ func _select(u: Unit) -> void:
 ## done (a move planned, an order given, a refusal).
 const MAP_TAP_DB := -10.0
 
-## Tap a machine to select it; tap a lit hex and it moves there, staying in hand while it can
-## still act; tap it again to take its order back (a planned move, an order onto a pack) and
-## let it go; a machine with an order shows its reach from where it started, and a new move or
-## order there replaces the old one. With a machine in hand, a tap on a pack orders it onto
-## that fight, moving it into range first (and a second tap on the pack it is ordered onto
-## takes the order back). With nothing in hand, a tap on a pack shows its fight.
+## The map's taps (Ryan, 22 November). Nothing in hand: a tap on a machine takes it in hand, on a
+## pack shows its fight, on the ground says what it is. A machine in hand: a lit hex lays a
+## waypoint there and the reach is drawn again from it with the move left; a pack it can reach is
+## pathed to and ordered onto, as one step; its latest waypoint, or the pack it is ordered onto,
+## executes its move at once; an earlier waypoint takes back every step after it; another machine
+## cancels the plan in hand and takes that one; anything else (the machine itself, a hex or a pack
+## out of its reach) cancels the plan, its steps off the undo, and lets it go.
 func _on_hex_tapped(h: Vector2i) -> void:
 	if battle.state != Battle.State.PLAN or _map.is_playing():
 		return
@@ -630,43 +634,25 @@ func _on_hex_tapped(h: Vector2i) -> void:
 	var was_inspected := _map.inspected == h
 	_map.inspected = Vector2i(-9999, -9999)
 	_inspect_pack = null
-	if sel != null and u != null and u.is_enemy():
-		_order_attack(sel, u, [])
+	if sel != null:
+		_tap_in_hand(sel, h, u)
 		return
 	if was_inspected:
 		_select(null)
 		Sound.play("ui_back", MAP_TAP_DB)
 		_refresh()
 		return
-	if sel != null and u == null and _map.destinations.has(h):
-		if not battle.move_again(sel, h).is_empty():   # a machine with a plan gives it up for this one
-			_planned(sel)
-			return
-	elif u != null and u.is_player() and not u.is_static():
-		if sel == u and battle.retake(u):
-			# A tap on the machine in hand takes its order back and lets it go (Ryan, 10 November:
-			# "Tapping on them when they are selected should cancel the order"; "When I tap a unit
-			# to cancel its order, it should deselect"). The order's own undo: the UNDO count drops.
-			_select(null)
-			Sound.play("ui_back", MAP_TAP_DB)
-			_refresh()
-			_autosave()
-			return
-		if sel == u:
-			_select(null)
-			Sound.play("ui_back", MAP_TAP_DB)
-		else:
-			_select(u)
-			_on_unit_held(u)   # its shield, hull, move and actions, in the readout
-			Sound.play("map_select", MAP_TAP_DB)
+	if u != null and u.is_player() and not u.is_static():
+		_select(u)
+		_on_unit_held(u)   # its shield, hull, move and actions, in the readout
+		Sound.play("map_select", MAP_TAP_DB)
 	elif u != null and u.is_enemy():
 		# Nothing in hand: the pack's fight is shown, who would join and who is ordered in.
-		_select(null)
 		_inspect_pack = u
 		_map.inspected = h
 		_on_unit_held(u)
 		Sound.play("map_select", MAP_TAP_DB)
-	elif sel == null and u == null and battle.field.map.has(h) and not battle.field.map.is_structure(h):
+	elif u == null and battle.field.map.has(h) and not battle.field.map.is_structure(h):
 		# Nothing to move: the tap asks what the ground is (Ryan, 21 September), and what lies on
 		# it (a cache: its kind and its likely contents, never the contents; the bible's loot row).
 		_map.inspected = h   # the hex lit, so what was tapped is plain (Ryan, 29 September)
@@ -675,9 +661,58 @@ func _on_hex_tapped(h: Vector2i) -> void:
 		lines.append_array(ground_lines(battle.field.map.terrain[h], battle.field.map.ground_id(h)))
 		_show_details(lines)
 		Sound.play("map_select", MAP_TAP_DB)
-	else:
-		_select(null)
 	_refresh()
+
+
+## A tap with a machine in hand (_on_hex_tapped).
+func _tap_in_hand(sel: Unit, h: Vector2i, u: Unit) -> void:
+	var wps := battle.waypoints(sel)
+	var k := wps.rfind(h)
+	if k == wps.size() - 1 and k >= 0:
+		_execute_unit(sel)
+		return
+	if k >= 0:
+		battle.back_to_waypoint(sel, k + 1)
+		Sound.play("ui_back", MAP_TAP_DB)
+		_select(sel)
+		_refresh()
+		_autosave()
+		return
+	if u != null and u.is_enemy():
+		if battle.order_of(sel) == u:
+			if battle.pending(sel):
+				_execute_unit(sel)
+			else:
+				_let_go(sel)   # its move has played onto it already: nothing more to give
+			return
+		_order_attack(sel, u, [])
+		return
+	if u == null and _map.destinations.has(h) and not battle.move_to(sel, h).is_empty():
+		_planned(sel)
+		return
+	if u != null and u != sel and u.is_player() and not u.is_static():
+		# Another machine: the plan in hand is cancelled and that one comes into hand (Ryan, 22
+		# November, asked: "Cancel it, select new").
+		battle.cancel(sel)
+		_select(u)
+		_on_unit_held(u)
+		Sound.play("map_select", MAP_TAP_DB)
+		_refresh()
+		_autosave()
+		return
+	_let_go(sel)
+
+
+## The machine in hand let go: its plan in hand cancelled, every step of it off the undo (Ryan,
+## 22 November: "If at any point the order is cancelled ... anything queued to undo by that order
+## is removed"). A move that has played is UNDO's alone to take back.
+func _let_go(sel: Unit) -> void:
+	var had := battle.cancel(sel)
+	_select(null)
+	Sound.play("ui_back", MAP_TAP_DB)
+	_refresh()
+	if had:
+		_autosave()
 
 
 var _draft_unit: Unit = null   # the machine whose route is being drawn by hand
@@ -693,6 +728,11 @@ var _drag_target: Unit = null  # the pack under the finger as the route is drawn
 func _on_route_drag_started(u: Unit) -> void:
 	if battle.state != Battle.State.PLAN or _map.is_playing() or battle.actions_left(u) <= 0:
 		return
+	if battle.pending(u):
+		return   # a route is drawn for a first leg alone: a machine with waypoints lays its next by a tap
+	var sel: Unit = _map.selected
+	if sel != null and sel != u:
+		battle.cancel(sel)   # another machine taken: the plan in hand goes, as a tap on it does
 	_details.visible = false
 	_select(u)   # its destinations light while the finger draws
 	_draft_unit = u
@@ -729,15 +769,18 @@ func _on_route_drag_ended(commit: bool) -> void:
 	_drag_target = null
 	_map.draft = []
 	_map.draft_land = {}
-	if u != null and commit and target != null:
+	if u == null:
+		_refresh()
+		return
+	if commit and target != null:
 		_order_attack(u, target, draft)
 		return
-	if u != null and commit and not draft.is_empty():
+	if commit and not draft.is_empty():
 		if battle.move_along(u, draft):
 			_planned(u)
 			return
 		_refuse()
-	_select(null)
+	_select(u)
 	_refresh()
 
 
@@ -781,7 +824,7 @@ func pack_lines(u: Unit) -> Array:
 		for m in u.member_list():
 			if not parts.is_empty():
 				parts.append("·")
-			parts.append_array([str(db.foes.get(str(m[0]), {}).get("name", str(m[0]))), "×%d" % int(m[1])])
+			parts.append(str(db.foes.get(str(m[0]), {}).get("name", str(m[0]))))   # no count (Ryan, 23 November: "Packs on the map don't need their count numbers"): its formation, a double-tap, shows them
 		parts.append_array(["·", "Move", str(u.movespeed)])
 		if u.traits.has("winged"):
 			parts.append_array(["·", "Winged"])   # it crosses water and crags as a flyer does
@@ -999,10 +1042,55 @@ func _on_hex_double_tapped(h: Vector2i) -> void:
 		return
 	var u := _map.unit_at_shown(h)
 	if u == null:
-		return   # the gate and the rift carry no entry on the map (Ryan, 9 November: not selectable)
+		# A cache has its codex (Ryan, 23 November: "Should be able to double-tap a cache on the map
+		# and open a codex entry for it"); the gate and the rift carry none (9 November: not selectable).
+		var cache := battle.field.cache_at(h)
+		if not cache.is_empty():
+			_details.visible = false
+			_codex.move_to_front()
+			_codex.open(cache_codex(cache))
+		return
 	_details.visible = false
+	if u.is_enemy() and not u.is_boss:
+		# A pack shows its formation (the same day: "When double tapping a pack, it should show the
+		# formation. Double tapping a unit in the formation opens it's codex entry").
+		var entry := codex_entry_for(u)
+		_formation.move_to_front()
+		_formation.open(str(entry.get("title", u.display_name)), str(entry.get("subtitle", "")), FormationBox.cells_of(u))
+		return
 	_codex.move_to_front()
 	_codex.open(codex_entry_for(u))
+
+
+## A foe in an open formation double-tapped: its codex in the formation's place, one shade on the
+## screen (Ryan, 23 November: the two plates' shades doubled), BACK returning to the formation.
+func _on_formation_foe(fid: String) -> void:
+	var db := ContentDB.load_default()
+	if not db.foes.has(fid):
+		return
+	_formation.visible = false   # set aside as it stands, not closed: BACK shows it again
+	var entry := db.codex_for_foe(db.make_foe(fid))
+	entry["back"] = func() -> void:
+		_formation.move_to_front()
+		_formation.visible = true
+	_codex.move_to_front()
+	_codex.open(entry)
+
+
+## A cache's codex: its kind's name, its tier, what such a kind holds by its numbers, its codex
+## text (Ryan's to write; empty until he does), as the cache's readout says them (cache_lines).
+static func cache_codex(c: Dictionary) -> Dictionary:
+	var db := ContentDB.load_default()
+	var t := int(c.get("tier", 1))
+	var kind := db.loot_kind_of_tier(t)
+	var e: Dictionary = db.loot.get(kind, {})
+	var sv: Array = e.get("salvage", [0, 0])
+	var items: Array = [["salvage", "%d-%d" % [int(sv[0]), int(sv[1])]]]
+	if int(e.get("components", 0)) > 0:
+		items.append(["components", str(int(e["components"]))])
+	if float(e.get("blueprint", 0.0)) > 0.0:
+		items.append(["blueprint", "%d%%" % roundi(float(e["blueprint"]) * 100.0)])
+	return {"title": str(e.get("name", kind)), "subtitle": "CACHE // TIER %d" % t, "body": str(e.get("codex", "")), "stat_items": items, "faces": [], "current": -1}
 
 
 static func codex_entry_for(u: Unit) -> Dictionary:
@@ -1016,7 +1104,7 @@ static func codex_entry_for(u: Unit) -> Dictionary:
 		return {"title": u.display_name, "subtitle": str(u.faction).to_upper(), "body": ""}
 	var entry := db.codex_for_foe(db.make_foe(fid))
 	entry["title"] = u.display_name
-	entry["subtitle"] = "%s // %s" % [entry["subtitle"], (("BOSS // SEALED" if u.sealed else "BOSS") if u.is_boss else "×%d // MOVE %d" % [u.strength, u.movespeed])]
+	entry["subtitle"] = "%s // %s" % [entry["subtitle"], (("BOSS // SEALED" if u.sealed else "BOSS") if u.is_boss else "MOVE %d" % u.movespeed)]
 	if u.traits.has("winged"):
 		entry["subtitle"] += " // WINGED"   # it crosses water and crags as a flyer does
 	return entry
@@ -1042,18 +1130,20 @@ func _on_undo() -> void:
 	var u := battle.undo()
 	Sound.play("ui_back")
 	_details.visible = false
-	_select(u if u != null and battle.can_move(u) else null)
+	# The machine the step was about comes into hand while it has a plan left to take back, and is
+	# let go once it has none (Ryan, 22 November: "Undo automatically selects the unit it is
+	# currently undoing").
+	_select(u if u != null and battle.pending(u) else null)
 	_refresh()
 	_autosave()
 
 
-## A move planned (the battle already has the machine at its route's end): the route shows from
-## where it stands, and it plays on EXECUTE, ENGAGE or END TURN (Ryan, 25 October: no waiting on
-## a walk to do the next thing). It stays in hand while it can still act, so a tap on a pack next
-## is its attack from the route's end (Abalon's move, then pick a target).
-func _planned(u: Unit, keep: bool = true) -> void:
+## A waypoint laid (the battle already has the machine at its route's end): the route shows from
+## where it stands, and the machine stays in hand, its reach drawn again from the waypoint, until
+## its move is executed or cancelled.
+func _planned(u: Unit) -> void:
 	Sound.play("plot")
-	_select(u if keep and battle.actions_left(u) > 0 else null)
+	_select(u)
 	_details.visible = false
 	_refresh()
 	_autosave()
@@ -1281,20 +1371,18 @@ var _inspect_pack: Unit = null
 
 ## Order a machine onto a pack (bible section 5; Battle.order_onto): along a drawn route first,
 ## if one was drawn, then the fight from the route's end if the pack is in range there; with no
-## route, from the farthest hex in range its move left reaches, or where it stands. A second tap
-## on the pack it is already ordered onto takes the order back. The move into range is planned
-## and one UNDO takes back the move and the order together.
+## route, from the farthest hex in range its move left reaches from its latest waypoint, or where
+## it stands. The move into range and the order are one step on the undo, and the machine stays in
+## hand: a second tap on the pack, or on its latest waypoint, executes it. A pack out of its reach
+## cancels the plan in hand and lets it go (Ryan, 22 November, asked), its refusal said.
 func _order_attack(m: Unit, target: Unit, draft: Array) -> void:
 	match battle.order_onto(m, target, draft):
 		"ordered":
 			Sound.play("plot")
-			_select(null)
+			_select(m)
 		"moved":
 			Sound.play("ui_back")   # the drawn route ended out of range: it moved, and no order
-			_select(null)
-		"cancelled":
-			Sound.play("ui_back")
-			_select(null)
+			_select(m)
 		"refused":
 			Sound.play("ui_back")
 			if not battle.forced.is_empty():
@@ -1303,15 +1391,15 @@ func _order_attack(m: Unit, target: Unit, draft: Array) -> void:
 			return
 		"out_of_reach":
 			Sound.play("ui_back")
+			battle.cancel(m)
+			_select(null)
 			_show_details(notice_lines("Out of reach", "%s cannot get within %d of it this turn" % [m.display_name, m.attack_range]))
-			_refresh()
-			return
 		"no_room":
 			_refuse()
-			_select(null)
+			_select(m)
 		_:
 			Sound.play("ui_back")
-			_select(null)
+			_select(m)
 	_refresh()
 	_autosave()
 
@@ -1354,15 +1442,17 @@ func _ordered_onto(targets: Array) -> Array:
 	return out
 
 
-## The one button: ENGAGE while a fight is ready, EXECUTE while planned moves wait to play, END
-## TURN otherwise.
+## The one button: EXECUTE for the machine in hand, else ENGAGE while a fight is ready, else END
+## TURN.
 func _on_main_button() -> void:
 	if battle.state != Battle.State.PLAN or _map.is_playing():
 		return
-	if not battle.next_fight().is_empty():
+	var held: Unit = _map.selected
+	if held != null:
+		if battle.pending(held):
+			_execute_unit(held)
+	elif not battle.next_fight().is_empty():
 		_engage()
-	elif not battle.planned.is_empty():
-		_execute()
 	else:
 		_ask_end_turn()
 
@@ -1371,23 +1461,23 @@ var _executing := false   # the moves EXECUTE took are playing: the button keeps
 var _queue_pulse := false  # back from a fight with orders still waiting: the button pulses until the player does something else (the long wall brief 7.4)
 
 
-## EXECUTE: the planned moves play on the map and the turn goes on, with no enemy turn (Ryan, 2
-## November: "Movement should be able to be executed in sequence if the player wants, and
-## undone"). UNDO still takes them back, in order, each machine set back where it stood
-## (Battle.take_plan). A move that plays ends its machine's action, its attack ordered before it or
-## never (Ryan, 16 November: "if an attack wasn't ordered, it cannot attack ... Once execute is run,
-## the action is forfeit (barring undo, of course)"), so the machine in hand is let go as EXECUTE is
-## pressed, its reach dark at once ("When Execute is clicked, the movement range overlay should turn
-## off if visible").
-func _execute() -> void:
-	var plan := battle.take_plan()
-	if plan.is_empty():
-		return
+## EXECUTE: the machine in hand's move plays on the map at once and the turn goes on (Ryan, 22
+## November: "executes that move immediately, with the unit moving to that position"), one step on
+## the undo (Battle.execute). A move that plays ends its machine's action unless its attack was
+## ordered before it (Ryan, 16 November: "Once execute is run, the action is forfeit (barring
+## undo, of course)"), and the machine is let go, its reach dark at once.
+func _execute_unit(u: Unit) -> void:
+	var plan := battle.execute(u)
 	_details.visible = false
 	_select(null)
 	_map.queue_redraw()
+	if plan.is_empty():
+		Sound.play("plot")   # an order where it stands: nothing walks, the order stands as given
+		_refresh()
+		_autosave()
+		return
 	Sound.say("resolve_move")   # "in transit", "moving to intercept"
-	_autosave()   # the battle has every machine where its plan ends already
+	_autosave()   # the battle has the machine where its move ends already
 	_executing = true
 	_play_plan(plan, [], func() -> void:
 		_executing = false

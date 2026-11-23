@@ -3851,7 +3851,7 @@ func _land_blow(foe: Foe, blow: int, by: Unit, weapon: bool, aimed: bool, armour
 	var armoured := mini(taken, armour)
 	taken -= armoured
 	foe.hp -= taken
-	_note_blow(foe, strike, taken, kind)
+	_note_blow(foe, strike, taken, kind, weapon)
 	return {"taken": taken, "armoured": armoured, "barred": barred}
 
 
@@ -4928,7 +4928,7 @@ func _merge(f: Foe, a: Dictionary) -> void:
 		# Its own Empowered, gained in its own turn like a rallier's share of its rally: it
 		# halves as that turn ends, so half reaches its next blow.
 		Effects.stack(f, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:" + f.content_id, lift, Effects.DECAY_HALF)
-	log.append("%s: %s, %d taken in, regrows %d, Empowered ×%d" % [f.display_name, str(a.get("name", "merges")), taken, f.hp - before, lift])
+	log.append("%s: %s, %d taken in, regrows %d%s" % [f.display_name, str(a.get("name", "merges")), taken, f.hp - before, (", Empowered ×%d" % lift) if lift > 0 else ""])
 	_refresh_kin()
 
 
@@ -6182,6 +6182,11 @@ func reboot_mech(mech_index: int) -> bool:
 	var lit := Effects.clear_waiting_jams(ms.unit)
 	if lit > 0:
 		log.append("%s's reboot clears %d jammed entr%s" % [ms.unit.display_name, lit, "y" if lit == 1 else "ies"])
+	# And every corrupted entry heals (Ryan, 23 November: "Corrupted should heal on reboot, just
+	# like jammed").
+	var healed := Effects.clear_corruption(ms.unit)
+	if healed > 0:
+		log.append("%s's reboot heals %d corrupted entr%s" % [ms.unit.display_name, healed, "y" if healed == 1 else "ies"])
 	var vented := ms.heat
 	var shot := release_shot(ms)   # read while it holds its heat
 	ms.heat = 0
@@ -6212,6 +6217,7 @@ func _burrow(ms: MechState) -> void:
 		ms.heat = ms.heat_max
 	ms.overheated = false
 	var lit := Effects.clear_waiting_jams(ms.unit)
+	Effects.clear_corruption(ms.unit)   # the reboot's drop heals corruption as it lights a jam
 	ms.burrow_shield = maxi(0, ms.unit.shield_max - ms.unit.shield)
 	ms.burrow_heat = maxi(0, ms.heat)
 	var back := _recall_drill(ms)
@@ -6276,6 +6282,7 @@ func _burrowed_turn(ms: MechState) -> void:
 	var cool := mini(ms.heat, ceili(float(ms.burrow_heat) * float(share) / 100.0))
 	ms.heat -= cool
 	Effects.clear_waiting_jams(ms.unit)
+	Effects.clear_corruption(ms.unit)
 	var cap := maxi(1, int(rule.get("cap", 3)))
 	if Effects.stacks_of(ms.unit, "conserved_momentum") < cap:
 		Effects.stack(ms.unit, Effects.STATUS["conserved_momentum"], Effects.SKIRMISH, "burrow", 1, Effects.DECAY_NONE)
@@ -6692,9 +6699,10 @@ func _fall_with_cores() -> void:
 			log.append("%s falls, and its parts with it" % core.display_name)
 
 
-## A blow the spend under way landed on `foe`, for the screen (spend_blows).
-func _note_blow(foe: Foe, strike: int, taken: int, kind: String) -> void:
-	spend_blows.append({"foe": foe, "strike": strike, "taken": maxi(0, taken), "hp": foe.hp, "kind": kind})
+## A blow the spend under way landed on `foe`, for the screen (spend_blows); `weapon` false for
+## equipment's hit, which deals nothing of its own.
+func _note_blow(foe: Foe, strike: int, taken: int, kind: String, weapon: bool = true) -> void:
+	spend_blows.append({"foe": foe, "strike": strike, "taken": maxi(0, taken), "hp": foe.hp, "kind": kind, "weapon": weapon})
 
 
 ## The pack a foe fights for, or null (a test's foes come from none).

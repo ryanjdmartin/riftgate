@@ -397,7 +397,7 @@ godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmis
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn shot.png route
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/quick/quick_run_screen.tscn shot.png hangar
 RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn phone.png
-# Skirmish poses: codex, mechcodex, termtip, hold (the second die's readout), mechhold, foehold,
+# Skirmish poses: codex, mechcodex, dieview, termtip, hold (the second die's readout), mechhold, foehold,
 # confirm, lock, touch, pair, pair_spread (RIFTGATE_FOES=gel:2,goblin:3), swaphome, acquire,
 # strike, enemyturn, plaque, lure_all, rage, repick (RIFTGATE_FOES=wolf:3), columns
 # (RIFTGATE_FOES=goblin:4,mandragora:4), chips, essence (RIFTGATE_TEAM=ammit,badger), stores
@@ -407,7 +407,7 @@ RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . 
 # feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal.
 # Battle poses: select, route, hold, boss, ground, plan_play, execute, endask, inspect, hunter,
 # hunted, draft, carry, north, queue, attack, predict, caught, flyer, caches, cachesflat, zoom,
-# zoomlast, codex, foecodex, resolve, rift, tear, peak, fracture, elite, foe, onprops, logfull,
+# zoomlast, codex, formation, foecodex, resolve, rift, tear, peak, fracture, elite, foe, onprops, logfull,
 # engage, contact, bosscontact, menu, settings, trials, tune.
 # Quick campaign poses: draft, picked, hangar (RIFTGATE_SHOT_H=3000 shows the stores at its
 # foot), chooser, fight, track, rewards, over.

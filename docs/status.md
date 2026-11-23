@@ -78,7 +78,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1439 tests, 389,609 checks, green on Godot 4.8-beta4 (22 November, Exposed, Golden and Swallowed as stack timers). The runner fails a run
+- Tests: 1445 tests, 389,686 checks, green on Godot 4.8-beta4 (23 November, main taken in on the terminology branch: the tips to the standard, the stack timers). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -102,6 +102,13 @@ What is built runs as `docs/rules.md` states it (its known gaps at the end), and
 section 12 lists what waits on Ryan. Every number in content is a placeholder. Most of what
 was built for his eye is a first cut with a judge or play line in the to-do's Ryan list.
 
+- **The map's input is waypoints** (Ryan, 22 November, on `claude/map-movement-input-ygl9gr`, for
+  his play on the phone): a tap on a lit hex lays a waypoint and the reach is drawn again from it
+  with the move left; a tap on the latest waypoint or the ordered pack executes that machine at
+  once; an earlier waypoint cuts back; the machine itself, anything out of reach or another
+  machine cancels the plan in hand, its steps off the undo; the button is EXECUTE only with a
+  machine in hand; UNDO takes the machine it undoes in hand. The rules' Laying a move, The
+  button and UNDO; the bible's row. Not yet played on a device.
 - **The skirmish.** Every die rolls, the foes pick and show their moves, the player spends,
   locks and rerolls (two rerolls a round), then the foes act. A dealt component is a weapon or
   equipment; shields and vents are off the die, their slottable pieces planned drafts, and
@@ -286,7 +293,14 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
 - **The screens.** The harness (`godot --path .`) launches a battle as a run deals it, a lone
   fight, a saved battle and the quick campaign, and picks a machine's upgrade build. The
   skirmish screen, the battle screen, the pause menu and its settings are built; the hangar,
-  the mission map and the draft are not. A debug build's settings hold TRIALS and COLOURS
+  the mission map and the draft are not. In a fight (22 November) a foe's intent is a dark plate above
+  it, level with its gauge, its arrows leaving the foe's middle; a status chip is a square tile
+  with its number at its corner; a die is spent by dragging a large crosshair from it
+  (`AimLayer`), the die staying in its tray. Settings on a debug build compare the chip's forms
+  (CHIPS) and the tether's (TETHER) until Ryan picks. Since 23 November a die's double-tap shows
+  the whole die at its live numbers and a hold alone locks; a dark entry is its own face under a
+  veil; a unit's tap waits out the die's double-tap window; on the map a pack's double-tap opens
+  its formation (`FormationBox`) and a cache's its codex, and a pack shows no count. A debug build's settings hold TRIALS and COLOURS
   (`ColourTuner`: Ryan tunes there and sends its COPY text).
 - **The hangar page.** `tools/hangar.html` over `tools/hangar_data.py`'s files, a tab a kind
   since 20 November: Chassis (the Bench renamed: every machine a card, a tap its working sheet
@@ -442,11 +456,11 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   republishes while he is on the page.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.655 on 20 November from main's file at `33c4cc61` (the page's Version 519),
-  over this line's v0.654. Before republishing,
+  Published at v0.657 on 23 November from main's file at `b3f7c466` (the page's Version 520),
+  over v0.655 (the live page checked byte for byte against `33c4cc61`'s file first). Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
-  `33c4cc61` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  `b3f7c466` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
   live source with the tool's wrapper line, its trailing newline and `</body></html>`
   stripped): check BASE against the live page byte for byte first. After main merges in,
   check the tables script's run against the file's tables before keeping it: a row it

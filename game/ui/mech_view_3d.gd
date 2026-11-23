@@ -1000,7 +1000,8 @@ func _setup(chassis_id: String, maker: String) -> void:
 			# On its hex at the floor's scale, a tall machine kept to the same share of the hex
 			# a wide one is; the pivot under the stage still turns and bobs in model units.
 			var tall := hi.y - minf(lo.y, 0.0)
-			_field_scale = float(field.get("fill", 0.86)) / maxf(0.001, maxf(widest, tall * 0.8))
+			var stand := float(MechRig.load_sidecar(chassis_id).get("stand", 1.0))   # a model's own share beside its class's (lowforge's `stand`: the Macaque's)
+			_field_scale = float(field.get("fill", 0.86)) * stand / maxf(0.001, maxf(widest, tall * 0.8))
 			var at: Vector2 = field["at"]
 			_stage.position = Vector3(at.x, float(field.get("lift", 0.0)), -at.y)
 			_stage.scale = Vector3.ONE * _field_scale

@@ -728,7 +728,7 @@
    "id": "hardened",
    "category": "status",
    "name": "Hardened Light",
-   "codex": "When Hit: If its shield is up, -1 damage received per stack ({N}).\nWhen Broken: Reduce stacks to 0.",
+   "codex": "When Hit: If its shield is up, -1 damage received per stack ({N}).\nShield Broken: Reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 18 November: \"no innate shield armour. The Pulse grants one Hardened Light at tier 1. Hardened Light only decays when the shield breaks, and has a cap of 3 stacks\"; \"The reboot breaks it yes. When it breaks, it loses all of them. If it's weak, we'll buff it, but this is the best shape that doesn't add any weird exceptions. It contains high points and low points and that makes it interesting and healthy\". Shield armour, never armour, so an Expose leaves it (\"It's the only tank not weak to Expose\"), and it takes nothing off a blow on bare hull, a tick or a burn. What reopens it: a Purge proving too threatening, which moves it to a resource bar in place of a buff (his word the same day). His name of 17 November; the session's Hardened before it, a stack off each turn start for a day.",
@@ -776,7 +776,7 @@
    "id": "corrupted",
    "category": "status",
    "name": "Corrupted",
-   "codex": "Commit: This machine takes 3 damage per stack ({N}).\nLasts the skirmish.",
+   "codex": "Commit: This machine takes 3 damage per stack ({N}).\nOn Reboot: Reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "The bite is the status's own number in the engine's table, a placeholder.",
@@ -784,7 +784,7 @@
      "kind": "debuff",
      "on": "machine",
      "stacks": "Yes: its bite a stack",
-     "lasts": "The skirmish"
+     "lasts": "Until the machine reboots"
     }
    }
   },

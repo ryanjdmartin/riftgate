@@ -176,7 +176,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    passive's or a status's: a chassis has neither of its own; a shield gain like any). Every die rolls;
    entries are equally likely.
 2. Every foe picks its move, then its target; both show, exact, before the player acts, its
-   intent chip under it: the move's kind, its blow's number and strikes, and each rider by its
+   intent plate above it: the move's kind, its blow's number and strikes, and each rider by its
    mark, a numbered one with its stacks. A blow's number counts the rallies on their way to it
    this round (Empowered, below).
 3. The player's turn: spend, lock and reroll in any order. Each spend resolves fully before
@@ -250,8 +250,9 @@ whole. A second one renews to the larger count, never adds.
   follows the same rule (Rapid's free reroll, the Booster, the Uplink, the
   Reveille Horn), but Instant's, kept on purpose and shown on the die by its keyword: it rolls as
   the round's opening roll does, itself included, and spins every chamber on the Cassowary's
-  die. Double-tap or hold a die to lock it, and again to unlock it; spending
-  unlocks it; locks clear each round.
+  die. Hold a die to lock it, and again to unlock it; spending
+  unlocks it; locks clear each round. A double-tap shows the whole die, its loadout, every entry at its
+  live numbers, the one showing marked.
 - **A folded die** (the Clydesdale's Disappearing Carriages): its hardpoints are two batteries
   of four, one up at a time, and every roll and reroll lands among the battery up and its fixed
   pieces, the Changeover live on both. The Changeover (Rapid, spent on itself) turns
@@ -288,7 +289,8 @@ whole. A second one renews to the larger count, never adds.
   player's turn ends are banked, up to three, and come back at the next round's start beside
   its two, spent like any reroll; a roar's cost comes off the whole. It banks while the
   Giant Petrel fights: wrecked by the next round's start, it carries nothing.
-- **Spending**: drag a die onto a target: a weapon or a debuff onto a foe in reach, a shield, a
+- **Spending**: aim a die at a target, its crosshair dragged from the die (the die stays in its
+  tray, showing what it will deal there) and let go there: a weapon or a debuff onto a foe in reach, a shield, a
   vent or a buff onto a machine it may reach. Each die is spent once a round (Rapid and Instant excepted). A blank does
   nothing; an unspent die is lost. On screen a spend's hits and shots land one at a time, a beat
   apart, every one of them: each foe a hit reaches flashes, its gauge steps down to what the blow
@@ -332,7 +334,9 @@ whole. A second one renews to the larger count, never adds.
   stepping die's next entry by its mark and the
   number it will show (the Cassowary's), the shield a zap will pay by the shield's mark ("-2",
   the Buzzard's). The readout says each on a line of its own, headed by
-  the same box. A dark entry is blank, its clock and its turns left along the foot. How each
+  the same box. A dark entry does nothing, and the die shows its own face dimmed under a veil of
+  stripes, a plate on its foot with the clock and its turns left (a cooldown, Rapid's own
+  switch-off) or the reboot's mark, the stripes heavier and in the red-red (a foe's jam). How each
   mark is drawn is `tools/die_sheet.gd`'s sheet and the bible's section 6.
 
 ### Reach
@@ -447,7 +451,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   nothing); every modifier and the foe's own reads then count on each hit. A machine carrying
   Ricochet strikes again after each shot (Ricochet, below).
 - **The die shows the number** one blow will deal after every modifier; a debuff shows none,
-  and a gun whose blow is nothing here shows 0. Dragged over a foe it may strike,
+  and a gun whose blow is nothing here shows 0. Aimed at a foe it may strike,
   it shows that foe's number: its missing hull, conditions on it, its Brittle, its armour off. A
   Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
@@ -464,10 +468,11 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   strike each say so. No source is listed. A tap on it again closes it, and it
   is one readout with the units' (below): a tap on another die or a unit moves it. A die's tap
   lands once the double-tap window (0.15 s, from the tap's release to a second touch) has passed
-  with no second touch, the die lit from the touch until it does, so a double-tap only locks and
-  leaves the readouts as they stand; a tap
-  that lands as the enemy's turn replays, or under a codex, opens nothing. The whole die is in
-  the codex (double-tap the machine). **The keywords list**, in the pause menu, gives every reach, keyword, rule and status the dice and chips print, and the keywords
+  with no second touch, the die lit from the touch until it does, so a double-tap never flashes
+  the readout open; a unit's tap in a fight waits out the same window; a tap
+  that lands as the enemy's turn replays, or under a codex, opens nothing. The whole die as the
+  fight has it is the die's double-tap; as it stands between fights, the codex's (double-tap the
+  machine). **The keywords list**, in the pause menu, gives every reach, keyword, rule and status the dice and chips print, and the keywords
   a foe's move carries (Every Machine, Countdown, Last Act and the rest), with its codex line. Wherever shown text names one of those terms (the holds, the readouts, the codex, the
   list itself), it reads bold in its colour with its icon before it, and a tap on it opens its
   entry beside the word, where its own terms open theirs; a tap anywhere else closes it. A term
@@ -649,9 +654,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   fells its first target moves the corpse, which dies in the slot it was moved to and gets back
   up or splits there. A Mine moves with its foe.
   A foe keeps its pick and its move, from the rank it now stands in (a back foe pulled into the
-  front stands exposed to Direct fire). On the screen: drag the die to the first target and
-  drop it; the second targets light; tap one to spend it; a tap or a hold on the die reads it; drag the die
-  again to move it or set it back. A tap on the ground sets it back too, the die flying home,
+  front stands exposed to Direct fire). On the screen: aim the die at the first target and
+  let go; the crosshair stays pinned there and the second targets light; tap one to spend it; a tap or a hold on the die reads it; drag from the die
+  again to aim anew or set it back. A tap on the ground sets it back too,
   once no readout is open: the first such tap closes the open readout.
 - **Sap** (with a number; the Baboon's Redshift Emitter, beside a Purge 1): each foe hit gains
   that many stacks of Sapped a strike, laid once the strikes are done.
@@ -1001,10 +1006,12 @@ On a machine:
   foe runs 1 hotter a stack, until its turn ends, when every stack goes, so it never piles up.
   Cleansable.
 - **Jammed** (debuff, a foe's jam): the entry comes up blank until the machine reboots, the
-  reboot's drop lighting it, or a Cleanse lifts it; no clock ends it, and the die's foot shows
-  the reboot's mark on it in place of a count.
+  reboot's drop lighting it, or a Cleanse lifts it; no clock ends it, and its veil carries the
+  reboot's mark in place of a count. A cooldown is no debuff: the spend's own price, its chip
+  saying no Debuff and wearing no wedge.
 - **Corrupted** (debuff): each spend of the entry bites its owner 3 a stack, shield first,
-  no armour off it; lasts the skirmish.
+  no armour off it; it lasts until the machine reboots, the reboot's drop healing every
+  corrupted entry as it lights a jam, or a Cleanse lifts it.
 - **Brittle** (debuff, from a foe's Brittle rider: the World Eater's pin; a foe's Brittle below
   is the same rule on the other body): every blow the machine takes deals a point more a
   stack, the shield taking the extra first as it takes any blow, and the stacks halve as its
@@ -1758,38 +1765,52 @@ a stat.
   wall, a hunter's machine; no other pack's whole way shows, a selected machine's hunters'
   included. Each machine has one action (the Dingo two, by its Retrograde Flywheel: it may
   move and act twice during each turn of the map phase, and inside a fight it spends its die once a round like any machine): one move,
-  in one go, then it may fight; a fight ends the action however it ends, and the board under the
-  map says what each can still do. The fight is ordered before the move plays: a move that plays
-  (EXECUTE, ENGAGE or END TURN) with no order standing ends the action there, and one that plays
-  with an order keeps that order as given, the machine taking no other and the order taken back
-  ending the action. A machine carried in another's move keeps its action and its move. A selected machine lights the hexes its move reaches, one
-  border round the whole reach, its dashes crawling as its target's do, and brackets the packs it could be ordered onto. A move is
-  planned: its route shows from where the machine stands, and the next move or order reads from
-  the route's end. An order can be given again: a machine with a move planned or an order
-  waiting shows, in hand, its reach from where it started, and a new move or order there
-  replaces the old one, its step on the undo taking the old one's place; a tap on it in hand
-  takes its order back and lets it go, and its steps come off the undo (the count drops, and an
-  UNDO never puts the order back); a tap on it with none lets it go. A machine it carried that has since been given an order of its own, or one whose
-  starting hex another now plans to stand on, is taken back by UNDO alone. The one button reads
-  ENGAGE while a fight is ready (a catch, or a machine ordered onto a pack), ENGAGE 1 OF N while
-  N fights wait, each numbered on the map in the order ENGAGE opens them (a catch first, then
-  the packs in the order their orders were given), else EXECUTE while planned moves wait, else
-  END TURN; back from a fight with more waiting, the orders stand and the button pulses. EXECUTE plays every planned move and the turn goes on, so moves play in
-  whatever sequence the player gives them; ENGAGE plays them first too (the boss's fight aside,
-  below), then the fight opens. EXECUTE lets go of the machine in hand, its reach dark at once.
-  UNDO takes back the last move or order, whoever made it, in the
-  order they were made, a move that has played included (the machine goes back where it
-  stood, its action whole again), back to the turn's start or the last fight. A caught machine's fights come first, one a
-  hunter, and the map draws each as the machine's order onto the hunter that caught it. END TURN asks first
+  laid a waypoint at a time until it plays, then it may fight; a fight ends the action however it
+  ends, and the board under the map says what each can still do. The fight is ordered before the
+  move plays: a move that plays (EXECUTE, ENGAGE or END TURN) with no order standing ends the
+  action there, and one that plays with an order keeps that order as given, the machine taking no
+  other. A machine carried in another's move keeps its action and its move.
+- **Laying a move**: a tap on a machine takes it in hand and lights the hexes its move reaches,
+  one border round the whole reach, its dashes crawling as its target's do, and brackets the packs
+  it could be ordered onto. A tap on a lit hex lays a waypoint there, the route to it the cheapest;
+  while move is left the reach is drawn again from that waypoint with what is left, and the next
+  tap extends from it, until the move is spent. Every waypoint stays lit and the route runs through
+  them from where the machine stands. A tap on a pack the move left reaches (from the latest
+  waypoint, to the farthest hex in attack range, or from the waypoint itself when it is beside the
+  pack) paths there and orders the machine onto it, one step; an order onto another pack replaces
+  it. A tap on an earlier waypoint takes back every step after it; a tap on the latest waypoint, or
+  on the pack it is ordered onto, executes its move at once, the machine walking there and let go.
+  A tap on the machine itself, or on anything out of its reach (a hex or a pack), cancels its plan
+  and lets it go, and the steps that plan put on the undo go with it; a tap on another machine
+  cancels it the same way and takes that one in hand. A move that has played is taken back by UNDO
+  alone. A route can also be drawn by hand for a first leg: a drag from the machine through the
+  hexes it should walk, let go on a hex for a waypoint or on a pack for an order.
+- **The button** reads EXECUTE while a machine is in hand, lit while it has waypoints or an order
+  to play, dimmed and disabled otherwise; EXECUTE plays its move as a tap on its latest waypoint
+  does. With none in hand it reads ENGAGE while a fight is ready (a catch, or a machine ordered
+  onto a pack), ENGAGE 1 OF N while N fights wait, each numbered on the map in the order ENGAGE
+  opens them (a catch first, then the packs in the order their orders were given), else END TURN;
+  back from a fight with more waiting, the orders stand and the button pulses. ENGAGE plays any
+  move still planned first (the boss's fight aside, below), then the fight opens.
+- **UNDO** takes back the last step, whoever made it, in the order made: a waypoint, an order, or
+  an executed move (the machine back where it stood, its waypoints and order as they were, its
+  action whole again), back to the turn's start or the last fight. The machine the step was about
+  comes into hand while it has a plan left, and is let go once it has none. A caught machine's
+  fights come first, one a hunter, and the map draws each as the machine's order onto the hunter
+  that caught it. END TURN asks first
   while a machine can still move or fight; then the turn ends: packs walk and strike; Rift
   Pressure rises one. Nothing returns on the map: the shield is full as every fight opens. Once every
   machine has fought, is ordered, is caught, or can neither move nor reach a pack where it
-  stands, the button pulses, whichever it reads.
+  stands, the button pulses while no machine is in hand.
 - **A tap and a double-tap** on the map work as a die's do in a fight: a double-tap on a
-  machine or a pack opens its codex, and a tap on one lands only once the double-tap window
+  machine, the boss or a cache opens its codex, and on a pack its formation, the grid the fight
+  will deal, back rank over front, a double-tap on a foe there opening that foe's codex in its
+  place, BACK returning to it; a codex or a formation shuts on a tap outside it, with no CLOSE; a tap
+  on one lands only once the double-tap window
   (0.1 s on the map, from the tap's release to a second touch; a die's is 0.15) has passed with no second touch, its hex
   bracketed from the touch until it does, so a double-tap never selects first; a tap on bare
-  ground lands at once.
+  ground lands at once. A pack shows no count on the map, in its readout or its plaque: its
+  formation does.
 - **The readout**: holding or tapping a machine, a pack, the boss or the ground shows
   it in the strip under the map, as the fight's holds read: a machine's hull as a gauge (its
   shield is the fight's), its move and actions left, a chip for its damaged components; a pack's
@@ -1800,10 +1821,8 @@ a stat.
   its name (a wall by what it is): who crosses it, who wades it and who cannot, and whether
   packs enter it. A refused order
   says what stopped it there too.
-- **Orders**: a tap or drag onto a pack plans the machine's move to the farthest hex in attack
-  range its move reaches (or leaves it, if in range) and orders it, one step for UNDO; a
-  second tap on the pack takes the order back. ENGAGE opens one fight at a time: the first
-  order's pack and every machine ordered onto it.
+- **Orders**: ENGAGE opens one fight at a time: the first order's pack and every machine ordered
+  onto it.
 - **A fight** is one pack: nothing joins it and it joins nothing; a hunter's
   catch is a fight a hunter, one hunter a machine. The machines whose engage range covers
   it (1: beside it, the one range everyone on the map has) may join. Orders onto several packs queue, ENGAGE opening them one at a

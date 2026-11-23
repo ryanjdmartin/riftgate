@@ -7120,6 +7120,7 @@ def macaque(b):
                 _beam(b, wing[0], wing[1], _mq_cs(1.6, 1.4, 0.3), _mq_cs(1.2, 1.0, 0.2), "livery.livery", label + "_edge")
     waist.__exit__(None, None, None)
     _macaque_motion(b, legs)
+    b.stand = 0.7   # fitted by its height it stood twice the wide mediums' (Ryan, 22 November: "The macaque needs to be smaller")
 
 macaque.maker = "aphelion"
 

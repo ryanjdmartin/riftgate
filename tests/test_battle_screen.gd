@@ -75,111 +75,198 @@ func test_a_tap_selects_and_a_lit_hex_plans_the_move() -> void:
 	assert_eq(s._map.plans.size(), 1, "with its route drawn")
 	assert_eq(s._map.unit_at_shown(start), m, "a tap where it stands finds it")
 	assert_eq(s._map.selected, m, "and it stays in hand, to pick a target from there")
+	assert_eq(s._resolve_btn.text, "EXECUTE", "the button executes the machine in hand")
+	assert_false(s._resolve_btn.disabled, "lit: a waypoint is laid")
 	assert_false(s._clear_btn.disabled, "the move can be undone")
 	assert_eq(s._clear_btn.text, "UNDO", "the button undoes whatever came last")
 	s._on_undo()
 	assert_eq(m.pos, start, "undo puts it back")
 	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "and the plan with it")
 	assert_true(s._clear_btn.disabled, "and there is nothing more to undo")
-	assert_eq(s._map.selected, m, "the machine back in hand")
+	assert_eq(s._map.selected, null, "nothing left of its plan: let go")
+	assert_eq(s._resolve_btn.text, "END TURN", "and the button ends the turn")
+	s._on_hex_tapped(m.pos)
+	assert_eq(s._resolve_btn.text, "EXECUTE", "in hand with nothing laid ...")
+	assert_true(s._resolve_btn.disabled, "... EXECUTE is dim")
 	s._on_hex_tapped(dest)
-	s._on_end_turn()
-	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "END TURN plays the plan")
+	s._on_hex_tapped(dest)   # its latest waypoint: executed at once
+	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "the tap on its waypoint plays the plan")
 	assert_eq(m.pos, dest, "and it stands where it went")
+	assert_eq(s._map.selected, null, "let go")
 	s.free()
 
 
-## A move entered reads EXECUTE, and EXECUTE plays it with the turn going on (Ryan, 2 November:
-## "it shouldn't "end turn" when a command is entered. Movement should be able to be executed in
-## sequence if the player wants, and undone"): no enemy turn, the next moves planned and played
-## after it, and UNDO takes them back in order, each machine where it stood, nothing planned again.
-func test_a_planned_move_reads_execute_and_plays_with_the_turn_going_on() -> void:
+## Waypoints (Ryan, 22 November): each tap on a lit hex lays one and draws the reach again from it;
+## a tap on an earlier one cuts back to it; a tap on the machine cancels the plan, its steps off
+## the undo; a tap on another machine cancels it and takes that one.
+func test_waypoints_are_laid_cut_back_and_cancelled_by_taps() -> void:
+	var s := _screen()
+	var b := s.battle
+	var m: Unit = b.mechs()[0]
+	var other: Unit = b.mechs()[1]
+	var start := m.pos
+	s._on_hex_tapped(start)
+	var laid: Array = []
+	while not s._map.destinations.is_empty() and laid.size() < 3:
+		var h: Vector2i = s._map.destinations.keys()[0]
+		s._on_hex_tapped(h)
+		laid.append(h)
+		assert_eq(s._map.selected, m, "still in hand")
+	assert_true(laid.size() >= 2, "two waypoints laid")
+	assert_eq(b.waypoints(m).size(), laid.size(), "a waypoint a tap")
+	assert_eq(s._map.plans.size(), laid.size(), "every leg drawn")
+	assert_eq(b.history.size(), laid.size(), "a step a waypoint")
+	s._on_hex_tapped(laid[0])
+	assert_eq(b.waypoints(m), [laid[0]] as Array[Vector2i], "an earlier waypoint cuts back to it")
+	assert_eq(b.history.size(), 1, "its later steps off the undo")
+	assert_eq(s._map.selected, m, "still in hand")
+	s._on_hex_tapped(start)   # the machine itself, drawn where it started
+	assert_eq(m.pos, start, "cancelled: back where it stood")
+	assert_eq(s._map.selected, null, "and let go")
+	assert_false(b.can_undo(), "nothing queued to undo")
+	s._on_hex_tapped(start)
+	s._on_hex_tapped(s._map.destinations.keys()[0])
+	s._on_hex_tapped(other.pos)
+	assert_eq(m.pos, start, "another machine tapped: the plan in hand cancelled")
+	assert_eq(s._map.selected, other, "and that one in hand")
+	assert_false(b.can_undo(), "its steps gone")
+	s._on_hex_tapped(b.map.rift)
+	assert_eq(s._map.selected, null, "a tap out of reach lets it go")
+	s.free()
+
+
+## UNDO follows the steps back across machines, taking each in hand while it has a plan left
+## (Ryan, 22 November, his own example: a Skua lays a waypoint and an order and executes, a
+## Badger lays two waypoints; five UNDOs take them back one at a time).
+func test_undo_walks_back_across_machines_selecting_each() -> void:
+	var s := _screen()
+	var b := s.battle
+	var skua: Unit = b.mechs()[0]
+	var badger: Unit = b.mechs()[1]
+	var sq: Unit = b.field.packs()[0]
+	var s0 := skua.pos
+	s._on_hex_tapped(s0)
+	var wp: Vector2i = s._map.destinations.keys()[0]
+	for h in s._map.destinations.keys():
+		if int(s._map.destinations[h]) == 1:
+			wp = h
+			break
+	s._on_hex_tapped(wp)
+	# A pack beside the waypoint, for the order.
+	for n in Hex.neighbors(wp):
+		if b.field.can_stand(sq, n) and b.field.unit_at(n) == null:
+			sq.pos = n
+			break
+	sq.behaviour = "push"
+	s._select(skua)
+	s._on_hex_tapped(sq.pos)
+	assert_eq(b.order_of(skua), sq, "ordered from its waypoint, beside the pack")
+	assert_eq(b.waypoints(skua), [wp] as Array[Vector2i], "no further move for it")
+	s._on_hex_tapped(sq.pos)   # the pack it is ordered onto: executed
+	assert_true(b.played.has(skua.id), "the Skua's move played")
+	assert_eq(s._map.selected, null, "let go")
+	assert_eq(s._resolve_btn.text, "ENGAGE", "with nothing in hand, the fight is ready")
+	s._on_hex_tapped(badger.pos)
+	var b0 := badger.pos
+	for i in range(2):
+		var h: Vector2i = Vector2i(-9999, -9999)
+		for d in s._map.destinations.keys():
+			if not Hex.are_adjacent(d, sq.pos) and d != sq.pos:
+				h = d
+				break
+		s._on_hex_tapped(h)
+	assert_eq(b.waypoints(badger).size(), 2, "the Badger's two waypoints")
+	s._on_undo()
+	assert_eq(b.waypoints(badger).size(), 1, "its last waypoint first")
+	assert_eq(s._map.selected, badger, "in hand")
+	s._on_undo()
+	assert_eq(badger.pos, b0, "then its first")
+	assert_eq(s._map.selected, null, "nothing left: let go")
+	s._on_undo()
+	assert_false(b.played.has(skua.id), "the Skua's execute undone")
+	assert_eq(s._map.shown[skua.id][0], s0, "warped back where it stood")
+	assert_eq(b.order_of(skua), sq, "its order intact")
+	assert_eq(s._map.selected, skua, "and in hand")
+	s._on_undo()
+	assert_eq(b.order_of(skua), null, "then its order")
+	assert_eq(s._map.selected, skua, "still in hand")
+	s._on_undo()
+	assert_eq(skua.pos, s0, "then its waypoint")
+	assert_eq(s._map.selected, null, "and let go")
+	assert_false(b.can_undo(), "the turn as it opened")
+	s.free()
+
+
+## EXECUTE plays the machine in hand's move with the turn going on (Ryan, 22 November: "Tapping
+## Execute is analogous to the execute above"): no enemy turn, the next machine's moves laid and
+## played after it, and UNDO takes them back in order.
+func test_execute_plays_the_machine_in_hand_and_the_turn_goes_on() -> void:
 	var s := _screen()
 	var b := s.battle
 	var a: Unit = b.mechs()[0]
 	var c: Unit = b.mechs()[1]
-	var d: Unit = b.mechs()[2]
 	var a0 := a.pos
 	var c0 := c.pos
-	var d0 := d.pos
 	var packs := {}
 	for sq in b.field.packs():
 		packs[sq] = sq.pos
 	s._on_hex_tapped(a.pos)
 	var ha: Vector2i = s._map.destinations.keys()[0]
 	s._on_hex_tapped(ha)
-	assert_eq(s._resolve_btn.text, "EXECUTE", "a move entered: the button executes it")
-	s._select(a)   # in hand with its reach lit, as a tap shows it
-	assert_false(s._map.destinations.is_empty(), "the machine in hand shows its reach")
+	assert_eq(s._resolve_btn.text, "EXECUTE", "a waypoint laid: the button executes it")
 	s._on_main_button()
 	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "EXECUTE plays the plan")
 	assert_true(s._map.destinations.is_empty(), "and turns the reach off (Ryan, 16 November: \"When Execute is clicked, the movement range overlay should turn off if visible\")")
-	# Its move played, its action is over (Ryan, 16 November: "Once execute is run, the action is
-	# forfeit"): let go.
 	assert_eq(s._map.selected, null, "the machine let go")
 	assert_eq(a.pos, ha, "the machine stands where it went")
 	assert_eq(b.field.phase, 0, "and the turn goes on")
-	assert_eq(b.state, Battle.State.PLAN, "the player's still")
 	for sq in packs.keys():
 		assert_eq(sq.pos, packs[sq], "no pack walked")
-	assert_eq(s._resolve_btn.text, "END TURN", "nothing waiting: the button ends the turn")
-	assert_false(s._clear_btn.disabled, "and the move can still be undone")
-	# Two more planned, then one EXECUTE plays both.
-	var dests := {}
-	for m in [c, d]:
-		s._on_hex_tapped(m.pos)
-		for h in s._map.destinations.keys():
-			if h != ha and not dests.values().has(h):
-				dests[m] = h
-				break
-		s._on_hex_tapped(dests[m])
-	assert_eq(s._map.shown.get(c.id, [Vector2i.ZERO])[0], c0, "the next moves are planned from where their machines stand")
-	assert_false(s._map.shown.has(a.id), "and the played one is not planned again")
-	assert_eq(s._resolve_btn.text, "EXECUTE", "EXECUTE again")
+	assert_eq(s._resolve_btn.text, "END TURN", "nothing in hand: the button ends the turn")
+	s._on_hex_tapped(c.pos)
+	var hc: Vector2i = s._map.destinations.keys()[0]
+	s._on_hex_tapped(hc)
+	assert_false(s._map.shown.has(a.id), "the played one is not planned again")
 	s._on_main_button()
-	assert_eq([a.pos, c.pos, d.pos], [ha, dests[c], dests[d]], "all three played, in sequence")
+	assert_eq([a.pos, c.pos], [ha, hc], "both played, in sequence")
 	s._on_undo()
-	assert_eq([a.pos, c.pos, d.pos], [ha, dests[c], d0], "UNDO takes the last back, the machine where it stood")
-	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "with the move played before it not planned again")
-	assert_eq(s._map.selected, d, "and back in hand to move again")
+	assert_eq(s._map.selected, c, "UNDO takes the last execute back, its machine in hand")
+	assert_eq(s._map.shown[c.id][0], c0, "shown where it stood, its waypoint laid")
 	s._on_undo()
-	assert_eq(c.pos, c0, "then the one before")
-	assert_true(s._map.plans.is_empty() and s._map.shown.is_empty(), "nothing planned")
+	assert_eq(c.pos, c0, "then its waypoint")
 	s._on_undo()
-	assert_eq(a.pos, a0, "then the first")
+	s._on_undo()
+	assert_eq(a.pos, a0, "then the first's")
 	assert_true(s._clear_btn.disabled, "back to the turn's start")
-	assert_eq(s._resolve_btn.text, "END TURN", "and the button ends the turn")
 	s.free()
 
 
-## ENGAGE still comes first with a fight ready, a move waiting or not; a move entered with nothing
-## else left to do pulses EXECUTE, the next press.
-func test_engage_comes_before_execute_and_execute_pulses_when_it_is_all_that_is_left() -> void:
+## EXECUTE shows only with a machine in hand; with none, ENGAGE comes first with a fight ready,
+## and only the button with nothing in hand pulses.
+func test_execute_is_the_machine_in_hands_and_engage_the_rest() -> void:
 	var s := _screen()
 	var b := s.battle
 	var a: Unit = b.mechs()[0]
-	var c: Unit = b.mechs()[1]
 	var sq: Unit = b.field.packs()[0]
-	var home := sq.pos
 	_engage(b, sq, a)
 	s._refresh()
-	s._on_hex_tapped(c.pos)
-	s._on_hex_tapped(s._map.destinations.keys()[0])
 	s._on_hex_tapped(a.pos)
 	s._on_hex_tapped(sq.pos)
-	assert_eq(b.order_of(a), sq, "one ordered")
-	assert_false(b.planned.is_empty(), "and another's move waiting")
-	assert_eq(s._resolve_btn.text, "ENGAGE", "the fight's button first")
-	s._on_undo()
-	assert_eq(s._resolve_btn.text, "EXECUTE", "the order taken back: the move's")
+	assert_eq(b.order_of(a), sq, "ordered")
+	assert_eq(s._resolve_btn.text, "EXECUTE", "in hand: the button executes")
+	s._on_hex_tapped(sq.pos)
+	assert_eq(s._map.selected, null, "the second tap on the pack executes and lets go")
+	assert_eq(s._resolve_btn.text, "ENGAGE", "the fight's button")
 	for m in b.mechs():
-		if m != c:
+		if m != a:
 			b.spent[m.id] = 1   # nothing else for anyone to do
-	sq.pos = home   # and the pack back where it spawned, out of reach of the one that moved
 	s._refresh()
 	assert_true(b.nothing_left(), "nothing left but the button")
-	assert_eq(s._resolve_btn.text, "EXECUTE", "which executes the move")
-	assert_true(s._resolve_btn.pulse, "and pulses")
+	assert_true(s._resolve_btn.pulse, "which pulses")
+	s._select(b.mechs()[1])
+	s._refresh()
+	assert_false(s._resolve_btn.pulse, "but not while a machine is in hand")
+	assert_true(s._resolve_btn.disabled, "whose EXECUTE is dim with nothing laid")
 	s.free()
 
 
@@ -236,35 +323,11 @@ func test_an_executed_move_is_saved_played() -> void:
 	assert_true(r._map.shown.is_empty(), "resumed, the map shows it there")
 	assert_eq(r._resolve_btn.text, "END TURN", "with nothing to execute")
 	r._on_undo()
-	assert_eq(loaded.field.unit_by_id(m.id).pos, start, "and its undo sets it back where it stood")
-	assert_true(r._map.plans.is_empty(), "with nothing planned again")
+	assert_eq(r._map.shown[m.id][0], start, "and its undo sets it back where it stood")
+	assert_eq(r._map.selected, loaded.field.unit_by_id(m.id), "its plan in hand again")
 	r.free()
 	s.free()
 	SaveGame.clear(TMP)
-
-
-func test_undo_takes_back_an_order_and_the_moves_in_the_order_made() -> void:
-	var s := _screen()
-	var b := s.battle
-	var a: Unit = b.mechs()[0]
-	var c: Unit = b.mechs()[1]
-	var sq: Unit = b.field.packs()[0]
-	_engage(b, sq, a)
-	s._refresh()
-	var c0 := c.pos
-	s._on_hex_tapped(c.pos)
-	var dest: Vector2i = s._map.destinations.keys()[0]
-	s._on_hex_tapped(dest)
-	s._on_hex_tapped(a.pos)
-	s._on_hex_tapped(sq.pos)
-	assert_eq(b.order_of(a), sq, "ordered")
-	s._on_undo()
-	assert_eq(b.order_of(a), null, "the order comes back first")
-	assert_eq(c.pos, dest, "the other machine's move still planned")
-	s._on_undo()
-	assert_eq(c.pos, c0, "then the move")
-	assert_true(s._clear_btn.disabled, "and nothing is left")
-	s.free()
 
 
 func test_a_second_tap_lets_a_machine_go() -> void:
@@ -302,15 +365,17 @@ func test_a_tap_on_a_pack_with_a_machine_in_hand_orders_it_and_engage_opens_the_
 	s._on_hex_tapped(sq.pos)
 	assert_eq(b.order_of(m), sq, "ordered onto the pack")
 	assert_eq(b.state, Battle.State.PLAN, "nothing opens on the tap")
-	assert_eq(s._resolve_btn.text, "ENGAGE", "the button reads ENGAGE")
+	assert_eq(s._map.selected, m, "the machine still in hand")
 	assert_false(s._map.attack.is_empty(), "the map shows the fight")
 	assert_true((s._map.attack["committed"] as Array).has(m), "with the machine in it")
 	s._on_hex_tapped(m.pos)
-	s._on_hex_tapped(sq.pos)
-	assert_eq(b.order_of(m), null, "a second tap on its pack takes the order back")
+	assert_eq(b.order_of(m), null, "a tap on the machine cancels the order")
+	assert_eq(s._map.selected, null, "and lets it go")
 	assert_eq(s._resolve_btn.text, "END TURN", "and the button ends the turn again")
 	s._on_hex_tapped(m.pos)
 	s._on_hex_tapped(sq.pos)
+	s._on_hex_tapped(sq.pos)   # executed
+	assert_eq(s._resolve_btn.text, "ENGAGE", "the button reads ENGAGE")
 	s._on_main_button()
 	assert_true(s._skirmish != null, "ENGAGE opens the skirmish screen")
 	assert_true(s._board._title().begins_with("FIGHT"), "the board says so")
@@ -342,6 +407,7 @@ func test_a_fracture_earned_by_a_fight_is_announced_on_the_top_bar() -> void:
 	_engage(b, sq, m)
 	s._refresh()
 	s._on_hex_tapped(m.pos)
+	s._on_hex_tapped(sq.pos)
 	s._on_hex_tapped(sq.pos)
 	s._on_main_button()
 	var sk: Skirmish = s._skirmish.sk
@@ -540,61 +606,6 @@ func test_a_packs_target_is_the_thing_it_attacks() -> void:
 ## from where it started; a new move replaces the planned one, one step on the undo where there
 ## was one; a tap on it takes its order back, lets it go and takes its step off the undo; and
 ## another machine's step given since keeps its own, forgetting the plan taken back.
-func test_an_order_is_given_again_and_taken_back_by_a_tap() -> void:
-	var s := _screen()
-	var b := s.battle
-	var m: Unit = b.mechs()[0]
-	var other: Unit = b.mechs()[1]
-	var start := m.pos
-	s._on_hex_tapped(start)
-	var reach: Dictionary = s._map.destinations.duplicate()
-	assert_true(reach.size() >= 2, "a reach to move in")
-	var first: Vector2i = reach.keys()[0]
-	s._on_hex_tapped(first)
-	assert_eq(m.pos, first, "the move planned")
-	assert_true(b.has_plan(m), "it has a plan")
-	assert_eq(b.history.size(), 1, "one step on the undo")
-	assert_eq(s._map.selected, m, "still in hand")
-	assert_eq(s._map.destinations.keys().size(), reach.size(), "its reach from where it started, to give the move again")
-	var second: Vector2i = first
-	for h in reach.keys():
-		if h != first:
-			second = h
-			break
-	s._on_hex_tapped(second)
-	assert_eq(m.pos, second, "the new move in the old one's place")
-	assert_eq(b.plan_pieces().filter(func(p: Dictionary) -> bool: return int(p["unit"]) == m.id).size(), 1, "one move planned, not two")
-	assert_eq(b.plan_pieces()[0]["from"], start, "from where it started")
-	assert_eq(b.history.size(), 1, "still one step: the new move took the old one's place on the undo")
-	# Another machine moves after it; then the first's order is taken back by a tap.
-	s._on_hex_tapped(start)   # a tap on the machine in hand (drawn where it started) ...
-	assert_eq(m.pos, start, "... takes its order back")
-	assert_false(b.has_plan(m), "nothing planned")
-	assert_eq(s._map.selected, null, "and lets it go")
-	assert_eq(b.history.size(), 0, "its step is off the undo: nothing to take back")
-	s._on_hex_tapped(start)
-	s._on_hex_tapped(first)
-	var o_start := other.pos
-	s._on_hex_tapped(o_start)
-	var o_to: Vector2i = o_start
-	for h in s._map.destinations.keys():
-		if h != first:
-			o_to = h
-			break
-	s._on_hex_tapped(o_to)
-	assert_eq(b.history.size(), 2, "two machines moved: two steps")
-	s._select(m)
-	s._on_hex_tapped(start)
-	assert_eq(m.pos, start, "the first machine's move taken back out of order")
-	assert_eq(other.pos, o_to, "the other's stands")
-	assert_eq(b.history.size(), 1, "one step left, the other's")
-	b.undo()
-	assert_eq(other.pos, o_start, "UNDO takes the other's back")
-	assert_eq(m.pos, start, "and never puts the first's plan back")
-	assert_false(b.has_plan(m) or b.has_plan(other), "the turn as it opened")
-	s.free()
-
-
 func test_a_hunters_catch_is_fought_first() -> void:
 	var s := _screen()
 	var b := s.battle
@@ -621,10 +632,12 @@ func test_a_hunters_catch_is_fought_first() -> void:
 	s._on_hex_tapped(hunter.pos)
 	assert_eq(b.order_of(m), hunter, "ordered onto its hunter as well")
 	assert_eq(s._map.order_pairs().filter(func(p: Array) -> bool: return p[0] == m).size(), 1, "it is still the one line")
+	s._on_hex_tapped(hunter.pos)   # executed
 	var other: Unit = b.field.packs()[1]
 	s._on_hex_tapped(b.mechs()[1].pos)
 	s._on_hex_tapped(other.pos)
 	assert_eq(b.order_of(b.mechs()[1]), null, "another pack cannot be ordered on first")
+	s._on_hex_tapped(b.mechs()[1].pos)   # let go
 	s._on_end_turn()
 	assert_eq(b.field.phase, 0, "nor the turn ended")
 	s._on_main_button()
@@ -647,6 +660,7 @@ func test_the_boss_fight_plays_its_theme() -> void:
 	_engage(b, b.boss, b.mechs()[0])
 	s._refresh()
 	s._on_hex_tapped(b.mechs()[0].pos)
+	s._on_hex_tapped(b.boss.pos)
 	s._on_hex_tapped(b.boss.pos)
 	s._on_main_button()
 	assert_true(b.boss_fight, "the boss's fight")
@@ -875,7 +889,9 @@ func test_hold_shows_a_readout() -> void:
 	assert_false(s._details.visible, "hidden on release")
 	var sq: Unit = s.battle.field.packs()[0]
 	s._on_unit_held(sq)
-	assert_true(s._details_entry.text().contains("×%d" % int(sq.member_list()[0][1])), "the pack's members, each at its count")
+	var first_name := str(ContentDB.load_default().foes.get(str(sq.member_list()[0][0]), {}).get("name", ""))
+	assert_true(s._details_entry.text().contains(first_name), "the pack's members by name")
+	assert_false(s._details_entry.text().contains("×"), "and no count (23 November: its formation counts them)")
 	assert_false(s._details_entry.text().contains("Ring"), "no ring line: a hunter catches at the engage range everyone shares (10 November)")
 	assert_true(s._details_entry.text().contains("Marches") or s._details_entry.text().contains("Hunts"), "and what it is doing")
 	if sq.behaviour != "hunt":
@@ -929,7 +945,9 @@ func test_gate_falling_shows_the_outcome() -> void:
 	s.free()
 
 
-func test_double_tap_opens_the_codex_for_a_machine_and_a_pack() -> void:
+## A double-tap on the map (Ryan, 23 November): a machine's codex; a pack's formation, a foe in it
+## its own codex over it; a cache's codex.
+func test_double_tap_opens_a_machines_codex_a_packs_formation_and_a_caches_codex() -> void:
 	var s := _screen()
 	var m: Unit = s.battle.mechs()[0]
 	s._on_hex_double_tapped(m.pos)
@@ -939,11 +957,33 @@ func test_double_tap_opens_the_codex_for_a_machine_and_a_pack() -> void:
 	assert_false(s._codex.visible, "and closes")
 	var sq: Unit = s.battle.field.packs()[0]
 	s._on_hex_double_tapped(sq.pos)
-	assert_true(s._codex.visible, "the codex opens for a pack")
-	assert_eq(s._codex._title.text, sq.display_name, "headed by the pack")
-	assert_true(s._codex._sub.text.contains("×%d" % sq.strength), "with its strength in the subtitle")
-	assert_true(not s._codex._body.text().is_empty(), "and its foe type's codex text")
-	s._codex.close()
+	assert_false(s._codex.visible, "a pack opens no codex")
+	assert_true(s._formation.visible, "but its formation")
+	assert_eq(s._formation._title.text, sq.display_name, "headed by the pack")
+	assert_false(s._formation._sub.text.contains("×"), "no count in its subtitle")
+	var cells := FormationBox.cells_of(sq)
+	var heads := cells.filter(func(c) -> bool: return not str(c).is_empty()).size()
+	assert_eq(heads, sq.member_list().reduce(func(a: int, m: Array) -> int: return a + int(m[1]), 0), "every foe in it a cell")
+	var fid := ""
+	for c in cells:
+		if not str(c).is_empty():
+			fid = str(c)
+			break
+	s._formation.foe_double_tapped.emit(fid)
+	assert_true(s._codex.visible, "a foe double-tapped there opens its codex")
+	assert_eq(s._codex._title.text, str(ContentDB.load_default().foes[fid]["name"]), "that foe's")
+	assert_false(s._formation.visible, "in the formation's place: one shade, never two")
+	assert_true(s._codex._back_btn.visible, "with BACK")
+	s._codex._go_back()
+	assert_true(s._formation.visible and not s._codex.visible, "BACK returns to the formation")
+	s._formation.close()
+	if not s.battle.field.caches.is_empty():
+		var c: Dictionary = s.battle.field.caches[0]
+		if s._map.unit_at_shown(c["pos"]) == null:
+			s._on_hex_double_tapped(c["pos"])
+			assert_true(s._codex.visible, "a cache opens its codex")
+			assert_true(s._codex._sub.text.begins_with("CACHE"), "named a cache")
+			s._codex.close()
 	s.free()
 
 
@@ -1022,6 +1062,7 @@ func test_a_skirmish_quit_leaves_the_battle_too() -> void:
 	s._refresh()
 	s._on_hex_tapped(b.mechs()[0].pos)
 	s._on_hex_tapped(b.field.packs()[0].pos)
+	s._on_hex_tapped(b.field.packs()[0].pos)
 	s._on_main_button()
 	assert_true(s._skirmish != null, "skirmish screen opened")
 	var quits: Array = []
@@ -1061,6 +1102,8 @@ func test_the_battle_is_saved_as_it_goes_and_resumes() -> void:
 	assert_eq(r._skirmish, null, "no fight opened on its own")
 	r.free()
 	# Into the fight, and the save follows every change.
+	s._select(null)
+	s._refresh()
 	s._on_main_button()
 	var sk: Skirmish = s._skirmish.sk
 	var before := FileAccess.get_file_as_string(TMP)
@@ -1209,7 +1252,7 @@ func test_execute_lets_the_machine_go_and_its_action_is_over() -> void:
 	sq.behaviour = "push"
 	s._select(a)
 	s._on_hex_tapped(stop)
-	assert_eq(s._map.selected, a, "planned, the machine stays in hand for an attack from the route's end")
+	assert_eq(s._map.selected, a, "laid, the machine stays in hand for an attack from the waypoint")
 	assert_false(s._map.threat.is_empty(), "its reach for one drawn")
 	s._on_main_button()
 	assert_eq(a.pos, stop, "the move played")
@@ -1219,9 +1262,11 @@ func test_execute_lets_the_machine_go_and_its_action_is_over() -> void:
 	s._on_hex_tapped(a.pos)
 	s._on_hex_tapped(sq.pos)
 	assert_eq(b.order_of(a), null, "the pack beside it cannot be ordered on")
-	assert_eq(s._resolve_btn.text, "END TURN", "no fight waiting")
+	assert_true(s._resolve_btn.disabled, "nothing to execute")
 	s._select(null)
+	s._refresh()
+	assert_eq(s._resolve_btn.text, "END TURN", "no fight waiting")
 	s._on_undo()
-	assert_eq(a.pos, a0, "UNDO takes the move back")
+	assert_eq(s._map.shown[a.id][0], a0, "UNDO takes the execute back, the machine where it stood")
 	assert_eq(b.actions_left(a), 1, "and gives the action back")
 	s.free()

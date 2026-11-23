@@ -78,6 +78,7 @@ static func to_dict(b: Battle) -> Dictionary:
 		"sponsorship": b.sponsorship,
 		"loot": b.loot, "blueprints_known": b.blueprints_known,   # the caches claimed and the run's blueprints (7 November)
 		"action_hexes": _int_keys(b.action_hexes),
+		"move_used": _int_keys(b.move_used),   # the move points each machine's waypoints have spent this action (22 November)
 		"wrecks": _units(b.field.wrecks),   # where each fell, its hexes held for the battle (16 November)
 		"state": b.state,
 		"outcome": b.outcome,
@@ -171,6 +172,16 @@ static func from_dict(d: Dictionary) -> Battle:
 		b.spent[int(str(uid))] = int(d["spent"][uid])
 	for uid in d.get("moved", []):
 		b.moved[int(uid)] = true
+	# The move points spent (22 November); a save from before them had one move an action, so a
+	# machine that had moved has its whole move spent.
+	if d.has("move_used"):
+		for uid in d["move_used"].keys():
+			b.move_used[int(str(uid))] = int(d["move_used"][uid])
+	else:
+		for uid in b.moved.keys():
+			var mu := b.field.unit_by_id(int(uid))
+			if mu != null:
+				b.move_used[int(uid)] = mu.movespeed
 	for uid in d.get("played", []):
 		b.played[int(uid)] = true
 	# The undo and the plan (25 October), as they were; the snapshots read a JSON round trip's

@@ -493,6 +493,7 @@ class Build:
         self.death_pose = None   # the pose it goes to when lost, in place of the baseline slump (see death())
         self.hidden_fire = None  # (act, from, to[, blow]): the slice every weapon on a hidden mount fires with (the Cottonmouth's drum turning two chambers, 16 November), the sidecar's hidden_fire (MechRig.fire_hidden)
         self.aims = {}         # a fixed component -> the joint that turns to aim it, when it is no waist (MechView3D.aim_joint_for)
+        self.stand = 1.0       # its share of the hex beside its class's (MechView3D), for a shape the fit misjudges: a tall walker fitted by its height stands over the wide machines (the Macaque's, Ryan, 22 November: "needs to be smaller")
         self.pivots = False    # whether the whole machine turns on the spot to aim (a tank's tracks, a castered chassis), as a hover does
         self.fx_sizes = {}     # a fixed weapon -> its muzzle flare's size: an fx_<component> Empty at its business end (fx())
         self.plumes = []       # [{node, part, reach, breadth}]: a booster's plume along its thrust (plume())
@@ -1414,6 +1415,8 @@ class Build:
             out["aims"] = dict(self.aims)
         if self.pivots:
             out["pivots"] = True
+        if self.stand != 1.0:
+            out["stand"] = self.stand
         if self.stock_shapes:
             out["stock_shapes"] = {n: self.stock_shapes[n] for n in sorted(self.stock_shapes, key=lambda n: int(n[3:]))}
         # Each booster's plume (plume()): the Empty at its mouth, the lit part it burns with, its size.
