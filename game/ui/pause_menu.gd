@@ -173,7 +173,11 @@ func _show_page(page: String) -> void:
 			var page_rows := _rows
 			_rows = _list.get_child(0)
 			_set_row("SET", [["FODDER TIDE", Settings.FODDER_SET], ["AS BUILT", _trials_as_built()]])   # his first set of 23 November in one press, and every dial back to the game's own
-			_credit("Fodder tide: FORMATIONS FODDER, PACK BONUS +½, STRIKE 5, START TEARS TWO, over the rest as set.")
+			_credit("Fodder tide: FODDER, PACK BONUS +½, STRIKE 5, START TEARS TWO; the rest as set.")
+			_choice_row("FORMATIONS", "formation_form", Settings.FORMATION_FORMS, Settings.FORMATION_FORM_LABELS)   # the tide as fodder: every formation come apart into packs for one machine and for two, the tears sending one in turn (Battlefield.fodder_tide; the same day: "All fodder safer to fight ... choices of pack sizes and pack types")
+			_credit("Fodder: every formation as packs for one machine or two; tears send them too. Next battle.")
+			_choice_row("PACK BONUS", "pack_bonus", Settings.PACK_BONUSES, Settings.PACK_BONUS_LABELS)   # what a pack pays the Rupture meter as it falls, on top of its rating (Battle.pack_bonus_trial; the same day: "a flat fracture bonus to a pack on top of the per-foe weight")
+			_credit("Pips a pack pays the Rupture as it falls, over its rating. Next battle.")
 			_choice_row("PHASED", "phased_form", Settings.PHASED_FORMS, Settings.PHASED_FORM_LABELS)   # when a machine's Phased lands (Skirmish.phase_at_once; Ryan, 20 November: "Set the debug toggle for phased")
 			_credit("A machine's Phased as the round ends, through the next; or at once, until the round ends. Next battle.")
 			_choice_row("FIELD DEPTH", "field_depth", Settings.FIELD_DEPTHS)   # the field's depth in rows, twelve the game's (Ramp.depth_trial; Ryan, 10 November: "I think the map is a bit too shallow")
@@ -192,13 +196,9 @@ func _show_page(page: String) -> void:
 			_choice_row("RIFT SENDS", "rift_sends", Settings.RIFT_SENDS, Settings.RIFT_SENDS_LABELS)   # the compositions the rift sends a peak, each to its own stretch of wall (Battlefield.rift_sends_trial; the same day: "each headed a different direction")
 			_credit("Packs the rift sends a wave, each its own way; the Rupture asks no more. Next battle.")
 			_choice_row("START TEARS", "flank_tears", Settings.FLANK_TEARS, Settings.FLANK_TEARS_LABELS)   # tears open across the width from the first turn (Battlefield.flank_tears_trial; the same day: "starting tears at the top and bottom"; "Tears need to spread wide")
-			_credit("Tears open from turn one: two at the wall's ends, or four across it; the Rupture asks no more. Next battle.")
+			_credit("Tears open from turn one, two at the wall's ends or four across it. Next battle.")
 			_choice_row("LEADERS", "leader_step", Settings.LEADER_STEPS, Settings.LEADER_STEP_LABELS)   # an elite's and a boss's hit points more for each Convergence past its tier's first (ContentDB.leader_step_trial; Ryan, 23 November: "if they don't scale with me they'll become a joke at C4")
 			_credit("An elite's and a boss's hit points more each battle into a tier: C2 one step, C4 three. Next battle.")
-			_choice_row("FORMATIONS", "formation_form", Settings.FORMATION_FORMS, Settings.FORMATION_FORM_LABELS)   # the tide as fodder: every formation come apart into packs for one machine and for two, the tears sending one in turn (Battlefield.fodder_tide; the same day: "All fodder safer to fight ... choices of pack sizes and pack types")
-			_credit("Fodder: a formation as two or three packs for one machine or two, from its own foes; the tears send them too. Next battle.")
-			_choice_row("PACK BONUS", "pack_bonus", Settings.PACK_BONUSES, Settings.PACK_BONUS_LABELS)   # what a pack pays the Rupture meter as it falls, on top of its rating (Battle.pack_bonus_trial; the same day: "a flat fracture bonus to a pack on top of the per-foe weight")
-			_credit("Pips a pack pays the Rupture as it falls, over its rating; the Rupture grows to match. Next battle.")
 			_rows = page_rows
 			_list.set_deferred("scroll_vertical", kept)
 			_button("BACK", func() -> void: _show_page("settings"), false, "ui_back")
@@ -384,6 +384,7 @@ func _slider(caption: String, key: String) -> void:
 func _credit(text: String) -> void:
 	var l := Hud.label(text, 11, Palette.MUTED, Hud.mono())
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD   # a long note wraps under its row and never widens the page past the glass (the trials' notes)
 	_rows.add_child(l)
 
 
