@@ -223,10 +223,11 @@ measures a battle's minutes against his ten to thirty, which nothing does yet.
 
 ## 12. The player's side at tier one (12 November)
 
-Every tier-one stock die is basics beside its locked pieces: four that had drifted went back on
+Every tier-one stock die is basics beside its locked pieces: five that had drifted went back on
 23 November, each piece to the basic of its reach (the Wild Boar, the Echidna, the Skua, the
-Storm Petrel; his "just basic pieces"). One is left, his pick of 19 November below: the
-Cottonmouth's Incendiary Shells, his to keep or turn. The slots that held a
+Storm Petrel; his "just basic pieces"; and the Cottonmouth, a second Ankle Mortar where its
+Incendiary Shells stood, on his "Send the cottonmouth to some kind of stock pieces and I'll fix
+it in another session"). The slots that held a
 placeholder gun, a second Twin Autoguns where a vent stood, with Claude's leans as he marked them:
 
 | The machine | Lean | Why |

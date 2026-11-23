@@ -158,9 +158,9 @@ func _show_page(page: String) -> void:
 			# A debug build's dials for the numbers still to be picked by play, the game's own
 			# until one is: when Phased lands, the field's depth, the opening's distance, the
 			# fodder's worth on the Rupture meter, the meter's size, the tide's density, the wall
-			# strike, the packs' pace, the rift's count, the start's tears, the leaders' step, the
-			# tide as fodder and the pack bonus (each read as the next battle starts), under two
-			# sets that lay several at once. A dial leaves this page with
+			# strike, the packs' pace, the rift's count, the start's tears, the leaders' step and
+			# the pack bonus (each read as the next battle starts), under a set that lays every
+			# one back as built. A dial leaves this page with
 			# its question: the pick lands in content or in the engine and the what-if is cut (the
 			# heat's, the top basic's, the rank and file's, the overheat's and the Barrier basic's
 			# left on 23 November, each as built).
@@ -172,10 +172,7 @@ func _show_page(page: String) -> void:
 			_rows.add_child(_list)
 			var page_rows := _rows
 			_rows = _list.get_child(0)
-			_set_row("SET", [["FODDER TIDE", Settings.FODDER_SET], ["AS BUILT", _trials_as_built()]])   # his first set of 23 November in one press, and every dial back to the game's own
-			_credit("Fodder tide: FODDER, PACK BONUS +½, STRIKE 5, START TEARS TWO; the rest as set.")
-			_choice_row("FORMATIONS", "formation_form", Settings.FORMATION_FORMS, Settings.FORMATION_FORM_LABELS)   # the tide as fodder: every formation come apart into packs for one machine and for two, the tears sending one in turn (Battlefield.fodder_tide; the same day: "All fodder safer to fight ... choices of pack sizes and pack types")
-			_credit("Fodder: every formation as packs for one machine or two; tears send them too. Next battle.")
+			_set_row("SET", [["AS BUILT", _trials_as_built()]])   # every dial of the page back to the game's own, in one press
 			_choice_row("PACK BONUS", "pack_bonus", Settings.PACK_BONUSES, Settings.PACK_BONUS_LABELS)   # what a pack pays the Rupture meter as it falls, on top of its rating (Battle.pack_bonus_trial; the same day: "a flat fracture bonus to a pack on top of the per-foe weight")
 			_credit("Pips a pack pays the Rupture as it falls, over its rating. Next battle.")
 			_choice_row("PHASED", "phased_form", Settings.PHASED_FORMS, Settings.PHASED_FORM_LABELS)   # when a machine's Phased lands (Skirmish.phase_at_once; Ryan, 20 November: "Set the debug toggle for phased")

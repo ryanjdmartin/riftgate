@@ -164,10 +164,6 @@ var meter_held: int = 0           # hundredths of menace the fodder's trial has 
 ## TRIALS → PACK BONUS and RIFTGATE_PACK_BONUS set it (Settings.field_trial).
 static var pack_bonus_trial: int = 0
 var meter_bonus: int = 0          # menace the pack bonus's trial has added to the meter this battle; 0 with no trial
-## How many deals of its fodder a formation carries under the fodder's trial (Battlefield.dealt_as
-## takes them in turn), and how far apart the opening stands a formation's packs, in columns.
-const FODDER_DEALS := 6
-const FODDER_OPENING_GAP := 6
 ## The battle's share of the run's Sponsorship measures (the bible's Sponsorship row): the
 ## hexes its machines move on the map, and each fight's own (Skirmish.sponsorship), added up.
 var sponsorship := {"hexes_moved": 0, "guarded": 0, "damaging_spends": 0, "quiet_spends": 0}   # ContentDB.SPONSORSHIP_MEASURES
@@ -241,30 +237,8 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		# the ramp; one with no gate at every ramp).
 		var forms := _alternate(db.compositions(faction, tier + 1, "formation", ramp), db.compositions(guest, tier + 1, "formation", ramp) if has_guest else [])
 		var patrols := _alternate(db.compositions(faction, tier + 1, "patrol", ramp), db.compositions(guest, tier + 1, "patrol", ramp) if has_guest else [])
-		var tear_sends: Array = patrols
-		if Battlefield.fodder_tide:
-			# The fodder's trial (Battlefield.fodder_tide): every formation carries what it comes
-			# apart into, a few deals of it so no two need come alike, and the tears send a patrol
-			# and a fodder pack in turn, the pack for two one time in three by the seed. The patrol
-			# first, as the game's own tears send, so the Rupture's size reads the same first sends.
-			var step := ContentDB.step_in_tier(tier, ramp)
-			for f in forms:
-				var deals: Array = []
-				for n in range(FODDER_DEALS):
-					deals.append(db.fodder_of(f, n, seed_value, step))
-				f["fodder"] = deals
-			tear_sends = []
-			for j in range(2 * maxi(forms.size(), patrols.size()) if not forms.is_empty() else 0):
-				var of: Dictionary = forms[j % forms.size()]
-				var pack := db.fodder_pack(of, 2 if posmod(hash([seed_value, "tear", j]), 3) == 0 else 1, hash([seed_value, "tear", j, 1]), posmod(j, 3) < step)
-				if not patrols.is_empty():
-					tear_sends.append(patrols[j % patrols.size()])
-				if not pack.is_empty():
-					tear_sends.append(pack)
-			if tear_sends.is_empty():
-				tear_sends = patrols
 		field.cycle = _alternate(forms, patrols)
-		field.patrol_cycle = tear_sends
+		field.patrol_cycle = patrols
 		var nf := Ramp.dense(Ramp.formations_at(ramp))   # the game's count, but under the tide's trial
 		var np := Ramp.dense(Ramp.patrols_at(ramp))
 		# The opening (the long wall brief 3.2): the ramp's formations across the width as before,
@@ -295,20 +269,11 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		u.facing = face_rng.randi_range(1, 2)   # northward, one of the two directions that lead away from the gate
 		field.add_unit(u)
 		i += 1
-	for j in range(placed.size()):
-		var p: Array = placed[j]
-		# One pack, but under the fodder's trial a formation as the packs it comes apart into, spread
-		# along the wall about its own column (Battlefield.dealt_as; the deals past the last the
-		# rift's cycle takes first, so the opening and the first wave differ): the Rupture's size
-		# below reads the composition placed.
-		var comes: Array = field.dealt_as(p[0], -1 - j)
-		var at_col := Hex.axial_to_offset(p[1]).x
-		for n in range(comes.size()):
-			var col := clampi(at_col + (FODDER_OPENING_GAP * (2 * n - (comes.size() - 1))) / 2, 0, w_cols - 1)
-			var sq := field.emerge(comes[n], Hex.offset_to_axial(col, Hex.axial_to_offset(p[1]).y))
-			if sq != null and int(p[2]) > 0:
-				_open_row(sq, col, int(p[2]))
-				field.assign_goal(sq)   # its segment is read from where it opens: the wall it reaches soonest
+	for p in placed:
+		var sq := field.emerge(p[0], p[1])
+		if sq != null and int(p[2]) > 0:
+			_open_row(sq, Hex.axial_to_offset(p[1]).x, int(p[2]))
+			field.assign_goal(sq)   # its segment is read from where it opens: the wall it reaches soonest
 	# The start's tears on trial (Battlefield.flank_tears_trial): open from the first turn across
 	# the width, sending from the first peak. The Rupture's size below leaves them out, as it
 	# leaves the tide's extras.
@@ -334,17 +299,17 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 	# Under the tide's trial the size stays the game's: the extras it places and sends are
 	# the squad's to choose among, never more to kill (Ramp.tide_trial).
 	field_menace = 0
-	var packs_counted := 0   # the packs that menace comes as, for the pack bonus's trial
-	for j in range(placed.size()):
-		if not bool(placed[j][3]):
-			field_menace += db.composition_menace(placed[j][0])
-			packs_counted += field.dealt_as(placed[j][0], -1 - j).size()
+	var packs_counted := 0   # the packs that menace comes in, for the pack bonus's trial
+	for p in placed:
+		if not bool(p[3]):
+			field_menace += db.composition_menace(p[0])
+			packs_counted += 1
 	var tears_open := 0
 	var patrol_at := 0
 	for j in range(Ramp.beats_at(tier)):
 		if not field.cycle.is_empty():
 			field_menace += db.composition_menace(field.cycle[j % field.cycle.size()])
-			packs_counted += field.dealt_as(field.cycle[j % field.cycle.size()], j).size()
+			packs_counted += 1
 		for t in range(tears_open):
 			if field.patrol_cycle.is_empty():
 				break

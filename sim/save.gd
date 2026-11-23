@@ -256,13 +256,6 @@ static func _compositions_from(list: Array) -> Array:
 		for key in ["squad", "layout", "lead", "hunts"]:   # the long wall brief's composition fields (3.7, section 6) and the hunt (8 November)
 			if c.has(key):
 				entry[key] = c[key]
-		# What a formation comes apart into under the fodder's trial (Battlefield.dealt_as): its
-		# deals, each a list of compositions, so a battle begun under the trial keeps its fodder.
-		if c.get("fodder", null) is Array:
-			var deals: Array = []
-			for deal in c["fodder"]:
-				deals.append(_compositions_from(deal if deal is Array else []))
-			entry["fodder"] = deals
 		out.append(entry)
 	return out
 

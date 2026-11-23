@@ -299,8 +299,8 @@ twice. And the Shoring Jack, of which he said on 23 November "a dead face most o
 but that's possibly because I felt I couldn't afford any break in my shield": its Armoured
 lasts until its machine's next turn starts and a reboot is that whole turn, so a machine's own
 Jack never covers its own bare turn. Alone it pays only on a turn fought on a broken shield;
-in a pair it covers a partner's reboot. The fodder tide makes the pair's case more often and
-the lone one no better.
+in a pair it covers a partner's reboot. Packs sized to their rating make the pair's case more
+often and the lone one no better.
 
 ## 7. Open
 

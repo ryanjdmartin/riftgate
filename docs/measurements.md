@@ -12561,3 +12561,81 @@ Every fight won but an elite's and a boss's on stock dice (99%). The bench's fin
 squad between stock and today's finds: a sixth off an elite's price and a fifth off a boss's,
 where today's take 36% and 37%. A boss against the bench reads what a boss with a quarter more
 hit points reads against today's finds (21.6% in both, 9.1 rounds and 8.8).
+
+## 23 November: the graded tide, a rating's size and the squad's shape
+
+For Ryan's correction of the split trial of the entry above ("I don't want the packs split, I
+want them SCALED ... the far edges are 1s with a sprinkling of 2s, then 2s in between, and 3s
+coming right down the center ... 1s fastest and 3s slowest") and `docs/tide_proposal.md`. The
+split's generator and its dial are cut with this entry's commit; its reads above stand as what
+a pack of 8 and of 12 hit points costs.
+
+**The squad's shape** (`tools/tide_model.py`, 400 battles a row, seed 1: twelve turns, fights
+for free, a pack wanting its rating in machines, twelve deep, ten a pip). The rift sends a
+pack for three every other peak, a mouth by each end of the wall a pack for one every peak (a
+quarter of them for two), a mouth between each end and the middle a pack for two every other
+peak, the sides in turn; each walks at its rating's pace to the wall it reaches soonest. The
+last column is the gate lost to ones, twos and threes:
+
+| The tide | Packs sent | Pips sent | Pips killed | Packs that struck | Gate lost | Actions spent fighting | By rating |
+|---|---|---|---|---|---|---|---|
+| Every pack at pace 2, the squad free | 19 | 33 | 90% | 27% | 193 | 62% | 32, 96, 64 |
+| Paces 3, 2 and 1 | 19 | 33 | 87% | 28% | 151 | 60% | 39, 93, 19 |
+| Paces 4, 3 and 2 | 19 | 33 | 90% | 47% | 274 | 62% | 50, 158, 66 |
+| Paces 4, 3 and 2, fourteen deep | 19 | 33 | 87% | 38% | 205 | 60% | 48, 112, 45 |
+| Paces 4, 3 and 2, no pack for two at the ends | 19 | 31 | 95% | 37% | 176 | 62% | 54, 77, 45 |
+| Paces 4, 3 and 2, half the ends' packs for two | 19 | 35 | 87% | 53% | 370 | 63% | 43, 236, 91 |
+| The squad holding the gate | 19 | 33 | 60% | 77% | 1050 | 41% | 435, 609, 6 |
+| The squad camped on the rift | 19 | 33 | 40% | 73% | 1474 | 27% | 550, 924, 0 |
+| Each machine holding a lane of its own | 19 | 33 | 61% | 55% | 1027 | 42% | 22, 400, 605 |
+| The middle split, a two and a one for each three: the squad free | 22 | 33 | 93% | 43% | 274 | 64% | 72, 202, 0 |
+| The middle split: each machine holding a lane of its own | 22 | 33 | 88% | 51% | 439 | 60% | 46, 394, 0 |
+
+With threes down the middle a squad that holds a post loses the wall five times over, and so
+does one whose machines each hold a lane (605 of it to the threes it never gathers for). With
+the middle split, the morning's trial, holding a lane each loses 439 where a free squad loses
+274: spreading was the answer and gathering bought little. A free squad's greatest loss is to
+the twos in every row, and the ends' twos are the worst of it. Slower threes lose less than
+faster ones gain: paces 3, 2 and 1 read 151 where 4, 3 and 2 read 274.
+
+**A rating's size on the Meadow's foes** (`tools/anchor_read.gd`, `packs=`, tier one at its
+first Convergence, the six certain tier ones on stock dice, every squad of the pool of the
+size named, two to four fights a squad, the greedy bot; of a four's hull, reboots a machine a
+fight):
+
+| The pack | Hit points | At its rating | A machine short |
+|---|---|---|---|
+| A lone whisker cat, for one | 12 | 5.3 rounds, 4.1%, 1.17 reboots | |
+| A lone treant, for one | 14, plated | won 71%, 11.3 rounds, 19.0%, 3.42 reboots | |
+| A lone treant, for two | 14, plated | 4.7 rounds, 2.1%, 0.90 reboots | won 61%, 11.9 rounds, 19.1% |
+| Two whisker cats, for two | 24 | 5.4 rounds, 2.8%, 1.09 reboots | won 44%, 21.5% |
+| Three goblins, for two | 12 | 2.8 rounds, 0.2%, 0.23 reboots | won 100%, 6.2 rounds, 4.4% |
+| Four goblins, for two | 16 | 4.3 rounds, 1.6%, 0.61 reboots | won 83%, 17.1% |
+| A treant and a mandragora, for two | 17, plated | 5.7 rounds, 3.4%, 1.14 reboots | won 39% |
+| Two gels, for two | 16 with their halves | 4.5 rounds, 0.7%, 0.57 reboots | won 50%, 17.6% |
+| Three goblins and three mandragoras, for three | 21 | 3.2 rounds, 1.7%, 0.33 reboots | won 100%, 5.9 rounds, 13.3%, 0.10 wrecks |
+| Four goblins and two mandragoras | 22 | 3.3 rounds, 2.2%, 0.41 reboots | won 100%, 6.0 rounds, 12.8% |
+| Four goblins and three mandragoras | 25 | 4.3 rounds, 4.8%, 0.76 reboots | won 80%, 27.9%, 0.53 wrecks |
+| Four and four, the horde as built | 28 | 5.2 rounds, 10.3%, 1.09 reboots | won 47%, 40.2%, 1.20 wrecks |
+| A treant, two goblins and a mandragora | 25, plated | 5.5 rounds, 1.7%, 1.01 reboots | won 100%, 9.7 rounds, 15.4% |
+| A treant, three goblins and two mandragoras, the grove as built | 32, plated | 6.6 rounds, 6.9%, 1.36 reboots | won 63%, 37.0% |
+| Two treants | 28, plated | 6.7 rounds, 5.2%, 1.42 reboots | won 90%, 11.3 rounds, 24.4% |
+| Two treants and two mandragoras | 34, plated | 7.7 rounds, 12.9%, 1.78 reboots | won 50% |
+| Three gels and two mandragoras, the gel wall as built | 30 with their halves | 4.4 rounds, 5.1%, 0.72 reboots | won 57%, 32.3% |
+| Three treants | 42, plated | won 95%, 10.4 rounds, 24.6%, 2.57 reboots | won none |
+
+The other domains' lone flankers for one machine: the roc 6.7 rounds and 1.38 reboots, the
+dullahan 6.2 and 1.00, Cerberus 4.5 and 0.88, a sandworm won 83% in 9.9 rounds.
+
+**A lone pack against a kit that has grown** (`refit=finds=N`, one machine):
+
+| The pack | Stock | Two finds a die | Every basic gun a find |
+|---|---|---|---|
+| A lone treant | won 71%, 11.3 rounds, 3.42 reboots | won 96%, 8.8 rounds, 2.62 reboots | 7.5 rounds, 11.7%, 2.29 reboots |
+| A lone whisker cat | 5.3 rounds, 1.17 reboots | 3.9 rounds, 0.62 reboots | 4.4 rounds, 0.88 reboots |
+| Two goblins | 3.8 rounds, 0.58 reboots | 3.5 rounds, 0.33 reboots | 3.4 rounds, 0.33 reboots |
+| A lone gel | 4.6 rounds, 0.83 reboots | 3.8 rounds, 0.58 reboots | 3.8 rounds, 0.67 reboots |
+
+Eight hit points a machine is the size that falls inside a gauge at every rating; today's
+ones, twos and threes are each half again over it; and a treant is a pack for two through the
+tier on any of today's kits.

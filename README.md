@@ -136,9 +136,9 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     `briefs/refit_pass.md` (the reboot's rules, its section 22) and `briefs/numbers_pass.md`
     (tier one sized against the reboot: the yardsticks, the baseline, the defence side's
     approach, the tier-one bench); `economy_pass.md`; `formation_proposal.md` (kept for the
-    bosses' stat blocks and the flankers' slate); `tide_proposal.md` (the tide as fodder, Ryan's
-    paradigm of 23 November on trial: his words, the dials, the reads, the forms by
-    Convergence still to write and his questions);
+    bosses' stat blocks and the flankers' slate); `tide_proposal.md` (the graded tide, Ryan's
+    design of 23 November: his words, the design as read, the reads, where the session pushes
+    back, the Meadow's packs as a table for his marks);
     `locked_pieces_proposal.md`;
     `reboot_machines_proposal.md` (the machines the reboot broke); `rules_sweep_proposal.md` (the
     rules sweep's limits on design space, for his marks); `bosses_proposal.md` (the
@@ -256,7 +256,7 @@ perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.
 #   machines=3 reads every fight with that many machines whatever it is rated: the first battle's trio against a true four
 #   refit=finds=2 reads a squad a few battles into its tier (two basic guns a die swapped for tier-one finds); life=150 and blows=115 a leader's hit points and attack at that share of content's: the block a leader would stand at a Convergence on
 #   refit=face=<id>:power=2:strikes=2:heat=5 rewrites one piece's entry for the run (its numbers, a keyword's, its tier), a part a piece: the tier-one bench's spec is docs/briefs/numbers_pass.md, section 6
-#   kinds=fodder reads every pack the tier's formations may come apart into under the fodder's trial, each at its rating (machines=1: each met by one machine); "packs=goblin*2;goblin*3+mandragora@2" reads hand-made packs, a rating after @
+#   "packs=goblin*2;goblin*3+mandragora@2;treant*2@3" reads hand-made packs, a rating after @ (machines=1: each met by one machine), to size a pack before it is content
 #   only=id,id reads those compositions or bosses alone; tier=, ramp=; refit=<spec> lays a
 #   what-if over content for the run (refit=barrier=none, the Barrier basic off the stock dice);
 #   blows=80 sets every elite's and boss's attack to that share of content's, in hundredths
@@ -367,7 +367,7 @@ python3 tools/pricing_run.py run vanilla --parts vanilla,vanillaheat,ladders --b
 python3 tools/turn_loop.py --seeds 2000            # the campaign's turn loop from sim/campaign.gd's constants, every battle won: the pressure the fronts put on the cities
 python3 tools/turn_loop.py --seeds 2000 --widen 3  # with a rift that steps a tier up once it has bled its city three times
 python3 tools/basics_model.py                      # the stock guns against rank and file: shots to kill, the gun that deals one more by its heat, the rider ladder, a bench of guns by its spends to kill five marks
-python3 tools/tide_model.py                        # what the tide asks of four machines on the long wall: packs sent, packs that struck and gate lost by the count, the pace, the depth, the mouths and the fodder tide, fights for free (the coverage behind docs/tide_proposal.md)
+python3 tools/tide_model.py                        # what the tide asks of four machines on the long wall: packs sent, packs that struck and gate lost by the count, the pace, the depth, the mouths and the graded tide, fights for free (the coverage behind docs/tide_proposal.md)
 python3 tools/budget_model.py                      # what a fight costs a squad under the reboot, as the hull budget counts it: a horde, a massive in front, a lone flanker, a pack and an elite by blow and hit points, and how far it tracks the bot
 
 # how often each foe special fires: every third starter trio against each domain's formation,
@@ -469,7 +469,6 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_RIFT_SENDS=2                         the compositions the rift sends a peak, 1 to 4, each to its own stretch of wall
 #   RIFTGATE_FLANK_TEARS=2                        tears open across the width from the first turn, two at the wall's ends or four, 0 the game's
 #   RIFTGATE_LEADERS=20                           an elite's and a boss's hit points that many hundredths more for each Convergence past its tier's first, three steps at most, 0 the game's
-#   RIFTGATE_FORMATIONS=fodder                    the tide as fodder: every formation come apart into packs for one machine and for two, from its own foes, the tears sending one in turn with their patrols
 #   RIFTGATE_PACK_BONUS=50                        what a pack pays the Rupture meter as it falls, on top of its rating, in hundredths of a pip, 0 the game's
 #   RIFTGATE_PHASED=at_once                       a machine's Phased at once until the round ends, round_end the game's (Phased as the round ends, through the next)
 # The same on the phone, a debug build's SETTINGS, TRIALS (a page that scrolls), each read as
@@ -479,10 +478,9 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   FIELD DEPTH (12, 14, 16), OPENING (+0, +1, +2), FODDER (FULL, 3/4, HALF),
 #   RUPTURE (1 BEAT, 2 BEATS, 3 BEATS), TIDE (×1, ×1.5, ×2), STRIKE (10, 7, 5, 3),
 #   PACE (BUILT, +1, +2), RIFT SENDS (×1, ×2, ×3), START TEARS (NONE, TWO, FOUR),
-#   FORMATIONS (BUILT, FODDER), PACK BONUS (NONE, +¼, +½, +1), LEADERS (BUILT, +10% A C, +20% A C),
+#   PACK BONUS (NONE, +¼, +½, +1), LEADERS (BUILT, +10% A C, +20% A C),
 #   PHASED (ROUND END, AT ONCE), with the Phase Inducer, a tier-two component, to set it for testing
-# and over them SET: FODDER TIDE lays FORMATIONS FODDER, PACK BONUS +½, STRIKE 5 and START TEARS TWO
-# at once, over the rest as set; AS BUILT sets every dial of the page back to the game's own
+# and over them SET: AS BUILT sets every dial of the page back to the game's own
 # A thing fired constantly, to judge it running (=1 unless a value is shown)
 #   RIFTGATE_FEED_DEBUG       the skirmish feed's analysis events and the ground tears (any run)
 #   RIFTGATE_PULSE_DEBUG      END TURN pulsing, on the map and in a fight (any run)

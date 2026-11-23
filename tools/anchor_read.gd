@@ -33,10 +33,42 @@ extends SceneTree
 ##   packs   hand-made packs in the compositions' place, for sizing one before it is content:
 ##           packs=goblin*2;goblin+mandragora;goblin*3+mandragora@2, a pack its foes joined by +,
 ##           a count after *, its rating after @ (one unless said); each a row of the kind
-##           "pack 1" or "pack 2", stood on a grid as ContentDB.grid_of lays its members. With it,
-##           the compositions are read only when kinds= names them
-##   kinds   may name fodder: every pack the tier's formations may come apart into under the
-##           fodder's trial (ContentDB.fodder_candidates), each once, at its rating
+##           "pack 1", "pack 2" or "pack 3", stood on a grid laid from its members (the front
+##           rank from the left, a massive foe filling its column, the back rank behind). With
+##           it, the compositions are read only when kinds= names them
+
+
+## A grid for a hand-made pack (packs=), eight cells, front then back: the front-rank foes from
+## the left in the order given, a massive one filling its column, the back-rank foes behind them
+## from the left, never behind a massive. What four columns cannot hold is left out.
+func _grid_of(db: ContentDB, members: Array) -> Array:
+	var cells: Array = ["", "", "", "", "", "", "", ""]
+	var massive := {}
+	var col := 0
+	for m in members:
+		var f: Dictionary = db.foes.get(str(m[0]), {})
+		if int(f.get("size", 1)) < 2 and str(f.get("rank", "front")) == "back":
+			continue
+		for k in range(int(m[1])):
+			if col >= 4:
+				break
+			cells[col] = str(m[0])
+			if int(f.get("size", 1)) >= 2:
+				massive[col] = true
+			col += 1
+	var back := 0
+	for m in members:
+		var f: Dictionary = db.foes.get(str(m[0]), {})
+		if int(f.get("size", 1)) >= 2 or str(f.get("rank", "front")) != "back":
+			continue
+		for k in range(int(m[1])):
+			while back < 4 and massive.has(back):
+				back += 1
+			if back >= 4:
+				break
+			cells[4 + back] = str(m[0])
+			back += 1
+	return cells
 
 
 func combos(pool: Array, n: int) -> Array:
@@ -114,23 +146,6 @@ func _init() -> void:
 		if kinds.has("boss"):
 			for bid in db.bosses_of(str(fid)):
 				rows.append(["boss", str(fid), str(bid), {}])
-	# The fodder's trial's packs (kinds=fodder): every candidate of every formation, each once.
-	if kinds.has("fodder"):
-		for fid in db.factions.keys():
-			for c in db.compositions(str(fid), tier, "formation", ramp):
-				for pips in [1, 2]:
-					for members in db.fodder_candidates(c, pips):
-						var said: Array = []
-						for m in members:
-							said.append("%s*%d" % [str(m[0]), int(m[1])] if int(m[1]) > 1 else str(m[0]))
-						var label := "%s@%d" % ["+".join(said), pips]
-						if seen.has(label):
-							continue
-						seen.append(label)
-						var made := Battlefield.composition(members, str(fid), "patrol", label)
-						made["squad"] = pips
-						made["layout"] = db.grid_of(members)
-						rows.append(["pack", str(fid), label, made])
 	# The hand-made packs (packs=): each a patrol of its members at its rating, on a grid laid
 	# from them, under its first foe's domain.
 	for spec in str(o["packs"]).split(";", false):
@@ -148,7 +163,7 @@ func _init() -> void:
 		var fac := db.faction_of_foe(str(members[0][0]))
 		var made := Battlefield.composition(members, fac, "patrol", str(spec))
 		made["squad"] = clampi(int(at[1]), 1, 4) if at.size() == 2 else 1
-		made["layout"] = db.grid_of(members)
+		made["layout"] = _grid_of(db, members)
 		rows.append(["pack", fac, str(spec), made])
 	if int(o["machines"]) > 0:
 		print("what-if: every fight read with %d machines, whatever it is rated" % clampi(int(o["machines"]), 1, mini(4, pool.size())))

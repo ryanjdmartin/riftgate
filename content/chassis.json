@@ -1612,7 +1612,7 @@
     "ankle_mortar",
     "twin_autoguns",
     "halo_projector",
-    "incendiary_shells"
+    "ankle_mortar"
    ],
    "passive": {
     "id": "adaptive_munitions_drum",
