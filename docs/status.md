@@ -78,7 +78,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1437 tests, 389,375 checks, green on Godot 4.8-beta4 (22 November, the battle UI pass: the dark intent plate, square chips, the crosshair aim; and the Macaque's offhand a chip on its die's rail). The runner fails a run
+- Tests: 1439 tests, 389,431 checks, green on Godot 4.8-beta4 (23 November, the map's waypoint input, the battle UI pass with Ryan's picks and the Macaque's offhand on its die's rail). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -102,6 +102,13 @@ What is built runs as `docs/rules.md` states it (its known gaps at the end), and
 section 12 lists what waits on Ryan. Every number in content is a placeholder. Most of what
 was built for his eye is a first cut with a judge or play line in the to-do's Ryan list.
 
+- **The map's input is waypoints** (Ryan, 22 November, on `claude/map-movement-input-ygl9gr`, for
+  his play on the phone): a tap on a lit hex lays a waypoint and the reach is drawn again from it
+  with the move left; a tap on the latest waypoint or the ordered pack executes that machine at
+  once; an earlier waypoint cuts back; the machine itself, anything out of reach or another
+  machine cancels the plan in hand, its steps off the undo; the button is EXECUTE only with a
+  machine in hand; UNDO takes the machine it undoes in hand. The rules' Laying a move, The
+  button and UNDO; the bible's row. Not yet played on a device.
 - **The skirmish.** Every die rolls, the foes pick and show their moves, the player spends,
   locks and rerolls (two rerolls a round), then the foes act. A dealt component is a weapon or
   equipment; shields and vents are off the die, their slottable pieces planned drafts, and

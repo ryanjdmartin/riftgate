@@ -543,7 +543,7 @@ func _draw() -> void:
 	if not destinations.is_empty():
 		var reach := destinations.duplicate()
 		if selected != null:
-			reach[shown_hex(selected)] = true
+			reach[selected.pos] = true   # the reach is drawn from its latest waypoint
 		_region_outline(reach, hud, 3.0)
 
 	# A pack the selected machine could be ordered onto, from where its move can take it or where
@@ -566,13 +566,19 @@ func _draw() -> void:
 	# was planned and nothing showed it: Ryan, "I can, but the UI doesnt register it".)
 	if _anim.is_empty() and fight_group.is_empty():
 		var last_piece := {}
+		var first_piece := {}
 		for k in range(plans.size()):
 			last_piece[int(plans[k]["unit"])] = k
+			if not first_piece.has(int(plans[k]["unit"])):
+				first_piece[int(plans[k]["unit"])] = k
 		for k in range(plans.size()):
 			var pc: Dictionary = plans[k]
 			if (pc["path"] as Array).is_empty():
 				continue
-			_route(pc["from"], pc["path"], hud, last_piece[int(pc["unit"])] == k)
+			# A leg after the first runs on from its waypoint, so the route reads as one line.
+			_route(pc["from"], pc["path"], hud, last_piece[int(pc["unit"])] == k, first_piece[int(pc["unit"])] == k)
+			if last_piece[int(pc["unit"])] != k:
+				_waypoint_mark((pc["path"] as Array)[(pc["path"] as Array).size() - 1], hud)
 			for rd in pc["riders"]:
 				Hud.stroke_poly(self, MapOrient.corners(center(rd[3]), HEX_SIZE - _px(6.0)), Color(hud, 0.8), _px(2.5))
 
@@ -1887,6 +1893,17 @@ func _contact_effect(h: Vector2i, lit: bool, _at_base: bool = false) -> void:
 ## hex rather than its centre, so it never draws across the machine or the pack. `lock`
 ## puts the target on its end: the display's rings turning and a dashed border crawling
 ## round the hex.
+## A waypoint before a route's end (Ryan, 22 November: "Waypoints stay lit"): the hex filled and
+## edged heavy, with a ring at its middle, so it reads apart from the reach's cells by structure
+## (the reach is a fill alone) and from the end's lock (rings that breathe). Hot, for the phone.
+func _waypoint_mark(h: Vector2i, col: Color) -> void:
+	var c := center(h)
+	draw_colored_polygon(MapOrient.corners(c, HEX_SIZE - _px(2.0)), Color(col, 0.45))
+	Hud.stroke_poly(self, MapOrient.corners(c, HEX_SIZE - _px(4.0)), col, _px(4.0))
+	draw_arc(c, HEX_SIZE * 0.3, 0.0, TAU, 24, col, _px(4.0))
+	draw_circle(c, HEX_SIZE * 0.1, col)
+
+
 func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool = true, breathe: bool = true, edged: bool = false) -> void:
 	# A machine's route leaves from its hex's edge, so it never crosses the machine; a
 	# pack's comes out of the sprite (Ryan, 29 September). An edged route (the enemy's)

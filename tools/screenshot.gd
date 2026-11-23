@@ -393,11 +393,13 @@ func _apply_battle_pose() -> void:
 		"select":
 			s._on_hex_tapped(b.mechs()[0].pos)
 		"route":
-			for i in range(mini(2, b.mechs().size())):
-				s._on_hex_tapped(b.mechs()[i].pos)
+			# The first machine in hand with two waypoints laid (22 November): its legs, the first
+			# waypoint lit, and its reach drawn again from the second with what is left.
+			s._on_hex_tapped(b.mechs()[0].pos)
+			for i in range(2):
 				var dests: Array = s._map.destinations.keys()
 				if not dests.is_empty():
-					s._on_hex_tapped(dests[dests.size() / 2])
+					s._on_hex_tapped(dests[0])
 		"hold":
 			s._on_unit_held(b.field.packs()[0])
 		"boss":
@@ -414,13 +416,12 @@ func _apply_battle_pose() -> void:
 					break
 			s._on_hex_tapped(pick)
 		"plan_play", "execute":
-			# Two machines' moves planned, then END TURN, or EXECUTE (the turn going on): the plan
+			# The first machine's move laid, then END TURN, or EXECUTE (the turn going on): the plan
 			# playing (RIFTGATE_SHOT_FRAME), or played, at a later frame.
-			for i in range(mini(2, b.mechs().size())):
-				s._on_hex_tapped(b.mechs()[i].pos)
-				var dests: Array = s._map.destinations.keys()
-				if not dests.is_empty():
-					s._on_hex_tapped(dests[dests.size() / 2])
+			s._on_hex_tapped(b.mechs()[0].pos)
+			var dests: Array = s._map.destinations.keys()
+			if not dests.is_empty():
+				s._on_hex_tapped(dests[dests.size() / 2])
 			if _pose == "execute":
 				s._on_main_button()
 			else:

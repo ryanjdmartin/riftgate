@@ -1745,33 +1745,43 @@ a stat.
   wall, a hunter's machine; no other pack's whole way shows, a selected machine's hunters'
   included. Each machine has one action (the Dingo two, by its Retrograde Flywheel: it may
   move and act twice during each turn of the map phase, and inside a fight it spends its die once a round like any machine): one move,
-  in one go, then it may fight; a fight ends the action however it ends, and the board under the
-  map says what each can still do. The fight is ordered before the move plays: a move that plays
-  (EXECUTE, ENGAGE or END TURN) with no order standing ends the action there, and one that plays
-  with an order keeps that order as given, the machine taking no other and the order taken back
-  ending the action. A machine carried in another's move keeps its action and its move. A selected machine lights the hexes its move reaches, one
-  border round the whole reach, its dashes crawling as its target's do, and brackets the packs it could be ordered onto. A move is
-  planned: its route shows from where the machine stands, and the next move or order reads from
-  the route's end. An order can be given again: a machine with a move planned or an order
-  waiting shows, in hand, its reach from where it started, and a new move or order there
-  replaces the old one, its step on the undo taking the old one's place; a tap on it in hand
-  takes its order back and lets it go, and its steps come off the undo (the count drops, and an
-  UNDO never puts the order back); a tap on it with none lets it go. A machine it carried that has since been given an order of its own, or one whose
-  starting hex another now plans to stand on, is taken back by UNDO alone. The one button reads
-  ENGAGE while a fight is ready (a catch, or a machine ordered onto a pack), ENGAGE 1 OF N while
-  N fights wait, each numbered on the map in the order ENGAGE opens them (a catch first, then
-  the packs in the order their orders were given), else EXECUTE while planned moves wait, else
-  END TURN; back from a fight with more waiting, the orders stand and the button pulses. EXECUTE plays every planned move and the turn goes on, so moves play in
-  whatever sequence the player gives them; ENGAGE plays them first too (the boss's fight aside,
-  below), then the fight opens. EXECUTE lets go of the machine in hand, its reach dark at once.
-  UNDO takes back the last move or order, whoever made it, in the
-  order they were made, a move that has played included (the machine goes back where it
-  stood, its action whole again), back to the turn's start or the last fight. A caught machine's fights come first, one a
-  hunter, and the map draws each as the machine's order onto the hunter that caught it. END TURN asks first
+  laid a waypoint at a time until it plays, then it may fight; a fight ends the action however it
+  ends, and the board under the map says what each can still do. The fight is ordered before the
+  move plays: a move that plays (EXECUTE, ENGAGE or END TURN) with no order standing ends the
+  action there, and one that plays with an order keeps that order as given, the machine taking no
+  other. A machine carried in another's move keeps its action and its move.
+- **Laying a move**: a tap on a machine takes it in hand and lights the hexes its move reaches,
+  one border round the whole reach, its dashes crawling as its target's do, and brackets the packs
+  it could be ordered onto. A tap on a lit hex lays a waypoint there, the route to it the cheapest;
+  while move is left the reach is drawn again from that waypoint with what is left, and the next
+  tap extends from it, until the move is spent. Every waypoint stays lit and the route runs through
+  them from where the machine stands. A tap on a pack the move left reaches (from the latest
+  waypoint, to the farthest hex in attack range, or from the waypoint itself when it is beside the
+  pack) paths there and orders the machine onto it, one step; an order onto another pack replaces
+  it. A tap on an earlier waypoint takes back every step after it; a tap on the latest waypoint, or
+  on the pack it is ordered onto, executes its move at once, the machine walking there and let go.
+  A tap on the machine itself, or on anything out of its reach (a hex or a pack), cancels its plan
+  and lets it go, and the steps that plan put on the undo go with it; a tap on another machine
+  cancels it the same way and takes that one in hand. A move that has played is taken back by UNDO
+  alone. A route can also be drawn by hand for a first leg: a drag from the machine through the
+  hexes it should walk, let go on a hex for a waypoint or on a pack for an order.
+- **The button** reads EXECUTE while a machine is in hand, lit while it has waypoints or an order
+  to play, dimmed and disabled otherwise; EXECUTE plays its move as a tap on its latest waypoint
+  does. With none in hand it reads ENGAGE while a fight is ready (a catch, or a machine ordered
+  onto a pack), ENGAGE 1 OF N while N fights wait, each numbered on the map in the order ENGAGE
+  opens them (a catch first, then the packs in the order their orders were given), else END TURN;
+  back from a fight with more waiting, the orders stand and the button pulses. ENGAGE plays any
+  move still planned first (the boss's fight aside, below), then the fight opens.
+- **UNDO** takes back the last step, whoever made it, in the order made: a waypoint, an order, or
+  an executed move (the machine back where it stood, its waypoints and order as they were, its
+  action whole again), back to the turn's start or the last fight. The machine the step was about
+  comes into hand while it has a plan left, and is let go once it has none. A caught machine's
+  fights come first, one a hunter, and the map draws each as the machine's order onto the hunter
+  that caught it. END TURN asks first
   while a machine can still move or fight; then the turn ends: packs walk and strike; Rift
   Pressure rises one. Nothing returns on the map: the shield is full as every fight opens. Once every
   machine has fought, is ordered, is caught, or can neither move nor reach a pack where it
-  stands, the button pulses, whichever it reads.
+  stands, the button pulses while no machine is in hand.
 - **A tap and a double-tap** on the map work as a die's do in a fight: a double-tap on a
   machine or a pack opens its codex, and a tap on one lands only once the double-tap window
   (0.1 s on the map, from the tap's release to a second touch; a die's is 0.15) has passed with no second touch, its hex
@@ -1787,10 +1797,8 @@ a stat.
   its name (a wall by what it is): who crosses it, who wades it and who cannot, and whether
   packs enter it. A refused order
   says what stopped it there too.
-- **Orders**: a tap or drag onto a pack plans the machine's move to the farthest hex in attack
-  range its move reaches (or leaves it, if in range) and orders it, one step for UNDO; a
-  second tap on the pack takes the order back. ENGAGE opens one fight at a time: the first
-  order's pack and every machine ordered onto it.
+- **Orders**: ENGAGE opens one fight at a time: the first order's pack and every machine ordered
+  onto it.
 - **A fight** is one pack: nothing joins it and it joins nothing; a hunter's
   catch is a fight a hunter, one hunter a machine. The machines whose engage range covers
   it (1: beside it, the one range everyone on the map has) may join. Orders onto several packs queue, ENGAGE opening them one at a
