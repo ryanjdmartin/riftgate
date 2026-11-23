@@ -385,13 +385,11 @@
    "passive": {
     "id": "lockdown",
     "name": "Lockdown",
-    "description": "Equipment it spends on itself seals it: armour +3, its cooling stopped, 3 hotter at the end of each turn, and its Cryo Flinger gains Spread. A weapon it fires opens it, and so does a reboot. Its weapons deal 1 more to a foe carrying Cryo.",
+    "description": "Using equipment on itself grants Sealed. While Sealed, its Cryo Flinger gains Spread. Its weapons deal +1 damage to a foe carrying Cryo.",
     "effects": [
      {
       "trigger": "static",
-      "effect": "seal_form",
-      "value": 3,
-      "heat": 3
+      "effect": "seal_form"
      },
      {
       "trigger": "static",

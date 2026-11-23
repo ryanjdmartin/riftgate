@@ -2380,8 +2380,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 				errs.append("%s: target_rank's reach is direct or indirect" % where)
 			if str(eff.get("trigger", "")) != "on_attack":
 				errs.append("%s: target_rank reads a reach on an attack's own effects only (on_attack)" % where)
-		if effect == "seal_form" and (int(eff.get("value", 0)) <= 0 or int(eff.get("heat", 0)) < 0):
-			errs.append("%s: seal_form's value is the armour the seal grants, positive, and heat what it runs hotter a turn, not negative" % where)
+		if effect == "seal_form" and (eff.has("value") or eff.has("heat")):
+			errs.append("%s: seal_form says no numbers: Sealed's are its own (23 November)" % where)
 		if effect == "paradox" and int(eff.get("value", 0)) < 1:
 			errs.append("%s: paradox's value is the count that knocks a foe out, at least 1" % where)
 		if effect == "grant_keyword" and eff.has("printed"):

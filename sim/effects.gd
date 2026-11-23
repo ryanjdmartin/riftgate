@@ -352,18 +352,19 @@ const STATUS := {
 		"tags": ["ability"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
 	# The Polar Bear's seal (Ryan's go, 20 October; the form-changing tank of his 15 October
 	# framework): a shield it spends on itself seals it, a vent or a weapon opens it.
-	# One chip while sealed, carrying the armour its Lockdown grants (sealed_status builds it
-	# with the passive's numbers), renewing, never stacking (Ryan: the granted armour is tied
-	# to the mode). Its own cooling stops and it runs hotter at the end of each turn
-	# (Skirmish); an ally's vent still cools it (Ryan, 20 October: allowed).
+	# One chip while sealed, renewing, never stacking (Ryan: the granted armour is tied to the
+	# mode), its numbers its own, whatever passive lets a machine seal (Ryan, 23 November:
+	# "Polar bear should go on the status not the passive"): its armour, and `seal_heat`, what it
+	# runs hotter at the end of each turn (Skirmish). Its own cooling stops; an ally's vent still
+	# cools it (Ryan, 20 October: allowed).
 	# The Clydesdale's batteries (Ryan, 11 November: "One half at a time ... The active half should
 	# persist between skirmishes"): its die folds in two, a battery up and one stowed, and this
 	# chip says the second is up; with none the first is. Held for the battle (fold_die), never a
 	# buff, so nothing purges it; the model holds the form of the same name (the second battery up).
 	"changed_over": {"id": "changed_over", "name": "Changed Over", "description": "Its second battery is up and its first stowed: its die rolls the second battery and its fixed pieces.", "decay": "none", "stacking": "renew",
 		"tags": ["ability", "form"], "effects": []},
-	"sealed": {"id": "sealed", "name": "Sealed", "description": "Sealed: armour up, its cooling stopped, hotter at the end of each turn. A weapon it fires opens it.", "decay": "none", "stacking": "renew",
-		"tags": ["ability", "form"], "effects": []},
+	"sealed": {"id": "sealed", "name": "Sealed", "description": "Armour +3, its cooling stopped, 3 hotter at the end of each turn. A weapon it fires opens it.", "decay": "none", "stacking": "renew", "seal_heat": 3,
+		"tags": ["ability", "form"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 3}]},
 	# The Mole's burrow (Ryan, 16 November: "Instead of Reboot, it Burrows. While burrowed, it gains
 	# a unpurgable buff called 'Burrowed' that grants 1 Armour ... and all its die faces change to
 	# its locked piece, the Inertia Drill, and it remains burrowed until it uses it"; his kit of the
@@ -2276,13 +2277,21 @@ static func foe_armour_bonus(f) -> int:
 
 
 ## The form a machine seals into (seal_form, static; the Polar Bear's Lockdown, 20 October):
-## {"armour": the armour the seal grants, "heat": what it runs hotter at the end of each turn}
-## when a live passive carries it, else empty.
+## {"armour": the armour Sealed grants, "heat": what it runs hotter at the end of each turn}, the
+## status's own numbers (23 November), when a live passive lets the machine seal, else empty.
 static func seal_form(u) -> Dictionary:
 	for pair in _taking_part(u, "static", null):
 		if str(pair[0].get("effect", "")) == "seal_form":
-			return {"armour": int(pair[0].get("value", 0)), "heat": int(pair[0].get("heat", 0))}
+			return {"armour": status_value_static("sealed", "add_stat"), "heat": int(STATUS["sealed"].get("seal_heat", 0))}
 	return {}
+
+
+## The value a status's static effect of this name carries (Sealed's armour).
+static func status_value_static(status_id: String, effect: String) -> int:
+	for eff in STATUS.get(status_id, {}).get("effects", []):
+		if str(eff.get("trigger", "")) == "static" and str(eff.get("effect", "")) == effect:
+			return int(eff.get("value", 0))
+	return 0
 
 
 ## The Buzzard's zap (shield_zap, static; Ryan, 11 November: "spend X shield and add it to the
@@ -2302,15 +2311,6 @@ static func zap_of(u, face: Face) -> Dictionary:
 			cost = maxi(cost, int(eff.get("cost", 0)))
 			damage = maxi(damage, int(eff.get("value", 0)) * weight(pair[1]))
 	return {"cost": cost, "damage": damage} if cost > 0 and damage > 0 else {}
-
-
-## The Sealed status with the seal's own numbers in it: the chip the machine wears while
-## sealed, carrying the armour as its one effect (the stat pipeline reads it like any add).
-static func sealed_status(armour: int, heat: int) -> Dictionary:
-	var d: Dictionary = STATUS["sealed"].duplicate(true)
-	d["description"] = "Sealed: armour +%d, its cooling stopped, %d hotter at the end of each turn. A weapon it fires opens it." % [armour, heat]
-	d["effects"] = [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": armour}]
-	return d
 
 
 static func is_sealed(u) -> bool:
@@ -3299,7 +3299,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"self_status":
 			var sn := str(STATUS.get(str(eff.get("status", "")), {}).get("name", str(eff.get("status", ""))))
 			body = "spent on a foe, lays %s %s on its own machine%s%s" % [sn, vs, " for each foe it reaches" if bool(eff.get("per_foe", false)) else "", (", up to %d" % int(eff["cap"])) if int(eff.get("cap", 0)) > 0 else ""]
-		"seal_form": body = "equipment it spends on itself seals it: armour +%s, its cooling stopped, %s hotter at the end of each turn; a weapon it fires opens it" % [vs, str(eff.get("heat", 0))]
+		"seal_form": body = "equipment it uses on itself grants Sealed; a weapon it fires removes it"
 		"stack_status":
 			var nm := str(STATUS.get(str(v), {}).get("name", str(v)))
 			var k := maxi(1, int(eff.get("stacks", 1)))

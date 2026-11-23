@@ -229,14 +229,14 @@ func test_a_reboot_vents_what_stood_past_the_maximum_so_its_turn_burns_nothing()
 func test_a_reboot_opens_a_sealed_machine() -> void:
 	var m := _mech(1, "A", Die.single(Face.buff("overcharged", 1)), 40, 200, 30)
 	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
-		{"trigger": "static", "effect": "seal_form", "value": 10, "heat": 15}]})
+		{"trigger": "static", "effect": "seal_form"}]})
 	var sk := _fight([m], [Foe.make("brute", 900, 25)])
 	var ms: Skirmish.MechState = sk.mechs[0]
 	sk.start_round()
 	assert_true(sk.assign(0, null), "a buff on itself")
 	assert_true(Effects.is_sealed(m), "seals it")
 	sk.end_round()
-	assert_eq(ms.heat, 15, "sealed, it ran 15 hotter as its turn ended")
+	assert_eq(ms.heat, int(Effects.STATUS["sealed"]["seal_heat"]), "sealed, it ran hotter as its turn ended")
 	var hull := m.hull
 	sk.start_round()
 	assert_true(sk.can_reboot(0), "sealed, it may reboot: it is never stuck in its shell")

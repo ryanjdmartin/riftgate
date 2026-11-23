@@ -3239,7 +3239,7 @@ func _shift_form(ms: MechState, f: Face, target) -> void:
 	match form_change(ms, f, not (target is MechState) or target == ms):
 		"seal":
 			var seal := Effects.seal_form(ms.unit)
-			Effects.stack(ms.unit, Effects.sealed_status(int(seal["armour"]), int(seal["heat"])), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
+			Effects.stack(ms.unit, Effects.STATUS["sealed"], Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
 			log.append("%s seals: armour +%d, its cooling stopped, +%d heat a turn" % [ms.unit.display_name, int(seal["armour"]), int(seal["heat"])])
 		"open":
 			Effects.remove(ms.unit, "sealed")

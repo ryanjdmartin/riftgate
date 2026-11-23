@@ -1136,7 +1136,7 @@ func test_greedy_values_the_seal_by_the_blows_its_armour_turns() -> void:
 	var sk := Skirmish.new(1)
 	var buff := Face.buff("overcharged", 1)
 	var u := _mech("A", Die.of([buff, Face.attack(10, L)]), 0, 200)
-	u.grant_passive({"id": "test_seal", "name": "Seal", "description": "", "effects": [{"trigger": "static", "effect": "seal_form", "value": 20, "heat": 5}]})
+	u.grant_passive({"id": "test_seal", "name": "Seal", "description": "", "effects": [{"trigger": "static", "effect": "seal_form"}]})
 	sk.add_mech(u)
 	sk.add_foes([_ghoul(500, 30), _ghoul(500, 30)])
 	sk.begin()
@@ -1145,7 +1145,7 @@ func test_greedy_values_the_seal_by_the_blows_its_armour_turns() -> void:
 	assert_true(pol.seal_score(sk, ms) > 0.0, "twenty armour against two blows of thirty is worth the forty it keeps off")
 	var on_self := pol.machine_spend_score(sk, ms, ms, buff)
 	assert_true(absf(on_self - (pol.buff_score(sk, ms, buff) + pol.seal_score(sk, ms))) < 0.001, "spent on itself, the buff is worth what it grants and the seal besides")
-	Effects.stack(u, Effects.sealed_status(20, 5), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
+	Effects.stack(u, Effects.STATUS["sealed"], Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
 	assert_eq(pol.seal_score(sk, ms), 0.0, "and nothing once sealed")
 
 

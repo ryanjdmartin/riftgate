@@ -61,7 +61,7 @@ Cannot be used without enough shield. | implemented |
 | **On itself** | Resolve: This machine gains the status printed on the entry. | implemented |
 | **An ally's action** | Resolve: If the target's die is used, spend {N} rerolls. Its die rerolls onto a different entry, and it can act again. | implemented |
 | **Rolls its die** | Resolve: The target's die rerolls onto a different entry. A used die does not reroll. | implemented |
-| **Rerolls a kill** | Resolve: If any foe hit fell, gain {N} rerolls. | implemented |
+| **Rerolls a kill** | Resolve: If any foe hit was defeated, gain {N} rerolls. | implemented |
 | **Grants a reroll** | Resolve: Gain {N} rerolls. | implemented |
 | **Vents all** | Commit: Reduce heat to 0. Damage increases per step of heat vented, as printed. | implemented |
 | **Fires the shield** | Commit: Reduce shield to 0. Damage increases per step of shield spent, as printed. | implemented |
@@ -136,8 +136,8 @@ Foes are forced to target an Exposed machine at round start.
 Turn Start: Reduce stacks by 1. | implemented |
 | **Empowered** | On Hit: +1 damage per stack ({N}).
 Turn End: Reduce stacks by half, rounded down. | implemented |
-| **Sealed** | +Armour from its passive. Cooling is stopped. Its Cryo Flinger gains Spread.
-Turn End: Gain heat from its passive.
+| **Sealed** | +3 Armour. Cooling is stopped.
+Turn End: Gain 3 heat.
 Using a weapon or rebooting removes it. | implemented |
 | **Changed Over** | Its second battery is up and its first is stowed. Lasts the battle. | implemented |
 | **Cryo** | When Hit: If by a weapon, consume all stacks. The machine that hit it loses 1 heat per stack ({N}). | implemented |
@@ -165,7 +165,7 @@ Resolve: If triggered, reduce stacks to 0. | implemented |
 | **Ricochet** | Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage, with every effect of the weapon except its area.
 After Being Hit: If hull damage was taken, reduce stacks by half, rounded down.
 Lasts the skirmish. | implemented |
-| **Essence** | Gain 1 whenever any foe falls. Lasts the battle.
+| **Essence** | Gain 1 whenever any foe is defeated. Lasts the battle.
 Skirmish Start: Gain 1 Empowered per 5 Essence.
 Round End: If this machine killed this round, gain 1 Empowered per 5 Essence. | implemented |
 | **Offhand** | Its weapons and equipment aimed at a foe carry the armament shown.
@@ -186,7 +186,7 @@ Turn Start: Reduce stacks by half, rounded down. | implemented |
 | **Destroyed component** | This entry is blank for the rest of the battle. Its passive bonuses still apply, its passive abilities do not.
 After the battle, a fixed component is rebuilt and a hardpoint's is lost. | implemented |
 | **Mine** | Uses aimed at this foe add their damage and keywords to the Mine.
-When this foe falls: Hit every foe around it for the Mine's damage ({N}), with its keywords. | implemented |
+When defeated: Hit every foe around it for the Mine's damage ({N}), with its keywords. | implemented |
 | **Ore** | At 3 Ore, base Armour increases by 1. | implemented |
 | **Scorched** | Its uses aimed at a foe cost +1 heat per stack ({N}).
 Turn End: Reduce stacks to 0. | implemented |
@@ -207,7 +207,7 @@ On Suppressed: Reduce stacks to 0.
 Turn End: Reduce stacks by 1. | implemented |
 | **Empowered** | On Hit: +1 damage per stack ({N}).
 Turn End: Reduce stacks by half, rounded down. | implemented |
-| **Undying** | When it falls: Return with full HP, acting from next round. Reduce stacks to 0. | implemented |
+| **Undying** | When defeated: Return with full HP, acting from next round. Reduce stacks to 0. | implemented |
 | **Aloft** | Cannot be targeted or hit. Its other effects continue.
 Ends when its gathered move lands. | implemented |
 | **Appropriated** | Holds the number of the component it took: a weapon's damage, otherwise 1.
@@ -348,8 +348,8 @@ Only usable while not Golden. | implemented |
 Foes do not target a machine their hits would already wreck while another stands. | implemented |
 | **Self-Destruct** | Resolve: This foe is removed. It cannot return. | implemented |
 | **Every Machine** | Hits every machine. It has no target, so Lure does not move it. | implemented |
-| **Last Act** | When it falls: Use this move at once. A single-target move hits the machine that killed it, or nothing if no machine did. | implemented |
-| **Parts** | A core and its parts. While its parts stand, the core is Guarded. A fallen part may grow back. When the core falls, its parts fall. | implemented |
+| **Last Act** | When defeated: Use this move at once. A single-target move hits the machine that killed it, or nothing if no machine did. | implemented |
+| **Parts** | A core and its parts. While its parts stand, the core is Guarded. A defeated part may grow back. When the core is defeated, its parts are defeated. | implemented |
 | **Countdown** | Lands {N} rounds after it is announced. Nothing hits while it gathers.
 Suppress delays it 1 round. Disrupt cancels it. | implemented |
 | **Follow-up** | Names the move its foe announces next round. Suppress or Disrupt on the first cancels the second. Once announced, the second can be Suppressed but not Disrupted. | implemented |

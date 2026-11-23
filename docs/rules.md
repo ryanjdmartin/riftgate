@@ -979,8 +979,10 @@ On a machine:
   moment the Ore moves, so it lands with the Ore that earns it and goes as the hopper empties;
   no Purge touches it.
 - **Sealed** (Ability, the Polar Bear's form): equipment it spends on itself (a buff dropped on
-  itself) seals it: armour +3, any cooling it is granted stopped (a chassis has none of its own), 3 heat more at the end of each turn
-  before the overheat, and its Cryo Flinger gains Spread (one foe open, its rank's three sealed);
+  itself) seals it. Sealed's numbers are the status's own, whatever passive lets a machine seal:
+  armour +3, any cooling it is granted stopped (a chassis has none of its own), 3 heat more at
+  the end of each turn before the overheat. While it is Sealed, its Lockdown gives its Cryo
+  Flinger Spread (one foe open, its rank's three sealed);
   a weapon it fires opens it, and so does a reboot: the shell and its armour go as the die
   drops, so the seal's clock adds nothing that turn and it stands bare and open through the
   enemy's. Equipment on an ally and a debuff (the Flinger's lure) leave the

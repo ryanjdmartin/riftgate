@@ -1701,7 +1701,7 @@ func test_an_ability_wears_its_own_chip_and_no_purge_takes_it() -> void:
 	sk.add_foes([nob, gel, beast, lord, wary])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
-	Effects.stack(m, Effects.sealed_status(3, 2), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
+	Effects.stack(m, Effects.STATUS["sealed"], Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
 	Effects.grant_buff(m, "overcharged", 2, "buff:overcharge_coil", sk.round)
 	Effects.stack(nob, Effects.STATUS["enraged"], Effects.SKIRMISH, "foe:goblin_nob", 2, Effects.DECAY_NONE)
 	s._refresh()

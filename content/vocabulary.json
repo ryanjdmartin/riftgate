@@ -664,7 +664,7 @@
    "id": "sealed",
    "category": "status",
    "name": "Sealed",
-   "codex": "+Armour from its passive. Cooling is stopped. Its Cryo Flinger gains Spread.\nTurn End: Gain heat from its passive.\nUsing a weapon or rebooting removes it.",
+   "codex": "+3 Armour. Cooling is stopped.\nTurn End: Gain 3 heat.\nUsing a weapon or rebooting removes it.",
    "status": "implemented",
    "design": {
     "holes": "One chip, renewing, never stacking: the armour it grants is tied to the form. The numbers are placeholders.",
@@ -904,7 +904,7 @@
    "id": "essence",
    "category": "status",
    "name": "Essence",
-   "codex": "Gain 1 whenever any foe falls. Lasts the battle.\nSkirmish Start: Gain 1 Empowered per 5 Essence.\nRound End: If this machine killed this round, gain 1 Empowered per 5 Essence.",
+   "codex": "Gain 1 whenever any foe is defeated. Lasts the battle.\nSkirmish Start: Gain 1 Empowered per 5 Essence.\nRound End: If this machine killed this round, gain 1 Empowered per 5 Essence.",
    "status": "implemented",
    "design": {
     "holes": "Ryan's rework of 12 November, Souls then; Essence his name of 15 November (\"Rename souls to Essence\"). No cap by his call (\"as part of the fantasy\"), so it is no store, which is capped and wears a bar: an Ability, a chip with its count. The kill's flare is once a round, as it ends, when an attack of the Ammit's killed in it (Ryan, 16 November: \"at the end of a round where the Ammit killed at least one enemy\"); once an attack that killed from 12 November until then (\"Flaring twice for an AoE is probably wrong, let's make it 'one of more killed' by an attack\"), and once for each foe in the first build. The text is a session's draft.",
@@ -1078,7 +1078,7 @@
    "id": "mine",
    "category": "status",
    "name": "Mine",
-   "codex": "Uses aimed at this foe add their damage and keywords to the Mine.\nWhen this foe falls: Hit every foe around it for the Mine's damage ({N}), with its keywords.",
+   "codex": "Uses aimed at this foe add their damage and keywords to the Mine.\nWhen defeated: Hit every foe around it for the Mine's damage ({N}), with its keywords.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 9 November: \"the lammergeier basically converts all hits to AoE hits, at the cost of a delay until Death\". One Mine a spend at a flat 2 (\"then look at per hit later if it's weak\"); its riders the spend's whole result on the foe (\"the mine should take the entire result of the spend, then apply it. So a 3-hit flak that burns 1 per hit if the target is under 50% HP, would result in adding a 2 damage mine with 3 flak, and 0-3 burn\"), every hit's stacks as its machine deepened and doubled them and a gated keyword where its gate held (\"if a gate is met when fired only, then apply it\"); the numbered ones add up and the rest ride once; Chain rides as its arcs (Claude's lean, which he took); in the enemy's turn a Mine's Disrupt does nothing; a Suppress rides as fired, each foe the blast meets judging its own Numbed (Claude's read; Ryan: \"Your reads are correct\"). A mark the team laid: a Ward turns it away, a foe's cleanse takes it, the Paradox counts it. A foe taken into a merge hands its Mine to the merger.",
@@ -1724,7 +1724,7 @@
    "id": "kill_rerolls",
    "category": "component_property",
    "name": "Rerolls a kill",
-   "codex": "Resolve: If any foe hit fell, gain {N} rerolls.",
+   "codex": "Resolve: If any foe hit was defeated, gain {N} rerolls.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1854,7 +1854,7 @@
    "id": "last_act",
    "category": "foe",
    "name": "Last Act",
-   "codex": "When it falls: Use this move at once. A single-target move hits the machine that killed it, or nothing if no machine did.",
+   "codex": "When defeated: Use this move at once. A single-target move hits the machine that killed it, or nothing if no machine did.",
    "status": "implemented",
    "design": {
     "holes": "Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. The Gargantuan King's Meteor (30 October). A short list of steps since 16 November, on Ryan's mark of 15 November ('foes who, say buff others on death, or debuff on death'): the blow may carry also, and on_death.act is one special in a blow's place with its own also, each an effect a fall may do (Foe.FALL_EFFECTS). Carriers of more than a blow since 17 November, on his yes to the bench: the Mandragora line's scream, the Gorgon's dying gaze, the Salamander's embers and the Lich's, which takes back the readiness it gave (unready_all, a fall's by sense). The codex is a session's draft for them; it and the term's word are his ('maybe rename to something more interesting'). A single blow lands on the machine that made the kill since 17 November, as a curse does (Ryan, of the Dread Knight's Death Throes: 'yes, hit its killer, if it has one'); it followed the foe's own pick until then."
@@ -1864,7 +1864,7 @@
    "id": "parts",
    "category": "foe",
    "name": "Parts",
-   "codex": "A core and its parts. While its parts stand, the core is Guarded. A fallen part may grow back. When the core falls, its parts fall.",
+   "codex": "A core and its parts. While its parts stand, the core is Guarded. A defeated part may grow back. When the core is defeated, its parts are defeated.",
    "status": "implemented",
    "design": {
     "holes": "Content: parts (foe ids), guard (all or any), regrow_parts (rounds). Parts are found by pack and type, one deep, and each takes a cell of its pack's grid. The Fallen Weapon's two eyes and the Obsidian Tyrant's rider (30 October); a move may open once a part has fallen (part_fallen)."
@@ -2214,7 +2214,7 @@
    "id": "risen",
    "category": "status",
    "name": "Undying",
-   "codex": "When it falls: Return with full HP, acting from next round. Reduce stacks to 0.",
+   "codex": "When defeated: Return with full HP, acting from next round. Reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "",

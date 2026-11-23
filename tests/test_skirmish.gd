@@ -1230,7 +1230,7 @@ func test_a_granted_shield_regen_comes_back_each_round_to_the_maximum_sealed_or_
 		{"trigger": "static", "effect": "add_stat", "stat": "shield_regen", "value": 2}]})
 	m.shield = 5
 	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
-		{"trigger": "static", "effect": "seal_form", "value": 1, "heat": 0}]})
+		{"trigger": "static", "effect": "seal_form"}]})
 	var plain := _mech("B", Die.single(Face.attack(1, L)), 10, 100)
 	plain.shield = 5
 	sk.add_mech(m)
@@ -1247,7 +1247,7 @@ func test_a_granted_shield_regen_comes_back_each_round_to_the_maximum_sealed_or_
 	sk.end_round()
 	sk.start_round()
 	assert_eq(m.shield, 10, "capped at the maximum")
-	Effects.stack(m, Effects.sealed_status(1, 0), Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	Effects.stack(m, Effects.STATUS["sealed"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
 	assert_true(Effects.is_sealed(m), "sealed")
 	m.shield = 4
 	sk.end_round()
@@ -7103,14 +7103,14 @@ func test_an_attacker_status_condition_reads_the_foe_striking() -> void:
 func test_a_buff_on_itself_seals_the_machine_and_a_weapon_opens_it() -> void:
 	var sk := Skirmish.new(1)
 	var buff := Face.buff("overcharged", 1)
-	var vent := Face.from_dict({"kind": "vent", "power": 20})
+	var vent := Face.from_dict({"kind": "vent", "power": 5})
 	var gun := Face.attack(10, L)
 	var lure := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure", "cryo"], "heat": 5, "cryo": 1})
 	var shield := Face.shield(20)
 	var m := _mech("A", Die.of([buff, vent, gun, lure, shield]), 0, 200)
 	m.grant_passive({"id": "radiator", "name": "Radiator", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 5}]}, "radiator")   # cooling is granted: a chassis has none of its own
 	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
-		{"trigger": "static", "effect": "seal_form", "value": 10, "heat": 15}]})
+		{"trigger": "static", "effect": "seal_form"}]})
 	var b := _mech("B", Die.single(Face.attack(10, L)), 40, 100)
 	sk.add_mech(m)
 	sk.add_mech(b)
@@ -7118,7 +7118,9 @@ func test_a_buff_on_itself_seals_the_machine_and_a_weapon_opens_it() -> void:
 	sk.begin()
 	sk.start_round()
 	var ms := sk.mechs[0]
-	assert_eq(Effects.seal_form(m), {"armour": 10, "heat": 15}, "the passive says what the seal grants")
+	var A := Effects.status_value_static("sealed", "add_stat")
+	var H := int(Effects.STATUS["sealed"]["seal_heat"])
+	assert_eq(Effects.seal_form(m), {"armour": A, "heat": H}, "Sealed's own numbers, whatever passive lets it seal")
 	assert_false(Effects.is_sealed(m), "open to begin with")
 	assert_eq(Skirmish.form_change(ms, buff), "seal", "a buff of its own on itself would seal it")
 	assert_eq(Skirmish.form_change(ms, buff, false), "", "the same buff on an ally would not")
@@ -7136,27 +7138,27 @@ func test_a_buff_on_itself_seals_the_machine_and_a_weapon_opens_it() -> void:
 	ms.face_index = 0
 	assert_true(sk.assign(0, null), "a buff on itself")
 	assert_true(Effects.is_sealed(m), "seals it")
-	assert_eq(m.armour, 10, "the seal's armour, read through the stat")
-	assert_true("\n".join(sk.log).contains("A seals: armour +10"), "the log says so")
-	assert_eq(sk.forecast(ms)["heat_end"], 15, "the forecast reads the seal's heat at the turn's end")
+	assert_eq(m.armour, A, "the seal's armour, read through the stat")
+	assert_true("\n".join(sk.log).contains("A seals: armour +%d" % A), "the log says so")
+	assert_eq(sk.forecast(ms)["heat_end"], H, "the forecast reads the seal's heat at the turn's end")
 	sk.end_round()
-	assert_eq(ms.heat, 15, "sealed, it ran 15 hotter at the end of its turn")
+	assert_eq(ms.heat, H, "sealed, it ran hotter at the end of its turn")
 	assert_true(Effects.is_sealed(m), "and stays sealed through the enemy's turn")
 	sk.start_round()
-	assert_eq(ms.heat, 15, "its cooling stopped: nothing shed at the round's start")
+	assert_eq(ms.heat, H, "its cooling stopped: nothing shed at the round's start")
 	ms.face_index = 3
 	assert_true(sk.assign(0, sk.front[0]), "a lure, a debuff")
 	assert_true(Effects.is_sealed(m), "keeps the seal")
 	assert_eq(Effects.stacks_of(sk.front[0], "cryoed"), 1, "and leaves Cryo on the foe")
 	sk.end_round()
-	assert_eq(ms.heat, 35, "the lure's 5 and another 15 sealed")
+	assert_eq(ms.heat, 2 * H + 5, "the lure's 5 and the seal's again")
 	sk.start_round()
 	ms.face_index = 1
 	assert_true(sk.assign(0, null), "a vent on itself")
 	assert_true(Effects.is_sealed(m), "opens nothing")
-	assert_eq(ms.heat, 15, "though its 20 come off")
+	assert_eq(ms.heat, 2 * H, "though its 5 come off")
 	sk.end_round()
-	assert_eq(ms.heat, 30, "and the seal's 15 go back on")
+	assert_eq(ms.heat, 3 * H, "and the seal's go back on")
 	sk.start_round()
 	ms.face_index = 2
 	assert_eq(Skirmish.form_change(ms, gun), "open", "sealed, a weapon would open it")
@@ -7165,9 +7167,9 @@ func test_a_buff_on_itself_seals_the_machine_and_a_weapon_opens_it() -> void:
 	assert_eq(m.armour, 0, "the seal's armour goes with it")
 	assert_true("\n".join(sk.log).contains("A opens"), "the log says so")
 	sk.end_round()
-	assert_eq(ms.heat, 30 - Skirmish.cryo_cool(), "open, nothing more at the turn's end, and the Cryo its gun met cooled it")
+	assert_eq(ms.heat, 3 * H - Skirmish.cryo_cool(), "open, nothing more at the turn's end, and the Cryo its gun met cooled it")
 	sk.start_round()
-	assert_eq(ms.heat, 25 - Skirmish.cryo_cool(), "and its cooling runs again")
+	assert_eq(ms.heat, maxi(0, 3 * H - Skirmish.cryo_cool() - 5), "and its cooling runs again")
 	ms.face_index = 0
 	assert_true(sk.assign(0, null), "sealed again")
 	assert_true(Effects.is_sealed(m), "one seal, renewed")
@@ -7188,7 +7190,7 @@ func test_a_grant_scoped_to_one_piece_holds_on_it_alone_while_sealed() -> void:
 	gun.component = "test_gun"
 	var m := _mech("A", Die.of([lure, buff, gun]), 0, 200)
 	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
-		{"trigger": "static", "effect": "seal_form", "value": 3, "heat": 3},
+		{"trigger": "static", "effect": "seal_form"},
 		{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "when": "sealed", "entry": "test_flinger"}]})
 	sk.add_mech(m)
 	sk.add_mech(_mech("B", Die.single(Face.attack(10, L)), 40, 100))
@@ -8216,7 +8218,7 @@ func test_a_purge_takes_every_buffs_stacks_and_leaves_the_abilities() -> void:
 	var m := _mech("D", Die.of([buff, Face.attack(10, L)]), 40, 200)
 	m.grant_passive({"id": "radiator", "name": "Radiator", "description": "", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "cooling", "value": 5}]}, "radiator")   # cooling is granted: a chassis has none of its own
 	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
-		{"trigger": "static", "effect": "seal_form", "value": 10, "heat": 15}]})
+		{"trigger": "static", "effect": "seal_form"}]})
 	s2.add_mech(m)
 	var hitter := _archer(500, 12)   # the back rank strikes after the front, so after the purge
 	s2.add_foes([_purger(), hitter])
@@ -8225,11 +8227,11 @@ func test_a_purge_takes_every_buffs_stacks_and_leaves_the_abilities() -> void:
 	var ms: Skirmish.MechState = s2.mechs[0]
 	ms.face_index = 0
 	assert_true(s2.assign(0, null), "a buff on itself")
-	assert_true(Effects.is_sealed(m) and m.armour == 10, "seals it, armour 10")
+	assert_true(Effects.is_sealed(m) and m.armour == Effects.status_value_static("sealed", "add_stat"), "seals it, Sealed's armour")
 	m.shield = 0
 	s2.end_round()
-	assert_true(Effects.is_sealed(m) and m.armour == 10, "the purge left the seal and its armour")
-	assert_eq(m.hull, 200 - 2, "so the blow after it met the plate")
+	assert_true(Effects.is_sealed(m) and m.armour == Effects.status_value_static("sealed", "add_stat"), "the purge left the seal and its armour")
+	assert_eq(m.hull, 200 - (12 - Effects.status_value_static("sealed", "add_stat")), "so the blow after it met the plate")
 	assert_true("\n".join(s2.log).contains("purges D ×9: Empowered gone"), "the log says the purge took the buff that sealed it, and nothing of the seal")
 	# A Ward turns it away.
 	var s4 := Skirmish.new(1, 1)
