@@ -49,61 +49,61 @@ Status: 208 implemented, 6 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Swap** | Commit: Choose another foe or an empty slot. The target and that choice trade places.
-Massive foes cannot be moved. | implemented |
+| **Swap** | Commit: Choose another Sprite or an empty slot. The target and that choice trade places.
+Massive Sprites cannot be moved. | implemented |
 | **Volatile** | Commit: Lose {N} hull. Ignores shield and Armour. | implemented |
 | **Shield cost** | Commit: Lose {N} shield.
 Cannot be used without enough shield. | implemented |
-| **Targets** | Who this component can be used on. Under its mark, the middle hex is this machine and the side hexes are the other machines. A filled hex can be chosen. | implemented |
+| **Targets** | Who this component can be used on. Under its mark, the middle hex is this Frame and the side hexes are the other Frames. A filled hex can be chosen. | implemented |
 | **Cooldown** | Resolve: This entry is unavailable for the rest of the round and the next {N} rounds. | implemented |
-| **Gather** | Resolve: Every other foe's Mine joins the target's Mine. | implemented |
+| **Gather** | Resolve: Every other Sprite's Mine joins the target's Mine. | implemented |
 | **Detonate** | Resolve: The target's Mine triggers now. | implemented |
-| **On itself** | Resolve: This machine gains the status printed on the entry. | implemented |
+| **On itself** | Resolve: This Frame gains the status printed on the entry. | implemented |
 | **An ally's action** | Resolve: If the target's die is used, spend {N} rerolls. Its die rerolls onto a different entry, and it can act again. | implemented |
 | **Rolls its die** | Resolve: The target's die rerolls onto a different entry. A used die does not reroll. | implemented |
-| **Rerolls a kill** | Resolve: If any foe hit was defeated, gain {N} rerolls. | implemented |
+| **Rerolls a kill** | Resolve: If any Sprite hit was defeated, gain {N} rerolls. | implemented |
 | **Grants a reroll** | Resolve: Gain {N} rerolls. | implemented |
 | **Vents all** | Commit: Reduce heat to 0. Damage increases per step of heat vented, as printed. | implemented |
 | **Fires the shield** | Commit: Reduce shield to 0. Damage increases per step of shield spent, as printed. | implemented |
-| **Passes heat** | Resolve: Move all of this machine's heat to the target. The target gains the printed status per step of heat moved. | implemented |
+| **Passes heat** | Resolve: Move all of this Frame's heat to the target. The target gains the printed status per step of heat moved. | implemented |
 | **Grows with missing HP** | Damage increases per step of the target's missing HP, as printed. | implemented |
 | **Finisher** | Commit: If the target is at or below half Max HP, double base damage. | implemented |
-| **Gated** | The keyword applies only to a foe that meets its condition at Commit. | implemented |
-| **Consumes** | On Hit: Consume all stacks of the named status on the foe hit. +1 damage per stack consumed.
-On equipment: Consume up to the printed number from this machine. Gain 1 stack of the granted status per one consumed. | implemented |
-| **Ablates its firer** | Resolve: Apply {N} Ablate to this machine. | implemented |
+| **Gated** | The keyword applies only to a Sprite that meets its condition at Commit. | implemented |
+| **Consumes** | On Hit: Consume all stacks of the named status on the Sprite hit. +1 damage per stack consumed.
+On equipment: Consume up to the printed number from this Frame. Gain 1 stack of the granted status per one consumed. | implemented |
+| **Ablates its firer** | Resolve: Apply {N} Ablate to this Frame. | implemented |
 | **Ignores armour** | Hits ignore Armour. | implemented |
 | **Empties the hopper** | Commit: Consume all Ore. Hit once per Ore consumed. No Ore is gained from these hits.
 Cannot be used without Ore. | implemented |
-| **Braces** | Resolve: Apply {N} Armoured to this machine. | implemented |
+| **Braces** | Resolve: Apply {N} Armoured to this Frame. | implemented |
 | **Strikes** | Hits per use. Each hit deals the full number, and Armour reduces each hit. | implemented |
 
 ## Reach
 
 | Term | Codex | Status |
 |---|---|---|
-| **Direct** | Can target any front-rank foe, any back-rank foe with an empty slot in front of it, and any Exposed foe. | implemented |
-| **Indirect** | Can target any foe. | implemented |
-| **Every Foe** | Hits every foe. Each hit counts as Targeted. | implemented |
-| **Every Ally** | Applies to every machine, this machine included. | implemented |
-| **Every Other Ally** | Applies to every machine except this one. | implemented |
+| **Direct** | Can target any front-rank Sprite, any back-rank Sprite with an empty slot in front of it, and any Exposed Sprite. | implemented |
+| **Indirect** | Can target any Sprite. | implemented |
+| **Every Sprite** | Hits every Sprite. Each hit counts as Targeted. | implemented |
+| **Every Frame** | Applies to every Frame, this Frame included. | implemented |
+| **Every Other Frame** | Applies to every Frame except this one. | implemented |
 
 ## Keyword
 
 | Term | Codex | Status |
 |---|---|---|
-| **Spread** | Also hits all other foes beside the target in the same rank, dealing {N} damage. The extra hits are not Targeted. | implemented |
-| **Penetrate** | Also hits all other foes in the same column, dealing {N} damage. The extra hits are not Targeted. | implemented |
+| **Spread** | Also hits all other Sprites beside the target in the same rank, dealing {N} damage. The extra hits are not Targeted. | implemented |
+| **Penetrate** | Also hits all other Sprites in the same column, dealing {N} damage. The extra hits are not Targeted. | implemented |
 | **Cryo** | Resolve: Apply {N} Cryo per hit. | implemented |
 | **Ablate** | Resolve: Apply {N} Ablate per hit. | implemented |
-| **Lure** | Each foe hit targets this machine this round. | implemented |
-| **Shock** | Resolve: Apply Shocked to each foe hit. | implemented |
+| **Lure** | Each Sprite hit targets this Frame this round. | implemented |
+| **Shock** | Resolve: Apply Shocked to each Sprite hit. | implemented |
 | **Expose** | Resolve: Apply 2 Exposed to each unit hit. | implemented |
-| **Disrupt** | Each foe hit switches to the next move in its list it can use this round. | implemented |
-| **Suppress** | Resolve: Apply Suppressed to each foe hit. | implemented |
+| **Disrupt** | Each Sprite hit switches to the next move in its list it can use this round. | implemented |
+| **Suppress** | Resolve: Apply Suppressed to each Sprite hit. | implemented |
 | **Brittle** | Resolve: Apply {N} Brittle per hit. | implemented |
 | **Sap** | Resolve: Apply {N} Sapped per hit. | implemented |
-| **Chain** | Resolve: Hit every Shocked foe for {N} damage. These hits are not Targeted and do not consume Shocked. | implemented |
+| **Chain** | Resolve: Hit every Shocked Sprite for {N} damage. These hits are not Targeted and do not consume Shocked. | implemented |
 | **Rapid** | Resolve: Reroll this die for free. This entry is unavailable for the rest of the round. | implemented |
 | **Instant** | Resolve: Reroll this die for free. | implemented |
 | **Jam** | Apply Jammed to the entry the target's die shows. | implemented |
@@ -111,7 +111,7 @@ Cannot be used without Ore. | implemented |
 | **Corrupt** | Resolve: Apply {N} Corrupted per hit to the entry the target's die shows. | implemented |
 | **Purge** | Resolve: Reduce stacks of every buff on each unit hit by {N}. | implemented |
 | **Cleanse** | Remove every debuff from the target.
-A foe's Cleanse targets the foe carrying the most debuffs. | implemented |
+A Sprite's Cleanse targets the Sprite carrying the most debuffs. | implemented |
 
 ## Status
 
@@ -131,8 +131,8 @@ Turn End: If it carries no Brittle, reduce stacks to 0. | implemented |
 | **Sapped** | On Hit: -1 damage dealt per stack ({N}).
 Turn End: Reduce stacks to 0. | implemented |
 | **Exposed** | All armour is negated.
-Exposed foes can be targeted regardless of reach.
-Foes are forced to target an Exposed machine at round start.
+Exposed Sprites can be targeted regardless of reach.
+Sprites are forced to target an Exposed Frame at round start.
 Turn Start: Reduce stacks by 1. | implemented |
 | **Empowered** | On Hit: +1 damage per stack ({N}).
 Turn End: Reduce stacks by half, rounded down. | implemented |
@@ -140,7 +140,7 @@ Turn End: Reduce stacks by half, rounded down. | implemented |
 Turn End: Gain 3 heat.
 Using a weapon or rebooting removes it. | implemented |
 | **Changed Over** | Its second battery is up and its first is stowed. Lasts the battle. | implemented |
-| **Cryo** | When Hit: If by a weapon, consume all stacks. The machine that hit it loses 1 heat per stack ({N}). | implemented |
+| **Cryo** | When Hit: If by a weapon, consume all stacks. The Frame that hit it loses 1 heat per stack ({N}). | implemented |
 | **Armoured** | +1 Armour per stack ({N}).
 Turn Start: Reduce stacks to 0. | implemented |
 | **Hardened Light** | When Hit: If its shield is up, -1 damage received per stack ({N}).
@@ -148,7 +148,7 @@ Shield Broken: Reduce stacks to 0. | implemented |
 | **Primed** | Resolve: Apply 1 Ablate per hit. If triggered, reduce stacks by 1. | implemented |
 | **Jammed** | This entry comes up blank.
 On Reboot: Reduce stacks to 0. | implemented |
-| **Corrupted** | Commit: This machine takes 3 damage per stack ({N}).
+| **Corrupted** | Commit: This Frame takes 3 damage per stack ({N}).
 On Reboot: Reduce stacks to 0. | implemented |
 | **Phased** | Cannot be damaged, targeted or hit. Can still act. Its other effects continue.
 Round End: Reduce stacks to 0. | implemented |
@@ -158,16 +158,16 @@ Ignores Armour and Barrier. | implemented |
 Turn End: Reduce stacks to 0. Gain Numbed equal to its stun resist: 1, 2 if massive, 3 if an elite, a hero or a boss. | implemented |
 | **Vitriol** | Turn End: Lose 10% of current HP per stack ({N}), rounded down, then reduce stacks by 1. Ignores Armour.
 Never reduces HP to 0. | implemented |
-| **Web Bomb** | Round End: Apply Suppressed to this foe and each foe beside it. Reduce stacks to 0. | implemented |
+| **Web Bomb** | Round End: Apply Suppressed to this Sprite and each Sprite beside it. Reduce stacks to 0. | implemented |
 | **Spun Up** | Weapon hits deal +2 damage per stack ({N}).
 Resolve: If triggered, reduce stacks to 0. | implemented |
 | **Ricochet** | Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage, with every effect of the weapon except its area.
 After Being Hit: If hull damage was taken, reduce stacks by half, rounded down.
 Lasts the skirmish. | implemented |
-| **Essence** | Gain 1 whenever any foe is defeated. Lasts the battle.
+| **Essence** | Gain 1 whenever any Sprite is defeated. Lasts the battle.
 Skirmish Start: Gain 1 Empowered per 5 Essence.
-Round End: If this machine killed this round, gain 1 Empowered per 5 Essence. | implemented |
-| **Offhand** | Its weapons and equipment aimed at a foe carry the armament shown.
+Round End: If this Frame killed this round, gain 1 Empowered per 5 Essence. | implemented |
+| **Offhand** | Its weapons and equipment aimed at a Sprite carry the armament shown.
 Resolve: Switch to the next armament. | implemented |
 | **Aile Boost** | Weapons gain Indirect reach.
 Resolve: If triggered, reduce stacks to 0. | implemented |
@@ -175,7 +175,7 @@ Resolve: If triggered, reduce stacks to 0. | implemented |
 Resolve: If triggered, reduce stacks to 0. | implemented |
 | **Aile Assault** | Weapons gain Indirect reach.
 Resolve: If triggered, reduce stacks to 0. | implemented |
-| **Parry** | Counts the damage its Armour and Barrier prevent from foe hits this round.
+| **Parry** | Counts the damage its Armour and Barrier prevent from Sprite hits this round.
 Turn Start: Its next weapon hit this turn deals +damage equal to half the count, rounded down.
 Turn End: Reduce stacks to 0. | implemented |
 | **Essence Flare** | Empowered on any unit is not reduced.
@@ -184,10 +184,10 @@ Round End: Reduce stacks to 0. | implemented |
 Turn Start: Reduce stacks by half, rounded down. | implemented |
 | **Destroyed component** | This entry is blank for the rest of the battle. Its passive bonuses still apply, its passive abilities do not.
 After the battle, a fixed component is rebuilt and a hardpoint's is lost. | implemented |
-| **Mine** | Uses aimed at this foe add their damage and keywords to the Mine.
-When defeated: Hit every foe around it for the Mine's damage ({N}), with its keywords. | implemented |
+| **Mine** | Uses aimed at this Sprite add their damage and keywords to the Mine.
+When defeated: Hit every Sprite around it for the Mine's damage ({N}), with its keywords. | implemented |
 | **Ore** | At 3 Ore, base Armour increases by 1. | implemented |
-| **Scorched** | Its uses aimed at a foe cost +1 heat per stack ({N}).
+| **Scorched** | Its uses aimed at a Sprite cost +1 heat per stack ({N}).
 Turn End: Reduce stacks to 0. | implemented |
 | **Overheated** | Stacks equal heat above Max Heat.
 Turn End: Take 1 hull damage per stack ({N}). The first since its last reboot also breaks its shield.
@@ -225,14 +225,14 @@ Turn Start: Reduce stacks to 0. | implemented |
 Resolve: If triggered, reduce stacks by 1. | implemented |
 | **Supercooled** | Weapons gain Cryo 1.
 Resolve: If triggered, reduce stacks by 1. | implemented |
-| **Regenerating** | Turn End: Heal 1 per stack ({N}), then reduce stacks by 1. A machine heals shield, a foe heals HP. | implemented |
+| **Regenerating** | Turn End: Heal 1 per stack ({N}), then reduce stacks by 1. A Frame heals shield, a Sprite heals HP. | implemented |
 | **Burrowed** | +1 Armour. Its die rolls only its Inertia Drill.
 Turn Start: Remove Broken and Overheated. Regain half the shield and vent half the heat it was missing when it burrowed. Gain 1 Conserved Momentum.
 Ends when the Inertia Drill is used. | implemented |
 | **Applied Momentum** | Turn Start: Take a hit of 2 damage, then reduce stacks by 1. | implemented |
 | **Drill Out** | Its Inertia Drill is out. Its next burrow brings it back. | implemented |
-| **Sonic Needle** | Gain 1 stack per hit from the Echidna, and per hit this foe lands on the Echidna. Conducts Chain like Shocked.
-At 3 stacks: Chain 2 hits every foe that conducts. Reduce stacks to 0. | implemented |
+| **Sonic Needle** | Gain 1 stack per hit from the Echidna, and per hit this Sprite lands on the Echidna. Conducts Chain like Shocked.
+At 3 stacks: Chain 2 hits every Sprite that conducts. Reduce stacks to 0. | implemented |
 
 ## Formation
 
@@ -339,24 +339,24 @@ At 3 stacks: Chain 2 hits every foe that conducts. Reduce stacks to 0. | impleme
 | **Drain** | After Hit: Heal HP equal to the hull damage dealt. | implemented |
 | **Timid** | Attacks only while it carries a buff, or one is announced for it. Otherwise it uses another move. | implemented |
 | **Swallow** | Round End: Apply {N} Swallowed to the target.
-Cannot target the last machine able to act. | implemented |
+Cannot target the last Frame able to act. | implemented |
 | **Golden Rage** | Turn End: Gain {N} Golden.
 Only usable while not Golden. | implemented |
-| **Merge** | Absorbs every other foe of the named kinds and heals the HP they had left. Its next move deals more per foe absorbed. | implemented |
-| **Aim** | How a foe picks its target at round start, shown as its arrow. Strongest: most hull plus shield. Weakest: least hull plus shield. Hottest: most heat. Most buffed: most buff stacks. With no word, any machine. Ties are random.
-Foes do not target a machine their hits would already wreck while another stands. | implemented |
-| **Self-Destruct** | Resolve: This foe is removed. It cannot return. | implemented |
-| **Every Machine** | Hits every machine. It has no target, so Lure does not move it. | implemented |
-| **Last Act** | When defeated: Use this move at once. A single-target move hits the machine that killed it, or nothing if no machine did. | implemented |
+| **Merge** | Absorbs every other Sprite of the named kinds and heals the HP they had left. Its next move deals more per Sprite absorbed. | implemented |
+| **Aim** | How a Sprite picks its target at round start, shown as its arrow. Strongest: most hull plus shield. Weakest: least hull plus shield. Hottest: most heat. Most buffed: most buff stacks. With no word, any Frame. Ties are random.
+Sprites do not target a Frame their hits would already wreck while another stands. | implemented |
+| **Self-Destruct** | Resolve: This Sprite is removed. It cannot return. | implemented |
+| **Every Frame** | Hits every Frame. It has no target, so Lure does not move it. | implemented |
+| **Last Act** | When defeated: Use this move at once. A single-target move hits the Frame that killed it, or nothing if no Frame did. | implemented |
 | **Parts** | A core and its parts. While its parts stand, the core is Guarded. A defeated part may grow back. When the core is defeated, its parts are defeated. | implemented |
 | **Countdown** | Lands {N} rounds after it is announced. Nothing hits while it gathers.
 Suppress delays it 1 round. Disrupt cancels it. | implemented |
-| **Follow-up** | Names the move its foe announces next round. Suppress or Disrupt on the first cancels the second. Once announced, the second can be Suppressed but not Disrupted. | implemented |
-| **Grudge** | +1 damage per foe the team has killed this skirmish. | implemented |
-| **Foe action** | Each round every foe picks a move and a target before your turn, shown on its intent chip. An attack's damage is the foe's attack times the move's factor. | implemented |
+| **Follow-up** | Names the move its Sprite announces next round. Suppress or Disrupt on the first cancels the second. Once announced, the second can be Suppressed but not Disrupted. | implemented |
+| **Grudge** | +1 damage per Sprite the team has killed this skirmish. | implemented |
+| **Sprite move** | Each round every Sprite picks a move and a target before your turn, shown on its intent chip. An attack's damage is the Sprite's attack times the move's factor. | implemented |
 | **Scorch** | Resolve: Apply {N} Scorched per hit. | implemented |
 | **Menace** | A pack's threat rating: a patrol 1 or 2, a formation 3, an elite or a boss 4. The Rupture meter, Anathema and salvage count it. Killing a pack pays its remaining Menace. | implemented |
-| **Elite** | A unique foe leading its own pack, rated 4 Menace, arriving at a Fracture. It stands at the battle's tier. | implemented |
+| **Elite** | A unique Sprite leading its own pack, rated 4 Menace, arriving at a Fracture. It stands at the battle's tier. | implemented |
 | **Seal** | The boss cannot be attacked or join a skirmish until the Rupture breaks its seal. | implemented |
 
 ## Rules
@@ -379,9 +379,9 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Weapon** (implemented): The engine's kind is attack for a weapon and a debuff alike: a debuff is an attack of no damage (Face.is_debuff), so code asks is_weapon() for this word and is_attack() for both.
 - **Spread** (implemented): Its number rides on the entry beside the keyword (cleave), and the validator asks for it on a weapon. The half it dealt from 26 October retired 28 October (Ryan): at single digits a neighbour's half killed no rank and file. A piece may carry it beside Penetrate, the plus round its target; Splash, the two under one word, was cut on 15 November (Ryan: "It might be a more interesting game with only the other area shapes, with a few select pieces carrying both spread and penetrate together").
 - **Penetrate** (implemented): Its number rides on the entry beside the keyword (penetrate), and the validator asks for it on a weapon.
-- **Every Foe** (implemented): A keyword from 2 November (Ryan: 'Every foe is a targeting mode, just like spread, penetrate, and splash, it should be listed as such and given a keyword'), a targeting mode in its own right since 4 November ('Silence should not narrow targeting modes, that's why I'm switching them to targeting modes'), drawn in the die's targeting slot. A working name, the foes' Every Machine mirrored. A weapon's too since 12 November, when Sweep went (Ryan: the Whip Scorpion's and the Musk Ox's specials "a 'target all'"): it strikes every foe for its whole number and none is its one target (Ryan, 12 November: "Target all shouldn't need a target in the same way that sweep didn't. Why would only the first target pop shock? That's weird and useless"), so a Shock is doubled and spent on each and, with no primary target, no Ricochet follows it. No area keyword rides it.
-- **Every Ally** (implemented): Every Foe's mirror on the team's side (2 November; a targeting mode since 4 November); a working name. Its mark is the three hexes under a low arch, its own cell lit (Ryan, 4 November: 'the difference is whether the center one is lit or not, its two modes, even if the every ally doesn't actually exist in game, yet'): no piece carries it yet. Never a vent's (the validator).
-- **Every Other Ally** (implemented): Every Ally's other mode (4 November), the Mooring Screens' team shield; a working name. Its mark is Every Ally's with its own cell dark. Never a vent's (the validator).
+- **Every Sprite** (implemented): A keyword from 2 November (Ryan: 'Every foe is a targeting mode, just like spread, penetrate, and splash, it should be listed as such and given a keyword'), a targeting mode in its own right since 4 November ('Silence should not narrow targeting modes, that's why I'm switching them to targeting modes'), drawn in the die's targeting slot. A working name, the foes' Every Machine mirrored. A weapon's too since 12 November, when Sweep went (Ryan: the Whip Scorpion's and the Musk Ox's specials "a 'target all'"): it strikes every foe for its whole number and none is its one target (Ryan, 12 November: "Target all shouldn't need a target in the same way that sweep didn't. Why would only the first target pop shock? That's weird and useless"), so a Shock is doubled and spent on each and, with no primary target, no Ricochet follows it. No area keyword rides it.
+- **Every Frame** (implemented): Every Foe's mirror on the team's side (2 November; a targeting mode since 4 November); a working name. Its mark is the three hexes under a low arch, its own cell lit (Ryan, 4 November: 'the difference is whether the center one is lit or not, its two modes, even if the every ally doesn't actually exist in game, yet'): no piece carries it yet. Never a vent's (the validator).
+- **Every Other Frame** (implemented): Every Ally's other mode (4 November), the Mooring Screens' team shield; a working name. Its mark is Every Ally's with its own cell dark. Never a vent's (the validator).
 - **Cryo** (implemented): Other pieces may lay it (marked for reuse as a healthier ally cooling than a vent). A rider on the mark is benched until the roster has room. The cooling a stack is a placeholder.
 - **Ablate** (implemented): Its number rides on the face beside the keyword (ablate), and the validator asks for it. Burn until 15 November: the word is Ryan's, for an eroding that is not only fire ("Ablating or ablate is very clinical, it fits the military notation, and evokes eating though armour to me"). A session's draft, his to write.
 - **Lure** (implemented): No status and no chip: the arrow is the record. A draw by an ally is parked (the bible's redirection row).
@@ -483,13 +483,13 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Armour** (implemented): Numbers are placeholders.
 - **Aim** (implemented): Content: aim on a move aimed at one machine, never on a foe (Ryan, 17 November: "the heat target is a property of the attack, not the dragon itself"; his go on the three words the same day: "if it's the strongest/weakest/hottest table from above, then yes I agree and you can go ahead"); when on a move is the condition that lets a foe pick it, and a special never fires twice running. The strongest and the weakest have no carrier yet, and the most buffed is a session's keep for the Djinn's Unmake (the bible's section 12). The codex and the words on a move's target line are a session's drafts, his to write in his terminology pass.
 - **Self-Destruct** (implemented): A property of a foe's attack action. A self-destructing foe counts as a kill like any other.
-- **Every Machine** (implemented): A property of a foe's attack action. Its number is per machine, so a move with it is priced well under a single blow from the same foe. The name is a working one.
+- **Every Frame** (implemented): A property of a foe's attack action. Its number is per machine, so a move with it is priced well under a single blow from the same foe. The name is a working one.
 - **Last Act** (implemented): Content: on_death.blow, an attack's shape (name, factor, strikes, keywords), beside or instead of a split. The Gargantuan King's Meteor (30 October). A short list of steps since 16 November, on Ryan's mark of 15 November ('foes who, say buff others on death, or debuff on death'): the blow may carry also, and on_death.act is one special in a blow's place with its own also, each an effect a fall may do (Foe.FALL_EFFECTS). Carriers of more than a blow since 17 November, on his yes to the bench: the Mandragora line's scream, the Gorgon's dying gaze, the Salamander's embers and the Lich's, which takes back the readiness it gave (unready_all, a fall's by sense). The codex is a session's draft for them; it and the term's word are his ('maybe rename to something more interesting'). A single blow lands on the machine that made the kill since 17 November, as a curse does (Ryan, of the Dread Knight's Death Throes: 'yes, hit its killer, if it has one'); it followed the foe's own pick until then.
 - **Parts** (implemented): Content: parts (foe ids), guard (all or any), regrow_parts (rounds). Parts are found by pack and type, one deep, and each takes a cell of its pack's grid. The Fallen Weapon's two eyes and the Obsidian Tyrant's rider (30 October); a move may open once a part has fallen (part_fallen).
 - **Countdown** (implemented): The foe stays on the field while it gathers; its pick holds while the machine stands, and a Lure moves it.
 - **Follow-up** (implemented): Content: then, on the first move, naming the second (30 October). One deep: a follow-up names none of its own and comes only after the move that names it, never by the roll. A borrowed swing with nothing taken is no follow-up, and the roll decides. Off the player's list since 15 November (Ryan: "I don't think we need to explicitly spell this out for the player. A backend pattern is ok, and it will become obvious through play and mastery by the player"): the engine's pattern, with no term and no row in the list; a move's own readout still says what it names next.
 - **Grudge** (implemented): The Pilgrim's Karma (30 October), the Tonberry's Everyone's Grudge under a name of ours. Content: per_kill on an attack, the points a kill. Every fall counts but a foe that went whole (a burst, a part falling with its core) and one taken in by a merge.
-- **Foe action** (implemented): A foe's whole brain is its weighted draw and its pick; none plans ahead.
+- **Sprite move** (implemented): A foe's whole brain is its weighted draw and its pick; none plans ahead.
 - **Vents all** (implemented): Only the first shot of a chain fires the heat.
 - **Fires the shield** (implemented): Its carrier the Buzzard's Shield-burner Cannon (Ryan, 18 November: it breaks the shield, and no zap rides it: "It can't, since the shield will be empty"). Never beside Vents all on one entry (the validator). The codex is a session's draft.
 - **Passes heat** (implemented): Its carrier the Puffin's dump (Ryan, 11 November: "A locked piece can transfer the Puffins heat to another unit along with a buff based on heat moved"; "just allies"; 19 November, Empowered for every 2: "that needs data"). An ally its heat takes past the maximum burns as the turn ends, his "forcing an overheat". The codex is a session's draft.

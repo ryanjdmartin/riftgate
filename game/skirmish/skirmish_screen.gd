@@ -1744,7 +1744,7 @@ func _foe_abilities(foe: Foe) -> Array:
 		var strikes := Foe.is_attack_action(la)
 		var said := "Ability, Last Act: %s" % str(la.get("name", ""))
 		if strikes:
-			said += ", %d%s" % [foe.damage_of(la), " at Every Machine" if Array(la.get("keywords", [])).has("all") else ""]
+			said += ", %d%s" % [foe.damage_of(la), (" at %s" % str(ContentDB.load_default().vocabulary.get("all", {}).get("name", ""))) if Array(la.get("keywords", [])).has("all") else ""]
 		rows.append(["skull", str(foe.damage_of(la)) if strikes else "", said, Palette.ENEMY, "ability"])
 	if Effects.has(foe, "golden"):
 		# A golden rage (4 November): the add it carries, the rounds left and the damage that

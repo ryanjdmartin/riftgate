@@ -112,17 +112,22 @@ tips already follow, still his to mark.
 
 ### Who
 
-**1. Machine, foe, unit.**
-Our side's pieces are *machines*, the other side's are *foes*, and *unit* means either. "Enemy"
-stops appearing in explanations. The HUD banners (ENEMY PHASE and so on) keep their style.
-- "Target: Enemy, Direct" → "Target: Foe, Direct"
+**1. Frame, Sprite, unit.** (settled 23 November: his word)
+Our side's pieces are *Frames*, the other side's are *Sprites*, and *unit* means either, always
+capitalised but never tappable terms. "Foe", "machine" and "enemy" leave the shown text (his: "I
+want to stop using 'foe'. I'd prefer something like Sprite for the flat faction"; "Sprite and
+Frame?"). The engine keeps its own names. The HUD's ENEMY PHASE stays ("Keep it, no need to
+change that"). The tips, the target lines and the glossary are swept; the other kinds follow as
+each is rewritten.
+- "Target: Every Foe" → "Target: Every Sprite"
+- "this machine" → "this Frame"
 
 **2. Name a group by who is in it.** (settled 22 November: his mark, 2-A)
-Ours are Self, Any machine, Another machine, Every Machine, Every Other Machine. The foes' are
-Self, Another foe, Every Foe, Every other foe. Still to build: Every Ally and Every Other Ally are
-renamed on the target lines and in their tips.
-- "Any ally or self" → "Any machine"
-- "Every Ally" → "Every Machine"
+Ours are Self, Any Frame, Another Frame, Every Frame, Every Other Frame. The Sprites' are Self,
+Another Sprite, Every Sprite, Every other Sprite (rule 1's words). Every Frame is one term for a
+buff on your whole team and a Sprite's attack on it. Built on the target lines and the tips.
+- "Any ally or self" → "Any Frame"
+- "Every Ally" → "Every Frame"
 
 **3. A piece calls the machine it's on "this machine".**
 That covers components, passives and modules. A status's tip calls the unit carrying it "it".
@@ -132,9 +137,9 @@ That covers components, passives and modules. A status's tip calls the unit carr
 The two halves of a round are "your turn" and "the foes' turn".
 - "at the end of the player's turn" → "at the end of your turn"
 
-**5. A foe makes moves.**
+**5. A Sprite makes moves.**
 Its *intent* is the move it's showing this round. The word "action" goes, and the term "Foe
-action" becomes "Foe move".
+action" becomes "Sprite move" (renamed with rule 1).
 - "skips its telegraphed action" → "skips its move"
 
 ### Whom

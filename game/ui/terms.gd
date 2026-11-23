@@ -143,7 +143,7 @@ static func status_colour(status_id: String) -> Color:
 
 
 ## What one term is, over its tip: the list's headings (PauseMenu.GLOSSARY) for one.
-const KINDS := {"reach": "REACH", "keyword": "KEYWORD", "component_property": "RULE ON A COMPONENT", "status": "STATUS", "foe": "A FOE'S MOVE"}
+const KINDS := {"reach": "REACH", "keyword": "KEYWORD", "component_property": "RULE ON A COMPONENT", "status": "STATUS", "foe": "A SPRITE'S MOVE"}
 ## A status's heading by what it is to its unit (Effects.status_kind; Ryan, 9 November: buffs and
 ## debuffs "clearly labeled as such, so that it's clear what gets purged").
 const STATUS_KINDS := {"buff": "BUFF // A PURGE TAKES IT", "debuff": "DEBUFF", "ability": "ABILITY // NOTHING STRIPS IT"}
