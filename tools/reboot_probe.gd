@@ -194,13 +194,13 @@ func _fight(cid: String, mates: Array, c: Dictionary, seed_value: int, agg: Dict
 	var rounds := 0
 	var peak := 0   # the most Ricochet it held this fight (the Skua's)
 	while sk.outcome == Skirmish.Outcome.NONE and rounds < CAP:
+		var log_from := sk.log.size()   # from before the round opens, so a Rage it opens is read
 		sk.start_round()
 		rounds += 1
 		var alive := me.alive()
 		var alive_mates: Array[bool] = []
 		for m in sk.mechs:
 			alive_mates.append(m.alive())
-		var log_from := sk.log.size()
 		pol.play_round(sk)
 		var rages := "%s rages" % me.unit.display_name   # a Rage opening (Skirmish._rage_opens's line)
 		var zapped := "%s pays " % me.unit.display_name   # a zap paid (Skirmish._pay_zap's line)

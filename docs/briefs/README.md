@@ -170,7 +170,7 @@ moves he has not marked stand as its plan.
 
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
-| Minerva (10) | Honey Badger; the Wild Boar (down, 16 November); *the mole*; *the lure tank* | the Polar Bear (up, 16 November); *the echidna*; *the Cryo party defence*; *the immune one*, the Pangolin his stand-in name | *the siege battery*; *the battlecruiser* |
+| Minerva (10) | Honey Badger; the Wild Boar (down, 16 November); the Echidna (down, 20 November); *the lure tank* | the Polar Bear (up, 16 November); the Mole (up, 20 November, its tree in design); *the Cryo party defence*; *the immune one*, the Pangolin his stand-in name | *the siege battery*; *the battlecruiser* |
 | Kestrel (10) | Skua; Storm Petrel | Buzzard; Kite; Needletail; the Puffin (up, 19 November) | Lammergeier; Giant Petrel |
 | Kestrel's two, tiers open | *the Snowy Owl*, leaning to Cryo | *the Magpie*, its slot open to another design | |
 | Wainwright & Sutler (10) | Prairie Dog; Cassowary; Cottonmouth | Dingo; Clydesdale; funnel-web; Whip Scorpion; *the gunship* | Swallowtail, back in design; Musk Ox |
@@ -247,8 +247,8 @@ One row a live brief; the to-do's Design sessions hold each one's task.
 | `ws_swallowtail.md` | the Swallowtail's rework, three locked pieces open | Wainwright & Sutler | 3 | parked: his session, its niche first |
 | `ws_gunship.md` | proposal, Claude's first round | Wainwright & Sutler | 2 | his own session |
 | `minerva_lure_tank.md` | the tier-one front: every hit lures | Minerva | 1 | his calls |
-| `minerva_mole.md` | the drill tank: it burrows in its reboot's place, a planned draft with its model | Minerva | 1 | its kit's session |
-| `minerva_hedgehog.md` | the echidna: strikers hurt themselves after they act | Minerva | 2 | his calls on the new shape |
+| `minerva_mole.md` | the Mole's upgrade tree, back in design at tier two | Minerva | 2 | its session with him |
+| `minerva_hedgehog.md` | the Echidna's look: the armoured car's bristle, its kit built | Minerva | 1 | his pick of the bristle |
 | `minerva_cryo_defence.md` | Cryo for the party, detonated by a locked piece | Minerva | 2 | Claude's round on his direction |
 | `minerva_immune.md` | immune to every buff and debuff, lent to an ally | Minerva | 2 | his calls |
 | `minerva_siege_battery.md` | his H-tank, a charge | Minerva | 3 | parked until he picks it up |
@@ -266,7 +266,6 @@ One row a live brief; the to-do's Design sessions hold each one's task.
 | `arsenal_thunder.md` | the soft Archon homage, much shield | the Arsenal | 3 | Claude's round on his direction |
 | `arsenal_mastema.md` | fire through the team | the Arsenal | 3 | his calls |
 | `arsenal_minos.md` | the mover; "It needs something else" | the Arsenal | 3 | the something else, in chat |
-| `arsenal_frost.md` | cut by Ryan: a stub of what the Cryo round takes | the Arsenal | none | retires with `minerva_cryo_defence.md`'s round |
 
 Not briefed: the empty slots toward each maker's ten; cantrips, his idea of small Rapid
 pieces with no cooldown, a combined entry before a Rapid one; the economy's items
@@ -328,6 +327,7 @@ aside so Ryan can overrule the reason. A chassis's own bench is in its brief.
 
 Each landed; its decisions are bible rows and content.
 
+- The frost figure, cut, its round folded into `minerva_cryo_defence.md`: `git show 9d604ce3:docs/briefs/arsenal_frost.md`
 - The Polar Bear's seal: `git show 96fe416:docs/briefs/minerva_polar_bear.md`
 - The Polar Bear's first form: `git show 63487a9:docs/briefs/minerva_armadillo.md`
 - The Honey Badger's Ore Hopper: `git show c05c41b:docs/briefs/minerva_honey_badger.md`

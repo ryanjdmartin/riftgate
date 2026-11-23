@@ -96,7 +96,7 @@ func play_run(seed_value: int, verbose: bool = false) -> Dictionary:
 	var team: Array = []
 	for m in c.roster:
 		team.append(m.chassis)
-	var out := {"team": team, "won": false, "turns": 0, "reports": [], "passes": 0, "rushes": 0, "stalled": 0,
+	var out := {"team": team, "won": false, "turns": 0, "reports": [], "passes": 0, "rushes": 0, "upgrades": 0, "stalled": 0,
 		"first_fall": -1, "finale": false, "fights": 0, "spends": {}, "fight_sizes": [], "party": c.party.duplicate()}
 	var guard := 0
 	while c.state != Campaign.OVER and guard < 200:
@@ -184,6 +184,15 @@ func play_run(seed_value: int, verbose: bool = false) -> Dictionary:
 		# Everything above one rush goes on the capital's gate.
 		# Salvage goes into the capital's gate (nothing else can be built yet); Favour waits for
 		# rushes.
+		# The plain player buys every machine up as far as the Convergence opens first, its first
+		# branch offered each time (the hangar's upgrade verb, 20 November), then repairs.
+		if c.state == Campaign.PICK:
+			for m in c.roster:
+				while true:
+					var picks: Array = c.db.upgrade_picks(m.chassis, m.branches)
+					if not c.upgrade(m.uid, str(picks[0]) if not picks.is_empty() else ""):
+						break
+					out["upgrades"] += 1
 		if c.state == Campaign.PICK and c.salvage > 0:
 			c.repair_capital(c.salvage)
 	out["won"] = c.won
@@ -244,7 +253,7 @@ func report() -> String:
 	if not asides.strip_edges().is_empty():
 		L.append(asides.strip_edges())
 	L.append("")
-	L.append("Every number the campaign uses is a placeholder (`sim/campaign.gd`); this measures them against a plain player, it does not tune them. The first battle is the opening domain's and brings the fourth machine (won, the first of the host maker's machines put up; lost, the tender's leftover); nothing else brings anything in yet (the later offers, research and building are not built), so every run is those four and what it loses. The player defends the front nearest to falling with every ready machine, rushes a wreck with Favour only when nobody is ready, and puts all its salvage into the capital's gate; on the map it plays %s Read the bands." % [
+	L.append("Every number the campaign uses is a placeholder (`sim/campaign.gd`); this measures them against a plain player, it does not tune them. The first battle is the opening domain's and brings the fourth machine (won, the first of the host maker's machines put up; lost, the tender's leftover); nothing else brings anything in yet (the later offers, research and building are not built), so every run is those four and what it loses. The player defends the front nearest to falling with every ready machine, rushes a wreck with Favour only when nobody is ready, buys every machine up a tier as the Convergence opens it, and puts the rest of its salvage into the capital's gate; on the map it plays %s Read the bands." % [
 		"the player that gathers (`--muster`, BattleBot.Rule.MUSTER): a hunter's catch first, then each pack in the order it reaches the wall takes as many machines as it is rated, the nearest that can reach it this turn, a pack short of its rating fought one short when it strikes the wall this coming turn and gathered on otherwise, the boss first once its seal breaks (the race for it), a machine left over taking a cache its move reaches or walking toward the pack that reaches the wall soonest, never the sealed boss, every fight fought out." if map_rule == BattleBot.Rule.MUSTER else
 		"the defence rule (the long wall brief, section 5): a hunter's catch first, then every machine onto the pack it can stand beside that reaches the wall soonest, ties by the larger threat rating and then the nearer, a machine with no pack in reach taking a cache its move reaches (the nearest, the higher kind on a tie) and the rest walking toward the pack that reaches the wall soonest, never the sealed boss, every fight fought out."])
 	L.append("")
@@ -258,6 +267,7 @@ func report() -> String:
 	var stalled := 0
 	var passes := 0
 	var rushes := 0
+	var upgrades := 0
 	var fights_all := 0
 	var kit_left: Array[float] = []
 	for r in results:
@@ -274,6 +284,7 @@ func report() -> String:
 		stalled += int(r["stalled"])
 		passes += int(r["passes"])
 		rushes += int(r["rushes"])
+		upgrades += int(r["upgrades"])
 		var kit: Array = r["kit"]
 		kit_left.append(100.0 * float(kit[0]) / maxf(1.0, float(kit[1])))
 	L.append("## The runs")
@@ -289,6 +300,7 @@ func report() -> String:
 	L.append("| Hardpoints still filled at the end, percent | %s |" % _band(kit_left))
 	L.append("| Turns passed with nobody ready | %d in all | |" % passes)
 	L.append("| Wrecks rushed | %d in all | |" % rushes)
+	L.append("| Machines bought up a tier | %d in all | the plain player buys each up as the Convergence opens it, its first pick each time, at UPGRADE_PRICE salvage |" % upgrades)
 	L.append("| Battles the bot could not finish (run abandoned) | %d | |" % stalled)
 	L.append("")
 	# Who started: each tier-one machine, the runs it started and how many of those were won.

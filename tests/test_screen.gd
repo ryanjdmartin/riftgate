@@ -91,12 +91,12 @@ func test_screen_builds_and_starts_round_one() -> void:
 	s.free()
 
 
-## A die takes a unit's gestures (Ryan, 30 October: "change lock/unlock to hold and double-tap,
-## and tap to inspect for dice ... That way it's standard across the board"): a tap opens its
-## readout and a tap again closes it, one readout at a time with the units'; a double-tap or a
-## hold locks or unlocks it, the readouts left as they stand (its tap waits out the double-tap
-## window, so a double-tap's first tap never lands); no codex.
-func test_a_tap_reads_a_die_and_a_double_tap_or_a_hold_locks_it() -> void:
+## A die's gestures (Ryan, 30 October: "tap to inspect for dice"; 23 November: "Die face double
+## tap needs to open a display of the whole die, with current buffs and debuffs applied to all
+## faces. That leaves only hold to lock the die"): a tap opens its readout and a tap again closes
+## it, one readout at a time with the units'; a double-tap opens the whole die at its live
+## numbers, the one showing marked; a hold locks or unlocks it, the readouts left as they stand.
+func test_a_tap_reads_a_die_a_double_tap_shows_the_die_and_a_hold_locks_it() -> void:
 	var s := _screen()
 	var d: DieFaceView = s._dice[0]
 	assert_true(d.confirm_taps, "the tray's dice wait out the double-tap window")
@@ -108,21 +108,17 @@ func test_a_tap_reads_a_die_and_a_double_tap_or_a_hold_locks_it() -> void:
 	d.tapped.emit()
 	assert_true(s._pop.is_empty() and not s._details.visible, "a tap on it again closes it")
 	d.double_tapped.emit()
-	assert_true(s.locked[0], "a double-tap locks")
-	assert_true(d.locked, "the view shows the lock")
-	assert_true(s._pop.is_empty() and not s._details.visible, "and opens no readout")
-	assert_false(s._codex.visible, "no codex: the whole die is the machine's double-tap")
-	d.double_tapped.emit()
-	assert_false(s.locked[0], "a double-tap again unlocks")
+	assert_false(s.locked[0], "a double-tap locks nothing")
+	assert_true(s._codex.visible, "it opens the whole die")
+	assert_eq(s._codex._faces.get_child_count(), s.sk.mechs[0].die.faces.size(), "every entry a row")
+	s._close_codex()
 	s._on_mech_tapped(1)
-	d.double_tapped.emit()
-	assert_eq(s._pop, {"mech": 1}, "a double-tap leaves the machine's readout open")
-	assert_true(s.locked[0], "and locks")
 	d.held.emit()
-	assert_false(s.locked[0], "a hold unlocks")
+	assert_true(s.locked[0], "a hold locks")
+	assert_true(d.locked, "the view shows the lock")
 	assert_eq(s._pop, {"mech": 1}, "and leaves the readout open")
 	d.held.emit()
-	assert_true(s.locked[0], "a hold again locks")
+	assert_false(s.locked[0], "a hold again unlocks")
 	s._close_pop()
 	s._replay_shade.visible = true
 	d.tapped.emit()
@@ -644,10 +640,10 @@ func test_attack_then_reroll_flow() -> void:
 	var s := _screen(5)
 	var attacker := -1
 	for i in range(3):
-		if s.sk.mechs[i].face().is_attack():
+		if s.sk.mechs[i].face().is_attack() and not s.sk.targets_for(i).is_empty():
 			attacker = i
 			break
-	assert_true(attacker >= 0, "someone rolled an attack")
+	assert_true(attacker >= 0, "someone rolled an attack it can aim")
 	var target: Foe = s.sk.targets_for(attacker)[0]
 	assert_true(s._use_die(attacker, target), "attack lands first")
 	assert_false(s.sk.spend_blows.is_empty(), "its blows recorded, to land a strike at a time")
@@ -979,6 +975,13 @@ func test_the_hold_reads_shields_debuffs_buffs_and_grants() -> void:
 	assert_eq(str(EntryReadout.lines_for(wreck, 2, -1, wreck, [], [], db)[0]["text"]), db.component_name(wreck.component).to_upper(), "its name still the title")
 	var coil := Face.buff("overcharged", 2)
 	assert_eq(str(EntryReadout.effects_of(coil)[0]["text"]), "Grants %s ×2" % str(Effects.STATUS["overcharged"]["name"]), "a buff grants its status")
+	var shroud := Face.buff("", 1)
+	shroud.disrupts_attackers = true
+	var said: Array[String] = []
+	for l in EntryReadout.effects_of(shroud):
+		said.append(str(l["text"]))
+	assert_eq(said[0], "Buff", "a buff that grants no status says its kind, as a debuff does: %s" % str(said))
+	assert_false(said.any(func(t: String) -> bool: return t.begins_with("Grants")), "and no Grants line with no name: %s" % str(said))
 	var u := Unit.new()
 	u.grant_passive({"id": "t_spill", "name": "Spill", "description": "Damage past a kill spills behind.", "effects": [{"trigger": "static", "effect": "spillover", "value": 1}]})
 	var gun := Face.attack(4)
@@ -1118,7 +1121,9 @@ func test_end_turn_asks_only_when_dice_would_be_wasted() -> void:
 				continue
 			left = true
 			var f := ms.face()
-			if f.is_attack():
+			if f.is_attack() and s.sk.targets_for(i).is_empty():
+				s._use_die(i, null)   # a dead entry (the Fragmenter with no Ore): passed
+			elif f.is_attack():
 				s._use_die(i, s.sk.targets_for(i)[0])
 			elif f.kind == Face.Kind.BLANK:
 				s._use_die(i, null)
@@ -1298,7 +1303,7 @@ func test_the_last_kill_ends_the_fight_without_end_turn() -> void:
 ## nestle under the Heat bar, same shape, divided into four clear segments"): one bar under the
 ## heat, a gauge's own shape and step, a segment a stack up to its cap, lit to its count, in its
 ## chip's colour, and no chip; a stack spent from it bursts on the segment that emptied. The
-## Honey Badger's hopper, its cap four.
+## Honey Badger's Ore, its most three.
 func test_a_capped_store_shows_as_a_segmented_bar_under_the_heat_in_its_chips_place() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
@@ -1312,24 +1317,24 @@ func test_a_capped_store_shows_as_a_segmented_bar_under_the_heat_in_its_chips_pl
 	s._refresh()
 	var v: UnitView = s._mech_views[0]
 	var glyph := SkirmishScreen.status_glyph("hopper")
-	assert_eq([int(v.store[0]), int(v.store[1])], [2, 4], "two of four segments lit")
+	assert_eq([int(v.store[0]), int(v.store[1])], [2, 3], "two of three segments lit")
 	assert_eq(str(v.store[3]), glyph, "the store's own mark, for its burst")
 	# The bar is one more gauge in the stack: under the last of them, their width, their height.
 	assert_eq(v._store_step(), UnitView.BAR_STEP, "it takes a gauge's step in the stack")
 	var first: Rect2 = v._store_cell(0)
-	var last: Rect2 = v._store_cell(3)
+	var last: Rect2 = v._store_cell(2)
 	assert_true(is_equal_approx(first.position.y, v._bars_top() + v.bars.size() * UnitView.BAR_STEP), "directly under the heat, the last gauge")
 	assert_true(is_equal_approx(first.position.x, v.size.x * 0.1) and is_equal_approx(last.end.x, v.size.x * 0.9), "across the gauges' own width")
 	assert_eq(first.size.y, UnitView.BAR_H, "a gauge's height")
 	# Its units are cells of their own, one width, clear ground between each and the next (Ryan,
 	# 10 November: "split them into different bars with borders and whitespace, in the same row").
-	for k in range(3):
+	for k in range(2):
 		var here: Rect2 = v._store_cell(k)
 		var next: Rect2 = v._store_cell(k + 1)
 		assert_true(next.position.x - here.end.x >= 1.0, "a hairline of ground between cell %d and %d" % [k, k + 1])
 		assert_true(is_equal_approx(here.size.x, next.size.x) and is_equal_approx(here.position.y, next.position.y), "one width, one row")
 	for r in s._mech_rows(0):
-		assert_ne(str(r[0]), glyph, "and no chip for the loads")
+		assert_ne(str(r[0]), glyph, "and no chip for the Ore")
 	Effects.spend_stacks(m, "hopper", 1)
 	s._refresh()
 	v.spend_chip(glyph)
@@ -1341,10 +1346,15 @@ func test_a_capped_store_shows_as_a_segmented_bar_under_the_heat_in_its_chips_pl
 
 ## The Honey Badger's hopper is such a bar, four segments, and what its loads are worth is an
 ## Armoured chip like any buff's, never an ability's (10 November).
-func test_the_badgers_hopper_is_a_bar_of_four_and_its_plate_an_armoured_chip() -> void:
+func test_the_badgers_ore_is_a_bar_and_its_armour_an_ability_chip() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
 	var m := db.make_mech("badger")
+	m.passive = {}
+	m.modifiers.clear()
+	m.grant_passive({"id": "ore", "name": "Ore", "description": "", "effects": [
+		{"trigger": "static", "effect": "fill_hopper", "value": 1, "cap": 4},
+		{"trigger": "static", "effect": "hopper_plate", "value": 1, "at": 3}]})
 	sk.add_mech(m)
 	sk.add_foes([Foe.make("revenant", 300, 10)])
 	var s := SkirmishScreen.new()
@@ -1353,13 +1363,12 @@ func test_the_badgers_hopper_is_a_bar_of_four_and_its_plate_an_armoured_chip() -
 	s._refresh()
 	var v: UnitView = s._mech_views[0]
 	assert_eq([int(v.store[0]), int(v.store[1])], [3, 4], "three of four segments lit")
-	var armoured := 0
+	var chips := 0
 	for r in s._mech_rows(0):
-		assert_ne(str(r[0]), SkirmishScreen.status_glyph("hopper"), "no chip for the loads, and none in the hopper's mark")
-		if str(r[0]) == SkirmishScreen.status_glyph("braced"):
-			armoured += 1
-			assert_eq(str(r[5]) if r.size() > 5 else "", "buff", "a buff's chip, one a Purge takes")
-	assert_eq(armoured, 1, "one Armoured chip for what the loads are worth")
+		if str(r[0]) == SkirmishScreen.status_glyph("ore_plate"):
+			chips += 1
+			assert_ne(str(r[5]) if r.size() > 5 else "", "buff", "no buff's chip: an Ability, which no Purge takes")
+	assert_eq(chips, 1, "one Ore chip for the armour, and none for the store itself")
 	s.free()
 
 
@@ -2145,9 +2154,10 @@ func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	var first: Foe = s.sk.targets_for(0)[0]
 	s._begin_second(0, first)
 	assert_eq(s._pending["primary"], first, "the die waits on its first target")
-	assert_true(s._ghost.visible and s._ghost.can_drag, "shown there, and it can be picked back up")
+	assert_true(s._aim.active and s._aim.pinned, "the crosshair pinned there")
+	assert_true(s._dice[0].can_drag, "and the die can be picked back up")
 	assert_true(s._forecast_for(0).has("coming"), "the gauges still read the round preview while it waits, the die uncounted (the audit's Bug 16: the bot's estimate stood in here)")
-	assert_eq(s._dice[0].modulate.a, 0.0, "its tray slot stands empty")
+	assert_eq(s._dice[0].modulate.a, 1.0, "the die stays in its tray, tethered to the crosshair")
 	var second = null
 	for x in s.sk.swap_targets(first):
 		if x is Foe:
@@ -2164,19 +2174,19 @@ func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	s._on_slot_tapped(b.x, b.y)
 	assert_true(s._pending.is_empty(), "a tap on the second spends it")
 	assert_eq(Vector2i(first.rank, first.column), b, "and they trade places")
-	assert_false(s._ghost.visible, "the die is gone from the field")
+	assert_false(s._aim.active, "the crosshair let go")
 	s.free()
 	var t := _screen()
 	var tm: Skirmish.MechState = t.sk.mechs[0]
 	tm.die.faces[tm.face_index] = Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "swaps": true})
 	t._begin_second(0, t.sk.targets_for(0)[0])
-	t._ghost.tapped.emit()
+	t._on_die_tapped(0)
 	assert_eq(t._pop, {"die": 0}, "a tap on the waiting die reads it")
 	assert_true(t._details.visible and t._details_entry.visible, "its readout shown")
 	assert_false(t._pending.is_empty(), "and the Swap still waits")
-	t._ghost.tapped.emit()
+	t._on_die_tapped(0)
 	assert_true(t._pop.is_empty(), "a tap again closes it")
-	t._ghost.held.emit()
+	t._dice[0].held.emit()
 	assert_eq(t._pop, {"die": 0}, "a hold opens it too: a die being spent has nothing to lock")
 	assert_false(t.locked[0], "and locks nothing")
 	var nothing := InputEventMouseButton.new()
@@ -2186,11 +2196,11 @@ func test_a_swap_waits_on_its_first_target_for_a_tap_on_the_second() -> void:
 	assert_true(t._pop.is_empty() and not t._pending.is_empty(), "a tap on nothing closes the readout first, the Swap still waiting")
 	t._gui_input(nothing)
 	assert_true(t._pending.is_empty(), "a second sets the Swap back")
-	assert_false(t._ghost.visible, "the die gone from its first target")
+	assert_false(t._aim.active, "the crosshair gone from its first target")
 	assert_false(tm.assigned, "home in the tray, unspent")
 	assert_eq(t._dice[0].modulate.a, 1.0, "and shown there")
 	t._begin_second(0, t.sk.targets_for(0)[0])
-	t._on_ghost_drag_started()
+	t._dice[0].drag_started.emit()
 	assert_true(t._pending.is_empty() and t._drag_from == 0, "dragging it again picks it back up")
 	assert_true(t._pop.is_empty() and not t._details.visible, "and the die in hand closes its readout")
 	t._on_drag_ended(Vector2(-100, -100))
@@ -2867,9 +2877,10 @@ func test_an_intent_arrow_leaves_its_chips_middle_and_the_ranks_stand_slightly_a
 	var inner_end := inner.position.x + inner.size.x * 0.5 + inner.chip_wrap * 0.5
 	assert_true(start - inner_end >= 6.0 - 0.01, "the back rank's last foe's widest row keeps its gap to its neighbour's")
 	var fv := s._foe_view_for(s.sk.front[0])
-	var laid := fv.chip_layout()
-	assert_eq(str((laid[0][1] as Array)[3]), "intent", "the first chip is the intent's")
-	assert_eq(fv.intent_anchor_global(), fv.get_global_transform() * (laid[0][0] as Rect2).get_center(), "its arrow leaves the chip's middle")
+	var plate := fv.intent_rect()
+	assert_true(plate.size.x > 0.0 and plate.end.y <= fv.drawing_rect().position.y, "the intent stands above the foe, apart from its chips")
+	assert_false(fv.chip_layout().any(func(c: Array) -> bool: return str((c[1] as Array)[3]) == "intent"), "no intent among the chips under it")
+	assert_eq(fv.intent_anchor_global(), fv.anchor_global(), "its arrow leaves the middle of its drawing")
 	s._toggle_all_arrows(true)
 	var inv := s._arrows.get_global_transform().affine_inverse()
 	var from := inv * fv.intent_anchor_global()
@@ -2937,4 +2948,92 @@ func test_a_sapped_foe_wears_its_chip() -> void:
 		if r is Array and r.size() >= 3 and str(r[0]) == "sap" and str(r[1]) == "-2":
 			found = true
 	assert_true(found, "the chip: the sap glyph and -2")
+	s.free()
+
+
+## Every status the team lays on a foe wears its chip there, on its term's mark, and the same mark
+## on its way (22 November: the Echidna's needles were laid on every foe its Howitzer hit and worn
+## by none, its chip never written, and on its way a needle, a Pin, a Sear and the Mole's drill
+## each wore a star). A status the chips forget fails here, not on the phone.
+func test_every_status_the_team_lays_wears_its_chip_on_its_terms_mark() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	sk.add_mech(db.make_mech("badger"))
+	var foe := Foe.make("revenant", 300, 10)
+	sk.add_foes([foe])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	for id in Effects.FOE_STATUSES:
+		foe.modifiers.clear()
+		Effects.stack(foe, Effects.STATUS[id], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
+		var mark := Terms.glyph(Terms.of_status(id))
+		assert_false(mark.is_empty(), "%s is a term with a mark" % id)
+		var worn: Array = s._foe_rows(foe).filter(func(r) -> bool: return str(r[0]) == mark and (r.size() < 5 or str(r[4]) != "preview"))
+		assert_eq(worn.size(), 1, "a foe carrying %s wears its chip, on its term's mark" % id)
+		var coming: Array = SkirmishScreen._coming_rows({id: {"stacks": 1, "name": str(Effects.STATUS[id]["name"])}}, [], func(i: String) -> String: return SkirmishScreen._foe_glyph(i), func(i: String) -> Color: return SkirmishScreen._foe_chip_colour(i))
+		assert_eq(str(coming[0][0]), mark, "and %s on its way wears the same mark" % id)
+	s.free()
+
+
+## The Howitzer's case (Ryan, 22 November: "Echidna howitzer didn't apply needle to all foes hit,
+## just the target ... Or it did but it doesn't show it, actually"): a Spread and Penetrate strike
+## from a machine whose passive lays a needle on every foe it reaches shows a needle's chip on all
+## four, each counting toward the stacks its rule fires them at. The passive is the test's.
+func test_a_spread_strike_shows_its_needles_on_every_foe_it_reached() -> void:
+	var u := Unit.mech(0, "Needler", Vector2i.ZERO)
+	u.shield = 10
+	u.shield_max = 10
+	u.hull = 100
+	u.hull_max = 100
+	var gun := Face.attack(4, Face.Reach.INDIRECT, [Face.Keyword.CLEAVE, Face.Keyword.PENETRATE])
+	gun.cleave = 1
+	gun.penetrate = 1
+	u.die = Die.single(gun)
+	u.grant_passive({"id": "test_needles", "name": "Test Needles", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "lay_status", "value": "sonic_needle", "stacks": 1},
+		{"trigger": "static", "effect": "needles", "status": "sonic_needle", "at": 3, "chain": 2}]})
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(u)
+	var foes: Array = []
+	for i in range(6):
+		foes.append(Foe.make("revenant", 30, 0, i >= 3))
+	sk.add_foes(foes)
+	sk.begin()
+	sk.start_round()
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	assert_true(sk.assign(0, sk.front[1]), "the gun at the front rank's middle foe")
+	var shown := 0
+	for f in sk.field_foes():
+		var laid := Effects.stacks_of(f, "sonic_needle")
+		var chips: Array = s._foe_rows(f).filter(func(r) -> bool: return str(r[0]) == Terms.glyph("sonic_needle"))
+		assert_eq(chips.size(), 1 if laid > 0 else 0, "a foe wears the needle's chip exactly when it carries a needle")
+		if laid > 0 and chips.size() == 1:
+			shown += 1
+			assert_eq(str(chips[0][1]), "1/3", "its chip counts the stack toward the three that fire it")
+			assert_eq(str(chips[0][2]), "Debuff, Sonic Needle 1 of 3", "and its readout names it with them, a debuff")
+	assert_eq(shown, 4, "the target, the two beside it and the one behind it each show theirs")
+	s.free()
+
+
+## The offhand's rider is a chip on the entry it rides, on the face's rail, never in the passive
+## box beside it, and the machine wears no chip for it (Ryan, 22 November: "it's ability does not
+## need to appear as a chip on the unit. The ability should appear as a chip on its die faces").
+func test_an_offhand_rides_its_entry_as_a_rail_chip_and_wears_none_on_its_machine() -> void:
+	var d := DieFaceView.new()
+	d.face = Face.attack(4)
+	d.offhand = "offhand_rifle"
+	assert_true(d.rail_tags().has("offhand"), "its rider is a chip on the entry's rail")
+	assert_false(d.passive_marks().any(func(m) -> bool: return str(m[0]) == "star"), "and nothing in the passive box")
+	assert_eq(DieFaceView.chip_glyph("offhand"), "star", "on its term's star")
+	d.free()
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var u := db.make_mech(db.chassis.keys()[0])
+	Effects.stack(u, Effects.STATUS["offhand"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	sk.add_mech(u)
+	sk.add_foes([Foe.make("revenant", 30, 0)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	assert_false(s._mech_rows(0).any(func(r) -> bool: return str(r[2]).contains(str(Effects.STATUS["offhand"]["name"]))), "the machine wears no chip for its offhand")
 	s.free()

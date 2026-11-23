@@ -42,7 +42,7 @@ const REROLLS_PER_ROUND := 2   # two since 6 November (Ryan: a reroll gained is 
 const AREA_ROW := 1      # beside the target in its rank: Spread's, Splash's
 const AREA_COLUMN := 2   # the other rank of its column: Penetrate's, Splash's
 const AREA_ALL := 3      # any other foe a reach over every foe adds: nothing
-const AREA_CHAIN := 4    # every other Shocked foe on the field: Chain's conductors (28 October)
+const AREA_CHAIN := 4    # a Chain's arc: a conductor's blow, struck apart from the strike's own footprint (21 November)
 const AREA_SIDE := 5     # the foe to the right of the target in its rank: the Macaque's Beam Rifle's blow, beside any area's (19 November)
 ## A spend's hits in the order they land (_hit): the entry's strikes, the sword's hit again after
 ## each (the Macaque's Beam Sword, 19 November), and a Ricochet's after them all.
@@ -105,6 +105,8 @@ class MechState:
 	var killed_round: bool = false  # an attack of its own killed this round: what its passive reads as the round ends (on_round_kill: the Ammit's flare)
 	var offhand: int = -1           # the form its offhand holds, by its place in the cycle (Effects.offhand_forms: the Macaque's); -1 for none
 	var parried: int = 0            # what a Barrier and its armour have kept off foes' blows while its Parry stands this round (the Beam Buckler's)
+	var burrow_shield: int = 0      # what its shield was missing as it burrowed (the Mole's): each turn under makes good the burrow rule's share of it, so a blow taken under is not mended
+	var burrow_heat: int = 0        # the heat it carried as it burrowed, its overheat vented: each turn under takes the same share of it off
 
 	## The heat it carries past its maximum, a stack a point (the reboot's Overheated).
 	func overheat_stacks() -> int:
@@ -723,27 +725,22 @@ static func zap_ready(ms: MechState, f: Face) -> int:
 	return int(z["damage"])
 
 
-## The loads one shot of a hopper-firing attack takes (fires_hopper, the Bullion Fragmenter,
-## 11 October): as many as the machine's hopper holds, up to the shot's most, so a full
-## hopper feeds several shots rather than one. Read as the die is spent.
+## The Ore a spend of a hopper-emptying attack takes (empties_hopper, the Bullion Fragmenter,
+## Ryan, 20 November: "Empties the hopper, striking once for every load emptied"): every Ore the
+## machine holds, a strike each (Effects.effective_face). Read as the die is spent.
 static func hopper_loads(u, f: Face) -> int:
-	if f == null or f.fires_hopper <= 0:
+	if f == null or not f.empties_hopper:
 		return 0
-	return mini(Effects.stacks_of(u, "hopper"), f.fires_hopper)
+	return Effects.stacks_of(u, "hopper")
 
 
-## What the hopper adds to every blow of that shot.
-static func hopper_bonus(u, f: Face) -> int:
-	return hopper_loads(u, f) * f.power_per_load if f != null else 0
-
-
-## The loads each foe a spend of this entry damages puts in its machine's hopper: the weapon's
-## own number where it prints one (the Chainsaw Claw's two), else the machine's passive's for
-## any weapon (the Ore Hopper's one, 31 October); equipment deals no damage and loads nothing.
+## The Ore each foe a spend of this entry damages puts in its machine's hopper: the machine's
+## passive's for any weapon (the Ore Hopper's one), none for a weapon that empties the hopper
+## ("Grants no Ore"); equipment deals no damage and fills nothing.
 static func hopper_fill_of(u, f: Face) -> int:
-	if f == null or not f.is_weapon():
+	if f == null or not f.is_weapon() or f.empties_hopper:
 		return 0
-	return f.fills_hopper if f.fills_hopper > 0 else Effects.hopper_fill(u)
+	return Effects.hopper_fill(u)
 
 
 ## What one blow of an attack entry will deal, as the die shows it (decided 10 October, bible
@@ -784,7 +781,7 @@ static func firer_ctx(ms: MechState, f: Face) -> Dictionary:
 func shown_number(ms: MechState, f: Face, target: Foe = null) -> int:
 	if f == null or not f.is_attack():
 		return 0
-	var add := heat_bonus(ms, f) + shield_bonus(ms, f) + hopper_bonus(ms.unit, f)   # what the entry prints from its firer, inside the pipeline
+	var add := heat_bonus(ms, f) + shield_bonus(ms, f)   # what the entry prints from its firer, inside the pipeline
 	var own := (f.missing_bonus(target) + f.consume_bonus(target)) if not f.is_debuff() else 0   # the foe's own reads, flat after it (the blow's order)
 	# A split entry (the Skua's) shows a hit's blow: its base halved, rounded down, never below one, then the buffs.
 	var d := int(Effects.attack(ms.unit, f, split_share(f.power + add, f.split), 0, target, firer_ctx(ms, f))["damage"]) + own
@@ -1349,7 +1346,7 @@ func spend_face(ms: MechState) -> Face:
 ## carries is its own: its Ablating and Vitriol tick and damage it, a web on it bursts on it
 ## and a Mine on it blows on it. A Phased foe is out of reach the same way (foe_phased), and
 ## nothing damages it besides. Every list of the foes a spend reaches is read through here
-## (reached_by, area_shapes, shocked_foes, mine_reach, web_catch), so the bot and the screen
+## (reached_by, area_shapes, conducting_foes, mine_reach, web_catch), so the bot and the screen
 ## read the same.
 static func out_of_reach(foe: Foe) -> bool:
 	return foe != null and (Effects.has(foe, "aloft") or Effects.has(foe, "phased"))
@@ -1541,6 +1538,8 @@ func start_round() -> void:
 		# went as its shield dropped.
 		if ms.rebooting:
 			_recover(ms)
+		elif Effects.has(ms.unit, "burrowed") and not paused(ms):
+			_burrowed_turn(ms)   # a turn under opens (the Mole's): before anything cools and before its die rolls the Drill
 		# A sealed machine's cooling stops (the Polar Bear's Lockdown, 20 October): opening or
 		# a reboot is its way down.
 		var drop := 0 if Effects.is_sealed(ms.unit) or paused(ms) else mini(ms.heat, cooling_of(ms))
@@ -1574,14 +1573,6 @@ func start_round() -> void:
 			regened.append("%s +%d" % [ms.unit.display_name, gained])
 	if not regened.is_empty():
 		log.append("shield regen: " + ", ".join(regened))
-	# The hopper grants its Armoured for the round, what the loads it holds are worth (the Honey
-	# Badger's, Ryan, 10 November: "returns at the start of his turn since its granted by the
-	# funnel bar"): last round's went at the round's end as every machine's Armoured does, and a
-	# Purge may have taken it sooner. Before the foes announce, so their blows are drawn against it.
-	for ms in live_mechs():
-		var plated := 0 if paused(ms) else Effects.plate_round(ms.unit)
-		if plated > 0:
-			log.append("%s's hopper plates it: %s ×%d" % [ms.unit.display_name, Effects.STATUS["braced"]["name"], Effects.plated(ms.unit)])
 	# Every foe announces its move for the round: which action, at whom. Chosen now, before
 	# the player acts, so the intent chips and the forecast are exact. The move first, from
 	# the ones its conditions allow (never the same special twice running), then its pick, each
@@ -2303,6 +2294,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	var turn := turn_entries(ms, f)   # where a one-of-each machine's die may turn once this is out (the Needletail's), read before the spend
 	var spent_kind := _turn_kind(ms, f) if Effects.one_of_each(ms.unit) and not f.acts_again() else 0   # the kind the Relay sends onto cooldown: 1 the weapons, 2 the equipment, 0 none (a Rapid or Instant spend, a blank)
 	f = Effects.effective_face(ms.unit, f, target if target is Foe else null)   # the entry as this machine's passives make it, over the foe it is aimed at
+	var once := Effects.once_taken(ms.unit, Effects.rewritten(ms.unit, raw), target if target is Foe else null)   # what holds once a turn, read before the spend lays anything
 	if f.is_attack() and (not (target is Foe) or not targets_for_face(ms, raw).has(target)):
 		return false
 	# A Swap takes its second target with it (Ryan, 21 October: drag to the first, drop, then
@@ -2573,6 +2565,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	if f.self_ablate > 0 and ms.alive():
 		Effects.stack(ms.unit, Effects.STATUS["ablating_mech"], Effects.SKIRMISH, "self:" + f.component, f.self_ablate, Effects.status_decay(Effects.STATUS["ablating_mech"]))
 		log.append("%s: its own fire, %s ×%d" % [ms.unit.display_name, Effects.STATUS["ablating_mech"]["name"], f.self_ablate])
+	Effects.mark_once(ms.unit, once)
 	_shift_form(ms, f, target)
 	if f.kind != Face.Kind.BLANK:
 		var deals := f.is_attack() and f.power > 0
@@ -2758,6 +2751,7 @@ func _enemy_turn() -> void:
 	# decided, the foes after the blow that wrecks the last machine doing nothing.
 	_acted.clear()
 	_enemy_acting = true
+	_drill_ticks()   # the drills at work, before the side's opening (the Mole's): a fight they end, the loop below breaks on
 	# The foes' turn starts (his four places: "Its turn Start: Armoured, Barrier, Ward"; Brittle
 	# with them, the team's blows having used it): every foe's plate, Barrier and Ward from its
 	# last turn go here, before the first foe acts, its Brittle halves unless a pin holds it,
@@ -3010,9 +3004,12 @@ func foes_beside(f: Foe) -> Array[Foe]:
 ## before left, and each carries the move's riders unless a Ward turns them away.
 func _strike(f: Foe, t: MechState) -> void:
 	var turned := false
+	var standing := f.alive()   # a fall's last act strikes from a foe already down, and strikes whole
 	for s in range(f.strikes()):
 		if not t.alive():
 			break   # the enemy's turn is sequenced as it happens (Ryan, 4 November): a wreck takes no more
+		if standing and not f.alive():
+			break   # felled between its blows (a needle bolt its last blow brought): no zero-HP foe strikes on
 		var hull_before := t.unit.hull
 		var events_before := turn_events.size()
 		_damage_mech(t, f.damage(), f)
@@ -3030,11 +3027,13 @@ func _strike(f: Foe, t: MechState) -> void:
 			f.hp = mini(f.hp_max, f.hp + dealt)
 			if f.hp > had:
 				log.append("%s drains %d" % [f.display_name, f.hp - had])
-		# A Ward turns away every rider a foe's blows lay this round; the damage has landed.
+		# A Ward turns away every rider a foe's blows lay this round; the damage has landed. What the
+		# machine lays on its striker is its own, no rider of the blow, and lands after it either way.
 		if Effects.has(t.unit, "ward"):
 			if t.alive() and _rides(f) and not turned:
 				log.append("%s: the Ward turns %s's riders away" % [t.unit.display_name, f.display_name])
 				turned = true
+			_struck_by(t, f)
 			continue
 		# A raging machine takes no debuff (the Nemesis's Rage, Ryan, 23 November: "Immune to all
 		# debuffs"): the riders that lay one land nothing on it; a Destroy lays none, and lands.
@@ -3084,6 +3083,9 @@ func _strike(f: Foe, t: MechState) -> void:
 			# says a component was destroyed (Jenny's information lines, 8 October).
 			ev["component"] = apply_injury(t)
 			ev["injured"] = str(ev["component"]) == "destroyed"
+		# The blow and its riders done, what the struck machine lays on its striker (on_struck: the
+		# echidna's needle), whose bolt may fell it before its next blow.
+		_struck_by(t, f)
 
 
 
@@ -3374,8 +3376,92 @@ func _spend_at(mech_index: int, ms: MechState, f: Face, target: Foe, second = nu
 	_scale_now = 1.0
 	_reached_last = h.reached.size()
 	_lay_mine(ms, target, h.mine)
+	_drill(mech_index, ms, f, target)
 	_entry_effects(ms, f, target, second)
 	_finish_hits(mech_index, ms, f, target, h, pays)
+
+
+## The Inertia Drill's spend, a burrower's burrow piece (the Mole's; Ryan, 16 November: "Consumes
+## all Conserved Momentum and grants a stack of Applied Momentum for each one"; "Drill should be
+## indirect always ... Makes sense cause it tunnels"): every stack of Conserved Momentum spent, as
+## many of Applied Momentum laid on the foe, and the machine up, its drill out until its next
+## burrow. Its foe's Ward turns the drill's mark away, the stacks spent all the same. The mark
+## carries the tick its machine has as it drills (Effects.momentum_of), so a branch learned later
+## changes the next drill, and the tick needs no machine to land (_drill_ticks).
+func _drill(mech_index: int, ms: MechState, f: Face, target: Foe) -> void:
+	var rule := Effects.burrow_rule(ms.unit)
+	if rule.is_empty() or f.component != str(rule.get("piece", "")):
+		return
+	var n := Effects.stacks_of(ms.unit, "conserved_momentum")
+	Effects.remove(ms.unit, "conserved_momentum")
+	Effects.remove(ms.unit, "burrowed")
+	Effects.stack(ms.unit, Effects.STATUS["drill_out"], Effects.SKIRMISH, "burrow", 1, Effects.DECAY_NONE)
+	if n <= 0 or target == null or not target.alive():
+		log.append("%s comes up, its drill spent" % ms.unit.display_name)
+		return
+	if Effects.turns_mark(target, "applied_momentum"):
+		log.append("%s comes up, and %s's Ward turns its drill away" % [ms.unit.display_name, target.display_name])
+		return
+	var tick := Effects.momentum_of(ms.unit, f)
+	var m := Effects.stack(target, Effects.STATUS["applied_momentum"], Effects.SKIRMISH, drill_source(ms), n, Effects.DECAY_NONE)
+	if m == null:
+		return
+	m.effects = [{"blow": int(tick["blow"]), "lays": (tick["lays"] as Dictionary).duplicate(), "mech": mech_index}]   # a fresh array: the preview's copy shares the fight's
+	log.append("%s comes up and drills %s: Applied Momentum %d" % [ms.unit.display_name, target.display_name, Effects.stacks_of(target, "applied_momentum")])
+	_foe_gained_status(target, "applied_momentum", n)
+
+
+## The drills at work, as the foes' turn starts and before their side's opening (the Mole's; Ryan,
+## 16 November: "Applied Momentum decays 1 at the start of the target's turn"; his set, "Base: Flat
+## 2 damage blow a turn ... make the damage a blow since I want it to scale with Brittle"): each foe
+## carrying Applied Momentum takes its drill's blow, a plain blow (plain_blow_on: its Brittle adds,
+## its armour and a Barrier from its last turn take it, no Shock read), then what the drill's
+## branch lays (Ablate's Ablating and Seared, the squad's Brittle and Pinned and Exposed), and a
+## stack goes. Before the opening, so a Pinned it lays holds the Brittle the opening would halve
+## ("the pin holding its Brittle while the drill is in"). A drilled foe that falls takes the rest
+## with it.
+func _drill_ticks() -> void:
+	for foe in field_foes():
+		if outcome != Outcome.NONE:
+			return
+		if not foe.alive() or not Effects.has(foe, "applied_momentum"):
+			continue
+		var tick := {}
+		for m in foe.modifiers:
+			if m.id == "applied_momentum" and not m.effects.is_empty():
+				tick = m.effects[0]
+		var by: MechState = null
+		var at := int(tick.get("mech", -1))
+		if at >= 0 and at < mechs.size():
+			by = mechs[at]
+		var blow := int(tick.get("blow", 0))
+		if blow > 0 and not foe_phased(foe):
+			var before := foe.hp
+			var dealt := plain_blow_on(foe, blow, by)
+			if _barrier_eats(foe, true):
+				dealt = 0
+			foe.hp -= dealt
+			log.append("the drill in %s strikes it for %d" % [foe.display_name, clampi(dealt, 0, maxi(0, before))])
+		if foe.alive():
+			var gained := {}
+			var turned := {}
+			var lays: Dictionary = tick.get("lays", {})
+			for sid in lays:
+				var n := int(lays[sid])
+				if n <= 0 or not Effects.STATUS.has(str(sid)):
+					continue
+				if str(sid) == "exposure":
+					if not Effects.turns_mark(foe, "exposure"):
+						Effects.grant_for_rounds(foe, Effects.STATUS["exposure"], "mech", round)   # it falls as its turn starts, the first after this round
+					_note_status(gained, foe, "exposure", turned)
+				else:
+					_land_rider(foe, str(sid), n, gained, turned)
+			_tell_turned(turned)
+			for f in gained.keys():
+				for status_id in gained[f]:
+					_foe_gained_status(f, status_id, int(gained[f][status_id]))
+			Effects.spend_stacks(foe, "applied_momentum", 1)
+		_turn_death_check()
 
 
 ## One weapon's or debuff's hits on its target, shared by every spend at a foe (the plain one, the
@@ -3395,9 +3481,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	var fired := heat_bonus(ms, f) + shield_bonus(ms, f)
 	h.fired = fired
 	_scale_now = Effects.heat_damage_multiple(ms.unit, ms.heat, ms.heat_max)   # its heat scale, at the heat it holds before a shot fires it (the Whip Scorpion's Death Ray)
-	var loads := hopper_loads(ms.unit, f)   # the loads this shot fires from the hopper, read once too
-	var from_hopper := loads * f.power_per_load
-	var own := fired + from_hopper   # what the entry prints from its firer, on every blow of the spend
+	var loads := hopper_loads(ms.unit, f)   # the Ore this spend empties from the hopper, a strike each, read once too
+	var own := fired   # what the entry prints from its firer, on every blow of the spend
 	var damaged: Array = []    # every foe the blows took HP off, for the hopper's loads (Ryan, 31 October: "per foe damaged")
 	h.vented_all = ms.heat if f.vents_all else 0
 	if f.vents_all:
@@ -3412,7 +3497,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	# Every foe one strike reaches (a Spread's neighbours, a Penetrate's column, every foe for a
 	# reach over them all), the same for each strike, since a kill clears its slot only after the
 	# spend.
-	var hit := reached_by(f, target)
+	var hit := ridden_by(f, target)   # the strike's own footprint: Chain's conductors are struck apart, after it (below)
 	var shapes := area_shapes(f, target)   # the shape each foe past the target stands in, for its number
 	# The offhand's riders (the Macaque's, Ryan, 19 November; "I had intended for everything to
 	# apply riders"): the rifle's blow on the foe to the right of the target with every strike, its
@@ -3526,30 +3611,42 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		# on the foe to the right, a blow of its own on a foe an area of the strike reached too, then
 		# Chain's arcs, which follow the impact.
 		var landings: Array = []
-		var arcs: Array = []
 		for foe in hit:
-			var row := [foe, blows[foe], int(shapes.get(foe, 0))]
-			if int(row[2]) == AREA_CHAIN:
-				arcs.append(row)
-			else:
-				landings.append(row)
+			landings.append([foe, blows[foe], int(shapes.get(foe, 0))])
 		if step == HIT_STRIKE and right != null:
 			var first_right := not struck_once.has(right) and not hit.has(right)
 			landings.append([right, _side_blow(ms, f, side, own, split, right, _zapped(_judged(judged_hp, right))) + _foe_reads(f, reads, right, first_right), AREA_SIDE])
-		landings.append_array(arcs)
-		for landing_at in landings:
+		# Chain's arcs (Ryan, 21 November: "All foes on the field with Shock are struck for {value}.
+		# Does not use or consume Shock"; "It should stack with spread and penetrate"; of its own
+		# target, "Any conductor"): read once the strike's own blows have landed, so a Shock the
+		# strike spent on its target conducts nothing and a needle there, or a Shock equipment leaves
+		# standing, does; a conductor an area of the strike reached takes the area's blow and the arc.
+		# Each is the Chain's number flat ("If Chain doesn't carry the riders, it shouldn't carry the
+		# unit's or weapon's buffs either"), the entry's own strikes alone arcing, never a Ricochet's or
+		# a hit again.
+		var arcs_read := not (step == HIT_STRIKE and f.has(Face.Keyword.CHAIN))
+		var li := 0
+		while li < landings.size() or not arcs_read:
+			if li >= landings.size():
+				arcs_read = true
+				for c in conducting_foes(null):
+					landings.append([c, f.number_of(Face.Keyword.CHAIN), AREA_CHAIN])
+				continue
+			var landing_at: Array = landings[li]
+			li += 1
 			var foe: Foe = landing_at[0]
 			var shape: int = landing_at[2]
+			# A Chain's arc is its blow alone (Ryan, 18 November: "take riders off chain. Thematically
+			# it's a lightning arc, not part of the impact"): no rider of the entry, its primers or a
+			# passive lands on a conductor, and no Shock, Expose, Lure or Disrupt after the blow; no
+			# strike is aimed at it, even on the spend's own target.
+			var arc := shape == AREA_CHAIN
 			var was_alive := foe.alive()
 			var hp_before := foe.hp
 			var first := not struck_once.has(foe)   # the foe's first blow of the spend
 			struck_once[foe] = true
-			var into_mine := foe == target   # the blow on the spend's target: its riders are the Mine's too
-			var struck := foe == target or everyone   # a strike aimed at this foe, never a blow that only reaches it
-			# A Chain's arc is its blow alone (Ryan, 18 November: "take riders off chain. Thematically
-			# it's a lightning arc, not part of the impact"): no rider of the entry, its primers or a
-			# passive lands on a conductor, and no Shock, Expose, Lure or Disrupt after the blow.
-			var arc := shape == AREA_CHAIN
+			var into_mine := foe == target and not arc   # the blow on the spend's target: its riders are the Mine's too
+			var struck := (foe == target or everyone) and not arc   # a strike aimed at this foe, never a blow that only reaches it
 			if not h.reached.has(foe):
 				h.reached.append(foe)
 			if shape == AREA_CHAIN:
@@ -3557,7 +3654,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			var blow: int = landing_at[1]
 			# Spillover (Overwhelm until 6 October): damage past the kill of a front-rank foe carries
 			# into the foe behind it (_spill). A massive foe fills its column: nothing is behind it.
-			var spills := f.spills and foe.rank == 0 and not foe.is_massive()
+			var spills := f.spills and not arc and foe.rank == 0 and not foe.is_massive()
 			var taken := 0   # what the foe takes of the blow, nothing for a corpse a later strike spills past
 			if spills and not was_alive:
 				# A later strike on a foe an earlier strike of this spend killed (Ryan, 15 October:
@@ -3581,7 +3678,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				# piece that ignores armour meets none (Foe.armour_for). Every blow is recorded, one on a
 				# foe an earlier hit of the spend felled included, so the screen shows every hit and
 				# shot land (Ryan, 7 November: "Anything truncated confuses the player").
-				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), struck, foe.armour_for(f), at, ("ricochet" if bounce else ("again" if echo else "strike")) if struck else ("chain" if shape == AREA_CHAIN else "area"))
+				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), struck, foe.armour_total() if arc else foe.armour_for(f), at, ("ricochet" if bounce else ("again" if echo else "strike")) if struck else ("chain" if shape == AREA_CHAIN else "area"))   # an arc meets the foe's own armour, no piece's rule of the entry's
 				taken = int(landing["taken"])
 				var foe_armoured := int(landing["armoured"])
 				var barred := bool(landing["barred"])
@@ -3595,7 +3692,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 					log.append("%s consumes %s ×%d on %s, +%d" % [ms.unit.display_name, str(Effects.STATUS.get(f.consumes, {}).get("name", f.consumes)), eaten, foe.display_name, eaten * f.per_consumed])
 				if was_alive:
 					h.dealt += clampi(taken, 0, maxi(0, hp_before))
-				if foe == target:
+				if foe == target and not arc:
 					landed = taken
 					h.armoured += foe_armoured
 				# A weapon's strike aimed at the foe spends a shock, even one that deals nothing (Ryan,
@@ -3651,7 +3748,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# October), and the hitter cools for them once the spend's own heat has landed (below);
 			# equipment spends none. The blow's own Cryo lands with the riders, so a spend never
 			# eats what it lays.
-			if was_alive and not f.is_debuff() and Effects.has(foe, "cryoed"):
+			if was_alive and not f.is_debuff() and not arc and Effects.has(foe, "cryoed"):   # the weapon's own hit cashes it; a Chain's arc is no hit of the weapon's
 				h.thawed += Effects.stacks_of(foe, "cryoed")
 				Effects.remove(foe, "cryoed")
 			if f.has(Face.Keyword.CRYO) and not arc:
@@ -3711,7 +3808,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	# hopper's Armoured follows the loads' worth both ways (Effects._plate).
 	if loads > 0:
 		Effects.spend_loads(ms.unit, loads)
-		log.append("%s fires the hopper: %d load%s, +%d" % [ms.unit.display_name, loads, "" if loads == 1 else "s", from_hopper])
+		log.append("%s empties the hopper: %d Ore, %d strike%s" % [ms.unit.display_name, loads, loads, "" if loads == 1 else "s"])
 	h.damaged = damaged.size()
 	var per_foe := hopper_fill_of(ms.unit, f)
 	if per_foe > 0 and not damaged.is_empty():
@@ -3742,7 +3839,7 @@ func _land_blow(foe: Foe, blow: int, by: Unit, weapon: bool, aimed: bool, armour
 	var armoured := mini(taken, armour)
 	taken -= armoured
 	foe.hp -= taken
-	_note_blow(foe, strike, taken, kind)
+	_note_blow(foe, strike, taken, kind, weapon)
 	return {"taken": taken, "armoured": armoured, "barred": barred}
 
 
@@ -3991,14 +4088,16 @@ func _lured(ms: MechState, aimed: Foe) -> Array[Foe]:
 ## still standing in its slot included, as the strikes find it. A foe out of the team's reach
 ## (out_of_reach: Aloft) is passed over by all of it. The resolver and the bot read the same
 ## list.
-## The foes a spend's riders land on (Ryan, 18 November: "take riders off chain. Thematically it's a
-## lightning arc, not part of the impact"): every foe it reaches but Chain's conductors, which take
-## the arc's blow alone. What a lure's turn, a Shock, a mark and a passive's lay are read over.
+## The strike's own footprint, the foes a spend's riders land on (Ryan, 18 November: "take riders
+## off chain. Thematically it's a lightning arc, not part of the impact"): its target and every foe
+## an area of it reaches (area_shapes), never a foe Chain's arc alone strikes; a conductor an area
+## reaches is in it, and takes the arc besides (21 November). What a lure's turn, a Shock, a mark
+## and a passive's lay are read over, and the blows the resolver lands before the arcs.
 func ridden_by(f: Face, target: Foe) -> Array[Foe]:
 	var shapes := area_shapes(f, target)
 	var out: Array[Foe] = []
 	for foe in reached_by(f, target):
-		if foe == target or int(shapes.get(foe, AREA_ALL)) != AREA_CHAIN:
+		if foe == target or shapes.has(foe):
 			out.append(foe)
 	return out
 
@@ -4032,34 +4131,42 @@ func reached_by(f: Face, target: Foe) -> Array[Foe]:
 			hit.append(other)
 			if area:
 				_pair_with(hit, other)
-	# Chain's conductors (28 October): every other Shocked foe on the field, after the shapes, so
-	# a foe both beside the target and Shocked takes one blow, the shape's; a twin's half only if
-	# it carries the charge itself.
+	# Chain's conductors last (conductors), each once in the list a spend counts its foes by; a
+	# conductor a shape reached is struck by both (21 November), the arc apart (_hit).
 	for foe in conductors(f, target):
 		if not hit.has(foe):
 			hit.append(foe)
 	return hit
 
 
-## Chain's conductors (Ryan, 28 October; the kill and repeat retired): every other foe on the
-## field alive and Shocked, wherever it stands and whatever the entry's reach, in the field's
-## order. None for an entry without Chain. A debuff's arcs are its Chain's number alone, and they
-## carry its riders as any area of it does (the Storm Petrel's lure since 17 November: every
-## Shocked foe it arcs to is lured). Read as the die is spent, before any blow lands, so a Shock
-## the spend lays never conducts its own arc.
+## Chain's conductors, the foes a spend's arcs will strike (Ryan, 21 November: "All foes on the
+## field with Shock are struck for {value}. Does not use or consume Shock"; "Any conductor"): every
+## foe on the field alive and conducting (Shocked, or a Sonic Needle in it), wherever it stands and
+## whatever the entry's reach, in the field's order; its own target too unless the strike's own
+## blow takes away what it conducts by, which a weapon's strike aimed at it does to a Shock alone
+## (a needle stays, and equipment spends no Shock). None for an entry without Chain. Read as the
+## die is spent; the resolver reads the field again once the strike's own blows have landed, and a
+## Shock or a needle the spend lays lands after its arcs, so it never conducts its own.
 func conductors(f: Face, target: Foe) -> Array[Foe]:
-	if f != null and f.has(Face.Keyword.CHAIN):
-		return shocked_foes(target)
-	var none: Array[Foe] = []
-	return none
+	var out: Array[Foe] = []
+	if f == null or not f.has(Face.Keyword.CHAIN):
+		return out
+	var spends := not f.is_debuff()   # a weapon's strike aimed at a foe spends its Shock before the arcs
+	for foe in conducting_foes(null):
+		var aimed := foe == target or f.reaches_all
+		if aimed and spends and not Effects.conducts_but(foe, "shocked"):
+			continue
+		out.append(foe)
+	return out
 
 
-## Every foe on the field alive and Shocked but `but`, in the field's order: a Chain's
-## conductors, a Mine's blast's included.
-func shocked_foes(but: Foe) -> Array[Foe]:
+## Every foe on the field alive and conducting Chain but `but` (Effects.conducts: Shocked, a Sonic
+## Needle), in the field's order: a Chain's conductors, a Mine's blast's and a needle bolt's
+## included.
+func conducting_foes(but: Foe) -> Array[Foe]:
 	var out: Array[Foe] = []
 	for foe in field_foes():
-		if foe != but and foe.alive() and Effects.has(foe, "shocked") and not out.has(foe) and not out_of_reach(foe):
+		if foe != but and foe.alive() and Effects.conducts(foe) and not out.has(foe) and not out_of_reach(foe):
 			out.append(foe)
 	return out
 
@@ -4068,9 +4175,9 @@ func shocked_foes(but: Foe) -> Array[Foe]:
 ## Ryan, 28 October), for the number it takes in place of the roll: AREA_ROW beside the target
 ## in its rank (Spread's, Splash's), AREA_COLUMN the other rank of its column (Penetrate's,
 ## Splash's), a twin slot's other half as the half it pairs with (the target's own twin beside it
-## in the row, or the column's when the entry reaches no row), AREA_CHAIN every other Shocked foe
-## on the field (Chain's conductors), AREA_ALL any other foe a reach over every foe adds. The
-## target is not in it. The resolver and the bot read the same map.
+## in the row, or the column's when the entry reaches no row), AREA_ALL any other foe a reach over
+## every foe adds. Chain's conductors are struck apart (conductors), never a shape of the strike.
+## The target is not in it. The resolver and the bot read the same map.
 func area_shapes(f: Face, target: Foe) -> Dictionary:
 	var out := {}
 	if f == null or target == null:
@@ -4093,9 +4200,6 @@ func area_shapes(f: Face, target: Foe) -> Dictionary:
 		var pair := twin_of(target)
 		if pair != null and not out.has(pair):
 			out[pair] = AREA_ROW if f.reaches_row() else AREA_COLUMN
-	for foe in conductors(f, target):
-		if not out.has(foe):
-			out[foe] = AREA_CHAIN
 	if f.reaches_all:
 		for foe in field_foes():
 			if foe != target and not out.has(foe) and not out_of_reach(foe):
@@ -4104,7 +4208,7 @@ func area_shapes(f: Face, target: Foe) -> Dictionary:
 
 
 ## The number a foe in a shape takes in place of the roll: the row's (Spread's or Splash's),
-## the column's (Penetrate's or Splash's), Chain's on a conductor, and the entry's own for a foe
+## the column's (Penetrate's or Splash's), and the entry's own for a foe
 ## a reach over every foe adds (a weapon's strikes each whole, the Whip Scorpion's release's;
 ## equipment's blow is nothing, the Shift Whistle's lure-all's).
 static func area_number(f: Face, shape: int) -> int:
@@ -4113,8 +4217,6 @@ static func area_number(f: Face, shape: int) -> int:
 			return f.row_number()
 		AREA_COLUMN:
 			return f.column_number()
-		AREA_CHAIN:
-			return f.number_of(Face.Keyword.CHAIN)
 		AREA_ALL:
 			return f.power
 	return 0
@@ -4167,10 +4269,7 @@ func right_of(foe: Foe) -> Foe:
 ## base, through the firer's pipeline with its conditions judged on that foe.
 func _area_blow(ms: MechState, f: Face, shape: int, foe: Foe, prints: int, split: int, ctx: Dictionary = {}) -> int:
 	if f.is_debuff():
-		# A debuff deals nothing under any effect (Effects.attack); its Chain's arcs land the number
-		# it prints, plain, no add or multiply (the Storm Petrel's lure, its Striker branch, 17
-		# November: "adds Chain 3 to the lure"), and every other area of it nothing.
-		return area_number(f, shape) if shape == AREA_CHAIN else 0
+		return 0   # a debuff deals nothing under any effect (Effects.attack), its areas' blows included
 	return int(Effects.attack(ms.unit, f, split_share(area_number(f, shape) + prints, split), 0, foe, ctx)["damage"])
 
 
@@ -4668,6 +4767,8 @@ func shield_short(ms: MechState, f: Face) -> bool:
 ## The second: an entry that spends a count of its machine's for what it grants (Face.spends, the
 ## Quintessence Tap's Essence) cannot be played while the machine holds none of it.
 func spend_short(ms: MechState, f: Face) -> bool:
+	if f != null and f.empties_hopper and Effects.stacks_of(ms.unit, "hopper") <= 0:
+		return true   # the Bullion Fragmenter with no Ore: a dead entry (Ryan, 20 November)
 	return f != null and not f.spends.is_empty() and Effects.stacks_of(ms.unit, f.spends) <= 0
 
 
@@ -4830,7 +4931,7 @@ func _merge(f: Foe, a: Dictionary) -> void:
 		# Its own Empowered, gained in its own turn like a rallier's share of its rally: it
 		# halves as that turn ends, so half reaches its next blow.
 		Effects.stack(f, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:" + f.content_id, lift, Effects.DECAY_HALF)
-	log.append("%s: %s, %d taken in, regrows %d, Empowered ×%d" % [f.display_name, str(a.get("name", "merges")), taken, f.hp - before, lift])
+	log.append("%s: %s, %d taken in, regrows %d%s" % [f.display_name, str(a.get("name", "merges")), taken, f.hp - before, (", Empowered ×%d" % lift) if lift > 0 else ""])
 	_refresh_kin()
 
 
@@ -5193,29 +5294,19 @@ func _blow_mine(mine: Dictionary, rank: int, col: int, massive: bool, where: Str
 	var r: Dictionary = mine.get("riders", {})
 	var kws: Array = r.get("keywords", [])
 	var met := mine_reach(rank, col, massive)
-	var arcs: Array[Foe] = []
 	var chain := int(r.get("chain", 0))
-	if chain > 0:
-		for foe in shocked_foes(null):
-			if not met.has(foe):
-				arcs.append(foe)
 	mine_tally["blasts"] += 1
 	log.append("the Mine on %s blows: %s" % [where, mine_text(mine)])
 	var beat := _next_beat()
-	var all: Array[Foe] = []
-	all.append_array(met)
-	all.append_array(arcs)
-	for foe in all:
-		var blow := chain if arcs.has(foe) else dmg
-		var hp_before := foe.hp
-		var taken := Effects.damage_taken(foe, blow, null, true, false)
-		if _barrier_eats(foe, true):
-			taken = 0   # its riders land all the same
-		taken = maxi(0, taken - foe.armour_total())
-		foe.hp -= taken
-		_note_blow(foe, beat, taken, "mine")
-		mine_tally["damage"] += clampi(taken, 0, maxi(0, hp_before))
-		log.append("the Mine %s %s for %d" % ["arcs to" if arcs.has(foe) else "hits", foe.display_name, taken])
+	for foe in met:
+		_mine_blow(foe, dmg, beat, "hits")
+	# Its Chain's arcs once the blast has landed (Ryan, 21 November: Chain "should stack with spread
+	# and penetrate"): the number flat on every foe on the field that conducts, a foe it met among
+	# them, each a blow alone, so no rider of the Mine rides an arc (18 November).
+	if chain > 0:
+		for foe in conducting_foes(null):
+			_mine_blow(foe, chain, beat, "arcs to")
+	var all: Array[Foe] = met   # the foes its riders land on: the blast's, never an arc's
 	var gained := {}
 	var turned := {}
 	var stacks: Dictionary = r.get("stacks", {})
@@ -5240,6 +5331,20 @@ func _blow_mine(mine: Dictionary, rank: int, col: int, massive: bool, where: Str
 	for foe in gained.keys():
 		for status_id in gained[foe]:
 			_foe_gained_status(foe, status_id, int(gained[foe][status_id]))
+
+
+## One blow of a Mine's blast or of its Chain's arc on a foe: through its Brittle, a Barrier and its
+## armour, aimed at nobody (so no Shock is read or spent), for the screen a "mine" blow of the beat.
+func _mine_blow(foe: Foe, blow: int, beat: int, verb: String) -> void:
+	var hp_before := foe.hp
+	var taken := Effects.damage_taken(foe, blow, null, true, false)
+	if _barrier_eats(foe, true):
+		taken = 0   # its riders land all the same
+	taken = maxi(0, taken - foe.armour_total())
+	foe.hp -= taken
+	_note_blow(foe, beat, taken, "mine")
+	mine_tally["damage"] += clampi(taken, 0, maxi(0, hp_before))
+	log.append("the Mine %s %s for %d" % [verb, foe.display_name, taken])
 
 
 ## A mark a Mine's blast lays after its blow, Shocked or Exposed (through the player's next
@@ -5464,13 +5569,99 @@ func _parry_returns(ms: MechState) -> void:
 func _land_rider(foe: Foe, sid: String, n: int, gained: Dictionary, turned: Dictionary, laid = null) -> void:
 	if n <= 0:
 		return
-	Effects.stack(foe, Effects.STATUS[sid], Effects.SKIRMISH, "mech", n, Effects.status_decay(Effects.STATUS[sid]))
+	var needler := needler_of(sid)
+	if needler != null:
+		_lay_needles(needler, foe, n)   # a stack at a time, the bolt at its count
+	else:
+		Effects.stack(foe, Effects.STATUS[sid], Effects.SKIRMISH, "mech", n, Effects.status_decay(Effects.STATUS[sid]))
 	_note_status(gained, foe, sid, turned, n)
 	if laid == null or Effects.turns_mark(foe, sid):
 		return   # its Ward turned the lay away: nothing laid to tell
 	var per: Dictionary = laid.get(foe, {})
 	per[sid] = int(per.get(sid, 0)) + n
 	laid[foe] = per
+
+
+## The machine whose Sonic Needles lay this status (Effects.needle_rule: the echidna's, Ryan, 20
+## November), the first in the team's order still in the fight; null when none does, and the
+## status lands as any rider's.
+func needler_of(sid: String) -> MechState:
+	for ms in mechs:
+		if ms.alive() and not is_out(ms) and str(Effects.needle_rule(ms.unit).get("status", "")) == sid:
+			return ms
+	return null
+
+
+## Needles landing on a foe (Ryan, 20 November: "Striking a foe, or getting struck by one, grants
+## that foe a stack of Sonic Needle"): a stack at a time, each the needle its machine's rule makes
+## (Effects.needle_spec), and the stack that brings the foe to the rule's count fires the bolt
+## (_needle_bolt) before the next lands, so two stacks on a foe at two fire it once and leave one
+## (two under a bolt that leaves a stack). A foe's Ward turns them away as any mark. A felled foe
+## takes them as a rider lands on it, and its bolt fires all the same (no trigger goes unfired).
+func _lay_needles(ms: MechState, foe: Foe, n: int) -> void:
+	var rule := Effects.needle_rule(ms.unit)
+	var sid := str(rule["status"])
+	var spec := Effects.needle_spec(rule, ms.unit.display_name)
+	for i in range(n):
+		if Effects.stack(foe, spec, Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE) == null:
+			return   # its Ward turned it away
+		if Effects.stacks_of(foe, sid) >= int(rule["at"]):
+			_needle_bolt(ms, foe, rule)
+
+
+## The bolt the needles bring (Ryan, 20 November: "On 3 stacks, the Echidna fires Chain 2, then
+## consume all stacks on this foe"; his answer that day: "targeted at nothing. So the foe that hit 3
+## stacks and procced it would take 2 by definition"): the Chain's number on every conductor on the
+## field (conducting_foes), the foe it fires from among them while it stands, each a Chain's arc as
+## a Mine's blast lands one (a blow aimed at nobody, so no rider, no needle, no Shock doubled or
+## spent: its Brittle adds, a Barrier takes it, its armour comes off); then the rule takes that
+## foe's stacks, every one, or down to a step's count (Chaos's, Ryan, 21 November: "reduce stacks
+## to 1"). In a spend, its blows
+## land a beat after the spend's for the screen; what it fells falls at the death check that follows,
+## the spend's, or in the foes' turn the one after the action whose blow brought it (a striker it
+## fells strikes no more: _strike).
+func _needle_bolt(ms: MechState, foe: Foe, rule: Dictionary) -> void:
+	var sid := str(rule["status"])
+	var chain := int(rule.get("chain", 0))
+	log.append("%s's needles fire in %s: Chain %d" % [ms.unit.display_name, foe.display_name, chain])
+	var beat := _next_beat()
+	for c in conducting_foes(null):
+		var taken := Effects.damage_taken(c, chain, ms.unit, true, false)
+		if _barrier_eats(c, true):
+			taken = 0
+		taken = maxi(0, taken - c.armour_total())
+		c.hp -= taken
+		if not _enemy_acting:
+			_note_blow(c, beat, taken, "chain")   # a spend's blows, for the screen; the foes' turn records none on a foe
+		log.append("the needles arc to %s for %d" % [c.display_name, taken])
+	var keeps := int(rule.get("keeps", 0))
+	if keeps <= 0:
+		Effects.remove(foe, sid)
+	else:
+		Effects.spend_stacks(foe, sid, maxi(0, Effects.stacks_of(foe, sid) - keeps))
+
+
+## A foe's blow landing on a machine (on_struck): what the machine's passives lay on its striker, a
+## blow's worth (the echidna's needle, Ryan, 20 November: "getting struck by one, grants that foe a
+## stack"), whatever the blow dealt (his of 15 October: "I thought mitigation would be ok"). A
+## wreck the blow made lays nothing. Told and gained as a spend's riders are.
+func _struck_by(ms: MechState, f: Foe) -> void:
+	if not ms.alive() or is_out(ms) or not f.alive():
+		return
+	var lays := Effects.struck_lays(ms.unit)
+	if lays.is_empty():
+		return
+	var gained := {}
+	var turned := {}
+	for pair in lays:
+		var sid := str(pair[0])
+		if not Effects.turns_mark(f, sid):
+			log.append("%s, struck, lays %s ×%d on %s" % [ms.unit.display_name, str(Effects.STATUS[sid]["name"]), int(pair[1]), f.display_name])   # told before it lands, so a bolt it brings follows it
+		_land_rider(f, sid, int(pair[1]), gained, turned)
+	_tell_turned(turned)
+	for foe in gained.keys():
+		for status_id in gained[foe]:
+			_foe_gained_status(foe, status_id, int(gained[foe][status_id]))
 
 
 ## A Web landing once the strikes are done: one web however often the foe was webbed.
@@ -5936,6 +6127,8 @@ func can_reboot(mech_index: int) -> bool:
 		return false   # a Phased machine may: the safe reboot (Ryan, 15 November)
 	if Effects.raging(ms.unit) or (not Effects.rage_piece(ms.unit).is_empty() and ms.heat >= ms.heat_max):
 		return false   # a raging machine reboots only as its heat reaches nothing, and one that would rage never reboots by choice at its maximum (the Nemesis's Rage; Ryan, 23 November: "Nemesis never reboots voluntarily at max heat, yes")
+	if Effects.has(ms.unit, "burrowed"):
+		return false   # a burrower under stays under until it spends its drill (the Mole's): its die is the Drill alone
 	if Effects.one_of_each(ms.unit):
 		return ms.spends <= 1
 	return not ms.assigned and ms.spends == 0
@@ -5961,7 +6154,14 @@ func reboot_mech(mech_index: int) -> bool:
 	last_acts.clear()
 	spend_blows.clear()
 	_shoved.clear()
-	_reboot_now(mechs[mech_index])
+	var ms := mechs[mech_index]
+	if Effects.burrows(ms.unit):
+		_burrow(ms)
+		if not snap.is_empty():
+			history.append(snap)
+		_refresh_allies()
+		return true
+	_reboot_now(ms)
 	if not snap.is_empty():
 		history.append(snap)
 	_refresh_allies()
@@ -5992,6 +6192,11 @@ func _reboot_now(ms: MechState, why: String = "") -> void:
 	var lit := Effects.clear_waiting_jams(ms.unit)
 	if lit > 0:
 		log.append("%s's reboot clears %d jammed entr%s" % [ms.unit.display_name, lit, "y" if lit == 1 else "ies"])
+	# And every corrupted entry heals (Ryan, 23 November: "Corrupted should heal on reboot, just
+	# like jammed").
+	var healed := Effects.clear_corruption(ms.unit)
+	if healed > 0:
+		log.append("%s's reboot heals %d corrupted entr%s" % [ms.unit.display_name, healed, "y" if healed == 1 else "ies"])
 	var vented := ms.heat
 	ms.heat = 0
 	ms.overheated = false
@@ -6059,6 +6264,96 @@ func _rage_cooled(ms: MechState) -> bool:
 	if not ms.rebooting:
 		_reboot_now(ms, "its rage is spent")
 	return true
+
+
+## The burrow, a burrower's reboot (the Mole's; Ryan, 16 November: "Instead of Reboot, it Burrows";
+## "only on a nothing spend"): its whole turn, on a turn it has spent nothing (can_reboot). Its
+## shield is never emptied ("it just doesn't explode its own shield when it does"); what stands
+## past its heat's maximum vents at once, as a reboot's does since 17 November, so nothing burns at
+## its END TURN and it is free to overheat again; a foe's jams light, the reboot's drop. It gains a
+## stack of Conserved Momentum, and its drill comes home with what is left of the Applied Momentum
+## in its foe, back as Conserved ("It returns to the Mole when it burrows, taking the debuff with
+## it"), up to the rule's cap. Burrowed, its armour the rule's, its die rolls the Drill alone
+## (Effects.live_entries), and each turn under opens with the rule's share of what its shield and
+## heat were missing as it burrowed made good (_burrowed_turn).
+func _burrow(ms: MechState) -> void:
+	var rule := Effects.burrow_rule(ms.unit)
+	ms.assigned = true
+	var vented := ms.overheat_stacks()
+	if vented > 0:
+		ms.heat = ms.heat_max
+	ms.overheated = false
+	var lit := Effects.clear_waiting_jams(ms.unit)
+	Effects.clear_corruption(ms.unit)   # the reboot's drop heals corruption as it lights a jam
+	ms.burrow_shield = maxi(0, ms.unit.shield_max - ms.unit.shield)
+	ms.burrow_heat = maxi(0, ms.heat)
+	var back := _recall_drill(ms)
+	var cap := maxi(1, int(rule.get("cap", 3)))
+	var had := Effects.stacks_of(ms.unit, "conserved_momentum")
+	var gain := mini(cap - had, 1 + back)
+	if gain > 0:
+		Effects.stack(ms.unit, Effects.STATUS["conserved_momentum"], Effects.SKIRMISH, "burrow", gain, Effects.DECAY_NONE)
+	Effects.stack(ms.unit, Effects.STATUS["burrowed"], Effects.SKIRMISH, "burrow", maxi(1, int(rule.get("armour", 1))), Effects.DECAY_NONE)
+	var bits: Array[String] = ["Conserved Momentum %d" % Effects.stacks_of(ms.unit, "conserved_momentum")]
+	if back > 0:
+		bits.append("its drill home with %d" % back)
+	if vented > 0:
+		bits.append("heat -%d past its maximum" % vented)
+	if lit > 0:
+		bits.append("%d jammed entr%s lit" % [lit, "y" if lit == 1 else "ies"])
+	log.append("%s burrows: %s" % [ms.unit.display_name, ", ".join(bits)])
+
+
+## The drill a burrower takes back as it burrows: its Drill Out let go, and the Applied Momentum its
+## drill left in a foe still standing taken off it, its stacks returned. 0 when its drill is home, or
+## its foe fell and took the rest with it.
+func _recall_drill(ms: MechState) -> int:
+	Effects.remove(ms.unit, "drill_out")
+	var source := drill_source(ms)
+	var back := 0
+	for f in field_foes():
+		if not f.alive():
+			continue
+		var keep: Array = []
+		for m in f.modifiers:
+			if m.id == "applied_momentum" and m.source == source:
+				back += m.stacks
+				continue
+			keep.append(m)
+		f.modifiers = keep
+	return back
+
+
+## The source a burrower's drill marks its foe with, its own machine's: the recall finds its own.
+static func drill_source(ms: MechState) -> String:
+	return "drill:%d" % ms.unit.id
+
+
+## A turn under, as it opens (the Mole's; Ryan, 16 November: "burrowed clears broken and overheated
+## at the start of each turn while burrowed, just like reboot would"; his set the same day, recovery
+## in two turns: "go with 1 and 2"): Broken and Overheated cleared and the one overheat between
+## reboots free again; the rule's share (half) of what its shield was missing as it burrowed back on
+## it and of the heat it carried then off it, so two turns under is whole and cold and a blow taken
+## under is not mended; a foe's jams lit, as a reboot's drop lights them ("mechanically exactly like
+## using Reboot every turn"); and a stack of Conserved Momentum, up to the cap.
+func _burrowed_turn(ms: MechState) -> void:
+	var rule := Effects.burrow_rule(ms.unit)
+	var share := clampi(int(rule.get("recover", 50)), 1, 100)
+	ms.shield_broken = false
+	ms.overheated = false
+	if ms.heat > ms.heat_max:
+		ms.heat = ms.heat_max
+	var mend := ceili(float(ms.burrow_shield) * float(share) / 100.0)
+	var before := ms.unit.shield
+	ms.unit.shield = mini(ms.unit.shield_max, ms.unit.shield + mend)
+	var cool := mini(ms.heat, ceili(float(ms.burrow_heat) * float(share) / 100.0))
+	ms.heat -= cool
+	Effects.clear_waiting_jams(ms.unit)
+	Effects.clear_corruption(ms.unit)
+	var cap := maxi(1, int(rule.get("cap", 3)))
+	if Effects.stacks_of(ms.unit, "conserved_momentum") < cap:
+		Effects.stack(ms.unit, Effects.STATUS["conserved_momentum"], Effects.SKIRMISH, "burrow", 1, Effects.DECAY_NONE)
+	log.append("%s is burrowed: shield +%d, heat -%d, Conserved Momentum %d" % [ms.unit.display_name, ms.unit.shield - before, cool, Effects.stacks_of(ms.unit, "conserved_momentum")])
 
 
 ## A reboot's recovery, as the round after it opens: the shield whole, and the machine free to
@@ -6464,9 +6759,10 @@ func _fall_with_cores() -> void:
 			log.append("%s falls, and its parts with it" % core.display_name)
 
 
-## A blow the spend under way landed on `foe`, for the screen (spend_blows).
-func _note_blow(foe: Foe, strike: int, taken: int, kind: String) -> void:
-	spend_blows.append({"foe": foe, "strike": strike, "taken": maxi(0, taken), "hp": foe.hp, "kind": kind})
+## A blow the spend under way landed on `foe`, for the screen (spend_blows); `weapon` false for
+## equipment's hit, which deals nothing of its own.
+func _note_blow(foe: Foe, strike: int, taken: int, kind: String, weapon: bool = true) -> void:
+	spend_blows.append({"foe": foe, "strike": strike, "taken": maxi(0, taken), "hp": foe.hp, "kind": kind, "weapon": weapon})
 
 
 ## The pack a foe fights for, or null (a test's foes come from none).

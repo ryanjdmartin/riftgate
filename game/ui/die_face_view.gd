@@ -13,7 +13,7 @@ extends Control
 ##
 ## Gestures (the skirmish's, Ryan, 30 October):
 ##   tap         -> `tapped`          read the die: its readout opens, or closes
-##   double-tap  -> `double_tapped`   lock or unlock
+##   double-tap  -> `double_tapped`   the whole die (the screen opens it)
 ##   hold        -> `held` / `hold_released`   lock or unlock
 ##   drag        -> `drag_started` / `drag_moved(pos)` / `drag_ended(pos)`   spend the face on a target
 ## With `confirm_taps` a tap lands only once the double-tap window has passed with no second tap,
@@ -84,6 +84,12 @@ var face: Face = null
 var shown_number: String = ""   # what the blow will deal now, or against the foe it is held over (10 October)
 var corrupted: int = 0       # Corrupted stacks on the entry showing: a chip in the enemy's colour, with the count
 var dark: int = 0            # a dark entry (a cooldown, a foe's jam): the rounds it has left, this one included, its clock along the foot
+## A dark entry's own face (Ryan, 23 November: "Cooldown, rapid, and jam shouldn't replace the face
+## with an X, they should have effects they apply on top of the face"): drawn dimmed under the
+## dark's veil, which carries its clock; null draws the stand-in's cross.
+var under: Face = null
+var jammed: bool = false     # the dark is a foe's jam, not a cooldown or Rapid's own switch-off
+var _veiled := false         # drawing `under` beneath the veil this frame
 var cooldown: int = -1       # the rounds a spend darkens it, its machine's passives in (Skirmish.cooldown_of); -1 reads the entry's own
 var next_face: Face = null   # a stepping die's next chamber (the Cassowary's), in the passive box at the rail's foot; null for a die that rolls
 var next_number: String = "" # the blow that next entry will deal now, as the screen reads it (Skirmish.shown_number_text); "" reads its own
@@ -295,12 +301,54 @@ static func draw_chevrons(ci: CanvasItem, top: Vector2, n: int, ink: Color, scal
 
 
 func _draw() -> void:
+	var real := face
+	var veil := real != null and real.disabled and under != null and not dead
+	if veil:
+		face = under
+		_veiled = true
+	_draw_face()
+	face = real
+	_veiled = false
+	if veil:
+		_draw_veil()
+
+
+## The veil over a dark entry's own face: dark stripes across it, a foe's jam's in the red-red and
+## heavier, and a plate at the middle with its mark and what ends it, its rounds left or the
+## reboot's mark for a jam that waits on one. Hot, for the phone.
+const VEIL_STRIPE := 14.0
+func _draw_veil() -> void:
+	var bob := sin(_t * 1.6 + _phase) * BOB_PX if animate else 0.0
+	var rect := Rect2(Vector2(0, bob), Vector2(FACE, FACE)).grow(-3.0)
+	var col := Palette.LOSS if jammed else Palette.INK
+	# Stripes at 45 degrees, clipped to the face's square by their ends.
+	var k := -FACE
+	while k < FACE:
+		var a := Vector2(rect.position.x + maxf(0.0, k), rect.position.y + maxf(0.0, -k))
+		var b := Vector2(rect.position.x + minf(rect.size.x, k + rect.size.y), rect.position.y + minf(rect.size.y, rect.size.x - k))
+		if b.x > a.x:
+			draw_line(a, b, Color(col, 0.24 if jammed else 0.14), 5.0 if jammed else 4.0)
+		k += VEIL_STRIPE
+	# The plate sits on the foot, over the costs a dark entry cannot pay anyway, so the face's
+	# mark and number stay in view.
+	var reboot := dark >= Effects.DARK_REBOOT
+	var count := "" if reboot or dark <= 0 else str(dark)
+	var font := Hud.display_bold()
+	var w := 34.0 + (font.get_string_size(count, HORIZONTAL_ALIGNMENT_LEFT, -1, 22).x + 4.0 if not count.is_empty() else 0.0)
+	var plate := Rect2(Vector2(FACE * 0.5 - w * 0.5, rect.end.y - 38.0), Vector2(w, 32.0))
+	Hud.box(self, plate, 5.0, Color(Palette.BG, 0.95), col, 2.5)
+	Glyphs.draw(self, "shield_vent" if reboot else "cooldown", plate.position + Vector2(17.0, 16.0), 20, col, 2.4)
+	if not count.is_empty():
+		draw_string(font, Vector2(plate.position.x + 32.0, plate.end.y - 8.0), count, HORIZONTAL_ALIGNMENT_LEFT, -1, 22, col)
+
+
+func _draw_face() -> void:
 	var bob := sin(_t * 1.6 + _phase) * BOB_PX if animate else 0.0
 	var rect := Rect2(Vector2(0, bob), Vector2(FACE, FACE))
 	if _wobble >= 0.0 and _shear != null:
 		_shear.set_slices(_wobble_slices(bob))
 	var hud := Palette.HUD
-	var alpha := 0.35 if spent else 1.0
+	var alpha := 0.35 if spent else (0.6 if _veiled else 1.0)
 	var border := Color(hud, alpha)
 	var fill := Palette.PANEL
 	if dead:
@@ -575,6 +623,8 @@ func rail_tags() -> Array[String]:
 			tags.append(Face.KEYWORD_NAMES[k])
 	if face.has_unique_rule() and inside != "star":
 		tags.append("star")      # a rule printed on the entry: the hold reads it out
+	if not offhand.is_empty() and face.is_attack():
+		tags.append("offhand")   # its offhand's rider, a chip on the entry (the Macaque's; Ryan, 19 November: "a unique (star) effect attached to weapons and equipment that target foes"; 22 November: on the face, not the passive box)
 	if not form_mark.is_empty():
 		tags.append(form_mark)   # it seals its machine, or opens it (the Polar Bear's, 2 November)
 	if corrupted > 0 and face.kind != Face.Kind.BLANK:
@@ -646,8 +696,6 @@ func passive_marks() -> Array:
 			out.append(["ricochet", "+%d" % ricochet, Glyphs.colour_for("ricochet")])   # a strike of 1 more a stack after each shot (the Skua's)
 		if parry > 0 and face.is_weapon():
 			out.append(["spin", "+%d" % parry, Glyphs.colour_for("parry")])   # the Parry's return on its next strike alone (Ryan, 19 November: "next strike")
-		if not offhand.is_empty() and face.is_attack():
-			out.append(["star", "", Glyphs.colour_for("offhand")])   # its offhand's rider (the Macaque's; Ryan, 19 November: "a unique (star) effect attached to weapons and equipment that target foes")
 		if zap_cost > 0 and face.is_weapon():
 			out.append(["shield", "-%d" % zap_cost, Palette.SHIELD])   # the shield its zap pays, by the shield's mark in its colour (the Buzzard's); the blow it buys is in the number
 	if next_face != null:

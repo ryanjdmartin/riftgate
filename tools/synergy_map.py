@@ -96,8 +96,8 @@ KEYWORDS = {
 }
 # A face field and what it sets or reads.
 FACE_FIELDS = {
-    "braces": [("braced", "sets")], "fills_hopper": [("hopper", "sets")],
-    "fires_hopper": [("hopper", "reads")], "detonates": [("mine", "reads")],
+    "braces": [("braced", "sets")],
+    "empties_hopper": [("hopper", "reads")], "detonates": [("mine", "reads")],
     "gathers_mines": [("mine", "reads")], "vents_all": [("heat", "reads")], "power_per_heat": [("heat", "reads")],
     "spends_shield": [], "power_per_shield": [],   # the Shield-burner Cannon's whole shield into the shot (18 November): no currency of this map's
     "power_per_missing": [("missing_hp", "reads")], "finisher": [("missing_hp", "reads")],
@@ -240,7 +240,7 @@ class Map:
                         self.add(cur, how, p)
             for k, v in f.items():
                 if k in ("kind", "reach", "power", "keywords", "heat", "targets", "status", "stacks", "rounds",
-                         "ablate", "brittle", "cryo", "cleave", "penetrate", "gates", "consumes", "per_consumed", "per_heat", "per_missing", "power_per_load", "per_shield"):
+                         "ablate", "brittle", "cryo", "cleave", "penetrate", "gates", "consumes", "per_consumed", "per_heat", "per_missing", "per_shield"):
                     continue
                 if k not in FACE_FIELDS:
                     self.unmapped.append("%s: face field %s" % (e["name"], k))

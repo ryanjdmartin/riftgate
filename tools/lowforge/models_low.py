@@ -1788,8 +1788,8 @@ def wild_boar(b):
 wild_boar.maker = "minerva"
 
 
-# The Mole (TB-2FAB Tunnel Borer): Minerva's burrowing drill tank, a planned draft in content until
-# its session hands it back (docs/briefs/minerva_mole.md), modelled from its fifth look round
+# The Mole (TB-2FAB Tunnel Borer): Minerva's burrowing drill tank, its kit built 20 November (its
+# brief, retired: git show f6f11185:docs/briefs/minerva_mole.md), modelled from its fifth look round
 # (tools/lowforge/looks/mole_looks.py, docs/looks/minerva_mole5.png) so it can be judged moving
 # (Ryan, 17 November: "I think I need to see the model animated in the hangar to judge").
 MOLE_TX, MOLE_TW, MOLE_TH = 18.0, 12.5, 16.0        # the treads: centre across, width, height
@@ -2254,8 +2254,8 @@ def mole(b):
     drill hard, the ring's lower rim in the ground (the dig-in Claude's addition, the way the
     Thunderbirds' Mole goes in: his to strike). The Inertia Drill fires as a launch: the tip spins
     up, leaves the throat and dives into the ground ahead, tunnelling, as an Indirect drill does,
-    while the bore stands empty; the form "drill_out" holds it empty until a burrow docks the tip
-    (the firing act alone still slides it home after, until the kit marks the drill out)."""
+    while the bore stands empty; the form "drill_out", which the kit lays as the Drill is spent and
+    the game holds once the firing slice lands, keeps it empty until a burrow docks the tip."""
     TX, TW, TH, CZ = MOLE_TX, MOLE_TW, MOLE_TH, MOLE_CZ
     REST = 22.0   # the louvres' rest, degrees out of the face
     for s in (-1.0, 1.0):   # the treads, chamfered both ends, a skirt over each with a hazard tip forward
@@ -2421,13 +2421,15 @@ def mole(b):
           body=shudder(1.0, 3.4, 0.35, sink=-0.4))
     # The Inertia Drill's firing, from the burrow or out of it (Indirect, so from wherever it is): the
     # tip spins up three turns as the hull braces, leaves the throat as the launch takes it (the tip
-    # here run back into the bore the same moment, so the bore stands empty), the hull kicked back
-    # nose up and settling, and the tip slid home a beat later.
+    # here run back into the bore the same moment, so the bore stands empty), and the hull kicked back
+    # nose up and settling. The bore stays empty to the act's end: in the game the drill stays in its
+    # foe until the next burrow, and the form "drill_out" holds it so once the slice lands (the kit
+    # of 20 November; the slide home a beat later was its stand-in until then).
     fire = {
         "drill_rev": [(round(T_LAUNCH * k / 10.0, 3), round(1080.0 * (k / 10.0) ** 2, 2)) for k in range(11)] + [(3.0, 1080.0)],
         "ring_rev": [(round(T_LAUNCH * k / 10.0, 3), round(-360.0 * (k / 10.0) ** 2, 2)) for k in range(11)] + [(3.0, -360.0)],
         "drill_seat": [slide(0.0), slide(T_LAUNCH - 0.12, dy=-1.0), slide(T_LAUNCH, dy=-1.6), slide(T_LAUNCH + 0.06, dy=-24.0),
-                       slide(2.0, dy=-24.0), slide(2.9)],
+                       slide(3.2, dy=-24.0)],
     }
     kick = [(0.2, 0.0, 0.0, 0.0), (0.6, 0.0, 0.0, -0.6, 0.0, -0.8, 0.0), (T_LAUNCH, 0.0, 0.0, -0.6, 0.0, -0.8, 0.0),
             (T_LAUNCH + 0.12, 0.0, -2.4, 0.2, 0.0, 1.8, 0.0), (1.5, 0.0, -0.5, 0.0, 0.0, 0.3, 0.0), (2.4, 0.0, 0.0, 0.0)]
@@ -2492,8 +2494,8 @@ def mole(b):
     # toggle, and the burrow animation will need to show the docking if the drill is out"): the bore
     # empty, the tip run back out of sight in it. A burrow lets it go, so as the machine digs the tip
     # comes home along the bore turning a turn, past its seat a hair and back, docked before the drill
-    # revs; held, it lets the burrow go, as the Drill's firing brings it up. The firing act itself
-    # still slides the tip home after it flies, until the kit marks the machine while its drill is out.
+    # revs; held, it lets the burrow go, as the Drill's firing brings it up. The kit lays it as the
+    # Drill is spent (Skirmish._drill), and the game holds it once the firing slice has landed.
     DOCK = 0.8
     b.form("drill_out", DOCK, {"drill_seat": [slide(0.0), slide(0.15, dy=0.8), slide(DOCK, dy=-24.0)], "drill_rev": [(0.0, 0.0), (DOCK, -360.0)]},
            releases=["burrowed"])
@@ -7115,6 +7117,7 @@ def macaque(b):
                 _beam(b, wing[0], wing[1], _mq_cs(1.6, 1.4, 0.3), _mq_cs(1.2, 1.0, 0.2), "livery.livery", label + "_edge")
     waist.__exit__(None, None, None)
     _macaque_motion(b, legs)
+    b.stand = 0.7   # fitted by its height it stood twice the wide mediums' (Ryan, 22 November: "The macaque needs to be smaller")
 
 macaque.maker = "aphelion"
 

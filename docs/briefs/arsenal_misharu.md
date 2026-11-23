@@ -12,7 +12,7 @@ two holes, which fight each other.
 **Status**: proposal with a place; the payoff decided as Penance (Ryan, 14 October); in session
 since 15 October (Claude's first round and its review, below; Ryan has answered none of it).
 **Maker**: the Arsenal. **Proposed tier**: two. **Read first**: `docs/briefs/README.md`; "The
-design as proposed" below, with its first Penance; `docs/roster_analysis.md` section 4; the
+design as proposed" below, with its first Penance; `git show a95e0a1f:docs/roster_analysis.md`, section 4; the
 bible's shield rule and its Barrier and Ward row (section 5), and its row on the Arsenal's next
 chassis (section 7).
 

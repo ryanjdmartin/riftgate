@@ -172,6 +172,25 @@ func test_the_validator_holds_a_branch_to_a_tweak_of_a_locked_piece() -> void:
 				assert_eq(real.make_mech(str(cid), 1, Vector2i.ZERO, null, [], b).branches.size(), (b as Array).size(), "%s builds with %s" % [cid, str(b)])
 
 
+## A direction back in design (the Mole's tree, Ryan, 20 November: "Send the Mole's current
+## Upgrade tree back to design"): a planned draft, kept in content and validated whatever its depth,
+## and never offered: no pick takes it, and the builds list it nowhere.
+func test_a_planned_direction_is_kept_and_never_offered() -> void:
+	var db := _db(2)
+	db.chassis["test_frame"]["branches"][0]["status"] = "planned"
+	db.chassis["test_frame"]["branches"][0]["steps"].append({"description": "Guard two.", "effects": [{"trigger": "static", "effect": "grant_keyword", "value": "cleave", "entry": "test_lure"}]})
+	var errs: Array[String] = []
+	db._validate_branches("chassis test_frame", db.chassis["test_frame"], errs)
+	assert_eq(errs, [] as Array[String], "a planned direction two steps deep on a tier two validates: its depth waits on its session")
+	assert_false(db.branch_error("test_frame", ["guard"]).is_empty(), "no pick takes it")
+	assert_eq(db.branch_error("test_frame", ["spark"]), "", "the other stands")
+	assert_eq(db.branch_builds("test_frame"), [[], ["spark"]], "the builds list it nowhere")
+	db.chassis["test_frame"]["branches"][0]["status"] = "cut"
+	var bad: Array[String] = []
+	db._validate_branches("chassis test_frame", db.chassis["test_frame"], bad)
+	assert_false(bad.is_empty(), "a direction's status is planned or nothing")
+
+
 ## A step may tweak as many pieces as it needs (Ryan, 19 November: "Things that limit design space
 ## should never be a rule"): one on the passive and a locked piece at once validates, rides the
 ## passive, each effect still on its own piece, and its line stands under the passive in the codex.

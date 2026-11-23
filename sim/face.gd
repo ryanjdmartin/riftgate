@@ -171,9 +171,7 @@ var spends_up_to: int = 0     # ...the most it spends, and so the most it grants
 var passes_heat: bool = false  # a buff on an ally: its machine's whole heat, its overheat with it, passes onto the ally it is spent on, past that ally's maximum too...
 var heat_per_stack: int = 0    # ...and the ally gains a stack of its status for every this many heat passed, rounded down (2); buff_stacks holds what it would grant now on the die as shown (Skirmish.shown_face)
 var holds_all: String = ""    # any entry: once it is spent, no unit's stacks of this status run down at this round's end, either side's (Skirmish.round_holds)
-var fills_hopper: int = 0     # an attack: loads it puts in its machine's hopper for each foe its blows reach (the Chainsaw Claw, 11 October)
-var fires_hopper: int = 0     # an attack: the most loads one shot fires from the hopper...
-var power_per_load: int = 0   # ...each adding this to the blow (the Bullion Fragmenter, 11 October)
+var empties_hopper: bool = false   # an attack: spent, it empties its machine's hopper and strikes once for every Ore it empties, a dead entry while the hopper is empty; it puts no Ore in (the Bullion Fragmenter, Ryan, 20 November)
 var braces: int = 0           # any entry: spending it Armours its owner, this many stacks, until its side's next turn begins (the Breaching Plow, 12 October)
 var cooldown: int = -1        # any entry: the rounds it sits out once spent, after the round of the spend (Ryan, 14 October; counted so since 12 November: "change the count so 1 is how I intended"), printed on it; -1 or 0, none (Rapid's own switch-off is the keyword's, never printed)
 var team_rerolls: int = 0     # equipment: spending it gives the team this many rerolls this round, at once and past the round's two (the Reveille Horn, the Immelmann Booster; Ryan, 15 November, in the place of the Rallied buff: "This doesn't need to be a temporary buff or a keyword")
@@ -381,7 +379,6 @@ static func from_dict(d: Dictionary) -> Face:
 		f.power_per_missing = maxi(0, int(d.get("power_per_missing", 0)))
 		f.per_missing = maxi(1, int(d.get("per_missing", 20)))
 		f.finisher = maxi(0, int(d.get("finisher", 0)))
-		f.fills_hopper = maxi(0, int(d.get("fills_hopper", 0)))
 		f.ablate = maxi(0, int(d.get("ablate", 0)))   # add_keyword gives an Ablate entry one stack when it says none
 		f.cryo = maxi(0, int(d.get("cryo", 0)))
 		f.brittle = maxi(0, int(d.get("brittle", 0)))
@@ -400,8 +397,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.ignores_armour = d.get("ignores_armour", false) is bool and d.get("ignores_armour", false)
 		f.swaps = d.get("swaps", false) is bool and d.get("swaps", false)
 		f.webs = d.get("webs", false) is bool and d.get("webs", false)
-		f.fires_hopper = maxi(0, int(d.get("fires_hopper", 0)))
-		f.power_per_load = maxi(0, int(d.get("power_per_load", 0))) if f.fires_hopper > 0 else 0
+		f.empties_hopper = d.get("empties_hopper", false) is bool and d.get("empties_hopper", false)
 	f.braces = maxi(0, int(d.get("braces", 0)))
 	f.volatile = maxi(0, int(d.get("volatile", 0)))
 	f.shield_cost = maxi(0, int(d.get("shield_cost", 0)))
@@ -516,11 +512,8 @@ func to_dict() -> Dictionary:
 		d["swaps"] = true
 	if webs:
 		d["webs"] = true
-	if fills_hopper > 0:
-		d["fills_hopper"] = fills_hopper
-	if fires_hopper > 0:
-		d["fires_hopper"] = fires_hopper
-		d["power_per_load"] = power_per_load
+	if empties_hopper:
+		d["empties_hopper"] = true
 	if braces > 0:
 		d["braces"] = braces
 	if cooldown >= 0:
@@ -644,7 +637,7 @@ func acts_again() -> bool:
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or spends_shield or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or self_vent > 0 or ignores_armour or swaps or webs or spills or fills_hopper > 0 or fires_hopper > 0 or braces > 0 \
+	return vents_all or spends_shield or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or self_vent > 0 or ignores_armour or swaps or webs or spills or empties_hopper or braces > 0 \
 		or turns_die or team_rerolls > 0 or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
@@ -687,7 +680,7 @@ func is_weapon() -> bool:
 ## effect; the die draws its reach frame with the status mark inside. A gun whose blow is
 ## nothing here (its 5 against armour 5) is no debuff: it prints "0".
 func is_debuff() -> bool:
-	return kind == Kind.ATTACK and power <= 0 and not vents_all and not spends_shield and fires_hopper <= 0 and power_per_missing <= 0
+	return kind == Kind.ATTACK and power <= 0 and not vents_all and not spends_shield and not empties_hopper and power_per_missing <= 0
 
 
 ## Equipment (Ryan, 26 October: "the label for all 4 forms of buff and debuff faces"): a buff,
@@ -789,9 +782,7 @@ func duplicate_face() -> Face:
 	f.swaps = swaps
 	f.webs = webs
 	f.spills = spills
-	f.fills_hopper = fills_hopper
-	f.fires_hopper = fires_hopper
-	f.power_per_load = power_per_load
+	f.empties_hopper = empties_hopper
 	f.braces = braces
 	f.cooldown = cooldown
 	f.turns_die = turns_die
@@ -910,10 +901,8 @@ func rule_phrases() -> Array[String]:
 			out.append(Templates.say("rule.self_ablate", {"status": status_name("ablating_mech"), "n": self_ablate}))
 		if self_vent > 0:
 			out.append(Templates.say("rule.self_vent", {"n": self_vent}))
-		if fills_hopper > 0:
-			out.append(Templates.say("rule.fills_hopper", {"n": fills_hopper}))
-		if fires_hopper > 0:
-			out.append(Templates.say("rule.fires_hopper", {"per_load": power_per_load, "loads": fires_hopper}))
+		if empties_hopper:
+			out.append(Templates.say("rule.empties_hopper"))
 	elif cools_all:
 		out.append(Templates.say("rule.cools_all"))
 	if braces > 0:
@@ -1136,10 +1125,8 @@ func describe() -> String:
 				s += " " + Templates.say("rule.self_ablate", {"status": status_name("ablating_mech"), "n": self_ablate})   # the Stoker's: its own machine set ablating as it fires
 			if self_vent > 0:
 				s += " " + Templates.say("rule.self_vent", {"n": self_vent})   # the Nemesis's Knuckles of Fury: its own machine cooled as it strikes
-			if fills_hopper > 0:
-				s += " " + Templates.say("rule.fills_hopper", {"n": fills_hopper})
-			if fires_hopper > 0:
-				s += " " + Templates.say("rule.fires_hopper", {"per_load": power_per_load, "loads": fires_hopper})
+			if empties_hopper:
+				s += " " + Templates.say("rule.empties_hopper")
 			if braces > 0:
 				s += " " + Templates.say("rule.braces", {"n": braces})
 			if gathers_mines:

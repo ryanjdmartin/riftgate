@@ -456,6 +456,7 @@ func test_the_validator_holds_the_petrels_fields_to_their_kinds() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
 	var base: Dictionary = db.components["twin_autoguns"].duplicate(true)
+	base.erase("basic")   # a synthetic piece of its own tier, never a basic
 	var cases := {
 		"bad_regen": [{"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["lure"], "regenerates": {"status": "regenerating", "stacks": 3}}, "regenerates"],
 		"bad_self_kind": [{"kind": "buff", "status": "overcharged", "self_statuses": [{"status": "hardened"}]}, "self_statuses"],

@@ -543,7 +543,7 @@ func _draw() -> void:
 	if not destinations.is_empty():
 		var reach := destinations.duplicate()
 		if selected != null:
-			reach[shown_hex(selected)] = true
+			reach[selected.pos] = true   # the reach is drawn from its latest waypoint
 		_region_outline(reach, hud, 3.0)
 
 	# A pack the selected machine could be ordered onto, from where its move can take it or where
@@ -566,13 +566,19 @@ func _draw() -> void:
 	# was planned and nothing showed it: Ryan, "I can, but the UI doesnt register it".)
 	if _anim.is_empty() and fight_group.is_empty():
 		var last_piece := {}
+		var first_piece := {}
 		for k in range(plans.size()):
 			last_piece[int(plans[k]["unit"])] = k
+			if not first_piece.has(int(plans[k]["unit"])):
+				first_piece[int(plans[k]["unit"])] = k
 		for k in range(plans.size()):
 			var pc: Dictionary = plans[k]
 			if (pc["path"] as Array).is_empty():
 				continue
-			_route(pc["from"], pc["path"], hud, last_piece[int(pc["unit"])] == k)
+			# A leg after the first runs on from its waypoint, so the route reads as one line.
+			_route(pc["from"], pc["path"], hud, last_piece[int(pc["unit"])] == k, first_piece[int(pc["unit"])] == k)
+			if last_piece[int(pc["unit"])] != k:
+				_waypoint_mark((pc["path"] as Array)[(pc["path"] as Array).size() - 1], hud)
 			for rd in pc["riders"]:
 				Hud.stroke_poly(self, MapOrient.corners(center(rd[3]), HEX_SIZE - _px(6.0)), Color(hud, 0.8), _px(2.5))
 
@@ -704,8 +710,6 @@ func _draw() -> void:
 			if on != null:
 				_queue_number(center(on.pos) + Vector2(-HEX_SIZE * 0.62, -HEX_SIZE * 0.55), k + 1)
 
-	_draw_caches()
-	_draw_wrecks()
 	_draw_field_units(map)
 	for prey in hunted.keys():
 		_hunted_tag(prey, hunted[prey])
@@ -876,28 +880,29 @@ var inspected := Vector2i(-9999, -9999)
 const CACHE_TOKEN := 3.0   # a cache's token, in screen pixels a texel at zoom 1: a little over a foe's (2.6), hot for the phone
 const CHEST := 26.0        # the chest's plate on screen, held at every zoom (36 at first; Ryan, 10 November: "Loot chest icons can be smaller")
 
-func _draw_caches() -> void:
-	if field == null or field.caches.is_empty():
-		return
+## One cache on its hex, drawn in the field's order down the glass (_draw_field_units), so the
+## rift's shell above it never covers its chest (Ryan, 23 November).
+func _draw_cache(c: Dictionary) -> void:
 	var db := ContentDB.load_default()
 	_map_space()
-	for c in field.caches:
-		var h: Vector2i = c["pos"]
-		var at := center(h)
-		var t := int(c.get("tier", 1))
-		var a := 0.45 if field.unit_at(h) != null or field.wreck_at(h) != null else 1.0
-		var kind := db.loot_kind_of_tier(t)
-		if _map3d == null or not Map3D.has_cache_model(kind):
-			_chest(at, t, a, CHEST * 1.3)
-			continue
-		# The token over the painting, by how much of the hex the painting has (the model's own
-		# sinking is Map3D's, by the same threshold).
-		var flat := 1.0 - _solid_at(h)
-		var tex := Sprites.map_cache(kind)
-		if flat > 0.02 and tex != null:
-			var ts := tex.get_size() * CACHE_TOKEN
-			draw_texture_rect(tex, Rect2((at - Vector2(ts.x * 0.5, ts.y - SPRITE_FEET)).floor(), ts), false, Color(1, 1, 1, flat * a))
-		_chest(at + Vector2(0.0, -HEX_SIZE * 0.86), t, a, CHEST)
+	var h: Vector2i = c["pos"]
+	var at := center(h)
+	var t := int(c.get("tier", 1))
+	var a := 0.45 if field.unit_at(h) != null or field.wreck_at(h) != null else 1.0
+	var kind := db.loot_kind_of_tier(t)
+	if _map3d == null or not Map3D.has_cache_model(kind):
+		_chest(at, t, a, CHEST * 1.3)
+		_map_space()
+		return
+	# The token over the painting, by how much of the hex the painting has (the model's own
+	# sinking is Map3D's, by the same threshold).
+	var flat := 1.0 - _solid_at(h)
+	var tex := Sprites.map_cache(kind)
+	if flat > 0.02 and tex != null:
+		var ts := tex.get_size() * CACHE_TOKEN
+		draw_texture_rect(tex, Rect2((at - Vector2(ts.x * 0.5, ts.y - SPRITE_FEET)).floor(), ts), false, Color(1, 1, 1, flat * a))
+	_chest(at + Vector2(0.0, -HEX_SIZE * 0.86), t, a, CHEST)
+	_map_space()
 
 
 ## The wrecks (Battlefield.wrecks; the model is Map3D's, seen in both worlds as a machine is):
@@ -909,11 +914,10 @@ const WRECK_SMOKE := Color(0.72, 0.72, 0.74)
 const WRECK_PUFFS := 5
 const WRECK_RISE_S := 2.8      # seconds a puff takes to rise and go
 
-func _draw_wrecks() -> void:
-	if field == null or field.wrecks.is_empty():
-		return
+## One wreck's mark and its smoke, in the field's order down the glass (_draw_field_units).
+func _draw_wreck(u: Unit) -> void:
 	_map_space()
-	for u in field.wrecks:
+	if true:
 		var at := center(u.pos)
 		if _map3d == null:
 			var pts := MapOrient.corners(at, HEX_SIZE * 0.62)
@@ -1511,12 +1515,16 @@ func _shell_walls(map: BattleMap) -> Array:
 			var pair: Array = []   # the two corners nearest the neighbour: the edge between them
 			var order := range(6)
 			order.sort_custom(func(x: int, y: int) -> bool: return corners[x].distance_to(nc) < corners[y].distance_to(nc))
-			pair = [corners[order[0]], corners[order[1]]]
+			pair = [corners[order[0]], corners[order[1]], nc]
 			mine.append(pair)
 		# Round the rift the way the hexes run: each hex's edges by their bearing from the mouth.
 		mine.sort_custom(func(x: Array, y: Array) -> bool: return ((x[0] + x[1]) * 0.5 - c).angle() < ((y[0] + y[1]) * 0.5 - c).angle())
 		for pair in mine:
-			var e := {"a": pair[0], "b": pair[1], "plate": i, "along": along, "y": maxf((pair[0] as Vector2).y, (pair[1] as Vector2).y)}
+			# Its place down the glass halfway between its hex's middle and the neighbour's outside it
+			# (23 November: keyed by its lower end, a slanting stretch drew over what stood in the
+			# hex beside and below it): what is inside stands behind it, what is outside below it in
+			# front.
+			var e := {"a": pair[0], "b": pair[1], "plate": i, "along": along, "y": (c.y + (pair[2] as Vector2).y) * 0.5}
 			along += (pair[0] as Vector2).distance_to(pair[1])
 			out.append(e)
 	return out
@@ -1527,6 +1535,11 @@ func _shell_walls(map: BattleMap) -> Array:
 ## front.
 func _draw_field_units(map: BattleMap) -> void:
 	var items: Array = []
+	# Caches and wrecks first at a row, the units standing over them; each in its hex's place.
+	for c in field.caches:
+		items.append([center(c["pos"]).y - 0.02, c])
+	for w in field.wrecks:
+		items.append([center(w.pos).y - 0.01, w])
 	for u in field.units:
 		items.append([_unit_center(u).y, u])
 	var now := _shell_now()
@@ -1540,9 +1553,14 @@ func _draw_field_units(map: BattleMap) -> void:
 	items.sort_custom(func(x: Array, y: Array) -> bool: return float(x[0]) < float(y[0]))
 	for it in items:
 		if it[1] is Unit:
-			_draw_unit(it[1])
-		else:
+			if field.wrecks.has(it[1]):
+				_draw_wreck(it[1])
+			else:
+				_draw_unit(it[1])
+		elif (it[1] as Dictionary).has("plate"):
 			_draw_wall(it[1], now, mouth)
+		else:
+			_draw_cache(it[1])
 
 
 ## One stretch of the wall: its face from the ground to its faux height, a pale cap along its top
@@ -1887,6 +1905,17 @@ func _contact_effect(h: Vector2i, lit: bool, _at_base: bool = false) -> void:
 ## hex rather than its centre, so it never draws across the machine or the pack. `lock`
 ## puts the target on its end: the display's rings turning and a dashed border crawling
 ## round the hex.
+## A waypoint before a route's end (Ryan, 22 November: "Waypoints stay lit"): the hex filled and
+## edged heavy, with a ring at its middle, so it reads apart from the reach's cells by structure
+## (the reach is a fill alone) and from the end's lock (rings that breathe). Hot, for the phone.
+func _waypoint_mark(h: Vector2i, col: Color) -> void:
+	var c := center(h)
+	draw_colored_polygon(MapOrient.corners(c, HEX_SIZE - _px(2.0)), Color(col, 0.45))
+	Hud.stroke_poly(self, MapOrient.corners(c, HEX_SIZE - _px(4.0)), col, _px(4.0))
+	draw_arc(c, HEX_SIZE * 0.3, 0.0, TAU, 24, col, _px(4.0))
+	draw_circle(c, HEX_SIZE * 0.1, col)
+
+
 func _route(from: Vector2i, path: Array, col: Color, lock: bool, from_edge: bool = true, breathe: bool = true, edged: bool = false) -> void:
 	# A machine's route leaves from its hex's edge, so it never crosses the machine; a
 	# pack's comes out of the sprite (Ryan, 29 September). An edged route (the enemy's)
@@ -2301,7 +2330,8 @@ func focus_on(p: Vector2, z: float) -> void:
 	queue_redraw()
 
 
-## "Badger + Kite vs ghouls ×6 + necromancers ×3": one contact group, in words.
+## "Badger + Kite vs Ghouls + Necromancers": one contact group, in words, no pack's count (Ryan, 23
+## November: "Packs on the map don't need their count numbers").
 static func contact_text(group: Array) -> String:
 	var mechs: Array[String] = []
 	var packs: Array[String] = []
@@ -2309,7 +2339,7 @@ static func contact_text(group: Array) -> String:
 		if u.is_player():
 			mechs.append(str(u.display_name))
 		else:
-			packs.append("%s ×%d" % [u.display_name, u.strength] if u.strength > 0 else str(u.display_name).to_upper())
+			packs.append(str(u.display_name))
 	return " + ".join(mechs) + " vs " + " + ".join(packs)
 
 
@@ -2691,8 +2721,8 @@ func tap_released(h: Vector2i) -> void:
 	if _second:
 		_second = false
 		hex_double_tapped.emit(h)
-	elif unit_at_shown(h) != null:
-		_land_tap()   # a tap still waiting elsewhere lands first, in order
+	elif unit_at_shown(h) != null or (field != null and not field.cache_at(h).is_empty()):
+		_land_tap()   # a tap still waiting elsewhere lands first, in order; a cache waits too, its double-tap its codex
 		_tap_hex = h
 		_tap_due = Time.get_ticks_msec() / 1000.0 + DOUBLE_TAP_SECONDS
 		queue_redraw()

@@ -18,7 +18,7 @@ signal held
 signal hold_released
 
 const HOLD_SECONDS := 0.45
-const DOUBLE_TAP_SECONDS := 0.35
+const DOUBLE_TAP_SECONDS := DieFaceView.DOUBLE_TAP_SECONDS   # a die's window, the one every double-tap in a fight waits (Ryan, 23 November: "Codex views need the same double-tap delay as other double taps, like the die face")
 const STATUS_H := 38.0
 const CHIP_H := 30.0
 const CHIP_GLYPH := 18.0
@@ -36,6 +36,30 @@ const RIDER_GLYPH := 16.0  # a rider's mark inside the intent chip
 const RIDER_TEXT := 14
 const RIDER_PAD := 6.0     # before a rider: its divider's room
 const ACT_RATE := 9.0      # the acting foe's breath, radians a second: quick, it is happening now
+## How a status chip carries its number (Ryan, 22 November: "In StS for instance, the number is
+## overlayed on the bottom of the chip ... alternate chip designs that let us incorporate numbers
+## in a way that isn't just directly to the right at full size"): "corner", a square tile with its
+## number over the bottom-right corner on a dark outline; "tab", a square tile with its number on a
+## small solid plate at that corner; "classic", the number at full size to the glyph's right. A
+## debug build's CHIP STYLE (Settings), or RIFTGATE_CHIP_STYLE on any run; the first the default.
+const CHIP_STYLES := ["corner", "tab", "classic"]
+const TILE := 36.0          # a square chip's side
+const TILE_GLYPH := 24.0    # its glyph, larger than the classic chip's
+const TILE_TEXT := 18       # its number over the corner
+const TILE_ROW_GAP := 8.0   # between two rows of square chips: the corner's number and the wedges stand past the edge
+const TAB_TEXT := 14        # the tab's number, on its plate
+## A foe's intent stands above it, apart from its chips (Ryan, 22 November: "move intents to above
+## the enemy unit, be a bit larger, and be either shaped or styled differently than the chips, to
+## stand out"), larger: a dark plate edged in the intent's colour, its glyph and number in it, each
+## rider after a divider in its own colour, its bottom level with the floating gauge's (the same
+## day: "I like the black background, no arrow. Move it up so the bottom is flush with the bottom
+## of the HP bar").
+const INTENT_H := 40.0
+const INTENT_GLYPH := 26.0
+const INTENT_TEXT := 26
+const INTENT_PAD := 7.0
+const INTENT_RIDER_GLYPH := 18.0
+const INTENT_RIDER_TEXT := 18
 
 var display_name: String = ""     # for the codex and readouts; never drawn here
 var is_enemy: bool = false
@@ -109,6 +133,16 @@ var _pressed := false
 var _press_at := 0.0
 var _holding := false
 var _last_tap_at := -10.0
+var _second := false              # this touch came inside the double-tap window
+var _tap_due := -1.0              # when a tap waiting out the window lands; negative for none
+
+
+## A tap waiting out the double-tap window lands now, if one is waiting.
+func _land_tap() -> void:
+	if _tap_due < 0.0:
+		return
+	_tap_due = -1.0
+	tapped.emit()
 var _t := 0.0
 
 
@@ -273,18 +307,22 @@ func _gui_input(event: InputEvent) -> void:
 			_pressed = true
 			_holding = false
 			_press_at = Time.get_ticks_msec() / 1000.0
+			_second = _press_at - _last_tap_at <= DOUBLE_TAP_SECONDS   # the window runs from the last tap's release to this touch, as a die's
 			set_process(true)
 		else:
 			if _holding:
 				hold_released.emit()
 			elif _pressed:
 				var now := Time.get_ticks_msec() / 1000.0
-				if now - _last_tap_at <= DOUBLE_TAP_SECONDS:
+				if _second:
+					_second = false
 					_last_tap_at = -10.0
+					_tap_due = -1.0   # the double-tap stands in for its first tap
 					double_tapped.emit()
 				else:
 					_last_tap_at = now
-					tapped.emit()
+					_land_tap()
+					_tap_due = now + DOUBLE_TAP_SECONDS   # a tap lands once the window has passed, so a double-tap never shows a tap's work
 			_pressed = false
 			_holding = false
 			# The loop stops itself once nothing plays: stopped here, a tear or a dropped signal
@@ -294,8 +332,11 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
+	if _tap_due >= 0.0 and not _pressed and Time.get_ticks_msec() / 1000.0 >= _tap_due:
+		_land_tap()
 	if _pressed and not _holding and Time.get_ticks_msec() / 1000.0 - _press_at >= HOLD_SECONDS:
 		_holding = true
+		_tap_due = -1.0
 		held.emit()
 	if _shatter >= 0.0:
 		_shatter += delta
@@ -330,7 +371,7 @@ func _process(delta: float) -> void:
 	if (_has_pending() or breathe or acting) and visible and not dead:
 		_t += delta
 		queue_redraw()
-	elif not _pressed and _shatter < 0.0 and _ripple < 0.0 and _acquire < 0.0 and _glitch < 0.0 and _spend < 0.0 and _shift < 0.0:
+	elif not _pressed and _tap_due < 0.0 and _shatter < 0.0 and _ripple < 0.0 and _acquire < 0.0 and _glitch < 0.0 and _spend < 0.0 and _shift < 0.0:
 		set_process(false)
 
 
@@ -633,7 +674,7 @@ func _draw() -> void:
 			# One small gauge floating above the drawing's top-right, with a leader dropping
 			# from a third of the way along its underside, diagonally down-left onto the sprite.
 			# On acquire the leader draws itself.
-			var bx := minf(vis.end.x - 10.0, size.x - FLOAT_BAR_W - 2.0)
+			var bx := _float_x()
 			var y := vis.position.y - FLOAT_LIFT
 			var from := Vector2(bx + FLOAT_BAR_W / 3.0, y + BAR_H)
 			var reach := 1.0 if _acquire < 0.0 else clampf(_acquire / (ACQUIRE_SECONDS * 0.6), 0.0, 1.0)
@@ -651,32 +692,35 @@ func _draw() -> void:
 	if not intent.is_empty() and not dead and sprite == null and intent_kind.is_empty():
 		draw_string(mono, Vector2(0, sil.get_center().y + 5.0), "[%s]" % intent, HORIZONTAL_ALIGNMENT_CENTER, size.x, 13, Color(hud, 0.45 if intent_dim else 0.95))
 
-	# The chips under the drawing: intent first, then statuses, centred in rows that wrap at the
-	# view's width (Ryan, 2 November: "chips can go off the sides of the screen if there are too
-	# many ... Need to wrap rows"), each row kept on the screen (chip_layout).
+	# The chips under the drawing, the statuses, centred in rows that wrap at the view's width
+	# (Ryan, 2 November: "chips can go off the sides of the screen if there are too many ... Need
+	# to wrap rows"), each row kept on the screen (chip_layout); the intent's plate above it.
 	if dead:
 		return
 	var acq := clampf(_acquire / ACQUIRE_SECONDS, 0.0, 1.0) if _acquire >= 0.0 else 1.0
-	var laid := chip_layout()
-	for k in range(laid.size()):
-		var rect: Rect2 = laid[k][0]
-		var ch: Array = laid[k][1]
+	for laid_chip in chip_layout():
+		var rect: Rect2 = laid_chip[0]
+		var ch: Array = laid_chip[1]
 		_chip_rects[ch[0]] = [rect, ch[2]]
-		var locking: bool = k == 0 and not intent_kind.is_empty() and acq < 1.0
-		var txt: String = ch[1]
+		draw_chip(self, rect, ch, mono)
+	var ir := intent_rect()
+	if ir.size.x > 0.0:
+		var ich := intent_chip()
+		var locking := acq < 1.0
+		var txt: String = ich[1]
 		if locking and acq < SCRAMBLE_PART:
 			txt = Hud.scramble(txt, int(Time.get_ticks_msec() / 45), get_instance_id() % 97)
-		draw_chip(self, rect, ch, mono, txt)
+		draw_intent(self, ir, ich, mono, txt)
 		if locking:
-			# The lock: bracket corners collapsing onto the chip, fading as they land.
-			Hud.brackets(self, rect.grow(2.0 + 18.0 * (1.0 - acq)), 8.0, Color(ch[2], 1.0 - acq * 0.7), 1.5)
+			# The lock: bracket corners collapsing onto the plate, fading as they land.
+			Hud.brackets(self, ir.grow(3.0 + 18.0 * (1.0 - acq)), 10.0, Color(ich[2], 1.0 - acq * 0.7), 2.0)
 	_draw_spend(mono)
 
 
-## The chips under the drawing as they lay out, in order, the intent's first: [[Rect2 in the view,
-## the chip], ...]: rows that wrap at `chip_wrap` (the view's width when none), each centred under
-## the view and held on the screen, the first row just under the drawing. Empty for a dead unit or
-## one with no chips.
+## The chips under the drawing as they lay out, in order: [[Rect2 in the view, the chip], ...]: rows
+## that wrap at `chip_wrap` (the view's width when none), each centred under the view and held on
+## the screen, the first row just under the drawing. Empty for a dead unit or one with no chips. The
+## intent stands apart, above the drawing (intent_rect).
 func chip_layout() -> Array:
 	var out: Array = []
 	if dead:
@@ -684,8 +728,6 @@ func chip_layout() -> Array:
 	var hud := Palette.HUD
 	var mono := Hud.mono()
 	var chips: Array = []
-	if not intent_kind.is_empty():
-		chips.append([Glyphs.intent_for(intent_kind), (str(intent_value) + intent_note) if intent_value > 0 else "", Palette.ENEMY if is_enemy else hud, "intent", intent_riders])
 	for s in statuses:
 		chips.append([s[0], str(s[1]), s[2] if s.size() >= 3 else hud, s[3] if s.size() >= 4 else "status", [], s[4] if s.size() >= 5 else ""])
 	if chips.is_empty():
@@ -694,35 +736,65 @@ func chip_layout() -> Array:
 	for ch in chips:
 		widths.append(chip_width(mono, ch))
 	var rows := chip_rows(widths, chip_wrap if chip_wrap > 0.0 else size.x)
-	var lo := -INF
-	var hi := INF
-	var parent := get_parent() as Control
-	if parent != null:
-		lo = 2.0 - position.x
-		hi = parent.size.x - position.x - 2.0
-	var cy := minf(_visible().end.y + GAP, size.y - 2.0) + CHIP_H * 0.5
-	cy = minf(cy, size.y - CHIP_H * 0.5 - 1.0)
+	var span := _screen_span()
+	var h := chip_h()
+	var cy := minf(_visible().end.y + GAP, size.y - 2.0) + h * 0.5
+	cy = minf(cy, size.y - h * 0.5 - 1.0)
 	for row in rows:
 		var total := 0.0
 		for i in row:
 			total += widths[i] + CHIP_GAP
 		total -= CHIP_GAP
 		var x := floorf((size.x - total) * 0.5)
-		x = clampf(x, lo, maxf(lo, hi - total))
+		x = clampf(x, span.x, maxf(span.x, span.y - total))
 		for i in row:
-			out.append([Rect2(x, cy - CHIP_H * 0.5, widths[i], CHIP_H), chips[i]])
+			out.append([Rect2(x, cy - h * 0.5, widths[i], h), chips[i]])
 			x += widths[i] + CHIP_GAP
-		cy += CHIP_H + ROW_GAP
+		cy += h + row_gap()
 	return out
 
 
-## Where a foe's intent arrow leaves it (Ryan, 9 November: "the lines should come from the intent
-## chip, and always from the intent chip's middle"): the middle of its intent chip, wherever its
-## row lays it, on the screen; the drawing's middle for a unit showing no intent chip.
+## The screen's span in the view's x, inset 2 px: [left, right] (unbounded without a parent).
+func _screen_span() -> Vector2:
+	var parent := get_parent() as Control
+	if parent == null:
+		return Vector2(-INF, INF)
+	return Vector2(2.0 - position.x, parent.size.x - position.x - 2.0)
+
+
+## The intent as its plate draws it ([glyph, text, Color, "intent", riders]), or empty for none.
+func intent_chip() -> Array:
+	if intent_kind.is_empty():
+		return []
+	return [Glyphs.intent_for(intent_kind), (str(intent_value) + intent_note) if intent_value > 0 else "", Palette.ENEMY if is_enemy else Palette.HUD, "intent", intent_riders]
+
+
+## The intent's plate in the view: over the drawing, left of the floating gauge, its bottom level
+## with the gauge's lowest bar, held on the screen; an empty rect for a dead unit or one showing no
+## intent.
+func intent_rect() -> Rect2:
+	if dead or intent_kind.is_empty():
+		return Rect2()
+	var w := chip_width(Hud.mono(), intent_chip())
+	var vis := _visible()
+	var span := _screen_span()
+	var x := floorf(vis.get_center().x - w * 0.5)
+	if not bars.is_empty() and not bars_above:
+		x = minf(x, _float_x() - 6.0 - w)   # clear of the floating gauge at the drawing's top-right, its pointer still on the drawing
+	x = clampf(x, span.x, maxf(span.x, span.y - w))
+	var bottom := vis.position.y - FLOAT_LIFT + BAR_H   # the floating gauge's lowest bar's bottom (_draw)
+	return Rect2(x, bottom - INTENT_H, w, INTENT_H)
+
+
+## The floating gauge's left edge (a foe's): at the drawing's top-right, held in the view.
+func _float_x() -> float:
+	var vis := _visible()
+	return minf(vis.end.x - 10.0, size.x - FLOAT_BAR_W - 2.0)
+
+
+## Where a foe's intent arrow leaves it: the middle of its drawing (Ryan, 22 November: "Put intent
+## arrows coming from the center of the portrait"), the plate standing above it.
 func intent_anchor_global() -> Vector2:
-	var laid := chip_layout()
-	if not intent_kind.is_empty() and not laid.is_empty():
-		return get_global_transform() * (laid[0][0] as Rect2).get_center()
 	return anchor_global()
 
 
@@ -743,11 +815,51 @@ static func chip_rows(widths: Array, wrap: float) -> Array:
 	return rows
 
 
-## A chip's width: its glyph's square, its text, and each rider inside it after a divider (an
-## intent's). `ch` is [glyph, text, Color, kind, riders].
+## The chip style drawn now (CHIP_STYLES).
+static func chip_style() -> String:
+	return Settings.look("RIFTGATE_CHIP_STYLE", "chip_style", CHIP_STYLES)
+
+
+## A status chip is a square tile with its number at its corner, in either square style.
+static func square() -> bool:
+	return chip_style() != "classic"
+
+
+## A status chip's height and the gap between two rows of them, in the style drawn now.
+static func chip_h() -> float:
+	return TILE if square() else CHIP_H
+
+
+static func row_gap() -> float:
+	return TILE_ROW_GAP if square() else ROW_GAP
+
+
+## A chip's size: an intent's plate (draw_intent), or a status chip in the style drawn now.
+static func chip_size(mono: Font, ch: Array) -> Vector2:
+	if _is_intent(ch):
+		return Vector2(chip_width(mono, ch), INTENT_H)
+	return Vector2(chip_width(mono, ch), chip_h())
+
+
+static func _is_intent(ch: Array) -> bool:
+	return ch.size() > 3 and str(ch[3]) == "intent"
+
+
+## A count as a square chip's corner shows it: the multiplication sign goes, the number is the
+## stacks ("×2" is 2); a sign of more or less stays.
+static func corner_text(t: String) -> String:
+	return t.trim_prefix("×")
+
+
+## A chip's width: an intent's plate (draw_intent); a square tile in the square styles; else its
+## glyph's square and its text. `ch` is [glyph, text, Color, kind, riders].
 const ABILITY_TEXT_GAP := 5.0   # what an ability chip's text stands off its solid tile
 
 static func chip_width(mono: Font, ch: Array) -> float:
+	if _is_intent(ch):
+		return draw_intent(null, Rect2(), ch, mono)
+	if square():
+		return TILE
 	var txt := str(ch[1])
 	var w := CHIP_H + (mono.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, CHIP_TEXT).x + 8.0 if not txt.is_empty() else 0.0)
 	if not txt.is_empty() and ch.size() > 3 and str(ch[3]) == "ability":
@@ -766,6 +878,12 @@ static func chip_width(mono: Font, ch: Array) -> float:
 ## colour; a buff's or a debuff's mark at its corner (`ch` [glyph, text, Color, kind, riders,
 ## what]: _polarity_mark).
 static func draw_chip(ci: CanvasItem, rect: Rect2, ch: Array, mono: Font, txt = null) -> void:
+	if _is_intent(ch):
+		draw_intent(ci, rect, ch, mono, txt)
+		return
+	if square():
+		_draw_tile(ci, rect, ch, mono, txt)
+		return
 	var col: Color = ch[2]
 	var kind := str(ch[3]) if ch.size() > 3 else "status"
 	var glyph_col := col
@@ -834,6 +952,10 @@ static func _polarity_mark(ci: CanvasItem, rect: Rect2, what: String, col: Color
 		return
 	var up := what == "buff"
 	var x0 := rect.position.x + 5.0 if up else rect.end.x - 5.0 - POLARITY_W
+	if square():
+		# A square chip's number holds its bottom-right corner: the buff's wedge stands off the top
+		# at the right and the debuff's off the bottom at the left, still a diagonal apart.
+		x0 = rect.end.x - 5.0 - POLARITY_W if up else rect.position.x + 5.0
 	var edge := rect.position.y if up else rect.end.y
 	var dir := -1.0 if up else 1.0   # away from the chip
 	var base_y := edge - dir * POLARITY_H * 0.5
@@ -842,6 +964,91 @@ static func _polarity_mark(ci: CanvasItem, rect: Rect2, what: String, col: Color
 	var rim := PackedVector2Array([Vector2(x0 - 2.0, base_y - dir * 1.0), Vector2(x0 + POLARITY_W + 2.0, base_y - dir * 1.0), tip + Vector2(0.0, dir * 2.0)])
 	ci.draw_colored_polygon(rim, Color(Palette.BG, 0.95 * col.a))
 	ci.draw_colored_polygon(wedge, col)
+
+
+## A status chip as a square tile (the square styles): its frame by its kind as the classic chip's,
+## its glyph larger and centred, and its number at the bottom-right corner, over it on a dark
+## outline ("corner") or on a small plate of the chip's colour ("tab").
+static func _draw_tile(ci: CanvasItem, rect: Rect2, ch: Array, mono: Font, txt = null) -> void:
+	var col: Color = ch[2]
+	var kind := str(ch[3]) if ch.size() > 3 else "status"
+	var glyph_col := col
+	if kind == "preview":
+		var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * PENDING_RATE)
+		Hud.fill_poly(ci, Hud.cut(rect, 4.0), Color(Palette.BG, 0.94))
+		col = Color(col, 0.3 + 0.7 * beat)
+		glyph_col = col
+		dashed_rect(ci, rect, col, 2.0)
+	elif kind == "ability":
+		# The ability's solid tile is the whole chip, its glyph cut out of it.
+		Hud.fill_poly(ci, Hud.cut(rect.grow(1.0), 5.0), Color(Palette.BG, 0.94))
+		Hud.fill_poly(ci, Hud.cut(rect, 4.0), col)
+		glyph_col = Palette.BG
+	else:
+		Hud.box(ci, rect, 4.0, Color(Palette.BG, 0.94), col, 1.5)
+	var text := corner_text(str(ch[1]) if txt == null else str(txt))
+	var c := rect.get_center()
+	if not text.is_empty():
+		c += Vector2(-3.0, -3.0)   # the glyph leans off the corner its number holds
+	Glyphs.draw(ci, str(ch[0]), c, TILE_GLYPH, glyph_col, 2.2)
+	if not text.is_empty():
+		_draw_count(ci, rect, text, col)
+	_polarity_mark(ci, rect, str(ch[5]) if ch.size() > 5 else "", col)
+
+
+## A square chip's number at its bottom-right corner, standing a little past it.
+static func _draw_count(ci: CanvasItem, rect: Rect2, text: String, col: Color) -> void:
+	var font := Hud.display_bold()
+	if chip_style() == "tab":
+		var tw := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, TAB_TEXT).x
+		var plate := Rect2(rect.end.x + 3.0 - (tw + 7.0), rect.end.y - 11.0, tw + 7.0, 16.0)
+		Hud.fill_poly(ci, Hud.cut(plate.grow(1.5), 3.0), Color(Palette.BG, 0.95 * col.a))
+		Hud.fill_poly(ci, Hud.cut(plate, 2.5), col)
+		var ink := Palette.BG if col.get_luminance() > 0.45 else Palette.INK   # dark on a light plate, light on a dark one (the shield's blue)
+		ci.draw_string(font, Vector2(plate.position.x + 3.5, plate.end.y - 3.0), text, HORIZONTAL_ALIGNMENT_LEFT, -1, TAB_TEXT, Color(ink, col.a))
+		return
+	var w := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, TILE_TEXT).x
+	var at := Vector2(rect.end.x + 3.0 - w, rect.end.y + 4.0)
+	ci.draw_string_outline(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, TILE_TEXT, 6, Color(Palette.BG, 0.95 * col.a))
+	ci.draw_string(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, TILE_TEXT, Color(Palette.INK, col.a))
+
+
+## A foe's intent plate in `rect` on `ci`, or with `ci` null only measured: returns its width. A
+## dark plate edged in the intent's colour, its glyph and number in that colour (`txt`, or its own),
+## each rider after a divider, its mark and number in its own colour (its term's).
+static func draw_intent(ci: CanvasItem, rect: Rect2, ch: Array, mono: Font, txt = null) -> float:
+	var col: Color = ch[2]
+	var font := Hud.display_bold()
+	var text := str(ch[1]) if txt == null else str(txt)
+	var riders: Array = ch[4] if ch.size() > 4 else []
+	var cy := rect.get_center().y
+	if ci != null:
+		Hud.fill_poly(ci, Hud.cut(rect.grow(2.0), 8.0), Color(Palette.BG, 0.9 * col.a))   # a dark edge outside the colour's, for any ground
+		Hud.fill_poly(ci, Hud.cut(rect, 7.0), Color(Palette.BG, 0.94 * col.a))
+		Hud.stroke_poly(ci, Hud.cut(rect, 7.0), col, 3.0)
+	var x := rect.position.x + INTENT_PAD
+	if ci != null:
+		Glyphs.draw(ci, str(ch[0]), Vector2(x + INTENT_GLYPH * 0.5, cy), INTENT_GLYPH, col, 3.0)
+	x += INTENT_GLYPH
+	if not text.is_empty():
+		x += 3.0
+		if ci != null:
+			ci.draw_string(font, Vector2(x, cy + INTENT_TEXT * 0.36), text, HORIZONTAL_ALIGNMENT_LEFT, -1, INTENT_TEXT, col)
+		x += font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, INTENT_TEXT).x
+	x += INTENT_PAD
+	for r in riders:
+		var rt := str(r[1])
+		var rw := 5.0 + INTENT_RIDER_GLYPH + (2.0 + font.get_string_size(rt, HORIZONTAL_ALIGNMENT_LEFT, -1, INTENT_RIDER_TEXT).x if not rt.is_empty() else 0.0) + 5.0
+		if ci != null:
+			var rc: Color = r[2]
+			rc.a *= col.a
+			var at := x - 2.0
+			ci.draw_line(Vector2(at - 2.0, rect.position.y + 7.0), Vector2(at - 2.0, rect.end.y - 7.0), Color(col, 0.6 * col.a), 2.0)
+			Glyphs.draw(ci, str(r[0]), Vector2(at + 5.0 + INTENT_RIDER_GLYPH * 0.5, cy), INTENT_RIDER_GLYPH, rc, 2.0)
+			if not rt.is_empty():
+				ci.draw_string(font, Vector2(at + 5.0 + INTENT_RIDER_GLYPH + 2.0, cy + INTENT_RIDER_TEXT * 0.36), rt, HORIZONTAL_ALIGNMENT_LEFT, -1, INTENT_RIDER_TEXT, rc)
+		x += rw + 4.0
+	return x - rect.position.x
 
 
 ## A rect drawn in dashes on any canvas item (a chip's edge), its dark edge under each dash.

@@ -260,7 +260,7 @@ func _kit(r: QuickRun) -> Dictionary:
 	for uid in r.squad:
 		var m: QuickRun.Machine = r.machine(int(uid))
 		for cid in m.loadout:
-			var t := r.db.component_tier(str(cid))
+			var t := 0 if r.db.is_basic(str(cid)) else r.db.component_tier(str(cid))   # "t0" the basics, a flag on tier one
 			k["t%d" % clampi(t, 0, 3)] = int(k["t%d" % clampi(t, 0, 3)]) + 1
 		k["empty"] = int(k["empty"]) + r.hardpoints(m) - m.loadout.size()
 		k["modules"] = int(k["modules"]) + m.modules.size()

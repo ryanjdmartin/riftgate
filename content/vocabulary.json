@@ -183,7 +183,7 @@
    "id": "cleave",
    "category": "keyword",
    "name": "Spread",
-   "codex": "Keyword with a number. Spread 2 also hits the foes beside the target in its rank, each taking 2 where the target takes the number: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. On a debuff it carries no number: its effects reach those foes, and it deals nothing.",
+   "codex": "Keyword with a number. Spread 2: the weapon or equipment also strikes the foes beside the target in its rank, each taking 2 where the target takes the number: the attacker's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. On a debuff it carries no number: its effects reach those foes, and it deals nothing.",
    "status": "implemented",
    "design": {
     "holes": "Its number rides on the entry beside the keyword (cleave), and the validator asks for it on a weapon. The half it dealt from 26 October retired 28 October (Ryan): at single digits a neighbour's half killed no rank and file. A piece may carry it beside Penetrate, the plus round its target; Splash, the two under one word, was cut on 15 November (Ryan: \"It might be a more interesting game with only the other area shapes, with a few select pieces carrying both spread and penetrate together\")."
@@ -193,7 +193,7 @@
    "id": "penetrate",
    "category": "keyword",
    "name": "Penetrate",
-   "codex": "Keyword with a number. Penetrate 3 also hits the other rank of the target's column, which takes 3 where the target takes the number: the attacker's bonuses land on that 3 as on the blow, then the foe's own statuses and armour. A massive foe fills its column, so it is hit once. On a debuff it carries no number.",
+   "codex": "Keyword with a number. Penetrate 3: the weapon or equipment also strikes the other rank of the target's column, which takes 3 where the target takes the number: the attacker's bonuses land on that 3 as on the blow, then the foe's own statuses and armour. A massive foe fills its column, so it is hit once. On a debuff it carries no number.",
    "status": "implemented",
    "design": {
     "holes": "Its number rides on the entry beside the keyword (penetrate), and the validator asks for it on a weapon."
@@ -412,10 +412,10 @@
    "id": "chain",
    "category": "keyword",
    "name": "Chain",
-   "codex": "Keyword with a number. Chain 2 also lands 2 on every other Shocked foe on the field, wherever it stands, where the target takes the number: a weapon's bonuses land on that 2 as on the blow, then each foe's own statuses and armour. An arc is its blow alone: nothing the entry lays rides it, so a conductor takes the number and no mark, no Lure and no Shock. On a debuff, which deals nothing itself, the arcs land the number plain, through each foe's armour. No strike is aimed at them, so their Shock stands.",
+   "codex": "Keyword with a number. Chain 2: all foes on the field with Shock are struck for 2. Does not use or consume Shock.",
    "status": "implemented",
    "design": {
-    "holes": "Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain). Retired 3 November: the charge, one other foe at random after the arcs (Ryan, 2 November: \"Chain just is the situational aoe, and if weak we can either add more things for it to proc on, or give it the self-charge again\"); Charged, the primer, supplies the Shock beside the Shock weapons and Retaliate. A debuff's since 17 November (the Storm Petrel's Pulse, its Striker branch): refused until then, since a debuff's arc would carry its riders to every conductor for no blow; with a number the arc is a blow. Its arcs carry no rider since 18 November (Ryan: \"take riders off chain. Thematically it's a lightning arc, not part of the impact\"): they had carried the entry's riders as any area does, the fourth footprint's rule, which on the Pulse lured every Shocked foe it arced to; the Arc Fault Cannon printed none, so it lost nothing."
+    "holes": "Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain). Retired 3 November: the charge, one other foe at random after the arcs (Ryan, 2 November: \"Chain just is the situational aoe, and if weak we can either add more things for it to proc on, or give it the self-charge again\"); Charged, the primer, supplies the Shock beside the Shock weapons and Retaliate. A debuff's since 17 November (the Storm Petrel's Pulse, its Striker branch): refused until then, since a debuff's arc would carry its riders to every conductor for no blow; with a number the arc is a blow. Its arcs carry no rider since 18 November (Ryan: \"take riders off chain. Thematically it's a lightning arc, not part of the impact\"): they had carried the entry's riders as any area does, the fourth footprint's rule, which on the Pulse lured every Shocked foe it arced to; the Arc Fault Cannon printed none, so it lost nothing. Since 21 November (Ryan: \"All foes on the field with Shock are struck for {value}. Does not use or consume Shock\"; \"If Chain doesn't carry the riders, it shouldn't carry the unit's or weapon's buffs either\"; \"It should stack with spread and penetrate\"; of its own target, \"Any conductor\"): each arc is the number flat, no buff of the machine's or the piece's, on every conductor, its own target too while it still conducts after the strike (a weapon's strike spends a Shock first; a needle stays, and equipment spends none), and a conductor an area reaches takes the area's blow and the arc. Retired that day: the firer's modifiers riding each arc (28 October to 21 November), and a foe an area reached never arcing (29 October to 21 November). Whether an arc is a strike the foe's own statuses, armour and Barrier read (as built) or a flat ping that ignores them waits on his read of the armour data (the bible's section 12)."
    }
   },
   {
@@ -776,7 +776,7 @@
    "id": "corrupted",
    "category": "status",
    "name": "Corrupted",
-   "codex": "Component status. Every time this die entry is spent it bites its owner for 3 per stack, shield first, before the component acts. A blank is never spent, so a jammed entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed.",
+   "codex": "Component status. Every time this die entry is spent it bites its owner for 3 per stack, shield first, before the component acts. A blank is never spent, so a jammed entry does not bite. Stacks. Lasts until the machine reboots and can be cleansed.",
    "status": "implemented",
    "design": {
     "holes": "The bite is the status's own number in the engine's table, a placeholder.",
@@ -784,7 +784,7 @@
      "kind": "debuff",
      "on": "machine",
      "stacks": "Yes: its bite a stack",
-     "lasts": "The skirmish"
+     "lasts": "Until the machine reboots"
     }
    }
   },
@@ -1441,6 +1441,16 @@
    }
   },
   {
+   "id": "on_struck",
+   "category": "trigger",
+   "name": "On struck",
+   "codex": "Passive trigger. Fires when a foe's blow lands on this machine, a time a blow, whatever the blow dealt; it lays a status on the striker. A blow that wrecks the machine lays nothing.",
+   "status": "implemented",
+   "design": {
+    "holes": "Its carrier the Echidna's Sonic Needles (Ryan, 20 November: \"getting struck by one, grants that foe a stack of Sonic Needle\"). The codex is a session's draft."
+   }
+  },
+  {
    "id": "on_shield_gain",
    "category": "trigger",
    "name": "On shield gain",
@@ -1993,11 +2003,11 @@
   {
    "id": "hopper_property",
    "category": "component_property",
-   "name": "The hopper",
-   "codex": "A rule printed on a weapon, for a machine with a hopper. One fills it: the loads it prints for each foe its blows damage, after the blow, in place of what the machine's own passive puts in. The other fires it: each load it takes adds its bonus to the blow, up to its most a shot, and the loads it takes are spent, with the Armoured they stood for. The hopper shows under the heat; the die shows what a shot would fire.",
+   "name": "Empties the hopper",
+   "codex": "A rule printed on a weapon, for a machine with a hopper of Ore. Spent, it empties the hopper and strikes once for every Ore it empties, the armour the Ore stood for going with it, and puts no Ore back. With the hopper empty it cannot be spent. The hopper shows under the heat; the die shows how many strikes it would land.",
    "status": "implemented",
    "design": {
-    "holes": "The numbers are placeholders at the stock pass's scale."
+    "holes": "Ryan, 20 November: \"Empties the hopper, striking once for every load emptied. Grants no Ore.\" \"Fragmenter is a dead face with no Ore.\" The numbers are placeholders."
    }
   },
   {
@@ -2059,16 +2069,32 @@
   {
    "id": "hopper",
    "category": "resource",
-   "name": "Hopper",
-   "codex": "Machine store, the Honey Badger's: every foe its weapons damage puts a load in it (its Chainsaw Claw digs two), up to four, and every two loads held are a stack of Armoured, granted as each round opens and following the loads as they come and go. Its Bullion Fragmenter fires two a shot. Lasts the skirmish; never decays, and no cleanse or Purge touches the loads: a Purge strips the Armoured they granted, until the machine's next turn.",
+   "name": "Ore",
+   "codex": "Machine store, the Honey Badger's hopper: every foe its weapons damage puts an Ore in it, up to three, and every raise its upgrades grant adds to that. Its Bullion Fragmenter empties it, a strike for every Ore, and puts none back. Lasts the skirmish; never decays, and no cleanse or Purge touches it.",
    "status": "implemented",
    "design": {
-    "holes": "Its numbers since 31 October (Ryan's go, then his second fallback on the runner's read the same day): a cap of four, a point of armour for every two loads. What the loads are worth is Armoured, a buff a Purge strips, since 10 November (Ryan: \"The buff he gets from it is Armoured, not an ability. Its purgeable, but returns at the start of his turn since its granted by the funnel bar\"); the Ore Plate, an ability of its own, before.",
+    "holes": "Ryan, 20 November: \"Damaging a foe grants one stack of Ore (max 3). At 3, base armour increases by 1 (represented by an ability chip).\" The engine id stays hopper. What the Ore is worth is the Ore chip (ore_plate), an Ability. The four loads and their Armoured of 31 October and 10 November are git's.",
     "table": {
      "kind": "store",
      "on": "machine",
      "stacks": "Yes: a load a foe its weapons damage (the claw's two), up to 4; two spent a shot",
      "lasts": "The skirmish; never decays"
+    }
+   }
+  },
+  {
+   "id": "ore_plate",
+   "category": "status",
+   "name": "Ore",
+   "codex": "Ability, the Honey Badger's: armour from the Ore in its hopper, a point once it holds three (and one more for each Ore past three, from its Miner upgrade). It lands as the Ore that earns it lands and goes as the hopper empties. No Purge touches it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 20 November: \"It's no longer cleansable, represented as an Ore ability chip.\" Its stacks are the armour, set from the Ore held (Effects._plate).",
+    "table": {
+     "kind": "ability",
+     "on": "machine",
+     "stacks": "Yes: its stacks are the armour, set from the Ore held",
+     "lasts": "While the hopper holds the Ore, the skirmish at most"
     }
    }
   },
@@ -2418,6 +2444,86 @@
    "status": "implemented",
    "design": {
     "holes": "Never a buff, so no Purge reaches it. If ammo runs plentiful, the vents' and shields' reloads or the trickle come down."
+   }
+  },
+  {
+   "id": "burrowed",
+   "category": "status",
+   "name": "Burrowed",
+   "codex": "Ability, the Mole's. It burrows in its reboot's place, on a turn it has spent nothing, and stays under until it spends its Inertia Drill: armour +1, its die rolling the Drill alone. Each of its turns under opens with Broken and Overheated cleared, half of what its shield and heat were missing as it burrowed made good, and a stack of Conserved Momentum. No Purge touches it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 16 November: \"Instead of Reboot, it Burrows. While burrowed, it gains a unpurgable buff called 'Burrowed'\"; an unpurgeable buff is labelled an Ability by his rule of 8 November. The text is a session's draft.",
+    "table": {
+     "kind": "ability",
+     "on": "machine",
+     "stacks": "Renews: one, its armour the burrow's",
+     "lasts": "Until it spends the Inertia Drill"
+    }
+   }
+  },
+  {
+   "id": "conserved_momentum",
+   "category": "resource",
+   "name": "Conserved Momentum",
+   "codex": "Machine store, the Mole's: a stack as it burrows and one as each turn under opens, up to 3, and what is left of its Applied Momentum back as it burrows again. Its Inertia Drill spends every stack, laying a stack of Applied Momentum for each. A store, so no Purge touches it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 16 November: \"At the start of every turn while burrowed, it gains a stack of Conserved Momentum\"; \"We can cap it at 3, sure\"; a stack as it burrows, his \"go with 1 and 2\". The text is a session's draft.",
+    "table": {
+     "kind": "store",
+     "on": "machine",
+     "stacks": "Yes: up to 3",
+     "lasts": "Until the Inertia Drill spends it"
+    }
+   }
+  },
+  {
+   "id": "applied_momentum",
+   "category": "status",
+   "name": "Applied Momentum",
+   "codex": "Foe status, from the Mole's Inertia Drill: a stack for each Conserved Momentum it spent. As the foe's turn starts, the drill in it strikes it with a blow of 2, its Brittle adding and its armour taking it, then a stack goes. The Mole's next burrow takes the drill back with what is left. A foe's cleanse takes it, a Ward turns it away, and a foe that falls takes it with it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 16 November: \"Applied Momentum decays 1 at the start of the target's turn\"; \"Base: Flat 2 damage blow a turn ... make the damage a blow since I want it to scale with Brittle\". It strikes before the foes' side opens, so a Pinned it lays holds the Brittle. The text is a session's draft.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Yes: a turn of the drill a stack",
+     "lasts": "A stack each of its turns, or until the Mole burrows"
+    }
+   }
+  },
+  {
+   "id": "drill_out",
+   "category": "status",
+   "name": "Drill Out",
+   "codex": "Ability, the Mole's: its Inertia Drill is out, in its foe or in the ground where its foe fell. Its next burrow brings it home.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 16 November: \"It returns to the Mole when it burrows, taking the debuff with it\"; 18 November, \"Build the toggle\". The text is a session's draft.",
+    "table": {
+     "kind": "ability",
+     "on": "machine",
+     "stacks": "Renews: one",
+     "lasts": "Until its next burrow"
+    }
+   }
+  },
+  {
+   "id": "sonic_needle",
+   "category": "status",
+   "name": "Sonic Needle",
+   "codex": "Foe status, from the Echidna's Sonic Needles: a stack for every strike of its weapons and equipment that reaches the foe, and for every blow the foe lands on it. It conducts Chain, as Shocked does. On 3 stacks, the Echidna fires Chain 2: 2 on every conductor on the field, this foe included, each its Brittle adding and its armour taking it, no strike aimed at any; then every stack on this foe is consumed. A foe's cleanse takes it, a Ward turns it away, and a foe that falls takes it with it.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 20 November: \"Sonic Needle - Conducts Chain. On 3 stacks, the Echidna fires Chain 2, then consume all stacks on this foe\"; his answers that day: the bolt is \"targeted at nothing. So the foe that hit 3 stacks and procced it would take 2 by definition\", and a stack a strike. Its branches tweak it: the Spiker's sap (1 less on the foe's attacks a stack) and Chaos's bolt leaving its foe one stack in place of none (Ryan, 21 November: \"reduce stacks to 1\"). The text is a session's draft.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Yes: up to 3",
+     "lasts": "Until a bolt consumes it"
+    }
    }
   }
  ]

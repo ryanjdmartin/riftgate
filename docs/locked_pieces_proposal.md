@@ -349,7 +349,10 @@ reason and not only the idea:
 1. Done, 10 November: his marks on the questions, and the direction as the bible's rows.
 2. The six tweaks, a first round in chat (brought 10 November), then his marks.
 3. The rules as each part is built, the bible republished on his word.
-4. The basics' numbers and the stock rule with the refit pass's stock re-deal, read by the
-   runner before they stand.
-5. The ladders and the machine's tier in the engine, the runner's rows at each tier; the branches as
-   content proposed in chat, chassis by chassis; the upgrade's price with the economy pass.
+4. The basics' numbers: the foes' line's tier-one bench (Ryan, 21 November), the to-do's line;
+   the stock rule done, 20 November (a basic a flag on tier one).
+5. Done, 20 November: the machine's tier in the engine and the saves, a standard lift of its stat
+   lines (no locked piece rises with it, his word), the hangar's upgrade verb. Still to come: the
+   branches as content proposed in chat, chassis by chassis (the Honey Badger's and the Prairie
+   Dog's built); each chassis's own lift once the scaling is in; the runner's rows at each tier;
+   the upgrade's price with the economy pass.

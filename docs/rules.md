@@ -17,11 +17,10 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 ## Machines
 
 - **Chassis**: hull, shield, heat maximum, armour, move, size class, one way of moving, hardpoints, fixed components, module
-  slots (two; the Clydesdale three) and one passive. Twenty-six chassis from five makers
-  (`content/chassis.json`), two of them dealt by nothing yet (a chassis whose entry says
-  `"status": "planned"`): the Swallowtail, back in design until its session hands it back, and
-  the Mole, a draft whose engine is still to come. A run has four squad slots and starts with
-  three machines.
+  slots (two; the Clydesdale three) and one passive. Twenty-seven chassis from five makers
+  (`content/chassis.json`), one of them dealt by nothing yet (a chassis whose entry says
+  `"status": "planned"`): the Swallowtail, back in design until its session hands it back. A
+  run has four squad slots and starts with three machines.
 - **The die**: one entry per component, fixed components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die,
   beside its name in its readout, and down the codex. A piece a branch has upgraded wears a
@@ -69,19 +68,29 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   to 3, run as one passive nothing on the die can remove. The same module twice stacks.
   Fitted in the harness and the quick campaign's hangar (not in the campaign yet). Catalogue:
   `content/modules.json`.
-- **Tiers and blueprints**: the basics are tier zero, what comes off the assembly line: a run
-  starts with every basic's blueprint. Every other component carries its tier, one to three,
-  and a chassis stocks components up to its own tier at tiers one and two, a tier three to
-  tier two, so a tier-three component is only ever found. Blueprints
-  of tiers one to three are found; a bought chassis brings one copy of each component it
+- **Tiers and blueprints**: every component that is not fixed carries its tier, one to three, and
+  a chassis stocks components up to its own tier at tiers one and two, a tier three to tier two,
+  so a tier-three component is only ever found. A **basic** is a tier-one piece with a flag, what
+  comes off the assembly line: a run starts with every basic's blueprint, and a basic is never a
+  find. A tier-one chassis may stock found tier-one pieces beside its basics. Blueprints of every
+  piece but the basics are found; a bought chassis brings one copy of each component it
   stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
   maker) makes no basics and fields no tier-one chassis, though its tier-one components exist
   and its tier-two chassis stock them. The basic kit is six pieces, each a maker's: four
   guns, the Twin Autoguns and the Rivet Gun dealing 3 for 4 heat, Direct, the Ankle Mortar 3 for
   5, Indirect (a point of heat over Direct), and the Laser Carbine, Direct and warm, 4 for 5, and two defensive pieces, each spent on itself or an ally (the
   Halo Projector, a Barrier, cooldown 1; the Shoring Jack, Armoured 2 until its side's next turn).
-- **Branches** (an upgrade's picks; a run buys none yet, since no machine holds a tier of its
-  own, and the harness fields them): a chassis of tier one or two may carry two directions,
+- **A machine's tier**: one to three. A machine arrives at its chassis's tier, as stocked, and is
+  bought up a tier at a time between battles (the campaign's hangar, for salvage; the quick
+  campaign's, at no price), a tier opening as the Convergence reaches that tier's rifts. An
+  upgrade lifts the whole machine and carries its branch's pick as the choice where its chassis
+  has branches. The lift is a passive of its own on the machine, a tier at a time, never a write
+  to a stat or a piece: its stat lines rise, and its plate in the codex says its tier. A locked
+  piece's number does not rise with the tier: it grows by the branch's steps or by the kit beside
+  it, and a piece that needs a number of its own a tier is a call for its chassis. Every chassis
+  takes one standard lift for now (`tier_lift` in `content/chassis.json`). A machine keeps its tier and its picks,
+  a wreck included.
+- **Branches** (an upgrade's picks; the harness fields them too): a chassis of tier one or two may carry two directions,
   each a step a pick, as deep as its machine picks, a tier one twice and a tier two once. A
   machine's first pick takes a direction's first step and its second the same direction's
   deeper step or the other's first, so a tier one ends specialized or mixed. A step tweaks the
@@ -103,7 +112,24 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   Booster granting Aile Blitz; Valkyrie, the rifle's slot holding the Beam Bazooka, then the shield's
   the Beam Pavise and the Booster granting Aile Assault with 1 Empowered. A step may name the piece
   it upgrades, and the die's readout and the codex call the piece so (the Aile Blitzer, the Aile
-  Assaulter), the die keeping the piece as printed.
+  Assaulter), the die keeping the piece as printed. A step may remake a piece whole, its entry
+  as spent, read and shown the new one under the step's name, the die keeping it as printed;
+  a grant may hold once a round, the first spend that takes it spending it until the next round
+  opens; and a step may have its machine's weapon strikes count a status more. The Honey
+  Badger's, a tier one's: Miner, its Chainsaw Claw gaining Penetrate 2, Ore max +1 and a point of
+  armour for each Ore past three, then Brittle 2 on the Claw, its first spend each turn Instant
+  (two uses a turn, the second if the die finds it again) and Ore max +2; Smelter, its Bullion
+  Fragmenter gaining Spread 2 and Ore max +1, then Ablate 1 and Ore max +3. The Prairie Dog's,
+  a tier one's: Flakker, the first strike of its weapons on a Brittle foe each turn Rapid, then
+  its Flakshot Spreader remade as the Flakshot Disperser (Indirect, Brittle 4, Spread,
+  Penetrate); Harrier, its weapon strikes counting Brittle twice, then the Spreader remade as the
+  Flakshot Repeater (Direct, 1 three times, Brittle 1, Spread 1). Neither form keeps the
+  Spreader's cooldown. The Echidna's, a tier one's: Spiker, its Supersonic Spike Tether as the
+  Hypersonic Spike Tether, Instant at a heat more, then its Sonic Needles taking a point a stack
+  off the attacks of the foe they are in; Chaos, its needles' bolt leaving its foe one stack in
+  place of none, then its weapons dealing 1 more to a foe for each stack of Sonic Needle in it.
+  A direction may be back in design, a planned draft: kept in content, its depth unchecked, and
+  never offered (the Mole's two since its move to tier two).
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
@@ -148,10 +174,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    reboot recovers: its heat nothing, its shield whole. Every machine sheds what cooling it is
    granted, then regains what shield regen it is granted, up to its maximum (a module's, a
    passive's or a status's: a chassis has neither of its own; a shield gain like any). Every die rolls;
-   entries are equally likely. A store that grants a buff
-   grants it for the round (the Honey Badger's hopper its Armoured), before the foes pick.
+   entries are equally likely.
 2. Every foe picks its move, then its target; both show, exact, before the player acts, its
-   intent chip under it: the move's kind, its blow's number and strikes, and each rider by its
+   intent plate above it: the move's kind, its blow's number and strikes, and each rider by its
    mark, a numbered one with its stacks. A blow's number counts the rallies on their way to it
    this round (Empowered, below).
 3. The player's turn: spend, lock and reroll in any order. Each spend resolves fully before
@@ -219,8 +244,9 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   follows the same rule (Rapid's free reroll, the Booster, the Uplink, the
   Reveille Horn), but Instant's, kept on purpose and shown on the die by its keyword: it rolls as
   the round's opening roll does, itself included, and spins every chamber on the Cassowary's
-  die. Double-tap or hold a die to lock it, and again to unlock it; spending
-  unlocks it; locks clear each round.
+  die. Hold a die to lock it, and again to unlock it; spending
+  unlocks it; locks clear each round. A double-tap shows the whole die, its loadout, every entry at its
+  live numbers, the one showing marked.
 - **A folded die** (the Clydesdale's Disappearing Carriages): its hardpoints are two batteries
   of four, one up at a time, and every roll and reroll lands among the battery up and its fixed
   pieces, the Changeover live on both. The Changeover (Rapid, spent on itself) turns
@@ -257,7 +283,8 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   player's turn ends are banked, up to three, and come back at the next round's start beside
   its two, spent like any reroll; a roar's cost comes off the whole. It banks while the
   Giant Petrel fights: wrecked by the next round's start, it carries nothing.
-- **Spending**: drag a die onto a target: a weapon or a debuff onto a foe in reach, a shield, a
+- **Spending**: aim a die at a target, its crosshair dragged from the die (the die stays in its
+  tray, showing what it will deal there) and let go there: a weapon or a debuff onto a foe in reach, a shield, a
   vent or a buff onto a machine it may reach. Each die is spent once a round (Rapid and Instant excepted). A blank does
   nothing; an unspent die is lost. On screen a spend's hits and shots land one at a time, a beat
   apart, every one of them: each foe a hit reaches flashes, its gauge steps down to what the blow
@@ -301,7 +328,9 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   stepping die's next entry by its mark and the
   number it will show (the Cassowary's), the shield a zap will pay by the shield's mark ("-2",
   the Buzzard's). The readout says each on a line of its own, headed by
-  the same box. A dark entry is blank, its clock and its turns left along the foot. How each
+  the same box. A dark entry does nothing, and the die shows its own face dimmed under a veil of
+  stripes, a plate on its foot with the clock and its turns left (a cooldown, Rapid's own
+  switch-off) or the reboot's mark, the stripes heavier and in the red-red (a foe's jam). How each
   mark is drawn is `tools/die_sheet.gd`'s sheet and the bible's section 6.
 
 ### Reach
@@ -319,8 +348,8 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   salvo, and one debuff, the Shift Whistle's lure (Minerva, tier
   three). A
   weapon reaches wide by Spread or Penetrate, or lands on every foe.
-- Chain's arcs read no reach: they land on every Shocked foe on the field, front or back,
-  whatever the gun's reach.
+- Chain's arcs read no reach: they strike every foe on the field that conducts (a Shocked
+  foe, or one carrying a Sonic Needle), front or back, whatever the gun's reach.
 - A kill clears its slot at its spend's death check, so a hole in the front opens that
   column's back to Direct; what a kill brings back (a foe getting back up, a Gel's halves)
   stands once the spend is done (A spend's order, below), and otherwise the hole stays open:
@@ -331,13 +360,13 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
 Every foe a strike reaches takes a blow of its own, read in one order:
 1. The number: on the foe the strike is aimed at, the weapon's number; on every other
    foe its area reaches, the number of the shape it stands in (Spread's beside the target,
-   Penetrate's in the other rank of its column); on every other Shocked foe on
-   the field, Chain's (a foe in a shape and Shocked takes the shape's, one blow). Then what the
-   entry prints from its firer: what heat fired adds (Vents all), what shield fired adds (Fires
-   the shield) and the hopper's loads.
-2. The attacker's modifiers, on every blow: adds, then multiplies, then floors, a condition on
-   the foe read on that foe (a status it carries, its rank). A zap's add is one of the adds,
-   beside Empowered's (Passives, below).
+   Penetrate's in the other rank of its column). Then what the entry prints from its firer:
+   what heat fired adds (Vents all), what shield fired adds (Fires the shield). A Chain's arc
+   is its own blow, struck apart once the strike's have landed (Chain N, under Player keywords),
+   its number flat: steps 1 and 2 give it nothing more.
+2. The attacker's modifiers, on every blow of the strike: adds, then multiplies, then floors, a
+   condition on the foe read on that foe (a status it carries, its rank). A zap's add is one of
+   the adds, beside Empowered's (Passives, below).
 3. The foe's own, flat first: what the entry reads off it (the hull it is missing on every
    blow, the stacks a consumer eats on it on its first blow) and its Brittle; then its multiplies
    (Shocked doubles a weapon's strike aimed at it, never a blow that only reaches it); then its
@@ -346,7 +375,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
    weapon's hits (below).
 - **The strike order**: a strike's blows are resolved in one order, the target's first, then
   Spread's left and then its right, then Penetrate's other rank, a twin slot's other half with
-  its pair, then the Beam Rifle's foe to the right, then Chain's arcs. It is the calculation's
+  its pair, then the Beam Rifle's foe to the right, then Chain's arcs, read once those have
+  landed. It is the calculation's
   alone: the screen shows a strike's blows landing together, on its beat. What waits on a
   machine's next strike lands on its spend's first blow alone, its first strike's on its target,
   and on none of that strike's area (the Parry's return).
@@ -399,8 +429,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   its damage on every foe round its slot (the slot's other half, the foes beside it in its rank
   and the other rank of its column; a massive foe's, the front-rank foes in the columns either
   side), each through its own Brittle, a Barrier and its armour, aimed at nobody
-  so a Shock neither doubles it nor is spent; Chain's number on every other Shocked foe on the
-  field; then its keywords on each foe it met, felled or not, as a hit's riders land, Shock and
+  so a Shock neither doubles it nor is spent; then Chain's number, flat, on every foe on the field
+  that conducts, a foe the blast met among them, each a blow alone that no rider rides; then its
+  keywords on each foe it met, felled or not, as a hit's riders land, Shock and
   Expose after its blow, Disrupt only in the player's turn. Several Mines due at one death check
   blow in strike order, front left to right, then the back, and a blast that fells a mined foe
   blows that one's Mine in turn. A blast set off in a spend is part of it, so what its falls
@@ -414,7 +445,7 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   nothing); every modifier and the foe's own reads then count on each hit. A machine carrying
   Ricochet strikes again after each shot (Ricochet, below).
 - **The die shows the number** one blow will deal after every modifier; a debuff shows none,
-  and a gun whose blow is nothing here shows 0. Dragged over a foe it may strike,
+  and a gun whose blow is nothing here shows 0. Aimed at a foe it may strike,
   it shows that foe's number: its missing hull, conditions on it, its Brittle, its armour off. A
   Shocked foe's doubling is not folded in (it shows on the foe's chip). Its heat is
   the heat the spend will add, every modifier in (a Scorched machine's weapons run hotter).
@@ -431,10 +462,11 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   strike each say so. No source is listed. A tap on it again closes it, and it
   is one readout with the units' (below): a tap on another die or a unit moves it. A die's tap
   lands once the double-tap window (0.15 s, from the tap's release to a second touch) has passed
-  with no second touch, the die lit from the touch until it does, so a double-tap only locks and
-  leaves the readouts as they stand; a tap
-  that lands as the enemy's turn replays, or under a codex, opens nothing. The whole die is in
-  the codex (double-tap the machine). **The keywords list**, in the pause menu, gives every reach, keyword, rule and status the dice and chips print, and the keywords
+  with no second touch, the die lit from the touch until it does, so a double-tap never flashes
+  the readout open; a unit's tap in a fight waits out the same window; a tap
+  that lands as the enemy's turn replays, or under a codex, opens nothing. The whole die as the
+  fight has it is the die's double-tap; as it stands between fights, the codex's (double-tap the
+  machine). **The keywords list**, in the pause menu, gives every reach, keyword, rule and status the dice and chips print, and the keywords
   a foe's move carries (Every Machine, Countdown, Last Act and the rest), with its codex line. Wherever shown text names one of those terms (the holds, the readouts, the codex, the
   list itself), it reads bold in its colour with its icon before it, and a tap on it opens its
   entry beside the word, where its own terms open theirs; a tap anywhere else closes it. A term
@@ -537,15 +569,21 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   and a foe immune to it (An immunity, under Foes) takes none.
 - **Shock**: every foe the hit reaches is Shocked after its blow, the ones it fells included, so
   a hit never spends its own Shock.
-- **Chain N**: the blow also lands N on every other Shocked foe on the field, each arc a blow
-  alone: no strike is aimed at it, so its Shock stands, it adds no heat, and no rider rides it,
-  the entry's, its primers' or a passive's (a lightning arc, never part of the impact), so a
-  conductor takes the arc's number through its own statuses and armour and nothing else. On a
-  debuff, which deals nothing itself (the Storm Petrel's Pulse in its Striker branch), each arc
-  lands N plain, no add or multiply of the machine's, and its lure stays on what its strike and
-  its area reach. Its footprint, like an area's, is read from the strike's own foe: an arc
-  spreads nowhere, a foe an area reaches never arcs, and a foe both beside the target and
-  Shocked takes one blow, the area's, with the area's riders.
+- **Chain N**: all foes on the field that conduct (a Shocked foe, or one carrying a Sonic Needle)
+  are struck for N, front or back, whatever the reach, with every strike of the entry (a
+  Ricochet's strikes and a hit again arc none). The arcs are read once the strike's own blows
+  have landed, so its own target is struck too while it still conducts: a weapon's strike aimed
+  at it spends a Shock first, so a Shocked target is out, but a needle stays, and equipment spends
+  no Shock. Each arc is N flat: no add or multiply of the machine's, no rule of the piece's (a
+  gun that ignores armour, a spill), no rider (the entry's, its primers' or a passive's: no mark,
+  no Lure, no Shock, no needle), no heat, and it does not use or consume a Shock. The conductor's
+  own statuses and armour read it (its Brittle adds, Armoured and armour come off, Exposed takes
+  them away), and a Barrier takes a weapon's arc; whether an arc stays a strike they read or
+  becomes a flat ping they never touch waits on Ryan (the bible's section 12). It stacks with an
+  area: a conductor Spread or Penetrate reaches takes the area's blow, with its riders, and the
+  arc. An arc spreads nowhere and cashes no Cryo; a kill by an arc is still its machine's (the
+  kill rules read it), and a foe it damages counts where a rule counts the foes a spend damaged
+  (the Honey Badger's Ore).
 - **Lure**: every foe reached turns on the spender for the round, a felled one too. A move at
   every machine or at nobody holds no pick, so it has nothing to turn.
 - **Expose** (the Needletail's Fovea Designator, the Swallowtail's Spotting Flare, the Lammergeier's Lorentz Contractor): every foe reached
@@ -610,9 +648,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   fells its first target moves the corpse, which dies in the slot it was moved to and gets back
   up or splits there. A Mine moves with its foe.
   A foe keeps its pick and its move, from the rank it now stands in (a back foe pulled into the
-  front stands exposed to Direct fire). On the screen: drag the die to the first target and
-  drop it; the second targets light; tap one to spend it; a tap or a hold on the die reads it; drag the die
-  again to move it or set it back. A tap on the ground sets it back too, the die flying home,
+  front stands exposed to Direct fire). On the screen: aim the die at the first target and
+  let go; the crosshair stays pinned there and the second targets light; tap one to spend it; a tap or a hold on the die reads it; drag from the die
+  again to aim anew or set it back. A tap on the ground sets it back too,
   once no readout is open: the first such tap closes the open readout.
 - **Sap** (with a number; the Baboon's Redshift Emitter, beside a Purge 1): each foe hit gains
   that many stacks of Sapped a strike, laid once the strikes are done.
@@ -667,11 +705,9 @@ nothing. The Suppression Battery's Suppress is
 gated on Brittle, and the Backdraft Charge consumes Ablating, its Suppress gated at two.
 **Ablates its firer** (the Stoker's): spending it sets its own machine Ablating, the stacks it
 prints, after the blow; the round preview with the die in hand counts the first tick, off its shield as the turn ends.
-**The hopper**: a weapon that fills it puts the loads it prints in its machine's hopper for
-each foe its blows damage, after the blow, in place of what the machine's passive puts in (the
-Honey Badger's Chainsaw Claw, two); a weapon that fires it takes up to its most loads a shot,
-each adding its bonus to the blow, and spends them (its Bullion Fragmenter fires two at +2),
-the armour they stood for going with them. **Braces**:
+**Empties the hopper** (the Honey Badger's Bullion Fragmenter): spent, it empties its machine's
+hopper and strikes once for every Ore it empties, the armour the Ore stood for going with it; it
+puts no Ore in, and with none in the hopper it is a dead entry, nowhere to land. **Braces**:
 spending it Armours its owner, the stacks it says, an armour point each, until its side's
 next turn begins (the Shift Whistle prints it). **The Quintessence Tap** (the Ammit's, equipment spent on
 itself, cooldown 3): it consumes the Ammit's Essence, as much as it holds up to 5, and grants a
@@ -753,7 +789,7 @@ Nob's Enrage, a core's guard (Guarded), a Gel's split, a last act, a golden rage
 lasts. A machine's: the Polar Bear's seal (its form), the Nemesis's Rage and the Ammit's Essence
 (a count with no cap, so no store: its chip says the number). What an
 ability, a passive or a store grants beyond itself is a buff like any (the Nob's gathered
-Enraged, a module's Empowered or Armoured, the Armoured the Honey Badger's hopper grants): a
+Enraged, a module's Empowered or Armoured): a
 stack is a stack, whatever granted it.
 
 Every status on a unit says what it is, wherever it shows: a **buff**, which a Purge reaches,
@@ -788,7 +824,7 @@ On a machine:
   codex lists it among what the battle keeps.
 - **Armoured** (buff, on either side): armour +1 a stack, every stack at once, whatever
   granted it, so the count is the armour, until its side's next turn begins: a machine's
-  (from a buff, a brace or the hopper) stands through the enemy's turn and goes as the next
+  (from a buff or a brace) stands through the enemy's turn and goes as the next
   round opens, before the foes announce, and a foe's (from its brace or another's) stands
   through the player's turn and goes as the foes' next turn opens, before the first of them
   acts. It takes no rounds: no grant holds it longer.
@@ -935,18 +971,14 @@ On a machine:
   stands past its maximum burns as any machine's. It never reboots by choice while it rages, nor
   at its heat maximum or past it. No Purge touches it. Out of the Rage the Knuckles are one entry
   of its die, a plain swing that cools it 3.
-- **Hopper** (store, the Honey Badger's): its Ore Hopper puts a load in for each foe a spend
-  of its weapons damages, after the blow (a weapon that prints its own number puts that in
-  instead), up to four; a weapon that fires
-  the hopper spends them; a Mine's blast fills none. It lasts the skirmish, never decays, nothing cleanses it, and it shows as a row
-  under the heat, in the heat bar's shape, four cells, one lit a load. What the loads are
-  worth is Armoured, a stack for every two held, granted by the hopper: as each round opens it
-  grants the machine Armoured up to that worth, and between rounds the grant follows the loads
-  by the change in their worth alone (a load that makes a pair adds a stack, loads fired take
-  their stacks back, off the hopper's own grant and no other). It is a buff like any Armoured:
-  it goes as the next round opens, the hopper granting it again whole, and a Purge strips it
-  and leaves the loads, so what a Purge took comes back at the machine's next turn and no
-  sooner.
+- **Ore** (store, the Honey Badger's hopper): its Ore Hopper puts one Ore in for each foe a spend
+  of its weapons damages, after the blow, up to its most (three, and every raise a step grants
+  added to it); a weapon that empties the hopper puts none in, and a Mine's blast fills none. It
+  lasts the skirmish, never decays, nothing cleanses it, and it shows as a row under the heat, in
+  the heat bar's shape, a cell an Ore. What the Ore is worth is armour, the **Ore** chip, an
+  Ability: a point once it holds three (a step adds a point for each Ore past three), set the
+  moment the Ore moves, so it lands with the Ore that earns it and goes as the hopper empties;
+  no Purge touches it.
 - **Sealed** (Ability, the Polar Bear's form): equipment it spends on itself (a buff dropped on
   itself) seals it: armour +3, any cooling it is granted stopped (a chassis has none of its own), 3 heat more at the end of each turn
   before the overheat, and its Cryo Flinger gains Spread (one foe open, its rank's three sealed);
@@ -968,10 +1000,12 @@ On a machine:
   foe runs 1 hotter a stack, until its turn ends, when every stack goes, so it never piles up.
   Cleansable.
 - **Jammed** (debuff, a foe's jam): the entry comes up blank until the machine reboots, the
-  reboot's drop lighting it, or a Cleanse lifts it; no clock ends it, and the die's foot shows
-  the reboot's mark on it in place of a count.
+  reboot's drop lighting it, or a Cleanse lifts it; no clock ends it, and its veil carries the
+  reboot's mark in place of a count. A cooldown is no debuff: the spend's own price, its chip
+  saying no Debuff and wearing no wedge.
 - **Corrupted** (debuff): each spend of the entry bites its owner 3 a stack, shield first,
-  no armour off it; lasts the skirmish.
+  no armour off it; it lasts until the machine reboots, the reboot's drop healing every
+  corrupted entry as it lights a jam, or a Cleanse lifts it.
 - **Brittle** (debuff, from a foe's Brittle rider: the World Eater's pin; a foe's Brittle below
   is the same rule on the other body): every blow the machine takes deals a point more a
   stack, the shield taking the extra first as it takes any blow, and the stacks halve as its
@@ -1005,6 +1039,19 @@ On a foe:
   shock is spent. A strike is aimed at the foe it resolves on: the player's pick, or each foe a
   weapon over every foe strikes, which the game targets rather than the player. A blow that
   only reaches it (an area's, a Chain's arc, a spill, a Mine's blast) neither doubles nor spends it, and equipment leaves it standing; it never stacks.
+  It conducts Chain.
+- **Sonic Needle** (debuff, the Echidna's): a stack for every strike of the Echidna's weapons and
+  equipment that reaches the foe, an area's neighbours included and a Chain's arc never, and a
+  stack for every blow the foe lands on the Echidna, whatever the blow dealt; a blow that wrecks
+  it lays none. It conducts Chain. The stacks land one at a time, and the one that brings the foe
+  to 3 fires the bolt before the next lands: the Echidna fires Chain 2, aimed at nothing, so 2
+  lands on every foe on the field that conducts, that foe included while it stands, each a blow
+  alone as a Chain's arc is (no rider and no needle, a Shock neither doubled nor spent, through
+  its own Brittle, a Barrier and its armour); then every stack on that foe is consumed. A foe the
+  strike fells takes its riders as any does, and its bolt fires on the others all the same; a
+  foe whose own blow brings its bolt and fells it strikes no more that turn. A foe's cleanse
+  takes the needles, a Ward turns them away, and they last until a bolt spends them. With no
+  Echidna in the fight they land as any status and fire nothing.
 - **Exposed** (debuff): it stands in Direct reach of every machine as if its
   column's front were empty, and its armour counts for nothing, its own and any Armoured.
   Through the player's next turn: it falls as the foe's turn starts in the next round;
@@ -1191,11 +1238,40 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
 - **Broken** (debuff): a shield at nothing, whatever took it there: a foe's blow, the overheat,
   the machine's own reboot, or a shield spend or cost of its own. A Broken shield gains no
   shield by any method, a grant, a regen, a refill on a kill or a module's, until the reboot's
-  recovery, so a shield breaks once between reboots. No cleanse lifts it. A Barrier is a buff
+  recovery (a turn under, for a burrower), so a shield breaks once between reboots. No cleanse lifts it. A Barrier is a buff
   in front of shield and hull: it touches neither bar and lands on any machine, Broken or
   rebooting.
 - A Swallowed machine cannot reboot: it has no turn to give. A Phased one may, and its reboot
   is the safe one, bare where nothing reaches it.
+- **The burrow** (the Mole's passive, Burrow): it burrows in its reboot's place, its die dragged
+  onto the same target, which reads BURROW while its die is in hand; the reboot's gate, a turn
+  it has spent nothing, and its whole turn. Its shield is never emptied. What stands past its
+  heat's maximum vents at once, as a reboot's does, so nothing burns at its END TURN and it is
+  free to overheat again, and every entry a foe jammed lights. It gains a stack of **Conserved
+  Momentum** (a store, so no Purge touches it, up to 3, a bar under its heat), and its drill
+  comes home with what is left of the Applied Momentum in its foe, back as Conserved up to the
+  cap. It is then **Burrowed** (an ability, so no Purge touches it): armour 1, its die rolling
+  the Inertia Drill alone, which its die never rolls above ground; and each of its turns under
+  opens, before anything cools, with Broken and Overheated cleared and the one overheat between
+  reboots free again, half of what its shield was missing as it burrowed back on it and half of
+  the heat it carried then off it, each rounded up (two turns under is whole and cold, and a
+  blow taken under is not mended), every entry a foe jammed lit, and a stack of Conserved
+  Momentum. It stays under until it spends the Drill, and cannot burrow again while under.
+- **The Inertia Drill** (its locked piece, equipment, Indirect): spent at a foe, it spends every
+  stack of Conserved Momentum, lays as many of **Applied Momentum** on the foe (a mark the team
+  lays: the foe's Ward turns it away, the stacks spent all the same), and brings the Mole up,
+  **Drill Out** (an ability) until its next burrow, its foe felled or not. As the foes' turn
+  starts, before their side's opening, each foe carrying Applied Momentum takes its drill's
+  blow, a plain blow of 2 (its Brittle adds, its armour and a Barrier from its last turn take it,
+  no Shock is read, and a Phased foe takes nothing), then what a branch of its drill lays (the
+  Mole's two are back in design and offered nowhere: Ablate, Ablate 2 in the blow's place, then
+  Seared with it; Squad, Brittle 1 and Pinned, then Exposed), and a stack goes. Before the opening, so a Pinned it lays holds
+  the Brittle the opening would halve. A foe's cleanse takes it, a foe that falls takes it with
+  it, and the Mole's next burrow takes it home. The drill works as its machine stood when it
+  drilled: a branch learned later changes the next drill.
+- The fight bot burrows a burrower by the reboot's reads, but never while its drill still works
+  in a standing foe unless it overheats; under, it holds the drill until it has its cap of
+  Conserved Momentum and is whole and cold, then drills the foe its blows pay most on.
 - The fight bot reboots a machine past its maximum, unless a vent it shows takes it back
   under; one whose shield is broken when a blow is coming or its heat is half spent; one whose
   entry would pass its maximum, where it has heat to shed and this round's blows would take a
@@ -1491,7 +1567,9 @@ who return whole (a foe that joined it in the fight, a Gel's half, a raised Reve
 is no survivor, and each of them counts as a kill as any foe does: A kill, above).
 
 ### Passives: triggers and conditions
-- Triggers: static, on attack, on injury (a blow that would destroy a component), on skirmish start,
+- Triggers: static, on attack, on struck (a foe's blow landing on this machine, a time a blow
+  whatever it dealt, laying a status on the striker: the Echidna's needle; a blow that wrecks it
+  lays nothing), on injury (a blow that would destroy a component), on skirmish start,
   on hull damage (any hull lost: a blow, a bite or an overheat), on shield gain, on shield
   granted (an ally this machine shields), on buffing an ally (equipment this machine spends on an
   ally, once for each ally it lands on, whatever it did there), on heat gain, on foe status (a foe
@@ -1508,9 +1586,11 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   feeds itself.
 - A passive may count a grant off a status its machine carries, in steps (a stack of Empowered
   for every 5 Essence), and a status may name the battle as its scope, kept from fight to fight
-  (Essence).
+  (Essence). It may count an attack's add off the stacks of a status in the foe the blow lands
+  on: the Echidna's Chaos, 1 more a Sonic Needle, read on every blow of its weapons on that foe,
+  an area's among them (a Chain's arc and the needles' bolt are flat and take none).
 - A passive may double a weapon's printed number before its buffs, on every blow, what the
-  entry prints from its firer included (an area's number, heat fired, hopper loads), the buffs
+  entry prints from its firer included (an area's number, heat fired), the buffs
   added once after it and the struck foe's own reads (its missing HP, the stacks consumed on
   it) after those, undoubled, and under a condition where it carries one (the Kite's, against
   an unhurt foe); it may grant a cooldown to every weapon and equipment its machine aims at a
@@ -1525,8 +1605,8 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   add (the Buzzard's: 2 shield for +2). It is paid unasked as the spend begins whenever the
   shield holds the cost: short of it the weapon fires plain, and the last point paid breaks
   the shield. The add is the attacker's, beside Empowered's, wherever Empowered's goes: every
-  strike of the spend, every foe its area reaches, a Chain's arcs and a Ricochet's strikes, the
-  cost paid once a spend. Equipment pays none, nor an entry that fires the whole shield. The
+  strike of the spend, every foe its area reaches and a Ricochet's strikes, never a Chain's arc,
+  the cost paid once a spend. Equipment pays none, nor an entry that fires the whole shield. The
   die's number carries the add while the zap is ready, and its passive box shows the cost. A passive or a module may split every weapon and equipment aimed at a foe instead (the Split-cycle Breech, a module; a second adds nothing):
   each hits twice as often, and each hit's base weapon damage
   (its number and what the entry prints) is halved, rounded down and never below one, every
@@ -1692,38 +1772,52 @@ a stat.
   wall, a hunter's machine; no other pack's whole way shows, a selected machine's hunters'
   included. Each machine has one action (the Dingo two, by its Retrograde Flywheel: it may
   move and act twice during each turn of the map phase, and inside a fight it spends its die once a round like any machine): one move,
-  in one go, then it may fight; a fight ends the action however it ends, and the board under the
-  map says what each can still do. The fight is ordered before the move plays: a move that plays
-  (EXECUTE, ENGAGE or END TURN) with no order standing ends the action there, and one that plays
-  with an order keeps that order as given, the machine taking no other and the order taken back
-  ending the action. A machine carried in another's move keeps its action and its move. A selected machine lights the hexes its move reaches, one
-  border round the whole reach, its dashes crawling as its target's do, and brackets the packs it could be ordered onto. A move is
-  planned: its route shows from where the machine stands, and the next move or order reads from
-  the route's end. An order can be given again: a machine with a move planned or an order
-  waiting shows, in hand, its reach from where it started, and a new move or order there
-  replaces the old one, its step on the undo taking the old one's place; a tap on it in hand
-  takes its order back and lets it go, and its steps come off the undo (the count drops, and an
-  UNDO never puts the order back); a tap on it with none lets it go. A machine it carried that has since been given an order of its own, or one whose
-  starting hex another now plans to stand on, is taken back by UNDO alone. The one button reads
-  ENGAGE while a fight is ready (a catch, or a machine ordered onto a pack), ENGAGE 1 OF N while
-  N fights wait, each numbered on the map in the order ENGAGE opens them (a catch first, then
-  the packs in the order their orders were given), else EXECUTE while planned moves wait, else
-  END TURN; back from a fight with more waiting, the orders stand and the button pulses. EXECUTE plays every planned move and the turn goes on, so moves play in
-  whatever sequence the player gives them; ENGAGE plays them first too (the boss's fight aside,
-  below), then the fight opens. EXECUTE lets go of the machine in hand, its reach dark at once.
-  UNDO takes back the last move or order, whoever made it, in the
-  order they were made, a move that has played included (the machine goes back where it
-  stood, its action whole again), back to the turn's start or the last fight. A caught machine's fights come first, one a
-  hunter, and the map draws each as the machine's order onto the hunter that caught it. END TURN asks first
+  laid a waypoint at a time until it plays, then it may fight; a fight ends the action however it
+  ends, and the board under the map says what each can still do. The fight is ordered before the
+  move plays: a move that plays (EXECUTE, ENGAGE or END TURN) with no order standing ends the
+  action there, and one that plays with an order keeps that order as given, the machine taking no
+  other. A machine carried in another's move keeps its action and its move.
+- **Laying a move**: a tap on a machine takes it in hand and lights the hexes its move reaches,
+  one border round the whole reach, its dashes crawling as its target's do, and brackets the packs
+  it could be ordered onto. A tap on a lit hex lays a waypoint there, the route to it the cheapest;
+  while move is left the reach is drawn again from that waypoint with what is left, and the next
+  tap extends from it, until the move is spent. Every waypoint stays lit and the route runs through
+  them from where the machine stands. A tap on a pack the move left reaches (from the latest
+  waypoint, to the farthest hex in attack range, or from the waypoint itself when it is beside the
+  pack) paths there and orders the machine onto it, one step; an order onto another pack replaces
+  it. A tap on an earlier waypoint takes back every step after it; a tap on the latest waypoint, or
+  on the pack it is ordered onto, executes its move at once, the machine walking there and let go.
+  A tap on the machine itself, or on anything out of its reach (a hex or a pack), cancels its plan
+  and lets it go, and the steps that plan put on the undo go with it; a tap on another machine
+  cancels it the same way and takes that one in hand. A move that has played is taken back by UNDO
+  alone. A route can also be drawn by hand for a first leg: a drag from the machine through the
+  hexes it should walk, let go on a hex for a waypoint or on a pack for an order.
+- **The button** reads EXECUTE while a machine is in hand, lit while it has waypoints or an order
+  to play, dimmed and disabled otherwise; EXECUTE plays its move as a tap on its latest waypoint
+  does. With none in hand it reads ENGAGE while a fight is ready (a catch, or a machine ordered
+  onto a pack), ENGAGE 1 OF N while N fights wait, each numbered on the map in the order ENGAGE
+  opens them (a catch first, then the packs in the order their orders were given), else END TURN;
+  back from a fight with more waiting, the orders stand and the button pulses. ENGAGE plays any
+  move still planned first (the boss's fight aside, below), then the fight opens.
+- **UNDO** takes back the last step, whoever made it, in the order made: a waypoint, an order, or
+  an executed move (the machine back where it stood, its waypoints and order as they were, its
+  action whole again), back to the turn's start or the last fight. The machine the step was about
+  comes into hand while it has a plan left, and is let go once it has none. A caught machine's
+  fights come first, one a hunter, and the map draws each as the machine's order onto the hunter
+  that caught it. END TURN asks first
   while a machine can still move or fight; then the turn ends: packs walk and strike; Rift
   Pressure rises one. Nothing returns on the map: the shield is full as every fight opens. Once every
   machine has fought, is ordered, is caught, or can neither move nor reach a pack where it
-  stands, the button pulses, whichever it reads.
+  stands, the button pulses while no machine is in hand.
 - **A tap and a double-tap** on the map work as a die's do in a fight: a double-tap on a
-  machine or a pack opens its codex, and a tap on one lands only once the double-tap window
+  machine, the boss or a cache opens its codex, and on a pack its formation, the grid the fight
+  will deal, back rank over front, a double-tap on a foe there opening that foe's codex in its
+  place, BACK returning to it; a codex or a formation shuts on a tap outside it, with no CLOSE; a tap
+  on one lands only once the double-tap window
   (0.1 s on the map, from the tap's release to a second touch; a die's is 0.15) has passed with no second touch, its hex
   bracketed from the touch until it does, so a double-tap never selects first; a tap on bare
-  ground lands at once.
+  ground lands at once. A pack shows no count on the map, in its readout or its plaque: its
+  formation does.
 - **The readout**: holding or tapping a machine, a pack, the boss or the ground shows
   it in the strip under the map, as the fight's holds read: a machine's hull as a gauge (its
   shield is the fight's), its move and actions left, a chip for its damaged components; a pack's
@@ -1734,10 +1828,8 @@ a stat.
   its name (a wall by what it is): who crosses it, who wades it and who cannot, and whether
   packs enter it. A refused order
   says what stopped it there too.
-- **Orders**: a tap or drag onto a pack plans the machine's move to the farthest hex in attack
-  range its move reaches (or leaves it, if in range) and orders it, one step for UNDO; a
-  second tap on the pack takes the order back. ENGAGE opens one fight at a time: the first
-  order's pack and every machine ordered onto it.
+- **Orders**: ENGAGE opens one fight at a time: the first order's pack and every machine ordered
+  onto it.
 - **A fight** is one pack: nothing joins it and it joins nothing; a hunter's
   catch is a fight a hunter, one hunter a machine. The machines whose engage range covers
   it (1: beside it, the one range everyone on the map has) may join. Orders onto several packs queue, ENGAGE opening them one at a

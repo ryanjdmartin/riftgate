@@ -129,7 +129,6 @@ static var HIT_DEBUG := OS.get_environment("RIFTGATE_HIT_DEBUG") == "1"
 const HIT_DEBUG_KINDS := [["hull", -1.0], ["shield", 0.0], ["block", 0.6], ["hull", 1.0]]
 var _hit_debug_at := 0.0
 var _hit_debug_n := 0
-const HOME_FLIGHT := 0.22   # seconds a waiting Swap's die takes to fly home when a tap on nothing sets it back
 
 var sk: Skirmish
 var locked: Array[bool] = []
@@ -174,10 +173,11 @@ class PairMarks extends Control:
 var _view_foe: Dictionary = {}       # UnitView -> Foe
 var _mech_views: Array[UnitView] = []
 var _dice: Array[DieFaceView] = []
-var _ghost: DieFaceView
+var _aim: AimLayer                    # the die in hand's crosshair and its tether to the die (AimLayer)
 ## A spend waiting on its second target (a Swap, the Dingo's Combat Translocator; Ryan, 21
 ## October: drag to the first target, drop, the seconds light, tap one): {"mech", "primary"}.
-## The die sits over its first target; dragging it again picks it back up, to move or cancel.
+## The crosshair stays pinned on its first target; dragging the die again picks it back up, to
+## aim again or cancel.
 var _pending: Dictionary = {}
 var _arrows: ArrowLayer
 var _details: HudPanel
@@ -593,7 +593,7 @@ func _build() -> void:
 		# from the touch so the beat never reads as lag. A hold locks too.
 		d.confirm_taps = true
 		d.tapped.connect(_on_die_tapped.bind(i))
-		d.double_tapped.connect(_toggle_lock.bind(i))
+		d.double_tapped.connect(_open_die_view.bind(i))   # the whole die as the fight has it (Ryan, 23 November); a hold alone locks
 		d.held.connect(_toggle_lock.bind(i))
 		d.drag_started.connect(_on_drag_started.bind(i))
 		d.drag_moved.connect(_on_drag_moved)
@@ -737,21 +737,13 @@ func _build() -> void:
 	_fx.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_fx)
 
-	# Overlays: arrows, drag ghost, details, codex, confirm, outcome.
+	# Overlays: arrows, the aim, details, codex, confirm, outcome.
 	_arrows = ArrowLayer.new()
 	_arrows.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_arrows)
-	_ghost = DieFaceView.new()
-	_ghost.animate = false
-	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_ghost.drag_started.connect(_on_ghost_drag_started)
-	_ghost.drag_moved.connect(_on_drag_moved)
-	_ghost.drag_ended.connect(_on_drag_ended)
-	_ghost.tapped.connect(_on_ghost_tapped)
-	_ghost.held.connect(_on_ghost_held)
-	_ghost.modulate = Color.WHITE   # solid: with its slot emptied, this is the die itself
-	_ghost.visible = false
-	_place(_ghost, Vector2.ZERO, DieFaceView.view_size())
+	_aim = AimLayer.new()
+	_aim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(_aim)
 
 	_details = HudPanel.new(14.0)
 	_details.fill_alpha = 1.0   # the log's lines sit behind it; a readout of text reads over nothing
@@ -1288,8 +1280,21 @@ func _refresh(save: bool = true) -> void:
 		# A locked piece goes out charged whenever a muster pays and it has somewhere to land
 		# (the Swallowtail's, Ryan, 22 October): the die shows the form that will happen.
 		d.charged = not ms.assigned and sk.charge_lands(ms)
-		var sf := sk.shown_face(ms, sk.spend_face(ms))   # reach as the passive reads it now, the charged form when it goes out charged
-		d.set_face(sf, sk.shown_number_text(ms, sf))   # and the number the blow will deal
+		# The die in hand stays in its tray and shows what it will deal where it is aimed (22
+		# November: the finger covered a die carried under it): over a foe it may strike, its
+		# missing hull, a status on it, its armour and the keywords its rank grants (10 October),
+		# a gated keyword's chip struck where it will not land; over a machine a shield may land
+		# on, what it gives there (21 October); anywhere else, the plain entry and number.
+		var over_foe: Foe = _drag_over if _drag_from == i and _drag_over is Foe else null
+		var sf := sk.shown_face(ms, sk.spend_face(ms), over_foe)   # reach as the passive reads it now, the charged form when it goes out charged
+		if _drag_from == i and _drag_over is Skirmish.MechState and sf != null and sf.kind == Face.Kind.SHIELD:
+			d.set_face(sf, str(sk.shield_amount(ms, sf, _drag_over)))
+		else:
+			d.set_face(sf, sk.shown_number_text(ms, sf, over_foe))   # and the number the blow will deal
+		var gates: Array[int] = []
+		if _drag_from == i:
+			gates.assign(sk.shut_gates(ms, sf, over_foe))
+		d.shut = gates
 		d.ricochet = _ricochets(ms, sf) if not ms.assigned and ms.alive() else 0   # the strikes of 1 its Ricochet adds after each shot
 		var held := _offhand_of(ms, sf) if not ms.assigned and ms.alive() else []
 		d.offhand = str(held[0]) if not held.is_empty() else ""   # its offhand's armament riding it (the Macaque's)
@@ -1301,6 +1306,10 @@ func _refresh(save: bool = true) -> void:
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
 		# A dark entry shows the rounds it has left, this one included (the cooldown row).
 		d.dark = Effects.dark_rounds(ms.unit, ms.face_index, sk.round) if sf != null and sf.disabled else 0
+		# Its own face under the dark's veil (Ryan, 23 November: "they should have effects they
+		# apply on top of the face"), what it would do were it lit; a jam's veil apart from a cooldown's.
+		d.under = sk.shown_face(ms, ms.die.faces[ms.face_index]) if sf != null and sf.disabled and ms.face_index >= 0 and ms.face_index < ms.die.faces.size() else null
+		d.jammed = d.under != null and Effects.cleansable_disable(ms.unit, ms.face_index)
 		d.cooldown = sf.cooldown_rounds() if sf != null else 0   # the rounds a spend darkens it: a cost along its foot
 		d.next_face = sk.next_face(ms) if ms.alive() else null   # a stepping die's next chamber
 		if d.next_face == null and ms.alive():
@@ -1310,15 +1319,15 @@ func _refresh(save: bool = true) -> void:
 		d.spent = ms.assigned
 		d.dead = not ms.alive()
 		d.locked = locked[i]
-		d.can_tap = ms.alive() and _pending.get("mech", -1) != i   # a tap reads the die, spent too; the pending one's is its ghost's
+		d.can_tap = ms.alive()   # a tap reads the die, spent too, and the one waiting on a Swap's second target
 		# A die done still lifts while its machine may reboot (the Needletail's, after its one action
-		# with nothing lit to flip to): REBOOT is the one place it lands.
-		d.can_drag = assigning and ms.alive() and (not ms.assigned or sk.can_reboot(i)) and _pending.get("mech", -1) != i
-		# While a die is dragged, the one under the finger is the die: its slot goes empty
-		# (Ryan, 26 September: a copy dragged beside the original read as a copy). Modulate,
-		# not visible: the view must keep receiving the drag's motion.
-		d.modulate = Color(1, 1, 1, 0.0) if _drag_from == i or _pending.get("mech", -1) == i else Color.WHITE
+		# with nothing lit to flip to): REBOOT is the one place it lands. The die waiting on a
+		# Swap's second target lifts again to aim anew.
+		d.can_drag = assigning and ms.alive() and (not ms.assigned or sk.can_reboot(i))
+		d.modulate = Color.WHITE   # the die never leaves its tray: the aim leaves it (AimLayer)
 		d.queue_redraw()
+	if _drag_from < 0:
+		_pin_aim()   # a waiting Swap's crosshair held on its first target, wherever the field now lays it
 
 	_refresh_log()
 	# A die in hand that would bring the team a reroll lights REROLL and shows the count it
@@ -1783,7 +1792,7 @@ func _foe_rows(foe: Foe) -> Array:
 		# glyph, with the armour every grant adds (its own brace, a Protect).
 		var arm := Effects.foe_armour_bonus(foe)
 		rows.append(status_row("braced", status_glyph("braced"), "+%d" % arm, "%s +%d" % [Effects.STATUS["braced"]["name"], arm], _foe_chip_colour("braced")))
-	if Effects.has(foe, "kindled"):
+	if Effects.has(foe, "kindled") and Effects.foe_attack_bonus(foe) > 0:
 		var kindled := Effects.foe_attack_bonus(foe)
 		rows.append(status_row("kindled", "overcharge", "+%d" % kindled, "Empowered +%d" % kindled, _foe_chip_colour("kindled")))
 	var raged := Effects.stacks_of(foe, "enraged")
@@ -1827,6 +1836,14 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(status_row("paradox", "paradox", "%d/%d" % [paradox, at] if at > 0 else str(paradox), "Paradox %d%s" % [paradox, " of %d" % at if at > 0 else ""], _foe_chip_colour("paradox")))
 	if Effects.has(foe, "shocked"):
 		rows.append(status_row("shocked", "shocked", "×2", "Shocked", _foe_chip_colour("shocked")))
+	var needles := Effects.stacks_of(foe, "sonic_needle")
+	if needles > 0:
+		# The Echidna's needles (20 November), counted toward the stacks its machine's rule fires
+		# them at, as Paradox counts toward its gate; the stacks alone when no machine standing
+		# fires them.
+		var fires := sk.needler_of("sonic_needle")
+		var at := int(Effects.needle_rule(fires.unit)["at"]) if fires != null else 0
+		rows.append(status_row("sonic_needle", _foe_glyph("sonic_needle"), "%d/%d" % [needles, at] if at > 0 else str(needles), "%s %d%s" % [str(Effects.STATUS["sonic_needle"]["name"]), needles, " of %d" % at if at > 0 else ""], _foe_chip_colour("sonic_needle")))
 	var numbed := Effects.stacks_of(foe, "numbed")
 	if numbed > 0:
 		rows.append(status_row("numbed", "numbed", "×%d" % numbed, "Numbed ×%d" % numbed, _foe_chip_colour("numbed")))
@@ -1839,6 +1856,10 @@ func _foe_rows(foe: Foe) -> Array:
 	var sap := Effects.stacks_of(foe, "sapped")
 	if sap > 0:
 		rows.append(status_row("sapped", "sap", "-%d" % sap, "Sapped ×%d: its blows %d lower until after its next turn" % [sap, sap], _foe_chip_colour("sapped")))
+	var drilled := Effects.stacks_of(foe, "applied_momentum")
+	if drilled > 0:
+		# The Mole's drill in it (18 November): a stack for each of the foe's turns it still strikes.
+		rows.append(status_row("applied_momentum", _foe_glyph("applied_momentum"), "×%d" % drilled, "%s ×%d" % [str(Effects.STATUS["applied_momentum"]["name"]), drilled], _foe_chip_colour("applied_momentum")))
 	for pin in Effects.HOLDERS.values():   # a pin's chip: the lock on the status it holds
 		if Effects.has(foe, pin):
 			rows.append(status_row(pin, Terms.glyph(pin), "", str(Effects.STATUS[pin]["name"]), _foe_chip_colour(pin)))
@@ -1953,8 +1974,8 @@ static func status_glyph(id: String) -> String:
 			return "primed"
 		"regenerating":
 			return "regenerating"
-		"hopper":
-			return "hopper"
+		"hopper", "ore_plate":
+			return "hopper"   # the Ore chip, its armour, wears the hopper's mark (Ryan, 20 November: "an Ore ability chip")
 		"sealed":
 			return "seal"   # the shell's mark, as the die's chip that seals it (2 November)
 		"phased", "phasing":
@@ -1977,7 +1998,12 @@ static func status_glyph(id: String) -> String:
 			return "essence_flare"   # the Tap's hold, a buff on its machine (15 November)
 		"cryoed":
 			return "cryo"
-	return "star"
+	# Any other status wears its term's mark (Terms, the one table the die, the chips and the text
+	# read), so a status no line above names never wears a mark its tip does not (22 November: the
+	# Echidna's needles on their way, the Mole's Burrowed and Drill Out, each a star); the star is
+	# for one whose term names none.
+	var termed := Terms.glyph(Terms.of_status(id))
+	return termed if not termed.is_empty() else "star"
 
 
 ## Statuses and warnings on a mech as [glyph, chip text, readout text, colour], the readout text
@@ -1994,8 +2020,6 @@ func _mech_rows(i: int) -> Array:
 	var rows: Array = []
 	if not ms.alive():
 		return rows
-	if locked[i]:
-		rows.append(["lock", "", "Die locked", Palette.HUD])
 	if ms.free_rerolls > 0 and not ms.assigned and sk.state == Skirmish.State.ASSIGN:
 		rows.append(["reroll", "×%d" % ms.free_rerolls, "Free reroll ×%d, this die alone" % ms.free_rerolls, Palette.HUD])
 	var damaged := ms.unit.damaged_component_count()
@@ -2026,8 +2050,8 @@ func _mech_rows(i: int) -> Array:
 		var id := str(d[5])
 		if int(d[3]) < Effects.SKIRMISH and not Effects.is_status(id):
 			continue
-		if id == "shots" or id == "muster" or Effects.store_cap(ms.unit, id) > 0:
-			continue   # a count shows as pips under the heat bar (the Cassowary's sixth shot), a capped store as its bar, and the gate by the Rapid it grants, never a chip
+		if id == "shots" or id == "muster" or id == "offhand" or Effects.store_cap(ms.unit, id) > 0:
+			continue   # the offhand's form rides its die's entries, never a chip on the machine (Ryan, 22 November);  a count shows as pips under the heat bar (the Cassowary's sixth shot), a capped store as its bar, and the gate by the Rapid it grants, never a chip
 		if not first.has(id):
 			order.append(id)
 			first[id] = d
@@ -2054,6 +2078,8 @@ func _mech_rows(i: int) -> Array:
 			# Phased on its way (15 November: granted as the round ends): a status to come, so a
 			# preview chip, as a rally's Empowered is on a foe.
 			rows.append(status_row(id, glyph, "", "Phased as this round ends, if it stands", colour, "preview"))
+		elif id.begins_with("disabled") and str(d[0]) == "Cooldown":
+			rows.append([glyph, count, named, colour, "status", ""])   # a spend's own price, never a debuff (Ryan, 23 November: "Cooldown is not a Debuff"): no Debuff in its words, no wedge
 		else:
 			rows.append(status_row(id, glyph, count, named, colour))
 	if ABILITY_DEBUG and abilities.is_empty():
@@ -2232,6 +2258,12 @@ func _on_die_tapped(i: int) -> void:
 ## A die locked or unlocked, for the reroll to keep or roll: while the player assigns, a live die
 ## not yet spent.
 func _toggle_lock(i: int) -> void:
+	if _pending.get("mech", -1) == i:
+		# The die waiting on a Swap's second target is being spent: nothing to lock, so a hold
+		# reads it as a hold on a unit does.
+		if _pop != {"die": i}:
+			_open_pop({"die": i})
+		return
 	if sk.state != Skirmish.State.ASSIGN:
 		return
 	var ms: Skirmish.MechState = sk.mechs[i]
@@ -2271,7 +2303,7 @@ func _entry_marks(ms: Skirmish.MechState, i: int, die: int) -> Array:
 		out.append([Templates.say("state.locked"), EntryReadout.mark("lock", Palette.HUD, false)])
 	var rot := Effects.corrupt_stacks(ms.unit, i) if i >= 0 else 0
 	if rot > 0:
-		out.append([Templates.say("state.corrupted", {"n": rot}), EntryReadout.mark("corrupt", Glyphs.colour_for("corrupt"))])
+		out.append([Templates.say("state.corrupted", {"n": rot, "bite": rot * Skirmish.corrupt_bite()}), EntryReadout.mark("corrupt", Glyphs.colour_for("corrupt"))])   # the bite a spend will take (Ryan, 23 November: "Corrupted needs to show the damage it will deal in the die readout")
 	return out
 
 
@@ -2328,6 +2360,11 @@ func _show_die(i: int) -> bool:
 		var returned := _parry_of(ms, sf) if not ms.assigned else 0
 		if returned > 0:
 			extra.append(EntryReadout.parry_line(returned))
+		# A burrower's drill (the Mole's): what its Conserved Momentum becomes in the foe, by the
+		# momentum's mark.
+		if not ms.assigned and sf.component != "" and sf.component == str(Effects.burrow_rule(ms.unit).get("piece", "")):
+			var tick := Effects.momentum_of(ms.unit, sf)
+			extra.append(EntryReadout.drill_line(Effects.stacks_of(ms.unit, "conserved_momentum"), int(tick["blow"]), tick["lays"]))
 		# The shield its zap pays for a weapon (the Buzzard's), by the same box.
 		var zap := _zap_cost(ms, sf) if not ms.assigned else 0
 		if zap > 0:
@@ -2576,9 +2613,26 @@ func _on_foe_double_tapped(v: UnitView) -> void:
 
 func _on_mech_double_tapped(i: int) -> void:
 	var ms: Skirmish.MechState = sk.mechs[i]
-	var entry := ContentDB.load_default().codex_for_unit(ms.unit)
-	entry["current"] = ms.face_index
-	_open_codex(entry)
+	# The codex is the machine as it stands outside the fight (Ryan, 23 November: "Codex does not
+	# need to show the current die face. Codex entries should only ever show elements as they are
+	# outside the skirmish"): no entry showing marked.
+	_open_codex(ContentDB.load_default().codex_for_unit(ms.unit))
+
+
+## The whole die on a double-tap (Ryan, 23 November: "Die face double tap needs to open a display
+## of the whole die, with current buffs and debuffs applied to all faces. That leaves only hold to
+## lock the die"): every entry as the fight now has it, at its live numbers, the one showing
+## marked, in the codex's panel with nothing else of the machine's.
+func _open_die_view(i: int) -> void:
+	if _replay_shade.visible or _codex.is_open():
+		return
+	var ms: Skirmish.MechState = sk.mechs[i]
+	var base := ContentDB.load_default().codex_for_unit(ms.unit)
+	_open_codex({
+		"title": ms.unit.display_name, "subtitle": "LOADOUT",   # Ryan's word, 23 November
+		"faces": _shown_faces(ms), "face_rules": base.get("face_rules", []), "face_steps": base.get("face_steps", []),
+		"current": ms.face_index, "steps": base.get("steps", false), "stowed": base.get("stowed", []),
+	})
 
 
 ## Fill and show the codex (see `CodexBox` for the entry keys).
@@ -2684,26 +2738,25 @@ func prey_for(i: int, force: bool = false) -> Array[Foe]:
 
 func _on_drag_started(i: int) -> void:
 	_drop_die_pop()
+	if not _pending.is_empty():
+		_cancel_second()   # a die lifted while a Swap waits: the waiting one picked back up, or set back for another
 	_drag_from = i
 	_drag_over = null
 	Sound.play("die_pick")
-	var sf := sk.shown_face(sk.mechs[i], sk.spend_face(sk.mechs[i]))
-	_ghost.shut = []   # no foe in hand yet: every chip as printed
-	_ghost.set_face(sf, sk.shown_number_text(sk.mechs[i], sf))
-	_ghost.ricochet = _ricochets(sk.mechs[i], sf)
-	var held := _offhand_of(sk.mechs[i], sf)
-	_ghost.offhand = str(held[0]) if not held.is_empty() else ""
-	_ghost.parry = _parry_of(sk.mechs[i], sf)
-	_ghost.upgrades = _dice[i].upgrades
-	_ghost.zap_cost = _zap_cost(sk.mechs[i], sf)
-	_ghost.passing = sk.mechs[i].heat if sf != null and sf.passes_heat else 0
-	_ghost.form_mark = form_mark(sk.mechs[i], sf)
-	_ghost.cooldown = sf.cooldown_rounds() if sf != null else 0
-	_ghost.charged = sk.charge_lands(sk.mechs[i])
-	_ghost.corrupted = Effects.corrupt_stacks(sk.mechs[i].unit, sk.mechs[i].face_index)
-	_ghost.slot = sk.mechs[i].face_index + 1
-	_ghost.visible = true
+	_aim_at(_dice[i].get_global_rect().get_center(), false)
 	_refresh()
+
+
+## The aim drawn from the die in hand's middle to a global point, locked over somewhere it may be
+## spent or pinned on a Swap's first target (AimLayer).
+func _aim_at(global_pos: Vector2, locked: bool, pinned: bool = false) -> void:
+	var i: int = _drag_from if _drag_from >= 0 else int(_pending.get("mech", -1))
+	if i < 0:
+		_aim.clear()
+		return
+	var inv := _aim.get_global_transform().affine_inverse()
+	var r := _dice[i].get_global_rect()
+	_aim.aim(Rect2(inv * r.position, inv.basis_xform(r.size)), inv * global_pos, locked, Palette.TARGET, pinned)
 
 
 
@@ -2713,10 +2766,8 @@ func _drop_die_pop() -> void:
 		_pop = {}
 		_details.visible = false
 func _on_drag_moved(global_pos: Vector2) -> void:
-	if not _ghost.visible:
+	if _drag_from < 0:
 		return
-	var local: Vector2 = get_global_transform().affine_inverse() * global_pos
-	_ghost.position = local - Vector2(DIE_SIZE * 0.5, DIE_SIZE * 0.5)
 	# The hover hum while the die is over somewhere it may be spent (Ryan, 5 October).
 	var target = _drop_target_at(global_pos)
 	var can := target != null and _drag_from >= 0 and sk.can_assign(_drag_from, target)
@@ -2729,24 +2780,13 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 	# What the die is over decides what the gauges forecast (a lure's turn, a Cryo cash): read
 	# again only when it changes, never saved mid-drag.
 	var over = target if can else null
+	_aim_at(global_pos, can or boots)
 	if not _same_target(over, _drag_over):
+		# The die in its tray reads what it will deal there and the gauges what the round will
+		# leave (_refresh); the heat bar the net over a Cryo foe (Ryan, 16 October: on the bar,
+		# never the die) through the forecast it reads (_forecast_for).
 		_drag_over = over
 		_refresh(false)
-	# Over a foe it may strike, the die shows what it will deal to that foe (10 October):
-	# its missing hull, a status on it, its armour, and the keywords its rank grants (the
-	# Cottonmouth's drum). A shield over a machine it may land on shows what it will give
-	# there (the Puffin's ally heat, 21 October). Anywhere else, the plain entry and number.
-	if _drag_from >= 0:
-		var ms: Skirmish.MechState = sk.mechs[_drag_from]
-		var over_foe: Foe = target if can and target is Foe else null
-		var sf := sk.shown_face(ms, sk.spend_face(ms), over_foe)
-		_ghost.shut = sk.shut_gates(ms, sf, over_foe)   # a gated keyword's chip struck where it will not land
-		if can and target is Skirmish.MechState and sf != null and sf.kind == Face.Kind.SHIELD:
-			_ghost.set_face(sf, str(sk.shield_amount(ms, sf, target)))
-		else:
-			_ghost.set_face(sf, sk.shown_number_text(ms, sf, over_foe))
-		# The heat bar reads the net over a Cryo foe (Ryan, 16 October: on the bar, never the die)
-		# through the forecast the refresh above reads (_forecast_for).
 
 
 func _on_drag_ended(global_pos: Vector2) -> void:
@@ -2754,12 +2794,11 @@ func _on_drag_ended(global_pos: Vector2) -> void:
 	_drag_from = -1
 	_drag_over = null
 	_reboot_hover = false   # every way out of here refreshes, which dresses the control
-	_ghost.visible = false
+	_aim.clear()
 	Sound.hover(false)
 	if i < 0:
 		_refresh()
 		return
-	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if _over_reboot(global_pos) and _do_reboot(i):
 		return   # the die dropped on REBOOT: its machine's turn given
 	var target = _drop_target_at(global_pos)
@@ -2771,46 +2810,24 @@ func _on_drag_ended(global_pos: Vector2) -> void:
 	_refresh()
 
 
-## A Swap dropped on its first target (Ryan, 21 October): the die sits over that foe, the
-## second targets light (every other foe that moves, every empty slot), and a tap on one
-## spends it; dragging the die again picks it back up; a tap reads it as ever.
+## A Swap dropped on its first target (Ryan, 21 October): the crosshair stays pinned on that foe,
+## tethered to the die in its tray, the second targets light (every other foe that moves, every
+## empty slot), and a tap on one spends it; dragging the die again picks it back up; a tap reads
+## it as ever.
 func _begin_second(i: int, primary: Foe) -> void:
 	_pending = {"mech": i, "primary": primary}
-	var fv := _foe_view_for(primary)
-	if fv != null:
-		var local: Vector2 = get_global_transform().affine_inverse() * fv.get_global_rect().get_center()
-		_ghost.position = local - Vector2(DIE_SIZE * 0.5, DIE_SIZE * 0.5)
-	_ghost.visible = true
-	_ghost.can_drag = true
-	_ghost.mouse_filter = Control.MOUSE_FILTER_STOP
+	_pin_aim()
 	Sound.play("die_drop")
 	_refresh()
 
 
-## The pending die picked back up off its first target: a drag like any, so it may land on
-## another first target or be set back to cancel.
-func _on_ghost_drag_started() -> void:
+## The crosshair pinned on the waiting Swap's first target, if one waits.
+func _pin_aim() -> void:
 	if _pending.is_empty():
 		return
-	var i: int = _pending["mech"]
-	_pending = {}
-	_drop_die_pop()
-	_drag_from = i
-	_drag_over = null
-	Sound.play("die_pick")
-	_refresh()
-
-
-## A tap on the pending die reads it, as a tap on the die in the tray does; a hold opens its
-## readout too, as a hold on a unit does (it is being spent: there is nothing to lock).
-func _on_ghost_tapped() -> void:
-	if not _pending.is_empty():
-		_on_die_tapped(int(_pending["mech"]))
-
-
-func _on_ghost_held() -> void:
-	if not _pending.is_empty() and _pop != {"die": int(_pending["mech"])}:
-		_open_pop({"die": int(_pending["mech"])})
+	var fv := _foe_view_for(_pending["primary"])
+	if fv != null:
+		_aim_at(fv.get_global_transform() * fv.drawing_rect().get_center(), true, true)
 
 
 ## A tap on a slot while a Swap waits for its second target: the foe there, or the empty slot,
@@ -2856,46 +2873,16 @@ func _lay(c: Control, pos: Vector2, sz: Vector2) -> void:
 ## The pending Swap put back in the tray, unspent.
 func _cancel_second() -> void:
 	_pending = {}
-	_ghost.visible = false
-	_ghost.can_drag = false
-	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if _drag_from < 0:
+		_aim.clear()
 
 
-## A tap on nothing sets the waiting Swap back (Ryan, 30 October): the die flies home to its place
-## in the tray, unspent, with a drop on nowhere's sound. A copy flies, so the die is free to be
-## picked up again the moment it is home.
+## A tap on nothing sets the waiting Swap back (Ryan, 30 October), with a drop on nowhere's sound:
+## the crosshair lets go of its first target, the die unspent in its tray.
 func _send_second_home() -> void:
-	var i: int = _pending["mech"]
-	var from := _ghost.position
 	_cancel_second()
 	Sound.play("die_drop")
 	_refresh(false)
-	if not is_inside_tree():
-		return
-	var d := _dice[i]   # as the refresh above drew it
-	var fly := DieFaceView.new()
-	fly.animate = false
-	fly.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	fly.set_face(d.face, d.shown_number)
-	fly.slot = d.slot
-	fly.corrupted = d.corrupted
-	fly.ricochet = d.ricochet
-	fly.offhand = d.offhand
-	fly.parry = d.parry
-	fly.upgrades = d.upgrades
-	fly.zap_cost = d.zap_cost
-	fly.charged = d.charged
-	fly.dark = d.dark
-	fly.cooldown = d.cooldown
-	fly.position = from
-	fly.size = DieFaceView.view_size()
-	add_child(fly)
-	d.modulate.a = 0.0   # in flight until it lands
-	var tw := create_tween()
-	tw.tween_property(fly, "position", d.position, HOME_FLIGHT).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tw.tween_callback(func() -> void:
-		fly.queue_free()
-		_refresh(false))
 
 
 ## Two drop targets the same (a Foe, a MechState, an empty slot's Vector2i, or null), compared by
@@ -3384,7 +3371,8 @@ func _land_spend_blow(b: Dictionary, n: int) -> void:
 			bar[3] = hp
 		v.queue_redraw()
 	_animate_hit(v)
-	_pop_damage(v, int(b["taken"]), n)
+	if int(b["taken"]) > 0 or bool(b.get("weapon", true)):
+		_pop_damage(v, int(b["taken"]), n)   # equipment that deals nothing rises no 0 (Ryan, 23 November)
 
 
 ## A blow's number rising off the unit it struck, in ink on a dark edge (a blow that did nothing in
@@ -4214,6 +4202,11 @@ func _dress_reboot() -> void:
 		return
 	_reboot_btn.text = reboot_word(sk.mechs[_drag_from] if _drag_from >= 0 and _drag_from < sk.mechs.size() else null)
 	_reboot_btn.filled = _reboot_hover
+	# A burrower's die in hand burrows there (the Mole's; Ryan, 16 November: "Instead of Reboot, it
+	# Burrows"): the control says so while it is held.
+	var word := "BURROW" if _drag_from >= 0 and _drag_from < sk.mechs.size() and Effects.burrows(sk.mechs[_drag_from].unit) else "REBOOT"
+	if _reboot_btn.text != word:
+		_reboot_btn.text = word
 	_reboot_btn.set_pulse(_drag_from >= 0 and sk.can_reboot(_drag_from))
 	_reboot_btn.queue_redraw()
 

@@ -593,59 +593,14 @@ func test_a_blow_grows_with_its_targets_missing_hull() -> void:
 
 ## The face shows the number (10 October, bible section 5): what the blow will deal now, and
 ## held over a foe, what it deals to that foe. Flat means no roll, however much feeds it.
-func test_the_hopper_fills_from_a_claw_and_a_shot_fires_a_few_loads() -> void:
-	# Ryan, 11 October: the Honey Badger's locked pair. A weapon that fills the hopper puts a
-	# load in for each foe its blows reach; one that fires it takes up to its most a shot,
-	# +5 a load, and spends them, so a full hopper feeds several shots rather than one.
-	var sk := Skirmish.new(1)
-	var claw := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "keywords": ["cleave"], "cleave": 5, "fills_hopper": 1})
-	var gun := Face.from_dict({"kind": "attack", "reach": "direct", "power": 20, "fires_hopper": 3, "power_per_load": 5})
-	assert_eq(claw.describe(), "10 spread 5 fills the hopper", "the claw says what it does, its Spread's number with it")
-	assert_eq(gun.describe(), "20 fires the hopper, +5 a load (3 a shot)", "and so does the gun")
-	assert_eq(Face.from_dict(gun.to_dict()).describe(), gun.describe(), "both round-trip")
-	var m := _mech("A", Die.of([claw, gun]), 500, 500)
-	var ms := sk.add_mech(m)
-	sk.add_foes([_ghoul(500, 10), _ghoul(500, 10), _ghoul(500, 10)])
-	sk.begin()
-	sk.start_round()
-	ms.face_index = 1
-	assert_eq(sk.shown_number(ms, gun), 20, "an empty hopper adds nothing")
-	ms.face_index = 0
-	assert_true(sk.assign(0, sk.front[1]), "the claw on the middle foe")
-	assert_eq(Effects.stacks_of(m, "hopper"), 3, "three foes reached: three loads")
-	assert_true("\n".join(sk.log).contains("fills the hopper: +3 (3)"), "the log says so")
-	sk.end_round()
-	assert_eq(Effects.stacks_of(m, "hopper"), 3, "the loads keep through the round")
-	sk.start_round()
-	Effects.stack(m, Effects.STATUS["hopper"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
-	ms.face_index = 1
-	assert_eq(sk.shown_number(ms, gun), 35, "five loads, but three a shot: 20 and 15")
-	var hp: int = sk.front[0].hp
-	assert_true(sk.assign(0, sk.front[0]), "the shot")
-	assert_eq(sk.front[0].hp, hp - 35, "twenty and three loads")
-	assert_eq(Effects.stacks_of(m, "hopper"), 2, "three spent, two left for the next shot")
-	sk.end_round()
-	sk.start_round()
-	ms.face_index = 1
-	assert_eq(sk.shown_number(ms, gun), 30, "the next shot fires the two left")
-
-
-func test_the_bot_fills_the_hopper_before_it_fires_it() -> void:
-	# A claw that reaches three foes is worth its loads to a machine that can fire them.
-	var sk := Skirmish.new(1)
-	var claw := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "keywords": ["cleave"], "fills_hopper": 1})
-	var gun := Face.from_dict({"kind": "attack", "reach": "direct", "power": 20, "fires_hopper": 3, "power_per_load": 5})
-	var m := _mech("A", Die.of([claw, gun]), 500, 500)
-	var ms := sk.add_mech(m)
-	sk.add_foes([_ghoul(500, 10), _ghoul(500, 10), _ghoul(500, 10)])
-	sk.begin()
-	sk.start_round()
-	var pol := Policy.make(Policy.GREEDY, 1)
-	var plain := Face.from_dict({"kind": "attack", "reach": "direct", "power": 10, "keywords": ["cleave"]})
-	assert_true(pol.attack_score(sk, ms, claw, sk.front[1]) > pol.attack_score(sk, ms, plain, sk.front[1]), "the loads are worth something")
-	assert_eq(pol.hopper_fill_score(sk, ms, claw, sk.front[1]), 3.0 * 5.0 * Policy.HOPPER_WEIGHT, "three loads at five, discounted")
-	Effects.stack(m, Effects.STATUS["hopper"], Effects.SKIRMISH, "test", 6, Effects.DECAY_NONE)
-	assert_eq(pol.hopper_fill_score(sk, ms, claw, sk.front[1]), 0.0, "two shots' worth waiting already: no more value")
+func test_an_emptying_entry_says_what_it_does_and_round_trips() -> void:
+	# Ryan, 20 November: the Bullion Fragmenter empties the hopper, a strike an Ore (its engine in
+	# tests/test_badger.gd).
+	var gun := Face.from_dict({"kind": "attack", "reach": "direct", "power": 2, "empties_hopper": true})
+	assert_eq(gun.describe(), "2 a strike for every Ore it empties", "the entry says what it does")
+	assert_true(gun.has_unique_rule(), "a rule printed on the entry: the star chip")
+	assert_false(gun.is_debuff(), "a weapon")
+	assert_true(Face.from_dict(gun.to_dict()).empties_hopper, "it round-trips")
 
 
 func test_a_bracing_entry_armours_its_owner_until_its_sides_next_turn_begins() -> void:
@@ -1720,8 +1675,11 @@ func test_chain_never_arcs_to_the_foe_it_is_aimed_at() -> void:
 	assert_eq("\n".join(sk.log).count("arcs to"), 1, "one arc")
 
 
-func test_the_firers_modifiers_ride_every_arc() -> void:
-	for amp in [["add_damage", 1, 3, "2 + 1"], ["multiply_damage", 2, 4, "2 x 2"]]:
+## An arc is the Chain's number flat (Ryan, 21 November: "If Chain doesn't carry the riders, it
+## shouldn't carry the unit's or weapon's buffs either. It's flat damage that strikes"): no add or
+## multiply of the machine's lands on it, where the strike itself takes them.
+func test_no_buff_of_the_machines_rides_an_arc() -> void:
+	for amp in [["add_damage", 1, 2, "2, flat"], ["multiply_damage", 2, 2, "2, flat"]]:
 		var sk := Skirmish.new(1, 2)
 		var m := _mech("A", Die.single(_chain_gun()))
 		m.grant_passive({"id": "test_amp", "name": "Amp", "description": "", "effects": [{"trigger": "on_attack", "effect": str(amp[0]), "value": amp[1]}]})
@@ -1734,6 +1692,7 @@ func test_the_firers_modifiers_ride_every_arc() -> void:
 		_shock_on(other)
 		assert_true(sk.assign(0, target), "the Chain gun spent")
 		assert_eq(30 - other.hp, int(amp[2]), "%s: the conductor takes %s" % [str(amp[0]), str(amp[3])])
+		assert_true(30 - target.hp > 4, "%s: the strike itself takes the buff" % str(amp[0]))
 
 
 func test_a_kill_by_an_arc_fires_the_kill_rules() -> void:
@@ -1752,7 +1711,9 @@ func test_a_kill_by_an_arc_fires_the_kill_rules() -> void:
 	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "and the kill is its attack's: its kill trigger fires")
 
 
-func test_an_arc_meets_armour_unless_its_gun_ignores_it() -> void:
+## An arc meets the foe's own armour whatever its gun's rules (21 November: no rule of the piece's
+## rides an arc), a gun that ignores armour included; only the foe's own statuses read it.
+func test_an_arc_meets_armour_whatever_its_gun_ignores() -> void:
 	for ignores in [false, true]:
 		var sk := Skirmish.new(1, 2)
 		var gun := _chain_gun(4, 2, 3)
@@ -1766,7 +1727,7 @@ func test_an_arc_meets_armour_unless_its_gun_ignores_it() -> void:
 		sk.start_round()
 		_shock_on(plated)
 		assert_true(sk.assign(0, target), "the Chain gun spent")
-		assert_eq(30 - plated.hp, 2 if ignores else 1, "a gun that ignores armour arcs past it" if ignores else "Chain 2, plain, less armour 1")
+		assert_eq(30 - plated.hp, 1, "Chain 2, flat, less armour 1, %s" % ("its gun's own rule left behind" if ignores else "a plain gun's"))
 
 
 ## The primers (Ryan, 2 November; as keywords since 3 November: "a multi-hit weapon with Shock
@@ -1940,24 +1901,25 @@ func test_the_maps_list_the_conductors() -> void:
 	sk.begin()
 	sk.start_round()
 	_shock_on(behind)
-	var shapes := sk.area_shapes(gun, target)
-	assert_eq(shapes.size(), 1, "one foe past the target")
-	assert_eq(int(shapes.get(behind, 0)), Skirmish.AREA_CHAIN, "the Shocked foe, a conductor")
+	assert_true(sk.area_shapes(gun, target).is_empty(), "Chain is no shape of the strike: its conductors are struck apart")
+	assert_eq(Array(sk.ridden_by(gun, target)), [target], "the strike's own footprint, its riders' foes: the target alone")
 	var hit := sk.reached_by(gun, target)
-	assert_eq(hit.size(), 2, "the target and its conductor")
+	assert_eq(hit.size(), 2, "every foe the spend reaches: the target and its conductor")
 	assert_true(hit.has(target) and hit.has(behind), "both")
 	assert_false(hit.has(beside) or hit.has(other_back), "no foe without a charge")
-	assert_eq(Skirmish.area_number(gun, Skirmish.AREA_CHAIN), 2, "a conductor's number is Chain's")
+	assert_eq(Array(sk.conductors(gun, target)), [behind], "the arcs' foes: the conductor")
+	_shock_on(target)
+	assert_eq(Array(sk.conductors(gun, target)), [behind], "a Shocked target is out: the gun's strike spends its Shock first")
 	var probe := Face.attack(0, L, [K.CHAIN])
 	probe.chain = 2
-	assert_eq(Array(sk.conductors(probe, target)), [behind], "a debuff's Chain conducts too, its arcs carrying its riders (the Storm Petrel's lure, 17 November)")
+	assert_eq(Array(sk.conductors(probe, target)), [target, behind], "equipment spends no Shock, so its Shocked target is struck too (Ryan, 21 November: \"Any conductor\")")
 	assert_true(sk.conductors(Face.attack(0, L, [K.LURE]), target).is_empty(), "an entry without Chain conducts nothing")
 
 
-## Chain's footprint beside an area's (Ryan, 29 October: "Chain is an AoE shape, so it doesn't proc
-## on spread/penetrate/splash procs, right?"): both are read from the strike's own foe, so an arc
-## spreads nowhere, and a foe both beside the target and Shocked takes one blow, the area's.
-func test_chain_and_spread_each_reach_from_the_target_alone() -> void:
+## Chain beside an area (Ryan, 21 November: "It should stack with spread and penetrate"): a Shocked
+## foe beside the target takes Spread's blow and the arc, the area's blow spending no Shock, and an
+## arc spreads nowhere.
+func test_chain_stacks_with_spread_and_spreads_nowhere() -> void:
 	var sk := Skirmish.new(1, 3)
 	var gun := _chain_gun(4, 2, 3, [K.CLEAVE])
 	gun.cleave = 1
@@ -1977,11 +1939,12 @@ func test_chain_and_spread_each_reach_from_the_target_alone() -> void:
 	assert_true(sk.assign(0, target), "the Chain and Spread gun spent")
 	assert_eq(target.hp, 26, "the target takes the roll")
 	assert_eq(left.hp, 29, "the foe beside it takes Spread 1")
-	assert_eq(right.hp, 29, "the Shocked foe beside it takes one blow, the area's: Spread 1, never Chain's 2 too")
+	assert_eq(right.hp, 27, "the Shocked foe beside it takes Spread 1 and Chain's 2")
+	assert_true(Effects.has(right, "shocked"), "an area's blow spends no Shock, nor an arc")
 	assert_eq(far.hp, 28, "the Shocked foe out of the row takes Chain 2")
 	assert_eq(mid_back.hp, 30, "the arc spreads nowhere: the conductor's neighbour takes nothing")
-	assert_eq(right_back.hp, 30, "and nothing arcs from the area's foe")
-	assert_eq("\n".join(sk.log).count("arcs to"), 1, "one arc, to the one conductor out of the area")
+	assert_eq(right_back.hp, 30, "and nothing arcs on from the area's foe")
+	assert_eq("\n".join(sk.log).count("arcs to"), 2, "two arcs, one to each conductor")
 
 
 ## Shocked (Ryan, 29 October: "when targeted and struck by a weapon, double the damage received
@@ -3950,27 +3913,27 @@ func test_hull_damage_fires_on_every_hull_hit_for_the_skirmish() -> void:
 	assert_eq(Effects.stacks_of(n, "hopper"), 1, "the bite fed it")
 
 
-## A store's cap (Ryan, 22 October, of the Nemesis's rage, until 23 November; the Wild Boar's
-## Juggernaut at one today): a passive's stack_status that names a cap banks no stack past it, the
-## rule text says so, and the cap reads back for the store's boxes; a cap below one is refused by
-## the validator. On a synthetic counter, the hopper's loads.
+## A cap on a banked stack (Ryan, 22 October, of the Nemesis's rage, a store until 23 November; the
+## Wild Boar's Juggernaut at one today): a passive's stack_status that names a cap banks no stack
+## past it, the rule text says so, and the cap reads back; a cap below one is refused by the
+## validator. On a synthetic stack of Empowered.
 func test_a_capped_store_banks_no_more_than_its_cap() -> void:
 	var core := {"id": "rage_core", "name": "Rage Core", "description": "", "effects": [
-		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "hopper", "cap": 3}]}
+		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "overcharged", "cap": 3}]}
 	var m := _mech("A", Die.single(Face.attack(30)), 0, 200)
 	m.grant_passive(core)
 	for k in range(5):
 		Effects.fire(m, "on_hull_damage", 10)
-	assert_eq(Effects.stacks_of(m, "hopper"), 3, "five hull hits, three loads: the cap")
-	assert_eq(Effects.store_cap(m, "hopper"), 3, "the cap reads back for its boxes")
+	assert_eq(Effects.stacks_of(m, "overcharged"), 3, "five hull hits, three stacks: the cap")
+	assert_eq(Effects.store_cap(m, "overcharged"), 3, "the cap reads back")
 	assert_eq(Effects.store_cap(m, "muster"), 0, "an uncapped store has none")
 	assert_true(Effects.effect_text(core["effects"][0]).contains("up to 3"), "the rule text names the cap")
-	Effects.spend_stacks(m, "hopper", 1)
+	Effects.spend_stacks(m, "overcharged", 1)
 	Effects.fire(m, "on_hull_damage", 10)
-	assert_eq(Effects.stacks_of(m, "hopper"), 3, "a spent one banks again, up to the cap")
+	assert_eq(Effects.stacks_of(m, "overcharged"), 3, "a spent one banks again, up to the cap")
 	var db := ContentDB.load_default()
 	var errs: Array[String] = []
-	db._validate_passive("probe", {"id": "p", "name": "P", "description": "", "effects": [{"trigger": "on_hull_damage", "effect": "stack_status", "value": "hopper", "cap": 0}]}, errs)
+	db._validate_passive("probe", {"id": "p", "name": "P", "description": "", "effects": [{"trigger": "on_hull_damage", "effect": "stack_status", "value": "overcharged", "cap": 0}]}, errs)
 	assert_true(errs.any(func(e) -> bool: return e.contains("cap")), "a cap below one is refused")
 
 
@@ -5527,7 +5490,7 @@ func test_a_foe_aloft_takes_what_it_carries_and_nothing_that_lands_elsewhere() -
 	var next_to: Foe = s2.front[1]
 	var far: Foe = s2.front[2]
 	Effects.stack(r2, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1)
-	assert_false(s2.shocked_foes(null).has(r2), "Shocked, it conducts no arc")
+	assert_false(s2.conducting_foes(null).has(r2), "Shocked, it conducts no arc")
 	var blast := s2.mine_reach(next_to.rank, next_to.column, false)
 	assert_true(blast.has(next_to) and blast.has(far) and not blast.has(r2), "a Mine blowing beside it reaches the foes in reach and passes it by")
 	assert_true(s2.mine_reach(r2.rank, r2.column, false).has(r2), "a Mine it carries blows on it: what it carries is its own")
@@ -9395,6 +9358,30 @@ func test_mines_blow_in_strike_order_and_a_blast_that_fells_a_mined_foe_blows_it
 ## add up, the rest ride once; a gated keyword rides only where its gate held on the hit; nothing
 ## a hit reads off its foe rides, and a rule written on a piece's own blows (ignores armour, where
 ## Breach rode until 15 November) stays with the piece: the blast always meets armour.
+## A Mine's Chain stacks with its blast (Ryan, 21 November: Chain "should stack with spread and
+## penetrate"): a conductor the blast meets takes the blast and the arc, one out of its reach the arc
+## alone, and no rider of the Mine rides an arc (18 November: "take riders off chain").
+func test_a_mines_chain_stacks_with_its_blast_and_carries_no_rider() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.blank()), 40, 100))
+	var a := _ghoul(100, 0)
+	var b := _ghoul(100, 0)
+	var c := _ghoul(100, 0)
+	var far := _archer(100, 0)
+	sk.add_foes([a, b, c, far])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.front[1] == b and sk.back[0] == far, "b mid-front, the archer behind a")
+	_shock_on(a)
+	_shock_on(far)
+	sk._blow_mine({"damage": 3, "riders": {"chain": 2, "stacks": {"brittled": 1}, "keywords": []}}, 0, 1, false, "b")
+	assert_eq(a.hp, 100 - 3 - 2, "a Shocked foe beside it takes the blast and the arc")
+	assert_eq(c.hp, 100 - 3, "a plain one beside it, the blast alone")
+	assert_eq(far.hp, 100 - 2, "a conductor out of its reach, the arc alone")
+	assert_eq(Effects.stacks_of(far, "brittled"), 0, "and no rider rides the arc")
+	assert_eq([Effects.stacks_of(a, "brittled"), Effects.stacks_of(c, "brittled")], [1, 1], "the riders on each foe the blast met")
+
+
 func test_a_mines_keywords_add_up_and_its_blast_meets_armour() -> void:
 	var merged := Skirmish.mine_riders_merged({"stacks": {"ablating": 2}, "keywords": ["shock"]}, {"stacks": {"ablating": 3}, "chain": 1, "keywords": ["shock", "expose"]})
 	assert_eq([int(merged["stacks"]["ablating"]), int(merged["chain"])], [5, 1], "Ablating 2 and Ablating 3 are Ablating 5")

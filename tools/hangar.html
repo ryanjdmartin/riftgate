@@ -586,6 +586,11 @@ button.entry{width:100%;text-align:left;font:inherit;color:var(--ink)}
 .tctx{border-left:3px solid var(--rule-strong);padding:2px 0 2px 10px;margin:6px 0 2px}
 .tctx .piece{font-weight:600;color:var(--ink)}
 .tuse{margin:2px 0 0;font-size:12.5px;color:var(--ink-3)}
+.bwords{margin:8px 0 6px}
+.bwordsd{margin:6px 0 0}
+.bwordsd>summary{cursor:pointer;font:600 12.5px/1.4 var(--display);color:var(--ink-2)}
+.bwordsd .bwg{display:block;margin:10px 0 2px;font:600 11px/1.4 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.tag.shared{border-style:dashed}
 .tuse .piece{font-weight:600;color:var(--ink-2)}
 .tuse .more{color:var(--ink-3)}
 .entry.crow .con{grid-area:on;font-size:12px;color:var(--ink-3)}
@@ -679,7 +684,7 @@ const REACH = {direct: "direct", indirect: "indirect", every_foe: "every foe"};
 const state = {
   shipped: {}, about: {}, edits: {},
   section: "chassis", sub: {chassis: "machines", components: "list", modules: "list", foes: "formations", text: "overview"},
-  open: null, returnTo: null, draft: null, invalid: new Set(), raw: false, fopen: new Set(), fscroll: null, fedit: new Set(),
+  open: null, returnTo: null, draft: null, invalid: new Set(), raw: false, fopen: new Set(), fscroll: null, fedit: new Set(), bwords: {},
   db: null, user: null, dbState: "loading", canWrite: true,
   designs: null, dnotes: [], designState: "connecting", dNote: null, dDir: null, dIdea: null, dAdd: null, bbrief: {},
   pins: null, renders: null,
@@ -872,8 +877,8 @@ function dieIds(e) { return [...(e.fixed || []), ...(e.loadout || []).slice(0, N
 function dieComps(e) { return dieIds(e).map(id => ctx().comps.get(id)).filter(Boolean).map(x => x.entry); }
 const faceKeywords = (c) => ((c && c.face) || {}).keywords || [];
 const kindOf = (c) => ((c && c.face) || {}).kind || "";
-// A component's blueprint tier, as ContentDB.component_tier: the tier it stores, 0 the basics
-// (a run starts with their blueprints) to 3; null for a locked one, never a blueprint.
+// A component's blueprint tier, as ContentDB.component_tier: the tier it stores, 1 to 3, a basic
+// a tier-one piece with its flag (a run starts with its blueprint); null for a locked one.
 const compTier = (c) => (!c || ctx().locked.has(c.id) || c.tier === undefined || c.tier === null) ? null : Number(c.tier);
 function makerShort(id) { return MAKER_SHORT[id] || (ctx().makers.get(id) || {}).name || id || ""; }
 const factionName = (id) => (ctx().factions.get(id) || {}).name || id || "";
@@ -925,7 +930,7 @@ const FILTER_SPECS = {
       {id: "reach", label: "Reach", of: e => [(e.face || {}).reach], name: v => REACH[v] || v, order: Object.keys(REACH)},
       {id: "kw", label: "Keywords", of: faceKeywords, name: vocabName},
       {id: "shape", label: "Silhouette", of: e => [e.shape], name: plain},
-      {id: "tier", label: "Tier", of: e => [compTier(e) !== null ? "T" + compTier(e) : "none"], name: v => v === "none" ? "No tier" : v === "T0" ? "T0 (basic)" : v, order: ["T0", "T1", "T2", "T3", "none"]},
+      {id: "tier", label: "Tier", of: e => [compTier(e) !== null ? (e.basic ? "basic" : "T" + compTier(e)) : "none"], name: v => v === "none" ? "No tier" : v === "basic" ? "T1 (basic)" : v, order: ["basic", "T1", "T2", "T3", "none"]},
       {id: "fit", label: "Dice", of: e => [ctx().fitted.get(e.id) ? "fitted" : "spare"], name: v => v === "fitted" ? "On a die" : "On none", order: ["fitted", "spare"]},
       {id: "lock", label: "Locked", of: e => [ctx().locked.has(e.id) ? "locked" : "slot"], name: v => v === "locked" ? "A locked piece" : "Slottable", order: ["slot", "locked"]},
       {id: "status", label: "Status", of: e => e.status === "planned" ? ["planned"] : [], keep: true},
@@ -1764,7 +1769,7 @@ function carriersOf(cid) { return [...ctx().chassis.values()].filter(ch => dieId
 function componentRow(x, note) {
   const comp = x.entry, f = comp.face || {}, kind = f.kind || "", tier = compTier(comp), carriers = carriersOf(comp.id);
   const name = el("span", {class: "cname"}, comp.name || comp.id);
-  if (tier !== null) name.append(el("span", {class: "tier", title: tier === 0 ? "Blueprint tier 0: a basic, whose blueprint a run starts with" : "Blueprint tier: its blueprint is found, and a bought chassis that stocks it brings a copy"}, "T" + tier));
+  if (tier !== null) name.append(el("span", {class: "tier", title: comp.basic ? "Blueprint tier 1, a basic: a run starts with its blueprint" : "Blueprint tier: its blueprint is found, and a bought chassis that stocks it brings a copy"}, "T" + tier));
   if (ctx().locked.has(comp.id)) name.append(" ", el("span", {class: "tag planned", title: "A locked piece: built into its machine, never a blueprint, no tier"}, "locked"));
   if (comp.status === "planned") name.append(" ", el("span", {class: "tag planned", title: "A planned draft: kept, not shown, not run"}, "planned"));
   if (x.st) name.append(" ", el("span", {class: "tag " + x.st}, x.st === "del" ? "delete" : x.st));
@@ -2114,6 +2119,7 @@ function sheetBar(c) {
 function renderSheet(main) {
   const {key, id} = state.open, f = FILES.find(x => x.key === key);
   want("text", ensureText);
+  if (key === "components.entries") want("readouts", ensureReadouts);
   if (key === "foes.entries") { want("foeart", ensureFoeArt); want("foerules", ensureFoeRules); }
   const live = liveMap(key).get(id), s = shippedEntry(key, id), st = entryState(key, id), ed = editFor(key, id);
   const e = live ? live.entry : (s || (ed ? ed.data : null));
@@ -2140,7 +2146,7 @@ function renderSheet(main) {
 }
 const SHEETS = {
   "components.entries": {
-    sub: (c) => [makerShort(c.e.maker), compTier(c.e) !== null ? "T" + compTier(c.e) + (compTier(c.e) === 0 ? " · a basic" : "") : "locked", KIND_GLYPH[kindOf(c.e)] || kindOf(c.e)].filter(Boolean).join(" · "),
+    sub: (c) => [makerShort(c.e.maker), compTier(c.e) !== null ? "T" + compTier(c.e) + (c.e.basic ? " · a basic" : "") : "locked", KIND_GLYPH[kindOf(c.e)] || kindOf(c.e)].filter(Boolean).join(" · "),
     body(sheet, c) {
       const e = c.e, f = e.face || {}, sf = c.s.face || {}, key = c.key, id = c.id;
       sheet.append(el("h3", {}, "Its die entry"));
@@ -2150,8 +2156,8 @@ const SHEETS = {
       for (const k of (f.keywords || [])) kws.append(kwChip(k, "kw", kwNumber(f, k)));
       for (const t of (e.tags || [])) kws.append(el("span", {class: "kw shape", title: "A tag: build flavour, read by a module or passive"}, t));
       sheet.append(kws);
-      const ro = readoutEl(compReadout(id));
-      if (ro) sheet.append(ro);
+      const words = wordsBox(id);
+      if (words) sheet.append(words);
       const cells = numKeys(f, sf).map(k => numCellAt(c, ["face"], k));
       if (compTier(e) !== null || typeof e.tier === "number") cells.unshift(numCellAt(c, [], "tier", "blueprint tier"));
       sheet.append(numsBox(cells), el("p", {class: "shint", style: "margin-top:6px"}, "Clear a number to put it back as the files have it. Its keywords, reach, shape and tags change on the raw view (Every field)."));
@@ -2375,6 +2381,8 @@ function closeText(drop = true) { if (drop && state.topen) keepTyped(state.topen
 // that would change nothing is removed instead.
 async function putText(s, patch) {
   if (!state.db) return false;
+  const stray = typeof patch.text === "string" ? strayBraces(patch.text, s.fills) : [];
+  if (s.key === "templates.entries" && stray.length) { toast(strayWords(stray, s.fills) + ": not saved. A note asks a session for a new slot."); return false; }
   const prev = textDoc(s) || {};
   const d = {text: prev.text, mark: prev.mark, note: prev.note, ...patch};
   if (typeof d.text !== "string" || d.text === s.text) delete d.text;
@@ -2467,7 +2475,7 @@ function textRow(s, opts = {}) {
   ed.append(facts);
   const use = templateUse(s);
   if (use) {
-    const box = el("div", {class: "tctx"}, el("span", {class: "lab"}, use.count ? "Printed on " + use.count + " piece" + (use.count === 1 ? "" : "s") + " at its own numbers · the first " + use.on.length : "No piece prints it at its own numbers today: it prints in a fight (a moved number, a short purse, the die's hold, a live intent), or once a piece carries its rule"));
+    const box = el("div", {class: "tctx"}, el("span", {class: "lab"}, use.count ? "Printed on " + useWords(use) + " at their own numbers · the first " + use.on.length : "No piece prints it at its own numbers today: it prints in a fight (a moved number, a short purse, the die's hold, a live intent), or once a piece carries its rule"));
     for (const o of use.on) box.append(el("p", {class: "rl"}, el("span", {class: "piece"}, o.piece + ": "), o.words));
     ed.append(box);
   }
@@ -2480,9 +2488,12 @@ function textRow(s, opts = {}) {
   if (s.edit) {
     ta = el("textarea", {id: "tx-edit", rows: "3", "aria-label": "The text", disabled: !canText()});
     ta.value = t.text;
-    ta.addEventListener("input", () => { t.text = ta.value; autosize(ta); meter.textContent = wordCount(ta.value); keepTyped(s.id, t); sync(); });
+    const warn = s.key === "templates.entries" ? el("div", {class: "tflagline"}) : null;
+    const check = () => { if (!warn) return; const bad = strayBraces(ta.value, s.fills); warn.hidden = !bad.length; warn.textContent = bad.length ? strayWords(bad, s.fills) + ": it cannot be saved so" : ""; };
+    ta.addEventListener("input", () => { t.text = ta.value; autosize(ta); meter.textContent = wordCount(ta.value); keepTyped(s.id, t); sync(); check(); });
     requestAnimationFrame(() => autosize(ta));
     ed.append(ta, meter);
+    if (warn) { check(); ed.append(warn); }
   }
   const note = el("input", {type: "text", id: "tx-note", value: t.note, placeholder: s.edit ? "A note to the session (optional): what to fix, what to match" : "A note to the session: what it should say", "aria-label": "Note to the session", disabled: !canText()});
   note.addEventListener("input", () => { t.note = note.value; keepTyped(s.id, t); sync(); });
@@ -2540,7 +2551,7 @@ const TEXT_VIEWS = [
   {id: "components", label: "Components", what: "A component's every text: its codex, its flavour and its passive. A locked piece is its machine's own, so its texts are on its machine's card in Chassis.", group: "Maker"},
   {id: "modules", label: "Modules", what: "A module's every text: its rule, its codex and its flavour.", group: "Maker"},
   {id: "foes", label: "Foes", what: "A foe's every text: its codex and flavour, then each move's name and line, then its fall's.", group: "Domain"},
-  {id: "vocabulary", label: "Vocabulary", what: "Every term's entry, the rule as the player reads it, a card a category.", group: ""},
+  {id: "vocabulary", label: "Vocabulary", what: "Every term's entry, the rule as the player reads it, a card a category.", group: "Category"},
   {id: "domains", label: "Domains", what: "A domain's flavour beside its name, and the caches' lines.", group: ""},
   {id: "templates", label: "Templates", what: "The words the game composes from a piece's numbers: a component's own rules, its readout's words, its lines on the die's hold in a fight, and a foe move's words. A brace is a value the game fills in ({n}, {per_load}); a template written in forms (one, other) picks one by its count. Under each, the pieces that print it, in the game's words.", group: ""},
   {id: "code", label: "In code", what: "The texts the code still holds: the status lines. Read only here: a note asks a session to change one.", group: ""},
@@ -2748,7 +2759,55 @@ function renderTextOverview(main) {
 function templateUse(s) {
   if (s.key !== "templates.entries" || !state.readouts) return null;
   const u = (state.readouts.templates || {})[s.entry];
-  return u ? {count: u.count || 0, on: u.on || []} : {count: 0, on: []};
+  return u ? {count: u.count || 0, pieces: u.pieces || 0, moves: u.moves || 0, on: u.on || []} : {count: 0, pieces: 0, moves: 0, on: []};
+}
+// How many components and foe moves a template's lines print on, in words.
+const useWords = (u) => [u.pieces ? u.pieces + (u.pieces === 1 ? " piece" : " pieces") : "", u.moves ? u.moves + (u.moves === 1 ? " move" : " moves") : ""].filter(Boolean).join(" and ") || "none";
+// The braces a template's text holds that the game fills nothing into, and how to say so.
+function strayBraces(text, fills) { return [...String(text).matchAll(/\{([^}]*)\}/g)].map(m => m[1]).filter(b => !(fills || []).includes(b)); }
+const fillWords = (fills) => (fills || []).length ? fills.map(f => "{" + f + "}").join(", ") : "nothing";
+const strayWords = (bad, fills) => `{${bad.join("}, {")}} is filled by nothing: the game fills ${fillWords(fills)}`;
+// A piece's words (Ryan, 20 November: "Need to be able to hop to/edit the template from the
+// Chassis tab when viewing a chassis"): its lines as the game prints them, and under them every
+// template those lines are built from, each the Text tab's row in place: typed here, it is his
+// as there, and waits for a session to fold it in; "On the Text tab" opens its row there. A
+// template other pieces' lines share says on how many, since an edit changes them all.
+const WORD_ROWS = [["rule", "Its own rules"], ["attr", "What it is, its costs and its target"], ["kw", "Its keywords"], ["other", "Elsewhere in its lines"]];
+function wordsBox(cid, label) {
+  const ro = compReadout(cid);
+  if (!ro) return state.loaded.readouts ? null : el("p", {class: "hint"}, "Loading what it does…");
+  const box = el("div", {class: "bwords"}), lines = readoutEl(ro, label);
+  if (lines) box.append(lines);
+  const tpl = ro.tpl || {}, ids = WORD_ROWS.flatMap(([g]) => tpl[g] || []);
+  if (!ids.length || !state.text) return box;
+  const det = el("details", {class: "bwordsd", open: state.bwords[cid] || null});
+  det.addEventListener("toggle", () => { state.bwords[cid] = det.open; });
+  det.append(el("summary", {}, `Edit its words: the ${ids.length} template${ids.length === 1 ? "" : "s"} its lines are built from`));
+  det.append(el("p", {class: "hint"}, "A brace is a value the game fills in. What you type is yours, as on the Text tab, and waits there for a session to fold in. Clear a field to put it back as the files have it."));
+  if (!canText()) det.append(el("p", {class: "help"}, state.textState === "connecting" ? "Connecting to the texts…" : "Read only: the texts cannot be saved in this view."));
+  for (const [g, glabel] of WORD_ROWS) {
+    if (!(tpl[g] || []).length) continue;
+    det.append(el("span", {class: "lab bwg"}, glabel));
+    for (const id of tpl[g]) for (const t of textSlots().filter(x => x.key === "templates.entries" && x.entry === id)) det.append(templateField(t));
+  }
+  box.append(det);
+  return box;
+}
+function templateField(s) {
+  const v = textView(s), fid = `tpl.${s.entry}.${s.path}`, use = templateUse(s) || {count: 0};
+  const head = el("div", {class: "thead"}, blabel(fid, s.entry + (s.sub ? " · " + s.sub : "")), stateTag(v.st));
+  if (v.pending) head.append(el("span", {class: "tag pending", title: "Saved here; a session folds it into the files"}, v.newText ? "your text waits" : v.newMark ? "your mark waits" : "your note waits"));
+  if (use.count > 1) head.append(el("span", {class: "tag shared", title: "Other lines are built from it too: an edit here changes them all"}, "on " + useWords(use)));
+  head.append(el("button", {class: "linkbtn", title: "This template's row on the Text tab: every piece it prints on, and a note to the session", onclick: () => openTextAt(s)}, "On the Text tab"));
+  const warn = el("div", {class: "tflagline", hidden: true});
+  const check = (t) => { const bad = strayBraces(t, s.fills); warn.hidden = !bad.length; warn.textContent = bad.length ? strayWords(bad, s.fills) + ": it cannot be saved so" : ""; };
+  const field = bfield("area", fid, v.text, val => { if (!strayBraces(val, s.fills).length) benchTextSave(s, val); }, {placeholder: "Nothing written."}, canText());
+  field.addEventListener("input", () => check(field.value));
+  check(field.value);
+  const box = el("div", {class: "btext"}, head, el("p", {class: "hint", style: "margin:0 0 4px"}, "fills " + fillWords(s.fills)), field, warn);
+  if (v.newText) box.append(el("details", {class: "bfiles"}, el("summary", {}, "As the files have it"), el("p", {class: "old"}, s.text || "(empty)")));
+  if (v.note) box.append(el("div", {class: "tflagline", style: "color:var(--edited)"}, "Your note: " + v.note));
+  return box;
 }
 function textContext(card) {
   if (!state.readouts) return null;
@@ -2889,8 +2948,10 @@ const benchOf = (e) => ((e && e.design) || {}).bench || {};
 const benchCan = () => state.dbState === "ready" && state.canWrite;
 const benchKind = (id) => "bn-" + safeId(id);
 function reworkBriefOf(id) { return designDocs().find(d => (d.header || {}).kind === "chassis" && d.header.built === id) || null; }
-// A built machine's state: the one he set, else in design where a brief reworks it, else in game.
-const benchDefault = (e) => (reworkBriefOf(e.id) ? "design" : "game");
+// A built machine's state: the one he set, else in design where it is back in design (planned, a
+// brief reworking it), unfinished where it is dealt and a brief still holds something of it open
+// (the Echidna's look, the Mole's tree, the Buzzard's direction), else in game.
+const benchDefault = (e) => (!reworkBriefOf(e.id) ? "game" : e.status === "planned" ? "design" : "unfinished");
 const benchState = (e) => benchOf(e).state || benchDefault(e);
 // The upgrade steps a machine's tier leaves it: four at tier one, two at tier two, none at three.
 const benchSteps = (tier) => (Number(tier) === 1 ? [["a", "s1"], ["a", "s2"], ["b", "s1"], ["b", "s2"]] : Number(tier) === 2 ? [["a", "s1"], ["b", "s1"]] : []);
@@ -3156,6 +3217,8 @@ function benchPiece(e, cid, copies) {
   const kws = el("div", {class: "kws"});
   for (const k of (f.keywords || [])) kws.append(kwChip(k, "kw", kwNumber(f, k)));
   if (kws.childElementCount) box.append(kws);
+  const words = wordsBox(cid);
+  if (words) box.append(words);
   const nums = el("div", {class: "bnums"});
   const keys = [...new Set([...Object.keys(sf), ...Object.keys(f)])].filter(k => typeof f[k] === "number" || typeof sf[k] === "number");
   for (const k of keys) nums.append(benchNumCell(`${cid}.face.${k}`, plain(k), f[k], sf[k], v => benchWrite(key, cid, d => { d.face = d.face || {}; benchSetNum(d.face, sf, k, v); })));
@@ -3235,6 +3298,75 @@ function benchStock(sheet, e) {
 }
 // Its codex and its flavour: the Text tab's two rows for the machine, read and written as that tab
 // does, so a write on either shows on both.
+// Every term a machine orbits (Ryan, 22 November: "all ability, keywords, status chips, etc. in the
+// chassis edit sections, so that I can see everything a chassis orbits and edit it together.
+// Especially ones unique to that chassis"): the terms its own words name, its passive, its upgrades
+// and its locked pieces, by a term's name as the game's text writes it (its capital) or its id where
+// a field holds one, and the locked pieces' readouts as the game prints them. A term no other
+// machine names is its own; the rest are shared. Design notes are never read.
+let ORBITS = null;
+function orbitStrings(x, out) {
+  if (typeof x === "string") out.push(x);
+  else if (Array.isArray(x)) for (const v of x) orbitStrings(v, out);
+  else if (x && typeof x === "object") for (const k of Object.keys(x)) if (k !== "design") orbitStrings(x[k], out);
+  return out;
+}
+function machineOrbit(e, vocab, rx) {
+  const strs = orbitStrings({passive: e.passive, branches: e.branches, upgrades: e.upgrades, traits: e.traits, codex: e.codex}, []);
+  for (const cid of new Set(e.fixed || [])) {
+    const c = ctx().comps.get(cid);
+    if (c) orbitStrings({face: c.face, passive: c.passive, codex: c.codex}, strs);
+    const r = compReadout(cid);
+    if (r) strs.push(r.attr || "", r.kw || "", ...(r.rule ? [].concat(r.rule) : []));
+  }
+  const ids = new Set();
+  for (const s of strs) {
+    if (vocab.has(s)) ids.add(s);
+    for (const m of s.matchAll(rx)) for (const id of (rx.byName.get(m[1]) || [])) ids.add(id);
+  }
+  // A term whose entry names the machine or one of its locked pieces is its too (the Mole's Drill Out).
+  const own = [e.name, ...[...new Set(e.fixed || [])].map(cid => (ctx().comps.get(cid) || {}).name)].filter(Boolean)
+    .map(n => new RegExp("(?<![A-Za-z])" + n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?![a-z])"));
+  for (const t of vocab.values()) if (t.codex && own.some(r => r.test(t.codex))) ids.add(t.id);
+  return ids;
+}
+function machineTerms(e) {
+  if (!ORBITS || ORBITS.ctx !== ctx() || ORBITS.readouts !== state.readouts) {
+    const vocab = vocabMap(), byName = new Map();
+    for (const t of vocab.values()) if (t.name) { const a = byName.get(t.name) || []; a.push(t.id); byName.set(t.name, a); }
+    const names = [...byName.keys()].sort((a, b) => b.length - a.length).map(n => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+    const rx = new RegExp("(?<![A-Za-z])(" + names.join("|") + ")(?![a-z])", "g");
+    rx.byName = byName;
+    const of = new Map(), count = new Map();
+    for (const m of ctx().chassis.values()) {
+      const ids = machineOrbit(m, vocab, rx);
+      of.set(m.id, ids);
+      for (const id of ids) count.set(id, (count.get(id) || 0) + 1);
+    }
+    ORBITS = {ctx: ctx(), readouts: state.readouts, of, count};
+  }
+  const vocab = vocabMap(), cats = liveEntries("vocabulary.entries").map(x => x.entry.id);
+  return [...(ORBITS.of.get(e.id) || [])].map(id => ({term: vocab.get(id), own: (ORBITS.count.get(id) || 0) === 1}))
+    .filter(x => x.term).sort((a, b) => (b.own - a.own) || cats.indexOf(a.term.id) - cats.indexOf(b.term.id));
+}
+function benchTerms(sheet, e) {
+  sheet.append(el("h3", {}, "Its terms"));
+  const terms = machineTerms(e);
+  if (!state.readouts) sheet.append(el("p", {class: "help"}, state.loaded.readouts ? "The readouts did not load, so the locked pieces' printed words are left out." : "Loading the readouts…"));
+  sheet.append(el("p", {class: "hint"}, "Every keyword, status, ability and resource its passive, its upgrades and its locked pieces name, its own first. Each is the term's entry on the Text tab, edited here as there."));
+  const row = (x) => {
+    const t = x.term, label = [t.name, plain(t.category), t.status === "planned" ? "planned" : ""].filter(Boolean).join(" · ");
+    return textField("vocabulary.entries", t.id, "codex", label, {}, t.codex);
+  };
+  const own = terms.filter(x => x.own), shared = terms.filter(x => !x.own);
+  if (!own.length) sheet.append(el("p", {class: "hint"}, "None of its own: every term it names, another machine names too."));
+  for (const x of own) sheet.append(row(x));
+  if (shared.length) {
+    const box = el("details", {class: "bbrief"}, el("summary", {}, `Shared with other machines · ${shared.length}`));
+    for (const x of shared) box.append(row(x));
+    sheet.append(box);
+  }
+}
 function benchTexts(sheet, e) {
   sheet.append(el("h3", {}, "Codex and flavour"));
   const slots = [["codex", "codex"], ["flavour", "flavour"]];
@@ -3309,6 +3441,7 @@ function renderBenchSheet(main, m) {
   if (!uniq.length) sheet.append(el("p", {class: "hint"}, "None: its identity is its passive and its numbers."));
   for (const cid of uniq) sheet.append(benchPiece(e, cid, fixed.filter(x => x === cid).length));
   benchUpgrades(sheet, e);
+  benchTerms(sheet, e);
   benchStock(sheet, e);
   if (brief) benchBrief(sheet, brief, false);
   sheet.append(el("div", {class: "toolbar", style: "margin-top:22px"},
@@ -3387,7 +3520,7 @@ function settleBriefLink(main) {
 // The Chassis tab: the machines, a machine's sheet, a briefed machine's brief, the Briefs view and
 // its waiting edits; a chassis's or a maker's raw editor where one is open.
 function renderChassis(main) {
-  want("designs", ensureDesigns); want("text", ensureText);
+  want("designs", ensureDesigns); want("text", ensureText); want("readouts", ensureReadouts);
   if (state.bopen && state.bopen.kind === "link") {
     if (!settleBriefLink(main)) return;
     if (state.section !== "chassis") return render();

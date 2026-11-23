@@ -143,13 +143,24 @@ func _apply_pose() -> void:
 			# as the die's target and filled under it.
 			s._on_drag_started(0)
 			s._on_drag_moved(s._reboot_btn.get_global_rect().get_center())
+		"dieview":
+			# A die's double-tap (23 November): the whole die at its live numbers, the one showing marked.
+			s._open_die_view(0)
+		"aim", "aimfree":
+			# A die in hand (22 November): the die stays in its tray, the crosshair on the first
+			# foe ("aim", locked, the die reading what it deals there) or in the open sky
+			# ("aimfree"), a dashed tether between them.
+			s._on_drag_started(1)
+			var fv := s._foe_view_for(s.sk.front[0])
+			var at := fv.get_global_transform() * fv.drawing_rect().get_center() if _pose == "aim" else Vector2(s.size.x * 0.55, s.size.y * 0.2)
+			s._on_drag_moved(at)
 		"touch":
 			# The first die lit as its tap waits out the double-tap window (30 October).
 			s._dice[0]._tap_due = 1.0e12
 			s._dice[0].queue_redraw()
 		"swaphome":
-			# A Swap waiting on its first target, then a tap on nothing sending it home (30 October):
-			# RIFTGATE_SHOT_FRAME=6 or so catches the die in flight.
+			# A Swap waiting on its first target, its crosshair pinned there, then a tap on nothing
+			# setting it back (30 October): RIFTGATE_SHOT_FRAME=2 catches it pinned.
 			var ms: Skirmish.MechState = s.sk.mechs[0]
 			ms.die.faces[ms.face_index] = Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "swaps": true})
 			s._refresh()
@@ -388,11 +399,13 @@ func _apply_battle_pose() -> void:
 		"select":
 			s._on_hex_tapped(b.mechs()[0].pos)
 		"route":
-			for i in range(mini(2, b.mechs().size())):
-				s._on_hex_tapped(b.mechs()[i].pos)
+			# The first machine in hand with two waypoints laid (22 November): its legs, the first
+			# waypoint lit, and its reach drawn again from the second with what is left.
+			s._on_hex_tapped(b.mechs()[0].pos)
+			for i in range(2):
 				var dests: Array = s._map.destinations.keys()
 				if not dests.is_empty():
-					s._on_hex_tapped(dests[dests.size() / 2])
+					s._on_hex_tapped(dests[0])
 		"hold":
 			s._on_unit_held(b.field.packs()[0])
 		"boss":
@@ -409,13 +422,12 @@ func _apply_battle_pose() -> void:
 					break
 			s._on_hex_tapped(pick)
 		"plan_play", "execute":
-			# Two machines' moves planned, then END TURN, or EXECUTE (the turn going on): the plan
+			# The first machine's move laid, then END TURN, or EXECUTE (the turn going on): the plan
 			# playing (RIFTGATE_SHOT_FRAME), or played, at a later frame.
-			for i in range(mini(2, b.mechs().size())):
-				s._on_hex_tapped(b.mechs()[i].pos)
-				var dests: Array = s._map.destinations.keys()
-				if not dests.is_empty():
-					s._on_hex_tapped(dests[dests.size() / 2])
+			s._on_hex_tapped(b.mechs()[0].pos)
+			var dests: Array = s._map.destinations.keys()
+			if not dests.is_empty():
+				s._on_hex_tapped(dests[dests.size() / 2])
 			if _pose == "execute":
 				s._on_main_button()
 			else:
@@ -607,8 +619,17 @@ func _apply_battle_pose() -> void:
 			s._map.scroll_to_unit(b.mechs()[0] if _pose == "zoom" else b.mechs()[b.mechs().size() - 1])
 		"codex":
 			s._on_hex_double_tapped(b.mechs()[0].pos)
-		"foecodex":
+		"formation":
+			# A pack's formation, its double-tap (23 November).
 			s._on_hex_double_tapped(b.field.packs()[0].pos)
+		"foecodex":
+			# A foe's codex over its pack's formation, a double-tap on it there.
+			var pk: Unit = b.field.packs()[0]
+			s._on_hex_double_tapped(pk.pos)
+			for cell in FormationBox.cells_of(pk):
+				if not str(cell).is_empty():
+					s._on_formation_foe(str(cell))
+					break
 		"resolve":
 			s._on_end_turn()
 		"rift":

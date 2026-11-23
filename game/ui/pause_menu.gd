@@ -149,6 +149,8 @@ func _show_page(page: String) -> void:
 			_credit("Voice: Jenny (Dioco)")   # her licence asks for it (CREDITS.md is the record)
 			if OS.is_debug_build():
 				_toggle("EVERY LINE", "voice_test")   # Jenny on every hook, every time: to hear them all on the phone
+				_choice_row("CHIPS", "chip_style", UnitView.CHIP_STYLES)   # how a status chip carries its number: over its corner, on a plate at its corner, or beside it (UnitView.chip_style)
+				_choice_row("TETHER", "aim_tether", AimLayer.TETHERS)   # the aim's tether from the die's edge, or over the die from its middle (AimLayer.tether)
 				_toggle("WELD", "weld")   # the machines' parts welded (MechWeld); off draws them as authored, to compare the look and the heat on the phone
 				_button("TRIALS", func() -> void: _show_page("trials"))   # the trial dials, each a number still to be picked by play (the page's own note lists them), a page of their own so the settings fit every glass
 				_button("COLOURS", func() -> void: _show_page("colours"))   # the colours that carry a meaning and the HUD presets, by wheel or hex (ColourTuner)

@@ -64,6 +64,7 @@ const AILE_REACH_WORTH := 0.3    # an Aile buff's Indirect reach on the next wea
 const AILE_ARMOUR_WORTH := 0.5   # and the Blitz's armour ignored, a point of armour off each foe it may strike, a share of it a strike; a placeholder
 const ROLL_AGAIN_WEIGHT := 1.0   # another action of the die (Rapid, Instant, the reset gun, the Horn's), as the die's own average blow
 const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Ablate's does
+const NEEDLE_PROGRESS := 0.5     # a Sonic Needle short of its bolt: its share of the bolt, at the odds the bolt still comes (a first cut, 20 November)
 const BRITTLE_WEIGHT := 0.5         # a stack of Brittle, as the point it adds to each team blow the foe is likely to take while it lasts
 const SWAP_WEIGHT := 0.25        # a foe brought into the front rank by a swap, as a share of its kill and its threat: it stands exposed to Direct fire
 const BUNCH_WEIGHT := 0.75       # what a swap adds to an ally's area entry this round, as a share: the ally may still spend elsewhere
@@ -317,6 +318,10 @@ func _reboots_second(sk: Skirmish, i: int) -> bool:
 func _wants_reboot(sk: Skirmish, ms: Skirmish.MechState) -> bool:
 	var blind := kind == BLIND or kind == RANDOM
 	var rager := not Effects.rage_piece(ms.unit).is_empty()   # one that would rage (the Nemesis's) reads its maximum as the Rage it opens, never a wall
+	# A burrower whose drill still works in a foe (the Mole's) gives it up as it burrows, the burrow
+	# taking it home with what is left: only an overheat takes it under then, and its guns fight on.
+	if drill_working(sk, ms):
+		return ms.overheat_stacks() > 0
 	if ms.overheat_stacks() > 0:
 		# A vent showing that takes it back under its maximum is the cheaper way down: it keeps
 		# the shield a reboot would drop (the kits that still roll a vent).
@@ -355,9 +360,10 @@ func _reboot_idle(sk: Skirmish) -> void:
 		var ms: Skirmish.MechState = sk.mechs[i]
 		if ms.heat <= 0 and ms.unit.shield >= ms.unit.shield_max:
 			continue
+		if drill_working(sk, ms):
+			continue   # a burrow would take its drill home before it has done its work (the Mole's)
 		if not Effects.rage_piece(ms.unit).is_empty() and not ms.shield_broken:
 			continue   # one that would rage (the Nemesis's) keeps the heat it is climbing toward its Rage
-
 		var fc := sk.forecast(ms)
 		var kept := maxi(0, ms.unit.shield - int(fc["shield_after"]))
 		if kind == BLIND or kind == RANDOM or kept <= REBOOT_KEEP:
@@ -693,15 +699,16 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	var mean := _mean(outcomes)
 	var p_kill := _kill_odds(outcomes, target.hp)
 	var score := _capped(outcomes, target.hp)
-	# Every other foe the blow reaches (a Spread's neighbours, a Penetrate's column,
-	# a Chain's Shocked conductors, a reach over every foe): its shape's number through the
-	# firer's modifiers and its own reads, statuses (a Shock never, no strike being aimed at it:
-	# 29 October) and armour, capped at what it has left (area by shape, numbered, and Chain).
+	# Every other foe the strike's own footprint reaches (a Spread's neighbours, a Penetrate's
+	# column, a reach over every foe): its shape's number through the firer's modifiers and its own
+	# reads, statuses (a Shock never, no strike being aimed at it: 29 October) and armour, capped at
+	# what it has left (area by shape, numbered).
 	var shapes := sk.area_shapes(f, target)
-	for n in sk.reached_by(f, target):
+	for n in sk.ridden_by(f, target):
 		if n != target and n.alive():
 			# A weapon over every foe strikes each as its own target (12 November), a Shock read on each.
 			score += _capped(damage_outcomes(ms, f, n) if f.reach == Face.Reach.EVERY_FOE else damage_outcomes(ms, f, n, int(shapes.get(n, Skirmish.AREA_ALL))), n.hp)
+	score += arcs_worth(sk, ms, f, target, mean)
 	# The rifle's blow on the foe to the right with every strike (the Macaque's offhand, 19
 	# November), a blow of its own beside an area's, through the same order.
 	if f.reach != Face.Reach.EVERY_FOE and Effects.side_strike(ms.unit, f, target) > 0:
@@ -723,6 +730,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 				score += ((1.0 - p_kill) if foe == target else 1.0) * disrupt_score(sk, foe)
 		if f.has(Face.Keyword.LURE):
 			score += (1.0 - p_kill) * lure_score(sk, ms, hit)
+			score += (1.0 - p_kill) * lured_needles(sk, ms, f, hit)   # the blows it turns onto a machine that needles its strikers
 		if f.has(Face.Keyword.SHOCK):
 			# Each foe left standing takes the team's next strike aimed at it double: the blow
 			# shock_cash reads, capped at what the foe will have left. A charge already on a foe
@@ -764,6 +772,9 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	if f.webs:
 		# A delayed stun (the funnel-web's web, 18 October): the blows its burst will stop.
 		score += (1.0 - p_kill) * web_score(sk, target)
+	# A burrower's drill (the Mole's Inertia Drill): its turns in the foe (drill_worth).
+	if real.component != "" and real.component == str(Effects.burrow_rule(ms.unit).get("piece", "")):
+		score += drill_worth(sk, ms, real, target)
 	if f.has(Face.Keyword.DISPEL):
 		# Purge (28 October): what every foe the entry reaches carries but Numbed and Guarded,
 		# the target's at the odds it outlives the blow, its Undying whatever.
@@ -789,6 +800,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# come on the hull the blow leaves, at the odds the foe outlives the blow. A lay that asks for
 	# a weapon's hit (the Ambush's) gets nothing from equipment.
 	var laid_apps := 0
+	var needled := str(Effects.needle_rule(ms.unit).get("status", ""))
 	for foe in sk.ridden_by(f, target):
 		if not foe.alive():
 			continue
@@ -802,7 +814,10 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 				continue
 			if Effects.turns_mark(foe, str(pair[0])):
 				continue   # its Ward turns the lay away (28 October)
-			score += survives * dot_payout(str(pair[0]), int(pair[1]) * maxi(1, f.strikes), left) * VITRIOL_WEIGHT
+			if str(pair[0]) == needled:
+				score += survives * needle_worth(sk, ms, foe, int(pair[1]) * maxi(1, f.strikes), left)   # the Echidna's needles: the bolt they bring
+			else:
+				score += survives * dot_payout(str(pair[0]), int(pair[1]) * maxi(1, f.strikes), left) * VITRIOL_WEIGHT
 			if foe == target:
 				laid_apps += 1
 	# The statuses this blow applies feed any machine's Paradox meter (the Baboon's Pocket
@@ -888,6 +903,156 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 ## shield pays one, the whole shield for a gun that fires it (the Shield-burner Cannon), read as
 ## burn_cost reads shield gone this turn. A placeholder, as every weight: the regrowth a break shuts
 ## off until the reboot (its carrion) is not counted.
+## Whether a burrower's drill is still at work in a foe standing (the Mole's): Applied Momentum of
+## its own on a live foe, which its next burrow would take home.
+static func drill_working(sk: Skirmish, ms: Skirmish.MechState) -> bool:
+	if not Effects.burrows(ms.unit) or not Effects.has(ms.unit, "drill_out"):
+		return false
+	var source := Skirmish.drill_source(ms)
+	for f in sk.field_foes():
+		if not f.alive():
+			continue
+		for m in f.modifiers:
+			if m.id == "applied_momentum" and m.source == source and m.stacks > 0:
+				return true
+	return false
+
+
+## The Inertia Drill at a foe (the Mole's; a first cut, 20 November): a blow a stack of its
+## Conserved Momentum, each through the foe's armour and capped at what the foe has left, and the
+## Ablating its branch lays, at the payout the bot reads any Ablating at. Under, with stacks still
+## to bank and its shield or heat not yet made good, it is worth waiting a turn: the drill is held
+## (a score below nothing), so a dig runs its two turns and drills whole and cold with the cap, a
+## dig's rhythm in his kit ("a turn more under for 3, whole and cold"). A Ward turns it away.
+func drill_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
+	var rule := Effects.burrow_rule(ms.unit)
+	var n := Effects.stacks_of(ms.unit, "conserved_momentum")
+	if n <= 0 or Effects.turns_mark(target, "applied_momentum"):
+		return 0.0
+	if n < int(rule.get("cap", 3)) and (ms.unit.shield < ms.unit.shield_max or ms.heat > 0):
+		return -1.0
+	var tick := Effects.momentum_of(ms.unit, f)
+	var per := maxi(0, int(tick["blow"]) - target.armour_total())
+	var left := float(target.hp)
+	var worth := 0.0
+	for k in range(n):
+		var d := minf(left, float(per))
+		worth += d
+		left -= d
+	var lays: Dictionary = tick["lays"]
+	if int(lays.get("ablating", 0)) > 0 and left > 0.0:
+		worth += float(n) * dot_payout("ablating", int(lays["ablating"]), int(left)) * ABLATE_WEIGHT
+	return worth
+
+
+## A Chain spend's arcs (Ryan, 21 November: "All foes on the field with Shock are struck for
+## {value}. Does not use or consume Shock"): the number flat on every conductor the arcs will strike
+## (Skirmish.conductors: its own target among them while it still conducts), with every strike of
+## the entry, no buff of the machine's or the piece's; each through the foe's own Brittle and
+## armour, a Barrier eating a weapon's first, capped at what the foe keeps (the target's after the
+## strike's mean).
+func arcs_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe, mean: float) -> float:
+	var arcs := sk.conductors(f, target)
+	if arcs.is_empty():
+		return 0.0
+	var n := f.number_of(Face.Keyword.CHAIN)
+	var strikes := maxi(1, f.strikes)
+	var worth := 0.0
+	for c in arcs:
+		if not c.alive():
+			continue
+		var per := float(maxi(0, Effects.damage_taken(c, n, ms.unit, true, false) - c.armour_total()))
+		var landing := strikes - (1 if not f.is_debuff() and c != target and Effects.has(c, "barrier") else 0)
+		var left := maxf(0.0, float(c.hp) - (mean if c == target else 0.0))
+		worth += minf(left, per * float(maxi(0, landing)))
+	return worth
+
+
+## How many bolts `n` more needles fire on a foe holding `have` (Skirmish._lay_needles: a stack at a
+## time, the bolt at the rule's `at`, then the stacks down to the rule's `keeps`, none by default),
+## and the stacks it holds after: [bolts, stacks].
+static func needle_bolts(have: int, n: int, at: int, keeps: int) -> Array:
+	var bolts := 0
+	var held := have
+	for i in range(maxi(0, n)):
+		held += 1
+		if held >= at:
+			bolts += 1
+			held = clampi(keeps, 0, held)
+	return [bolts, held]
+
+
+## What laying `n` of this machine's needles on a foe is worth (the Echidna's Sonic Needles; a first
+## cut, 20 November): every bolt they fire (bolt_worth), and what they leave short of the next, its
+## share of a bolt at NEEDLE_PROGRESS; with the Spiker's sap, the points the foe's attacks lose this
+## round. `left` is the HP the foe keeps after the blow that lays them, `already` the needles the
+## same spend lays on it first (a lured foe's own spend). A Ward turns them away.
+func needle_worth(sk: Skirmish, ms: Skirmish.MechState, foe: Foe, n: int, left: int, already: int = 0) -> float:
+	var rule := Effects.needle_rule(ms.unit)
+	if rule.is_empty() or n <= 0:
+		return 0.0
+	var sid := str(rule["status"])
+	if Effects.turns_mark(foe, sid):
+		return 0.0
+	var at := int(rule["at"])
+	var keeps := int(rule.get("keeps", 0))
+	var start: int = needle_bolts(Effects.stacks_of(foe, sid), already, at, keeps)[1]
+	var after := needle_bolts(start, n, at, keeps)
+	var bolt := bolt_worth(sk, ms, rule, foe, left)
+	var worth := float(int(after[0])) * bolt
+	var short := int(after[1]) - (start if int(after[0]) == 0 else 0)
+	worth += maxf(0.0, float(short)) / float(at) * bolt * NEEDLE_PROGRESS
+	var sap := int(rule.get("sap", 0))
+	if sap > 0 and left > 0 and foe.attacks() and not foe.is_suppressed():
+		worth += float(mini(sk.foe_blow(foe), sap * n) * foe.strikes()) * HULL_WEIGHT
+	return worth
+
+
+## A needle bolt's worth now (Skirmish._needle_bolt): the Chain's number on every conductor, the foe
+## it fires from among them with the HP it keeps (`left`), each blow through the foe's Brittle and
+## armour and capped at what it has, a kill at its bonus.
+func bolt_worth(sk: Skirmish, ms: Skirmish.MechState, rule: Dictionary, from: Foe, left: int) -> float:
+	var chain := int(rule.get("chain", 0))
+	var foes := sk.conducting_foes(from)
+	if left > 0 and not Skirmish.out_of_reach(from):
+		foes.append(from)
+	var worth := 0.0
+	for c in foes:
+		var hp := left if c == from else c.hp
+		var blow := Skirmish.plain_blow_on(c, chain, ms)
+		worth += float(mini(blow, hp))
+		if blow >= hp:
+			worth += KILL_BONUS + _threat_now(c, sk) * HULL_WEIGHT
+	return worth
+
+
+## What a lure's turned blows lay on their strikers (on_struck: the Echidna's needles, Ryan, 20
+## November: the Tether "theoretically ... should result in 2 stacks on that foe"): every foe it
+## turns onto this machine strikes it this round, a needle a blow, after the needles the spend lays
+## on it.
+func lured_needles(sk: Skirmish, ms: Skirmish.MechState, f: Face, foes: Array) -> float:
+	var rule := Effects.needle_rule(ms.unit)
+	if rule.is_empty():
+		return 0.0
+	var sid := str(rule["status"])
+	var per := 0
+	for pair in Effects.struck_lays(ms.unit):
+		if str(pair[0]) == sid:
+			per += int(pair[1])
+	if per <= 0:
+		return 0.0
+	var worth := 0.0
+	for foe in foes:
+		if not foe.alive() or not foe.aims_at_one() or foe.target == ms or not foe.attacks() or foe.is_suppressed():
+			continue
+		var own := 0
+		for pair in Effects.laid_statuses(ms.unit, f, foe):
+			if str(pair[0]) == sid:
+				own += int(pair[1]) * maxi(1, f.strikes)
+		worth += needle_worth(sk, ms, foe, per * foe.strikes(), foe.hp, own)
+	return worth
+
+
 func shield_spend_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> float:
 	if f == null or ms.shield_broken:
 		return 0.0
@@ -1406,9 +1571,9 @@ func hopper_fill_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Fo
 	var per_shot := 0
 	for e in ms.die.faces:
 		var ef := Effects.effective_face(ms.unit, e)
-		if ef.fires_hopper > 0 and ef.power_per_load > per_load:
-			per_load = ef.power_per_load
-			per_shot = ef.fires_hopper
+		if ef.empties_hopper and ef.power > per_load:
+			per_load = ef.power   # a strike more of the entry that empties it (the Bullion Fragmenter)
+			per_shot = maxi(1, Effects.store_cap(ms.unit, "hopper"))
 	var have := Effects.stacks_of(ms.unit, "hopper") if held < 0 else held
 	var cap := Effects.store_cap(ms.unit, "hopper")
 	var room := cap - have if cap > 0 else per_shot * 2 - have
@@ -1581,7 +1746,6 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 		rolls.append(f.power)
 	var fired := Skirmish.heat_bonus(ms, f)   # what the heat it fires adds
 	fired += Skirmish.shield_bonus(ms, f)   # what the shield it fires adds (the Shield-burner Cannon's)
-	fired += Skirmish.hopper_bonus(ms.unit, f)   # and what the loads it fires add
 	var zap := Skirmish.zap_ready(ms, f)   # the Buzzard's zap, where Empowered's add goes, when its shield pays
 	var zctx := {"zap": zap} if zap > 0 else {}
 	var scale := Effects.heat_damage_multiple(ms.unit, ms.heat, ms.heat_max)   # the Whip Scorpion's heat scale, at the heat it holds
@@ -1599,11 +1763,7 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 	var barred := damaging and target != null and Effects.has(target, "barrier")
 	for v in rolls:
 		# A split's halving of the base (rounded down, never below one), then the firer's modifiers
-		# judged on this foe, then its own reads. A debuff's Chain arc is its printed number plain
-		# (Skirmish._area_blow), its armour off.
-		if area == Skirmish.AREA_CHAIN and not damaging:
-			out.append([float(maxi(0, v - (target.armour_for(f) if target != null else 0))), w])
-			continue
+		# judged on this foe, then its own reads.
 		var dmg: int = int(Effects.attack(ms.unit, f, Skirmish.split_share(v + fired, f.split), 0, target, zctx.duplicate())["damage"]) + own
 		# The foe's own statuses read last: a Shocked foe takes the first blow aimed at it double
 		# (a foe past the target, an area's or an arc's, never: 29 October), and its Brittle adds to
@@ -2687,7 +2847,7 @@ static func _widest(sk: Skirmish, areas: Array) -> float:
 				continue
 			var shapes := sk.area_shapes(ef, t)
 			var past := 0.0
-			for foe in sk.reached_by(ef, t):
+			for foe in sk.ridden_by(ef, t):
 				if foe != t and foe.alive():
 					past += minf(maxf(0.0, _area_mean(m, ef, int(shapes.get(foe, Skirmish.AREA_ALL))) - float(foe.armour_total())), float(foe.hp))
 			most = maxf(most, past)
@@ -2699,7 +2859,7 @@ static func _widest(sk: Skirmish, areas: Array) -> float:
 ## that foe: the shape's number with what the entry prints from its firer (heat fired, the
 ## hopper), a split's halving of that base, through its machine's modifiers with no foe in hand.
 static func _area_mean(m: Skirmish.MechState, f: Face, shape: int) -> float:
-	var n := Skirmish.split_share(Skirmish.area_number(f, shape) + Skirmish.heat_bonus(m, f) + Skirmish.shield_bonus(m, f) + Skirmish.hopper_bonus(m.unit, f), f.split)
+	var n := Skirmish.split_share(Skirmish.area_number(f, shape) + Skirmish.heat_bonus(m, f) + Skirmish.shield_bonus(m, f), f.split)
 	var zap := Skirmish.zap_ready(m, f)
 	var ctx := {"zap": zap} if zap > 0 else {}
 	var scale := Effects.heat_damage_multiple(m.unit, m.heat, m.heat_max)   # the Whip Scorpion's heat scale
