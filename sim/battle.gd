@@ -258,12 +258,22 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		u.facing = face_rng.randi_range(1, 2)   # northward, one of the two directions that lead away from the gate
 		field.add_unit(u)
 		i += 1
+	if Battlefield.pickets_trial > 0:
+		for fid in [faction, guest]:
+			if not str(fid).is_empty() and db.factions.has(fid):
+				field.picket_foe[fid] = db.front_liner(fid, tier + 1, ramp)
 	for j in range(placed.size()):
 		var p: Array = placed[j]
-		var sq := field.emerge(p[0], p[1])
-		if sq != null and int(p[2]) > 0:
-			_open_row(sq, Hex.axial_to_offset(p[1]).x, int(p[2]))
-			field.assign_goal(sq)   # its segment is read from where it opens: the wall it reaches soonest
+		# One pack, but under the pickets' trial a formation as its pickets, two columns apart about
+		# its own (Battlefield.dealt_as): the Rupture's size below reads the composition placed.
+		var comes: Array = field.dealt_as(p[0])
+		var at_col := Hex.axial_to_offset(p[1]).x
+		for n in range(comes.size()):
+			var col := clampi(at_col + (2 * n - (comes.size() - 1)), 0, w_cols - 1)
+			var sq := field.emerge(comes[n], Hex.offset_to_axial(col, Hex.axial_to_offset(p[1]).y))
+			if sq != null and int(p[2]) > 0:
+				_open_row(sq, col, int(p[2]))
+				field.assign_goal(sq)   # its segment is read from where it opens: the wall it reaches soonest
 	# The flanks' tears on trial (Battlefield.flank_tears_trial): open from the first turn at the
 	# wall's two ends, sending from the first peak. The Rupture's size below leaves them out, as
 	# it leaves the tide's extras.
@@ -1483,15 +1493,6 @@ func _prune_orders() -> void:
 				_end_action(m.id)
 
 
-## The order of the enemy's turn on trial (Ryan, 23 November: "I would be curious to see how it
-## felt if the packs spawned, then the movement phase happens, so packs move the instant they
-## spawn. I think it might feel better overall, since I wouldn't be playing so far up"): false the
-## game's, the packs walk and then Rift Pressure ticks, so a spawn stands a whole turn where it
-## landed; true, the tick comes first and what it sends walks at once. A debug build's SETTINGS →
-## TRIALS → SPAWNS and RIFTGATE_SPAWN_FIRST set it (Settings.field_trial).
-static var spawn_first_trial: bool = false
-
-
 ## End the player's turn (bible section 4): the enemy's turn plays (packs walk round the
 ## machines, a pack on the apron strikes the gate), the rift ticks once, and the next turn opens
 ## with the fights hunters have forced. Nothing returns on the map (the long wall brief 3.6: the
@@ -1502,9 +1503,9 @@ func end_turn() -> Dictionary:
 		return {}
 	claim_caches()
 	var walks: Dictionary
-	if spawn_first_trial:
+	if Battlefield.spawn_walk_trial > 0:
 		# The trial's order: Rift Pressure ticks first, so what a peak sends walks in the same
-		# enemy turn, out of its mouth at once (a pack that hunts aside: Battlefield._walk).
+		# enemy turn, out of its mouth at once (those that stand all the same: Battlefield._walk).
 		last_spawned = field.tick_pressure(1)
 		walks = field.enemy_turn()
 		field.phase += 1

@@ -236,6 +236,7 @@ static func _field_dict(f: Battlefield) -> Dictionary:
 		"cycle": f.cycle, "patrol_cycle": f.patrol_cycle, "cycle_index": f._cycle_index, "patrol_index": f._patrol_index,
 		"tear_row": f.tear_row, "tears": tears, "caches": caches, "peaks": f.peaks, "rift_spawns": f.rift_spawns, "tear_spawns": f.tear_spawns,
 		"phase": f.phase, "log": f.log, "next_id": f._next_id,
+		"picket_foe": f.picket_foe,   # the pickets' trial's foe a domain, empty with none: a battle begun under it keeps its pickets
 		"units": units,
 	}
 
@@ -277,6 +278,10 @@ static func _field_from(d: Dictionary, map: BattleMap) -> Battlefield:
 	f._cycle_index = int(d.get("cycle_index", d.get("spawn_index", 0)))
 	f._patrol_index = int(d.get("patrol_index", 0))
 	f.tear_row = int(d.get("tear_row", d.get("seam_row", f.tear_row_start())))   # the seam's row, by its name until 23 November
+	var pickets = d.get("picket_foe", {})
+	if pickets is Dictionary:
+		for k in (pickets as Dictionary).keys():
+			f.picket_foe[str(k)] = str(pickets[k])
 	for t in d.get("tears", []):
 		f.tears.append({"pos": Vector2i(int(t[0]), int(t[1])), "opened": int(t[2]) if t.size() > 2 else 0})
 	for c in d.get("caches", []):

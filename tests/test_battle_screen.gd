@@ -823,6 +823,38 @@ func test_every_lock_of_a_turn_is_declared() -> void:
 	s.free()
 
 
+## The field has taken the enemy's turn before the map shows it, so until the round's view plays
+## them every pack that will walk is drawn where it stood, and what the tide sent is unseen and
+## paints no ground; the round's view lets both go (headless it plays nothing and does so at once).
+func test_the_packs_stand_where_they_stood_until_the_round_plays_them() -> void:
+	var s := _screen()
+	var f: Battlefield = s.battle.field
+	var walker: Unit = null
+	for sq in f.packs():
+		if not sq.is_boss:
+			walker = sq
+			break
+	assert_true(walker != null, "a pack to walk")
+	var from := walker.pos
+	var to: Vector2i = Hex.neighbors(from)[5]
+	s._map.hold_walks([[walker.id, [from, to]]])
+	walker.pos = to   # the field moves it at once
+	assert_eq(s._map._unit_center(walker), s._map.center(from), "drawn where it stood, the field having moved it")
+	var sent := Unit.pack(0, "sent", Hex.neighbors(to)[5], "marsh", 2)
+	f.add_unit(sent)
+	s._map.hold_spawn(sent)
+	var with_sent := Bleed.sources(f, Vector2.ZERO, 48.0)
+	assert_eq(s._map._bleed_sources().size(), with_sent.size() - 1, "a pack unseen paints no ground")
+	s._map.play_round([], [sent], false, Callable(), Callable())
+	assert_eq(s._map._unit_center(walker), s._map.center(to), "the round played: where the field has it")
+	assert_eq(s._map._bleed_sources().size(), with_sent.size(), "and what the tide sent is seen")
+	# END TURN leaves nothing held once its views have played.
+	s._on_end_turn()
+	assert_true(s._map._held_px.is_empty() and s._map._spawn_hidden.is_empty(), "nothing left held after a turn")
+	assert_eq(s._map.seam_shown, -1.0, "the seam as the field has it")
+	s.free()
+
+
 ## The seam is a circle about the rift and a picture alone (Ryan, 23 November: "I think the seam
 ## should be circular, radiating out from the rift ... It should start with a radius that
 ## encompasses the boss shield, and maybe one or two hexes around it"; "the seam should move every

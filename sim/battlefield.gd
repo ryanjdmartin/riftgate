@@ -77,8 +77,12 @@ func tear_row_start() -> int:
 ## other mouths, and sends a patrol at every peak after, so where the next flood comes from is
 ## known an interval ahead. Tears stay open.
 var tears: Array = []
-## The packs the tide sent this turn, by id (peak): under the spawn-first trial a pack that hunts
-## stands the turn it lands (_walk). Battle.end_turn empties it as the turn ends; never saved.
+## Each domain's picket under the pickets' trial, faction id -> foe id (Battle.setup fills it from
+## content, ContentDB.front_liner); empty otherwise.
+var picket_foe: Dictionary = {}
+## The packs the tide sent this turn, by id, each "rift" or "tear" by its mouth (peak): under the
+## spawn order's trial some of them stand the turn they land (_walk). Battle.end_turn empties it
+## as the turn ends; never saved.
 var fresh: Dictionary = {}
 ## The hunters that turned on a machine since the screen last asked ([hunter id, prey id], in
 ## order; pick_prey): the battle hands them over (Battle.take_locks) for the declaration on
@@ -175,6 +179,19 @@ static func strike_of(sq: Unit) -> int:
 ## set it (Settings.field_trial). The boss, which never walks, aside. The opening is measured in a
 ## pack's own moves (Battle._open_row), so a quicker pack opens that much farther from the wall.
 static var pace_trial: int = 0
+## The enemy turn's order on trial (the same day: "I would be curious to see how it felt if the
+## packs spawned, then the movement phase happens, so packs move the instant they spawn. I think it
+## might feel better overall, since I wouldn't be playing so far up"): 0 the game's, the packs walk
+## and then Rift Pressure ticks, so a spawn stands a whole turn where it landed, its walk seen
+## before it is taken; 1, the tick comes first and the rift's packs walk at once, out of the mouth
+## he camped, while a tear's stand their turn as in the game's order; 2, every pack the tide sends
+## walks at once. A pack that hunts stands the turn it lands in every order, so its lock is seen a
+## whole turn before its catch. Why the middle form: a tear opens near the wall, and a patrol that
+## walks as it lands strikes before any turn to answer it; with fights for free the coverage model
+## reads the wall losing about four times as much to 2 as to the game's order, and about twice as
+## much to 1 on a dense tide (tools/tide_model.py). A debug build's SETTINGS → TRIALS → SPAWNS and
+## RIFTGATE_SPAWN_FIRST=rift|all set it (Settings.field_trial).
+static var spawn_walk_trial: int = 0
 ## The rift's count on trial, the compositions it sends a peak, 1 the game's (the same day:
 ## "sending multiple packs out of the rift at once, each headed a different direction"): each
 ## draws its segment from a share of its own of the wall it reaches soonest (assign_goal), so
@@ -182,6 +199,18 @@ static var pace_trial: int = 0
 ## extras are the squad's to choose among, never more to kill. SETTINGS → TRIALS → RIFT SENDS and
 ## RIFTGATE_RIFT_SENDS.
 static var rift_sends_trial: int = 1
+## The body on trial as pickets, the heads a picket holds, 0 the game's (the same day: "it feels to
+## me like the game would be more fun if fodder were the primary, significant, threat to the wall,
+## but easy to defeat without any hull lost by a decent player ... Fodder should pose a threat by
+## quantity, not by hard hits"; and of the map, "I would rather more packs ... so that I can choose
+## where to attack and what to let through"): every formation the opening places or the rift sends
+## comes as a pack rated one for each pip of its rating, each so many of its domain's commonest
+## front-liner (picket_foe; his picket of 19 November), parting along the wall as they leave. The
+## pips are the formation's, so the Rupture's size and a wave's worth are the game's; what changes
+## is the count and what one machine can answer alone. A feel for the direction on today's units,
+## before any content is written for it (docs/tide_proposal.md). SETTINGS → TRIALS → FORMATIONS
+## and RIFTGATE_PICKETS=2|3.
+static var pickets_trial: int = 0
 ## The flanks' tears on trial, how many stand open as the battle starts, 0 the game's (the same
 ## day: "Having starting tears at the top and bottom might make sense"): each opens at an end of
 ## the wall on the tears' row (flank_tear_hex), the two ends in turn, and sends from the first
@@ -625,11 +654,12 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 	if sq.is_boss:
 		return w
 	var prey: Unit = pick_prey(sq) if sq.behaviour == "hunt" else null
-	if prey != null and fresh.has(sq.id):
-		# Sent this turn, under the spawn-first trial (Battle.spawn_first_trial): it has turned on
-		# its machine, which is declared, and stands where it landed until the next enemy turn, so
-		# the lock is seen a whole turn before the catch, as a spawn's walk is in the game's order.
-		w.prey = prey.id
+	if fresh.has(sq.id) and (prey != null or (spawn_walk_trial == 1 and str(fresh[sq.id]) == "tear")):
+		# Sent this turn, under the spawn order's trial (spawn_walk_trial), and one that stands
+		# where it landed until the next enemy turn: a hunter, which has turned on its machine (the
+		# lock is declared, and seen a whole turn before the catch), and a tear's pack while the
+		# rift's alone walk at once. It strikes nothing this turn, as a spawn never has.
+		w.prey = prey.id if prey != null else 0
 		return w
 	var found := _walk_search(sq, blocked)
 	var dist: Dictionary = found[0]
@@ -869,16 +899,17 @@ func tick_pressure(ticks: int) -> bool:
 func peak() -> void:
 	peaks += 1
 	var times := Ramp.dense_at(peaks)   # one, but under the tide's trial (Ramp.tide_trial)
-	var sends := times * maxi(1, rift_sends_trial)   # and the rift's own count's (rift_sends_trial)
-	for i in range(sends):
+	var sends: Array = []   # what the rift sends this peak: one, but under the tide's trial, the rift's own count's (rift_sends_trial) and the pickets' (dealt_as)
+	for i in range(times * maxi(1, rift_sends_trial)):
 		if cycle.is_empty():
 			break
-		var c: Dictionary = cycle[_cycle_index % cycle.size()]
+		sends.append_array(dealt_as(cycle[_cycle_index % cycle.size()]))
 		_cycle_index += 1
-		var sq := emerge(c, map.rift, i, sends)   # several at once part along the wall (assign_goal)
+	for i in range(sends.size()):
+		var sq := emerge(sends[i], map.rift, i, sends.size())   # several at once part along the wall (assign_goal)
 		if sq != null:
 			rift_spawns += 1
-			fresh[sq.id] = true
+			fresh[sq.id] = "rift"
 			log.append("Rift pressure peaks: %s emerge at %s" % [sq.display_name, str(sq.pos)])
 	for t in tears:
 		if patrol_cycle.is_empty():
@@ -888,7 +919,7 @@ func peak() -> void:
 		var sq := emerge(c, t["pos"])
 		if sq != null:
 			tear_spawns += 1
-			fresh[sq.id] = true
+			fresh[sq.id] = "tear"
 			log.append("A tear sends %s at %s" % [sq.display_name, str(sq.pos)])
 	tear_row = mini(tear_row + Ramp.tear_creep_at(ramp), apron_row())
 	for i in range(Ramp.tears_at(ramp) * times):
@@ -898,6 +929,20 @@ func peak() -> void:
 		tears.append({"pos": at, "opened": phase})
 		log.append("A tear opens at %s" % str(at))
 	rift_pressure_max = maxi(TIMER_FLOOR, rift_pressure_max - Ramp.step_at(ramp))
+
+
+## What a composition comes as at a mouth: itself, or under the pickets' trial a formation as a
+## picket for each pip of its rating (pickets_trial).
+func dealt_as(c: Dictionary) -> Array:
+	var foe := str(picket_foe.get(str(c.get("faction", "")), ""))
+	if pickets_trial <= 0 or str(c.get("size", "")) != "formation" or foe.is_empty():
+		return [c]
+	var out: Array = []
+	for k in range(ContentDB.squad_of(c)):
+		var p := composition([[foe, pickets_trial]], str(c.get("faction", "")), "patrol", "%s_picket" % str(c.get("id", "")))
+		p["squad"] = 1
+		out.append(p)
+	return out
 
 
 ## A composition as the cycle holds it, for the harness and the tests: one or more members

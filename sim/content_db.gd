@@ -1284,6 +1284,29 @@ func _compositions_at(faction_id: String, tier: int, size: String, ramp: int = -
 	return out
 
 
+## A domain's commonest front-liner at a tier: the foe that fills the most front-rank cells across
+## its formations there (those the ramp's gate holds), the first written winning a tie; "" with no
+## formation. The pickets' foe (Ryan, 19 November: "lets just standardize it to 3 of the default
+## frontliner for each domain"), read from content and never named in code.
+func front_liner(faction_id: String, tier: int, ramp: int = -1) -> String:
+	var counts := {}
+	var order: Array = []
+	for c in compositions(faction_id, tier, "formation", ramp):
+		var cells: Array = c.get("layout", [])
+		for i in range(mini(4, cells.size())):
+			var fid := str(cells[i])
+			if fid.is_empty():
+				continue
+			if not counts.has(fid):
+				order.append(fid)
+			counts[fid] = int(counts.get(fid, 0)) + 1
+	var best := ""
+	for fid in order:
+		if best.is_empty() or int(counts[fid]) > int(counts[best]):
+			best = str(fid)
+	return best
+
+
 ## A composition's grid as eight cells, the front rank's four then the back's, each a foe id or
 ## "" for empty (the composition's own declaration since 8 November: its front and back).
 static func layout_cells(c: Dictionary) -> Array:

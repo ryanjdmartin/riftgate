@@ -86,7 +86,9 @@ static func seam(field: Battlefield, origin: Vector2, hex_px: float, turn: float
 ## pack. `moving` maps a unit id to its pixel offset from hex (0,0) while a move plays, so the
 ## bleed travels with a pack (Ryan, 22 September). `tears` is how many of the field's tears are
 ## shown (BattleMapView.tears_shown: one opened this turn waits for its opening); under 0, all.
-static func sources(field: Battlefield, origin: Vector2, hex_px: float, moving: Dictionary = {}, tears: int = -1) -> PackedVector3Array:
+## `unseen` holds the ids of packs not drawn yet (one the tide sent, until it bursts in): they
+## bleed nothing.
+static func sources(field: Battlefield, origin: Vector2, hex_px: float, moving: Dictionary = {}, tears: int = -1, unseen: Dictionary = {}) -> PackedVector3Array:
 	var out := PackedVector3Array()
 	var r := origin + MapOrient.to_pixel(field.map.rift, hex_px)
 	out.append(Vector3(r.x, r.y, RIFT_RADIUS_HEX * hex_px))
@@ -99,6 +101,8 @@ static func sources(field: Battlefield, origin: Vector2, hex_px: float, moving: 
 	for sq in field.packs():
 		if out.size() >= MAX_SOURCES:
 			break
+		if unseen.has(sq.id):
+			continue
 		var p: Vector2 = origin + (moving[sq.id] if moving.has(sq.id) else MapOrient.to_pixel(sq.pos, hex_px))
 		out.append(Vector3(p.x, p.y, (BOSS_RADIUS_HEX if sq.is_multi_hex() else pack_radius_hex) * hex_px))
 	return out

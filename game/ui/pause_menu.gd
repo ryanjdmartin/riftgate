@@ -160,8 +160,8 @@ func _show_page(page: String) -> void:
 			# points and the Barrier basic's place (each read at the next launch), the hull an
 			# overheat burns, the field's depth, the opening's distance, the fodder's worth on
 			# the Rupture meter, the meter's size, the tide's density, the wall strike, the
-			# packs' pace, the enemy turn's order, the rift's count and the flanks' tears (each
-			# read as the next battle starts). A dial leaves this page with its question: the
+			# packs' pace, the enemy turn's order, the rift's count, the flanks' tears and the
+			# formations as pickets (each read as the next battle starts). A dial leaves this page with its question: the
 			# pick lands in content or in the engine and the what-if is cut.
 			_title("TRIALS")
 			# The dials stand in a scroller, as the keywords do, so a glass of any height holds
@@ -196,12 +196,14 @@ func _show_page(page: String) -> void:
 			_credit("What a pip of threat rating strikes the wall for. Next battle.")
 			_choice_row("PACE", "pack_pace", Settings.PACES, Settings.PACE_LABELS)   # hexes added to every pack's move (Battlefield.pace_trial; Ryan, 23 November: "I'd probably give everything +1 right now and see what that does")
 			_credit("Every pack's move, as built or more. The opening stands a move out, so farther. Next battle.")
-			_choice_row("SPAWNS", "spawn_order", Settings.SPAWN_ORDERS, Settings.SPAWN_ORDER_LABELS)   # the enemy turn's order (Battle.spawn_first_trial; the same day: "if the packs spawned, then the movement phase happens")
-			_credit("The tide sends after the packs walk, or before: a spawn leaves its mouth at once, a hunter aside. Next battle.")
+			_choice_row("SPAWNS", "spawn_order", Settings.SPAWN_ORDERS, Settings.SPAWN_ORDER_LABELS)   # whether a pack walks the turn the tide sends it (Battlefield.spawn_walk_trial; the same day: "if the packs spawned, then the movement phase happens")
+			_credit("A pack the tide sends stands a turn where it lands; or the rift's walk at once; or every mouth's. A hunter always stands. Next battle.")
 			_choice_row("RIFT SENDS", "rift_sends", Settings.RIFT_SENDS, Settings.RIFT_SENDS_LABELS)   # the compositions the rift sends a peak, each to its own stretch of wall (Battlefield.rift_sends_trial; the same day: "each headed a different direction")
 			_credit("Packs the rift sends a wave, each its own way; the Rupture asks no more. Next battle.")
 			_choice_row("FLANK TEARS", "flank_tears", Settings.FLANK_TEARS, Settings.FLANK_TEARS_LABELS)   # tears open at the wall's two ends from the first turn (Battlefield.flank_tears_trial; the same day: "starting tears at the top and bottom")
 			_credit("Tears open at the wall's two ends from turn one; the Rupture asks no more. Next battle.")
+			_choice_row("FORMATIONS", "formation_form", Settings.FORMATION_FORMS, Settings.FORMATION_FORM_LABELS)   # every formation as pickets rated one, two or three of the domain's front-liner each (Battlefield.pickets_trial; the same day: "Fodder should pose a threat by quantity, not by hard hits")
+			_credit("Every formation as three small packs for one machine each, the same worth on the Rupture. Next battle.")
 			_rows = page_rows
 			_list.set_deferred("scroll_vertical", kept)
 			_button("BACK", func() -> void: _show_page("settings"), false, "ui_back")

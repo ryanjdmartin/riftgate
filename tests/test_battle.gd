@@ -2069,3 +2069,125 @@ func _carry_line(b: Battle, carrier: Unit, rider: Unit, third: Unit) -> Array:
 			if not crowded:
 				return line
 	return []
+
+
+## The pace's trial (Ryan, 23 November: "I'd probably give everything +1 right now and see what
+## that does"): every pack's move a hex more, the boss, which never walks, as it was; and the
+## opening, measured in a pack's own moves, stands that much farther from the wall.
+func test_the_paces_trial_adds_a_hex_to_every_packs_move_and_stands_the_opening_farther() -> void:
+	var plain := Battle.new(3)
+	plain.setup(_team(), "meadow")
+	Battlefield.pace_trial = 1
+	var quick := Battle.new(3)
+	quick.setup(_team(), "meadow")
+	Battlefield.pace_trial = 0
+	var a: Array = plain.field.packs()
+	var b: Array = quick.field.packs()
+	assert_eq(a.size(), b.size(), "the same packs open the battle")
+	var rows_plain := 0
+	var rows_quick := 0
+	for i in range(a.size()):
+		var was: Unit = a[i]
+		var now: Unit = b[i]
+		if was.is_boss:
+			assert_eq(now.movespeed, was.movespeed, "the boss as it was")
+			continue
+		assert_eq(now.movespeed, was.movespeed + 1, "%s a hex quicker" % was.display_name)
+		rows_plain += plain.field.apron_row() - Hex.axial_to_offset(was.pos).y
+		rows_quick += quick.field.apron_row() - Hex.axial_to_offset(now.pos).y
+	assert_true(rows_quick > rows_plain, "and the opening farther from the wall, a move being longer (%d rows against %d)" % [rows_quick, rows_plain])
+	var again := Battle.new(3)
+	again.setup(_team(), "meadow")
+	assert_eq((again.field.packs()[0] as Unit).movespeed, (a[0] as Unit).movespeed, "no trial: the game's own pace")
+
+
+## The spawn order's trial at a battle's scale (Ryan, 23 November: "if the packs spawned, then the
+## movement phase happens, so packs move the instant they spawn"): Rift Pressure ticks before the
+## packs walk, so what the rift sent at the first peak has already left its mouth as the next
+## turn opens, where in the game's order it stands where it landed; and the turn's marks are gone.
+func test_the_spawn_orders_trial_ticks_before_the_walk() -> void:
+	var rows := {}
+	for mode in [0, 2]:
+		Battlefield.spawn_walk_trial = mode
+		var b := Battle.new(4)
+		b.setup(_team(), "marsh")
+		var before := {}
+		for sq in b.field.packs():
+			before[sq.id] = true
+		var walks := b.end_turn()
+		assert_true(b.last_spawned, "the first peak comes as turn one ends")
+		assert_true(b.field.fresh.is_empty(), "the turn's marks are gone as it ends")
+		for sq in b.field.packs():
+			if before.has(sq.id) or sq.behaviour == "hunt":
+				continue
+			rows[mode] = Hex.axial_to_offset(sq.pos).y
+			assert_eq(walks.has(sq.id), mode == 2, "what the rift sent walked this turn only under the trial")
+			if mode == 2:
+				var w: Battlefield.Walk = walks[sq.id]
+				assert_false(w.path.is_empty(), "out of its mouth at once")
+				assert_ne(w.from, w.end, "from where it landed")
+	Battlefield.spawn_walk_trial = 0
+	assert_true(rows.has(0) and rows.has(2) and int(rows[2]) > int(rows[0]), "and stands nearer the wall for it")
+
+
+## The mouths' trials (Ryan, 23 November: "Having starting tears at the top and bottom might make
+## sense, or else sending multiple packs out of the rift at once, each headed a different
+## direction"): two tears open at the wall's two ends from the first turn, or the rift sending two
+## a peak, and the Rupture asking no more for either, as under the tide's trial.
+func test_the_mouths_trials_leave_the_ruptures_size_alone() -> void:
+	var plain := Battle.new(6)
+	plain.setup(_team(), "meadow")
+	assert_true(plain.field.tears.is_empty(), "no trial: no tear before the first peak")
+	Battlefield.flank_tears_trial = 2
+	var flanks := Battle.new(6)
+	flanks.setup(_team(), "meadow")
+	Battlefield.flank_tears_trial = 0
+	assert_eq(flanks.field.tears.size(), 2, "two tears open as the battle starts")
+	var cols: Array = flanks.field.tears.map(func(t: Dictionary) -> int: return Hex.axial_to_offset(t["pos"]).x)
+	cols.sort()
+	assert_true(int(cols[0]) <= 4 and int(cols[1]) >= flanks.map.width - 5, "one by each end of the wall (%s)" % str(cols))
+	assert_eq(flanks.thresholds, plain.thresholds, "and the Rupture asks no more")
+	flanks.end_turn()
+	assert_eq(flanks.field.tear_spawns, 2, "each sends from the first peak")
+	Battlefield.rift_sends_trial = 2
+	var twice := Battle.new(6)
+	twice.setup(_team(), "meadow")
+	assert_eq(twice.thresholds, plain.thresholds, "the rift's count on trial: the Rupture's size the game's too")
+	twice.end_turn()
+	Battlefield.rift_sends_trial = 1
+	assert_eq(twice.field.rift_spawns, 2, "and the rift sends two at a peak")
+
+
+## The pickets' trial (Ryan, 23 November: "Fodder should pose a threat by quantity, not by hard
+## hits"; his picket of 19 November): every formation the opening places or the rift sends comes
+## as a pack rated one for each of its pips, each so many of the domain's commonest front-liner,
+## read from content; the Rupture's size is the game's, the pips being the same.
+func test_the_pickets_trial_deals_a_formation_as_its_pips_in_small_packs() -> void:
+	var db := ContentDB.load_default()
+	var plain := Battle.new(8)
+	plain.setup(_team(), "meadow")
+	var formations: Array = plain.field.packs().filter(func(sq: Unit) -> bool: return sq.composition_size == "formation")
+	assert_eq(formations.size(), Ramp.formations_at(0), "no trial: the ramp's formations open the battle")
+	Battlefield.pickets_trial = 2
+	var b := Battle.new(8)
+	b.setup(_team(), "meadow")
+	var foe := db.front_liner("meadow", 1, 0)
+	assert_true(db.foes.has(foe), "the Meadow's front-liner, read from its formations (%s)" % foe)
+	assert_eq(b.field.picket_foe.get("meadow", ""), foe, "handed to the field")
+	var pickets: Array = b.field.packs().filter(func(sq: Unit) -> bool: return sq.composition.ends_with("_picket"))
+	assert_eq(pickets.size(), 3 * Ramp.formations_at(0), "a formation rated three opens as three pickets")
+	assert_true(b.field.packs().filter(func(sq: Unit) -> bool: return sq.composition_size == "formation").is_empty(), "and no formation stands")
+	var cols := {}
+	for sq in pickets:
+		assert_eq((sq as Unit).squad, 1, "each a fight for one")
+		assert_eq((sq as Unit).members, [[foe, 2]], "two of the front-liner")
+		cols[(sq as Unit).goal_col] = true
+	assert_eq(cols.size(), pickets.size(), "each to a stretch of wall of its own")
+	assert_eq(b.thresholds, plain.thresholds, "the Rupture asks the same: the pips are the formation's")
+	b.end_turn()
+	var sent: Array = b.field.packs().filter(func(sq: Unit) -> bool: return sq.composition.ends_with("_picket"))
+	assert_eq(sent.size(), pickets.size() + 3, "and the rift's first wave, a formation, comes as three more")
+	Battlefield.pickets_trial = 0
+	var again := Battle.new(8)
+	again.setup(_team(), "meadow")
+	assert_true(again.field.picket_foe.is_empty(), "no trial: no picket")

@@ -1178,6 +1178,11 @@ func _on_end_turn() -> void:
 		var w: Battlefield.Walk = walks[sid]
 		if not w.path.is_empty():
 			pack_moves.append([sid, [starts.get(sid, w.from)] + Array(w.path)])
+	# Everything that will walk stands where it stood, and what the tide sent is unseen, from this
+	# frame until the round's view plays them: the field has taken the turn already.
+	_map.hold_walks(pack_moves)
+	for sq in sent:
+		_map.hold_spawn(sq)
 	_play_plan(plan, [], func() -> void: _play_round(pack_moves, sent))
 
 
@@ -1194,7 +1199,7 @@ func _play_round(pack_moves: Array, sent: Array) -> void:
 		return
 	if _spawned:
 		Sound.play("peak_sweep", -4.0)   # the tide's wave, under the round: the seam's sweep was its cue until 23 November
-	_map.play_round(pack_moves, sent, Battle.spawn_first_trial, _show_round, _after_step)
+	_map.play_round(pack_moves, sent, Battlefield.spawn_walk_trial > 0, _show_round, _after_step)
 	_refresh()   # the buttons grey while it plays
 
 

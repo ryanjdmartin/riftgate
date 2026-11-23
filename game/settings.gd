@@ -39,9 +39,10 @@ const DISPLAY_DEFAULTS := {
 	"tide_density": "100",   # TIDES: a debug build's trial of how many packs the opening places and the tide sends, in hundredths of the game's (Ramp.tide_trial), read as a battle starts
 	"wall_strike": "10",   # STRIKES: a debug build's trial of what a pip of threat rating strikes the wall for (Battlefield.strike_trial), read as a battle starts
 	"pack_pace": "0",   # PACES: a debug build's trial of hexes added to every pack's move (Battlefield.pace_trial), read as a battle starts
-	"spawn_order": "walk_first",   # SPAWN_ORDERS: a debug build's trial of the enemy turn's order, the packs walking before the tide sends or after it (Battle.spawn_first_trial), read as a battle starts
+	"spawn_order": "stand",   # SPAWN_ORDERS: a debug build's trial of whether a pack the tide sends walks the turn it lands, none, the rift's or all (Battlefield.spawn_walk_trial), read as a battle starts
 	"rift_sends": "1",   # RIFT_SENDS: a debug build's trial of the compositions the rift sends a peak, each leaving in its own direction (Battlefield.rift_sends_trial), read as a battle starts
 	"flank_tears": "0",   # FLANK_TEARS: a debug build's trial of tears open at the wall's two ends from the first turn (Battlefield.flank_tears_trial), read as a battle starts
+	"formation_form": "0",   # FORMATION_FORMS: a debug build's trial of every formation dealt as pickets rated one, two or three heads each (Battlefield.pickets_trial), read as a battle starts
 	"heat_trial": "0",   # HEATS: a debug build's what-if, every weapon a point or two cooler than content prices it, or a point hotter (HEAT_SPECS, Refit's hotter and cooling), read at the next launch
 	"top_basic_heat": "0",   # TOP_BASIC_HEATS: a debug build's what-if, more heat on the basic guns that deal more than the plainest (Refit's top), read at the next launch
 	"rank_hp": "0",   # RANK_HPS: a debug build's what-if, a hit point more on tier one's rank and file (Refit's foehp), read at the next launch
@@ -163,26 +164,33 @@ const STRIKES := ["10", "7", "5", "3"]
 ## them): the packs' pace, a hex or two more on every pack's move ("I'd probably give everything +1
 ## right now and see what that does"); the enemy turn's order, the tide sending before the packs
 ## walk, so a spawn leaves its mouth at once ("I would be curious to see how it felt if the packs
-## spawned, then the movement phase happens"); the rift sending two or three compositions a peak,
+## spawned, then the movement phase happens"), for the rift's packs alone or for every mouth's
+## (Battlefield.spawn_walk_trial has why there are two); the rift sending two or three compositions a peak,
 ## each making for its own stretch of wall ("sending multiple packs out of the rift at once, each
 ## headed a different direction"); and two tears open at the wall's ends from the first turn
 ## ("Having starting tears at the top and bottom might make sense"). The last two leave the
 ## Rupture's size on the game's own tide, as TIDE does.
 const PACES := ["0", "1", "2"]
 const PACE_LABELS := {"0": "BUILT", "1": "+1", "2": "+2"}
-const SPAWN_ORDERS := ["walk_first", "spawn_first"]
-const SPAWN_ORDER_LABELS := {"walk_first": "AFTER WALK", "spawn_first": "BEFORE WALK"}
+const SPAWN_ORDERS := ["stand", "rift", "all"]
+const SPAWN_ORDER_LABELS := {"stand": "STAND", "rift": "RIFT WALKS", "all": "ALL WALK"}
 const RIFT_SENDS := ["1", "2", "3"]
 const RIFT_SENDS_LABELS := {"1": "×1", "2": "×2", "3": "×3"}
 const FLANK_TEARS := ["0", "2"]
 const FLANK_TEARS_LABELS := {"0": "NONE", "2": "TWO"}
+## And the body as pickets, for a feel of his direction of the same day on today's units ("Fodder
+## should pose a threat by quantity, not by hard hits"; Battlefield.pickets_trial): every formation
+## as a pack rated one for each of its pips, each two or three of the domain's commonest
+## front-liner.
+const FORMATION_FORMS := ["0", "2", "3"]
+const FORMATION_FORM_LABELS := {"0": "BUILT", "2": "PICKETS ×2", "3": "PICKETS ×3"}
 
 
 ## Set the field's trial for the battles that start after this: RIFTGATE_FIELD_DEPTH,
 ## RIFTGATE_OPENING, RIFTGATE_FODDER, RIFTGATE_BEATS, RIFTGATE_TIDE, RIFTGATE_STRIKE,
-## RIFTGATE_PACE, RIFTGATE_SPAWN_FIRST (1), RIFTGATE_RIFT_SENDS, RIFTGATE_FLANK_TEARS,
-## RIFTGATE_OVERHEAT and RIFTGATE_PHASED (round_end or at_once) on
-## any run, else a debug build's twelve settings when `saved` (the game's own
+## RIFTGATE_PACE, RIFTGATE_SPAWN_FIRST (rift or all), RIFTGATE_RIFT_SENDS, RIFTGATE_FLANK_TEARS,
+## RIFTGATE_PICKETS, RIFTGATE_OVERHEAT and RIFTGATE_PHASED (round_end or at_once) on
+## any run, else a debug build's thirteen settings when `saved` (the game's own
 ## entry points pass it; a scene run alone and the tests read the environment only, so no
 ## machine's saved settings move a test's field). Nothing set is the game's own field, meter,
 ## tide and overheat.
@@ -199,11 +207,14 @@ static func field_trial(saved: bool = false) -> void:
 	var spawn_first := OS.get_environment("RIFTGATE_SPAWN_FIRST")
 	var sends := OS.get_environment("RIFTGATE_RIFT_SENDS")
 	var flank := OS.get_environment("RIFTGATE_FLANK_TEARS")
+	var pickets := OS.get_environment("RIFTGATE_PICKETS")
 	if saved and OS.is_debug_build():
+		if pickets.is_empty() and FORMATION_FORMS.has(str(display.get("formation_form", ""))):
+			pickets = str(display["formation_form"])
 		if pace.is_empty() and PACES.has(str(display.get("pack_pace", ""))):
 			pace = str(display["pack_pace"])
 		if spawn_first.is_empty() and SPAWN_ORDERS.has(str(display.get("spawn_order", ""))):
-			spawn_first = "1" if str(display["spawn_order"]) == "spawn_first" else "0"
+			spawn_first = str(display["spawn_order"])
 		if sends.is_empty() and RIFT_SENDS.has(str(display.get("rift_sends", ""))):
 			sends = str(display["rift_sends"])
 		if flank.is_empty() and FLANK_TEARS.has(str(display.get("flank_tears", ""))):
@@ -234,9 +245,10 @@ static func field_trial(saved: bool = false) -> void:
 	Skirmish.overheat_scale = clampi(int(burn), 1, 10) if burn.is_valid_int() else 1
 	Skirmish.phase_at_once = phased == "at_once"
 	Battlefield.pace_trial = clampi(int(pace), 0, 4) if pace.is_valid_int() else 0
-	Battle.spawn_first_trial = spawn_first == "1"
+	Battlefield.spawn_walk_trial = 2 if spawn_first == "all" else (1 if spawn_first == "rift" else 0)
 	Battlefield.rift_sends_trial = clampi(int(sends), 1, 4) if sends.is_valid_int() else 1
 	Battlefield.flank_tears_trial = clampi(int(flank), 0, 6) if flank.is_valid_int() else 0
+	Battlefield.pickets_trial = clampi(int(pickets), 0, 4) if pickets.is_valid_int() else 0
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.

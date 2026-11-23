@@ -343,7 +343,9 @@ var _bleed_src := PackedVector3Array()
 ## The bleed's sources as the map shows them now: the rift, the tears shown (one bursting open
 ## grows its painting with its ring), every pack where it walks.
 func _bleed_sources() -> PackedVector3Array:
-	var src := Bleed.sources(field, _origin, HEX_SIZE, _anim_px, tears_shown)
+	var at := _held_px.duplicate()
+	at.merge(_anim_px, true)
+	var src := Bleed.sources(field, _origin, HEX_SIZE, at, tears_shown, _spawn_hidden)
 	for i in _tear_born.keys():
 		var k := 1 + int(i)   # the rift first, then the tears in their order (Bleed.sources)
 		var age: float = _ring_t - float(_tear_born[i])
@@ -1162,6 +1164,8 @@ func play_round(pack_moves: Array, sent: Array, sent_first: bool, called: Callab
 	var held_tears := tears_shown
 	if not _can_play():
 		seam_shown = -1.0
+		_held_px = {}
+		_spawn_hidden = {}
 		if done.is_valid():
 			done.call()
 		return
@@ -1188,6 +1192,7 @@ func play_round(pack_moves: Array, sent: Array, sent_first: bool, called: Callab
 			_burst_in(sent)
 		_seam_front = _ring_t
 		_seam_grow = stand
+		_held_px = {}   # the walks take them from here
 		if not pack_moves.is_empty():
 			play_phases([pack_moves], func() -> void: pass))
 	if seam_shown >= 0.0:
@@ -1362,6 +1367,7 @@ func _end_cutscene() -> void:
 	seam_shown = -1.0
 	tears_shown = -1
 	_tear_born = {}
+	_held_px = {}
 	_spawn_hidden = {}
 	for id in _spawn_born.keys():
 		if _ring_t - float(_spawn_born[id]) >= TEAR_OPEN_SECONDS:
@@ -2659,11 +2665,26 @@ func _advance_anim(delta: float) -> void:
 
 
 var _anim_px: Dictionary = {}   # unit id -> map pixel offset from hex (0,0) while moving
+## The packs held where they stood as the enemy's turn was taken, unit id -> map pixel offset from
+## hex (0,0), until the round's view plays their walks (hold_walks): the field has them at their
+## walks' ends already, and they must not blink there and rewind while the machines' plan and the
+## glide out play first.
+var _held_px: Dictionary = {}
+
+
+## Hold every pack that will walk where its walk starts (`pack_moves`, play_phases' moves), until
+## play_round plays them.
+func hold_walks(pack_moves: Array) -> void:
+	_held_px = {}
+	for mv in pack_moves:
+		if (mv[1] as Array).size() >= 2:
+			_held_px[mv[0]] = MapOrient.to_pixel(mv[1][0], HEX_SIZE)
+	queue_redraw()
 
 
 func _unit_center(u: Unit) -> Vector2:
-	if _anim_px.has(u.id):
-		var px: Vector2 = _anim_px[u.id]
+	if _anim_px.has(u.id) or _held_px.has(u.id):
+		var px: Vector2 = _anim_px[u.id] if _anim_px.has(u.id) else _held_px[u.id]
 		var under := MapOrient.from_pixel(px, HEX_SIZE)
 		return _origin + px + Vector2(0, -_lift_along(px, under))
 	return center(shown_hex(u))
@@ -2692,7 +2713,7 @@ func _draw_unit(u: Unit) -> void:
 	if _spawn_born.has(u.id):
 		var age: float = _ring_t - float(_spawn_born[u.id])
 		if age < TEAR_OPEN_SECONDS:
-			_tear_opening(MapOrient.from_pixel(_anim_px[u.id], HEX_SIZE) if _anim_px.has(u.id) else u.pos, _unit_center(u), age)   # the burst it comes out of, a tear's own, on the hex it is drawn on
+			_tear_opening(MapOrient.from_pixel(_anim_px[u.id], HEX_SIZE) if _anim_px.has(u.id) else (MapOrient.from_pixel(_held_px[u.id], HEX_SIZE) if _held_px.has(u.id) else u.pos), _unit_center(u), age)   # the burst it comes out of, a tear's own, on the hex it is drawn on
 			born = clampf(age / 0.5, 0.0, 1.0)
 	var hud := Palette.HUD
 	if u.is_multi_hex():
