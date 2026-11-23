@@ -289,7 +289,7 @@ var ablations: Array = []
 ## lands on one of them afterwards (a machine's loop catching a status it just gained) skips
 ## its next action rather than an action already taken.
 var _acted: Array = []
-var _gold_due: Dictionary = {}   # a foe gone gold this turn: [its add, its count], laid as its turn ends (Golden, a timer)
+var _gold_due: Dictionary = {}   # a foe gone gold this turn: its count, laid as its turn ends (Golden, a timer)
 ## The round preview (Ryan, 26 October: it "should account for every single thing that will
 ## happen other than 1) random active effects ... and 2) player decisions"): set on a copy of the
 ## fight that plays the rest of the round (preview_round), so every rule runs as it will, and a
@@ -2786,8 +2786,8 @@ func _enemy_turn() -> void:
 		# A countdown still gathering carries its priming to the blow it lands, and a foe that
 		# stepped up this round has had its round, so it keeps it for its next.
 		var moves := not f.fresh and not f.gathering()
-		if skip and not _staggered(f):
-			f.recovering = true   # its action lost to a stun: its stun resist lands as Numbed as its turn ends (a stagger is no stun's, and numbs nothing)
+		if skip:
+			f.recovering = true   # its action lost to a stun: its stun resist lands as Numbed as its turn ends
 		if not skip and not f.fresh:   # a suppressed foe does nothing, and a web on it still bursts; one that stepped up this round has had its round
 			_foe_turn(f)
 			# A move that landed names its follow-up for next round (30 October); one lost to a
@@ -4443,13 +4443,13 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			_seq += 1
 			log.append("%s: %s, the team loses %d reroll%s next round" % [f.display_name, str(a.get("name", "roars")), value, "" if value == 1 else "s"])
 		"golden":
-			# The Thunder Ape's Golden Rage (4 November): a mode for the rounds the move says, its
-			# blows harder by the move's value and a point of plate; a quarter of its HP lost from
-			# here breaks it and it staggers (_break_golden), a Suppress breaks it too (_suppress).
+			# The Thunder Ape's Golden Rage (4 November): Golden for the rounds the move says, its
+			# numbers Golden's own; a quarter of its HP lost from then Suppresses it (_break_golden),
+			# and a Suppress that lands ends it (_suppress).
 			# Golden is a timer (22 November), laid as this turn ends, after its tick (_gold_due).
 			var rounds := clampi(int(a.get("rounds", 3)), 1, 5)
-			_gold_due[f] = [maxi(1, value), rounds]
-			log.append("%s: %s, Golden %d as its turn ends, its blows %d harder and a point of armour" % [f.display_name, str(a.get("name", "goes gold")), rounds, maxi(1, value)])
+			_gold_due[f] = rounds
+			log.append("%s: %s, Golden %d as its turn ends" % [f.display_name, str(a.get("name", "goes gold")), rounds])
 		"ablate":
 			# A Ward turns away every rider a foe lays on its machine, a special's as a blow's
 			# (Ryan, 25 October: "Should stop all riders, even from non-damaging attacks").
@@ -5040,11 +5040,11 @@ static func golden_left(f: Foe) -> int:
 func _gold_lands(f: Foe) -> void:
 	if not _gold_due.has(f):
 		return
-	var gold: Array = _gold_due[f]
+	var rounds := int(_gold_due[f])
 	_gold_due.erase(f)
-	Effects.lay_timer(f, Effects.golden(int(gold[0])), "golden", int(gold[1]))
+	Effects.lay_timer(f, Effects.STATUS["golden"], "golden", rounds)
 	f.golden_mark = f.hp
-	log.append("%s is Golden %d: %d more damage breaks it" % [f.display_name, int(gold[1]), golden_left(f)])
+	log.append("%s is Golden %d: %d more damage Suppresses it" % [f.display_name, rounds, golden_left(f)])
 
 
 ## The rounds a gold foe's rage has left, this one counted: its Golden's count, 0 while it is calm.
@@ -5052,10 +5052,11 @@ func golden_rounds_left(f: Foe) -> int:
 	return Effects.stacks_of(f, "golden")
 
 
-## A gold foe that has lost a quarter of its HP since it went gold staggers (4 November, Ryan's
-## read of Rajang: the rage is "broken by a bold player with great timing"): the rage ends and
-## it loses its next action, the bold play's pay, where the swallow's release loses none (the
-## exit if it reads as a free stun). One whose rage ran out on its clock, or was purged, is calm.
+## A gold foe that has lost a quarter of its HP since it went gold gains Suppressed (4 November,
+## Ryan's read of Rajang: the rage is "broken by a bold player with great timing"; a Suppress like
+## any since 23 November: "Otherwise you can chain a stagger into a suppress and the boss rolls
+## over"), read once a rage. One that lands ends the rage (_suppress); a Numbed stack soaks it,
+## and the gold runs its clock. One whose rage ran out on its clock is calm.
 func _break_golden() -> void:
 	for f in field_foes():
 		if f.golden_mark < 0 or not f.alive():
@@ -5066,22 +5067,10 @@ func _break_golden() -> void:
 			_stagger(f, "reels")
 
 
-## The rage broken: the gold goes and the foe loses its next action, never Numbed (a stagger is
-## the mode's own, no stun piece's), and one already suppressed loses nothing more.
-func _staggered(f: Foe) -> bool:
-	for m in Effects.live(f):
-		if m.id == "suppressed" and m.source == "stagger":
-			return true
-	return false
-
-
 func _stagger(f: Foe, why: String) -> void:
-	Effects.remove(f, "golden")
-	f.golden_mark = -1
-	var next := _acted.has(f) or f.fresh
-	if not _suppressed_through(f, round + 1 if next else round):
-		Effects.grant_for_rounds(f, Effects.STATUS["suppressed"], "stagger", round + 1 if next else round)
-	log.append("%s %s: its golden rage breaks, and it staggers out of its next action" % [f.display_name, why])
+	f.golden_mark = -1   # the quarter is read once a rage
+	log.append("%s %s: a quarter of its HP lost since it went gold" % [f.display_name, why])
+	_suppress(f)
 
 
 ## A swallower that has lost a quarter of its HP since it swallowed lets its machine go at

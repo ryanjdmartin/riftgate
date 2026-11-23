@@ -489,4 +489,10 @@ line, never in its event ("On hit: if targeted"); a tip does not over-specify, s
 other rule that may change ("if either gets changed, the tip needs editing as well. It also
 assumes knowledge of the other two keywords"); one effect a line. Ablating is renamed Ablate,
 one name for the keyword and the status it leaves, as Brittle is.
+Then, on the answers: a sum only where a line says "per stack" ("Don't need to sum stacks when
+the meaning is just the stacks"); Golden is +2 whatever laid it, its move saying only its rounds
+("No stack should be dynamic based on what created it"); its break is a Suppress like any
+("Otherwise you can chain a stagger into a suppress and the boss rolls over"); a swallow's
+release on its swallower's fall goes unsaid ("implied ... from common sense"), and so does a
+Shock or a Brittle on a hit that deals nothing.
 

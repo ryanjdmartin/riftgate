@@ -123,7 +123,7 @@ Status: 208 implemented, 6 planned, 0 idea.
 | **Exposed** | All armour is negated.
 Exposed foes can be targeted regardless of reach.
 Foes are forced to target an Exposed machine at round start.
-Turn Start: Reduce stacks ({N}) by 1. | implemented |
+Turn Start: Reduce stacks by 1. | implemented |
 | **Empowered** | On Hit: +1 damage per stack ({N}).
 Turn End: Reduce stacks by half, rounded down. | implemented |
 | **Sealed** | Ability, the Polar Bear's form. Equipment it spends on itself seals it: armour up by its Lockdown's number, any cooling it is granted stopped, its Cryo Flinger gaining Spread, and it runs hotter at the end of each turn. A weapon it fires opens it, and so does a reboot; equipment on an ally and a debuff, its lure among them, leave it as it is. No Purge touches it. | implemented |
@@ -133,7 +133,7 @@ Turn End: Reduce stacks by half, rounded down. | implemented |
 Turn Start: Reduce stacks to 0. | implemented |
 | **Hardened Light** | Machine buff. While its shield stands, every blow on it loses 1 a stack. It stays until the shield breaks, a reboot's drop included, and then every stack goes. The Storm Petrel's Hardlight Pulse lays it, a stack a spend up to 3, and up to 4 and then 5 in its Defence branch, where the Pulse's Spread lays a stack for each foe it hits. | implemented |
 | **Primed** | After Hit: Apply 1 Ablate.
-Resolve: If triggered, reduce stacks ({N}) by 1. | implemented |
+Resolve: If triggered, reduce stacks by 1. | implemented |
 | **Jammed** | Component status. This die entry comes up blank while it lasts; the component itself is untouched. A foe's jam lasts until the machine reboots and can be cleansed; a rapid component's own switch-off ends with the round, and is no jam. | implemented |
 | **Corrupted** | Component status. Every time this die entry is spent it bites its owner for 3 per stack, shield first, before the component acts. A blank is never spent, so a jammed entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed. | implemented |
 | **Phased** | Status, on either side. On a machine: it cannot be damaged or targeted by anything until the end of the round, by either side, and it acts: no foe picks it, a blow or a move at every machine passes it by, no ally may spend on it, and nothing of its own damages it either, its heat past the maximum or a Volatile bite. Everything it carries ticks all the same, so a debuff runs down while it waits; the heat stays, and burns the turn it is back in reach. It is granted at the end of the round, to a machine that still stands, so it is queued a round ahead and lasts the whole of the next. On a foe: it fades as the round its move lands in ends, and through the next no die can be dropped on it, nothing aimed elsewhere reaches it and nothing it carries damages it. It acts all the same. The round it makes the move is the round to reach it. | implemented |
@@ -165,7 +165,7 @@ Turn Start: Reduce stacks by half, rounded down. | implemented |
 +1 Armour.
 Gain Suppressed upon losing 25% Max HP since the start of the effect.
 On Suppressed: Reduce stacks to 0.
-Turn End: Reduce stacks ({N}) by 1. | implemented |
+Turn End: Reduce stacks by 1. | implemented |
 | **Empowered** | On Hit: +1 damage per stack ({N}).
 Turn End: Reduce stacks by half, rounded down. | implemented |
 | **Undying** | Foe status, from a Reraise, its own or an ally's. After it falls it gets back up once, whole, in its own slot and at once, unless it self-destructed; it strikes from the next round. | implemented |
@@ -173,7 +173,7 @@ Turn End: Reduce stacks by half, rounded down. | implemented |
 | **Appropriated** | Ability, Gilgamesh's: the number of the piece he holds. His Collect knocks loose the component a machine's die is showing, Jams it until that machine reboots, and leaves him Appropriated at its number: a weapon's printed blow, and 1 for anything that is no weapon, a fake. His Borrowed Blade lands that number next round and spends it. One piece at a time, what he takes next replacing it. No Purge reaches it; a Ward on the machine turns the taking away. | implemented |
 | **Swallowed** | Cannot act. All ongoing effects are paused.
 Immune to all damage. Cannot be targeted or hit by anything.
-Round End: Reduce stacks ({N}) by 1.
+Round End: Reduce stacks by 1.
 Reduce stacks to 0 upon {caster} losing 25% Max HP since the start of the effect. | implemented |
 | **Guarded** | Foe ability, a core's. It takes no damage while its parts stand, all of them or any, by the foe, its Ablate and Vitriol included. No Purge touches it. | implemented |
 | **Ability** | A unit's own mechanic, the rule it plays by: never a buff or a debuff, so no Purge or Cleanse touches it. Its chip shows its mark cut out of a solid tile: the Goblin Nob's Enrage, a core's guard, a Gel's split, a last act, the Thunder Ape's golden rage; the Polar Bear's seal, the Ammit's Essence. | implemented |

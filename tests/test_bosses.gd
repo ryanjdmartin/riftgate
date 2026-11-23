@@ -440,7 +440,7 @@ func test_the_content_loads_a_moves_steps_and_the_validator_holds_them() -> void
 	db.load_dir(ContentDB.DIR)
 	db.foes["x_steps"] = {"id": "x_steps", "name": "X", "faction": "meadow", "hp": 9, "attack": 3, "rank": "front", "codex": "", "flavour": "", "design": {"fantasy": "a test's"},
 		"actions": [{"id": "a", "name": "A", "kind": "attack", "text": "", "status": "implemented",
-			"also": [{"effect": "brace", "value": 2}, {"effect": "golden", "value": 2, "rounds": 2}]}]}
+			"also": [{"effect": "brace", "value": 2}, {"effect": "golden", "rounds": 2}]}]}
 	assert_true(db.validate().filter(func(e) -> bool: return e.contains("x_steps")).is_empty(), "a blow with two steps is whole")
 	var made := db.make_foe("x_steps")
 	var also: Array = made.actions[0].get("also", [])
@@ -1323,7 +1323,7 @@ func test_a_golden_rage_is_a_mode_that_a_quarter_of_its_hp_or_a_stun_breaks() ->
 	sk.add_mech(_mech("A", Die.single(Face.attack(6, I))))
 	sk.add_mech(_mech("B", Die.single(Face.attack(6, I))))
 	var ape := Foe.make("ape", 24, 7)
-	var rage := {"id": "golden_rage", "name": "Golden Rage", "kind": "buff", "effect": "golden", "value": 2, "rounds": 3, "weight": 1, "when": "calm", "text": ""}
+	var rage := {"id": "golden_rage", "name": "Golden Rage", "kind": "buff", "effect": "golden", "rounds": 3, "weight": 1, "when": "calm", "text": ""}
 	ape.actions = [_move("fist"), rage]
 	sk.add_foes([ape])
 	sk.begin()
@@ -1355,7 +1355,7 @@ func test_a_golden_rage_is_a_mode_that_a_quarter_of_its_hp_or_a_stun_breaks() ->
 	assert_true(ape.is_suppressed(), "staggered out of its next action")
 	assert_eq(ape.damage_of(ape.actions[0]), 7, "its blows its own again")
 	assert_eq(ape.armour_total(), 0, "the plate gone with the gold")
-	assert_true("\n".join(sk.log).contains("staggers"), "the log says so")
+	assert_true("\n".join(sk.log).contains("a quarter of its HP lost since it went gold"), "the log says so")
 	# Gold again, and a stun breaks it.
 	sk.end_round()
 	sk.start_round()
@@ -1386,16 +1386,17 @@ func test_a_golden_rage_is_a_mode_that_a_quarter_of_its_hp_or_a_stun_breaks() ->
 	db.load_dir(ContentDB.DIR)
 	db.foes["x_gold"] = {"id": "x_gold", "name": "X", "faction": "peak", "hp": 9, "attack": 3, "codex": "", "flavour": "", "design": {},
 		"actions": [{"id": "a", "name": "A", "kind": "attack", "text": "", "status": "implemented"},
-			{"id": "g", "name": "G", "kind": "buff", "effect": "golden", "value": 2, "rounds": 9, "weight": 1, "text": "", "status": "implemented"}]}
+			{"id": "g", "name": "G", "kind": "buff", "effect": "golden", "rounds": 9, "weight": 1, "text": "", "status": "implemented"}]}
 	var errs: Array = db.validate()
 	assert_true(errs.any(func(e) -> bool: return e.contains("x_gold") and e.contains("golden's rounds")), "nine rounds of gold is refused")
 
 
-## A stagger is the mode's own, no stun piece's (4 November): it numbs the foe nothing, so the
-## next stun lands and breaks the gold again; and a rage the foe's own tick breaks in the enemy's
-## turn staggers it out of its next action, never the one it has had.
-func test_a_stagger_numbs_nothing_and_a_tick_broken_rage_costs_the_next_action() -> void:
-	var rage := {"id": "golden_rage", "name": "Golden Rage", "kind": "buff", "effect": "golden", "value": 2, "rounds": 3, "weight": 1, "when": "calm", "text": ""}
+## The break is a Suppress like any (Ryan, 23 November: "Otherwise you can chain a stagger into a
+## suppress and the boss rolls over"): it numbs the foe as any stun does, so the next stun strips a
+## stack and the next gold stands; and a rage the foe's own tick breaks in the enemy's turn
+## Suppresses it out of its next action, never the one it has had.
+func test_the_golden_break_is_a_suppress_that_numbs_and_a_tick_broken_rage_costs_the_next_action() -> void:
+	var rage := {"id": "golden_rage", "name": "Golden Rage", "kind": "buff", "effect": "golden", "rounds": 3, "weight": 1, "when": "calm", "text": ""}
 	var sk := Skirmish.new(1, 3)
 	sk.add_mech(_mech("A", Die.single(Face.attack(6, I))))
 	sk.add_mech(_mech("B", Die.single(Face.attack(6, I))))
@@ -1411,16 +1412,16 @@ func test_a_stagger_numbs_nothing_and_a_tick_broken_rage_costs_the_next_action()
 	assert_true(Effects.has(ape, "golden"), "gold")
 	assert_true(sk.assign(0, ape), "A strikes")
 	assert_true(sk.assign(1, ape), "B strikes: a quarter lost")
-	assert_true(ape.is_suppressed(), "staggered")
+	assert_true(ape.is_suppressed(), "Suppressed")
 	sk.end_round()
-	assert_eq(Effects.stacks_of(ape, "numbed"), 0, "a stagger numbs nothing")
+	assert_eq(Effects.stacks_of(ape, "numbed"), 3, "it recovers Numbed 3, an elite's, as from any stun")
 	sk.start_round()
 	ape.action = rage
 	sk.end_round()
 	sk.start_round()
 	assert_true(Effects.has(ape, "golden"), "gold again")
-	assert_true(sk._suppress(ape), "a stun lands, no Numbed in its way")
-	assert_false(Effects.has(ape, "golden"), "and breaks the gold")
+	assert_false(sk._suppress(ape), "a stun strips a stack of Numbed and lands nothing")
+	assert_true(Effects.has(ape, "golden"), "so the gold stands: no chain of stuns")
 	# Broken by its own tick in the enemy's turn: it acted gold, and loses the next action.
 	var sk2 := Skirmish.new(1, 3)
 	sk2.add_mech(_mech("A", Die.single(Face.attack(1, I))))

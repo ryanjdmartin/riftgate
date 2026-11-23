@@ -1740,9 +1740,8 @@ func _foe_abilities(foe: Foe) -> Array:
 	if Effects.has(foe, "golden"):
 		# A golden rage (4 November): the add it carries, the rounds left and the damage that
 		# breaks it, so burst-or-shield reads off the chip.
-		var gold := Effects.golden_value(foe)
 		var rounds_left := sk.golden_rounds_left(foe)
-		rows.append(["overcharge", "+%d" % gold, "Ability, Golden +%d, %d round%s, %d more damage breaks it" % [gold, rounds_left, "" if rounds_left == 1 else "s", Skirmish.golden_left(foe)], _foe_chip_colour("golden"), "ability"])
+		rows.append(["overcharge", str(rounds_left), "Ability, Golden %d, %d more damage Suppresses it" % [rounds_left, Skirmish.golden_left(foe)], _foe_chip_colour("golden"), "ability"])
 	if ABILITY_DEBUG and rows.is_empty():
 		rows.append(["overcharge", "", "Ability, Enrage (RIFTGATE_ABILITY_DEBUG)", _foe_chip_colour("enraged"), "ability"])
 	return rows

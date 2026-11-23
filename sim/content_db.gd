@@ -3125,12 +3125,14 @@ static func _all_effects() -> Array:
 ## `also`, by the same rules. `a` carries the effect's fields (value, foe, count, rounds).
 func _validate_effect(aw: String, a: Dictionary, effect: String, errs: Array[String]) -> void:
 	# A priming and a regrowth say their number; a Barrier and a Ward say none (28 October).
-	if (effect == "prime" or effect == "regenerate" or effect == "golden") and int(a.get("value", 0)) < 1:
+	if (effect == "prime" or effect == "regenerate") and int(a.get("value", 0)) < 1:
 		errs.append("%s: %s says its number: value, 1 or more" % [aw, effect])
 	# A golden rage (4 November) lasts the rounds it says, 1 to 5, three unsaid.
 	if effect == "golden" and a.has("rounds") and (int(a["rounds"]) < 1 or int(a["rounds"]) > 5):
 		errs.append("%s: golden's rounds are the rounds the rage lasts, 1 to 5" % aw)
-	if (effect == "barrier" or effect == "ward_all" or effect == "appropriate" or effect == "phase" or effect == "unready_all") and a.has("value"):
+	# Golden is one state, its numbers its own (Ryan, 23 November: "No stack should be dynamic
+	# based on what created it"): its move says only its rounds.
+	if (effect == "barrier" or effect == "ward_all" or effect == "appropriate" or effect == "phase" or effect == "unready_all" or effect == "golden") and a.has("value"):
 		errs.append("%s: %s takes no value" % [aw, effect])
 	# A cleanse (28 October) takes every mark the team laid, so it says no number.
 	if effect == "cleanse" and a.has("value"):

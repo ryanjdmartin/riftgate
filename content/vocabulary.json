@@ -632,7 +632,7 @@
    "id": "exposure",
    "category": "status",
    "name": "Exposed",
-   "codex": "All armour is negated.\nExposed foes can be targeted regardless of reach.\nFoes are forced to target an Exposed machine at round start.\nTurn Start: Reduce stacks ({N}) by 1.",
+   "codex": "All armour is negated.\nExposed foes can be targeted regardless of reach.\nFoes are forced to target an Exposed machine at round start.\nTurn Start: Reduce stacks by 1.",
    "status": "implemented",
    "design": {
     "holes": "The id is exposure, since exposed names the formation word (and named an aim of the foes' until 17 November); a machine's is exposure_mech in the engine. The machine's half is Ryan's of 15 November, built 16 November: \"all armour of all kinds\"; \"Exposed does not strip the petrel's resistant shield\"; \"keep the logic where enemies don't try and overkill. That helps keep it fair. So the whole field targets up until predicted death, then the rest pick intent targets as normal\"; \"Exposed sets the intents, everything after proceeds as normal\"; \"Lure wins\". A session's reads where his words give none: a countdown's pick carried from the round before holds, and a machine out of reach (Phased as the round ended) draws nothing. Still his: whether a machine that stands Exposed may be marked again; built as no, so the whole field's fire comes every other round at most. The aim content called exposed went on 17 November with every aim of a foe's own. The machine's text is a session's draft, his to write.",
@@ -744,7 +744,7 @@
    "id": "primed",
    "category": "status",
    "name": "Primed",
-   "codex": "After Hit: Apply 1 Ablate.\nResolve: If triggered, reduce stacks ({N}) by 1.",
+   "codex": "After Hit: Apply 1 Ablate.\nResolve: If triggered, reduce stacks by 1.",
    "status": "implemented",
    "design": {
     "holes": "The third primer since 15 November, beside Charged and Supercooled (Ryan: \"give it the same format as cryo ... use a stack on firing\"; \"Primed - agreed, how many Ablate stacks does each Primed stack apply? Just one, like supercooled?\"; one, since Ablate 1 on a gun measures as about the point a Charged stack's Shock does). Until then every blow left a stack of Ablating a stack of Primed, for a buff's rounds on a machine and one move on a foe. A placeholder name.",
@@ -2182,7 +2182,7 @@
    "id": "golden",
    "category": "status",
    "name": "Golden",
-   "codex": "On Hit: +2 damage dealt.\n+1 Armour.\nGain Suppressed upon losing 25% Max HP since the start of the effect.\nOn Suppressed: Reduce stacks to 0.\nTurn End: Reduce stacks ({N}) by 1.",
+   "codex": "On Hit: +2 damage dealt.\n+1 Armour.\nGain Suppressed upon losing 25% Max HP since the start of the effect.\nOn Suppressed: Reduce stacks to 0.\nTurn End: Reduce stacks by 1.",
    "status": "implemented",
    "design": {
     "holes": "Monster Hunter's Rajang by archetype, Ryan's read of 4 November (the golden rage \"is a mode, not an attack ... a cycle that forces the player into a cycle of attack and defense, broken by a bold player with great timing\"). Claude's translation: the window is the decision, shield through its rounds or burst a quarter of its HP through the extra plate to stagger it; the lost action is the bold play's pay, where the swallow's release loses none (the stun row's care; the exit if it reads as a free stun). The add is the move's value and the plate a point; numbers placeholders.",
@@ -2262,7 +2262,7 @@
    "id": "swallowed",
    "category": "status",
    "name": "Swallowed",
-   "codex": "Cannot act. All ongoing effects are paused.\nImmune to all damage. Cannot be targeted or hit by anything.\nRound End: Reduce stacks ({N}) by 1.\nReduce stacks to 0 upon {caster} losing 25% Max HP since the start of the effect.",
+   "codex": "Cannot act. All ongoing effects are paused.\nImmune to all damage. Cannot be targeted or hit by anything.\nRound End: Reduce stacks by 1.\nReduce stacks to 0 upon {caster} losing 25% Max HP since the start of the effect.",
    "status": "implemented",
    "design": {
     "holes": "Out of play, so everything it carries pauses (Ryan, 16 November: \"Swallowed it's out of play so everything should pause\"), where a Phased machine's ticks on: its Ablating, Scorched and Sapped wait, its Empowered and Brittle do not halve, its Regenerating pays nothing, it neither cools nor regenerates, a buff of its own holds nothing on the field (Essence Flare), and every timed status on it, a cooldown and a jam among them, moves a round later for each round's end it sits out: the rounds it sat out never came for it. Let go as its swallow's rounds run out, it is back before that round's end is read, the end it was owed from the round it was taken in; let go sooner, it goes on from where it stood. The swallow's own rounds run. It burns nothing while it is out and burns the turn it is back. A session's reads: an event of its fight still reaches it (a foe felled banks an Ammit's Essence), and a reboot it had begun before it was taken still recovers as the next round opens, the second half of a turn already given. Nothing cleanses it.",

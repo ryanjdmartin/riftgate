@@ -312,7 +312,7 @@ const STATUS := {
 	# move says; a quarter of its HP lost since it went gold, or a Suppress, breaks it and it
 	# staggers (Skirmish._break_golden, _stagger). An ability, never a buff (Ryan, 8 November:
 	# "Golden rage should be an ability chip too"), so no Purge strips it. Its add is the move's
-	# value (golden()); one rage at a time (renew), the next once it is calm. A timer (22
+	# numbers its own, whatever move laid it (Ryan, 23 November); one rage at a time (renew), the next once it is calm. A timer (22
 	# November): its stacks are the turns it has left, a stack going as its turn ends (a foe's
 	# tick), laid as the turn it went gold ends, after that turn's tick (Skirmish._foe_turn_ends).
 	"golden": {"id": "golden", "name": "Golden", "description": "Its blows hit {value} harder and it wears a point of armour until its rage ends; a quarter of its HP lost since it went gold, or a Suppress, breaks it, and it staggers.", "stacking": "renew", "timer": true,
@@ -583,15 +583,6 @@ static func is_status(id: String) -> bool:
 
 ## Empowered at a rally's own value: the status above with the move's value in place of the
 ## default, so the Howl's 5 is 5 and the chip says so.
-
-## Golden at a move's own value (4 November): the status above with the move's add in place of
-## the default; the plate stays a point whatever the move says.
-static func golden(value: int) -> Dictionary:
-	var d: Dictionary = STATUS["golden"].duplicate(true)
-	d["effects"][0]["value"] = value
-	d["description"] = filled(str(STATUS["golden"]["description"]), d["effects"])
-	return d
-
 
 ## What a foe's gold adds to its blows: its live Golden grant's add, 0 while it is calm.
 static func golden_value(f) -> int:

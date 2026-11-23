@@ -1126,13 +1126,12 @@ On a foe:
   its chip the rule (Enrage), and what it has gathered a buff.
 - **Golden** (Ability, a golden rage: the Thunder Ape's): a timer, at the rounds its move says,
   laid as the turn it went gold ends, after that turn's ticks, a stack going as each of its turns
-  ends; while it stands its blows hit the move's value harder, each strike of a move, and it
-  wears a point of armour. A
-  quarter of its HP lost since it went gold breaks it and it staggers: the gold goes and it
-  loses its next action (never Numbed: a stagger is no stun piece's, and one already
-  suppressed loses nothing more). A Suppress that lands breaks it too, one a Numbed stack
-  absorbs does not; no Purge strips it, an Ability. Its chip counts
-  the rounds left and the damage that breaks it, and its HP bar wears a notch where it breaks. It goes gold only while calm (the `calm`
+  ends; while it stands its blows hit 2 harder, each strike of a move, and it wears a point of
+  armour, its numbers its own whatever move laid it. A quarter of its HP lost since it went gold
+  Suppresses it, once a rage: a Suppress like any, so a Numbed stack soaks it and the gold runs
+  on, and one that lands leaves Numbed as any stun does. A Suppress that lands ends it, from the
+  break or any other; no Purge strips it, an Ability. Its chip counts the rounds left and the
+  damage that Suppresses it, and its HP bar wears a notch there. It goes gold only while calm (the `calm`
   condition: not gold), so one rage at a time.
 - **Appropriated** (an Ability, a take's: Gilgamesh's): the number of the entry he holds, which
   his borrowed swing lands in place of his attack and spends. One piece at a time, what he
@@ -1451,7 +1450,7 @@ Ablate, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Expo
   revive an ally (Undying on one of its own, never itself, not readied already: a
   party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,
-  rally (Empowered at its value on every foe on the field, itself too, at once), golden (the rage: Golden for the rounds it says, 1 to 5 and three unsaid, its value the add; only while calm), drain rerolls, ablate (stacks of Ablate on one machine), Brittle (stacks of Brittle on one
+  rally (Empowered at its value on every foe on the field, itself too, at once), golden (the rage: Golden for the rounds it says, 1 to 5 and three unsaid, no value; only while calm), drain rerolls, ablate (stacks of Ablate on one machine), Brittle (stacks of Brittle on one
   machine), Brittle on all (the same on every machine), Sap on all (stacks of Sapped on every
   machine, through its next turn), scorch all (stacks of
   Scorched on every machine), corrupt all (Corrupted stacks on the entry every machine shows),
