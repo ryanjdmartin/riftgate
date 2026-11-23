@@ -315,8 +315,8 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   number, every foe through its own Brittle and armour. A weapon's strike is aimed at each, so a
   Shock on any of them is doubled and spent; with no primary target no Ricochet follows it, and
   no area keyword rides it. It is
-  a targeting mode of its own: no passive turns it into Direct or Indirect. Two gated specials carry it, the Whip Scorpion's
-  blast as it reboots and the Musk Ox's salvo, and one debuff, the Shift Whistle's lure (Minerva, tier
+  a targeting mode of its own: no passive turns it into Direct or Indirect. One gated special carries it, the Musk Ox's
+  salvo, and one debuff, the Shift Whistle's lure (Minerva, tier
   three). A
   weapon reaches wide by Spread or Penetrate, or lands on every foe.
 - Chain's arcs read no reach: they land on every Shocked foe on the field, front or back,
@@ -578,8 +578,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 - **Instant** (any component): the die rolls again free, as the round's opening roll does,
   itself included, so the same entry may show again and be spent again, and the machine acts
   again; on a stepping die the roll spins every chamber. Nothing goes dark, so an Instant
-  component always carries a limiter: a cooldown, heat or a cost, or the store a charged form
-  spends (the Knuckle of Fury's five rage). A piece locked on a stepping die (the Cassowary's
+  component always carries a limiter: a cooldown, heat or a cost. A piece Instant only while its
+  machine rages has its machine's heat (the Nemesis's Knuckles of Fury, below). A piece locked on a stepping die (the Cassowary's
   Spin-Up) needs none: its spin is a true roll over every chamber, so it lands on itself one
   time in six, to be spent again, a fifth of a spin more a spend on average, and every other way
   back to it in a round runs through the other chambers' switch-offs or the team's rerolls. An
@@ -738,20 +738,20 @@ has nothing behind it. As the Boar gains a Barrier, from its own Breaching Plow 
 Barrier on itself, a cooldown of 1) or an ally's piece, its Drive waits (a buff under the passive's own name): its next weapon attack ignores armour.
 
 ### Buffs, debuffs and resistance
-A **store** is a capped resource a machine fills and spends (the Muster, the rage, the
+A **store** is a capped resource a machine fills and spends (the Muster, the
 hopper, the Cassowary's shot count; the Musk Ox's magazine works the same way), its own kind
 and never a buff: each shows as a row under the heat in the heat bar's shape, by how it fills:
 one that comes in whole units (the hopper's loads, the magazine's ammo) as separate
 cells, each with its own border and a hairline of ground between them, the lit ones filled; one that
-fills by degrees (the Muster) or is spent in chunks by a charged piece (the rage) as a meter
-with a notch a charge or a chunk, a dragged charged piece's price pending on it; the shot count as cells too,
+fills by degrees (the Muster) as a meter
+with a notch a charge, a dragged charged piece's price pending on it; the shot count as cells too,
 its last marked as the shot that counts; and no Purge touches it, its filling or its use. An **Ability** is a
 unit's own mechanic, the rule it plays by, and never a buff or a debuff, so no Purge
 or Cleanse touches it; its chip shows its mark cut out of a solid tile, ahead of the unit's
 other chips, and its hold line names it an Ability and says what goes on. A foe's: the Goblin
 Nob's Enrage, a core's guard (Guarded), a Gel's split, a last act, a golden rage while it
-lasts. A machine's: the Polar Bear's seal (its form) and the Ammit's Essence (a count with no
-cap, so no store: its chip says the number). What an
+lasts. A machine's: the Polar Bear's seal (its form), the Nemesis's Rage and the Ammit's Essence
+(a count with no cap, so no store: its chip says the number). What an
 ability, a passive or a store grants beyond itself is a buff like any (the Nob's gathered
 Enraged, a module's Empowered or Armoured, the Armoured the Honey Badger's hopper grants): a
 stack is a stack, whatever granted it.
@@ -870,7 +870,7 @@ On a machine:
   A drain is a move's alone: no fall takes a reroll.
 - **Charged** (buff): while it lasts the machine's weapons fire with Shock, shown on the die
   and landing as the keyword does, after the blows; a weapon fired spends a stack (a Rapid's
-  or an Instant's second fire is a second fire, a salvo one, a reboot's blast none; equipment carries it not and spends
+  or an Instant's second fire is a second fire, a salvo one; equipment carries it not and spends
   nothing); a Mine the fire leaves carries the Shock.
 - **Supercooled** (buff): the same with Cryo 1, a stack a strike on each foe hit, one more
   than its own on a gun that carries Cryo, laid after the hits.
@@ -920,15 +920,21 @@ On a machine:
   a Mine), nor a stun, nor a Purge, so a turned mark feeds no Paradox; the damage
   lands; until its next turn starts. On either side a Ward turns the whole thing
   and stands.
-- **Rage** (store, the Nemesis's): its Crucible Capacitor banks one for each foe's blow its
-  shield takes with nothing on its hull, two for hull damage (a blow, a bite of its own, an
-  overheat; a blow that breaks the shield and wounds is hull damage alone), and two for every
+- **Rage** (Ability, the Nemesis's): its Crucible Capacitor heats it 1 for each foe's blow its
+  shield takes with nothing on its hull, 2 for hull damage (a blow, a bite of its own, an
+  overheat; a blow that breaks the shield and wounds is hull damage alone), and 2 for every
   blow of its own weapons a foe's armour or Barrier takes whole, each foe's and each strike's
-  (a corpse's and a debuff's never), up to 10. A bite of its own on its shield and a blow its
-  own Barrier or armour takes whole bank nothing. With five banked its Knuckles of Fury go out
-  charged, unasked: they spend the five and are Instant, the die rolling again, itself included,
-  so a fist may show again. Lasts the skirmish, never decays, and nothing cleanses it. It shows as a
-  meter under the heat in its chip's colour, a notch at five.
+  (a corpse's and a debuff's never). A bite of its own on its shield and a blow its own Barrier
+  or armour takes whole heat nothing. A turn it opens at its heat maximum or past it, it rages,
+  before its die rolls: every debuff on it lifts (what a Cleanse lifts), and none lands on it
+  while it rages, a foe's riders and its moves turned away with a line in the log; its die rolls
+  among its Knuckles of Fury alone, no reroll moving it, and they are Instant, so it swings
+  again, each swing cooling it 3. When its heat reaches nothing, by its swings, a cooling it is
+  granted or an ally's pull, its Rage ends and it reboots at once, whatever it has spent, and
+  acts no more that turn. Ending the turn leaves it raging, its die still the fists, and what
+  stands past its maximum burns as any machine's. It never reboots by choice while it rages, nor
+  at its heat maximum or past it. No Purge touches it. Out of the Rage the Knuckles are one entry
+  of its die, a plain swing that cools it 3.
 - **Hopper** (store, the Honey Badger's): its Ore Hopper puts a load in for each foe a spend
   of its weapons damages, after the blow (a weapon that prints its own number puts that in
   instead), up to four; a weapon that fires
@@ -1165,8 +1171,19 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   before the roll and before the foes pick, its shield is whole and Broken is gone. Heat laid
   on it after the vent stays: one vent, as the shield drops. UNDO takes a reboot back like a
   spend.
-- Nothing forces a reboot, and it clears nothing else: the machine's statuses stand. It is no
-  pass, no entry spent and no shield gain, so nothing that reads one fires on it.
+- A machine whose reboot fires a piece first (the Whip Scorpion's Heliographic Death Ray, a
+  locked piece its die never rolls): while its die is held, REBOOT reads the piece's word (DEATH
+  RAY), and its die dropped there brings the piece up in place of the entry it showed, nothing
+  vented yet; while it is up REBOOT reads CANCEL, and a drop there again shows the entry it did.
+  The die with the piece up rerolls nothing. Spent, the piece does its thing and the machine
+  reboots as above, the reboot its whole turn. A die with nothing the piece may land on (a field
+  of Phased foes) cannot reboot that turn: it skips, or spends an entry that needs no foe. UNDO
+  takes the shot and its reboot back, the piece up again. The round's roll stands in place of a
+  piece left up.
+- Besides that piece's, one rule reboots a machine: a Rage that reaches no heat (the Nemesis's,
+  Rage under Statuses). Nothing else forces a reboot, and it clears nothing else: the machine's
+  statuses stand. It is no pass, no entry spent and no shield gain, so nothing that reads one
+  fires on it.
 - **Overheated** (debuff): the heat a machine carries past its maximum, a stack a point. It is
   heat like any other: every rule that reads heat counts it, and a maximum that rises takes
   stacks back onto the bar. No cleanse lifts it. Its burn and the one overheat between reboots
@@ -1182,8 +1199,16 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
 - The fight bot reboots a machine past its maximum, unless a vent it shows takes it back
   under; one whose shield is broken when a blow is coming or its heat is half spent; one whose
   entry would pass its maximum, where it has heat to shed and this round's blows would take a
-  point of its shield or less; one whose vent would blast for more than its best spend; and a
-  die left idle, where there is something to get back. A machine that may reboot after an
+  point of its shield or less; and a die left idle, where there is something to get back. A
+  machine whose reboot fires a piece first (the Whip Scorpion's) fires it at its best target
+  wherever it would reboot, standing it down when it has nothing to fire at, and in place of its
+  best spend when the piece's shot, its heat free, less what standing bare through the round
+  costs over standing as it is, is worth more. It prices heat that takes a gauge past half where
+  that doubles the hits on it, reads a heat scale on every blow at the heat the machine holds and
+  a cooling of its own as heat off. A machine that would rage (the Nemesis's) reads heat that
+  opens its next turn at its maximum as the Rage's swings, at a share, never reboots to make room
+  for its entry or for a shield short of broken, and swings a Rage down to its reboot. Other heat
+  under the maximum it reads as free, never as fuel. A machine that may reboot after an
   action (the Needletail's) spends first where a spend is worth making, its heat free before
   the vent, and reboots after it. It weighs a pull as the ally's cooling less what the heat costs
   on its own gauge, and a dump as the buff its heat makes and its own gauge emptied, less what
@@ -1536,17 +1561,13 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   under every other change (Indirect,
   a flat 4, heat 6, one blow, Ballistic, the entry's keywords, rules and tags kept),
   Penetrate 2 when aimed at the back rank and Spread 2 at the front, shown on the die over the foe
-  it is dragged to. The Whip Scorpion's Thermal Ejection Manifold is its boiler: every blow a
-  foe lands on it adds 2 heat (in the enemy's turn, after the overheat, so the gauge may
-  stand past its maximum), and its reboot's vent is the one that explodes. A reboot opens
-  its valves on every foe as its shield drops, front rank and back: 1 each for every 2 heat
-  it sheds, whole steps alone, what stood past its maximum with the rest; with less than 2
-  its vent is any machine's. One hit of its own in the player's turn, a strike on
-  each foe through its machine's adds and the foe's Brittle and armour (a Shocked one
-  doubled), costing no heat, its machine's kill for what it fells. The blows it takes bare
-  while it reboots bank heat that stays, the next blast's first fuel. A turn it ends with its
-  die unspent releases nothing. Its locked Heliographic Death Ray fires the same heat at one
-  foe: 2, and 1 more for every 2 heat, leaving it cold and its shield standing.
+  it is dragged to. The Whip Scorpion's Thermal Ejection Manifold is its boiler: its weapons'
+  damage runs with its heat, half at no heat to double at its maximum along a straight line, a
+  multiply after every add and held at double past the maximum, read at the heat it holds as a
+  shot begins (before a Vents all shot fires it); the die's number and the bot read it the same
+  way. Past half its heat maximum every hit a foe lands on it is doubled, before its shield,
+  armour and a Barrier see it. Its reboot fires its locked Heliographic Death Ray first (The
+  reboot, below): 2, and 1 more for every 2 heat it fires, at its heat scale, then the reboot.
 
 ### Every number is a question
 Every stat, damage figure and property is read through one pipeline (`sim/effects.gd`), in

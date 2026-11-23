@@ -1825,7 +1825,7 @@ func test_a_brace_is_a_positive_number_of_stacks() -> void:
 
 ## Rolling again on a status (the Nemesis's fists on rage, 12 October to 11 November) and the
 ## Spin-Up's spin retired on 12 November: Instant is the roll that may land on itself, a spin on a
-## stepping die, and a charged form on a store prices it, so either key is refused.
+## stepping die, so either key is refused.
 func test_rolling_again_and_the_spin_are_retired_for_instant() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
@@ -2813,34 +2813,6 @@ func test_a_passive_may_read_the_striker_for_a_status_the_vocabulary_drafts() ->
 	assert_true(hit, "a status nobody knows is refused")
 
 
-## A charged form may draw on another store than the Muster (the Nemesis's rage, 11 November):
-## a status tagged a store, priced in its stacks, never beside a muster price; a price needs its
-## store.
-func test_a_charged_form_on_a_store_names_a_store_and_its_price() -> void:
-	var db := ContentDB.new()
-	db.load_dir(ContentDB.DIR)
-	var base: Dictionary = db.components["slugthrower"].duplicate(true)
-	var cases := {
-		"store_ok": [{"store": "rage", "price": 5, "keywords": ["shock"]}, ""],
-		"store_not_one": [{"store": "overcharged", "price": 5}, "tagged a store"],
-		"store_and_muster": [{"store": "rage", "muster": 1}, "never in musters"],
-		"price_alone": [{"price": 3, "keywords": ["shock"]}, "needs the store"],
-		"price_nothing": [{"store": "rage", "price": 0}, "at least one stack"],
-	}
-	for id in cases.keys():
-		var c: Dictionary = base.duplicate(true)
-		c["face"]["charged"] = cases[id][0]
-		db.components["probe_" + id] = c
-	var errs := db.validate()
-	for id in cases.keys():
-		var want := str(cases[id][1])
-		var hit := errs.filter(func(e: String) -> bool: return e.begins_with("component probe_" + id + " ") and e.contains("charged"))
-		if want.is_empty():
-			assert_true(hit.is_empty(), "%s passes: %s" % [id, hit])
-		else:
-			assert_true(hit.any(func(e: String) -> bool: return e.contains(want)), "%s is refused (%s): %s" % [id, want, hit])
-
-
 ## Cryo is a numbered keyword like Ablate (20 October), and the Polar Bear's content runs: its
 ## Lockdown passive carries the seal, its die its fixed Cryo Flinger before its hardpoints (one
 ## since 9 November, Ryan: a five-entry die).
@@ -2922,7 +2894,7 @@ func test_a_cooldown_is_whole_rounds_and_every_instant_entry_carries_a_limiter()
 		"test_toll": [{"keywords": ["instant"], "shield_cost": 2}, ""],
 		"test_switch": [{"keywords": ["instant"], "cooldown": 1}, ""],
 		"test_both": [{"keywords": ["rapid", "instant"], "heat": 2}, "never both"],
-		"test_both_charged": [{"keywords": ["rapid"], "charged": {"store": "rage", "price": 5, "keywords": ["instant"]}}, "never both"],
+		"test_both_charged": [{"keywords": ["rapid"], "charged": {"muster": 1, "keywords": ["instant"]}}, "never both"],
 		"test_zero": [{"cooldown": 0}, "leaves it out"],
 		"test_negative": [{"cooldown": -1}, "whole number of rounds"],
 		"test_two": [{"cooldown": 2}, ""],
@@ -3008,7 +2980,7 @@ func test_a_vent_never_reaches_every_ally_and_the_siphons_leavings_are_refused()
 	var errs := db.validate()
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("Every Ally and Every Other Ally are a shield's or a buff's")), "a vent never reaches every ally")
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_old_reach") and e.contains("reaches_all is a targeting mode now")), "the old reach key is refused for the targeting mode")
-	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("heat_per_blow left the entry")), "a heat a blow on an entry is refused: a passive's now")
+	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component test_vent_all") and e.contains("heat_per_blow is retired")), "a heat a blow on an entry is refused: a passive's gain_heat now")
 	assert_true(errs.any(func(e: String) -> bool: return e.contains("test_boiler") and e.contains("'vent_blast'") and e.contains("not implemented")), "and the vent blast, which the engine no longer runs")
 
 
@@ -3077,7 +3049,7 @@ func test_a_passive_one_off_lifts_the_effect_cap_by_one() -> void:
 		{"trigger": "on_attack", "effect": "multiply_printed", "value": 2},
 		{"trigger": "on_attack", "effect": "add_heat", "value": 10},
 		{"trigger": "static", "effect": "add_stat", "stat": "hull", "value": 2},
-		{"trigger": "on_kill", "effect": "stack_status", "value": "rage"}]}
+		{"trigger": "on_kill", "effect": "stack_status", "value": "overcharged"}]}
 	db.chassis[cid]["passive"] = four
 	db.chassis[cid]["design"].erase("one_off")
 	var capped := func() -> bool:

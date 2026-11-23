@@ -171315,12 +171315,6 @@
    "from": 2.3,
    "to": 5.0,
    "blow": 3.1
-  },
-  "thermal_ejection_manifold": {
-   "act": "blast",
-   "from": 1.2,
-   "to": 5.3,
-   "blow": 2.4
   }
  },
  "stock_shapes": {

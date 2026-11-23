@@ -144,6 +144,7 @@ var swaps: bool = false   # an attack: the spend takes a second target, another 
 var webs: bool = false    # an attack: each foe hit wears the piece's web, which bursts as the round ends into a Suppress on it and the foe beside it, each for its next turn (the Web Bomb's; Ryan, 15 November: "It's a unique effect, and the debuff can be renamed \"web bomb.\"")
 var spills: bool = false  # the effective entry only, never printed: damage past a kill in the front rank carries into the foe behind (the Overrun Gearing's, a module's; Ryan, 15 November: "As a module only effect, this does not need to be a keyword"; Effects.grants_spill)
 var self_ablate: int = 0        # an attack: spending it sets its own machine Ablating, this many stacks (the Stoker's, the stock pass's landing, 22 October; a price in its own shield since Ablate, 15 November)
+var self_vent: int = 0          # an attack: spending it cools its own machine this much, once the spend's heat has landed (the Nemesis's Knuckles of Fury, Ryan, 23 November: "It deals damage and cools the Nemesis by 3")
 var component: String = ""    # the component this entry is (content id); "" for an empty hardpoint
 var empty: bool = false       # an empty hardpoint: blank, and nothing was ever there to break
 var fixed: bool = false       # built into the chassis (no hardpoint); false means this entry is a hardpoint
@@ -395,6 +396,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.holds = str(d.get("holds", ""))
 		f.per_consumed = maxi(1, int(d.get("per_consumed", 1)))
 		f.self_ablate = maxi(0, int(d.get("self_ablate", 0)))
+		f.self_vent = maxi(0, int(d.get("self_vent", 0)))
 		f.ignores_armour = d.get("ignores_armour", false) is bool and d.get("ignores_armour", false)
 		f.swaps = d.get("swaps", false) is bool and d.get("swaps", false)
 		f.webs = d.get("webs", false) is bool and d.get("webs", false)
@@ -506,6 +508,8 @@ func to_dict() -> Dictionary:
 		d["per_consumed"] = per_consumed
 	if self_ablate > 0:
 		d["self_ablate"] = self_ablate
+	if self_vent > 0:
+		d["self_vent"] = self_vent
 	if ignores_armour:
 		d["ignores_armour"] = true
 	if swaps:
@@ -640,7 +644,7 @@ func acts_again() -> bool:
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or spends_shield or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or ignores_armour or swaps or webs or spills or fills_hopper > 0 or fires_hopper > 0 or braces > 0 \
+	return vents_all or spends_shield or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or self_vent > 0 or ignores_armour or swaps or webs or spills or fills_hopper > 0 or fires_hopper > 0 or braces > 0 \
 		or turns_die or team_rerolls > 0 or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
@@ -780,6 +784,7 @@ func duplicate_face() -> Face:
 	f.holds = holds
 	f.per_consumed = per_consumed
 	f.self_ablate = self_ablate
+	f.self_vent = self_vent
 	f.ignores_armour = ignores_armour
 	f.swaps = swaps
 	f.webs = webs
@@ -861,18 +866,10 @@ func muster_price() -> int:
 	return maxi(1, int(charged.get("muster", 1)))
 
 
-## The store a charged spend draws on (the Nemesis's rage since 11 November, Ryan: "its rage is
-## consumed in chunks of 5"): the Muster unless the draft names another store, a status tagged one.
-func charge_store() -> String:
-	return str(charged.get("store", "muster"))
-
-
-## What a charged spend costs from its store: musters for the Muster (each its rule's points),
-## stacks for any other store (`price`, one unless the draft says more).
+## What a charged spend costs: musters (each its rule's points). A charged form drew on another
+## store, a status's stacks, until the Nemesis's rage left it on 23 November.
 func charge_price() -> int:
-	if charge_store() == "muster":
-		return muster_price()
-	return maxi(1, int(charged.get("price", 1)))
+	return muster_price()
 
 
 ## The entry's costs past heat as its text says them (Ryan, 26 October: Volatile a cost like
@@ -911,6 +908,8 @@ func rule_phrases() -> Array[String]:
 			out.append(Templates.say("rule.webs"))
 		if self_ablate > 0:
 			out.append(Templates.say("rule.self_ablate", {"status": status_name("ablating_mech"), "n": self_ablate}))
+		if self_vent > 0:
+			out.append(Templates.say("rule.self_vent", {"n": self_vent}))
 		if fills_hopper > 0:
 			out.append(Templates.say("rule.fills_hopper", {"n": fills_hopper}))
 		if fires_hopper > 0:
@@ -1135,6 +1134,8 @@ func describe() -> String:
 				s += " " + Templates.say("rule.ignores_armour")
 			if self_ablate > 0:
 				s += " " + Templates.say("rule.self_ablate", {"status": status_name("ablating_mech"), "n": self_ablate})   # the Stoker's: its own machine set ablating as it fires
+			if self_vent > 0:
+				s += " " + Templates.say("rule.self_vent", {"n": self_vent})   # the Nemesis's Knuckles of Fury: its own machine cooled as it strikes
 			if fills_hopper > 0:
 				s += " " + Templates.say("rule.fills_hopper", {"n": fills_hopper})
 			if fires_hopper > 0:
@@ -1166,9 +1167,6 @@ func describe() -> String:
 	return s.strip_edges()
 
 
-## What a charged spend costs, as the entry prints it: "a muster" (or "N musters"), or the
-## store's stacks by name ("5 rage").
+## What a charged spend costs, as the entry prints it: "a muster" (or "N musters").
 func charge_cost_text() -> String:
-	if charge_store() == "muster":
-		return Templates.say("cost.musters", {"n": muster_price()})
-	return Templates.say("cost.store", {"n": charge_price(), "store": status_name(charge_store()).to_lower()})
+	return Templates.say("cost.musters", {"n": muster_price()})

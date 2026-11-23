@@ -4506,12 +4506,9 @@ def whip_scorpion(b):
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=1.4, heft=0.22)
     # Its Heliographic Death Ray fires with a slice of its ray: the collector's last flash, the
-    # light down the relays, the blow as the lens fires, the gun kicked back and running out. Its
-    # passive's release fires the broadside, keyed by the passive's id: the valve wheel's last
-    # quarter turn and the squat, the blow on every foe as the first gun fires, the other three
-    # after it, and the bores flaring until the last gun's kick has run out.
-    b.fires = {"heliographic_death_ray": ("ray", 2.3, 5.0, FIRE),
-               "thermal_ejection_manifold": ("blast", 1.2, 5.3, SHOTS[0][1])}
+    # light down the relays, the blow as the lens fires, the gun kicked back and running out. The
+    # broadside act fired its reboot's blast on every foe until the blast was cut (23 November).
+    b.fires = {"heliographic_death_ray": ("ray", 2.3, 5.0, FIRE)}
     # Its manifold's four vents wear the halo every glowing vent does (Ryan, 31 October: "applied to all
     # 'hot' things - so all glowing boosters and vents"; found bare on 3 November), the collar and the
     # bore's floor lit together as its blast flares them.
@@ -5520,7 +5517,7 @@ def nemesis(b):
                           [(0.8, -3.0, twist, 0.0), (1.5, 0.0, 0.0, 0.0)]   # cocked the other way, then twisted in behind the fist
         b.act(name, 1.7, tracks, body=body, heft=0.05, idle=False,
               glow=[(["core_fire", "condenser_slot", "visor"], [(0.58, 0.0), (0.63, 14.0), (0.9, 5.0), (1.3, 0.0)])])
-    b.fires = {"knuckle_of_fury": [("jab", 0.3, 1.5, 0.62), ("cross", 0.3, 1.5, 0.62)]}   # its fists fire with a punch each, left and right in turn, its blow at full reach
+    b.fires = {"knuckles_of_fury": [("jab", 0.3, 1.5, 0.62), ("cross", 0.3, 1.5, 0.62)]}   # its fists fire with a punch each, left and right in turn, its blow at full reach
     # The chest flares hotter than the vent and the visor it lights with (Ryan, 3 November, the second
     # notes: "Nemesis chest vent can get bumped up even more when it flares"), the vent cooler on its
     # brighter tile (_flare_scale).

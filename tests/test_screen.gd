@@ -1293,80 +1293,49 @@ func test_the_last_kill_ends_the_fight_without_end_turn() -> void:
 	s.free()
 
 
-## The Nemesis's rage (Ryan, 13 October; the Knuckle of Fury's charged Instant on five rage since
-## 12 November): a die rolled again by the store it spent bursts the store's chip, then flips back
-## with the reroll's sound; headless, the burst is set going and the die is the player's to spend
-## again.
-func test_a_rage_roll_bursts_the_chip_and_gives_the_die_back() -> void:
-	var db := ContentDB.load_default()
-	var sk := Skirmish.new(1)
-	var m := db.make_mech("badger")
-	var fist := Face.attack(10)
-	fist.charged = {"store": "rage", "price": 5, "keywords": ["instant"]}
-	m.die = Die.single(fist)
-	sk.add_mech(m)
-	sk.add_foes([Foe.make("revenant", 300, 10)])
-	var s := SkirmishScreen.new()
-	s.setup(sk)
-	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 5, Effects.DECAY_NONE)
-	s._refresh()
-	assert_true(s._use_die(0, sk.front[0]), "the fist lands")
-	assert_false(sk.mechs[0].assigned, "the five rage rolled it again")
-	assert_true(s._mech_views[0]._spend >= 0.0, "the rage chip bursts")
-	assert_eq(s._mech_views[0]._spend_glyph, SkirmishScreen.status_glyph("rage"), "on the rage chip")
-	assert_false(s._dice[0].spent, "the die is the player's again")
-	assert_true(s._use_die(0, sk.front[0]), "and it punches again")
-	assert_true(sk.mechs[0].assigned, "no rage left: spent")
-	s._rage_debug()   # the debug switch's call: a stack kept on the machine, the burst again
-	assert_true(Effects.stacks_of(m, "rage") >= 1, "the debug keeps a stack to burst")
-	s.free()
-
-
 ## A capped store on the screen (Ryan, 22 October: every store a bar; 10 November: "Resource bars
 ## like the badgers should be the same shape as the other resource bars, and continuous ...
 ## nestle under the Heat bar, same shape, divided into four clear segments"): one bar under the
 ## heat, a gauge's own shape and step, a segment a stack up to its cap, lit to its count, in its
-## chip's colour, and no chip; a stack spent from it bursts on the segment that emptied. A store a
-## charged piece spends in chunks is the Muster's smooth bar instead (the Nemesis's rage since 11
-## November), so the rage here banks for no piece.
+## chip's colour, and no chip; a stack spent from it bursts on the segment that emptied. The
+## Honey Badger's hopper, its cap four.
 func test_a_capped_store_shows_as_a_segmented_bar_under_the_heat_in_its_chips_place() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
 	var m := db.make_mech("badger")
-	m.grant_passive({"id": "rage_core", "name": "Rage Core", "description": "", "effects": [
-		{"trigger": "on_hull_damage", "effect": "stack_status", "value": "rage", "cap": 5}]})
 	m.die = Die.single(Face.attack(10))
 	sk.add_mech(m)
 	sk.add_foes([Foe.make("revenant", 300, 10)])
 	var s := SkirmishScreen.new()
 	s.setup(sk)
-	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
+	Effects.add_loads(m, 2)
 	s._refresh()
 	var v: UnitView = s._mech_views[0]
-	assert_eq([int(v.store[0]), int(v.store[1])], [2, 5], "two of five segments lit")
-	assert_eq(str(v.store[3]), SkirmishScreen.status_glyph("rage"), "the store's own mark, for its burst")
+	var glyph := SkirmishScreen.status_glyph("hopper")
+	assert_eq([int(v.store[0]), int(v.store[1])], [2, 4], "two of four segments lit")
+	assert_eq(str(v.store[3]), glyph, "the store's own mark, for its burst")
 	# The bar is one more gauge in the stack: under the last of them, their width, their height.
 	assert_eq(v._store_step(), UnitView.BAR_STEP, "it takes a gauge's step in the stack")
 	var first: Rect2 = v._store_cell(0)
-	var last: Rect2 = v._store_cell(4)
+	var last: Rect2 = v._store_cell(3)
 	assert_true(is_equal_approx(first.position.y, v._bars_top() + v.bars.size() * UnitView.BAR_STEP), "directly under the heat, the last gauge")
 	assert_true(is_equal_approx(first.position.x, v.size.x * 0.1) and is_equal_approx(last.end.x, v.size.x * 0.9), "across the gauges' own width")
 	assert_eq(first.size.y, UnitView.BAR_H, "a gauge's height")
 	# Its units are cells of their own, one width, clear ground between each and the next (Ryan,
 	# 10 November: "split them into different bars with borders and whitespace, in the same row").
-	for k in range(4):
+	for k in range(3):
 		var here: Rect2 = v._store_cell(k)
 		var next: Rect2 = v._store_cell(k + 1)
 		assert_true(next.position.x - here.end.x >= 1.0, "a hairline of ground between cell %d and %d" % [k, k + 1])
 		assert_true(is_equal_approx(here.size.x, next.size.x) and is_equal_approx(here.position.y, next.position.y), "one width, one row")
 	for r in s._mech_rows(0):
-		assert_ne(str(r[0]), SkirmishScreen.status_glyph("rage"), "and no rage chip")
-	Effects.spend_stacks(m, "rage", 1)
+		assert_ne(str(r[0]), glyph, "and no chip for the loads")
+	Effects.spend_stacks(m, "hopper", 1)
 	s._refresh()
-	v.spend_chip(SkirmishScreen.status_glyph("rage"))
-	assert_true(v._spend >= 0.0 and v._spend_glyph == SkirmishScreen.status_glyph("rage"), "the spent stack bursts")
+	v.spend_chip(glyph)
+	assert_true(v._spend >= 0.0 and v._spend_glyph == glyph, "the spent stack bursts")
 	assert_eq(int(v.store[0]), 1, "one segment left lit")
-	assert_true(((v._chip_rects[SkirmishScreen.status_glyph("rage")][0]) as Rect2).encloses(v._store_cell(1)), "the burst on the segment that emptied")
+	assert_true(((v._chip_rects[glyph][0]) as Rect2).encloses(v._store_cell(1)), "the burst on the segment that emptied")
 	s.free()
 
 
@@ -2068,7 +2037,7 @@ func test_a_lure_in_hand_previews_its_turn_with_dashed_arrows_and_the_gauges() -
 	var sk := Skirmish.new(1)
 	var a := db.make_mech("badger")
 	a.die = Die.single(Face.from_dict({"kind": "attack", "reach": "every_foe", "power": 0, "keywords": ["lure"], "braces": 2}))
-	a.grant_passive({"id": "boiler", "name": "Boiler", "description": "", "effects": [{"trigger": "static", "effect": "heat_per_blow", "value": 10}]})
+	a.grant_passive({"id": "heat_a_blow", "name": "Heat a Blow", "description": "", "effects": [{"trigger": "on_shield_hit", "effect": "gain_heat", "value": 10}, {"trigger": "on_hull_damage", "effect": "gain_heat", "value": 10}]})
 	sk.add_mech(a)
 	sk.add_mech(db.make_mech("clydesdale"))
 	sk.add_foes([Foe.make("revenant", 300, 10), Foe.make("revenant", 300, 10)])
@@ -2929,35 +2898,31 @@ func test_a_status_row_says_buff_or_debuff_and_its_chip_carries_it() -> void:
 	s.free()
 
 
-## A release plays on the screen (the Whip Scorpion's valves; on its reboot since 17 November,
-## Ryan: "the reboot vent is the one that explodes"): a machine whose die is dropped on REBOOT
-## holding its gate's heat fires what it vents at once, and the screen takes the fight as it
-## stands after; its model fires it with the act keyed by the passive (release_key). Synthetic
-## passive.
-func test_a_reboots_blast_plays_as_the_die_is_dropped() -> void:
+## REBOOT's word (the Whip Scorpion's Death Ray, Ryan, 23 November: "Reboot is replaced with
+## "Death Ray" when holding its die"; "Holding the death ray changes reboot to "Cancel," and cancelling
+## returns the die to what it was before"): REBOOT with no die in hand or another machine's, the
+## piece's word with the die of a machine whose reboot fires one, CANCEL while the piece is up; a
+## drop on it brings the piece up and a drop again stands it down, the die back as it was, nothing
+## vented. Synthetic passive.
+func test_reboot_wears_the_pieces_word_and_cancel_while_it_is_up() -> void:
 	var s := _screen(5)
 	var ms: Skirmish.MechState = s.sk.mechs[0]
-	ms.unit.grant_passive({"id": "boiler", "name": "Boiler", "description": "", "effects": [{"trigger": "static", "effect": "reboot_release", "value": 1, "per": 2}]})
-	ms.heat = 6
-	assert_eq(SkirmishScreen.release_key(ms), "boiler", "its model's firing for the release is keyed by the passive (the broadside, 12 November)")
-	assert_eq(SkirmishScreen.release_key(s.sk.mechs[1]), "", "a machine whose vent blasts nothing has none")
-	var hp := 0
-	for foe in s.sk.field_foes():
-		hp += foe.hp
-	var standing := s.sk.field_foes().size()
-	assert_true(s._do_reboot(0), "its die dropped on REBOOT")
-	assert_eq(s.sk.releases.size(), 1, "it released")
-	assert_eq((s.sk.releases[0]["blows"] as Array).size(), standing, "a blow on every foe that stood")
-	var after := 0
-	for foe in s.sk.field_foes():
-		after += foe.hp
-	assert_true(after < hp, "the pack took it")
-	assert_eq(ms.heat, 0, "and the machine is cold")
-	assert_true(s._shown_hp.is_empty(), "no gauge is left held off the tree")
-	s._end_turn_now()
-	assert_true(s.sk.releases.is_empty(), "the round's end releases nothing more")
+	var ray := Face.attack(4, Face.Reach.DIRECT)
+	ray.component = "test_ray"
+	ms.unit.die.faces.append(ray)
+	ms.unit.grant_passive({"id": "rayed", "name": "Rayed", "description": "", "effects": [{"trigger": "static", "effect": "reboot_piece", "piece": "test_ray", "label": "Death Ray"}]})
+	ms.face_index = 0
+	assert_eq(SkirmishScreen.reboot_word(null), "REBOOT", "no die in hand")
+	assert_eq(SkirmishScreen.reboot_word(s.sk.mechs[1]), "REBOOT", "another machine's die")
+	assert_eq(SkirmishScreen.reboot_word(ms), "DEATH RAY", "its die in hand: the piece's word")
+	var heat := ms.heat
+	assert_true(s._do_reboot(0), "its die dropped on the control")
+	assert_eq(ms.face().component, "test_ray", "the piece is up")
+	assert_false(ms.rebooting, "and nothing vented")
+	assert_eq(SkirmishScreen.reboot_word(ms), "CANCEL", "the control offers to stand it down")
+	assert_true(s._do_reboot(0), "dropped again")
+	assert_eq([ms.face_index, ms.ray_from, ms.heat], [0, -1, heat], "the die shows what it did")
 	s.free()
-
 
 ## Sapped wears a chip of its own on the foe (11 November): the blade and the arrow down, its
 ## stacks as the blow it takes off.

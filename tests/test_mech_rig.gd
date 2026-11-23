@@ -281,27 +281,20 @@ func test_only_the_weapon_that_fired_kicks_after_its_aim() -> void:
 
 
 func test_a_fixed_weapon_fires_with_a_slice_of_its_own_act() -> void:
-	# Every firing a sidecar names is one of its chassis's fixed components, or its passive where the
-	# passive fires (a release: the Whip Scorpion's broadside, 12 November), on an act it has, so a
-	# renamed component, passive or act fails here until the model follows.
+	# Every firing a sidecar names is one of its chassis's fixed components, on an act it has, so a
+	# renamed component or act fails here until the model follows.
 	var db := ContentDB.load_default()
 	var named := 0
 	for id in MACHINES:
 		var side := MechRig.load_sidecar(id)
 		var fires = side.get("fires", {})
 		var fixed: Array = db.chassis.get(id, {}).get("fixed", [])
-		var passive = db.chassis.get(id, {}).get("passive", null)
-		var passive_id := str(passive.get("id", "")) if passive is Dictionary else ""
-		var releases := passive is Dictionary and (passive.get("effects", []) as Array).any(func(e) -> bool: return e is Dictionary and str(e.get("effect", "")) == "reboot_release")
 		var acts := {}
 		for a in side.get("acts", []):
 			acts[str(a["name"])] = float(a.get("duration", 0.0))
 		for cid in (fires as Dictionary).keys():
 			named += 1
-			if not passive_id.is_empty() and cid == passive_id:
-				assert_true(releases, "%s: its passive %s fires with an act, and fires something (a release)" % [id, cid])
-			else:
-				assert_true(fixed.has(cid), "%s: %s fires with an act, and is one of its fixed weapons" % [id, cid])
+			assert_true(fixed.has(cid), "%s: %s fires with an act, and is one of its fixed weapons" % [id, cid])
 			var slices: Array = fires[cid] if fires[cid] is Array else [fires[cid]]
 			for f in slices:
 				assert_true(acts.has(str(f["act"])), "%s: %s's act %s is one of its own" % [id, cid, f["act"]])

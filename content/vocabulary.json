@@ -435,7 +435,7 @@
    "codex": "After this component is spent the machine acts again: the die rolls again for free and may land on this one again, so the same component can be spent again. On the Cassowary's die the roll spins the whole cylinder. Nothing goes dark: what it costs and the odds are its limit. Any component may carry it.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan, 12 November: \"the rapid no cooldown pieces change to a new keyword: Instant (reroll after use, can land on itself)\". Every Instant piece carries a limiter, which the validator holds content to: a cooldown, heat, Volatile or a shield cost, or the store a charged form spends (the Knuckle of Fury's five rage); a piece locked on a stepping die has the cylinder's odds (the Spin-Up's). An entry is Rapid or Instant, never both."
+    "holes": "Ryan, 12 November: \"the rapid no cooldown pieces change to a new keyword: Instant (reroll after use, can land on itself)\". Every Instant piece carries a limiter, which the validator holds content to: a cooldown, heat, Volatile or a shield cost, or the store a charged form spends; a piece locked on a stepping die has the cylinder's odds (the Spin-Up's), and a piece Instant only while its machine rages has its heat (the Nemesis's Knuckles of Fury). An entry is Rapid or Instant, never both."
    }
   },
   {
@@ -2042,17 +2042,17 @@
   },
   {
    "id": "rage",
-   "category": "resource",
+   "category": "status",
    "name": "Rage",
-   "codex": "Machine store, the Nemesis's: a foe's hit on its shield banks one, hull damage two (a blow, a bite of its own, an overheat; a blow that breaks its shield and wounds is hull damage), and every blow of its own weapons that a foe's armour or Barrier takes whole two, up to 10, kept for the skirmish. With five banked its Knuckles of Fury go out charged, unasked: they spend the five and are Instant, the die rolling again, a fist included. Never decays; no cleanse or Purge touches it.",
+   "codex": "Ability, the Nemesis's. Opening a turn at its heat maximum or past it, it rages: every debuff on it lifts, and none lands on it while it rages. Its die shows only its Knuckles of Fury, and they are Instant, so it swings until its heat runs out. When its heat reaches nothing, however it got there, the Rage ends and it reboots at once. It never reboots by choice at its maximum, and no Purge touches its Rage. Ending the turn leaves it raging.",
    "status": "implemented",
    "design": {
-    "holes": "Capped at 10 (the passive's stack_status cap), spent in fives (the Knuckle's charged price). The numbers are placeholders (Ryan, 11 November: \"These numbers are complete randomness anyway\").",
+    "holes": "Ryan, 23 November: \"When the Nemesis starts its turn with heat at or over max, it gains the unpurgable status Rage: Remove all debuffs on self. Immune to all debuffs. The only component available is Knuckles of Fury\"; \"Rage ends when the Nemesis' heat reaches zero, at which point it immediately reboots, regardless of how it got there.\" Its debuffs are the statuses a foe lays on a machine, the ones a Cleanse lifts. Its heat comes from the blows it takes and its own blows a foe's armour or Barrier takes whole, by the rules its rage was banked by from 11 November. The text is a session's draft.",
     "table": {
-     "kind": "store",
+     "kind": "ability",
      "on": "machine",
-     "stacks": "Yes: one a hit on its shield, two a hull hit or a blow blocked whole, up to 10; five a charged punch",
-     "lasts": "The skirmish; never decays"
+     "stacks": "Renews: one Rage",
+     "lasts": "Until its heat reaches nothing, when it reboots"
     }
    }
   },
