@@ -2127,41 +2127,146 @@ func test_the_mouths_trials_leave_the_ruptures_size_alone() -> void:
 	twice.end_turn()
 	Battlefield.rift_sends_trial = 1
 	assert_eq(twice.field.rift_spawns, 2, "and the rift sends two at a peak")
+	# Four from the start stand across the width ("Tears need to spread wide"): the two ends and
+	# the thirds between them, none beside another.
+	Battlefield.flank_tears_trial = 4
+	var wide := Battle.new(6)
+	wide.setup(_team(), "meadow")
+	Battlefield.flank_tears_trial = 0
+	assert_eq(wide.field.tears.size(), 4, "four tears open as the battle starts")
+	var wide_cols: Array = wide.field.tears.map(func(t: Dictionary) -> int: return Hex.axial_to_offset(t["pos"]).x)
+	wide_cols.sort()
+	var third := wide.map.width / 3
+	assert_true(int(wide_cols[0]) <= 4 and int(wide_cols[3]) >= wide.map.width - 5, "the ends as before (%s)" % str(wide_cols))
+	assert_true(absi(int(wide_cols[1]) - third) <= 4 and absi(int(wide_cols[2]) - 2 * third) <= 4, "and one by each third of the width (%s)" % str(wide_cols))
+	for i in range(4):
+		for j in range(i + 1, 4):
+			assert_true(Hex.distance(wide.field.tears[i]["pos"], wide.field.tears[j]["pos"]) >= 3, "no two beside each other")
+	assert_eq(wide.thresholds, plain.thresholds, "and the Rupture asks no more")
 
 
-## The pickets' trial (Ryan, 23 November: "Fodder should pose a threat by quantity, not by hard
-## hits"; his picket of 19 November): every formation the opening places or the rift sends comes
-## as a pack rated one for each of its pips, each so many of the domain's commonest front-liner,
-## read from content; the Rupture's size is the game's, the pips being the same.
-func test_the_pickets_trial_deals_a_formation_as_its_pips_in_small_packs() -> void:
-	var db := ContentDB.load_default()
+## The tide as fodder on trial (Ryan, 23 November: "All fodder safer to fight ... More fodder
+## overall, with choices of pack sizes and pack types - bring back threat 2 packs as fodder and not
+## just hunters ... Spread fodder across the map"): every formation the opening places or the rift
+## sends comes apart into packs for one machine and for two, from its own foes, each to its own
+## stretch of wall; the tears send a patrol and a fodder pack in turn; the Rupture's size is the
+## game's, the pips being the formation's; and a battle begun under it keeps its fodder in a save.
+func test_the_fodder_tide_deals_a_formation_as_packs_for_one_and_two() -> void:
 	var plain := Battle.new(8)
 	plain.setup(_team(), "meadow")
 	var formations: Array = plain.field.packs().filter(func(sq: Unit) -> bool: return sq.composition_size == "formation")
 	assert_eq(formations.size(), Ramp.formations_at(0), "no trial: the ramp's formations open the battle")
-	Battlefield.pickets_trial = 2
+	assert_false(plain.field.cycle.any(func(c: Dictionary) -> bool: return c.has("fodder")), "and no composition carries fodder")
+	Battlefield.fodder_tide = true
 	var b := Battle.new(8)
 	b.setup(_team(), "meadow")
-	var foe := db.front_liner("meadow", 1, 0)
-	assert_true(db.foes.has(foe), "the Meadow's front-liner, read from its formations (%s)" % foe)
-	assert_eq(b.field.picket_foe.get("meadow", ""), foe, "handed to the field")
-	var pickets: Array = b.field.packs().filter(func(sq: Unit) -> bool: return sq.composition.ends_with("_picket"))
-	assert_eq(pickets.size(), 3 * Ramp.formations_at(0), "a formation rated three opens as three pickets")
-	assert_true(b.field.packs().filter(func(sq: Unit) -> bool: return sq.composition_size == "formation").is_empty(), "and no formation stands")
+	Battlefield.fodder_tide = false
+	var is_fodder := func(sq: Unit) -> bool: return sq.composition.ends_with("_fodder")
+	var fodder: Array = b.field.packs().filter(is_fodder)
+	assert_true(b.field.packs().filter(func(sq: Unit) -> bool: return sq.composition_size == "formation").is_empty(), "no formation stands")
+	var pips := 0
 	var cols := {}
-	for sq in pickets:
-		assert_eq((sq as Unit).squad, 1, "each a fight for one")
-		assert_eq((sq as Unit).members, [[foe, 2]], "two of the front-liner")
+	for sq in fodder:
+		pips += (sq as Unit).squad
+		assert_true([1, 2].has((sq as Unit).squad), "each a fight for one machine or for two")
+		assert_eq((sq as Unit).behaviour, "push", "each a pusher")
+		assert_eq(Battlefield.heads(sq), (sq as Unit).layout.filter(func(cell) -> bool: return not str(cell).is_empty()).size(), "what its grid holds")
+		for m in (sq as Unit).members:
+			assert_eq(b.db.faction_of_foe(str(m[0])), "meadow", "of its formation's own foes (%s)" % str(m[0]))
 		cols[(sq as Unit).goal_col] = true
-	assert_eq(cols.size(), pickets.size(), "each to a stretch of wall of its own")
+	assert_eq(pips, 3 * Ramp.formations_at(0), "the formation's three pips, in two packs or three")
+	assert_true(fodder.size() >= 2 * Ramp.formations_at(0), "so more packs stand than formations would")
+	assert_eq(cols.size(), fodder.size(), "each to a stretch of wall of its own")
 	assert_eq(b.thresholds, plain.thresholds, "the Rupture asks the same: the pips are the formation's")
+	# The tears: a patrol, then a fodder pack, in turn.
+	assert_true(b.field.patrol_cycle.size() >= 2, "the tears have a cycle")
+	for k in range(b.field.patrol_cycle.size()):
+		assert_eq(str(b.field.patrol_cycle[k]["id"]).ends_with("_fodder"), k % 2 == 1, "the tears' cycle: a patrol, a fodder pack, in turn (%d)" % k)
+		assert_true([1, 2].has(ContentDB.squad_of(b.field.patrol_cycle[k])), "each for one machine or two")
+	# The rift's first wave, a formation, comes apart too, and another way than the opening's
+	# where the seed has it so.
+	var before := fodder.size()
 	b.end_turn()
-	var sent: Array = b.field.packs().filter(func(sq: Unit) -> bool: return sq.composition.ends_with("_picket"))
-	assert_eq(sent.size(), pickets.size() + 3, "and the rift's first wave, a formation, comes as three more")
-	Battlefield.pickets_trial = 0
+	var after: Array = b.field.packs().filter(is_fodder)
+	var sent_pips := 0
+	for sq in after:
+		if not fodder.has(sq):
+			sent_pips += (sq as Unit).squad
+	assert_eq(sent_pips, 3, "the rift's formation comes as its three pips of fodder")
+	assert_true(after.size() - before >= 2, "in two packs or three")
+	# A battle begun under the trial keeps its fodder, whatever the dial says when it is resumed.
+	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
+	assert_false(Battlefield.fodder_tide, "the dial is off")
+	for k in range(b.field.cycle.size()):
+		var mine: Dictionary = b.field.cycle[k]
+		var theirs: Dictionary = back.field.cycle[k]
+		assert_eq(theirs.has("fodder"), mine.has("fodder"), "a save keeps which compositions come apart")
+		if mine.has("fodder"):
+			for n in range((mine["fodder"] as Array).size()):
+				var a: Array = b.field.dealt_as(mine, n).map(func(c: Dictionary) -> Array: return [c["members"], ContentDB.squad_of(c)])
+				var z: Array = back.field.dealt_as(theirs, n).map(func(c: Dictionary) -> Array: return [c["members"], ContentDB.squad_of(c)])
+				assert_eq(z, a, "and what each deal of it is")
 	var again := Battle.new(8)
 	again.setup(_team(), "meadow")
-	assert_true(again.field.picket_foe.is_empty(), "no trial: no picket")
+	assert_true(again.field.packs().filter(is_fodder).is_empty(), "no trial: no fodder")
+
+
+## The pack bonus on trial (Ryan, 23 November: "Maybe add a flat fracture bonus to a pack on top of
+## the per-foe weight, so that splitting into 4 fights across the map and grouping for bigger packs
+## are both viable ways of farming fracture"): a pack pays the meter its bonus as it falls, once,
+## on top of its rating; the Rupture's size counts the bonus for every pack it counts, so the
+## battle's length holds; the tally is never touched; a save keeps what was paid.
+func test_the_pack_bonus_trial_pays_a_pack_as_it_falls_and_sizes_the_rupture_to_match() -> void:
+	var plain := Battle.new(8)
+	plain.setup(_team(), "meadow")
+	Battle.pack_bonus_trial = 50
+	var b := Battle.new(8)
+	b.setup(_team(), "meadow")
+	# The packs the size counts at the first Convergence: what opens, the rift's send a beat, a
+	# patrol from every tear open before a beat; less the one the squad may leave, and each elite.
+	var counted := Ramp.formations_at(0) + Ramp.patrols_at(0)
+	var open := 0
+	for beat in range(Ramp.beats_at(0)):
+		counted += 1 + open
+		open += Ramp.tears_at(0)
+	counted += Ramp.elite_fractures_at(0).size() - Battle.RUPTURE_LEAVE
+	assert_eq(int(b.thresholds[-1]), int(plain.thresholds[-1]) + 50 * counted, "the Rupture grows by the bonus of every pack it counts (%d)" % counted)
+	assert_eq(b.thresholds.size(), plain.thresholds.size(), "the same Fractures")
+	quiet_start(b)
+	var m: Unit = b.mechs()[0]
+	var sq: Unit = b.field.packs()[0]
+	var worth := ContentDB.worth_of(sq.squad)
+	_engage(b, sq, m)
+	var sk := b.attack(sq, [m])
+	sk.begin()
+	sk.start_round()
+	var felled := false
+	for f in sk.field_foes():
+		if f.pack_id == sq.id and not felled and Battlefield.heads(sq) >= 2:
+			f.hp = 0
+			felled = true
+	sk.end_round()
+	b.finish_skirmish()
+	if felled:
+		assert_true(b.field.units.has(sq), "a head of it gone, the pack standing")
+		assert_eq(b.meter_bonus, 0, "a pack that stands has paid no bonus")
+		assert_eq(b.meter(), b.menace_killed, "its heads' share alone on the meter")
+		b.spent.clear()
+		_engage(b, sq, m)
+		_win(b.attack(sq, [m]))
+		b.finish_skirmish()
+	else:
+		_win(sk)
+		b.finish_skirmish()
+	assert_false(b.field.units.has(sq), "the pack has fallen")
+	assert_eq(b.menace_killed, worth, "the tally is its rating: salvage and Anathema read no bonus")
+	assert_eq([b.meter_bonus, b.meter()], [50, worth + 50], "and the meter its rating and the bonus, once")
+	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
+	assert_eq([back.meter_bonus, back.meter()], [b.meter_bonus, b.meter()], "a save keeps what the bonus has paid")
+	Battle.pack_bonus_trial = 0
+	var again := Battle.new(8)
+	again.setup(_team(), "meadow")
+	assert_eq(again.thresholds, plain.thresholds, "no trial: the game's own size")
 
 
 ## The leaders' step on trial (Ryan, 23 November: "A set form of each formation, for each C. Bosses

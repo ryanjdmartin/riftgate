@@ -485,6 +485,68 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 		menu.free()
 
 
+## The tide's trials of 23 November read the same way: the packs' pace, the rift's count, the
+## start's tears, the leaders' step, the tide as fodder and the pack bonus, each the game's own
+## until a debug build's setting or the environment asks; and the page's two sets lay several at
+## once (FODDER TIDE, his first set of that day; AS BUILT, every dial back).
+func test_the_tides_trials_read_the_settings_and_the_sets_lay_them() -> void:
+	for env in ["RIFTGATE_PACE", "RIFTGATE_RIFT_SENDS", "RIFTGATE_FLANK_TEARS", "RIFTGATE_LEADERS", "RIFTGATE_FORMATIONS", "RIFTGATE_PACK_BONUS", "RIFTGATE_STRIKE"]:
+		if not OS.get_environment(env).is_empty():
+			return
+	var keys := ["pack_pace", "rift_sends", "flank_tears", "leader_step", "formation_form", "pack_bonus", "wall_strike"]
+	var was := {}
+	for key in keys:
+		was[key] = Settings.display.get(key, Settings.DISPLAY_DEFAULTS[key])
+	var asked := {"pack_pace": "1", "rift_sends": "2", "flank_tears": "4", "leader_step": "20", "formation_form": "fodder", "pack_bonus": "50"}
+	for key in asked:
+		Settings.display[key] = asked[key]
+	Settings.field_trial()
+	assert_eq([Battlefield.pace_trial, Battlefield.rift_sends_trial, Battlefield.flank_tears_trial, ContentDB.leader_step_trial, Battlefield.fodder_tide, Battle.pack_bonus_trial], [0, 1, 0, 0, false, 0], "run alone, the saved settings move nothing")
+	Settings.field_trial(true)
+	assert_eq([Battlefield.pace_trial, Battlefield.rift_sends_trial, Battlefield.flank_tears_trial, ContentDB.leader_step_trial, Battlefield.fodder_tide, Battle.pack_bonus_trial], [1, 2, 4, 20, true, 50] if OS.is_debug_build() else [0, 1, 0, 0, false, 0], "where the game starts a battle, a debug build's settings are the trial")
+	for key in asked:
+		Settings.display[key] = "a lot"
+	Settings.display["formation_form"] = "2"   # the pickets' setting of the build before: no option now
+	Settings.field_trial(true)
+	assert_eq([Battlefield.pace_trial, Battlefield.rift_sends_trial, Battlefield.flank_tears_trial, ContentDB.leader_step_trial, Battlefield.fodder_tide, Battle.pack_bonus_trial], [0, 1, 0, 0, false, 0], "a value that is no option asks for nothing")
+	# The sets: each key a dial of the page, each value one of its options.
+	var options := {"formation_form": Settings.FORMATION_FORMS, "pack_bonus": Settings.PACK_BONUSES, "wall_strike": Settings.STRIKES, "flank_tears": Settings.FLANK_TEARS}
+	for key in Settings.FODDER_SET.keys():
+		assert_true(options.has(key) and (options[key] as Array).has(str(Settings.FODDER_SET[key])), "the fodder tide's set lays %s on an option of its dial" % key)
+		assert_true(Settings.TRIAL_KEYS.has(key), "which AS BUILT sets back")
+		assert_ne(str(Settings.FODDER_SET[key]), str(Settings.DISPLAY_DEFAULTS[key]), "and moves it off the game's own")
+	for key in Settings.TRIAL_KEYS:
+		assert_true(Settings.DISPLAY_DEFAULTS.has(key), "%s is a setting" % key)
+	assert_eq([str(Settings.DISPLAY_DEFAULTS["formation_form"]), str(Settings.DISPLAY_DEFAULTS["pack_bonus"]), str(Settings.DISPLAY_DEFAULTS["flank_tears"])], ["built", "0", "0"], "the tide ships as built, with no bonus and no tear at the start")
+	if OS.is_debug_build():
+		for key in Settings.FODDER_SET.keys():
+			Settings.display[key] = Settings.FODDER_SET[key]
+		var menu := PauseMenu.new()
+		menu._show_page("trials")
+		var labels := _menu_labels(menu)
+		for want in ["FODDER TIDE", "AS BUILT", "FODDER", "FOUR"]:
+			assert_true(labels.has(want), "the trials' page offers %s" % want)
+		for bonus in Settings.PACK_BONUSES:
+			assert_true(labels.has(str(Settings.PACK_BONUS_LABELS[bonus])), "and the pack bonus %s" % Settings.PACK_BONUS_LABELS[bonus])
+		var captions: Array = []
+		for l in menu._rows.find_children("*", "Label", true, false):
+			captions.append(str((l as Label).text))
+		assert_true(captions.has("START TEARS") and captions.has("PACK BONUS") and captions.has("FORMATIONS") and captions.has("SET"), "under their captions: %s" % str(captions))
+		assert_false(labels.has("PICKETS ×2") or captions.has("FLANK TEARS"), "the pickets' choices are gone with their trial")
+		var filled := {}
+		for btn in menu._rows.find_children("*", "", true, false):
+			if btn is HudButton and ["FODDER TIDE", "AS BUILT"].has(str((btn as HudButton).text)):
+				filled[str((btn as HudButton).text)] = (btn as HudButton).filled
+		assert_eq(filled, {"FODDER TIDE": true, "AS BUILT": false}, "a set reads filled while every dial of it stands as it lays it")
+		assert_eq(menu._trials_as_built().keys().size(), Settings.TRIAL_KEYS.size(), "AS BUILT names every trial dial")
+		for key in Settings.TRIAL_KEYS:
+			assert_eq(str(menu._trials_as_built()[key]), str(Settings.DISPLAY_DEFAULTS[key]), "at the game's own (%s)" % key)
+		menu.free()
+	for key in keys:
+		Settings.display[key] = was[key]
+	Settings.field_trial()
+
+
 ## A lone fight from the menu reads the fight's trials as a battle does (when Phased lands is a
 ## fight's): a dial set inside one fight is the next one's, with no relaunch. The launch here has
 ## nobody to fight, so it stops before it saves or shows.

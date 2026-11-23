@@ -153,6 +153,21 @@ var field_menace: int = 0         # the menace of the opening and the tide throu
 ## build's SETTINGS → TRIALS → FODDER and RIFTGATE_FODDER set it (Settings.field_trial).
 static var fodder_trial: int = 100
 var meter_held: int = 0           # hundredths of menace the fodder's trial has kept off the meter this battle; 0 with no trial
+## The pack bonus on trial, menace a pack pays the Rupture meter as it falls, on top of its
+## rating's worth, 0 the game's (Ryan, 23 November: "Maybe add a flat fracture bonus to a pack on
+## top of the per-foe weight, so that splitting into 4 fights across the map and grouping for
+## bigger packs are both viable ways of farming fracture"). Every pack but the boss's unit pays it,
+## once, as its last foe falls; the meter's size counts it for every pack it counts (setup), so
+## the battle's length holds and what moves is the mix: at half a pip a pack for one machine
+## fills the meter half again as fast as its pips, a pack for two a quarter again, a formation a
+## sixth. The tally (salvage's and Anathema's) is never touched. A debug build's SETTINGS →
+## TRIALS → PACK BONUS and RIFTGATE_PACK_BONUS set it (Settings.field_trial).
+static var pack_bonus_trial: int = 0
+var meter_bonus: int = 0          # menace the pack bonus's trial has added to the meter this battle; 0 with no trial
+## How many deals of its fodder a formation carries under the fodder's trial (Battlefield.dealt_as
+## takes them in turn), and how far apart the opening stands a formation's packs, in columns.
+const FODDER_DEALS := 6
+const FODDER_OPENING_GAP := 6
 ## The battle's share of the run's Sponsorship measures (the bible's Sponsorship row): the
 ## hexes its machines move on the map, and each fight's own (Skirmish.sponsorship), added up.
 var sponsorship := {"hexes_moved": 0, "guarded": 0, "damaging_spends": 0, "quiet_spends": 0}   # ContentDB.SPONSORSHIP_MEASURES
@@ -226,8 +241,30 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		# the ramp; one with no gate at every ramp).
 		var forms := _alternate(db.compositions(faction, tier + 1, "formation", ramp), db.compositions(guest, tier + 1, "formation", ramp) if has_guest else [])
 		var patrols := _alternate(db.compositions(faction, tier + 1, "patrol", ramp), db.compositions(guest, tier + 1, "patrol", ramp) if has_guest else [])
+		var tear_sends: Array = patrols
+		if Battlefield.fodder_tide:
+			# The fodder's trial (Battlefield.fodder_tide): every formation carries what it comes
+			# apart into, a few deals of it so no two need come alike, and the tears send a patrol
+			# and a fodder pack in turn, the pack for two one time in three by the seed. The patrol
+			# first, as the game's own tears send, so the Rupture's size reads the same first sends.
+			var step := ContentDB.step_in_tier(tier, ramp)
+			for f in forms:
+				var deals: Array = []
+				for n in range(FODDER_DEALS):
+					deals.append(db.fodder_of(f, n, seed_value, step))
+				f["fodder"] = deals
+			tear_sends = []
+			for j in range(2 * maxi(forms.size(), patrols.size()) if not forms.is_empty() else 0):
+				var of: Dictionary = forms[j % forms.size()]
+				var pack := db.fodder_pack(of, 2 if posmod(hash([seed_value, "tear", j]), 3) == 0 else 1, hash([seed_value, "tear", j, 1]), posmod(j, 3) < step)
+				if not patrols.is_empty():
+					tear_sends.append(patrols[j % patrols.size()])
+				if not pack.is_empty():
+					tear_sends.append(pack)
+			if tear_sends.is_empty():
+				tear_sends = patrols
 		field.cycle = _alternate(forms, patrols)
-		field.patrol_cycle = patrols
+		field.patrol_cycle = tear_sends
 		var nf := Ramp.dense(Ramp.formations_at(ramp))   # the game's count, but under the tide's trial
 		var np := Ramp.dense(Ramp.patrols_at(ramp))
 		# The opening (the long wall brief 3.2): the ramp's formations across the width as before,
@@ -258,27 +295,25 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		u.facing = face_rng.randi_range(1, 2)   # northward, one of the two directions that lead away from the gate
 		field.add_unit(u)
 		i += 1
-	if Battlefield.pickets_trial > 0:
-		for fid in [faction, guest]:
-			if not str(fid).is_empty() and db.factions.has(fid):
-				field.picket_foe[fid] = db.front_liner(fid, tier + 1, ramp)
 	for j in range(placed.size()):
 		var p: Array = placed[j]
-		# One pack, but under the pickets' trial a formation as its pickets, two columns apart about
-		# its own (Battlefield.dealt_as): the Rupture's size below reads the composition placed.
-		var comes: Array = field.dealt_as(p[0])
+		# One pack, but under the fodder's trial a formation as the packs it comes apart into, spread
+		# along the wall about its own column (Battlefield.dealt_as; the deals past the last the
+		# rift's cycle takes first, so the opening and the first wave differ): the Rupture's size
+		# below reads the composition placed.
+		var comes: Array = field.dealt_as(p[0], -1 - j)
 		var at_col := Hex.axial_to_offset(p[1]).x
 		for n in range(comes.size()):
-			var col := clampi(at_col + (2 * n - (comes.size() - 1)), 0, w_cols - 1)
+			var col := clampi(at_col + (FODDER_OPENING_GAP * (2 * n - (comes.size() - 1))) / 2, 0, w_cols - 1)
 			var sq := field.emerge(comes[n], Hex.offset_to_axial(col, Hex.axial_to_offset(p[1]).y))
 			if sq != null and int(p[2]) > 0:
 				_open_row(sq, col, int(p[2]))
 				field.assign_goal(sq)   # its segment is read from where it opens: the wall it reaches soonest
-	# The flanks' tears on trial (Battlefield.flank_tears_trial): open from the first turn at the
-	# wall's two ends, sending from the first peak. The Rupture's size below leaves them out, as
-	# it leaves the tide's extras.
+	# The start's tears on trial (Battlefield.flank_tears_trial): open from the first turn across
+	# the width, sending from the first peak. The Rupture's size below leaves them out, as it
+	# leaves the tide's extras.
 	for k in range(maxi(0, Battlefield.flank_tears_trial)):
-		var at := field.flank_tear_hex(k)
+		var at := field.start_tear_hex(k, Battlefield.flank_tears_trial)
 		if at == Battlefield.NO_HEX:
 			break
 		field.tears.append({"pos": at, "opened": 0})
@@ -299,18 +334,22 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 	# Under the tide's trial the size stays the game's: the extras it places and sends are
 	# the squad's to choose among, never more to kill (Ramp.tide_trial).
 	field_menace = 0
-	for p in placed:
-		if not bool(p[3]):
-			field_menace += db.composition_menace(p[0])
+	var packs_counted := 0   # the packs that menace comes as, for the pack bonus's trial
+	for j in range(placed.size()):
+		if not bool(placed[j][3]):
+			field_menace += db.composition_menace(placed[j][0])
+			packs_counted += field.dealt_as(placed[j][0], -1 - j).size()
 	var tears_open := 0
 	var patrol_at := 0
 	for j in range(Ramp.beats_at(tier)):
 		if not field.cycle.is_empty():
 			field_menace += db.composition_menace(field.cycle[j % field.cycle.size()])
+			packs_counted += field.dealt_as(field.cycle[j % field.cycle.size()], j).size()
 		for t in range(tears_open):
 			if field.patrol_cycle.is_empty():
 				break
 			field_menace += db.composition_menace(field.patrol_cycle[patrol_at % field.patrol_cycle.size()])
+			packs_counted += 1
 			patrol_at += 1
 		tears_open += Ramp.tears_at(ramp)
 	# The lightest patrol the tide deals is the squad's to leave; an elite the tier calls is
@@ -324,6 +363,9 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 	var n := Ramp.fractures_at(tier)
 	if field_menace > 0 and n > 0:
 		var size := maxi(1, field_menace - RUPTURE_LEAVE * lightest) + Ramp.elite_fractures_at(tier).size() * elite
+		# The pack bonus's trial: every pack the size counts pays its bonus, the one the squad may
+		# leave aside and each elite with them.
+		size += maxi(0, pack_bonus_trial) * (maxi(0, packs_counted - (RUPTURE_LEAVE if lightest > 0 else 0)) + Ramp.elite_fractures_at(tier).size())
 		var steps: Array = []
 		var total := 0.0
 		for k in range(n):
@@ -406,9 +448,10 @@ func is_sealed() -> bool:
 	return boss != null and boss.sealed
 
 
-## What the Rupture meter reads: the menace killed, less what the fodder's trial held back.
+## What the Rupture meter reads: the menace killed, less what the fodder's trial held back, and
+## what the pack bonus's trial has paid.
 func meter() -> int:
-	return (menace_killed * 100 - meter_held) / 100
+	return (menace_killed * 100 - meter_held) / 100 + meter_bonus
 
 
 ## The Rupture: the seal breaks, by the last Fracture. Engaging the boss is the battle's last
@@ -1716,6 +1759,8 @@ func finish_skirmish() -> void:
 		var pay := maxi(0, owed - paid)
 		if not stands:
 			pack_paid.erase(sq.id)
+			if pack_bonus_trial > 0 and not sq.is_boss:
+				meter_bonus += pack_bonus_trial   # the pack bonus's trial: a pack's fall, once
 		elif pay > 0:
 			pack_paid[sq.id] = paid + pay
 		menace_killed += pay

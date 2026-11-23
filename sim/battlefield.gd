@@ -87,9 +87,6 @@ func tear_row_stop() -> int:
 ## other mouths, and sends a patrol at every peak after, so where the next flood comes from is
 ## known an interval ahead. Tears stay open.
 var tears: Array = []
-## Each domain's picket under the pickets' trial, faction id -> foe id (Battle.setup fills it from
-## content, ContentDB.front_liner); empty otherwise.
-var picket_foe: Dictionary = {}
 ## The hunters that turned on a machine since the screen last asked ([hunter id, prey id], in
 ## order; pick_prey): the battle hands them over (Battle.take_locks) for the declaration on
 ## screen (Ryan, 8 November: "Declare when a hunter selects a target").
@@ -192,23 +189,27 @@ static var pace_trial: int = 0
 ## extras are the squad's to choose among, never more to kill. SETTINGS → TRIALS → RIFT SENDS and
 ## RIFTGATE_RIFT_SENDS.
 static var rift_sends_trial: int = 1
-## The body on trial as pickets, the heads a picket holds, 0 the game's (the same day: "it feels to
-## me like the game would be more fun if fodder were the primary, significant, threat to the wall,
-## but easy to defeat without any hull lost by a decent player ... Fodder should pose a threat by
-## quantity, not by hard hits"; and of the map, "I would rather more packs ... so that I can choose
-## where to attack and what to let through"): every formation the opening places or the rift sends
-## comes as a pack rated one for each pip of its rating, each so many of its domain's commonest
-## front-liner (picket_foe; his picket of 19 November), parting along the wall as they leave. The
-## pips are the formation's, so the Rupture's size and a wave's worth are the game's; what changes
-## is the count and what one machine can answer alone. A feel for the direction on today's units,
-## before any content is written for it (docs/tide_proposal.md). SETTINGS → TRIALS → FORMATIONS
-## and RIFTGATE_PICKETS=2|3.
-static var pickets_trial: int = 0
-## The flanks' tears on trial, how many stand open as the battle starts, 0 the game's (the same
-## day: "Having starting tears at the top and bottom might make sense"): each opens at an end of
-## the wall on the tears' row (flank_tear_hex), the two ends in turn, and sends from the first
-## peak. The Rupture's size stays the game's. SETTINGS →
-## TRIALS → FLANK TEARS and RIFTGATE_FLANK_TEARS.
+## The tide on trial as fodder (the same day, his paradigm for it: "All fodder safer to fight,
+## reducing the 'fight short for efficiency, fight full for safety' decision in favour of 'where do
+## I put my forces.' More fodder overall, with choices of pack sizes and pack types - bring back
+## threat 2 packs as fodder and not just hunters ... Spread fodder across the map, either through
+## more Tears, or through multiple spawns at the rift headed in different directions (or both)"):
+## every formation the opening places or the rift sends comes apart into packs for one machine
+## and for two, drawn from its own foes and parting along the wall as they leave, and every tear
+## sends a fodder pack and a patrol in turn (Battle.setup lays both from content,
+## ContentDB.fodder_of; dealt_as). The pips are the formation's, so the Rupture's size is the
+## game's; what changes is the count, the spread, and what one machine answers alone. The hunters
+## and the elites are as built. A stand-in on today's foes, before any content is written for it
+## (docs/tide_proposal.md). The form it retires: every formation as three small packs of its
+## domain's commonest front-liner (the same day's first cut, one size and one kind). SETTINGS →
+## TRIALS → FORMATIONS and RIFTGATE_FORMATIONS=fodder.
+static var fodder_tide: bool = false
+## The tears open as the battle starts on trial, how many, 0 the game's (the same day: "Having
+## starting tears at the top and bottom might make sense"; and of the fodder, "Tears need to
+## spread wide, the crawl forward isn't as important as distributing enemy forces"): they stand
+## evenly across the width on the tears' row, two at the wall's two ends and four at its ends and
+## its thirds (start_tear_hex), and send from the first peak. The Rupture's size stays the game's.
+## SETTINGS → TRIALS → START TEARS and RIFTGATE_FLANK_TEARS.
 static var flank_tears_trial: int = 0
 
 
@@ -884,11 +885,11 @@ func tick_pressure(ticks: int) -> bool:
 func peak() -> void:
 	peaks += 1
 	var times := Ramp.dense_at(peaks)   # one, but under the tide's trial (Ramp.tide_trial)
-	var sends: Array = []   # what the rift sends this peak: one, but under the tide's trial, the rift's own count's (rift_sends_trial) and the pickets' (dealt_as)
+	var sends: Array = []   # what the rift sends this peak: one, but under the tide's trial, the rift's own count's (rift_sends_trial) and the fodder's (dealt_as)
 	for i in range(times * maxi(1, rift_sends_trial)):
 		if cycle.is_empty():
 			break
-		sends.append_array(dealt_as(cycle[_cycle_index % cycle.size()]))
+		sends.append_array(dealt_as(cycle[_cycle_index % cycle.size()], _cycle_index))
 		_cycle_index += 1
 	for i in range(sends.size()):
 		var sq := emerge(sends[i], map.rift, i, sends.size())   # several at once part along the wall (assign_goal)
@@ -914,18 +915,15 @@ func peak() -> void:
 	rift_pressure_max = maxi(TIMER_FLOOR, rift_pressure_max - Ramp.step_at(ramp))
 
 
-## What a composition comes as at a mouth: itself, or under the pickets' trial a formation as a
-## picket for each pip of its rating (pickets_trial).
-func dealt_as(c: Dictionary) -> Array:
-	var foe := str(picket_foe.get(str(c.get("faction", "")), ""))
-	if pickets_trial <= 0 or str(c.get("size", "")) != "formation" or foe.is_empty():
+## What a composition comes as at a mouth: itself, or the packs it comes apart into where it
+## carries them (its `fodder`, a list of deals each a list of compositions, laid by Battle.setup
+## under the fodder's trial), the `n`th deal in turn, so a formation dealt again comes another way.
+func dealt_as(c: Dictionary, n: int = 0) -> Array:
+	var deals = c.get("fodder", null)
+	if not (deals is Array) or (deals as Array).is_empty():
 		return [c]
-	var out: Array = []
-	for k in range(ContentDB.squad_of(c)):
-		var p := composition([[foe, pickets_trial]], str(c.get("faction", "")), "patrol", "%s_picket" % str(c.get("id", "")))
-		p["squad"] = 1
-		out.append(p)
-	return out
+	var deal = (deals as Array)[posmod(n, (deals as Array).size())]
+	return (deal as Array) if deal is Array and not (deal as Array).is_empty() else [c]
 
 
 ## A composition as the cycle holds it, for the harness and the tests: one or more members
@@ -1285,22 +1283,26 @@ func _tear_fits(h: Vector2i) -> bool:
 	return unit_at(h) == null and wreck_at(h) == null and not machine_adjacent(h)
 
 
-## Where a flank's tear opens on trial (flank_tears_trial): the hex a tear fits on nearest an end
-## of the wall, on the tears' row or the row before or after it, three hexes at least from every
-## open tear; the ends in turn, the first tear at the low columns' end and the second at the high.
-## A peak's own rule (tear_hex) takes the best of one row, which on a row a river crosses is no end.
-func flank_tear_hex(k: int) -> Vector2i:
+## Where the `k`th of `n` tears open from the start stands (flank_tears_trial): evenly across the
+## width, the first and the last at the wall's two ends, on the hex a tear fits on nearest its
+## column, on the tears' row or the row before or after it, three hexes at least from every open
+## tear. A peak's own rule (tear_hex) takes the best of one row, which on a row a river crosses is
+## no end.
+func start_tear_hex(k: int, n: int) -> Vector2i:
+	var want := ((map.width - 1) * clampi(k, 0, maxi(1, n - 1))) / maxi(1, n - 1)
 	for i in range(map.width):
-		var col := i if k % 2 == 0 else map.width - 1 - i
-		for row in [tear_row, tear_row - 1, tear_row + 1]:
-			var h := Hex.offset_to_axial(col, row)
-			if not _tear_fits(h):
+		for col in ([want] if i == 0 else [want - i, want + i]):
+			if col < 0 or col >= map.width:
 				continue
-			var clear := true
-			for t in tears:
-				clear = clear and Hex.distance(h, t["pos"]) >= 3
-			if clear:
-				return h
+			for row in [tear_row, tear_row - 1, tear_row + 1]:
+				var h := Hex.offset_to_axial(col, row)
+				if not _tear_fits(h):
+					continue
+				var clear := true
+				for t in tears:
+					clear = clear and Hex.distance(h, t["pos"]) >= 3
+				if clear:
+					return h
 	return NO_HEX
 
 

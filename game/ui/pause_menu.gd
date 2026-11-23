@@ -158,8 +158,9 @@ func _show_page(page: String) -> void:
 			# A debug build's dials for the numbers still to be picked by play, the game's own
 			# until one is: when Phased lands, the field's depth, the opening's distance, the
 			# fodder's worth on the Rupture meter, the meter's size, the tide's density, the wall
-			# strike, the packs' pace, the rift's count, the flanks' tears, the leaders' step and
-			# the tide's packs (each read as the next battle starts). A dial leaves this page with
+			# strike, the packs' pace, the rift's count, the start's tears, the leaders' step, the
+			# tide as fodder and the pack bonus (each read as the next battle starts), under two
+			# sets that lay several at once. A dial leaves this page with
 			# its question: the pick lands in content or in the engine and the what-if is cut (the
 			# heat's, the top basic's, the rank and file's, the overheat's and the Barrier basic's
 			# left on 23 November, each as built).
@@ -171,6 +172,8 @@ func _show_page(page: String) -> void:
 			_rows.add_child(_list)
 			var page_rows := _rows
 			_rows = _list.get_child(0)
+			_set_row("SET", [["FODDER TIDE", Settings.FODDER_SET], ["AS BUILT", _trials_as_built()]])   # his first set of 23 November in one press, and every dial back to the game's own
+			_credit("Fodder tide: FORMATIONS FODDER, PACK BONUS +½, STRIKE 5, START TEARS TWO, over the rest as set.")
 			_choice_row("PHASED", "phased_form", Settings.PHASED_FORMS, Settings.PHASED_FORM_LABELS)   # when a machine's Phased lands (Skirmish.phase_at_once; Ryan, 20 November: "Set the debug toggle for phased")
 			_credit("A machine's Phased as the round ends, through the next; or at once, until the round ends. Next battle.")
 			_choice_row("FIELD DEPTH", "field_depth", Settings.FIELD_DEPTHS)   # the field's depth in rows, twelve the game's (Ramp.depth_trial; Ryan, 10 November: "I think the map is a bit too shallow")
@@ -188,12 +191,14 @@ func _show_page(page: String) -> void:
 			_credit("Every pack's move, as built or more. The opening stands a move out, so farther. Next battle.")
 			_choice_row("RIFT SENDS", "rift_sends", Settings.RIFT_SENDS, Settings.RIFT_SENDS_LABELS)   # the compositions the rift sends a peak, each to its own stretch of wall (Battlefield.rift_sends_trial; the same day: "each headed a different direction")
 			_credit("Packs the rift sends a wave, each its own way; the Rupture asks no more. Next battle.")
-			_choice_row("FLANK TEARS", "flank_tears", Settings.FLANK_TEARS, Settings.FLANK_TEARS_LABELS)   # tears open at the wall's two ends from the first turn (Battlefield.flank_tears_trial; the same day: "starting tears at the top and bottom")
-			_credit("Tears open at the wall's two ends from turn one; the Rupture asks no more. Next battle.")
+			_choice_row("START TEARS", "flank_tears", Settings.FLANK_TEARS, Settings.FLANK_TEARS_LABELS)   # tears open across the width from the first turn (Battlefield.flank_tears_trial; the same day: "starting tears at the top and bottom"; "Tears need to spread wide")
+			_credit("Tears open from turn one: two at the wall's ends, or four across it; the Rupture asks no more. Next battle.")
 			_choice_row("LEADERS", "leader_step", Settings.LEADER_STEPS, Settings.LEADER_STEP_LABELS)   # an elite's and a boss's hit points more for each Convergence past its tier's first (ContentDB.leader_step_trial; Ryan, 23 November: "if they don't scale with me they'll become a joke at C4")
 			_credit("An elite's and a boss's hit points more each battle into a tier: C2 one step, C4 three. Next battle.")
-			_choice_row("FORMATIONS", "formation_form", Settings.FORMATION_FORMS, Settings.FORMATION_FORM_LABELS)   # every formation as pickets rated one, two or three of the domain's front-liner each (Battlefield.pickets_trial; the same day: "Fodder should pose a threat by quantity, not by hard hits")
-			_credit("Every formation as three small packs for one machine each, the same worth on the Rupture. Next battle.")
+			_choice_row("FORMATIONS", "formation_form", Settings.FORMATION_FORMS, Settings.FORMATION_FORM_LABELS)   # the tide as fodder: every formation come apart into packs for one machine and for two, the tears sending one in turn (Battlefield.fodder_tide; the same day: "All fodder safer to fight ... choices of pack sizes and pack types")
+			_credit("Fodder: a formation as two or three packs for one machine or two, from its own foes; the tears send them too. Next battle.")
+			_choice_row("PACK BONUS", "pack_bonus", Settings.PACK_BONUSES, Settings.PACK_BONUS_LABELS)   # what a pack pays the Rupture meter as it falls, on top of its rating (Battle.pack_bonus_trial; the same day: "a flat fracture bonus to a pack on top of the per-foe weight")
+			_credit("Pips a pack pays the Rupture as it falls, over its rating; the Rupture grows to match. Next battle.")
 			_rows = page_rows
 			_list.set_deferred("scroll_vertical", kept)
 			_button("BACK", func() -> void: _show_page("settings"), false, "ui_back")
@@ -420,6 +425,38 @@ func _choice_row(caption: String, key: String, options: Array, labels: Dictionar
 			_show_page(_page))
 		row.add_child(b)
 	_rows.add_child(row)
+
+
+## A row of sets on the trials' page: each button lays several dials at once (its dictionary of
+## settings) and draws the page again, filled while every dial of its set stands as it lays it.
+func _set_row(caption: String, sets: Array) -> void:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	row.add_child(_caption(caption))
+	for entry in sets:
+		var values: Dictionary = entry[1]
+		var b := HudButton.new(str(entry[0]))
+		b.font_size = 14
+		b.filled = values.keys().all(func(k) -> bool: return str(Settings.display.get(k, Settings.DISPLAY_DEFAULTS[k])) == str(values[k]))
+		b.custom_minimum_size = Vector2(0, 40)
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if _list != null and _list.is_ancestor_of(_rows):
+			b.mouse_filter = Control.MOUSE_FILTER_PASS
+		b.pressed.connect(func() -> void:
+			Settings.set_displays(values)
+			for k in values.keys():
+				display_changed.emit(str(k), values[k])
+			_show_page(_page))
+		row.add_child(b)
+	_rows.add_child(row)
+
+
+## Every trial dial at the game's own (the trials' page's AS BUILT).
+func _trials_as_built() -> Dictionary:
+	var out := {}
+	for key in Settings.TRIAL_KEYS:
+		out[key] = Settings.DISPLAY_DEFAULTS[key]
+	return out
 
 
 ## The mask over the menu while the host rebuilds: a dark shade, a line of mono text and a

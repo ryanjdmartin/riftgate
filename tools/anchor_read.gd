@@ -14,7 +14,7 @@ extends SceneTree
 ##
 ## usage: godot --headless --path . -s tools/anchor_read.gd -- pool=a,b,c,d,e,f [seeds=5]
 ##        [squads=0] [tier=1] [ramp=1] [kinds=patrol,formation,elite,boss] [only=id,id]
-##        [refit=spec] [blows=percent] [life=percent] [machines=n] [label=text]
+##        [refit=spec] [blows=percent] [life=percent] [machines=n] [packs=spec] [label=text]
 ##   pool    the chassis ids the squads are drawn from
 ##   seeds   fights a squad; squads: how many of the pool's squads of that size (0, all:
 ##           the even draw, every machine in as many squads as every other; a count takes
@@ -30,6 +30,13 @@ extends SceneTree
 ##           fields or a foe it makes later; the rank and file beside them as content has it
 ##   life    the same on their hit points (life=120): with blows, a read of the block a leader
 ##           would stand at a Convergence on (the forms by Convergence, docs/formation_proposal.md)
+##   packs   hand-made packs in the compositions' place, for sizing one before it is content:
+##           packs=goblin*2;goblin+mandragora;goblin*3+mandragora@2, a pack its foes joined by +,
+##           a count after *, its rating after @ (one unless said); each a row of the kind
+##           "pack 1" or "pack 2", stood on a grid as ContentDB.grid_of lays its members. With it,
+##           the compositions are read only when kinds= names them
+##   kinds   may name fodder: every pack the tier's formations may come apart into under the
+##           fodder's trial (ContentDB.fodder_candidates), each once, at its rating
 
 
 func combos(pool: Array, n: int) -> Array:
@@ -56,11 +63,15 @@ func combos(pool: Array, n: int) -> Array:
 
 
 func _init() -> void:
-	var o := {"seeds": "5", "tier": "1", "pool": "", "kinds": "patrol,formation,elite,boss", "ramp": "1", "squads": "0", "label": "", "only": "", "refit": "", "blows": "100", "life": "100", "machines": "0"}
+	var o := {"seeds": "5", "tier": "1", "pool": "", "kinds": "patrol,formation,elite,boss", "ramp": "1", "squads": "0", "label": "", "only": "", "refit": "", "blows": "100", "life": "100", "machines": "0", "packs": ""}
+	var asked := {}
 	for arg in OS.get_cmdline_user_args():
 		var kv := str(arg).split("=", true, 1)
 		if kv.size() == 2:
 			o[kv[0]] = kv[1]
+			asked[kv[0]] = true
+	if not str(o["packs"]).is_empty() and not asked.has("kinds"):
+		o["kinds"] = ""
 	var seeds := int(o["seeds"])
 	var tier := int(o["tier"])
 	var ramp := int(o["ramp"])
@@ -103,6 +114,42 @@ func _init() -> void:
 		if kinds.has("boss"):
 			for bid in db.bosses_of(str(fid)):
 				rows.append(["boss", str(fid), str(bid), {}])
+	# The fodder's trial's packs (kinds=fodder): every candidate of every formation, each once.
+	if kinds.has("fodder"):
+		for fid in db.factions.keys():
+			for c in db.compositions(str(fid), tier, "formation", ramp):
+				for pips in [1, 2]:
+					for members in db.fodder_candidates(c, pips):
+						var said: Array = []
+						for m in members:
+							said.append("%s*%d" % [str(m[0]), int(m[1])] if int(m[1]) > 1 else str(m[0]))
+						var label := "%s@%d" % ["+".join(said), pips]
+						if seen.has(label):
+							continue
+						seen.append(label)
+						var made := Battlefield.composition(members, str(fid), "patrol", label)
+						made["squad"] = pips
+						made["layout"] = db.grid_of(members)
+						rows.append(["pack", str(fid), label, made])
+	# The hand-made packs (packs=): each a patrol of its members at its rating, on a grid laid
+	# from them, under its first foe's domain.
+	for spec in str(o["packs"]).split(";", false):
+		var at := str(spec).split("@", true, 1)
+		var members: Array = []
+		for part in str(at[0]).split("+", false):
+			var fc := str(part).split("*", true, 1)
+			if not db.foes.has(str(fc[0])):
+				push_error("anchor_read: no foe %s" % str(fc[0]))
+				quit(1)
+				return
+			members.append([str(fc[0]), maxi(1, int(fc[1])) if fc.size() == 2 else 1])
+		if members.is_empty():
+			continue
+		var fac := db.faction_of_foe(str(members[0][0]))
+		var made := Battlefield.composition(members, fac, "patrol", str(spec))
+		made["squad"] = clampi(int(at[1]), 1, 4) if at.size() == 2 else 1
+		made["layout"] = db.grid_of(members)
+		rows.append(["pack", fac, str(spec), made])
 	if int(o["machines"]) > 0:
 		print("what-if: every fight read with %d machines, whatever it is rated" % clampi(int(o["machines"]), 1, mini(4, pool.size())))
 	var blows := clampi(int(o["blows"]), 10, 300)
@@ -135,6 +182,8 @@ func _init() -> void:
 		var kind_label := str(row[0])
 		if kind_label == "patrol" and rated >= 2:
 			kind_label = "hunter"
+		if kind_label == "pack":
+			kind_label = "pack %d" % rated
 		if not by_machine.has(kind_label):
 			by_machine[kind_label] = {}
 		var tally: Dictionary = by_machine[kind_label]

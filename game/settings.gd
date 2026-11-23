@@ -40,9 +40,10 @@ const DISPLAY_DEFAULTS := {
 	"wall_strike": "10",   # STRIKES: a debug build's trial of what a pip of threat rating strikes the wall for (Battlefield.strike_trial), read as a battle starts
 	"pack_pace": "0",   # PACES: a debug build's trial of hexes added to every pack's move (Battlefield.pace_trial), read as a battle starts
 	"rift_sends": "1",   # RIFT_SENDS: a debug build's trial of the compositions the rift sends a peak, each leaving in its own direction (Battlefield.rift_sends_trial), read as a battle starts
-	"flank_tears": "0",   # FLANK_TEARS: a debug build's trial of tears open at the wall's two ends from the first turn (Battlefield.flank_tears_trial), read as a battle starts
+	"flank_tears": "0",   # FLANK_TEARS: a debug build's trial of tears open across the width from the first turn (Battlefield.flank_tears_trial), read as a battle starts
 	"leader_step": "0",   # LEADER_STEPS: a debug build's trial of an elite's and a boss's hit points more for each Convergence past its tier's first, in hundredths (ContentDB.leader_step_trial), read as a battle starts
-	"formation_form": "0",   # FORMATION_FORMS: a debug build's trial of every formation dealt as pickets rated one, two or three heads each (Battlefield.pickets_trial), read as a battle starts
+	"formation_form": "built",   # FORMATION_FORMS: a debug build's trial of the tide as fodder, every formation come apart into packs for one machine and for two (Battlefield.fodder_tide), read as a battle starts
+	"pack_bonus": "0",   # PACK_BONUSES: a debug build's trial of what a pack pays the Rupture meter as it falls, on top of its rating, in hundredths of a pip (Battle.pack_bonus_trial), read as a battle starts
 	"chip_style": "corner",   # UnitView.CHIP_STYLES: a debug build's comparison of how a status chip carries its number, read as the field draws
 	"phased_form": "round_end",   # PHASED_FORMS: a debug build's trial of when a machine's Phased lands, as the round ends or as its entry is spent (Skirmish.phase_at_once), read as a battle starts
 }
@@ -122,33 +123,44 @@ const STRIKES := ["10", "7", "5", "3"]
 ## them): the packs' pace, a hex or two more on every pack's move ("I'd probably give everything +1
 ## right now and see what that does"); the rift sending two or three compositions a peak,
 ## each making for its own stretch of wall ("sending multiple packs out of the rift at once, each
-## headed a different direction"); and two tears open at the wall's ends from the first turn
-## ("Having starting tears at the top and bottom might make sense"). The last two leave the
-## Rupture's size on the game's own tide, as TIDE does.
+## headed a different direction"); and tears open across the width from the first turn, two at
+## the wall's ends or four ("Having starting tears at the top and bottom might make sense";
+## "Tears need to spread wide"). The last two leave the Rupture's size on the game's own tide, as
+## TIDE does.
 const PACES := ["0", "1", "2"]
 const PACE_LABELS := {"0": "BUILT", "1": "+1", "2": "+2"}
 const RIFT_SENDS := ["1", "2", "3"]
 const RIFT_SENDS_LABELS := {"1": "×1", "2": "×2", "3": "×3"}
-const FLANK_TEARS := ["0", "2"]
-const FLANK_TEARS_LABELS := {"0": "NONE", "2": "TWO"}
-## And the body as pickets, for a feel of his direction of the same day on today's units ("Fodder
-## should pose a threat by quantity, not by hard hits"; Battlefield.pickets_trial): every formation
-## as a pack rated one for each of its pips, each two or three of the domain's commonest
-## front-liner.
+const FLANK_TEARS := ["0", "2", "4"]
+const FLANK_TEARS_LABELS := {"0": "NONE", "2": "TWO", "4": "FOUR"}
+## And the tide as fodder, his paradigm of the same day on today's foes ("All fodder safer to
+## fight ... More fodder overall, with choices of pack sizes and pack types - bring back threat 2
+## packs as fodder and not just hunters"; Battlefield.fodder_tide): every formation come apart
+## into packs for one machine and for two, and every tear sending one in turn with its patrols.
+## With it the pack bonus ("Maybe add a flat fracture bonus to a pack on top of the per-foe
+## weight"; Battle.pack_bonus_trial): a quarter, a half or a whole pip a pack as it falls.
+## FODDER_SET is his first set of that day in one press, laid over whatever the other dials
+## hold: the fodder, half a pip a pack, the wall strike halved ("Reduce foe damage to the wall so
+## that quantity matters") and two tears open from the start ("Spread fodder across the map");
+## TRIAL_KEYS are the dials AS BUILT sets back.
 ## And the leaders by the Convergence (the same day: "if they don't scale with me they'll become a
 ## joke at C4"; ContentDB.leader_step_trial): an elite's and a boss's hit points a tenth or a
 ## fifth more for each battle into its tier, the fifth what a read of a squad carrying finds asks.
 const LEADER_STEPS := ["0", "10", "20"]
 const LEADER_STEP_LABELS := {"0": "BUILT", "10": "+10% A C", "20": "+20% A C"}
-const FORMATION_FORMS := ["0", "2", "3"]
-const FORMATION_FORM_LABELS := {"0": "BUILT", "2": "PICKETS ×2", "3": "PICKETS ×3"}
+const FORMATION_FORMS := ["built", "fodder"]
+const FORMATION_FORM_LABELS := {"built": "BUILT", "fodder": "FODDER"}
+const PACK_BONUSES := ["0", "25", "50", "100"]
+const PACK_BONUS_LABELS := {"0": "NONE", "25": "+¼", "50": "+½", "100": "+1"}
+const FODDER_SET := {"formation_form": "fodder", "pack_bonus": "50", "wall_strike": "5", "flank_tears": "2"}
+const TRIAL_KEYS := ["phased_form", "field_depth", "field_opening", "fodder_worth", "rupture_beats", "tide_density", "wall_strike", "pack_pace", "rift_sends", "flank_tears", "leader_step", "formation_form", "pack_bonus"]
 
 
 ## Set the field's trial for the battles that start after this: RIFTGATE_FIELD_DEPTH,
 ## RIFTGATE_OPENING, RIFTGATE_FODDER, RIFTGATE_BEATS, RIFTGATE_TIDE, RIFTGATE_STRIKE,
-## RIFTGATE_PACE, RIFTGATE_RIFT_SENDS, RIFTGATE_FLANK_TEARS,
-## RIFTGATE_PICKETS, RIFTGATE_LEADERS, RIFTGATE_OVERHEAT and RIFTGATE_PHASED (round_end or
-## at_once) on any run, else a debug build's fourteen settings when `saved` (the game's own
+## RIFTGATE_PACE, RIFTGATE_RIFT_SENDS, RIFTGATE_FLANK_TEARS, RIFTGATE_FORMATIONS (fodder),
+## RIFTGATE_PACK_BONUS, RIFTGATE_LEADERS, RIFTGATE_OVERHEAT and RIFTGATE_PHASED (round_end or
+## at_once) on any run, else a debug build's settings (TRIAL_KEYS) when `saved` (the game's own
 ## entry points pass it; a scene run alone and the tests read the environment only, so no
 ## machine's saved settings move a test's field). Nothing set is the game's own field, meter,
 ## tide and overheat.
@@ -164,13 +176,16 @@ static func field_trial(saved: bool = false) -> void:
 	var pace := OS.get_environment("RIFTGATE_PACE")
 	var sends := OS.get_environment("RIFTGATE_RIFT_SENDS")
 	var flank := OS.get_environment("RIFTGATE_FLANK_TEARS")
-	var pickets := OS.get_environment("RIFTGATE_PICKETS")
+	var forms := OS.get_environment("RIFTGATE_FORMATIONS")
+	var bonus := OS.get_environment("RIFTGATE_PACK_BONUS")
 	var leaders := OS.get_environment("RIFTGATE_LEADERS")
 	if saved and OS.is_debug_build():
 		if leaders.is_empty() and LEADER_STEPS.has(str(display.get("leader_step", ""))):
 			leaders = str(display["leader_step"])
-		if pickets.is_empty() and FORMATION_FORMS.has(str(display.get("formation_form", ""))):
-			pickets = str(display["formation_form"])
+		if forms.is_empty() and FORMATION_FORMS.has(str(display.get("formation_form", ""))):
+			forms = str(display["formation_form"])
+		if bonus.is_empty() and PACK_BONUSES.has(str(display.get("pack_bonus", ""))):
+			bonus = str(display["pack_bonus"])
 		if pace.is_empty() and PACES.has(str(display.get("pack_pace", ""))):
 			pace = str(display["pack_pace"])
 		if sends.is_empty() and RIFT_SENDS.has(str(display.get("rift_sends", ""))):
@@ -203,7 +218,8 @@ static func field_trial(saved: bool = false) -> void:
 	Battlefield.pace_trial = clampi(int(pace), 0, 4) if pace.is_valid_int() else 0
 	Battlefield.rift_sends_trial = clampi(int(sends), 1, 4) if sends.is_valid_int() else 1
 	Battlefield.flank_tears_trial = clampi(int(flank), 0, 6) if flank.is_valid_int() else 0
-	Battlefield.pickets_trial = clampi(int(pickets), 0, 4) if pickets.is_valid_int() else 0
+	Battlefield.fodder_tide = forms == "fodder"
+	Battle.pack_bonus_trial = clampi(int(bonus), 0, 400) if bonus.is_valid_int() else 0
 	ContentDB.leader_step_trial = clampi(int(leaders), 0, 100) if leaders.is_valid_int() else 0
 
 
@@ -248,6 +264,12 @@ static func set_display(key: String, value: Variant) -> void:
 	cf.load(PATH)
 	cf.set_value("display", key, value)
 	cf.save(PATH)
+
+
+## Set several of a debug build's dials at once and keep them (the trials' page's sets).
+static func set_displays(values: Dictionary) -> void:
+	for key in values.keys():
+		set_display(str(key), values[key])
 
 
 ## Forget the saved knobs (tests).

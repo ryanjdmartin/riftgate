@@ -71,6 +71,7 @@ static func to_dict(b: Battle) -> Dictionary:
 		"foes_killed": b.foes_killed,
 		"menace_killed": b.menace_killed,
 		"meter_held": b.meter_held,
+		"meter_bonus": b.meter_bonus,   # what the pack bonus's trial has added to the meter, 0 with none
 		"pack_paid": _int_keys(b.pack_paid),   # what each standing pack's kills have paid of its rating (11 November)
 		"tier": b.tier, "ramp": b.ramp,
 		"thresholds": b.thresholds, "fractures": b.fractures, "rupture_turn": b.rupture_turn,
@@ -131,6 +132,7 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.foes_killed = int(d.get("foes_killed", 0))
 	b.menace_killed = int(d.get("menace_killed", 0))
 	b.meter_held = int(d.get("meter_held", 0))
+	b.meter_bonus = int(d.get("meter_bonus", 0))
 	for uid in d.get("pack_paid", {}).keys():
 		b.pack_paid[int(str(uid))] = int(d["pack_paid"][uid])
 	b.tier = int(d.get("tier", 0))
@@ -236,7 +238,6 @@ static func _field_dict(f: Battlefield) -> Dictionary:
 		"cycle": f.cycle, "patrol_cycle": f.patrol_cycle, "cycle_index": f._cycle_index, "patrol_index": f._patrol_index,
 		"tear_row": f.tear_row, "tears": tears, "caches": caches, "peaks": f.peaks, "rift_spawns": f.rift_spawns, "tear_spawns": f.tear_spawns,
 		"phase": f.phase, "log": f.log, "next_id": f._next_id,
-		"picket_foe": f.picket_foe,   # the pickets' trial's foe a domain, empty with none: a battle begun under it keeps its pickets
 		"units": units,
 	}
 
@@ -255,6 +256,13 @@ static func _compositions_from(list: Array) -> Array:
 		for key in ["squad", "layout", "lead", "hunts"]:   # the long wall brief's composition fields (3.7, section 6) and the hunt (8 November)
 			if c.has(key):
 				entry[key] = c[key]
+		# What a formation comes apart into under the fodder's trial (Battlefield.dealt_as): its
+		# deals, each a list of compositions, so a battle begun under the trial keeps its fodder.
+		if c.get("fodder", null) is Array:
+			var deals: Array = []
+			for deal in c["fodder"]:
+				deals.append(_compositions_from(deal if deal is Array else []))
+			entry["fodder"] = deals
 		out.append(entry)
 	return out
 
@@ -278,10 +286,6 @@ static func _field_from(d: Dictionary, map: BattleMap) -> Battlefield:
 	f._cycle_index = int(d.get("cycle_index", d.get("spawn_index", 0)))
 	f._patrol_index = int(d.get("patrol_index", 0))
 	f.tear_row = int(d.get("tear_row", d.get("seam_row", f.tear_row_start())))   # the seam's row, by its name until 23 November
-	var pickets = d.get("picket_foe", {})
-	if pickets is Dictionary:
-		for k in (pickets as Dictionary).keys():
-			f.picket_foe[str(k)] = str(pickets[k])
 	for t in d.get("tears", []):
 		f.tears.append({"pos": Vector2i(int(t[0]), int(t[1])), "opened": int(t[2]) if t.size() > 2 else 0})
 	for c in d.get("caches", []):

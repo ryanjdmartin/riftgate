@@ -12430,3 +12430,110 @@ The coverage model's last table the same day, the tide with no middle (`tools/ti
 
 The same packs cost a squad that spreads the same through the rift as through six tears across
 the width; a squad that holds the middle against the tears loses the wall four times over.
+
+## 23 November: the fodder's size, what one machine ends without a reboot
+
+For Ryan's paradigm of that day ("All fodder safer to fight ... bring back threat 2 packs as
+fodder and not just hunters"; "A well-tuned and well-played flanker should be able to finish a
+fight on the sides without rebooting") and the stand-in that deals it (`ContentDB.fodder_of`,
+FORMATIONS on FODDER). `tools/anchor_read.gd` with its `packs=` and `kinds=fodder` of this entry,
+tier one at its first Convergence, the six certain tier ones on stock dice, every single machine
+and every pair of the pool as the pack is rated, four or five fights a squad, the greedy bot, at
+the commit this entry lands with. Hull is a share of a squad of four's; the reboots are a
+machine's a fight, by a bot that reboots early. A cell is a direction, a kind's mean a band.
+
+Hand-made packs first, one machine each, to find the size. A machine's gauge is three shots of a
+basic gun, nine or ten points of damage:
+
+| The pack | Hit points | One machine, stock dice |
+|---|---|---|
+| A goblin | 4 | 1.4 rounds, no hull, no reboot |
+| Two goblins | 8 | 3.9 rounds, 0.2%, 0.60 reboots |
+| Three goblins | 12 | 6.1 rounds, 4.2%, 1.33 reboots |
+| Two goblins and a mandragora | 11 | won 93%, 5.8 rounds, 7.8%, 1.40 reboots |
+| Three mandragoras | 9 | won 97%, 4.8 rounds, 10.5%, 1.43 reboots |
+| Two gels | 8, and four halves | won 53%, 8.1 rounds, 16.9% |
+| Three revenants | 9 | 4.5 rounds, 4.4%, 0.97 reboots |
+| A zombie knight and a revenant | 8, and a rising | 9.2 rounds, 5.2%, 1.97 reboots |
+| Two salamanders | 12 | 5.5 rounds, 5.2%, 1.33 reboots |
+
+Eight hit points is what one gauge ends; what a foe leaves as it falls and what stacks on one
+machine (the gels' Ablating, the roots' Corrupt) count against it. So the stand-in's budget: 8
+for one machine, a foe's standing hit points counting what it leaves and half again for a
+rising, a back rank of two at most. Its first cut gave a pack for two 16, and that pack met by
+one machine read won 73%, 7.8 rounds, 15.2% of a four's hull (most of the machine's own) and
+0.27 wrecks a fight: the fight short his paradigm is rid of. At 12 for two, as landed, every
+pack the tier-one formations come apart into:
+
+| Domain | The pack | For | On stock dice | With two finds a die | Met by one machine |
+|---|---|---|---|---|---|
+| Meadow | goblin ×2 | 1 | 3.8 rounds, 0.2%, 0.58 reboots | 3.5 rounds, 0.1%, 0.33 reboots |  |
+| Meadow | goblin, mandragora | 1 | 2.9 rounds, 0.4%, 0.25 reboots | 2.5 rounds, 0.2%, 0.08 reboots |  |
+| Meadow | mandragora ×2 | 1 | 2.2 rounds, 0.3%, 0.08 reboots | 2.4 rounds, 0.6%, 0.12 reboots |  |
+| Meadow | goblin ×3 | 2 | 2.6 rounds, 0.1%, 0.25 reboots | 2.4 rounds, 0.0%, 0.15 reboots | won 100%, 6.2 rounds, 4.3%, 1.33 reboots |
+| Meadow | goblin ×2, mandragora | 2 | 2.1 rounds, 0.0%, 0.04 reboots | 2.2 rounds, 0.1%, 0.12 reboots | won 96%, 5.9 rounds, 8.0%, 1.42 reboots |
+| Meadow | goblin, mandragora ×2 | 2 | 2.0 rounds, 0.1%, 0.02 reboots | 2.1 rounds, 0.0%, 0.07 reboots | won 100%, 5.3 rounds, 6.6%, 1.25 reboots |
+| Meadow | gel | 1 | 4.6 rounds, 0.9%, 0.83 reboots | 3.8 rounds, 0.5%, 0.58 reboots |  |
+| Meadow | gel, mandragora | 2 | 2.1 rounds, 0.0%, 0.03 reboots | 2.5 rounds, 0.1%, 0.17 reboots | won 96%, 6.8 rounds, 6.8%, 1.50 reboots |
+| Waste | needler ×2 | 1 | 3.9 rounds, 4.7%, 0.83 reboots | 2.6 rounds, 0.9%, 0.17 reboots |  |
+| Waste | needler, cockatrice | 1 | 3.5 rounds, 1.6%, 0.58 reboots | 2.8 rounds, 0.7%, 0.25 reboots |  |
+| Waste | cockatrice ×2 | 1 | 3.6 rounds, 1.2%, 0.54 reboots | 2.8 rounds, 0.3%, 0.21 reboots |  |
+| Waste | needler ×3 | 2 | 2.2 rounds, 0.8%, 0.17 reboots | 1.9 rounds, 0.2%, 0.15 reboots | won 83%, 5.5 rounds, 16.4%, 1.75 reboots |
+| Waste | needler ×2, cockatrice | 2 | 2.4 rounds, 0.3%, 0.21 reboots | 2.0 rounds, 0.1%, 0.24 reboots | won 83%, 5.3 rounds, 11.4%, 1.54 reboots |
+| Waste | needler, cockatrice ×2 | 2 | 2.8 rounds, 0.1%, 0.45 reboots | 2.2 rounds, 0.0%, 0.31 reboots | won 96%, 6.2 rounds, 9.2%, 1.83 reboots |
+| Marsh | revenant ×2 | 1 | 2.1 rounds, 0.1%, 0.04 reboots | 2.2 rounds, 0.2%, 0.08 reboots |  |
+| Marsh | revenant, ghost | 1 | 3.2 rounds, 0.4%, 0.33 reboots | 2.4 rounds, 0.3%, 0.12 reboots |  |
+| Marsh | ghost ×2 | 1 | 4.8 rounds, 1.9%, 0.79 reboots | 2.8 rounds, 1.0%, 0.17 reboots |  |
+| Marsh | revenant ×4 | 2 | 2.2 rounds, 0.7%, 0.22 reboots | 2.4 rounds, 0.6%, 0.29 reboots | won 96%, 5.5 rounds, 13.5%, 1.67 reboots |
+| Marsh | revenant ×2, ghost | 2 | 2.2 rounds, 0.0%, 0.12 reboots | 2.6 rounds, 0.0%, 0.24 reboots | won 100%, 6.7 rounds, 7.0%, 1.54 reboots |
+| Marsh | revenant, ghost ×2 | 2 | 3.4 rounds, 0.1%, 0.35 reboots | 3.5 rounds, 0.3%, 0.40 reboots | won 75%, 7.8 rounds, 12.5%, 2.42 reboots |
+| Marsh | zombie knight | 1 | 2.9 rounds, 1.1%, 0.33 reboots | 1.9 rounds, 0.0%, 0.00 reboots |  |
+| Marsh | zombie knight, revenant | 2 | 2.0 rounds, 0.0%, 0.06 reboots | 1.4 rounds, 0.0%, 0.03 reboots | won 100%, 9.1 rounds, 5.5%, 1.96 reboots |
+| Marsh | zombie knight, ghost | 2 | 2.3 rounds, 0.0%, 0.11 reboots | 1.7 rounds, 0.0%, 0.11 reboots | won 88%, 7.9 rounds, 11.1%, 2.12 reboots |
+| Peak | salamander | 1 | 2.1 rounds, 0.2%, 0.08 reboots | 2.0 rounds, 0.3%, 0.08 reboots |  |
+| Peak | bomb ×2 | 1 | 3.7 rounds, 0.3%, 0.46 reboots | 2.7 rounds, 0.3%, 0.25 reboots |  |
+| Peak | bomb, drake | 1 | 4.0 rounds, 1.2%, 0.46 reboots | 3.0 rounds, 0.6%, 0.25 reboots |  |
+| Peak | drake ×2 | 1 | 3.5 rounds, 1.3%, 0.50 reboots | 2.9 rounds, 0.3%, 0.21 reboots |  |
+| Peak | salamander ×2 | 2 | 2.1 rounds, 0.1%, 0.07 reboots | 1.6 rounds, 0.0%, 0.02 reboots | won 100%, 5.5 rounds, 5.2%, 1.33 reboots |
+| Peak | salamander, bomb | 2 | 1.7 rounds, 0.0%, 0.00 reboots | 1.2 rounds, 0.0%, 0.00 reboots | won 100%, 4.7 rounds, 1.6%, 0.79 reboots |
+| Peak | bomb ×3 | 2 | 2.1 rounds, 0.0%, 0.07 reboots | 1.9 rounds, 0.0%, 0.14 reboots | won 100%, 6.7 rounds, 2.5%, 1.25 reboots |
+| Peak | salamander, drake | 2 | 1.8 rounds, 0.0%, 0.01 reboots | 1.3 rounds, 0.0%, 0.00 reboots | won 100%, 5.0 rounds, 3.1%, 1.08 reboots |
+| Peak | bomb ×2, drake | 2 | 2.3 rounds, 0.0%, 0.09 reboots | 1.9 rounds, 0.0%, 0.12 reboots | won 100%, 6.4 rounds, 3.7%, 1.29 reboots |
+| Peak | bomb, drake ×2 | 2 | 2.6 rounds, 0.2%, 0.20 reboots | 2.0 rounds, 0.0%, 0.07 reboots | won 100%, 6.3 rounds, 6.2%, 1.38 reboots |
+
+The means: a pack for one 3.4 rounds, 1.0% of a four's hull and 0.45 reboots on stock dice, 2.7
+rounds, 0.4% and 0.19 with two finds a die; a pack for two 2.3 rounds, 0.1% and 0.14, and met by
+one machine won 95%, 6.3 rounds, 7.5% (about three tenths of that machine's hull) and 1.53
+reboots. The needlers are the hard-hitting line (two of them 4.7% of a four's hull from one
+stock machine, three met alone 16.4%); the massive foes are in no pack (a treant met by one
+machine: won 71%, 11.3 rounds, 3.42 reboots).
+
+The whole battle, a direction only (`tools/battle_run.gd`, ten seeds each of the Meadow and the
+Marsh, the Honey Badger, the Skua, the Cassowary and the Storm Petrel at Convergence 1, the
+bot's player, which gathers and holds no lane):
+
+| The field | Won | The gate fell | Wiped | The Rupture's turn | Fights for one a battle | Their rounds | Their hull |
+|---|---|---|---|---|---|---|---|
+| As built | 20% | 10% to 20% | 60% to 70% | 6.5 | 3.0 to 3.8 | 5.5 to 8.9 | 3.1% to 4.6% of the squad's |
+| His set (FODDER, PACK BONUS +½, STRIKE 5, START TEARS TWO) | 10% | 50% to 60% | 30% to 40% | 5.7 | 6.6 to 8.6 | 4.2 to 6.3 | 1.8% to 3.7% |
+
+The gathering player loses the wall under the set where it lost its machines as built: what
+the coverage model says of a squad that holds a post (`tools/tide_model.py`, 400 battles a row,
+seed 1; twelve turns, fights for free, a pack for two wanting two machines):
+
+| The tide | Packs sent | Pips sent | Pips killed | Packs that struck | Gate lost | Actions spent fighting |
+|---|---|---|---|---|---|---|
+| As built, the wall struck for ten a pip | 13 | 19 | 100% | 12% | 15 | 40% |
+| The fodder tide, ten a pip | 17 | 20 | 96% | 7% | 25 | 40% |
+| The fodder tide, five a pip | 17 | 20 | 96% | 7% | 12 | 40% |
+| His set: fodder, two tears from the start, five a pip | 25 | 29 | 95% | 5% | 16 | 58% |
+| The set, four tears from the start | 33 | 39 | 92% | 6% | 25 | 74% |
+| The set, TIDE ×2 | 42 | 49 | 83% | 20% | 114 | 86% |
+| The set, the squad holding the gate | 25 | 29 | 49% | 44% | 397 | 30% |
+| The set, the squad camped on the rift | 25 | 29 | 40% | 52% | 535 | 24% |
+| The set with four tears, the squad holding the gate | 33 | 39 | 52% | 44% | 450 | 42% |
+
+A squad that spreads holds the wall under the set as it did as built, at three fifths of its
+actions where it spent two fifths; a squad that holds the gate or the rift loses the wall twice
+over. Four tears from the start is three quarters of its actions; twice the tide on top is a
+rout.

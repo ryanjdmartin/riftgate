@@ -26,10 +26,13 @@ The model plays that and nothing else:
     moves out on each flank, then a peak every third turn, the rift sending the next of its
     cycle and every open tear a patrol, a tear opening a peak on a row that steps toward the
     wall. No hunters, no elites, no boss, no Rupture: twelve turns of the tide and its count.
-  - Its last table is a tide with no middle (the rethink, docs/tide_proposal.md, section 4):
-    packs for one machine through tears across the whole width with the rift sending none,
-    against the same packs through the rift, for a squad free to go where it will and one
-    that holds a post.
+  - A table is a tide with no middle (docs/tide_proposal.md): packs for one machine through
+    tears across the whole width with the rift sending none, against the same packs through
+    the rift, for a squad free to go where it will and one that holds a post.
+  - Its last table is the fodder tide as the trial deals it (Battlefield.fodder_tide; his
+    paradigm of the same day): every formation come apart into packs for one machine and for
+    two, the tears sending a patrol and a fodder pack in turn, tears open across the width
+    from the first turn, and the wall struck for five a pip.
 
 What it cannot say: what a fight costs, so whether a pack is worth a machine; how long a fight
 takes to play; what a hunter does to a squad spread this thin. Read a column against its
@@ -90,10 +93,11 @@ class Pack:
 
 
 class Field:
-    def __init__(self, depth, rng, leash=0, camp="gate"):
+    def __init__(self, depth, rng, leash=0, camp="gate", strike=STRIKE):
         self.depth = depth
         self.apron = depth - 3
         self.rng = rng
+        self.strike = strike   # what a pip strikes the wall for
         self.leash = leash   # the hexes from its post the squad keeps within; 0 for a free squad
         self.home = (WALL // 2, self.apron if camp == "gate" else 3)   # the post: the gate's front, or the rift's
         self.packs = []
@@ -168,7 +172,7 @@ class Field:
         for p in self.packs:
             p.at = toward(p.at, (p.goal, self.apron), p.pace)
             if p.at[1] >= self.apron:
-                self.gate += STRIKE * p.rating
+                self.gate += self.strike * p.rating
                 if not p.struck:
                     p.struck = True
                     self.struck_packs += 1
@@ -200,56 +204,64 @@ def front(rng, depth=14, pace=3, mouths=6, rate=3, leash=0, camp="gate", through
     return f
 
 
-def battle(rng, depth=12, pace=2, tide=1, split=False, flank_tears=0, rift_sends=1, opening=1, spawn_first=0):
+def battle(rng, depth=12, pace=2, tide=1, split=False, flank_tears=0, rift_sends=1, opening=1, fodder=False, strike=STRIKE, leash=0, camp="gate"):
     """One battle's tide. `tide` multiplies the opening, the rift's sends and the tears a peak;
     `split` deals every formation as three packs rated one; `opening` is the moves out the
-    opening's formation stands (its patrols one more); `spawn_first` 1 sends the tide before
-    the packs walk, so a pack leaves its mouth at once, and 2 the rift's packs alone, a tear's
-    standing a turn where it lands as in the game's order."""
-    f = Field(depth, rng)
+    opening's formation stands (its patrols one more); `flank_tears` stand open from the first
+    turn, evenly across the width (two at the wall's ends). `fodder` is the trial's tide: a
+    formation comes apart into packs for one and for two (three ones, or a one and a two), the
+    opening's stood six columns apart, and every tear sends a patrol and a fodder pack in turn,
+    the pack for two one time in three. `strike` is what a pip strikes the wall for; `leash`
+    and `camp` hold the squad to a post (Field)."""
+    f = Field(depth, rng, leash, camp, strike)
+    if leash and camp == "rift":
+        f.machines = [(8 + i, 3) for i in range(4)]
 
-    def send(at, rating, part=0, parts=1):
-        if split and rating == 3:
+    def send(at, rating, part=0, parts=1, spread=0):
+        if fodder and rating == 3:
+            ways = rng.choice(([1, 1, 1], [1, 2], [2, 1]))
+            for k, r in enumerate(ways):
+                col = min(WALL - 1, max(0, at[0] + (spread * (2 * k - (len(ways) - 1))) // 2))
+                f.deal((col, at[1]), r, pace, part * len(ways) + k, parts * len(ways))
+        elif split and rating == 3:
             for k in range(3):
                 f.deal(at, 1, pace, part * 3 + k, parts * 3)
         else:
             f.deal(at, rating, pace, part, parts)
 
     for k in range(tide):
-        send(((WALL * (k + 1)) // (tide + 1), max(1, f.apron - opening * pace)), 3)
+        send(((WALL * (k + 1)) // (tide + 1), max(1, f.apron - opening * pace)), 3, spread=6)
     for k in range(2 * tide):
         inset = (k // 2) * 3
         f.deal((inset if k % 2 == 0 else WALL - 1 - inset, max(1, f.apron - (opening + 1) * pace)), 1, pace)
     for k in range(flank_tears):
-        f.tears.append((1 if k % 2 == 0 else WALL - 2, f.tear_row))
+        f.tears.append((((WALL - 1) * k) // max(1, flank_tears - 1), f.tear_row))
     cycle = [3, 1]
     at_cycle = 0
+    at_tear = 0
     pressure = BEAT - 1
+    stop = max(f.tear_row, f.apron - 4)   # the tears' row never within four rows of the wall
 
-    def peak(rift=True, tears=True):
-        nonlocal at_cycle
+    def peak():
+        nonlocal at_cycle, at_tear
         n = tide * rift_sends
-        for i in range(n if rift else 0):
+        for i in range(n):
             send((WALL // 2, 2), cycle[at_cycle % len(cycle)], i, n)
             at_cycle += 1
-        if not tears:
-            return
         for t in list(f.tears):
-            f.deal(t, 1, pace)
-        f.tear_row = min(f.tear_row + 2, f.apron)
+            f.deal(t, (2 if rng.random() < 1 / 3 else 1) if fodder and at_tear % 2 == 1 else 1, pace)
+            at_tear += 1
+        f.tear_row = min(f.tear_row + 1, stop)
         for i in range(tide):
             f.open_tear()
 
     for turn in range(TURNS):
         f.player()
         pressure += 1
-        peaked = pressure >= BEAT
-        if peaked:
-            pressure = 0
-            peak(spawn_first > 0, spawn_first == 1)   # what the tide sends before the walk
         f.enemy()
-        if peaked:
-            peak(spawn_first == 0, spawn_first != 1)  # and what it sends after it
+        if pressure >= BEAT:
+            pressure = 0
+            peak()
     return f
 
 
@@ -296,7 +308,7 @@ def main():
     for depth in (12, 14, 16):
         for pace in (2, 3, 4):
             print(row("%d deep, pace %d" % (depth, pace), read(n, s, tide=2, split=True, depth=depth, pace=pace, opening=2)))
-    print("\n**The mouths and the order.** Fourteen deep at pace 3, formations split, the opening a move farther out.\n")
+    print("\n**The mouths.** Fourteen deep at pace 3, formations split, the opening a move farther out.\n")
     print(HEAD)
     for label, kw in [
         ("TIDE ×1", {}),
@@ -305,10 +317,6 @@ def main():
         ("TIDE ×1, the rift sends 2, two flank tears", {"rift_sends": 2, "flank_tears": 2}),
         ("TIDE ×2", {"tide": 2}),
         ("TIDE ×2, two flank tears", {"tide": 2, "flank_tears": 2}),
-        ("TIDE ×2, two flank tears, the tide sends before the walk", {"tide": 2, "flank_tears": 2, "spawn_first": 1}),
-        ("TIDE ×2, two flank tears, the rift alone sends before the walk", {"tide": 2, "flank_tears": 2, "spawn_first": 2}),
-        ("TIDE ×1, the tide sends before the walk", {"spawn_first": 1}),
-        ("TIDE ×1, the rift alone sends before the walk", {"spawn_first": 2}),
     ]:
         print(row(label, read(n, s, depth=14, pace=3, split=True, opening=2, **kw)))
     print("\n**A tide with no middle.** Three packs for one machine a turn, fourteen deep at pace 3: through the rift, or through six tears across the width with the rift sending none; a squad free to go where it will, one camped within four hexes of the rift, or one holding within four of the gate. (A squad camped on a rift that sends everything is his play's to say, 23 November: it won; this model has no fight to cost the squad that splits.)\n")
@@ -322,6 +330,20 @@ def main():
         ("Through four tears, the squad free", {"mouths": 4}),
     ]:
         print(row(label, read(n, s, play=front, **kw)))
+    print("\n**The fodder tide.** The trial's tide (FORMATIONS on FODDER), twelve deep at pace 2: every formation as packs for one machine and for two, the tears sending a patrol and a fodder pack in turn. A pack for two still wants two machines here; in the game one machine may take it alone, at a price.\n")
+    print(HEAD)
+    for label, kw in [
+        ("As built, the wall struck for ten a pip", {}),
+        ("The fodder tide, ten a pip", {"fodder": True}),
+        ("The fodder tide, five a pip", {"fodder": True, "strike": 5}),
+        ("His set: fodder, two tears from the start, five a pip", {"fodder": True, "strike": 5, "flank_tears": 2}),
+        ("The set, four tears from the start", {"fodder": True, "strike": 5, "flank_tears": 4}),
+        ("The set, TIDE ×2", {"fodder": True, "strike": 5, "flank_tears": 2, "tide": 2}),
+        ("The set, the squad holding the gate", {"fodder": True, "strike": 5, "flank_tears": 2, "leash": 4}),
+        ("The set, the squad camped on the rift", {"fodder": True, "strike": 5, "flank_tears": 2, "leash": 4, "camp": "rift"}),
+        ("The set with four tears, the squad holding the gate", {"fodder": True, "strike": 5, "flank_tears": 4, "leash": 4}),
+    ]:
+        print(row(label, read(n, s, **kw)))
 
 
 if __name__ == "__main__":
