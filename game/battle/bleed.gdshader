@@ -20,8 +20,9 @@ uniform vec2 map_size = vec2(1.0, 1.0);      // the painted map, in map pixels
 uniform vec2 view_size = vec2(1.0, 1.0);     // this texture, in screen pixels
 uniform vec2 scroll = vec2(0.0, 0.0);        // the map view's scroll
 uniform float zoom = 1.0;
-uniform vec2 grad = vec2(0.0, 1.0);          // where the rift's bleed is total and where it is gone, along grad_axis
+uniform vec2 grad = vec2(0.0, 1.0);          // where the seam's painting is whole and where it stops at the wall, along grad_axis (Bleed.wall)
 uniform vec2 grad_axis = vec2(0.0, 1.0);     // from the rift toward the wall (Bleed.axis): down the screen, or leftward with the wall at the left
+uniform vec4 seam = vec4(0.0, 0.0, 0.0, 1.0);   // the seam's circle about the rift (Bleed.seam): its centre, its radius and the run its edge falls over, in map pixels
 uniform vec3 sources[32];                    // x, y, radius in map pixels
 uniform int source_count = 0;
 uniform sampler2D units : filter_nearest;    // the machines alone: a mask where the scene wins
@@ -33,6 +34,7 @@ uniform float south_d = -1.0e6;              // the wall's foot along far_axis: 
 uniform float focus_band = 330.0;            // the sharp zone reaches this far toward the rift from the middle, in map pixels
 uniform float focus_falloff = 180.0;         // map pixels over which the blur reaches its maximum
 uniform float blur_max = 3.0;                // the blur's tap spacing at its maximum, in screen pixels
+uniform float far_gain = 1.0;                // the far ground's softening: whole at the close view, gone with the whole field in view (BattleMapView.zoom_min)
 uniform vec2 play_x = vec2(0.0, 1.0);        // the playable field's left and right, in map pixels
 uniform float edge_fade = 30.0;              // map pixels past the field over which the side blur reaches full strength (smaller is harder)
 uniform float edge_blur = 1.6;               // the side blur's maximum
@@ -53,7 +55,9 @@ uniform vec4 boxes[32];                      // left, top, right, bottom, in the
 uniform int box_count = 0;
 
 float bleed_at(vec2 px) {
-	float m = 1.0 - clamp((dot(px, grad_axis) - grad.x) / max(1.0, grad.y - grad.x), 0.0, 1.0);
+	float held = 1.0 - clamp((dot(px, grad_axis) - grad.x) / max(1.0, grad.y - grad.x), 0.0, 1.0);
+	float ring = 1.0 - clamp((distance(px, seam.xy) - (seam.z - seam.w * 0.5)) / max(1.0, seam.w), 0.0, 1.0);
+	float m = min(held, ring);
 	for (int i = 0; i < source_count; i++) {
 		vec3 s = sources[i];
 		float d = distance(px, s.xy);
@@ -79,7 +83,7 @@ float bayer(ivec2 c) {
 // only"). Both worlds soften alike: all or none.
 float blur_radius(vec2 px) {
 	float d = dot(px, far_axis);
-	float f = clamp((d - focus_d - focus_band) / focus_falloff, 0.0, 1.0);
+	float f = clamp((d - focus_d - focus_band) / focus_falloff, 0.0, 1.0) * far_gain;
 	float s = clamp((south_d - d) / (focus_falloff * 0.5), 0.0, 1.0);
 	return max(f, s) * blur_max;
 }

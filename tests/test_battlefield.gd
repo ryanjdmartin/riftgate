@@ -116,58 +116,104 @@ func test_a_pack_on_the_apron_strikes_the_gate() -> void:
 	assert_eq(sq.pos, front, "it holds at the gate")
 
 
-## A pusher's wall segment (the long wall brief 3.3; Ryan, 9 November: "the flankers should target
-## their closest wall with a small amount of randomness, avoiding crowding"): the wall nearest where
-## it is dealt, at a spread of nothing its own column, which it walks to from wherever it stands; a
-## pack the rift sends the rift's column; the ramp's spread 2 at the foot and half the wall at the
-## top, for the rift's packs alone; a flank's the foot's 2, flat; a hunter draws none.
-func test_a_pushers_segment_is_the_wall_nearest_where_it_is_dealt_and_walked_to() -> void:
+## A pusher's wall segment (Ryan, 23 November: "they're skipping sections they could hit this turn
+## to go hit something two turns away. I think the randomization of their movement should be chosen
+## from targets of equivalent closeness, not distance from center"): the stretch of wall it reaches
+## soonest, read from its own walk as it is dealt. A pack one move from the wall draws only among
+## the columns it strikes this turn; one far out draws across everything it reaches no later; a
+## hunter draws none.
+func test_a_pushers_segment_is_a_stretch_of_wall_it_reaches_soonest() -> void:
 	var f := _field(20, 12)
-	var rift_col := Hex.axial_to_offset(f.map.rift).x
-	var sq := f.add_unit(Unit.pack(0, "ghouls", _o(3, 3), "marsh", 2))
-	f.assign_goal(sq, 0)
-	assert_eq(sq.goal_col, 3, "at a spread of nothing, its own column: the wall nearest it")
-	for i in range(8):
+	var row := f.apron_row()
+	for n in range(12):
+		var near := f.add_unit(Unit.pack(0, "near%d" % n, _o(4, row - 2), "marsh", 2))
+		f.phase = n
+		f.assign_goal(near)
+		assert_true(absi(near.goal_col - 4) <= 1, "a pack a move from the wall takes the wall in front of it (%d)" % near.goal_col)
+		var w: Battlefield.Walk = f.plan_walks()[near.id]
+		assert_true(w.strikes, "and strikes it this turn, never a stretch a turn further")
+		f.units.erase(near)
+	f.phase = 0
+	var far := f.add_unit(Unit.pack(0, "far", _o(10, 1), "marsh", 2))
+	var cols := f.soonest_columns(far)
+	assert_eq(cols.size(), 9, "eight rows out at move 2: four turns, and the nine columns its walk reaches in them")
+	assert_eq(cols[0], 6, "four columns either side of its own")
+	assert_eq(cols[cols.size() - 1], 14, "and no further")
+	f.assign_goal(far)
+	assert_true(cols.has(far.goal_col), "its segment is one of them")
+	var turns := 0
+	while not f.on_apron(far, far.pos) and turns < 20:
 		f.enemy_turn()
-	assert_eq(Hex.axial_to_offset(sq.pos), Vector2i(3, f.apron_row()), "walked to the apron hex in that column, straight down")
-	var sent := f.add_unit(Unit.pack(0, "sent", _o(4, 1), "marsh", 2))
-	f.assign_goal(sent, 0, true)
-	assert_eq(sent.goal_col, rift_col, "a pack the rift sends: the rift's column")
-	assert_eq(Ramp.spread_at(0, 20), 2, "the rift's spread at the foot")
-	assert_eq(Ramp.spread_at(Ramp.TOP, 20), 10, "and half the wall at the top")
-	assert_eq(Ramp.FLANK_SPREAD, 2, "a flank's, the foot's, flat")
-	f.ramp = Ramp.TOP
-	for n in range(6):
-		var flank := f.add_unit(Unit.pack(0, "f%d" % n, _o(18, 2), "marsh", 2))
-		f.assign_goal(flank)
-		assert_true(absi(flank.goal_col - 18) <= Ramp.FLANK_SPREAD, "a flank at the top of the ramp stays by its own stretch of wall, never across the map (%d)" % flank.goal_col)
+		turns += 1
+	assert_eq(turns, 4, "at the wall in the fewest turns, whichever it drew")
+	assert_eq(Hex.axial_to_offset(far.pos).x, far.goal_col, "on its own segment")
 	var hunter := f.add_unit(Unit.pack(0, "wolves", _o(15, 3), "marsh", 2))
 	hunter.behaviour = "hunt"
-	f.assign_goal(hunter, 4)
+	f.assign_goal(hunter)
 	assert_eq(hunter.goal_col, -1, "a hunter draws no segment")
 
 
-## At a spread of four the draw lands eight pushers the rift sends on eight of the nine columns
-## about the rift's, never off the wall; the crowding keeps two from one column while an emptier one
-## is in the window.
-func test_eight_pushers_at_a_spread_of_four_take_eight_of_the_nine_columns() -> void:
+## The turns are the walk's own: water on the way to a stretch of wall puts it a turn further, and
+## a wreck on an apron hex takes that hex out for the battle.
+func test_the_soonest_stretch_reads_the_ground_and_the_wrecks() -> void:
 	var f := _field(20, 12)
-	var rift_col := Hex.axial_to_offset(f.map.rift).x
+	var row := f.apron_row()
+	var sq := f.add_unit(Unit.pack(0, "ghouls", _o(10, row - 2), "marsh", 2))
+	assert_eq(f.soonest_columns(sq), [9, 10, 11] as Array[int], "two steps out: its own column and one either side")
+	f.map.terrain[_o(9, row)] = BattleMap.Terrain.WATER
+	assert_eq(f.soonest_columns(sq), [10, 11] as Array[int], "a segment is a land hex: the flooded one is out")
+	f.map.terrain[_o(9, row)] = BattleMap.Terrain.PLAIN
+	var wreck := Unit.mech(9, "Wreck", _o(11, row), 3)
+	f.wrecks.append(wreck)
+	assert_eq(f.soonest_columns(sq), [9, 10] as Array[int], "nor one a wreck lies on")
+	f.wrecks.clear()
+	for h in [_o(10, row - 1), _o(9, row - 1), _o(11, row - 1), _o(10, row), _o(11, row)]:
+		f.map.terrain[h] = BattleMap.Terrain.WATER   # a wade between it and the wall: two of its move a hex
+	var wet := f.soonest_columns(sq)
+	assert_true(wet.size() > 0, "it still reaches the wall")
+	var walked := Unit.pack(0, "probe", sq.pos, "marsh", 2)
+	assert_true(f._turns_along(walked, [_o(10, row - 1), _o(10, row)]) == 2, "a wade a turn: two turns straight down through the water")
+
+
+## Eight pushers one mouth sends take eight columns of the nine they all reach soonest: the
+## crowding keeps two from one column while an emptier one is among them.
+func test_eight_pushers_from_one_mouth_take_eight_columns() -> void:
+	var f := _field(20, 12)
 	var cols := {}
 	for n in range(8):
-		var p := f.add_unit(Unit.pack(0, "p%d" % n, _o(n * 2, 1), "marsh", 2))
-		f.assign_goal(p, 4, true)
-		assert_true(absi(p.goal_col - rift_col) <= 4, "pusher %d inside the nine columns" % n)
+		var p := f.add_unit(Unit.pack(0, "p%d" % n, _o(10, 1), "marsh", 2))
+		f.assign_goal(p)
+		assert_true(absi(p.goal_col - 10) <= 4, "pusher %d among the nine columns" % n)
 		cols[p.goal_col] = true
 	assert_eq(cols.size(), 8, "eight columns of the nine")
-	var edge := f.add_unit(Unit.pack(0, "edge", _o(0, 1), "marsh", 2))
-	f.assign_goal(edge, 40)
-	assert_true(edge.goal_col >= 0 and edge.goal_col < f.map.width, "a spread past the wall is clamped to it")
 
 
-## Two flankers dealt side by side never share a segment while their window holds another (Ryan:
-## "avoiding crowding ... make sure packs don't get stuck on one another"), and both strike, each on
-## its own stretch of the apron.
+## Several packs one mouth sends at once each draw from a share of their own of those columns, in
+## order along the wall (Ryan, 23 November: "sending multiple packs out of the rift at once, each
+## headed a different direction").
+func test_packs_sent_together_leave_in_different_directions() -> void:
+	var f := _field(20, 12)
+	var left := f.add_unit(Unit.pack(0, "left", _o(10, 1), "marsh", 2))
+	f.assign_goal(left, 0, 2)
+	var right := f.add_unit(Unit.pack(0, "right", _o(10, 1), "marsh", 2))
+	f.assign_goal(right, 1, 2)
+	assert_true(left.goal_col < 10, "the first of two toward one end of the wall (%d)" % left.goal_col)
+	assert_true(right.goal_col >= 10, "the second toward the other (%d)" % right.goal_col)
+	var was := Battlefield.rift_sends_trial
+	Battlefield.rift_sends_trial = 3
+	var g := _field(20, 12)
+	g.spawn_faction = "marsh"
+	g.cycle = [Battlefield.composition([["revenant", 4]], "marsh", "formation", "host")]
+	g.peak()
+	Battlefield.rift_sends_trial = was
+	var sent: Array = g.packs()
+	assert_eq(sent.size(), 3, "the rift sent three under its trial")
+	assert_true((sent[0] as Unit).goal_col < (sent[1] as Unit).goal_col and (sent[1] as Unit).goal_col < (sent[2] as Unit).goal_col, "each its own stretch, in order along the wall")
+
+
+## Two flankers dealt side by side never share a segment while another is as near (Ryan, 9
+## November: "avoiding crowding ... make sure packs don't get stuck on one another"), and both
+## strike, each on its own stretch of the apron.
 func test_flankers_dealt_together_take_their_own_segments_and_both_strike() -> void:
 	var f := _field(20, 12)
 	var a := f.add_unit(Unit.pack(0, "a", _o(2, 4), "marsh", 2))
@@ -175,8 +221,8 @@ func test_flankers_dealt_together_take_their_own_segments_and_both_strike() -> v
 	var b := f.add_unit(Unit.pack(0, "b", _o(2, 5), "marsh", 2))
 	f.assign_goal(b)
 	assert_true(absi(a.goal_col - b.goal_col) >= 2, "two segments apart, none beside the other (%d, %d)" % [a.goal_col, b.goal_col])
-	for col in [a.goal_col, b.goal_col]:
-		assert_true(absi(col - 2) <= Ramp.FLANK_SPREAD, "each by its own stretch of wall")
+	assert_true(f.soonest_columns(a).has(a.goal_col), "the first on a stretch it reaches soonest")
+	assert_true(f.soonest_columns(b).has(b.goal_col), "and the second")
 	for i in range(6):
 		f.enemy_turn()
 	var walks := f.plan_walks()
@@ -193,7 +239,7 @@ func test_flankers_dealt_together_take_their_own_segments_and_both_strike() -> v
 func test_a_walk_carries_its_whole_way_and_the_stops_of_the_turns_after() -> void:
 	var f := _field(20, 12)
 	var sq := f.add_unit(Unit.pack(0, "ghouls", _o(3, 1), "marsh", 2))
-	f.assign_goal(sq, 0)
+	sq.goal_col = 3
 	var w: Battlefield.Walk = f.plan_walks()[sq.id]
 	assert_true(w.route.size() > w.path.size(), "the way runs past this turn's walk")
 	assert_eq(w.route.slice(0, w.path.size()), w.path, "this turn's walk is its first stretch")
@@ -329,8 +375,8 @@ func test_the_wall_is_struck_anywhere_along_it_and_a_patrol_chips_less() -> void
 
 
 ## A peak (the pacing session, 30 October): the rift sends the cycle's next composition, a tear
-## opens on the seam's row and sends a patrol from the next peak on, the seam creeps, and a
-## spawn never lands beside a machine.
+## opens on the tears' row and sends a patrol from the next peak on, the row steps toward the wall,
+## and a spawn never lands beside a machine.
 func test_a_peak_sends_from_the_rift_and_a_tear_sends_from_the_peak_after_it_opens() -> void:
 	var f := _field(9, 20)
 	f.spawn_faction = "marsh"
@@ -338,7 +384,7 @@ func test_a_peak_sends_from_the_rift_and_a_tear_sends_from_the_peak_after_it_ope
 	f.patrol_cycle = [Battlefield.composition([["revenant", 2]], "marsh", "patrol", "shamblers")]
 	f.ramp = 0
 	var m := f.add_unit(Unit.mech(9, "A", _o(4, 2), 3))   # a machine right under the rift
-	assert_eq(f.seam_row, f.seam_start(), "the seam starts where the bleed's gradient ended")
+	assert_eq(f.tear_row, f.tear_row_start(), "the tears' row at its start")
 	f.peak()
 	assert_eq(f.peaks, 1, "one peak")
 	assert_eq(f.packs().size(), 1, "the rift sent one composition and the new tear sent nothing yet")
@@ -348,9 +394,9 @@ func test_a_peak_sends_from_the_rift_and_a_tear_sends_from_the_peak_after_it_ope
 	assert_false(f.machine_adjacent(sent.pos), "it landed beside no machine")
 	assert_true(Hex.distance(sent.pos, f.map.rift) <= 3, "near the rift")
 	assert_eq(f.tears.size(), Ramp.tears_at(0), "the ramp's count of tears opened")
-	assert_eq(f.seam_row, f.seam_start() + Ramp.seam_creep_at(0), "the seam crept")
+	assert_eq(f.tear_row, f.tear_row_start() + Ramp.tear_creep_at(0), "the tears' row stepped toward the wall")
 	var first: Vector2i = f.tears[0]["pos"]
-	assert_eq(Hex.axial_to_offset(first).y, f.seam_row, "and the tear opened on the seam's new edge")
+	assert_eq(Hex.axial_to_offset(first).y, f.tear_row, "and the tear opened on it")
 	f.peak()
 	assert_eq(f.packs().size(), 3, "the rift sent again and the tear sent its first patrol")
 	assert_eq(f.rift_spawns, 2, "two from the rift")
@@ -363,7 +409,7 @@ func test_a_peak_sends_from_the_rift_and_a_tear_sends_from_the_peak_after_it_ope
 	assert_true(Hex.distance(first, second) >= 3, "spread away from the first")
 	for i in range(12):
 		f.peak()
-	assert_eq(f.seam_row, f.apron_row(), "the seam creeps as far as the apron and no further")
+	assert_eq(f.tear_row, f.apron_row(), "the tears' row steps as far as the apron and no further")
 	for t in f.tears:
 		assert_true(Hex.axial_to_offset(t["pos"]).y <= f.apron_row(), "a tear opens no further south than the apron")
 	assert_true(f.units.has(m), "the machine still stands")

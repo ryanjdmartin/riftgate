@@ -133,7 +133,7 @@ func test_setup_places_team_formation_and_boss() -> void:
 ## The field's trial (Ryan, 10 November: "I think the map is a bit too shallow ... If the map is a
 ## little deeper, and the seam starts a little farther out, it will feel more like I can actually
 ## plan a little bit ahead instead of panicking from the very start"): a trial depth is the
-## field's depth, and the seam's start stands that much farther from the wall while its share's
+## field's depth, and the tears' row starts that much farther from the wall while its share's
 ## ceiling holds. The opening is measured from the wall, so depth alone leaves a formation's first
 ## walk on the wall; a trial of the opening stands every opening pack that many moves farther
 ## out, and then the enemy's first turn strikes nothing.
@@ -147,7 +147,7 @@ func test_the_fields_trial_deepens_the_field_and_stands_the_opening_farther_out(
 	deep.setup(_team(), "meadow")
 	assert_eq(deep.map.height, depth + 2, "a trial depth is the field's")
 	assert_eq(deep.map.width, plain.map.width, "the wall as long as it was")
-	assert_eq(deep.field.apron_row() - deep.field.seam_row, plain.field.apron_row() - plain.field.seam_row + 2, "the seam starts two rows farther from the wall")
+	assert_eq(deep.field.apron_row() - deep.field.tear_row, plain.field.apron_row() - plain.field.tear_row + 2, "the tears' row starts two rows farther from the wall")
 	# Over a few seeds (a shape may put a wall in a pack's way on one): the deeper field alone
 	# still has packs on the wall in the enemy's first turn; the opening a move farther out, none.
 	var seeds := [1, 2, 3, 4, 5, 6]

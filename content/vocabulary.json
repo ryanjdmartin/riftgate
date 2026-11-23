@@ -73,7 +73,7 @@
    "id": "rift_pressure",
    "category": "resource",
    "name": "Rift Pressure",
-   "codex": "Ticks once per battlefield phase, never inside a fight. It fills at the ramp's beat (3 turns, 2 from Convergence 8), a turn short of its peak as a battle opens, and the beat halves once at the Rupture. When full it resets and peaks: the rift sends the next composition of its cycle, every tear open before the peak sends a patrol, the seam creeps toward the gate, and new tears open on it. It never stops: the boss's seal breaking does not quiet it.",
+   "codex": "Ticks once per battlefield phase, never inside a fight. It fills at the ramp's beat (3 turns, 2 from Convergence 8), a turn short of its peak as a battle opens, and the beat halves once at the Rupture. When full it resets and peaks: the rift sends the next composition of its cycle, every tear open before the peak sends a patrol, and new tears open, each peak's nearer the wall. It never stops: the boss's seal breaking does not quiet it.",
    "status": "implemented",
    "design": {
     "holes": "The interval step inside a battle (the escalation a stall would meet) is on the ramp's table at zero until the turtle read asks for it."
@@ -1254,7 +1254,7 @@
    "id": "tear",
    "category": "battlefield",
    "name": "Tear",
-   "codex": "A mouth beside the rift's. At a peak of Rift Pressure the ramp's count of tears (one; two from Convergence 8) open on the seam, a few rows past the rift (row 4 at twelve deep) and creeping toward the wall, as far from the rift and the other tears as the row allows, and every tear open before the peak sends a patrol. A tear opens a peak before it first sends, so where the next flood comes from is known an interval ahead. Tears stay open and never close.",
+   "codex": "A mouth beside the rift's. At a peak of Rift Pressure the ramp's count of tears (one; two from Convergence 8) open on a row a few past the rift (row 4 at twelve deep), each peak's two rows nearer the wall, as far from the rift and the other tears as the row allows, and every tear open before the peak sends a patrol. A tear opens a peak before it first sends, so where the next flood comes from is known an interval ahead. Tears stay open and never close.",
    "status": "implemented",
    "design": {
     "holes": "Drawn as a first cut for the phone; its mark and its opening are to judge running (RIFTGATE_PEAK_DEBUG=1 peaks every enemy turn)."
@@ -1264,10 +1264,10 @@
    "id": "seam",
    "category": "battlefield",
    "name": "Seam",
-   "codex": "The flattening's edge: the row the rift's bleed reaches, a row for every five of the field's depth and one more at the start (row 4 at twelve deep), creeping two rows toward the gate at every peak, as far as the row before the wall. The tears open on it. It is the clock's picture: no rule reads the ground behind it.",
+   "codex": "The flattening's edge: a circle about the rift, four hexes out as a battle opens and half a hex wider every round, stopping at the foot of the wall. It is a picture alone: no rule reads the ground inside it, and a tear opens wherever its own row has room.",
    "status": "implemented",
    "design": {
-    "holes": "The creep a peak is a placeholder (the ramp's table, flat at two)."
+    "holes": "Its start and its growth a round are placeholders for his eye (Bleed.seam_start_hex, Bleed.seam_grow_hex; the map tuner moves both)."
    }
   },
   {
@@ -1654,7 +1654,7 @@
    "id": "ramp",
    "category": "city",
    "name": "Ramp",
-   "codex": "The soft scaling under the tier, never shown: the Convergence as it stands when a battle starts sets how many compositions stand on the field at the start and which of the tier's variants are dealt, how fast Rift Pressure fills, how many tears open at a peak and how far the seam creeps. It scales no pack. It rises with the run, the same for every open front, and never resets.",
+   "codex": "The soft scaling under the tier, never shown: the Convergence as it stands when a battle starts sets how many compositions stand on the field at the start and which of the tier's variants are dealt, how fast Rift Pressure fills, how many tears open at a peak and how far each peak's open toward the wall. It scales no pack. It rises with the run, the same for every open front, and never resets.",
    "status": "implemented",
    "design": {
     "holes": "One table of placeholders (sim/ramp.gd), read by the campaign runner and moved on Ryan's word; the timer's 12 reads as the old clock's number (docs/measurements.md, 30 October)."

@@ -234,7 +234,7 @@ static func _field_dict(f: Battlefield) -> Dictionary:
 		"rift_pressure": f.rift_pressure, "rift_pressure_max": f.rift_pressure_max,
 		"spawn_faction": f.spawn_faction, "ramp": f.ramp,
 		"cycle": f.cycle, "patrol_cycle": f.patrol_cycle, "cycle_index": f._cycle_index, "patrol_index": f._patrol_index,
-		"seam_row": f.seam_row, "tears": tears, "caches": caches, "peaks": f.peaks, "rift_spawns": f.rift_spawns, "tear_spawns": f.tear_spawns,
+		"tear_row": f.tear_row, "tears": tears, "caches": caches, "peaks": f.peaks, "rift_spawns": f.rift_spawns, "tear_spawns": f.tear_spawns,
 		"phase": f.phase, "log": f.log, "next_id": f._next_id,
 		"units": units,
 	}
@@ -276,7 +276,7 @@ static func _field_from(d: Dictionary, map: BattleMap) -> Battlefield:
 		f.patrol_cycle = f.cycle.duplicate(true)
 	f._cycle_index = int(d.get("cycle_index", d.get("spawn_index", 0)))
 	f._patrol_index = int(d.get("patrol_index", 0))
-	f.seam_row = int(d.get("seam_row", f.seam_start()))
+	f.tear_row = int(d.get("tear_row", d.get("seam_row", f.tear_row_start())))   # the seam's row, by its name until 23 November
 	for t in d.get("tears", []):
 		f.tears.append({"pos": Vector2i(int(t[0]), int(t[1])), "opened": int(t[2]) if t.size() > 2 else 0})
 	for c in d.get("caches", []):

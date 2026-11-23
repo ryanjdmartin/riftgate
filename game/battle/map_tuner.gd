@@ -35,6 +35,15 @@ func _init(map: BattleMapView) -> void:
 	_slider("BLEED RADIUS", 0.6, 4.5, Bleed.pack_radius_hex, func(v: float) -> void:
 		Bleed.pack_radius_hex = v
 		_map.queue_redraw())
+	_slider("TEAR RADIUS", 1.0, 7.0, Bleed.tear_radius_hex, func(v: float) -> void:
+		Bleed.tear_radius_hex = v
+		_map.queue_redraw())
+	_slider("SEAM", 2.0, 8.0, Bleed.seam_start_hex, func(v: float) -> void:   # the seam's radius as a battle opens, in hexes from the rift
+		Bleed.seam_start_hex = v
+		_map.queue_redraw())
+	_slider("SEAM GROW", 0.0, 2.0, Bleed.seam_grow_hex, func(v: float) -> void:   # and the hexes it grows a round
+		Bleed.seam_grow_hex = v
+		_map.queue_redraw())
 	_toggle("SCAN", true, func(on: bool) -> void:
 		_map.sweep_on = on
 		_map.queue_redraw())

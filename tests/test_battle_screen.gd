@@ -763,31 +763,37 @@ func test_a_tear_has_no_edge_tag() -> void:
 	s.free()
 
 
-## A peak is shown after the packs' walks, never under them (Ryan, 10 November: a tear "needs ...
-## an animation/cutscene when one opens. And an animation/cutscene when the seam moves, too"):
-## the map holds the seam where it stood and the new tear unseen until the cutscene plays, then
-## shows the field as it is and hands on. Headless nothing plays, so it hands on at once.
-func test_a_peak_is_held_until_its_cutscene_plays() -> void:
+## The enemy's turn is held until it is shown (Ryan, 10 November: a tear "needs ... an
+## animation/cutscene when one opens"; 23 November: the seam grows under the round's view): the map
+## holds the seam at the turn it stood at and the new tear unseen, the round's view lets the seam
+## go to the field's own turn and keeps the tear's hold, and the peak's cutscene lets that go.
+## Headless nothing plays, so each hands on at once.
+func test_the_enemys_turn_is_held_until_its_views_play() -> void:
 	var s := _screen()
 	var f: Battlefield = s.battle.field
-	var seam := f.seam_row
+	var turn := f.phase
 	var tears := f.tears.size()
 	s._map.hold_peak()
+	f.phase += 1
 	f.peak()
-	assert_eq(s._map.seam_shown, float(seam), "the seam drawn where it stood")
+	assert_eq(s._map.seam_shown, float(turn), "the seam drawn at the turn it stood at")
 	assert_eq(s._map.tears_shown, tears, "the new tear not drawn yet")
-	var grad_held: Vector2 = Bleed.gradient(f, Vector2.ZERO, 48.0, s._map.seam_shown)
-	var grad_now: Vector2 = Bleed.gradient(f, Vector2.ZERO, 48.0)
-	assert_true(grad_now.x > grad_held.x, "the painting's edge as held stands short of the field's")
+	assert_true(Bleed.seam_radius(f, 48.0) > Bleed.seam_radius(f, 48.0, s._map.seam_shown), "the seam as held stands short of the field's")
+	assert_eq(Bleed.sources(f, Vector2.ZERO, 48.0, {}, s._map.tears_shown).size(), Bleed.sources(f, Vector2.ZERO, 48.0).size() - 1, "and the held tear bleeds nothing yet")
 	var handed := [false]
-	s._map.play_peak(func() -> void: handed[0] = true)
-	assert_true(handed[0], "the cutscene hands on")
-	assert_false(s._map.cutscene_playing(), "and is over")
+	s._map.play_round([], [], false, Callable(), func() -> void: handed[0] = true)
+	assert_true(handed[0], "the round's view hands on")
 	assert_eq(s._map.seam_shown, -1.0, "the seam drawn as the field has it")
-	assert_eq(s._map.tears_shown, -1, "and every tear")
+	assert_eq(s._map.tears_shown, tears, "the tear still waits for its opening")
+	handed[0] = false
+	s._map.play_peak(func() -> void: handed[0] = true)
+	assert_true(handed[0], "the peak's cutscene hands on")
+	assert_false(s._map.cutscene_playing(), "and is over")
+	assert_eq(s._map.tears_shown, -1, "every tear drawn")
 	# A turn with no peak hands on the same way.
 	s._map.hold_peak()
 	handed[0] = false
+	s._map.play_round([], [], false, Callable(), func() -> void: handed[0] = true)
 	s._map.play_peak(func() -> void: handed[0] = true)
 	assert_true(handed[0], "nothing to show: at once")
 	s.free()
@@ -817,24 +823,54 @@ func test_every_lock_of_a_turn_is_declared() -> void:
 	s.free()
 
 
-## The painting's edge stands on the seam (Ryan, 10 November: "The point of the seam was to
-## visually represent where the tears can open"): the seam's own row is the painting's, where a
-## tear opens, and the row past it the reconstruction's, at the start and after every creep, in
-## either view.
-func test_the_paintings_edge_stands_on_the_seam() -> void:
+## The seam is a circle about the rift and a picture alone (Ryan, 23 November: "I think the seam
+## should be circular, radiating out from the rift ... It should start with a radius that
+## encompasses the boss shield, and maybe one or two hexes around it"; "the seam should move every
+## round"; "The seam is visual only"): as a battle opens the shell's seven hexes and the ring round
+## them are the painting's and a hex six steps out is solid; it grows a round, never a peak; it
+## stops at the wall's foot however far it has grown; and a tear paints its own ground wherever the
+## seam stands, wider than a pack does. In either view.
+func test_the_seam_is_a_circle_about_the_rift_that_grows_a_round() -> void:
 	var s := _screen()
 	var f: Battlefield = s.battle.field
 	var was := Bleed.everywhere
 	Bleed.everywhere = false
 	var none := PackedVector3Array()
-	for step in range(4):
-		var grad := Bleed.gradient(f, Vector2.ZERO, 48.0)
-		var col := Hex.axial_to_offset(f.map.gate).x
-		var on := MapOrient.to_pixel(Hex.offset_to_axial(col, f.seam_row), 48.0)
-		var past := MapOrient.to_pixel(Hex.offset_to_axial(col, f.seam_row + 1), 48.0)
-		assert_eq(Bleed.solid(on, grad, none), 0.0, "the seam's row %d is the painting's" % f.seam_row)
-		assert_eq(Bleed.solid(past, grad, none), 1.0, "the row past it is solid ground")
-		f.peak()
+	var wall := Bleed.wall(f, Vector2.ZERO, 48.0)
+	var seam := Bleed.seam(f, Vector2.ZERO, 48.0)
+	var shell: Array = f.map.shell_hexes()
+	assert_eq(shell.size(), 7, "the shell's seven")
+	for h in shell:
+		assert_eq(Bleed.solid(MapOrient.to_pixel(h, 48.0), wall, seam, none), 0.0, "a hex of the shell is the painting's")
+		for n in Hex.neighbors(h):
+			if f.map.has(n):
+				assert_eq(Bleed.solid(MapOrient.to_pixel(n, 48.0), wall, seam, none), 0.0, "and the hexes round it")
+	var rift_o := Hex.axial_to_offset(f.map.rift)
+	var out := Hex.offset_to_axial(rift_o.x, 6)
+	assert_eq(Hex.distance(out, f.map.rift), 6, "six steps down the field")
+	assert_eq(Bleed.solid(MapOrient.to_pixel(out, 48.0), wall, seam, none), 1.0, "solid ground as the battle opens")
+	var r0 := Bleed.seam_radius(f, 48.0)
+	f.peak()
+	assert_eq(Bleed.seam_radius(f, 48.0), r0, "a peak moves no seam")
+	f.phase += 1
+	assert_true(Bleed.seam_radius(f, 48.0) > r0, "a round does")
+	f.phase = 400
+	seam = Bleed.seam(f, Vector2.ZERO, 48.0)
+	assert_eq(Bleed.solid(MapOrient.to_pixel(Hex.offset_to_axial(rift_o.x, f.apron_row()), 48.0), wall, seam, none), 0.0, "grown past everything, the row before the wall is the painting's")
+	for g in f.map.gate_hexes:
+		if Hex.axial_to_offset(g).y == f.map.height - 1:
+			assert_eq(Bleed.solid(MapOrient.to_pixel(g, 48.0), wall, seam, none), 1.0, "and the wall's own row never is")
+	f.phase = 0
+	seam = Bleed.seam(f, Vector2.ZERO, 48.0)
+	# A tear far from the seam paints its own ground, wider than a pack does.
+	var far := Hex.offset_to_axial(0, f.apron_row() - 1)
+	var beside := Hex.offset_to_axial(2, f.apron_row() - 1)
+	assert_eq(Bleed.solid(MapOrient.to_pixel(far, 48.0), wall, seam, none), 1.0, "solid before a tear opens there")
+	f.tears.append({"pos": far, "opened": 0})
+	var src := Bleed.sources(f, Vector2.ZERO, 48.0)
+	assert_eq(Bleed.solid(MapOrient.to_pixel(far, 48.0), wall, seam, src), 0.0, "a tear's hex is the painting's")
+	assert_true(Bleed.tear_radius_hex > Bleed.pack_radius_hex, "its bleed wider than a pack's")
+	f.tears.clear()
 	Bleed.everywhere = was
 	s.free()
 

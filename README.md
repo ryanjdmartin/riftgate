@@ -458,6 +458,10 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_BEATS=3                              the Rupture meter's size in beats of the tide, 1 to 6, 2 the game's
 #   RIFTGATE_TIDE=150                             the packs the opening places and each wave sends, in hundredths, 100 the game's
 #   RIFTGATE_STRIKE=5                             what a pip of threat rating strikes the wall for, 10 the game's
+#   RIFTGATE_PACE=1                               hexes added to every pack's move, 0 to 4, 0 the game's
+#   RIFTGATE_SPAWN_FIRST=1                        the tide sends before the packs walk, so a spawn leaves its mouth at once (a hunter aside)
+#   RIFTGATE_RIFT_SENDS=2                         the compositions the rift sends a peak, 1 to 4, each to its own stretch of wall
+#   RIFTGATE_FLANK_TEARS=2                        tears open at the wall's ends from the first turn, 0 the game's
 #   RIFTGATE_PHASED=at_once                       a machine's Phased at once until the round ends, round_end the game's (Phased as the round ends, through the next)
 # The same on the phone, a debug build's SETTINGS, TRIALS (a page that scrolls). Read at the
 # next launch, so pick, close the app, open it and start a new battle or run (a saved one keeps
@@ -469,6 +473,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 # Read as the next battle starts, or a lone fight for OVERHEAT, with no relaunch:
 #   OVERHEAT (×1, ×2, ×3), FIELD DEPTH (12, 14, 16), OPENING (+0, +1, +2), FODDER (FULL, 3/4, HALF),
 #   RUPTURE (1 BEAT, 2 BEATS, 3 BEATS), TIDE (×1, ×1.5, ×2), STRIKE (10, 7, 5, 3),
+#   PACE (BUILT, +1, +2), SPAWNS (AFTER WALK, BEFORE WALK), RIFT SENDS (×1, ×2, ×3), FLANK TEARS (NONE, TWO),
 #   PHASED (ROUND END, AT ONCE), with the Phase Inducer, a tier-two component, to set it for testing
 # A thing fired constantly, to judge it running (=1 unless a value is shown)
 #   RIFTGATE_FEED_DEBUG       the skirmish feed's analysis events and the ground tears (any run)
@@ -486,6 +491,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_MINE_DEBUG       a Mine of 3 on every foe as the fight opens (skirmish)
 #   RIFTGATE_ESSENCE_DEBUG=12 that much Essence on every machine that banks it (skirmish)
 #   RIFTGATE_PEAK_DEBUG       Rift Pressure peaking every enemy turn (battle)
+#   RIFTGATE_ROUND_DEBUG      the round's view over and over while the map rests: the glide out to the whole field, ROUND N, the seam growing a round's worth, the glide home (battle)
 #   RIFTGATE_CACHE_DEBUG      a cache of every kind beside the team and by the rift (a new battle)
 #   RIFTGATE_WRECK_DEBUG      a wreck of each of the team's chassis beside it, let go every four seconds (a new battle)
 #   RIFTGATE_SHELL_DEBUG      the rift's shell cracking a stretch every 1.2 s through all seven, then bursting (battle)

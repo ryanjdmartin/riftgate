@@ -1654,7 +1654,9 @@ a stat.
   middle one, ending at the five's lower edge, its eye over the rift's own row. The far ground softens
   toward the rift and the city softens past the wall in either view: at the screen's top and
   foot with the wall at the bottom, at its right and left with the wall at the left, never its
-  top there. A pack or a machine past the screen's edge has a tag at that
+  top there. The map zooms by a pinch, in to 2.6 times a hex's drawn size and out until the
+  whole field stands in the view, in either view and at any depth; the far ground's softening
+  fades as the view pulls back and is gone with the whole field in it. A pack or a machine past the screen's edge has a tag at that
   edge; a tear has none, as the rift has none. Three gauges stand at the top of the screen whatever the scroll: the gate's integrity,
   Rift Pressure toward the next spawn (a box a turn of the beat) and the Rupture meter toward its
   Fractures (a notch a Fracture, those earned lit); the gate and the rift carry no bar on the map
@@ -1779,7 +1781,7 @@ a stat.
   fights come first, one a hunter, and the map draws each as the machine's order onto the hunter
   that caught it. END TURN asks first
   while a machine can still move or fight; then the turn ends: packs walk and strike; Rift
-  Pressure rises one. Nothing returns on the map: the shield is full as every fight opens. Once every
+  Pressure rises one; the seam grows (The round is shown, below). Nothing returns on the map: the shield is full as every fight opens. Once every
   machine has fought, is ordered, is caught, or can neither move nor reach a pack where it
   stands, the button pulses while no machine is in hand.
 - **A tap and a double-tap** on the map work as a die's do in a fight: a double-tap on a
@@ -1832,13 +1834,19 @@ a stat.
   nobody holds ground against them and a pusher never turns back for a machine in its way; the
   walk shown is the walk played. The
   enemy never attacks a machine on the map: pushers strike the gate, hunters catch.
-- **Pushers** make for the wall at a segment of their own: as a pusher is dealt it draws a wall
-  column about the wall nearest it, from the turn and the pack: a pack the rift sends about the
-  rift's column within the ramp's spread (2 at Convergence 0, half the wall's length at 12), any
-  other (a flank patrol, a formation the opening places, a tear's patrol) about its own column
-  within 2; of those columns the least crowded wins (another pusher's segment counting 2, one
-  beside it 1), then the nearest the draw. It walks to the land hex of the row before the wall
-  nearest that column, a tie toward the gate's column; a pack with no segment (a hunter left
+- **Pushers** make for the wall at a segment of their own, the stretch they reach soonest: as a
+  pusher is dealt (and where the opening stands it) it reads its own walk to every land hex of
+  the row before the wall, in turns (its move a turn, water waded, the ground alone: who stands
+  where by then is unknown, a wreck's hex aside), and of the columns it reaches in the fewest
+  turns it draws one, from the turn and the pack; of those columns the least crowded wins
+  (another pusher's segment counting 2, one beside it 1), then the nearest the draw. So a pack a
+  move from the wall strikes the wall in front of it and never walks past it to a stretch a turn
+  further, and a pack the rift sends fans across as much of the wall as it reaches no later: at
+  a move of 2, nine columns of the twenty at twelve deep and thirteen at sixteen, at every
+  Convergence. Several packs one mouth sends at once (the tide's trial, the rift's) each draw
+  from a share of their own of those columns, in order along the wall, so they leave in
+  different directions. It walks to the land hex of the row before the wall
+  nearest its column, a tie toward the gate's column; a pack with no segment (a hunter left
   without prey) walks to the nearest. A pusher ending its walk beside any hex
   of the gate or the wall strikes the gate's bar for its threat rating's worth, 10 a pip (a patrol 10, a
   formation 30, an elite 40), every enemy turn, whatever its head count. A pack a fight has worn strikes
@@ -1898,8 +1906,10 @@ a stat.
   never inside a fight), a turn short of its peak as the battle opens. When it fills it resets and peaks: the rift
   sends the next composition of its cycle (the tier's formations and patrols in turn, the
   lead's and the guest's in turn); every tear open before this peak sends the next patrol of
-  the patrol cycle; the seam creeps two rows toward the gate (as far as the row before the
-  wall); the ramp's count of tears (one; two from Convergence 8) open on the seam's row, each
+  the patrol cycle; the tears' row steps two rows toward the gate (as far as the row before the
+  wall; it starts a row for every five of the field's depth and one more, row 4 at twelve deep,
+  5 at sixteen, and is drawn nowhere); the ramp's count of tears (one; two from Convergence 8)
+  open on that row, each
   on a free land hex with no unit on it and no machine beside it, the farthest from the rift
   and the other tears, so the mouths spread across the width; and the interval shortens by the
   ramp's step (zero today, never below 1). At the Rupture the beat halves once, never below
@@ -1908,14 +1918,21 @@ a stat.
   spawn lands on the nearest free hex to its mouth with no machine beside it, so it and its
   walk are seen for a whole turn and nothing appears on top of a detachment. Packs never
   escalate in place.
-- **The seam** is the flattening's edge: the row the rift's bleed reaches, at the start a row for
-  every five of the field's depth and one more (row 4 at twelve deep, 5 at twenty). It is the clock's picture,
-  and it shows where the tears can open: the painting's edge stands on it, the seam's own row
-  the painting's front row and the row past it solid ground. No rule reads the flattened hexes.
-- **A peak is shown** once the packs have walked: the map keeps the seam where it stood and the
-  new tears unseen through the walks, then glides to the seam, whose edge sweeps to its new row
-  under a bright front with its name on it, then in on each new tear, zoomed, as it bursts open,
-  and back to where the player was looking at the zoom they had. Nothing on the screen takes
+- **The seam** is the flattening's edge and a picture alone: a circle about the rift's middle,
+  the painted world inside it. As a battle opens its edge stands four hexes out, so the shell's
+  seven hexes and a hex and a half round them are the painting's; it grows half a hex a round,
+  every round, and stops at the foot of the wall however far it has grown, so the wall and the
+  city stand in the reconstruction. No rule reads the flattened hexes, and the tears open by
+  their own row (Rift Pressure, above), wherever the seam stands. A tear paints its own ground
+  round it, wider than a pack does (a pack's painting reaches about a hex round it, a tear's
+  nearly two).
+- **The round is shown** as the player's turn ends: the machines' planned moves play where the
+  player is looking; then the map glides out to the whole field, the round's number stands
+  mid-map (ROUND N, the round opening) while every pack walks and the seam grows together, a
+  ring riding the seam's edge; the packs the tide sent this turn burst in where they landed,
+  still in view; and the map glides back to where the player was looking at the zoom they had.
+  **A peak is shown** after it: the map glides in on each new tear, zoomed, as it bursts open,
+  its painting growing round it, and back. Nothing on the screen takes
   a touch while the map plays one of these, and nothing skips it.
 - **A hunter's lock is shown** after it: for every hunter that turned on a machine this turn,
   in turn, the map glides in on the hunter, zoomed, and the band says HUNTED and who turns on
@@ -2148,8 +2165,10 @@ and nothing scales a pack.
   Every patrol and formation writes down the question it poses, `design.question`, internal
   like everything under `design`; and a foe's `role` (pusher, hunter or flanker; absent: a
   pusher's) is what the validator holds a patrol's and a formation's members to, a crossing
-  saying why under `design.crossing`. No
-  composition in content writes `ramp` yet.
+  saying why under `design.crossing`. Twenty-six
+  compositions write `ramp`: each tier's pair of duelists comes at its later Convergences (tier
+  one's from 3, tier two's from 8, tier three's from 11), and the lighter formations of tiers one
+  and two leave from Convergence 8. A pack itself never grows with the Convergence.
 
 ## Known gaps between these rules and the code
 

@@ -22,6 +22,7 @@ extends RefCounted
 
 ## A pack's walk on the enemy's turn.
 class Walk:
+	var from: Vector2i               # where it stood as the walk began (a pack the tide sent this turn: where it landed)
 	var path: Array[Vector2i] = []   # the hexes it walks, after its own
 	var route: Array[Vector2i] = []  # its whole way to its goal as the field stands, after its own hex: the path, then the turns after it (a pusher's to its wall segment, a hunter's to where its prey stands inside its ring); empty when it goes nowhere
 	var end: Vector2i                # where it stops
@@ -56,27 +57,29 @@ var cycle: Array = []
 var patrol_cycle: Array = []
 var _cycle_index: int = 0
 var _patrol_index: int = 0
-## The flattening's edge (the pacing session, 30 October): the row the rift's bleed reaches,
-## total on the rift's row and gone here, seam_start() at the start; it creeps south a peak
-## (Ramp.seam_creep_at) as the clock's picture, as far as the apron. No rule reads the
-## flattened hexes; the tears open on the seam's row.
-var seam_row: int = 0   # seam_start(), set as the field takes its map
+## The row the next tears open on (the pacing session, 30 October): tear_row_start() at the start,
+## two rows nearer the wall a peak (Ramp.tear_creep_at), as far as the apron, so each peak's tears
+## open nearer the wall. It was the seam's row until 23 November, the painting's edge drawn on it;
+## the seam is a picture alone since (Ryan: "The seam is visual only. Tears are still spawned by
+## the same logic they are now"; Bleed.seam_radius), and this row is the tears' own, drawn nowhere.
+var tear_row: int = 0   # tear_row_start(), set as the field takes its map
 
 
-## Where the seam stands at a battle's start (the long wall brief 3.2): a share of the depth, a
-## row for every five of it rounded up (two at least, four at most) and one more: row 4 at twelve
-## deep, 5 at twenty, the old field's number. It was the first row past the rift's mouth while
-## the mouth was rows (to 10 November); the shapes now lay to the rift's row and the seam keeps
-## its own start. A placeholder.
-func seam_start() -> int:
+## Where the tears' row stands at a battle's start (the long wall brief 3.2): a share of the depth,
+## a row for every five of it rounded up (two at least, four at most) and one more: row 4 at twelve
+## deep, 5 at sixteen. A placeholder.
+func tear_row_start() -> int:
 	return clampi(ceili(float(map.height) / 5.0), 2, 4) + 1
 
 
 ## The tears (Ryan's name, 30 October): the mouths beside the rift's, each {"pos": Vector2i,
-## "opened": the phase it opened at}. A tear opens at a peak on the seam's row, far from the
+## "opened": the phase it opened at}. A tear opens at a peak on the tears' row, far from the
 ## other mouths, and sends a patrol at every peak after, so where the next flood comes from is
 ## known an interval ahead. Tears stay open.
 var tears: Array = []
+## The packs the tide sent this turn, by id (peak): under the spawn-first trial a pack that hunts
+## stands the turn it lands (_walk). Battle.end_turn empties it as the turn ends; never saved.
+var fresh: Dictionary = {}
 ## The hunters that turned on a machine since the screen last asked ([hunter id, prey id], in
 ## order; pick_prey): the battle hands them over (Battle.take_locks) for the declaration on
 ## screen (Ryan, 8 November: "Declare when a hunter selects a target").
@@ -117,7 +120,7 @@ var shell: Dictionary = {}
 
 func _init(battle_map: BattleMap) -> void:
 	map = battle_map
-	seam_row = seam_start()
+	tear_row = tear_row_start()
 
 
 func add_unit(u: Unit) -> Unit:
@@ -165,6 +168,28 @@ static func strike_of(sq: Unit) -> int:
 	return maxi(1, (clampi(sq.squad, 1, 4) * strike_per_pip() * now) / full)
 
 
+## The packs' pace on trial, hexes added to every pack's move, 0 the game's (Ryan, 23 November: "I
+## feel like packs walk too slow, even for a 12 deep map. I'd rather they don't start so close but
+## reach the wall faster. Each pack becomes more threatening that way. I'd probably give everything
+## +1 right now and see what that does"): a debug build's SETTINGS → TRIALS → PACE and RIFTGATE_PACE
+## set it (Settings.field_trial). The boss, which never walks, aside. The opening is measured in a
+## pack's own moves (Battle._open_row), so a quicker pack opens that much farther from the wall.
+static var pace_trial: int = 0
+## The rift's count on trial, the compositions it sends a peak, 1 the game's (the same day:
+## "sending multiple packs out of the rift at once, each headed a different direction"): each
+## draws its segment from a share of its own of the wall it reaches soonest (assign_goal), so
+## they part as they leave. The Rupture's size stays the game's, as under the tide's trial: the
+## extras are the squad's to choose among, never more to kill. SETTINGS → TRIALS → RIFT SENDS and
+## RIFTGATE_RIFT_SENDS.
+static var rift_sends_trial: int = 1
+## The flanks' tears on trial, how many stand open as the battle starts, 0 the game's (the same
+## day: "Having starting tears at the top and bottom might make sense"): each opens at an end of
+## the wall on the tears' row (flank_tear_hex), the two ends in turn, and sends from the first
+## peak. The Rupture's size stays the game's. SETTINGS →
+## TRIALS → FLANK TEARS and RIFTGATE_FLANK_TEARS.
+static var flank_tears_trial: int = 0
+
+
 ## Give a pack its foe types' map profile: its move and its wings. `foe` names the entry when
 ## the unit's own foe_id does not (the boss, which unpacks by its faction). No foe says whether
 ## its pack hunts (its composition does, pack_of) or how far it reaches: a hunter catches at the
@@ -189,6 +214,8 @@ func dress_pack(sq: Unit, foe: String = "") -> Unit:
 			winged = winged and bool(mp.get("winged", false))
 		if winged and not sq.traits.has("winged"):
 			sq.traits.append("winged")
+		if p.has("movespeed"):
+			sq.movespeed += maxi(0, pace_trial)   # the pace's trial; a pack with no profile keeps the move it was made with
 	return sq
 
 
@@ -593,10 +620,17 @@ func _distance_from(sq: Unit, at: Vector2i, u: Unit) -> int:
 ## waits, and the map says so.
 func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 	var w := Walk.new()
+	w.from = sq.pos
 	w.end = sq.pos
 	if sq.is_boss:
 		return w
 	var prey: Unit = pick_prey(sq) if sq.behaviour == "hunt" else null
+	if prey != null and fresh.has(sq.id):
+		# Sent this turn, under the spawn-first trial (Battle.spawn_first_trial): it has turned on
+		# its machine, which is declared, and stands where it landed until the next enemy turn, so
+		# the lock is seen a whole turn before the catch, as a spawn's walk is in the game's order.
+		w.prey = prey.id
+		return w
 	var found := _walk_search(sq, blocked)
 	var dist: Dictionary = found[0]
 	var prev: Dictionary = found[1]
@@ -829,20 +863,22 @@ func tick_pressure(ticks: int) -> bool:
 
 
 ## A peak of Rift Pressure (the pacing session, 30 October): the rift sends the cycle's next
-## composition; every tear open before this peak sends the patrol cycle's next; the seam creeps
-## south; the ramp's count of new tears open on the seam's row, each to send from the next
+## composition; every tear open before this peak sends the patrol cycle's next; the tears' row
+## steps toward the wall; the ramp's count of new tears open on it, each to send from the next
 ## peak; and the interval shortens by the ramp's step. One clock, more mouths as the ramp rises.
 func peak() -> void:
 	peaks += 1
 	var times := Ramp.dense_at(peaks)   # one, but under the tide's trial (Ramp.tide_trial)
-	for i in range(times):
+	var sends := times * maxi(1, rift_sends_trial)   # and the rift's own count's (rift_sends_trial)
+	for i in range(sends):
 		if cycle.is_empty():
 			break
 		var c: Dictionary = cycle[_cycle_index % cycle.size()]
 		_cycle_index += 1
-		var sq := emerge(c, map.rift)
+		var sq := emerge(c, map.rift, i, sends)   # several at once part along the wall (assign_goal)
 		if sq != null:
 			rift_spawns += 1
+			fresh[sq.id] = true
 			log.append("Rift pressure peaks: %s emerge at %s" % [sq.display_name, str(sq.pos)])
 	for t in tears:
 		if patrol_cycle.is_empty():
@@ -852,8 +888,9 @@ func peak() -> void:
 		var sq := emerge(c, t["pos"])
 		if sq != null:
 			tear_spawns += 1
+			fresh[sq.id] = true
 			log.append("A tear sends %s at %s" % [sq.display_name, str(sq.pos)])
-	seam_row = mini(seam_row + Ramp.seam_creep_at(ramp), apron_row())
+	tear_row = mini(tear_row + Ramp.tear_creep_at(ramp), apron_row())
 	for i in range(Ramp.tears_at(ramp) * times):
 		var at := tear_hex()
 		if at == NO_HEX:
@@ -881,8 +918,9 @@ func pack_name(foe_id: String) -> String:
 ## A composition emerges at a mouth (the rift, a tear, or where the setup places it): a pack of
 ## its members as content writes them, dressed by its lead, on the nearest free hex to the mouth
 ## with no machine adjacent (30 October: the player sees a spawn for a whole turn and nothing
-## appears on top of a detachment). Null for a composition with no members.
-func emerge(c: Dictionary, mouth: Vector2i) -> Unit:
+## appears on top of a detachment), its wall segment drawn from there. Null for a composition with
+## no members.
+func emerge(c: Dictionary, mouth: Vector2i, part: int = 0, parts: int = 1) -> Unit:
 	var sq := pack_of(c, spawn_faction)
 	if sq == null:
 		return null
@@ -890,7 +928,7 @@ func emerge(c: Dictionary, mouth: Vector2i) -> Unit:
 	dress_pack(sq)
 	sq.pos = landing(sq, mouth)
 	add_unit(sq)
-	assign_goal(sq, -1, mouth == map.rift)
+	assign_goal(sq, part, parts)   # `part` of the `parts` one mouth sends at once (peak)
 	return sq
 
 
@@ -1051,35 +1089,98 @@ func cache_at(h: Vector2i) -> Dictionary:
 	return {}
 
 
-## A pusher's wall segment (the long wall brief 3.3): the wall nearest where it is dealt, and a
-## draw either side, from the turn and the pack, so a resumed battle draws as the unbroken one did
-## (no stream). A pack the rift sends draws about the rift's column within the ramp's spread (Ryan,
-## 5 November: rift packs "can target a segment left or right of it, reducing clogging and creating
-## extra tension. The variance of where they target can even be a ramp factor"); any other (a flank
-## patrol, a formation the opening places, a tear's patrol) about its own column within
-## Ramp.FLANK_SPREAD (Ryan, 9 November: "the flankers should target their closest wall with a small
-## amount of randomness, avoiding crowding, in order to force the player to make decisions ... make
-## sure packs don't get stuck on one another, but also don't target halfway across the map and
-## become irrelevant"). Of the window's columns the least crowded wins (_crowding: the other
-## pushers' segments on it or beside it), then the one nearest the draw, so the packs spread along
-## the wall and never pile onto one stretch, and none leaves its window for room. A spread given
-## (the tests) sets the window. A hunter and the boss draw none. Called as a pack is dealt
-## (emerge: the start's placements and every spawn).
-func assign_goal(sq: Unit, spread: int = -1, from_rift: bool = false) -> void:
+## A pusher's wall segment: the stretch of wall it reaches soonest (Ryan, 23 November, of a
+## formation one move from the wall that walked two turns to a stretch beside it: "they're skipping
+## sections they could hit this turn to go hit something two turns away. I think the randomization
+## of their movement should be chosen from targets of equivalent closeness, not distance from
+## center"). As it is dealt it reads its own walk to the wall (soonest_columns: the columns of the
+## apron it reaches in the fewest turns, as the field stands) and draws one of them, from the turn
+## and the pack, so a resumed battle draws as the unbroken one did (no stream). Of those columns the
+## least crowded wins (_crowding: the other pushers' segments on it or beside it), then the one
+## nearest the draw, so the packs still part along the wall and none takes a later stretch for room
+## (Ryan, 9 November: "avoiding crowding ... make sure packs don't get stuck on one another"). So a
+## pack a move from the wall strikes the wall in front of it, and a pack the rift sends, turns out,
+## fans across as much of the wall as it reaches no later. Several packs one mouth sends at once
+## each draw from a share of their own of those columns, in order along the wall (`part` of
+## `parts`), so they leave it in different directions (his words the same day: "sending multiple
+## packs out of the rift at once, each headed a different direction"). A hunter and the boss draw
+## none. Called as a pack is dealt (emerge, and again where the opening stands it: Battle.setup).
+## The form it retires: a window of columns about where the pack was dealt (the rift's column
+## within the ramp's spread for the rift's, its own within two for any other; 5 and 9 November),
+## which read no walk, so a pack near the wall drew a stretch a turn further than the one in front
+## of it, and the rift's packs at a low Convergence all made for the gate's own stretch.
+func assign_goal(sq: Unit, part: int = 0, parts: int = 1) -> void:
 	if sq.is_boss or sq.behaviour != "push":
 		return
-	if spread < 0:
-		spread = Ramp.spread_at(ramp, map.width) if from_rift else Ramp.FLANK_SPREAD
-	var base := Hex.axial_to_offset(map.rift if from_rift else sq.pos).x
-	var want := clampi(base + (phase * 31 + sq.id * 17) % (2 * spread + 1) - spread, 0, map.width - 1)
+	var cols := soonest_columns(sq)
+	if cols.is_empty():
+		sq.goal_col = Hex.axial_to_offset(sq.pos).x   # no way to the wall as the field stands: its own column, where it waits
+		return
+	if parts > 1 and cols.size() >= parts:
+		cols = cols.slice((cols.size() * clampi(part, 0, parts - 1)) / parts, (cols.size() * (clampi(part, 0, parts - 1) + 1)) / parts)
+	var want: int = cols[(phase * 31 + sq.id * 17) % cols.size()]
 	var best := want
 	var best_key := Vector2i(1 << 30, 0)
-	for col in range(maxi(0, base - spread), mini(map.width - 1, base + spread) + 1):
+	for col in cols:
 		var key := Vector2i(_crowding(sq, col), absi(col - want))
 		if key.x < best_key.x or (key.x == best_key.x and key.y < best_key.y):
 			best_key = key
 			best = col
 	sq.goal_col = best
+
+
+## The wall columns a pusher reaches soonest from where it stands, in order along the wall: every
+## land hex of the apron its own walk reaches (the ground's rules alone: who stands where by then is
+## unknown, though a wreck holds its hex for the battle), each by the turns that walk takes
+## (_turns_along), and of them the columns of the fewest. Empty when it has no way to the wall.
+func soonest_columns(sq: Unit) -> Array[int]:
+	var found := _walk_search(sq, {})
+	var dist: Dictionary = found[0]
+	var prev: Dictionary = found[1]
+	var by_col := {}
+	var fewest := 1 << 30
+	for h in dist.keys():
+		var hx: Vector2i = h
+		if not on_apron(sq, hx) or not _land(hx) or wreck_at(hx) != null:
+			continue
+		var route: Array[Vector2i] = []
+		var c := hx
+		while c != sq.pos:
+			route.push_front(c)
+			c = prev[c]
+		var turns := _turns_along(sq, route)
+		var col := Hex.axial_to_offset(hx).x
+		if not by_col.has(col) or turns < int(by_col[col]):
+			by_col[col] = turns
+		fewest = mini(fewest, turns)
+	var out: Array[int] = []
+	for col in by_col.keys():
+		if int(by_col[col]) == fewest:
+			out.append(int(col))
+	out.sort()
+	return out
+
+
+## The turns a pack takes to walk a route from where it stands: its move a turn, a water hex
+## costing two and entered with whatever is left, as the turn's own walk spends it (_walk). None
+## for a route of nothing; a route it cannot walk counts as never.
+func _turns_along(sq: Unit, route: Array) -> int:
+	var turns := 0
+	var at := 0
+	while at < route.size():
+		var budget := sq.movespeed
+		var moved := false
+		while at < route.size():
+			var cost := BattleMap.spend(map.terrain[route[at]], sq.traits, budget)
+			if cost < 0:
+				break
+			budget -= cost
+			at += 1
+			moved = true
+		if not moved:
+			return 1 << 20
+		turns += 1
+	return turns
 
 
 ## How crowded a wall column is for a pusher drawing its segment: two for every other pusher whose
@@ -1123,19 +1224,17 @@ func landing(sq: Unit, mouth: Vector2i, floor_row: int = -1) -> Vector2i:
 	return nearest_standable(sq, mouth)
 
 
-## Where the next tear opens: a free land hex on the seam's row (the row above or below it
+## Where the next tear opens: a free land hex on the tears' row (the row above or below it
 ## when the row has none), no machine beside it, the farthest from the rift and every open
 ## tear, so the mouths spread across the width; among equals, one by the turn. NO_HEX when
 ## none.
 func tear_hex() -> Vector2i:
-	for row in [seam_row, seam_row - 1, seam_row + 1]:
+	for row in [tear_row, tear_row - 1, tear_row + 1]:
 		var best: Array = []
 		var best_d := -1
 		for col in range(map.width):
 			var h := Hex.offset_to_axial(col, row)
-			if not map.has(h) or map.is_structure(h) or int(map.terrain[h]) == BattleMap.Terrain.WATER or int(map.terrain[h]) == BattleMap.Terrain.MOUNTAIN:
-				continue
-			if unit_at(h) != null or wreck_at(h) != null or machine_adjacent(h):
+			if not _tear_fits(h):
 				continue
 			var d := Hex.distance(h, map.rift)
 			for t in tears:
@@ -1147,6 +1246,33 @@ func tear_hex() -> Vector2i:
 				best.append(h)
 		if not best.is_empty():
 			return best[(phase * 7 + tears.size() * 13) % best.size()]
+	return NO_HEX
+
+
+## Whether a tear may open on a hex: land on the field, no unit and no wreck on it, no machine
+## beside it.
+func _tear_fits(h: Vector2i) -> bool:
+	if not map.has(h) or map.is_structure(h) or int(map.terrain[h]) == BattleMap.Terrain.WATER or int(map.terrain[h]) == BattleMap.Terrain.MOUNTAIN:
+		return false
+	return unit_at(h) == null and wreck_at(h) == null and not machine_adjacent(h)
+
+
+## Where a flank's tear opens on trial (flank_tears_trial): the hex a tear fits on nearest an end
+## of the wall, on the tears' row or the row before or after it, three hexes at least from every
+## open tear; the ends in turn, the first tear at the low columns' end and the second at the high.
+## A peak's own rule (tear_hex) takes the best of one row, which on a row a river crosses is no end.
+func flank_tear_hex(k: int) -> Vector2i:
+	for i in range(map.width):
+		var col := i if k % 2 == 0 else map.width - 1 - i
+		for row in [tear_row, tear_row - 1, tear_row + 1]:
+			var h := Hex.offset_to_axial(col, row)
+			if not _tear_fits(h):
+				continue
+			var clear := true
+			for t in tears:
+				clear = clear and Hex.distance(h, t["pos"]) >= 3
+			if clear:
+				return h
 	return NO_HEX
 
 

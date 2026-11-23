@@ -7,9 +7,9 @@ extends RefCounted
 ## at a tier step (with the tier locked when the rift opens, a reset would make an old rift
 ## easier by waiting). The tier, locked and shown, sets the kind: who comes, the Fractures, the
 ## elites and which, the boss's numbers and escort. The ramp sets the map's count and speed: the
-## compositions on the field at the start, Rift Pressure's fill, the tears a peak, the seam's
-## creep, and since the long wall brief (docs/briefs/long_wall_build.md) the field's size and the
-## spread of the pushers' wall segments. It no longer scales a pack (Ryan, 7 November: with fixed
+## compositions on the field at the start, Rift Pressure's fill, the tears a peak, the step of
+## the tears' row, and since the long wall brief (docs/briefs/long_wall_build.md) the field's
+## size. It no longer scales a pack (Ryan, 7 November: with fixed
 ## compositions and no reinforcement, "it probably doesn't need to be a dynamic multiplication of
 ## ramp for foes ... maybe gate certain predefined compositions behind a ramp+tier"): a pack is its
 ## composition as content writes it, never more than its eight slots hold. The interval step inside a battle is on the table at zero until the
@@ -50,8 +50,8 @@ static func tears_at(c: int) -> int:
 	return 1 + clampc(c) / 8
 
 
-## The seam's creep a peak, in rows: flat.
-static func seam_creep_at(_c: int) -> int:
+## How far the tears' row steps toward the wall a peak, in rows: flat.
+static func tear_creep_at(_c: int) -> int:
 	return 2
 
 
@@ -110,20 +110,6 @@ static func elite_fractures_at(tier: int) -> Array:
 	return Array(ELITE_FRACTURES[clampi(tier, 0, ELITE_FRACTURES.size() - 1)])
 
 
-## How far either side of the rift's column the wall segment of a pack the rift sends may fall
-## (the long wall brief 3.3; Ryan, 5 November: "The variance of where they target can even be a
-## ramp factor"): 2 at the foot, half the wall's length at the top. `width` is the wall's length.
-static func spread_at(c: int, width: int) -> int:
-	return 2 + ((width / 2 - 2) * clampc(c)) / 12   # placeholder (the long wall brief)
-
-
-## How far either side of its own column the segment of a pack dealt anywhere but the rift may fall
-## (a flank patrol, a formation the opening places, a tear's patrol; Ryan, 9 November: "the
-## flankers should target their closest wall with a small amount of randomness"): the foot's 2, flat,
-## so none aims halfway across the map. Placeholder.
-const FLANK_SPREAD := 2
-
-
 ## The wall's length: the count of hexes along the wall, the map's width (the long wall, Ryan,
 ## 5 November: "Wide map, with lots of wall to defend, but not as deep"; the build brief,
 ## docs/briefs/long_wall_build.md 3.1). A lever of the ramp's, never fixed.
@@ -142,6 +128,6 @@ static func depth_at(_c: int) -> int:
 ## out, it will feel more like I can actually plan a little bit ahead instead of panicking from
 ## the very start"): a debug build's SETTINGS → FIELD DEPTH and RIFTGATE_FIELD_DEPTH set it
 ## (Settings.field_trial), so he finds the number on the phone before the placeholder moves. The
-## seam's start is a share of the depth with a ceiling (Battlefield.seam_start), so a deeper
-## field leaves it that much farther from the wall.
+## tears' row starts at a share of the depth with a ceiling (Battlefield.tear_row_start), so a
+## deeper field leaves it that much farther from the wall.
 static var depth_trial: int = 0

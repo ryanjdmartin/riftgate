@@ -470,10 +470,31 @@ func _tag(text: String, size_px: int, mono: bool) -> HudButton:
 
 # ---------------------------------------------------------------- refresh
 
-## RIFTGATE_PEAK_DEBUG=1: Rift Pressure peaks every enemy turn, so the tears, the seam's creep
-## and the mouths' sends can be judged running within a few turns (the pacing session, 30
-## October; placeholders all).
+## RIFTGATE_PEAK_DEBUG=1: Rift Pressure peaks every enemy turn, so the tears' openings and the
+## mouths' sends can be judged running within a few turns (the pacing session, 30 October;
+## placeholders all).
 static var PEAK_DEBUG := OS.get_environment("RIFTGATE_PEAK_DEBUG") == "1"
+## RIFTGATE_ROUND_DEBUG=1: the round's view plays over and over while the map is at rest, every few
+## seconds: the glide out to the whole field, the round's number, the seam growing a round's worth
+## from where it stands (and back, as each ends), the glide home; so its pace, the banner and the
+## ring on the seam's edge are judged running without ending a turn. Nothing in the battle moves.
+static var ROUND_DEBUG := OS.get_environment("RIFTGATE_ROUND_DEBUG") == "1"
+const ROUND_DEBUG_EVERY := 2.5   # seconds at rest between two plays
+var _round_debug_t := 0.0
+
+
+func _process(delta: float) -> void:
+	if not ROUND_DEBUG or battle == null or _map == null or _skirmish != null:
+		return
+	if battle.state != Battle.State.PLAN or _map.is_playing() or (_menu != null and _menu.visible):
+		_round_debug_t = 0.0
+		return
+	_round_debug_t += delta
+	if _round_debug_t >= ROUND_DEBUG_EVERY:
+		_round_debug_t = 0.0
+		_map.hold_peak()
+		_map.play_round([], [], false, _show_round, _refresh, float(battle.field.phase) + 1.0)
+		_refresh()
 
 
 func _refresh() -> void:
@@ -1141,20 +1162,78 @@ func _on_end_turn() -> void:
 		Sound.say("resolve_all" if committed == free else "resolve_move")
 	var gate_before := battle.field.gate_hp
 	var plan := battle.take_plan()   # the machines' planned moves play first, then the packs walk
-	_map.hold_peak()   # a peak this turn is shown after the walks (_after_step): the seam and the tears stand as they were until then
+	_map.hold_peak()   # the seam and the tears stand as they were until the round and the peak are shown (_play_round, _after_step)
 	var walks := battle.end_turn()
 	_gate_struck = battle.field.gate_hp < gate_before
 	_spawned = battle.last_spawned
+	# The packs' walks, each from where it stood: a pack the tide sent before the walks (the
+	# spawn-first trial) from where it landed. And the packs the tide sent this turn, unseen until
+	# the round shows them.
 	var pack_moves: Array = []
+	var sent: Array = []
+	for sq in battle.field.packs():
+		if not starts.has(sq.id):
+			sent.append(sq)
 	for sid in walks.keys():
 		var w: Battlefield.Walk = walks[sid]
-		if starts.has(sid) and not w.path.is_empty():
-			pack_moves.append([sid, [starts[sid]] + Array(w.path)])
-	_play_plan(plan, pack_moves, _after_step)
+		if not w.path.is_empty():
+			pack_moves.append([sid, [starts.get(sid, w.from)] + Array(w.path)])
+	_play_plan(plan, [], func() -> void: _play_round(pack_moves, sent))
 
 
 var _gate_struck := false   # the enemy's turn just played hit the gate: heard when the walk has played
 var _spawned := false       # and the rift spawned
+
+
+## The enemy's turn on the map (Ryan, 23 November; BattleMapView.play_round): the whole field in
+## view, the round's number over it, while the packs walk and the seam grows; then what the turn
+## did (_after_step). The round named is the one opening, the turn the player is about to take.
+func _play_round(pack_moves: Array, sent: Array) -> void:
+	if DisplayServer.get_name() == "headless":
+		_map.play_round([], [], false, Callable(), _after_step)
+		return
+	if _spawned:
+		Sound.play("peak_sweep", -4.0)   # the tide's wave, under the round: the seam's sweep was its cue until 23 November
+	_map.play_round(pack_moves, sent, Battle.spawn_first_trial, _show_round, _after_step)
+	_refresh()   # the buttons grey while it plays
+
+
+## The round's number, mid-map, for `seconds` (Ryan: "show 'Round {N}' on the middle of the
+## screen while the enemies move"): big in the display's light on a dark plate its own width, a
+## rule above and under it, the map left undimmed so the walks and the seam read under it. It
+## takes no touch. A first cut, judged running (RIFTGATE_ROUND_DEBUG=1 plays it over and over).
+const ROUND_SIZE := 72
+
+func _show_round(seconds: float) -> void:
+	var text := "ROUND %d" % (battle.field.phase + 1)
+	var font := Hud.display_bold()
+	var ts := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, ROUND_SIZE)
+	var plate := ColorRect.new()
+	plate.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	plate.color = Color(0, 0, 0, 0.72)
+	plate.size = Vector2(ts.x + 72.0, ts.y + 18.0)
+	plate.position = Vector2((W - plate.size.x) * 0.5, MAP_Y + (_map.size.y - plate.size.y) * 0.5)
+	for y in [0.0, plate.size.y - 3.0]:
+		var rule := ColorRect.new()
+		rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		rule.color = Palette.HUD
+		rule.position = Vector2(0.0, y)
+		rule.size = Vector2(plate.size.x, 3.0)
+		plate.add_child(rule)
+	var label := Hud.label(text, ROUND_SIZE, Palette.HUD, font)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.size = plate.size
+	plate.add_child(label)
+	plate.modulate = Color(1, 1, 1, 0)
+	add_child(plate)
+	var tw := create_tween()
+	tw.tween_property(plate, "modulate", Color(1, 1, 1, 1), 0.18)
+	tw.tween_interval(maxf(0.3, seconds - 0.18 - 0.3))
+	tw.tween_property(plate, "modulate", Color(1, 1, 1, 0), 0.3)
+	tw.tween_callback(plate.queue_free)
+
 
 func _after_step() -> void:
 	if _gate_struck:
@@ -1162,7 +1241,6 @@ func _after_step() -> void:
 		Sound.say("gate")
 		_top.flash("gate")   # the gauge that moved says so, wherever the map is scrolled
 	if _spawned:
-		Sound.play_after(0.35 if _gate_struck else 0.0, Sound.family("spawn", battle.faction))
 		_top.flash("rift")
 	_gate_struck = false
 	_spawned = false
@@ -1197,10 +1275,10 @@ func _on_cutscene(playing: bool) -> void:
 		_cut_block.move_to_front()
 
 
-## A beat of the peak's cutscene, heard: the seam's creep starting, a tear opening. Borrowed
-## sounds until each has its own (the audio to-do).
+## A beat of the enemy's turn, heard: the tide's packs bursting in under the round's view, a tear
+## opening.
 func _on_peak_beat(what: String) -> void:
-	Sound.play("tear_open" if what == "tear" else "peak_sweep")   # each its own since 16 November (the reveal and the alarm before)
+	Sound.play("tear_open" if what == "tear" else Sound.family("spawn", battle.faction))
 	_top.flash("rift")
 
 
