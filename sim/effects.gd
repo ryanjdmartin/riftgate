@@ -106,7 +106,7 @@ const STATUS := {
 	# Ablating on a foe (Ryan, 15 November: Ablate, his word, in Burn's place; "evokes eating
 	# though armour to me"). A damage point a stack since 18 October (in the spirit of flattening
 	# the numbers; 5 before), the stacks the Ablate keyword's own number.
-	"ablating": {"id": "ablating", "name": "Ablating", "description": "Loses {value} HP per stack as its turn ends, then loses a stack.",
+	"ablating": {"id": "ablating", "name": "Ablate", "description": "Loses {value} HP per stack as its turn ends, then loses a stack.",
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp", "value": 1}]},
 	# The Nemesis's rage (Ryan, 12 October, in place of the Crucible): its passive banks a
 	# stack for every hull hit, its own included, for the skirmish (`decay` none overrides a
@@ -123,7 +123,7 @@ const STATUS := {
 	# the foes' tax on heat: every weapon and equipment aimed at a foe runs hotter until the
 	# turn's end, when every stack goes, so it never piles up under several scorchers, and a hold,
 	# a buff or a cool weapon plays round it.
-	"ablating_mech": {"id": "ablating_mech", "name": "Ablating", "description": "Loses {value} shield per stack as its turn ends, then hull, past armour and a Barrier; then loses a stack.", "decay": "turn",
+	"ablating_mech": {"id": "ablating_mech", "name": "Ablate", "description": "Loses {value} shield per stack as its turn ends, then hull, past armour and a Barrier; then loses a stack.", "decay": "turn",
 		"tags": ["dot", CLEANSABLE], "effects": [{"trigger": "status", "effect": "tick_hp", "value": 1}]},
 	"scorched": {"id": "scorched", "name": "Scorched", "description": "Every weapon and equipment it aims at a foe runs {value} hotter per stack, until its turn ends, when every stack goes.", "decay": "turn_all",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "on_attack", "effect": "add_heat", "value": 1}]},
@@ -144,7 +144,7 @@ const STATUS := {
 	# and never the last hit point, then a stack fades (Ablating's shape, stacking add): it
 	# opens on a boss, finishes no foe and so sets off no last act. Its passive lays it a stack
 	# per hit on a foe showing no intent on it (lay_status on on_attack, when target_no_intent).
-	"vitriol": {"id": "vitriol", "name": "Vitriol", "description": "Loses {value}% of its current HP per stack as its turn ends, past armour, after Ablating, rounded down, then loses a stack. It never finishes a foe.",
+	"vitriol": {"id": "vitriol", "name": "Vitriol", "description": "Loses {value}% of its current HP per stack as its turn ends, past armour, after Ablate, rounded down, then loses a stack. It never finishes a foe.",
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp_share", "value": 10}]},
 	# The funnel-web's web (18 October): the mark its Web Bomb leaves, named for the piece since
 	# 15 November (Ryan: "the debuff can be renamed \"web bomb.\""; the id is the engine's). The
@@ -219,7 +219,7 @@ const STATUS := {
 	# want it as a fitted piece, if nothing else"; its name his, 15 November: "Rename 'Seared.'"):
 	# its Ablating takes its points and loses no stack as its turn ends, and the pin goes there
 	# either way, by the same rule as Pinned's. No piece lays it yet.
-	"seared": {"id": "seared", "name": "Seared", "description": "The next time its Ablating would lose a stack, it does not. Gone as its turn ends either way.", "stacking": "renew", "decay": "after_turn",
+	"seared": {"id": "seared", "name": "Seared", "description": "The next time its Ablate would lose a stack, it does not. Gone as its turn ends either way.", "stacking": "renew", "decay": "after_turn",
 		"tags": ["pin"], "effects": [{"trigger": "static", "effect": "hold_status", "value": "ablating"}]},
 	"exposure": {"id": "exposure", "name": "Exposed", "description": "In Direct reach of every machine, and its armour counts for nothing. Lasts through your next turn.", "stacking": "renew", "decay": "turn_start", "timer": true, "stacks": 2,
 		"tags": ["expose"], "effects": []},
@@ -499,7 +499,7 @@ const STATUS := {
 	# "put machine regeneration back, that will literally be added in this session probably").
 	# Until 15 November a foe's was its value at each of three actions. A buff a Purge lowers, on
 	# either side.
-	"regenerating": {"id": "regenerating", "name": "Regenerating", "description": "Regrows {value} HP a stack as its turn ends, after its Ablating and Vitriol, then loses a stack.",
+	"regenerating": {"id": "regenerating", "name": "Regenerating", "description": "Regrows {value} HP a stack as its turn ends, after its Ablate and Vitriol, then loses a stack.",
 		"tags": ["buff"], "effects": [{"trigger": "status", "effect": "regrow", "value": 1}]},
 	"ward": {"id": "ward", "name": "Ward", "description": "No rider a foe lays lands on it this round, from a blow or a move of its own (ablate, scorch, jam, corrupt, purge); a blow's damage lands. Until its next turn starts.", "stacking": "renew", "decay": "round",
 		"tags": ["buff"], "effects": []},

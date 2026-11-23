@@ -213,7 +213,7 @@ func test_a_weapon_that_ablates_its_firer_pays_in_its_own_shield() -> void:
 	stoker.ablate = 2
 	stoker.heat = 1
 	stoker.self_ablate = 1
-	assert_true(stoker.describe().contains("Ablating 1 on itself"), "the hold says it: %s" % stoker.describe())
+	assert_true(stoker.describe().contains("Ablate 1 on itself"), "the hold says it: %s" % stoker.describe())
 	assert_true(stoker.has_unique_rule(), "a printed rule: the star")
 	var u := _mech(1, "A", 10, 100, Die.single(stoker))
 	var foe := Foe.make("dummy", 900, 0)

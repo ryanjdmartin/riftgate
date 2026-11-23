@@ -2600,7 +2600,7 @@ func test_a_units_readout_names_its_chips_without_their_descriptions() -> void:
 	for l in s._foe_hold_lines(foe):
 		if str(l["style"]) == "chip":
 			chips.append(str(l["text"]))
-	assert_true(chips.has("Debuff, Ablating ×3"), "a foe's Ablating by its name and stacks, labelled a debuff (Ryan, 9 November): %s" % str(chips))
+	assert_true(chips.has("Debuff, Ablate ×3"), "a foe's Ablating by its name and stacks, labelled a debuff (Ryan, 9 November): %s" % str(chips))
 	var mine: Array[String] = []
 	for l in s._mech_hold_lines(0):
 		if str(l["style"]) == "chip":

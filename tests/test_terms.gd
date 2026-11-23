@@ -226,3 +226,20 @@ func test_the_keywords_list_files_the_statuses_by_buff_debuff_and_ability() -> v
 	assert_true(str(Terms.entry("overcharged", db)["heading"]).begins_with("BUFF"), "a buff's tip says so")
 	assert_true(str(Terms.entry("ablating", db)["heading"]).begins_with("DEBUFF"), "and a debuff's")
 	assert_true(str(Terms.entry("sealed", db)["heading"]).begins_with("ABILITY"), "and an ability's")
+
+
+## A tip says the sum its unit carries (Ryan, 23 November: "All buffs and debuffs need to have
+## their current sum mentioned in their in-game tips"): {N} filled from the unit whose readout is
+## open, and {caster} with who laid it; with none open the sum's aside goes and N stands in.
+func test_a_tip_fills_the_sum_its_unit_carries() -> void:
+	var line := "On Hit: +1 damage per stack ({N}).\nTurn End: Reduce stacks by half, rounded down."
+	assert_eq(KeywordTip.filled("overcharged", line, {"overcharged": {"N": 4}}), "On Hit: +1 damage per stack (4).\nTurn End: Reduce stacks by half, rounded down.", "the unit's sum")
+	assert_eq(KeywordTip.filled("overcharged", line, {}), "On Hit: +1 damage per stack.\nTurn End: Reduce stacks by half, rounded down.", "with no unit, no aside")
+	assert_eq(KeywordTip.filled("penetrate", "dealing {N} damage", {}), "dealing N damage", "a keyword's number stands as N")
+	assert_eq(KeywordTip.filled("swallowed", "upon {caster} losing", {"swallowed": {"N": 2, "caster": "Floraison"}}), "upon Floraison losing", "who laid it")
+	assert_eq(KeywordTip.filled("swallowed", "upon {caster} losing", {}), "upon its caster losing", "or its caster")
+	var db := ContentDB.load_default()
+	for id in db.vocabulary.keys():
+		var said := KeywordTip.filled(str(id), str(db.vocabulary[id].get("codex", "")), {})
+		assert_false(said.contains("{"), "%s's tip leaves no mark unfilled: %s" % [id, said])
+	KeywordTip.fills = {}

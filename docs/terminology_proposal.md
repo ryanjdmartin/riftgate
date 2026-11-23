@@ -481,3 +481,12 @@ The statuses on a clock became stacks that count it down ("could we just switch 
 and use that as the timer?"): Exposed 2, Golden and Swallowed are timers, built that day (the
 bible's timers row, `docs/rules.md`, When a status ends); a hit is "hit", never "struck".
 
+**23 November, in chat**, on the sample of ten, with his own texts for them (now on the Text
+tab). His rules: a buff's or a debuff's tip says the sum its unit carries, his `{N}` ("All buffs
+and debuffs need to have their current sum mentioned in their in-game tips"); a stack changes by
+"reduce stacks by" or "reduce stacks to", so no plural is needed; a condition goes inside the
+line, never in its event ("On hit: if targeted"); a tip does not over-specify, so it names no
+other rule that may change ("if either gets changed, the tip needs editing as well. It also
+assumes knowledge of the other two keywords"); one effect a line. Ablating is renamed Ablate,
+one name for the keyword and the status it leaves, as Brittle is.
+

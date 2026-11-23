@@ -4969,11 +4969,6 @@ func _swallow(f: Foe, t: MechState, rounds: int) -> void:
 	if is_out(t) or Effects.has(t.unit, "swallowing") or swallowable().size() < 2:
 		log.append("%s: %s, and finds nothing it may take" % [f.display_name, what])
 		return
-	# A quarter of its HP lost from here lets the machine go (31 October); a second machine
-	# taken while it holds one joins the first's count, so the release its chip promised never
-	# moves back (the review of 2 November).
-	if swallowed_by(f) == null:
-		f.swallow_mark = f.hp
 	# Round End: gains Swallowed (Ryan, 22 November: "Round end, swallow it?"): the machine stays
 	# in the fight, hittable, until the round ends (_land_swallows).
 	Effects.stack(t.unit, Effects.STATUS["swallowing"], Effects.SKIRMISH, swallow_source(f), rounds, Effects.DECAY_NONE)
@@ -4991,6 +4986,12 @@ func _land_swallows() -> void:
 		Effects.remove(ms.unit, "swallowing")
 		if not ms.alive() or is_out(ms):
 			continue
+		# A quarter of its swallower's HP lost from here lets it go ("since the start of the effect":
+		# Ryan, 23 November); a second machine taken while it holds one joins the first's count, so
+		# the release its chip promised never moves back (the review of 2 November).
+		for foe in field_foes():
+			if swallow_source(foe) == due[0].source and swallowed_by(foe) == null:
+				foe.swallow_mark = foe.hp
 		Effects.lay_timer(ms.unit, Effects.STATUS["swallowed"], due[0].source, due[0].stacks)
 		ms.assigned = true
 		for foe in field_foes():

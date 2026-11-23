@@ -1451,7 +1451,7 @@ func test_a_consumer_eats_its_targets_stacks_and_stuns_at_its_threshold() -> voi
 	Effects.stack(hot, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 3)
 	Effects.stack(warm, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 1)
 	var ms: Skirmish.MechState = sk.mechs[0]
-	assert_true(charge.describe().contains("consumes Ablating, +1 a stack"), "the hold says what it eats: %s" % charge.describe())
+	assert_true(charge.describe().contains("consumes Ablate, +1 a stack"), "the hold says what it eats: %s" % charge.describe())
 	assert_eq(sk.shown_number(ms, charge, hot), 5, "over three stacks the die shows 2 and 3")
 	assert_eq(sk.shown_number(ms, charge, warm), 3, "over one, 2 and 1")
 	assert_eq(sk.shut_gates(ms, charge, warm), [K.SUPPRESS] as Array[int], "one stack is under the threshold: the chip struck")
@@ -2783,7 +2783,7 @@ func test_stacks_a_hot_machine_applies_run_deeper() -> void:
 	sk.mechs[0].heat = 45
 	sk.assign(0, sk.front[0])
 	assert_eq(Effects.stacks_of(g, "ablating"), 1 + 2, "at 45 heat the same burn is two deeper, two whole steps of 20 (the first round's stack burned off at the ghoul's turn)")
-	assert_true(sk.log[sk.log.size() - 2].contains("runs hot: +2 Ablating"), "and the log says so: %s" % sk.log[sk.log.size() - 2])
+	assert_true(sk.log[sk.log.size() - 2].contains("runs hot: +2 Ablate"), "and the log says so: %s" % sk.log[sk.log.size() - 2])
 	# A buff on an ally is deepened the same way; Numbed from a suppress is not.
 	var s2 := Skirmish.new(2)
 	var buff := Face.buff("primed", 1, 1)
@@ -4729,7 +4729,7 @@ func test_the_round_preview_lists_every_status_the_round_lands() -> void:
 	var pv := sk.preview_round()
 	assert_false(pv["foes"][x]["coming"].has("ablating"), "nothing in hand: no Ablate on it")
 	assert_eq(int(pv["mechs"][0]["coming"]["ablating_mech"]["stacks"]), 2, "its rider's Ablating on the machine")
-	assert_eq(str(pv["mechs"][0]["coming"]["ablating_mech"]["name"]), "Ablating", "named")
+	assert_eq(str(pv["mechs"][0]["coming"]["ablating_mech"]["name"]), "Ablate", "named")
 	pv = sk.preview_round(0, x)
 	assert_eq(int(pv["foes"][x]["coming"]["ablating"]["stacks"]), 3, "over it, the Ablate the die lays")
 	assert_true(m.recorder == null and x.recorder == null, "the fight's own carry no recorder: only the copy's play is noted")
@@ -7079,7 +7079,7 @@ func test_an_attacker_status_condition_reads_the_foe_striking() -> void:
 	var notes := Effects.explain(m, m.die.faces[0])
 	assert_true(notes.is_empty(), "a passive with no component names no die row")
 	var lead := Effects.effect_text(m.modifiers[0].effects[0])
-	assert_eq(lead, "blows from foes carrying Ablating: damage taken -5", "the rule reads with its condition as the lead")
+	assert_eq(lead, "blows from foes carrying Ablate: damage taken -5", "the rule reads with its condition as the lead")
 	assert_eq(Effects.effect_text({"trigger": "static", "effect": "add_damage_taken", "value": -5, "when": "attacker_status", "status": "brittled"}),
 		"blows from foes carrying Brittle: damage taken -5", "Brittle reads by its name since it was built (21 October)")
 	assert_eq(Effects.effect_text({"trigger": "static", "effect": "add_damage_taken", "value": -5, "when": "attacker_status", "status": "unbuilt"}),
@@ -8275,7 +8275,7 @@ func test_a_foes_cleanse_takes_the_teams_marks_off_the_most_marked_of_its_own() 
 	assert_true(Effects.has(b, "numbed"), "Numbed stays: nothing removes it")
 	assert_true(Effects.has(b, "suppressed"), "and Suppressed stays: the stun is sure")
 	assert_true(Effects.has(a, "cryoed"), "the other's mark stays: one foe a cleanse")
-	assert_true("\n".join(sk.log).contains("loses ablating"), "the log says what went")
+	assert_true("\n".join(sk.log).contains("loses ablate"), "the log says what went")
 	# Never twice running while another move is open.
 	healer.actions = [{"id": "touch", "name": "Touch", "kind": "attack", "weight": 1, "text": ""}, healer.actions[0]]
 	assert_false(sk.legal_actions(healer).any(func(x) -> bool: return str(x.get("effect", "")) == "cleanse"), "the round after, the cleanse is not open")
@@ -10663,7 +10663,7 @@ func test_a_consumer_eats_each_foe_struck_its_own() -> void:
 	assert_eq(burning.hp, 100 - (1 * 2 + 3), "the burning neighbour: its Spread 1 doubled, then a point a stack it carried, undoubled (the struck unit's reads after the firer's multiplies)")
 	assert_eq(cold.hp, 98, "the cold one: its Spread 1, doubled")
 	assert_false(Effects.has(burning, "ablating"), "its stacks eaten")
-	assert_true("\n".join(sk.log).contains("consumes Ablating ×3 on"), "the log says whose")
+	assert_true("\n".join(sk.log).contains("consumes Ablate ×3 on"), "the log says whose")
 
 
 ## The plus round the target, a piece carrying Spread and Penetrate together (Ryan, 15 November:

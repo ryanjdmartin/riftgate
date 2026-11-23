@@ -51,6 +51,7 @@ MOVE_AS_KEYWORD = {"ablate": "ablate", "jam": "jam", "scorch_all": "scorch", "co
 VIA_STATUS = {"primed": [("ablating", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
 ENGINE_ALIASES = {"ablating_mech": "ablating", "brittled_mech": "brittled", "exposure_mech": "exposure",   # the same word on the other body
                   "phasing": "phased",   # the wait for Phased, which is granted as the round ends (15 November)
+                  "swallowing": "swallowed",   # the wait for Swallowed, which lands as the round ends (22 November)
                   "parry_strike": "parry"}   # the Parry's return, next turn's first weapon's add, under the same name (19 November)
 
 # Printed rules, read off a component's face.

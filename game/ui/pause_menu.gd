@@ -482,7 +482,10 @@ func _keywords_list() -> ScrollContainer:
 		col.add_child(head)
 		for e in kind["entries"]:
 			var term := EntryReadout.new()   # a name over its line, close together
-			term.set_lines([EntryReadout.term_line(str(e[2])), EntryReadout.prose_line(str(e[1]), 17, Palette.INK.lerp(Palette.MUTED, 0.35))], width)
+			var said: Array = [EntryReadout.term_line(str(e[2]))]
+			for line in KeywordTip.filled(str(e[2]), str(e[1]), {}).split("\n"):
+				said.append(EntryReadout.prose_line(line, 17, Palette.INK.lerp(Palette.MUTED, 0.35)))
+			term.set_lines(said, width)
 			col.add_child(term)
 	return sc
 

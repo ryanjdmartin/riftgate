@@ -1772,7 +1772,7 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["skull", "", "Destroyed this round", Palette.LOSS, "preview"])
 	rows.append_array(_foe_abilities(foe))
 	if foe.ablate_stacks() > 0:
-		rows.append(status_row("ablating", "ablate", str(foe.ablate_stacks()), "Ablating ×%d" % foe.ablate_stacks(), _foe_chip_colour("ablating")))
+		rows.append(status_row("ablating", "ablate", str(foe.ablate_stacks()), "%s ×%d" % [str(Effects.STATUS["ablating"]["name"]), foe.ablate_stacks()], _foe_chip_colour("ablating")))
 	var vitriol := Effects.stacks_of(foe, "vitriol")
 	if vitriol > 0:
 		# The funnel-web's acid (18 October): its stacks, and the share they eat as its turn ends.
@@ -2482,6 +2482,7 @@ func _close_pop() -> void:
 		return
 	var die := _pop.has("die")
 	_pop = {}
+	KeywordTip.fills = {}   # no unit open: its tips' sums go with it
 	_details.visible = false
 	if die:
 		_refresh(false)   # its marks and its lure's preview go with it
@@ -2513,10 +2514,12 @@ func _show_pop() -> void:
 		if v == null:
 			_close_pop()
 			return
+		KeywordTip.fills = term_fills(foe)
 		_show_details("", v, [], _foe_hold_lines(foe))
 	elif _pop.has("mech"):
 		var i: int = _pop["mech"]
 		var mv: UnitView = _mech_views[i]
+		KeywordTip.fills = term_fills(sk.mechs[i].unit)
 		_show_details("", mv, [], _mech_hold_lines(i), mv.drawn_top(), POP_GAP)
 
 
@@ -2640,6 +2643,7 @@ static func _hold_title(name: String) -> Dictionary:
 func _on_foe_double_tapped(v: UnitView) -> void:
 	var foe: Foe = _view_foe.get(v, null)
 	if foe != null:
+		KeywordTip.fills = term_fills(foe)
 		_open_codex(ContentDB.load_default().codex_for_foe(foe))
 
 
@@ -2647,7 +2651,26 @@ func _on_mech_double_tapped(i: int) -> void:
 	var ms: Skirmish.MechState = sk.mechs[i]
 	var entry := ContentDB.load_default().codex_for_unit(ms.unit)
 	entry["current"] = ms.face_index
+	KeywordTip.fills = term_fills(ms.unit)
 	_open_codex(entry)
+
+
+## What a unit carries, by term, for its tips' {N} and {caster} (KeywordTip.fills): each status's
+## stacks summed under the term it reads as, and a swallow's swallower by name.
+func term_fills(u) -> Dictionary:
+	var out := {}
+	for m in Effects.live(u):
+		var term := Terms.of_status(m.id)
+		if term.is_empty():
+			continue
+		var f: Dictionary = out.get(term, {"N": 0})
+		f["N"] = int(f["N"]) + m.stacks
+		if m.id == "swallowed" or m.id == "swallowing":
+			for foe in sk.field_foes():
+				if Skirmish.swallow_source(foe) == m.source:
+					f["caster"] = foe.display_name
+		out[term] = f
+	return out
 
 
 ## Fill and show the codex (see `CodexBox` for the entry keys).
@@ -2658,6 +2681,7 @@ func _open_codex(entry: Dictionary) -> void:
 
 func _close_codex() -> void:
 	_codex.close()
+	KeywordTip.fills = {}
 
 
 var _menu: PauseMenu = null
