@@ -12324,6 +12324,47 @@ Tether on one turn in twelve, so a lone read says little of the Tether or of the
 turned blows lay. A trace of one fight (four goblins, seed 1) shows the bolts firing on struck
 blows and the Cannon arcing to needled goblins. The stock is placeholders; his play decides.
 
+
+## 23 November: the Nemesis's Rage and the Whip Scorpion's Death Ray, as built
+
+`tools/reboot_probe.gd` as the entries above, each machine first in the squad beside the Honey
+Badger, the Prairie Dog and the Cassowary, the greedy bot (taught the Death Ray for its reboots,
+the doubled hits and the heat scale, and the Rage's worth at the maximum, `Policy.rage_worth` at
+`RAGE_SHARE` 0.5), 168 formation and elite fights (8 seeds) and 78 boss fights (6 seeds) a
+machine. Read twice: on `ccr-178e0404-ptuh2m` at `909be478`, the tree of the 20 November entry
+with the rebuild alone, so like for like with it; and after main's merge at `bf689cd0` (the
+Honey Badger's Ore, the Mole, the Echidna, machine tiers), with the Buzzard and the Polar Bear read
+again beside them, since the merge moved every fight. The probe counted a Rage from before the
+round opened only from the second read on.
+
+| The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad |
+|---|---|---|
+| The Whip Scorpion, before the merge | 4.3, 29%, 7%, 7% | 6.5, 29%, 9%, 12% |
+| The Nemesis, before the merge | 4.5, 9%, 6%, 7% | 6.7, 9%, 11%, 13% |
+| The Whip Scorpion, merged | 5.0, 30%, 7%, 9% | 7.5, 32%, 12%, 17% |
+| The Nemesis, merged | 5.4, 12%, 9%, 9% | 7.6, 12%, 13%, 15% |
+| The Buzzard, merged | 5.7, 21%, 9%, 11% | 9.7, 24%, 15%, 22% |
+| The Polar Bear, merged | 7.5, 22%, 14%, 15% | 13.8, 23%, 27%, 31% |
+
+Under the table, merged: the Whip Scorpion fires its Ray 1.49 times a formation fight
+and 2.40 times a boss fight for about 9.5 heat a shot, every reboot of its a shot; the Nemesis
+rages 0.45 times a formation fight and 0.86 times a boss fight, about four swings a Rage (3.51
+Instant actions a boss fight), 0.56 of them ending in its reboot inside the fight, and overheats
+0.46 times a boss fight. Before the bot read the Rage's worth (the first read, before the merge,
+bosses), it never ended a turn past its maximum, rebooting or holding short of it: 7.7 rounds.
+
+What it says, a direction at these counts. Against the 20 November entry, like for like: the Whip
+Scorpion stands about where its blast left it (6.5 boss rounds against 6.3, 4.3 formation rounds
+against 4.0), its own hull lost nearly doubled (9% against 5%: the doubled hits past half its
+heat), a Ray every 3.4 rounds; the Nemesis moves from mid-pack (8.6 boss rounds, a round behind
+the Buzzard's 7.7) to level with the Whip Scorpion (6.7), giving a reboot 9% of its turns where
+it gave 24% (the fists cool it, and it never reboots by choice at its maximum). Merged, both lead
+the four against tier one's bosses by a band (7.5 and 7.6 rounds, the squad losing 15% to 17%,
+against the Buzzard's 9.7 and 22% and the Polar Bear's 13.8 and 31%), and the formations too, by
+less (5.0 and 5.4 rounds against 5.7 and 7.5). The bot's Rage is a first
+cut, its share a placeholder, so the Nemesis's read moves with it; the Whip Scorpion's exit is
+Ryan's (every hit doubled past half its heat). A bot's read of tier one's foes.
+
 ## 21 November: enemy armour at tier one, and Chain's arcs as a strike or a flat ping
 
 For Ryan's pick of Chain's arc form (the bible's section 12: "I need more data to make this

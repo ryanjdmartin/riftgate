@@ -28,9 +28,9 @@ too), and the Needletail the same day. It retires once its calls are rows and co
 | Puffin | Landed 19 November at tier two (the bible's row): equipment it spends on an ally takes up to 4 of that ally's heat onto it, and its lock passes its whole heat to an ally for Empowered 1 for every 2 | His play of it in a team that leverages heat |
 | Swallowtail, in design | Two dead plain forms; the system hands it a niche, the team's pit crew | His session |
 | Polar Bear | Stands as built (19 November): its text's clause fixed, the wall at tier one moot at tier two | Settled, his "Leave the bear" |
-| Whip Scorpion | His rework: the one kit built on the system | Its strength; the Ray a dump that keeps the shield |
+| Whip Scorpion | Rebuilt 23 November on his design (the bible's row): its damage half cold to double at its maximum, hits on it doubled past half its heat, its reboot firing its Death Ray | His play of it, and his exit if it is strong |
 | Stingray | The Suite suits the system; its stock gives it almost nothing to deepen; tier two since 20 November | Its stock, the stock re-deal's |
-| Nemesis | The system feeds its rage, its overheat included | The rage-and-burn loop; its placeholder slot |
+| Nemesis | Rebuilt 23 November on his design (the bible's rows): its blows heat it; at its maximum it rages, a flurry of Knuckles until its heat runs out, then it reboots | His play of it; its placeholder slot |
 | Wild Boar | Stands as built (20 November): it lost a stat and nothing else | Settled, his "Boar seems good to leave as is" |
 | Giant Petrel | Its rerolls stand; its gifts of actions cost their receivers heat | Its unrefined kit, his session |
 | Musk Ox | Its clock is ammo; the reboot is for its shield alone | Its session, the Forge's dead clause |
@@ -161,27 +161,27 @@ this proposal read it is in git: `git show 90d15e4:docs/reboot_machines_proposal
 
 ### Whip Scorpion
 
-Wainwright & Sutler, tier 2, heavy walker, his rework of 17 November. *Context*: the formation
-breaker, "heat is its ammunition"; "the reboot vent is the one that explodes", then "remove the 8
-heat minimum".
-
-*Kit*: hull 40, shield 8, armour 1, heat 14, move 3, 4 hardpoints.
-- Thermal Ejection Manifold: a reboot opens its valves as its heat vents, every foe taking 1 for
-  every 2 heat it sheds; every blow a foe lands on it adds 2 heat.
-- Heliographic Death Ray (fixed): 2, heat 3, firing its whole heat, a point more a 2 heat, and
-  leaving it cold.
+Wainwright & Sutler, tier 2, heavy walker, rebuilt 23 November on his design (the bible's row
+has his words). *Kit*: hull 40, shield 8, armour 1, heat 14, move 3, 4 hardpoints.
+- Thermal Ejection Manifold: its damage half at no heat to double at its maximum, a straight
+  line, held at double past it; past half its heat every hit on it doubled; its reboot fires the
+  Heliographic Death Ray first, the Ray off its die until the reboot brings it up.
+- Heliographic Death Ray (fixed, off the die): 2, heat 3, firing its whole heat, a point more a
+  2 heat, at the heat scale, then the reboot.
 - Thermal Ray 6 for 9; Twin Autoguns 3 for 4, twice; Maxigun 2 three times for 4.
 
-*As a whole.* The one kit built on the system: its reboot is its attack, its bare turn a bruiser's
-price (40 hull), and the blows it takes bare are the next blast's fuel. Two ways to cash its heat:
-the blast on every foe, bare after, or the Ray on one foe with its shield kept and no reboot. Read
-with its gate it was the strongest machine against a lone boss; without the gate it blasts a
-round sooner.
+*As a whole.* Heat is its damage and its risk: cold it hits for half, hot for double and is hit
+twice as hard, and its reboot is its burst, the Ray at whatever its heat makes of it. Its old
+partners, the blast on every foe and the heat every blow on it banked, are gone.
 
-*Verdict.* It fits. One note: the Ray is a heat dump that keeps the shield, the same dear effect
-as the Buzzard's Afterburner, and it outvalues the blast against a lone foe. Its strength's first
-lever is his, a lower heat maximum.
+*The read* (23 November, `docs/measurements.md`): against tier one's bosses it finishes in 7.5
+rounds, the squad losing 17%, the lead of the four read with the Nemesis (the Buzzard 9.7, the
+Polar Bear 13.8), and the formations in 5.0; a Ray every 3.1 rounds, about 9.5 heat a shot. Like
+for like with its blast form it stands about where it was, its own hull lost nearly doubled by
+the doubled hits. Strong by this bot, so his exit is the one to weigh on his play: every hit
+doubled past half its heat.
 
+### Stingray
 ### Stingray
 
 Aphelion, tier 2 since 20 November (Ryan: "Stingray - with the Macaque, move this to tier 2 now"), medium hover. *Context*: the hot status amplifier; the Lance support
@@ -206,27 +206,27 @@ re-deal's). Tier two on his word of 20 November, with the Macaque at Aphelion's 
 
 ### Nemesis
 
-Arsenal, tier 2, heavy walker. *Context*: the sustained-damage bruiser; rage from blows ("a smooth
-resource bar ... Taking a hit on shield gives 1 rage, hull damage gives 2 rage"); rage spent in
-fives for a fist that is Instant; its fourth slot a placeholder since the Retribution Thurible
-went back to design.
-
-*Kit*: hull 36, shield 6, armour 2, heat 14, move 3, 4 hardpoints.
-- Crucible Capacitor: a foe's hit on its shield banks 1 rage; hull damage, or a blow of its own a
-  foe's armour or Barrier takes whole, banks 2; up to 10.
-- Knuckle of Fury, twice (fixed): 5 for 6, melee; for 5 rage, Instant (it rolls again and acts
-  again).
+Arsenal, tier 2, heavy walker, rebuilt 23 November on his design (the bible's three rows have his
+words). *Kit*: hull 36, shield 6, armour 2, heat 14, move 3, 4 hardpoints.
+- Crucible Capacitor: a foe's hit on its shield heats it 1; hull damage, or a blow of its own a
+  foe's armour or Barrier takes whole, 2. A turn it opens at its heat maximum or past it, it
+  rages: its debuffs lifted and none landing, its die its Knuckles of Fury alone, Instant; at no
+  heat its Rage ends and it reboots at once; it never reboots by choice at its maximum.
+- Knuckles of Fury (fixed, one): 5, no heat, cooling it 3 a swing.
 - Plasma Arquebus 4 for 5; Blazethrower 3 and Ablate 2 for 6; Twin Autoguns 3 for 4 (the
   placeholder); Halo Projector.
 
-*As a whole.* The system feeds it. Its 6 shield breaks in a round and stays broken, so nearly every
-blow is hull damage and 2 rage; its bare reboot turn is a rage turn; and the burn past its maximum
-is hull damage at every END TURN, more rage. An Instant Knuckle buys a second spend the same
-round, up to 12 heat between them, so its raging rounds push it over its maximum and the burn pays
-back in rage: "reboot, or die" as a build.
+*As a whole.* The system feeds it as it fed the rage: its 6 shield breaks in a round and stays
+broken, so nearly every blow is 2 heat, and its guns climb the same gauge, so its maximum comes
+round of itself and a Rage is a turn of fists, four or five from 14, then a bare turn. Out of
+the Rage a punch feathers its heat short of the maximum.
 
-*Verdict.* It fits. To watch: that loop, rage from its own overheat into more Instant heat; its
-placeholder slot is the stock re-deal's.
+*The read* (23 November, `docs/measurements.md`): level with the Whip Scorpion against the
+bosses (7.6 rounds, the squad losing 15%) where it was a round behind the Buzzard on 20
+November, and the formations in 5.4; it rages 0.86 times a boss fight, about four swings a Rage,
+and gives a reboot 12% of its turns, the fewest read. The bot reads the Rage at a placeholder
+share, so the read moves with it; his exits stand (heat from hits alone; no reboot by choice at
+all).
 
 ### Wild Boar, settled
 
