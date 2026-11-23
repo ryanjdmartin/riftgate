@@ -20,9 +20,10 @@ extends RefCounted
 ## about three quarters of it). Wide enough that a pack stands in its world with most of the hexes
 ## round it (Ryan, 16 November: "the effect is more subtle than I thought. Can we increase the
 ## bleed radius that surrounds enemy packs?"; at 1.45 the painting reached barely past the pack's
-## own hex; at 3 it took the whole ring round it, then "Pull the enemy bleed radius back a bit"),
-## the boss's a hex wider.
-static var pack_radius_hex := 2.5   # a var, so the map tuner can move it live
+## own hex; at 3 it took the whole ring round it, then "Pull the enemy bleed radius back a bit";
+## 2.5 until 23 November: "Pull in the bleed radius that follows a pack, slightly"), the boss's
+## more than a hex wider.
+static var pack_radius_hex := 2.2   # a var, so the map tuner can move it live
 const BOSS_RADIUS_HEX := 3.5
 const RIFT_RADIUS_HEX := 2.6
 const SEAM_RUN_ROWS := 4.0      # the rows the gradient falls over, half of them either side of the seam's edge: the dithered band about two thirds of a row wide, as it was at a battle's start

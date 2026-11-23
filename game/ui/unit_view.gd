@@ -18,7 +18,7 @@ signal held
 signal hold_released
 
 const HOLD_SECONDS := 0.45
-const DOUBLE_TAP_SECONDS := 0.35
+const DOUBLE_TAP_SECONDS := DieFaceView.DOUBLE_TAP_SECONDS   # a die's window, the one every double-tap in a fight waits (Ryan, 23 November: "Codex views need the same double-tap delay as other double taps, like the die face")
 const STATUS_H := 38.0
 const CHIP_H := 30.0
 const CHIP_GLYPH := 18.0
@@ -133,6 +133,16 @@ var _pressed := false
 var _press_at := 0.0
 var _holding := false
 var _last_tap_at := -10.0
+var _second := false              # this touch came inside the double-tap window
+var _tap_due := -1.0              # when a tap waiting out the window lands; negative for none
+
+
+## A tap waiting out the double-tap window lands now, if one is waiting.
+func _land_tap() -> void:
+	if _tap_due < 0.0:
+		return
+	_tap_due = -1.0
+	tapped.emit()
 var _t := 0.0
 
 
@@ -297,18 +307,22 @@ func _gui_input(event: InputEvent) -> void:
 			_pressed = true
 			_holding = false
 			_press_at = Time.get_ticks_msec() / 1000.0
+			_second = _press_at - _last_tap_at <= DOUBLE_TAP_SECONDS   # the window runs from the last tap's release to this touch, as a die's
 			set_process(true)
 		else:
 			if _holding:
 				hold_released.emit()
 			elif _pressed:
 				var now := Time.get_ticks_msec() / 1000.0
-				if now - _last_tap_at <= DOUBLE_TAP_SECONDS:
+				if _second:
+					_second = false
 					_last_tap_at = -10.0
+					_tap_due = -1.0   # the double-tap stands in for its first tap
 					double_tapped.emit()
 				else:
 					_last_tap_at = now
-					tapped.emit()
+					_land_tap()
+					_tap_due = now + DOUBLE_TAP_SECONDS   # a tap lands once the window has passed, so a double-tap never shows a tap's work
 			_pressed = false
 			_holding = false
 			# The loop stops itself once nothing plays: stopped here, a tear or a dropped signal
@@ -318,8 +332,11 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
+	if _tap_due >= 0.0 and not _pressed and Time.get_ticks_msec() / 1000.0 >= _tap_due:
+		_land_tap()
 	if _pressed and not _holding and Time.get_ticks_msec() / 1000.0 - _press_at >= HOLD_SECONDS:
 		_holding = true
+		_tap_due = -1.0
 		held.emit()
 	if _shatter >= 0.0:
 		_shatter += delta
@@ -354,7 +371,7 @@ func _process(delta: float) -> void:
 	if (_has_pending() or breathe or acting) and visible and not dead:
 		_t += delta
 		queue_redraw()
-	elif not _pressed and _shatter < 0.0 and _ripple < 0.0 and _acquire < 0.0 and _glitch < 0.0 and _spend < 0.0 and _shift < 0.0:
+	elif not _pressed and _tap_due < 0.0 and _shatter < 0.0 and _ripple < 0.0 and _acquire < 0.0 and _glitch < 0.0 and _spend < 0.0 and _shift < 0.0:
 		set_process(false)
 
 

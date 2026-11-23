@@ -597,7 +597,7 @@ func _build() -> void:
 		# from the touch so the beat never reads as lag. A hold locks too.
 		d.confirm_taps = true
 		d.tapped.connect(_on_die_tapped.bind(i))
-		d.double_tapped.connect(_toggle_lock.bind(i))
+		d.double_tapped.connect(_open_die_view.bind(i))   # the whole die as the fight has it (Ryan, 23 November); a hold alone locks
 		d.held.connect(_toggle_lock.bind(i))
 		d.drag_started.connect(_on_drag_started.bind(i))
 		d.drag_moved.connect(_on_drag_moved)
@@ -1320,6 +1320,10 @@ func _refresh(save: bool = true) -> void:
 		d.corrupted = Effects.corrupt_stacks(ms.unit, ms.face_index) if ms.face_index >= 0 else 0
 		# A dark entry shows the rounds it has left, this one included (the cooldown row).
 		d.dark = Effects.dark_rounds(ms.unit, ms.face_index, sk.round) if sf != null and sf.disabled else 0
+		# Its own face under the dark's veil (Ryan, 23 November: "they should have effects they
+		# apply on top of the face"), what it would do were it lit; a jam's veil apart from a cooldown's.
+		d.under = sk.shown_face(ms, ms.die.faces[ms.face_index]) if sf != null and sf.disabled and ms.face_index >= 0 and ms.face_index < ms.die.faces.size() else null
+		d.jammed = d.under != null and Effects.cleansable_disable(ms.unit, ms.face_index)
 		d.cooldown = sf.cooldown_rounds() if sf != null else 0   # the rounds a spend darkens it: a cost along its foot
 		d.next_face = sk.next_face(ms) if ms.alive() else null   # a stepping die's next chamber
 		if d.next_face == null and ms.alive():
@@ -1814,7 +1818,7 @@ func _foe_rows(foe: Foe) -> Array:
 		# glyph, with the armour every grant adds (its own brace, a Protect).
 		var arm := Effects.foe_armour_bonus(foe)
 		rows.append(status_row("braced", status_glyph("braced"), "+%d" % arm, "%s +%d" % [Effects.STATUS["braced"]["name"], arm], _foe_chip_colour("braced")))
-	if Effects.has(foe, "kindled"):
+	if Effects.has(foe, "kindled") and Effects.foe_attack_bonus(foe) > 0:
 		var kindled := Effects.foe_attack_bonus(foe)
 		rows.append(status_row("kindled", "overcharge", "+%d" % kindled, "Empowered +%d" % kindled, _foe_chip_colour("kindled")))
 	var raged := Effects.stacks_of(foe, "enraged")
@@ -2045,8 +2049,6 @@ func _mech_rows(i: int) -> Array:
 	var rows: Array = []
 	if not ms.alive():
 		return rows
-	if locked[i]:
-		rows.append(["lock", "", "Die locked", Palette.HUD])
 	if ms.free_rerolls > 0 and not ms.assigned and sk.state == Skirmish.State.ASSIGN:
 		rows.append(["reroll", "×%d" % ms.free_rerolls, "Free reroll ×%d, this die alone" % ms.free_rerolls, Palette.HUD])
 	var damaged := ms.unit.damaged_component_count()
@@ -2105,6 +2107,8 @@ func _mech_rows(i: int) -> Array:
 			# Phased on its way (15 November: granted as the round ends): a status to come, so a
 			# preview chip, as a rally's Empowered is on a foe.
 			rows.append(status_row(id, glyph, "", "Phased as this round ends, if it stands", colour, "preview"))
+		elif id.begins_with("disabled") and str(d[0]) == "Cooldown":
+			rows.append([glyph, count, named, colour, "status", ""])   # a spend's own price, never a debuff (Ryan, 23 November: "Cooldown is not a Debuff"): no Debuff in its words, no wedge
 		else:
 			rows.append(status_row(id, glyph, count, named, colour))
 	if ABILITY_DEBUG and abilities.is_empty():
@@ -2328,7 +2332,7 @@ func _entry_marks(ms: Skirmish.MechState, i: int, die: int) -> Array:
 		out.append([Templates.say("state.locked"), EntryReadout.mark("lock", Palette.HUD, false)])
 	var rot := Effects.corrupt_stacks(ms.unit, i) if i >= 0 else 0
 	if rot > 0:
-		out.append([Templates.say("state.corrupted", {"n": rot}), EntryReadout.mark("corrupt", Glyphs.colour_for("corrupt"))])
+		out.append([Templates.say("state.corrupted", {"n": rot, "bite": rot * Skirmish.corrupt_bite()}), EntryReadout.mark("corrupt", Glyphs.colour_for("corrupt"))])   # the bite a spend will take (Ryan, 23 November: "Corrupted needs to show the damage it will deal in the die readout")
 	return out
 
 
@@ -2638,9 +2642,26 @@ func _on_foe_double_tapped(v: UnitView) -> void:
 
 func _on_mech_double_tapped(i: int) -> void:
 	var ms: Skirmish.MechState = sk.mechs[i]
-	var entry := ContentDB.load_default().codex_for_unit(ms.unit)
-	entry["current"] = ms.face_index
-	_open_codex(entry)
+	# The codex is the machine as it stands outside the fight (Ryan, 23 November: "Codex does not
+	# need to show the current die face. Codex entries should only ever show elements as they are
+	# outside the skirmish"): no entry showing marked.
+	_open_codex(ContentDB.load_default().codex_for_unit(ms.unit))
+
+
+## The whole die on a double-tap (Ryan, 23 November: "Die face double tap needs to open a display
+## of the whole die, with current buffs and debuffs applied to all faces. That leaves only hold to
+## lock the die"): every entry as the fight now has it, at its live numbers, the one showing
+## marked, in the codex's panel with nothing else of the machine's.
+func _open_die_view(i: int) -> void:
+	if _replay_shade.visible or _codex.is_open():
+		return
+	var ms: Skirmish.MechState = sk.mechs[i]
+	var base := ContentDB.load_default().codex_for_unit(ms.unit)
+	_open_codex({
+		"title": ms.unit.display_name, "subtitle": "THE DIE",
+		"faces": _shown_faces(ms), "face_rules": base.get("face_rules", []), "face_steps": base.get("face_steps", []),
+		"current": ms.face_index, "steps": base.get("steps", false), "stowed": base.get("stowed", []),
+	})
 
 
 ## Fill and show the codex (see `CodexBox` for the entry keys).
@@ -3380,7 +3401,8 @@ func _land_spend_blow(b: Dictionary, n: int) -> void:
 			bar[3] = hp
 		v.queue_redraw()
 	_animate_hit(v)
-	_pop_damage(v, int(b["taken"]), n)
+	if int(b["taken"]) > 0 or bool(b.get("weapon", true)):
+		_pop_damage(v, int(b["taken"]), n)   # equipment that deals nothing rises no 0 (Ryan, 23 November)
 
 
 ## A blow's number rising off the unit it struck, in ink on a dark edge (a blow that did nothing in

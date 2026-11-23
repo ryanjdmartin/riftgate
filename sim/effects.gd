@@ -836,6 +836,8 @@ static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1
 			m.stacks += n
 			_record(u, m, n)
 			return m
+	if n <= 0:
+		return null   # no stack, no status: a grant of none never stands as one at nothing (the King Gel's Empowered ×0, 23 November)
 	var m := make(passive, scope, source)
 	if m == null:
 		return null
@@ -3016,6 +3018,14 @@ static func clear_waiting_jams(u) -> int:
 		keep.append(m)
 	u.modifiers = keep
 	return n
+
+
+## Heal every corrupted entry (the reboot's drop; Ryan, 23 November: "Corrupted should heal on
+## reboot, just like jammed"): how many entries it cleared.
+static func clear_corruption(u) -> int:
+	var before: int = u.modifiers.size()
+	u.modifiers = u.modifiers.filter(func(m) -> bool: return not m.effects.any(func(eff) -> bool: return str(eff.get("effect", "")) == "corrupt_entry"))
+	return before - u.modifiers.size()
 
 
 static func disable_entry(u, index: int, source: String, until_round: int) -> Modifier:

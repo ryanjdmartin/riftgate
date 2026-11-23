@@ -244,8 +244,9 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   follows the same rule (Rapid's free reroll, the Booster, the Uplink, the
   Reveille Horn), but Instant's, kept on purpose and shown on the die by its keyword: it rolls as
   the round's opening roll does, itself included, and spins every chamber on the Cassowary's
-  die. Double-tap or hold a die to lock it, and again to unlock it; spending
-  unlocks it; locks clear each round.
+  die. Hold a die to lock it, and again to unlock it; spending
+  unlocks it; locks clear each round. A double-tap shows the whole die, every entry at its
+  live numbers, the one showing marked.
 - **A folded die** (the Clydesdale's Disappearing Carriages): its hardpoints are two batteries
   of four, one up at a time, and every roll and reroll lands among the battery up and its fixed
   pieces, the Changeover live on both. The Changeover (Rapid, spent on itself) turns
@@ -327,7 +328,9 @@ runs and nothing damages it; on a Swallowed one none runs but the swallow's.
   stepping die's next entry by its mark and the
   number it will show (the Cassowary's), the shield a zap will pay by the shield's mark ("-2",
   the Buzzard's). The readout says each on a line of its own, headed by
-  the same box. A dark entry is blank, its clock and its turns left along the foot. How each
+  the same box. A dark entry does nothing, and the die shows its own face dimmed under a veil of
+  stripes, a plate on its foot with the clock and its turns left (a cooldown, Rapid's own
+  switch-off) or the reboot's mark, the stripes heavier and in the red-red (a foe's jam). How each
   mark is drawn is `tools/die_sheet.gd`'s sheet and the bible's section 6.
 
 ### Reach
@@ -459,10 +462,11 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   strike each say so. No source is listed. A tap on it again closes it, and it
   is one readout with the units' (below): a tap on another die or a unit moves it. A die's tap
   lands once the double-tap window (0.15 s, from the tap's release to a second touch) has passed
-  with no second touch, the die lit from the touch until it does, so a double-tap only locks and
-  leaves the readouts as they stand; a tap
-  that lands as the enemy's turn replays, or under a codex, opens nothing. The whole die is in
-  the codex (double-tap the machine). **The keywords list**, in the pause menu, gives every reach, keyword, rule and status the dice and chips print, and the keywords
+  with no second touch, the die lit from the touch until it does, so a double-tap never flashes
+  the readout open; a unit's tap in a fight waits out the same window; a tap
+  that lands as the enemy's turn replays, or under a codex, opens nothing. The whole die as the
+  fight has it is the die's double-tap; as it stands between fights, the codex's (double-tap the
+  machine). **The keywords list**, in the pause menu, gives every reach, keyword, rule and status the dice and chips print, and the keywords
   a foe's move carries (Every Machine, Countdown, Last Act and the rest), with its codex line. Wherever shown text names one of those terms (the holds, the readouts, the codex, the
   list itself), it reads bold in its colour with its icon before it, and a tap on it opens its
   entry beside the word, where its own terms open theirs; a tap anywhere else closes it. A term
@@ -990,10 +994,12 @@ On a machine:
   foe runs 1 hotter a stack, until its turn ends, when every stack goes, so it never piles up.
   Cleansable.
 - **Jammed** (debuff, a foe's jam): the entry comes up blank until the machine reboots, the
-  reboot's drop lighting it, or a Cleanse lifts it; no clock ends it, and the die's foot shows
-  the reboot's mark on it in place of a count.
+  reboot's drop lighting it, or a Cleanse lifts it; no clock ends it, and its veil carries the
+  reboot's mark in place of a count. A cooldown is no debuff: the spend's own price, its chip
+  saying no Debuff and wearing no wedge.
 - **Corrupted** (debuff): each spend of the entry bites its owner 3 a stack, shield first,
-  no armour off it; lasts the skirmish.
+  no armour off it; it lasts until the machine reboots, the reboot's drop healing every
+  corrupted entry as it lights a jam, or a Cleanse lifts it.
 - **Brittle** (debuff, from a foe's Brittle rider: the World Eater's pin; a foe's Brittle below
   is the same rule on the other body): every blow the machine takes deals a point more a
   stack, the shield taking the extra first as it takes any blow, and the stacks halve as its
@@ -1783,10 +1789,13 @@ a stat.
   machine has fought, is ordered, is caught, or can neither move nor reach a pack where it
   stands, the button pulses while no machine is in hand.
 - **A tap and a double-tap** on the map work as a die's do in a fight: a double-tap on a
-  machine or a pack opens its codex, and a tap on one lands only once the double-tap window
+  machine, the boss or a cache opens its codex, and on a pack its formation, the grid the fight
+  will deal, back rank over front, a double-tap on a foe there opening that foe's codex; a tap
+  on one lands only once the double-tap window
   (0.1 s on the map, from the tap's release to a second touch; a die's is 0.15) has passed with no second touch, its hex
   bracketed from the touch until it does, so a double-tap never selects first; a tap on bare
-  ground lands at once.
+  ground lands at once. A pack shows no count on the map, in its readout or its plaque: its
+  formation does.
 - **The readout**: holding or tapping a machine, a pack, the boss or the ground shows
   it in the strip under the map, as the fight's holds read: a machine's hull as a gauge (its
   shield is the fight's), its move and actions left, a chip for its damaged components; a pack's

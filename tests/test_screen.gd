@@ -91,12 +91,12 @@ func test_screen_builds_and_starts_round_one() -> void:
 	s.free()
 
 
-## A die takes a unit's gestures (Ryan, 30 October: "change lock/unlock to hold and double-tap,
-## and tap to inspect for dice ... That way it's standard across the board"): a tap opens its
-## readout and a tap again closes it, one readout at a time with the units'; a double-tap or a
-## hold locks or unlocks it, the readouts left as they stand (its tap waits out the double-tap
-## window, so a double-tap's first tap never lands); no codex.
-func test_a_tap_reads_a_die_and_a_double_tap_or_a_hold_locks_it() -> void:
+## A die's gestures (Ryan, 30 October: "tap to inspect for dice"; 23 November: "Die face double
+## tap needs to open a display of the whole die, with current buffs and debuffs applied to all
+## faces. That leaves only hold to lock the die"): a tap opens its readout and a tap again closes
+## it, one readout at a time with the units'; a double-tap opens the whole die at its live
+## numbers, the one showing marked; a hold locks or unlocks it, the readouts left as they stand.
+func test_a_tap_reads_a_die_a_double_tap_shows_the_die_and_a_hold_locks_it() -> void:
 	var s := _screen()
 	var d: DieFaceView = s._dice[0]
 	assert_true(d.confirm_taps, "the tray's dice wait out the double-tap window")
@@ -108,21 +108,17 @@ func test_a_tap_reads_a_die_and_a_double_tap_or_a_hold_locks_it() -> void:
 	d.tapped.emit()
 	assert_true(s._pop.is_empty() and not s._details.visible, "a tap on it again closes it")
 	d.double_tapped.emit()
-	assert_true(s.locked[0], "a double-tap locks")
-	assert_true(d.locked, "the view shows the lock")
-	assert_true(s._pop.is_empty() and not s._details.visible, "and opens no readout")
-	assert_false(s._codex.visible, "no codex: the whole die is the machine's double-tap")
-	d.double_tapped.emit()
-	assert_false(s.locked[0], "a double-tap again unlocks")
+	assert_false(s.locked[0], "a double-tap locks nothing")
+	assert_true(s._codex.visible, "it opens the whole die")
+	assert_eq(s._codex._faces.get_child_count(), s.sk.mechs[0].die.faces.size(), "every entry a row")
+	s._close_codex()
 	s._on_mech_tapped(1)
-	d.double_tapped.emit()
-	assert_eq(s._pop, {"mech": 1}, "a double-tap leaves the machine's readout open")
-	assert_true(s.locked[0], "and locks")
 	d.held.emit()
-	assert_false(s.locked[0], "a hold unlocks")
+	assert_true(s.locked[0], "a hold locks")
+	assert_true(d.locked, "the view shows the lock")
 	assert_eq(s._pop, {"mech": 1}, "and leaves the readout open")
 	d.held.emit()
-	assert_true(s.locked[0], "a hold again locks")
+	assert_false(s.locked[0], "a hold again unlocks")
 	s._close_pop()
 	s._replay_shade.visible = true
 	d.tapped.emit()

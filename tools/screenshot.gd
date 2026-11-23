@@ -143,6 +143,9 @@ func _apply_pose() -> void:
 			# as the die's target and filled under it.
 			s._on_drag_started(0)
 			s._on_drag_moved(s._reboot_btn.get_global_rect().get_center())
+		"dieview":
+			# A die's double-tap (23 November): the whole die at its live numbers, the one showing marked.
+			s._open_die_view(0)
 		"aim", "aimfree":
 			# A die in hand (22 November): the die stays in its tray, the crosshair on the first
 			# foe ("aim", locked, the die reading what it deals there) or in the open sky
@@ -613,8 +616,17 @@ func _apply_battle_pose() -> void:
 			s._map.scroll_to_unit(b.mechs()[0] if _pose == "zoom" else b.mechs()[b.mechs().size() - 1])
 		"codex":
 			s._on_hex_double_tapped(b.mechs()[0].pos)
-		"foecodex":
+		"formation":
+			# A pack's formation, its double-tap (23 November).
 			s._on_hex_double_tapped(b.field.packs()[0].pos)
+		"foecodex":
+			# A foe's codex over its pack's formation, a double-tap on it there.
+			var pk: Unit = b.field.packs()[0]
+			s._on_hex_double_tapped(pk.pos)
+			for cell in FormationBox.cells_of(pk):
+				if not str(cell).is_empty():
+					s._on_formation_foe(str(cell))
+					break
 		"resolve":
 			s._on_end_turn()
 		"rift":

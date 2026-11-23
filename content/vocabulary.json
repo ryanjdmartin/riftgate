@@ -776,7 +776,7 @@
    "id": "corrupted",
    "category": "status",
    "name": "Corrupted",
-   "codex": "Component status. Every time this die entry is spent it bites its owner for 3 per stack, shield first, before the component acts. A blank is never spent, so a jammed entry does not bite. Stacks. Clears at end of skirmish. Can be cleansed.",
+   "codex": "Component status. Every time this die entry is spent it bites its owner for 3 per stack, shield first, before the component acts. A blank is never spent, so a jammed entry does not bite. Stacks. Lasts until the machine reboots and can be cleansed.",
    "status": "implemented",
    "design": {
     "holes": "The bite is the status's own number in the engine's table, a placeholder.",
@@ -784,7 +784,7 @@
      "kind": "debuff",
      "on": "machine",
      "stacks": "Yes: its bite a stack",
-     "lasts": "The skirmish"
+     "lasts": "Until the machine reboots"
     }
    }
   },

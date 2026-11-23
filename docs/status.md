@@ -78,7 +78,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1439 tests, 389,431 checks, green on Godot 4.8-beta4 (23 November, the map's waypoint input, the battle UI pass with Ryan's picks and the Macaque's offhand on its die's rail). The runner fails a run
+- Tests: 1442 tests, 389,444 checks, green on Godot 4.8-beta4 (23 November, Ryan's list of that day: the whole die on a double-tap, the dark entry's veil, the formation, Corrupted's heal at a reboot). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -297,7 +297,10 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   it, level with its gauge, its arrows leaving the foe's middle; a status chip is a square tile
   with its number at its corner; a die is spent by dragging a large crosshair from it
   (`AimLayer`), the die staying in its tray. Settings on a debug build compare the chip's forms
-  (CHIPS) and the tether's (TETHER) until Ryan picks. A debug build's settings hold TRIALS and COLOURS
+  (CHIPS) and the tether's (TETHER) until Ryan picks. Since 23 November a die's double-tap shows
+  the whole die at its live numbers and a hold alone locks; a dark entry is its own face under a
+  veil; a unit's tap waits out the die's double-tap window; on the map a pack's double-tap opens
+  its formation (`FormationBox`) and a cache's its codex, and a pack shows no count. A debug build's settings hold TRIALS and COLOURS
   (`ColourTuner`: Ryan tunes there and sends its COPY text).
 - **The hangar page.** `tools/hangar.html` over `tools/hangar_data.py`'s files, a tab a kind
   since 20 November: Chassis (the Bench renamed: every machine a card, a tap its working sheet

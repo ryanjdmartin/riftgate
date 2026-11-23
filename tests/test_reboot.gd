@@ -644,6 +644,8 @@ func live_test_a_die_dragged_onto_reboot_is_the_one_way_in() -> void:
 	_tap(vp, rb)
 	assert_false(_rebooting(sk).has(true), "a touch on REBOOT reboots nothing")
 	_tap(vp, s._mech_views[0].get_global_rect().get_center())
+	OS.delay_msec(int(UnitView.DOUBLE_TAP_SECONDS * 1000.0) + 40)   # a unit's tap waits out the double-tap window, as a die's
+	s._mech_views[0]._process(0.016)
 	assert_eq(s._pop, {"mech": 0}, "a tap on a machine reads it")
 	_tap(vp, rb)
 	assert_false(_rebooting(sk).has(true), "nor with a machine's readout open")
@@ -831,4 +833,48 @@ func test_a_machine_whose_whole_die_is_dark_may_reboot() -> void:
 	assert_false(s._reboot_btn.disabled, "and REBOOT takes it")
 	assert_true(s._do_reboot(0), "its die dropped on REBOOT, it reboots")
 	assert_eq([ms.heat, m.shield], [0, 0], "vented, the shield down")
+	s.free()
+
+
+## Corrupted heals at a reboot, as a jam lights (Ryan, 23 November: "Corrupted should heal on
+## reboot, just like jammed"): every corrupted entry clean after the drop.
+func test_a_reboot_heals_every_corrupted_entry() -> void:
+	var m := _mech(1, "A", _gun(10))
+	var sk := _fight([m], [Foe.make("dummy", 900, 0)])
+	sk.start_round()
+	Effects.corrupt_entry(m, 0, "foe:x", 2)
+	Effects.corrupt_entry(m, 1, "foe:x", 1)
+	assert_eq([Effects.corrupt_stacks(m, 0), Effects.corrupt_stacks(m, 1)], [2, 1], "two entries corrupted")
+	assert_true(sk.reboot_mech(0), "it reboots")
+	assert_eq([Effects.corrupt_stacks(m, 0), Effects.corrupt_stacks(m, 1)], [0, 0], "and both are clean")
+
+
+## A grant of no stacks is no status (23 November, the King Gel's Empowered ×0): nothing stands at
+## nothing to clear.
+func test_a_grant_of_no_stacks_stands_no_status() -> void:
+	var foe := Foe.make("dummy", 10, 1)
+	assert_true(Effects.stack(foe, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:x", 0, Effects.DECAY_HALF) == null, "no grant at none")
+	assert_false(Effects.has(foe, "kindled"), "and no Empowered on it")
+
+
+## A cooldown's chip is no debuff (Ryan, 23 November: "Cooldown is not a Debuff"): no Debuff in its
+## words and no wedge; a foe's jam still is one.
+func test_a_cooldown_is_no_debuff_and_a_jam_is() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech(_a_chassis(db))
+	m.die = Die.of([Face.attack(3, L, [], 4), Face.attack(2, L, [], 2)])
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("dummy", 900, 0)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.disable_entry(m, 0, "cooldown", sk.round + 1)
+	Effects.disable_entry(m, 1, "foe:x", Effects.JAM_REBOOT)
+	var rows := s._mech_rows(0)
+	var cool := rows.filter(func(r: Array) -> bool: return str(r[2]).begins_with("Cooldown"))
+	var jam := rows.filter(func(r: Array) -> bool: return str(r[2]).contains("Jammed"))
+	assert_eq(cool.size(), 1, "the cooldown's chip, its words bare")
+	assert_eq(str(cool[0][5]) if cool[0].size() > 5 else "", "", "and no wedge")
+	assert_true(jam.size() == 1 and str(jam[0][2]).begins_with("Debuff"), "the jam a debuff")
+	assert_false(rows.any(func(r: Array) -> bool: return str(r[2]) == "Die locked"), "and no chip for a lock")
 	s.free()
