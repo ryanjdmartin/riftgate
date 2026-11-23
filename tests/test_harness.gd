@@ -411,8 +411,7 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	var beats_was = Settings.display.get("rupture_beats", "2")
 	var tide_was = Settings.display.get("tide_density", "100")
 	var strike_was = Settings.display.get("wall_strike", "10")
-	var burn_was = Settings.display.get("overheat_burn", "1")
-	Settings.display["overheat_burn"] = "2"
+	Settings.display["overheat_burn"] = "2"   # a dial of a build before 23 November, locked at one since: its saved setting moves nothing
 	Settings.display["tide_density"] = "150"
 	Settings.display["wall_strike"] = "5"
 	Settings.display["field_depth"] = "16"
@@ -427,7 +426,7 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [16, 2, 50, 3] if OS.is_debug_build() else [0, 0, 100, 0], "where the game starts a battle, a debug build's settings are the trial")
 	assert_eq([Ramp.tide_trial, Battlefield.strike_trial], [150, 5] if OS.is_debug_build() else [100, 0], "the tide's density and the wall strike with them")
 	assert_eq(Battlefield.strike_per_pip(), 5 if OS.is_debug_build() else Battlefield.STRIKE_PER_PIP, "and the field answers with the strike")
-	assert_eq(Skirmish.overheat_scale, 2 if OS.is_debug_build() else 1, "the overheat's burn with them")
+	assert_eq(Skirmish.overheat_scale, 1, "and a saved OVERHEAT of an older build burns no more: locked at a point of hull a point")
 	assert_eq(Ramp.beats_at(0), 3 if OS.is_debug_build() else Ramp.BEATS, "and the ramp answers with the beats")
 	assert_eq(Ramp.depth_at(0), 16 if OS.is_debug_build() else 12, "and the ramp answers with it")
 	Settings.display["field_depth"] = "a mile"
@@ -436,11 +435,9 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	Settings.display["rupture_beats"] = "an age"
 	Settings.display["tide_density"] = "a flood"
 	Settings.display["wall_strike"] = "a tap"
-	Settings.display["overheat_burn"] = "a furnace"
 	Settings.field_trial(true)
 	assert_eq([Ramp.depth_trial, Battle.opening_trial, Battle.fodder_trial, Ramp.beats_trial], [0, 0, 100, 0], "a value that is no option asks for nothing")
 	assert_eq([Ramp.tide_trial, Battlefield.strike_trial], [100, 0], "of the tide or the strike either")
-	assert_eq(Skirmish.overheat_scale, 1, "or of the overheat")
 	Settings.display["wall_strike"] = str(Battlefield.STRIKE_PER_PIP)
 	Settings.field_trial(true)
 	assert_eq(Battlefield.strike_trial, 0, "and the game's own strike is no trial")
@@ -450,9 +447,9 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 	Settings.display["rupture_beats"] = beats_was
 	Settings.display["tide_density"] = tide_was
 	Settings.display["wall_strike"] = strike_was
-	Settings.display["overheat_burn"] = burn_was
+	Settings.display.erase("overheat_burn")
 	assert_false(Settings.DISPLAY_DEFAULTS.has("reboot") or Settings.DISPLAY_DEFAULTS.has("shield_regen") or Settings.DISPLAY_DEFAULTS.has("shield_break"), "the reboot is the rule and no dial (folded in 15 November), the regen's dial went with the regen, and the block's with the rule that a blow past the shield reaches the hull")
-	assert_eq(str(Settings.DISPLAY_DEFAULTS["overheat_burn"]), "1", "the overheat ships at one hull a point")
+	assert_false(Settings.DISPLAY_DEFAULTS.has("overheat_burn"), "the overheat's dial left with its question: one hull a point")
 	assert_eq([str(Settings.DISPLAY_DEFAULTS["tide_density"]), str(Settings.DISPLAY_DEFAULTS["wall_strike"])], ["100", str(Battlefield.STRIKE_PER_PIP)], "the tide and the strike ship on the game's own")
 	assert_true(Settings.TIDES.has("100") and Settings.STRIKES.has(str(Battlefield.STRIKE_PER_PIP)), "which are among their options")
 	assert_eq([str(Settings.DISPLAY_DEFAULTS["field_depth"]), str(Settings.DISPLAY_DEFAULTS["field_opening"]), str(Settings.DISPLAY_DEFAULTS["fodder_worth"]), str(Settings.DISPLAY_DEFAULTS["rupture_beats"])], ["12", "0", "100", str(Ramp.BEATS)], "all four ship on the game's own field and meter")
@@ -488,25 +485,25 @@ func test_the_fields_trial_reads_the_settings_only_where_the_game_starts_a_battl
 		menu.free()
 
 
-## A lone fight from the menu reads the fight's trials as a battle does (the overheat's burn
-## is a fight's): a dial set inside one fight is the next one's, with no relaunch. The launch
-## here has nobody to fight, so it stops before it saves or shows.
+## A lone fight from the menu reads the fight's trials as a battle does (when Phased lands is a
+## fight's): a dial set inside one fight is the next one's, with no relaunch. The launch here has
+## nobody to fight, so it stops before it saves or shows.
 func test_a_lone_fight_from_the_menu_reads_the_trials() -> void:
-	if not OS.get_environment("RIFTGATE_OVERHEAT").is_empty():
+	if not OS.get_environment("RIFTGATE_PHASED").is_empty():
 		return
-	var burn_was = Settings.display.get("overheat_burn", "1")
+	var phased_was = Settings.display.get("phased_form", "round_end")
 	var h: Control = HARNESS.new()
 	var hs := HarnessSetup.defaults(_db())
 	hs.team = []
 	h.setup = hs
-	Settings.display["overheat_burn"] = "2"
-	Skirmish.overheat_scale = 1
+	Settings.display["phased_form"] = "at_once"
+	Skirmish.phase_at_once = false
 	h._on_fight()
-	assert_eq(Skirmish.overheat_scale, 2 if OS.is_debug_build() else 1, "a debug build's OVERHEAT is the next lone fight's")
-	Settings.display["overheat_burn"] = "1"
+	assert_eq(Skirmish.phase_at_once, OS.is_debug_build(), "a debug build's PHASED is the next lone fight's")
+	Settings.display["phased_form"] = "round_end"
 	h._on_fight()
-	assert_eq(Skirmish.overheat_scale, 1, "and the game's own again with the dial")
-	Settings.display["overheat_burn"] = burn_was
+	assert_false(Skirmish.phase_at_once, "and the game's own again with the dial")
+	Settings.display["phased_form"] = phased_was
 	Settings.field_trial()
 	h.free()
 
@@ -570,116 +567,31 @@ func test_a_machine_back_in_design_has_no_row_and_the_team_as_ticked_is_kept() -
 	live.free()
 
 
-## The refit pass's what-ifs are off until something asks (docs/briefs/refit_pass.md; the model
-## itself is content): RIFTGATE_REFIT names a spec, or a debug build's dials name its parts.
-func test_the_refit_what_if_is_off_until_the_setting_or_the_environment_asks() -> void:
+## The refit pass's what-ifs are off until the environment asks (docs/briefs/refit_pass.md; the
+## model itself is content): RIFTGATE_REFIT names a spec and nothing else does. The dials that
+## named its parts left the trials' page with their questions (Ryan, 23 November: "We can lock in
+## the rank and file setting as 4, heat as built, top basic as built, and overheat at x1"; "barrier
+## basic yes, for now at least"), so what a build saved for one asks for nothing.
+func test_the_refit_what_if_is_off_until_the_environment_asks() -> void:
 	if not OS.get_environment("RIFTGATE_REFIT").is_empty():
 		assert_eq(HARNESS.refit_spec(), OS.get_environment("RIFTGATE_REFIT"), "the environment's spec is the what-if's")
 		return
-	var heat_was = Settings.display.get("heat_trial", "0")
-	var barrier_was = Settings.display.get("barrier_basic", "built")
-	var top_was = Settings.display.get("top_basic_heat", "0")
-	var rank_was = Settings.display.get("rank_hp", "0")
-	Settings.display["rank_hp"] = "0"
-	Settings.display["heat_trial"] = "0"
-	Settings.display["barrier_basic"] = "built"
-	Settings.display["top_basic_heat"] = "0"
 	assert_eq(HARNESS.refit_spec(), "", "as built by default: the game plays the content as written")
-	# The top basic's dial (14 November): more heat on the basic guns that deal more than the
-	# plainest. The vanilla's own point is content since 15 November, its dial gone.
-	for top in Settings.TOP_BASIC_HEATS:
-		Settings.display["top_basic_heat"] = top
-		var want_top: String = "" if top == "0" or not OS.is_debug_build() else "top=%s" % top
-		assert_eq(HARNESS.refit_spec(), want_top, "and the top basic's heat: %s" % top)
-		if not want_top.is_empty():
-			assert_eq(int(Refit.parse(want_top)["top"]), int(top), "which the what-if takes")
-		assert_true(Settings.TOP_BASIC_HEAT_LABELS.has(top), "%s has its button's label" % top)
-	Settings.display["top_basic_heat"] = "molten"
-	assert_eq(HARNESS.refit_spec(), "", "a value that is no option asks for nothing")
-	Settings.display["top_basic_heat"] = "0"
-	# The standard foe's dial beside it (15 November): a hit point more on tier one's rank and
-	# file, the same what-if, alone or with the top basic's.
-	for rank_hp in Settings.RANK_HPS:
-		Settings.display["rank_hp"] = rank_hp
-		var want_rank: String = "" if rank_hp == "0" or not OS.is_debug_build() else "foehp=%s" % rank_hp
-		assert_eq(HARNESS.refit_spec(), want_rank, "a debug build's setting names the rank and file's hit points: %s" % rank_hp)
-		if not want_rank.is_empty():
-			assert_eq(int(Refit.parse(want_rank)["foehp"]), int(rank_hp), "and the what-if takes it")
-		assert_true(Settings.RANK_HP_LABELS.has(rank_hp), "%s has its button's label" % rank_hp)
-	Settings.display["top_basic_heat"] = "2"
-	Settings.display["rank_hp"] = "1"
-	if OS.is_debug_build():
-		var two := Refit.parse(HARNESS.refit_spec())
-		assert_eq([int(two["top"]), int(two["foehp"])], [2, 1], "the top basic hotter against a standard foe a point up: the two dials make one spec")
-	Settings.display["rank_hp"] = "a horde"
-	Settings.display["top_basic_heat"] = "0"
-	assert_eq(HARNESS.refit_spec(), "", "a value that is no option asks for nothing")
-	Settings.display["rank_hp"] = "0"
-	# Dials of a build before 15 November ask for nothing: the vanilla's point is content and
-	# breach is cut, so their settings name no part.
-	Settings.display["basic_guns"] = "1"
-	Settings.display["foe_breach"] = "cut"
-	assert_eq(HARNESS.refit_spec(), "", "a saved BASIC GUNS or FOE BREACH of an older build is no part of the spec")
-	Settings.display.erase("basic_guns")
-	Settings.display.erase("foe_breach")
-	# The Barrier basic's dial (13 November): off the stock dice, the same what-if.
-	Settings.display["barrier_basic"] = "none"
-	assert_eq(HARNESS.refit_spec(), "barrier=none" if OS.is_debug_build() else "", "a debug build's setting takes the Barrier basic off the stock dice")
-	Settings.display["barrier_basic"] = "everywhere"
-	assert_eq(HARNESS.refit_spec(), "", "a value that is no option asks for nothing")
-	Settings.display["barrier_basic"] = "built"
-	# A dial of a build before the fold-in asks for nothing: the regen's went with the regen.
-	Settings.display["shield_regen"] = "2"
-	assert_eq(HARNESS.refit_spec(), "", "a saved SHIELD REGEN of an older build is no part of the spec")
-	Settings.display.erase("shield_regen")
-	# The heat's dial (12 November): every weapon a point cooler or hotter than content prices
-	# it, the same what-if, alone or beside the Barrier basic's.
-	for heat in Settings.HEATS:
-		Settings.display["heat_trial"] = heat
-		var want_heat: String = "" if heat == "0" or not OS.is_debug_build() else str(Settings.HEAT_SPECS[heat])
-		assert_eq(HARNESS.refit_spec(), want_heat, "a debug build's setting names the heat's prices: %s" % heat)
-		if not want_heat.is_empty():
-			var priced := Refit.parse(want_heat)
-			assert_eq(int(priced["hotter"]), int(heat), "the what-if takes the price")
-			assert_false(priced.has("cooling"), "and names no cooling: no chassis cools by itself since the reboot")
-		assert_true(Settings.HEAT_LABELS.has(heat), "%s has its button's label" % heat)
-	Settings.display["barrier_basic"] = "none"
-	Settings.display["heat_trial"] = "1"
-	if OS.is_debug_build():
-		var both := Refit.parse(HARNESS.refit_spec())
-		assert_eq([str(both["barrier"]), int(both["hotter"])], ["none", 1], "the two dials make one spec")
-	Settings.display["barrier_basic"] = "built"
-	Settings.display["heat_trial"] = "scalding"
-	assert_eq(HARNESS.refit_spec(), "", "a heat that is no option asks for nothing")
-	Settings.display["heat_trial"] = heat_was
-	Settings.display["barrier_basic"] = barrier_was
-	Settings.display["top_basic_heat"] = top_was
-	Settings.display["rank_hp"] = rank_was
-	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("top_basic_heat", "")), "0", "the top basic ships as content has it")
-	assert_false(Settings.DISPLAY_DEFAULTS.has("basic_guns") or Settings.DISPLAY_DEFAULTS.has("foe_breach"), "and the two dials whose questions are answered are gone")
-	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("rank_hp", "")), "0", "and the rank and file as content has them")
-	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("barrier_basic", "")), "built", "the Barrier basic ships on the dice content gives it")
-	assert_eq(str(Settings.DISPLAY_DEFAULTS.get("heat_trial", "")), "0", "the heat's too")
+	var old := {"heat_trial": "-1", "top_basic_heat": "2", "rank_hp": "1", "barrier_basic": "none", "overheat_burn": "2", "basic_guns": "1", "foe_breach": "cut", "shield_regen": "2"}
+	for key in old:
+		assert_false(Settings.DISPLAY_DEFAULTS.has(key), "%s is no setting: its question is answered" % key)
+		Settings.display[key] = old[key]
+	assert_eq(HARNESS.refit_spec(), "", "a dial an older build saved is no part of the spec")
+	for key in old:
+		Settings.display.erase(key)
 	if OS.is_debug_build():
 		var menu := PauseMenu.new()
 		menu._show_page("trials")
-		var labels := _menu_labels(menu)
-		for heat in Settings.HEATS:
-			assert_true(labels.has(str(Settings.HEAT_LABELS[heat])), "the heat's offset %s" % Settings.HEAT_LABELS[heat])
-		for top in Settings.TOP_BASIC_HEATS:
-			assert_true(labels.has(str(Settings.TOP_BASIC_HEAT_LABELS[top])), "the top basic's heat %s" % Settings.TOP_BASIC_HEAT_LABELS[top])
 		var captions: Array = []
 		for l in menu._rows.find_children("*", "Label", true, false):
 			captions.append(str((l as Label).text))
-		assert_true(captions.has("RANK AND FILE"), "and the rank and file's hit points have their row: %s" % str(captions))
-		assert_false(captions.has("FOE BREACH") or captions.has("BASIC GUNS"), "and no row for breach or for the basic guns' damage: %s" % str(captions))
+		for gone in ["HEAT", "TOP BASIC", "RANK AND FILE", "OVERHEAT", "BARRIER BASIC", "FOE BREACH", "BASIC GUNS", "REBOOT", "SHIELD REGEN", "SHIELD BREAK", "SPAWNS"]:
+			assert_false(captions.has(gone), "no row for %s: %s" % [gone, str(captions)])
+		assert_true(captions.has("STRIKE") and captions.has("PHASED"), "the page keeps the dials whose questions are open: %s" % str(captions))
 		assert_true(menu._list != null and menu._list.is_ancestor_of(menu._rows.find_children("*", "BaseButton", true, false)[0]), "the dials stand in a scroller, so a short glass holds them")
-		for burn in Settings.OVERHEATS:
-			assert_true(labels.has(str(Settings.OVERHEAT_LABELS[burn])), "and the overheat's burn %s" % Settings.OVERHEAT_LABELS[burn])
-		var rows: Array = []
-		for l in menu._rows.find_children("*", "Label", true, false):
-			rows.append(str((l as Label).text))
-		assert_false(rows.has("REBOOT") or rows.has("SHIELD REGEN") or rows.has("SHIELD BREAK"), "the reboot is the rule, the regen is gone and a blow past the shield reaches the hull: none has a row")
-		for deal in Settings.BARRIER_BASICS:
-			assert_true(labels.has(str(Settings.BARRIER_BASIC_LABELS[deal])), "and the Barrier basic's place %s" % Settings.BARRIER_BASIC_LABELS[deal])
 		menu.free()

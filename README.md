@@ -463,23 +463,18 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_TIDE=150                             the packs the opening places and each wave sends, in hundredths, 100 the game's
 #   RIFTGATE_STRIKE=5                             what a pip of threat rating strikes the wall for, 10 the game's
 #   RIFTGATE_PACE=1                               hexes added to every pack's move, 0 to 4, 0 the game's
-#   RIFTGATE_SPAWN_FIRST=rift|all                 the tide sends before the packs walk, so the rift's packs (or every mouth's) leave at once; a hunter stands
 #   RIFTGATE_RIFT_SENDS=2                         the compositions the rift sends a peak, 1 to 4, each to its own stretch of wall
 #   RIFTGATE_FLANK_TEARS=2                        tears open at the wall's ends from the first turn, 0 the game's
 #   RIFTGATE_LEADERS=20                           an elite's and a boss's hit points that many hundredths more for each Convergence past its tier's first, three steps at most, 0 the game's
 #   RIFTGATE_PICKETS=2                            every formation dealt as a pack rated one for each of its pips, that many of the domain's commonest front-liner each (2 or 3), 0 the game's
 #   RIFTGATE_PHASED=at_once                       a machine's Phased at once until the round ends, round_end the game's (Phased as the round ends, through the next)
-# The same on the phone, a debug build's SETTINGS, TRIALS (a page that scrolls). Read at the
-# next launch, so pick, close the app, open it and start a new battle or run (a saved one keeps
-# the numbers it was saved with):
-#   HEAT (−2, −1, BUILT, +1)       every weapon cooler or hotter than content prices it (hotter)
-#   TOP BASIC (BUILT, +2, +4)      more heat on the basic guns that deal more than the plainest (top)
-#   RANK AND FILE (BUILT, +1)      a hit point more on tier one's rank and file, the massive foes as built (foehp)
-#   BARRIER BASIC (BUILT, NONE)    the Barrier basic on the stock dice, or the Armoured basic in its slot (barrier=none)
-# Read as the next battle starts, or a lone fight for OVERHEAT, with no relaunch:
-#   OVERHEAT (×1, ×2, ×3), FIELD DEPTH (12, 14, 16), OPENING (+0, +1, +2), FODDER (FULL, 3/4, HALF),
+# The same on the phone, a debug build's SETTINGS, TRIALS (a page that scrolls), each read as
+# the next battle starts, with no relaunch (RIFTGATE_REFIT and RIFTGATE_OVERHEAT have no dial:
+# the heat's, the top basic's, the rank and file's, the Barrier basic's and the overheat's left
+# the page on 23 November, each as built):
+#   FIELD DEPTH (12, 14, 16), OPENING (+0, +1, +2), FODDER (FULL, 3/4, HALF),
 #   RUPTURE (1 BEAT, 2 BEATS, 3 BEATS), TIDE (×1, ×1.5, ×2), STRIKE (10, 7, 5, 3),
-#   PACE (BUILT, +1, +2), SPAWNS (STAND, RIFT WALKS, ALL WALK), RIFT SENDS (×1, ×2, ×3), FLANK TEARS (NONE, TWO),
+#   PACE (BUILT, +1, +2), RIFT SENDS (×1, ×2, ×3), FLANK TEARS (NONE, TWO),
 #   FORMATIONS (BUILT, PICKETS ×2, PICKETS ×3), LEADERS (BUILT, +10% A C, +20% A C),
 #   PHASED (ROUND END, AT ONCE), with the Phase Inducer, a tier-two component, to set it for testing
 # A thing fired constantly, to judge it running (=1 unless a value is shown)

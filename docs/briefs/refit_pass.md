@@ -188,8 +188,8 @@ numbers pass's, and what a boss pays and salvage's growth by tier are the econom
 | STRIKE | 10, 7, 5 or 3 a pip, ten the game's | His "each needs to do less to the wall" |
 | FODDER | 100, 75 or 50 | A rank-and-file kill's worth on the meter. With the size in beats it may have no job left |
 
-Five more since 23 November, from his play of these (PACE, SPAWNS, RIFT SENDS, FLANK TEARS and
-FORMATIONS as pickets): `docs/tide_proposal.md`, section 2, has each with the words it answers.
+More since 23 November, from his play of these: `docs/tide_proposal.md` has each with the words
+it answers.
 
 The tide and the strike are his direction for "noticeably more spawns then the minimum number
 required" (the pacing row). Claude's lean for his first play: TIDE on ×1.5 with the strike at
@@ -238,7 +238,7 @@ placeholder gun, a second Twin Autoguns where a vent stood, with Claude's leans 
 Also open from this step: equipment's price (a buff makes no heat and a debuff device one or
 two, so equipment is the cool play); a fifth basic gun, an Indirect one, if it is still wanted
 now that the Ankle Mortar is Indirect; and tier one's slottable finds brought to the basics'
-band, the numbers brief's bench. Heat's prices are the HEAT dial's open question (section 23).
+band, the numbers brief's bench. Heat's prices are settled as built (section 23).
 
 ## 13. The anchor: the second battle on real tier ones (12 November)
 
@@ -294,7 +294,8 @@ the gel, the zombie knight, the bomb and the salamander, with the elites and the
 The Halo Projector stays a basic on the starting dice, its cooldown 1, and the leaders are
 sized for a squad without it: his words, the reason and the exit are the bible's Barrier row
 (section 5), the reads the numbers brief's section 3 and `docs/measurements.md`, 18
-November. Whether it proves toxic is his play's to say, on BARRIER BASIC. The discussion of
+November. It stays after his play of its dial (23 November: "barrier basic yes, for now at
+least"); whether it proves toxic is still his play's to say. The discussion of
 12 November, his question, the bench and the read of what stands in its slot, is `git show
 5d22273:docs/briefs/refit_pass.md`.
 
@@ -472,8 +473,8 @@ its switch on 15 November, on his "Go ahead on the fold and build".
 10. At END TURN, after its Ablating has ticked, a machine past its maximum loses a point of
     hull for every stack it carries, at every END TURN it stands there. The stacks build with
     every spend, so the burn grows until the machine reboots or is wrecked. A stack costs one
-    hull ("Overheat damage did felt fair at 1 per heat ... I'd go with that to start"); a debug
-    build's OVERHEAT dial plays two or three.
+    hull ("Overheat damage did felt fair at 1 per heat ... I'd go with that to start"; settled
+    after his play of two and three, 23 November: "overheat at x1").
 11. The first END TURN a machine stands past its maximum since its last reboot is its overheat:
     its shield breaks, and anything that triggers on an overheat fires. One overheat between
     reboots: a machine that falls back under its maximum and passes it again only burns.
@@ -596,9 +597,9 @@ cost of the riders. Tier two foes are facing a more coherent build from the play
 step down, but heat can rise on a 1 damage weapon."
 
 **What landed, and what is open.** The plain basic guns deal 3 and the Laser Carbine 4 since 15
-November, their heat unmoved at 4 and 5. Three dials stay his to pick by play (a debug build's
-TRIALS, each read at the next launch): HEAT, every weapon one or two cooler, since the prices
-were sized against a cooling the reboot removed ("I just know I overheated a lot"); TOP BASIC,
-the Carbine's point at 2 or 4 more heat; and RANK AND FILE, the standard foe at 5 ("Ok let's go
-3 against 5 or 3 against 4 as the options"). Claude's lean: HEAT on −1 and TOP BASIC on +2. What
+November, their heat unmoved at 4 and 5. All three are settled as built since 23 November, after
+his play of the dials that moved them (every weapon cooler, the Carbine's point hotter, the
+standard foe at 5: "We can lock in the rank and file setting as 4, heat as built, top basic as
+built ... That all felt fine enough as a starting point, to me"), where this pass leaned a point
+cooler on every weapon and two hotter on the Carbine. Nothing here is open. What
 each point is worth, the riders' prices and the bench are the numbers brief's sections 4 and 6.

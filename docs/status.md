@@ -231,8 +231,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   ("sizing it without means that if it does prove toxic after all, in my play, then it's
   relatively easy to remove"): an elite 24.4% (20.3% to 27.7%), a boss 29.5% (25.1% to
   36.1%). The Barrier basic stays on the starting dice ("one of the two sides of the
-  defensive coin"); the squad with it pays an elite 15.9% and a boss 20.4%, and whether that
-  proves toxic is his play's to say, on BARRIER BASIC. Each domain's kit without Breach
+  defensive coin"; 23 November, after his play of its dial: "barrier basic yes, for now at
+  least"); the squad with it pays an elite 15.9% and a boss 20.4%, and whether that proves
+  toxic is still his play's to say. Each domain's kit without Breach
   landed with its sizing (the bible's levers row): the Waste's purge ahead of the blow, a
   move's own order and no rule of Purge; the Peak's Bomb as its hard hit on a telegraph; the
   Marsh's knight and its Serpent's fangs; the Meadow's as it was. How the leaders strike is
@@ -268,11 +269,13 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   machine short costs four to six times its price. Tiers two and three are unsized, their
   foes still the ones sized against a shield that refilled; the first battle, the Meadow's
   alone and the one a trio fights, is built and its sizing his. On a debug
-  build's SETTINGS, TRIALS, each a number still to be picked: HEAT, TOP BASIC, RANK AND FILE
-  and BARRIER BASIC (read at the next launch), OVERHEAT, FIELD DEPTH, OPENING, FODDER,
-  RUPTURE, TIDE, STRIKE, PACE, SPAWNS, RIFT SENDS, FLANK TEARS, FORMATIONS and LEADERS (read as
-  the next battle starts; the last six are his play's of 23 November, `docs/tide_proposal.md`). A dial leaves the page with its
-  question; the block is cut, a blow past a shield reaching the hull. The runners lay the
+  build's SETTINGS, TRIALS, each a number still to be picked: FIELD DEPTH, OPENING, FODDER,
+  RUPTURE, TIDE, STRIKE, PACE, RIFT SENDS, FLANK TEARS, FORMATIONS and LEADERS (read as the
+  next battle starts; the last five are his play's of 23 November, `docs/tide_proposal.md`). A
+  dial leaves the page with its question: the basics' four and the overheat's left that day,
+  each settled as built (the vanilla 3 for 4 heat against a standard foe of 4, the Carbine 4
+  for 5, the Barrier basic on the starting dice, a point of hull a point of heat past the
+  maximum); the block is cut, a blow past a shield reaching the hull. The runners lay the
   same what-ifs with `--refit` (`sim/refit.gd`). `docs/balance.md` is the matrix of 27
   October, older than every rule since, and still prints the old aims' cells and a
   comparison section the next run drops. Detail: `docs/briefs/numbers_pass.md`; the refit
@@ -424,9 +427,9 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
      chat, a row a pack and a row a form, and the leaders' blocks as a table for his marks.
    - His play of a second battle, which says whether the budget's shares stand (the brief's
      section 11): the fights are even across the domains, and the battle whole is tight.
-   - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
-     his picks on RANK AND FILE, HEAT and TOP BASIC: its prices are read from the vanilla he
-     settles on. It brings tier one's slottable numbers down to the basics' (Ryan, 21 November).
+   - The tier-one bench, placeholder pieces each the vanilla with one thing traded, priced
+     from the vanilla he settled on 23 November. It brings tier one's slottable numbers down to
+     the basics' (Ryan, 21 November).
    - The scorches on every machine above tier one, then the scaling from the baseline: the
      first battle down, its sizing his ("I'll handle that one"), tiers two and three up.
 2. **The machines the reboot broke** (another session's line, beside the first): each fix

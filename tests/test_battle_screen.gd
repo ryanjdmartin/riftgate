@@ -781,7 +781,7 @@ func test_the_enemys_turn_is_held_until_its_views_play() -> void:
 	assert_true(Bleed.seam_radius(f, 48.0) > Bleed.seam_radius(f, 48.0, s._map.seam_shown), "the seam as held stands short of the field's")
 	assert_eq(Bleed.sources(f, Vector2.ZERO, 48.0, {}, s._map.tears_shown).size(), Bleed.sources(f, Vector2.ZERO, 48.0).size() - 1, "and the held tear bleeds nothing yet")
 	var handed := [false]
-	s._map.play_round([], [], false, Callable(), func() -> void: handed[0] = true)
+	s._map.play_round([], [], Callable(), func() -> void: handed[0] = true)
 	assert_true(handed[0], "the round's view hands on")
 	assert_eq(s._map.seam_shown, -1.0, "the seam drawn as the field has it")
 	assert_eq(s._map.tears_shown, tears, "the tear still waits for its opening")
@@ -793,7 +793,7 @@ func test_the_enemys_turn_is_held_until_its_views_play() -> void:
 	# A turn with no peak hands on the same way.
 	s._map.hold_peak()
 	handed[0] = false
-	s._map.play_round([], [], false, Callable(), func() -> void: handed[0] = true)
+	s._map.play_round([], [], Callable(), func() -> void: handed[0] = true)
 	s._map.play_peak(func() -> void: handed[0] = true)
 	assert_true(handed[0], "nothing to show: at once")
 	s.free()
@@ -845,7 +845,7 @@ func test_the_packs_stand_where_they_stood_until_the_round_plays_them() -> void:
 	s._map.hold_spawn(sent)
 	var with_sent := Bleed.sources(f, Vector2.ZERO, 48.0)
 	assert_eq(s._map._bleed_sources().size(), with_sent.size() - 1, "a pack unseen paints no ground")
-	s._map.play_round([], [sent], false, Callable(), Callable())
+	s._map.play_round([], [sent], Callable(), Callable())
 	assert_eq(s._map._unit_center(walker), s._map.center(to), "the round played: where the field has it")
 	assert_eq(s._map._bleed_sources().size(), with_sent.size(), "and what the tide sent is seen")
 	# END TURN leaves nothing held once its views have played.

@@ -1504,18 +1504,9 @@ func end_turn() -> Dictionary:
 	if state != State.PLAN or not forced.is_empty():
 		return {}
 	claim_caches()
-	var walks: Dictionary
-	if Battlefield.spawn_walk_trial > 0:
-		# The trial's order: Rift Pressure ticks first, so what a peak sends walks in the same
-		# enemy turn, out of its mouth at once (those that stand all the same: Battlefield._walk).
-		last_spawned = field.tick_pressure(1)
-		walks = field.enemy_turn()
-		field.phase += 1
-	else:
-		walks = field.enemy_turn()
-		field.phase += 1
-		last_spawned = field.tick_pressure(1)
-	field.fresh.clear()
+	var walks := field.enemy_turn()
+	field.phase += 1
+	last_spawned = field.tick_pressure(1)
 	_new_turn()
 	return walks
 

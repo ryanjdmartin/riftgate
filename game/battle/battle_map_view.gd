@@ -1156,11 +1156,10 @@ func cutscene_playing() -> bool:
 ## stand (the screen's banner), plays the packs' walks (`pack_moves`, play_phases' moves) and grows
 ## the seam to the field's own turn together, a ring riding its edge, then glides back to where the
 ## player was looking, and `done`. The packs the tide sent this turn (`sent`) are unseen until they
-## burst in: once the walks are done, in view, the game's order; or as the walks begin, when the
-## tide sent before them (`sent_first`, the spawn-first trial), and then each walks out of its
-## mouth. The tears' hold stands through it, for play_peak. With nothing to play on, `done` at once.
-## `to_turn` is the turn the seam grows to, the field's own unless given (the debug loop's).
-func play_round(pack_moves: Array, sent: Array, sent_first: bool, called: Callable, done: Callable, to_turn: float = -1.0) -> void:
+## burst in, once the walks are done, still in view. The tears' hold stands through it, for
+## play_peak. With nothing to play on, `done` at once. `to_turn` is the turn the seam grows to, the
+## field's own unless given (the debug loop's).
+func play_round(pack_moves: Array, sent: Array, called: Callable, done: Callable, to_turn: float = -1.0) -> void:
 	var held_tears := tears_shown
 	if not _can_play():
 		seam_shown = -1.0
@@ -1181,15 +1180,13 @@ func play_round(pack_moves: Array, sent: Array, sent_first: bool, called: Callab
 		if (mv[1] as Array).size() >= 2:
 			walk_s = maxf(walk_s, _curve_for(mv[0], mv[1]).duration / maxf(0.01, pace))
 	var stand := maxf(ROUND_HOLD, walk_s + ROUND_AFTER)
-	var bursts := not sent.is_empty() and not sent_first
+	var bursts := not sent.is_empty()
 	var mid := _scroll_rect().get_center()
 	tw.tween_method(_glide.bind(_cut_cam, Vector3(mid.x, mid.y, zoom_min())), 0.0, 1.0, ROUND_GLIDE).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	_cut_cam = Vector3(mid.x, mid.y, zoom_min())
 	tw.tween_callback(func() -> void:
 		if called.is_valid():
 			called.call(stand + (ROUND_SPAWN if bursts else 0.0))
-		if sent_first:
-			_burst_in(sent)
 		_seam_front = _ring_t
 		_seam_grow = stand
 		_held_px = {}   # the walks take them from here

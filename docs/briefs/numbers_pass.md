@@ -78,10 +78,11 @@ them after. Numbers in content are placeholders until then, as ever.
 | Foes' plate | 1 on about a tenth of slots; his ceiling for tier one's base armour is 2 |
 | The Barrier basic | The Halo Projector, on seven dealt stock dice, sitting out a round after a spend |
 
-The dials still his to play, each a what-if over content (a debug build's TRIALS): HEAT,
-every weapon one or two cooler; TOP BASIC, the Carbine's point at 2 or 4 more heat; RANK AND
-FILE, the standard foe at 5; OVERHEAT, a point of excess burning 2 or 3; BARRIER BASIC, off
-the stock dice with the Armoured basic in its slot.
+Each of these as built is his pick since 23 November, after his play of their five dials,
+which are cut ("We can lock in the rank and file setting as 4, heat as built, top basic as
+built, and overheat at x1. That all felt fine enough as a starting point, to me"; "barrier
+basic yes, for now at least"). The runners still lay each as a what-if (`--refit`,
+`RIFTGATE_OVERHEAT`).
 
 ## 3. Where tier one stands
 
@@ -230,12 +231,12 @@ His, each with this pass's lean and its read (`docs/measurements.md`, 17 and 18 
 
 | The call | The lean | Why |
 |---|---|---|
-| Whether the Barrier basic proves toxic | His play's to say (18 November: "if it does prove toxic after all, in my play, then it's relatively easy to remove"); it stays on the starting dice until then, on BARRIER BASIC | The leaders are sized for a squad without it, so taking it off moves no number. With it a squad pays about half, and the leaders whose weight is one great blow cost it least: the Vampire Lord 7.1%, the Fell Rider and the Rust Monster 7.4%, the Mantis Ant 7.8%, the Marsh Serpent 8.3%, the Nob 9.6%. A second round of cooldown is 3.5 points on a boss where the piece itself is 20 |
+| Whether the Barrier basic proves toxic | His play's to say (18 November: "if it does prove toxic after all, in my play, then it's relatively easy to remove"); it stays on the starting dice (23 November: "barrier basic yes, for now at least"), its dial cut | The leaders are sized for a squad without it, so taking it off moves no number. With it a squad pays about half, and the leaders whose weight is one great blow cost it least: the Vampire Lord 7.1%, the Fell Rider and the Rust Monster 7.4%, the Mantis Ant 7.8%, the Marsh Serpent 8.3%, the Nob 9.6%. A second round of cooldown is 3.5 points on a boss where the piece itself is 20 |
 | How the leaders strike | His lean, 18 November (section 1; the bible's section 9): whole blows the norm, "leaning slightly towards multi to gently boost armour in boss and elite fights", never so "an armoured tank is just best in every fight" | A pair is the gentle setting and three strikes or more a wall's fight (section 4's plate arithmetic), so three and more stay the rare kit shape. Today one boss a domain carries a move of strikes (Floraison's three and five, the Emperor Scorpion's pair, the Matador's four, the Fiend of Fire's six) and one elite fight of tier one's eleven (the Thunder Ape's three). Two more bosses strike in pairs on his go of 18 November, the Mantis Ant and the Gargantuan King (section 8). What room the lean has left is a pair on a few elites' plain blows, each a proposal in chat by the kit's fantasy. A move of strikes is sized with what lands once a strike: its riders, and a machine's Brittle (the World Eater its one layer, so it keeps whole blows). A foe's Empowered goes through the move's multiplier, so a pair at the same total takes a rally as the whole blow did, and it grows on a move whose strikes add up to more than its attack (Full Bloom, five strikes at half, takes two and a half of one). This pass's lean of 17 November, every plain blow as two strikes, is retired; its read stands, and the what-if that made it, the anchor read's `split=`, left with the leader pass (`git show 4ae57e4:tools/anchor_read.gd`) |
-| HEAT | −1: a vanilla 3 for 3 | Four shots a gauge for three; a formation 0.7 rounds shorter and a point of hull lighter, a quarter fewer reboots; "I just know I overheated a lot" |
-| TOP BASIC | +2: the Carbine 4 for 6 | Its point is paid in heat: two shots a gauge for the vanilla's four |
-| RANK AND FILE | As built: a standard foe of 4 | At 5 a formation runs a round longer and costs half again as much, so the blows would be sized again. The room 5 was to buy, a point between the Carbine and the kill, is bought by the Carbine's heat. Loosely held; tier two's standard is 5 already |
-| OVERHEAT | ×1, and the dial cut | A stack burns every turn until the reboot, so one compounds; the bot reboots before it burns |
+
+Settled on 23 November after his play, each as built and its dial cut (section 2): the vanilla
+3 for 4 heat where this pass leaned a point cooler, the Carbine 4 for 5 where it leaned 4 for 6,
+a standard foe of 4, a point of hull a point of heat past the maximum.
 
 Landed on 19 November on his "Agreed on all, send Coil to T2", read at the baseline
 (`docs/measurements.md`, that day): the Field Radiators and the Boundary-layer Bleed lose their

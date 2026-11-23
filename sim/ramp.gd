@@ -51,8 +51,9 @@ static func tears_at(c: int) -> int:
 
 
 ## How far the tears' row steps toward the wall a peak, in rows: flat, one (two until 23
-## November: Ryan, of packs that walk as they land, "Spawn then move is sorted out by not putting
-## tears so close to the wall, at least so quickly"). Where it stops is Battlefield.tear_row_stop.
+## November: Ryan, "not putting tears so close to the wall, at least so quickly"; "the crawl
+## forward isn't as important as distributing enemy forces"). Where it stops is
+## Battlefield.tear_row_stop.
 static func tear_creep_at(_c: int) -> int:
 	return 1
 

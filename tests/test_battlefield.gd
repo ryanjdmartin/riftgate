@@ -211,48 +211,6 @@ func test_packs_sent_together_leave_in_different_directions() -> void:
 	assert_true((sent[0] as Unit).goal_col < (sent[1] as Unit).goal_col and (sent[1] as Unit).goal_col < (sent[2] as Unit).goal_col, "each its own stretch, in order along the wall")
 
 
-## The spawn order's trial on the field (Battlefield.spawn_walk_trial): with the tide sent before
-## the walk, the rift's pack walks out of its mouth at once; a tear's pack walks too when every
-## mouth's does, and stands its turn when the rift's alone do; and a pack that hunts stands in
-## either, its lock taken and declared, so the catch is never the turn it lands. The turn after,
-## everything walks.
-func test_what_the_tide_sends_before_the_walk_walks_or_stands_by_its_mouth() -> void:
-	var was := Battlefield.spawn_walk_trial
-	for mode in [1, 2]:
-		Battlefield.spawn_walk_trial = mode
-		var f := _field(20, 12)
-		f.spawn_faction = "marsh"
-		f.cycle = [Battlefield.composition([["revenant", 4]], "marsh", "formation", "host")]
-		var wolves := Battlefield.composition([["revenant", 2]], "marsh", "patrol", "stalkers")
-		wolves["hunts"] = "nearest"
-		f.patrol_cycle = [Battlefield.composition([["revenant", 2]], "marsh", "patrol", "shamblers"), wolves]
-		f.tears = [{"pos": _o(2, 5), "opened": 0}, {"pos": _o(17, 5), "opened": 0}]
-		var m := f.add_unit(Unit.mech(9, "A", _o(10, 9), 3))
-		f.peak()
-		var sent: Array = f.packs()
-		assert_eq(sent.size(), 3, "the rift's formation, a tear's patrol and a tear's hunters")
-		var landed := {}
-		for sq in sent:
-			landed[sq.id] = sq.pos
-		var walks := f.enemy_turn()
-		var host: Unit = sent[0]
-		var patrol: Unit = sent[1]
-		var hunters: Unit = sent[2]
-		assert_eq(hunters.behaviour, "hunt", "the second tear sent the pack that hunts")
-		assert_ne(host.pos, landed[host.id], "mode %d: the rift's pack walked as it came" % mode)
-		assert_eq((walks[host.id] as Battlefield.Walk).from, landed[host.id], "its walk from where it landed")
-		assert_eq(patrol.pos != landed[patrol.id], mode == 2, "mode %d: a tear's pack walks only when every mouth's does" % mode)
-		assert_false((walks[patrol.id] as Battlefield.Walk).strikes, "and strikes nothing the turn it lands")
-		assert_eq(hunters.pos, landed[hunters.id], "mode %d: a pack that hunts stands the turn it lands" % mode)
-		assert_eq(hunters.prey, m.id, "its lock taken")
-		assert_eq(f.locks, [[hunters.id, m.id]], "and handed over to be declared")
-		f.fresh.clear()   # the turn ends (Battle.end_turn)
-		f.enemy_turn()
-		assert_ne(patrol.pos, landed[patrol.id], "the turn after, the tear's pack walks")
-		assert_ne(hunters.pos, landed[hunters.id], "and the hunters")
-	Battlefield.spawn_walk_trial = was
-
-
 ## Two flankers dealt side by side never share a segment while another is as near (Ryan, 9
 ## November: "avoiding crowding ... make sure packs don't get stuck on one another"), and both
 ## strike, each on its own stretch of the apron.

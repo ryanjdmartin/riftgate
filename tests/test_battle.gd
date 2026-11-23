@@ -2101,35 +2101,6 @@ func test_the_paces_trial_adds_a_hex_to_every_packs_move_and_stands_the_opening_
 	assert_eq((again.field.packs()[0] as Unit).movespeed, (a[0] as Unit).movespeed, "no trial: the game's own pace")
 
 
-## The spawn order's trial at a battle's scale (Ryan, 23 November: "if the packs spawned, then the
-## movement phase happens, so packs move the instant they spawn"): Rift Pressure ticks before the
-## packs walk, so what the rift sent at the first peak has already left its mouth as the next
-## turn opens, where in the game's order it stands where it landed; and the turn's marks are gone.
-func test_the_spawn_orders_trial_ticks_before_the_walk() -> void:
-	var rows := {}
-	for mode in [0, 2]:
-		Battlefield.spawn_walk_trial = mode
-		var b := Battle.new(4)
-		b.setup(_team(), "marsh")
-		var before := {}
-		for sq in b.field.packs():
-			before[sq.id] = true
-		var walks := b.end_turn()
-		assert_true(b.last_spawned, "the first peak comes as turn one ends")
-		assert_true(b.field.fresh.is_empty(), "the turn's marks are gone as it ends")
-		for sq in b.field.packs():
-			if before.has(sq.id) or sq.behaviour == "hunt":
-				continue
-			rows[mode] = Hex.axial_to_offset(sq.pos).y
-			assert_eq(walks.has(sq.id), mode == 2, "what the rift sent walked this turn only under the trial")
-			if mode == 2:
-				var w: Battlefield.Walk = walks[sq.id]
-				assert_false(w.path.is_empty(), "out of its mouth at once")
-				assert_ne(w.from, w.end, "from where it landed")
-	Battlefield.spawn_walk_trial = 0
-	assert_true(rows.has(0) and rows.has(2) and int(rows[2]) > int(rows[0]), "and stands nearer the wall for it")
-
-
 ## The mouths' trials (Ryan, 23 November: "Having starting tears at the top and bottom might make
 ## sense, or else sending multiple packs out of the rift at once, each headed a different
 ## direction"): two tears open at the wall's two ends from the first turn, or the rift sending two

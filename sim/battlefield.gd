@@ -22,7 +22,6 @@ extends RefCounted
 
 ## A pack's walk on the enemy's turn.
 class Walk:
-	var from: Vector2i               # where it stood as the walk began (a pack the tide sent this turn: where it landed)
 	var path: Array[Vector2i] = []   # the hexes it walks, after its own
 	var route: Array[Vector2i] = []  # its whole way to its goal as the field stands, after its own hex: the path, then the turns after it (a pusher's to its wall segment, a hunter's to where its prey stands inside its ring); empty when it goes nowhere
 	var end: Vector2i                # where it stops
@@ -73,10 +72,10 @@ func tear_row_start() -> int:
 
 
 ## Where the tears' row stops: TEAR_STOP_ROWS short of the row before the wall, never short of its
-## start (Ryan, 23 November: "not putting tears so close to the wall, at least so quickly"). Four
-## rows is two walks at a move of two and more than one at three, so a patrol that walks as it
-## lands (the spawn order's trial) is seen a turn before it strikes; it ran to the row before the
-## wall itself, reached by the third peak at twelve deep. A placeholder.
+## start (Ryan, 23 November: "not putting tears so close to the wall, at least so quickly", and
+## "Tears need to spread wide, the crawl forward isn't as important as distributing enemy
+## forces"). It ran to the row before the wall itself, reached by the third peak at twelve deep,
+## where a tear's pack struck almost as it landed. A placeholder.
 const TEAR_STOP_ROWS := 4
 
 func tear_row_stop() -> int:
@@ -91,10 +90,6 @@ var tears: Array = []
 ## Each domain's picket under the pickets' trial, faction id -> foe id (Battle.setup fills it from
 ## content, ContentDB.front_liner); empty otherwise.
 var picket_foe: Dictionary = {}
-## The packs the tide sent this turn, by id, each "rift" or "tear" by its mouth (peak): under the
-## spawn order's trial some of them stand the turn they land (_walk). Battle.end_turn empties it
-## as the turn ends; never saved.
-var fresh: Dictionary = {}
 ## The hunters that turned on a machine since the screen last asked ([hunter id, prey id], in
 ## order; pick_prey): the battle hands them over (Battle.take_locks) for the declaration on
 ## screen (Ryan, 8 November: "Declare when a hunter selects a target").
@@ -190,19 +185,6 @@ static func strike_of(sq: Unit) -> int:
 ## set it (Settings.field_trial). The boss, which never walks, aside. The opening is measured in a
 ## pack's own moves (Battle._open_row), so a quicker pack opens that much farther from the wall.
 static var pace_trial: int = 0
-## The enemy turn's order on trial (the same day: "I would be curious to see how it felt if the
-## packs spawned, then the movement phase happens, so packs move the instant they spawn. I think it
-## might feel better overall, since I wouldn't be playing so far up"): 0 the game's, the packs walk
-## and then Rift Pressure ticks, so a spawn stands a whole turn where it landed, its walk seen
-## before it is taken; 1, the tick comes first and the rift's packs walk at once, out of the mouth
-## he camped, while a tear's stand their turn as in the game's order; 2, every pack the tide sends
-## walks at once. A pack that hunts stands the turn it lands in every order, so its lock is seen a
-## whole turn before its catch. Why the middle form: a tear opens near the wall, and a patrol that
-## walks as it lands strikes before any turn to answer it; with fights for free the coverage model
-## reads the wall losing about four times as much to 2 as to the game's order, and about twice as
-## much to 1 on a dense tide (tools/tide_model.py). A debug build's SETTINGS → TRIALS → SPAWNS and
-## RIFTGATE_SPAWN_FIRST=rift|all set it (Settings.field_trial).
-static var spawn_walk_trial: int = 0
 ## The rift's count on trial, the compositions it sends a peak, 1 the game's (the same day:
 ## "sending multiple packs out of the rift at once, each headed a different direction"): each
 ## draws its segment from a share of its own of the wall it reaches soonest (assign_goal), so
@@ -660,18 +642,10 @@ func _distance_from(sq: Unit, at: Vector2i, u: Unit) -> int:
 ## waits, and the map says so.
 func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 	var w := Walk.new()
-	w.from = sq.pos
 	w.end = sq.pos
 	if sq.is_boss:
 		return w
 	var prey: Unit = pick_prey(sq) if sq.behaviour == "hunt" else null
-	if fresh.has(sq.id) and (prey != null or (spawn_walk_trial == 1 and str(fresh[sq.id]) == "tear")):
-		# Sent this turn, under the spawn order's trial (spawn_walk_trial), and one that stands
-		# where it landed until the next enemy turn: a hunter, which has turned on its machine (the
-		# lock is declared, and seen a whole turn before the catch), and a tear's pack while the
-		# rift's alone walk at once. It strikes nothing this turn, as a spawn never has.
-		w.prey = prey.id if prey != null else 0
-		return w
 	var found := _walk_search(sq, blocked)
 	var dist: Dictionary = found[0]
 	var prev: Dictionary = found[1]
@@ -920,7 +894,6 @@ func peak() -> void:
 		var sq := emerge(sends[i], map.rift, i, sends.size())   # several at once part along the wall (assign_goal)
 		if sq != null:
 			rift_spawns += 1
-			fresh[sq.id] = "rift"
 			log.append("Rift pressure peaks: %s emerge at %s" % [sq.display_name, str(sq.pos)])
 	for t in tears:
 		if patrol_cycle.is_empty():
@@ -930,7 +903,6 @@ func peak() -> void:
 		var sq := emerge(c, t["pos"])
 		if sq != null:
 			tear_spawns += 1
-			fresh[sq.id] = "tear"
 			log.append("A tear sends %s at %s" % [sq.display_name, str(sq.pos)])
 	tear_row = mini(tear_row + Ramp.tear_creep_at(ramp), tear_row_stop())
 	for i in range(Ramp.tears_at(ramp) * times):

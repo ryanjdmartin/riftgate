@@ -493,7 +493,7 @@ func _process(delta: float) -> void:
 	if _round_debug_t >= ROUND_DEBUG_EVERY:
 		_round_debug_t = 0.0
 		_map.hold_peak()
-		_map.play_round([], [], false, _show_round, _refresh, float(battle.field.phase) + 1.0)
+		_map.play_round([], [], _show_round, _refresh, float(battle.field.phase) + 1.0)
 		_refresh()
 
 
@@ -1166,9 +1166,8 @@ func _on_end_turn() -> void:
 	var walks := battle.end_turn()
 	_gate_struck = battle.field.gate_hp < gate_before
 	_spawned = battle.last_spawned
-	# The packs' walks, each from where it stood: a pack the tide sent before the walks (the
-	# spawn-first trial) from where it landed. And the packs the tide sent this turn, unseen until
-	# the round shows them.
+	# The packs' walks, each from where it stood, and the packs the tide sent this turn, unseen
+	# until the round shows them.
 	var pack_moves: Array = []
 	var sent: Array = []
 	for sq in battle.field.packs():
@@ -1176,8 +1175,8 @@ func _on_end_turn() -> void:
 			sent.append(sq)
 	for sid in walks.keys():
 		var w: Battlefield.Walk = walks[sid]
-		if not w.path.is_empty():
-			pack_moves.append([sid, [starts.get(sid, w.from)] + Array(w.path)])
+		if starts.has(sid) and not w.path.is_empty():
+			pack_moves.append([sid, [starts[sid]] + Array(w.path)])
 	# Everything that will walk stands where it stood, and what the tide sent is unseen, from this
 	# frame until the round's view plays them: the field has taken the turn already.
 	_map.hold_walks(pack_moves)
@@ -1195,11 +1194,11 @@ var _spawned := false       # and the rift spawned
 ## did (_after_step). The round named is the one opening, the turn the player is about to take.
 func _play_round(pack_moves: Array, sent: Array) -> void:
 	if DisplayServer.get_name() == "headless":
-		_map.play_round([], [], false, Callable(), _after_step)
+		_map.play_round([], [], Callable(), _after_step)
 		return
 	if _spawned:
 		Sound.play("peak_sweep", -4.0)   # the tide's wave, under the round: the seam's sweep was its cue until 23 November
-	_map.play_round(pack_moves, sent, Battlefield.spawn_walk_trial > 0, _show_round, _after_step)
+	_map.play_round(pack_moves, sent, _show_round, _after_step)
 	_refresh()   # the buttons grey while it plays
 
 
