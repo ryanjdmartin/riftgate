@@ -42,7 +42,9 @@ document's job and every command are in `README.md`.
   works in a worktree under `.claude/worktrees/` (`CLAUDE.md`, Session handoff). A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word.
 - Branches. Main holds everything this file describes, the terminology pass's branch
-  (`claude/gameplay-terminology-tooltips-rug879`) landed on 22 November on Ryan's "Ok push to main".
+  (`claude/gameplay-terminology-tooltips-rug879`) landed again on 24 November on Ryan's "land this on
+  main": gameplay text follows `docs/text_standard.md` (CLAUDE.md says so), every glossary tip is
+  written to it, and a reach over every Sprite targets the field.
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
   (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks
@@ -78,7 +80,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1445 tests, 389,686 checks, green on Godot 4.8-beta4 (23 November, main taken in on the terminology branch: the tips to the standard, the stack timers). The runner fails a run
+- Tests: 1446 tests, 390,063 checks, green on Godot 4.8-beta4 (24 November, the terminology branch landing: the tips to the standard, every tip held to its shape). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -446,9 +448,8 @@ Deleted on his word of 20 November: the vocabulary marks, the targeting scenes, 
 analysis, the effects listening page and the engagement sandbox (the README's docs line has the
 copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 
-- The terminology standard, what is still his to mark (settled rules listed for reference; Version 5, 23 November): https://claude.ai/artifact/TXNpkS4zuPJ5c6sEpk9oF4
-  (Version 2, 22 November, from `claude/gameplay-terminology-tooltips-rug879`, the timing rules added), made from
-  `docs/terminology_proposal.md`'s sections 2 and 4 by `tools/pages/terminology_marks_page.py` and
+- The terminology standard, what is still his to mark (settled rules listed for reference; Version 6, 24 November): https://claude.ai/artifact/TXNpkS4zuPJ5c6sEpk9oF4,
+  made from `docs/text_standard.md`'s section 2 and `docs/terminology_proposal.md`'s section 4 by `tools/pages/terminology_marks_page.py` and
   published with the `db` and `user` capabilities. Each rule, call and name takes a mark and a
   note, saved in the collection `marks`, a document an item keyed by its id (`rule-13`,
   `name-aloft`: `title`, `mark`, `note`, `at`). He may mark there or in chat; a session reads
@@ -468,7 +469,7 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 334 (23 November): a second precision pass on the tips, checked against the engine. Version 333 (23 November): the tips, the target lines and the glossary in Sprite and Frame. Version 332 (23 November): main taken in, Corrupted's tip on its reboot rule, Hardened Light's "Shield Broken". Version 331 (23 November): Primed's rider at Resolve, the Ape's "Gain 3 Golden". Version 330 (23 November): Sealed's numbers on the status, the tips' "When defeated". Version 329 (23 November): the other 113 glossary tips redrafted to his rules, session drafts for his marks. Version 328 (23 November): his own texts for the sample tips, a line an effect, {N} the unit's live sum where a line counts per stack; Ablating renamed Ablate; Golden +2 whatever laid it, its break a Suppress like any. Version 326 (22 November): ten term tips redrafted in the terminology standard's event format (Ablating, Brittle, Shocked, Primed, Exposed, Golden, Swallowed, Armoured, Empowered, Penetrate), the sample for his marks before the rest, data only. Version 325 (22 November): the Inertia Drill's rule line, data only over 324's page. Version 324 (22 November): a machine's sheet lists every term it orbits, its own first,
+  `edits`, `designs` and `text` read first. Version 335 (24 November): a reach over every Sprite says no hit is Targeted. Version 334 (23 November): a second precision pass on the tips, checked against the engine. Version 333 (23 November): the tips, the target lines and the glossary in Sprite and Frame. Version 332 (23 November): main taken in, Corrupted's tip on its reboot rule, Hardened Light's "Shield Broken". Version 331 (23 November): Primed's rider at Resolve, the Ape's "Gain 3 Golden". Version 330 (23 November): Sealed's numbers on the status, the tips' "When defeated". Version 329 (23 November): the other 113 glossary tips redrafted to his rules, session drafts for his marks. Version 328 (23 November): his own texts for the sample tips, a line an effect, {N} the unit's live sum where a line counts per stack; Ablating renamed Ablate; Golden +2 whatever laid it, its break a Suppress like any. Version 326 (22 November): ten term tips redrafted in the terminology standard's event format (Ablating, Brittle, Shocked, Primed, Exposed, Golden, Swallowed, Armoured, Empowered, Penetrate), the sample for his marks before the rest, data only. Version 325 (22 November): the Inertia Drill's rule line, data only over 324's page. Version 324 (22 November): a machine's sheet lists every term it orbits, its own first,
   each editable in place; 323 the same day, a dealt machine with an open brief under Unfinished.
   Version 322 (22 November): Version 321's files, the Text
   tab's Vocabulary view with its category filter again, from `claude/gameplay-terminology-tooltips-rug879`. Version 321 (21 November): main at `8b5a027d`, the

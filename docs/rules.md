@@ -346,10 +346,11 @@ whole. A second one renews to the larger count, never adds.
   and the Musk Ox's Shrapnel Recuperator carry Spread 1 and Penetrate 1 together; which other
   explosives carry which is open).
 - **Every Foe** reaches any foe and lands on every foe in the fight, front rank and back, and
-  none is its one target: a debuff's effects on each, a weapon's strike on each for its whole
-  number, every foe through its own Brittle and armour. A weapon's strike is aimed at each, so a
-  Shock on any of them is doubled and spent; with no primary target no Ricochet follows it, and
-  no area keyword rides it. It is
+  targets the field: a debuff's effects on each, a weapon's strike on each for its whole
+  number, every foe through its own Brittle and armour. No hit of it is aimed at a foe, the one
+  the die was dropped on included, so it doubles and spends no Shock, no Chain arcs from it, it
+  feeds no Mine and a next strike's add finds no strike of it; with no target no Ricochet
+  follows it, and no area keyword rides it. It is
   a targeting mode of its own: no passive turns it into Direct or Indirect. Two gated specials carry it, the Whip Scorpion's
   blast as it reboots and the Musk Ox's salvo, and one debuff, the Shift Whistle's lure (Minerva, tier
   three). A

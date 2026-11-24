@@ -10995,9 +10995,9 @@ func test_a_foe_its_burn_kills_strikes_first_and_falls_as_its_turn_ends() -> voi
 
 ## Every Foe on a weapon (12 November, Sweep's place for the two gated specials): dropped on any
 ## foe, it strikes every foe in the fight for its number, each through its own Brittle and armour,
-## and none is its one target (Ryan: "Target all shouldn't need a target in the same way that
-## sweep didn't. Why would only the first target pop shock?"): a Shock on any foe is doubled and
-## spent, and no Ricochet follows it.
+## and it targets the field (Ryan, 24 November: "should probably be coded as none are targeted,
+## since its targeting the field. Important semantics"): no hit is aimed, the one it was dropped on
+## included, so no Shock is doubled or spent, no Chain arcs and no Ricochet follows it.
 func test_a_weapon_over_every_foe_lands_its_number_on_each() -> void:
 	var blast := Face.attack(3, E)
 	var sk := Skirmish.new(1, 2)
@@ -11015,12 +11015,28 @@ func test_a_weapon_over_every_foe_lands_its_number_on_each() -> void:
 	Effects.stack(a, Effects.STATUS["shocked"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
 	Effects.stack(c, Effects.STATUS["shocked"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
 	var bot := Policy.make(Policy.GREEDY, 1)
-	assert_true(bot.attack_score(sk, ms, blast, a) >= 6.0 + 2.0 + 6.0, "the bot counts every foe it strikes, each Shock doubled")
+	var worth := bot.attack_score(sk, ms, blast, a)
+	assert_true(worth >= 3.0 + 2.0 + 3.0 and worth < 6.0 + 2.0 + 3.0, "the bot counts every foe it strikes, no Shock doubled, the one it is dropped on included: %f" % worth)
 	Effects.stack(m, Effects.STATUS["ricochet"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
-	assert_true(sk.assign(0, b), "dropped on the plated one")
-	assert_eq([a.hp, b.hp, c.hp], [94, 98, 94], "each Shocked foe doubled wherever it was dropped, the plated one its 3 less the plate")
-	assert_false(Effects.has(a, "shocked") or Effects.has(c, "shocked"), "and every Shock is spent")
-	assert_eq(sk.spend_blows.filter(func(x): return str(x["kind"]) == "ricochet").size(), 0, "with no one target, no Ricochet follows")
+	assert_true(sk.assign(0, a), "dropped on a Shocked one")
+	assert_eq([a.hp, b.hp, c.hp], [97, 98, 97], "its number on each, the plated one its 3 less the plate, and no Shock doubled, the one it was dropped on included")
+	assert_true(Effects.has(a, "shocked") and Effects.has(c, "shocked"), "and every Shock stands")
+	assert_eq(sk.spend_blows.filter(func(x): return str(x["kind"]) == "ricochet").size(), 0, "with no target, no Ricochet follows")
+	# Chain on it arcs nothing: no hit of it is aimed (the Chain tip's "If targeted").
+	var arcing := Face.attack(3, E, [K.CHAIN])
+	arcing.chain = 2
+	assert_true(sk.conductors(arcing, a).is_empty(), "no conductor reads a reach over every foe")
+	var sk2 := Skirmish.new(1, 2)
+	var m2 := _mech("A", Die.single(arcing), 40, 100)
+	sk2.add_mech(m2)
+	var d := _ghoul(100, 0)
+	var e := _ghoul(100, 0)
+	sk2.add_foes([d, e])
+	sk2.begin()
+	sk2.start_round()
+	Effects.stack(e, Effects.STATUS["shocked"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_true(sk2.assign(0, d), "a Chain over every foe")
+	assert_eq([d.hp, e.hp], [97, 97], "its number on each, and no arc on the Shocked one")
 
 
 ## The boiler's release (the Whip Scorpion's Thermal Ejection Manifold; Ryan, 12 November: "1

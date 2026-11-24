@@ -125,7 +125,8 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     questions only Ryan can settle in its section 12; `status.md` how things stand and the
     order of work; `todo.md` the tasks, one line each by who moves it; `measurements.md`
     every run a decision cites; `naming.md` the kinds of names each maker wants, a reference
-    and never a list; `name_candidates.md` the names floated on the hangar's old Names tab,
+    and never a list; `text_standard.md` how gameplay text is written (Ryan's standard: read
+    before drafting a tip, a readout, a move line, a passive or a module's text); `name_candidates.md` the names floated on the hangar's old Names tab,
     kept as a record.
   - Generated: `vocabulary.md` (from the vocabulary), `voice.md` (every shown text Ryan has
     signed as his own, read before a session drafts shown text), `synergy_map.md` (who sets
@@ -142,8 +143,8 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     bosses' and elites' slate); `heroes_proposal.md`; `domain_statuses_proposal.md` (the
     domains' buffs and debuffs, the purging leaders, Phased by source); `mechanics_audit.md`;
     `skirmish_audit.md` (the code audit and its order of work);
-    `terminology_proposal.md` (the terminology pass: one standard for the gameplay text, marked
-    by Ryan in chat and on its page).
+    `terminology_proposal.md` (the terminology pass: its counts, the calls and names still open,
+    and his marks; the standard itself is `text_standard.md`).
   - Retired, in git: the vocabulary pass's proposal and its table of marks
     (`git show 07f01fb:docs/vocabulary_pass_proposal.md`,
     `git show 07f01fb:docs/vocabulary_table.md`), which is what "the proposal's section N" in
@@ -218,8 +219,8 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 python3 tools/synergy_map.py --write
 # the roster analysis as its page (status has the link)
 python3 tools/pages/roster_analysis_page.py > /tmp/roster_analysis.html
-# the terminology pass's rules as the page Ryan marks on (status has the link), from docs/terminology_proposal.md's
-# sections 2 and 4; publish with capabilities {"db": {}, "user": {}}, his marks in its collection `marks`
+# the terminology pass's rules as the page Ryan marks on (status has the link), from docs/text_standard.md's section 2
+# and docs/terminology_proposal.md's section 4; publish with capabilities {"db": {}, "user": {}}, his marks in its collection `marks`
 python3 tools/pages/terminology_marks_page.py > build/terminology_marks.html
 python3 tools/pages/rules_sweep_page.py > /tmp/rules_sweep.html   # the rules sweep's page for his marks, from docs/rules_sweep_proposal.md
 

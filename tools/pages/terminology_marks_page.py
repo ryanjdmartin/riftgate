@@ -2,9 +2,10 @@
 """The terminology pass's rules as a page Ryan marks on (20 November: "Can you turn this into an
 artifact for me?", of the rules spelled out in chat).
 
-Reads docs/terminology_proposal.md, the one home of the rules: its section 2 (the rules by group,
-each with its examples and, where it offers a choice, its A and B) and its section 4 (the calls
-that are no rule: who rewrites the drafts, and the names, each with what may be picked). Prints
+Reads docs/text_standard.md, the one home of the rules, its section 2 (the rules by group, each
+with its examples and its tag: settled, his, listed without marks; untagged, Claude's lean, to
+mark), and docs/terminology_proposal.md's section 4 (the calls that are no rule: the questions
+the drafts raised and the names, each with what may be picked). Prints
 the page: every rule and call with its marks (A or B where it offers a choice, else Agree; then
 Change and Ask), every name with its picks, and a note each. The marks live in the page's
 database, collection `marks`, a document an item keyed by its id (`rule-13`, `call-who-rewrites`,
@@ -26,17 +27,18 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 DOC = os.path.join(ROOT, "docs", "terminology_proposal.md")
+STANDARD = os.path.join(ROOT, "docs", "text_standard.md")
 
 
 def slug(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
 
 
-def section(lines: list, n: int) -> list:
-    """The lines of the proposal's section `n`, its heading left out."""
+def section(lines: list, n: int, doc: str = DOC) -> list:
+    """The lines of a document's section `n`, its heading left out."""
     start = next((i for i, l in enumerate(lines) if l.startswith("## %d. " % n)), None)
     if start is None:
-        raise SystemExit("no section %d in %s" % (n, DOC))
+        raise SystemExit("no section %d in %s" % (n, doc))
     end = next((i for i in range(start + 1, len(lines)) if lines[i].startswith("## ")), len(lines))
     return lines[start + 1:end]
 
@@ -146,8 +148,8 @@ def to_him(text: str) -> str:
     return re.sub(r"\bhis\b", "your", text)
 
 
-def items_of(lines: list) -> list:
-    lines = to_him("\n".join(section(lines, 2)) + "\n## 4. \n" + "\n".join(section(lines, 4))).split("\n")
+def items_of(standard: list, proposal: list) -> list:
+    lines = to_him("\n".join(section(standard, 2, STANDARD)) + "\n## 4. \n" + "\n".join(section(proposal, 4))).split("\n")
     cut = lines.index("## 4. ")
     rules, calls = lines[:cut], lines[cut + 1:]
     out = []
@@ -491,11 +493,12 @@ start();
 
 
 def main() -> None:
-    lines = open(DOC, encoding="utf-8").read().splitlines()
-    items = items_of(lines)
+    proposal = open(DOC, encoding="utf-8").read().splitlines()
+    standard = open(STANDARD, encoding="utf-8").read().splitlines()
+    items = items_of(standard, proposal)
     rules = sum(1 for i in items if i["id"].startswith("rule-"))
     settled = sum(1 for i in items if i["settled"])
-    meta = ("%d to mark, %d settled \u00b7 from docs/terminology_proposal.md \u00b7 A is Claude's lean"
+    meta = ("%d to mark, %d settled \u00b7 from docs/text_standard.md and the proposal's calls \u00b7 A is Claude's lean"
             % (len(items) - settled, settled))
     page = PAGE.replace("__META__", html.escape(meta)).replace("__ITEMS__", json.dumps(items, ensure_ascii=False).replace("</", "<\\/"))
     sys.stdout.write(page)

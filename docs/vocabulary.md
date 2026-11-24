@@ -86,7 +86,7 @@ Cannot be used without Ore. | implemented |
 |---|---|---|
 | **Direct** | Can target any front-rank Sprite, any back-rank Sprite with no Sprite in front of it, and any Exposed Sprite. | implemented |
 | **Indirect** | Can target any Sprite. | implemented |
-| **Every Sprite** | Hits every Sprite for full damage. Each hit counts as Targeted. | implemented |
+| **Every Sprite** | Hits every Sprite for full damage. No hit is Targeted. | implemented |
 | **Every Frame** | Applies to every Frame, this Frame included. | implemented |
 | **Every Other Frame** | Applies to every Frame except this one. | implemented |
 

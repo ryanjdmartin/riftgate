@@ -243,3 +243,35 @@ func test_a_tip_fills_the_sum_its_unit_carries() -> void:
 		var said := KeywordTip.filled(str(id), str(db.vocabulary[id].get("codex", "")), {})
 		assert_false(said.contains("{"), "%s's tip leaves no mark unfilled: %s" % [id, said])
 	KeywordTip.fills = {}
+
+
+## Every glossary tip follows the standard's mechanical parts (docs/text_standard.md; Ryan,
+## 24 November: "New content additions need to know and follow the format"): no semicolon, the
+## words that left the text (foe, machine, enemy, blow, strike, falls), {N} on a status only where
+## a line counts per stack, and a capital after every label. What a tip says is his; this only
+## holds its shape.
+func test_every_tip_keeps_the_standards_shape() -> void:
+	var db := ContentDB.load_default()
+	var gone := RegEx.new()
+	gone.compile("(?i)\\b(foes?|foe's|machines?|machine's|enemy|enemies|blows?|strikes?|struck|falls|fell|felled)\\b")
+	var labels := ["Turn Start", "Turn End", "Round End", "Commit", "On Hit", "When Hit", "After Hit", "After Being Hit", "Resolve",
+		"When defeated", "On Reboot", "Shield Broken", "Skirmish Start", "On Suppressed"]
+	var shown := 0
+	for kind in PauseMenu.GLOSSARY:
+		for id in db.vocabulary.keys():
+			var e: Dictionary = db.vocabulary[id]
+			if str(e.get("category", "")) != str(kind[0]) or str(e.get("status", "")) != "implemented":
+				continue
+			shown += 1
+			var tip := str(e.get("codex", ""))
+			assert_false(tip.contains(";"), "%s: no semicolon (%s)" % [id, tip])
+			var m := gone.search(tip)
+			assert_true(m == null, "%s: says '%s', a word the standard retired" % [id, m.get_string() if m != null else ""])
+			for line in tip.split("\n"):
+				if str(kind[0]) == "status" and line.contains("{N}"):
+					assert_true(line.contains("per stack ({N})"), "%s: a status's {N} follows a per-stack amount: %s" % [id, line])
+				for label in labels:
+					if line.begins_with(label + ": "):
+						var rest: String = line.substr(label.length() + 2)
+						assert_true(not rest.is_empty() and rest[0] == rest[0].to_upper(), "%s: a capital after %s: %s" % [id, label, line])
+	assert_true(shown > 100, "every tip read: %d" % shown)

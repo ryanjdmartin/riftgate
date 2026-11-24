@@ -613,7 +613,8 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	var quick := second_action(sk, ms, f)   # its machine's second action this round (the Needletail's)
 	var real := f
 	f = Effects.effective_face(ms.unit, f, target)
-	var outcomes := damage_outcomes(ms, f, target)
+	var field := f.reach == Face.Reach.EVERY_FOE   # it targets the field: no foe takes an aimed strike (24 November)
+	var outcomes := damage_outcomes(ms, f, target, Skirmish.AREA_ALL if field else -1)
 	var mean := _mean(outcomes)
 	var p_kill := _kill_odds(outcomes, target.hp)
 	var score := _capped(outcomes, target.hp)
@@ -624,8 +625,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	var shapes := sk.area_shapes(f, target)
 	for n in sk.ridden_by(f, target):
 		if n != target and n.alive():
-			# A weapon over every foe strikes each as its own target (12 November), a Shock read on each.
-			score += _capped(damage_outcomes(ms, f, n) if f.reach == Face.Reach.EVERY_FOE else damage_outcomes(ms, f, n, int(shapes.get(n, Skirmish.AREA_ALL))), n.hp)
+			score += _capped(damage_outcomes(ms, f, n, int(shapes.get(n, Skirmish.AREA_ALL))), n.hp)
 	score += arcs_worth(sk, ms, f, target, mean)
 	# The rifle's blow on the foe to the right with every strike (the Macaque's offhand, 19
 	# November), a blow of its own beside an area's, through the same order.

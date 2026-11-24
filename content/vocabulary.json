@@ -203,7 +203,7 @@
    "id": "every_foe",
    "category": "reach",
    "name": "Every Sprite",
-   "codex": "Hits every Sprite for full damage. Each hit counts as Targeted.",
+   "codex": "Hits every Sprite for full damage. No hit is Targeted.",
    "status": "implemented",
    "design": {
     "holes": "A keyword from 2 November (Ryan: 'Every foe is a targeting mode, just like spread, penetrate, and splash, it should be listed as such and given a keyword'), a targeting mode in its own right since 4 November ('Silence should not narrow targeting modes, that's why I'm switching them to targeting modes'), drawn in the die's targeting slot. A working name, the foes' Every Machine mirrored. A weapon's too since 12 November, when Sweep went (Ryan: the Whip Scorpion's and the Musk Ox's specials \"a 'target all'\"): it strikes every foe for its whole number and none is its one target (Ryan, 12 November: \"Target all shouldn't need a target in the same way that sweep didn't. Why would only the first target pop shock? That's weird and useless\"), so a Shock is doubled and spent on each and, with no primary target, no Ricochet follows it. No area keyword rides it."

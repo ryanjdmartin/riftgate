@@ -3548,9 +3548,11 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	# the entry reads: the firer's pipeline on it, the foe's Brittle and armour, the weapon's riders
 	# a strike. Read as the spend begins, so a stack the spend earns bounces none of it.
 	var strikes := maxi(1, f.strikes)
-	# A reach over every foe has no one target (Ryan, 12 November: "Target all shouldn't need a
-	# target in the same way that sweep didn't"): every foe is struck, so a Shock on any of them
-	# is doubled and spent, and with no primary target no Ricochet follows it.
+	# A reach over every foe targets the field (Ryan, 12 November: "Target all shouldn't need a
+	# target in the same way that sweep didn't"; 24 November: "should probably be coded as none are
+	# targeted, since its targeting the field. Important semantics"): no hit of it is aimed at a
+	# foe, the one the die was dropped on included, so it doubles and spends no Shock, sets off no
+	# Chain, feeds no Mine and lands no next strike's add, and with no target no Ricochet follows.
 	var bounces := Effects.stacks_of(ms.unit, "ricochet") if f.is_weapon() and not everyone else 0
 	# The hits in the order they land, each a place of its own on the screen: every strike, the
 	# sword's hit again after each, then the Ricochet's.
@@ -3601,8 +3603,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			number = floori(number * again / 100.0)
 			h.base += number
 		var ctx := _zapped(_judged(judged_hp, target))
-		if at == 0:
-			ctx["first_blow"] = true   # the spend's first blow, its first strike's on its target (the strike order): a next strike's add lands on it alone (the Parry's return)
+		if at == 0 and not everyone:
+			ctx["first_blow"] = true   # the spend's first blow, its first strike's on its target (the strike order): a next strike's add lands on it alone (the Parry's return); a reach over every foe has no target for it
 		var modded := Effects.attack(ms.unit, f, number, heat, target, ctx)
 		var dmg: int = int(modded["damage"]) + (0 if bounce else _foe_reads(f, reads, target, not struck_once.has(target)))
 		if at == 0:
@@ -3616,7 +3618,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		# strike is read before any lands, so no blow of it reads what another did.
 		var blows := {}
 		for foe in hit:
-			blows[foe] = dmg if foe == target else _area_blow(ms, f, int(shapes.get(foe, AREA_ALL)), foe, own, split, _zapped(_judged(judged_hp, foe))) + _foe_reads(f, reads, foe, not struck_once.has(foe))
+			blows[foe] = dmg if foe == target and not everyone else _area_blow(ms, f, int(shapes.get(foe, AREA_ALL)), foe, own, split, _zapped(_judged(judged_hp, foe))) + _foe_reads(f, reads, foe, not struck_once.has(foe))
 		# Every blow of the strike in the strike order, [foe, its blow, the shape it stands in] (Ryan,
 		# 19 November: "Spread always computes before Penetrate, and Penetrate computes before
 		# Rifle"): the target, Spread's left and right, Penetrate's other rank, then the rifle's blow
@@ -3636,7 +3638,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		# Each is the Chain's number flat ("If Chain doesn't carry the riders, it shouldn't carry the
 		# unit's or weapon's buffs either"), the entry's own strikes alone arcing, never a Ricochet's or
 		# a hit again.
-		var arcs_read := not (step == HIT_STRIKE and f.has(Face.Keyword.CHAIN))
+		var arcs_read := everyone or not (step == HIT_STRIKE and f.has(Face.Keyword.CHAIN))   # a reach over every foe aims at none, so nothing arcs
 		var li := 0
 		while li < landings.size() or not arcs_read:
 			if li >= landings.size():
@@ -3657,8 +3659,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			var hp_before := foe.hp
 			var first := not struck_once.has(foe)   # the foe's first blow of the spend
 			struck_once[foe] = true
-			var into_mine := foe == target and not arc   # the blow on the spend's target: its riders are the Mine's too
-			var struck := (foe == target or everyone) and not arc   # a strike aimed at this foe, never a blow that only reaches it
+			var into_mine := foe == target and not everyone and not arc   # the blow on the spend's target: its riders are the Mine's too
+			var struck := foe == target and not everyone and not arc   # a strike aimed at this foe, never a blow that only reaches it, nor one of a reach over every foe
 			if not h.reached.has(foe):
 				h.reached.append(foe)
 			if shape == AREA_CHAIN:
@@ -4154,11 +4156,11 @@ func reached_by(f: Face, target: Foe) -> Array[Foe]:
 ## Shock or a needle the spend lays lands after its arcs, so it never conducts its own.
 func conductors(f: Face, target: Foe) -> Array[Foe]:
 	var out: Array[Foe] = []
-	if f == null or not f.has(Face.Keyword.CHAIN):
-		return out
+	if f == null or not f.has(Face.Keyword.CHAIN) or f.reach == Face.Reach.EVERY_FOE:
+		return out   # a reach over every foe aims at none, so nothing arcs (24 November)
 	var spends := not f.is_debuff()   # a weapon's strike aimed at a foe spends its Shock before the arcs
 	for foe in conducting_foes(null):
-		var aimed := foe == target or f.reaches_all
+		var aimed := foe == target
 		if aimed and spends and not Effects.conducts_but(foe, "shocked"):
 			continue
 		out.append(foe)
