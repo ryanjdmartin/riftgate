@@ -12401,6 +12401,33 @@ reboot. The lower maximum is a real lever: the Whip Scorpion reboots more, fires
 loses more hull, a boss fight 1.1 rounds longer, between the Nemesis (7.6) and the Buzzard (9.7) of
 the 23 November read.
 
+
+## 24 November: the Nemesis's and the Whip Scorpion's runner rows, at 200 seeds
+
+`tools/balance.gd -- --seeds 200 --rows nemesis,whip_scorpion,buzzard,polar_bear --policies
+random,greedy --noparty`, in three parts merged, each machine alone against every pack of the matrix
+(92), on `ccr-178e0404-ptuh2m` at `302d6a4c` (main the same), Godot 4.8-beta4: 147,200 fights. The
+Buzzard and the Polar Bear are tier-two rows to read them beside. A row's walls are the packs greedy
+play wins under half of; its easy packs those random play wins nine in ten; its flat cells those
+where the two rungs land within five points with greedy under 95%; the gap is random's rounds over
+greedy's on the cells both win a quarter of (about 2 on the big fights, about 1 on the rank and
+file, the bible's section 2).
+
+| The row | Wins, random / greedy | Walls | Easy | Flat | Gap, big / rank and file | Greedy: rounds, hull a fight | Peak heat, overheats a fight |
+|---|---|---|---|---|---|---|---|
+| The Nemesis | 60.4% / 69.3% | 27 | 47 | 21 | 1.31 (10) / 1.43 | 5.7, 49% | 72%, 0.11 |
+| The Whip Scorpion | 53.3% / 58.1% | 40 | 44 | 33 | 0.58 (4) / 0.99 | 5.8, 57% | 55%, 0.01 |
+| The Buzzard | 48.6% / 54.6% | 41 | 38 | 36 | 1.09 (4) / 1.33 | 4.5, 56% | 65%, 0.00 |
+| The Polar Bear | 29.1% / 42.2% | 53 | 18 | 49 | 1.43 (1) / 1.58 | 7.6, 73% | 50%, 0.01 |
+
+What it says. Alone, the Nemesis is the strongest of the four by a band, with the fewest walls,
+and its rungs come apart (a gap over 1, flat cells fewest): its Rage rewards the play that reaches
+it. The Whip Scorpion reads above the Buzzard but holds no decision for this bot: greedy wins its
+big fights slower than random (0.58) and level on the rank and file (0.99), its heat peaking at
+55%, since the bot prices the doubled hits past half its heat and reads the scale's climb as no
+investment, so it plays cold, and random play, running it hot, does as well. Its row is a floor of
+skill until the bot reads heat as fuel (the to-do's bot line); his play reads its strength.
+
 ## 21 November: enemy armour at tier one, and Chain's arcs as a strike or a flat ping
 
 For Ryan's pick of Chain's arc form (the bible's section 12: "I need more data to make this
