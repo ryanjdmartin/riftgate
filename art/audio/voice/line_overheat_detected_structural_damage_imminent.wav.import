@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://blm0nf4ae5p34"
-path="res://.godot/imported/line_overheat_detected_structural_damage_imminent.wav-8b3da45be653816b5dcb1918bd6adb55.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_overheat_detected_structural_damage_imminent.wav"
-dest_files=["res://.godot/imported/line_overheat_detected_structural_damage_imminent.wav-8b3da45be653816b5dcb1918bd6adb55.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=2
+importer="skip"

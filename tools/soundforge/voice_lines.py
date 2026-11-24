@@ -341,8 +341,10 @@ SHIP_SR = 24000   # her chain stops at 4.5 kHz, so half the rate loses nothing a
 
 
 def ship():
-    """Every line into art/audio/voice at SHIP_SR, as the page rendered it, and lines.json."""
+    """Every line into art/audio/voice at SHIP_SR, as the page rendered it, the game's files at
+    every rate from it (forge's write_rates: the master's import skipped), and lines.json."""
     import wave
+    F.ffmpeg_ready(False)
     os.makedirs(SHIP_DIR, exist_ok=True)
     table = {"spacing": SPACING, "stale": STALE, "personality": PERSONALITY, "hooks": {}}
     written = set()
@@ -366,6 +368,7 @@ def ship():
                     w.setsampwidth(2)
                     w.setframerate(SHIP_SR)
                     w.writeframes(pcm.tobytes())
+                F.write_rates(os.path.join(SHIP_DIR, name + ".wav"), os.path.join(SHIP_DIR, name))
                 written.add(name)
                 print("  %-20s %-52s %5.2f s" % (hook, text, len(y) / SHIP_SR))
         table["hooks"][hook] = entry
@@ -373,7 +376,7 @@ def ship():
         json.dump(table, fh, indent=1, ensure_ascii=False)
         fh.write("\n")
     for f in sorted(os.listdir(SHIP_DIR)):
-        if f.endswith(".wav") and f[:-4] not in written:
+        if F.retired(f, written):
             os.remove(os.path.join(SHIP_DIR, f))
             if os.path.exists(os.path.join(SHIP_DIR, f + ".import")):
                 os.remove(os.path.join(SHIP_DIR, f + ".import"))

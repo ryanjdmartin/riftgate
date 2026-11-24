@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://brps64lf7tjbq"
-path="res://.godot/imported/w_blade.wav-5e4359d41a88ccd19ba1c6e040a7c73b.sample"
-
-[deps]
-
-source_file="res://art/audio/w_blade.wav"
-dest_files=["res://.godot/imported/w_blade.wav-5e4359d41a88ccd19ba1c6e040a7c73b.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=2
+importer="skip"

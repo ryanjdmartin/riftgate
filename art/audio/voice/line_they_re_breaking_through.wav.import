@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://ccwnjykq0qfog"
-path="res://.godot/imported/line_they_re_breaking_through.wav-3af651f00094339b88a63410ca2f878c.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_they_re_breaking_through.wav"
-dest_files=["res://.godot/imported/line_they_re_breaking_through.wav-3af651f00094339b88a63410ca2f878c.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=2
+importer="skip"

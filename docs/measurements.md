@@ -12818,3 +12818,153 @@ At 8 hit points a grove of two is as clean a pack for three as the horde of six,
 treants cost what the horde of eight costs. One machine alone still spends six rounds and a
 reboot or two on a treant at any of these: its plate, its regrowth and its blow do that, more
 than its hit points.
+
+## 24 November: the music through the engine, against the pair page
+
+**Method.** Hold The Line's battle half, the whole loop, played by Godot 4.8-beta4 (the game's
+build) with `AudioStreamPlayback.mix_audio` on the imported stream at the mix rate
+`audio/driver/mix_rate` sets (headless, the Dummy driver), aligned to the master WAV (Godot delays
+two samples) and subtracted from it. A band's number is that difference's energy against the
+master's in the band (Welch spectra, 8192-point Hann frames), in dB. The 44.1 kHz references are
+the master through ffmpeg's resampler (soxr at 28 bits for the q8 and q9 rows, the forge's long
+swr filter for the shipped rows; the two agree within 98 dB below 18 kHz). The page is
+`hold_the_line_r27_pair.mp4`'s right channel from the Track Pairs page's version
+1794371204-c6ae: the master itself apart from the AAC's noise, correlation 0.9998 at its level. Its
+plain Hold The Line button and its run are the 6 November file (correlation 0.9997 and 1.000 with
+it, 0.48 and 0.045 with the file that ships). A run of the game's real import, `compress/mode=2`,
+plays bit for bit what the probe's QOA rows played.
+
+**Noise added, dB under the master in each band:**
+
+| Path | 20–150 Hz | 150–500 | 500–2k | 2–5k | 5–8k | 8–12k | 12–16k | 16–20k |
+|---|---|---|---|---|---|---|---|---|
+| The pair page: AAC, 192 kbps a channel | −38.4 | −32.9 | −30.3 | −25.6 | −22.9 | −21.5 | −19.8 | −19.3 |
+| The game before: QOA, 48 kHz | −48.2 | −41.9 | −35.6 | −26.3 | −19.1 | −15.9 | −11.7 | −8.1 |
+| Vorbis q8, 44.1 kHz (about 128 kbps) | −34.7 | −31.4 | −24.2 | −18.6 | −17.7 | −15.5 | −12.8 | −10.6 |
+| Vorbis q9, 44.1 kHz | −35.0 | −31.7 | −27.4 | −24.2 | −22.1 | −19.4 | −17.0 | −15.3 |
+| Vorbis q10, 44.1 kHz, through `Sound` (the phone) | −37.9 | −35.3 | −33.9 | −32.9 | −32.9 | −32.0 | −29.4 | −25.6 |
+| Vorbis q10, 48 kHz, through `Sound` (the desk) | −37.1 | −34.7 | −33.4 | −32.5 | −32.7 | −31.9 | −29.2 | −25.4 |
+
+QOA's noise is white (one level at every frequency), so it sits under the music's body and close
+under its top; q8 and q9 also dull the top 0.1 to 0.2 dB, q10 holds it within 0.02 dB.
+
+**Godot's 48 to 44.1 kHz converter** (the phone's path before: its Android driver is fixed at
+44.1 kHz in 4.8-beta4's source, `platform/android/audio_driver_opensl.cpp`), a −6 dBFS sine fitted
+at the tone and at its ghost, 48 kHz less the tone folded at 44.1 kHz:
+
+| Tone | Level out | Ghost at | Ghost under the tone |
+|---|---|---|---|
+| 3 kHz | −0.02 dB | 0.9 kHz | 66.7 dB |
+| 6 kHz | −0.09 dB | 2.1 kHz | 46.8 dB |
+| 10 kHz | −0.42 dB | 6.1 kHz | 31.0 dB |
+| 15 kHz | −1.54 dB | 11.1 kHz | 17.8 dB |
+| 19 kHz | −3.30 dB | 15.1 kHz | 9.4 dB |
+
+On the whole loop the converter took 0.24 dB off 8–12 kHz, 0.8 dB off 12–16 kHz and 1.7 dB off
+16–20 kHz.
+
+**The seam and the pair, through `Sound`:** the loop wraps on bar nine's sample (814,154 at
+44.1 kHz, 886,154 at 48 kHz), the difference either side of the seam at the codec's level (−54 to
+−60 dB); before the half-sample offset Godot's seek, which truncates a time to its sample, wrapped
+one sample early. A pair's two halves sit on the same sample (Godot's two-sample delay) from a
+start at 255 s and after the wrap.
+
+## 24 November: the effects, Jenny's lines and every loop through the engine
+
+**Method.** As the entry above: Godot 4.8-beta4, `mix_audio` through the real `Sound` node's
+`_stream` at each mix rate (headless, `audio/driver/mix_rate`), aligned for Godot's two-sample
+delay and subtracted from the sound's file at that rate (the master at 48 kHz, its copy through
+the forge's resampler at 44.1 kHz), in dB under the file in each band.
+
+**The effects, all 79 together:**
+
+| Path | 20–150 Hz | 150–500 | 500–2k | 2–5k | 5–8k | 8–12k | 12–16k | 16–20k |
+|---|---|---|---|---|---|---|---|---|
+| Before: QOA, 48 kHz | −51.8 | −47.7 | −35.9 | −25.7 | −18.5 | −13.7 | −10.9 | −9.4 |
+| Now: PCM, 48 kHz and 44.1 kHz | every effect plays its file sample for sample (float rounding, under −128 dB) |||||||
+
+On the phone the effects had also taken Godot's converter (the entry above's tones). The 44.1 kHz
+copies peak at −0.4 dBFS at most (`w_laser`).
+
+**Every loop through `Sound`,** a minute from 60 s, the worst band from 20 Hz to 16 kHz and the
+top band:
+
+| Loop | 44.1 kHz, to 16 kHz | 44.1 kHz, 16–20 kHz | 48 kHz, to 16 kHz | 48 kHz, 16–20 kHz |
+|---|---|---|---|---|
+| Hold The Line, map | −27.0 | −10.7 (see below) | −26.9 | −10.5 |
+| Hold The Line, battle | −29.4 | −25.7 | −29.1 | −25.8 |
+| Night Shift, map | −29.0 | −25.0 | −29.1 | −25.4 |
+| Night Shift, battle | −29.6 | −25.3 | −29.3 | −25.2 |
+| The Far Bank, map | −29.7 | −22.1 | −29.9 | −20.9 |
+| The Far Bank, battle | −28.3 | −23.2 | −28.4 | −22.5 |
+| Full Bore | −29.0 | −24.2 | −28.8 | −22.2 |
+| Low Ground | −28.6 | −21.6 | −28.9 | −20.2 |
+| The Crossing | −28.4 | −25.1 | −28.4 | −24.8 |
+
+Hold The Line's map half holds almost nothing above 16 kHz (60 dB under its whole level), so its
+top band's ratio is a near-empty band's: the codec's noise there is 66 dB under the loop. Every
+loop wraps on its bar's own sample at both rates (bar nine for Hold The Line's and The Far
+Bank's halves, the top for the rest), the difference either side of the seam −49 to −88 dB.
+
+**Jenny's line** (`line_full_line_advancing`, 24 kHz, through Godot to 44.1 kHz): as PCM her
+bands to 4.5 kHz play as written; QOA had added 0.2 dB at 4.5–8 kHz and 0.9 dB at 8–12 kHz.
+Godot's conversion up takes 0.6 dB off 4.5–8 kHz and 2.1 dB off 8–12 kHz, and leaves an image at
+12–20 kHz 49 dB under her 100 Hz–1 kHz band, where the line holds nothing.
+
+**The Track Pairs page's passed pairs** (its version 1794371204-c6ae, before version 89): every
+channel of `hold_the_line_r27`, `night_shift_r35` and `far_bank_r8` is the game's half
+(correlation 0.9995 to 0.99997, the difference 30 to 43 dB under it: the AAC's).
+
+## 24 November: Jenny's lines at the mix rates
+
+**Method.** As the entries above, through the real `Sound` node's `_voice_stream`: each of the
+151 lines' copies made by the forge's `write_rates` from her 24 kHz master (ffmpeg's long-filter
+resampler up to 44.1 and 48 kHz, PCM), against the copy, and one line against an ideal
+upsample of its master (soxr at 28 bits).
+
+Every line plays its file sample for sample at both rates (largest difference 3 × 10⁻⁸). The
+copies peak at −0.3 dBFS at most (`line_flawless_victory`), each the length of its master.
+`line_full_line_advancing` at 44.1 kHz, dB in each band:
+
+| Path | 100–1000 Hz | 1–4.5 kHz | 4.5–8 kHz | 8–12 kHz | 12–20 kHz |
+|---|---|---|---|---|---|
+| Her line, ideally upsampled | 73.6 | 62.0 | 44.3 | 35.8 | −82.3 |
+| The game before: QOA at 24 kHz, Godot's conversion up | 73.6 | 62.0 | 43.9 | 34.6 | 26.3 |
+| The game now: her 44.1 kHz file | 73.6 | 62.0 | 44.3 | 35.8 | −9.0 |
+
+The conversion's image at 12–20 kHz is gone (83 dB under her 100 Hz–1 kHz band now, where it
+was 47 dB under), and the top of her voice keeps its level.
+
+## 24 November: the Nemesis on hits alone and its two branches, the Whip Scorpion's doubling on all damage
+
+`tools/reboot_probe.gd` as the 24 November levers entry (the squad beside the Honey Badger, the
+Prairie Dog and the Cassowary, the greedy bot, 168 formation fights at 8 seeds and 78 boss fights
+at 6), on `ccr-178e0404-ptuh2m` at `d0b4be70` with main merged (`b217971d`), Godot 4.8-beta4. Ryan,
+24 November: "I think we simplify the nemesis to just When Hit: gain 1 heat. Remove the other heat
+generators from the t2 passive", Breaker and Berserker its directions, and "I think we implement
+the double damage recieved penalty on the Whip as well". A branch is read with `--branches`, so at
+tier three with the tier's lift, beside the base at its tier two.
+
+| The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad |
+|---|---|---|
+| The Nemesis as built (23 November, from the entry above) | 5.4, 12%, 9%, 9% | 7.6, 12%, 13%, 15% |
+| The Nemesis on hits alone (24 November) | 5.6, 12%, 9%, 10% | 7.7, 12%, 11%, 16% |
+| Its Breaker, at tier three | 5.3, 8%, 7%, 8% | 7.2, 10%, 9%, 14% |
+| Its Berserker, at tier three | 5.3, 9%, 7%, 8% | 7.0, 11%, 8%, 14% |
+| The Whip Scorpion as built (23 November, from the entry above) | 5.0, 30%, 7%, 9% | 7.5, 32%, 12%, 17% |
+| Its damage all doubled past half its heat (24 November) | 5.0, 30%, 7%, 9% | 7.5, 32%, 13%, 18% |
+
+Under the table: the Nemesis rages 0.40 times a formation fight and 0.82 a boss fight (0.45 and
+0.86 as built), its Breaker 0.39 and 0.63, its Berserker 0.48 and 0.77, each Rage of the
+Berserker's the longest (3.05 Instant swings a boss fight, the Breaker 2.18). The Whip Scorpion
+overheats no fight in either set (0.00 a fight), and fires its Ray 1.49 and 2.41 times a fight for
+about 9.2 and 9.5 heat a shot, as before.
+
+What it says, a direction. Hits alone are a small nerf at tier two: a formation fight 0.2 rounds
+longer and a Rage a little rarer, the heat its Rage runs on still its guns' and the hits it takes,
+as the levers entry found. The branches read faster than the base, the tier's lift with them; of
+the two the Berserker rages more, its hull's heat firing where the Breaker's rarely does (tier
+one's foes seldom take a blow of its whole), so at tier one the Breaker is its Brittle. The Whip
+Scorpion's doubling on all damage moves nothing the bot plays: it never overheats it and keeps its
+heat near half (the runner row's read), so what the doubling adds, the burn and the tick past half,
+lands only on a player who rides it hot.

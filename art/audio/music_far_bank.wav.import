@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://dffg84cuc31fa"
-path="res://.godot/imported/music_far_bank.wav-80112ecb465c0574c5c3eb070a3a7e23.sample"
-
-[deps]
-
-source_file="res://art/audio/music_far_bank.wav"
-dest_files=["res://.godot/imported/music_far_bank.wav-80112ecb465c0574c5c3eb070a3a7e23.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=2
+importer="skip"

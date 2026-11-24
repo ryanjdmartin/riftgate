@@ -630,7 +630,7 @@ file.
 - **Kind:** B
 - **Where:** the briefs, each at its line below
 - **It says:**
-  - `minerva_hedgehog.md` 105, "a damaging lure, if kept, is never Rapid"; his words, "I would absolutely not give it rapid", then "but not sure".
+  - `minerva_hedgehog.md` 105 (retired 24 November; `git show 3b3d5f4b:docs/briefs/minerva_hedgehog.md`), "a damaging lure, if kept, is never Rapid"; his words, "I would absolutely not give it rapid", then "but not sure".
   - `numbers_pass.md` 405 and 406, a countdown on the rank and file is "too ubiquitous", dropping his "primarily".
   - `ws_gunship.md` 191 to 203 reads "magnitudes, not steps" as forbidding a capstone; the rules read it as a permission (any whole number).
   - `kestrel_line.md` 139 and 140, "a locked Kestrel piece never is [a rifle]", widening his call on the Pinion Driver.

@@ -978,15 +978,18 @@ func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 	var rerolls_gained := copy.rerolls_left - rerolls_left
 	var events: Array = copy.turn_events.duplicate()   # a last act the spend set off lands now
 	var over: Array[int] = []
+	var burnt: Array[int] = []
 	var ablated: Array[int] = []
 	var standing: Array[int] = []
 	over.resize(mechs.size())
+	burnt.resize(mechs.size())
 	ablated.resize(mechs.size())
 	standing.resize(mechs.size())
 	if copy.outcome == Outcome.NONE:
 		copy._end_player_turn()
 		for o in copy.overheats:
 			over[int(o["mech"])] += int(o["over"])
+			burnt[int(o["mech"])] += int(o["burn"])
 		for a in copy.ablations:
 			ablated[int(a["mech"])] += int(a["points"])
 	for i in range(mechs.size()):
@@ -1030,6 +1033,7 @@ func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 			"heat_end": heat_end[i],       # the gauge as the turn ends, uncapped: what the burn reads
 			"heat_after": cm.heat,         # the gauge after the round
 			"overheat": over[i],
+			"burn": burnt[i],              # the hull the excess burns (burn_scale a point)
 			"ablated": ablated[i],         # what its Ablating takes as the turn ends, the shield first
 			"breaks_shield": standing[i] > 0 and shield_hit[i] <= 0,
 			"component_risk": injures,

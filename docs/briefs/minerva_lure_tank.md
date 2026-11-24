@@ -9,7 +9,7 @@ Ryan's.
 
 **Status**: Ryan's idea of 4 November, Claude's first round below, unanswered. **Maker**: Minerva.
 **Proposed tier**: one. **Read first**: `docs/briefs/README.md` (ten a maker, the orbits);
-`minerva_hedgehog.md` (the split); the bible's Armoured row, retaliation and thorns row and
+`minerva_hedgehog.md` (the split; retired with the Echidna's model, in git); the bible's Armoured row, retaliation and thorns row and
 redirection row (section 5), and section 12's Polar Bear question.
 
 ## What Ryan said

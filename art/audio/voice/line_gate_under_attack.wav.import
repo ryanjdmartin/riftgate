@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://pkmn4qy30y7x"
-path="res://.godot/imported/line_gate_under_attack.wav-b1b7423b550b6a036ec5036b67fd6f21.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_gate_under_attack.wav"
-dest_files=["res://.godot/imported/line_gate_under_attack.wav-b1b7423b550b6a036ec5036b67fd6f21.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=2
+importer="skip"

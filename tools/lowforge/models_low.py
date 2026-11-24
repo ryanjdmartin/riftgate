@@ -2516,6 +2516,229 @@ def mole(b):
 mole.maker = "minerva"
 
 
+# ------------------------------------------------------------------ the Echidna
+
+ECHIDNA_STATIONS = (27.0, 0.0, -27.0)   # its three wheel stations a side, evenly spaced (look A's)
+ECHIDNA_R = 10.0                        # its wheels' radius: each wheel's middle stands this high
+ECHIDNA_HUB_Z = 12.0                    # the heavy hubs on the housings' faces, their middle this high
+ECHIDNA_BACK = 31.0                     # each spine's lean toward the tail, off upright, as the side view shows it
+ECHIDNA_SPLAY = 35.0                    # and out to its flank (Ryan, 22 November: "I like the 35")
+ECHIDNA_BANK = (-11.5, -36.5)           # where each bank's five spines stand along its rail ("Can we squeeze in 5 a bank?")
+ECHIDNA_BEAD = "amber.lit"              # a spine's lit tip
+ECHIDNA_TETHER = (0.0, 46.3, 13.5)      # the Supersonic Spike Tether's breech on the prow's cap
+ECHIDNA_TETHER_UP = 6.0                 # its line, a little up off level
+
+
+def _echidna_leaned(back, side, s):
+    """A direction leaning `back` degrees off upright toward the tail and `side` degrees out to
+    the flank (`s` the side's sign), each lean read on its own plane, so a spine splayed to the
+    side keeps the backward lean the side view shows (look A's third round)."""
+    return Vector((s * math.tan(math.radians(side)), -math.tan(math.radians(back)), 1.0)).normalized()
+
+
+def _echidna_spine(b, base, d, length, tip, half=1.5, bead=1.3):
+    """One of its spines, the Sonic Needle's emitters: a thick dark emitter rooted in a broad
+    collar, tapering to a lit bead on its tip, the bead its own part (`tip`) so the needles can
+    light a spine at a time."""
+    p, d = Vector(base), Vector(d).normalized()
+    b.prism("z", p.x, p.y, p.z + 0.8, half * 1.6, 1.6, "steel.plate", 6, "emitter_collar")
+    end = p + d * length
+    _beam(b, tuple(p - d * 0.6), tuple(end), _sq(half * 2.0, half * 2.0), _sq(half * 1.2, half * 1.2), "steel.dark", "emitter")
+    _beam(b, tuple(end - d * 0.2), tuple(end + d * (bead * 1.6)), _sq(bead * 2.0, bead * 2.0), _sq(bead * 1.2, bead * 1.2), ECHIDNA_BEAD, tip)
+
+
+def _echidna_ram(b, x, y0, y1, z0, z1, w=11.0):
+    """The ram block on a front corner, its two knuckles blunt bosses: a ram first and a fist
+    second (look A's second round)."""
+    b.box(x - w / 2.0, x + w / 2.0, y0, y1, z0, z1, "livery.livery2", "ram")
+    b.box(x - w / 2.0 - 0.6, x + w / 2.0 + 0.6, y0 + 1.0, y0 + 3.6, z0 - 0.6, z1 + 0.6, "steel.dark", "ram_strap")
+    zc = (z0 + z1) / 2.0
+    for k in (-1.0, 1.0):
+        px = x + k * w * 0.25
+        _beam(b, (px, y1 - 0.5, zc), (px, y1 + 3.0, zc), _sq(4.6, 6.6), _sq(3.0, 4.4), "steel.dark", "ram_boss")
+
+
+def _echidna_whip(b, base, height, lean=10.0, splay=0.0):
+    """A whip aerial on a spring base, leaning a little toward the tail."""
+    l, s = math.radians(lean), math.radians(splay)
+    d = Vector((math.sin(s) * math.sin(l), -math.cos(s) * math.sin(l), math.cos(l)))
+    p = Vector(base)
+    b.prism("z", p.x, p.y, p.z + 1.0, 1.3, 2.0, "steel.dark", 6, "aerial_base")
+    _beam(b, tuple(p + Vector((0.0, 0.0, 1.6))), tuple(p + d * height), _sq(0.95, 0.95), _sq(0.55, 0.55), "steel.dark", "aerial")
+
+
+def echidna(b):
+    """Minerva "Echidna" (SV-6R Seismic Survey Car, a session's draft of its designation), the tank
+    that fights and wants to be struck: look A of its look rounds (the bible's Echidna row; their brief in git),
+    the armoured car Ryan picked on 15 November ("I like the armoured car") with the bristle of the
+    fourth round, which he took on 24 November ("Go with five a bank, build the model"). Nicknamed
+    for the animal, never a model of it ("remember the machines were nicknamed after animals they
+    resemble or act like").
+
+    Six heavy wheels, each in its own boxed housing off the hull's flank with only its foot showing,
+    a livery plate and a heavy hub on the housing's face; one sill along the foot of each side's
+    three housings and a drive case between them. It turns as a tank does, by skid steer: each side's
+    three wheels are driven together and the sides against each other, so nothing steers, the
+    housings stay rigid, and the whole machine turns on the spot to aim (`pivots`). Every wheel spins
+    on its axle and every hub with it, four lugs on its face so the turn reads. A faceted hull over a
+    dark belly, its glacis wedged down to a blunt prow with a dark cap, a vision slit under a brow, two
+    lamps, a bumper under the prow and a ram with two blunt bosses on the front of each front housing.
+    The engine cover over the rear two thirds is a low dome in the maker's green; along it run two
+    rails, and on each rail stand five short thick spines, the Sonic Needle's emitters, leaning 31
+    degrees back toward the tail and 35 out to their flank, each a dark emitter tapering to a lit bead
+    that lights on its own as the needles ring; a driver box with a grille between the banks. Across
+    the hull's back face, under the cover's overhang, two Minervan vents (Ryan, 16 November: "make that
+    vent a Minervan signature"), their louvres a little open over banked heat.
+
+    Mounts, in the stock's order: hp_1 the gun on the low turret ahead of the cover (the Rivet Gun),
+    with a whip aerial on the turret's back; hp_2 on the left middle housing (the Ankle Mortar) and hp_3
+    on the right (the Twin Autoguns), each firing clear over the front housing; hp_4 bare on the right
+    rear housing (the Shoring Jack takes no mount), so a gun fitted there fires over the bare middle
+    housing's tail. The Supersonic Spike Tether, its locked piece, is the launcher on the prow's cap
+    where the look's prow emitter stood: a short barrel in a collar on a slide, a dark spike in it with
+    a lit tip, fed by a line from a spool on the prow's top; it kicks back along its line as it fires
+    and the spines ring with it."""
+    R = ECHIDNA_R
+    spinning = []
+    for s, side in ((-1.0, "l"), (1.0, "r")):
+        xo = s * 30.5
+        hx = s * 24.0
+        for k, yc in enumerate(ECHIDNA_STATIONS):
+            # The wheel on its axle, its foot under the housing's lower edge.
+            wheel = "wheel_%s%d" % (side, k + 1)
+            with b.joint(wheel, (s * 23.0, yc, R)):
+                _wheel(b, s * 23.0, yc, R, 11.0)
+            spinning.append(wheel)
+            b.loft([(yc - 12.5, rect(hx, 13.0, 11.5, 17.0)), (yc - 9.0, rect(hx, 13.0, 7.5, 22.0)),
+                    (yc + 9.0, rect(hx, 13.0, 7.5, 22.0)), (yc + 12.5, rect(hx, 13.0, 11.5, 17.0))], "steel.plate", "housing")
+            b.box(min(xo, xo + s * 1.4), max(xo, xo + s * 1.4), yc - 8.0, yc + 8.0, 10.5, 20.5, "livery.livery2", "housing_plate")
+            # The heavy hub on the housing's face, turning with its wheel: four lugs round its cap.
+            hub = "hub_%s%d" % (side, k + 1)
+            hz = ECHIDNA_HUB_Z
+            with b.joint(hub, (xo + s * 1.9, yc, hz)):
+                b.prism("x", xo + s * 1.9, yc, hz, 4.8, 2.2, "steel.dark", 8, "hub", phase=math.pi / 8)
+                b.prism("x", xo + s * 3.3, yc, hz, 2.3, 1.2, "steel.plate", 8, "hub_cap", phase=math.pi / 8)
+                for dy, dz in ((3.5, 0.0), (-3.5, 0.0), (0.0, 3.5), (0.0, -3.5)):
+                    x0, x1 = sorted((xo + s * 2.9, xo + s * 3.6))
+                    b.box(x0, x1, yc + dy - 0.6, yc + dy + 0.6, hz + dz - 0.6, hz + dz + 0.6, "steel.plate", "hub_lug")
+            spinning.append(hub)
+        # One sill along the foot of the three housings and a drive case between the stations.
+        b.box(min(xo, xo + s * 1.6), max(xo, xo + s * 1.6), -37.5, 37.5, 7.5, 9.8, "steel.dark", "sill")
+        b.box(min(s * 19.0, s * 29.0), max(s * 19.0, s * 29.0), -30.0, 30.0, 9.0, 15.0, "steel.dark", "drive_case")
+    # The belly between the wheels and the faceted hull over it, its glacis wedged down to the prow.
+    b.loft([(-39.0, rect(0.0, 36.0, 9.0, 15.0)), (-34.0, rect(0.0, 36.0, 6.0, 16.0)), (34.0, rect(0.0, 36.0, 6.0, 16.0)), (40.0, rect(0.0, 30.0, 9.0, 15.0))], "steel.dark", "belly")
+    hull = b.loft([(-41.0, _chamfered(0.0, 34.0, 14.0, 23.0, 5.0)), (-35.0, _chamfered(0.0, 42.0, 13.0, 29.0, 6.0)), (9.0, _chamfered(0.0, 42.0, 13.0, 29.0, 6.0)),
+                   (29.0, _chamfered(0.0, 36.0, 12.0, 20.0, 4.0))], "steel.panel", "hull")
+    b.loft([(12.0, rect(0.0, 28.0, 24.0, 28.1)), (17.0, rect(0.0, 27.0, 22.0, 25.9))], "glass.glass", "slit")
+    b.loft([(7.5, rect(0.0, 32.0, 28.6, 30.2)), (12.5, rect(0.0, 31.0, 27.5, 29.0))], "steel.plate", "brow")
+    # The prow: a blunt wedge off the glacis's foot with a dark cap, a vehicle's bow and no snout.
+    b.loft([(29.0, _chamfered(0.0, 36.0, 12.0, 20.0, 4.0)), (37.0, _chamfered(0.0, 21.0, 11.0, 17.5, 3.0)), (44.0, _chamfered(0.0, 10.0, 11.5, 15.6, 1.6))], "steel.panel", "prow")
+    b.loft([(44.0, _chamfered(0.0, 10.0, 11.5, 15.6, 1.6)), (46.5, _chamfered(0.0, 6.0, 12.2, 14.8, 0.8))], "steel.dark", "prow_cap")
+    for s in (-1.0, 1.0):
+        b.box(s * 13.0 - 2.2, s * 13.0 + 2.2, 26.2, 28.6, 20.4, 23.2, "amber.light", "lamp")
+    b.box(-24.0, 24.0, 39.5, 42.0, 7.0, 11.0, "steel.dark", "bumper")
+    for s in (-1.0, 1.0):
+        _echidna_ram(b, s * 24.0, 39.0, 46.0, 4.5, 16.0)
+    # The engine cover over the rear two thirds, a low dome.
+    b.loft([(-44.0, _chamfered(0.0, 28.0, 21.0, 26.0, 4.0)), (-37.0, _chamfered(0.0, 42.0, 25.0, 31.0, 6.0)),
+            (-12.0, _chamfered(0.0, 42.0, 25.0, 32.0, 6.0)), (-6.0, _chamfered(0.0, 36.0, 26.0, 30.0, 4.0))], "livery.livery2", "engine_cover")
+    # The bristle: a rail each side of the cover and five spines on it, 6.5 long at the front to 8 at
+    # the tail, each bead its own part (needle_l1 ... needle_r5, front to back); the driver between.
+    needles = {"l": [], "r": []}
+    for s, side in ((-1.0, "l"), (1.0, "r")):
+        x = s * 12.5
+        b.box(x - 2.4, x + 2.4, -39.0, -9.0, 30.4, 33.0, "steel.dark", "emitter_rail")
+        d = _echidna_leaned(ECHIDNA_BACK, ECHIDNA_SPLAY, s)
+        first, last = ECHIDNA_BANK
+        for k in range(5):
+            t = k / 4.0
+            tip = "needle_%s%d" % (side, k + 1)
+            _echidna_spine(b, (x, first + (last - first) * t, 33.0), d, 6.5 + 1.5 * t, tip)
+            needles[side].append(tip)
+    b.box(-5.0, 5.0, -33.0, -17.0, 31.0, 34.4, "steel.dark", "emitter_driver")
+    b.box(-3.6, 3.6, -31.5, -18.5, 34.4, 34.9, "steel.vent", "driver_grille")
+    # Two Minervan vents across the hull's back face, hooded by the cover's overhang.
+    vents = _minerva_vents(b, [hull], (-7.5, 7.5), -41.0, 17.5, width=11.0, height=6.0, slats=3)
+    # The turret ahead of the cover, its gun (hp_1) and a whip aerial on its back.
+    b.prism("z", 0.0, 2.0, 29.5, 9.5, 1.2, "steel.dark", 8, "ring")
+    with b.joint("turret", (0.0, 2.0, 30.0)):
+        b.prism("z", 0.0, 2.0, 33.2, 8.5, 6.0, "steel.panel", 8, "turret", phase=math.pi / 8)
+        b.box(-5.0, 5.0, 8.0, 11.0, 31.0, 35.5, "steel.plate", "mantlet")
+        b.box(-3.0, 3.0, -3.5, 1.5, 36.2, 37.0, "steel.plate", "hatch")
+        b.stock("hp_1", (0.0, 11.0, 33.2), "barrel", scale=0.85, carries="rivet_gun")
+        _echidna_whip(b, (-5.6, -2.6, 36.0), 13.0, lean=12.0, splay=-10.0)
+    # The flank mounts on the middle housings, each firing clear over the front housing; the fourth
+    # bare on the right rear housing.
+    b.stock("hp_2", (-24.0, -1.0, 22.6), "rack", scale=0.62, carries="ankle_mortar")
+    b.stock("hp_3", (24.0, -1.0, 22.6), "twin_barrel", scale=0.62, carries="twin_autoguns")
+    b.pad("hp_4", (24.0, -27.0, 22.6), size=(7.0, 1.0))
+    # The Supersonic Spike Tether on the prow's cap: a collar, the barrel on a slide along its line, a
+    # dark spike in it with a lit tip, and the line back to a spool on the prow's top.
+    up = math.radians(ECHIDNA_TETHER_UP)
+    line = Vector((0.0, math.cos(up), math.sin(up)))
+    at = Vector(ECHIDNA_TETHER)
+    b.prism("y", at.x, at.y + 0.6, at.z, 2.6, 1.6, "steel.plate", 8, "tether_collar", phase=math.pi / 8)
+    with b.joint("tether", tuple(at), slide=tuple(line)):
+        _beam(b, tuple(at - line * 0.4), tuple(at + line * 6.5), _poly(2.0, 8), _poly(1.7, 8), "steel.panel", "tether_barrel")
+        _beam(b, tuple(at + line * 6.3), tuple(at + line * 7.1), _poly(2.2, 8), _poly(2.2, 8), "steel.dark", "tether_muzzle")
+        _beam(b, tuple(at + line * 5.0), tuple(at + line * 8.6), _sq(1.5, 1.5), _sq(0.7, 0.7), "steel.dark", "tether_spike")
+        _beam(b, tuple(at + line * 8.4), tuple(at + line * 9.6), _sq(0.9, 0.9), _sq(0.3, 0.3), ECHIDNA_BEAD, "tether_tip")
+        b.fx("supersonic_spike_tether", tuple(at + line * 7.4), forward=tuple(line), size=12.0)
+    b.prism("x", 0.0, 39.5, 17.6, 1.7, 5.2, "steel.dark", 8, "tether_spool", phase=math.pi / 8)
+    for s in (-1.0, 1.0):
+        b.box(s * 2.6 - 0.5, s * 2.6 + 0.5, 37.8, 41.2, 15.6, 19.6, "steel.plate", "spool_cheek")
+    _beam(b, (0.0, 40.8, 17.0), tuple(at + Vector((0.0, -0.3, 1.0))), _sq(0.5, 0.5), _sq(0.5, 0.5), "steel.dark", "tether_line")
+    b.pivots = True   # skid steer: it turns on the spot to aim, the Tether's line with it
+
+    # Idle acts. Venting, the Minervan vent's act.
+    _minerva_vent_act(b, vents)
+    # The needles ringing: a bead at a time down each bank, the two banks together, then the whole
+    # bristle at once and down (Ryan, of the phone: every effect has come back hotter, so hot).
+    ripple = []
+    for k in range(5):
+        t = 0.5 + 0.16 * k
+        ripple.append(([needles["l"][k], needles["r"][k]], [(round(t, 3), 0.0), (round(t + 0.12, 3), 8.0), (round(t + 0.5, 3), 2.5),
+                                                          (1.9, 2.5), (2.15, 9.0), (2.7, 9.0), (3.5, 0.0)]))
+    b.act("needles_ring", 3.8, {}, glow=ripple)
+    # The turret looks out to one side, holds, across to the other, holds, and home, slow, with the
+    # pause the turret rule asks before it turns back.
+    b.act("traverse", 8.6, {"turret": [(0.5, 0.0), (2.1, 40.0), (2.9, 40.0), (5.9, -40.0), (6.7, -40.0), (8.3, 0.0)]},
+          body=[(2.1, 0.0, 0.0, 0.0, 0.0, 0.0, -0.8), (2.9, 0.0, 0.0, 0.0, 0.0, 0.0, -0.8), (4.4, 0.0, 0.0, 0.0), (5.9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.8),
+                (6.7, 0.0, 0.0, 0.0, 0.0, 0.0, 0.8), (8.4, 0.0, 0.0, 0.0)])
+    # A neutral turn, the skid steer shown (Ryan, 15 November: "How does it turn? Like a tank?"): it
+    # turns on the spot a little to the left, holds, past to the right, holds, and back, each side's
+    # wheels and hubs rolling against the other's by the arc its track draws (23 out, a radius of 10).
+    roll = lambda deg: round(math.degrees(math.radians(deg) * 23.0 / R), 2)
+    turn = [(0.5, 0.0), (1.7, 16.0), (2.4, 16.0), (4.4, -14.0), (5.1, -14.0), (6.3, 0.0)]
+    tracks = {}
+    for jn in spinning:
+        sign = -1.0 if "_r" in jn else 1.0   # turning left the right side rolls forward (a negative turn on its axle)
+        tracks[jn] = [(t, round(sign * roll(a), 2)) for t, a in turn]
+    b.act("neutral_turn", 6.6, tracks, body=[(t, 0.0, 0.0, 0.0, a, 0.0, 0.0) for t, a in turn])
+    # The Tether's firing: the barrel drawn back a hair on its slide, then kicked back hard along its
+    # line as the spike leaves, the hull jolting nose up on its wheels, the bristle ringing with it,
+    # the barrel run out again. Played on the spend (`fires`), never at rest.
+    slide = lambda t, d: (round(t, 3), 0.0, 0.0, 0.0, 0.0, round(line.y * d, 3), round(line.z * d, 3))
+    T_FIRE = 0.3
+    fire = {"tether": [slide(0.0, 0.0), slide(0.2, -0.6), slide(T_FIRE, -0.6), slide(T_FIRE + 0.06, -3.4), slide(0.9, -1.2), slide(1.3, 0.0)]}
+    jolt = [(0.2, 0.0, 0.0, 0.0), (T_FIRE + 0.08, 0.0, -0.8, 0.2, 0.0, 1.2, 0.0), (0.8, 0.0, -0.2, 0.0, 0.0, 0.2, 0.0), (1.3, 0.0, 0.0, 0.0)]
+    ring = [([needles["l"][k], needles["r"][k]], [(T_FIRE, 0.0), (round(T_FIRE + 0.06 + 0.05 * k, 3), 8.0), (1.3, 0.0)]) for k in range(5)]
+    b.act("tether_fire", 1.4, fire, body=jolt, heft=0.05, idle=False, glow=ring + [(["tether_tip"], [(0.0, 0.0), (0.15, 6.0), (T_FIRE, 8.0), (T_FIRE + 0.1, 0.0)])])
+    b.fires = {"supersonic_spike_tether": ("tether_fire", 0.0, 1.3, T_FIRE)}
+    # The beads that flare wear the hot halo.
+    b.halo = list(b.halo) + needles["l"] + needles["r"]
+    # Movement: every wheel and hub rolls by its radius, a small rock on pulling away and stopping;
+    # it is quick for a Minerva (its move is 4), so it gets under way briskly.
+    b.gait(wheels={jn: R for jn in spinning}, rock=3.0)
+    b.move(accel=1.4, heft=0.2)
+    # Its way down: a blow takes out the right side's running gear, the hull listing onto it and down
+    # at the nose, the turret slewed round, the needles flaring once as it goes.
+    b.death(0.9, {"turret": [(0.9, 32.0)]}, body=[(0.9, 0.0, 0.0, 0.0, 4.0, -2.0, 6.0)],
+            glow=[(needles["l"] + needles["r"], [(0.0, 0.0), (0.2, 9.0), (0.9, 3.0)])])
+
+echidna.maker = "minerva"
+
+
 def _wheel(b, cx, cy, r, w, label="wheel", lit=False):
     """An eight-sided wheel across x: rubber tread with a dark hub, a lit hub ring if asked."""
     b.prism("x", cx, cy, r, r, w, "bore.tread", 8, label, phase=math.pi / 8)

@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://boo452m5jw1jl"
-path="res://.godot/imported/line_skirmish_feed_acquired.wav-870e73239f2bf7ab41ce9bc52ed391e2.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_skirmish_feed_acquired.wav"
-dest_files=["res://.godot/imported/line_skirmish_feed_acquired.wav-870e73239f2bf7ab41ce9bc52ed391e2.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=2
+importer="skip"

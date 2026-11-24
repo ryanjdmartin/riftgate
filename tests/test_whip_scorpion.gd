@@ -117,6 +117,7 @@ func test_its_burn_its_tick_and_a_bite_land_double_past_half_and_a_price_pays_as
 	assert_eq([Skirmish.burn_scale(ms), Skirmish.burn_scale(sk.mechs[1])], [2, 1], "two a point past the maximum, one on a plain machine")
 	ms.heat = 13
 	assert_eq(int(sk.forecast(ms)["burn"]), 6, "the forecast reads 3 past it burning 6")
+	assert_eq(int(sk.preview_round()["mechs"][0]["burn"]), 6, "and so does the round preview the screen draws")
 	var hull := u.hull
 	sk._burn_stacks(ms, 3)
 	assert_eq(hull - u.hull, 6, "and it burns 6: the overheat pays twice")

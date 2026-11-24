@@ -7,13 +7,17 @@ real recordings and a real track when there are some. numpy only.
     tools/spriter/.venv/bin/python tools/soundforge/forge.py build            # everything SHIP names into art/audio (and retire the rest)
     tools/spriter/.venv/bin/python tools/soundforge/forge.py build effects    # everything but the loops
     tools/spriter/.venv/bin/python tools/soundforge/forge.py build ui_tap kill   # some
+    tools/spriter/.venv/bin/python tools/soundforge/forge.py encode           # the game's files at every rate from the masters, Jenny's lines too, no render (or: encode effects, encode voice, encode ui_tap)
     tools/spriter/.venv/bin/python tools/soundforge/forge.py list
     tools/spriter/.venv/bin/python tools/soundforge/forge.py measure          # level and balance of every file
     tools/spriter/.venv/bin/python tools/soundforge/forge.py sketch [human rift djent]   # eight bars in a direction, to tools/soundforge/out
     tools/spriter/.venv/bin/python tools/soundforge/forge.py sections                    # every section of every track, with timestamps
     tools/spriter/.venv/bin/python tools/soundforge/forge.py audition                    # every effect in one file, a second apart, to tools/soundforge/out
 
-Then `godot --headless --path . --import`. `game/audio/sound.gd` plays them by name.
+Then `godot --headless --path . --import`. `game/audio/sound.gd` plays them by name. A build
+writes each sound's master WAV and then the files the game plays, one a mix rate (an effect's
+PCM, a loop's Ogg Vorbis; the section above `main`), which needs ffmpeg, with libvorbis for the
+loops; the rest of the forge is numpy.
 
 The second cut (Ryan's notes, 23 September, after the first was measured):
   - A phone speaker starts around 300 Hz, so weight lives in the 150 to 800 Hz band (a
@@ -3774,10 +3778,113 @@ def read(name):
         return x, w.getframerate()
 
 
+# ---------------------------------------------------------------- every sound as the game plays it
+# A sound ships as a file for each rate the game's audio mixes at, written from the master WAV above:
+# an effect a PCM WAV, a loop Ogg Vorbis at quality 10 (Ryan, 24 November, of the game's Hold The
+# Line against the pair page's: "The game track sounds much worse to me than the page. The page mix
+# is what I iterated on and approved"; then "Yes, fix the effects"). Godot's own WAV compression
+# (QOA) laid a white hiss close under the top octaves, and on the phone, whose driver always mixes
+# at 44.1 kHz, Godot's rate converter dulled the top and folded high partials back as ghost tones.
+# Quality 10 measures cleaner than the page's AAC in every band above 150 Hz, PCM is the master
+# itself (docs/measurements.md, 24 November), and the game plays the file at the mix rate, so
+# nothing converts it. The master stays for the tools (the pair page, measure, audition), its import
+# skipped so no build carries it. Needs ffmpeg on the PATH, with libvorbis for the loops.
+RATES = (44100, 48000)   # the phone's, and the usual desk's (game/audio/sound.gd's RATES)
+VORBIS_QUALITY = 10
+# ffmpeg's own resampler on a long filter: within 98 dB of soxr's below 18 kHz, and in every ffmpeg.
+RESAMPLE = "aresample=%d:filter_size=256:phase_shift=14:linear_interp=0:exact_rational=1:cutoff=0.97"
+
+
+VOICE = os.path.join(OUT, "voice")   # Jenny's lines, as tools/soundforge/voice_lines.py ships them
+
+
+def ffmpeg_ready(vorbis):
+    import shutil
+    import subprocess
+    if shutil.which("ffmpeg") is None:
+        sys.exit("the game's files at every rate need ffmpeg on the PATH%s" % (", with libvorbis" if vorbis else ""))
+    if vorbis and "libvorbis" not in subprocess.run(["ffmpeg", "-hide_banner", "-encoders"], capture_output=True, text=True).stdout:
+        sys.exit("this ffmpeg has no libvorbis, which the loops' Vorbis files need")
+
+
+def write_rates(master, stem):
+    """A master WAV into the game's file at each of RATES (`<stem>.<rate>.wav`, a loop's `.ogg`):
+    a loop's Ogg Vorbis, any other sound's PCM WAV, a rate the master already has a copy of it; and
+    the master's import skipped, so Godot neither imports the master nor exports it."""
+    import shutil
+    import subprocess
+    import wave as wav_
+    loop = os.path.basename(stem).startswith("music_")
+    with wav_.open(master, "rb") as w:
+        own = w.getframerate()
+    out = []
+    for rate in RATES:
+        path = "%s.%d.%s" % (stem, rate, "ogg" if loop else "wav")
+        resample = [] if rate == own else ["-af", RESAMPLE % rate]
+        if loop:
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", master] + resample
+                           + ["-c:a", "libvorbis", "-q:a", str(VORBIS_QUALITY), path], check=True)
+        elif not resample:
+            shutil.copyfile(master, path)
+        else:
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", master] + resample + ["-c:a", "pcm_s16le",
+                            "-map_metadata", "-1", "-fflags", "+bitexact", "-flags:a", "+bitexact", path], check=True)
+        out.append(path)
+    with open(master + ".import", "w", newline="\n") as f:
+        f.write('[remap]\n\nimporter="skip"\n')
+    return out
+
+
+def rate_files(name):
+    """A SHIP sound's files at every rate, from its master in OUT."""
+    return write_rates(os.path.join(OUT, name + ".wav"), os.path.join(OUT, name))
+
+
+def voice_lines():
+    """Jenny's lines as the game's table names them (VOICE's lines.json), each a master in VOICE."""
+    import json
+    with open(os.path.join(VOICE, "lines.json"), encoding="utf-8") as f:
+        hooks = json.load(f)["hooks"]
+    return sorted({line["file"] for h in hooks.values() for pool in ("lines", "personality") for line in h[pool]})
+
+
+def retired(f, names):
+    """Whether a file is one `names` no longer holds: a master WAV whose sound is gone, or a file
+    at a rate (`hit.44100.wav`, `music_x.48000.ogg`) whose sound is gone or whose rate RATES no
+    longer holds. Any other file is none of these and stays."""
+    if not (f.endswith(".wav") or f.endswith(".ogg")):
+        return False
+    stem, _, rate = f[:-4].rpartition(".")
+    if stem and rate.isdigit():
+        return stem not in names or int(rate) not in RATES
+    return f.endswith(".wav") and f[:-4] not in names
+
+
 def main(argv):
-    if len(argv) < 1 or argv[0] not in ("build", "list", "measure", "sketch", "sections", "audition"):
+    if len(argv) < 1 or argv[0] not in ("build", "encode", "list", "measure", "sketch", "sections", "audition"):
         print(__doc__)
         return 2
+    if argv[0] == "encode":
+        # The game's files at every rate from the masters as they stand, without rendering them
+        # again: every sound and Jenny's lines, or the effects, the lines (`voice`), or some sounds.
+        names = argv[1:] or list(SHIP)
+        if argv[1:] == ["effects"]:
+            names = [n for n in SHIP if not n.startswith("music_")]
+        lines = voice_lines() if argv[1:] in ([], ["voice"]) else []
+        if argv[1:] == ["voice"]:
+            names = []
+        for name in names:
+            if name not in SHIP:
+                print("no such sound:", name)
+                return 1
+        ffmpeg_ready(any(n.startswith("music_") for n in names))
+        for name in names:
+            for path in rate_files(name):
+                print("%-28s %s" % (name, os.path.relpath(path)))
+        for line in lines:
+            for path in write_rates(os.path.join(VOICE, line + ".wav"), os.path.join(VOICE, line)):
+                print("%-28s %s" % (line, os.path.relpath(path)))
+        return 0
     if argv[0] == "audition":
         # Every effect as built, one after another with a second between, into one file,
         # and where each one starts.
@@ -3842,6 +3949,8 @@ def main(argv):
         if name not in SHIP:
             print("no such sound:", name)
             return 1
+    ffmpeg_ready(any(n.startswith("music_") for n in names))   # before the renders, which take minutes a loop
+    for name in names:
         seed(name)
         x = SHIP[name]()
         if name.startswith("music_"):
@@ -3849,11 +3958,12 @@ def main(argv):
         else:
             x = master(x)
             path = write_as_is(name, x, True)
+        rate_files(name)
         print("%-16s %5.2f s  %s" % (name, len(x) / SR, os.path.relpath(path)))
     if whole:
         # A whole build retires what SHIP no longer names (and its import file).
         for f in sorted(os.listdir(OUT)):
-            if f.endswith(".wav") and f[:-4] not in SHIP:
+            if retired(f, SHIP):
                 os.remove(os.path.join(OUT, f))
                 if os.path.exists(os.path.join(OUT, f + ".import")):
                     os.remove(os.path.join(OUT, f + ".import"))
