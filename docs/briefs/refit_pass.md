@@ -179,23 +179,13 @@ second peak, a cleared field does nothing, and menace is a pack's threat rating,
 Equal worth is not equal difficulty: tuning each composition to its rating within a band is the
 numbers pass's, and what a boss pays and salvage's growth by tier are the economy pass's.
 
-**On trial, four dials** (a debug build's TRIALS, each read as the next battle starts):
-
-| Dial | Its choices | What it asks |
-|---|---|---|
-| RUPTURE | 1, 2 or 3 beats, two the game's | His play of the two beats and of the elite's four |
-| TIDE | ×1, ×1.5, ×2 | How many packs the opening places and each wave sends, the Rupture's size left alone, so the extras are never more to kill |
-| STRIKE | 10, 7, 5 or 3 a pip, ten the game's | His "each needs to do less to the wall" |
-| FODDER | 100, 75 or 50 | A rank-and-file kill's worth on the meter. With the size in beats it may have no job left |
-
-More since 23 November, from his play of these: `docs/tide_proposal.md` has each with the words
-it answers.
-
-The tide and the strike are his direction for "noticeably more spawns then the minimum number
-required" (the pacing row). Claude's lean for his first play: TIDE on ×1.5 with the strike at
-ten, about one pack in three left standing for the same meter. Its holes: the bot declines no
-fight, so the strike's number is his play's to find; salvage pays by the pack, so packs left
-standing are purse left behind; and a multiplier is a trial's shape, never the game's form.
+**The dials of that day**, three of them gone since 24 November, when the trials' page was cut
+to what is played (`docs/tide_proposal.md`, section 3): the tide's density, for his
+"noticeably more spawns then the minimum number required", left to the packs every mouth sends
+at once; the fodder's worth on the meter left with no job, since at half the middle still won
+his play; the Rupture's beats stay two and are a runner's what-if (`RIFTGATE_BEATS`). The wall
+strike is on the page still, ten, five or three a pip, for his "each needs to do less to the
+wall".
 
 **A second flank patrol a domain: a first proposal, nothing in content.** His words: "Another
 would probably be smart, yeah. Different enough that the same strategy doesn't strictly work on

@@ -36,6 +36,8 @@ extends SceneTree
 ##           "pack 1", "pack 2" or "pack 3", stood on a grid laid from its members (the front
 ##           rank from the left, a massive foe filling its column, the back rank behind). With
 ##           it, the compositions are read only when kinds= names them
+##   foe     a what-if on one foe's numbers for the run: foe=treant:hp=9:attack=4:armour=0, as
+##           many foes as wanted joined by ; (to size a foe before content moves it)
 
 
 ## A grid for a hand-made pack (packs=), eight cells, front then back: the front-rank foes from
@@ -95,7 +97,7 @@ func combos(pool: Array, n: int) -> Array:
 
 
 func _init() -> void:
-	var o := {"seeds": "5", "tier": "1", "pool": "", "kinds": "patrol,formation,elite,boss", "ramp": "1", "squads": "0", "label": "", "only": "", "refit": "", "blows": "100", "life": "100", "machines": "0", "packs": ""}
+	var o := {"seeds": "5", "tier": "1", "pool": "", "kinds": "patrol,formation,elite,boss", "ramp": "1", "squads": "0", "label": "", "only": "", "refit": "", "blows": "100", "life": "100", "machines": "0", "packs": "", "foe": ""}
 	var asked := {}
 	for arg in OS.get_cmdline_user_args():
 		var kv := str(arg).split("=", true, 1)
@@ -124,6 +126,17 @@ func _init() -> void:
 	if not str(o["refit"]).is_empty():
 		for line in Refit.apply(db, Refit.parse(str(o["refit"]))):
 			print("what-if: " + str(line))
+	for spec in str(o["foe"]).split(";", false):
+		var bits := str(spec).split(":", false)
+		if bits.is_empty() or not db.foes.has(str(bits[0])):
+			push_error("anchor_read: foe= names no foe '%s'" % str(spec))
+			quit(1)
+			return
+		for i in range(1, bits.size()):
+			var kv := str(bits[i]).split("=", true, 1)
+			if kv.size() == 2:
+				db.foes[str(bits[0])][str(kv[0])] = int(kv[1])
+		print("what-if: %s as %s" % [str(db.foes[str(bits[0])].get("name", bits[0])), ", ".join(Array(bits.slice(1)))])
 	var four := 0.0
 	var names: Array = []
 	for cid in pool:

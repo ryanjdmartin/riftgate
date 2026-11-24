@@ -11,9 +11,9 @@ extends SceneTree
 ## tier ones), --rule muster|defence (the map's player, BattleBot.Rule: muster by default, the
 ## player that gathers; defence the floor), --policy greedy|random (the fight bot, greedy), --out
 ## path (docs/battle_run.md). The field's trial dials are read from the environment as the game
-## reads them (Settings.field_trial: RIFTGATE_STRIKE, RIFTGATE_TIDE, RIFTGATE_BEATS,
-## RIFTGATE_OPENING, RIFTGATE_FODDER, RIFTGATE_FIELD_DEPTH, RIFTGATE_OVERHEAT, RIFTGATE_PACE,
-## RIFTGATE_RIFT_SENDS, RIFTGATE_FLANK_TEARS, RIFTGATE_PACK_BONUS), a what-if the
+## reads them (Settings.field_trial: RIFTGATE_GRADED, RIFTGATE_SENDS, RIFTGATE_STRIKE,
+## RIFTGATE_PACK_BONUS, RIFTGATE_FIELD_DEPTH, RIFTGATE_OPENING, RIFTGATE_BEATS, RIFTGATE_LEADERS,
+## RIFTGATE_OVERHEAT), a what-if the
 ## report names under its first line; with none set it is the game's own field.
 ##
 ## A battle is set up as a run sets one up (Battle.setup at the tier and the Convergence, the boss
@@ -213,7 +213,7 @@ func report() -> String:
 		Policy.kind_name(policy)])
 	L.append("")
 	var trials: Array[String] = []
-	for key in ["RIFTGATE_STRIKE", "RIFTGATE_TIDE", "RIFTGATE_BEATS", "RIFTGATE_OPENING", "RIFTGATE_FODDER", "RIFTGATE_FIELD_DEPTH", "RIFTGATE_OVERHEAT", "RIFTGATE_PACE", "RIFTGATE_RIFT_SENDS", "RIFTGATE_FLANK_TEARS", "RIFTGATE_PACK_BONUS", "RIFTGATE_LEADERS"]:
+	for key in ["RIFTGATE_GRADED", "RIFTGATE_SENDS", "RIFTGATE_STRIKE", "RIFTGATE_PACK_BONUS", "RIFTGATE_FIELD_DEPTH", "RIFTGATE_OPENING", "RIFTGATE_BEATS", "RIFTGATE_LEADERS", "RIFTGATE_OVERHEAT"]:
 		if not OS.get_environment(key).is_empty():
 			trials.append("%s=%s" % [key, OS.get_environment(key)])
 	if not trials.is_empty():

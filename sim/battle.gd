@@ -145,14 +145,6 @@ var fractures: int = 0            # Fractures earned so far
 var rupture_turn: int = -1        # the phase the seal broke at; -1 while it holds (or with no seal)
 var elites_spawned: Array = []    # the elite compositions spawned this battle, by id
 var field_menace: int = 0         # the menace of the opening and the tide through the beats, the thresholds' base
-## The fodder's trial (Ryan, 10 November, after his play: "If fracture rewards were a little lower
-## for fodder, then it becomes a bit more of a quantity game for non-elites and I'll feel more
-## like sending my flankers out"): the share, in hundredths, of a kill's menace the Rupture meter
-## counts when its pack came as no elite, 100 the game's. The tally itself (salvage's and
-## Anathema's) is never touched: the meter reads it less what the trial held back. A debug
-## build's SETTINGS → TRIALS → FODDER and RIFTGATE_FODDER set it (Settings.field_trial).
-static var fodder_trial: int = 100
-var meter_held: int = 0           # hundredths of menace the fodder's trial has kept off the meter this battle; 0 with no trial
 ## The pack bonus on trial, menace a pack pays the Rupture meter as it falls, on top of its
 ## rating's worth, 0 the game's (Ryan, 23 November: "Maybe add a flat fracture bonus to a pack on
 ## top of the per-foe weight, so that splitting into 4 fights across the map and grouping for
@@ -218,7 +210,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 	# start the ramp's count of formations (the second the guest's where there is one) and
 	# patrols, at the ramp's density. The harness's composed side (`formation`) is each entry a
 	# pack of one type under its own foe's faction, all placed and all cycled, as before.
-	var placed: Array = []   # [composition, hex, opening, extra]: opening 0 places it on the hex, 1 a move from the apron, 2 two moves; extra, a pack the tide's trial adds past the game's count (Ramp.tide_trial), which the Rupture's size leaves out
+	var placed: Array = []   # [composition, hex, opening, band]: opening 0 places it on the hex, 1 a move of its own from the apron, 2 two moves; band, the band of the wall it makes for under the graded tide, -1 with none
 	var w_cols := w
 	if not formation.is_empty():
 		var comps: Array = []
@@ -230,7 +222,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		field.cycle = comps
 		field.patrol_cycle = comps.duplicate(true)
 		for j in range(comps.size()):
-			placed.append([comps[j], Hex.offset_to_axial((w_cols * (j + 1)) / (comps.size() + 1), 3 + (j % 3)), 0, false])
+			placed.append([comps[j], Hex.offset_to_axial((w_cols * (j + 1)) / (comps.size() + 1), 3 + (j % 3)), 0, -1])
 	else:
 		var has_guest := not guest.is_empty() and guest != faction and db.factions.has(guest)
 		# The tier's compositions the ramp's gate holds (7 November: variants placed on the tier and
@@ -239,15 +231,39 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		var patrols := _alternate(db.compositions(faction, tier + 1, "patrol", ramp), db.compositions(guest, tier + 1, "patrol", ramp) if has_guest else [])
 		field.cycle = _alternate(forms, patrols)
 		field.patrol_cycle = patrols
-		var nf := Ramp.dense(Ramp.formations_at(ramp))   # the game's count, but under the tide's trial
-		var np := Ramp.dense(Ramp.patrols_at(ramp))
+		var nf := Ramp.formations_at(ramp)
+		var np := Ramp.patrols_at(ramp)
+		if Battlefield.graded_tide:
+			# The graded tide (Battlefield.graded_tide): the domain's packs by rating, the guest's
+			# in turn with them, each list taken from a start of its own by the battle's seed; the
+			# hunting packs apart. The opening is the game's own count in the graded tide's packs,
+			# a pack for three before the middle and a pack for one at each end, each a move
+			# farther out than the game stands them (Ryan, 23 November: "I'd rather they don't
+			# start so close but reach the wall faster").
+			var mine := db.graded_packs(faction, tier + 1, ramp)
+			var theirs := db.graded_packs(guest, tier + 1, ramp) if has_guest else {}
+			for r in [1, 2, 3]:
+				var pool := _alternate(mine.get(r, []), theirs.get(r, []))
+				if not pool.is_empty():
+					field.graded[r] = pool
+					field._graded_at[r] = posmod(hash([seed_value, r]), pool.size())
+			field.hunters = patrols.filter(func(c: Dictionary) -> bool: return not str(c.get("hunts", "")).is_empty())
+		if not field.graded.is_empty():
+			var mid := Battlefield.BAND_RATING.size() / 2
+			for k in range(nf):
+				placed.append([field.next_graded(3), Hex.offset_to_axial((w_cols * (k + 1)) / (nf + 1), OPENING_FLOOR_ROW), 2, mid])
+			for k in range(np):
+				var inset := (k / 2) * 3
+				placed.append([field.next_graded(1), Hex.offset_to_axial(inset if k % 2 == 0 else w_cols - 1 - inset, OPENING_FLOOR_ROW), 3, 0 if k % 2 == 0 else Battlefield.BAND_RATING.size() - 1])
+			forms = []
+			patrols = []
 		# The opening (the long wall brief 3.2): the ramp's formations across the width as before,
 		# each a move of its own from the apron, so its first walk reaches the wall; the ramp's
 		# patrols on the flanks, two moves out. The rows are set once each pack is dressed and
 		# its pace known (_open_rows, below).
 		if not forms.is_empty():
 			for k in range(nf):
-				placed.append([forms[k % forms.size()], Hex.offset_to_axial((w_cols * (k + 1)) / (nf + 1), OPENING_FLOOR_ROW), 1, k >= Ramp.formations_at(ramp)])
+				placed.append([forms[k % forms.size()], Hex.offset_to_axial((w_cols * (k + 1)) / (nf + 1), OPENING_FLOOR_ROW), 1, -1])
 		# No hunter stands on the field at turn one (Ryan, 8 November: "no hunters should be on the
 		# field turn one, but that was a formation pass issue, I think"): the opening's patrols are
 		# the tier's that push, in their order, and the hunting packs come with the tide and the
@@ -257,8 +273,8 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 			openers = patrols
 		if not openers.is_empty():
 			for k in range(np):
-				var inset := (k / 2) * 3   # the two flanks' edges first; a trial's extras three columns in at a time
-				placed.append([openers[k % openers.size()], Hex.offset_to_axial(inset if k % 2 == 0 else w_cols - 1 - inset, OPENING_FLOOR_ROW), 2, k >= Ramp.patrols_at(ramp)])
+				var inset := (k / 2) * 3   # the two flanks' edges first, then three columns in at a time
+				placed.append([openers[k % openers.size()], Hex.offset_to_axial(inset if k % 2 == 0 else w_cols - 1 - inset, OPENING_FLOOR_ROW), 2, -1])
 	var gate_o := Hex.axial_to_offset(map.gate)
 	var i := 0
 	var face_rng := RandomNumberGenerator.new()
@@ -270,18 +286,12 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		field.add_unit(u)
 		i += 1
 	for p in placed:
-		var sq := field.emerge(p[0], p[1])
+		if (p[0] as Dictionary).is_empty():
+			continue
+		var sq := field.emerge(p[0], p[1], 0, 1, int(p[3]))
 		if sq != null and int(p[2]) > 0:
 			_open_row(sq, Hex.axial_to_offset(p[1]).x, int(p[2]))
-			field.assign_goal(sq)   # its segment is read from where it opens: the wall it reaches soonest
-	# The start's tears on trial (Battlefield.flank_tears_trial): open from the first turn across
-	# the width, sending from the first peak. The Rupture's size below leaves them out, as it
-	# leaves the tide's extras.
-	for k in range(maxi(0, Battlefield.flank_tears_trial)):
-		var at := field.start_tear_hex(k, Battlefield.flank_tears_trial)
-		if at == Battlefield.NO_HEX:
-			break
-		field.tears.append({"pos": at, "opened": 0})
+			field.assign_goal(sq, 0, 1, int(p[3]))   # its segment is read from where it opens: the wall it reaches soonest, or its band's under the graded tide
 	var fac: Dictionary = db.factions.get(faction, {})
 	var firsts := db.bosses_of(faction)
 	var boss_id := str(lineup[0]) if not lineup.is_empty() else (firsts[0] if not firsts.is_empty() else "")
@@ -296,31 +306,44 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 	# ramp's beats, as Battlefield.peak sends it (the rift's cycle in order; a patrol from every
 	# tear open before a peak, in the tears' cycle's order; the ramp's tears opening after it),
 	# each at its threat rating's worth, so a layout's draw moves no threshold. Placeholders.
-	# Under the tide's trial the size stays the game's: the extras it places and sends are
-	# the squad's to choose among, never more to kill (Ramp.tide_trial).
+	# Every mouth's sends are counted (Battlefield.sends_trial), and under the graded tide each
+	# at the mean of the bands its mouth draws from (Battlefield.graded_mean), with the hunting
+	# pack the rift sends every other peak.
 	field_menace = 0
 	var packs_counted := 0   # the packs that menace comes in, for the pack bonus's trial
 	for p in placed:
-		if not bool(p[3]):
+		if not (p[0] as Dictionary).is_empty():
 			field_menace += db.composition_menace(p[0])
 			packs_counted += 1
+	var sends := maxi(1, Battlefield.sends_trial)
 	var tears_open := 0
+	var cycle_at := 0
 	var patrol_at := 0
 	for j in range(Ramp.beats_at(tier)):
-		if not field.cycle.is_empty():
-			field_menace += db.composition_menace(field.cycle[j % field.cycle.size()])
-			packs_counted += 1
-		for t in range(tears_open):
-			if field.patrol_cycle.is_empty():
-				break
-			field_menace += db.composition_menace(field.patrol_cycle[patrol_at % field.patrol_cycle.size()])
-			packs_counted += 1
-			patrol_at += 1
+		if not field.graded.is_empty():
+			field_menace += sends * Battlefield.graded_mean(true) + tears_open * sends * Battlefield.graded_mean(false)
+			packs_counted += sends * (1 + tears_open)
+			if j % 2 == 1 and not field.hunters.is_empty():
+				field_menace += db.composition_menace(field.hunters[(j / 2) % field.hunters.size()])
+				packs_counted += 1
+		else:
+			for k in range(sends):
+				if field.cycle.is_empty():
+					break
+				field_menace += db.composition_menace(field.cycle[cycle_at % field.cycle.size()])
+				packs_counted += 1
+				cycle_at += 1
+			for t in range(tears_open * sends):
+				if field.patrol_cycle.is_empty():
+					break
+				field_menace += db.composition_menace(field.patrol_cycle[patrol_at % field.patrol_cycle.size()])
+				packs_counted += 1
+				patrol_at += 1
 		tears_open += Ramp.tears_at(ramp)
 	# The lightest patrol the tide deals is the squad's to leave; an elite the tier calls is
 	# its size's rating, whichever comes.
-	var lightest := 0
-	for c in field.patrol_cycle:
+	var lightest := ContentDB.MENACE_PER_PIP if not field.graded.is_empty() else 0
+	for c in (field.patrol_cycle if field.graded.is_empty() else []):
 		var m := db.composition_menace(c)
 		lightest = m if lightest == 0 else mini(lightest, m)
 	var elite := ContentDB.worth_of(int(ContentDB.SQUAD_BY_SIZE["elite"]))
@@ -413,10 +436,9 @@ func is_sealed() -> bool:
 	return boss != null and boss.sealed
 
 
-## What the Rupture meter reads: the menace killed, less what the fodder's trial held back, and
-## what the pack bonus's trial has paid.
+## What the Rupture meter reads: the menace killed, and what the pack bonus's trial has paid.
 func meter() -> int:
-	return (menace_killed * 100 - meter_held) / 100 + meter_bonus
+	return menace_killed + meter_bonus
 
 
 ## The Rupture: the seal breaks, by the last Fracture. Engaging the boss is the battle's last
@@ -1729,8 +1751,6 @@ func finish_skirmish() -> void:
 		elif pay > 0:
 			pack_paid[sq.id] = paid + pay
 		menace_killed += pay
-		if fodder_trial < 100 and sq.composition_size != "elite":
-			meter_held += pay * (100 - clampi(fodder_trial, 0, 100))
 	current = null
 	boss_fight = false
 	state = State.PLAN

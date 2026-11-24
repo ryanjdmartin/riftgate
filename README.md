@@ -256,7 +256,7 @@ perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.
 #   machines=3 reads every fight with that many machines whatever it is rated: the first battle's trio against a true four
 #   refit=finds=2 reads a squad a few battles into its tier (two basic guns a die swapped for tier-one finds); life=150 and blows=115 a leader's hit points and attack at that share of content's: the block a leader would stand at a Convergence on
 #   refit=face=<id>:power=2:strikes=2:heat=5 rewrites one piece's entry for the run (its numbers, a keyword's, its tier), a part a piece: the tier-one bench's spec is docs/briefs/numbers_pass.md, section 6
-#   "packs=goblin*2;goblin*3+mandragora@2;treant*2@3" reads hand-made packs, a rating after @ (machines=1: each met by one machine), to size a pack before it is content
+#   "packs=goblin*2;goblin*3+mandragora@2;treant*2@3" reads hand-made packs, a rating after @ (machines=1: each met by one machine), to size a pack before it is content; "foe=treant:hp=9:armour=0" lays one foe's numbers for the run
 #   only=id,id reads those compositions or bosses alone; tier=, ramp=; refit=<spec> lays a
 #   what-if over content for the run (refit=barrier=none, the Barrier basic off the stock dice);
 #   blows=80 sets every elite's and boss's attack to that share of content's, in hundredths
@@ -457,30 +457,25 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_AA=off|fxaa|msaa2|msaa4              the AA mode (the player's SETTINGS, AA MODE; MSAA 4X by default)
 #   RIFTGATE_SAFE=<top>,<bottom>                  keeps a phone's safe bands clear
 # Numbers on trial (a what-if over content, never a decision)
+#   RIFTGATE_GRADED=1                             the graded tide: packs rated one to three dealt by where they make for, ones to the wall's ends, twos between, threes down the middle
+#   RIFTGATE_SENDS=2                              the packs every mouth sends at a peak, the rift and each open tear, 1 to 4, 1 the game's
+#   RIFTGATE_STRIKE=5                             what a pip of threat rating strikes the wall for, 10 the game's
+#   RIFTGATE_PACK_BONUS=50                        what a pack pays the Rupture meter as it falls, on top of its rating, in hundredths of a pip, 0 the game's
+#   RIFTGATE_FIELD_DEPTH=14                       the field's rows from the rift to the wall, 10 to 24, 12 the game's
+#   RIFTGATE_PHASED=at_once                       a machine's Phased at once until the round ends, round_end the game's (Phased as the round ends, through the next)
+# The same on the phone, a debug build's SETTINGS, TRIALS, each read as the next battle starts,
+# with no relaunch. The page holds what is tried in person and nothing else (24 November):
+#   TIDE (BUILT, GRADED), SENDS (1, 2, 3), STRIKE (10, 5, 3), PACK BONUS (NONE, +½, +1),
+#   FIELD DEPTH (12, 14, 16), PHASED (ROUND END, AT ONCE), with the Phase Inducer, a tier-two
+#   component, to set it for testing
+# and over them SET: GRADED lays TIDE GRADED, SENDS 2, STRIKE 5 and PACK BONUS +½ at once;
+# AS BUILT sets every dial of the page back to the game's own
+# The runners' what-ifs, with no dial on the phone
 #   RIFTGATE_REFIT=hotter=-1                      any spec the runners' --refit takes, read as the game starts
 #   RIFTGATE_OVERHEAT=2                           the hull an overheat burns a point of heat past the maximum, 1 the game's
-#   RIFTGATE_FIELD_DEPTH=14                       the field's rows from the rift to the wall, 10 to 24, 12 the game's
 #   RIFTGATE_OPENING=1                            how many more of their own moves from the wall the first packs stand, 0 to 3
-#   RIFTGATE_FODDER=50                            the share, in hundredths, of a rank-and-file pack's menace that fills the Rupture meter
 #   RIFTGATE_BEATS=3                              the Rupture meter's size in beats of the tide, 1 to 6, 2 the game's
-#   RIFTGATE_TIDE=150                             the packs the opening places and each wave sends, in hundredths, 100 the game's
-#   RIFTGATE_STRIKE=5                             what a pip of threat rating strikes the wall for, 10 the game's
-#   RIFTGATE_PACE=1                               hexes added to every pack's move, 0 to 4, 0 the game's
-#   RIFTGATE_RIFT_SENDS=2                         the compositions the rift sends a peak, 1 to 4, each to its own stretch of wall
-#   RIFTGATE_FLANK_TEARS=2                        tears open across the width from the first turn, two at the wall's ends or four, 0 the game's
 #   RIFTGATE_LEADERS=20                           an elite's and a boss's hit points that many hundredths more for each Convergence past its tier's first, three steps at most, 0 the game's
-#   RIFTGATE_PACK_BONUS=50                        what a pack pays the Rupture meter as it falls, on top of its rating, in hundredths of a pip, 0 the game's
-#   RIFTGATE_PHASED=at_once                       a machine's Phased at once until the round ends, round_end the game's (Phased as the round ends, through the next)
-# The same on the phone, a debug build's SETTINGS, TRIALS (a page that scrolls), each read as
-# the next battle starts, with no relaunch (RIFTGATE_REFIT and RIFTGATE_OVERHEAT have no dial:
-# the heat's, the top basic's, the rank and file's, the Barrier basic's and the overheat's left
-# the page on 23 November, each as built):
-#   FIELD DEPTH (12, 14, 16), OPENING (+0, +1, +2), FODDER (FULL, 3/4, HALF),
-#   RUPTURE (1 BEAT, 2 BEATS, 3 BEATS), TIDE (×1, ×1.5, ×2), STRIKE (10, 7, 5, 3),
-#   PACE (BUILT, +1, +2), RIFT SENDS (×1, ×2, ×3), START TEARS (NONE, TWO, FOUR),
-#   PACK BONUS (NONE, +¼, +½, +1), LEADERS (BUILT, +10% A C, +20% A C),
-#   PHASED (ROUND END, AT ONCE), with the Phase Inducer, a tier-two component, to set it for testing
-# and over them SET: AS BUILT sets every dial of the page back to the game's own
 # A thing fired constantly, to judge it running (=1 unless a value is shown)
 #   RIFTGATE_FEED_DEBUG       the skirmish feed's analysis events and the ground tears (any run)
 #   RIFTGATE_PULSE_DEBUG      END TURN pulsing, on the map and in a fight (any run)

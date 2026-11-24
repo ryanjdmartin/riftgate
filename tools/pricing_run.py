@@ -172,7 +172,7 @@ class Content:
         for size in ('formation', 'patrol'):
             found = []
             for t in range(max(1, min(tier, 3)), 0, -1):
-                found = [c for c in f.get('compositions', []) if c.get('size') == size and t in tiers_of(c)]
+                found = [c for c in f.get('compositions', []) if c.get('size') == size and t in tiers_of(c) and not c.get('tide')]   # a tide on trial's packs are no part of the game's
                 if found:
                     break
             for c in found:

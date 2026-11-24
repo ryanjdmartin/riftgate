@@ -33,15 +33,9 @@ const DISPLAY_DEFAULTS := {
 	"skirmish_controls": "middle",   # SKIRMISH_CONTROLS: where the skirmish's log, dice and Reroll sit
 	"map_view": "wall_left",   # MAP_VIEWS: the battle map's orientation (MapOrient), a view only
 	"field_depth": "12",   # FIELD_DEPTHS: a debug build's trial of the field's depth in rows (Ramp.depth_trial), read as a battle starts
-	"field_opening": "0",   # FIELD_OPENINGS: a debug build's trial of how many moves farther from the wall the opening's packs stand (Battle.opening_trial), read as a battle starts
-	"fodder_worth": "100",   # FODDER_WORTHS: a debug build's trial of what a rank-and-file kill fills of the Rupture meter, in hundredths (Battle.fodder_trial), read as a battle starts
-	"rupture_beats": "2",   # RUPTURE_BEATS: a debug build's trial of the Rupture meter's size in beats of the tide (Ramp.beats_trial), read as a battle starts
-	"tide_density": "100",   # TIDES: a debug build's trial of how many packs the opening places and the tide sends, in hundredths of the game's (Ramp.tide_trial), read as a battle starts
 	"wall_strike": "10",   # STRIKES: a debug build's trial of what a pip of threat rating strikes the wall for (Battlefield.strike_trial), read as a battle starts
-	"pack_pace": "0",   # PACES: a debug build's trial of hexes added to every pack's move (Battlefield.pace_trial), read as a battle starts
-	"rift_sends": "1",   # RIFT_SENDS: a debug build's trial of the compositions the rift sends a peak, each leaving in its own direction (Battlefield.rift_sends_trial), read as a battle starts
-	"flank_tears": "0",   # FLANK_TEARS: a debug build's trial of tears open across the width from the first turn (Battlefield.flank_tears_trial), read as a battle starts
-	"leader_step": "0",   # LEADER_STEPS: a debug build's trial of an elite's and a boss's hit points more for each Convergence past its tier's first, in hundredths (ContentDB.leader_step_trial), read as a battle starts
+	"tide_form": "built",   # TIDE_FORMS: a debug build's trial of the graded tide, packs dealt by where they make for (Battlefield.graded_tide), read as a battle starts
+	"mouth_sends": "1",   # SENDS: a debug build's trial of the packs every mouth sends at a peak (Battlefield.sends_trial), read as a battle starts
 	"pack_bonus": "0",   # PACK_BONUSES: a debug build's trial of what a pack pays the Rupture meter as it falls, on top of its rating, in hundredths of a pip (Battle.pack_bonus_trial), read as a battle starts
 	"chip_style": "corner",   # UnitView.CHIP_STYLES: a debug build's comparison of how a status chip carries its number, read as the field draws
 	"phased_form": "round_end",   # PHASED_FORMS: a debug build's trial of when a machine's Phased lands, as the round ends or as its entry is spent (Skirmish.phase_at_once), read as a battle starts
@@ -79,133 +73,82 @@ const MAP_VIEW_LABELS := {"wall_left": "WALL LEFT", "wall_bottom": "WALL BOTTOM"
 ## round ends, the foes whose pick it was picking again (Skirmish.phase_at_once).
 const PHASED_FORMS := ["round_end", "at_once"]
 const PHASED_FORM_LABELS := {"round_end": "ROUND END", "at_once": "AT ONCE"}
-## The field's trial, a debug build's (Ryan, 10 November, after his play of the long wall: "I think
-## the map is a bit too shallow ... If the map is a little deeper, and the seam starts a little
-## farther out, it will feel more like I can actually plan a little bit ahead instead of panicking
-## from the very start"): the field's depth in rows, twelve the game's, and how many moves farther
-## from the wall the opening's packs stand, none the game's. The two go together: the opening is
-## measured from the wall, so depth alone leaves a formation's first walk on the wall, and the
-## rows a deeper field adds are what the opening has to stand farther out on.
+## The trials' page, cut on 24 November to what is tried in person (Ryan: "clean up the trials
+## tab. Remove anything no longer relevant. There's too many variables in there, we need to tone
+## it down to just what is actually needed to try in person versus just chatting it out"). What
+## stayed, each read as the next battle starts:
+## - TIDE, the graded tide (his design of 23 November; Battlefield.graded_tide): packs rated one
+##   to three dealt by where they make for, ones to the wall's ends, twos between, threes down
+##   the middle.
+## - SENDS, the packs every mouth sends at a peak, the rift and each tear alike ("If we enable
+##   multiple simultaneous spawns from all spawn points, it gives us a very useful tuning dial
+##   for convergences. More so then the beat, I think"; Battlefield.sends_trial).
+## - STRIKE, what a pip of threat rating strikes the wall for, ten the game's ("Reduce foe damage
+##   to the wall so that quantity matters").
+## - PACK BONUS, what a pack pays the Rupture meter as it falls, over its rating ("Maybe add a
+##   flat fracture bonus to a pack on top of the per-foe weight"; Battle.pack_bonus_trial).
+## - FIELD DEPTH, the field's rows, twelve the game's ("I think 12, 14, and 16 unit field depths
+##   all have their merit").
+## GRADED_SET lays the graded tide's first set in one press and TRIAL_KEYS are what AS BUILT
+## sets back. What left the page with its engine: the tide's density, the rift's own count (the
+## sends took both), the fodder's worth on the meter (at half the middle still won, his play of
+## 23 November), a flat hex on every pack's move (the pace is a pack's own) and the tears open
+## from the start ("I wouldn't clutter the map with a ton of tears"). What left the page and
+## stays a runner's what-if, as the basics' did: the opening's distance (RIFTGATE_OPENING), the
+## Rupture's beats (RIFTGATE_BEATS) and the leaders' step (RIFTGATE_LEADERS).
+const TIDE_FORMS := ["built", "graded"]
+const TIDE_FORM_LABELS := {"built": "BUILT", "graded": "GRADED"}
+const SENDS := ["1", "2", "3"]
+const STRIKES := ["10", "5", "3"]
+const PACK_BONUSES := ["0", "50", "100"]
+const PACK_BONUS_LABELS := {"0": "NONE", "50": "+½", "100": "+1"}
 const FIELD_DEPTHS := ["12", "14", "16"]
-const FIELD_OPENINGS := ["0", "1", "2"]
-const FIELD_OPENING_LABELS := {"0": "+0", "1": "+1", "2": "+2"}
-## The fodder's trial beside them (the same play: "If fracture rewards were a little lower for
-## fodder, then it becomes a bit more of a quantity game for non-elites and I'll feel more like
-## sending my flankers out"): what a kill fills of the Rupture meter when its pack came as no
-## elite, in hundredths, the whole the game's; an elite's fall fills its chunk whatever the dial.
-## As the meter was first built the middle formation alone earned the first Fracture and three
-## fights the Rupture; sized in beats since, the flank's patrols are part of it
-## (docs/measurements.md, 10 and 11 November).
-const FODDER_WORTHS := ["100", "75", "50"]
-const FODDER_WORTH_LABELS := {"100": "FULL", "75": "3/4", "50": "HALF"}
-## The meter's size beside it, in beats of the tide (Ryan, 11 November: "the 3 fractures, with
-## the current rate of fill, felt short to me", then "Try your lean first" of two beats): how many
-## peaks of Rift Pressure the Rupture's field part runs through, two the game's (Ramp.BEATS). One
-## beat is the opening and the first wave; three brings the second composition and the first
-## hunting packs, the runner's player's tenth turn (docs/measurements.md, 11 November). The two
-## dials lengthen a battle from two sides: this one leaves a kill's worth alone.
-const RUPTURE_BEATS := ["1", "2", "3"]
-const RUPTURE_BEATS_LABELS := {"1": "1 BEAT", "2": "2 BEATS", "3": "3 BEATS"}
-## The tide's density and the wall strike beside them (Ryan, 11 November: "I think we should try
-## to lean for noticeably more spawns then the minimum number required for our target completion
-## speed. When I was playing I felt the need to chase every pack down, since that felt possible.
-## I think that's wrong. More pusher and flanker packs, even if it means that each needs to do
-## less to the wall, is better"): how many packs the opening places and each wave sends against
-## the game's own, half again or twice (whole packs: Ramp.dense, Ramp.dense_at), with the
-## Rupture's size left on the game's own tide, so the extras are a choice and never more to
-## kill; and what a pip of threat rating strikes the wall for, ten the game's. The bot's reads
-## are docs/measurements.md, 11 November.
-const TIDES := ["100", "150", "200"]
-const TIDE_LABELS := {"100": "×1", "150": "×1.5", "200": "×2"}
-const STRIKES := ["10", "7", "5", "3"]
-## The dials of 23 November, from his play of the field's dials (each his words; the statics hold
-## them): the packs' pace, a hex or two more on every pack's move ("I'd probably give everything +1
-## right now and see what that does"); the rift sending two or three compositions a peak,
-## each making for its own stretch of wall ("sending multiple packs out of the rift at once, each
-## headed a different direction"); and tears open across the width from the first turn, two at
-## the wall's ends or four ("Having starting tears at the top and bottom might make sense";
-## "Tears need to spread wide"). The last two leave the Rupture's size on the game's own tide, as
-## TIDE does.
-const PACES := ["0", "1", "2"]
-const PACE_LABELS := {"0": "BUILT", "1": "+1", "2": "+2"}
-const RIFT_SENDS := ["1", "2", "3"]
-const RIFT_SENDS_LABELS := {"1": "×1", "2": "×2", "3": "×3"}
-const FLANK_TEARS := ["0", "2", "4"]
-const FLANK_TEARS_LABELS := {"0": "NONE", "2": "TWO", "4": "FOUR"}
-## And the pack bonus (the same day: "Maybe add a flat fracture bonus to a pack on top of the
-## per-foe weight, so that splitting into 4 fights across the map and grouping for bigger packs
-## are both viable ways of farming fracture"; Battle.pack_bonus_trial): a quarter, a half or a
-## whole pip a pack as it falls. TRIAL_KEYS are the dials the page's AS BUILT sets back.
-## And the leaders by the Convergence (the same day: "if they don't scale with me they'll become a
-## joke at C4"; ContentDB.leader_step_trial): an elite's and a boss's hit points a tenth or a
-## fifth more for each battle into its tier, the fifth what a read of a squad carrying finds asks.
-const LEADER_STEPS := ["0", "10", "20"]
-const LEADER_STEP_LABELS := {"0": "BUILT", "10": "+10% A C", "20": "+20% A C"}
-const PACK_BONUSES := ["0", "25", "50", "100"]
-const PACK_BONUS_LABELS := {"0": "NONE", "25": "+¼", "50": "+½", "100": "+1"}
-const TRIAL_KEYS := ["phased_form", "field_depth", "field_opening", "fodder_worth", "rupture_beats", "tide_density", "wall_strike", "pack_pace", "rift_sends", "flank_tears", "leader_step", "pack_bonus"]
+const GRADED_SET := {"tide_form": "graded", "mouth_sends": "2", "wall_strike": "5", "pack_bonus": "50"}
+const TRIAL_KEYS := ["tide_form", "mouth_sends", "wall_strike", "pack_bonus", "field_depth", "phased_form"]
 
 
-## Set the field's trial for the battles that start after this: RIFTGATE_FIELD_DEPTH,
-## RIFTGATE_OPENING, RIFTGATE_FODDER, RIFTGATE_BEATS, RIFTGATE_TIDE, RIFTGATE_STRIKE,
-## RIFTGATE_PACE, RIFTGATE_RIFT_SENDS, RIFTGATE_FLANK_TEARS, RIFTGATE_PACK_BONUS, RIFTGATE_LEADERS, RIFTGATE_OVERHEAT and RIFTGATE_PHASED (round_end or
-## at_once) on any run, else a debug build's settings (TRIAL_KEYS) when `saved` (the game's own
-## entry points pass it; a scene run alone and the tests read the environment only, so no
-## machine's saved settings move a test's field). Nothing set is the game's own field, meter,
+## Set the field's trial for the battles that start after this: RIFTGATE_GRADED (1),
+## RIFTGATE_SENDS, RIFTGATE_STRIKE, RIFTGATE_PACK_BONUS, RIFTGATE_FIELD_DEPTH, RIFTGATE_PHASED
+## (round_end or at_once), and the runners' own RIFTGATE_OPENING, RIFTGATE_BEATS, RIFTGATE_LEADERS
+## and RIFTGATE_OVERHEAT, on any run; else a debug build's settings (TRIAL_KEYS) when `saved` (the
+## game's own entry points pass it; a scene run alone and the tests read the environment only, so
+## no machine's saved settings move a test's field). Nothing set is the game's own field, meter,
 ## tide and overheat.
 static func field_trial(saved: bool = false) -> void:
-	var depth := OS.get_environment("RIFTGATE_FIELD_DEPTH")
-	var opening := OS.get_environment("RIFTGATE_OPENING")
-	var fodder := OS.get_environment("RIFTGATE_FODDER")
-	var beats := OS.get_environment("RIFTGATE_BEATS")
-	var tide := OS.get_environment("RIFTGATE_TIDE")
+	var graded := OS.get_environment("RIFTGATE_GRADED")
+	var sends := OS.get_environment("RIFTGATE_SENDS")
 	var strike := OS.get_environment("RIFTGATE_STRIKE")
-	var burn := OS.get_environment("RIFTGATE_OVERHEAT")
-	var phased := OS.get_environment("RIFTGATE_PHASED")
-	var pace := OS.get_environment("RIFTGATE_PACE")
-	var sends := OS.get_environment("RIFTGATE_RIFT_SENDS")
-	var flank := OS.get_environment("RIFTGATE_FLANK_TEARS")
 	var bonus := OS.get_environment("RIFTGATE_PACK_BONUS")
+	var depth := OS.get_environment("RIFTGATE_FIELD_DEPTH")
+	var phased := OS.get_environment("RIFTGATE_PHASED")
+	var opening := OS.get_environment("RIFTGATE_OPENING")
+	var beats := OS.get_environment("RIFTGATE_BEATS")
 	var leaders := OS.get_environment("RIFTGATE_LEADERS")
+	var burn := OS.get_environment("RIFTGATE_OVERHEAT")
 	if saved and OS.is_debug_build():
-		if leaders.is_empty() and LEADER_STEPS.has(str(display.get("leader_step", ""))):
-			leaders = str(display["leader_step"])
-		if bonus.is_empty() and PACK_BONUSES.has(str(display.get("pack_bonus", ""))):
-			bonus = str(display["pack_bonus"])
-		if pace.is_empty() and PACES.has(str(display.get("pack_pace", ""))):
-			pace = str(display["pack_pace"])
-		if sends.is_empty() and RIFT_SENDS.has(str(display.get("rift_sends", ""))):
-			sends = str(display["rift_sends"])
-		if flank.is_empty() and FLANK_TEARS.has(str(display.get("flank_tears", ""))):
-			flank = str(display["flank_tears"])
-		if depth.is_empty() and FIELD_DEPTHS.has(str(display.get("field_depth", ""))):
-			depth = str(display["field_depth"])
-		if opening.is_empty() and FIELD_OPENINGS.has(str(display.get("field_opening", ""))):
-			opening = str(display["field_opening"])
-		if fodder.is_empty() and FODDER_WORTHS.has(str(display.get("fodder_worth", ""))):
-			fodder = str(display["fodder_worth"])
-		if beats.is_empty() and RUPTURE_BEATS.has(str(display.get("rupture_beats", ""))):
-			beats = str(display["rupture_beats"])
-		if tide.is_empty() and TIDES.has(str(display.get("tide_density", ""))):
-			tide = str(display["tide_density"])
+		if graded.is_empty() and str(display.get("tide_form", "")) == "graded":
+			graded = "1"
+		if sends.is_empty() and SENDS.has(str(display.get("mouth_sends", ""))):
+			sends = str(display["mouth_sends"])
 		if strike.is_empty() and STRIKES.has(str(display.get("wall_strike", ""))):
 			strike = str(display["wall_strike"])
+		if bonus.is_empty() and PACK_BONUSES.has(str(display.get("pack_bonus", ""))):
+			bonus = str(display["pack_bonus"])
+		if depth.is_empty() and FIELD_DEPTHS.has(str(display.get("field_depth", ""))):
+			depth = str(display["field_depth"])
 		if phased.is_empty() and PHASED_FORMS.has(str(display.get("phased_form", ""))):
 			phased = str(display["phased_form"])
-	Ramp.depth_trial = clampi(int(depth), 10, 24) if depth.is_valid_int() else 0
-	Battle.opening_trial = clampi(int(opening), 0, 3) if opening.is_valid_int() else 0
-	Battle.fodder_trial = clampi(int(fodder), 10, 100) if fodder.is_valid_int() else 100
-	Ramp.beats_trial = clampi(int(beats), 1, 6) if beats.is_valid_int() else 0
-	Ramp.tide_trial = clampi(int(tide), 100, 400) if tide.is_valid_int() else 100
+	Battlefield.graded_tide = graded == "1"
+	Battlefield.sends_trial = clampi(int(sends), 1, 4) if sends.is_valid_int() else 1
 	var pip := clampi(int(strike), 1, 20) if strike.is_valid_int() else 0
 	Battlefield.strike_trial = 0 if pip == Battlefield.STRIKE_PER_PIP else pip
-	Skirmish.overheat_scale = clampi(int(burn), 1, 10) if burn.is_valid_int() else 1
-	Skirmish.phase_at_once = phased == "at_once"
-	Battlefield.pace_trial = clampi(int(pace), 0, 4) if pace.is_valid_int() else 0
-	Battlefield.rift_sends_trial = clampi(int(sends), 1, 4) if sends.is_valid_int() else 1
-	Battlefield.flank_tears_trial = clampi(int(flank), 0, 6) if flank.is_valid_int() else 0
 	Battle.pack_bonus_trial = clampi(int(bonus), 0, 400) if bonus.is_valid_int() else 0
+	Ramp.depth_trial = clampi(int(depth), 10, 24) if depth.is_valid_int() else 0
+	Skirmish.phase_at_once = phased == "at_once"
+	Battle.opening_trial = clampi(int(opening), 0, 3) if opening.is_valid_int() else 0
+	Ramp.beats_trial = clampi(int(beats), 1, 6) if beats.is_valid_int() else 0
 	ContentDB.leader_step_trial = clampi(int(leaders), 0, 100) if leaders.is_valid_int() else 0
+	Skirmish.overheat_scale = clampi(int(burn), 1, 10) if burn.is_valid_int() else 1
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.

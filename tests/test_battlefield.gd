@@ -199,15 +199,15 @@ func test_packs_sent_together_leave_in_different_directions() -> void:
 	f.assign_goal(right, 1, 2)
 	assert_true(left.goal_col < 10, "the first of two toward one end of the wall (%d)" % left.goal_col)
 	assert_true(right.goal_col >= 10, "the second toward the other (%d)" % right.goal_col)
-	var was := Battlefield.rift_sends_trial
-	Battlefield.rift_sends_trial = 3
+	var was := Battlefield.sends_trial
+	Battlefield.sends_trial = 3
 	var g := _field(20, 12)
 	g.spawn_faction = "marsh"
 	g.cycle = [Battlefield.composition([["revenant", 4]], "marsh", "formation", "host")]
 	g.peak()
-	Battlefield.rift_sends_trial = was
+	Battlefield.sends_trial = was
 	var sent: Array = g.packs()
-	assert_eq(sent.size(), 3, "the rift sent three under its trial")
+	assert_eq(sent.size(), 3, "the rift sent three under the sends' trial")
 	assert_true((sent[0] as Unit).goal_col < (sent[1] as Unit).goal_col and (sent[1] as Unit).goal_col < (sent[2] as Unit).goal_col, "each its own stretch, in order along the wall")
 
 

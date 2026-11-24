@@ -56,6 +56,13 @@ var cycle: Array = []
 var patrol_cycle: Array = []
 var _cycle_index: int = 0
 var _patrol_index: int = 0
+## The graded tide's packs, a rating (1 to 3) to the compositions of it the domain has, in the
+## order dealt; empty for the tide as built (Battle.setup lays it under the trial, the save keeps
+## it). With them the hunting compositions that come out of the rift, and where each list stands.
+var graded: Dictionary = {}
+var hunters: Array = []
+var _graded_at: Dictionary = {}
+var _hunter_index: int = 0
 ## The row the next tears open on (the pacing session, 30 October): tear_row_start() at the start,
 ## a row nearer the wall a peak (Ramp.tear_creep_at), as far as tear_row_stop(), so each peak's
 ## tears open a little nearer the wall and never beside it. It was the seam's row until 23 November, the painting's edge drawn on it;
@@ -146,7 +153,7 @@ func add_unit(u: Unit) -> Unit:
 const STRIKE_PER_PIP := 10
 ## A trial strike a pip, 0 for the game's (Ryan, 11 November, of more spawns: "even if it means
 ## that each needs to do less to the wall"): a debug build's SETTINGS → TRIALS → STRIKE and
-## RIFTGATE_STRIKE set it (Settings.field_trial), beside the tide's density (Ramp.tide_trial).
+## RIFTGATE_STRIKE set it (Settings.field_trial).
 static var strike_trial: int = 0
 
 
@@ -175,27 +182,31 @@ static func strike_of(sq: Unit) -> int:
 	return maxi(1, (clampi(sq.squad, 1, 4) * strike_per_pip() * now) / full)
 
 
-## The packs' pace on trial, hexes added to every pack's move, 0 the game's (Ryan, 23 November: "I
-## feel like packs walk too slow, even for a 12 deep map. I'd rather they don't start so close but
-## reach the wall faster. Each pack becomes more threatening that way. I'd probably give everything
-## +1 right now and see what that does"): a debug build's SETTINGS → TRIALS → PACE and RIFTGATE_PACE
-## set it (Settings.field_trial). The boss, which never walks, aside. The opening is measured in a
-## pack's own moves (Battle._open_row), so a quicker pack opens that much farther from the wall.
-static var pace_trial: int = 0
-## The rift's count on trial, the compositions it sends a peak, 1 the game's (the same day:
-## "sending multiple packs out of the rift at once, each headed a different direction"): each
-## draws its segment from a share of its own of the wall it reaches soonest (assign_goal), so
-## they part as they leave. The Rupture's size stays the game's, as under the tide's trial: the
-## extras are the squad's to choose among, never more to kill. SETTINGS → TRIALS → RIFT SENDS and
-## RIFTGATE_RIFT_SENDS.
-static var rift_sends_trial: int = 1
-## The tears open as the battle starts on trial, how many, 0 the game's (the same day: "Having
-## starting tears at the top and bottom might make sense"; and of the fodder, "Tears need to
-## spread wide, the crawl forward isn't as important as distributing enemy forces"): they stand
-## evenly across the width on the tears' row, two at the wall's two ends and four at its ends and
-## its thirds (start_tear_hex), and send from the first peak. The Rupture's size stays the game's.
-## SETTINGS → TRIALS → START TEARS and RIFTGATE_FLANK_TEARS.
-static var flank_tears_trial: int = 0
+## The packs every mouth sends at a peak, the rift and each open tear alike, 1 the game's (Ryan,
+## 24 November: "I think enabling multiple spawns at the rift and at tears is plenty ... If we
+## enable multiple simultaneous spawns from all spawn points, it gives us a very useful tuning
+## dial for convergences. More so then the beat, I think"): each of a mouth's packs makes for a
+## stretch of wall of its own (assign_goal), and the Rupture's size counts them (Battle.setup).
+## A dial until the ramp's table holds it by the Convergence: SETTINGS → TRIALS → SENDS and
+## RIFTGATE_SENDS. It takes the place of the rift's own count and the tide's density, the two
+## dials of 11 and 23 November it does the work of.
+static var sends_trial: int = 1
+## The graded tide on trial (Ryan, 23 November: "Packs vary in strength, threat 1-3, 4 for elites
+## ... Spawns reduce in strength the further to the sides of the map they target. So the far edges
+## are 1s with a sprinkling of 2s, then 2s in between, and 3s coming right down the center. Move
+## speed for pushers probably should reflect that, with 1s fastest and 3s slowest"; 24 November,
+## of the session's leans for it: "I think we build your leans and I'll see"). The wall is five
+## bands (BAND_RATING); a mouth's packs each draw a band, the rift from all five and a tear from
+## its own and the ones beside it, and the band says the rating: a pack for one at the ends, one
+## in END_TWO_IN of them for two, a pack for two between, a pack for three down the middle. The
+## pack is the next of its rating the domain has (`graded`, laid by Battle.setup from content:
+## ContentDB.graded_packs), it walks at its composition's pace, and it comes down onto its own
+## stretch from above (_higher), so none runs along the wall. A hunting pack comes out of the
+## rift every other peak from the second (`hunters`); the elites and the boss are as built.
+## SETTINGS → TRIALS → TIDE and RIFTGATE_GRADED=1; a battle begun graded stays graded.
+static var graded_tide: bool = false
+const BAND_RATING := [1, 2, 3, 2, 1]   # the wall's bands from one end to the other, each the rating that makes for it
+const END_TWO_IN := 5                  # one in so many of an end's packs is a pack for two (the session's lean: rare)
 
 
 ## Give a pack its foe types' map profile: its move and its wings. `foe` names the entry when
@@ -222,8 +233,6 @@ func dress_pack(sq: Unit, foe: String = "") -> Unit:
 			winged = winged and bool(mp.get("winged", false))
 		if winged and not sq.traits.has("winged"):
 			sq.traits.append("winged")
-		if p.has("movespeed"):
-			sq.movespeed += maxi(0, pace_trial)   # the pace's trial; a pack with no profile keeps the move it was made with
 	return sq
 
 
@@ -676,9 +685,10 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 			w.waits = true
 	var route: Array[Vector2i] = []
 	var c := goal
+	var high := prey == null and not graded.is_empty()   # the graded tide's pushers come down onto their own stretch (_higher)
 	while c != sq.pos:
 		route.push_front(c)
-		c = prev[c]
+		c = _higher(c, dist, prev) if high else prev[c]
 	var budget := sq.movespeed
 	var walked: Array[Vector2i] = []
 	for s in route:
@@ -696,6 +706,23 @@ func _walk(sq: Unit, blocked: Dictionary) -> Walk:
 	if prey != null and _distance_from(sq, w.end, prey) <= Unit.ENGAGE_RANGE:
 		w.catches = prey.id
 	return w
+
+
+## The hex a shortest way reaches `c` from, the one nearest the rift of those that serve: read
+## back from the wall, so a pack bound for a far stretch crosses the field high and comes down
+## onto its own stretch, never along the wall past stretches it could strike (Ryan, 23 November,
+## of the walk it would otherwise be: "they're skipping sections they could hit this turn to go
+## hit something two turns away"). Every neighbour as far from the pack as the search's own
+## choice is as short a way.
+func _higher(c: Vector2i, dist: Dictionary, prev: Dictionary) -> Vector2i:
+	var best: Vector2i = prev[c]
+	var want := int(dist[best])
+	var best_row := Hex.axial_to_offset(best).y
+	for n in Hex.neighbors(c):
+		if dist.has(n) and int(dist[n]) == want and Hex.axial_to_offset(n).y < best_row:
+			best = n
+			best_row = Hex.axial_to_offset(n).y
+	return best
 
 
 ## Where each later turn of a walk's whole way ends (Walk.route past its path), as indices into
@@ -867,37 +894,115 @@ func tick_pressure(ticks: int) -> bool:
 ## composition; every tear open before this peak sends the patrol cycle's next; the tears' row
 ## steps toward the wall; the ramp's count of new tears open on it, each to send from the next
 ## peak; and the interval shortens by the ramp's step. One clock, more mouths as the ramp rises.
+## Every mouth sends `sends_trial` packs, one the game's; under the graded tide each is drawn by
+## the band it makes for (_graded_sends).
 func peak() -> void:
 	peaks += 1
-	var times := Ramp.dense_at(peaks)   # one, but under the tide's trial (Ramp.tide_trial)
-	var sends: Array = []   # what the rift sends this peak: one, but under the tide's trial and the rift's own count's (rift_sends_trial)
-	for i in range(times * maxi(1, rift_sends_trial)):
-		if cycle.is_empty():
-			break
-		sends.append(cycle[_cycle_index % cycle.size()])
-		_cycle_index += 1
-	for i in range(sends.size()):
-		var sq := emerge(sends[i], map.rift, i, sends.size())   # several at once part along the wall (assign_goal)
-		if sq != null:
-			rift_spawns += 1
-			log.append("Rift pressure peaks: %s emerge at %s" % [sq.display_name, str(sq.pos)])
-	for t in tears:
-		if patrol_cycle.is_empty():
-			break
-		var c: Dictionary = patrol_cycle[_patrol_index % patrol_cycle.size()]
-		_patrol_index += 1
-		var sq := emerge(c, t["pos"])
-		if sq != null:
-			tear_spawns += 1
-			log.append("A tear sends %s at %s" % [sq.display_name, str(sq.pos)])
+	var n := maxi(1, sends_trial)
+	if not graded.is_empty():
+		_graded_sends(map.rift, range(BAND_RATING.size()), n, true)
+		for t in tears:
+			var b := band_of(Hex.axial_to_offset(t["pos"]).x)
+			_graded_sends(t["pos"], range(maxi(0, b - 1), mini(BAND_RATING.size(), b + 2)), n, false)
+		if peaks >= 2 and peaks % 2 == 0 and not hunters.is_empty():
+			var hunt := emerge(hunters[_hunter_index % hunters.size()], map.rift)
+			_hunter_index += 1
+			if hunt != null:
+				rift_spawns += 1
+				log.append("Rift pressure peaks: %s emerge at %s" % [hunt.display_name, str(hunt.pos)])
+	else:
+		var sends: Array = []   # what the rift sends this peak: one, but under the sends' trial
+		for i in range(n):
+			if cycle.is_empty():
+				break
+			sends.append(cycle[_cycle_index % cycle.size()])
+			_cycle_index += 1
+		for i in range(sends.size()):
+			var sq := emerge(sends[i], map.rift, i, sends.size())   # several at once part along the wall (assign_goal)
+			if sq != null:
+				rift_spawns += 1
+				log.append("Rift pressure peaks: %s emerge at %s" % [sq.display_name, str(sq.pos)])
+		for t in tears:
+			for i in range(n):
+				if patrol_cycle.is_empty():
+					break
+				var c: Dictionary = patrol_cycle[_patrol_index % patrol_cycle.size()]
+				_patrol_index += 1
+				var sq := emerge(c, t["pos"], i, n)
+				if sq != null:
+					tear_spawns += 1
+					log.append("A tear sends %s at %s" % [sq.display_name, str(sq.pos)])
 	tear_row = mini(tear_row + Ramp.tear_creep_at(ramp), tear_row_stop())
-	for i in range(Ramp.tears_at(ramp) * times):
+	for i in range(Ramp.tears_at(ramp)):
 		var at := tear_hex()
 		if at == NO_HEX:
 			break
 		tears.append({"pos": at, "opened": phase})
 		log.append("A tear opens at %s" % str(at))
 	rift_pressure_max = maxi(TIMER_FLOOR, rift_pressure_max - Ramp.step_at(ramp))
+
+
+## The band of the wall a column stands in, 0 to 4 from one end to the other (BAND_RATING).
+func band_of(col: int) -> int:
+	return clampi((col * BAND_RATING.size()) / maxi(1, map.width), 0, BAND_RATING.size() - 1)
+
+
+## The graded tide's sends from one mouth at a peak: `n` packs, each to a band of its own drawn
+## from `bands` by the battle's seed, the peak and the mouth (so a resumed battle sends as the
+## unbroken one did), the band's rating's next pack; an end's pack is for two one time in
+## END_TWO_IN.
+func _graded_sends(mouth: Vector2i, bands: Array, n: int, from_rift: bool) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash([seed_value, peaks, mouth])
+	var order: Array = bands.duplicate()
+	for i in range(order.size() - 1, 0, -1):
+		var j := rng.randi_range(0, i)
+		var held = order[i]
+		order[i] = order[j]
+		order[j] = held
+	for k in range(n):
+		if order.is_empty():
+			break
+		var band := int(order[k % order.size()])
+		var rating := int(BAND_RATING[band])
+		if rating == 1 and rng.randi_range(1, END_TWO_IN) == 1:
+			rating = 2
+		var c := next_graded(rating)
+		if c.is_empty():
+			continue
+		var sq := emerge(c, mouth, 0, 1, band)
+		if sq == null:
+			continue
+		if from_rift:
+			rift_spawns += 1
+			log.append("Rift pressure peaks: %s emerge at %s" % [sq.display_name, str(sq.pos)])
+		else:
+			tear_spawns += 1
+			log.append("A tear sends %s at %s" % [sq.display_name, str(sq.pos)])
+
+
+## The graded tide's next pack of a rating, its list taken in turn; of the nearest rating that
+## has any when its own has none; empty with no pack at all.
+func next_graded(rating: int) -> Dictionary:
+	for r in [rating, rating - 1, rating + 1, rating - 2, rating + 2]:
+		var pool: Array = graded.get(r, [])
+		if pool.is_empty():
+			continue
+		var at := int(_graded_at.get(r, 0))
+		_graded_at[r] = at + 1
+		return pool[at % pool.size()]
+	return {}
+
+
+## What a send of the graded tide is worth on the Rupture meter before it is drawn, in menace:
+## the mean of the bands a mouth draws from, the rift from all five and a tear from an end's and
+## the one beside it, an end's pack counted with its share of twos. The meter is sized on it
+## (Battle.setup), so no draw moves a threshold.
+static func graded_mean(from_rift: bool) -> int:
+	var end := ContentDB.MENACE_PER_PIP + ContentDB.MENACE_PER_PIP / END_TWO_IN
+	if not from_rift:
+		return (end + 2 * ContentDB.MENACE_PER_PIP) / 2
+	return (2 * end + 2 * 2 * ContentDB.MENACE_PER_PIP + 3 * ContentDB.MENACE_PER_PIP) / BAND_RATING.size()
 
 
 ## A composition as the cycle holds it, for the harness and the tests: one or more members
@@ -918,17 +1023,21 @@ func pack_name(foe_id: String) -> String:
 ## A composition emerges at a mouth (the rift, a tear, or where the setup places it): a pack of
 ## its members as content writes them, dressed by its lead, on the nearest free hex to the mouth
 ## with no machine adjacent (30 October: the player sees a spawn for a whole turn and nothing
-## appears on top of a detachment), its wall segment drawn from there. Null for a composition with
-## no members.
-func emerge(c: Dictionary, mouth: Vector2i, part: int = 0, parts: int = 1) -> Unit:
+## appears on top of a detachment), its wall segment drawn from there. It walks at its slowest
+## member's pace, or at the pace its composition names (`pace`: a pack's pace is its own, so a
+## small band may run and a hunting pack of any size be fast). Null for a composition with no
+## members. `band`, under the graded tide, is the band of the wall it makes for.
+func emerge(c: Dictionary, mouth: Vector2i, part: int = 0, parts: int = 1, band: int = -1) -> Unit:
 	var sq := pack_of(c, spawn_faction)
 	if sq == null:
 		return null
 	sq.display_name = pack_name(sq.foe_id)
 	dress_pack(sq)
+	if int(c.get("pace", 0)) > 0:
+		sq.movespeed = int(c["pace"])
 	sq.pos = landing(sq, mouth)
 	add_unit(sq)
-	assign_goal(sq, part, parts)   # `part` of the `parts` one mouth sends at once (peak)
+	assign_goal(sq, part, parts, band)   # `part` of the `parts` one mouth sends at once (peak)
 	return sq
 
 
@@ -1109,10 +1218,14 @@ func cache_at(h: Vector2i) -> Dictionary:
 ## within the ramp's spread for the rift's, its own within two for any other; 5 and 9 November),
 ## which read no walk, so a pack near the wall drew a stretch a turn further than the one in front
 ## of it, and the rift's packs at a low Convergence all made for the gate's own stretch.
-func assign_goal(sq: Unit, part: int = 0, parts: int = 1) -> void:
+func assign_goal(sq: Unit, part: int = 0, parts: int = 1, band: int = -1) -> void:
 	if sq.is_boss or sq.behaviour != "push":
 		return
-	var cols := soonest_columns(sq)
+	# Under the graded tide a pack makes for the band it was drawn for, wherever in it the wall
+	# is least crowded; a band it cannot reach leaves it the wall it reaches soonest.
+	var cols := band_columns(sq, band) if band >= 0 else soonest_columns(sq)
+	if cols.is_empty() and band >= 0:
+		cols = soonest_columns(sq)
 	if cols.is_empty():
 		sq.goal_col = Hex.axial_to_offset(sq.pos).x   # no way to the wall as the field stands: its own column, where it waits
 		return
@@ -1157,6 +1270,23 @@ func soonest_columns(sq: Unit) -> Array[int]:
 	for col in by_col.keys():
 		if int(by_col[col]) == fewest:
 			out.append(int(col))
+	out.sort()
+	return out
+
+
+## The wall columns of a band a pusher can reach from where it stands, in order along the wall:
+## every land hex of the apron in the band its own walk reaches, whatever the turns (the graded
+## tide's packs make for their band, not for the wall nearest them).
+func band_columns(sq: Unit, band: int) -> Array[int]:
+	var dist: Dictionary = _walk_search(sq, {})[0]
+	var seen := {}
+	for h in dist.keys():
+		var hx: Vector2i = h
+		if on_apron(sq, hx) and _land(hx) and wreck_at(hx) == null and band_of(Hex.axial_to_offset(hx).x) == band:
+			seen[Hex.axial_to_offset(hx).x] = true
+	var out: Array[int] = []
+	for col in seen.keys():
+		out.append(int(col))
 	out.sort()
 	return out
 
@@ -1255,29 +1385,6 @@ func _tear_fits(h: Vector2i) -> bool:
 	if not map.has(h) or map.is_structure(h) or int(map.terrain[h]) == BattleMap.Terrain.WATER or int(map.terrain[h]) == BattleMap.Terrain.MOUNTAIN:
 		return false
 	return unit_at(h) == null and wreck_at(h) == null and not machine_adjacent(h)
-
-
-## Where the `k`th of `n` tears open from the start stands (flank_tears_trial): evenly across the
-## width, the first and the last at the wall's two ends, on the hex a tear fits on nearest its
-## column, on the tears' row or the row before or after it, three hexes at least from every open
-## tear. A peak's own rule (tear_hex) takes the best of one row, which on a row a river crosses is
-## no end.
-func start_tear_hex(k: int, n: int) -> Vector2i:
-	var want := ((map.width - 1) * clampi(k, 0, maxi(1, n - 1))) / maxi(1, n - 1)
-	for i in range(map.width):
-		for col in ([want] if i == 0 else [want - i, want + i]):
-			if col < 0 or col >= map.width:
-				continue
-			for row in [tear_row, tear_row - 1, tear_row + 1]:
-				var h := Hex.offset_to_axial(col, row)
-				if not _tear_fits(h):
-					continue
-				var clear := true
-				for t in tears:
-					clear = clear and Hex.distance(h, t["pos"]) >= 3
-				if clear:
-					return h
-	return NO_HEX
 
 
 ## Apply a finished skirmish back to the map: survivors keep marching, a wrecked machine leaves

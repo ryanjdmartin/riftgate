@@ -356,7 +356,7 @@ static func fight_kind(sk: Skirmish) -> String:
 			return "boss"
 		if p.composition_size == "elite":
 			out = "elite"
-		elif p.composition_size == "formation" and out != "elite":
+		elif p.composition_size == "formation" and p.squad >= 3 and out != "elite":
 			out = "formation"
 		squad = maxi(squad, p.squad)
 	return out if not out.is_empty() else "patrol for %d" % maxi(1, squad)

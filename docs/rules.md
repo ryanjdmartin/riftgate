@@ -1823,8 +1823,8 @@ a stat.
   the fight, and the survivors come back by member. A composition may name its lead, which then
   stands first; its grid is where each stands (Content conventions). Each pack carries its threat rating, the machines it is intended
   for: its composition's own, else a patrol 1, a formation 3, an elite and an escort 4, a pack
-  of no composition 3, the boss's unit 4. A pack walks at its slowest member's pace,
-  winged only when every member is. They cross every land hex and wade water as a
+  of no composition 3, the boss's unit 4. A pack walks at its slowest member's pace, or at
+  the pace its composition names, and is winged only when every member is. They cross every land hex and wade water as a
   ground machine does, a water hex costing two of their move (entered with whatever is left),
   and never enter walls; a winged pack (the Cockatrice, the Ghost, the Bone Wyvern, the Bomb,
   the Drake, and their lines' recolours) crosses both as a flyer does and may stand there;
@@ -2151,9 +2151,11 @@ and nothing scales a pack.
   front-rank foe in a front cell, a back-rank foe in a back cell, a massive foe in a front cell
   with the back cell behind it null (it fills its column), a core's parts each in a cell of its
   own beside it, once a core. The grid is the whole count: the pack on the map is what it holds,
-  a variant with one more goblin is its own composition, and no cell lists alternatives. Four
+  a variant with one more goblin is its own composition, and no cell lists alternatives. Six
   fields more, each optional: `squad`, the machines it is intended for, 1 to 4, its threat rating
-  on the map (absent: a patrol 1, a formation 3, an elite and an escort 4); `lead`, a foe id in
+  on the map (absent: a patrol 1, a formation 3, an elite and an escort 4); `pace`, the hexes its
+  pack walks a turn, 1 to 6 (absent: its slowest member's); `tide`, the tide on trial it is
+  written for (`graded`: dealt by the graded tide alone and by nothing else; absent: the game's); `lead`, a foe id in
   the grid whose sprite the pack wears, an elite composition's its elite (absent: the first in
   reading order, front left to right, then back); `hunts`, the caveat its pack hunts by
   (nearest, weakest, strongest or slowest; absent: it pushes), never on an escort, which

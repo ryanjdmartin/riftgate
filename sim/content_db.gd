@@ -1275,18 +1275,43 @@ func is_part(foe_id: String) -> bool:
 ## "we've either defined the escort or we haven't"; the content tests want every size at every tier), as the
 ## spawn lists did (the ladder's brief, D3), so a domain written for tier one fights at every
 ## tier. Nothing when the faction has none.
-func compositions(faction_id: String, tier: int, size: String = "", ramp: int = -1) -> Array:
+## A composition written for a tide on trial (`tide`: "graded", the graded tide's packs) is dealt
+## by that tide alone: every other reader asks with no `tide` and never meets it.
+func compositions(faction_id: String, tier: int, size: String = "", ramp: int = -1, tide: String = "") -> Array:
 	var out: Array = []
 	var sizes: Array = [size] if not size.is_empty() else COMPOSITION_SIZES
 	for sz in sizes:
-		out.append_array(_compositions_at(faction_id, clampi(tier, 1, 3), str(sz), ramp))
+		out.append_array(_compositions_at(faction_id, clampi(tier, 1, 3), str(sz), ramp, tide))
 	return out
 
 
-func _compositions_at(faction_id: String, tier: int, size: String, ramp: int = -1) -> Array:
+## The graded tide's packs for a domain at a tier and a Convergence, a rating (1 to 3) to its
+## compositions in content order: the pushing patrols and formations written for it (`tide`:
+## "graded"), each by the machines it is for; and for a domain with none written, every pushing
+## patrol and formation it has, as built, so the tide runs on any domain. The hunting packs are
+## the caller's (Battle.setup deals them apart).
+func graded_packs(faction_id: String, tier: int, ramp: int = -1) -> Dictionary:
+	var out := {}
+	var found: Array = compositions(faction_id, tier, "patrol", ramp, GRADED) + compositions(faction_id, tier, "formation", ramp, GRADED)
+	if found.is_empty():
+		found = compositions(faction_id, tier, "patrol", ramp) + compositions(faction_id, tier, "formation", ramp)
+	for c in found:
+		if not str(c.get("hunts", "")).is_empty():
+			continue
+		var r := clampi(squad_of(c), 1, 3)
+		if not out.has(r):
+			out[r] = []
+		(out[r] as Array).append(c)
+	return out
+
+
+const GRADED := "graded"   # the `tide` a composition written for the graded tide carries
+
+
+func _compositions_at(faction_id: String, tier: int, size: String, ramp: int = -1, tide: String = "") -> Array:
 	var out: Array = []
 	for c in factions.get(faction_id, {}).get("compositions", []):
-		if not (c is Dictionary) or str(c.get("size", "")) != size or not composition_tiers(c).has(tier):
+		if not (c is Dictionary) or str(c.get("size", "")) != size or not composition_tiers(c).has(tier) or str(c.get("tide", "")) != tide:
 			continue
 		if ramp >= 0 and not ramp_holds(c, ramp):
 			continue
@@ -1295,7 +1320,7 @@ func _compositions_at(faction_id: String, tier: int, size: String, ramp: int = -
 		if members.is_empty():
 			continue
 		var entry := {"id": str(c.get("id", "")), "size": size, "faction": faction_id, "members": members, "layout": cells, "boss": str(c.get("boss", "")), "lead": str(members[0][0])}
-		for key in ["squad", "ramp", "hunts"]:   # the threat rating (the long wall brief 3.7), the ramp gate (7 November) and the hunt (8 November), as content writes them
+		for key in ["squad", "ramp", "hunts", "pace"]:   # the threat rating (the long wall brief 3.7), the ramp gate (7 November), the hunt (8 November) and a pack's own pace (24 November), as content writes them
 			if c.has(key):
 				entry[key] = c[key]
 		out.append(entry)
@@ -1349,7 +1374,7 @@ func _validate_ramp_gates(errs: Array[String]) -> void:
 	for fid in factions.keys():
 		var groups := {}   # "size|tier|boss" -> its compositions
 		for c in factions[fid].get("compositions", []):
-			if not (c is Dictionary):
+			if not (c is Dictionary) or c.has("tide"):   # the graded tide's packs are covered by rating (_validate_graded)
 				continue
 			for t in composition_tiers(c):
 				var key := "%s|%d|%s" % [str(c.get("size", "")), int(t), str(c.get("boss", ""))]
@@ -1364,6 +1389,25 @@ func _validate_ramp_gates(errs: Array[String]) -> void:
 			for r in range(first_ramp_of(int(parts[1])), Ramp.TOP + 1):
 				if not list.any(func(c) -> bool: return ramp_holds(c, r)):
 					errs.append("faction %s: no %s at tier %s%s is dealt at Convergence %d; the ramp gates must hold every Convergence from the tier's first (%d) to %d" % [fid, parts[0], parts[1], (" for " + parts[2]) if not parts[2].is_empty() else "", r, first_ramp_of(int(parts[1])), Ramp.TOP])
+					break
+
+
+## The graded tide's packs cover their tiers: where a domain has any written at a tier, every
+## rating, one to three, has a pack at every Convergence that tier is fought at, its first to the
+## top, so no band of the wall is ever left with nothing to send.
+func _validate_graded(errs: Array[String]) -> void:
+	for fid in factions.keys():
+		for t in [1, 2, 3]:
+			if compositions(str(fid), t, "", -1, GRADED).is_empty():
+				continue
+			for r in range(first_ramp_of(t), Ramp.TOP + 1):
+				var have := graded_packs(str(fid), t, r)
+				var short := false
+				for rating in [1, 2, 3]:
+					if (have.get(rating, []) as Array).is_empty() and not short:
+						short = true
+						errs.append("faction %s: the graded tide has no pack for %d at tier %d, Convergence %d" % [fid, rating, t, r])
+				if short:
 					break
 
 
@@ -3454,6 +3498,7 @@ func _validate_foes(errs: Array[String]) -> void:
 
 func _validate_factions(errs: Array[String]) -> void:
 	_validate_ramp_gates(errs)
+	_validate_graded(errs)
 	var opening: Array = []
 	for id in factions.keys():
 		var f: Dictionary = factions[id]
@@ -3537,6 +3582,10 @@ func _validate_factions(errs: Array[String]) -> void:
 				if not (g is Array) or (g as Array).size() != 2 or not (g as Array).all(func(x) -> bool: return x is float or x is int) \
 						or int(g[0]) < 0 or int(g[0]) > int(g[1]) or int(g[1]) > Ramp.TOP:
 					errs.append("%s: ramp is [lo, hi], the Convergences it is dealt at, 0 <= lo <= hi <= %d" % [cw, Ramp.TOP])
+			if c.has("pace") and not ((c["pace"] is float or c["pace"] is int) and int(c["pace"]) >= 1 and int(c["pace"]) <= 6 and float(c["pace"]) == floor(float(c["pace"]))):
+				errs.append("%s: pace is the hexes its pack walks a turn, 1 to 6 (absent: its slowest member's)" % cw)
+			if c.has("tide") and str(c["tide"]) != GRADED:
+				errs.append("%s: tide is '%s', the tide on trial it is written for (absent: the game's)" % [cw, GRADED])
 			if c.has("hunts"):
 				# Whether its pack hunts, and whom (Ryan, 8 November: "The composition should say if
 				# it hunts, not the units"); an escort walks with its boss, which never hunts.

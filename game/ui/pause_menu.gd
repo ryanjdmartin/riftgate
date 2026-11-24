@@ -155,15 +155,13 @@ func _show_page(page: String) -> void:
 				_button("COLOURS", func() -> void: _show_page("colours"))   # the colours that carry a meaning and the HUD presets, by wheel or hex (ColourTuner)
 			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
 		"trials":
-			# A debug build's dials for the numbers still to be picked by play, the game's own
-			# until one is: when Phased lands, the field's depth, the opening's distance, the
-			# fodder's worth on the Rupture meter, the meter's size, the tide's density, the wall
-			# strike, the packs' pace, the rift's count, the start's tears, the leaders' step and
-			# the pack bonus (each read as the next battle starts), under a set that lays every
-			# one back as built. A dial leaves this page with
-			# its question: the pick lands in content or in the engine and the what-if is cut (the
-			# heat's, the top basic's, the rank and file's, the overheat's and the Barrier basic's
-			# left on 23 November, each as built).
+			# A debug build's dials for what is tried in person, the game's own until one is
+			# picked: the graded tide, the packs a mouth sends, the wall strike, the pack bonus
+			# and the field's depth for the tide, and when Phased lands (each read as the next
+			# battle starts), under two sets that lay the tide's at once or the page back as
+			# built. A dial leaves this page with its question; one that can be settled in talk
+			# is a runner's what-if and never a row here (Settings has the page's cut of 24
+			# November).
 			_title("TRIALS")
 			# The dials stand in a scroller, as the keywords do, so a glass of any height holds
 			# them (14 November: at twelve rows the page had outgrown the 1280 glass, and the
@@ -172,30 +170,20 @@ func _show_page(page: String) -> void:
 			_rows.add_child(_list)
 			var page_rows := _rows
 			_rows = _list.get_child(0)
-			_set_row("SET", [["AS BUILT", _trials_as_built()]])   # every dial of the page back to the game's own, in one press
+			_set_row("SET", [["GRADED", Settings.GRADED_SET], ["AS BUILT", _trials_as_built()]])   # the graded tide's first set in one press, and every dial back to the game's own
+			_credit("Graded: TIDE GRADED, SENDS 2, STRIKE 5, PACK BONUS +½.")
+			_choice_row("TIDE", "tide_form", Settings.TIDE_FORMS, Settings.TIDE_FORM_LABELS)   # the graded tide (Battlefield.graded_tide; Ryan, 23 November: "the far edges are 1s with a sprinkling of 2s, then 2s in between, and 3s coming right down the center")
+			_credit("Graded: packs for one to the wall's ends, for two between, for three down the middle. Next battle.")
+			_choice_row("SENDS", "mouth_sends", Settings.SENDS)   # the packs every mouth sends at a peak, the rift and each tear (Battlefield.sends_trial; Ryan, 24 November: "a very useful tuning dial for convergences")
+			_credit("Packs the rift and every tear send at a wave. Next battle.")
+			_choice_row("STRIKE", "wall_strike", Settings.STRIKES)   # what a pip of threat rating strikes the wall for, ten the game's (Battlefield.strike_trial; Ryan, 23 November: "Reduce foe damage to the wall so that quantity matters")
+			_credit("What a pip of threat rating strikes the wall for. Next battle.")
 			_choice_row("PACK BONUS", "pack_bonus", Settings.PACK_BONUSES, Settings.PACK_BONUS_LABELS)   # what a pack pays the Rupture meter as it falls, on top of its rating (Battle.pack_bonus_trial; the same day: "a flat fracture bonus to a pack on top of the per-foe weight")
 			_credit("Pips a pack pays the Rupture as it falls, over its rating. Next battle.")
+			_choice_row("FIELD DEPTH", "field_depth", Settings.FIELD_DEPTHS)   # the field's depth in rows, twelve the game's (Ramp.depth_trial; Ryan, 23 November: "I think 12, 14, and 16 unit field depths all have their merit")
+			_credit("Rows from the rift to the wall. Next battle.")
 			_choice_row("PHASED", "phased_form", Settings.PHASED_FORMS, Settings.PHASED_FORM_LABELS)   # when a machine's Phased lands (Skirmish.phase_at_once; Ryan, 20 November: "Set the debug toggle for phased")
 			_credit("A machine's Phased as the round ends, through the next; or at once, until the round ends. Next battle.")
-			_choice_row("FIELD DEPTH", "field_depth", Settings.FIELD_DEPTHS)   # the field's depth in rows, twelve the game's (Ramp.depth_trial; Ryan, 10 November: "I think the map is a bit too shallow")
-			_choice_row("OPENING", "field_opening", Settings.FIELD_OPENINGS, Settings.FIELD_OPENING_LABELS)   # how many moves farther from the wall the opening's packs stand (Battle.opening_trial): depth alone leaves their first walk on the wall
-			_credit("Rows from rift to wall; moves farther out the first packs stand. Next battle.")
-			_choice_row("FODDER", "fodder_worth", Settings.FODDER_WORTHS, Settings.FODDER_WORTH_LABELS)   # what a rank-and-file kill fills of the Rupture meter (Battle.fodder_trial; Ryan, 10 November: "If fracture rewards were a little lower for fodder")
-			_credit("A pack's worth on the Rupture meter, an elite's untouched. Next battle.")
-			_choice_row("RUPTURE", "rupture_beats", Settings.RUPTURE_BEATS, Settings.RUPTURE_BEATS_LABELS)   # how many peaks of the tide the Rupture's field part runs through, two the game's (Ramp.beats_trial; Ryan, 11 November: "Try your lean first")
-			_credit("Waves of the tide the Rupture takes, an elite's four on top. Next battle.")
-			_choice_row("TIDE", "tide_density", Settings.TIDES, Settings.TIDE_LABELS)   # how many packs the opening places and each wave sends against the game's own, the Rupture's size left (Ramp.tide_trial; Ryan, 11 November: "noticeably more spawns then the minimum number required")
-			_credit("Packs at the opening and each wave; the Rupture asks no more. Next battle.")
-			_choice_row("STRIKE", "wall_strike", Settings.STRIKES)   # what a pip of threat rating strikes the wall for, ten the game's (Battlefield.strike_trial; the same day: "even if it means that each needs to do less to the wall")
-			_credit("What a pip of threat rating strikes the wall for. Next battle.")
-			_choice_row("PACE", "pack_pace", Settings.PACES, Settings.PACE_LABELS)   # hexes added to every pack's move (Battlefield.pace_trial; Ryan, 23 November: "I'd probably give everything +1 right now and see what that does")
-			_credit("Every pack's move, as built or more. The opening stands a move out, so farther. Next battle.")
-			_choice_row("RIFT SENDS", "rift_sends", Settings.RIFT_SENDS, Settings.RIFT_SENDS_LABELS)   # the compositions the rift sends a peak, each to its own stretch of wall (Battlefield.rift_sends_trial; the same day: "each headed a different direction")
-			_credit("Packs the rift sends a wave, each its own way; the Rupture asks no more. Next battle.")
-			_choice_row("START TEARS", "flank_tears", Settings.FLANK_TEARS, Settings.FLANK_TEARS_LABELS)   # tears open across the width from the first turn (Battlefield.flank_tears_trial; the same day: "starting tears at the top and bottom"; "Tears need to spread wide")
-			_credit("Tears open from turn one, two at the wall's ends or four across it. Next battle.")
-			_choice_row("LEADERS", "leader_step", Settings.LEADER_STEPS, Settings.LEADER_STEP_LABELS)   # an elite's and a boss's hit points more for each Convergence past its tier's first (ContentDB.leader_step_trial; Ryan, 23 November: "if they don't scale with me they'll become a joke at C4")
-			_credit("An elite's and a boss's hit points more each battle into a tier: C2 one step, C4 three. Next battle.")
 			_rows = page_rows
 			_list.set_deferred("scroll_vertical", kept)
 			_button("BACK", func() -> void: _show_page("settings"), false, "ui_back")

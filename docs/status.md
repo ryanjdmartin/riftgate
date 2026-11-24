@@ -41,21 +41,25 @@ document's job and every command are in `README.md`.
   a branch: the desk machine's folder stays on `main`, and a session that needs another branch
   works in a worktree under `.claude/worktrees/` (`CLAUDE.md`, Session handoff). A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word.
-- **The battle's enemy side is being redesigned as a graded tide** (Ryan, 23 November, from
-  his play: "Any time I tried splitting my forces, I lost the battle. Any time I stayed in the
-  middle, I won"; then "All fodder safer to fight ... 'where do I put my forces'"; and, of a
-  trial that split every formation into small packs, "I don't want the packs split, I want
-  them SCALED ... the far edges are 1s with a sprinkling of 2s, then 2s in between, and 3s
-  coming right down the center ... 1s fastest and 3s slowest"). `docs/tide_proposal.md` has
-  his words, the design as read, the reads, where the session pushes back, the Meadow's packs
-  as a table for his marks, and its questions. Nothing of it is decided or built: the split
-  trial is cut, and until he marks the table no session writes a pack, a formation, an
-  elite's or a boss's numbers, or a rule of the tide. The hunters are pinned on his word.
+- **The battle's enemy side is on trial as a graded tide** (Ryan, 23 November: "Any time I
+  tried splitting my forces, I lost the battle. Any time I stayed in the middle, I won"; "I
+  don't want the packs split, I want them SCALED ... the far edges are 1s with a sprinkling of
+  2s, then 2s in between, and 3s coming right down the center ... 1s fastest and 3s slowest";
+  24 November, of the session's leans: "I think we build your leans and I'll see").
+  `docs/tide_proposal.md` has his words, the design as read, what is built and the reads. A
+  debug build's SETTINGS, TRIALS, TIDE on GRADED (or SET, GRADED) deals packs by the band of
+  the wall each makes for; the Meadow's packs for it are in content, marked `tide`: `graded`,
+  and dealt by nothing else; every other domain plays it on its compositions as built. None
+  of it is the game's until he says. Until he has played it, no session writes a pack, a
+  formation, an elite's or a boss's numbers, or a rule of the tide. His three points of 24
+  November stand over what comes next: a massive foe is a kind of unit and no measure of
+  threat, a squad's growth inside a tier is a target to set, and the packs a mouth sends at
+  once are the Convergence's dial. The hunters are pinned on his word.
 - Branches. `claude/formation-pass-feedback-rlvx5x` (23 November, Ryan's play of the field's
   dials: the seam a circle, the round's view, the zoom's floor, the pushers' segments, the
   tears' row slower and off the wall, five tier-one stock dice back to basics, the basics'
-  five dials settled and cut, the pack bonus and the start's tears on dials, the graded tide's
-  proposal with its reads, the tier-one bench as a grid) runs ahead of main until he lands it;
+  five dials settled and cut, the graded tide on a dial with the Meadow's packs, the trials'
+  page cut to six dials, the tier-one bench as a grid) runs ahead of main until he lands it;
   this file describes it. Main holds everything else here, the terminology pass's branch
   (`claude/gameplay-terminology-tooltips-rug879`) landed on 22 November on Ryan's "Ok push to main".
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
@@ -93,7 +97,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1448 tests, 389,710 checks, green on Godot 4.8-beta4 (23 November, the split trial cut, the pack bonus and the bench's what-if). The runner fails a run
+- Tests: 1447 tests, 389,702 checks, green on Godot 4.8-beta4 (24 November, the graded tide on its dial and the trials' page cut to six). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -274,14 +278,15 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   machine short costs four to six times its price. Tiers two and three are unsized, their
   foes still the ones sized against a shield that refilled; the first battle, the Meadow's
   alone and the one a trio fights, is built and its sizing his. On a debug
-  build's SETTINGS, TRIALS, each a number still to be picked: FIELD DEPTH, OPENING, FODDER,
-  RUPTURE, TIDE, STRIKE, PACE, RIFT SENDS, START TEARS, PACK BONUS and LEADERS (read as the
-  next battle starts; the last five are his play's of 23 November, `docs/tide_proposal.md`;
-  SET's AS BUILT lays the page back). A
-  dial leaves the page with its question: the basics' four and the overheat's left that day,
-  each settled as built (the vanilla 3 for 4 heat against a standard foe of 4, the Carbine 4
-  for 5, the Barrier basic on the starting dice, a point of hull a point of heat past the
-  maximum); the block is cut, a blow past a shield reaching the hull. The runners lay the
+  build's SETTINGS, TRIALS, what is tried in person and nothing else since 24 November: TIDE
+  (the graded tide), SENDS, STRIKE, PACK BONUS, FIELD DEPTH and PHASED, each read as the next
+  battle starts, under SET (GRADED, AS BUILT). A dial leaves the page with its question: the
+  basics' four and the overheat's on 23 November, each settled as built (the vanilla 3 for 4
+  heat against a standard foe of 4, the Carbine 4 for 5, the Barrier basic on the starting
+  dice, a point of hull a point of heat past the maximum); the tide's density, the rift's own
+  count, the fodder's worth, the flat pace and the start's tears on 24 November, cut with
+  their engine; the opening's distance, the Rupture's beats and the leaders' step the same
+  day, kept as the runners' what-ifs; the block is cut, a blow past a shield reaching the hull. The runners lay the
   same what-ifs with `--refit` (`sim/refit.gd`). `docs/balance.md` is the matrix of 27
   October, older than every rule since, and still prints the old aims' cells and a
   comparison section the next run drops. Detail: `docs/briefs/numbers_pass.md`; the refit
@@ -427,10 +432,10 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    - Every tier-one leader read again at sixty fights or more (the shaman's warband reads 33%
      at every commit back to its thirty-fight sizing), then any leader moved into its band.
    - The graded tide (`docs/tide_proposal.md`; the formation pass runs inside it). It waits
-     on his marks on the Meadow's table and his answers to the proposal's questions; then the
-     Meadow's packs land as content, the lanes and the pace by rating are built on dials for
-     his play, the other domains follow a table at a time, and the leaders' blocks go to him
-     as a table.
+     on his play of it and his answers to the proposal's questions; then each value that
+     settles lands (the sends by the Convergence first) and its dial is cut, the other domains
+     follow a table at a time, and the leaders' blocks go to him as a table once a rating's
+     size at each Convergence, the target, is set.
    - His play of a second battle, which says whether the budget's shares stand (the brief's
      section 11): the fights are even across the domains, and the battle whole is tight.
    - The tier-one bench (`docs/briefs/numbers_pass.md`, section 6): a grid for his marks since
@@ -493,7 +498,7 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   Published at v0.655 on 20 November from main's file at `33c4cc61` (the page's Version 519),
-  over this line's v0.654. The file is at v0.660 on `claude/formation-pass-feedback-rlvx5x`
+  over this line's v0.654. The file is at v0.661 on `claude/formation-pass-feedback-rlvx5x`
   (the wall, tears and seam rows, the vanilla, reboot, Barrier and hunters rows, section 12's
   tide item), unpublished: the session that wrote it had no room left to read the live page
   whole. Before republishing,

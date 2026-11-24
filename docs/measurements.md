@@ -12639,3 +12639,40 @@ dullahan 6.2 and 1.00, Cerberus 4.5 and 0.88, a sandworm won 83% in 9.9 rounds.
 Eight hit points a machine is the size that falls inside a gauge at every rating; today's
 ones, twos and threes are each half again over it; and a treant is a pack for two through the
 tier on any of today's kits.
+
+## 24 November: the graded tide on its dial, and a treant as another kind of unit
+
+For the graded tide as built (`docs/tide_proposal.md`, section 3) and Ryan's point of that day
+on the massive foes ("another kind of unit, offering variety, not necessarily more threat ...
+Why can't 'Treant Grove' be like, two or three treants?").
+
+**The whole battle, a direction only** (`tools/battle_run.gd`, ten seeds, the Meadow, the Honey
+Badger, the Skua, the Cassowary and the Storm Petrel at Convergence 1, the bot's player, which
+gathers and holds no lane; the graded rows at `RIFTGATE_STRIKE=5 RIFTGATE_PACK_BONUS=50`):
+
+| The field | Won | The gate fell | Wiped | The Rupture reached, its turn | Hull at the Rupture | Fights for one a battle | Fights for three |
+|---|---|---|---|---|---|---|---|
+| As built | 20% | 10% | 70% | 70%, turn 6.6 | 36% | 3.8, 5.5 rounds, 3.1% of the squad's hull | 2.0, 5.3 rounds, 14.4%, one in five lost |
+| Graded, SENDS 1 | 60% | 10% | 30% | 90%, turn 8.1 | 65% | 3.2, 3.4 rounds, 0.2% | 1.3, 5.9 rounds, 4.1%, none lost |
+| Graded, SENDS 2 | none | 50% | 50% | 50%, turn 9.8 | 54% | 4.1, 3.4 rounds, 0.4% | 1.6, 5.6 rounds, 5.6%, none lost |
+
+The Marsh, which has no packs written for the graded tide and plays it on its compositions as
+built, at SENDS 1: won 30%, wiped 60%, its fights for one 7.2 rounds.
+
+**A treant's hit points** (`tools/anchor_read.gd` with `foe=treant:hp=N` of this entry, its
+plate, its blow of 6 and its regrowth as content has them; the six certain tier ones on stock
+dice at the tier's first Convergence, two fights a squad, the greedy bot; of a four's hull,
+reboots a machine a fight):
+
+| The pack | At 14, as content | At 10 | At 8 |
+|---|---|---|---|
+| Two treants, for three | 6.7 rounds, 5.2%, 1.42 reboots | 4.2 rounds, 1.8%, 0.77 | 3.4 rounds, 1.4%, 0.50 |
+| Three treants, for three | won 95%, 10.4 rounds, 24.6%, 2.57 | 6.7 rounds, 12.6%, 1.59 | 5.0 rounds, 8.6%, 1.09 |
+| Two treants and two mandragoras, for three | 7.7 rounds, 12.9%, 1.78 | 5.3 rounds, 8.2%, 1.15 | 4.7 rounds, 5.2%, 0.97 |
+| One treant, for two | 4.7 rounds, 2.1%, 0.90 | 2.8 rounds, 0.7%, 0.32 | 2.2 rounds, 0.3%, 0.20 |
+| One treant, for one | won 71%, 11.3 rounds, 19.0%, 3.42 | 7.9 rounds, 12.7%, 2.17 | 6.2 rounds, 10.5%, 1.75 |
+
+At 8 hit points a grove of two is as clean a pack for three as the horde of six, and three
+treants cost what the horde of eight costs. One machine alone still spends six rounds and a
+reboot or two on a treant at any of these: its plate, its regrowth and its blow do that, more
+than its hit points.
