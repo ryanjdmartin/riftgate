@@ -271,27 +271,28 @@ static func box(ci: CanvasItem, rect: Rect2, c: float, fill: Color, border: Colo
 ## Four bracket corners just outside a rect, the targeting-reticle look.
 ## A fight's badge (Ryan, 24 November: "The skirmish number label needs to change to a red icon that
 ## looks more engage-ey, like crossed swords or a target or something. The info panel should
-## indicate that icon with the number"): a square tile of the engage red on a dark rim, the crossed
-## swords cut out of it in the dark, and the fight's place in the queue at its lower right corner as
-## a status chip's count stands (UnitView's corner), or `beside` it, where a row has no room below,
-## `side` across, centred on `at` (or with its left edge there, `from_left`). Returns the rect the
-## badge takes, its count beside it included. Hot, for the phone.
-static func engage_badge(ci: CanvasItem, at: Vector2, n: int, side: float, from_left: bool = false, beside: bool = false) -> Rect2:
+## indicate that icon with the number"; then "The swords need to be centered in their chip. Put the
+## number in the center of the chip too"): a square tile of the engage red (Palette.engage) on a dark
+## rim, the crossed swords cut out of it in the dark about its middle, and the fight's place in the
+## queue over their crossing, in the ink on a dark outline, `side` across, centred on `at` (or with
+## its left edge there, `from_left`). Returns the tile's rect. Hot, for the phone.
+static func engage_badge(ci: CanvasItem, at: Vector2, n: int, side: float, from_left: bool = false) -> Rect2:
 	var rect := Rect2(Vector2(at.x if from_left else at.x - side * 0.5, at.y - side * 0.5), Vector2(side, side))
 	if ci == null:
 		return rect
 	var cut_px := side * 0.2
+	var mid := rect.get_center()
 	ci.draw_colored_polygon(cut(rect.grow(2.5), cut_px + 1.5), Color(Palette.BG, 0.95))
-	ci.draw_colored_polygon(cut(rect, cut_px), Palette.ENGAGE)
-	Glyphs.draw(ci, "engage", rect.get_center() + Vector2(-side * 0.08, -side * 0.08), side * 0.66, Palette.BG, maxf(2.0, side * 0.09))
+	ci.draw_colored_polygon(cut(rect, cut_px), Palette.engage())
+	Glyphs.draw(ci, "engage", mid, side * 0.76, Palette.BG, maxf(2.0, side * 0.09))
 	var font := display_bold()
 	var t := str(n)
-	var px := int(roundf(side * (0.8 if beside else 0.62)))
-	var w := font.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
-	var p := Vector2(rect.end.x + side * 0.22, rect.get_center().y + px * 0.36) if beside else Vector2(rect.end.x + side * 0.12 - w, rect.end.y + side * 0.16)
-	ci.draw_string_outline(font, p, t, HORIZONTAL_ALIGNMENT_LEFT, -1, px, maxi(4, int(side * 0.2)), Color(Palette.BG, 0.95))
+	var px := int(roundf(side * 0.6))
+	var tw := font.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, px).x
+	var p := Vector2(mid.x - tw * 0.5, mid.y + font.get_ascent(px) * 0.5 - font.get_descent(px) * 0.25)
+	ci.draw_string_outline(font, p, t, HORIZONTAL_ALIGNMENT_LEFT, -1, px, maxi(4, int(side * 0.18)), Color(Palette.BG, 0.95))
 	ci.draw_string(font, p, t, HORIZONTAL_ALIGNMENT_LEFT, -1, px, Palette.INK)
-	return Rect2(rect.position, Vector2(p.x + w - rect.position.x, rect.size.y)) if beside else rect
+	return rect
 
 
 static func brackets(ci: CanvasItem, rect: Rect2, len_px: float, color: Color, width: float = 1.0) -> void:

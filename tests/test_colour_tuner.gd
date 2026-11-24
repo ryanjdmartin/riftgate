@@ -67,7 +67,7 @@ func test_the_page_holds_only_what_is_in_play() -> void:
 	var keys: Array = []
 	for s in ColourTuner.SLOTS:
 		keys.append(str(s[0]))
-	assert_eq(keys, ["hud_green", "hud_amber", "hud_blue", "ENEMY", "ENEMY_HOT", "ENEMY_DEEP", "ENEMY_EDGE", "HEAT", "LOSS", "LOSS_DIM", "ENGAGE", "SHIELD", "HULL", "GAIN"], "the page's rows")
+	assert_eq(keys, ["hud_green", "hud_amber", "hud_blue", "ENEMY", "ENEMY_HOT", "ENEMY_DEEP", "ENEMY_EDGE", "HEAT", "LOSS", "LOSS_DIM", "SHIELD", "HULL", "GAIN"], "the page's rows")
 
 
 func test_a_headless_run_keeps_no_picks() -> void:
@@ -108,3 +108,15 @@ func _count(node: Node, cls: String) -> int:
 	for c in node.get_children():
 		n += _count(c, cls)
 	return n
+
+
+## A fight to engage on the map wears the skirmish's approved red, heat's (Ryan, 24 November: "I mean
+## the approved red we use in the skirmish, not pure ff0000"), and follows a pick for HEAT; it has no
+## row of its own on the page.
+func test_the_engage_marks_wear_heat_s_red() -> void:
+	assert_eq(Palette.engage(), Palette.HEAT, "heat's red")
+	assert_ne(Palette.engage(), Palette.LOSS, "never harm's pure red")
+	ColourTuner.set_colour("HEAT", Color("ff3000"), false)
+	assert_eq(Palette.engage(), Color("ff3000"), "a pick for heat moves it")
+	ColourTuner.reset("HEAT", false)
+	assert_eq(Palette.engage(), Color("ff4000"), "and back")

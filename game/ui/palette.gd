@@ -52,13 +52,17 @@ static var GAIN := Color("5cff6a")
 static var LOSS := Color("ff0000")
 ## A dead thing, dimmed: a blank or destroyed entry, a wrecked machine's die, a dying foe's ghost.
 static var LOSS_DIM := Color("7a1400")
-## A fight to engage (Ryan, 24 November: "The engageable packs markers should be in red, not white
-## or violet. The engage confirmed pulse needs to be in red too"): on the map the packs a machine in
-## hand could engage, a fight confirmed (its pulse) and its number in the queue (the crossed swords),
-## and that number on the orders board. LOSS's red-red until tuned apart; always on a dark edge or a
-## plate, since a red bare on the field's bright grounds fails whatever its hue (29 and 30 October,
-## docs/measurements.md).
-static var ENGAGE := Color("ff0000")
+
+
+## A fight to engage, on the map: heat's red, the red he approved in the skirmish (Ryan, 24 November:
+## "The engageable packs markers should be in red, not white or violet. The engage confirmed pulse
+## needs to be in red too"; "I mean the approved red we use in the skirmish, not pure ff0000"): the
+## packs a machine in hand could engage, a fight confirmed and its pulse, the queue's crossed swords,
+## and that badge on the orders board, always on a dark edge or a plate, since a red bare on the
+## field's bright grounds fails whatever its hue (docs/measurements.md). Heat itself is never drawn
+## on the map, and a pick for HEAT on the COLOURS page moves it too.
+static func engage() -> Color:
+	return HEAT
 
 ## The overlay colour. Settings.apply() sets it from the saved choice; this is the green
 ## preset's, the default.

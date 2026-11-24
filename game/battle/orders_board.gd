@@ -23,7 +23,7 @@ const ROW_H := 24.0
 const SETTLE := 0.45   # seconds a changed line spends scrambled
 const BAR_W := 54.0
 const BAR_H := 10.0   # one gauge, the hull, so a little heavier than the two it replaced
-const BADGE_H := 20.0 # a fight's badge on a machine's row (Hud.engage_badge), inside the row, its count beside it
+const BADGE_H := 23.0 # a fight's badge on a machine's row (Hud.engage_badge), inside the row
 
 var _t := 0.0
 var _last: Dictionary = {}    # line key -> text last drawn, to see a change
@@ -73,7 +73,7 @@ func _draw() -> void:
 			# The fight it is in, as the map numbers it on the pack: the crossed swords and its place
 			# in the queue (Ryan, 24 November: "The info panel should indicate that icon with the
 			# number for machines involved in that fight").
-			x = Hud.engage_badge(self, Vector2(x - 4.0, y - 5.0), int(r["fight"]), BADGE_H, true, true).end.x + 12.0
+			x = Hud.engage_badge(self, Vector2(x - 4.0, y - 5.0), int(r["fight"]), BADGE_H, true).end.x + 10.0
 		if not str(r["meets"]).is_empty():
 			_text(mono, Vector2(x, y), _settled(key + "c", r["meets"], frame), 13, Color(Palette.ENEMY, 0.9), split - x - 8.0)
 		y += ROW_H

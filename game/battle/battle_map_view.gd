@@ -590,18 +590,18 @@ func _draw() -> void:
 					hit = hit or threat.has(x) or Hex.distance(x, selected.pos) <= selected.attack_range
 				if hit:
 					# Lit, not only bracketed (Ryan, 24 November: "when ordering a unit on the map, it
-					# needs to highlight packs it could engage"), in the engage red ("should be in red,
-					# not white or violet"): its hexes washed and edged in it, the edge and the brackets
+					# needs to highlight packs it could engage"), in the red ("should be in red, not
+					# white or violet"; Palette.engage, heat's): its hexes washed and edged in it, the edge and the brackets
 					# heavy on a dark edge, since a red bare on the field's bright grounds fails.
 					var cells := {}
 					for x in sq.hexes():
 						cells[x] = true
-						draw_colored_polygon(MapOrient.corners(center(x), HEX_SIZE - _px(2.0)), Color(Palette.ENGAGE, 0.35))   # over the ground, the painted world's too
-					_region_outline(cells, Palette.ENGAGE, 5.0, Palette.ENGAGE)
+						draw_colored_polygon(MapOrient.corners(center(x), HEX_SIZE - _px(2.0)), Color(Palette.engage(), 0.35))   # over the ground, the painted world's too
+					_region_outline(cells, Palette.engage(), 5.0, Palette.engage())
 					var bc := center(sq.pos)
 					var box := Rect2(bc - Vector2(HEX_SIZE, HEX_SIZE), Vector2(HEX_SIZE, HEX_SIZE) * 2.0)
 					Hud.brackets(self, box, _px(16.0), Color(Palette.BG, 0.85), _px(7.0))
-					Hud.brackets(self, box, _px(16.0), Palette.ENGAGE, _px(4.0))
+					Hud.brackets(self, box, _px(16.0), Palette.engage(), _px(4.0))
 
 	# The moves planned and not yet played (Ryan, 25 October: "highlight and display the planned
 	# move like we used to"): each machine's route in the display's light from where it stands,
@@ -786,7 +786,7 @@ func _draw() -> void:
 	Hud.scanlines(self, Rect2(Vector2.ZERO, size))
 
 
-## A fight's place in the queue: its badge, the crossed swords and its number on the engage red
+## A fight's place in the queue: its badge, the crossed swords and its number on the red
 ## (Ryan, 24 November: "The skirmish number label needs to change to a red icon that looks more
 ## engage-ey"; Hud.engage_badge), on the pack it opens on; drawn on screen at its place, so it holds
 ## its size at every zoom. The orders board wears the same badge on each machine in the fight.
@@ -2004,14 +2004,15 @@ func _ally_target(c: Vector2, col: Color) -> void:
 		draw_arc(c, r, 0.0, TAU, 32, Color(col, 0.4 - 0.12 * k), 1.5)
 
 
-## In the engage red (Ryan, 24 November: "The engage confirmed pulse needs to be in red too"): the hex
+## In the red (Ryan, 24 November: "The engage confirmed pulse needs to be in red too"; Palette.engage,
+## the skirmish's approved red): the hex
 ## washed, breathing, its edge and the rings going out from it each on a dark edge, so the red holds
 ## on the field's bright grounds; the breath in its strength alone, never toward another hue.
 func _contact_effect(h: Vector2i, lit: bool, _at_base: bool = false) -> void:
 	var c := center(h)
 	var a := 1.0 if lit else 0.35
 	var breath := 0.5 + 0.5 * sin(_ring_t * 4.0)
-	var red := Palette.ENGAGE
+	var red := Palette.engage()
 	_fill(h, Color(red, (0.5 + 0.3 * breath) * a))
 	var rim := MapOrient.corners(c, HEX_SIZE - _px(3.0))
 	Hud.stroke_poly(self, rim, Color(Palette.BG, 0.8 * a), _px(6.0))
