@@ -1603,7 +1603,7 @@ func _shock_on(foe: Foe) -> void:
 	Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 
 
-func test_chain_arcs_to_every_shocked_foe_on_the_field_whatever_its_reach() -> void:
+func test_chain_pings_every_shocked_foe_on_the_field_whatever_its_reach() -> void:
 	var sk := Skirmish.new(1, 2)
 	sk.add_mech(_mech("A", Die.single(_chain_gun())))
 	var target := _ghoul(30, 5)
@@ -1619,13 +1619,13 @@ func test_chain_arcs_to_every_shocked_foe_on_the_field_whatever_its_reach() -> v
 	assert_false(sk.targets_for_face(sk.mechs[0], sk.mechs[0].face()).has(behind), "the foe behind the target is out of Direct reach")
 	assert_true(sk.assign(0, target), "the Chain gun spent")
 	assert_eq(target.hp, 26, "the target takes the roll")
-	assert_eq(beside.hp, 28, "the Shocked foe beside it takes Chain 2, plain: no strike is aimed at it")
+	assert_eq(beside.hp, 28, "the Shocked foe beside it loses Chain's 2 HP at Resolve: no strike is aimed at it")
 	assert_eq(behind.hp, 28, "and so does the one behind the target, out of the gun's reach")
 	assert_true(Effects.has(beside, "shocked") and Effects.has(behind, "shocked"), "each conductor keeps its charge")
 	assert_eq(idle.hp, 30, "a foe with no charge takes nothing")
 	assert_false(Effects.has(idle, "shocked"), "and gains no charge: Chain is the arcs alone (3 November)")
-	assert_eq(sk.mechs[0].heat, 3, "heat once a spend; an arc adds none")
-	assert_eq("\n".join(sk.log).count("arcs to"), 2, "the log tells each arc")
+	assert_eq(sk.mechs[0].heat, 3, "heat once a spend; the ping adds none")
+	assert_eq("\n".join(sk.log).count("'s Chain: "), 2, "the log tells each foe the ping reaches")
 
 
 ## An arc is its blow alone (Ryan, 18 November: "take riders off chain. Thematically it's a lightning
@@ -1657,7 +1657,7 @@ func test_an_arc_carries_no_rider() -> void:
 	assert_eq(target.target, ms, "and turns on it")
 
 
-func test_chain_never_arcs_to_the_foe_it_is_aimed_at() -> void:
+func test_chain_never_pings_the_foe_whose_shock_its_strike_spent() -> void:
 	var sk := Skirmish.new(1, 2)
 	sk.add_mech(_mech("A", Die.single(_chain_gun())))
 	var target := _ghoul(30, 5)
@@ -1670,9 +1670,9 @@ func test_chain_never_arcs_to_the_foe_it_is_aimed_at() -> void:
 	assert_true(sk.assign(0, target), "the Chain gun spent")
 	assert_eq(target.hp, 22, "the aimed foe takes the roll, doubled by its own charge, once")
 	assert_false(Effects.has(target, "shocked"), "the strike aimed at it spends the charge")
-	assert_eq(other.hp, 28, "the other conductor takes Chain 2, plain")
+	assert_eq(other.hp, 28, "the other conductor loses Chain's 2 HP")
 	assert_true(Effects.has(other, "shocked"), "and keeps its charge")
-	assert_eq("\n".join(sk.log).count("arcs to"), 1, "one arc")
+	assert_eq("\n".join(sk.log).count("'s Chain: "), 1, "one foe pinged")
 
 
 ## An arc is the Chain's number flat (Ryan, 21 November: "If Chain doesn't carry the riders, it
@@ -1711,9 +1711,9 @@ func test_a_kill_by_an_arc_fires_the_kill_rules() -> void:
 	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "and the kill is its attack's: its kill trigger fires")
 
 
-## An arc meets the foe's own armour whatever its gun's rules (21 November: no rule of the piece's
-## rides an arc), a gun that ignores armour included; only the foe's own statuses read it.
-func test_an_arc_meets_armour_whatever_its_gun_ignores() -> void:
+## Chain's ping is HP lost (Ryan, 24 November: "The under-armour ping is simpler"): no armour takes
+## any of it, whatever its gun's rules.
+func test_chains_ping_passes_armour_whatever_its_gun() -> void:
 	for ignores in [false, true]:
 		var sk := Skirmish.new(1, 2)
 		var gun := _chain_gun(4, 2, 3)
@@ -1727,7 +1727,7 @@ func test_an_arc_meets_armour_whatever_its_gun_ignores() -> void:
 		sk.start_round()
 		_shock_on(plated)
 		assert_true(sk.assign(0, target), "the Chain gun spent")
-		assert_eq(30 - plated.hp, 1, "Chain 2, flat, less armour 1, %s" % ("its gun's own rule left behind" if ignores else "a plain gun's"))
+		assert_eq(30 - plated.hp, 2, "Chain's 2 HP, its armour taking none, %s" % ("its gun ignoring armour" if ignores else "a plain gun's"))
 
 
 ## The primers (Ryan, 2 November; as keywords since 3 November: "a multi-hit weapon with Shock
@@ -1873,7 +1873,7 @@ func test_a_foes_stun_resist_is_by_its_kind_unless_content_says() -> void:
 	assert_true(elites > 0, "content has elites to check")
 
 
-func test_a_conductors_barrier_takes_the_arc_and_its_charge_stands() -> void:
+func test_chains_ping_passes_a_barrier_and_the_charge_stands() -> void:
 	var sk := Skirmish.new(1, 2)
 	sk.add_mech(_mech("A", Die.single(_chain_gun())))
 	var target := _ghoul(30, 5)
@@ -1884,8 +1884,8 @@ func test_a_conductors_barrier_takes_the_arc_and_its_charge_stands() -> void:
 	_shock_on(sheltered)
 	Effects.grant_buff(sheltered, "barrier", 1, "test", sk.round)
 	assert_true(sk.assign(0, target), "the Chain gun spent")
-	assert_eq(sheltered.hp, 30, "the Barrier takes the arc whole")
-	assert_false(Effects.has(sheltered, "barrier"), "and pops")
+	assert_eq(sheltered.hp, 28, "the ping is no blow: it loses its 2 HP past the Barrier")
+	assert_true(Effects.has(sheltered, "barrier"), "which stands")
 	assert_true(Effects.has(sheltered, "shocked"), "the charge stands: no strike was aimed at it")
 
 
@@ -1940,11 +1940,11 @@ func test_chain_stacks_with_spread_and_spreads_nowhere() -> void:
 	assert_eq(target.hp, 26, "the target takes the roll")
 	assert_eq(left.hp, 29, "the foe beside it takes Spread 1")
 	assert_eq(right.hp, 27, "the Shocked foe beside it takes Spread 1 and Chain's 2")
-	assert_true(Effects.has(right, "shocked"), "an area's blow spends no Shock, nor an arc")
+	assert_true(Effects.has(right, "shocked"), "an area's blow spends no Shock, nor the ping")
 	assert_eq(far.hp, 28, "the Shocked foe out of the row takes Chain 2")
-	assert_eq(mid_back.hp, 30, "the arc spreads nowhere: the conductor's neighbour takes nothing")
-	assert_eq(right_back.hp, 30, "and nothing arcs on from the area's foe")
-	assert_eq("\n".join(sk.log).count("arcs to"), 2, "two arcs, one to each conductor")
+	assert_eq(mid_back.hp, 30, "the ping spreads nowhere: the conductor's neighbour loses nothing")
+	assert_eq(right_back.hp, 30, "and nothing goes on from the area's foe")
+	assert_eq("\n".join(sk.log).count("'s Chain: "), 2, "two foes pinged, each conductor once")
 
 
 ## Shocked (Ryan, 29 October: "when targeted and struck by a weapon, double the damage received
@@ -10951,7 +10951,8 @@ func test_a_foe_its_burn_kills_strikes_first_and_falls_as_its_turn_ends() -> voi
 ## foe, it strikes every foe in the fight for its number, each through its own Brittle and armour,
 ## and it targets the field (Ryan, 24 November: "should probably be coded as none are targeted,
 ## since its targeting the field. Important semantics"): no hit is aimed, the one it was dropped on
-## included, so no Shock is doubled or spent, no Chain arcs and no Ricochet follows it.
+## included, so no Shock is doubled or spent and no Ricochet follows it; Chain's ping at its Resolve
+## reaches every conductor (Ryan, 24 November: no target in the line).
 func test_a_weapon_over_every_foe_lands_its_number_on_each() -> void:
 	var blast := Face.attack(3, E)
 	var sk := Skirmish.new(1, 2)
@@ -10976,10 +10977,10 @@ func test_a_weapon_over_every_foe_lands_its_number_on_each() -> void:
 	assert_eq([a.hp, b.hp, c.hp], [97, 98, 97], "its number on each, the plated one its 3 less the plate, and no Shock doubled, the one it was dropped on included")
 	assert_true(Effects.has(a, "shocked") and Effects.has(c, "shocked"), "and every Shock stands")
 	assert_eq(sk.spend_blows.filter(func(x): return str(x["kind"]) == "ricochet").size(), 0, "with no target, no Ricochet follows")
-	# Chain on it arcs nothing: no hit of it is aimed (the Chain tip's "If targeted").
+	# Chain on it pings every conductor: no hit of it is aimed, so none spent a Shock.
 	var arcing := Face.attack(3, E, [K.CHAIN])
 	arcing.chain = 2
-	assert_true(sk.conductors(arcing, a).is_empty(), "no conductor reads a reach over every foe")
+	assert_eq(sk.conductors(arcing, a), [a, c], "every Shocked foe, the one it is dropped on among them")
 	var sk2 := Skirmish.new(1, 2)
 	var m2 := _mech("A", Die.single(arcing), 40, 100)
 	sk2.add_mech(m2)
@@ -10990,7 +10991,7 @@ func test_a_weapon_over_every_foe_lands_its_number_on_each() -> void:
 	sk2.start_round()
 	Effects.stack(e, Effects.STATUS["shocked"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
 	assert_true(sk2.assign(0, d), "a Chain over every foe")
-	assert_eq([d.hp, e.hp], [97, 97], "its number on each, and no arc on the Shocked one")
+	assert_eq([d.hp, e.hp], [97, 95], "its number on each, and Chain's 2 HP off the Shocked one")
 
 
 ## The Hollow-point Harpoon's pin (Ryan, 11 November: "Applies 1 flak and the target's flak does
