@@ -174,11 +174,17 @@ func _aim() -> void:
 	var centre_px := (_view * 0.5 - _scroll) / _zoom   # the map pixel under the screen's middle
 	var target := _world(centre_px - _origin)
 	var back := Vector3(0.0, _sin, _cos)
+	# Pulled back as the view zooms out past 1 (the whole field in view: BattleMapView.zoom_min),
+	# so the ground at the screen's foot and what stands on it stay clear of the near plane; an
+	# orthographic view draws the same from any distance.
+	var pull := 1.0 / clampf(_zoom, 0.2, 1.0)
+	_camera.far = 4000.0 * pull
 	# Aimed before the map is in the tree too (setup runs first), so nothing global here:
 	# both cameras sit directly under their viewport and local is global.
-	_camera.look_at_from_position(target + back * CAMERA_DISTANCE, target, Vector3.UP)
+	_camera.look_at_from_position(target + back * CAMERA_DISTANCE * pull, target, Vector3.UP)
 	if _units_cam != null:
 		_units_cam.size = _camera.size
+		_units_cam.far = _camera.far
 		_units_cam.transform = _camera.transform
 
 
@@ -850,7 +856,8 @@ func set_sweep(map_y: float) -> void:
 var _anim_px: Dictionary = {}   # unit id -> map pixel while a move plays, in place of its hex
 ## A machine whose move is planned and not yet played stands where its plan starts (Ryan, 25
 ## October): unit id -> [hex, facing], in place of the battle's hex, until the plan plays.
-var seam_shown := -1.0   # the seam's row as the map shows it while its creep waits or plays (BattleMapView.seam_shown); under 0, the field's
+var seam_shown := -1.0   # the turn the map shows the seam at while its growth waits or plays (BattleMapView.seam_shown); under 0, the field's
+var tears_shown := -1    # how many of the field's tears the map shows (BattleMapView.tears_shown); under 0, all
 var held: Dictionary = {}
 
 
@@ -1917,8 +1924,9 @@ func _build_camera() -> void:
 ## Put every mech where the field says it is, on top of its column and turned to its
 ## facing.
 func sync() -> void:
-	var grad := Bleed.gradient(field, _origin, hex_px, seam_shown)
-	var src := Bleed.sources(field, _origin, hex_px, _anim_px)
+	var wall := Bleed.wall(field, _origin, hex_px)
+	var seam := Bleed.seam(field, _origin, hex_px, seam_shown)
+	var src := Bleed.sources(field, _origin, hex_px, _anim_px, tears_shown)
 	var map := field.map
 	for h in _columns.keys():
 		_lift[h] = _height_of(h) * _cos * _ppu
@@ -1977,7 +1985,7 @@ func sync() -> void:
 				(_pivots[u.id] as Node3D).rotation.y = facing_yaw(_facing_of(u))
 			_rest_yaw[u.id] = facing_yaw(_facing_of(u))
 	_sync_wrecks(occupied)
-	_sync_caches(occupied, grad, src)
+	_sync_caches(occupied, wall, seam, src)
 	_hide_props_under(occupied)
 	for uid in _units.keys():
 		if not seen.has(uid):
@@ -2159,7 +2167,7 @@ func cache_shown(cid: int) -> bool:
 	return _caches.has(cid) and (_caches[cid] as Node3D).visible
 
 
-func _sync_caches(occupied: Dictionary, grad: Vector2, src: PackedVector3Array) -> void:
+func _sync_caches(occupied: Dictionary, wall: Vector2, seam: Vector4, src: PackedVector3Array) -> void:
 	var db := ContentDB.load_default()
 	var live := {}
 	for c in field.caches:
@@ -2183,7 +2191,7 @@ func _sync_caches(occupied: Dictionary, grad: Vector2, src: PackedVector3Array) 
 		occupied[h] = true
 		# As the painting takes the hex the model sinks into it, as the ground's height does
 		# (Bleed.solid, the compositor's threshold), and is gone where the hex is flat.
-		var solid := Bleed.solid(_origin + MapOrient.to_pixel(h, hex_px), grad, src)
+		var solid := Bleed.solid(_origin + MapOrient.to_pixel(h, hex_px), wall, seam, src)
 		node.visible = solid > 0.02 and not under_machine
 		node.position = _hex_world(h, _height_of(h))
 		node.scale = Vector3(CACHE_FIT, CACHE_FIT * maxf(solid, 0.02), CACHE_FIT)

@@ -12458,3 +12458,363 @@ direction. "Took" counts the HP that counted (no overkill).
   in the armoured ones and 43% to 61% on the armoured leaders; scored flat (b), the same arcs deal
   20% more (52% more in the armoured fights). The arcs were 13.1% of those squads' damage (a), 15.3%
   (b). No foe Barrier at tier one; Brittle stood on 36 arcs into armour.
+
+## 23 November: the tide against four machines, a coverage model apart from content
+
+For Ryan's direction of that day (fodder by count, "so that I can choose where to attack and
+what to let through"; `docs/tide_proposal.md`) and for the five dials built with it. No game
+content and no fight: `tools/tide_model.py`, 400 battles a row, seed 1. Twelve turns of the tide
+on a bare field twenty wide: an opening of a formation and two flank patrols, a peak every third
+turn (the rift's cycle of a formation and a patrol, a patrol from every open tear, a tear a
+peak), packs walking to the stretch of wall they reach soonest and striking for ten a pip a
+turn. Four machines of move 3, 4, 5 and 6, one action a turn, a pack falling the turn as many
+machines as its rating stand beside it; a greedy player that sees everything and whose fights
+cost nothing. No hunters, elites, boss or Rupture. So every cell is the tide at its kindest and
+is read against its neighbours, never as a number: a real squad loses more.
+
+**The count.** The game's tide, then more of it, then every formation dealt as three packs rated one.
+
+| The tide | Packs sent | Pips sent | Pips killed | Packs that struck | Gate lost | Actions spent fighting |
+|---|---|---|---|---|---|---|
+| As built | 13 | 19 | 100% | 11% | 15 | 40% |
+| TIDE ×2 | 26 | 38 | 85% | 24% | 275 | 67% |
+| TIDE ×3 | 39 | 57 | 73% | 50% | 745 | 87% |
+| As built, formations split | 19 | 19 | 100% | 10% | 34 | 40% |
+| TIDE ×2, formations split | 38 | 38 | 93% | 15% | 96 | 74% |
+| TIDE ×3, formations split | 57 | 57 | 79% | 50% | 487 | 94% |
+
+**The pace and the depth.** At TIDE ×2 with formations split, the opening a move farther out.
+
+| The tide | Packs sent | Pips sent | Pips killed | Packs that struck | Gate lost | Actions spent fighting |
+|---|---|---|---|---|---|---|
+| 12 deep, pace 2 | 38 | 38 | 93% | 14% | 67 | 74% |
+| 12 deep, pace 3 | 38 | 38 | 93% | 15% | 65 | 74% |
+| 12 deep, pace 4 | 38 | 38 | 93% | 51% | 283 | 73% |
+| 14 deep, pace 2 | 38 | 38 | 93% | 10% | 50 | 74% |
+| 14 deep, pace 3 | 38 | 38 | 93% | 12% | 53 | 74% |
+| 14 deep, pace 4 | 38 | 38 | 93% | 23% | 129 | 73% |
+| 16 deep, pace 2 | 38 | 38 | 91% | 10% | 47 | 72% |
+| 16 deep, pace 3 | 38 | 38 | 92% | 8% | 41 | 73% |
+| 16 deep, pace 4 | 38 | 38 | 91% | 26% | 142 | 72% |
+
+**The mouths and the order.** Fourteen deep at pace 3, formations split, the opening a move farther out.
+
+| The tide | Packs sent | Pips sent | Pips killed | Packs that struck | Gate lost | Actions spent fighting |
+|---|---|---|---|---|---|---|
+| TIDE ×1 | 19 | 19 | 100% | 5% | 10 | 40% |
+| TIDE ×1, two flank tears | 27 | 27 | 97% | 8% | 28 | 55% |
+| TIDE ×1, the rift sends 2 | 27 | 27 | 96% | 4% | 17 | 54% |
+| TIDE ×1, the rift sends 2, two flank tears | 35 | 35 | 94% | 7% | 31 | 69% |
+| TIDE ×2 | 38 | 38 | 93% | 12% | 53 | 74% |
+| TIDE ×2, two flank tears | 46 | 46 | 89% | 16% | 85 | 86% |
+| TIDE ×2, two flank tears, the tide sends before the walk | 46 | 46 | 90% | 55% | 324 | 86% |
+| TIDE ×2, two flank tears, the rift alone sends before the walk | 46 | 46 | 89% | 33% | 183 | 85% |
+| TIDE ×1, the tide sends before the walk | 19 | 19 | 100% | 24% | 49 | 40% |
+| TIDE ×1, the rift alone sends before the walk | 19 | 19 | 100% | 8% | 16 | 40% |
+
+What it says: as built the squad spends two actions in five; twice the tide with formations
+still fights for three loses the wall, the same pips as packs for one machine do not, so the
+count becomes a choice only with packs one machine answers; the band between a squad at work
+and a rout is narrow (twice to three times today's pips, lower for a squad whose fights cost
+turns); a hex more of pace changes little with the opening a move farther out and two more is a
+cliff at twelve deep; and the tide sent before the walk is the largest lever of all, nearly all
+of it the tears' packs near the wall, which is why the SPAWNS dial has a middle choice.
+
+## 23 November: a kit's growth inside tier one, and the leaders' block that answers it
+
+For Ryan's "if they don't scale with me they'll become a joke at C4" and the forms by
+Convergence (`docs/tide_proposal.md`, section 5). `tools/anchor_read.gd`, tier one at Convergence
+1 (the second battle), the six certain tier ones on the stock dice of that day (basics on every
+die but the Cottonmouth's shell), every squad of the pool at each fight's rating, three fights a
+squad, the greedy bot, at `bb536910` with the what-ifs of this entry; a kind's mean is a band, a
+cell a direction. `refit=finds=N` swaps up to N basic guns a tier-one die for the tier's found
+guns of their reach, dealt round them in content order (the Shotfire Rack, the Howitzer, the
+Incendiary Shells and the Airburst Shell; the Slugthrower, the Enfilade Beam, the Overclocked
+Railgun, the Arc Fault Cannon, the Plasma Arquebus, the Blazethrower, the Maxigun, the Thermal
+Ray, the Flechette Pod and the Transonic Rifle), so a squad carries a spread and never the best.
+A battle's caches hold five to eight components against about fifteen weapon slots in a squad of
+four, so two a die is a squad one or two battles in. Of a four's hull:
+
+| The squad | A patrol | A hunter's pack | A formation | An elite | A boss |
+|---|---|---|---|---|---|
+| Stock, basics | 3.9%, 5.8 rounds, won 100% | 9.4%, 5.1 rounds, won 100% | 8.0%, 6.1 rounds, won 100% | 21.5%, 7.8 rounds, won 99% | 27.0%, 10.6 rounds, won 99% |
+| One find a die | 3.7%, 5.3 rounds, won 100% | 7.9%, 4.8 rounds, won 100% | 6.4%, 5.8 rounds, won 100% | 18.8%, 7.2 rounds, won 99% | 24.0%, 9.6 rounds, won 99% |
+| Two finds a die | 2.5%, 4.7 rounds, won 100% | 5.0%, 4.2 rounds, won 100% | 5.5%, 5.2 rounds, won 100% | 13.7%, 5.6 rounds, won 100% | 16.9%, 7.1 rounds, won 100% |
+| Every basic gun a find | 2.9%, 4.4 rounds, won 100% | 6.8%, 4.5 rounds, won 100% | 4.9%, 4.9 rounds, won 100% | 15.2%, 5.9 rounds, won 100% | 17.6%, 7.6 rounds, won 100% |
+
+Every gun a find reads no better than two a die: the spread deals the hot guns and the weak
+ones with the rest. Then the same squad with two finds a die against leaders at a share of
+content's hit points (`life=`) and attack (`blows=`), the rank and file beside them as written:
+
+| The leaders' block | An elite | A boss |
+|---|---|---|
+| Hit points ×1.25 | 18.1%, 6.8 rounds, won 99%, 0.09 wrecks a fight | 21.6%, 8.8 rounds, won 100%, 0.11 wrecks a fight |
+| Hit points ×1.5 | 23.0%, 8.0 rounds, won 99%, 0.14 wrecks a fight | 26.7%, 10.5 rounds, won 98%, 0.18 wrecks a fight |
+| Hit points ×1.25, blows ×1.15 | 25.2%, 7.0 rounds, won 99%, 0.23 wrecks a fight | 30.3%, 9.1 rounds, won 96%, 0.35 wrecks a fight |
+| Hit points ×1.4, blows ×1.25 | 34.0%, 7.9 rounds, won 97%, 0.46 wrecks a fight | 40.6%, 10.5 rounds, won 91%, 0.65 wrecks a fight |
+
+So two battles of today's finds take a third off an elite's and a boss's price and a quarter off
+their length, and half again the hit points at the same blows puts both back (the stock squad's
+21.5% and 7.8 rounds, 27.0% and 10.6). The stock baseline itself reads a formation at 8.0% where
+the sizing of 19 November read 5.5%: the four dice that went back to basics that day.
+
+The coverage model's last table the same day, the tide with no middle (`tools/tide_model.py`,
+400 battles a row, seed 1; three packs for one machine a turn, fourteen deep at pace 3):
+
+| The tide | Packs sent | Pips sent | Pips killed | Packs that struck | Gate lost | Actions spent fighting |
+|---|---|---|---|---|---|---|
+| Through the rift, the squad free | 42 | 42 | 93% | 2% | 7 | 81% |
+| Through six tears, the squad free | 42 | 42 | 93% | 3% | 15 | 81% |
+| Through six tears, the squad camped on the rift | 42 | 42 | 32% | 52% | 1328 | 28% |
+| Through six tears, the squad holding the gate | 42 | 42 | 53% | 39% | 861 | 47% |
+| Through six tears, four packs a turn, the squad free | 54 | 54 | 81% | 10% | 66 | 91% |
+| Through four tears, the squad free | 40 | 40 | 92% | 0% | 5 | 77% |
+
+The same packs cost a squad that spreads the same through the rift as through six tears across
+the width; a squad that holds the middle against the tears loses the wall four times over.
+
+## 23 November: the fodder's size, what one machine ends without a reboot
+
+For Ryan's paradigm of that day ("All fodder safer to fight ... bring back threat 2 packs as
+fodder and not just hunters"; "A well-tuned and well-played flanker should be able to finish a
+fight on the sides without rebooting") and the stand-in that deals it (`ContentDB.fodder_of`,
+FORMATIONS on FODDER). `tools/anchor_read.gd` with its `packs=` and `kinds=fodder` of this entry,
+tier one at its first Convergence, the six certain tier ones on stock dice, every single machine
+and every pair of the pool as the pack is rated, four or five fights a squad, the greedy bot, at
+the commit this entry lands with. Hull is a share of a squad of four's; the reboots are a
+machine's a fight, by a bot that reboots early. A cell is a direction, a kind's mean a band.
+
+Hand-made packs first, one machine each, to find the size. A machine's gauge is three shots of a
+basic gun, nine or ten points of damage:
+
+| The pack | Hit points | One machine, stock dice |
+|---|---|---|
+| A goblin | 4 | 1.4 rounds, no hull, no reboot |
+| Two goblins | 8 | 3.9 rounds, 0.2%, 0.60 reboots |
+| Three goblins | 12 | 6.1 rounds, 4.2%, 1.33 reboots |
+| Two goblins and a mandragora | 11 | won 93%, 5.8 rounds, 7.8%, 1.40 reboots |
+| Three mandragoras | 9 | won 97%, 4.8 rounds, 10.5%, 1.43 reboots |
+| Two gels | 8, and four halves | won 53%, 8.1 rounds, 16.9% |
+| Three revenants | 9 | 4.5 rounds, 4.4%, 0.97 reboots |
+| A zombie knight and a revenant | 8, and a rising | 9.2 rounds, 5.2%, 1.97 reboots |
+| Two salamanders | 12 | 5.5 rounds, 5.2%, 1.33 reboots |
+
+Eight hit points is what one gauge ends; what a foe leaves as it falls and what stacks on one
+machine (the gels' Ablating, the roots' Corrupt) count against it. So the stand-in's budget: 8
+for one machine, a foe's standing hit points counting what it leaves and half again for a
+rising, a back rank of two at most. Its first cut gave a pack for two 16, and that pack met by
+one machine read won 73%, 7.8 rounds, 15.2% of a four's hull (most of the machine's own) and
+0.27 wrecks a fight: the fight short his paradigm is rid of. At 12 for two, as landed, every
+pack the tier-one formations come apart into:
+
+| Domain | The pack | For | On stock dice | With two finds a die | Met by one machine |
+|---|---|---|---|---|---|
+| Meadow | goblin ×2 | 1 | 3.8 rounds, 0.2%, 0.58 reboots | 3.5 rounds, 0.1%, 0.33 reboots |  |
+| Meadow | goblin, mandragora | 1 | 2.9 rounds, 0.4%, 0.25 reboots | 2.5 rounds, 0.2%, 0.08 reboots |  |
+| Meadow | mandragora ×2 | 1 | 2.2 rounds, 0.3%, 0.08 reboots | 2.4 rounds, 0.6%, 0.12 reboots |  |
+| Meadow | goblin ×3 | 2 | 2.6 rounds, 0.1%, 0.25 reboots | 2.4 rounds, 0.0%, 0.15 reboots | won 100%, 6.2 rounds, 4.3%, 1.33 reboots |
+| Meadow | goblin ×2, mandragora | 2 | 2.1 rounds, 0.0%, 0.04 reboots | 2.2 rounds, 0.1%, 0.12 reboots | won 96%, 5.9 rounds, 8.0%, 1.42 reboots |
+| Meadow | goblin, mandragora ×2 | 2 | 2.0 rounds, 0.1%, 0.02 reboots | 2.1 rounds, 0.0%, 0.07 reboots | won 100%, 5.3 rounds, 6.6%, 1.25 reboots |
+| Meadow | gel | 1 | 4.6 rounds, 0.9%, 0.83 reboots | 3.8 rounds, 0.5%, 0.58 reboots |  |
+| Meadow | gel, mandragora | 2 | 2.1 rounds, 0.0%, 0.03 reboots | 2.5 rounds, 0.1%, 0.17 reboots | won 96%, 6.8 rounds, 6.8%, 1.50 reboots |
+| Waste | needler ×2 | 1 | 3.9 rounds, 4.7%, 0.83 reboots | 2.6 rounds, 0.9%, 0.17 reboots |  |
+| Waste | needler, cockatrice | 1 | 3.5 rounds, 1.6%, 0.58 reboots | 2.8 rounds, 0.7%, 0.25 reboots |  |
+| Waste | cockatrice ×2 | 1 | 3.6 rounds, 1.2%, 0.54 reboots | 2.8 rounds, 0.3%, 0.21 reboots |  |
+| Waste | needler ×3 | 2 | 2.2 rounds, 0.8%, 0.17 reboots | 1.9 rounds, 0.2%, 0.15 reboots | won 83%, 5.5 rounds, 16.4%, 1.75 reboots |
+| Waste | needler ×2, cockatrice | 2 | 2.4 rounds, 0.3%, 0.21 reboots | 2.0 rounds, 0.1%, 0.24 reboots | won 83%, 5.3 rounds, 11.4%, 1.54 reboots |
+| Waste | needler, cockatrice ×2 | 2 | 2.8 rounds, 0.1%, 0.45 reboots | 2.2 rounds, 0.0%, 0.31 reboots | won 96%, 6.2 rounds, 9.2%, 1.83 reboots |
+| Marsh | revenant ×2 | 1 | 2.1 rounds, 0.1%, 0.04 reboots | 2.2 rounds, 0.2%, 0.08 reboots |  |
+| Marsh | revenant, ghost | 1 | 3.2 rounds, 0.4%, 0.33 reboots | 2.4 rounds, 0.3%, 0.12 reboots |  |
+| Marsh | ghost ×2 | 1 | 4.8 rounds, 1.9%, 0.79 reboots | 2.8 rounds, 1.0%, 0.17 reboots |  |
+| Marsh | revenant ×4 | 2 | 2.2 rounds, 0.7%, 0.22 reboots | 2.4 rounds, 0.6%, 0.29 reboots | won 96%, 5.5 rounds, 13.5%, 1.67 reboots |
+| Marsh | revenant ×2, ghost | 2 | 2.2 rounds, 0.0%, 0.12 reboots | 2.6 rounds, 0.0%, 0.24 reboots | won 100%, 6.7 rounds, 7.0%, 1.54 reboots |
+| Marsh | revenant, ghost ×2 | 2 | 3.4 rounds, 0.1%, 0.35 reboots | 3.5 rounds, 0.3%, 0.40 reboots | won 75%, 7.8 rounds, 12.5%, 2.42 reboots |
+| Marsh | zombie knight | 1 | 2.9 rounds, 1.1%, 0.33 reboots | 1.9 rounds, 0.0%, 0.00 reboots |  |
+| Marsh | zombie knight, revenant | 2 | 2.0 rounds, 0.0%, 0.06 reboots | 1.4 rounds, 0.0%, 0.03 reboots | won 100%, 9.1 rounds, 5.5%, 1.96 reboots |
+| Marsh | zombie knight, ghost | 2 | 2.3 rounds, 0.0%, 0.11 reboots | 1.7 rounds, 0.0%, 0.11 reboots | won 88%, 7.9 rounds, 11.1%, 2.12 reboots |
+| Peak | salamander | 1 | 2.1 rounds, 0.2%, 0.08 reboots | 2.0 rounds, 0.3%, 0.08 reboots |  |
+| Peak | bomb ×2 | 1 | 3.7 rounds, 0.3%, 0.46 reboots | 2.7 rounds, 0.3%, 0.25 reboots |  |
+| Peak | bomb, drake | 1 | 4.0 rounds, 1.2%, 0.46 reboots | 3.0 rounds, 0.6%, 0.25 reboots |  |
+| Peak | drake ×2 | 1 | 3.5 rounds, 1.3%, 0.50 reboots | 2.9 rounds, 0.3%, 0.21 reboots |  |
+| Peak | salamander ×2 | 2 | 2.1 rounds, 0.1%, 0.07 reboots | 1.6 rounds, 0.0%, 0.02 reboots | won 100%, 5.5 rounds, 5.2%, 1.33 reboots |
+| Peak | salamander, bomb | 2 | 1.7 rounds, 0.0%, 0.00 reboots | 1.2 rounds, 0.0%, 0.00 reboots | won 100%, 4.7 rounds, 1.6%, 0.79 reboots |
+| Peak | bomb ×3 | 2 | 2.1 rounds, 0.0%, 0.07 reboots | 1.9 rounds, 0.0%, 0.14 reboots | won 100%, 6.7 rounds, 2.5%, 1.25 reboots |
+| Peak | salamander, drake | 2 | 1.8 rounds, 0.0%, 0.01 reboots | 1.3 rounds, 0.0%, 0.00 reboots | won 100%, 5.0 rounds, 3.1%, 1.08 reboots |
+| Peak | bomb ×2, drake | 2 | 2.3 rounds, 0.0%, 0.09 reboots | 1.9 rounds, 0.0%, 0.12 reboots | won 100%, 6.4 rounds, 3.7%, 1.29 reboots |
+| Peak | bomb, drake ×2 | 2 | 2.6 rounds, 0.2%, 0.20 reboots | 2.0 rounds, 0.0%, 0.07 reboots | won 100%, 6.3 rounds, 6.2%, 1.38 reboots |
+
+The means: a pack for one 3.4 rounds, 1.0% of a four's hull and 0.45 reboots on stock dice, 2.7
+rounds, 0.4% and 0.19 with two finds a die; a pack for two 2.3 rounds, 0.1% and 0.14, and met by
+one machine won 95%, 6.3 rounds, 7.5% (about three tenths of that machine's hull) and 1.53
+reboots. The needlers are the hard-hitting line (two of them 4.7% of a four's hull from one
+stock machine, three met alone 16.4%); the massive foes are in no pack (a treant met by one
+machine: won 71%, 11.3 rounds, 3.42 reboots).
+
+The whole battle, a direction only (`tools/battle_run.gd`, ten seeds each of the Meadow and the
+Marsh, the Honey Badger, the Skua, the Cassowary and the Storm Petrel at Convergence 1, the
+bot's player, which gathers and holds no lane):
+
+| The field | Won | The gate fell | Wiped | The Rupture's turn | Fights for one a battle | Their rounds | Their hull |
+|---|---|---|---|---|---|---|---|
+| As built | 20% | 10% to 20% | 60% to 70% | 6.5 | 3.0 to 3.8 | 5.5 to 8.9 | 3.1% to 4.6% of the squad's |
+| His set (FODDER, PACK BONUS +½, STRIKE 5, START TEARS TWO) | 10% | 50% to 60% | 30% to 40% | 5.7 | 6.6 to 8.6 | 4.2 to 6.3 | 1.8% to 3.7% |
+
+The gathering player loses the wall under the set where it lost its machines as built: what
+the coverage model says of a squad that holds a post (`tools/tide_model.py`, 400 battles a row,
+seed 1; twelve turns, fights for free, a pack for two wanting two machines):
+
+| The tide | Packs sent | Pips sent | Pips killed | Packs that struck | Gate lost | Actions spent fighting |
+|---|---|---|---|---|---|---|
+| As built, the wall struck for ten a pip | 13 | 19 | 100% | 12% | 15 | 40% |
+| The fodder tide, ten a pip | 17 | 20 | 96% | 7% | 25 | 40% |
+| The fodder tide, five a pip | 17 | 20 | 96% | 7% | 12 | 40% |
+| His set: fodder, two tears from the start, five a pip | 25 | 29 | 95% | 5% | 16 | 58% |
+| The set, four tears from the start | 33 | 39 | 92% | 6% | 25 | 74% |
+| The set, TIDE ×2 | 42 | 49 | 83% | 20% | 114 | 86% |
+| The set, the squad holding the gate | 25 | 29 | 49% | 44% | 397 | 30% |
+| The set, the squad camped on the rift | 25 | 29 | 40% | 52% | 535 | 24% |
+| The set with four tears, the squad holding the gate | 33 | 39 | 52% | 44% | 450 | 42% |
+
+A squad that spreads holds the wall under the set as it did as built, at three fifths of its
+actions where it spent two fifths; a squad that holds the gate or the rift loses the wall twice
+over. Four tears from the start is three quarters of its actions; twice the tide on top is a
+rout.
+
+## 23 November: the tier-one bench at the anchor
+
+For the bench's grid (`docs/briefs/numbers_pass.md`, section 6): whether the finds priced from
+the vanilla he settled that day flatten a kit's growth inside tier one. `tools/anchor_read.gd`
+as the entry of the same day on a kit's growth (tier one at Convergence 1, the six certain tier
+ones, every squad of the pool at each fight's rating, three fights a squad, the greedy bot),
+with `refit=<the bench's spec>,finds=2`: `sim/refit.gd`'s `face=` of this entry rewrites ten
+pieces for the run (the Slugthrower 2 twice for 5, the Maxigun at 8 heat, the Enfilade Beam 3
+with Penetrate 2, the Arc Fault Cannon 3 for 4, the Shotfire Rack at 6 heat, the Howitzer 3 for
+6 without its Penetrate, the Incendiary Shells at 6 heat, the Airburst Shell at 5 without its
+Brittle, the Plasma Arquebus and the Overclocked Railgun out of the tier), and `finds=2` deals
+what is left round the dice. Of a four's hull:
+
+| The squad | A lone flanker | A hunter's pack | A formation | An elite | A boss |
+|---|---|---|---|---|---|
+| Stock, basics | 3.9%, 5.8 rounds | 9.4%, 5.1 rounds | 8.0%, 6.1 rounds | 21.5%, 7.8 rounds | 27.0%, 10.6 rounds |
+| Two of today's finds a die | 2.5%, 4.7 rounds | 5.0%, 4.2 rounds | 5.5%, 5.2 rounds | 13.7%, 5.6 rounds | 16.9%, 7.1 rounds |
+| Two of the bench's finds a die | 3.4%, 5.3 rounds | 7.4%, 4.8 rounds | 6.2%, 5.6 rounds | 18.1%, 6.8 rounds | 21.6%, 9.1 rounds |
+
+Every fight won but an elite's and a boss's on stock dice (99%). The bench's finds leave a
+squad between stock and today's finds: a sixth off an elite's price and a fifth off a boss's,
+where today's take 36% and 37%. A boss against the bench reads what a boss with a quarter more
+hit points reads against today's finds (21.6% in both, 9.1 rounds and 8.8).
+
+## 23 November: the graded tide, a rating's size and the squad's shape
+
+For Ryan's correction of the split trial of the entry above ("I don't want the packs split, I
+want them SCALED ... the far edges are 1s with a sprinkling of 2s, then 2s in between, and 3s
+coming right down the center ... 1s fastest and 3s slowest") and `docs/tide_proposal.md`. The
+split's generator and its dial are cut with this entry's commit; its reads above stand as what
+a pack of 8 and of 12 hit points costs.
+
+**The squad's shape** (`tools/tide_model.py`, 400 battles a row, seed 1: twelve turns, fights
+for free, a pack wanting its rating in machines, twelve deep, ten a pip). The rift sends a
+pack for three every other peak, a mouth by each end of the wall a pack for one every peak (a
+quarter of them for two), a mouth between each end and the middle a pack for two every other
+peak, the sides in turn; each walks at its rating's pace to the wall it reaches soonest. The
+last column is the gate lost to ones, twos and threes:
+
+| The tide | Packs sent | Pips sent | Pips killed | Packs that struck | Gate lost | Actions spent fighting | By rating |
+|---|---|---|---|---|---|---|---|
+| Every pack at pace 2, the squad free | 19 | 33 | 90% | 27% | 193 | 62% | 32, 96, 64 |
+| Paces 3, 2 and 1 | 19 | 33 | 87% | 28% | 151 | 60% | 39, 93, 19 |
+| Paces 4, 3 and 2 | 19 | 33 | 90% | 47% | 274 | 62% | 50, 158, 66 |
+| Paces 4, 3 and 2, fourteen deep | 19 | 33 | 87% | 38% | 205 | 60% | 48, 112, 45 |
+| Paces 4, 3 and 2, no pack for two at the ends | 19 | 31 | 95% | 37% | 176 | 62% | 54, 77, 45 |
+| Paces 4, 3 and 2, half the ends' packs for two | 19 | 35 | 87% | 53% | 370 | 63% | 43, 236, 91 |
+| The squad holding the gate | 19 | 33 | 60% | 77% | 1050 | 41% | 435, 609, 6 |
+| The squad camped on the rift | 19 | 33 | 40% | 73% | 1474 | 27% | 550, 924, 0 |
+| Each machine holding a lane of its own | 19 | 33 | 61% | 55% | 1027 | 42% | 22, 400, 605 |
+| The middle split, a two and a one for each three: the squad free | 22 | 33 | 93% | 43% | 274 | 64% | 72, 202, 0 |
+| The middle split: each machine holding a lane of its own | 22 | 33 | 88% | 51% | 439 | 60% | 46, 394, 0 |
+
+With threes down the middle a squad that holds a post loses the wall five times over, and so
+does one whose machines each hold a lane (605 of it to the threes it never gathers for). With
+the middle split, the morning's trial, holding a lane each loses 439 where a free squad loses
+274: spreading was the answer and gathering bought little. A free squad's greatest loss is to
+the twos in every row, and the ends' twos are the worst of it. Slower threes lose less than
+faster ones gain: paces 3, 2 and 1 read 151 where 4, 3 and 2 read 274.
+
+**A rating's size on the Meadow's foes** (`tools/anchor_read.gd`, `packs=`, tier one at its
+first Convergence, the six certain tier ones on stock dice, every squad of the pool of the
+size named, two to four fights a squad, the greedy bot; of a four's hull, reboots a machine a
+fight):
+
+| The pack | Hit points | At its rating | A machine short |
+|---|---|---|---|
+| A lone whisker cat, for one | 12 | 5.3 rounds, 4.1%, 1.17 reboots | |
+| A lone treant, for one | 14, plated | won 71%, 11.3 rounds, 19.0%, 3.42 reboots | |
+| A lone treant, for two | 14, plated | 4.7 rounds, 2.1%, 0.90 reboots | won 61%, 11.9 rounds, 19.1% |
+| Two whisker cats, for two | 24 | 5.4 rounds, 2.8%, 1.09 reboots | won 44%, 21.5% |
+| Three goblins, for two | 12 | 2.8 rounds, 0.2%, 0.23 reboots | won 100%, 6.2 rounds, 4.4% |
+| Four goblins, for two | 16 | 4.3 rounds, 1.6%, 0.61 reboots | won 83%, 17.1% |
+| A treant and a mandragora, for two | 17, plated | 5.7 rounds, 3.4%, 1.14 reboots | won 39% |
+| Two gels, for two | 16 with their halves | 4.5 rounds, 0.7%, 0.57 reboots | won 50%, 17.6% |
+| Three goblins and three mandragoras, for three | 21 | 3.2 rounds, 1.7%, 0.33 reboots | won 100%, 5.9 rounds, 13.3%, 0.10 wrecks |
+| Four goblins and two mandragoras | 22 | 3.3 rounds, 2.2%, 0.41 reboots | won 100%, 6.0 rounds, 12.8% |
+| Four goblins and three mandragoras | 25 | 4.3 rounds, 4.8%, 0.76 reboots | won 80%, 27.9%, 0.53 wrecks |
+| Four and four, the horde as built | 28 | 5.2 rounds, 10.3%, 1.09 reboots | won 47%, 40.2%, 1.20 wrecks |
+| A treant, two goblins and a mandragora | 25, plated | 5.5 rounds, 1.7%, 1.01 reboots | won 100%, 9.7 rounds, 15.4% |
+| A treant, three goblins and two mandragoras, the grove as built | 32, plated | 6.6 rounds, 6.9%, 1.36 reboots | won 63%, 37.0% |
+| Two treants | 28, plated | 6.7 rounds, 5.2%, 1.42 reboots | won 90%, 11.3 rounds, 24.4% |
+| Two treants and two mandragoras | 34, plated | 7.7 rounds, 12.9%, 1.78 reboots | won 50% |
+| Three gels and two mandragoras, the gel wall as built | 30 with their halves | 4.4 rounds, 5.1%, 0.72 reboots | won 57%, 32.3% |
+| Three treants | 42, plated | won 95%, 10.4 rounds, 24.6%, 2.57 reboots | won none |
+
+The other domains' lone flankers for one machine: the roc 6.7 rounds and 1.38 reboots, the
+dullahan 6.2 and 1.00, Cerberus 4.5 and 0.88, a sandworm won 83% in 9.9 rounds.
+
+**A lone pack against a kit that has grown** (`refit=finds=N`, one machine):
+
+| The pack | Stock | Two finds a die | Every basic gun a find |
+|---|---|---|---|
+| A lone treant | won 71%, 11.3 rounds, 3.42 reboots | won 96%, 8.8 rounds, 2.62 reboots | 7.5 rounds, 11.7%, 2.29 reboots |
+| A lone whisker cat | 5.3 rounds, 1.17 reboots | 3.9 rounds, 0.62 reboots | 4.4 rounds, 0.88 reboots |
+| Two goblins | 3.8 rounds, 0.58 reboots | 3.5 rounds, 0.33 reboots | 3.4 rounds, 0.33 reboots |
+| A lone gel | 4.6 rounds, 0.83 reboots | 3.8 rounds, 0.58 reboots | 3.8 rounds, 0.67 reboots |
+
+Eight hit points a machine is the size that falls inside a gauge at every rating; today's
+ones, twos and threes are each half again over it; and a treant is a pack for two through the
+tier on any of today's kits.
+
+## 24 November: the graded tide on its dial, and a treant as another kind of unit
+
+For the graded tide as built (`docs/tide_proposal.md`, section 3) and Ryan's point of that day
+on the massive foes ("another kind of unit, offering variety, not necessarily more threat ...
+Why can't 'Treant Grove' be like, two or three treants?").
+
+**The whole battle, a direction only** (`tools/battle_run.gd`, ten seeds, the Meadow, the Honey
+Badger, the Skua, the Cassowary and the Storm Petrel at Convergence 1, the bot's player, which
+gathers and holds no lane; the graded rows at `RIFTGATE_STRIKE=5 RIFTGATE_PACK_BONUS=50`):
+
+| The field | Won | The gate fell | Wiped | The Rupture reached, its turn | Hull at the Rupture | Fights for one a battle | Fights for three |
+|---|---|---|---|---|---|---|---|
+| As built | 20% | 10% | 70% | 70%, turn 6.6 | 36% | 3.8, 5.5 rounds, 3.1% of the squad's hull | 2.0, 5.3 rounds, 14.4%, one in five lost |
+| Graded, SENDS 1 | 60% | 10% | 30% | 90%, turn 8.1 | 65% | 3.2, 3.4 rounds, 0.2% | 1.3, 5.9 rounds, 4.1%, none lost |
+| Graded, SENDS 2 | none | 50% | 50% | 50%, turn 9.8 | 54% | 4.1, 3.4 rounds, 0.4% | 1.6, 5.6 rounds, 5.6%, none lost |
+
+The Marsh, which has no packs written for the graded tide and plays it on its compositions as
+built, at SENDS 1: won 30%, wiped 60%, its fights for one 7.2 rounds.
+
+**A treant's hit points** (`tools/anchor_read.gd` with `foe=treant:hp=N` of this entry, its
+plate, its blow of 6 and its regrowth as content has them; the six certain tier ones on stock
+dice at the tier's first Convergence, two fights a squad, the greedy bot; of a four's hull,
+reboots a machine a fight):
+
+| The pack | At 14, as content | At 10 | At 8 |
+|---|---|---|---|
+| Two treants, for three | 6.7 rounds, 5.2%, 1.42 reboots | 4.2 rounds, 1.8%, 0.77 | 3.4 rounds, 1.4%, 0.50 |
+| Three treants, for three | won 95%, 10.4 rounds, 24.6%, 2.57 | 6.7 rounds, 12.6%, 1.59 | 5.0 rounds, 8.6%, 1.09 |
+| Two treants and two mandragoras, for three | 7.7 rounds, 12.9%, 1.78 | 5.3 rounds, 8.2%, 1.15 | 4.7 rounds, 5.2%, 0.97 |
+| One treant, for two | 4.7 rounds, 2.1%, 0.90 | 2.8 rounds, 0.7%, 0.32 | 2.2 rounds, 0.3%, 0.20 |
+| One treant, for one | won 71%, 11.3 rounds, 19.0%, 3.42 | 7.9 rounds, 12.7%, 2.17 | 6.2 rounds, 10.5%, 1.75 |
+
+At 8 hit points a grove of two is as clean a pack for three as the horde of six, and three
+treants cost what the horde of eight costs. One machine alone still spends six rounds and a
+reboot or two on a treant at any of these: its plate, its regrowth and its blow do that, more
+than its hit points.

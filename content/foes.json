@@ -87,7 +87,7 @@
       "hp": 4, "attack": 1, "rank": "front", "movespeed": 2,
       "on_death": { "summon": "gel_half", "count": 2, "pair": true },
       "actions": [
-        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["ablate"], "ablate": 1, "text": "Flows over the hull: {damage}, and the machine Ablating ×1.", "status": "implemented" }
+        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["ablate"], "ablate": 1, "text": "Flows over the hull: {damage}, and the machine Ablate ×1.", "status": "implemented" }
       ],
       "flavour": "Count them after, not before."
     },
@@ -97,7 +97,7 @@
       "codex": "Half of a Gel. Smaller, weaker, and there are two of them.",
       "hp": 2, "attack": 0, "rank": "front", "movespeed": 2,
       "actions": [
-        { "id": "engulf", "name": "Engulf", "kind": "debuff", "effect": "ablate", "value": 1, "weight": 2, "text": "Flows over the hull: the machine Ablating ×{value}.", "status": "implemented" }
+        { "id": "engulf", "name": "Engulf", "kind": "debuff", "effect": "ablate", "value": 1, "weight": 2, "text": "Flows over the hull: the machine Ablate ×{value}.", "status": "implemented" }
       ],
       "flavour": "Told you."
     },
@@ -129,7 +129,7 @@
       "hp": 6, "attack": 2, "armour": 2, "rank": "front", "movespeed": 2,
       "on_death": { "summon": "molten_gel_half", "count": 2, "pair": true },
       "actions": [
-        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["brittle", "ablate"], "brittle": 2, "ablate": 2, "text": "Burns over the hull: {damage}, and the machine Brittle ×2 and Ablating ×2.", "status": "implemented" }
+        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["brittle", "ablate"], "brittle": 2, "ablate": 2, "text": "Burns over the hull: {damage}, and the machine Brittle ×2 and Ablate ×2.", "status": "implemented" }
       ],
       "flavour": "Field note: the crust is the easy part."
     },
@@ -139,7 +139,7 @@
       "codex": "Half of a Molten Gel: a thinner crust, the same burn.",
       "hp": 3, "attack": 1, "armour": 1, "rank": "front", "movespeed": 2,
       "actions": [
-        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["brittle", "ablate"], "brittle": 1, "ablate": 1, "text": "Burns over the hull: {damage}, and the machine Brittle ×1 and Ablating ×1.", "status": "implemented" }
+        { "id": "engulf", "name": "Engulf", "kind": "attack", "weight": 2, "keywords": ["brittle", "ablate"], "brittle": 1, "ablate": 1, "text": "Burns over the hull: {damage}, and the machine Brittle ×1 and Ablate ×1.", "status": "implemented" }
       ],
       "flavour": "Still hot."
     },
@@ -474,7 +474,7 @@
     {
       "id": "spectre", "name": "Spectre", "faction": "marsh", "tier": 2,
       "design": { "fantasy": "The spectre, the Marsh's cleanser: the domain's lever (Ryan, 28 October, 'debuffs are hard here'). Tier two of the ghost line." },
-      "codex": "A ghost that keeps its dead clean. Its hallow strips what the team has laid on one of its own, Ablating, Brittle and Shock alike: kill it first, or cash the marks before it acts. When it throws its bolt it fades after: Phased through the next round, out of reach and striking all the same. Reach it on a round it stands solid.",
+      "codex": "A ghost that keeps its dead clean. Its hallow strips what the team has laid on one of its own, Ablate, Brittle and Shock alike: kill it first, or cash the marks before it acts. When it throws its bolt it fades after: Phased through the next round, out of reach and striking all the same. Reach it on a round it stands solid.",
       "hp": 6, "attack": 4, "rank": "back", "movespeed": 2, "winged": true,
       "actions": [
         { "id": "hex_bolt", "name": "Hex Bolt", "kind": "attack", "weight": 2, "also": [{"effect": "phase"}], "text": "A bolt of grave-light for {damage}, and it fades as the round ends: Phased through the next.", "status": "implemented" },
@@ -668,11 +668,11 @@
     {
       "id": "magma_lizard", "name": "Magma Lizard", "faction": "peak", "tier": 3,
       "design": { "fantasy": "The magma lizard, the Peak's primer: Primed as a foe's buff. Tier three of the salamander line." },
-      "codex": "A salamander that lights the rest: its stoke primes every other foe, so their next blows leave the machine Ablating. Kill it first, or Ward what they are aimed at.",
+      "codex": "A salamander that lights the rest: its stoke primes every other foe, so their next blows leave the machine Ablate. Kill it first, or Ward what they are aimed at.",
       "hp": 9, "attack": 7, "rank": "front", "movespeed": 2,
       "actions": [
         { "id": "bite", "name": "Bite", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 2, "text": "A burning bite for {damage}. It scorches.", "status": "implemented" },
-        { "id": "stoke_the_pack", "name": "Stoke the Pack", "kind": "buff", "effect": "prime", "value": 1, "weight": 1, "when": "others_on_field", "text": "Lights the others: every other foe is Primed {value}, its next blows leaving Ablating 1.", "status": "implemented" }
+        { "id": "stoke_the_pack", "name": "Stoke the Pack", "kind": "buff", "effect": "prime", "value": 1, "weight": 1, "when": "others_on_field", "text": "Lights the others: every other foe is Primed {value}, its next blows leaving Ablate 1.", "status": "implemented" }
       ],
       "flavour": "One of them is the match. Find the match."
     },
@@ -683,7 +683,7 @@
       "hp": 4, "attack": 3, "rank": "back", "movespeed": 2, "winged": true,
       "actions": [
         { "id": "breath", "name": "Breath", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 1, "text": "A gout of fire for {damage}, over the front rank. It scorches.", "status": "implemented" },
-        { "id": "stoke", "name": "Stoke", "kind": "debuff", "effect": "ablate", "value": 1, "weight": 1, "text": "Sets a machine Ablating, ×{value}.", "status": "implemented" }
+        { "id": "stoke", "name": "Stoke", "kind": "debuff", "effect": "ablate", "value": 1, "weight": 1, "text": "Sets a machine Ablate, ×{value}.", "status": "implemented" }
       ],
       "flavour": "If the sky turns orange, that's not the sunset."
     },
@@ -695,7 +695,7 @@
       "actions": [
         { "id": "breath", "name": "Breath", "kind": "attack", "weight": 2, "keywords": ["scorch"], "scorch": 2, "text": "A gout of fire for {damage}, over the front rank. It scorches.", "status": "implemented" },
         { "id": "dive", "name": "Dive", "kind": "attack", "factor": 1.5, "weight": 1, "text": "Drops on a machine for {damage}.", "status": "implemented" },
-        { "id": "stoke", "name": "Stoke", "kind": "debuff", "effect": "ablate", "value": 4, "weight": 1, "text": "Sets a machine Ablating, ×{value}.", "status": "implemented" }
+        { "id": "stoke", "name": "Stoke", "kind": "debuff", "effect": "ablate", "value": 4, "weight": 1, "text": "Sets a machine Ablate, ×{value}.", "status": "implemented" }
       ],
       "flavour": "When it climbs, it is not leaving."
     },
@@ -857,7 +857,7 @@
       "codex": "Shadow and flame, the size of a gate. It picks the strongest machine on the field and comes for it: a whip that leaves it ablating, a blade of shadow, and below half a fire that scorches everything. Keep the tank cool, or it is the first to go.",
       "hp": 54, "attack": 16, "armour": 1, "rank": "front", "size": 2, "movespeed": 2,
       "actions": [
-        {"id": "flame_whip", "name": "Flame Whip", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["ablate"], "ablate": 2, "text": "The whip of flame: {damage}, and the machine Ablating ×2.", "status": "implemented"},
+        {"id": "flame_whip", "name": "Flame Whip", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["ablate"], "ablate": 2, "text": "The whip of flame: {damage}, and the machine Ablate ×2.", "status": "implemented"},
         {"id": "shadow_blade", "name": "Shadow Blade", "kind": "attack", "weight": 2, "text": "The blade of shadow, for {damage}.", "status": "implemented"},
         {"id": "shadow_and_flame", "name": "Shadow and Flame", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["all", "scorch"], "scorch": 1, "when": "below_half", "text": "Shadow and flame: {damage} to every machine, each one scorched.", "status": "implemented"}
       ],
@@ -883,7 +883,7 @@
       "actions": [
         {"id": "lightning_beam", "name": "Lightning Beam", "kind": "attack", "factor": 0.75, "weight": 2, "keywords": ["jam"], "text": "A beam of lightning: {damage}, and the entry it shows is Jammed until its machine reboots.", "status": "implemented"},
         {"id": "rampage", "name": "Rampage", "kind": "attack", "strikes": 3, "factor": 0.4, "weight": 2, "text": "A rampage of fists: {damage}, three times.", "status": "implemented"},
-        {"id": "golden_rage", "name": "Golden Rage", "kind": "buff", "effect": "golden", "value": 2, "rounds": 3, "weight": 2, "when": "calm", "text": "It roars and its fur goes gold: its blows hit 2 harder and it wears a point of armour for three rounds, until a quarter of its HP is knocked out of it; then it staggers.", "status": "implemented"}
+        {"id": "golden_rage", "name": "Golden Rage", "kind": "buff", "effect": "golden", "rounds": 3, "weight": 2, "when": "calm", "text": "It roars and its fur goes gold: Gain 3 Golden.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix M: it is not a monkey. Do not call it a monkey."
     },
@@ -1012,7 +1012,7 @@
       "hp": 40, "attack": 7, "armour": 0, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "lash", "name": "Tendrils", "kind": "attack", "factor": 0.6, "strikes": 2, "weight": 2, "text": "Tendrils, twice: {damage} each.", "status": "implemented"},
-        {"id": "bad_breath", "name": "Bad Breath", "kind": "attack", "factor": 0.3, "weight": 1, "keywords": ["all", "ablate", "scorch", "jam", "corrupt"], "ablate": 1, "scorch": 1, "corrupt": 1, "text": "Bad Breath over every machine: {damage} each, and each one Ablating, scorched, the entry it shows Jammed and corrupted.", "status": "implemented"},
+        {"id": "bad_breath", "name": "Bad Breath", "kind": "attack", "factor": 0.3, "weight": 1, "keywords": ["all", "ablate", "scorch", "jam", "corrupt"], "ablate": 1, "scorch": 1, "corrupt": 1, "text": "Bad Breath over every machine: {damage} each, and each one Ablate, scorched, the entry it shows Jammed and corrupted.", "status": "implemented"},
         {"id": "seedfall", "name": "Seedfall", "kind": "buff", "effect": "summon", "foe": "mandragora", "count": 2, "weight": 1, "when": "below_half", "text": "Below half, it seeds the ground: two mandragoras join the fight.", "status": "implemented"}
       ],
       "flavour": "Gate order one, amended again: if it is green and it smells like that, masks on."
@@ -1118,7 +1118,7 @@
       "hp": 72, "attack": 11, "armour": 0, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "six_blades", "name": "Six Blades", "kind": "attack", "factor": 0.3, "strikes": 6, "weight": 2, "text": "Six blades, one after another: {damage}, six times.", "status": "implemented"},
-        {"id": "flame_lash", "name": "Flame Lash", "kind": "attack", "factor": 0.75, "weight": 1, "keywords": ["ablate"], "ablate": 2, "text": "A lash of flame: {damage}, and the machine Ablating ×2.", "status": "implemented"},
+        {"id": "flame_lash", "name": "Flame Lash", "kind": "attack", "factor": 0.75, "weight": 1, "keywords": ["ablate"], "ablate": 2, "text": "A lash of flame: {damage}, and the machine Ablate ×2.", "status": "implemented"},
         {"id": "fire", "name": "Fire", "kind": "attack", "factor": 0.6, "weight": 2, "keywords": ["all", "scorch"], "scorch": 1, "when": "below_half", "text": "Fire: {damage} to every machine, each one scorched.", "status": "implemented"}
       ],
       "flavour": "Recruitment poster, the back: six arms. Count them again. Six."
@@ -1154,7 +1154,7 @@
       "hp": 60, "attack": 10, "armour": 1, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
         {"id": "twin_shear", "name": "Twin Shear", "kind": "attack", "strikes": 2, "factor": 0.6, "weight": 2, "text": "The pincers: {damage}, twice.", "status": "implemented"},
-        {"id": "paralytail", "name": "Paralytail", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["jam", "ablate"], "ablate": 2, "text": "The tail: {damage}, the entry it shows Jammed until its machine reboots, and the machine Ablating ×2.", "status": "implemented"},
+        {"id": "paralytail", "name": "Paralytail", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["jam", "ablate"], "ablate": 2, "text": "The tail: {damage}, the entry it shows Jammed until its machine reboots, and the machine Ablate ×2.", "status": "implemented"},
         {"id": "desert_gasp", "name": "Desert Gasp", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["all", "corrupt"], "corrupt": 1, "when": "below_half", "text": "Desert gasp over every machine: {damage} each, and the entry each shows is corrupted.", "status": "implemented"}
       ],
       "flavour": "Field manual, appendix W: if the sand moves and there is no wind, it is not the wind."
@@ -1222,7 +1222,7 @@
       "codex": "The Gels' king, and it eats its own. It calls every Gel on the field into itself, healing what they had left and hitting harder for each one, so kill the Gels before it does. Below half it simply falls on everything.",
       "hp": 72, "attack": 11, "armour": 0, "rank": "front", "size": 2, "movespeed": 1,
       "actions": [
-        {"id": "dissolve", "name": "Dissolve", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["brittle", "ablate"], "brittle": 2, "ablate": 2, "before": [{"effect": "dispel", "value": 1}], "text": "Purge 1, then it dissolves into the hull: {damage}, and the machine Brittle ×2 and Ablating ×2.", "status": "implemented"},
+        {"id": "dissolve", "name": "Dissolve", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["brittle", "ablate"], "brittle": 2, "ablate": 2, "before": [{"effect": "dispel", "value": 1}], "text": "Purge 1, then it dissolves into the hull: {damage}, and the machine Brittle ×2 and Ablate ×2.", "status": "implemented"},
         {"id": "merge", "name": "Merge", "kind": "buff", "effect": "merge", "foe": ["gel", "gel_half", "bubble_gel", "bubble_gel_half", "molten_gel", "molten_gel_half"], "value": 1, "weight": 2, "text": "Every Gel on the field is taken in: it regrows the HP they had left, and its next move hits {value} harder for each.", "status": "implemented"},
         {"id": "belly_flop", "name": "Belly Flop", "kind": "attack", "factor": 0.5, "weight": 2, "keywords": ["all"], "when": "below_half", "text": "It falls on everything: {damage} to every machine.", "status": "implemented"}
       ],

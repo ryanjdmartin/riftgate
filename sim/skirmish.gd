@@ -290,6 +290,7 @@ var ablations: Array = []
 ## lands on one of them afterwards (a machine's loop catching a status it just gained) skips
 ## its next action rather than an action already taken.
 var _acted: Array = []
+var _gold_due: Dictionary = {}   # a foe gone gold this turn: its count, laid as its turn ends (Golden, a timer)
 ## The round preview (Ryan, 26 October: it "should account for every single thing that will
 ## happen other than 1) random active effects ... and 2) player decisions"): set on a copy of the
 ## fight that plays the rest of the round (preview_round), so every rule runs as it will, and a
@@ -2770,8 +2771,8 @@ func _enemy_turn() -> void:
 		# A countdown still gathering carries its priming to the blow it lands, and a foe that
 		# stepped up this round has had its round, so it keeps it for its next.
 		var moves := not f.fresh and not f.gathering()
-		if skip and not _staggered(f):
-			f.recovering = true   # its action lost to a stun: its stun resist lands as Numbed as its turn ends (a stagger is no stun's, and numbs nothing)
+		if skip:
+			f.recovering = true   # its action lost to a stun: its stun resist lands as Numbed as its turn ends
 		if not skip and not f.fresh:   # a suppressed foe does nothing, and a web on it still bursts; one that stepped up this round has had its round
 			_foe_turn(f)
 			# A move that landed names its follow-up for next round (30 October); one lost to a
@@ -2813,6 +2814,7 @@ func _enemy_turn() -> void:
 		# Its Empowered halves, its own turn over (16 November: a machine's at END TURN, a foe's
 		# here, where it halved as the round ended until then): a rally stands whole on the next
 		# blow of a foe that had acted before it landed. Essence Flare holds it while it stands.
+		_gold_lands(f)
 		Effects.halve_buffs(f, field_holds())
 		Effects.foe_turn_end(f)   # what lasts until after its next turn goes (Sapped)
 		# Numbed's clock (Ryan, 2 November; at its turn's end since 16 November, "Numbed (applied
@@ -2838,6 +2840,7 @@ func _enemy_turn() -> void:
 		_turn_death_check()   # and once the turn is done, for a foe that fell outside an action's check
 	_enemy_acting = false
 	_acted.clear()
+	_gold_due.clear()
 	if outcome != Outcome.NONE:
 		return
 	# A Swallowed machine first (Ryan, 16 November: "Swallowed it's out of play so everything
@@ -2853,6 +2856,7 @@ func _enemy_turn() -> void:
 			Effects.end_round(ms.unit, round)   # timed effects run out; a Swallowed machine's wait
 	for f in field_foes():
 		Effects.end_round(f, round)
+	_land_swallows()   # after the round's count: a swallow taken this round counts from the next
 
 
 ## The enemy's turn's death check, after a foe's action or a tick that kills it: the dead cleared
@@ -3226,7 +3230,7 @@ func _shift_form(ms: MechState, f: Face, target) -> void:
 	match form_change(ms, f, not (target is MechState) or target == ms):
 		"seal":
 			var seal := Effects.seal_form(ms.unit)
-			Effects.stack(ms.unit, Effects.sealed_status(int(seal["armour"]), int(seal["heat"])), Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
+			Effects.stack(ms.unit, Effects.STATUS["sealed"], Effects.SKIRMISH, "seal", 1, Effects.DECAY_NONE)
 			log.append("%s seals: armour +%d, its cooling stopped, +%d heat a turn" % [ms.unit.display_name, int(seal["armour"]), int(seal["heat"])])
 		"open":
 			Effects.remove(ms.unit, "sealed")
@@ -3299,7 +3303,7 @@ func _ablate(ms: MechState, points: int) -> void:
 ## intent turning on it (_pick_mech_target). Refreshed, never added. The caller has read the
 ## Ward.
 func _expose_mech(f: Foe, t: MechState, said: String = "") -> void:
-	Effects.grant_for_rounds(t.unit, Effects.STATUS["exposure_mech"], "foe:" + f.content_id, round + 1)
+	Effects.lay_timer(t.unit, Effects.STATUS["exposure_mech"], "foe:" + f.content_id)   # a stack goes as each of its turns starts
 	var lead := "%s exposes %s" % [f.display_name, t.unit.display_name] if said.is_empty() else "%s: %s, %s is Exposed" % [f.display_name, said, t.unit.display_name]
 	log.append("%s: its armour counts for nothing, and the next round's fire turns on it" % lead)
 
@@ -3452,7 +3456,7 @@ func _drill_ticks() -> void:
 					continue
 				if str(sid) == "exposure":
 					if not Effects.turns_mark(foe, "exposure"):
-						Effects.grant_for_rounds(foe, Effects.STATUS["exposure"], "mech", round)   # it falls as its turn starts, the first after this round
+						Effects.lay_timer(foe, Effects.STATUS["exposure"], "mech")   # a stack goes as each of its turns starts
 					_note_status(gained, foe, "exposure", turned)
 				else:
 					_land_rider(foe, str(sid), n, gained, turned)
@@ -3536,9 +3540,11 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	# the entry reads: the firer's pipeline on it, the foe's Brittle and armour, the weapon's riders
 	# a strike. Read as the spend begins, so a stack the spend earns bounces none of it.
 	var strikes := maxi(1, f.strikes)
-	# A reach over every foe has no one target (Ryan, 12 November: "Target all shouldn't need a
-	# target in the same way that sweep didn't"): every foe is struck, so a Shock on any of them
-	# is doubled and spent, and with no primary target no Ricochet follows it.
+	# A reach over every foe targets the field (Ryan, 12 November: "Target all shouldn't need a
+	# target in the same way that sweep didn't"; 24 November: "should probably be coded as none are
+	# targeted, since its targeting the field. Important semantics"): no hit of it is aimed at a
+	# foe, the one the die was dropped on included, so it doubles and spends no Shock, sets off no
+	# Chain, feeds no Mine and lands no next strike's add, and with no target no Ricochet follows.
 	var bounces := Effects.stacks_of(ms.unit, "ricochet") if f.is_weapon() and not everyone else 0
 	# The hits in the order they land, each a place of its own on the screen: every strike, the
 	# sword's hit again after each, then the Ricochet's.
@@ -3589,8 +3595,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			number = floori(number * again / 100.0)
 			h.base += number
 		var ctx := _zapped(_judged(judged_hp, target))
-		if at == 0:
-			ctx["first_blow"] = true   # the spend's first blow, its first strike's on its target (the strike order): a next strike's add lands on it alone (the Parry's return)
+		if at == 0 and not everyone:
+			ctx["first_blow"] = true   # the spend's first blow, its first strike's on its target (the strike order): a next strike's add lands on it alone (the Parry's return); a reach over every foe has no target for it
 		var modded := Effects.attack(ms.unit, f, number, heat, target, ctx)
 		var dmg: int = int(modded["damage"]) + (0 if bounce else _foe_reads(f, reads, target, not struck_once.has(target)))
 		if at == 0:
@@ -3604,7 +3610,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		# strike is read before any lands, so no blow of it reads what another did.
 		var blows := {}
 		for foe in hit:
-			blows[foe] = dmg if foe == target else _area_blow(ms, f, int(shapes.get(foe, AREA_ALL)), foe, own, split, _zapped(_judged(judged_hp, foe))) + _foe_reads(f, reads, foe, not struck_once.has(foe))
+			blows[foe] = dmg if foe == target and not everyone else _area_blow(ms, f, int(shapes.get(foe, AREA_ALL)), foe, own, split, _zapped(_judged(judged_hp, foe))) + _foe_reads(f, reads, foe, not struck_once.has(foe))
 		# Every blow of the strike in the strike order, [foe, its blow, the shape it stands in] (Ryan,
 		# 19 November: "Spread always computes before Penetrate, and Penetrate computes before
 		# Rifle"): the target, Spread's left and right, Penetrate's other rank, then the rifle's blow
@@ -3624,7 +3630,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		# Each is the Chain's number flat ("If Chain doesn't carry the riders, it shouldn't carry the
 		# unit's or weapon's buffs either"), the entry's own strikes alone arcing, never a Ricochet's or
 		# a hit again.
-		var arcs_read := not (step == HIT_STRIKE and f.has(Face.Keyword.CHAIN))
+		var arcs_read := everyone or not (step == HIT_STRIKE and f.has(Face.Keyword.CHAIN))   # a reach over every foe aims at none, so nothing arcs
 		var li := 0
 		while li < landings.size() or not arcs_read:
 			if li >= landings.size():
@@ -3645,8 +3651,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			var hp_before := foe.hp
 			var first := not struck_once.has(foe)   # the foe's first blow of the spend
 			struck_once[foe] = true
-			var into_mine := foe == target and not arc   # the blow on the spend's target: its riders are the Mine's too
-			var struck := (foe == target or everyone) and not arc   # a strike aimed at this foe, never a blow that only reaches it
+			var into_mine := foe == target and not everyone and not arc   # the blow on the spend's target: its riders are the Mine's too
+			var struck := foe == target and not everyone and not arc   # a strike aimed at this foe, never a blow that only reaches it, nor one of a reach over every foe
 			if not h.reached.has(foe):
 				h.reached.append(foe)
 			if shape == AREA_CHAIN:
@@ -4149,11 +4155,11 @@ func reached_by(f: Face, target: Foe) -> Array[Foe]:
 ## Shock or a needle the spend lays lands after its arcs, so it never conducts its own.
 func conductors(f: Face, target: Foe) -> Array[Foe]:
 	var out: Array[Foe] = []
-	if f == null or not f.has(Face.Keyword.CHAIN):
-		return out
+	if f == null or not f.has(Face.Keyword.CHAIN) or f.reach == Face.Reach.EVERY_FOE:
+		return out   # a reach over every foe aims at none, so nothing arcs (24 November)
 	var spends := not f.is_debuff()   # a weapon's strike aimed at a foe spends its Shock before the arcs
 	for foe in conducting_foes(null):
-		var aimed := foe == target or f.reaches_all
+		var aimed := foe == target
 		if aimed and spends and not Effects.conducts_but(foe, "shocked"):
 			continue
 		out.append(foe)
@@ -4440,13 +4446,13 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			_seq += 1
 			log.append("%s: %s, the team loses %d reroll%s next round" % [f.display_name, str(a.get("name", "roars")), value, "" if value == 1 else "s"])
 		"golden":
-			# The Thunder Ape's Golden Rage (4 November): a mode for the rounds the move says, its
-			# blows harder by the move's value and a point of plate; a quarter of its HP lost from
-			# here breaks it and it staggers (_break_golden), a Suppress breaks it too (_suppress).
+			# The Thunder Ape's Golden Rage (4 November): Golden for the rounds the move says, its
+			# numbers Golden's own; a quarter of its HP lost from then Suppresses it (_break_golden),
+			# and a Suppress that lands ends it (_suppress).
+			# Golden is a timer (22 November), laid as this turn ends, after its tick (_gold_due).
 			var rounds := clampi(int(a.get("rounds", 3)), 1, 5)
-			Effects.grant_for_rounds(f, Effects.golden(maxi(1, value)), "golden", round + rounds)
-			f.golden_mark = f.hp
-			log.append("%s: %s, its blows %d harder and a point of armour for %d round%s; %d more damage breaks it" % [f.display_name, str(a.get("name", "goes gold")), maxi(1, value), rounds, "" if rounds == 1 else "s", golden_left(f)])
+			_gold_due[f] = rounds
+			log.append("%s: %s, Golden %d as its turn ends" % [f.display_name, str(a.get("name", "goes gold")), rounds])
 		"ablate":
 			# A Ward turns away every rider a foe lays on its machine, a special's as a blow's
 			# (Ryan, 25 October: "Should stop all riders, even from non-damaging attacks").
@@ -4910,7 +4916,11 @@ func _land_phases() -> void:
 ## The machines a swallow may take: alive and in the fight. A swallow needs two of them, so it
 ## never takes the last machine able to act (Floraison's, 30 October).
 func swallowable() -> Array[MechState]:
-	return targetable_mechs()
+	var out: Array[MechState] = []
+	for ms in targetable_mechs():
+		if not Effects.has(ms.unit, "swallowing"):
+			out.append(ms)   # one a swallow waits on is taken already (it lands as the round ends)
+	return out
 
 
 ## The foes a merge would take in now (the King Gel's, 30 October): every other live foe on the
@@ -4988,20 +4998,38 @@ func _swallow(f: Foe, t: MechState, rounds: int) -> void:
 	if Effects.has(t.unit, "ward"):
 		log.append("%s: %s, and %s's Ward turns it away" % [f.display_name, what, t.unit.display_name])
 		return
-	if is_out(t) or swallowable().size() < 2:
+	if is_out(t) or Effects.has(t.unit, "swallowing") or swallowable().size() < 2:
 		log.append("%s: %s, and finds nothing it may take" % [f.display_name, what])
 		return
-	# A quarter of its HP lost from here lets the machine go (31 October); a second machine
-	# taken while it holds one joins the first's count, so the release its chip promised never
-	# moves back (the review of 2 November).
-	if swallowed_by(f) == null:
-		f.swallow_mark = f.hp
-	Effects.grant_for_rounds(t.unit, Effects.STATUS["swallowed"], swallow_source(f), round + rounds)
-	t.assigned = true
-	for foe in field_foes():
-		if foe.alive() and foe.target == t:
-			foe.target = _repick(foe)
-	log.append("%s: %s, %s swallowed: out of the fight for %d round%s, or until %s falls" % [f.display_name, what, t.unit.display_name, rounds, "" if rounds == 1 else "s", f.display_name])
+	# Round End: gains Swallowed (Ryan, 22 November: "Round end, swallow it?"): the machine stays
+	# in the fight, hittable, until the round ends (_land_swallows).
+	Effects.stack(t.unit, Effects.STATUS["swallowing"], Effects.SKIRMISH, swallow_source(f), rounds, Effects.DECAY_NONE)
+	log.append("%s: %s, %s is Swallowed %d as the round ends, or until %s falls" % [f.display_name, what, t.unit.display_name, rounds, f.display_name])
+
+
+## The swallows on their way land as the round ends, after its count (Swallowed, a timer): each
+## machine waiting is Swallowed for the swallow's rounds, out of the fight from the next round,
+## and the foes on it look elsewhere. One out of reach by then (Phased) is let be.
+func _land_swallows() -> void:
+	for ms in mechs:
+		var due: Array = ms.unit.modifiers.filter(func(m) -> bool: return m.id == "swallowing")
+		if due.is_empty():
+			continue
+		Effects.remove(ms.unit, "swallowing")
+		if not ms.alive() or is_out(ms):
+			continue
+		# A quarter of its swallower's HP lost from here lets it go ("since the start of the effect":
+		# Ryan, 23 November); a second machine taken while it holds one joins the first's count, so
+		# the release its chip promised never moves back (the review of 2 November).
+		for foe in field_foes():
+			if swallow_source(foe) == due[0].source and swallowed_by(foe) == null:
+				foe.swallow_mark = foe.hp
+		Effects.lay_timer(ms.unit, Effects.STATUS["swallowed"], due[0].source, due[0].stacks)
+		ms.assigned = true
+		for foe in field_foes():
+			if foe.alive() and foe.target == ms:
+				foe.target = _repick(foe)
+		log.append("%s is Swallowed %d" % [ms.unit.display_name, due[0].stacks])
 
 
 ## The HP a swallower lets its machine go at: a quarter of its HP below its HP as it swallowed
@@ -5022,7 +5050,7 @@ func swallowed_by(f: Foe) -> MechState:
 	var src := swallow_source(f)
 	for ms in mechs:
 		for m in Effects.live(ms.unit):
-			if m.id == "swallowed" and m.source == src:
+			if (m.id == "swallowed" or m.id == "swallowing") and m.source == src:
 				return ms
 	return null
 
@@ -5039,18 +5067,28 @@ static func golden_left(f: Foe) -> int:
 	return clampi(f.hp - golden_break_at(f), 0, maxi(0, f.hp))
 
 
-## The rounds a gold foe's rage has left, this one counted; 0 while it is calm.
+## Turn End: gains Golden (22 November): a foe that went gold this turn is Golden as the turn
+## ends, after its tick, so the count it shows is whole.
+func _gold_lands(f: Foe) -> void:
+	if not _gold_due.has(f):
+		return
+	var rounds := int(_gold_due[f])
+	_gold_due.erase(f)
+	Effects.lay_timer(f, Effects.STATUS["golden"], "golden", rounds)
+	f.golden_mark = f.hp
+	log.append("%s is Golden %d: %d more damage Suppresses it" % [f.display_name, rounds, golden_left(f)])
+
+
+## The rounds a gold foe's rage has left, this one counted: its Golden's count, 0 while it is calm.
 func golden_rounds_left(f: Foe) -> int:
-	for m in Effects.live(f):
-		if m.id == "golden":
-			return maxi(1, m.expires_round - round + 1) if m.expires_round >= 0 else 1
-	return 0
+	return Effects.stacks_of(f, "golden")
 
 
-## A gold foe that has lost a quarter of its HP since it went gold staggers (4 November, Ryan's
-## read of Rajang: the rage is "broken by a bold player with great timing"): the rage ends and
-## it loses its next action, the bold play's pay, where the swallow's release loses none (the
-## exit if it reads as a free stun). One whose rage ran out on its clock, or was purged, is calm.
+## A gold foe that has lost a quarter of its HP since it went gold gains Suppressed (4 November,
+## Ryan's read of Rajang: the rage is "broken by a bold player with great timing"; a Suppress like
+## any since 23 November: "Otherwise you can chain a stagger into a suppress and the boss rolls
+## over"), read once a rage. One that lands ends the rage (_suppress); a Numbed stack soaks it,
+## and the gold runs its clock. One whose rage ran out on its clock is calm.
 func _break_golden() -> void:
 	for f in field_foes():
 		if f.golden_mark < 0 or not f.alive():
@@ -5061,22 +5099,10 @@ func _break_golden() -> void:
 			_stagger(f, "reels")
 
 
-## The rage broken: the gold goes and the foe loses its next action, never Numbed (a stagger is
-## the mode's own, no stun piece's), and one already suppressed loses nothing more.
-func _staggered(f: Foe) -> bool:
-	for m in Effects.live(f):
-		if m.id == "suppressed" and m.source == "stagger":
-			return true
-	return false
-
-
 func _stagger(f: Foe, why: String) -> void:
-	Effects.remove(f, "golden")
-	f.golden_mark = -1
-	var next := _acted.has(f) or f.fresh
-	if not _suppressed_through(f, round + 1 if next else round):
-		Effects.grant_for_rounds(f, Effects.STATUS["suppressed"], "stagger", round + 1 if next else round)
-	log.append("%s %s: its golden rage breaks, and it staggers out of its next action" % [f.display_name, why])
+	f.golden_mark = -1   # the quarter is read once a rage
+	log.append("%s %s: a quarter of its HP lost since it went gold" % [f.display_name, why])
+	_suppress(f)
 
 
 ## A swallower that has lost a quarter of its HP since it swallowed lets its machine go at
@@ -5101,7 +5127,7 @@ func _release_swallowed(f: Foe, why: String = "falls") -> void:
 		var keep: Array = []
 		var freed := false
 		for m in ms.unit.modifiers:
-			if m.id == "swallowed" and m.source == src:
+			if (m.id == "swallowed" or m.id == "swallowing") and m.source == src:
 				freed = true
 				continue
 			keep.append(m)
@@ -5371,7 +5397,7 @@ func _mine_blow(foe: Foe, blow: int, beat: int, verb: String) -> void:
 func _mine_mark(foe: Foe, sid: String, gained: Dictionary, turned: Dictionary) -> void:
 	if not Effects.turns_mark(foe, sid):
 		if sid == "exposure":
-			Effects.grant_for_rounds(foe, Effects.STATUS["exposure"], "mech", round)   # it falls as its turn starts, the first after this round (Effects.turn_opens)
+			Effects.lay_timer(foe, Effects.STATUS["exposure"], "mech")   # a stack goes as each of its turns starts (Effects.turn_opens)
 		else:
 			Effects.stack(foe, Effects.STATUS[sid], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	_note_status(gained, foe, sid, turned)
@@ -5488,7 +5514,7 @@ func _expose(foe: Foe, by: MechState, turned = null) -> void:
 	if Effects.turns_mark(foe, "exposure"):
 		_turned_away(foe, "exposure", turned, by)
 		return
-	Effects.grant_for_rounds(foe, Effects.STATUS["exposure"], "mech", round)
+	Effects.lay_timer(foe, Effects.STATUS["exposure"], "mech")
 	log.append("%s exposes %s" % [by.unit.display_name, foe.display_name])
 	_foe_gained_status(foe, "exposure")
 

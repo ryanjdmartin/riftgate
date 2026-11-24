@@ -33,7 +33,7 @@ const TABLE := {
 	"destroy": ["crack", "enemy"],   # the rider that destroys the entry showing (15 November): the destroyed component's own mark
 	# Rules on a component.
 	"targets": ["", "plain"], "strikes": ["", "plain"],
-	"gated": ["", "plain"], "consumes": ["", "plain"], "power_per_missing": ["", "plain"], "finisher": ["", "plain"],
+	"gated": ["", "plain"], "fixed": ["", "plain"], "consumes": ["", "plain"], "power_per_missing": ["", "plain"], "finisher": ["", "plain"],
 	"cooldown": ["cooldown", "plain"],
 	"hopper_property": ["hopper", "plain"],
 	"volatile": ["hull", "hull"], "shield_cost": ["shield", "guard"], "brace_property": ["shield", "guard"],
@@ -82,7 +82,7 @@ const TABLE := {
 ## A die entry's own mark, by the engine's prefix on its status id, and the term it reads as.
 const ENTRY_MARKS := {"corrupted": "corrupted", "disabled": "jammed"}
 ## An engine status keyed apart from its term: a machine's Ablating, the Badger's hopper.
-const ALIASES := {"ablating_mech": "ablating", "brittled_mech": "brittled", "exposure_mech": "exposure", "phasing": "phased", "hopper": "hopper_property", "parry_strike": "parry"}
+const ALIASES := {"ablating_mech": "ablating", "brittled_mech": "brittled", "exposure_mech": "exposure", "phasing": "phased", "swallowing": "swallowed", "hopper": "hopper_property", "parry_strike": "parry"}
 
 ## Terms never matched in prose: names a shown text uses as a plain word in their place
 ## ("Targets any front-rank foe", a move that "Strikes twice").
@@ -144,7 +144,7 @@ static func status_colour(status_id: String) -> Color:
 
 
 ## What one term is, over its tip: the list's headings (PauseMenu.GLOSSARY) for one.
-const KINDS := {"reach": "REACH", "keyword": "KEYWORD", "component_property": "RULE ON A COMPONENT", "status": "STATUS", "foe": "A FOE'S MOVE"}
+const KINDS := {"reach": "REACH", "keyword": "KEYWORD", "component_property": "RULE ON A COMPONENT", "status": "STATUS", "foe": "A SPRITE'S MOVE"}
 ## A status's heading by what it is to its unit (Effects.status_kind; Ryan, 9 November: buffs and
 ## debuffs "clearly labeled as such, so that it's clear what gets purged").
 const STATUS_KINDS := {"buff": "BUFF // A PURGE TAKES IT", "debuff": "DEBUFF", "ability": "ABILITY // NOTHING STRIPS IT"}

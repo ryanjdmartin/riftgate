@@ -104,6 +104,9 @@ var _act_debug_at := 0.0
 ## heat maximum, so it rages every turn: its flurry of Instant Knuckles and the reboot its Rage
 ## ends in are judged running.
 static var RAGE_DEBUG := OS.get_environment("RIFTGATE_RAGE_DEBUG") == "1"
+## RIFTGATE_BREAK_DEBUG=1 draws a break point at three quarters of every foe's HP (the swallow's
+## release, the golden rage's break), to judge the notch on a phone.
+static var BREAK_DEBUG := OS.get_environment("RIFTGATE_BREAK_DEBUG") == "1"
 ## RIFTGATE_PREY_DEBUG=1: the predator sense stays on, over the foes the first ambusher's entry
 ## showing marks (or, with no ambusher on the team, the first machine's, the read forced), to
 ## judge it running.
@@ -1525,6 +1528,18 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	if _shown_hp.has(foe):
 		# A spend's blows still landing: the gauge shows what they have left so far, no forecast.
 		v.bars = [[int(_shown_hp[foe]), foe.hp_max, Palette.HUD, int(_shown_hp[foe])]]
+	# Its break point (Ryan, 22 November: "Swallowed's threshold can be shown on the HP bar"): the
+	# HP its swallow lets go at, or its golden rage breaks at, a notch across the bar.
+	var breaks := -1
+	if foe.swallow_mark >= 0 and sk.swallowed_by(foe) != null:
+		breaks = Skirmish.swallow_release_at(foe)
+	elif foe.golden_mark >= 0 and Effects.has(foe, "golden"):
+		breaks = Skirmish.golden_break_at(foe)
+	elif BREAK_DEBUG:
+		breaks = foe.hp_max * 3 / 4
+	if breaks > 0:
+		var bar: Array = v.bars[0]
+		v.bars = [[bar[0], bar[1], bar[2], bar[3], 0, 0, breaks]]
 	v.dead = not foe.alive()
 	v.highlight = targets.has(foe)
 	v.intent = ""
@@ -1709,14 +1724,13 @@ func _foe_abilities(foe: Foe) -> Array:
 		var strikes := Foe.is_attack_action(la)
 		var said := "Ability, Last Act: %s" % str(la.get("name", ""))
 		if strikes:
-			said += ", %d%s" % [foe.damage_of(la), " at Every Machine" if Array(la.get("keywords", [])).has("all") else ""]
+			said += ", %d%s" % [foe.damage_of(la), (" at %s" % str(ContentDB.load_default().vocabulary.get("all", {}).get("name", ""))) if Array(la.get("keywords", [])).has("all") else ""]
 		rows.append(["skull", str(foe.damage_of(la)) if strikes else "", said, Palette.ENEMY, "ability"])
 	if Effects.has(foe, "golden"):
 		# A golden rage (4 November): the add it carries, the rounds left and the damage that
 		# breaks it, so burst-or-shield reads off the chip.
-		var gold := Effects.golden_value(foe)
 		var rounds_left := sk.golden_rounds_left(foe)
-		rows.append(["overcharge", "+%d" % gold, "Ability, Golden +%d, %d round%s, %d more damage breaks it" % [gold, rounds_left, "" if rounds_left == 1 else "s", Skirmish.golden_left(foe)], _foe_chip_colour("golden"), "ability"])
+		rows.append(["overcharge", str(rounds_left), "Ability, Golden %d, %d more damage Suppresses it" % [rounds_left, Skirmish.golden_left(foe)], _foe_chip_colour("golden"), "ability"])
 	if ABILITY_DEBUG and rows.is_empty():
 		rows.append(["overcharge", "", "Ability, Enrage (RIFTGATE_ABILITY_DEBUG)", _foe_chip_colour("enraged"), "ability"])
 	return rows
@@ -1746,7 +1760,7 @@ func _foe_rows(foe: Foe) -> Array:
 		rows.append(["skull", "", "Destroyed this round", Palette.LOSS, "preview"])
 	rows.append_array(_foe_abilities(foe))
 	if foe.ablate_stacks() > 0:
-		rows.append(status_row("ablating", "ablate", str(foe.ablate_stacks()), "Ablating ×%d" % foe.ablate_stacks(), _foe_chip_colour("ablating")))
+		rows.append(status_row("ablating", "ablate", str(foe.ablate_stacks()), "%s ×%d" % [str(Effects.STATUS["ablating"]["name"]), foe.ablate_stacks()], _foe_chip_colour("ablating")))
 	var vitriol := Effects.stacks_of(foe, "vitriol")
 	if vitriol > 0:
 		# The funnel-web's acid (18 October): its stacks, and the share they eat as its turn ends.
@@ -1986,8 +2000,8 @@ static func status_glyph(id: String) -> String:
 			return "seal"   # the shell's mark, as the die's chip that seals it (2 November)
 		"phased", "phasing":
 			return "phased"   # the wait for it wears its mark, on a preview's dashed edge (_mech_rows)
-		"swallowed":
-			return "swallowed"
+		"swallowed", "swallowing":
+			return "swallowed"   # the wait for it wears its mark, as a preview chip (_mech_rows)
 		"barrier":
 			return "barrier"
 		"ward":
@@ -2091,6 +2105,9 @@ func _mech_rows(i: int) -> Array:
 			# Phased on its way (15 November: granted as the round ends): a status to come, so a
 			# preview chip, as a rally's Empowered is on a foe.
 			rows.append(status_row(id, glyph, "", "Phased as this round ends, if it stands", colour, "preview"))
+		elif id == "swallowing":
+			# Swallowed on its way (22 November: it lands as the round ends): a preview chip, its count the rounds it will be out.
+			rows.append(status_row(id, glyph, str(stacks), "Swallowed %d as this round ends" % stacks, colour, "preview"))
 		elif id.begins_with("disabled") and str(d[0]) == "Cooldown":
 			rows.append([glyph, count, named, colour, "status", ""])   # a spend's own price, never a debuff (Ryan, 23 November: "Cooldown is not a Debuff"): no Debuff in its words, no wedge
 		else:
@@ -2463,6 +2480,7 @@ func _close_pop() -> void:
 		return
 	var die := _pop.has("die")
 	_pop = {}
+	KeywordTip.fills = {}   # no unit open: its tips' sums go with it
 	_details.visible = false
 	if die:
 		_refresh(false)   # its marks and its lure's preview go with it
@@ -2494,10 +2512,12 @@ func _show_pop() -> void:
 		if v == null:
 			_close_pop()
 			return
+		KeywordTip.fills = term_fills(foe)
 		_show_details("", v, [], _foe_hold_lines(foe))
 	elif _pop.has("mech"):
 		var i: int = _pop["mech"]
 		var mv: UnitView = _mech_views[i]
+		KeywordTip.fills = term_fills(sk.mechs[i].unit)
 		_show_details("", mv, [], _mech_hold_lines(i), mv.drawn_top(), POP_GAP)
 
 
@@ -2621,6 +2641,7 @@ static func _hold_title(name: String) -> Dictionary:
 func _on_foe_double_tapped(v: UnitView) -> void:
 	var foe: Foe = _view_foe.get(v, null)
 	if foe != null:
+		KeywordTip.fills = term_fills(foe)
 		_open_codex(ContentDB.load_default().codex_for_foe(foe))
 
 
@@ -2629,6 +2650,7 @@ func _on_mech_double_tapped(i: int) -> void:
 	# The codex is the machine as it stands outside the fight (Ryan, 23 November: "Codex does not
 	# need to show the current die face. Codex entries should only ever show elements as they are
 	# outside the skirmish"): no entry showing marked.
+	KeywordTip.fills = term_fills(ms.unit)
 	_open_codex(ContentDB.load_default().codex_for_unit(ms.unit))
 
 
@@ -2648,6 +2670,24 @@ func _open_die_view(i: int) -> void:
 	})
 
 
+## What a unit carries, by term, for its tips' {N} and {caster} (KeywordTip.fills): each status's
+## stacks summed under the term it reads as, and a swallow's swallower by name.
+func term_fills(u) -> Dictionary:
+	var out := {}
+	for m in Effects.live(u):
+		var term := Terms.of_status(m.id)
+		if term.is_empty():
+			continue
+		var f: Dictionary = out.get(term, {"N": 0})
+		f["N"] = int(f["N"]) + m.stacks
+		if m.id == "swallowed" or m.id == "swallowing":
+			for foe in sk.field_foes():
+				if Skirmish.swallow_source(foe) == m.source:
+					f["caster"] = foe.display_name
+		out[term] = f
+	return out
+
+
 ## Fill and show the codex (see `CodexBox` for the entry keys).
 func _open_codex(entry: Dictionary) -> void:
 	_close_pop()
@@ -2656,6 +2696,7 @@ func _open_codex(entry: Dictionary) -> void:
 
 func _close_codex() -> void:
 	_codex.close()
+	KeywordTip.fills = {}
 
 
 var _menu: PauseMenu = null

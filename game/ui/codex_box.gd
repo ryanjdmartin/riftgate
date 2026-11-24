@@ -226,7 +226,12 @@ func open(entry: Dictionary) -> void:
 		rows = [[str(entry.get("passive", "")), "chassis"]]
 	var said: Array = []
 	for row in rows:
-		said.append(EntryReadout.prose_line(str(row[0]), 17, Palette.INK, true))   # its name in bold, as a chip's
+		# A line an effect (the text standard): the first under its name in bold, as a chip's, the
+		# rest each a line of its own.
+		var lines := str(row[0]).split("\n")
+		said.append(EntryReadout.prose_line(lines[0], 17, Palette.INK, true))
+		for k in range(1, lines.size()):
+			said.append(EntryReadout.prose_line(lines[k], 17, Palette.INK))
 	_passives.set_lines(said, TEXT)
 	_passives.visible = not rows.is_empty()
 	# The active effects, each its name and where it comes from, then what it does.

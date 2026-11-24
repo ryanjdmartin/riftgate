@@ -740,7 +740,7 @@ func _face_of(component_id: String) -> Face:
 func _labels(faces: Array) -> Array:
 	var out: Array = []
 	for f in faces:
-		out.append("" if f.empty else _db.component_name(f.component).to_upper() + ("  ·  BUILT IN" if f.fixed else ""))
+		out.append("" if f.empty else _db.component_name(f.component).to_upper() + ("  ·  INTEGRATED" if f.fixed else ""))
 	return out
 
 

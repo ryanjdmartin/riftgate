@@ -37,6 +37,8 @@ What it prints:
      counts, and then see what sticks ... and what is redundant enough to cut"): the spends
      each takes to kill five standard foes, a plain 4, a 3 behind a point of plate, a thin 3,
      a thick 6 and a 4 behind plate. Two guns with the same row and the same heat are one gun.
+     Priced from the vanilla he settled on 23 November (3 for 4 heat, the Laser Carbine 4 for
+     5), with what a gauge of 12 holds of each: its shots before the maximum, and their damage.
 """
 
 import argparse
@@ -257,17 +259,17 @@ def main():
 
     # 8. The bench: each gun's kill signature across the standard foes.
     bench = [   # name, damage a strike, strikes, heat
-        ("The vanilla: 3", 3, 1, 3),
-        ("One more, hot: 4", 4, 1, 6),
+        ("The vanilla: 3", 3, 1, 4),
+        ("One more for a point of heat: 4", 4, 1, 5),
         ("One more, split: 2 twice", 2, 2, 4),
         ("Split fine: 1 four times", 1, 4, 4),
-        ("The vanilla split: 1 three times", 1, 3, 3),
-        ("A rider's gun: 2", 2, 1, 3),
-        ("A heavy rider's gun: 1", 1, 1, 3),
-        ("Two more, hotter: 5", 5, 1, 8),
-        ("Two more, split: 3 twice", 3, 2, 7),
-        ("A big gun: 6", 6, 1, 9),
+        ("A point less for a rider: 2", 2, 1, 4),
+        ("The rider kept for a point of heat: 3", 3, 1, 5),
+        ("The rider kept twice over: 3", 3, 1, 6),
+        ("Two more: 5", 5, 1, 7),
+        ("Three more: 6", 6, 1, 9),
         ("Six, split: 2 three times", 2, 3, 6),
+        ("One more on the indirect gun: 4", 4, 1, 6),
     ]
     marks = [("a plain 4", 4, 0), ("3 behind plate", 3, 1), ("a thin 3", 3, 0), ("a thick 6", 6, 0), ("4 behind plate", 4, 1)]
     def spends(hp, plate, dmg, strikes):
@@ -279,8 +281,9 @@ def main():
         sig = tuple(spends(hp, plate, dmg, strikes) for _, hp, plate in marks)
         same = seen.get(sig, "")
         seen.setdefault(sig, name)
-        rows.append([name, h] + list(sig) + [("as " + same.split(":")[0].lower()) if same else ""])
-    table("8. A bench of guns, each the vanilla with one thing traded: spends to kill", ["The gun", "Heat"] + [m_[0].capitalize() for m_ in marks] + ["The same kills"], rows)
+        shots = 12 // h
+        rows.append([name, h, "%d, %d damage" % (shots, shots * dmg * strikes)] + list(sig) + [("as " + same.split(":")[0].lower()) if same else ""])
+    table("8. A bench of guns, each the vanilla with one thing traded: spends to kill", ["The gun", "Heat", "Shots a gauge of 12"] + [m_[0].capitalize() for m_ in marks] + ["The same kills"], rows)
 
 
 if __name__ == "__main__":

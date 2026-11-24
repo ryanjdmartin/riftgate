@@ -87,7 +87,7 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
   - Probes: `special_probe.gd` and `chain_probe.gd` (each with a `_read.py`),
     `reboot_probe.gd`, `behaviour_trace.gd`, `death_floor.gd` (where each lost machine lies)
   - Drivers over the balance runner: `stock_loop.py`, `endgame_fours.py`, `pricing_run.py`
-  - Models apart from content: `turn_loop.py`, `basics_model.py`, `budget_model.py`
+  - Models apart from content: `turn_loop.py`, `basics_model.py`, `budget_model.py`, `tide_model.py`
   - Pictures: `screenshot.gd`, `die_sheet.gd`, `hero_shot.gd`, `act_shot.gd`, `gait_clip.gd`,
     `fit_sheet.gd`, `tileset_shot.gd`, `backdrop_shot.gd`, `perf_probe.gd`, `sound_smoke.gd`
   - Art: `lowforge/` builds the machines, the gate, the wall and the caches by code
@@ -125,7 +125,8 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     questions only Ryan can settle in its section 12; `status.md` how things stand and the
     order of work; `todo.md` the tasks, one line each by who moves it; `measurements.md`
     every run a decision cites; `naming.md` the kinds of names each maker wants, a reference
-    and never a list; `name_candidates.md` the names floated on the hangar's old Names tab,
+    and never a list; `text_standard.md` how gameplay text is written (Ryan's standard: read
+    before drafting a tip, a readout, a move line, a passive or a module's text); `name_candidates.md` the names floated on the hangar's old Names tab,
     kept as a record.
   - Generated: `vocabulary.md` (from the vocabulary), `voice.md` (every shown text Ryan has
     signed as his own, read before a session drafts shown text), `synergy_map.md` (who sets
@@ -136,14 +137,17 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     `briefs/refit_pass.md` (the reboot's rules, its section 22) and `briefs/numbers_pass.md`
     (tier one sized against the reboot: the yardsticks, the baseline, the defence side's
     approach, the tier-one bench); `economy_pass.md`; `formation_proposal.md` (kept for the
-    bosses' stat blocks and the flankers' slate); `locked_pieces_proposal.md`;
+    bosses' stat blocks and the flankers' slate); `tide_proposal.md` (the graded tide, Ryan's
+    design of 23 November: his words, the design as read, the reads, where the session pushes
+    back, the Meadow's packs as a table for his marks);
+    `locked_pieces_proposal.md`;
     `rules_sweep_proposal.md` (the
     rules sweep's limits on design space, for his marks); `bosses_proposal.md` (the
     bosses' and elites' slate); `heroes_proposal.md`; `domain_statuses_proposal.md` (the
     domains' buffs and debuffs, the purging leaders, Phased by source); `mechanics_audit.md`;
     `skirmish_audit.md` (the code audit and its order of work);
-    `terminology_proposal.md` (the terminology pass: one standard for the gameplay text, marked
-    by Ryan in chat and on its page).
+    `terminology_proposal.md` (the terminology pass: its counts, the calls and names still open,
+    and his marks; the standard itself is `text_standard.md`).
   - Retired, in git: the vocabulary pass's proposal and its table of marks
     (`git show 07f01fb:docs/vocabulary_pass_proposal.md`,
     `git show 07f01fb:docs/vocabulary_table.md`), which is what "the proposal's section N" in
@@ -218,8 +222,8 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 python3 tools/synergy_map.py --write
 # the roster analysis as its page (status has the link)
 python3 tools/pages/roster_analysis_page.py > /tmp/roster_analysis.html
-# the terminology pass's rules as the page Ryan marks on (status has the link), from docs/terminology_proposal.md's
-# sections 2 and 4; publish with capabilities {"db": {}, "user": {}}, his marks in its collection `marks`
+# the terminology pass's rules as the page Ryan marks on (status has the link), from docs/text_standard.md's section 2
+# and docs/terminology_proposal.md's section 4; publish with capabilities {"db": {}, "user": {}}, his marks in its collection `marks`
 python3 tools/pages/terminology_marks_page.py > build/terminology_marks.html
 python3 tools/pages/rules_sweep_page.py > /tmp/rules_sweep.html   # the rules sweep's page for his marks, from docs/rules_sweep_proposal.md
 
@@ -251,6 +255,9 @@ perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.
 perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=2 kinds=formation
 perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth seeds=2 kinds=elite,boss
 #   machines=3 reads every fight with that many machines whatever it is rated: the first battle's trio against a true four
+#   refit=finds=2 reads a squad a few battles into its tier (two basic guns a die swapped for tier-one finds); life=150 and blows=115 a leader's hit points and attack at that share of content's: the block a leader would stand at a Convergence on
+#   refit=face=<id>:power=2:strikes=2:heat=5 rewrites one piece's entry for the run (its numbers, a keyword's, its tier), a part a piece: the tier-one bench's spec is docs/briefs/numbers_pass.md, section 6
+#   "packs=goblin*2;goblin*3+mandragora@2;treant*2@3" reads hand-made packs, a rating after @ (machines=1: each met by one machine), to size a pack before it is content; "foe=treant:hp=9:armour=0" lays one foe's numbers for the run
 #   only=id,id reads those compositions or bosses alone; tier=, ramp=; refit=<spec> lays a
 #   what-if over content for the run (refit=barrier=none, the Barrier basic off the stock dice);
 #   blows=80 sets every elite's and boss's attack to that share of content's, in hundredths
@@ -361,6 +368,7 @@ python3 tools/pricing_run.py run vanilla --parts vanilla,vanillaheat,ladders --b
 python3 tools/turn_loop.py --seeds 2000            # the campaign's turn loop from sim/campaign.gd's constants, every battle won: the pressure the fronts put on the cities
 python3 tools/turn_loop.py --seeds 2000 --widen 3  # with a rift that steps a tier up once it has bled its city three times
 python3 tools/basics_model.py                      # the stock guns against rank and file: shots to kill, the gun that deals one more by its heat, the rider ladder, a bench of guns by its spends to kill five marks
+python3 tools/tide_model.py                        # what the tide asks of four machines on the long wall: packs sent, packs that struck and gate lost by the count, the pace, the depth, the mouths and the graded tide, fights for free (the coverage behind docs/tide_proposal.md)
 python3 tools/budget_model.py                      # what a fight costs a squad under the reboot, as the hull budget counts it: a horde, a massive in front, a lone flanker, a pack and an elite by blow and hit points, and how far it tracks the bot
 
 # how often each foe special fires: every third starter trio against each domain's formation,
@@ -450,26 +458,25 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_AA=off|fxaa|msaa2|msaa4              the AA mode (the player's SETTINGS, AA MODE; MSAA 4X by default)
 #   RIFTGATE_SAFE=<top>,<bottom>                  keeps a phone's safe bands clear
 # Numbers on trial (a what-if over content, never a decision)
+#   RIFTGATE_GRADED=1                             the graded tide: packs rated one to three dealt by where they make for, ones to the wall's ends, twos between, threes down the middle
+#   RIFTGATE_SENDS=2                              the packs every mouth sends at a peak, the rift and each open tear, 1 to 4, 1 the game's
+#   RIFTGATE_STRIKE=5                             what a pip of threat rating strikes the wall for, 10 the game's
+#   RIFTGATE_PACK_BONUS=50                        what a pack pays the Rupture meter as it falls, on top of its rating, in hundredths of a pip, 0 the game's
+#   RIFTGATE_FIELD_DEPTH=14                       the field's rows from the rift to the wall, 10 to 24, 12 the game's
+#   RIFTGATE_PHASED=at_once                       a machine's Phased at once until the round ends, round_end the game's (Phased as the round ends, through the next)
+# The same on the phone, a debug build's SETTINGS, TRIALS, each read as the next battle starts,
+# with no relaunch. The page holds what is tried in person and nothing else (24 November):
+#   TIDE (BUILT, GRADED), SENDS (1, 2, 3), STRIKE (10, 5, 3), PACK BONUS (NONE, +½, +1),
+#   FIELD DEPTH (12, 14, 16), PHASED (ROUND END, AT ONCE), with the Phase Inducer, a tier-two
+#   component, to set it for testing
+# and over them SET: GRADED lays TIDE GRADED, SENDS 2, STRIKE 5 and PACK BONUS +½ at once;
+# AS BUILT sets every dial of the page back to the game's own
+# The runners' what-ifs, with no dial on the phone
 #   RIFTGATE_REFIT=hotter=-1                      any spec the runners' --refit takes, read as the game starts
 #   RIFTGATE_OVERHEAT=2                           the hull an overheat burns a point of heat past the maximum, 1 the game's
-#   RIFTGATE_FIELD_DEPTH=14                       the field's rows from the rift to the wall, 10 to 24, 12 the game's
 #   RIFTGATE_OPENING=1                            how many more of their own moves from the wall the first packs stand, 0 to 3
-#   RIFTGATE_FODDER=50                            the share, in hundredths, of a rank-and-file pack's menace that fills the Rupture meter
 #   RIFTGATE_BEATS=3                              the Rupture meter's size in beats of the tide, 1 to 6, 2 the game's
-#   RIFTGATE_TIDE=150                             the packs the opening places and each wave sends, in hundredths, 100 the game's
-#   RIFTGATE_STRIKE=5                             what a pip of threat rating strikes the wall for, 10 the game's
-#   RIFTGATE_PHASED=at_once                       a machine's Phased at once until the round ends, round_end the game's (Phased as the round ends, through the next)
-# The same on the phone, a debug build's SETTINGS, TRIALS (a page that scrolls). Read at the
-# next launch, so pick, close the app, open it and start a new battle or run (a saved one keeps
-# the numbers it was saved with):
-#   HEAT (−2, −1, BUILT, +1)       every weapon cooler or hotter than content prices it (hotter)
-#   TOP BASIC (BUILT, +2, +4)      more heat on the basic guns that deal more than the plainest (top)
-#   RANK AND FILE (BUILT, +1)      a hit point more on tier one's rank and file, the massive foes as built (foehp)
-#   BARRIER BASIC (BUILT, NONE)    the Barrier basic on the stock dice, or the Armoured basic in its slot (barrier=none)
-# Read as the next battle starts, or a lone fight for OVERHEAT, with no relaunch:
-#   OVERHEAT (×1, ×2, ×3), FIELD DEPTH (12, 14, 16), OPENING (+0, +1, +2), FODDER (FULL, 3/4, HALF),
-#   RUPTURE (1 BEAT, 2 BEATS, 3 BEATS), TIDE (×1, ×1.5, ×2), STRIKE (10, 7, 5, 3),
-#   PHASED (ROUND END, AT ONCE), with the Phase Inducer, a tier-two component, to set it for testing
+#   RIFTGATE_LEADERS=20                           an elite's and a boss's hit points that many hundredths more for each Convergence past its tier's first, three steps at most, 0 the game's
 # A thing fired constantly, to judge it running (=1 unless a value is shown)
 #   RIFTGATE_FEED_DEBUG       the skirmish feed's analysis events and the ground tears (any run)
 #   RIFTGATE_PULSE_DEBUG      END TURN pulsing, on the map and in a fight (any run)
@@ -486,6 +493,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_MINE_DEBUG       a Mine of 3 on every foe as the fight opens (skirmish)
 #   RIFTGATE_ESSENCE_DEBUG=12 that much Essence on every machine that banks it (skirmish)
 #   RIFTGATE_PEAK_DEBUG       Rift Pressure peaking every enemy turn (battle)
+#   RIFTGATE_ROUND_DEBUG      the round's view over and over while the map rests: the glide out to the whole field, ROUND N, the seam growing a round's worth, the glide home (battle)
 #   RIFTGATE_CACHE_DEBUG      a cache of every kind beside the team and by the rift (a new battle)
 #   RIFTGATE_WRECK_DEBUG      a wreck of each of the team's chassis beside it, let go every four seconds (a new battle)
 #   RIFTGATE_SHELL_DEBUG      the rift's shell cracking a stretch every 1.2 s through all seven, then bursting (battle)

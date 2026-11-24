@@ -70,7 +70,7 @@ static func to_dict(b: Battle) -> Dictionary:
 		"guest": b.guest,
 		"foes_killed": b.foes_killed,
 		"menace_killed": b.menace_killed,
-		"meter_held": b.meter_held,
+		"meter_bonus": b.meter_bonus,   # what the pack bonus's trial has added to the meter, 0 with none
 		"pack_paid": _int_keys(b.pack_paid),   # what each standing pack's kills have paid of its rating (11 November)
 		"tier": b.tier, "ramp": b.ramp,
 		"thresholds": b.thresholds, "fractures": b.fractures, "rupture_turn": b.rupture_turn,
@@ -109,6 +109,14 @@ static func _order_ids(orders: Dictionary) -> Dictionary:
 
 
 ## A dictionary keyed by unit id, with string keys for JSON.
+## A dictionary by number as JSON keeps it, its keys strings.
+static func _string_keys(d: Dictionary) -> Dictionary:
+	var out := {}
+	for k in d.keys():
+		out[str(k)] = d[k]
+	return out
+
+
 static func _int_keys(d: Dictionary) -> Dictionary:
 	var out := {}
 	for k in d.keys():
@@ -130,7 +138,7 @@ static func from_dict(d: Dictionary) -> Battle:
 	b.guest = str(d.get("guest", ""))
 	b.foes_killed = int(d.get("foes_killed", 0))
 	b.menace_killed = int(d.get("menace_killed", 0))
-	b.meter_held = int(d.get("meter_held", 0))
+	b.meter_bonus = int(d.get("meter_bonus", 0))
 	for uid in d.get("pack_paid", {}).keys():
 		b.pack_paid[int(str(uid))] = int(d["pack_paid"][uid])
 	b.tier = int(d.get("tier", 0))
@@ -234,7 +242,10 @@ static func _field_dict(f: Battlefield) -> Dictionary:
 		"rift_pressure": f.rift_pressure, "rift_pressure_max": f.rift_pressure_max,
 		"spawn_faction": f.spawn_faction, "ramp": f.ramp,
 		"cycle": f.cycle, "patrol_cycle": f.patrol_cycle, "cycle_index": f._cycle_index, "patrol_index": f._patrol_index,
-		"seam_row": f.seam_row, "tears": tears, "caches": caches, "peaks": f.peaks, "rift_spawns": f.rift_spawns, "tear_spawns": f.tear_spawns,
+		# The graded tide's packs by rating, its hunting packs and where each list stands; empty
+		# for the tide as built: a battle begun graded stays graded.
+		"graded": _string_keys(f.graded), "graded_at": _string_keys(f._graded_at), "hunters": f.hunters, "hunter_index": f._hunter_index,
+		"tear_row": f.tear_row, "tears": tears, "caches": caches, "peaks": f.peaks, "rift_spawns": f.rift_spawns, "tear_spawns": f.tear_spawns,
 		"phase": f.phase, "log": f.log, "next_id": f._next_id,
 		"units": units,
 	}
@@ -251,7 +262,7 @@ static func _compositions_from(list: Array) -> Array:
 			if m is Array and (m as Array).size() >= 2:
 				members.append([str(m[0]), int(m[1])])
 		var entry := {"id": str(c.get("id", "")), "size": str(c.get("size", "patrol")), "faction": str(c.get("faction", "")), "members": members}
-		for key in ["squad", "layout", "lead", "hunts"]:   # the long wall brief's composition fields (3.7, section 6) and the hunt (8 November)
+		for key in ["squad", "layout", "lead", "hunts", "pace"]:   # the long wall brief's composition fields (3.7, section 6), the hunt (8 November) and a pack's own pace
 			if c.has(key):
 				entry[key] = c[key]
 		out.append(entry)
@@ -276,7 +287,17 @@ static func _field_from(d: Dictionary, map: BattleMap) -> Battlefield:
 		f.patrol_cycle = f.cycle.duplicate(true)
 	f._cycle_index = int(d.get("cycle_index", d.get("spawn_index", 0)))
 	f._patrol_index = int(d.get("patrol_index", 0))
-	f.seam_row = int(d.get("seam_row", f.seam_start()))
+	var graded = d.get("graded", {})
+	if graded is Dictionary:
+		for r in (graded as Dictionary).keys():
+			f.graded[int(str(r))] = _compositions_from(graded[r] if graded[r] is Array else [])
+	var graded_at = d.get("graded_at", {})
+	if graded_at is Dictionary:
+		for r in (graded_at as Dictionary).keys():
+			f._graded_at[int(str(r))] = int(graded_at[r])
+	f.hunters = _compositions_from(d.get("hunters", []))
+	f._hunter_index = int(d.get("hunter_index", 0))
+	f.tear_row = int(d.get("tear_row", d.get("seam_row", f.tear_row_start())))   # the seam's row, by its name until 23 November
 	for t in d.get("tears", []):
 		f.tears.append({"pos": Vector2i(int(t[0]), int(t[1])), "opened": int(t[2]) if t.size() > 2 else 0})
 	for c in d.get("caches", []):
@@ -315,7 +336,7 @@ static func _unit_dict(u: Unit) -> Dictionary:
 		"id": u.id, "name": u.display_name, "side": u.side, "pos": _hex(u.pos),
 		"hull": u.hull, "shield": u.shield, "base": u.base, "modifiers": mods, "allies": u.allies,
 		"traits": u.traits, "footprint": _hexes(u.footprint), "facing": u.facing,
-		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "members": u.members, "composition": u.composition, "composition_size": u.composition_size, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "goal_col": u.goal_col, "squad": u.squad, "full_strength": u.full_strength, "layout": u.layout, "is_boss": u.is_boss, "sealed": u.sealed, "lineup": u.lineup, "boss_tier": u.boss_tier, "attack_range": u.attack_range,
+		"faction": u.faction, "foe_id": u.foe_id, "strength": u.strength, "members": u.members, "composition": u.composition, "composition_size": u.composition_size, "behaviour": u.behaviour, "hunts": u.hunts, "prey": u.prey, "goal_col": u.goal_col, "squad": u.squad, "full_strength": u.full_strength, "layout": u.layout, "is_boss": u.is_boss, "sealed": u.sealed, "lineup": u.lineup, "boss_tier": u.boss_tier, "boss_step": u.boss_step, "attack_range": u.attack_range,
 		"die": faces, "paint": paint, "passive": u.passive, "chassis_id": u.chassis_id,
 		"hardpoints": u.hardpoints, "damaged_faces": damaged, "modules": u.modules, "branches": u.branches, "tier": u.tier,
 	}
@@ -373,6 +394,7 @@ static func _unit_into(u: Unit, d: Dictionary) -> void:
 	u.sealed = bool(d.get("sealed", false))
 	u.lineup = _strings(d.get("lineup", []))
 	u.boss_tier = int(d.get("boss_tier", 0))
+	u.boss_step = int(d.get("boss_step", 0))
 	var faces = d.get("die", null)
 	if faces is Array:
 		var list: Array = []

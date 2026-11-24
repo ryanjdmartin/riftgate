@@ -60,9 +60,19 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   little as the rule needs, and is named in the report (the page shows it to him as changed);
   a rename moves the slot's ledger line with the id (`python3 tools/hangar_text.py --check`
   says when one is left behind). A new key that holds shown text gets a slot there.
+- Gameplay text follows `docs/text_standard.md` (Ryan's standard, 17 to 24 November; 24
+  November: "New content additions need to know and follow the format"): Frame and Sprite in
+  place of machine and foe, the event labels, "Apply N X" and "Reduce stacks by", a status's
+  numbers its own, `{N}` on a per-stack line, one effect a line and no semicolon. Read it with
+  `docs/voice.md` before drafting or changing a tip, a readout, a move line, a passive or a
+  module's text, and write a new piece's text to it from the start; `tests/test_terms.gd` holds
+  every tip to its mechanical parts. The glossary tips are written to it; the other kinds follow
+  kind by kind, so older text that breaks it is a draft waiting, never a pattern to copy.
 - Kit words (decided 18 September): a **component** is one piece of kit and exactly one
   entry on the die; a **hardpoint** is a free slot (one `hp_<n>` pin on the model); a
-  chassis's **fixed** components are built in and use no hardpoint; an empty hardpoint is a
+  chassis's **Integrated** components (`fixed` in the data; Ryan, 24 November: "I'd rather change Fixed a
+  chassis locked components to Integrated") are built in and use no hardpoint, and *Fixed: X* is
+  the rule that only X may be used; an empty hardpoint is a
   blank entry, nothing fills it. Shown text never says "face" (the player sees no
   polyhedron); `Face` is the engine's name for one die entry. A component is a **weapon**
   (it deals damage), a **shield**, a **vent** or **equipment** (a buff or a debuff, dealing
@@ -74,7 +84,7 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   dealt component is a weapon or equipment, and the shield and the heat come back by a reboot
   alone (the next rule: no chassis regenerates or cools); the slottable shields and vents are
   planned drafts nothing deals, two machines are back in design (`"status": "planned"` on the
-  chassis), and the engine still runs the four kinds for the locked pieces that are one.
+  chassis), and the engine still runs the four kinds for the Integrated components that are one.
 - The reboot is the rule of the shield and of heat (Ryan, 13 November: "This is
   fundamental, I don't want it to get skipped by other sessions"; folded into the game on 15
   November, on his "Go ahead on the fold and build"): `docs/rules.md` has it (The reboot), and

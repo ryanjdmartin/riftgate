@@ -229,14 +229,14 @@ func test_a_reboot_vents_what_stood_past_the_maximum_so_its_turn_burns_nothing()
 func test_a_reboot_opens_a_sealed_machine() -> void:
 	var m := _mech(1, "A", Die.single(Face.buff("overcharged", 1)), 40, 200, 30)
 	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
-		{"trigger": "static", "effect": "seal_form", "value": 10, "heat": 15}]})
+		{"trigger": "static", "effect": "seal_form"}]})
 	var sk := _fight([m], [Foe.make("brute", 900, 25)])
 	var ms: Skirmish.MechState = sk.mechs[0]
 	sk.start_round()
 	assert_true(sk.assign(0, null), "a buff on itself")
 	assert_true(Effects.is_sealed(m), "seals it")
 	sk.end_round()
-	assert_eq(ms.heat, 15, "sealed, it ran 15 hotter as its turn ended")
+	assert_eq(ms.heat, int(Effects.STATUS["sealed"]["seal_heat"]), "sealed, it ran hotter as its turn ended")
 	var hull := m.hull
 	sk.start_round()
 	assert_true(sk.can_reboot(0), "sealed, it may reboot: it is never stuck in its shell")
@@ -289,7 +289,7 @@ func test_a_machine_out_of_reach_does_not_burn_and_a_phased_one_may_reboot() -> 
 	sk.end_round()
 	assert_eq(m.hull, 190, "it burns the turn it passes its maximum")
 	sk.start_round()
-	Effects.grant_for_rounds(m, Effects.STATUS["swallowed"], "test", sk.round)
+	Effects.lay_timer(m, Effects.STATUS["swallowed"], "test", 1)
 	assert_true(Skirmish.is_out(ms), "Swallowed, it is out of the fight this round")
 	assert_false(sk.can_reboot(0), "and cannot reboot")
 	sk.end_round()

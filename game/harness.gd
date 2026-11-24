@@ -53,10 +53,9 @@ func _ready() -> void:
 
 ## The refit pass's what-ifs (docs/briefs/refit_pass.md; sim/refit.gd), laid over the content
 ## once, as the game starts and before anything is built from it: RIFTGATE_REFIT names a spec (its
-## parts: hotter=N, top=N, foehp=N, barrier=cooldownN|heatN|none), or a
-## debug build's SETTINGS → TRIALS has HEAT a point either side, or BARRIER BASIC off the stock
-## dice (the phone's way, read at the next launch; Settings.HEAT_SPECS and BARRIER_BASICS). The model itself is content since 10 November. A battle or a run saved
-## before a switch keeps the numbers it was saved with, so judge it on a new one.
+## parts: hotter=N, top=N, foehp=N, finds=N, barrier=cooldownN|heatN|none). A debug build's dials
+## for them left the trials' page on 23 November, each as built (Settings). A battle or a run
+## saved before a switch keeps the numbers it was saved with, so judge it on a new one.
 static var _refit_trial_done := false
 static func refit_trial() -> void:
 	var spec := refit_spec()
@@ -67,27 +66,9 @@ static func refit_trial() -> void:
 		print("refit what-if: " + line)
 
 
-## The what-if's spec, "" for the game as built: the environment's as written, else a debug
-## build's heat prices (Settings.HEAT_SPECS), the top basic's heat
-## (Settings.TOP_BASIC_HEATS), tier one's rank and file a hit point up (Settings.RANK_HPS) and
-## the Barrier basic off the stock dice (Settings.BARRIER_BASICS).
+## The what-if's spec, "" for the game as built: the environment's as written.
 static func refit_spec() -> String:
-	var spec := OS.get_environment("RIFTGATE_REFIT")
-	if spec.is_empty() and OS.is_debug_build():
-		var parts: Array[String] = []
-		var heat := str(Settings.display.get("heat_trial", "0"))
-		if Settings.HEAT_SPECS.has(heat):
-			parts.append(str(Settings.HEAT_SPECS[heat]))
-		var top := str(Settings.display.get("top_basic_heat", "0"))
-		if top != "0" and Settings.TOP_BASIC_HEATS.has(top):
-			parts.append("top=" + top)
-		var rank_hp := str(Settings.display.get("rank_hp", "0"))
-		if rank_hp != "0" and Settings.RANK_HPS.has(rank_hp):
-			parts.append("foehp=" + rank_hp)
-		if str(Settings.display.get("barrier_basic", "built")) == "none":
-			parts.append("barrier=none")
-		spec = ",".join(parts)
-	return spec
+	return OS.get_environment("RIFTGATE_REFIT")
 
 
 ## Build the menu over a setup (the tests call this out of the tree, with their own).
@@ -242,7 +223,7 @@ func _chassis_row(id: String) -> VBoxContainer:
 	toggle.custom_minimum_size.x = 170
 	top.add_child(toggle)
 	var fixed_n: int = c.get("fixed", []).size()
-	var info := "%s · move %d · %d hardpoints%s · tier %d" % [" ".join(c.get("traits", [])), int(c["movespeed"]), int(c["hardpoints"]), " + %d fixed" % fixed_n if fixed_n > 0 else "", db.chassis_tier(id)]
+	var info := "%s · move %d · %d hardpoints%s · tier %d" % [" ".join(c.get("traits", [])), int(c["movespeed"]), int(c["hardpoints"]), " + %d integrated" % fixed_n if fixed_n > 0 else "", db.chassis_tier(id)]
 	box.add_child(_hint(info))
 	var status := _label("", 15, Palette.INK)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -323,7 +304,7 @@ func _fill_editor(id: String) -> void:
 	for cid in c.get("fixed", []):
 		fixed.append(db.component_name(str(cid)))
 	if not fixed.is_empty():
-		editor.add_child(_hint("Fixed: " + ", ".join(fixed)))
+		editor.add_child(_hint("Integrated: " + ", ".join(fixed)))
 	var p := setup.picks(id)
 	for slot in range(p.size()):
 		var line := HBoxContainer.new()
@@ -875,7 +856,7 @@ func _button(text: String, on_pressed: Callable, h: float = 60, size_px: int = 2
 # ---------------------------------------------------------------- launching
 
 func _on_fight() -> void:
-	Settings.field_trial(true)   # the fight's trials as the settings stand now (the overheat's burn): a lone fight reads them as a battle does
+	Settings.field_trial(true)   # the fight's trials as the settings stand now (when Phased lands): a lone fight reads them as a battle does
 	var sk := setup.make_skirmish()
 	if sk == null:
 		return

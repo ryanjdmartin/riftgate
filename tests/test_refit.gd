@@ -305,3 +305,53 @@ func test_a_fight_plays_on_the_models_dice() -> void:
 		var c: Dictionary = db.components.get(str(kind), {})
 		assert_false(str(c.get("face", {}).get("kind", "")) in ["shield", "vent"], "%s: no shield and no vent is spent" % kind)
 	assert_true(sk.destroyed == 0, "and nothing is destroyed: no foe's blow carries Destroy")
+
+
+## The two what-ifs for a kit's growth inside a tier (23 November): finds=N swaps up to N basic guns
+## a tier-one die for the tier's found guns of their reach, and face= rewrites one piece's entry for
+## the run, its numbers, a keyword's or its tier, so the tier-one bench can be read before a piece
+## of it is content. Each on whatever content says: the piece is the first found gun the tier has.
+func test_the_finds_and_a_rewritten_piece_are_laid_over_the_copy_in_memory() -> void:
+	var db := _own()
+	var found := ""
+	for cid in db.components.keys():
+		var face = db.components[cid].get("face", null)
+		if found.is_empty() and face is Dictionary and str(db.components[cid].get("status", "")) != "planned" and not db.is_basic(str(cid)) and db.component_tier(str(cid)) == 1 and str(face.get("kind", "")) == "attack" and int(face.get("power", 0)) > 0:
+			found = str(cid)
+	assert_false(found.is_empty(), "tier one has a found gun")
+	var spec := Refit.parse("face=%s:power=2:strikes=2:heat=5:penetrate=2,finds=2" % found)
+	assert_eq([int(spec["finds"]), (spec["faces"] as Array).size()], [2, 1], "the spec names the finds and the piece")
+	var written: Dictionary = (ContentDB.load_default().components[found]["face"] as Dictionary).duplicate(true)
+	var basics := Refit.basic_guns(db)
+	var stock := {}
+	for id in db.chassis.keys():
+		stock[id] = Array(db.chassis[id].get("loadout", [])).duplicate()
+	var notes := Refit.apply(db, spec)
+	assert_eq(notes.size(), 2, "a line for each: %s" % str(notes))
+	var face: Dictionary = db.components[found]["face"]
+	assert_eq([int(face["power"]), int(face["strikes"]), int(face["heat"]), int(face["penetrate"])], [2, 2, 5, 2], "the piece's entry is the spec's")
+	assert_true(Array(face["keywords"]).has("penetrate"), "with the keyword its number names")
+	var swapped := 0
+	for id in db.chassis.keys():
+		var now: Array = db.chassis[id].get("loadout", [])
+		var here := 0
+		for i in range(now.size()):
+			if str(now[i]) != str(stock[id][i]):
+				here += 1
+				assert_true(basics.has(str(stock[id][i])) and not basics.has(str(now[i])), "%s: a basic gun gave its slot to a found one" % id)
+				assert_eq(str(db.components[str(now[i])]["face"].get("reach", "")), str(db.components[str(stock[id][i])]["face"].get("reach", "")), "%s: of its own reach" % id)
+				assert_eq(int(db.chassis[id].get("tier", 0)), 1, "%s: on a tier-one die alone" % id)
+		assert_true(here <= 2, "%s: two swaps a die at most" % id)
+		swapped += here
+	assert_true(swapped > 0, "the finds were dealt")
+	assert_eq(ContentDB.load_default().components[found]["face"], written, "and the game's own content is untouched")
+	# A keyword at nothing comes off, and a piece moved up a tier leaves the tier's finds.
+	var again := _own()
+	Refit.apply(again, Refit.parse("face=%s:penetrate=2" % found))
+	Refit.apply(again, Refit.parse("face=%s:penetrate=0:tier=2" % found))
+	var back: Dictionary = again.components[found]["face"]
+	assert_false(back.has("penetrate") or Array(back.get("keywords", [])).has("penetrate"), "a keyword set to nothing is gone")
+	assert_eq(again.component_tier(found), 2, "the piece stands a tier up")
+	Refit.apply(again, Refit.parse("finds=9"))
+	for id in again.chassis.keys():
+		assert_false(Array(again.chassis[id].get("loadout", [])).has(found) and not Array(ContentDB.load_default().chassis[id].get("loadout", [])).has(found), "%s: a piece a tier up is no tier-one find" % id)

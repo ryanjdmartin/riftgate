@@ -161,7 +161,7 @@ func test_everything_a_swallowed_machine_carries_waits_and_it_comes_back_as_it_l
 	sk.begin()
 	sk.start_round()
 	var ms: Skirmish.MechState = sk.mechs[0]
-	Effects.grant_for_rounds(u, Effects.STATUS["swallowed"], "test", sk.round + 1)   # out this round and the next
+	Effects.lay_timer(u, Effects.STATUS["swallowed"], "test", 2)   # out this round and the next
 	_lay(u, "ablating_mech", 3)
 	_lay(u, "scorched", 2)
 	_lay(u, "sapped", 2)
@@ -203,12 +203,67 @@ func test_everything_a_swallowed_machine_carries_waits_and_it_comes_back_as_it_l
 	assert_eq(Effects.dark_rounds(u, 1, sk.round), 1, "the dark entry counts down again")
 
 
+## A timer renews to the larger count and works at any count (Ryan, 22 November: "make sure it's
+## built so that a theoretical exposed 1 or 3 will work as well"); its stacks never scale what it
+## does.
+func test_a_timer_renews_to_the_larger_count_at_any_count() -> void:
+	var g := Foe.make("revenant", 900, 1)
+	g.armour = 3
+	Effects.lay_timer(g, Effects.STATUS["exposure"], "mech")
+	Effects.turn_opens(g, 1)
+	assert_eq(Effects.stacks_of(g, "exposure"), 1, "a stack gone as its turn started")
+	Effects.lay_timer(g, Effects.STATUS["exposure"], "mech")
+	assert_eq(Effects.stacks_of(g, "exposure"), 2, "laid again, it renews to 2, never adds")
+	Effects.lay_timer(g, Effects.STATUS["exposure"], "mech", 3)
+	assert_eq(Effects.stacks_of(g, "exposure"), 3, "an Exposed 3 renews to the larger count")
+	Effects.lay_timer(g, Effects.STATUS["exposure"], "mech", 1)
+	assert_eq(Effects.stacks_of(g, "exposure"), 3, "and an Exposed 1 leaves it at 3")
+	for i in range(3):
+		assert_eq(g.armour_total(), 0, "its armour counts for nothing at %d" % Effects.stacks_of(g, "exposure"))
+		Effects.turn_opens(g, 2 + i)
+	assert_false(Effects.has(g, "exposure"), "three turn starts on, gone")
+	assert_eq(g.armour_total(), 3, "its armour back")
+	var u := _mech("A", Die.single(Face.blank()))
+	u.base["armour"] = 4
+	Effects.lay_timer(u, Effects.STATUS["exposure_mech"], "foe:test", 3)
+	assert_eq(Effects.stat(u, "armour"), 0, "a machine's Exposed 3: its armour nothing, the multiply counted once")
+
+
+## A swallow lands as the round ends (Ryan, 22 November: "Round end, swallow it?"): until then
+## the machine is in the fight, hittable by the foes after its swallower, and its wait is its own
+## status; the round's end lays Swallowed at the swallow's count, after that round's own count.
+func test_a_swallowed_machine_stays_hittable_until_the_round_ends() -> void:
+	var sk := Skirmish.new(1, 3)
+	var a := _mech("A", Die.single(Face.blank()))
+	var b := _mech("B", Die.single(Face.blank()))
+	sk.add_mech(a)
+	sk.add_mech(b)
+	var flo := Foe.make("floraison", 900, 20)
+	flo.actions = [{"id": "swallow", "name": "Swallow", "kind": "debuff", "effect": "swallow", "value": 2, "weight": 1, "text": ""},
+		{"id": "lash", "name": "Lash", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": [], "text": ""}]
+	var rev := Foe.make("revenant", 900, 7)
+	sk.add_foes([flo, rev])
+	sk.begin()
+	sk.start_round()
+	assert_eq(sk.front[0], flo, "the swallower acts first")
+	flo.action = flo.actions[0]
+	flo.target = sk.mechs[0]
+	rev.target = sk.mechs[0]
+	sk.end_round()
+	assert_eq(a.hull, 493, "the foe after the swallower still hits it")
+	assert_eq(Effects.stacks_of(a, "swallowing"), 0, "and the wait has landed as the round ended")
+	assert_eq(Effects.stacks_of(a, "swallowed"), 2, "Swallowed 2: its count whole, the round it was taken in uncounted")
+	assert_eq(sk.swallowed_by(flo), sk.mechs[0], "held by its swallower")
+	sk.start_round()
+	assert_true(sk.mechs[0].assigned, "out the next round")
+
+
 ## Only the swallow's own rounds run: every other timed thing moves a round later for each
 ## round's end it sits out, and none for the round's end it is let go at.
 func test_the_swallows_own_rounds_run_while_every_other_clock_stands() -> void:
 	var u := _mech("A", Die.single(Face.attack(1, L)))
 	var timed := {"id": "test_timed", "name": "Timed", "description": "", "effects": []}   # a buff for the round, as Essence Flare is
-	Effects.grant_for_rounds(u, Effects.STATUS["swallowed"], "test", 2)
+	Effects.lay_timer(u, Effects.STATUS["swallowed"], "test", 2)
 	Effects.grant_for_rounds(u, timed, "test", 1)
 	Effects.disable_entry(u, 0, "cooldown", 4)
 	assert_eq(Effects.dark_rounds(u, 0, 1), 4, "taken in the first round with its entry dark for the rest of it and three more")
@@ -269,7 +324,7 @@ func test_a_swallowed_machines_hold_on_the_field_waits_with_it() -> void:
 	sk.start_round()
 	Effects.grant_for_rounds(holder, Effects.STATUS["essence_flare"], "test", sk.round)
 	assert_true(sk.field_holds().has("overcharged"), "the buff holds every Empowered on the field")
-	Effects.grant_for_rounds(holder, Effects.STATUS["swallowed"], "test", sk.round + 1)
+	Effects.lay_timer(holder, Effects.STATUS["swallowed"], "test", 2)
 	assert_true(sk.field_holds().is_empty(), "and nothing once its machine is out of play")
 	_lay(ally, "overcharged", 8)
 	_lay(g, "kindled", 8)
@@ -403,9 +458,10 @@ func test_a_dark_entry_lights_again_as_its_machines_turn_ends() -> void:
 	assert_false(Effects.is_entry_disabled(u, 1), "and lit again as that turn ends")
 
 
-## A foe's Exposed falls as its turn starts in the round after it landed ("Exposed on next turn
-## start"): through the player's turn it was laid in and the next, and gone before the foes act.
-func test_a_foes_exposed_falls_as_its_turn_starts_the_round_after() -> void:
+## A foe's Exposed is a timer (Ryan, 22 November): Exposed 2, a stack going as each of its turns
+## starts, so it stands through the player's turn it was laid in and the next, and is gone before
+## the foes act that round.
+func test_a_foes_exposed_2_loses_a_stack_as_each_of_its_turns_starts() -> void:
 	var sk := Skirmish.new(1)
 	sk.add_mech(_mech("A", Die.single(Face.blank())))
 	var g := Foe.make("revenant", 900, 1)
@@ -413,10 +469,11 @@ func test_a_foes_exposed_falls_as_its_turn_starts_the_round_after() -> void:
 	sk.add_foes([g])
 	sk.begin()
 	sk.start_round()
-	Effects.grant_for_rounds(g, Effects.STATUS["exposure"], "mech", sk.round)
+	Effects.lay_timer(g, Effects.STATUS["exposure"], "mech")
+	assert_eq(Effects.stacks_of(g, "exposure"), 2, "Exposed 2, its own count")
 	assert_eq(g.armour_total(), 0, "Exposed: its armour counts for nothing")
 	sk.end_round()
-	assert_true(Effects.has(g, "exposure"), "it stands through the foes' turn of the round it landed, and the round's end")
+	assert_eq(Effects.stacks_of(g, "exposure"), 1, "a stack gone as its turn started: it stands through the foes' turn of the round it landed, and the round's end")
 	sk.start_round()
 	assert_eq(g.armour_total(), 0, "and through the player's next turn")
 	sk._end_player_turn()

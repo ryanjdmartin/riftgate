@@ -827,10 +827,10 @@ func foes_for(sq: Unit) -> Array[Foe]:
 			var b := make_foe(str(cid))
 			b.pack_id = sq.id
 			b.commands = true
-			scale_boss(b, sq.boss_tier)
+			scale_boss(b, sq.boss_tier, sq.boss_step)
 			out.append(b)
 			for part in parts_for(b):
-				scale_boss(part, sq.boss_tier)
+				scale_boss(part, sq.boss_tier, sq.boss_step)
 				out.append(part)
 		if sq.foe_id.is_empty() and sq.members.is_empty():
 			# Its escort unnamed, the tier's own units of its domain (escort_units).
@@ -852,7 +852,7 @@ func foes_for(sq: Unit) -> Array[Foe]:
 		for i in range(int(e[1])):
 			var f := make_foe(fid)
 			if is_elite(fid):
-				scale_boss(f, sq.boss_tier)   # every elite stands at its battle's tier as a boss does (Ryan, 2 November)
+				scale_boss(f, sq.boss_tier, sq.boss_step)   # every elite stands at its battle's tier as a boss does (Ryan, 2 November)
 			f.pack_id = sq.id
 			f.escorts = sq.is_boss
 			out.append(f)
@@ -878,6 +878,24 @@ const BOSS_TIERS := [
 
 static func boss_tier(t: int) -> Dictionary:
 	return BOSS_TIERS[clampi(t, 0, BOSS_TIERS.size() - 1)]
+
+
+## The leaders' step on trial, hundredths of an elite's and a boss's hit points more for each
+## Convergence its battle stands past its tier's first, three steps at most, 0 the game's (Ryan,
+## 23 November: "A set form of each formation, for each C. Bosses too ... I'm barely scraping by
+## some of these fights at C2 with stock units, if they don't scale with me they'll become a joke
+## at C4"). A first number from a read, never his form, which is a fixed entry a Convergence
+## (docs/tide_proposal.md, section 5): a squad carrying two of tier one's finds a die pays a
+## leader a third less, and half again the hit points puts the price back, so a fifth a
+## Convergence. A debug build's SETTINGS → TRIALS → LEADERS and RIFTGATE_LEADERS set it
+## (Settings.field_trial).
+static var leader_step_trial: int = 0
+
+
+## A battle's place in its tier: the Convergences past the tier's first, none before it and three
+## at most, so a tier's last step holds for a rift fought late (`tier` counts from 0).
+static func step_in_tier(tier: int, ramp: int) -> int:
+	return clampi(ramp - first_ramp_of(tier + 1), 0, Campaign.TIER_EVERY - 1)
 
 
 ## A fight's slots: four columns of two ranks, the ranks holding (a front foe never stands in the
@@ -911,9 +929,9 @@ static func fit_grid(list: Array[Foe]) -> Array[Foe]:
 ## so the plaque, the codex and a save read them as its own. A boss whose kit is armour grows it
 ## by its `armour_step` a tier above one, from a lighter start (Ryan, 31 October: "just the ones
 ## that have it", since a tier-one team has little against armour; the Cinder Tortoise's 1, 2, 3).
-func scale_boss(f: Foe, t: int) -> void:
+func scale_boss(f: Foe, t: int, step: int = 0) -> void:
 	var s := boss_tier(t)
-	f.hp_max = maxi(1, roundi(f.hp_max * float(s["hp"])))
+	f.hp_max = maxi(1, roundi(f.hp_max * float(s["hp"]) * (1.0 + float(leader_step_trial * clampi(step, 0, Campaign.TIER_EVERY - 1)) / 100.0)))
 	f.hp = f.hp_max
 	f.attack += int(s["attack"])
 	f.armour += f.armour_step * clampi(t, 0, BOSS_TIERS.size() - 1)
@@ -1257,18 +1275,43 @@ func is_part(foe_id: String) -> bool:
 ## "we've either defined the escort or we haven't"; the content tests want every size at every tier), as the
 ## spawn lists did (the ladder's brief, D3), so a domain written for tier one fights at every
 ## tier. Nothing when the faction has none.
-func compositions(faction_id: String, tier: int, size: String = "", ramp: int = -1) -> Array:
+## A composition written for a tide on trial (`tide`: "graded", the graded tide's packs) is dealt
+## by that tide alone: every other reader asks with no `tide` and never meets it.
+func compositions(faction_id: String, tier: int, size: String = "", ramp: int = -1, tide: String = "") -> Array:
 	var out: Array = []
 	var sizes: Array = [size] if not size.is_empty() else COMPOSITION_SIZES
 	for sz in sizes:
-		out.append_array(_compositions_at(faction_id, clampi(tier, 1, 3), str(sz), ramp))
+		out.append_array(_compositions_at(faction_id, clampi(tier, 1, 3), str(sz), ramp, tide))
 	return out
 
 
-func _compositions_at(faction_id: String, tier: int, size: String, ramp: int = -1) -> Array:
+## The graded tide's packs for a domain at a tier and a Convergence, a rating (1 to 3) to its
+## compositions in content order: the pushing patrols and formations written for it (`tide`:
+## "graded"), each by the machines it is for; and for a domain with none written, every pushing
+## patrol and formation it has, as built, so the tide runs on any domain. The hunting packs are
+## the caller's (Battle.setup deals them apart).
+func graded_packs(faction_id: String, tier: int, ramp: int = -1) -> Dictionary:
+	var out := {}
+	var found: Array = compositions(faction_id, tier, "patrol", ramp, GRADED) + compositions(faction_id, tier, "formation", ramp, GRADED)
+	if found.is_empty():
+		found = compositions(faction_id, tier, "patrol", ramp) + compositions(faction_id, tier, "formation", ramp)
+	for c in found:
+		if not str(c.get("hunts", "")).is_empty():
+			continue
+		var r := clampi(squad_of(c), 1, 3)
+		if not out.has(r):
+			out[r] = []
+		(out[r] as Array).append(c)
+	return out
+
+
+const GRADED := "graded"   # the `tide` a composition written for the graded tide carries
+
+
+func _compositions_at(faction_id: String, tier: int, size: String, ramp: int = -1, tide: String = "") -> Array:
 	var out: Array = []
 	for c in factions.get(faction_id, {}).get("compositions", []):
-		if not (c is Dictionary) or str(c.get("size", "")) != size or not composition_tiers(c).has(tier):
+		if not (c is Dictionary) or str(c.get("size", "")) != size or not composition_tiers(c).has(tier) or str(c.get("tide", "")) != tide:
 			continue
 		if ramp >= 0 and not ramp_holds(c, ramp):
 			continue
@@ -1277,7 +1320,7 @@ func _compositions_at(faction_id: String, tier: int, size: String, ramp: int = -
 		if members.is_empty():
 			continue
 		var entry := {"id": str(c.get("id", "")), "size": size, "faction": faction_id, "members": members, "layout": cells, "boss": str(c.get("boss", "")), "lead": str(members[0][0])}
-		for key in ["squad", "ramp", "hunts"]:   # the threat rating (the long wall brief 3.7), the ramp gate (7 November) and the hunt (8 November), as content writes them
+		for key in ["squad", "ramp", "hunts", "pace"]:   # the threat rating (the long wall brief 3.7), the ramp gate (7 November), the hunt (8 November) and a pack's own pace (24 November), as content writes them
 			if c.has(key):
 				entry[key] = c[key]
 		out.append(entry)
@@ -1331,7 +1374,7 @@ func _validate_ramp_gates(errs: Array[String]) -> void:
 	for fid in factions.keys():
 		var groups := {}   # "size|tier|boss" -> its compositions
 		for c in factions[fid].get("compositions", []):
-			if not (c is Dictionary):
+			if not (c is Dictionary) or c.has("tide"):   # the graded tide's packs are covered by rating (_validate_graded)
 				continue
 			for t in composition_tiers(c):
 				var key := "%s|%d|%s" % [str(c.get("size", "")), int(t), str(c.get("boss", ""))]
@@ -1346,6 +1389,25 @@ func _validate_ramp_gates(errs: Array[String]) -> void:
 			for r in range(first_ramp_of(int(parts[1])), Ramp.TOP + 1):
 				if not list.any(func(c) -> bool: return ramp_holds(c, r)):
 					errs.append("faction %s: no %s at tier %s%s is dealt at Convergence %d; the ramp gates must hold every Convergence from the tier's first (%d) to %d" % [fid, parts[0], parts[1], (" for " + parts[2]) if not parts[2].is_empty() else "", r, first_ramp_of(int(parts[1])), Ramp.TOP])
+					break
+
+
+## The graded tide's packs cover their tiers: where a domain has any written at a tier, every
+## rating, one to three, has a pack at every Convergence that tier is fought at, its first to the
+## top, so no band of the wall is ever left with nothing to send.
+func _validate_graded(errs: Array[String]) -> void:
+	for fid in factions.keys():
+		for t in [1, 2, 3]:
+			if compositions(str(fid), t, "", -1, GRADED).is_empty():
+				continue
+			for r in range(first_ramp_of(t), Ramp.TOP + 1):
+				var have := graded_packs(str(fid), t, r)
+				var short := false
+				for rating in [1, 2, 3]:
+					if (have.get(rating, []) as Array).is_empty() and not short:
+						short = true
+						errs.append("faction %s: the graded tide has no pack for %d at tier %d, Convergence %d" % [fid, rating, t, r])
+				if short:
 					break
 
 
@@ -2386,8 +2448,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 				errs.append("%s: target_rank's reach is direct or indirect" % where)
 			if str(eff.get("trigger", "")) != "on_attack":
 				errs.append("%s: target_rank reads a reach on an attack's own effects only (on_attack)" % where)
-		if effect == "seal_form" and (int(eff.get("value", 0)) <= 0 or int(eff.get("heat", 0)) < 0):
-			errs.append("%s: seal_form's value is the armour the seal grants, positive, and heat what it runs hotter a turn, not negative" % where)
+		if effect == "seal_form" and (eff.has("value") or eff.has("heat")):
+			errs.append("%s: seal_form says no numbers: Sealed's are its own (23 November)" % where)
 		if effect == "paradox" and int(eff.get("value", 0)) < 1:
 			errs.append("%s: paradox's value is the count that knocks a foe out, at least 1" % where)
 		if effect == "grant_keyword" and eff.has("printed"):
@@ -3138,12 +3200,14 @@ static func _all_effects() -> Array:
 ## `also`, by the same rules. `a` carries the effect's fields (value, foe, count, rounds).
 func _validate_effect(aw: String, a: Dictionary, effect: String, errs: Array[String]) -> void:
 	# A priming and a regrowth say their number; a Barrier and a Ward say none (28 October).
-	if (effect == "prime" or effect == "regenerate" or effect == "golden") and int(a.get("value", 0)) < 1:
+	if (effect == "prime" or effect == "regenerate") and int(a.get("value", 0)) < 1:
 		errs.append("%s: %s says its number: value, 1 or more" % [aw, effect])
 	# A golden rage (4 November) lasts the rounds it says, 1 to 5, three unsaid.
 	if effect == "golden" and a.has("rounds") and (int(a["rounds"]) < 1 or int(a["rounds"]) > 5):
 		errs.append("%s: golden's rounds are the rounds the rage lasts, 1 to 5" % aw)
-	if (effect == "barrier" or effect == "ward_all" or effect == "appropriate" or effect == "phase" or effect == "unready_all") and a.has("value"):
+	# Golden is one state, its numbers its own (Ryan, 23 November: "No stack should be dynamic
+	# based on what created it"): its move says only its rounds.
+	if (effect == "barrier" or effect == "ward_all" or effect == "appropriate" or effect == "phase" or effect == "unready_all" or effect == "golden") and a.has("value"):
 		errs.append("%s: %s takes no value" % [aw, effect])
 	# A cleanse (28 October) takes every mark the team laid, so it says no number.
 	if effect == "cleanse" and a.has("value"):
@@ -3449,6 +3513,7 @@ func _validate_foes(errs: Array[String]) -> void:
 
 func _validate_factions(errs: Array[String]) -> void:
 	_validate_ramp_gates(errs)
+	_validate_graded(errs)
 	var opening: Array = []
 	for id in factions.keys():
 		var f: Dictionary = factions[id]
@@ -3532,6 +3597,10 @@ func _validate_factions(errs: Array[String]) -> void:
 				if not (g is Array) or (g as Array).size() != 2 or not (g as Array).all(func(x) -> bool: return x is float or x is int) \
 						or int(g[0]) < 0 or int(g[0]) > int(g[1]) or int(g[1]) > Ramp.TOP:
 					errs.append("%s: ramp is [lo, hi], the Convergences it is dealt at, 0 <= lo <= hi <= %d" % [cw, Ramp.TOP])
+			if c.has("pace") and not ((c["pace"] is float or c["pace"] is int) and int(c["pace"]) >= 1 and int(c["pace"]) <= 6 and float(c["pace"]) == floor(float(c["pace"]))):
+				errs.append("%s: pace is the hexes its pack walks a turn, 1 to 6 (absent: its slowest member's)" % cw)
+			if c.has("tide") and str(c["tide"]) != GRADED:
+				errs.append("%s: tide is '%s', the tide on trial it is written for (absent: the game's)" % [cw, GRADED])
 			if c.has("hunts"):
 				# Whether its pack hunts, and whom (Ryan, 8 November: "The composition should say if
 				# it hunts, not the units"); an escort walks with its boss, which never hunts.

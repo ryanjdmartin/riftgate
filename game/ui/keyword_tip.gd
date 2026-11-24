@@ -15,6 +15,11 @@ const GAP := 8.0           # between the word and the tip
 const PAD := 16.0          # the panel's content margin
 
 static var _open: KeywordTip = null
+## What the unit whose readout is open carries, by term (Ryan, 23 November: "All buffs and debuffs
+## need to have their current sum mentioned in their in-game tips"): {term id: {"N": its sum,
+## "caster": who laid it}}, set by the screen showing that unit and cleared as it closes. A tip
+## fills its line's {N} and {caster} from it (filled).
+static var fills: Dictionary = {}
 
 var terms: Array = []      # the ids it shows: what tests read
 var _catch: Control
@@ -96,7 +101,8 @@ func _fill(ids: Array, near: Rect2) -> void:
 		if not str(e["heading"]).is_empty():
 			list.append({"style": "caption", "text": str(e["heading"]), "parts": [], "place": ""})
 		list.append(EntryReadout.term_line(str(id)))
-		list.append(EntryReadout.prose_line(str(e["codex"]), 17, Palette.INK))
+		for line in filled(str(id), str(e["codex"])).split("\n"):
+			list.append(EntryReadout.prose_line(line, 17, Palette.INK))   # a line an effect (Ryan, 23 November)
 	var screen := _screen()
 	var width := minf(WIDTH, screen.size.x - MARGIN * 2.0)
 	_lines.set_lines(list, width - PAD * 2.0)
@@ -110,6 +116,16 @@ func _fill(ids: Array, near: Rect2) -> void:
 		y = near.end.y + GAP
 	y = clampf(y, screen.position.y + MARGIN, maxf(screen.position.y + MARGIN, screen.end.y - size.y - MARGIN))
 	_panel.position = Vector2(x, y)
+
+
+## A term's line with its marks filled: {N} the sum the open unit carries, {caster} who laid it.
+## With no unit open (the keywords list, a die's entry) the sum's own aside goes and a bare N or
+## "its caster" stands in.
+static func filled(id: String, codex: String, with: Dictionary = fills) -> String:
+	var f: Dictionary = with.get(id, {})
+	for key in f.keys():
+		codex = codex.replace("{%s}" % key, str(f[key]))
+	return codex.replace(" ({N})", "").replace("{N}", "N").replace("{caster}", "its caster")
 
 
 func _screen() -> Rect2:

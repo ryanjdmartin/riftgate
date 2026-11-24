@@ -385,13 +385,11 @@
    "passive": {
     "id": "lockdown",
     "name": "Lockdown",
-    "description": "Equipment it spends on itself seals it: armour +3, its cooling stopped, 3 hotter at the end of each turn, and its Cryo Flinger gains Spread. A weapon it fires opens it, and so does a reboot. Its weapons deal 1 more to a foe carrying Cryo.",
+    "description": "Using equipment on itself grants Sealed. While Sealed, its Cryo Flinger gains Spread. Its weapons deal +1 damage to a foe carrying Cryo.",
     "effects": [
      {
       "trigger": "static",
-      "effect": "seal_form",
-      "value": 3,
-      "heat": 3
+      "effect": "seal_form"
      },
      {
       "trigger": "static",
@@ -437,9 +435,9 @@
     "breaching_plow"
    ],
    "loadout": [
-    "slugthrower",
-    "slugthrower",
-    "shotfire_rack",
+    "rivet_gun",
+    "rivet_gun",
+    "ankle_mortar",
     "shoring_jack",
     "twin_autoguns"
    ],
@@ -599,7 +597,7 @@
    "design": {
     "fantasy": "Ryan's tank that fights (14 October: a unit that \"still wants to get hit, but actually has to worry slightly about its own hull\"; 15 October: \"We just need to make the tank not only use tank abilities\"): an armoured car on six boxed wheels, his pick of 15 November (\"I like the armoured car\"), turning on the spot as the tracked machines do, nicknamed for how it acts and not drawn as the animal (\"remember the machines were nicknamed after animals they resemble or act like\"). Its spines are the Sonic Needles it leaves in whatever it strikes and whatever strikes it, his of 15 October (\"Sonic Needle (sonic the hedgehog reference)\"), the Knuckles in it the soft reference of his second round. The designation is a session's draft: a seismic survey car drives acoustic spikes into the rock on a line and listens to them, which is the Tether's.",
     "niche": "tank that punishes (Ryan, 20 November): every foe it strikes and every foe that strikes it takes a Sonic Needle; the needles conduct Chain, and every third in a foe fires Chain 2 through every conductor, that foe included; its Tether lures and saps, so the lured foe's blow is the second needle.",
-    "notes": "His kit of 20 November, built at tier one, where it takes the Mole's place (\"Now leaning T1 with this kit, would bump out the Mole who is admittedly pretty complex and niche\"). Its numbers are his shape and the session's placeholders: armour 0 his, shield 10 above the tier-one mean of 8 and hull 24 the medium's (\"Shield above average, hull average (as you see fit)\"), move 4, fast for a Minerva (his \"relatively fast for a Minerva\" of 15 October). Its stock is placeholders: the Rivet Gun, the Howitzer (Spread 1 and Penetrate 1, up to four needles a spend), the Arc Fault Cannon (its Chain arcs through every needled foe) and the Shoring Jack. Its look waits on his pick of the bristle (docs/briefs/minerva_hedgehog.md); until a model is built it draws the stand-in."
+    "notes": "His kit of 20 November, built at tier one, where it takes the Mole's place (\"Now leaning T1 with this kit, would bump out the Mole who is admittedly pretty complex and niche\"). Its numbers are his shape and the session's placeholders: armour 0 his, shield 10 above the tier-one mean of 8 and hull 24 the medium's (\"Shield above average, hull average (as you see fit)\"), move 4, fast for a Minerva (his \"relatively fast for a Minerva\" of 15 October). Its stock is basics since 23 November, as every tier-one die's is (Ryan: \"Quite a few T1 chassis are still stocking tier 1 pieces instead of just basic pieces. Things like the Echidna coming stock with the Arc Fault Cannon and Howitzer is clearly a high performing build\"): the Rivet Gun, the Ankle Mortar where the Howitzer stood, the Twin Autoguns where the Arc Fault Cannon stood, and the Shoring Jack. Its look waits on his pick of the bristle (docs/briefs/minerva_hedgehog.md); until a model is built it draws the stand-in."
    },
    "codex": "",
    "hull": 24,
@@ -618,8 +616,8 @@
    ],
    "loadout": [
     "rivet_gun",
-    "howitzer",
-    "arc_fault_cannon",
+    "ankle_mortar",
+    "twin_autoguns",
     "shoring_jack"
    ],
    "passive": {
@@ -1064,7 +1062,7 @@
    "passive": {
     "id": "crucible_capacitor",
     "name": "Crucible Capacitor",
-    "description": "A foe's hit on its shield adds 1 heat; hull damage, or a blow of its own that a foe's armour or Barrier takes whole, adds 2. Opening a turn at its heat maximum or past it, it rages: its debuffs lifted and no more landing, its die all Knuckles of Fury, Instant. The Rage ends as its heat reaches nothing, and it reboots at once. It never reboots by choice at its maximum.",
+    "description": "When Hit: If only Shield is damaged, gain 1 Heat.\nHull Damaged: Gain 2 Heat.\nAfter Hit: If damage was reduced to 0, gain 2 Heat.\nTurn Start: If at Max Heat or higher, remove all Debuffs and gain Rage.",
     "effects": [
      {
       "trigger": "on_shield_hit",
@@ -1611,7 +1609,7 @@
     "ankle_mortar",
     "twin_autoguns",
     "halo_projector",
-    "incendiary_shells"
+    "ankle_mortar"
    ],
    "passive": {
     "id": "adaptive_munitions_drum",
@@ -1680,7 +1678,7 @@
    "passive": {
     "id": "thermal_ejection_manifold",
     "name": "Thermal Ejection Manifold",
-    "description": "Its weapons deal half damage at no heat, rising with its heat to double at its maximum. Past half its heat, every hit it takes is doubled. Its reboot fires the Heliographic Death Ray first: the Ray comes up on its die in place of what it showed, and once it fires the Whip Scorpion reboots.",
+    "description": "Weapon damage scales with Heat: 50% at 0 Heat to 200% at Max Heat.\nWhen Hit: If above half Max Heat, double damage received.\nReboot replaced by Fixed: Heliographic Death Ray.\nResolve: If Heliographic Death Ray was used, Reboot immediately.",
     "effects": [
      {
       "trigger": "static",
@@ -1741,7 +1739,7 @@
    "passive": {
     "id": "muster_deck",
     "name": "Muster Deck",
-    "description": "Allies beside it on the map travel with it. Every die that rolls fills its Muster a sliver, a kill by its own guns more, and its locked pieces spend a muster to do more.",
+    "description": "Allies beside it on the map travel with it. Every die that rolls fills its Muster a sliver, a kill by its own guns more, and its Integrated components spend a muster to do more.",
     "effects": [
      {
       "trigger": "static",
@@ -1865,7 +1863,7 @@
    "design": {
     "fantasy": "The strafer (Ryan, 14 October: \"Love the [strafer], lock that in\"), a swing-wing since 21 October, the strafing jet by trade; the Skua, the seabird that harries others in repeated dives until they drop what they carry. Since 11 November, in his words, Ramping Dakka.",
     "niche": "Ramping Dakka (Ryan, 11 November, a complete rewrite): the first weapon it damages a foe with each round gains it a stack of Ricochet, and after a weapon fires it hits its target again for 1 a stack, so it is the long fight's hitter, weak in its first round and a storm by its fifth, on one foe at a time. Hull damage halves the stacks, so it ramps only while its shield holds: Kestrel's risk. Its lock, the Hypersonic Swoop, is the one way to a second stack in a round. Every bounce pays the foe's armour, so plate stops it and an Exposed foe does not; its payoffs are riders laid a strike and flat buffs counted on each strike.",
-    "notes": "Rewritten 11 November on his words (the fast flyers' round: the bible's Kestrel row; its brief, git show e5638e2:docs/briefs/kestrel_skua.md). The stack is the passive's (on_damage, once a round) and the Swoop's; Ricochet is a buff that lasts the fight, read by the hit, halved on hull damage. Retired with it: the Split-cycle Breech (every weapon hitting twice at half; the engine keeps split_strikes, which no passive uses) and the Flechette Pod as its lock, now an ordinary weapon in its stock. Every number a placeholder. Its stock is three guns, the Pod in the Shoring Jack's place (his to move); the Pod four strikes of 1 since Sweep went on 12 November. Its model is the jaeger of 26 and 27 October (tools/lowforge/models_low.py, skua): the Pod hangs as a rack on the belly mount, and the twin pods on its spine, the old lock's, are housings nothing fires until its look is revisited. Its passive's name is his (12 November: \"Carom field or rebound field?\", then \"go for the rename\"; Skip-fire Breech was a session's working name)."
+    "notes": "Rewritten 11 November on his words (the fast flyers' round: the bible's Kestrel row; its brief, git show e5638e2:docs/briefs/kestrel_skua.md). The stack is the passive's (on_damage, once a round) and the Swoop's; Ricochet is a buff that lasts the fight, read by the hit, halved on hull damage. Retired with it: the Split-cycle Breech (every weapon hitting twice at half; the engine keeps split_strikes, which no passive uses) and the Flechette Pod as its lock, now an ordinary weapon in its stock. Every number a placeholder. Its stock is three basic guns since 23 November (his \"just basic pieces\" for every tier-one die), a second Twin Autoguns where the Pod stood; the Pod is a find, four strikes of 1 since Sweep went on 12 November. Its model is the jaeger of 26 and 27 October (tools/lowforge/models_low.py, skua): the belly mount wears whatever its third gun is, and the twin pods on its spine, the old lock's, are housings nothing fires until its look is revisited. Its passive's name is his (12 November: \"Carom field or rebound field?\", then \"go for the rename\"; Skip-fire Breech was a session's working name)."
    },
    "codex": "",
    "hull": 20,
@@ -1885,7 +1883,7 @@
    "loadout": [
     "laser_carbine",
     "twin_autoguns",
-    "flechette_pod"
+    "twin_autoguns"
    ],
    "passive": {
     "id": "carom_field",
@@ -1932,7 +1930,7 @@
     "laser_carbine",
     "ankle_mortar",
     "twin_autoguns",
-    "arc_fault_cannon"
+    "laser_carbine"
    ],
    "passive": {
     "id": "hardlight_generator",

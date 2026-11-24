@@ -66,12 +66,22 @@ var plans: Array = []                # the moves planned and not yet played (Bat
 var shown: Dictionary = {}           # machine id -> [hex, facing]: where a planned machine stands until its plan plays (Battle.shown_positions)
 var scroll_y: float = 0.0            # the map's offset on screen, in pixels
 var scroll_x: float = 0.0
-var zoom: float = 1.0                # the reconstruction's zoom (Ryan, 21 September); 1 fits the width
-var seam_shown := -1.0               # the seam's row as drawn while a peak's creep waits or plays (hold_peak, play_peak); under 0, the field's own
+var zoom: float = 1.0                # the reconstruction's zoom (Ryan, 21 September); 1 is a hex at HEX_SIZE
+var seam_shown := -1.0               # the turn the seam is drawn at while a round's growth waits or plays (hold_peak, play_round), a turn and a part; under 0, the field's own
 var tears_shown := -1                # how many of the field's tears are drawn, the rest waiting for their opening; under 0, all
 
-const ZOOM_MIN := 1.0
 const ZOOM_MAX := 2.6
+
+
+## The zoom's floor: far enough out that the whole field stands in the view, both ways (Ryan, 23
+## November: "Can we allow the zoom to zoom out to show the whole map?"), in either MAP VIEW and
+## at any depth; never past 1, where a field smaller than the view already fits. The floor was 1,
+## a hex at HEX_SIZE, from the narrow field that fitted the width there (21 September).
+func zoom_min() -> float:
+	if field == null or size.x <= 0.0 or size.y <= 0.0:
+		return 1.0
+	var r := _scroll_rect()
+	return minf(1.0, minf(size.x / maxf(1.0, r.size.x), size.y / maxf(1.0, r.size.y)))
 
 var _origin := Vector2.ZERO
 var _map3d: Map3D = null             # the battlefield's geometry; null only when headless
@@ -325,8 +335,23 @@ func center(h: Vector2i) -> Vector2:
 	return _origin + MapOrient.to_pixel(h, HEX_SIZE) + Vector2(0, -_lift_at(h))
 
 
-var _bleed_grad := Vector2.ZERO
+var _bleed_wall := Vector2.ZERO
+var _bleed_seam := Vector4.ZERO
 var _bleed_src := PackedVector3Array()
+
+
+## The bleed's sources as the map shows them now: the rift, the tears shown (one bursting open
+## grows its painting with its ring), every pack where it walks.
+func _bleed_sources() -> PackedVector3Array:
+	var at := _held_px.duplicate()
+	at.merge(_anim_px, true)
+	var src := Bleed.sources(field, _origin, HEX_SIZE, at, tears_shown, _spawn_hidden)
+	for i in _tear_born.keys():
+		var k := 1 + int(i)   # the rift first, then the tears in their order (Bleed.sources)
+		var age: float = _ring_t - float(_tear_born[i])
+		if k < src.size() and age < TEAR_OPEN_SECONDS:
+			src[k] = Vector3(src[k].x, src[k].y, src[k].z * clampf(age / (TEAR_OPEN_SECONDS * 0.6), 0.0, 1.0))
+	return src
 
 ## A hex's lift on screen: its column's height, the same in either world (the painting stands at
 ## the reconstruction's heights). Until 16 November it faded to nothing where the painting took
@@ -392,7 +417,7 @@ func scroll_to_unit(u: Unit) -> void:
 
 ## Zoom about a screen point, so what is under the finger stays under it.
 func zoom_at(local: Vector2, factor: float) -> void:
-	var nz := clampf(zoom * factor, ZOOM_MIN, ZOOM_MAX)
+	var nz := clampf(zoom * factor, zoom_min(), ZOOM_MAX)
 	var k := nz / zoom
 	scroll_x = local.x - (local.x - scroll_x) * k
 	scroll_y = local.y - (local.y - scroll_y) * k
@@ -488,14 +513,21 @@ func _draw() -> void:
 		_map3d.look(Vector2(scroll_x, scroll_y), zoom)
 		_map3d.held = shown
 		_map3d.seam_shown = seam_shown
+		_map3d.tears_shown = tears_shown
 		_map3d.sync()
 		var mat: ShaderMaterial = _composite.material
-		var src := Bleed.sources(field, _origin, HEX_SIZE, _anim_px)
+		var src := _bleed_sources()
 		if flatten_r > 0.0 and src.size() < Bleed.MAX_SOURCES:
 			src.append(Vector3(flatten_at.x, flatten_at.y, flatten_r * HEX_SIZE))
-		_bleed_grad = Bleed.gradient(field, _origin, HEX_SIZE, seam_shown)
+		_bleed_wall = Bleed.wall(field, _origin, HEX_SIZE)
+		_bleed_seam = Bleed.seam(field, _origin, HEX_SIZE, seam_shown)
 		_bleed_src = src.duplicate()   # what the overlays' lifts read this frame (_lift_at)
-		mat.set_shader_parameter("grad", _bleed_grad)
+		mat.set_shader_parameter("grad", _bleed_wall)
+		mat.set_shader_parameter("seam", _bleed_seam)
+		# The far ground's softening is the close view's: it fades as the view pulls back and
+		# is gone with the whole field in it, where there is no far (zoom_min).
+		var floor_z := zoom_min()
+		mat.set_shader_parameter("far_gain", clampf((zoom - floor_z) / maxf(0.001, 1.0 - floor_z), 0.0, 1.0) if floor_z < 1.0 else 1.0)
 		mat.set_shader_parameter("source_count", src.size())
 		src.resize(Bleed.MAX_SOURCES)
 		mat.set_shader_parameter("sources", src)
@@ -1001,9 +1033,10 @@ func _solid_at(h: Vector2i) -> float:
 	if _map3d == null:
 		return 1.0
 	if _bleed_src.is_empty():
-		_bleed_grad = Bleed.gradient(field, _origin, HEX_SIZE, seam_shown)
-		_bleed_src = Bleed.sources(field, _origin, HEX_SIZE, _anim_px)
-	return Bleed.solid(base(h), _bleed_grad, _bleed_src)
+		_bleed_wall = Bleed.wall(field, _origin, HEX_SIZE)
+		_bleed_seam = Bleed.seam(field, _origin, HEX_SIZE, seam_shown)
+		_bleed_src = _bleed_sources()
+	return Bleed.solid(base(h), _bleed_wall, _bleed_seam, _bleed_src)
 
 
 ## The tears (30 October): each a small vortex ring in the rift's own light on the seam's
@@ -1071,29 +1104,31 @@ func _tear_opening(h: Vector2i, c: Vector2, age: float) -> float:
 ## was looking, at the zoom they had. One plays at a time and nothing is taken while it plays, on
 ## the map or off it, and nothing skips it; headless, or with nothing to show, it hands on at once. First cuts, judged running.
 ##
-## A peak of Rift Pressure: the field has already peaked when the enemy's turn is taken, so the
-## screen calls hold_peak before it (the map keeps the seam where it stood and the new tears
-## unseen while the packs walk) and play_peak after the walks: the map glides to the seam, the
-## painting's edge sweeps to its new row under a hot violet front with its name on it, then the
-## map glides in on each new tear as it bursts open (RIFTGATE_PEAK_DEBUG=1 peaks every enemy
-## turn). A hunter's lock: play_locks glides in on each hunter that turned on a machine, in
-## turn, and the screen declares it there.
-signal peak_beat(what: String)   # "seam" as the creep starts, "tear" as each opens: the screen's sounds
+## The enemy's turn: the field has already taken it when the screen plays it, so the screen calls
+## hold_peak before it (the map keeps the seam where it stood and the new tears unseen) and then
+## play_round, the whole field in view while the packs walk and the seam grows, and play_peak,
+## the map gliding in on each new tear as it bursts open (RIFTGATE_PEAK_DEBUG=1 peaks every enemy
+## turn; RIFTGATE_ROUND_DEBUG=1 plays the round's view over and over). A hunter's lock: play_locks
+## glides in on each hunter that turned on a machine, in turn, and the screen declares it there.
+signal peak_beat(what: String)   # "tear" as each opens, "spawn" as the tide's packs burst in: the screen's sounds
 signal cutscene_changed(playing: bool)   # one began or ended: the screen takes no input while one plays
 
 const CUT_GLIDE := 0.45          # the map's glide to a thing and back
 const CUT_ZOOM := 1.6            # the zoom on what stands on one hex, a tear or a hunter; a player zoomed further in keeps their own
-const SEAM_SWEEP := 1.2          # the edge's sweep to its new row
-const SEAM_FADE := 0.6           # the front's fade once it stands
+const SEAM_FADE := 0.5           # the ring on the seam's edge fading once it stands
 const LOCK_HOLD := 2.0           # the map held on a hunter while its declaration shows
+const ROUND_GLIDE := 0.55        # the glide out to the whole field, and back
+const ROUND_HOLD := 1.2          # the least the whole field stands in view, whatever walks
+const ROUND_AFTER := 0.3         # a beat after the last pack stops
+const ROUND_SPAWN := 0.75        # the tide's packs bursting in, in view, once the walks are done
 
 var _cut_tween: Tween = null
 var _cut_done := Callable()
 var _cut_home := Vector3.ZERO    # the scroll (x, y) and the zoom (z) the cutscene started from
 var _cut_cam := Vector3.ZERO     # the map point at mid-screen (x, y) and the zoom (z) the last glide ends on
 var _tear_born: Dictionary = {}  # a tear's index -> the clock (_ring_t) its opening began at
-var _seam_front := -1.0          # the clock the seam's sweep began at; under 0, no front is drawn
-var _seam_to := 0.0              # the row the sweep ends on
+var _seam_front := -1.0          # the clock the seam's growth began at; under 0, no ring is drawn on its edge
+var _seam_grow := 0.0            # the seconds that growth takes
 var _spawn_hidden: Dictionary = {}   # a pack's id -> true: unseen until its arrival is played (hold_spawn)
 var _spawn_born: Dictionary = {}     # a pack's id -> the clock (_ring_t) its arrival began at
 
@@ -1102,7 +1137,7 @@ var _spawn_born: Dictionary = {}     # a pack's id -> the clock (_ring_t) its ar
 func hold_peak() -> void:
 	if field == null:
 		return
-	seam_shown = float(field.seam_row)
+	seam_shown = float(field.phase)
 	tears_shown = field.tears.size()
 
 
@@ -1111,30 +1146,84 @@ func cutscene_playing() -> bool:
 	return _cut_tween != null
 
 
-## Play what the field did since hold_peak (the seam's creep, the tears opened), then `done`.
+## The round's turn of the enemy, shown whole (Ryan, 23 November: "At End Turn, we center the
+## camera on the battlefield, zoom out as far as we can go, show 'Round {N}' on the middle of the
+## screen while the enemies move and the seam expands simultaneously. Then zoom back in to show the
+## usual tear and spawn stuff as now"; of the seam, "every round, but not a big fuss about it"): the
+## map glides out to the whole field (zoom_min), calls `called` with the seconds the view will
+## stand (the screen's banner), plays the packs' walks (`pack_moves`, play_phases' moves) and grows
+## the seam to the field's own turn together, a ring riding its edge, then glides back to where the
+## player was looking, and `done`. The packs the tide sent this turn (`sent`) are unseen until they
+## burst in, once the walks are done, still in view. The tears' hold stands through it, for
+## play_peak. With nothing to play on, `done` at once. `to_turn` is the turn the seam grows to, the
+## field's own unless given (the debug loop's).
+func play_round(pack_moves: Array, sent: Array, called: Callable, done: Callable, to_turn: float = -1.0) -> void:
+	var held_tears := tears_shown
+	if not _can_play():
+		seam_shown = -1.0
+		_held_px = {}
+		_spawn_hidden = {}
+		if done.is_valid():
+			done.call()
+		return
+	for u in sent:
+		hold_spawn(u)
+	var after := func() -> void:
+		tears_shown = held_tears   # the round's end let every hold go (_end_cutscene): the tears wait on for their opening
+		if done.is_valid():
+			done.call()
+	var tw := _begin_cutscene(after)
+	var walk_s := 0.0
+	for mv in pack_moves:
+		if (mv[1] as Array).size() >= 2:
+			walk_s = maxf(walk_s, _curve_for(mv[0], mv[1]).duration / maxf(0.01, pace))
+	var stand := maxf(ROUND_HOLD, walk_s + ROUND_AFTER)
+	var bursts := not sent.is_empty()
+	var mid := _scroll_rect().get_center()
+	tw.tween_method(_glide.bind(_cut_cam, Vector3(mid.x, mid.y, zoom_min())), 0.0, 1.0, ROUND_GLIDE).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_cut_cam = Vector3(mid.x, mid.y, zoom_min())
+	tw.tween_callback(func() -> void:
+		if called.is_valid():
+			called.call(stand + (ROUND_SPAWN if bursts else 0.0))
+		_seam_front = _ring_t
+		_seam_grow = stand
+		_held_px = {}   # the walks take them from here
+		if not pack_moves.is_empty():
+			play_phases([pack_moves], func() -> void: pass))
+	if seam_shown >= 0.0:
+		tw.tween_property(self, "seam_shown", to_turn if to_turn >= 0.0 else float(field.phase), stand).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	else:
+		tw.tween_interval(stand)
+	if bursts:
+		tw.tween_callback(func() -> void: _burst_in(sent))
+		tw.tween_interval(ROUND_SPAWN)
+	tw.tween_method(_glide.bind(_cut_cam, Vector3((size.x * 0.5 - _cut_home.x) / _cut_home.z, (size.y * 0.5 - _cut_home.y) / _cut_home.z, _cut_home.z)), 0.0, 1.0, ROUND_GLIDE).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_callback(_finish_cutscene)
+
+
+## The packs held unseen burst in where they stand, each out of a tear's own burst (_draw_unit).
+func _burst_in(packs: Array) -> void:
+	var any := false
+	for u in packs:
+		if u != null and _spawn_hidden.has((u as Unit).id):
+			_spawn_hidden.erase((u as Unit).id)
+			_spawn_born[(u as Unit).id] = _ring_t
+			any = true
+	if any:
+		peak_beat.emit("spawn")
+	queue_redraw()
+
+
+## Play the tears the field opened since hold_peak, then `done`: the map glides in on each new
+## tear as it bursts open, its painting growing round it with its ring.
 func play_peak(done: Callable) -> void:
-	var crept: bool = field != null and seam_shown >= 0.0 and float(field.seam_row) > seam_shown
 	var opened: int = (field.tears.size() - tears_shown) if field != null and tears_shown >= 0 else 0
-	if not _can_play() or (not crept and opened <= 0):
+	if not _can_play() or opened <= 0:
 		_end_cutscene()
 		if done.is_valid():
 			done.call()
 		return
 	var tw := _begin_cutscene(done)
-	if crept:
-		# The seam, where the player is looking along the wall: its old edge and its new both in
-		# view, the middle of the creep at the middle of the screen across the field, at the
-		# player's own zoom (the seam is the whole field's, nothing to close in on).
-		_seam_to = float(field.seam_row)
-		var mid := (Bleed.seam_edge(field, _origin, HEX_SIZE, seam_shown) + Bleed.seam_edge(field, _origin, HEX_SIZE, _seam_to)) * 0.5
-		var axis := Bleed.axis()
-		var here := to_map(size * 0.5)
-		_glide_to(tw, here + axis * (mid - here.dot(axis)), zoom)
-		tw.tween_callback(func() -> void:
-			_seam_front = _ring_t
-			peak_beat.emit("seam"))
-		tw.tween_property(self, "seam_shown", _seam_to, SEAM_SWEEP).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-		tw.tween_interval(0.35)
 	for i in range(maxi(0, tears_shown), field.tears.size()):
 		_glide_to(tw, center(field.tears[i]["pos"]), maxf(zoom, CUT_ZOOM))
 		tw.tween_callback(func() -> void:
@@ -1273,45 +1362,42 @@ func _end_cutscene() -> void:
 	seam_shown = -1.0
 	tears_shown = -1
 	_tear_born = {}
+	_held_px = {}
 	_spawn_hidden = {}
-	_spawn_born = {}
-	if _seam_front >= 0.0 and _ring_t - _seam_front < SEAM_SWEEP:
-		_seam_front = -1.0   # skipped mid-sweep: no front left standing where the edge is not
+	for id in _spawn_born.keys():
+		if _ring_t - float(_spawn_born[id]) >= TEAR_OPEN_SECONDS:
+			_spawn_born.erase(id)   # a burst still playing plays out; one done is forgotten
 	queue_redraw()
 
 
-## The seam's front while its creep plays and a moment after (map space, left in screen space):
-## a wide violet band on the painting's moving edge across the whole field, a bright line in it
-## and a white hairline in that, three fainter echoes trailing behind it toward the rift, and
-## the seam's name on the line where the player is looking. A line and its motion, never a hue
-## alone; hot for the phone.
+## The seam's edge while it grows and a moment after (map space, left in screen space): a ring
+## riding the painting's moving edge, a wide violet band with a bright line in it and a white
+## hairline in that, drawn only on the field's side of the wall, where the painting stops. No name
+## and no view of its own (Ryan, 23 November: "not a big fuss about it"); a line and its motion,
+## never a hue alone; hot for the phone.
 func _draw_seam_front() -> void:
 	if _seam_front < 0.0 or field == null:
 		return
 	var age := _ring_t - _seam_front
-	if age > SEAM_SWEEP + 0.35 + SEAM_FADE:
+	if age > _seam_grow + SEAM_FADE:
 		_seam_front = -1.0
 		return
-	var a := 1.0 - clampf((age - SEAM_SWEEP - 0.35) / SEAM_FADE, 0.0, 1.0)
-	var row := seam_shown if seam_shown >= 0.0 else _seam_to
+	var a := clampf(age / 0.2, 0.0, 1.0) * (1.0 - clampf((age - _seam_grow) / SEAM_FADE, 0.0, 1.0))
+	var c := base(field.map.rift)
+	var r := Bleed.seam_radius(field, HEX_SIZE, seam_shown)
 	var axis := Bleed.axis()
-	var side := Vector2(-axis.y, axis.x)
-	var edge := Bleed.seam_edge(field, _origin, HEX_SIZE, row)
-	var r := _hex_bounds(field.map.all_hexes())
-	r.position += _origin
-	var mid := r.get_center()
-	var half := maxf(r.size.x, r.size.y) * 0.5 + HEX_SIZE
-	var on := axis * edge + side * mid.dot(side)
+	var stop := (_bleed_wall.x + _bleed_wall.y) * 0.5   # the wall's foot along the axis: no ring past it
 	_map_space()
-	var moving := age < SEAM_SWEEP
-	for k in range(3, 0, -1):
-		var back := on - axis * HEX_SIZE * 0.45 * float(k)
-		draw_line(back - side * half, back + side * half, Color(Palette.ENEMY, a * (0.5 - 0.13 * float(k)) * (1.0 if moving else 0.4)), _px(5.0))
-	draw_line(on - side * half, on + side * half, Color(Palette.ENEMY, 0.45 * a), _px(22.0))
-	draw_line(on - side * half, on + side * half, Color(ENEMY_HOT, a), _px(7.0))
-	draw_line(on - side * half, on + side * half, Color(Color.WHITE, 0.9 * a), _px(2.0))
-	var here := to_map(size * 0.5)
-	_plaque(on + side * (here.dot(side) - on.dot(side)) + Vector2(0.0, -16.0 / zoom), _term("seam"), Color(Palette.ENEMY, a), 2.5)
+	var n := 120
+	var prev := c + Vector2(r, 0.0)
+	for i in range(1, n + 1):
+		var ang := TAU * float(i) / float(n)
+		var at := c + Vector2(cos(ang), sin(ang)) * r
+		if prev.dot(axis) < stop and at.dot(axis) < stop:
+			draw_line(prev, at, Color(Palette.ENEMY, 0.4 * a), _px(16.0))
+			draw_line(prev, at, Color(ENEMY_HOT, 0.9 * a), _px(5.0))
+			draw_line(prev, at, Color(Color.WHITE, 0.8 * a), _px(1.5))
+		prev = at
 	_screen_space()
 
 
@@ -2323,7 +2409,7 @@ func set_highlight(hexes: Array) -> void:
 
 ## Zoom to `z` and centre a map point, for the contact panel's look at a fight.
 func focus_on(p: Vector2, z: float) -> void:
-	zoom = clampf(z, ZOOM_MIN, ZOOM_MAX)
+	zoom = clampf(z, zoom_min(), ZOOM_MAX)
 	scroll_x = size.x * 0.5 - p.x * zoom
 	scroll_y = size.y * 0.5 - p.y * zoom
 	_clamp_scroll()
@@ -2589,11 +2675,26 @@ func _advance_anim(delta: float) -> void:
 
 
 var _anim_px: Dictionary = {}   # unit id -> map pixel offset from hex (0,0) while moving
+## The packs held where they stood as the enemy's turn was taken, unit id -> map pixel offset from
+## hex (0,0), until the round's view plays their walks (hold_walks): the field has them at their
+## walks' ends already, and they must not blink there and rewind while the machines' plan and the
+## glide out play first.
+var _held_px: Dictionary = {}
+
+
+## Hold every pack that will walk where its walk starts (`pack_moves`, play_phases' moves), until
+## play_round plays them.
+func hold_walks(pack_moves: Array) -> void:
+	_held_px = {}
+	for mv in pack_moves:
+		if (mv[1] as Array).size() >= 2:
+			_held_px[mv[0]] = MapOrient.to_pixel(mv[1][0], HEX_SIZE)
+	queue_redraw()
 
 
 func _unit_center(u: Unit) -> Vector2:
-	if _anim_px.has(u.id):
-		var px: Vector2 = _anim_px[u.id]
+	if _anim_px.has(u.id) or _held_px.has(u.id):
+		var px: Vector2 = _anim_px[u.id] if _anim_px.has(u.id) else _held_px[u.id]
 		var under := MapOrient.from_pixel(px, HEX_SIZE)
 		return _origin + px + Vector2(0, -_lift_along(px, under))
 	return center(shown_hex(u))
@@ -2622,7 +2723,7 @@ func _draw_unit(u: Unit) -> void:
 	if _spawn_born.has(u.id):
 		var age: float = _ring_t - float(_spawn_born[u.id])
 		if age < TEAR_OPEN_SECONDS:
-			_tear_opening(u.pos, _unit_center(u), age)   # the burst it comes out of, a tear's own
+			_tear_opening(MapOrient.from_pixel(_anim_px[u.id], HEX_SIZE) if _anim_px.has(u.id) else (MapOrient.from_pixel(_held_px[u.id], HEX_SIZE) if _held_px.has(u.id) else u.pos), _unit_center(u), age)   # the burst it comes out of, a tear's own, on the hex it is drawn on
 			born = clampf(age / 0.5, 0.0, 1.0)
 	var hud := Palette.HUD
 	if u.is_multi_hex():

@@ -29,13 +29,25 @@ extends RefCounted
 ##   barrier=heatN      the Barrier basic makes N heat
 ##   barrier=none       the Barrier basic leaves the stock dice, the Armoured basic in its slot
 ##                      (the Barrier's place, open since 12 November: a basic, or rare or locked)
+##   finds=N    the squad a few battles into its tier: on every tier-one stock die up to N basic
+##              guns give their slots to found guns of that tier and their reach, dealt round the
+##              tier's finds in content order, so a squad carries a spread of them and never the
+##              best alone (Ryan, 23 November: "the player is going to go through power spikes as
+##              they outfit their units ... if they don't scale with me they'll become a joke at
+##              C4"). A read of what a kit's growth inside a tier is worth against foes that hold
+##              still, so the forms a Convergence apart can be sized to it
+##   face=ID:KEY=N:KEY=N   one piece's entry rewritten for the run, as many parts as pieces: its
+##              power, strikes, heat or reach, a keyword with its number (penetrate=2; =0 takes
+##              the keyword off), or its tier (tier=2, out of tier one's finds). The id is the
+##              spec's, so the tier-one bench can be read at the anchor before a piece of it is
+##              content (docs/briefs/numbers_pass.md, section 6, has the spec)
 
 const BARRIER := "barrier"   # the status the Barrier basic grants (the engine's word)
 const ARMOURED := "braced"   # the status the Armoured basic grants
 
 
 static func parse(text: String) -> Dictionary:
-	var spec := {"hotter": 0, "top": 0, "foehp": 0, "barrier": ""}
+	var spec := {"hotter": 0, "top": 0, "foehp": 0, "barrier": "", "finds": 0, "faces": []}
 	for part in text.split(",", false):
 		var p := part.strip_edges()
 		if p.begins_with("hotter="):
@@ -46,8 +58,12 @@ static func parse(text: String) -> Dictionary:
 			spec["foehp"] = int(p.trim_prefix("foehp="))
 		elif p.begins_with("barrier="):
 			spec["barrier"] = p.trim_prefix("barrier=")
+		elif p.begins_with("finds="):
+			spec["finds"] = int(p.trim_prefix("finds="))
+		elif p.begins_with("face="):
+			(spec["faces"] as Array).append(p.trim_prefix("face="))
 		elif not p.is_empty():
-			push_error("--refit: no part '%s' (hotter=N, top=N, foehp=N, barrier=cooldownN|heatN|none; the model's die and the basics' heat are content since 10 November, regen= and cooling= left with the chassis's own on 15 November, and basics= and breach= with the vanilla's 3 and breach's cut the same day)" % p)
+			push_error("--refit: no part '%s' (hotter=N, top=N, foehp=N, finds=N, face=ID:KEY=N, barrier=cooldownN|heatN|none; the model's die and the basics' heat are content since 10 November, regen= and cooling= left with the chassis's own on 15 November, and basics= and breach= with the vanilla's 3 and breach's cut the same day)" % p)
 	return spec
 
 
@@ -55,6 +71,40 @@ static func parse(text: String) -> Dictionary:
 ## head.
 static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 	var notes: Array[String] = []
+	# face=: a piece's entry rewritten, before anything reads the pieces (the finds' pool is by
+	# tier and reach).
+	for text in spec.get("faces", []):
+		var bits := str(text).split(":", false)
+		var cid := str(bits[0]) if bits.size() > 0 else ""
+		if not db.components.has(cid) or not (db.components[cid].get("face", null) is Dictionary):
+			push_error("--refit: face= names no component '%s'" % cid)
+			continue
+		var piece: Dictionary = db.components[cid]
+		var entry: Dictionary = piece["face"]
+		var said: Array[String] = []
+		for i in range(1, bits.size()):
+			var kv := str(bits[i]).split("=", true, 1)
+			if kv.size() != 2:
+				continue
+			var key := str(kv[0])
+			if key == "tier":
+				piece["tier"] = int(kv[1])
+			elif key == "reach":
+				entry["reach"] = str(kv[1])
+			elif ["power", "strikes", "heat"].has(key):
+				entry[key] = int(kv[1])
+			else:   # a keyword with its number; none takes the keyword off
+				var words: Array = Array(entry.get("keywords", [])).duplicate()
+				if int(kv[1]) > 0:
+					entry[key] = int(kv[1])
+					if not words.has(key):
+						words.append(key)
+				else:
+					entry.erase(key)
+					words.erase(key)
+				entry["keywords"] = words
+			said.append("%s %s" % [key, str(kv[1])])
+		notes.append("%s: %s" % [str(piece.get("name", cid)), ", ".join(said)])
 	var hotter := int(spec.get("hotter", 0))
 	if hotter != 0:
 		var n := 0
@@ -135,6 +185,48 @@ static func apply(db: ContentDB, spec: Dictionary) -> Array[String]:
 				notes.append("the Barrier basic leaves the stock dice: the Armoured basic in its slot on %d" % dice)
 		else:
 			push_error("--refit: barrier=%s is no rule (cooldownN, heatN, none)" % barrier_rule)
+	# The squad a few battles in: found guns of tier one in the basic guns' slots.
+	var finds := int(spec.get("finds", 0))
+	if finds > 0:
+		var by_reach := {}   # reach -> the tier's found guns of it, in content order
+		for cid in db.components.keys():
+			var c: Dictionary = db.components[cid]
+			var face = c.get("face", null)
+			if str(c.get("status", "")) == "planned" or not (face is Dictionary) or db.is_basic(str(cid)) or db.component_tier(str(cid)) != 1:
+				continue
+			if str(face.get("kind", "")) == "attack" and int(face.get("power", 0)) > 0:
+				var reach := str(face.get("reach", ""))
+				if not by_reach.has(reach):
+					by_reach[reach] = []
+				(by_reach[reach] as Array).append(str(cid))
+		var basics := basic_guns(db)
+		var dealt := {}   # reach -> how many dealt so far, so the finds go round
+		var dice := 0
+		var slots := 0
+		for id in db.chassis.keys():
+			if int(db.chassis[id].get("tier", 0)) != 1:
+				continue
+			var loadout = db.chassis[id].get("loadout", [])
+			if not (loadout is Array):
+				continue
+			var swapped := 0
+			for i in range((loadout as Array).size()):
+				if swapped >= finds or not basics.has(str(loadout[i])):
+					continue
+				var reach := str(db.components[str(loadout[i])]["face"].get("reach", ""))
+				var pool: Array = by_reach.get(reach, [])
+				if pool.is_empty():
+					continue
+				loadout[i] = pool[int(dealt.get(reach, 0)) % pool.size()]
+				dealt[reach] = int(dealt.get(reach, 0)) + 1
+				swapped += 1
+			if swapped > 0:
+				dice += 1
+				slots += swapped
+		var said: Array[String] = []
+		for reach in by_reach.keys():
+			said.append("%s: %s" % [reach, ", ".join((by_reach[reach] as Array).map(func(c): return str(db.components[c].get("name", c))))])
+		notes.append("up to %d basic guns a tier-one die swapped for the tier's finds (%d slots on %d dice; %s)" % [finds, slots, dice, "; ".join(said)])
 	return notes
 
 
