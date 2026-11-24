@@ -67,7 +67,7 @@ func test_the_page_holds_only_what_is_in_play() -> void:
 	var keys: Array = []
 	for s in ColourTuner.SLOTS:
 		keys.append(str(s[0]))
-	assert_eq(keys, ["hud_green", "hud_amber", "hud_blue", "ENEMY", "ENEMY_HOT", "ENEMY_DEEP", "ENEMY_EDGE", "HEAT", "LOSS", "LOSS_DIM", "SHIELD", "HULL", "GAIN"], "the page's rows")
+	assert_eq(keys, ["hud_green", "hud_amber", "hud_blue", "ENEMY", "ENEMY_HOT", "ENEMY_DEEP", "ENEMY_EDGE", "HEAT", "LOSS", "LOSS_DIM", "ENGAGE", "SHIELD", "HULL", "GAIN"], "the page's rows")
 
 
 func test_a_headless_run_keeps_no_picks() -> void:

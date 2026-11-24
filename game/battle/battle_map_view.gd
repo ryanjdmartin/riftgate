@@ -58,6 +58,7 @@ var attack: Dictionary = {}          # the fight shown (Battle.roster) with "com
 var orders: Dictionary = {}          # mech id -> the pack it is ordered onto (Battle.orders): drawn as a line to it
 var fight_group: Array = []          # the fight being entered: the map freezes on it through the handover
 var queue: Array = []                # the fights waiting, in the order ENGAGE opens them (Battle.fights_waiting): numbered on the map
+var fights_through := false          # the fights' marks (orders, catches, the next fight, the queue) stay drawn while what plays is ENGAGE's own moves
 var flatten_at := Vector2.ZERO       # the handover into a skirmish: one more bleed source, growing
 var flatten_r := 0.0                 # its radius in hexes; 0 is none (tweened by the screen)
 var destinations: Dictionary = {}    # hexes the selected mech may end on
@@ -589,17 +590,18 @@ func _draw() -> void:
 					hit = hit or threat.has(x) or Hex.distance(x, selected.pos) <= selected.attack_range
 				if hit:
 					# Lit, not only bracketed (Ryan, 24 November: "when ordering a unit on the map, it
-					# needs to highlight packs it could engage"): its hexes washed and edged in the
-					# violet's bright, the brackets heavy on a dark edge.
+					# needs to highlight packs it could engage"), in the engage red ("should be in red,
+					# not white or violet"): its hexes washed and edged in it, the edge and the brackets
+					# heavy on a dark edge, since a red bare on the field's bright grounds fails.
 					var cells := {}
 					for x in sq.hexes():
 						cells[x] = true
-						draw_colored_polygon(MapOrient.corners(center(x), HEX_SIZE - _px(2.0)), Color(Palette.ENEMY, 0.55))
-					_region_outline(cells, Palette.ENEMY, 5.0)
+						draw_colored_polygon(MapOrient.corners(center(x), HEX_SIZE - _px(2.0)), Color(Palette.ENGAGE, 0.35))   # over the ground, the painted world's too
+					_region_outline(cells, Palette.ENGAGE, 5.0, Palette.ENGAGE)
 					var bc := center(sq.pos)
 					var box := Rect2(bc - Vector2(HEX_SIZE, HEX_SIZE), Vector2(HEX_SIZE, HEX_SIZE) * 2.0)
 					Hud.brackets(self, box, _px(16.0), Color(Palette.BG, 0.85), _px(7.0))
-					Hud.brackets(self, box, _px(16.0), ENEMY_HOT, _px(4.0))
+					Hud.brackets(self, box, _px(16.0), Palette.ENGAGE, _px(4.0))
 
 	# The moves planned and not yet played (Ryan, 25 October: "highlight and display the planned
 	# move like we used to"): each machine's route in the display's light from where it stands,
@@ -711,7 +713,7 @@ func _draw() -> void:
 	# The fights hunters forced (bible section 5): the hunter and its prey lit, the prey
 	# tagged; they come first on the player's turn, and the catch is drawn as the prey's order
 	# onto its hunters, below.
-	if not is_blocking() and fight_group.is_empty():
+	if (not is_blocking() or fights_through) and fight_group.is_empty():
 		for f in forced:
 			var prey: Unit = f["prey"]
 			for h in f["hunters"]:
@@ -720,43 +722,43 @@ func _draw() -> void:
 			_plaque(center(prey.pos) + Vector2(0.0, -HEX_SIZE * 1.05), "CAUGHT", Palette.ENEMY, 2.0)
 	# The orders (bible section 5): a line from each machine to the pack it is ordered onto, in
 	# the display's light, dashes crawling toward the pack; a caught machine's to its hunters.
-	if not is_blocking() and fight_group.is_empty():
+	if (not is_blocking() or fights_through) and fight_group.is_empty():
 		for pair in order_pairs():
 			_order_line(pair[0], pair[1])
 	# The fight shown (bible section 5): the next one ENGAGE opens, the one a dragged machine
 	# is over, or a pack looked at: its pack lit, the machines in it bracketed. No band says where
 	# a machine must stand (the long wall brief 7.2): beside the pack, which the lit move shows.
-	if not attack.is_empty() and not is_blocking():
+	# It stays through ENGAGE's own moves (Ryan, 24 November: the engage pulse "shouldn't disappear
+	# during a move animation"), and wears no label (the same day: "Remove all the 'fight // '
+	# popup labels everywhere"): the queue's crossed swords number it.
+	if not attack.is_empty() and (not is_blocking() or fights_through):
 		var targets: Array = attack.get("targets", [])
-		var group: Array = targets
-		for u in group:
+		for u in targets:
 			_contact_effect((u as Unit).pos, true, true)
 		for m in attack.get("committed", []):
 			var c := center((m as Unit).pos)
 			Hud.brackets(self, Rect2(c - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), _px(12.0), hud, _px(3.0))
-		if not targets.is_empty():
-			_plaque(center((targets[0] as Unit).pos) + Vector2(0.0, -HEX_SIZE * 1.05), "FIGHT // " + contact_text(attack.get("committed", []) + group), Palette.ENEMY, 2.0)
 	# The fight being entered: frozen on its units through the handover.
 	if not fight_group.is_empty():
 		for u in fight_group:
 			_contact_effect((u as Unit).pos, true, (u as Unit).is_enemy())
-	# The queue (the long wall brief 7.4): each fight waiting numbered in the order ENGAGE opens
-	# it, on its pack (a catch's on the machine caught). No pip under a machine says whether it can
-	# still act: the board under the map says it, each machine's row (Ryan, 9 November: "I don't
-	# like the action-remaining marker, it causes clutter and confusion. Remove, the panel does that
-	# job").
-	if not is_blocking() and fight_group.is_empty():
-		for k in range(queue.size()):
-			var q: Dictionary = queue[k]
-			var on: Unit = q["target"] if q["target"] != null else q["prey"]
-			if on != null:
-				_queue_number(center(on.pos) + Vector2(-HEX_SIZE * 0.62, -HEX_SIZE * 0.55), k + 1)
-
 	_draw_field_units(map)
 	for prey in hunted.keys():
 		_hunted_tag(prey, hunted[prey])
 	for sq in hunting.keys():
 		_hunter_chip(sq, hunting[sq])
+	# The queue (the long wall brief 7.4): each fight waiting numbered in the order ENGAGE opens
+	# it, its badge at its pack's upper left (a catch's at the machine caught), drawn over the units
+	# so no sprite or model covers it. No pip under a machine says whether
+	# it can still act: the board under the map says it, each machine's row (Ryan, 9 November: "I
+	# don't like the action-remaining marker, it causes clutter and confusion. Remove, the panel does
+	# that job").
+	if (not is_blocking() or fights_through) and fight_group.is_empty():
+		for k in range(queue.size()):
+			var q: Dictionary = queue[k]
+			var on: Unit = q["target"] if q["target"] != null else q["prey"]
+			if on != null:
+				_queue_number(center(on.pos) + Vector2(-HEX_SIZE * 0.62, -HEX_SIZE * 0.55), k + 1)
 
 	if selected != null:
 		var c := _unit_center(selected)
@@ -784,19 +786,15 @@ func _draw() -> void:
 	Hud.scanlines(self, Rect2(Vector2.ZERO, size))
 
 
-## A fight's place in the queue: its number on a disc in the display's light, ringed heavy, on
-## the pack it opens on; drawn on screen at its place, so it holds its size at every zoom.
+## A fight's place in the queue: its badge, the crossed swords and its number on the engage red
+## (Ryan, 24 November: "The skirmish number label needs to change to a red icon that looks more
+## engage-ey"; Hud.engage_badge), on the pack it opens on; drawn on screen at its place, so it holds
+## its size at every zoom. The orders board wears the same badge on each machine in the fight.
+const QUEUE_BADGE_H := 32.0
+
 func _queue_number(at: Vector2, n: int) -> void:
 	_screen_space()
-	var p := to_screen(at)
-	var r := 13.0
-	draw_circle(p, r + 2.0, Palette.BG)
-	draw_circle(p, r, Palette.HUD)
-	draw_arc(p, r + 2.0, 0.0, TAU, 24, Palette.BG, 2.0)
-	var font := Hud.display_bold()
-	var t := str(n)
-	var tw := font.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, 18).x
-	draw_string(font, p + Vector2(-tw * 0.5, 7.0), t, HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Palette.BG)
+	Hud.engage_badge(self, to_screen(at), n, QUEUE_BADGE_H)
 	_map_space()
 
 
@@ -1995,11 +1993,6 @@ func _intent_breath() -> float:
 	return 0.5 + 0.5 * sin(_ring_t * 2.0)   # a touch quicker than the contact's 1.6 (Ryan, 30 September: halfway back from 2.4)
 
 
-## The contact marks breathe between the violet and its pale (Ryan, 22 September, of the red then).
-func _ring_colour() -> Color:
-	var breath := 0.5 + 0.5 * sin(_ring_t * 1.6)
-	return Palette.ENEMY.lerp(ENEMY_HOT, 0.35 + 0.65 * breath)
-
 
 
 ## Under a machine's own destination marker: two faint rings breathing, in the display's
@@ -2011,17 +2004,24 @@ func _ally_target(c: Vector2, col: Color) -> void:
 		draw_arc(c, r, 0.0, TAU, 32, Color(col, 0.4 - 0.12 * k), 1.5)
 
 
+## In the engage red (Ryan, 24 November: "The engage confirmed pulse needs to be in red too"): the hex
+## washed, breathing, its edge and the rings going out from it each on a dark edge, so the red holds
+## on the field's bright grounds; the breath in its strength alone, never toward another hue.
 func _contact_effect(h: Vector2i, lit: bool, _at_base: bool = false) -> void:
 	var c := center(h)
 	var a := 1.0 if lit else 0.35
 	var breath := 0.5 + 0.5 * sin(_ring_t * 4.0)
-	_fill(h, Color(Palette.ENEMY, (0.7 + 0.25 * breath) * a))
-	Hud.stroke_poly(self, MapOrient.corners(c, HEX_SIZE - _px(3.0)), Color(Palette.ENEMY, a), _px(2.5))
-	var col := _ring_colour()
+	var red := Palette.ENGAGE
+	_fill(h, Color(red, (0.5 + 0.3 * breath) * a))
+	var rim := MapOrient.corners(c, HEX_SIZE - _px(3.0))
+	Hud.stroke_poly(self, rim, Color(Palette.BG, 0.8 * a), _px(6.0))
+	Hud.stroke_poly(self, rim, Color(red, a), _px(3.5))
 	for k in range(2):
 		var phase := fmod(_ring_t * 0.9 + k * 0.5, 1.0)
 		var r := HEX_SIZE * (0.3 + 1.1 * phase)
-		draw_arc(c, r, 0.0, TAU, 40, Color(col, (1.0 - phase) * a), _px(3.0 * (1.0 - phase * 0.5) + 1.0))
+		var w := _px(3.5 * (1.0 - phase * 0.5) + 1.0)
+		draw_arc(c, r, 0.0, TAU, 40, Color(Palette.BG, 0.75 * (1.0 - phase) * a), w + _px(3.0))
+		draw_arc(c, r, 0.0, TAU, 40, Color(red, (1.0 - phase) * a), w)
 
 
 ## A route, either side's (Ryan, 29 September): a quiet line with dashes crawling toward
@@ -2407,8 +2407,8 @@ func _pack_segments(p: Unit) -> void:
 ## target lock is: dashes in the display's light and the light at half, crawling along it (Ryan,
 ## 10 November: "Unit moverange border should be the animated one, not static"). Corner i to i+1
 ## faces DIRECTIONS[(6 - i) % 6] in either view (the flat-top corners are the pointy ones turned).
-func _region_outline(region: Dictionary, col: Color, width: float) -> void:
-	var bright := col.lerp(Color.WHITE, 0.25 + 0.25 * sin(_ring_t * 1.6))
+func _region_outline(region: Dictionary, col: Color, width: float, toward: Color = Color.WHITE) -> void:
+	var bright := col.lerp(toward, 0.25 + 0.25 * sin(_ring_t * 1.6))   # a red passes itself: lightened toward white it would take blue (CLAUDE.md, the colours)
 	var crawl := fmod(_ring_t * 1.5, 2.0)
 	for pass_i in range(2):
 		for h in region.keys():
@@ -2453,29 +2453,6 @@ func focus_on(p: Vector2, z: float) -> void:
 	_clamp_scroll()
 	queue_redraw()
 
-
-## "Badger + Kite vs Ghouls + Necromancers": one contact group, in words, no pack's count (Ryan, 23
-## November: "Packs on the map don't need their count numbers").
-static func contact_text(group: Array) -> String:
-	var mechs: Array[String] = []
-	var packs: Array[String] = []
-	for u in group:
-		if u.is_player():
-			mechs.append(str(u.display_name))
-		else:
-			packs.append(str(u.display_name))
-	return " + ".join(mechs) + " vs " + " + ".join(packs)
-
-
-## The fight's words with the ground it is fought on (decided 22 September).
-func contact_label(group: Array, ends: Dictionary = {}) -> String:
-	var ground_h: Vector2i = Battle.ground_hex(group)
-	if ends.has((group[0] as Unit).id):
-		for u in group:
-			if u.is_enemy():
-				ground_h = ends[u.id]
-				break
-	return "%s // %s" % [contact_text(group), ContentDB.load_default().term_name(field.map.ground_id(ground_h)).to_upper()]
 
 
 ## The frame's left and right lines in map pixels: the field plus a little, and the line

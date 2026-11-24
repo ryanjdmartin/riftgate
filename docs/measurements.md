@@ -12755,3 +12755,31 @@ At 8 hit points a grove of two is as clean a pack for three as the horde of six,
 treants cost what the horde of eight costs. One machine alone still spends six rounds and a
 reboot or two on a treant at any of these: its plate, its regrowth and its blow do that, more
 than its hit points.
+
+## 24 November: the engage red against the map's grounds
+
+**The engage red** (the decision it informs: the bible's semantic-colours and map's-colours rows,
+on Ryan's "The engageable packs markers should be in red, not white or violet. The engage confirmed
+pulse needs to be in red too"). Method: as the red read of 29 October, the Machado protan, deutan
+and tritan matrices at severity 1.0 in linear sRGB, luminance contrast / CIEDE2000, against the
+battle map's grounds sampled from a render at the phone's layout (the 3D field's dirt #56585f, its
+scenery's #58544a, a chasm's floor #49546a, the painted meadow #66cc33, a painted bank #663300 and
+the painting's dark #003300). Normal / protan / deutan / tritan, #ff0000 bare:
+
+| Ground | Contrast | ΔE |
+|---|---|---|
+| The 3D field's dirt | 1.78 / 1.10 / 2.23 / 1.77 | 36.9 / 28.1 / 38.5 / 36.8 |
+| Its scenery's dirt | 1.89 / 1.19 / 2.35 / 1.90 | 36.0 / 19.1 / 32.3 / 33.5 |
+| A chasm's floor | 1.92 / 1.17 / 2.44 / 1.91 | 41.8 / 33.5 / 44.7 / 43.8 |
+| The meadow, painted | 1.95 / 3.29 / 1.50 / 1.91 | 74.9 / 32.8 / 10.4 / 64.3 |
+| A painted bank | 2.58 / 1.80 / 3.01 / 2.60 | 31.0 / 13.9 / 29.8 / 29.2 |
+| The painting's dark | 3.56 / 2.16 / 4.56 / 3.57 | 66.3 / 18.6 / 39.7 / 58.7 |
+
+Bare, the red fails as the October reads found (1.10 on the dirt in protan, ΔE 10.4 on the meadow in
+deutan), and #ff3000 moves it no more than a tenth either way, so every engage mark stands on a dark
+edge (#070907 at 0.8) or a plate: the edge stands 2.56:1 or more from the dirt, the scenery and the
+chasm in every simulation and 9.36 from the meadow, the red core 1.80 from the bank and 2.16 from
+the painting's dark where the edge falls short, and the core 3.12:1 on its own edge (protan, the
+worst). The badge's count, the ink on the red under a dark outline, stands 2.88:1 at worst (deutan).
+From the HUD presets and the violet the red stands ΔE 24.9 or more in every simulation; from heat's
+#ff4000 2.6 (deutan), which the map never draws.

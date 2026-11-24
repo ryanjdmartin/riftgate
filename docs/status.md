@@ -100,7 +100,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1465 tests, about 390,900 checks, green on Godot 4.8-beta4 (24 November, Ryan's list of the day). The runner fails a run
+- Tests: 1468 tests, 398,777 checks, green on Godot 4.8-beta4 (24 November, the map's pass). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -342,7 +342,13 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   wears; a die is spent by dragging a large crosshair in the HUD colour from it (`AimLayer`), the
   tether over the die, the die staying in its tray. Settings on a debug build compare the chip's
   forms (CHIPS) until Ryan picks. A machine's executed move on the map plays under the player's
-  hands (`BattleMapView.is_blocking`); a fight's moves and the enemy's turn still hold them. Since 23 November a die's double-tap shows
+  hands (`BattleMapView.is_blocking`); a fight's moves and the enemy's turn still hold them. On the
+  map (24 November) a fight to engage wears the engage red (`Palette.ENGAGE`, on a dark edge or a
+  plate): the packs a machine in hand could engage, the next fight's pulse (kept through ENGAGE's
+  own moves), and the queue's badge, crossed swords with the fight's place at its corner
+  (`Hud.engage_badge`), worn too on each machine's row of the orders board; no label names a fight.
+  The gorges are nine steps deep and about half carry a faint stream, one body of water each,
+  whatever its ways close round flooded (`Map3D._stream_polys`). Since 23 November a die's double-tap shows
   the whole die at its live numbers and a hold alone locks; a dark entry is its own face under a
   veil; a unit's tap waits out the die's double-tap window; on the map a pack's double-tap opens
   its formation (`FormationBox`, a foe's codex on a tap there) and a cache's its codex, and a pack shows no count. A debug build's settings hold TRIALS and COLOURS

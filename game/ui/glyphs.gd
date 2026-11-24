@@ -538,6 +538,15 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			ci.draw_line(c + Vector2(s * 0.45, -s * 0.9), c + Vector2(s * 0.9, -s * 0.45), color, width)
 			ci.draw_line(c + Vector2(-s * 0.75, s * 0.1), c + Vector2(-s * 0.1, s * 0.75), color, width)
 			ci.draw_line(c + Vector2(-s * 0.9, s * 0.6), c + Vector2(-s * 0.6, s * 0.9), color, width)
+		"engage":
+			# Crossed swords (Ryan, 24 November: "a red icon that looks more engage-ey, like crossed
+			# swords"): a fight to be fought. Each blade from its hilt low at one side to its point
+			# high at the other, its guard across the hilt and its grip heavier below it.
+			for m in [1.0, -1.0]:
+				var hilt := c + Vector2(-s * 0.5 * m, s * 0.5)
+				ci.draw_line(hilt, c + Vector2(s * 0.88 * m, -s * 0.88), color, width)
+				ci.draw_line(c + Vector2(-s * 0.84 * m, s * 0.16), c + Vector2(-s * 0.16 * m, s * 0.84), color, width)
+				ci.draw_line(hilt, c + Vector2(-s * 0.92 * m, s * 0.92), color, width * 1.4)
 		"heart":
 			ci.draw_arc(c + Vector2(-s * 0.42, -s * 0.3), s * 0.45, PI * 0.8, PI * 2.0, 14, color, width)
 			ci.draw_arc(c + Vector2(s * 0.42, -s * 0.3), s * 0.45, PI, PI * 2.2, 14, color, width)

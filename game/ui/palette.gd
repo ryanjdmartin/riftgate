@@ -52,6 +52,13 @@ static var GAIN := Color("5cff6a")
 static var LOSS := Color("ff0000")
 ## A dead thing, dimmed: a blank or destroyed entry, a wrecked machine's die, a dying foe's ghost.
 static var LOSS_DIM := Color("7a1400")
+## A fight to engage (Ryan, 24 November: "The engageable packs markers should be in red, not white
+## or violet. The engage confirmed pulse needs to be in red too"): on the map the packs a machine in
+## hand could engage, a fight confirmed (its pulse) and its number in the queue (the crossed swords),
+## and that number on the orders board. LOSS's red-red until tuned apart; always on a dark edge or a
+## plate, since a red bare on the field's bright grounds fails whatever its hue (29 and 30 October,
+## docs/measurements.md).
+static var ENGAGE := Color("ff0000")
 
 ## The overlay colour. Settings.apply() sets it from the saved choice; this is the green
 ## preset's, the default.

@@ -516,7 +516,11 @@ func _refresh() -> void:
 	if not playing:
 		_map.plans = battle.plan_pieces() if planning else []
 		_map.shown = battle.shown_positions() if planning else {}
-	_map.attack = _fight_preview() if planning and not playing else {}
+	# The fight's marks stay through ENGAGE's own moves (Ryan, 24 November: the engage pulse
+	# "shouldn't disappear during a move animation"); the enemy's turn still hides them until it
+	# has played, so a catch shows once its hunter has arrived.
+	_map.fights_through = _engaging
+	_map.attack = _fight_preview() if planning and (not playing or _engaging) else {}
 	_map.route_drawing = planning and not playing
 	# The rift's shell over the seven beside it: a plate cracked for each Fracture earned, burst at
 	# the Rupture (BattleMapView.set_shell).
@@ -1580,6 +1584,8 @@ func _ask_end_turn() -> void:
 
 ## ENGAGE: the next fight opens with the machines ordered onto it; the boss's fight plays its
 ## reveal.
+var _engaging := false   # ENGAGE's planned moves are playing: the fight's marks stay up (BattleMapView.fights_through)
+
 func _engage() -> void:
 	var f := battle.next_fight()
 	if f.is_empty():
@@ -1605,7 +1611,9 @@ func _engage() -> void:
 	if battle.next_fight_is_boss():
 		plan = []
 		_map.shown = {}
+	_engaging = true
 	_play_plan(plan, [], func() -> void:
+		_engaging = false
 		var sk := battle.engage()
 		if sk == null:
 			Sound.play("ui_back")

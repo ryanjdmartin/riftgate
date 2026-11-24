@@ -1270,6 +1270,43 @@ func test_engage_counts_the_fights_waiting() -> void:
 	s.free()
 
 
+## The engage badge (Ryan, 24 November: "The skirmish number label needs to change to a red icon
+## that looks more engage-ey ... The info panel should indicate that icon with the number for
+## machines involved in that fight"): the board gives each machine the place of its fight in the
+## map's queue, and a machine in no fight none; the fight's marks stay up while ENGAGE's own moves
+## play (the engage pulse "shouldn't disappear during a move animation").
+func test_each_machine_in_a_fight_wears_its_place_in_the_queue() -> void:
+	var s := _screen()
+	var b := s.battle
+	var ms := b.mechs()
+	var packs: Array = []
+	for sq in b.field.packs():
+		if not sq.is_boss:
+			packs.append(sq)
+	_engage(b, packs[0], ms[0])
+	_engage(b, packs[1], ms[1])
+	assert_true(b.order(ms[0], packs[0]) and b.order(ms[1], packs[1]), "each machine ordered onto a pack")
+	s._refresh()
+	var n := OrdersBoard.fight_numbers(b)
+	assert_eq([int(n.get(ms[0].id, 0)), int(n.get(ms[1].id, 0))], [1, 2], "each machine its fight's place, as the map numbers the packs")
+	assert_false(n.has(ms[2].id), "a machine in no fight wears none")
+	var rows := s._board._rows()
+	assert_eq([int(rows[0]["fight"]), int(rows[1]["fight"]), int(rows[2]["fight"])], [1, 2, 0], "the board's rows carry it")
+	# ENGAGE's moves playing: the next fight and the queue stay drawn.
+	s._engaging = true
+	s._map._blocking = true
+	s._map._anim_queue = [[[ms[0].id, [ms[0].pos, ms[0].pos]]]]
+	s._refresh()
+	assert_true(s._map.is_blocking(), "a move holding the hands plays")
+	assert_false(s._map.attack.is_empty(), "the next fight's pulse stays through ENGAGE's moves")
+	assert_true(s._map.fights_through, "and the map draws the fights' marks through them")
+	s._engaging = false
+	s._refresh()
+	assert_true(s._map.attack.is_empty(), "the enemy's turn playing hides them until it has")
+	s._map._anim_queue = []
+	s.free()
+
+
 func test_the_rift_shell_cracks_a_plate_a_fracture_and_bursts_at_the_rupture() -> void:
 	# The rift's shell over the seven hexes beside it (the bible's pacing row; built 16 November): a
 	# plate cracked for each Fracture earned, the shell burst at the Rupture. What the map finds

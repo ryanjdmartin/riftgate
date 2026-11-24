@@ -27,6 +27,7 @@ const SLOTS := [
 	["HEAT", "MEANINGS", PALETTE, "HEAT", "Heat and what hits harder: its chips, the gauge, a die's heat, a passive's name"],
 	["LOSS", "MEANINGS", PALETTE, "LOSS", "Harm to a unit: a number moved against it, a kill or wreck forecast, DRY, SHORT, NO ROOM"],
 	["LOSS_DIM", "MEANINGS", PALETTE, "LOSS_DIM", "A blank or destroyed entry, a wrecked machine's die, a dying foe's ghost"],
+	["ENGAGE", "MEANINGS", PALETTE, "ENGAGE", "A fight to engage: the packs a machine in hand could engage, a fight's pulse, its crossed swords and number"],
 	["SHIELD", "MEANINGS", PALETTE, "SHIELD", "Shield: its gauge and chips"],
 	["HULL", "MEANINGS", PALETTE, "HULL", "Hull: its gauge, a hull cost"],
 	["GAIN", "MEANINGS", PALETTE, "GAIN", "A number moved in its unit's favour"],
