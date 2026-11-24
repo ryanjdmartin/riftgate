@@ -638,13 +638,18 @@
    "design": {
     "stage": "draft",
     "fantasy": "A rocket drill (Ryan, 16 November: \"Thematically, it's a rocket drill. It returns to the Mole when it burrows, taking the debuff with it\"): fired out of the Mole's bore, it tunnels to its foe, Indirect (\"Makes sense cause it tunnels\"), and stays in it until the Mole goes under again.",
-    "niche": "The Mole's locked piece, every entry on its die while it is burrowed and none above ground: equipment, Indirect. It turns all the Mole's Conserved Momentum into as many stacks of Applied Momentum on the foe, and the Mole comes up; at the start of each of that foe's turns Applied Momentum lands a plain blow of 2, then a stack decays. Its branches: Ablate 2 in the blow's place, then Seared; or Brittle 1 and Pinned with the blow, then Exposed (docs/briefs/minerva_mole.md, The kit as he set it). Its heat is the session's."
+    "niche": "The Mole's locked piece, every entry on its die while it is burrowed and none above ground: a weapon, Indirect, 2 damage, Rapid, ignoring armour, Ward and Barrier (Ryan, 24 November). Resolve: its target gains Applied Momentum, or its branch's form (Frozen Momentum, Heated Momentum). Fired, it brings the Mole up, and Rapid rolls its die again among its own entries. Its numbers are placeholders."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
-    "power": 0,
-    "keywords": []
+    "power": 2,
+    "keywords": [
+     "rapid"
+    ],
+    "ignores_armour": true,
+    "ignores_ward": true,
+    "ignores_barrier": true
    },
    "passive": null,
    "tags": [

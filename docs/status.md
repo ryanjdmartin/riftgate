@@ -100,7 +100,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1461 tests, 393,992 checks, green on Godot 4.8-beta4 (24 November, the leftovers test gone on Ryan's word). The runner fails a run
+- Tests: 1464 tests, 394,108 checks, green on Godot 4.8-beta4 (24 November, the Mole the squad's marker). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -382,10 +382,15 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   none); a status no chip line names wears its term's mark, never a star, on a foe or a machine
   (`test_screen.gd` holds both). Its model is look A with five spines a bank (24 November, his
   pick): skid steer, the Tether a spike launcher on the prow, Minerva's vents across its back, the
-  spines' beads ringing one by one; his read of it running waits (the to-do). The Mole is built (20 November, on
-  his "Build the mole now", his kit of 16 November; at tier two since that day, its tree back in
-  design; the rules' reboot section, the bible's Mole row): it burrows in its reboot's place, banks Conserved Momentum under, and its Inertia Drill
-  lays Applied Momentum, a blow a turn in its foe until a burrow takes it home. Its model holds
+  spines' beads ringing one by one; his read of it running waits (the to-do). The Mole is the
+  squad's marker (24 November, his role and kit, at tier two; the rules' reboot section, the
+  bible's Mole row): it burrows in its reboot's place, banking no Momentum but armoured at once,
+  each turn under bringing 3 shield, 6 cooling and 5 Momentum (up to 10); its Inertia Drill, a
+  Rapid weapon ignoring armour, Ward and Barrier, lays Applied Momentum, Brittle climbing under a
+  Pinned each of the foe's turns, a blow of 1, and 5 of the Mole's Momentum drained, the drill
+  home at none; every use on the drilled foe gives a Momentum back. Its directions are the Glacial
+  Mole (Frozen Momentum, Frozen keeping a Cryo through its cash) and the Magma Mole (Heated
+  Momentum's held Ablate), each with an immunity. Its model holds
   Burrowed and Drill Out from the statuses (a form may let others go as it is held, `releases`),
   and a form asked while a firing slice plays waits for it to land, so the drill launches and
   then the Mole comes up with its bore empty. The Macaque is a model from its third look round,
@@ -463,7 +468,7 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    built on Ryan's marks, in its own commit, at placeholder numbers.
 3. **The design sessions, from the briefs**: each decision a bible row, each brief retired
    once its decisions are rows and content. The locked pieces' footing first (its own session
-   since 20 November), the Mole's tree at tier two, then the machine back in design (the Swallowtail), the built but
+   since 20 November), then the machine back in design (the Swallowtail), the built but
    unfinished (the Needletail, the Giant Petrel, the Musk Ox) and the gunship, the tier-one
    fronts (Minerva's lure tank, an Aphelion tier one), Claude's first rounds on his directions
    of 5 and 6 November, the rest as its session comes. The to-do's roster is grouped to match.

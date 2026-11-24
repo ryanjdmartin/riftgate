@@ -105,8 +105,6 @@ class MechState:
 	var killed_round: bool = false  # an attack of its own killed this round: what its passive reads as the round ends (on_round_kill: the Ammit's flare)
 	var offhand: int = -1           # the form its offhand holds, by its place in the cycle (Effects.offhand_forms: the Macaque's); -1 for none
 	var parried: int = 0            # what a Barrier and its armour have kept off foes' blows while its Parry stands this round (the Beam Buckler's)
-	var burrow_shield: int = 0      # what its shield was missing as it burrowed (the Mole's): each turn under makes good the burrow rule's share of it, so a blow taken under is not mended
-	var burrow_heat: int = 0        # the heat it carried as it burrowed, its overheat vented: each turn under takes the same share of it off
 
 	## The heat it carries past its maximum, a stack a point (the reboot's Overheated).
 	func overheat_stacks() -> int:
@@ -3379,65 +3377,116 @@ func _spend_at(mech_index: int, ms: MechState, f: Face, target: Foe, second = nu
 	_zap_now = 0
 	_scale_now = 1.0
 	_reached_last = h.reached.size()
+	_drilled_hits(h.reached)
 	_lay_mine(ms, target, h.mine)
 	_drill(mech_index, ms, f, target)
 	_entry_effects(ms, f, target, second)
 	_finish_hits(mech_index, ms, f, target, h, pays)
 
 
-## The Inertia Drill's spend, a burrower's burrow piece (the Mole's; Ryan, 16 November: "Consumes
-## all Conserved Momentum and grants a stack of Applied Momentum for each one"; "Drill should be
-## indirect always ... Makes sense cause it tunnels"): every stack of Conserved Momentum spent, as
-## many of Applied Momentum laid on the foe, and the machine up, its drill out until its next
-## burrow. Its foe's Ward turns the drill's mark away, the stacks spent all the same. The mark
-## carries the tick its machine has as it drills (Effects.momentum_of), so a branch learned later
-## changes the next drill, and the tick needs no machine to land (_drill_ticks).
+## The Inertia Drill's Resolve, a burrower's burrow piece (the Mole's; Ryan, 24 November: "Resolve:
+## Target gains Applied Momentum"; "Firing the drill exits burrowed, as it does now"): its hit is its
+## own, the pipeline's (a weapon, Indirect, Rapid, ignoring armour, Ward and Barrier); then the
+## machine is up, its drill out, and its foe carries the drill's form (Effects.momentum_of: Applied
+## Momentum, or the form its branch names), a mark that never stacks, carrying its tick as its
+## machine stands now, so a branch learned later changes the next drill. A Ward turns it away unless
+## the piece ignores Ward. No Momentum is spent: the drill drains it as its foe's turns start.
 func _drill(mech_index: int, ms: MechState, f: Face, target: Foe) -> void:
 	var rule := Effects.burrow_rule(ms.unit)
 	if rule.is_empty() or f.component != str(rule.get("piece", "")):
 		return
-	var n := Effects.stacks_of(ms.unit, "conserved_momentum")
-	Effects.remove(ms.unit, "conserved_momentum")
 	Effects.remove(ms.unit, "burrowed")
 	Effects.stack(ms.unit, Effects.STATUS["drill_out"], Effects.SKIRMISH, "burrow", 1, Effects.DECAY_NONE)
-	if n <= 0 or target == null or not target.alive():
-		log.append("%s comes up, its drill spent" % ms.unit.display_name)
-		return
-	if Effects.turns_mark(target, "applied_momentum"):
-		log.append("%s comes up, and %s's Ward turns its drill away" % [ms.unit.display_name, target.display_name])
+	if target == null or not target.alive():
+		log.append("%s comes up, its drill in the ground" % ms.unit.display_name)
 		return
 	var tick := Effects.momentum_of(ms.unit, f)
-	var m := Effects.stack(target, Effects.STATUS["applied_momentum"], Effects.SKIRMISH, drill_source(ms), n, Effects.DECAY_NONE)
+	var sid := str(tick["status"])
+	if Effects.turns_mark(target, sid) and not f.ignores_ward:
+		log.append("%s comes up, and %s's Ward turns its drill away" % [ms.unit.display_name, target.display_name])
+		return
+	var warded := Effects.turns_mark(target, sid)
+	var m: Effects.Modifier = null
+	if warded:
+		m = Effects.make(Effects.STATUS[sid], Effects.SKIRMISH, drill_source(ms))   # through the Ward, which turns away only what it may
+		if m != null:
+			m.decay = Effects.DECAY_NONE
+			target.modifiers.append(m)
+	else:
+		m = Effects.stack(target, Effects.STATUS[sid], Effects.SKIRMISH, drill_source(ms), 1, Effects.DECAY_NONE)
 	if m == null:
 		return
-	m.effects = [{"blow": int(tick["blow"]), "lays": (tick["lays"] as Dictionary).duplicate(), "mech": mech_index}]   # a fresh array: the preview's copy shares the fight's
-	log.append("%s comes up and drills %s: Applied Momentum %d" % [ms.unit.display_name, target.display_name, Effects.stacks_of(target, "applied_momentum")])
-	_foe_gained_status(target, "applied_momentum", n)
+	m.effects = [{"blow": int(tick["blow"]), "drain": int(tick["drain"]), "lays": (tick["lays"] as Dictionary).duplicate(), "mech": mech_index}]   # a fresh array: the preview's copy shares the fight's
+	log.append("%s comes up and drills %s: %s" % [ms.unit.display_name, target.display_name, str(Effects.STATUS[sid]["name"])])
+	_foe_gained_status(target, sid, 1)
+
+
+## The Momentum a use gives the machines whose drills are in the foes it hit (Ryan, 24 November:
+## "Hits on the target add 1 momentum to the mole. So focused fire can extend it by a turn or two,
+## but not forever"; "Go to Resolve, and include area hits as well"): once a use for each drilled
+## foe among every foe its blows reached, an area's and a Chain's arc's included, up to the cap.
+## Called before the use lays its own marks, so the drill's own use feeds nothing.
+func _drilled_hits(reached: Array) -> void:
+	for foe in reached:
+		var by := driller_of(foe)
+		if by == null:
+			continue
+		var cap := Effects.store_cap(by.unit, "momentum")
+		var had := Effects.stacks_of(by.unit, "momentum")
+		if cap > 0 and had >= cap:
+			continue
+		Effects.stack(by.unit, Effects.STATUS["momentum"], Effects.SKIRMISH, "burrow", 1, Effects.DECAY_NONE)
+		log.append("the drill in %s gives %s a Momentum (%d)" % [foe.display_name, by.unit.display_name, Effects.stacks_of(by.unit, "momentum")])
+
+
+## The machine whose drill is in this foe, or null (Effects.DRILL_STATUSES by its source).
+func driller_of(foe: Foe) -> MechState:
+	for m in foe.modifiers:
+		if Effects.DRILL_STATUSES.has(m.id):
+			for ms in mechs:
+				if drill_source(ms) == m.source:
+					return ms
+	return null
 
 
 ## The drills at work, as the foes' turn starts and before their side's opening (the Mole's; Ryan,
-## 16 November: "Applied Momentum decays 1 at the start of the target's turn"; his set, "Base: Flat
-## 2 damage blow a turn ... make the damage a blow since I want it to scale with Brittle"): each foe
-## carrying Applied Momentum takes its drill's blow, a plain blow (plain_blow_on: its Brittle adds,
-## its armour and a Barrier from its last turn take it, no Shock read), then what the drill's
-## branch lays (Ablate's Ablating and Seared, the squad's Brittle and Pinned and Exposed), and a
-## stack goes. Before the opening, so a Pinned it lays holds the Brittle the opening would halve
-## ("the pin holding its Brittle while the drill is in"). A drilled foe that falls takes the rest
-## with it.
+## 24 November: "Turn Start: Gain 1 Brittle and Pinned. Then, take 1 damage and drain 5 Momentum from
+## the Mole. If 0 Momentum, remove and return to the Mole"; "The take 1 is a blow"): each foe carrying
+## a drill's form gains what its tick lays (Applied Momentum's Brittle and the Pinned that holds it,
+## the Glacial Mole's Cryo and Frozen, the Magma Mole's Ablate and the Seared that holds it), then
+## takes its plain blow (plain_blow_on: its Brittle adds, its armour and a Barrier from its last turn
+## take it, no Shock read; none on a Phased foe), then the drill drains its machine's Momentum; at
+## none the mark goes and the drill comes home. Before the opening, so the Pinned it lays holds the
+## Brittle the opening would halve. A drilled foe that falls takes the mark with it.
 func _drill_ticks() -> void:
 	for foe in field_foes():
 		if outcome != Outcome.NONE:
 			return
-		if not foe.alive() or not Effects.has(foe, "applied_momentum"):
+		if not foe.alive():
 			continue
-		var tick := {}
+		var mark: Effects.Modifier = null
 		for m in foe.modifiers:
-			if m.id == "applied_momentum" and not m.effects.is_empty():
-				tick = m.effects[0]
+			if Effects.DRILL_STATUSES.has(m.id):
+				mark = m
+		if mark == null:
+			continue
+		var tick: Dictionary = mark.effects[0] if not mark.effects.is_empty() and mark.effects[0] is Dictionary else {}
 		var by: MechState = null
 		var at := int(tick.get("mech", -1))
 		if at >= 0 and at < mechs.size():
 			by = mechs[at]
+		var gained := {}
+		var turned := {}
+		var lays: Dictionary = tick.get("lays", {})
+		for sid in lays:
+			var n := int(lays[sid])
+			if n <= 0 or not Effects.STATUS.has(str(sid)):
+				continue
+			_land_rider(foe, str(sid), n, gained, turned)
+		_tell_turned(turned)
+		for g in gained.keys():
+			for status_id in gained[g]:
+				_foe_gained_status(g, status_id, int(gained[g][status_id]))
 		var blow := int(tick.get("blow", 0))
 		if blow > 0 and not foe_phased(foe):
 			var before := foe.hp
@@ -3446,25 +3495,17 @@ func _drill_ticks() -> void:
 				dealt = 0
 			foe.hp -= dealt
 			log.append("the drill in %s strikes it for %d" % [foe.display_name, clampi(dealt, 0, maxi(0, before))])
-		if foe.alive():
-			var gained := {}
-			var turned := {}
-			var lays: Dictionary = tick.get("lays", {})
-			for sid in lays:
-				var n := int(lays[sid])
-				if n <= 0 or not Effects.STATUS.has(str(sid)):
-					continue
-				if str(sid) == "exposure":
-					if not Effects.turns_mark(foe, "exposure"):
-						Effects.lay_timer(foe, Effects.STATUS["exposure"], "mech")   # a stack goes as each of its turns starts
-					_note_status(gained, foe, "exposure", turned)
-				else:
-					_land_rider(foe, str(sid), n, gained, turned)
-			_tell_turned(turned)
-			for f in gained.keys():
-				for status_id in gained[f]:
-					_foe_gained_status(f, status_id, int(gained[f][status_id]))
-			Effects.spend_stacks(foe, "applied_momentum", 1)
+		var left := 0
+		if by != null:
+			var drain := int(tick.get("drain", 0))
+			Effects.spend_stacks(by.unit, "momentum", mini(drain, Effects.stacks_of(by.unit, "momentum")))
+			left = Effects.stacks_of(by.unit, "momentum")
+			log.append("the drill in %s drains %s's Momentum to %d" % [foe.display_name, by.unit.display_name, left])
+		if left <= 0:
+			Effects.remove(foe, mark.id)
+			if by != null:
+				Effects.remove(by.unit, "drill_out")
+				log.append("%s's drill comes home from %s" % [by.unit.display_name, foe.display_name])
 		_turn_death_check()
 
 
@@ -3684,7 +3725,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				# piece that ignores armour meets none (Foe.armour_for). Every blow is recorded, one on a
 				# foe an earlier hit of the spend felled included, so the screen shows every hit and
 				# shot land (Ryan, 7 November: "Anything truncated confuses the player").
-				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), struck, foe.armour_total() if arc else foe.armour_for(f), at, ("ricochet" if bounce else ("again" if echo else "strike")) if struck else ("chain" if shape == AREA_CHAIN else "area"))   # an arc meets the foe's own armour, no piece's rule of the entry's
+				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), struck, foe.armour_total() if arc else foe.armour_for(f), at, ("ricochet" if bounce else ("again" if echo else "strike")) if struck else ("chain" if shape == AREA_CHAIN else "area"), arc or not f.ignores_barrier)   # an arc meets the foe's own armour, no piece's rule of the entry's
 				taken = int(landing["taken"])
 				var foe_armoured := int(landing["armoured"])
 				var barred := bool(landing["barred"])
@@ -3756,7 +3797,15 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# eats what it lays.
 			if was_alive and not f.is_debuff() and not arc and Effects.has(foe, "cryoed"):   # the weapon's own hit cashes it; a Chain's arc is no hit of the weapon's
 				h.thawed += Effects.stacks_of(foe, "cryoed")
-				Effects.remove(foe, "cryoed")
+				if Effects.has(foe, "frozen"):
+					# Frozen (the Glacial Mole's, Ryan, 24 November): the hitter cooled as ever, the Cryo
+					# kept, a Numbed spent in its place if the foe has one, and Frozen gone.
+					if Effects.has(foe, "numbed"):
+						Effects.spend_stacks(foe, "numbed", 1)
+					Effects.remove(foe, "frozen")
+					log.append("%s's Frozen keeps its Cryo" % foe.display_name)
+				else:
+					Effects.remove(foe, "cryoed")
 			if f.has(Face.Keyword.CRYO) and not arc:
 				var cryo_laid := _stacks_from(ms, "cryoed", f.cryo) * doubled
 				riders.append(func() -> void: _land_rider(foe, "cryoed", cryo_laid, gained, turned))
@@ -3837,9 +3886,9 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 ## weapon's blow whole (28 October), then its `armour`, flat; off its HP and recorded for the
 ## screen as `kind` in `strike`. Returns {taken: what came off its HP, armoured: what the armour
 ## took, barred: whether a Barrier took it}.
-func _land_blow(foe: Foe, blow: int, by: Unit, weapon: bool, aimed: bool, armour: int, strike: int, kind: String) -> Dictionary:
+func _land_blow(foe: Foe, blow: int, by: Unit, weapon: bool, aimed: bool, armour: int, strike: int, kind: String, eats := true) -> Dictionary:
 	var taken := Effects.damage_taken(foe, blow, by, weapon, aimed)
-	var barred := _barrier_eats(foe, weapon)
+	var barred := eats and _barrier_eats(foe, weapon)   # a piece that ignores Barrier passes it by (the Inertia Drill's)
 	if barred:
 		taken = 0   # its riders land all the same
 	var armoured := mini(taken, armour)
@@ -6316,11 +6365,11 @@ func _rage_cooled(ms: MechState) -> bool:
 ## shield is never emptied ("it just doesn't explode its own shield when it does"); what stands
 ## past its heat's maximum vents at once, as a reboot's does since 17 November, so nothing burns at
 ## its END TURN and it is free to overheat again; a foe's jams light, the reboot's drop. It gains a
-## stack of Conserved Momentum, and its drill comes home with what is left of the Applied Momentum
-## in its foe, back as Conserved ("It returns to the Mole when it burrows, taking the debuff with
-## it"), up to the rule's cap. Burrowed, its armour the rule's, its die rolls the Drill alone
-## (Effects.live_entries), and each turn under opens with the rule's share of what its shield and
-## heat were missing as it burrowed made good (_burrowed_turn).
+## no Momentum ("Burrow does not bank. But it does gain the 1 Armour", Ryan, 24 November), and its
+## drill comes home from its foe, its Momentum left where it ended up ("Yes it brings the drill
+## back and momentum stays where it ended up"). Burrowed, its armour the rule's from this turn,
+## its die rolls the Drill alone (Effects.live_entries), and each turn under opens with the rule's
+## flat shield, cooling and Momentum (_burrowed_turn).
 func _burrow(ms: MechState) -> void:
 	var rule := Effects.burrow_rule(ms.unit)
 	ms.assigned = true
@@ -6330,18 +6379,11 @@ func _burrow(ms: MechState) -> void:
 	ms.overheated = false
 	var lit := Effects.clear_waiting_jams(ms.unit)
 	Effects.clear_corruption(ms.unit)   # the reboot's drop heals corruption as it lights a jam
-	ms.burrow_shield = maxi(0, ms.unit.shield_max - ms.unit.shield)
-	ms.burrow_heat = maxi(0, ms.heat)
 	var back := _recall_drill(ms)
-	var cap := maxi(1, int(rule.get("cap", 3)))
-	var had := Effects.stacks_of(ms.unit, "conserved_momentum")
-	var gain := mini(cap - had, 1 + back)
-	if gain > 0:
-		Effects.stack(ms.unit, Effects.STATUS["conserved_momentum"], Effects.SKIRMISH, "burrow", gain, Effects.DECAY_NONE)
 	Effects.stack(ms.unit, Effects.STATUS["burrowed"], Effects.SKIRMISH, "burrow", maxi(1, int(rule.get("armour", 1))), Effects.DECAY_NONE)
-	var bits: Array[String] = ["Conserved Momentum %d" % Effects.stacks_of(ms.unit, "conserved_momentum")]
-	if back > 0:
-		bits.append("its drill home with %d" % back)
+	var bits: Array[String] = ["Momentum %d" % Effects.stacks_of(ms.unit, "momentum")]
+	if back:
+		bits.append("its drill home")
 	if vented > 0:
 		bits.append("heat -%d past its maximum" % vented)
 	if lit > 0:
@@ -6349,20 +6391,19 @@ func _burrow(ms: MechState) -> void:
 	log.append("%s burrows: %s" % [ms.unit.display_name, ", ".join(bits)])
 
 
-## The drill a burrower takes back as it burrows: its Drill Out let go, and the Applied Momentum its
-## drill left in a foe still standing taken off it, its stacks returned. 0 when its drill is home, or
-## its foe fell and took the rest with it.
-func _recall_drill(ms: MechState) -> int:
+## The drill a burrower takes back as it burrows: its Drill Out let go, and its drill's mark taken
+## off the foe it is in, its Momentum untouched. True when it took a mark off a foe.
+func _recall_drill(ms: MechState) -> bool:
 	Effects.remove(ms.unit, "drill_out")
 	var source := drill_source(ms)
-	var back := 0
+	var back := false
 	for f in field_foes():
 		if not f.alive():
 			continue
 		var keep: Array = []
 		for m in f.modifiers:
-			if m.id == "applied_momentum" and m.source == source:
-				back += m.stacks
+			if Effects.DRILL_STATUSES.has(m.id) and m.source == source:
+				back = true
 				continue
 			keep.append(m)
 		f.modifiers = keep
@@ -6375,30 +6416,29 @@ static func drill_source(ms: MechState) -> String:
 
 
 ## A turn under, as it opens (the Mole's; Ryan, 16 November: "burrowed clears broken and overheated
-## at the start of each turn while burrowed, just like reboot would"; his set the same day, recovery
-## in two turns: "go with 1 and 2"): Broken and Overheated cleared and the one overheat between
-## reboots free again; the rule's share (half) of what its shield was missing as it burrowed back on
-## it and of the heat it carried then off it, so two turns under is whole and cold and a blow taken
-## under is not mended; a foe's jams lit, as a reboot's drop lights them ("mechanically exactly like
-## using Reboot every turn"); and a stack of Conserved Momentum, up to the cap.
+## at the start of each turn while burrowed, just like reboot would"; 24 November: "When burrowed,
+## it gains 50% shield regen, 50% cooling, and 50% Momentum generation", "50% of the final numbers,
+## but represented as flat numbers"): Broken and Overheated cleared and the one overheat between
+## reboots free again; the rule's shield back on it and its cooling off its heat, so a blow taken
+## under is mended as any missing shield is; a foe's jams lit, as a reboot's drop lights them
+## ("mechanically exactly like using Reboot every turn"); and the rule's Momentum, up to the cap.
 func _burrowed_turn(ms: MechState) -> void:
 	var rule := Effects.burrow_rule(ms.unit)
-	var share := clampi(int(rule.get("recover", 50)), 1, 100)
 	ms.shield_broken = false
 	ms.overheated = false
 	if ms.heat > ms.heat_max:
 		ms.heat = ms.heat_max
-	var mend := ceili(float(ms.burrow_shield) * float(share) / 100.0)
 	var before := ms.unit.shield
-	ms.unit.shield = mini(ms.unit.shield_max, ms.unit.shield + mend)
-	var cool := mini(ms.heat, ceili(float(ms.burrow_heat) * float(share) / 100.0))
+	ms.unit.shield = mini(ms.unit.shield_max, ms.unit.shield + maxi(0, int(rule.get("shield", 0))))
+	var cool := mini(ms.heat, maxi(0, int(rule.get("cool", 0))))
 	ms.heat -= cool
 	Effects.clear_waiting_jams(ms.unit)
 	Effects.clear_corruption(ms.unit)
-	var cap := maxi(1, int(rule.get("cap", 3)))
-	if Effects.stacks_of(ms.unit, "conserved_momentum") < cap:
-		Effects.stack(ms.unit, Effects.STATUS["conserved_momentum"], Effects.SKIRMISH, "burrow", 1, Effects.DECAY_NONE)
-	log.append("%s is burrowed: shield +%d, heat -%d, Conserved Momentum %d" % [ms.unit.display_name, ms.unit.shield - before, cool, Effects.stacks_of(ms.unit, "conserved_momentum")])
+	var cap := maxi(1, int(rule.get("cap", 10)))
+	var gain := mini(cap - Effects.stacks_of(ms.unit, "momentum"), maxi(0, int(rule.get("momentum", 0))))
+	if gain > 0:
+		Effects.stack(ms.unit, Effects.STATUS["momentum"], Effects.SKIRMISH, "burrow", gain, Effects.DECAY_NONE)
+	log.append("%s is burrowed: shield +%d, heat -%d, Momentum %d" % [ms.unit.display_name, ms.unit.shield - before, cool, Effects.stacks_of(ms.unit, "momentum")])
 
 
 ## A reboot's recovery, as the round after it opens: the shield whole, and the machine free to
