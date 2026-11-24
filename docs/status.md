@@ -512,14 +512,13 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   republishes while he is on the page.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.669 on 24 November from `ccr-178e0404-ptuh2m`'s file at `052c981d` (the page's
-  Version 525: the Whip Scorpion's two directions and its base's nerf in section 12), over v0.668
-  (Version 524, the same day from `50d574f5`), v0.667 (Version 523, from `8b5a8f6b`: main's v0.666
-  merged with that branch's rows) and v0.663 (Version 522, from `766ddc88`, the live page checked
-  byte for byte against that file first). Before republishing,
+  Published at v0.670 on 24 November from `ccr-178e0404-ptuh2m`'s file at `0a6605b9` (the page's
+  Version 526: the Whip Scorpion on its hits alone at Max Heat 12, its two directions built), over
+  v0.669 to v0.667 (Versions 525 to 523, the same day, that branch's) and v0.663 (Version 522,
+  from `766ddc88`, the live page checked byte for byte against that file first). Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
-  `052c981d` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  `0a6605b9` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
   live source with the tool's wrapper line, its trailing newline and `</body></html>`
   stripped): check BASE against the live page byte for byte first. After main merges in,
   check the tables script's run against the file's tables before keeping it: a row it
