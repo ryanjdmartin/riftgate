@@ -1899,10 +1899,12 @@ static func clear_on_break(u) -> Array[String]:
 
 ## The statuses this machine's live passives lay on one foe its blow reaches (lay_status on
 ## on_attack, its `when` read against that foe: the funnel-web's Ambush, 18 October), as
-## [[status id, stacks a hit, damaging, stacks a hit while Overheated], ...], the last its
+## [[status id, stacks a hit, damaging, stacks a hit while Overheated, once a spend], ...]: its
 ## `overheated` in place of `stacks` where the machine stands past its heat maximum as the rider
 ## lands (the Whip Scorpion's Incinerator, 24 November: "If Overheated, apply 2 Ablate Instead"),
-## 0 where it names none. The skirmish asks once a foe at the spend,
+## 0 where it names none; and whether it lays once a spend, on the target's first hit alone
+## (`once` "spend": the Incinerator's what-if of the same day, "Change On Hit to Resolve, so its
+## once per spend"). The skirmish asks once a foe at the spend,
 ## before any strike's riders land, and lays them on every strike that
 ## reaches the foe, one the spend fells too (the spend's order), a blow of nothing included,
 ## unless the effect asks for a weapon's hit (`damaging`, which its passive's text says: the
@@ -1919,19 +1921,20 @@ static func laid_statuses(u, face: Face, target) -> Array:
 		var id := str(eff.get("value", ""))
 		if not STATUS.has(id):
 			continue
-		out.append([id, maxi(1, int(eff.get("stacks", 1))) * int(pair[1].stacks), bool(eff.get("damaging", false)), maxi(0, int(eff.get("overheated", 0))) * int(pair[1].stacks)])
+		out.append([id, maxi(1, int(eff.get("stacks", 1))) * int(pair[1].stacks), bool(eff.get("damaging", false)), maxi(0, int(eff.get("overheated", 0))) * int(pair[1].stacks), str(eff.get("once", "")) == "spend"])
 	return out
 
 
 ## The heat each hit of this entry gives its machine (hit_heat on on_attack: the Whip Scorpion's
 ## Incinerator, Ryan, 24 November: "Resolve: For each hit, gain 1 heat and apply 1 Ablate"): its
-## `value`, every Sprite hit, a debuff's and an area's included, a Chain's arc none.
-static func hit_heat(u, face: Face, target = null) -> int:
+## `value`, every Sprite hit, a debuff's and an area's included, a Chain's arc none. `once_a_spend`
+## asks for those that give it once a spend instead, on the target's first hit (`once` "spend").
+static func hit_heat(u, face: Face, target = null, once_a_spend: bool = false) -> int:
 	var n := 0
 	if face == null or not face.is_attack():
 		return n
 	for pair in _taking_part(u, "on_attack", face, target):
-		if str(pair[0].get("effect", "")) == "hit_heat":
+		if str(pair[0].get("effect", "")) == "hit_heat" and (str(pair[0].get("once", "")) == "spend") == once_a_spend:
 			n += maxi(0, int(pair[0].get("value", 0))) * weight(pair[1])
 	return n
 

@@ -333,6 +333,30 @@ func test_every_sprite_hit_counts_an_area_s_and_equipment_s_and_the_ray_lays_one
 	assert_true(ms.rebooting and ms.heat == 0, "and the reboot takes its heat")
 
 
+## The Incinerator's what-if of once a spend (Ryan, 24 November: "Change On Hit to Resolve, so its
+## once per spend"): its heat and its Ablate ride the target's first hit alone, whatever the
+## strikes and the area, so a heat and an Ablate a spend.
+func test_once_a_spend_its_heat_and_its_ablate_ride_the_target_s_first_hit_alone() -> void:
+	var triple := Face.from_dict({"kind": "attack", "reach": "direct", "power": 1, "strikes": 3, "keywords": ["cleave"], "cleave": 1, "heat": 0})
+	var u := _mech("W", Die.single(triple), 10, 10, 200)
+	u.grant_passive({"id": "stoke_once", "name": "Stoke Once", "description": "", "effects": [
+		{"trigger": "on_attack", "effect": "hit_heat", "value": 1, "once": "spend"},
+		{"trigger": "on_attack", "effect": "lay_status", "value": "ablating", "stacks": 1, "overheated": 2, "once": "spend"}]})
+	var left := Foe.make("dummy", 900, 0)
+	var mid := Foe.make("dummy", 900, 0)
+	var sk := Skirmish.new(1, 2)
+	sk.add_mech(u)
+	sk.add_foes([left, mid])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.heat = 0
+	assert_eq(Policy.heat_of(ms, triple), 1, "the bot counts a heat a spend")
+	assert_true(sk.assign(0, left), "three strikes, a spread on each")
+	assert_eq(ms.heat, 1, "a heat a spend")
+	assert_eq([Effects.stacks_of(left, "ablating"), Effects.stacks_of(mid, "ablating")], [1, 0], "an Ablate on the target, none past it")
+
+
 func test_the_validator_holds_the_scale_the_doubling_and_the_piece_to_their_shapes() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
@@ -343,6 +367,8 @@ func test_the_validator_holds_the_scale_the_doubling_and_the_piece_to_their_shap
 		"hot_ok": [{"trigger": "static", "effect": "hot_hits", "value": 2}, ""],
 		"piece_unnamed": [{"trigger": "static", "effect": "reboot_piece", "piece": "no_such_piece", "label": "Ray"}, "names its piece"],
 		"stoke_none": [{"trigger": "on_attack", "effect": "hit_heat", "value": 0}, "1 or more"],
+		"stoke_once": [{"trigger": "on_attack", "effect": "hit_heat", "value": 1, "once": "spend"}, ""],
+		"heat_once": [{"trigger": "on_attack", "effect": "add_heat", "value": 1, "once": "spend"}, "once is"],
 		"stoke_ok": [{"trigger": "on_attack", "effect": "hit_heat", "value": 1}, ""],
 		"lay_hot_none": [{"trigger": "on_attack", "effect": "lay_status", "value": "ablating", "stacks": 1, "overheated": 0}, "past the heat maximum"],
 		"lay_hot_ok": [{"trigger": "on_attack", "effect": "lay_status", "value": "ablating", "stacks": 1, "overheated": 2}, ""],

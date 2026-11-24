@@ -13017,3 +13017,31 @@ fires a smaller Ray less often, since it never holds its heat past half on purpo
 holds are for. The Incinerator is the fastest of the Whip Scorpion's builds the bot plays, its
 Ablate a hit doing it, though the bot never overheats it, so its 2 Ablate past the maximum never
 comes into the read.
+
+## 24 November: the Incinerator's two what-ifs, on the Halo Projector's stock
+
+`tools/reboot_probe.gd` as the entries above (168 formation fights at 8 seeds, 78 boss fights at 6,
+the greedy bot), on `ccr-178e0404-ptuh2m` with the stock Ryan picked ("Go Halo Projector for the
+Thermal Ray, that's plenty": the Halo Projector, two Twin Autoguns, the Maxigun) and no heat on the
+Ray ("It's kind of pointless for the Death Ray to have heat on it"). The Incinerator at tier three
+with the tier's lift. His two what-ifs, each on its own ("I assume the Maxigun is carrying the
+Incinerator a bit. Can we try, independently: 1. Change On Hit to Resolve, so its once per spend
+2. Change it to 1 Ablate and 2 heat"), read with the probe's `--set`: its heat and its Ablate once
+a spend on the target's first hit (`hit_heat.once=spend,lay_status.once=spend`), and 2 heat a hit
+(`hit_heat.value=2`), its 2 Ablate past the maximum kept in both. A fourth read takes his
+assumption head on: a third Twin Autoguns in the Maxigun's place.
+
+| The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad | Its Ray: shots a fight, heat a shot |
+|---|---|---|---|
+| The Whip Scorpion on the new stock | 6.1, 29%, 7%, 9% | 10.2, 29%, 13%, 19% | 1.64 and 2.69, 5.7 and 6.0 |
+| Its Incinerator as built, a heat and an Ablate a hit | 5.1, 32%, 5%, 7% | 7.3, 32%, 9%, 13% | 1.47 and 2.13, 7.9 and 7.7 |
+| Once a spend | 5.3, 30%, 5%, 8% | 8.7, 29%, 8%, 16% | 1.43 and 2.24, 7.6 and 7.6 |
+| 2 heat a hit | 5.1, 37%, 5%, 7% | 7.1, 38%, 5%, 12% | 1.69 and 2.46, 8.5 and 8.3 |
+| As built, a third Twin Autoguns for the Maxigun | 6.1, 34%, 5%, 8% | 10.1, 34%, 6%, 16% | 1.92 and 3.09, 5.5 and 5.3 |
+
+What it says, a direction. The new stock reads slow for this bot, a boss fight 10.2 rounds, since it
+never holds its heat past half on purpose, the play the Halo is for. The Maxigun carries the
+Incinerator: without it the branch reads as the base does, 10.1 against 10.2, and with it 2.9
+rounds faster, its three hits three Ablate a use. Once a spend takes about half of that back (8.7),
+the Maxigun's use one Ablate like any other's. 2 heat a hit takes none of it (7.1): the heat brings
+the Ray round sooner and bigger, and the bot never lets it overheat (0.00 a fight in every read).

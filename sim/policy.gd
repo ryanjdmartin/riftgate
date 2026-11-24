@@ -1716,7 +1716,7 @@ static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
 	var added := int(Effects.attack(ms.unit, f, 0, f.heat)["heat"])
 	if f.vents_all:
 		added -= ms.heat
-	added += Effects.hit_heat(ms.unit, f) * maxi(1, f.strikes)   # the heat its hits give it, the target's alone (the Incinerator's)
+	added += Effects.hit_heat(ms.unit, f) * maxi(1, f.strikes) + Effects.hit_heat(ms.unit, f, null, true)   # the heat its hits give it, the target's alone, and once a spend (the Incinerator's)
 	if f.self_vent > 0:
 		added -= mini(f.self_vent, maxi(0, ms.heat + added))   # it cools itself once its heat has landed (the Nemesis's Knuckles of Fury)
 	return added

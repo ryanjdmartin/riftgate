@@ -100,7 +100,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1467 tests, 394,054 checks, green on Godot 4.8-beta4 (24 November, the Whip Scorpion on its hits alone at Max Heat 12, its Obliterator and Incinerator built). The runner fails a run
+- Tests: 1468 tests, 394,058 checks, green on Godot 4.8-beta4 (24 November, the Whip Scorpion on the Halo Projector's stock, its Ray without heat, its Incinerator read two ways). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -220,8 +220,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   and a keyword on its Knuckles its two branches, Breaker and Berserker), the Polar Bear (a reboot
   opens its seal), the Whip Scorpion (rebuilt the same day: its damage by its heat, its reboot
   firing its Death Ray, its hits doubled past half its heat; since the 24th its heat maximum 12
-  and its Obliterator and Incinerator built on Ryan's design; its stock his question, the Thermal
-  Ray "probably greedy"), the
+  and its Obliterator and Incinerator built on Ryan's design, the Halo Projector in its stock in
+  the Thermal Ray's place, and no heat on its Ray), the
   Lammergeier, the Wild Boar, the Baboon, the Stingray, and the Macaque, landed 19 November
   on `ccr-64b5deec-lunnff` from Ryan's kit (Aphelion's agile duelist at tier one: its offhand
   cycles the Beam Rifle, the Beam Sword and the Beam Shield after every spend at a foe, a rider

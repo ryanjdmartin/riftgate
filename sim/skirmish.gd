@@ -3543,6 +3543,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	var riders: Array[Callable] = []   # every rider the strikes earn, in order, landed once the strikes are done (Ryan, 3 November)
 	var doubled := Effects.stack_multiplier(ms.unit, f, target)   # the stacks this spend lays, multiplied (the sixth shot)
 	var hit_heat := Effects.hit_heat(ms.unit, f, target)   # the heat each hit gives its machine (the Incinerator's)
+	var spend_heat := Effects.hit_heat(ms.unit, f, target, true)   # and what it gives once a spend, on the target's first hit
 	var told_shut := {}   # the foes a gate turned the keyword from, told once
 	var split := maxi(1, f.split)    # a split: the hits it doubles, each base halved (Effects.split_of; the Split-cycle Breech, a module)
 	# One shape of weapon (Sweep, the one multi-target mode, went on 12 November): its hits all on
@@ -3727,11 +3728,13 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# "Resolve: For each hit, gain 1 heat and apply 1 Ablate. If Overheated, apply 2 Ablate
 			# Instead"), landed with the hit's riders and ahead of its lays, so a lay that reads
 			# Overheated reads the heat its own hit brought.
-			if hit_heat > 0 and not arc:
+			var once_here := foe == target and first and not arc   # the spend's once-a-spend effects ride the target's first hit
+			var hh := (hit_heat + (spend_heat if once_here else 0)) if not arc else 0
+			if hh > 0:
 				riders.append(func() -> void:
 					if ms.alive():
-						_add_heat(ms, hit_heat)
-						h.hit_heated += hit_heat)
+						_add_heat(ms, hh)
+						h.hit_heated += hh)
 			# A hit lays what the passives lay on this foe, a stack per strike, a debuff's included,
 			# unless the passive asks for a weapon's hit (the Ambush's Vitriol, its text says so:
 			# Ryan, 25 October); a lay with its stacks past the heat maximum reads the gauge as it lands.
@@ -3739,6 +3742,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				for pair in lays[foe]:
 					if bool(pair[2]) and f.is_debuff():
 						continue
+					if (pair as Array).size() > 4 and bool(pair[4]) and not once_here:
+						continue   # a lay once a spend rides the target's first hit alone
 					var sid := str(pair[0])
 					var plain := int(pair[1])
 					var hot := int(pair[3]) if (pair as Array).size() > 3 else 0

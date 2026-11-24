@@ -1695,7 +1695,8 @@
    "tier": 2,
    "design": {
     "fantasy": "Ryan's boiler (12 and 13 October: \"a crazy steampunk machine venting everywhere\"; 20 October: \"it doesn't actually use steam to run, its a future-tech machine. it just kind of behaves like a steampunk device\"). The whip scorpion sprays when provoked. Named by Ryan, 20 October; 11 November: \"this is a scorpion, so it's probably not a frontliner, thematically\", and it \"goes all in with the weird and wonderful, along with the cassowary and cottonmouth\".",
-    "niche": "A bursty damage dealer (Ryan, 20 November: \"it's now positioned as a bursty damage dealer, but that could change\"): heat is its ammunition and its risk (Ryan, 23 November: \"Deals -50% damage at zero heat to +100% damage at max heat, scaling linearly. When over 50% heat, damage recieved from hits is doubled\"; held at double past the maximum, his \"Hold\" the same day). Its hits alone double past half its heat, his option 1 of 24 November (\"Go with option 1 and max heat 12\"), so its Incinerator may ride Overheated on the plain burn; all its damage doubled for that day (\"all damage received is doubled, so that overheat pays twice\"; \"Volatile should double as well, all damage is all damage\"). Its heat maximum 12 since then, his first lever (12 November: \"the first place to nerf the scorpion if it needs it is just lowering the max heat, so that's easy\"). It no longer gains heat on being hit. Its reboot fires its locked ray first, at whatever its heat makes of it, and then it reboots, so the reboot is its burst. A phased field leaves the ray nothing to fire at and the reboot waits (\"you just have to skip or use a support action\"). Its reboot's vent blasted every foe from 17 to 23 November, and every blow it took added heat; all its damage doubled for a day, 24 November, and its heat maximum 14 until then. Numbers placeholders."
+    "niche": "A bursty damage dealer (Ryan, 20 November: \"it's now positioned as a bursty damage dealer, but that could change\"): heat is its ammunition and its risk (Ryan, 23 November: \"Deals -50% damage at zero heat to +100% damage at max heat, scaling linearly. When over 50% heat, damage recieved from hits is doubled\"; held at double past the maximum, his \"Hold\" the same day). Its hits alone double past half its heat, his option 1 of 24 November (\"Go with option 1 and max heat 12\"), so its Incinerator may ride Overheated on the plain burn; all its damage doubled for that day (\"all damage received is doubled, so that overheat pays twice\"; \"Volatile should double as well, all damage is all damage\"). Its heat maximum 12 since then, his first lever (12 November: \"the first place to nerf the scorpion if it needs it is just lowering the max heat, so that's easy\"). It no longer gains heat on being hit. Its reboot fires its locked ray first, at whatever its heat makes of it, and then it reboots, so the reboot is its burst. A phased field leaves the ray nothing to fire at and the reboot waits (\"you just have to skip or use a support action\"). Its reboot's vent blasted every foe from 17 to 23 November, and every blow it took added heat; all its damage doubled for a day, 24 November, and its heat maximum 14 until then. Numbers placeholders.",
+    "notes": "Ryan, 24 November: \"I think the stock build for this guy is wrong. It wants options to moderately build heat, and then lower heat options to maximize the time over half. The 9 heat weapon is probably greedy\"; then \"Go Halo Projector for the Thermal Ray, that's plenty\". The Halo Projector's Barrier, no heat, holds it past half against the doubled hits, beside the Twin Autoguns and the Maxigun, 4 heat each. The Thermal Ray, 9 heat, stocked it until then."
    },
    "codex": "",
    "hull": 40,
@@ -1713,7 +1714,7 @@
     "heliographic_death_ray"
    ],
    "loadout": [
-    "thermal_ray",
+    "halo_projector",
     "twin_autoguns",
     "twin_autoguns",
     "maxigun"
@@ -1774,7 +1775,7 @@
      "id": "obliterator",
      "name": "Obliterator",
      "design": {
-      "notes": "Ryan, 24 November: \"Obliterator: Turn Start: Gain 1 heat. Heliographic Death Ray -> Heliographic Doom Ray. Hull Cost: 1. Direct, 2 damage plus 1 per 2 heat. Spread. Penetrate. Ignores Armour\". Spread and Penetrate at 2 each, his \"2s all around\" of 20 November for an area keyword he gives no number, so each Sprite past the target takes 2 at the heat scale, the target the whole shot; the Doom Ray keeps the Ray's heat 3 and Vents all, and REBOOT reads DOOM RAY with its die in hand (the Death Ray's slot). Its hull cost is damage like any (his of the same day: \"all damage is all damage\"), so 2 when it fires past half its heat. The step's text a session's draft from his words."
+      "notes": "Ryan, 24 November: \"Obliterator: Turn Start: Gain 1 heat. Heliographic Death Ray -> Heliographic Doom Ray. Hull Cost: 1. Direct, 2 damage plus 1 per 2 heat. Spread. Penetrate. Ignores Armour\". Spread and Penetrate at 2 each, his \"2s all around\" of 20 November for an area keyword he gives no number, so each Sprite past the target takes 2 at the heat scale, the target the whole shot; the Doom Ray keeps the Ray's Vents all and, as it does since the same day, no heat of its own (\"It's kind of pointless for the Death Ray to have heat on it, since it immediately reboots and sheds its heat\"), and REBOOT reads DOOM RAY with its die in hand (the Death Ray's slot). Its hull cost is damage like any (his of the same day: \"all damage is all damage\"), so 2 when it fires past half its heat. The step's text a session's draft from his words."
      },
      "steps": [
       {
@@ -1800,7 +1801,7 @@
           ],
           "cleave": 2,
           "penetrate": 2,
-          "heat": 3,
+          "heat": 0,
           "vents_all": true,
           "power_per_heat": 1,
           "per_heat": 2,
