@@ -12366,6 +12366,41 @@ cut, its share a placeholder, so the Nemesis's read moves with it; the Whip Scor
 are Ryan's (all the damage it takes doubled past half its heat, or a lower heat maximum). A bot's
 read of tier one's foes.
 
+
+## 24 November: Ryan's nerf options for the Nemesis and the Whip Scorpion, the cheap ones read
+
+`tools/reboot_probe.gd` as the 23 November entry (the squad beside the Honey Badger, the Prairie
+Dog and the Cassowary, the greedy bot, 168 formation fights at 8 seeds and 78 boss fights at 6), on
+`ccr-178e0404-ptuh2m` at `302d6a4c` (main the same), Godot 4.8-beta4. The two of his options a
+probe can read without building a rule: the Nemesis's heat from hits alone (23 November: "if this
+version is too much, we simplify it to just when hit-> gain heat"), read as `--drop-trigger
+on_blocked`, its own blows blocked whole heating it no more, its nearest form (the hull damage of
+its own bite and burn still heats it); and the Whip Scorpion's lower heat maximum (12 November: "the
+first place to nerf the scorpion if it needs it is just lowering the max heat"), `--heat-max 12`.
+His other options need a rule built to be read: the Whip Scorpion's every point of damage it takes
+doubled past half its heat, the Knuckles' cooling split in and out of the Rage, and no reboot by
+choice at all.
+
+| The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad |
+|---|---|---|
+| The Nemesis as built (23 November) | 5.4, 12%, 9%, 9% | 7.6, 12%, 13%, 15% |
+| Its heat from hits alone | 5.4, 12%, 9%, 9% | 7.6, 12%, 13%, 16% |
+| The Whip Scorpion as built (23 November) | 5.0, 30%, 7%, 9% | 7.5, 32%, 12%, 17% |
+| Its heat maximum 12 | 5.5, 36%, 8%, 10% | 8.6, 37%, 16%, 20% |
+
+Under the table: the Nemesis without the blocked blows' heat rages 0.45 times a formation fight
+and 0.85 a boss fight, as built 0.45 and 0.86; the Whip Scorpion at 12 fires its Ray 1.95 and 3.17
+times a fight for about 6.9 heat a shot, where at 14 it fired 1.49 and 2.40 times for about 9.5.
+
+What it says, a direction. Heat from hits alone moves nothing: tier one's foes rarely take a blow
+of its whole, so the heat its Rage runs on is its guns' and the hits it takes, and the option as
+read is no nerf. His other two answer other things, unread here: the cooling split a punch out of
+the Rage that feathers its heat too well ("If it's too strong, we'll give it different heat
+reductions in and out of rage"), and no reboot by choice at all its shield, left to the Rage's own
+reboot. The lower maximum is a real lever: the Whip Scorpion reboots more, fires a smaller Ray more often and
+loses more hull, a boss fight 1.1 rounds longer, between the Nemesis (7.6) and the Buzzard (9.7) of
+the 23 November read.
+
 ## 21 November: enemy armour at tier one, and Chain's arcs as a strike or a flat ping
 
 For Ryan's pick of Chain's arc form (the bible's section 12: "I need more data to make this
