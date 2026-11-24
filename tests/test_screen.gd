@@ -1648,6 +1648,29 @@ func test_a_foe_that_comes_back_wears_its_return_in_place_of_the_skull() -> void
 ## it's labelled as an Ability, so it doesn't get purged"; "Can use this for player units as well,
 ## like the armadillo's form"): each its glyph on a solid tile, ahead of the statuses, its hold
 ## line naming it an Ability; a Purge takes the buffs and leaves them.
+## A buff a passive banks with a cap (the Wild Boar's Juggernaut, one at most) is a buff and wears
+## its chip; only a capped store shows as a bar in its place (the Honey Badger's Ore). Synthetic
+## passive.
+func test_a_capped_buff_wears_its_chip_and_only_a_store_is_a_bar() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.grant_passive({"id": "test_cap", "name": "Cap", "description": "", "effects": [{"trigger": "on_hull_damage", "effect": "stack_status", "value": "overcharged", "stacks": 1, "cap": 1}]})
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("revenant", 300, 10)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.fire(m, "on_hull_damage", 5)
+	Effects.add_loads(m, 2)
+	s._refresh()
+	assert_eq(Effects.store_cap(m, "overcharged"), 1, "a capped buff")
+	var rows: Array = s._mech_rows(0)
+	var buff := SkirmishScreen.status_glyph("overcharged")
+	assert_true(rows.any(func(r: Array) -> bool: return str(r[0]) == buff), "it wears its chip")
+	assert_false(rows.any(func(r: Array) -> bool: return str(r[0]) == SkirmishScreen.status_glyph("hopper")), "the Ore, a store, shows as its bar")
+	s.free()
+
+
 func test_an_ability_wears_its_own_chip_and_no_purge_takes_it() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1, 4)
@@ -2933,6 +2956,20 @@ func test_reboot_wears_the_pieces_word_and_cancel_while_it_is_up() -> void:
 	assert_eq(SkirmishScreen.reboot_word(ms), "CANCEL", "the control offers to stand it down")
 	assert_true(s._do_reboot(0), "dropped again")
 	assert_eq([ms.face_index, ms.ray_from, ms.heat], [0, -1, heat], "the die shows what it did")
+	# Held over REBOOT, the die shows what the drop brings up, at its number; over CANCEL, what it
+	# goes back to.
+	s._drag_from = 0
+	s._reboot_hover = true
+	s._refresh(false)
+	assert_eq(s._dice[0].face.component, "test_ray", "over REBOOT the die shows the piece")
+	assert_eq(s._dice[0].shown_number, s.sk.shown_number_text(ms, s.sk.shown_face(ms, ray, null), null), "at the number it would fire for now")
+	s._reboot_hover = false
+	assert_true(s._do_reboot(0), "brought up")
+	s._reboot_hover = true
+	s._refresh(false)
+	assert_eq(s._dice[0].face, ms.die.faces[0], "over CANCEL, the entry it goes back to")
+	s._drag_from = -1
+	s._reboot_hover = false
 	s.free()
 
 ## Sapped wears a chip of its own on the foe (11 November): the blade and the arrow down, its

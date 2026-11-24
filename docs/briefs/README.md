@@ -23,7 +23,8 @@ proposed in chat first. The long form of this file is `git show cc446826:docs/br
   shield or vent entry is dealt on a die, and no blow destroys a component by its size. A
   brief's lines on a shield entry, a vent, regen, cooling, an injury or an overheat predate
   these and are read under them: section 22's table reads each unbuilt design here against
-  the rule, and `docs/reboot_machines_proposal.md` the built machines. His expectation, no
+  the rule, and the built machines' read did the same (retired 24 November, its decisions the
+  bible's rows: `git show 302d6a4c:docs/reboot_machines_proposal.md`). His expectation, no
   strict rule: what grants regen, cooling, flat shield or flat heat reduction is a kit's, a
   locked piece's or gated behind a synergy, and a shield spend may not be standard fare
   ("it's so expensive").

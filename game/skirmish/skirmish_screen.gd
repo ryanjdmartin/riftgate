@@ -1287,6 +1287,12 @@ func _refresh(save: bool = true) -> void:
 		# on, what it gives there (21 October); anywhere else, the plain entry and number.
 		var over_foe: Foe = _drag_over if _drag_from == i and _drag_over is Foe else null
 		var sf := sk.shown_face(ms, sk.spend_face(ms), over_foe)   # reach as the passive reads it now, the charged form when it goes out charged
+		# Over REBOOT, the die of a machine whose reboot fires a piece first shows what the drop
+		# brings up (the Whip Scorpion's Death Ray, at the number its heat makes now), or over
+		# CANCEL the entry it goes back to.
+		var swap: Face = reboot_swap(ms) if _drag_from == i and _reboot_hover else null
+		if swap != null:
+			sf = sk.shown_face(ms, swap, null)
 		if _drag_from == i and _drag_over is Skirmish.MechState and sf != null and sf.kind == Face.Kind.SHIELD:
 			d.set_face(sf, str(sk.shield_amount(ms, sf, _drag_over)))
 		else:
@@ -2015,6 +2021,13 @@ static func _chip_colour(id: String) -> Color:
 	return Terms.status_colour(id)
 
 
+## Whether a machine's status shows as a store's bar under its heat in place of a chip: a store with
+## a cap on this machine (the Honey Badger's Ore). A capped buff is a buff and wears its chip (the
+## Wild Boar's Juggernaut, banked one at most).
+static func _store_bar(ms: Skirmish.MechState, id: String) -> bool:
+	return Effects.status_kind(id) == "store" and Effects.store_cap(ms.unit, id) > 0
+
+
 func _mech_rows(i: int) -> Array:
 	var ms: Skirmish.MechState = sk.mechs[i]
 	var rows: Array = []
@@ -2050,7 +2063,7 @@ func _mech_rows(i: int) -> Array:
 		var id := str(d[5])
 		if int(d[3]) < Effects.SKIRMISH and not Effects.is_status(id):
 			continue
-		if id == "shots" or id == "muster" or id == "offhand" or Effects.store_cap(ms.unit, id) > 0:
+		if id == "shots" or id == "muster" or id == "offhand" or _store_bar(ms, id):
 			continue   # the offhand's form rides its die's entries, never a chip on the machine (Ryan, 22 November);  a count shows as pips under the heat bar (the Cassowary's sixth shot), a capped store as its bar, and the gate by the Rapid it grants, never a chip
 		if not first.has(id):
 			order.append(id)
@@ -2116,7 +2129,7 @@ func _mech_rows(i: int) -> Array:
 		# chip left out.
 		var skip: Array = ["shots", "muster"]
 		for id in fc.get("coming", {}).keys():
-			if Effects.store_cap(ms.unit, id) > 0:
+			if _store_bar(ms, id):
 				skip.append(id)
 		rows.append_array(_coming_rows(fc.get("coming", {}), skip, status_glyph, _chip_colour))
 	return rows
@@ -2776,6 +2789,8 @@ func _on_drag_moved(global_pos: Vector2) -> void:
 	if boots != _reboot_hover:
 		_reboot_hover = boots
 		_dress_reboot()
+		if reboot_swap(sk.mechs[_drag_from]) != null:
+			_refresh(false)   # the die shows what the drop brings up, or what it goes back to
 	Sound.hover(can or boots)
 	# What the die is over decides what the gauges forecast (a lure's turn, a Cryo cash): read
 	# again only when it changes, never saved mid-drag.
@@ -4150,6 +4165,17 @@ func _do_reboot(i: int) -> bool:
 	if sk.outcome != Skirmish.Outcome.NONE:
 		_show_outcome(sk.outcome)
 	return true
+
+
+## The entry a drop on REBOOT would put on this machine's die (the Whip Scorpion's): its reboot
+## piece while it is down, the entry it showed while the piece is up; null for any other machine.
+static func reboot_swap(ms: Skirmish.MechState) -> Face:
+	if ms == null or Effects.reboot_piece(ms.unit).is_empty():
+		return null
+	if ms.ray_from >= 0:
+		return ms.die.faces[ms.ray_from] if ms.ray_from < ms.die.faces.size() else null
+	var at := Skirmish.reboot_piece_at(ms)
+	return ms.die.faces[at] if at >= 0 else null
 
 
 ## REBOOT's word for the die in hand (`ms`, null for none): REBOOT, or for a machine whose reboot

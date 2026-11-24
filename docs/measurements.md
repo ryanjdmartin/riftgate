@@ -12362,8 +12362,9 @@ it gave 24% (the fists cool it, and it never reboots by choice at its maximum). 
 the four against tier one's bosses by a band (7.5 and 7.6 rounds, the squad losing 15% to 17%,
 against the Buzzard's 9.7 and 22% and the Polar Bear's 13.8 and 31%), and the formations too, by
 less (5.0 and 5.4 rounds against 5.7 and 7.5). The bot's Rage is a first
-cut, its share a placeholder, so the Nemesis's read moves with it; the Whip Scorpion's exit is
-Ryan's (every hit doubled past half its heat). A bot's read of tier one's foes.
+cut, its share a placeholder, so the Nemesis's read moves with it; the Whip Scorpion's nerf options
+are Ryan's (all the damage it takes doubled past half its heat, or a lower heat maximum). A bot's
+read of tier one's foes.
 
 ## 21 November: enemy armour at tier one, and Chain's arcs as a strike or a flat ping
 

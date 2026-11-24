@@ -410,13 +410,7 @@ func _reboot(sk: Skirmish, i: int) -> bool:
 
 ## Where a machine's reboot piece sits on its die (the Whip Scorpion's Death Ray), lit; -1 for none.
 static func piece_entry(ms: Skirmish.MechState) -> int:
-	var piece := Effects.reboot_piece(ms.unit)
-	if piece.is_empty():
-		return -1
-	for k in range(ms.die.faces.size()):
-		if ms.die.faces[k].component == piece and not Effects.is_entry_disabled(ms.unit, k):
-			return k
-	return -1
+	return Skirmish.reboot_piece_at(ms)
 
 
 ## What firing a machine's reboot piece is worth now (the Whip Scorpion's Death Ray), in foe hit

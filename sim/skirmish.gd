@@ -6241,17 +6241,24 @@ func _toggle_reboot_piece(mech_index: int) -> bool:
 		return true
 	if not can_reboot(mech_index):
 		return false
-	var at := -1
-	for k in range(ms.die.faces.size()):
-		if ms.die.faces[k].component == piece and not Effects.is_entry_disabled(ms.unit, k):
-			at = k
-			break
+	var at := reboot_piece_at(ms)
 	if at < 0:
 		return false
 	ms.ray_from = ms.face_index
 	ms.face_index = at
 	log.append("%s brings its %s up" % [ms.unit.display_name, _piece_name(ms, piece)])
 	return true
+
+
+## Where a machine's reboot piece sits on its die, lit (the Whip Scorpion's Death Ray); -1 for none.
+static func reboot_piece_at(ms: MechState) -> int:
+	var piece := Effects.reboot_piece(ms.unit) if ms != null else ""
+	if piece.is_empty():
+		return -1
+	for k in range(ms.die.faces.size()):
+		if ms.die.faces[k].component == piece and not Effects.is_entry_disabled(ms.unit, k):
+			return k
+	return -1
 
 
 ## A component's name for the log, from the content the machine was built from where it is known.
