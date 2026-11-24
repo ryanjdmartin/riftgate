@@ -16,7 +16,7 @@ extends RefCounted
 ## against the HUD options, the enemy red and the rift's violets on the ground it is drawn on
 ## (docs/measurements.md, 30 October). The fight's backdrop keeps its palettes here too (BACKDROPS),
 ## its water the map's liquid (LIQUIDS), so a domain's colours change in one place. RIFTGATE_BLEED_DEBUG=1 gives the whole field to the
-## painted world (Bleed.gradient), and tools/tileset_shot.gd draws every tileset side by side.
+## painted world (Bleed.everywhere), and tools/tileset_shot.gd draws every tileset side by side.
 
 ## Each domain's liquid, written once for the map's water and the fight's lake (30 October: the
 ## fight's lava had stayed the yellow-orange Ryan called acid after the map's went orange-red, and

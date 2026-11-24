@@ -50,6 +50,10 @@ hunters row holds his words.
 
 ## 5. The ramp gates and the pruning, from the reads
 
+The forms by Convergence it pruned are asked for again (Ryan, 23 November: "A set form of each
+formation, for each C. Bosses too"): `docs/tide_proposal.md`, section 5, has what the records
+hold, the read of a kit's growth and the form proposed.
+
 A stub: sixty compositions grown to ninety-two candidates and pruned to eighty by the curve
 read of 9 November, on the model before the refit. The gates that landed are each
 composition's `ramp` in content, and its patrols rated one were rewritten as the duelists

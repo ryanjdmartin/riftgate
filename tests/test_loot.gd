@@ -303,26 +303,27 @@ func test_a_caches_model_stands_on_solid_ground_alone_and_goes_when_claimed() ->
 	var f := b.field
 	assert_true(f.caches.size() >= 2, "caches to show")
 	var m := _cache_map(f)
-	var solid_ground := Vector2(-1.0e7, -1.0e7 + 1.0)   # the gradient gone everywhere: every hex solid
-	var painted := Vector2(1.0e7, 1.0e7 + 1.0)          # total everywhere, as RIFTGATE_BLEED_DEBUG paints it
-	m._sync_caches({}, solid_ground, PackedVector3Array())
+	var solid_ground := Vector2(-1.0e7, -1.0e7 + 1.0)   # the seam's painting stopped everywhere: every hex solid
+	var painted := Vector2(1.0e7, 1.0e7 + 1.0)          # whole everywhere, as RIFTGATE_BLEED_DEBUG paints it
+	var seam := Vector4(0.0, 0.0, 1.0e7, 1.0)           # the seam's circle past everything, so the stop alone decides
+	m._sync_caches({}, solid_ground, seam, PackedVector3Array())
 	for c in f.caches:
 		assert_true(m.cache_shown(int(c["id"])), "cache %d stands on solid ground" % int(c["id"]))
 		assert_true(is_equal_approx((m._caches[int(c["id"])] as Node3D).scale.y, Map3D.CACHE_FIT), "at its whole height")
 	var first: Dictionary = f.caches[0]
 	var occupied := {first["pos"]: true}
-	m._sync_caches(occupied, solid_ground, PackedVector3Array())
+	m._sync_caches(occupied, solid_ground, seam, PackedVector3Array())
 	assert_false(m.cache_shown(int(first["id"])), "hidden under a machine on its hex")
 	assert_true(m.cache_shown(int(f.caches[1]["id"])), "the others stand")
 	var asked := {}
-	m._sync_caches(asked, solid_ground, PackedVector3Array())
+	m._sync_caches(asked, solid_ground, seam, PackedVector3Array())
 	for c in f.caches:
 		assert_true(asked.has(c["pos"]), "a cache's hex hides its own dressing")
-	m._sync_caches({}, painted, PackedVector3Array())
+	m._sync_caches({}, painted, seam, PackedVector3Array())
 	for c in f.caches:
 		assert_false(m.cache_shown(int(c["id"])), "gone under the painting, where the map view draws its token")
 	f.caches.remove_at(0)
-	m._sync_caches({}, solid_ground, PackedVector3Array())
+	m._sync_caches({}, solid_ground, seam, PackedVector3Array())
 	assert_false(m._caches.has(int(first["id"])), "a claimed cache's model is freed")
 	assert_eq(m._caches.size(), f.caches.size(), "one model a cache left")
 	m.free()

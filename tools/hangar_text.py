@@ -561,6 +561,8 @@ def lints(s, planned_terms):
     if re.search(r"damaging weapon", t, re.I):
         out.append("says \"damaging weapon\": a weapon deals damage by definition")
     allowed = {"damage", "value"} if s["kind"] in ("foe_move", "status_line", "passive", "module_text") else set(s.get("fills") or [])
+    if s["kind"] == "term":
+        allowed |= {"caster"}   # a tip's who-laid-it, filled from the unit whose readout is open (KeywordTip.filled; {N} is its sum)
     for b in re.findall(r"\{([a-z_]+)\}", t):
         if b not in allowed:
             out.append("{%s} is filled by nothing here" % b)

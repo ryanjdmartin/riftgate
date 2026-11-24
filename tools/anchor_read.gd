@@ -14,7 +14,7 @@ extends SceneTree
 ##
 ## usage: godot --headless --path . -s tools/anchor_read.gd -- pool=a,b,c,d,e,f [seeds=5]
 ##        [squads=0] [tier=1] [ramp=1] [kinds=patrol,formation,elite,boss] [only=id,id]
-##        [refit=spec] [blows=percent] [machines=n] [label=text]
+##        [refit=spec] [blows=percent] [life=percent] [machines=n] [packs=spec] [label=text]
 ##   pool    the chassis ids the squads are drawn from
 ##   seeds   fights a squad; squads: how many of the pool's squads of that size (0, all:
 ##           the even draw, every machine in as many squads as every other; a count takes
@@ -28,6 +28,49 @@ extends SceneTree
 ##   blows   a what-if on the leaders alone: every elite's, boss's, hero's and commander's
 ##           attack at that share of content's, in hundredths (blows=80), a foe a fight
 ##           fields or a foe it makes later; the rank and file beside them as content has it
+##   life    the same on their hit points (life=120): with blows, a read of the block a leader
+##           would stand at a Convergence on (the forms by Convergence, docs/formation_proposal.md)
+##   packs   hand-made packs in the compositions' place, for sizing one before it is content:
+##           packs=goblin*2;goblin+mandragora;goblin*3+mandragora@2, a pack its foes joined by +,
+##           a count after *, its rating after @ (one unless said); each a row of the kind
+##           "pack 1", "pack 2" or "pack 3", stood on a grid laid from its members (the front
+##           rank from the left, a massive foe filling its column, the back rank behind). With
+##           it, the compositions are read only when kinds= names them
+##   foe     a what-if on one foe's numbers for the run: foe=treant:hp=9:attack=4:armour=0, as
+##           many foes as wanted joined by ; (to size a foe before content moves it)
+
+
+## A grid for a hand-made pack (packs=), eight cells, front then back: the front-rank foes from
+## the left in the order given, a massive one filling its column, the back-rank foes behind them
+## from the left, never behind a massive. What four columns cannot hold is left out.
+func _grid_of(db: ContentDB, members: Array) -> Array:
+	var cells: Array = ["", "", "", "", "", "", "", ""]
+	var massive := {}
+	var col := 0
+	for m in members:
+		var f: Dictionary = db.foes.get(str(m[0]), {})
+		if int(f.get("size", 1)) < 2 and str(f.get("rank", "front")) == "back":
+			continue
+		for k in range(int(m[1])):
+			if col >= 4:
+				break
+			cells[col] = str(m[0])
+			if int(f.get("size", 1)) >= 2:
+				massive[col] = true
+			col += 1
+	var back := 0
+	for m in members:
+		var f: Dictionary = db.foes.get(str(m[0]), {})
+		if int(f.get("size", 1)) >= 2 or str(f.get("rank", "front")) != "back":
+			continue
+		for k in range(int(m[1])):
+			while back < 4 and massive.has(back):
+				back += 1
+			if back >= 4:
+				break
+			cells[4 + back] = str(m[0])
+			back += 1
+	return cells
 
 
 func combos(pool: Array, n: int) -> Array:
@@ -54,11 +97,15 @@ func combos(pool: Array, n: int) -> Array:
 
 
 func _init() -> void:
-	var o := {"seeds": "5", "tier": "1", "pool": "", "kinds": "patrol,formation,elite,boss", "ramp": "1", "squads": "0", "label": "", "only": "", "refit": "", "blows": "100", "machines": "0"}
+	var o := {"seeds": "5", "tier": "1", "pool": "", "kinds": "patrol,formation,elite,boss", "ramp": "1", "squads": "0", "label": "", "only": "", "refit": "", "blows": "100", "life": "100", "machines": "0", "packs": "", "foe": ""}
+	var asked := {}
 	for arg in OS.get_cmdline_user_args():
 		var kv := str(arg).split("=", true, 1)
 		if kv.size() == 2:
 			o[kv[0]] = kv[1]
+			asked[kv[0]] = true
+	if not str(o["packs"]).is_empty() and not asked.has("kinds"):
+		o["kinds"] = ""
 	var seeds := int(o["seeds"])
 	var tier := int(o["tier"])
 	var ramp := int(o["ramp"])
@@ -79,6 +126,17 @@ func _init() -> void:
 	if not str(o["refit"]).is_empty():
 		for line in Refit.apply(db, Refit.parse(str(o["refit"]))):
 			print("what-if: " + str(line))
+	for spec in str(o["foe"]).split(";", false):
+		var bits := str(spec).split(":", false)
+		if bits.is_empty() or not db.foes.has(str(bits[0])):
+			push_error("anchor_read: foe= names no foe '%s'" % str(spec))
+			quit(1)
+			return
+		for i in range(1, bits.size()):
+			var kv := str(bits[i]).split("=", true, 1)
+			if kv.size() == 2:
+				db.foes[str(bits[0])][str(kv[0])] = int(kv[1])
+		print("what-if: %s as %s" % [str(db.foes[str(bits[0])].get("name", bits[0])), ", ".join(Array(bits.slice(1)))])
 	var four := 0.0
 	var names: Array = []
 	for cid in pool:
@@ -101,15 +159,42 @@ func _init() -> void:
 		if kinds.has("boss"):
 			for bid in db.bosses_of(str(fid)):
 				rows.append(["boss", str(fid), str(bid), {}])
+	# The hand-made packs (packs=): each a patrol of its members at its rating, on a grid laid
+	# from them, under its first foe's domain.
+	for spec in str(o["packs"]).split(";", false):
+		var at := str(spec).split("@", true, 1)
+		var members: Array = []
+		for part in str(at[0]).split("+", false):
+			var fc := str(part).split("*", true, 1)
+			if not db.foes.has(str(fc[0])):
+				push_error("anchor_read: no foe %s" % str(fc[0]))
+				quit(1)
+				return
+			members.append([str(fc[0]), maxi(1, int(fc[1])) if fc.size() == 2 else 1])
+		if members.is_empty():
+			continue
+		var fac := db.faction_of_foe(str(members[0][0]))
+		var made := Battlefield.composition(members, fac, "patrol", str(spec))
+		made["squad"] = clampi(int(at[1]), 1, 4) if at.size() == 2 else 1
+		made["layout"] = _grid_of(db, members)
+		rows.append(["pack", fac, str(spec), made])
 	if int(o["machines"]) > 0:
 		print("what-if: every fight read with %d machines, whatever it is rated" % clampi(int(o["machines"]), 1, mini(4, pool.size())))
 	var blows := clampi(int(o["blows"]), 10, 300)
 	if blows != 100:
 		print("what-if: every leader's attack at %d%% of content's" % blows)
-	# A foe as content makes it, a leader's attack at the what-if's share (never under one).
+	var life := clampi(int(o["life"]), 10, 400)
+	if life != 100:
+		print("what-if: every leader's hit points at %d%% of content's" % life)
+	# A foe as content makes it, a leader's attack and hit points at the what-ifs' shares (never
+	# under one).
 	var lead := func(f: Foe) -> Foe:
-		if f != null and blows != 100 and (f.boss or f.elite or f.hero or f.commands):
-			f.attack = maxi(1, roundi(float(f.attack) * float(blows) / 100.0))
+		if f != null and (f.boss or f.elite or f.hero or f.commands):
+			if blows != 100:
+				f.attack = maxi(1, roundi(float(f.attack) * float(blows) / 100.0))
+			if life != 100:
+				f.hp_max = maxi(1, roundi(float(f.hp_max) * float(life) / 100.0))
+				f.hp = f.hp_max
 		return f
 	var sums := {}
 	var by_machine := {}   # kind, then chassis: [fights, the share of its own hull lost, wrecks]
@@ -125,6 +210,8 @@ func _init() -> void:
 		var kind_label := str(row[0])
 		if kind_label == "patrol" and rated >= 2:
 			kind_label = "hunter"
+		if kind_label == "pack":
+			kind_label = "pack %d" % rated
 		if not by_machine.has(kind_label):
 			by_machine[kind_label] = {}
 		var tally: Dictionary = by_machine[kind_label]

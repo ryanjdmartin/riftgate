@@ -91,9 +91,10 @@ func _run(f: String, inst, method: String) -> void:
 	# never leaves it on for the next.
 	Ramp.depth_trial = 0
 	Battle.opening_trial = 0
-	Battle.fodder_trial = 100
 	Ramp.beats_trial = 0
-	Ramp.tide_trial = 100
+	Battlefield.graded_tide = false
+	Battlefield.sends_trial = 1
+	Battle.pack_bonus_trial = 0
 	Battlefield.strike_trial = 0
 	Skirmish.overheat_scale = 1
 	inst.script_errors_expected = 0

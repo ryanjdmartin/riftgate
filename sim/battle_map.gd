@@ -229,8 +229,8 @@ func _widen_rift() -> void:
 
 
 ## Where a shape's laying starts: the rift's row (FIRST_ROW). Kept as a function so the sim reads
-## one name for it (the opening's packs and the seam read their own rows: Battle.OPENING_FLOOR_ROW,
-## Battlefield.seam_start).
+## one name for it (the opening's packs and the tears read their own rows: Battle.OPENING_FLOOR_ROW,
+## Battlefield.tear_row_start).
 func mouth_rows() -> int:
 	return FIRST_ROW
 

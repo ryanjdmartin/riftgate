@@ -333,9 +333,9 @@ func test_the_debug_switch_gives_the_whole_field_to_the_painting() -> void:
 	var south := Bleed.axis() * 5000.0   # far past the rift's gradient, toward the wall in either view
 	var was := Bleed.everywhere
 	Bleed.everywhere = false
-	assert_true(Bleed.at(south, Bleed.gradient(b.field, Vector2.ZERO, 48.0), PackedVector3Array()) < 0.01, "the reconstruction stands far from the rift")
+	assert_true(Bleed.at(south, Bleed.wall(b.field, Vector2.ZERO, 48.0), Bleed.seam(b.field, Vector2.ZERO, 48.0), PackedVector3Array()) < 0.01, "the reconstruction stands far from the rift")
 	Bleed.everywhere = true
-	assert_true(Bleed.at(south, Bleed.gradient(b.field, Vector2.ZERO, 48.0), PackedVector3Array()) > 0.99, "RIFTGATE_BLEED_DEBUG paints it all")
+	assert_true(Bleed.at(south, Bleed.wall(b.field, Vector2.ZERO, 48.0), Bleed.seam(b.field, Vector2.ZERO, 48.0), PackedVector3Array()) > 0.99, "RIFTGATE_BLEED_DEBUG paints it all")
 	Bleed.everywhere = was
 
 

@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 209 implemented, 6 planned, 0 idea.
+Status: 207 implemented, 6 planned, 0 idea.
 
 ## Resource
 
@@ -13,7 +13,7 @@ Status: 209 implemented, 6 planned, 0 idea.
 | **Shield** | Enemy damage hits shield before hull. A shield absorbs its number: a blow costs it its damage, and whatever it cannot absorb passes to the hull, armour coming off it there. Nothing mends a shield by itself: a reboot brings it back whole, and a component, a module or a passive may add to one that still stands, up to the chassis maximum. A shield at nothing is Broken, and takes none until its machine reboots. The shield is full as every fight opens, as the heat starts at zero; nothing returns on the map. | implemented |
 | **Heat** | A component that prints heat adds it when spent, and it stays: nothing cools a machine by itself. Heat may pass the chassis maximum, and what stands past it is Overheated: at the end of your turn, before the enemy acts, it burns hull one for one, every turn it stands there, and the first such turn since the machine's last reboot breaks its shield. A reboot takes the heat to nothing; a vent, a module or a passive that cools takes some off, what stands past the maximum first. A machine the burn wrecks is lost on its own turn. Foes never add heat: a Scorched machine's weapons and equipment aimed at foes run hotter for the turn. | implemented |
 | **Reroll** | Two rerolls per round, each rerolling every unlocked, unspent die. A reroll lands on any other component on the die, never the one showing; a second copy of the same component may come up. Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds, unless a Giant Petrel fights: its Maverick's Playbook banks up to three left unspent as your turn ends, for the next round. | implemented |
-| **Rift Pressure** | Ticks once per battlefield phase, never inside a fight. It fills at the ramp's beat (3 turns, 2 from Convergence 8), a turn short of its peak as a battle opens, and the beat halves once at the Rupture. When full it resets and peaks: the rift sends the next composition of its cycle, every tear open before the peak sends a patrol, the seam creeps toward the gate, and new tears open on it. It never stops: the boss's seal breaking does not quiet it. | implemented |
+| **Rift Pressure** | Ticks once per battlefield phase, never inside a fight. It fills at the ramp's beat (3 turns, 2 from Convergence 8), a turn short of its peak as a battle opens, and the beat halves once at the Rupture. When full it resets and peaks: the rift sends the next composition of its cycle, every tear open before the peak sends a patrol, and new tears open, each peak's nearer the wall. It never stops: the boss's seal breaking does not quiet it. | implemented |
 | **Rupture meter** | Fills by the menace of the packs you kill, in any fight however it ends, toward the tier's Fractures (three, four or five), each later one costing more. The last, the Rupture, takes the packs the field opens with and the rift's first two peaks send, one lone patrol left over, and 4 more for each elite the tier's Fractures bring. The Rupture breaks the boss's seal, and nothing else does: a cleared field is breathing room until the next peak. | implemented |
 | **Fracture** | A step of the Rupture meter, paid out as a fight ends. At the Fractures the tier names (tier one's first; tier two's first and third; tier three's first, second and fourth) an elite emerges at the rift, the lead domain's elites in turn and never twice in a battle. The last Fracture is the Rupture. | implemented |
 | **Gate Integrity** | Each pusher makes for a segment of the wall of its own, drawn as it is dealt. A pusher that ends its walk beside any hex of the gate or the wall strikes the gate's bar every turn: ten for each machine it is a fight for, less as it loses foes, at least one. The whole wall is the target, so no line plugs it. Gate integrity persists across battles and is repaired in the meta. | implemented |
@@ -38,11 +38,9 @@ Status: 209 implemented, 6 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Weapon** | A component that deals damage: spent on a foe within its reach, it deals its number in damage, then its keywords act and its heat lands. One that deals none is equipment. | implemented |
-| **Shield component** | Spend on self or an ally to add its number in shield, capped at that machine's shield maximum; a Broken shield takes none until its machine reboots. No stock die holds one: the kind is a few Integrated components'. | implemented |
-| **Vent component** | Spend on self or an ally to remove its number in heat. No stock die holds one: the kind is an Integrated component's. | implemented |
-| **Equipment** | A buff or a debuff: a component that deals no damage. A buff is spent on a machine (itself, an ally, or either, as it says) and grants it a status; a debuff is spent on a foe within its reach, its keywords its whole effect. Shields and vents are kinds of their own. | implemented |
-| **Buff component** | Equipment spent on a machine (itself, an ally, or either, as the component says) that grants it a status, so many stacks deep, through the end of so many rounds: Empowered for damage, Armoured against damage, Primed to lay Ablate on hit. A status that runs down on its own (Empowered, halving) takes no rounds. The die shows the status name and the stacks. | implemented |
+| **Weapon** | A component that deals damage. Used on a Sprite within reach: deals its damage, then its keywords apply. | implemented |
+| **Equipment** | A component that deals no damage: a buff used on a Frame, or a debuff used on a Sprite within reach. | implemented |
+| **Buff component** | Equipment used on a Frame. Applies the status and stacks shown on the die. | implemented |
 
 ## Component Property
 
@@ -98,7 +96,7 @@ Cannot be used without Ore. | implemented |
 | **Penetrate** | Also hits all other Sprites in the same column, dealing {N} damage. The extra hits are not Targeted. | implemented |
 | **Cryo** | Resolve: Apply {N} Cryo per hit. | implemented |
 | **Ablate** | Resolve: Apply {N} Ablate per hit. | implemented |
-| **Lure** | Resolve: Sprites hit are forced to target this Frame this round. | implemented |
+| **Lure** | On Hit: Change intended target to this Frame. | implemented |
 | **Shock** | Resolve: Apply Shocked to each Sprite hit. | implemented |
 | **Expose** | Resolve: Apply 2 Exposed to each unit hit. | implemented |
 | **Disrupt** | Resolve: Sprites hit switch to the next move they can use, keeping their target. | implemented |
@@ -161,7 +159,7 @@ Other statuses still count down.
 Round End: Removed. | implemented |
 | **Ablate** | Turn End: Take 1 damage per stack ({N}), then reduce stacks by 1.
 Ignores Armour and Barrier. | implemented |
-| **Suppressed** | Next turn skipped.
+| **Suppressed** | May not act.
 Turn End: Removed. Gain Numbed equal to stun resist: 1, 2 if massive, 3 if elite, hero or boss. | implemented |
 | **Vitriol** | Turn End: Lose 10% of current HP per stack ({N}), rounded down, then reduce stacks by 1.
 Ignores Armour and Barrier. Cannot reduce HP below 1. | implemented |
@@ -234,7 +232,7 @@ Reduce stacks to 0 upon {caster} losing 25% Max HP since the start of the effect
 Cannot be cleansed. | implemented |
 | **Guarded** | Immune to all damage while every part stands. | implemented |
 | **Ability** | A unit's own rule. Not a Buff or Debuff, so no Purge or Cleanse removes it. | implemented |
-| **Barrier** | When Hit: If damage would be dealt, consumed to prevent it. Riders still apply.
+| **Barrier** | When Hit: Consumed to reduce damage to 0.
 Turn Start: Removed. | implemented |
 | **Ward** | Blocks every Debuff and Purge from the other side. Damage still applies.
 Turn Start: Removed. | implemented |
@@ -282,8 +280,8 @@ At 3 or more stacks: Chain 2 fires. Reduce stacks to 0. | implemented |
 | **Composition** | What the rift sends and what stands on the field when a battle starts: a patrol (a few foes, a fight for one machine or a pair), a formation (the body's fight), an elite leading its own, or a boss's escort. A composition is one pack on one hex: its members, listed on a hold, unpack into the fight together and come back by member. Each domain writes its compositions by tier, each dealt across a band of the ramp; the ramp sets how many stand at the start, never how thick they are. | implemented |
 | **Patrol** | The small composition: a few foes, a fight for one machine or for a pair, the threat rating its hold shows. Two stand on the flanks at the start (one from Convergence 8), and the tears send nothing else. | implemented |
 | **Formation** | The body's composition: a fight for three machines, the threat rating its hold shows. One stands on the field at the start (two from Convergence 3, three from 8), and the rift alone sends more, at its peaks. A domain's tier writes its formations; the lead's and the guest's come in turn. | implemented |
-| **Tear** | A mouth beside the rift's. At a peak of Rift Pressure the ramp's count of tears (one; two from Convergence 8) open on the seam, a few rows past the rift (row 4 at twelve deep) and creeping toward the wall, as far from the rift and the other tears as the row allows, and every tear open before the peak sends a patrol. A tear opens a peak before it first sends, so where the next flood comes from is known an interval ahead. Tears stay open and never close. | implemented |
-| **Seam** | The flattening's edge: the row the rift's bleed reaches, a row for every five of the field's depth and one more at the start (row 4 at twelve deep), creeping two rows toward the gate at every peak, as far as the row before the wall. The tears open on it. It is the clock's picture: no rule reads the ground behind it. | implemented |
+| **Tear** | A mouth beside the rift's. At a peak of Rift Pressure the ramp's count of tears (one; two from Convergence 8) open on a row a few past the rift (row 4 at twelve deep), each peak's a row nearer the wall and never beside it, as far from the rift and the other tears as the row allows, and every tear open before the peak sends a patrol. A tear opens a peak before it first sends, so where the next flood comes from is known an interval ahead. Tears stay open and never close. | implemented |
+| **Seam** | The flattening's edge: a circle about the rift, four hexes out as a battle opens and half a hex wider every round, stopping at the foot of the wall. It is a picture alone: no rule reads the ground inside it, and a tear opens wherever its own row has room. | implemented |
 
 ## Terrain
 
@@ -349,7 +347,7 @@ At 3 or more stacks: Chain 2 fires. Reduce stacks to 0. | implemented |
 |---|---|---|
 | **City ability** | Battlefield-level ability owned and upgraded by the city: sprint, airlift, teleport, tractor beam, orbital strike. Cooldowns measured in phases. | planned |
 | **Tier** | The hard scaling: a rift's tier is locked as the rift opens and sets the kind of battle: who comes, the sizes of its compositions, the Fractures to the Rupture, how many elites and which, the boss's numbers and escort. The Convergence's tier rises one every four; a rift keeps the tier it opened at, so an old rift never hardens by waiting. | implemented |
-| **Ramp** | The soft scaling under the tier, never shown: the Convergence as it stands when a battle starts sets how many compositions stand on the field at the start and which of the tier's variants are dealt, how fast Rift Pressure fills, how many tears open at a peak and how far the seam creeps. It scales no pack. It rises with the run, the same for every open front, and never resets. | implemented |
+| **Ramp** | The soft scaling under the tier, never shown: the Convergence as it stands when a battle starts sets how many compositions stand on the field at the start and which of the tier's variants are dealt, how fast Rift Pressure fills, how many tears open at a peak and how far each peak's open toward the wall. It scales no pack. It rises with the run, the same for every open front, and never resets. | implemented |
 
 ## Foe
 
@@ -475,7 +473,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Patrol** (implemented): The tier-one patrols read as a lone starter's fight on the greedy rung, not a tenth of its hull (docs/measurements.md, 30 October); their sizes are Ryan's to mark.
 - **Formation** (implemented): The word also names the skirmish's two ranks; the context tells them apart.
 - **Tear** (implemented): Drawn as a first cut for the phone; its mark and its opening are to judge running (RIFTGATE_PEAK_DEBUG=1 peaks every enemy turn).
-- **Seam** (implemented): The creep a peak is a placeholder (the ramp's table, flat at two).
+- **Seam** (implemented): Its start and its growth a round are placeholders for his eye (Bleed.seam_start_hex, Bleed.seam_grow_hex; the map tuner moves both).
 - **Ruins** (implemented): No skirmish condition yet; what terrain does in a fight is section 12's question.
 - **Water** (implemented): No skirmish condition yet (section 12). Each map shape lays its own water (a fat river with its narrows, a delta's channels, ponds, a pond, the gorge's flooded channels, or none: the city has none). Since 29 October the horde wades it as the ground machines do, so water slows a crossing and never walls it; the crossing guarantee binds the walls.
 - **City defense** (planned): No die and no rule yet: how gate defences work is section 12's question.

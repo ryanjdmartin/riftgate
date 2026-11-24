@@ -156,13 +156,13 @@ func _show_page(page: String) -> void:
 				_button("COLOURS", func() -> void: _show_page("colours"))   # the colours that carry a meaning and the HUD presets, by wheel or hex (ColourTuner)
 			_button("BACK", func() -> void: _show_page("paused"), false, "ui_back")
 		"trials":
-			# A debug build's dials for the numbers still to be picked by play, the game's own
-			# until one is: the basics' heat, the top basic's price, the standard foe's hit
-			# points and the Barrier basic's place (each read at the next launch), the hull an
-			# overheat burns, the field's depth, the opening's distance, the fodder's worth on
-			# the Rupture meter, the meter's size, the tide's density and the wall strike (each
-			# read as the next battle starts). A dial leaves this page with its question: the
-			# pick lands in content or in the engine and the what-if is cut.
+			# A debug build's dials for what is tried in person, the game's own until one is
+			# picked: the graded tide, the packs a mouth sends, the wall strike, the pack bonus
+			# and the field's depth for the tide, and when Phased lands (each read as the next
+			# battle starts), under two sets that lay the tide's at once or the page back as
+			# built. A dial leaves this page with its question; one that can be settled in talk
+			# is a runner's what-if and never a row here (Settings has the page's cut of 24
+			# November).
 			_title("TRIALS")
 			# The dials stand in a scroller, as the keywords do, so a glass of any height holds
 			# them (14 November: at twelve rows the page had outgrown the 1280 glass, and the
@@ -171,29 +171,20 @@ func _show_page(page: String) -> void:
 			_rows.add_child(_list)
 			var page_rows := _rows
 			_rows = _list.get_child(0)
-			_choice_row("HEAT", "heat_trial", Settings.HEATS, Settings.HEAT_LABELS)   # every weapon a point cooler or hotter than content prices it (Settings.HEAT_SPECS; the prices themselves are content since 12 November)
-			_credit("Every weapon's heat against built: one or two less, or one more. Next launch.")
-			_choice_row("TOP BASIC", "top_basic_heat", Settings.TOP_BASIC_HEATS, Settings.TOP_BASIC_HEAT_LABELS)   # more heat on the basic guns that deal more than the plainest (Refit's top): the price of the gun that deals one more
-			_credit("The basic gun that deals most: its heat as built, or more. Next launch.")
-			_choice_row("RANK AND FILE", "rank_hp", Settings.RANK_HPS, Settings.RANK_HP_LABELS)   # a hit point more on tier one's rank and file (Refit's foehp; Ryan, 15 November: a vanilla of 3 against a standard foe of 4 or of 5)
-			_credit("Tier one's rank and file: hit points as built, or one more. Next launch.")
-			_choice_row("OVERHEAT", "overheat_burn", Settings.OVERHEATS, Settings.OVERHEAT_LABELS)   # the hull a point of heat past the gauge burns as the turn ends, one the game's (Skirmish.overheat_scale)
-			_credit("Hull an overheat burns a point past the gauge. Next battle.")
+			_set_row("SET", [["GRADED", Settings.GRADED_SET], ["AS BUILT", _trials_as_built()]])   # the graded tide's first set in one press, and every dial back to the game's own
+			_credit("Graded: TIDE GRADED, SENDS 2, STRIKE 5, PACK BONUS +½.")
+			_choice_row("TIDE", "tide_form", Settings.TIDE_FORMS, Settings.TIDE_FORM_LABELS)   # the graded tide (Battlefield.graded_tide; Ryan, 23 November: "the far edges are 1s with a sprinkling of 2s, then 2s in between, and 3s coming right down the center")
+			_credit("Graded: packs for one to the wall's ends, for two between, for three down the middle. Next battle.")
+			_choice_row("SENDS", "mouth_sends", Settings.SENDS)   # the packs every mouth sends at a peak, the rift and each tear (Battlefield.sends_trial; Ryan, 24 November: "a very useful tuning dial for convergences")
+			_credit("Packs the rift and every tear send at a wave. Next battle.")
+			_choice_row("STRIKE", "wall_strike", Settings.STRIKES)   # what a pip of threat rating strikes the wall for, ten the game's (Battlefield.strike_trial; Ryan, 23 November: "Reduce foe damage to the wall so that quantity matters")
+			_credit("What a pip of threat rating strikes the wall for. Next battle.")
+			_choice_row("PACK BONUS", "pack_bonus", Settings.PACK_BONUSES, Settings.PACK_BONUS_LABELS)   # what a pack pays the Rupture meter as it falls, on top of its rating (Battle.pack_bonus_trial; the same day: "a flat fracture bonus to a pack on top of the per-foe weight")
+			_credit("Pips a pack pays the Rupture as it falls, over its rating. Next battle.")
+			_choice_row("FIELD DEPTH", "field_depth", Settings.FIELD_DEPTHS)   # the field's depth in rows, twelve the game's (Ramp.depth_trial; Ryan, 23 November: "I think 12, 14, and 16 unit field depths all have their merit")
+			_credit("Rows from the rift to the wall. Next battle.")
 			_choice_row("PHASED", "phased_form", Settings.PHASED_FORMS, Settings.PHASED_FORM_LABELS)   # when a machine's Phased lands (Skirmish.phase_at_once; Ryan, 20 November: "Set the debug toggle for phased")
 			_credit("A machine's Phased as the round ends, through the next; or at once, until the round ends. Next battle.")
-			_choice_row("BARRIER BASIC", "barrier_basic", Settings.BARRIER_BASICS, Settings.BARRIER_BASIC_LABELS)   # the Barrier basic on the stock dice as built, or off them with the Armoured basic in its slot (Refit's barrier=none; its place is open since 12 November)
-			_credit("The Barrier on the starting dice, or the Armoured basic in its slot. Next launch.")
-			_choice_row("FIELD DEPTH", "field_depth", Settings.FIELD_DEPTHS)   # the field's depth in rows, twelve the game's (Ramp.depth_trial; Ryan, 10 November: "I think the map is a bit too shallow")
-			_choice_row("OPENING", "field_opening", Settings.FIELD_OPENINGS, Settings.FIELD_OPENING_LABELS)   # how many moves farther from the wall the opening's packs stand (Battle.opening_trial): depth alone leaves their first walk on the wall
-			_credit("Rows from rift to wall; moves farther out the first packs stand. Next battle.")
-			_choice_row("FODDER", "fodder_worth", Settings.FODDER_WORTHS, Settings.FODDER_WORTH_LABELS)   # what a rank-and-file kill fills of the Rupture meter (Battle.fodder_trial; Ryan, 10 November: "If fracture rewards were a little lower for fodder")
-			_credit("A pack's worth on the Rupture meter, an elite's untouched. Next battle.")
-			_choice_row("RUPTURE", "rupture_beats", Settings.RUPTURE_BEATS, Settings.RUPTURE_BEATS_LABELS)   # how many peaks of the tide the Rupture's field part runs through, two the game's (Ramp.beats_trial; Ryan, 11 November: "Try your lean first")
-			_credit("Waves of the tide the Rupture takes, an elite's four on top. Next battle.")
-			_choice_row("TIDE", "tide_density", Settings.TIDES, Settings.TIDE_LABELS)   # how many packs the opening places and each wave sends against the game's own, the Rupture's size left (Ramp.tide_trial; Ryan, 11 November: "noticeably more spawns then the minimum number required")
-			_credit("Packs at the opening and each wave; the Rupture asks no more. Next battle.")
-			_choice_row("STRIKE", "wall_strike", Settings.STRIKES)   # what a pip of threat rating strikes the wall for, ten the game's (Battlefield.strike_trial; the same day: "even if it means that each needs to do less to the wall")
-			_credit("What a pip of threat rating strikes the wall for. Next battle.")
 			_rows = page_rows
 			_list.set_deferred("scroll_vertical", kept)
 			_button("BACK", func() -> void: _show_page("settings"), false, "ui_back")
@@ -379,6 +370,7 @@ func _slider(caption: String, key: String) -> void:
 func _credit(text: String) -> void:
 	var l := Hud.label(text, 11, Palette.MUTED, Hud.mono())
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD   # a long note wraps under its row and never widens the page past the glass (the trials' notes)
 	_rows.add_child(l)
 
 
@@ -420,6 +412,38 @@ func _choice_row(caption: String, key: String, options: Array, labels: Dictionar
 			_show_page(_page))
 		row.add_child(b)
 	_rows.add_child(row)
+
+
+## A row of sets on the trials' page: each button lays several dials at once (its dictionary of
+## settings) and draws the page again, filled while every dial of its set stands as it lays it.
+func _set_row(caption: String, sets: Array) -> void:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	row.add_child(_caption(caption))
+	for entry in sets:
+		var values: Dictionary = entry[1]
+		var b := HudButton.new(str(entry[0]))
+		b.font_size = 14
+		b.filled = values.keys().all(func(k) -> bool: return str(Settings.display.get(k, Settings.DISPLAY_DEFAULTS[k])) == str(values[k]))
+		b.custom_minimum_size = Vector2(0, 40)
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if _list != null and _list.is_ancestor_of(_rows):
+			b.mouse_filter = Control.MOUSE_FILTER_PASS
+		b.pressed.connect(func() -> void:
+			Settings.set_displays(values)
+			for k in values.keys():
+				display_changed.emit(str(k), values[k])
+			_show_page(_page))
+		row.add_child(b)
+	_rows.add_child(row)
+
+
+## Every trial dial at the game's own (the trials' page's AS BUILT).
+func _trials_as_built() -> Dictionary:
+	var out := {}
+	for key in Settings.TRIAL_KEYS:
+		out[key] = Settings.DISPLAY_DEFAULTS[key]
+	return out
 
 
 ## The mask over the menu while the host rebuilds: a dark shade, a line of mono text and a

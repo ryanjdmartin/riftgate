@@ -630,16 +630,31 @@ func _apply_battle_pose() -> void:
 				if not str(cell).is_empty():
 					s._on_formation_foe(str(cell))
 					break
-		"resolve":
+		"resolve", "round":
+			# END TURN: the enemy's turn under the whole field's view, the round's number over it
+			# (23 November); RIFTGATE_SHOT_FRAME picks the moment (in a cloud session the banner
+			# with the packs walking near 14). RIFTGATE_PEAKS=<n> plays that many turns first, so
+			# the seam has grown and tears stand open.
+			for i in range(maxi(0, int(OS.get_environment("RIFTGATE_PEAKS")))):
+				b.end_turn()
+			s._refresh()
 			s._on_end_turn()
+		"whole":
+			# The zoom at its floor: the whole field in view (23 November). RIFTGATE_PEAKS=<n>
+			# plays that many turns first.
+			for i in range(maxi(0, int(OS.get_environment("RIFTGATE_PEAKS")))):
+				b.end_turn()
+			s._refresh()
+			s._map.zoom_at(s._map.size * 0.5, 0.01)
+			s._map.queue_redraw()
 		"rift":
 			# The rift's end of the field: the vortex standing on its hexes (on the lowest of them
 			# with the wall at the left) and the boss's picture at its size beside it (9 November).
 			s._map.scroll_to_top()
 			s._map.queue_redraw()
 		"tear":
-			# A peak of Rift Pressure (RIFTGATE_PEAKS=<n> for more): the seam crept, a tear open on
-			# its row, the map looking at the newest, a little off the middle so the ring is seen
+			# A peak of Rift Pressure (RIFTGATE_PEAKS=<n> for more): a tear open, its own painting
+			# round it, the map looking at the newest, a little off the middle so the ring is seen
 			# to stand on its hex under its name wherever the map is scrolled (10 November).
 			for i in range(maxi(1, int(OS.get_environment("RIFTGATE_PEAKS")))):
 				b.field.peak()
@@ -651,9 +666,9 @@ func _apply_battle_pose() -> void:
 				s._map._clamp_scroll()
 			s._map.queue_redraw()
 		"peak":
-			# A peak's cutscene (10 November): the seam's creep under its front, then the tear
-			# bursting open, then the map back where it was; RIFTGATE_SHOT_FRAME picks the moment
-			# (a cloud session draws few frames a second: the sweep near 12, the tear's burst near 26).
+			# A peak's cutscene (10 November): the map gliding in on the new tear as it bursts
+			# open, then back where it was; RIFTGATE_SHOT_FRAME picks the moment (a cloud session
+			# draws few frames a second: the tear's burst near 12).
 			s._map.hold_peak()
 			b.field.peak()
 			s._refresh()

@@ -41,8 +41,28 @@ document's job and every command are in `README.md`.
   a branch: the desk machine's folder stays on `main`, and a session that needs another branch
   works in a worktree under `.claude/worktrees/` (`CLAUDE.md`, Session handoff). A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word.
-- Branches. Main holds everything this file describes, the terminology pass's branch
-  (`claude/gameplay-terminology-tooltips-rug879`) landed again on 24 November on Ryan's "land this on
+- **The battle's enemy side is on trial as a graded tide** (Ryan, 23 November: "Any time I
+  tried splitting my forces, I lost the battle. Any time I stayed in the middle, I won"; "I
+  don't want the packs split, I want them SCALED ... the far edges are 1s with a sprinkling of
+  2s, then 2s in between, and 3s coming right down the center ... 1s fastest and 3s slowest";
+  24 November, of the session's leans: "I think we build your leans and I'll see").
+  `docs/tide_proposal.md` has his words, the design as read, what is built and the reads. A
+  debug build's SETTINGS, TRIALS, TIDE on GRADED (or SET, GRADED) deals packs by the band of
+  the wall each makes for; the Meadow's packs for it are in content, marked `tide`: `graded`,
+  and dealt by nothing else; every other domain plays it on its compositions as built. None
+  of it is the game's until he says. Until he has played it, no session writes a pack, a
+  formation, an elite's or a boss's numbers, or a rule of the tide. His three points of 24
+  November stand over what comes next: a massive foe is a kind of unit and no measure of
+  threat ("a property, not a quota", with more kinds of enemy wanted in a pass of its own), a
+  squad's growth inside a tier is a target to set, and the packs a mouth sends at once are the
+  Convergence's dial. The hunters are pinned and the treant waits on his marks.
+- Branches. Main holds everything this file describes. `claude/formation-pass-feedback-rlvx5x`
+  landed on 24 November on Ryan's "Make sure main is updated" (his play of the field's dials: the
+  seam a circle, the round's view, the zoom's floor, the pushers' segments, the tears' row slower
+  and off the wall, five tier-one stock dice back to basics, the basics' five dials settled and
+  cut, the graded tide on a dial with the Meadow's packs, the trials' page cut to six dials, the
+  tier-one bench as a grid). The terminology pass's branch
+  (`claude/gameplay-terminology-tooltips-rug879`) landed again the same day on his "land this on
   main": gameplay text follows `docs/text_standard.md` (CLAUDE.md says so), every glossary tip is
   written to it, and a reach over every Sprite targets the field.
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
@@ -80,7 +100,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1456 tests, 390,146 checks, green on Godot 4.8-beta4 (24 November, the Nemesis's Rage and the Whip Scorpion's Death Ray, a raging swing on the undo, and the terminology branch: the tips to the standard, every tip held to its shape). The runner fails a run
+- Tests: 1464 tests, 390,409 checks, green on Godot 4.8-beta4 (24 November, the formation feedback's branch landed on main: the graded tide on its dial and the trials' page cut to six, beside the Nemesis's Rage, the Whip Scorpion's Death Ray and the tips to the standard). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -151,7 +171,11 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   brief open. 84 components, 7 of them planned drafts nothing deals (the slottable shields and
   vents, the Gravity Knuckles and the Tesla Gauntlets, the Retribution Thurible, the Solar Flare
   Array); 20 modules. A stock die is basics beside its
-  locked pieces: the basic guns deal 3 for 4 heat and the Laser Carbine 4 for 5, the Halo
+  locked pieces, at tier one on every die (the Wild Boar, the Echidna, the Skua, the Storm
+  Petrel and the Cottonmouth went back to basics on 23 November, on his "just basic pieces"
+  and, of the Cottonmouth's shell, "Send the cottonmouth to some kind of stock pieces and I'll
+  fix it in another session"; the sizing's reads of 17 to 20 November
+  were on their old dice): the basic guns deal 3 for 4 heat and the Laser Carbine 4 for 5, the Halo
   Projector lays a Barrier and the Shoring Jack Armoured 2, and every piece that grants a
   Barrier sits out a round after. A machine moves 3 to 6 hexes. A basic is a tier-one piece with
   a flag (its blueprint a run's from the start), never a find. A machine holds a tier, its
@@ -220,8 +244,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   ("sizing it without means that if it does prove toxic after all, in my play, then it's
   relatively easy to remove"): an elite 24.4% (20.3% to 27.7%), a boss 29.5% (25.1% to
   36.1%). The Barrier basic stays on the starting dice ("one of the two sides of the
-  defensive coin"); the squad with it pays an elite 15.9% and a boss 20.4%, and whether that
-  proves toxic is his play's to say, on BARRIER BASIC. Each domain's kit without Breach
+  defensive coin"; 23 November, after his play of its dial: "barrier basic yes, for now at
+  least"); the squad with it pays an elite 15.9% and a boss 20.4%, and whether that proves
+  toxic is still his play's to say. Each domain's kit without Breach
   landed with its sizing (the bible's levers row): the Waste's purge ahead of the blow, a
   move's own order and no rule of Purge; the Peak's Bomb as its hard hit on a telegraph; the
   Marsh's knight and its Serpent's fangs; the Meadow's as it was. How the leaders strike is
@@ -246,26 +271,40 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Brittle 2 on every machine (a point), and the goblin horde as built at 7.4%, its four roots
   its cost. The shaman's warband reads 33% at sixty fights at every commit back to its sizing,
   whose thirty read 24.6%, so the leaders want a read at sixty or more (the to-do's defence line). His to pick: the pickets' count, and the rest of
-  `docs/domain_statuses_proposal.md` (its section 8 holds this round's open items). The
+  `docs/domain_statuses_proposal.md` (its section 8 holds this round's open items). Inside a tier nothing steps by the
+  Convergence but the opening's count: the variants by Convergence his design of 7 November
+  called for were pruned on a read from before the reboot, and the bosses' entries by tier and
+  ramp were never written. Read on 23 November, a squad two battles into tier one pays an
+  elite and a boss a third less, and half again their hit points puts the price back (the
+  tide proposal's section 5; `docs/measurements.md`). The
   battle whole is the open question (the brief's section 11): at their ratings a second
   battle's fights come to three fifths to nine tenths of a squad's hull, and a fight met a
   machine short costs four to six times its price. Tiers two and three are unsized, their
   foes still the ones sized against a shield that refilled; the first battle, the Meadow's
   alone and the one a trio fights, is built and its sizing his. On a debug
-  build's SETTINGS, TRIALS, each a number still to be picked: HEAT, TOP BASIC, RANK AND FILE
-  and BARRIER BASIC (read at the next launch), OVERHEAT, FIELD DEPTH, OPENING, FODDER,
-  RUPTURE, TIDE and STRIKE (read as the next battle starts). A dial leaves the page with its
-  question; the block is cut, a blow past a shield reaching the hull. The runners lay the
+  build's SETTINGS, TRIALS, what is tried in person and nothing else since 24 November: TIDE
+  (the graded tide), SENDS, STRIKE, PACK BONUS, FIELD DEPTH and PHASED, each read as the next
+  battle starts, under SET (GRADED, AS BUILT). A dial leaves the page with its question: the
+  basics' four and the overheat's on 23 November, each settled as built (the vanilla 3 for 4
+  heat against a standard foe of 4, the Carbine 4 for 5, the Barrier basic on the starting
+  dice, a point of hull a point of heat past the maximum); the tide's density, the rift's own
+  count, the fodder's worth, the flat pace and the start's tears on 24 November, cut with
+  their engine; the opening's distance, the Rupture's beats and the leaders' step the same
+  day, kept as the runners' what-ifs; the block is cut, a blow past a shield reaching the hull. The runners lay the
   same what-ifs with `--refit` (`sim/refit.gd`). `docs/balance.md` is the matrix of 27
   October, older than every rule since, and still prints the old aims' cells and a
   comparison section the next run drops. Detail: `docs/briefs/numbers_pass.md`; the refit
   brief's sections 13, 22 and 23; the bible's scale row and section 12.
 - **The battle and its map.** A battle is the defence of a long wall: a field 20 by 12, the
   wall along one edge and the rift opposite, the siege under way as it opens; MAP VIEW turns
-  it (the wall at the left, the default, or at the bottom). A pack pushes for its own stretch
-  of wall, flanks or hunts one machine; a pack is one fight, a hunter's catch first; nobody
-  blocks a move and nobody ends on another's hex. The tide comes on a beat, a peak of Rift
-  Pressure opening tears on the seam; the Rupture meter is two beats of it, filled by menace,
+  it (the wall at the left, the default, or at the bottom), and a pinch zooms out to the whole
+  field. A pack pushes for the stretch of wall it reaches soonest, flanks or hunts one machine;
+  a pack is one fight, a hunter's catch first; nobody blocks a move and nobody ends on
+  another's hex. The tide comes on a beat, a peak of Rift Pressure opening tears on a row of
+  their own that steps a row toward the wall and stops four rows short of it; the seam is a circle about the rift that grows a round,
+  a picture alone, and a tear paints its own ground. As a turn ends the map glides out to the
+  whole field, ROUND N over it while the packs walk and the seam grows, then back, then the
+  tears open one by one. The Rupture meter is two beats of the tide, filled by menace,
   its Fractures calling the elites; the boss holds its hex before the rift's five, sealed
   until the Rupture. A pip of threat rating strikes the wall for ten. A move that plays ends
   its machine's action unless an order stands, and UNDO gives it back. Six shapes by the
@@ -371,8 +410,10 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   measure the sizing stands on. `tools/battle_run.gd` plays one battle of a run
   whole by squads, reads the field's trial dials from the environment as the game does, and
   with `--whole` plays a player that never fights a pack short at the wall; and `tools/balance.gd --packs rating` fights every composition with squads
-  of its rating. `tools/budget_model.py` and
-  `tools/basics_model.py` are the small models apart from content.
+  of its rating; its `refit=finds=N` reads a squad a few battles into its tier and its `life=`
+  and `blows=` a leader's block. `tools/budget_model.py`,
+  `tools/basics_model.py` and `tools/tide_model.py` (what the tide asks of four machines on
+  the wall, fights for free) are the small models apart from content.
   `tests/test_leftovers.gd` fails the build for a rule no piece prints, and
   `tools/behaviour_trace.gd` checks that a refactor changes no fight.
 - **The phone.** A Pixel on a debug build (the README's phone commands). Ryan's reads arrive
@@ -397,13 +438,17 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
      those names the same day).
    - Every tier-one leader read again at sixty fights or more (the shaman's warband reads 33%
      at every commit back to its thirty-fight sizing), then any leader moved into its band.
-   - The formation pass (the bible's formation row): every composition given a purpose, a
-     row a formation in chat first; the goblin horde's four roots on his play of it.
+   - The graded tide (`docs/tide_proposal.md`; the formation pass runs inside it). It waits
+     on his play of it and his answers to the proposal's questions; then each value that
+     settles lands (the sends by the Convergence first) and its dial is cut, the other domains
+     follow a table at a time, and the leaders' blocks go to him as a table once a rating's
+     size at each Convergence, the target, is set.
    - His play of a second battle, which says whether the budget's shares stand (the brief's
      section 11): the fights are even across the domains, and the battle whole is tight.
-   - The tier-one bench, placeholder pieces each the vanilla with one thing traded, after
-     his picks on RANK AND FILE, HEAT and TOP BASIC: its prices are read from the vanilla he
-     settles on. It brings tier one's slottable numbers down to the basics' (Ryan, 21 November).
+   - The tier-one bench (`docs/briefs/numbers_pass.md`, section 6): a grid for his marks since
+     23 November, each find the vanilla with one thing traded, priced from the vanilla he
+     settled that day; its survivors to the hangar as placeholders, then content. It brings
+     tier one's slottable numbers down to the basics' (Ryan, 21 November).
    - The scorches on every machine above tier one, then the scaling from the baseline: the
      first battle down, its sizing his ("I'll handle that one"), tiers two and three up.
 2. **The machines the reboot broke** (another session's line, beside the first): each fix
@@ -449,7 +494,7 @@ Deleted on his word of 20 November: the vocabulary marks, the targeting scenes, 
 analysis, the effects listening page and the engagement sandbox (the README's docs line has the
 copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 
-- The terminology standard, what is still his to mark (settled rules listed for reference; Version 8, 24 November): https://claude.ai/artifact/TXNpkS4zuPJ5c6sEpk9oF4,
+- The terminology standard, what is still his to mark (settled rules listed for reference; Version 9, 24 November): https://claude.ai/artifact/TXNpkS4zuPJ5c6sEpk9oF4,
   made from `docs/text_standard.md`'s section 2 and `docs/terminology_proposal.md`'s section 4 by `tools/pages/terminology_marks_page.py` and
   published with the `db` and `user` capabilities. Each rule, call and name takes a mark and a
   note, saved in the collection `marks`, a document an item keyed by its id (`rule-13`,
@@ -459,7 +504,10 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   Published at v0.657 on 23 November from main's file at `b3f7c466` (the page's Version 520),
-  over v0.655 (the live page checked byte for byte against `33c4cc61`'s file first). Before republishing,
+  over v0.655 (the live page checked byte for byte against `33c4cc61`'s file first). The file is
+  at v0.662 on main since `claude/formation-pass-feedback-rlvx5x` landed on 24 November (the wall,
+  tears and seam rows, the vanilla, reboot, Barrier and hunters rows, section 12's tide item),
+  unpublished: the session that wrote it had no room left to read the live page whole. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
   `b3f7c466` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
@@ -468,9 +516,12 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   check the tables script's run against the file's tables before keeping it: a row it
   reverts belongs to a branch not yet landed.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
-  files from `tools/hangar_data.py`'s printed map. A publish sends only the files that moved,
+  files from `tools/hangar_data.py`'s printed map. Unpublished from
+  `claude/formation-pass-feedback-rlvx5x`: four tier-one stock dice and the vocabulary's Seam,
+  Tear, Rift Pressure and Ramp lines moved on 23 November (its `text` and `edits` collections
+  were empty that day, `designs` his two notes of 5 November). A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 338 (24 November): a chassis's built-in components are Integrated, and Fixed: X is the rule on Rage and Burrowed. Version 337 (24 November): technical lines, Consumed and Removed on the statuses that never stack, the Nemesis's Rage split onto its passive and its Knuckles. Version 336 (24 November): main at `d044ce7`, the standard landed. Version 335 (24 November): a reach over every Sprite says no hit is Targeted. Version 334 (23 November): a second precision pass on the tips, checked against the engine. Version 333 (23 November): the tips, the target lines and the glossary in Sprite and Frame. Version 332 (23 November): main taken in, Corrupted's tip on its reboot rule, Hardened Light's "Shield Broken". Version 331 (23 November): Primed's rider at Resolve, the Ape's "Gain 3 Golden". Version 330 (23 November): Sealed's numbers on the status, the tips' "When defeated". Version 329 (23 November): the other 113 glossary tips redrafted to his rules, session drafts for his marks. Version 328 (23 November): his own texts for the sample tips, a line an effect, {N} the unit's live sum where a line counts per stack; Ablating renamed Ablate; Golden +2 whatever laid it, its break a Suppress like any. Version 326 (22 November): ten term tips redrafted in the terminology standard's event format (Ablating, Brittle, Shocked, Primed, Exposed, Golden, Swallowed, Armoured, Empowered, Penetrate), the sample for his marks before the rest, data only. Version 325 (22 November): the Inertia Drill's rule line, data only over 324's page. Version 324 (22 November): a machine's sheet lists every term it orbits, its own first,
+  `edits`, `designs` and `text` read first. Version 339 (24 November): his lines for the Nemesis, Barrier, Lure and Suppressed, the Whip Scorpion's Fixed Death Ray, the Shield and Vent kind tips gone; `tools/hangar_data.py` stops on main's new pack scaling (its SCALING check, for the formation session), so this publish carried the content and the Text tab alone. Version 338 (24 November): a chassis's built-in components are Integrated, and Fixed: X is the rule on Rage and Burrowed. Version 337 (24 November): technical lines, Consumed and Removed on the statuses that never stack, the Nemesis's Rage split onto its passive and its Knuckles. Version 336 (24 November): main at `d044ce7`, the standard landed. Version 335 (24 November): a reach over every Sprite says no hit is Targeted. Version 334 (23 November): a second precision pass on the tips, checked against the engine. Version 333 (23 November): the tips, the target lines and the glossary in Sprite and Frame. Version 332 (23 November): main taken in, Corrupted's tip on its reboot rule, Hardened Light's "Shield Broken". Version 331 (23 November): Primed's rider at Resolve, the Ape's "Gain 3 Golden". Version 330 (23 November): Sealed's numbers on the status, the tips' "When defeated". Version 329 (23 November): the other 113 glossary tips redrafted to his rules, session drafts for his marks. Version 328 (23 November): his own texts for the sample tips, a line an effect, {N} the unit's live sum where a line counts per stack; Ablating renamed Ablate; Golden +2 whatever laid it, its break a Suppress like any. Version 326 (22 November): ten term tips redrafted in the terminology standard's event format (Ablating, Brittle, Shocked, Primed, Exposed, Golden, Swallowed, Armoured, Empowered, Penetrate), the sample for his marks before the rest, data only. Version 325 (22 November): the Inertia Drill's rule line, data only over 324's page. Version 324 (22 November): a machine's sheet lists every term it orbits, its own first,
   each editable in place; 323 the same day, a dealt machine with an open brief under Unfinished.
   Version 322 (22 November): Version 321's files, the Text
   tab's Vocabulary view with its category filter again, from `claude/gameplay-terminology-tooltips-rug879`. Version 321 (21 November): main at `8b5a027d`, the
