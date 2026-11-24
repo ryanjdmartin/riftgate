@@ -141,7 +141,7 @@ question are their chassis's fixed components. His answer: "I'd rather change Fi
 locked components to Integrated, actually." So a chassis's built-in components are Integrated,
 and "Fixed: Knuckles of Fury" is the rule on Rage, "Fixed: Inertia Drill" on Burrowed.
 
-**A hit, damage and a loss.** (open, 24 November: his ask)
+**A hit, damage and a loss.** (settled 24 November: his word, A with "suffer"; the standard's rule 39)
 His ask: "I want to standardize the difference between something that hits, and is affected by
 armour and brittle and such like the Mole's Drill debuff, and flat damage that bypasses all that
 like Ablate. Both say 'take 1 damage' right now." The engine has three kinds, not two:
@@ -164,6 +164,9 @@ End: Lose 1 Hull per stack ({N}).", and the drill's tick reads "take a hit of 1 
 **B:** A term the player can tap for damage that is not a hit (Flat, True or Pure): "Take 1 Flat
 damage", its tip saying what never sees it and that a Frame's Shield takes it first. "Lose N Hull"
 stays for what passes the Shield too.
+
+His answer: "I like hit for N, suffer N damage, and lose N hull as the format examples that we
+want."
 
 **Names.**
 - **Aloft.** The Roc's climb out of reach, a working name. Pick: Keep · Soaring · Airborne

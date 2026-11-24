@@ -2305,18 +2305,16 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: side_strike is static: value, what the foe to the right of the target takes with every strike, 1 or more" % where)
 		if effect == "strike_again" and (trig != "static" or int(eff.get("value", 0)) < 1):
 			errs.append("%s: strike_again is static: value, the share of each strike's blow its hit again carries, in percent, 1 or more" % where)
-		# The burrow in a reboot's place (the Mole's, Ryan, 16 November; its numbers his of 24
-		# November): its piece the locked piece its die rolls alone while Burrowed (checked against the
-		# chassis's fixed pieces below), its cap on Momentum, Burrowed's armour, and what each turn under
-		# opens with: shield regained, heat cooled and Momentum gained, flat numbers.
+		# The burrow in a reboot's place (the Mole's, Ryan, 16 November): its piece the locked piece
+		# its die rolls alone while Burrowed (checked against the chassis's fixed pieces below). Its
+		# numbers are the statuses' own (Ryan, 24 November: "Move the effects on the mole's passive to
+		# the status chip"): Burrowed's armour and its turn's shield, cooling and Momentum, Momentum's cap.
 		if effect == "burrow":
 			if trig != "static" or str(eff.get("piece", "")).strip_edges().is_empty():
 				errs.append("%s: burrow is static: piece, the locked piece its die rolls alone while Burrowed" % where)
-			if int(eff.get("cap", 0)) < 1 or int(eff.get("armour", 0)) < 1:
-				errs.append("%s: burrow's cap (Momentum at most) and armour (Burrowed's) are 1 or more" % where)
-			for k in ["shield", "cool", "momentum"]:
-				if int(eff.get(k, -1)) < 0:
-					errs.append("%s: burrow's %s, what each turn under opens with, is 0 or more" % [where, k])
+			for k in ["cap", "armour", "shield", "cool", "momentum"]:
+				if eff.has(k):
+					errs.append("%s: burrow takes no %s since 24 November: the number is Burrowed's or Momentum's own (Effects.STATUS)" % [where, k])
 			for k in ["recover", "blow"]:
 				if eff.has(k):
 					errs.append("%s: burrow takes no %s since 24 November: a turn under opens with flat shield, cool and momentum, and the drill's blow is its status's" % [where, k])

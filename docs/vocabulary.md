@@ -50,7 +50,7 @@ Drained by Applied Momentum. | implemented |
 |---|---|---|
 | **Swap** | Second target: another Sprite or an empty slot.
 Resolve: The target and the second target swap places. Massive Sprites cannot move. | implemented |
-| **Volatile** | Commit: Lose {N} Hull. Ignores Shield and Armour. | implemented |
+| **Volatile** | Commit: Lose {N} Hull. | implemented |
 | **Shield cost** | Commit: Lose {N} Shield.
 Cannot be used without enough Shield. | implemented |
 | **Targets** | Which Frames this can be used on, shown as three hexes under its mark: the middle is this Frame, the sides are the other Frames. A filled hex can be chosen. | implemented |
@@ -105,7 +105,7 @@ Cannot be used without Ore. | implemented |
 | **Suppress** | Resolve: Apply Suppressed to each Sprite hit. | implemented |
 | **Brittle** | Resolve: Apply {N} Brittle per hit. | implemented |
 | **Sap** | Resolve: Apply {N} Sapped per hit. | implemented |
-| **Chain** | After Hit: If targeted, deal {N} damage to every Sprite that conducts Chain. These hits are not Targeted. No bonuses or riders apply. | implemented |
+| **Chain** | After Hit: If targeted, hit every Sprite that conducts Chain for {N} damage. These hits are not Targeted. No bonuses or riders apply. | implemented |
 | **Rapid** | Resolve: Reroll this die for free, never onto this entry. This entry goes dark for the rest of the round. | implemented |
 | **Instant** | Resolve: Reroll this die for free. May land on this entry again. | implemented |
 | **Jam** | Resolve: Apply Jammed to the entry the target's die shows. | implemented |
@@ -154,17 +154,16 @@ Shield Broken: Reduce stacks to 0. | implemented |
 | **Primed** | Resolve: If this was an attack, apply 1 Ablate per hit and reduce stacks by 1. | implemented |
 | **Jammed** | This entry comes up blank.
 On Reboot: Removed. | implemented |
-| **Corrupted** | Commit: Take 3 damage per stack ({N}).
+| **Corrupted** | Commit: Suffer 3 damage per stack ({N}).
 On Reboot: Reduce stacks to 0. | implemented |
 | **Phased** | Immune to all damage. Cannot be targeted or hit. Can still act.
 Other statuses still count down.
 Round End: Removed. | implemented |
-| **Ablate** | Turn End: Take 1 damage per stack ({N}), then reduce stacks by 1.
-Ignores Armour and Barrier. | implemented |
+| **Ablate** | Turn End: Suffer 1 damage per stack ({N}), then reduce stacks by 1. | implemented |
 | **Suppressed** | May not act.
 Turn End: Removed. Gain Numbed equal to stun resist: 1, 2 if massive, 3 if elite, hero or boss. | implemented |
 | **Vitriol** | Turn End: Lose 10% of current HP per stack ({N}), rounded down, then reduce stacks by 1.
-Ignores Armour and Barrier. Cannot reduce HP below 1. | implemented |
+Cannot reduce HP below 1. | implemented |
 | **Web Bomb** | Round End: Consumed to apply Suppressed to this Sprite and the nearest Sprite to its right in the same rank, or to its left if none. | implemented |
 | **Spun Up** | Weapon hits deal +2 damage per stack ({N}).
 Resolve: If a weapon was used, reduce stacks to 0. | implemented |
@@ -195,7 +194,7 @@ Turn Start: Reduce stacks by half, rounded down. | implemented |
 | **Destroyed component** | This entry is blank for the rest of the battle. Passive bonuses still apply. Passive abilities do not.
 After the battle: an Integrated component is rebuilt, a hardpoint's component is lost. | implemented |
 | **Mine** | Uses aimed at this Sprite by the Frame that laid it add their damage and riders to the Mine.
-When defeated: The Mine goes off, dealing 1 damage per stack ({N}) to every Sprite around it, with its riders. | implemented |
+When defeated: The Mine goes off, hitting every Sprite around it for 1 damage per stack ({N}), with its riders. | implemented |
 | **Rage** | Immune to all Debuffs.
 Fixed: Knuckles of Fury
 Reboot disabled.
@@ -204,7 +203,7 @@ At 0 Heat: Consumed to Reboot immediately. | implemented |
 | **Scorched** | Uses aimed at a Sprite cost +1 Heat per stack ({N}).
 Turn End: Reduce stacks to 0. | implemented |
 | **Overheated** | Stacks equal Heat above Max Heat.
-Turn End: Take 1 Hull damage per stack ({N}), ignoring Shield and Armour. The first time since the last Reboot, reduce Shield to 0.
+Turn End: Lose 1 Hull per stack ({N}). The first time since the last Reboot, reduce Shield to 0.
 On Reboot: Reduce stacks to 0.
 Cannot be cleansed. | implemented |
 | **Broken** | Applied when Shield reaches 0. Shield cannot be gained.
@@ -247,9 +246,9 @@ Resolve: If a weapon was used, reduce stacks by 1. | implemented |
 Fixed: Inertia Drill
 Turn Start: Remove Broken, Overheated, Jammed and Corrupted. Gain 3 Shield and 5 Momentum, and lose 6 Heat.
 Resolve: If Inertia Drill was used, removed. | implemented |
-| **Applied Momentum** | Turn Start: Gain 1 Brittle and Pinned. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.
+| **Applied Momentum** | Turn Start: Gain 1 Brittle and Pinned. Then, take a hit for 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.
 Resolve: If hit, the Mole gains 1 Momentum. | implemented |
-| **Frozen Momentum** | Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.
+| **Frozen Momentum** | Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take a hit for 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.
 Resolve: If hit, the Mole gains 1 Momentum. | implemented |
 | **Heated Momentum** | Turn Start: Gain 1 Brittle, 2 Ablate, Pinned, and Seared. Then, drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.
 Resolve: If hit, the Mole gains 1 Momentum. | implemented |

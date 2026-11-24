@@ -25,6 +25,8 @@ section 4. `tests/test_terms.gd` holds every tip to the mechanical parts.
   "Consumed" when its own effect uses it up ("At 0 Heat: Consumed to Reboot immediately") and
   "Removed" when it simply ends ("Turn Start: Removed."). A chip and a keyword on the die say
   "X N". A timer's stacks are its clock, never its strength.
+- **Damage.** "Hit for N" is a hit: Shield, then Armour, with Barrier, Brittle and When Hit. "Suffer
+  N damage" is not a hit: Shield first and nothing else. "Lose N Hull" comes off Hull alone (rule 39).
 - **Numbers.** Digits; rates use "per". A status's numbers are its own, never the move's or the
   passive's that laid it. `{N}` fills with the unit's current sum and goes only on a per-stack
   line ("+1 damage per stack ({N})"); in a keyword's tip it is the keyword's number.
@@ -256,3 +258,23 @@ does.
 **38. Game nouns are capitalised.**
 His lines of 24 November write Heat, Max Heat, Debuffs and Reboot with capitals, beside Armour
 and Max HP: so do Shield, Hull, HP, Buff and Debuff. "Damage" stays lowercase, as his lines have it.
+
+### Damage
+
+**39. Hit, suffer, lose.** (settled 24 November: his word)
+His format of 24 November: "I like hit for N, suffer N damage, and lose N hull as the format
+examples that we want", for his ask the same day, "standardize the difference between something
+that hits, and is affected by armour and brittle and such like the Mole's Drill debuff, and flat
+damage that bypasses all that like Ablate." Three verbs for the three ways damage lands:
+- *Hit for N*: a hit. A Frame's Shield takes it first, then Armour comes off what reaches Hull or
+  HP; Barrier, Brittle and every When Hit apply. A status's own line says "take a hit for N damage".
+- *Suffer N damage*: not a hit. A Frame's Shield takes it first, then Hull or HP; Armour, Barrier,
+  Brittle and the hit events never touch it (Ablate, Corrupted).
+- *Lose N Hull* (HP, Shield): off that number alone, nothing before it (Volatile, Overheated,
+  Vitriol).
+
+Hull Damaged reads all three. The verb says what touches the damage, so no line adds "Ignores
+Armour and Barrier" to say it again.
+- "Turn End: Take 1 damage per stack ({N}), then reduce stacks by 1. Ignores Armour and Barrier." (Ablate) → "Turn End: Suffer 1 damage per stack ({N}), then reduce stacks by 1."
+- "Take 1 Hull damage per stack ({N}), ignoring Shield and Armour." (Overheated) → "Lose 1 Hull per stack ({N})."
+- "Then, take 1 damage" (Applied Momentum) → "Then, take a hit for 1 damage"

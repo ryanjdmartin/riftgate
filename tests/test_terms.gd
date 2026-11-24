@@ -254,6 +254,10 @@ func test_every_tip_keeps_the_standards_shape() -> void:
 	var db := ContentDB.load_default()
 	var gone := RegEx.new()
 	gone.compile("(?i)\\b(foes?|foe's|machines?|machine's|enemy|enemies|blows?|strikes?|struck|falls|fell|felled)\\b")
+	# Damage lands three ways, each its verb (Ryan, 24 November: "I like hit for N, suffer N damage,
+	# and lose N hull as the format examples that we want"): "take N damage" says none of them.
+	var took := RegEx.new()
+	took.compile("(?i)\\b(takes?|deals?) (\\d+|\\{N\\}) (hull )?damage\\b")
 	var labels := ["Turn Start", "Turn End", "Round End", "Commit", "On Hit", "When Hit", "After Hit", "After Being Hit", "Resolve",
 		"When defeated", "On Reboot", "Shield Broken", "Hull Damaged", "Skirmish Start", "On Suppressed", "On Burrowed"]
 	var shown := 0
@@ -267,6 +271,8 @@ func test_every_tip_keeps_the_standards_shape() -> void:
 			assert_false(tip.contains(";"), "%s: no semicolon (%s)" % [id, tip])
 			var m := gone.search(tip)
 			assert_true(m == null, "%s: says '%s', a word the standard retired" % [id, m.get_string() if m != null else ""])
+			var t := took.search(tip)
+			assert_true(t == null, "%s: says '%s': a hit is 'hit for N', the rest 'suffer N damage' or 'lose N Hull' (the standard's rule 39)" % [id, t.get_string() if t != null else ""])
 			# A status that never stacks is consumed or removed, never reduced (Ryan, 24 November:
 			# "non-stacking statuses shouldn't say 'reduce to 0,' they can just say 'Consumed' or
 			# 'Removed' just like Shock"): one that renews, counts nothing and keeps no timer.

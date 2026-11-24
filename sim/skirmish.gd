@@ -6367,11 +6367,10 @@ func _rage_cooled(ms: MechState) -> bool:
 ## its END TURN and it is free to overheat again; a foe's jams light, the reboot's drop. It gains a
 ## no Momentum ("Burrow does not bank. But it does gain the 1 Armour", Ryan, 24 November), and its
 ## drill comes home from its foe, its Momentum left where it ended up ("Yes it brings the drill
-## back and momentum stays where it ended up"). Burrowed, its armour the rule's from this turn,
-## its die rolls the Drill alone (Effects.live_entries), and each turn under opens with the rule's
+## back and momentum stays where it ended up"). Burrowed, its armour Burrowed's own from this turn,
+## its die rolls the Drill alone (Effects.live_entries), and each turn under opens with Burrowed's
 ## flat shield, cooling and Momentum (_burrowed_turn).
 func _burrow(ms: MechState) -> void:
-	var rule := Effects.burrow_rule(ms.unit)
 	ms.assigned = true
 	var vented := ms.overheat_stacks()
 	if vented > 0:
@@ -6380,7 +6379,7 @@ func _burrow(ms: MechState) -> void:
 	var lit := Effects.clear_waiting_jams(ms.unit)
 	Effects.clear_corruption(ms.unit)   # the reboot's drop heals corruption as it lights a jam
 	var back := _recall_drill(ms)
-	Effects.stack(ms.unit, Effects.STATUS["burrowed"], Effects.SKIRMISH, "burrow", maxi(1, int(rule.get("armour", 1))), Effects.DECAY_NONE)
+	Effects.stack(ms.unit, Effects.STATUS["burrowed"], Effects.SKIRMISH, "burrow", 1, Effects.DECAY_NONE)
 	var bits: Array[String] = ["Momentum %d" % Effects.stacks_of(ms.unit, "momentum")]
 	if back:
 		bits.append("its drill home")
@@ -6419,23 +6418,22 @@ static func drill_source(ms: MechState) -> String:
 ## at the start of each turn while burrowed, just like reboot would"; 24 November: "When burrowed,
 ## it gains 50% shield regen, 50% cooling, and 50% Momentum generation", "50% of the final numbers,
 ## but represented as flat numbers"): Broken and Overheated cleared and the one overheat between
-## reboots free again; the rule's shield back on it and its cooling off its heat, so a blow taken
+## reboots free again; Burrowed's shield back on it and its cooling off its heat, so a blow taken
 ## under is mended as any missing shield is; a foe's jams lit, as a reboot's drop lights them
-## ("mechanically exactly like using Reboot every turn"); and the rule's Momentum, up to the cap.
+## ("mechanically exactly like using Reboot every turn"); and Burrowed's Momentum, up to Momentum's cap.
 func _burrowed_turn(ms: MechState) -> void:
-	var rule := Effects.burrow_rule(ms.unit)
 	ms.shield_broken = false
 	ms.overheated = false
 	if ms.heat > ms.heat_max:
 		ms.heat = ms.heat_max
 	var before := ms.unit.shield
-	ms.unit.shield = mini(ms.unit.shield_max, ms.unit.shield + maxi(0, int(rule.get("shield", 0))))
-	var cool := mini(ms.heat, maxi(0, int(rule.get("cool", 0))))
+	ms.unit.shield = mini(ms.unit.shield_max, ms.unit.shield + Effects.burrowed_number("shield"))
+	var cool := mini(ms.heat, Effects.burrowed_number("cool"))
 	ms.heat -= cool
 	Effects.clear_waiting_jams(ms.unit)
 	Effects.clear_corruption(ms.unit)
-	var cap := maxi(1, int(rule.get("cap", 10)))
-	var gain := mini(cap - Effects.stacks_of(ms.unit, "momentum"), maxi(0, int(rule.get("momentum", 0))))
+	var cap := maxi(1, Effects.store_cap(ms.unit, "momentum"))
+	var gain := mini(cap - Effects.stacks_of(ms.unit, "momentum"), Effects.burrowed_number("momentum"))
 	if gain > 0:
 		Effects.stack(ms.unit, Effects.STATUS["momentum"], Effects.SKIRMISH, "burrow", gain, Effects.DECAY_NONE)
 	log.append("%s is burrowed: shield +%d, heat -%d, Momentum %d" % [ms.unit.display_name, ms.unit.shield - before, cool, Effects.stacks_of(ms.unit, "momentum")])

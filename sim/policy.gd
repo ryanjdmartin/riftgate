@@ -931,12 +931,11 @@ static func drill_working(sk: Skirmish, ms: Skirmish.MechState) -> bool:
 ## not yet made good, it is worth waiting a turn: the drill is held (a score below nothing). A Ward
 ## turns it away unless the piece ignores Ward.
 func drill_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
-	var rule := Effects.burrow_rule(ms.unit)
 	var have := Effects.stacks_of(ms.unit, "momentum")
 	var tick := Effects.momentum_of(ms.unit, f)
 	if Effects.turns_mark(target, str(tick["status"])) and not f.ignores_ward:
 		return 0.0
-	if have < int(rule.get("cap", 10)) and (ms.unit.shield < ms.unit.shield_max or ms.heat > 0):
+	if have < Effects.store_cap(ms.unit, "momentum") and (ms.unit.shield < ms.unit.shield_max or ms.heat > 0):
 		return -1.0
 	var ticks := maxi(1, ceili(float(have) / float(maxi(1, int(tick["drain"])))))
 	var lays: Dictionary = tick["lays"]

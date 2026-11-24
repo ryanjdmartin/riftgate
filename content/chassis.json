@@ -502,12 +502,7 @@
      {
       "trigger": "static",
       "effect": "burrow",
-      "piece": "inertia_drill",
-      "cap": 10,
-      "armour": 1,
-      "shield": 3,
-      "cool": 6,
-      "momentum": 5
+      "piece": "inertia_drill"
      }
     ]
    },

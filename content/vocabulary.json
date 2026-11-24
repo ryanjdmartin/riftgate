@@ -361,7 +361,7 @@
    "id": "volatile",
    "category": "component_property",
    "name": "Volatile",
-   "codex": "Commit: Lose {N} Hull. Ignores Shield and Armour.",
+   "codex": "Commit: Lose {N} Hull.",
    "status": "implemented",
    "design": {
     "holes": "Hull outright, where the Corrupted bite takes shield first. The number is a placeholder. A keyword with a chip until 26 October; a cost like heat since, so the die says the price and no chip does."
@@ -392,7 +392,7 @@
    "id": "chain",
    "category": "keyword",
    "name": "Chain",
-   "codex": "After Hit: If targeted, deal {N} damage to every Sprite that conducts Chain. These hits are not Targeted. No bonuses or riders apply.",
+   "codex": "After Hit: If targeted, hit every Sprite that conducts Chain for {N} damage. These hits are not Targeted. No bonuses or riders apply.",
    "status": "implemented",
    "design": {
     "holes": "Shock's other payoff (Ryan, 28 October: 'the thinking man's AoE'); the kill and repeat and the ping retired; 29 October, Ryan's pick from six looks measured that day: its arcs plain and never spending a charge, with Shock read by a weapon's strike aimed at the foe alone, and a random charge after the arcs, since the arc was short of charges to find. Its number rides on the entry (chain). Retired 3 November: the charge, one other foe at random after the arcs (Ryan, 2 November: \"Chain just is the situational aoe, and if weak we can either add more things for it to proc on, or give it the self-charge again\"); Charged, the primer, supplies the Shock beside the Shock weapons and Retaliate. A debuff's since 17 November (the Storm Petrel's Pulse, its Striker branch): refused until then, since a debuff's arc would carry its riders to every conductor for no blow; with a number the arc is a blow. Its arcs carry no rider since 18 November (Ryan: \"take riders off chain. Thematically it's a lightning arc, not part of the impact\"): they had carried the entry's riders as any area does, the fourth footprint's rule, which on the Pulse lured every Shocked foe it arced to; the Arc Fault Cannon printed none, so it lost nothing. Since 21 November (Ryan: \"All foes on the field with Shock are struck for {value}. Does not use or consume Shock\"; \"If Chain doesn't carry the riders, it shouldn't carry the unit's or weapon's buffs either\"; \"It should stack with spread and penetrate\"; of its own target, \"Any conductor\"): each arc is the number flat, no buff of the machine's or the piece's, on every conductor, its own target too while it still conducts after the strike (a weapon's strike spends a Shock first; a needle stays, and equipment spends none), and a conductor an area reaches takes the area's blow and the arc. Retired that day: the firer's modifiers riding each arc (28 October to 21 November), and a foe an area reached never arcing (29 October to 21 November). Whether an arc is a strike the foe's own statuses, armour and Barrier read (as built) or a flat ping that ignores them waits on his read of the armour data (the bible's section 12)."
@@ -756,7 +756,7 @@
    "id": "corrupted",
    "category": "status",
    "name": "Corrupted",
-   "codex": "Commit: Take 3 damage per stack ({N}).\nOn Reboot: Reduce stacks to 0.",
+   "codex": "Commit: Suffer 3 damage per stack ({N}).\nOn Reboot: Reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "The bite is the status's own number in the engine's table, a placeholder.",
@@ -788,7 +788,7 @@
    "id": "ablating",
    "category": "status",
    "name": "Ablate",
-   "codex": "Turn End: Take 1 damage per stack ({N}), then reduce stacks by 1.\nIgnores Armour and Barrier.",
+   "codex": "Turn End: Suffer 1 damage per stack ({N}), then reduce stacks by 1.",
    "status": "implemented",
    "design": {
     "holes": "Engine ids ablating (a foe's) and ablating_mech (a machine's). Ryan's rule, 15 November, in the place of Burning as heat on a machine: \"hits shield first, I think. Pretty deadly otherwise. Bypasses armour when damaging hull\"; \"Tick of ablate ignores barrier yes\". A Phased machine takes no point and its stack fades all the same, and a Swallowed one's stacks wait (Ryan, 16 November: \"Everything ticks during phased. It doesn't take damage but it's a way of waiting out a debuff\"; \"Swallowed it's out of play so everything should pause\"). The foes' numbers are still the ones sized as heat, his to set. A session's draft, his to write.",
@@ -820,7 +820,7 @@
    "id": "vitriol",
    "category": "status",
    "name": "Vitriol",
-   "codex": "Turn End: Lose 10% of current HP per stack ({N}), rounded down, then reduce stacks by 1.\nIgnores Armour and Barrier. Cannot reduce HP below 1.",
+   "codex": "Turn End: Lose 10% of current HP per stack ({N}), rounded down, then reduce stacks by 1.\nCannot reduce HP below 1.",
    "status": "implemented",
    "design": {
     "holes": "Only the funnel-web's passive lays it; a keyword that ever carries it shares the word. Whether a tick passes Guarded is the parts' question, as Ablating's is. The word Corroded is kept for a foe's damage over time on machines.",
@@ -1058,7 +1058,7 @@
    "id": "mine",
    "category": "status",
    "name": "Mine",
-   "codex": "Uses aimed at this Sprite by the Frame that laid it add their damage and riders to the Mine.\nWhen defeated: The Mine goes off, dealing 1 damage per stack ({N}) to every Sprite around it, with its riders.",
+   "codex": "Uses aimed at this Sprite by the Frame that laid it add their damage and riders to the Mine.\nWhen defeated: The Mine goes off, hitting every Sprite around it for 1 damage per stack ({N}), with its riders.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 9 November: \"the lammergeier basically converts all hits to AoE hits, at the cost of a delay until Death\". One Mine a spend at a flat 2 (\"then look at per hit later if it's weak\"); its riders the spend's whole result on the foe (\"the mine should take the entire result of the spend, then apply it. So a 3-hit flak that burns 1 per hit if the target is under 50% HP, would result in adding a 2 damage mine with 3 flak, and 0-3 burn\"), every hit's stacks as its machine deepened and doubled them and a gated keyword where its gate held (\"if a gate is met when fired only, then apply it\"); the numbered ones add up and the rest ride once; Chain rides as its arcs (Claude's lean, which he took); in the enemy's turn a Mine's Disrupt does nothing; a Suppress rides as fired, each foe the blast meets judging its own Numbed (Claude's read; Ryan: \"Your reads are correct\"). A mark the team laid: a Ward turns it away, a foe's cleanse takes it, the Paradox counts it. A foe taken into a merge hands its Mine to the merger.",
@@ -2108,7 +2108,7 @@
    "id": "overheated",
    "category": "status",
    "name": "Overheated",
-   "codex": "Stacks equal Heat above Max Heat.\nTurn End: Take 1 Hull damage per stack ({N}), ignoring Shield and Armour. The first time since the last Reboot, reduce Shield to 0.\nOn Reboot: Reduce stacks to 0.\nCannot be cleansed.",
+   "codex": "Stacks equal Heat above Max Heat.\nTurn End: Lose 1 Hull per stack ({N}). The first time since the last Reboot, reduce Shield to 0.\nOn Reboot: Reduce stacks to 0.\nCannot be cleansed.",
    "status": "implemented",
    "design": {
     "holes": "The reboot's (Ryan, 13 November: \"an uncleanseable debuff on the unit, a stack for every point of heat\"), read off the gauge and no status of the engine's table. A session's draft, his to write. The hull a stack burns is the trial's OVERHEAT dial, one the game's.",
@@ -2472,7 +2472,7 @@
    "id": "applied_momentum",
    "category": "status",
    "name": "Applied Momentum",
-   "codex": "Turn Start: Gain 1 Brittle and Pinned. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.\nResolve: If hit, the Mole gains 1 Momentum.",
+   "codex": "Turn Start: Gain 1 Brittle and Pinned. Then, take a hit for 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.\nResolve: If hit, the Mole gains 1 Momentum.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 24 November, his text: \"Debuff, doesn't stack. Turn Start: Gain 1 Brittle and Pinned. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole\"; \"The take 1 is a blow\"; \"Go to Resolve, and include area hits as well. Easily added to the Applied Momentum debuff: Resolve: The Mole gains 1 Momentum.\" His words, not yet signed on the Text tab.",
@@ -2488,7 +2488,7 @@
    "id": "frozen_momentum",
    "category": "status",
    "name": "Frozen Momentum",
-   "codex": "Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.\nResolve: If hit, the Mole gains 1 Momentum.",
+   "codex": "Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take a hit for 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.\nResolve: If hit, the Mole gains 1 Momentum.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 24 November, the Glacial Mole's: \"Applied Momentum -> Frozen Momentum. Debuff, doesn't stack. Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.\" Its Resolve line is Applied Momentum's, the form it takes the place of. His words, not yet signed on the Text tab.",
