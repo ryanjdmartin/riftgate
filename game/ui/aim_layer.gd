@@ -9,22 +9,21 @@ extends Control
 ## (drawn in, heavier, bracket corners breathing round it); a spend
 ## waiting on its second target (a Swap) keeps the crosshair pinned on its first.
 ##
-## The tether is aimed at the die's middle and drawn from its edge out, so it never crosses the
-## number the die shows ("edge"), or from the middle itself, over the die ("over"): a debug build's
-## TETHER (Settings), or RIFTGATE_AIM_TETHER, until Ryan picks (22 November: "Your take on the line
-## not covering the face is good and probably correct, but I'd like to see it on top as well").
-## Heavy corners mark the die in hand. `die` and `to` are in this layer's
-## space; nothing shows while `active` is false.
+## The tether runs from the die's middle, over the die, to the crosshair (Ryan, 24 November: "lock
+## in 'over' for the tether and remove the control"). The whole aim is drawn in the HUD's colour,
+## and heavy corners wrap the die's own face, never the chips on its rail (24 November). `die` is
+## the face's rect and `to` the finger, in this layer's space; nothing shows while `active` is false.
 
-const TETHERS := ["edge", "over"]
 ## The crosshair rides under the finger, large, so it shows all round a fingertip (Ryan, 22
-## November: "Crosshair under finger, but it can be large for visibility").
-const RADIUS := 56.0        # its ring
-const LOCKED_RADIUS := 46.0 # drawn in on a target, its brackets outside it
+## November: "Crosshair under finger, but it can be large for visibility"; 24 November: "can be
+## bigger. Don't shrink the reticle when hovering a target").
+const RADIUS := 70.0        # its ring, the same over a target, its brackets outside it there
 const DASH := 12.0
 const GAP := 8.0
 const TETHER_W := 4.0
 const RATE := 6.0           # the dashes' crawl toward the crosshair and the lock's breath, radians a second
+const CORNER := 16.0        # the arms of the die's corners, short of the chips at the rail's head and foot
+const CORNER_OUT := 3.0     # how far outside the face they stand
 
 var active := false
 var from := Vector2.ZERO
@@ -70,26 +69,25 @@ func _draw() -> void:
 	var t := Time.get_ticks_msec() / 1000.0
 	var dark := Color(Palette.BG, 0.85)
 	var col := colour if locked or pinned else Color(colour, 0.85)
-	var r := LOCKED_RADIUS if locked or pinned else RADIUS
-	# The tether: dashes from the die's edge to the crosshair's ring, crawling toward it, each on
-	# a dark edge so it holds on the sky, the field and the tray alike.
+	var r := RADIUS
+	# The tether: dashes from the die's middle to the crosshair's ring, crawling toward it, each on
+	# a dark edge so it holds on the sky, the field, the tray and the die alike.
 	var span := to - from
 	var length := span.length()
 	var dir := span / maxf(length, 0.001)
-	var start := _edge(die.grow(4.0), dir) if tether() == "edge" else 0.0   # where the line from the die's middle leaves it, or the middle
-	if length > r + start + 4.0:
+	if length > r + 4.0:
 		var run := length - r - 2.0
-		var d := start + fmod(t * RATE * 6.0, DASH + GAP) - (DASH + GAP)
+		var d := fmod(t * RATE * 6.0, DASH + GAP) - (DASH + GAP)
 		while d < run:
-			var a := maxf(d, start)
+			var a := maxf(d, 0.0)
 			var b := minf(d + DASH, run)
 			if b > a:
 				draw_line(from + dir * a, from + dir * b, dark, TETHER_W + 3.0)
 				draw_line(from + dir * a, from + dir * b, col, TETHER_W)
 			d += DASH + GAP
 	# The die in hand: heavy corners round it.
-	Hud.brackets(self, die.grow(6.0), 22.0, dark, 7.0)
-	Hud.brackets(self, die.grow(6.0), 22.0, col, 4.0)
+	Hud.brackets(self, die.grow(CORNER_OUT), CORNER, dark, 7.0)
+	Hud.brackets(self, die.grow(CORNER_OUT), CORNER, col, 4.0)
 	# The crosshair: a ring, four ticks reaching in, and a dot at its heart; locked, heavier, with
 	# bracket corners breathing round it.
 	var w := 5.0 if locked or pinned else 4.0
@@ -107,15 +105,3 @@ func _draw() -> void:
 		Hud.brackets(self, box, 20.0, dark, 8.0)
 		Hud.brackets(self, box, 20.0, col, 5.0)
 
-
-## How far from a rect's middle the ray along `dir` leaves it.
-static func _edge(rect: Rect2, dir: Vector2) -> float:
-	var half := rect.size * 0.5
-	var tx := half.x / absf(dir.x) if absf(dir.x) > 0.0001 else INF
-	var ty := half.y / absf(dir.y) if absf(dir.y) > 0.0001 else INF
-	return minf(tx, ty)
-
-
-## The tether drawn now (TETHERS).
-static func tether() -> String:
-	return Settings.look("RIFTGATE_AIM_TETHER", "aim_tether", TETHERS)

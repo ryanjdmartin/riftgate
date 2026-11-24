@@ -581,22 +581,32 @@ func _draw() -> void:
 	# A pack the selected machine could be ordered onto, from where its move can take it or where
 	# it stands, bracketed in the violet's bright (the long wall brief 7.2: the band past the move
 	# went with the rings; the move's lit cells and these brackets are what a selection shows).
-	if not threat.is_empty() and _anim.is_empty():
+	if not threat.is_empty() and not is_blocking():
 		if selected != null:
 			for sq in field.packs():
 				var hit := false
 				for x in sq.hexes():
 					hit = hit or threat.has(x) or Hex.distance(x, selected.pos) <= selected.attack_range
 				if hit:
+					# Lit, not only bracketed (Ryan, 24 November: "when ordering a unit on the map, it
+					# needs to highlight packs it could engage"): its hexes washed and edged in the
+					# violet's bright, the brackets heavy on a dark edge.
+					var cells := {}
+					for x in sq.hexes():
+						cells[x] = true
+						draw_colored_polygon(MapOrient.corners(center(x), HEX_SIZE - _px(2.0)), Color(Palette.ENEMY, 0.55))
+					_region_outline(cells, Palette.ENEMY, 5.0)
 					var bc := center(sq.pos)
-					Hud.brackets(self, Rect2(bc - Vector2(HEX_SIZE, HEX_SIZE) * 0.9, Vector2(HEX_SIZE, HEX_SIZE) * 1.8), _px(12.0), ENEMY_HOT, _px(3.0))
+					var box := Rect2(bc - Vector2(HEX_SIZE, HEX_SIZE), Vector2(HEX_SIZE, HEX_SIZE) * 2.0)
+					Hud.brackets(self, box, _px(16.0), Color(Palette.BG, 0.85), _px(7.0))
+					Hud.brackets(self, box, _px(16.0), ENEMY_HOT, _px(4.0))
 
 	# The moves planned and not yet played (Ryan, 25 October: "highlight and display the planned
 	# move like we used to"): each machine's route in the display's light from where it stands,
 	# its lock on the hex its plan ends on, and a carrier's riders' landings outlined. They play
 	# on ENGAGE or END TURN. (Cut by mistake with the hunters' rings on 10 November, so a move
 	# was planned and nothing showed it: Ryan, "I can, but the UI doesnt register it".)
-	if _anim.is_empty() and fight_group.is_empty():
+	if not is_blocking() and fight_group.is_empty():
 		var last_piece := {}
 		var first_piece := {}
 		for k in range(plans.size()):
@@ -622,7 +632,7 @@ func _draw() -> void:
 	# prey and its landing hex says when it catches.
 	var hunted := {}   # prey -> the packs hunting it, for the tags drawn over the units
 	var hunting := {}  # hunter -> its prey, for the hunter's own chip
-	if _anim.is_empty() and fight_group.is_empty() and forced.is_empty():
+	if not is_blocking() and fight_group.is_empty() and forced.is_empty():
 		for sq in field.packs():
 			var w: Battlefield.Walk = walks.get(sq.id, null)
 			if w == null:
@@ -657,15 +667,15 @@ func _draw() -> void:
 	# A selected machine wears its shield and hull over its hex; an inspected pack its
 	# strength as one segment a foe (Ryan, 29 September: a pack keeps only its count between
 	# fights, so every segment is whole; per-foe hull would need the pack to remember it).
-	if selected != null and _anim.is_empty():
+	if selected != null and not is_blocking():
 		_unit_gauges(selected)
 	var ipack := field.unit_at(inspected) if map.has(inspected) else null
-	if ipack != null and ipack.is_enemy() and _anim.is_empty():
+	if ipack != null and ipack.is_enemy() and not is_blocking():
 		_pack_segments(ipack)
 
 	# The hex a tap asked about: bracketed in the display's light (Ryan, 29 September); a
 	# pack there has its route breathing between the violets, drawn in the pack loop.
-	if map.has(inspected) and _anim.is_empty():
+	if map.has(inspected) and not is_blocking():
 		var ic := center(inspected)
 		Hud.brackets(self, Rect2(ic - Vector2(HEX_SIZE, HEX_SIZE) * 0.95, Vector2(HEX_SIZE, HEX_SIZE) * 1.9), _px(HEX_SIZE * 0.45), Color(hud, 0.95), _px(2.5))
 
@@ -701,7 +711,7 @@ func _draw() -> void:
 	# The fights hunters forced (bible section 5): the hunter and its prey lit, the prey
 	# tagged; they come first on the player's turn, and the catch is drawn as the prey's order
 	# onto its hunters, below.
-	if _anim.is_empty() and fight_group.is_empty():
+	if not is_blocking() and fight_group.is_empty():
 		for f in forced:
 			var prey: Unit = f["prey"]
 			for h in f["hunters"]:
@@ -710,13 +720,13 @@ func _draw() -> void:
 			_plaque(center(prey.pos) + Vector2(0.0, -HEX_SIZE * 1.05), "CAUGHT", Palette.ENEMY, 2.0)
 	# The orders (bible section 5): a line from each machine to the pack it is ordered onto, in
 	# the display's light, dashes crawling toward the pack; a caught machine's to its hunters.
-	if _anim.is_empty() and fight_group.is_empty():
+	if not is_blocking() and fight_group.is_empty():
 		for pair in order_pairs():
 			_order_line(pair[0], pair[1])
 	# The fight shown (bible section 5): the next one ENGAGE opens, the one a dragged machine
 	# is over, or a pack looked at: its pack lit, the machines in it bracketed. No band says where
 	# a machine must stand (the long wall brief 7.2): beside the pack, which the lit move shows.
-	if not attack.is_empty() and _anim.is_empty():
+	if not attack.is_empty() and not is_blocking():
 		var targets: Array = attack.get("targets", [])
 		var group: Array = targets
 		for u in group:
@@ -735,7 +745,7 @@ func _draw() -> void:
 	# still act: the board under the map says it, each machine's row (Ryan, 9 November: "I don't
 	# like the action-remaining marker, it causes clutter and confusion. Remove, the panel does that
 	# job").
-	if _anim.is_empty() and fight_group.is_empty():
+	if not is_blocking() and fight_group.is_empty():
 		for k in range(queue.size()):
 			var q: Dictionary = queue[k]
 			var on: Unit = q["target"] if q["target"] != null else q["prey"]
@@ -1637,16 +1647,44 @@ func _draw_field_units(map: BattleMap) -> void:
 		for w in _shell_walls(map):
 			items.append([float(w["y"]), w])
 	items.sort_custom(func(x: Array, y: Array) -> bool: return float(x[0]) < float(y[0]))
+	var walls: Array = []   # the stretches drawn so far, as rects in map space
 	for it in items:
 		if it[1] is Unit:
 			if field.wrecks.has(it[1]):
 				_draw_wreck(it[1])
 			else:
 				_draw_unit(it[1])
+				_machine_over_walls(it[1], walls)
 		elif (it[1] as Dictionary).has("plate"):
 			_draw_wall(it[1], now, mouth)
+			var a: Vector2 = it[1]["a"]
+			var b: Vector2 = it[1]["b"]
+			walls.append(Rect2(a, Vector2.ZERO).expand(b).expand(a + Vector2(0.0, -HEX_SIZE * SHELL_HEIGHT * 1.12)).grow(_px(4.0)))
 		else:
 			_draw_cache(it[1])
+
+
+## A machine in front of a stretch of the rift's shell drawn again over it (Ryan, 24 November: "The
+## rift shell is being drawn over things in front of it, still"): the machines are the 3D scene's,
+## under every flat mark, so the wall the field draws in its order down the glass covered one
+## standing below it. Where a stretch already drawn overlaps it, its own box is cut from the
+## machines' layer of the scene (Map3D's units, transparent round them) and laid over the wall.
+func _machine_over_walls(u: Unit, walls: Array) -> void:
+	if walls.is_empty() or _map3d == null or not u.is_player() or u.is_static():
+		return
+	var c := _unit_center(u)
+	var box := Rect2(c - Vector2(HEX_SIZE * 0.95, HEX_SIZE * 1.9), Vector2(HEX_SIZE * 1.9, HEX_SIZE * 2.4))
+	var hit := false
+	for w in walls:
+		hit = hit or (w as Rect2).intersects(box)
+	if not hit:
+		return
+	var density := _density()
+	var tex := _map3d.get_units_texture()
+	var screen := Rect2(Vector2(scroll_x, scroll_y) + box.position * zoom, box.size * zoom)
+	_screen_space()
+	draw_texture_rect_region(tex, screen, Rect2(screen.position * density, screen.size * density))
+	_map_space()
 
 
 ## One stretch of the wall: its face from the ground to its faux height, a pale cap along its top
@@ -2478,6 +2516,7 @@ static func mech_seconds_per_hex(move: float) -> float:
 var _anim: Dictionary = {}      # unit id -> {path, t, curve: MovePath, hex: the step reached}
 var _anim_queue: Array = []     # [[moves], ...] phases still to play: mechs, then packs
 var _anim_done: Callable = Callable()
+var _blocking := true   # what plays holds the player's hands (is_blocking)
 
 
 ## The plan as phases to play (Ryan, 25 October: the planned moves animate on ENGAGE or END
@@ -2531,6 +2570,14 @@ func is_playing() -> bool:
 	return not _anim.is_empty() or not _anim_queue.is_empty() or _cut_tween != null
 
 
+## Whether what plays holds the player's hands (a fight's moves, the enemy's turn); a machine's
+## own executed move never does (Ryan, 24 November: "I should not have to wait for a movement
+## animation on the map to complete before being able to interact with anything. Should just
+## happen asynchronously").
+func is_blocking() -> bool:
+	return _cut_tween != null or (_blocking and (not _anim.is_empty() or not _anim_queue.is_empty()))
+
+
 ## Play the phase's moves: the mechs along their routes, then the packs along their
 ## intents, then `done`. Each move is [unit id, Array of hexes from start to end].
 ## A machine's move may carry riders, [uid, path, [[rider id, the hex it rode from], ...]]: the
@@ -2545,7 +2592,34 @@ func play_moves(mech_moves: Array, pack_moves: Array, done: Callable) -> void:
 ## [[rider id, the hex it rode from, ...], ...]. A move may carry where it leaves its unit
 ## standing, [..., riders, [end hex, facing], {rider id: [hex, facing]}], so a planned machine
 ## with more of its plan still to play stands there between its pieces (`shown`).
-func play_phases(phases: Array, done: Callable) -> void:
+## Called while moves still play, it joins them rather than cutting them short: its first phase
+## sets off at once beside what is moving (a unit already moving waits a phase), the rest line up
+## phase by phase with what is queued, and `done` runs once everything has played, after the
+## earlier `done`. `blocking` false plays it under the player's hands (is_blocking).
+func play_phases(phases: Array, done: Callable, blocking: bool = true) -> void:
+	if is_playing() and _cut_tween == null:
+		_blocking = _blocking or blocking
+		var before := _anim_done
+		_anim_done = func() -> void:
+			if before.is_valid():
+				before.call()
+			if done.is_valid():
+				done.call()
+		var rest: Array = phases.duplicate()
+		if not rest.is_empty() and not _anim.is_empty():
+			var now: Array = []
+			var later: Array = []
+			for mv in rest[0]:
+				(later if _anim.has(mv[0]) else now).append(mv)
+			_start_moves(now)
+			rest[0] = later
+		for k in range(rest.size()):
+			while _anim_queue.size() <= k:
+				_anim_queue.append([])
+			(_anim_queue[k] as Array).append_array(rest[k])
+		queue_redraw()
+		return
+	_blocking = blocking
 	_anim_queue = phases.duplicate()
 	_anim_done = done
 	# Everyone who will move starts where they were, this frame, so nobody blinks to the
@@ -2573,25 +2647,7 @@ func play_phases(phases: Array, done: Callable) -> void:
 func _next_anim_phase() -> void:
 	_anim.clear()
 	while not _anim_queue.is_empty() and _anim.is_empty():
-		var moves: Array = _anim_queue.pop_front()
-		for mv in moves:
-			if (mv[1] as Array).size() >= 2:
-				var riders: Array = []
-				for rd in (mv[2] if mv.size() >= 3 else []):
-					riders.append([rd[0], MapOrient.to_pixel(rd[1], HEX_SIZE) - MapOrient.to_pixel(mv[1][0], HEX_SIZE)])
-				_anim[mv[0]] = {"path": mv[1], "t": 0.0, "curve": _curve_for(mv[0], mv[1]), "hex": 0, "riders": riders,
-					"lands": mv[3] if mv.size() >= 4 else [], "rider_lands": mv[4] if mv.size() >= 5 else {}}
-				# On its way: the animation has it now, from where it stood.
-				shown.erase(mv[0])
-				var start_px: Vector2 = MapOrient.to_pixel(mv[1][0], HEX_SIZE)
-				_anim_px[mv[0]] = start_px
-				if _map3d != null:
-					_map3d.set_anim(mv[0], start_px, Vector2.ZERO)
-				for rd in riders:
-					shown.erase(rd[0])
-					_anim_px[rd[0]] = start_px + (rd[1] as Vector2)
-					if _map3d != null:
-						_map3d.set_anim(rd[0], start_px + (rd[1] as Vector2), Vector2.ZERO)
+		_start_moves(_anim_queue.pop_front())
 	if _anim.is_empty():
 		for uid in _anim_px.keys():
 			if _map3d != null:
@@ -2603,6 +2659,48 @@ func _next_anim_phase() -> void:
 		if cb.is_valid():
 			cb.call()
 	queue_redraw()
+
+
+## Stop a unit's move where it is, and any queued for it, so it stands where the battle has it
+## (an UNDO taking back a move still playing); its riders' with it.
+func stop_unit(uid: int) -> void:
+	var ids: Array = [uid]
+	if _anim.has(uid):
+		for rd in _anim[uid]["riders"]:
+			ids.append(rd[0])
+		_anim.erase(uid)
+	for k in range(_anim_queue.size()):
+		_anim_queue[k] = (_anim_queue[k] as Array).filter(func(mv: Array) -> bool: return int(mv[0]) != uid)
+	for id in ids:
+		_anim_px.erase(id)
+		shown.erase(id)
+		if _map3d != null:
+			_map3d.clear_anim(id)
+	if _anim.is_empty():
+		_next_anim_phase()
+	queue_redraw()
+
+
+## Set `moves` (play_phases' form) off now, each from where its path starts.
+func _start_moves(moves: Array) -> void:
+	for mv in moves:
+		if (mv[1] as Array).size() >= 2:
+			var riders: Array = []
+			for rd in (mv[2] if mv.size() >= 3 else []):
+				riders.append([rd[0], MapOrient.to_pixel(rd[1], HEX_SIZE) - MapOrient.to_pixel(mv[1][0], HEX_SIZE)])
+			_anim[mv[0]] = {"path": mv[1], "t": 0.0, "curve": _curve_for(mv[0], mv[1]), "hex": 0, "riders": riders,
+				"lands": mv[3] if mv.size() >= 4 else [], "rider_lands": mv[4] if mv.size() >= 5 else {}}
+			# On its way: the animation has it now, from where it stood.
+			shown.erase(mv[0])
+			var start_px: Vector2 = MapOrient.to_pixel(mv[1][0], HEX_SIZE)
+			_anim_px[mv[0]] = start_px
+			if _map3d != null:
+				_map3d.set_anim(mv[0], start_px, Vector2.ZERO)
+			for rd in riders:
+				shown.erase(rd[0])
+				_anim_px[rd[0]] = start_px + (rd[1] as Vector2)
+				if _map3d != null:
+					_map3d.set_anim(rd[0], start_px + (rd[1] as Vector2), Vector2.ZERO)
 
 
 ## A move as a curve with a speed along it (MovePath). A machine takes its own step and its

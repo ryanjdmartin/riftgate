@@ -183,10 +183,10 @@ var _aim: AimLayer                    # the die in hand's crosshair and its teth
 ## aim again or cancel.
 var _pending: Dictionary = {}
 var _arrows: ArrowLayer
+var _chips: ChipLayer
 var _details: HudPanel
 var _details_label: Label
 var _details_entry: EntryReadout     # the die's hold: the entry showing, its effects listed (Ryan, 25 October)
-var _details_ring: CylinderView      # a stepping die's chambers in its readout (the Cassowary's)
 var _codex: CodexBox                 # the spec plate, shared with the battle screen
 var _mech_3d: Array[MechView3D] = [] # parallel to _mech_views; null where the mech is a sprite
 var _bg: HudBackdrop = null
@@ -744,6 +744,10 @@ func _build() -> void:
 	_arrows = ArrowLayer.new()
 	_arrows.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_arrows)
+	_chips = ChipLayer.new()   # the foes' chips over their intent lines, the lines over their sprites
+	_chips.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_chips.source = func() -> Array: return _view_foe.keys()
+	add_child(_chips)
 	_aim = AimLayer.new()
 	_aim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_aim)
@@ -764,10 +768,6 @@ func _build() -> void:
 	_details.add_child(dv)
 	_details_label = Hud.label("", 16, Palette.INK)
 	dv.add_child(_details_label)
-	_details_ring = CylinderView.new()
-	_details_ring.visible = false
-	_details_ring.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	dv.add_child(_details_ring)
 	_details_entry = EntryReadout.new()
 	_details_entry.visible = false
 	dv.add_child(_details_entry)
@@ -1890,7 +1890,7 @@ func _foe_rows(foe: Foe) -> Array:
 	# (for the next round's) is a chip like any other.
 	if foe.alive():
 		rows.append_array(_coming_rows(fate.get("coming", {}), ["kindled"] if rally_chip else [], _foe_glyph, _foe_chip_colour))
-	return rows
+	return merge_coming(rows)
 
 
 ## A status's row, as the chips and the hold read it: [glyph, chip text, readout text, colour, kind,
@@ -1923,6 +1923,42 @@ static func _coming_rows(coming: Dictionary, skip: Array, glyph_of: Callable, co
 		var text := "" if renews else "+%d" % int(c["stacks"])
 		rows.append(status_row(str(id), glyph_of.call(id), text, "%s%s on its way" % [str(c["name"]), "" if text.is_empty() else " " + text], colour_of.call(id), "preview"))
 	return rows
+
+
+## Stacks on their way joined to the chip the unit already wears of that status (Ryan, 24
+## November: "if a unit has 1 Brittle and another one is inbound, the original brittle chip should
+## have the preview effect and show 2"): a preview row with a count, matched to a status row of the
+## same glyph and colour, makes that row a preview showing the sum, its readout saying what is on
+## its way, and leaves. Stacks gained are a "+N"; a preview with no gain (a renewal, a fall, the
+## hull an overheat burns) or with nothing to join stands as its own chip.
+static func merge_coming(rows: Array) -> Array:
+	var out: Array = []
+	for r in rows:
+		var into := -1
+		if r.size() > 4 and str(r[4]) == "preview" and str(r[1]).begins_with("+") and _stack_count(str(r[1])) > 0:
+			for k in range(out.size()):
+				var e: Array = out[k]
+				if (e.size() <= 4 or str(e[4]) != "preview") and str(e[0]) == str(r[0]) and (e[3] as Color).is_equal_approx(r[3]) and _stack_count(str(e[1])) > 0:
+					into = k
+					break
+		if into < 0:
+			out.append(r)
+			continue
+		var e: Array = (out[into] as Array).duplicate()
+		var lead := "+" if str(e[1]).begins_with("+") else ""
+		e[1] = "%s%d" % [lead, _stack_count(str(e[1])) + _stack_count(str(r[1]))]
+		e[2] = "%s, %s on its way" % [str(e[2]), str(r[1])]
+		while e.size() < 5:
+			e.append("status")
+		e[4] = "preview"
+		out[into] = e
+	return out
+
+
+## A chip's count as a number: its digits, whatever sign or "×" leads them; 0 for none.
+static func _stack_count(t: String) -> int:
+	var digits := t.lstrip("+-×")
+	return int(digits) if digits.is_valid_int() else 0
 
 
 ## The glyph a foe's status wears on its chip (the rows above name them inline).
@@ -2136,7 +2172,7 @@ func _mech_rows(i: int) -> Array:
 			if Effects.store_cap(ms.unit, id) > 0:
 				skip.append(id)
 		rows.append_array(_coming_rows(fc.get("coming", {}), skip, status_glyph, _chip_colour))
-	return rows
+	return merge_coming(rows)
 
 
 ## A corpse's word: how many rounds its core needs to regrow it, by the core's schedule.
@@ -2200,7 +2236,7 @@ func _refresh_arrows() -> void:
 			if not wanted:
 				continue
 			var from: Vector2 = inv * fv.intent_anchor_global()
-			var to: Vector2 = inv * _mech_views[target_index].anchor_global()
+			var to: Vector2 = inv * _mech_views[target_index].bar_anchor_global()
 			list.append([from, to, Palette.ENEMY, true] if spill.has(target_index) else [from, to, Palette.ENEMY])
 	# The lure preview: every foe the die in hand would turn, dashed to its machine, shown unasked;
 	# one whose blow lands elsewhere as the round stands (the lurer falls before it acts, and it
@@ -2210,24 +2246,20 @@ func _refresh_arrows() -> void:
 			var fv := _foe_view_for(foe)
 			if fv == null:
 				continue
-			list.append([inv * fv.intent_anchor_global(), inv * _mech_views[lurer].anchor_global(), Palette.ENEMY, true])
+			list.append([inv * fv.intent_anchor_global(), inv * _mech_views[lurer].bar_anchor_global(), Palette.ENEMY, true])
 			for i in _round.get("foes", {}).get(foe, {}).get("struck", []):
 				if int(i) != lurer and int(i) >= 0 and int(i) < _mech_views.size():
-					list.append([inv * fv.intent_anchor_global(), inv * _mech_views[int(i)].anchor_global(), Palette.ENEMY, true])
+					list.append([inv * fv.intent_anchor_global(), inv * _mech_views[int(i)].bar_anchor_global(), Palette.ENEMY, true])
 	_arrows.set_arrows(list)
 
 
 ## Readout over a control: a text block (a mined slot's), or lines (EntryReadout): a die's
-## entry showing with its effects listed, a stepping die's cylinder above it, or a unit's
-## gauges, chips and intent. `top` is where the control's drawing starts inside it (a
-## machine's gauges), `gap` the air between the readout and that.
-func _show_details(text: String, near: Control, ring: Array = [], entry: Array = [], top: float = 0.0, gap: float = 10.0) -> void:
+## entry showing with its effects listed, or a unit's gauges, chips and intent. `top` is where
+## the control's drawing starts inside it (a machine's gauges), `gap` the air between the readout
+## and that.
+func _show_details(text: String, near: Control, entry: Array = [], top: float = 0.0, gap: float = 10.0) -> void:
 	_details_label.text = text
 	_details_label.visible = not text.is_empty()
-	# A stepping die's cylinder above its entries: [faces, the chamber showing, the next].
-	_details_ring.visible = not ring.is_empty()
-	if not ring.is_empty():
-		_details_ring.set_cylinder(ring[0], int(ring[1]), int(ring[2]))
 	var width := 360.0
 	# The readout's lines at the panel's content width, so their wrapping is measured at the
 	# width they are drawn.
@@ -2342,10 +2374,9 @@ func _show_die(i: int) -> bool:
 	# October: "it just turns the iconography into text"): its place and name, what holds on
 	# it now, its codex, a line for each mark on the die, a number the live sources moved
 	# highlighted, its own rules last, its tags (EntryReadout).
-	# The whole die is the codex's, a double-tap on the machine. A die that steps (the
-	# Cassowary's) shows its chambers as a cylinder above it: the one showing lit, an arrow
-	# round to the next (Ryan's ring, 19 October).
-	var ring: Array = [_shown_faces(ms), ms.face_index, sk.next_index(ms)] if Effects.steps_die(ms.unit) else []
+	# The whole die is the double-tap's, a stepping die's chambers round its cylinder with it: a
+	# tap shows the entry alone (Ryan, 24 November: "single tap on the cassowary die doesn't need to
+	# show the whole circle"), its next chamber on its line below.
 	var at := ms.face_index
 	var f: Face = ms.die.faces[at] if at >= 0 and at < ms.die.faces.size() else null
 	var entry: Array = []
@@ -2401,9 +2432,9 @@ func _show_die(i: int) -> bool:
 		var states: Array = _entry_states(ms, at)
 		states.append_array(_entry_marks(ms, at, i))
 		entry = EntryReadout.lines_for(sf, at + 1, shown, f, states, Effects.written_rules(ms.unit, f), ContentDB.load_default(), EntryReadout.face_types(sf, ms.unit), extra, sf.cooldown_rounds() if sf != null else 0)
-	if entry.is_empty() and ring.is_empty():
+	if entry.is_empty():
 		return false
-	_show_details("", _dice[i], ring, entry)
+	_show_details("", _dice[i], entry)
 	return true
 
 
@@ -2500,12 +2531,12 @@ func _show_pop() -> void:
 			_close_pop()
 			return
 		KeywordTip.fills = term_fills(foe)
-		_show_details("", v, [], _foe_hold_lines(foe))
+		_show_details("", v, _foe_hold_lines(foe))
 	elif _pop.has("mech"):
 		var i: int = _pop["mech"]
 		var mv: UnitView = _mech_views[i]
 		KeywordTip.fills = term_fills(sk.mechs[i].unit)
-		_show_details("", mv, [], _mech_hold_lines(i), mv.drawn_top(), POP_GAP)
+		_show_details("", mv, _mech_hold_lines(i), mv.drawn_top(), POP_GAP)
 
 
 ## A tap on nothing (the ground, the black) closes an open readout; with none open, it sets a
@@ -2795,9 +2826,12 @@ func _aim_at(global_pos: Vector2, locked: bool, pinned: bool = false) -> void:
 	if i < 0:
 		_aim.clear()
 		return
-	var inv := _aim.get_global_transform().affine_inverse()
-	var r := _dice[i].get_global_rect()
-	_aim.aim(Rect2(inv * r.position, inv.basis_xform(r.size)), inv * global_pos, locked, Palette.TARGET, pinned)
+	# The die's own face, never the chips on its rail (Ryan, 24 November: the braces "need to wrap the
+	# die corners, not the die+chip corners"), in the HUD's colour ("the targeting reticle ... needs
+	# to be in HUD colour").
+	var to_aim := _aim.get_global_transform().affine_inverse() * _dice[i].get_global_transform()
+	var face := to_aim * Rect2(Vector2.ZERO, Vector2.ONE * DieFaceView.FACE)
+	_aim.aim(face, _aim.get_global_transform().affine_inverse() * global_pos, locked, Palette.HUD, pinned)
 
 
 
@@ -4252,13 +4286,11 @@ func _dress_reboot() -> void:
 	_reboot_btn.queue_redraw()
 
 
-## UNDO's reach: the spends and rerolls since the last roll, its badge; off while a spend's
-## blow still plays, while the enemy's turn replays, and with nothing to take back.
+## UNDO, off while a spend's blow still plays, while the enemy's turn replays, and with nothing
+## to take back. It wears no count (Ryan, 24 November: "undo doesn't need the count on it anywhere").
 func _refresh_undo() -> void:
 	if _undo_btn == null:
 		return
-	var depth := sk.undo_depth()
-	_undo_btn.badge = "×%d" % depth if depth > 0 else ""
 	_undo_btn.set_enabled(sk.can_undo() and not _replay_shade.visible and Time.get_ticks_msec() >= _undo_from)
 
 

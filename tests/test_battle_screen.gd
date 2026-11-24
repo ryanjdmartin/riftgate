@@ -1037,8 +1037,8 @@ func test_double_tap_opens_a_machines_codex_a_packs_formation_and_a_caches_codex
 		if not str(c).is_empty():
 			fid = str(c)
 			break
-	s._formation.foe_double_tapped.emit(fid)
-	assert_true(s._codex.visible, "a foe double-tapped there opens its codex")
+	s._formation.foe_tapped.emit(fid)
+	assert_true(s._codex.visible, "a foe tapped there opens its codex (Ryan, 24 November: a single tap)")
 	assert_eq(s._codex._title.text, str(ContentDB.load_default().foes[fid]["name"]), "that foe's")
 	assert_false(s._formation.visible, "in the formation's place: one shade, never two")
 	assert_true(s._codex._back_btn.visible, "with BACK")

@@ -2122,16 +2122,12 @@ func test_a_stepping_die_shows_its_next_chamber_and_its_shot_count() -> void:
 		assert_false(str(r[2]).begins_with("Shots"), "the count is cells under the heat, never a chip")
 	assert_true(s._dice[1].next_face == null, "a die that rolls shows none")
 	assert_true(s._mech_views[1].pips.is_empty(), "nor a count's cells")
-	# The readout's cylinder (Ryan's ring, 19 October): every chamber in order, the one showing lit,
-	# the arrow to the next; a die that rolls has none.
+	# A tap shows the entry alone, no cylinder (Ryan, 24 November: "single tap on the cassowary die
+	# doesn't need to show the whole circle"); the double-tap's whole die keeps it.
 	s._on_die_tapped(0)
-	assert_true(s._details_ring.visible, "the stepping die's readout shows its cylinder")
-	assert_eq(s._details_ring.faces.size(), n, "every chamber on it")
-	assert_eq([s._details_ring.current, s._details_ring.next], [ms.face_index, (ms.face_index + 1) % n], "the one showing lit, the arrow to the next")
+	assert_true(s._details.visible, "the stepping die's readout opens")
+	assert_eq(s._details.find_children("*", "CylinderView", true, false).size(), 0, "and shows no cylinder")
 	s._on_die_tapped(0)
-	s._on_die_tapped(1)
-	assert_false(s._details_ring.visible, "a die that rolls shows no cylinder")
-	s._on_die_tapped(1)
 	# The codex prints the order: its cylinder, no chamber lit and every gap's arrow, between fights.
 	var entry := ContentDB.load_default().codex_for_unit(ms.unit)
 	assert_true(bool(entry["steps"]), "the codex knows the die steps")
@@ -2800,9 +2796,9 @@ func test_a_shotgun_tagged_melee_fires_a_tracer() -> void:
 
 
 ## UNDO (Ryan, 2 November: "undo to your last roll"): a spend taken back on the screen, the
-## button's badge saying how far it reaches, the button off once nothing is left, and the
-## trail showing the round's bar under its opening lines.
-func test_undo_takes_back_the_last_spend_and_its_badge_says_how_far_it_reaches() -> void:
+## button wearing no count (24 November: "undo doesn't need the count on it anywhere"), the
+## button off once nothing is left, and the trail showing the round's bar under its opening lines.
+func test_undo_takes_back_the_last_spend_and_wears_no_count() -> void:
 	var s := _screen()
 	var ms: Skirmish.MechState = s.sk.mechs[0]
 	ms.unit.die = Die.single(Face.attack(1, Face.Reach.DIRECT))   # a scratch: the foe stands to be read after
@@ -2818,7 +2814,7 @@ func test_undo_takes_back_the_last_spend_and_its_badge_says_how_far_it_reaches()
 	assert_true(s._use_die(0, foe), "the die spent")
 	assert_eq(s.sk.front[0].hp, hp - 1, "the blow landed")
 	assert_false(s._undo_btn.disabled, "the undo opens")
-	assert_eq(s._undo_btn.badge, "×1", "one spend back")
+	assert_eq(s._undo_btn.badge, "", "and no count on it")
 	var text := s._log_text()
 	assert_true(text.find(SkirmishScreen.ROLL_BAR) < text.rfind("> "), "the bar sits under the opening lines, the spend's after it")
 	s._on_undo()
@@ -2880,12 +2876,43 @@ func test_an_intent_arrow_leaves_its_chips_middle_and_the_ranks_stand_slightly_a
 	var plate := fv.intent_rect()
 	assert_true(plate.size.x > 0.0 and plate.end.y <= fv.drawing_rect().position.y, "the intent stands above the foe, apart from its chips")
 	assert_false(fv.chip_layout().any(func(c: Array) -> bool: return str((c[1] as Array)[3]) == "intent"), "no intent among the chips under it")
-	assert_eq(fv.intent_anchor_global(), fv.anchor_global(), "its arrow leaves the middle of its drawing")
+	var vis := fv.drawing_rect()
+	assert_eq(fv.intent_anchor_global(), fv.get_global_transform() * Vector2(vis.get_center().x, vis.end.y), "its line leaves the bottom centre of its drawing (Ryan, 24 November)")
 	s._toggle_all_arrows(true)
 	var inv := s._arrows.get_global_transform().affine_inverse()
 	var from := inv * fv.intent_anchor_global()
-	assert_true(s._arrows.arrows.any(func(x: Array) -> bool: return (x[0] as Vector2).is_equal_approx(from)), "and the arrow drawn starts there")
+	assert_true(s._arrows.arrows.any(func(x: Array) -> bool: return (x[0] as Vector2).is_equal_approx(from)), "and the line drawn starts there")
+	var mv: UnitView = s._mech_views[s.sk.mechs.find(s.sk.front[0].target)] if s.sk.mechs.find(s.sk.front[0].target) >= 0 else s._mech_views[0]
+	var top := mv.bar_anchor_global()
+	assert_true(top.y < mv.anchor_global().y, "a machine's lines land on the top of its gauges, above its middle")
+	assert_true(s._arrows.arrows.any(func(x: Array) -> bool: return (x[1] as Vector2).is_equal_approx(inv * top)) or s.sk.front[0].target == null, "and a line drawn ends there")
+	s._chips._process(0.0)
+	assert_true(fv.chips_apart, "the foe's chips drawn over the lines, by the chip layer")
 	s.free()
+
+
+## Stacks on their way join the chip of that status the unit wears (Ryan, 24 November: "if a unit
+## has 1 Brittle and another one is inbound, the original brittle chip should have the preview
+## effect and show 2"); a preview with nothing to join, or no count, stands alone.
+func test_incoming_stacks_join_the_chip_the_unit_wears() -> void:
+	var col := Color(0.8, 0.2, 0.1)
+	var rows: Array = [
+		SkirmishScreen.status_row("brittled", "brittle", "1", "Brittle 1", col),
+		SkirmishScreen.status_row("brittled", "brittle", "+1", "Brittle +1 on its way", col, "preview"),
+		SkirmishScreen.status_row("sapped", "sap", "+2", "Sapped +2 on its way", col, "preview"),
+		["skull", "", "Destroyed this round", col, "preview"],
+		SkirmishScreen.status_row("sapped", "sap", "1", "Sapped 1", col),
+		["sap", "-3", "a burn, no stacks", col, "preview"],
+	]
+	var out := SkirmishScreen.merge_coming(rows)
+	assert_eq(out.size(), 5, "the Brittle on its way joined the one it wears")
+	assert_eq([str(out[0][0]), str(out[0][1]), str(out[0][4])], ["brittle", "2", "preview"], "showing the sum, pulsing as a preview")
+	assert_true(str(out[0][2]).ends_with("+1 on its way"), "its readout says what is coming")
+	assert_eq([str(out[1][0]), str(out[1][1])], ["sap", "+2"], "a status it lacks stands as its own chip")
+	assert_eq(str(out[2][0]), "skull", "and a preview with no count")
+	assert_eq([str(out[4][1]), str(out[3][1])], ["-3", "1"], "and a preview that gains no stacks (an overheat's burn)")
+	assert_eq(UnitView.corner_text("+2"), "2", "a square chip's count wears no sign")
+	assert_eq(UnitView.corner_text("-3"), "3", "of either kind")
 
 
 ## A status says what it is (Ryan, 9 November: "Buffs and debuffs ... need to be clearly labeled as
