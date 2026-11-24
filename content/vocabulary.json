@@ -1511,6 +1511,16 @@
    }
   },
   {
+   "id": "on_shield_hit",
+   "category": "trigger",
+   "name": "On a hit on its shield",
+   "codex": "Passive trigger. Fires when a foe's blow lands on this machine's shield and puts nothing on its hull; a blow that wounds fires On hull damage alone.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Nemesis's rage, one a hit on its shield (Ryan, 11 November: \"hull damage takes priority\"), and its heat from 23 to 24 November; no piece prints it since, and it stays (Ryan, 24 November: \"That leftovers rule needs to be removed\")."
+   }
+  },
+  {
    "id": "on_blocked",
    "category": "trigger",
    "name": "On a blow blocked",

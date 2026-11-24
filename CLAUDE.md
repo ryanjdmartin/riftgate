@@ -173,17 +173,6 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
 - A one-off exception proposed for balance is a symptom (Ryan, 18 October): before proposing
   one, look for the root cause that makes it seem reasonable and fix that, in the open; a
   passive breaking a rule for its design is a different thing (bible section 7).
-- A rule leaves the engine with its last piece (Ryan, 12 November, on seven rules that had lost
-  theirs in five days and stayed: "Yeah go ahead and fix it"): a rework that takes a rule's last
-  carrier cuts the rule in the same pass, its engine path, its validator check, its term and
-  glyph, its bot weight, its tools' rows and the tests of the rule itself, and moves a test that
-  only used it to observe something else onto a synthetic piece. Nothing is parked as a rework's
-  "leavings". `tests/test_leftovers.gd` holds it: an effect kind, a trigger, a die entry's key or
-  a keyword that no piece prints (a planned draft counts as a piece) fails the build until it is
-  cut, or listed there with what it is: a step of the one pipeline or of the trigger table (the
-  general path, no piece's rule), a rule a brief's settled answer names, or a field the engine
-  sets itself. "It may be wanted some day" is no reason: a piece that wants a cut rule back has
-  it built then, and git keeps the old form.
 - Content slated to change waits for its own session (Ryan, 9 November: "Don't propose issues
   with content slated to change. We're basing decisions around designs that aren't finished"): a
   piece whose rework or design session is pending (the to-do's design sessions, a brief) gets no

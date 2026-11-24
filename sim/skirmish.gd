@@ -1158,7 +1158,7 @@ func forecast(ms: MechState, extra_shield: int = 0) -> Dictionary:
 			struck += int(r["through"])
 			if int(r["through"]) > 0 and destroys(f, ms):
 				component_risk = true
-			blow_heat += Effects.blow_heat(ms.unit, int(r["through"]) > 0)   # the heat a hit lays on it as it lands, whatever it dealt (the Nemesis's)
+			blow_heat += Effects.blow_heat(ms.unit, int(r["through"]) > 0, int(r["absorbed"]) > 0)   # the heat a hit lays on it as it lands, whatever it dealt (the Nemesis's)
 	shield = int(walk["shield"])
 	var heat_end := ms.heat + tick_heat + seal_heat(ms)
 	var over := maxi(0, heat_end - ms.heat_max)
@@ -5498,6 +5498,15 @@ func _hull_damaged(ms: MechState) -> void:
 		log.append("%s: its hull takes the hit, %s" % [ms.unit.display_name, ", ".join(halved)])
 
 
+## A foe's blow its shield took, nothing of it on the hull (Ryan, 11 November, the Nemesis: "hull
+## damage takes priority"): the on_shield_hit passives fire. A bite of its own and a Barrier's
+## block are no hit on its shield.
+func _shield_hit(ms: MechState) -> void:
+	var parts := _apply(ms, Effects.shield_hit(ms.unit))
+	if not parts.is_empty():
+		log.append("%s: %s from the hit on its shield" % [ms.unit.display_name, ", ".join(parts)])
+
+
 ## The blows of a spend that a foe's armour or Barrier took whole (the Nemesis's rage, Ryan, 11
 ## November, per blow): the on_blocked passives fire once a blow, one log line for the spend.
 func _blows_blocked(ms: MechState, n: int) -> void:
@@ -6506,6 +6515,8 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 		log.append("%s %s %s: hull -%d%s" % [source.display_name, verb, ms.unit.display_name, r["through"], armoured])
 	if int(r["through"]) > 0:
 		_hull_damaged(ms)
+	elif int(r["absorbed"]) > 0:
+		_shield_hit(ms)   # a blow its shield took, none of it on the hull (hull first)
 
 
 ## The arithmetic of one blow against a shield and armour, shared by the real hit

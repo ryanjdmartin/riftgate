@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 206 implemented, 6 planned, 0 idea.
+Status: 207 implemented, 6 planned, 0 idea.
 
 ## Resource
 
@@ -323,6 +323,7 @@ At 3 or more stacks: Chain 2 fires. Reduce stacks to 0. | implemented |
 | **On foe status** | Passive trigger. Fires when any foe gains a status, whoever applied it: once for each status a spend puts on a foe, however many strikes or stacks (an application, not a stack). Never for Paradox, nor for the Suppressed a Paradox causes, and Numbed is no status. Effects: paradox (the foe gains a stack of Paradox; at the count it is Suppressed and the Paradox clears). | implemented |
 | **On applying stacks** | Passive trigger. Fires when this machine applies stacks of a status to anyone: a foe's Ablate (from an Ablate or from Primed), an ally's or its own buff, its own Empowered from a kill. Effects: add_stacks (so many stacks more, flat or for every so much heat the machine carries). Never for Numbed, which is exempt from every interaction. | implemented |
 | **On hull damage** | Passive trigger. Fires when this machine loses hull: to a blow, a bite or an overheat. | implemented |
+| **On a hit on its shield** | Passive trigger. Fires when a foe's blow lands on this machine's shield and puts nothing on its hull; a blow that wounds fires On hull damage alone. | implemented |
 | **On a blow blocked** | Passive trigger. Fires once for every blow of this machine's weapons that a living foe's armour or Barrier takes whole, each foe's of an area and each strike's. | implemented |
 | **On gaining a Barrier** | Passive trigger. Fires as this machine gains a Barrier, from its own equipment or an ally's. | implemented |
 | **On a kill** | Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains and spills included: a status, a shield (the Kite's, recharged whole) or a vent. | implemented |
@@ -483,6 +484,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **On skirmish start** (implemented): The Ammit's passive uses it.
 - **On applying stacks** (implemented): Shocked and Suppressed are not stacks, so it never touches them.
 - **On hull damage** (implemented): The hook for the pinned berserker idea too; the Nemesis's Berserker, a heat for hull lost (24 November).
+- **On a hit on its shield** (implemented): The Nemesis's rage, one a hit on its shield (Ryan, 11 November: "hull damage takes priority"), and its heat from 23 to 24 November; no piece prints it since, and it stays (Ryan, 24 November: "That leftovers rule needs to be removed").
 - **On a blow blocked** (implemented): The Nemesis's Breaker, two heat a blow blocked (Ryan, 11 November: per blow, "that lets it scrap against the comp its supposed to"; on its passive from 23 to 24 November, its branch's since).
 - **On gaining a Barrier** (implemented): The Wild Boar's Juggernaut Drive (Ryan, 11 November: "After gaining Barrier, its next weapon attack gains Breach"; ignores armour since 15 November).
 - **At the end of a round it killed in** (implemented): Ryan, 16 November, the Ammit's passive in his words: "At the start of the skirmish, or at the end of a round where the Ammit killed at least one enemy, the Essences Flare, granting 1 Empowered per 5 Essences it holds." A kill is an attack's, as the kill trigger counts it; a machine wrecked in the enemy's turn fires nothing.

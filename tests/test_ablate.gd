@@ -12,9 +12,9 @@ const K := Face.Keyword
 ## A hull hit that heats its machine a point, as a passive that reads hull damage would.
 const TALLY := {"id": "tally", "name": "Tally", "description": "", "effects": [
 	{"trigger": "on_hull_damage", "effect": "gain_heat", "value": 1}]}
-## A hit that heats it a point as it lands, whatever it dealt: a foe's hit, never a tick.
+## A hit on the shield that heats it a point: a foe's blow its shield took, never a tick.
 const FLINCH := {"id": "flinch", "name": "Flinch", "description": "", "effects": [
-	{"trigger": "on_struck", "effect": "gain_heat", "value": 1}]}
+	{"trigger": "on_shield_hit", "effect": "gain_heat", "value": 1}]}
 ## Regen granted, as a module would.
 const MENDER := {"id": "mender", "name": "Mender", "description": "", "effects": [
 	{"trigger": "static", "effect": "add_stat", "stat": "shield_regen", "value": 5}]}
@@ -122,9 +122,9 @@ func test_what_reaches_the_hull_is_hull_damage_and_the_shields_share_is_no_hit()
 	var s2 := _fight([shielded], [Foe.make("dummy", 900, 0)])
 	s2.start_round()
 	_ablating(shielded, 1)
-	s2._end_player_turn()   # the tick alone, before the dummy's hit of nothing lands (a hit all the same)
+	s2.end_round()
 	assert_eq([shielded.shield, shielded.hull], [9, 100], "the shield took it whole")
-	assert_eq(s2.mechs[0].heat, 0, "no hull damage, and no hit either")
+	assert_eq(s2.mechs[0].heat, 0, "no hull damage, and no blow on its shield either")
 
 
 ## A rebooting machine stands bare, so its tick lands on the hull; the reboot does not lift it.
