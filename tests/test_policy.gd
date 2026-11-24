@@ -439,15 +439,17 @@ func test_greedy_values_a_gated_stun_where_it_lands_and_prices_what_a_consumer_e
 
 
 ## Instant (12 November): a spend that gives its machine its turn back, Rapid's or Instant's, is
-## worth about the die's own average blow more; the Nemesis's fists are the charged form five rage
-## buys, read by the bot as the entry goes out (Skirmish.spend_face), so it counts only once the
-## rage is banked.
+## worth about the die's own average blow more; a raging machine's rage piece is Instant while it
+## rages (the Nemesis's Knuckles of Fury, 23 November), read by the bot through the entry as its
+## machine makes it (Effects.effective_face), so it counts only in the Rage, its die then the fist
+## alone. Synthetic passive.
 func test_greedy_values_an_instant_spend_as_another_roll() -> void:
 	var fist := Face.attack(10, L)
-	fist.charged = {"store": "rage", "price": 5, "keywords": ["instant"]}
+	fist.component = "test_fist"
 	var gun := Face.attack(20, L)
 	var sk := Skirmish.new(3)
 	var m := _mech("A", Die.of([fist, gun]), 0, 200)
+	m.grant_passive({"id": "fury", "name": "Fury", "description": "", "effects": [{"trigger": "static", "effect": "rage_form", "piece": "test_fist"}]})
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(500, 10)])
 	sk.begin()
@@ -456,13 +458,12 @@ func test_greedy_values_an_instant_spend_as_another_roll() -> void:
 	var ms: Skirmish.MechState = sk.mechs[0]
 	var g: Foe = sk.front[0]
 	ms.face_index = 0
-	assert_false(sk.spend_face(ms).has(Face.Keyword.INSTANT), "no rage yet: the plain fist goes out")
-	var bare := pol.attack_score(sk, ms, sk.spend_face(ms), g)
-	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 5, Effects.DECAY_NONE)
-	var out := sk.spend_face(ms)
-	assert_true(out.has(Face.Keyword.INSTANT), "five banked: it goes out charged, Instant")
-	assert_eq(snappedf(pol.attack_score(sk, ms, out, g) - bare, 0.01), snappedf(Policy.ROLL_AGAIN_WEIGHT * 15.0, 0.01),
-		"Instant: another roll, the die's average blow (10 and 20 over two entries)")
+	assert_false(Effects.effective_face(m, fist).has(Face.Keyword.INSTANT), "calm: the plain fist")
+	var bare := pol.attack_score(sk, ms, fist, g)
+	Effects.stack(m, Effects.STATUS["rage"], Effects.SKIRMISH, "test", 1, Effects.DECAY_NONE)
+	assert_true(Effects.effective_face(m, fist).has(Face.Keyword.INSTANT), "raging: Instant")
+	assert_eq(snappedf(pol.attack_score(sk, ms, fist, g) - bare, 0.01), snappedf(Policy.ROLL_AGAIN_WEIGHT * 10.0, 0.01),
+		"Instant: another roll, the die's average blow (the fist alone, its die in the Rage)")
 
 
 func test_the_bot_reads_a_shocked_foe_as_taking_double() -> void:

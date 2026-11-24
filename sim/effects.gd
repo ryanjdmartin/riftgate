@@ -52,10 +52,10 @@ const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
 	"on_struck": ["lay_status"],   # a foe's blow landing on this machine, what it lays on the striker (the echidna's Sonic Needles, 20 November)
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "heat_per_blow", "reboot_release", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_max", "hopper_plate", "count_status", "piece_form", "hold_status", "self_status", "shield_zap", "add_power", "offhand", "side_strike", "strike_again", "buff_status", "burrow", "momentum", "needles"],
-	"on_hull_damage": ["stack_status", "add_shield", "vent_heat"],
-	"on_shield_hit": ["stack_status", "add_shield", "vent_heat"],
-	"on_blocked": ["stack_status"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "rage_form", "heat_scale", "hot_hits", "reboot_piece", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_max", "hopper_plate", "count_status", "piece_form", "hold_status", "self_status", "shield_zap", "add_power", "offhand", "side_strike", "strike_again", "buff_status", "burrow", "momentum", "needles"],
+	"on_hull_damage": ["stack_status", "add_shield", "vent_heat", "gain_heat"],
+	"on_shield_hit": ["stack_status", "add_shield", "vent_heat", "gain_heat"],
+	"on_blocked": ["stack_status", "gain_heat"],
 	"on_barrier": ["stack_status"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
 	"on_shield_gain": ["vent_heat", "stack_status"],
@@ -108,12 +108,16 @@ const STATUS := {
 	# the numbers; 5 before), the stacks the Ablate keyword's own number.
 	"ablating": {"id": "ablating", "name": "Ablate", "description": "Loses {value} HP per stack as its turn ends, then loses a stack.",
 		"tags": ["dot"], "effects": [{"trigger": "status", "effect": "tick_hp", "value": 1}]},
-	# The Nemesis's rage (Ryan, 12 October, in place of the Crucible): its passive banks a
-	# stack for every hull hit, its own included, for the skirmish (`decay` none overrides a
-	# passive's tick), and an entry that rolls again on it spends one to roll the die again.
-	# A store like the hopper: it does nothing by itself.
-	"rage": {"id": "rage", "name": "Rage", "description": "Banked for the skirmish, up to its cap; a piece charged on rage spends it for its charged form.", "decay": "none",
-		"tags": ["store"], "effects": []},
+	# The Nemesis's Rage (Ryan, 23 November: "When the Nemesis starts its turn with heat at or over
+	# max, it gains the unpurgable status Rage: Remove all debuffs on self. Immune to all debuffs.
+	# The only component available is Knuckles of Fury"; "Rage ends when the Nemesis' heat reaches
+	# zero, at which point it immediately reboots, regardless of how it got there"): its own
+	# mechanic, an ability nothing strips, laid and lifted by the engine (Skirmish._rage_opens,
+	# _rage_cooled) on a machine whose passive has a rage form (rage_piece). While it stands the
+	# machine is immune to every cleansable status (immune_to), its die rolls only among its rage
+	# piece's entries (live_entries), and the piece fires Instant (effective_face).
+	"rage": {"id": "rage", "name": "Rage", "description": "Its debuffs lifted and none lands on it; its rage piece is all its die shows, Instant; at no heat it reboots at once.", "decay": "none", "stacking": "renew", "single": true,
+		"tags": ["ability"], "effects": []},
 	# Ablating on a machine, the same rule on the other body (Ryan, 15 November: "hits shield
 	# first, I think. Pretty deadly otherwise. Bypasses armour when damaging hull"; "Tick of ablate
 	# ignores barrier yes"): a point a stack at the end of the player's turn, before the overheat,
@@ -778,8 +782,8 @@ static func _record(u, m: Modifier, n: int) -> void:
 
 ## A timed effect: gone after the end of `round`.
 static func grant_for_rounds(u, passive: Dictionary, source: String, round: int) -> Modifier:
-	if turns_mark(u, str(passive.get("id", ""))):
-		return null   # a foe's Ward turns the team's mark away (28 October)
+	if turns_mark(u, str(passive.get("id", ""))) or immune_to(u, passive):
+		return null   # a foe's Ward turns the team's mark away (28 October); a raging machine takes no debuff
 	var held := _held(u, passive, ROUNDS, 1, round)
 	if held != null:
 		return held
@@ -842,8 +846,8 @@ static func _held(u, passive: Dictionary, scope: int, n: int, expires_round: int
 ## stack, it is a stack (Ryan, 8 November: "A stack is a stack, doesn't matter where it came
 ## from").
 static func stack(u, passive: Dictionary, scope: int, source: String, n: int = 1, decay: int = DECAY_TICK, expires_round: int = -1) -> Modifier:
-	if turns_mark(u, str(passive.get("id", ""))):
-		return null   # a foe's Ward turns the team's mark away (28 October)
+	if turns_mark(u, str(passive.get("id", ""))) or immune_to(u, passive):
+		return null   # a foe's Ward turns the team's mark away (28 October); a raging machine takes no debuff
 	if bool(passive.get("single", false)):
 		n = mini(n, 1)   # one stack whoever grants it (the STATUS note above)
 	var held := _held(u, passive, scope, n, expires_round)
@@ -1498,6 +1502,9 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dicti
 	# The Buzzard's zap, paid for this spend (Skirmish._pay_zap): a flat add beside Empowered's (Ryan,
 	# 18 November: "Put the bonus damage where Empowered goes in the damage calculation").
 	d_add += float(ctx.get("zap", 0))
+	# The Whip Scorpion's heat scale (Ryan, 23 November: "Deals -50% damage at zero heat to +100% damage
+	# at max heat, scaling linearly"), a multiply after every add (Skirmish.firer_ctx).
+	d_mult *= float(ctx.get("heat_scale", 1.0))
 	var out_dmg := maxi(d_floor, int(roundf((float(dmg) * p_mult + d_add) * d_mult)))
 	var out_heat := maxi(0, int(roundf((heat + h_add) * h_mult)))
 	if face != null and face.is_debuff():
@@ -2012,6 +2019,8 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	var base := rewritten(u, face)
 	var r := effective_reach(u, face)
 	var granted := granted_keywords(u, base, target)
+	if raging(u) and base.component == rage_piece(u) and not base.has(Face.Keyword.INSTANT) and not granted.has(Face.Keyword.INSTANT):
+		granted.append(Face.Keyword.INSTANT)   # the Nemesis's Knuckles of Fury, Instant while it rages (Ryan, 23 November: "When in Rage, it has Instant")
 	var numbers := granted_numbers(u, base, target)
 	# A numbered grant on a keyword the entry already carries sets its number (the drum's shape).
 	var raised := {}
@@ -2383,7 +2392,7 @@ static func blow_blocked(u) -> Dictionary:
 ## Nothing here can fire itself: a shield gained here grants no more shield, heat shed here
 ## grants no heat.
 static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary:
-	var out := {"shield": 0, "vent": 0, "pull": 0, "statuses": [] as Array[String]}
+	var out := {"shield": 0, "vent": 0, "pull": 0, "heat": 0, "statuses": [] as Array[String]}
 	for pair in _taking_part(u, trigger, null):
 		var eff: Dictionary = pair[0]
 		# An effect that fires once a round (its `once`: "round"; the Skua's stack of Ricochet for
@@ -2406,6 +2415,11 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 				out["shield"] += maxi(0, int(u.shield_max) - int(u.shield))
 			"vent_heat":
 				out["vent"] += v
+			"gain_heat":
+				# Heat for a blow (the Nemesis's Crucible Capacitor since 23 November, Ryan: "change rage
+				# into simply generating heat, using the same rules as rage generation"): what the
+				# caller lays on the machine through the heat path.
+				out["heat"] += v
 			"pull_heat":
 				# The Puffin's pull (Ryan, 11 November: "Using an equipment on an ally moves some of its
 				# heat to the Puffin"; 19 November, "I think 4 for the Puffin"): the most of the ally's
@@ -2753,15 +2767,19 @@ static func momentum_of(u, face: Face) -> Dictionary:
 	return {"blow": maxi(0, blow), "lays": lays}
 
 
-## The entries a folded die rolls among: its fixed pieces, up on either battery, and the battery
-## up (the first, or the second while it carries Changed Over); empty for a die that does not fold,
-## which rolls among all of them. A burrower's die (the Mole's) rolls its burrow piece alone while
-## Burrowed and every other entry above ground (Ryan, 17 November: "the drill isn't accessible
-## while unburrowed so it doesn't add to the face count"; 16 November, "all its die faces change to
-## its locked piece").
+## The entries a die rolls among: a burrower's (the Mole's) its burrow piece alone while Burrowed
+## and every other entry above ground (Ryan, 17 November: "the drill isn't accessible while
+## unburrowed so it doesn't add to the face count"; 16 November, "all its die faces change to its
+## locked piece"); a raging machine's rage piece alone (the Nemesis's Knuckles of Fury,
+## rage_piece); never the piece its reboot fires (the Whip Scorpion's Death Ray, reboot_piece),
+## which comes up only as the reboot brings it; a folded die's fixed pieces, up on either battery,
+## and the battery up (the first, or the second while it carries Changed Over). Empty for a die
+## none of these reaches, which rolls among all of them.
 static func live_entries(u, die) -> Array:
+	if die == null:
+		return []
 	var piece := str(burrow_rule(u).get("piece", ""))
-	if piece != "" and die != null:
+	if piece != "":
 		var under := has(u, "burrowed")
 		var out: Array = []
 		for i in range(die.faces.size()):
@@ -2769,6 +2787,27 @@ static func live_entries(u, die) -> Array:
 				out.append(i)
 		if not out.is_empty():
 			return out
+	var rp := rage_piece(u) if raging(u) else ""
+	if not rp.is_empty():
+		var rage: Array = []
+		for i in range(die.faces.size()):
+			if die.faces[i].component == rp:
+				rage.append(i)
+		if not rage.is_empty():
+			return rage
+	var off := reboot_piece(u)
+	if not off.is_empty():
+		var on: Array = []
+		var folded := _folded_entries(u, die)
+		for i in range(die.faces.size()):
+			if die.faces[i].component != off and (folded.is_empty() or folded.has(i)):
+				on.append(i)
+		return on
+	return _folded_entries(u, die)
+
+
+## A folded die's live entries (live_entries), empty for a die that does not fold.
+static func _folded_entries(u, die) -> Array:
 	var h := folds_die(u)
 	if h <= 0 or die == null:
 		return []
@@ -2951,28 +2990,79 @@ static func buff_stacks(u) -> int:
 	return n
 
 
-## The heat every blow a foe lands on this machine adds (heat_per_blow, static: the Whip
-## Scorpion's passive), 0 for none.
-static func heat_per_blow(u) -> int:
+## The heat a foe's blow lays on this machine as it lands (gain_heat on on_hull_damage, or on
+## on_shield_hit for a blow its shield took whole: the Nemesis's Crucible Capacitor), for the
+## forecast: what a passive answering the blow would give.
+static func blow_heat(u, hull_hit: bool) -> int:
 	var n := 0
-	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "heat_per_blow":
-			n += int(pair[0].get("value", 0))
+	for pair in _taking_part(u, "on_hull_damage" if hull_hit else "on_shield_hit", null):
+		if str(pair[0].get("effect", "")) == "gain_heat":
+			n += int(pair[0].get("value", 0)) * int(pair[1].stacks)
 	return n
 
 
-## What a machine's reboot blasts as its heat vents (reboot_release, static; the Whip Scorpion's
-## Thermal Ejection Manifold, Ryan, 12 November: "1 damage to each enemy, increased by 1 for each
-## heat over 8"; 17 November, on the reboot's vent in place of a passed turn: "the reboot vent is
-## the one that explodes"; no gate since the same day, "1 damage to all enemies for every X
-## heat"): {value: what every foe takes a step, per: the heat a step, id: the passive's, which
-## its model's firing is keyed by (the broadside, MechRig.fire_act)} (Skirmish.release_shot).
-## Empty for a machine whose vent blasts nothing.
-static func reboot_release(u) -> Dictionary:
+## Is this machine raging (the Nemesis's Rage, 23 November)?
+static func raging(u) -> bool:
+	return has(u, "rage")
+
+
+## Does this status land on nothing here: a cleansable one (what a foe does to a machine) on a
+## raging machine, which is immune to every debuff while its Rage stands.
+static func immune_to(u, passive: Dictionary) -> bool:
+	return u != null and not (u is Foe) and (passive.get("tags", []) as Array).has(CLEANSABLE) and raging(u)
+
+
+## The piece a machine's Rage leaves it (rage_form, static: the Nemesis's Knuckles of Fury, Ryan,
+## 23 November: "The only component available is Knuckles of Fury"), a component id; "" for a
+## machine with no rage form.
+static func rage_piece(u) -> String:
 	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "reboot_release":
-			return {"value": int(pair[0].get("value", 1)), "per": maxi(1, int(pair[0].get("per", 1))), "id": str(pair[1].id)}
-	return {}
+		if str(pair[0].get("effect", "")) == "rage_form":
+			return str(pair[0].get("piece", ""))
+	return ""
+
+
+## The heat scale on a machine's damage (heat_scale, static: the Whip Scorpion's, Ryan, 23
+## November: "Deals -50% damage at zero heat to +100% damage at max heat, scaling linearly";
+## held past the maximum, his of the same day: "Hold"): its multiple at `heat` of `heat_max`,
+## `cold` percent at no heat to `hot` percent at the maximum. 1 for a machine with none.
+static func heat_damage_multiple(u, heat: int, heat_max: int) -> float:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "heat_scale":
+			var k := clampf(float(heat) / float(maxi(1, heat_max)), 0.0, 1.0)
+			return lerpf(float(pair[0].get("cold", 100)), float(pair[0].get("hot", 100)), k) / 100.0
+	return 1.0
+
+
+## What a hit on this machine is multiplied by at `heat` of `heat_max` (hot_hits, static: the Whip
+## Scorpion's, Ryan, 23 November: "When over 50% heat, damage recieved from hits is doubled"): its
+## `value` while its heat stands over half its maximum, 1 otherwise or with none.
+static func hot_hits(u, heat: int, heat_max: int) -> int:
+	var n := 1
+	if heat * 2 <= heat_max:
+		return n
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "hot_hits":
+			n = maxi(n, int(pair[0].get("value", 1)))
+	return n
+
+
+## The piece a machine's reboot fires first (reboot_piece, static: the Whip Scorpion's Heliographic
+## Death Ray, Ryan, 23 November: "The death ray is not on the die normally. Reboot is replaced with
+## 'Death Ray' when holding its die"; "The death ray does it's thing when used, then the Scorpion
+## reboots"), a component id, and the word the REBOOT control wears for it; "" for none.
+static func reboot_piece(u) -> String:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "reboot_piece":
+			return str(pair[0].get("piece", ""))
+	return ""
+
+
+static func reboot_label(u) -> String:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "reboot_piece":
+			return str(pair[0].get("label", ""))
+	return ""
 
 
 ## The kinds a piece is on this machine, in the engine's words (Ryan, 26 October: "Face type is
@@ -3323,7 +3413,11 @@ static func effect_text(eff: Dictionary) -> String:
 		"step_die": body = "its die never rolls: each fight opens on a random entry, and every roll steps it to the next in order"
 		"fold_die": body = "its die is two batteries of %s, one up at a time with its fixed pieces; the battery up stays up from fight to fight, and a battle opens on the first" % vs
 		"rewrite_weapon": body = "every weapon and equipment it aims at a foe fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
-		"reboot_release": body = "a reboot blasts what it vents: %s on every foe for every %d heat" % [vs, maxi(1, int(eff.get("per", 1)))]
+		"rage_form": body = "starting its turn at its heat maximum or past it, it rages: its debuffs lifted and none lands on it, its %s all its die shows, Instant; at no heat it reboots at once" % str(eff.get("piece", "")).replace("_", " ")
+		"heat_scale": body = "its damage ×%s at no heat to ×%s at its heat maximum, by its heat" % [str(float(eff.get("cold", 100)) / 100.0), str(float(eff.get("hot", 100)) / 100.0)]
+		"hot_hits": body = "past half its heat maximum, a hit on it ×%s" % vs
+		"reboot_piece": body = "its reboot fires its %s first" % str(eff.get("piece", "")).replace("_", " ")
+		"gain_heat": body = "+%s heat" % vs
 		"burrow": body = "it burrows in its reboot's place: Burrowed, armour +%d, its die rolls its %s alone, and each turn under makes good %d%% of what its shield and heat were missing as it burrowed and banks a stack of Conserved Momentum, up to %d; spent, the drill lays a stack of Applied Momentum for each, a blow of %d on its foe as each of its turns starts" % [maxi(1, int(eff.get("armour", 1))), str(eff.get("piece", "")).replace("_", " "), int(eff.get("recover", 50)), int(eff.get("cap", 3)), int(eff.get("blow", 0))]
 		"momentum":
 			var parts: Array[String] = []
@@ -3351,7 +3445,6 @@ static func effect_text(eff: Dictionary) -> String:
 		"hold_status": body = "its %s does not decay" % str(STATUS.get(str(v), {}).get("name", v))
 		"hold_all": body = "no %s decays this round, any unit's" % str(STATUS.get(str(v), {}).get("name", v))
 		"ignore_armour": body = "its weapons ignore armour"
-		"heat_per_blow": body = "every blow a foe lands on it adds %s heat" % vs
 		"multiply_stacks": body = "the stacks it lays ×%s" % vs
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
 		"shield_zap": body = "each weapon it fires pays %d shield, when it holds that much, for +%s on its every blow" % [int(eff.get("cost", 0)), vs]

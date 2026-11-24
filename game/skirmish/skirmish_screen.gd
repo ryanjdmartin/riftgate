@@ -100,9 +100,9 @@ static var ACT_DEBUG := OS.get_environment("RIFTGATE_ACT_DEBUG") == "1"
 ## machine's shell and its burst follow the model, to judge them running together.
 static var SEAL_DEBUG := OS.get_environment("RIFTGATE_SEAL_DEBUG") == "1"
 var _act_debug_at := 0.0
-## RIFTGATE_RAGE_DEBUG=1: the rage bar fills two a beat on the machine that banks rage (the
-## Nemesis's since 11 November) and empties at its cap, so its notches, the die's charged mark
-## at five and the bar's colour are judged running.
+## RIFTGATE_RAGE_DEBUG=1: every machine with a rage form (the Nemesis's) opens each turn at its
+## heat maximum, so it rages every turn: its flurry of Instant Knuckles and the reboot its Rage
+## ends in are judged running.
 static var RAGE_DEBUG := OS.get_environment("RIFTGATE_RAGE_DEBUG") == "1"
 ## RIFTGATE_BREAK_DEBUG=1 draws a break point at three quarters of every foe's HP (the swallow's
 ## release, the golden rage's break), to judge the notch on a phone.
@@ -132,8 +132,6 @@ static var HIT_DEBUG := OS.get_environment("RIFTGATE_HIT_DEBUG") == "1"
 const HIT_DEBUG_KINDS := [["hull", -1.0], ["shield", 0.0], ["block", 0.6], ["hull", 1.0]]
 var _hit_debug_at := 0.0
 var _hit_debug_n := 0
-const ROLL_AGAIN_AT := 0.3   # the die flips back this long after its stack bursts (a placeholder, judged running)
-var _rage_debug_at := -10.0
 
 var sk: Skirmish
 var locked: Array[bool] = []
@@ -211,9 +209,6 @@ func _process(delta: float) -> void:
 	if _bg == null:
 		return
 	_fight_t += delta
-	if RAGE_DEBUG and _fight_t - _rage_debug_at > 1.6:
-		_rage_debug_at = _fight_t
-		_rage_debug()
 	if PLAQUE_DEBUG and _plaque != null and not _plaque.is_showing() and _fight_t - _plaque_debug_at > PLAQUE_HOLD + 1.2:
 		_plaque_debug_at = _fight_t
 		var names: Array = []
@@ -360,6 +355,7 @@ func setup(skirmish: Skirmish) -> void:
 	if sk.state == Skirmish.State.SETUP:
 		sk.begin()
 	if sk.state == Skirmish.State.ROUND_START:
+		_rage_debug()
 		sk.start_round()
 	if MINE_DEBUG:
 		for foe in sk.field_foes():
@@ -1270,23 +1266,13 @@ func _refresh(save: bool = true) -> void:
 		v.pips = [Effects.stacks_of(ms.unit, "shots"), every] if every > 0 else []
 		# A capped store as a bar under the heat (Ryan, 21 and 22 October: every store a bar;
 		# 10 November: in the heat bar's shape, a segment a stack up to its cap), in its chip's
-		# colour and place. A store a charged piece spends in chunks (the Nemesis's rage, Ryan, 11
-		# November: "a smooth resource bar like the swallowtail") fills as the Muster does, a
-		# notch a chunk, the dragged piece's price pending on it.
+		# colour and place.
 		v.store = []
-		var chunks := charge_chunks(ms)
 		for id in Effects.STATUS.keys():
 			var cap := Effects.store_cap(ms.unit, str(id)) if (Effects.STATUS[id].get("tags", []) as Array).has("store") else 0
 			if cap <= 0:
 				continue
-			var held := Effects.banked(ms.unit, str(id))
-			if chunks.has(str(id)):
-				var after := held
-				if _drag_from == i and sk.charge_lands(ms) and ms.face().charge_store() == str(id):
-					after = maxi(0, held - ms.face().charge_price())
-				v.bars.append([held, cap, _chip_colour(str(id)), after, int(chunks[str(id)])])
-				continue
-			v.store = [held, cap, _chip_colour(str(id)), status_glyph(str(id))]
+			v.store = [Effects.banked(ms.unit, str(id)), cap, _chip_colour(str(id)), status_glyph(str(id))]
 			break
 		v.highlight = support.has(ms)
 		v.statuses = []
@@ -1589,18 +1575,6 @@ static func pair_halves() -> Dictionary:
 			if od is Dictionary and bool(od.get("pair", false)) and not str(od.get("summon", "")).is_empty():
 				_pair_halves[str(od["summon"])] = true
 	return _pair_halves
-
-
-## The stores this machine's charged pieces spend in chunks (the Nemesis's rage since 11 November):
-## store -> its price, the largest when two pieces differ; the Muster draws its own gauge.
-static func charge_chunks(ms: Skirmish.MechState) -> Dictionary:
-	var out := {}
-	if ms == null or ms.unit == null or ms.unit.die == null:
-		return out
-	for f in ms.unit.die.faces:
-		if f != null and not f.charged.is_empty() and f.charge_store() != "muster":
-			out[f.charge_store()] = maxi(int(out.get(f.charge_store(), 0)), f.charge_price())
-	return out
 
 
 ## The strikes of 1 a machine's Ricochet adds after each shot of the weapon it shows (the Skua's,
@@ -2049,12 +2023,9 @@ static func status_glyph(id: String) -> String:
 ## Statuses and warnings on a mech as [glyph, chip text, readout text, colour], the readout text
 ## the chip's name and count (as a foe's, _foe_rows). Warnings come from the forecast: what the
 ## end of the round does if nothing changes.
-## A machine status's colour on its chip, or on a capped store's bar: its term's (Terms), the
-## Nemesis's rage, a store the keywords list holds no term for, in heat's, and any other in ink,
-## never the HUD colour (Ryan, 30 October: "Stay away from HUD colour").
+## A machine status's colour on its chip, or on a capped store's bar: its term's (Terms), and any
+## other in ink, never the HUD colour (Ryan, 30 October: "Stay away from HUD colour").
 static func _chip_colour(id: String) -> Color:
-	if id == "rage":
-		return Palette.HEAT
 	return Terms.status_colour(id)
 
 
@@ -3117,12 +3088,7 @@ func _use_die(i: int, target, second = null) -> bool:
 	var spent: Face = sk.mechs[i].face()
 	var sealed_before := Effects.is_sealed(sk.mechs[i].unit)
 	var heat_before := _heats()
-	# The store a charged Instant spends (the Knuckle of Fury's five rage, 12 November): its chip
-	# bursts and the die flips back with its roll.
-	var fuel := ""
-	if spent != null and spent.charge_store() != "muster" and spent.charged_form().has(Face.Keyword.INSTANT) and sk.charge_lands(sk.mechs[i]):
-		fuel = spent.charge_store()
-	var fuel_before := Effects.stacks_of(sk.mechs[i].unit, fuel) if not fuel.is_empty() else 0
+	var booting_before: Array = sk.mechs.map(func(m: Skirmish.MechState) -> bool: return m.rebooting)
 	var ok := sk.assign(i, target, second)
 	if ok:
 		locked[i] = false
@@ -3153,8 +3119,6 @@ func _use_die(i: int, target, second = null) -> bool:
 	_refresh()
 	if ok:
 		Sound.play("die_spend")   # the console letting the die go; the component's own sound lands after
-	if ok and not fuel.is_empty() and not sk.mechs[i].assigned and Effects.stacks_of(sk.mechs[i].unit, fuel) < fuel_before:
-		_roll_again(i, fuel)
 	# The fight decided by this die: nothing queued during it is said after (the win clears
 	# Jenny's queue, so the last kill never gets a heat warning behind it).
 	var won := ok and sk.outcome == Skirmish.Outcome.VICTORY
@@ -3246,6 +3210,12 @@ func _use_die(i: int, target, second = null) -> bool:
 			var at := float(deaths.get(dead[k], ends))
 			ends = maxf(ends, at)
 			Sound.play_after(at + 0.07 * k, "kill", -2.0 * k)
+		# A reboot the spend brought on (the Whip Scorpion's Death Ray once it has fired, a Rage
+		# spent at no heat, the Nemesis's): its vent sounds once the blows have landed.
+		for k in range(mini(booting_before.size(), sk.mechs.size())):
+			if sk.mechs[k].rebooting and not bool(booting_before[k]):
+				Sound.play_after(ends, "vent", -3.0)
+				break
 	if not heat_hook.is_empty():
 		Sound.say_after(ends + (AFTER_DEATH if not dead.is_empty() else 0.0), heat_hook)
 	# A split's halves step up where it fell (the Gel's, 25 October), and a foe getting back up
@@ -4193,28 +4163,24 @@ func _on_reroll() -> void:
 
 ## Machine `i` gives its turn to a reboot, if it may (its die dropped on REBOOT): its shield
 ## drops and its heat vents at once, the round preview plays it bare, and UNDO takes it back. A
-## vent that explodes (the Whip Scorpion's valves, Ryan, 17 November: "the reboot vent is the one
-## that explodes") plays its blast from what stood there, the foes it fells and what they do as
-## they fall after it, and the fight it decides ends once it has played. False when it may not,
-## and nothing changes.
+## machine whose reboot fires a piece first (the Whip Scorpion's Death Ray) brings the piece up on
+## its die instead, or stands it down again (Skirmish.reboot_mech): no vent yet, the piece's spend
+## brings the reboot. False when it may not, and nothing changes.
 func _do_reboot(i: int) -> bool:
 	if _replay_shade.visible or not _pending.is_empty() or not sk.can_reboot(i):
 		return false
 	_flush_blows()   # whatever of the last spend is still landing lands first
-	var was: Dictionary = {}   # every foe's view and look before the vent, for a blast's shots and deaths
-	for foe in sk.field_foes():
-		var fv := _foe_view_for(foe)
-		if fv != null:
-			was[foe] = [fv, fv.look(), _home.get(fv, fv.position)]
 	var sealed_before := Effects.is_sealed(sk.mechs[i].unit)
 	if not sk.reboot_mech(i):
 		return false
-	var released: Array = sk.releases.duplicate(true)
 	_close_pop()
+	if not sk.mechs[i].rebooting:
+		Sound.play("die_roll")   # its die turns to the piece, or back
+		_refresh()
+		return true
 	Sound.play("vent")
 	if sealed_before and not Effects.is_sealed(sk.mechs[i].unit):
 		_form_shift_at(0.0, i, false)   # a reboot opens a sealed machine: its shell bursts as the die drops
-	var valves := _hold_releases(released)
 	if is_inside_tree():
 		for act in sk.last_acts:   # a machine a last act struck holds its gauges until the act lands
 			var g: Array = act.get("gauges", [])
@@ -4222,15 +4188,19 @@ func _do_reboot(i: int) -> bool:
 				if not _shown_gauges.has(int(act["mechs"][k])):
 					_shown_gauges[int(act["mechs"][k])] = g[k]
 	_refresh()
-	var over := _play_releases(released, was, valves)
 	if sk.outcome != Skirmish.Outcome.NONE:
-		if over > 0.0 and is_inside_tree():
-			var ow := create_tween()
-			ow.tween_interval(over + 0.75)
-			ow.tween_callback(_show_outcome.bind(sk.outcome))
-		else:
-			_show_outcome(sk.outcome)
+		_show_outcome(sk.outcome)
 	return true
+
+
+## REBOOT's word for the die in hand (`ms`, null for none): REBOOT, or for a machine whose reboot
+## fires a piece first its passive's word for the piece, CANCEL while the piece is up.
+static func reboot_word(ms: Skirmish.MechState) -> String:
+	if ms == null or Effects.reboot_piece(ms.unit).is_empty():
+		return "REBOOT"
+	if ms.ray_from >= 0:
+		return "CANCEL"
+	return Effects.reboot_label(ms.unit).to_upper()
 
 
 func _any_may_reboot() -> bool:
@@ -4264,10 +4234,14 @@ func _over_reboot(global_pos: Vector2) -> bool:
 
 ## The control as it stands: dashed at rest; its edge solid and pulsing while a die it would take
 ## is in hand, the drop's target; filled once that die is over it. Its word is working text in
-## code, his to write.
+## code, his to write; with the die of a machine whose reboot fires a piece first in hand, the
+## piece's word from its passive (the Whip Scorpion's, Ryan, 23 November: "Reboot is replaced with
+## "Death Ray" when holding its die"), and CANCEL while that piece is up ("Holding the death ray
+## changes reboot to "Cancel"").
 func _dress_reboot() -> void:
 	if _reboot_btn == null:
 		return
+	_reboot_btn.text = reboot_word(sk.mechs[_drag_from] if _drag_from >= 0 and _drag_from < sk.mechs.size() else null)
 	_reboot_btn.filled = _reboot_hover
 	# A burrower's die in hand burrows there (the Mole's; Ryan, 16 November: "Instead of Reboot, it
 	# Burrows"): the control says so while it is held.
@@ -4304,40 +4278,14 @@ func _on_undo() -> void:
 	_refresh()
 
 
-## A die rolled again by a store it spent (the Nemesis's rage, Ryan, 13 October: a stack a roll
-## until 11 November; the Knuckle of Fury's charged Instant, five rage, since 12 November): the
-## store's chip bursts as it goes, then the die flips back with the reroll's own flip and sound. The
-## die waits folded until then, so its new face is never seen before the roll.
-func _roll_again(i: int, status: String) -> void:
-	_mech_views[i].spend_chip(status_glyph(status))
-	var d := _dice[i]
-	if not is_inside_tree():
-		return
-	d.pivot_offset = d.size * 0.5
-	d.scale = Vector2(0.06, 1.0)
-	var tw := create_tween()
-	tw.tween_interval(ROLL_AGAIN_AT)
-	tw.tween_callback(func() -> void: Sound.play("die_roll"))
-	tw.tween_property(d, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-
-
-## RIFTGATE_RAGE_DEBUG: the rage bar on the machine that banks rage (the first machine when none
-## does) fills two a beat and empties at its cap, so the bar's notches and the die's charged
-## mark at five are seen to come and go. Nothing is spent by a spend.
+## RIFTGATE_RAGE_DEBUG: every machine with a rage form that is not raging is put at its heat
+## maximum as its turn is about to open, so the round's start lays its Rage (Skirmish._rage_opens).
 func _rage_debug() -> void:
-	var at := 0
-	for k in range(sk.mechs.size()):
-		if Effects.store_cap(sk.mechs[k].unit, "rage") > 0:
-			at = k
-	if sk.mechs.is_empty() or not sk.mechs[at].alive():
+	if not RAGE_DEBUG or sk == null:
 		return
-	var u := sk.mechs[at].unit
-	var cap := maxi(1, Effects.store_cap(u, "rage"))
-	if Effects.stacks_of(u, "rage") >= cap:
-		Effects.spend_stacks(u, "rage", Effects.stacks_of(u, "rage"))
-	else:
-		Effects.stack(u, Effects.STATUS["rage"], Effects.SKIRMISH, "debug", mini(2, cap - Effects.stacks_of(u, "rage")), Effects.DECAY_NONE)
-	_refresh()
+	for ms in sk.mechs:
+		if ms.alive() and not Effects.rage_piece(ms.unit).is_empty() and not Effects.raging(ms.unit):
+			ms.heat = maxi(ms.heat, ms.heat_max)
 
 
 ## Live dice that still hold a usable face.
@@ -4388,6 +4336,7 @@ func _end_turn_now() -> void:
 	var outcome := sk.end_round()
 	var rose_in_turn := _risen_since(returns_before)   # read before the next round's start clears the returns
 	if outcome == Skirmish.Outcome.NONE:
+		_rage_debug()
 		sk.start_round()
 		_heat_rearm()   # the machines have cooled: one back under three quarters can be warned again
 		for i in range(locked.size()):
@@ -4416,71 +4365,6 @@ func _end_turn_now() -> void:
 				_animate_arrival(_foe_view_for(foe), 0.1)
 				Sound.play_after(0.36 + 0.09 * arrived, "arrival", -3.0 * arrived)
 				arrived += 1)
-
-
-## What every foe a release struck had before it (the Whip Scorpion's valves, on its reboot):
-## Foe -> its HP as the blast met it, read off its first blow, and its gauge held there until the
-## blow lands.
-func _hold_releases(released: Array) -> Dictionary:
-	var hp_before := {}
-	for r in released:
-		for bl in r["blows"]:
-			var foe: Foe = bl.get("foe", null)
-			if foe != null and not hp_before.has(foe):
-				hp_before[foe] = int(bl["hp"]) + int(bl["taken"])
-	if is_inside_tree():
-		for foe in hp_before.keys():
-			if foe.alive():
-				_shown_hp[foe] = int(hp_before[foe])
-	return hp_before
-
-
-## The releases played, as the reboot that vents them is declared (a first cut, to judge running;
-## after the enemy's turn until 17 November, when the release was a passed turn's): each machine
-## fires once and its blow lands on every foe at a beat, each its own flash and number, and the
-## foes it felled die after it. A machine whose model fires its release with an act (the Whip
-## Scorpion's broadside, keyed by the passive's id: Ryan, 12 November, "the blast should be hooked
-## up, same as the ray animation") winds it up first, the blow and its sound waiting on it, as a
-## fixed weapon's spend does (_fire_wind). Returns the seconds it takes.
-func _play_releases(released: Array, was: Dictionary, hp_before: Dictionary) -> float:
-	var ends := 0.0
-	for r in released:
-		var blows: Array = r["blows"]
-		var i := int(r["mech"])
-		if blows.is_empty() or i < 0 or i >= _mech_views.size():
-			continue
-		var dead: Array = []
-		for bl in blows:
-			var foe: Foe = bl.get("foe", null)
-			if foe != null and not foe.alive() and not dead.has(foe):
-				dead.append(foe)
-		var key := release_key(sk.mechs[i]) if i < sk.mechs.size() else ""
-		var wind := _mech_3d[i].fire_wind(key) if not key.is_empty() and i < _mech_3d.size() and _mech_3d[i] != null else 0.0
-		var fire_at := ends + BLOW_AT + wind
-		if wind > 0.0:
-			_wind_up(i, true, key, ends)
-		var landed := fire_at + Sound.lands("vent")
-		var beats := _beats(blows)
-		for k in range(_strikes_of(blows)):
-			_attack_at(fire_at - BLOW_AT + _beat(beats, k), _mech_views[i], _view_struck(blows, k, was, null), true, BLOW_AT + Sound.lands("vent"), key if wind > 0.0 else "", wind > 0.0)
-			Sound.play_after(fire_at + _beat(beats, k), "vent", -2.0 if k == 0 else -6.0)
-		var deaths := _land_blows(blows, landed, was, dead, hp_before)
-		ends = landed
-		for bl in blows:
-			ends = maxf(ends, _blow_time(bl, landed, beats))
-		for k in range(dead.size()):
-			var at := float(deaths.get(dead[k], ends))
-			ends = maxf(ends, at)
-			Sound.play_after(at + 0.07 * k, "kill", -2.0 * k)
-	return ends
-
-
-## What a machine's release fires with on its model: its releasing passive's id (Effects.reboot_release),
-## the key its sidecar's `fires` names the act's slice by; "" for a machine whose vent blasts nothing.
-static func release_key(ms: Skirmish.MechState) -> String:
-	if ms == null or ms.unit == null:
-		return ""
-	return str(Effects.reboot_release(ms.unit).get("id", ""))
 
 
 func _show_outcome(outcome: int) -> void:

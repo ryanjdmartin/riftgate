@@ -47,6 +47,7 @@ const TABLE := {
 	# Statuses.
 	"ablating": ["ablate", "heat"], "scorched": ["scorch", "heat"], "primed": ["primed", "heat"],
 	"overcharged": ["overcharge", "heat"], "kindled": ["overcharge", "heat"], "enraged": ["overcharge", "heat"], "golden": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
+	"rage": ["rapid", "heat"],   # the Nemesis's Rage (23 November): its Knuckles Instant, the fists' mark, in heat's group
 	"charged": ["shocked", "heat"], "supercooled": ["cryo", "guard"],
 	"brittled": ["brittle", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"], "ricochet": ["ricochet", "heat"],
 	"parry": ["spin", "heat"],   # the Beam Buckler's (19 November): what it blocks, next turn's first weapon's add, in Spun Up's family
@@ -126,7 +127,7 @@ static func colour(id: String) -> Color:
 
 ## The term an engine status stands for: its own id, an alias's, or a component's mark by its
 ## prefix ("corrupted_2"; an entry a foe switched off, the engine's "disabled_2", reads Jammed);
-## "" when the list defines none (the Nemesis's rage, a store).
+## "" when the list defines none (a store with no term of its own).
 static func of_status(status_id: String) -> String:
 	if ALIASES.has(status_id):
 		return str(ALIASES[status_id])

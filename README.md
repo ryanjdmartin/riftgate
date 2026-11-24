@@ -476,7 +476,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_PULSE_DEBUG      END TURN pulsing, on the map and in a fight (any run)
 #   RIFTGATE_SEAL_DEBUG       a model's form held and let go in turn: the Polar Bear's seal, the Clydesdale's batteries, the Macaque's armaments one at a time (any run)
 #   RIFTGATE_ACT_DEBUG        one foe after another lit as the acting foe (skirmish)
-#   RIFTGATE_RAGE_DEBUG       the rage meter filling and emptying on the machine that banks it (skirmish)
+#   RIFTGATE_RAGE_DEBUG       every machine with a rage form (the Nemesis) opens each turn at its heat maximum, so it rages every turn (skirmish)
 #   RIFTGATE_PREY_DEBUG       the predator sense kept on (skirmish)
 #   RIFTGATE_PLAQUE_DEBUG     the plaque with one move name after another (skirmish)
 #   RIFTGATE_ALOFT_DEBUG      every foe drawn as out of the dice's reach; RIFTGATE_FOES=roc:1 is the real thing (skirmish)

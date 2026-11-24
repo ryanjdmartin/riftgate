@@ -7,7 +7,7 @@ extends SceneTree
 ## and pair_spread (a Gel's halves in its slot, and a Spread held over them; RIFTGATE_FOES=gel:2,goblin:3),
 ## mechcodex, hold (the second die's readout; RIFTGATE_HOLD_ENTRY=<place> picks the entry
 ## showing), mechhold and foehold (the first machine's and the first foe's readout, as a tap opens it), confirm (the
-## end-turn question), lock, rage (the rage's roll again mid-burst), heat (Ablating and
+## end-turn question), lock, rage (the Nemesis raging, its die all Knuckles of Fury), heat (Ablating and
 ## Scorched on the first machine), foeheat (heat's red-orange beside the enemy's violet on three foes' chips), repick (a foe whose machine falls before it acts, a second
 ## arrow dashed to the machine it will strike), columns (every foe aimed at the machine nearest its column, every arrow on).
 
@@ -247,9 +247,14 @@ func _apply_pose() -> void:
 				var over: Control = s._foe_view_for(s.sk.front[0])
 				s._on_drag_moved(over.get_global_rect().get_center())
 		"rage":
-			# The rage's roll again: the chip's burst and the die folded before its flip
-			# (RIFTGATE_SHOT_FRAME=8 catches the burst mid-flight).
-			s._rage_debug()
+			# The Nemesis's Rage (23 November): every machine with a rage form at its heat maximum and
+			# raging, its chip up and its die all Knuckles of Fury.
+			for ms in s.sk.mechs:
+				if ms.alive() and not Effects.rage_piece(ms.unit).is_empty():
+					ms.heat = maxi(ms.heat, ms.heat_max)
+					s.sk._rage_opens(ms)
+					ms.face_index = s.sk._roll(ms)
+			s._refresh()
 		"repick":
 			# The round preview's settled re-pick (26 October): the first machine falls to the first
 			# front foe's blow, so the second, aimed at it too, strikes the pick it will make; every
@@ -308,7 +313,7 @@ func _apply_pose() -> void:
 		"stores":
 			# Every machine's own resource row part filled, to judge the rows beside the heat bar
 			# (10 November; RIFTGATE_TEAM=badger,nemesis,cassowary,swallowtail, then musk_ox): the
-			# Honey Badger's hopper at three loads of four, the Nemesis's rage at three, the
+			# Honey Badger's hopper at three loads of four, the
 			# Cassowary's count two short of its shot, the Swallowtail's Muster a charge and a
 			# half, the Musk Ox's magazine two down, and each machine a little hot.
 			for ms in s.sk.mechs:
@@ -316,8 +321,6 @@ func _apply_pose() -> void:
 				ms.heat = maxi(ms.heat, int(u.heat_max * 0.4))
 				if Effects.store_cap(u, "hopper") > 0:
 					Effects.add_loads(u, 3)
-				if Effects.store_cap(u, "rage") > 0:
-					Effects.stack(u, Effects.STATUS["rage"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_NONE)
 				var every := Effects.counts_shots(u)
 				if every > 2:
 					Effects.stack(u, Effects.STATUS["shots"], Effects.SKIRMISH, "mech", every - 2, Effects.DECAY_NONE)

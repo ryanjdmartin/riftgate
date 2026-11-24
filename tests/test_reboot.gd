@@ -16,9 +16,9 @@ const MENDER := {"id": "mender", "name": "Mender", "description": "", "effects":
 ## A hull hit that stands a shield up, a gain by another road than the regen.
 const LINER := {"id": "liner", "name": "Liner", "description": "", "effects": [
 	{"trigger": "on_hull_damage", "effect": "add_shield", "value": 10}]}
-## A reboot blasts what it vents on every foe, 1 for every 2 heat.
-const BOILER := {"id": "boiler", "name": "Boiler", "description": "", "effects": [
-	{"trigger": "static", "effect": "reboot_release", "value": 1, "per": 2}]}
+## A reboot that fires a piece first, the piece's id "ray".
+const RAYED := {"id": "rayed", "name": "Rayed", "description": "", "effects": [
+	{"trigger": "static", "effect": "reboot_piece", "piece": "ray", "label": "Ray"}]}
 
 
 func _mech(id: int, name: String, d: Die, shield: int = 40, hull: int = 100, heat_max: int = 30) -> Unit:
@@ -387,29 +387,41 @@ func test_a_barrier_lands_on_a_broken_shield_and_covers_a_reboot() -> void:
 	assert_true("\n".join(sk.log).contains("the Barrier takes the blow"), "the log says so")
 
 
-## The vent that explodes (Ryan, 17 November: "the reboot vent is the one that explodes"): a
-## machine whose reboot blasts what it vents lands it on every foe as its shield drops; a turn it
-## ends with its die unspent releases nothing, the release a passed turn's until then.
-func test_a_reboots_vent_explodes_and_an_unspent_die_releases_nothing() -> void:
-	var m := _mech(1, "A", _gun(10), 40, 200)
-	m.grant_passive(BOILER)
+## A machine whose reboot fires a piece first (the Whip Scorpion's Death Ray, Ryan, 23 November:
+## "The death ray does it's thing when used, then the Scorpion reboots"): dropped on REBOOT its die
+## brings the piece up and nothing vents yet; spent, the piece fires and the reboot follows, its
+## shield down and its heat gone, bare through the enemy's turn and whole as the next opens; a turn
+## it ends with its die unspent keeps its heat, as any machine's.
+func test_a_reboot_piece_fires_and_then_the_machine_reboots() -> void:
+	var ray := Face.attack(7, L, [], 3)
+	ray.component = "ray"
+	var gun := Face.attack(1, L, [], 10)
+	var m := _mech(1, "A", Die.of([gun, ray]), 40, 200)
+	m.grant_passive(RAYED)
 	var foe := Foe.make("dummy", 900, 0)
 	var sk := _fight([m], [foe])
 	var ms: Skirmish.MechState = sk.mechs[0]
 	sk.start_round()
+	ms.face_index = 0
 	sk.assign(0, sk.front[0])
 	sk.end_round()
-	var hp := foe.hp
 	sk.start_round()
 	assert_eq(ms.heat, 10, "ten held")
 	sk.end_round()
-	assert_eq(foe.hp, hp, "a turn it ends with its die unspent opens no valve")
-	assert_true(sk.releases.is_empty(), "nothing released")
+	assert_eq(ms.heat, 10, "a turn it ends with its die unspent keeps its heat")
 	sk.start_round()
-	assert_true(sk.reboot_mech(0), "it reboots")
-	assert_eq(foe.hp, hp - 5, "and its vent lands on the foe at once: 1 for every 2 heat it sheds")
-	assert_eq(ms.heat, 0, "left cold")
-	assert_eq(sk.releases.size(), 1, "the screen is told")
+	assert_true(sk.reboot_mech(0), "its die on REBOOT")
+	assert_false(ms.rebooting, "nothing vents yet: the piece is up")
+	assert_eq([ms.face().component, ms.heat, m.shield], ["ray", 10, 40], "its die shows the piece, its heat and shield as they were")
+	var hp := foe.hp
+	assert_true(sk.assign(0, sk.front[0]), "the piece spent")
+	assert_eq(foe.hp, hp - 7, "it fires")
+	assert_true(ms.rebooting, "and the machine reboots")
+	assert_eq([ms.heat, m.shield], [0, 0], "cold and bare")
+	assert_true("\n".join(sk.log).contains("A reboots as its ray has fired"), "the log says why")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(m.shield, 40, "whole as the next round opens")
 
 
 func test_the_round_preview_plays_a_reboot_bare_and_a_burn_that_stands() -> void:

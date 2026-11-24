@@ -77,7 +77,7 @@ CURRENCIES = OrderedDict([
     ("mine", ("Mine", "on a foe")),
     ("ammo", ("Ammo", "a store")),
     ("muster", ("The Muster", "a store")),
-    ("rage", ("Rage", "a store")),
+    ("rage", ("Rage", "on a machine")),
     ("hopper", ("The hopper", "a store")),
     ("essence", ("Souls", "a count, kept for the battle")),
     ("foe_buff", ("A foe's buffs (Armoured, Empowered, Getting Back Up; Primed, Barrier, Ward and Regenerating once the ladder lands)", "on a foe")),
@@ -107,6 +107,7 @@ FACE_FIELDS = {
     "spends_magazine": [("ammo", "reads")], "magazine_min": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
     "self_ablate": [("ablating_mech", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
     "vents": [], "cooldown": [], "charged": [("muster", "reads")],
+    "self_vent": [("heat", "sets")],   # the Knuckles of Fury cool their own machine as they strike (23 November)
     "rolls_target": [],
     # The rules written on their one piece (15 November, keywords before): the Combat Translocator's
     # swap and the Web Bomb's web.
@@ -119,8 +120,9 @@ EFFECTS = {
     "seal_form": [("sealed", "sets"), ("braced", "sets"), ("heat", "sets")],
     "paradox": [("paradox", "sets"), ("suppressed", "sets")], "muster": [("muster", "sets"), ("reroll", "reads")],
     "pull_heat": [("ally_heat", "reads"), ("heat", "sets")],   # the Puffin's pull (19 November): an ally's heat onto its own gauge
-    "add_stacks": [], "reboot_release": [("heat", "reads")], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
-    "heat_per_blow": [("heat", "sets")],
+    "add_stacks": [], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
+    "gain_heat": [("heat", "sets")], "rage_form": [("heat", "reads"), ("rage", "sets")],   # the Nemesis's Crucible Capacitor (23 November): blows heat it, and its maximum rages it
+    "heat_scale": [("heat", "reads")], "hot_hits": [("heat", "reads")], "reboot_piece": [("heat", "reads")],   # the Whip Scorpion's Thermal Ejection Manifold (23 November): its damage by its heat, a hot gauge's doubled hits, and its Ray fired as it reboots
     "step_die": [("reroll", "reads")], "split_strikes": [("strikes", "sets")], "multiply_printed": [], "free_reroll": [("reroll", "sets")],
     "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "rewrite_weapon": [], "grant_keyword": [], "spillover": [("strikes", "sets")],
     "add_shield": [], "refill_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
@@ -130,7 +132,7 @@ EFFECTS = {
     "shield_zap": [], "add_power": [],   # the Buzzard's zap and its Burst's raise of the cannon's number (18 November)
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
 }
-TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_granted": "shield_granted", "on_buff_granted": None, "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",
+TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_hit": None, "on_blocked": None, "on_shield_granted": "shield_granted", "on_buff_granted": None, "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",
             "on_foe_status": "paradox_feed", "on_stack": None, "on_attack": None, "static": None,
             "on_injury": None, "on_skirmish_start": None, "on_shield_gain": None, "on_damage": None}
 CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None,
@@ -180,7 +182,8 @@ ENGINE_READERS = {
     "rank": ["Direct reaches the front, Indirect any"],
     "strikes": ["each strike takes the foe's conditions and armour on its own"],
     "mine": ["blows on every foe round its slot when it falls"],
-    "ammo": [], "muster": [], "rage": [], "hopper": [], "missing_hp": [], "ally_heat": [], "shield_granted": [], "tags": ["the screen's lunge reads Melee; nothing else reads a tag"],
+    "rage": ["at its heat maximum as its turn opens: its debuffs lifted and none landing, its die its rage piece alone, Instant; at no heat it reboots"],
+    "ammo": [], "muster": [], "hopper": [], "missing_hp": [], "ally_heat": [], "shield_granted": [], "tags": ["the screen's lunge reads Melee; nothing else reads a tag"],
     "foe_buff": ["each has an answer beside a purge: kill, suppress or disrupt the rallier, Expose the brace or ignore its armour, pop a Barrier with a cheap blow, wait out a Ward, burst what regenerates"],
 }
 

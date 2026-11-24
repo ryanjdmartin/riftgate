@@ -41046,7 +41046,7 @@
   "condenser_slot": 5.0
  },
  "fires": {
-  "knuckle_of_fury": [
+  "knuckles_of_fury": [
    {
     "act": "jab",
     "from": 0.3,

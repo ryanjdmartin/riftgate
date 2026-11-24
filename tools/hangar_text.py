@@ -326,6 +326,12 @@ def content_slots():
         the die's rider, and its line, the rider as the player reads it; a step's forms as upgrades,
         and the name a step gives the piece it upgrades (the Aile Blitzer), on the die's readout."""
         for i, eff in enumerate(effects or []):
+            if isinstance(eff, dict) and eff.get("effect") == "reboot_piece" and "label" in eff:
+                # the word REBOOT wears while the die is held of a machine whose reboot fires a piece
+                # first (the Whip Scorpion's Death Ray, 23 November)
+                add(key, entry, "%s.%d.label" % (at, i), "title", eff.get("label", ""), owner, group, shown=shown, why=why, sub="reboot control",
+                    facts="%s, %s" % (eff.get("piece", ""), effect_words([eff])))
+                continue
             if isinstance(eff, dict) and eff.get("effect") != "offhand" and eff.get("entry") and "name" in eff:
                 # the name a step gives the piece it upgrades (the Aile Booster as its Blitzer)
                 add(key, entry, "%s.%d.name" % (at, i), "title", eff.get("name", ""), owner, group, shown=shown, why=why, sub="upgraded piece",

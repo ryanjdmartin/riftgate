@@ -80,7 +80,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1446 tests, 390,063 checks, green on Godot 4.8-beta4 (24 November, the terminology branch landing: the tips to the standard, every tip held to its shape). The runner fails a run
+- Tests: 1456 tests, 390,110 checks, green on Godot 4.8-beta4 (24 November, the terminology branch landing on 24 November, the Nemesis's Rage and the Whip Scorpion's Death Ray, a raging swing on the undo: the tips to the standard, every tip held to its shape). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -191,8 +191,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Injector; its shield-lit parts carry its heat, blue to red-orange, `RIFTGATE_HEAT_GLOW_DEBUG=1`), its strength his play's in
   a team that leverages heat, since the bot reads only its Empowered (20 November); its first
   round on the Swallowtail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
-  the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis, the Polar Bear
-  (a reboot opens its seal), the Whip Scorpion (its reboot's vent blasts every foe), the
+  the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis (its Rage, rebuilt
+  on Ryan's design of 23 November), the Polar Bear (a reboot opens its seal), the Whip Scorpion
+  (rebuilt the same day: its damage by its heat, and its reboot firing its Death Ray), the
   Lammergeier, the Wild Boar, the Baboon, the Stingray, and the Macaque, landed 19 November
   on `ccr-64b5deec-lunnff` from Ryan's kit (Aphelion's agile duelist at tier one: its offhand
   cycles the Beam Rifle, the Beam Sword and the Beam Shield after every spend at a foe, a rider

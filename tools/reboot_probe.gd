@@ -6,13 +6,16 @@ extends SceneTree
 ## composition at its own grid) or, with --bosses, tier one's bosses alone; the greedy bot playing.
 ## Per machine, of its turns: the share it spent, gave to a reboot or held, the share it stood bare
 ## of shield as the enemy struck, and sealed (the Polar Bear's Lockdown); a fight's overheats, burn
-## and vents that blast (the Whip Scorpion's); its own hull lost (percent of its own), its fights wrecked,
+## and Rages (the Nemesis's); its own hull lost (percent of its own), its fights wrecked,
 ## and the squad's hull lost; under the table, a machine that spends its shield into its blows (the
 ## Buzzard's zap and its cannon, 18 November): its zaps a fight, its shots of the whole shield and
 ## the shield each fired; one whose reboot may be its second spend (the Needletail's, the same
 ## day): how many of its reboots came after a spend of its own; and one that ramps Ricochet (the
 ## Skua's, 19 November): its peak stacks a fight and its halvings; one that moves heat (the Puffin's,
-## 19 November): its pulls a fight and the heat each took, its dumps and the heat each passed. For
+## 19 November): its pulls a fight and the heat each took, its dumps and the heat each passed; one
+## whose reboot fires a piece first (the Whip Scorpion's Death Ray, 23 November): its Ray's shots a
+## fight and the heat each fired; one that rages (the Nemesis's, the same day): its Rages a fight, its
+## Instant actions and the reboots its Rage ended in. For
 ## every machine, the share of their turns the squad's other three gave to a reboot, since a machine
 ## that takes its allies' heat is read by theirs. A direction, never a gate: the bot's play of the reboot is a first
 ## heuristic, so its losses are a floor of skill. A fight still standing at forty rounds (CAP)
@@ -21,7 +24,13 @@ extends SceneTree
 ##   perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/reboot_probe.gd -- --bosses --seeds 6 --only kite,badger
 ## Options: --seeds N (6), --only <chassis ids>, --bosses, --branches <picks> (the
 ## machine read's upgrades, its directions in the order taken: --branches defence,defence; each
-## machine read takes those its chassis allows). Four in parallel, a part of the roster each, read
+## machine read takes those its chassis allows), --heat-max N (a what-if: the read machine's heat
+## maximum: the Whip Scorpion's lever, Ryan's of 17 November), --face-heat <component>=N (a what-if:
+## a piece's printed heat: the Nemesis's Knuckles, Ryan, 20 November: "I suspect that the knuckles
+## are too hot"), --stock <component ids> (a what-if: the read
+## machine's stock in place of its own, in order), --drop-effect <effect> (a what-if: the read
+## machine's passive without that effect: the Whip Scorpion's doubled hits, hot_hits, for one).
+## Four in parallel, a part of the roster each, read
 ## the whole roster in about seven minutes.
 ##
 ## The proposal's leans it laid over its fight loop went with their calls: the Polar Bear's and
@@ -35,6 +44,10 @@ var seeds := 6
 var only: Array = []
 var bosses := false
 var picks: Array = []   # the machine read's branch picks (--branches)
+var heat_max := -1      # --heat-max: the read machine's heat maximum as a what-if; -1 leaves content's
+var face_heat := {}     # --face-heat: component id -> its printed heat as a what-if
+var stock: Array = []   # --stock: the read machine's stock as a what-if; empty leaves content's
+var drop_effect := ""   # --drop-effect: an effect the read machine's passive goes without, as a what-if
 
 const CAP := 40   # a fight still standing at forty rounds ends there as it stands, the bot stalled
 
@@ -52,11 +65,36 @@ func _init() -> void:
 				bosses = true
 			"--branches":
 				picks = Array(v.split(","))
+			"--heat-max":
+				heat_max = maxi(1, int(v))
+			"--drop-effect":
+				drop_effect = v
+			"--stock":
+				stock = Array(v.split(","))
+			"--face-heat":
+				for pair in v.split(","):
+					face_heat[pair.get_slice("=", 0)] = maxi(0, int(pair.get_slice("=", 1)))
 	db = ContentDB.load_default()
 	if not db.load_errors.is_empty():
 		push_error("content did not load: " + "\n".join(db.load_errors))
 		quit(1)
 		return
+	for cid in face_heat.keys():
+		if db.components.has(cid):
+			db.components[cid]["face"]["heat"] = int(face_heat[cid])
+	if not drop_effect.is_empty():
+		for cid in only:
+			var dp = db.chassis.get(cid, {}).get("passive", null)
+			if dp is Dictionary:
+				dp["effects"] = (dp.get("effects", []) as Array).filter(func(e) -> bool: return str(e.get("effect", "")) != drop_effect)
+	if not stock.is_empty():
+		for cid in only:
+			if db.chassis.has(cid):
+				db.chassis[cid]["loadout"] = stock.duplicate()
+	if heat_max > 0:
+		for cid in only:
+			if db.chassis.has(cid):
+				db.chassis[cid]["heat_max"] = heat_max
 	var mates := ["badger", "prairie_dog", "cassowary"]
 	var comps: Array = []
 	for fac in db.factions.keys():
@@ -67,10 +105,11 @@ func _init() -> void:
 		for size in ["formation", "elite"]:
 			for c in db.compositions(str(fac), 1, size):
 				comps.append(c)
-	print("%d %s, %d seeds, the squad's three: %s%s" % [comps.size(), "bosses" if bosses else "compositions", seeds, ", ".join(mates),
-		"" if picks.is_empty() else ", upgrades " + ",".join(picks)])
+	print("%d %s, %d seeds, the squad's three: %s%s%s%s" % [comps.size(), "bosses" if bosses else "compositions", seeds, ", ".join(mates),
+		"" if picks.is_empty() else ", upgrades " + ",".join(picks), "" if heat_max < 0 else ", its heat maximum %d" % heat_max,
+		("" if face_heat.is_empty() else ", heat " + str(face_heat)) + ("" if stock.is_empty() else ", its stock " + ",".join(stock)) + ("" if drop_effect.is_empty() else ", without its " + drop_effect)])
 	var t0 := Time.get_ticks_msec()
-	print("| Machine | Fights | Won | Rounds | Spent | Rebooted | Held | Rounds a reboot | Overheats a fight | Burn a fight | Bare turns | Sealed | Blasts a fight | Own hull lost | Wrecked | Squad hull lost | Mates rebooted |")
+	print("| Machine | Fights | Won | Rounds | Spent | Rebooted | Held | Rounds a reboot | Overheats a fight | Burn a fight | Bare turns | Sealed | Rages a fight | Own hull lost | Wrecked | Squad hull lost | Mates rebooted |")
 	print("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")
 	var spent_shield: Array[String] = []   # the lines under the table
 	for cid in db.chassis.keys():
@@ -79,10 +118,11 @@ func _init() -> void:
 		if str(db.chassis[cid].get("status", "")) == "planned":
 			continue
 		var agg := {"fights": 0, "won": 0, "rounds": 0, "turns": 0, "spent": 0, "reboot": 0, "held": 0, "overheats": 0, "burn": 0,
-			"bare": 0, "sealed": 0, "blasts": 0, "hull_lost": 0.0, "wrecked": 0, "squad_lost": 0.0,
+			"bare": 0, "sealed": 0, "rages": 0, "hull_lost": 0.0, "wrecked": 0, "squad_lost": 0.0,
 			"zaps": 0, "whole": 0, "whole_shield": 0, "spend_reboot": 0,
 			"peak": 0, "halvings": 0, "halved_rebooting": 0, "stacks_lost": 0,
-			"pulls": 0, "pulled": 0, "dumps": 0, "dumped": 0, "mate_turns": 0, "mate_reboots": 0}
+			"pulls": 0, "pulled": 0, "dumps": 0, "dumped": 0, "mate_turns": 0, "mate_reboots": 0,
+			"rays": 0, "ray_heat": 0, "ray_reboots": 0, "rage_reboots": 0, "instants": 0}
 		for ci in range(comps.size()):
 			for s in range(seeds):
 				_fight(str(cid), mates, comps[ci], 1000 + s * 7919 + ci * 104729, agg)
@@ -93,8 +133,14 @@ func _init() -> void:
 			int(round(100.0 * agg["spent"] / t)), int(round(100.0 * agg["reboot"] / t)), int(round(100.0 * agg["held"] / t)),
 			("%.1f" % (t / float(agg["reboot"]))) if int(agg["reboot"]) > 0 else "never",
 			agg["overheats"] / n, agg["burn"] / n, int(round(100.0 * agg["bare"] / t)), int(round(100.0 * agg["sealed"] / t)),
-			agg["blasts"] / n, int(round(agg["hull_lost"] / n)), int(round(100.0 * agg["wrecked"] / n)), int(round(agg["squad_lost"] / n)),
+			agg["rages"] / n, int(round(agg["hull_lost"] / n)), int(round(100.0 * agg["wrecked"] / n)), int(round(agg["squad_lost"] / n)),
 			int(round(100.0 * agg["mate_reboots"] / maxf(1.0, float(agg["mate_turns"]))))])
+		if int(agg["rays"]) > 0:
+			spent_shield.append("%s: %.2f shots of its whole heat a fight, %s heat each; %.2f reboots a fight its reboot piece fired first" % [
+				str(db.chassis[cid].get("name", cid)), agg["rays"] / n, "%.1f" % (float(agg["ray_heat"]) / float(agg["rays"])), agg["ray_reboots"] / n])
+		if int(agg["rages"]) + int(agg["instants"]) > 0:
+			spent_shield.append("%s: %.2f Rages a fight, %.2f Instant actions a fight, %.2f reboots a fight its Rage ended in" % [
+				str(db.chassis[cid].get("name", cid)), agg["rages"] / n, agg["instants"] / n, agg["rage_reboots"] / n])
 		if int(agg["pulls"]) + int(agg["dumps"]) > 0:
 			spent_shield.append("%s: %.2f pulls a fight, %s heat each; %.2f dumps a fight, %s heat each" % [
 				str(db.chassis[cid].get("name", cid)), agg["pulls"] / n, ("%.1f" % (float(agg["pulled"]) / float(agg["pulls"]))) if int(agg["pulls"]) > 0 else "no",
@@ -102,9 +148,9 @@ func _init() -> void:
 		if int(agg["peak"]) > 0:
 			spent_shield.append("%s: Ricochet at its peak %.1f stacks a fight; %.2f halvings a fight, %.2f of them while it rebooted, %.1f stacks lost" % [
 				str(db.chassis[cid].get("name", cid)), agg["peak"] / n, agg["halvings"] / n, agg["halved_rebooting"] / n, agg["stacks_lost"] / n])
-		if int(agg["spend_reboot"]) > 0:
+		if int(agg["spend_reboot"]) > int(agg["ray_reboots"]) + int(agg["rage_reboots"]):
 			spent_shield.append("%s: %d of its %d reboots after a spend of its own (its second spend the reboot)" % [
-				str(db.chassis[cid].get("name", cid)), int(agg["spend_reboot"]), int(agg["reboot"])])
+				str(db.chassis[cid].get("name", cid)), int(agg["spend_reboot"]) - int(agg["ray_reboots"]) - int(agg["rage_reboots"]), int(agg["reboot"])])
 		if int(agg["zaps"]) + int(agg["whole"]) > 0:
 			spent_shield.append("%s: %.2f zaps a fight; %.2f shots of the whole shield a fight, %s shield each" % [
 				str(db.chassis[cid].get("name", cid)), agg["zaps"] / n, agg["whole"] / n,
@@ -115,8 +161,8 @@ func _init() -> void:
 	quit(0)
 
 
-## One fight, the machine first in the squad, played round by round so its turns and its blasts are
-## read as the player's turn ends (before the burn and the enemy) and its burns as the round does.
+## One fight, the machine first in the squad, played round by round so its turns are read as the
+## player's turn ends (before the burn and the enemy) and its burns as the round does.
 func _fight(cid: String, mates: Array, c: Dictionary, seed_value: int, agg: Dictionary) -> void:
 	var sk := Skirmish.new(seed_value)
 	var uid := 0
@@ -148,23 +194,32 @@ func _fight(cid: String, mates: Array, c: Dictionary, seed_value: int, agg: Dict
 	var rounds := 0
 	var peak := 0   # the most Ricochet it held this fight (the Skua's)
 	while sk.outcome == Skirmish.Outcome.NONE and rounds < CAP:
+		var log_from := sk.log.size()   # from before the round opens, so a Rage it opens is read
 		sk.start_round()
 		rounds += 1
 		var alive := me.alive()
 		var alive_mates: Array[bool] = []
 		for m in sk.mechs:
 			alive_mates.append(m.alive())
-		var log_from := sk.log.size()
 		pol.play_round(sk)
-		var valves := "%s opens its valves" % me.unit.display_name   # a reboot's vent that blasts, in the player's turn
+		var rages := "%s rages" % me.unit.display_name   # a Rage opening (Skirmish._rage_opens's line)
 		var zapped := "%s pays " % me.unit.display_name   # a zap paid (Skirmish._pay_zap's line)
 		var whole := "%s fires its whole shield: -" % me.unit.display_name   # the shield fired whole (Skirmish._hit's line)
 		var takes := "%s takes " % me.unit.display_name   # a pull (Skirmish._pull_heat's line)
 		var passes := "%s passes " % me.unit.display_name   # a dump (Skirmish._pass_heat's line)
 		for line in sk.log.slice(log_from):
 			var said := str(line)
-			if said.begins_with(valves):
-				agg["blasts"] += 1
+			if said.begins_with(rages):
+				agg["rages"] += 1
+			elif said.begins_with("%s fires its heat: -" % me.unit.display_name):
+				agg["rays"] += 1
+				agg["ray_heat"] += int(said.get_slice("-", 1).get_slice(",", 0))
+			elif said.begins_with("%s reboots as its rage is spent" % me.unit.display_name):
+				agg["rage_reboots"] += 1
+			elif said.begins_with("%s reboots as its " % me.unit.display_name) and said.contains(" has fired"):
+				agg["ray_reboots"] += 1
+			elif said.begins_with("%s: instant, rolls again" % me.unit.display_name):
+				agg["instants"] += 1
 			elif said.begins_with(zapped) and said.contains("shield into the blow"):
 				agg["zaps"] += 1
 			elif said.begins_with(whole):
