@@ -3311,10 +3311,12 @@ function orbitStrings(x, out) {
   else if (x && typeof x === "object") for (const k of Object.keys(x)) if (k !== "design") orbitStrings(x[k], out);
   return out;
 }
+// The page's maps hold each row as {entry, st}: what a term or a component says is its entry.
+const unwrapped = (v) => (v && v.entry) ? v.entry : v;
 function machineOrbit(e, vocab, rx) {
   const strs = orbitStrings({passive: e.passive, branches: e.branches, upgrades: e.upgrades, traits: e.traits, codex: e.codex}, []);
   for (const cid of new Set(e.fixed || [])) {
-    const c = ctx().comps.get(cid);
+    const c = unwrapped(ctx().comps.get(cid));
     if (c) orbitStrings({face: c.face, passive: c.passive, codex: c.codex}, strs);
     const r = compReadout(cid);
     if (r) strs.push(r.attr || "", r.kw || "", ...(r.rule ? [].concat(r.rule) : []));
@@ -3325,14 +3327,14 @@ function machineOrbit(e, vocab, rx) {
     for (const m of s.matchAll(rx)) for (const id of (rx.byName.get(m[1]) || [])) ids.add(id);
   }
   // A term whose entry names the machine or one of its locked pieces is its too (the Mole's Drill Out).
-  const own = [e.name, ...[...new Set(e.fixed || [])].map(cid => (ctx().comps.get(cid) || {}).name)].filter(Boolean)
+  const own = [e.name, ...[...new Set(e.fixed || [])].map(cid => (unwrapped(ctx().comps.get(cid)) || {}).name)].filter(Boolean)
     .map(n => new RegExp("(?<![A-Za-z])" + n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(?![a-z])"));
   for (const t of vocab.values()) if (t.codex && own.some(r => r.test(t.codex))) ids.add(t.id);
   return ids;
 }
 function machineTerms(e) {
   if (!ORBITS || ORBITS.ctx !== ctx() || ORBITS.readouts !== state.readouts) {
-    const vocab = vocabMap(), byName = new Map();
+    const vocab = new Map([...vocabMap()].map(([k, v]) => [k, unwrapped(v)])), byName = new Map();
     for (const t of vocab.values()) if (t.name) { const a = byName.get(t.name) || []; a.push(t.id); byName.set(t.name, a); }
     const names = [...byName.keys()].sort((a, b) => b.length - a.length).map(n => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
     const rx = new RegExp("(?<![A-Za-z])(" + names.join("|") + ")(?![a-z])", "g");
@@ -3345,15 +3347,15 @@ function machineTerms(e) {
     }
     ORBITS = {ctx: ctx(), readouts: state.readouts, of, count};
   }
-  const vocab = vocabMap(), cats = liveEntries("vocabulary.entries").map(x => x.entry.id);
+  const vocab = new Map([...vocabMap()].map(([k, v]) => [k, unwrapped(v)])), cats = liveEntries("vocabulary.entries").map(x => x.entry.id);
   return [...(ORBITS.of.get(e.id) || [])].map(id => ({term: vocab.get(id), own: (ORBITS.count.get(id) || 0) === 1}))
     .filter(x => x.term).sort((a, b) => (b.own - a.own) || cats.indexOf(a.term.id) - cats.indexOf(b.term.id));
 }
 function benchTerms(sheet, e) {
   sheet.append(el("h3", {}, "Its terms"));
   const terms = machineTerms(e);
-  if (!state.readouts) sheet.append(el("p", {class: "help"}, state.loaded.readouts ? "The readouts did not load, so the locked pieces' printed words are left out." : "Loading the readouts…"));
-  sheet.append(el("p", {class: "hint"}, "Every keyword, status, ability and resource its passive, its upgrades and its locked pieces name, its own first. Each is the term's entry on the Text tab, edited here as there."));
+  if (!state.readouts) sheet.append(el("p", {class: "help"}, state.loaded.readouts ? "The readouts did not load, so the Integrated components' printed words are left out." : "Loading the readouts…"));
+  sheet.append(el("p", {class: "hint"}, "Every keyword, status, ability and resource its passive, its upgrades and its Integrated components name, its own first. Each is the term's entry on the Text tab, edited here as there."));
   const row = (x) => {
     const t = x.term, label = [t.name, plain(t.category), t.status === "planned" ? "planned" : ""].filter(Boolean).join(" · ");
     return textField("vocabulary.entries", t.id, "codex", label, {}, t.codex);
