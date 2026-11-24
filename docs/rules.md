@@ -1223,6 +1223,8 @@ Ablating, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Ex
   locked piece its die never rolls): while its die is held, REBOOT reads the piece's word (DEATH
   RAY), and its die dropped there brings the piece up in place of the entry it showed, nothing
   vented yet; while it is up REBOOT reads CANCEL, and a drop there again shows the entry it did.
+  Held over REBOOT, the die shows what the drop brings up, the piece at the number its heat makes
+  now, and over CANCEL the entry it goes back to.
   The die with the piece up rerolls nothing. Spent, the piece does its thing and the machine
   reboots as above, the reboot its whole turn. A die with nothing the piece may land on (a field
   of Phased foes) cannot reboot that turn: it skips, or spends an entry that needs no foe. UNDO
