@@ -3038,8 +3038,9 @@ static func heat_damage_multiple(u, heat: int, heat_max: int) -> float:
 ## Whip Scorpion's, Ryan, 24 November: "I think we implement the double damage recieved penalty",
 ## his option of the 23rd, "all damage received is doubled, so that overheat pays twice"): its
 ## `value` while its heat stands over half its maximum, 1 otherwise or with none. Every damage it
-## takes reads it: a foe's hit, its overheat's burn, its Ablating's tick and a Corrupted bite. A
-## price in hull (Volatile's "Lose N Hull", a tithe a spend) is no damage, and pays as printed.
+## takes reads it: a foe's hit, its overheat's burn, its Ablating's tick, a Corrupted bite and a
+## price in hull, Volatile's and a tithe a spend (his, the same day: "Volatile should double as well,
+## all damage is all damage"). Shield paid as a price is no damage.
 static func hot_damage(u, heat: int, heat_max: int) -> int:
 	var n := 1
 	if heat * 2 <= heat_max:

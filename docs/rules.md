@@ -1669,8 +1669,9 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   shot begins (before a Vents all shot fires it); the die's number and the bot read it the same
   way. Past half its heat maximum all the damage it takes is doubled: a foe's hit before its
   shield, armour and a Barrier see it, its overheat's burn (so a point past its maximum burns 2),
-  its Ablating's tick and a Corrupted bite, each read at the heat it holds as the damage lands. A
-  price in hull (Volatile's, a tithe a spend) is no damage, and pays as printed. Its reboot fires its locked Heliographic Death Ray first (The
+  its Ablating's tick, a Corrupted bite and a price in hull (Volatile's, a tithe a spend, the die
+  showing Volatile's doubled), each read at the heat it holds as the damage lands. Shield paid as
+  a price is no damage. Its reboot fires its locked Heliographic Death Ray first (The
   reboot, below): 2, and 1 more for every 2 heat it fires, at its heat scale, then the reboot.
 
 ### Every number is a question

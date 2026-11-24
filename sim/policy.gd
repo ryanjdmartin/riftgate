@@ -1489,7 +1489,7 @@ func brittle_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, foe: Foe, left
 static func volatile_cost(sk: Skirmish, ms: Skirmish.MechState, f: Face, uses: float = 1.0) -> float:
 	if Skirmish.is_phased(ms):
 		return 0.0   # nothing damages a Phased machine, the hull its own spend costs included (Skirmish.pending_volatile)
-	var bite := Skirmish.spend_bite(ms.unit, f)
+	var bite := Skirmish.spend_bite(ms.unit, f) * Effects.hot_damage(ms.unit, ms.heat, ms.heat_max)   # doubled on a hot gauge (the Whip Scorpion's)
 	if bite <= 0:
 		return 0.0
 	var cost := float(bite) * uses * HULL_WEIGHT

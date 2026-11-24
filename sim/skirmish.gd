@@ -1101,7 +1101,7 @@ func pending_volatile(ms: MechState) -> int:
 	var f := ms.face()
 	if f == null or ms.assigned or is_phased(ms):
 		return 0   # a Phased machine pays no hull for its spend (Ryan, 16 November: "I think we block the damage as a feature, and see how bad it is once we have real hull cost pieces that matter")
-	return spend_bite(ms.unit, Effects.effective_face(ms.unit, f))
+	return spend_bite(ms.unit, Effects.effective_face(ms.unit, f)) * Effects.hot_damage(ms.unit, ms.heat, ms.heat_max)   # damage like any, doubled on a hot gauge (the Whip Scorpion's)
 
 
 ## The hull a volatile entry costs its owner per spend, the number its Volatile carries (a
@@ -1468,6 +1468,14 @@ func reach_of(ms: MechState, f: Face) -> int:
 ## front, Penetrate at the back), as the spend will carry them.
 func shown_face(ms: MechState, f: Face, target: Foe = null) -> Face:
 	var sf := Effects.effective_face(ms.unit, f, target)
+	var hot := Effects.hot_damage(ms.unit, ms.heat, ms.heat_max) if sf != null and sf.volatile > 0 else 1
+	if hot > 1:
+		# Its hull price is damage like any (Ryan, 24 November: "Volatile should double as well, all
+		# damage is all damage"), doubled on a hot gauge (the Whip Scorpion's): the die shows what the
+		# spend costs now, as it shows a raised heat.
+		if sf == f:
+			sf = f.duplicate_face()
+		sf.volatile *= hot
 	if sf != null and cannot_pay(ms, sf):
 		if sf == f:
 			sf = f.duplicate_face()

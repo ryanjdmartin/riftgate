@@ -9,7 +9,7 @@ extends TestCase
 ## of the scale past the maximum, "Hold"; 24 November, his option of the 23rd taken, "all damage
 ## received is doubled, so that overheat pays twice"), on synthetic passives and pieces: its damage by
 ## its heat, the die's number and the bot reading it; all damage it takes on a hot gauge doubled, a
-## hit, the burn, a tick and a bite, a price in hull as printed; the reboot piece off the die,
+## hit, the burn, a tick, a bite and a price in hull; the reboot piece off the die,
 ## brought up and stood down, fired and the reboot after, saved and undone; with nothing to fire at,
 ## the bot stands it down; the validator holds the keys to their shapes.
 
@@ -103,9 +103,10 @@ func test_a_hit_on_a_gauge_past_half_lands_double() -> void:
 
 ## All the damage it takes past half its heat, not its hits alone (Ryan, 24 November: "I think we
 ## implement the double damage recieved penalty on the Whip as well"): its overheat's burn, its
-## Ablating's tick and a Corrupted bite land double, and the forecast and the bot read them so; a
-## price in hull (Volatile's "Lose N Hull") is no damage and pays as printed; at half, all plain.
-func test_its_burn_its_tick_and_a_bite_land_double_past_half_and_a_price_pays_as_printed() -> void:
+## Ablating's tick, a Corrupted bite and a price in hull land double (his, the same day: "Volatile
+## should double as well, all damage is all damage"), and the forecast, the die and the bot read
+## them so; at half, all plain.
+func test_its_burn_its_tick_a_bite_and_its_hull_price_land_double_past_half() -> void:
 	var gun := Face.from_dict({"kind": "attack", "reach": "direct", "power": 1, "volatile": 2})
 	var u := _mech("W", Die.single(gun), 10, 0, 200)
 	u.grant_passive(HOT)
@@ -135,12 +136,16 @@ func test_its_burn_its_tick_and_a_bite_land_double_past_half_and_a_price_pays_as
 	ms.face_index = 0
 	Effects.corrupt_entry(u, 0, "test", 1)
 	assert_eq(sk.pending_bite(ms), Skirmish.corrupt_bite(), "at half, the bite plain")
+	assert_eq([sk.pending_volatile(ms), sk.shown_face(ms, ms.face()).volatile], [2, 2], "and Volatile's price as printed, on the die too")
+	var price := Policy.volatile_cost(sk, ms, ms.face())
 	ms.heat = 6
 	assert_eq(sk.pending_bite(ms), 2 * Skirmish.corrupt_bite(), "past half, doubled")
-	assert_eq(sk.pending_volatile(ms), 2, "and Volatile's price as printed")
+	assert_eq([sk.pending_volatile(ms), sk.shown_face(ms, ms.face()).volatile], [4, 4], "and Volatile's price, the die showing what it costs now")
+	assert_eq(gun.volatile, 2, "the piece keeps its printed price")
+	assert_true(Policy.volatile_cost(sk, ms, ms.face()) > price, "and the bot prices the doubled hull")
 	hull = u.hull
 	assert_true(sk.assign(0, foe), "it fires, corrupted and volatile")
-	assert_eq(hull - u.hull, 2 * Skirmish.corrupt_bite() + 2, "the bite doubled, the price not")
+	assert_eq(hull - u.hull, 2 * Skirmish.corrupt_bite() + 4, "the bite and the price both doubled")
 
 
 func test_its_reboot_brings_the_piece_up_and_a_second_drop_stands_it_down() -> void:
