@@ -183,7 +183,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
    the next. UNDO takes back the last spend or reroll, in the order made, back to the last
    roll, its floor: the round's roll, a reroll that draws, or a spend that draws inside itself
    (Rapid's or Instant's reroll); a stepping die's step draws nothing,
-   so it is taken back like a spend. The trail shows a bar at every roll, every line of it at
+   so it is taken back like a spend, and so does a roll that can land only one way (an Instant
+   roll among one entry, a raging Nemesis's fists; a Rapid reroll with one other entry to go to). The trail shows a bar at every roll, every line of it at
    full strength, and UNDO's badge says how many spends it reaches; UNDO opens once a spend's
    last blow has played. END TURN sits bottom-left and UNDO bottom-right, and UNDO reads on or
    off by its edge, a heavy solid one or a faint dashed one. END TURN pulses once no

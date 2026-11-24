@@ -106,6 +106,40 @@ func test_a_raging_machine_swings_until_its_heat_runs_out_then_reboots_at_once()
 	assert_false(Effects.raging(u), "and calm")
 
 
+## The undo takes a raging swing back (Ryan, 24 November: "It's instant, but since its the only
+## face, it probably should be allowed to Undo"): the roll again can land only on the fists, so it
+## draws nothing and is no floor; the last swing comes back with the reboot it brought. An Instant
+## roll with a choice is still the undo's floor.
+func test_the_undo_takes_a_raging_swing_back_and_the_reboot_its_last_one_brought() -> void:
+	var u := _nemesis()
+	var foe := Foe.make("dummy", 900, 0)
+	var sk := _fight([u], [foe])
+	sk.keeps_undo = true
+	var ms: Skirmish.MechState = sk.mechs[0]
+	_rage_at(sk, 9)
+	assert_true(Effects.raging(u), "raging")
+	assert_true(sk.assign(0, sk.front[0]), "a swing")
+	assert_eq([ms.heat, foe.hp], [6, 895], "three off its nine")
+	assert_true(sk.can_undo(), "the roll again drew nothing: the swing is on the undo")
+	assert_true(sk.undo(), "taken back")
+	var back: Skirmish.MechState = sk.mechs[0]
+	assert_eq([back.heat, sk.front[0].hp, back.assigned], [9, 900, false], "its heat, the foe and its die as they were")
+	for k in range(3):
+		assert_true(sk.assign(0, sk.front[0]), "swing %d" % (k + 1))
+	assert_true(sk.mechs[0].rebooting, "its heat at nothing, it reboots")
+	assert_eq(sk.undo_depth(), 3, "every swing on the undo")
+	assert_true(sk.undo(), "the last taken back")
+	assert_eq([sk.mechs[0].rebooting, sk.mechs[0].heat], [false, 3], "and the reboot with it")
+	assert_true(Effects.raging(sk.mechs[0].unit), "raging still")
+	var jab := Face.attack(2, L, [Face.Keyword.INSTANT], 1)
+	var other := _mech("Q", Die.of([jab, jab.duplicate_face(), Face.attack(3, L)]))
+	var s2 := _fight([other], [Foe.make("dummy", 900, 0)])
+	s2.keeps_undo = true
+	s2.mechs[0].face_index = 0
+	assert_true(s2.assign(0, s2.front[0]), "an Instant jab on a die with a choice")
+	assert_false(s2.can_undo(), "its roll drew: the undo's floor")
+
+
 func test_an_ended_turn_leaves_it_raging_and_what_stands_past_its_maximum_burns() -> void:
 	var u := _nemesis()
 	var sk := _fight([u], [Foe.make("dummy", 900, 0)])

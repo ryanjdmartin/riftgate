@@ -4668,13 +4668,32 @@ func _act_again(ms: MechState, itself := false) -> void:
 		return
 	_rolled()
 	var live := Effects.live_entries(ms.unit, ms.die)
-	if itself:
+	var only := _only_landing(ms, live, itself)
+	if only >= 0:
+		ms.face_index = only   # a roll that can land only one way draws nothing, so the undo takes the spend back
+	elif itself:
 		ms.face_index = ms.die.roll_among(rng, live)
 	elif Effects.steps_die(ms.unit):
 		ms.face_index = _step(ms)
 	else:
 		ms.face_index = ms.die.reroll_among(rng, live, ms.face_index)
 	ms.assigned = false
+
+
+## The one entry a die rolling again can land on, or -1 where the roll has a choice (Ryan, 24
+## November, of the Nemesis's Rage: "It's instant, but since its the only face, it probably should
+## be allowed to Undo"): an Instant roll among one live entry (a raging machine's fists), or a
+## Rapid reroll with one other entry to go to. A roll with no choice is no draw: the stream is left
+## alone, so the spend stays on the undo (assign). A stepping die steps by its own rule.
+static func _only_landing(ms: MechState, live: Array, itself: bool) -> int:
+	if Effects.steps_die(ms.unit):
+		return -1
+	var pool: Array = live.duplicate() if not live.is_empty() else range(ms.die.faces.size())
+	if not itself:
+		pool = pool.filter(func(i) -> bool: return int(i) != ms.face_index)
+		if pool.is_empty():
+			return ms.face_index   # nowhere else to go: it stays, as the reroll rule leaves it
+	return int(pool[0]) if pool.size() == 1 else -1
 
 
 ## The entries a one-of-each machine's die may flip to once `spent` is out (Effects.one_of_each,
