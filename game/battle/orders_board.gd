@@ -23,7 +23,7 @@ const ROW_H := 24.0
 const SETTLE := 0.45   # seconds a changed line spends scrambled
 const BAR_W := 54.0
 const BAR_H := 10.0   # one gauge, the hull, so a little heavier than the two it replaced
-const BADGE_H := 23.0 # a fight's badge on a machine's row (Hud.engage_badge), inside the row
+const BADGE_H := 19.0 # a fight's badge on a machine's row (Hud.engage_badge), its rim clear of the rows above and below (Ryan, 24 November: "Shrink the chips slightly in the info panel so they don't clip")
 
 var _t := 0.0
 var _last: Dictionary = {}    # line key -> text last drawn, to see a change
