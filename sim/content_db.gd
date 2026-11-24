@@ -2372,8 +2372,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		# Or a static grant held once a round (20 November: the Honey Badger's Claw Instant the first
 		# time each turn, the Prairie Dog's first weapon strike on a Brittle foe Rapid), spent as its
 		# spend is made (Effects.mark_once).
-		# Once a spend (the Incinerator's what-if, 24 November): an attack's heat a hit or its lay, on
-		# the target's first hit alone.
+		# Once a spend (the Incinerator's, 24 November): an attack's heat with its first hit, its lay
+		# on each Sprite's first.
 		var once_spend := str(eff.get("once", "")) == "spend" and trig == "on_attack" and ["hit_heat", "lay_status"].has(effect)
 		if eff.has("once") and not once_spend and (str(eff["once"]) != "round" or ["on_attack", "on_injury"].has(trig) or (trig == "static" and effect != "grant_keyword")):
 			errs.append("%s: once is \"round\", on an effect an event fires or a static grant_keyword (never on_attack or on_injury), or \"spend\" on an on_attack hit_heat or lay_status" % where)

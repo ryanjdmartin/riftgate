@@ -1749,23 +1749,25 @@
      "id": "incinerator",
      "name": "Incinerator",
      "design": {
-      "notes": "Ryan, 24 November: \"Incinerator: Passive gains Resolve: For each hit, gain 1 heat and apply 1 Ablate. If Overheated, apply 2 Ablate Instead.\" Built the same day once the base's doubling went back to its hits alone, his option 1 (\"Go with option 1 and max heat 12, then build the Incinerator\"), so riding Overheated pays the plain burn. A session's readings, laid out to him before his word to build it: each hit every Sprite hit, a weapon's and equipment's, an area's included and a Chain's arc none; each hit's heat lands before its Ablate, so a hit that takes it past Max Heat lays 2; the Death Ray vents first, so its hit lays 1 and its heat goes with the reboot. The step's text a session's draft from his words."
+      "notes": "Ryan, 24 November: \"Resolve: Gain 1 heat and apply 1 Ablate. If Overheated, apply 3 Ablate instead\" and \"It should apply to everything hit, not just the target\", his form after the reads of the same day (measurements.md: the Maxigun carried a heat and an Ablate a hit, his first form, \"Passive gains Resolve: For each hit, gain 1 heat and apply 1 Ablate. If Overheated, apply 2 Ablate Instead\"). Once a spend: its heat with the spend's first hit, its Ablate on each Sprite hit once, an area's and equipment's included, a Chain's arc none; the heat lands before the Ablate, so a spend that takes it past Max Heat lays 3; the Death Ray vents first, so it lays 1 and its heat goes with the reboot. The step's text his, with \"to each Sprite hit\" a session's, the standard's words for everything hit."
      },
      "steps": [
       {
-       "description": "Resolve: For each hit, gain 1 Heat and apply 1 Ablate. If Overheated, apply 2 Ablate instead.",
+       "description": "Resolve: Gain 1 Heat and apply 1 Ablate to each Sprite hit. If Overheated, apply 3 Ablate instead.",
        "effects": [
         {
          "trigger": "on_attack",
          "effect": "hit_heat",
-         "value": 1
+         "value": 1,
+         "once": "spend"
         },
         {
          "trigger": "on_attack",
          "effect": "lay_status",
          "value": "ablating",
          "stacks": 1,
-         "overheated": 2
+         "overheated": 3,
+         "once": "spend"
         }
        ]
       }

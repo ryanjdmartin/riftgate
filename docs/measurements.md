@@ -13045,3 +13045,19 @@ Incinerator: without it the branch reads as the base does, 10.1 against 10.2, an
 rounds faster, its three hits three Ablate a use. Once a spend takes about half of that back (8.7),
 the Maxigun's use one Ablate like any other's. 2 heat a hit takes none of it (7.1): the heat brings
 the Ray round sooner and bigger, and the bot never lets it overheat (0.00 a fight in every read).
+
+## 24 November: the Incinerator as Ryan set it, once a use on every Sprite hit
+
+`tools/reboot_probe.gd` as the entry above (the Halo Projector's stock, tier three with the lift),
+`--branches incinerator`, on Ryan's form: "Resolve: Gain 1 heat and apply 1 Ablate. If Overheated,
+apply 3 Ablate instead", and "It should apply to everything hit, not just the target".
+
+| The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad | Its Ray: shots a fight, heat a shot |
+|---|---|---|---|
+| The Incinerator, once a use on every Sprite hit, 3 Ablate past the maximum | 5.3, 30%, 5%, 8% | 8.7, 29%, 7%, 16% | 1.43 and 2.24, 7.6 and 7.6 |
+
+What it says, a direction: it reads as the once-a-spend what-if above did, to the figure. Its stock
+holds no weapon with an area, so every Sprite hit is its target, and the bot overheats it in about
+one boss fight in a hundred, so its 3 Ablate past the maximum barely comes into the read: both are
+the player's to find. A boss fight 1.5 rounds faster than the base on this stock, and 1.4 slower
+than its first form.

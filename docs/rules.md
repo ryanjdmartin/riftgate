@@ -117,10 +117,10 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   Direct, 2 and a point for every 2 heat it fires, Spread 2, Penetrate 2, Ignores Armour), REBOOT
   reading DOOM RAY with its die in hand; the heat it fires lands on every hit of the shot, as the
   blow's order lays what an entry prints from its firer, so the whole shot lands on each Sprite
-  it reaches; Incinerator, on its passive, each of its hits (every Sprite hit, an area's and
-  equipment's, a Chain's arc none) giving it a heat as the hit's riders land and then laying
-  Ablate 1, or 2 where it stands past its heat maximum by then, so the hit that takes it past
-  lays 2; the Death Ray vents before it hits, so its hit lays 1. The Macaque's, a tier one's, each touch its offhand's forms (a form
+  it reaches; Incinerator, on its passive, once a use: a heat with its first hit, then Ablate 1
+  on each Sprite it hit (an area's and equipment's included, a Chain's arc none), or 3 where it
+  stands past its heat maximum by then, so the use that takes it past lays 3 on each; the Death
+  Ray vents before it hits, so it lays 1. The Macaque's, a tier one's, each touch its offhand's forms (a form
   a step names takes its slot's place in the cycle) and its second steps its Aile Booster too:
   Duelist, the Beam Sword's slot holding the Beam Saber, then the shield's the Beam Buckler and the
   Booster granting Aile Blitz; Valkyrie, the rifle's slot holding the Beam Bazooka, then the shield's

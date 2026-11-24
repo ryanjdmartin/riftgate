@@ -333,15 +333,16 @@ func test_every_sprite_hit_counts_an_area_s_and_equipment_s_and_the_ray_lays_one
 	assert_true(ms.rebooting and ms.heat == 0, "and the reboot takes its heat")
 
 
-## The Incinerator's what-if of once a spend (Ryan, 24 November: "Change On Hit to Resolve, so its
-## once per spend"): its heat and its Ablate ride the target's first hit alone, whatever the
-## strikes and the area, so a heat and an Ablate a spend.
-func test_once_a_spend_its_heat_and_its_ablate_ride_the_target_s_first_hit_alone() -> void:
+## The Incinerator as it stands (Ryan, 24 November: "Resolve: Gain 1 heat and apply 1 Ablate. If
+## Overheated, apply 3 Ablate instead"; "It should apply to everything hit, not just the target"):
+## once a spend, its heat with the spend's first hit and its Ablate on each Sprite hit once, however
+## many strikes; the heat lands first, so the spend that takes it past its maximum lays 3 on each.
+func test_once_a_spend_its_heat_and_an_ablate_on_each_sprite_hit_three_past_its_maximum() -> void:
 	var triple := Face.from_dict({"kind": "attack", "reach": "direct", "power": 1, "strikes": 3, "keywords": ["cleave"], "cleave": 1, "heat": 0})
 	var u := _mech("W", Die.single(triple), 10, 10, 200)
 	u.grant_passive({"id": "stoke_once", "name": "Stoke Once", "description": "", "effects": [
 		{"trigger": "on_attack", "effect": "hit_heat", "value": 1, "once": "spend"},
-		{"trigger": "on_attack", "effect": "lay_status", "value": "ablating", "stacks": 1, "overheated": 2, "once": "spend"}]})
+		{"trigger": "on_attack", "effect": "lay_status", "value": "ablating", "stacks": 1, "overheated": 3, "once": "spend"}]})
 	var left := Foe.make("dummy", 900, 0)
 	var mid := Foe.make("dummy", 900, 0)
 	var sk := Skirmish.new(1, 2)
@@ -354,7 +355,14 @@ func test_once_a_spend_its_heat_and_its_ablate_ride_the_target_s_first_hit_alone
 	assert_eq(Policy.heat_of(ms, triple), 1, "the bot counts a heat a spend")
 	assert_true(sk.assign(0, left), "three strikes, a spread on each")
 	assert_eq(ms.heat, 1, "a heat a spend")
-	assert_eq([Effects.stacks_of(left, "ablating"), Effects.stacks_of(mid, "ablating")], [1, 0], "an Ablate on the target, none past it")
+	assert_eq([Effects.stacks_of(left, "ablating"), Effects.stacks_of(mid, "ablating")], [1, 1], "an Ablate on each Sprite hit, once")
+	sk.end_round()
+	sk.start_round()
+	ms.heat = 10
+	var had := [Effects.stacks_of(left, "ablating"), Effects.stacks_of(mid, "ablating")]
+	assert_true(sk.assign(0, left), "from its maximum")
+	assert_eq(ms.heat, 11, "its heat first, past the maximum")
+	assert_eq([Effects.stacks_of(left, "ablating") - int(had[0]), Effects.stacks_of(mid, "ablating") - int(had[1])], [3, 3], "so 3 on each")
 
 
 func test_the_validator_holds_the_scale_the_doubling_and_the_piece_to_their_shapes() -> void:
