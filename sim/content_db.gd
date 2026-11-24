@@ -2401,8 +2401,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		if (effect == "rage_form" or effect == "reboot_piece") and not components.has(str(eff.get("piece", ""))):
 			errs.append("%s: %s names its piece, a component ('%s' is none)" % [where, effect, str(eff.get("piece", ""))])
 		# The Whip Scorpion's Thermal Ejection Manifold (23 November): the heat scale, cold and hot in
-		# percent of its damage at no heat and at the maximum; the multiple on a hit past half its heat;
-		# the word REBOOT wears for its reboot's piece.
+		# percent of its damage at no heat and at the maximum; the multiple on all damage it takes past
+		# half its heat; the word REBOOT wears for its reboot's piece.
 		if effect == "heat_scale" and (int(eff.get("cold", -1)) < 0 or int(eff.get("hot", -1)) < 0 or int(eff.get("cold", 100)) == int(eff.get("hot", 100))):
 			errs.append("%s: heat_scale is its damage in percent at no heat (cold) and at its maximum (hot): 0 or more each, and apart" % where)
 		if effect == "hot_damage" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 2 or float(eff["value"]) != floorf(float(eff["value"]))):
@@ -2931,7 +2931,11 @@ func _validate_branches(where: String, c: Dictionary, errs: Array[String]) -> vo
 			for k in (st as Dictionary).keys():
 				if not ["description", "effects", "design"].has(str(k)):
 					errs.append("%s: '%s' is no key of a step (description, effects, design)" % [sw, str(k)])
-			_validate_passive(sw, {"id": "branch", "name": str(d["name"]), "description": st.get("description", ""), "effects": st.get("effects", [])}, errs)
+			# A planned direction's step is a draft (CLAUDE.md: kept, not shown, not run, and not
+			# validated against the engine), so its effects may wait on the code (the Whip Scorpion's
+			# Incinerator, 24 November).
+			if not planned_dir:
+				_validate_passive(sw, {"id": "branch", "name": str(d["name"]), "description": st.get("description", ""), "effects": st.get("effects", [])}, errs)
 			if str(st.get("description", "")).strip_edges().is_empty():
 				errs.append("%s: a step says what it does (description)" % sw)
 			for eff in st.get("effects", []):

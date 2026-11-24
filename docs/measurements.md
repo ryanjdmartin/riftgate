@@ -12968,3 +12968,25 @@ one's foes seldom take a blow of its whole), so at tier one the Breaker is its B
 Scorpion's doubling on all damage moves nothing the bot plays: it never overheats it and keeps its
 heat near half (the runner row's read), so what the doubling adds, the burn and the tick past half,
 lands only on a player who rides it hot.
+
+## 24 November: the Whip Scorpion's Obliterator
+
+`tools/reboot_probe.gd` as the entry above (168 formation fights at 8 seeds, 78 boss fights at 6,
+the greedy bot), `--only whip_scorpion --branches obliterator`, so at tier three with the tier's
+lift, beside the base at its tier two; on `ccr-178e0404-ptuh2m` with the Volatile doubling and
+the Obliterator built (its commit the one that records this). Ryan, 24 November: "Turn Start: Gain
+1 heat. Heliographic Death Ray -> Heliographic Doom Ray. Hull Cost: 1. Direct, 2 damage plus 1
+per 2 heat. Spread. Penetrate. Ignores Armour", the area at 2 each, the heat it fires on every hit.
+
+| The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad |
+|---|---|---|
+| The Whip Scorpion, all its damage doubled hot (from the entry above) | 5.0, 30%, 7%, 9% | 7.5, 32%, 13%, 18% |
+| Its Obliterator, at tier three | 4.5, 39%, 11%, 10% | 7.2, 39%, 19%, 17% |
+
+Under the table: the Doom Ray fires 1.75 times a formation fight and 2.83 a boss fight, about 9
+heat a shot (the Death Ray 1.49 and 2.41 at about 9.2 and 9.5).
+
+What it says, a direction. The Obliterator ends a formation fight half a round sooner, its shot
+landing whole on the row and the column, and reboots more, a turn bare in each; its own hull pays
+for it, the hull cost doubled hot and the bare turns, about half again what the base loses. The
+bot fires the Ray at about the heat it did, so the turn's heat and the wide shot are what move.

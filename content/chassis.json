@@ -1738,10 +1738,76 @@
       "trigger": "static",
       "effect": "reboot_piece",
       "piece": "heliographic_death_ray",
-      "label": "Death Ray"
+      "label": "Death Ray",
+      "slot": "ray"
      }
     ]
    },
+   "branches": [
+    {
+     "id": "incinerator",
+     "name": "Incinerator",
+     "status": "planned",
+     "design": {
+      "notes": "Ryan, 24 November: \"Incinerator: Passive gains Resolve: For each hit, gain 1 heat and apply 1 Ablate. If Overheated, apply 2 Ablate Instead.\" Back in design from its first day on his own concern: \"I have concerns about the double overheat damage making it unviable. I wonder if there's a way to nerf the base version without the double damage we just applied\". Its effects wait on that answer; the step's text a session's draft from his words."
+     },
+     "steps": [
+      {
+       "description": "Resolve: For each hit, gain 1 Heat and apply 1 Ablate. If Overheated, apply 2 Ablate instead.",
+       "effects": []
+      }
+     ]
+    },
+    {
+     "id": "obliterator",
+     "name": "Obliterator",
+     "design": {
+      "notes": "Ryan, 24 November: \"Obliterator: Turn Start: Gain 1 heat. Heliographic Death Ray -> Heliographic Doom Ray. Hull Cost: 1. Direct, 2 damage plus 1 per 2 heat. Spread. Penetrate. Ignores Armour\". Spread and Penetrate at 2 each, his \"2s all around\" of 20 November for an area keyword he gives no number, so each Sprite past the target takes 2 at the heat scale, the target the whole shot; the Doom Ray keeps the Ray's heat 3 and Vents all, and REBOOT reads DOOM RAY with its die in hand (the Death Ray's slot). Its hull cost is damage like any (his of the same day: \"all damage is all damage\"), so 2 when it fires past half its heat. The step's text a session's draft from his words."
+     },
+     "steps": [
+      {
+       "description": "Turn Start: Gain 1 Heat.\nHeliographic Death Ray becomes the Heliographic Doom Ray: Hull Cost 1, Direct, 2 damage plus 1 per 2 Heat, Spread 2, Penetrate 2, Ignores Armour.",
+       "effects": [
+        {
+         "trigger": "on_turn_start",
+         "effect": "gain_heat",
+         "value": 1
+        },
+        {
+         "trigger": "static",
+         "effect": "piece_form",
+         "entry": "heliographic_death_ray",
+         "name": "Heliographic Doom Ray",
+         "face": {
+          "kind": "attack",
+          "reach": "direct",
+          "power": 2,
+          "keywords": [
+           "cleave",
+           "penetrate"
+          ],
+          "cleave": 2,
+          "penetrate": 2,
+          "heat": 3,
+          "vents_all": true,
+          "power_per_heat": 1,
+          "per_heat": 2,
+          "volatile": 1,
+          "ignores_armour": true
+         }
+        },
+        {
+         "trigger": "static",
+         "effect": "reboot_piece",
+         "piece": "heliographic_death_ray",
+         "label": "Doom Ray",
+         "slot": "ray"
+        }
+       ]
+      }
+     ]
+    }
+   ],
    "flavour": ""
   },
   {

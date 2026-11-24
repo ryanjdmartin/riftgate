@@ -1511,16 +1511,6 @@
    }
   },
   {
-   "id": "on_shield_hit",
-   "category": "trigger",
-   "name": "On a hit on its shield",
-   "codex": "Passive trigger. Fires when a foe's blow lands on this machine's shield and puts nothing on its hull; a blow that wounds fires On hull damage alone.",
-   "status": "implemented",
-   "design": {
-    "holes": "The Nemesis's rage, one a hit on its shield (Ryan, 11 November: \"hull damage takes priority\"), and its heat from 23 to 24 November; no piece prints it since, and it stays (Ryan, 24 November: \"That leftovers rule needs to be removed\")."
-   }
-  },
-  {
    "id": "on_blocked",
    "category": "trigger",
    "name": "On a blow blocked",
@@ -1528,6 +1518,16 @@
    "status": "implemented",
    "design": {
     "holes": "The Nemesis's Breaker, two heat a blow blocked (Ryan, 11 November: per blow, \"that lets it scrap against the comp its supposed to\"; on its passive from 23 to 24 November, its branch's since)."
+   }
+  },
+  {
+   "id": "on_turn_start",
+   "category": "trigger",
+   "name": "Turn Start",
+   "codex": "Passive trigger. Fires as this machine's turn starts, after a reboot's recovery and before its die rolls.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Whip Scorpion's Obliterator (Ryan, 24 November: \"Turn Start: Gain 1 heat\"). The codex is a session's draft."
    }
   },
   {

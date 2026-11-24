@@ -132,9 +132,9 @@ EFFECTS = {
     "shield_zap": [], "add_power": [],   # the Buzzard's zap and its Burst's raise of the cannon's number (18 November)
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
 }
-TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_hit": None, "on_blocked": None, "on_shield_granted": "shield_granted", "on_buff_granted": None, "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",
+TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_blocked": None, "on_shield_granted": "shield_granted", "on_buff_granted": None, "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",
             "on_foe_status": "paradox_feed", "on_stack": None, "on_attack": None, "static": None,
-            "on_injury": None, "on_skirmish_start": None, "on_shield_gain": None, "on_damage": None, "on_struck": None}
+            "on_injury": None, "on_skirmish_start": None, "on_shield_gain": None, "on_damage": None, "on_struck": None, "on_turn_start": None}
 CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None,
               "target_no_intent": None, "shield_up": None, "target_unhurt": "missing_hp", "target_half": "missing_hp"}
 # A foe move's riders and effects, on machines.

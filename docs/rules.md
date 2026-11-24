@@ -111,7 +111,13 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   each foe's and each strike's (a corpse's and a debuff's never), and Brittle 1 on the Knuckles;
   Berserker, 1 heat for hull lost to anything (a blow, a bite of its own, a tick, an overheat), so
   a blow that wounds heats it 2, and Ablate 1 on the Knuckles. A keyword a step grants its rage
-  piece is on the piece its Rage leaves the die. The Macaque's, a tier one's, each touch its offhand's forms (a form
+  piece is on the piece its Rage leaves the die. The Whip Scorpion's, a tier two's: Obliterator, a
+  heat as each of its turns starts (Turn Start, after a reboot's recovery and before its die
+  rolls) and its Heliographic Death Ray remade as the Heliographic Doom Ray (a hull cost of 1,
+  Direct, 2 and a point for every 2 heat it fires, Spread 2, Penetrate 2, Ignores Armour), REBOOT
+  reading DOOM RAY with its die in hand; the heat it fires lands on every hit of the shot, as the
+  blow's order lays what an entry prints from its firer, so the whole shot lands on each Sprite
+  it reaches. Its Incinerator is back in design. The Macaque's, a tier one's, each touch its offhand's forms (a form
   a step names takes its slot's place in the cycle) and its second steps its Aile Booster too:
   Duelist, the Beam Sword's slot holding the Beam Saber, then the shield's the Beam Buckler and the
   Booster granting Aile Blitz; Valkyrie, the rifle's slot holding the Beam Bazooka, then the shield's
@@ -133,8 +139,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   Hypersonic Spike Tether, Instant at a heat more, then its Sonic Needles taking a point a stack
   off the attacks of the foe they are in; Chaos, its needles' bolt leaving its foe one stack in
   place of none, then its weapons dealing 1 more to a foe for each stack of Sonic Needle in it.
-  A direction may be back in design, a planned draft: kept in content, its depth unchecked, and
-  never offered (the Mole's two since its move to tier two).
+  A direction may be back in design, a planned draft: kept in content, its depth and its steps'
+  effects unchecked against the engine, and never offered (the Mole's two since its move to tier
+  two, the Whip Scorpion's Incinerator).
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves

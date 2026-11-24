@@ -1158,7 +1158,7 @@ func forecast(ms: MechState, extra_shield: int = 0) -> Dictionary:
 			struck += int(r["through"])
 			if int(r["through"]) > 0 and destroys(f, ms):
 				component_risk = true
-			blow_heat += Effects.blow_heat(ms.unit, int(r["through"]) > 0, int(r["absorbed"]) > 0)   # the heat a hit lays on it as it lands, whatever it dealt (the Nemesis's)
+			blow_heat += Effects.blow_heat(ms.unit, int(r["through"]) > 0)   # the heat a hit lays on it as it lands, whatever it dealt (the Nemesis's)
 	shield = int(walk["shield"])
 	var heat_end := ms.heat + tick_heat + seal_heat(ms)
 	var over := maxi(0, heat_end - ms.heat_max)
@@ -1567,6 +1567,13 @@ func start_round() -> void:
 			log.append("%s's pilot light: +%d heat (a what-if)" % [ms.unit.display_name, int(pilot[ms.unit.chassis_id])])
 		ms.hot_entry = -1
 		ms.ray_from = -1   # the round's roll stands in place of a reboot piece still up (the Whip Scorpion's Death Ray)
+		# What its passives give it as its turn starts (on_turn_start: the Whip Scorpion's
+		# Obliterator, Ryan, 24 November: "Turn Start: Gain 1 heat"), after a reboot's recovery and
+		# the cooling, before a Rage reads the gauge and before its die rolls; none while Swallowed.
+		if not paused(ms):
+			var opened := _apply(ms, Effects.fire(ms.unit, "on_turn_start"))
+			if not opened.is_empty():
+				log.append("%s: %s as its turn starts" % [ms.unit.display_name, ", ".join(opened)])
 		_rage_cooled(ms)   # a raging machine its granted cooling took to nothing reboots now
 		_rage_opens(ms)    # one that opens its turn at its heat maximum or past it rages, before its die rolls
 		ms.face_index = _roll(ms)
@@ -5498,15 +5505,6 @@ func _hull_damaged(ms: MechState) -> void:
 		log.append("%s: its hull takes the hit, %s" % [ms.unit.display_name, ", ".join(halved)])
 
 
-## A foe's blow its shield took, nothing of it on the hull (Ryan, 11 November, the Nemesis: "hull
-## damage takes priority"): the on_shield_hit passives fire. A bite of its own and a Barrier's
-## block are no hit on its shield.
-func _shield_hit(ms: MechState) -> void:
-	var parts := _apply(ms, Effects.shield_hit(ms.unit))
-	if not parts.is_empty():
-		log.append("%s: %s from the hit on its shield" % [ms.unit.display_name, ", ".join(parts)])
-
-
 ## The blows of a spend that a foe's armour or Barrier took whole (the Nemesis's rage, Ryan, 11
 ## November, per blow): the on_blocked passives fire once a blow, one log line for the spend.
 func _blows_blocked(ms: MechState, n: int) -> void:
@@ -6515,8 +6513,6 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 		log.append("%s %s %s: hull -%d%s" % [source.display_name, verb, ms.unit.display_name, r["through"], armoured])
 	if int(r["through"]) > 0:
 		_hull_damaged(ms)
-	elif int(r["absorbed"]) > 0:
-		_shield_hit(ms)   # a blow its shield took, none of it on the hull (hull first)
 
 
 ## The arithmetic of one blow against a shield and armour, shared by the real hit

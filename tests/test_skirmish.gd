@@ -8072,44 +8072,6 @@ func _berserker() -> Dictionary:
 		{"trigger": "on_hull_damage", "effect": "gain_heat", "value": 1}]}
 
 
-## A hit on its shield and hull damage, never both (Ryan, 11 November, of the Nemesis's rage:
-## "Taking a hit on shield gives 1 rage, hull damage gives 2 rage", and "hull damage takes priority,
-## so it would be 2 if the shield is broken and hull damaged"; no piece prints a hit on its shield
-## since 24 November, and the rule stays). Synthetic.
-func _shield_or_hull() -> Dictionary:
-	return {"id": "shield_or_hull", "name": "Shield or Hull", "description": "", "effects": [
-		{"trigger": "on_shield_hit", "effect": "gain_heat", "value": 1},
-		{"trigger": "on_hull_damage", "effect": "gain_heat", "value": 2}]}
-
-
-func test_a_hit_on_the_shield_banks_one_and_hull_damage_two_never_both() -> void:
-	var sk := Skirmish.new(1)
-	var m := _mech("A", Die.single(Face.attack(1, L)), 5, 1000)
-	m.grant_passive(_shield_or_hull())
-	m.heat_max = 100
-	sk.add_mech(m)
-	var foe := _ghoul(500, 3)
-	sk.add_foes([foe])
-	sk.begin()
-	var ms := sk.mechs[0]
-	sk._damage_mech(ms, 3, foe)
-	assert_eq([m.shield, m.hull], [2, 1000], "the shield takes it whole")
-	assert_eq(sk.mechs[0].heat, 1, "a hit on its shield: one heat")
-	assert_true("\n".join(sk.log).contains("from the hit on its shield"), "the log says why")
-	assert_eq(Effects.blow_heat(m, false, true), 1, "and the forecast reads it")
-	sk._damage_mech(ms, 3, foe)
-	assert_eq([m.shield, m.hull], [0, 999], "it breaks the shield and wounds")
-	assert_eq(sk.mechs[0].heat, 3, "two for the hull, never three: hull first")
-	m.armour = 10
-	sk._damage_mech(ms, 3, foe)
-	assert_eq(sk.mechs[0].heat, 3, "its armour takes the blow whole: nothing")
-	m.armour = 0
-	m.shield = 5
-	Effects.grant_buff(m, "barrier", 1, "test", sk.round)
-	sk._damage_mech(ms, 3, foe)
-	assert_eq(sk.mechs[0].heat, 3, "its own Barrier takes it: nothing")
-
-
 func _breaker() -> Dictionary:
 	return {"id": "breaker", "name": "Breaker", "description": "", "effects": [
 		{"trigger": "on_blocked", "effect": "gain_heat", "value": 2}]}

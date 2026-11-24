@@ -240,6 +240,55 @@ func test_the_bot_fires_the_piece_for_its_reboot_and_stands_it_down_with_nothing
 	assert_eq([ms.face_index, ms.ray_from, ms.rebooting], [shown, -1, false], "the piece stood down, the die as it was")
 
 
+## The Obliterator's shape (Ryan, 24 November: "Turn Start: Gain 1 heat. Heliographic Death Ray ->
+## Heliographic Doom Ray. Hull Cost: 1. Direct, 2 damage plus 1 per 2 heat. Spread. Penetrate.
+## Ignores Armour"), on synthetic passives and pieces: a heat as its turn starts; a step's form of the
+## reboot piece comes up in its place, REBOOT wearing the word its slot's later grant gives; its
+## hull cost doubled on a hot gauge; the heat it fires on every hit of the shot (the blow's order:
+## what the entry prints from its firer lands on every blow), so the whole shot lands on each
+## Sprite it reaches, past armour; then the reboot.
+func test_a_step_s_form_of_the_reboot_piece_comes_up_with_its_word_and_fires_wide() -> void:
+	var u := _mech("W", Die.of([Face.attack(3, L, [], 2), _ray()]), 10, 10, 200)
+	u.grant_passive({"id": "rayed", "name": "Rayed", "description": "", "effects": [
+		{"trigger": "static", "effect": "reboot_piece", "piece": "test_ray", "label": "Death Ray", "slot": "ray"}]})
+	u.grant_passive(SCALE)
+	u.grant_passive(HOT)
+	u.grant_passive({"id": "doom", "name": "Doom", "description": "", "effects": [
+		{"trigger": "on_turn_start", "effect": "gain_heat", "value": 1},
+		{"trigger": "static", "effect": "piece_form", "entry": "test_ray", "name": "Test Doom Ray", "face": {"kind": "attack", "reach": "direct", "power": 2,
+			"keywords": ["cleave", "penetrate"], "cleave": 2, "penetrate": 2, "heat": 3, "vents_all": true, "power_per_heat": 1, "per_heat": 2, "volatile": 1, "ignores_armour": true}},
+		{"trigger": "static", "effect": "reboot_piece", "piece": "test_ray", "label": "Doom Ray", "slot": "ray"}]}, "branch")
+	var left := Foe.make("dummy", 900, 0)
+	var mid := Foe.make("dummy", 900, 0)
+	var right := Foe.make("dummy", 900, 0)
+	var behind := Foe.make("dummy", 900, 0, true)
+	left.armour = 5
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(u)
+	sk.add_foes([left, mid, right, behind])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	assert_eq(ms.heat, 1, "a heat as its turn starts")
+	assert_true(sk.log.any(func(l: String) -> bool: return l.contains("+1 heat as its turn starts")), "the log says so")
+	sk.end_round()
+	ms.heat = 9
+	sk.start_round()
+	assert_eq(ms.heat, 10, "its turn opens a heat higher")
+	assert_eq(Effects.reboot_label(u), "Doom Ray", "REBOOT wears the later grant's word")
+	assert_true(sk.reboot_mech(0), "its die on REBOOT")
+	var shown := sk.shown_face(ms, ms.face())
+	assert_eq([ms.face().component, shown.volatile], ["test_ray", 2], "the form comes up, its hull cost doubled on a hot gauge")
+	assert_true(shown.has(Face.Keyword.CLEAVE) and shown.has(Face.Keyword.PENETRATE) and shown.ignores_armour, "Spread, Penetrate, Ignores Armour")
+	assert_eq([left.column, behind.column, behind.rank], [0, 0, 1], "the armoured one in front of the one behind")
+	var hull := u.hull
+	assert_true(sk.assign(0, left), "it fires")
+	var shot := (2 + 10 / 2) * 2   # 2 and a point for every 2 of its 10, doubled at its maximum
+	assert_eq([900 - left.hp, 900 - mid.hp, 900 - behind.hp, 900 - right.hp], [shot, shot, shot, 0], "the whole shot on the target, the one beside and the one behind, past the armour; none past them")
+	assert_eq(hull - u.hull, 2, "its hull cost, doubled")
+	assert_true(ms.rebooting, "and it reboots")
+
+
 func test_the_validator_holds_the_scale_the_doubling_and_the_piece_to_their_shapes() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
