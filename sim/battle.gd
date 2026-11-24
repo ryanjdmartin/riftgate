@@ -236,10 +236,7 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 		if Battlefield.graded_tide:
 			# The graded tide (Battlefield.graded_tide): the domain's packs by rating, the guest's
 			# in turn with them, each list taken from a start of its own by the battle's seed; the
-			# hunting packs apart. The opening is the game's own count in the graded tide's packs,
-			# a pack for three before the middle and a pack for one at each end, each a move
-			# farther out than the game stands them (Ryan, 23 November: "I'd rather they don't
-			# start so close but reach the wall faster").
+			# hunting packs apart. Its opening is its own (graded_opening).
 			var mine := db.graded_packs(faction, tier + 1, ramp)
 			var theirs := db.graded_packs(guest, tier + 1, ramp) if has_guest else {}
 			for r in [1, 2, 3]:
@@ -249,12 +246,8 @@ func setup(team: Array, faction_id: String = "", w: int = -1, h: int = -1) -> vo
 					field._graded_at[r] = posmod(hash([seed_value, r]), pool.size())
 			field.hunters = patrols.filter(func(c: Dictionary) -> bool: return not str(c.get("hunts", "")).is_empty())
 		if not field.graded.is_empty():
-			var mid := Battlefield.BAND_RATING.size() / 2
-			for k in range(nf):
-				placed.append([field.next_graded(3), Hex.offset_to_axial((w_cols * (k + 1)) / (nf + 1), OPENING_FLOOR_ROW), 2, mid])
-			for k in range(np):
-				var inset := (k / 2) * 3
-				placed.append([field.next_graded(1), Hex.offset_to_axial(inset if k % 2 == 0 else w_cols - 1 - inset, OPENING_FLOOR_ROW), 3, 0 if k % 2 == 0 else Battlefield.BAND_RATING.size() - 1])
+			for e in graded_opening(ramp, w_cols):
+				placed.append([field.next_graded(int(e[1])), Hex.offset_to_axial(int(e[2]), OPENING_FLOOR_ROW), int(e[3]), int(e[0])])
 			forms = []
 			patrols = []
 		# The opening (the long wall brief 3.2): the ramp's formations across the width as before,
@@ -397,10 +390,53 @@ static func make_boss_unit(content: ContentDB, faction_id: String, t: int, boss_
 	return u
 
 
+## The graded tide's opening (Ryan, 24 November: "There needs to be more packs on the field at the
+## start, for sure"): packs before every band of the wall, each of its band's rating and each
+## its own moves from the row before the wall, as [band, rating, column, moves], in the order
+## they are stood. Before the middle the ramp's count of packs for three (Ramp.formations_at), the
+## first two moves out and each after it a move farther back, so they come down the centre one
+## behind another; a pack for two before each band between, three moves out; at each end two packs
+## for one, the outer three moves out and the inner two. Nothing strikes on the first turn. Seven
+## packs at the first Convergence, eight from the third and nine from the eighth, where the game
+## as built stands three, four and four. The session's form and placeholders all: a set form by
+## Convergence is Ryan's to mark (the tide's proposal).
+static func graded_opening(ramp_at: int, cols: int) -> Array:
+	var n := Battlefield.BAND_RATING.size()
+	var by_band: Array = []   # every band's columns, in order along the wall
+	for b in range(n):
+		by_band.append([])
+	for col in range(cols):
+		(by_band[clampi((col * n) / maxi(1, cols), 0, n - 1)] as Array).append(col)
+	var out: Array = []
+	var mid := n / 2
+	var middle: Array = by_band[mid]
+	for k in range(Ramp.formations_at(ramp_at)):
+		# About the band's middle column: on it, then a column either side in turn.
+		var step := ((k + 1) / 2) * (1 if k % 2 == 1 else -1)
+		var col: int = middle[clampi(middle.size() / 2 + step, 0, middle.size() - 1)]
+		out.append([mid, int(Battlefield.BAND_RATING[mid]), col, 2 + k])
+	for b in range(1, n - 1):
+		if b == mid:
+			continue
+		var between: Array = by_band[b]
+		# A band on the wall's far side stands its pack as the near side's mirror.
+		var col: int = between[between.size() / 2] if b < mid else between[(between.size() - 1) / 2]
+		out.append([b, int(Battlefield.BAND_RATING[b]), col, 3])
+	var first: Array = by_band[0]
+	var last: Array = by_band[n - 1]
+	# One end's outer and inner, then the other's inner and outer: the packs for one come in turn
+	# from their list, so each end stands two different packs where the list holds two.
+	out.append([0, int(Battlefield.BAND_RATING[0]), int(first[0]), 3])
+	out.append([0, int(Battlefield.BAND_RATING[0]), int(first[first.size() - 1]), 2])
+	out.append([n - 1, int(Battlefield.BAND_RATING[n - 1]), int(last[0]), 2])
+	out.append([n - 1, int(Battlefield.BAND_RATING[n - 1]), int(last[last.size() - 1]), 3])
+	return out
+
+
 ## The opening's row for a pack placed at the start (the long wall brief 3.2): `moves` of its own
 ## pace short of the apron row (a formation one, a patrol two), never into the rift's mouth, at
 ## its column; it lands there as any spawn lands (Battlefield.landing: the nearest hex it can
-## stand on with no machine beside it). A pack that hunts opens a row further back at a time
+## stand on with no machine beside it), a pusher on ground that has a way to the wall. A pack that hunts opens a row further back at a time
 ## until it has caught nobody, so no battle opens on a forced fight (Ryan, 6 November: "I
 ## probably would shy away from hitting the first battle with a fight in the first turn, that's
 ## for sure. That's just mean"); its first walk is the enemy's first turn, after the player's.
@@ -417,7 +453,10 @@ static var opening_trial: int = 0
 func _open_row(sq: Unit, col: int, moves: int) -> void:
 	moves += maxi(0, opening_trial)
 	var row := maxi(OPENING_FLOOR_ROW, field.apron_row() - moves * sq.movespeed)   # placeholder (the long wall brief)
-	sq.pos = field.landing(sq, Hex.offset_to_axial(col, row), OPENING_FLOOR_ROW)
+	# A pusher opens on ground with a way to the wall (Battlefield.wall_ground), never in a pocket
+	# the shape closed off, where it would hold its hex for the battle.
+	var ground := field.wall_ground(sq) if sq.behaviour == "push" else {}
+	sq.pos = field.landing(sq, Hex.offset_to_axial(col, row), OPENING_FLOOR_ROW, {}, ground)
 	while sq.behaviour == "hunt" and row > OPENING_FLOOR_ROW and field.catch_of(sq) != null:
 		row -= 1
 		sq.pos = field.landing(sq, Hex.offset_to_axial(col, row), OPENING_FLOOR_ROW)

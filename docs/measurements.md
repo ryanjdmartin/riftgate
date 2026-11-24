@@ -12901,3 +12901,35 @@ painting's dark where the edge falls short, and the core 3.89:1 on its own edge 
 dark outline, 2.61 (deutan). From the HUD presets and the violet it stands ΔE 22.4 or more in every
 simulation; from harm's #ff0000 2.6 (deutan), which the map draws only on a stop with no room and
 the gate's integrity, each with its own mark.
+
+## 24 November: the graded tide's fuller opening and the rift's landing
+
+For Ryan's read of the graded tide in play ("There needs to be more packs on the field at the
+start, for sure. And spawns from the rift should probably spawn outside of the shell, and on a
+hex that is on the side of where they're headed"), as built that day: the graded opening seven
+packs where it stood three (`Battle.graded_opening`), and a pack the rift sends landing on the
+ring outside the shell on its heading's side under either tide (`Battlefield.rift_landing`),
+which starts a pack bound for the middle six rows from the wall at twelve deep where it stood
+nine and walked round the rift.
+
+**The whole battle, a direction only** (`tools/battle_run.gd`, the same ten seeds, squad and
+dials as the entry of the same day above: the Meadow at Convergence 1, the bot's player, which
+gathers and holds no lane; the graded rows at `RIFTGATE_STRIKE=5 RIFTGATE_PACK_BONUS=50`). The
+row before it is that entry's:
+
+| The field | Won | The gate fell | Wiped | The Rupture reached, its turn | Hull at the Rupture | Fights for one a battle | Fights for two | Fights for three |
+|---|---|---|---|---|---|---|---|---|
+| As built, before | 20% | 10% | 70% | 70%, turn 6.6 | 36% | 3.8, 5.5 rounds, 3.1% of the squad's hull | 0.3, 5.3 rounds, 3.8% | 2.0, 5.3 rounds, 14.4% |
+| As built, the rift's landing | 10% | 30% | 60% | 70%, turn 5.4 | 37% | 3.4, 5.7 rounds, 3.6% | 0.9, 4.4 rounds, 15.8% | 1.9, 5.4 rounds, 11.6% |
+| Graded, SENDS 1, before | 60% | 10% | 30% | 90%, turn 8.1 | 65% | 3.2, 3.4 rounds, 0.2% | 3.4, 4.2 rounds, 2.6% | 1.3, 5.9 rounds, 4.1% |
+| Graded, SENDS 1, the opening and the landing | 50% | 20% | 30% | 70%, turn 8.0 | 64% | 4.7, 3.0 rounds, 0.1% | 5.0, 4.2 rounds, 3.4% | 1.4, 5.5 rounds, 4.5% |
+| Graded, SENDS 2, before | none | 50% | 50% | 50%, turn 9.8 | 54% | 4.1, 3.4 rounds, 0.4% | 3.7, 4.6 rounds, 4.8% | 1.6, 5.6 rounds, 5.6% |
+| Graded, SENDS 2, the opening and the landing | none | 80% | 20% | 50%, turn 10.2 | 38% | 4.4, 3.0 rounds, 0.2% | 5.1, 4.1 rounds, 3.8% | 1.8, 5.8 rounds, 3.9% |
+
+Read as a direction at ten seeds, a battle a tenth: at one send the bot's result holds with
+half again as many fights for one and for two a battle (4.7 for 3.2, 5.0 for 3.4), each still
+cheap; at two
+the gathering player loses the wall in eight battles of ten where it lost it in five; and as
+built the rift's packs reach the wall about a turn sooner (the Rupture at turn 5.4 for 6.6),
+the gate falling in three battles for one. Main moved between the two reads (the Mole's rework
+and the map's pass), none of it this squad's.

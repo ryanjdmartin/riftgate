@@ -55,7 +55,14 @@ document's job and every command are in `README.md`.
   November stand over what comes next: a massive foe is a kind of unit and no measure of
   threat ("a property, not a quota", with more kinds of enemy wanted in a pass of its own), a
   squad's growth inside a tier is a target to set, and the packs a mouth sends at once are the
-  Convergence's dial. The hunters are pinned and the treant waits on his marks.
+  Convergence's dial. The hunters are pinned and the treant waits on his marks. From his
+  first play of it (24 November: "There needs to be more packs on the field at the start, for
+  sure. And spawns from the rift should probably spawn outside of the shell, and on a hex that
+  is on the side of where they're headed ... Still testing the rest"): its opening stands
+  seven packs at the first Convergence, before every band of the wall and two at each end
+  (`Battle.graded_opening`, the session's count and his to mark), and a pack the rift sends
+  lands outside the shell on the side it is headed, under either tide (the rules' Rift
+  Pressure).
 - Branches. Main holds everything this file describes. `claude/game-ui-animation-tweaks-xiex10`
   landed on 24 November on Ryan's "merge into main" (his two lists of the day: the Cassowary's size
   and run, the Macaque's size, UNDO's count gone, the aim's reticle and tether, the intent lines
@@ -106,7 +113,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1469 tests, 402,003 checks, green on Godot 4.8-beta4 (24 November, the map's pass on the Mole's main). The runner fails a run
+- Tests: 1471 tests, 402,108 checks, green on Godot 4.8-beta4 (24 November, the graded tide's opening and the rift's landing). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).

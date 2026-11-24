@@ -466,6 +466,21 @@ func pick_prey(sq: Unit) -> Unit:
 	var current := unit_by_id(sq.prey)
 	if current != null and current.is_player() and not current.is_static():
 		return current
+	var best := would_hunt(sq)
+	# One hunter a machine (Ryan, 8 November): with every machine hunted already it pushes for the
+	# wall instead, and turns on a machine once one is free, which the log says.
+	var was := sq.prey
+	sq.prey = best.id if best != null else 0
+	if best != null and sq.prey != was:
+		log.append("%s turns on %s" % [sq.display_name, best.display_name])
+		locks.append([sq.id, best.id])
+	return best
+
+
+## The machine a hunter with no prey would turn on from where it stands, by its caveat, locking
+## nothing (pick_prey locks; the rift reads this to land a hunting pack on its prey's side). Null
+## with nothing to hunt.
+func would_hunt(sq: Unit) -> Unit:
 	var best: Unit = null
 	var best_key := 0
 	for m in mechs():
@@ -475,13 +490,6 @@ func pick_prey(sq: Unit) -> Unit:
 		if best == null or key < best_key:
 			best = m
 			best_key = key
-	# One hunter a machine (Ryan, 8 November): with every machine hunted already it pushes for the
-	# wall instead, and turns on a machine once one is free, which the log says.
-	var was := sq.prey
-	sq.prey = best.id if best != null else 0
-	if best != null and sq.prey != was:
-		log.append("%s turns on %s" % [sq.display_name, best.display_name])
-		locks.append([sq.id, best.id])
 	return best
 
 
@@ -1023,9 +1031,10 @@ func pack_name(foe_id: String) -> String:
 ## A composition emerges at a mouth (the rift, a tear, or where the setup places it): a pack of
 ## its members as content writes them, dressed by its lead, on the nearest free hex to the mouth
 ## with no machine adjacent (30 October: the player sees a spawn for a whole turn and nothing
-## appears on top of a detachment), its wall segment drawn from there. It walks at its slowest
-## member's pace, or at the pace its composition names (`pace`: a pack's pace is its own, so a
-## small band may run and a hunting pack of any size be fast). Null for a composition with no
+## appears on top of a detachment), its wall segment drawn from there. A pack the rift sends then
+## takes its place outside the shell, on the side it is headed (rift_landing). It walks at its
+## slowest member's pace, or at the pace its composition names (`pace`: a pack's pace is its own,
+## so a small band may run and a hunting pack of any size be fast). Null for a composition with no
 ## members. `band`, under the graded tide, is the band of the wall it makes for.
 func emerge(c: Dictionary, mouth: Vector2i, part: int = 0, parts: int = 1, band: int = -1) -> Unit:
 	var sq := pack_of(c, spawn_faction)
@@ -1038,6 +1047,8 @@ func emerge(c: Dictionary, mouth: Vector2i, part: int = 0, parts: int = 1, band:
 	sq.pos = landing(sq, mouth)
 	add_unit(sq)
 	assign_goal(sq, part, parts, band)   # `part` of the `parts` one mouth sends at once (peak)
+	if mouth == map.rift:
+		sq.pos = rift_landing(sq, heading_of(sq))   # its segment is drawn first, so the draw is the one it always made
 	return sq
 
 
@@ -1339,13 +1350,15 @@ func machine_adjacent(h: Vector2i) -> bool:
 ## adjacent, by ring search; the nearest it can stand on at all when none is clear. With a
 ## `floor_row` the search never enters a row nearer the rift than it (the opening's packs stay
 ## off the rift's row, Battle._open_row: a shape may lay water or a wall on the floor row, and
-## the pack goes along it rather than back onto the rift's).
-func landing(sq: Unit, mouth: Vector2i, floor_row: int = -1) -> Vector2i:
+## the pack goes along it rather than back onto the rift's). It lands with no hex of its own on
+## a `shut` one, though the search passes them (the rift's landing: the shell's seven), and with
+## a `within` only on a hex of it (the opening's: the ground with a way to the wall).
+func landing(sq: Unit, mouth: Vector2i, floor_row: int = -1, shut: Dictionary = {}, within: Dictionary = {}) -> Vector2i:
 	var seen := {mouth: true}
 	var queue: Array[Vector2i] = [mouth]
 	while not queue.is_empty():
 		var cur: Vector2i = queue.pop_front()
-		if can_stand(sq, cur) and not machine_adjacent(cur) and Hex.axial_to_offset(cur).y >= floor_row:
+		if can_stand(sq, cur) and not machine_adjacent(cur) and Hex.axial_to_offset(cur).y >= floor_row and _clear_of(sq, cur, shut) and (within.is_empty() or within.has(cur)):
 			return cur
 		for n in Hex.neighbors(cur):
 			if map.has(n) and not seen.has(n) and Hex.axial_to_offset(n).y >= floor_row:
@@ -1354,17 +1367,115 @@ func landing(sq: Unit, mouth: Vector2i, floor_row: int = -1) -> Vector2i:
 	return nearest_standable(sq, mouth)
 
 
+## The ground a pack can walk to the wall from: every hex its own walk reaches from the row before
+## the wall, read back from it. A pocket the map's shape closed off is none of it, so nothing is
+## stood where it could only wait (the opening's packs and the tears: a pack stood in a walled
+## corner of the field held its hex for the battle, "no way through", and the Rupture's size
+## counted it).
+func wall_ground(sq: Unit) -> Dictionary:
+	var out := {}
+	var stood := sq.pos
+	for h in apron_hexes().keys():
+		var hx: Vector2i = h
+		if out.has(hx) or not _land(hx) or not _walkable(sq, hx, {}):
+			continue
+		sq.pos = hx
+		for k in (_walk_search(sq, {})[0] as Dictionary).keys():
+			out[k] = true
+	sq.pos = stood
+	return out
+
+
+## Whether a pack anchored at `at` holds none of the `shut` hexes.
+func _clear_of(sq: Unit, at: Vector2i, shut: Dictionary) -> bool:
+	if shut.is_empty():
+		return true
+	for o in sq.footprint:
+		if shut.has(at + o):
+			return false
+	return true
+
+
+var _rift_ring: Array[Vector2i] = []
+
+## The ring outside the rift's shell: every hex beside one of the shell's seven that is neither
+## one of them nor the rift's own, in the shell's order round the rift. Read once.
+func rift_ring() -> Array[Vector2i]:
+	if _rift_ring.is_empty():
+		var inside := {}
+		for h in map.rift_hexes:
+			inside[h] = true
+		for h in map.shell_hexes():
+			inside[h] = true
+		for h in map.shell_hexes():
+			for n in Hex.neighbors(h):
+				if map.has(n) and not inside.has(n) and not _rift_ring.has(n):
+					_rift_ring.append(n)
+	return _rift_ring
+
+
+## Where a pack is headed as it is dealt: a hunter's prey (the machine it would turn on, read
+## without locking it: would_hunt), a pusher's wall segment on the row before the wall, and
+## straight down the field from the rift with neither.
+func heading_of(sq: Unit) -> Vector2i:
+	if sq.behaviour == "hunt":
+		var prey := would_hunt(sq)
+		if prey != null:
+			return prey.pos
+	var col := sq.goal_col if sq.goal_col >= 0 else Hex.axial_to_offset(map.rift).x
+	return Hex.offset_to_axial(col, apron_row())
+
+
+## Where a pack the rift sends lands (Ryan, 24 November: "spawns from the rift should probably
+## spawn outside of the shell, and on a hex that is on the side of where they're headed. Right now
+## they spawn from the back and have to skirt around the whole rift to head out"): a hex of the
+## ring outside the shell's seven (rift_ring), the one its own walk to `toward` is shortest from,
+## of those it can stand on clear of the shell with no machine beside it; of equals, the one
+## nearest the wall, so it comes out of the rift's front. With none such on the ring (machines all
+## round it, or every hex held) it lands as any spawn does, from the ring's hex nearest its
+## heading outward and never on the shell. The form it retires: the nearest free hex to the
+## rift's middle, which was a shell hex on the rift's own row whichever way the pack was going.
+func rift_landing(sq: Unit, toward: Vector2i) -> Vector2i:
+	var shut := {}
+	for h in map.shell_hexes():
+		shut[h] = true
+	# Its walk read back from where it is headed: one search, every ring hex's distance in it (a
+	# water hex is paid for on entering it, so a way read backwards is out by a wade at most).
+	var stood := sq.pos
+	sq.pos = toward
+	var dist: Dictionary = _walk_search(sq, {})[0]
+	sq.pos = stood
+	var best := NO_HEX
+	var best_key := Vector2i(1 << 30, 0)
+	var nearest := NO_HEX   # the ring's hex nearest its heading, whoever stands on or by it
+	var nearest_key := Vector2i(1 << 30, 0)
+	for h in rift_ring():
+		var key := Vector2i(int(dist.get(h, (1 << 20) + Hex.distance(h, toward))), -Hex.axial_to_offset(h).y)
+		if key.x < nearest_key.x or (key.x == nearest_key.x and key.y < nearest_key.y):
+			nearest = h
+			nearest_key = key
+		if not can_stand(sq, h) or machine_adjacent(h) or not _clear_of(sq, h, shut):
+			continue
+		if key.x < best_key.x or (key.x == best_key.x and key.y < best_key.y):
+			best = h
+			best_key = key
+	if best != NO_HEX:
+		return best
+	return landing(sq, nearest if nearest != NO_HEX else map.rift, -1, shut)
+
+
 ## Where the next tear opens: a free land hex on the tears' row (the row above or below it
-## when the row has none), no machine beside it, the farthest from the rift and every open
-## tear, so the mouths spread across the width; among equals, one by the turn. NO_HEX when
-## none.
+## when the row has none), no machine beside it and a way to the wall from it (wall_ground), the
+## farthest from the rift and every open tear, so the mouths spread across the width; among
+## equals, one by the turn. NO_HEX when none.
 func tear_hex() -> Vector2i:
+	var ground := wall_ground(Unit.new())   # a tear opens where a pack walking the horde's ground has a way to the wall
 	for row in [tear_row, tear_row - 1, tear_row + 1]:
 		var best: Array = []
 		var best_d := -1
 		for col in range(map.width):
 			var h := Hex.offset_to_axial(col, row)
-			if not _tear_fits(h):
+			if not _tear_fits(h) or not ground.has(h):
 				continue
 			var d := Hex.distance(h, map.rift)
 			for t in tears:

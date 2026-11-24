@@ -1778,7 +1778,8 @@ a stat.
   put there: the ramp's count of formations (one; two from Convergence 3; three from 8) spread
   across the width, each a move of its own from the row before the wall, and its count of
   patrols (two; one from 8) on the flanks two moves out, none on the rift's row (a pack
-  whose opening hex the shape took goes along its row, never back toward the rift), each the
+  whose opening hex the shape took goes along its row, never back toward the rift) and a
+  pusher on ground with a way to the wall, never in a corner the shape closed off, each the
   tier's compositions in turn, the lead's and the guest's in turn with the lead's first, each
   as content writes it (the ramp scales no pack: it scales the field). Rift Pressure opens a
   turn short of its peak. No hunter stands on the field at turn one: the opening's patrols
@@ -1968,13 +1969,19 @@ a stat.
   field's depth and one more, row 4 at twelve deep, 5 at sixteen, and is drawn nowhere); the
   ramp's count of tears (one; two from Convergence 8)
   open on that row, each
-  on a free land hex with no unit on it and no machine beside it, the farthest from the rift
+  on a free land hex with no unit on it, no machine beside it and a way to the wall from it,
+  the farthest from the rift
   and the other tears, so the mouths spread across the width; and the interval shortens by the
   ramp's step (zero today, never below 1). At the Rupture the beat halves once, never below
   one; nothing re-seals. A tear opens a peak before it first sends, so where
   the next flood comes from is known an interval ahead; tears stay open and never close. A
   spawn lands on the nearest free hex to its mouth with no machine beside it, so it and its
-  walk are seen for a whole turn and nothing appears on top of a detachment. Packs never
+  walk are seen for a whole turn and nothing appears on top of a detachment. A pack the rift
+  sends lands outside the shell, on the side it is headed: on the ring of hexes round the
+  shell's seven, the one its own walk to where it is headed is shortest from (its wall
+  segment, drawn before it takes its place; a hunting pack's prey, which the landing does not
+  lock), of those it can stand on with no machine beside it, the nearest the wall of equals;
+  with none free on the ring, the nearest hex past it, never one of the seven. Packs never
   escalate in place.
 - **The seam** is the flattening's edge and a picture alone: a circle about the rift's middle,
   the painted world inside it. As a battle opens its edge stands four hexes out, so the shell's
@@ -2053,7 +2060,8 @@ a stat.
   running after. A Fracture brings no prize (not built). The rift's shell is a wall along the
   outer edges of the seven hexes beside its five, the boss's among them, so the boss stands
   behind it: while the seal stands no machine enters or stands on one of the seven, a flyer as
-  much as any, while the packs pass and land there as ever; each Fracture cracks one hex's
+  much as any, while the packs pass and stop there as ever (the rift sends none onto one:
+  Rift Pressure, above); each Fracture cracks one hex's
   stretch of it, the ends first and the boss's last, and the Rupture bursts it and opens the
   seven. One cache lies behind it, on one of the seven (never the boss's), its kind rolled at
   the rift's depth: the final sortie's bait.
