@@ -135,16 +135,20 @@ def foe_rules():
     db, foe = gd_source("sim/content_db.gd"), gd_source("sim/foe.gd")
     problems = []
     scale = gd_func(db, "scale_boss")
-    for what, pat in [("its HP by the tier's hp, rounded", r'f\.hp_max = maxi\(1, roundi\(f\.hp_max \* float\(s\["hp"\]\)\)\)'),
+    # The leaders' trial (ContentDB.leader_step_trial, a debug setting, off by default) lifts a
+    # leader's HP by its place in its tier; the hangar's formations show the scaling with it off.
+    if not re.search(r"static var leader_step_trial: int = 0\b", db):
+        problems.append("ContentDB.leader_step_trial is no longer off by default: the hangar's formations show a leader's HP without it; update SCALING in tools/hangar.html and foe_rules() in tools/hangar_data.py")
+    for what, pat in [("its HP by the tier's hp, rounded", r'f\.hp_max = maxi\(1, roundi\(f\.hp_max \* float\(s\["hp"\]\)'),
                       ("its attack by the tier's attack", r'f\.attack \+= int\(s\["attack"\]\)'),
                       ("its armour by its armour_step a tier above one", r'f\.armour \+= f\.armour_step \* clampi\(t, 0, BOSS_TIERS\.size\(\) - 1\)')]:
         if not re.search(pat, scale):
             problems.append("ContentDB.scale_boss no longer scales %s as the hangar's formations show it: update SCALING in tools/hangar.html and foe_rules() in tools/hangar_data.py" % what)
     packs = gd_func(db, "foes_for")
     calls = len(re.findall(r"scale_boss\(", packs))
-    for what, pat in [("a boss pack's commanders", r"scale_boss\(b, sq\.boss_tier\)"),
-                      ("a commander's parts", r"for part in parts_for\(b\):\s*scale_boss\(part, sq\.boss_tier\)"),
-                      ("a pack's elite", r"if is_elite\(fid\):\s*scale_boss\(f, sq\.boss_tier\)"),
+    for what, pat in [("a boss pack's commanders", r"scale_boss\(b, sq\.boss_tier(?:, sq\.boss_step)?\)"),
+                      ("a commander's parts", r"for part in parts_for\(b\):\s*scale_boss\(part, sq\.boss_tier(?:, sq\.boss_step)?\)"),
+                      ("a pack's elite", r"if is_elite\(fid\):\s*scale_boss\(f, sq\.boss_tier(?:, sq\.boss_step)?\)"),
                       ("an elite's parts, left at their own numbers", r"out\.append_array\(parts_for\(f\)\)")]:
         if not re.search(pat, packs):
             problems.append("ContentDB.foes_for no longer treats %s as the hangar's formations show it: update SCALING in tools/hangar.html and foe_rules() in tools/hangar_data.py" % what)
