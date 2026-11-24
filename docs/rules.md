@@ -16,12 +16,12 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
 
 ## Machines
 
-- **Chassis**: hull, shield, heat maximum, armour, move, size class, one way of moving, hardpoints, fixed components, module
+- **Chassis**: hull, shield, heat maximum, armour, move, size class, one way of moving, hardpoints, Integrated components, module
   slots (two; the Clydesdale three) and one passive. Twenty-seven chassis from five makers
   (`content/chassis.json`), one of them dealt by nothing yet (a chassis whose entry says
   `"status": "planned"`): the Swallowtail, back in design until its session hands it back. A
   run has four squad slots and starts with three machines.
-- **The die**: one entry per component, fixed components first, then one per hardpoint in
+- **The die**: one entry per component, Integrated components first, then one per hardpoint in
   order. Each entry shows its place, from I, as a grey Roman numeral: top left on the die,
   beside its name in its readout, and down the codex. A piece a branch has upgraded wears a
   chevron under its place for each step taken on it, on the die and down the codex; a step on
@@ -43,7 +43,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   machine, the codex the piece as built. A rule over the pieces a machine aims at foes reads every weapon
   and equipment aimed at a foe, so a buff, a shield and a vent stay out of it. A
   component has a number (or none), heat, strikes, up to three authored keywords, and may
-  carry a passive. A **fixed** component is built into its chassis, uses no hardpoint, is
+  carry a passive. An **Integrated** component is built into its chassis, uses no hardpoint, is
   never a blueprint and has no tier.
 - **Hits**: a rule reads one of three: damaging a foe with a weapon (its blow dealt
   something); hitting a foe with a weapon (any blow of a weapon, a blow of 0 included); hitting
@@ -68,13 +68,13 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   to 3, run as one passive nothing on the die can remove. The same module twice stacks.
   Fitted in the harness and the quick campaign's hangar (not in the campaign yet). Catalogue:
   `content/modules.json`.
-- **Tiers and blueprints**: every component that is not fixed carries its tier, one to three, and
+- **Tiers and blueprints**: every component that is not Integrated carries its tier, one to three, and
   a chassis stocks components up to its own tier at tiers one and two, a tier three to tier two,
   so a tier-three component is only ever found. A **basic** is a tier-one piece with a flag, what
   comes off the assembly line: a run starts with every basic's blueprint, and a basic is never a
   find. A tier-one chassis may stock found tier-one pieces beside its basics. Blueprints of every
   piece but the basics are found; a bought chassis brings one copy of each component it
-  stocks, never its blueprint. A fixed component has no tier; the Arsenal (the capital's
+  stocks, never its blueprint. An Integrated component has no tier; the Arsenal (the capital's
   maker) makes no basics and fields no tier-one chassis, though its tier-one components exist
   and its tier-two chassis stock them. The basic kit is six pieces, each a maker's: four
   guns, the Twin Autoguns and the Rivet Gun dealing 3 for 4 heat, Direct, the Ankle Mortar 3 for
@@ -94,7 +94,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   each a step a pick, as deep as its machine picks, a tier one twice and a tier two once. A
   machine's first pick takes a direction's first step and its second the same direction's
   deeper step or the other's first, so a tier one ends specialized or mixed. A step tweaks the
-  machine's locked pieces or its passive, as many as it needs, never a stat: its effects ride the
+  machine's Integrated components or its passive, as many as it needs, never a stat: its effects ride the
   machine as a passive of their own, each scoped to its piece where it names one, so the die keeps the piece as
   printed and the entry as spent carries the tweak, and a destroyed piece takes its tweaks with
   it. A step on the passive takes over the effect it names in place: an effect that names a
@@ -137,7 +137,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   back cold and whole). The slottable shields and vents of tiers zero
   and one are retired; the three of tier two are kept in content as drafts nothing deals (no
   blueprint, no loot, no basic) until a kit wants one; the engine still runs both kinds, for the
-  locked pieces that are one (the Musk Ox's Quick Reload, the Sutler's Hoist) and the machines
+  Integrated components that are one (the Musk Ox's Quick Reload, the Sutler's Hoist) and the machines
   back in design. No piece grants a cooling or a shield regen today; the engine keeps both, the
   reboot's rulings on a granted one standing (The reboot, below).
 - **Damage states**: a component is intact or destroyed, for the whole battle (none is destroyed
@@ -255,7 +255,7 @@ whole. A second one renews to the larger count, never adds.
   unlocks it; locks clear each round. A double-tap shows the whole die, its loadout, every entry at its
   live numbers, the one showing marked.
 - **A folded die** (the Clydesdale's Disappearing Carriages): its hardpoints are two batteries
-  of four, one up at a time, and every roll and reroll lands among the battery up and its fixed
+  of four, one up at a time, and every roll and reroll lands among the battery up and its Integrated
   pieces, the Changeover live on both. The Changeover (Rapid, spent on itself) turns
   the die to its other battery, and Rapid's free roll lands there, never on the Changeover, which
   Rapid darkens for the rest of the round, so it turns once a round. The second battery up is its Ability, Changed Over, kept from fight to
@@ -1235,7 +1235,7 @@ Ablate, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Expo
   on it after the vent stays: one vent, as the shield drops. UNDO takes a reboot back like a
   spend.
 - A machine whose reboot fires a piece first (the Whip Scorpion's Heliographic Death Ray, a
-  locked piece its die never rolls): while its die is held, REBOOT reads the piece's word (DEATH
+  Integrated component its die never rolls): while its die is held, REBOOT reads the piece's word (DEATH
   RAY), and its die dropped there brings the piece up in place of the entry it showed, nothing
   vented yet; while it is up REBOOT reads CANCEL, and a drop there again shows the entry it did.
   The die with the piece up rerolls nothing. Spent, the piece does its thing and the machine
@@ -1273,7 +1273,7 @@ Ablate, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Expo
   the heat it carried then off it, each rounded up (two turns under is whole and cold, and a
   blow taken under is not mended), every entry a foe jammed lit, and a stack of Conserved
   Momentum. It stays under until it spends the Drill, and cannot burrow again while under.
-- **The Inertia Drill** (its locked piece, equipment, Indirect): spent at a foe, it spends every
+- **The Inertia Drill** (its Integrated component, equipment, Indirect): spent at a foe, it spends every
   stack of Conserved Momentum, lays as many of **Applied Momentum** on the foe (a mark the team
   lays: the foe's Ward turns it away, the stacks spent all the same), and brings the Mole up,
   **Drill Out** (an ability) until its next burrow, its foe felled or not. As the foes' turn
@@ -2042,7 +2042,7 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   maker. A city's gate is 200, the capital's 300. The capital's gate is the run's life: the
   run is lost at zero.
 - **Start**: a tender of one tier-one machine from each city maker (by seed, in stock
-  loadout; a chassis whose passive or locked piece is still planned is not dealt, so a maker
+  loadout; a chassis whose passive or Integrated component is still planned is not dealt, so a maker
   whose only tier one is a draft offers nothing until it lands); the player takes three. Four
   squad slots; the first battle is fought by those three and brings the fourth machine (The
   first battle, below). 0 salvage, 100 Favour, a blueprint for every basic, the six of tier
@@ -2076,7 +2076,7 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   open, as art: no front, and nothing reads its domain. **Wiped** (every machine wrecked): the horde strikes the gate for up to six phases;
   the city falls at zero or holds wounded, keeping the salvage; no Favour.
 - **After a battle**: hull mends free; a destroyed hardpoint component is gone, a destroyed
-  fixed one rebuilt; a wreck sits out the next turn unless rushed (100 Favour). Fitting and
+  Integrated one rebuilt; a wreck sits out the next turn unless rushed (100 Favour). Fitting and
   stripping are instant; the capital's gate repairs at 5 salvage a point.
 - **Turn end**: each unfought open rift bleeds its city 50 (falling it at zero); each fallen
   city drains the capital 25; the Convergence rises 1; rifts open at standing cities that are
@@ -2153,7 +2153,7 @@ and nothing scales a pack.
 - **A fight** takes the squad's machines still standing, their damage carried, their heat from
   zero and their shields full; a wipe ends the run.
 - **The boss's fall**: the campaign's after-battle rule without the shop (hull mends; a
-  destroyed hardpoint component is gone, a destroyed fixed one rebuilt). Then, each one of three
+  destroyed hardpoint component is gone, a destroyed Integrated one rebuilt). Then, each one of three
   and one taken: a loot pick for each fight before the boss (components and modules: a tier-one
   battle's of tier one; a tier-two's of tiers one and two, a tier three now and then; a
   tier-three's mostly tier two, tier three oftener); the boss's token, components of the

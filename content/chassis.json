@@ -1739,7 +1739,7 @@
    "passive": {
     "id": "muster_deck",
     "name": "Muster Deck",
-    "description": "Allies beside it on the map travel with it. Every die that rolls fills its Muster a sliver, a kill by its own guns more, and its locked pieces spend a muster to do more.",
+    "description": "Allies beside it on the map travel with it. Every die that rolls fills its Muster a sliver, a kill by its own guns more, and its Integrated components spend a muster to do more.",
     "effects": [
      {
       "trigger": "static",

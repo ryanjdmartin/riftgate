@@ -242,7 +242,7 @@ func _chassis_row(id: String) -> VBoxContainer:
 	toggle.custom_minimum_size.x = 170
 	top.add_child(toggle)
 	var fixed_n: int = c.get("fixed", []).size()
-	var info := "%s · move %d · %d hardpoints%s · tier %d" % [" ".join(c.get("traits", [])), int(c["movespeed"]), int(c["hardpoints"]), " + %d fixed" % fixed_n if fixed_n > 0 else "", db.chassis_tier(id)]
+	var info := "%s · move %d · %d hardpoints%s · tier %d" % [" ".join(c.get("traits", [])), int(c["movespeed"]), int(c["hardpoints"]), " + %d integrated" % fixed_n if fixed_n > 0 else "", db.chassis_tier(id)]
 	box.add_child(_hint(info))
 	var status := _label("", 15, Palette.INK)
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -323,7 +323,7 @@ func _fill_editor(id: String) -> void:
 	for cid in c.get("fixed", []):
 		fixed.append(db.component_name(str(cid)))
 	if not fixed.is_empty():
-		editor.add_child(_hint("Fixed: " + ", ".join(fixed)))
+		editor.add_child(_hint("Integrated: " + ", ".join(fixed)))
 	var p := setup.picks(id)
 	for slot in range(p.size()):
 		var line := HBoxContainer.new()

@@ -123,7 +123,7 @@
    "id": "shield_component",
    "category": "component_kind",
    "name": "Shield component",
-   "codex": "Spend on self or an ally to add its number in shield, capped at that machine's shield maximum; a Broken shield takes none until its machine reboots. No stock die holds one: the kind is a few locked pieces'.",
+   "codex": "Spend on self or an ally to add its number in shield, capped at that machine's shield maximum; a Broken shield takes none until its machine reboots. No stock die holds one: the kind is a few Integrated components'.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -133,7 +133,7 @@
    "id": "vent",
    "category": "component_kind",
    "name": "Vent component",
-   "codex": "Spend on self or an ally to remove its number in heat. No stock die holds one: the kind is a locked piece's.",
+   "codex": "Spend on self or an ally to remove its number in heat. No stock die holds one: the kind is an Integrated component's.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -1048,7 +1048,7 @@
    "id": "destroyed_component",
    "category": "status",
    "name": "Destroyed component",
-   "codex": "This entry is blank for the rest of the battle. Passive bonuses still apply. Passive abilities do not.\nAfter the battle: a fixed component is rebuilt, a hardpoint's component is lost.",
+   "codex": "This entry is blank for the rest of the battle. Passive bonuses still apply. Passive abilities do not.\nAfter the battle: an Integrated component is rebuilt, a hardpoint's component is lost.",
    "status": "implemented",
    "design": {
     "holes": "No foe carries Destroy yet, so nothing is destroyed in play (Ryan, 15 November: \"Only promoted form or superboss-level so we're not tuning the economy around it. No longer a general rule\"). The campaign's hangar screen is not built."
@@ -1763,8 +1763,8 @@
   {
    "id": "fixed_component",
    "category": "kit",
-   "name": "Fixed component",
-   "codex": "A component built into the chassis: always on the die, never removed, never sold, and it uses no hardpoint. It is the machine's own: no other machine carries one, and it can never be built.",
+   "name": "Integrated component",
+   "codex": "A component built into the chassis. Always on the die and uses no hardpoint. Cannot be removed, sold or built. No other Frame carries it.",
    "status": "implemented",
    "design": {
     "holes": "Never bought open. Locked pieces are powerful and unique, never blueprints, so no hardpoint stocks one and none carries a tier (the validator holds it; ContentDB.component_tier answers 0)."
@@ -1961,6 +1961,16 @@
    }
   },
   {
+   "id": "fixed",
+   "category": "component_property",
+   "name": "Fixed",
+   "codex": "Only the specified component may be used.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 24 November, for the third case in a week (the Nemesis's Rage, the Mole's burrow, the Whip Scorpion's reboot that puts the Death Ray on its die): \"It might want a keyword: 'Fixed: Knuckles of Fury'. Fixed: Only the specified component may be used.\" The kit word it would have met became Integrated the same day (\"I'd rather change Fixed a chassis locked components to Integrated\"). A word of the text: each piece's own engine path holds its die to its one component."
+   }
+  },
+  {
    "id": "gated",
    "category": "component_property",
    "name": "Gated",
@@ -2054,7 +2064,7 @@
    "id": "rage",
    "category": "status",
    "name": "Rage",
-   "codex": "Immune to all Debuffs.\nOnly Knuckles of Fury available.\nReboot disabled.\nAt 0 Heat: Consumed to Reboot immediately.",
+   "codex": "Immune to all Debuffs.\nFixed: Knuckles of Fury\nReboot disabled.\nAt 0 Heat: Consumed to Reboot immediately.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 23 November: \"When the Nemesis starts its turn with heat at or over max, it gains the unpurgable status Rage: Remove all debuffs on self. Immune to all debuffs. The only component available is Knuckles of Fury\"; \"Rage ends when the Nemesis' heat reaches zero, at which point it immediately reboots, regardless of how it got there.\" Its debuffs are the statuses a foe lays on a machine, the ones a Cleanse lifts. Its heat comes from the blows it takes and its own blows a foe's armour or Barrier takes whole, by the rules its rage was banked by from 11 November. The text is a session's draft.",
@@ -2376,7 +2386,7 @@
    "id": "muster",
    "category": "resource",
    "name": "Muster",
-   "codex": "Machine store, the Swallowtail's: a charge its locked pieces spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty and never decays; a store, so no Purge touches it. With a charge up, its locked pieces go out charged unasked, unless the charged form has nowhere to land; then the plain form goes out and the charge waits.",
+   "codex": "Machine store, the Swallowtail's: a charge its Integrated components spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty and never decays; a store, so no Purge touches it. With a charge up, its Integrated components go out charged unasked, unless the charged form has nowhere to land; then the plain form goes out and the charge waits.",
    "status": "implemented",
    "design": {
     "holes": "Every number is a placeholder; carrying it between fights is section 12's heat question.",
@@ -2450,7 +2460,7 @@
    "id": "burrowed",
    "category": "status",
    "name": "Burrowed",
-   "codex": "Replaces Reboot. +1 Armour. Only Inertia Drill available.\nTurn Start: Remove Broken, Overheated, Jammed and Corrupted. Regain half the Shield missing when burrowed, and lose half the Heat held then, rounded up. Gain 1 Conserved Momentum, up to 3.\nResolve: If the Inertia Drill was used, removed.",
+   "codex": "Replaces Reboot. +1 Armour.\nFixed: Inertia Drill\nTurn Start: Remove Broken, Overheated, Jammed and Corrupted. Regain half the Shield missing when burrowed, and lose half the Heat held then, rounded up. Gain 1 Conserved Momentum, up to 3.\nResolve: If the Inertia Drill was used, removed.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 16 November: \"Instead of Reboot, it Burrows. While burrowed, it gains a unpurgable buff called 'Burrowed'\"; an unpurgeable buff is labelled an Ability by his rule of 8 November. The text is a session's draft.",

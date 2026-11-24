@@ -14,6 +14,7 @@ section 4. `tests/test_terms.gd` holds every tip to the mechanical parts.
 - **Words.** *Frame* is ours, *Sprite* theirs, *unit* either; Frame and Sprite are capitalised and
   never tappable. A Frame *uses* a component, and each blow that lands is a *hit*. A Sprite is
   *defeated*, and the Frame that did it *killed* it; a Frame is *wrecked*, a component *destroyed*.
+  A chassis's built-in components are *Integrated*; *Fixed: X* means only X may be used.
   Never foe, machine, enemy, blow, strike, shot, falls or felled; "spend" only for a resource paid
   (rerolls, Ore). The HUD's own voice (ENEMY PHASE) stays.
 - **Labels.** A timed line opens with its label and a colon, then a capital (rules 10 and 31).
@@ -234,8 +235,7 @@ of Spread and Penetrate fire every event but the target's.
 attack spends it; "When it would gain X: Prevent it" for what stops a status landing; "Cannot be
 cleansed." on a debuff no Cleanse removes, until the headings say it (rule 24); X and Y for an
 entry's two printed numbers ("+X damage per Y Heat vented, as shown on the entry"); "Only X
-available." for a die held to one component, until the keyword for it is named (the proposal's
-section 4).
+available." gave way to "Fixed: X" for a die held to one component (24 November).
 - "Resolve: If triggered, reduce stacks by 1." → "Resolve: If a weapon was used, reduce stacks by 1."
 
 **36. A reach over every Sprite targets the field.** (settled 24 November: his word)

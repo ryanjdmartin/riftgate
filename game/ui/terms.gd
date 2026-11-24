@@ -33,7 +33,7 @@ const TABLE := {
 	"destroy": ["crack", "enemy"],   # the rider that destroys the entry showing (15 November): the destroyed component's own mark
 	# Rules on a component.
 	"targets": ["", "plain"], "strikes": ["", "plain"],
-	"gated": ["", "plain"], "consumes": ["", "plain"], "power_per_missing": ["", "plain"], "finisher": ["", "plain"],
+	"gated": ["", "plain"], "fixed": ["", "plain"], "consumes": ["", "plain"], "power_per_missing": ["", "plain"], "finisher": ["", "plain"],
 	"cooldown": ["cooldown", "plain"],
 	"hopper_property": ["hopper", "plain"],
 	"volatile": ["hull", "hull"], "shield_cost": ["shield", "guard"], "brace_property": ["shield", "guard"],

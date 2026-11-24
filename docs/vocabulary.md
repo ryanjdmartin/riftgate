@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 208 implemented, 6 planned, 0 idea.
+Status: 209 implemented, 6 planned, 0 idea.
 
 ## Resource
 
@@ -20,7 +20,7 @@ Status: 208 implemented, 6 planned, 0 idea.
 | **Shots** | Machine count, the Cassowary's: every weapon and equipment it aims at a foe this fight, shown as six pips under the heat bar, the sixth lit when it is next, where its sixth shot counts double. Shields, vents, buffs and spins are no shots. Never a chip; nothing cleanses it; it resets each fight. | implemented |
 | **Armour** | A chassis number taken off every blow that reaches the hull, flat, never a percentage: a blow on bare hull and what passes a shield alike. A blow at or under the armour does nothing to the hull. Shield is not armoured: a blow on shield costs the shield its full damage. | implemented |
 | **Ore** | Machine store, the Honey Badger's hopper: every foe its weapons damage puts an Ore in it, up to three, and every raise its upgrades grant adds to that. Its Bullion Fragmenter empties it, a strike for every Ore, and puts none back. Lasts the skirmish; never decays, and no cleanse or Purge touches it. | implemented |
-| **Muster** | Machine store, the Swallowtail's: a charge its locked pieces spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty and never decays; a store, so no Purge touches it. With a charge up, its locked pieces go out charged unasked, unless the charged form has nowhere to land; then the plain form goes out and the charge waits. | implemented |
+| **Muster** | Machine store, the Swallowtail's: a charge its Integrated components spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty and never decays; a store, so no Purge touches it. With a charge up, its Integrated components go out charged unasked, unless the charged form has nowhere to land; then the plain form goes out and the charge waits. | implemented |
 | **Ammo** | The Musk Ox's magazine, a row of cells under its heat bar, a cell an ammo. Its weapons spend ammo instead of heating it: 1 for every 2 heat a gun would make, rounded up, at least 1, the price printed where the gun's heat would be; a foe's Scorched still heats them. The magazine holds 10, opens each fight at 3 and gains 1 at the start of every round after the first; a vent the Musk Ox spends on itself adds 3, a shield 2, an entry that is both 3, once. With too little left, a gun cannot be spent (DRY). | implemented |
 | **Conserved Momentum** | Machine store, the Mole's: a stack as it burrows and one as each turn under opens, up to 3, and what is left of its Applied Momentum back as it burrows again. Its Inertia Drill spends every stack, laying a stack of Applied Momentum for each. A store, so no Purge touches it. | implemented |
 
@@ -30,7 +30,7 @@ Status: 208 implemented, 6 planned, 0 idea.
 |---|---|---|
 | **Component** | A piece of kit on a machine, and one entry on its die. There is no generic kit: every entry on a die is a component, or an empty hardpoint. Each round the die is rolled and the component that comes up is what the machine can do. | implemented |
 | **Hardpoint** | A free slot on the chassis. Any component fits any hardpoint. On the model a hardpoint is a socket where the component mounts. | implemented |
-| **Fixed component** | A component built into the chassis: always on the die, never removed, never sold, and it uses no hardpoint. It is the machine's own: no other machine carries one, and it can never be built. | implemented |
+| **Integrated component** | A component built into the chassis. Always on the die and uses no hardpoint. Cannot be removed, sold or built. No other Frame carries it. | implemented |
 | **Empty hardpoint** | A hardpoint with nothing in it is an entry on the die that does nothing when it comes up. Nothing fills it for you. | implemented |
 | **Module** | Kit inside the machine, not on its die: a few numbers up or down, and at most one rule of its own. A chassis has its module slots (two, three on the Clydesdale), and a module is never spent: it is always working. | implemented |
 
@@ -39,8 +39,8 @@ Status: 208 implemented, 6 planned, 0 idea.
 | Term | Codex | Status |
 |---|---|---|
 | **Weapon** | A component that deals damage: spent on a foe within its reach, it deals its number in damage, then its keywords act and its heat lands. One that deals none is equipment. | implemented |
-| **Shield component** | Spend on self or an ally to add its number in shield, capped at that machine's shield maximum; a Broken shield takes none until its machine reboots. No stock die holds one: the kind is a few locked pieces'. | implemented |
-| **Vent component** | Spend on self or an ally to remove its number in heat. No stock die holds one: the kind is a locked piece's. | implemented |
+| **Shield component** | Spend on self or an ally to add its number in shield, capped at that machine's shield maximum; a Broken shield takes none until its machine reboots. No stock die holds one: the kind is a few Integrated components'. | implemented |
+| **Vent component** | Spend on self or an ally to remove its number in heat. No stock die holds one: the kind is an Integrated component's. | implemented |
 | **Equipment** | A buff or a debuff: a component that deals no damage. A buff is spent on a machine (itself, an ally, or either, as it says) and grants it a status; a debuff is spent on a foe within its reach, its keywords its whole effect. Shields and vents are kinds of their own. | implemented |
 | **Buff component** | Equipment spent on a machine (itself, an ally, or either, as the component says) that grants it a status, so many stacks deep, through the end of so many rounds: Empowered for damage, Armoured against damage, Primed to lay Ablate on hit. A status that runs down on its own (Empowered, halving) takes no rounds. The die shows the status name and the stacks. | implemented |
 
@@ -68,6 +68,7 @@ A dark entry can be rolled but not used. | implemented |
 | **Passes heat** | Resolve: Move all of this Frame's Heat to the target. The target gains 1 stack of the shown status per Y Heat moved, rounded down. | implemented |
 | **Grows with missing HP** | Commit: +X damage per Y HP the target is missing, as shown on the entry. | implemented |
 | **Finisher** | Commit: If the target is at or below half Max HP, double base damage. | implemented |
+| **Fixed** | Only the specified component may be used. | implemented |
 | **Gated** | The keyword applies only to Sprites that meet its condition at Commit. | implemented |
 | **Consumes** | On Hit: If a weapon, consume all stacks of the named status on the Sprite hit. +{N} damage per stack consumed.
 Commit: If equipment, consume up to {N} of the named count from this Frame. Gain 1 stack of the granted status per one consumed.
@@ -192,11 +193,11 @@ Round End: Removed. | implemented |
 | **Brittle** | When Hit: +1 damage received per stack ({N}).
 Turn Start: Reduce stacks by half, rounded down. | implemented |
 | **Destroyed component** | This entry is blank for the rest of the battle. Passive bonuses still apply. Passive abilities do not.
-After the battle: a fixed component is rebuilt, a hardpoint's component is lost. | implemented |
+After the battle: an Integrated component is rebuilt, a hardpoint's component is lost. | implemented |
 | **Mine** | Uses aimed at this Sprite by the Frame that laid it add their damage and riders to the Mine.
 When defeated: The Mine goes off, dealing 1 damage per stack ({N}) to every Sprite around it, with its riders. | implemented |
 | **Rage** | Immune to all Debuffs.
-Only Knuckles of Fury available.
+Fixed: Knuckles of Fury
 Reboot disabled.
 At 0 Heat: Consumed to Reboot immediately. | implemented |
 | **Ore** | At 3 Ore, base Armour increases by 1. | implemented |
@@ -242,7 +243,8 @@ Resolve: If a weapon was used, reduce stacks by 1. | implemented |
 | **Supercooled** | Weapons gain Cryo 1.
 Resolve: If a weapon was used, reduce stacks by 1. | implemented |
 | **Regenerating** | Turn End: Gain 1 Shield per stack ({N}) on a Frame, or 1 HP per stack on a Sprite, then reduce stacks by 1. | implemented |
-| **Burrowed** | Replaces Reboot. +1 Armour. Only Inertia Drill available.
+| **Burrowed** | Replaces Reboot. +1 Armour.
+Fixed: Inertia Drill
 Turn Start: Remove Broken, Overheated, Jammed and Corrupted. Regain half the Shield missing when burrowed, and lose half the Heat held then, rounded up. Gain 1 Conserved Momentum, up to 3.
 Resolve: If the Inertia Drill was used, removed. | implemented |
 | **Applied Momentum** | Turn Start: Take a hit of 2 damage, then reduce stacks by 1.
@@ -502,7 +504,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **An ally's action** (implemented): Its price is the lever if it reads as Rapid embodied in a machine (the bible's Kestrel row); the order is the play, the ally spending first.
 - **Grants a reroll** (implemented): The Rallied buff until 15 November (Ryan's mark: "This doesn't need to be a temporary buff or a keyword ... We can communicate by highlighting the reroll button as part of the preview, if one will be granted"; the grant passing the round's two: "allow it"). A reroll the Horn grants still counts toward the Muster when spent on the carrier. A session's draft, his to write.
 - **Component** (implemented): Multi-slot components were set aside as invisible complexity.
-- **Fixed component** (implemented): Never bought open. Locked pieces are powerful and unique, never blueprints, so no hardpoint stocks one and none carries a tier (the validator holds it; ContentDB.component_tier answers 0).
+- **Integrated component** (implemented): Never bought open. Locked pieces are powerful and unique, never blueprints, so no hardpoint stocks one and none carries a tier (the validator holds it; ContentDB.component_tier answers 0).
 - **Module** (implemented): Fitted in the harness and the quick campaign's hangar: the campaign's roster, the loot that drops them and its hangar wait for the economy pass and the hangar screen.
 - **Armour** (implemented): Numbers are placeholders.
 - **Aim** (implemented): Content: aim on a move aimed at one machine, never on a foe (Ryan, 17 November: "the heat target is a property of the attack, not the dragon itself"; his go on the three words the same day: "if it's the strongest/weakest/hottest table from above, then yes I agree and you can go ahead"); when on a move is the condition that lets a foe pick it, and a special never fires twice running. The strongest and the weakest have no carrier yet, and the most buffed is a session's keep for the Djinn's Unmake (the bible's section 12). The codex and the words on a move's target line are a session's drafts, his to write in his terminology pass.
@@ -519,6 +521,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Passes heat** (implemented): Its carrier the Puffin's dump (Ryan, 11 November: "A locked piece can transfer the Puffins heat to another unit along with a buff based on heat moved"; "just allies"; 19 November, Empowered for every 2: "that needs data"). An ally its heat takes past the maximum burns as the turn ends, his "forcing an overheat". The codex is a session's draft.
 - **Grows with missing HP** (implemented): Both numbers are the entry's own (power_per_missing and per_missing), placeholders.
 - **Finisher** (implemented): A working name. The Coriolis Accelerator's slope as one step (Ryan, 11 November: "is there a way to make the pinion driver simpler but fill the same purpose"); its factor is the entry's own (finisher), a placeholder.
+- **Fixed** (implemented): Ryan, 24 November, for the third case in a week (the Nemesis's Rage, the Mole's burrow, the Whip Scorpion's reboot that puts the Death Ray on its die): "It might want a keyword: 'Fixed: Knuckles of Fury'. Fixed: Only the specified component may be used." The kit word it would have met became Integrated the same day ("I'd rather change Fixed a chassis locked components to Integrated"). A word of the text: each piece's own engine path holds its die to its one component.
 - **Gated** (implemented): Suppress alone carries a gate today. A working name for Ryan's name pass.
 - **Consumes** (implemented): A mine laid from it eats its arrival's stacks. The equipment's form is the Quintessence Tap's (12 November, the Soul Siphon then), the engine's spends and spends_up_to; its text is a session's draft.
 - **Ablates its firer** (implemented): A working name for Ryan's name pass. It was fuel for a machine that wanted heat while a machine's Burning was heat; since Ablate (15 November) it is a price alone, the component pass's to read.
