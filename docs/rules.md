@@ -106,7 +106,12 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   itself, then Chain 3 and Charged 2. The Buzzard's, a tier two's single pick: Sustain, on its
   passive, its zap adding 3 for the same 2 shield and every foe that falls laying Regenerating 2
   on it in place of the 2 shield; Burst, on its Shield-burner Cannon, Spread 2 and Penetrate 2 and
-  its own number 2 higher. The Macaque's, a tier one's, each touch its offhand's forms (a form
+  its own number 2 higher. The Nemesis's, a tier two's, each on its passive and its Knuckles of
+  Fury: Breaker, 2 heat for each blow of its own weapons a foe's armour or Barrier takes whole,
+  each foe's and each strike's (a corpse's and a debuff's never), and Brittle 1 on the Knuckles;
+  Berserker, 1 heat for hull lost to anything (a blow, a bite of its own, a tick, an overheat), so
+  a blow that wounds heats it 2, and Ablate 1 on the Knuckles. A keyword a step grants its rage
+  piece is on the piece its Rage leaves the die. The Macaque's, a tier one's, each touch its offhand's forms (a form
   a step names takes its slot's place in the cycle) and its second steps its Aile Booster too:
   Duelist, the Beam Sword's slot holding the Beam Saber, then the shield's the Beam Buckler and the
   Booster granting Aile Blitz; Valkyrie, the rifle's slot holding the Beam Bazooka, then the shield's
@@ -968,12 +973,10 @@ On a machine:
   a Mine), nor a stun, nor a Purge, so a turned mark feeds no Paradox; the damage
   lands; until its next turn starts. On either side a Ward turns the whole thing
   and stands.
-- **Rage** (Ability, the Nemesis's): its Crucible Capacitor heats it 1 for each foe's blow its
-  shield takes with nothing on its hull, 2 for hull damage (a blow, a bite of its own, an
-  overheat; a blow that breaks the shield and wounds is hull damage alone), and 2 for every
-  blow of its own weapons a foe's armour or Barrier takes whole, each foe's and each strike's
-  (a corpse's and a debuff's never). A bite of its own on its shield and a blow its own Barrier
-  or armour takes whole heat nothing. A turn it opens at its heat maximum or past it, it rages,
+- **Rage** (Ability, the Nemesis's): its Crucible Capacitor heats it 1 for each foe's blow that
+  lands on it, whatever the blow dealt, one its shield, its armour or its own Barrier takes whole
+  included, and one from a striker already down; a tick, a bite and a burn are no blow. Its
+  branches heat it for more (Branches, above). A turn it opens at its heat maximum or past it, it rages,
   before its die rolls: every debuff on it lifts (what a Cleanse lifts), and none lands on it
   while it rages, a foe's riders and its moves turned away with a line in the log; its die rolls
   among its Knuckles of Fury alone, no reroll moving it, and they are Instant, so it swings
@@ -1298,7 +1301,8 @@ Ablate, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Expo
   wherever it would reboot, standing it down when it has nothing to fire at, and in place of its
   best spend when the piece's shot, its heat free, less what standing bare through the round
   costs over standing as it is, is worth more. It prices heat that takes a gauge past half where
-  that doubles the hits on it, reads a heat scale on every blow at the heat the machine holds and
+  that doubles all the damage it takes (the hits and its Ablating's tick; the burn past its
+  maximum, doubled with it), reads a heat scale on every blow at the heat the machine holds and
   a cooling of its own as heat off. A machine that would rage (the Nemesis's) reads heat that
   opens its next turn at its maximum as the Rage's swings, at a share, never reboots to make room
   for its entry or for a shield short of broken, and swings a Rage down to its reboot. Other heat
@@ -1663,8 +1667,10 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   damage runs with its heat, half at no heat to double at its maximum along a straight line, a
   multiply after every add and held at double past the maximum, read at the heat it holds as a
   shot begins (before a Vents all shot fires it); the die's number and the bot read it the same
-  way. Past half its heat maximum every hit a foe lands on it is doubled, before its shield,
-  armour and a Barrier see it. Its reboot fires its locked Heliographic Death Ray first (The
+  way. Past half its heat maximum all the damage it takes is doubled: a foe's hit before its
+  shield, armour and a Barrier see it, its overheat's burn (so a point past its maximum burns 2),
+  its Ablating's tick and a Corrupted bite, each read at the heat it holds as the damage lands. A
+  price in hull (Volatile's, a tithe a spend) is no damage, and pays as printed. Its reboot fires its locked Heliographic Death Ray first (The
   reboot, below): 2, and 1 more for every 2 heat it fires, at its heat scale, then the reboot.
 
 ### Every number is a question

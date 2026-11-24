@@ -121,8 +121,8 @@ EFFECTS = {
     "paradox": [("paradox", "sets"), ("suppressed", "sets")], "muster": [("muster", "sets"), ("reroll", "reads")],
     "pull_heat": [("ally_heat", "reads"), ("heat", "sets")],   # the Puffin's pull (19 November): an ally's heat onto its own gauge
     "add_stacks": [], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
-    "gain_heat": [("heat", "sets")], "rage_form": [("heat", "reads"), ("rage", "sets")],   # the Nemesis's Crucible Capacitor (23 November): blows heat it, and its maximum rages it
-    "heat_scale": [("heat", "reads")], "hot_hits": [("heat", "reads")], "reboot_piece": [("heat", "reads")],   # the Whip Scorpion's Thermal Ejection Manifold (23 November): its damage by its heat, a hot gauge's doubled hits, and its Ray fired as it reboots
+    "gain_heat": [("heat", "sets")], "rage_form": [("heat", "reads"), ("rage", "sets")],   # the Nemesis's Crucible Capacitor (23 November): hits heat it, and its maximum rages it
+    "heat_scale": [("heat", "reads")], "hot_damage": [("heat", "reads")], "reboot_piece": [("heat", "reads")],   # the Whip Scorpion's Thermal Ejection Manifold (23 November): its damage by its heat, all damage on a hot gauge doubled (24 November), and its Ray fired as it reboots
     "step_die": [("reroll", "reads")], "split_strikes": [("strikes", "sets")], "multiply_printed": [], "free_reroll": [("reroll", "sets")],
     "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "rewrite_weapon": [], "grant_keyword": [], "spillover": [("strikes", "sets")],
     "add_shield": [], "refill_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
@@ -132,9 +132,9 @@ EFFECTS = {
     "shield_zap": [], "add_power": [],   # the Buzzard's zap and its Burst's raise of the cannon's number (18 November)
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
 }
-TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_shield_hit": None, "on_blocked": None, "on_shield_granted": "shield_granted", "on_buff_granted": None, "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",
+TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_blocked": None, "on_shield_granted": "shield_granted", "on_buff_granted": None, "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",
             "on_foe_status": "paradox_feed", "on_stack": None, "on_attack": None, "static": None,
-            "on_injury": None, "on_skirmish_start": None, "on_shield_gain": None, "on_damage": None}
+            "on_injury": None, "on_skirmish_start": None, "on_shield_gain": None, "on_damage": None, "on_struck": None}
 CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None,
               "target_no_intent": None, "shield_up": None, "target_unhurt": "missing_hp", "target_half": "missing_hp"}
 # A foe move's riders and effects, on machines.

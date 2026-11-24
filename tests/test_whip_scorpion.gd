@@ -6,17 +6,19 @@ extends TestCase
 ## replaced with "Death Ray" when holding its die. Selecting reboot equips the Heliographic Death Ray
 ## instead of rebooting. Holding the death ray changes reboot to "Cancel," and cancelling returns the
 ## die to what it was before"; "The death ray does it's thing when used, then the Scorpion reboots";
-## of the scale past the maximum, "Hold"), on synthetic passives and pieces: its damage by its heat,
-## the die's number and the bot reading it; a hit on a hot gauge doubled; the reboot piece off the
-## die, brought up and stood down, fired and the reboot after, saved and undone; with nothing to fire
-## at, the bot stands it down; the validator holds the keys to their shapes.
+## of the scale past the maximum, "Hold"; 24 November, his option of the 23rd taken, "all damage
+## received is doubled, so that overheat pays twice"), on synthetic passives and pieces: its damage by
+## its heat, the die's number and the bot reading it; all damage it takes on a hot gauge doubled, a
+## hit, the burn, a tick and a bite, a price in hull as printed; the reboot piece off the die,
+## brought up and stood down, fired and the reboot after, saved and undone; with nothing to fire at,
+## the bot stands it down; the validator holds the keys to their shapes.
 
 const L := Face.Reach.DIRECT
 
 const SCALE := {"id": "scale", "name": "Scale", "description": "", "effects": [
 	{"trigger": "static", "effect": "heat_scale", "cold": 50, "hot": 200}]}
 const HOT := {"id": "hot", "name": "Hot", "description": "", "effects": [
-	{"trigger": "static", "effect": "hot_hits", "value": 2}]}
+	{"trigger": "static", "effect": "hot_damage", "value": 2}]}
 const RAYED := {"id": "rayed", "name": "Rayed", "description": "", "effects": [
 	{"trigger": "static", "effect": "reboot_piece", "piece": "test_ray", "label": "Death Ray"}]}
 
@@ -81,8 +83,8 @@ func test_a_hit_on_a_gauge_past_half_lands_double() -> void:
 	var sk := _fight([u], [foe])
 	var ms: Skirmish.MechState = sk.mechs[0]
 	ms.heat = 5
-	assert_eq(Effects.hot_hits(u, 5, 10), 1, "at half, plain")
-	assert_eq(Effects.hot_hits(u, 6, 10), 2, "past half, doubled")
+	assert_eq(Effects.hot_damage(u, 5, 10), 1, "at half, plain")
+	assert_eq(Effects.hot_damage(u, 6, 10), 2, "past half, doubled")
 	var fc := sk.forecast(ms)
 	assert_eq(200 - int(fc["hull_after"]), 3 * foe.strikes(), "the forecast reads a plain blow at half")
 	var hull := u.hull
@@ -96,6 +98,48 @@ func test_a_hit_on_a_gauge_past_half_lands_double() -> void:
 	sk.end_round()
 	assert_eq(hull - u.hull, 6 * foe.strikes(), "and it lands doubled")
 	assert_true(Policy.make(Policy.GREEDY, 1).hot_cost(sk, ms, 0, sk.forecast(ms)) == 0.0, "no heat added, no cost")
+	assert_true(Effects.effect_text(HOT["effects"][0]).contains("all damage it takes"), "reads as a sentence")
+
+
+## All the damage it takes past half its heat, not its hits alone (Ryan, 24 November: "I think we
+## implement the double damage recieved penalty on the Whip as well"): its overheat's burn, its
+## Ablating's tick and a Corrupted bite land double, and the forecast and the bot read them so; a
+## price in hull (Volatile's "Lose N Hull") is no damage and pays as printed; at half, all plain.
+func test_its_burn_its_tick_and_a_bite_land_double_past_half_and_a_price_pays_as_printed() -> void:
+	var gun := Face.from_dict({"kind": "attack", "reach": "direct", "power": 1, "volatile": 2})
+	var u := _mech("W", Die.single(gun), 10, 0, 200)
+	u.grant_passive(HOT)
+	var plain := _mech("P", Die.single(Face.attack(1, L)), 10, 0, 200)
+	var foe := Foe.make("dummy", 900, 0)
+	var sk := _fight([u, plain], [foe])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	# The burn: past its maximum it is past half, so every point burns two.
+	assert_eq([Skirmish.burn_scale(ms), Skirmish.burn_scale(sk.mechs[1])], [2, 1], "two a point past the maximum, one on a plain machine")
+	ms.heat = 13
+	assert_eq(int(sk.forecast(ms)["burn"]), 6, "the forecast reads 3 past it burning 6")
+	var hull := u.hull
+	sk._burn_stacks(ms, 3)
+	assert_eq(hull - u.hull, 6, "and it burns 6: the overheat pays twice")
+	# The tick: 2 Ablating, a point a stack.
+	ms.heat = 6
+	Effects.stack(u, Effects.STATUS["ablating_mech"], Effects.SKIRMISH, "test", 2, Effects.status_decay(Effects.STATUS["ablating_mech"]))
+	assert_eq(int(sk.forecast(ms)["ablated"]), 4, "past half the forecast reads the tick doubled")
+	hull = u.hull
+	sk._ablate(ms, 2)
+	assert_eq(hull - u.hull, 4, "and it ticks double")
+	ms.heat = 5
+	assert_eq(int(sk.forecast(ms)["ablated"]), 2, "at half, plain")
+	assert_true(Policy.make(Policy.GREEDY, 1).hot_cost(sk, ms, 1, sk.forecast(ms)) > 0.0, "a heat that tips it past half costs the tick it doubles")
+	# The bite: a Corrupted entry's 3 a stack, and Volatile's price beside it.
+	ms.face_index = 0
+	Effects.corrupt_entry(u, 0, "test", 1)
+	assert_eq(sk.pending_bite(ms), Skirmish.corrupt_bite(), "at half, the bite plain")
+	ms.heat = 6
+	assert_eq(sk.pending_bite(ms), 2 * Skirmish.corrupt_bite(), "past half, doubled")
+	assert_eq(sk.pending_volatile(ms), 2, "and Volatile's price as printed")
+	hull = u.hull
+	assert_true(sk.assign(0, foe), "it fires, corrupted and volatile")
+	assert_eq(hull - u.hull, 2 * Skirmish.corrupt_bite() + 2, "the bite doubled, the price not")
 
 
 func test_its_reboot_brings_the_piece_up_and_a_second_drop_stands_it_down() -> void:
@@ -196,8 +240,8 @@ func test_the_validator_holds_the_scale_the_doubling_and_the_piece_to_their_shap
 	var cases := {
 		"scale_flat": [{"trigger": "static", "effect": "heat_scale", "cold": 100, "hot": 100}, "apart"],
 		"scale_ok": [{"trigger": "static", "effect": "heat_scale", "cold": 50, "hot": 200}, ""],
-		"hot_one": [{"trigger": "static", "effect": "hot_hits", "value": 1}, "2 or more"],
-		"hot_ok": [{"trigger": "static", "effect": "hot_hits", "value": 2}, ""],
+		"hot_one": [{"trigger": "static", "effect": "hot_damage", "value": 1}, "2 or more"],
+		"hot_ok": [{"trigger": "static", "effect": "hot_damage", "value": 2}, ""],
 		"piece_unnamed": [{"trigger": "static", "effect": "reboot_piece", "piece": "no_such_piece", "label": "Ray"}, "names its piece"],
 		"piece_wordless": [{"trigger": "static", "effect": "reboot_piece", "piece": str(db.components.keys()[0])}, "label"],
 	}

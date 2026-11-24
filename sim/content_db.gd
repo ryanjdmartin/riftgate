@@ -2405,8 +2405,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		# the word REBOOT wears for its reboot's piece.
 		if effect == "heat_scale" and (int(eff.get("cold", -1)) < 0 or int(eff.get("hot", -1)) < 0 or int(eff.get("cold", 100)) == int(eff.get("hot", 100))):
 			errs.append("%s: heat_scale is its damage in percent at no heat (cold) and at its maximum (hot): 0 or more each, and apart" % where)
-		if effect == "hot_hits" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 2 or float(eff["value"]) != floorf(float(eff["value"]))):
-			errs.append("%s: hot_hits is what a hit on it is multiplied by past half its heat: a whole number, 2 or more" % where)
+		if effect == "hot_damage" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 2 or float(eff["value"]) != floorf(float(eff["value"]))):
+			errs.append("%s: hot_damage is what all damage it takes is multiplied by past half its heat: a whole number, 2 or more" % where)
 		if effect == "reboot_piece" and str(eff.get("label", "")).strip_edges().is_empty():
 			errs.append("%s: reboot_piece names the word REBOOT wears for its piece (label)" % where)
 		if effect == "shove_behind" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or int(eff["value"]) > 100 or float(eff["value"]) != floorf(float(eff["value"]))):

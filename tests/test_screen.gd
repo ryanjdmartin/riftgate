@@ -2069,7 +2069,7 @@ func test_a_lure_in_hand_previews_its_turn_with_dashed_arrows_and_the_gauges() -
 	var sk := Skirmish.new(1)
 	var a := db.make_mech("badger")
 	a.die = Die.single(Face.from_dict({"kind": "attack", "reach": "every_foe", "power": 0, "keywords": ["lure"], "braces": 2}))
-	a.grant_passive({"id": "heat_a_blow", "name": "Heat a Blow", "description": "", "effects": [{"trigger": "on_shield_hit", "effect": "gain_heat", "value": 10}, {"trigger": "on_hull_damage", "effect": "gain_heat", "value": 10}]})
+	a.grant_passive({"id": "heat_a_blow", "name": "Heat a Blow", "description": "", "effects": [{"trigger": "on_struck", "effect": "gain_heat", "value": 10}]})
 	sk.add_mech(a)
 	sk.add_mech(db.make_mech("clydesdale"))
 	sk.add_foes([Foe.make("revenant", 300, 10), Foe.make("revenant", 300, 10)])

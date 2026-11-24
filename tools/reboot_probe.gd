@@ -30,11 +30,9 @@ extends SceneTree
 ## a piece's printed heat: the Nemesis's Knuckles, Ryan, 20 November: "I suspect that the knuckles
 ## are too hot"), --stock <component ids> (a what-if: the read
 ## machine's stock in place of its own, in order), --drop-effect <effect> (a what-if: the read
-## machine's passive without that effect: the Whip Scorpion's doubled hits, hot_hits, for one),
+## machine's passive without that effect: the Whip Scorpion's doubled damage, hot_damage, for one),
 ## --drop-trigger <trigger> (a what-if: the read machine's passive without its effects on that trigger:
-## the Nemesis's heat from hits alone, Ryan's nerf option of 23 November, "we simplify it to just
-## when hit-> gain heat", read as --drop-trigger on_blocked, its own blows blocked whole heating it
-## no more).
+## the Nemesis with no heat from the hits it takes, --drop-trigger on_struck, for one).
 ## Four in parallel, a part of the roster each, read
 ## the whole roster in about seven minutes.
 ##

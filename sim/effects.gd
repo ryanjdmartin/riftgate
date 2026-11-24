@@ -51,10 +51,9 @@ const ROUNDS := 3
 const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
 	"on_injury": ["no_destroy"],
-	"on_struck": ["lay_status"],   # a foe's blow landing on this machine, what it lays on the striker (the echidna's Sonic Needles, 20 November)
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "rage_form", "heat_scale", "hot_hits", "reboot_piece", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_max", "hopper_plate", "count_status", "piece_form", "hold_status", "self_status", "shield_zap", "add_power", "offhand", "side_strike", "strike_again", "buff_status", "burrow", "momentum", "needles"],
+	"on_struck": ["lay_status", "gain_heat"],   # a foe's hit landing on this machine, whatever it dealt: what it lays on the striker (the echidna's Sonic Needles, 20 November), the heat it gains (the Nemesis's Crucible Capacitor, 24 November)
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "rage_form", "heat_scale", "hot_damage", "reboot_piece", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_max", "hopper_plate", "count_status", "piece_form", "hold_status", "self_status", "shield_zap", "add_power", "offhand", "side_strike", "strike_again", "buff_status", "burrow", "momentum", "needles"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat", "gain_heat"],
-	"on_shield_hit": ["stack_status", "add_shield", "vent_heat", "gain_heat"],
 	"on_blocked": ["stack_status", "gain_heat"],
 	"on_barrier": ["stack_status"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
@@ -2360,13 +2359,6 @@ static func hull_damaged(u) -> Dictionary:
 	return fire(u, "on_hull_damage")
 
 
-## A foe's blow its shield took with nothing on its hull (on_shield_hit; the Nemesis's rage, Ryan,
-## 11 November: "Taking a hit on shield gives 1 rage, hull damage gives 2", and "hull damage takes
-## priority"): a blow that wounds fires on_hull_damage alone.
-static func shield_hit(u) -> Dictionary:
-	return fire(u, "on_shield_hit")
-
-
 ## A blow of the machine's weapon on a foe that the foe's armour or Barrier took whole (on_blocked;
 ## the Nemesis's rage, Ryan, 11 November: "getting its attacks completely blocked gives 2 rage",
 ## per blow: "every foe hit needs sufficient armour, or multiple barriers, to farm rage from every
@@ -2990,14 +2982,22 @@ static func buff_stacks(u) -> int:
 	return n
 
 
-## The heat a foe's blow lays on this machine as it lands (gain_heat on on_hull_damage, or on
-## on_shield_hit for a blow its shield took whole: the Nemesis's Crucible Capacitor), for the
-## forecast: what a passive answering the blow would give.
+## The heat a foe's hit lays on this machine as it lands, for the forecast: gain_heat on on_struck,
+## whatever the hit dealt (the Nemesis's Crucible Capacitor, Ryan, 24 November: "simplify the
+## nemesis to just When Hit: gain 1 heat"), and on on_hull_damage for a hit that takes hull (its
+## Berserker's "Hull Damaged: Gain 1 heat"): what a passive answering the hit would give.
 static func blow_heat(u, hull_hit: bool) -> int:
+	return heat_on(u, "on_struck") + (heat_on(u, "on_hull_damage") if hull_hit else 0)
+
+
+## The heat this machine's passives give it when `trigger` fires (gain_heat), as `fire` lays it:
+## a hit's (on_struck), hull lost to anything (on_hull_damage), a blow of its own blocked whole
+## (on_blocked).
+static func heat_on(u, trigger: String) -> int:
 	var n := 0
-	for pair in _taking_part(u, "on_hull_damage" if hull_hit else "on_shield_hit", null):
+	for pair in _taking_part(u, trigger, null):
 		if str(pair[0].get("effect", "")) == "gain_heat":
-			n += int(pair[0].get("value", 0)) * int(pair[1].stacks)
+			n += int(pair[0].get("value", 0)) * weight(pair[1])
 	return n
 
 
@@ -3034,15 +3034,18 @@ static func heat_damage_multiple(u, heat: int, heat_max: int) -> float:
 	return 1.0
 
 
-## What a hit on this machine is multiplied by at `heat` of `heat_max` (hot_hits, static: the Whip
-## Scorpion's, Ryan, 23 November: "When over 50% heat, damage recieved from hits is doubled"): its
-## `value` while its heat stands over half its maximum, 1 otherwise or with none.
-static func hot_hits(u, heat: int, heat_max: int) -> int:
+## What damage this machine takes is multiplied by at `heat` of `heat_max` (hot_damage, static: the
+## Whip Scorpion's, Ryan, 24 November: "I think we implement the double damage recieved penalty",
+## his option of the 23rd, "all damage received is doubled, so that overheat pays twice"): its
+## `value` while its heat stands over half its maximum, 1 otherwise or with none. Every damage it
+## takes reads it: a foe's hit, its overheat's burn, its Ablating's tick and a Corrupted bite. A
+## price in hull (Volatile's "Lose N Hull", a tithe a spend) is no damage, and pays as printed.
+static func hot_damage(u, heat: int, heat_max: int) -> int:
 	var n := 1
 	if heat * 2 <= heat_max:
 		return n
 	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "hot_hits":
+		if str(pair[0].get("effect", "")) == "hot_damage":
 			n = maxi(n, int(pair[0].get("value", 1)))
 	return n
 
@@ -3415,7 +3418,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"rewrite_weapon": body = "every weapon and equipment it aims at a foe fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
 		"rage_form": body = "starting its turn at its heat maximum or past it, it rages: its debuffs lifted and none lands on it, its %s all its die shows, Instant; at no heat it reboots at once" % str(eff.get("piece", "")).replace("_", " ")
 		"heat_scale": body = "its damage ×%s at no heat to ×%s at its heat maximum, by its heat" % [str(float(eff.get("cold", 100)) / 100.0), str(float(eff.get("hot", 100)) / 100.0)]
-		"hot_hits": body = "past half its heat maximum, a hit on it ×%s" % vs
+		"hot_damage": body = "past half its heat maximum, all damage it takes ×%s" % vs
 		"reboot_piece": body = "its reboot fires its %s first" % str(eff.get("piece", "")).replace("_", " ")
 		"gain_heat": body = "+%s heat" % vs
 		"burrow": body = "it burrows in its reboot's place: Burrowed, armour +%d, its die rolls its %s alone, and each turn under makes good %d%% of what its shield and heat were missing as it burrowed and banks a stack of Conserved Momentum, up to %d; spent, the drill lays a stack of Applied Momentum for each, a blow of %d on its foe as each of its turns starts" % [maxi(1, int(eff.get("armour", 1))), str(eff.get("piece", "")).replace("_", " "), int(eff.get("recover", 50)), int(eff.get("cap", 3)), int(eff.get("blow", 0))]
@@ -3478,7 +3481,6 @@ static func effect_text(eff: Dictionary) -> String:
 		"on_injury": lead = "on an injury: "
 		"on_struck": lead = "on a foe's blow landing on it: "
 		"on_hull_damage": lead = "on losing hull: "
-		"on_shield_hit": lead = "on a foe's blow its shield takes, none on its hull: "
 		"on_blocked": lead = "on each blow of its weapons a foe's armour or Barrier takes whole: "
 		"on_barrier": lead = "as it gains a Barrier: "
 		"on_skirmish_start": lead = "as the fight begins: "

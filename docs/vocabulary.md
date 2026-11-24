@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 207 implemented, 6 planned, 0 idea.
+Status: 206 implemented, 6 planned, 0 idea.
 
 ## Resource
 
@@ -314,7 +314,7 @@ At 3 or more stacks: Chain 2 fires. Reduce stacks to 0. | implemented |
 | Term | Codex | Status |
 |---|---|---|
 | **On attack** | Passive trigger. Fires on every attack, after its number is read. Effects: multiply or add damage or heat, multiply the printed number alone before any buff (the Kite's double, on an unhurt foe), or set a minimum damage. | implemented |
-| **On struck** | Passive trigger. Fires when a foe's blow lands on this machine, a time a blow, whatever the blow dealt; it lays a status on the striker. A blow that wrecks the machine lays nothing. | implemented |
+| **On struck** | Passive trigger. Fires when a foe's blow lands on this machine, a time a blow, whatever the blow dealt: it gains heat, or lays a status on the striker. A blow that wrecks the machine gains and lays nothing. | implemented |
 | **On shield gain** | Passive trigger. Fires when this machine gains shield from any source, with the amount gained; it may shed heat or grant a status, never raise more shield. | implemented |
 | **On shielding an ally** | Passive trigger. Fires when this machine spends a shield component on an ally, with the shield's size; it may shed the ally's heat or grant the ally a status, never raise more shield. It never fires for a shield on itself. | implemented |
 | **On buffing an ally** | Passive trigger. Fires when this machine spends a piece of equipment on an ally, once for each ally it lands on, whatever the equipment did; it may take some of the ally's heat onto this machine. It never fires for equipment on itself. | implemented |
@@ -323,7 +323,6 @@ At 3 or more stacks: Chain 2 fires. Reduce stacks to 0. | implemented |
 | **On foe status** | Passive trigger. Fires when any foe gains a status, whoever applied it: once for each status a spend puts on a foe, however many strikes or stacks (an application, not a stack). Never for Paradox, nor for the Suppressed a Paradox causes, and Numbed is no status. Effects: paradox (the foe gains a stack of Paradox; at the count it is Suppressed and the Paradox clears). | implemented |
 | **On applying stacks** | Passive trigger. Fires when this machine applies stacks of a status to anyone: a foe's Ablate (from an Ablate or from Primed), an ally's or its own buff, its own Empowered from a kill. Effects: add_stacks (so many stacks more, flat or for every so much heat the machine carries). Never for Numbed, which is exempt from every interaction. | implemented |
 | **On hull damage** | Passive trigger. Fires when this machine loses hull: to a blow, a bite or an overheat. | implemented |
-| **On a hit on its shield** | Passive trigger. Fires when a foe's blow lands on this machine's shield and puts nothing on its hull; a blow that wounds fires On hull damage alone. | implemented |
 | **On a blow blocked** | Passive trigger. Fires once for every blow of this machine's weapons that a living foe's armour or Barrier takes whole, each foe's of an area and each strike's. | implemented |
 | **On gaining a Barrier** | Passive trigger. Fires as this machine gains a Barrier, from its own equipment or an ally's. | implemented |
 | **On a kill** | Passive trigger. Fires once after an attack of this machine's that killed, however many foes fell to it, chains and spills included: a status, a shield (the Kite's, recharged whole) or a vent. | implemented |
@@ -477,15 +476,14 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Ruins** (implemented): No skirmish condition yet; what terrain does in a fight is section 12's question.
 - **Water** (implemented): No skirmish condition yet (section 12). Each map shape lays its own water (a fat river with its narrows, a delta's channels, ponds, a pond, the gorge's flooded channels, or none: the city has none). Since 29 October the horde wades it as the ground machines do, so water slows a crossing and never walls it; the crossing guarantee binds the walls.
 - **City defense** (planned): No die and no rule yet: how gate defences work is section 12's question.
-- **On struck** (implemented): Its carrier the Echidna's Sonic Needles (Ryan, 20 November: "getting struck by one, grants that foe a stack of Sonic Needle"). The codex is a session's draft.
+- **On struck** (implemented): Its carriers the Echidna's Sonic Needles (Ryan, 20 November: "getting struck by one, grants that foe a stack of Sonic Needle") and the Nemesis's heat (24 November: "When Hit: gain 1 heat"). The codex is a session's draft.
 - **On shield gain** (implemented): No content uses it yet.
 - **On shielding an ally** (implemented): Fires on the spend, whatever the shield gained, so a shield die on a topped-up ally still does its other work.
 - **On buffing an ally** (implemented): Its carrier the Puffin's pull (Ryan, 11 November: "Using an equipment on an ally moves some of its heat to the Puffin"; 19 November: "I think 4 for the Puffin"). The piece that passes heat fires none: its heat goes the other way. The codex is a session's draft.
 - **On skirmish start** (implemented): The Ammit's passive uses it.
 - **On applying stacks** (implemented): Shocked and Suppressed are not stacks, so it never touches them.
-- **On hull damage** (implemented): The hook for the pinned berserker idea too.
-- **On a hit on its shield** (implemented): The Nemesis's rage, one a hit on its shield (Ryan, 11 November: "hull damage takes priority").
-- **On a blow blocked** (implemented): The Nemesis's rage, two a blow blocked (Ryan, 11 November: per blow, "that lets it scrap against the comp its supposed to").
+- **On hull damage** (implemented): The hook for the pinned berserker idea too; the Nemesis's Berserker, a heat for hull lost (24 November).
+- **On a blow blocked** (implemented): The Nemesis's Breaker, two heat a blow blocked (Ryan, 11 November: per blow, "that lets it scrap against the comp its supposed to"; on its passive from 23 to 24 November, its branch's since).
 - **On gaining a Barrier** (implemented): The Wild Boar's Juggernaut Drive (Ryan, 11 November: "After gaining Barrier, its next weapon attack gains Breach"; ignores armour since 15 November).
 - **At the end of a round it killed in** (implemented): Ryan, 16 November, the Ammit's passive in his words: "At the start of the skirmish, or at the end of a round where the Ammit killed at least one enemy, the Essences Flare, granting 1 Empowered per 5 Essences it holds." A kill is an attack's, as the kill trigger counts it; a machine wrecked in the enemy's turn fires nothing.
 - **On a foe killed** (implemented): Built 12 November for the Ammit's Souls. It fires once for each foe that falls, which is what the trigger is: no effect opts into the count. A foe getting back up, a part and a Bomb's burst are no kill and fire nothing.

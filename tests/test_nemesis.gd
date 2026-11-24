@@ -83,6 +83,26 @@ func test_a_turn_opened_at_its_maximum_rages_its_debuffs_lifted_and_its_die_all_
 	assert_true((ag.get("tags", []) as Array).has("ability"), "an ability: no Purge touches it")
 
 
+## A branch's tweak to the rage piece rides into the Rage (its Breaker's and Berserker's, Ryan, 24
+## November: "Knuckles of Fury gains "Apply 1 Brittle.""; "Knuckles of Fury gains "Apply 1
+## Ablate.""): a keyword granted on the piece, scoped to it, is on the fist the Rage leaves its die,
+## and lands with its swing. Synthetic passives and piece.
+func test_a_keyword_granted_on_the_rage_piece_rides_into_the_rage_and_lands() -> void:
+	var u := _nemesis()
+	u.grant_passive({"id": "tweak", "name": "Tweak", "description": "", "effects": [
+		{"trigger": "static", "effect": "grant_keyword", "value": "brittle", "number": 1, "entry": "test_fist"}]}, "branch", "test_fist")
+	var foe := Foe.make("dummy", 900, 0)
+	var sk := _fight([u], [foe])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	_rage_at(sk, 9)
+	assert_true(Effects.raging(u), "it rages")
+	var ef := Effects.effective_face(u, ms.face())
+	assert_eq([ms.face().component, ef.number_of(Face.Keyword.BRITTLE)], ["test_fist", 1], "the fist it swings carries the Brittle 1 granted on it")
+	assert_true(ef.has(Face.Keyword.INSTANT), "and its Instant beside it")
+	assert_true(sk.assign(0, foe), "a swing")
+	assert_eq(Effects.stacks_of(foe, "brittled"), 1, "its Brittle lands")
+
+
 func test_a_raging_machine_swings_until_its_heat_runs_out_then_reboots_at_once() -> void:
 	var u := _nemesis()
 	var foe := Foe.make("dummy", 900, 0)

@@ -1286,7 +1286,7 @@ func heat_cost_of(sk: Skirmish, ms: Skirmish.MechState, added: int) -> float:
 		return 0.0   # a spend before the reboot it owes as its second (the Needletail's): the vent takes its heat
 	var fc := sk.forecast(ms)
 	var over := maxi(0, int(fc["heat_end"]) + added - ms.heat_max)
-	var burn := (over - int(fc["overheat"])) * Skirmish.overheat_scale   # the hull the added excess burns
+	var burn := (over - int(fc["overheat"])) * Skirmish.burn_scale(ms)   # the hull the added excess burns
 	var cost := float(burn) * HULL_WEIGHT
 	if not fc["destroyed"] and int(fc["hull_after"]) - burn <= 0:
 		cost += DEATH_WEIGHT
@@ -1306,7 +1306,7 @@ func heat_cost_of(sk: Skirmish, ms: Skirmish.MechState, added: int) -> float:
 	var line := caution_line(ms)
 	if line >= 0:
 		var top := mini(int(fc["heat_end"]) + added, ms.heat_max)
-		cost += float(maxi(0, top - maxi(line, int(fc["heat_end"])))) * HULL_WEIGHT * Skirmish.overheat_scale
+		cost += float(maxi(0, top - maxi(line, int(fc["heat_end"])))) * HULL_WEIGHT * Skirmish.burn_scale(ms)
 	return cost
 
 
@@ -1325,17 +1325,18 @@ static func rage_worth(ms: Skirmish.MechState, heat: int) -> float:
 	return 0.0
 
 
-## What `added` heat costs a machine whose hits on it double on a hot gauge (the Whip Scorpion's
-## Thermal Ejection Manifold, past half its heat): the hull this round's blows would take more with
-## the heat on it, a wreck it would make at DEATH_WEIGHT; nothing where the gauge stays on its side.
+## What `added` heat costs a machine all of whose damage doubles on a hot gauge (the Whip Scorpion's
+## Thermal Ejection Manifold, past half its heat): the hull this round's hits and its Ablating's
+## tick would take more with the heat on it, a wreck it would make at DEATH_WEIGHT; nothing where the
+## gauge stays on its side. The burn's doubling is heat_cost_of's (burn_scale).
 func hot_cost(sk: Skirmish, ms: Skirmish.MechState, added: int, fc: Dictionary) -> float:
-	if added <= 0 or Effects.hot_hits(ms.unit, ms.heat + added, ms.heat_max) <= Effects.hot_hits(ms.unit, ms.heat, ms.heat_max):
+	if added <= 0 or Effects.hot_damage(ms.unit, ms.heat + added, ms.heat_max) <= Effects.hot_damage(ms.unit, ms.heat, ms.heat_max):
 		return 0.0
 	var heat := ms.heat
 	ms.heat = heat + added
 	var hot := sk.forecast(ms)
 	ms.heat = heat
-	var more := maxi(0, int(hot["struck"]) - int(fc["struck"]))
+	var more := maxi(0, int(hot["struck"]) - int(fc["struck"])) + maxi(0, int(hot["ablated"]) - int(fc["ablated"]))
 	var cost := float(more) * HULL_WEIGHT
 	if not fc["destroyed"] and int(fc["hull_after"]) - more <= 0:
 		cost += DEATH_WEIGHT
@@ -2884,7 +2885,7 @@ func seal_score(sk: Skirmish, ms: Skirmish.MechState) -> float:
 ## room it makes.
 func vent_score(sk: Skirmish, who: Skirmish.MechState, power: int) -> float:
 	var fc := sk.forecast(who)
-	var saved := mini(power, int(fc["overheat"])) * Skirmish.overheat_scale   # the hull the vent keeps from the burn
+	var saved := mini(power, int(fc["overheat"])) * Skirmish.burn_scale(who)   # the hull the vent keeps from the burn
 	var score := float(saved) * HULL_WEIGHT
 	if fc["destroyed"] and int(fc["overheat"]) > 0 and int(fc["hull_after"]) + saved > 0:
 		score += DEATH_WEIGHT
@@ -2895,7 +2896,7 @@ func vent_score(sk: Skirmish, who: Skirmish.MechState, power: int) -> float:
 	var line := caution_line(who)
 	if line >= 0:
 		var held := mini(int(fc["heat_end"]), who.heat_max) - line
-		score += float(clampi(power - int(fc["overheat"]), 0, maxi(0, held))) * HULL_WEIGHT * Skirmish.overheat_scale
+		score += float(clampi(power - int(fc["overheat"]), 0, maxi(0, held))) * HULL_WEIGHT * Skirmish.burn_scale(who)
 	return score
 
 

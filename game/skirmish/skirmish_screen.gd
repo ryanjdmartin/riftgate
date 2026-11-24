@@ -2122,7 +2122,7 @@ func _mech_rows(i: int) -> Array:
 	# say. Their terms are the vocabulary's (overheated, broken, rebooting), drafts for his writing.
 	var stacks := ms.overheat_stacks()
 	if stacks > 0:
-		rows.append(["heat", "×%d" % stacks, "Debuff, Overheated ×%d: hull -%d every turn until it reboots" % [stacks, stacks * Skirmish.overheat_scale], Palette.HEAT, "status", "debuff"])
+		rows.append(["heat", "×%d" % stacks, "Debuff, Overheated ×%d: hull -%d every turn until it reboots" % [stacks, stacks * Skirmish.burn_scale(ms)], Palette.HEAT, "status", "debuff"])
 	if ms.rebooting:
 		rows.append(["shield_vent", "", "Rebooting: vented and bare this turn, its shield whole the next", Palette.HUD])
 	elif ms.shield_broken:
@@ -2133,7 +2133,7 @@ func _mech_rows(i: int) -> Array:
 		# the skull "is just another predicted chip, like any other. It just symbolizes death").
 		if int(fc["overheat"]) > 0:
 			# The heat burns as the turn ends, so there is still time to vent.
-			var burn := int(fc["overheat"]) * Skirmish.overheat_scale   # the hull the excess burns: one a point, but under the overheat's trial
+			var burn := int(fc["burn"])   # the hull the excess burns: one a point, two where all damage doubles hot (the Whip Scorpion's)
 			rows.append(["heat", "-%d" % burn, "Overheating: hull -%d at the turn's end" % burn, Palette.HEAT, "preview"])
 		if bool(fc["destroyed"]):
 			rows.append(["skull", "", "Wrecked this round: %d incoming" % int(fc["incoming"]), Palette.LOSS, "preview"])

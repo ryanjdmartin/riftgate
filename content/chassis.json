@@ -1035,8 +1035,7 @@
    "design": {
     "fantasy": "A hulking, neckless, spiked brute. Thick arms made for pummeling. A glowing firey core in its torso that lights up as the mech takes damage and heats up.",
     "niche": "Sustained damage bruiser",
-    "one_off": "Its passive's four lines (the bible's section 7): the three blows that heat it and the Rage that heat buys, one idea, Ryan's of 23 November, where a passive holds three.",
-    "notes": "Its fourth hardpoint holds a placeholder, the plain basic gun, since the Retribution Thurible went back to design on 15 November (Ryan's word; the placeholder a session's, as a vent's slot took one on 10 November): the stock re-deal's to fill. Its Rage since 23 November, tied to heat as in its lore (Ryan: \"change rage into simply generating heat, using the same rules as rage generation\"; \"When the Nemesis starts its turn with heat at or over max, it gains the unpurgable status Rage: Remove all debuffs on self. Immune to all debuffs. The only component available is Knuckles of Fury\"; \"Rage ends when the Nemesis' heat reaches zero, at which point it immediately reboots, regardless of how it got there\"; \"Nemesis never reboots voluntarily at max heat, yes. I would even consider not letting it reboot voluntarily at all\"). The player may end the turn while it rages, the Rage standing (\"I'm leaving the option open for the player to end turn at any time, the nemesis is just still stuck in rage\"). His nerf options if it is too much: the heat from hits alone (\"if this version is too much, we simplify it to just when hit-> gain heat\"); the Knuckles' cooling split in and out of the Rage (\"If it's too strong, we'll give it different heat reductions in and out of rage\"); and no reboot by choice at all (above). Its rage was a store spent in fives on a charged Instant Knuckle from 11 to 23 November."
+    "notes": "Its fourth hardpoint holds a placeholder, the plain basic gun, since the Retribution Thurible went back to design on 15 November (Ryan's word; the placeholder a session's, as a vent's slot took one on 10 November): the stock re-deal's to fill. Its Rage since 23 November, tied to heat as in its lore (Ryan: \"change rage into simply generating heat, using the same rules as rage generation\"; \"When the Nemesis starts its turn with heat at or over max, it gains the unpurgable status Rage: Remove all debuffs on self. Immune to all debuffs. The only component available is Knuckles of Fury\"; \"Rage ends when the Nemesis' heat reaches zero, at which point it immediately reboots, regardless of how it got there\"; \"Nemesis never reboots voluntarily at max heat, yes. I would even consider not letting it reboot voluntarily at all\"). The player may end the turn while it rages, the Rage standing (\"I'm leaving the option open for the player to end turn at any time, the nemesis is just still stuck in rage\"). Its heat since 24 November a point for each hit it takes, whatever the hit dealt (Ryan: \"I think we simplify the nemesis to just When Hit: gain 1 heat. Remove the other heat generators from the t2 passive\"), his nerf option of the 23rd (\"if this version is too much, we simplify it to just when hit-> gain heat\"); its blocked hits' heat and its hull's went to its two branches (below). His other options if it is still too much: the Knuckles' cooling split in and out of the Rage (\"If it's too strong, we'll give it different heat reductions in and out of rage\"); and no reboot by choice at all (above). From 23 to 24 November a hit its shield took heated it 1, hull damage 2 and each of its own hits a Sprite's armour or Barrier took whole 2. Its rage was a store spent in fives on a charged Instant Knuckle from 11 to 23 November."
    },
    "codex": "",
    "hull": 36,
@@ -1062,22 +1061,12 @@
    "passive": {
     "id": "crucible_capacitor",
     "name": "Crucible Capacitor",
-    "description": "When Hit: If only Shield is damaged, gain 1 Heat.\nHull Damaged: Gain 2 Heat.\nAfter Hit: If damage was reduced to 0, gain 2 Heat.\nTurn Start: If at Max Heat or higher, remove all Debuffs and gain Rage.",
+    "description": "When Hit: Gain 1 Heat.\nTurn Start: If at Max Heat or higher, remove all Debuffs and gain Rage.",
     "effects": [
      {
-      "trigger": "on_shield_hit",
+      "trigger": "on_struck",
       "effect": "gain_heat",
       "value": 1
-     },
-     {
-      "trigger": "on_hull_damage",
-      "effect": "gain_heat",
-      "value": 2
-     },
-     {
-      "trigger": "on_blocked",
-      "effect": "gain_heat",
-      "value": 2
      },
      {
       "trigger": "static",
@@ -1086,6 +1075,60 @@
      }
     ]
    },
+   "branches": [
+    {
+     "id": "breaker",
+     "name": "Breaker",
+     "design": {
+      "notes": "Ryan, 24 November: \"Breaker: Passive gains \\\"After Hit: If damage was reduced to 0, gain 2 Heat.\\\" Knuckles of Fury gains \\\"Apply 1 Brittle.\\\"\" The heat his line of the 23rd on the passive, each of its own hits a Sprite's armour or Barrier takes whole (on_blocked), any of its weapons'; the Brittle a keyword on the Knuckles, Brittle 1, laid at Resolve on each foe hit. The step's text a session's draft from his words, the keyword as its chip on the die reads."
+     },
+     "steps": [
+      {
+       "description": "After Hit: If damage was reduced to 0, gain 2 Heat.\nKnuckles of Fury gains Brittle 1.",
+       "effects": [
+        {
+         "trigger": "on_blocked",
+         "effect": "gain_heat",
+         "value": 2
+        },
+        {
+         "trigger": "static",
+         "effect": "grant_keyword",
+         "value": "brittle",
+         "number": 1,
+         "entry": "knuckles_of_fury"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "berserker",
+     "name": "Berserker",
+     "design": {
+      "notes": "Ryan, 24 November: \"Berserker: Passive gains \\\"Hull Damaged: Gain 1 heat.\\\" Knuckles of Fury gains \\\"Apply 1 Ablate.\\\"\" Hull Damaged as every Hull Damaged line reads it: hull lost to anything, a hit, its overheat's burn, an Ablating tick or a Corrupted bite, so a hit that wounds heats it 2 with the passive's 1. The Ablate a keyword on the Knuckles, Ablate 1, laid at Resolve on each foe hit. The step's text a session's draft from his words, the keyword as its chip on the die reads."
+     },
+     "steps": [
+      {
+       "description": "Hull Damaged: Gain 1 Heat.\nKnuckles of Fury gains Ablate 1.",
+       "effects": [
+        {
+         "trigger": "on_hull_damage",
+         "effect": "gain_heat",
+         "value": 1
+        },
+        {
+         "trigger": "static",
+         "effect": "grant_keyword",
+         "value": "ablate",
+         "number": 1,
+         "entry": "knuckles_of_fury"
+        }
+       ]
+      }
+     ]
+    }
+   ],
    "flavour": ""
   },
   {
@@ -1652,7 +1695,7 @@
    "tier": 2,
    "design": {
     "fantasy": "Ryan's boiler (12 and 13 October: \"a crazy steampunk machine venting everywhere\"; 20 October: \"it doesn't actually use steam to run, its a future-tech machine. it just kind of behaves like a steampunk device\"). The whip scorpion sprays when provoked. Named by Ryan, 20 October; 11 November: \"this is a scorpion, so it's probably not a frontliner, thematically\", and it \"goes all in with the weird and wonderful, along with the cassowary and cottonmouth\".",
-    "niche": "A bursty damage dealer (Ryan, 20 November: \"it's now positioned as a bursty damage dealer, but that could change\"): heat is its ammunition and its risk (Ryan, 23 November: \"Deals -50% damage at zero heat to +100% damage at max heat, scaling linearly. When over 50% heat, damage recieved from hits is doubled\"; held at double past the maximum, his \"Hold\" the same day). It no longer gains heat on being hit. Its reboot fires its locked ray first, at whatever its heat makes of it, and then it reboots, so the reboot is its burst. His nerf options if it is strong: all the damage it takes doubled past half its heat, not its hits alone, so an overheat pays twice (\"if it's strong, I would consider changing to all damage received is doubled, so that overheat pays twice\"); or a lower heat maximum, his first lever (12 November: \"the first place to nerf the scorpion if it needs it is just lowering the max heat, so that's easy\"). The probe's --heat-max reads the second. A phased field leaves the ray nothing to fire at and the reboot waits (\"you just have to skip or use a support action\"). Its reboot's vent blasted every foe from 17 to 23 November, and every blow it took added heat. Numbers placeholders."
+    "niche": "A bursty damage dealer (Ryan, 20 November: \"it's now positioned as a bursty damage dealer, but that could change\"): heat is its ammunition and its risk (Ryan, 23 November: \"Deals -50% damage at zero heat to +100% damage at max heat, scaling linearly. When over 50% heat, damage recieved from hits is doubled\"; held at double past the maximum, his \"Hold\" the same day). Past half its heat all the damage it takes doubles since 24 November, a Sprite's hit, its overheat's burn, an Ablating tick and a Corrupted bite (Ryan: \"I think we implement the double damage recieved penalty on the Whip as well\"), his nerf option of the 23rd (\"if it's strong, I would consider changing to all damage received is doubled, so that overheat pays twice\"); a price in hull, Volatile's \"Lose N Hull\", is no damage, and pays as printed. It no longer gains heat on being hit. Its reboot fires its locked ray first, at whatever its heat makes of it, and then it reboots, so the reboot is its burst. His other nerf option if it is strong: a lower heat maximum, his first lever (12 November: \"the first place to nerf the scorpion if it needs it is just lowering the max heat, so that's easy\"). The probe's --heat-max reads it. A phased field leaves the ray nothing to fire at and the reboot waits (\"you just have to skip or use a support action\"). Its reboot's vent blasted every foe from 17 to 23 November, and every blow it took added heat; its hits alone doubled from 23 to 24 November. Numbers placeholders."
    },
    "codex": "",
    "hull": 40,
@@ -1678,7 +1721,7 @@
    "passive": {
     "id": "thermal_ejection_manifold",
     "name": "Thermal Ejection Manifold",
-    "description": "Weapon damage scales with Heat: 50% at 0 Heat to 200% at Max Heat.\nWhen Hit: If above half Max Heat, double damage received.\nReboot replaced by Fixed: Heliographic Death Ray.\nResolve: If Heliographic Death Ray was used, Reboot immediately.",
+    "description": "Weapon damage scales with Heat: 50% at 0 Heat to 200% at Max Heat.\nIf above half Max Heat, double damage received.\nReboot replaced by Fixed: Heliographic Death Ray.\nResolve: If Heliographic Death Ray was used, Reboot immediately.",
     "effects": [
      {
       "trigger": "static",
@@ -1688,7 +1731,7 @@
      },
      {
       "trigger": "static",
-      "effect": "hot_hits",
+      "effect": "hot_damage",
       "value": 2
      },
      {
