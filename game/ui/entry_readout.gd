@@ -303,7 +303,7 @@ static func codex_lines(f: Face, db: ContentDB, rules: Array = []) -> Array:
 	# said on its own row in the templates' words, at the rule's numbers.
 	var burrow := db.burrow_of_piece(f.component) if db != null else {}
 	if not burrow.is_empty():
-		marks.append(text_line("rule", capital(Templates.say("rule.drill", {"spent": str(Effects.STATUS["conserved_momentum"]["name"]), "laid": str(Effects.STATUS["applied_momentum"]["name"]), "blow": int(burrow.get("blow", 0))})), "rule"))
+		marks.append(text_line("rule", capital(Templates.say("rule.drill", {"laid": str(Effects.STATUS["applied_momentum"]["name"])})), "rule"))
 	for r in rules:
 		marks.append(text_line("rule", str(r), "rule"))
 	out.append_array(joined(marks))
@@ -953,15 +953,16 @@ static func parry_line(n: int) -> Dictionary:
 ## What a burrower's drill lays if spent now (the Mole's Inertia Drill; Ryan, 16 November): the
 ## Applied Momentum its Conserved stacks become, the drill's blow a turn and what its branch lays
 ## after it, headed by the momentum's mark.
-static func drill_line(stacks: int, blow: int, lays: Dictionary) -> Dictionary:
+static func drill_line(status_id: String, momentum: int, turns: int, blow: int, lays: Dictionary) -> Dictionary:
 	var with: Array[String] = []
 	for id in lays:
 		with.append(Templates.say("hold.drill_lay", {"status": str(Effects.STATUS.get(str(id), {}).get("name", str(id))), "n": int(lays[id])}))
-	var turn := Templates.say("hold.drill_blow", {"n": blow}) if blow > 0 else ""
-	if not with.is_empty():
-		turn = Templates.say("hold.drill_both", {"blow": turn, "lays": ", ".join(with)}) if not turn.is_empty() else ", ".join(with)
-	var said := Templates.say("hold.drill", {"n": stacks, "turn": turn if not turn.is_empty() else Templates.say("hold.drill_nothing")})
-	return marked(text_line("effect", said, "rule"), [passive_mark("spin", "×%d" % stacks, Glyphs.colour_for("applied_momentum"))])
+	var hit := Templates.say("hold.drill_blow", {"n": blow}) if blow > 0 else ""
+	var turn := ", ".join(with)
+	if not hit.is_empty():
+		turn = Templates.say("hold.drill_both", {"blow": hit, "lays": turn}) if not turn.is_empty() else hit
+	var said := Templates.say("hold.drill", {"status": str(Effects.STATUS.get(status_id, {}).get("name", status_id)), "n": turns, "turn": turn if not turn.is_empty() else Templates.say("hold.drill_nothing")})
+	return marked(text_line("effect", said, "rule"), [passive_mark(Terms.glyph(status_id), str(momentum), Glyphs.colour_for(status_id))])
 
 
 ## The armament its machine's offhand holds, riding the weapon or equipment showing (the line

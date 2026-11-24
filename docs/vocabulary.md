@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 207 implemented, 6 planned, 0 idea.
+Status: 210 implemented, 6 planned, 0 idea.
 
 ## Resource
 
@@ -22,7 +22,9 @@ Status: 207 implemented, 6 planned, 0 idea.
 | **Ore** | Machine store, the Honey Badger's hopper: every foe its weapons damage puts an Ore in it, up to three, and every raise its upgrades grant adds to that. Its Bullion Fragmenter empties it, a strike for every Ore, and puts none back. Lasts the skirmish; never decays, and no cleanse or Purge touches it. | implemented |
 | **Muster** | Machine store, the Swallowtail's: a charge its Integrated components spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty and never decays; a store, so no Purge touches it. With a charge up, its Integrated components go out charged unasked, unless the charged form has nowhere to land; then the plain form goes out and the charge waits. | implemented |
 | **Ammo** | The Musk Ox's magazine, a row of cells under its heat bar, a cell an ammo. Its weapons spend ammo instead of heating it: 1 for every 2 heat a gun would make, rounded up, at least 1, the price printed where the gun's heat would be; a foe's Scorched still heats them. The magazine holds 10, opens each fight at 3 and gains 1 at the start of every round after the first; a vent the Musk Ox spends on itself adds 3, a shield 2, an entry that is both 3, once. With too little left, a gun cannot be spent (DRY). | implemented |
-| **Conserved Momentum** | Machine store, the Mole's: a stack as it burrows and one as each turn under opens, up to 3, and what is left of its Applied Momentum back as it burrows again. Its Inertia Drill spends every stack, laying a stack of Applied Momentum for each. A store, so no Purge touches it. | implemented |
+| **Momentum** | Maximum 10.
+Gained while Burrowed.
+Drained by Applied Momentum. | implemented |
 
 ## Kit
 
@@ -243,11 +245,16 @@ Resolve: If a weapon was used, reduce stacks by 1. | implemented |
 | **Regenerating** | Turn End: Gain 1 Shield per stack ({N}) on a Frame, or 1 HP per stack on a Sprite, then reduce stacks by 1. | implemented |
 | **Burrowed** | Replaces Reboot. +1 Armour.
 Fixed: Inertia Drill
-Turn Start: Remove Broken, Overheated, Jammed and Corrupted. Regain half the Shield missing when burrowed, and lose half the Heat held then, rounded up. Gain 1 Conserved Momentum, up to 3.
+Turn Start: Remove Broken, Overheated, Jammed and Corrupted. Gain 3 Shield and 5 Momentum, and lose 6 Heat.
 Resolve: If the Inertia Drill was used, removed. | implemented |
-| **Applied Momentum** | Turn Start: Take a hit of 2 damage, then reduce stacks by 1.
-When the Frame that laid it burrows again: Reduce stacks to 0. | implemented |
-| **Drill Out** | Inertia Drill is out until the next burrow. | implemented |
+| **Applied Momentum** | Turn Start: Gain 1 Brittle and Pinned. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.
+Resolve: The Mole gains 1 Momentum. | implemented |
+| **Frozen Momentum** | Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.
+Resolve: The Mole gains 1 Momentum. | implemented |
+| **Heated Momentum** | Turn Start: Gain 1 Brittle, 2 Ablate, Pinned, and Seared. Then, drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.
+Resolve: The Mole gains 1 Momentum. | implemented |
+| **Frozen** | When any amount of Cryo would be consumed, consume 1 Numbed instead, if any, then remove Frozen. | implemented |
+| **Drill Out** | Inertia Drill is out until it returns, or the next burrow. | implemented |
 | **Sonic Needle** | Gain 1 stack per hit from the Frame that laid it, and per hit this Sprite lands on that Frame.
 Conducts Chain.
 At 3 or more stacks: Chain 2 fires. Reduce stacks to 0. | implemented |
@@ -552,8 +559,11 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Supercooled** (implemented): The Cryo primer (Ryan, 2 November: "laying 1 cryo at a time makes sense, keeps it a little unique, and avoids massive cooling spikes"; the name his pick), so any gun is a Cryo setter for a turn and the Cryo synergies open past the Cryo Flinger; a stack a strike after the hits (3 November: "resulting in 2 applications, not apply-cash-apply-cash, and not hit-hit-apply once"). No piece grants it yet.
 - **Regenerating** (implemented): One clock on both sides since 15 November (Ryan: "These are structured as 'Regen 1 per stack' and I'd give all sources either a fixed duration, say 2 or 3 turns, or have it decay one stack at a time"; "Regenerating - agreed"), Ablating's turned round; a value at each of three turns until then. The machine half, built 30 October for the Storm Petrel's lock, which lays it no longer since its rework of 17 November, is kept with no piece granting it on Ryan's word of that day: "put machine regeneration back, that will literally be added in this session probably". Bought by whatever grants it, so a foe's purge takes it. The numbers are placeholders, the foes' unmoved by the new clock.
 - **Ammo** (implemented): Never a buff, so no Purge reaches it. If ammo runs plentiful, the vents' and shields' reloads or the trickle come down.
-- **Burrowed** (implemented): Ryan, 16 November: "Instead of Reboot, it Burrows. While burrowed, it gains a unpurgable buff called 'Burrowed'"; an unpurgeable buff is labelled an Ability by his rule of 8 November. The text is a session's draft.
-- **Conserved Momentum** (implemented): Ryan, 16 November: "At the start of every turn while burrowed, it gains a stack of Conserved Momentum"; "We can cap it at 3, sure"; a stack as it burrows, his "go with 1 and 2". The text is a session's draft.
-- **Applied Momentum** (implemented): Ryan, 16 November: "Applied Momentum decays 1 at the start of the target's turn"; "Base: Flat 2 damage blow a turn ... make the damage a blow since I want it to scale with Brittle". It strikes before the foes' side opens, so a Pinned it lays holds the Brittle. The text is a session's draft.
+- **Burrowed** (implemented): Ryan, 16 November: "Instead of Reboot, it Burrows. While burrowed, it gains a unpurgable buff called 'Burrowed'"; an unpurgeable buff is labelled an Ability by his rule of 8 November. Its turns under his of 24 November: "When burrowed, it gains 50% shield regen, 50% cooling, and 50% Momentum generation", "50% of the final numbers, but represented as flat numbers"; "Burrow does not bank. But it does gain the 1 Armour." The text is a session's draft.
+- **Momentum** (implemented): Ryan, 24 November: "Momentum is a Resource. It goes to 10 (subject to tuning)." Renamed from Conserved Momentum. The text is a session's draft.
+- **Applied Momentum** (implemented): Ryan, 24 November, his text: "Debuff, doesn't stack. Turn Start: Gain 1 Brittle and Pinned. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole"; "The take 1 is a blow"; "Go to Resolve, and include area hits as well. Easily added to the Applied Momentum debuff: Resolve: The Mole gains 1 Momentum." His words, not yet signed on the Text tab.
+- **Frozen Momentum** (implemented): Ryan, 24 November, the Glacial Mole's: "Applied Momentum -> Frozen Momentum. Debuff, doesn't stack. Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole." Its Resolve line is Applied Momentum's, the form it takes the place of. His words, not yet signed on the Text tab.
+- **Heated Momentum** (implemented): Ryan, 24 November, the Magma Mole's: "Applied Momentum -> Heated Momentum. Debuff, doesn't stack. Turn Start: Gain 1 Brittle, 2 Ablate, Pinned, and Seared. Then, drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole." Its Resolve line is Applied Momentum's, the form it takes the place of. His words, not yet signed on the Text tab.
+- **Frozen** (implemented): Ryan, 24 November, the Glacial Mole's: "Frozen: Debuff. When any amount of Cryo would be consumed, consume 1 Numbed instead, if any, then remove Frozen"; "It gets the cooling. It is preserved regardless of numbed existing." His words, not yet signed on the Text tab.
 - **Drill Out** (implemented): Ryan, 16 November: "It returns to the Mole when it burrows, taking the debuff with it"; 18 November, "Build the toggle". The text is a session's draft.
 - **Sonic Needle** (implemented): Ryan, 20 November: "Sonic Needle - Conducts Chain. On 3 stacks, the Echidna fires Chain 2, then consume all stacks on this foe"; his answers that day: the bolt is "targeted at nothing. So the foe that hit 3 stacks and procced it would take 2 by definition", and a stack a strike. Its branches tweak it: the Spiker's sap (1 less on the foe's attacks a stack) and Chaos's bolt leaving its foe one stack in place of none (Ryan, 21 November: "reduce stacks to 1"). The text is a session's draft.

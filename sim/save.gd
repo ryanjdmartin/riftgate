@@ -490,8 +490,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 		mechs.append({"unit": ms.unit.id, "heat": ms.heat, "heat_max": ms.heat_max, "face_index": ms.face_index,
 			"locked": ms.locked, "assigned": ms.assigned, "free_rerolls": ms.free_rerolls, "ammo": ms.ammo, "ammo_max": ms.ammo_max,
 			"hot_entry": ms.hot_entry, "spends": ms.spends, "rebooting": ms.rebooting, "ray_from": ms.ray_from, "shield_broken": ms.shield_broken, "overheated": ms.overheated,
-			"killed_round": ms.killed_round, "offhand": ms.offhand, "parried": ms.parried,
-			"burrow_shield": ms.burrow_shield, "burrow_heat": ms.burrow_heat})
+			"killed_round": ms.killed_round, "offhand": ms.offhand, "parried": ms.parried})
 	var packs: Array = []
 	for sq in sk.packs:
 		packs.append(sq.id)
@@ -663,8 +662,6 @@ static func _skirmish_into(sk: Skirmish, d: Dictionary, lookup: Callable) -> voi
 		ms.killed_round = bool(md.get("killed_round", false))   # an attack of its own killed this round: its passive's flare as the round ends (16 November)
 		ms.offhand = int(md.get("offhand", -1))   # the offhand's form by its place in the cycle (the Macaque's, 19 November); its chip rides the unit's modifiers
 		ms.parried = int(md.get("parried", 0))    # what its Parry has counted this round
-		ms.burrow_shield = int(md.get("burrow_shield", 0))   # what its shield was missing as it burrowed (the Mole's), each turn under making good a share
-		ms.burrow_heat = int(md.get("burrow_heat", 0))       # the heat it carried as it burrowed
 	sk.packs.clear()
 	for pid in d.get("packs", []):
 		var sq: Unit = lookup.call(int(pid))

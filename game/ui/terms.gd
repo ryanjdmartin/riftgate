@@ -55,7 +55,10 @@ const TABLE := {
 	"aile_boost": ["rapid", "plain"], "aile_blitz": ["rapid", "plain"], "aile_assault": ["rapid", "plain"],   # the Aile Booster's dash, the Rapid piece's own mark
 	"burrowed": ["seal", "guard"], "drill_out": ["spin", "plain"],   # the Mole's (16 November): its armoured form under, the shell's mark and family; its drill out of its bore
 	"sonic_needle": ["needle", "heat"],   # the Echidna's (20 November): a spike ringing in its foe, with Shocked's group, a conductor of Chain that hits harder later; its own mark, so it never reads as Shocked by hue alone
-	"applied_momentum": ["spin", "heat"],   # the Mole's momentum laid in a foe: the drill's turn, with what hits harder later (its Conserved Momentum a store, a bar under the heat as every store is)
+	"applied_momentum": ["spin", "heat"],
+	"frozen_momentum": ["hardened", "guard"],   # the Glacial Mole's drill (24 November): its own mark, cold's family, never Applied Momentum's by hue alone
+	"heated_momentum": ["scorch", "heat"],      # the Magma Mole's drill: its own mark, heat's family
+	"frozen": ["seal", "guard"],                # what keeps the Cryo through a cash: the shell's mark, never Cryo's own   # the Mole's momentum laid in a foe: the drill's turn, with what hits harder later (its Conserved Momentum a store, a bar under the heat as every store is)
 	"mine": ["mine", "heat"],
 	"essence": ["essence", "heat"], "essence_flare": ["essence_flare", "heat"],   # the Ammit's count and its Tap's buff (12 and 15 November), with Empowered's group: what hits harder
 	"braced": ["shield", "guard"], "barrier": ["barrier", "guard"], "ward": ["ward", "guard"], "hardened": ["hardened", "guard"],

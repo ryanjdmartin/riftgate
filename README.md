@@ -273,7 +273,8 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/balance.gd --
 # its options (the script's head has each in full):
 #   --seeds N, --policies random,greedy (blind and planner too; the planner costs about four
 #     greedy fights a fight, so run it on the team rows), --out path, --json path
-#   --rows badger,team     only those rows; --team badger,kite adds a row of exactly those machines
+#   --rows badger,team     only those rows; --team badger,kite adds a row of exactly those machines,
+#     an id with its branch picks after an @ as the harness fields them (--team mole@glacial, row team:mole@glacial)
 #   --packs big | rank_and_file | elites | "treant x1,finale"   only those packs, by the JSON's ids;
 #     --pack goblin:4+mandragora:2 adds a composed pack; --boss-tiers the bosses by tier; --noparty
 #   --trace "kite|goblin x6|greedy|3"   plays that one fight and prints its log

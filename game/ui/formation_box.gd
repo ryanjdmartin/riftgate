@@ -3,13 +3,14 @@ extends Control
 
 ## A pack's formation, the plate a double-tap on a pack opens on the map (Ryan, 23 November: "When
 ## double tapping a pack, it should show the formation. Double tapping a unit in the formation
-## opens it's codex entry"): the pack's name and what it is, then its grid as the fight will deal it,
+## opens it's codex entry"; 24 November: "Selecting a unit in the formation display on the map should
+## only need a single tap, not double"): the pack's name and what it is, then its grid as the fight will deal it,
 ## the back rank over the front as the skirmish stands them, each foe its picture on a plate and an
-## empty cell a dashed one. A double-tap on a foe asks for its codex (`foe_double_tapped`), which
+## empty cell a dashed one. A tap on a foe asks for its codex (`foe_tapped`), which
 ## the screen opens in its place, BACK on it returning here. A shade over the whole screen, the
 ## panel over it; a tap outside shuts it (no CLOSE: Ryan, 23 November). Its rank labels are the codex's words for a rank.
 
-signal foe_double_tapped(foe_id: String)
+signal foe_tapped(foe_id: String)
 
 const WIDTH := 640.0
 const TOP := 220.0
@@ -27,12 +28,10 @@ var _grid: _Grid
 
 
 ## The grid: eight cells, the front rank's four then the back's (Unit.layout's order), drawn back
-## over front; a double-tap on a foe's cell inside the die's window asks for its codex.
+## over front; a tap on a foe's cell asks for its codex.
 class _Grid extends Control:
-	signal cell_double_tapped(i: int)
+	signal cell_tapped(i: int)
 	var cells: Array = []   # eight foe ids or ""
-	var _last_at := -10.0
-	var _last_cell := -1
 
 	func _init() -> void:
 		mouse_filter = Control.MOUSE_FILTER_STOP
@@ -53,13 +52,8 @@ class _Grid extends Control:
 		for i in range(cells.size()):
 			if cell_rect(i).has_point(event.position) and not str(cells[i]).is_empty():
 				hit = i
-		var now := Time.get_ticks_msec() / 1000.0
-		if hit >= 0 and hit == _last_cell and now - _last_at <= DieFaceView.DOUBLE_TAP_SECONDS:
-			_last_cell = -1
-			cell_double_tapped.emit(hit)
-		else:
-			_last_cell = hit
-			_last_at = now
+		if hit >= 0:
+			cell_tapped.emit(hit)
 
 	func _draw() -> void:
 		var mono := Hud.mono()
@@ -110,7 +104,7 @@ func _init() -> void:
 	col.add_child(_sub)
 	_grid = _Grid.new()
 	_grid.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	_grid.cell_double_tapped.connect(func(i: int) -> void: foe_double_tapped.emit(str(_grid.cells[i])))
+	_grid.cell_tapped.connect(func(i: int) -> void: foe_tapped.emit(str(_grid.cells[i])))
 	col.add_child(_grid)
 
 

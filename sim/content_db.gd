@@ -1982,6 +1982,9 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# false, never on equipment, which deals nothing.
 	if fd.has("ignores_armour") and (not (fd["ignores_armour"] is bool) or kind != "attack"):
 		errs.append("%s: ignores_armour is true or false, on an attack" % where)
+	for flag in ["ignores_ward", "ignores_barrier"]:
+		if fd.has(flag) and (not (fd[flag] is bool) or kind != "attack"):
+			errs.append("%s: %s is true or false, on an attack" % [where, flag])
 	# The two rules that were keywords until 15 November, each its one piece's own (the Combat
 	# Translocator's swap, the Web Bomb's web): true or false, on an attack.
 	for rule in ["swaps", "webs"]:
@@ -2309,29 +2312,41 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: side_strike is static: value, what the foe to the right of the target takes with every strike, 1 or more" % where)
 		if effect == "strike_again" and (trig != "static" or int(eff.get("value", 0)) < 1):
 			errs.append("%s: strike_again is static: value, the share of each strike's blow its hit again carries, in percent, 1 or more" % where)
-		# The burrow in a reboot's place (the Mole's, Ryan, 16 November): its piece the locked piece
-		# its die rolls alone while Burrowed (checked against the chassis's fixed pieces below), its cap
-		# on Conserved Momentum, Burrowed's armour, the share a turn under makes good in percent, and the
-		# drill's blow a turn.
+		# The burrow in a reboot's place (the Mole's, Ryan, 16 November; its numbers his of 24
+		# November): its piece the locked piece its die rolls alone while Burrowed (checked against the
+		# chassis's fixed pieces below), its cap on Momentum, Burrowed's armour, and what each turn under
+		# opens with: shield regained, heat cooled and Momentum gained, flat numbers.
 		if effect == "burrow":
 			if trig != "static" or str(eff.get("piece", "")).strip_edges().is_empty():
 				errs.append("%s: burrow is static: piece, the locked piece its die rolls alone while Burrowed" % where)
 			if int(eff.get("cap", 0)) < 1 or int(eff.get("armour", 0)) < 1:
-				errs.append("%s: burrow's cap (Conserved Momentum at most) and armour (Burrowed's) are 1 or more" % where)
-			if int(eff.get("recover", 0)) < 1 or int(eff.get("recover", 0)) > 100:
-				errs.append("%s: burrow's recover is the share of what was missing a turn under makes good, in percent, 1 to 100" % where)
-			if int(eff.get("blow", -1)) < 0:
-				errs.append("%s: burrow's blow is the drill's blow a turn, 0 or more" % where)
-		# A branch's tweak of the drill's turn in its foe (the Mole's Ablate and squad branches, Ryan,
-		# 16 November): a blow in the burrow's blow's place, and the foe statuses it lays after it.
+				errs.append("%s: burrow's cap (Momentum at most) and armour (Burrowed's) are 1 or more" % where)
+			for k in ["shield", "cool", "momentum"]:
+				if int(eff.get(k, -1)) < 0:
+					errs.append("%s: burrow's %s, what each turn under opens with, is 0 or more" % [where, k])
+			for k in ["recover", "blow"]:
+				if eff.has(k):
+					errs.append("%s: burrow takes no %s since 24 November: a turn under opens with flat shield, cool and momentum, and the drill's blow is its status's" % [where, k])
+		# A machine's immunity to a status (the Glacial Mole's Brittle, the Magma Mole's Ablate; Ryan,
+		# 24 November: "Passive gains: Immune to Brittle"): a status a foe may lay on a machine, by its
+		# id or its machine form's.
+		if effect == "immune":
+			var v := str(eff.get("value", ""))
+			if trig != "static" or not (Effects.STATUS.has(v) or Effects.STATUS.has(v + "_mech")):
+				errs.append("%s: immune is static: value, the status it takes none of" % where)
+		# A branch's tweak of the drill in its foe (the Mole's Glacial and Magma Moles, Ryan, 24
+		# November): the drill's form it lays in Applied Momentum's place, and a blow or foe statuses
+		# over that form's own.
 		if effect == "momentum":
 			if trig != "static" or not eff.has("entry"):
 				errs.append("%s: momentum is static, scoped to the drill it tweaks (entry)" % where)
+			if eff.has("status") and not Effects.DRILL_STATUSES.has(str(eff["status"])):
+				errs.append("%s: momentum's status is one of the drill's forms (%s)" % [where, ", ".join(Effects.DRILL_STATUSES)])
 			if eff.has("blow") and int(eff["blow"]) < 0:
 				errs.append("%s: momentum's blow takes the drill's blow's place, 0 or more" % where)
 			var lays = eff.get("lays", {})
-			if not (lays is Dictionary) or (not eff.has("blow") and (lays as Dictionary).is_empty()):
-				errs.append("%s: momentum lays {status: stacks} after the drill's blow, or sets its blow" % where)
+			if not (lays is Dictionary) or (not eff.has("blow") and not eff.has("status") and (lays as Dictionary).is_empty()):
+				errs.append("%s: momentum names the drill's form (status), lays {status: stacks}, or sets its blow" % where)
 			elif lays is Dictionary:
 				for sid in lays:
 					if not Effects.FOE_STATUSES.has(str(sid)) or int(lays[sid]) < 1:

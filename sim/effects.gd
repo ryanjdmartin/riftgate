@@ -52,7 +52,7 @@ const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes", "hit_heat"],
 	"on_injury": ["no_destroy"],
 	"on_struck": ["lay_status", "gain_heat"],   # a foe's hit landing on this machine, whatever it dealt: what it lays on the striker (the echidna's Sonic Needles, 20 November), the heat it gains (the Nemesis's Crucible Capacitor, 24 November)
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "rage_form", "heat_scale", "hot_hits", "reboot_piece", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_max", "hopper_plate", "count_status", "piece_form", "hold_status", "self_status", "shield_zap", "add_power", "offhand", "side_strike", "strike_again", "buff_status", "burrow", "momentum", "needles"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "rage_form", "heat_scale", "hot_hits", "reboot_piece", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_max", "hopper_plate", "count_status", "piece_form", "hold_status", "self_status", "shield_zap", "add_power", "offhand", "side_strike", "strike_again", "buff_status", "burrow", "momentum", "needles", "immune"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat", "gain_heat"],
 	"on_blocked": ["stack_status", "gain_heat"],
 	"on_turn_start": ["gain_heat"],   # as this machine's turn starts (the Whip Scorpion's Obliterator, Ryan, 24 November: "Turn Start: Gain 1 heat")
@@ -373,16 +373,20 @@ const STATUS := {
 	# a unpurgable buff called 'Burrowed' that grants 1 Armour ... and all its die faces change to
 	# its locked piece, the Inertia Drill, and it remains burrowed until it uses it"; his kit of the
 	# same day): an ability by his rule of 8 November (an unpurgeable buff is labelled an Ability,
-	# so no Purge takes it), its armour a point a stack, the stacks the burrow rule's `armour`. Its
-	# die rolls the Drill alone while it holds (live_entries), and the model holds the form of the
-	# same name. It goes as the Drill is spent.
-	"burrowed": {"id": "burrowed", "name": "Burrowed", "description": "Armour +{value} a stack. Its die rolls its Inertia Drill alone, and each of its turns opens with Broken and Overheated cleared, half of what its shield and heat were missing as it burrowed made good, and a stack of Conserved Momentum. It comes up as it spends the Drill.", "decay": "none", "stacking": "renew",
+	# so no Purge takes it), its armour a point a stack, the stacks the burrow rule's `armour`, held
+	# from the burrow's own turn (24 November: "Burrow does not bank. But it does gain the 1
+	# Armour"). Its die rolls the Drill alone while it holds (live_entries), and the model holds the
+	# form of the same name. Each turn under opens with the rule's flat shield, cooling and
+	# Momentum (his of 24 November: "50% shield regen, 50% cooling, and 50% Momentum generation",
+	# "50% of the final numbers, but represented as flat numbers"). It goes as the Drill is fired.
+	"burrowed": {"id": "burrowed", "name": "Burrowed", "description": "Armour +{value} a stack. Its die rolls its Inertia Drill alone, and each of its turns opens with Broken and Overheated cleared, shield regained, heat cooled and Momentum gained. It comes up as it fires the Drill.", "decay": "none", "stacking": "renew",
 		"tags": ["ability", "form"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
-	# The momentum the Mole banks under (Ryan, 16 November: "At the start of every turn while
-	# burrowed, it gains a stack of Conserved Momentum"; "We can cap it at 3, sure"): a store, a
-	# capped count the Drill spends whole, so nothing purges it; a stack as it burrows, one as each
-	# turn under opens, and what is left of its Applied Momentum back as it burrows again.
-	"conserved_momentum": {"id": "conserved_momentum", "name": "Conserved Momentum", "description": "The Inertia Drill spends every stack, laying a stack of Applied Momentum on its foe for each. Capped.", "decay": "none",
+	# The Mole's Momentum (Ryan, 24 November: "Momentum is a Resource. It goes to 10 (subject to
+	# tuning)"): a store, capped by its burrow rule (store_cap), so nothing purges it. Each turn
+	# under adds the rule's share; every use that hits a foe its drill is in adds 1; the drill in a
+	# foe drains it as that foe's turn starts, and comes home when it runs out. A burrow that takes
+	# the drill home leaves it where it ended up.
+	"momentum": {"id": "momentum", "name": "Momentum", "description": "Gained while Burrowed and as the foe its drill is in is hit. Its drill drains it as that foe's turn starts. Capped.", "decay": "none",
 		"tags": ["store"], "effects": []},
 	# The Drill in its foe (Ryan, 16 November: "Consumes all Conserved Momentum and grants a stack
 	# of Applied Momentum for each one. Applied Momentum decays 1 at the start of the target's
@@ -400,7 +404,24 @@ const STATUS := {
 	# the rule that lays it (needle_spec); it lasts until a bolt spends it.
 	"sonic_needle": {"id": "sonic_needle", "name": "Sonic Needle", "description": "Conducts Chain. At its count of stacks, its machine fires Chain on every conductor, then the stacks go.", "decay": "none",
 		"tags": ["conducts"], "effects": []},
-	"applied_momentum": {"id": "applied_momentum", "name": "Applied Momentum", "description": "As its turn starts the drill in it strikes it, then it loses a stack. A burrow takes the drill back with what is left.", "decay": "none",
+	# The drill in its foe, and its branches' forms (Ryan, 24 November): a mark that never stacks,
+	# laid as the Inertia Drill resolves. As its foe's turn starts it lays its `tick`'s statuses
+	# (Brittle and the Pinned that holds it; the Glacial Mole's Cryo and Frozen, the Magma Mole's
+	# Ablate and the Seared that holds it), lands its plain blow, then drains its Mole's Momentum,
+	# and at none it goes and the drill comes home (Skirmish._drill_ticks). Every use that hits its
+	# foe gives its Mole a Momentum ("Resolve: The Mole gains 1 Momentum", area hits included:
+	# Skirmish._drilled_hits). Each status's numbers are its own.
+	"applied_momentum": {"id": "applied_momentum", "name": "Applied Momentum", "description": "As its turn starts it gains Brittle and Pinned, takes a blow and drains its Mole's Momentum; at none it goes. A use that hits it gives its Mole a Momentum.", "decay": "none", "stacking": "renew",
+		"tags": [], "effects": [], "tick": {"blow": 1, "drain": 5, "lays": {"brittled": 1, "pinned": 1}}},
+	"frozen_momentum": {"id": "frozen_momentum", "name": "Frozen Momentum", "description": "As its turn starts it gains Brittle, Cryo, Pinned and Frozen, takes a blow and drains its Mole's Momentum; at none it goes. A use that hits it gives its Mole a Momentum.", "decay": "none", "stacking": "renew",
+		"tags": [], "effects": [], "tick": {"blow": 1, "drain": 5, "lays": {"brittled": 2, "cryoed": 1, "pinned": 1, "frozen": 1}}},
+	"heated_momentum": {"id": "heated_momentum", "name": "Heated Momentum", "description": "As its turn starts it gains Brittle, Ablate, Pinned and Seared and drains its Mole's Momentum; at none it goes. A use that hits it gives its Mole a Momentum.", "decay": "none", "stacking": "renew",
+		"tags": [], "effects": [], "tick": {"blow": 0, "drain": 5, "lays": {"brittled": 1, "ablating": 2, "pinned": 1, "seared": 1}}},
+	# Frozen (the Glacial Mole's, Ryan, 24 November: "When any amount of Cryo would be consumed,
+	# consume 1 Numbed instead, if any, then remove Frozen"; "It gets the cooling. It is preserved
+	# regardless of numbed existing"): the next Cryo cash on its foe cools its hitter as ever and
+	# leaves the Cryo, a Numbed spent if it has one, and Frozen goes.
+	"frozen": {"id": "frozen", "name": "Frozen", "description": "The next weapon hit that would spend its Cryo cools its hitter and leaves the Cryo, a Numbed spent in its place; then Frozen goes.", "decay": "none", "stacking": "renew",
 		"tags": [], "effects": []},
 	# The drill out of its bore (Ryan, 18 November: "Does the drill stay out after firing, and
 	# return only on burrow?"; 16 November, "It returns to the Mole when it burrows"): held from
@@ -668,7 +689,9 @@ static func brace_stacks(value: int) -> int:
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
 ## what the team put on it. Never Numbed (a buff only a Purge lowers, 2 November), and never the foe's
 ## own buffs (Braced, Empowered, Undying).
-const FOE_STATUSES := ["ablating", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "brittled", "exposure", "mine", "pinned", "seared", "sapped", "applied_momentum", "sonic_needle"]
+const FOE_STATUSES := ["ablating", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "brittled", "exposure", "mine", "pinned", "seared", "sapped", "applied_momentum", "frozen_momentum", "heated_momentum", "frozen", "sonic_needle"]
+## The drill's forms a burrower's Inertia Drill lays (the Mole's and its branches'), each carrying its tick.
+const DRILL_STATUSES := ["applied_momentum", "frozen_momentum", "heated_momentum"]
 ## The status that holds each status a piece may hold on its target (Face.holds).
 const HOLDERS := {"brittled": "pinned", "ablating": "seared"}
 ## The buff a machine gains when it spends an entry that holds a status on every unit this round
@@ -2564,8 +2587,8 @@ static func store_cap(u, id: String) -> int:
 		for eff in m.effects:
 			if str(eff.get("effect", "")) == "stack_status" and str(eff.get("value", "")) == id and int(eff.get("cap", 0)) > 0:
 				return int(eff["cap"])
-			if id == "conserved_momentum" and str(eff.get("effect", "")) == "burrow" and int(eff.get("cap", 0)) > 0:
-				return int(eff["cap"])   # the Mole's, banked under up to its burrow's cap
+			if id == "momentum" and str(eff.get("effect", "")) == "burrow" and int(eff.get("cap", 0)) > 0:
+				return int(eff["cap"])   # the Mole's Momentum, up to its burrow's cap
 	return 0
 
 
@@ -2738,11 +2761,11 @@ static func folds_die(u) -> int:
 
 
 ## The burrow a machine takes in its reboot's place (burrow, static; the Mole's, Ryan, 16
-## November: "Instead of Reboot, it Burrows"): {piece: the locked piece its die rolls alone while
-## Burrowed and never above ground (the Inertia Drill), cap: the Conserved Momentum it holds at
-## most, armour: Burrowed's armour, recover: the share of what its shield and heat were missing as
-## it burrowed made good as each turn under opens, blow: the drill's blow a turn}; empty for a
-## machine that reboots.
+## November: "Instead of Reboot, it Burrows"; its numbers his of 24 November): {piece: the locked
+## piece its die rolls alone while Burrowed and never above ground (the Inertia Drill), cap: the
+## Momentum it holds at most, armour: Burrowed's armour, and what each turn under opens with:
+## shield, the shield it regains; cool, the heat it sheds; momentum, the Momentum it gains}; empty
+## for a machine that reboots.
 static func burrow_rule(u) -> Dictionary:
 	for pair in _taking_part(u, "static", null):
 		if str(pair[0].get("effect", "")) == "burrow":
@@ -2754,29 +2777,35 @@ static func burrows(u) -> bool:
 	return not burrow_rule(u).is_empty()
 
 
-## What the drill does to its foe each turn, as its machine stands now, `face` its drill's entry
-## (momentum_of): {blow: the plain blow it strikes, lays: {status id: stacks} it lays after the
-## blow}. The burrow rule's blow, and every live step of its branches on the drill (momentum,
-## static, scoped to the piece: the Ablate branch's Ablate 2 in
-## the blow's place and its Seared, the squad branch's Brittle 1 and Pinned and its Exposed; Ryan,
-## 16 November: "Ablate branch: Change damage to Ablate 2 (but it decays), and then second upgrade
-## adds Seared. Squad branch: ADDS brittle 1 and pinned to the blow. Second upgrade adds exposed"),
-## a step's `blow` taking the blow's place and its `lays` adding to the rest.
+## What the drill lays in its foe, as its machine stands now, `face` its drill's entry
+## (momentum_of): {status: the drill status it lays, blow: the plain blow it lands as the foe's turn
+## starts, drain: the Momentum it drains then, lays: {status id: stacks} it lays first}. Applied
+## Momentum, or the form a live step of its branches names (momentum, static, scoped to the piece:
+## the Glacial Mole's Frozen Momentum, the Magma Mole's Heated Momentum; Ryan, 24 November), its
+## numbers the status's own tick; a step's `blow` takes the blow's place and its `lays` add.
 static func momentum_of(u, face: Face) -> Dictionary:
-	var rule := burrow_rule(u)
-	var blow := int(rule.get("blow", 0))
-	var lays := {}
+	var sid := "applied_momentum"
+	var extra := {}
+	var blow := -1
 	for pair in _taking_part(u, "static", face):
 		var eff: Dictionary = pair[0]
 		if str(eff.get("effect", "")) != "momentum":
 			continue
+		if DRILL_STATUSES.has(str(eff.get("status", ""))):
+			sid = str(eff["status"])
 		if eff.has("blow"):
 			blow = int(eff["blow"])
 		var more = eff.get("lays", {})
 		if more is Dictionary:
 			for id in more:
-				lays[str(id)] = int(lays.get(str(id), 0)) + int(more[id])
-	return {"blow": maxi(0, blow), "lays": lays}
+				extra[str(id)] = int(extra.get(str(id), 0)) + int(more[id])
+	var tick: Dictionary = STATUS[sid].get("tick", {})
+	var lays := {}
+	for id in (tick.get("lays", {}) as Dictionary):
+		lays[str(id)] = int(tick["lays"][id])
+	for id in extra:
+		lays[id] = int(lays.get(id, 0)) + int(extra[id])
+	return {"status": sid, "blow": maxi(0, blow if blow >= 0 else int(tick.get("blow", 0))), "drain": maxi(0, int(tick.get("drain", 0))), "lays": lays}
 
 
 ## The entries a die rolls among: a burrower's (the Mole's) its burrow piece alone while Burrowed
@@ -2970,7 +2999,7 @@ static func purge(u, n: int = 1) -> Array[String]:
 ## The marks the team lays on foes (28 October), what a foe's cleanse takes off its own: never
 ## Numbed (the buff nothing removes), never Suppressed (so a stun stays sure), never Guarded or a
 ## buff.
-const TEAM_MARKS := ["ablating", "brittled", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine", "pinned", "seared", "sapped", "applied_momentum", "sonic_needle"]
+const TEAM_MARKS := ["ablating", "brittled", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine", "pinned", "seared", "sapped", "applied_momentum", "frozen_momentum", "heated_momentum", "frozen", "sonic_needle"]
 
 
 ## How many of the team's marks a foe carries, each status one mark.
@@ -3027,9 +3056,22 @@ static func raging(u) -> bool:
 
 
 ## Does this status land on nothing here: a cleansable one (what a foe does to a machine) on a
-## raging machine, which is immune to every debuff while its Rage stands.
+## raging machine, which is immune to every debuff while its Rage stands; or one a machine's own
+## immunity names (immune, static: the Glacial Mole's Brittle, the Magma Mole's Ablate; Ryan, 24
+## November: "Passive gains: Immune to Brittle"), the status or its machine's form of it.
 static func immune_to(u, passive: Dictionary) -> bool:
-	return u != null and not (u is Foe) and (passive.get("tags", []) as Array).has(CLEANSABLE) and raging(u)
+	if u == null or u is Foe:
+		return false
+	if (passive.get("tags", []) as Array).has(CLEANSABLE) and raging(u):
+		return true
+	var id := str(passive.get("id", ""))
+	for pair in _taking_part(u, "static", null):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) == "immune":
+			var v := str(eff.get("value", ""))
+			if v != "" and (id == v or id == v + "_mech"):
+				return true
+	return false
 
 
 ## The piece a machine's Rage leaves it (rage_form, static: the Nemesis's Knuckles of Fury, Ryan,
@@ -3443,9 +3485,12 @@ static func effect_text(eff: Dictionary) -> String:
 		"reboot_piece": body = "its reboot fires its %s first" % str(eff.get("piece", "")).replace("_", " ")
 		"gain_heat": body = "+%s heat" % vs
 		"hit_heat": body = "+%s heat for each hit" % vs
-		"burrow": body = "it burrows in its reboot's place: Burrowed, armour +%d, its die rolls its %s alone, and each turn under makes good %d%% of what its shield and heat were missing as it burrowed and banks a stack of Conserved Momentum, up to %d; spent, the drill lays a stack of Applied Momentum for each, a blow of %d on its foe as each of its turns starts" % [maxi(1, int(eff.get("armour", 1))), str(eff.get("piece", "")).replace("_", " "), int(eff.get("recover", 50)), int(eff.get("cap", 3)), int(eff.get("blow", 0))]
+		"burrow": body = "it burrows in its reboot's place: Burrowed, armour +%d, its die rolls its %s alone, and each turn under regains %d shield, cools %d and gains %d Momentum, up to %d" % [maxi(1, int(eff.get("armour", 1))), str(eff.get("piece", "")).replace("_", " "), int(eff.get("shield", 0)), int(eff.get("cool", 0)), int(eff.get("momentum", 0)), int(eff.get("cap", 10))]
+		"immune": body = "immune to %s" % str(STATUS.get(str(eff.get("value", "")), {}).get("name", str(eff.get("value", ""))))
 		"momentum":
 			var parts: Array[String] = []
+			if DRILL_STATUSES.has(str(eff.get("status", ""))):
+				parts.append("it lays %s" % str(STATUS[str(eff["status"])]["name"]))
 			if eff.has("blow"):
 				parts.append("its blow %d" % int(eff["blow"]) if int(eff["blow"]) > 0 else "no blow")
 			var more = eff.get("lays", {})

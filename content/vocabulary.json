@@ -2440,10 +2440,10 @@
    "id": "burrowed",
    "category": "status",
    "name": "Burrowed",
-   "codex": "Replaces Reboot. +1 Armour.\nFixed: Inertia Drill\nTurn Start: Remove Broken, Overheated, Jammed and Corrupted. Regain half the Shield missing when burrowed, and lose half the Heat held then, rounded up. Gain 1 Conserved Momentum, up to 3.\nResolve: If the Inertia Drill was used, removed.",
+   "codex": "Replaces Reboot. +1 Armour.\nFixed: Inertia Drill\nTurn Start: Remove Broken, Overheated, Jammed and Corrupted. Gain 3 Shield and 5 Momentum, and lose 6 Heat.\nResolve: If the Inertia Drill was used, removed.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan, 16 November: \"Instead of Reboot, it Burrows. While burrowed, it gains a unpurgable buff called 'Burrowed'\"; an unpurgeable buff is labelled an Ability by his rule of 8 November. The text is a session's draft.",
+    "holes": "Ryan, 16 November: \"Instead of Reboot, it Burrows. While burrowed, it gains a unpurgable buff called 'Burrowed'\"; an unpurgeable buff is labelled an Ability by his rule of 8 November. Its turns under his of 24 November: \"When burrowed, it gains 50% shield regen, 50% cooling, and 50% Momentum generation\", \"50% of the final numbers, but represented as flat numbers\"; \"Burrow does not bank. But it does gain the 1 Armour.\" The text is a session's draft.",
     "table": {
      "kind": "ability",
      "on": "machine",
@@ -2453,18 +2453,18 @@
    }
   },
   {
-   "id": "conserved_momentum",
+   "id": "momentum",
    "category": "resource",
-   "name": "Conserved Momentum",
-   "codex": "Machine store, the Mole's: a stack as it burrows and one as each turn under opens, up to 3, and what is left of its Applied Momentum back as it burrows again. Its Inertia Drill spends every stack, laying a stack of Applied Momentum for each. A store, so no Purge touches it.",
+   "name": "Momentum",
+   "codex": "Maximum 10.\nGained while Burrowed.\nDrained by Applied Momentum.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan, 16 November: \"At the start of every turn while burrowed, it gains a stack of Conserved Momentum\"; \"We can cap it at 3, sure\"; a stack as it burrows, his \"go with 1 and 2\". The text is a session's draft.",
+    "holes": "Ryan, 24 November: \"Momentum is a Resource. It goes to 10 (subject to tuning).\" Renamed from Conserved Momentum. The text is a session's draft.",
     "table": {
      "kind": "store",
      "on": "machine",
-     "stacks": "Yes: up to 3",
-     "lasts": "Until the Inertia Drill spends it"
+     "stacks": "Yes: up to 10",
+     "lasts": "Until its drill drains it"
     }
    }
   },
@@ -2472,15 +2472,63 @@
    "id": "applied_momentum",
    "category": "status",
    "name": "Applied Momentum",
-   "codex": "Turn Start: Take a hit of 2 damage, then reduce stacks by 1.\nWhen the Frame that laid it burrows again: Reduce stacks to 0.",
+   "codex": "Turn Start: Gain 1 Brittle and Pinned. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.\nResolve: The Mole gains 1 Momentum.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan, 16 November: \"Applied Momentum decays 1 at the start of the target's turn\"; \"Base: Flat 2 damage blow a turn ... make the damage a blow since I want it to scale with Brittle\". It strikes before the foes' side opens, so a Pinned it lays holds the Brittle. The text is a session's draft.",
+    "holes": "Ryan, 24 November, his text: \"Debuff, doesn't stack. Turn Start: Gain 1 Brittle and Pinned. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole\"; \"The take 1 is a blow\"; \"Go to Resolve, and include area hits as well. Easily added to the Applied Momentum debuff: Resolve: The Mole gains 1 Momentum.\" His words, not yet signed on the Text tab.",
     "table": {
      "kind": "debuff",
      "on": "foe",
-     "stacks": "Yes: a turn of the drill a stack",
-     "lasts": "A stack each of its turns, or until the Mole burrows"
+     "stacks": "No",
+     "lasts": "Until its Mole's Momentum runs out, or the Mole burrows"
+    }
+   }
+  },
+  {
+   "id": "frozen_momentum",
+   "category": "status",
+   "name": "Frozen Momentum",
+   "codex": "Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.\nResolve: The Mole gains 1 Momentum.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 24 November, the Glacial Mole's: \"Applied Momentum -> Frozen Momentum. Debuff, doesn't stack. Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.\" Its Resolve line is Applied Momentum's, the form it takes the place of. His words, not yet signed on the Text tab.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "No",
+     "lasts": "Until its Mole's Momentum runs out, or the Mole burrows"
+    }
+   }
+  },
+  {
+   "id": "heated_momentum",
+   "category": "status",
+   "name": "Heated Momentum",
+   "codex": "Turn Start: Gain 1 Brittle, 2 Ablate, Pinned, and Seared. Then, drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.\nResolve: The Mole gains 1 Momentum.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 24 November, the Magma Mole's: \"Applied Momentum -> Heated Momentum. Debuff, doesn't stack. Turn Start: Gain 1 Brittle, 2 Ablate, Pinned, and Seared. Then, drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.\" Its Resolve line is Applied Momentum's, the form it takes the place of. His words, not yet signed on the Text tab.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "No",
+     "lasts": "Until its Mole's Momentum runs out, or the Mole burrows"
+    }
+   }
+  },
+  {
+   "id": "frozen",
+   "category": "status",
+   "name": "Frozen",
+   "codex": "When any amount of Cryo would be consumed, consume 1 Numbed instead, if any, then remove Frozen.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 24 November, the Glacial Mole's: \"Frozen: Debuff. When any amount of Cryo would be consumed, consume 1 Numbed instead, if any, then remove Frozen\"; \"It gets the cooling. It is preserved regardless of numbed existing.\" His words, not yet signed on the Text tab.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "No",
+     "lasts": "Until a Cryo cash on it"
     }
    }
   },
@@ -2488,7 +2536,7 @@
    "id": "drill_out",
    "category": "status",
    "name": "Drill Out",
-   "codex": "Inertia Drill is out until the next burrow.",
+   "codex": "Inertia Drill is out until it returns, or the next burrow.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 16 November: \"It returns to the Mole when it burrows, taking the debuff with it\"; 18 November, \"Build the toggle\". The text is a session's draft.",
@@ -2496,7 +2544,7 @@
      "kind": "ability",
      "on": "machine",
      "stacks": "Renews: one",
-     "lasts": "Until its next burrow"
+     "lasts": "Until its drill comes home: its Momentum runs out, or its next burrow"
     }
    }
   },

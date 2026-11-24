@@ -23,6 +23,7 @@ const ROW_H := 24.0
 const SETTLE := 0.45   # seconds a changed line spends scrambled
 const BAR_W := 54.0
 const BAR_H := 10.0   # one gauge, the hull, so a little heavier than the two it replaced
+const BADGE_H := 19.0 # a fight's badge on a machine's row (Hud.engage_badge), its rim clear of the rows above and below (Ryan, 24 November: "Shrink the chips slightly in the info panel so they don't clip")
 
 var _t := 0.0
 var _last: Dictionary = {}    # line key -> text last drawn, to see a change
@@ -67,8 +68,13 @@ func _draw() -> void:
 		_bar(Rect2(x, y - 10.0, BAR_W, BAR_H), u.hull, u.hull_max, Palette.HULL)
 		x += BAR_W + 12.0
 		_text(mono, Vector2(x, y), _settled(key + "o", r["order"], frame), 13, r["colour"], 90.0)
+		x += mono.get_string_size(r["order"], HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x + 12.0
+		if int(r["fight"]) > 0:
+			# The fight it is in, as the map numbers it on the pack: the crossed swords and its place
+			# in the queue (Ryan, 24 November: "The info panel should indicate that icon with the
+			# number for machines involved in that fight").
+			x = Hud.engage_badge(self, Vector2(x - 4.0, y - 5.0), int(r["fight"]), BADGE_H, true).end.x + 10.0
 		if not str(r["meets"]).is_empty():
-			x += mono.get_string_size(r["order"], HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x + 12.0
 			_text(mono, Vector2(x, y), _settled(key + "c", r["meets"], frame), 13, Color(Palette.ENEMY, 0.9), split - x - 8.0)
 		y += ROW_H
 	# The field, at the right.
@@ -117,10 +123,12 @@ func _title() -> String:
 ## MOVED, ONE MORE, SPENT, its order, CAUGHT) and which hunter is after it: the one whose tag it
 ## wears on the map, its prey. A caught
 ## machine names its fight there instead, as an order names its pack (Ryan, 2 November: the catch
-## reads as its attack order): CAUGHT > the hunter that caught it, +1 a hunter more.
+## reads as its attack order): CAUGHT > the hunter that caught it, +1 a hunter more. `fight` is the
+## place in the queue of the fight it is in (fight_numbers), 0 for none.
 func _rows() -> Array:
 	var out: Array = []
 	var shown: Dictionary = walks.call() if walks.is_valid() else {}
+	var fights := fight_numbers(battle)
 	for m in battle.mechs():
 		var order := "READY"
 		var col := Palette.HUD
@@ -148,7 +156,32 @@ func _rows() -> Array:
 			if (w.prey if w != null and w.prey != 0 else p.prey) == m.id:
 				meets = "HUNTED BY " + _short(p.display_name)
 				break
-		out.append({"unit": m, "name": m.display_name.to_upper(), "order": order, "meets": meets, "colour": col})
+		out.append({"unit": m, "name": m.display_name.to_upper(), "order": order, "meets": meets, "colour": col, "fight": int(fights.get(m.id, 0))})
+	return out
+
+
+## Each machine in a fight waiting, by id, to that fight's place in the order ENGAGE opens them
+## (Battle.fights_waiting, the map's queue), from 1: a pack's fight holds the machines ordered onto
+## it, a catch the machine caught and those ordered onto its hunters.
+static func fight_numbers(b: Battle) -> Dictionary:
+	var out := {}
+	if b.state != Battle.State.PLAN:
+		return out
+	var waiting := b.fights_waiting()
+	for k in range(waiting.size()):
+		var q: Dictionary = waiting[k]
+		var onto: Array = []
+		if q["target"] != null:
+			onto = [q["target"]]
+		else:
+			var prey: Unit = q["prey"]
+			out[prey.id] = k + 1
+			for f in b.forced:
+				if f["prey"] == prey:
+					onto = f["hunters"]
+		for uid in b.orders.keys():
+			if onto.has(b.orders[uid]) and not out.has(int(uid)):
+				out[int(uid)] = k + 1
 	return out
 
 

@@ -56,7 +56,13 @@ document's job and every command are in `README.md`.
   threat ("a property, not a quota", with more kinds of enemy wanted in a pass of its own), a
   squad's growth inside a tier is a target to set, and the packs a mouth sends at once are the
   Convergence's dial. The hunters are pinned and the treant waits on his marks.
-- Branches. Main holds everything this file describes. `claude/formation-pass-feedback-rlvx5x`
+- Branches. Main holds everything this file describes. `claude/game-ui-animation-tweaks-xiex10`
+  landed on 24 November on Ryan's "merge into main" (his two lists of the day: the Cassowary's size
+  and run, the Macaque's size, UNDO's count gone, the aim's reticle and tether, the intent lines
+  under the chips, the stack chips merged and unsigned, the formation's single tap, a machine's
+  move under the player's hands, the shell behind what stands before it, the gorges deep and their
+  water, the engage marks in heat's red and the fight's crossed-swords badge on the map and the
+  board, no FIGHT label). `claude/formation-pass-feedback-rlvx5x`
   landed on 24 November on Ryan's "Make sure main is updated" (his play of the field's dials: the
   seam a circle, the round's view, the zoom's floor, the pushers' segments, the tears' row slower
   and off the wall, five tier-one stock dice back to basics, the basics' five dials settled and
@@ -100,7 +106,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1468 tests, 394,061 checks, green on Godot 4.8-beta4 (24 November, the Incinerator once a use on every Sprite hit). The runner fails a run
+- Tests: 1476 tests, 402,072 checks, green on Godot 4.8-beta4 (24 November, main's Mole merged into the Whip Scorpion's round: its Incinerator once a use on every Sprite hit). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -340,13 +346,22 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   fight, a saved battle and the quick campaign, and picks a machine's upgrade build. The
   skirmish screen, the battle screen, the pause menu and its settings are built; the hangar,
   the mission map and the draft are not. In a fight (22 November) a foe's intent is a dark plate above
-  it, level with its gauge, its arrows leaving the foe's middle; a status chip is a square tile
-  with its number at its corner; a die is spent by dragging a large crosshair from it
-  (`AimLayer`), the die staying in its tray. Settings on a debug build compare the chip's forms
-  (CHIPS) and the tether's (TETHER) until Ryan picks. Since 23 November a die's double-tap shows
+  it, level with its gauge, its lines (24 November) running from the foe's feet under its chips
+  (`ChipLayer`) to the top of a machine's gauges, dashes crawling; a status chip is a square tile
+  with its number at its corner, unsigned, and stacks on their way pulse on the chip the unit
+  wears; a die is spent by dragging a large crosshair in the HUD colour from it (`AimLayer`), the
+  tether over the die, the die staying in its tray. Settings on a debug build compare the chip's
+  forms (CHIPS) until Ryan picks. A machine's executed move on the map plays under the player's
+  hands (`BattleMapView.is_blocking`); a fight's moves and the enemy's turn still hold them. On the
+  map (24 November) a fight to engage wears heat's red (`Palette.engage`, #ff4000, on a dark edge or a
+  plate): the packs a machine in hand could engage, the next fight's pulse (kept through ENGAGE's
+  own moves), and the queue's badge, crossed swords with the fight's place over their crossing
+  (`Hud.engage_badge`), worn too on each machine's row of the orders board; no label names a fight.
+  The gorges are nine steps deep and about half carry a faint stream, one body of water each,
+  whatever its ways close round flooded (`Map3D._stream_polys`). Since 23 November a die's double-tap shows
   the whole die at its live numbers and a hold alone locks; a dark entry is its own face under a
   veil; a unit's tap waits out the die's double-tap window; on the map a pack's double-tap opens
-  its formation (`FormationBox`) and a cache's its codex, and a pack shows no count. A debug build's settings hold TRIALS and COLOURS
+  its formation (`FormationBox`, a foe's codex on a tap there) and a cache's its codex, and a pack shows no count. A debug build's settings hold TRIALS and COLOURS
   (`ColourTuner`: Ryan tunes there and sends its COPY text).
 - **The hangar page.** `tools/hangar.html` over `tools/hangar_data.py`'s files, a tab a kind
   since 20 November: Chassis (the Bench renamed: every machine a card, a tap its working sheet
@@ -386,10 +401,15 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   none); a status no chip line names wears its term's mark, never a star, on a foe or a machine
   (`test_screen.gd` holds both). Its model is look A with five spines a bank (24 November, his
   pick): skid steer, the Tether a spike launcher on the prow, Minerva's vents across its back, the
-  spines' beads ringing one by one; his read of it running waits (the to-do). The Mole is built (20 November, on
-  his "Build the mole now", his kit of 16 November; at tier two since that day, its tree back in
-  design; the rules' reboot section, the bible's Mole row): it burrows in its reboot's place, banks Conserved Momentum under, and its Inertia Drill
-  lays Applied Momentum, a blow a turn in its foe until a burrow takes it home. Its model holds
+  spines' beads ringing one by one; his read of it running waits (the to-do). The Mole is the
+  squad's marker (24 November, his role and kit, at tier two; the rules' reboot section, the
+  bible's Mole row): it burrows in its reboot's place, banking no Momentum but armoured at once,
+  each turn under bringing 3 shield, 6 cooling and 5 Momentum (up to 10); its Inertia Drill, a
+  Rapid weapon ignoring armour, Ward and Barrier, lays Applied Momentum, Brittle climbing under a
+  Pinned each of the foe's turns, a blow of 1, and 5 of the Mole's Momentum drained, the drill
+  home at none; every use on the drilled foe gives a Momentum back. Its directions are the Glacial
+  Mole (Frozen Momentum, Frozen keeping a Cryo through its cash) and the Magma Mole (Heated
+  Momentum's held Ablate), each with an immunity. Its model holds
   Burrowed and Drill Out from the statuses (a form may let others go as it is held, `releases`),
   and a form asked while a firing slice plays waits for it to land, so the drill launches and
   then the Mole comes up with its bore empty. The Macaque is a model from its third look round,
@@ -465,7 +485,7 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
      first battle down, its sizing his ("I'll handle that one"), tiers two and three up.
 2. **The design sessions, from the briefs**: each decision a bible row, each brief retired
    once its decisions are rows and content. The locked pieces' footing first (its own session
-   since 20 November), the Mole's tree at tier two, then the machine back in design (the Swallowtail), the built but
+   since 20 November), then the machine back in design (the Swallowtail), the built but
    unfinished (the Needletail, the Giant Petrel, the Musk Ox) and the gunship, the tier-one
    fronts (Minerva's lure tank, an Aphelion tier one), Claude's first rounds on his directions
    of 5 and 6 November, the rest as its session comes. The to-do's roster is grouped to match.

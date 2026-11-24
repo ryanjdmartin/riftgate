@@ -277,7 +277,7 @@ file.
 ### D5. A passive that only feeds its own fixed pieces adds nothing
 
 - **Kind:** A
-- **Where:** the bible, line 678 (the identity row); `docs/briefs/minerva_mole.md` 73 to 75 ("no closed loop between a passive and its own locked piece")
+- **Where:** the bible, line 678 (the identity row); `docs/briefs/minerva_mole.md` 73 to 75 (retired 24 November; `git show d015406c:docs/briefs/minerva_mole.md`) ("no closed loop between a passive and its own locked piece")
 - **It says:** "A passive that only feeds its own fixed components adds nothing"
 - **His words:** "it must open build space", said of the Onryō. The sentence runs against line 746 ("fixed pieces that feed each other are design space of their own") and line 692 (a locked piece "glues" the identity together "with the passive").
 - **A cut:** the sentence goes, and his "open build space" stays.
@@ -529,7 +529,7 @@ file.
 ### S7. The mole's bench by ownership
 
 - **Kind:** A
-- **Where:** `docs/briefs/minerva_mole.md` 135, 136, 141 and 142
+- **Where:** `docs/briefs/minerva_mole.md` 135, 136, 141 and 142 (retired 24 November; in git at `d015406c`)
 - **It says:** "a charge is the siege battery's question"; "the Onryō's Pall holds that proposal"
 - **His words:** none.
 - **A cut:** both reasons go; an idea benched there needs a reason of its own.
@@ -547,7 +547,7 @@ file.
 ### S9. Tier one is never a support
 
 - **Kind:** B
-- **Where:** `docs/briefs/README.md` 140 to 143 ("Claude's, partly agreed"); applied at `minerva_mole.md` 197 and 198 and `aphelion_barrier_ward.md` 30
+- **Where:** `docs/briefs/README.md` 140 to 143 ("Claude's, partly agreed"); applied at `minerva_mole.md` 197 and 198 (retired 24 November; in git at `d015406c`) and `aphelion_barrier_ward.md` 30
 - **It says:** a tier one stands in a start "a body or a hitter and never a support"
 - **His words:** "...whatever of Puffin and the two undesigned ones makes the most sense as a support-lean" (12 November), for one of Kestrel's tier-one places.
 - **A cut:** the sort stays Claude's, without the "never"; the two briefs drop it as a reason.
@@ -601,7 +601,7 @@ file.
 ### S15. Phased is the shadow panther's, by his word
 
 - **Kind:** B
-- **Where:** `docs/briefs/minerva_mole.md` 121
+- **Where:** `docs/briefs/minerva_mole.md` 121 (retired 24 November; in git at `d015406c`)
 - **It says:** "Phased is the shadow panther's orbit by his word"
 - **His words:** "It keeps the phased orbit, not the Kite", a choice between two machines; the Phased row plans other granters.
 - **A cut:** his choice as he made it, no ownership.

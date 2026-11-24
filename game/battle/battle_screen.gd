@@ -345,7 +345,7 @@ func _build() -> void:
 	# One scan bar over the whole screen, on the top layer: it crosses the map and the
 	# controls alike, and whatever geometry lies under it lights (Ryan, 21 September).
 	_formation = FormationBox.new()
-	_formation.foe_double_tapped.connect(_on_formation_foe)
+	_formation.foe_tapped.connect(_on_formation_foe)
 	add_child(_formation)
 	_codex = CodexBox.new()
 	add_child(_codex)
@@ -490,7 +490,7 @@ var _round_debug_t := 0.0
 func _process(delta: float) -> void:
 	if not ROUND_DEBUG or battle == null or _map == null or _skirmish != null:
 		return
-	if battle.state != Battle.State.PLAN or _map.is_playing() or (_menu != null and _menu.visible):
+	if battle.state != Battle.State.PLAN or _map.is_blocking() or (_menu != null and _menu.visible):
 		_round_debug_t = 0.0
 		return
 	_round_debug_t += delta
@@ -506,7 +506,7 @@ func _refresh() -> void:
 	if PEAK_DEBUG:
 		f.rift_pressure_max = 1
 	var planning := battle.state == Battle.State.PLAN
-	var playing := _map.is_playing()
+	var playing := _map.is_blocking()   # a machine's own move plays under the player's hands (BattleMapView.is_blocking)
 	_top.queue_redraw()   # the gate, the rift's spawn and the Fractures, read off the battle
 	# Every pack's walk on the enemy's turn, from where the machines stand now.
 	_map.walks = f.plan_walks() if planning and not playing else {}
@@ -516,7 +516,11 @@ func _refresh() -> void:
 	if not playing:
 		_map.plans = battle.plan_pieces() if planning else []
 		_map.shown = battle.shown_positions() if planning else {}
-	_map.attack = _fight_preview() if planning and not playing else {}
+	# The fight's marks stay through ENGAGE's own moves (Ryan, 24 November: the engage pulse
+	# "shouldn't disappear during a move animation"); the enemy's turn still hides them until it
+	# has played, so a catch shows once its hunter has arrived.
+	_map.fights_through = _engaging
+	_map.attack = _fight_preview() if planning and (not playing or _engaging) else {}
 	_map.route_drawing = planning and not playing
 	# The rift's shell over the seven beside it: a plate cracked for each Fracture earned, burst at
 	# the Rupture (BattleMapView.set_shell).
@@ -531,7 +535,7 @@ func _refresh() -> void:
 	var waiting: Array = battle.fights_waiting() if planning else []
 	_map.queue = waiting
 	var held: Unit = _map.selected if planning else null
-	if held != null or _executing:
+	if held != null:
 		_resolve_btn.text = "EXECUTE"
 	elif not fight.is_empty():
 		# One button for the queue (the long wall brief 7.4): it says how many fights wait, the
@@ -545,7 +549,6 @@ func _refresh() -> void:
 		_queue_pulse = false
 	_resolve_btn.set_pulse(planning and not playing and held == null and (battle.nothing_left() or _queue_pulse))   # every machine done, or back from a fight with more waiting: the button is next
 	_clear_btn.set_enabled(planning and not playing and battle.can_undo())
-	_clear_btn.badge = "×%d" % battle.history.size() if planning and battle.can_undo() else ""   # how far it reaches, as the fight's says
 
 
 func _refresh_log() -> void:
@@ -643,7 +646,7 @@ const MAP_TAP_DB := -10.0
 ## cancels the plan in hand and takes that one; anything else (the machine itself, a hex or a pack
 ## out of its reach) cancels the plan, its steps off the undo, and lets it go.
 func _on_hex_tapped(h: Vector2i) -> void:
-	if battle.state != Battle.State.PLAN or _map.is_playing():
+	if battle.state != Battle.State.PLAN or _map.is_blocking():
 		return
 	_details.visible = false
 	var u := _map.unit_at_shown(h)
@@ -747,7 +750,7 @@ var _drag_target: Unit = null  # the pack under the finger as the route is drawn
 ## pack orders the machine onto it from the draft's end (bible section 5; Abalon's drag onto
 ## an enemy), or from the farthest hex in range when nothing was drawn.
 func _on_route_drag_started(u: Unit) -> void:
-	if battle.state != Battle.State.PLAN or _map.is_playing() or battle.actions_left(u) <= 0:
+	if battle.state != Battle.State.PLAN or _map.is_blocking() or battle.actions_left(u) <= 0:
 		return
 	if battle.pending(u):
 		return   # a route is drawn for a first leg alone: a machine with waypoints lays its next by a tap
@@ -1146,9 +1149,11 @@ func _show_details(lines: Array) -> void:
 ## UNDO: the last move or order, whoever made it (Ryan, 25 October: "the undo stack is stored
 ## in order, and undos in order, always"), its machine back in hand while it can still move.
 func _on_undo() -> void:
-	if _map.is_playing() or not battle.can_undo():
+	if _map.is_blocking() or not battle.can_undo():
 		return
 	var u := battle.undo()
+	if u != null:
+		_map.stop_unit(u.id)   # a move still playing stops where the battle now has it (it plays under the player's hands)
 	Sound.play("ui_back")
 	_details.visible = false
 	# The machine the step was about comes into hand while it has a plan left to take back, and is
@@ -1172,7 +1177,7 @@ func _planned(u: Unit) -> void:
 
 ## The plan played on the map, then `then`: the pieces in their phases, and after them the
 ## packs' walks when there are any. Headless, nothing plays and `then` runs at once.
-func _play_plan(plan: Array, pack_moves: Array, then: Callable) -> void:
+func _play_plan(plan: Array, pack_moves: Array, then: Callable, blocking: bool = true) -> void:
 	var phases := BattleMapView.plan_phases(plan)
 	if not pack_moves.is_empty():
 		phases.append(pack_moves)
@@ -1183,14 +1188,14 @@ func _play_plan(plan: Array, pack_moves: Array, then: Callable) -> void:
 	if not plan.is_empty():
 		Sound.play("plot")
 	_map.plans = []
-	_map.play_phases(phases, then)
-	_refresh()   # the buttons grey until the plan has played
+	_map.play_phases(phases, then, blocking)
+	_refresh()   # the buttons grey until a blocking plan has played
 
 
 ## End the turn: the enemy's turn plays (bible section 4), the packs walking where the map
 ## showed, then the next turn opens, with any fight a hunter forced.
 func _on_end_turn() -> void:
-	if battle.state != Battle.State.PLAN or _map.is_playing() or not battle.forced.is_empty():
+	if battle.state != Battle.State.PLAN or _map.is_blocking() or not battle.forced.is_empty():
 		return   # a second press while the walk plays would end the next turn over it
 	_select(null)
 	_details.visible = false
@@ -1527,7 +1532,7 @@ func _ordered_onto(targets: Array) -> Array:
 ## The one button: EXECUTE for the machine in hand, else ENGAGE while a fight is ready, else END
 ## TURN.
 func _on_main_button() -> void:
-	if battle.state != Battle.State.PLAN or _map.is_playing():
+	if battle.state != Battle.State.PLAN or _map.is_blocking():
 		return
 	var held: Unit = _map.selected
 	if held != null:
@@ -1539,7 +1544,6 @@ func _on_main_button() -> void:
 		_ask_end_turn()
 
 
-var _executing := false   # the moves EXECUTE took are playing: the button keeps its word until they have
 var _queue_pulse := false  # back from a fight with orders still waiting: the button pulses until the player does something else (the long wall brief 7.4)
 
 
@@ -1560,10 +1564,10 @@ func _execute_unit(u: Unit) -> void:
 		return
 	Sound.say("resolve_move")   # "in transit", "moving to intercept"
 	_autosave()   # the battle has the machine where its move ends already
-	_executing = true
-	_play_plan(plan, [], func() -> void:
-		_executing = false
-		_refresh())
+	# It walks under the player's hands (Ryan, 24 November: "I should not have to wait for a
+	# movement animation on the map to complete before being able to interact with anything"):
+	# the battle has it where it ends, and the map plays it beside whatever else moves.
+	_play_plan(plan, [], func() -> void: _refresh(), false)
 
 
 ## END TURN: at once with nothing left to do; while a machine can still move or fight it asks
@@ -1580,6 +1584,8 @@ func _ask_end_turn() -> void:
 
 ## ENGAGE: the next fight opens with the machines ordered onto it; the boss's fight plays its
 ## reveal.
+var _engaging := false   # ENGAGE's planned moves are playing: the fight's marks stay up (BattleMapView.fights_through)
+
 func _engage() -> void:
 	var f := battle.next_fight()
 	if f.is_empty():
@@ -1605,7 +1611,9 @@ func _engage() -> void:
 	if battle.next_fight_is_boss():
 		plan = []
 		_map.shown = {}
+	_engaging = true
 	_play_plan(plan, [], func() -> void:
+		_engaging = false
 		var sk := battle.engage()
 		if sk == null:
 			Sound.play("ui_back")

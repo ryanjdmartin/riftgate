@@ -140,6 +140,8 @@ var holds: String = ""        # an attack: the status its target keeps through t
 var consumes: String = ""     # an attack: the status it consumes on its target, every stack, a point more a stack before the multiplies (the Backdraft Charge's Ablating, 22 October)...
 var per_consumed: int = 1     # ...the damage a stack consumed adds
 var ignores_armour: bool = false   # an attack: its blows take nothing off for a foe's armour, a rule written on the piece (Ryan, 15 November: "Ignores armour can be an explicitly written out property", where the Breach keyword stood on our side)
+var ignores_ward: bool = false     # an attack: a foe's Ward turns none of its marks away (the Inertia Drill's, Ryan, 24 November: "Ignores Armour, Ward, and Barrier")
+var ignores_barrier: bool = false  # an attack: a foe's Barrier takes none of its blows (the Inertia Drill's, the same day)
 var swaps: bool = false   # an attack: the spend takes a second target, another foe or an empty slot, and the two trade places; a rule written on the piece, no keyword (the Combat Translocator's; Ryan, 15 November: "Can be unique text, not a keyworded rider")
 var webs: bool = false    # an attack: each foe hit wears the piece's web, which bursts as the round ends into a Suppress on it and the foe beside it, each for its next turn (the Web Bomb's; Ryan, 15 November: "It's a unique effect, and the debuff can be renamed \"web bomb.\"")
 var spills: bool = false  # the effective entry only, never printed: damage past a kill in the front rank carries into the foe behind (the Overrun Gearing's, a module's; Ryan, 15 November: "As a module only effect, this does not need to be a keyword"; Effects.grants_spill)
@@ -395,6 +397,8 @@ static func from_dict(d: Dictionary) -> Face:
 		f.self_ablate = maxi(0, int(d.get("self_ablate", 0)))
 		f.self_vent = maxi(0, int(d.get("self_vent", 0)))
 		f.ignores_armour = d.get("ignores_armour", false) is bool and d.get("ignores_armour", false)
+		f.ignores_ward = d.get("ignores_ward", false) is bool and d.get("ignores_ward", false)
+		f.ignores_barrier = d.get("ignores_barrier", false) is bool and d.get("ignores_barrier", false)
 		f.swaps = d.get("swaps", false) is bool and d.get("swaps", false)
 		f.webs = d.get("webs", false) is bool and d.get("webs", false)
 		f.empties_hopper = d.get("empties_hopper", false) is bool and d.get("empties_hopper", false)
@@ -508,6 +512,10 @@ func to_dict() -> Dictionary:
 		d["self_vent"] = self_vent
 	if ignores_armour:
 		d["ignores_armour"] = true
+	if ignores_ward:
+		d["ignores_ward"] = true
+	if ignores_barrier:
+		d["ignores_barrier"] = true
 	if swaps:
 		d["swaps"] = true
 	if webs:
@@ -637,7 +645,7 @@ func acts_again() -> bool:
 ## prints with its shells (Ryan, 2 November), and a shield's cooling the number under its steam
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
-	return vents_all or spends_shield or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or self_vent > 0 or ignores_armour or swaps or webs or spills or empties_hopper or braces > 0 \
+	return vents_all or spends_shield or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or self_vent > 0 or ignores_armour or ignores_ward or ignores_barrier or swaps or webs or spills or empties_hopper or braces > 0 \
 		or turns_die or team_rerolls > 0 or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
@@ -779,6 +787,8 @@ func duplicate_face() -> Face:
 	f.self_ablate = self_ablate
 	f.self_vent = self_vent
 	f.ignores_armour = ignores_armour
+	f.ignores_ward = ignores_ward
+	f.ignores_barrier = ignores_barrier
 	f.swaps = swaps
 	f.webs = webs
 	f.spills = spills
@@ -893,6 +903,10 @@ func rule_phrases() -> Array[String]:
 			out.append(Templates.say("rule.holds", {"status": status_name(holds)}))
 		if ignores_armour:
 			out.append(Templates.say("rule.ignores_armour"))
+		if ignores_ward:
+			out.append(Templates.say("rule.ignores_ward"))
+		if ignores_barrier:
+			out.append(Templates.say("rule.ignores_barrier"))
 		if swaps:
 			out.append(Templates.say("rule.swaps"))
 		if webs:
@@ -1121,6 +1135,10 @@ func describe() -> String:
 				s += " " + Templates.say("rule.holds", {"status": status_name(holds)})
 			if ignores_armour:
 				s += " " + Templates.say("rule.ignores_armour")
+			if ignores_ward:
+				s += " " + Templates.say("rule.ignores_ward")
+			if ignores_barrier:
+				s += " " + Templates.say("rule.ignores_barrier")
 			if self_ablate > 0:
 				s += " " + Templates.say("rule.self_ablate", {"status": status_name("ablating_mech"), "n": self_ablate})   # the Stoker's: its own machine set ablating as it fires
 			if self_vent > 0:
