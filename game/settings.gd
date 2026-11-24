@@ -38,6 +38,7 @@ const DISPLAY_DEFAULTS := {
 	"mouth_sends": "1",   # SENDS: a debug build's trial of the packs every mouth sends at a peak (Battlefield.sends_trial), read as a battle starts
 	"pack_bonus": "0",   # PACK_BONUSES: a debug build's trial of what a pack pays the Rupture meter as it falls, on top of its rating, in hundredths of a pip (Battle.pack_bonus_trial), read as a battle starts
 	"chip_style": "corner",   # UnitView.CHIP_STYLES: a debug build's comparison of how a status chip carries its number, read as the field draws
+	"aim_tether": "edge",   # AimLayer.TETHERS: a debug build's comparison of the aim's tether, from the die's edge or over it from its middle
 	"phased_form": "round_end",   # PHASED_FORMS: a debug build's trial of when a machine's Phased lands, as the round ends or as its entry is spent (Skirmish.phase_at_once), read as a battle starts
 }
 const DISPLAY_RANGES := {
@@ -149,6 +150,19 @@ static func field_trial(saved: bool = false) -> void:
 	Ramp.beats_trial = clampi(int(beats), 1, 6) if beats.is_valid_int() else 0
 	ContentDB.leader_step_trial = clampi(int(leaders), 0, 100) if leaders.is_valid_int() else 0
 	Skirmish.overheat_scale = clampi(int(burn), 1, 10) if burn.is_valid_int() else 1
+
+
+static var _env := {}
+
+## A look a debug build compares (the chips, the aim's tether): its environment variable when set
+## to one of `options`, else the setting `key`, else the first option.
+static func look(env: String, key: String, options: Array) -> String:
+	if not _env.has(env):
+		_env[env] = OS.get_environment(env)
+	if options.has(_env[env]):
+		return str(_env[env])
+	var st := str(display.get(key, options[0]))
+	return st if options.has(st) else str(options[0])
 
 
 ## Load once and push the choices into the palette. Safe to call repeatedly.

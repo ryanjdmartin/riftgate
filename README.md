@@ -125,7 +125,8 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     questions only Ryan can settle in its section 12; `status.md` how things stand and the
     order of work; `todo.md` the tasks, one line each by who moves it; `measurements.md`
     every run a decision cites; `naming.md` the kinds of names each maker wants, a reference
-    and never a list; `name_candidates.md` the names floated on the hangar's old Names tab,
+    and never a list; `text_standard.md` how gameplay text is written (Ryan's standard: read
+    before drafting a tip, a readout, a move line, a passive or a module's text); `name_candidates.md` the names floated on the hangar's old Names tab,
     kept as a record.
   - Generated: `vocabulary.md` (from the vocabulary), `voice.md` (every shown text Ryan has
     signed as his own, read before a session drafts shown text), `synergy_map.md` (who sets
@@ -145,8 +146,8 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     bosses' and elites' slate); `heroes_proposal.md`; `domain_statuses_proposal.md` (the
     domains' buffs and debuffs, the purging leaders, Phased by source); `mechanics_audit.md`;
     `skirmish_audit.md` (the code audit and its order of work);
-    `terminology_proposal.md` (the terminology pass: one standard for the gameplay text, marked
-    by Ryan in chat and on its page).
+    `terminology_proposal.md` (the terminology pass: its counts, the calls and names still open,
+    and his marks; the standard itself is `text_standard.md`).
   - Retired, in git: the vocabulary pass's proposal and its table of marks
     (`git show 07f01fb:docs/vocabulary_pass_proposal.md`,
     `git show 07f01fb:docs/vocabulary_table.md`), which is what "the proposal's section N" in
@@ -221,8 +222,8 @@ python3 tools/pages/bible_merge.py BASE.html docs/design-bible.html THEIRS.html 
 python3 tools/synergy_map.py --write
 # the roster analysis as its page (status has the link)
 python3 tools/pages/roster_analysis_page.py > /tmp/roster_analysis.html
-# the terminology pass's rules as the page Ryan marks on (status has the link), from docs/terminology_proposal.md's
-# sections 2 and 4; publish with capabilities {"db": {}, "user": {}}, his marks in its collection `marks`
+# the terminology pass's rules as the page Ryan marks on (status has the link), from docs/text_standard.md's section 2
+# and docs/terminology_proposal.md's section 4; publish with capabilities {"db": {}, "user": {}}, his marks in its collection `marks`
 python3 tools/pages/terminology_marks_page.py > build/terminology_marks.html
 python3 tools/pages/rules_sweep_page.py > /tmp/rules_sweep.html   # the rules sweep's page for his marks, from docs/rules_sweep_proposal.md
 
@@ -404,7 +405,7 @@ godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/skirmis
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn shot.png route
 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/quick/quick_run_screen.tscn shot.png hangar
 RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . --resolution 360x640 -s tools/screenshot.gd -- res://game/battle/battle_screen.tscn phone.png
-# Skirmish poses: codex, mechcodex, termtip, hold (the second die's readout), mechhold, foehold,
+# Skirmish poses: codex, mechcodex, dieview, termtip, hold (the second die's readout), mechhold, foehold,
 # confirm, lock, touch, pair, pair_spread (RIFTGATE_FOES=gel:2,goblin:3), swaphome, acquire,
 # strike, enemyturn, plaque, lure_all, rage, repick (RIFTGATE_FOES=wolf:3), columns
 # (RIFTGATE_FOES=goblin:4,mandragora:4), chips, essence (RIFTGATE_TEAM=ammit,badger), stores
@@ -414,7 +415,7 @@ RIFTGATE_SHOT_H=1616 RIFTGATE_SAFE=80,48 RIFTGATE_SHOT_SCALE=1.5 godot --path . 
 # feed_levels, feed_recalc, feed_wobble, feed_tear, feed_signal.
 # Battle poses: select, route, hold, boss, ground, plan_play, execute, endask, inspect, hunter,
 # hunted, draft, carry, north, queue, attack, predict, caught, flyer, caches, cachesflat, zoom,
-# zoomlast, codex, foecodex, resolve, rift, tear, peak, fracture, elite, foe, onprops, logfull,
+# zoomlast, codex, formation, foecodex, resolve, rift, tear, peak, fracture, elite, foe, onprops, logfull,
 # engage, contact, bosscontact, menu, settings, trials, tune.
 # Quick campaign poses: draft, picked, hangar (RIFTGATE_SHOT_H=3000 shows the stores at its
 # foot), chooser, fight, track, rewards, over.
@@ -481,7 +482,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_PULSE_DEBUG      END TURN pulsing, on the map and in a fight (any run)
 #   RIFTGATE_SEAL_DEBUG       a model's form held and let go in turn: the Polar Bear's seal, the Clydesdale's batteries, the Macaque's armaments one at a time (any run)
 #   RIFTGATE_ACT_DEBUG        one foe after another lit as the acting foe (skirmish)
-#   RIFTGATE_RAGE_DEBUG       the rage meter filling and emptying on the machine that banks it (skirmish)
+#   RIFTGATE_RAGE_DEBUG       every machine with a rage form (the Nemesis) opens each turn at its heat maximum, so it rages every turn (skirmish)
 #   RIFTGATE_PREY_DEBUG       the predator sense kept on (skirmish)
 #   RIFTGATE_PLAQUE_DEBUG     the plaque with one move name after another (skirmish)
 #   RIFTGATE_ALOFT_DEBUG      every foe drawn as out of the dice's reach; RIFTGATE_FOES=roc:1 is the real thing (skirmish)

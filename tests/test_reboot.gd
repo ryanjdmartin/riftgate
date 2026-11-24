@@ -16,9 +16,9 @@ const MENDER := {"id": "mender", "name": "Mender", "description": "", "effects":
 ## A hull hit that stands a shield up, a gain by another road than the regen.
 const LINER := {"id": "liner", "name": "Liner", "description": "", "effects": [
 	{"trigger": "on_hull_damage", "effect": "add_shield", "value": 10}]}
-## A reboot blasts what it vents on every foe, 1 for every 2 heat.
-const BOILER := {"id": "boiler", "name": "Boiler", "description": "", "effects": [
-	{"trigger": "static", "effect": "reboot_release", "value": 1, "per": 2}]}
+## A reboot that fires a piece first, the piece's id "ray".
+const RAYED := {"id": "rayed", "name": "Rayed", "description": "", "effects": [
+	{"trigger": "static", "effect": "reboot_piece", "piece": "ray", "label": "Ray"}]}
 
 
 func _mech(id: int, name: String, d: Die, shield: int = 40, hull: int = 100, heat_max: int = 30) -> Unit:
@@ -229,14 +229,14 @@ func test_a_reboot_vents_what_stood_past_the_maximum_so_its_turn_burns_nothing()
 func test_a_reboot_opens_a_sealed_machine() -> void:
 	var m := _mech(1, "A", Die.single(Face.buff("overcharged", 1)), 40, 200, 30)
 	m.grant_passive({"id": "lockdown", "name": "Lockdown", "description": "", "effects": [
-		{"trigger": "static", "effect": "seal_form", "value": 10, "heat": 15}]})
+		{"trigger": "static", "effect": "seal_form"}]})
 	var sk := _fight([m], [Foe.make("brute", 900, 25)])
 	var ms: Skirmish.MechState = sk.mechs[0]
 	sk.start_round()
 	assert_true(sk.assign(0, null), "a buff on itself")
 	assert_true(Effects.is_sealed(m), "seals it")
 	sk.end_round()
-	assert_eq(ms.heat, 15, "sealed, it ran 15 hotter as its turn ended")
+	assert_eq(ms.heat, int(Effects.STATUS["sealed"]["seal_heat"]), "sealed, it ran hotter as its turn ended")
 	var hull := m.hull
 	sk.start_round()
 	assert_true(sk.can_reboot(0), "sealed, it may reboot: it is never stuck in its shell")
@@ -289,7 +289,7 @@ func test_a_machine_out_of_reach_does_not_burn_and_a_phased_one_may_reboot() -> 
 	sk.end_round()
 	assert_eq(m.hull, 190, "it burns the turn it passes its maximum")
 	sk.start_round()
-	Effects.grant_for_rounds(m, Effects.STATUS["swallowed"], "test", sk.round)
+	Effects.lay_timer(m, Effects.STATUS["swallowed"], "test", 1)
 	assert_true(Skirmish.is_out(ms), "Swallowed, it is out of the fight this round")
 	assert_false(sk.can_reboot(0), "and cannot reboot")
 	sk.end_round()
@@ -387,29 +387,41 @@ func test_a_barrier_lands_on_a_broken_shield_and_covers_a_reboot() -> void:
 	assert_true("\n".join(sk.log).contains("the Barrier takes the blow"), "the log says so")
 
 
-## The vent that explodes (Ryan, 17 November: "the reboot vent is the one that explodes"): a
-## machine whose reboot blasts what it vents lands it on every foe as its shield drops; a turn it
-## ends with its die unspent releases nothing, the release a passed turn's until then.
-func test_a_reboots_vent_explodes_and_an_unspent_die_releases_nothing() -> void:
-	var m := _mech(1, "A", _gun(10), 40, 200)
-	m.grant_passive(BOILER)
+## A machine whose reboot fires a piece first (the Whip Scorpion's Death Ray, Ryan, 23 November:
+## "The death ray does it's thing when used, then the Scorpion reboots"): dropped on REBOOT its die
+## brings the piece up and nothing vents yet; spent, the piece fires and the reboot follows, its
+## shield down and its heat gone, bare through the enemy's turn and whole as the next opens; a turn
+## it ends with its die unspent keeps its heat, as any machine's.
+func test_a_reboot_piece_fires_and_then_the_machine_reboots() -> void:
+	var ray := Face.attack(7, L, [], 3)
+	ray.component = "ray"
+	var gun := Face.attack(1, L, [], 10)
+	var m := _mech(1, "A", Die.of([gun, ray]), 40, 200)
+	m.grant_passive(RAYED)
 	var foe := Foe.make("dummy", 900, 0)
 	var sk := _fight([m], [foe])
 	var ms: Skirmish.MechState = sk.mechs[0]
 	sk.start_round()
+	ms.face_index = 0
 	sk.assign(0, sk.front[0])
 	sk.end_round()
-	var hp := foe.hp
 	sk.start_round()
 	assert_eq(ms.heat, 10, "ten held")
 	sk.end_round()
-	assert_eq(foe.hp, hp, "a turn it ends with its die unspent opens no valve")
-	assert_true(sk.releases.is_empty(), "nothing released")
+	assert_eq(ms.heat, 10, "a turn it ends with its die unspent keeps its heat")
 	sk.start_round()
-	assert_true(sk.reboot_mech(0), "it reboots")
-	assert_eq(foe.hp, hp - 5, "and its vent lands on the foe at once: 1 for every 2 heat it sheds")
-	assert_eq(ms.heat, 0, "left cold")
-	assert_eq(sk.releases.size(), 1, "the screen is told")
+	assert_true(sk.reboot_mech(0), "its die on REBOOT")
+	assert_false(ms.rebooting, "nothing vents yet: the piece is up")
+	assert_eq([ms.face().component, ms.heat, m.shield], ["ray", 10, 40], "its die shows the piece, its heat and shield as they were")
+	var hp := foe.hp
+	assert_true(sk.assign(0, sk.front[0]), "the piece spent")
+	assert_eq(foe.hp, hp - 7, "it fires")
+	assert_true(ms.rebooting, "and the machine reboots")
+	assert_eq([ms.heat, m.shield], [0, 0], "cold and bare")
+	assert_true("\n".join(sk.log).contains("A reboots as its ray has fired"), "the log says why")
+	sk.end_round()
+	sk.start_round()
+	assert_eq(m.shield, 40, "whole as the next round opens")
 
 
 func test_the_round_preview_plays_a_reboot_bare_and_a_burn_that_stands() -> void:
@@ -644,6 +656,8 @@ func live_test_a_die_dragged_onto_reboot_is_the_one_way_in() -> void:
 	_tap(vp, rb)
 	assert_false(_rebooting(sk).has(true), "a touch on REBOOT reboots nothing")
 	_tap(vp, s._mech_views[0].get_global_rect().get_center())
+	OS.delay_msec(int(UnitView.DOUBLE_TAP_SECONDS * 1000.0) + 40)   # a unit's tap waits out the double-tap window, as a die's
+	s._mech_views[0]._process(0.016)
 	assert_eq(s._pop, {"mech": 0}, "a tap on a machine reads it")
 	_tap(vp, rb)
 	assert_false(_rebooting(sk).has(true), "nor with a machine's readout open")
@@ -831,4 +845,48 @@ func test_a_machine_whose_whole_die_is_dark_may_reboot() -> void:
 	assert_false(s._reboot_btn.disabled, "and REBOOT takes it")
 	assert_true(s._do_reboot(0), "its die dropped on REBOOT, it reboots")
 	assert_eq([ms.heat, m.shield], [0, 0], "vented, the shield down")
+	s.free()
+
+
+## Corrupted heals at a reboot, as a jam lights (Ryan, 23 November: "Corrupted should heal on
+## reboot, just like jammed"): every corrupted entry clean after the drop.
+func test_a_reboot_heals_every_corrupted_entry() -> void:
+	var m := _mech(1, "A", _gun(10))
+	var sk := _fight([m], [Foe.make("dummy", 900, 0)])
+	sk.start_round()
+	Effects.corrupt_entry(m, 0, "foe:x", 2)
+	Effects.corrupt_entry(m, 1, "foe:x", 1)
+	assert_eq([Effects.corrupt_stacks(m, 0), Effects.corrupt_stacks(m, 1)], [2, 1], "two entries corrupted")
+	assert_true(sk.reboot_mech(0), "it reboots")
+	assert_eq([Effects.corrupt_stacks(m, 0), Effects.corrupt_stacks(m, 1)], [0, 0], "and both are clean")
+
+
+## A grant of no stacks is no status (23 November, the King Gel's Empowered ×0): nothing stands at
+## nothing to clear.
+func test_a_grant_of_no_stacks_stands_no_status() -> void:
+	var foe := Foe.make("dummy", 10, 1)
+	assert_true(Effects.stack(foe, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:x", 0, Effects.DECAY_HALF) == null, "no grant at none")
+	assert_false(Effects.has(foe, "kindled"), "and no Empowered on it")
+
+
+## A cooldown's chip is no debuff (Ryan, 23 November: "Cooldown is not a Debuff"): no Debuff in its
+## words and no wedge; a foe's jam still is one.
+func test_a_cooldown_is_no_debuff_and_a_jam_is() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech(_a_chassis(db))
+	m.die = Die.of([Face.attack(3, L, [], 4), Face.attack(2, L, [], 2)])
+	sk.add_mech(m)
+	sk.add_foes([Foe.make("dummy", 900, 0)])
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	Effects.disable_entry(m, 0, "cooldown", sk.round + 1)
+	Effects.disable_entry(m, 1, "foe:x", Effects.JAM_REBOOT)
+	var rows := s._mech_rows(0)
+	var cool := rows.filter(func(r: Array) -> bool: return str(r[2]).begins_with("Cooldown"))
+	var jam := rows.filter(func(r: Array) -> bool: return str(r[2]).contains("Jammed"))
+	assert_eq(cool.size(), 1, "the cooldown's chip, its words bare")
+	assert_eq(str(cool[0][5]) if cool[0].size() > 5 else "", "", "and no wedge")
+	assert_true(jam.size() == 1 and str(jam[0][2]).begins_with("Debuff"), "the jam a debuff")
+	assert_false(rows.any(func(r: Array) -> bool: return str(r[2]) == "Die locked"), "and no chip for a lock")
 	s.free()

@@ -233,8 +233,11 @@ vec4 blurred_other2(vec2 uv, vec2 texel, float rad) {
 
 void fragment() {
 	vec2 spx = UV * view_size;                                 // screen pixel
-	ivec2 c = ivec2(floor(spx / cell));
-	vec2 q = ((vec2(c) + 0.5) * cell - scroll) / zoom;         // the dither cell's map pixel
+	// The dither's cells ride the map, not the glass (Ryan, 23 November: the seam's and a pack's
+	// dithering jittered as the map panned, a pattern fixed to the screen swimming over the ground
+	// beneath it): counted from the map's origin on screen, still `cell` screen pixels square.
+	ivec2 c = ivec2(floor((spx - scroll) / cell));
+	vec2 q = ((vec2(c) + 0.5) * cell) / zoom;                  // the dither cell's map pixel
 	float k = smoothstep(0.42, 0.58, bleed_at(q));
 	vec2 px = (spx - scroll) / zoom;                           // this fragment's map pixel
 	// Past the field's sides the world softens and fades into the edge of the table, the
@@ -294,7 +297,7 @@ void fragment() {
 	// units layer's translucent part (a flyer's shadow) falls on the painting the same way.
 	// Each side reads only its own: the machines' layer where the painting shows, the scene
 	// where it does not (the units layer is the scene's size, so one texel serves both).
-	if (k > bayer(c)) {
+	if (k > bayer(((c % 4) + 4) % 4)) {   // a cell left of or above the map's origin counts on from 3, never a negative
 		vec4 u = aa_here ? fxaa_at(units_lin, UV, TEXTURE_PIXEL_SIZE) : blurred_units(UV, 1.0 / view_size, rad);
 		COLOR = other;
 		COLOR.rgb = mix(COLOR.rgb, u.rgb, u.a);

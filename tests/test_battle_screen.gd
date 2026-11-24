@@ -957,7 +957,9 @@ func test_hold_shows_a_readout() -> void:
 	assert_false(s._details.visible, "hidden on release")
 	var sq: Unit = s.battle.field.packs()[0]
 	s._on_unit_held(sq)
-	assert_true(s._details_entry.text().contains("×%d" % int(sq.member_list()[0][1])), "the pack's members, each at its count")
+	var first_name := str(ContentDB.load_default().foes.get(str(sq.member_list()[0][0]), {}).get("name", ""))
+	assert_true(s._details_entry.text().contains(first_name), "the pack's members by name")
+	assert_false(s._details_entry.text().contains("×"), "and no count (23 November: its formation counts them)")
 	assert_false(s._details_entry.text().contains("Ring"), "no ring line: a hunter catches at the engage range everyone shares (10 November)")
 	assert_true(s._details_entry.text().contains("Marches") or s._details_entry.text().contains("Hunts"), "and what it is doing")
 	if sq.behaviour != "hunt":
@@ -1011,7 +1013,9 @@ func test_gate_falling_shows_the_outcome() -> void:
 	s.free()
 
 
-func test_double_tap_opens_the_codex_for_a_machine_and_a_pack() -> void:
+## A double-tap on the map (Ryan, 23 November): a machine's codex; a pack's formation, a foe in it
+## its own codex over it; a cache's codex.
+func test_double_tap_opens_a_machines_codex_a_packs_formation_and_a_caches_codex() -> void:
 	var s := _screen()
 	var m: Unit = s.battle.mechs()[0]
 	s._on_hex_double_tapped(m.pos)
@@ -1021,11 +1025,33 @@ func test_double_tap_opens_the_codex_for_a_machine_and_a_pack() -> void:
 	assert_false(s._codex.visible, "and closes")
 	var sq: Unit = s.battle.field.packs()[0]
 	s._on_hex_double_tapped(sq.pos)
-	assert_true(s._codex.visible, "the codex opens for a pack")
-	assert_eq(s._codex._title.text, sq.display_name, "headed by the pack")
-	assert_true(s._codex._sub.text.contains("×%d" % sq.strength), "with its strength in the subtitle")
-	assert_true(not s._codex._body.text().is_empty(), "and its foe type's codex text")
-	s._codex.close()
+	assert_false(s._codex.visible, "a pack opens no codex")
+	assert_true(s._formation.visible, "but its formation")
+	assert_eq(s._formation._title.text, sq.display_name, "headed by the pack")
+	assert_false(s._formation._sub.text.contains("×"), "no count in its subtitle")
+	var cells := FormationBox.cells_of(sq)
+	var heads := cells.filter(func(c) -> bool: return not str(c).is_empty()).size()
+	assert_eq(heads, sq.member_list().reduce(func(a: int, m: Array) -> int: return a + int(m[1]), 0), "every foe in it a cell")
+	var fid := ""
+	for c in cells:
+		if not str(c).is_empty():
+			fid = str(c)
+			break
+	s._formation.foe_double_tapped.emit(fid)
+	assert_true(s._codex.visible, "a foe double-tapped there opens its codex")
+	assert_eq(s._codex._title.text, str(ContentDB.load_default().foes[fid]["name"]), "that foe's")
+	assert_false(s._formation.visible, "in the formation's place: one shade, never two")
+	assert_true(s._codex._back_btn.visible, "with BACK")
+	s._codex._go_back()
+	assert_true(s._formation.visible and not s._codex.visible, "BACK returns to the formation")
+	s._formation.close()
+	if not s.battle.field.caches.is_empty():
+		var c: Dictionary = s.battle.field.caches[0]
+		if s._map.unit_at_shown(c["pos"]) == null:
+			s._on_hex_double_tapped(c["pos"])
+			assert_true(s._codex.visible, "a cache opens its codex")
+			assert_true(s._codex._sub.text.begins_with("CACHE"), "named a cache")
+			s._codex.close()
 	s.free()
 
 

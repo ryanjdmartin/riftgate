@@ -2,7 +2,8 @@ extends SceneTree
 
 ## Measures a screen's per-frame cost on this machine: frame time and draw calls, over a run
 ## of frames, printed as a table. The battle screen at zoom 1 and at full zoom (the default),
-## or the skirmish screen (`-- skirmish`). Each row also gives the 3D views' own draw calls:
+## or the skirmish screen (`-- skirmish`); then the battle at full zoom while it pans, a few pixels
+## a frame back and forth, as a finger drags it (23 November: the map's framerate fell as it panned). Each row also gives the 3D views' own draw calls:
 ## the map's world and its machines' layer, or each machine's view in the skirmish (the
 ## machines are welded at load; RIFTGATE_WELD=off counts them as authored). Needs a window;
 ## run without vsync so the frame time is the work, not the refresh.
@@ -41,15 +42,22 @@ func _tick() -> void:
 	elif _frames > WARMUP:
 		_samples.append((now - _t0) / 1000.0)
 		_t0 = now
+	if _phase == 2 and not _skirmish:
+		var m: BattleMapView = (_screen as BattleScreen)._map
+		m.scroll_x += 4.0 if (_frames / 60) % 2 == 0 else -4.0
+		m.scroll_y += 2.0 if (_frames / 45) % 2 == 0 else -2.0
+		m._clamp_scroll()
+		m.queue_redraw()
 	if _frames == WARMUP + RUN:
-		_report("skirmish" if _skirmish else ("zoom 1.0" if _phase == 0 else "zoom 2.6"))
+		_report("skirmish" if _skirmish else ["zoom 1.0", "zoom 2.6", "panning"][_phase])
 		if _skirmish:
 			quit(0)
 			return
-		(_screen as BattleScreen)._map.zoom_at((_screen as BattleScreen)._map.size * 0.5, 2.6)
+		if _phase == 0:
+			(_screen as BattleScreen)._map.zoom_at((_screen as BattleScreen)._map.size * 0.5, 2.6)
 		_frames = 0
 		_phase += 1
-		if _phase == 2:
+		if _phase == 3:
 			quit(0)
 
 
@@ -60,8 +68,8 @@ func _report(label: String) -> void:
 		sum += s
 	var mean := sum / _samples.size()
 	var p95: float = _samples[int(_samples.size() * 0.95)]
-	print("%-10s  mean %.2f ms  p95 %.2f ms  draw calls %d  primitives %d  objects %d  3D: %s" % [
-		label, mean, p95,
+	print("%-10s  mean %.2f ms  p95 %.2f ms  process %.2f ms  draw calls %d  primitives %d  objects %d  3D: %s" % [
+		label, mean, p95, Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0,
 		int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)),
 		int(Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)),
 		int(Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME)),

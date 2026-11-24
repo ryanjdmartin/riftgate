@@ -53,15 +53,18 @@ document's job and every command are in `README.md`.
   of it is the game's until he says. Until he has played it, no session writes a pack, a
   formation, an elite's or a boss's numbers, or a rule of the tide. His three points of 24
   November stand over what comes next: a massive foe is a kind of unit and no measure of
-  threat, a squad's growth inside a tier is a target to set, and the packs a mouth sends at
-  once are the Convergence's dial. The hunters are pinned on his word.
-- Branches. `claude/formation-pass-feedback-rlvx5x` (23 November, Ryan's play of the field's
-  dials: the seam a circle, the round's view, the zoom's floor, the pushers' segments, the
-  tears' row slower and off the wall, five tier-one stock dice back to basics, the basics'
-  five dials settled and cut, the graded tide on a dial with the Meadow's packs, the trials'
-  page cut to six dials, the tier-one bench as a grid) runs ahead of main until he lands it;
-  this file describes it. Main holds everything else here, the terminology pass's branch
-  (`claude/gameplay-terminology-tooltips-rug879`) landed on 22 November on Ryan's "Ok push to main".
+  threat ("a property, not a quota", with more kinds of enemy wanted in a pass of its own), a
+  squad's growth inside a tier is a target to set, and the packs a mouth sends at once are the
+  Convergence's dial. The hunters are pinned and the treant waits on his marks.
+- Branches. Main holds everything this file describes. `claude/formation-pass-feedback-rlvx5x`
+  landed on 24 November on Ryan's "Make sure main is updated" (his play of the field's dials: the
+  seam a circle, the round's view, the zoom's floor, the pushers' segments, the tears' row slower
+  and off the wall, five tier-one stock dice back to basics, the basics' five dials settled and
+  cut, the graded tide on a dial with the Meadow's packs, the trials' page cut to six dials, the
+  tier-one bench as a grid). The terminology pass's branch
+  (`claude/gameplay-terminology-tooltips-rug879`) landed again the same day on his "land this on
+  main": gameplay text follows `docs/text_standard.md` (CLAUDE.md says so), every glossary tip is
+  written to it, and a reach over every Sprite targets the field.
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
   (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks
@@ -97,7 +100,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1447 tests, 389,702 checks, green on Godot 4.8-beta4 (24 November, the graded tide on its dial and the trials' page cut to six). The runner fails a run
+- Tests: 1464 tests, 390,375 checks, green on Godot 4.8-beta4 (24 November, the formation feedback's branch landed on main: the graded tide on its dial and the trials' page cut to six, beside the Nemesis's Rage, the Whip Scorpion's Death Ray and the tips to the standard). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -212,8 +215,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Injector; its shield-lit parts carry its heat, blue to red-orange, `RIFTGATE_HEAT_GLOW_DEBUG=1`), its strength his play's in
   a team that leverages heat, since the bot reads only its Empowered (20 November); its first
   round on the Swallowtail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
-  the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis, the Polar Bear
-  (a reboot opens its seal), the Whip Scorpion (its reboot's vent blasts every foe), the
+  the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis (its Rage, rebuilt
+  on Ryan's design of 23 November), the Polar Bear (a reboot opens its seal), the Whip Scorpion
+  (rebuilt the same day: its damage by its heat, and its reboot firing its Death Ray), the
   Lammergeier, the Wild Boar, the Baboon, the Stingray, and the Macaque, landed 19 November
   on `ccr-64b5deec-lunnff` from Ryan's kit (Aphelion's agile duelist at tier one: its offhand
   cycles the Beam Rifle, the Beam Sword and the Beam Shield after every spend at a foe, a rider
@@ -331,11 +335,14 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
 - **The screens.** The harness (`godot --path .`) launches a battle as a run deals it, a lone
   fight, a saved battle and the quick campaign, and picks a machine's upgrade build. The
   skirmish screen, the battle screen, the pause menu and its settings are built; the hangar,
-  the mission map and the draft are not. In a fight (22 November, on the branch
-  `claude/battle-ui-intents-status-6hgoi0` until Ryan lands it) a foe's intent is a plate above
-  it, a status chip a square tile with its number at its corner (Settings → CHIPS on a debug
-  build compares the corner, the tab and the old chip), and a die is spent by dragging a
-  crosshair from it (`AimLayer`), the die staying in its tray. A debug build's settings hold TRIALS and COLOURS
+  the mission map and the draft are not. In a fight (22 November) a foe's intent is a dark plate above
+  it, level with its gauge, its arrows leaving the foe's middle; a status chip is a square tile
+  with its number at its corner; a die is spent by dragging a large crosshair from it
+  (`AimLayer`), the die staying in its tray. Settings on a debug build compare the chip's forms
+  (CHIPS) and the tether's (TETHER) until Ryan picks. Since 23 November a die's double-tap shows
+  the whole die at its live numbers and a hold alone locks; a dark entry is its own face under a
+  veil; a unit's tap waits out the die's double-tap window; on the map a pack's double-tap opens
+  its formation (`FormationBox`) and a cache's its codex, and a pack shows no count. A debug build's settings hold TRIALS and COLOURS
   (`ColourTuner`: Ryan tunes there and sends its COPY text).
 - **The hangar page.** `tools/hangar.html` over `tools/hangar_data.py`'s files, a tab a kind
   since 20 November: Chassis (the Bench renamed: every machine a card, a tap its working sheet
@@ -487,9 +494,8 @@ Deleted on his word of 20 November: the vocabulary marks, the targeting scenes, 
 analysis, the effects listening page and the engagement sandbox (the README's docs line has the
 copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 
-- The terminology pass's rules, for his marks: https://claude.ai/artifact/TXNpkS4zuPJ5c6sEpk9oF4
-  (Version 2, 22 November, from `claude/gameplay-terminology-tooltips-rug879`, the timing rules added), made from
-  `docs/terminology_proposal.md`'s sections 2 and 4 by `tools/pages/terminology_marks_page.py` and
+- The terminology standard, what is still his to mark (settled rules listed for reference; Version 6, 24 November): https://claude.ai/artifact/TXNpkS4zuPJ5c6sEpk9oF4,
+  made from `docs/text_standard.md`'s section 2 and `docs/terminology_proposal.md`'s section 4 by `tools/pages/terminology_marks_page.py` and
   published with the `db` and `user` capabilities. Each rule, call and name takes a mark and a
   note, saved in the collection `marks`, a document an item keyed by its id (`rule-13`,
   `name-aloft`: `title`, `mark`, `note`, `at`). He may mark there or in chat; a session reads
@@ -497,14 +503,14 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   republishes while he is on the page.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.655 on 20 November from main's file at `33c4cc61` (the page's Version 519),
-  over this line's v0.654. The file is at v0.661 on `claude/formation-pass-feedback-rlvx5x`
-  (the wall, tears and seam rows, the vanilla, reboot, Barrier and hunters rows, section 12's
-  tide item), unpublished: the session that wrote it had no room left to read the live page
-  whole. Before republishing,
+  Published at v0.657 on 23 November from main's file at `b3f7c466` (the page's Version 520),
+  over v0.655 (the live page checked byte for byte against `33c4cc61`'s file first). The file is
+  at v0.662 on main since `claude/formation-pass-feedback-rlvx5x` landed on 24 November (the wall,
+  tears and seam rows, the vanilla, reboot, Barrier and hunters rows, section 12's tide item),
+  unpublished: the session that wrote it had no room left to read the live page whole. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
-  `33c4cc61` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  `b3f7c466` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
   live source with the tool's wrapper line, its trailing newline and `</body></html>`
   stripped): check BASE against the live page byte for byte first. After main merges in,
   check the tables script's run against the file's tables before keeping it: a row it
@@ -515,7 +521,7 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   Tear, Rift Pressure and Ramp lines moved on 23 November (its `text` and `edits` collections
   were empty that day, `designs` his two notes of 5 November). A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 325 (22 November): the Inertia Drill's rule line, data only over 324's page. Version 324 (22 November): a machine's sheet lists every term it orbits, its own first,
+  `edits`, `designs` and `text` read first. Version 336 (24 November): main at `d044ce7`, the standard landed. Version 335 (24 November): a reach over every Sprite says no hit is Targeted. Version 334 (23 November): a second precision pass on the tips, checked against the engine. Version 333 (23 November): the tips, the target lines and the glossary in Sprite and Frame. Version 332 (23 November): main taken in, Corrupted's tip on its reboot rule, Hardened Light's "Shield Broken". Version 331 (23 November): Primed's rider at Resolve, the Ape's "Gain 3 Golden". Version 330 (23 November): Sealed's numbers on the status, the tips' "When defeated". Version 329 (23 November): the other 113 glossary tips redrafted to his rules, session drafts for his marks. Version 328 (23 November): his own texts for the sample tips, a line an effect, {N} the unit's live sum where a line counts per stack; Ablating renamed Ablate; Golden +2 whatever laid it, its break a Suppress like any. Version 326 (22 November): ten term tips redrafted in the terminology standard's event format (Ablating, Brittle, Shocked, Primed, Exposed, Golden, Swallowed, Armoured, Empowered, Penetrate), the sample for his marks before the rest, data only. Version 325 (22 November): the Inertia Drill's rule line, data only over 324's page. Version 324 (22 November): a machine's sheet lists every term it orbits, its own first,
   each editable in place; 323 the same day, a dealt machine with an open brief under Unfinished.
   Version 322 (22 November): Version 321's files, the Text
   tab's Vocabulary view with its category filter again, from `claude/gameplay-terminology-tooltips-rug879`. Version 321 (21 November): main at `8b5a027d`, the

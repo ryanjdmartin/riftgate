@@ -18,7 +18,7 @@ signal held
 signal hold_released
 
 const HOLD_SECONDS := 0.45
-const DOUBLE_TAP_SECONDS := 0.35
+const DOUBLE_TAP_SECONDS := DieFaceView.DOUBLE_TAP_SECONDS   # a die's window, the one every double-tap in a fight waits (Ryan, 23 November: "Codex views need the same double-tap delay as other double taps, like the die face")
 const STATUS_H := 38.0
 const CHIP_H := 30.0
 const CHIP_GLYPH := 18.0
@@ -50,13 +50,13 @@ const TILE_ROW_GAP := 8.0   # between two rows of square chips: the corner's num
 const TAB_TEXT := 14        # the tab's number, on its plate
 ## A foe's intent stands above it, apart from its chips (Ryan, 22 November: "move intents to above
 ## the enemy unit, be a bit larger, and be either shaped or styled differently than the chips, to
-## stand out"): a solid plate in the enemy's colour with a dark rim and a pointer down onto the foe,
-## its glyph and number dark on it, each rider in a dark inset of its own colour.
+## stand out"), larger: a dark plate edged in the intent's colour, its glyph and number in it, each
+## rider after a divider in its own colour, its bottom level with the floating gauge's (the same
+## day: "I like the black background, no arrow. Move it up so the bottom is flush with the bottom
+## of the HP bar").
 const INTENT_H := 40.0
 const INTENT_GLYPH := 26.0
 const INTENT_TEXT := 26
-const INTENT_POINT := 10.0  # the pointer's height under the plate
-const INTENT_LIFT := 4.0    # the pointer's tip above the drawing's top
 const INTENT_PAD := 7.0
 const INTENT_RIDER_GLYPH := 18.0
 const INTENT_RIDER_TEXT := 18
@@ -64,7 +64,7 @@ const INTENT_RIDER_TEXT := 18
 var display_name: String = ""     # for the codex and readouts; never drawn here
 var is_enemy: bool = false
 var massive: bool = false
-var bars: Array = []              # [[value, max, Color, (pending), (points a notch), (rounds at rest)], ...]
+var bars: Array = []              # [[value, max, Color, (pending), (points a notch), (broken), (a break point)], ...]
 var bars_above: bool = false      # true: full-width gauges above the sprite; false: floating
 var pips: Array = []              # [count, of]: a count toward a shot drawn as cells under the gauges (the Cassowary's sixth shot), the last lit when it is next; empty for none
 var store: Array = []             # [count, cap, colour, glyph]: a capped store's bar under the heat, a segment a stack up to its cap, lit to its count (the Honey Badger's hopper, the Nemesis's rage); empty for none
@@ -133,6 +133,16 @@ var _pressed := false
 var _press_at := 0.0
 var _holding := false
 var _last_tap_at := -10.0
+var _second := false              # this touch came inside the double-tap window
+var _tap_due := -1.0              # when a tap waiting out the window lands; negative for none
+
+
+## A tap waiting out the double-tap window lands now, if one is waiting.
+func _land_tap() -> void:
+	if _tap_due < 0.0:
+		return
+	_tap_due = -1.0
+	tapped.emit()
 var _t := 0.0
 
 
@@ -297,18 +307,22 @@ func _gui_input(event: InputEvent) -> void:
 			_pressed = true
 			_holding = false
 			_press_at = Time.get_ticks_msec() / 1000.0
+			_second = _press_at - _last_tap_at <= DOUBLE_TAP_SECONDS   # the window runs from the last tap's release to this touch, as a die's
 			set_process(true)
 		else:
 			if _holding:
 				hold_released.emit()
 			elif _pressed:
 				var now := Time.get_ticks_msec() / 1000.0
-				if now - _last_tap_at <= DOUBLE_TAP_SECONDS:
+				if _second:
+					_second = false
 					_last_tap_at = -10.0
+					_tap_due = -1.0   # the double-tap stands in for its first tap
 					double_tapped.emit()
 				else:
 					_last_tap_at = now
-					tapped.emit()
+					_land_tap()
+					_tap_due = now + DOUBLE_TAP_SECONDS   # a tap lands once the window has passed, so a double-tap never shows a tap's work
 			_pressed = false
 			_holding = false
 			# The loop stops itself once nothing plays: stopped here, a tear or a dropped signal
@@ -318,8 +332,11 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
+	if _tap_due >= 0.0 and not _pressed and Time.get_ticks_msec() / 1000.0 >= _tap_due:
+		_land_tap()
 	if _pressed and not _holding and Time.get_ticks_msec() / 1000.0 - _press_at >= HOLD_SECONDS:
 		_holding = true
+		_tap_due = -1.0
 		held.emit()
 	if _shatter >= 0.0:
 		_shatter += delta
@@ -354,7 +371,7 @@ func _process(delta: float) -> void:
 	if (_has_pending() or breathe or acting) and visible and not dead:
 		_t += delta
 		queue_redraw()
-	elif not _pressed and _shatter < 0.0 and _ripple < 0.0 and _acquire < 0.0 and _glitch < 0.0 and _spend < 0.0 and _shift < 0.0:
+	elif not _pressed and _tap_due < 0.0 and _shatter < 0.0 and _ripple < 0.0 and _acquire < 0.0 and _glitch < 0.0 and _spend < 0.0 and _shift < 0.0:
 		set_process(false)
 
 
@@ -693,7 +710,7 @@ func _draw() -> void:
 		var txt: String = ich[1]
 		if locking and acq < SCRAMBLE_PART:
 			txt = Hud.scramble(txt, int(Time.get_ticks_msec() / 45), get_instance_id() % 97)
-		draw_intent(self, ir, ich, mono, txt, vis.get_center().x)
+		draw_intent(self, ir, ich, mono, txt)
 		if locking:
 			# The lock: bracket corners collapsing onto the plate, fading as they land.
 			Hud.brackets(self, ir.grow(3.0 + 18.0 * (1.0 - acq)), 10.0, Color(ich[2], 1.0 - acq * 0.7), 2.0)
@@ -752,8 +769,9 @@ func intent_chip() -> Array:
 	return [Glyphs.intent_for(intent_kind), (str(intent_value) + intent_note) if intent_value > 0 else "", Palette.ENEMY if is_enemy else Palette.HUD, "intent", intent_riders]
 
 
-## The intent's plate in the view: centred over the drawing, its pointer's tip just above the
-## drawing's top, held on the screen; an empty rect for a dead unit or one showing no intent.
+## The intent's plate in the view: over the drawing, left of the floating gauge, its bottom level
+## with the gauge's lowest bar, held on the screen; an empty rect for a dead unit or one showing no
+## intent.
 func intent_rect() -> Rect2:
 	if dead or intent_kind.is_empty():
 		return Rect2()
@@ -764,7 +782,8 @@ func intent_rect() -> Rect2:
 	if not bars.is_empty() and not bars_above:
 		x = minf(x, _float_x() - 6.0 - w)   # clear of the floating gauge at the drawing's top-right, its pointer still on the drawing
 	x = clampf(x, span.x, maxf(span.x, span.y - w))
-	return Rect2(x, vis.position.y - INTENT_LIFT - INTENT_POINT - INTENT_H, w, INTENT_H)
+	var bottom := vis.position.y - FLOAT_LIFT + BAR_H   # the floating gauge's lowest bar's bottom (_draw)
+	return Rect2(x, bottom - INTENT_H, w, INTENT_H)
 
 
 ## The floating gauge's left edge (a foe's): at the drawing's top-right, held in the view.
@@ -773,13 +792,9 @@ func _float_x() -> float:
 	return minf(vis.end.x - 10.0, size.x - FLOAT_BAR_W - 2.0)
 
 
-## Where a foe's intent arrow leaves it (Ryan, 9 November: "the lines should come from the intent
-## chip, and always from the intent chip's middle"): the middle of its intent plate, on the screen;
-## the drawing's middle for a unit showing no intent.
+## Where a foe's intent arrow leaves it: the middle of its drawing (Ryan, 22 November: "Put intent
+## arrows coming from the center of the portrait"), the plate standing above it.
 func intent_anchor_global() -> Vector2:
-	var ir := intent_rect()
-	if ir.size.x > 0.0:
-		return get_global_transform() * ir.get_center()
 	return anchor_global()
 
 
@@ -800,16 +815,9 @@ static func chip_rows(widths: Array, wrap: float) -> Array:
 	return rows
 
 
-static var _env_style := "?"
-
-## The chip style drawn now (CHIP_STYLES): RIFTGATE_CHIP_STYLE when set, else the debug setting.
+## The chip style drawn now (CHIP_STYLES).
 static func chip_style() -> String:
-	if _env_style == "?":
-		_env_style = OS.get_environment("RIFTGATE_CHIP_STYLE")
-	if CHIP_STYLES.has(_env_style):
-		return _env_style
-	var st := str(Settings.display.get("chip_style", CHIP_STYLES[0]))
-	return st if CHIP_STYLES.has(st) else str(CHIP_STYLES[0])
+	return Settings.look("RIFTGATE_CHIP_STYLE", "chip_style", CHIP_STYLES)
 
 
 ## A status chip is a square tile with its number at its corner, in either square style.
@@ -1005,48 +1013,40 @@ static func _draw_count(ci: CanvasItem, rect: Rect2, text: String, col: Color) -
 	ci.draw_string(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, TILE_TEXT, Color(Palette.INK, col.a))
 
 
-## A foe's intent plate in `rect` on `ci`, or with `ci` null only measured: returns its width.
-## Solid in the intent's colour inside a dark rim, its glyph and number dark on it (`txt`, or its
-## own), each rider after it in a dark inset holding its mark and number in its own colour; with
-## `point_x` set, a pointer under the plate at that x, down onto the foe.
-static func draw_intent(ci: CanvasItem, rect: Rect2, ch: Array, mono: Font, txt = null, point_x: float = NAN) -> float:
+## A foe's intent plate in `rect` on `ci`, or with `ci` null only measured: returns its width. A
+## dark plate edged in the intent's colour, its glyph and number in that colour (`txt`, or its own),
+## each rider after a divider, its mark and number in its own colour (its term's).
+static func draw_intent(ci: CanvasItem, rect: Rect2, ch: Array, mono: Font, txt = null) -> float:
 	var col: Color = ch[2]
 	var font := Hud.display_bold()
 	var text := str(ch[1]) if txt == null else str(txt)
 	var riders: Array = ch[4] if ch.size() > 4 else []
-	var ink := Color(Palette.BG, col.a)
 	var cy := rect.get_center().y
 	if ci != null:
-		var rim := Color(Palette.BG, 0.95 * col.a)
-		if not is_nan(point_x):
-			var px := clampf(point_x, rect.position.x + 14.0, rect.end.x - 14.0)
-			var tip := Vector2(px, rect.end.y + INTENT_POINT)
-			ci.draw_colored_polygon(PackedVector2Array([Vector2(px - 13.0, rect.end.y - 2.0), Vector2(px + 13.0, rect.end.y - 2.0), tip + Vector2(0.0, 4.0)]), rim)
-			ci.draw_colored_polygon(PackedVector2Array([Vector2(px - 9.0, rect.end.y - 1.0), Vector2(px + 9.0, rect.end.y - 1.0), tip]), col)
-		Hud.fill_poly(ci, Hud.cut(rect.grow(3.0), 9.0), rim)
-		Hud.fill_poly(ci, Hud.cut(rect, 7.0), col)
+		Hud.fill_poly(ci, Hud.cut(rect.grow(2.0), 8.0), Color(Palette.BG, 0.9 * col.a))   # a dark edge outside the colour's, for any ground
+		Hud.fill_poly(ci, Hud.cut(rect, 7.0), Color(Palette.BG, 0.94 * col.a))
+		Hud.stroke_poly(ci, Hud.cut(rect, 7.0), col, 3.0)
 	var x := rect.position.x + INTENT_PAD
 	if ci != null:
-		Glyphs.draw(ci, str(ch[0]), Vector2(x + INTENT_GLYPH * 0.5, cy), INTENT_GLYPH, ink, 3.0)
+		Glyphs.draw(ci, str(ch[0]), Vector2(x + INTENT_GLYPH * 0.5, cy), INTENT_GLYPH, col, 3.0)
 	x += INTENT_GLYPH
 	if not text.is_empty():
 		x += 3.0
 		if ci != null:
-			ci.draw_string(font, Vector2(x, cy + INTENT_TEXT * 0.36), text, HORIZONTAL_ALIGNMENT_LEFT, -1, INTENT_TEXT, ink)
+			ci.draw_string(font, Vector2(x, cy + INTENT_TEXT * 0.36), text, HORIZONTAL_ALIGNMENT_LEFT, -1, INTENT_TEXT, col)
 		x += font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, INTENT_TEXT).x
 	x += INTENT_PAD
 	for r in riders:
-		# A rider: a dark inset in the plate, its mark and number in its own colour (its term's).
 		var rt := str(r[1])
 		var rw := 5.0 + INTENT_RIDER_GLYPH + (2.0 + font.get_string_size(rt, HORIZONTAL_ALIGNMENT_LEFT, -1, INTENT_RIDER_TEXT).x if not rt.is_empty() else 0.0) + 5.0
 		if ci != null:
 			var rc: Color = r[2]
 			rc.a *= col.a
-			var inset := Rect2(x - 2.0, rect.position.y + 5.0, rw, rect.size.y - 10.0)
-			Hud.fill_poly(ci, Hud.cut(inset, 4.0), Color(Palette.BG, 0.95 * col.a))
-			Glyphs.draw(ci, str(r[0]), Vector2(inset.position.x + 5.0 + INTENT_RIDER_GLYPH * 0.5, cy), INTENT_RIDER_GLYPH, rc, 2.0)
+			var at := x - 2.0
+			ci.draw_line(Vector2(at - 2.0, rect.position.y + 7.0), Vector2(at - 2.0, rect.end.y - 7.0), Color(col, 0.6 * col.a), 2.0)
+			Glyphs.draw(ci, str(r[0]), Vector2(at + 5.0 + INTENT_RIDER_GLYPH * 0.5, cy), INTENT_RIDER_GLYPH, rc, 2.0)
 			if not rt.is_empty():
-				ci.draw_string(font, Vector2(inset.position.x + 5.0 + INTENT_RIDER_GLYPH + 2.0, cy + INTENT_RIDER_TEXT * 0.36), rt, HORIZONTAL_ALIGNMENT_LEFT, -1, INTENT_RIDER_TEXT, rc)
+				ci.draw_string(font, Vector2(at + 5.0 + INTENT_RIDER_GLYPH + 2.0, cy + INTENT_RIDER_TEXT * 0.36), rt, HORIZONTAL_ALIGNMENT_LEFT, -1, INTENT_RIDER_TEXT, rc)
 		x += rw + 4.0
 	return x - rect.position.x
 
@@ -1206,6 +1206,22 @@ func _store_cell(k: int, row: Rect2 = Rect2()) -> Rect2:
 	return _cell_rect(k, maxi(1, int(store[1])), row)
 
 
+## A break point on a bar (a swallow's release, a golden rage's break: 22 November): a thick
+## notch through the bar, past both its edges, on a dark ground, and a caret over it pointing down,
+## so it reads by structure on any bar colour. Hot to start: it comes down once judged on a phone.
+func _break_notch(rect: Rect2, at: float) -> void:
+	var x := rect.position.x + rect.size.x * at
+	var top := Vector2(x + 2.4, rect.position.y - 4.0)
+	var foot := Vector2(x - 2.4, rect.end.y + 4.0)
+	draw_line(top, foot, Color(Palette.BG, 0.95), 6.0)
+	draw_line(top, foot, Color(Palette.INK, 1.0), 3.0)
+	var tip := Vector2(x + 2.4, rect.position.y - 4.0)
+	var caret := PackedVector2Array([tip, tip + Vector2(-5.0, -7.0), tip + Vector2(5.0, -7.0)])
+	draw_colored_polygon(caret, Color(Palette.BG, 0.95))
+	var inner := PackedVector2Array([tip + Vector2(0, -1.5), tip + Vector2(-3.0, -5.5), tip + Vector2(3.0, -5.5)])
+	draw_colored_polygon(inner, Palette.INK)
+
+
 func _gauge(rect: Rect2, b: Array) -> void:
 	if b.size() >= 5 and int(b[4]) == 1:
 		# A bar whose every unit is its own notch holds whole units (the Musk Ox's ammo): cells,
@@ -1247,6 +1263,8 @@ func _gauge(rect: Rect2, b: Array) -> void:
 			at += step
 	elif b.size() < 4 or int(b[3]) == int(b[0]):
 		Hud.ticks(self, rect.grow(-2.0), int(b[0]), int(b[1]), col, 2.4)
+	if b.size() >= 7 and int(b[6]) > 0:
+		_break_notch(rect, clampf(float(b[6]) / mx, 0.0, 1.0))
 	if b.size() < 4 or int(b[3]) == int(b[0]):
 		return
 	var pending: float = clampf(float(b[3]) / mx, 0.0, 1.0)

@@ -70,6 +70,15 @@ After his play of the field's dials:
   yes, but mostly to increase proximity. If we enable multiple simultaneous spawns from all
   spawn points, it gives us a very useful tuning dial for convergences. More so then the beat,
   I think."
+- Of those massive foes, the same day: "my new massives were complete spitballs, not to be
+  taken as verbatim. We will want massives for all domains as part of a pass, or upgrade some
+  existing units to massive. Each domain does not need the same number of Massives - its a
+  property, not a quota. Perhaps one domain has more massives as an identity, and one has less
+  as an identity (probably Meadow)." And of the treant: "Don't bother with the treant just
+  yet. I will mark things."
+- Enemy diversity: "In general, we just need more enemy diversity. Mixing and matching what
+  we've got is fine, but if every pack were constructed of unique things, that would be fine
+  too. It's not like you see other roguelikes generally re-using enemies."
 - The trials' page: "clean up the trials tab. Remove anything no longer relevant. There's too
   many variables in there, we need to tone it down to just what is actually needed to try in
   person versus just chatting it out."
@@ -142,10 +151,13 @@ pace is a pack's own).
    meter as it falls.
 6. The hunters are pinned, probably rated three; the elite gathers the squad.
 7. A massive foe is another kind of unit, big where the others swarm, and no measure of
-   threat: a domain has several, at any pace, alone, together or carrying others.
+   threat. It is a property and never a quota: a domain has as many as its identity wants,
+   the Meadow perhaps the fewest, and an existing foe may become one.
 8. Few tears. Volume is the packs every mouth sends at once, and that count is the
    Convergence's dial; the tears' work is to part the lanes and bring the mouths nearer.
 9. A squad's growth inside a tier is a target to set, and the components are filled to it.
+10. More kinds of enemy. A pack may mix what the domain has or be made of foes no other pack
+    holds.
 
 ## 5. What was measured
 
@@ -293,9 +305,9 @@ After his play of the graded tide:
 2. The Meadow's table: each row's rating, pace and Convergence, and what is missing.
 3. A rating's size at each Convergence of a tier, the target the packs' forms and the
    component tiers are both filled to. The reads give its start: eight hit points a machine.
-4. The massive foes: whether the treant comes down to about two small foes' worth, with its
-   blow, so a grove is two or three of them; and the new ones he named (a cyclops the goblins
-   ride, a pack of fast werebears), his to write or a table for the session to draft.
+4. The treant waits on his marks ("Don't bother with the treant just yet"); the read of it
+   at 8 and 10 hit points is section 5's. The massive foes and the wider cast are a pass of
+   their own (section 10), and the ones he floated were spitballs, no list.
 5. The elite's arrival, so it cannot be led, and the hunters' role, when he takes each up.
 
 ## 9. Bench: ideas set aside, one line each, for him to overrule
@@ -318,7 +330,9 @@ After his play of the graded tide:
 1. His play of the graded tide and his answers to section 8.
 2. Each value that settles landed in the engine or the ramp's table (the sends by the
    Convergence first) and its dial cut; the Meadow's packs unmarked as they become the game's.
-3. A domain at a time, each a table first.
+3. A domain at a time, each a table first; with it the pass for massive foes (new ones, or
+   an existing foe made massive, as many as each domain's identity wants) and for more kinds
+   of enemy.
 4. The leaders' blocks by tier and Convergence as a table for his marks, read with the
    tier-one bench once the targets are set.
 5. The elite's arrival and the hunters' role, each its own session.

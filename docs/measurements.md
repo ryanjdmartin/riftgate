@@ -12245,6 +12245,44 @@ plan a plan. Landed at 24 HP and attack 10, an elite's fight at the band's middl
 to 27.7%), the squad with the Barrier basic paying about what it pays the other elites (15.9%);
 every fight won.
 
+## 20 November: the Whip Scorpion's and the Nemesis's performance, with their levers
+
+`tools/reboot_probe.gd` as the entries above, each machine first in the squad beside the Honey
+Badger, the Prairie Dog and the Cassowary, the greedy bot, 168 formation and elite fights and 78
+boss fights, on `ccr-178e0404-ptuh2m` at `31d1a556` (main at `33c4cc61` merged in: the foes' kit
+marks and their sizing). The what-ifs are the probe's options: `--heat-max 12`, `--release-per 3`
+(a blast's point every 3 heat), `--drop-effect heat_per_blow` (no heat for a blow it takes), `--stock shoring_jack,twin_autoguns,twin_autoguns,maxigun` (the
+Shoring Jack in the Thermal Ray's place), `--face-heat knuckle_of_fury=4`.
+
+| The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad |
+|---|---|---|
+| The Whip Scorpion as built | 4.0, 24%, 4%, 6% | 6.3, 19%, 5%, 12% |
+| Its heat maximum 12 | 4.1, 24%, 5%, 6% | 6.6, 22%, 6%, 12% |
+| A blast's point every 3 heat | 4.3, 20%, 4%, 6% | 6.5, 18%, 5%, 12% |
+| The Shoring Jack for its Thermal Ray | 4.4, 21%, 4%, 7% | 7.2, 18%, 8%, 13% |
+| Without its heat on being hit | 4.2, 21%, 4%, 6% | 6.5, 18%, 6%, 12% |
+| The Nemesis as built | 5.2, 21%, 5%, 8% | 8.6, 24%, 12%, 17% |
+| Its Knuckles at heat 4 | 5.0, 18%, 5%, 8% | 8.5, 21%, 13%, 16% |
+| The Buzzard | 4.8, 19%, 5%, 7% | 7.7, 23%, 16%, 17% |
+| The Polar Bear | 5.9, 20%, 10%, 10% | 10.6, 22%, 23%, 23% |
+
+Under the table: the Whip Scorpion blasts 0.95 times a formation fight for 4.7 on every foe and
+1.22 times a boss fight for 5.4, and fires its whole heat 0.47 and 0.94 times for about 9 heat;
+the Nemesis spends rage 0.05 times a formation fight and 0.21 times a boss fight, an Instant
+Knuckle 0.05 and 0.19 times (0.05 and 0.28 at heat 4), and overheats 0.01 and 0.00 times.
+
+What it says. The Whip Scorpion is the strongest of the reads by a band: a boss fight in 6.3
+rounds with the squad losing 12%, where the other tier twos take 7.7 to 10.6 and lose 17% to 23%,
+and its own hull loses 5%. Its die is five weapons, two of them 6s (the Thermal Ray and the
+Maxigun's three 2s), and its reboot, everyone else's lost turn, deals damage to every foe. The
+passive's levers move it little (a lower heat maximum blasts smaller and more often; a thinner
+blast takes 0.2 rounds, and so does going without the heat its blows taken bank); its stock moves it most, the Thermal Ray the largest single piece of its
+edge, and without it it still reads strongest. The Nemesis reads mid-pack, level with the Buzzard
+on hull against the bosses and a round slower. The bot never rides its overheat loop, rebooting
+first, and the Knuckles at heat 4 take three points off its reboots and nothing off its fights; its
+rage engine is quiet, an Instant Knuckle about once in five boss fights and once in twenty
+formation fights. A bot's read of tier one's foes: a direction.
+
 ## 20 November: the Mole alone, beside the Honey Badger
 
 `tools/balance.gd -- --seeds 30 --rows mole,badger --policies greedy`, every pack of the matrix
@@ -12285,6 +12323,47 @@ foes a spend, the Arc Fault Cannon arcing through every needled foe), and the bo
 Tether on one turn in twelve, so a lone read says little of the Tether or of the needles a lure's
 turned blows lay. A trace of one fight (four goblins, seed 1) shows the bolts firing on struck
 blows and the Cannon arcing to needled goblins. The stock is placeholders; his play decides.
+
+
+## 23 November: the Nemesis's Rage and the Whip Scorpion's Death Ray, as built
+
+`tools/reboot_probe.gd` as the entries above, each machine first in the squad beside the Honey
+Badger, the Prairie Dog and the Cassowary, the greedy bot (taught the Death Ray for its reboots,
+the doubled hits and the heat scale, and the Rage's worth at the maximum, `Policy.rage_worth` at
+`RAGE_SHARE` 0.5), 168 formation and elite fights (8 seeds) and 78 boss fights (6 seeds) a
+machine. Read twice: on `ccr-178e0404-ptuh2m` at `909be478`, the tree of the 20 November entry
+with the rebuild alone, so like for like with it; and after main's merge at `bf689cd0` (the
+Honey Badger's Ore, the Mole, the Echidna, machine tiers), with the Buzzard and the Polar Bear read
+again beside them, since the merge moved every fight. The probe counted a Rage from before the
+round opened only from the second read on.
+
+| The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad |
+|---|---|---|
+| The Whip Scorpion, before the merge | 4.3, 29%, 7%, 7% | 6.5, 29%, 9%, 12% |
+| The Nemesis, before the merge | 4.5, 9%, 6%, 7% | 6.7, 9%, 11%, 13% |
+| The Whip Scorpion, merged | 5.0, 30%, 7%, 9% | 7.5, 32%, 12%, 17% |
+| The Nemesis, merged | 5.4, 12%, 9%, 9% | 7.6, 12%, 13%, 15% |
+| The Buzzard, merged | 5.7, 21%, 9%, 11% | 9.7, 24%, 15%, 22% |
+| The Polar Bear, merged | 7.5, 22%, 14%, 15% | 13.8, 23%, 27%, 31% |
+
+Under the table, merged: the Whip Scorpion fires its Ray 1.49 times a formation fight
+and 2.40 times a boss fight for about 9.5 heat a shot, every reboot of its a shot; the Nemesis
+rages 0.45 times a formation fight and 0.86 times a boss fight, about four swings a Rage (3.51
+Instant actions a boss fight), 0.56 of them ending in its reboot inside the fight, and overheats
+0.46 times a boss fight. Before the bot read the Rage's worth (the first read, before the merge,
+bosses), it never ended a turn past its maximum, rebooting or holding short of it: 7.7 rounds.
+
+What it says, a direction at these counts. Against the 20 November entry, like for like: the Whip
+Scorpion stands about where its blast left it (6.5 boss rounds against 6.3, 4.3 formation rounds
+against 4.0), its own hull lost nearly doubled (9% against 5%: the doubled hits past half its
+heat), a Ray every 3.4 rounds; the Nemesis moves from mid-pack (8.6 boss rounds, a round behind
+the Buzzard's 7.7) to level with the Whip Scorpion (6.7), giving a reboot 9% of its turns where
+it gave 24% (the fists cool it, and it never reboots by choice at its maximum). Merged, both lead
+the four against tier one's bosses by a band (7.5 and 7.6 rounds, the squad losing 15% to 17%,
+against the Buzzard's 9.7 and 22% and the Polar Bear's 13.8 and 31%), and the formations too, by
+less (5.0 and 5.4 rounds against 5.7 and 7.5). The bot's Rage is a first
+cut, its share a placeholder, so the Nemesis's read moves with it; the Whip Scorpion's exit is
+Ryan's (every hit doubled past half its heat). A bot's read of tier one's foes.
 
 ## 21 November: enemy armour at tier one, and Chain's arcs as a strike or a flat ping
 

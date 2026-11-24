@@ -235,6 +235,7 @@ static func _default_battle() -> Battle:
 # ---------------------------------------------------------------- build
 
 var _codex: CodexBox = null
+var _formation: FormationBox = null   # a pack's grid, a double-tap on the pack (FormationBox)
 
 
 func _build() -> void:
@@ -343,6 +344,9 @@ func _build() -> void:
 	_build_log_full()
 	# One scan bar over the whole screen, on the top layer: it crosses the map and the
 	# controls alike, and whatever geometry lies under it lights (Ryan, 21 September).
+	_formation = FormationBox.new()
+	_formation.foe_double_tapped.connect(_on_formation_foe)
+	add_child(_formation)
 	_codex = CodexBox.new()
 	add_child(_codex)
 	_scan = ScanBar.new()
@@ -841,7 +845,7 @@ func pack_lines(u: Unit) -> Array:
 		for m in u.member_list():
 			if not parts.is_empty():
 				parts.append("·")
-			parts.append_array([str(db.foes.get(str(m[0]), {}).get("name", str(m[0]))), "×%d" % int(m[1])])
+			parts.append(str(db.foes.get(str(m[0]), {}).get("name", str(m[0]))))   # no count (Ryan, 23 November: "Packs on the map don't need their count numbers"): its formation, a double-tap, shows them
 		parts.append_array(["·", "Move", str(u.movespeed)])
 		if u.traits.has("winged"):
 			parts.append_array(["·", "Winged"])   # it crosses water and crags as a flyer does
@@ -1059,10 +1063,55 @@ func _on_hex_double_tapped(h: Vector2i) -> void:
 		return
 	var u := _map.unit_at_shown(h)
 	if u == null:
-		return   # the gate and the rift carry no entry on the map (Ryan, 9 November: not selectable)
+		# A cache has its codex (Ryan, 23 November: "Should be able to double-tap a cache on the map
+		# and open a codex entry for it"); the gate and the rift carry none (9 November: not selectable).
+		var cache := battle.field.cache_at(h)
+		if not cache.is_empty():
+			_details.visible = false
+			_codex.move_to_front()
+			_codex.open(cache_codex(cache))
+		return
 	_details.visible = false
+	if u.is_enemy() and not u.is_boss:
+		# A pack shows its formation (the same day: "When double tapping a pack, it should show the
+		# formation. Double tapping a unit in the formation opens it's codex entry").
+		var entry := codex_entry_for(u)
+		_formation.move_to_front()
+		_formation.open(str(entry.get("title", u.display_name)), str(entry.get("subtitle", "")), FormationBox.cells_of(u))
+		return
 	_codex.move_to_front()
 	_codex.open(codex_entry_for(u))
+
+
+## A foe in an open formation double-tapped: its codex in the formation's place, one shade on the
+## screen (Ryan, 23 November: the two plates' shades doubled), BACK returning to the formation.
+func _on_formation_foe(fid: String) -> void:
+	var db := ContentDB.load_default()
+	if not db.foes.has(fid):
+		return
+	_formation.visible = false   # set aside as it stands, not closed: BACK shows it again
+	var entry := db.codex_for_foe(db.make_foe(fid))
+	entry["back"] = func() -> void:
+		_formation.move_to_front()
+		_formation.visible = true
+	_codex.move_to_front()
+	_codex.open(entry)
+
+
+## A cache's codex: its kind's name, its tier, what such a kind holds by its numbers, its codex
+## text (Ryan's to write; empty until he does), as the cache's readout says them (cache_lines).
+static func cache_codex(c: Dictionary) -> Dictionary:
+	var db := ContentDB.load_default()
+	var t := int(c.get("tier", 1))
+	var kind := db.loot_kind_of_tier(t)
+	var e: Dictionary = db.loot.get(kind, {})
+	var sv: Array = e.get("salvage", [0, 0])
+	var items: Array = [["salvage", "%d-%d" % [int(sv[0]), int(sv[1])]]]
+	if int(e.get("components", 0)) > 0:
+		items.append(["components", str(int(e["components"]))])
+	if float(e.get("blueprint", 0.0)) > 0.0:
+		items.append(["blueprint", "%d%%" % roundi(float(e["blueprint"]) * 100.0)])
+	return {"title": str(e.get("name", kind)), "subtitle": "CACHE // TIER %d" % t, "body": str(e.get("codex", "")), "stat_items": items, "faces": [], "current": -1}
 
 
 static func codex_entry_for(u: Unit) -> Dictionary:
@@ -1076,7 +1125,7 @@ static func codex_entry_for(u: Unit) -> Dictionary:
 		return {"title": u.display_name, "subtitle": str(u.faction).to_upper(), "body": ""}
 	var entry := db.codex_for_foe(db.make_foe(fid))
 	entry["title"] = u.display_name
-	entry["subtitle"] = "%s // %s" % [entry["subtitle"], (("BOSS // SEALED" if u.sealed else "BOSS") if u.is_boss else "×%d // MOVE %d" % [u.strength, u.movespeed])]
+	entry["subtitle"] = "%s // %s" % [entry["subtitle"], (("BOSS // SEALED" if u.sealed else "BOSS") if u.is_boss else "MOVE %d" % u.movespeed)]
 	if u.traits.has("winged"):
 		entry["subtitle"] += " // WINGED"   # it crosses water and crags as a flyer does
 	return entry

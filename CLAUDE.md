@@ -60,6 +60,14 @@ Always wrap headless Godot runs in a watchdog: a tool script that errors before 
   little as the rule needs, and is named in the report (the page shows it to him as changed);
   a rename moves the slot's ledger line with the id (`python3 tools/hangar_text.py --check`
   says when one is left behind). A new key that holds shown text gets a slot there.
+- Gameplay text follows `docs/text_standard.md` (Ryan's standard, 17 to 24 November; 24
+  November: "New content additions need to know and follow the format"): Frame and Sprite in
+  place of machine and foe, the event labels, "Apply N X" and "Reduce stacks by", a status's
+  numbers its own, `{N}` on a per-stack line, one effect a line and no semicolon. Read it with
+  `docs/voice.md` before drafting or changing a tip, a readout, a move line, a passive or a
+  module's text, and write a new piece's text to it from the start; `tests/test_terms.gd` holds
+  every tip to its mechanical parts. The glossary tips are written to it; the other kinds follow
+  kind by kind, so older text that breaks it is a draft waiting, never a pattern to copy.
 - Kit words (decided 18 September): a **component** is one piece of kit and exactly one
   entry on the die; a **hardpoint** is a free slot (one `hp_<n>` pin on the model); a
   chassis's **fixed** components are built in and use no hardpoint; an empty hardpoint is a

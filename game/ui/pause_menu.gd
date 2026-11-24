@@ -41,7 +41,7 @@ const TOOL_ROW := 66.0     # the colours page's row of tools above its BACK
 
 ## The keywords list's kinds, in the order the page shows them: the vocabulary's category and the
 ## page's heading for it.
-const GLOSSARY := [["reach", "REACH"], ["keyword", "KEYWORDS"], ["component_property", "RULES ON A COMPONENT"], ["status", "STATUSES"], ["foe", "FOES' MOVES"]]
+const GLOSSARY := [["reach", "REACH"], ["keyword", "KEYWORDS"], ["component_property", "RULES ON A COMPONENT"], ["status", "STATUSES"], ["foe", "SPRITES' MOVES"]]
 
 var _scrim: ColorRect
 var _panel: HudPanel
@@ -150,6 +150,7 @@ func _show_page(page: String) -> void:
 			if OS.is_debug_build():
 				_toggle("EVERY LINE", "voice_test")   # Jenny on every hook, every time: to hear them all on the phone
 				_choice_row("CHIPS", "chip_style", UnitView.CHIP_STYLES)   # how a status chip carries its number: over its corner, on a plate at its corner, or beside it (UnitView.chip_style)
+				_choice_row("TETHER", "aim_tether", AimLayer.TETHERS)   # the aim's tether from the die's edge, or over the die from its middle (AimLayer.tether)
 				_toggle("WELD", "weld")   # the machines' parts welded (MechWeld); off draws them as authored, to compare the look and the heat on the phone
 				_button("TRIALS", func() -> void: _show_page("trials"))   # the trial dials, each a number still to be picked by play (the page's own note lists them), a page of their own so the settings fit every glass
 				_button("COLOURS", func() -> void: _show_page("colours"))   # the colours that carry a meaning and the HUD presets, by wheel or hex (ColourTuner)
@@ -507,7 +508,10 @@ func _keywords_list() -> ScrollContainer:
 		col.add_child(head)
 		for e in kind["entries"]:
 			var term := EntryReadout.new()   # a name over its line, close together
-			term.set_lines([EntryReadout.term_line(str(e[2])), EntryReadout.prose_line(str(e[1]), 17, Palette.INK.lerp(Palette.MUTED, 0.35))], width)
+			var said: Array = [EntryReadout.term_line(str(e[2]))]
+			for line in KeywordTip.filled(str(e[2]), str(e[1]), {}).split("\n"):
+				said.append(EntryReadout.prose_line(line, 17, Palette.INK.lerp(Palette.MUTED, 0.35)))
+			term.set_lines(said, width)
 			col.add_child(term)
 	return sc
 

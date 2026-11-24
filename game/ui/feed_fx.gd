@@ -30,8 +30,10 @@ var foe_views: Callable = Callable()    # -> Array of UnitView
 var mech_views: Callable = Callable()   # -> Array of UnitView
 var dice: Callable = Callable()         # -> Array of DieFaceView
 
-const GAP_MIN := 5.0
-const GAP_MAX := 11.0
+## Seconds between two events on a lane, drawn evenly between these (5 to 11 until 23 November:
+## "Reduce the base frequency of flavour animations in the skirmish, slightly").
+const GAP_MIN := 6.0
+const GAP_MAX := 13.0
 const LANES := {
 	"foe": {"scanbox": 3, "databox": 3, "tear": 2, "signal": 1},
 	"ally": {"readout": 3, "levels": 2, "recalc": 3, "wobble": 2},

@@ -28,10 +28,10 @@ too), and the Needletail the same day. It retires once its calls are rows and co
 | Puffin | Landed 19 November at tier two (the bible's row): equipment it spends on an ally takes up to 4 of that ally's heat onto it, and its lock passes its whole heat to an ally for Empowered 1 for every 2 | His play of it in a team that leverages heat |
 | Swallowtail, in design | Two dead plain forms; the system hands it a niche, the team's pit crew | His session |
 | Polar Bear | Stands as built (19 November): its text's clause fixed, the wall at tier one moot at tier two | Settled, his "Leave the bear" |
-| Whip Scorpion | His rework: the one kit built on the system | Its strength; the Ray a dump that keeps the shield |
-| Stingray | The Suite suits the system; its stock gives it almost nothing to deepen | Its stock; its tier |
-| Nemesis | The system feeds its rage, its overheat included | The rage-and-burn loop; its placeholder slot |
-| Wild Boar | Lost a stat and nothing else | Nothing |
+| Whip Scorpion | Rebuilt 23 November on his design (the bible's row): its damage half cold to double at its maximum, hits on it doubled past half its heat, its reboot firing its Death Ray | His play of it, and his exit if it is strong |
+| Stingray | The Suite suits the system; its stock gives it almost nothing to deepen; tier two since 20 November | Its stock, the stock re-deal's |
+| Nemesis | Rebuilt 23 November on his design (the bible's rows): its blows heat it; at its maximum it rages, a flurry of Knuckles until its heat runs out, then it reboots | His play of it; its placeholder slot |
+| Wild Boar | Stands as built (20 November): it lost a stat and nothing else | Settled, his "Boar seems good to leave as is" |
 | Giant Petrel | Its rerolls stand; its gifts of actions cost their receivers heat | Its unrefined kit, his session |
 | Musk Ox | Its clock is ammo; the reboot is for its shield alone | Its session, the Forge's dead clause |
 | The other nine | Nothing of theirs reads heat, cooling, regen or a shield gain | Nothing |
@@ -161,30 +161,30 @@ this proposal read it is in git: `git show 90d15e4:docs/reboot_machines_proposal
 
 ### Whip Scorpion
 
-Wainwright & Sutler, tier 2, heavy walker, his rework of 17 November. *Context*: the formation
-breaker, "heat is its ammunition"; "the reboot vent is the one that explodes", then "remove the 8
-heat minimum".
-
-*Kit*: hull 40, shield 8, armour 1, heat 14, move 3, 4 hardpoints.
-- Thermal Ejection Manifold: a reboot opens its valves as its heat vents, every foe taking 1 for
-  every 2 heat it sheds; every blow a foe lands on it adds 2 heat.
-- Heliographic Death Ray (fixed): 2, heat 3, firing its whole heat, a point more a 2 heat, and
-  leaving it cold.
+Wainwright & Sutler, tier 2, heavy walker, rebuilt 23 November on his design (the bible's row
+has his words). *Kit*: hull 40, shield 8, armour 1, heat 14, move 3, 4 hardpoints.
+- Thermal Ejection Manifold: its damage half at no heat to double at its maximum, a straight
+  line, held at double past it; past half its heat every hit on it doubled; its reboot fires the
+  Heliographic Death Ray first, the Ray off its die until the reboot brings it up.
+- Heliographic Death Ray (fixed, off the die): 2, heat 3, firing its whole heat, a point more a
+  2 heat, at the heat scale, then the reboot.
 - Thermal Ray 6 for 9; Twin Autoguns 3 for 4, twice; Maxigun 2 three times for 4.
 
-*As a whole.* The one kit built on the system: its reboot is its attack, its bare turn a bruiser's
-price (40 hull), and the blows it takes bare are the next blast's fuel. Two ways to cash its heat:
-the blast on every foe, bare after, or the Ray on one foe with its shield kept and no reboot. Read
-with its gate it was the strongest machine against a lone boss; without the gate it blasts a
-round sooner.
+*As a whole.* Heat is its damage and its risk: cold it hits for half, hot for double and is hit
+twice as hard, and its reboot is its burst, the Ray at whatever its heat makes of it. Its old
+partners, the blast on every foe and the heat every blow on it banked, are gone.
 
-*Verdict.* It fits. One note: the Ray is a heat dump that keeps the shield, the same dear effect
-as the Buzzard's Afterburner, and it outvalues the blast against a lone foe. Its strength's first
-lever is his, a lower heat maximum.
+*The read* (23 November, `docs/measurements.md`): against tier one's bosses it finishes in 7.5
+rounds, the squad losing 17%, the lead of the four read with the Nemesis (the Buzzard 9.7, the
+Polar Bear 13.8), and the formations in 5.0; a Ray every 3.1 rounds, about 9.5 heat a shot. Like
+for like with its blast form it stands about where it was, its own hull lost nearly doubled by
+the doubled hits. Strong by this bot, so his exit is the one to weigh on his play: every hit
+doubled past half its heat.
 
 ### Stingray
+### Stingray
 
-Aphelion, tier unplaced, medium hover. *Context*: the hot status amplifier; the Lance support
+Aphelion, tier 2 since 20 November (Ryan: "Stingray - with the Macaque, move this to tier 2 now"), medium hover. *Context*: the hot status amplifier; the Lance support
 since 11 November ("a defensive debuff plus an offensive buff"); "Upgrades can redirect it to the
 primed+burn abuse".
 
@@ -202,48 +202,38 @@ Its stock is the trouble: the Lance is the only thing it lays, so most turns it 
 whose heat is a timer and not a resource.
 
 *Verdict.* It fits; its stock starves its passive (riders for the Suite to deepen, the stock
-re-deal's), and its tier is his.
+re-deal's). Tier two on his word of 20 November, with the Macaque at Aphelion's tier one.
 
 ### Nemesis
 
-Arsenal, tier 2, heavy walker. *Context*: the sustained-damage bruiser; rage from blows ("a smooth
-resource bar ... Taking a hit on shield gives 1 rage, hull damage gives 2 rage"); rage spent in
-fives for a fist that is Instant; its fourth slot a placeholder since the Retribution Thurible
-went back to design.
-
-*Kit*: hull 36, shield 6, armour 2, heat 14, move 3, 4 hardpoints.
-- Crucible Capacitor: a foe's hit on its shield banks 1 rage; hull damage, or a blow of its own a
-  foe's armour or Barrier takes whole, banks 2; up to 10.
-- Knuckle of Fury, twice (fixed): 5 for 6, melee; for 5 rage, Instant (it rolls again and acts
-  again).
+Arsenal, tier 2, heavy walker, rebuilt 23 November on his design (the bible's three rows have his
+words). *Kit*: hull 36, shield 6, armour 2, heat 14, move 3, 4 hardpoints.
+- Crucible Capacitor: a foe's hit on its shield heats it 1; hull damage, or a blow of its own a
+  foe's armour or Barrier takes whole, 2. A turn it opens at its heat maximum or past it, it
+  rages: its debuffs lifted and none landing, its die its Knuckles of Fury alone, Instant; at no
+  heat its Rage ends and it reboots at once; it never reboots by choice at its maximum.
+- Knuckles of Fury (fixed, one): 5, no heat, cooling it 3 a swing.
 - Plasma Arquebus 4 for 5; Blazethrower 3 and Ablate 2 for 6; Twin Autoguns 3 for 4 (the
   placeholder); Halo Projector.
 
-*As a whole.* The system feeds it. Its 6 shield breaks in a round and stays broken, so nearly every
-blow is hull damage and 2 rage; its bare reboot turn is a rage turn; and the burn past its maximum
-is hull damage at every END TURN, more rage. An Instant Knuckle buys a second spend the same
-round, up to 12 heat between them, so its raging rounds push it over its maximum and the burn pays
-back in rage: "reboot, or die" as a build.
+*As a whole.* The system feeds it as it fed the rage: its 6 shield breaks in a round and stays
+broken, so nearly every blow is 2 heat, and its guns climb the same gauge, so its maximum comes
+round of itself and a Rage is a turn of fists, four or five from 14, then a bare turn. Out of
+the Rage a punch feathers its heat short of the maximum.
 
-*Verdict.* It fits. To watch: that loop, rage from its own overheat into more Instant heat; its
-placeholder slot is the stock re-deal's.
+*The read* (23 November, `docs/measurements.md`): level with the Whip Scorpion against the
+bosses (7.6 rounds, the squad losing 15%) where it was a round behind the Buzzard on 20
+November, and the formations in 5.4; it rages 0.86 times a boss fight, about four swings a Rage,
+and gives a reboot 12% of its turns, the fewest read. The bot reads the Rage at a placeholder
+share, so the read moves with it; his exits stand (heat from hits alone; no reboot by choice at
+all).
 
-### Wild Boar
+### Wild Boar, settled
 
-Minerva, tier 2, heavy tracked. *Context*: the vanguard tank that "dives rather than tanks"; it
-lost its regen stat and nothing else.
-
-*Kit*: hull 36, shield 8, armour 2, heat 12, move 4, 5 hardpoints.
-- Juggernaut Drive: damaging a front-rank foe deals 25% of its maximum HP, rounded up, to the foe
-  behind it; after it gains a Barrier, its next weapon ignores armour.
-- Breaching Plow (fixed): a Barrier on itself and a Cleanse, cooldown 1.
-- Slugthrower 4 for 4, twice; Shotfire Rack 4 for 5; Twin Autoguns 3 for 4; Shoring Jack.
-
-*As a whole.* Guns above the vanilla, a shove that turns front-rank hits into back-rank damage, two
-cool defensive entries that stretch its cycle, and armour 2 that keeps its bare turn survivable. As
-sturdy as the Honey Badger in the read.
-
-*Verdict.* It fits; the reboot leaves it nothing to fix.
+Left as built on 20 November (Ryan: "Boar seems good to leave as is"): it lost its regen stat and
+nothing else, its guns above the vanilla, its shove and its two cool defensive entries stretching
+its cycle, and armour 2 keeping its bare turn survivable. Its kit as this proposal read it is in
+git: `git show 361095c:docs/reboot_machines_proposal.md`.
 
 ### Giant Petrel
 
@@ -390,6 +380,10 @@ in formations and nothing against a lone boss.
 4. Skua: settled 19 November, left as built ("Leave it as is and move on").
 5. Kite: settled 19 November, left as built, the kill that mends refused ("Leave it").
 6. Cottonmouth: settled 19 November, left as built ("Leave it").
-7. Puffin: built 19 November on his calls at tier two (the bible's row); his names and the
-   dump's rate after the read. Swallowtail: its session as set.
+7. Puffin: built 19 November on his calls at tier two and named on the 20th, the Downwash
+   Exchanger and the Overdrive Injector (the bible's row); its strength his play's in a team that
+   leverages heat. Swallowtail: its session as set.
 8. Polar Bear: settled 19 November, left as built ("Leave the bear"), its text's clause fixed.
+9. Stingray: tier two on his word of 20 November ("with the Macaque, move this to tier 2 now");
+   its starved stock the stock re-deal's.
+10. Wild Boar: settled 20 November, left as built ("Boar seems good to leave as is").

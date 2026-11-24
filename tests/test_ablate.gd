@@ -9,12 +9,12 @@ extends TestCase
 const L := Face.Reach.DIRECT
 const K := Face.Keyword
 
-## A hull hit that banks a stack, as a passive that reads hull damage would.
+## A hull hit that heats its machine a point, as a passive that reads hull damage would.
 const TALLY := {"id": "tally", "name": "Tally", "description": "", "effects": [
-	{"trigger": "on_hull_damage", "effect": "stack_status", "value": "rage", "stacks": 1, "cap": 10}]}
-## A hit on the shield that banks one: a foe's blow its shield took, never a tick.
+	{"trigger": "on_hull_damage", "effect": "gain_heat", "value": 1}]}
+## A hit on the shield that heats it a point: a foe's blow its shield took, never a tick.
 const FLINCH := {"id": "flinch", "name": "Flinch", "description": "", "effects": [
-	{"trigger": "on_shield_hit", "effect": "stack_status", "value": "rage", "stacks": 1, "cap": 10}]}
+	{"trigger": "on_shield_hit", "effect": "gain_heat", "value": 1}]}
 ## Regen granted, as a module would.
 const MENDER := {"id": "mender", "name": "Mender", "description": "", "effects": [
 	{"trigger": "static", "effect": "add_stat", "stat": "shield_regen", "value": 5}]}
@@ -115,7 +115,7 @@ func test_what_reaches_the_hull_is_hull_damage_and_the_shields_share_is_no_hit()
 	_ablating(bare, 1)
 	sk.end_round()
 	assert_eq(bare.hull, 99, "a point off the bare hull")
-	assert_eq(Effects.stacks_of(bare, "rage"), 1, "and it is hull damage: the passive that reads it fires")
+	assert_eq(sk.mechs[0].heat, 1, "and it is hull damage: the passive that reads it fires")
 	var shielded := _mech(2, "B", 10, 100)
 	shielded.grant_passive(TALLY)
 	shielded.grant_passive(FLINCH)
@@ -124,7 +124,7 @@ func test_what_reaches_the_hull_is_hull_damage_and_the_shields_share_is_no_hit()
 	_ablating(shielded, 1)
 	s2.end_round()
 	assert_eq([shielded.shield, shielded.hull], [9, 100], "the shield took it whole")
-	assert_eq(Effects.stacks_of(shielded, "rage"), 0, "no hull damage, and no blow on its shield either")
+	assert_eq(s2.mechs[0].heat, 0, "no hull damage, and no blow on its shield either")
 
 
 ## A rebooting machine stands bare, so its tick lands on the hull; the reboot does not lift it.
@@ -164,7 +164,7 @@ func test_a_phased_machines_stacks_fade_and_take_nothing_and_a_swallowed_ones_wa
 	var sk2 := _fight([v, _mech(2, "B", 10, 100)], [Foe.make("dummy", 900, 0)])
 	sk2.start_round()
 	_ablating(v, 2)
-	Effects.grant_for_rounds(v, Effects.STATUS["swallowed"], "test", sk2.round + 1)
+	Effects.lay_timer(v, Effects.STATUS["swallowed"], "test", 2)
 	assert_eq(int(sk2.forecast(sk2.mechs[0])["ablated"]), 0, "the forecast counts none while it is Swallowed")
 	sk2.end_round()
 	sk2.start_round()
@@ -213,7 +213,7 @@ func test_a_weapon_that_ablates_its_firer_pays_in_its_own_shield() -> void:
 	stoker.ablate = 2
 	stoker.heat = 1
 	stoker.self_ablate = 1
-	assert_true(stoker.describe().contains("Ablating 1 on itself"), "the hold says it: %s" % stoker.describe())
+	assert_true(stoker.describe().contains("Ablate 1 on itself"), "the hold says it: %s" % stoker.describe())
 	assert_true(stoker.has_unique_rule(), "a printed rule: the star")
 	var u := _mech(1, "A", 10, 100, Die.single(stoker))
 	var foe := Foe.make("dummy", 900, 0)

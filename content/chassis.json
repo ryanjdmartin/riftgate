@@ -385,13 +385,11 @@
    "passive": {
     "id": "lockdown",
     "name": "Lockdown",
-    "description": "Equipment it spends on itself seals it: armour +3, its cooling stopped, 3 hotter at the end of each turn, and its Cryo Flinger gains Spread. A weapon it fires opens it, and so does a reboot. Its weapons deal 1 more to a foe carrying Cryo.",
+    "description": "Using equipment on itself grants Sealed. While Sealed, its Cryo Flinger gains Spread. Its weapons deal +1 damage to a foe carrying Cryo.",
     "effects": [
      {
       "trigger": "static",
-      "effect": "seal_form",
-      "value": 3,
-      "heat": 3
+      "effect": "seal_form"
      },
      {
       "trigger": "static",
@@ -1037,7 +1035,8 @@
    "design": {
     "fantasy": "A hulking, neckless, spiked brute. Thick arms made for pummeling. A glowing firey core in its torso that lights up as the mech takes damage and heats up.",
     "niche": "Sustained damage bruiser",
-    "notes": "Its fourth hardpoint holds a placeholder, the plain basic gun, since the Retribution Thurible went back to design on 15 November (Ryan's word; the placeholder a session's, as a vent's slot took one on 10 November): the stock re-deal's to fill."
+    "one_off": "Its passive's four lines (the bible's section 7): the three blows that heat it and the Rage that heat buys, one idea, Ryan's of 23 November, where a passive holds three.",
+    "notes": "Its fourth hardpoint holds a placeholder, the plain basic gun, since the Retribution Thurible went back to design on 15 November (Ryan's word; the placeholder a session's, as a vent's slot took one on 10 November): the stock re-deal's to fill. Its Rage since 23 November, tied to heat as in its lore (Ryan: \"change rage into simply generating heat, using the same rules as rage generation\"; \"When the Nemesis starts its turn with heat at or over max, it gains the unpurgable status Rage: Remove all debuffs on self. Immune to all debuffs. The only component available is Knuckles of Fury\"; \"Rage ends when the Nemesis' heat reaches zero, at which point it immediately reboots, regardless of how it got there\"; \"Nemesis never reboots voluntarily at max heat, yes. I would even consider not letting it reboot voluntarily at all\"). The player may end the turn while it rages, the Rage standing (\"I'm leaving the option open for the player to end turn at any time, the nemesis is just still stuck in rage\"). If this version is too much he would simplify the heat to hits alone (\"if this version is too much, we simplify it to just when hit-> gain heat\"). Its rage was a store spent in fives on a charged Instant Knuckle from 11 to 23 November."
    },
    "codex": "",
    "hull": 36,
@@ -1052,8 +1051,7 @@
    ],
    "size": "heavy",
    "fixed": [
-    "knuckle_of_fury",
-    "knuckle_of_fury"
+    "knuckles_of_fury"
    ],
    "loadout": [
     "plasma_arquebus",
@@ -1064,28 +1062,27 @@
    "passive": {
     "id": "crucible_capacitor",
     "name": "Crucible Capacitor",
-    "description": "A foe's hit on its shield banks a rage; hull damage, or a blow of its own that a foe's armour or Barrier takes whole, banks two. Up to 10, for the skirmish.",
+    "description": "A foe's hit on its shield adds 1 heat; hull damage, or a blow of its own that a foe's armour or Barrier takes whole, adds 2. Opening a turn at its heat maximum or past it, it rages: its debuffs lifted and no more landing, its die all Knuckles of Fury, Instant. The Rage ends as its heat reaches nothing, and it reboots at once. It never reboots by choice at its maximum.",
     "effects": [
      {
       "trigger": "on_shield_hit",
-      "effect": "stack_status",
-      "value": "rage",
-      "stacks": 1,
-      "cap": 10
+      "effect": "gain_heat",
+      "value": 1
      },
      {
       "trigger": "on_hull_damage",
-      "effect": "stack_status",
-      "value": "rage",
-      "stacks": 2,
-      "cap": 10
+      "effect": "gain_heat",
+      "value": 2
      },
      {
       "trigger": "on_blocked",
-      "effect": "stack_status",
-      "value": "rage",
-      "stacks": 2,
-      "cap": 10
+      "effect": "gain_heat",
+      "value": 2
+     },
+     {
+      "trigger": "static",
+      "effect": "rage_form",
+      "piece": "knuckles_of_fury"
      }
     ]
    },
@@ -1157,7 +1154,7 @@
    "name": "Stingray",
    "designation": "Perigee Flight 4 Strike Skimmer",
    "maker": "aphelion",
-   "tier": 1,
+   "tier": 2,
    "design": {
     "fantasy": "A flat pearl-white lens of a hull that rides on lift fans sunk flush into its wings and pitches like a helicopter to move. Its heat suite is its weapon: the hotter it runs, the deeper every burn and every buff it lays. The ray's barb is its tail, lit at the tip; its lance rides the turret on its back (Ryan, 28 October: the locked lance on the dome; it lay in the ray's mouth under the nose).",
     "niche": "hot status amplifier"
@@ -1655,7 +1652,7 @@
    "tier": 2,
    "design": {
     "fantasy": "Ryan's boiler (12 and 13 October: \"a crazy steampunk machine venting everywhere\"; 20 October: \"it doesn't actually use steam to run, its a future-tech machine. it just kind of behaves like a steampunk device\"). The whip scorpion sprays when provoked. Named by Ryan, 20 October; 11 November: \"this is a scorpion, so it's probably not a frontliner, thematically\", and it \"goes all in with the weird and wonderful, along with the cassowary and cottonmouth\".",
-    "niche": "The tier-two formation breaker (Ryan, 11 November, from the role map in its brief): heat is its ammunition. Its reboot's vent is the one that explodes (Ryan, 17 November: \"Whip scorpion needs a rework, and honestly, I think you just found it: the reboot vent is the one that explodes. It's an easy swap in\"): the heat it sheds as its shield drops lands on every foe, 1 each for every 2 heat (the same day, of the gate of 8 it had from 12 November: \"remove the 8 heat minimum. Set it to 1 damage to all enemies for every X heat, your call. Far more intuitive I think, and more flexible\"; 2 a point is a session's pick, 7 on every foe at its maximum of 14 as the gate gave, and its ray's own rate). Every blow a foe lands on it banks heat, the blows it takes bare while it reboots among them, the next blast's first fuel. Heat past its maximum burns it every turn and feeds the blast, so how long it rides is its choice. Its locked ray fires the same heat at one foe and keeps its shield, the weaker spend. Until 17 November the release was a passed turn's, once the enemy had acted, a sustained blow each round it held its die; this is a burst a reboot (\"Unfortunately it changes it's profile from sustained damage to huge burst, but I think it's ok. It was headed that way anyway\"). Numbers placeholders."
+    "niche": "A bursty damage dealer (Ryan, 20 November: \"it's now positioned as a bursty damage dealer, but that could change\"): heat is its ammunition and its risk (Ryan, 23 November: \"Deals -50% damage at zero heat to +100% damage at max heat, scaling linearly. When over 50% heat, damage recieved from hits is doubled\"; held at double past the maximum, his \"Hold\" the same day). It no longer gains heat on being hit. Its reboot fires its locked ray first, at whatever its heat makes of it, and then it reboots, so the reboot is its burst. If it is strong, he would consider doubling all the damage it takes past half its heat, so an overheat pays twice (\"if it's strong, I would consider changing to all damage received is doubled, so that overheat pays twice\"). A phased field leaves the ray nothing to fire at and the reboot waits (\"you just have to skip or use a support action\"). Its reboot's vent blasted every foe from 17 to 23 November, and every blow it took added heat. Numbers placeholders."
    },
    "codex": "",
    "hull": 40,
@@ -1681,18 +1678,24 @@
    "passive": {
     "id": "thermal_ejection_manifold",
     "name": "Thermal Ejection Manifold",
-    "description": "A reboot opens its valves as its heat vents: every foe takes 1 for every 2 heat it sheds. Every blow a foe lands on it adds 2 heat.",
+    "description": "Its weapons deal half damage at no heat, rising with its heat to double at its maximum. Past half its heat, every hit it takes is doubled. Its reboot fires the Heliographic Death Ray first: the Ray comes up on its die in place of what it showed, and once it fires the Whip Scorpion reboots.",
     "effects": [
      {
       "trigger": "static",
-      "effect": "reboot_release",
-      "value": 1,
-      "per": 2
+      "effect": "heat_scale",
+      "cold": 50,
+      "hot": 200
      },
      {
       "trigger": "static",
-      "effect": "heat_per_blow",
+      "effect": "hot_hits",
       "value": 2
+     },
+     {
+      "trigger": "static",
+      "effect": "reboot_piece",
+      "piece": "heliographic_death_ray",
+      "label": "Death Ray"
      }
     ]
    },

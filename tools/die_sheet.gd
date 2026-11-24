@@ -189,6 +189,11 @@ func _rest() -> Array:
 	charged.charged = true
 	var dark := _die(Face.disabled_stand_in(Face.attack(4)))
 	dark.dark = 2
+	dark.under = Face.attack(4)   # its own face under the veil (23 November)
+	var jam := _die(Face.disabled_stand_in(Face.attack(4)))
+	jam.dark = Effects.DARK_REBOOT
+	jam.under = Face.attack(4)
+	jam.jammed = true
 	var rapid := Face.attack(4)
 	rapid.add_keyword(Face.Keyword.RAPID)
 	var instant := Face.attack(4)
@@ -196,7 +201,7 @@ func _rest() -> Array:
 	var chips := Face.attack(4)
 	chips.add_keyword(Face.Keyword.ABLATE)
 	chips.add_keyword(Face.Keyword.CLEAVE)
-	chips.label = "a rule of its own"
+	chips.swaps = true   # a rule of its own: the star
 	var chipped := _die(chips)
 	chipped.corrupted = 2
 	var stepping := _die(Face.attack(3))
@@ -213,7 +218,8 @@ func _rest() -> Array:
 		["A count spent", "the Souls it would take\nnow, a stack each", _die(spender)],
 		["LOCKED", "a reroll skips it", locked],
 		["CHARGED", "armed for its charged\nform (the Swallowtail)", charged],
-		["Dark", "a cooldown or a switch-\noff: the clock, its turns", dark],
+		["Dark", "a cooldown or a switch-\noff: veiled, its turns", dark],
+		["Jammed", "a foe's jam: veiled in\nred until it reboots", jam],
 		["Chips", "keywords, the star for a\nrule, a corruption", chipped],
 		["Rapid", "acts again, the die\nrerolled elsewhere", _die(rapid)],
 		["Instant", "acts again, the roll\nmay land on itself", _die(instant)],

@@ -1756,7 +1756,7 @@ func _validate_vocabulary(errs: Array[String]) -> void:
 
 ## A charged form (the Swallowtail's locked pieces, 21 October): what a muster buys, its keys the
 ## engine reads (Face.charged_form) and nothing else.
-const CHARGED_KEYS := ["muster", "store", "price", "status", "stacks", "rounds", "not_acted", "keywords", "shield", "vents", "cleanse", "act_again"]
+const CHARGED_KEYS := ["muster", "status", "stacks", "rounds", "not_acted", "keywords", "shield", "vents", "cleanse", "act_again"]
 
 
 func _validate_charged(where: String, kind: String, cd, errs: Array[String]) -> void:
@@ -1768,18 +1768,6 @@ func _validate_charged(where: String, kind: String, cd, errs: Array[String]) -> 
 			errs.append("%s: charged has no '%s' (it knows %s)" % [where, key, ", ".join(CHARGED_KEYS)])
 	if int(cd.get("muster", 1)) < 1:
 		errs.append("%s: a charged form costs at least one muster" % where)
-	# Another store than the Muster (the Nemesis's rage, 11 November): a status tagged a store,
-	# priced in its stacks, never beside a muster price.
-	if cd.has("store"):
-		var store := str(cd["store"])
-		if not Effects.STATUS.has(store) or not (Effects.STATUS[store].get("tags", []) as Array).has("store") or store == "muster":
-			errs.append("%s: a charged store is a status tagged a store, other than the Muster ('%s' is not)" % [where, store])
-		if cd.has("muster"):
-			errs.append("%s: a charged form on a store is priced in its stacks (price), never in musters" % where)
-		if int(cd.get("price", 1)) < 1:
-			errs.append("%s: a charged form costs at least one stack of its store" % where)
-	elif cd.has("price"):
-		errs.append("%s: a charged price is a store's stacks: it needs the store it draws on" % where)
 	if cd.has("status") and not Effects.MECH_STATUSES.has(str(cd["status"])):
 		errs.append("%s: a charged status is one of the machines' (%s)" % [where, ", ".join(Effects.MECH_STATUSES)])
 	if cd.has("shield") and (str(cd["shield"]) != "full" or kind != "shield"):
@@ -1814,8 +1802,10 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: only attacks strike more than once" % where)
 	if fd.has("power_max"):
 		errs.append("%s: power_max is gone (2 November): a weapon is one number" % where)
-	if fd.has("heat_per_blow"):
-		errs.append("%s: heat_per_blow left the entry with the Siphon (12 November): a heat a blow taken is a passive's static heat_per_blow" % where)
+	# A weapon that cools its own machine as it strikes (the Nemesis's Knuckles of Fury, 23 November):
+	# an attack's, a whole number, 1 or more.
+	if fd.has("self_vent") and (kind != "attack" or not (fd["self_vent"] is int or fd["self_vent"] is float) or int(fd["self_vent"]) < 1 or float(fd["self_vent"]) != floorf(float(fd["self_vent"]))):
+		errs.append("%s: self_vent is the heat an attack cools its own machine as it strikes: a whole number, 1 or more, on an attack" % where)
 	# No crits since 10 October (bible section 5, the damage ranges row): chances live on
 	# riders, so a face that still carries one is stale content.
 	if fd.has("crit") or fd.has("crit_bonus"):
@@ -2004,10 +1994,13 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: braces is a positive number of stacks of Armoured, an armour point each" % where)
 	# Rolling again on a status (the Nemesis's fists on rage, 12 October to 11 November) and the
 	# spin (the Spin-Up's, 19 October) retired on 12 November: Instant is the roll that may land on
-	# itself, a spin on a stepping die, and a charged form on a store prices it (the Knuckle of
-	# Fury's five rage).
+	# itself, a spin on a stepping die. A heat a blow taken on an entry (the Siphon's, until 12
+	# November) and on a passive (the Whip Scorpion's, until 23 November) retired too: the heat a
+	# blow lays on a machine is a passive's gain_heat (the Nemesis's).
 	if fd.has("rolls_again_on"):
-		errs.append("%s: rolls_again_on is retired (12 November): Instant is the roll that may land on itself, a charged form on a store its price" % where)
+		errs.append("%s: rolls_again_on is retired (12 November): Instant is the roll that may land on itself" % where)
+	if fd.has("heat_per_blow"):
+		errs.append("%s: heat_per_blow is retired (23 November): the heat a blow lays on its machine is a passive's gain_heat" % where)
 	if fd.has("spins"):
 		errs.append("%s: spins is retired (12 November): Instant's roll is a spin on a stepping die" % where)
 	# The cooldown (Ryan, 14 October; counted after the round of the spend since 12 November,
@@ -2022,15 +2015,15 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		var cd = fd["cooldown"]
 		if not (cd is int or cd is float) or float(cd) < 1.0 or float(cd) != floorf(float(cd)):
 			errs.append("%s: cooldown is a whole number of rounds, 1 or more; an entry with none leaves it out" % where)
-	# Rapid or Instant, never both: each gives the turn back its own way, so the charged form a store
+	# Rapid or Instant, never both: each gives the turn back its own way, so the charged form a muster
 	# buys never adds the other to its plain one either.
 	var charged_keys: Array = (fd["charged"] as Dictionary).get("keywords", []) if fd.get("charged") is Dictionary else []
 	if (rapid or charged_keys.has("rapid")) and (instant or charged_keys.has("instant")):
 		errs.append("%s: an entry is Rapid or Instant, never both: each gives the machine its turn back its own way" % where)
 	# Every chain carries a limiter (Ryan, 15 October: no chain is free). Rapid's is its own, the
 	# entry dark for the rest of the round; Instant's roll may land on itself, so an Instant entry
-	# prints a cooldown or pays heat, hull or shield every spend, or is the charged form a store
-	# buys, its price the limit (the Knuckle of Fury's five rage). A piece locked on a stepping die
+	# prints a cooldown or pays heat, hull or shield every spend; a piece Instant only while its
+	# machine rages has that machine's heat (the Nemesis's Knuckles of Fury). A piece locked on a stepping die
 	# has the cylinder and its odds for its limiter (the Cassowary's Spin-Up, Ryan, 19 October: a
 	# combo piece, its spin a true roll that lands on itself one time in its die's size, to be spent
 	# again, the high roll he allowed; the exit, a stepping-die piece that ever chains for sure gets a
@@ -2401,8 +2394,21 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		# every spend aimed at a foe leaves, a whole number, 1 or more.
 		if effect == "mine_on_spend" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or float(eff["value"]) != floorf(float(eff["value"]))):
 			errs.append("%s: mine_on_spend is the Mine's flat damage a spend: a whole number, 1 or more" % where)
-		if effect == "reboot_release" and (int(eff.get("value", 0)) < 1 or int(eff.get("per", 0)) < 1 or eff.has("gate")):
-			errs.append("%s: reboot_release is what every foe takes from a reboot's vent for every so much heat: value and per (the heat a step), whole numbers, 1 or more; it has no gate" % where)
+		# The Nemesis's Crucible Capacitor (23 November): the heat a blow lays on the machine, a whole
+		# number, 1 or more; and its Rage's piece, a component (the chassis holds it fixed).
+		if effect == "gain_heat" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or float(eff["value"]) != floorf(float(eff["value"]))):
+			errs.append("%s: gain_heat is the heat the event lays on the machine: a whole number, 1 or more" % where)
+		if (effect == "rage_form" or effect == "reboot_piece") and not components.has(str(eff.get("piece", ""))):
+			errs.append("%s: %s names its piece, a component ('%s' is none)" % [where, effect, str(eff.get("piece", ""))])
+		# The Whip Scorpion's Thermal Ejection Manifold (23 November): the heat scale, cold and hot in
+		# percent of its damage at no heat and at the maximum; the multiple on a hit past half its heat;
+		# the word REBOOT wears for its reboot's piece.
+		if effect == "heat_scale" and (int(eff.get("cold", -1)) < 0 or int(eff.get("hot", -1)) < 0 or int(eff.get("cold", 100)) == int(eff.get("hot", 100))):
+			errs.append("%s: heat_scale is its damage in percent at no heat (cold) and at its maximum (hot): 0 or more each, and apart" % where)
+		if effect == "hot_hits" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 2 or float(eff["value"]) != floorf(float(eff["value"]))):
+			errs.append("%s: hot_hits is what a hit on it is multiplied by past half its heat: a whole number, 2 or more" % where)
+		if effect == "reboot_piece" and str(eff.get("label", "")).strip_edges().is_empty():
+			errs.append("%s: reboot_piece names the word REBOOT wears for its piece (label)" % where)
 		if effect == "shove_behind" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or int(eff["value"]) > 100 or float(eff["value"]) != floorf(float(eff["value"]))):
 			errs.append("%s: shove_behind is the share of a front foe's maximum HP its damaging blow drives into the foe behind, in percent: a whole number, 1 to 100" % where)
 		# The Petrels' passives: shield for every point of heat gained (the Storm Petrel's since 17
@@ -2442,8 +2448,8 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 				errs.append("%s: target_rank's reach is direct or indirect" % where)
 			if str(eff.get("trigger", "")) != "on_attack":
 				errs.append("%s: target_rank reads a reach on an attack's own effects only (on_attack)" % where)
-		if effect == "seal_form" and (int(eff.get("value", 0)) <= 0 or int(eff.get("heat", 0)) < 0):
-			errs.append("%s: seal_form's value is the armour the seal grants, positive, and heat what it runs hotter a turn, not negative" % where)
+		if effect == "seal_form" and (eff.has("value") or eff.has("heat")):
+			errs.append("%s: seal_form says no numbers: Sealed's are its own (23 November)" % where)
 		if effect == "paradox" and int(eff.get("value", 0)) < 1:
 			errs.append("%s: paradox's value is the count that knocks a foe out, at least 1" % where)
 		if effect == "grant_keyword" and eff.has("printed"):
@@ -2867,6 +2873,13 @@ func _validate_chassis(errs: Array[String]) -> void:
 			errs.append("%s: use 'passive' (zero or one), not 'passives'" % where)
 		var one_off := str(c.get("design", {}).get("one_off", "")) if c.get("design", {}) is Dictionary else ""
 		_validate_passive(where, c.get("passive", null), errs, not one_off.is_empty())
+		# A piece its passive leaves it in Rage or fires as it reboots (the Nemesis's Knuckles, the
+		# Whip Scorpion's Ray) is one of its fixed components: what it has, whatever it is dealt.
+		var cp = c.get("passive", null)
+		if cp is Dictionary and str(cp.get("status", "implemented")) == "implemented":
+			for eff in cp.get("effects", []):
+				if ["rage_form", "reboot_piece"].has(str(eff.get("effect", ""))) and not Array(c.get("fixed", [])).has(str(eff.get("piece", ""))):
+					errs.append("%s: its %s's piece '%s' is one of its fixed components" % [where, str(eff.get("effect", "")), str(eff.get("piece", ""))])
 		if c.has("branches"):
 			_validate_branches(where, c, errs)
 
@@ -3187,12 +3200,14 @@ static func _all_effects() -> Array:
 ## `also`, by the same rules. `a` carries the effect's fields (value, foe, count, rounds).
 func _validate_effect(aw: String, a: Dictionary, effect: String, errs: Array[String]) -> void:
 	# A priming and a regrowth say their number; a Barrier and a Ward say none (28 October).
-	if (effect == "prime" or effect == "regenerate" or effect == "golden") and int(a.get("value", 0)) < 1:
+	if (effect == "prime" or effect == "regenerate") and int(a.get("value", 0)) < 1:
 		errs.append("%s: %s says its number: value, 1 or more" % [aw, effect])
 	# A golden rage (4 November) lasts the rounds it says, 1 to 5, three unsaid.
 	if effect == "golden" and a.has("rounds") and (int(a["rounds"]) < 1 or int(a["rounds"]) > 5):
 		errs.append("%s: golden's rounds are the rounds the rage lasts, 1 to 5" % aw)
-	if (effect == "barrier" or effect == "ward_all" or effect == "appropriate" or effect == "phase" or effect == "unready_all") and a.has("value"):
+	# Golden is one state, its numbers its own (Ryan, 23 November: "No stack should be dynamic
+	# based on what created it"): its move says only its rounds.
+	if (effect == "barrier" or effect == "ward_all" or effect == "appropriate" or effect == "phase" or effect == "unready_all" or effect == "golden") and a.has("value"):
 		errs.append("%s: %s takes no value" % [aw, effect])
 	# A cleanse (28 October) takes every mark the team laid, so it says no number.
 	if effect == "cleanse" and a.has("value"):

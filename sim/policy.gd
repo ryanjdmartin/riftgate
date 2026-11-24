@@ -79,6 +79,8 @@ const PRIMED_WORTH := 2.0        # a stack of Primed on a foe (28 October): the 
 const REGEN_WEIGHT := 0.5        # a point of shield a regeneration brings in a round to come, as a share of the hull it keeps: those blows are guessed from this round's (the Storm Petrel's, 30 October)
 const AHEAD_SHARE := 0.6         # the shield persona: a blow next round, as a share of one this round (the fight may end, the foes pick afresh)
 const CYCLE_AHEAD := 0.6         # a stepping die's next round, as a share of this one: where the dial rests now is the chamber it opens on (the Cassowary's cycle, 3 November)
+const RAGE_SHARE := 0.5          # a Rage's flurry next turn (the Nemesis's), as a share of its swings' plain damage: a round away, the fight may end first, and it ends in a bare round; a placeholder
+const RAGE_SWINGS := 8           # the most swings a Rage is read for: past it the heat is a burn, never more fists
 const REBOOT_KEEP := 1           # the reboot's first play (a what-if): the shield this round's blows would take off a machine that it gives up without a thought when it reboots
 
 var kind: int = GREEDY
@@ -200,8 +202,7 @@ func play_round(sk: Skirmish, rerolls: bool = true) -> void:
 				continue
 			# Its second spend the reboot (the Needletail's): one it owed, or one its spend made it want.
 			if _reboots_second(sk, i):
-				if sk.reboot_mech(i):
-					reboots += 1
+				_reboot(sk, i)
 				continue
 			var opts := options_for(sk, i)
 			if opts.is_empty():
@@ -221,12 +222,10 @@ func play_round(sk: Skirmish, rerolls: bool = true) -> void:
 					_note_forced(sk, ms)
 					held.append(i)
 					continue
-				# A machine whose reboot's vent explodes (the Whip Scorpion's) gives its turn to it when
-				# the blast is worth more than its best spend: the valves or the gun. One that may not
-				# reboot (it has spent this turn) spends.
-				if release_worth(sk, ms) > float(pick["score"]) and sk.can_reboot(i):
-					if sk.reboot_mech(i):
-						reboots += 1
+				# A machine whose reboot fires a piece first (the Whip Scorpion's Death Ray) fires it, and
+				# reboots, when the piece's best spend, less the round it then stands bare, is worth more
+				# than its die's best. One that may not reboot (it has spent this turn) spends.
+				if sk.can_reboot(i) and piece_worth(sk, i) > float(pick["score"]) and _reboot(sk, i):
 					continue
 				if kind == PLANNER:
 					alternatives.append_array(_top_two(opts))
@@ -275,8 +274,7 @@ func _reboot_first(sk: Skirmish) -> void:
 				if _best_score(sk, i) > 0.0:
 					continue
 				_owed.erase(i)
-			if sk.reboot_mech(i):
-				reboots += 1
+			_reboot(sk, i)
 
 
 ## The best a machine's die offers now, or -1 with nothing to spend on.
@@ -287,10 +285,14 @@ func _best_score(sk: Skirmish, i: int) -> float:
 	return best
 
 
-## Whether this machine's next spend comes before a reboot it owes (_owed): its heat is vented
-## with the rest, so it costs nothing.
+## Whether this machine's next spend comes before a reboot it owes (_owed), or is its reboot
+## piece's (the Whip Scorpion's Death Ray, up): its heat is vented with the rest, so it costs nothing.
 func _vents_after(sk: Skirmish, ms: Skirmish.MechState) -> bool:
-	if _owed.is_empty() or ms.rebooting:
+	if ms.rebooting:
+		return false
+	if ms.ray_from >= 0:
+		return true   # its reboot piece up (the Whip Scorpion's Death Ray): the reboot after the spend vents its heat
+	if _owed.is_empty():
 		return false
 	var i := sk.mechs.find(ms)
 	return i >= 0 and _owed.has(i)
@@ -310,9 +312,12 @@ func _reboots_second(sk: Skirmish, i: int) -> bool:
 ## half spent; with the entry it shows too hot to fire without passing its maximum, when this
 ## round's blows would take little of its shield; and to top up a shield at a quarter or less
 ## with its heat half spent, when none are coming. The blind and the random bot read no picks:
-## they reboot at the maximum or on a break, whatever is coming.
+## they reboot at the maximum or on a break, whatever is coming. One that would rage (the
+## Nemesis's) never reboots to make room for its entry or for a shield short of broken: its
+## maximum is the Rage it climbs toward (rage_worth).
 func _wants_reboot(sk: Skirmish, ms: Skirmish.MechState) -> bool:
 	var blind := kind == BLIND or kind == RANDOM
+	var rager := not Effects.rage_piece(ms.unit).is_empty()   # one that would rage (the Nemesis's) reads its maximum as the Rage it opens, never a wall
 	# A burrower whose drill still works in a foe (the Mole's) gives it up as it burrows, the burrow
 	# taking it home with what is left: only an overheat takes it under then, and its guns fight on.
 	if drill_working(sk, ms):
@@ -332,12 +337,12 @@ func _wants_reboot(sk: Skirmish, ms: Skirmish.MechState) -> bool:
 	if waiting > 0 and (blind or not pressed or waiting * 3 >= maxi(1, ms.unit.die.faces.size())):
 		return true
 	if ms.shield_broken:
-		return blind or pressed or ms.heat * 2 >= ms.heat_max
+		return blind or pressed or (ms.heat * 2 >= ms.heat_max and not rager)
 	var f := ms.face()
 	var entry_heat := heat_of(ms, f) if f != null and f.kind != Face.Kind.BLANK else 0
-	if entry_heat > 0 and ms.heat + entry_heat > ms.heat_max:
+	if entry_heat > 0 and ms.heat + entry_heat > ms.heat_max and not rager:
 		return ms.heat > 0 and (blind or kept <= REBOOT_KEEP)   # cold already, a reboot buys the entry no room: it only drops the shield
-	return not blind and not pressed and ms.unit.shield * 4 <= ms.unit.shield_max and ms.heat * 2 >= ms.heat_max
+	return not blind and not pressed and not rager and ms.unit.shield * 4 <= ms.unit.shield_max and ms.heat * 2 >= ms.heat_max
 
 
 ## A die left unspent as the turn's spending ends is the cheap moment for a reboot:
@@ -350,34 +355,112 @@ func _reboot_idle(sk: Skirmish) -> void:
 		if not sk.can_reboot(i):
 			continue
 		if _owed.has(i) or _reboots_second(sk, i):   # a reboot it owed and put after a spend it then held, or its second-spend reboot with its die spent and nothing to turn to
-			if sk.reboot_mech(i):
-				reboots += 1
+			_reboot(sk, i)
 			continue
 		var ms: Skirmish.MechState = sk.mechs[i]
 		if ms.heat <= 0 and ms.unit.shield >= ms.unit.shield_max:
 			continue
 		if drill_working(sk, ms):
 			continue   # a burrow would take its drill home before it has done its work (the Mole's)
+		if not Effects.rage_piece(ms.unit).is_empty() and not ms.shield_broken:
+			continue   # one that would rage (the Nemesis's) keeps the heat it is climbing toward its Rage
 		var fc := sk.forecast(ms)
 		var kept := maxi(0, ms.unit.shield - int(fc["shield_after"]))
 		if kind == BLIND or kind == RANDOM or kept <= REBOOT_KEEP:
-			if sk.reboot_mech(i):
-				reboots += 1
+			_reboot(sk, i)
 
 
-## What a reboot's vent would blast (the Whip Scorpion's Thermal Ejection Manifold, on the reboot
-## since 17 November), in foe hit points: its blow on every foe standing, each through its
-## armour, capped at what the foe has left; nothing under its gate. Nothing for a machine whose
-## vent blasts nothing.
-func release_worth(sk: Skirmish, ms: Skirmish.MechState) -> float:
-	var shot := sk.release_shot(ms)
-	if shot == null:
-		return 0.0
-	var worth := 0.0
-	for foe in sk.field_foes():
-		if foe.alive():
-			worth += minf(float(foe.hp), float(sk.shown_number(ms, shot, foe)))   # through its pipeline and the foe's armour
-	return worth
+## A reboot, the bot's: a plain one, or, on a machine whose reboot fires a piece first (the Whip
+## Scorpion's Heliographic Death Ray, Skirmish.reboot_mech), the piece brought up and spent where it
+## is worth the most (the blind rung's nearest foe, the random rung's any), the reboot after it. False
+## when it could not: a reboot it may not make, or a piece with nothing to fire at (a field of Phased
+## foes), stood down again so the die shows what it did.
+func _reboot(sk: Skirmish, i: int) -> bool:
+	var ms: Skirmish.MechState = sk.mechs[i]
+	if Effects.reboot_piece(ms.unit).is_empty():
+		if not sk.reboot_mech(i):
+			return false
+		reboots += 1
+		return true
+	if not sk.reboot_mech(i):
+		return false
+	var pick: Dictionary = {}
+	if kind == BLIND:
+		pick = _blind_pick(sk, i)
+	else:
+		var opts := options_for(sk, i)
+		if not opts.is_empty():
+			pick = opts[rng.randi_range(0, opts.size() - 1)] if kind == RANDOM else opts[0]
+			if kind != RANDOM:
+				for o in opts:
+					if o["score"] > pick["score"]:
+						pick = o
+	var spent := ms.face()
+	var charged := sk.charge_lands(ms)
+	var marks := {} if pick.is_empty() else _paint_marks(sk, ms, spent, pick.get("target"))
+	if pick.is_empty() or not sk.assign(i, pick.get("target"), pick.get("second", null)):
+		if ms.ray_from >= 0:
+			sk.reboot_mech(i)   # stood down: nothing it may fire at
+		return false
+	_tally(spent, charged)
+	_note_paints(ms, pick.get("target"), marks)
+	reboots += 1
+	return true
+
+
+## Where a machine's reboot piece sits on its die (the Whip Scorpion's Death Ray), lit; -1 for none.
+static func piece_entry(ms: Skirmish.MechState) -> int:
+	var piece := Effects.reboot_piece(ms.unit)
+	if piece.is_empty():
+		return -1
+	for k in range(ms.die.faces.size()):
+		if ms.die.faces[k].component == piece and not Effects.is_entry_disabled(ms.unit, k):
+			return k
+	return -1
+
+
+## What firing a machine's reboot piece is worth now (the Whip Scorpion's Death Ray), in foe hit
+## points: the piece's best spend as it would go out, its heat free (the reboot after it vents it),
+## less what standing bare through this round costs over standing as it is (bare_cost). -INF for a
+## machine with no piece to bring up, or one that may not reboot.
+func piece_worth(sk: Skirmish, i: int) -> float:
+	var ms: Skirmish.MechState = sk.mechs[i]
+	var at := piece_entry(ms)
+	if at < 0 or ms.ray_from >= 0 or not sk.can_reboot(i):
+		return -INF
+	var was := ms.face_index
+	ms.face_index = at
+	ms.ray_from = was   # read as up: its heat goes with the reboot after it (_vents_after)
+	var best := -INF
+	for o in options_for(sk, i):
+		best = maxf(best, float(o["score"]))
+	ms.face_index = was
+	ms.ray_from = -1
+	if best == -INF:
+		return best
+	return best - bare_cost(sk, ms)
+
+
+## What a reboot now costs a machine through this round's blows, in foe hit points: the hull it
+## would lose bare and cold (its shield and its heat gone at the drop) over what it loses as it
+## stands, the burn of an overheat it would shed and a doubling of hits on a hot gauge (the Whip
+## Scorpion's) taken off; a wreck it would make, or save, at DEATH_WEIGHT. Negative where the
+## reboot saves hull.
+func bare_cost(sk: Skirmish, ms: Skirmish.MechState) -> float:
+	var now := sk.forecast(ms)
+	var shield := ms.unit.shield
+	var heat := ms.heat
+	ms.unit.shield = 0
+	ms.heat = 0
+	var bare := sk.forecast(ms)
+	ms.unit.shield = shield
+	ms.heat = heat
+	var cost := float(int(now["hull_after"]) - int(bare["hull_after"])) * HULL_WEIGHT
+	if bare["destroyed"] and not now["destroyed"]:
+		cost += DEATH_WEIGHT
+	elif now["destroyed"] and not bare["destroyed"]:
+		cost -= DEATH_WEIGHT
+	return cost
 
 
 ## A damaging die held because its heat would cross the maximum: a forced choice, and the
@@ -513,8 +596,7 @@ func _blind_round(sk: Skirmish) -> void:
 			if not ms.alive() or ms.assigned or held.has(i):
 				continue
 			if _reboots_second(sk, i):   # its second spend the reboot (the Needletail's), as the greedy's loop
-				if sk.reboot_mech(i):
-					reboots += 1
+				_reboot(sk, i)
 				spent_one = true
 				break
 			var pick := _blind_pick(sk, i)
@@ -613,7 +695,8 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	var quick := second_action(sk, ms, f)   # its machine's second action this round (the Needletail's)
 	var real := f
 	f = Effects.effective_face(ms.unit, f, target)
-	var outcomes := damage_outcomes(ms, f, target)
+	var field := f.reach == Face.Reach.EVERY_FOE   # it targets the field: no foe takes an aimed strike (24 November)
+	var outcomes := damage_outcomes(ms, f, target, Skirmish.AREA_ALL if field else -1)
 	var mean := _mean(outcomes)
 	var p_kill := _kill_odds(outcomes, target.hp)
 	var score := _capped(outcomes, target.hp)
@@ -624,8 +707,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	var shapes := sk.area_shapes(f, target)
 	for n in sk.ridden_by(f, target):
 		if n != target and n.alive():
-			# A weapon over every foe strikes each as its own target (12 November), a Shock read on each.
-			score += _capped(damage_outcomes(ms, f, n) if f.reach == Face.Reach.EVERY_FOE else damage_outcomes(ms, f, n, int(shapes.get(n, Skirmish.AREA_ALL))), n.hp)
+			score += _capped(damage_outcomes(ms, f, n, int(shapes.get(n, Skirmish.AREA_ALL))), n.hp)
 	score += arcs_worth(sk, ms, f, target, mean)
 	# The rifle's blow on the foe to the right with every strike (the Macaque's offhand, 19
 	# November), a blow of its own beside an area's, through the same order.
@@ -1215,6 +1297,10 @@ func heat_cost_of(sk: Skirmish, ms: Skirmish.MechState, added: int) -> float:
 	if not fc["destroyed"] and int(fc["hull_after"]) - burn <= 0:
 		cost += DEATH_WEIGHT
 	cost += overheat_marks_cost(ms, int(fc["overheat"]), over)
+	cost += hot_cost(sk, ms, added, fc)
+	# A machine that would rage (the Nemesis's): heat that opens its next turn at its maximum buys
+	# the Rage's flurry, read at a share (rage_worth), and heat it sheds below it gives that up.
+	cost -= rage_worth(ms, int(fc["heat_after"]) + added) - rage_worth(ms, int(fc["heat_after"]))
 	# The first turn past the maximum breaks the shield, and what stands there burns again
 	# every turn: the shield it would lose, and the burn once more.
 	if over > 0:
@@ -1227,6 +1313,38 @@ func heat_cost_of(sk: Skirmish, ms: Skirmish.MechState, added: int) -> float:
 	if line >= 0:
 		var top := mini(int(fc["heat_end"]) + added, ms.heat_max)
 		cost += float(maxi(0, top - maxi(line, int(fc["heat_end"])))) * HULL_WEIGHT * Skirmish.overheat_scale
+	return cost
+
+
+## What a Rage opening on `heat` is worth to a machine that would rage (the Nemesis's Crucible
+## Capacitor), in foe hit points: a swing of its rage piece for every point the piece cools it,
+## up to RAGE_SWINGS, each at the piece's plain number, at RAGE_SHARE; nothing under its maximum,
+## for a machine already raging, or for one with no rage form.
+static func rage_worth(ms: Skirmish.MechState, heat: int) -> float:
+	var piece := Effects.rage_piece(ms.unit)
+	if piece.is_empty() or Effects.raging(ms.unit) or heat < ms.heat_max:
+		return 0.0
+	for f in ms.die.faces:
+		if f != null and f.component == piece:
+			var swings := ceili(float(heat) / float(f.self_vent)) if f.self_vent > 0 else 1
+			return RAGE_SHARE * float(mini(swings, RAGE_SWINGS) * f.power * maxi(1, f.strikes))
+	return 0.0
+
+
+## What `added` heat costs a machine whose hits on it double on a hot gauge (the Whip Scorpion's
+## Thermal Ejection Manifold, past half its heat): the hull this round's blows would take more with
+## the heat on it, a wreck it would make at DEATH_WEIGHT; nothing where the gauge stays on its side.
+func hot_cost(sk: Skirmish, ms: Skirmish.MechState, added: int, fc: Dictionary) -> float:
+	if added <= 0 or Effects.hot_hits(ms.unit, ms.heat + added, ms.heat_max) <= Effects.hot_hits(ms.unit, ms.heat, ms.heat_max):
+		return 0.0
+	var heat := ms.heat
+	ms.heat = heat + added
+	var hot := sk.forecast(ms)
+	ms.heat = heat
+	var more := maxi(0, int(hot["struck"]) - int(fc["struck"]))
+	var cost := float(more) * HULL_WEIGHT
+	if not fc["destroyed"] and int(fc["hull_after"]) - more <= 0:
+		cost += DEATH_WEIGHT
 	return cost
 
 
@@ -1595,14 +1713,18 @@ static func _stowed_faces(ms: Skirmish.MechState) -> Array:
 
 
 ## The heat one use of an attack entry adds, through the pipeline; negative for one that
-## fires the gauge empty first.
+## fires the gauge empty first, or cools its own machine (self_vent).
 static func heat_of(ms: Skirmish.MechState, f: Face) -> int:
 	if f != null and not f.is_attack():
 		return f.heat   # a printed heat on a piece spent on machines, landing as it is (the Musk Ox's quick reload)
 	if ms.ammo_max > 0 and f != null and not f.is_debuff():
 		return Effects.debuff_heat(ms.unit, f)   # a forging machine's gun: only a foe's debuff heats it
 	var added := int(Effects.attack(ms.unit, f, 0, f.heat)["heat"])
-	return added - ms.heat if f.vents_all else added
+	if f.vents_all:
+		added -= ms.heat
+	if f.self_vent > 0:
+		added -= mini(f.self_vent, maxi(0, ms.heat + added))   # it cools itself once its heat has landed (the Nemesis's Knuckles of Fury)
+	return added
 
 
 ## What one use of an attack entry can land, with the odds of each: [[damage, weight], ...].
@@ -1626,6 +1748,9 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 	fired += Skirmish.shield_bonus(ms, f)   # what the shield it fires adds (the Shield-burner Cannon's)
 	var zap := Skirmish.zap_ready(ms, f)   # the Buzzard's zap, where Empowered's add goes, when its shield pays
 	var zctx := {"zap": zap} if zap > 0 else {}
+	var scale := Effects.heat_damage_multiple(ms.unit, ms.heat, ms.heat_max)   # the Whip Scorpion's heat scale, at the heat it holds
+	if scale != 1.0:
+		zctx["heat_scale"] = scale
 	# The foe's own reads (the blow's order, 28 October): its missing hull on every blow, and the
 	# stacks a consumer eats on it on the first, flat after the firer's pipeline, as the resolver lands them.
 	var own := f.missing_bonus(target) if not f.is_debuff() else 0   # every blow's
@@ -2736,7 +2861,11 @@ static func _widest(sk: Skirmish, areas: Array) -> float:
 static func _area_mean(m: Skirmish.MechState, f: Face, shape: int) -> float:
 	var n := Skirmish.split_share(Skirmish.area_number(f, shape) + Skirmish.heat_bonus(m, f) + Skirmish.shield_bonus(m, f), f.split)
 	var zap := Skirmish.zap_ready(m, f)
-	return float(Effects.attack(m.unit, f, n, 0, null, {"zap": zap} if zap > 0 else {})["damage"]) * float(maxi(1, f.strikes))
+	var ctx := {"zap": zap} if zap > 0 else {}
+	var scale := Effects.heat_damage_multiple(m.unit, m.heat, m.heat_max)   # the Whip Scorpion's heat scale
+	if scale != 1.0:
+		ctx["heat_scale"] = scale
+	return float(Effects.attack(m.unit, f, n, 0, null, ctx)["damage"]) * float(maxi(1, f.strikes))
 
 
 ## A foe's worth standing in the front rank, where Direct fire reaches it.

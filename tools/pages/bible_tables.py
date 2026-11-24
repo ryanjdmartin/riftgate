@@ -51,6 +51,7 @@ MOVE_AS_KEYWORD = {"ablate": "ablate", "jam": "jam", "scorch_all": "scorch", "co
 VIA_STATUS = {"primed": [("ablating", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
 ENGINE_ALIASES = {"ablating_mech": "ablating", "brittled_mech": "brittled", "exposure_mech": "exposure",   # the same word on the other body
                   "phasing": "phased",   # the wait for Phased, which is granted as the round ends (15 November)
+                  "swallowing": "swallowed",   # the wait for Swallowed, which lands as the round ends (22 November)
                   "parry_strike": "parry"}   # the Parry's return, next turn's first weapon's add, under the same name (19 November)
 
 # Printed rules, read off a component's face.
@@ -58,6 +59,7 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("vents_all", "Vents all", lambda f: bool(f.get("vents_all"))),
            ("spends_shield", "Fires the shield", lambda f: bool(f.get("spends_shield"))),
            ("passes_heat", "Passes heat", lambda f: bool(f.get("passes_heat"))),
+           ("self_vent", "Cools itself", lambda f: int(f.get("self_vent", 0) or 0) > 0),   # the Knuckles of Fury (23 November)
            ("power_per_missing", "Grows with missing HP", lambda f: int(f.get("power_per_missing", 0)) > 0),
            ("finisher", "Finisher", lambda f: int(f.get("finisher", 0) or 0) > 1),
            ("gated", "Gated", lambda f: bool(f.get("gates"))),

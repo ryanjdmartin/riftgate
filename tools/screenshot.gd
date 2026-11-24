@@ -7,7 +7,7 @@ extends SceneTree
 ## and pair_spread (a Gel's halves in its slot, and a Spread held over them; RIFTGATE_FOES=gel:2,goblin:3),
 ## mechcodex, hold (the second die's readout; RIFTGATE_HOLD_ENTRY=<place> picks the entry
 ## showing), mechhold and foehold (the first machine's and the first foe's readout, as a tap opens it), confirm (the
-## end-turn question), lock, rage (the rage's roll again mid-burst), heat (Ablating and
+## end-turn question), lock, rage (the Nemesis raging, its die all Knuckles of Fury), heat (Ablating and
 ## Scorched on the first machine), foeheat (heat's red-orange beside the enemy's violet on three foes' chips), repick (a foe whose machine falls before it acts, a second
 ## arrow dashed to the machine it will strike), columns (every foe aimed at the machine nearest its column, every arrow on).
 
@@ -143,6 +143,9 @@ func _apply_pose() -> void:
 			# as the die's target and filled under it.
 			s._on_drag_started(0)
 			s._on_drag_moved(s._reboot_btn.get_global_rect().get_center())
+		"dieview":
+			# A die's double-tap (23 November): the whole die at its live numbers, the one showing marked.
+			s._open_die_view(0)
 		"aim", "aimfree":
 			# A die in hand (22 November): the die stays in its tray, the crosshair on the first
 			# foe ("aim", locked, the die reading what it deals there) or in the open sky
@@ -244,9 +247,14 @@ func _apply_pose() -> void:
 				var over: Control = s._foe_view_for(s.sk.front[0])
 				s._on_drag_moved(over.get_global_rect().get_center())
 		"rage":
-			# The rage's roll again: the chip's burst and the die folded before its flip
-			# (RIFTGATE_SHOT_FRAME=8 catches the burst mid-flight).
-			s._rage_debug()
+			# The Nemesis's Rage (23 November): every machine with a rage form at its heat maximum and
+			# raging, its chip up and its die all Knuckles of Fury.
+			for ms in s.sk.mechs:
+				if ms.alive() and not Effects.rage_piece(ms.unit).is_empty():
+					ms.heat = maxi(ms.heat, ms.heat_max)
+					s.sk._rage_opens(ms)
+					ms.face_index = s.sk._roll(ms)
+			s._refresh()
 		"repick":
 			# The round preview's settled re-pick (26 October): the first machine falls to the first
 			# front foe's blow, so the second, aimed at it too, strikes the pick it will make; every
@@ -305,7 +313,7 @@ func _apply_pose() -> void:
 		"stores":
 			# Every machine's own resource row part filled, to judge the rows beside the heat bar
 			# (10 November; RIFTGATE_TEAM=badger,nemesis,cassowary,swallowtail, then musk_ox): the
-			# Honey Badger's hopper at three loads of four, the Nemesis's rage at three, the
+			# Honey Badger's hopper at three loads of four, the
 			# Cassowary's count two short of its shot, the Swallowtail's Muster a charge and a
 			# half, the Musk Ox's magazine two down, and each machine a little hot.
 			for ms in s.sk.mechs:
@@ -313,8 +321,6 @@ func _apply_pose() -> void:
 				ms.heat = maxi(ms.heat, int(u.heat_max * 0.4))
 				if Effects.store_cap(u, "hopper") > 0:
 					Effects.add_loads(u, 3)
-				if Effects.store_cap(u, "rage") > 0:
-					Effects.stack(u, Effects.STATUS["rage"], Effects.SKIRMISH, "mech", 3, Effects.DECAY_NONE)
 				var every := Effects.counts_shots(u)
 				if every > 2:
 					Effects.stack(u, Effects.STATUS["shots"], Effects.SKIRMISH, "mech", every - 2, Effects.DECAY_NONE)
@@ -613,8 +619,17 @@ func _apply_battle_pose() -> void:
 			s._map.scroll_to_unit(b.mechs()[0] if _pose == "zoom" else b.mechs()[b.mechs().size() - 1])
 		"codex":
 			s._on_hex_double_tapped(b.mechs()[0].pos)
-		"foecodex":
+		"formation":
+			# A pack's formation, its double-tap (23 November).
 			s._on_hex_double_tapped(b.field.packs()[0].pos)
+		"foecodex":
+			# A foe's codex over its pack's formation, a double-tap on it there.
+			var pk: Unit = b.field.packs()[0]
+			s._on_hex_double_tapped(pk.pos)
+			for cell in FormationBox.cells_of(pk):
+				if not str(cell).is_empty():
+					s._on_formation_foe(str(cell))
+					break
 		"resolve", "round":
 			# END TURN: the enemy's turn under the whole field's view, the round's number over it
 			# (23 November); RIFTGATE_SHOT_FRAME picks the moment (in a cloud session the banner
