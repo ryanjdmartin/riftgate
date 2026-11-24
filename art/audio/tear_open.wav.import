@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://mm3dkdfryd7b"
-path="res://.godot/imported/tear_open.wav-34e9800ff3c394883311ba44b719ab4c.sample"
-
-[deps]
-
-source_file="res://art/audio/tear_open.wav"
-dest_files=["res://.godot/imported/tear_open.wav-34e9800ff3c394883311ba44b719ab4c.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=2
+importer="skip"

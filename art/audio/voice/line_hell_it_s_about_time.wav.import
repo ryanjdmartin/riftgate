@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://6w85kpus8sy7"
-path="res://.godot/imported/line_hell_it_s_about_time.wav-64c8a5be7631b09e9469240220da2543.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_hell_it_s_about_time.wav"
-dest_files=["res://.godot/imported/line_hell_it_s_about_time.wav-64c8a5be7631b09e9469240220da2543.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=2
+importer="skip"

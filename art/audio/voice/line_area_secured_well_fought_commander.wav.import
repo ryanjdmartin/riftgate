@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://me8btl2412c7"
-path="res://.godot/imported/line_area_secured_well_fought_commander.wav-8f63fab7cd994bf09992bf029e398095.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_area_secured_well_fought_commander.wav"
-dest_files=["res://.godot/imported/line_area_secured_well_fought_commander.wav-8f63fab7cd994bf09992bf029e398095.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=2
+importer="skip"

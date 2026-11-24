@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://d084no0qv7unv"
-path="res://.godot/imported/line_connecting_to_live_feed.wav-c5007685663e3dc45bfaa3b44d85ad60.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_connecting_to_live_feed.wav"
-dest_files=["res://.godot/imported/line_connecting_to_live_feed.wav-c5007685663e3dc45bfaa3b44d85ad60.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=2
+importer="skip"

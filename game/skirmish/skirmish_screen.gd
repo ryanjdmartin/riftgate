@@ -1870,10 +1870,12 @@ func _foe_rows(foe: Foe) -> Array:
 	var sap := Effects.stacks_of(foe, "sapped")
 	if sap > 0:
 		rows.append(status_row("sapped", "sap", "-%d" % sap, "Sapped ×%d: its blows %d lower until after its next turn" % [sap, sap], _foe_chip_colour("sapped")))
-	var drilled := Effects.stacks_of(foe, "applied_momentum")
-	if drilled > 0:
-		# The Mole's drill in it (18 November): a stack for each of the foe's turns it still strikes.
-		rows.append(status_row("applied_momentum", _foe_glyph("applied_momentum"), "×%d" % drilled, "%s ×%d" % [str(Effects.STATUS["applied_momentum"]["name"]), drilled], _foe_chip_colour("applied_momentum")))
+	for sid in Effects.DRILL_STATUSES + ["frozen"]:
+		if Effects.has(foe, sid):
+			# The Mole's drill in it, in its branch's form, and the Glacial Mole's Frozen (24 November):
+			# marks that never stack, so the chip is bare; how long the drill stays is its Mole's
+			# Momentum, the bar under that machine's heat.
+			rows.append(status_row(sid, _foe_glyph(sid), "", str(Effects.STATUS[sid]["name"]), _foe_chip_colour(sid)))
 	for pin in Effects.HOLDERS.values():   # a pin's chip: the lock on the status it holds
 		if Effects.has(foe, pin):
 			rows.append(status_row(pin, Terms.glyph(pin), "", str(Effects.STATUS[pin]["name"]), _foe_chip_colour(pin)))
@@ -2408,11 +2410,13 @@ func _show_die(i: int) -> bool:
 		var returned := _parry_of(ms, sf) if not ms.assigned else 0
 		if returned > 0:
 			extra.append(EntryReadout.parry_line(returned))
-		# A burrower's drill (the Mole's): what its Conserved Momentum becomes in the foe, by the
-		# momentum's mark.
+		# A burrower's drill (the Mole's): the form it lays, the turns its machine's Momentum keeps it
+		# in (its drain a turn), and what each of them does, by the drill's mark with the Momentum.
 		if not ms.assigned and sf.component != "" and sf.component == str(Effects.burrow_rule(ms.unit).get("piece", "")):
 			var tick := Effects.momentum_of(ms.unit, sf)
-			extra.append(EntryReadout.drill_line(Effects.stacks_of(ms.unit, "conserved_momentum"), int(tick["blow"]), tick["lays"]))
+			var have := Effects.stacks_of(ms.unit, "momentum")
+			var turns := maxi(1, ceili(float(have) / float(maxi(1, int(tick["drain"])))))
+			extra.append(EntryReadout.drill_line(str(tick["status"]), have, turns, int(tick["blow"]), tick["lays"]))
 		# The shield its zap pays for a weapon (the Buzzard's), by the same box.
 		var zap := _zap_cost(ms, sf) if not ms.assigned else 0
 		if zap > 0:

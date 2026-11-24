@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://ctgtv0top381u"
-path="res://.godot/imported/cut.wav-0ac4449055ff58377696003e36cc502f.sample"
-
-[deps]
-
-source_file="res://art/audio/cut.wav"
-dest_files=["res://.godot/imported/cut.wav-0ac4449055ff58377696003e36cc502f.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=2
+importer="skip"

@@ -471,7 +471,7 @@
    "design": {
     "fantasy": "Ryan's drill-tank mole (4 November: \"Some kind of drill-tank mole machine\"): a low, narrow tank behind one great drill, a ring cutter turning round a rocket tip that it fires into a foe, tunnelling to it, and takes back as it burrows. Out of the burrow its cab runs out level to see past the drill's face and the fore weapon block's gun faces forward on a yoke just out of a side port and the rear block, raised on rams, fires from a port in its front over the fore one; burrowed, they tuck in behind it and every gun retracts. The name is the Thunderbirds' Mole, and the designation carries the nod (TB-2 for Thunderbird 2, FAB the sign-off): his call of 17 November, \"Designation and name are good\".",
     "niche": "tempo bruiser (Ryan, 16 November): it burrows in its reboot's place, banks momentum underground and drills a foe with it",
-    "notes": "A planned draft, undealt, in content since 17 November so its model can be judged moving in the hangar (Ryan: \"I think I need to see the model animated in the hangar to judge\"). Its kit as he set it is in docs/briefs/minerva_mole.md, which stays its home until its session lands; the passive and the Inertia Drill are planned drafts of that kit. Its numbers are the Honey Badger's, placeholders. Its four hardpoints are his (17 November: \"Let's lock in 4 or 5 hardpoints for it, the drill isn't accessible while unburrowed so it doesn't add to the face count\"; then \"Add a gun mount to the top of the central roof, above the vent\"), the top gun the fourth; its stock, placeholders: the Rivet Gun in the cab's roof, the Slugthrower in the rear block, the Twin Autoguns on the top gun and the Shoring Jack, which takes no mount, so the fore block's mount stands bare. Whatever class a mount wears stows as it burrows (Ryan, 17 November: \"What happens if the stock guns are swapped out? Can't just ignore that\"): the model's burrow stows any of the four in the hull under an iris, each in its port form."
+    "notes": "In content since 17 November, first so its model could be judged moving in the hangar (Ryan: \"I think I need to see the model animated in the hangar to judge\"); its kit's rounds and its tree's are in git with their briefs. Its numbers are the Honey Badger's, placeholders. Its four hardpoints are his (17 November: \"Let's lock in 4 or 5 hardpoints for it, the drill isn't accessible while unburrowed so it doesn't add to the face count\"; then \"Add a gun mount to the top of the central roof, above the vent\"), the top gun the fourth; its stock, placeholders: the Rivet Gun in the cab's roof, the Slugthrower in the rear block, the Twin Autoguns on the top gun and the Shoring Jack, which takes no mount, so the fore block's mount stands bare. Whatever class a mount wears stows as it burrows (Ryan, 17 November: \"What happens if the stock guns are swapped out? Can't just ignore that\"): the model's burrow stows any of the four in the hull under an iris, each in its port form. Its kit his of 24 November, at tier two with its tree: \"Momentum is a Resource. It goes to 10\"; Burrowed's turns under \"50% shield regen, 50% cooling, and 50% Momentum generation\", as flat numbers at half its shield, its heat maximum and its Momentum's (3, 6 and 5, placeholders); \"Burrow does not bank. But it does gain the 1 Armour\"; the Inertia Drill \"Indirect, 2 damage (?) Rapid Ignores Armour, Ward, and Barrier. Resolve: Target gains Applied Momentum\"; a burrow brings the drill back and \"momentum stays where it ended up\". Its directions the Glacial Mole and the Magma Mole, one step each, a tier two picking once."
    },
    "codex": "",
    "hull": 36,
@@ -497,94 +497,71 @@
    "passive": {
     "id": "burrow",
     "name": "Burrow",
-    "description": "On a turn it has spent nothing it may burrow in place of a reboot, gaining a stack of Conserved Momentum, up to 3, and taking back what is left of its Applied Momentum as Conserved. Burrowed, an ability no Purge touches, it has armour 1, its die rolls the Inertia Drill alone, and each of its turns opens with Broken and Overheated cleared, half of what its shield and heat were missing as it burrowed made good, and another stack. It stays under until it spends the Drill.",
+    "description": "Reboot replaced by Burrowed.",
     "effects": [
      {
       "trigger": "static",
       "effect": "burrow",
       "piece": "inertia_drill",
-      "cap": 3,
+      "cap": 10,
       "armour": 1,
-      "recover": 50,
-      "blow": 2
+      "shield": 3,
+      "cool": 6,
+      "momentum": 5
      }
     ]
    },
    "flavour": "",
    "branches": [
     {
-     "id": "ablate",
-     "name": "Ablate",
+     "id": "glacial",
+     "name": "Glacial Mole",
      "design": {
-      "notes": "Ryan, 16 November: \"Ablate branch: Change damage to Ablate 2 (but it decays), and then second upgrade adds Seared.\" The drill lays Ablate 2 in its blow's place, the Ablating decaying as Ablating does; Seared with it at the second step. Back in design 20 November with the Mole's move to tier two, where a machine picks once (Ryan: \"Send the Mole's current Upgrade tree back to design, though, and we can fix it\")."
+      "notes": "Ryan, 24 November: \"Glacial Mole: Passive gains: Immune to Brittle. Applied Momentum -> Frozen Momentum\", Frozen Momentum and Frozen as their terms say."
      },
      "steps": [
       {
-       "description": "Its drill lays Ablate 2 on its foe as each of the foe's turns starts, in place of the blow.",
+       "description": "Immune to Brittle.\nApplied Momentum becomes Frozen Momentum.",
        "effects": [
+        {
+         "trigger": "static",
+         "effect": "immune",
+         "value": "brittled"
+        },
         {
          "trigger": "static",
          "effect": "momentum",
          "entry": "inertia_drill",
-         "blow": 0,
-         "lays": {
-          "ablating": 2
-         }
-        }
-       ]
-      },
-      {
-       "description": "Its drill also lays Seared.",
-       "effects": [
-        {
-         "trigger": "static",
-         "effect": "momentum",
-         "entry": "inertia_drill",
-         "lays": {
-          "seared": 1
-         }
+         "status": "frozen_momentum"
         }
        ]
       }
-     ],
-     "status": "planned"
+     ]
     },
     {
-     "id": "squad",
-     "name": "Squad",
+     "id": "magma",
+     "name": "Magma Mole",
      "design": {
-      "notes": "Ryan, 16 November: \"Squad branch: ADDS brittle 1 and pinned to the blow. Second upgrade adds exposed.\" Each turn's blow carries the Brittle the turns before laid, the pin holding it while the drill is in. Back in design 20 November with the Mole's move to tier two, where a machine picks once (Ryan: \"Send the Mole's current Upgrade tree back to design, though, and we can fix it\")."
+      "notes": "Ryan, 24 November: \"Magma Mole: Passive gains: Immune to Ablate. Applied Momentum -> Heated Momentum\", Heated Momentum as its term says."
      },
      "steps": [
       {
-       "description": "Its drill's blow also lays Brittle 1 and Pinned.",
+       "description": "Immune to Ablate.\nApplied Momentum becomes Heated Momentum.",
        "effects": [
+        {
+         "trigger": "static",
+         "effect": "immune",
+         "value": "ablating"
+        },
         {
          "trigger": "static",
          "effect": "momentum",
          "entry": "inertia_drill",
-         "lays": {
-          "brittled": 1,
-          "pinned": 1
-         }
-        }
-       ]
-      },
-      {
-       "description": "Its drill's blow also Exposes its foe.",
-       "effects": [
-        {
-         "trigger": "static",
-         "effect": "momentum",
-         "entry": "inertia_drill",
-         "lays": {
-          "exposure": 1
-         }
+         "status": "heated_momentum"
         }
        ]
       }
-     ],
-     "status": "planned"
+     ]
     }
    ]
   },

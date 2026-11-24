@@ -585,9 +585,13 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-rift tools/foeforge/
 ### Sound
 
 ```sh
-# every sound and the six music tracks into art/audio, then the import
+# every sound and the six music tracks into art/audio, then the import. A build writes each sound's
+# master WAV (the tools' copy, its import skipped) and the files the game plays, one a mix rate
+# (44.1 kHz for the phone, 48 kHz for the desk): an effect's PCM WAV, a loop's Ogg Vorbis. It
+# needs ffmpeg, with libvorbis for the loops
 tools/spriter/.venv/bin/python tools/soundforge/forge.py build          # or: build effects (all but the loops), or: build ui_tap kill music_far_bank
-tools/spriter/.venv/bin/python tools/soundforge/voice_lines.py ship     # Jenny's lines into art/audio/voice with lines.json
+tools/spriter/.venv/bin/python tools/soundforge/forge.py encode         # the game's files at every rate again from the masters, Jenny's lines too, no render (or: encode effects, encode voice, encode ui_tap)
+tools/spriter/.venv/bin/python tools/soundforge/voice_lines.py ship     # Jenny's lines into art/audio/voice with lines.json: each a 24 kHz master and its files at every rate
 perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 perl -e 'alarm 300; exec @ARGV' godot --path . --resolution 360x640 -s tools/sound_smoke.gd   # every sound hook run with a window, muted: a SCRIPT ERROR in the log is a broken hook
 tools/spriter/.venv/bin/python tools/soundforge/forge.py measure        # each file's loudness, peak and share under 150 Hz
@@ -595,6 +599,7 @@ tools/spriter/.venv/bin/python tools/soundforge/forge.py sections       # every 
 tools/spriter/.venv/bin/python tools/soundforge/forge.py sketch map_88  # eight-bar sketches and variants into tools/soundforge/out (not shipped)
 # sketches for Ryan's ear, each as AAC with a page (index.html) to publish
 tools/spriter/.venv/bin/python tools/soundforge/pair_sketches.py [all]      # every track as a pair, a map half and a battle half, into out/pairs/
+tools/spriter/.venv/bin/python tools/soundforge/pair_sketches.py shipped    # the passed pairs' entries and the run from the shipped files, into the live manifest copied to out/pairs/
 tools/spriter/.venv/bin/python tools/soundforge/hold_sketches.py [set ...]  # Hold The Line's pair and its A/B sets
 tools/spriter/.venv/bin/python tools/soundforge/night_sketches.py [set ...] # Night Shift's
 tools/spriter/.venv/bin/python tools/soundforge/far_sketches.py             # The Far Bank's map half

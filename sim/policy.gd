@@ -64,6 +64,8 @@ const AILE_REACH_WORTH := 0.3    # an Aile buff's Indirect reach on the next wea
 const AILE_ARMOUR_WORTH := 0.5   # and the Blitz's armour ignored, a point of armour off each foe it may strike, a share of it a strike; a placeholder
 const ROLL_AGAIN_WEIGHT := 1.0   # another action of the die (Rapid, Instant, the reset gun, the Horn's), as the die's own average blow
 const VITRIOL_WEIGHT := 0.5      # a status a passive lays (the funnel-web's acid) pays out over the actions to come, as Ablate's does
+const DRILL_BRITTLE := 1.0       # a Brittle the drill holds on its foe: about one more blow of the squad's lands on it a turn (a first cut, 24 November)
+const DRILL_FOCUS := 0.5         # a use on a foe a drill is in: the Momentum it gives the drill's machine, a fifth of a turn more in the foe
 const NEEDLE_PROGRESS := 0.5     # a Sonic Needle short of its bolt: its share of the bolt, at the odds the bolt still comes (a first cut, 20 November)
 const BRITTLE_WEIGHT := 0.5         # a stack of Brittle, as the point it adds to each team blow the foe is likely to take while it lasts
 const SWAP_WEIGHT := 0.25        # a foe brought into the front rank by a swap, as a share of its kill and its threat: it stands exposed to Direct fire
@@ -772,9 +774,12 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	if f.webs:
 		# A delayed stun (the funnel-web's web, 18 October): the blows its burst will stop.
 		score += (1.0 - p_kill) * web_score(sk, target)
-	# A burrower's drill (the Mole's Inertia Drill): its turns in the foe (drill_worth).
+	# A burrower's drill (the Mole's Inertia Drill): its turns in the foe (drill_worth). A use on a
+	# foe a drill is in gives that drill's machine a Momentum, a share of a turn more in it.
 	if real.component != "" and real.component == str(Effects.burrow_rule(ms.unit).get("piece", "")):
 		score += drill_worth(sk, ms, real, target)
+	elif sk.driller_of(target) != null:
+		score += DRILL_FOCUS
 	if f.has(Face.Keyword.DISPEL):
 		# Purge (28 October): what every foe the entry reaches carries but Numbed and Guarded,
 		# the target's at the odds it outlives the blow, its Undying whatever.
@@ -903,7 +908,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 ## shield pays one, the whole shield for a gun that fires it (the Shield-burner Cannon), read as
 ## burn_cost reads shield gone this turn. A placeholder, as every weight: the regrowth a break shuts
 ## off until the reboot (its carrion) is not counted.
-## Whether a burrower's drill is still at work in a foe standing (the Mole's): Applied Momentum of
+## Whether a burrower's drill is still at work in a foe standing (the Mole's): its drill's form of
 ## its own on a live foe, which its next burrow would take home.
 static func drill_working(sk: Skirmish, ms: Skirmish.MechState) -> bool:
 	if not Effects.burrows(ms.unit) or not Effects.has(ms.unit, "drill_out"):
@@ -913,35 +918,41 @@ static func drill_working(sk: Skirmish, ms: Skirmish.MechState) -> bool:
 		if not f.alive():
 			continue
 		for m in f.modifiers:
-			if m.id == "applied_momentum" and m.source == source and m.stacks > 0:
+			if Effects.DRILL_STATUSES.has(m.id) and m.source == source:
 				return true
 	return false
 
 
-## The Inertia Drill at a foe (the Mole's; a first cut, 20 November): a blow a stack of its
-## Conserved Momentum, each through the foe's armour and capped at what the foe has left, and the
-## Ablating its branch lays, at the payout the bot reads any Ablating at. Under, with stacks still
-## to bank and its shield or heat not yet made good, it is worth waiting a turn: the drill is held
-## (a score below nothing), so a dig runs its two turns and drills whole and cold with the cap, a
-## dig's rhythm in his kit ("a turn more under for 3, whole and cold"). A Ward turns it away.
+## The Inertia Drill's mark at a foe (the Mole's; a first cut, 24 November), over its hit, which the
+## pipeline scores: the turns its machine's Momentum keeps it in (its drain a turn, a turn at least),
+## each a blow through the foe's armour that the Brittle held so far adds to, capped at what the foe
+## has left, the Brittle it holds read as a blow more of the squad's a turn, and the Ablate its form
+## lays at the payout the bot reads any Ablate at. Under, short of its cap with its shield or heat
+## not yet made good, it is worth waiting a turn: the drill is held (a score below nothing). A Ward
+## turns it away unless the piece ignores Ward.
 func drill_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
 	var rule := Effects.burrow_rule(ms.unit)
-	var n := Effects.stacks_of(ms.unit, "conserved_momentum")
-	if n <= 0 or Effects.turns_mark(target, "applied_momentum"):
-		return 0.0
-	if n < int(rule.get("cap", 3)) and (ms.unit.shield < ms.unit.shield_max or ms.heat > 0):
-		return -1.0
+	var have := Effects.stacks_of(ms.unit, "momentum")
 	var tick := Effects.momentum_of(ms.unit, f)
-	var per := maxi(0, int(tick["blow"]) - target.armour_total())
+	if Effects.turns_mark(target, str(tick["status"])) and not f.ignores_ward:
+		return 0.0
+	if have < int(rule.get("cap", 10)) and (ms.unit.shield < ms.unit.shield_max or ms.heat > 0):
+		return -1.0
+	var ticks := maxi(1, ceili(float(have) / float(maxi(1, int(tick["drain"])))))
+	var lays: Dictionary = tick["lays"]
+	var brittle_per := int(lays.get("brittled", 0))
+	var blow := int(tick["blow"])
 	var left := float(target.hp)
 	var worth := 0.0
-	for k in range(n):
-		var d := minf(left, float(per))
-		worth += d
-		left -= d
-	var lays: Dictionary = tick["lays"]
+	for k in range(ticks):
+		var brittle := brittle_per * (k + 1)   # the Pinned it lays holds what each turn lays
+		if blow > 0:
+			var d := minf(left, float(maxi(0, blow + brittle - target.armour_total())))
+			worth += d
+			left -= d
+		worth += float(brittle) * DRILL_BRITTLE
 	if int(lays.get("ablating", 0)) > 0 and left > 0.0:
-		worth += float(n) * dot_payout("ablating", int(lays["ablating"]), int(left)) * ABLATE_WEIGHT
+		worth += float(ticks) * dot_payout("ablating", int(lays["ablating"]), int(left)) * ABLATE_WEIGHT
 	return worth
 
 

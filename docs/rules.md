@@ -128,8 +128,9 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   Hypersonic Spike Tether, Instant at a heat more, then its Sonic Needles taking a point a stack
   off the attacks of the foe they are in; Chaos, its needles' bolt leaving its foe one stack in
   place of none, then its weapons dealing 1 more to a foe for each stack of Sonic Needle in it.
-  A direction may be back in design, a planned draft: kept in content, its depth unchecked, and
-  never offered (the Mole's two since its move to tier two).
+  The Mole's, a tier two's single pick: the Glacial Mole and the Magma Mole, each its drill's
+  form and an immunity (its drill, below). A direction may be back in design, a planned draft:
+  kept in content, its depth unchecked, and never offered.
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
@@ -1263,31 +1264,40 @@ Ablate, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Expo
   onto the same target, which reads BURROW while its die is in hand; the reboot's gate, a turn
   it has spent nothing, and its whole turn. Its shield is never emptied. What stands past its
   heat's maximum vents at once, as a reboot's does, so nothing burns at its END TURN and it is
-  free to overheat again, and every entry a foe jammed lights. It gains a stack of **Conserved
-  Momentum** (a store, so no Purge touches it, up to 3, a bar under its heat), and its drill
-  comes home with what is left of the Applied Momentum in its foe, back as Conserved up to the
-  cap. It is then **Burrowed** (an ability, so no Purge touches it): armour 1, its die rolling
-  the Inertia Drill alone, which its die never rolls above ground; and each of its turns under
-  opens, before anything cools, with Broken and Overheated cleared and the one overheat between
-  reboots free again, half of what its shield was missing as it burrowed back on it and half of
-  the heat it carried then off it, each rounded up (two turns under is whole and cold, and a
-  blow taken under is not mended), every entry a foe jammed lit, and a stack of Conserved
-  Momentum. It stays under until it spends the Drill, and cannot burrow again while under.
-- **The Inertia Drill** (its Integrated component, equipment, Indirect): spent at a foe, it spends every
-  stack of Conserved Momentum, lays as many of **Applied Momentum** on the foe (a mark the team
-  lays: the foe's Ward turns it away, the stacks spent all the same), and brings the Mole up,
-  **Drill Out** (an ability) until its next burrow, its foe felled or not. As the foes' turn
-  starts, before their side's opening, each foe carrying Applied Momentum takes its drill's
-  blow, a plain blow of 2 (its Brittle adds, its armour and a Barrier from its last turn take it,
-  no Shock is read, and a Phased foe takes nothing), then what a branch of its drill lays (the
-  Mole's two are back in design and offered nowhere: Ablate, Ablate 2 in the blow's place, then
-  Seared with it; Squad, Brittle 1 and Pinned, then Exposed), and a stack goes. Before the opening, so a Pinned it lays holds
-  the Brittle the opening would halve. A foe's cleanse takes it, a foe that falls takes it with
-  it, and the Mole's next burrow takes it home. The drill works as its machine stood when it
-  drilled: a branch learned later changes the next drill.
+  free to overheat again, and every entry a foe jammed lights. It banks no **Momentum** (a
+  resource, up to 10, a store no Purge touches, a bar under its heat), and its drill comes home
+  from the foe it is in, its Momentum left where it ended up. It is then **Burrowed** (an
+  ability, so no Purge touches it): armour 1 from the burrow's own turn, its die rolling the
+  Inertia Drill alone, which its die never rolls above ground; and each of its turns under opens,
+  before anything cools, with Broken and Overheated cleared and the one overheat between reboots
+  free again, 3 shield back on it (a blow taken under is mended as any missing shield is), 6 heat
+  off it, every entry a foe jammed lit, and 5 Momentum, up to its 10: half of each final number,
+  written flat. It stays under until it fires the Drill, and cannot burrow again while under.
+- **The Inertia Drill** (its Integrated component, a weapon): 2 damage, Indirect, Rapid, ignoring
+  armour, Ward and Barrier. Fired, it brings the Mole up, **Drill Out** (an ability) until its
+  drill comes home, and Rapid rolls its die again among its own entries, so it acts again. Its
+  Resolve lays **Applied Momentum** on its target (a mark the team lays that never stacks, so a
+  foe's cleanse takes it; it passes a Ward). No Momentum is spent by the firing. As the foes'
+  turn starts, before their side's opening, each foe carrying it gains Brittle 1 and Pinned,
+  then takes a plain blow of 1 (its Brittle adds, its armour and a Barrier from its last turn
+  take it, no Shock is read, and a Phased foe takes nothing), then drains 5 of its Mole's
+  Momentum; at none the mark goes and the drill comes home. Before the opening, so the Pinned it
+  lays holds the Brittle the opening would halve: its Brittle climbs a point a turn. Every use
+  that hits the drilled foe, an area's hit and a Chain's arc included, gives its Mole a Momentum
+  as it resolves, up to the cap; the drill's own use gives none. A foe that falls takes the mark
+  with it, the drill idle in the ground until its Mole burrows. The drill works as its machine
+  stood when it fired: a branch learned later changes the next drill.
+- The Mole's directions, a tier two's single pick: the **Glacial Mole**, immune to Brittle, its
+  drill laying **Frozen Momentum** in Applied Momentum's place (each of its foe's turns: Brittle 2,
+  Cryo 1, Pinned and **Frozen**, then the blow of 1 and the drain); and the **Magma Mole**, immune
+  to Ablate, its drill laying **Heated Momentum** (Brittle 1, Ablate 2, Pinned and Seared, and the
+  drain, no blow). Frozen (a debuff): the next weapon hit that would spend its foe's Cryo cools
+  the hitter as ever and leaves the Cryo, a Numbed spent in its place if it has one, and Frozen
+  goes. A machine immune to a status takes none of it, whatever lays it.
 - The fight bot burrows a burrower by the reboot's reads, but never while its drill still works
   in a standing foe unless it overheats; under, it holds the drill until it has its cap of
-  Conserved Momentum and is whole and cold, then drills the foe its blows pay most on.
+  Momentum and is whole and cold, then drills the foe its blows and its mark pay most on, and it
+  leans its squad's uses onto a foe a drill is in.
 - The fight bot reboots a machine past its maximum, unless a vent it shows takes it back
   under; one whose shield is broken when a blow is coming or its heat is half spent; one whose
   entry would pass its maximum, where it has heat to shed and this round's blows would take a
