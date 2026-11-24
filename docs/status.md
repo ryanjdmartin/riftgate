@@ -501,14 +501,12 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   republishes while he is on the page.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.657 on 23 November from main's file at `b3f7c466` (the page's Version 520),
-  over v0.655 (the live page checked byte for byte against `33c4cc61`'s file first). The file is
-  at v0.662 on main since `claude/formation-pass-feedback-rlvx5x` landed on 24 November (the wall,
-  tears and seam rows, the vanilla, reboot, Barrier and hunters rows, section 12's tide item),
-  unpublished: the session that wrote it had no room left to read the live page whole. Before republishing,
+  Published at v0.663 on 24 November from `ccr-178e0404-ptuh2m`'s file at `766ddc88` (the page's
+  Version 522: main's v0.662 merged with that branch's rows), over v0.658 (Version 521, the same
+  day from `1ed59ae6`; the live page checked byte for byte against that file first). Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
-  `1ed59ae6` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  `766ddc88` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
   live source with the tool's wrapper line, its trailing newline and `</body></html>`
   stripped): check BASE against the live page byte for byte first. After main merges in,
   check the tables script's run against the file's tables before keeping it: a row it
