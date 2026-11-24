@@ -32,11 +32,49 @@ func test_every_named_sound_has_a_file_at_every_rate() -> void:
 
 ## A sound's master WAV is the tools' (the pair page reads it, the forge measures it): the game
 ## plays its files at the mix rates, so the master's import is skipped and no build carries it.
+## Jenny's lines the same, their masters at 24 kHz.
 func test_a_sounds_master_is_not_imported() -> void:
+	var masters: Array = []
 	for name in Sound.all_names():
+		masters.append(Sound.DIR + name)
+	for file in _line_files():
+		masters.append(Sound.VOICE_DIR + file)
+	for master in masters:
 		var cfg := ConfigFile.new()
-		assert_eq(cfg.load(Sound.DIR + name + ".wav.import"), OK, "%s.wav has its import file" % name)
-		assert_eq(str(cfg.get_value("remap", "importer", "")), "skip", "%s.wav is skipped by the import" % name)
+		assert_eq(cfg.load(master + ".wav.import"), OK, "%s.wav has its import file" % master.get_file())
+		assert_eq(str(cfg.get_value("remap", "importer", "")), "skip", "%s.wav is skipped by the import" % master.get_file())
+
+
+## Every line of Jenny's plays from a PCM file at each of RATES, written by the forge's
+## write_rates from her 24 kHz master, at the rate its name says, the rates' files one length.
+func test_every_line_has_a_file_at_every_rate() -> void:
+	var files := _line_files()
+	assert_true(files.size() > 100, "the table's lines were read (%d)" % files.size())
+	assert_eq(Sound.VOICE_DIR, Sound.DIR + "voice/", "a line's file is found the way a sound's is (rate_path)")
+	for file in files:
+		var seconds: Array = []
+		for rate in Sound.RATES:
+			var path := Sound.rate_path("voice/" + file, "wav", rate)
+			assert_eq(path, Sound.VOICE_DIR + "%s.%d.wav" % [file, rate], "%s plays its own file at %d Hz" % [file, rate])
+			var s: AudioStreamWAV = (load(path) as AudioStreamWAV) if FileAccess.file_exists(path) else null
+			assert_true(s != null, "%s loads as a WAV" % path.get_file())
+			if s != null:
+				assert_eq(s.format, AudioStreamWAV.FORMAT_16_BITS, "%s plays as PCM" % path.get_file())
+				assert_eq(s.mix_rate, int(rate), "%s is at the rate its name says" % path.get_file())
+				seconds.append(s.get_length())
+		if seconds.size() == Sound.RATES.size():
+			assert_true(absf(float(seconds[0]) - float(seconds[1])) < 1.0 / 44100.0 + 0.00001, "%s is one length at every rate" % file)
+
+
+## Every file a line of the table names, once.
+func _line_files() -> Array:
+	var out := {}
+	var hooks: Dictionary = Sound._read_lines().get("hooks", {})
+	for hook in hooks:
+		for key in ["lines", "personality"]:
+			for line in hooks[hook].get(key, []):
+				out[str(line["file"])] = true
+	return out.keys()
 
 
 ## No WAV the game plays is compressed (QOA hisses over the top octaves): every WAV import under
@@ -214,7 +252,9 @@ func test_the_lines_table_is_whole() -> void:
 		assert_true(not (h.get("lines", []) as Array).is_empty() or not (h.get("personality", []) as Array).is_empty(), "%s has a line" % hook)
 		for key in ["lines", "personality"]:
 			for line in h.get(key, []):
-				assert_true(FileAccess.file_exists(Sound.VOICE_DIR + str(line["file"]) + ".wav"), "%s's %s is a file" % [hook, line["file"]])
+				assert_true(FileAccess.file_exists(Sound.VOICE_DIR + str(line["file"]) + ".wav"), "%s's %s has its master" % [hook, line["file"]])
+				for rate in Sound.RATES:
+					assert_true(FileAccess.file_exists(Sound.VOICE_DIR + "%s.%d.wav" % [line["file"], rate]), "%s's %s has its file at %d Hz" % [hook, line["file"], rate])
 		for other in h.get("merge", []):
 			assert_true(hooks.has(other), "%s merges %s, a hook" % [hook, other])
 		var sig := str(h.get("signal", ""))

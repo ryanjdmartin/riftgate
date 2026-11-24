@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://cnjhmxteihslt"
-path="res://.godot/imported/line_let_s_dance.wav-63a02fa3656f2668efbf6b57d2f68084.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_let_s_dance.wav"
-dest_files=["res://.godot/imported/line_let_s_dance.wav-63a02fa3656f2668efbf6b57d2f68084.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=0
+importer="skip"

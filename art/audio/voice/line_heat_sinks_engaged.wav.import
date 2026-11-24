@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://cymnjvofy7edo"
-path="res://.godot/imported/line_heat_sinks_engaged.wav-27eef5d557f6df6dd71b630b9edf07dc.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_heat_sinks_engaged.wav"
-dest_files=["res://.godot/imported/line_heat_sinks_engaged.wav-27eef5d557f6df6dd71b630b9edf07dc.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=0
+importer="skip"

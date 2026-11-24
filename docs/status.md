@@ -100,7 +100,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1467 tests, 392,076 checks, green on Godot 4.8-beta4 (24 November, every sound a file a mix rate). The runner fails a run
+- Tests: 1468 tests, 394,192 checks, green on Godot 4.8-beta4 (24 November, Jenny's lines a file a mix rate too). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -404,11 +404,11 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Godot's Android driver always mixes at, and 48 kHz for the desk), written by the forge from its
   master WAV, whose import is skipped: an effect as PCM, a loop as Ogg Vorbis at quality 10 (24
   November, on Ryan's "The game track sounds much worse to me than the page" and "Yes, fix the
-  effects"; the bible's row beside the master's, and `docs/measurements.md`). QOA's hiss and
-  Godot's rate converter are gone: the music measures cleaner than the pair page's AAC, and an
-  effect plays its file sample for sample. Jenny's lines import as PCM too, one 24 kHz file each,
-  which Godot converts up (a faint image 12 to 20 kHz, about 49 dB under her voice); a file a
-  rate for her lines is his call. A WAV imports as PCM by the project's default.
+  effects", then "Yes, do Jenny's lines at both rates too"; the bible's row beside the master's,
+  and `docs/measurements.md`). QOA's hiss and Godot's rate converter are gone: the music measures
+  cleaner than the pair page's AAC, and an effect and a line of Jenny's play their files sample
+  for sample, her lines' copies made from her 24 kHz masters (`forge.py encode voice`, and
+  `voice_lines.py ship` for new ones). A WAV imports as PCM by the project's default.
 - **The runners and tools.** `tools/balance.gd` plays the skirmish with `sim/policy.gd`'s
   ladder and `tools/campaign_run.gd` whole runs (the README has every command). The bot has
   a first play of the reboot, and prices every step of a foe's move and of its fall by one

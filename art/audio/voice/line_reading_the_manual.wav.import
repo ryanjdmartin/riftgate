@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://ba22l45uhgvs8"
-path="res://.godot/imported/line_reading_the_manual.wav-11c2fd450b0195079a2e07e3ba8f99a4.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_reading_the_manual.wav"
-dest_files=["res://.godot/imported/line_reading_the_manual.wav-11c2fd450b0195079a2e07e3ba8f99a4.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=0
+importer="skip"

@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://bvfqd0crscwno"
-path="res://.godot/imported/line_back_to_hell_with_you.wav-5e3037eb9129b1c4a985d30a460f7b0e.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_back_to_hell_with_you.wav"
-dest_files=["res://.godot/imported/line_back_to_hell_with_you.wav-5e3037eb9129b1c4a985d30a460f7b0e.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=0
+importer="skip"

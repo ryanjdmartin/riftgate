@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://c8kawmm3ktb3o"
-path="res://.godot/imported/line_combat_imminent.wav-87bea5fdc47f4900b21d7eefbf3fe596.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_combat_imminent.wav"
-dest_files=["res://.godot/imported/line_combat_imminent.wav-87bea5fdc47f4900b21d7eefbf3fe596.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=0
+importer="skip"

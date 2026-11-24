@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://bli6oqahelapn"
-path="res://.godot/imported/line_now_for_wrath_now_for_ruin_and_the_red_dawn.wav-5d0aae2565bd895457f4f71f02148c6f.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_now_for_wrath_now_for_ruin_and_the_red_dawn.wav"
-dest_files=["res://.godot/imported/line_now_for_wrath_now_for_ruin_and_the_red_dawn.wav-5d0aae2565bd895457f4f71f02148c6f.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=0
+importer="skip"

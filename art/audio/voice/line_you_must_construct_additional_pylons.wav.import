@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://h1qgqjdh7ub4"
-path="res://.godot/imported/line_you_must_construct_additional_pylons.wav-5e9df508cbde4707709bfe17c936b7bc.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_you_must_construct_additional_pylons.wav"
-dest_files=["res://.godot/imported/line_you_must_construct_additional_pylons.wav-5e9df508cbde4707709bfe17c936b7bc.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=0
+importer="skip"

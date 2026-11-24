@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://sxjkfegg8l46"
-path="res://.godot/imported/line_transferring_to_tactical_display.wav-ae8039aac88729df671481cbf1718a46.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_transferring_to_tactical_display.wav"
-dest_files=["res://.godot/imported/line_transferring_to_tactical_display.wav-ae8039aac88729df671481cbf1718a46.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=0
+importer="skip"

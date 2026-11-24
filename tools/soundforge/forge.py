@@ -7,7 +7,7 @@ real recordings and a real track when there are some. numpy only.
     tools/spriter/.venv/bin/python tools/soundforge/forge.py build            # everything SHIP names into art/audio (and retire the rest)
     tools/spriter/.venv/bin/python tools/soundforge/forge.py build effects    # everything but the loops
     tools/spriter/.venv/bin/python tools/soundforge/forge.py build ui_tap kill   # some
-    tools/spriter/.venv/bin/python tools/soundforge/forge.py encode           # the game's files at every rate from the masters, no render (or: encode effects, encode ui_tap)
+    tools/spriter/.venv/bin/python tools/soundforge/forge.py encode           # the game's files at every rate from the masters, Jenny's lines too, no render (or: encode effects, encode voice, encode ui_tap)
     tools/spriter/.venv/bin/python tools/soundforge/forge.py list
     tools/spriter/.venv/bin/python tools/soundforge/forge.py measure          # level and balance of every file
     tools/spriter/.venv/bin/python tools/soundforge/forge.py sketch [human rift djent]   # eight bars in a direction, to tools/soundforge/out
@@ -3795,8 +3795,7 @@ VORBIS_QUALITY = 10
 RESAMPLE = "aresample=%d:filter_size=256:phase_shift=14:linear_interp=0:exact_rational=1:cutoff=0.97"
 
 
-def rate_file(name, rate):
-    return os.path.join(OUT, "%s.%d.%s" % (name, rate, "ogg" if name.startswith("music_") else "wav"))
+VOICE = os.path.join(OUT, "voice")   # Jenny's lines, as tools/soundforge/voice_lines.py ships them
 
 
 def ffmpeg_ready(vorbis):
@@ -3808,38 +3807,57 @@ def ffmpeg_ready(vorbis):
         sys.exit("this ffmpeg has no libvorbis, which the loops' Vorbis files need")
 
 
-def rate_files(name):
-    """A sound's master into its file at each of RATES (a loop's Ogg Vorbis, an effect's PCM WAV,
-    the master's own rate a copy of it), and the master's import skipped: Godot then neither
-    imports the master nor exports it."""
+def write_rates(master, stem):
+    """A master WAV into the game's file at each of RATES (`<stem>.<rate>.wav`, a loop's `.ogg`):
+    a loop's Ogg Vorbis, any other sound's PCM WAV, a rate the master already has a copy of it; and
+    the master's import skipped, so Godot neither imports the master nor exports it."""
     import shutil
     import subprocess
-    master = os.path.join(OUT, name + ".wav")
+    import wave as wav_
+    loop = os.path.basename(stem).startswith("music_")
+    with wav_.open(master, "rb") as w:
+        own = w.getframerate()
+    out = []
     for rate in RATES:
-        out = rate_file(name, rate)
-        if name.startswith("music_"):
-            resample = [] if rate == SR else ["-af", RESAMPLE % rate]
+        path = "%s.%d.%s" % (stem, rate, "ogg" if loop else "wav")
+        resample = [] if rate == own else ["-af", RESAMPLE % rate]
+        if loop:
             subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", master] + resample
-                           + ["-c:a", "libvorbis", "-q:a", str(VORBIS_QUALITY), out], check=True)
-        elif rate == SR:
-            shutil.copyfile(master, out)
+                           + ["-c:a", "libvorbis", "-q:a", str(VORBIS_QUALITY), path], check=True)
+        elif not resample:
+            shutil.copyfile(master, path)
         else:
-            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", master, "-af", RESAMPLE % rate, "-c:a", "pcm_s16le",
-                            "-map_metadata", "-1", "-fflags", "+bitexact", "-flags:a", "+bitexact", out], check=True)
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", master] + resample + ["-c:a", "pcm_s16le",
+                            "-map_metadata", "-1", "-fflags", "+bitexact", "-flags:a", "+bitexact", path], check=True)
+        out.append(path)
     with open(master + ".import", "w", newline="\n") as f:
         f.write('[remap]\n\nimporter="skip"\n')
-    return [rate_file(name, rate) for rate in RATES]
+    return out
 
 
-def _retired(f):
-    """Whether a file in OUT is one SHIP no longer names: a master, or a file at a rate (an effect's
-    WAV, a loop's Vorbis) whose sound is gone or whose rate RATES no longer holds."""
+def rate_files(name):
+    """A SHIP sound's files at every rate, from its master in OUT."""
+    return write_rates(os.path.join(OUT, name + ".wav"), os.path.join(OUT, name))
+
+
+def voice_lines():
+    """Jenny's lines as the game's table names them (VOICE's lines.json), each a master in VOICE."""
+    import json
+    with open(os.path.join(VOICE, "lines.json"), encoding="utf-8") as f:
+        hooks = json.load(f)["hooks"]
+    return sorted({line["file"] for h in hooks.values() for pool in ("lines", "personality") for line in h[pool]})
+
+
+def retired(f, names):
+    """Whether a file is one `names` no longer holds: a master WAV whose sound is gone, or a file
+    at a rate (`hit.44100.wav`, `music_x.48000.ogg`) whose sound is gone or whose rate RATES no
+    longer holds. Any other file is none of these and stays."""
     if not (f.endswith(".wav") or f.endswith(".ogg")):
         return False
     stem, _, rate = f[:-4].rpartition(".")
-    if f.endswith(".wav") and not rate.isdigit():
-        return f[:-4] not in SHIP   # a master
-    return stem not in SHIP or not rate.isdigit() or int(rate) not in RATES
+    if stem and rate.isdigit():
+        return stem not in names or int(rate) not in RATES
+    return f.endswith(".wav") and f[:-4] not in names
 
 
 def main(argv):
@@ -3847,10 +3865,14 @@ def main(argv):
         print(__doc__)
         return 2
     if argv[0] == "encode":
-        # The game's files at every rate from the masters as they stand, without rendering them again.
+        # The game's files at every rate from the masters as they stand, without rendering them
+        # again: every sound and Jenny's lines, or the effects, the lines (`voice`), or some sounds.
         names = argv[1:] or list(SHIP)
         if argv[1:] == ["effects"]:
             names = [n for n in SHIP if not n.startswith("music_")]
+        lines = voice_lines() if argv[1:] in ([], ["voice"]) else []
+        if argv[1:] == ["voice"]:
+            names = []
         for name in names:
             if name not in SHIP:
                 print("no such sound:", name)
@@ -3859,6 +3881,9 @@ def main(argv):
         for name in names:
             for path in rate_files(name):
                 print("%-28s %s" % (name, os.path.relpath(path)))
+        for line in lines:
+            for path in write_rates(os.path.join(VOICE, line + ".wav"), os.path.join(VOICE, line)):
+                print("%-28s %s" % (line, os.path.relpath(path)))
         return 0
     if argv[0] == "audition":
         # Every effect as built, one after another with a second between, into one file,
@@ -3938,7 +3963,7 @@ def main(argv):
     if whole:
         # A whole build retires what SHIP no longer names (and its import file).
         for f in sorted(os.listdir(OUT)):
-            if _retired(f):
+            if retired(f, SHIP):
                 os.remove(os.path.join(OUT, f))
                 if os.path.exists(os.path.join(OUT, f + ".import")):
                     os.remove(os.path.join(OUT, f + ".import"))

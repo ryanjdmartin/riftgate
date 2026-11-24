@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://jp2a50lybr4c"
-path="res://.godot/imported/line_i_m_too_old_for_this_shit.wav-141be22cffb90e0fa7bc824e81bd93bd.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_i_m_too_old_for_this_shit.wav"
-dest_files=["res://.godot/imported/line_i_m_too_old_for_this_shit.wav-141be22cffb90e0fa7bc824e81bd93bd.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=0
+importer="skip"

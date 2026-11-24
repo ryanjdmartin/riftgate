@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://lm8nf1rsl0uw"
-path="res://.godot/imported/line_i_m_glitching_out_here.wav-784a1a9e9925e9649b50b9fba008752b.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_i_m_glitching_out_here.wav"
-dest_files=["res://.godot/imported/line_i_m_glitching_out_here.wav-784a1a9e9925e9649b50b9fba008752b.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=0
+importer="skip"

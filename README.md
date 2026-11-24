@@ -590,8 +590,8 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-rift tools/foeforge/
 # (44.1 kHz for the phone, 48 kHz for the desk): an effect's PCM WAV, a loop's Ogg Vorbis. It
 # needs ffmpeg, with libvorbis for the loops
 tools/spriter/.venv/bin/python tools/soundforge/forge.py build          # or: build effects (all but the loops), or: build ui_tap kill music_far_bank
-tools/spriter/.venv/bin/python tools/soundforge/forge.py encode         # the game's files at every rate again from the masters, no render (or: encode effects, encode ui_tap)
-tools/spriter/.venv/bin/python tools/soundforge/voice_lines.py ship     # Jenny's lines into art/audio/voice with lines.json
+tools/spriter/.venv/bin/python tools/soundforge/forge.py encode         # the game's files at every rate again from the masters, Jenny's lines too, no render (or: encode effects, encode voice, encode ui_tap)
+tools/spriter/.venv/bin/python tools/soundforge/voice_lines.py ship     # Jenny's lines into art/audio/voice with lines.json: each a 24 kHz master and its files at every rate
 perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 perl -e 'alarm 300; exec @ARGV' godot --path . --resolution 360x640 -s tools/sound_smoke.gd   # every sound hook run with a window, muted: a SCRIPT ERROR in the log is a broken hook
 tools/spriter/.venv/bin/python tools/soundforge/forge.py measure        # each file's loudness, peak and share under 150 Hz

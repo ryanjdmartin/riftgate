@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://qg300uhqepvt"
-path="res://.godot/imported/line_evil_draws_close.wav-140872287c0de3e0fdeddc4565b40c62.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_evil_draws_close.wav"
-dest_files=["res://.godot/imported/line_evil_draws_close.wav-140872287c0de3e0fdeddc4565b40c62.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=0
+importer="skip"

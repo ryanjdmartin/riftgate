@@ -131,10 +131,11 @@ const LOOP_FROM := {"music_far_bank": 8, "music_hold_the_line": 8, "music_far_ba
 ## rate, so Godot converts nothing: its rate converter dulls the top and folds high partials back
 ## as ghost tones, and its WAV compression (QOA) hisses over the top octaves, where the game is to
 ## play what Ryan passed (24 November, of the music: "The page mix is what I iterated on and
-## approved"; then "Yes, fix the effects"). An effect is PCM, a loop Ogg Vorbis at quality 10. Any
-## other mix rate takes the nearest file, and a rate's file missing (the phone's build carries
-## only its own) the other. A footfall's or a plate's random pitch (VARY) still converts its file,
-## by design. Jenny's lines are one 24 kHz PCM file each (VOICE_DIR), converted up.
+## approved"; then "Yes, fix the effects", and "Yes, do Jenny's lines at both rates too"). An effect
+## and a line of Jenny's (VOICE_DIR, her master at 24 kHz) are PCM, a loop Ogg Vorbis at quality
+## 10. Any other mix rate takes the nearest file, and a rate's file missing (the phone's build
+## carries only its own) the other. A footfall's or a plate's random pitch (VARY) still converts
+## its file, by design.
 const RATES := [44100, 48000]
 
 ## Every loop's shown title and its working label. The files are named for the titles
@@ -917,7 +918,7 @@ func _voice_stream(file: String) -> AudioStream:
 	var key := "voice/" + file
 	if _streams.has(key):
 		return _streams[key]
-	var path := VOICE_DIR + file + ".wav"
+	var path := rate_path(key, "wav")   # VOICE_DIR's file at the mix rate
 	var s: AudioStream = load(path) if ResourceLoader.exists(path) else null
 	_streams[key] = s
 	return s

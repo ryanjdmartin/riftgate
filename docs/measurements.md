@@ -12851,3 +12851,23 @@ Godot's conversion up takes 0.6 dB off 4.5–8 kHz and 2.1 dB off 8–12 kHz, an
 **The Track Pairs page's passed pairs** (its version 1794371204-c6ae, before version 89): every
 channel of `hold_the_line_r27`, `night_shift_r35` and `far_bank_r8` is the game's half
 (correlation 0.9995 to 0.99997, the difference 30 to 43 dB under it: the AAC's).
+
+## 24 November: Jenny's lines at the mix rates
+
+**Method.** As the entries above, through the real `Sound` node's `_voice_stream`: each of the
+151 lines' copies made by the forge's `write_rates` from her 24 kHz master (ffmpeg's long-filter
+resampler up to 44.1 and 48 kHz, PCM), against the copy, and one line against an ideal
+upsample of its master (soxr at 28 bits).
+
+Every line plays its file sample for sample at both rates (largest difference 3 × 10⁻⁸). The
+copies peak at −0.3 dBFS at most (`line_flawless_victory`), each the length of its master.
+`line_full_line_advancing` at 44.1 kHz, dB in each band:
+
+| Path | 100–1000 Hz | 1–4.5 kHz | 4.5–8 kHz | 8–12 kHz | 12–20 kHz |
+|---|---|---|---|---|---|
+| Her line, ideally upsampled | 73.6 | 62.0 | 44.3 | 35.8 | −82.3 |
+| The game before: QOA at 24 kHz, Godot's conversion up | 73.6 | 62.0 | 43.9 | 34.6 | 26.3 |
+| The game now: her 44.1 kHz file | 73.6 | 62.0 | 44.3 | 35.8 | −9.0 |
+
+The conversion's image at 12–20 kHz is gone (83 dB under her 100 Hz–1 kHz band now, where it
+was 47 dB under), and the top of her voice keeps its level.

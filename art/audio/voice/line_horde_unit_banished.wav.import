@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://vf7qjwe3fm5q"
-path="res://.godot/imported/line_horde_unit_banished.wav-f11a2356926c628c0063957f7cf6ab03.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_horde_unit_banished.wav"
-dest_files=["res://.godot/imported/line_horde_unit_banished.wav-f11a2356926c628c0063957f7cf6ab03.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=0
+importer="skip"

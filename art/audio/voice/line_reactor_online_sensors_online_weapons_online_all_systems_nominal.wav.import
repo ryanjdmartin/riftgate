@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://w866iw6a0yjd"
-path="res://.godot/imported/line_reactor_online_sensors_online_weapons_online_all_systems_nominal.wav-29a5d0dfec391397580eb90cb57bf2ec.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_reactor_online_sensors_online_weapons_online_all_systems_nominal.wav"
-dest_files=["res://.godot/imported/line_reactor_online_sensors_online_weapons_online_all_systems_nominal.wav-29a5d0dfec391397580eb90cb57bf2ec.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=0
+importer="skip"

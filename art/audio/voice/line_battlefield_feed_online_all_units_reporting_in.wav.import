@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://dwxca7k5ovean"
-path="res://.godot/imported/line_battlefield_feed_online_all_units_reporting_in.wav-9969097f9e669861dff8da1570c559a3.sample"
-
-[deps]
-
-source_file="res://art/audio/voice/line_battlefield_feed_online_all_units_reporting_in.wav"
-dest_files=["res://.godot/imported/line_battlefield_feed_online_all_units_reporting_in.wav-9969097f9e669861dff8da1570c559a3.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=0
+importer="skip"
