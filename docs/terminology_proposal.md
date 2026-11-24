@@ -130,6 +130,18 @@ that lays stacks puts the number first; a chip and a keyword on the die say "Abl
 **A capital after a label.** (settled 23 November: his word)
 "Capitalize after a colon, yes."
 
+**A keyword for "only this component".**
+His suggestion of 24 November, for the third case in a week (the Nemesis's Rage, the Whip
+Scorpion's reboot that puts the Death Ray on its die, the Mole's burrow): "Fixed: Knuckles of
+Fury", with the keyword's tip "Fixed: Only the specified component may be used." The catch is
+the name: "fixed" is already the kit word for a chassis's built-in components (CLAUDE.md, 18
+September), the loadout editor prints "Fixed: Knuckles of Fury" today for the Nemesis's built-in
+pieces, the Destroyed component tip says "a fixed component is rebuilt", and all three pieces in
+question are their chassis's fixed components. Until it is named the tips say "Only Knuckles of
+Fury available."
+- **A:** Another word for the keyword, the kit word kept: Bound, Sole or Locked In ("Bound: Knuckles of Fury").
+- **B:** "Fixed" for the keyword, and the kit word renamed (built-in), in shown text and the docs.
+
 **Names.**
 - **Aloft.** The Roc's climb out of reach, a working name. Pick: Keep · Soaring · Airborne
 - **Last Act.** What a foe does when defeated ("maybe rename to something more interesting").

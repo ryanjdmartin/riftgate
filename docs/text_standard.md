@@ -20,13 +20,18 @@ section 4. `tests/test_terms.gd` holds every tip to the mechanical parts.
   An always-on line has none.
 - **Conditions** sit inside the line: "On Hit: If targeted, ...". **Riders** land at Resolve.
 - **Stacks.** "Apply N X" lays stacks, number first ("Apply 2 Brittle"); "Gain N X" on itself;
-  "Reduce stacks by 1", "by half, rounded down", "to 0". A chip and a keyword on the die say
+  "Reduce stacks by 1", "by half, rounded down", "to 0". A status that never stacks says
+  "Consumed" when its own effect uses it up ("At 0 Heat: Consumed to Reboot immediately") and
+  "Removed" when it simply ends ("Turn Start: Removed."). A chip and a keyword on the die say
   "X N". A timer's stacks are its clock, never its strength.
 - **Numbers.** Digits; rates use "per". A status's numbers are its own, never the move's or the
   passive's that laid it. `{N}` fills with the unit's current sum and goes only on a per-stack
   line ("+1 damage per stack ({N})"); in a keyword's tip it is the keyword's number.
-- **Shape.** Precise and succinct, one effect a line, no semicolon. It names no other rule that
-  may change, no piece that carries it, and never its own heading.
+- **Shape.** Technical lines, not prose: "Only Knuckles of Fury available.", "Reboot disabled.",
+  "Cooling disabled." Precise and succinct, one effect a line, no semicolon. It names no other
+  rule that may change, no piece that carries it, and never its own heading. Game nouns are
+  capitalised as his lines write them: Heat, Max Heat, Shield, Hull, HP, Max HP, Armour, Buff,
+  Debuff, Reboot.
 - **As written:**
   - Brittle: "When Hit: +1 damage received per stack ({N}). / Turn Start: Reduce stacks by half, rounded down."
   - Shocked: "When Hit: If targeted, consume to double damage received, before applying defensive effects. / Conducts Chain."
@@ -114,10 +119,15 @@ A *round* is your turn plus the foes' turn, a *skirmish* one pack fought to the 
 the whole map. "Skirmish" is the noun; "fight" stays only as a verb.
 - "It lasts the fight" → "Lasts the skirmish."
 
-**14. A stack changes by "reduce stacks".** (settled 23 November: his word)
+**14. A stack changes by "reduce stacks"; a status that never stacks is consumed or removed.** (settled 23 and 24 November: his word)
 "Reduce stacks by 1", "Reduce stacks by half, rounded down", "Reduce stacks to 0". No plural to
-adjust. A Cleanse or a Purge *removes*.
+adjust. A status that never stacks has no stacks to reduce ("Rage is a buff status that isn't
+stacked. So non-stacking statuses shouldn't say 'reduce to 0,' they can just say 'Consumed' or
+'Removed' just like Shock"): "Consumed" when its own effect spends it, "Removed" when it ends.
+A Cleanse or a Purge *removes*.
 - "a stack fades" → "Reduce stacks by 1."
+- "Turn Start: Reduce stacks to 0." (Ward) → "Turn Start: Removed."
+- "When its heat reaches nothing, the Rage ends and it reboots at once." → "At 0 Heat: Consumed to Reboot immediately."
 
 ### What things are called
 
@@ -223,10 +233,24 @@ of Spread and Penetrate fire every event but the target's.
 "If a weapon was used" on what a weapon's use spends, "If this was an attack" where either side's
 attack spends it; "When it would gain X: Prevent it" for what stops a status landing; "Cannot be
 cleansed." on a debuff no Cleanse removes, until the headings say it (rule 24); X and Y for an
-entry's two printed numbers ("+X damage per Y heat vented, X and Y shown on the entry").
+entry's two printed numbers ("+X damage per Y Heat vented, as shown on the entry"); "Only X
+available." for a die held to one component, until the keyword for it is named (the proposal's
+section 4).
 - "Resolve: If triggered, reduce stacks by 1." → "Resolve: If a weapon was used, reduce stacks by 1."
 
 **36. A reach over every Sprite targets the field.** (settled 24 November: his word)
 "A weapon that hits every sprite, for that reason, should probably be coded as none are targeted,
 since its targeting the field." Its tip says "No hit is Targeted", and the engine aims none of its
 hits (`docs/rules.md`, Every Foe).
+
+**37. Technical lines, not prose.** (settled 24 November: his word)
+"You're still writing prose and not technical lines": a line states the rule, no "its" and no
+clause it can do without. A status's trigger lives on what grants it: the Nemesis's passive says
+"Turn Start: If at Max Heat or higher, remove all Debuffs and gain Rage.", and Rage says what it
+does.
+- "Its Knuckles of Fury are its only component, and gain Instant." → "Only Knuckles of Fury available." (Rage) and "During Rage, gain Instant." (the Knuckles)
+- "Cannot reboot by choice." → "Reboot disabled."
+
+**38. Game nouns are capitalised.**
+His lines of 24 November write Heat, Max Heat, Debuffs and Reboot with capitals, beside Armour
+and Max HP: so do Shield, Hull, HP, Buff and Debuff. "Damage" stays lowercase, as his lines have it.

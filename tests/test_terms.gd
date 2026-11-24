@@ -267,6 +267,14 @@ func test_every_tip_keeps_the_standards_shape() -> void:
 			assert_false(tip.contains(";"), "%s: no semicolon (%s)" % [id, tip])
 			var m := gone.search(tip)
 			assert_true(m == null, "%s: says '%s', a word the standard retired" % [id, m.get_string() if m != null else ""])
+			# A status that never stacks is consumed or removed, never reduced (Ryan, 24 November:
+			# "non-stacking statuses shouldn't say 'reduce to 0,' they can just say 'Consumed' or
+			# 'Removed' just like Shock"): one that renews, counts nothing and keeps no timer.
+			if str(kind[0]) == "status":
+				var sid := Terms.engine_status(str(id))
+				var d: Dictionary = Effects.STATUS.get(sid, {})
+				if not d.is_empty() and Effects.status_stacking(d) == "renew" and not Effects.is_timer(sid) and not Effects.is_counted(sid):
+					assert_false(tip.to_lower().contains("stacks"), "%s never stacks: its tip says Consumed or Removed (%s)" % [id, tip])
 			for line in tip.split("\n"):
 				if str(kind[0]) == "status" and line.contains("{N}"):
 					assert_true(line.contains("per stack ({N})"), "%s: a status's {N} follows a per-stack amount: %s" % [id, line])

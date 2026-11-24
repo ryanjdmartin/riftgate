@@ -48,45 +48,45 @@ Status: 208 implemented, 6 planned, 0 idea.
 
 | Term | Codex | Status |
 |---|---|---|
-| **Swap** | Takes a second target: another Sprite or an empty slot.
-Resolve: The target and the second target trade places. A massive Sprite does not move. | implemented |
-| **Volatile** | Commit: Lose {N} hull. Ignores shield and Armour. | implemented |
-| **Shield cost** | Commit: Lose {N} shield.
-Cannot be used without enough shield. | implemented |
-| **Targets** | Which Frames this component can be used on, shown as three hexes under its mark: the middle hex is this Frame, the side hexes are the other Frames. A filled hex can be chosen. | implemented |
+| **Swap** | Second target: another Sprite or an empty slot.
+Resolve: The target and the second target swap places. Massive Sprites cannot move. | implemented |
+| **Volatile** | Commit: Lose {N} Hull. Ignores Shield and Armour. | implemented |
+| **Shield cost** | Commit: Lose {N} Shield.
+Cannot be used without enough Shield. | implemented |
+| **Targets** | Which Frames this can be used on, shown as three hexes under its mark: the middle is this Frame, the sides are the other Frames. A filled hex can be chosen. | implemented |
 | **Cooldown** | Resolve: This entry goes dark for the rest of the round and the next {N} rounds.
 A dark entry can be rolled but not used. | implemented |
 | **Gather** | Resolve: Every other Sprite's Mine merges into the target's Mine. | implemented |
-| **Detonate** | Resolve: The target's Mine goes off, this use's addition included. | implemented |
-| **On itself** | Resolve: This Frame gains the status shown. Where shown, it gains it once per Sprite hit, up to the cap shown. | implemented |
-| **An ally's action** | Resolve: If the target Frame's die is used, spend {N} rerolls. Its die rerolls onto a different entry and can be used again. | implemented |
-| **Rolls its die** | Resolve: The target's die rerolls onto a different entry. A used die does not reroll. | implemented |
+| **Detonate** | Resolve: The target's Mine goes off, including this use's addition. | implemented |
+| **On itself** | Resolve: This Frame gains the status shown. Where shown: once per Sprite hit, up to the cap shown. | implemented |
+| **An ally's action** | Resolve: If the target Frame's die is used, spend {N} rerolls to reroll it onto a different entry. It can act again. | implemented |
+| **Rolls its die** | Resolve: The target's die rerolls onto a different entry. A used die cannot reroll. | implemented |
 | **Rerolls a kill** | Resolve: If any Sprite hit was defeated, gain {N} rerolls. | implemented |
 | **Grants a reroll** | Resolve: Gain {N} rerolls. | implemented |
-| **Vents all** | Commit: Reduce heat to 0. +X damage per Y heat vented, X and Y shown on the entry. | implemented |
-| **Fires the shield** | Commit: Reduce shield to 0. +X damage per Y shield spent, X and Y shown on the entry. | implemented |
-| **Passes heat** | Resolve: Move all of this Frame's heat to the target. The target gains 1 stack of the shown status per Y heat moved, Y shown on the entry, rounded down. | implemented |
-| **Grows with missing HP** | Commit: +X damage per Y HP the target is missing, X and Y shown on the entry. | implemented |
-| **Finisher** | Commit: If the target is at or below half its Max HP, double base damage. | implemented |
-| **Gated** | The keyword applies only to a Sprite that meets its condition at Commit. | implemented |
-| **Consumes** | On Hit: If a weapon, consume every stack of the named status on the Sprite hit. +{N} damage per stack consumed.
+| **Vents all** | Commit: Reduce Heat to 0. +X damage per Y Heat vented, as shown on the entry. | implemented |
+| **Fires the shield** | Commit: Reduce Shield to 0. +X damage per Y Shield spent, as shown on the entry. | implemented |
+| **Passes heat** | Resolve: Move all of this Frame's Heat to the target. The target gains 1 stack of the shown status per Y Heat moved, rounded down. | implemented |
+| **Grows with missing HP** | Commit: +X damage per Y HP the target is missing, as shown on the entry. | implemented |
+| **Finisher** | Commit: If the target is at or below half Max HP, double base damage. | implemented |
+| **Gated** | The keyword applies only to Sprites that meet its condition at Commit. | implemented |
+| **Consumes** | On Hit: If a weapon, consume all stacks of the named status on the Sprite hit. +{N} damage per stack consumed.
 Commit: If equipment, consume up to {N} of the named count from this Frame. Gain 1 stack of the granted status per one consumed.
-Equipment cannot be used with none to consume. | implemented |
+Equipment cannot be used with nothing to consume. | implemented |
 | **Ablates its firer** | Resolve: Apply {N} Ablate to this Frame. | implemented |
 | **Ignores armour** | Hits ignore Armour. | implemented |
 | **Empties the hopper** | Commit: Consume all Ore. Hit once per Ore consumed. No Ore is gained from these hits.
 Cannot be used without Ore. | implemented |
 | **Braces** | Resolve: Apply {N} Armoured to this Frame. | implemented |
-| **Strikes** | Hits per use. Each hit deals the full number, and Armour reduces each one. | implemented |
+| **Strikes** | Hits per use. Each hit deals full damage and is reduced by Armour separately. | implemented |
 
 ## Reach
 
 | Term | Codex | Status |
 |---|---|---|
-| **Direct** | Can target any front-rank Sprite, any back-rank Sprite with no Sprite in front of it, and any Exposed Sprite. | implemented |
-| **Indirect** | Can target any Sprite. | implemented |
+| **Direct** | Targets front-rank Sprites, back-rank Sprites with nothing in front, and Exposed Sprites. | implemented |
+| **Indirect** | Targets any Sprite. | implemented |
 | **Every Sprite** | Hits every Sprite for full damage. No hit is Targeted. | implemented |
-| **Every Frame** | Applies to every Frame, this Frame included. | implemented |
+| **Every Frame** | Applies to every Frame, including this one. | implemented |
 | **Every Other Frame** | Applies to every Frame except this one. | implemented |
 
 ## Keyword
@@ -97,40 +97,40 @@ Cannot be used without Ore. | implemented |
 | **Penetrate** | Also hits all other Sprites in the same column, dealing {N} damage. The extra hits are not Targeted. | implemented |
 | **Cryo** | Resolve: Apply {N} Cryo per hit. | implemented |
 | **Ablate** | Resolve: Apply {N} Ablate per hit. | implemented |
-| **Lure** | Resolve: Each Sprite hit retargets its move to this Frame this round. | implemented |
+| **Lure** | Resolve: Sprites hit are forced to target this Frame this round. | implemented |
 | **Shock** | Resolve: Apply Shocked to each Sprite hit. | implemented |
 | **Expose** | Resolve: Apply 2 Exposed to each unit hit. | implemented |
-| **Disrupt** | Resolve: Each Sprite hit switches to the next move in its list it can use. It keeps its target. | implemented |
+| **Disrupt** | Resolve: Sprites hit switch to the next move they can use, keeping their target. | implemented |
 | **Suppress** | Resolve: Apply Suppressed to each Sprite hit. | implemented |
 | **Brittle** | Resolve: Apply {N} Brittle per hit. | implemented |
 | **Sap** | Resolve: Apply {N} Sapped per hit. | implemented |
-| **Chain** | After Hit: If targeted, hit every Sprite that conducts Chain for {N} damage. These hits are not Targeted and gain no bonuses or riders. | implemented |
-| **Rapid** | Resolve: This entry goes dark for the rest of the round. Reroll this die for free onto a different entry. | implemented |
-| **Instant** | Resolve: Reroll this die for free. It can land on this entry again. | implemented |
+| **Chain** | After Hit: If targeted, deal {N} damage to every Sprite that conducts Chain. These hits are not Targeted. No bonuses or riders apply. | implemented |
+| **Rapid** | Resolve: Reroll this die for free, never onto this entry. This entry goes dark for the rest of the round. | implemented |
+| **Instant** | Resolve: Reroll this die for free. May land on this entry again. | implemented |
 | **Jam** | Resolve: Apply Jammed to the entry the target's die shows. | implemented |
-| **Destroy** | After Hit: If hull damage was dealt, destroy the entry the target's die shows. | implemented |
+| **Destroy** | After Hit: If Hull damage was dealt, destroy the entry the target's die shows. | implemented |
 | **Corrupt** | Resolve: Apply {N} Corrupted per hit to the entry the target's die shows. | implemented |
-| **Purge** | Resolve: Reduce the stacks of every buff on each unit hit by {N}. | implemented |
-| **Cleanse** | Resolve: Remove every debuff from the target, except those that cannot be cleansed.
-A Sprite's Cleanse removes every debuff but Suppressed from the Sprite carrying the most kinds of debuff. | implemented |
+| **Purge** | Resolve: Reduce stacks of every Buff on each unit hit by {N}. | implemented |
+| **Cleanse** | Resolve: Remove every Debuff from the target, except those that cannot be cleansed.
+A Sprite's Cleanse removes every Debuff but Suppressed from the Sprite with the most kinds of Debuff. | implemented |
 
 ## Status
 
 | Term | Codex | Status |
 |---|---|---|
 | **Juggernaut Drive** | Weapon hits ignore Armour.
-Resolve: If a weapon was used, reduce stacks to 0. | implemented |
-| **Numbed** | When it would gain Suppressed: Prevent it, then reduce stacks by 1.
+Resolve: If a weapon was used, consumed. | implemented |
+| **Numbed** | When Suppressed would be applied: Prevent it and reduce stacks by 1.
 Turn End: Reduce stacks by 1. | implemented |
-| **Paradox** | When it gains another debuff: Gain 1 stack per stack gained.
+| **Paradox** | When another Debuff is applied: Gain 1 stack per stack applied.
 At 5 or more stacks: Reduce stacks to 0 and gain Suppressed. | implemented |
 | **Retaliate** | Machine status. While it lasts, a foe that strikes this machine's bare hull is Shocked. It lasts the rounds the component that grants it says. | planned |
 | **Shocked** | When Hit: If targeted, consume to double damage received, before applying defensive effects.
 Conducts Chain. | implemented |
-| **Pinned** | When Brittle would be reduced: Prevent it, then reduce stacks to 0.
-Turn End: If it carries no Brittle, reduce stacks to 0. | implemented |
-| **Seared** | When Ablate would be reduced: Prevent it, then reduce stacks to 0.
-Turn End: Reduce stacks to 0. | implemented |
+| **Pinned** | When Brittle would be reduced: Consumed to prevent it.
+Turn End: If there is no Brittle, removed. | implemented |
+| **Seared** | When Ablate would be reduced: Consumed to prevent it.
+Turn End: Removed. | implemented |
 | **Sapped** | On Hit: -1 damage dealt per stack ({N}).
 Turn End: Reduce stacks to 0. | implemented |
 | **Exposed** | All armour is negated.
@@ -139,78 +139,78 @@ Sprites are forced to target an Exposed Frame at round start.
 Turn Start: Reduce stacks by 1. | implemented |
 | **Empowered** | On Hit: +1 damage per stack ({N}).
 Turn End: Reduce stacks by half, rounded down. | implemented |
-| **Sealed** | +3 Armour. Cooling is stopped.
-Turn End: Gain 3 heat.
-Resolve: If a weapon was used, reduce stacks to 0.
-On Reboot: Reduce stacks to 0. | implemented |
-| **Changed Over** | Its die rolls its second battery, not its first.
+| **Sealed** | +3 Armour. Cooling disabled.
+Turn End: Gain 3 Heat.
+Resolve: If a weapon was used, removed.
+On Reboot: Removed. | implemented |
+| **Changed Over** | The die rolls the second battery, not the first.
 Lasts the battle. | implemented |
-| **Cryo** | When Hit: If by a weapon, consume all stacks. The Frame that hit it loses 1 heat per stack ({N}). | implemented |
+| **Cryo** | When Hit: If by a weapon, consume all stacks. The attacker loses 1 Heat per stack ({N}). | implemented |
 | **Armoured** | +1 Armour per stack ({N}).
 Turn Start: Reduce stacks to 0. | implemented |
-| **Hardened Light** | When Hit: If it has shield, -1 damage received per stack ({N}).
+| **Hardened Light** | When Hit: If Shield is up, -1 damage received per stack ({N}).
 Shield Broken: Reduce stacks to 0. | implemented |
-| **Primed** | Resolve: If this was an attack, apply 1 Ablate per hit, then reduce stacks by 1. | implemented |
+| **Primed** | Resolve: If this was an attack, apply 1 Ablate per hit and reduce stacks by 1. | implemented |
 | **Jammed** | This entry comes up blank.
+On Reboot: Removed. | implemented |
+| **Corrupted** | Commit: Take 3 damage per stack ({N}).
 On Reboot: Reduce stacks to 0. | implemented |
-| **Corrupted** | Commit: This Frame takes 3 damage per stack ({N}).
-On Reboot: Reduce stacks to 0. | implemented |
-| **Phased** | Cannot be damaged, targeted or hit. Can still act. Its other statuses still count down.
-Round End: Reduce stacks to 0. | implemented |
+| **Phased** | Immune to all damage. Cannot be targeted or hit. Can still act.
+Other statuses still count down.
+Round End: Removed. | implemented |
 | **Ablate** | Turn End: Take 1 damage per stack ({N}), then reduce stacks by 1.
 Ignores Armour and Barrier. | implemented |
-| **Suppressed** | Skips its next turn.
-Turn End: Reduce stacks to 0. Gain Numbed equal to its stun resist: 1, 2 if massive, 3 if an elite, a hero or a boss. | implemented |
+| **Suppressed** | Next turn skipped.
+Turn End: Removed. Gain Numbed equal to stun resist: 1, 2 if massive, 3 if elite, hero or boss. | implemented |
 | **Vitriol** | Turn End: Lose 10% of current HP per stack ({N}), rounded down, then reduce stacks by 1.
 Ignores Armour and Barrier. Cannot reduce HP below 1. | implemented |
-| **Web Bomb** | Round End: Apply Suppressed to this Sprite and to the next Sprite on its right in its rank, or on its left if there is none. Reduce stacks to 0. | implemented |
+| **Web Bomb** | Round End: Consumed to apply Suppressed to this Sprite and the nearest Sprite to its right in the same rank, or to its left if none. | implemented |
 | **Spun Up** | Weapon hits deal +2 damage per stack ({N}).
 Resolve: If a weapon was used, reduce stacks to 0. | implemented |
-| **Ricochet** | Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage, with every effect of the weapon except its area.
-After Being Hit: If hull damage was taken, reduce stacks by half, rounded down.
+| **Ricochet** | Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage, with every effect of the weapon except area.
+After Being Hit: If Hull damage was taken, reduce stacks by half, rounded down.
 Lasts the skirmish. | implemented |
 | **Essence** | When any Sprite is defeated: Gain 1 Essence.
 Skirmish Start: Gain 1 Empowered per 5 Essence.
 Round End: If this Frame killed a Sprite this round, gain 1 Empowered per 5 Essence.
 Lasts the battle. | implemented |
-| **Offhand** | Its weapons and equipment used on a Sprite gain the effect of the armament shown.
+| **Offhand** | Weapons and equipment used on a Sprite gain the armament shown.
 Resolve: If used on a Sprite, switch to the next armament.
 Skirmish Start: Switch to the first armament. | implemented |
 | **Aile Boost** | Weapons gain Indirect reach.
-Resolve: If a weapon was used, reduce stacks to 0. | implemented |
+Resolve: If a weapon was used, consumed. | implemented |
 | **Aile Blitz** | Weapons gain Indirect reach and ignore Armour.
-Resolve: If a weapon was used, reduce stacks to 0. | implemented |
+Resolve: If a weapon was used, consumed. | implemented |
 | **Aile Assault** | Weapons gain Indirect reach.
-Resolve: If a weapon was used, reduce stacks to 0. | implemented |
-| **Parry** | Counts the damage its Armour and Barrier prevent from Sprite hits this round.
-Turn Start: Its first weapon hit this turn gains +1 damage per 2 damage counted.
-Resolve: If a weapon was used, reduce stacks to 0.
-Turn End: Reduce stacks to 0. | implemented |
+Resolve: If a weapon was used, consumed. | implemented |
+| **Parry** | Counts damage prevented by Armour and Barrier from Sprite hits this round.
+Turn Start: The first weapon hit this turn gains +1 damage per 2 damage counted.
+Resolve: If a weapon was used, consumed.
+Turn End: Removed. | implemented |
 | **Essence Flare** | Empowered on any unit is not reduced.
-Round End: Reduce stacks to 0. | implemented |
+Round End: Removed. | implemented |
 | **Brittle** | When Hit: +1 damage received per stack ({N}).
 Turn Start: Reduce stacks by half, rounded down. | implemented |
-| **Destroyed component** | This entry is blank for the rest of the battle. Its passive bonuses still apply. Its passive abilities do not.
-After the battle, a fixed component is rebuilt and a hardpoint's component is lost. | implemented |
-| **Mine** | Each use the Frame that laid it aims at this Sprite adds its damage and riders to the Mine.
-When defeated: The Mine goes off, hitting every Sprite around it for 1 damage per stack ({N}), with its riders. | implemented |
-| **Rage** | Gained at Turn Start if heat is at or above Max Heat. Removes all debuffs when gained.
-Immune to all debuffs.
-Its Knuckles of Fury are its only component, and gain Instant.
-Cannot reboot by choice.
-When heat reaches 0: Reduce stacks to 0, then reboot at once. | implemented |
+| **Destroyed component** | This entry is blank for the rest of the battle. Passive bonuses still apply. Passive abilities do not.
+After the battle: a fixed component is rebuilt, a hardpoint's component is lost. | implemented |
+| **Mine** | Uses aimed at this Sprite by the Frame that laid it add their damage and riders to the Mine.
+When defeated: The Mine goes off, dealing 1 damage per stack ({N}) to every Sprite around it, with its riders. | implemented |
+| **Rage** | Immune to all Debuffs.
+Only Knuckles of Fury available.
+Reboot disabled.
+At 0 Heat: Consumed to Reboot immediately. | implemented |
 | **Ore** | At 3 Ore, base Armour increases by 1. | implemented |
-| **Scorched** | Its uses aimed at a Sprite cost +1 heat per stack ({N}).
+| **Scorched** | Uses aimed at a Sprite cost +1 Heat per stack ({N}).
 Turn End: Reduce stacks to 0. | implemented |
-| **Overheated** | Stacks equal heat above Max Heat.
-Turn End: Take 1 hull damage per stack ({N}), ignoring shield and Armour. The first time since its last reboot, reduce shield to 0.
+| **Overheated** | Stacks equal Heat above Max Heat.
+Turn End: Take 1 Hull damage per stack ({N}), ignoring Shield and Armour. The first time since the last Reboot, reduce Shield to 0.
 On Reboot: Reduce stacks to 0.
 Cannot be cleansed. | implemented |
-| **Broken** | Gained when shield reaches 0. Cannot gain shield.
-Removed when a reboot restores its shield.
+| **Broken** | Applied when Shield reaches 0. Shield cannot be gained.
+Removed when a Reboot restores Shield.
 Cannot be cleansed. | implemented |
-| **Rebooting** | Gained by dragging the die of a Frame that has used nothing this turn onto REBOOT. Its shield and heat drop to 0 at once.
-Turn Start: Restore shield to max and remove Broken. Reduce stacks to 0. | implemented |
+| **Rebooting** | Applied by dragging the die of a Frame that has used nothing this turn onto REBOOT. Shield and Heat drop to 0 at once.
+Turn Start: Consumed to restore Shield to max and remove Broken. | implemented |
 | **Enraged** | On Hit: +1 damage per stack ({N}).
 When you use a component that is not a weapon: Gain 1 stack.
 Lasts the skirmish. | implemented |
@@ -221,33 +221,33 @@ On Suppressed: Reduce stacks to 0.
 Turn End: Reduce stacks by 1. | implemented |
 | **Empowered** | On Hit: +1 damage per stack ({N}).
 Turn End: Reduce stacks by half, rounded down. | implemented |
-| **Undying** | When defeated: Return with full HP, acting from next round. Reduce stacks to 0. | implemented |
-| **Aloft** | Cannot be targeted or hit. Its other statuses still count down.
-Ends when its gathered move lands. | implemented |
-| **Appropriated** | Holds the number of the component it took: a weapon's damage, otherwise 1.
-Its next Borrowed Blade deals this number. | implemented |
+| **Undying** | When defeated: Consumed to return with full HP, acting from next round. | implemented |
+| **Aloft** | Cannot be targeted or hit. Other statuses still count down.
+Removed when its gathered move lands. | implemented |
+| **Appropriated** | Holds the stolen component's number: a weapon's damage, otherwise 1.
+Consumed by the next Borrowed Blade, which deals this number. | implemented |
 | **Swallowed** | Cannot act. All ongoing effects are paused.
 Immune to all damage. Cannot be targeted or hit by anything.
 Round End: Reduce stacks by 1.
 Reduce stacks to 0 upon {caster} losing 25% Max HP since the start of the effect.
 Cannot be cleansed. | implemented |
-| **Guarded** | Immune to all damage while every one of its parts stands. | implemented |
-| **Ability** | A unit's own rule. Not a buff or a debuff, so no Purge or Cleanse removes it. | implemented |
-| **Barrier** | When Hit: If damage would be dealt, prevent it and reduce stacks to 0. Riders still apply.
-Turn Start: Reduce stacks to 0. | implemented |
-| **Ward** | Blocks every debuff and Purge from the other side. Damage still applies.
-Turn Start: Reduce stacks to 0. | implemented |
+| **Guarded** | Immune to all damage while every part stands. | implemented |
+| **Ability** | A unit's own rule. Not a Buff or Debuff, so no Purge or Cleanse removes it. | implemented |
+| **Barrier** | When Hit: If damage would be dealt, consumed to prevent it. Riders still apply.
+Turn Start: Removed. | implemented |
+| **Ward** | Blocks every Debuff and Purge from the other side. Damage still applies.
+Turn Start: Removed. | implemented |
 | **Charged** | Weapons gain Shock.
 Resolve: If a weapon was used, reduce stacks by 1. | implemented |
 | **Supercooled** | Weapons gain Cryo 1.
 Resolve: If a weapon was used, reduce stacks by 1. | implemented |
-| **Regenerating** | Turn End: Gain 1 shield per stack ({N}) on a Frame, or 1 HP per stack on a Sprite, then reduce stacks by 1. | implemented |
-| **Burrowed** | Gained in place of Rebooting. +1 Armour. Its die rolls only its Inertia Drill.
-Turn Start: Remove Broken, Overheated, Jammed and Corrupted. Regain half the shield it was missing when it burrowed, and lose half the heat it had then, rounded up. Gain 1 Conserved Momentum, up to 3.
-Resolve: If the Inertia Drill was used, reduce stacks to 0. | implemented |
+| **Regenerating** | Turn End: Gain 1 Shield per stack ({N}) on a Frame, or 1 HP per stack on a Sprite, then reduce stacks by 1. | implemented |
+| **Burrowed** | Replaces Reboot. +1 Armour. Only Inertia Drill available.
+Turn Start: Remove Broken, Overheated, Jammed and Corrupted. Regain half the Shield missing when burrowed, and lose half the Heat held then, rounded up. Gain 1 Conserved Momentum, up to 3.
+Resolve: If the Inertia Drill was used, removed. | implemented |
 | **Applied Momentum** | Turn Start: Take a hit of 2 damage, then reduce stacks by 1.
-Removed when the Frame that laid it burrows again. | implemented |
-| **Drill Out** | Its Inertia Drill is out. Its next burrow brings it back. | implemented |
+When the Frame that laid it burrows again: Reduce stacks to 0. | implemented |
+| **Drill Out** | Inertia Drill is out until the next burrow. | implemented |
 | **Sonic Needle** | Gain 1 stack per hit from the Frame that laid it, and per hit this Sprite lands on that Frame.
 Conducts Chain.
 At 3 or more stacks: Chain 2 fires. Reduce stacks to 0. | implemented |
@@ -353,26 +353,31 @@ At 3 or more stacks: Chain 2 fires. Reduce stacks to 0. | implemented |
 
 | Term | Codex | Status |
 |---|---|---|
-| **Immune** | Immune to the effect named on its chip. | implemented |
-| **Drain** | After Hit: Heal HP equal to the hull damage dealt. | implemented |
-| **Timid** | Uses an attack only while it carries a buff, or a buff is announced for it. | implemented |
+| **Immune** | Immune to the effect named on the chip. | implemented |
+| **Drain** | After Hit: Heal HP equal to the Hull damage dealt. | implemented |
+| **Timid** | Attacks only while carrying a Buff, or with a Buff announced for it. | implemented |
 | **Swallow** | Round End: Apply {N} Swallowed to the target.
 Cannot target the last Frame able to act. | implemented |
 | **Golden Rage** | Turn End: Gain {N} Golden.
 Only usable while not Golden. | implemented |
-| **Merge** | Absorbs every other Sprite of the named kinds. Heals the HP they had left, up to its Max HP.
+| **Merge** | Absorbs every other Sprite of the named kinds, healing the HP they had left, up to Max HP.
 Gain {N} Empowered per Sprite absorbed. | implemented |
-| **Aim** | How a Sprite picks its target at round start, shown as its arrow. Strongest: most hull plus shield. Weakest: least hull plus shield. Hottest: most heat. Most buffed: most buff stacks. With no word, any Frame. Ties are random.
-Sprites do not target a Frame their hits would already wreck while another stands. | implemented |
+| **Aim** | How a Sprite picks its target at round start, shown as its arrow.
+Strongest: most Hull plus Shield.
+Weakest: least Hull plus Shield.
+Hottest: most Heat.
+Most buffed: most Buff stacks.
+No word: any Frame. Ties are random.
+Never targets a Frame its hits would already wreck while another stands. | implemented |
 | **Self-Destruct** | Resolve: This Sprite is removed. It cannot return. | implemented |
-| **Every Frame** | Hits every Frame. It has no target, so Lure does not move it. | implemented |
+| **Every Frame** | Hits every Frame. No target, so Lure cannot move it. | implemented |
 | **Last Act** | When defeated: Use this move at once. A single-target move hits the Frame that killed it, or nothing if no Frame did. | implemented |
 | **Parts** | A core and its parts. While every part stands, the core is Guarded. A defeated part may grow back. When the core is defeated, its parts are defeated. | implemented |
 | **Countdown** | Lands {N} rounds after it is announced. Nothing hits while it gathers.
 Suppress delays it 1 round. Disrupt cancels it. | implemented |
 | **Follow-up** | Names the move its Sprite announces next round. Suppress or Disrupt on the first cancels the second. Once announced, the second can be Suppressed but not Disrupted. | implemented |
 | **Grudge** | +1 damage per Sprite the team has killed this skirmish. | implemented |
-| **Sprite move** | Each round every Sprite picks a move and a target before your turn, shown on its intent chip. An attack's damage is the Sprite's attack times the move's factor. | implemented |
+| **Sprite move** | Each round every Sprite picks a move and a target before your turn, shown on its intent chip. Attack damage is the Sprite's attack times the move's factor. | implemented |
 | **Scorch** | Resolve: Apply {N} Scorched per hit. | implemented |
 | **Menace** | A pack's threat rating: a patrol 1 or 2, a formation 3, an elite or a boss 4. The Rupture meter, Anathema and salvage count it. Killing a pack pays its remaining Menace. | implemented |
 | **Elite** | A unique Sprite leading its own pack, rated 4 Menace, arriving at a Fracture. It stands at the battle's tier. | implemented |

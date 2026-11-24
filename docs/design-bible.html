@@ -524,90 +524,90 @@
   <h4>Buffs, debuffs and stores</h4>
   <div class="tablewrap"><table><thead><tr><th>Status</th><th>Kind</th><th>On</th><th>Effect</th><th>Stacks</th><th>Lasts</th><th>Granted by</th><th>Global or unique</th></tr></thead><tbody>
   <tr><td>Aile Assault</td><td>Buff</td><td>Machines</td><td>Weapons gain Indirect reach.
-Resolve: If a weapon was used, reduce stacks to 0.</td><td>No: one, whatever grants it</td><td>Until the next weapon it fires, across turns</td><td>nothing in content yet</td><td>Unused</td></tr>
+Resolve: If a weapon was used, consumed.</td><td>No: one, whatever grants it</td><td>Until the next weapon it fires, across turns</td><td>nothing in content yet</td><td>Unused</td></tr>
   <tr><td>Aile Blitz</td><td>Buff</td><td>Machines</td><td>Weapons gain Indirect reach and ignore Armour.
-Resolve: If a weapon was used, reduce stacks to 0.</td><td>No: one, whatever grants it</td><td>Until the next weapon it fires, across turns</td><td>nothing in content yet</td><td>Unused</td></tr>
+Resolve: If a weapon was used, consumed.</td><td>No: one, whatever grants it</td><td>Until the next weapon it fires, across turns</td><td>nothing in content yet</td><td>Unused</td></tr>
   <tr><td>Aile Boost</td><td>Buff</td><td>Machines</td><td>Weapons gain Indirect reach.
-Resolve: If a weapon was used, reduce stacks to 0.</td><td>No: one, whatever grants it</td><td>Until the next weapon it fires, across turns</td><td>Aile Booster (the Macaque's) (locked)</td><td>Unique: the Macaque</td></tr>
+Resolve: If a weapon was used, consumed.</td><td>No: one, whatever grants it</td><td>Until the next weapon it fires, across turns</td><td>Aile Booster (the Macaque's) (locked)</td><td>Unique: the Macaque</td></tr>
   <tr><td>Charged</td><td>Buff</td><td>Machines</td><td>Weapons gain Shock.
 Resolve: If a weapon was used, reduce stacks by 1.</td><td>Yes: a fire spends one</td><td>Until spent</td><td>the Storm Petrel's Striker I (passive); the Storm Petrel's Striker II (passive)</td><td>Unique: the Storm Petrel</td></tr>
   <tr><td>Empowered</td><td>Buff</td><td>Machines</td><td>On Hit: +1 damage per stack ({N}).
 Turn End: Reduce stacks by half, rounded down.</td><td>Yes: a damage point a stack</td><td>Halves as its turn ends, rounded down, until gone</td><td>Quintessence Tap (the Ammit's) (locked); Overcharge Coil; Photosphere Lance (the Stingray's) (locked); Overdrive Injector (the Puffin's) (locked); Reheat Uplink (the Giant Petrel's) (locked); the Ammit's Quintessence Reactor (passive); the Macaque's Valkyrie II (passive); Grievance Reliquary (module)</td><td>Global</td></tr>
   <tr><td>Essence Flare</td><td>Buff</td><td>Machines</td><td>Empowered on any unit is not reduced.
-Round End: Reduce stacks to 0.</td><td>Never: one, renewed</td><td>Until the round's end</td><td>Quintessence Tap (the Ammit's) (locked)</td><td>Unique: the Ammit</td></tr>
-  <tr><td>Hardened Light</td><td>Buff</td><td>Machines</td><td>When Hit: If it has shield, -1 damage received per stack ({N}).
+Round End: Removed.</td><td>Never: one, renewed</td><td>Until the round's end</td><td>Quintessence Tap (the Ammit's) (locked)</td><td>Unique: the Ammit</td></tr>
+  <tr><td>Hardened Light</td><td>Buff</td><td>Machines</td><td>When Hit: If Shield is up, -1 damage received per stack ({N}).
 Shield Broken: Reduce stacks to 0.</td><td>Yes: a point off every blow a stack while its shield stands</td><td>Until its shield breaks, every stack then</td><td>Hardlight Pulse (the Storm Petrel's) (locked); the Storm Petrel's Defence I (passive); the Storm Petrel's Defence II (passive)</td><td>Unique: the Storm Petrel</td></tr>
   <tr><td>Juggernaut Drive</td><td>Buff</td><td>Machines</td><td>Weapon hits ignore Armour.
-Resolve: If a weapon was used, reduce stacks to 0.</td><td>No: one, whatever grants it</td><td>Until its next weapon attack</td><td>the Wild Boar's Juggernaut Drive (passive)</td><td>Unique: the Wild Boar</td></tr>
-  <tr><td>Parry</td><td>Buff</td><td>Machines</td><td>Counts the damage its Armour and Barrier prevent from Sprite hits this round.
-Turn Start: Its first weapon hit this turn gains +1 damage per 2 damage counted.
-Resolve: If a weapon was used, reduce stacks to 0.
-Turn End: Reduce stacks to 0.</td><td>No: one Parry, counting through its round, then its return, its number half of what it counted, spent whole by the next weapon</td><td>Its round, then the next turn until a weapon fires</td><td>nothing in content yet</td><td>Unused</td></tr>
-  <tr><td>Phased</td><td>Buff</td><td>Machines</td><td>Cannot be damaged, targeted or hit. Can still act. Its other statuses still count down.
-Round End: Reduce stacks to 0.</td><td>No</td><td>Granted as the round ends, to a machine that stands; until the next round's end</td><td>Mooring Screens charged (the Swallowtail's) (locked); Phase Inducer; the Spectre's Hex Bolt; the Wraith's Hex Bolt</td><td>Global</td></tr>
+Resolve: If a weapon was used, consumed.</td><td>No: one, whatever grants it</td><td>Until its next weapon attack</td><td>the Wild Boar's Juggernaut Drive (passive)</td><td>Unique: the Wild Boar</td></tr>
+  <tr><td>Parry</td><td>Buff</td><td>Machines</td><td>Counts damage prevented by Armour and Barrier from Sprite hits this round.
+Turn Start: The first weapon hit this turn gains +1 damage per 2 damage counted.
+Resolve: If a weapon was used, consumed.
+Turn End: Removed.</td><td>No: one Parry, counting through its round, then its return, its number half of what it counted, spent whole by the next weapon</td><td>Its round, then the next turn until a weapon fires</td><td>nothing in content yet</td><td>Unused</td></tr>
+  <tr><td>Phased</td><td>Buff</td><td>Machines</td><td>Immune to all damage. Cannot be targeted or hit. Can still act.
+Other statuses still count down.
+Round End: Removed.</td><td>No</td><td>Granted as the round ends, to a machine that stands; until the next round's end</td><td>Mooring Screens charged (the Swallowtail's) (locked); Phase Inducer; the Spectre's Hex Bolt; the Wraith's Hex Bolt</td><td>Global</td></tr>
   <tr><td>Retaliate (planned)</td><td>Buff</td><td>Machines</td><td>Machine status. While it lasts, a foe that strikes this machine's bare hull is Shocked. It lasts the rounds the component that grants it says.</td><td>No: one does all it does</td><td>The buff's rounds</td><td>Retribution Thurible (planned)</td><td>Planned</td></tr>
-  <tr><td>Ricochet</td><td>Buff</td><td>Machines</td><td>Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage, with every effect of the weapon except its area.
-After Being Hit: If hull damage was taken, reduce stacks by half, rounded down.
+  <tr><td>Ricochet</td><td>Buff</td><td>Machines</td><td>Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage, with every effect of the weapon except area.
+After Being Hit: If Hull damage was taken, reduce stacks by half, rounded down.
 Lasts the skirmish.</td><td>Yes: a strike of 1 more a stack after each shot</td><td>The fight; hull damage halves it</td><td>Hypersonic Swoop (the Skua's) (locked); the Skua's Carom Field (passive)</td><td>Unique: the Skua</td></tr>
   <tr><td>Spun Up</td><td>Buff</td><td>Machines</td><td>Weapon hits deal +2 damage per stack ({N}).
 Resolve: If a weapon was used, reduce stacks to 0.</td><td>Yes: its bonus a stack, every stack spent by the next weapon</td><td>Until the next weapon it spends, across turns</td><td>Spin-Up (the Cassowary's) (locked)</td><td>Unique: the Cassowary</td></tr>
   <tr><td>Supercooled</td><td>Buff</td><td>Machines</td><td>Weapons gain Cryo 1.
 Resolve: If a weapon was used, reduce stacks by 1.</td><td>Yes: a fire spends one</td><td>Until spent</td><td>nothing in content yet</td><td>Unused</td></tr>
-  <tr><td>Broken</td><td>Debuff</td><td>Machines</td><td>Gained when shield reaches 0. Cannot gain shield.
-Removed when a reboot restores its shield.
+  <tr><td>Broken</td><td>Debuff</td><td>Machines</td><td>Applied when Shield reaches 0. Shield cannot be gained.
+Removed when a Reboot restores Shield.
 Cannot be cleansed.</td><td>No</td><td>Until the machine's reboot brings its shield back</td><td>nothing in content yet</td><td>Unused</td></tr>
-  <tr><td>Corrupted</td><td>Debuff</td><td>Machines</td><td>Commit: This Frame takes 3 damage per stack ({N}).
+  <tr><td>Corrupted</td><td>Debuff</td><td>Machines</td><td>Commit: Take 3 damage per stack ({N}).
 On Reboot: Reduce stacks to 0.</td><td>Yes: its bite a stack</td><td>Until the machine reboots</td><td>the Mandragora's Root Lash; the Mandrake's Root Lash; the Alraune's Root Lash; the Barbed Needler's Needles; the Gorgon's Peck; the Wraith's Hex Bolt; the Reaper's Harvest; the Rust Monster's Rusting Bite; the Fell Rider's Fell Blade; the Antiquarian's Show Collection; the World Eater's Dragon Breath; the Shuffler's Dark Caress; the Rotbloom's Bad Breath; the Marsh Serpent's Beta; the Emperor Scorpion's Desert Gasp; the Thief's Mug; the Summoner's Diamond Dust</td><td>Global</td></tr>
   <tr><td>Jammed</td><td>Debuff</td><td>Machines</td><td>This entry comes up blank.
-On Reboot: Reduce stacks to 0.</td><td>No</td><td>Until the machine's next turn ends</td><td>the Alraune's Shriek; the Whisker Cat's Whisker Lash; the Sabre Cat's Whisker Lash; the Storm Cat's Whisker Lash; the Cockatrice's Stone; the Basilisk's Stone; the Gorgon's Stone; the Gorgon's Dying Gaze (its fall); the Leshy's Root Snare; the Thunder Ape's Lightning Beam; the Rust Monster's Antennae; the Rider of the Wild Hunt's Frost; the Rotbloom's Bad Breath; the Gilgamesh's Collect; the Prising Eye's Gaze; the Emperor Scorpion's Paralytail; the Storm Orb's Spark Plasma</td><td>Global</td></tr>
-  <tr><td>Overheated</td><td>Debuff</td><td>Machines</td><td>Stacks equal heat above Max Heat.
-Turn End: Take 1 hull damage per stack ({N}), ignoring shield and Armour. The first time since its last reboot, reduce shield to 0.
+On Reboot: Removed.</td><td>No</td><td>Until the machine's next turn ends</td><td>the Alraune's Shriek; the Whisker Cat's Whisker Lash; the Sabre Cat's Whisker Lash; the Storm Cat's Whisker Lash; the Cockatrice's Stone; the Basilisk's Stone; the Gorgon's Stone; the Gorgon's Dying Gaze (its fall); the Leshy's Root Snare; the Thunder Ape's Lightning Beam; the Rust Monster's Antennae; the Rider of the Wild Hunt's Frost; the Rotbloom's Bad Breath; the Gilgamesh's Collect; the Prising Eye's Gaze; the Emperor Scorpion's Paralytail; the Storm Orb's Spark Plasma</td><td>Global</td></tr>
+  <tr><td>Overheated</td><td>Debuff</td><td>Machines</td><td>Stacks equal Heat above Max Heat.
+Turn End: Take 1 Hull damage per stack ({N}), ignoring Shield and Armour. The first time since the last Reboot, reduce Shield to 0.
 On Reboot: Reduce stacks to 0.
 Cannot be cleansed.</td><td>Yes: a point of heat past the maximum each</td><td>Until the heat is back under the maximum, or the machine reboots</td><td>nothing in content yet</td><td>Unused</td></tr>
-  <tr><td>Scorched</td><td>Debuff</td><td>Machines</td><td>Its uses aimed at a Sprite cost +1 heat per stack ({N}).
+  <tr><td>Scorched</td><td>Debuff</td><td>Machines</td><td>Uses aimed at a Sprite cost +1 Heat per stack ({N}).
 Turn End: Reduce stacks to 0.</td><td>Yes: its heat a stack</td><td>Until the end of the player's turn, every stack at once</td><td>the Bomb's Flare Up; the Grenade's Flare Up; the Balloon's Flare Up; the Balloon's Self-Destruct; the Salamander's Bite; the Salamander's Embers (its fall); the Fire Lizard's Bite; the Magma Lizard's Bite; the Drake's Breath; the Wyvern's Breath; the Red Dragon's Breath; the Red Dragon's Flame Breath; the Cerberus's Maul; the Basalt Cerberus's Maul; the Sulphur Cerberus's Maul; the Magma Elemental's Eruption; the Basalt Elemental's Eruption; the Sulphur Elemental's Eruption; the Goblin Nob's Skull Bash; the Bane's Shadow and Flame; the Firelord's The Hammer; the Rotbloom's Bad Breath; the Gargantuan King's Flame; the Cinder Tortoise's Earthquake; the Fiend of Fire's Fire; the Obsidian Tyrant's Firestorm; the Black Mage's Fire; the Black Mage's Fira; the Summoner's Pyroclasm</td><td>Global</td></tr>
   <tr><td>Swallowed</td><td>Debuff</td><td>Machines</td><td>Cannot act. All ongoing effects are paused.
 Immune to all damage. Cannot be targeted or hit by anything.
 Round End: Reduce stacks by 1.
 Reduce stacks to 0 upon {caster} losing 25% Max HP since the start of the effect.
 Cannot be cleansed.</td><td>Renews: a timer</td><td>Laid as the round ends, a stack going as each round ends, ended early by its swallower falling or losing a quarter of its HP</td><td>the Floraison's Swallow; the Ruby Colossus's Whirlsand</td><td>Global</td></tr>
-  <tr><td>Burrowed</td><td>Ability</td><td>Machines</td><td>Gained in place of Rebooting. +1 Armour. Its die rolls only its Inertia Drill.
-Turn Start: Remove Broken, Overheated, Jammed and Corrupted. Regain half the shield it was missing when it burrowed, and lose half the heat it had then, rounded up. Gain 1 Conserved Momentum, up to 3.
-Resolve: If the Inertia Drill was used, reduce stacks to 0.</td><td>Renews: one, its armour the burrow's</td><td>Until it spends the Inertia Drill</td><td>nothing in content yet</td><td>Unused</td></tr>
-  <tr><td>Changed Over</td><td>Ability</td><td>Machines</td><td>Its die rolls its second battery, not its first.
+  <tr><td>Burrowed</td><td>Ability</td><td>Machines</td><td>Replaces Reboot. +1 Armour. Only Inertia Drill available.
+Turn Start: Remove Broken, Overheated, Jammed and Corrupted. Regain half the Shield missing when burrowed, and lose half the Heat held then, rounded up. Gain 1 Conserved Momentum, up to 3.
+Resolve: If the Inertia Drill was used, removed.</td><td>Renews: one, its armour the burrow's</td><td>Until it spends the Inertia Drill</td><td>nothing in content yet</td><td>Unused</td></tr>
+  <tr><td>Changed Over</td><td>Ability</td><td>Machines</td><td>The die rolls the second battery, not the first.
 Lasts the battle.</td><td>Renews: one chip</td><td>Until the Changeover turns the die back, or the battle ends</td><td>nothing in content yet</td><td>Unused</td></tr>
-  <tr><td>Drill Out</td><td>Ability</td><td>Machines</td><td>Its Inertia Drill is out. Its next burrow brings it back.</td><td>Renews: one</td><td>Until its next burrow</td><td>nothing in content yet</td><td>Unused</td></tr>
+  <tr><td>Drill Out</td><td>Ability</td><td>Machines</td><td>Inertia Drill is out until the next burrow.</td><td>Renews: one</td><td>Until its next burrow</td><td>nothing in content yet</td><td>Unused</td></tr>
   <tr><td>Essence</td><td>Ability</td><td>Machines</td><td>When any Sprite is defeated: Gain 1 Essence.
 Skirmish Start: Gain 1 Empowered per 5 Essence.
 Round End: If this Frame killed a Sprite this round, gain 1 Empowered per 5 Essence.
 Lasts the battle.</td><td>Yes: one for every foe that falls in its fight, with no cap</td><td>The battle</td><td>the Ammit's Quintessence Reactor (passive)</td><td>Unique: the Ammit</td></tr>
-  <tr><td>Offhand</td><td>Ability</td><td>Machines</td><td>Its weapons and equipment used on a Sprite gain the effect of the armament shown.
+  <tr><td>Offhand</td><td>Ability</td><td>Machines</td><td>Weapons and equipment used on a Sprite gain the armament shown.
 Resolve: If used on a Sprite, switch to the next armament.
 Skirmish Start: Switch to the first armament.</td><td>No: one armament at a time</td><td>The fight, turning after each weapon or equipment it aims at a foe</td><td>nothing in content yet</td><td>Unused</td></tr>
   <tr><td>Ore</td><td>Ability</td><td>Machines</td><td>At 3 Ore, base Armour increases by 1.</td><td>Yes: its stacks are the armour, set from the Ore held</td><td>While the hopper holds the Ore, the skirmish at most</td><td>nothing in content yet</td><td>Unused</td></tr>
-  <tr><td>Rage</td><td>Ability</td><td>Machines</td><td>Gained at Turn Start if heat is at or above Max Heat. Removes all debuffs when gained.
-Immune to all debuffs.
-Its Knuckles of Fury are its only component, and gain Instant.
-Cannot reboot by choice.
-When heat reaches 0: Reduce stacks to 0, then reboot at once.</td><td>Renews: one Rage</td><td>Until its heat reaches nothing, when it reboots</td><td>nothing in content yet</td><td>Unused</td></tr>
-  <tr><td>Sealed</td><td>Ability</td><td>Machines</td><td>+3 Armour. Cooling is stopped.
-Turn End: Gain 3 heat.
-Resolve: If a weapon was used, reduce stacks to 0.
-On Reboot: Reduce stacks to 0.</td><td>Renews: one seal however often it seals</td><td>Until a weapon it fires opens it, or the skirmish ends</td><td>the Polar Bear's Lockdown (passive)</td><td>Unique: the Polar Bear</td></tr>
+  <tr><td>Rage</td><td>Ability</td><td>Machines</td><td>Immune to all Debuffs.
+Only Knuckles of Fury available.
+Reboot disabled.
+At 0 Heat: Consumed to Reboot immediately.</td><td>Renews: one Rage</td><td>Until its heat reaches nothing, when it reboots</td><td>nothing in content yet</td><td>Unused</td></tr>
+  <tr><td>Sealed</td><td>Ability</td><td>Machines</td><td>+3 Armour. Cooling disabled.
+Turn End: Gain 3 Heat.
+Resolve: If a weapon was used, removed.
+On Reboot: Removed.</td><td>Renews: one seal however often it seals</td><td>Until a weapon it fires opens it, or the skirmish ends</td><td>the Polar Bear's Lockdown (passive)</td><td>Unique: the Polar Bear</td></tr>
   <tr><td>Conserved Momentum</td><td>Store</td><td>Machines</td><td>Machine store, the Mole's: a stack as it burrows and one as each turn under opens, up to 3, and what is left of its Applied Momentum back as it burrows again. Its Inertia Drill spends every stack, laying a stack of Applied Momentum for each. A store, so no Purge touches it.</td><td>Yes: up to 3</td><td>Until the Inertia Drill spends it</td><td>nothing in content yet</td><td>Unused</td></tr>
   <tr><td>Muster</td><td>Store</td><td>Machines</td><td>Machine store, the Swallowtail's: a charge its locked pieces spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty and never decays; a store, so no Purge touches it. With a charge up, its locked pieces go out charged unasked, unless the charged form has nowhere to land; then the plain form goes out and the charge waits.</td><td>Yes: a charge about thirty rolls of any die, five rolls' worth a kill by its guns, up to its cap</td><td>The skirmish; never decays</td><td>the Swallowtail's Muster Deck (passive)</td><td>Unique: the Swallowtail</td></tr>
   <tr><td>Ore</td><td>Store</td><td>Machines</td><td>Machine store, the Honey Badger's hopper: every foe its weapons damage puts an Ore in it, up to three, and every raise its upgrades grant adds to that. Its Bullion Fragmenter empties it, a strike for every Ore, and puts none back. Lasts the skirmish; never decays, and no cleanse or Purge touches it.</td><td>Yes: a load a foe its weapons damage (the claw's two), up to 4; two spent a shot</td><td>The skirmish; never decays</td><td>the Honey Badger's Ore Hopper (passive)</td><td>Unique: the Honey Badger</td></tr>
   <tr><td>Shots</td><td>Store</td><td>Machines</td><td>Machine count, the Cassowary's: every weapon and equipment it aims at a foe this fight, shown as six pips under the heat bar, the sixth lit when it is next, where its sixth shot counts double. Shields, vents, buffs and spins are no shots. Never a chip; nothing cleanses it; it resets each fight.</td><td>Yes: one a weapon or equipment aimed at a foe</td><td>The skirmish; never decays</td><td>the Cassowary's Indexed Cylinder (passive)</td><td>Unique: the Cassowary</td></tr>
-  <tr><td>Rebooting</td><td>State</td><td>Machines</td><td>Gained by dragging the die of a Frame that has used nothing this turn onto REBOOT. Its shield and heat drop to 0 at once.
-Turn Start: Restore shield to max and remove Broken. Reduce stacks to 0.</td><td>No</td><td>Through the enemy's turn, until the next round opens</td><td>nothing in content yet</td><td>Unused</td></tr>
+  <tr><td>Rebooting</td><td>State</td><td>Machines</td><td>Applied by dragging the die of a Frame that has used nothing this turn onto REBOOT. Shield and Heat drop to 0 at once.
+Turn Start: Consumed to restore Shield to max and remove Broken.</td><td>No</td><td>Through the enemy's turn, until the next round opens</td><td>nothing in content yet</td><td>Unused</td></tr>
   <tr><td>Armoured</td><td>Buff</td><td>Both</td><td>+1 Armour per stack ({N}).
 Turn Start: Reduce stacks to 0.</td><td>Yes: an armour point a stack, every stack going at once</td><td>Until its next turn starts</td><td>Shoring Jack; Shift Whistle; the Honey Badger's Ore Hopper (passive); the Honey Badger's Miner I (passive); Phase Conjugator (module); the Goblin's Shield Wall; the Goblin Guard's Shield Wall; the Goblin Captain's Shield Wall; the Antlion's Burrow; the Antlion Queen's Burrow; the Sandworm's Burrow; the Night Sandworm's Burrow; the Salt Sandworm's Burrow; the Death Knight's Grave Guard; the Goblin Shaman's Lightning Shield; the Old Man of the Desert's Burrow; the Firelord's Submerge; the Matador's Red Capote; the Cinder Tortoise's Withdraw; the Mantis Ant's Burrow; the Warding Orb's Guard Aura</td><td>On machines: global; on foes: global</td></tr>
-  <tr><td>Barrier</td><td>Buff</td><td>Both</td><td>When Hit: If damage would be dealt, prevent it and reduce stacks to 0. Riders still apply.
-Turn Start: Reduce stacks to 0.</td><td>No</td><td>A machine's until the next blow a foe lands on it, a foe's until a weapon's blow pops it; either until its next turn starts</td><td>Breaching Plow (the Wild Boar's) (locked); Halo Projector; Blast Door; the Pit Antlion's Burrow; the Djinn's Mirage</td><td>On machines: global; on foes: global</td></tr>
-  <tr><td>Primed</td><td>Buff</td><td>Both</td><td>Resolve: If this was an attack, apply 1 Ablate per hit, then reduce stacks by 1.</td><td>Yes: a stack a weapon fired, each lending Ablate 1</td><td>Until spent</td><td>Aurora Lattice; the Magma Lizard's Stoke the Pack</td><td>On machines: global; on foes: unique: the Magma Lizard</td></tr>
-  <tr><td>Regenerating</td><td>Buff</td><td>Both</td><td>Turn End: Gain 1 shield per stack ({N}) on a Frame, or 1 HP per stack on a Sprite, then reduce stacks by 1.</td><td>Yes: a point a stack, grants adding</td><td>A stack fades as each of its turns ends</td><td>the Buzzard's Sustain I (passive); the Wight's Grave Mend; the Draugr's Grave Mend; the Barrow Giant's Knit; the Grave Giant's Knit; the Charnel Giant's Knit</td><td>On machines: unique: the Buzzard; on foes: global</td></tr>
-  <tr><td>Ward</td><td>Buff</td><td>Both</td><td>Blocks every debuff and Purge from the other side. Damage still applies.
-Turn Start: Reduce stacks to 0.</td><td>No</td><td>Until its next turn starts</td><td>Decoherence Veil; the Storm Petrel's Defence I (passive)</td><td>On machines: global</td></tr>
+  <tr><td>Barrier</td><td>Buff</td><td>Both</td><td>When Hit: If damage would be dealt, consumed to prevent it. Riders still apply.
+Turn Start: Removed.</td><td>No</td><td>A machine's until the next blow a foe lands on it, a foe's until a weapon's blow pops it; either until its next turn starts</td><td>Breaching Plow (the Wild Boar's) (locked); Halo Projector; Blast Door; the Pit Antlion's Burrow; the Djinn's Mirage</td><td>On machines: global; on foes: global</td></tr>
+  <tr><td>Primed</td><td>Buff</td><td>Both</td><td>Resolve: If this was an attack, apply 1 Ablate per hit and reduce stacks by 1.</td><td>Yes: a stack a weapon fired, each lending Ablate 1</td><td>Until spent</td><td>Aurora Lattice; the Magma Lizard's Stoke the Pack</td><td>On machines: global; on foes: unique: the Magma Lizard</td></tr>
+  <tr><td>Regenerating</td><td>Buff</td><td>Both</td><td>Turn End: Gain 1 Shield per stack ({N}) on a Frame, or 1 HP per stack on a Sprite, then reduce stacks by 1.</td><td>Yes: a point a stack, grants adding</td><td>A stack fades as each of its turns ends</td><td>the Buzzard's Sustain I (passive); the Wight's Grave Mend; the Draugr's Grave Mend; the Barrow Giant's Knit; the Grave Giant's Knit; the Charnel Giant's Knit</td><td>On machines: unique: the Buzzard; on foes: global</td></tr>
+  <tr><td>Ward</td><td>Buff</td><td>Both</td><td>Blocks every Debuff and Purge from the other side. Damage still applies.
+Turn Start: Removed.</td><td>No</td><td>Until its next turn starts</td><td>Decoherence Veil; the Storm Petrel's Defence I (passive)</td><td>On machines: global</td></tr>
   <tr><td>Ablate</td><td>Debuff</td><td>Both</td><td>Turn End: Take 1 damage per stack ({N}), then reduce stacks by 1.
 Ignores Armour and Barrier.</td><td>Yes: the Ablate's number per blow, or as many as the foe's move says</td><td>Until the stacks run out: one fades at each tick, as its turn ends (a foe's own action done; the end of the player's turn on a machine)</td><td>Incendiary Shells; Solar Flare Array (planned); Gravity Knuckles (planned); Blazethrower; Meteor Artillery; Stoker; the Gel's Engulf; the Half-Gel's Engulf; the Molten Gel's Engulf; the Molten Half-Gel's Engulf; the Drake's Stoke; the Wyvern's Stoke; the Bane's Flame Whip; the Rotbloom's Bad Breath; the Fiend of Fire's Flame Lash; the Emperor Scorpion's Paralytail; the King Gel's Dissolve; via Primed</td><td>On machines: global; on foes: global</td></tr>
   <tr><td>Brittle</td><td>Debuff</td><td>Both</td><td>When Hit: +1 damage received per stack ({N}).
@@ -618,90 +618,90 @@ Sprites are forced to target an Exposed Frame at round start.
 Turn Start: Reduce stacks by 1.</td><td>Renews: a timer, a second Expose renewing it to the larger count</td><td>Exposed 2, a stack going as each of its carrier's turns starts</td><td>Spotting Flare (the Swallowtail's) (locked); Lorentz Contractor (the Lammergeier's) (locked); Fovea Designator (the Needletail's) (locked); the Goblin Warchief's Kill Order; the Alpha Warg's Mark Prey; the Basilisk's Transfix; the Lich's Command; the Wild Huntsman's Name the Quarry; the Piercing Eye's Gaze</td><td>On machines: global; on foes: unique: the Lammergeier, the Needletail, the Swallowtail</td></tr>
   <tr><td>Sapped</td><td>Debuff</td><td>Both</td><td>On Hit: -1 damage dealt per stack ({N}).
 Turn End: Reduce stacks to 0.</td><td>Yes: every Sap adds</td><td>Until after its next turn</td><td>the Fell Rider's Shriek</td><td>On machines: unique: the Fell Rider</td></tr>
-  <tr><td>Aloft</td><td>Buff</td><td>Foes</td><td>Cannot be targeted or hit. Its other statuses still count down.
-Ends when its gathered move lands.</td><td>No</td><td>While its move gathers: from the turn it begins until the turn it lands or is broken off</td><td>the Roc's Stoop; the Night Roc's Stoop; the Great Roc's Stoop</td><td>Global</td></tr>
+  <tr><td>Aloft</td><td>Buff</td><td>Foes</td><td>Cannot be targeted or hit. Other statuses still count down.
+Removed when its gathered move lands.</td><td>No</td><td>While its move gathers: from the turn it begins until the turn it lands or is broken off</td><td>the Roc's Stoop; the Night Roc's Stoop; the Great Roc's Stoop</td><td>Global</td></tr>
   <tr><td>Empowered</td><td>Buff</td><td>Foes</td><td>On Hit: +1 damage per stack ({N}).
 Turn End: Reduce stacks by half, rounded down.</td><td>Yes: each rally's value adds</td><td>Halves as its turn ends, rounded down, until gone</td><td>the Goblin Captain's Warcry; the Dire Wolf's Howl; the Warg's Howl; the Alpha Warg's Howl; the Basalt Elemental's Stoke the Forge; the Sulphur Elemental's Stoke the Forge; the Goblin Shaman's Bloodlust; the Enkidu's Roar; the Fallen Weapon's Drive; the Saurian Queen's Goad</td><td>Global</td></tr>
   <tr><td>Enraged</td><td>Buff</td><td>Foes</td><td>On Hit: +1 damage per stack ({N}).
 When you use a component that is not a weapon: Gain 1 stack.
 Lasts the skirmish.</td><td>Yes: the foe's rage a non-weapon spend</td><td>The fight; a Purge lowers the stacks, and the rage, the Nob's Ability, goes on</td><td>the Goblin Nob's rage</td><td>Unique: the Goblin Nob</td></tr>
-  <tr><td>Numbed</td><td>Buff</td><td>Foes</td><td>When it would gain Suppressed: Prevent it, then reduce stacks by 1.
+  <tr><td>Numbed</td><td>Buff</td><td>Foes</td><td>When Suppressed would be applied: Prevent it and reduce stacks by 1.
 Turn End: Reduce stacks by 1.</td><td>Yes: its stun resist as it recovers from a stun</td><td>A stack goes as each of its turns ends</td><td>Suppression Battery; Umbra Inducer; Web Bomb (the Funnel-web's) (locked); Spotting Flare charged (the Swallowtail's) (locked); Backdraft Charge; via Paradox</td><td>Global</td></tr>
-  <tr><td>Undying</td><td>Buff</td><td>Foes</td><td>When defeated: Return with full HP, acting from next round. Reduce stacks to 0.</td><td>No</td><td>Until it falls; it returns once</td><td>the Lich's Reraise; the Zombie Knight's Reraise; the Grave Giant's Rise Again; the Charnel Giant's Rise Again; the Death Knight's Reraise; the Dread Knight's Reraise; the Dullahan's Reraise; the Grave Dullahan's Reraise; the Charnel Dullahan's Reraise; the Skeleton King's Rise; the Vampire Lord's Undying; the promoted Cleric's Reraise</td><td>Global</td></tr>
+  <tr><td>Undying</td><td>Buff</td><td>Foes</td><td>When defeated: Consumed to return with full HP, acting from next round.</td><td>No</td><td>Until it falls; it returns once</td><td>the Lich's Reraise; the Zombie Knight's Reraise; the Grave Giant's Rise Again; the Charnel Giant's Rise Again; the Death Knight's Reraise; the Dread Knight's Reraise; the Dullahan's Reraise; the Grave Dullahan's Reraise; the Charnel Dullahan's Reraise; the Skeleton King's Rise; the Vampire Lord's Undying; the promoted Cleric's Reraise</td><td>Global</td></tr>
   <tr><td>Applied Momentum</td><td>Debuff</td><td>Foes</td><td>Turn Start: Take a hit of 2 damage, then reduce stacks by 1.
-Removed when the Frame that laid it burrows again.</td><td>Yes: a turn of the drill a stack</td><td>A stack each of its turns, or until the Mole burrows</td><td>nothing in content yet</td><td>Unused</td></tr>
-  <tr><td>Cryo</td><td>Debuff</td><td>Foes</td><td>When Hit: If by a weapon, consume all stacks. The Frame that hit it loses 1 heat per stack ({N}).</td><td>Yes: the Cryo's number per foe reached; a weapon's hit spends every stack</td><td>Until a weapon's hit spends it, or the skirmish ends</td><td>Cryo Flinger (the Polar Bear's) (locked)</td><td>Unique: the Polar Bear</td></tr>
-  <tr><td>Mine</td><td>Debuff</td><td>Foes</td><td>Each use the Frame that laid it aims at this Sprite adds its damage and riders to the Mine.
-When defeated: The Mine goes off, hitting every Sprite around it for 1 damage per stack ({N}), with its riders.</td><td>Yes: its damage, every spend adding to it, one Mine a foe</td><td>The fight, until the foe falls or the Syrinx Drone detonates it</td><td>the Lammergeier's Reverberant Payload (passive)</td><td>Unique: the Lammergeier</td></tr>
-  <tr><td>Paradox</td><td>Debuff</td><td>Foes</td><td>When it gains another debuff: Gain 1 stack per stack gained.
+When the Frame that laid it burrows again: Reduce stacks to 0.</td><td>Yes: a turn of the drill a stack</td><td>A stack each of its turns, or until the Mole burrows</td><td>nothing in content yet</td><td>Unused</td></tr>
+  <tr><td>Cryo</td><td>Debuff</td><td>Foes</td><td>When Hit: If by a weapon, consume all stacks. The attacker loses 1 Heat per stack ({N}).</td><td>Yes: the Cryo's number per foe reached; a weapon's hit spends every stack</td><td>Until a weapon's hit spends it, or the skirmish ends</td><td>Cryo Flinger (the Polar Bear's) (locked)</td><td>Unique: the Polar Bear</td></tr>
+  <tr><td>Mine</td><td>Debuff</td><td>Foes</td><td>Uses aimed at this Sprite by the Frame that laid it add their damage and riders to the Mine.
+When defeated: The Mine goes off, dealing 1 damage per stack ({N}) to every Sprite around it, with its riders.</td><td>Yes: its damage, every spend adding to it, one Mine a foe</td><td>The fight, until the foe falls or the Syrinx Drone detonates it</td><td>the Lammergeier's Reverberant Payload (passive)</td><td>Unique: the Lammergeier</td></tr>
+  <tr><td>Paradox</td><td>Debuff</td><td>Foes</td><td>When another Debuff is applied: Gain 1 stack per stack applied.
 At 5 or more stacks: Reduce stacks to 0 and gain Suppressed.</td><td>Yes: one for every debuff stack gained; at five or more it Suppresses and clears</td><td>The skirmish; never decays</td><td>the Baboon's Pocket Paradox (passive)</td><td>Unique: the Baboon</td></tr>
-  <tr><td>Pinned</td><td>Debuff</td><td>Foes</td><td>When Brittle would be reduced: Prevent it, then reduce stacks to 0.
-Turn End: If it carries no Brittle, reduce stacks to 0.</td><td>Never: a second pin refreshes it</td><td>Until the halving it stops</td><td>nothing in content yet</td><td>Unused</td></tr>
-  <tr><td>Seared</td><td>Debuff</td><td>Foes</td><td>When Ablate would be reduced: Prevent it, then reduce stacks to 0.
-Turn End: Reduce stacks to 0.</td><td>Never: a second pin refreshes it</td><td>Until the fade it stops</td><td>nothing in content yet</td><td>Unused</td></tr>
+  <tr><td>Pinned</td><td>Debuff</td><td>Foes</td><td>When Brittle would be reduced: Consumed to prevent it.
+Turn End: If there is no Brittle, removed.</td><td>Never: a second pin refreshes it</td><td>Until the halving it stops</td><td>nothing in content yet</td><td>Unused</td></tr>
+  <tr><td>Seared</td><td>Debuff</td><td>Foes</td><td>When Ablate would be reduced: Consumed to prevent it.
+Turn End: Removed.</td><td>Never: a second pin refreshes it</td><td>Until the fade it stops</td><td>nothing in content yet</td><td>Unused</td></tr>
   <tr><td>Shocked</td><td>Debuff</td><td>Foes</td><td>When Hit: If targeted, consume to double damage received, before applying defensive effects.
 Conducts Chain.</td><td>Never</td><td>Until the next team blow of a weapon</td><td>Combat Translocator (the Dingo's) (locked); Polarity Projector; Tesla Gauntlets (planned)</td><td>Global</td></tr>
   <tr><td>Sonic Needle</td><td>Debuff</td><td>Foes</td><td>Gain 1 stack per hit from the Frame that laid it, and per hit this Sprite lands on that Frame.
 Conducts Chain.
 At 3 or more stacks: Chain 2 fires. Reduce stacks to 0.</td><td>Yes: up to 3</td><td>Until a bolt consumes it</td><td>the Echidna's Sonic Needles (passive)</td><td>Unique: the Echidna</td></tr>
-  <tr><td>Suppressed</td><td>Debuff</td><td>Foes</td><td>Skips its next turn.
-Turn End: Reduce stacks to 0. Gain Numbed equal to its stun resist: 1, 2 if massive, 3 if an elite, a hero or a boss.</td><td>No</td><td>One turn: this round's, or the next if it has acted</td><td>Suppression Battery; Umbra Inducer; Web Bomb (the Funnel-web's) (locked); Spotting Flare charged (the Swallowtail's) (locked); Backdraft Charge; via Paradox</td><td>Global</td></tr>
+  <tr><td>Suppressed</td><td>Debuff</td><td>Foes</td><td>Next turn skipped.
+Turn End: Removed. Gain Numbed equal to stun resist: 1, 2 if massive, 3 if elite, hero or boss.</td><td>No</td><td>One turn: this round's, or the next if it has acted</td><td>Suppression Battery; Umbra Inducer; Web Bomb (the Funnel-web's) (locked); Spotting Flare charged (the Swallowtail's) (locked); Backdraft Charge; via Paradox</td><td>Global</td></tr>
   <tr><td>Vitriol</td><td>Debuff</td><td>Foes</td><td>Turn End: Lose 10% of current HP per stack ({N}), rounded down, then reduce stacks by 1.
 Ignores Armour and Barrier. Cannot reduce HP below 1.</td><td>Yes: a stack per weapon hit on a foe showing no intent on the spider; a tick a stack</td><td>A stack fades as each of its turns ends</td><td>the Funnel-web's Ambush (passive)</td><td>Unique: the Funnel-web</td></tr>
-  <tr><td>Web Bomb</td><td>Debuff</td><td>Foes</td><td>Round End: Apply Suppressed to this Sprite and to the next Sprite on its right in its rank, or on its left if there is none. Reduce stacks to 0.</td><td>No</td><td>Until the round's end, when it bursts</td><td>Web Bomb (the Funnel-web's) (locked)</td><td>Unique: the Funnel-web</td></tr>
-  <tr><td>Appropriated</td><td>Ability</td><td>Foes</td><td>Holds the number of the component it took: a weapon's damage, otherwise 1.
-Its next Borrowed Blade deals this number.</td><td>No: its number is the piece's, and what it takes next replaces it</td><td>Until its borrowed swing spends it</td><td>the Gilgamesh's Collect</td><td>Unique: the Gilgamesh</td></tr>
+  <tr><td>Web Bomb</td><td>Debuff</td><td>Foes</td><td>Round End: Consumed to apply Suppressed to this Sprite and the nearest Sprite to its right in the same rank, or to its left if none.</td><td>No</td><td>Until the round's end, when it bursts</td><td>Web Bomb (the Funnel-web's) (locked)</td><td>Unique: the Funnel-web</td></tr>
+  <tr><td>Appropriated</td><td>Ability</td><td>Foes</td><td>Holds the stolen component's number: a weapon's damage, otherwise 1.
+Consumed by the next Borrowed Blade, which deals this number.</td><td>No: its number is the piece's, and what it takes next replaces it</td><td>Until its borrowed swing spends it</td><td>the Gilgamesh's Collect</td><td>Unique: the Gilgamesh</td></tr>
   <tr><td>Golden</td><td>Ability</td><td>Foes</td><td>On Hit: +2 damage dealt.
 +1 Armour.
 Gain Suppressed upon losing 25% Max HP since the start of the effect.
 On Suppressed: Reduce stacks to 0.
 Turn End: Reduce stacks by 1.</td><td>Renews: a timer, one rage at a time</td><td>Laid as its turn ends, a stack going as each of its turns ends, ended early by a quarter of its HP lost or a Suppress</td><td>the Thunder Ape's Golden Rage</td><td>Unique: the Thunder Ape</td></tr>
-  <tr><td>Guarded</td><td>Ability</td><td>Foes</td><td>Immune to all damage while every one of its parts stands.</td><td>No</td><td>While its parts stand</td><td>the Fallen Weapon's parts; the Astromancer's parts; the Ruby Colossus's parts; the Obsidian Tyrant's parts</td><td>Global</td></tr>
+  <tr><td>Guarded</td><td>Ability</td><td>Foes</td><td>Immune to all damage while every part stands.</td><td>No</td><td>While its parts stand</td><td>the Fallen Weapon's parts; the Astromancer's parts; the Ruby Colossus's parts; the Obsidian Tyrant's parts</td><td>Global</td></tr>
   </tbody></table></div>
   <h4>Keywords</h4>
   <div class="tablewrap"><table><thead><tr><th>Keyword</th><th>What it does</th><th>Unlocked components</th><th>Locked components</th><th>Passives and modules</th><th>Foe moves</th></tr></thead><tbody>
   <tr><td colspan="6"><em>On our components</em></td></tr>
   <tr><td>Ablate</td><td>Resolve: Apply {N} Ablate per hit.</td><td>4 (+2 planned)</td><td>0</td><td>1</td><td>&mdash;</td></tr>
   <tr><td>Brittle</td><td>Resolve: Apply {N} Brittle per hit.</td><td>2</td><td>3</td><td>1</td><td>&mdash;</td></tr>
-  <tr><td>Chain</td><td>After Hit: If targeted, hit every Sprite that conducts Chain for {N} damage. These hits are not Targeted and gain no bonuses or riders.</td><td>1</td><td>0</td><td>2</td><td>&mdash;</td></tr>
-  <tr><td>Cleanse</td><td>Resolve: Remove every debuff from the target, except those that cannot be cleansed.
-A Sprite's Cleanse removes every debuff but Suppressed from the Sprite carrying the most kinds of debuff.</td><td>0 (+1 planned)</td><td>3</td><td>0</td><td>&mdash;</td></tr>
+  <tr><td>Chain</td><td>After Hit: If targeted, deal {N} damage to every Sprite that conducts Chain. These hits are not Targeted. No bonuses or riders apply.</td><td>1</td><td>0</td><td>2</td><td>&mdash;</td></tr>
+  <tr><td>Cleanse</td><td>Resolve: Remove every Debuff from the target, except those that cannot be cleansed.
+A Sprite's Cleanse removes every Debuff but Suppressed from the Sprite with the most kinds of Debuff.</td><td>0 (+1 planned)</td><td>3</td><td>0</td><td>&mdash;</td></tr>
   <tr><td>Cryo</td><td>Resolve: Apply {N} Cryo per hit.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
-  <tr><td>Disrupt</td><td>Resolve: Each Sprite hit switches to the next move in its list it can use. It keeps its target.</td><td>1</td><td>0</td><td>0</td><td>&mdash;</td></tr>
+  <tr><td>Disrupt</td><td>Resolve: Sprites hit switch to the next move they can use, keeping their target.</td><td>1</td><td>0</td><td>0</td><td>&mdash;</td></tr>
   <tr><td>Expose</td><td>Resolve: Apply 2 Exposed to each unit hit.</td><td>0</td><td>3</td><td>0</td><td>&mdash;</td></tr>
-  <tr><td>Instant</td><td>Resolve: Reroll this die for free. It can land on this entry again.</td><td>0</td><td>1</td><td>2</td><td>&mdash;</td></tr>
-  <tr><td>Lure</td><td>Resolve: Each Sprite hit retargets its move to this Frame this round.</td><td>2</td><td>3</td><td>0</td><td>&mdash;</td></tr>
+  <tr><td>Instant</td><td>Resolve: Reroll this die for free. May land on this entry again.</td><td>0</td><td>1</td><td>2</td><td>&mdash;</td></tr>
+  <tr><td>Lure</td><td>Resolve: Sprites hit are forced to target this Frame this round.</td><td>2</td><td>3</td><td>0</td><td>&mdash;</td></tr>
   <tr><td>Penetrate</td><td>Also hits all other Sprites in the same column, dealing {N} damage. The extra hits are not Targeted.</td><td>2</td><td>1</td><td>3</td><td>&mdash;</td></tr>
-  <tr><td>Purge</td><td>Resolve: Reduce the stacks of every buff on each unit hit by {N}.</td><td>1</td><td>1</td><td>0</td><td>&mdash;</td></tr>
-  <tr><td>Rapid</td><td>Resolve: This entry goes dark for the rest of the round. Reroll this die for free onto a different entry.</td><td>1 (+1 planned)</td><td>5</td><td>1</td><td>&mdash;</td></tr>
+  <tr><td>Purge</td><td>Resolve: Reduce stacks of every Buff on each unit hit by {N}.</td><td>1</td><td>1</td><td>0</td><td>&mdash;</td></tr>
+  <tr><td>Rapid</td><td>Resolve: Reroll this die for free, never onto this entry. This entry goes dark for the rest of the round.</td><td>1 (+1 planned)</td><td>5</td><td>1</td><td>&mdash;</td></tr>
   <tr><td>Sap</td><td>Resolve: Apply {N} Sapped per hit.</td><td>0</td><td>2</td><td>0</td><td>&mdash;</td></tr>
   <tr><td>Shock</td><td>Resolve: Apply Shocked to each Sprite hit.</td><td>1 (+1 planned)</td><td>1</td><td>0</td><td>&mdash;</td></tr>
   <tr><td>Spread</td><td>Also hits all Sprites beside the target, dealing {N} damage. The extra hits are not Targeted.</td><td>3</td><td>2</td><td>5</td><td>&mdash;</td></tr>
   <tr><td>Suppress</td><td>Resolve: Apply Suppressed to each Sprite hit.</td><td>3</td><td>1</td><td>0</td><td>&mdash;</td></tr>
   <tr><td colspan="6"><em>Printed on our components (the star)</em></td></tr>
-  <tr><td>Strikes</td><td>Hits per use. Each hit deals the full number, and Armour reduces each one.</td><td>3</td><td>2</td><td>0</td><td>&mdash;</td></tr>
-  <tr><td>Vents all</td><td>Commit: Reduce heat to 0. +X damage per Y heat vented, X and Y shown on the entry.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
-  <tr><td>Fires the shield</td><td>Commit: Reduce shield to 0. +X damage per Y shield spent, X and Y shown on the entry.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
-  <tr><td>Passes heat</td><td>Resolve: Move all of this Frame's heat to the target. The target gains 1 stack of the shown status per Y heat moved, Y shown on the entry, rounded down.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
+  <tr><td>Strikes</td><td>Hits per use. Each hit deals full damage and is reduced by Armour separately.</td><td>3</td><td>2</td><td>0</td><td>&mdash;</td></tr>
+  <tr><td>Vents all</td><td>Commit: Reduce Heat to 0. +X damage per Y Heat vented, as shown on the entry.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
+  <tr><td>Fires the shield</td><td>Commit: Reduce Shield to 0. +X damage per Y Shield spent, as shown on the entry.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
+  <tr><td>Passes heat</td><td>Resolve: Move all of this Frame's Heat to the target. The target gains 1 stack of the shown status per Y Heat moved, rounded down.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
   <tr><td>Cools itself</td><td></td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
-  <tr><td>Grows with missing HP</td><td>Commit: +X damage per Y HP the target is missing, X and Y shown on the entry.</td><td>1</td><td>0</td><td>0</td><td>&mdash;</td></tr>
-  <tr><td>Finisher</td><td>Commit: If the target is at or below half its Max HP, double base damage.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
-  <tr><td>Gated</td><td>The keyword applies only to a Sprite that meets its condition at Commit.</td><td>2</td><td>0</td><td>0</td><td>&mdash;</td></tr>
-  <tr><td>Consumes</td><td>On Hit: If a weapon, consume every stack of the named status on the Sprite hit. +{N} damage per stack consumed.
+  <tr><td>Grows with missing HP</td><td>Commit: +X damage per Y HP the target is missing, as shown on the entry.</td><td>1</td><td>0</td><td>0</td><td>&mdash;</td></tr>
+  <tr><td>Finisher</td><td>Commit: If the target is at or below half Max HP, double base damage.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
+  <tr><td>Gated</td><td>The keyword applies only to Sprites that meet its condition at Commit.</td><td>2</td><td>0</td><td>0</td><td>&mdash;</td></tr>
+  <tr><td>Consumes</td><td>On Hit: If a weapon, consume all stacks of the named status on the Sprite hit. +{N} damage per stack consumed.
 Commit: If equipment, consume up to {N} of the named count from this Frame. Gain 1 stack of the granted status per one consumed.
-Equipment cannot be used with none to consume.</td><td>1</td><td>1</td><td>0</td><td>&mdash;</td></tr>
+Equipment cannot be used with nothing to consume.</td><td>1</td><td>1</td><td>0</td><td>&mdash;</td></tr>
   <tr><td>Ablates its firer</td><td>Resolve: Apply {N} Ablate to this Frame.</td><td>1</td><td>0</td><td>0</td><td>&mdash;</td></tr>
   <tr><td>Ignores armour</td><td>Hits ignore Armour.</td><td>1</td><td>2</td><td>0</td><td>&mdash;</td></tr>
   <tr><td>The hopper</td><td>Commit: Consume all Ore. Hit once per Ore consumed. No Ore is gained from these hits.
 Cannot be used without Ore.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
   <tr><td>Braces</td><td>Resolve: Apply {N} Armoured to this Frame.</td><td>1</td><td>0</td><td>0</td><td>&mdash;</td></tr>
-  <tr><td>Swap</td><td>Takes a second target: another Sprite or an empty slot.
-Resolve: The target and the second target trade places. A massive Sprite does not move.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
-  <tr><td>Web Bomb</td><td>Round End: Apply Suppressed to this Sprite and to the next Sprite on its right in its rank, or on its left if there is none. Reduce stacks to 0.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
+  <tr><td>Swap</td><td>Second target: another Sprite or an empty slot.
+Resolve: The target and the second target swap places. Massive Sprites cannot move.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
+  <tr><td>Web Bomb</td><td>Round End: Consumed to apply Suppressed to this Sprite and the nearest Sprite to its right in the same rank, or to its left if none.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
   <tr><td>Gather</td><td>Resolve: Every other Sprite's Mine merges into the target's Mine.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
-  <tr><td>Detonate</td><td>Resolve: The target's Mine goes off, this use's addition included.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
-  <tr><td>An ally's action</td><td>Resolve: If the target Frame's die is used, spend {N} rerolls. Its die rerolls onto a different entry and can be used again.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
-  <tr><td>Rolls its die</td><td>Resolve: The target's die rerolls onto a different entry. A used die does not reroll.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
+  <tr><td>Detonate</td><td>Resolve: The target's Mine goes off, including this use's addition.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
+  <tr><td>An ally's action</td><td>Resolve: If the target Frame's die is used, spend {N} rerolls to reroll it onto a different entry. It can act again.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
+  <tr><td>Rolls its die</td><td>Resolve: The target's die rerolls onto a different entry. A used die cannot reroll.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
   <tr><td>Rerolls a kill</td><td>Resolve: If any Sprite hit was defeated, gain {N} rerolls.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
   <tr><td>Grants a reroll</td><td>Resolve: Gain {N} rerolls.</td><td>0</td><td>2</td><td>0</td><td>&mdash;</td></tr>
   <tr><td>Cooldown</td><td>Resolve: This entry goes dark for the rest of the round and the next {N} rounds.
@@ -712,17 +712,17 @@ A dark entry can be rolled but not used.</td><td>3</td><td>3</td><td>0</td><td>&
   <tr><td>Jam</td><td>Resolve: Apply Jammed to the entry the target's die shows.</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>16 (the Alraune, the Basilisk, the Cockatrice, the Emperor Scorpion, the Gilgamesh, the Gorgon, the Leshy, the Prising Eye, the Rider of the Wild Hunt, the Rotbloom, the Rust Monster, the Sabre Cat, the Storm Cat, the Storm Orb, the Thunder Ape, the Whisker Cat); 6 of them a move of its own</td></tr>
   <tr><td>Corrupt</td><td>Resolve: Apply {N} Corrupted per hit to the entry the target's die shows.</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>17 (the Alraune, the Antiquarian, the Barbed Needler, the Emperor Scorpion, the Fell Rider, the Gorgon, the Mandragora, the Mandrake, the Marsh Serpent, the Reaper, the Rotbloom, the Rust Monster, the Shuffler, the Summoner, the Thief, the World Eater, the Wraith); 1 of them a move of its own</td></tr>
   <tr><td>Brittle</td><td>Keyword with a number on a foe's attack: each blow that lands leaves that many stacks of Brittle on the machine it hits (Brittle, above).</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>6 (the Bubble Gel, the Bubble Half-Gel, the King Gel, the Molten Gel, the Molten Half-Gel, the World Eater)</td></tr>
-  <tr><td>Destroy</td><td>After Hit: If hull damage was dealt, destroy the entry the target's die shows.</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>0</td></tr>
-  <tr><td>Drain</td><td>After Hit: Heal HP equal to the hull damage dealt.</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1 (the Vampire Lord)</td></tr>
+  <tr><td>Destroy</td><td>After Hit: If Hull damage was dealt, destroy the entry the target's die shows.</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>0</td></tr>
+  <tr><td>Drain</td><td>After Hit: Heal HP equal to the Hull damage dealt.</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1 (the Vampire Lord)</td></tr>
   <tr><td>Purge (a foe's)</td><td>A foe's move of its own, or a step of a move ahead of its blow where the move says so; never a rider on a blow and never a last act's: Purge N, the rule ours runs, N stacks off every buff the machine it lands on carries, for good, whatever granted it; its Abilities and its stores stay; a Ward turns it away.</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>8 (the Barbed Needler, the Djinn, the Great Needler, the King Gel, the Needler, the Old Man of the Desert, the Pilgrim, the Rust Monster); 1 of them a move of its own; 7 a step ahead of a blow</td></tr>
   <tr><td>Swallow</td><td>Round End: Apply {N} Swallowed to the target.
 Cannot target the last Frame able to act.</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>2 (the Floraison, the Ruby Colossus); 2 of them a move of its own</td></tr>
-  <tr><td>Merge</td><td>Absorbs every other Sprite of the named kinds. Heals the HP they had left, up to its Max HP.
+  <tr><td>Merge</td><td>Absorbs every other Sprite of the named kinds, healing the HP they had left, up to Max HP.
 Gain {N} Empowered per Sprite absorbed.</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1 (the King Gel); 1 of them a move of its own</td></tr>
   <tr><td>Golden Rage</td><td>Turn End: Gain {N} Golden.
 Only usable while not Golden.</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1 (the Thunder Ape); 1 of them a move of its own</td></tr>
   <tr><td>Self-Destruct</td><td>Resolve: This Sprite is removed. It cannot return.</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>4 (the Balloon, the Bomb, the Fuming Orb, the Grenade)</td></tr>
-  <tr><td>Every Frame</td><td>Hits every Frame. It has no target, so Lure does not move it.</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>32 (the Antiquarian, the Astromancer, the Augur, the Balloon, the Bane, the Bone Wyvern, the Cinder Tortoise, the Dusk Treant, the Elder Treant, the Emperor Scorpion, the Fallen Weapon, the Fell Rider, the Fiend of Fire, the Frost Treant, the Goblin Shaman, the Grenade, the King Gel, the Marsh Serpent, the Night Sandworm, the Obsidian Tyrant, the Old Man of the Desert, the Phantom Train, the Reaper, the Rotbloom, the Ruby Colossus, the Salt Sandworm, the Shuffler, the Storm Orb, the Thief, the Vampire Lord, the Warrior, the World Eater)</td></tr>
+  <tr><td>Every Frame</td><td>Hits every Frame. No target, so Lure cannot move it.</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>32 (the Antiquarian, the Astromancer, the Augur, the Balloon, the Bane, the Bone Wyvern, the Cinder Tortoise, the Dusk Treant, the Elder Treant, the Emperor Scorpion, the Fallen Weapon, the Fell Rider, the Fiend of Fire, the Frost Treant, the Goblin Shaman, the Grenade, the King Gel, the Marsh Serpent, the Night Sandworm, the Obsidian Tyrant, the Old Man of the Desert, the Phantom Train, the Reaper, the Rotbloom, the Ruby Colossus, the Salt Sandworm, the Shuffler, the Storm Orb, the Thief, the Vampire Lord, the Warrior, the World Eater)</td></tr>
   <tr><td>Countdown</td><td>Lands {N} rounds after it is announced. Nothing hits while it gathers.
 Suppress delays it 1 round. Disrupt cancels it.</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>17 (the Augur, the Balloon, the Fallen Weapon, the Gargantuan King, the Great Needler, the Great Roc, the Lancer, the Marsh Serpent, the Night Roc, the Obsidian Tyrant, the Phantom Train, the Pilgrim, the Reaper, the Red Dragon, the Roc, the Ruby Colossus)</td></tr>
   <tr><td>Grudge</td><td>+1 damage per Sprite the team has killed this skirmish.</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>1 (the Pilgrim)</td></tr>

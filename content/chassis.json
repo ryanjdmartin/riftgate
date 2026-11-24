@@ -1062,7 +1062,7 @@
    "passive": {
     "id": "crucible_capacitor",
     "name": "Crucible Capacitor",
-    "description": "A foe's hit on its shield adds 1 heat; hull damage, or a blow of its own that a foe's armour or Barrier takes whole, adds 2. Opening a turn at its heat maximum or past it, it rages: its debuffs lifted and no more landing, its die all Knuckles of Fury, Instant. The Rage ends as its heat reaches nothing, and it reboots at once. It never reboots by choice at its maximum.",
+    "description": "When Hit: If only Shield is damaged, gain 1 Heat.\nWhen Hull damage is taken: Gain 2 Heat.\nAfter Hit: If fully blocked by Armour or Barrier, gain 2 Heat.\nTurn Start: If at Max Heat or higher, remove all Debuffs and gain Rage.",
     "effects": [
      {
       "trigger": "on_shield_hit",
