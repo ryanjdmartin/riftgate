@@ -409,6 +409,9 @@ static func graded_opening(ramp_at: int, cols: int) -> Array:
 		(by_band[clampi((col * n) / maxi(1, cols), 0, n - 1)] as Array).append(col)
 	var out: Array = []
 	var mid := n / 2
+	for b in range(n):
+		if (by_band[b] as Array).is_empty():
+			return out   # a field too narrow to have five bands opens with nothing of this form
 	var middle: Array = by_band[mid]
 	for k in range(Ramp.formations_at(ramp_at)):
 		# About the band's middle column: on it, then a column either side in turn.

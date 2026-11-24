@@ -350,15 +350,15 @@ whole. A second one renews to the larger count, never adds.
 - **Every Foe** reaches any foe and lands on every foe in the fight, front rank and back, and
   targets the field: a debuff's effects on each, a weapon's strike on each for its whole
   number, every foe through its own Brittle and armour. No hit of it is aimed at a foe, the one
-  the die was dropped on included, so it doubles and spends no Shock, no Chain arcs from it, it
+  the die was dropped on included, so it doubles and spends no Shock, its Chain pings every conductor as it resolves, it
   feeds no Mine and a next strike's add finds no strike of it; with no target no Ricochet
   follows it, and no area keyword rides it. It is
   a targeting mode of its own: no passive turns it into Direct or Indirect. One gated special carries it, the Musk Ox's
   salvo, and one debuff, the Shift Whistle's lure (Minerva, tier
   three). A
   weapon reaches wide by Spread or Penetrate, or lands on every foe.
-- Chain's arcs read no reach: they strike every foe on the field that conducts (a Shocked
-  foe, or one carrying a Sonic Needle), front or back, whatever the gun's reach.
+- Chain's ping reads no reach: every foe on the field that conducts (a Shocked foe, or one
+  carrying a Sonic Needle) loses its HP, front or back, whatever the gun's reach.
 - A kill clears its slot at its spend's death check, so a hole in the front opens that
   column's back to Direct; what a kill brings back (a foe getting back up, a Gel's halves)
   stands once the spend is done (A spend's order, below), and otherwise the hole stays open:
@@ -370,9 +370,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
 1. The number: on the foe the strike is aimed at, the weapon's number; on every other
    foe its area reaches, the number of the shape it stands in (Spread's beside the target,
    Penetrate's in the other rank of its column). Then what the entry prints from its firer:
-   what heat fired adds (Vents all), what shield fired adds (Fires the shield). A Chain's arc
-   is its own blow, struck apart once the strike's have landed (Chain N, under Player keywords),
-   its number flat: steps 1 and 2 give it nothing more.
+   what heat fired adds (Vents all), what shield fired adds (Fires the shield). Chain's ping
+   is no blow and takes none of these steps: HP lost, flat, as the use resolves (Chain N, under
+   Player keywords).
 2. The attacker's modifiers, on every blow of the strike: adds, then multiplies, then floors, a
    condition on the foe read on that foe (a status it carries, its rank). A zap's add is one of
    the adds, beside Empowered's (Passives, below).
@@ -384,8 +384,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
    weapon's hits (below).
 - **The strike order**: a strike's blows are resolved in one order, the target's first, then
   Spread's left and then its right, then Penetrate's other rank, a twin slot's other half with
-  its pair, then the Beam Rifle's foe to the right, then Chain's arcs, read once those have
-  landed. It is the calculation's
+  its pair, then the Beam Rifle's foe to the right; Chain's ping comes after them all, as the use
+  resolves. It is the calculation's
   alone: the screen shows a strike's blows landing together, on its beat. What waits on a
   machine's next strike lands on its spend's first blow alone, its first strike's on its target,
   and on none of that strike's area (the Parry's return).
@@ -438,8 +438,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   its damage on every foe round its slot (the slot's other half, the foes beside it in its rank
   and the other rank of its column; a massive foe's, the front-rank foes in the columns either
   side), each through its own Brittle, a Barrier and its armour, aimed at nobody
-  so a Shock neither doubles it nor is spent; then Chain's number, flat, on every foe on the field
-  that conducts, a foe the blast met among them, each a blow alone that no rider rides; then its
+  so a Shock neither doubles it nor is spent; then Chain's ping, its number off the HP of every foe
+  on the field that conducts, a foe the blast met among them, no rider riding it; then its
   keywords on each foe it met, felled or not, as a hit's riders land, Shock and
   Expose after its blow, Disrupt only in the player's turn. Several Mines due at one death check
   blow in strike order, front left to right, then the back, and a blast that fells a mined foe
@@ -578,21 +578,18 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   and a foe immune to it (An immunity, under Foes) takes none.
 - **Shock**: every foe the hit reaches is Shocked after its blow, the ones it fells included, so
   a hit never spends its own Shock.
-- **Chain N**: all foes on the field that conduct (a Shocked foe, or one carrying a Sonic Needle)
-  are struck for N, front or back, whatever the reach, with every strike of the entry (a
-  Ricochet's strikes and a hit again arc none). The arcs are read once the strike's own blows
-  have landed, so its own target is struck too while it still conducts: a weapon's strike aimed
-  at it spends a Shock first, so a Shocked target is out, but a needle stays, and equipment spends
-  no Shock. Each arc is N flat: no add or multiply of the machine's, no rule of the piece's (a
-  gun that ignores armour, a spill), no rider (the entry's, its primers' or a passive's: no mark,
-  no Lure, no Shock, no needle), no heat, and it does not use or consume a Shock. The conductor's
-  own statuses and armour read it (its Brittle adds, Armoured and armour come off, Exposed takes
-  them away), and a Barrier takes a weapon's arc; whether an arc stays a strike they read or
-  becomes a flat ping they never touch waits on Ryan (the bible's section 12). It stacks with an
-  area: a conductor Spread or Penetrate reaches takes the area's blow, with its riders, and the
-  arc. An arc spreads nowhere and cashes no Cryo; a kill by an arc is still its machine's (the
-  kill rules read it), and a foe it damages counts where a rule counts the foes a spend damaged
-  (the Honey Badger's Ore).
+- **Chain N**: as the use resolves, every foe on the field that conducts (a Shocked foe, or one
+  carrying a Sonic Needle) loses N HP, front or back, whatever the reach, once a use however many
+  strikes it has. It is read after every hit of the use and before its riders land, so its own
+  target loses it too while it still conducts (a weapon's strike aimed at it spends a Shock first,
+  so a Shocked target is out, but a needle stays, and equipment spends no Shock), and a Shock or a
+  needle the use lays conducts none of it. It is HP lost, no hit and no blow: no add or multiply of
+  the machine's, no rule of the piece's, no rider, no heat; no armour, Brittle or Barrier reads it,
+  it does not use or consume a Shock, it spreads nowhere and cashes no Cryo, and a rule that counts
+  hits or the foes a spend damaged does not count it (the Honey Badger's Ore, the Mole's Momentum).
+  A Phased foe loses none. A kill by it is still its machine's (the kill rules read it). It stacks
+  with an area: a conductor Spread or Penetrate reaches takes the area's blow, with its riders, and
+  loses the HP besides.
 - **Lure**: every foe reached turns on the spender for the round, a felled one too. A move at
   every machine or at nobody holds no pick, so it has nothing to turn.
 - **Expose** (the Needletail's Fovea Designator, the Swallowtail's Spotting Flare, the Lammergeier's Lorentz Contractor): every foe reached
@@ -822,7 +819,7 @@ On a machine:
   Mine's blast: a kill as the death check counts it, so a foe getting back up, a split and a
   part bank none), with no cap, kept from fight to fight through the battle and gone as the
   battle ends. The Essence flares as each fight opens, and at the end of a round in which an
-  attack of the Ammit's own killed (its weapon's blow, an arc, a spill), once a round however
+  attack of the Ammit's own killed (its weapon's blow, Chain's ping, a spill), once a round however
   many fell and however many of its attacks felled them: it gains a stack
   of Empowered for every 5 Essence it holds, nothing under 5, and none is spent by it. The
   round's kills are banked by then, so the flare reads the count with all of them in; an Ammit
@@ -937,7 +934,7 @@ On a machine:
   the weapon but its area: its number 1 in place of the entry's and of what the entry reads off
   the foe, the firer's modifiers on it (Empowered adds), the foe's Brittle, then its armour, so a
   point of plate stops every one and an Exposed foe's plate stops none; the weapon's riders
-  land with each, a stack a strike; an area and a Chain's arcs are the weapon's own and no
+  land with each, a stack a strike; an area and Chain's ping are the weapon's own and no
   Ricochet carries them, and a weapon over every foe has no target for one to hit. The stacks are read as the spend begins, so one
   the spend earns strikes nothing of it. Equipment strikes nothing again. Whenever the
   machine's hull is damaged (a blow, a bite or an overheat) half its stacks go, rounded down, so
@@ -1054,16 +1051,16 @@ On a foe:
 - **Shocked** (debuff): when a weapon's strike aimed at it lands, the blow deals double and the
   shock is spent. A strike is aimed at the foe it resolves on: the player's pick, or each foe a
   weapon over every foe strikes, which the game targets rather than the player. A blow that
-  only reaches it (an area's, a Chain's arc, a spill, a Mine's blast) neither doubles nor spends it, and equipment leaves it standing; it never stacks.
+  only reaches it (an area's, a spill, a Mine's blast) neither doubles nor spends it, nor does Chain's ping, and equipment leaves it standing; it never stacks.
   It conducts Chain.
 - **Sonic Needle** (debuff, the Echidna's): a stack for every strike of the Echidna's weapons and
-  equipment that reaches the foe, an area's neighbours included and a Chain's arc never, and a
+  equipment that reaches the foe, an area's neighbours included and Chain's ping never, and a
   stack for every blow the foe lands on the Echidna, whatever the blow dealt; a blow that wrecks
   it lays none. It conducts Chain. The stacks land one at a time, and the one that brings the foe
-  to 3 fires the bolt before the next lands: the Echidna fires Chain 2, aimed at nothing, so 2
-  lands on every foe on the field that conducts, that foe included while it stands, each a blow
-  alone as a Chain's arc is (no rider and no needle, a Shock neither doubled nor spent, through
-  its own Brittle, a Barrier and its armour); then every stack on that foe is consumed. A foe the
+  to 3 fires the bolt before the next lands: the Echidna fires Chain 2, aimed at nothing, so every
+  foe on the field that conducts loses 2 HP, that foe included while it stands, as Chain's ping
+  does (no rider and no needle, a Shock neither doubled nor spent, no armour, Brittle or Barrier
+  reading it); then every stack on that foe is consumed. A foe the
   strike fells takes its riders as any does, and its bolt fires on the others all the same; a
   foe whose own blow brings its bolt and fells it strikes no more that turn. A foe's cleanse
   takes the needles, a Ward turns them away, and they last until a bolt spends them. With no
@@ -1161,7 +1158,7 @@ On a foe:
 - **Aloft** (buff, the Roc's while its Stoop gathers; a working name): the foe is out of the
   team's reach. No die may be dropped on it, as a spend's target or a Swap's second, and
   nothing a spend lands with no aim reaches it either: a neighbour's Spread, a blow or a mark
-  at every foe, a Chain's arc, a Mine's blast beside it, a web's catch, a spill or a shove
+  at every foe, Chain's ping, a Mine's blast beside it, a web's catch, a spill or a shove
   from the foe in front. What it carries is its own, which is what parts it from Phased: its
   Ablate and Vitriol tick and damage it, a web on it bursts on it and a Mine on it blows on
   it. It begins as the move begins to gather, in the enemy's turn of the round it was
@@ -1283,7 +1280,7 @@ Ablate, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Expo
   take it, no Shock is read, and a Phased foe takes nothing), then drains 5 of its Mole's
   Momentum; at none the mark goes and the drill comes home. Before the opening, so the Pinned it
   lays holds the Brittle the opening would halve: its Brittle climbs a point a turn. Every use
-  that hits the drilled foe, an area's hit and a Chain's arc included, gives its Mole a Momentum
+  that hits the drilled foe, an area's hit included (Chain's ping is no hit), gives its Mole a Momentum
   as it resolves, up to the cap; the drill's own use gives none. A foe that falls takes the mark
   with it, the drill idle in the ground until its Mole burrows. The drill works as its machine
   stood when it fired: a branch learned later changes the next drill.
@@ -1600,7 +1597,7 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   granted (an ally this machine shields), on buffing an ally (equipment this machine spends on an
   ally, once for each ally it lands on, whatever it did there), on heat gain, on foe status (a foe
   gains a debuff), on stack (this machine applies stacks), on a kill (once after an attack of
-  this machine's that killed, however many fell to it, arcs and spills included:
+  this machine's that killed, however many fell to it, Chain's ping and spills included:
   the Kite's shield), at the end of a round it killed in (once as the round ends, after the
   enemy's turn, for a machine whose own attack killed in it, however many fell and however
   many attacks felled them; a machine wrecked first fires nothing: the Ammit's flare), on a foe killed (every kill the death check counts in
@@ -1614,7 +1611,7 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   for every 5 Essence), and a status may name the battle as its scope, kept from fight to fight
   (Essence). It may count an attack's add off the stacks of a status in the foe the blow lands
   on: the Echidna's Chaos, 1 more a Sonic Needle, read on every blow of its weapons on that foe,
-  an area's among them (a Chain's arc and the needles' bolt are flat and take none).
+  an area's among them (Chain's ping and the needles' bolt are HP lost and take none).
 - A passive may double a weapon's printed number before its buffs, on every blow, what the
   entry prints from its firer included (an area's number, heat fired), the buffs
   added once after it and the struck foe's own reads (its missing HP, the stacks consumed on
@@ -1631,7 +1628,7 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   add (the Buzzard's: 2 shield for +2). It is paid unasked as the spend begins whenever the
   shield holds the cost: short of it the weapon fires plain, and the last point paid breaks
   the shield. The add is the attacker's, beside Empowered's, wherever Empowered's goes: every
-  strike of the spend, every foe its area reaches and a Ricochet's strikes, never a Chain's arc,
+  strike of the spend, every foe its area reaches and a Ricochet's strikes, never Chain's ping,
   the cost paid once a spend. Equipment pays none, nor an entry that fires the whole shield. The
   die's number carries the add while the zap is ready, and its passive box shows the cost. A passive or a module may split every weapon and equipment aimed at a foe instead (the Split-cycle Breech, a module; a second adds nothing):
   each hits twice as often, and each hit's base weapon damage

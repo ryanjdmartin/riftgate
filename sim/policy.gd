@@ -956,26 +956,19 @@ func drill_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> 
 	return worth
 
 
-## A Chain spend's arcs (Ryan, 21 November: "All foes on the field with Shock are struck for
-## {value}. Does not use or consume Shock"): the number flat on every conductor the arcs will strike
-## (Skirmish.conductors: its own target among them while it still conducts), with every strike of
-## the entry, no buff of the machine's or the piece's; each through the foe's own Brittle and
-## armour, a Barrier eating a weapon's first, capped at what the foe keeps (the target's after the
-## strike's mean).
+## A Chain spend's ping (Ryan, 24 November: "Resolve: All Sprites with Shock, Static, or Sonic
+## Needle lose {N} HP"): the number flat, once a use, on every conductor the ping will reach
+## (Skirmish.conductors: its own target among them while it still conducts after the strike), no
+## armour, Brittle or Barrier read; a Phased foe loses none; capped at what each foe keeps (the
+## target's after the strike's mean).
 func arcs_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe, mean: float) -> float:
-	var arcs := sk.conductors(f, target)
-	if arcs.is_empty():
-		return 0.0
 	var n := f.number_of(Face.Keyword.CHAIN)
-	var strikes := maxi(1, f.strikes)
 	var worth := 0.0
-	for c in arcs:
-		if not c.alive():
+	for c in sk.conductors(f, target):
+		if not c.alive() or Skirmish.foe_phased(c):
 			continue
-		var per := float(maxi(0, Effects.damage_taken(c, n, ms.unit, true, false) - c.armour_total()))
-		var landing := strikes - (1 if not f.is_debuff() and c != target and Effects.has(c, "barrier") else 0)
 		var left := maxf(0.0, float(c.hp) - (mean if c == target else 0.0))
-		worth += minf(left, per * float(maxi(0, landing)))
+		worth += minf(left, float(n))
 	return worth
 
 
@@ -1019,9 +1012,9 @@ func needle_worth(sk: Skirmish, ms: Skirmish.MechState, foe: Foe, n: int, left: 
 	return worth
 
 
-## A needle bolt's worth now (Skirmish._needle_bolt): the Chain's number on every conductor, the foe
-## it fires from among them with the HP it keeps (`left`), each blow through the foe's Brittle and
-## armour and capped at what it has, a kill at its bonus.
+## A needle bolt's worth now (Skirmish._needle_bolt): Chain's ping of its number on every conductor,
+## the foe it fires from among them with the HP it keeps (`left`), flat and capped at what it has, a
+## kill at its bonus; a Phased foe loses none.
 func bolt_worth(sk: Skirmish, ms: Skirmish.MechState, rule: Dictionary, from: Foe, left: int) -> float:
 	var chain := int(rule.get("chain", 0))
 	var foes := sk.conducting_foes(from)
@@ -1029,8 +1022,10 @@ func bolt_worth(sk: Skirmish, ms: Skirmish.MechState, rule: Dictionary, from: Fo
 		foes.append(from)
 	var worth := 0.0
 	for c in foes:
+		if Skirmish.foe_phased(c):
+			continue
 		var hp := left if c == from else c.hp
-		var blow := Skirmish.plain_blow_on(c, chain, ms)
+		var blow := chain
 		worth += float(mini(blow, hp))
 		if blow >= hp:
 			worth += KILL_BONUS + _threat_now(c, sk) * HULL_WEIGHT

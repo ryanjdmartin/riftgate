@@ -74,7 +74,8 @@ document's job and every command are in `README.md`.
   seam a circle, the round's view, the zoom's floor, the pushers' segments, the tears' row slower
   and off the wall, five tier-one stock dice back to basics, the basics' five dials settled and
   cut, the graded tide on a dial with the Meadow's packs, the trials' page cut to six dials, the
-  tier-one bench as a grid). The terminology pass's branch
+  tier-one bench as a grid), and again the same day with the two fixes from his first play of
+  the graded tide, its fuller opening and the rift's landing. The terminology pass's branch
   (`claude/gameplay-terminology-tooltips-rug879`) landed again the same day on his "land this on
   main": gameplay text follows `docs/text_standard.md` (CLAUDE.md says so), every glossary tip is
   written to it, and a reach over every Sprite targets the field.
@@ -397,7 +398,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Minerva's vent, the Polar Bear's (16 and 17 November). The Echidna is built (20 November, his
   kit that day, at tier one; the rules' Sonic Needle, the bible's Echidna row): every foe it
   strikes and every foe whose blow lands on it takes a Sonic Needle, a conductor of Chain, and
-  the third in a foe fires Chain 2 on every conductor, that foe included; its Supersonic Spike
+  the third in a foe fires Chain 2 on every conductor, that foe included (Chain a ping of HP lost
+  since 24 November, his "The under-armour ping is simpler"); its Supersonic Spike
   Tether lures and saps, its directions Spiker and Chaos. A foe wears its needles on a chip
   counting toward the bolt ("1/3"), and the Mole's Applied Momentum on one (22 November, on his
   report that the Howitzer's needles showed on its target alone: laid on every foe it hit, worn by
@@ -538,10 +540,10 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   Published at v0.657 on 23 November from main's file at `b3f7c466` (the page's Version 520),
-  over v0.655 (the live page checked byte for byte against `33c4cc61`'s file first). The file is
-  at v0.662 on main since `claude/formation-pass-feedback-rlvx5x` landed on 24 November (the wall,
-  tears and seam rows, the vanilla, reboot, Barrier and hunters rows, section 12's tide item),
-  unpublished: the session that wrote it had no room left to read the live page whole. Before republishing,
+  over v0.655 (the live page checked byte for byte against `33c4cc61`'s file first). The file
+  has moved on since and is unpublished, at v0.669 on 24 November (the wall, tears and seam
+  rows, the vanilla, reboot, Barrier and hunters rows, section 12's tide item, the rift's
+  landing in the tears row, and the other sessions' rows of that day). Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
   `b3f7c466` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
