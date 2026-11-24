@@ -74,8 +74,9 @@ document's job and every command are in `README.md`.
   seam a circle, the round's view, the zoom's floor, the pushers' segments, the tears' row slower
   and off the wall, five tier-one stock dice back to basics, the basics' five dials settled and
   cut, the graded tide on a dial with the Meadow's packs, the trials' page cut to six dials, the
-  tier-one bench as a grid), and again the same day with the two fixes from his first play of
-  the graded tide, its fuller opening and the rift's landing. The terminology pass's branch
+  tier-one bench as a grid). Since then the same branch holds two fixes from his first play of
+  the graded tide, its fuller opening and the rift's landing, pushed and not on main: they wait
+  on his word to land. The terminology pass's branch
   (`claude/gameplay-terminology-tooltips-rug879`) landed again the same day on his "land this on
   main": gameplay text follows `docs/text_standard.md` (CLAUDE.md says so), every glossary tip is
   written to it, and a reach over every Sprite targets the field.
