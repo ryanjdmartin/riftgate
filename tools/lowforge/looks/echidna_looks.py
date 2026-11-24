@@ -1,5 +1,5 @@
 """Look tests for the echidna (Minerva, tier two, a tank that fights and wants to be struck:
-docs/briefs/minerva_hedgehog.md), the same machine two ways, as Ryan named them on 15 November:
+its brief, retired with its model of 24 November, in git), the same machine two ways, as Ryan named them on 15 November:
 "Echidna I had two general ideas, either a half track, or a heavily armored car with protected
 wheels." His frame for it, 15 October: "a wheeled crawler ... relatively fast for a Minerva, more
 offensive, play up the 'knuckles the echidna' soft reference."

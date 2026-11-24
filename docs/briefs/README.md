@@ -248,7 +248,6 @@ One row a live brief; the to-do's Design sessions hold each one's task.
 | `ws_gunship.md` | proposal, Claude's first round | Wainwright & Sutler | 2 | his own session |
 | `minerva_lure_tank.md` | the tier-one front: every hit lures | Minerva | 1 | his calls |
 | `minerva_mole.md` | the Mole's upgrade tree, back in design at tier two | Minerva | 2 | its session with him |
-| `minerva_hedgehog.md` | the Echidna's look: the armoured car's bristle, its kit built | Minerva | 1 | his pick of the bristle |
 | `minerva_cryo_defence.md` | Cryo for the party, detonated by a locked piece | Minerva | 2 | Claude's round on his direction |
 | `minerva_immune.md` | immune to every buff and debuff, lent to an ally | Minerva | 2 | his calls |
 | `minerva_siege_battery.md` | his H-tank, a charge | Minerva | 3 | parked until he picks it up |

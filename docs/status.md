@@ -100,7 +100,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1464 tests, 390,409 checks, green on Godot 4.8-beta4 (24 November, the formation feedback's branch landed on main: the graded tide on its dial and the trials' page cut to six, beside the Nemesis's Rage, the Whip Scorpion's Death Ray and the tips to the standard). The runner fails a run
+- Tests: 1464 tests, 390,884 checks, green on Godot 4.8-beta4 (24 November, the Echidna's model in the rig tests). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -380,8 +380,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   counting toward the bolt ("1/3"), and the Mole's Applied Momentum on one (22 November, on his
   report that the Howitzer's needles showed on its target alone: laid on every foe it hit, worn by
   none); a status no chip line names wears its term's mark, never a star, on a foe or a machine
-  (`test_screen.gd` holds both). Its look waits on his pick of the
-  bristle, the stand-in drawing it meanwhile. The Mole is built (20 November, on
+  (`test_screen.gd` holds both). Its model is look A with five spines a bank (24 November, his
+  pick): skid steer, the Tether a spike launcher on the prow, Minerva's vents across its back, the
+  spines' beads ringing one by one; his read of it running waits (the to-do). The Mole is built (20 November, on
   his "Build the mole now", his kit of 16 November; at tier two since that day, its tree back in
   design; the rules' reboot section, the bible's Mole row): it burrows in its reboot's place, banks Conserved Momentum under, and its Inertia Drill
   lays Applied Momentum, a blow a turn in its foe until a burrow takes it home. Its model holds
@@ -455,8 +456,7 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    built on Ryan's marks, in its own commit, at placeholder numbers.
 3. **The design sessions, from the briefs**: each decision a bible row, each brief retired
    once its decisions are rows and content. The locked pieces' footing first (its own session
-   since 20 November), the Echidna's look beside it (its kit built 20 November; the bristle his
-   pick, then its model), the Mole's tree at tier two, then the machine back in design (the Swallowtail), the built but
+   since 20 November), the Mole's tree at tier two, then the machine back in design (the Swallowtail), the built but
    unfinished (the Needletail, the Giant Petrel, the Musk Ox) and the gunship, the tier-one
    fronts (Minerva's lure tank, an Aphelion tier one), Claude's first rounds on his directions
    of 5 and 6 November, the rest as its session comes. The to-do's roster is grouped to match.
