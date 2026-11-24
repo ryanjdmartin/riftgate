@@ -12755,3 +12755,53 @@ At 8 hit points a grove of two is as clean a pack for three as the horde of six,
 treants cost what the horde of eight costs. One machine alone still spends six rounds and a
 reboot or two on a treant at any of these: its plate, its regrowth and its blow do that, more
 than its hit points.
+
+## 24 November: the music through the engine, against the pair page
+
+**Method.** Hold The Line's battle half, the whole loop, played by Godot 4.8-beta4 (the game's
+build) with `AudioStreamPlayback.mix_audio` on the imported stream at the mix rate
+`audio/driver/mix_rate` sets (headless, the Dummy driver), aligned to the master WAV (Godot delays
+two samples) and subtracted from it. A band's number is that difference's energy against the
+master's in the band (Welch spectra, 8192-point Hann frames), in dB. The 44.1 kHz references are
+the master through ffmpeg's resampler (soxr at 28 bits for the q8 and q9 rows, the forge's long
+swr filter for the shipped rows; the two agree within 98 dB below 18 kHz). The page is
+`hold_the_line_r27_pair.mp4`'s right channel from the Track Pairs page's version
+1794371204-c6ae: the master itself apart from the AAC's noise, correlation 0.9998 at its level. Its
+plain Hold The Line button and its run are the 6 November file (correlation 0.9997 and 1.000 with
+it, 0.48 and 0.045 with the file that ships). A run of the game's real import, `compress/mode=2`,
+plays bit for bit what the probe's QOA rows played.
+
+**Noise added, dB under the master in each band:**
+
+| Path | 20–150 Hz | 150–500 | 500–2k | 2–5k | 5–8k | 8–12k | 12–16k | 16–20k |
+|---|---|---|---|---|---|---|---|---|
+| The pair page: AAC, 192 kbps a channel | −38.4 | −32.9 | −30.3 | −25.6 | −22.9 | −21.5 | −19.8 | −19.3 |
+| The game before: QOA, 48 kHz | −48.2 | −41.9 | −35.6 | −26.3 | −19.1 | −15.9 | −11.7 | −8.1 |
+| Vorbis q8, 44.1 kHz (about 128 kbps) | −34.7 | −31.4 | −24.2 | −18.6 | −17.7 | −15.5 | −12.8 | −10.6 |
+| Vorbis q9, 44.1 kHz | −35.0 | −31.7 | −27.4 | −24.2 | −22.1 | −19.4 | −17.0 | −15.3 |
+| Vorbis q10, 44.1 kHz, through `Sound` (the phone) | −37.9 | −35.3 | −33.9 | −32.9 | −32.9 | −32.0 | −29.4 | −25.6 |
+| Vorbis q10, 48 kHz, through `Sound` (the desk) | −37.1 | −34.7 | −33.4 | −32.5 | −32.7 | −31.9 | −29.2 | −25.4 |
+
+QOA's noise is white (one level at every frequency), so it sits under the music's body and close
+under its top; q8 and q9 also dull the top 0.1 to 0.2 dB, q10 holds it within 0.02 dB.
+
+**Godot's 48 to 44.1 kHz converter** (the phone's path before: its Android driver is fixed at
+44.1 kHz in 4.8-beta4's source, `platform/android/audio_driver_opensl.cpp`), a −6 dBFS sine fitted
+at the tone and at its ghost, 48 kHz less the tone folded at 44.1 kHz:
+
+| Tone | Level out | Ghost at | Ghost under the tone |
+|---|---|---|---|
+| 3 kHz | −0.02 dB | 0.9 kHz | 66.7 dB |
+| 6 kHz | −0.09 dB | 2.1 kHz | 46.8 dB |
+| 10 kHz | −0.42 dB | 6.1 kHz | 31.0 dB |
+| 15 kHz | −1.54 dB | 11.1 kHz | 17.8 dB |
+| 19 kHz | −3.30 dB | 15.1 kHz | 9.4 dB |
+
+On the whole loop the converter took 0.24 dB off 8–12 kHz, 0.8 dB off 12–16 kHz and 1.7 dB off
+16–20 kHz.
+
+**The seam and the pair, through `Sound`:** the loop wraps on bar nine's sample (814,154 at
+44.1 kHz, 886,154 at 48 kHz), the difference either side of the seam at the codec's level (−54 to
+−60 dB); before the half-sample offset Godot's seek, which truncates a time to its sample, wrapped
+one sample early. A pair's two halves sit on the same sample (Godot's two-sample delay) from a
+start at 255 s and after the wrap.

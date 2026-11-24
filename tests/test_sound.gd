@@ -6,7 +6,40 @@ extends TestCase
 
 func test_every_named_sound_has_a_file() -> void:
 	for name in Sound.all_names():
-		assert_true(FileAccess.file_exists(Sound.DIR + name + ".wav"), "art/audio/%s.wav exists (tools/soundforge builds it)" % name)
+		if not name.begins_with("music_"):
+			assert_true(FileAccess.file_exists(Sound.DIR + name + ".wav"), "art/audio/%s.wav exists (tools/soundforge builds it)" % name)
+			continue
+		for rate in Sound.MUSIC_RATES:
+			var path := Sound.DIR + "%s.%d.ogg" % [name, rate]
+			assert_true(FileAccess.file_exists(path), "art/audio/%s exists (tools/soundforge encodes it from its master)" % path.get_file())
+			var s := load(path) as AudioStreamOggVorbis
+			assert_true(s != null, "%s loads as Ogg Vorbis" % path.get_file())
+			if s != null:
+				assert_eq(int(s.packet_sequence.sampling_rate), int(rate), "%s is at the rate its name says, so nothing converts it" % path.get_file())
+
+
+## A loop's master WAV is the tools' (the pair page reads it, the forge measures it): the game
+## plays its Vorbis files, so the master's import is skipped and no build carries it.
+func test_a_loops_master_is_not_imported() -> void:
+	for name in Sound.all_names():
+		if not name.begins_with("music_"):
+			continue
+		var cfg := ConfigFile.new()
+		assert_eq(cfg.load(Sound.DIR + name + ".wav.import"), OK, "%s.wav has its import file" % name)
+		assert_eq(str(cfg.get_value("remap", "importer", "")), "skip", "%s.wav is skipped by the import" % name)
+
+
+## A loop wraps on its LOOP_FROM bar's sample at every rate, where the forge renders the seam:
+## Godot's seek truncates a time to its sample, so the offset sits half a sample past the bar.
+func test_a_loop_wraps_on_its_bar() -> void:
+	for name in Sound.LOOP_FROM:
+		for rate in Sound.MUSIC_RATES:
+			var bar := int(roundf(int(Sound.LOOP_FROM[name]) * 240.0 / float(Sound.TEMPO[name]) * rate))
+			assert_eq(int(Sound.loop_offset(name, rate) * rate), bar, "%s wraps on bar %d's sample at %d Hz" % [name, int(Sound.LOOP_FROM[name]) + 1, rate])
+	assert_eq(Sound.loop_offset("music_night_shift", 44100), 0.0, "a loop without a LOOP_FROM wraps to its top")
+	assert_eq(Sound.music_path("music_night_shift", 44100), Sound.DIR + "music_night_shift.44100.ogg", "the phone's rate plays its own file")
+	assert_eq(Sound.music_path("music_night_shift", 48000), Sound.DIR + "music_night_shift.48000.ogg", "the desk's rate plays its own file")
+	assert_eq(Sound.music_path("music_night_shift", 96000), Sound.DIR + "music_night_shift.48000.ogg", "another rate plays the nearest")
 
 
 func test_a_component_sound_finds_its_blow() -> void:
@@ -57,11 +90,12 @@ func test_every_pair_is_two_halves_on_one_timeline() -> void:
 			assert_false(Sound.title(half).is_empty(), "%s has its track's title" % half)
 			assert_false(seen.has(half), "%s is in one pair" % half)
 			seen[half] = true
-		var a: AudioStream = load(Sound.DIR + str(pair[0]) + ".wav")
-		var b: AudioStream = load(Sound.DIR + str(pair[1]) + ".wav")
-		assert_true(a != null and b != null, "%s's halves load" % pair[1])
-		if a != null and b != null:
-			assert_true(absf(a.get_length() - b.get_length()) < 0.001, "%s's halves are one length" % pair[1])
+		for rate in Sound.MUSIC_RATES:
+			var a: AudioStream = load(Sound.DIR + "%s.%d.ogg" % [pair[0], rate])
+			var b: AudioStream = load(Sound.DIR + "%s.%d.ogg" % [pair[1], rate])
+			assert_true(a != null and b != null, "%s's halves load at %d Hz" % [pair[1], rate])
+			if a != null and b != null:
+				assert_true(absf(a.get_length() - b.get_length()) < 0.001, "%s's halves are one length at %d Hz" % [pair[1], rate])
 		assert_eq(Sound.TEMPO.get(pair[0]), Sound.TEMPO.get(pair[1]), "%s's halves keep one tempo" % pair[1])
 		assert_eq(int(Sound.LOOP_FROM.get(pair[0], 0)), int(Sound.LOOP_FROM.get(pair[1], 0)), "%s's halves wrap to one bar" % pair[1])
 		assert_eq(Sound.title(pair[0]), Sound.title(pair[1]), "%s's halves share a title" % pair[1])

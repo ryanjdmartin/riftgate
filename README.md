@@ -585,8 +585,11 @@ tools/foeforge/.venv/bin/python tools/foeforge/forge.py cut-rift tools/foeforge/
 ### Sound
 
 ```sh
-# every sound and the six music tracks into art/audio, then the import
+# every sound and the six music tracks into art/audio, then the import. A loop's build writes its
+# master WAV (the tools' copy, its import skipped) and encodes the Ogg Vorbis files the game plays,
+# one a mix rate (44.1 kHz for the phone, 48 kHz for the desk), which needs ffmpeg with libvorbis
 tools/spriter/.venv/bin/python tools/soundforge/forge.py build          # or: build effects (all but the loops), or: build ui_tap kill music_far_bank
+tools/spriter/.venv/bin/python tools/soundforge/forge.py encode         # the loops' Vorbis files again from their masters, no render (or: encode music_far_bank)
 tools/spriter/.venv/bin/python tools/soundforge/voice_lines.py ship     # Jenny's lines into art/audio/voice with lines.json
 perl -e 'alarm 600; exec @ARGV' godot --headless --path . --import
 perl -e 'alarm 300; exec @ARGV' godot --path . --resolution 360x640 -s tools/sound_smoke.gd   # every sound hook run with a window, muted: a SCRIPT ERROR in the log is a broken hook
