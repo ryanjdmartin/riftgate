@@ -406,8 +406,8 @@ func _build_matrix() -> void:
 	for ids in custom_teams:
 		var team_ids: Array = []
 		for id in ids:
-			var cid := str(id).strip_edges()
-			if not db.chassis.has(cid):
+			var cid := str(id).strip_edges()   # a chassis id, with its branch picks after an @ (mole@glacial, macaque@duelist+duelist), as the harness fields them
+			if not db.chassis.has(cid.split("@")[0]):
 				push_error("--team: no chassis '%s' (chassis: %s)" % [cid, ", ".join(db.chassis.keys())])
 				quit(1)
 				return
@@ -541,7 +541,9 @@ func _build_matrix() -> void:
 func _names(ids: Array) -> Array[String]:
 	var out: Array[String] = []
 	for id in ids:
-		out.append(str(db.chassis[id].get("name", id)))
+		var parts := str(id).split("@")
+		var nm := str(db.chassis[parts[0]].get("name", parts[0]))
+		out.append(nm if parts.size() < 2 else "%s (%s)" % [nm, parts[1].replace("+", ", ")])
 	return out
 
 
@@ -561,13 +563,16 @@ func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int) -> Dictionary
 	var sk := Skirmish.new(seed_value)
 	var hull_max := 0
 	var uid := 0
-	for cid in r["chassis"]:
+	for entry in r["chassis"]:
 		uid += 1
+		var parts := str(entry).split("@")   # a chassis id and its branch picks (_names)
+		var cid := parts[0]
+		var picks: Array = Array(parts[1].split("+", false)) if parts.size() > 1 else []
 		var fitted := str(r.get("module", ""))
 		var mods: Array = Array(fits.get(cid, [])).duplicate()
 		if not fitted.is_empty():
 			mods.append(fitted)
-		var u := db.make_mech(cid, uid, Vector2i.ZERO, null, mods)
+		var u := db.make_mech(cid, uid, Vector2i.ZERO, null, mods, picks)
 		if not is_equal_approx(damage_scale, 1.0):
 			# The scale rides on every blow as a loadout modifier, the way a number is asked
 			# here, so the bot's outcomes and the resolver read the same thing.
@@ -689,12 +694,12 @@ const RATING_BUDGET := {1: 100.0 / 30.0, 2: 10.0, 3: 5.0, 4: 25.0}   # percent o
 func _rating() -> int:
 	var pool: Array = custom_teams[0] if not custom_teams.is_empty() else RATING_POOL
 	for cid in pool:
-		if not db.chassis.has(str(cid)):
+		if not db.chassis.has(str(cid).split("@")[0]):
 			push_error("--team: no chassis '%s'" % str(cid))
 			return 1
 	var four := 0.0
 	for cid in pool:
-		four += float(db.make_mech(str(cid)).hull_max)
+		four += float(db.make_mech(str(cid).split("@")[0]).hull_max)
 	four = 4.0 * four / float(maxi(1, pool.size()))
 	var tiers: Array = only_tiers if not only_tiers.is_empty() else [1]
 	var t0 := Time.get_ticks_msec()
