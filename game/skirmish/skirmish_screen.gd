@@ -1827,7 +1827,7 @@ func _foe_rows(foe: Foe) -> Array:
 		for r in sk.rallies_on(foe):
 			who.append(r.display_name)
 		var from := ", ".join(who) if not who.is_empty() else "nobody (RIFTGATE_PREVIEW_DEBUG)"
-		rows.append(status_row("kindled", "overcharge", "+%d" % maxi(1, coming), "Empowered +%d on its way, from %s" % [maxi(1, coming), from], _foe_chip_colour("kindled"), "preview"))
+		rows.append(status_row("kindled", "overcharge", "+%d" % maxi(1, coming), "Empowered +%d incoming, from %s" % [maxi(1, coming), from], _foe_chip_colour("kindled"), "preview"))
 	if Effects.has(foe, "risen"):
 		rows.append(status_row("risen", "star", "", str(Effects.STATUS["risen"]["name"]), _foe_chip_colour("risen")))
 	# The four buffs a foe's specials grant (28 October), on the machines' chips: Primed's lit
@@ -1921,7 +1921,7 @@ static func _coming_rows(coming: Dictionary, skip: Array, glyph_of: Callable, co
 		var c: Dictionary = coming[id]
 		var renews := Effects.STATUS.has(id) and Effects.status_stacking(Effects.STATUS[id]) == "renew"
 		var text := "" if renews else "+%d" % int(c["stacks"])
-		rows.append(status_row(str(id), glyph_of.call(id), text, "%s%s on its way" % [str(c["name"]), "" if text.is_empty() else " " + text], colour_of.call(id), "preview"))
+		rows.append(status_row(str(id), glyph_of.call(id), text, "%s%s incoming" % [str(c["name"]), "" if text.is_empty() else " " + text], colour_of.call(id), "preview"))
 	return rows
 
 
@@ -1947,7 +1947,7 @@ static func merge_coming(rows: Array) -> Array:
 		var e: Array = (out[into] as Array).duplicate()
 		var lead := "+" if str(e[1]).begins_with("+") else ""
 		e[1] = "%s%d" % [lead, _stack_count(str(e[1])) + _stack_count(str(r[1]))]
-		e[2] = "%s, %s on its way" % [str(e[2]), str(r[1])]
+		e[2] = "%s, %s incoming" % [str(e[2]), str(r[1])]
 		while e.size() < 5:
 			e.append("status")
 		e[4] = "preview"

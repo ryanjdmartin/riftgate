@@ -2898,8 +2898,8 @@ func test_incoming_stacks_join_the_chip_the_unit_wears() -> void:
 	var col := Color(0.8, 0.2, 0.1)
 	var rows: Array = [
 		SkirmishScreen.status_row("brittled", "brittle", "1", "Brittle 1", col),
-		SkirmishScreen.status_row("brittled", "brittle", "+1", "Brittle +1 on its way", col, "preview"),
-		SkirmishScreen.status_row("sapped", "sap", "+2", "Sapped +2 on its way", col, "preview"),
+		SkirmishScreen.status_row("brittled", "brittle", "+1", "Brittle +1 incoming", col, "preview"),
+		SkirmishScreen.status_row("sapped", "sap", "+2", "Sapped +2 incoming", col, "preview"),
 		["skull", "", "Destroyed this round", col, "preview"],
 		SkirmishScreen.status_row("sapped", "sap", "1", "Sapped 1", col),
 		["sap", "-3", "a burn, no stacks", col, "preview"],
@@ -2907,7 +2907,7 @@ func test_incoming_stacks_join_the_chip_the_unit_wears() -> void:
 	var out := SkirmishScreen.merge_coming(rows)
 	assert_eq(out.size(), 5, "the Brittle on its way joined the one it wears")
 	assert_eq([str(out[0][0]), str(out[0][1]), str(out[0][4])], ["brittle", "2", "preview"], "showing the sum, pulsing as a preview")
-	assert_true(str(out[0][2]).ends_with("+1 on its way"), "its readout says what is coming")
+	assert_true(str(out[0][2]).ends_with("+1 incoming"), "its readout says what is coming (Ryan, 24 November: \"incoming\", never \"on its way\")")
 	assert_eq([str(out[1][0]), str(out[1][1])], ["sap", "+2"], "a status it lacks stands as its own chip")
 	assert_eq(str(out[2][0]), "skull", "and a preview with no count")
 	assert_eq([str(out[4][1]), str(out[3][1])], ["-3", "1"], "and a preview that gains no stacks (an overheat's burn)")
