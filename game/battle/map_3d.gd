@@ -49,15 +49,20 @@ const TERRAIN := {
 ## the spikes on top.
 const STEP := 7.0
 const WATER_DROP := -5.0
-const CHASM_DROP := -42.0   # a chasm's floor (the gorge's, 16 November): six steps down, out of sight of most of it
+const CHASM_DROP := -63.0   # a chasm's floor (the gorge's, 16 November): nine steps down, out of sight of most of it (six until 24 November: "Machine gorges can be deeper"); the painting's banks follow (height_of_step)
 ## A chasm has a bottom (Ryan, 16 November: "for the machine world there should be like a barely
 ## visible bottom. Maybe some little rivers down there ... its not just a hole into nothing"): its
-## rock darkens down its walls to a gravel floor at CHASM_FLOOR_SHADE of its lit tone, and a stream a
-## few units wide winds along the floor from each chasm hex into the next, a little brighter so it
-## reads. The painting keeps its black pit.
+## rock darkens down its walls to a gravel floor at CHASM_FLOOR_SHADE of its lit tone, and some
+## gorges carry a stream a few units wide along the floor (_bake_gorge_water), faint (24 November:
+## "the water in them fainter"; the shade multiplies the water's tile in linear light, so it reads
+## about twice what it says). The painting keeps its black pit.
 const CHASM_FLOOR_SHADE := 0.3
-const CHASM_STREAM_SHADE := 0.55
+const CHASM_STREAM_SHADE := 0.16
 const CHASM_STREAM_WIDTH := 3.5
+## The share of the gorges that carry water where no flooded stretch spills in (Ryan, 24 November:
+## "Not every gorge needs water in it"), by the map's seed: a gorge is a run of chasm hexes joined
+## edge to edge, and one a flooded stretch spills into always carries it.
+const GORGE_WET := 0.5
 
 ## The tile each terrain's top wears (art/terrain/<name>.png); sides wear rock.
 const TILE := {
@@ -402,49 +407,222 @@ func _falls_material() -> ShaderMaterial:
 	return _falls_mat
 
 
-## The stream on a chasm's floor, about the hex's middle: a ribbon CHASM_STREAM_WIDTH across from
-## the middle to the edge it shares with each neighbouring chasm (or a flooded stretch of one),
-## bending a little on the way and straight again at the edge so the next hex's half meets it, and
-## a pool at the middle where they join (the whole of it in a lone hex).
-func _stream_geo(h: Vector2i) -> Dictionary:
+## The gorges, each a run of chasm hexes joined edge to edge (the field's and the scenery's
+## alike), its hexes in order, the gorges in the order of their first hex.
+func _gorges() -> Array:
 	var map := field.map
-	var v := PackedVector3Array()
-	var y := CHASM_DROP + 0.4
-	var here := _hex_world(h)
-	var half := CHASM_STREAM_WIDTH * 0.5
-	var links := 0
-	for d in Hex.DIRECTIONS:
-		var nb: Vector2i = h + d
-		var wet: bool = map.terrain_of(nb) == BattleMap.Terrain.WATER
-		if not (wet or _is_chasm(nb)):
+	var hexes: Array = map.all_hexes().duplicate()
+	hexes.append_array(map.margin.keys())
+	var pits := {}
+	for h in hexes:
+		if _is_chasm(h):
+			pits[h] = true
+	var keys: Array = pits.keys()
+	keys.sort()
+	var seen := {}
+	var out: Array = []
+	for h in keys:
+		if seen.has(h):
 			continue
-		links += 1
-		var to := _hex_world(nb) - here
-		var end := Vector2(to.x, to.z) * 0.5
-		var along := end.normalized()
-		var side := Vector2(-along.y, along.x)
-		var bend := (2.0 + float(absi(h.x * 31 + h.y * 17 + d.x * 7 + d.y * 3) % 3)) * (1.0 if (h.x + h.y + d.x) % 2 == 0 else -1.0)
-		var steps := 6
-		var prev_l := Vector2.ZERO
-		var prev_r := Vector2.ZERO
-		for i in range(steps + 1):
-			var t := float(i) / float(steps)
-			var at := end * t + side * sin(PI * t) * bend
-			var l := at + side * half
-			var r := at - side * half
-			if i > 0:
-				for p in [prev_l, prev_r, r, prev_l, r, l]:
-					v.append(Vector3(p.x, y, p.y))
-			prev_l = l
-			prev_r = r
-	var pool := half * (1.6 if links > 0 else 2.6)
-	for i in range(6):
-		var a := TAU * float(i) / 6.0
-		var b := TAU * float(i + 1) / 6.0
-		v.append(Vector3(0.0, y, 0.0))
-		v.append(Vector3(cos(a) * pool, y, sin(a) * pool))
-		v.append(Vector3(cos(b) * pool, y, sin(b) * pool))
-	return {"v": v, "n": _filled3(v.size(), Vector3.UP)}
+		var run: Array = []
+		var queue: Array = [h]
+		seen[h] = true
+		while not queue.is_empty():
+			var x: Vector2i = queue.pop_back()
+			run.append(x)
+			for d in Hex.DIRECTIONS:
+				var n: Vector2i = x + d
+				if pits.has(n) and not seen.has(n):
+					seen[n] = true
+					queue.append(n)
+		run.sort()
+		out.append(run)
+	return out
+
+
+## Whether a gorge carries water: always where a flooded stretch spills into it (its waterfall
+## needs somewhere to go), else GORGE_WET of the gorges by the map's seed and the gorge's first hex.
+func _gorge_wet(run: Array) -> bool:
+	for h in run:
+		for d in Hex.DIRECTIONS:
+			if field.map.terrain_of(h + d) == BattleMap.Terrain.WATER:
+				return true
+	var first: Vector2i = run[0]
+	var k := absi(first.x * 92821 + first.y * 68917 + field.map.map_seed * 131) % 1000
+	return k < int(GORGE_WET * 1000.0)
+
+
+## The water on a gorge's floor as outlines in the world's ground plane (x, z), counter-clockwise
+## and without holes (Ryan, 24 November: "Water should connect more fluidly with rounded vertices,
+## it looks like a spiderweb now. If there's an enclosed section of river in a gorge, it should get
+## filled in like a flooded section"). The river runs through each hex from the edge it shares with
+## the next chasm (or a flooded stretch spilling in) to the next such edge: in a hex it crosses, a
+## curve bending through the hex's middle; at the gorge's end, into a pool at the middle; where it
+## forks, each way curving round into the next; a lone hex a pool alone. The ways are joined into
+## one body, any part they close round filled as a flooded pool, and every inside corner rounded,
+## as water runs together.
+const STREAM_SCALE := 8.0   # the outline is worked this many times larger, so its arcs come out fine
+const STREAM_ROUND := 2.2   # the inside corners' rounding, in the stream's half widths
+
+func _stream_polys(run: Array) -> Array:
+	var map := field.map
+	var inside := {}
+	for h in run:
+		inside[h] = true
+	var half := CHASM_STREAM_WIDTH * 0.5 * STREAM_SCALE
+	var pieces: Array = []
+	for h in run:
+		var c := _xz(h)
+		var links: Array = []   # [bearing, the middle of the edge the river crosses there]
+		for d in Hex.DIRECTIONS:
+			var nb: Vector2i = h + d
+			if inside.has(nb) or map.terrain_of(nb) == BattleMap.Terrain.WATER:
+				var m := (c + _xz(nb)) * 0.5
+				links.append([(m - c).angle(), m])
+		links.sort_custom(func(x: Array, y: Array) -> bool: return float(x[0]) < float(y[0]))
+		match links.size():
+			0:
+				pieces.append(_disc(c, half * 2.6))
+			1:
+				pieces.append_array(_ribbon([links[0][1], c], half))
+				pieces.append(_disc(c, half * 1.6))
+			2:
+				# Bending through the middle, a little off it by the hex's seed, so a straight run
+				# meanders.
+				var a := float(absi(h.x * 7919 + h.y * 104729) % 360)
+				var bend := Vector2.from_angle(deg_to_rad(a)) * (3.0 + float(absi(h.x * 31 + h.y * 17) % 4)) * STREAM_SCALE
+				pieces.append_array(_ribbon(_bezier(links[0][1], c + bend, links[1][1]), half))
+			_:
+				# A fork: each way curving round into the next about the middle, so the ways meet in
+				# a rounded pool there (what the curves close round) and a flooded stretch's shore
+				# turns round rather than at a point.
+				for i in range(links.size()):
+					pieces.append_array(_ribbon(_bezier(links[i][1], c, links[(i + 1) % links.size()][1]), half))
+	var soft := half * STREAM_ROUND
+	var out: Array = []
+	for body in _union(pieces):
+		# Grown and shrunk again: every inside corner rounded off, the outside as it was.
+		for grown in Geometry2D.offset_polygon(body, soft, Geometry2D.JOIN_ROUND):
+			if Geometry2D.is_polygon_clockwise(grown):
+				continue
+			for back in Geometry2D.offset_polygon(grown, -soft, Geometry2D.JOIN_ROUND):
+				if Geometry2D.is_polygon_clockwise(back):
+					continue
+				var world := _tidy(back, STREAM_SCALE * 0.05)
+				for i in range(world.size()):
+					world[i] /= STREAM_SCALE
+				if world.size() >= 3:
+					out.append(world)
+	return out
+
+
+## An outline with the slivers its joining leaves taken out: a point within `near` of the last one
+## kept, then a point the outline turns straight back at.
+static func _tidy(poly: PackedVector2Array, near: float) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for v in poly:
+		if out.is_empty() or v.distance_to(out[out.size() - 1]) >= near:
+			out.append(v)
+	while out.size() > 3 and out[0].distance_to(out[out.size() - 1]) < near:
+		out.remove_at(out.size() - 1)
+	var i := 0
+	while out.size() > 3 and i < out.size():
+		var p0 := out[(i + out.size() - 1) % out.size()]
+		var p2 := out[(i + 1) % out.size()]
+		if absf((out[i] - p0).angle_to(p2 - out[i])) > deg_to_rad(150.0):
+			out.remove_at(i)
+			i = maxi(0, i - 1)
+		else:
+			i += 1
+	return out
+
+
+## A hex's middle in the ground plane, at STREAM_SCALE.
+func _xz(h: Vector2i) -> Vector2:
+	var w := _hex_world(h)
+	return Vector2(w.x, w.z) * STREAM_SCALE
+
+
+## A line `half` either side of `points`, round at its ends and its bends, as outlines.
+static func _ribbon(points: Array, half: float) -> Array:
+	var out: Array = []
+	for p in Geometry2D.offset_polyline(PackedVector2Array(points), half, Geometry2D.JOIN_ROUND, Geometry2D.END_ROUND):
+		if not Geometry2D.is_polygon_clockwise(p):
+			out.append(p)
+	return out
+
+
+## A round pool of radius `r` about `c`, counter-clockwise.
+static func _disc(c: Vector2, r: float) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for i in range(32):
+		out.append(c + Vector2.from_angle(TAU * float(i) / 32.0) * r)
+	if Geometry2D.is_polygon_clockwise(out):
+		out.reverse()
+	return out
+
+
+## A curve from `a` to `b` drawn toward `ctrl` (a quadratic Bézier), as points.
+static func _bezier(a: Vector2, ctrl: Vector2, b: Vector2, steps: int = 12) -> Array:
+	var out: Array = []
+	for i in range(steps + 1):
+		var t := float(i) / float(steps)
+		out.append(a.lerp(ctrl, t).lerp(ctrl.lerp(b, t), t))
+	return out
+
+
+## Outlines joined into the bodies they make, each a counter-clockwise outline; whatever a body
+## closes round is part of it (its holes filled).
+static func _union(pieces: Array) -> Array:
+	var bodies: Array = []
+	for p in pieces:
+		var merged: PackedVector2Array = p
+		var apart: Array = []
+		for body in bodies:
+			var outs: Array = Geometry2D.merge_polygons(merged, body).filter(func(x: PackedVector2Array) -> bool: return not Geometry2D.is_polygon_clockwise(x))
+			if outs.size() == 1:
+				merged = outs[0]
+			else:
+				apart.append(body)
+		apart.append(merged)
+		bodies = apart
+	return bodies
+
+
+## The gorges' water baked on their floors (_stream_polys), each triangle with the rows its middle
+## stands in.
+func _bake_gorge_water() -> void:
+	var y := CHASM_DROP + 0.4
+	var by_band := {}
+	for run in _gorges():
+		if not _gorge_wet(run):
+			continue
+		for poly in _stream_polys(run):
+			var tris := Geometry2D.triangulate_polygon(poly)
+			var parts: Array = [[poly, tris]]
+			if tris.is_empty():
+				# An outline the ear clipping refuses: its convex pieces, each a fan.
+				parts = []
+				for piece in Geometry2D.decompose_polygon_in_convex(poly):
+					var fan := PackedInt32Array()
+					for i in range(1, piece.size() - 1):
+						fan.append_array([0, i, i + 1])
+					parts.append([piece, fan])
+			for part in parts:
+				var pts: PackedVector2Array = part[0]
+				var idx: PackedInt32Array = part[1]
+				for k in range(0, idx.size(), 3):
+					var mid := (pts[idx[k]] + pts[idx[k + 1]] + pts[idx[k + 2]]) / 3.0
+					var band := _band(MapOrient.from_pixel(Vector2(mid.x * _ppu, mid.y * _ppu * _sin), hex_px))
+					if not by_band.has(band):
+						by_band[band] = []   # an Array, held by reference: a packed array read out of the dictionary is a copy
+					for j in range(3):
+						var q := pts[idx[k + j]]
+						(by_band[band] as Array).append(Vector3(q.x, y, q.y))
+	var mat := _chasm_material("water", 1.0, CHASM_STREAM_SHADE)
+	for band in by_band.keys():
+		var v := PackedVector3Array(by_band[band])
+		_bake({"v": v, "n": _filled3(v.size(), Vector3.UP)}, Transform3D.IDENTITY, mat, int(band), false)
 
 
 ## Which neighbours of a road hex are road too (the gate counts, so the road runs into
@@ -1417,10 +1595,9 @@ func _build_ground() -> void:
 		var column: Array
 		if pit:
 			# A chasm: the column sunk deep, its own walls rock from the ground down darkening as
-			# they go, its floor gravel in the dark and a stream along it.
+			# they go, its floor gravel in the dark (its gorge's water is laid after: _bake_gorge_water).
 			column = _column_geo(hgt, sides)
 			_bake(column[0], at_xf, _chasm_material("gravel"), band, true)
-			_bake(_stream_geo(h), at_xf, _chasm_material("water", 1.0, CHASM_STREAM_SHADE), band, false)
 			if not falls.is_empty():
 				_bake(_falls_geo(falls, hgt), at_xf, _falls_material(), band, false)
 		elif ground_t == BattleMap.Terrain.ROAD:
@@ -1449,6 +1626,7 @@ func _build_ground() -> void:
 		var dressed := _dress(col, h, t, hgt, rng)
 		if dressed > 0.0:
 			_top[h] = hgt + dressed
+	_bake_gorge_water()
 	_flush_batches()
 
 

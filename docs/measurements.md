@@ -12871,3 +12871,33 @@ copies peak at −0.3 dBFS at most (`line_flawless_victory`), each the length of
 
 The conversion's image at 12–20 kHz is gone (83 dB under her 100 Hz–1 kHz band now, where it
 was 47 dB under), and the top of her voice keeps its level.
+
+## 24 November: heat's red on the map's grounds, for the engage marks
+
+**The red for the engage marks** (the decision it informs: the bible's semantic-colours and map's-colours
+rows, on Ryan's "The engageable packs markers should be in red, not white or violet. The engage
+confirmed pulse needs to be in red too", then "I mean the approved red we use in the skirmish, not pure
+ff0000": heat's #ff4000). Method: as the red read of 29 October, the Machado protan, deutan and
+tritan matrices at severity 1.0 in linear sRGB, luminance contrast / CIEDE2000, against the battle
+map's grounds sampled from a render at the phone's layout (the 3D field's dirt #56585f, its
+scenery's #58544a, a chasm's floor #49546a, the painted meadow #66cc33, a painted bank #663300 and
+the painting's dark #003300). Normal / protan / deutan / tritan, #ff4000 bare:
+
+| Ground | Contrast | ΔE |
+|---|---|---|
+| The 3D field's dirt | 2.02 / 1.37 / 2.46 / 1.79 | 38.3 / 30.1 / 40.7 / 33.5 |
+| Its scenery's dirt | 2.15 / 1.49 / 2.59 / 1.91 | 36.9 / 22.1 / 35.0 / 32.7 |
+| A chasm's floor | 2.19 / 1.46 / 2.69 / 1.93 | 43.2 / 35.6 / 47.0 / 44.1 |
+| The meadow, painted | 1.71 / 2.65 / 1.36 / 1.90 | 69.4 / 26.1 / 8.1 / 67.0 |
+| A painted bank | 2.94 / 2.24 / 3.33 / 2.62 | 32.3 / 19.5 / 33.3 / 27.6 |
+| The painting's dark | 4.06 / 2.69 / 5.03 / 3.60 | 65.1 / 24.1 / 43.0 / 60.2 |
+
+Bare, it fails as the October reads found for a red (1.37 on the dirt in protan, ΔE 8.1 on the
+meadow in deutan; pure #ff0000, first tried, 1.10 and 10.4), so every engage mark stands on a dark
+edge (#070907 at 0.8) or a plate: the edge stands 2.56:1 or more from the dirt, the scenery and the
+chasm in every simulation and 9.36 from the meadow, the core 2.24 from the bank and 2.69 from the
+painting's dark where the edge falls short, and the core 3.89:1 on its own edge (protan, the worst;
+#ff0000's 3.12). On the badge the dark swords stand 3.89:1 on it and the count, the ink under a
+dark outline, 2.61 (deutan). From the HUD presets and the violet it stands ΔE 22.4 or more in every
+simulation; from harm's #ff0000 2.6 (deutan), which the map draws only on a stop with no room and
+the gate's integrity, each with its own mark.

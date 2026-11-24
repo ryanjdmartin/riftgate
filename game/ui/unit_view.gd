@@ -127,6 +127,7 @@ var _glitch_for := 0.5            # how long this tear lasts
 var _spend: float = -1.0          # seconds since a store's stack went from a chip (the Nemesis's rage); negative when idle
 var _spend_glyph := ""           # the chip it went from
 const SPEND_SECONDS := 0.55
+var chips_apart := false          # its chips and intent plate drawn by a ChipLayer over the intent lines, not in its own _draw
 var _chip_rects := {}             # glyph -> [rect, colour] as last drawn, so a chip's last stack bursts where the chip was
 
 var _pressed := false
@@ -692,17 +693,29 @@ func _draw() -> void:
 	if not intent.is_empty() and not dead and sprite == null and intent_kind.is_empty():
 		draw_string(mono, Vector2(0, sil.get_center().y + 5.0), "[%s]" % intent, HORIZONTAL_ALIGNMENT_CENTER, size.x, 13, Color(hud, 0.45 if intent_dim else 0.95))
 
-	# The chips under the drawing, the statuses, centred in rows that wrap at the view's width
-	# (Ryan, 2 November: "chips can go off the sides of the screen if there are too many ... Need
-	# to wrap rows"), each row kept on the screen (chip_layout); the intent's plate above it.
 	if dead:
 		return
+	if not chips_apart:
+		draw_chips(self)
+	_draw_spend(mono)
+
+
+## The chips under the drawing, the statuses, centred in rows that wrap at the view's width
+## (Ryan, 2 November: "chips can go off the sides of the screen if there are too many ... Need
+## to wrap rows"), each row kept on the screen (chip_layout); the intent's plate above it. Drawn
+## on `ci` in the view's own space: the view itself, or a ChipLayer's plate over the intent lines
+## when `chips_apart` (Ryan, 24 November: the lines run "under the chips layer but over the sprite
+## layer").
+func draw_chips(ci: CanvasItem) -> void:
+	if dead:
+		return
+	var mono := Hud.mono()
 	var acq := clampf(_acquire / ACQUIRE_SECONDS, 0.0, 1.0) if _acquire >= 0.0 else 1.0
 	for laid_chip in chip_layout():
 		var rect: Rect2 = laid_chip[0]
 		var ch: Array = laid_chip[1]
 		_chip_rects[ch[0]] = [rect, ch[2]]
-		draw_chip(self, rect, ch, mono)
+		draw_chip(ci, rect, ch, mono)
 	var ir := intent_rect()
 	if ir.size.x > 0.0:
 		var ich := intent_chip()
@@ -710,11 +723,10 @@ func _draw() -> void:
 		var txt: String = ich[1]
 		if locking and acq < SCRAMBLE_PART:
 			txt = Hud.scramble(txt, int(Time.get_ticks_msec() / 45), get_instance_id() % 97)
-		draw_intent(self, ir, ich, mono, txt)
+		draw_intent(ci, ir, ich, mono, txt)
 		if locking:
 			# The lock: bracket corners collapsing onto the plate, fading as they land.
-			Hud.brackets(self, ir.grow(3.0 + 18.0 * (1.0 - acq)), 10.0, Color(ich[2], 1.0 - acq * 0.7), 2.0)
-	_draw_spend(mono)
+			Hud.brackets(ci, ir.grow(3.0 + 18.0 * (1.0 - acq)), 10.0, Color(ich[2], 1.0 - acq * 0.7), 2.0)
 
 
 ## The chips under the drawing as they lay out, in order: [[Rect2 in the view, the chip], ...]: rows
@@ -792,10 +804,22 @@ func _float_x() -> float:
 	return minf(vis.end.x - 10.0, size.x - FLOAT_BAR_W - 2.0)
 
 
-## Where a foe's intent arrow leaves it: the middle of its drawing (Ryan, 22 November: "Put intent
-## arrows coming from the center of the portrait"), the plate standing above it.
+## Where a foe's intent line leaves it: the bottom centre of its drawing (Ryan, 24 November: "The
+## intent lines should originate from the bottom center of the enemy sprite"), the plate standing
+## above it.
 func intent_anchor_global() -> Vector2:
-	return anchor_global()
+	var vis := _visible()
+	return get_global_transform() * Vector2(vis.get_center().x, vis.end.y)
+
+
+## Where a foe's intent line lands on a machine: the top centre of its gauges, the hull's bar
+## (Ryan, 24 November: "The intents should point to the top center of the machine's health bar"),
+## or the top of its drawing with no gauges above it.
+func bar_anchor_global() -> Vector2:
+	if bars_above and not bars.is_empty() and not dead:
+		return get_global_transform() * Vector2(size.x * 0.5, _bars_top())
+	var vis := _visible()
+	return get_global_transform() * Vector2(vis.get_center().x, vis.position.y)
 
 
 ## The chips' rows: each as many chips, in order, as fit `wrap` with their gaps, a chip wider than
@@ -845,10 +869,11 @@ static func _is_intent(ch: Array) -> bool:
 	return ch.size() > 3 and str(ch[3]) == "intent"
 
 
-## A count as a square chip's corner shows it: the multiplication sign goes, the number is the
-## stacks ("×2" is 2); a sign of more or less stays.
+## A count as a square chip's corner shows it: the stacks alone, the multiplication sign and any
+## sign of more or less gone ("×2", "+2" and "-2" are 2; Ryan, 24 November: "chips with stacks
+## don't need + or -").
 static func corner_text(t: String) -> String:
-	return t.trim_prefix("×")
+	return t.lstrip("+-×")
 
 
 ## A chip's width: an intent's plate (draw_intent); a square tile in the square styles; else its
@@ -987,10 +1012,7 @@ static func _draw_tile(ci: CanvasItem, rect: Rect2, ch: Array, mono: Font, txt =
 	else:
 		Hud.box(ci, rect, 4.0, Color(Palette.BG, 0.94), col, 1.5)
 	var text := corner_text(str(ch[1]) if txt == null else str(txt))
-	var c := rect.get_center()
-	if not text.is_empty():
-		c += Vector2(-3.0, -3.0)   # the glyph leans off the corner its number holds
-	Glyphs.draw(ci, str(ch[0]), c, TILE_GLYPH, glyph_col, 2.2)
+	Glyphs.draw(ci, str(ch[0]), rect.get_center(), TILE_GLYPH, glyph_col, 2.2)   # centred whether or not a count holds its corner (Ryan, 24 November)
 	if not text.is_empty():
 		_draw_count(ci, rect, text, col)
 	_polarity_mark(ci, rect, str(ch[5]) if ch.size() > 5 else "", col)

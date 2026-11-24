@@ -56,7 +56,13 @@ document's job and every command are in `README.md`.
   threat ("a property, not a quota", with more kinds of enemy wanted in a pass of its own), a
   squad's growth inside a tier is a target to set, and the packs a mouth sends at once are the
   Convergence's dial. The hunters are pinned and the treant waits on his marks.
-- Branches. Main holds everything this file describes. `claude/formation-pass-feedback-rlvx5x`
+- Branches. Main holds everything this file describes. `claude/game-ui-animation-tweaks-xiex10`
+  landed on 24 November on Ryan's "merge into main" (his two lists of the day: the Cassowary's size
+  and run, the Macaque's size, UNDO's count gone, the aim's reticle and tether, the intent lines
+  under the chips, the stack chips merged and unsigned, the formation's single tap, a machine's
+  move under the player's hands, the shell behind what stands before it, the gorges deep and their
+  water, the engage marks in heat's red and the fight's crossed-swords badge on the map and the
+  board, no FIGHT label). `claude/formation-pass-feedback-rlvx5x`
   landed on 24 November on Ryan's "Make sure main is updated" (his play of the field's dials: the
   seam a circle, the round's view, the zoom's floor, the pushers' segments, the tears' row slower
   and off the wall, five tier-one stock dice back to basics, the basics' five dials settled and
@@ -336,13 +342,22 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   fight, a saved battle and the quick campaign, and picks a machine's upgrade build. The
   skirmish screen, the battle screen, the pause menu and its settings are built; the hangar,
   the mission map and the draft are not. In a fight (22 November) a foe's intent is a dark plate above
-  it, level with its gauge, its arrows leaving the foe's middle; a status chip is a square tile
-  with its number at its corner; a die is spent by dragging a large crosshair from it
-  (`AimLayer`), the die staying in its tray. Settings on a debug build compare the chip's forms
-  (CHIPS) and the tether's (TETHER) until Ryan picks. Since 23 November a die's double-tap shows
+  it, level with its gauge, its lines (24 November) running from the foe's feet under its chips
+  (`ChipLayer`) to the top of a machine's gauges, dashes crawling; a status chip is a square tile
+  with its number at its corner, unsigned, and stacks on their way pulse on the chip the unit
+  wears; a die is spent by dragging a large crosshair in the HUD colour from it (`AimLayer`), the
+  tether over the die, the die staying in its tray. Settings on a debug build compare the chip's
+  forms (CHIPS) until Ryan picks. A machine's executed move on the map plays under the player's
+  hands (`BattleMapView.is_blocking`); a fight's moves and the enemy's turn still hold them. On the
+  map (24 November) a fight to engage wears heat's red (`Palette.engage`, #ff4000, on a dark edge or a
+  plate): the packs a machine in hand could engage, the next fight's pulse (kept through ENGAGE's
+  own moves), and the queue's badge, crossed swords with the fight's place over their crossing
+  (`Hud.engage_badge`), worn too on each machine's row of the orders board; no label names a fight.
+  The gorges are nine steps deep and about half carry a faint stream, one body of water each,
+  whatever its ways close round flooded (`Map3D._stream_polys`). Since 23 November a die's double-tap shows
   the whole die at its live numbers and a hold alone locks; a dark entry is its own face under a
   veil; a unit's tap waits out the die's double-tap window; on the map a pack's double-tap opens
-  its formation (`FormationBox`) and a cache's its codex, and a pack shows no count. A debug build's settings hold TRIALS and COLOURS
+  its formation (`FormationBox`, a foe's codex on a tap there) and a cache's its codex, and a pack shows no count. A debug build's settings hold TRIALS and COLOURS
   (`ColourTuner`: Ryan tunes there and sends its COPY text).
 - **The hangar page.** `tools/hangar.html` over `tools/hangar_data.py`'s files, a tab a kind
   since 20 November: Chassis (the Bench renamed: every machine a card, a tap its working sheet

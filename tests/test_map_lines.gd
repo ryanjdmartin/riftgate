@@ -132,34 +132,104 @@ func test_the_machines_layer_is_lit_by_the_sun() -> void:
 
 ## A chasm has a bottom in the machines' world (Ryan, 16 November: "for the machine world there
 ## should be like a barely visible bottom. Maybe some little rivers down there ... its not just a
-## hole into nothing"): its rock darkens down its walls to a dim floor, and a stream runs on the
-## floor from each chasm hex to the edge it shares with the next.
+## hole into nothing"): its rock darkens down its walls to a dim floor, and a gorge's stream runs on
+## the floor through each chasm hex to the edge it shares with the next, one body of water.
 func test_a_chasm_has_a_dim_floor_and_a_stream() -> void:
+	var m := _chasm_map([Hex.offset_to_axial(4, 5), Hex.offset_to_axial(4, 5) + Hex.DIRECTIONS[0]])
+	var a := Hex.offset_to_axial(4, 5)
+	var b: Vector2i = a + Hex.DIRECTIONS[0]
+	var rock := m._chasm_material("rock")
+	assert_eq(float(rock.get_shader_parameter("fade_below")), Map3D.CHASM_DROP, "the rock darkens down to the floor")
+	assert_true(float(rock.get_shader_parameter("fade_floor")) <= 0.5, "to a dim floor, barely seen")
+	assert_true(Map3D.CHASM_STREAM_SHADE > 0.0 and Map3D.CHASM_STREAM_SHADE <= 0.25, "the stream faint, a fifth or so of the water's lit tone (Ryan, 24 November: \"the water in them fainter\")")
+	assert_true(Map3D.CHASM_DROP <= -60.0, "the gorge deep (24 November: \"Machine gorges can be deeper\")")
+	var gorges := m._gorges()
+	assert_eq(gorges, [[a, b] if a < b else [b, a]], "the two chasm hexes one gorge")
+	var polys := m._stream_polys(gorges[0])
+	assert_eq(polys.size(), 1, "its water one body")
+	var ca := m._hex_world(a)
+	var cb := m._hex_world(b)
+	assert_true(Geometry2D.is_point_in_polygon((Vector2(ca.x, ca.z) + Vector2(cb.x, cb.z)) * 0.5, polys[0]), "running over the edge the two share")
+	assert_true(Geometry2D.is_point_in_polygon(Vector2(ca.x, ca.z), polys[0]) and Geometry2D.is_point_in_polygon(Vector2(cb.x, cb.z), polys[0]), "from the middle of one to the middle of the next")
+	m.free()
+
+
+## The water connects as water does (Ryan, 24 November: "Water should connect more fluidly with
+## rounded vertices, it looks like a spiderweb now. If there's an enclosed section of river in a
+## gorge, it should get filled in like a flooded section"): three chasm hexes round a corner close a
+## loop, and what the loop closes round is water, one body with no hole; a fork's inside corners are
+## rounded off, so nowhere in it does the outline turn sharply in.
+func test_a_gorge_s_water_fills_what_it_closes_round() -> void:
+	var a := Hex.offset_to_axial(4, 5)
+	var b: Vector2i = a + Hex.DIRECTIONS[0]
+	var c: Vector2i = a + Hex.DIRECTIONS[1]
+	var m := _chasm_map([a, b, c])
+	var polys := m._stream_polys(m._gorges()[0])
+	assert_eq(polys.size(), 1, "one body of water")
+	var mid := Vector2.ZERO
+	for h in [a, b, c]:
+		var w := m._hex_world(h)
+		mid += Vector2(w.x, w.z) / 3.0
+	assert_true(Geometry2D.is_point_in_polygon(mid, polys[0]), "the corner the three close round flooded")
+	m.free()
+	# A fork: a hex with three ways out, nowhere sharp on its inside.
+	var f := Hex.offset_to_axial(4, 5)
+	var fork := [f, f + Hex.DIRECTIONS[0], f + Hex.DIRECTIONS[2], f + Hex.DIRECTIONS[4]]
+	var mf := _chasm_map(fork)
+	var body: PackedVector2Array = mf._stream_polys(mf._gorges()[0])[0]
+	var sharp := 0
+	for i in range(body.size()):
+		var p0 := body[(i + body.size() - 1) % body.size()]
+		var p1 := body[i]
+		var p2 := body[(i + 1) % body.size()]
+		var turn := (p1 - p0).angle_to(p2 - p1)
+		if absf(turn) > deg_to_rad(40.0):
+			sharp += 1
+	assert_eq(sharp, 0, "no sharp turn anywhere on its outline: round where the ways meet")
+	mf.free()
+
+
+## Not every gorge carries water (Ryan, 24 November: "Not every gorge needs water in it"): over a
+## generated gorge map some gorges are dry and some wet, and one a flooded stretch spills into is
+## always wet.
+func test_some_gorges_are_dry_and_a_fed_one_never() -> void:
+	var wet := 0
+	var dry := 0
+	var fed := 0
+	for seed_value in [1, 2, 3]:
+		var m := Map3D.new()
+		m.hex_px = 44.0
+		m._ppu = m.hex_px / Map3D.HEX_WORLD
+		m._sin = sin(deg_to_rad(Map3D.PITCH))
+		m.field = Battlefield.new(BattleMap.generate(9, 24, seed_value, "gorge"))
+		for run in m._gorges():
+			var spills := false
+			for h in run:
+				for d in Hex.DIRECTIONS:
+					spills = spills or m.field.map.terrain_of(h + d) == BattleMap.Terrain.WATER
+			if spills:
+				fed += 1
+				assert_true(m._gorge_wet(run), "a gorge a flooded stretch spills into carries water")
+			elif m._gorge_wet(run):
+				wet += 1
+			else:
+				dry += 1
+		m.free()
+	assert_true(wet > 0 and dry > 0, "some wet and some dry: %d wet, %d dry (%d fed)" % [wet, dry, fed])
+
+
+## A Map3D over a flat map whose `pits` are chasm hexes, set up enough to lay their water.
+func _chasm_map(pits: Array) -> Map3D:
 	var m := Map3D.new()
 	m.hex_px = 44.0
 	m._ppu = m.hex_px / Map3D.HEX_WORLD
 	m._sin = sin(deg_to_rad(Map3D.PITCH))
 	var map := BattleMap.flat(9, 12)
-	var a := Hex.offset_to_axial(4, 5)
-	var b: Vector2i = a + Hex.DIRECTIONS[0]
-	for h in [a, b]:
+	for h in pits:
 		map.terrain[h] = BattleMap.Terrain.MOUNTAIN
 		map.wall_look[h] = "chasms"
 	m.field = Battlefield.new(map)
-	var rock := m._chasm_material("rock")
-	assert_eq(float(rock.get_shader_parameter("fade_below")), Map3D.CHASM_DROP, "the rock darkens down to the floor")
-	assert_true(float(rock.get_shader_parameter("fade_floor")) <= 0.5, "to a dim floor, barely seen")
-	assert_true(Map3D.CHASM_STREAM_SHADE > Map3D.CHASM_FLOOR_SHADE, "the stream a little brighter, so it reads")
-	var v: PackedVector3Array = m._stream_geo(a)["v"]
-	assert_false(v.is_empty(), "a stream on the floor")
-	var to := m._hex_world(b) - m._hex_world(a)
-	var way := Vector2(to.x, to.z)
-	var reach := 0.0
-	for p in v:
-		assert_true(absf(p.y - Map3D.CHASM_DROP) < 1.0, "on the floor")
-		reach = maxf(reach, Vector2(p.x, p.z).dot(way.normalized()))
-	assert_true(absf(reach - way.length() * 0.5) <= Map3D.CHASM_STREAM_WIDTH, "running to the edge it shares with the next chasm: %.1f of %.1f" % [reach, way.length() * 0.5])
-	m.free()
+	return m
 
 
 ## Where a flooded stretch of the gorge meets a chasm, the chasm's wall there is a waterfall in the

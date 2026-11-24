@@ -24,7 +24,7 @@ const SLOTS := [
 	["ENEMY_HOT", "THE ENEMY'S VIOLET", MAP, "ENEMY_HOT", "What the map's violet marks breathe toward; brackets, warnings, the tapped route's pulse"],
 	["ENEMY_DEEP", "THE ENEMY'S VIOLET", MAP, "ENEMY_DEEP", "The intent field's dark stripes and a route's crawling gaps"],
 	["ENEMY_EDGE", "THE ENEMY'S VIOLET", MAP, "ENEMY_EDGE", "The dark line under the map's violet rings, bands and tags"],
-	["HEAT", "MEANINGS", PALETTE, "HEAT", "Heat and what hits harder: its chips, the gauge, a die's heat, a passive's name"],
+	["HEAT", "MEANINGS", PALETTE, "HEAT", "Heat and what hits harder: its chips, the gauge, a die's heat, a passive's name; on the map a fight to engage"],
 	["LOSS", "MEANINGS", PALETTE, "LOSS", "Harm to a unit: a number moved against it, a kill or wreck forecast, DRY, SHORT, NO ROOM"],
 	["LOSS_DIM", "MEANINGS", PALETTE, "LOSS_DIM", "A blank or destroyed entry, a wrecked machine's die, a dying foe's ghost"],
 	["SHIELD", "MEANINGS", PALETTE, "SHIELD", "Shield: its gauge and chips"],
