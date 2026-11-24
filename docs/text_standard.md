@@ -102,7 +102,8 @@ A timed line opens with its label, then a colon: Turn Start, Turn End, Round End
 events (rule 31). "Its" never needs to say whose. Past those, the labels the tips use (his "The
 rest is fine", with "When broken -> Shield Broken", and his "Hull Damaged" of 24 November): When
 defeated, On Reboot, Shield Broken, Hull Damaged,
-Skirmish Start, When it would gain X, When X would be reduced, At N stacks. "Lasts the skirmish."
+Skirmish Start, When it would gain X, When X would be reduced, At N stacks, and On X as X is gained
+(his Golden's "On Suppressed", Drill Out's "On Burrowed"). "Lasts the skirmish."
 or "Lasts the battle." is a line of its own for what never counts down.
 - "As its turn ends it halves" → "Turn End: Reduce stacks by half, rounded down."
 

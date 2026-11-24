@@ -1366,8 +1366,8 @@ func test_every_blow_meets_the_shield_and_then_the_armour() -> void:
 func test_a_weapon_that_ignores_armour_takes_nothing_off_for_it() -> void:
 	var gun := Face.attack(20, L)
 	gun.ignores_armour = true
-	assert_true(gun.describe().contains("ignores armour"), "the entry says it: %s" % gun.describe())
-	assert_true(gun.rule_phrases().has("ignores armour") and gun.has_unique_rule(), "a printed rule: the star, and its line on the hold")
+	assert_true(gun.describe().contains("ignores Armour"), "the entry says it: %s" % gun.describe())
+	assert_true(gun.rule_phrases().has("ignores Armour") and gun.has_unique_rule(), "a printed rule: the star, and its line on the hold")
 	assert_true(Face.from_dict(gun.to_dict()).ignores_armour and gun.duplicate_face().ignores_armour, "and it survives a save and a copy")
 	assert_true(Face.keyword_from_name("breach") <= 0, "Breach is no keyword")
 	var sk := Skirmish.new(1)
@@ -11297,7 +11297,7 @@ func test_a_barrier_makes_the_next_weapon_attack_ignore_armour() -> void:
 	var hp := foe.hp
 	assert_true(Effects.effective_face(ms.unit, ms.face(), foe).ignores_armour and not ms.die.faces[2].ignores_armour, "the gun fires ignoring armour, the piece itself unchanged")
 	var shown := sk.shown_face(ms, ms.face(), foe)
-	assert_true(shown.rule_phrases().has("ignores armour"), "the die shows the rule on the gun while the state stands")
+	assert_true(shown.rule_phrases().has("ignores Armour"), "the die shows the rule on the gun while the state stands")
 	assert_eq(sk.shown_number(ms, shown, foe), 4, "and its number whole")
 	assert_true(sk.assign(0, foe), "the next weapon")
 	assert_eq(hp - foe.hp, 4, "it ignores armour: the foe's 3 takes nothing")

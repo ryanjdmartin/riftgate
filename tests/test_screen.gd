@@ -845,7 +845,7 @@ func test_a_dies_readout_shows_the_entry_showing_with_its_effects_listed() -> vo
 	assert_eq(str(lines[0]["place"]), "I", "beside its place on the die")
 	var sf := s.sk.shown_face(ms, gun)
 	var n := s.sk.shown_number(ms, sf)
-	assert_eq(texts, [texts[0], "Attack %d ×2" % n, "Heat %d" % sf.heat, "Target: Enemy, Indirect", "Spread 2", "Apply Ablate 2 on hit", "Tags: Beam, Flame"],
+	assert_eq(texts, [texts[0], "Attack %d ×2" % n, "Heat %d" % sf.heat, "Target: Sprite, Indirect", "Spread 2", "Apply Ablate 2 on hit", "Tags: Beam, Flame"],
 		"a line a mark on the die, in the order a spend runs it, its numbers as the die prints them, and no source listed: %s" % str(texts))
 	var attack: Array = lines[1]["parts"]
 	assert_eq([int(attack[1]["trend"]), bool(attack[1]["gain"])], [1, true], "the blow moved up by the passive, the machine's gain: coloured, never explained")
@@ -927,7 +927,7 @@ func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
 	var texts: Array[String] = []
 	for l in lines:
 		texts.append(str(l["text"]))
-	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3 ×2 · Heat 3 · Target: Enemy, Indirect", "Spread 2 · Apply Ablate 2 on hit · Rapid", "Test: a passive's line."],
+	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3 ×2 · Heat 3 · Target: Sprite, Indirect", "Spread 2 · Apply Ablate 2 on hit · Rapid", "Test: a passive's line."],
 		"its name, its attributes, its keywords, its rules: %s" % str(texts))
 	assert_eq([str(lines[0]["type"]), str(lines[0]["tags"])], ["Weapon", "Beam, Flame"], "its type, then its tags, beside its name")
 	var types := {}
@@ -958,15 +958,15 @@ func test_the_hold_reads_shields_debuffs_buffs_and_grants() -> void:
 		texts.append(str(l["text"]))
 	assert_eq(texts, ["Shield 6", "Target: Self", "Cleanse"], "its number, its target, its keyword: %s" % str(texts))
 	shield.targets = Face.Target.ALLY
-	assert_eq(EntryReadout.whom(shield), "Target: Any other ally", "an ally's")
+	assert_eq(EntryReadout.whom(shield), "Target: Another Frame", "an ally's")
 	shield.targets = Face.Target.SELF_ALLY
-	assert_eq(EntryReadout.whom(shield), "Target: Any ally or self", "either")
+	assert_eq(EntryReadout.whom(shield), "Target: Any Frame", "either")
 	var probe := Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.SUPPRESS])
 	probe.strikes = 2
 	probe.gates = {"suppress": {"when": "target_status", "status": "brittled"}}
 	var lines := EntryReadout.effects_of(probe)
 	assert_eq(str(lines[0]["text"]), "Debuff ×2", "a debuff prints no number")
-	assert_eq(str(lines[1]["text"]), "Target: Enemy, Indirect", "a weapon's target and reach")
+	assert_eq(str(lines[1]["text"]), "Target: Sprite, Indirect", "a weapon's target and reach")
 	assert_eq(str(lines[2]["text"]), "Apply Suppress %s" % Effects.gate_text(probe.gates["suppress"]), "a gated rider says where it lands")
 	assert_eq(str(EntryReadout.effects_of(Face.empty_slot())[0]["text"]), "Comes up blank: nothing fills it", "an empty hardpoint says what it does, its name the title")
 	var wreck := Face.blank()
@@ -2470,7 +2470,7 @@ func test_a_dies_readout_heads_each_line_with_its_mark() -> void:
 	assert_eq(str(by.get("shield", {}).get("text", "")), "Shield 3", "the shield's glyph on its number")
 	var target: Dictionary = {}
 	for l in lines:
-		if str(l.get("text", "")) == "Target: Any other ally":
+		if str(l.get("text", "")) == "Target: Another Frame":
 			target = l
 	assert_false(target.is_empty(), "whom it reaches, in words")
 	assert_eq((target.get("marks", []) as Array).map(func(m: Dictionary) -> String: return str(m.get("glyph", ""))), ["aim_ally"], "headed by the three hexes the die draws, the two beside lit")

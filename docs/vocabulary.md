@@ -23,7 +23,7 @@ Status: 210 implemented, 6 planned, 0 idea.
 | **Muster** | Machine store, the Swallowtail's: a charge its Integrated components spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty and never decays; a store, so no Purge touches it. With a charge up, its Integrated components go out charged unasked, unless the charged form has nowhere to land; then the plain form goes out and the charge waits. | implemented |
 | **Ammo** | The Musk Ox's magazine, a row of cells under its heat bar, a cell an ammo. Its weapons spend ammo instead of heating it: 1 for every 2 heat a gun would make, rounded up, at least 1, the price printed where the gun's heat would be; a foe's Scorched still heats them. The magazine holds 10, opens each fight at 3 and gains 1 at the start of every round after the first; a vent the Musk Ox spends on itself adds 3, a shield 2, an entry that is both 3, once. With too little left, a gun cannot be spent (DRY). | implemented |
 | **Momentum** | Maximum 10.
-Gained while Burrowed.
+Gained by Burrowed and Applied Momentum.
 Drained by Applied Momentum. | implemented |
 
 ## Kit
@@ -74,7 +74,7 @@ A dark entry can be rolled but not used. | implemented |
 Commit: If equipment, consume up to {N} of the named count from this Frame. Gain 1 stack of the granted status per one consumed.
 Equipment cannot be used with nothing to consume. | implemented |
 | **Ablates its firer** | Resolve: Apply {N} Ablate to this Frame. | implemented |
-| **Ignores armour** | Hits ignore Armour. | implemented |
+| **Ignores Armour** | Armour does not reduce the damage. | implemented |
 | **Empties the hopper** | Commit: Consume all Ore. Hit once per Ore consumed. No Ore is gained from these hits.
 Cannot be used without Ore. | implemented |
 | **Braces** | Resolve: Apply {N} Armoured to this Frame. | implemented |
@@ -169,7 +169,7 @@ Ignores Armour and Barrier. Cannot reduce HP below 1. | implemented |
 | **Spun Up** | Weapon hits deal +2 damage per stack ({N}).
 Resolve: If a weapon was used, reduce stacks to 0. | implemented |
 | **Ricochet** | Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage, with every effect of the weapon except area.
-After Being Hit: If Hull damage was taken, reduce stacks by half, rounded down.
+Hull Damaged: Reduce stacks by half, rounded down.
 Lasts the skirmish. | implemented |
 | **Essence** | When any Sprite is defeated: Gain 1 Essence.
 Skirmish Start: Gain 1 Empowered per 5 Essence.
@@ -243,18 +243,19 @@ Resolve: If a weapon was used, reduce stacks by 1. | implemented |
 | **Supercooled** | Weapons gain Cryo 1.
 Resolve: If a weapon was used, reduce stacks by 1. | implemented |
 | **Regenerating** | Turn End: Gain 1 Shield per stack ({N}) on a Frame, or 1 HP per stack on a Sprite, then reduce stacks by 1. | implemented |
-| **Burrowed** | Replaces Reboot. +1 Armour.
+| **Burrowed** | +1 Armour.
 Fixed: Inertia Drill
 Turn Start: Remove Broken, Overheated, Jammed and Corrupted. Gain 3 Shield and 5 Momentum, and lose 6 Heat.
-Resolve: If the Inertia Drill was used, removed. | implemented |
-| **Applied Momentum** | Turn Start: Gain 1 Brittle and Pinned. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.
-Resolve: The Mole gains 1 Momentum. | implemented |
-| **Frozen Momentum** | Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.
-Resolve: The Mole gains 1 Momentum. | implemented |
-| **Heated Momentum** | Turn Start: Gain 1 Brittle, 2 Ablate, Pinned, and Seared. Then, drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.
-Resolve: The Mole gains 1 Momentum. | implemented |
-| **Frozen** | When any amount of Cryo would be consumed, consume 1 Numbed instead, if any, then remove Frozen. | implemented |
-| **Drill Out** | Inertia Drill is out until it returns, or the next burrow. | implemented |
+Resolve: If Inertia Drill was used, removed. | implemented |
+| **Applied Momentum** | Turn Start: Gain 1 Brittle and Pinned. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.
+Resolve: If hit, the Mole gains 1 Momentum. | implemented |
+| **Frozen Momentum** | Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.
+Resolve: If hit, the Mole gains 1 Momentum. | implemented |
+| **Heated Momentum** | Turn Start: Gain 1 Brittle, 2 Ablate, Pinned, and Seared. Then, drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.
+Resolve: If hit, the Mole gains 1 Momentum. | implemented |
+| **Frozen** | When Cryo would be consumed: Consumed to prevent it. Consume 1 Numbed, if any. | implemented |
+| **Drill Out** | Removed when Applied Momentum returns to the Mole.
+On Burrowed: Removed. | implemented |
 | **Sonic Needle** | Gain 1 stack per hit from the Frame that laid it, and per hit this Sprite lands on that Frame.
 Conducts Chain.
 At 3 or more stacks: Chain 2 fires. Reduce stacks to 0. | implemented |
@@ -530,7 +531,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Gated** (implemented): Suppress alone carries a gate today. A working name for Ryan's name pass.
 - **Consumes** (implemented): A mine laid from it eats its arrival's stacks. The equipment's form is the Quintessence Tap's (12 November, the Soul Siphon then), the engine's spends and spends_up_to; its text is a session's draft.
 - **Ablates its firer** (implemented): A working name for Ryan's name pass. It was fuel for a machine that wanted heat while a machine's Burning was heat; since Ablate (15 November) it is a price alone, the component pass's to read.
-- **Ignores armour** (implemented): Ryan, 15 November, with Breach cut on both sides: "I would remove Breach from the player's side. Ignores armour can be an explicitly written out property"; "the player armour piercing pieces should be higher tier, obviously, or gated, I think. Else they become obvious best faces for certain domains". On the Ammit's Soulcutter Talons, the Wild Boar's next weapon after a Barrier, and the Overclocked Railgun, whose tier is the component pass's. A session's draft, his to write.
+- **Ignores Armour** (implemented): Ryan, 15 November, with Breach cut on both sides: "I would remove Breach from the player's side. Ignores armour can be an explicitly written out property"; "the player armour piercing pieces should be higher tier, obviously, or gated, I think. Else they become obvious best faces for certain domains". On the Ammit's Soulcutter Talons, the Wild Boar's next weapon after a Barrier, and the Overclocked Railgun, whose tier is the component pass's. A session's draft, his to write.
 - **Empties the hopper** (implemented): Ryan, 20 November: "Empties the hopper, striking once for every load emptied. Grants no Ore." "Fragmenter is a dead face with no Ore." The numbers are placeholders.
 - **Braces** (implemented): A rule on one carrier, not a keyword, until another piece wants it; the stacks are a placeholder.
 - **Strikes** (implemented): Heat is paid once per use, not per strike.

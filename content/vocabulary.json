@@ -868,7 +868,7 @@
    "id": "ricochet",
    "category": "status",
    "name": "Ricochet",
-   "codex": "Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage, with every effect of the weapon except area.\nAfter Being Hit: If Hull damage was taken, reduce stacks by half, rounded down.\nLasts the skirmish.",
+   "codex": "Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage, with every effect of the weapon except area.\nHull Damaged: Reduce stacks by half, rounded down.\nLasts the skirmish.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 12 November: \"Ricochet (buff): After firing a weapon, it hits the primary target 1 more time per stack, dealing 1 damage each time and applying all effects other than area keywords\"; \"I'm leaving what applies in the ricochets open, if applying unique effects N more times is broken, then we dial it back and explicitly say 'keywords' instead of 'effects'\"; 11 November: \"Lose half stacks of Ricochet on any hull damage\". His first thought, a Ricochet on every foe a weapon hits, he dropped with Sweep. Claude's readings, built on his go and his to move: 1 in place of the entry's number and of its reads of the foe, the firer's adds on it; half rounded down at each blow, bite or overheat that takes hull, so a lone stack is lost; no cap; a buff a Purge takes.",
@@ -1983,8 +1983,8 @@
   {
    "id": "ignores_armour",
    "category": "component_property",
-   "name": "Ignores armour",
-   "codex": "Hits ignore Armour.",
+   "name": "Ignores Armour",
+   "codex": "Armour does not reduce the damage.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 15 November, with Breach cut on both sides: \"I would remove Breach from the player's side. Ignores armour can be an explicitly written out property\"; \"the player armour piercing pieces should be higher tier, obviously, or gated, I think. Else they become obvious best faces for certain domains\". On the Ammit's Soulcutter Talons, the Wild Boar's next weapon after a Barrier, and the Overclocked Railgun, whose tier is the component pass's. A session's draft, his to write."
@@ -2440,7 +2440,7 @@
    "id": "burrowed",
    "category": "status",
    "name": "Burrowed",
-   "codex": "Replaces Reboot. +1 Armour.\nFixed: Inertia Drill\nTurn Start: Remove Broken, Overheated, Jammed and Corrupted. Gain 3 Shield and 5 Momentum, and lose 6 Heat.\nResolve: If the Inertia Drill was used, removed.",
+   "codex": "+1 Armour.\nFixed: Inertia Drill\nTurn Start: Remove Broken, Overheated, Jammed and Corrupted. Gain 3 Shield and 5 Momentum, and lose 6 Heat.\nResolve: If Inertia Drill was used, removed.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 16 November: \"Instead of Reboot, it Burrows. While burrowed, it gains a unpurgable buff called 'Burrowed'\"; an unpurgeable buff is labelled an Ability by his rule of 8 November. Its turns under his of 24 November: \"When burrowed, it gains 50% shield regen, 50% cooling, and 50% Momentum generation\", \"50% of the final numbers, but represented as flat numbers\"; \"Burrow does not bank. But it does gain the 1 Armour.\" The text is a session's draft.",
@@ -2456,7 +2456,7 @@
    "id": "momentum",
    "category": "resource",
    "name": "Momentum",
-   "codex": "Maximum 10.\nGained while Burrowed.\nDrained by Applied Momentum.",
+   "codex": "Maximum 10.\nGained by Burrowed and Applied Momentum.\nDrained by Applied Momentum.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 24 November: \"Momentum is a Resource. It goes to 10 (subject to tuning).\" Renamed from Conserved Momentum. The text is a session's draft.",
@@ -2472,7 +2472,7 @@
    "id": "applied_momentum",
    "category": "status",
    "name": "Applied Momentum",
-   "codex": "Turn Start: Gain 1 Brittle and Pinned. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.\nResolve: The Mole gains 1 Momentum.",
+   "codex": "Turn Start: Gain 1 Brittle and Pinned. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.\nResolve: If hit, the Mole gains 1 Momentum.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 24 November, his text: \"Debuff, doesn't stack. Turn Start: Gain 1 Brittle and Pinned. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole\"; \"The take 1 is a blow\"; \"Go to Resolve, and include area hits as well. Easily added to the Applied Momentum debuff: Resolve: The Mole gains 1 Momentum.\" His words, not yet signed on the Text tab.",
@@ -2488,7 +2488,7 @@
    "id": "frozen_momentum",
    "category": "status",
    "name": "Frozen Momentum",
-   "codex": "Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.\nResolve: The Mole gains 1 Momentum.",
+   "codex": "Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.\nResolve: If hit, the Mole gains 1 Momentum.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 24 November, the Glacial Mole's: \"Applied Momentum -> Frozen Momentum. Debuff, doesn't stack. Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.\" Its Resolve line is Applied Momentum's, the form it takes the place of. His words, not yet signed on the Text tab.",
@@ -2504,7 +2504,7 @@
    "id": "heated_momentum",
    "category": "status",
    "name": "Heated Momentum",
-   "codex": "Turn Start: Gain 1 Brittle, 2 Ablate, Pinned, and Seared. Then, drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.\nResolve: The Mole gains 1 Momentum.",
+   "codex": "Turn Start: Gain 1 Brittle, 2 Ablate, Pinned, and Seared. Then, drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.\nResolve: If hit, the Mole gains 1 Momentum.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 24 November, the Magma Mole's: \"Applied Momentum -> Heated Momentum. Debuff, doesn't stack. Turn Start: Gain 1 Brittle, 2 Ablate, Pinned, and Seared. Then, drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.\" Its Resolve line is Applied Momentum's, the form it takes the place of. His words, not yet signed on the Text tab.",
@@ -2520,7 +2520,7 @@
    "id": "frozen",
    "category": "status",
    "name": "Frozen",
-   "codex": "When any amount of Cryo would be consumed, consume 1 Numbed instead, if any, then remove Frozen.",
+   "codex": "When Cryo would be consumed: Consumed to prevent it. Consume 1 Numbed, if any.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 24 November, the Glacial Mole's: \"Frozen: Debuff. When any amount of Cryo would be consumed, consume 1 Numbed instead, if any, then remove Frozen\"; \"It gets the cooling. It is preserved regardless of numbed existing.\" His words, not yet signed on the Text tab.",
@@ -2536,7 +2536,7 @@
    "id": "drill_out",
    "category": "status",
    "name": "Drill Out",
-   "codex": "Inertia Drill is out until it returns, or the next burrow.",
+   "codex": "Removed when Applied Momentum returns to the Mole.\nOn Burrowed: Removed.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 16 November: \"It returns to the Mole when it burrows, taking the debuff with it\"; 18 November, \"Build the toggle\". The text is a session's draft.",

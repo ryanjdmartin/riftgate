@@ -550,7 +550,7 @@ Other statuses still count down.
 Round End: Removed.</td><td>No</td><td>Granted as the round ends, to a machine that stands; until the next round's end</td><td>Mooring Screens charged (the Swallowtail's) (locked); Phase Inducer; the Spectre's Hex Bolt; the Wraith's Hex Bolt</td><td>Global</td></tr>
   <tr><td>Retaliate (planned)</td><td>Buff</td><td>Machines</td><td>Machine status. While it lasts, a foe that strikes this machine's bare hull is Shocked. It lasts the rounds the component that grants it says.</td><td>No: one does all it does</td><td>The buff's rounds</td><td>Retribution Thurible (planned)</td><td>Planned</td></tr>
   <tr><td>Ricochet</td><td>Buff</td><td>Machines</td><td>Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage, with every effect of the weapon except area.
-After Being Hit: If Hull damage was taken, reduce stacks by half, rounded down.
+Hull Damaged: Reduce stacks by half, rounded down.
 Lasts the skirmish.</td><td>Yes: a strike of 1 more a stack after each shot</td><td>The fight; hull damage halves it</td><td>Hypersonic Swoop (the Skua's) (locked); the Skua's Carom Field (passive)</td><td>Unique: the Skua</td></tr>
   <tr><td>Spun Up</td><td>Buff</td><td>Machines</td><td>Weapon hits deal +2 damage per stack ({N}).
 Resolve: If a weapon was used, reduce stacks to 0.</td><td>Yes: its bonus a stack, every stack spent by the next weapon</td><td>Until the next weapon it spends, across turns</td><td>Spin-Up (the Cassowary's) (locked)</td><td>Unique: the Cassowary</td></tr>
@@ -574,13 +574,14 @@ Immune to all damage. Cannot be targeted or hit by anything.
 Round End: Reduce stacks by 1.
 Reduce stacks to 0 upon {caster} losing 25% Max HP since the start of the effect.
 Cannot be cleansed.</td><td>Renews: a timer</td><td>Laid as the round ends, a stack going as each round ends, ended early by its swallower falling or losing a quarter of its HP</td><td>the Floraison's Swallow; the Ruby Colossus's Whirlsand</td><td>Global</td></tr>
-  <tr><td>Burrowed</td><td>Ability</td><td>Machines</td><td>Replaces Reboot. +1 Armour.
+  <tr><td>Burrowed</td><td>Ability</td><td>Machines</td><td>+1 Armour.
 Fixed: Inertia Drill
 Turn Start: Remove Broken, Overheated, Jammed and Corrupted. Gain 3 Shield and 5 Momentum, and lose 6 Heat.
-Resolve: If the Inertia Drill was used, removed.</td><td>Renews: one, its armour the burrow's</td><td>Until it spends the Inertia Drill</td><td>nothing in content yet</td><td>Unused</td></tr>
+Resolve: If Inertia Drill was used, removed.</td><td>Renews: one, its armour the burrow's</td><td>Until it spends the Inertia Drill</td><td>nothing in content yet</td><td>Unused</td></tr>
   <tr><td>Changed Over</td><td>Ability</td><td>Machines</td><td>The die rolls the second battery, not the first.
 Lasts the battle.</td><td>Renews: one chip</td><td>Until the Changeover turns the die back, or the battle ends</td><td>nothing in content yet</td><td>Unused</td></tr>
-  <tr><td>Drill Out</td><td>Ability</td><td>Machines</td><td>Inertia Drill is out until it returns, or the next burrow.</td><td>Renews: one</td><td>Until its drill comes home: its Momentum runs out, or its next burrow</td><td>nothing in content yet</td><td>Unused</td></tr>
+  <tr><td>Drill Out</td><td>Ability</td><td>Machines</td><td>Removed when Applied Momentum returns to the Mole.
+On Burrowed: Removed.</td><td>Renews: one</td><td>Until its drill comes home: its Momentum runs out, or its next burrow</td><td>nothing in content yet</td><td>Unused</td></tr>
   <tr><td>Essence</td><td>Ability</td><td>Machines</td><td>When any Sprite is defeated: Gain 1 Essence.
 Skirmish Start: Gain 1 Empowered per 5 Essence.
 Round End: If this Frame killed a Sprite this round, gain 1 Empowered per 5 Essence.
@@ -598,7 +599,7 @@ Turn End: Gain 3 Heat.
 Resolve: If a weapon was used, removed.
 On Reboot: Removed.</td><td>Renews: one seal however often it seals</td><td>Until a weapon it fires opens it, or the skirmish ends</td><td>the Polar Bear's Lockdown (passive)</td><td>Unique: the Polar Bear</td></tr>
   <tr><td>Momentum</td><td>Store</td><td>Machines</td><td>Maximum 10.
-Gained while Burrowed.
+Gained by Burrowed and Applied Momentum.
 Drained by Applied Momentum.</td><td>Yes: up to 10</td><td>Until its drill drains it</td><td>nothing in content yet</td><td>Unused</td></tr>
   <tr><td>Muster</td><td>Store</td><td>Machines</td><td>Machine store, the Swallowtail's: a charge its Integrated components spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty and never decays; a store, so no Purge touches it. With a charge up, its Integrated components go out charged unasked, unless the charged form has nowhere to land; then the plain form goes out and the charge waits.</td><td>Yes: a charge about thirty rolls of any die, five rolls' worth a kill by its guns, up to its cap</td><td>The skirmish; never decays</td><td>the Swallowtail's Muster Deck (passive)</td><td>Unique: the Swallowtail</td></tr>
   <tr><td>Ore</td><td>Store</td><td>Machines</td><td>Machine store, the Honey Badger's hopper: every foe its weapons damage puts an Ore in it, up to three, and every raise its upgrades grant adds to that. Its Bullion Fragmenter empties it, a strike for every Ore, and puts none back. Lasts the skirmish; never decays, and no cleanse or Purge touches it.</td><td>Yes: a load a foe its weapons damage (the claw's two), up to 4; two spent a shot</td><td>The skirmish; never decays</td><td>the Honey Badger's Ore Hopper (passive)</td><td>Unique: the Honey Badger</td></tr>
@@ -633,14 +634,14 @@ Lasts the skirmish.</td><td>Yes: the foe's rage a non-weapon spend</td><td>The f
   <tr><td>Numbed</td><td>Buff</td><td>Foes</td><td>When Suppressed would be applied: Prevent it and reduce stacks by 1.
 Turn End: Reduce stacks by 1.</td><td>Yes: its stun resist as it recovers from a stun</td><td>A stack goes as each of its turns ends</td><td>Suppression Battery; Umbra Inducer; Web Bomb (the Funnel-web's) (locked); Spotting Flare charged (the Swallowtail's) (locked); Backdraft Charge; via Paradox</td><td>Global</td></tr>
   <tr><td>Undying</td><td>Buff</td><td>Foes</td><td>When defeated: Consumed to return with full HP, acting from next round.</td><td>No</td><td>Until it falls; it returns once</td><td>the Lich's Reraise; the Zombie Knight's Reraise; the Grave Giant's Rise Again; the Charnel Giant's Rise Again; the Death Knight's Reraise; the Dread Knight's Reraise; the Dullahan's Reraise; the Grave Dullahan's Reraise; the Charnel Dullahan's Reraise; the Skeleton King's Rise; the Vampire Lord's Undying; the promoted Cleric's Reraise</td><td>Global</td></tr>
-  <tr><td>Applied Momentum</td><td>Debuff</td><td>Foes</td><td>Turn Start: Gain 1 Brittle and Pinned. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.
-Resolve: The Mole gains 1 Momentum.</td><td>No</td><td>Until its Mole's Momentum runs out, or the Mole burrows</td><td>nothing in content yet</td><td>Unused</td></tr>
+  <tr><td>Applied Momentum</td><td>Debuff</td><td>Foes</td><td>Turn Start: Gain 1 Brittle and Pinned. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.
+Resolve: If hit, the Mole gains 1 Momentum.</td><td>No</td><td>Until its Mole's Momentum runs out, or the Mole burrows</td><td>nothing in content yet</td><td>Unused</td></tr>
   <tr><td>Cryo</td><td>Debuff</td><td>Foes</td><td>When Hit: If by a weapon, consume all stacks. The attacker loses 1 Heat per stack ({N}).</td><td>Yes: the Cryo's number per foe reached; a weapon's hit spends every stack</td><td>Until a weapon's hit spends it, or the skirmish ends</td><td>Cryo Flinger (the Polar Bear's) (locked)</td><td>Unique: the Polar Bear</td></tr>
-  <tr><td>Frozen</td><td>Debuff</td><td>Foes</td><td>When any amount of Cryo would be consumed, consume 1 Numbed instead, if any, then remove Frozen.</td><td>No</td><td>Until a Cryo cash on it</td><td>nothing in content yet</td><td>Unused</td></tr>
-  <tr><td>Frozen Momentum</td><td>Debuff</td><td>Foes</td><td>Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.
-Resolve: The Mole gains 1 Momentum.</td><td>No</td><td>Until its Mole's Momentum runs out, or the Mole burrows</td><td>nothing in content yet</td><td>Unused</td></tr>
-  <tr><td>Heated Momentum</td><td>Debuff</td><td>Foes</td><td>Turn Start: Gain 1 Brittle, 2 Ablate, Pinned, and Seared. Then, drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.
-Resolve: The Mole gains 1 Momentum.</td><td>No</td><td>Until its Mole's Momentum runs out, or the Mole burrows</td><td>nothing in content yet</td><td>Unused</td></tr>
+  <tr><td>Frozen</td><td>Debuff</td><td>Foes</td><td>When Cryo would be consumed: Consumed to prevent it. Consume 1 Numbed, if any.</td><td>No</td><td>Until a Cryo cash on it</td><td>nothing in content yet</td><td>Unused</td></tr>
+  <tr><td>Frozen Momentum</td><td>Debuff</td><td>Foes</td><td>Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.
+Resolve: If hit, the Mole gains 1 Momentum.</td><td>No</td><td>Until its Mole's Momentum runs out, or the Mole burrows</td><td>nothing in content yet</td><td>Unused</td></tr>
+  <tr><td>Heated Momentum</td><td>Debuff</td><td>Foes</td><td>Turn Start: Gain 1 Brittle, 2 Ablate, Pinned, and Seared. Then, drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.
+Resolve: If hit, the Mole gains 1 Momentum.</td><td>No</td><td>Until its Mole's Momentum runs out, or the Mole burrows</td><td>nothing in content yet</td><td>Unused</td></tr>
   <tr><td>Mine</td><td>Debuff</td><td>Foes</td><td>Uses aimed at this Sprite by the Frame that laid it add their damage and riders to the Mine.
 When defeated: The Mine goes off, dealing 1 damage per stack ({N}) to every Sprite around it, with its riders.</td><td>Yes: its damage, every spend adding to it, one Mine a foe</td><td>The fight, until the foe falls or the Syrinx Drone detonates it</td><td>the Lammergeier's Reverberant Payload (passive)</td><td>Unique: the Lammergeier</td></tr>
   <tr><td>Paradox</td><td>Debuff</td><td>Foes</td><td>When another Debuff is applied: Gain 1 stack per stack applied.
@@ -701,7 +702,7 @@ A Sprite's Cleanse removes every Debuff but Suppressed from the Sprite with the 
 Commit: If equipment, consume up to {N} of the named count from this Frame. Gain 1 stack of the granted status per one consumed.
 Equipment cannot be used with nothing to consume.</td><td>1</td><td>1</td><td>0</td><td>&mdash;</td></tr>
   <tr><td>Ablates its firer</td><td>Resolve: Apply {N} Ablate to this Frame.</td><td>1</td><td>0</td><td>0</td><td>&mdash;</td></tr>
-  <tr><td>Ignores armour</td><td>Hits ignore Armour.</td><td>1</td><td>3</td><td>0</td><td>&mdash;</td></tr>
+  <tr><td>Ignores Armour</td><td>Armour does not reduce the damage.</td><td>1</td><td>3</td><td>0</td><td>&mdash;</td></tr>
   <tr><td>The hopper</td><td>Commit: Consume all Ore. Hit once per Ore consumed. No Ore is gained from these hits.
 Cannot be used without Ore.</td><td>0</td><td>1</td><td>0</td><td>&mdash;</td></tr>
   <tr><td>Braces</td><td>Resolve: Apply {N} Armoured to this Frame.</td><td>1</td><td>0</td><td>0</td><td>&mdash;</td></tr>
