@@ -1,24 +1,3 @@
 [remap]
 
-importer="wav"
-type="AudioStreamWAV"
-uid="uid://yld3rytps8lx"
-path="res://.godot/imported/contact.wav-785385fb2c9f4e816aece137f52dd89c.sample"
-
-[deps]
-
-source_file="res://art/audio/contact.wav"
-dest_files=["res://.godot/imported/contact.wav-785385fb2c9f4e816aece137f52dd89c.sample"]
-
-[params]
-
-force/8_bit=false
-force/mono=false
-force/max_rate=false
-force/max_rate_hz=44100
-edit/trim=false
-edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
-compress/mode=2
+importer="skip"

@@ -4,8 +4,8 @@ extends Node
 ## The game's sound. The direction (bible, 22 September): effects grounded and heavy,
 ## weight and machinery, never a space opera; music an industrial groove, driving but not
 ## fast. Every sound is built by tools/soundforge from a written recipe under art/audio, the
-## way the models are built: an effect a WAV, a loop an Ogg Vorbis file a mix rate encoded from
-## its master WAV (MUSIC_RATES). Each is asked for by name: `Sound.play("hit")`,
+## way the models are built, and plays from a file a mix rate written from its master WAV
+## (RATES): an effect a WAV, a loop Ogg Vorbis. Each is asked for by name: `Sound.play("hit")`,
 ## `Sound.music("skirmish")`. Like `Settings`, a static face; the node behind it is made on
 ## first use and lives under the root. Headless there is no node and every call is a no-op,
 ## so the sim and the tests never touch audio.
@@ -125,14 +125,17 @@ const SETS := {}
 ## the reveal; The Far Bank keeps its wrap in its pair, both halves at one bar). Bars are the 4/4 bar's length at the loop's TEMPO. Absent means the top.
 const LOOP_FROM := {"music_far_bank": 8, "music_hold_the_line": 8, "music_far_bank_map": 8, "music_hold_the_line_map": 8}   # Hold The Line wraps to the power chords, bar nine (Ryan, 29 September: its seam was the janky one; the bass's entrance at five was tried first)
 
-## The rates a loop ships at, an Ogg Vorbis file each (`music_x.44100.ogg`), encoded by the forge
-## from its master: the phone's 44.1 kHz, which Godot's Android driver always mixes at, and 48 kHz,
-## the usual desk's. A loop plays the file at the mix rate, so Godot converts nothing: its rate
-## converter dulls the top and folds high partials back as ghost tones, and its WAV import (QOA)
-## hisses over the top octaves, where the game is to play the mix Ryan passed on the pair page
-## (24 November: "The page mix is what I iterated on and approved"). Any other mix rate takes the
-## nearest file, and a rate's file missing (the phone's build carries only its own) the other.
-const MUSIC_RATES := [44100, 48000]
+## The rates a sound ships at, a file each (`hit_minerva.44100.wav`, `music_x.44100.ogg`), written
+## by the forge from its master WAV, whose import is skipped: the phone's 44.1 kHz, which Godot's
+## Android driver always mixes at, and 48 kHz, the usual desk's. A sound plays its file at the mix
+## rate, so Godot converts nothing: its rate converter dulls the top and folds high partials back
+## as ghost tones, and its WAV compression (QOA) hisses over the top octaves, where the game is to
+## play what Ryan passed (24 November, of the music: "The page mix is what I iterated on and
+## approved"; then "Yes, fix the effects"). An effect is PCM, a loop Ogg Vorbis at quality 10. Any
+## other mix rate takes the nearest file, and a rate's file missing (the phone's build carries
+## only its own) the other. A footfall's or a plate's random pitch (VARY) still converts its file,
+## by design. Jenny's lines are one 24 kHz PCM file each (VOICE_DIR), converted up.
+const RATES := [44100, 48000]
 
 ## Every loop's shown title and its working label. The files are named for the titles
 ## (Ryan's picks, 25 September); the labels are creation order, human A B C and rift A B C,
@@ -494,31 +497,31 @@ func _stream(name: String) -> AudioStream:
 		# The loops play round: the forge renders their tails across the seam. A loop with
 		# a LOOP_FROM wraps to that bar instead of its top (the forge's wrapped tail then
 		# lands on the intro, which plays once; the seam at the groove is bare).
-		var music := music_path(name)
+		var music := rate_path(name, "ogg")
 		var v: AudioStreamOggVorbis = load(music) if ResourceLoader.exists(music) else null
 		if v != null:
 			v.loop = true
 			v.loop_offset = loop_offset(name, v.packet_sequence.sampling_rate)
 		_streams[name] = v
 		return v
-	var path := DIR + name + ".wav"
+	var path := rate_path(name, "wav")
 	var s: AudioStream = load(path) if ResourceLoader.exists(path) else null
 	_streams[name] = s
 	return s
 
 
-## The file a loop plays at `rate` (the mix rate when absent): its MUSIC_RATES file nearest it
-## that exists.
-static func music_path(name: String, rate: float = -1.0) -> String:
+## The file a sound plays at `rate` (the mix rate when absent): its RATES file nearest it that
+## exists, an effect's a WAV and a loop's Ogg Vorbis (`ext`).
+static func rate_path(name: String, ext: String, rate: float = -1.0) -> String:
 	if rate < 0.0:
 		rate = AudioServer.get_mix_rate()
-	var order: Array = MUSIC_RATES.duplicate()
+	var order: Array = RATES.duplicate()
 	order.sort_custom(func(a: int, b: int) -> bool: return absf(a - rate) < absf(b - rate))
 	for r in order:
-		var path := DIR + "%s.%d.ogg" % [name, r]
+		var path := DIR + "%s.%d.%s" % [name, r, ext]
 		if ResourceLoader.exists(path):
 			return path
-	return DIR + "%s.%d.ogg" % [name, order[0]]
+	return DIR + "%s.%d.%s" % [name, order[0], ext]
 
 
 ## Where a loop wraps to, in seconds, in its file at `rate`: its LOOP_FROM bar on the sample

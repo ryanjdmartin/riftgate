@@ -100,7 +100,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1466 tests, 390,965 checks, green on Godot 4.8-beta4 (24 November, the music as Vorbis a mix rate). The runner fails a run
+- Tests: 1467 tests, 392,076 checks, green on Godot 4.8-beta4 (24 November, every sound a file a mix rate). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -400,13 +400,15 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   the battle half in a fight. Low Ground, The Crossing and Full Bore play nowhere until their
   pairs pass, in a music session of Ryan's own. No domain has a boss theme. The peak's sweep
   and a tear opening have their own sounds, and a hunter roars by its family as it turns on a
-  machine (first cuts, unheard). The music plays as Ogg Vorbis at quality 10, a file a mix rate
-  (44.1 kHz, which Godot's Android driver always mixes at, and 48 kHz for the desk), encoded by
-  the forge from its master WAV, whose import is skipped (24 November, on Ryan's "The game track
-  sounds much worse to me than the page"; the bible's row beside the master's, and
-  `docs/measurements.md`): QOA's hiss and Godot's rate converter are gone from the music, which
-  measures cleaner than the pair page's AAC. The effects still import as QOA at 48 kHz, so on the
-  phone they take the converter; his ear on the fixed music decides whether they follow.
+  machine (first cuts, unheard). Every sound plays from a file a mix rate (44.1 kHz, which
+  Godot's Android driver always mixes at, and 48 kHz for the desk), written by the forge from its
+  master WAV, whose import is skipped: an effect as PCM, a loop as Ogg Vorbis at quality 10 (24
+  November, on Ryan's "The game track sounds much worse to me than the page" and "Yes, fix the
+  effects"; the bible's row beside the master's, and `docs/measurements.md`). QOA's hiss and
+  Godot's rate converter are gone: the music measures cleaner than the pair page's AAC, and an
+  effect plays its file sample for sample. Jenny's lines import as PCM too, one 24 kHz file each,
+  which Godot converts up (a faint image 12 to 20 kHz, about 49 dB under her voice); a file a
+  rate for her lines is his call. A WAV imports as PCM by the project's default.
 - **The runners and tools.** `tools/balance.gd` plays the skirmish with `sim/policy.gd`'s
   ladder and `tools/campaign_run.gd` whole runs (the README has every command). The bot has
   a first play of the reboot, and prices every step of a foe's move and of its fall by one
@@ -557,6 +559,10 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 - The Melody Desk: https://claude.ai/artifact/PcASpr5ijTdPcx1dNg3UoV
   (`tools/soundforge/melody_desk.html`; collections `parts` and `melodies`), at its version 8.
 - The pair page: https://claude.ai/artifact/19BTqzwbJ4q8qoUxCZNtSW
-  (`tools/soundforge/out/pairs/`, built by `pair_sketches.py`), at its version 88. A version
+  (`tools/soundforge/out/pairs/`, built by `pair_sketches.py`), at its version 89 (24 November:
+  the passed pairs, Hold The Line, Night Shift and The Far Bank, on the switch as they ship, the
+  rounds that passed, checked against the game's files channel by channel; their stale
+  first-round entries gone; the run on Hold The Line's shipped halves; `pair_sketches.py
+  shipped` rebuilds that side from the live manifest, read first, and leaves the rest). A version
   holds at most 256 MiB of files and a publish 64 MB, so a round's new files go up with the
   old round's removals, in two publishes when they pass the limit.

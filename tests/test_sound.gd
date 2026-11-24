@@ -4,42 +4,71 @@ extends TestCase
 ## no-op that touches nothing.
 
 
-func test_every_named_sound_has_a_file() -> void:
+## Every sound plays from a file at each of RATES, written by the forge from its master: an effect
+## a PCM WAV, a loop Ogg Vorbis, each at the rate its name says, so nothing converts it, and the
+## rates' files one length.
+func test_every_named_sound_has_a_file_at_every_rate() -> void:
 	for name in Sound.all_names():
-		if not name.begins_with("music_"):
-			assert_true(FileAccess.file_exists(Sound.DIR + name + ".wav"), "art/audio/%s.wav exists (tools/soundforge builds it)" % name)
-			continue
-		for rate in Sound.MUSIC_RATES:
-			var path := Sound.DIR + "%s.%d.ogg" % [name, rate]
-			assert_true(FileAccess.file_exists(path), "art/audio/%s exists (tools/soundforge encodes it from its master)" % path.get_file())
-			var s := load(path) as AudioStreamOggVorbis
-			assert_true(s != null, "%s loads as Ogg Vorbis" % path.get_file())
+		var ext := "ogg" if name.begins_with("music_") else "wav"
+		var seconds: Array = []
+		for rate in Sound.RATES:
+			var path := Sound.DIR + "%s.%d.%s" % [name, rate, ext]
+			assert_true(FileAccess.file_exists(path), "art/audio/%s exists (tools/soundforge writes it from its master)" % path.get_file())
+			var s: AudioStream = load(path) if FileAccess.file_exists(path) else null
+			if ext == "ogg":
+				assert_true(s is AudioStreamOggVorbis, "%s loads as Ogg Vorbis" % path.get_file())
+				if s is AudioStreamOggVorbis:
+					assert_eq(int((s as AudioStreamOggVorbis).packet_sequence.sampling_rate), int(rate), "%s is at the rate its name says" % path.get_file())
+			else:
+				assert_true(s is AudioStreamWAV, "%s loads as a WAV" % path.get_file())
+				if s is AudioStreamWAV:
+					assert_eq((s as AudioStreamWAV).format, AudioStreamWAV.FORMAT_16_BITS, "%s plays as PCM, not compressed" % path.get_file())
+					assert_eq((s as AudioStreamWAV).mix_rate, int(rate), "%s is at the rate its name says" % path.get_file())
 			if s != null:
-				assert_eq(int(s.packet_sequence.sampling_rate), int(rate), "%s is at the rate its name says, so nothing converts it" % path.get_file())
+				seconds.append(s.get_length())
+		if seconds.size() == Sound.RATES.size():
+			assert_true(absf(float(seconds[0]) - float(seconds[1])) < 1.0 / 44100.0 + 0.00001, "%s is one length at every rate" % name)
 
 
-## A loop's master WAV is the tools' (the pair page reads it, the forge measures it): the game
-## plays its Vorbis files, so the master's import is skipped and no build carries it.
-func test_a_loops_master_is_not_imported() -> void:
+## A sound's master WAV is the tools' (the pair page reads it, the forge measures it): the game
+## plays its files at the mix rates, so the master's import is skipped and no build carries it.
+func test_a_sounds_master_is_not_imported() -> void:
 	for name in Sound.all_names():
-		if not name.begins_with("music_"):
-			continue
 		var cfg := ConfigFile.new()
 		assert_eq(cfg.load(Sound.DIR + name + ".wav.import"), OK, "%s.wav has its import file" % name)
 		assert_eq(str(cfg.get_value("remap", "importer", "")), "skip", "%s.wav is skipped by the import" % name)
+
+
+## No WAV the game plays is compressed (QOA hisses over the top octaves): every WAV import under
+## art/audio, Jenny's lines with the effects, is PCM, and so is a new one by the project's default.
+func test_every_wav_imports_as_pcm() -> void:
+	var defaults: Dictionary = ProjectSettings.get_setting("importer_defaults/wav", {})
+	assert_eq(int(defaults.get("compress/mode", -1)), 0, "a new WAV imports as PCM (project.godot's importer_defaults)")
+	var seen := 0
+	for dir in [Sound.DIR, Sound.VOICE_DIR]:
+		for f in DirAccess.get_files_at(dir):
+			if not f.ends_with(".wav.import"):
+				continue
+			var cfg := ConfigFile.new()
+			if cfg.load(dir + f) != OK or str(cfg.get_value("remap", "importer", "")) != "wav":
+				continue
+			seen += 1
+			assert_eq(int(cfg.get_value("params", "compress/mode", -1)), 0, "%s imports as PCM" % f.trim_suffix(".import"))
+	assert_true(seen > 100, "the effects' and the lines' imports were read (%d)" % seen)
 
 
 ## A loop wraps on its LOOP_FROM bar's sample at every rate, where the forge renders the seam:
 ## Godot's seek truncates a time to its sample, so the offset sits half a sample past the bar.
 func test_a_loop_wraps_on_its_bar() -> void:
 	for name in Sound.LOOP_FROM:
-		for rate in Sound.MUSIC_RATES:
+		for rate in Sound.RATES:
 			var bar := int(roundf(int(Sound.LOOP_FROM[name]) * 240.0 / float(Sound.TEMPO[name]) * rate))
 			assert_eq(int(Sound.loop_offset(name, rate) * rate), bar, "%s wraps on bar %d's sample at %d Hz" % [name, int(Sound.LOOP_FROM[name]) + 1, rate])
 	assert_eq(Sound.loop_offset("music_night_shift", 44100), 0.0, "a loop without a LOOP_FROM wraps to its top")
-	assert_eq(Sound.music_path("music_night_shift", 44100), Sound.DIR + "music_night_shift.44100.ogg", "the phone's rate plays its own file")
-	assert_eq(Sound.music_path("music_night_shift", 48000), Sound.DIR + "music_night_shift.48000.ogg", "the desk's rate plays its own file")
-	assert_eq(Sound.music_path("music_night_shift", 96000), Sound.DIR + "music_night_shift.48000.ogg", "another rate plays the nearest")
+	assert_eq(Sound.rate_path("music_night_shift", "ogg", 44100), Sound.DIR + "music_night_shift.44100.ogg", "the phone's rate plays its own file")
+	assert_eq(Sound.rate_path("music_night_shift", "ogg", 48000), Sound.DIR + "music_night_shift.48000.ogg", "the desk's rate plays its own file")
+	assert_eq(Sound.rate_path("ui_tap", "wav", 96000), Sound.DIR + "ui_tap.48000.wav", "another rate plays the nearest")
+	assert_eq(Sound.rate_path("ui_tap", "wav", 44100), Sound.DIR + "ui_tap.44100.wav", "an effect plays its file at the phone's rate")
 
 
 func test_a_component_sound_finds_its_blow() -> void:
@@ -90,7 +119,7 @@ func test_every_pair_is_two_halves_on_one_timeline() -> void:
 			assert_false(Sound.title(half).is_empty(), "%s has its track's title" % half)
 			assert_false(seen.has(half), "%s is in one pair" % half)
 			seen[half] = true
-		for rate in Sound.MUSIC_RATES:
+		for rate in Sound.RATES:
 			var a: AudioStream = load(Sound.DIR + "%s.%d.ogg" % [pair[0], rate])
 			var b: AudioStream = load(Sound.DIR + "%s.%d.ogg" % [pair[1], rate])
 			assert_true(a != null and b != null, "%s's halves load at %d Hz" % [pair[1], rate])

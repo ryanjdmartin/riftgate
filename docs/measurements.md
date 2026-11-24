@@ -12805,3 +12805,49 @@ On the whole loop the converter took 0.24 dB off 8–12 kHz, 0.8 dB off 12–16 
 −60 dB); before the half-sample offset Godot's seek, which truncates a time to its sample, wrapped
 one sample early. A pair's two halves sit on the same sample (Godot's two-sample delay) from a
 start at 255 s and after the wrap.
+
+## 24 November: the effects, Jenny's lines and every loop through the engine
+
+**Method.** As the entry above: Godot 4.8-beta4, `mix_audio` through the real `Sound` node's
+`_stream` at each mix rate (headless, `audio/driver/mix_rate`), aligned for Godot's two-sample
+delay and subtracted from the sound's file at that rate (the master at 48 kHz, its copy through
+the forge's resampler at 44.1 kHz), in dB under the file in each band.
+
+**The effects, all 79 together:**
+
+| Path | 20–150 Hz | 150–500 | 500–2k | 2–5k | 5–8k | 8–12k | 12–16k | 16–20k |
+|---|---|---|---|---|---|---|---|---|
+| Before: QOA, 48 kHz | −51.8 | −47.7 | −35.9 | −25.7 | −18.5 | −13.7 | −10.9 | −9.4 |
+| Now: PCM, 48 kHz and 44.1 kHz | every effect plays its file sample for sample (float rounding, under −128 dB) |||||||
+
+On the phone the effects had also taken Godot's converter (the entry above's tones). The 44.1 kHz
+copies peak at −0.4 dBFS at most (`w_laser`).
+
+**Every loop through `Sound`,** a minute from 60 s, the worst band from 20 Hz to 16 kHz and the
+top band:
+
+| Loop | 44.1 kHz, to 16 kHz | 44.1 kHz, 16–20 kHz | 48 kHz, to 16 kHz | 48 kHz, 16–20 kHz |
+|---|---|---|---|---|
+| Hold The Line, map | −27.0 | −10.7 (see below) | −26.9 | −10.5 |
+| Hold The Line, battle | −29.4 | −25.7 | −29.1 | −25.8 |
+| Night Shift, map | −29.0 | −25.0 | −29.1 | −25.4 |
+| Night Shift, battle | −29.6 | −25.3 | −29.3 | −25.2 |
+| The Far Bank, map | −29.7 | −22.1 | −29.9 | −20.9 |
+| The Far Bank, battle | −28.3 | −23.2 | −28.4 | −22.5 |
+| Full Bore | −29.0 | −24.2 | −28.8 | −22.2 |
+| Low Ground | −28.6 | −21.6 | −28.9 | −20.2 |
+| The Crossing | −28.4 | −25.1 | −28.4 | −24.8 |
+
+Hold The Line's map half holds almost nothing above 16 kHz (60 dB under its whole level), so its
+top band's ratio is a near-empty band's: the codec's noise there is 66 dB under the loop. Every
+loop wraps on its bar's own sample at both rates (bar nine for Hold The Line's and The Far
+Bank's halves, the top for the rest), the difference either side of the seam −49 to −88 dB.
+
+**Jenny's line** (`line_full_line_advancing`, 24 kHz, through Godot to 44.1 kHz): as PCM her
+bands to 4.5 kHz play as written; QOA had added 0.2 dB at 4.5–8 kHz and 0.9 dB at 8–12 kHz.
+Godot's conversion up takes 0.6 dB off 4.5–8 kHz and 2.1 dB off 8–12 kHz, and leaves an image at
+12–20 kHz 49 dB under her 100 Hz–1 kHz band, where the line holds nothing.
+
+**The Track Pairs page's passed pairs** (its version 1794371204-c6ae, before version 89): every
+channel of `hold_the_line_r27`, `night_shift_r35` and `far_bank_r8` is the game's half
+(correlation 0.9995 to 0.99997, the difference 30 to 43 dB under it: the AAC's).

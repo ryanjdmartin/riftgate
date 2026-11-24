@@ -30,15 +30,20 @@ track, brass and timpani in a rift track, at the fight's level.
 Writes into tools/soundforge/out/pairs/: each new half (<track>_map.wav or <track>_battle.wav);
 each pair as one stereo file (<track>_pair.mp4, the map left and the battle right, each channel
 coded on its own, with no joint or intensity stereo, so neither leaks into the other) for the
-page's live switch; and Hold The Line's run as the game would play it: the battle opening on
-the map, an engage, the map crossfading into the fight over three seconds from it, a victory and
-back to the field, then a hunter's contact whose fight lands in the keys section, every effect
-at its shipped level under the game's dips (Sound.DIP). The page is pair_page.html, copied in as
-index.html: publish it with manifest.json, the pairs and the run as its `files`.
+page's live switch; and Hold The Line's run as the game would play it, on both its shipped halves:
+the battle opening on the map, an engage, the map crossfading into the fight over three seconds
+from it, a victory and back to the field, then a hunter's contact whose fight lands in the keys
+section, every effect at its shipped level under the game's dips (Sound.DIP). A pair Ryan passed
+ships both halves (PAIRS' `passed`): its entry on the switch is the round that passed, built by
+its own sketch script from the same `ship()` the forge ships (hold_sketches.py's, night_sketches.py's,
+far_sketches.py's), so its first-round half is neither rendered nor listed. The page is
+pair_page.html, copied in as index.html: publish it with manifest.json, the pairs and the run as
+its `files`.
 
     tools/spriter/.venv/bin/python tools/soundforge/pair_sketches.py                  # the missing halves, then every pair, the run and the page
     tools/spriter/.venv/bin/python tools/soundforge/pair_sketches.py all              # every new half rendered again first (about four minutes a track)
     tools/spriter/.venv/bin/python tools/soundforge/pair_sketches.py render crossing  # the named tracks' new halves alone (one process a track runs them side by side)
+    tools/spriter/.venv/bin/python tools/soundforge/pair_sketches.py shipped          # the passed pairs' entries and the run from the shipped files, into out/pairs/manifest.json as it stands (the live page's, read first), the other pairs left alone
 """
 import json
 import math
@@ -68,12 +73,14 @@ CONTACT_AGAIN = 1.02   # the warning's second beat, 2 dB under the first
 LOOP_FROM = {"music_far_bank": 8, "music_hold_the_line": 8}
 FLIP = 3.0          # a pair's crossfade either way, from ENGAGE and from BACK TO THE FIELD (Ryan, 28 October: split the difference of 2.15 and 4)
 
-# A battle as the game plays it, in seconds of Hold The Line: the map from the top, an engage in
-# the first lift, the fight on through the seven into the drum solo, back to the field, then a
-# hunter's catch whose fight lands in the keys section and climbs into the climax.
-RUN = [(48.0, "engage"), (116.0, "victory"), (119.0, "field"),
-       (146.0, "contact"), (150.0, "engage"), (200.0, "victory"), (203.0, "field")]
-RUN_END = 232.0
+# A battle as the game plays it, in seconds of Hold The Line as it ships (the twenty-seventh round's
+# timeline): the map from the top, an engage in the first lift, the fight on through the seven
+# into the drum solo, back to the field, then a hunter's catch whose fight lands in the keys
+# section and climbs into the climax's second set, each where the first round's run had it in its
+# section.
+RUN = [(48.0, "engage"), (125.0, "victory"), (128.0, "field"),
+       (155.0, "contact"), (159.0, "engage"), (208.0, "victory"), (211.0, "field")]
+RUN_END = 240.0
 
 
 # ---------------------------------------------------------------- a recipe, read
@@ -548,11 +555,16 @@ def battle_low_ground(call):
 # until the rift tracks are levelled against Hold The Line (the bible's open levelling row). Low Ground's
 # chugs and kit put its battle half in the phone's band, so it sits under the rift tracks'
 # level, not over it as The Crossing does (28 October: at The Crossing's -17.7 it read -18.8).
+# `passed` names the round whose pair Ryan passed and the game ships, both halves (Sound.PAIRS):
+# the switch plays that round's entry, and this file's first-round half for the track is retired.
 PAIRS = {
-    "hold_the_line": {"title": "Hold The Line", "shipped": "battle", "recipe": F.music_hold_the_line, "arrange": map_hold_the_line, "level": MAP_LEVEL},
-    "night_shift": {"title": "Night Shift", "shipped": "map", "recipe": F.music_night_shift, "arrange": battle_night_shift, "level": -21.7},
+    "hold_the_line": {"title": "Hold The Line", "shipped": "battle", "recipe": F.music_hold_the_line, "arrange": map_hold_the_line, "level": MAP_LEVEL,
+                      "passed": "hold_the_line_r27"},
+    "night_shift": {"title": "Night Shift", "shipped": "map", "recipe": F.music_night_shift, "arrange": battle_night_shift, "level": -21.7,
+                    "passed": "night_shift_r35"},
     "full_bore": {"title": "Full Bore", "shipped": "battle", "recipe": F.music_full_bore, "arrange": map_full_bore, "level": -27.4},
-    "far_bank": {"title": "The Far Bank", "shipped": "battle", "recipe": F.music_far_bank, "arrange": map_far_bank, "level": -28.8},
+    "far_bank": {"title": "The Far Bank", "shipped": "battle", "recipe": F.music_far_bank, "arrange": map_far_bank, "level": -28.8,
+                 "passed": "far_bank_r8"},
     "low_ground": {"title": "Low Ground", "shipped": "map", "recipe": F.music_low_ground, "arrange": battle_low_ground, "level": -21.3},
     "crossing": {"title": "The Crossing", "shipped": "battle", "recipe": F.music_crossing, "arrange": map_crossing, "level": -28.3},
 }
@@ -602,9 +614,13 @@ def write(name, x, kbps=256, aac=True):
 
 
 def halves(track):
-    """The track's map and battle halves, the shipped one from art/audio and the new one from OUT."""
+    """The track's map and battle halves: the shipped one from art/audio, and the new one from OUT,
+    or from art/audio too once the pair has passed and ships both."""
     shipped = read_wav(os.path.join(AUDIO, "music_%s.wav" % track))
-    new = read_wav(os.path.join(OUT, "%s_%s.wav" % (track, new_half(track))))
+    if PAIRS[track].get("passed"):
+        new = read_wav(os.path.join(AUDIO, "music_%s_%s.wav" % (track, new_half(track))))
+    else:
+        new = read_wav(os.path.join(OUT, "%s_%s.wav" % (track, new_half(track))))
     if len(shipped) != len(new):
         raise ValueError("%s: the new half is %d samples, the shipped one %d: not one timeline" % (track, len(new), len(shipped)))
     return (new, shipped) if new_half(track) == "map" else (shipped, new)
@@ -684,6 +700,16 @@ def bar_times(name):
     return np.concatenate([[0.0], np.cumsum([s * k * 15.0 / m["bpm"] for s, k in zip(steps, scales)])])[:-1]
 
 
+def passed_entry(track, t):
+    """A passed pair's place on the switch: the page plays the round named, both halves as they ship."""
+    return {"id": track, "title": t["title"], "passed": t["passed"]}
+
+
+def run_entry(effects):
+    return {"track": "hold_the_line", "events": [{"at": w, "what": e} for w, e in RUN],
+            "effects": [{"at": round(w, 2), "name": nm, "db": db} for w, nm, db in effects], "end": RUN_END}
+
+
 def main(argv):
     os.makedirs(OUT, exist_ok=True)
     if argv[:1] == ["render"]:
@@ -692,11 +718,31 @@ def main(argv):
             path = write("%s_%s" % (track, new_half(track)), x, aac=False)
             print("%-14s %-6s %6.2f s  %s" % (track, new_half(track), len(x) / F.SR, os.path.relpath(path)))
         return 0
+    if argv[:1] == ["shipped"]:
+        # The passed pairs and the run from the shipped files, into the manifest as it stands (the
+        # live page's): the other pairs' entries and files are left as they are.
+        path = os.path.join(OUT, "manifest.json")
+        manifest = json.load(open(path))
+        listed = {t["id"]: t for t in manifest["tracks"]}
+        manifest["tracks"] = [passed_entry(k, t) if t.get("passed") else listed[k] for k, t in PAIRS.items() if t.get("passed") or k in listed]
+        x, effects = run(*halves("hold_the_line"))
+        write("hold_the_line_run", x)
+        manifest["run"] = run_entry(effects)
+        with open(path, "w") as f:
+            json.dump(manifest, f, indent=1)
+        shutil.copyfile(PAGE, os.path.join(OUT, "index.html"))
+        print(os.path.relpath(OUT))
+        return 0
     for track in PAIRS:
+        if PAIRS[track].get("passed"):
+            continue
         if argv[:1] == ["all"] or not os.path.exists(os.path.join(OUT, "%s_%s.wav" % (track, new_half(track)))):
             main(["render", track])
     tracks = []
     for track, t in PAIRS.items():
+        if t.get("passed"):
+            tracks.append(passed_entry(track, t))
+            continue
         map_x, battle_x = halves(track)
         write("%s_pair" % track, [map_x, battle_x], kbps=384)
         name = "music_" + track
@@ -709,9 +755,7 @@ def main(argv):
         print("%-14s map %6.1f dB (phone %6.1f)  battle %6.1f dB (phone %6.1f)" % (track, levels[0]["mean_db"], levels[0]["phone_db"], levels[1]["mean_db"], levels[1]["phone_db"]))
     x, effects = run(*halves("hold_the_line"))
     write("hold_the_line_run", x)
-    manifest = {"tracks": tracks, "flip": FLIP,
-                "run": {"track": "hold_the_line", "events": [{"at": w, "what": e} for w, e in RUN],
-                        "effects": [{"at": round(w, 2), "name": nm, "db": db} for w, nm, db in effects], "end": RUN_END}}
+    manifest = {"tracks": tracks, "flip": FLIP, "run": run_entry(effects)}
     with open(os.path.join(OUT, "manifest.json"), "w") as f:
         json.dump(manifest, f, indent=1)
     shutil.copyfile(PAGE, os.path.join(OUT, "index.html"))
