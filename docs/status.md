@@ -423,7 +423,6 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   and `blows=` a leader's block. `tools/budget_model.py`,
   `tools/basics_model.py` and `tools/tide_model.py` (what the tide asks of four machines on
   the wall, fights for free) are the small models apart from content.
-  `tests/test_leftovers.gd` fails the build for a rule no piece prints, and
   `tools/behaviour_trace.gd` checks that a refactor changes no fight.
 - **The phone.** A Pixel on a debug build (the README's phone commands). Ryan's reads arrive
   as screenshots, and `CLAUDE.md` says how to work one. What waits on his read is the to-do's
