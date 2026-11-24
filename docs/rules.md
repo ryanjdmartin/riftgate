@@ -117,7 +117,10 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   Direct, 2 and a point for every 2 heat it fires, Spread 2, Penetrate 2, Ignores Armour), REBOOT
   reading DOOM RAY with its die in hand; the heat it fires lands on every hit of the shot, as the
   blow's order lays what an entry prints from its firer, so the whole shot lands on each Sprite
-  it reaches. Its Incinerator is back in design. The Macaque's, a tier one's, each touch its offhand's forms (a form
+  it reaches; Incinerator, on its passive, each of its hits (every Sprite hit, an area's and
+  equipment's, a Chain's arc none) giving it a heat as the hit's riders land and then laying
+  Ablate 1, or 2 where it stands past its heat maximum by then, so the hit that takes it past
+  lays 2; the Death Ray vents before it hits, so its hit lays 1. The Macaque's, a tier one's, each touch its offhand's forms (a form
   a step names takes its slot's place in the cycle) and its second steps its Aile Booster too:
   Duelist, the Beam Sword's slot holding the Beam Saber, then the shield's the Beam Buckler and the
   Booster granting Aile Blitz; Valkyrie, the rifle's slot holding the Beam Bazooka, then the shield's
@@ -141,7 +144,7 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   place of none, then its weapons dealing 1 more to a foe for each stack of Sonic Needle in it.
   A direction may be back in design, a planned draft: kept in content, its depth and its steps'
   effects unchecked against the engine, and never offered (the Mole's two since its move to tier
-  two, the Whip Scorpion's Incinerator).
+  two).
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
@@ -1308,8 +1311,7 @@ Ablate, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Expo
   wherever it would reboot, standing it down when it has nothing to fire at, and in place of its
   best spend when the piece's shot, its heat free, less what standing bare through the round
   costs over standing as it is, is worth more. It prices heat that takes a gauge past half where
-  that doubles all the damage it takes (the hits and its Ablating's tick; the burn past its
-  maximum, doubled with it), reads a heat scale on every blow at the heat the machine holds and
+  that doubles the hits on it, reads a heat scale on every blow at the heat the machine holds and
   a cooling of its own as heat off. A machine that would rage (the Nemesis's) reads heat that
   opens its next turn at its maximum as the Rage's swings, at a share, never reboots to make room
   for its entry or for a shield short of broken, and swings a Rage down to its reboot. Other heat
@@ -1674,11 +1676,9 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   damage runs with its heat, half at no heat to double at its maximum along a straight line, a
   multiply after every add and held at double past the maximum, read at the heat it holds as a
   shot begins (before a Vents all shot fires it); the die's number and the bot read it the same
-  way. Past half its heat maximum all the damage it takes is doubled: a foe's hit before its
-  shield, armour and a Barrier see it, its overheat's burn (so a point past its maximum burns 2),
-  its Ablating's tick, a Corrupted bite and a price in hull (Volatile's, a tithe a spend, the die
-  showing Volatile's doubled), each read at the heat it holds as the damage lands. Shield paid as
-  a price is no damage. Its reboot fires its locked Heliographic Death Ray first (The
+  way. Past half its heat maximum every hit a foe lands on it is doubled, before its shield,
+  armour and a Barrier see it; its overheat's burn, a tick, a bite and a price in hull land as
+  printed. Its reboot fires its locked Heliographic Death Ray first (The
   reboot, below): 2, and 1 more for every 2 heat it fires, at its heat scale, then the reboot.
 
 ### Every number is a question

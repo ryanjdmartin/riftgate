@@ -122,14 +122,14 @@ EFFECTS = {
     "pull_heat": [("ally_heat", "reads"), ("heat", "sets")],   # the Puffin's pull (19 November): an ally's heat onto its own gauge
     "add_stacks": [], "forge": [("ammo", "sets"), ("heat", "reads")], "mine_on_spend": [("mine", "sets")],
     "gain_heat": [("heat", "sets")], "rage_form": [("heat", "reads"), ("rage", "sets")],   # the Nemesis's Crucible Capacitor (23 November): hits heat it, and its maximum rages it
-    "heat_scale": [("heat", "reads")], "hot_damage": [("heat", "reads")], "reboot_piece": [("heat", "reads")],   # the Whip Scorpion's Thermal Ejection Manifold (23 November): its damage by its heat, all damage on a hot gauge doubled (24 November), and its Ray fired as it reboots
+    "heat_scale": [("heat", "reads")], "hot_hits": [("heat", "reads")], "reboot_piece": [("heat", "reads")],   # the Whip Scorpion's Thermal Ejection Manifold (23 November): its damage by its heat, a hot gauge's doubled hits, and its Ray fired as it reboots
     "step_die": [("reroll", "reads")], "split_strikes": [("strikes", "sets")], "multiply_printed": [], "free_reroll": [("reroll", "sets")],
     "extra_action": [], "never_hunted": [], "no_destroy": [], "carry": [], "rewrite_weapon": [], "grant_keyword": [], "spillover": [("strikes", "sets")],
     "add_shield": [], "refill_shield": [], "vent_heat": [], "stack_status": [], "lay_status": [],
     "multiply_heat": [("heat", "sets")], "add_damage": [], "add_damage_taken": [], "hull_per_spend": [("hull_damage", "sets")],
     "multiply_damage": [], "multiply_stacks": [], "add_heat": [("heat", "sets")], "one_of_each": [], "min_damage": [],
     "shield_per_heat": [], "self_status": [], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
-    "shield_zap": [], "add_power": [],   # the Buzzard's zap and its Burst's raise of the cannon's number (18 November)
+    "shield_zap": [], "add_power": [], "hit_heat": [("heat", "sets")],   # the Incinerator's heat a hit (24 November)   # the Buzzard's zap and its Burst's raise of the cannon's number (18 November)
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
 }
 TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_blocked": None, "on_shield_granted": "shield_granted", "on_buff_granted": None, "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",

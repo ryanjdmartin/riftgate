@@ -12990,3 +12990,30 @@ What it says, a direction. The Obliterator ends a formation fight half a round s
 landing whole on the row and the column, and reboots more, a turn bare in each; its own hull pays
 for it, the hull cost doubled hot and the bare turns, about half again what the base loses. The
 bot fires the Ray at about the heat it did, so the turn's heat and the wide shot are what move.
+
+## 24 November: the Whip Scorpion on its hits alone at Max Heat 12, two stocks and the Incinerator
+
+`tools/reboot_probe.gd` as the entries above (168 formation fights at 8 seeds, 78 boss fights at 6,
+the greedy bot), on `ccr-178e0404-ptuh2m` with Ryan's option 1 built ("Go with option 1 and max heat
+12, then build the Incinerator"): its hits alone doubled past half its heat, its heat maximum 12.
+Two stocks read with `--stock` for his note the same day ("It wants options to moderately build
+heat, and then lower heat options to maximize the time over half. The 9 heat weapon is probably
+greedy"): the Thermal Ray out, the Halo Projector (a Barrier, no heat) and the Polarity Projector
+(Shock, 2 heat) in, or a second Twin Autoguns and the Halo. The Incinerator read with `--branches`,
+so at tier three with the tier's lift.
+
+| The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad | Its Ray: shots a fight, heat a shot |
+|---|---|---|---|
+| As built: Thermal Ray, Twin Autoguns ×2, Maxigun | 5.5, 36%, 8%, 10% | 8.6, 37%, 16%, 20% | 1.95 and 3.15, 6.8 and 6.9 |
+| Twin Autoguns, Maxigun, Halo Projector, Polarity Projector | 5.9, 28%, 7%, 10% | 9.3, 25%, 13%, 18% | 1.42 and 2.09, 5.7 and 6.0 |
+| Twin Autoguns ×2, Maxigun, Halo Projector | 6.1, 28%, 7%, 10% | 9.4, 29%, 12%, 18% | 1.56 and 2.47, 5.7 and 6.1 |
+| Its Incinerator, as built, at tier three | 4.8, 35%, 6%, 9% | 6.4, 39%, 9%, 14% | 1.67 and 2.51, 8.3 and 8.2 |
+
+What it says, a direction. On its hits alone at 12 it reads as the `--heat-max 12` read of the same
+day did, a boss fight a round slower than at 14, toward the Buzzard. The bot fires the Ray at about
+7 heat, so its top shot never comes into it. Both stocks of holds read slower still for the bot, by
+half a round in formations and three quarters against bosses: it spends more and reboots less, and
+fires a smaller Ray less often, since it never holds its heat past half on purpose, the play the
+holds are for. The Incinerator is the fastest of the Whip Scorpion's builds the bot plays, its
+Ablate a hit doing it, though the bot never overheats it, so its 2 Ablate past the maximum never
+comes into the read.

@@ -49,10 +49,10 @@ const ROUNDS := 3
 
 ## What the content may ask for, by trigger. The validator refuses anything else.
 const SUPPORTED_EFFECTS := {
-	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
+	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes", "hit_heat"],
 	"on_injury": ["no_destroy"],
 	"on_struck": ["lay_status", "gain_heat"],   # a foe's hit landing on this machine, whatever it dealt: what it lays on the striker (the echidna's Sonic Needles, 20 November), the heat it gains (the Nemesis's Crucible Capacitor, 24 November)
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "rage_form", "heat_scale", "hot_damage", "reboot_piece", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_max", "hopper_plate", "count_status", "piece_form", "hold_status", "self_status", "shield_zap", "add_power", "offhand", "side_strike", "strike_again", "buff_status", "burrow", "momentum", "needles"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "rage_form", "heat_scale", "hot_hits", "reboot_piece", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_max", "hopper_plate", "count_status", "piece_form", "hold_status", "self_status", "shield_zap", "add_power", "offhand", "side_strike", "strike_again", "buff_status", "burrow", "momentum", "needles"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat", "gain_heat"],
 	"on_blocked": ["stack_status", "gain_heat"],
 	"on_turn_start": ["gain_heat"],   # as this machine's turn starts (the Whip Scorpion's Obliterator, Ryan, 24 November: "Turn Start: Gain 1 heat")
@@ -1899,7 +1899,10 @@ static func clear_on_break(u) -> Array[String]:
 
 ## The statuses this machine's live passives lay on one foe its blow reaches (lay_status on
 ## on_attack, its `when` read against that foe: the funnel-web's Ambush, 18 October), as
-## [[status id, stacks a hit, damaging], ...]. The skirmish asks once a foe at the spend,
+## [[status id, stacks a hit, damaging, stacks a hit while Overheated], ...], the last its
+## `overheated` in place of `stacks` where the machine stands past its heat maximum as the rider
+## lands (the Whip Scorpion's Incinerator, 24 November: "If Overheated, apply 2 Ablate Instead"),
+## 0 where it names none. The skirmish asks once a foe at the spend,
 ## before any strike's riders land, and lays them on every strike that
 ## reaches the foe, one the spend fells too (the spend's order), a blow of nothing included,
 ## unless the effect asks for a weapon's hit (`damaging`, which its passive's text says: the
@@ -1916,8 +1919,21 @@ static func laid_statuses(u, face: Face, target) -> Array:
 		var id := str(eff.get("value", ""))
 		if not STATUS.has(id):
 			continue
-		out.append([id, maxi(1, int(eff.get("stacks", 1))) * int(pair[1].stacks), bool(eff.get("damaging", false))])
+		out.append([id, maxi(1, int(eff.get("stacks", 1))) * int(pair[1].stacks), bool(eff.get("damaging", false)), maxi(0, int(eff.get("overheated", 0))) * int(pair[1].stacks)])
 	return out
+
+
+## The heat each hit of this entry gives its machine (hit_heat on on_attack: the Whip Scorpion's
+## Incinerator, Ryan, 24 November: "Resolve: For each hit, gain 1 heat and apply 1 Ablate"): its
+## `value`, every Sprite hit, a debuff's and an area's included, a Chain's arc none.
+static func hit_heat(u, face: Face, target = null) -> int:
+	var n := 0
+	if face == null or not face.is_attack():
+		return n
+	for pair in _taking_part(u, "on_attack", face, target):
+		if str(pair[0].get("effect", "")) == "hit_heat":
+			n += maxi(0, int(pair[0].get("value", 0))) * weight(pair[1])
+	return n
 
 
 ## What this machine lays on a foe whose blow lands on it (on_struck lay_status: the echidna's
@@ -3035,19 +3051,17 @@ static func heat_damage_multiple(u, heat: int, heat_max: int) -> float:
 	return 1.0
 
 
-## What damage this machine takes is multiplied by at `heat` of `heat_max` (hot_damage, static: the
-## Whip Scorpion's, Ryan, 24 November: "I think we implement the double damage recieved penalty",
-## his option of the 23rd, "all damage received is doubled, so that overheat pays twice"): its
-## `value` while its heat stands over half its maximum, 1 otherwise or with none. Every damage it
-## takes reads it: a foe's hit, its overheat's burn, its Ablating's tick, a Corrupted bite and a
-## price in hull, Volatile's and a tithe a spend (his, the same day: "Volatile should double as well,
-## all damage is all damage"). Shield paid as a price is no damage.
-static func hot_damage(u, heat: int, heat_max: int) -> int:
+## What a hit on this machine is multiplied by at `heat` of `heat_max` (hot_hits, static: the Whip
+## Scorpion's, Ryan, 23 November: "When over 50% heat, damage recieved from hits is doubled"; all
+## its damage from 24 November, its hits alone again the same day, his option 1, so a branch that
+## rides Overheated pays the plain burn): its `value` while its heat stands over half its maximum, 1
+## otherwise or with none. A foe's hit reads it; its burn, a tick, a bite and a price in hull do not.
+static func hot_hits(u, heat: int, heat_max: int) -> int:
 	var n := 1
 	if heat * 2 <= heat_max:
 		return n
 	for pair in _taking_part(u, "static", null):
-		if str(pair[0].get("effect", "")) == "hot_damage":
+		if str(pair[0].get("effect", "")) == "hot_hits":
 			n = maxi(n, int(pair[0].get("value", 1)))
 	return n
 
@@ -3387,6 +3401,8 @@ static func effect_text(eff: Dictionary) -> String:
 				body = "lays %s on the striker, %s a blow" % [str(STATUS.get(str(v), {}).get("name", str(v))), "a stack" if n <= 1 else "%d stacks" % n]
 			else:
 				body = "lays %s on each foe %s, %s a hit" % [str(STATUS.get(str(v), {}).get("name", str(v))), "a weapon hits" if bool(eff.get("damaging", false)) else "hit", "a stack" if n <= 1 else "%d stacks" % n]
+				if int(eff.get("overheated", 0)) > 0:
+					body += ", %d past its heat maximum" % int(eff["overheated"])
 		"vent_heat": body = "sheds %s heat" % vs
 		"no_destroy": body = "components are never destroyed"
 		"set_reach": body = "reach becomes %s" % vs
@@ -3420,9 +3436,10 @@ static func effect_text(eff: Dictionary) -> String:
 		"rewrite_weapon": body = "every weapon and equipment it aims at a foe fires as one %s %s blow, heat %s, its keywords and rules kept" % [str(eff.get("reach", "direct")), vs, str(eff.get("heat", 0))]
 		"rage_form": body = "starting its turn at its heat maximum or past it, it rages: its debuffs lifted and none lands on it, its %s all its die shows, Instant; at no heat it reboots at once" % str(eff.get("piece", "")).replace("_", " ")
 		"heat_scale": body = "its damage ×%s at no heat to ×%s at its heat maximum, by its heat" % [str(float(eff.get("cold", 100)) / 100.0), str(float(eff.get("hot", 100)) / 100.0)]
-		"hot_damage": body = "past half its heat maximum, all damage it takes ×%s" % vs
+		"hot_hits": body = "past half its heat maximum, a hit on it ×%s" % vs
 		"reboot_piece": body = "its reboot fires its %s first" % str(eff.get("piece", "")).replace("_", " ")
 		"gain_heat": body = "+%s heat" % vs
+		"hit_heat": body = "+%s heat for each hit" % vs
 		"burrow": body = "it burrows in its reboot's place: Burrowed, armour +%d, its die rolls its %s alone, and each turn under makes good %d%% of what its shield and heat were missing as it burrowed and banks a stack of Conserved Momentum, up to %d; spent, the drill lays a stack of Applied Momentum for each, a blow of %d on its foe as each of its turns starts" % [maxi(1, int(eff.get("armour", 1))), str(eff.get("piece", "")).replace("_", " "), int(eff.get("recover", 50)), int(eff.get("cap", 3)), int(eff.get("blow", 0))]
 		"momentum":
 			var parts: Array[String] = []

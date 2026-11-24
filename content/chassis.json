@@ -1695,13 +1695,13 @@
    "tier": 2,
    "design": {
     "fantasy": "Ryan's boiler (12 and 13 October: \"a crazy steampunk machine venting everywhere\"; 20 October: \"it doesn't actually use steam to run, its a future-tech machine. it just kind of behaves like a steampunk device\"). The whip scorpion sprays when provoked. Named by Ryan, 20 October; 11 November: \"this is a scorpion, so it's probably not a frontliner, thematically\", and it \"goes all in with the weird and wonderful, along with the cassowary and cottonmouth\".",
-    "niche": "A bursty damage dealer (Ryan, 20 November: \"it's now positioned as a bursty damage dealer, but that could change\"): heat is its ammunition and its risk (Ryan, 23 November: \"Deals -50% damage at zero heat to +100% damage at max heat, scaling linearly. When over 50% heat, damage recieved from hits is doubled\"; held at double past the maximum, his \"Hold\" the same day). Past half its heat all the damage it takes doubles since 24 November, a Sprite's hit, its overheat's burn, an Ablating tick and a Corrupted bite (Ryan: \"I think we implement the double damage recieved penalty on the Whip as well\"), his nerf option of the 23rd (\"if it's strong, I would consider changing to all damage received is doubled, so that overheat pays twice\"), and a price in hull, Volatile's and a tithe's (his, the same day: \"Volatile should double as well, all damage is all damage\"). It no longer gains heat on being hit. Its reboot fires its locked ray first, at whatever its heat makes of it, and then it reboots, so the reboot is its burst. His other nerf option if it is strong: a lower heat maximum, his first lever (12 November: \"the first place to nerf the scorpion if it needs it is just lowering the max heat, so that's easy\"). The probe's --heat-max reads it. A phased field leaves the ray nothing to fire at and the reboot waits (\"you just have to skip or use a support action\"). Its reboot's vent blasted every foe from 17 to 23 November, and every blow it took added heat; its hits alone doubled from 23 to 24 November. Numbers placeholders."
+    "niche": "A bursty damage dealer (Ryan, 20 November: \"it's now positioned as a bursty damage dealer, but that could change\"): heat is its ammunition and its risk (Ryan, 23 November: \"Deals -50% damage at zero heat to +100% damage at max heat, scaling linearly. When over 50% heat, damage recieved from hits is doubled\"; held at double past the maximum, his \"Hold\" the same day). Its hits alone double past half its heat, his option 1 of 24 November (\"Go with option 1 and max heat 12\"), so its Incinerator may ride Overheated on the plain burn; all its damage doubled for that day (\"all damage received is doubled, so that overheat pays twice\"; \"Volatile should double as well, all damage is all damage\"). Its heat maximum 12 since then, his first lever (12 November: \"the first place to nerf the scorpion if it needs it is just lowering the max heat, so that's easy\"). It no longer gains heat on being hit. Its reboot fires its locked ray first, at whatever its heat makes of it, and then it reboots, so the reboot is its burst. A phased field leaves the ray nothing to fire at and the reboot waits (\"you just have to skip or use a support action\"). Its reboot's vent blasted every foe from 17 to 23 November, and every blow it took added heat; all its damage doubled for a day, 24 November, and its heat maximum 14 until then. Numbers placeholders."
    },
    "codex": "",
    "hull": 40,
    "shield": 8,
    "movespeed": 3,
-   "heat_max": 14,
+   "heat_max": 12,
    "hardpoints": 4,
    "module_slots": 2,
    "armour": 1,
@@ -1721,7 +1721,7 @@
    "passive": {
     "id": "thermal_ejection_manifold",
     "name": "Thermal Ejection Manifold",
-    "description": "Weapon damage scales with Heat: 50% at 0 Heat to 200% at Max Heat.\nIf above half Max Heat, double damage received.\nReboot replaced by Fixed: Heliographic Death Ray.\nResolve: If Heliographic Death Ray was used, Reboot immediately.",
+    "description": "Weapon damage scales with Heat: 50% at 0 Heat to 200% at Max Heat.\nWhen Hit: If above half Max Heat, double damage received.\nReboot replaced by Fixed: Heliographic Death Ray.\nResolve: If Heliographic Death Ray was used, Reboot immediately.",
     "effects": [
      {
       "trigger": "static",
@@ -1731,7 +1731,7 @@
      },
      {
       "trigger": "static",
-      "effect": "hot_damage",
+      "effect": "hot_hits",
       "value": 2
      },
      {
@@ -1747,14 +1747,26 @@
     {
      "id": "incinerator",
      "name": "Incinerator",
-     "status": "planned",
      "design": {
-      "notes": "Ryan, 24 November: \"Incinerator: Passive gains Resolve: For each hit, gain 1 heat and apply 1 Ablate. If Overheated, apply 2 Ablate Instead.\" Back in design from its first day on his own concern: \"I have concerns about the double overheat damage making it unviable. I wonder if there's a way to nerf the base version without the double damage we just applied\". Its effects wait on that answer; the step's text a session's draft from his words."
+      "notes": "Ryan, 24 November: \"Incinerator: Passive gains Resolve: For each hit, gain 1 heat and apply 1 Ablate. If Overheated, apply 2 Ablate Instead.\" Built the same day once the base's doubling went back to its hits alone, his option 1 (\"Go with option 1 and max heat 12, then build the Incinerator\"), so riding Overheated pays the plain burn. A session's readings, laid out to him before his word to build it: each hit every Sprite hit, a weapon's and equipment's, an area's included and a Chain's arc none; each hit's heat lands before its Ablate, so a hit that takes it past Max Heat lays 2; the Death Ray vents first, so its hit lays 1 and its heat goes with the reboot. The step's text a session's draft from his words."
      },
      "steps": [
       {
        "description": "Resolve: For each hit, gain 1 Heat and apply 1 Ablate. If Overheated, apply 2 Ablate instead.",
-       "effects": []
+       "effects": [
+        {
+         "trigger": "on_attack",
+         "effect": "hit_heat",
+         "value": 1
+        },
+        {
+         "trigger": "on_attack",
+         "effect": "lay_status",
+         "value": "ablating",
+         "stacks": 1,
+         "overheated": 2
+        }
+       ]
       }
      ]
     },

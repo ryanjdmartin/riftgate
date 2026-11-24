@@ -6,10 +6,10 @@ extends TestCase
 ## replaced with "Death Ray" when holding its die. Selecting reboot equips the Heliographic Death Ray
 ## instead of rebooting. Holding the death ray changes reboot to "Cancel," and cancelling returns the
 ## die to what it was before"; "The death ray does it's thing when used, then the Scorpion reboots";
-## of the scale past the maximum, "Hold"; 24 November, his option of the 23rd taken, "all damage
-## received is doubled, so that overheat pays twice"), on synthetic passives and pieces: its damage by
-## its heat, the die's number and the bot reading it; all damage it takes on a hot gauge doubled, a
-## hit, the burn, a tick, a bite and a price in hull; the reboot piece off the die,
+## of the scale past the maximum, "Hold"; 24 November, the hits alone again on his option 1, "Go
+## with option 1 and max heat 12"), on synthetic passives and pieces: its damage by
+## its heat, the die's number and the bot reading it; a hit on a hot gauge doubled, its burn, a
+## tick, a bite and a price in hull as printed; the reboot piece off the die,
 ## brought up and stood down, fired and the reboot after, saved and undone; with nothing to fire at,
 ## the bot stands it down; the validator holds the keys to their shapes.
 
@@ -18,7 +18,12 @@ const L := Face.Reach.DIRECT
 const SCALE := {"id": "scale", "name": "Scale", "description": "", "effects": [
 	{"trigger": "static", "effect": "heat_scale", "cold": 50, "hot": 200}]}
 const HOT := {"id": "hot", "name": "Hot", "description": "", "effects": [
-	{"trigger": "static", "effect": "hot_damage", "value": 2}]}
+	{"trigger": "static", "effect": "hot_hits", "value": 2}]}
+## The Incinerator's shape (Ryan, 24 November: "Resolve: For each hit, gain 1 heat and apply 1
+## Ablate. If Overheated, apply 2 Ablate Instead").
+const STOKE := {"id": "stoke", "name": "Stoke", "description": "", "effects": [
+	{"trigger": "on_attack", "effect": "hit_heat", "value": 1},
+	{"trigger": "on_attack", "effect": "lay_status", "value": "ablating", "stacks": 1, "overheated": 2}]}
 const RAYED := {"id": "rayed", "name": "Rayed", "description": "", "effects": [
 	{"trigger": "static", "effect": "reboot_piece", "piece": "test_ray", "label": "Death Ray"}]}
 
@@ -83,8 +88,8 @@ func test_a_hit_on_a_gauge_past_half_lands_double() -> void:
 	var sk := _fight([u], [foe])
 	var ms: Skirmish.MechState = sk.mechs[0]
 	ms.heat = 5
-	assert_eq(Effects.hot_damage(u, 5, 10), 1, "at half, plain")
-	assert_eq(Effects.hot_damage(u, 6, 10), 2, "past half, doubled")
+	assert_eq(Effects.hot_hits(u, 5, 10), 1, "at half, plain")
+	assert_eq(Effects.hot_hits(u, 6, 10), 2, "past half, doubled")
 	var fc := sk.forecast(ms)
 	assert_eq(200 - int(fc["hull_after"]), 3 * foe.strikes(), "the forecast reads a plain blow at half")
 	var hull := u.hull
@@ -98,54 +103,38 @@ func test_a_hit_on_a_gauge_past_half_lands_double() -> void:
 	sk.end_round()
 	assert_eq(hull - u.hull, 6 * foe.strikes(), "and it lands doubled")
 	assert_true(Policy.make(Policy.GREEDY, 1).hot_cost(sk, ms, 0, sk.forecast(ms)) == 0.0, "no heat added, no cost")
-	assert_true(Effects.effect_text(HOT["effects"][0]).contains("all damage it takes"), "reads as a sentence")
+	assert_true(Effects.effect_text(HOT["effects"][0]).contains("a hit on it"), "reads as a sentence")
 
 
-## All the damage it takes past half its heat, not its hits alone (Ryan, 24 November: "I think we
-## implement the double damage recieved penalty on the Whip as well"): its overheat's burn, its
-## Ablating's tick, a Corrupted bite and a price in hull land double (his, the same day: "Volatile
-## should double as well, all damage is all damage"), and the forecast, the die and the bot read
-## them so; at half, all plain.
-func test_its_burn_its_tick_a_bite_and_its_hull_price_land_double_past_half() -> void:
+## Its hits alone, past half its heat (Ryan, 24 November, his option 1: "Go with option 1 and max
+## heat 12", so a branch that rides Overheated pays the plain burn): its overheat's burn, its
+## Ablating's tick, a Corrupted bite and a price in hull land as printed, hot or cold, and the
+## forecast, the die and the bot read them so.
+func test_past_half_its_burn_its_tick_a_bite_and_its_hull_price_land_as_printed() -> void:
 	var gun := Face.from_dict({"kind": "attack", "reach": "direct", "power": 1, "volatile": 2})
 	var u := _mech("W", Die.single(gun), 10, 0, 200)
 	u.grant_passive(HOT)
-	var plain := _mech("P", Die.single(Face.attack(1, L)), 10, 0, 200)
 	var foe := Foe.make("dummy", 900, 0)
-	var sk := _fight([u, plain], [foe])
+	var sk := _fight([u], [foe])
 	var ms: Skirmish.MechState = sk.mechs[0]
-	# The burn: past its maximum it is past half, so every point burns two.
-	assert_eq([Skirmish.burn_scale(ms), Skirmish.burn_scale(sk.mechs[1])], [2, 1], "two a point past the maximum, one on a plain machine")
 	ms.heat = 13
-	assert_eq(int(sk.forecast(ms)["burn"]), 6, "the forecast reads 3 past it burning 6")
-	assert_eq(int(sk.preview_round()["mechs"][0]["burn"]), 6, "and so does the round preview the screen draws")
+	assert_eq(int(sk.forecast(ms)["burn"]), 3, "the forecast reads 3 past its maximum burning 3")
+	assert_eq(int(sk.preview_round()["mechs"][0]["burn"]), 3, "and so does the round preview the screen draws")
 	var hull := u.hull
 	sk._burn_stacks(ms, 3)
-	assert_eq(hull - u.hull, 6, "and it burns 6: the overheat pays twice")
-	# The tick: 2 Ablating, a point a stack.
+	assert_eq(hull - u.hull, 3, "and it burns 3: the burn is no hit")
 	ms.heat = 6
 	Effects.stack(u, Effects.STATUS["ablating_mech"], Effects.SKIRMISH, "test", 2, Effects.status_decay(Effects.STATUS["ablating_mech"]))
-	assert_eq(int(sk.forecast(ms)["ablated"]), 4, "past half the forecast reads the tick doubled")
+	assert_eq(int(sk.forecast(ms)["ablated"]), 2, "past half the tick reads plain")
 	hull = u.hull
 	sk._ablate(ms, 2)
-	assert_eq(hull - u.hull, 4, "and it ticks double")
-	ms.heat = 5
-	assert_eq(int(sk.forecast(ms)["ablated"]), 2, "at half, plain")
-	assert_true(Policy.make(Policy.GREEDY, 1).hot_cost(sk, ms, 1, sk.forecast(ms)) > 0.0, "a heat that tips it past half costs the tick it doubles")
-	# The bite: a Corrupted entry's 3 a stack, and Volatile's price beside it.
+	assert_eq(hull - u.hull, 2, "and ticks plain")
 	ms.face_index = 0
 	Effects.corrupt_entry(u, 0, "test", 1)
-	assert_eq(sk.pending_bite(ms), Skirmish.corrupt_bite(), "at half, the bite plain")
-	assert_eq([sk.pending_volatile(ms), sk.shown_face(ms, ms.face()).volatile], [2, 2], "and Volatile's price as printed, on the die too")
-	var price := Policy.volatile_cost(sk, ms, ms.face())
-	ms.heat = 6
-	assert_eq(sk.pending_bite(ms), 2 * Skirmish.corrupt_bite(), "past half, doubled")
-	assert_eq([sk.pending_volatile(ms), sk.shown_face(ms, ms.face()).volatile], [4, 4], "and Volatile's price, the die showing what it costs now")
-	assert_eq(gun.volatile, 2, "the piece keeps its printed price")
-	assert_true(Policy.volatile_cost(sk, ms, ms.face()) > price, "and the bot prices the doubled hull")
+	assert_eq([sk.pending_bite(ms), sk.pending_volatile(ms), sk.shown_face(ms, ms.face()).volatile], [Skirmish.corrupt_bite(), 2, 2], "the bite and Volatile's price as printed, on the die too")
 	hull = u.hull
 	assert_true(sk.assign(0, foe), "it fires, corrupted and volatile")
-	assert_eq(hull - u.hull, 2 * Skirmish.corrupt_bite() + 4, "the bite and the price both doubled")
+	assert_eq(hull - u.hull, Skirmish.corrupt_bite() + 2, "the bite and the price plain")
 
 
 func test_its_reboot_brings_the_piece_up_and_a_second_drop_stands_it_down() -> void:
@@ -244,7 +233,7 @@ func test_the_bot_fires_the_piece_for_its_reboot_and_stands_it_down_with_nothing
 ## Heliographic Doom Ray. Hull Cost: 1. Direct, 2 damage plus 1 per 2 heat. Spread. Penetrate.
 ## Ignores Armour"), on synthetic passives and pieces: a heat as its turn starts; a step's form of the
 ## reboot piece comes up in its place, REBOOT wearing the word its slot's later grant gives; its
-## hull cost doubled on a hot gauge; the heat it fires on every hit of the shot (the blow's order:
+## hull cost as printed; the heat it fires on every hit of the shot (the blow's order:
 ## what the entry prints from its firer lands on every blow), so the whole shot lands on each
 ## Sprite it reaches, past armour; then the reboot.
 func test_a_step_s_form_of_the_reboot_piece_comes_up_with_its_word_and_fires_wide() -> void:
@@ -278,15 +267,70 @@ func test_a_step_s_form_of_the_reboot_piece_comes_up_with_its_word_and_fires_wid
 	assert_eq(Effects.reboot_label(u), "Doom Ray", "REBOOT wears the later grant's word")
 	assert_true(sk.reboot_mech(0), "its die on REBOOT")
 	var shown := sk.shown_face(ms, ms.face())
-	assert_eq([ms.face().component, shown.volatile], ["test_ray", 2], "the form comes up, its hull cost doubled on a hot gauge")
+	assert_eq([ms.face().component, shown.volatile], ["test_ray", 1], "the form comes up, its hull cost as printed")
 	assert_true(shown.has(Face.Keyword.CLEAVE) and shown.has(Face.Keyword.PENETRATE) and shown.ignores_armour, "Spread, Penetrate, Ignores Armour")
 	assert_eq([left.column, behind.column, behind.rank], [0, 0, 1], "the armoured one in front of the one behind")
 	var hull := u.hull
 	assert_true(sk.assign(0, left), "it fires")
 	var shot := (2 + 10 / 2) * 2   # 2 and a point for every 2 of its 10, doubled at its maximum
 	assert_eq([900 - left.hp, 900 - mid.hp, 900 - behind.hp, 900 - right.hp], [shot, shot, shot, 0], "the whole shot on the target, the one beside and the one behind, past the armour; none past them")
-	assert_eq(hull - u.hull, 2, "its hull cost, doubled")
+	assert_eq(hull - u.hull, 1, "its hull cost")
 	assert_true(ms.rebooting, "and it reboots")
+
+
+## The Incinerator's rule on synthetic pieces: each hit gives its machine a heat as its riders land,
+## ahead of its lay, so the hit that takes the gauge past its maximum lays 2 and the ones before it
+## 1; every Sprite hit counts, an area's and equipment's too; the Death Ray vents before it hits, so
+## its hit lays 1 and its heat goes with the reboot; the bot counts a heat a hit.
+func test_each_hit_heats_its_machine_and_lays_ablate_two_once_past_its_maximum() -> void:
+	var triple := Face.from_dict({"kind": "attack", "reach": "direct", "power": 1, "strikes": 3, "heat": 0})
+	var u := _mech("W", Die.single(triple), 10, 10, 200)
+	u.grant_passive(STOKE)
+	var foe := Foe.make("dummy", 900, 0)
+	var sk := _fight([u], [foe])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.heat = 8
+	assert_eq(Policy.heat_of(ms, triple), 3, "the bot counts a heat a hit")
+	assert_true(sk.assign(0, foe), "three hits")
+	assert_eq(ms.heat, 11, "a heat a hit")
+	assert_eq(Effects.stacks_of(foe, "ablating"), 4, "1 at 9, 1 at its maximum, 2 past it")
+	assert_true(sk.log.any(func(l: String) -> bool: return l.contains("+3 heat from its hits")), "the log says so")
+
+
+func test_every_sprite_hit_counts_an_area_s_and_equipment_s_and_the_ray_lays_one() -> void:
+	var spread := Face.from_dict({"kind": "attack", "reach": "direct", "power": 1, "keywords": ["cleave"], "cleave": 1, "heat": 0})
+	var probe := Face.from_dict({"kind": "attack", "reach": "direct", "power": 0, "keywords": ["brittle"], "brittle": 1, "heat": 0})
+	var u := _mech("W", Die.of([spread, probe, _ray()]), 10, 10, 200)
+	u.grant_passive(STOKE)
+	u.grant_passive(RAYED)
+	var left := Foe.make("dummy", 900, 0)
+	var mid := Foe.make("dummy", 900, 0)
+	var right := Foe.make("dummy", 900, 0)
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(u)
+	sk.add_foes([left, mid, right])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.heat = 0
+	ms.face_index = 0
+	assert_true(sk.assign(0, mid), "a spread on the middle")
+	assert_eq(ms.heat, 3, "a heat for each Sprite it hit")
+	assert_eq([Effects.stacks_of(left, "ablating"), Effects.stacks_of(mid, "ablating"), Effects.stacks_of(right, "ablating")], [1, 1, 1], "and an Ablate on each")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 1
+	var had := Effects.stacks_of(left, "ablating")   # its first stack ticked away in its own turn
+	assert_true(sk.assign(0, left), "a debuff")
+	assert_eq([ms.heat, Effects.stacks_of(left, "ablating") - had], [4, 1], "equipment's hit counts too")
+	sk.end_round()
+	sk.start_round()
+	ms.heat = 14
+	assert_true(sk.reboot_mech(0), "the Ray up, past its maximum")
+	var before := Effects.stacks_of(mid, "ablating")
+	assert_true(sk.assign(0, mid), "it fires")
+	assert_eq(Effects.stacks_of(mid, "ablating") - before, 1, "it vents before it hits: 1, not 2")
+	assert_true(ms.rebooting and ms.heat == 0, "and the reboot takes its heat")
 
 
 func test_the_validator_holds_the_scale_the_doubling_and_the_piece_to_their_shapes() -> void:
@@ -295,9 +339,13 @@ func test_the_validator_holds_the_scale_the_doubling_and_the_piece_to_their_shap
 	var cases := {
 		"scale_flat": [{"trigger": "static", "effect": "heat_scale", "cold": 100, "hot": 100}, "apart"],
 		"scale_ok": [{"trigger": "static", "effect": "heat_scale", "cold": 50, "hot": 200}, ""],
-		"hot_one": [{"trigger": "static", "effect": "hot_damage", "value": 1}, "2 or more"],
-		"hot_ok": [{"trigger": "static", "effect": "hot_damage", "value": 2}, ""],
+		"hot_one": [{"trigger": "static", "effect": "hot_hits", "value": 1}, "2 or more"],
+		"hot_ok": [{"trigger": "static", "effect": "hot_hits", "value": 2}, ""],
 		"piece_unnamed": [{"trigger": "static", "effect": "reboot_piece", "piece": "no_such_piece", "label": "Ray"}, "names its piece"],
+		"stoke_none": [{"trigger": "on_attack", "effect": "hit_heat", "value": 0}, "1 or more"],
+		"stoke_ok": [{"trigger": "on_attack", "effect": "hit_heat", "value": 1}, ""],
+		"lay_hot_none": [{"trigger": "on_attack", "effect": "lay_status", "value": "ablating", "stacks": 1, "overheated": 0}, "past the heat maximum"],
+		"lay_hot_ok": [{"trigger": "on_attack", "effect": "lay_status", "value": "ablating", "stacks": 1, "overheated": 2}, ""],
 		"piece_wordless": [{"trigger": "static", "effect": "reboot_piece", "piece": str(db.components.keys()[0])}, "label"],
 	}
 	for id in cases.keys():

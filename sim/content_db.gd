@@ -2247,6 +2247,13 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: lay_status's damaging is true or false (a weapon's hit only, said in the passive's text)" % where)
 		if effect == "lay_status" and eff.has("stacks") and int(eff["stacks"]) < 1:
 			errs.append("%s: lay_status lays at least one stack a hit" % where)
+		# Its stacks past the heat maximum (the Whip Scorpion's Incinerator, 24 November: "If
+		# Overheated, apply 2 Ablate Instead"), in place of `stacks` while the machine stands there.
+		if effect == "lay_status" and eff.has("overheated") and (not (eff["overheated"] is int or eff["overheated"] is float) or int(eff["overheated"]) < 1):
+			errs.append("%s: lay_status's overheated is the stacks a hit it lays past the heat maximum, at least 1" % where)
+		# The heat each hit gives its machine (the Incinerator's): a whole number, 1 or more.
+		if effect == "hit_heat" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or float(eff["value"]) != floorf(float(eff["value"]))):
+			errs.append("%s: hit_heat is the heat each hit gives its machine: a whole number, 1 or more" % where)
 		if effect == "stack_status" and eff.has("cap") and int(eff["cap"]) < 1:
 			errs.append("%s: stack_status's cap is the most stacks it banks, at least 1" % where)
 		# A status a spend at a foe lays on its own machine (the Storm Petrel's branches, 17
@@ -2401,12 +2408,12 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		if (effect == "rage_form" or effect == "reboot_piece") and not components.has(str(eff.get("piece", ""))):
 			errs.append("%s: %s names its piece, a component ('%s' is none)" % [where, effect, str(eff.get("piece", ""))])
 		# The Whip Scorpion's Thermal Ejection Manifold (23 November): the heat scale, cold and hot in
-		# percent of its damage at no heat and at the maximum; the multiple on all damage it takes past
-		# half its heat; the word REBOOT wears for its reboot's piece.
+		# percent of its damage at no heat and at the maximum; the multiple on a hit past half its heat;
+		# the word REBOOT wears for its reboot's piece.
 		if effect == "heat_scale" and (int(eff.get("cold", -1)) < 0 or int(eff.get("hot", -1)) < 0 or int(eff.get("cold", 100)) == int(eff.get("hot", 100))):
 			errs.append("%s: heat_scale is its damage in percent at no heat (cold) and at its maximum (hot): 0 or more each, and apart" % where)
-		if effect == "hot_damage" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 2 or float(eff["value"]) != floorf(float(eff["value"]))):
-			errs.append("%s: hot_damage is what all damage it takes is multiplied by past half its heat: a whole number, 2 or more" % where)
+		if effect == "hot_hits" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 2 or float(eff["value"]) != floorf(float(eff["value"]))):
+			errs.append("%s: hot_hits is what a hit on it is multiplied by past half its heat: a whole number, 2 or more" % where)
 		if effect == "reboot_piece" and str(eff.get("label", "")).strip_edges().is_empty():
 			errs.append("%s: reboot_piece names the word REBOOT wears for its piece (label)" % where)
 		if effect == "shove_behind" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or int(eff["value"]) > 100 or float(eff["value"]) != floorf(float(eff["value"]))):
