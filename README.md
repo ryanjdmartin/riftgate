@@ -276,6 +276,7 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/balance.gd --
 #     greedy fights a fight, so run it on the team rows), --out path, --json path
 #   --rows badger,team     only those rows; --team badger,kite adds a row of exactly those machines,
 #     an id with its branch picks after an @ as the harness fields them (--team mole@glacial, row team:mole@glacial)
+#     and a tier after a # (--team nemesis#3: the tier's lift with no pick, to read a branch's row beside)
 #   --packs big | rank_and_file | elites | "treant x1,finale"   only those packs, by the JSON's ids;
 #     --pack goblin:4+mandragora:2 adds a composed pack; --boss-tiers the bosses by tier; --noparty
 #   --trace "kite|goblin x6|greedy|3"   plays that one fight and prints its log
