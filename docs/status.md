@@ -74,9 +74,9 @@ document's job and every command are in `README.md`.
   seam a circle, the round's view, the zoom's floor, the pushers' segments, the tears' row slower
   and off the wall, five tier-one stock dice back to basics, the basics' five dials settled and
   cut, the graded tide on a dial with the Meadow's packs, the trials' page cut to six dials, the
-  tier-one bench as a grid). Since then the same branch holds two fixes from his first play of
-  the graded tide, its fuller opening and the rift's landing, pushed and not on main: they wait
-  on his word to land. The terminology pass's branch
+  tier-one bench as a grid), and again on 25 November on his "Land on main", with the two
+  fixes from his first play of the graded tide: its fuller opening and the rift's landing. The
+  terminology pass's branch
   (`claude/gameplay-terminology-tooltips-rug879`) landed again the same day on his "land this on
   main": gameplay text follows `docs/text_standard.md` (CLAUDE.md says so), every glossary tip is
   written to it, and a reach over every Sprite targets the field.
@@ -115,7 +115,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1471 tests, 402,108 checks, green on Godot 4.8-beta4 (24 November, the graded tide's opening and the rift's landing). The runner fails a run
+- Tests: 1478 tests, 402,177 checks, green on Godot 4.8-beta4 (25 November, the graded tide's opening and the rift's landing merged over main's Nemesis and Whip Scorpion rounds). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -212,8 +212,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Booster. An upgraded piece wears a chevron a step under its place, on the die and down the
   codex, and takes the name its step gives it (the Aile Blitzer); `RIFTGATE_TEAM` fields picks
   in a standalone fight (`macaque@duelist+duelist`). The machines the reboot broke
-  are another session's line (`docs/reboot_machines_proposal.md`, read with
-  `tools/reboot_probe.gd`): the Storm Petrel landed from it on 17 November and took Ryan's
+  are read and settled, the proposal that read them retired on 24 November (`git show 302d6a4c:docs/reboot_machines_proposal.md`; read
+  with `tools/reboot_probe.gd`): the Storm Petrel landed from it on 17 November and took Ryan's
   shape of the 18th (no shield armour on its passive; its Hardlight Pulse lays Hardened Light,
   up to 3, every stack gone when the shield breaks, the reboot included); the Buzzard landed
   on the 18th in his carrion form (every foe that falls in its fight gives it shield, every
@@ -229,10 +229,14 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Empowered 1 for every 2; its kit named on the 20th, the Downwash Exchanger and the Overdrive
   Injector; its shield-lit parts carry its heat, blue to red-orange, `RIFTGATE_HEAT_GLOW_DEBUG=1`), its strength his play's in
   a team that leverages heat, since the bot reads only its Empowered (20 November); its first
-  round on the Swallowtail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
+  round on the Swallowtail, the team's pit crew, waits on Ryan's marks in its brief. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis (its Rage, rebuilt
-  on Ryan's design of 23 November), the Polar Bear (a reboot opens its seal), the Whip Scorpion
-  (rebuilt the same day: its damage by its heat, and its reboot firing its Death Ray), the
+  on Ryan's design of 23 November; since the 24th a heat for every hit it takes, its other heats
+  and a keyword on its Knuckles its two branches, Breaker and Berserker), the Polar Bear (a reboot
+  opens its seal), the Whip Scorpion (rebuilt the same day: its damage by its heat, its reboot
+  firing its Death Ray, its hits doubled past half its heat; since the 24th its heat maximum 12
+  and its Obliterator and Incinerator built on Ryan's design, the Halo Projector in its stock in
+  the Thermal Ray's place, and no heat on its Ray), the
   Lammergeier, the Wild Boar, the Baboon, the Stingray, and the Macaque, landed 19 November
   on `ccr-64b5deec-lunnff` from Ryan's kit (Aphelion's agile duelist at tier one: its offhand
   cycles the Beam Rifle, the Beam Sword and the Beam Shield after every spend at a foe, a rider
@@ -489,32 +493,30 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
      tier one's slottable numbers down to the basics' (Ryan, 21 November).
    - The scorches on every machine above tier one, then the scaling from the baseline: the
      first battle down, its sizing his ("I'll handle that one"), tiers two and three up.
-2. **The machines the reboot broke** (another session's line, beside the first): each fix
-   built on Ryan's marks, in its own commit, at placeholder numbers.
-3. **The design sessions, from the briefs**: each decision a bible row, each brief retired
+2. **The design sessions, from the briefs**: each decision a bible row, each brief retired
    once its decisions are rows and content. The locked pieces' footing first (its own session
    since 20 November), then the machine back in design (the Swallowtail), the built but
    unfinished (the Needletail, the Giant Petrel, the Musk Ox) and the gunship, the tier-one
    fronts (Minerva's lure tank, an Aphelion tier one), Claude's first rounds on his directions
    of 5 and 6 November, the rest as its session comes. The to-do's roster is grouped to match.
-4. **The refit pass's tail** (`docs/briefs/refit_pass.md`): his word on the first battle's
+3. **The refit pass's tail** (`docs/briefs/refit_pass.md`): his word on the first battle's
    block, his marks on the flanks' second patrols, the stock
    re-deal proper as a table in chat first, the component pass, what prices a round (parked
    on his word).
-5. **The skirmish code audit's structural steps** (`docs/skirmish_audit.md`): the bot's
+4. **The skirmish code audit's structural steps** (`docs/skirmish_audit.md`): the bot's
    mirrors onto the engine, statuses as data, the Face, each checked by the behaviour trace.
    Then the 200-seed matrix on the desk machine, the first read of the roster as it stands.
-6. **The stock pass's tail**: Ryan's name pass; the Lammergeier's stock; the pricing pass's
+5. **The stock pass's tail**: Ryan's name pass; the Lammergeier's stock; the pricing pass's
    next reads (the bible's pricing row); the heat session (`docs/briefs/heat_pillar.md`).
-7. **The foes' fresh start and the pacing session**: Ryan's marks (the bible's section 12:
+6. **The foes' fresh start and the pacing session**: Ryan's marks (the bible's section 12:
    the elites' names and numbers, the compositions' partition, the escorts, roles) and the
    ramp's numbers; then his play of the clocks on the phone.
-8. **Balancing for real**, once the sizing, the stock pass and the formations are in: the
+7. **Balancing for real**, once the sizing, the stock pass and the formations are in: the
    runner's rows on the roster as it stands, prices and tier ladders, the heat report, and
    Ryan's play deciding feel.
-9. **The screens**: a prototype hangar, the mission map and the draft, a run he can play.
-10. **The economy pass** (`docs/economy_pass.md`): the spending policy, then every price.
-11. The rest in the standing order: Ryan's text; the domains' last engine (the planned moves,
+8. **The screens**: a prototype hangar, the mission map and the draft, a run he can play.
+9. **The economy pass** (`docs/economy_pass.md`): the spending policy, then every price.
+10. The rest in the standing order: Ryan's text; the domains' last engine (the planned moves,
     the bosses' open calls); the battery plan's rest; audio; art; the commander layer after a
     balance baseline; onboarding before a phone leaves the desk.
 
@@ -540,14 +542,14 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   republishes while he is on the page.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.657 on 23 November from main's file at `b3f7c466` (the page's Version 520),
-  over v0.655 (the live page checked byte for byte against `33c4cc61`'s file first). The file
-  has moved on since and is unpublished, at v0.669 on 24 November (the wall, tears and seam
-  rows, the vanilla, reboot, Barrier and hunters rows, section 12's tide item, the rift's
-  landing in the tears row, and the other sessions' rows of that day). Before republishing,
+  Published at v0.674 on 25 November from main's file at `8775e481` (the page's Version 529: the
+  Nemesis's and the Whip Scorpion's rounds landed on main over its Chain ping), over v0.673
+  (Version 528, 24 November, from `ccr-178e0404-ptuh2m`'s `24adae57`). The file is a version past
+  the page, v0.675, since `claude/formation-pass-feedback-rlvx5x`'s two fixes of 24 November (the
+  tears row: the rift's landing, the flank tears' trial retired), unpublished. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
-  `b3f7c466` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  `8775e481` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
   live source with the tool's wrapper line, its trailing newline and `</body></html>`
   stripped): check BASE against the live page byte for byte first. After main merges in,
   check the tables script's run against the file's tables before keeping it: a row it

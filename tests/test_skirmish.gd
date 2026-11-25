@@ -7907,12 +7907,11 @@ func test_a_lure_over_every_foe_turns_them_all_and_braces() -> void:
 	assert_eq(sk.mechs[0].heat, 30, "three blows, ten heat each, after the overheat")
 
 
-## A heat a blow it takes, on its shield or its hull (the Nemesis's Crucible's shape since 23
-## November): `n` heat for each foe's blow that lands anything on it. Synthetic.
+## A heat a hit it takes, whatever the hit dealt (the Nemesis's Crucible's shape since 24
+## November, When Hit): `n` heat for each foe's hit that lands on it. Synthetic.
 func _heat_a_blow(n: int) -> Dictionary:
 	return {"id": "heat_a_blow", "name": "Heat a Blow", "description": "", "effects": [
-		{"trigger": "on_shield_hit", "effect": "gain_heat", "value": n},
-		{"trigger": "on_hull_damage", "effect": "gain_heat", "value": n}]}
+		{"trigger": "on_struck", "effect": "gain_heat", "value": n}]}
 
 
 ## The kinds a piece is (Ryan, 26 October: "Face type is either Weapon, Shield, Vent, or
@@ -8056,21 +8055,29 @@ func _purger() -> Foe:
 	return f
 
 
-## The three feeds of the Nemesis's heat (the Crucible Capacitor, its rage's from 11 November, Ryan:
-## "Taking a hit on shield gives 1 rage, hull damage gives 2 rage", "hull damage takes priority, so
-## it would be 2 if the shield is broken and hull damaged", and "getting its attacks completely
-## blocked gives 2 rage", per blow; heat since 23 November: "change rage into simply generating heat,
-## using the same rules as rage generation"): a foe's blow its shield takes whole heats it one; one
-## that breaks the shield and wounds two, never three; one its armour or its own Barrier takes whole
-## nothing. Synthetic passive, on a gauge too deep to overheat.
+## The Nemesis's heat (the Crucible Capacitor since 24 November, Ryan: "I think we simplify the
+## nemesis to just When Hit: gain 1 heat"): each foe's hit that lands on it heats it one, whatever
+## the hit dealt. Its branches' lines the same day: the Berserker's heat for hull lost to anything
+## ("Hull Damaged: Gain 1 heat"), the Breaker's for each of its own hits a foe's armour or Barrier
+## takes whole ("After Hit: If damage was reduced to 0, gain 2 Heat"), per blow (his of 11 November:
+## "I'd do per blow because that lets it scrap against the comp its supposed to"). Synthetic
+## passives, on a gauge too deep to overheat.
 func _crucible() -> Dictionary:
 	return {"id": "crucible", "name": "Crucible", "description": "", "effects": [
-		{"trigger": "on_shield_hit", "effect": "gain_heat", "value": 1},
-		{"trigger": "on_hull_damage", "effect": "gain_heat", "value": 2},
+		{"trigger": "on_struck", "effect": "gain_heat", "value": 1}]}
+
+
+func _berserker() -> Dictionary:
+	return {"id": "berserker", "name": "Berserker", "description": "", "effects": [
+		{"trigger": "on_hull_damage", "effect": "gain_heat", "value": 1}]}
+
+
+func _breaker() -> Dictionary:
+	return {"id": "breaker", "name": "Breaker", "description": "", "effects": [
 		{"trigger": "on_blocked", "effect": "gain_heat", "value": 2}]}
 
 
-func test_a_hit_on_the_shield_banks_one_and_hull_damage_two_never_both() -> void:
+func test_every_hit_it_takes_banks_one_whatever_it_dealt_and_hull_damage_adds_its_own() -> void:
 	var sk := Skirmish.new(1)
 	var m := _mech("A", Die.single(Face.attack(1, L)), 5, 1000)
 	m.grant_passive(_crucible())
@@ -8080,37 +8087,47 @@ func test_a_hit_on_the_shield_banks_one_and_hull_damage_two_never_both() -> void
 	sk.add_foes([foe])
 	sk.begin()
 	var ms := sk.mechs[0]
-	sk._damage_mech(ms, 3, foe)
+	sk._strike(foe, ms)
 	assert_eq([m.shield, m.hull], [2, 1000], "the shield takes it whole")
-	assert_eq(sk.mechs[0].heat, 1, "a hit on its shield: one heat")
-	assert_true("\n".join(sk.log).contains("from the hit on its shield"), "the log says why")
-	sk._damage_mech(ms, 3, foe)
+	assert_eq(ms.heat, 1, "a hit: one heat")
+	assert_true("\n".join(sk.log).contains("+1 heat from the hit"), "the log says why")
+	sk._strike(foe, ms)
 	assert_eq([m.shield, m.hull], [0, 999], "it breaks the shield and wounds")
-	assert_eq(sk.mechs[0].heat, 3, "two for the hull, never three: hull first")
+	assert_eq(ms.heat, 2, "one again, whatever the hit dealt")
 	m.armour = 10
-	sk._damage_mech(ms, 3, foe)
-	assert_eq(sk.mechs[0].heat, 3, "its armour takes the blow whole: nothing")
+	sk._strike(foe, ms)
+	assert_eq(ms.heat, 3, "its armour takes the hit whole: a hit all the same")
 	m.armour = 0
 	m.shield = 5
 	Effects.grant_buff(m, "barrier", 1, "test", sk.round)
-	sk._damage_mech(ms, 3, foe)
-	assert_eq(sk.mechs[0].heat, 3, "its own Barrier takes it: nothing")
+	sk._strike(foe, ms)
+	assert_eq([m.shield, ms.heat], [5, 4], "its own Barrier takes it whole: a hit all the same")
+	m.grant_passive(_berserker())
+	m.shield = 0
+	sk._strike(foe, ms)
+	assert_eq(ms.heat, 6, "a hit that wounds, with the Berserker's line: one for the hit, one for the hull")
+	m.armour = 10
+	sk._strike(foe, ms)
+	assert_eq(ms.heat, 7, "one that wounds nothing: the hit's alone")
+	m.armour = 0
+	sk._ablate(ms, 2)
+	assert_eq(ms.heat, 8, "hull lost to a tick is hull damage, and no hit")
 	for k in range(6):
-		sk._damage_mech(ms, 50, foe)
-	assert_eq(sk.mechs[0].heat, 15, "two a hull hit, with no cap: the gauge holds what it gains")
+		sk._strike(foe, ms)
+	assert_eq(ms.heat, 20, "two a wounding hit, with no cap: the gauge holds what it gains")
 
 
 ## A blow blocked whole, counted a blow (Ryan, 11 November: "I'd do per blow because that lets it
 ## scrap against the comp its supposed to"): every blow of its weapon on a living foe that the
 ## foe's armour or Barrier takes whole heats it two, each foe's of an area and each strike's; a blow
 ## that deals anything, a debuff's and one on a felled foe bank nothing. Synthetic passive and pieces.
-func test_every_blow_a_foes_armour_or_barrier_takes_whole_banks_two() -> void:
+func test_every_blow_a_foes_armour_or_barrier_takes_whole_banks_two_with_the_breaker() -> void:
 	var sk := Skirmish.new(1, 3)
 	var spread := Face.from_dict({"kind": "attack", "reach": "direct", "power": 3, "keywords": ["cleave"], "cleave": 2})
 	var twice := Face.from_dict({"kind": "attack", "reach": "direct", "power": 3, "strikes": 2})
 	var probe := Face.from_dict({"kind": "attack", "reach": "indirect", "power": 0, "keywords": ["shock"]})
 	var m := _mech("A", Die.of([spread, twice, probe]), 40, 200)
-	m.grant_passive(_crucible())
+	m.grant_passive(_breaker())
 	m.heat_max = 100
 	sk.add_mech(m)
 	var left := _ghoul(500, 0)

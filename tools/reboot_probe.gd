@@ -1,6 +1,7 @@
 extends SceneTree
 
-## The machines the reboot reaches, one at a time (17 November, for docs/reboot_machines_proposal.md):
+## The machines the reboot reaches, one at a time (17 November, for the reboot machines proposal,
+## retired 24 November: git show 302d6a4c:docs/reboot_machines_proposal.md):
 ## each chassis fielded first in a squad of four beside the Honey Badger, the Prairie Dog and the
 ## Cassowary, which the rule does not reach, against tier one's formations and elites (each
 ## composition at its own grid) or, with --bosses, tier one's bosses alone; the greedy bot playing.
@@ -29,7 +30,12 @@ extends SceneTree
 ## a piece's printed heat: the Nemesis's Knuckles, Ryan, 20 November: "I suspect that the knuckles
 ## are too hot"), --stock <component ids> (a what-if: the read
 ## machine's stock in place of its own, in order), --drop-effect <effect> (a what-if: the read
-## machine's passive without that effect: the Whip Scorpion's doubled hits, hot_hits, for one).
+## machine's passive without that effect: the Whip Scorpion's doubled hits, hot_hits, for one),
+## --drop-trigger <trigger> (a what-if: the read machine's passive without its effects on that trigger:
+## the Nemesis with no heat from the hits it takes, --drop-trigger on_struck, for one), --set
+## <effect>.<key>=<value>,... (a what-if: every effect of that kind on the read machine, its
+## passive's and its branches' steps', takes the value: the Incinerator's once a spend,
+## --set hit_heat.once=spend,lay_status.once=spend, or its 2 heat a hit, --set hit_heat.value=2).
 ## Four in parallel, a part of the roster each, read
 ## the whole roster in about seven minutes.
 ##
@@ -48,6 +54,8 @@ var heat_max := -1      # --heat-max: the read machine's heat maximum as a what-
 var face_heat := {}     # --face-heat: component id -> its printed heat as a what-if
 var stock: Array = []   # --stock: the read machine's stock as a what-if; empty leaves content's
 var drop_effect := ""   # --drop-effect: an effect the read machine's passive goes without, as a what-if
+var drop_trigger := ""  # --drop-trigger: a trigger whose effects the read machine's passive goes without, as a what-if
+var sets: Array = []    # --set: [effect, key, value] laid on every effect of that kind on the read machine, its passive's and its branches' steps', as a what-if
 
 const CAP := 40   # a fight still standing at forty rounds ends there as it stands, the bot stalled
 
@@ -69,8 +77,15 @@ func _init() -> void:
 				heat_max = maxi(1, int(v))
 			"--drop-effect":
 				drop_effect = v
+			"--drop-trigger":
+				drop_trigger = v
 			"--stock":
 				stock = Array(v.split(","))
+			"--set":
+				for item in v.split(","):
+					var lhs := item.get_slice("=", 0)
+					var val := item.get_slice("=", 1)
+					sets.append([lhs.get_slice(".", 0), lhs.get_slice(".", 1), int(val) if val.is_valid_int() else val])
 			"--face-heat":
 				for pair in v.split(","):
 					face_heat[pair.get_slice("=", 0)] = maxi(0, int(pair.get_slice("=", 1)))
@@ -87,6 +102,25 @@ func _init() -> void:
 			var dp = db.chassis.get(cid, {}).get("passive", null)
 			if dp is Dictionary:
 				dp["effects"] = (dp.get("effects", []) as Array).filter(func(e) -> bool: return str(e.get("effect", "")) != drop_effect)
+	if not drop_trigger.is_empty():
+		for cid in only:
+			var tp = db.chassis.get(cid, {}).get("passive", null)
+			if tp is Dictionary:
+				tp["effects"] = (tp.get("effects", []) as Array).filter(func(e) -> bool: return str(e.get("trigger", "")) != drop_trigger)
+	if not sets.is_empty():
+		for cid in only:
+			var sc: Dictionary = db.chassis.get(cid, {})
+			var lists: Array = []
+			if sc.get("passive", null) is Dictionary:
+				lists.append(sc["passive"].get("effects", []))
+			for b in sc.get("branches", []):
+				for st in b.get("steps", []):
+					lists.append(st.get("effects", []))
+			for effs in lists:
+				for e in effs:
+					for s in sets:
+						if str(e.get("effect", "")) == str(s[0]):
+							e[str(s[1])] = s[2]
 	if not stock.is_empty():
 		for cid in only:
 			if db.chassis.has(cid):
@@ -107,7 +141,7 @@ func _init() -> void:
 				comps.append(c)
 	print("%d %s, %d seeds, the squad's three: %s%s%s%s" % [comps.size(), "bosses" if bosses else "compositions", seeds, ", ".join(mates),
 		"" if picks.is_empty() else ", upgrades " + ",".join(picks), "" if heat_max < 0 else ", its heat maximum %d" % heat_max,
-		("" if face_heat.is_empty() else ", heat " + str(face_heat)) + ("" if stock.is_empty() else ", its stock " + ",".join(stock)) + ("" if drop_effect.is_empty() else ", without its " + drop_effect)])
+		("" if face_heat.is_empty() else ", heat " + str(face_heat)) + ("" if stock.is_empty() else ", its stock " + ",".join(stock)) + ("" if drop_effect.is_empty() else ", without its " + drop_effect) + ("" if drop_trigger.is_empty() else ", without its " + drop_trigger + " effects") + ("" if sets.is_empty() else ", set " + str(sets))])
 	var t0 := Time.get_ticks_msec()
 	print("| Machine | Fights | Won | Rounds | Spent | Rebooted | Held | Rounds a reboot | Overheats a fight | Burn a fight | Bare turns | Sealed | Rages a fight | Own hull lost | Wrecked | Squad hull lost | Mates rebooted |")
 	print("|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|")

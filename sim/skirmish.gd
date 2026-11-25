@@ -138,6 +138,7 @@ class Hits:
 	var reached: Array = []         # every foe the blows reached, felled or not (the casings' refund)
 	var thawed := 0                 # Cryo stacks the hits spent, cooling the hitter once its heat lands (_pay_hits)
 	var damaged := 0                # the foes the blows took HP off (the on_damage trigger's read)
+	var hit_heated := 0             # the heat the hits gave their machine as their riders landed (the Incinerator's), for the log
 	## What the hits aimed at the spend's target fired at it, for the Mine its machine leaves there
 	## (Ryan, 9 November: "the mine should take the entire result of the spend, then apply it"):
 	## each status's stacks every hit laid, as its machine deepened and doubled them, its Purge
@@ -975,15 +976,18 @@ func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 	var rerolls_gained := copy.rerolls_left - rerolls_left
 	var events: Array = copy.turn_events.duplicate()   # a last act the spend set off lands now
 	var over: Array[int] = []
+	var burnt: Array[int] = []
 	var ablated: Array[int] = []
 	var standing: Array[int] = []
 	over.resize(mechs.size())
+	burnt.resize(mechs.size())
 	ablated.resize(mechs.size())
 	standing.resize(mechs.size())
 	if copy.outcome == Outcome.NONE:
 		copy._end_player_turn()
 		for o in copy.overheats:
 			over[int(o["mech"])] += int(o["over"])
+			burnt[int(o["mech"])] += int(o["burn"])
 		for a in copy.ablations:
 			ablated[int(a["mech"])] += int(a["points"])
 	for i in range(mechs.size()):
@@ -1027,6 +1031,7 @@ func preview_round(hover_mech: int = -1, hover_target = null) -> Dictionary:
 			"heat_end": heat_end[i],       # the gauge as the turn ends, uncapped: what the burn reads
 			"heat_after": cm.heat,         # the gauge after the round
 			"overheat": over[i],
+			"burn": burnt[i],              # the hull the excess burns (overheat_scale a point)
 			"ablated": ablated[i],         # what its Ablating takes as the turn ends, the shield first
 			"breaks_shield": standing[i] > 0 and shield_hit[i] <= 0,
 			"component_risk": injures,
@@ -1131,6 +1136,8 @@ func forecast(ms: MechState, extra_shield: int = 0) -> Dictionary:
 	var off_shield := clampi(shield, 0, ablated)
 	shield -= off_shield
 	hull -= ablated - off_shield
+	var hull_heat := Effects.heat_on(ms.unit, "on_hull_damage")   # what hull lost to anything heats it (the Nemesis's Berserker)
+	var tick_heat := hull_heat if ablated > off_shield else 0       # the tick's, before the burn reads the gauge
 	# Its Regenerating pays as its turn ends, after the Ablating and before the foes strike (16
 	# November): a point of shield a stack, none for a shield that is broken or that the tick
 	# has just taken to nothing, none while it is Swallowed.
@@ -1149,17 +1156,17 @@ func forecast(ms: MechState, extra_shield: int = 0) -> Dictionary:
 			struck += int(r["through"])
 			if int(r["through"]) > 0 and destroys(f, ms):
 				component_risk = true
-			if int(r["through"]) > 0 or int(r["absorbed"]) > 0:
-				blow_heat += Effects.blow_heat(ms.unit, int(r["through"]) > 0)   # the heat a blow lays on it (the Nemesis's)
+			blow_heat += Effects.blow_heat(ms.unit, int(r["through"]) > 0)   # the heat a hit lays on it as it lands, whatever it dealt (the Nemesis's)
 	shield = int(walk["shield"])
-	var heat_end := ms.heat + seal_heat(ms)
+	var heat_end := ms.heat + tick_heat + seal_heat(ms)
 	var over := maxi(0, heat_end - ms.heat_max)
 	if is_out(ms):
 		over = 0   # one out of reach neither burns nor overheats (_burn_stacks); a rebooting machine has vented, and burns what it carries like any
-	hull -= over * overheat_scale
+	var burn := over * overheat_scale
+	hull -= burn
 	# The gauge does not settle: what stands past the maximum stays, and burns again; the heat the
-	# foes' blows lay on it lands after (the Nemesis's Crucible Capacitor).
-	var heat_after := heat_end + blow_heat
+	# burn's hull and the foes' hits lay on it lands after (the Nemesis's Crucible Capacitor).
+	var heat_after := heat_end + (hull_heat if burn > 0 else 0) + blow_heat
 	return {
 		"incoming": incoming,
 		"ablated": ablated,           # what its Ablating takes as the turn ends, the shield first
@@ -1169,6 +1176,7 @@ func forecast(ms: MechState, extra_shield: int = 0) -> Dictionary:
 		"heat_end": heat_end,       # the gauge as the turn ends, uncapped: what the burn reads
 		"heat_after": heat_after,   # the gauge after the round: what the turn left on it, then the foes' heat
 		"overheat": over,
+		"burn": burn,               # the hull the excess burns as the turn ends (overheat_scale a point)
 		"component_risk": component_risk,
 		"destroyed": hull <= 0 and ms.alive(),
 	}
@@ -1549,6 +1557,13 @@ func start_round() -> void:
 			log.append("%s's pilot light: +%d heat (a what-if)" % [ms.unit.display_name, int(pilot[ms.unit.chassis_id])])
 		ms.hot_entry = -1
 		ms.ray_from = -1   # the round's roll stands in place of a reboot piece still up (the Whip Scorpion's Death Ray)
+		# What its passives give it as its turn starts (on_turn_start: the Whip Scorpion's
+		# Obliterator, Ryan, 24 November: "Turn Start: Gain 1 heat"), after a reboot's recovery and
+		# the cooling, before a Rage reads the gauge and before its die rolls; none while Swallowed.
+		if not paused(ms):
+			var opened := _apply(ms, Effects.fire(ms.unit, "on_turn_start"))
+			if not opened.is_empty():
+				log.append("%s: %s as its turn starts" % [ms.unit.display_name, ", ".join(opened)])
 		_rage_cooled(ms)   # a raging machine its granted cooling took to nothing reboots now
 		_rage_opens(ms)    # one that opens its turn at its heat maximum or past it rages, before its die rolls
 		ms.face_index = _roll(ms)
@@ -3567,6 +3582,9 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	var webbed: Array[Foe] = []
 	var riders: Array[Callable] = []   # every rider the strikes earn, in order, landed once the strikes are done (Ryan, 3 November)
 	var doubled := Effects.stack_multiplier(ms.unit, f, target)   # the stacks this spend lays, multiplied (the sixth shot)
+	var hit_heat := Effects.hit_heat(ms.unit, f, target)   # the heat each hit gives its machine (the Incinerator's)
+	var spend_heat := Effects.hit_heat(ms.unit, f, target, true)   # and what it gives once a spend, on the spend's first hit
+	var spend_heated := false   # that heat given: once a spend
 	var told_shut := {}   # the foes a gate turned the keyword from, told once
 	var split := maxi(1, f.split)    # a split: the hits it doubles, each base halved (Effects.split_of; the Split-cycle Breech, a module)
 	# One shape of weapon (Sweep, the one multi-target mode, went on 12 November): its hits all on
@@ -3723,18 +3741,37 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				# reaches the foe leave it standing.
 				if not f.is_debuff() and struck and Effects.remove(foe, "shocked"):
 					log.append(("%s: the shock is spent on the Barrier" % foe.display_name) if barred else ("%s: the shock lands, %d doubled" % [foe.display_name, blow]))
+			# The heat a hit gives its machine (hit_heat), landed with the hit's riders and ahead of its
+			# lays, so a lay that reads Overheated reads the heat the hit brought. Once a spend (the
+			# Whip Scorpion's Incinerator, Ryan, 24 November: "Resolve: Gain 1 heat and apply 1 Ablate.
+			# If Overheated, apply 3 Ablate instead"; "It should apply to everything hit, not just the
+			# target"): its heat with the spend's first hit, its lay with each Sprite's first. A Chain's
+			# ping is no hit of the spend's (Resolve, after the strikes), so it gives none.
+			var first_hit := first
+			var hh := hit_heat
+			if not spend_heated:
+				hh += spend_heat
+				spend_heated = true
+			if hh > 0:
+				riders.append(func() -> void:
+					if ms.alive():
+						_add_heat(ms, hh)
+						h.hit_heated += hh)
 			# A hit lays what the passives lay on this foe, a stack per strike, a debuff's included,
 			# unless the passive asks for a weapon's hit (the Ambush's Vitriol, its text says so:
-			# Ryan, 25 October).
+			# Ryan, 25 October); a lay with its stacks past the heat maximum reads the gauge as it lands.
 			if lays.has(foe):
 				for pair in lays[foe]:
 					if bool(pair[2]) and f.is_debuff():
 						continue
+					if (pair as Array).size() > 4 and bool(pair[4]) and not first_hit:
+						continue   # a lay once a spend rides each Sprite's first hit alone
 					var sid := str(pair[0])
-					var n_laid := _stacks_from(ms, sid, int(pair[1])) * doubled
-					riders.append(func() -> void: _land_rider(foe, sid, n_laid, gained, turned, laid))
+					var plain := int(pair[1])
+					var hot := int(pair[3]) if (pair as Array).size() > 3 else 0
+					riders.append(func() -> void: _land_rider(foe, sid, _stacks_from(ms, sid, hot if hot > 0 and ms.heat > ms.heat_max else plain) * doubled, gained, turned, laid))
 					if into_mine:
-						h.mine_stack(sid, n_laid)
+						h.mine_stack(sid, _stacks_from(ms, sid, plain) * doubled)
 			# The killing strike: what it had past the kill carries on.
 			if spills and was_alive and not foe.alive():
 				_spill(ms, f, foe, taken - hp_before, hit, at)
@@ -3834,6 +3871,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	# the hit cashes, feeds on or reads what it lays. Shock, Expose, Lure and Disrupt land below,
 	# after the blow, as they did.
 	_land_riders(ms, riders, laid, webbed)
+	if h.hit_heated > 0:
+		log.append("%s: +%d heat from its hits" % [ms.unit.display_name, h.hit_heated])
 	# The hopper (11 October; the Ore Hopper, 31 October): a shot that fires it spends the loads
 	# it took; then each foe the spend's blows damaged puts loads in, after the blow, so a claw
 	# never feeds the shot it is part of: a weapon's own number where it prints one (the
@@ -5527,15 +5566,6 @@ func _hull_damaged(ms: MechState) -> void:
 		log.append("%s: its hull takes the hit, %s" % [ms.unit.display_name, ", ".join(halved)])
 
 
-## A foe's blow its shield took, nothing of it on the hull (Ryan, 11 November, the Nemesis: "hull
-## damage takes priority"): the on_shield_hit passives fire. A bite of its own and a Barrier's
-## block are no hit on its shield.
-func _shield_hit(ms: MechState) -> void:
-	var parts := _apply(ms, Effects.shield_hit(ms.unit))
-	if not parts.is_empty():
-		log.append("%s: %s from the hit on its shield" % [ms.unit.display_name, ", ".join(parts)])
-
-
 ## The blows of a spend that a foe's armour or Barrier took whole (the Nemesis's rage, Ryan, 11
 ## November, per blow): the on_blocked passives fire once a blow, one log line for the spend.
 func _blows_blocked(ms: MechState, n: int) -> void:
@@ -5721,12 +5751,19 @@ func _needle_bolt(ms: MechState, foe: Foe, rule: Dictionary) -> void:
 		Effects.spend_stacks(foe, sid, maxi(0, Effects.stacks_of(foe, sid) - keeps))
 
 
-## A foe's blow landing on a machine (on_struck): what the machine's passives lay on its striker, a
-## blow's worth (the echidna's needle, Ryan, 20 November: "getting struck by one, grants that foe a
-## stack"), whatever the blow dealt (his of 15 October: "I thought mitigation would be ok"). A
-## wreck the blow made lays nothing. Told and gained as a spend's riders are.
+## A foe's hit landing on a machine (on_struck), whatever the hit dealt (his of 15 October: "I
+## thought mitigation would be ok"): the heat the machine's passives give it for the hit (the
+## Nemesis's Crucible Capacitor, Ryan, 24 November: "simplify the nemesis to just When Hit: gain 1
+## heat"), a striker already down included; then what they lay on a living striker, a hit's worth
+## (the echidna's needle, Ryan, 20 November: "getting struck by one, grants that foe a stack"),
+## told and gained as a spend's riders are. A wreck the hit made gains and lays nothing.
 func _struck_by(ms: MechState, f: Foe) -> void:
-	if not ms.alive() or is_out(ms) or not f.alive():
+	if not ms.alive() or is_out(ms):
+		return
+	var parts := _apply(ms, Effects.fire(ms.unit, "on_struck"))
+	if not parts.is_empty():
+		log.append("%s: %s from the hit" % [ms.unit.display_name, ", ".join(parts)])
+	if not f.alive():
 		return
 	var lays := Effects.struck_lays(ms.unit)
 	if lays.is_empty():
@@ -6302,17 +6339,24 @@ func _toggle_reboot_piece(mech_index: int) -> bool:
 		return true
 	if not can_reboot(mech_index):
 		return false
-	var at := -1
-	for k in range(ms.die.faces.size()):
-		if ms.die.faces[k].component == piece and not Effects.is_entry_disabled(ms.unit, k):
-			at = k
-			break
+	var at := reboot_piece_at(ms)
 	if at < 0:
 		return false
 	ms.ray_from = ms.face_index
 	ms.face_index = at
 	log.append("%s brings its %s up" % [ms.unit.display_name, _piece_name(ms, piece)])
 	return true
+
+
+## Where a machine's reboot piece sits on its die, lit (the Whip Scorpion's Death Ray); -1 for none.
+static func reboot_piece_at(ms: MechState) -> int:
+	var piece := Effects.reboot_piece(ms.unit) if ms != null else ""
+	if piece.is_empty():
+		return -1
+	for k in range(ms.die.faces.size()):
+		if ms.die.faces[k].component == piece and not Effects.is_entry_disabled(ms.unit, k):
+			return k
+	return -1
 
 
 ## A component's name for the log, from the content the machine was built from where it is known.
@@ -6504,8 +6548,6 @@ func _damage_mech(ms: MechState, amount: int, source: Foe) -> void:
 		log.append("%s %s %s: hull -%d%s" % [source.display_name, verb, ms.unit.display_name, r["through"], armoured])
 	if int(r["through"]) > 0:
 		_hull_damaged(ms)
-	elif int(r["absorbed"]) > 0:
-		_shield_hit(ms)   # a blow its shield took, none of it on the hull (the Nemesis's rage: hull first)
 
 
 ## The arithmetic of one blow against a shield and armour, shared by the real hit

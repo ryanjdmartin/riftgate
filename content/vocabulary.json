@@ -1424,10 +1424,10 @@
    "id": "on_struck",
    "category": "trigger",
    "name": "On struck",
-   "codex": "Passive trigger. Fires when a foe's blow lands on this machine, a time a blow, whatever the blow dealt; it lays a status on the striker. A blow that wrecks the machine lays nothing.",
+   "codex": "Passive trigger. Fires when a foe's blow lands on this machine, a time a blow, whatever the blow dealt: it gains heat, or lays a status on the striker. A blow that wrecks the machine gains and lays nothing.",
    "status": "implemented",
    "design": {
-    "holes": "Its carrier the Echidna's Sonic Needles (Ryan, 20 November: \"getting struck by one, grants that foe a stack of Sonic Needle\"). The codex is a session's draft."
+    "holes": "Its carriers the Echidna's Sonic Needles (Ryan, 20 November: \"getting struck by one, grants that foe a stack of Sonic Needle\") and the Nemesis's heat (24 November: \"When Hit: gain 1 heat\"). The codex is a session's draft."
    }
   },
   {
@@ -1507,17 +1507,7 @@
    "codex": "Passive trigger. Fires when this machine loses hull: to a blow, a bite or an overheat.",
    "status": "implemented",
    "design": {
-    "holes": "The hook for the pinned berserker idea too."
-   }
-  },
-  {
-   "id": "on_shield_hit",
-   "category": "trigger",
-   "name": "On a hit on its shield",
-   "codex": "Passive trigger. Fires when a foe's blow lands on this machine's shield and puts nothing on its hull; a blow that wounds fires On hull damage alone.",
-   "status": "implemented",
-   "design": {
-    "holes": "The Nemesis's rage, one a hit on its shield (Ryan, 11 November: \"hull damage takes priority\")."
+    "holes": "The hook for the pinned berserker idea too; the Nemesis's Berserker, a heat for hull lost (24 November)."
    }
   },
   {
@@ -1527,7 +1517,17 @@
    "codex": "Passive trigger. Fires once for every blow of this machine's weapons that a living foe's armour or Barrier takes whole, each foe's of an area and each strike's.",
    "status": "implemented",
    "design": {
-    "holes": "The Nemesis's rage, two a blow blocked (Ryan, 11 November: per blow, \"that lets it scrap against the comp its supposed to\")."
+    "holes": "The Nemesis's Breaker, two heat a blow blocked (Ryan, 11 November: per blow, \"that lets it scrap against the comp its supposed to\"; on its passive from 23 to 24 November, its branch's since)."
+   }
+  },
+  {
+   "id": "on_turn_start",
+   "category": "trigger",
+   "name": "Turn Start",
+   "codex": "Passive trigger. Fires as this machine's turn starts, after a reboot's recovery and before its die rolls.",
+   "status": "implemented",
+   "design": {
+    "holes": "The Whip Scorpion's Obliterator (Ryan, 24 November: \"Turn Start: Gain 1 heat\"). The codex is a session's draft."
    }
   },
   {

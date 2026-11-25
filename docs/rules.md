@@ -106,7 +106,21 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   itself, then Chain 3 and Charged 2. The Buzzard's, a tier two's single pick: Sustain, on its
   passive, its zap adding 3 for the same 2 shield and every foe that falls laying Regenerating 2
   on it in place of the 2 shield; Burst, on its Shield-burner Cannon, Spread 2 and Penetrate 2 and
-  its own number 2 higher. The Macaque's, a tier one's, each touch its offhand's forms (a form
+  its own number 2 higher. The Nemesis's, a tier two's, each on its passive and its Knuckles of
+  Fury: Breaker, 2 heat for each blow of its own weapons a foe's armour or Barrier takes whole,
+  each foe's and each strike's (a corpse's and a debuff's never), and Brittle 1 on the Knuckles;
+  Berserker, 1 heat for hull lost to anything (a blow, a bite of its own, a tick, an overheat), so
+  a blow that wounds heats it 2, and Ablate 1 on the Knuckles. A keyword a step grants its rage
+  piece is on the piece its Rage leaves the die. The Whip Scorpion's, a tier two's: Obliterator, a
+  heat as each of its turns starts (Turn Start, after a reboot's recovery and before its die
+  rolls) and its Heliographic Death Ray remade as the Heliographic Doom Ray (a hull cost of 1,
+  Direct, 2 and a point for every 2 heat it fires, Spread 2, Penetrate 2, Ignores Armour), REBOOT
+  reading DOOM RAY with its die in hand; the heat it fires lands on every hit of the shot, as the
+  blow's order lays what an entry prints from its firer, so the whole shot lands on each Sprite
+  it reaches; Incinerator, on its passive, once a use: a heat with its first hit, then Ablate 1
+  on each Sprite it hit (an area's and equipment's included, Chain's ping no hit), or 3 where it
+  stands past its heat maximum by then, so the use that takes it past lays 3 on each; the Death
+  Ray vents before it hits, so it lays 1. The Macaque's, a tier one's, each touch its offhand's forms (a form
   a step names takes its slot's place in the cycle) and its second steps its Aile Booster too:
   Duelist, the Beam Sword's slot holding the Beam Saber, then the shield's the Beam Buckler and the
   Booster granting Aile Blitz; Valkyrie, the rifle's slot holding the Beam Bazooka, then the shield's
@@ -130,7 +144,8 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   place of none, then its weapons dealing 1 more to a foe for each stack of Sonic Needle in it.
   The Mole's, a tier two's single pick: the Glacial Mole and the Magma Mole, each its drill's
   form and an immunity (its drill, below). A direction may be back in design, a planned draft:
-  kept in content, its depth unchecked, and never offered.
+  kept in content, its depth and its steps' effects unchecked against the engine, and never
+  offered.
 - **No recovery on the die**: a component is a weapon or equipment. No stock die holds a
   shield or a vent and no slottable one is dealt: no chassis regains shield or cools by
   itself, both gauges come back by a reboot (The reboot, below), and the decision heat leaves
@@ -966,12 +981,10 @@ On a machine:
   a Mine), nor a stun, nor a Purge, so a turned mark feeds no Paradox; the damage
   lands; until its next turn starts. On either side a Ward turns the whole thing
   and stands.
-- **Rage** (Ability, the Nemesis's): its Crucible Capacitor heats it 1 for each foe's blow its
-  shield takes with nothing on its hull, 2 for hull damage (a blow, a bite of its own, an
-  overheat; a blow that breaks the shield and wounds is hull damage alone), and 2 for every
-  blow of its own weapons a foe's armour or Barrier takes whole, each foe's and each strike's
-  (a corpse's and a debuff's never). A bite of its own on its shield and a blow its own Barrier
-  or armour takes whole heat nothing. A turn it opens at its heat maximum or past it, it rages,
+- **Rage** (Ability, the Nemesis's): its Crucible Capacitor heats it 1 for each foe's blow that
+  lands on it, whatever the blow dealt, one its shield, its armour or its own Barrier takes whole
+  included, and one from a striker already down; a tick, a bite and a burn are no blow. Its
+  branches heat it for more (Branches, above). A turn it opens at its heat maximum or past it, it rages,
   before its die rolls: every debuff on it lifts (what a Cleanse lifts), and none lands on it
   while it rages, a foe's riders and its moves turned away with a line in the log; its die rolls
   among its Knuckles of Fury alone, no reroll moving it, and they are Instant, so it swings
@@ -1236,6 +1249,8 @@ Ablate, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Expo
   Integrated component its die never rolls): while its die is held, REBOOT reads the piece's word (DEATH
   RAY), and its die dropped there brings the piece up in place of the entry it showed, nothing
   vented yet; while it is up REBOOT reads CANCEL, and a drop there again shows the entry it did.
+  Held over REBOOT, the die shows what the drop brings up, the piece at the number its heat makes
+  now, and over CANCEL the entry it goes back to.
   The die with the piece up rerolls nothing. Spent, the piece does its thing and the machine
   reboots as above, the reboot its whole turn. A die with nothing the piece may land on (a field
   of Phased foes) cannot reboot that turn: it skips, or spends an entry that needs no foe. UNDO
@@ -1669,7 +1684,8 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   multiply after every add and held at double past the maximum, read at the heat it holds as a
   shot begins (before a Vents all shot fires it); the die's number and the bot read it the same
   way. Past half its heat maximum every hit a foe lands on it is doubled, before its shield,
-  armour and a Barrier see it. Its reboot fires its locked Heliographic Death Ray first (The
+  armour and a Barrier see it; its overheat's burn, a tick, a bite and a price in hull land as
+  printed. Its reboot fires its locked Heliographic Death Ray first (The
   reboot, below): 2, and 1 more for every 2 heat it fires, at its heat scale, then the reboot.
 
 ### Every number is a question
