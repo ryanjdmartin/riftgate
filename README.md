@@ -461,7 +461,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_AA=off|fxaa|msaa2|msaa4              the AA mode (the player's SETTINGS, AA MODE; MSAA 4X by default)
 #   RIFTGATE_SAFE=<top>,<bottom>                  keeps a phone's safe bands clear
 # Numbers on trial (a what-if over content, never a decision)
-#   RIFTGATE_GRADED=1                             the graded tide: packs rated one to three dealt by where they make for, ones to the wall's ends, twos between, threes down the middle
+#   RIFTGATE_GRADED=1                             the graded tide, the game's direction, on its dial until the switch-over (docs/briefs/graded_tide.md): packs rated one to three dealt by where they make for, ones to the wall's ends, twos between, threes down the middle
 #   RIFTGATE_SENDS=2                              the packs every mouth sends at a peak, the rift and each open tear, 1 to 4, 1 the game's
 #   RIFTGATE_STRIKE=5                             what a pip of threat rating strikes the wall for, 10 the game's
 #   RIFTGATE_PACK_BONUS=50                        what a pack pays the Rupture meter as it falls, on top of its rating, in hundredths of a pip, 0 the game's
