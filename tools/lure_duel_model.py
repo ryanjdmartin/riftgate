@@ -43,6 +43,7 @@ its entry shows, held; the others open the cage once nothing else stands, or reb
     python3 tools/lure_duel_model.py                 # the tables
     python3 tools/lure_duel_model.py --trials 4000   # steadier cells
     python3 tools/lure_duel_model.py --shows 1       # a drone no die rolls: there whenever wanted
+    python3 tools/lure_duel_model.py --hold          # Ryan's second pass: every hit holds, the reboot breaks it (fight_hold)
 """
 import argparse
 import random
@@ -67,13 +68,16 @@ class Frame:
 
 
 class Sprite:
-    def __init__(self, name, hp, moves, plate=0):
+    def __init__(self, name, hp, moves, plate=0, resist=1):
         self.name = name
         self.hp = hp
         self.plate = plate
         self.moves = moves   # (weight, kind, number): "hit" at one Frame, "all" at every Frame, "idle"
         self.move = None
         self.target = None
+        self.resist = resist   # its stun resist: the Numbed it gains as a stun ends (1, 2 massive, 3 elite)
+        self.numbed = 0
+        self.stunned = False
 
     def biggest(self):
         return max([n for _, k, n in self.moves if k == "hit"] or [0])
@@ -84,13 +88,13 @@ def pack(kind):
     mandragora = lambda: Sprite("mandragora", 3, [(2, "hit", 2)])
     needler = lambda: Sprite("needler", 4, [(2, "hit", 4)])
     if kind == "nob":
-        return [Sprite("nob", 60, [(2, "hit", 14), (2, "hit", 8)])]
+        return [Sprite("nob", 60, [(2, "hit", 14), (2, "hit", 8)], resist=3)]
     if kind == "fell_rider":
-        return [Sprite("fell rider", 48, [(2, "hit", 16), (1, "idle", 0), (2, "all", 6)])]
+        return [Sprite("fell rider", 48, [(2, "hit", 16), (1, "idle", 0), (2, "all", 6)], resist=3)]
     if kind == "old_man":
-        return [Sprite("old man", 44, [(2, "hit", 11), (1, "idle", 0), (2, "all", 7)], plate=1), needler(), needler()]
+        return [Sprite("old man", 44, [(2, "hit", 11), (1, "idle", 0), (2, "all", 7)], plate=1, resist=3), needler(), needler()]
     if kind == "treant":
-        return [Sprite("treant", 14, [(2, "hit", 6), (1, "idle", 0)], plate=1), goblin(), goblin(), goblin(), mandragora(), mandragora()]
+        return [Sprite("treant", 14, [(2, "hit", 6), (1, "idle", 0)], plate=1, resist=2), goblin(), goblin(), goblin(), mandragora(), mandragora()]
     if kind == "horde":
         return [goblin(), goblin(), goblin(), goblin(), mandragora(), mandragora(), mandragora(), mandragora()]
     raise ValueError(kind)
@@ -257,6 +261,182 @@ def fight(kind, squad_kind, lock, duel, sealed, sync, rng, shows=SHOWS, lure="no
     return won, rounds, t_lost, a_lost, wrecks, idle
 
 
+def fight_hold(kind, o, rng, cap=40):
+    """Ryan's second pass (25 November): the tank's every use on a Sprite entangles its target,
+    its use on itself lets go, the hold costs while it stands, and a reboot breaks it with a stun.
+
+    o: tax (Heat the tank gains at its turn end while it holds), dot (HP its Sprite loses then),
+    stun ("none", "reboot": the reboot's break Suppresses, "every": every break does), letgo (how
+    often the tank's die shows a piece it may use on itself: Armoured 2 as it lets go), through
+    (the hold outlasts the reboot, no break), plate (armour more against its Sprite, before the
+    shield), sealed (its Sprite's hit on every Frame lands on the tank alone), selfbreak (its
+    Sprite's move on itself breaks the hold)."""
+    squad = [Frame(tank=(i == 0)) for i in range(3)]
+    tank = squad[0]
+    foes = pack(kind)
+    partner = None
+    rounds = idle = stuns = reboots = 0
+    braced = 0
+
+    def let_go(stun):
+        nonlocal partner, stuns
+        if partner is not None and partner.hp > 0 and stun:
+            if partner.numbed > 0:
+                partner.numbed -= 1
+            else:
+                partner.stunned = True
+                stuns += 1
+        partner = None
+
+    while rounds < cap:
+        live = [f for f in foes if f.hp > 0]
+        up = [m for m in squad if m.hull > 0]
+        if not live or not up:
+            break
+        rounds += 1
+        if partner is not None and (partner.hp <= 0 or tank.hull <= 0):
+            partner = None
+        for m in up:
+            if m.rebooting:
+                m.rebooting = False
+                m.shield = m.shield_max
+            m.barrier = False
+        braced = 0
+        doomed = {}
+        for f in live:
+            total = sum(w for w, _, _ in f.moves)
+            r = rng.random() * total
+            for w, k, n in f.moves:
+                r -= w
+                if r < 0:
+                    f.move = (k, n)
+                    break
+            f.target = None
+            if f.move[0] == "hit":
+                if f is partner:
+                    f.target = tank
+                else:
+                    open_to = [m for m in up if doomed.get(m, 0) < m.shield + m.hull] or up
+                    f.target = rng.choice(open_to)
+                doomed[f.target] = doomed.get(f.target, 0) + f.move[1]
+        # Your turn: reboots first, as the player reads them off the intents.
+        acting = []
+        only_partner = partner is not None and all(f is partner for f in live)
+        for m in up:
+            aimed = any(f.target is m for f in live)
+            tax = o.get("tax", 0) if (m.tank and partner is not None) else 0
+            must = m.heat + GUN_HEAT + tax > GAUGE or (m.shield == 0 and aimed and m.heat >= GUN_HEAT)
+            if not m.tank and only_partner and m.heat >= 2 * GUN_HEAT:
+                must = True   # the squad's safe reboot, under the tank's hold
+            if must:
+                m.rebooting = True
+                m.shield = 0
+                m.heat = 0
+                if m.tank:
+                    reboots += 1
+                    if not o.get("through"):
+                        let_go(o.get("stun") in ("reboot", "every"))
+            else:
+                acting.append(m)
+        tank_acts = tank in acting
+        # The tank lets go by using something on itself, when its Sprite is all there is to aim at.
+        if tank_acts and partner is not None and all(f is partner for f in foes if f.hp > 0) \
+                and rng.random() < o.get("letgo", 0):
+            let_go(o.get("stun") == "every")
+            braced = 2
+            tank_acts = False
+        for m in acting:
+            if m.tank:
+                continue
+            pool = [f for f in foes if f.hp > 0 and f is not partner]
+            if pool:
+                kills = [f for f in pool if f.hp <= GUN - f.plate]
+                t = min(kills or pool, key=lambda f: f.hp)
+                t.hp -= max(0, GUN - t.plate)
+                m.heat += GUN_HEAT
+            else:
+                idle += 1
+        if tank_acts:
+            pool = [f for f in foes if f.hp > 0]
+            if pool:
+                big = max(pool, key=lambda f: (f.biggest(), f.hp))
+                t = partner if (partner is not None and partner.hp > 0 and partner.biggest() >= big.biggest()) else big
+                t.hp -= max(0, GUN - t.plate)
+                tank.heat += GUN_HEAT
+                if t.hp > 0 and t is not partner:
+                    let_go(o.get("stun") == "every")
+                    partner = t
+                    if t.move[0] == "hit":
+                        t.target = tank
+        if partner is not None and partner.hp <= 0:
+            partner = None
+        # Your turn's end: the hold's price, then the heat past the maximum.
+        if partner is not None and tank.hull > 0:
+            tank.heat += o.get("tax", 0)
+            partner.hp -= o.get("dot", 0)
+            if partner.hp <= 0:
+                partner = None
+        for m in [m for m in squad if m.hull > 0]:
+            if m.heat > GAUGE:
+                m.hull -= m.heat - GAUGE
+                m.shield = 0
+        # The Sprites' turn.
+        for f in foes:
+            if f.hp <= 0:
+                continue
+            if f.stunned:
+                f.stunned = False
+                f.numbed = f.resist
+                continue
+            k, n = f.move
+            held = f is partner and tank.hull > 0
+            if held and k == "idle" and o.get("selfbreak"):
+                partner = None   # its move on itself breaks it free (the other reading of "targeting itself")
+                held = False
+            if k == "hit":
+                t = f.target if f.target is not None and f.target.hull > 0 else next((m for m in squad if m.hull > 0), None)
+                hits = [t] if t is not None else []
+            elif k == "all":
+                hits = [tank] if (held and o.get("sealed", True)) else [m for m in squad if m.hull > 0]
+            else:
+                hits = []
+            for m in hits:
+                dmg = n
+                plate = m.armour + (braced if m is tank else 0)
+                if held and m is tank and o.get("plate", 0):
+                    dmg = max(0, dmg - plate - o["plate"])
+                    plate = 0
+                took = min(m.shield, dmg)
+                m.shield -= took
+                m.hull -= max(0, dmg - took - plate)
+            if f.numbed > 0:
+                f.numbed -= 1
+    won = not [f for f in foes if f.hp > 0]
+    a_lost = sum(m.hull_max - max(0, m.hull) for m in squad if m is not tank)
+    wrecks = sum(1 for m in squad if m.hull <= 0)
+    return won, rounds, tank.hull_max - max(0, tank.hull), a_lost, wrecks, idle, stuns, reboots
+
+
+def hold_cell(kind, o, trials, seed):
+    rng = random.Random(seed)
+    tot = [0.0] * 8
+    for _ in range(trials):
+        for i, v in enumerate(fight_hold(kind, o, rng)):
+            tot[i] += v
+    return [v / trials for v in tot]
+
+
+HOLD_ROWS = [
+    ("1 alone: every hit holds, nothing ends it", {"through": True}),
+    ("1 and 4: the reboot breaks it and stuns", {"stun": "reboot"}),
+    ("The four: 2 Heat, 2 HP, a let-go", {"stun": "reboot", "tax": 2, "dot": 2, "letgo": 0.5}),
+    ("1, 2 and 4, 1 HP, no Heat", {"stun": "reboot", "dot": 1, "letgo": 0.5}),
+    ("The same, 4 Armour against its Sprite", {"stun": "reboot", "dot": 1, "letgo": 0.5, "plate": 4}),
+    ("The same, every break stunning", {"stun": "every", "dot": 1, "letgo": 0.5}),
+    ("The same, its move on itself breaking free", {"stun": "reboot", "dot": 1, "letgo": 0.5, "selfbreak": True}),
+]
+
+
 def cell(kind, squad_kind, lock, duel, sealed, sync, trials, seed, shows=SHOWS, lure="none"):
     rng = random.Random(seed)
     tot = [0.0] * 6
@@ -287,14 +467,24 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--trials", type=int, default=2000)
     ap.add_argument("--shows", type=float, default=SHOWS, help="how often the drone is there to set when wanted (1 for a drone no die rolls)")
+    ap.add_argument("--hold", action="store_true", help="Ryan's second pass: every hit holds, a reboot breaks it")
     a = ap.parse_args()
     for kind, title in PACKS:
         print("\n### %s\n" % title)
         print("| The squad | Won | Rounds | Hull lost, the tank | Hull lost, the others | Wrecks | Turns with nothing to aim at |")
         print("|---|---|---|---|---|---|---|")
         for label, sk, lock, duel, sealed, sync, lure in ROWS:
+            if a.hold and lock not in ("none",) and label != "Slip, the lean":
+                continue
             c = cell(kind, sk, lock, duel, sealed, sync, a.trials, 11, a.shows, lure)
             print("| %s | %.0f%% | %.1f | %.1f | %.1f | %.2f | %.1f |" % (label, 100 * c[0], c[1], c[2], c[3], c[4], c[5]))
+        if a.hold:
+            print("\nThe hold (Ryan's second pass): its stuns and its tank's reboots a fight.\n")
+            print("| The hold | Won | Rounds | Hull lost, the tank | Hull lost, the others | Wrecks | Turns with nothing to aim at | Stuns | Reboots, the tank |")
+            print("|---|---|---|---|---|---|---|---|---|")
+            for label, o in HOLD_ROWS:
+                c = hold_cell(kind, o, a.trials, 11)
+                print("| %s | %.0f%% | %.1f | %.1f | %.1f | %.2f | %.1f | %.1f | %.1f |" % (label, 100 * c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7]))
 
 
 if __name__ == "__main__":

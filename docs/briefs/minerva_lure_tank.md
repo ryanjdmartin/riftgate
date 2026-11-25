@@ -7,7 +7,8 @@ the two able to target only each other. Its niche is his of 25 November: "THE ti
 with Storm Petrel a close second. It can be simpler than Petrel, but hopefully no less
 interesting." "The lure tank" is a working label; the name and the machine are Ryan's.
 
-**Status**: Ryan's idea of 25 November, Claude's round of that day below, unanswered. **Maker**:
+**Status**: Ryan's idea of 25 November, Claude's round on it (the cage), his four brainstorms
+on that and Claude's read of them (the hold), all of 25 November, unanswered. **Maker**:
 Minerva. **Proposed tier**: one. **Read first**: `docs/briefs/README.md` (ten a maker, the
 orbits); `docs/rules.md`, The reboot and Foes (a Sprite's target); the bible's redirection row,
 threat-shape row and armour row (section 5) and the Storm Petrel's row. The rounds before 25
@@ -27,6 +28,11 @@ on his "ignoring the old briefs", and stand in git.
   idea and see how we can make it work and make it interesting. Remember the target niche is for
   this to be THE tier-1 tank option, with Storm Petrel a close second. It can be simpler than
   Petrel, but hopefully no less interesting."
+- 25 November, on the cage: "Couple brainstorms to throw around: -the entangled target is set
+  on it hitting a sprite with anything -the entanglement is removed by targeting itself with
+  something -the entangled target and/or the lure tank take damage over time or some other
+  penalty while entangled -breaking the entanglement suppresses the target, maybe only during a
+  reboot break so it's not just guaranteed damage to the tank"
 
 ## Claude's round (25 November): the cage
 
@@ -146,13 +152,63 @@ lockout, the tag that says only the one who hung it may touch the machine.
 armour before the shield against one Sprite; the bot's price for a hold and for opening one; a
 tether drawn between the two, judged running; a warning on a die held over a caged Sprite.
 
-## Open for the session
+## Claude's read of his four (25 November): the hold
 
-1. How the cage ends: tight as written, or with the slip line.
-2. Area: sealed both ways, or the squad's area in and its Sprite's storms out.
-3. The tank's edge: plate before the shield, hits halved, or the drone taking the first hit.
-4. Lure and Spread on the Drone from tier one, or with the warden.
-5. The machine and its name; numbers and stock; its branches.
+**The loop they make together.** Every use on a Sprite holds its target. The held Sprite's hits
+land on the tank's shield until it breaks, and the broken shield brings the reboot. The reboot
+snaps the hold and Suppresses the Sprite, so the tank's bare round is safe and the squad has its
+window. The tank's next hit holds again. No entry on the die is the drone: the passive is.
+
+`tools/lure_duel_model.py --hold`, the hull the two other Frames lose, then the tank's:
+
+| | The Nob alone | The Fell Rider alone | The Old Man, two Needlers | The Goblin horde |
+|---|---|---|---|---|
+| The tank, no drone | 31, 16 | 29, 14 | 42, 26 | 7.5, 1.6 |
+| The cage (the round above) | 7.5, 21 | 11, 16 | 12, 18 | 3.2, 2.4 |
+| 1 alone, nothing ending it | won 7%, the squad idle 13 turns | won 77%, idle 14 | won 43%, idle 16 | 5.7, 3.1 |
+| 1 and 4 | 0.7, 28 | 0.6, 23 | 0.4, 27 | 6.2, 1.9 |
+| The four, 2 Heat and 2 HP | 0, 26 | 1.4, 19 | 2.9, 17 | 2.9, 0.8 |
+| 1, 2 and 4, 1 HP, no Heat | 0.3, 26 | 2.6, 21 | 6.8, 23 | 2.4, 0.4 |
+| The same, 4 Armour against its Sprite | 0, 16 | 2.4, 10 | 7.1, 7 | 2.4, 0.4 |
+
+**Each idea.**
+
+1. *Set by every hit.* The engine of it, and his 4 November "every hit lures" made to last. One
+   drone holds one Sprite, so it is the use's target: an area holds its target, a reach over
+   every Sprite holds none, and a hit on another Sprite moves the hold. Alone it is a trap against
+   a lone elite: nothing to aim at for 13 to 16 turns.
+2. *Let go by using something on itself.* A lever, with holding the default: the bot that lets
+   go whenever its squad has nothing to aim at loses more to the Old Man (13 hull for 7). Minerva
+   has two pieces for it at tier one, the Shoring Jack (Armoured 2) and the Blast Door (a
+   Barrier), and both cover the round's held hit, since a pick is a commitment. "Itself" reads
+   two ways: the tank, or the held Sprite (its own brace or recovery breaking it free, a counter
+   for the foes). The model's elites rarely move on themselves, so it cannot tell the two apart.
+3. *A price while held.* Heat on the tank measures as nothing: against a big hitter its shield
+   breaks first, and the broken shield brings the reboot before the Heat does. The shield is the
+   clock, and the Sprite's every hit on the tank is the price. HP off the held Sprite is a bonus
+   on the tank's own target, which it keeps hitting: at 1 the horde falls in 3.6 rounds for 5.2
+   (a hit and a tick kill a goblin), the elites a round or two sooner.
+4. *A reboot's break stuns.* The heart of it: with it the others lose under 3 hull to the lone
+   elites. "Only during a reboot break" is the right line. Every break stunning would let holding
+   and letting go stun every other round; the reboot ties the stun to the tank's whole turn.
+   Numbed does the rest: an elite's resist of 3 leaves about one reboot in two stunning (2 stuns
+   in 4 reboots against the Nob), and its Numbed chip says which.
+
+**The bend.** Against a lone elite the tank is the target of all the Sprite does, the whole fight:
+the redirection row's "standing draw" that "made one machine the target of everything", there
+Guard's failure. Here the price is the tank's hull (16 to 28 of its 36 a fight, and hull is the
+battle's), with the Numbed holes and one Sprite at a time; a Suppress-immune Sprite (the Pilgrim)
+makes every reboot bare.
+
+
+1. The cage (a Drone entry, the slip line) or the hold (every hit, the reboot's stun): Ryan's
+   four lean to the hold.
+2. Whose "itself" lets go: the tank's use on itself, or the held Sprite's move on itself.
+3. The price while held: HP off the held Sprite (1), Heat on the tank, or the shield alone.
+4. Its edge against its Sprite: 4 Armour before the shield, or none.
+5. Area: sealed both ways, or the squad's area in and its Sprite's storms out.
+6. The bend of the redirection row against a lone elite.
+7. The machine and its name; numbers and stock; its branches.
 
 ## What the session hands back
 
