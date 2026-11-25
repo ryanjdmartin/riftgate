@@ -1726,7 +1726,7 @@
      "id": "incinerator",
      "name": "Incinerator",
      "design": {
-      "notes": "Ryan, 24 November: \"Resolve: Gain 1 heat and apply 1 Ablate. If Overheated, apply 3 Ablate instead\" and \"It should apply to everything hit, not just the target\", his form after the reads of the same day (measurements.md: the Maxigun carried a heat and an Ablate a hit, his first form, \"Passive gains Resolve: For each hit, gain 1 heat and apply 1 Ablate. If Overheated, apply 2 Ablate Instead\"). Once a spend: its heat with the spend's first hit, its Ablate on each Sprite hit once, an area's and equipment's included, a Chain's arc none; the heat lands before the Ablate, so a spend that takes it past Max Heat lays 3; the Death Ray vents first, so it lays 1 and its heat goes with the reboot. The step's text his, with \"to each Sprite hit\" a session's, the standard's words for everything hit."
+      "notes": "Ryan, 24 November: \"Resolve: Gain 1 heat and apply 1 Ablate. If Overheated, apply 3 Ablate instead\" and \"It should apply to everything hit, not just the target\", his form after the reads of the same day (measurements.md: the Maxigun carried a heat and an Ablate a hit, his first form, \"Passive gains Resolve: For each hit, gain 1 heat and apply 1 Ablate. If Overheated, apply 2 Ablate Instead\"). Once a spend: its heat with the spend's first hit, its Ablate on each Sprite hit once, an area's and equipment's included, Chain's ping no hit; the heat lands before the Ablate, so a spend that takes it past Max Heat lays 3; the Death Ray vents first, so it lays 1 and its heat goes with the reboot. The step's text his, with \"to each Sprite hit\" a session's, the standard's words for everything hit."
      },
      "steps": [
       {

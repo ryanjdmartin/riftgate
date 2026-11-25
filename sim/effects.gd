@@ -1950,7 +1950,7 @@ static func laid_statuses(u, face: Face, target) -> Array:
 
 ## The heat each hit of this entry gives its machine (hit_heat on on_attack: the Whip Scorpion's
 ## Incinerator, Ryan, 24 November: "Resolve: For each hit, gain 1 heat and apply 1 Ablate"): its
-## `value`, every Sprite hit, a debuff's and an area's included, a Chain's arc none. `once_a_spend`
+## `value`, every Sprite hit, a debuff's and an area's included, Chain's ping none (no hit). `once_a_spend`
 ## asks for those that give it once a spend instead, with the spend's first hit (`once` "spend").
 static func hit_heat(u, face: Face, target = null, once_a_spend: bool = false) -> int:
 	var n := 0

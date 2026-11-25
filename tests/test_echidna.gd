@@ -132,7 +132,7 @@ func test_the_third_needle_fires_chain_2_on_every_conductor_its_own_foe_included
 	assert_true(Effects.has(c, "shocked"), "no strike aimed at a conductor: its Shock stands")
 
 
-func test_the_bolt_meets_brittle_a_barrier_and_armour() -> void:
+func test_the_bolt_pings_past_brittle_a_barrier_and_armour() -> void:
 	var u := _mech(Die.single(Face.attack(0, I, [K.LURE])))
 	var a := _foe()
 	var brittle := _foe()
@@ -145,8 +145,8 @@ func test_the_bolt_meets_brittle_a_barrier_and_armour() -> void:
 	_status(brittle, "brittled")
 	_status(barred, "barrier")
 	assert_true(sk.assign(0, a), "equipment lays the third needle")
-	assert_eq([a.hp, brittle.hp, barred.hp, plated.hp], [28, 27, 30, 29], "2 on its foe, Brittle adding, a Barrier taking it whole, armour taking 1")
-	assert_false(Effects.has(barred, "barrier"), "the Barrier is spent")
+	assert_eq([a.hp, brittle.hp, barred.hp, plated.hp], [28, 28, 28, 28], "Chain's 2 HP on each conductor, its foe included: no Brittle adds, no Barrier or armour takes it")
+	assert_true(Effects.has(barred, "barrier"), "the Barrier stands: the ping is no blow")
 
 
 func test_two_needles_on_a_foe_at_two_fire_once_and_leave_one() -> void:
