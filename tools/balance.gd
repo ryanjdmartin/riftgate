@@ -63,10 +63,10 @@ extends SceneTree
 ## finale's line of each domain's first bench hero promoted, beside the packs by default),
 ## --trace "<row id>|<pack id>|<policy>|<seed>" (play that one fight and print its log
 ## instead of the matrix; ids as the JSON names them, e.g. "kite|brute x4|greedy|3"),
-## --part i/n (21 October: run only every n-th cell from the i-th, counting from 0, into the
-## --json path and no report, so n processes share the matrix on n cores) and --merge
-## a.json,b.json (the report from those parts' cells, with the same options the parts ran
-## under; the time it prints is the longest part's):
+## --part i/n (21 October: run only every n-th cell from the i-th, counting from 0 and refused
+## out of range, into the --json path and no report, so n processes share the matrix on n
+## cores) and --merge a.json,b.json (the report from those parts' cells, with the same options
+## the parts ran under; the time it prints is the longest part's):
 ##   for i in 0 1 2 3; do godot ... -s tools/balance.gd -- --part $i/4 --json part$i.json & done; wait
 ##   godot ... -s tools/balance.gd -- --merge part0.json,part1.json,part2.json,part3.json
 ##
@@ -107,6 +107,7 @@ var edits: Array = []       # --set: "path=json" content replacements for this r
 var fits: Dictionary = {}   # --fit: chassis id -> the module ids fitted to every machine of it
 var part := -1              # --part i/n: this process runs the cells whose place in the matrix is i modulo n
 var parts := 1
+var bad_part := ""         # a --part out of range (i from 0 to n-1), refused before any fight
 var merge: Array = []       # --merge: the parts' JSON paths to build the report from
 
 var db: ContentDB
@@ -117,6 +118,10 @@ var cells: Dictionary = {}   # "row|pack|policy" -> aggregate
 
 func _init() -> void:
 	_parse_args()
+	if not bad_part.is_empty():
+		push_error("--part %s: a part is i/n with i from 0 to n-1 (0/4 to 3/4)" % bad_part)
+		quit(1)
+		return
 	db = ContentDB.load_default()
 	if not db.load_errors.is_empty():
 		push_error("content did not load: " + "\n".join(db.load_errors))
@@ -326,10 +331,14 @@ func _parse_args() -> void:
 				trace = v
 				i += 1
 			"--part":
+				# A part counts from 0 (0/4 to 3/4). One out of range is refused, never clamped: a
+				# clamped 4/4 runs 3/4's cells twice and leaves 0/4's unrun.
 				var pp := v.split("/")
-				if pp.size() == 2 and int(pp[1]) > 0:
+				if pp.size() == 2 and pp[0].is_valid_int() and pp[1].is_valid_int() and int(pp[1]) > 0 and int(pp[0]) >= 0 and int(pp[0]) < int(pp[1]):
 					parts = int(pp[1])
-					part = clampi(int(pp[0]), 0, parts - 1)
+					part = int(pp[0])
+				else:
+					bad_part = v
 				i += 1
 			"--merge":
 				merge = Array(v.split(","))
