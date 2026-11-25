@@ -55,7 +55,14 @@ document's job and every command are in `README.md`.
   November stand over what comes next: a massive foe is a kind of unit and no measure of
   threat ("a property, not a quota", with more kinds of enemy wanted in a pass of its own), a
   squad's growth inside a tier is a target to set, and the packs a mouth sends at once are the
-  Convergence's dial. The hunters are pinned and the treant waits on his marks.
+  Convergence's dial. The hunters are pinned and the treant waits on his marks. From his
+  first play of it (24 November: "There needs to be more packs on the field at the start, for
+  sure. And spawns from the rift should probably spawn outside of the shell, and on a hex that
+  is on the side of where they're headed ... Still testing the rest"): its opening stands
+  seven packs at the first Convergence, before every band of the wall and two at each end
+  (`Battle.graded_opening`, the session's count and his to mark), and a pack the rift sends
+  lands outside the shell on the side it is headed, under either tide (the rules' Rift
+  Pressure).
 - Branches. Main holds everything this file describes. `claude/game-ui-animation-tweaks-xiex10`
   landed on 24 November on Ryan's "merge into main" (his two lists of the day: the Cassowary's size
   and run, the Macaque's size, UNDO's count gone, the aim's reticle and tether, the intent lines
@@ -67,7 +74,9 @@ document's job and every command are in `README.md`.
   seam a circle, the round's view, the zoom's floor, the pushers' segments, the tears' row slower
   and off the wall, five tier-one stock dice back to basics, the basics' five dials settled and
   cut, the graded tide on a dial with the Meadow's packs, the trials' page cut to six dials, the
-  tier-one bench as a grid). The terminology pass's branch
+  tier-one bench as a grid), and again on 25 November on his "Land on main", with the two
+  fixes from his first play of the graded tide: its fuller opening and the rift's landing. The
+  terminology pass's branch
   (`claude/gameplay-terminology-tooltips-rug879`) landed again the same day on his "land this on
   main": gameplay text follows `docs/text_standard.md` (CLAUDE.md says so), every glossary tip is
   written to it, and a reach over every Sprite targets the field. The Mole's new tips followed it
@@ -111,7 +120,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1477 tests, 402,203 checks, green on Godot 4.8-beta4 (25 November, a Ricochet's hit the machine's, over main's Whip Scorpion round). The runner fails a run
+- Tests: 1479 tests, 402,308 checks, green on Godot 4.8-beta4 (25 November, a Ricochet's hit the machine's over the graded tide's opening and the rift's landing). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -542,7 +551,9 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   Published at v0.674 on 25 November from main's file at `8775e481` (the page's Version 529: the
   Nemesis's and the Whip Scorpion's rounds landed on main over its Chain ping), over v0.673
-  (Version 528, 24 November, from `ccr-178e0404-ptuh2m`'s `24adae57`). Before republishing,
+  (Version 528, 24 November, from `ccr-178e0404-ptuh2m`'s `24adae57`). The file is a version past
+  the page, v0.675, since `claude/formation-pass-feedback-rlvx5x`'s two fixes of 24 November (the
+  tears row: the rift's landing, the flank tears' trial retired), unpublished. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
   `8775e481` unless the live page says otherwise, OURS this branch's file, THEIRS the saved

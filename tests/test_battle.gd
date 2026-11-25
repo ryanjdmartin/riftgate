@@ -2051,14 +2051,27 @@ func test_the_graded_tide_deals_packs_by_the_band_of_the_wall_they_make_for() ->
 	assert_false(f.hunters.is_empty(), "its hunting packs stand apart")
 	for c in f.hunters:
 		assert_false(str(c.get("hunts", "")).is_empty(), "%s hunts" % str(c["id"]))
-	# The opening: the game's own count, a three before the middle and a one at each end.
+	# The opening: packs before every band of the wall, more than the game as built stands
+	# (Ryan, 24 November: "There needs to be more packs on the field at the start, for sure"),
+	# each of its band's rating, none to strike on the first turn.
 	var opened: Array = f.packs().filter(func(sq: Unit) -> bool: return not sq.is_boss)
-	assert_eq(opened.size(), Ramp.formations_at(0) + Ramp.patrols_at(0), "the game's own count opens the battle")
-	var mid := f.map.width / 2
+	var form := Battle.graded_opening(0, f.map.width)
+	assert_eq(opened.size(), form.size(), "the graded tide's own opening stands")
+	assert_true(opened.size() > Ramp.formations_at(0) + Ramp.patrols_at(0), "more packs than the game as built opens with (%d)" % opened.size())
+	assert_true(Battle.graded_opening(Ramp.TOP, f.map.width).size() > form.size(), "and more again up the ramp")
+	var stood := {}
+	for e in form:
+		assert_eq(int(e[1]), int(Battlefield.BAND_RATING[int(e[0])]), "the form stands a band its own rating")
+		assert_eq(f.band_of(int(e[2])), int(e[0]), "before its own band (column %d)" % int(e[2]))
+		assert_true(int(e[3]) >= 2, "two moves or more from the wall")
 	for sq in opened:
 		var band := f.band_of((sq as Unit).goal_col)
+		stood[band] = true
 		assert_eq(int(Battlefield.BAND_RATING[band]), (sq as Unit).squad, "%s, a pack for %d, makes for a band of its rating (column %d)" % [(sq as Unit).display_name, (sq as Unit).squad, (sq as Unit).goal_col])
 		assert_eq((sq as Unit).behaviour, "push", "and pushes")
+		assert_false(f.soonest_columns(sq).is_empty(), "%s opens with a way to the wall" % (sq as Unit).display_name)
+		assert_false((f.plan_walks()[(sq as Unit).id] as Battlefield.Walk).strikes, "and strikes nothing on the first turn")
+	assert_eq(stood.size(), Battlefield.BAND_RATING.size(), "a pack makes for every band of the wall")
 	var built_rows := 0
 	for sq in plain.field.packs():
 		if not sq.is_boss and sq.squad >= 3:
@@ -2132,6 +2145,135 @@ func test_a_graded_pack_bound_for_an_end_never_stops_short_along_the_wall() -> v
 		turns += 1
 	assert_true(f.on_apron(one, one.pos), "it reaches the wall (%d turns)" % turns)
 	assert_eq(f.band_of(Hex.axial_to_offset(one.pos).x), 0, "in its own band")
+
+
+## A pack the rift sends lands outside the shell, on the side it is headed (Ryan, 24 November:
+## "spawns from the rift should probably spawn outside of the shell, and on a hex that is on the
+## side of where they're headed. Right now they spawn from the back and have to skirt around the
+## whole rift to head out"): on the ring round the shell's seven, the hex its walk is shortest
+## from; its first walk never crosses the rift's column; a hunting pack lands on its prey's side
+## and locks nothing by it; nothing lands beside a machine; with the ring held it still stands
+## off the shell; and the tide as built draws its segment as it always did.
+func test_a_pack_the_rift_sends_lands_outside_the_shell_on_the_side_it_is_headed() -> void:
+	Battlefield.graded_tide = true
+	var b := Battle.new(8)
+	b.setup(_team(), "meadow")
+	Battlefield.graded_tide = false
+	var f := b.field
+	# A bare field, so the read is the landing's and no shape's: the opening's packs off it.
+	for sq in f.packs():
+		if not sq.is_boss:
+			f.units.erase(sq)
+	for h in f.map.terrain.keys():
+		if not f.map.is_structure(h):
+			f.map.terrain[h] = BattleMap.Terrain.PLAIN
+	var shell := f.map.shell_hexes()
+	var ring := f.rift_ring()
+	assert_eq(shell.size(), 7, "the shell's seven")
+	assert_true(ring.size() >= 8, "a ring of hexes round them (%d)" % ring.size())
+	for h in ring:
+		assert_false(shell.has(h) or f.map.rift_hexes.has(h), "no ring hex is the shell's or the rift's")
+		assert_true(Hex.neighbors(h).any(func(n: Vector2i) -> bool: return shell.has(n)), "each beside one of the seven")
+	var rift_col := Hex.axial_to_offset(f.map.rift).x
+	var last := Battlefield.BAND_RATING.size() - 1
+	var sides := {0: -1, last: 1}
+	for band in [0, last]:
+		var sq := f.emerge(f.next_graded(1), f.map.rift, 0, 1, band)
+		assert_eq(f.band_of(sq.goal_col), band, "a pack bound for an end of the wall (column %d)" % sq.goal_col)
+		assert_true(ring.has(sq.pos), "lands on the ring outside the shell (%s)" % str(Hex.axial_to_offset(sq.pos)))
+		assert_true((Hex.axial_to_offset(sq.pos).x - rift_col) * int(sides[band]) > 0, "on its own side of the rift (column %d)" % Hex.axial_to_offset(sq.pos).x)
+		var w: Battlefield.Walk = f.plan_walks()[sq.id]
+		assert_false(w.route.is_empty(), "and walks")
+		for h in w.route:
+			assert_true((Hex.axial_to_offset(h).x - rift_col) * int(sides[band]) >= 0, "never round the rift to the other side (column %d)" % Hex.axial_to_offset(h).x)
+		assert_eq(w.route.size(), Hex.distance(sq.pos, w.route[w.route.size() - 1]), "straight to its stretch, no hex wasted")
+	var centre := f.emerge(f.next_graded(3), f.map.rift, 0, 1, last / 2)
+	assert_true(ring.has(centre.pos), "a pack bound for the middle lands on the ring")
+	assert_eq(Hex.axial_to_offset(centre.pos).y, BattleMap.RIFT_ROWS + 1, "before the rift, the row past the shell's")
+	# A hunting pack: on its prey's side, and its prey is locked when it first walks, as before.
+	assert_false(f.hunters.is_empty(), "the Meadow's hunting packs")
+	for side in [-1, 1]:
+		var k := 0
+		for m in f.mechs():
+			m.pos = Hex.offset_to_axial(rift_col + side * (6 + k), f.apron_row() - 2)
+			k += 1
+		var locked := f.locks.size()
+		var hunt := f.emerge(f.hunters[0], f.map.rift)
+		assert_eq(hunt.behaviour, "hunt", "a hunting pack")
+		assert_true(ring.has(hunt.pos), "lands on the ring")
+		assert_true((Hex.axial_to_offset(hunt.pos).x - rift_col) * side > 0, "on the side its prey stands (column %d)" % Hex.axial_to_offset(hunt.pos).x)
+		assert_eq([hunt.prey, f.locks.size()], [0, locked], "and the landing locks nothing")
+		f.units.erase(hunt)
+	# Nothing lands beside a machine: one stood by the ring's hex turns the pack to the next.
+	var probe := f.emerge(f.next_graded(1), f.map.rift, 0, 1, 0)
+	var first := probe.pos
+	f.units.erase(probe)
+	var guard: Unit = f.mechs()[0]
+	for n in Hex.neighbors(first):
+		if f.can_stand(guard, n):
+			guard.pos = n
+			break
+	assert_true(f.machine_adjacent(first), "a machine beside the hex a pack took")
+	var turned := f.emerge(f.next_graded(1), f.map.rift, 0, 1, 0)
+	assert_true(turned.pos != first and not f.machine_adjacent(turned.pos), "the next lands clear of it")
+	assert_false(shell.has(turned.pos), "and off the shell still")
+	# The ring held: the pack lands beyond it, never on the shell.
+	for h in ring:
+		if f.unit_at(h) == null:
+			var block := f.emerge(f.next_graded(1), Hex.offset_to_axial(0, f.apron_row() - 1))
+			block.pos = h
+	var late := f.emerge(f.next_graded(1), f.map.rift, 0, 1, 0)
+	assert_false(shell.has(late.pos) or ring.has(late.pos) or f.map.rift_hexes.has(late.pos), "with the ring held it lands past it (%s)" % str(Hex.axial_to_offset(late.pos)))
+	# The tide as built: the same landing, and the segment it always drew (read from the hex the
+	# rift's middle is nearest, before the pack takes its place).
+	var built := Battle.new(8)
+	built.setup(_team(), "meadow")
+	var twin := Battle.new(8)
+	twin.setup(_team(), "meadow")
+	var c: Dictionary = built.field.cycle[0]
+	var sent := built.field.emerge(c, built.map.rift)
+	var drawn := Battlefield.pack_of(c, twin.field.spawn_faction)
+	drawn.pos = twin.field.landing(drawn, twin.map.rift)
+	twin.field.add_unit(drawn)
+	twin.field.assign_goal(drawn)
+	assert_eq(sent.goal_col, drawn.goal_col, "the tide as built draws its segment as it did")
+	assert_true(built.field.rift_ring().has(sent.pos), "and its pack lands on the ring too")
+	assert_false(built.map.shell_hexes().has(sent.pos), "off the shell")
+
+
+## Nothing is stood where it could only wait: the opening's pushers and the tears take ground
+## with a way to the wall (Battlefield.wall_ground), so a corner the map's shape closed off holds
+## neither (a pack stood in one held its hex for the battle and the Rupture's size counted it).
+func test_the_opening_and_the_tears_take_ground_with_a_way_to_the_wall() -> void:
+	Battlefield.graded_tide = true
+	var b := Battle.new(8)
+	b.map_kind = "steppe"
+	b.setup(_team(), "meadow")
+	Battlefield.graded_tide = false
+	var f := b.field
+	for h in f.map.terrain.keys():
+		if not f.map.is_structure(h):
+			f.map.terrain[h] = BattleMap.Terrain.PLAIN
+	# A pocket in the field's corner: the hex itself open, every hex beside it a crag.
+	var pocket := Hex.offset_to_axial(0, Battle.OPENING_FLOOR_ROW)
+	for n in Hex.neighbors(pocket):
+		if f.map.has(n):
+			f.map.terrain[n] = BattleMap.Terrain.MOUNTAIN
+	var sq: Unit = f.packs().filter(func(u: Unit) -> bool: return not u.is_boss and u.behaviour == "push")[0]
+	var ground := f.wall_ground(sq)
+	assert_false(ground.has(pocket), "the pocket has no way to the wall")
+	assert_true(ground.has(Hex.offset_to_axial(3, Battle.OPENING_FLOOR_ROW)), "the open field beside it has")
+	sq.pos = pocket
+	assert_true(f.soonest_columns(sq).is_empty(), "a pack stood there could only wait")
+	b._open_row(sq, 0, 20)   # as far back as the field goes, at the corner's column
+	assert_ne(sq.pos, pocket, "the opening stands it elsewhere")
+	assert_false(f.soonest_columns(sq).is_empty(), "on ground with a way to the wall")
+	# A tear: the pocket is the farthest hex from the rift on its row, and no tear opens there.
+	f.tear_row = Battle.OPENING_FLOOR_ROW
+	var at := f.tear_hex()
+	assert_ne(at, Battlefield.NO_HEX, "a tear finds a hex")
+	assert_ne(at, pocket, "never the pocket")
+	assert_true(ground.has(at), "one with a way to the wall")
 
 
 ## The pack bonus on trial (Ryan, 23 November: "Maybe add a flat fracture bonus to a pack on top of

@@ -82,6 +82,10 @@ After his play of the field's dials:
 - The trials' page: "clean up the trials tab. Remove anything no longer relevant. There's too
   many variables in there, we need to tone it down to just what is actually needed to try in
   person versus just chatting it out."
+- From his play of the graded tide (24 November): "There needs to be more packs on the field
+  at the start, for sure. And spawns from the rift should probably spawn outside of the shell,
+  and on a hex that is on the side of where they're headed. Right now they spawn from the back
+  and have to skirt around the whole rift to head out. Still testing the rest."
 
 ## 2. In the game since that day
 
@@ -89,7 +93,10 @@ The zoom out to the whole field; the seam a circle about the rift, a picture alo
 shown under the whole field; a pusher's segment the stretch of wall it reaches soonest; the
 tears' row a row a peak and never within four rows of the wall; every tier-one stock die
 basics beside its locked pieces (`docs/rules.md`, The battlefield; the bible's wall, tears and
-seam rows). The basics' numbers are settled as built and their five dials cut.
+seam rows). The basics' numbers are settled as built and their five dials cut. From his play of
+the graded tide, under either tide: a pack the rift sends lands outside the shell, on the side
+it is headed; and the opening's packs and the tears take ground with a way to the wall, so
+nothing stands in a corner the map closed off.
 
 ## 3. On trial: the graded tide and five dials
 
@@ -119,8 +126,13 @@ with no dial: the opening's distance, the Rupture's beats and the leaders' step.
   treant among them.
 - A pack bound for a far stretch crosses the field high and comes down onto its own stretch,
   so none runs along the wall or stops short on it.
-- The opening is the game's own count in the graded packs, a three before the middle and a
-  one at each end, each a move farther out than the game stands them.
+- The opening stands packs before every band, each of its band's rating and none near enough
+  to strike on the first turn: at each end two packs for one, the inner two of its own moves
+  from the wall and the outer three; a pack for two before each band between, three moves out;
+  before the middle the ramp's count of packs for three, the first two moves out and each after
+  it a move farther back. Seven packs and eleven pips at the first Convergence, eight from the
+  third and nine from the eighth, where the game as built stands three, four and four. The
+  count is the session's and his to mark.
 - The tears open as built, one a peak, a row nearer the wall each time and never within four
   rows of it. None stands open at the start.
 - A hunting pack comes out of the rift every other peak from the second. The hunters, the
@@ -301,7 +313,8 @@ squad's hull. The wolves are the hunters', pinned.
 
 After his play of the graded tide:
 
-1. The values that land: SENDS at each Convergence, STRIKE, PACK BONUS, FIELD DEPTH.
+1. The values that land: SENDS at each Convergence, STRIKE, PACK BONUS, FIELD DEPTH, and the
+   opening's count at each Convergence (seven, eight and nine as the session built it).
 2. The Meadow's table: each row's rating, pace and Convergence, and what is missing.
 3. A rating's size at each Convergence of a tier, the target the packs' forms and the
    component tiers are both filled to. The reads give its start: eight hit points a machine.
