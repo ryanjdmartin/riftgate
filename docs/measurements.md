@@ -12901,3 +12901,36 @@ painting's dark where the edge falls short, and the core 3.89:1 on its own edge 
 dark outline, 2.61 (deutan). From the HUD presets and the violet it stands ΔE 22.4 or more in every
 simulation; from harm's #ff0000 2.6 (deutan), which the map draws only on a stop with no room and
 the gate's integrity, each with its own mark.
+
+## 24 November: the Mole as the squad's marker, alone, beside Minerva's machines
+
+`tools/balance.gd -- --seeds 200 --policies greedy --rows mole,team:mole@glacial,team:mole@magma,polar_bear,badger,echidna --team mole@glacial --team mole@magma`,
+in four parts and merged, every pack of the matrix (101), each machine alone, on this branch at
+`8814c114` (the Mole's kit of 24 November, Ryan's: Momentum a resource to 10, each turn under 3
+shield, 6 cooling and 5 Momentum, the Inertia Drill a Rapid weapon laying Applied Momentum; the
+bot's first cut on it: the drill held until its cap and whole and cold, the mark priced by the
+turns its Momentum keeps it in, a use on a drilled foe leaned onto), 121,200 fights. The runner's
+`--team` takes a machine with its branch picks since that commit.
+
+| The machine | Tier | Win rate, the row's mean over 101 packs | Packs at 0% | Packs at 100% |
+|---|---|---|---|---|
+| The Glacial Mole | two | 61.0% | 27 | 53 |
+| The Magma Mole | two | 61.0% | 25 | 51 |
+| The Mole, no pick | two | 54.1% | 39 | 42 |
+| The Echidna | one | 49.0% | 45 | 38 |
+| The Honey Badger | one | 41.4% | 54 | 29 |
+| The Polar Bear | two | 39.5% | 55 | 29 |
+
+Spends: the Mole's Inertia Drill 32%, Slugthrower 23%, Twin Autoguns 15%, Rivet Gun 15%, Shoring
+Jack 14% (either direction within a point of it). It ends a fight with 47% of its heat left where
+the Honey Badger keeps 28%.
+
+What it says, read as bands: alone, the reworked Mole stands thirteen points over the Honey Badger
+and fifteen over the Polar Bear, Minerva's other tier two, and either direction adds seven more,
+closing walls the plain drill leaves (39 packs it never beats to 25 and 27). On 20 November its
+first kit read 40% beside the Honey Badger's 54% at 30 seeds; content and the foes have moved
+since (the Honey Badger reads 41% here), so the gap, not the number, is the comparison. A machine
+alone reads none of the marker's squad value (the Brittle its Pinned holds for the squad's blows),
+so this measures the floor of its role. The Echidna's row ran on Chain's strike: the run began
+before Chain became a ping of HP lost the same evening, and nothing else in these rows carries
+Chain.

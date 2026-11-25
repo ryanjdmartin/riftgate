@@ -223,10 +223,10 @@ func test_a_lure_that_wards_its_machine_turns_the_riders_of_the_turn() -> void:
 	assert_false(Effects.has(u, "ward"), "gone as its next turn starts")
 
 
-## A debuff's Chain (the Storm Petrel's Pulse, its Striker branch): its arcs land the number it
-## prints, plain, through each conductor's armour, and carry nothing else (Ryan, 18 November: "take
-## riders off chain. Thematically it's a lightning arc, not part of the impact"), so the lure stays on
-## its target; its target takes nothing, and no Shock is spent.
+## A debuff's Chain (the Storm Petrel's Pulse, its Striker branch): its ping takes the number it
+## prints off each conductor's HP, past armour, and carries nothing else (Ryan, 24 November:
+## "Resolve: All Sprites with Shock, Static, or Sonic Needle lose {N} HP"), so the lure stays on its
+## target; its target loses nothing, and no Shock is spent.
 func test_a_debuffs_chain_lands_its_number_plain_on_every_other_shocked_foe_and_lures_only_its_target() -> void:
 	var lure := Face.attack(0, I, [K.LURE, K.CHAIN])
 	lure.chain = 3
@@ -242,10 +242,10 @@ func test_a_debuffs_chain_lands_its_number_plain_on_every_other_shocked_foe_and_
 		Effects.stack(foe, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
 	Effects.stack(u, Effects.STATUS["overcharged"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
 	assert_true(sk.assign(0, a), "the lure at a foe that carries no Shock")
-	assert_eq([a.hp, b.hp, c.hp], [30, 28, 27], "nothing on its target; 3 on each conductor, b's point of armour off, Empowered adding nothing to a debuff")
+	assert_eq([a.hp, b.hp, c.hp], [30, 27, 27], "nothing on its target; 3 HP off each conductor, b's armour taking none, Empowered adding nothing")
 	assert_true(Effects.has(b, "shocked") and Effects.has(c, "shocked"), "no strike was aimed at them: their Shock stands")
 	assert_eq(a.target, ms, "its target turns on it")
-	assert_eq([b.target, c.target], [sk.mechs[1], sk.mechs[1]], "an arc lures nobody: its blow alone")
+	assert_eq([b.target, c.target], [sk.mechs[1], sk.mechs[1]], "the ping lures nobody")
 
 
 # ---------------------------------------------------------------- the Giant Petrel

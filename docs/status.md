@@ -393,7 +393,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Minerva's vent, the Polar Bear's (16 and 17 November). The Echidna is built (20 November, his
   kit that day, at tier one; the rules' Sonic Needle, the bible's Echidna row): every foe it
   strikes and every foe whose blow lands on it takes a Sonic Needle, a conductor of Chain, and
-  the third in a foe fires Chain 2 on every conductor, that foe included; its Supersonic Spike
+  the third in a foe fires Chain 2 on every conductor, that foe included (Chain a ping of HP lost
+  since 24 November, his "The under-armour ping is simpler"); its Supersonic Spike
   Tether lures and saps, its directions Spiker and Chaos. A foe wears its needles on a chip
   counting toward the bolt ("1/3"), and the Mole's Applied Momentum on one (22 November, on his
   report that the Howitzer's needles showed on its target alone: laid on every foe it hit, worn by
