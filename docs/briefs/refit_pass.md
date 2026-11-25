@@ -23,7 +23,8 @@ they run are `docs/rules.md`, and every run named here is in `docs/measurements.
   Barrier); the first battle scaled down and tiers two and three up (sections 10 and 13); the
   component pass (section 6).
 - **His to play or mark.** The dials (sections 11 and 23), 4-4-2's open places (section 13) and
-  the machines the rule reaches (`docs/reboot_machines_proposal.md`).
+  the machines the rule reaches (each settled or landed in its bible row; their read retired 24
+  November, `git show 302d6a4c:docs/reboot_machines_proposal.md`).
 
 ## 2. Ryan's calls, 9 November, in his words
 
@@ -71,7 +72,8 @@ superseded by the baseline of 16 November (the numbers brief, section 3). The wh
 
 ## 6. The audit: what the model breaks, touches and leaves (9 November, on main's content)
 
-A stub. Its list of machines is superseded by section 22's and `docs/reboot_machines_proposal.md`.
+A stub. Its list of machines is superseded by section 22's and the machines' read (retired 24
+November, `git show 302d6a4c:docs/reboot_machines_proposal.md`).
 Still to come from it, the component pass (the to-do's refit line): the planned shields and
 vents of tier two, the Laminar Deflector, the Corona Shield and the Entropy Condenser, kept until
 a kit wants one (the seven of tiers zero and one retired on 19 November on Ryan's yes, the Phased
@@ -87,7 +89,7 @@ flanker's a thirtieth or less, a hunter's a tenth, an elite's a quarter, the bos
 The bible's scale row holds it; the numbers brief has his words and where tier one stands.
 
 Closed since: the regen's size and heat as a pace (section 22), breach (cut on both sides), the
-roles (section 4), the four machines' sessions (`docs/reboot_machines_proposal.md`), and how
+roles (section 4), the four machines' sessions (their bible rows), and how
 common the Barrier is (a basic on the starting dice, 18 November: section 14). Still his:
 
 1. **Whether the Barrier basic proves toxic** in his play: section 14.
@@ -495,9 +497,9 @@ What follows from those, built so:
 
 ### The machines the rule reaches
 
-The built machines are read whole on today's game in `docs/reboot_machines_proposal.md`, kit by
-kit with what is open; the Storm Petrel, the Polar Bear and the Whip Scorpion are settled, each
-in its bible row. Until its session a machine plays as it is built. The designs in
+The built machines were read whole on the game of 17 to 24 November, kit by kit (`git show 302d6a4c:docs/reboot_machines_proposal.md`,
+retired 24 November); each is landed or settled in its bible row, and the Swallowtail, the Giant
+Petrel and the Musk Ox are their own sessions'. Until its session a machine plays as it is built. The designs in
 `docs/briefs/` not yet built that the rules reach, each folding the rule in at its own session:
 
 | The design | As its brief has it | Under the rules |

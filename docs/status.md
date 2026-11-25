@@ -109,7 +109,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1470 tests, 402,132 checks, green on Godot 4.8-beta4 (24 November, the damage verbs and the burrow's numbers on its statuses). The runner fails a run
+- Tests: 1477 tests, 402,203 checks, green on Godot 4.8-beta4 (25 November, a Ricochet's hit the machine's, over main's Whip Scorpion round). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -206,8 +206,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Booster. An upgraded piece wears a chevron a step under its place, on the die and down the
   codex, and takes the name its step gives it (the Aile Blitzer); `RIFTGATE_TEAM` fields picks
   in a standalone fight (`macaque@duelist+duelist`). The machines the reboot broke
-  are another session's line (`docs/reboot_machines_proposal.md`, read with
-  `tools/reboot_probe.gd`): the Storm Petrel landed from it on 17 November and took Ryan's
+  are read and settled, the proposal that read them retired on 24 November (`git show 302d6a4c:docs/reboot_machines_proposal.md`; read
+  with `tools/reboot_probe.gd`): the Storm Petrel landed from it on 17 November and took Ryan's
   shape of the 18th (no shield armour on its passive; its Hardlight Pulse lays Hardened Light,
   up to 3, every stack gone when the shield breaks, the reboot included); the Buzzard landed
   on the 18th in his carrion form (every foe that falls in its fight gives it shield, every
@@ -223,10 +223,14 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   Empowered 1 for every 2; its kit named on the 20th, the Downwash Exchanger and the Overdrive
   Injector; its shield-lit parts carry its heat, blue to red-orange, `RIFTGATE_HEAT_GLOW_DEBUG=1`), its strength his play's in
   a team that leverages heat, since the bot reads only its Empowered (20 November); its first
-  round on the Swallowtail waits on Ryan's marks. Built on placeholder numbers and waiting on his play, a to-do line each:
+  round on the Swallowtail, the team's pit crew, waits on Ryan's marks in its brief. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis (its Rage, rebuilt
-  on Ryan's design of 23 November), the Polar Bear (a reboot opens its seal), the Whip Scorpion
-  (rebuilt the same day: its damage by its heat, and its reboot firing its Death Ray), the
+  on Ryan's design of 23 November; since the 24th a heat for every hit it takes, its other heats
+  and a keyword on its Knuckles its two branches, Breaker and Berserker), the Polar Bear (a reboot
+  opens its seal), the Whip Scorpion (rebuilt the same day: its damage by its heat, its reboot
+  firing its Death Ray, its hits doubled past half its heat; since the 24th its heat maximum 12
+  and its Obliterator and Incinerator built on Ryan's design, the Halo Projector in its stock in
+  the Thermal Ray's place, and no heat on its Ray), the
   Lammergeier, the Wild Boar, the Baboon, the Stingray, and the Macaque, landed 19 November
   on `ccr-64b5deec-lunnff` from Ryan's kit (Aphelion's agile duelist at tier one: its offhand
   cycles the Beam Rifle, the Beam Sword and the Beam Shield after every spend at a foe, a rider
@@ -395,7 +399,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   strikes and every foe whose blow lands on it takes a Sonic Needle, a conductor of Chain, and
   the third in a foe fires Chain 2 on every conductor, that foe included (Chain a ping of HP lost
   since 24 November, his "The under-armour ping is simpler"); its Supersonic Spike
-  Tether lures and saps, its directions Spiker and Chaos. A foe wears its needles on a chip
+  Tether lures and saps, its directions Spiker and Chaos. On the ping, alone, every pack at 200
+  seeds (25 November, the measurements): 49% as on the strike, its fights against armour 1 three
+  to four rounds shorter, either direction five or six points more. A foe wears its needles on a chip
   counting toward the bolt ("1/3"), and the Mole's Applied Momentum on one (22 November, on his
   report that the Howitzer's needles showed on its target alone: laid on every foe it hit, worn by
   none); a status no chip line names wears its term's mark, never a star, on a foe or a machine
@@ -483,32 +489,30 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
      tier one's slottable numbers down to the basics' (Ryan, 21 November).
    - The scorches on every machine above tier one, then the scaling from the baseline: the
      first battle down, its sizing his ("I'll handle that one"), tiers two and three up.
-2. **The machines the reboot broke** (another session's line, beside the first): each fix
-   built on Ryan's marks, in its own commit, at placeholder numbers.
-3. **The design sessions, from the briefs**: each decision a bible row, each brief retired
+2. **The design sessions, from the briefs**: each decision a bible row, each brief retired
    once its decisions are rows and content. The locked pieces' footing first (its own session
    since 20 November), then the machine back in design (the Swallowtail), the built but
    unfinished (the Needletail, the Giant Petrel, the Musk Ox) and the gunship, the tier-one
    fronts (Minerva's lure tank, an Aphelion tier one), Claude's first rounds on his directions
    of 5 and 6 November, the rest as its session comes. The to-do's roster is grouped to match.
-4. **The refit pass's tail** (`docs/briefs/refit_pass.md`): his word on the first battle's
+3. **The refit pass's tail** (`docs/briefs/refit_pass.md`): his word on the first battle's
    block, his marks on the flanks' second patrols, the stock
    re-deal proper as a table in chat first, the component pass, what prices a round (parked
    on his word).
-5. **The skirmish code audit's structural steps** (`docs/skirmish_audit.md`): the bot's
+4. **The skirmish code audit's structural steps** (`docs/skirmish_audit.md`): the bot's
    mirrors onto the engine, statuses as data, the Face, each checked by the behaviour trace.
    Then the 200-seed matrix on the desk machine, the first read of the roster as it stands.
-6. **The stock pass's tail**: Ryan's name pass; the Lammergeier's stock; the pricing pass's
+5. **The stock pass's tail**: Ryan's name pass; the Lammergeier's stock; the pricing pass's
    next reads (the bible's pricing row); the heat session (`docs/briefs/heat_pillar.md`).
-7. **The foes' fresh start and the pacing session**: Ryan's marks (the bible's section 12:
+6. **The foes' fresh start and the pacing session**: Ryan's marks (the bible's section 12:
    the elites' names and numbers, the compositions' partition, the escorts, roles) and the
    ramp's numbers; then his play of the clocks on the phone.
-8. **Balancing for real**, once the sizing, the stock pass and the formations are in: the
+7. **Balancing for real**, once the sizing, the stock pass and the formations are in: the
    runner's rows on the roster as it stands, prices and tier ladders, the heat report, and
    Ryan's play deciding feel.
-9. **The screens**: a prototype hangar, the mission map and the draft, a run he can play.
-10. **The economy pass** (`docs/economy_pass.md`): the spending policy, then every price.
-11. The rest in the standing order: Ryan's text; the domains' last engine (the planned moves,
+8. **The screens**: a prototype hangar, the mission map and the draft, a run he can play.
+9. **The economy pass** (`docs/economy_pass.md`): the spending policy, then every price.
+10. The rest in the standing order: Ryan's text; the domains' last engine (the planned moves,
     the bosses' open calls); the battery plan's rest; audio; art; the commander layer after a
     balance baseline; onboarding before a phone leaves the desk.
 
@@ -534,14 +538,12 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   republishes while he is on the page.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.657 on 23 November from main's file at `b3f7c466` (the page's Version 520),
-  over v0.655 (the live page checked byte for byte against `33c4cc61`'s file first). The file is
-  at v0.662 on main since `claude/formation-pass-feedback-rlvx5x` landed on 24 November (the wall,
-  tears and seam rows, the vanilla, reboot, Barrier and hunters rows, section 12's tide item),
-  unpublished: the session that wrote it had no room left to read the live page whole. Before republishing,
+  Published at v0.674 on 25 November from main's file at `8775e481` (the page's Version 529: the
+  Nemesis's and the Whip Scorpion's rounds landed on main over its Chain ping), over v0.673
+  (Version 528, 24 November, from `ccr-178e0404-ptuh2m`'s `24adae57`). Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
-  `b3f7c466` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  `8775e481` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
   live source with the tool's wrapper line, its trailing newline and `</body></html>`
   stripped): check BASE against the live page byte for byte first. After main merges in,
   check the tables script's run against the file's tables before keeping it: a row it
@@ -552,7 +554,7 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   Tear, Rift Pressure and Ramp lines moved on 23 November (its `text` and `edits` collections
   were empty that day, `designs` his two notes of 5 November). A publish sends only the files that moved,
   each checked against the live copy by hash (the files listing gives each one's), with
-  `edits`, `designs` and `text` read first. Version 344 (24 November): Burrowed's and Momentum's numbers on the statuses, the tips in rule 39's three damage verbs. Version 343 (24 November): main at `092b367` with the Mole's tips to the standard (the Momentum debuffs Removed and returned, Frozen keeping the Cryo, Drill Out's two ends, the drill's readout naming its form), the target lines Sprite and Frame, Ignores Armour, the Mole's brief retired. Version 342 (24 November): a machine's sheet lists its terms again (the page's term and component rows are {entry, st}, which its terms section had read as bare entries, so every row came out blank). Version 341 (24 November): every data file from main at `b217971`, `tools/hangar_data.py`'s SCALING check reading the leaders' trial (`ContentDB.leader_step_trial`, off by default, and the check fails if it is ever on by default). Version 340 (24 November): the Echidna's model, rig and pins (no renders yet), its look brief gone from the briefs, the Macaque's stand. Version 339 (24 November): his lines for the Nemesis, Barrier, Lure and Suppressed, the Whip Scorpion's Fixed Death Ray, the Shield and Vent kind tips gone. Version 338 (24 November): a chassis's built-in components are Integrated, and Fixed: X is the rule on Rage and Burrowed. Version 337 (24 November): technical lines, Consumed and Removed on the statuses that never stack, the Nemesis's Rage split onto its passive and its Knuckles. Version 336 (24 November): main at `d044ce7`, the standard landed. Version 335 (24 November): a reach over every Sprite says no hit is Targeted. Version 334 (23 November): a second precision pass on the tips, checked against the engine. Version 333 (23 November): the tips, the target lines and the glossary in Sprite and Frame. Version 332 (23 November): main taken in, Corrupted's tip on its reboot rule, Hardened Light's "Shield Broken". Version 331 (23 November): Primed's rider at Resolve, the Ape's "Gain 3 Golden". Version 330 (23 November): Sealed's numbers on the status, the tips' "When defeated". Version 329 (23 November): the other 113 glossary tips redrafted to his rules, session drafts for his marks. Version 328 (23 November): his own texts for the sample tips, a line an effect, {N} the unit's live sum where a line counts per stack; Ablating renamed Ablate; Golden +2 whatever laid it, its break a Suppress like any. Version 326 (22 November): ten term tips redrafted in the terminology standard's event format (Ablating, Brittle, Shocked, Primed, Exposed, Golden, Swallowed, Armoured, Empowered, Penetrate), the sample for his marks before the rest, data only. Version 325 (22 November): the Inertia Drill's rule line, data only over 324's page. Version 324 (22 November): a machine's sheet lists every term it orbits, its own first,
+  `edits`, `designs` and `text` read first. Version 346 (25 November): the two branches met, main at `0ae7ff3` with `claude/gameplay-terminology-tooltips-rug879` (a Ricochet's hit the machine's, the standard's rule 40 on what a hit brings, Chain naming Shock, beside main's Whip Scorpion round and the trigger term Always on). Version 345 (25 November): the briefs data (the Static brief) and two of main's rigs, from `ccr-64b5deec-lunnff`. Version 344 (24 November): Burrowed's and Momentum's numbers on the statuses, the tips in rule 39's three damage verbs. Version 343 (24 November): main at `092b367` with the Mole's tips to the standard (the Momentum debuffs Removed and returned, Frozen keeping the Cryo, Drill Out's two ends, the drill's readout naming its form), the target lines Sprite and Frame, Ignores Armour, the Mole's brief retired. Version 342 (24 November): a machine's sheet lists its terms again (the page's term and component rows are {entry, st}, which its terms section had read as bare entries, so every row came out blank). Version 341 (24 November): every data file from main at `b217971`, `tools/hangar_data.py`'s SCALING check reading the leaders' trial (`ContentDB.leader_step_trial`, off by default, and the check fails if it is ever on by default). Version 340 (24 November): the Echidna's model, rig and pins (no renders yet), its look brief gone from the briefs, the Macaque's stand. Version 339 (24 November): his lines for the Nemesis, Barrier, Lure and Suppressed, the Whip Scorpion's Fixed Death Ray, the Shield and Vent kind tips gone. Version 338 (24 November): a chassis's built-in components are Integrated, and Fixed: X is the rule on Rage and Burrowed. Version 337 (24 November): technical lines, Consumed and Removed on the statuses that never stack, the Nemesis's Rage split onto its passive and its Knuckles. Version 336 (24 November): main at `d044ce7`, the standard landed. Version 335 (24 November): a reach over every Sprite says no hit is Targeted. Version 334 (23 November): a second precision pass on the tips, checked against the engine. Version 333 (23 November): the tips, the target lines and the glossary in Sprite and Frame. Version 332 (23 November): main taken in, Corrupted's tip on its reboot rule, Hardened Light's "Shield Broken". Version 331 (23 November): Primed's rider at Resolve, the Ape's "Gain 3 Golden". Version 330 (23 November): Sealed's numbers on the status, the tips' "When defeated". Version 329 (23 November): the other 113 glossary tips redrafted to his rules, session drafts for his marks. Version 328 (23 November): his own texts for the sample tips, a line an effect, {N} the unit's live sum where a line counts per stack; Ablating renamed Ablate; Golden +2 whatever laid it, its break a Suppress like any. Version 326 (22 November): ten term tips redrafted in the terminology standard's event format (Ablating, Brittle, Shocked, Primed, Exposed, Golden, Swallowed, Armoured, Empowered, Penetrate), the sample for his marks before the rest, data only. Version 325 (22 November): the Inertia Drill's rule line, data only over 324's page. Version 324 (22 November): a machine's sheet lists every term it orbits, its own first,
   each editable in place; 323 the same day, a dealt machine with an open brief under Unfinished.
   Version 322 (22 November): Version 321's files, the Text
   tab's Vocabulary view with its category filter again, from `claude/gameplay-terminology-tooltips-rug879`. Version 321 (21 November): main at `8b5a027d`, the

@@ -839,7 +839,7 @@
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "Fists, and a temper: every hit the Nemesis takes, its own included, heats it toward the Rage it swings through.",
+    "fantasy": "Fists, and a temper: every hit the Nemesis takes heats it toward the Rage it swings through.",
     "niche": "The Nemesis's locked melee and its Rage's outlet (Ryan, 23 November: \"Knuckle of Fury -> knuckles of Fury, only one equipped instead of two\"; \"Knuckles of Fury generates no heat and is no longer instant. It deals damage and cools the Nemesis by 3. When in Rage, it has Instant\"): one entry on its die, a punch that cools it 3. In Rage it is all the die shows, Instant, so a turn of Rage is a flurry until the heat runs out (\"One turn of rage is a flurry, that's the point\"). Out of Rage a punch feathers the heat short of the maximum (\"Punch outside of rage is allowed as a way of feathering heat and avoiding rage. If it's too strong, we'll give it different heat reductions in and out of rage\"). A charged Instant on five rage was its form from 12 to 23 November."
    },
    "face": {
@@ -1481,14 +1481,14 @@
    "design": {
     "stage": "draft",
     "fantasy": "The signal mirror on its mast, turned on one foe with the whole boiler behind it. Ryan, 11 November: the locked piece \"takes the buzzards old form. Cools completely, damage per heat spent. Low base damage\"; \"The heliograph term can go on the new locked piece\" (his name of 20 October: \"Keep heliographic cause its dumber\"). The name is a session's draft he kept (11 November: \"Heliographic death ray is a great name. Kept\"), and its gun his the same day: \"an actual gun. Pipes connecting it to the boiler, steampunk style. Mirror or mirrors as part of it because weird future nonsense tech. Like a steam powered mirrored laser railgun.\"",
-    "niche": "The Whip Scorpion's reboot (Ryan, 23 November: \"The death ray is not on the die normally. Reboot is replaced with 'Death Ray' when holding its die. Selecting reboot equips the Heliographic Death Ray instead of rebooting. Holding the death ray changes reboot to 'Cancel,' and cancelling returns the die to what it was before. The death ray does it's thing when used, then the Scorpion reboots\"): every point of heat the machine holds as one blow on one foe, a low base and a point for every 2 heat, at the passive's heat scale as the heat stood, so a hot gauge fires it at double; then the reboot leaves it cold. The release on every foe as it rebooted, its partner from 11 to 23 November, is cut (\"Reboot blast is cut, it wasn't in my spec\"). The Buzzard's Afterburner Cannon held this form until its rework of 11 November."
+    "niche": "The Whip Scorpion's reboot (Ryan, 23 November: \"The death ray is not on the die normally. Reboot is replaced with 'Death Ray' when holding its die. Selecting reboot equips the Heliographic Death Ray instead of rebooting. Holding the death ray changes reboot to 'Cancel,' and cancelling returns the die to what it was before. The death ray does it's thing when used, then the Scorpion reboots\"): every point of heat the machine holds as one blow on one foe, a low base and a point for every 2 heat, at the passive's heat scale as the heat stood, so a hot gauge fires it at double; then the reboot leaves it cold. The release on every foe as it rebooted, its partner from 11 to 23 November, is cut (\"Reboot blast is cut, it wasn't in my spec\"). The Buzzard's Afterburner Cannon held this form until its rework of 11 November. No heat of its own since 24 November (Ryan: \"It's kind of pointless for the Death Ray to have heat on it, since it immediately reboots and sheds its heat\"); 3 until then."
    },
    "face": {
     "kind": "attack",
     "reach": "direct",
     "power": 2,
     "keywords": [],
-    "heat": 3,
+    "heat": 0,
     "vents_all": true,
     "power_per_heat": 1,
     "per_heat": 2

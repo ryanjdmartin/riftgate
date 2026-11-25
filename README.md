@@ -141,7 +141,7 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     design of 23 November: his words, the design as read, the reads, where the session pushes
     back, the Meadow's packs as a table for his marks);
     `locked_pieces_proposal.md`;
-    `reboot_machines_proposal.md` (the machines the reboot broke); `rules_sweep_proposal.md` (the
+    `rules_sweep_proposal.md` (the
     rules sweep's limits on design space, for his marks); `bosses_proposal.md` (the
     bosses' and elites' slate); `heroes_proposal.md`; `domain_statuses_proposal.md` (the
     domains' buffs and debuffs, the purging leaders, Phased by source); `mechanics_audit.md`;
@@ -266,8 +266,9 @@ perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.
 # maker's team against every pack, each domain's formation at each tier and the party, random
 # and greedy over 200 seeds a cell (hours on one core; about two in four parts)
 perl -e 'alarm 36000; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
-# on several cores: --part i/n runs every n-th cell into its --json, and --merge writes the
-# report from the parts (the same options on every part and the merge)
+# on several cores: --part i/n runs every n-th cell into its --json (i counts from 0: 0/4 to 3/4,
+# and one out of range is refused), and --merge writes the report from the parts (the same
+# options on every part and the merge; a part may itself be split, 0/16, 4/16, 8/16 and 12/16 being 0/4)
 for i in 0 1 2 3; do perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200 --part $i/4 --json /tmp/part$i.json & done; wait
 perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200 --merge /tmp/part0.json,/tmp/part1.json,/tmp/part2.json,/tmp/part3.json
 # its options (the script's head has each in full):
@@ -377,7 +378,7 @@ python3 tools/budget_model.py                      # what a fight costs a squad 
 # --heat N scales the foes' heat stacks, --only peak,magma keeps the cells named; four parts, then the reader
 perl -e 'alarm 3000; exec @ARGV' godot --headless --path . -s tools/special_probe.gd -- --out build/special_0.json --part 0/4 --seeds 10 --step 3
 python3 tools/special_probe_read.py build
-# the machines the reboot reaches, one at a time (docs/reboot_machines_proposal.md): each
+# the machines the reboot reaches, one at a time (its first read, the reboot machines proposal, in git: `git show 302d6a4c:docs/reboot_machines_proposal.md`): each
 # chassis first in a squad beside the Honey Badger, the Prairie Dog and the Cassowary, against
 # tier one's formations and elites, or its bosses with --bosses; --only narrows the roster,
 # --whatif kite_bot|kite_mends lays a lean over the fight, --branches defence,striker fields the
