@@ -12934,3 +12934,36 @@ alone reads none of the marker's squad value (the Brittle its Pinned holds for t
 so this measures the floor of its role. The Echidna's row ran on Chain's strike: the run began
 before Chain became a ping of HP lost the same evening, and nothing else in these rows carries
 Chain.
+
+## 25 November: the Echidna on Chain's ping, alone, and both its directions
+
+`tools/balance.gd -- --seeds 200 --policies greedy --rows echidna,team:echidna@spiker,team:echidna@chaos --team echidna@spiker --team echidna@chaos`,
+every pack of the matrix (101), each machine alone, on this branch at `6af49b47`: Chain a ping
+since `db1a7059` (at Resolve every Sprite that conducts loses N HP, past armour and a Barrier),
+nothing else moved since 24 November's run but the trigger term's name. 60,600 fights in seven
+parts, merged (0/4 split into 0, 4, 8 and 12 of 16). Beside 24 November's Echidna row, which
+ran on Chain's strike, both read from their cells the same way (a pack at 0% wins none of its
+200 fights, at 100% every one; that entry's table, read from the report's rounded figures, gave
+the strike's row 49.0% and 38).
+
+| The machine | Win rate, the row's mean over 101 packs | Packs at 0% | Packs at 100% |
+|---|---|---|---|
+| The Echidna, Chain's strike (24 November) | 48.9% | 45 | 35 |
+| The Echidna, Chain's ping | 49.1% | 42 | 38 |
+| The Spiker Echidna | 54.2% | 37 | 44 |
+| The Chaos Echidna | 55.3% | 37 | 44 |
+
+Fights it wins are shorter: 5.30 rounds to 5.01 over the 56 packs it wins in both runs, and
+three to four and a half rounds shorter in the four whose foes carry armour 1 (Treant x1 11.8
+to 7.8, Zombie Knight x2 10.2 to 5.8, Sandworm x1 10.2 to 7.0, Magma Elemental x1 9.1 to 6.2),
+where the strike's 1 met armour 1 and the ping passes it. Two packs moved three points or more:
+Antlion x3 0% to 6%, Zombie Knight x2 92% to 100%.
+
+Spends: the Echidna's Rivet Gun, Twin Autoguns and Ankle Mortar 26% each, the Supersonic Spike
+Tether 12%, the Shoring Jack 10%; the Spiker's Tether 23% and its guns 20% to 22%; the Chaos's
+as the plain one's.
+
+What it says, read as bands: the ping leaves the Echidna's band where the strike had it, just
+under half; it shortens its fights against armour rather than opening walls. Either direction
+adds five or six points, most of it against swarms (Antlion x3 by 93 and 73 points, Bubble Gel
+x2 by 60 and 71, Wolf x4 by 53 and 60, Spiker's first).
