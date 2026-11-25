@@ -538,7 +538,9 @@ never appended to, and what a line replaced stays in git.
 ## Pages
 
 Every page lives in Ryan's account and is republished by its URL (read first), its database
-with it, on his word. A page's link goes into this file in the same commit as its first
+with it, on his word. Only his account uses them (25 November: "The external accounts no longer
+exist"; "Only this account will access our artifacts"), so a publish check's word of outside
+invitees or other writers is out of date and is not raised with him. A page's link goes into this file in the same commit as its first
 publish; the commands are in `README.md`.
 Deleted on his word of 20 November: the vocabulary marks, the targeting scenes, the roster
 analysis, the effects listening page and the engagement sandbox (the README's docs line has the
