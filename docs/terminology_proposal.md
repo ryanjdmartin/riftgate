@@ -170,11 +170,11 @@ want."
 
 **Names.**
 - **Aloft.** The Roc's climb out of reach, a working name. Pick: Keep · Soaring · Airborne
-- **Last Act.** What a foe does when defeated ("maybe rename to something more interesting").
+- **Last Act.** What a Sprite does when defeated ("maybe rename to something more interesting").
   Pick: Swan Song · Parting Shot · Last Gasp · Keep
-- **The attack's words.** On the target line: "the strongest machine", "the weakest machine",
-  "the hottest machine", "the most buffed machine". Pick: Sign off · Change
-- **Immune.** The drafted name for a foe's ability that one of your effects never lands on.
+- **The attack's words.** On the target line: "the strongest Frame", "the weakest Frame",
+  "the hottest Frame", "the most buffed Frame". Pick: Sign off · Change
+- **Immune.** The drafted name for a Sprite's ability that one of your effects never lands on.
   Pick: Sign off · Change
 - **The four falls.** Drafted names: Scream, Dying Gaze, Unbound, Embers. Pick: Sign off ·
   Change

@@ -1,6 +1,7 @@
 {
  "_about": "The single source of truth for every mechanic term. codex is the rule as the player reads it; design.holes is what the mechanic does not do yet. docs/vocabulary.md is generated from this file by tools/export_vocabulary.gd. status: implemented (in sim/), planned (designed, not coded), idea (floated, undecided).",
  "categories": [
+  "damage",
   "resource",
   "kit",
   "component_kind",
@@ -19,6 +20,36 @@
   "rules"
  ],
  "entries": [
+  {
+   "id": "damage_hit",
+   "category": "damage",
+   "name": "Hit for N",
+   "codex": "Shield takes it first, then Armour reduces it.\nBarrier, Brittle, On Hit and When Hit effects apply.",
+   "status": "implemented",
+   "design": {
+    "holes": "The three ways damage lands, the standard's rule 39 (Ryan, 24 November: \"I like hit for N, suffer N damage, and lose N hull as the format examples that we want\"), given a heading of their own in the keywords list on his yes of 25 November to a Damage section in place of reminders on each tip. Listed, never matched in a line (Terms.UNMATCHED): \"Hit\" is a label's word. The text is a session's draft."
+   }
+  },
+  {
+   "id": "damage_suffer",
+   "category": "damage",
+   "name": "Suffer N damage",
+   "codex": "Not a hit. Shield takes it first.\nArmour, Barrier, Brittle, On Hit and When Hit effects do not apply.",
+   "status": "implemented",
+   "design": {
+    "holes": "The three ways damage lands, the standard's rule 39 (Ryan, 24 November: \"I like hit for N, suffer N damage, and lose N hull as the format examples that we want\"), given a heading of their own in the keywords list on his yes of 25 November to a Damage section in place of reminders on each tip. Listed, never matched in a line (Terms.UNMATCHED): \"Hit\" is a label's word. The text is a session's draft."
+   }
+  },
+  {
+   "id": "damage_lose",
+   "category": "damage",
+   "name": "Lose N",
+   "codex": "Comes straight off the Hull, HP or Shield named.\nNothing reduces or adds to it.",
+   "status": "implemented",
+   "design": {
+    "holes": "The three ways damage lands, the standard's rule 39 (Ryan, 24 November: \"I like hit for N, suffer N damage, and lose N hull as the format examples that we want\"), given a heading of their own in the keywords list on his yes of 25 November to a Damage section in place of reminders on each tip. Listed, never matched in a line (Terms.UNMATCHED): \"Hit\" is a label's word. The text is a session's draft."
+   }
+  },
   {
    "id": "hull",
    "category": "resource",
