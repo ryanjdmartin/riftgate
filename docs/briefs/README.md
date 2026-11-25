@@ -212,10 +212,10 @@ Machines whose identity sits on one thing, a passive or a locked piece, built or
 (Ryan, 5 November: "There's some assumptions and holes here, but this is good
 information"). `docs/synergy_map.md` is the built content's view, piece by piece.
 
-- **Being struck (6), the largest:** Misharu, the Onryō, the Nemesis's rage, the echidna, the
-  lure tank and the Cryo party defence. A blow on hull is the roster's most crowded state.
+- **Being struck (5), the largest:** Misharu, the Onryō, the Nemesis's rage, the echidna and
+  the Cryo party defence. A blow on hull is the roster's most crowded state.
 - **Lure (3, 4 with the jellyfish):** the Polar Bear, the Storm Petrel and the lure tank,
-  apart by shape.
+  apart by shape (the lure tank's a cage on one Sprite, its round of 25 November).
 - **Cryo (3, 4 with the Macross):** the Polar Bear lays it, the Cryo party defence keeps it
   and blows it up, the Snowy Owl cashes it to stay unseen. The detonation is the one to check
   for room.
@@ -247,7 +247,7 @@ One row a live brief; the to-do's Design sessions hold each one's task.
 | `kestrel_owl.md` | the silent hunter, leaning to Cryo | Kestrel | open | his pick of where the stealth lives |
 | `ws_swallowtail.md` | the Swallowtail's rework, three locked pieces open | Wainwright & Sutler | 3 | parked: his session, its niche first |
 | `ws_gunship.md` | proposal, Claude's first round | Wainwright & Sutler | 2 | his own session |
-| `minerva_lure_tank.md` | the tier-one front: every hit lures | Minerva | 1 | his calls |
+| `minerva_lure_tank.md` | the tier-one tank: a drone cages one Sprite with it | Minerva | 1 | his calls |
 | `minerva_cryo_defence.md` | Cryo for the party, detonated by a locked piece | Minerva | 2 | Claude's round on his direction |
 | `minerva_immune.md` | immune to every buff and debuff, lent to an ally | Minerva | 2 | his calls |
 | `minerva_siege_battery.md` | his H-tank, a charge | Minerva | 3 | parked until he picks it up |

@@ -373,7 +373,7 @@ python3 tools/turn_loop.py --seeds 2000 --widen 3  # with a rift that steps a ti
 python3 tools/basics_model.py                      # the stock guns against rank and file: shots to kill, the gun that deals one more by its heat, the rider ladder, a bench of guns by its spends to kill five marks
 python3 tools/tide_model.py                        # what the tide asks of four machines on the long wall: packs sent, packs that struck and gate lost by the count, the pace, the depth, the mouths and the graded tide, fights for free (the coverage behind docs/tide_proposal.md)
 python3 tools/budget_model.py                      # what a fight costs a squad under the reboot, as the hull budget counts it: a horde, a massive in front, a lone flanker, a pack and an elite by blow and hit points, and how far it tracks the bot
-python3 tools/lure_duel_model.py                   # the lure tank's drone as a duel (docs/briefs/minerva_lure_tank.md): a brute among adds, the lock never set, held to a fall, or let go for a use or for nothing
+python3 tools/lure_duel_model.py                   # the lure tank's drone under the reboot (docs/briefs/minerva_lure_tank.md): a squad of three against five of tier one's packs, the cage as Ryan wrote it, opened by another Frame's aim, or free, with the tank's edge, its lure and its seal by turns
 
 # how often each foe special fires: every third starter trio against each domain's formation,
 # each boss and each hero alone, as built or with a condition named in OPENED read as true;
