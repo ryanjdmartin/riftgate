@@ -3064,113 +3064,20 @@ def _cassowary_pose(frames, until, hz=30.0):
     return tracks, out
 
 
-def _cassowary_stride(sweep, duty=0.6, lift=5.0, heel=-28.0, roll=0.3, flex=22.0, curl=-30.0, crouch=0.5, dip=1.6, nod=1.2,
-                      reach=0.97, n=60, carry=(0.08, 0.8), lean=0.0, hop=0.0):
-    """The Cassowary's walk (31 October), _plant's worked foot by foot for a digitigrade leg: each
-    foot's toes planted flat through its stance while the leg sweeps back under the body, and in
-    the stance's last `roll` the heel lifts, the shank tipping `heel` degrees about the ball with
-    the toes still flat, the push-off. Then the hock carries forward, lifted `lift`, as the ankle
-    flexes the foot up and forward under it, `flex` degrees, its toes curling `curl` (a bird's
-    swing: the hock stays low, so the knee never rises into the cab), and the foot reaches down
-    flat to land. The body rides as high as its planted legs allow kept `reach` of straight,
-    `crouch` lower, and drops `dip` and nods `nod` degrees onto each foot, never rolling. The feet
-    a half stride apart. Under a duty of a half it runs (24 November): both feet are up between
-    steps, the body carried across from one stance's ride to the next and `hop` higher at the
-    middle of the flight, and `lean` degrees nose down throughout. Returns (tracks, body, stride)
-    for b.gait with ease "linear"."""
-    stride = sweep / duty
-    shank_swing = _cassowary_mono([(0.0, heel), (0.45, flex), (0.85, 0.0), (1.0, 0.0)])
-    toes_swing = _cassowary_mono([(0.0, 0.0), (0.25, curl), (0.65, curl * 0.4), (0.85, 0.0), (1.0, 0.0)])
-    phases = {"l": 0.0, "r": 0.5}
-    y0, z0 = _CASSOWARY_BALL
-    off_y, off_z = _cassowary_hock((y0 - sweep * 0.5, z0), heel)   # the hock as the toes leave the ground
-    land_y, land_z = _cassowary_hock((y0 + sweep * 0.5, z0), 0.0)  # and as the foot lands
-
-    def foot(side, p):
-        """(ball y, ball z, shank, toes, planted) at phase p."""
-        q = (p - phases[side]) % 1.0
-        if q < duty:
-            u = max(0.0, (q / duty - (1.0 - roll)) / roll)
-            return y0 + sweep * 0.5 - sweep * q / duty, z0, heel * u * u * (3.0 - 2.0 * u), 0.0, True
-        s = (q - duty) / (1.0 - duty)
-        u = min(1.0, max(0.0, (s - carry[0]) / carry[1]))
-        w = u * u * (3.0 - 2.0 * u)
-        hy, hz = off_y + (land_y - off_y) * w, off_z + (land_z - off_z) * w
-        if s < 0.3:
-            hz += lift * (1.0 - (1.0 - s / 0.3) ** 2)   # up briskly
-        elif s < 0.62:
-            hz += lift
-        else:
-            hz += lift * (1.0 - ((s - 0.62) / 0.38) ** 2)  # down gathering speed
-        shank = shank_swing(s)[0]
-        oy, oz = _cassowary_hock((0.0, 0.0), shank)
-        return hy - oy, hz - oz, shank, toes_swing(s)[0], False
-
-    span = reach * (math.hypot(_CASSOWARY_KNEE[0] - _CASSOWARY_HIP[0], _CASSOWARY_KNEE[1] - _CASSOWARY_HIP[1])
-                    + math.hypot(_CASSOWARY_HOCK[0] - _CASSOWARY_KNEE[0], _CASSOWARY_HOCK[1] - _CASSOWARY_KNEE[1]))
-    rides = []
-    for i in range(n + 1):
-        p = i / float(n)
-        ride = None
-        for side in ("l", "r"):
-            y, z, shank, _toes, down = foot(side, p)
-            if not down:
-                continue
-            hy, hz = _cassowary_hock((y, z), shank)
-            dy = hy - _CASSOWARY_HIP[0]
-            r = hz + math.sqrt(max(0.0, span * span - dy * dy)) - _CASSOWARY_HIP[1]
-            ride = r if ride is None else min(ride, r)
-        rides.append(None if ride is None else min(0.0, ride))
-    # In a run's flight no foot holds the body up: it carries across from the stance it left to
-    # the one it lands in (the cycle wraps), `hop` higher at the middle.
-    flown = [v for v in rides if v is not None]
-    for i in range(n + 1):
-        if rides[i] is not None or not flown:
-            continue
-        a = i
-        while rides[a % (n + 1)] is None:
-            a -= 1
-        b_ = i
-        while rides[b_ % (n + 1)] is None:
-            b_ += 1
-        u = (i - a) / float(b_ - a)
-        rides[i] = (rides[a % (n + 1)] * (1.0 - u) + rides[b_ % (n + 1)] * u + hop * math.sin(math.pi * u))
-    pose = []
-    for i in range(n + 1):
-        p = i / float(n)
-        ride = rides[i] if rides[i] is not None else 0.0
-        jolt = 0.0
-        for land in phases.values():
-            x = (p - land) % 1.0
-            jolt += x / 0.05 if x < 0.05 else ((1.0 - (x - 0.05) / 0.35) ** 2 if x < 0.4 else 0.0)
-        pose.append((ride - crouch - dip * jolt, -nod * jolt - lean))
-    tracks = {}
-    for side in ("l", "r"):
-        rows = {j: [] for j in ("hip_", "knee_", "ankle_", "toe_")}
-        for i in range(n + 1):
-            p = i / float(n)
-            y, z, shank, toes, _down = foot(side, p)
-            dz, pitch = pose[i]
-            for j, v in zip(("hip_", "knee_", "ankle_", "toe_"), _cassowary_solve((y, z), shank, toes, 0.0, dz, pitch)):
-                rows[j].append((p, round(v, 3)))
-        for j, keys in rows.items():
-            tracks[j + side] = (keys, 0.0)
-    body = [(i / float(n), 0.0, 0.0, round(dz, 3), 0.0, round(pitch, 3), 0.0) for i, (dz, pitch) in enumerate(pose)]
-    return tracks, body, stride
-
-
 def _cassowary_stance(u, sweep, heel, roll):
-    """A planted foot `u` of the way through its stance, as _cassowary_stride's: (ball y, ball z,
-    shank, toes, True), its toes flat while the body passes over it, the heel lifting in its last
-    `roll`."""
+    """A planted foot `u` of the way through its stance: (ball y, ball z, shank, toes, True), its toes
+    flat while the body passes over them, the heel lifting in its last `roll` (the push-off, the shank
+    tipping `heel` degrees about the ball)."""
     y0, z0 = _CASSOWARY_BALL
     w = max(0.0, (u - (1.0 - roll)) / roll)
     return y0 + sweep * 0.5 - sweep * u, z0, heel * w * w * (3.0 - 2.0 * w), 0.0, True
 
 
 def _cassowary_swing(s, sweep, heel, lift, flex, curl, carry=(0.08, 0.8)):
-    """A foot `s` of the way through its swing, as _cassowary_stride's: (ball y, ball z, shank,
-    toes, False), from where the push-off left it to where it lands `sweep` ahead."""
+    """A foot `s` of the way through its swing: (ball y, ball z, shank, toes, False), from where the
+    push-off left it to where it lands `sweep` ahead, the hock carried forward lifted `lift` as the
+    ankle folds the foot up under it, `flex` degrees, its toes curling `curl`, and reaching down flat
+    to land."""
     y0, z0 = _CASSOWARY_BALL
     shank_swing = _cassowary_mono([(0.0, heel), (0.45, flex), (0.85, 0.0), (1.0, 0.0)])
     toes_swing = _cassowary_mono([(0.0, 0.0), (0.25, curl), (0.65, curl * 0.4), (0.85, 0.0), (1.0, 0.0)])
@@ -3190,102 +3097,60 @@ def _cassowary_swing(s, sweep, heel, lift, flex, curl, carry=(0.08, 0.8)):
     return hy - oy, hz - oz, shank, toes_swing(s)[0], False
 
 
-def _cassowary_handoff(walk, lope, sweep=40.0, n=160, reach=0.97):
-    """The stride the Cassowary changes gait in, from its walk into its lope (Ryan, 25 November: "The
-    cassowary run needs to be a real run, a lope, not a fast walk"), worked out foot by foot so no
-    foot slides: the lope's stride is twice the walk's, so the two cannot crossfade in step. It sets
-    off as the walk's left foot lands (the walk's phase 0); the left takes its walk step, the right
-    its walk step and then a swing between the two gaits', and each swing after is the lope's, the
-    left landing as the lope's phase 0 opens after `length` units. Both feet plant through a stance
-    of `sweep` in either gait, so only the swings grow; the body's crouch, dip, nod, lean and hop
-    ease from the walk's to the lope's over the change. `walk` and `lope` are the keyword sets
-    _cassowary_stride took. Returns {"from", "to", "length", "tracks", "body"} for b.gait's start."""
-    sw = sweep / walk.get("duty", 0.6)
-    sr = sweep / lope["duty"]
-    mid = {k: (walk.get(k, 0.0) + lope[k]) * 0.5 for k in ("lift", "flex", "curl", "heel", "roll")}
-    w_kw = {"heel": walk.get("heel", -28.0), "lift": walk.get("lift", 5.0), "flex": walk.get("flex", 22.0), "curl": walk.get("curl", -30.0)}
-    l_kw = {"heel": lope.get("heel", -28.0), "lift": lope["lift"], "flex": lope["flex"], "curl": lope["curl"]}
-    m_kw = {"heel": mid["heel"], "lift": mid["lift"], "flex": mid["flex"], "curl": mid["curl"]}
-    w_roll, l_roll = walk.get("roll", 0.3), lope["roll"]
-    # The feet's steps in units travelled: (start, end, "stance"|"swing", swing's keywords or stance's roll).
-    a1 = sweep                      # the left lifts from its first walk stance
-    a2 = sw                         # and lands its walk step
-    a3 = sw + sweep                 # lifts
-    land_l = a3 + (sr - sweep)      # and lands in the lope, its phase 0: the change's end
-    r1 = -sw * 0.5                  # the right planted half a walk stride earlier
-    r2 = r1 + sweep                 # lifts
-    r3 = sw * 0.5                   # lands its walk step
-    r4 = r3 + sweep                 # lifts into the swing between
-    r5 = land_l - sr * 0.5          # lands in the lope's rhythm, half its stride before the left
-    r6 = r5 + sweep                 # lifts into the lope's swing
-    length = land_l
-    steps = {
-        "l": [(0.0, a1, "stance", w_roll), (a1, a2, "swing", w_kw), (a2, a3, "stance", w_roll), (a3, land_l, "swing", l_kw), (land_l, land_l + sweep, "stance", l_roll)],
-        "r": [(r1, r2, "stance", w_roll), (r2, r3, "swing", w_kw), (r3, r4, "stance", w_roll), (r4, r5, "swing", m_kw), (r5, r6, "stance", l_roll), (r6, r6 + sr - sweep, "swing", l_kw)],
-    }
-    landings = [(0.0, sw), (r3, sw), (a2, sw), (r5, (sw + sr) * 0.5), (land_l, sr), (r1, sw)]
+def _cassowary_lope(sweep, duty=0.3, lift=10.0, heel=-34.0, roll=0.45, flex=36.0, curl=-28.0, bounce=2.5, crouch=1.0,
+                    lean=7.0, nod=1.5, reach=0.97, n=90):
+    """The Cassowary's run, a lope (Ryan, 25 November: "a real run, a lope, not a fast walk"; then "The
+    cassowary's run is very jerky, every time a foot touches down, it jumps. And the transition from
+    walk to run is janky. As a biped it can probably just take off into a run from standing"): each
+    foot planted `duty` of the stride through a stance of `sweep`, so the machine flies between its
+    steps, the swing lifted high with the ankle folded under the hock (_cassowary_stance,
+    _cassowary_swing). The body rides as a run's does, never as a walk's vault: one smooth swell a
+    step, lowest at mid-stance as the leg takes its weight and highest in the flight, `bounce` either
+    way of its middle, set as high as the planted legs allow kept `reach` of straight, `crouch` lower;
+    leaning `lean` degrees into the run, nose a further `nod` down at mid-stance and up in the flight.
+    Nothing jolts on a landing: the swell is already coming down to meet the foot. The feet a half
+    stride apart. Returns (tracks, body, stride) for b.gait with ease "linear"."""
+    stride = sweep / duty
+    phases = {"l": 0.0, "r": 0.5}
 
-    def foot(side, d):
-        for (a, e, kind, spec) in steps[side]:
-            if a <= d <= e + 1e-6:
-                t = (d - a) / max(1e-6, e - a)
-                if kind == "stance":
-                    return _cassowary_stance(min(t, 0.999999), sweep, w_kw["heel"] if spec == w_roll else l_kw["heel"], spec)
-                return _cassowary_swing(t, sweep, spec["heel"], spec["lift"], spec["flex"], spec["curl"])
-        raise ValueError("no step for %s at %.2f" % (side, d))
+    def foot(side, p):
+        q = (p - phases[side]) % 1.0
+        if q < duty:
+            return _cassowary_stance(q / duty, sweep, heel, roll)
+        return _cassowary_swing((q - duty) / (1.0 - duty), sweep, heel, lift, flex, curl)
 
     span = reach * (math.hypot(_CASSOWARY_KNEE[0] - _CASSOWARY_HIP[0], _CASSOWARY_KNEE[1] - _CASSOWARY_HIP[1])
                     + math.hypot(_CASSOWARY_HOCK[0] - _CASSOWARY_KNEE[0], _CASSOWARY_HOCK[1] - _CASSOWARY_KNEE[1]))
-    ds = [length * i / float(n) for i in range(n + 1)]
-    rides = []
-    for d in ds:
-        ride = None
+    top = (duty + 0.5) * 0.5   # the middle of the flight after the left's stance
+
+    def swell(p):
+        """+1 in the middle of a flight, -1 at mid-stance: one swell a step."""
+        return math.cos(4.0 * math.pi * (p - top))
+
+    ps = [i / float(n) for i in range(n + 1)]
+    room = []   # how high the planted legs let the body ride, less the swell there
+    for p in ps:
         for side in ("l", "r"):
-            y, z, shank, _toes, down = foot(side, d)
+            y, z, shank, _toes, down = foot(side, p)
             if not down:
                 continue
             hy, hz = _cassowary_hock((y, z), shank)
             dy = hy - _CASSOWARY_HIP[0]
-            r = hz + math.sqrt(max(0.0, span * span - dy * dy)) - _CASSOWARY_HIP[1]
-            ride = r if ride is None else min(ride, r)
-        rides.append(None if ride is None else min(0.0, ride))
-    pose = []
-    for i, d in enumerate(ds):
-        k = d / length
-        e = k * k * (3.0 - 2.0 * k)   # the walk's body easing into the lope's
-        mix = {key: walk.get(key, dflt) + (lope.get(key, dflt) - walk.get(key, dflt)) * e
-               for key, dflt in (("crouch", 0.5), ("dip", 1.6), ("nod", 1.2), ("lean", 0.0), ("hop", 0.0))}
-        ride = rides[i]
-        if ride is None:
-            a = i
-            while rides[a] is None:
-                a -= 1
-            b = i
-            while b < len(rides) - 1 and rides[b] is None:
-                b += 1
-            end = rides[b] if rides[b] is not None else rides[a]
-            u = (i - a) / float(max(1, b - a))
-            ride = rides[a] * (1.0 - u) + end * u + mix["hop"] * math.sin(math.pi * u)
-        jolt = 0.0
-        for land, stride in landings:
-            x = (d - land) / stride
-            if 0.0 <= x < 0.05:
-                jolt += x / 0.05
-            elif 0.05 <= x < 0.4:
-                jolt += (1.0 - (x - 0.05) / 0.35) ** 2
-        pose.append((ride - mix["crouch"] - mix["dip"] * jolt, -mix["nod"] * jolt - mix["lean"]))
+            room.append(hz + math.sqrt(max(0.0, span * span - dy * dy)) - _CASSOWARY_HIP[1] - bounce * swell(p))
+    base = min(0.0, min(room)) - crouch
+    pose = [(base + bounce * swell(p), -lean + nod * swell(p)) for p in ps]
     tracks = {}
     for side in ("l", "r"):
         rows = {j: [] for j in ("hip_", "knee_", "ankle_", "toe_")}
-        for i, d in enumerate(ds):
-            y, z, shank, toes, _down = foot(side, d)
+        for i, p in enumerate(ps):
+            y, z, shank, toes, _down = foot(side, p)
             dz, pitch = pose[i]
             for j, v in zip(("hip_", "knee_", "ankle_", "toe_"), _cassowary_solve((y, z), shank, toes, 0.0, dz, pitch)):
-                rows[j].append((round(d / length, 4), round(v, 3)))
+                rows[j].append((p, round(v, 3)))
         for j, keys in rows.items():
-            tracks[j + side] = keys
-    body = [(round(ds[i] / length, 4), 0.0, 0.0, round(dz, 3), 0.0, round(pitch, 3), 0.0) for i, (dz, pitch) in enumerate(pose)]
-    return {"from": 0.0, "to": 0.0, "length": length, "tracks": tracks, "body": body}
+            tracks[j + side] = (keys, 0.0)
+    body = [(ps[i], 0.0, 0.0, round(dz, 3), 0.0, round(pitch, 3), 0.0) for i, (dz, pitch) in enumerate(pose)]
+    return tracks, body, stride
 
 
 def _cassowary_drum_ring(cx, cz, r, flute):
@@ -3512,28 +3377,17 @@ def cassowary(b):
     tracks["waist"] = _cassowary_dense([(0.6, 0.0, 0.0, 0.0), (1.4, -3.0, 0.0, 0.0), (2.5, -3.5, 0.0, 0.0), (2.7, 2.0, 0.0, 0.0), (3.1, 1.6, 0.0, 0.0), (4.0, -2.0, 0.0, 0.0),
                                         (4.15, 1.5, 0.0, 0.0), (5.0, 0.0, 0.0, 0.0)], 6.0)
     b.act("kick", 6.0, tracks, body=body, ease="linear", heft=0.07, glow=[(["lamp"], [(2.4, 0.0), (2.7, 8.0), (3.2, 8.0), (3.8, 0.0)])])
-    # Movement: a long digitigrade stride, the toes planted while the body passes over them, the
-    # heel lifting into the push-off, the ankle folding the foot up under the hock as it swings
-    # and reaching it down to land flat; the body dropping and nodding onto each foot. A sweep of
-    # 40, a stride of 67, so its four hexes a move are paced, not scurried (at 30 it took three
-    # steps a second at its map pace).
-    # It walks off the mark and lopes once under way (Ryan, 24 November: "cassowary gait needs to
-    # accelerate into more of a run"; 25 November: "The cassowary run needs to be a real run, a
-    # lope, not a fast walk"): the lope covers twice the walk's ground a stride, each foot down a
-    # third of it on the walk's same sweep, so the machine flies between its steps, the swing
-    # lifted high with the ankle folded hard under the hock, the body down, leaning into it,
-    # rising through each flight and dropping onto each landing. The two strides cannot crossfade
-    # in step, so it changes in a stride worked out foot by foot (_cassowary_handoff): the walk's
-    # steps, a swing between, then the lope's.
-    walk = {"curl": -18.0}   # the toe plates droop on their hinges through the swing, less than a bird's toes curl
-    lope = {"duty": 0.3, "lift": 10.0, "flex": 36.0, "curl": -28.0, "heel": -34.0, "roll": 0.45,
-            "crouch": 3.5, "dip": 3.2, "nod": 3.0, "lean": 7.0, "hop": 5.0}   # the knee coming up high in the swing, short of the cab
-    wtracks, wbody, wstride = _cassowary_stride(sweep=40.0, **walk)
-    tracks, body, stride = _cassowary_stride(sweep=40.0, **lope)
-    hand = _cassowary_handoff(walk, lope)
-    b.gait(stride=stride, tracks=tracks, body=body, ease="linear", start=("walk", 0.25, 0.6, hand))
-    b.gait_option("walk", stride=wstride, tracks=wtracks, body=wbody, ease="linear")
-    b.move(accel=1.3, heft=0.17)
+    # Movement: it lopes, and sets off straight into the lope (Ryan, 24 November: "cassowary gait
+    # needs to accelerate into more of a run"; 25 November: "The cassowary run needs to be a real run,
+    # a lope, not a fast walk"; then "As a biped it can probably just take off into a run from
+    # standing"): two of its walk's old strides a stride, each foot down under a third of it, the
+    # knee coming up high in the swing, short of the cab, and the body swelling once a step as a
+    # run's does (_cassowary_lope). Quick off the mark, so the slow first strides are few. The walk
+    # it set off in until then, and the stride it changed in, are retired: the change read as a
+    # stumble, and the lope's dip and hop at each landing as a jump.
+    tracks, body, stride = _cassowary_lope(sweep=40.0)
+    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    b.move(accel=0.8, heft=0.17)
     # Its Spin-Up plays a slice of its test charge as it is used (Ryan, 31 October: the cheapest
     # first; found unfired on 3 November): the capacitor drum spinning up three turns as the spark
     # gap crackles, to the snap at its top.
