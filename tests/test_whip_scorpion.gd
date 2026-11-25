@@ -266,6 +266,7 @@ func test_a_step_s_form_of_the_reboot_piece_comes_up_with_its_word_and_fires_wid
 	assert_eq(ms.heat, 10, "its turn opens a heat higher")
 	assert_eq(Effects.reboot_label(u), "Doom Ray", "REBOOT wears the later grant's word")
 	assert_true(sk.reboot_mech(0), "its die on REBOOT")
+	assert_true(sk.log.any(func(l: String) -> bool: return l == "W brings its Test Doom Ray up"), "the log names the piece as its step calls it")
 	var shown := sk.shown_face(ms, ms.face())
 	assert_eq([ms.face().component, shown.volatile], ["test_ray", 1], "the form comes up, its hull cost as printed")
 	assert_true(shown.has(Face.Keyword.CLEAVE) and shown.has(Face.Keyword.PENETRATE) and shown.ignores_armour, "Spread, Penetrate, Ignores Armour")
@@ -363,6 +364,78 @@ func test_once_a_spend_its_heat_and_an_ablate_on_each_sprite_hit_three_past_its_
 	assert_true(sk.assign(0, left), "from its maximum")
 	assert_eq(ms.heat, 11, "its heat first, past the maximum")
 	assert_eq([Effects.stacks_of(left, "ablating") - int(had[0]), Effects.stacks_of(mid, "ablating") - int(had[1])], [3, 3], "so 3 on each")
+
+
+## The log names a piece as content does (the Heliographic Death Ray, not its id).
+func test_the_log_names_the_reboot_piece_as_content_does() -> void:
+	var db := ContentDB.load_default()
+	var u := db.make_mech("whip_scorpion")
+	var sk := Skirmish.new(1)
+	sk.add_mech(u)
+	sk.add_foes([Foe.make("dummy", 900, 0)])
+	sk.begin()
+	sk.start_round()
+	assert_true(sk.reboot_mech(0), "the Ray up")
+	var name := str(db.components[Effects.reboot_piece(u)]["name"])
+	assert_true(sk.log.any(func(l: String) -> bool: return l.ends_with("brings its %s up" % name)), "by its name in content")
+
+
+## The bot banks the heat that is its shot (24 November, so it holds its heat past half as the
+## stock is built to): a heat-scale machine whose reboot fires its heat reads held heat as a share of
+## its next shot (shot_worth), so mid-gauge it spends a builder over the Ray, and with the builder
+## that would burn it, it fires the Ray; heat on it costs less than on a plain machine.
+func test_the_bot_banks_its_heat_for_the_shot_and_fires_it_near_the_top() -> void:
+	var gun := Face.attack(3, L, [], 4)
+	var u := _mech("W", Die.of([gun, _ray()]), 12, 10, 200)
+	u.grant_passive(SCALE)
+	u.grant_passive(RAYED)
+	var plain := _mech("P", Die.single(gun.duplicate_face()), 12, 10, 200)
+	var foe := Foe.make("dummy", 900, 0)
+	var sk := _fight([u, plain], [foe])
+	var ms: Skirmish.MechState = sk.mechs[0]
+	var bot := Policy.make(Policy.GREEDY, 1)
+	assert_true(Policy.shot_worth(ms, 7) > Policy.shot_worth(ms, 0) and Policy.shot_worth(ms, 0) > 0.0, "its held heat banks a bigger shot")
+	assert_eq(Policy.shot_worth(sk.mechs[1], 7), 0.0, "a plain machine banks none")
+	ms.heat = 3
+	sk.mechs[1].heat = 3
+	assert_true(bot.heat_cost_of(sk, ms, 4) < bot.heat_cost_of(sk, sk.mechs[1], 4), "heat on it costs less: it is fuel")
+	ms.face_index = 0
+	ms.heat = 7
+	var spend := -INF
+	for o in bot.options_for(sk, 0):
+		spend = maxf(spend, float(o["score"]))
+	assert_true(bot.piece_worth(sk, 0) < spend, "past half, it builds on rather than fire the Ray (%s against %s)" % [bot.piece_worth(sk, 0), spend])
+	ms.heat = 11
+	spend = -INF
+	for o in bot.options_for(sk, 0):
+		spend = maxf(spend, float(o["score"]))
+	assert_true(bot.piece_worth(sk, 0) > spend, "near the top, the builder would burn it: it fires (%s against %s)" % [bot.piece_worth(sk, 0), spend])
+
+
+## The bot reads the Incinerator's lay past the maximum: a spend that takes it there lays 3 a Sprite
+## where it would lay 1, so it weighs more than the same spend on a lay with no such stacks; one that
+## stays under lays 1 either way.
+func test_the_bot_reads_the_lay_a_spend_past_its_maximum_lays() -> void:
+	var gun := Face.attack(3, L, [], 4)
+	var scores := []
+	for hot_n in [3, 0]:
+		var u := _mech("W", Die.single(gun), 12, 10, 200)
+		var lay := {"trigger": "on_attack", "effect": "lay_status", "value": "ablating", "stacks": 1, "once": "spend"}
+		if hot_n > 0:
+			lay["overheated"] = hot_n
+		u.grant_passive({"id": "stoke_once", "name": "Stoke Once", "description": "", "effects": [
+			{"trigger": "on_attack", "effect": "hit_heat", "value": 1, "once": "spend"}, lay]})
+		var foe := Foe.make("dummy", 900, 0)
+		var sk := _fight([u], [foe])
+		var ms: Skirmish.MechState = sk.mechs[0]
+		var bot := Policy.make(Policy.GREEDY, 1)
+		ms.heat = 8
+		var past := bot.attack_score(sk, ms, gun, foe)
+		ms.heat = 2
+		var under := bot.attack_score(sk, ms, gun, foe)
+		scores.append([past, under])
+	assert_true(float(scores[0][0]) > float(scores[1][0]), "taking it past its maximum, its 3 Ablate weigh more than 1 (%s against %s)" % [scores[0][0], scores[1][0]])
+	assert_eq(float(scores[0][1]), float(scores[1][1]), "under it, the same 1")
 
 
 func test_the_validator_holds_the_scale_the_doubling_and_the_piece_to_their_shapes() -> void:

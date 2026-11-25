@@ -64,7 +64,10 @@ document's job and every command are in `README.md`.
   lands outside the shell on the side it is headed, under either tide (the rules' Rift
   Pressure).
 - Branches. Main holds everything this file describes. `claude/game-ui-animation-tweaks-xiex10`
-  landed on 24 November on Ryan's "merge into main" (his two lists of the day: the Cassowary's size
+  landed again on 25 November on Ryan's "merge into main and update the hangar" (his list of the
+  day: the Cassowary's lope, the engage corners on the ordered pack alone, a machine drawn over a
+  pack in front of it, the threat chip at the picture's corner, the portrait tags, the shell on the
+  ledge, the dressing pressed flat), and first on 24 November on his "merge into main" (his two lists of the day: the Cassowary's size
   and run, the Macaque's size, UNDO's count gone, the aim's reticle and tether, the intent lines
   under the chips, the stack chips merged and unsigned, the formation's single tap, a machine's
   move under the player's hands, the shell behind what stands before it, the gorges deep and their
@@ -120,7 +123,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1481 tests, 402,321 checks, green on Godot 4.8-beta4 (25 November, the map's list of the day). The runner fails a run
+- Tests: 1484 tests, 402,331 checks, green on Godot 4.8-beta4 (25 November, the map's list of the day over the bot banking the Whip Scorpion's heat). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -237,11 +240,13 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   round on the Swallowtail, the team's pit crew, waits on Ryan's marks in its brief. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis (its Rage, rebuilt
   on Ryan's design of 23 November; since the 24th a heat for every hit it takes, its other heats
-  and a keyword on its Knuckles its two branches, Breaker and Berserker), the Polar Bear (a reboot
+  and a keyword on its Knuckles its two branches, Breaker and Berserker, the Berserker the stronger
+  on every pack alone at 200 seeds), the Polar Bear (a reboot
   opens its seal), the Whip Scorpion (rebuilt the same day: its damage by its heat, its reboot
   firing its Death Ray, its hits doubled past half its heat; since the 24th its heat maximum 12
   and its Obliterator and Incinerator built on Ryan's design, the Halo Projector in its stock in
-  the Thermal Ray's place, and no heat on its Ray), the
+  the Thermal Ray's place, and no heat on its Ray; since the 25th the bot banks its heat for the Ray,
+  and of its two the Obliterator reads the stronger), the
   Lammergeier, the Wild Boar, the Baboon, the Stingray, and the Macaque, landed 19 November
   on `ccr-64b5deec-lunnff` from Ryan's kit (Aphelion's agile duelist at tier one: its offhand
   cycles the Beam Rifle, the Beam Sword and the Beam Shield after every spend at a foe, a rider

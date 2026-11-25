@@ -83,6 +83,7 @@ const AHEAD_SHARE := 0.6         # the shield persona: a blow next round, as a s
 const CYCLE_AHEAD := 0.6         # a stepping die's next round, as a share of this one: where the dial rests now is the chamber it opens on (the Cassowary's cycle, 3 November)
 const RAGE_SHARE := 0.5          # a Rage's flurry next turn (the Nemesis's), as a share of its swings' plain damage: a round away, the fight may end first, and it ends in a bare round; a placeholder
 const RAGE_SWINGS := 8           # the most swings a Rage is read for: past it the heat is a burn, never more fists
+const SHOT_SHARE := 0.5          # the shot a machine's held heat banks for its reboot piece (the Whip Scorpion's Death Ray), as a share of it: a round or more away, the fight may end first; a placeholder
 const REBOOT_KEEP := 1           # the reboot's first play (a what-if): the shield this round's blows would take off a machine that it gives up without a thought when it reboots
 
 var kind: int = GREEDY
@@ -320,6 +321,7 @@ func _reboots_second(sk: Skirmish, i: int) -> bool:
 func _wants_reboot(sk: Skirmish, ms: Skirmish.MechState) -> bool:
 	var blind := kind == BLIND or kind == RANDOM
 	var rager := not Effects.rage_piece(ms.unit).is_empty()   # one that would rage (the Nemesis's) reads its maximum as the Rage it opens, never a wall
+	var banker := shot_worth(ms, ms.heat) > 0.0   # one whose heat is its shot (the Whip Scorpion's): its reboot fires it, weighed against its die (piece_worth), never a reboot for room
 	# A burrower whose drill still works in a foe (the Mole's) gives it up as it burrows, the burrow
 	# taking it home with what is left: only an overheat takes it under then, and its guns fight on.
 	if drill_working(sk, ms):
@@ -342,9 +344,9 @@ func _wants_reboot(sk: Skirmish, ms: Skirmish.MechState) -> bool:
 		return blind or pressed or (ms.heat * 2 >= ms.heat_max and not rager)
 	var f := ms.face()
 	var entry_heat := heat_of(ms, f) if f != null and f.kind != Face.Kind.BLANK else 0
-	if entry_heat > 0 and ms.heat + entry_heat > ms.heat_max and not rager:
+	if entry_heat > 0 and ms.heat + entry_heat > ms.heat_max and not rager and not banker:
 		return ms.heat > 0 and (blind or kept <= REBOOT_KEEP)   # cold already, a reboot buys the entry no room: it only drops the shield
-	return not blind and not pressed and not rager and ms.unit.shield * 4 <= ms.unit.shield_max and ms.heat * 2 >= ms.heat_max
+	return not blind and not pressed and not rager and not banker and ms.unit.shield * 4 <= ms.unit.shield_max and ms.heat * 2 >= ms.heat_max
 
 
 ## A die left unspent as the turn's spending ends is the cheap moment for a reboot:
@@ -366,6 +368,8 @@ func _reboot_idle(sk: Skirmish) -> void:
 			continue   # a burrow would take its drill home before it has done its work (the Mole's)
 		if not Effects.rage_piece(ms.unit).is_empty() and not ms.shield_broken:
 			continue   # one that would rage (the Nemesis's) keeps the heat it is climbing toward its Rage
+		if kind != BLIND and kind != RANDOM and shot_worth(ms, ms.heat) > 0.0 and piece_worth(sk, i) <= 0.0:
+			continue   # one whose heat is its shot (the Whip Scorpion's) fires it only where it is worth more than the heat it banks
 		var fc := sk.forecast(ms)
 		var kept := maxi(0, ms.unit.shield - int(fc["shield_after"]))
 		if kind == BLIND or kind == RANDOM or kept <= REBOOT_KEEP:
@@ -434,7 +438,25 @@ func piece_worth(sk: Skirmish, i: int) -> float:
 	ms.ray_from = -1
 	if best == -INF:
 		return best
-	return best - bare_cost(sk, ms)
+	# The shot it fires now is the heat it would otherwise bank for a bigger one (shot_worth): what it
+	# held, over the cold start the reboot leaves.
+	return best - bare_cost(sk, ms) - (shot_worth(ms, ms.heat) - shot_worth(ms, 0))
+
+
+## The shot the heat a machine holds banks for its reboot piece (the Whip Scorpion's Death Ray, or the
+## form a branch remakes it as: a low base and a point for every `per_heat` of the heat it fires, at
+## its heat scale), at SHOT_SHARE, on its target alone; nothing for a machine whose reboot fires no
+## heat. The bot's lean, so its heat is fuel it climbs with and holds, never only a gauge to empty.
+static func shot_worth(ms: Skirmish.MechState, heat: int) -> float:
+	var at := Skirmish.reboot_piece_at(ms)
+	if at < 0:
+		return 0.0
+	var f := Effects.effective_face(ms.unit, ms.die.faces[at])
+	if f == null or not f.vents_all or f.power_per_heat <= 0:
+		return 0.0
+	var h := maxi(0, heat)
+	var number := float(f.power + (h / maxi(1, f.per_heat)) * f.power_per_heat)
+	return SHOT_SHARE * number * Effects.heat_damage_multiple(ms.unit, h, ms.heat_max) * float(maxi(1, f.strikes))
 
 
 ## What a reboot now costs a machine through this round's blows, in foe hit points: the hull it
@@ -800,6 +822,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# a weapon's hit (the Ambush's) gets nothing from equipment.
 	var laid_apps := 0
 	var needled := str(Effects.needle_rule(ms.unit).get("status", ""))
+	var hot_after := ms.heat + heat_of(ms, f) > ms.heat_max   # the spend takes it past its maximum (a lay that reads Overheated)
 	for foe in sk.ridden_by(f, target):
 		if not foe.alive():
 			continue
@@ -813,10 +836,16 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 				continue
 			if Effects.turns_mark(foe, str(pair[0])):
 				continue   # its Ward turns the lay away (28 October)
+			# A lay past the maximum lays its own stacks where the spend takes it there (the
+			# Incinerator's 3 Ablate), and a lay once a spend lays once on each foe, whatever the strikes.
+			var n := int(pair[1])
+			if (pair as Array).size() > 3 and int(pair[3]) > 0 and hot_after:
+				n = int(pair[3])
+			var times := 1 if (pair as Array).size() > 4 and bool(pair[4]) else maxi(1, f.strikes)
 			if str(pair[0]) == needled:
-				score += survives * needle_worth(sk, ms, foe, int(pair[1]) * maxi(1, f.strikes), left)   # the Echidna's needles: the bolt they bring
+				score += survives * needle_worth(sk, ms, foe, n * times, left)   # the Echidna's needles: the bolt they bring
 			else:
-				score += survives * dot_payout(str(pair[0]), int(pair[1]) * maxi(1, f.strikes), left) * VITRIOL_WEIGHT
+				score += survives * dot_payout(str(pair[0]), n * times, left) * VITRIOL_WEIGHT
 			if foe == target:
 				laid_apps += 1
 	# The statuses this blow applies feed any machine's Paradox meter (the Baboon's Pocket
@@ -1300,6 +1329,10 @@ func heat_cost_of(sk: Skirmish, ms: Skirmish.MechState, added: int) -> float:
 	# A machine that would rage (the Nemesis's): heat that opens its next turn at its maximum buys
 	# the Rage's flurry, read at a share (rage_worth), and heat it sheds below it gives that up.
 	cost -= rage_worth(ms, int(fc["heat_after"]) + added) - rage_worth(ms, int(fc["heat_after"]))
+	# A machine whose heat is its shot (the Whip Scorpion's Death Ray, fired with its heat at its heat
+	# scale): heat that stays banks its next shot, read at a share (shot_worth); past the maximum the
+	# burn above prices it.
+	cost -= shot_worth(ms, int(fc["heat_after"]) + added) - shot_worth(ms, int(fc["heat_after"]))
 	# The first turn past the maximum breaks the shield, and what stands there burns again
 	# every turn: the shield it would lose, and the burn once more.
 	if over > 0:
