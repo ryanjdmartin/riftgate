@@ -381,8 +381,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   front of a pack's picture, a wall or a cache's chest is drawn over it (`BattleMapView._machine_over`),
   a pack's threat rating is a chip at its picture's corner, a machine off the screen is a portrait
   tag, a shell wall's ends stand on the highest ground outside them, a hex's dressing and a cache
-  press flat under a passing machine (`Map3D._flatten_props`), and the Cassowary lopes off its walk
-  through a handoff stride (`_cassowary_handoff`). Since 23 November a die's double-tap shows
+  press flat under a passing machine (`Map3D._flatten_props`), and the Cassowary sets off straight
+  into a lope whose body swells once a step (`_cassowary_lope`; its walk and the stride it changed in
+  retired on Ryan's "very jerky ... janky"). Since 23 November a die's double-tap shows
   the whole die at its live numbers and a hold alone locks; a dark entry is its own face under a
   veil; a unit's tap waits out the die's double-tap window; on the map a pack's double-tap opens
   its formation (`FormationBox`, a foe's codex on a tap there) and a cache's its codex, and a pack shows no count. A debug build's settings hold TRIALS and COLOURS
