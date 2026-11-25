@@ -237,11 +237,13 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   round on the Swallowtail, the team's pit crew, waits on Ryan's marks in its brief. Built on placeholder numbers and waiting on his play, a to-do line each:
   the Kite, the Skua, the Needletail, the Ammit, the Clydesdale, the Nemesis (its Rage, rebuilt
   on Ryan's design of 23 November; since the 24th a heat for every hit it takes, its other heats
-  and a keyword on its Knuckles its two branches, Breaker and Berserker), the Polar Bear (a reboot
+  and a keyword on its Knuckles its two branches, Breaker and Berserker, the Berserker the stronger
+  on every pack alone at 200 seeds), the Polar Bear (a reboot
   opens its seal), the Whip Scorpion (rebuilt the same day: its damage by its heat, its reboot
   firing its Death Ray, its hits doubled past half its heat; since the 24th its heat maximum 12
   and its Obliterator and Incinerator built on Ryan's design, the Halo Projector in its stock in
-  the Thermal Ray's place, and no heat on its Ray), the
+  the Thermal Ray's place, and no heat on its Ray; since the 25th the bot banks its heat for the Ray,
+  and of its two the Obliterator reads the stronger), the
   Lammergeier, the Wild Boar, the Baboon, the Stingray, and the Macaque, landed 19 November
   on `ccr-64b5deec-lunnff` from Ryan's kit (Aphelion's agile duelist at tier one: its offhand
   cycles the Beam Rifle, the Beam Sword and the Beam Shield after every spend at a foe, a rider

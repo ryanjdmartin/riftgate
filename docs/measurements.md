@@ -13213,3 +13213,68 @@ base ends a boss fight a round sooner, firing a Ray of about 8 heat where it fir
 at a little more of its own hull. The Incinerator still never rides Overheated (0.00 overheats a
 boss fight): to this bot the burn outweighs 3 Ablate on its one target, the stock holding no area
 weapon. The Obliterator is the fastest of the three on its whole shot wide.
+
+## 25 November: the Nemesis's and the Whip Scorpion's rows at 200 seeds, each branch beside its lift
+
+`tools/balance.gd -- --seeds 200 --rows nemesis,whip_scorpion,team:nemesis@breaker,team:nemesis@berserker,team:whip_scorpion@incinerator,team:whip_scorpion@obliterator --team nemesis@breaker --team nemesis@berserker --team whip_scorpion@incinerator --team whip_scorpion@obliterator --policies random,greedy --noparty`
+in four parts at `3e845d64`, then `team:nemesis#3` and `team:whip_scorpion#3` in four more at
+`ee884e93` (the same engine and content), all eight merged: each machine alone against every pack
+of the matrix (92), on `ccr-178e0404-ptuh2m` with main merged (`dcedf19f`), Godot 4.8-beta4,
+294,400 fights. The forms as built that day: the Nemesis heated 1 by every hit it takes, its
+Breaker and Berserker on Ryan's design; the Whip Scorpion at Max Heat 12 on the Halo Projector's
+stock, its hits doubled past half its heat, no heat on its Ray, its Obliterator and Incinerator on
+his design, and the bot banking its heat for the Ray (the entry before). A branch's row is at tier
+three, its pick and the tier's lift together (content's standard lift, +4 hull and +2 shield). The
+runner's `#3`, built for this read, fields a machine at tier three with no pick, so each branch
+reads beside its lift alone. The columns are the 24 November rows entry's (its walls, easy and
+flat cells and its gap), read from the merged report.
+
+| The row | Wins, random / greedy | Walls | Easy | Flat | Gap, big / rank and file | Greedy: rounds, hull a fight | Peak heat, overheats a fight |
+|---|---|---|---|---|---|---|---|
+| The Nemesis, 24 November (its old heats) | 60.4% / 69.3% | 27 | 47 | 21 | 1.31 (10) / 1.43 | 5.7, 49% | 72%, 0.11 |
+| The Nemesis, a heat a hit | 54.2% / 62.5% | 34 | 42 | 26 | 1.41 (6) / 1.47 | 6.0, 53% | 63%, 0.06 |
+| Its tier three's lift alone | 58.9% / 67.4% | 29 | 45 | 23 | 1.41 (9) / 1.47 | 6.1, 46% | 70%, 0.09 |
+| Its Breaker, tier three | 59.7% / 68.9% | 27 | 45 | 20 | 1.38 (10) / 1.47 | 6.0, 45% | 70%, 0.09 |
+| Its Berserker, tier three | 66.9% / 76.0% | 23 | 52 | 13 | 1.38 (13) / 1.40 | 5.4, 40% | 75%, 0.10 |
+| The Whip Scorpion, 24 November (Max Heat 14, the Thermal Ray's stock) | 53.3% / 58.1% | 40 | 44 | 33 | 0.58 (4) / 0.99 | 5.8, 57% | 55%, 0.01 |
+| The Whip Scorpion, as built | 50.5% / 55.8% | 40 | 40 | 36 | 0.65 (4) / 1.22 | 6.3, 58% | 56%, 0.01 |
+| Its tier three's lift alone | 53.3% / 57.8% | 39 | 43 | 34 | 0.68 (4) / 1.22 | 6.8, 55% | 59%, 0.01 |
+| Its Incinerator, tier three | 58.6% / 63.6% | 32 | 47 | 32 | 0.76 (8) / 1.15 | 6.5, 49% | 68%, 0.01 |
+| Its Obliterator, tier three | 63.1% / 68.1% | 29 | 53 | 24 | 0.88 (7) / 1.23 | 5.4, 44% | 66%, 0.01 |
+
+Since 24 November's rows the content under these fights moved only in the Meadow's packs (main's
+graded tide; the foes' other changes are text, but the Thunder Ape's, in no pack here), while other
+sessions' engine work moved under them too (the tide's dials, Chain's ping, the statuses' clocks),
+so a row's move since that entry is a direction; the read is this run's rows side by side. Spends,
+greedy: the Knuckles of Fury 45% of the Nemesis's, 49% of its lift's and of its Breaker's, 59% of
+its Berserker's; the Whip Scorpion's Ray 35%, its guns 34% and 18%, the Halo Projector 12%, every
+row of it within three points of that. The pick share names a remade piece by its form since this
+read, so the Obliterator's is its Heliographic Doom Ray's.
+
+What it says, read as bands. The Nemesis on a heat a hit stands seven points and seven walls under
+its 24 November row, the losses the packs it had to rage to beat (Molten Gel x2 98% to 0%, the
+Marsh formation 95% to 0%, the Waste formation 66% to 0%, the Fiend of Fire 91% to 31%, Antlion x3
+76% to 11%), and still over the Whip Scorpion and the Buzzard (48.6% / 54.6% on 24 November). Tier
+three's lift alone gives back five points and part of those packs (Molten Gel to 58%, the Fiend to
+54%), but neither formation (4% and 0%). The Breaker adds a point and a half over its lift, all on
+armoured single foes (Salt Sandworm x1 38% to 66%, the Fiend 54% to 69%, the Grave and Charnel
+Giants, the Matador and the Emperor Scorpion by eleven to thirteen points). The Berserker adds eight
+and a half, its hull's heat and its Knuckles' Ablate together taking back every pack the Nemesis
+lost (the Marsh formation 4% to 100%, the Waste formation 0% to 78%, Floraison 0% to 89%, the Fiend
+and Molten Gel 98%); its Knuckles are 59% of its spends to its lift's 49%, so it rages more, and
+most of that is the heat its Rage runs on. The Berserker is the stronger of the two on every one of
+the 92 packs, and no branch of either machine loses a pack to its lift by ten points.
+
+The Whip Scorpion's row is two to three points under its 24 November one, its walls the same 40.
+The bot banking its heat moves its rank and file's gap from 0.99 to 1.22, greedy the quicker now,
+but its big fights read 0.65 to 0.88 in every row of it, greedy slower than random where both win,
+and at tier two greedy loses two packs to random by a band (Barrow Giant x1 71% / 38%, Fire Lizard
+x2 82% / 53%), heavy hitters whose blows its banked heat doubles, both closed by the lift alone (89%
+and 100%). The lift alone gives it two points. The Incinerator adds six over it, on single big
+foes, where an Ablate a use stacks (Frost Treant x1 1% to 76%, Basalt Elemental x1 0% to 69%, Night
+Sandworm x1 36% to 100%, Salt Sandworm x1 14% to 74%, Dusk Treant x1 19% to 72%). The Obliterator
+adds ten, on groups (Molten Gel x2 and Gel x3 0% to 100%, Death Knight x2 3% to 98%, Spectre x3 37%
+to 98%, the Meadow formation 0% to 62%) and on most of the same single foes; the Incinerator leads
+it by more than six points only on the Basalt Elemental (69% to 25%) and the Obsidian Tyrant (30%
+to 12%). The Incinerator's Overheated stacks never come into play (0.01 overheats a fight in every
+row of the Whip Scorpion's), so its row reads the Ablate it lays once a use.
