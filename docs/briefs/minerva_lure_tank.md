@@ -183,11 +183,13 @@ window. The tank's next hit holds again. No entry on the die is the drone: the p
    Barrier), and both cover the round's held hit, since a pick is a commitment. "Itself" reads
    two ways: the tank, or the held Sprite (its own brace or recovery breaking it free, a counter
    for the foes). The model's elites rarely move on themselves, so it cannot tell the two apart.
-3. *A price while held.* Heat on the tank measures as nothing: against a big hitter its shield
-   breaks first, and the broken shield brings the reboot before the Heat does. The shield is the
-   clock, and the Sprite's every hit on the tank is the price. HP off the held Sprite is a bonus
-   on the tank's own target, which it keeps hitting: at 1 the horde falls in 3.6 rounds for 5.2
-   (a hit and a tick kill a goblin), the elites a round or two sooner.
+3. *A price while held.* Under 4, Heat on the tank is no price but a pace: it brings the reboot,
+   and so the stun, sooner. Against the Nob it changes nothing (its hits break the shield first,
+   and the broken shield brings the reboot), against the Old Man it saves the others hull (2.9 for
+   5.4), and in the horde it costs the tank turns (4.0 rounds for 3.6). The price is already
+   there: the held Sprite's every hit lands on the tank. HP off the held Sprite is a bonus on the
+   tank's own target, which it keeps hitting: at 1 the horde falls in 3.6 rounds for 5.2 (a hit and
+   a tick kill a goblin), the elites a round or two sooner.
 4. *A reboot's break stuns.* The heart of it: with it the others lose under 3 hull to the lone
    elites. "Only during a reboot break" is the right line. Every break stunning would let holding
    and letting go stun every other round; the reboot ties the stun to the tank's whole turn.
