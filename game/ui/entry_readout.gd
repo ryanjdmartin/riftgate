@@ -950,18 +950,11 @@ static func parry_line(n: int) -> Dictionary:
 	return marked(text_line("effect", Templates.say("hold.parry", {"n": n}), "rule"), [passive_mark("spin", "+%d" % n, Glyphs.colour_for("parry"))])
 
 
-## What a burrower's drill lays if spent now (the Mole's Inertia Drill; Ryan, 16 November): the
-## Applied Momentum its Conserved stacks become, the drill's blow a turn and what its branch lays
-## after it, headed by the momentum's mark.
-static func drill_line(status_id: String, momentum: int, turns: int, blow: int, lays: Dictionary) -> Dictionary:
-	var with: Array[String] = []
-	for id in lays:
-		with.append(Templates.say("hold.drill_lay", {"status": str(Effects.STATUS.get(str(id), {}).get("name", str(id))), "n": int(lays[id])}))
-	var hit := Templates.say("hold.drill_blow", {"n": blow}) if blow > 0 else ""
-	var turn := ", ".join(with)
-	if not hit.is_empty():
-		turn = Templates.say("hold.drill_both", {"blow": hit, "lays": turn}) if not turn.is_empty() else hit
-	var said := Templates.say("hold.drill", {"status": str(Effects.STATUS.get(status_id, {}).get("name", status_id)), "n": turns, "turn": turn if not turn.is_empty() else Templates.say("hold.drill_nothing")})
+## What a burrower's drill lays if used now (the Mole's Inertia Drill; Ryan, 16 November): the
+## form its branch lays and the turns its Momentum keeps it in, headed by the Momentum's mark. The
+## form is named, never explained: its tip says what each turn does (docs/text_standard.md, rule 11).
+static func drill_line(status_id: String, momentum: int, turns: int) -> Dictionary:
+	var said := Templates.say("hold.drill", {"status": str(Effects.STATUS.get(status_id, {}).get("name", status_id)), "n": turns})
 	return marked(text_line("effect", said, "rule"), [passive_mark(Terms.glyph(status_id), str(momentum), Glyphs.colour_for(status_id))])
 
 

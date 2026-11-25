@@ -925,12 +925,11 @@ static func drill_working(sk: Skirmish, ms: Skirmish.MechState) -> bool:
 ## not yet made good, it is worth waiting a turn: the drill is held (a score below nothing). A Ward
 ## turns it away unless the piece ignores Ward.
 func drill_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
-	var rule := Effects.burrow_rule(ms.unit)
 	var have := Effects.stacks_of(ms.unit, "momentum")
 	var tick := Effects.momentum_of(ms.unit, f)
 	if Effects.turns_mark(target, str(tick["status"])) and not f.ignores_ward:
 		return 0.0
-	if have < int(rule.get("cap", 10)) and (ms.unit.shield < ms.unit.shield_max or ms.heat > 0):
+	if have < Effects.store_cap(ms.unit, "momentum") and (ms.unit.shield < ms.unit.shield_max or ms.heat > 0):
 		return -1.0
 	var ticks := maxi(1, ceili(float(have) / float(maxi(1, int(tick["drain"])))))
 	var lays: Dictionary = tick["lays"]
@@ -1792,13 +1791,16 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 			var echo_base := floori(Skirmish.split_share(v + fired, f.split) * again / 100.0)
 			var echo := int(Effects.attack(ms.unit, f, echo_base, 0, target, zctx.duplicate())["damage"]) + own
 			echoed = float(maxi(0, (Effects.damage_taken(target, echo, ms.unit, damaging, false) if damaging else 0) - arm)) * n
-		# Ricochet (the Skua's, 12 November): once the weapon's strikes are done, a strike of 1 more
-		# a stack at its target, through the firer's pipeline, the foe's Brittle and its armour.
+		# Ricochet (the Skua's, 12 November; 25 November, the machine's alone): once the weapon's
+		# strikes are done, a hit of 1 more a stack at its target, through the firer's pipeline, none
+		# of the entry's own rules, then the foe's Brittle and its own armour.
 		var bounced := 0.0
 		var stacks := Effects.stacks_of(ms.unit, "ricochet") if f.is_weapon() and target != null and f.reach != Face.Reach.EVERY_FOE else 0
 		if stacks > 0:
-			var one := int(Effects.attack(ms.unit, f, 1, 0, target)["damage"])
-			bounced = float(maxi(0, Effects.damage_taken(target, one, ms.unit, true, false) - arm)) * stacks
+			var bctx := zctx.duplicate()
+			bctx["plain"] = true
+			var one := int(Effects.attack(ms.unit, f, 1, 0, target, bctx)["damage"])
+			bounced = float(maxi(0, Effects.damage_taken(target, one, ms.unit, true, false) - target.armour_total())) * stacks
 		out.append([float(first) + float(later) * maxf(0.0, n - 1.0) + bounced + echoed, w])
 	return out
 

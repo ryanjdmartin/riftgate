@@ -18,7 +18,7 @@ extends TestCase
 ## The statuses are the engine's; the passive and its numbers are the test's.
 
 const DRILL := "drill_test"
-const BURROW := {"trigger": "static", "effect": "burrow", "piece": DRILL, "cap": 10, "armour": 1, "shield": 3, "cool": 6, "momentum": 5}
+const BURROW := {"trigger": "static", "effect": "burrow", "piece": DRILL}
 const K := Face.Keyword
 
 
@@ -357,3 +357,18 @@ func test_a_burrow_undoes_like_a_spend() -> void:
 	assert_true(sk.can_undo(), "the burrow can be taken back")
 	sk.undo()
 	assert_false(Effects.has(sk.mechs[0].unit, "burrowed"), "and is: up again")
+
+
+## Burrowed's numbers are its own and Momentum's cap is Momentum's (Ryan, 24 November: "Move the
+## effects on the mole's passive to the status chip"): a burrow passive carries its piece alone (the
+## burrower above has nothing else, and its turns under are the tests above), and each tip says the
+## number its status holds.
+func test_the_burrows_numbers_are_the_statuses_own() -> void:
+	var u := _mole(20)
+	assert_eq(Effects.store_cap(u, "momentum"), int(Effects.STATUS["momentum"]["cap"]), "Momentum's cap is its own")
+	assert_eq(Effects.store_cap(_gunner(), "momentum"), 0, "and a machine that reboots banks none")
+	var db := ContentDB.load_default()
+	var tip := str(db.vocabulary["burrowed"]["codex"])
+	for said in ["+%d Armour" % Effects.status_value_static("burrowed", "add_stat"), "%d Shield" % Effects.burrowed_number("shield"), "%d Momentum" % Effects.burrowed_number("momentum"), "%d Heat" % Effects.burrowed_number("cool")]:
+		assert_true(tip.contains(said), "Burrowed's tip says %s: %s" % [said, tip])
+	assert_true(str(db.vocabulary["momentum"]["codex"]).contains("Maximum %d" % int(Effects.STATUS["momentum"]["cap"])), "and Momentum's says its cap")

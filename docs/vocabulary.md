@@ -23,7 +23,7 @@ Status: 210 implemented, 6 planned, 0 idea.
 | **Muster** | Machine store, the Swallowtail's: a charge its Integrated components spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty and never decays; a store, so no Purge touches it. With a charge up, its Integrated components go out charged unasked, unless the charged form has nowhere to land; then the plain form goes out and the charge waits. | implemented |
 | **Ammo** | The Musk Ox's magazine, a row of cells under its heat bar, a cell an ammo. Its weapons spend ammo instead of heating it: 1 for every 2 heat a gun would make, rounded up, at least 1, the price printed where the gun's heat would be; a foe's Scorched still heats them. The magazine holds 10, opens each fight at 3 and gains 1 at the start of every round after the first; a vent the Musk Ox spends on itself adds 3, a shield 2, an entry that is both 3, once. With too little left, a gun cannot be spent (DRY). | implemented |
 | **Momentum** | Maximum 10.
-Gained while Burrowed.
+Gained by Burrowed and Applied Momentum.
 Drained by Applied Momentum. | implemented |
 
 ## Kit
@@ -50,7 +50,7 @@ Drained by Applied Momentum. | implemented |
 |---|---|---|
 | **Swap** | Second target: another Sprite or an empty slot.
 Resolve: The target and the second target swap places. Massive Sprites cannot move. | implemented |
-| **Volatile** | Commit: Lose {N} Hull. Ignores Shield and Armour. | implemented |
+| **Volatile** | Commit: Lose {N} Hull. | implemented |
 | **Shield cost** | Commit: Lose {N} Shield.
 Cannot be used without enough Shield. | implemented |
 | **Targets** | Which Frames this can be used on, shown as three hexes under its mark: the middle is this Frame, the sides are the other Frames. A filled hex can be chosen. | implemented |
@@ -74,7 +74,7 @@ A dark entry can be rolled but not used. | implemented |
 Commit: If equipment, consume up to {N} of the named count from this Frame. Gain 1 stack of the granted status per one consumed.
 Equipment cannot be used with nothing to consume. | implemented |
 | **Ablates its firer** | Resolve: Apply {N} Ablate to this Frame. | implemented |
-| **Ignores armour** | Hits ignore Armour. | implemented |
+| **Ignores Armour** | Armour does not reduce the damage. | implemented |
 | **Empties the hopper** | Commit: Consume all Ore. Hit once per Ore consumed. No Ore is gained from these hits.
 Cannot be used without Ore. | implemented |
 | **Braces** | Resolve: Apply {N} Armoured to this Frame. | implemented |
@@ -94,8 +94,8 @@ Cannot be used without Ore. | implemented |
 
 | Term | Codex | Status |
 |---|---|---|
-| **Spread** | Also hits all Sprites beside the target, dealing {N} damage. The extra hits are not Targeted. | implemented |
-| **Penetrate** | Also hits all other Sprites in the same column, dealing {N} damage. The extra hits are not Targeted. | implemented |
+| **Spread** | Also hits all Sprites beside the target, dealing {N} damage. | implemented |
+| **Penetrate** | Also hits all other Sprites in the same column, dealing {N} damage. | implemented |
 | **Cryo** | Resolve: Apply {N} Cryo per hit. | implemented |
 | **Ablate** | Resolve: Apply {N} Ablate per hit. | implemented |
 | **Lure** | On Hit: Change intended target to this Frame. | implemented |
@@ -105,7 +105,7 @@ Cannot be used without Ore. | implemented |
 | **Suppress** | Resolve: Apply Suppressed to each Sprite hit. | implemented |
 | **Brittle** | Resolve: Apply {N} Brittle per hit. | implemented |
 | **Sap** | Resolve: Apply {N} Sapped per hit. | implemented |
-| **Chain** | Resolve: All Sprites with Shock, Static, or Sonic Needle lose {N} HP. | implemented |
+| **Chain** | Resolve: All Sprites with Shock lose {N} HP. | implemented |
 | **Rapid** | Resolve: Reroll this die for free, never onto this entry. This entry goes dark for the rest of the round. | implemented |
 | **Instant** | Resolve: Reroll this die for free. May land on this entry again. | implemented |
 | **Jam** | Resolve: Apply Jammed to the entry the target's die shows. | implemented |
@@ -154,22 +154,21 @@ Shield Broken: Reduce stacks to 0. | implemented |
 | **Primed** | Resolve: If this was an attack, apply 1 Ablate per hit and reduce stacks by 1. | implemented |
 | **Jammed** | This entry comes up blank.
 On Reboot: Removed. | implemented |
-| **Corrupted** | Commit: Take 3 damage per stack ({N}).
+| **Corrupted** | Commit: Suffer 3 damage per stack ({N}).
 On Reboot: Reduce stacks to 0. | implemented |
 | **Phased** | Immune to all damage. Cannot be targeted or hit. Can still act.
 Other statuses still count down.
 Round End: Removed. | implemented |
-| **Ablate** | Turn End: Take 1 damage per stack ({N}), then reduce stacks by 1.
-Ignores Armour and Barrier. | implemented |
+| **Ablate** | Turn End: Suffer 1 damage per stack ({N}), then reduce stacks by 1. | implemented |
 | **Suppressed** | May not act.
 Turn End: Removed. Gain Numbed equal to stun resist: 1, 2 if massive, 3 if elite, hero or boss. | implemented |
 | **Vitriol** | Turn End: Lose 10% of current HP per stack ({N}), rounded down, then reduce stacks by 1.
-Ignores Armour and Barrier. Cannot reduce HP below 1. | implemented |
+Cannot reduce HP below 1. | implemented |
 | **Web Bomb** | Round End: Consumed to apply Suppressed to this Sprite and the nearest Sprite to its right in the same rank, or to its left if none. | implemented |
 | **Spun Up** | Weapon hits deal +2 damage per stack ({N}).
 Resolve: If a weapon was used, reduce stacks to 0. | implemented |
-| **Ricochet** | Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage, with every effect of the weapon except area.
-After Being Hit: If Hull damage was taken, reduce stacks by half, rounded down.
+| **Ricochet** | Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage. No effect of the weapon applies.
+Hull Damaged: Reduce stacks by half, rounded down.
 Lasts the skirmish. | implemented |
 | **Essence** | When any Sprite is defeated: Gain 1 Essence.
 Skirmish Start: Gain 1 Empowered per 5 Essence.
@@ -195,7 +194,7 @@ Turn Start: Reduce stacks by half, rounded down. | implemented |
 | **Destroyed component** | This entry is blank for the rest of the battle. Passive bonuses still apply. Passive abilities do not.
 After the battle: an Integrated component is rebuilt, a hardpoint's component is lost. | implemented |
 | **Mine** | Uses aimed at this Sprite by the Frame that laid it add their damage and riders to the Mine.
-When defeated: The Mine goes off, dealing 1 damage per stack ({N}) to every Sprite around it, with its riders. | implemented |
+When defeated: The Mine goes off, hitting every Sprite around it for 1 damage per stack ({N}), with its riders. | implemented |
 | **Rage** | Immune to all Debuffs.
 Fixed: Knuckles of Fury
 Reboot disabled.
@@ -204,7 +203,7 @@ At 0 Heat: Consumed to Reboot immediately. | implemented |
 | **Scorched** | Uses aimed at a Sprite cost +1 Heat per stack ({N}).
 Turn End: Reduce stacks to 0. | implemented |
 | **Overheated** | Stacks equal Heat above Max Heat.
-Turn End: Take 1 Hull damage per stack ({N}), ignoring Shield and Armour. The first time since the last Reboot, reduce Shield to 0.
+Turn End: Lose 1 Hull per stack ({N}). The first time since the last Reboot, reduce Shield to 0.
 On Reboot: Reduce stacks to 0.
 Cannot be cleansed. | implemented |
 | **Broken** | Applied when Shield reaches 0. Shield cannot be gained.
@@ -243,18 +242,19 @@ Resolve: If a weapon was used, reduce stacks by 1. | implemented |
 | **Supercooled** | Weapons gain Cryo 1.
 Resolve: If a weapon was used, reduce stacks by 1. | implemented |
 | **Regenerating** | Turn End: Gain 1 Shield per stack ({N}) on a Frame, or 1 HP per stack on a Sprite, then reduce stacks by 1. | implemented |
-| **Burrowed** | Replaces Reboot. +1 Armour.
+| **Burrowed** | +1 Armour.
 Fixed: Inertia Drill
 Turn Start: Remove Broken, Overheated, Jammed and Corrupted. Gain 3 Shield and 5 Momentum, and lose 6 Heat.
-Resolve: If the Inertia Drill was used, removed. | implemented |
-| **Applied Momentum** | Turn Start: Gain 1 Brittle and Pinned. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.
-Resolve: The Mole gains 1 Momentum. | implemented |
-| **Frozen Momentum** | Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.
-Resolve: The Mole gains 1 Momentum. | implemented |
-| **Heated Momentum** | Turn Start: Gain 1 Brittle, 2 Ablate, Pinned, and Seared. Then, drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.
-Resolve: The Mole gains 1 Momentum. | implemented |
-| **Frozen** | When any amount of Cryo would be consumed, consume 1 Numbed instead, if any, then remove Frozen. | implemented |
-| **Drill Out** | Inertia Drill is out until it returns, or the next burrow. | implemented |
+Resolve: If Inertia Drill was used, removed. | implemented |
+| **Applied Momentum** | Turn Start: Gain 1 Brittle and Pinned. Then, take a hit for 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.
+Resolve: If hit, the Mole gains 1 Momentum. | implemented |
+| **Frozen Momentum** | Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take a hit for 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.
+Resolve: If hit, the Mole gains 1 Momentum. | implemented |
+| **Heated Momentum** | Turn Start: Gain 1 Brittle, 2 Ablate, Pinned, and Seared. Then, drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.
+Resolve: If hit, the Mole gains 1 Momentum. | implemented |
+| **Frozen** | When Cryo would be consumed: Consumed to prevent it. Consume 1 Numbed, if any. | implemented |
+| **Drill Out** | Removed when Applied Momentum returns to the Mole.
+On Burrowed: Removed. | implemented |
 | **Sonic Needle** | Gain 1 stack per hit from the Frame that laid it, and per hit this Sprite lands on that Frame.
 Conducts Chain.
 At 3 or more stacks: Chain 2 fires. Reduce stacks to 0. | implemented |
@@ -338,7 +338,7 @@ At 3 or more stacks: Chain 2 fires. Reduce stacks to 0. | implemented |
 | **On a foe killed** | Passive trigger. Fires as a death check counts a kill in this machine's fight, whoever or whatever made it, an ally's blow, an Ablate tick and a Mine's blast among them: a status, once for each foe that fell (the Ammit's Essence), or a shield gain like any (the Buzzard's). | implemented |
 | **On damaging a foe** | Passive trigger. Fires after a spend of this machine's weapons that took HP off a foe, however many foes it hurt: a status, a shield or a vent. An effect may fire once a round only (the Skua's stack of Ricochet). | implemented |
 | **On injury** | Passive trigger. Fires when a blow would destroy a component (a foe's Destroy, any of it on the hull). Effects: no_destroy (the component holds instead of being destroyed). | implemented |
-| **Static** | Passive trigger. Always on. Its effects change a machine's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat maximum, armour, move, cooling or shield regen; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag; and the rules a passive writes on its machine's entries, the star on the die: ignore_armour, and spillover (the Overrun Gearing's: damage past a kill in the front rank carries into the foe behind it in the same column, nothing standing behind a massive foe). | implemented |
+| **Always on** | Passive trigger. Its effects change a machine's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat maximum, armour, move, cooling or shield regen; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag; and the rules a passive writes on its machine's entries, the star on the die: ignore_armour, and spillover (the Overrun Gearing's: damage past a kill in the front rank carries into the foe behind it in the same column, nothing standing behind a massive foe). | implemented |
 
 ## Commander
 
@@ -426,7 +426,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Paradox** (implemented): The count is a placeholder (Ryan, 11 November: "we have no idea how many paradox stacks is balanced, we just decided on 3 or whatever as a placeholder without knowing how much status chips were going to get thrown around in the game as a whole"); a stack a debuff stack since that day, at five.
 - **Volatile** (implemented): Hull outright, where the Corrupted bite takes shield first. The number is a placeholder. A keyword with a chip until 26 October; a cost like heat since, so the die says the price and no chip does.
 - **Shield cost** (implemented): No piece carries it yet; the numbers are content's.
-- **Chain** (implemented): Ryan, 24 November, his text: "I want to change Chain. The under-armour ping is simpler. Resolve: All Sprites with Shock, Static, or Sonic Needle lose {N} HP." Static is the debuff of his Static machine of 4 November, not yet built (docs/briefs/aphelion_static.md), so only Shock and Sonic Needle conduct until it lands. His words, not yet signed on the Text tab.
+- **Chain** (implemented): Ryan, 24 November, his text: "I want to change Chain. The under-armour ping is simpler. Resolve: All Sprites with Shock, Static, or Sonic Needle lose {N} HP." Static is the debuff of his Static machine of 4 November, not yet built (docs/briefs/aphelion_static.md), so only Shock and Sonic Needle conduct until it lands. His words, not yet signed on the Text tab; 25 November, of the conductors: "the only non-exclusive conductor is Shock. So it's possible that we just need to mention Shock specifically", so Sonic Needle's and Static's own tips say they conduct it.
 - **Rapid** (implemented): Its limiter is its own switch-off, the entry dark for the rest of the round (Ryan, 12 November: "rapid gets its innate cooldown zero back without the explicit display"), which no cleanse lifts; a Rapid vent is never below tier three and a Rapid shield never below tier two (the bible's Rapid row).
 - **Instant** (implemented): Ryan, 12 November: "the rapid no cooldown pieces change to a new keyword: Instant (reroll after use, can land on itself)". Every Instant piece carries a limiter, which the validator holds content to: a cooldown, heat, Volatile or a shield cost, or the store a charged form spends; a piece locked on a stepping die has the cylinder's odds (the Spin-Up's), and a piece Instant only while its machine rages has its heat (the Nemesis's Knuckles of Fury). An entry is Rapid or Instant, never both.
 - **Jam** (implemented): Disable until 15 November (Ryan: "Rename to Jammed"); the rider follows the pattern, Jam lays Jammed.
@@ -530,11 +530,11 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Gated** (implemented): Suppress alone carries a gate today. A working name for Ryan's name pass.
 - **Consumes** (implemented): A mine laid from it eats its arrival's stacks. The equipment's form is the Quintessence Tap's (12 November, the Soul Siphon then), the engine's spends and spends_up_to; its text is a session's draft.
 - **Ablates its firer** (implemented): A working name for Ryan's name pass. It was fuel for a machine that wanted heat while a machine's Burning was heat; since Ablate (15 November) it is a price alone, the component pass's to read.
-- **Ignores armour** (implemented): Ryan, 15 November, with Breach cut on both sides: "I would remove Breach from the player's side. Ignores armour can be an explicitly written out property"; "the player armour piercing pieces should be higher tier, obviously, or gated, I think. Else they become obvious best faces for certain domains". On the Ammit's Soulcutter Talons, the Wild Boar's next weapon after a Barrier, and the Overclocked Railgun, whose tier is the component pass's. A session's draft, his to write.
+- **Ignores Armour** (implemented): Ryan, 15 November, with Breach cut on both sides: "I would remove Breach from the player's side. Ignores armour can be an explicitly written out property"; "the player armour piercing pieces should be higher tier, obviously, or gated, I think. Else they become obvious best faces for certain domains". On the Ammit's Soulcutter Talons, the Wild Boar's next weapon after a Barrier, and the Overclocked Railgun, whose tier is the component pass's. A session's draft, his to write.
 - **Empties the hopper** (implemented): Ryan, 20 November: "Empties the hopper, striking once for every load emptied. Grants no Ore." "Fragmenter is a dead face with no Ore." The numbers are placeholders.
 - **Braces** (implemented): A rule on one carrier, not a keyword, until another piece wants it; the stacks are a placeholder.
 - **Strikes** (implemented): Heat is paid once per use, not per strike.
-- **Static** (implemented): Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach.
+- **Always on** (implemented): Every read asks the pipeline; nothing is written to a stat or a component, so an effect that is gone stops answering. A static reach rule cannot be conditioned on reach.
 - **Order of operations** (implemented): Refit (the hangar) is what changes loadout-scoped effects; not built.
 - **Rage** (implemented): Ryan, 23 November: "When the Nemesis starts its turn with heat at or over max, it gains the unpurgable status Rage: Remove all debuffs on self. Immune to all debuffs. The only component available is Knuckles of Fury"; "Rage ends when the Nemesis' heat reaches zero, at which point it immediately reboots, regardless of how it got there." Its debuffs are the statuses a foe lays on a machine, the ones a Cleanse lifts. Its heat comes from the blows it takes and its own blows a foe's armour or Barrier takes whole, by the rules its rage was banked by from 11 November. The text is a session's draft.
 - **Ore** (implemented): Ryan, 20 November: "Damaging a foe grants one stack of Ore (max 3). At 3, base armour increases by 1 (represented by an ability chip)." The engine id stays hopper. What the Ore is worth is the Ore chip (ore_plate), an Ability. The four loads and their Armoured of 31 October and 10 November are git's.

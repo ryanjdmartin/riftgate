@@ -141,6 +141,33 @@ question are their chassis's fixed components. His answer: "I'd rather change Fi
 locked components to Integrated, actually." So a chassis's built-in components are Integrated,
 and "Fixed: Knuckles of Fury" is the rule on Rage, "Fixed: Inertia Drill" on Burrowed.
 
+**A hit, damage and a loss.** (settled 24 November: his word, A with "suffer"; the standard's rule 39)
+His ask: "I want to standardize the difference between something that hits, and is affected by
+armour and brittle and such like the Mole's Drill debuff, and flat damage that bypasses all that
+like Ablate. Both say 'take 1 damage' right now." The engine has three kinds, not two:
+- A hit (a weapon's, a Sprite's attack, Cleave, Penetrate, Chain, Ricochet, the Mine, the drill's
+  tick): a Frame's Shield first, then Armour; Barrier, Brittle and every When Hit apply.
+- Damage that is not a hit (Ablate, Corrupted's bite): a Frame's Shield first (his "hits shield
+  first, I think. Pretty deadly otherwise", 15 November), then Hull or HP; Armour, Barrier,
+  Brittle and the hit events never see it.
+- A loss (Volatile, Overheated, Vitriol): off the one number, past the Shield too.
+
+Hull Damaged reads all three. Two catches: "flat" already means a fixed number, never a
+percentage (Armour, a flat shield, Burrowed's flat numbers), and Vitriol bypasses everything as a
+percentage; and the second and third kinds differ by a Frame's Shield alone, on a Sprite not at all.
+
+**A:** The verbs carry it, in three forms. "Hit for N" or "take a hit of N damage" is a hit; "take N
+damage" is damage, the Shield first; "lose N Hull", "lose N HP" and "lose N Shield" come off that
+number alone. Ablate, Vitriol and Volatile drop their "Ignores ..." lines, Overheated reads "Turn
+End: Lose 1 Hull per stack ({N}).", and the drill's tick reads "take a hit of 1 damage".
+
+**B:** A term the player can tap for damage that is not a hit (Flat, True or Pure): "Take 1 Flat
+damage", its tip saying what never sees it and that a Frame's Shield takes it first. "Lose N Hull"
+stays for what passes the Shield too.
+
+His answer: "I like hit for N, suffer N damage, and lose N hull as the format examples that we
+want."
+
 **Names.**
 - **Aloft.** The Roc's climb out of reach, a working name. Pick: Keep · Soaring · Airborne
 - **Last Act.** What a foe does when defeated ("maybe rename to something more interesting").

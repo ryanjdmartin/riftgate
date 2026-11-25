@@ -65,7 +65,7 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("gated", "Gated", lambda f: bool(f.get("gates"))),
            ("consumes", "Consumes", lambda f: bool(f.get("consumes")) or bool(f.get("spends"))),   # a weapon's on its target, or equipment's of its own machine's count (the Quintessence Tap)
            ("self_ablate", "Ablates its firer", lambda f: int(f.get("self_ablate", 0) or 0) > 0),
-           ("ignores_armour", "Ignores armour", lambda f: bool(f.get("ignores_armour"))),
+           ("ignores_armour", "Ignores Armour", lambda f: bool(f.get("ignores_armour"))),
            ("hopper_property", "The hopper", lambda f: bool(f.get("empties_hopper"))),
            ("brace_property", "Braces", lambda f: int(f.get("braces", 0)) > 0),
            ("swap", "Swap", lambda f: bool(f.get("swaps"))),

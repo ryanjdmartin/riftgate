@@ -373,20 +373,22 @@ const STATUS := {
 	# a unpurgable buff called 'Burrowed' that grants 1 Armour ... and all its die faces change to
 	# its locked piece, the Inertia Drill, and it remains burrowed until it uses it"; his kit of the
 	# same day): an ability by his rule of 8 November (an unpurgeable buff is labelled an Ability,
-	# so no Purge takes it), its armour a point a stack, the stacks the burrow rule's `armour`, held
-	# from the burrow's own turn (24 November: "Burrow does not bank. But it does gain the 1
-	# Armour"). Its die rolls the Drill alone while it holds (live_entries), and the model holds the
-	# form of the same name. Each turn under opens with the rule's flat shield, cooling and
-	# Momentum (his of 24 November: "50% shield regen, 50% cooling, and 50% Momentum generation",
-	# "50% of the final numbers, but represented as flat numbers"). It goes as the Drill is fired.
-	"burrowed": {"id": "burrowed", "name": "Burrowed", "description": "Armour +{value} a stack. Its die rolls its Inertia Drill alone, and each of its turns opens with Broken and Overheated cleared, shield regained, heat cooled and Momentum gained. It comes up as it fires the Drill.", "decay": "none", "stacking": "renew",
+	# so no Purge takes it), its armour 1, held from the burrow's own turn (24 November: "Burrow
+	# does not bank. But it does gain the 1 Armour"). Its die rolls the Drill alone while it holds
+	# (live_entries), and the model holds the form of the same name. Each turn under opens with its
+	# flat shield, cooling and Momentum (his of 24 November: "50% shield regen, 50% cooling, and 50%
+	# Momentum generation", "50% of the final numbers, but represented as flat numbers"), the
+	# status's own numbers and never the passive's that grants it (Ryan, 24 November: "Move the
+	# effects on the mole's passive to the status chip"). It goes as the Drill is fired.
+	"burrowed": {"id": "burrowed", "name": "Burrowed", "description": "Armour +{value}. Its die rolls its Inertia Drill alone, and each of its turns opens with Broken and Overheated cleared, shield regained, heat cooled and Momentum gained. It comes up as it fires the Drill.", "decay": "none", "stacking": "renew",
+		"shield": 3, "cool": 6, "momentum": 5,
 		"tags": ["ability", "form"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
 	# The Mole's Momentum (Ryan, 24 November: "Momentum is a Resource. It goes to 10 (subject to
-	# tuning)"): a store, capped by its burrow rule (store_cap), so nothing purges it. Each turn
+	# tuning)"): a store, its cap its own (store_cap, a burrower's), so nothing purges it. Each turn
 	# under adds the rule's share; every use that hits a foe its drill is in adds 1; the drill in a
 	# foe drains it as that foe's turn starts, and comes home when it runs out. A burrow that takes
 	# the drill home leaves it where it ended up.
-	"momentum": {"id": "momentum", "name": "Momentum", "description": "Gained while Burrowed and as the foe its drill is in is hit. Its drill drains it as that foe's turn starts. Capped.", "decay": "none",
+	"momentum": {"id": "momentum", "name": "Momentum", "description": "Gained while Burrowed and as the foe its drill is in is hit. Its drill drains it as that foe's turn starts. Capped.", "decay": "none", "cap": 10,
 		"tags": ["store"], "effects": []},
 	# The Drill in its foe (Ryan, 16 November: "Consumes all Conserved Momentum and grants a stack
 	# of Applied Momentum for each one. Applied Momentum decays 1 at the start of the target's
@@ -1489,7 +1491,8 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dicti
 	# The entry's own finish (the Kite's Pinion Driver, 11 November): its number multiplied against a
 	# foe at half its HP or less, on the printed number as a passive's double is, the buffs once
 	# after it; the HP the hit judged, as a passive's condition on it is.
-	if face != null and face.finishes(target, int(ctx.get("hp", -1))):
+	# A Ricochet's hit (ctx `plain`) is the machine's, never the entry's: no finish of its own.
+	if face != null and not bool(ctx.get("plain", false)) and face.finishes(target, int(ctx.get("hp", -1))):
 		p_mult *= float(face.finisher)
 	var parts: Array = _taking_part(u, "on_attack", face, target, ctx)
 	for pair in parts:
@@ -2583,12 +2586,12 @@ static func store_cap(u, id: String) -> int:
 				elif str(eff.get("effect", "")) == "hopper_max":
 					more += int(eff.get("value", 0)) * weight(m)
 		return cap + more if cap > 0 else 0
+	if id == "momentum":
+		return int(STATUS["momentum"].get("cap", 0)) if burrows(u) else 0   # the Mole's Momentum, up to its own cap
 	for m in live(u):
 		for eff in m.effects:
 			if str(eff.get("effect", "")) == "stack_status" and str(eff.get("value", "")) == id and int(eff.get("cap", 0)) > 0:
 				return int(eff["cap"])
-			if id == "momentum" and str(eff.get("effect", "")) == "burrow" and int(eff.get("cap", 0)) > 0:
-				return int(eff["cap"])   # the Mole's Momentum, up to its burrow's cap
 	return 0
 
 
@@ -2761,11 +2764,10 @@ static func folds_die(u) -> int:
 
 
 ## The burrow a machine takes in its reboot's place (burrow, static; the Mole's, Ryan, 16
-## November: "Instead of Reboot, it Burrows"; its numbers his of 24 November): {piece: the locked
-## piece its die rolls alone while Burrowed and never above ground (the Inertia Drill), cap: the
-## Momentum it holds at most, armour: Burrowed's armour, and what each turn under opens with:
-## shield, the shield it regains; cool, the heat it sheds; momentum, the Momentum it gains}; empty
-## for a machine that reboots.
+## November: "Instead of Reboot, it Burrows"): {piece: the locked piece its die rolls alone while
+## Burrowed and never above ground (the Inertia Drill)}; empty for a machine that reboots. The
+## numbers are the statuses' own (24 November): Burrowed's armour and what each turn under opens
+## with (burrowed_number), Momentum's cap (store_cap).
 static func burrow_rule(u) -> Dictionary:
 	for pair in _taking_part(u, "static", null):
 		if str(pair[0].get("effect", "")) == "burrow":
@@ -2775,6 +2777,12 @@ static func burrow_rule(u) -> Dictionary:
 
 static func burrows(u) -> bool:
 	return not burrow_rule(u).is_empty()
+
+
+## What each turn under opens with, Burrowed's own number (`shield`, the shield it regains; `cool`,
+## the heat it sheds; `momentum`, the Momentum it gains): flat, whatever grants it.
+static func burrowed_number(key: String) -> int:
+	return maxi(0, int(STATUS["burrowed"].get(key, 0)))
 
 
 ## What the drill lays in its foe, as its machine stands now, `face` its drill's entry
@@ -3485,7 +3493,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"reboot_piece": body = "its reboot fires its %s first" % str(eff.get("piece", "")).replace("_", " ")
 		"gain_heat": body = "+%s heat" % vs
 		"hit_heat": body = "+%s heat for each hit" % vs
-		"burrow": body = "it burrows in its reboot's place: Burrowed, armour +%d, its die rolls its %s alone, and each turn under regains %d shield, cools %d and gains %d Momentum, up to %d" % [maxi(1, int(eff.get("armour", 1))), str(eff.get("piece", "")).replace("_", " "), int(eff.get("shield", 0)), int(eff.get("cool", 0)), int(eff.get("momentum", 0)), int(eff.get("cap", 10))]
+		"burrow": body = "it burrows in its reboot's place: Burrowed, armour +%d, its die rolls its %s alone, and each turn under regains %d shield, cools %d and gains %d Momentum, up to %d" % [status_value_static("burrowed", "add_stat"), str(eff.get("piece", "")).replace("_", " "), burrowed_number("shield"), burrowed_number("cool"), burrowed_number("momentum"), int(STATUS["momentum"].get("cap", 0))]
 		"immune": body = "immune to %s" % str(STATUS.get(str(eff.get("value", "")), {}).get("name", str(eff.get("value", ""))))
 		"momentum":
 			var parts: Array[String] = []

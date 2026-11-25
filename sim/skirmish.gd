@@ -3592,11 +3592,14 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	var struck_once := {}            # every foe a blow of the spend has met, for what a foe reads on its first
 	var blocked := 0                 # the weapon's blows a living foe's armour or Barrier took whole (on_blocked)
 	# Ricochet (the Skua's, Ryan, 12 November: "After firing a weapon, it hits the primary target 1
-	# more time per stack, dealing 1 damage each time and applying all effects other than area
-	# keywords"): once the weapon's strikes are done, a strike of 1 more a stack at the target
-	# alone. Each is a strike through the whole blow, its number 1 in place of the entry's and what
-	# the entry reads: the firer's pipeline on it, the foe's Brittle and armour, the weapon's riders
-	# a strike. Read as the spend begins, so a stack the spend earns bounces none of it.
+	# more time per stack"; 25 November, of its four reads: buffs "yes-no-no-yes", with "riders on
+	# skua ... has plenty of abuse cases without being able to stack Brittle to infinity"): once the
+	# weapon's strikes are done, a hit of 1 more a stack at the target alone, Targeted. Each is the
+	# Frame's, never the weapon's: its number 1 in place of the entry's, the firer's pipeline on it
+	# (its buffs, passives and modules), the foe's own Brittle, Armour and Barrier; nothing of the
+	# weapon, so no damage rule it prints (its finish, its reads), no Ignores Armour or Barrier, no
+	# rider, no passive's lay, no spill and nothing into a Mine. Read as the spend begins, so a
+	# stack the spend earns bounces none of it.
 	var strikes := maxi(1, f.strikes)
 	# A reach over every foe targets the field (Ryan, 12 November: "Target all shouldn't need a
 	# target in the same way that sweep didn't"; 24 November: "should probably be coded as none are
@@ -3653,6 +3656,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			number = floori(number * again / 100.0)
 			h.base += number
 		var ctx := _zapped(_judged(judged_hp, target))
+		if bounce:
+			ctx["plain"] = true   # a Ricochet's hit: none of the entry's own damage rules (Effects.attack)
 		if at == 0 and not everyone:
 			ctx["first_blow"] = true   # the spend's first blow, its first strike's on its target (the strike order): a next strike's add lands on it alone (the Parry's return); a reach over every foe has no target for it
 		var modded := Effects.attack(ms.unit, f, number, heat, target, ctx)
@@ -3687,14 +3692,15 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			var hp_before := foe.hp
 			var first := not struck_once.has(foe)   # the foe's first blow of the spend
 			struck_once[foe] = true
-			var into_mine := foe == target and not everyone   # the blow on the spend's target: its riders are the Mine's too
+			var rides := not bounce   # a Ricochet's hit carries nothing of the weapon: no rider, no lay, no spill (Ryan, 25 November)
+			var into_mine := foe == target and not everyone and rides   # the blow on the spend's target: its riders are the Mine's too
 			var struck := foe == target and not everyone   # a strike aimed at this foe, never a blow that only reaches it, nor one of a reach over every foe
 			if not h.reached.has(foe):
 				h.reached.append(foe)
 			var blow: int = landing_at[1]
 			# Spillover (Overwhelm until 6 October): damage past the kill of a front-rank foe carries
 			# into the foe behind it (_spill). A massive foe fills its column: nothing is behind it.
-			var spills := f.spills and foe.rank == 0 and not foe.is_massive()
+			var spills := f.spills and rides and foe.rank == 0 and not foe.is_massive()
 			var taken := 0   # what the foe takes of the blow, nothing for a corpse a later strike spills past
 			if spills and not was_alive:
 				# A later strike on a foe an earlier strike of this spend killed (Ryan, 15 October:
@@ -3718,7 +3724,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				# piece that ignores armour meets none (Foe.armour_for). Every blow is recorded, one on a
 				# foe an earlier hit of the spend felled included, so the screen shows every hit and
 				# shot land (Ryan, 7 November: "Anything truncated confuses the player").
-				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), struck, foe.armour_for(f), at, ("ricochet" if bounce else ("again" if echo else "strike")) if struck else "area", not f.ignores_barrier)
+				var landing := _land_blow(foe, blow, ms.unit, not f.is_debuff(), struck, foe.armour_total() if bounce else foe.armour_for(f), at, ("ricochet" if bounce else ("again" if echo else "strike")) if struck else "area", bounce or not f.ignores_barrier)   # a Ricochet's hit meets the foe's own Armour and Barrier
 				taken = int(landing["taken"])
 				var foe_armoured := int(landing["armoured"])
 				var barred := bool(landing["barred"])
@@ -3760,7 +3766,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# A hit lays what the passives lay on this foe, a stack per strike, a debuff's included,
 			# unless the passive asks for a weapon's hit (the Ambush's Vitriol, its text says so:
 			# Ryan, 25 October); a lay with its stacks past the heat maximum reads the gauge as it lands.
-			if lays.has(foe):
+			if rides and lays.has(foe):
 				for pair in lays[foe]:
 					if bool(pair[2]) and f.is_debuff():
 						continue
@@ -3778,18 +3784,18 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# Every rider lands on the foe its strike struck, felled or not (Ryan, 3 November: "the
 			# point is to show that the riders hit, AND it dies"; death is the spend's last check, so
 			# the preview shows them beside the skull and no trigger goes unfired).
-			if f.has(Face.Keyword.ABLATE):
+			if rides and f.has(Face.Keyword.ABLATE):
 				# Ablate is a numbered keyword (Ryan, 18 October): the stacks it says, whatever the
 				# blow dealt (it was a stack per 10 of the damage, rounded up, until then).
 				var ablate_laid := _stacks_from(ms, "ablating", f.ablate) * doubled
 				riders.append(func() -> void: _land_rider(foe, "ablating", ablate_laid, gained, turned))
 				if into_mine:
 					h.mine_stack("ablating", ablate_laid)
-			if f.has(Face.Keyword.SUPPRESS) and shut.get(foe, []).has(Face.Keyword.SUPPRESS):
+			if rides and f.has(Face.Keyword.SUPPRESS) and shut.get(foe, []).has(Face.Keyword.SUPPRESS):
 				if foe.alive() and not told_shut.has(foe):
 					told_shut[foe] = true
 					log.append("%s's suppress does not land on %s (%s)" % [ms.unit.display_name, foe.display_name, Effects.gate_text(f.gates.get("suppress", {}))])
-			elif f.has(Face.Keyword.SUPPRESS):
+			elif rides and f.has(Face.Keyword.SUPPRESS):
 				riders.append(func() -> void:
 					if _suppress(foe, turned):
 						_note_status(gained, foe, "suppressed"))
@@ -3799,7 +3805,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# its mark, one web however often it is webbed, and the skirmish bursts it as the round
 			# ends (_burst_webs). No Mine carries it: a rule one piece prints is that
 			# piece's.
-			if f.webs:
+			if rides and f.webs:
 				riders.append(func() -> void: _land_web(foe, gained, turned, webbed))
 			# Cryo (20 October): a weapon's hit spends every stack the foe carries (Ryan, 25
 			# October), and the hitter cools for them once the spend's own heat has landed (below);
@@ -3816,7 +3822,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 					log.append("%s's Frozen keeps its Cryo" % foe.display_name)
 				else:
 					Effects.remove(foe, "cryoed")
-			if f.has(Face.Keyword.CRYO):
+			if rides and f.has(Face.Keyword.CRYO):
 				var cryo_laid := _stacks_from(ms, "cryoed", f.cryo) * doubled
 				riders.append(func() -> void: _land_rider(foe, "cryoed", cryo_laid, gained, turned))
 				if into_mine:
@@ -3825,12 +3831,12 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# number in stacks a strike, with the riders, so no strike of the spend feeds on what
 			# it lays (Ryan, 3 November: "5,5,5 makes way more sense to me").
 			# Sap (the Baboon's Redshift Emitter, 11 November): Sapped laid as Brittle is, with the riders.
-			if f.has(Face.Keyword.SAP):
+			if rides and f.has(Face.Keyword.SAP):
 				var sap_laid := _stacks_from(ms, "sapped", f.sap) * doubled
 				riders.append(func() -> void: _land_rider(foe, "sapped", sap_laid, gained, turned))
 				if into_mine:
 					h.mine_stack("sapped", sap_laid)
-			if f.has(Face.Keyword.BRITTLE):
+			if rides and f.has(Face.Keyword.BRITTLE):
 				var brittle_laid := _stacks_from(ms, "brittled", f.brittle) * doubled
 				riders.append(func() -> void: _land_rider(foe, "brittled", brittle_laid, gained, turned))
 				if into_mine:
@@ -3838,7 +3844,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# A pin (the Hollow-point Harpoon's; Ryan, 16 November: "the next time it would decay, it
 			# doesn't"): laid after what the spend lays, spent by the decay it stops (Effects.spend_hold)
 			# or gone as its foe's turn ends where it held nothing (19 November).
-			if not f.holds.is_empty():
+			if rides and not f.holds.is_empty():
 				var held_id := f.holds
 				riders.append(func() -> void:
 					var holder: String = Effects.HOLDERS[held_id]
@@ -3848,7 +3854,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			# Purge (the player's, 28 October): every buff the foe carries but Numbed and Guarded,
 			# with the riders, equipment's included; a foe the blow killed loses its Getting Back
 			# Up, so it stays down.
-			if f.has(Face.Keyword.DISPEL):
+			if rides and f.has(Face.Keyword.DISPEL):
 				var purged := maxi(1, f.dispel)
 				riders.append(func() -> void: _purge_foe(ms.unit.display_name, foe, purged, turned))
 				if into_mine:
@@ -6397,11 +6403,10 @@ func _rage_cooled(ms: MechState) -> bool:
 ## its END TURN and it is free to overheat again; a foe's jams light, the reboot's drop. It gains a
 ## no Momentum ("Burrow does not bank. But it does gain the 1 Armour", Ryan, 24 November), and its
 ## drill comes home from its foe, its Momentum left where it ended up ("Yes it brings the drill
-## back and momentum stays where it ended up"). Burrowed, its armour the rule's from this turn,
-## its die rolls the Drill alone (Effects.live_entries), and each turn under opens with the rule's
+## back and momentum stays where it ended up"). Burrowed, its armour Burrowed's own from this turn,
+## its die rolls the Drill alone (Effects.live_entries), and each turn under opens with Burrowed's
 ## flat shield, cooling and Momentum (_burrowed_turn).
 func _burrow(ms: MechState) -> void:
-	var rule := Effects.burrow_rule(ms.unit)
 	ms.assigned = true
 	var vented := ms.overheat_stacks()
 	if vented > 0:
@@ -6410,7 +6415,7 @@ func _burrow(ms: MechState) -> void:
 	var lit := Effects.clear_waiting_jams(ms.unit)
 	Effects.clear_corruption(ms.unit)   # the reboot's drop heals corruption as it lights a jam
 	var back := _recall_drill(ms)
-	Effects.stack(ms.unit, Effects.STATUS["burrowed"], Effects.SKIRMISH, "burrow", maxi(1, int(rule.get("armour", 1))), Effects.DECAY_NONE)
+	Effects.stack(ms.unit, Effects.STATUS["burrowed"], Effects.SKIRMISH, "burrow", 1, Effects.DECAY_NONE)
 	var bits: Array[String] = ["Momentum %d" % Effects.stacks_of(ms.unit, "momentum")]
 	if back:
 		bits.append("its drill home")
@@ -6449,23 +6454,22 @@ static func drill_source(ms: MechState) -> String:
 ## at the start of each turn while burrowed, just like reboot would"; 24 November: "When burrowed,
 ## it gains 50% shield regen, 50% cooling, and 50% Momentum generation", "50% of the final numbers,
 ## but represented as flat numbers"): Broken and Overheated cleared and the one overheat between
-## reboots free again; the rule's shield back on it and its cooling off its heat, so a blow taken
+## reboots free again; Burrowed's shield back on it and its cooling off its heat, so a blow taken
 ## under is mended as any missing shield is; a foe's jams lit, as a reboot's drop lights them
-## ("mechanically exactly like using Reboot every turn"); and the rule's Momentum, up to the cap.
+## ("mechanically exactly like using Reboot every turn"); and Burrowed's Momentum, up to Momentum's cap.
 func _burrowed_turn(ms: MechState) -> void:
-	var rule := Effects.burrow_rule(ms.unit)
 	ms.shield_broken = false
 	ms.overheated = false
 	if ms.heat > ms.heat_max:
 		ms.heat = ms.heat_max
 	var before := ms.unit.shield
-	ms.unit.shield = mini(ms.unit.shield_max, ms.unit.shield + maxi(0, int(rule.get("shield", 0))))
-	var cool := mini(ms.heat, maxi(0, int(rule.get("cool", 0))))
+	ms.unit.shield = mini(ms.unit.shield_max, ms.unit.shield + Effects.burrowed_number("shield"))
+	var cool := mini(ms.heat, Effects.burrowed_number("cool"))
 	ms.heat -= cool
 	Effects.clear_waiting_jams(ms.unit)
 	Effects.clear_corruption(ms.unit)
-	var cap := maxi(1, int(rule.get("cap", 10)))
-	var gain := mini(cap - Effects.stacks_of(ms.unit, "momentum"), maxi(0, int(rule.get("momentum", 0))))
+	var cap := maxi(1, Effects.store_cap(ms.unit, "momentum"))
+	var gain := mini(cap - Effects.stacks_of(ms.unit, "momentum"), Effects.burrowed_number("momentum"))
 	if gain > 0:
 		Effects.stack(ms.unit, Effects.STATUS["momentum"], Effects.SKIRMISH, "burrow", gain, Effects.DECAY_NONE)
 	log.append("%s is burrowed: shield +%d, heat -%d, Momentum %d" % [ms.unit.display_name, ms.unit.shield - before, cool, Effects.stacks_of(ms.unit, "momentum")])

@@ -2423,13 +2423,13 @@ func _show_die(i: int) -> bool:
 		var returned := _parry_of(ms, sf) if not ms.assigned else 0
 		if returned > 0:
 			extra.append(EntryReadout.parry_line(returned))
-		# A burrower's drill (the Mole's): the form it lays, the turns its machine's Momentum keeps it
-		# in (its drain a turn), and what each of them does, by the drill's mark with the Momentum.
+		# A burrower's drill (the Mole's): the form it lays and the turns its machine's Momentum keeps
+		# it in (its drain a turn), by the drill's mark with the Momentum.
 		if not ms.assigned and sf.component != "" and sf.component == str(Effects.burrow_rule(ms.unit).get("piece", "")):
 			var tick := Effects.momentum_of(ms.unit, sf)
 			var have := Effects.stacks_of(ms.unit, "momentum")
 			var turns := maxi(1, ceili(float(have) / float(maxi(1, int(tick["drain"])))))
-			extra.append(EntryReadout.drill_line(str(tick["status"]), have, turns, int(tick["blow"]), tick["lays"]))
+			extra.append(EntryReadout.drill_line(str(tick["status"]), have, turns))
 		# The shield its zap pays for a weapon (the Buzzard's), by the same box.
 		var zap := _zap_cost(ms, sf) if not ms.assigned else 0
 		if zap > 0:

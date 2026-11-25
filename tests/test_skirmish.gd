@@ -1366,8 +1366,8 @@ func test_every_blow_meets_the_shield_and_then_the_armour() -> void:
 func test_a_weapon_that_ignores_armour_takes_nothing_off_for_it() -> void:
 	var gun := Face.attack(20, L)
 	gun.ignores_armour = true
-	assert_true(gun.describe().contains("ignores armour"), "the entry says it: %s" % gun.describe())
-	assert_true(gun.rule_phrases().has("ignores armour") and gun.has_unique_rule(), "a printed rule: the star, and its line on the hold")
+	assert_true(gun.describe().contains("ignores Armour"), "the entry says it: %s" % gun.describe())
+	assert_true(gun.rule_phrases().has("ignores Armour") and gun.has_unique_rule(), "a printed rule: the star, and its line on the hold")
 	assert_true(Face.from_dict(gun.to_dict()).ignores_armour and gun.duplicate_face().ignores_armour, "and it survives a save and a copy")
 	assert_true(Face.keyword_from_name("breach") <= 0, "Breach is no keyword")
 	var sk := Skirmish.new(1)
@@ -9718,14 +9718,18 @@ func test_ricochet_strikes_again_for_one_a_stack_after_each_shot() -> void:
 	assert_eq(sk.spend_blows.filter(func(b): return str(b["kind"]) == "ricochet").size(), 0, "and no blow of one is told")
 
 
-func test_a_ricochet_is_a_strike_through_the_whole_blow() -> void:
+## A Ricochet's hit is the machine's (Ryan, 25 November, its reads "yes-no-no-yes"): the
+## machine's buffs on its 1, Targeted, and nothing of the weapon: no rider, no area, no Ignores Armour.
+func test_a_ricochet_is_the_machines_hit_and_carries_nothing_of_the_weapon() -> void:
 	var gun := Face.attack(5, L)
 	var burner := Face.attack(3, L, [K.ABLATE])
 	burner.ablate = 1
 	var spread := Face.attack(4, L, [K.CLEAVE])
 	spread.cleave = 2
+	var piercer := Face.attack(5, L)
+	piercer.ignores_armour = true
 	var sk := Skirmish.new(1, 3)
-	var m := _mech("Skua", Die.of([gun, burner, spread]), 40, 100)
+	var m := _mech("Skua", Die.of([gun, burner, spread, piercer]), 40, 100)
 	sk.add_mech(m)
 	sk.add_foes([_ghoul(100, 0), _ghoul(100, 0), _ghoul(100, 0)])
 	sk.begin()
@@ -9749,11 +9753,11 @@ func test_a_ricochet_is_a_strike_through_the_whole_blow() -> void:
 	assert_eq(a.hp, 88, "its 6 less the plate, and three strikes of 2 less the plate")
 	sk.end_round()
 	sk.start_round()
-	# The weapon's riders ride each strike.
+	# No rider of the weapon rides them.
 	a.armour = 0
 	ms.face_index = 1
 	assert_true(sk.assign(0, b), "an Ablate 1 gun")
-	assert_eq(Effects.stacks_of(b, "ablating"), 4, "a stack for its strike and one for each Ricochet")
+	assert_eq(Effects.stacks_of(b, "ablating"), 1, "its strike's stack alone: no Ricochet lays one")
 	sk.end_round()
 	sk.start_round()
 	# An area is the shot's, never the Ricochet's.
@@ -9762,6 +9766,14 @@ func test_a_ricochet_is_a_strike_through_the_whole_blow() -> void:
 	ms.face_index = 2
 	assert_true(sk.assign(0, b), "a Spread gun between two foes")
 	assert_eq([a_before - a.hp, c_before - c.hp], [2, 2], "each neighbour its Spread 2 once: the Ricochets strike the aimed foe alone")
+	sk.end_round()
+	sk.start_round()
+	# Nor the weapon's own rules: its Ignores Armour is its strike's, and the Ricochets meet the plate.
+	a.armour = 1
+	var hp := a.hp
+	ms.face_index = 3
+	assert_true(sk.assign(0, a), "a gun that ignores Armour on the plated foe")
+	assert_eq(hp - a.hp, 5, "its 5 through the plate, and three hits of 1 the plate takes whole")
 
 
 func test_hull_damage_halves_ricochet_and_a_shield_keeps_it() -> void:
@@ -11315,7 +11327,7 @@ func test_a_barrier_makes_the_next_weapon_attack_ignore_armour() -> void:
 	var hp := foe.hp
 	assert_true(Effects.effective_face(ms.unit, ms.face(), foe).ignores_armour and not ms.die.faces[2].ignores_armour, "the gun fires ignoring armour, the piece itself unchanged")
 	var shown := sk.shown_face(ms, ms.face(), foe)
-	assert_true(shown.rule_phrases().has("ignores armour"), "the die shows the rule on the gun while the state stands")
+	assert_true(shown.rule_phrases().has("ignores Armour"), "the die shows the rule on the gun while the state stands")
 	assert_eq(sk.shown_number(ms, shown, foe), 4, "and its number whole")
 	assert_true(sk.assign(0, foe), "the next weapon")
 	assert_eq(hp - foe.hp, 4, "it ignores armour: the foe's 3 takes nothing")

@@ -498,10 +498,15 @@ func test_pressure_spawns_pack_at_rift() -> void:
 	assert_eq(f.packs()[0].foe_id, "revenant", "spawned from the cycle")
 	assert_eq(f.packs()[0].members, [["revenant", 6]], "its members at the ramp's density, one at the start")
 	assert_eq(f.rift_pressure, 0, "clock reset")
-	var beside := false
+	# Outside the shell (Ryan, 24 November: "spawns from the rift should probably spawn outside of
+	# the shell"): on the ring round the seven, a hex past the rift's five.
+	var at: Vector2i = f.packs()[0].pos
+	assert_true(f.rift_ring().has(at), "spawned on the ring outside the rift's shell")
+	assert_false(f.map.shell_hexes().has(at), "never on one of the seven")
+	var nearest := 1 << 20
 	for r in f.map.rift_hexes:
-		beside = beside or Hex.distance(f.packs()[0].pos, r) == 1
-	assert_true(beside, "spawned beside the rift, one of its five hexes")
+		nearest = mini(nearest, Hex.distance(at, r))
+	assert_eq(nearest, 2, "a hex past the rift's own")
 
 
 func test_a_hunter_picks_its_prey_by_its_caveat_and_keeps_it() -> void:
