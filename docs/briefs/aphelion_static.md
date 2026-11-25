@@ -36,13 +36,15 @@ target.
 
 **The holes.**
 
-1. **Which damage sets it off.** "When damaged" covers a team blow, an area's blow, an arc, a
+1. **Which damage sets it off.** "When damaged" covers a team blow, an area's blow, a
    spill, a mine, a Burning or Vitriol tick, and the discharge itself. If a discharge can set off
    Static, a foe's own share sets it off again: Static 3 deals 3, 2 and 1 to the foe and to each
    neighbour from a single hit. Two neighbours that both carry Static set each other off.
    Claude's lean: a discharge never sets off Static, on any foe. Then one damage is one discharge,
-   and the forecast stays readable. Chain becomes what sets the field off: each arc is damage, so
-   a Chain hit discharges every Static foe it reaches once. The alternative lets the cascade run,
+   and the forecast stays readable. Chain's ping is HP lost, no hit and no blow (24 November): if
+   it counts as damage, Chain becomes what sets the field off, a use that pings discharging every
+   Static foe once, each ping spending a stack where a Shock stays. The alternative lets the
+   cascade run,
    with each foe discharging at most once a spend. That is the bigger fantasy and the harder read.
 2. **The triangle.** Under Ryan's form, the stacks a strikes gun lays come back as a triangle. A
    ×3 Maxigun lays Static 3, which pays 3, 2 and 1 to the foe and to each neighbour: 6 to each. A
@@ -60,16 +62,13 @@ target.
    - The foes' Cleanse takes it, a foe's Ward turns it away, and the Susceptibility Tensor reads it.
    - The Paradox counts it. While the Baboon fights, every hit this machine lands adds a Paradox
      stack, so the two Aphelion tier ones stun together. The Paradox's row allows that.
-   - A kill by a discharge counts for the spender; the on-a-kill trigger already counts arcs and
-     spills.
-   - A foe that is both Shocked and Static takes one arc, not two.
-   - A Shocked conductor keeps its Shock, but a Static one spends a stack to its arc. So a Static
-     field is a charge that gets spent, never the standing charge the Chain row describes.
-5. **The name.** "Static" is already a name in the vocabulary: the passive trigger `static`
-   ("Passive trigger. Always on."). A keyword and the status it lays share a name (section 6), and
-   the keywords list shows terms by name. So the debuff needs an id of its own (`static_charge`,
-   say), and then either the debuff takes another word or the trigger is renamed. The trigger is
-   engine vocabulary, so "Always on" would do.
+   - A kill by a discharge counts for the spender; the on-a-kill trigger already counts Chain's
+     ping and spills.
+   - Chain is a ping since 24 November (Ryan: "Resolve: All Sprites with Shock, Static, or Sonic
+     Needle lose {N} HP"): a foe that is both Shocked and Static loses its N once, not twice.
+5. **The name.** The debuff is Static. The passive trigger `static` is named "Always on" since 25
+   November (Ryan: "Rename the trigger term"); its id stays the engine's, so the debuff needs an id
+   of its own (`static_charge`, say) under the name.
 
 **The bench.** Static as a keyword on pieces rather than a passive: then the Stingray would deepen
 it, and a keyword can still be added later. Splash 1 on every weapon: that is area by strength,
@@ -77,11 +76,10 @@ which the area row refuses.
 
 ## Open for the session
 
-1. Whether a discharge sets off Static (the cascade).
+1. Whether a discharge sets off Static (the cascade), and whether Chain's ping does.
 2. The triangle on strikes guns, and its exit.
 3. Through armour or past it.
-4. Its name beside the passive trigger's.
-5. Its numbers and stock, and a locked piece if its silhouette has one.
+4. Its numbers and stock, and a locked piece if its silhouette has one.
 
 ## What the session hands back
 
