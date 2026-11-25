@@ -13189,3 +13189,27 @@ the gathering player loses the wall in eight battles of ten where it lost it in 
 built the rift's packs reach the wall about a turn sooner (the Rupture at turn 5.4 for 6.6),
 the gate falling in three battles for one. Main moved between the two reads (the Mole's rework
 and the map's pass), none of it this squad's.
+
+## 25 November: the Whip Scorpion with a bot that banks its heat
+
+`tools/reboot_probe.gd` as the entries of 24 November (168 formation fights at 8 seeds, 78 boss
+fights at 6, the greedy bot; the branches at tier three with the tier's lift), on
+`ccr-178e0404-ptuh2m` with main merged (`dcedf19f`) and the bot taught the machine's heat as fuel
+(`Policy.shot_worth`: its held heat a share of its next Ray, so it builds past half and holds there,
+fires the Ray where the shot beats the heat it banks, and reboots for no room or top-up; and a lay
+that reads Overheated at its own stacks where the spend takes it past its maximum). Before it, the
+24 November reads on the same stock.
+
+| The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad | Its Ray: shots a fight, heat a shot |
+|---|---|---|---|
+| The Whip Scorpion, the old bot | 6.1, 29%, 7%, 9% | 10.2, 29%, 13%, 19% | 1.64 and 2.69, 5.7 and 6.0 |
+| The Whip Scorpion, the bot banking its heat | 5.6, 22%, 7%, 9% | 9.1, 22%, 15%, 18% | 1.18 and 1.86, 8.3 and 8.4 |
+| Its Incinerator, the old bot | 5.3, 30%, 5%, 8% | 8.7, 29%, 8%, 16% | 1.43 and 2.24, 7.6 and 7.6 |
+| Its Incinerator, the bot banking its heat | 5.4, 24%, 5%, 8% | 8.3, 27%, 9%, 14% | 1.27 and 2.13, 9.0 and 8.7 |
+| Its Obliterator, the bot banking its heat | 4.9, 27%, 8%, 8% | 7.8, 28%, 16%, 15% | 1.32 and 2.17, 9.0 and 9.1 |
+
+What it says, a direction. Holding its heat is the better play, as the stock was built for: the
+base ends a boss fight a round sooner, firing a Ray of about 8 heat where it fired one of about 6,
+at a little more of its own hull. The Incinerator still never rides Overheated (0.00 overheats a
+boss fight): to this bot the burn outweighs 3 Ablate on its one target, the stock holding no area
+weapon. The Obliterator is the fastest of the three on its whole shot wide.

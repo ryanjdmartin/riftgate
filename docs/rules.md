@@ -1320,7 +1320,10 @@ Ablate, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Expo
   wherever it would reboot, standing it down when it has nothing to fire at, and in place of its
   best spend when the piece's shot, its heat free, less what standing bare through the round
   costs over standing as it is, is worth more. It prices heat that takes a gauge past half where
-  that doubles the hits on it, reads a heat scale on every blow at the heat the machine holds and
+  that doubles the hits on it, and reads the heat a machine whose reboot fires it holds (the Whip
+  Scorpion's) as a share of its next shot, so it builds past half and holds there, fires the shot
+  where it beats the heat it banks, and never reboots it for room; it reads a heat scale on every
+  blow at the heat the machine holds and
   a cooling of its own as heat off. A machine that would rage (the Nemesis's) reads heat that
   opens its next turn at its maximum as the Rage's swings, at a share, never reboots to make room
   for its entry or for a shield short of broken, and swings a Rage down to its reboot. Other heat

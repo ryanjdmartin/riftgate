@@ -61,6 +61,7 @@ static var pilot: Dictionary = {}   # chassis id -> heat it gains as each round 
 # overheat Corrupts the component that took the gauge past the maximum, so many stacks
 # (--overheat-corrupt N).
 static var overheat_corrupt: int = 0
+static var piece_names: Dictionary = {}   # component id -> its name in content, for the log; ContentDB fills it as it loads
 ## The reboot, the shield's and the heat's rule (Ryan, 13 November; folded in on his go of 15
 ## November: "Go ahead on the fold and build"; docs/briefs/refit_pass.md, section 22, has his
 ## words and the spec line by line):
@@ -6365,9 +6366,13 @@ static func reboot_piece_at(ms: MechState) -> int:
 	return -1
 
 
-## A component's name for the log, from the content the machine was built from where it is known.
-func _piece_name(_ms: MechState, piece: String) -> String:
-	return piece.replace("_", " ")
+## A component's name for the log: the form a branch's step remakes it as (the Obliterator's
+## Heliographic Doom Ray), else its name in the content the fight was built from, else its id.
+func _piece_name(ms: MechState, piece: String) -> String:
+	var formed := Effects.form_name(ms.unit, piece) if ms != null else ""
+	if not formed.is_empty():
+		return formed
+	return str(piece_names.get(piece, piece.replace("_", " ")))
 
 
 ## The Nemesis's Rage opens (Ryan, 23 November: "When the Nemesis starts its turn with heat at or
