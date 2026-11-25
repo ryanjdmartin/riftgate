@@ -2250,6 +2250,13 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: lay_status's damaging is true or false (a weapon's hit only, said in the passive's text)" % where)
 		if effect == "lay_status" and eff.has("stacks") and int(eff["stacks"]) < 1:
 			errs.append("%s: lay_status lays at least one stack a hit" % where)
+		# Its stacks past the heat maximum (the Whip Scorpion's Incinerator, 24 November: "If
+		# Overheated, apply 2 Ablate Instead"), in place of `stacks` while the machine stands there.
+		if effect == "lay_status" and eff.has("overheated") and (not (eff["overheated"] is int or eff["overheated"] is float) or int(eff["overheated"]) < 1):
+			errs.append("%s: lay_status's overheated is the stacks a hit it lays past the heat maximum, at least 1" % where)
+		# The heat each hit gives its machine (the Incinerator's): a whole number, 1 or more.
+		if effect == "hit_heat" and (not (eff.get("value") is int or eff.get("value") is float) or int(eff["value"]) < 1 or float(eff["value"]) != floorf(float(eff["value"]))):
+			errs.append("%s: hit_heat is the heat each hit gives its machine: a whole number, 1 or more" % where)
 		if effect == "stack_status" and eff.has("cap") and int(eff["cap"]) < 1:
 			errs.append("%s: stack_status's cap is the most stacks it banks, at least 1" % where)
 		# A status a spend at a foe lays on its own machine (the Storm Petrel's branches, 17
@@ -2380,8 +2387,11 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		# Or a static grant held once a round (20 November: the Honey Badger's Claw Instant the first
 		# time each turn, the Prairie Dog's first weapon strike on a Brittle foe Rapid), spent as its
 		# spend is made (Effects.mark_once).
-		if eff.has("once") and (str(eff["once"]) != "round" or ["on_attack", "on_injury"].has(trig) or (trig == "static" and effect != "grant_keyword")):
-			errs.append("%s: once is \"round\", on an effect an event fires or a static grant_keyword (never on_attack or on_injury)" % where)
+		# Once a spend (the Incinerator's, 24 November): an attack's heat with its first hit, its lay
+		# on each Sprite's first.
+		var once_spend := str(eff.get("once", "")) == "spend" and trig == "on_attack" and ["hit_heat", "lay_status"].has(effect)
+		if eff.has("once") and not once_spend and (str(eff["once"]) != "round" or ["on_attack", "on_injury"].has(trig) or (trig == "static" and effect != "grant_keyword")):
+			errs.append("%s: once is \"round\", on an effect an event fires or a static grant_keyword (never on_attack or on_injury), or \"spend\" on an on_attack hit_heat or lay_status" % where)
 		# The Cottonmouth's drum (19 October): every weapon and debuff fired as one shot of a flat number,
 		# a reach and a heat; never keyed on reach, which reads the rewrite.
 		if effect == "rewrite_weapon":
@@ -2946,7 +2956,11 @@ func _validate_branches(where: String, c: Dictionary, errs: Array[String]) -> vo
 			for k in (st as Dictionary).keys():
 				if not ["description", "effects", "design"].has(str(k)):
 					errs.append("%s: '%s' is no key of a step (description, effects, design)" % [sw, str(k)])
-			_validate_passive(sw, {"id": "branch", "name": str(d["name"]), "description": st.get("description", ""), "effects": st.get("effects", [])}, errs)
+			# A planned direction's step is a draft (CLAUDE.md: kept, not shown, not run, and not
+			# validated against the engine), so its effects may wait on the code (the Whip Scorpion's
+			# Incinerator, 24 November).
+			if not planned_dir:
+				_validate_passive(sw, {"id": "branch", "name": str(d["name"]), "description": st.get("description", ""), "effects": st.get("effects", [])}, errs)
 			if str(st.get("description", "")).strip_edges().is_empty():
 				errs.append("%s: a step says what it does (description)" % sw)
 			for eff in st.get("effects", []):

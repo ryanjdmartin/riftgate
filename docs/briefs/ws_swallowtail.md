@@ -59,6 +59,15 @@ would hold them apart. Nothing is decided; it is his session's.
   (landed 19 November, the bible's Puffin row: its pull takes an ally's heat onto itself); if
   the Hoist keeps a cooling, the Puffin is not the only one. His call across the two.
 
+## The reboot's offer: the team's pit crew (Claude's, 17 November)
+
+From the read of every machine under the reboot (`git show 302d6a4c:docs/reboot_machines_proposal.md`,
+its Swallowtail section), for his marks: two of its four locks have dead plain forms, but the
+reboot hands it the niche it lacked. In-fight refuelling is the reboot itself now, so the HQ can be
+the team's pit crew: its charged Screens already give every ally the safe reboot (Phased), and its
+charged Hoist, written to clear Broken and Overheated too, would be a reboot by another hand with no
+bare turn, the dearest effect in the system, behind the Muster's gate.
+
 ## What the session hands back
 
 Its three open pieces in chat, his marks, then content; the charged forms' prices; its runner

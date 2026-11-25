@@ -49,13 +49,13 @@ const ROUNDS := 3
 
 ## What the content may ask for, by trigger. The validator refuses anything else.
 const SUPPORTED_EFFECTS := {
-	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes"],
+	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes", "hit_heat"],
 	"on_injury": ["no_destroy"],
-	"on_struck": ["lay_status"],   # a foe's blow landing on this machine, what it lays on the striker (the echidna's Sonic Needles, 20 November)
+	"on_struck": ["lay_status", "gain_heat"],   # a foe's hit landing on this machine, whatever it dealt: what it lays on the striker (the echidna's Sonic Needles, 20 November), the heat it gains (the Nemesis's Crucible Capacitor, 24 November)
 	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "rage_form", "heat_scale", "hot_hits", "reboot_piece", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_max", "hopper_plate", "count_status", "piece_form", "hold_status", "self_status", "shield_zap", "add_power", "offhand", "side_strike", "strike_again", "buff_status", "burrow", "momentum", "needles", "immune"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat", "gain_heat"],
-	"on_shield_hit": ["stack_status", "add_shield", "vent_heat", "gain_heat"],
 	"on_blocked": ["stack_status", "gain_heat"],
+	"on_turn_start": ["gain_heat"],   # as this machine's turn starts (the Whip Scorpion's Obliterator, Ryan, 24 November: "Turn Start: Gain 1 heat")
 	"on_barrier": ["stack_status"],
 	"on_skirmish_start": ["add_shield", "vent_heat", "stack_status"],
 	"on_shield_gain": ["vent_heat", "stack_status"],
@@ -1922,7 +1922,12 @@ static func clear_on_break(u) -> Array[String]:
 
 ## The statuses this machine's live passives lay on one foe its blow reaches (lay_status on
 ## on_attack, its `when` read against that foe: the funnel-web's Ambush, 18 October), as
-## [[status id, stacks a hit, damaging], ...]. The skirmish asks once a foe at the spend,
+## [[status id, stacks a hit, damaging, stacks a hit while Overheated, once a spend], ...]: its
+## `overheated` in place of `stacks` where the machine stands past its heat maximum as the rider
+## lands (the Whip Scorpion's Incinerator, 24 November: "If Overheated, apply 2 Ablate Instead"),
+## 0 where it names none; and whether it lays once a spend, on each Sprite's first hit (`once`
+## "spend": the Incinerator's, the same day, "Resolve: Gain 1 heat and apply 1 Ablate. If
+## Overheated, apply 3 Ablate instead"; "It should apply to everything hit, not just the target"). The skirmish asks once a foe at the spend,
 ## before any strike's riders land, and lays them on every strike that
 ## reaches the foe, one the spend fells too (the spend's order), a blow of nothing included,
 ## unless the effect asks for a weapon's hit (`damaging`, which its passive's text says: the
@@ -1939,8 +1944,22 @@ static func laid_statuses(u, face: Face, target) -> Array:
 		var id := str(eff.get("value", ""))
 		if not STATUS.has(id):
 			continue
-		out.append([id, maxi(1, int(eff.get("stacks", 1))) * int(pair[1].stacks), bool(eff.get("damaging", false))])
+		out.append([id, maxi(1, int(eff.get("stacks", 1))) * int(pair[1].stacks), bool(eff.get("damaging", false)), maxi(0, int(eff.get("overheated", 0))) * int(pair[1].stacks), str(eff.get("once", "")) == "spend"])
 	return out
+
+
+## The heat each hit of this entry gives its machine (hit_heat on on_attack: the Whip Scorpion's
+## Incinerator, Ryan, 24 November: "Resolve: For each hit, gain 1 heat and apply 1 Ablate"): its
+## `value`, every Sprite hit, a debuff's and an area's included, Chain's ping none (no hit). `once_a_spend`
+## asks for those that give it once a spend instead, with the spend's first hit (`once` "spend").
+static func hit_heat(u, face: Face, target = null, once_a_spend: bool = false) -> int:
+	var n := 0
+	if face == null or not face.is_attack():
+		return n
+	for pair in _taking_part(u, "on_attack", face, target):
+		if str(pair[0].get("effect", "")) == "hit_heat" and (str(pair[0].get("once", "")) == "spend") == once_a_spend:
+			n += maxi(0, int(pair[0].get("value", 0))) * weight(pair[1])
+	return n
 
 
 ## What this machine lays on a foe whose blow lands on it (on_struck lay_status: the echidna's
@@ -2381,13 +2400,6 @@ static func extra_actions(u) -> int:
 ## statuses granted, for the log; shield and vent from it are the caller's to apply.
 static func hull_damaged(u) -> Dictionary:
 	return fire(u, "on_hull_damage")
-
-
-## A foe's blow its shield took with nothing on its hull (on_shield_hit; the Nemesis's rage, Ryan,
-## 11 November: "Taking a hit on shield gives 1 rage, hull damage gives 2", and "hull damage takes
-## priority"): a blow that wounds fires on_hull_damage alone.
-static func shield_hit(u) -> Dictionary:
-	return fire(u, "on_shield_hit")
 
 
 ## A blow of the machine's weapon on a foe that the foe's armour or Barrier took whole (on_blocked;
@@ -3019,14 +3031,22 @@ static func buff_stacks(u) -> int:
 	return n
 
 
-## The heat a foe's blow lays on this machine as it lands (gain_heat on on_hull_damage, or on
-## on_shield_hit for a blow its shield took whole: the Nemesis's Crucible Capacitor), for the
-## forecast: what a passive answering the blow would give.
+## The heat a foe's hit lays on this machine as it lands, for the forecast: gain_heat on on_struck,
+## whatever the hit dealt (the Nemesis's Crucible Capacitor, Ryan, 24 November: "simplify the
+## nemesis to just When Hit: gain 1 heat"), and on on_hull_damage for a hit that takes hull (its
+## Berserker's "Hull Damaged: Gain 1 heat"): what a passive answering the hit would give.
 static func blow_heat(u, hull_hit: bool) -> int:
+	return heat_on(u, "on_struck") + (heat_on(u, "on_hull_damage") if hull_hit else 0)
+
+
+## The heat this machine's passives give it when `trigger` fires (gain_heat), as `fire` lays it:
+## a hit's (on_struck), hull lost to anything (on_hull_damage), a blow of its own blocked whole
+## (on_blocked).
+static func heat_on(u, trigger: String) -> int:
 	var n := 0
-	for pair in _taking_part(u, "on_hull_damage" if hull_hit else "on_shield_hit", null):
+	for pair in _taking_part(u, trigger, null):
 		if str(pair[0].get("effect", "")) == "gain_heat":
-			n += int(pair[0].get("value", 0)) * int(pair[1].stacks)
+			n += int(pair[0].get("value", 0)) * weight(pair[1])
 	return n
 
 
@@ -3077,8 +3097,10 @@ static func heat_damage_multiple(u, heat: int, heat_max: int) -> float:
 
 
 ## What a hit on this machine is multiplied by at `heat` of `heat_max` (hot_hits, static: the Whip
-## Scorpion's, Ryan, 23 November: "When over 50% heat, damage recieved from hits is doubled"): its
-## `value` while its heat stands over half its maximum, 1 otherwise or with none.
+## Scorpion's, Ryan, 23 November: "When over 50% heat, damage recieved from hits is doubled"; all
+## its damage from 24 November, its hits alone again the same day, his option 1, so a branch that
+## rides Overheated pays the plain burn): its `value` while its heat stands over half its maximum, 1
+## otherwise or with none. A foe's hit reads it; its burn, a tick, a bite and a price in hull do not.
 static func hot_hits(u, heat: int, heat_max: int) -> int:
 	var n := 1
 	if heat * 2 <= heat_max:
@@ -3424,6 +3446,8 @@ static func effect_text(eff: Dictionary) -> String:
 				body = "lays %s on the striker, %s a blow" % [str(STATUS.get(str(v), {}).get("name", str(v))), "a stack" if n <= 1 else "%d stacks" % n]
 			else:
 				body = "lays %s on each foe %s, %s a hit" % [str(STATUS.get(str(v), {}).get("name", str(v))), "a weapon hits" if bool(eff.get("damaging", false)) else "hit", "a stack" if n <= 1 else "%d stacks" % n]
+				if int(eff.get("overheated", 0)) > 0:
+					body += ", %d past its heat maximum" % int(eff["overheated"])
 		"vent_heat": body = "sheds %s heat" % vs
 		"no_destroy": body = "components are never destroyed"
 		"set_reach": body = "reach becomes %s" % vs
@@ -3460,6 +3484,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"hot_hits": body = "past half its heat maximum, a hit on it ×%s" % vs
 		"reboot_piece": body = "its reboot fires its %s first" % str(eff.get("piece", "")).replace("_", " ")
 		"gain_heat": body = "+%s heat" % vs
+		"hit_heat": body = "+%s heat for each hit" % vs
 		"burrow": body = "it burrows in its reboot's place: Burrowed, armour +%d, its die rolls its %s alone, and each turn under regains %d shield, cools %d and gains %d Momentum, up to %d" % [maxi(1, int(eff.get("armour", 1))), str(eff.get("piece", "")).replace("_", " "), int(eff.get("shield", 0)), int(eff.get("cool", 0)), int(eff.get("momentum", 0)), int(eff.get("cap", 10))]
 		"immune": body = "immune to %s" % str(STATUS.get(str(eff.get("value", "")), {}).get("name", str(eff.get("value", ""))))
 		"momentum":
@@ -3523,7 +3548,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"on_injury": lead = "on an injury: "
 		"on_struck": lead = "on a foe's blow landing on it: "
 		"on_hull_damage": lead = "on losing hull: "
-		"on_shield_hit": lead = "on a foe's blow its shield takes, none on its hull: "
+		"on_turn_start": lead = "as its turn starts: "
 		"on_blocked": lead = "on each blow of its weapons a foe's armour or Barrier takes whole: "
 		"on_barrier": lead = "as it gains a Barrier: "
 		"on_skirmish_start": lead = "as the fight begins: "

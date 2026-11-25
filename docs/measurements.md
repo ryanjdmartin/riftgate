@@ -12362,8 +12362,71 @@ it gave 24% (the fists cool it, and it never reboots by choice at its maximum). 
 the four against tier one's bosses by a band (7.5 and 7.6 rounds, the squad losing 15% to 17%,
 against the Buzzard's 9.7 and 22% and the Polar Bear's 13.8 and 31%), and the formations too, by
 less (5.0 and 5.4 rounds against 5.7 and 7.5). The bot's Rage is a first
-cut, its share a placeholder, so the Nemesis's read moves with it; the Whip Scorpion's exit is
-Ryan's (every hit doubled past half its heat). A bot's read of tier one's foes.
+cut, its share a placeholder, so the Nemesis's read moves with it; the Whip Scorpion's nerf options
+are Ryan's (all the damage it takes doubled past half its heat, or a lower heat maximum). A bot's
+read of tier one's foes.
+
+
+## 24 November: Ryan's nerf options for the Nemesis and the Whip Scorpion, the cheap ones read
+
+`tools/reboot_probe.gd` as the 23 November entry (the squad beside the Honey Badger, the Prairie
+Dog and the Cassowary, the greedy bot, 168 formation fights at 8 seeds and 78 boss fights at 6), on
+`ccr-178e0404-ptuh2m` at `302d6a4c` (main the same), Godot 4.8-beta4. The two of his options a
+probe can read without building a rule: the Nemesis's heat from hits alone (23 November: "if this
+version is too much, we simplify it to just when hit-> gain heat"), read as `--drop-trigger
+on_blocked`, its own blows blocked whole heating it no more, its nearest form (the hull damage of
+its own bite and burn still heats it); and the Whip Scorpion's lower heat maximum (12 November: "the
+first place to nerf the scorpion if it needs it is just lowering the max heat"), `--heat-max 12`.
+His other options need a rule built to be read: the Whip Scorpion's every point of damage it takes
+doubled past half its heat, the Knuckles' cooling split in and out of the Rage, and no reboot by
+choice at all.
+
+| The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad |
+|---|---|---|
+| The Nemesis as built (23 November) | 5.4, 12%, 9%, 9% | 7.6, 12%, 13%, 15% |
+| Its heat from hits alone | 5.4, 12%, 9%, 9% | 7.6, 12%, 13%, 16% |
+| The Whip Scorpion as built (23 November) | 5.0, 30%, 7%, 9% | 7.5, 32%, 12%, 17% |
+| Its heat maximum 12 | 5.5, 36%, 8%, 10% | 8.6, 37%, 16%, 20% |
+
+Under the table: the Nemesis without the blocked blows' heat rages 0.45 times a formation fight
+and 0.85 a boss fight, as built 0.45 and 0.86; the Whip Scorpion at 12 fires its Ray 1.95 and 3.17
+times a fight for about 6.9 heat a shot, where at 14 it fired 1.49 and 2.40 times for about 9.5.
+
+What it says, a direction. Heat from hits alone moves nothing: tier one's foes rarely take a blow
+of its whole, so the heat its Rage runs on is its guns' and the hits it takes, and the option as
+read is no nerf. His other two answer other things, unread here: the cooling split a punch out of
+the Rage that feathers its heat too well ("If it's too strong, we'll give it different heat
+reductions in and out of rage"), and no reboot by choice at all its shield, left to the Rage's own
+reboot. The lower maximum is a real lever: the Whip Scorpion reboots more, fires a smaller Ray more often and
+loses more hull, a boss fight 1.1 rounds longer, between the Nemesis (7.6) and the Buzzard (9.7) of
+the 23 November read.
+
+
+## 24 November: the Nemesis's and the Whip Scorpion's runner rows, at 200 seeds
+
+`tools/balance.gd -- --seeds 200 --rows nemesis,whip_scorpion,buzzard,polar_bear --policies
+random,greedy --noparty`, in three parts merged, each machine alone against every pack of the matrix
+(92), on `ccr-178e0404-ptuh2m` at `302d6a4c` (main the same), Godot 4.8-beta4: 147,200 fights. The
+Buzzard and the Polar Bear are tier-two rows to read them beside. A row's walls are the packs greedy
+play wins under half of; its easy packs those random play wins nine in ten; its flat cells those
+where the two rungs land within five points with greedy under 95%; the gap is random's rounds over
+greedy's on the cells both win a quarter of (about 2 on the big fights, about 1 on the rank and
+file, the bible's section 2).
+
+| The row | Wins, random / greedy | Walls | Easy | Flat | Gap, big / rank and file | Greedy: rounds, hull a fight | Peak heat, overheats a fight |
+|---|---|---|---|---|---|---|---|
+| The Nemesis | 60.4% / 69.3% | 27 | 47 | 21 | 1.31 (10) / 1.43 | 5.7, 49% | 72%, 0.11 |
+| The Whip Scorpion | 53.3% / 58.1% | 40 | 44 | 33 | 0.58 (4) / 0.99 | 5.8, 57% | 55%, 0.01 |
+| The Buzzard | 48.6% / 54.6% | 41 | 38 | 36 | 1.09 (4) / 1.33 | 4.5, 56% | 65%, 0.00 |
+| The Polar Bear | 29.1% / 42.2% | 53 | 18 | 49 | 1.43 (1) / 1.58 | 7.6, 73% | 50%, 0.01 |
+
+What it says. Alone, the Nemesis is the strongest of the four by a band, with the fewest walls,
+and its rungs come apart (a gap over 1, flat cells fewest): its Rage rewards the play that reaches
+it. The Whip Scorpion reads above the Buzzard but holds no decision for this bot: greedy wins its
+big fights slower than random (0.58) and level on the rank and file (0.99), its heat peaking at
+55%, since the bot prices the doubled hits past half its heat and reads the scale's climb as no
+investment, so it plays cold, and random play, running it hot, does as well. Its row is a floor of
+skill until the bot reads heat as fuel (the to-do's bot line); his play reads its strength.
 
 ## 21 November: enemy armour at tier one, and Chain's arcs as a strike or a flat ping
 
@@ -12871,6 +12934,133 @@ copies peak at −0.3 dBFS at most (`line_flawless_victory`), each the length of
 
 The conversion's image at 12–20 kHz is gone (83 dB under her 100 Hz–1 kHz band now, where it
 was 47 dB under), and the top of her voice keeps its level.
+
+## 24 November: the Nemesis on hits alone and its two branches, the Whip Scorpion's doubling on all damage
+
+`tools/reboot_probe.gd` as the 24 November levers entry (the squad beside the Honey Badger, the
+Prairie Dog and the Cassowary, the greedy bot, 168 formation fights at 8 seeds and 78 boss fights
+at 6), on `ccr-178e0404-ptuh2m` at `d0b4be70` with main merged (`b217971d`), Godot 4.8-beta4. Ryan,
+24 November: "I think we simplify the nemesis to just When Hit: gain 1 heat. Remove the other heat
+generators from the t2 passive", Breaker and Berserker its directions, and "I think we implement
+the double damage recieved penalty on the Whip as well". A branch is read with `--branches`, so at
+tier three with the tier's lift, beside the base at its tier two.
+
+| The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad |
+|---|---|---|
+| The Nemesis as built (23 November, from the entry above) | 5.4, 12%, 9%, 9% | 7.6, 12%, 13%, 15% |
+| The Nemesis on hits alone (24 November) | 5.6, 12%, 9%, 10% | 7.7, 12%, 11%, 16% |
+| Its Breaker, at tier three | 5.3, 8%, 7%, 8% | 7.2, 10%, 9%, 14% |
+| Its Berserker, at tier three | 5.3, 9%, 7%, 8% | 7.0, 11%, 8%, 14% |
+| The Whip Scorpion as built (23 November, from the entry above) | 5.0, 30%, 7%, 9% | 7.5, 32%, 12%, 17% |
+| Its damage all doubled past half its heat (24 November) | 5.0, 30%, 7%, 9% | 7.5, 32%, 13%, 18% |
+
+Under the table: the Nemesis rages 0.40 times a formation fight and 0.82 a boss fight (0.45 and
+0.86 as built), its Breaker 0.39 and 0.63, its Berserker 0.48 and 0.77, each Rage of the
+Berserker's the longest (3.05 Instant swings a boss fight, the Breaker 2.18). The Whip Scorpion
+overheats no fight in either set (0.00 a fight), and fires its Ray 1.49 and 2.41 times a fight for
+about 9.2 and 9.5 heat a shot, as before.
+
+What it says, a direction. Hits alone are a small nerf at tier two: a formation fight 0.2 rounds
+longer and a Rage a little rarer, the heat its Rage runs on still its guns' and the hits it takes,
+as the levers entry found. The branches read faster than the base, the tier's lift with them; of
+the two the Berserker rages more, its hull's heat firing where the Breaker's rarely does (tier
+one's foes seldom take a blow of its whole), so at tier one the Breaker is its Brittle. The Whip
+Scorpion's doubling on all damage moves nothing the bot plays: it never overheats it and keeps its
+heat near half (the runner row's read), so what the doubling adds, the burn and the tick past half,
+lands only on a player who rides it hot.
+
+## 24 November: the Whip Scorpion's Obliterator
+
+`tools/reboot_probe.gd` as the entry above (168 formation fights at 8 seeds, 78 boss fights at 6,
+the greedy bot), `--only whip_scorpion --branches obliterator`, so at tier three with the tier's
+lift, beside the base at its tier two; on `ccr-178e0404-ptuh2m` with the Volatile doubling and
+the Obliterator built (its commit the one that records this). Ryan, 24 November: "Turn Start: Gain
+1 heat. Heliographic Death Ray -> Heliographic Doom Ray. Hull Cost: 1. Direct, 2 damage plus 1
+per 2 heat. Spread. Penetrate. Ignores Armour", the area at 2 each, the heat it fires on every hit.
+
+| The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad |
+|---|---|---|
+| The Whip Scorpion, all its damage doubled hot (from the entry above) | 5.0, 30%, 7%, 9% | 7.5, 32%, 13%, 18% |
+| Its Obliterator, at tier three | 4.5, 39%, 11%, 10% | 7.2, 39%, 19%, 17% |
+
+Under the table: the Doom Ray fires 1.75 times a formation fight and 2.83 a boss fight, about 9
+heat a shot (the Death Ray 1.49 and 2.41 at about 9.2 and 9.5).
+
+What it says, a direction. The Obliterator ends a formation fight half a round sooner, its shot
+landing whole on the row and the column, and reboots more, a turn bare in each; its own hull pays
+for it, the hull cost doubled hot and the bare turns, about half again what the base loses. The
+bot fires the Ray at about the heat it did, so the turn's heat and the wide shot are what move.
+
+## 24 November: the Whip Scorpion on its hits alone at Max Heat 12, two stocks and the Incinerator
+
+`tools/reboot_probe.gd` as the entries above (168 formation fights at 8 seeds, 78 boss fights at 6,
+the greedy bot), on `ccr-178e0404-ptuh2m` with Ryan's option 1 built ("Go with option 1 and max heat
+12, then build the Incinerator"): its hits alone doubled past half its heat, its heat maximum 12.
+Two stocks read with `--stock` for his note the same day ("It wants options to moderately build
+heat, and then lower heat options to maximize the time over half. The 9 heat weapon is probably
+greedy"): the Thermal Ray out, the Halo Projector (a Barrier, no heat) and the Polarity Projector
+(Shock, 2 heat) in, or a second Twin Autoguns and the Halo. The Incinerator read with `--branches`,
+so at tier three with the tier's lift.
+
+| The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad | Its Ray: shots a fight, heat a shot |
+|---|---|---|---|
+| As built: Thermal Ray, Twin Autoguns ×2, Maxigun | 5.5, 36%, 8%, 10% | 8.6, 37%, 16%, 20% | 1.95 and 3.15, 6.8 and 6.9 |
+| Twin Autoguns, Maxigun, Halo Projector, Polarity Projector | 5.9, 28%, 7%, 10% | 9.3, 25%, 13%, 18% | 1.42 and 2.09, 5.7 and 6.0 |
+| Twin Autoguns ×2, Maxigun, Halo Projector | 6.1, 28%, 7%, 10% | 9.4, 29%, 12%, 18% | 1.56 and 2.47, 5.7 and 6.1 |
+| Its Incinerator, as built, at tier three | 4.8, 35%, 6%, 9% | 6.4, 39%, 9%, 14% | 1.67 and 2.51, 8.3 and 8.2 |
+
+What it says, a direction. On its hits alone at 12 it reads as the `--heat-max 12` read of the same
+day did, a boss fight a round slower than at 14, toward the Buzzard. The bot fires the Ray at about
+7 heat, so its top shot never comes into it. Both stocks of holds read slower still for the bot, by
+half a round in formations and three quarters against bosses: it spends more and reboots less, and
+fires a smaller Ray less often, since it never holds its heat past half on purpose, the play the
+holds are for. The Incinerator is the fastest of the Whip Scorpion's builds the bot plays, its
+Ablate a hit doing it, though the bot never overheats it, so its 2 Ablate past the maximum never
+comes into the read.
+
+## 24 November: the Incinerator's two what-ifs, on the Halo Projector's stock
+
+`tools/reboot_probe.gd` as the entries above (168 formation fights at 8 seeds, 78 boss fights at 6,
+the greedy bot), on `ccr-178e0404-ptuh2m` with the stock Ryan picked ("Go Halo Projector for the
+Thermal Ray, that's plenty": the Halo Projector, two Twin Autoguns, the Maxigun) and no heat on the
+Ray ("It's kind of pointless for the Death Ray to have heat on it"). The Incinerator at tier three
+with the tier's lift. His two what-ifs, each on its own ("I assume the Maxigun is carrying the
+Incinerator a bit. Can we try, independently: 1. Change On Hit to Resolve, so its once per spend
+2. Change it to 1 Ablate and 2 heat"), read with the probe's `--set`: its heat and its Ablate once
+a spend on the target's first hit (`hit_heat.once=spend,lay_status.once=spend`), and 2 heat a hit
+(`hit_heat.value=2`), its 2 Ablate past the maximum kept in both. A fourth read takes his
+assumption head on: a third Twin Autoguns in the Maxigun's place.
+
+| The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad | Its Ray: shots a fight, heat a shot |
+|---|---|---|---|
+| The Whip Scorpion on the new stock | 6.1, 29%, 7%, 9% | 10.2, 29%, 13%, 19% | 1.64 and 2.69, 5.7 and 6.0 |
+| Its Incinerator as built, a heat and an Ablate a hit | 5.1, 32%, 5%, 7% | 7.3, 32%, 9%, 13% | 1.47 and 2.13, 7.9 and 7.7 |
+| Once a spend | 5.3, 30%, 5%, 8% | 8.7, 29%, 8%, 16% | 1.43 and 2.24, 7.6 and 7.6 |
+| 2 heat a hit | 5.1, 37%, 5%, 7% | 7.1, 38%, 5%, 12% | 1.69 and 2.46, 8.5 and 8.3 |
+| As built, a third Twin Autoguns for the Maxigun | 6.1, 34%, 5%, 8% | 10.1, 34%, 6%, 16% | 1.92 and 3.09, 5.5 and 5.3 |
+
+What it says, a direction. The new stock reads slow for this bot, a boss fight 10.2 rounds, since it
+never holds its heat past half on purpose, the play the Halo is for. The Maxigun carries the
+Incinerator: without it the branch reads as the base does, 10.1 against 10.2, and with it 2.9
+rounds faster, its three hits three Ablate a use. Once a spend takes about half of that back (8.7),
+the Maxigun's use one Ablate like any other's. 2 heat a hit takes none of it (7.1): the heat brings
+the Ray round sooner and bigger, and the bot never lets it overheat (0.00 a fight in every read).
+
+## 24 November: the Incinerator as Ryan set it, once a use on every Sprite hit
+
+`tools/reboot_probe.gd` as the entry above (the Halo Projector's stock, tier three with the lift),
+`--branches incinerator`, on Ryan's form: "Resolve: Gain 1 heat and apply 1 Ablate. If Overheated,
+apply 3 Ablate instead", and "It should apply to everything hit, not just the target".
+
+| The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad | Its Ray: shots a fight, heat a shot |
+|---|---|---|---|
+| The Incinerator, once a use on every Sprite hit, 3 Ablate past the maximum | 5.3, 30%, 5%, 8% | 8.7, 29%, 7%, 16% | 1.43 and 2.24, 7.6 and 7.6 |
+
+What it says, a direction: it reads as the once-a-spend what-if above did, to the figure. Its stock
+holds no weapon with an area, so every Sprite hit is its target, and the bot overheats it in about
+one boss fight in a hundred, so its 3 Ablate past the maximum barely comes into the read: both are
+the player's to find. A boss fight 1.5 rounds faster than the base on this stock, and 1.4 slower
+than its first form.
 
 ## 24 November: heat's red on the map's grounds, for the engage marks
 

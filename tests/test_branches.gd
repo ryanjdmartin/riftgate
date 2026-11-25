@@ -173,8 +173,9 @@ func test_the_validator_holds_a_branch_to_a_tweak_of_a_locked_piece() -> void:
 
 
 ## A direction back in design (the Mole's tree, Ryan, 20 November: "Send the Mole's current
-## Upgrade tree back to design"): a planned draft, kept in content and validated whatever its depth,
-## and never offered: no pick takes it, and the builds list it nowhere.
+## Upgrade tree back to design"): a planned draft, kept in content whatever its depth and its steps'
+## effects unchecked against the engine (the Whip Scorpion's Incinerator, 24 November, waiting on
+## its rules), and never offered: no pick takes it, and the builds list it nowhere.
 func test_a_planned_direction_is_kept_and_never_offered() -> void:
 	var db := _db(2)
 	db.chassis["test_frame"]["branches"][0]["status"] = "planned"
@@ -182,6 +183,14 @@ func test_a_planned_direction_is_kept_and_never_offered() -> void:
 	var errs: Array[String] = []
 	db._validate_branches("chassis test_frame", db.chassis["test_frame"], errs)
 	assert_eq(errs, [] as Array[String], "a planned direction two steps deep on a tier two validates: its depth waits on its session")
+	db.chassis["test_frame"]["branches"][0]["steps"][1]["effects"] = [{"trigger": "on_attack", "effect": "no_such_effect", "value": 1}]
+	var draft: Array[String] = []
+	db._validate_branches("chassis test_frame", db.chassis["test_frame"], draft)
+	assert_eq(draft, [] as Array[String], "and a step whose effect the engine lacks waits with it")
+	db.chassis["test_frame"]["branches"][0]["steps"][1]["description"] = ""
+	var wordless: Array[String] = []
+	db._validate_branches("chassis test_frame", db.chassis["test_frame"], wordless)
+	assert_false(wordless.is_empty(), "though a step still says what it does")
 	assert_false(db.branch_error("test_frame", ["guard"]).is_empty(), "no pick takes it")
 	assert_eq(db.branch_error("test_frame", ["spark"]), "", "the other stands")
 	assert_eq(db.branch_builds("test_frame"), [[], ["spark"]], "the builds list it nowhere")
