@@ -533,13 +533,12 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   republishes while he is on the page.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.673 on 24 November from `ccr-178e0404-ptuh2m`'s file at `24adae57` (the page's
-  Version 528: main's v0.667 merged with that branch's rows, the Incinerator once a use), over
-  v0.671 to v0.667 (Versions 527 to 523, the same day, that branch's) and v0.663 (Version 522,
-  from `766ddc88`, the live page checked byte for byte against that file first). Before republishing,
+  Published at v0.674 on 25 November from main's file at `8775e481` (the page's Version 529: the
+  Nemesis's and the Whip Scorpion's rounds landed on main over its Chain ping), over v0.673
+  (Version 528, 24 November, from `ccr-178e0404-ptuh2m`'s `24adae57`). Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
-  `24adae57` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  `8775e481` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
   live source with the tool's wrapper line, its trailing newline and `</body></html>`
   stripped): check BASE against the live page byte for byte first. After main merges in,
   check the tables script's run against the file's tables before keeping it: a row it
