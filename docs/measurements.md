@@ -13189,3 +13189,28 @@ the gathering player loses the wall in eight battles of ten where it lost it in 
 built the rift's packs reach the wall about a turn sooner (the Rupture at turn 5.4 for 6.6),
 the gate falling in three battles for one. Main moved between the two reads (the Mole's rework
 and the map's pass), none of it this squad's.
+
+## 25 November: the Skua's Ricochet without its riders, a Flak Cannon in its first slot
+
+`tools/balance.gd -- --seeds 200 --policies greedy --rows skua --set 'chassis/skua/loadout/0="flak_cannon"'`,
+every pack of the matrix (101), the Skua alone, 20,200 fights a run: before, at `56d23b9` (a
+Ricochet's bounce laid the weapon's riders, a stack a bounce), and after, at `ce1c7c0` (Ryan's
+"yes-no-no-yes" of 25 November: a bounce takes the machine's buffs and is Targeted, and carries
+no rider, no damage rule of the entry and none of its Ignores Armour). The stock Skua carries no
+rider (the Laser Carbine and two Twin Autoguns), so the change reads only on a fitted one: here
+the Flak Cannon (Brittle 2) in the Laser Carbine's place.
+
+| The Skua with a Flak Cannon | Win rate, the row's mean over 101 packs | Packs at 0% | Packs at 100% | Hull lost |
+|---|---|---|---|---|
+| Before: its bounces lay Brittle | 36.4% | 52 | 22 | 73.7% |
+| After: its bounces lay nothing | 35.3% | 56 | 22 | 74.9% |
+
+Six packs moved three points or more, all but one of them lone, high-HP Sprites, the long fights
+where a Brittle a bounce kept climbing: Barrow Giant x1 35% to 0%, Sandworm x1 82% to 57%, Treant
+x1 89% to 68%, Magma Elemental x1 89% to 78%, the Augur's final 34% to 25%; the Cleric's final 24%
+to 28%. Spends barely moved: the Twin Autoguns 42% to 41%, the Flak Cannon 33% to 32%, the
+Hypersonic Swoop 25% to 26%.
+
+What it says, read as bands: the row's band is unchanged (a point, a direction at this size); what
+the riders bought was the lone big Sprite, where they were the abuse case Ryan named in play.
+
