@@ -555,16 +555,13 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   republishes while he is on the page.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.674 on 25 November from main's file at `8775e481` (the page's Version 529: the
-  Nemesis's and the Whip Scorpion's rounds landed on main over its Chain ping), over v0.673
-  (Version 528, 24 November, from `ccr-178e0404-ptuh2m`'s `24adae57`). The file is two versions past
-  the page, v0.676, on `claude/formation-pass-feedback-rlvx5x`'s rows (the tears row's landing
-  for the rift's packs; the graded tide's Decided row in section 4 and its numbers in section
-  12; the dials the page no longer has out of the heat, field, wall, battle and clocks rows),
-  unpublished. Before republishing,
+  Published at v0.677 on 25 November from this file at `596395f0` (the page's Version 530: the
+  graded tide's Decided row and its numbers, the switch-over, the rift's landing, and the
+  dials the page no longer has out of five rows), over v0.674 (Version 529, the same day, from
+  main's `8775e481`, checked against the live page byte for byte first). Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
-  `8775e481` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  `596395f0` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
   live source with the tool's wrapper line, its trailing newline and `</body></html>`
   stripped): check BASE against the live page byte for byte first. After main merges in,
   check the tables script's run against the file's tables before keeping it: a row it
