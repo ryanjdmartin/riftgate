@@ -266,8 +266,9 @@ perl -e 'alarm 3400; exec @ARGV' godot --headless --path . -s tools/anchor_read.
 # maker's team against every pack, each domain's formation at each tier and the party, random
 # and greedy over 200 seeds a cell (hours on one core; about two in four parts)
 perl -e 'alarm 36000; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200
-# on several cores: --part i/n runs every n-th cell into its --json, and --merge writes the
-# report from the parts (the same options on every part and the merge)
+# on several cores: --part i/n runs every n-th cell into its --json (i counts from 0: 0/4 to 3/4,
+# and one out of range is refused), and --merge writes the report from the parts (the same
+# options on every part and the merge; a part may itself be split, 0/16, 4/16, 8/16 and 12/16 being 0/4)
 for i in 0 1 2 3; do perl -e 'alarm 7200; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200 --part $i/4 --json /tmp/part$i.json & done; wait
 perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/balance.gd -- --seeds 200 --merge /tmp/part0.json,/tmp/part1.json,/tmp/part2.json,/tmp/part3.json
 # its options (the script's head has each in full):
