@@ -1919,7 +1919,7 @@ a stat.
   move from the wall strikes the wall in front of it and never walks past it to a stretch a turn
   further, and a pack the rift sends fans across as much of the wall as it reaches no later: at
   a move of 2, nine columns of the twenty at twelve deep and thirteen at sixteen, at every
-  Convergence. Several packs one mouth sends at once (the tide's trial, the rift's) each draw
+  Convergence. Several packs one mouth sends at once (the sends' dial, below) each draw
   from a share of their own of those columns, in order along the wall, so they leave in
   different directions. It walks to the land hex of the row before the wall
   nearest its column, a tie toward the gate's column; a pack with no segment (a hunter left
@@ -2001,6 +2001,29 @@ a stat.
   lock), of those it can stand on with no machine beside it, the nearest the wall of equals;
   with none free on the ring, the nearest hex past it, never one of the seven. Packs never
   escalate in place.
+- **The graded tide** is the tide the game is moving to, dealt in the cycle's place when its
+  dial is on (a debug build's SETTINGS, TRIALS, TIDE or SET; `RIFTGATE_GRADED=1`); a battle
+  begun on it stays on it. The wall is five bands, and a band's rating is the pack that makes
+  for it: one at each end, two between, three in the middle. A domain's packs are listed by
+  rating (its compositions marked `tide`: `graded`; a domain with none plays its pushing
+  patrols and formations by their ratings), each list taken in turn from a start the seed
+  draws, the guest's in turn with the lead's. At a peak every mouth sends as many packs as
+  the sends' dial says (one, two or three, the rift and each open tear alike), each to a band
+  of its own drawn by the seed, the peak and the mouth: the rift from all five, a tear from
+  its own band and the ones beside it. The pack is the next of its band's rating, and one in
+  five of an end's packs is for two. A pack makes for the least crowded column of its band
+  and comes down onto it across the field, never along the wall past stretches it could
+  strike. A hunting pack comes out of the rift every other peak from the second. The opening
+  stands packs before every band, each its own moves from the row before the wall and none
+  near enough to strike on the first turn: two packs for one at each end (the inner two moves
+  out, the outer three), a pack for two before each band between (three), and before the
+  middle the ramp's count of packs for three (the first two moves out, each after it a move
+  farther back), so seven, eight from Convergence 3 and nine from 8. The Rupture's size
+  counts the opening and, a beat, each mouth's sends at the mean of the bands it draws from,
+  with the hunting pack every other beat; the pack the squad may leave is a pack for one. The
+  tears, the elites and the boss are as above. Two dials ride with it: what a pip strikes the
+  wall for (ten, five or three) and what a pack pays the meter as it falls, over its rating
+  (nothing, half a pip or a pip, the size counting it for every pack it counts).
 - **The seam** is the flattening's edge and a picture alone: a circle about the rift's middle,
   the painted world inside it. As a battle opens its edge stands four hexes out, so the shell's
   seven hexes and a hex and a half round them are the painting's; it grows half a hex a round,
@@ -2237,8 +2260,8 @@ and nothing scales a pack.
   a variant with one more goblin is its own composition, and no cell lists alternatives. Six
   fields more, each optional: `squad`, the machines it is intended for, 1 to 4, its threat rating
   on the map (absent: a patrol 1, a formation 3, an elite and an escort 4); `pace`, the hexes its
-  pack walks a turn, 1 to 6 (absent: its slowest member's); `tide`, the tide on trial it is
-  written for (`graded`: dealt by the graded tide alone and by nothing else; absent: the game's); `lead`, a foe id in
+  pack walks a turn, 1 to 6 (absent: its slowest member's); `tide`, the tide it is
+  written for (`graded`: dealt by the graded tide alone; absent: the cycle's); `lead`, a foe id in
   the grid whose sprite the pack wears, an elite composition's its elite (absent: the first in
   reading order, front left to right, then back); `hunts`, the caveat its pack hunts by
   (nearest, weakest, strongest or slowest; absent: it pushes), never on an escort, which

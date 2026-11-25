@@ -26,7 +26,7 @@ The model plays that and nothing else:
     moves out on each flank, then a peak every third turn, the rift sending the next of its
     cycle and every open tear a patrol, a tear opening a peak on a row that steps toward the
     wall. No hunters, no elites, no boss, no Rupture: twelve turns of the tide and its count.
-  - A table is a tide with no middle (docs/tide_proposal.md): packs for one machine through
+  - A table is a tide with no middle (a trial of 23 November, set aside: docs/briefs/graded_tide.md, section 7): packs for one machine through
     tears across the whole width with the rift sending none, against the same packs through
     the rift, for a squad free to go where it will and one that holds a post.
   - Its last table is the graded tide (his design of the same day): packs for one by the

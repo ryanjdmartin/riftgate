@@ -399,7 +399,7 @@ static func make_boss_unit(content: ContentDB, faction_id: String, t: int, boss_
 ## for one, the outer three moves out and the inner two. Nothing strikes on the first turn. Seven
 ## packs at the first Convergence, eight from the third and nine from the eighth, where the game
 ## as built stands three, four and four. The session's form and placeholders all: a set form by
-## Convergence is Ryan's to mark (the tide's proposal).
+## Convergence is Ryan's to mark (docs/briefs/graded_tide.md).
 static func graded_opening(ramp_at: int, cols: int) -> Array:
 	var n := Battlefield.BAND_RATING.size()
 	var by_band: Array = []   # every band's columns, in order along the wall
