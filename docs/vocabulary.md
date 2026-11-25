@@ -2,7 +2,18 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 210 implemented, 6 planned, 0 idea.
+Status: 213 implemented, 6 planned, 0 idea.
+
+## Damage
+
+| Term | Codex | Status |
+|---|---|---|
+| **Hit for N** | Shield takes it first, then Armour reduces it.
+Barrier, Brittle, On Hit and When Hit effects apply. | implemented |
+| **Suffer N damage** | Not a hit. Shield takes it first.
+Armour, Barrier, Brittle, On Hit and When Hit effects do not apply. | implemented |
+| **Lose N** | Comes straight off the Hull, HP or Shield named.
+Nothing reduces or adds to it. | implemented |
 
 ## Resource
 
@@ -400,6 +411,9 @@ Suppress delays it 1 round. Disrupt cancels it. | implemented |
 
 Every entry whose `design.holes` is not empty. This is the list of things the mechanics do not do yet.
 
+- **Hit for N** (implemented): The three ways damage lands, the standard's rule 39 (Ryan, 24 November: "I like hit for N, suffer N damage, and lose N hull as the format examples that we want"), given a heading of their own in the keywords list on his yes of 25 November to a Damage section in place of reminders on each tip. Listed, never matched in a line (Terms.UNMATCHED): "Hit" is a label's word. The text is a session's draft.
+- **Suffer N damage** (implemented): The three ways damage lands, the standard's rule 39 (Ryan, 24 November: "I like hit for N, suffer N damage, and lose N hull as the format examples that we want"), given a heading of their own in the keywords list on his yes of 25 November to a Damage section in place of reminders on each tip. Listed, never matched in a line (Terms.UNMATCHED): "Hit" is a label's word. The text is a session's draft.
+- **Lose N** (implemented): The three ways damage lands, the standard's rule 39 (Ryan, 24 November: "I like hit for N, suffer N damage, and lose N hull as the format examples that we want"), given a heading of their own in the keywords list on his yes of 25 November to a Damage section in place of reminders on each tip. Listed, never matched in a line (Terms.UNMATCHED): "Hit" is a label's word. The text is a session's draft.
 - **HP** (implemented): A machine's health is its hull; the engine's code may say either word.
 - **Shield** (implemented): Shield sizes are placeholders. No chassis regenerates: the reboot refills a shield, and a passive, a module or a status may grant a regen.
 - **Heat** (implemented): Heat does nothing below the cap. Consider effects at high heat short of overflow. No chassis cools: the reboot vents, and a cooling a piece grants must stay below a typical weapon's heat or heat never matters (tuning).

@@ -2165,11 +2165,11 @@ func test_an_aim_is_a_moves_word_on_a_move_aimed_at_one_machine() -> void:
 		for l in EntryReadout.move_lines(foe, a, db, live, target):
 			out.append(str(l["text"]))
 		return "\n".join(out)
-	assert_true(str(said.call(foe.actions[0], false, "")).contains("Target: The hottest machine"), "the codex: its word is the target's line (%s)" % str(said.call(foe.actions[0], false, "")))
-	assert_true(str(said.call(foe.actions[0], true, "Skua")).contains("Target: Skua, the hottest machine"), "a fight: the machine it picked, then its word")
+	assert_true(str(said.call(foe.actions[0], false, "")).contains("Target: The hottest Frame"), "the codex: its word is the target's line (%s)" % str(said.call(foe.actions[0], false, "")))
+	assert_true(str(said.call(foe.actions[0], true, "Skua")).contains("Target: Skua, the hottest Frame"), "a fight: the machine it picked, then its word")
 	assert_true(str(said.call(foe.actions[1], false, "")).contains("Target: Any machine"), "a blow with no word says any machine")
 	assert_true(str(said.call(foe.actions[1], true, "Skua")).contains("Target: Skua") and not str(said.call(foe.actions[1], true, "Skua")).contains("Skua,"), "and in a fight the machine alone")
-	assert_true(str(said.call(foe.actions[2], false, "")).contains("Target: The most buffed machine"), "a special aimed at one machine says its word the same way")
+	assert_true(str(said.call(foe.actions[2], false, "")).contains("Target: The most buffed Frame"), "a special aimed at one machine says its word the same way")
 
 
 ## An immunity is a foe's own Ability (17 November): a Suppress or a Disrupt, each always or

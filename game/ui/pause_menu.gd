@@ -41,7 +41,7 @@ const TOOL_ROW := 66.0     # the colours page's row of tools above its BACK
 
 ## The keywords list's kinds, in the order the page shows them: the vocabulary's category and the
 ## page's heading for it.
-const GLOSSARY := [["reach", "REACH"], ["keyword", "KEYWORDS"], ["component_property", "RULES ON A COMPONENT"], ["status", "STATUSES"], ["foe", "SPRITES' MOVES"]]
+const GLOSSARY := [["damage", "DAMAGE"], ["reach", "REACH"], ["keyword", "KEYWORDS"], ["component_property", "RULES ON A COMPONENT"], ["status", "STATUSES"], ["foe", "SPRITES' MOVES"]]
 
 var _scrim: ColorRect
 var _panel: HudPanel

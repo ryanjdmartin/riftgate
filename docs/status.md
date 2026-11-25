@@ -84,7 +84,9 @@ document's job and every command are in `README.md`.
   the mole's passive to the status chip"), and damage lands three ways in the text, the standard's
   rule 39: "hit for N", "suffer N damage", "lose N Hull" (his of 24 November). On 25 November a
   Ricochet's hit became the machine's alone (his "yes-no-no-yes": buffs, Targeted, nothing of the
-  weapon), and rule 40 says what an extra hit brings, so a line names only what differs.
+  weapon), and rule 40 says what an extra hit brings, so a line names only what differs. The
+  keywords list opens on a Damage heading (Hit for N, Suffer N damage, Lose N), his yes of 25
+  November; the passives, the upgrades and the module rules are the next kind, once he has marked.
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
   (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks
@@ -120,7 +122,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1479 tests, 402,308 checks, green on Godot 4.8-beta4 (25 November, a Ricochet's hit the machine's over the graded tide's opening and the rift's landing). The runner fails a run
+- Tests: 1479 tests, 402,347 checks, green on Godot 4.8-beta4 (25 November, the glossary's Damage section and the attack's words in Frame). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -540,7 +542,7 @@ Deleted on his word of 20 November: the vocabulary marks, the targeting scenes, 
 analysis, the effects listening page and the engagement sandbox (the README's docs line has the
 copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 
-- The terminology standard, what is still his to mark (settled rules listed for reference; Version 12, 25 November, rule 40 on what a hit brings): https://claude.ai/artifact/TXNpkS4zuPJ5c6sEpk9oF4,
+- The terminology standard, what is still his to mark (settled rules listed for reference; Version 13, 25 November, the leans in Sprite and Frame and ready for his marks): https://claude.ai/artifact/TXNpkS4zuPJ5c6sEpk9oF4,
   made from `docs/text_standard.md`'s section 2 and `docs/terminology_proposal.md`'s section 4 by `tools/pages/terminology_marks_page.py` and
   published with the `db` and `user` capabilities. Each rule, call and name takes a mark and a
   note, saved in the collection `marks`, a document an item keyed by its id (`rule-13`,
