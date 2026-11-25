@@ -2219,6 +2219,19 @@ static func piece_form(u, face: Face) -> Face:
 	return c
 
 
+## The name a branch's step gives the piece it remakes (piece_form's `name`, the latest grant's: the
+## Obliterator's Heliographic Doom Ray), "" where none does.
+static func form_name(u, piece: String) -> String:
+	var best := ""
+	var seq := -1
+	for m in live(u):
+		for eff in m.effects:
+			if str(eff.get("trigger", "")) == "static" and str(eff.get("effect", "")) == "piece_form" and str(eff.get("entry", "")) == piece and m.seq > seq:
+				seq = m.seq
+				best = str(eff.get("name", ""))
+	return best
+
+
 ## The drum's shot from a weapon or a debuff and the rewrite that fires it.
 static func _rewrite(face: Face, eff: Dictionary) -> Face:
 	var c := face.duplicate_face()

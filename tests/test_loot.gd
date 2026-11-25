@@ -297,7 +297,7 @@ func _cache_map(f: Battlefield) -> Map3D:
 
 
 ## On the 3D map a cache is a model on its hex while the ground is solid, sunk and gone where the
-## painting has the hex, hidden under a machine standing on it, and freed once it is claimed.
+## painting has the hex, pressed flat under a machine standing on it, and freed once it is claimed.
 func test_a_caches_model_stands_on_solid_ground_alone_and_goes_when_claimed() -> void:
 	var b := _battle(11)
 	var f := b.field
@@ -306,24 +306,31 @@ func test_a_caches_model_stands_on_solid_ground_alone_and_goes_when_claimed() ->
 	var solid_ground := Vector2(-1.0e7, -1.0e7 + 1.0)   # the seam's painting stopped everywhere: every hex solid
 	var painted := Vector2(1.0e7, 1.0e7 + 1.0)          # whole everywhere, as RIFTGATE_BLEED_DEBUG paints it
 	var seam := Vector4(0.0, 0.0, 1.0e7, 1.0)           # the seam's circle past everything, so the stop alone decides
-	m._sync_caches({}, solid_ground, seam, PackedVector3Array())
+	m._sync_caches({}, [], solid_ground, seam, PackedVector3Array())
 	for c in f.caches:
 		assert_true(m.cache_shown(int(c["id"])), "cache %d stands on solid ground" % int(c["id"]))
 		assert_true(is_equal_approx((m._caches[int(c["id"])] as Node3D).scale.y, Map3D.CACHE_FIT), "at its whole height")
 	var first: Dictionary = f.caches[0]
-	var occupied := {first["pos"]: true}
-	m._sync_caches(occupied, solid_ground, seam, PackedVector3Array())
-	assert_false(m.cache_shown(int(first["id"])), "hidden under a machine on its hex")
+	# A machine on its hex presses it flat, and one on its way there part of the way, never blinking
+	# it out (Ryan, 25 November: "The caches and terrain elements flickering in and out of existence
+	# when a frame moves through the hex is weird").
+	var on := MapOrient.to_pixel(first["pos"], m.hex_px)
+	m._sync_caches({}, [on], solid_ground, seam, PackedVector3Array())
+	assert_false(m.cache_shown(int(first["id"])), "flat under a machine on its hex")
 	assert_true(m.cache_shown(int(f.caches[1]["id"])), "the others stand")
+	var near := on.lerp(MapOrient.to_pixel(first["pos"] + Hex.DIRECTIONS[0], m.hex_px), 0.7)
+	m._sync_caches({}, [near], solid_ground, seam, PackedVector3Array())
+	var part := (m._caches[int(first["id"])] as Node3D).scale.y
+	assert_true(m.cache_shown(int(first["id"])) and part > 0.0 and part < Map3D.CACHE_FIT, "a machine on its way past presses it part of the way (%.2f)" % part)
 	var asked := {}
-	m._sync_caches(asked, solid_ground, seam, PackedVector3Array())
+	m._sync_caches(asked, [], solid_ground, seam, PackedVector3Array())
 	for c in f.caches:
 		assert_true(asked.has(c["pos"]), "a cache's hex hides its own dressing")
-	m._sync_caches({}, painted, seam, PackedVector3Array())
+	m._sync_caches({}, [], painted, seam, PackedVector3Array())
 	for c in f.caches:
 		assert_false(m.cache_shown(int(c["id"])), "gone under the painting, where the map view draws its token")
 	f.caches.remove_at(0)
-	m._sync_caches({}, solid_ground, seam, PackedVector3Array())
+	m._sync_caches({}, [], solid_ground, seam, PackedVector3Array())
 	assert_false(m._caches.has(int(first["id"])), "a claimed cache's model is freed")
 	assert_eq(m._caches.size(), f.caches.size(), "one model a cache left")
 	m.free()

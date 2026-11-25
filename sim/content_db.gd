@@ -85,6 +85,10 @@ func load_dir(dir: String) -> void:
 	for m in c.get("makers", []):
 		makers[m["id"]] = m
 	components = _index(_read(dir + "components.json"))
+	# Each component's name for the battle log, which the fight's own code reads by id (Skirmish).
+	Skirmish.piece_names = {}
+	for cid in components.keys():
+		Skirmish.piece_names[str(cid)] = str(components[cid].get("name", str(cid)))
 	modules = _index(_read(dir + "modules.json"))
 	var lf := _read(dir + "loot.json")
 	loot = _index(lf)
