@@ -930,12 +930,14 @@ On a machine:
 - **Spun Up** (buff): the next weapon the machine spends deals +2 a stack and takes every
   stack; equipment leaves them standing; carried between turns until a weapon takes it.
 - **Ricochet** (buff, the Skua's): after a weapon fires, it hits its target again for 1, once a
-  stack, once all its own strikes are done. Each is a strike of its own with every effect of
-  the weapon but its area: its number 1 in place of the entry's and of what the entry reads off
-  the foe, the firer's modifiers on it (Empowered adds), the foe's Brittle, then its armour, so a
-  point of plate stops every one and an Exposed foe's plate stops none; the weapon's riders
-  land with each, a stack a strike; an area and Chain's ping are the weapon's own and no
-  Ricochet carries them, and a weapon over every foe has no target for one to hit. The stacks are read as the spend begins, so one
+  stack, once all its own strikes are done. Each is the machine's hit, never the weapon's: its
+  number 1 in place of the entry's, the firer's modifiers on it (Empowered adds, and the zap),
+  the foe's Brittle, then the foe's own armour and Barrier, so a point of plate stops every one
+  and an Exposed foe's plate stops none. It is aimed at the target, so a Shock still standing
+  doubles it. Nothing of the weapon rides it: no rider, no passive's lay, no area, no spill and
+  nothing into a Mine, none of the entry's own damage rules (its finish, what it reads off the
+  foe), and none of its Ignores Armour or Barrier. Chain's ping is the weapon's own, and a weapon
+  over every foe has no target for one to hit. The stacks are read as the spend begins, so one
   the spend earns strikes nothing of it. Equipment strikes nothing again. Whenever the
   machine's hull is damaged (a blow, a bite or an overheat) half its stacks go, rounded down, so
   a lone stack is lost; a blow its shield takes whole costs none. It lasts the fight, with no

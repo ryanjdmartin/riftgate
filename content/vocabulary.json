@@ -163,7 +163,7 @@
    "id": "cleave",
    "category": "keyword",
    "name": "Spread",
-   "codex": "Also hits all Sprites beside the target, dealing {N} damage. The extra hits are not Targeted.",
+   "codex": "Also hits all Sprites beside the target, dealing {N} damage.",
    "status": "implemented",
    "design": {
     "holes": "Its number rides on the entry beside the keyword (cleave), and the validator asks for it on a weapon. The half it dealt from 26 October retired 28 October (Ryan): at single digits a neighbour's half killed no rank and file. A piece may carry it beside Penetrate, the plus round its target; Splash, the two under one word, was cut on 15 November (Ryan: \"It might be a more interesting game with only the other area shapes, with a few select pieces carrying both spread and penetrate together\")."
@@ -173,7 +173,7 @@
    "id": "penetrate",
    "category": "keyword",
    "name": "Penetrate",
-   "codex": "Also hits all other Sprites in the same column, dealing {N} damage. The extra hits are not Targeted.",
+   "codex": "Also hits all other Sprites in the same column, dealing {N} damage.",
    "status": "implemented",
    "design": {
     "holes": "Its number rides on the entry beside the keyword (penetrate), and the validator asks for it on a weapon."
@@ -392,10 +392,10 @@
    "id": "chain",
    "category": "keyword",
    "name": "Chain",
-   "codex": "Resolve: All Sprites with Shock, Static, or Sonic Needle lose {N} HP.",
+   "codex": "Resolve: All Sprites with Shock lose {N} HP.",
    "status": "implemented",
    "design": {
-    "holes": "Ryan, 24 November, his text: \"I want to change Chain. The under-armour ping is simpler. Resolve: All Sprites with Shock, Static, or Sonic Needle lose {N} HP.\" Static is the debuff of his Static machine of 4 November, not yet built (docs/briefs/aphelion_static.md), so only Shock and Sonic Needle conduct until it lands. His words, not yet signed on the Text tab."
+    "holes": "Ryan, 24 November, his text: \"I want to change Chain. The under-armour ping is simpler. Resolve: All Sprites with Shock, Static, or Sonic Needle lose {N} HP.\" Static is the debuff of his Static machine of 4 November, not yet built (docs/briefs/aphelion_static.md), so only Shock and Sonic Needle conduct until it lands. His words, not yet signed on the Text tab; 25 November, of the conductors: \"the only non-exclusive conductor is Shock. So it's possible that we just need to mention Shock specifically\", so Sonic Needle's and Static's own tips say they conduct it."
    }
   },
   {
@@ -868,7 +868,7 @@
    "id": "ricochet",
    "category": "status",
    "name": "Ricochet",
-   "codex": "Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage, with every effect of the weapon except area.\nHull Damaged: Reduce stacks by half, rounded down.\nLasts the skirmish.",
+   "codex": "Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage. No effect of the weapon applies.\nHull Damaged: Reduce stacks by half, rounded down.\nLasts the skirmish.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 12 November: \"Ricochet (buff): After firing a weapon, it hits the primary target 1 more time per stack, dealing 1 damage each time and applying all effects other than area keywords\"; \"I'm leaving what applies in the ricochets open, if applying unique effects N more times is broken, then we dial it back and explicitly say 'keywords' instead of 'effects'\"; 11 November: \"Lose half stacks of Ricochet on any hull damage\". His first thought, a Ricochet on every foe a weapon hits, he dropped with Sweep. Claude's readings, built on his go and his to move: 1 in place of the entry's number and of its reads of the foe, the firer's adds on it; half rounded down at each blow, bite or overheat that takes hull, so a lone stack is lost; no cap; a buff a Purge takes.",

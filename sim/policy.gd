@@ -1796,13 +1796,16 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 			var echo_base := floori(Skirmish.split_share(v + fired, f.split) * again / 100.0)
 			var echo := int(Effects.attack(ms.unit, f, echo_base, 0, target, zctx.duplicate())["damage"]) + own
 			echoed = float(maxi(0, (Effects.damage_taken(target, echo, ms.unit, damaging, false) if damaging else 0) - arm)) * n
-		# Ricochet (the Skua's, 12 November): once the weapon's strikes are done, a strike of 1 more
-		# a stack at its target, through the firer's pipeline, the foe's Brittle and its armour.
+		# Ricochet (the Skua's, 12 November; 25 November, the machine's alone): once the weapon's
+		# strikes are done, a hit of 1 more a stack at its target, through the firer's pipeline, none
+		# of the entry's own rules, then the foe's Brittle and its own armour.
 		var bounced := 0.0
 		var stacks := Effects.stacks_of(ms.unit, "ricochet") if f.is_weapon() and target != null and f.reach != Face.Reach.EVERY_FOE else 0
 		if stacks > 0:
-			var one := int(Effects.attack(ms.unit, f, 1, 0, target)["damage"])
-			bounced = float(maxi(0, Effects.damage_taken(target, one, ms.unit, true, false) - arm)) * stacks
+			var bctx := zctx.duplicate()
+			bctx["plain"] = true
+			var one := int(Effects.attack(ms.unit, f, 1, 0, target, bctx)["damage"])
+			bounced = float(maxi(0, Effects.damage_taken(target, one, ms.unit, true, false) - target.armour_total())) * stacks
 		out.append([float(first) + float(later) * maxf(0.0, n - 1.0) + bounced + echoed, w])
 	return out
 

@@ -1203,7 +1203,7 @@
    "passive": {
     "id": "beam_armament_sequencer",
     "name": "Beam Armament Sequencer",
-    "description": "Three armaments of light, sequenced. Its offhand holds the Beam Rifle, the Beam Sword or the Beam Shield, a rider on every weapon and equipment it aims at a foe, and turns to the next after each; every fight opens on the rifle. Beam Rifle: each strike also strikes the foe to the right for 2. Beam Sword: after each strike, it hits the target again for half the strike's damage, rounded down. Beam Shield: it gains Armoured 2.",
+    "description": "Three armaments of light, sequenced. Its offhand holds the Beam Rifle, the Beam Sword or the Beam Shield, a rider on every weapon and equipment it aims at a foe, and turns to the next after each; every fight opens on the rifle. Beam Rifle: each strike also strikes the foe to the right for 2. Beam Sword: after each strike, it hits the target again for half the strike's base damage, rounded down. Beam Shield: it gains Armoured 2.",
     "effects": [
      {
       "trigger": "static",
@@ -1226,7 +1226,7 @@
       "id": "beam_sword",
       "slot": "sword",
       "name": "Beam Sword",
-      "description": "After each strike, hit the target again for half of the strike's damage (rounded down).",
+      "description": "After each strike, hit the target again for half of the strike's base damage (rounded down).",
       "riders": [
        {
         "trigger": "static",

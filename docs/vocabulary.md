@@ -94,8 +94,8 @@ Cannot be used without Ore. | implemented |
 
 | Term | Codex | Status |
 |---|---|---|
-| **Spread** | Also hits all Sprites beside the target, dealing {N} damage. The extra hits are not Targeted. | implemented |
-| **Penetrate** | Also hits all other Sprites in the same column, dealing {N} damage. The extra hits are not Targeted. | implemented |
+| **Spread** | Also hits all Sprites beside the target, dealing {N} damage. | implemented |
+| **Penetrate** | Also hits all other Sprites in the same column, dealing {N} damage. | implemented |
 | **Cryo** | Resolve: Apply {N} Cryo per hit. | implemented |
 | **Ablate** | Resolve: Apply {N} Ablate per hit. | implemented |
 | **Lure** | On Hit: Change intended target to this Frame. | implemented |
@@ -105,7 +105,7 @@ Cannot be used without Ore. | implemented |
 | **Suppress** | Resolve: Apply Suppressed to each Sprite hit. | implemented |
 | **Brittle** | Resolve: Apply {N} Brittle per hit. | implemented |
 | **Sap** | Resolve: Apply {N} Sapped per hit. | implemented |
-| **Chain** | Resolve: All Sprites with Shock, Static, or Sonic Needle lose {N} HP. | implemented |
+| **Chain** | Resolve: All Sprites with Shock lose {N} HP. | implemented |
 | **Rapid** | Resolve: Reroll this die for free, never onto this entry. This entry goes dark for the rest of the round. | implemented |
 | **Instant** | Resolve: Reroll this die for free. May land on this entry again. | implemented |
 | **Jam** | Resolve: Apply Jammed to the entry the target's die shows. | implemented |
@@ -167,7 +167,7 @@ Cannot reduce HP below 1. | implemented |
 | **Web Bomb** | Round End: Consumed to apply Suppressed to this Sprite and the nearest Sprite to its right in the same rank, or to its left if none. | implemented |
 | **Spun Up** | Weapon hits deal +2 damage per stack ({N}).
 Resolve: If a weapon was used, reduce stacks to 0. | implemented |
-| **Ricochet** | Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage, with every effect of the weapon except area.
+| **Ricochet** | Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage. No effect of the weapon applies.
 Hull Damaged: Reduce stacks by half, rounded down.
 Lasts the skirmish. | implemented |
 | **Essence** | When any Sprite is defeated: Gain 1 Essence.
@@ -426,7 +426,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Paradox** (implemented): The count is a placeholder (Ryan, 11 November: "we have no idea how many paradox stacks is balanced, we just decided on 3 or whatever as a placeholder without knowing how much status chips were going to get thrown around in the game as a whole"); a stack a debuff stack since that day, at five.
 - **Volatile** (implemented): Hull outright, where the Corrupted bite takes shield first. The number is a placeholder. A keyword with a chip until 26 October; a cost like heat since, so the die says the price and no chip does.
 - **Shield cost** (implemented): No piece carries it yet; the numbers are content's.
-- **Chain** (implemented): Ryan, 24 November, his text: "I want to change Chain. The under-armour ping is simpler. Resolve: All Sprites with Shock, Static, or Sonic Needle lose {N} HP." Static is the debuff of his Static machine of 4 November, not yet built (docs/briefs/aphelion_static.md), so only Shock and Sonic Needle conduct until it lands. His words, not yet signed on the Text tab.
+- **Chain** (implemented): Ryan, 24 November, his text: "I want to change Chain. The under-armour ping is simpler. Resolve: All Sprites with Shock, Static, or Sonic Needle lose {N} HP." Static is the debuff of his Static machine of 4 November, not yet built (docs/briefs/aphelion_static.md), so only Shock and Sonic Needle conduct until it lands. His words, not yet signed on the Text tab; 25 November, of the conductors: "the only non-exclusive conductor is Shock. So it's possible that we just need to mention Shock specifically", so Sonic Needle's and Static's own tips say they conduct it.
 - **Rapid** (implemented): Its limiter is its own switch-off, the entry dark for the rest of the round (Ryan, 12 November: "rapid gets its innate cooldown zero back without the explicit display"), which no cleanse lifts; a Rapid vent is never below tier three and a Rapid shield never below tier two (the bible's Rapid row).
 - **Instant** (implemented): Ryan, 12 November: "the rapid no cooldown pieces change to a new keyword: Instant (reroll after use, can land on itself)". Every Instant piece carries a limiter, which the validator holds content to: a cooldown, heat, Volatile or a shield cost, or the store a charged form spends; a piece locked on a stepping die has the cylinder's odds (the Spin-Up's), and a piece Instant only while its machine rages has its heat (the Nemesis's Knuckles of Fury). An entry is Rapid or Instant, never both.
 - **Jam** (implemented): Disable until 15 November (Ryan: "Rename to Jammed"); the rider follows the pattern, Jam lays Jammed.

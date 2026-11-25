@@ -27,6 +27,8 @@ section 4. `tests/test_terms.gd` holds every tip to the mechanical parts.
   "X N". A timer's stacks are its clock, never its strength.
 - **Damage.** "Hit for N" is a hit: Shield, then Armour, with Barrier, Brittle and When Hit. "Suffer
   N damage" is not a hit: Shield first and nothing else. "Lose N Hull" comes off Hull alone (rule 39).
+  An extra hit of a use brings what the use's hits bring, a hit no use makes brings its number
+  alone, and only a hit on the target is Targeted: a line names only what differs (rule 40).
 - **Numbers.** Digits; rates use "per". A status's numbers are its own, never the move's or the
   passive's that laid it. `{N}` fills with the unit's current sum and goes only on a per-stack
   line ("+1 damage per stack ({N})"); in a keyword's tip it is the keyword's number.
@@ -39,7 +41,7 @@ section 4. `tests/test_terms.gd` holds every tip to the mechanical parts.
   - Brittle: "When Hit: +1 damage received per stack ({N}). / Turn Start: Reduce stacks by half, rounded down."
   - Shocked: "When Hit: If targeted, consume to double damage received, before applying defensive effects. / Conducts Chain."
   - Golden: "On Hit: +2 damage dealt. / +1 Armour. / Gain Suppressed upon losing 25% Max HP since the start of the effect. / On Suppressed: Reduce stacks to 0. / Turn End: Reduce stacks by 1."
-  - Penetrate: "Also hits all other Sprites in the same column, dealing {N} damage. The extra hits are not Targeted."
+  - Penetrate: "Also hits all other Sprites in the same column, dealing {N} damage."
 
 ## 2. The rules
 
@@ -212,7 +214,7 @@ rule says exactly when it acts. "These are not replacements for actual code hook
 
 **30. A property has no event.** (settled 22 November: his word)
 Spread, Penetrate, Instant and "Ignores Armour" are always on, so they are written bare.
-- "Penetrate" → "Also hits all other foes in the same column, dealing {N} damage. The extra hits are not Targeted."
+- "Penetrate" → "Also hits all other Sprites in the same column, dealing {N} damage."
 
 **31. A use's events, in order.** (settled 22 November: his words, Commit and Resolve)
 *Commit*: the target is chosen, before any hit. *On Hit* and *When Hit*: as each hit lands.
@@ -278,3 +280,19 @@ Armour and Barrier" to say it again.
 - "Turn End: Take 1 damage per stack ({N}), then reduce stacks by 1. Ignores Armour and Barrier." (Ablate) → "Turn End: Suffer 1 damage per stack ({N}), then reduce stacks by 1."
 - "Take 1 Hull damage per stack ({N}), ignoring Shield and Armour." (Overheated) → "Lose 1 Hull per stack ({N})."
 - "Then, take 1 damage" (Applied Momentum) → "Then, take a hit for 1 damage"
+
+**40. What a hit brings.** (settled 25 November: his go-ahead on the session's plan)
+Every hit meets the Sprite's Shield, Armour, Barrier and Brittle (rule 39). What it brings from
+its source follows from where it comes from, so a line names only what differs:
+- An extra hit of a use (Spread, Penetrate, the Beam Rifle, the Beam Sword, a reach over every
+  Sprite) starts from its own number and brings everything the use's own hits bring: this
+  Frame's bonuses, the weapon's damage rules, its keywords and its riders.
+- A hit no use makes (a Mine's blast, the spill past a kill, the Wild Boar's shove, the drill's
+  tick) brings its number alone and meets the Sprite's own Armour.
+- Only a hit on the use's target is Targeted, so no line says an extra hit is not. A reach over
+  every Sprite says so, since the die lands on a Sprite it does not target (rule 36).
+- The exceptions say themselves: Ricochet is the use's but brings this Frame's bonuses alone (his
+  of 25 November, of its buffs, damage rules, riders and Targeted: "I think it should change to
+  yes-no-no-yes and that becomes cleaner"), and the Mine brings the riders it banked.
+- "Also hits all other Sprites in the same column, dealing {N} damage. The extra hits are not Targeted." → "Also hits all other Sprites in the same column, dealing {N} damage."
+- "for 1 damage, with every effect of the weapon except area" (Ricochet) → "for 1 damage. No effect of the weapon applies."

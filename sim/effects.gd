@@ -1491,7 +1491,8 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dicti
 	# The entry's own finish (the Kite's Pinion Driver, 11 November): its number multiplied against a
 	# foe at half its HP or less, on the printed number as a passive's double is, the buffs once
 	# after it; the HP the hit judged, as a passive's condition on it is.
-	if face != null and face.finishes(target, int(ctx.get("hp", -1))):
+	# A Ricochet's hit (ctx `plain`) is the machine's, never the entry's: no finish of its own.
+	if face != null and not bool(ctx.get("plain", false)) and face.finishes(target, int(ctx.get("hp", -1))):
 		p_mult *= float(face.finisher)
 	var parts: Array = _taking_part(u, "on_attack", face, target, ctx)
 	for pair in parts:
