@@ -160,7 +160,7 @@ pieces, so each stands on the footing in the first line.
 - [ ] A Kestrel chassis that orbits Exposed ("we need at least one chassis that orbits it"): one of the two unspecced mediums, in that slot's session; three locks set Exposed and no chassis cashes it
 - [ ] The Ammit's stock wants a Ward piece ("As a tier 3 it should have access to one"), with the stock re-deal or once the higher-tier Wards are written; the Decoherence Veil, tier one, is the Ward it could carry today
 - [ ] The Ammit's pitch (`design.fantasy` in `content/chassis.json`), still his of the old form
-- [ ] The Whip Scorpion's open ends: its bot fires the Death Ray for its reboot by a first heuristic and plays it no better than random (its runner row at 200 seeds, 24 November, on its hits doubled: it keeps its heat near half to dodge them, so its scale never climbs; all its damage doubled since, which it prices, and never overheats); its two idle acts, the pressure check and the heliograph sighting, first cuts his to judge running
+- [ ] The Whip Scorpion's open ends: its bot fires the Death Ray for its reboot by a first heuristic and plays it no better than random (its runner row at 200 seeds, 24 November, before its Max Heat 12 and its Halo Projector: it keeps its heat near half to dodge the doubled hits, so its scale never climbs, and it never overheats, so the Incinerator's 3 Ablate and the stock's holds never come into a read); its two idle acts, the pressure check and the heliograph sighting, first cuts his to judge running
 
 **Built, unfinished**, a design session each for kit and visual design, his to start:
 
