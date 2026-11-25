@@ -1279,8 +1279,8 @@ func is_part(foe_id: String) -> bool:
 ## "we've either defined the escort or we haven't"; the content tests want every size at every tier), as the
 ## spawn lists did (the ladder's brief, D3), so a domain written for tier one fights at every
 ## tier. Nothing when the faction has none.
-## A composition written for a tide on trial (`tide`: "graded", the graded tide's packs) is dealt
-## by that tide alone: every other reader asks with no `tide` and never meets it.
+## A composition marked `tide`: "graded" is a pack written for the tide's bands (graded_packs):
+## every other reader asks with no `tide` and never meets it.
 func compositions(faction_id: String, tier: int, size: String = "", ramp: int = -1, tide: String = "") -> Array:
 	var out: Array = []
 	var sizes: Array = [size] if not size.is_empty() else COMPOSITION_SIZES
@@ -1289,11 +1289,11 @@ func compositions(faction_id: String, tier: int, size: String = "", ramp: int = 
 	return out
 
 
-## The graded tide's packs for a domain at a tier and a Convergence, a rating (1 to 3) to its
-## compositions in content order: the pushing patrols and formations written for it (`tide`:
-## "graded"), each by the machines it is for; and for a domain with none written, every pushing
-## patrol and formation it has, as built, so the tide runs on any domain. The hunting packs are
-## the caller's (Battle.setup deals them apart).
+## The tide's packs for a domain at a tier and a Convergence, a rating (1 to 3) to its
+## compositions in content order: the pushing patrols and formations written for its bands
+## (`tide`: "graded"), each by the machines it is for; and for a domain with none written yet,
+## every pushing patrol and formation it has, so the tide runs on any domain. The hunting packs
+## are the caller's (Battle.setup deals them apart).
 func graded_packs(faction_id: String, tier: int, ramp: int = -1) -> Dictionary:
 	var out := {}
 	var found: Array = compositions(faction_id, tier, "patrol", ramp, GRADED) + compositions(faction_id, tier, "formation", ramp, GRADED)
@@ -3631,7 +3631,7 @@ func _validate_factions(errs: Array[String]) -> void:
 			if c.has("pace") and not ((c["pace"] is float or c["pace"] is int) and int(c["pace"]) >= 1 and int(c["pace"]) <= 6 and float(c["pace"]) == floor(float(c["pace"]))):
 				errs.append("%s: pace is the hexes its pack walks a turn, 1 to 6 (absent: its slowest member's)" % cw)
 			if c.has("tide") and str(c["tide"]) != GRADED:
-				errs.append("%s: tide is '%s', the tide on trial it is written for (absent: the game's)" % [cw, GRADED])
+				errs.append("%s: tide is '%s', the mark of a pack written for the tide's bands (absent: a patrol or a formation as it stands)" % [cw, GRADED])
 			if c.has("hunts"):
 				# Whether its pack hunts, and whom (Ryan, 8 November: "The composition should say if
 				# it hunts, not the units"); an escort walks with its boss, which never hunts.

@@ -13302,3 +13302,31 @@ to 98%, the Meadow formation 0% to 62%) and on most of the same single foes; the
 it by more than six points only on the Basalt Elemental (69% to 25%) and the Obsidian Tyrant (30%
 to 12%). The Incinerator's Overheated stacks never come into play (0.01 overheats a fight in every
 row of the Whip Scorpion's), so its row reads the Ablate it lays once a use.
+
+## 25 November: the switch-over, every domain on the graded tide
+
+For Ryan's "Go ahead with the switch-over" and his pick of the played set as the game's own
+numbers that day (two packs a mouth a peak, five a pip at the wall, half a pip a fallen pack):
+the graded tide the engine's one tide, the cycle of formations and patrols cut. The Meadow's
+row checks that the switched game is the tide he played; the other three say what a domain
+with no packs written for it plays in the meantime.
+
+**The whole battle, a direction only** (`tools/battle_run.gd -- --seeds 10`, a domain a run, no
+dial set: the Honey Badger, the Skua, the Cassowary and the Storm Petrel at Convergence 1, the
+bot's player, which gathers and holds no lane):
+
+| Domain | Won | The gate fell | Wiped | The Rupture reached, its turn | Hull at the Rupture | Fights for one a battle | Fights for two | Fights for three |
+|---|---|---|---|---|---|---|---|---|
+| The Meadow | none | 80% | 20% | 50%, turn 10.2 | 38% | 4.4, 3.0 rounds, 0.2% of the squad's hull | 5.1, 4.1 rounds, 3.8% | 1.8, 5.8 rounds, 3.9% |
+| The Marsh | none | 10% | 90% | 30%, turn 9.0 | 16% | 7.6, 7.5 rounds, 3.5% | none dealt | 1.5, 5.0 rounds, 10.4% |
+| The Waste | none | none | 100% | never | | 8.9, 7.1 rounds, 3.7% | 0.6, 5.2 rounds, 20.7% | 2.0, 5.6 rounds, 16.6% |
+| The Peak | 40% | 20% | 40% | 60%, turn 8.2 | 46% | 11.4, 4.8 rounds, 2.1% | none dealt | 2.0, 6.7 rounds, 12.2% |
+
+The Meadow's row is the row of 24 November's entry at SENDS 2, figure for figure, so the
+switch-over moved nothing of the tide he played. The other three have one pack for one machine
+at this Convergence, their duelist, and none for two, so the ends and the bands between are
+all duelists: eight to eleven fights for one a battle, at seven rounds each in the Marsh and
+the Waste where the Meadow's packs for one are three. The floor player is wiped by them in
+nine battles of ten in the Marsh and in every one in the Waste. Their tables are the brief's
+order (`docs/briefs/graded_tide.md`, section 8), and until each is written its domain is the
+harder for the switch-over.

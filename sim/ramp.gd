@@ -34,11 +34,6 @@ static func formations_at(c: int) -> int:
 	return 1 + (clampc(c) + 2) / 5
 
 
-## Patrols on the field at the start: two, one from Convergence 8.
-static func patrols_at(c: int) -> int:
-	return 2 if clampc(c) < 8 else 1
-
-
 ## Rift Pressure's fill, the beat (the long wall brief 3.2: the tide's waves come on it): 3
 ## turns at the start, 2 from Convergence 8.
 static func timer_at(c: int) -> int:

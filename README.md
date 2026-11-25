@@ -321,7 +321,7 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run
 # the map by the player that gathers (--rule muster, or defence), --domains to narrow; each cell won,
 # the gate fallen, wiped, the Rupture reached, the hull and the wrecks, and a ledger of every fight
 # (about twelve minutes on one core). The field's trial dials are read from the environment as
-# the game reads them (RIFTGATE_STRIKE=5 before the command, say), and --whole is a what-if on
+# the game reads them (RIFTGATE_STRIKE=10 before the command, say), and --whole is a what-if on
 # the map's player: it never fights a pack one short at the wall. The report names either.
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/battle_run.gd -- --seeds 20
 
@@ -461,19 +461,17 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_AA=off|fxaa|msaa2|msaa4              the AA mode (the player's SETTINGS, AA MODE; MSAA 4X by default)
 #   RIFTGATE_SAFE=<top>,<bottom>                  keeps a phone's safe bands clear
 # Numbers on trial (a what-if over content, never a decision)
-#   RIFTGATE_GRADED=1                             the graded tide, the game's direction, on its dial until the switch-over (docs/briefs/graded_tide.md): packs rated one to three dealt by where they make for, ones to the wall's ends, twos between, threes down the middle
-#   RIFTGATE_SENDS=2                              the packs every mouth sends at a peak, the rift and each open tear, 1 to 4, 1 the game's
-#   RIFTGATE_STRIKE=5                             what a pip of threat rating strikes the wall for, 10 the game's
-#   RIFTGATE_PACK_BONUS=50                        what a pack pays the Rupture meter as it falls, on top of its rating, in hundredths of a pip, 0 the game's
+#   RIFTGATE_SENDS=3                              the packs every mouth sends at a peak, the rift and each open tear, 1 to 4, 2 the game's
+#   RIFTGATE_STRIKE=10                            what a pip of threat rating strikes the wall for, 5 the game's
+#   RIFTGATE_PACK_BONUS=100                       what a pack pays the Rupture meter as it falls, on top of its rating, in hundredths of a pip, 50 the game's
 #   RIFTGATE_FIELD_DEPTH=14                       the field's rows from the rift to the wall, 10 to 24, 12 the game's
 #   RIFTGATE_PHASED=at_once                       a machine's Phased at once until the round ends, round_end the game's (Phased as the round ends, through the next)
 # The same on the phone, a debug build's SETTINGS, TRIALS, each read as the next battle starts,
-# with no relaunch. The page holds what is tried in person and nothing else (24 November):
-#   TIDE (BUILT, GRADED), SENDS (1, 2, 3), STRIKE (10, 5, 3), PACK BONUS (NONE, +½, +1),
+# with no relaunch. The page holds what is tried in person and nothing else:
+#   SENDS (1, 2, 3), STRIKE (10, 5, 3), PACK BONUS (NONE, +½, +1),
 #   FIELD DEPTH (12, 14, 16), PHASED (ROUND END, AT ONCE), with the Phase Inducer, a tier-two
 #   component, to set it for testing
-# and over them SET: GRADED lays TIDE GRADED, SENDS 2, STRIKE 5 and PACK BONUS +½ at once;
-# AS BUILT sets every dial of the page back to the game's own
+# and over them SET: GAME'S OWN sets every dial of the page back to the game's own
 # The runners' what-ifs, with no dial on the phone
 #   RIFTGATE_REFIT=hotter=-1                      any spec the runners' --refit takes, read as the game starts
 #   RIFTGATE_OVERHEAT=2                           the hull an overheat burns a point of heat past the maximum, 1 the game's

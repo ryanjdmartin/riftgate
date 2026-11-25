@@ -188,27 +188,57 @@ func test_eight_pushers_from_one_mouth_take_eight_columns() -> void:
 	assert_eq(cols.size(), 8, "eight columns of the nine")
 
 
-## Several packs one mouth sends at once each draw from a share of their own of those columns, in
-## order along the wall (Ryan, 23 November: "sending multiple packs out of the rift at once, each
-## headed a different direction").
-func test_packs_sent_together_leave_in_different_directions() -> void:
+## Several packs one mouth sends at once each make for a band of the wall of their own (Ryan, 23
+## November: "sending multiple packs out of the rift at once, each headed a different direction";
+## the bands are the tide's: "the far edges are 1s with a sprinkling of 2s, then 2s in between, and
+## 3s coming right down the center"). A pack dealt for a band takes a column of that band,
+## whichever it is and wherever it stands; two dealt for one band stand apart in it; and a peak's
+## packs from the rift are each drawn a different band, each the pack of its band's rating.
+func test_packs_sent_together_each_make_for_a_band_of_their_own() -> void:
 	var f := _field(20, 12)
-	var left := f.add_unit(Unit.pack(0, "left", _o(10, 1), "marsh", 2))
-	f.assign_goal(left, 0, 2)
-	var right := f.add_unit(Unit.pack(0, "right", _o(10, 1), "marsh", 2))
-	f.assign_goal(right, 1, 2)
-	assert_true(left.goal_col < 10, "the first of two toward one end of the wall (%d)" % left.goal_col)
-	assert_true(right.goal_col >= 10, "the second toward the other (%d)" % right.goal_col)
+	var bands := Battlefield.BAND_RATING.size()
+	for band in range(bands):
+		var sq := f.add_unit(Unit.pack(0, "band%d" % band, _o(10, 1), "marsh", 2))
+		f.assign_goal(sq, band)
+		assert_eq(f.band_of(sq.goal_col), band, "a pack dealt for band %d makes for a column of it (%d)" % [band, sq.goal_col])
+		if band == 0 or band == bands - 1:
+			assert_false(f.soonest_columns(sq).has(sq.goal_col), "an end's stretch is none of the wall it reaches soonest: the band is what it makes for")
+		f.units.erase(sq)
+	var first := f.add_unit(Unit.pack(0, "first", _o(10, 1), "marsh", 2))
+	f.assign_goal(first, 0)
+	var second := f.add_unit(Unit.pack(0, "second", _o(10, 1), "marsh", 2))
+	f.assign_goal(second, 0)
+	assert_eq([f.band_of(first.goal_col), f.band_of(second.goal_col)], [0, 0], "two dealt for one band both make for it")
+	assert_true(absi(first.goal_col - second.goal_col) >= 2, "on stretches of their own, neither beside the other (%d, %d)" % [first.goal_col, second.goal_col])
+	# A band it cannot reach leaves a pack the wall it reaches soonest.
+	var h := _field(20, 12)
+	for col in range(4):   # the first band's row before the wall, all water: no segment in it
+		h.map.terrain[_o(col, h.apron_row())] = BattleMap.Terrain.WATER
+	var turned := h.add_unit(Unit.pack(0, "turned", _o(10, 1), "marsh", 2))
+	assert_true(h.band_columns(turned, 0).is_empty(), "a band whose wall is all water has no column to make for")
+	h.assign_goal(turned, 0)
+	assert_true(h.soonest_columns(turned).has(turned.goal_col), "so the pack dealt for it takes the wall it reaches soonest (%d)" % turned.goal_col)
+	# The peak: as many packs as a mouth sends, the game's own count and a trial's, each to a band
+	# of its own and each its band's pack (an end's is now and then a pack for two).
 	var was := Battlefield.sends_trial
-	Battlefield.sends_trial = 3
-	var g := _field(20, 12)
-	g.spawn_faction = "marsh"
-	g.cycle = [Battlefield.composition([["revenant", 4]], "marsh", "formation", "host")]
-	g.peak()
+	for sends in [0, 3, bands]:
+		Battlefield.sends_trial = sends
+		var g := _field(20, 12)
+		g.spawn_faction = "marsh"
+		var two := Battlefield.composition([["revenant", 2]], "marsh", "patrol", "for_two")
+		two["squad"] = 2
+		g.graded = {1: [Battlefield.composition([["revenant", 1]], "marsh", "patrol", "for_one")], 2: [two], 3: [Battlefield.composition([["revenant", 4]], "marsh", "formation", "for_three")]}
+		g.peak()
+		var sent: Array = g.packs()
+		assert_eq(sent.size(), Battlefield.SENDS_A_PEAK if sends == 0 else sends, "the rift sent its packs (the dial at %d)" % sends)
+		var drawn := {}
+		for sq: Unit in sent:
+			var band := g.band_of(sq.goal_col)
+			drawn[band] = true
+			var want := int(Battlefield.BAND_RATING[band])
+			assert_true(sq.squad == want or (want == 1 and sq.squad == 2), "%s, a pack for %d, makes for a band of its rating (band %d)" % [sq.composition, sq.squad, band])
+		assert_eq(drawn.size(), sent.size(), "each to a band of its own")
 	Battlefield.sends_trial = was
-	var sent: Array = g.packs()
-	assert_eq(sent.size(), 3, "the rift sent three under the sends' trial")
-	assert_true((sent[0] as Unit).goal_col < (sent[1] as Unit).goal_col and (sent[1] as Unit).goal_col < (sent[2] as Unit).goal_col, "each its own stretch, in order along the wall")
 
 
 ## Two flankers dealt side by side never share a segment while another is as near (Ryan, 9
@@ -374,40 +404,83 @@ func test_the_wall_is_struck_anywhere_along_it_and_a_patrol_chips_less() -> void
 		assert_true(f.apron_hexes().has(_o(col, f.apron_row())), "column %d of the apron row strikes" % col)
 
 
-## A peak (the pacing session, 30 October): the rift sends the cycle's next composition, a tear
-## opens on the tears' row and sends a patrol from the next peak on, the row steps toward the wall,
-## and a spawn never lands beside a machine.
+## A peak (the pacing session, 30 October): the rift sends its packs, each to a band of the wall
+## drawn for it and each its band's rating's next; a tear opens on the tears' row and sends as
+## many from the next peak on, each to its own band or one beside it; a hunting pack comes out of
+## the rift every other peak from the second; the row steps toward the wall; and a spawn never
+## lands beside a machine.
 func test_a_peak_sends_from_the_rift_and_a_tear_sends_from_the_peak_after_it_opens() -> void:
 	var f := _field(9, 20)
 	f.spawn_faction = "marsh"
-	f.cycle = [Battlefield.composition([["revenant", 4], ["ghost", 2]], "marsh", "formation", "host")]
-	f.patrol_cycle = [Battlefield.composition([["revenant", 2]], "marsh", "patrol", "shamblers")]
+	var pair := Battlefield.composition([["revenant", 3]], "marsh", "patrol", "pair")
+	pair["squad"] = 2
+	var wolves := Battlefield.composition([["ghost", 3]], "marsh", "patrol", "wolves")
+	wolves["hunts"] = "nearest"
+	f.graded = {
+		1: [Battlefield.composition([["revenant", 2]], "marsh", "patrol", "shamblers")],
+		2: [pair],
+		3: [Battlefield.composition([["revenant", 4], ["ghost", 2]], "marsh", "formation", "host")],
+	}
+	f.hunters = [wolves]
+	var members := {"shamblers": [["revenant", 2]], "pair": [["revenant", 3]], "host": [["revenant", 4], ["ghost", 2]], "wolves": [["ghost", 3]]}
+	var rated := {1: "shamblers", 2: "pair", 3: "host"}
 	f.ramp = 0
+	var sends := Battlefield.sends_a_peak()
+	assert_eq(sends, Battlefield.SENDS_A_PEAK, "the game's own count of packs a mouth sends")
 	var m := f.add_unit(Unit.mech(9, "A", _o(4, 2), 3))   # a machine right under the rift
 	assert_eq(f.tear_row, f.tear_row_start(), "the tears' row at its start")
 	f.peak()
 	assert_eq(f.peaks, 1, "one peak")
-	assert_eq(f.packs().size(), 1, "the rift sent one composition and the new tear sent nothing yet")
-	var sent: Unit = f.packs()[0]
-	assert_eq(sent.members, [["revenant", 4], ["ghost", 2]], "the composition's members")
-	assert_eq(sent.composition_size, "formation", "and its size")
-	assert_false(f.machine_adjacent(sent.pos), "it landed beside no machine")
-	assert_true(Hex.distance(sent.pos, f.map.rift) <= 3, "near the rift")
+	assert_eq(f.packs().size(), sends, "the rift sent its packs and the new tear sent nothing yet")
+	assert_eq([f.rift_spawns, f.tear_spawns], [sends, 0], "all of them the rift's")
+	var drawn := {}
+	for sent in f.packs():
+		var band := f.band_of(sent.goal_col)
+		drawn[band] = true
+		var want := int(Battlefield.BAND_RATING[band])
+		assert_true(sent.composition == str(rated[want]) or (want == 1 and sent.composition == "pair"), "%s makes for a band of its rating (band %d, for %d)" % [sent.composition, band, want])
+		assert_eq(sent.members, members[sent.composition], "%s: the composition's members" % sent.composition)
+		assert_eq(sent.composition_size, "formation" if sent.composition == "host" else "patrol", "and its size")
+		assert_eq(sent.behaviour, "push", "the rift's packs at the first peak push")
+		assert_false(f.machine_adjacent(sent.pos), "it landed beside no machine")
+		assert_true(Hex.distance(sent.pos, f.map.rift) <= 3, "near the rift")
+	assert_eq(drawn.size(), sends, "each to a band of its own")
 	assert_eq(f.tears.size(), Ramp.tears_at(0), "the ramp's count of tears opened")
 	assert_eq(f.tear_row, f.tear_row_start() + Ramp.tear_creep_at(0), "the tears' row stepped toward the wall")
 	var first: Vector2i = f.tears[0]["pos"]
 	assert_eq(Hex.axial_to_offset(first).y, f.tear_row, "and the tear opened on it")
+	var before := f.packs().size()
 	f.peak()
-	assert_eq(f.packs().size(), 3, "the rift sent again and the tear sent its first patrol")
-	assert_eq(f.rift_spawns, 2, "two from the rift")
-	assert_eq(f.tear_spawns, 1, "one from the tear")
-	var patrol: Unit = f.packs()[2]
-	assert_eq(patrol.members, [["revenant", 2]], "the patrol cycle's")
-	assert_true(Hex.distance(patrol.pos, first) <= 2, "landed by its tear")
+	var second_wave: Array = f.packs().slice(before)
+	assert_eq(f.rift_spawns, 2 * sends + 1, "the rift sent again, and a hunting pack with it at the second peak")
+	assert_eq(f.tear_spawns, sends * Ramp.tears_at(0), "and the tear sent its first packs, as many as the rift's")
+	assert_eq(second_wave.size(), sends + 1 + sends * Ramp.tears_at(0), "all of them on the field")
+	var hunt: Unit = second_wave[second_wave.size() - 1]   # after the rift's own and the tears'
+	assert_eq([hunt.composition, hunt.behaviour, hunt.hunts], ["wolves", "hunt", "nearest"], "the hunting pack, dressed to hunt by its composition's caveat")
+	assert_eq(hunt.goal_col, -1, "it draws no stretch of wall")
+	assert_true(Hex.distance(hunt.pos, f.map.rift) <= 3 and not f.machine_adjacent(hunt.pos), "out of the rift, beside no machine")
+	var tear_band := f.band_of(Hex.axial_to_offset(first).x)
+	var tear_bands := {}
+	for sq: Unit in second_wave.slice(sends, second_wave.size() - 1):
+		var band := f.band_of(sq.goal_col)
+		tear_bands[band] = true
+		assert_true(absi(band - tear_band) <= 1, "a tear's pack makes for the tear's own band or one beside it (band %d from a tear before band %d)" % [band, tear_band])
+		var want := int(Battlefield.BAND_RATING[band])
+		assert_true(sq.composition == str(rated[want]) or (want == 1 and sq.composition == "pair"), "%s from the tear is its band's pack (band %d)" % [sq.composition, band])
+		assert_true(Hex.distance(sq.pos, first) <= 2, "landed by its tear")
+		assert_false(f.machine_adjacent(sq.pos), "beside no machine")
+	assert_eq(tear_bands.size(), sends * Ramp.tears_at(0), "each of the tear's to a band of its own")
 	assert_eq(f.tears.size(), 2 * Ramp.tears_at(0), "another tear opened")
 	var second: Vector2i = f.tears[1]["pos"]
 	assert_true(Hex.distance(first, second) >= 3, "spread away from the first")
-	for i in range(12):
+	var hunting := func() -> int: return f.packs().filter(func(sq: Unit) -> bool: return sq.behaviour == "hunt").size()
+	f.peak()
+	assert_eq(hunting.call(), 1, "no hunting pack at the third peak")
+	f.peak()
+	assert_eq(hunting.call(), 2, "and the next at the fourth: every other peak from the second")
+	for i in range(10):
+		for sq in f.packs():
+			f.units.erase(sq)   # the read from here is the tears' row: the field is cleared so the packs of so many mouths never fill it
 		f.peak()
 	assert_eq(f.tear_row, f.tear_row_stop(), "the tears' row steps as far as its stop and no further")
 	assert_eq(f.tear_row_stop(), f.apron_row() - Battlefield.TEAR_STOP_ROWS, "four rows short of the row before the wall")
@@ -417,6 +490,46 @@ func test_a_peak_sends_from_the_rift_and_a_tear_sends_from_the_peak_after_it_ope
 	var shallow := _field(9, 8)
 	assert_eq(shallow.tear_row_stop(), shallow.tear_row_start(), "on a field too shallow for the stop, the row never leaves its start")
 	assert_true(f.units.has(m), "the machine still stands")
+
+
+## The tide's lists (Battlefield.graded, a rating to its packs): each list is taken in turn and
+## round again; a rating with no pack is dealt the nearest that has any, one lighter before one
+## heavier; with no pack at all nothing is dealt. What a pack is worth on the Rupture meter
+## before it is drawn is read off the same lists: a rating at the mean of the list it is taken
+## from, a mouth's send at the mean of the bands it draws from, an end's with its one in
+## END_TWO_IN for two.
+func test_the_tides_lists_are_taken_in_turn_and_a_missing_rating_takes_the_nearest() -> void:
+	var f := _field(20, 12)
+	var pip := ContentDB.MENACE_PER_PIP
+	var pack := func(id: String, rating: int) -> Dictionary:
+		var c := Battlefield.composition([["revenant", rating]], "marsh", "patrol", id)
+		c["squad"] = rating
+		return c
+	var deal := func(rating: int) -> String: return str(f.next_graded(rating).get("id", ""))
+	assert_eq([f.rating_dealt(2), deal.call(2)], [-1, ""], "no pack at all: nothing to deal")
+	assert_eq([f.rating_worth(1), f.send_worth(true), f.send_worth(false)], [0, 0, 0], "and nothing to count")
+	f.graded = {1: [pack.call("a", 1), pack.call("b", 1), pack.call("c", 1)], 3: [pack.call("x", 3), pack.call("y", 3)]}
+	assert_eq([deal.call(1), deal.call(1), deal.call(1), deal.call(1)], ["a", "b", "c", "a"], "a list is taken in turn and round again")
+	assert_eq([f.rating_dealt(2), deal.call(2)], [1, "b"], "a rating with no pack takes the next of the one lighter, before the one heavier")
+	assert_eq([deal.call(3), deal.call(1), deal.call(3), deal.call(3)], ["x", "c", "y", "x"], "each list stands where its own draws left it")
+	f.graded = {2: [pack.call("p", 2)], 3: [pack.call("x", 3)]}
+	assert_eq([f.rating_dealt(1), deal.call(1)], [2, "p"], "with nothing lighter, the one heavier")
+	f.graded = {3: [pack.call("x", 3)]}
+	assert_eq([f.rating_dealt(1), deal.call(1), f.rating_dealt(2), deal.call(2)], [3, "x", 3, "x"], "and the next heavier past it")
+	f.graded = {1: [pack.call("a", 1)]}
+	assert_eq([f.rating_dealt(3), deal.call(3), f.rating_dealt(2), deal.call(2)], [1, "a", 1, "a"], "or the lighter, however far")
+	# The worth: every rating with its own packs, then a domain with no pack for two.
+	f.graded = {1: [pack.call("a", 1)], 2: [pack.call("p", 2)], 3: [pack.call("x", 3)]}
+	assert_eq([f.rating_worth(1), f.rating_worth(2), f.rating_worth(3)], [pip, 2 * pip, 3 * pip], "a rating is worth its pips")
+	var end := pip + pip / Battlefield.END_TWO_IN   # an end's pack: for one, and one time in so many for two
+	var bands := Battlefield.BAND_RATING.size()
+	assert_eq(f.send_worth(true), (2 * end + 2 * 2 * pip + 3 * pip) / bands, "the rift's send: the mean of the wall's bands, two ends, two between and the middle")
+	assert_eq(f.send_worth(false), (end + 2 * pip) / 2, "a tear's: the mean of an end's band and the one beside it")
+	f.graded = {1: [pack.call("a", 1)], 3: [pack.call("x", 3)]}
+	assert_eq(f.rating_worth(2), pip, "a rating with no pack is worth what it is dealt: the lighter one's")
+	assert_eq([f.send_worth(true), f.send_worth(false)], [(2 * pip + 2 * pip + 3 * pip) / bands, pip], "and the sends are counted so, an end's odd pack for two no heavier than its own")
+	f.graded = {3: [pack.call("x", 3), pack.call("z", 4)]}
+	assert_eq(f.rating_worth(3), (3 * pip + 4 * pip) / 2, "a list is worth the mean of its packs, each at its own rating")
 
 
 func test_gate_is_wider_than_one_hex() -> void:
@@ -490,23 +603,28 @@ func test_the_boss_never_walks() -> void:
 func test_pressure_spawns_pack_at_rift() -> void:
 	var f := _field()
 	f.spawn_faction = "marsh"
-	f.cycle = [Battlefield.composition([["revenant", 6]], "marsh")]
+	f.graded = {1: [Battlefield.composition([["revenant", 6]], "marsh")]}
 	f.rift_pressure_max = 2
 	assert_false(f.tick_pressure(1), "one tick, no spawn")
+	assert_true(f.packs().is_empty(), "nothing on the field yet")
 	assert_true(f.tick_pressure(1), "the second spawns")
-	assert_eq(f.packs().size(), 1, "one pack now")
-	assert_eq(f.packs()[0].foe_id, "revenant", "spawned from the cycle")
-	assert_eq(f.packs()[0].members, [["revenant", 6]], "its members at the ramp's density, one at the start")
+	assert_eq(f.packs().size(), Battlefield.sends_a_peak(), "the rift's packs now, as many as a mouth sends")
 	assert_eq(f.rift_pressure, 0, "clock reset")
-	# Outside the shell (Ryan, 24 November: "spawns from the rift should probably spawn outside of
-	# the shell"): on the ring round the seven, a hex past the rift's five.
-	var at: Vector2i = f.packs()[0].pos
-	assert_true(f.rift_ring().has(at), "spawned on the ring outside the rift's shell")
-	assert_false(f.map.shell_hexes().has(at), "never on one of the seven")
-	var nearest := 1 << 20
-	for r in f.map.rift_hexes:
-		nearest = mini(nearest, Hex.distance(at, r))
-	assert_eq(nearest, 2, "a hex past the rift's own")
+	var held := {}
+	for sq in f.packs():
+		assert_eq(sq.foe_id, "revenant", "spawned from the tide's list, the only one standing in for every rating")
+		assert_eq(sq.members, [["revenant", 6]], "its members as its composition writes them")
+		# Outside the shell (Ryan, 24 November: "spawns from the rift should probably spawn outside of
+		# the shell"): on the ring round the seven, a hex past the rift's five.
+		var at: Vector2i = sq.pos
+		held[at] = true
+		assert_true(f.rift_ring().has(at), "spawned on the ring outside the rift's shell")
+		assert_false(f.map.shell_hexes().has(at), "never on one of the seven")
+		var nearest := 1 << 20
+		for r in f.map.rift_hexes:
+			nearest = mini(nearest, Hex.distance(at, r))
+		assert_eq(nearest, 2, "a hex past the rift's own")
+	assert_eq(held.size(), f.packs().size(), "each on a hex of its own")
 
 
 func test_a_hunter_picks_its_prey_by_its_caveat_and_keeps_it() -> void:
@@ -993,12 +1111,13 @@ func test_a_rift_pressure_spawn_takes_its_foes_shown_name() -> void:
 	# the setup names its packs by the foe's shown name.
 	var f := _field()
 	f.foe_profiles = {"bone_hound": {"movespeed": 2, "name": "Bone Hound"}}
-	f.cycle = [Battlefield.composition([["bone_hound", 3]], "marsh")]
+	f.graded = {1: [Battlefield.composition([["bone_hound", 3]], "marsh")]}
 	f.spawn_faction = "marsh"
 	assert_true(f.tick_pressure(f.rift_pressure_max), "the rift spawns")
-	var sq: Unit = f.units[f.units.size() - 1]
-	assert_eq(sq.display_name, "bone hound pack", "named by its foe's shown name")
-	assert_eq(sq.foe_id, "bone_hound", "and still its foe by id")
+	assert_false(f.packs().is_empty(), "its packs on the field")
+	for sq in f.packs():
+		assert_eq(sq.display_name, "bone hound pack", "named by its foe's shown name")
+		assert_eq(sq.foe_id, "bone_hound", "and still its foe by id")
 
 
 func test_the_boss_takes_its_move_from_content() -> void:

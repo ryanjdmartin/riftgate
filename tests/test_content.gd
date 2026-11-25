@@ -1268,16 +1268,45 @@ func test_a_compositions_ramp_gate_deals_it_and_its_tier_is_covered() -> void:
 	assert_eq(db.compositions("meadow", 1, "formation", 9).map(func(c) -> String: return str(c["id"])), ["gate_high"], "at C9, the high one alone")
 	assert_eq(db.compositions("meadow", 1, "formation").size(), 2, "no ramp asked: both")
 	assert_eq(db.compositions("meadow", 1, "formation", 9)[0]["ramp"], [6, Ramp.TOP], "the dealt entry carries its gate")
+	# A battle deals by its own Convergence, whichever way its domain's packs reach the tide
+	# (ContentDB.graded_packs). First its pushing patrols and formations by their ratings, as a
+	# domain with none written for the tide's bands plays: the Meadow's own such packs set aside,
+	# the two variants are its only packs for three.
+	db.factions["meadow"]["compositions"] = kept.filter(func(c) -> bool: return not c.has("tide"))
 	var b := Battle.new(3)
 	b.db = db
 	b.ramp = 9
 	b.setup([], "meadow")
+	var threes := 0
 	for sq in b.field.packs():
-		if sq.composition_size == "formation":
+		if not sq.is_boss and sq.squad == 3:
+			threes += 1
 			assert_eq(sq.composition, "gate_high", "a battle at C9 deals the variant its gate holds")
-	for w in b.field.cycle:
-		if str(w["size"]) == "formation":
-			assert_eq(str(w["id"]), "gate_high", "and the rift sends no other")
+	assert_true(threes > 0, "the battle opens with packs for three, so the gate is read")
+	assert_eq((b.field.graded[3] as Array).map(func(c) -> String: return str(c["id"])), ["gate_high"], "and the tide holds no other for three")
+	for w in tide_lists(b.field):
+		assert_true(ContentDB.ramp_holds(w, 9), "nor any pack whose gate shuts C9 out (%s)" % str(w["id"]))
+	# Then the packs written for the bands (`tide`: graded), which a domain that has any is dealt
+	# alone: the two variants written so, the one C9's gate holds is the tide's whole list.
+	var low_band := low.duplicate(true)
+	low_band["id"] = "band_low"
+	low_band["tide"] = ContentDB.GRADED
+	var high_band := high.duplicate(true)
+	high_band["id"] = "band_high"
+	high_band["tide"] = ContentDB.GRADED
+	db.factions["meadow"]["compositions"] = kept.filter(func(c) -> bool: return not c.has("tide")) + [low_band, high_band]
+	var g := Battle.new(3)
+	g.db = db
+	g.ramp = 9
+	g.setup([], "meadow")
+	assert_eq(tide_lists(g.field).filter(func(c) -> bool: return str(c.get("hunts", "")).is_empty()).map(func(c) -> String: return str(c["id"])), ["band_high"], "written for the bands, the variant C9's gate holds is all the tide deals")
+	var stood := 0
+	for sq in g.field.packs():
+		if not sq.is_boss:
+			stood += 1
+			assert_eq(sq.composition, "band_high", "and all the opening stands, a band with no pack of its rating dealt the nearest that has one")
+	assert_true(stood > 0, "the opening stands its packs")
+	db.factions["meadow"]["compositions"] = kept   # the Meadow as it was, the two variants its tier-one formations
 	# A gap in the tier's Convergences is refused, and so is a gate of the wrong shape.
 	high["ramp"] = [7, Ramp.TOP]
 	assert_true(db.validate().any(func(e) -> bool: return str(e).contains("no formation at tier 1 is dealt at Convergence 6")), "C6 held by none: refused")

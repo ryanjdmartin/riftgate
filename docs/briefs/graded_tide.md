@@ -3,11 +3,12 @@
 <!-- hangar: {"kind": "rule", "maker": null, "tier": null, "status": "direction", "slot": false, "name": "the graded tide"} -->
 
 A design in progress, the foes' line's. Its direction is locked (Ryan, 25 November: "our
-direction here is locked"); its numbers are not. This brief holds the direction in his words,
+direction here is locked") and it is the game's own tide since the same day ("Go ahead with
+the switch-over"); its numbers are not settled. This brief holds the direction in his words,
 which of the built numbers are placeholders, the Meadow's packs, what is his to settle and
-the order of work. How it runs is `docs/rules.md` (The battlefield: The graded tide); why is
-the bible's graded tide row (section 4); every read is `docs/measurements.md`, 23 to 25
-November. The formation pass runs from here.
+the order of work. How it runs is `docs/rules.md` (The battlefield: Setup, Pushers, The tide);
+why is the bible's graded tide row (section 4); every read is `docs/measurements.md`, 23 to
+25 November. The formation pass runs from here.
 
 What it replaces is in git: the proposal it grew from, with the session's leans and the
 trials cut on the way, `git show 81b1e522:docs/tide_proposal.md`; what was left of the
@@ -65,28 +66,41 @@ Each point is his, and locked.
 
 ## 2. What is built, and which of its numbers are placeholders
 
-The engine deals the graded tide on its dial (a debug build's SETTINGS, TRIALS, SET, GRADED;
-`RIFTGATE_GRADED=1` on the desk) and the earlier tide otherwise: the switch-over is the
-order's first step. The Meadow alone has packs written for it; every other domain plays it
-on its patrols and formations as they stand, by their ratings.
+The graded tide is the engine's one tide since 25 November; the cycle of formations and
+patrols it replaced is cut. The numbers he had played it at became the game's own the same
+day, on his pick ("The played set"), each still a dial on a debug build's SETTINGS, TRIALS.
 
-| The number | As built | Whose |
+| The number | The game's own | Whose |
 |---|---|---|
 | The wall's bands and their ratings | Five: 1, 2, 3, 2, 1 | The session's reading of point 3 |
 | An end's pack for two | One in five | The session's ("a sprinkling") |
 | The paces | Ones 3; twos and threes their foes', 2, and 1 with a treant | The session's |
 | The opening | Seven packs, eight from Convergence 3 and nine from 8 as the rules count it: two ones at each end, a two between, the ramp's threes down the middle | The session's count, his to mark |
 | The hunting packs | One out of the rift every other peak from the second | The session's, pinned with the hunters |
-| SENDS, the packs a mouth sends at a peak | A dial, 1, 2 or 3; the set lays 2 | His to set at each Convergence |
-| STRIKE, a pip's strike at the wall | A dial, 10 (the game's), 5 or 3; the set lays 5 | His |
-| PACK BONUS, a fallen pack's pay over its rating | A dial, none, half a pip or a pip; the set lays half | His |
-| FIELD DEPTH | A dial, 12 (the game's), 14 or 16 | His |
+| SENDS, the packs a mouth sends at a peak | 2; a dial, 1, 2 or 3 | His to set at each Convergence |
+| STRIKE, a pip's strike at the wall | 5, ten until the switch-over; a dial, 10, 5 or 3 | His |
+| PACK BONUS, a fallen pack's pay over its rating | Half a pip; a dial, none, half or a pip | His |
+| FIELD DEPTH | 12; a dial, 12, 14 or 16 | His |
 | A rating's size | Eight hit points a machine, the read of what one gauge ends | A start; the target is his (section 5) |
+
+Two things the switch-over left as they stand, each waiting on a domain's table:
+
+- **Only the Meadow has packs written for the tide.** The Marsh, the Waste and the Peak play
+  it on their pushing patrols and formations by their ratings. Each has one pack for one
+  machine at tier one's first battles, its duelist, and none for two before Convergence 3,
+  so each opens with one formation and six of the same duelist. The Rupture's size counts
+  what a domain's lists hold, so its length stays honest, but the fights do not fit: a
+  duelist is seven rounds for one machine in the Marsh and the Waste where the Meadow's packs
+  for one are three, and the bot's floor player is wiped there in nine battles of ten or more
+  (`docs/measurements.md`, 25 November). Until its table is written a domain is the harder
+  for the switch-over.
+- **The Meadow's earlier formations and patrols are still in content**, unmarked, and no
+  battle deals them: the balance matrix, the harness's lone fights and the quick campaign
+  still read them. They retire, or take a place in the table, with his marks on section 3.
 
 ## 3. The Meadow's packs
 
-In content (`content/factions.json`, each marked `tide`: `graded`, dealt by the graded tide
-alone), working ids and no names, every number a placeholder: his marks change them ("I
+In content (`content/factions.json`, each marked `tide`: `graded`), working ids and no names, every number a placeholder: his marks change them ("I
 would mark a table"). The reads are stock dice at the tier's first battle, the greedy bot,
 the six certain tier ones; reboots are a machine's a fight. "From" is the battle of the tier
 a pack is first dealt at (C1 the tier's first, the code's ramp 0).
@@ -202,10 +216,9 @@ tiers two and three are `docs/bosses_proposal.md`'s.
 
 ## 8. The order from here
 
-1. **The switch-over**, on his word: the graded tide the game's own, its TIDE dial and the
-   earlier tide's cycle cut from the engine, the runners and the tests moved onto it.
-2. **Each value as it settles** landed in the engine or the ramp's table, the sends by the
+1. **Each value as it settles** landed in the engine or the ramp's table, the sends by the
    Convergence first, and its dial cut.
+2. **The Meadow's table marked**, its earlier formations and patrols retired or placed.
 3. **A domain at a time**, each a table for his marks first; with it the pass for massive
    foes and for more kinds of enemy.
 4. **A rating's size at each Convergence**, the target; then the leaders' and the bosses'

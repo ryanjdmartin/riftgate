@@ -34,14 +34,6 @@ func assert_ne(actual, unexpected, msg: String) -> void:
 		failures.append("%s (got %s)" % [msg, str(actual)])
 
 
-# ---------------------------------------------------------------- a battle's quiet start
-
-## The field a battle test reads its own rule on, apart from the opening (the long wall brief
-## 3.2: the formations a move from the wall, the patrols two, the rift a turn short of its peak):
-## every pack but the boss parked in the north where the start placed it before the brief (the
-## formations across the width on rows 3 to 5, the patrols on the flanks from row 5), the rift's
-## clock held so nothing spawns over a test's turns, and a catch the opening forced taken back.
-## The opening's own tests read a raw setup.
 ## Whether a screen carries a HudButton reading `text` (the withdraw button is gone: the long
 ## wall brief 7.5).
 func has_button(screen: Node, text: String) -> bool:
@@ -51,24 +43,92 @@ func has_button(screen: Node, text: String) -> bool:
 	return false
 
 
+# ---------------------------------------------------------------- a battle's quiet start
+
+## The field a battle test reads its own rule on, apart from the opening (the rules' Setup: packs
+## before every band of the wall, each two or more of its own moves out, the rift a turn short
+## of its peak): every pack but the boss parked in the north, across the width on rows 3 to 5 in
+## the order the opening stood them, whatever each is rated and however many they are, the rift's
+## clock held so nothing spawns over a test's turns, and the forced fights read again from where
+## the packs now stand. The opening's own tests read a raw setup.
 func quiet_start(b: Battle) -> void:
-	var forms: Array = []
-	var patrols: Array = []
-	for sq in b.field.packs():
-		if sq.is_boss:
-			continue
-		if sq.composition_size == "patrol":
-			patrols.append(sq)
-		else:
-			forms.append(sq)
+	var parked: Array = b.field.packs().filter(func(sq: Unit) -> bool: return not sq.is_boss)
 	var w := b.map.width
-	for k in range(forms.size()):
-		forms[k].pos = b.field.landing(forms[k], Hex.offset_to_axial((w * (k + 1)) / (forms.size() + 1), 3 + (k % 3)))
-	for k in range(patrols.size()):
-		patrols[k].pos = b.field.landing(patrols[k], Hex.offset_to_axial(0 if k % 2 == 0 else w - 1, 5 + k / 2))
+	for k in range(parked.size()):
+		var sq: Unit = parked[k]
+		sq.pos = b.field.landing(sq, Hex.offset_to_axial((w * (k + 1)) / (parked.size() + 1), 3 + (k % 3)))
 	b.field.rift_pressure = 0
 	b.field.rift_pressure_max = 99
 	b.forced = b.field.forced_fights()
+
+
+# ---------------------------------------------------------------- the tide's lists
+
+## Every composition a field's tide holds: its lists by rating, the lightest rating first, each
+## in the order dealt, then its hunting packs.
+func tide_lists(f: Battlefield) -> Array:
+	var out: Array = []
+	var ratings: Array = f.graded.keys()
+	ratings.sort()
+	for r in ratings:
+		out.append_array(f.graded[r])
+	out.append_array(f.hunters)
+	return out
+
+
+## A domain's pushing packs at a tier (1 to 3) and a Convergence as the tide lists them, a rating
+## to their ids in content's order, worked out apart from the battle's own lookup: the packs
+## written for the tide's bands (`tide`: graded) where the domain has any, else its patrols and
+## formations, each by its threat rating and none that hunts.
+func tide_packs(db: ContentDB, fid: String, tier: int, ramp: int) -> Dictionary:
+	var found: Array = db.compositions(fid, tier, "patrol", ramp, ContentDB.GRADED) + db.compositions(fid, tier, "formation", ramp, ContentDB.GRADED)
+	if found.is_empty():
+		found = db.compositions(fid, tier, "patrol", ramp) + db.compositions(fid, tier, "formation", ramp)
+	var out := {}
+	for c in found:
+		if not str(c.get("hunts", "")).is_empty():
+			continue
+		var r := clampi(ContentDB.squad_of(c), 1, 3)
+		if not out.has(r):
+			out[r] = []
+		(out[r] as Array).append(str(c["id"]))
+	return out
+
+
+## Two lists in turn, the first's first, the leftovers of the longer after: how a guest's packs
+## stand among the lead's.
+func in_turn(a: Array, b: Array) -> Array:
+	var out: Array = []
+	for k in range(maxi(a.size(), b.size())):
+		if k < a.size():
+			out.append(a[k])
+		if k < b.size():
+			out.append(b[k])
+	return out
+
+
+## Where a battle's opening departs from its tide's lists taken in turn, "" where it does not:
+## the packs of each rating on the field at the start (the boss aside), in the order stood, are
+## that rating's list from where its seed started it, each under its composition's faction. Read
+## on a battle as it opens, before the tide has sent anything.
+func opening_off_lists(b: Battle) -> String:
+	var opened: Array = b.field.packs().filter(func(u: Unit) -> bool: return not u.is_boss)
+	var counted := 0
+	for r in b.field.graded.keys():
+		var list: Array = b.field.graded[r]
+		var stood: Array = opened.filter(func(u: Unit) -> bool: return u.squad == int(r))
+		counted += stood.size()
+		var from := int(b.field._graded_at.get(r, 0)) - stood.size()   # where the seed started this list
+		if from < 0 or from >= list.size():
+			return "the list for %d started outside itself (%d of %d)" % [int(r), from, list.size()]
+		for k in range(stood.size()):
+			var c: Dictionary = list[(from + k) % list.size()]
+			var sq: Unit = stood[k]
+			if sq.composition != str(c["id"]) or sq.faction != str(c["faction"]):
+				return "pack %d for %d is %s of %s, where its list's next is %s of %s" % [k, int(r), sq.composition, sq.faction, str(c["id"]), str(c["faction"])]
+	if counted != opened.size():
+		return "%d of the %d packs stood are of no list's rating" % [opened.size() - counted, opened.size()]
+	return ""
 
 
 # ---------------------------------------------------------------- a fight's end

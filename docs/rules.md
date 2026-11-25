@@ -1792,19 +1792,18 @@ a stat.
   counts), and the two sides meet only in a fight. Each move still lands at once, so the next is
   planned from where it ended.
 - **Setup**: up to four machines on the row before the gate; the boss on its hex, the one touching both of the rift's front hexes, on the rift's middle line (the nearest free hex should a pack hold it),
-  sealed (below); and on the field, the siege under way, the compositions the tier and the ramp
-  put there: the ramp's count of formations (one; two from Convergence 3; three from 8) spread
-  across the width, each a move of its own from the row before the wall, and its count of
-  patrols (two; one from 8) on the flanks two moves out, none on the rift's row (a pack
-  whose opening hex the shape took goes along its row, never back toward the rift) and a
-  pusher on ground with a way to the wall, never in a corner the shape closed off, each the
-  tier's compositions in turn, the lead's and the guest's in turn with the lead's first, each
-  as content writes it (the ramp scales no pack: it scales the field). Rift Pressure opens a
-  turn short of its peak. No hunter stands on the field at turn one: the opening's patrols
-  are the tier's that push, in their order, and the packs that hunt come with the tide and the
-  tears (a tier whose patrols all hunt opens with them, each a row further back at a time,
-  never onto the rift's row, until no machine stands inside its catch). So no battle opens on a
-  forced fight.
+  sealed (below); and on the field, the siege under way, packs before every band of the wall
+  (The tide, below), each its own moves from the row before the wall and none near enough to
+  strike on the first turn: two packs for one machine at each end (the inner two moves out,
+  the outer three), a pack for two before each band between (three), and before the middle
+  the ramp's count of packs for three (one; two from Convergence 3; three from 8; the first
+  two moves out, each after it a move farther back), so seven, eight and nine. None stands on
+  the rift's row (a pack whose opening hex the shape took goes along its row, never back
+  toward the rift), and each stands on ground with a way to the wall, never in a corner the
+  shape closed off. Each is the next of its rating the domain has, the lead's and the guest's
+  in turn, as content writes it (the ramp scales no pack: it scales the field). Rift Pressure
+  opens a turn short of its peak. No hunter stands on the field at turn one: the packs that
+  hunt come with the tide. So no battle opens on a forced fight.
 - **A turn**: the map shows every pack's coming walk, read from where the machines' plans end,
   and every pack's threat rating under the pack, four pips with one filled a machine it is
   intended for, and no count; no ring is drawn round a hunter: it wears a chip, the attack mark
@@ -1910,22 +1909,20 @@ a stat.
   nobody holds ground against them and a pusher never turns back for a machine in its way; the
   walk shown is the walk played. The
   enemy never attacks a machine on the map: pushers strike the gate, hunters catch.
-- **Pushers** make for the wall at a segment of their own, the stretch they reach soonest: as a
-  pusher is dealt (and where the opening stands it) it reads its own walk to every land hex of
-  the row before the wall, in turns (its move a turn, water waded, the ground alone: who stands
-  where by then is unknown, a wreck's hex aside), and of the columns it reaches in the fewest
-  turns it draws one, from the turn and the pack; of those columns the least crowded wins
-  (another pusher's segment counting 2, one beside it 1), then the nearest the draw. So a pack a
-  move from the wall strikes the wall in front of it and never walks past it to a stretch a turn
-  further, and a pack the rift sends fans across as much of the wall as it reaches no later: at
-  a move of 2, nine columns of the twenty at twelve deep and thirteen at sixteen, at every
-  Convergence. Several packs one mouth sends at once (the sends' dial, below) each draw
-  from a share of their own of those columns, in order along the wall, so they leave in
-  different directions. It walks to the land hex of the row before the wall
-  nearest its column, a tie toward the gate's column; a pack with no segment (a hunter left
-  without prey) walks to the nearest. A pusher ending its walk beside any hex
-  of the gate or the wall strikes the gate's bar for its threat rating's worth, 10 a pip (a patrol 10, a
-  formation 30, an elite 40), every enemy turn, whatever its head count. A pack a fight has worn strikes
+- **Pushers** make for the wall at a segment of their own. A pack the tide deals makes for the
+  band of the wall it was drawn for (The tide, below): of the columns of that band its own walk
+  reaches, the least crowded wins (another pusher's segment counting 2, one beside it 1), then
+  the nearest a draw from the turn and the pack. A pack dealt for no band (an elite that
+  pushes) or with no way to its band takes the stretch it reaches soonest: it reads its own
+  walk to every land hex of the row before the wall, in turns (its move a turn, water waded,
+  the ground alone: who stands where by then is unknown, a wreck's hex aside), and draws among
+  the columns it reaches in the fewest, by the same crowding. It walks to the land hex of the
+  row before the wall nearest its column, a tie toward the gate's column, and comes down onto
+  its stretch across the field, never along the wall past stretches it could strike; a pack
+  with no segment (a hunter left without prey) walks to the nearest. A pusher ending its walk
+  beside any hex of the gate or the wall strikes the gate's bar for its threat rating's worth,
+  5 a pip (a pack for one machine 5, a pack for three 15, an elite 20), every enemy turn,
+  whatever its head count. A pack a fight has worn strikes
   by the share still standing: its rating's strike times the heads it holds over the heads it took the
   field with, rounded down, at least 1; grown past that count, its rating and no more. The gate is the look
   and the bar's name; the whole wall is the target, so no line plugs it.
@@ -1980,9 +1977,7 @@ a stat.
   the same tier; a tier with none takes the highest under it.
 - **Rift Pressure** fills at the ramp's beat (3 turns, 2 from Convergence 8; +1 each enemy turn,
   never inside a fight), a turn short of its peak as the battle opens. When it fills it resets and peaks: the rift
-  sends the next composition of its cycle (the tier's formations and patrols in turn, the
-  lead's and the guest's in turn); every tear open before this peak sends the next patrol of
-  the patrol cycle; the tears' row steps a row toward the gate (as far as four rows short of
+  and every tear open before this peak send their packs (The tide, below); the tears' row steps a row toward the gate (as far as four rows short of
   the row before the wall, so no tear opens beside it; it starts a row for every five of the
   field's depth and one more, row 4 at twelve deep, 5 at sixteen, and is drawn nowhere); the
   ramp's count of tears (one; two from Convergence 8)
@@ -2001,29 +1996,23 @@ a stat.
   lock), of those it can stand on with no machine beside it, the nearest the wall of equals;
   with none free on the ring, the nearest hex past it, never one of the seven. Packs never
   escalate in place.
-- **The graded tide** is the tide the game is moving to, dealt in the cycle's place when its
-  dial is on (a debug build's SETTINGS, TRIALS, TIDE or SET; `RIFTGATE_GRADED=1`); a battle
-  begun on it stays on it. The wall is five bands, and a band's rating is the pack that makes
+- **The tide** is graded. The wall is five bands, and a band's rating is the pack that makes
   for it: one at each end, two between, three in the middle. A domain's packs are listed by
   rating (its compositions marked `tide`: `graded`; a domain with none plays its pushing
   patrols and formations by their ratings), each list taken in turn from a start the seed
-  draws, the guest's in turn with the lead's. At a peak every mouth sends as many packs as
-  the sends' dial says (one, two or three, the rift and each open tear alike), each to a band
-  of its own drawn by the seed, the peak and the mouth: the rift from all five, a tear from
-  its own band and the ones beside it. The pack is the next of its band's rating, and one in
-  five of an end's packs is for two. A pack makes for the least crowded column of its band
-  and comes down onto it across the field, never along the wall past stretches it could
-  strike. A hunting pack comes out of the rift every other peak from the second. The opening
-  stands packs before every band, each its own moves from the row before the wall and none
-  near enough to strike on the first turn: two packs for one at each end (the inner two moves
-  out, the outer three), a pack for two before each band between (three), and before the
-  middle the ramp's count of packs for three (the first two moves out, each after it a move
-  farther back), so seven, eight from Convergence 3 and nine from 8. The Rupture's size
-  counts the opening and, a beat, each mouth's sends at the mean of the bands it draws from,
-  with the hunting pack every other beat; the pack the squad may leave is a pack for one. The
-  tears, the elites and the boss are as above. Two dials ride with it: what a pip strikes the
-  wall for (ten, five or three) and what a pack pays the meter as it falls, over its rating
-  (nothing, half a pip or a pip, the size counting it for every pack it counts).
+  draws, the guest's in turn with the lead's; a rating a domain has no pack for is dealt the
+  nearest it has, one lighter before one heavier. At a peak every mouth sends 2 packs, the
+  rift and each tear open before the peak alike, each to a band of its own drawn by the seed,
+  the peak and the mouth: the rift from all five, a tear from its own band and the ones beside
+  it. The pack is the next of its band's rating, and one in five of an end's packs is for
+  two. A hunting pack comes out of the rift every other peak from the second. A pack walks at
+  its composition's pace where it names one (Packs, above).
+- **The dials**, on a debug build's SETTINGS, TRIALS, each read as the next battle starts and
+  each number above a placeholder until its dial is settled and cut: SENDS, the packs a mouth
+  sends at a peak (1, 2 the game's, or 3); STRIKE, what a pip strikes the wall for (10, 5 the
+  game's, or 3); PACK BONUS, what a pack pays the Rupture meter as it falls, over its rating
+  (nothing, half a pip the game's, or a pip); FIELD DEPTH, the field's rows (12 the game's,
+  14 or 16).
 - **The seam** is the flattening's edge and a picture alone: a circle about the rift's middle,
   the painted world inside it. As a battle opens its edge stands four hexes out, so the shell's
   seven hexes and a hex and a half round them are the painting's; it grows half a hex a round,
@@ -2074,9 +2063,12 @@ a stat.
   each fight ends, toward the tier's Fractures (three at tier one, four at tier two, five at
   tier three). It is sized in beats of the tide, a beat a peak of Rift Pressure, two at every
   tier: the Rupture takes the ratings of the packs the opening places (the boss aside) and the
-  tide sends through its second peak (the rift's compositions and the tears' patrols, as the
-  peaks send them), less the lightest patrol the tide deals, which the squad may leave; and on
-  top an elite's four for each elite the tier's Fractures call. So the seal is earned by
+  tide sends through its second peak (every mouth's sends, each at the mean of the bands the
+  mouth draws from and of what the domain's lists hold for them, with the hunting pack of the
+  second peak), less a pack for one machine, which the squad may leave; on top an elite's
+  four for each elite the tier's Fractures call; and half a pip for every pack it counts,
+  since a pack pays that much over its rating as it falls, on the meter alone (the tally of
+  menace, salvage's and Anathema's, is its rating). So the seal is earned by
   fighting the tide, never the opening alone, the size follows the ramp's counts with no
   table of its own and is level across the domains, and more Fractures at a higher tier are
   more elites, not a longer run of beats.
@@ -2164,8 +2156,8 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   the battle starts, the same for every open front, never shown and never reset.
 - **Domains**: a rift rolls its lead domain (Meadow, Waste, Marsh, Peak; never a beaten one;
   a run's first rifts the Meadow's)
-  and from tier 1 a guest, another domain not beaten, whose compositions alternate with the lead's on the field at the start and in
-  the rift's cycle.
+  and from tier 1 a guest, another domain not beaten, whose packs come in turn with the lead's on the field at the start and in
+  the tide.
 - **The party**: dealt as the run starts, one hero to each domain from its bench, the front
   jobs and the back as even as the benches allow (two and two), by the seed; no job changes
   after.
@@ -2260,8 +2252,9 @@ and nothing scales a pack.
   a variant with one more goblin is its own composition, and no cell lists alternatives. Six
   fields more, each optional: `squad`, the machines it is intended for, 1 to 4, its threat rating
   on the map (absent: a patrol 1, a formation 3, an elite and an escort 4); `pace`, the hexes its
-  pack walks a turn, 1 to 6 (absent: its slowest member's); `tide`, the tide it is
-  written for (`graded`: dealt by the graded tide alone; absent: the cycle's); `lead`, a foe id in
+  pack walks a turn, 1 to 6 (absent: its slowest member's); `tide`, `graded` on a pack
+  written for the tide's bands (a domain that has any is dealt those in a battle, and one that
+  has none its pushing patrols and formations by their ratings); `lead`, a foe id in
   the grid whose sprite the pack wears, an elite composition's its elite (absent: the first in
   reading order, front left to right, then back); `hunts`, the caveat its pack hunts by
   (nearest, weakest, strongest or slowest; absent: it pushes), never on an escort, which

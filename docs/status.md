@@ -47,9 +47,15 @@ document's job and every command are in `README.md`.
   packs each striking the wall for less, the field full from the first turn.
   `docs/briefs/graded_tide.md` has the direction in his words, which built numbers are
   placeholders, the Meadow's packs, what is his to settle and the order; the rules' The
-  battlefield says how it runs. The engine deals it on its dial (SETTINGS, TRIALS, SET,
-  GRADED; `RIFTGATE_GRADED=1`) and the earlier tide otherwise, until the switch-over, the
-  order's first step and his to call. Only the Meadow has packs written for it. A domain's
+  battlefield says how it runs. It is the engine's one tide since the same day (his "Go ahead
+  with the switch-over"; the cycle of formations and patrols is cut), at the numbers he had
+  played it at, his pick: two packs a mouth a peak, five a pip at the wall, half a pip a
+  fallen pack, each still a dial. Only the Meadow has packs written for it: the other domains
+  play it on their patrols and formations as they stand, a duelist wherever a pack for one or
+  two is dealt, and are the harder for it until their tables are written (the bot's floor
+  player is wiped in the Marsh and the Waste: `docs/measurements.md`, 25 November); the
+  Meadow's earlier formations and patrols stay in content, dealt by no battle, until his
+  marks on its table. A domain's
   packs go to him as a table first ("I would mark a table"), so no session writes a pack, a
   leader's or a boss's numbers into content ahead of his marks; the hunters are pinned and
   the treant waits on him.
@@ -113,7 +119,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1484 tests, 402,640 checks, green on Godot 4.8-beta4 (25 November, the Cassowary's lope from standing over main with the terminology branch). The runner fails a run
+- Tests: 1485 tests, 406,800 checks, green on Godot 4.8-beta4 (25 November, the switch-over: the graded tide the game's own). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -128,7 +134,7 @@ document's job and every command are in `README.md`.
   (`tools/lowforge/tiles/`) too: restore those. Screenshots there need `xvfb-run -a` and
   `--rendering-method gl_compatibility`; models build with `BPY_PYTHON` set to a python3.11
   venv holding `bpy==5.0.1`.
-- Saves: the battle's version is 42, the run's 34 and the quick run's 17 (`sim/save.gd`). A
+- Saves: the battle's version is 44, the run's 34 and the quick run's 17 (`sim/save.gd`). A
   save from an older version is set aside, so a change to what a save holds moves its version.
 
 ## How things stand
@@ -300,8 +306,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   machine short costs four to six times its price. Tiers two and three are unsized, their
   foes still the ones sized against a shield that refilled; the first battle, the Meadow's
   alone and the one a trio fights, is built and its sizing his. On a debug
-  build's SETTINGS, TRIALS, what is tried in person and nothing else: SET (GRADED, AS BUILT),
-  TIDE, SENDS, STRIKE, PACK BONUS, FIELD DEPTH and PHASED, each read as the next battle starts.
+  build's SETTINGS, TRIALS, what is tried in person and nothing else: SENDS, STRIKE, PACK BONUS,
+  FIELD DEPTH and PHASED, each read as the next battle starts, under SET (GAME'S OWN).
   A dial leaves the page with its question. The runners keep three what-ifs with no dial
   (`RIFTGATE_OPENING`, `RIFTGATE_BEATS`, `RIFTGATE_LEADERS`) and lay the kit's with `--refit`
   (`sim/refit.gd`). `docs/balance.md` is the matrix of 27
@@ -311,8 +317,8 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
 - **The battle and its map.** A battle is the defence of a long wall: a field 20 by 12, the
   wall along one edge and the rift opposite, the siege under way as it opens; MAP VIEW turns
   it (the wall at the left, the default, or at the bottom), and a pinch zooms out to the whole
-  field. A pack pushes for a stretch of wall, the one it reaches soonest or, under the graded
-  tide, the band of its rating, or hunts one machine;
+  field. A pack pushes for the band of the wall its rating sends it to, ones to the ends and
+  threes down the middle, or hunts one machine;
   a pack is one fight, a hunter's catch first; nobody blocks a move and nobody ends on
   another's hex. The tide comes on a beat, a peak of Rift Pressure sending from the rift and
   every open tear and opening tears on a row of their own that steps a row toward the wall and
@@ -322,7 +328,7 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   whole field, ROUND N over it while the packs walk and the seam grows, then back, then the
   tears open one by one. The Rupture meter is two beats of the tide, filled by menace,
   its Fractures calling the elites; the boss holds its hex before the rift's five, sealed
-  until the Rupture. A pip of threat rating strikes the wall for ten (five or three on the STRIKE dial). A move that plays ends
+  until the Rupture. A pip of threat rating strikes the wall for five. A move that plays ends
   its machine's action unless an order stands, and UNDO gives it back. Six shapes by the
   seed: the river, the river delta, the gorge, the ruined city, the badlands and the steppe;
   the painted world stands at the 3D map's heights, each domain in its own tileset and rock.
@@ -486,8 +492,8 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    - Every tier-one leader read again at sixty fights or more (the shaman's warband reads 33%
      at every commit back to its thirty-fight sizing), then any leader moved into its band.
    - The graded tide (`docs/briefs/graded_tide.md`, its section 8 the order; the formation
-     pass runs inside it): the switch-over on his word, then each value as it settles (the
-     sends by the Convergence first) with its dial cut, the other domains a table at a time,
+     pass runs inside it): each value as it settles (the sends by the Convergence first)
+     with its dial cut, his marks on the Meadow's table, the other domains a table at a time,
      and the leaders' and the bosses' blocks as a table once a rating's size at each
      Convergence, the target, is set.
    - His play of a second battle, which says whether the budget's shares stand (the brief's

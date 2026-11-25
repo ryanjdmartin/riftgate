@@ -19,30 +19,56 @@ func _battle(seed_value: int = 3) -> Battle:
 	return b
 
 
-## The Rupture's size as the rule has it (11 November), worked out here apart from the battle's
-## own sum: [the field's part before the patrol left, the size]. Every pack counts at its threat
-## rating, a pip a hundred. The field's part is what stands at the start and what the tide sends
-## through the ramp's beats, a peak the rift's next composition and a patrol from every tear
-## open before it, the ramp's tears opening after; the size leaves the tide's lightest patrol
-## and adds an elite's four pips for each the tier's Fractures call.
+## The Rupture's size as the rule has it (sized in beats, 11 November; on the tide's lists since
+## the graded tide became the game's), worked out here apart from the battle's own sum: [the
+## field's part before the pack left, the size, the packs the field's part counts]. Every pack
+## counts at its threat rating, a pip a hundred. The field's part is what stands at the start and
+## what the tide sends through the ramp's beats: at a peak every mouth's packs, the rift's and
+## those of each tear open before it, the ramp's tears opening after; a send is worth the mean of
+## the bands its mouth draws from, each band at the mean of the list its pack is taken from (its
+## rating's, else the nearest that has any, a lighter before a heavier), an end's with its one in
+## so many for two; and the hunting pack the rift sends every other peak from the second. The
+## size leaves a pack for one machine and adds an elite's four pips for each the tier's Fractures
+## call, and the pack bonus for every pack it counts, the one left aside and the elites with them.
 func _rupture_size(b: Battle) -> Array:
 	var pip := ContentDB.MENACE_PER_PIP
 	var field_part := 0
+	var packs := 0
 	for sq in b.field.packs():
 		if not sq.is_boss:
 			field_part += sq.squad * pip
+			packs += 1
+	var worth := func(rating: int) -> int:
+		for r in [rating, rating - 1, rating + 1, rating - 2, rating + 2]:
+			var list: Array = b.field.graded.get(r, [])
+			if list.is_empty():
+				continue
+			var sum := 0
+			for c in list:
+				sum += ContentDB.squad_of(c) * pip
+			return sum / list.size()
+		return 0
+	var one: int = worth.call(1)
+	var two: int = worth.call(2)
+	var end := one + (two - one) / Battlefield.END_TWO_IN
+	var rift_send := 0   # the mean of the wall's bands, the rift's to draw from
+	for rating in Battlefield.BAND_RATING:
+		rift_send += end if int(rating) == 1 else int(worth.call(int(rating)))
+	rift_send /= Battlefield.BAND_RATING.size()
+	var tear_send := (end + two) / 2   # a tear's: an end's band and the one beside it
+	var sends := Battlefield.sends_a_peak()
 	var tears := 0
-	var at := 0
 	for j in range(Ramp.beats_at(b.tier)):
-		field_part += ContentDB.squad_of(b.field.cycle[j % b.field.cycle.size()]) * pip
-		for i in range(tears):
-			field_part += ContentDB.squad_of(b.field.patrol_cycle[at % b.field.patrol_cycle.size()]) * pip
-			at += 1
+		field_part += sends * rift_send + tears * sends * tear_send
+		packs += sends * (1 + tears)
+		if j % 2 == 1 and not b.field.hunters.is_empty():
+			field_part += ContentDB.squad_of(b.field.hunters[(j / 2) % b.field.hunters.size()]) * pip
+			packs += 1
 		tears += Ramp.tears_at(b.ramp)
-	var lightest := 1 << 30
-	for c in b.field.patrol_cycle:
-		lightest = mini(lightest, ContentDB.squad_of(c) * pip)
-	return [field_part, field_part - Battle.RUPTURE_LEAVE * lightest + Ramp.elite_fractures_at(b.tier).size() * 4 * pip]
+	var elites: int = Ramp.elite_fractures_at(b.tier).size()
+	var size := maxi(1, field_part - Battle.RUPTURE_LEAVE * one) + elites * 4 * pip
+	size += Battle.pack_bonus() * (packs - Battle.RUPTURE_LEAVE + elites)
+	return [field_part, size, packs]
 
 
 ## Park a pack beside a machine, rooted and pushing, so it can be attacked and does not hunt.
@@ -85,11 +111,37 @@ func _win(sk: Skirmish) -> void:
 		sk.start_round()
 
 
+## The opening's form as the rules have it (Setup), worked out here apart from
+## Battle.graded_opening: how many packs a battle stands before its wall at a Convergence. Two for
+## one machine at each end, one for two before each band between, and before the middle the
+## ramp's count for three.
+func _opening_count(ramp: int) -> int:
+	return 2 * 2 + 2 + Ramp.formations_at(ramp)
+
+
+## The rating a band's pack is dealt at, as the lists stand: its own where the domain has a pack
+## of it, else the nearest that has any, one lighter before one heavier.
+func _dealt_rating(f: Battlefield, rating: int) -> int:
+	for r in [rating, rating - 1, rating + 1, rating - 2, rating + 2]:
+		if not (f.graded.get(r, []) as Array).is_empty():
+			return r
+	return -1
+
+
+## The turns a pack takes to stand at the wall from where it is, as its walk shows it: this
+## turn's walk and the stops after it; none for a pack already there or with no way.
+func _turns_to_wall(f: Battlefield, sq: Unit) -> int:
+	var w: Battlefield.Walk = f.plan_walks()[sq.id]
+	return 0 if w.route.is_empty() else 1 + f.turn_ends(sq, w).size()
+
+
 func test_setup_places_team_formation_and_boss() -> void:
 	var b := Battle.new(3)
 	b.setup(_team(), "marsh")
 	assert_eq(b.mechs().size(), 3, "three mechs")
-	assert_eq(b.field.packs().size(), 1 + Ramp.formations_at(0) + Ramp.patrols_at(0), "the ramp's formations and patrols at the start, plus the boss")
+	var opening := Battle.graded_opening(0, b.map.width)
+	assert_eq(opening.size(), _opening_count(0), "the opening's form: two packs at each end, one before each band between, the ramp's count before the middle")
+	assert_eq(b.field.packs().size(), 1 + _opening_count(0), "the opening's packs at the start, plus the boss")
 	assert_true(b.boss != null and b.field.units.has(b.boss), "boss on the field")
 	# Its hex (Ryan, 10 November: "Put him on the single hex in front of the two new out of play
 	# ones"): touching both of the rift's front hexes, on the rift's middle line.
@@ -108,35 +160,47 @@ func test_setup_places_team_formation_and_boss() -> void:
 	for m in b.mechs():
 		assert_true(Hex.axial_to_offset(m.pos).y >= gate_row - 3, "%s starts by the gate" % m.display_name)
 		assert_eq(b.actions_left(m), 1, "%s has its action" % m.display_name)
-	# The opening (the long wall brief 3.2): a formation a move of its own from the apron, a
-	# patrol two moves, never in the rift's mouth; the boss by the rift; the rift a turn short.
+	# The opening (the rules' Setup): packs before every band of the wall, each of its band's
+	# rating (the nearest the domain has where it has none of it), each its own moves from the
+	# row before the wall and two or more, at its column, never in the rift's mouth, all pushing;
+	# the boss by the rift; the rift a turn short.
+	var walks := b.field.plan_walks()
+	var stood := {}
+	var k := 0
 	for sq in b.field.packs():
-		var row := Hex.axial_to_offset(sq.pos).y
+		var o := Hex.axial_to_offset(sq.pos)
 		if sq.is_boss:
-			assert_true(row <= 2, "the boss starts by the rift")
-		else:
-			var moves := 1 if sq.composition_size == "formation" else 2
-			var want := maxi(Battle.OPENING_FLOOR_ROW, b.field.apron_row() - moves * sq.movespeed)
-			if sq.behaviour == "hunt":
-				# A hunter opens a row back at a time until it has caught nobody (no battle opens
-				# on a forced fight, Ryan, 6 November).
-				assert_true(row <= want and row >= Battle.OPENING_FLOOR_ROW, "%s, a hunter, stands at or behind %d moves from the wall" % [sq.display_name, moves])
-				assert_true(b.field.catch_of(sq) == null, "%s has caught nobody" % sq.display_name)
-			else:
-				assert_eq(row, want, "%s stands %d move%s from the wall" % [sq.display_name, moves, "" if moves == 1 else "s"])
+			assert_true(o.y <= 2, "the boss starts by the rift")
+			continue
+		var e: Array = opening[k]
+		k += 1
+		var band := int(e[0])
+		var moves := int(e[3])
+		stood[band] = true
+		assert_eq(int(e[1]), int(Battlefield.BAND_RATING[band]), "the form stands band %d its own rating" % band)
+		assert_eq(sq.squad, _dealt_rating(b.field, int(e[1])), "%s before band %d is the pack dealt for its rating, %d" % [sq.display_name, band, int(e[1])])
+		assert_eq(sq.behaviour, "push", "%s pushes: no hunter stands on the field at turn one" % sq.display_name)
+		assert_true(moves >= 2, "two moves or more from the wall")
+		assert_eq(o, Vector2i(int(e[2]), maxi(Battle.OPENING_FLOOR_ROW, b.field.apron_row() - moves * sq.movespeed)), "%s stands %d of its own moves from the wall, at its column" % [sq.display_name, moves])
+		assert_eq(b.field.band_of(o.x), band, "before its own band")
+		assert_eq(b.field.band_of(sq.goal_col), band, "and makes for it (column %d)" % sq.goal_col)
+		assert_false(b.field.soonest_columns(sq).is_empty(), "on ground with a way to the wall")
+		assert_false((walks[sq.id] as Battlefield.Walk).strikes, "%s strikes nothing on the first turn" % sq.display_name)
+	assert_eq(stood.size(), Battlefield.BAND_RATING.size(), "a pack before every band of the wall")
 	assert_eq(b.field.rift_pressure, b.field.rift_pressure_max - 1, "the rift a turn short of its peak")
 	assert_eq(b.state, Battle.State.PLAN, "the player's turn")
 	assert_true(b.forced.is_empty(), "the first turn opens on no forced fight")
-	assert_eq(b.field.plan_walks().size(), b.field.packs().size(), "every pack's walk shows")
+	assert_eq(walks.size(), b.field.packs().size(), "every pack's walk shows")
 
 
 ## The field's trial (Ryan, 10 November: "I think the map is a bit too shallow ... If the map is a
 ## little deeper, and the seam starts a little farther out, it will feel more like I can actually
 ## plan a little bit ahead instead of panicking from the very start"): a trial depth is the
 ## field's depth, and the tears' row starts that much farther from the wall while its share's
-## ceiling holds. The opening is measured from the wall, so depth alone leaves a formation's first
-## walk on the wall; a trial of the opening stands every opening pack that many moves farther
-## out, and then the enemy's first turn strikes nothing.
+## ceiling holds. The opening is measured from the wall, so depth alone leaves every pack its own
+## moves from it and the first of them at the wall as soon; a trial of the opening stands every
+## opening pack that many moves farther out, and the first is at the wall later. Nothing strikes
+## on the first turn either way: the opening stands no pack that near.
 func test_the_fields_trial_deepens_the_field_and_stands_the_opening_farther_out() -> void:
 	var plain := Battle.new(3)
 	plain.setup(_team(), "meadow")
@@ -148,41 +212,63 @@ func test_the_fields_trial_deepens_the_field_and_stands_the_opening_farther_out(
 	assert_eq(deep.map.height, depth + 2, "a trial depth is the field's")
 	assert_eq(deep.map.width, plain.map.width, "the wall as long as it was")
 	assert_eq(deep.field.apron_row() - deep.field.tear_row, plain.field.apron_row() - plain.field.tear_row + 2, "the tears' row starts two rows farther from the wall")
-	# Over a few seeds (a shape may put a wall in a pack's way on one): the deeper field alone
-	# still has packs on the wall in the enemy's first turn; the opening a move farther out, none.
+	# Over a few seeds (a shape may put a wall in a pack's way on one): on the deeper field every
+	# pack still opens its own count of moves from the wall, so the first of them is at the wall
+	# as soon as on the game's own depth; with the opening a move farther out each stands a move
+	# farther (or on the floor row, where the field has no more room) and the first is at the
+	# wall later.
 	var seeds := [1, 2, 3, 4, 5, 6]
-	var pushers := 0
-	var striking := 0
+	var soonest := {}   # seed -> the turns the first pack takes to stand at the wall
+	var soonest_shallow := {}   # the same on the game's own depth
+	var rows := {}      # seed -> every opening pack's row
 	for s in seeds:
+		var shallow := Battle.new(s)   # the game's own depth, for the count of turns
+		Ramp.depth_trial = 0
+		shallow.setup(_team(), "meadow")
+		Ramp.depth_trial = depth + 2
 		var b := Battle.new(s)
 		b.setup(_team(), "meadow")
-		for sq in b.field.packs():
-			if sq.is_boss or sq.behaviour == "hunt":
-				continue
-			pushers += 1
-			var moves := 1 if sq.composition_size == "formation" else 2
+		var opening := Battle.graded_opening(0, b.map.width)
+		var pushers: Array = b.field.packs().filter(func(sq: Unit) -> bool: return not sq.is_boss)
+		assert_eq(pushers.size(), opening.size(), "seed %d: the opening's packs" % s)
+		var first := 1 << 20
+		var first_shallow := 1 << 20
+		rows[s] = []
+		for i in range(pushers.size()):
+			var sq: Unit = pushers[i]
+			var moves := int(opening[i][3])
 			var want := maxi(Battle.OPENING_FLOOR_ROW, b.field.apron_row() - moves * sq.movespeed)
 			assert_true(absi(Hex.axial_to_offset(sq.pos).y - want) <= 1, "seed %d: %s still opens %d of its moves from the wall, however deep the field (within the row its landing found): row %d, wanted %d" % [s, sq.display_name, moves, Hex.axial_to_offset(sq.pos).y, want])
-		for w in b.field.plan_walks().values():
-			if (w as Battlefield.Walk).strikes:
-				striking += 1
-	assert_true(pushers > 0 and striking > 0, "so the deeper field alone still has packs on the wall in the enemy's first turn: %d of %d pushers" % [striking, pushers])
+			(rows[s] as Array).append(Hex.axial_to_offset(sq.pos).y)
+			first = mini(first, _turns_to_wall(b.field, sq))
+		for sq in shallow.field.packs():
+			if not sq.is_boss:
+				first_shallow = mini(first_shallow, _turns_to_wall(shallow.field, sq))
+		assert_true(first >= 2 and first_shallow >= 2, "seed %d: nothing strikes the wall in the enemy's first turn at either depth (the first pack is there in %d, and in %d on the game's own)" % [s, first, first_shallow])
+		soonest[s] = first
+		soonest_shallow[s] = first_shallow
+	assert_eq(soonest.values().min(), soonest_shallow.values().min(), "the deeper field alone leaves the first pack at the wall as soon: the opening is measured from the wall (%s against %s)" % [str(soonest.values()), str(soonest_shallow.values())])
 	Battle.opening_trial = 1
-	var first := 0
+	var farther := 0
 	for s in seeds:
 		var far := Battle.new(s)
 		far.setup(_team(), "meadow")
-		for sq in far.field.packs():
-			if sq.is_boss or sq.behaviour == "hunt":
-				continue
-			var moves := (1 if sq.composition_size == "formation" else 2) + 1
+		var opening := Battle.graded_opening(0, far.map.width)
+		var pushers: Array = far.field.packs().filter(func(sq: Unit) -> bool: return not sq.is_boss)
+		assert_eq(pushers.size(), opening.size(), "seed %d: the opening's packs" % s)
+		var first := 1 << 20
+		for i in range(pushers.size()):
+			var sq: Unit = pushers[i]
+			var moves := int(opening[i][3]) + 1
 			var want := maxi(Battle.OPENING_FLOOR_ROW, far.field.apron_row() - moves * sq.movespeed)
-			assert_true(absi(Hex.axial_to_offset(sq.pos).y - want) <= 1, "seed %d: %s opens a move farther out (within the row its landing found): row %d, wanted %d" % [s, sq.display_name, Hex.axial_to_offset(sq.pos).y, want])
-		for w in far.field.plan_walks().values():
-			if (w as Battlefield.Walk).strikes:
-				first += 1
+			var row := Hex.axial_to_offset(sq.pos).y
+			assert_true(absi(row - want) <= 1, "seed %d: %s opens a move farther out (within the row its landing found): row %d, wanted %d" % [s, sq.display_name, row, want])
+			assert_true(row <= int(rows[s][i]), "seed %d: %s never nearer the wall than the game stands it (row %d against %d)" % [s, sq.display_name, row, int(rows[s][i])])
+			farther += int(rows[s][i]) - row
+			first = mini(first, _turns_to_wall(far.field, sq))
+		assert_true(first > int(soonest[s]), "seed %d: the opening a move farther out, the first pack is at the wall later (%d turns against %d)" % [s, first, int(soonest[s])])
 		assert_true(far.forced.is_empty(), "seed %d: nor does the battle open on a forced fight" % s)
-	assert_eq(first, 0, "the opening a move farther out, nothing strikes the wall in the enemy's first turn")
+	assert_true(farther > 0, "and the packs stand farther from the wall in all (%d rows)" % farther)
 	Ramp.depth_trial = 0
 	Battle.opening_trial = 0
 	var again := Battle.new(3)
@@ -195,10 +281,11 @@ func test_the_fields_trial_deepens_the_field_and_stands_the_opening_farther_out(
 ## on the field at turn one (8 November: "no hunters should be on the field turn one, but that
 ## was a formation pass issue, I think"; built with the pass, 10 November): in every domain, at
 ## the foot of the ramp and at its top, at every tier, with a guest and without, the opening's
-## packs all push, while the tier's hunting packs wait in the rift's cycle and the tears'.
+## packs all push, while the tier's hunting packs wait apart from the tide's lists, for the rift
+## to send.
 func test_no_battle_opens_on_a_forced_fight_and_no_hunter_stands_at_turn_one() -> void:
 	var db := ContentDB.load_default()
-	var hunting_cycles := 0
+	var hunting := 0
 	var fids: Array = db.factions.keys()
 	for fid in fids:
 		for guest in ["", str(fids[(fids.find(fid) + 1) % fids.size()])]:
@@ -210,33 +297,48 @@ func test_no_battle_opens_on_a_forced_fight_and_no_hunter_stands_at_turn_one() -
 						b.tier = tier
 						b.guest = guest
 						b.setup(_team(), str(fid))
-						assert_true(b.forced.is_empty(), "%s, guest '%s', ramp %d, tier %d, seed %d: no fight forced as the battle opens" % [fid, guest, ramp, tier, s])
+						var at := "%s, guest '%s', ramp %d, tier %d, seed %d" % [fid, guest, ramp, tier, s]
+						assert_true(b.forced.is_empty(), "%s: no fight forced as the battle opens" % at)
+						var opened := 0
 						for sq in b.field.packs():
 							if sq.is_boss:
 								continue
+							opened += 1
 							assert_true(Hex.axial_to_offset(sq.pos).y >= Battle.OPENING_FLOOR_ROW, "%s opens off the rift's row" % sq.display_name)
-							assert_true(sq.behaviour != "hunt", "%s, guest '%s', ramp %d, tier %d: %s hunts and stands on the field at turn one" % [fid, guest, ramp, tier, sq.display_name])
-						for c in b.field.patrol_cycle:
-							if not str(c.get("hunts", "")).is_empty():
-								hunting_cycles += 1
-	assert_true(hunting_cycles > 0, "the content's hunters still come with the tide and the tears, so the rule is read")
-	# A tier whose patrols all hunt opens with them all the same: the rule drops no pack it cannot replace.
+							assert_true(sq.behaviour != "hunt", "%s: %s hunts and stands on the field at turn one" % [at, sq.display_name])
+						assert_eq(opened, _opening_count(ramp), "%s: the opening stands every pack of its form" % at)
+						for r in b.field.graded.keys():
+							for c in b.field.graded[r]:
+								assert_true(str(c.get("hunts", "")).is_empty(), "%s: %s hunts and stands in the tide's list for %d" % [at, str(c["id"]), int(r)])
+						for c in b.field.hunters:
+							assert_false(str(c.get("hunts", "")).is_empty(), "%s: %s waits among the hunting packs and pushes" % [at, str(c["id"])])
+							hunting += 1
+	assert_true(hunting > 0, "the content's hunters still come with the tide, so the rule is read")
+	# A tier with no patrol that pushes opens whole all the same, and with no hunter: a band with
+	# no pack of its rating is dealt the nearest rating that has any, so its formations stand
+	# before the wall's ends too, and its hunting patrols wait for the rift like any other's.
 	var own := ContentDB.new()
 	own.load_dir(ContentDB.DIR)
 	var fid0 := str(own.factions.keys()[0])
 	var kept: Array = []
 	for c in own.factions[fid0]["compositions"]:
-		if str(c.get("size", "")) != "patrol" or c.has("hunts"):
+		if (str(c.get("size", "")) != "patrol" or c.has("hunts")) and not c.has("tide"):
 			kept.append(c)
 	own.factions[fid0]["compositions"] = kept
 	var hb := Battle.new(1)
 	hb.db = own
 	hb.setup(_team(), fid0)
-	var opened := 0
+	var listed: Array = tide_lists(hb.field).filter(func(c) -> bool: return str(c.get("hunts", "")).is_empty())
+	assert_true(not listed.is_empty() and listed.all(func(c) -> bool: return str(c["size"]) == "formation"), "with no patrol that pushes, the tide's lists hold the formations alone")
+	assert_false(hb.field.hunters.is_empty(), "and its hunting patrols wait apart")
+	var stood := 0
 	for sq in hb.field.packs():
-		if not sq.is_boss and sq.behaviour == "hunt":
-			opened += 1
-	assert_true(opened > 0, "with no patrol that pushes, the hunters open")
+		if sq.is_boss:
+			continue
+		stood += 1
+		assert_eq([sq.composition_size, sq.behaviour], ["formation", "push"], "%s, a formation, stands where a lighter pack would: no hunter opens" % sq.display_name)
+	assert_eq(stood, _opening_count(0), "the opening drops no pack for want of its rating")
+	assert_true(hb.forced.is_empty(), "nor opens on a forced fight")
 
 
 ## The field's size is the ramp's (the long wall brief 3.1): a battle that names none takes
@@ -317,7 +419,13 @@ func test_every_pack_carries_its_threat_rating() -> void:
 	h.setup(_team(), "marsh")
 	for p in h.field.packs():
 		assert_eq(p.squad, ContentDB.SQUAD_DEFAULT, "a pack of no composition is a fight for three")
-	assert_true(h.field.cycle.all(func(c) -> bool: return int(c.get("squad", 0)) == ContentDB.SQUAD_DEFAULT), "and so are the ones the rift sends after")
+	assert_eq(h.field.graded.keys(), [ContentDB.SQUAD_DEFAULT], "and the tide's one list is theirs, for three")
+	var composed := h.field.packs().size()
+	h.field.peak()
+	var after: Array = h.field.packs().slice(composed)
+	assert_eq(after.size(), Battlefield.sends_a_peak(), "the rift sends from it")
+	for p: Unit in after:
+		assert_eq(p.squad, ContentDB.SQUAD_DEFAULT, "and so are the ones the rift sends after, whichever band each makes for (band %d)" % h.field.band_of(p.goal_col))
 
 
 ## A composition is its grid (8 November): the pack on the map is what the grid holds, the lead
@@ -382,13 +490,20 @@ func test_a_composed_formation_replaces_the_spawn_list_and_the_boss_can_stay_hom
 		assert_false(sq.is_boss, "%s is no boss" % sq.display_name)
 		placed.append([sq.foe_id, sq.strength, sq.faction])
 	assert_eq(placed, [[a, 2, str(facs[0])], [c, 5, str(facs[1])], [a, 1, str(facs[0])]], "the packs as composed, each under its own foe's faction")
-	var cycled: Array = b.field.cycle.map(func(comp) -> Array: return [str(comp["members"][0][0]), int(comp["members"][0][1]), str(comp["faction"])])
-	assert_eq(cycled, placed, "and the rift sends them in turn")
-	b.field.rift_pressure = b.field.rift_pressure_max - 1
-	b.field._cycle_index = 1
-	b.field.tick_pressure(1)
-	var spawned: Unit = b.field.packs()[b.field.packs().size() - 1]
-	assert_eq([spawned.foe_id, spawned.faction], [c, str(facs[1])], "a rift pack wears its own faction")
+	# The tide's one list is the composed side, which every band draws from: the mouths send its
+	# packs in turn from the first, the rift's and then a tear's, each under its own faction.
+	assert_eq(b.field.graded.keys(), [ContentDB.SQUAD_DEFAULT], "one list, of packs of no composition")
+	var listed: Array = (b.field.graded[ContentDB.SQUAD_DEFAULT] as Array).map(func(comp) -> Array: return [str(comp["members"][0][0]), int(comp["members"][0][1]), str(comp["faction"])])
+	assert_eq(listed, placed, "the packs as composed, in their order")
+	assert_true(b.field.hunters.is_empty(), "and no hunting pack beside them")
+	for peak in range(2):
+		b.field.rift_pressure = b.field.rift_pressure_max - 1
+		assert_true(b.field.tick_pressure(1), "a peak")
+	var sent: Array = b.field.packs().slice(placed.size())
+	assert_eq(sent.size(), Battlefield.sends_a_peak() * (2 + Ramp.tears_at(0)), "two peaks: the rift's packs twice and the first tear's once")
+	for k in range(sent.size()):
+		var spawned: Unit = sent[k]
+		assert_eq([spawned.foe_id, spawned.strength, spawned.faction], placed[k % placed.size()], "pack %d the mouths send is the list's next in turn, under its own faction" % k)
 	b.forced = []
 	b.field.gate_hp = 0
 	b.end_turn()
@@ -451,57 +566,65 @@ func test_a_composition_unpacks_its_members_and_keeps_its_survivors_by_member() 
 
 
 ## The field at the start follows the tier and the ramp (the pacing session, 30 October): the
-## tier's compositions, the ramp's count of formations (the second the guest's where there is
-## one) and patrols at the ramp's density, the timer the ramp's, and the cycle the lead's and the
-## guest's formations and patrols in turn, a formation first.
+## timer the ramp's; the tide's lists the tier's pushing packs of the lead and the guest that the
+## ramp's gate holds, each by its rating and the two domains in turn, the lead's first, their
+## hunting patrols apart; and before the wall the opening's form at the ramp, the ramp's count of
+## packs before the middle, each pack its list's next as content writes it.
 func test_the_field_at_the_start_follows_the_tier_and_the_ramp() -> void:
 	var db := ContentDB.load_default()
+	var mid := Battlefield.BAND_RATING.size() / 2
 	for r in [0, 6, 12]:
 		var b := Battle.new(5)
 		b.tier = 1
 		b.ramp = r
 		b.guest = "waste"
 		b.setup(_team(), "meadow")
-		assert_eq(b.field.rift_pressure_max, Ramp.timer_at(r), "ramp %d: the timer" % r)
-		var forms := 0
-		var patrols := 0
-		var guests := 0
-		for sq in b.field.packs():
-			if sq.is_boss:
-				continue
-			if sq.composition_size == "formation":
-				forms += 1
-			elif sq.composition_size == "patrol":
-				patrols += 1
-			if sq.faction == "waste":
-				guests += 1
+		var f := b.field
+		assert_eq(f.rift_pressure_max, Ramp.timer_at(r), "ramp %d: the timer" % r)
+		# The lists: both domains' tier-two packs the gate holds, by rating, in turn.
+		var mine := tide_packs(db, "meadow", 2, r)
+		var theirs := tide_packs(db, "waste", 2, r)
+		var ratings: Array = f.graded.keys()
+		ratings.sort()
+		assert_true(ratings.has(1) and ratings.has(3), "ramp %d: packs for one and for three at the least (%s)" % [r, str(ratings)])
+		for rating in ratings:
+			var ids: Array = (f.graded[rating] as Array).map(func(c) -> String: return str(c["id"]))
+			assert_eq(ids, in_turn(mine.get(rating, []), theirs.get(rating, [])), "ramp %d: the packs for %d, the lead's and the guest's in turn, the lead's first" % [r, int(rating)])
+			for c in f.graded[rating]:
+				assert_eq([ContentDB.squad_of(c), str(c.get("hunts", ""))], [int(rating), ""], "ramp %d: %s is a pack for %d that pushes" % [r, str(c["id"]), int(rating)])
+		for rating in mine.keys() + theirs.keys():
+			assert_true(ratings.has(rating), "ramp %d: a list for every rating either domain has a pack for (%d)" % [r, int(rating)])
+		assert_false(f.hunters.is_empty(), "ramp %d: the hunting packs stand apart" % r)
+		for c in f.hunters:
+			assert_true(str(c["size"]) == "patrol" and not str(c.get("hunts", "")).is_empty(), "ramp %d: %s is a patrol that hunts" % [r, str(c["id"])])
+		# The opening: its form at the ramp, each pack a tier-two composition as content writes it.
+		var opened: Array = f.packs().filter(func(sq: Unit) -> bool: return not sq.is_boss)
+		assert_eq(opened.size(), _opening_count(r), "ramp %d: the opening's count of packs" % r)
+		var by_band := {}
+		for sq: Unit in opened:
+			var band := f.band_of(sq.goal_col)
+			by_band[band] = int(by_band.get(band, 0)) + 1
+			assert_eq(sq.squad, _dealt_rating(f, int(Battlefield.BAND_RATING[band])), "ramp %d: %s before band %d is the pack dealt for its rating" % [r, sq.composition, band])
 			var comp: Dictionary = {}
-			for c in db.compositions(sq.faction, 2, sq.composition_size):
+			for c in db.compositions(sq.faction, 2, sq.composition_size) + db.compositions(sq.faction, 2, sq.composition_size, -1, ContentDB.GRADED):
 				if str(c["id"]) == sq.composition:
 					comp = c
 			assert_false(comp.is_empty(), "ramp %d: %s is a tier-two composition of its domain" % [r, sq.composition])
+			assert_true(ContentDB.ramp_holds(comp, r), "ramp %d: one its gate deals at this Convergence (%s)" % [r, sq.composition])
 			for k in range(comp["members"].size()):
 				assert_eq(sq.members[k], [str(comp["members"][k][0]), int(comp["members"][k][1])], "ramp %d: %s's member %d as content writes it, at any ramp (7 November)" % [r, sq.composition, k])
-		assert_eq(forms, Ramp.formations_at(r), "ramp %d: the formations at the start" % r)
-		assert_eq(patrols, Ramp.patrols_at(r), "ramp %d: the patrols at the start" % r)
-		# The lead's and the guest's in turn, the lead's first: the second formation and the
-		# second patrol are the guest's.
-		assert_eq(guests, Ramp.formations_at(r) / 2 + Ramp.patrols_at(r) / 2, "ramp %d: every second composition on the field is the guest's" % r)
-		var first_pack: Unit = b.field.packs()[0]
-		assert_eq(first_pack.faction, "meadow", "ramp %d: the first on the field is the lead's" % r)
-		assert_eq(str(b.field.cycle[0]["size"]), "formation", "ramp %d: the cycle starts with a formation" % r)
-		assert_eq(str(b.field.cycle[0]["faction"]), "meadow", "the lead's")
-		assert_eq(str(b.field.cycle[2]["faction"]), "waste", "then the guest's formation, after the lead's patrol")
-		for c in b.field.patrol_cycle:
-			assert_eq(str(c["size"]), "patrol", "the tears send patrols alone")
-		assert_true(b.field.cycle.size() >= db.compositions("meadow", 2, "formation").size() + db.compositions("waste", 2, "formation").size(), "every formation of both is in the cycle")
+		for band in range(Battlefield.BAND_RATING.size()):
+			var want := Ramp.formations_at(r) if band == mid else (1 if int(Battlefield.BAND_RATING[band]) == 2 else 2)
+			assert_eq(int(by_band.get(band, 0)), want, "ramp %d: the packs making for band %d" % [r, band])
+		assert_eq(opening_off_lists(b), "", "ramp %d: each pack the opening stands is its list's next, the lead's or the guest's as it comes" % r)
+		assert_true(opened.any(func(sq: Unit) -> bool: return sq.faction == "waste") and opened.any(func(sq: Unit) -> bool: return sq.faction == "meadow"), "ramp %d: so both domains stand before the wall" % r)
 
 
 ## The Rupture meter (the pacing session, 30 October; sized in beats, 11 November): the last
-## threshold the opening and the tide through the ramp's beats, a patrol's worth left, and an
-## elite's rating for the tier's elite; a Fracture pays out as a fight ends, the elite the tier
-## names spawning at the rift; the last breaks the seal; a sealed boss cannot be ordered onto
-## and joins no fight.
+## threshold the opening and the tide through the ramp's beats, a pack for one machine left, an
+## elite's rating for the tier's elite, and the pack bonus of every pack it counts; a Fracture
+## pays out as a fight ends, the elite the tier names spawning at the rift; the last breaks the
+## seal; a sealed boss cannot be ordered onto and joins no fight.
 func test_the_meter_fills_by_menace_and_the_fractures_pay_out_as_fights_end() -> void:
 	var b := _battle()   # the Marsh at tier 0: three Fractures, the Reaper at the first
 	var db := b.db
@@ -509,9 +632,9 @@ func test_the_meter_fills_by_menace_and_the_fractures_pay_out_as_fights_end() ->
 	var size := _rupture_size(b)
 	assert_true(b.field_menace > 0, "the field's part weighs something")
 	assert_eq(b.field_menace, int(size[0]), "the field's part: the opening and the tide through the ramp's beats")
-	assert_eq(int(b.thresholds[b.thresholds.size() - 1]), int(size[1]), "the Rupture: that, the tide's lightest patrol left, and four pips for the tier's elite")
+	assert_eq(int(b.thresholds[b.thresholds.size() - 1]), int(size[1]), "the Rupture: that, a pack for one machine left, four pips for the tier's elite, and the pack bonus of every pack counted")
 	assert_eq(Ramp.beats_at(0), Ramp.BEATS, "on the game's own beats")
-	assert_eq(int(b.thresholds[b.thresholds.size() - 1]) % ContentDB.MENACE_PER_PIP, 0, "a whole count of pips, whatever the domain's numbers")
+	assert_true(int(size[2]) > _opening_count(0), "the tide's packs counted with the opening's (%d)" % int(size[2]))
 	for k in range(1, b.thresholds.size()):
 		assert_true(int(b.thresholds[k]) - int(b.thresholds[k - 1]) >= int(b.thresholds[k - 1]) - (int(b.thresholds[k - 2]) if k >= 2 else 0), "later Fractures cost more (%s)" % str(b.thresholds))
 	assert_true(b.is_sealed() and b.boss.sealed, "the boss is sealed while there is a field to earn the Rupture against")
@@ -527,22 +650,25 @@ func test_the_meter_fills_by_menace_and_the_fractures_pay_out_as_fights_end() ->
 	var r := b.roster(sq)
 	assert_false((r["joins"] as Array).has(b.boss), "a sealed boss's ring is inert: it joins no fight")
 	assert_false(bool(r["all_in"]), "so the fight is an ordinary one")
-	# Kill the first pack outright: its menace is the first Fracture's worth or more.
+	# The tally stood a pack's worth short of the first Fracture by hand, then that pack killed
+	# outright: its fall carries the meter over the threshold as the fight ends.
 	var worth := ContentDB.worth_of(sq.squad)
+	var short := int(b.thresholds[0]) - worth
+	assert_true(short > 0, "the first Fracture costs more than one pack (%d against %d)" % [int(b.thresholds[0]), worth])
+	b.menace_killed = short
+	b._fractures()
+	assert_eq(b.fractures, 0, "no Fracture under the first threshold")
 	var sk := b.attack(sq, [m])
 	_win(sk)
 	b.finish_skirmish()
-	var packs_before := b.field.packs().size()
-	assert_eq(b.menace_killed, worth, "the tally counts the pack's fall at its threat rating's worth")
-	if b.menace_killed >= int(b.thresholds[0]):
-		assert_true(b.fractures >= 1, "a Fracture is earned once the tally crosses its threshold")
-		assert_eq(b.elites_spawned, [str(db.elite_compositions("marsh", 1)[0]["id"])], "and the Marsh's first own elite emerges at it (the roll at this seed is above the wanderers' chance)")
-		var elite: Unit = b.field.packs()[b.field.packs().size() - 1]
-		assert_eq(elite.composition_size, "elite", "an elite composition")
-		assert_true(db.is_elite(elite.foe_id), "led by its elite")
-		assert_true(Hex.distance(elite.pos, b.map.rift) <= 3, "at the rift")
-	else:
-		assert_eq(b.fractures, 0, "no Fracture under the first threshold")
+	assert_eq(b.menace_killed, short + worth, "the tally counts the pack's fall at its threat rating's worth")
+	assert_eq(b.meter(), short + worth + Battle.pack_bonus(), "and the meter the pack bonus over it")
+	assert_eq(b.fractures, 1, "a Fracture is earned as the fight ends, once the meter crosses its threshold")
+	assert_eq(b.elites_spawned, [str(db.elite_compositions("marsh", 1)[0]["id"])], "and the Marsh's first own elite emerges at it (the roll at this seed is above the wanderers' chance)")
+	var elite: Unit = b.field.packs()[b.field.packs().size() - 1]
+	assert_eq(elite.composition_size, "elite", "an elite composition")
+	assert_true(db.is_elite(elite.foe_id), "led by its elite")
+	assert_true(Hex.distance(elite.pos, b.map.rift) <= 3, "at the rift")
 	assert_true(b.is_sealed(), "the seal holds short of the Rupture")
 	# The tally carried over the last threshold by hand: the Rupture.
 	b.menace_killed = int(b.thresholds[b.thresholds.size() - 1])
@@ -560,8 +686,11 @@ func test_the_meter_fills_by_menace_and_the_fractures_pay_out_as_fights_end() ->
 ## as they were; and a battle under way keeps the thresholds it opened on.
 func test_the_beats_trial_moves_the_fields_part_and_nothing_else() -> void:
 	var two := _battle()
-	assert_eq(int(two.thresholds[-1]), int(_rupture_size(two)[1]), "the game's own: two beats")
-	var over := int(two.thresholds[-1]) - int(_rupture_size(two)[0])   # the elite's part less the patrol left, read before the dial moves
+	var own := _rupture_size(two)
+	assert_eq(int(two.thresholds[-1]), int(own[1]), "the game's own: two beats")
+	# What the size holds past the field's part and the bonus of the packs that part counts: the
+	# elite's part, with its bonus, less the pack left with its own. Read before the dial moves.
+	var over := int(two.thresholds[-1]) - int(own[0]) - Battle.pack_bonus() * int(own[2])
 	var sizes := {}
 	for beats in [1, 3]:
 		Ramp.beats_trial = beats
@@ -570,7 +699,8 @@ func test_the_beats_trial_moves_the_fields_part_and_nothing_else() -> void:
 		assert_eq(b.field_menace, int(size[0]), "%d beats: the opening and the tide through that many peaks" % beats)
 		assert_eq(int(b.thresholds[-1]), int(size[1]), "and the Rupture with it")
 		assert_eq(b.thresholds.size(), two.thresholds.size(), "the tier's count of Fractures stands")
-		assert_eq(int(b.thresholds[-1]) - int(size[0]), over, "the elite's part and the patrol left are the tier's, whatever the beats")
+		assert_true((int(size[2]) - int(own[2])) * (beats - Ramp.BEATS) > 0, "the packs counted follow the beats (%d against %d)" % [int(size[2]), int(own[2])])
+		assert_eq(int(b.thresholds[-1]) - int(size[0]) - Battle.pack_bonus() * int(size[2]), over, "the elite's part and the pack left are the tier's, whatever the beats")
 		for k in range(1, b.thresholds.size()):
 			assert_true(int(b.thresholds[k]) - int(b.thresholds[k - 1]) >= int(b.thresholds[k - 1]) - (int(b.thresholds[k - 2]) if k >= 2 else 0), "later Fractures still cost more (%s)" % str(b.thresholds))
 		sizes[beats] = int(b.thresholds[-1])
@@ -590,9 +720,11 @@ func test_the_strikes_trial_sets_what_a_pip_strikes_the_wall_for() -> void:
 	var own := _battle()
 	var sq0: Unit = own.field.packs()[0]
 	var rating := clampi(sq0.squad, 1, 4)
-	assert_eq(Battlefield.strike_of(sq0), rating * Battlefield.STRIKE_PER_PIP, "the game's own strike a pip")
-	Battlefield.strike_trial = 5
-	assert_eq(Battlefield.strike_of(sq0), rating * 5, "the strike's trial: five a pip")
+	assert_eq(Battlefield.strike_per_pip(), Battlefield.STRIKE_PER_PIP, "no trial: the game's own strike a pip")
+	assert_eq(Battlefield.strike_of(sq0), rating * Battlefield.STRIKE_PER_PIP, "and a pack strikes by it")
+	var tried := 2 * Battlefield.STRIKE_PER_PIP
+	Battlefield.strike_trial = tried
+	assert_eq(Battlefield.strike_of(sq0), rating * tried, "the strike's trial: twice the game's a pip")
 	Battlefield.strike_trial = 0
 	assert_eq(Battlefield.strike_of(sq0), rating * Battlefield.STRIKE_PER_PIP, "and the game's own again")
 
@@ -603,6 +735,7 @@ func test_the_strikes_trial_sets_what_a_pip_strikes_the_wall_for() -> void:
 ## tally; a pack a fight has worn has paid the share its strike has lost, the fall makes it
 ## whole, once; and a save carries the books.
 func test_menace_is_a_packs_threat_rating_whoever_is_in_it() -> void:
+	Battle.pack_bonus_trial = 0   # the pack bonus set aside: the meter here is the tally alone (its own test reads the bonus)
 	var db := ContentDB.load_default()
 	var pip := ContentDB.MENACE_PER_PIP
 	assert_eq([ContentDB.worth_of(1), ContentDB.worth_of(2), ContentDB.worth_of(3), ContentDB.worth_of(4)], [pip, 2 * pip, 3 * pip, 4 * pip], "one, two, three, four")
@@ -618,7 +751,7 @@ func test_menace_is_a_packs_threat_rating_whoever_is_in_it() -> void:
 		b.finish_skirmish()
 		assert_false(b.field.units.has(sq), "the pack is gone")
 		assert_eq(b.menace_killed, 4 * pip, "an elite's fall is four pips (%s)" % str(c["id"]))
-		assert_eq(b.meter(), b.menace_killed, "and the meter is the tally")
+		assert_eq(b.meter(), b.menace_killed, "and with no pack bonus the meter is the tally")
 		assert_true(b.pack_paid.is_empty(), "nothing of the pack is left on the books")
 		falls.append(b.menace_killed)
 		weights.append(db.composition_weight(c))
@@ -664,33 +797,50 @@ func test_menace_is_a_packs_threat_rating_whoever_is_in_it() -> void:
 	assert_false(w.field.units.has(sqw), "the pack falls")
 	assert_eq(w.menace_killed, worth, "and its fall makes its rating whole, once")
 	assert_true(w.pack_paid.is_empty(), "the books clear")
+	Battle.pack_bonus_trial = -1
 
 
 ## The thresholds read the tide (the long wall brief 3.8; in beats since 11 November): the menace
-## placed at the start and what the rift and the tears send through the ramp's beats, at the
-## ramp's density; and the Rupture quickens the tide, the beat halving once, never sealing again.
+## placed at the start and what the rift and the tears send through the ramp's beats, pack for
+## pack, each send at the mean of the bands its mouth draws from, so no draw moves a threshold;
+## and the Rupture quickens the tide, the beat halving once, never sealing again.
 func test_the_thresholds_read_the_first_waves_and_the_rupture_halves_the_beat() -> void:
 	var b := Battle.new(3)
 	b.ramp = 5
 	b.setup(_team(), "marsh")
-	var db := b.db
 	var placed := 0
+	var opened := 0
 	for sq in b.field.packs():
 		if not sq.is_boss:
 			placed += ContentDB.worth_of(sq.squad)
+			opened += 1
 	var size := _rupture_size(b)
 	assert_true(int(size[0]) > placed, "the tide's beats weigh something past the opening")
 	assert_eq(b.field_menace, int(size[0]), "the field's part: the opening and the tide through the beats")
-	# The tide as the field then sends it: the same menace, peak by peak.
-	var sent := placed
+	# No draw moves a threshold: another seed's battle stands other packs of its lists before
+	# the wall and draws other bands at its peaks, and opens on the same thresholds.
+	var stood := func(battle: Battle) -> Array: return battle.field.packs().filter(func(sq: Unit) -> bool: return not sq.is_boss).map(func(sq: Unit) -> String: return sq.composition)
+	var other_openings := 0
+	for s in [1, 2, 4, 5, 6, 7]:
+		var other := Battle.new(s)
+		other.ramp = 5
+		other.setup(_team(), "marsh")
+		assert_eq([other.field_menace, other.thresholds], [b.field_menace, b.thresholds], "seed %d: the same field's part and the same thresholds" % s)
+		if stood.call(other) != stood.call(b):
+			other_openings += 1
+	assert_true(other_openings > 0, "though the seeds stood different packs (%d of six)" % other_openings)
+	# The tide as the field then sends it: pack for pack what the size counted, peak by peak,
+	# each worth what its band's rating made it, where the size read the mean.
+	var sent := 0
 	var seen: Array = b.field.packs().duplicate()
 	for j in range(Ramp.beats_at(b.tier)):
 		b.field.peak()
 		for sq in b.field.packs():
 			if not seen.has(sq):
 				seen.append(sq)
-				sent += ContentDB.worth_of(sq.squad)
-	assert_eq(sent, b.field_menace, "and it is what the rift and the tears send through those peaks")
+				sent += 1
+	assert_eq(sent, int(size[2]) - opened, "and the mouths send through those peaks the packs it counted")
+	assert_eq([b.field.rift_spawns, b.field.tear_spawns], [Battlefield.sends_a_peak() * Ramp.beats_at(b.tier) + (Ramp.beats_at(b.tier) / 2 if not b.field.hunters.is_empty() else 0), sent - b.field.rift_spawns], "the rift's at every peak, a tear's from the peak after it opens")
 	b.field.rift_pressure_max = 3
 	b.rupture()
 	assert_false(b.is_sealed(), "the Rupture")
@@ -1998,51 +2148,54 @@ func _carry_line(b: Battle, carrier: Unit, rider: Unit, third: Unit) -> Array:
 	return []
 
 
-## The sends' trial (Ryan, 24 November: "I think enabling multiple spawns at the rift and at
-## tears is plenty ... If we enable multiple simultaneous spawns from all spawn points, it gives
-## us a very useful tuning dial for convergences"): every mouth sends so many packs at a peak, the
-## rift and each open tear alike, each to a stretch of wall of its own, and the Rupture's size
-## counts them.
+## The packs a mouth sends at a peak (Ryan, 24 November: "I think enabling multiple spawns at the
+## rift and at tears is plenty ... If we enable multiple simultaneous spawns from all spawn points,
+## it gives us a very useful tuning dial for convergences"): every mouth sends so many, the rift
+## and each open tear alike, two the game's own and the dial another count, and the Rupture's
+## size counts them.
 func test_every_mouth_sends_as_many_packs_as_the_sends_trial_says() -> void:
+	var own := Battlefield.SENDS_A_PEAK
+	assert_eq(Battlefield.sends_a_peak(), own, "no trial: the game's own count")
 	var plain := Battle.new(6)
 	plain.setup(_team(), "meadow")
 	assert_true(plain.field.tears.is_empty(), "no tear stands before the first peak")
 	plain.end_turn()
-	assert_eq([plain.field.rift_spawns, plain.field.tear_spawns], [1, 0], "the game's own: the rift sends one at a peak")
-	Battlefield.sends_trial = 2
-	var twice := Battle.new(6)
-	twice.setup(_team(), "meadow")
-	assert_true(int(twice.thresholds[-1]) > int(plain.thresholds[-1]), "the Rupture's size counts what the mouths send (%d against %d)" % [int(twice.thresholds[-1]), int(plain.thresholds[-1])])
-	twice.end_turn()
-	assert_eq(twice.field.rift_spawns, 2, "the rift sends two at a peak")
-	assert_eq(twice.field.tears.size(), plain.field.tears.size(), "and no more tears open for it")
-	var open := twice.field.tears.size()
+	assert_eq([plain.field.rift_spawns, plain.field.tear_spawns], [own, 0], "the game's own: the rift sends its two at a peak")
+	var open := plain.field.tears.size()
 	assert_true(open > 0, "a tear opened at the first peak")
-	twice.field.peak()
-	assert_eq(twice.field.tear_spawns, 2 * open, "at the next, each open tear sends two")
-	Battlefield.sends_trial = 1
+	var hunting := 1 if not plain.field.hunters.is_empty() else 0   # the rift's hunting pack at the second peak
+	plain.field.peak()
+	assert_eq([plain.field.rift_spawns, plain.field.tear_spawns], [2 * own + hunting, own * open], "at the next, each open tear sends as many as the rift")
+	for tried in [own + 1, own - 1]:
+		if tried < 1:
+			continue   # no dial below one pack a mouth
+		Battlefield.sends_trial = tried
+		assert_eq(Battlefield.sends_a_peak(), tried, "the dial at %d" % tried)
+		var b := Battle.new(6)
+		b.setup(_team(), "meadow")
+		assert_true((int(b.thresholds[-1]) - int(plain.thresholds[-1])) * (tried - own) > 0, "the Rupture's size counts what the mouths send (%d at %d a mouth against %d at %d)" % [int(b.thresholds[-1]), tried, int(plain.thresholds[-1]), own])
+		b.end_turn()
+		assert_eq([b.field.rift_spawns, b.field.tear_spawns], [tried, 0], "the rift sends %d at a peak" % tried)
+		assert_eq(b.field.tears.size(), open, "and no more tears open for it")
+		b.field.peak()
+		assert_eq([b.field.rift_spawns, b.field.tear_spawns], [2 * tried + hunting, tried * open], "at the next, each open tear sends %d" % tried)
+	Battlefield.sends_trial = 0
 	var again := Battle.new(6)
 	again.setup(_team(), "meadow")
 	assert_eq(again.thresholds, plain.thresholds, "no trial: the game's own size")
 
 
-## The graded tide on trial (Ryan, 23 November: "the far edges are 1s with a sprinkling of 2s,
-## then 2s in between, and 3s coming right down the center. Move speed for pushers probably should
-## reflect that, with 1s fastest and 3s slowest"; 24 November: "I think we build your leans and
-## I'll see"): a battle opens on a pack for three before the middle and a pack for one at each end,
-## farther out than the game stands them; a mouth's packs are drawn by the band of the wall each
-## makes for; a pack walks at its composition's pace; the hunting packs come apart from them; and
-## a battle begun graded stays graded in a save.
-func test_the_graded_tide_deals_packs_by_the_band_of_the_wall_they_make_for() -> void:
+## The tide is graded (Ryan, 23 November: "the far edges are 1s with a sprinkling of 2s, then 2s
+## in between, and 3s coming right down the center. Move speed for pushers probably should reflect
+## that, with 1s fastest and 3s slowest"; the game's own tide since 25 November, on his "Go ahead
+## with the switch-over"): a battle opens on packs before every band of the wall, each of its
+## band's rating; a mouth's packs are drawn by the band of the wall each makes for; a pack walks at
+## its composition's pace; the hunting packs come apart from them; and a save keeps the lists.
+func test_the_tide_deals_packs_by_the_band_of_the_wall_they_make_for() -> void:
 	var db := ContentDB.load_default()
-	var plain := Battle.new(8)
-	plain.setup(_team(), "meadow")
-	assert_true(plain.field.graded.is_empty() and plain.field.hunters.is_empty(), "no trial: the tide as built")
-	Battlefield.graded_tide = true
 	Battlefield.sends_trial = 3
 	var b := Battle.new(8)
 	b.setup(_team(), "meadow")
-	Battlefield.graded_tide = false
 	var f := b.field
 	assert_true(f.graded.has(1) and f.graded.has(2) and f.graded.has(3), "the Meadow has packs for one, two and three")
 	for r in f.graded.keys():
@@ -2051,14 +2204,16 @@ func test_the_graded_tide_deals_packs_by_the_band_of_the_wall_they_make_for() ->
 	assert_false(f.hunters.is_empty(), "its hunting packs stand apart")
 	for c in f.hunters:
 		assert_false(str(c.get("hunts", "")).is_empty(), "%s hunts" % str(c["id"]))
-	# The opening: packs before every band of the wall, more than the game as built stands
-	# (Ryan, 24 November: "There needs to be more packs on the field at the start, for sure"),
-	# each of its band's rating, none to strike on the first turn.
+	# The opening: packs before every band of the wall (Ryan, 24 November: "There needs to be more
+	# packs on the field at the start, for sure"), seven of them, eight from the third Convergence
+	# and nine from the eighth, each of its band's rating, none to strike on the first turn.
 	var opened: Array = f.packs().filter(func(sq: Unit) -> bool: return not sq.is_boss)
 	var form := Battle.graded_opening(0, f.map.width)
-	assert_eq(opened.size(), form.size(), "the graded tide's own opening stands")
-	assert_true(opened.size() > Ramp.formations_at(0) + Ramp.patrols_at(0), "more packs than the game as built opens with (%d)" % opened.size())
-	assert_true(Battle.graded_opening(Ramp.TOP, f.map.width).size() > form.size(), "and more again up the ramp")
+	assert_eq(opened.size(), form.size(), "the opening stands its form")
+	for ramp in range(Ramp.TOP + 1):
+		assert_eq(Battle.graded_opening(ramp, f.map.width).size(), _opening_count(ramp), "Convergence %d: two at each end, one before each band between, the ramp's count before the middle" % ramp)
+	assert_eq([0, 2, 3, 7, 8, Ramp.TOP].map(func(ramp: int) -> int: return Battle.graded_opening(ramp, f.map.width).size()), [7, 7, 8, 8, 9, 9], "seven packs, eight from the third Convergence and nine from the eighth")
+	assert_true(Battle.graded_opening(0, Battlefield.BAND_RATING.size() - 1).is_empty(), "a field too narrow to have the five bands opens with nothing of the form")
 	var stood := {}
 	for e in form:
 		assert_eq(int(e[1]), int(Battlefield.BAND_RATING[int(e[0])]), "the form stands a band its own rating")
@@ -2072,13 +2227,7 @@ func test_the_graded_tide_deals_packs_by_the_band_of_the_wall_they_make_for() ->
 		assert_false(f.soonest_columns(sq).is_empty(), "%s opens with a way to the wall" % (sq as Unit).display_name)
 		assert_false((f.plan_walks()[(sq as Unit).id] as Battlefield.Walk).strikes, "and strikes nothing on the first turn")
 	assert_eq(stood.size(), Battlefield.BAND_RATING.size(), "a pack makes for every band of the wall")
-	var built_rows := 0
-	for sq in plain.field.packs():
-		if not sq.is_boss and sq.squad >= 3:
-			built_rows = plain.field.apron_row() - Hex.axial_to_offset(sq.pos).y
-	for sq in opened:
-		if (sq as Unit).squad >= 3:
-			assert_true(f.apron_row() - Hex.axial_to_offset((sq as Unit).pos).y > built_rows or (sq as Unit).movespeed < 2, "the pack for three opens farther from the wall than the game stands its formation")
+	assert_eq(opening_off_lists(b), "", "each the next of its rating's list, from where the seed started it")
 	# A peak: the rift sends three, each to a band of its own, at its band's rating but for an
 	# end's odd pack for two.
 	b.end_turn()
@@ -2097,7 +2246,7 @@ func test_the_graded_tide_deals_packs_by_the_band_of_the_wall_they_make_for() ->
 		if c.has("pace"):
 			paced = c
 	assert_false(paced.is_empty(), "a pack for one in content names its pace")
-	var runner := f.emerge(paced, f.map.rift, 0, 1, 0)
+	var runner := f.emerge(paced, f.map.rift, 0)
 	assert_eq(runner.movespeed, int(paced["pace"]), "and walks at it")
 	assert_ne(int(db.foes[runner.foe_id].get("movespeed", 0)), int(paced["pace"]), "where its own foes walk another (%s)" % runner.foe_id)
 	# The hunting packs come out of the rift every other peak from the second.
@@ -2105,34 +2254,34 @@ func test_the_graded_tide_deals_packs_by_the_band_of_the_wall_they_make_for() ->
 	assert_eq(hunting.call(), 0, "none at the first peak")
 	f.peak()
 	assert_eq(hunting.call(), 1, "one at the second")
-	# A save keeps the tide graded, whatever the dial says when it is resumed.
+	# A save keeps the tide's lists and where each stands, so the resumed rift sends on from them.
 	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
-	assert_false(Battlefield.graded_tide, "the dial is off")
 	assert_eq(back.field.graded.keys().size(), f.graded.keys().size(), "a save keeps the packs by rating")
 	for r in f.graded.keys():
 		assert_eq((back.field.graded[r] as Array).map(func(c: Dictionary) -> String: return str(c["id"])), (f.graded[r] as Array).map(func(c: Dictionary) -> String: return str(c["id"])), "each list as it was (%d)" % int(r))
 		assert_eq(int(back.field._graded_at[r]), int(f._graded_at[r]), "and where it stands")
 	assert_eq([back.field.hunters.size(), back.field._hunter_index], [f.hunters.size(), f._hunter_index], "and the hunting packs")
+	var twin := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
 	var before := back.field.packs().size()
 	back.field.peak()
+	twin.field.peak()
 	assert_true(back.field.packs().size() > before, "and the resumed battle's rift sends by the bands still")
-	Battlefield.sends_trial = 1
-	var again := Battle.new(8)
-	again.setup(_team(), "meadow")
-	assert_true(again.field.graded.is_empty(), "no trial: the tide as built")
+	var drawn := func(field: Battlefield) -> Array: return field.packs().slice(before).map(func(sq: Unit) -> Array: return [sq.composition, sq.goal_col, sq.pos])
+	assert_eq(drawn.call(back.field), drawn.call(twin.field), "the same packs to the same stretches however often it is resumed: the draw is the seed's, the peak's and the mouth's")
+	f.peak()
+	assert_eq(drawn.call(f), drawn.call(back.field), "as the unbroken battle sends them")
+	Battlefield.sends_trial = 0
 
 
-## The graded tide's pushers come down onto their own stretch (Battlefield._higher): a pack the
+## The tide's pushers come down onto their own stretch (Battlefield._higher): a pack the
 ## rift sends to an end of the wall crosses the field high and never stands on the apron short of
 ## its stretch, where it would stop and strike (Ryan, 23 November, of the walk it would otherwise
 ## be: "they're skipping sections they could hit this turn to go hit something two turns away").
-func test_a_graded_pack_bound_for_an_end_never_stops_short_along_the_wall() -> void:
-	Battlefield.graded_tide = true
+func test_a_pack_bound_for_an_end_never_stops_short_along_the_wall() -> void:
 	var b := Battle.new(8)
 	b.setup([], "meadow")   # nobody to catch or block it
-	Battlefield.graded_tide = false
 	var f := b.field
-	var one := f.emerge(f.next_graded(1), f.map.rift, 0, 1, 0)
+	var one := f.emerge(f.next_graded(1), f.map.rift, 0)
 	assert_eq(f.band_of(one.goal_col), 0, "a pack for one bound for the wall's first band (column %d)" % one.goal_col)
 	var turns := 0
 	while not f.on_apron(one, one.pos) and turns < 20:
@@ -2153,12 +2302,10 @@ func test_a_graded_pack_bound_for_an_end_never_stops_short_along_the_wall() -> v
 ## whole rift to head out"): on the ring round the shell's seven, the hex its walk is shortest
 ## from; its first walk never crosses the rift's column; a hunting pack lands on its prey's side
 ## and locks nothing by it; nothing lands beside a machine; with the ring held it still stands
-## off the shell; and the tide as built draws its segment as it always did.
+## off the shell; and a pack dealt for no band lands there too, on the segment it drew first.
 func test_a_pack_the_rift_sends_lands_outside_the_shell_on_the_side_it_is_headed() -> void:
-	Battlefield.graded_tide = true
 	var b := Battle.new(8)
 	b.setup(_team(), "meadow")
-	Battlefield.graded_tide = false
 	var f := b.field
 	# A bare field, so the read is the landing's and no shape's: the opening's packs off it.
 	for sq in f.packs():
@@ -2178,7 +2325,7 @@ func test_a_pack_the_rift_sends_lands_outside_the_shell_on_the_side_it_is_headed
 	var last := Battlefield.BAND_RATING.size() - 1
 	var sides := {0: -1, last: 1}
 	for band in [0, last]:
-		var sq := f.emerge(f.next_graded(1), f.map.rift, 0, 1, band)
+		var sq := f.emerge(f.next_graded(1), f.map.rift, band)
 		assert_eq(f.band_of(sq.goal_col), band, "a pack bound for an end of the wall (column %d)" % sq.goal_col)
 		assert_true(ring.has(sq.pos), "lands on the ring outside the shell (%s)" % str(Hex.axial_to_offset(sq.pos)))
 		assert_true((Hex.axial_to_offset(sq.pos).x - rift_col) * int(sides[band]) > 0, "on its own side of the rift (column %d)" % Hex.axial_to_offset(sq.pos).x)
@@ -2187,7 +2334,7 @@ func test_a_pack_the_rift_sends_lands_outside_the_shell_on_the_side_it_is_headed
 		for h in w.route:
 			assert_true((Hex.axial_to_offset(h).x - rift_col) * int(sides[band]) >= 0, "never round the rift to the other side (column %d)" % Hex.axial_to_offset(h).x)
 		assert_eq(w.route.size(), Hex.distance(sq.pos, w.route[w.route.size() - 1]), "straight to its stretch, no hex wasted")
-	var centre := f.emerge(f.next_graded(3), f.map.rift, 0, 1, last / 2)
+	var centre := f.emerge(f.next_graded(3), f.map.rift, last / 2)
 	assert_true(ring.has(centre.pos), "a pack bound for the middle lands on the ring")
 	assert_eq(Hex.axial_to_offset(centre.pos).y, BattleMap.RIFT_ROWS + 1, "before the rift, the row past the shell's")
 	# A hunting pack: on its prey's side, and its prey is locked when it first walks, as before.
@@ -2205,7 +2352,7 @@ func test_a_pack_the_rift_sends_lands_outside_the_shell_on_the_side_it_is_headed
 		assert_eq([hunt.prey, f.locks.size()], [0, locked], "and the landing locks nothing")
 		f.units.erase(hunt)
 	# Nothing lands beside a machine: one stood by the ring's hex turns the pack to the next.
-	var probe := f.emerge(f.next_graded(1), f.map.rift, 0, 1, 0)
+	var probe := f.emerge(f.next_graded(1), f.map.rift, 0)
 	var first := probe.pos
 	f.units.erase(probe)
 	var guard: Unit = f.mechs()[0]
@@ -2214,7 +2361,7 @@ func test_a_pack_the_rift_sends_lands_outside_the_shell_on_the_side_it_is_headed
 			guard.pos = n
 			break
 	assert_true(f.machine_adjacent(first), "a machine beside the hex a pack took")
-	var turned := f.emerge(f.next_graded(1), f.map.rift, 0, 1, 0)
+	var turned := f.emerge(f.next_graded(1), f.map.rift, 0)
 	assert_true(turned.pos != first and not f.machine_adjacent(turned.pos), "the next lands clear of it")
 	assert_false(shell.has(turned.pos), "and off the shell still")
 	# The ring held: the pack lands beyond it, never on the shell.
@@ -2222,34 +2369,41 @@ func test_a_pack_the_rift_sends_lands_outside_the_shell_on_the_side_it_is_headed
 		if f.unit_at(h) == null:
 			var block := f.emerge(f.next_graded(1), Hex.offset_to_axial(0, f.apron_row() - 1))
 			block.pos = h
-	var late := f.emerge(f.next_graded(1), f.map.rift, 0, 1, 0)
+	var late := f.emerge(f.next_graded(1), f.map.rift, 0)
 	assert_false(shell.has(late.pos) or ring.has(late.pos) or f.map.rift_hexes.has(late.pos), "with the ring held it lands past it (%s)" % str(Hex.axial_to_offset(late.pos)))
-	# The tide as built: the same landing, and the segment it always drew (read from the hex the
-	# rift's middle is nearest, before the pack takes its place).
-	var built := Battle.new(8)
-	built.setup(_team(), "meadow")
+	# A pack dealt for no band (an elite that pushes, a pack made by hand): the same landing, and
+	# the segment it draws is the wall it reaches soonest from the hex nearest the rift's middle,
+	# read before the pack takes its place on the ring. The twin battle deals the same pack by
+	# hand as far as the draw, and stops there.
+	var free := Battle.new(8)
+	free.setup(_team(), "meadow")
 	var twin := Battle.new(8)
 	twin.setup(_team(), "meadow")
-	var c: Dictionary = built.field.cycle[0]
-	var sent := built.field.emerge(c, built.map.rift)
+	var c: Dictionary = (free.field.graded[3] as Array)[0]
+	var sent := free.field.emerge(c, free.map.rift)
 	var drawn := Battlefield.pack_of(c, twin.field.spawn_faction)
+	twin.field.dress_pack(drawn)
+	if int(c.get("pace", 0)) > 0:
+		drawn.movespeed = int(c["pace"])
 	drawn.pos = twin.field.landing(drawn, twin.map.rift)
 	twin.field.add_unit(drawn)
+	var reached := twin.field.soonest_columns(drawn)
 	twin.field.assign_goal(drawn)
-	assert_eq(sent.goal_col, drawn.goal_col, "the tide as built draws its segment as it did")
-	assert_true(built.field.rift_ring().has(sent.pos), "and its pack lands on the ring too")
-	assert_false(built.map.shell_hexes().has(sent.pos), "off the shell")
+	assert_eq([sent.id, sent.movespeed], [drawn.id, drawn.movespeed], "the twin's pack is the same pack")
+	assert_true(reached.has(drawn.goal_col), "dealt for no band, a pack draws among the wall it reaches soonest (column %d of %s)" % [drawn.goal_col, str(reached)])
+	assert_eq(sent.goal_col, drawn.goal_col, "and the rift's pack keeps the segment it drew before it took its place")
+	assert_ne(sent.pos, drawn.pos, "which is not where the draw was read from")
+	assert_true(free.field.rift_ring().has(sent.pos), "its pack lands on the ring too")
+	assert_false(free.map.shell_hexes().has(sent.pos), "off the shell")
 
 
 ## Nothing is stood where it could only wait: the opening's pushers and the tears take ground
 ## with a way to the wall (Battlefield.wall_ground), so a corner the map's shape closed off holds
 ## neither (a pack stood in one held its hex for the battle and the Rupture's size counted it).
 func test_the_opening_and_the_tears_take_ground_with_a_way_to_the_wall() -> void:
-	Battlefield.graded_tide = true
 	var b := Battle.new(8)
 	b.map_kind = "steppe"
 	b.setup(_team(), "meadow")
-	Battlefield.graded_tide = false
 	var f := b.field
 	for h in f.map.terrain.keys():
 		if not f.map.is_structure(h):
@@ -2276,27 +2430,42 @@ func test_the_opening_and_the_tears_take_ground_with_a_way_to_the_wall() -> void
 	assert_true(ground.has(at), "one with a way to the wall")
 
 
-## The pack bonus on trial (Ryan, 23 November: "Maybe add a flat fracture bonus to a pack on top of
-## the per-foe weight, so that splitting into 4 fights across the map and grouping for bigger packs
-## are both viable ways of farming fracture"): a pack pays the meter its bonus as it falls, once,
-## on top of its rating; the Rupture's size counts the bonus for every pack it counts, so the
-## battle's length holds; the tally is never touched; a save keeps what was paid.
-func test_the_pack_bonus_trial_pays_a_pack_as_it_falls_and_sizes_the_rupture_to_match() -> void:
-	var plain := Battle.new(8)
-	plain.setup(_team(), "meadow")
-	Battle.pack_bonus_trial = 50
+## The pack bonus (Ryan, 23 November: "Maybe add a flat fracture bonus to a pack on top of the
+## per-foe weight, so that splitting into 4 fights across the map and grouping for bigger packs are
+## both viable ways of farming fracture"): a pack pays the meter its bonus as it falls, once, on
+## top of its rating, half a pip the game's own and the dial another; the Rupture's size counts
+## the bonus for every pack it counts, so the battle's length holds; the tally is never touched;
+## a save keeps what was paid.
+func test_the_pack_bonus_pays_a_pack_as_it_falls_and_sizes_the_rupture_to_match() -> void:
+	var bonus := Battle.PACK_BONUS
+	assert_eq(Battle.pack_bonus(), bonus, "no trial: the game's own bonus")
+	assert_true(bonus > 0, "which pays something, so the rule is read (%d)" % bonus)
+	Battle.pack_bonus_trial = 0
+	assert_eq(Battle.pack_bonus(), 0, "the dial at none: no bonus, where the game's own is one")
+	var none := Battle.new(8)
+	none.setup(_team(), "meadow")
+	Battle.pack_bonus_trial = -1
 	var b := Battle.new(8)
 	b.setup(_team(), "meadow")
-	# The packs the size counts at the first Convergence: what opens, the rift's send a beat, a
-	# patrol from every tear open before a beat; less the one the squad may leave, and each elite.
-	var counted := Ramp.formations_at(0) + Ramp.patrols_at(0)
+	# The packs the size counts at the first Convergence: what opens, every mouth's sends a beat
+	# (the rift's, and those of each tear open before the beat), the hunting pack of every other
+	# beat from the second; less the one the squad may leave, and each elite.
+	var counted := _opening_count(0)
 	var open := 0
 	for beat in range(Ramp.beats_at(0)):
-		counted += 1 + open
+		counted += Battlefield.sends_a_peak() * (1 + open)
+		if beat % 2 == 1 and not b.field.hunters.is_empty():
+			counted += 1
 		open += Ramp.tears_at(0)
+	assert_eq(counted, int(_rupture_size(b)[2]), "the packs the field's part counts")
 	counted += Ramp.elite_fractures_at(0).size() - Battle.RUPTURE_LEAVE
-	assert_eq(int(b.thresholds[-1]), int(plain.thresholds[-1]) + 50 * counted, "the Rupture grows by the bonus of every pack it counts (%d)" % counted)
-	assert_eq(b.thresholds.size(), plain.thresholds.size(), "the same Fractures")
+	assert_eq(int(b.thresholds[-1]), int(none.thresholds[-1]) + bonus * counted, "the Rupture grows by the bonus of every pack it counts (%d)" % counted)
+	assert_eq(b.thresholds.size(), none.thresholds.size(), "the same Fractures")
+	Battle.pack_bonus_trial = 2 * bonus
+	var twice := Battle.new(8)
+	twice.setup(_team(), "meadow")
+	assert_eq(int(twice.thresholds[-1]), int(none.thresholds[-1]) + 2 * bonus * counted, "and by a trial's as much")
+	Battle.pack_bonus_trial = -1
 	quiet_start(b)
 	var m: Unit = b.mechs()[0]
 	var sq: Unit = b.field.packs()[0]
@@ -2325,13 +2494,23 @@ func test_the_pack_bonus_trial_pays_a_pack_as_it_falls_and_sizes_the_rupture_to_
 		b.finish_skirmish()
 	assert_false(b.field.units.has(sq), "the pack has fallen")
 	assert_eq(b.menace_killed, worth, "the tally is its rating: salvage and Anathema read no bonus")
-	assert_eq([b.meter_bonus, b.meter()], [50, worth + 50], "and the meter its rating and the bonus, once")
+	assert_eq([b.meter_bonus, b.meter()], [bonus, worth + bonus], "and the meter its rating and the bonus, once")
 	var back := SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(b))))
 	assert_eq([back.meter_bonus, back.meter()], [b.meter_bonus, b.meter()], "a save keeps what the bonus has paid")
+	# The dial at none: a pack's fall pays its rating and nothing over it.
 	Battle.pack_bonus_trial = 0
+	quiet_start(none)
+	var m0: Unit = none.mechs()[0]
+	var sq0: Unit = none.field.packs()[0]
+	_engage(none, sq0, m0)
+	_win(none.attack(sq0, [m0]))
+	none.finish_skirmish()
+	assert_false(none.field.units.has(sq0), "with no bonus, a pack fallen")
+	assert_eq([none.meter_bonus, none.meter()], [0, none.menace_killed], "pays the meter its rating alone")
+	Battle.pack_bonus_trial = -1
 	var again := Battle.new(8)
 	again.setup(_team(), "meadow")
-	assert_eq(again.thresholds, plain.thresholds, "no trial: the game's own size")
+	assert_eq(again.thresholds, b.thresholds, "no trial: the game's own size")
 
 
 ## The leaders' step on trial (Ryan, 23 November: "A set form of each formation, for each C. Bosses
