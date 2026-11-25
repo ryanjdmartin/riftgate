@@ -120,7 +120,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1479 tests, 402,308 checks, green on Godot 4.8-beta4 (25 November, a Ricochet's hit the machine's over the graded tide's opening and the rift's landing). The runner fails a run
+- Tests: 1481 tests, 402,321 checks, green on Godot 4.8-beta4 (25 November, the map's list of the day). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -372,7 +372,12 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   own moves), and the queue's badge, crossed swords with the fight's place over their crossing
   (`Hud.engage_badge`), worn too on each machine's row of the orders board; no label names a fight.
   The gorges are nine steps deep and about half carry a faint stream, one body of water each,
-  whatever its ways close round flooded (`Map3D._stream_polys`). Since 23 November a die's double-tap shows
+  whatever its ways close round flooded (`Map3D._stream_polys`). Since 25 November a machine in
+  front of a pack's picture, a wall or a cache's chest is drawn over it (`BattleMapView._machine_over`),
+  a pack's threat rating is a chip at its picture's corner, a machine off the screen is a portrait
+  tag, a shell wall's ends stand on the highest ground outside them, a hex's dressing and a cache
+  press flat under a passing machine (`Map3D._flatten_props`), and the Cassowary lopes off its walk
+  through a handoff stride (`_cassowary_handoff`). Since 23 November a die's double-tap shows
   the whole die at its live numbers and a hold alone locks; a dark entry is its own face under a
   veil; a unit's tap waits out the die's double-tap window; on the map a pack's double-tap opens
   its formation (`FormationBox`, a foe's codex on a tap there) and a cache's its codex, and a pack shows no count. A debug build's settings hold TRIALS and COLOURS

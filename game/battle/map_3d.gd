@@ -927,23 +927,43 @@ func _flush_batches() -> void:
 	_batches.clear()
 
 
-var _prop_meshes: Dictionary = {}   # hex -> the meshes of its props, hidden while a machine stands there
-var _props_hidden: Dictionary = {}  # hex -> true while hidden
+var _prop_meshes: Dictionary = {}   # hex -> the meshes of its props, laid flat while a machine stands there
+var _laid: Dictionary = {}          # hex -> how much of its props stands, 1 whole to 0 laid flat, as last set
 
-## Hide the props of every hex a grounded machine stands on (or is crossing), and show the
-## rest again. A flyer hides nothing: it rides over what stands there.
-func _hide_props_under(occupied: Dictionary) -> void:
+## A hex's dressing lies down under a machine, and stands up again as it goes (Ryan, 25 November: "The
+## caches and terrain elements flickering in and out of existence when a frame moves through the hex
+## is weird. There has to be a better way"; they hid outright as a machine's hex changed, so a move
+## blinked them out and in hex by hex). The scene draws the machines with depth among the props, so a
+## rubble pile or a shrub would stand through a machine on its hex (29 September); instead each
+## hex's props are squashed onto its ground by how near a grounded machine is to its middle: whole a
+## step away, flat within half a step, eased between, so a passing machine presses them down and
+## they rise behind it, with nothing kept. A wreck's and a cache's own hex (`held`) stay flat.
+const FLAT_NEAR := 0.5   # in steps between two hexes' middles: flat this near
+const FLAT_FAR := 0.95   # and standing whole this far
+
+func _flatten_props(grounded: Array, held: Dictionary) -> void:
 	for h in _prop_meshes.keys():
-		var hide: bool = occupied.has(h)
-		if _props_hidden.get(h, false) == hide:
+		var k := 0.0 if held.has(h) else standing(h, grounded)
+		if absf(float(_laid.get(h, 1.0)) - k) < 0.001:
 			continue
-		_props_hidden[h] = hide
+		_laid[h] = k
+		var g := _height_of(h)
+		var xf := Transform3D(Basis.from_scale(Vector3(1.0, maxf(k, 0.001), 1.0)), Vector3(0.0, g * (1.0 - k), 0.0))   # its height scaled about its ground
 		for mi in _prop_meshes[h]:
 			var m: MeshInstance3D = mi
-			if hide:
-				m.visible = false
-			else:
-				m.visible = not m.has_meta("is_trace") or _trace_mode != "off"
+			m.visible = k > 0.02 and (not m.has_meta("is_trace") or _trace_mode != "off")
+			m.transform = xf
+
+
+## How much of what stands on hex `h` stays up beside the grounded machines at `grounded` (map
+## pixels): 1 with none near, 0 with one on it (_flatten_props).
+func standing(h: Vector2i, grounded: Array) -> float:
+	var at := MapOrient.to_pixel(h, hex_px)
+	var step := hex_px * sqrt(3.0)
+	var k := 1.0
+	for p in grounded:
+		k = minf(k, smoothstep(FLAT_NEAR * step, FLAT_FAR * step, (p as Vector2).distance_to(at)))
+	return k
 
 
 ## A static model (the gate, a wall segment) baked the same way at its current transform,
@@ -1005,9 +1025,9 @@ func set_trace_mode(mode: String) -> void:
 	_trace_mode = mode
 	for em in _trace_nodes:
 		if is_instance_valid(em):
-			# A prop's traces stay hidden while a machine stands on its hex (audit, 29
+			# A prop's traces stay hidden while a machine has its hex's props laid flat (audit, 29
 			# September: this used to show a hidden hex's outlines again, through the machine).
-			var under_machine: bool = em.has_meta("prop_hex") and _props_hidden.get(em.get_meta("prop_hex"), false)
+			var under_machine: bool = em.has_meta("prop_hex") and float(_laid.get(em.get_meta("prop_hex"), 1.0)) <= 0.02
 			em.visible = mode != "off" and not under_machine
 			if mode != "off":
 				em.material_override = _trace_material(str(em.get_meta("kind", "prop")))
@@ -2024,6 +2044,25 @@ func outline_boxes() -> PackedVector4Array:
 	return out
 
 
+## A machine's box on the screen, in this viewport's pixels: its model's bounds as the camera sees
+## them (the map's over-draw, BattleMapView._machine_over); empty for a unit with no model shown.
+func unit_box(uid: int) -> Rect2:
+	if _camera == null or not _camera.is_inside_tree() or not _outlined.has(uid):
+		return Rect2()
+	var model: Node3D = _outlined[uid][0]
+	if not is_instance_valid(model) or not model.is_visible_in_tree():
+		return Rect2()
+	var bounds: AABB = _outlined[uid][1]
+	var xf := model.global_transform
+	var lo := Vector2(INF, INF)
+	var hi := -lo
+	for i in range(8):
+		var at := _camera.unproject_position(xf * bounds.get_endpoint(i))
+		lo = lo.min(at)
+		hi = hi.max(at)
+	return Rect2(lo, hi - lo)
+
+
 ## A structure's scale along the wall (the long wall brief 7.1). The ground is stretched in
 ## depth so the pitched camera lays it on the 2D grid; a model is not. With the wall at the
 ## bottom it runs across the screen and needs nothing; at the left it runs into the screen's
@@ -2109,11 +2148,12 @@ func sync() -> void:
 	for h in _columns.keys():
 		_lift[h] = _height_of(h) * _cos * _ppu
 	var seen := {}
-	var occupied: Dictionary = {}
+	var occupied: Dictionary = {}   # the hexes whose dressing lies flat for good: a wreck's, a cache's
+	var grounded: Array = []        # where each grounded machine stands or passes, in map pixels
 	for u in field.units:
 		seen[u.id] = true
 		if u.is_player() and not u.traits.has("flyer"):
-			occupied[MapOrient.from_pixel(_anim_px[u.id], hex_px) if _anim_px.has(u.id) else _hex_of(u)] = true
+			grounded.append(_anim_px[u.id] if _anim_px.has(u.id) else MapOrient.to_pixel(_hex_of(u), hex_px))
 		var node: Node3D = _units.get(u.id, null)
 		if node == null:
 			node = _make_unit(u)
@@ -2163,8 +2203,8 @@ func sync() -> void:
 				(_pivots[u.id] as Node3D).rotation.y = facing_yaw(_facing_of(u))
 			_rest_yaw[u.id] = facing_yaw(_facing_of(u))
 	_sync_wrecks(occupied)
-	_sync_caches(occupied, wall, seam, src)
-	_hide_props_under(occupied)
+	_sync_caches(occupied, grounded, wall, seam, src)
+	_flatten_props(grounded, occupied)
 	for uid in _units.keys():
 		if not seen.has(uid):
 			_units[uid].queue_free()
@@ -2345,7 +2385,7 @@ func cache_shown(cid: int) -> bool:
 	return _caches.has(cid) and (_caches[cid] as Node3D).visible
 
 
-func _sync_caches(occupied: Dictionary, wall: Vector2, seam: Vector4, src: PackedVector3Array) -> void:
+func _sync_caches(occupied: Dictionary, grounded: Array, wall: Vector2, seam: Vector4, src: PackedVector3Array) -> void:
 	var db := ContentDB.load_default()
 	var live := {}
 	for c in field.caches:
@@ -2364,13 +2404,13 @@ func _sync_caches(occupied: Dictionary, wall: Vector2, seam: Vector4, src: Packe
 			var core := node.find_child("core", true, false) as Node3D
 			if core != null:
 				_cache_cores[cid] = [core, core.position.y]
-		# Its hex's own dressing would stand through it: hidden, as under a machine.
-		var under_machine: bool = occupied.has(h)
+		# Its hex's own dressing would stand through it: laid flat for good.
 		occupied[h] = true
 		# As the painting takes the hex the model sinks into it, as the ground's height does
-		# (Bleed.solid, the compositor's threshold), and is gone where the hex is flat.
-		var solid := Bleed.solid(_origin + MapOrient.to_pixel(h, hex_px), wall, seam, src)
-		node.visible = solid > 0.02 and not under_machine
+		# (Bleed.solid, the compositor's threshold), and is gone where the hex is flat; and a
+		# machine on it presses it down as a hex's dressing (standing), never blinking out.
+		var solid := Bleed.solid(_origin + MapOrient.to_pixel(h, hex_px), wall, seam, src) * standing(h, grounded)
+		node.visible = solid > 0.02
 		node.position = _hex_world(h, _height_of(h))
 		node.scale = Vector3(CACHE_FIT, CACHE_FIT * maxf(solid, 0.02), CACHE_FIT)
 	for cid in _caches.keys():

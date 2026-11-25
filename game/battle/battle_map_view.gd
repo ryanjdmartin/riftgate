@@ -580,8 +580,8 @@ func _draw() -> void:
 		_region_outline(reach, hud, 3.0)
 
 	# A pack the selected machine could be ordered onto, from where its move can take it or where
-	# it stands, bracketed in the violet's bright (the long wall brief 7.2: the band past the move
-	# went with the rings; the move's lit cells and these brackets are what a selection shows).
+	# it stands, lit in the engage red (the long wall brief 7.2: the band past the move went with
+	# the rings; the move's lit cells and these packs are what a selection shows).
 	if not threat.is_empty() and not is_blocking():
 		if selected != null:
 			for sq in field.packs():
@@ -598,10 +598,14 @@ func _draw() -> void:
 						cells[x] = true
 						draw_colored_polygon(MapOrient.corners(center(x), HEX_SIZE - _px(2.0)), Color(Palette.engage(), 0.35))   # over the ground, the painted world's too
 					_region_outline(cells, Palette.engage(), 5.0, Palette.engage())
-					var bc := center(sq.pos)
-					var box := Rect2(bc - Vector2(HEX_SIZE, HEX_SIZE), Vector2(HEX_SIZE, HEX_SIZE) * 2.0)
-					Hud.brackets(self, box, _px(16.0), Color(Palette.BG, 0.85), _px(7.0))
-					Hud.brackets(self, box, _px(16.0), Palette.engage(), _px(4.0))
+					# The corners say which one it is ordered onto, alone (Ryan, 25 November: "The
+					# available engage targets only needs the corner brackets when selected, not all
+					# the time"): a selection's mark, as the machine in hand wears its own.
+					if orders.get(selected.id, null) == sq:
+						var bc := center(sq.pos)
+						var box := Rect2(bc - Vector2(HEX_SIZE, HEX_SIZE), Vector2(HEX_SIZE, HEX_SIZE) * 2.0)
+						Hud.brackets(self, box, _px(16.0), Color(Palette.BG, 0.85), _px(7.0))
+						Hud.brackets(self, box, _px(16.0), Palette.engage(), _px(4.0))
 
 	# The moves planned and not yet played (Ryan, 25 October: "highlight and display the planned
 	# move like we used to"): each machine's route in the display's light from where it stands,
@@ -1613,15 +1617,43 @@ func _shell_walls(map: BattleMap) -> Array:
 			mine.append(pair)
 		# Round the rift the way the hexes run: each hex's edges by their bearing from the mouth.
 		mine.sort_custom(func(x: Array, y: Array) -> bool: return ((x[0] + x[1]) * 0.5 - c).angle() < ((y[0] + y[1]) * 0.5 - c).angle())
+		var hb := base(hexes[i])
 		for pair in mine:
+			# Each end stands on the highest ground outside at its corner (Ryan, 25 November: "Raised
+			# terrain looks weird next to the shell"): a raised hex outside is in front of the wall and
+			# higher than its foot, so a wall standing at the shell's own level ran up over that hex's
+			# top; on the ledge, the hex's top shows whole and the wall rises behind it, a stretch
+			# sloping where one end stands higher than the other.
+			var a: Vector2 = pair[0]
+			var b: Vector2 = pair[1]
+			a.y -= _ledge(hexes[i], a - c + hb, inside)
+			b.y -= _ledge(hexes[i], b - c + hb, inside)
 			# Its place down the glass halfway between its hex's middle and the neighbour's outside it
 			# (23 November: keyed by its lower end, a slanting stretch drew over what stood in the
 			# hex beside and below it): what is inside stands behind it, what is outside below it in
 			# front.
-			var e := {"a": pair[0], "b": pair[1], "plate": i, "along": along, "y": (c.y + (pair[2] as Vector2).y) * 0.5}
+			var e := {"a": a, "b": b, "plate": i, "along": along, "y": (c.y + (pair[2] as Vector2).y) * 0.5}
 			along += (pair[0] as Vector2).distance_to(pair[1])
 			out.append(e)
 	return out
+
+
+## How far above a shell hex's own top a wall's end at `corner` (its place on the grid, unlifted)
+## stands: the most any hex outside the shell at that corner rises over the shell hex, its ground's
+## lift and the top of a range standing on it (a cliff's or a crag's footing as the painting stands
+## it, DomainGround.RANGE_LOOKS: the shell is round the rift, where the painting shows), or nothing.
+func _ledge(h: Vector2i, corner: Vector2, inside: Dictionary) -> float:
+	var most := 0.0
+	var map := field.map
+	for n in Hex.neighbors(h):
+		if inside.has(n) or base(n).distance_to(corner) > HEX_SIZE * 1.05:
+			continue
+		var top := _lift_at(n)
+		if map.terrain_of(n) == BattleMap.Terrain.MOUNTAIN:
+			var look: Dictionary = DomainGround.RANGE_LOOKS.get(str(map.wall_look.get(n, "")), {})
+			top += float(look.get("lift", 0)) * DomainGround.scale_of(HEX_SIZE)
+		most = maxf(most, top - _lift_at(h))
+	return most
 
 
 ## The units and the shell's wall in their order down the glass (a pack's feet, a stretch's front),
@@ -1645,44 +1677,66 @@ func _draw_field_units(map: BattleMap) -> void:
 		for w in _shell_walls(map):
 			items.append([float(w["y"]), w])
 	items.sort_custom(func(x: Array, y: Array) -> bool: return float(x[0]) < float(y[0]))
-	var walls: Array = []   # the stretches drawn so far, as rects in map space
+	var behind: Array = []   # what is drawn so far that a machine further down the glass stands in front of, as rects on the screen
 	for it in items:
 		if it[1] is Unit:
-			if field.wrecks.has(it[1]):
-				_draw_wreck(it[1])
+			var u: Unit = it[1]
+			if field.wrecks.has(u):
+				_draw_wreck(u)
 			else:
-				_draw_unit(it[1])
-				_machine_over_walls(it[1], walls)
+				_draw_unit(u)
+				if u.is_player() and not u.is_static():
+					_machine_over(u, behind)
+				elif u.is_enemy():
+					behind.append(_pack_screen_rect(u))
 		elif (it[1] as Dictionary).has("plate"):
 			_draw_wall(it[1], now, mouth)
 			var a: Vector2 = it[1]["a"]
 			var b: Vector2 = it[1]["b"]
-			walls.append(Rect2(a, Vector2.ZERO).expand(b).expand(a + Vector2(0.0, -HEX_SIZE * SHELL_HEIGHT * 1.12)).grow(_px(4.0)))
+			var rise := Vector2(0.0, -HEX_SIZE * SHELL_HEIGHT * 1.12)
+			var r := Rect2(a, Vector2.ZERO).expand(b).expand(a + rise).expand(b + rise).grow(_px(4.0))
+			behind.append(Rect2(to_screen(r.position), r.size * zoom))
 		else:
 			_draw_cache(it[1])
+			var cc := center((it[1] as Dictionary)["pos"])
+			behind.append(Rect2(to_screen(cc - Vector2(HEX_SIZE, HEX_SIZE * 1.4)), Vector2(HEX_SIZE * 2.0, HEX_SIZE * 2.0) * zoom))
 
 
-## A machine in front of a stretch of the rift's shell drawn again over it (Ryan, 24 November: "The
-## rift shell is being drawn over things in front of it, still"): the machines are the 3D scene's,
-## under every flat mark, so the wall the field draws in its order down the glass covered one
-## standing below it. Where a stretch already drawn overlaps it, its own box is cut from the
-## machines' layer of the scene (Map3D's units, transparent round them) and laid over the wall.
-func _machine_over_walls(u: Unit, walls: Array) -> void:
-	if walls.is_empty() or _map3d == null or not u.is_player() or u.is_static():
-		return
-	var c := _unit_center(u)
-	var box := Rect2(c - Vector2(HEX_SIZE * 0.95, HEX_SIZE * 1.9), Vector2(HEX_SIZE * 1.9, HEX_SIZE * 2.4))
-	var hit := false
-	for w in walls:
-		hit = hit or (w as Rect2).intersects(box)
-	if not hit:
+## A machine in front of what the field drew before it, drawn again over it (Ryan, 24 November: "The
+## rift shell is being drawn over things in front of it, still"; 25 November: "Enemy map sprites draw
+## over machines"): the machines are the 3D scene's, under every flat mark, so a stretch of the wall,
+## a pack's picture (its threat chip with it) or a cache's chest, drawn in its order down the glass,
+## covered a machine standing below it. Where one drawn already (`behind`, rects on the screen)
+## overlaps the machine's own box on the screen (Map3D.unit_box, the model's bounds as the camera
+## sees them), that box is cut from the machines' layer of the scene (Map3D's units, transparent round
+## them) and laid over it; what stands further down the glass is drawn after, over the machine.
+func _machine_over(u: Unit, behind: Array) -> void:
+	if behind.is_empty() or _map3d == null:
 		return
 	var density := _density()
-	var tex := _map3d.get_units_texture()
-	var screen := Rect2(Vector2(scroll_x, scroll_y) + box.position * zoom, box.size * zoom)
+	var box := _map3d.unit_box(u.id)
+	var screen := Rect2(box.position / density, box.size / density).grow(2.0)
+	if box.size.x <= 0.0:
+		var c := _unit_center(u)
+		var r := Rect2(c - Vector2(HEX_SIZE * 0.95, HEX_SIZE * 1.9), Vector2(HEX_SIZE * 1.9, HEX_SIZE * 2.4))
+		screen = Rect2(to_screen(r.position), r.size * zoom)
+	var hit := false
+	for w in behind:
+		hit = hit or (w as Rect2).intersects(screen)
+	if not hit:
+		return
 	_screen_space()
-	draw_texture_rect_region(tex, screen, Rect2(screen.position * density, screen.size * density))
+	draw_texture_rect_region(_map3d.get_units_texture(), screen, Rect2(screen.position * density, screen.size * density))
 	_map_space()
+
+
+## What a pack's picture and its threat chip cover on the screen (_draw_unit).
+func _pack_screen_rect(u: Unit) -> Rect2:
+	var c := _unit_center(u)
+	var tex := foe_picture(u)
+	var ts := sprite_size(u, tex)
+	var r := Rect2(to_screen(c - Vector2(ts.x * 0.5, ts.y - SPRITE_FEET)), ts * zoom)
+	return r.grow(THREAT_CHIP.y * 0.5)
 
 
 ## One stretch of the wall: its face from the ground to its faux height, a pale cap along its top
@@ -1809,7 +1863,7 @@ func _draw_tags() -> void:
 			draw_string(Hud.mono(), rect.position + Vector2(0, rect.size.y - 6.0), "BOSS", HORIZONTAL_ALIGNMENT_CENTER, rect.size.x, 12, Palette.INK)
 		else:
 			# Its threat rating, as the pack itself wears it (no count: 10 November).
-			_pips_in(Rect2(rect.position.x, rect.end.y - 17.0, rect.size.x, 12.0), sq.squad, 7.0, 3.0)
+			_threat_chip(Vector2(rect.get_center().x, rect.end.y - 9.0), sq.squad)
 		_tag_chevron(rect, edge, border)
 
 
@@ -1824,11 +1878,20 @@ func _tag_chevron(rect: Rect2, edge: String, col: Color) -> void:
 
 ## A machine past the edge: its name in the display's light, so the squad's split reads off
 ## screen too.
+## A machine off the screen: its portrait on the tag (Ryan, 25 November: "The off-screen chip for Frames
+## should show a portrait, not a cut off name"), lit as the hunter's chip lights it, its name's first
+## letter while it has no model.
 func _machine_tag(rect: Rect2, m: Unit, edge: String) -> void:
 	var col := Palette.HUD
 	Hud.box(self, rect, 6.0, Color(Palette.BG, 0.94), Color(col, 0.9), 1.5)
-	var name := m.display_name.to_upper()
-	draw_string(Hud.mono(), rect.position + Vector2(0, rect.size.y * 0.5 + 5.0), name.substr(0, 6), HORIZONTAL_ALIGNMENT_CENTER, rect.size.x, 12, col)
+	var face := rect.grow(-5.0)
+	var tex := portrait_of(m)
+	draw_rect(face, Color(col, 0.12), true)
+	if tex != null:
+		var side := minf(face.size.x, face.size.y) + 6.0
+		draw_texture_rect(tex, Rect2(face.get_center() - Vector2.ONE * side * 0.5, Vector2.ONE * side), false, Color(2.0, 2.0, 2.0, 1.0))
+	else:
+		draw_string(Hud.display_bold(), face.position + Vector2(0, face.size.y * 0.5 + 9.0), m.display_name.substr(0, 1).to_upper(), HORIZONTAL_ALIGNMENT_CENTER, face.size.x, 26, col)
 	_tag_chevron(rect, edge, col)
 
 
@@ -2364,7 +2427,7 @@ func portrait_of(u: Unit) -> Texture2D:
 		var view: MechView3D = null
 		var db := ContentDB.load_default()
 		if MechView3D.has_model(MechView3D.model_for(u.chassis_id)):
-			view = MechView3D.make(u.chassis_id, db.maker_of(u.chassis_id), "clean", "", MechView3D.YAW_FRONT, Vector2i(48, 48), false, u.paint, MechView3D.plan_for(u, db))
+			view = MechView3D.make(u.chassis_id, db.maker_of(u.chassis_id), "clean", "", MechView3D.YAW_FRONT, Vector2i(96, 96), false, u.paint, MechView3D.plan_for(u, db))   # fine enough for the off-screen tag's face
 			add_child(view)
 		_portraits[u.id] = view
 	var v: MechView3D = _portraits[u.id]
@@ -2832,10 +2895,20 @@ func _draw_unit(u: Unit) -> void:
 		draw_string(Hud.mono(), c + Vector2(-5.0, 5.0), u.display_name.substr(0, 1).to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Palette.BG)
 	# No gauge over a mech: shield and hull read in the docked readout when it is tapped
 	# (Ryan, 21 September), where the contrast is under control.
-	# A pack wears its threat rating under it and no count (Ryan, 10 November: "The threat
-	# display can go under the pack. Remove the unit count tag, its no longer needed").
+	# A pack wears its threat rating at its picture's lower right and no count (Ryan, 10 November:
+	# "Remove the unit count tag, its no longer needed"; 25 November: "simplified into a smaller chip
+	# attached to the corner of the sprite, and drawn at the same layer as it"): drawn with the
+	# picture, so what stands in front of the pack covers both.
 	if u.is_enemy() and u.strength > 0:
-		_threat_pips(c + Vector2(0.0, SPRITE_FEET), u.squad, Palette.ENEMY, u.is_boss)
+		var corner := c + Vector2(14.0, SPRITE_FEET)
+		if tex != null:
+			var ts := sprite_size(u, tex)
+			var frame := Rect2(c - Vector2(ts.x * 0.5, ts.y - SPRITE_FEET), ts)
+			var used := Sprites.used_rect(tex)
+			corner = frame.position + used.end * (ts / tex.get_size())   # the drawing's own corner, past its frame's empty margin
+		_screen_space()
+		_threat_chip(to_screen(corner) + Vector2(-THREAT_CHIP.x * 0.25, -THREAT_CHIP.y * 0.4), u.squad, u.is_boss)
+		_map_space()
 
 
 ## How big a foe's picture draws on the map at zoom 1: a pack's a little larger than its pixels,
@@ -2856,37 +2929,23 @@ static func sprite_size(u: Unit, tex: Texture2D) -> Vector2:
 	return ts * SPRITE_SCALE * (1.3 if u != null and u.is_enemy() and not u.is_multi_hex() else 1.0)
 
 
-const PIP := 9.0       # a threat pip's width on screen: hot, for the phone
-const PIP_GAP := 4.0
+## The pack's threat rating (the long wall brief 7.3; Ryan, 6 November: "The one thing we should do
+## is show the threat rating of a formation on the map. For how many units it's intended for"; 25
+## November: "The threat indicator bar needs to be simplified into a smaller chip attached to the
+## corner of the sprite"): a small chip, a machine's pip and the number of machines it is intended
+## for in the ink, on a dark plate edged in the violet, heavier for the boss, centred on the screen
+## point `at` and holding its size at every zoom. The one hint on the map: nothing says how to beat a
+## pack (his word, 6 November). Returns the chip's rect.
+const THREAT_CHIP := Vector2(28.0, 18.0)
 
-## The pack's threat rating under the pack (the long wall brief 7.3; Ryan, 6 November: "The one
-## thing we should do is show the threat rating of a formation on the map. For how many units
-## it's intended for"; under the pack and alone since 10 November, the count badge gone): four
-## machine pips on a plate at its feet, one filled for each machine it is intended for and the
-## rest open, so the rating reads by structure, never by hue (Ryan is colourblind). The boss's
-## plate has a heavier border. The one hint on the map: nothing says how to beat a pack (his
-## word, 6 November). `feet` is the pack's feet in map space; the plate holds its size on screen.
-func _threat_pips(feet: Vector2, n: int, border: Color, heavy: bool = false) -> void:
-	_screen_space()
-	var w := 4.0 * PIP + 3.0 * PIP_GAP + 10.0
-	var rect := _plaque_rect(to_screen(feet) + Vector2(0.0, 4.0 + (PIP + 8.0) * 0.5), Vector2(w, PIP + 8.0))
-	draw_rect(rect, Palette.BG, true)
-	draw_rect(rect, border, false, 3.0 if heavy else 1.5)
-	_pips_in(rect, n, PIP, PIP_GAP)
-	_map_space()
-
-
-## Four machine pips across the middle of `rect`, `n` of them filled.
-func _pips_in(rect: Rect2, n: int, pip: float, gap: float) -> void:
-	var x0 := rect.get_center().x - (4.0 * pip + 3.0 * gap) * 0.5
-	for i in range(4):
-		var pc := Vector2(x0 + pip * 0.5 + float(i) * (pip + gap), rect.get_center().y)
-		var pts := Hex.corners(pc, pip * 0.5)
-		if i < n:
-			draw_colored_polygon(pts, Color.WHITE)
-		else:
-			pts.append(pts[0])
-			draw_polyline(pts, Color(Color.WHITE, 0.7), 1.5, true)
+func _threat_chip(at: Vector2, n: int, heavy: bool = false) -> Rect2:
+	var rect := Rect2((at - THREAT_CHIP * 0.5).round(), THREAT_CHIP)
+	draw_rect(rect.grow(2.0), Color(ENEMY_EDGE, 0.95), true)
+	draw_rect(rect, Color(Palette.BG, 0.96), true)
+	draw_rect(rect, Palette.ENEMY, false, 3.0 if heavy else 2.0)
+	draw_colored_polygon(Hex.corners(Vector2(rect.position.x + 9.0, rect.get_center().y), 5.0), Color.WHITE)
+	draw_string(Hud.display_bold(), Vector2(rect.position.x + 16.0, rect.get_center().y + 5.0), str(n), HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Palette.INK)
+	return rect
 
 
 # ---------------------------------------------------------------- gestures
