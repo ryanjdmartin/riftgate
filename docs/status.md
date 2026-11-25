@@ -73,7 +73,9 @@ document's job and every command are in `README.md`.
   written to it, and a reach over every Sprite targets the field. The Mole's new tips followed it
   the same day, Burrowed's and Momentum's numbers on the statuses since (his "Move the effects on
   the mole's passive to the status chip"), and damage lands three ways in the text, the standard's
-  rule 39: "hit for N", "suffer N damage", "lose N Hull" (his of 24 November).
+  rule 39: "hit for N", "suffer N damage", "lose N Hull" (his of 24 November). On 25 November a
+  Ricochet's hit became the machine's alone (his "yes-no-no-yes": buffs, Targeted, nothing of the
+  weapon), and rule 40 says what an extra hit brings, so a line names only what differs.
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
   (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks
@@ -529,7 +531,7 @@ Deleted on his word of 20 November: the vocabulary marks, the targeting scenes, 
 analysis, the effects listening page and the engagement sandbox (the README's docs line has the
 copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 
-- The terminology standard, what is still his to mark (settled rules listed for reference; Version 11, 24 November, the damage verbs settled): https://claude.ai/artifact/TXNpkS4zuPJ5c6sEpk9oF4,
+- The terminology standard, what is still his to mark (settled rules listed for reference; Version 12, 25 November, rule 40 on what a hit brings): https://claude.ai/artifact/TXNpkS4zuPJ5c6sEpk9oF4,
   made from `docs/text_standard.md`'s section 2 and `docs/terminology_proposal.md`'s section 4 by `tools/pages/terminology_marks_page.py` and
   published with the `db` and `user` capabilities. Each rule, call and name takes a mark and a
   note, saved in the collection `marks`, a document an item keyed by its id (`rule-13`,
