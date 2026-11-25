@@ -136,10 +136,10 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     then retired to git: `briefs/` (its README says what each waits on), among them
     `briefs/refit_pass.md` (the reboot's rules, its section 22) and `briefs/numbers_pass.md`
     (tier one sized against the reboot: the yardsticks, the baseline, the defence side's
-    approach, the tier-one bench); `economy_pass.md`; `formation_proposal.md` (kept for the
-    bosses' stat blocks and the flankers' slate); `tide_proposal.md` (the graded tide, Ryan's
-    design of 23 November: his words, the design as read, the reads, where the session pushes
-    back, the Meadow's packs as a table for his marks);
+    approach, the tier-one bench) and `briefs/graded_tide.md` (the battle's enemy side: Ryan's
+    direction, locked on 25 November, the built numbers that are placeholders, the Meadow's
+    packs as a table for his marks, the leaders and the bosses as fixed entries, what is open
+    and the order); `economy_pass.md`;
     `locked_pieces_proposal.md`;
     `rules_sweep_proposal.md` (the
     rules sweep's limits on design space, for his marks); `bosses_proposal.md` (the
@@ -461,7 +461,7 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_AA=off|fxaa|msaa2|msaa4              the AA mode (the player's SETTINGS, AA MODE; MSAA 4X by default)
 #   RIFTGATE_SAFE=<top>,<bottom>                  keeps a phone's safe bands clear
 # Numbers on trial (a what-if over content, never a decision)
-#   RIFTGATE_GRADED=1                             the graded tide: packs rated one to three dealt by where they make for, ones to the wall's ends, twos between, threes down the middle
+#   RIFTGATE_GRADED=1                             the graded tide, the game's direction, on its dial until the switch-over (docs/briefs/graded_tide.md): packs rated one to three dealt by where they make for, ones to the wall's ends, twos between, threes down the middle
 #   RIFTGATE_SENDS=2                              the packs every mouth sends at a peak, the rift and each open tear, 1 to 4, 1 the game's
 #   RIFTGATE_STRIKE=5                             what a pip of threat rating strikes the wall for, 10 the game's
 #   RIFTGATE_PACK_BONUS=50                        what a pack pays the Rupture meter as it falls, on top of its rating, in hundredths of a pip, 0 the game's

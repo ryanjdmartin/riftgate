@@ -41,28 +41,18 @@ document's job and every command are in `README.md`.
   a branch: the desk machine's folder stays on `main`, and a session that needs another branch
   works in a worktree under `.claude/worktrees/` (`CLAUDE.md`, Session handoff). A branch
   takes main as it lands and main takes the branch as a fast-forward on Ryan's word.
-- **The battle's enemy side is on trial as a graded tide** (Ryan, 23 November: "Any time I
-  tried splitting my forces, I lost the battle. Any time I stayed in the middle, I won"; "I
-  don't want the packs split, I want them SCALED ... the far edges are 1s with a sprinkling of
-  2s, then 2s in between, and 3s coming right down the center ... 1s fastest and 3s slowest";
-  24 November, of the session's leans: "I think we build your leans and I'll see").
-  `docs/tide_proposal.md` has his words, the design as read, what is built and the reads. A
-  debug build's SETTINGS, TRIALS, TIDE on GRADED (or SET, GRADED) deals packs by the band of
-  the wall each makes for; the Meadow's packs for it are in content, marked `tide`: `graded`,
-  and dealt by nothing else; every other domain plays it on its compositions as built. None
-  of it is the game's until he says. Until he has played it, no session writes a pack, a
-  formation, an elite's or a boss's numbers, or a rule of the tide. His three points of 24
-  November stand over what comes next: a massive foe is a kind of unit and no measure of
-  threat ("a property, not a quota", with more kinds of enemy wanted in a pass of its own), a
-  squad's growth inside a tier is a target to set, and the packs a mouth sends at once are the
-  Convergence's dial. The hunters are pinned and the treant waits on his marks. From his
-  first play of it (24 November: "There needs to be more packs on the field at the start, for
-  sure. And spawns from the rift should probably spawn outside of the shell, and on a hex that
-  is on the side of where they're headed ... Still testing the rest"): its opening stands
-  seven packs at the first Convergence, before every band of the wall and two at each end
-  (`Battle.graded_opening`, the session's count and his to mark), and a pack the rift sends
-  lands outside the shell on the side it is headed, under either tide (the rules' Rift
-  Pressure).
+- **The battle's enemy side is the graded tide, its direction locked** (Ryan, 25 November:
+  "our direction here is locked"): packs rated one to three and scaled, never split, strength
+  falling toward the wall's ends and pace rising, every mouth sending several at once, more
+  packs each striking the wall for less, the field full from the first turn.
+  `docs/briefs/graded_tide.md` has the direction in his words, which built numbers are
+  placeholders, the Meadow's packs, what is his to settle and the order; the rules' The
+  battlefield says how it runs. The engine deals it on its dial (SETTINGS, TRIALS, SET,
+  GRADED; `RIFTGATE_GRADED=1`) and the earlier tide otherwise, until the switch-over, the
+  order's first step and his to call. Only the Meadow has packs written for it. A domain's
+  packs go to him as a table first ("I would mark a table"), so no session writes a pack, a
+  leader's or a boss's numbers into content ahead of his marks; the hunters are pinned and
+  the treant waits on him.
 - Branches. Main holds everything this file describes. `claude/game-ui-animation-tweaks-xiex10`
   landed a third time on 25 November on Ryan's "yes republish the union, then merge into main"
   (the Cassowary setting off from standing straight into its lope, its body swelling once a step
@@ -75,13 +65,9 @@ document's job and every command are in `README.md`.
   move under the player's hands, the shell behind what stands before it, the gorges deep and their
   water, the engage marks in heat's red and the fight's crossed-swords badge on the map and the
   board, no FIGHT label). `claude/formation-pass-feedback-rlvx5x`
-  landed on 24 November on Ryan's "Make sure main is updated" (his play of the field's dials: the
-  seam a circle, the round's view, the zoom's floor, the pushers' segments, the tears' row slower
-  and off the wall, five tier-one stock dice back to basics, the basics' five dials settled and
-  cut, the graded tide on a dial with the Meadow's packs, the trials' page cut to six dials, the
-  tier-one bench as a grid), and again on 25 November on his "Land on main", with the two
-  fixes from his first play of the graded tide: its fuller opening and the rift's landing. The
-  terminology pass's branch
+  (the field's view and seam, the graded tide on its dial, the tier-one bench as a grid) landed
+  on 24 November on his "Make sure main is updated" and again on the 25th on his "Land on
+  main". The terminology pass's branch
   (`claude/gameplay-terminology-tooltips-rug879`) landed again the same day on his "land this on
   main": gameplay text follows `docs/text_standard.md` (CLAUDE.md says so), every glossary tip is
   written to it, and a reach over every Sprite targets the field. The Mole's new tips followed it
@@ -184,7 +170,7 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   its blow, and the Obsidian Tyrant and the Ruby Colossus to Disrupt while Firestorm
   and Ultima gather. Four falls do more than strike: the root line's scream, the Gorgon's
   gaze, the Salamander's embers, the Lich's. The Red Dragon keeps its Crush on Ryan's word, so
-  the Peak has no foe that Exposes. Content: four domains, 118 compositions as grids in
+  the Peak has no foe that Exposes. Content: four domains, 138 compositions (19 of them the Meadow's packs for the graded tide) as grids in
   `content/factions.json`, each a pusher's, a flanker's or a hunter's with a threat rating (a
   patrol 1, a heavy patrol 2, a formation 3, an elite and a boss 4) that is also its menace;
   129 foes, 21 of them elites and 8 heroes; thirteen bosses; two moves planned (the Warrior's
@@ -305,41 +291,38 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   its cost. The shaman's warband reads 33% at sixty fights at every commit back to its sizing,
   whose thirty read 24.6%, so the leaders want a read at sixty or more (the to-do's defence line). His to pick: the pickets' count, and the rest of
   `docs/domain_statuses_proposal.md` (its section 8 holds this round's open items). Inside a tier nothing steps by the
-  Convergence but the opening's count: the variants by Convergence his design of 7 November
-  called for were pruned on a read from before the reboot, and the bosses' entries by tier and
-  ramp were never written. Read on 23 November, a squad two battles into tier one pays an
-  elite and a boss a third less, and half again their hit points puts the price back (the
-  tide proposal's section 5; `docs/measurements.md`). The
+  Convergence but the opening's count and a graded pack's gate: a rating's size at each
+  Convergence is a target for him to set, and the packs' forms, the leaders' and the bosses'
+  blocks and the component tiers are filled to it (`docs/briefs/graded_tide.md`, sections 4
+  and 5). The
   battle whole is the open question (the brief's section 11): at their ratings a second
   battle's fights come to three fifths to nine tenths of a squad's hull, and a fight met a
   machine short costs four to six times its price. Tiers two and three are unsized, their
   foes still the ones sized against a shield that refilled; the first battle, the Meadow's
   alone and the one a trio fights, is built and its sizing his. On a debug
-  build's SETTINGS, TRIALS, what is tried in person and nothing else since 24 November: TIDE
-  (the graded tide), SENDS, STRIKE, PACK BONUS, FIELD DEPTH and PHASED, each read as the next
-  battle starts, under SET (GRADED, AS BUILT). A dial leaves the page with its question: the
-  basics' four and the overheat's on 23 November, each settled as built (the vanilla 3 for 4
-  heat against a standard foe of 4, the Carbine 4 for 5, the Barrier basic on the starting
-  dice, a point of hull a point of heat past the maximum); the tide's density, the rift's own
-  count, the fodder's worth, the flat pace and the start's tears on 24 November, cut with
-  their engine; the opening's distance, the Rupture's beats and the leaders' step the same
-  day, kept as the runners' what-ifs; the block is cut, a blow past a shield reaching the hull. The runners lay the
-  same what-ifs with `--refit` (`sim/refit.gd`). `docs/balance.md` is the matrix of 27
+  build's SETTINGS, TRIALS, what is tried in person and nothing else: SET (GRADED, AS BUILT),
+  TIDE, SENDS, STRIKE, PACK BONUS, FIELD DEPTH and PHASED, each read as the next battle starts.
+  A dial leaves the page with its question. The runners keep three what-ifs with no dial
+  (`RIFTGATE_OPENING`, `RIFTGATE_BEATS`, `RIFTGATE_LEADERS`) and lay the kit's with `--refit`
+  (`sim/refit.gd`). `docs/balance.md` is the matrix of 27
   October, older than every rule since, and still prints the old aims' cells and a
   comparison section the next run drops. Detail: `docs/briefs/numbers_pass.md`; the refit
   brief's sections 13, 22 and 23; the bible's scale row and section 12.
 - **The battle and its map.** A battle is the defence of a long wall: a field 20 by 12, the
   wall along one edge and the rift opposite, the siege under way as it opens; MAP VIEW turns
   it (the wall at the left, the default, or at the bottom), and a pinch zooms out to the whole
-  field. A pack pushes for the stretch of wall it reaches soonest, flanks or hunts one machine;
+  field. A pack pushes for a stretch of wall, the one it reaches soonest or, under the graded
+  tide, the band of its rating, or hunts one machine;
   a pack is one fight, a hunter's catch first; nobody blocks a move and nobody ends on
-  another's hex. The tide comes on a beat, a peak of Rift Pressure opening tears on a row of
-  their own that steps a row toward the wall and stops four rows short of it; the seam is a circle about the rift that grows a round,
+  another's hex. The tide comes on a beat, a peak of Rift Pressure sending from the rift and
+  every open tear and opening tears on a row of their own that steps a row toward the wall and
+  stops four rows short of it; a pack the rift sends lands outside its shell, on the side it
+  is headed; the seam is a circle about the rift that grows a round,
   a picture alone, and a tear paints its own ground. As a turn ends the map glides out to the
   whole field, ROUND N over it while the packs walk and the seam grows, then back, then the
   tears open one by one. The Rupture meter is two beats of the tide, filled by menace,
   its Fractures calling the elites; the boss holds its hex before the rift's five, sealed
-  until the Rupture. A pip of threat rating strikes the wall for ten. A move that plays ends
+  until the Rupture. A pip of threat rating strikes the wall for ten (five or three on the STRIKE dial). A move that plays ends
   its machine's action unless an order stands, and UNDO gives it back. Six shapes by the
   seed: the river, the river delta, the gorge, the ruined city, the badlands and the steppe;
   the painted world stands at the 3D map's heights, each domain in its own tileset and rock.
@@ -502,11 +485,11 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
      those names the same day).
    - Every tier-one leader read again at sixty fights or more (the shaman's warband reads 33%
      at every commit back to its thirty-fight sizing), then any leader moved into its band.
-   - The graded tide (`docs/tide_proposal.md`; the formation pass runs inside it). It waits
-     on his play of it and his answers to the proposal's questions; then each value that
-     settles lands (the sends by the Convergence first) and its dial is cut, the other domains
-     follow a table at a time, and the leaders' blocks go to him as a table once a rating's
-     size at each Convergence, the target, is set.
+   - The graded tide (`docs/briefs/graded_tide.md`, its section 8 the order; the formation
+     pass runs inside it): the switch-over on his word, then each value as it settles (the
+     sends by the Convergence first) with its dial cut, the other domains a table at a time,
+     and the leaders' and the bosses' blocks as a table once a rating's size at each
+     Convergence, the target, is set.
    - His play of a second battle, which says whether the budget's shares stand (the brief's
      section 11): the fights are even across the domains, and the battle whole is tight.
    - The tier-one bench (`docs/briefs/numbers_pass.md`, section 6): a grid for his marks since
@@ -568,9 +551,11 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
   Published at v0.674 on 25 November from main's file at `8775e481` (the page's Version 529: the
   Nemesis's and the Whip Scorpion's rounds landed on main over its Chain ping), over v0.673
-  (Version 528, 24 November, from `ccr-178e0404-ptuh2m`'s `24adae57`). The file is a version past
-  the page, v0.675, since `claude/formation-pass-feedback-rlvx5x`'s two fixes of 24 November (the
-  tears row: the rift's landing, the flank tears' trial retired), unpublished. Before republishing,
+  (Version 528, 24 November, from `ccr-178e0404-ptuh2m`'s `24adae57`). The file is two versions past
+  the page, v0.676, on `claude/formation-pass-feedback-rlvx5x`'s rows (the tears row's landing
+  for the rift's packs; the graded tide's Decided row in section 4 and its numbers in section
+  12; the dials the page no longer has out of the heat, field, wall, battle and clocks rows),
+  unpublished. Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
   `8775e481` unless the live page says otherwise, OURS this branch's file, THEIRS the saved

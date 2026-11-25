@@ -889,9 +889,9 @@ static func boss_tier(t: int) -> Dictionary:
 ## 23 November: "A set form of each formation, for each C. Bosses too ... I'm barely scraping by
 ## some of these fights at C2 with stock units, if they don't scale with me they'll become a joke
 ## at C4"). A first number from a read, never his form, which is a fixed entry a Convergence
-## (docs/tide_proposal.md, section 5): a squad carrying two of tier one's finds a die pays a
+## (docs/briefs/graded_tide.md, section 4): a squad carrying two of tier one's finds a die pays a
 ## leader a third less, and half again the hit points puts the price back, so a fifth a
-## Convergence. A debug build's SETTINGS → TRIALS → LEADERS and RIFTGATE_LEADERS set it
+## Convergence. RIFTGATE_LEADERS sets it, a runner's what-if with no dial
 ## (Settings.field_trial).
 static var leader_step_trial: int = 0
 

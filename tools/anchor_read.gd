@@ -29,7 +29,7 @@ extends SceneTree
 ##           attack at that share of content's, in hundredths (blows=80), a foe a fight
 ##           fields or a foe it makes later; the rank and file beside them as content has it
 ##   life    the same on their hit points (life=120): with blows, a read of the block a leader
-##           would stand at a Convergence on (the forms by Convergence, docs/formation_proposal.md)
+##           would stand at a Convergence on (the forms by Convergence, docs/briefs/graded_tide.md, section 4)
 ##   packs   hand-made packs in the compositions' place, for sizing one before it is content:
 ##           packs=goblin*2;goblin+mandragora;goblin*3+mandragora@2, a pack its foes joined by +,
 ##           a count after *, its rating after @ (one unless said); each a row of the kind
