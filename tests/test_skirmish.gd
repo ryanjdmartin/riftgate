@@ -30,6 +30,13 @@ func _ghoul(hp: int = 30, atk: int = 10) -> Foe:
 func _archer(hp: int = 30, atk: int = 10) -> Foe:
 	return Foe.make("archer", hp, atk, true)
 
+
+## A foe's move set by hand once the round has opened, its pick among its own drawn as the round's
+## opening would (Ryan, 26 November: "Intents pick their target at round start").
+func _set_move(sk: Skirmish, f: Foe, a: Dictionary) -> void:
+	f.action = a
+	f.ally_pick = sk._pick_ally(f, [])
+
 ## The three rules written on their one piece since 15 November (keywords before), set on a test's
 ## own entry: damage past a kill spilling behind (the Overrun Gearing's), the Web Bomb's web and
 ## the Combat Translocator's swap.
@@ -4516,8 +4523,8 @@ func test_the_round_preview_reads_a_cure_that_saves_a_burning_foe() -> void:
 	sk.begin()
 	assert_true(sk.front[0] == cleric, "the curer stands left and acts first")
 	sk.start_round()
-	cleric.action = cure
 	x.hp = 2
+	_set_move(sk, cleric, cure)
 	Effects.stack(x, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 3)
 	var per := _rule("ablating", "tick_hp")
 	assert_eq(sk.hp_after_ticks(x), 0, "alone, its Ablating fells it as its turn ends")
@@ -6930,7 +6937,7 @@ func test_a_webbed_foe_felled_in_the_enemys_turn_takes_its_web_and_a_cleanse_lif
 	s2.begin()
 	s2.start_round()
 	assert_true(s2.assign(0, other), "web the other one")
-	cleric.action = cleric.actions[1]
+	_set_move(s2, cleric, cleric.actions[1])
 	s2.end_round()
 	assert_false(Effects.has(other, "webbed"), "the cleanse lifted the web in the enemy's turn")
 	assert_false(other.is_suppressed() or cleric.is_suppressed(), "so nothing bursts as the round ends")
@@ -8255,8 +8262,9 @@ func test_a_foes_cleanse_takes_the_teams_marks_off_the_most_marked_of_its_own() 
 
 
 ## A foe's cleanse lifts a stun (Ryan, 26 November: "Change the cleanse to remove suppress, I never
-## approved that"): a stun alone calls it, and a cleanser that acts before the stunned foe frees it
-## to act that turn, so it never lost its action and gains no Numbed.
+## approved that"): a stun on its pick, a cleanser that acts first frees it to act that turn, so it
+## shows its intent (his: "a stunned sprite shows no intent line, but on cleanse it does show"),
+## never lost its action and gains no Numbed.
 func test_a_foes_cleanse_lifts_a_stun_and_frees_its_ally_to_act() -> void:
 	var sk := Skirmish.new(1, 3)
 	var u := _mech("A", Die.single(Face.attack(1, L)), 40, 200)
@@ -8268,18 +8276,243 @@ func test_a_foes_cleanse_lifts_a_stun_and_frees_its_ally_to_act() -> void:
 	if sk.field_foes()[0] != healer:
 		sk._swap(a, healer)   # the heavier hitter deploys first: the cleanser goes before it here
 	assert_eq(sk.field_foes(), [healer, a] as Array[Foe], "the cleanser first in strike order")
+	Effects.stack(a, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 1)
 	sk.start_round()
-	assert_eq(sk.cleanse_target(healer), null, "nothing marked: no target")
+	assert_eq(healer.ally_pick, a, "the cleanse picks the marked foe as the round opens")
+	assert_true(a.intent_on(u), "it shows its intent")
 	assert_true(sk._suppress(a), "the stun lands")
-	assert_eq(Effects.cleanse_marks(a), 1, "a stun is one of what a cleanse takes")
-	assert_eq(Effects.team_marks(a), 0, "and none of the team's marks, which a Ward turns")
-	assert_eq(sk.cleanse_target(healer), a, "a stun alone calls the cleanse")
-	assert_true(a.is_suppressed(), "stunned as the enemy's turn begins")
+	sk._refresh_freed()
+	assert_true(a.is_suppressed() and a.freed, "stunned, and freed: the cleanse comes first")
+	assert_true(a.intent_on(u), "so it still shows its intent, and the Ambush reads it as aimed")
 	var hit := u.shield + u.hull
 	sk.end_round()
-	assert_false(Effects.has(a, "suppressed"), "the cleanse, first in strike order, lifted the stun")
+	assert_false(Effects.has(a, "suppressed"), "the cleanse lifted the stun")
 	assert_true(u.shield + u.hull < hit, "and the freed foe struck that turn")
 	assert_false(Effects.has(a, "numbed"), "it never lost its action, so it gains no Numbed")
+
+
+## A healer, a cleanser or a reviver of the given effect, its move's value `value`.
+func _ally_caster(effect: String, when: String, value: int = 0) -> Foe:
+	var f := _caster(effect, "defend", when)
+	if value > 0:
+		f.actions[0]["value"] = value
+		f.action = f.actions[0]
+	return f
+
+
+## A cleanse picks as the round opens and holds (Ryan, 26 November: "Cleanse should NOT pick its
+## target as it acts ... Intents pick their target at round start"): marks the team lays after it
+## never move it, so it lands on its pick and every other foe keeps what it carries.
+func test_a_cleanse_picks_as_the_round_opens_and_later_marks_never_move_it() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 200))
+	var healer := _ally_caster("cleanse", "ally_marked")
+	var x := _ghoul(500, 1)
+	var y := _ghoul(500, 1)
+	sk.add_foes([healer, x, y])
+	sk.begin()
+	Effects.stack(x, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	sk.start_round()
+	assert_eq(healer.ally_pick, x, "the marked one, picked as the round opens")
+	Effects.stack(y, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	Effects.stack(y, Effects.STATUS["vitriol"], Effects.SKIRMISH, "mech", 2, Effects.DECAY_NONE)
+	sk._keep_ally_picks()
+	assert_eq(healer.ally_pick, x, "marks laid in the player's turn never move it, whoever carries more")
+	sk.end_round()
+	assert_false(Effects.has(x, "shocked"), "it lands on its pick")
+	assert_true(Effects.has(y, "shocked"), "and the other keeps what it carries")
+
+
+## A pick moves in the player's turn when its foe falls (Ryan, 26 November: "if the intended
+## target dies or otherwise becomes invalid"), drawn again by the move's own rule, and never in the
+## foes' turn ("that should only happen on the players turn"): a pick that falls there takes the
+## move with it.
+func test_a_pick_that_falls_draws_again_in_the_players_turn_and_never_in_the_foes() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 200))
+	var healer := _ally_caster("cleanse", "ally_marked")
+	var x := _ghoul(500, 1)
+	var y := _ghoul(500, 1)
+	sk.add_foes([healer, x, y])
+	sk.begin()
+	Effects.stack(x, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	Effects.stack(x, Effects.STATUS["vitriol"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	Effects.stack(y, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	sk.start_round()
+	assert_eq(healer.ally_pick, x, "the most marked")
+	x.hp = 0
+	sk._clear_dead()
+	sk._keep_ally_picks()
+	assert_eq(healer.ally_pick, y, "its pick fell in the player's turn: it draws again, the marked one left")
+	# The foes' turn: a pick that falls before its caster acts is never drawn again.
+	var sk2 := Skirmish.new(1, 3)
+	sk2.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 200))
+	var c := _ally_caster("cleanse", "ally_marked")
+	var p := _ghoul(3, 5)
+	var q := _ghoul(500, 5)
+	sk2.add_foes([p, q, c])
+	sk2.begin()
+	assert_eq(sk2.field_foes(), [p, q, c] as Array[Foe], "the cleanser last in strike order")
+	Effects.stack(p, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 5)
+	Effects.stack(p, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	Effects.stack(q, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	sk2.start_round()
+	assert_eq(c.ally_pick, p, "the most marked, burning")
+	sk2.end_round()
+	assert_false(p.alive(), "its burn felled it as its turn ended, before the cleanser acted")
+	assert_true(Effects.has(q, "shocked"), "and the cleanse picked nobody else: the foes' turn never moves a pick")
+
+
+## A Cleanse whose pick carries nothing stays on it (Ryan, 26 November: "It stays"): the player
+## spending the pick's last mark moves nothing, and it lands for nothing.
+func test_a_cleanse_whose_pick_carries_nothing_stays() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 200))
+	var healer := _ally_caster("cleanse", "ally_marked")
+	var x := _ghoul(500, 1)
+	var y := _ghoul(500, 1)
+	sk.add_foes([healer, x, y])
+	sk.begin()
+	Effects.stack(x, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	sk.start_round()
+	assert_eq(healer.ally_pick, x, "the marked one")
+	Effects.remove(x, "shocked")   # a weapon's hit spends the Shock
+	Effects.stack(y, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	sk._keep_ally_picks()
+	assert_eq(healer.ally_pick, x, "it stays on its pick")
+	sk.end_round()
+	assert_true(Effects.has(y, "shocked"), "and lifts nothing off the other")
+	assert_true("\n".join(sk.log).contains("carries no mark to lift"), "the log says it lifted nothing")
+
+
+## A second caster passes over a foe the first covers (Ryan, 26 November: "Yes"): a second
+## cleanser over the first's pick, and with none else marked its cleanse is not open; a second
+## healer over a foe the first heal fills, but onto one still the most hurt after it; and two
+## revivers never pick the same ally.
+func test_a_second_caster_passes_over_what_the_first_covers() -> void:
+	var sk := Skirmish.new(1, 4)
+	sk.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 200))
+	var c1 := _ally_caster("cleanse", "ally_marked")
+	var c2 := _ally_caster("cleanse", "ally_marked")
+	var x := _ghoul(500, 1)
+	var y := _ghoul(500, 1)
+	sk.add_foes([x, y, c1, c2])
+	sk.begin()
+	Effects.stack(x, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	Effects.stack(x, Effects.STATUS["vitriol"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	Effects.stack(y, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	sk.start_round()
+	assert_eq([c1.ally_pick, c2.ally_pick], [x, y], "the first the most marked, the second the next")
+	Effects.remove(y, "shocked")
+	assert_false(sk.legal_actions(c2, [c1]).any(func(a) -> bool: return str(a.get("effect", "")) == "cleanse"), "with the first's pick the only one marked, the second's cleanse is not open")
+	# Two healers of 4.
+	var sh := Skirmish.new(1, 4)
+	sh.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 200))
+	var h1 := _ally_caster("heal", "ally_hurt", 4)
+	var h2 := _ally_caster("heal", "ally_hurt", 4)
+	var hx := _ghoul(500, 1)
+	var hy := _ghoul(500, 1)
+	sh.add_foes([hx, hy, h1, h2])
+	sh.begin()
+	hx.hp -= 3
+	hy.hp -= 2
+	sh.start_round()
+	assert_eq([h1.ally_pick, h2.ally_pick], [hx, hy], "the first heal fills the most hurt, so the second takes the next")
+	hx.hp -= 7
+	h1.ally_pick = sh._pick_ally(h1, [])
+	h2.ally_pick = sh._pick_ally(h2, [h1])
+	assert_eq([h1.ally_pick, h2.ally_pick], [hx, hx], "one still the most hurt after the first heal takes the second too")
+	# Two revivers.
+	var sr := Skirmish.new(1, 4)
+	sr.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 200))
+	var r1 := _ally_caster("revive_once_ally", "ally_unready")
+	var r2 := _ally_caster("revive_once_ally", "ally_unready")
+	var big := _ghoul(500, 9)
+	var small := _ghoul(500, 3)
+	sr.add_foes([big, small, r1, r2])
+	sr.begin()
+	sr.start_round()
+	assert_eq([r1.ally_pick, r2.ally_pick], [big, small], "the heaviest hitter for the first, the next for the second")
+
+
+## Nothing targets a Phased foe (its tip: "Cannot be damaged, targeted or hit by anything"), so no
+## pick among its own falls on one.
+func test_no_pick_among_its_own_falls_on_a_phased_foe() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 200))
+	var healer := _ally_caster("heal", "ally_hurt", 4)
+	var x := _ghoul(500, 1)
+	var y := _ghoul(500, 1)
+	sk.add_foes([healer, x, y])
+	sk.begin()
+	x.hp -= 10
+	y.hp -= 2
+	Effects.grant_for_rounds(x, Effects.STATUS["phased"], "test", 1)
+	sk.start_round()
+	assert_eq(healer.ally_pick, y, "the most hurt is Phased: the heal picks the next")
+
+
+## A stun its foe's cleanse does not reach holds (Ryan, 26 November): a cleanser after its pick in
+## the order they strike, a foe no cleanse picked, and a cleanser stunned itself free nothing, and
+## the intents read so at once.
+func test_a_stun_no_cleanse_lifts_first_holds() -> void:
+	var sk := Skirmish.new(1, 3)
+	var u := _mech("A", Die.single(Face.attack(1, L)), 40, 200)
+	sk.add_mech(u)
+	var healer := _ally_caster("cleanse", "ally_marked")
+	var a := _ghoul(500, 7)
+	var b := _ghoul(500, 7)
+	sk.add_foes([healer, a, b])
+	sk.begin()
+	if sk.field_foes()[0] != healer:
+		sk._swap(sk.field_foes()[0], healer)
+	Effects.stack(a, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	sk.start_round()
+	assert_eq(healer.ally_pick, a, "the marked one")
+	assert_true(sk._suppress(a) and sk._suppress(b), "both stunned")
+	sk._refresh_freed()
+	assert_true(a.freed and a.intent_on(u), "the pick is freed")
+	assert_false(b.freed or b.intent_on(u), "the other holds: no cleanse picked it")
+	assert_true(sk._suppress(healer), "the cleanser stunned too")
+	sk._refresh_freed()
+	assert_false(a.freed or a.intent_on(u), "and its pick holds with it")
+	# A cleanser behind its pick lands after the stun has had its turn.
+	var sk2 := Skirmish.new(1, 2)
+	var u2 := _mech("A", Die.single(Face.attack(1, L)), 40, 200)
+	sk2.add_mech(u2)
+	var late := _ally_caster("cleanse", "ally_marked")
+	var c := _ghoul(500, 7)
+	sk2.add_foes([c, late])
+	sk2.begin()
+	assert_eq(sk2.field_foes(), [c, late] as Array[Foe], "the cleanser behind its pick")
+	Effects.stack(c, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	sk2.start_round()
+	assert_true(sk2._suppress(c), "its pick stunned")
+	sk2._refresh_freed()
+	assert_false(c.freed or c.intent_on(u2), "nothing lifts it before its turn")
+
+
+## The picks among the foes' own ride the fight's copy and its undo (the preview's copy, the
+## planner's, a saved battle): each foe's by its place.
+func test_the_picks_among_its_own_ride_a_copy_and_an_undo() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 200))
+	var healer := _ally_caster("cleanse", "ally_marked")
+	var x := _ghoul(500, 1)
+	var y := _ghoul(500, 1)
+	sk.add_foes([healer, x, y])
+	sk.begin()
+	Effects.stack(y, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	sk.start_round()
+	var hi := sk.field_foes().find(healer)
+	var yi := sk.field_foes().find(y)
+	assert_eq(healer.ally_pick, y, "the marked one")
+	var copy := SaveGame.clone_skirmish(sk)
+	assert_eq(copy.field_foes()[hi].ally_pick, copy.field_foes()[yi], "the copy's cleanser picks the copy's same foe")
+	var snap := SaveGame.snapshot_skirmish(sk)
+	healer.ally_pick = null
+	SaveGame.restore_skirmish(sk, snap)
+	assert_eq(sk.field_foes()[hi].ally_pick, sk.field_foes()[yi], "and the undo puts it back")
 
 
 ## A foe's Barrier (the ladder's brief, B; 28 October): its special shelters itself, aimed at
@@ -8688,7 +8921,7 @@ func test_a_reraise_readies_one_of_its_own_a_party_member_first_and_never_itself
 	var readied: Array = []
 	for i in range(3):
 		sk.start_round()
-		cleric.action = reraise
+		_set_move(sk, cleric, reraise)
 		sk.end_round()
 		for f in [brute, squire, knight]:
 			if Effects.has(f, "risen") and not readied.has(f):

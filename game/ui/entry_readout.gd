@@ -404,6 +404,8 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 			whom = everyone   # the term, as a blow at every machine says it
 		elif key == "any_machine":
 			whom = at_target if live and not target.is_empty() else _anyone(word_for)
+		elif live and not target.is_empty() and Foe.ALLY_PICKED.has(str(a.get("effect", ""))):
+			whom = target   # in a fight, its pick among its own, drawn as the round opened (26 November)
 		else:
 			whom = Templates.say("foe_target." + key)
 		out.append(text_line("effect", kind, "attr"))

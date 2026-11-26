@@ -213,12 +213,15 @@ var _blasts: Array = []
 ## The enemy's turn is under way (_enemy_turn): a Mine's Disrupt does nothing then, the foes' moves
 ## being under way.
 var _enemy_acting := false
+## From the enemy's turn until the next round opens, the picks among the foes' own hold (Ryan, 26
+## November: a shift "should only happen on the players turn"): none is drawn again, and no stun
+## reads as freed, the cleanse itself lifting it.
+var _foes_turn := false
 ## The machine whose spend, or whose passed turn's release, is under way: the one that makes
 ## the kills its death check clears, as the kill trigger reads them (_after_kills). Null
 ## outside one: a tick's kill, a Mine blowing in the enemy's turn and a foe's own burst are
 ## nobody's. A fall's curse lands on it (_last_act).
 var _killer: MechState = null
-var _mended: Foe = null   # the foe a move's heal mended, for a cleanse that follows it in the same move (the Cleric's Cure, one patient); cleared as each move's first step begins
 ## Every blow of the last enemy turn, in order, for the screen to replay:
 ## {foe, mech (index), absorbed, through, blocked, broke_shield, injured, shield, hull,
 ## seq, name, boss, all}. `seq` orders it among the turn's specials; `name` is the move's shown
@@ -921,7 +924,7 @@ func rallies_on(x: Foe) -> Array[Foe]:
 ## Will this foe's move this round rally the others: a rally, the foe alive and yet to act, not
 ## Suppressed, not gathering and not stepped up this round.
 func rallies_now(r: Foe) -> bool:
-	if r == null or not r.alive() or r.fresh or r.is_suppressed() or r.gathering() or _acted.has(r):
+	if r == null or not r.alive() or r.fresh or r.stays_stunned() or r.gathering() or _acted.has(r):
 		return false
 	return not Foe.is_attack_action(r.action) and str(r.action.get("effect", "")) == "rally"
 
@@ -1597,11 +1600,18 @@ func start_round() -> void:
 	_refresh_kin()
 	var ahead := {}
 	var announced: Array = []   # the foes whose move for this round is out, in the order they strike
+	_foes_turn = false   # the player's turn opens: the picks among the foes' own are drawn, and may move until it ends
 	for f in field_foes():
 		f.fresh = false   # a half that stepped up last round acts from this one
+		f.freed = false
 		# A move gathered last round holds, and so does its pick while the machine stands.
 		var carried := not f.pending.is_empty()
 		_choose_foe_action(f, announced)
+		# Its pick among its own (Ryan, 26 November: "Intents pick their target at round start"),
+		# past what the casters announced ahead of it cover; a stun a cleanse ahead of it will lift
+		# reads as freed, so its blows are drawn as it will strike.
+		f.ally_pick = _pick_ally(f, announced)
+		f.freed = _is_freed(f)
 		announced.append(f)
 		if not f.aims_at_one():
 			f.target = null   # nothing of it lands on one machine: no pick, and no draw
@@ -1609,6 +1619,7 @@ func start_round() -> void:
 			f.target = _pick_mech_target(f, _doomed(ahead))   # a pick that fell, or went out of reach as the round ended (Phased), is drawn again
 		_draw_blows(f, ahead)
 	state = State.ASSIGN
+	_refresh_freed()
 	_mark_roll()   # the round's roll: the undo reaches back to here, and the trail shows the bar
 
 
@@ -1626,7 +1637,7 @@ func _doomed(ahead: Dictionary) -> Array:
 ## forecast reads them: a blow at every machine on each, any other on its pick. A special, a
 ## suppressed foe and a countdown still gathering land nothing this round.
 func _draw_blows(f: Foe, ahead: Dictionary) -> void:
-	if not f.attacks() or foe_blow(f) <= 0 or f.is_suppressed():
+	if not f.attacks() or foe_blow(f) <= 0 or f.stays_stunned():
 		return
 	if not f.pending.is_empty() and f.charge > 0:
 		return
@@ -1670,7 +1681,7 @@ func legal_actions(f: Foe, announced = null) -> Array:
 			continue   # a call back with nothing lost (the Wild Huntsman's Horn): none of its kind has fallen
 		if bool(a.get("once", false)) and f.spent_once.has(str(a.get("id", ""))):
 			continue   # used once this fight already
-		if _when_holds(f, a):
+		if _when_holds(f, a, announced):
 			legal.append(a)
 	if f.strikes_when_buffed and not legal.is_empty():
 		# The goblins (Ryan, 20 November: "goblins only attack when they have any buff, or are
@@ -1697,7 +1708,7 @@ func legal_actions(f: Foe, announced = null) -> Array:
 		# two, the Thief's Mug; a blow whose rider is a second Expose, the Piercing Eye's Gaze),
 		# so a foe never reaches for a move its own condition shuts; then any blow at all.
 		for a in f.actions:
-			if Foe.is_attack_action(a) and not follow.has(str(a.get("id", ""))) and _when_holds(f, a) and not (bool(a.get("once", false)) and f.spent_once.has(str(a.get("id", "")))):
+			if Foe.is_attack_action(a) and not follow.has(str(a.get("id", ""))) and _when_holds(f, a, announced) and not (bool(a.get("once", false)) and f.spent_once.has(str(a.get("id", "")))):
 				legal.append(a)
 	if legal.is_empty():
 		for a in f.actions:
@@ -1839,17 +1850,19 @@ func _begin_countdown(f: Foe) -> void:
 
 
 ## Does a move's condition hold right now? One word or a list meaning any (Foe.WHENS).
-func _when_holds(f: Foe, a: Dictionary) -> bool:
+## `announced` as legal_actions takes it: the casters whose picks among their own come before
+## this foe's, so a heal, a cleanse or a revive casts only while one of its own is left for it.
+func _when_holds(f: Foe, a: Dictionary, announced = null) -> bool:
 	var whens := Foe.whens_of(a)
 	if whens.is_empty():
 		return true
 	for w in whens:
-		if _when_word_holds(f, a, str(w)):
+		if _when_word_holds(f, a, str(w), announced):
 			return true
 	return false
 
 
-func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
+func _when_word_holds(f: Foe, a: Dictionary, w: String, announced = null) -> bool:
 	match w:
 		"below_half":
 			return f.hp * 2 <= f.hp_max
@@ -1861,24 +1874,21 @@ func _when_word_holds(f: Foe, a: Dictionary, w: String) -> bool:
 			var behind: Foe = back[f.column]
 			return behind != null and behind != f and behind.alive()
 		"ally_hurt":
-			for o in field_foes():
-				if o.alive() and o.hp < o.hp_max:
-					return true
-			return false
+			return heal_target(f, _ally_cover(_casters_ahead(f, announced), "heal")) != null
 		"others_on_field":
 			for o in field_foes():
 				if o != f and o.alive():
 					return true
 			return false
 		"ally_unready":
-			return _unready_ally(f) != null
+			return _unready_ally(f, _ally_cover(_casters_ahead(f, announced), "revive_once_ally").keys()) != null
 		"machine_buffed":
 			for ms in live_mechs():
 				if Effects.buff_stacks(ms.unit) > 0:
 					return true
 			return false
 		"ally_marked":
-			return cleanse_target(f) != null
+			return cleanse_target(f, _ally_cover(_casters_ahead(f, announced), "cleanse").keys()) != null
 		"part_fallen":
 			return parts_down(f) > 0
 		"calm":
@@ -1912,14 +1922,16 @@ func _barrier_eats(foe: Foe, weapon: bool) -> bool:
 	return true
 
 
-## The foe a cleanse lands on (28 October): the one on its side, itself included, carrying the
-## most of the team's marks and the stun (each status one; Effects.cleanse_marks), the first in
-## strike order on a tie; null when none carries one.
-func cleanse_target(f: Foe) -> Foe:
+## The foe a cleanse picks (28 October), as the round opens (Ryan, 26 November: "Intents pick their
+## target at round start"): the one on its side, itself included, carrying the most of the team's
+## marks and the stun (each status one; Effects.cleanse_marks), the first in strike order on a tie;
+## never one Phased (nothing targets it) or one another cleanse already takes (`covered`, Ryan: a
+## second cleanser passes over a Sprite the first covers); null when none is left carrying one.
+func cleanse_target(_f: Foe, covered: Array = []) -> Foe:
 	var best: Foe = null
 	var most := 0
 	for o in field_foes():
-		if not o.alive():
+		if not o.alive() or foe_phased(o) or covered.has(o):
 			continue
 		var n := Effects.cleanse_marks(o)
 		if n > most:
@@ -1931,12 +1943,134 @@ func cleanse_target(f: Foe) -> Foe:
 ## The foe a heal mends (15 October, foes helping foes): the most hurt of its side by hull
 ## missing, the healer included, the first in the order they stand on a tie; null when none
 ## is hurt. One rule for the move and for the bot's read of it.
-func heal_target(_f: Foe) -> Foe:
+## The foe a heal picks (15 October), as the round opens (26 November): the most hurt of its own
+## by HP missing, itself included, the first in the order they stand on a tie, less what the heals
+## already picked will mend (`mends`, foe -> points: a second healer passes over a Sprite the first
+## fills); never one Phased; null when none is left hurt.
+func heal_target(_f: Foe, mends: Dictionary = {}) -> Foe:
 	var hurt: Foe = null
+	var most := 0
 	for other in field_foes():
-		if other.alive() and other.hp < other.hp_max and (hurt == null or other.hp_max - other.hp > hurt.hp_max - hurt.hp):
+		if not other.alive() or foe_phased(other):
+			continue
+		var missing := other.hp_max - other.hp - int(mends.get(other, 0))
+		if missing > most:
 			hurt = other
+			most = missing
 	return hurt
+
+
+## The casters whose picks among their own come before this foe's: those announced ahead of it as
+## the round opens (`announced`), every other foe on the field when a pick is drawn again in the
+## player's turn (`announced` null).
+func _casters_ahead(f: Foe, announced = null) -> Array:
+	if announced is Array:
+		return (announced as Array).filter(func(o) -> bool: return o != f)
+	return field_foes().filter(func(o) -> bool: return o != f)
+
+
+## What the casters' picks already cover, for the next pick (Ryan, 26 November: a second healer or
+## cleanser passes over a Sprite the first covers, and two revivers never pick the same ally):
+## foe -> the points the heals picked on it mend, for "heal"; foe -> true for a cleanse's pick (a
+## Cure's among them: it cleanses its patient) or a revive's.
+func _ally_cover(by: Array, effect: String) -> Dictionary:
+	var out := {}
+	for c in by:
+		var x: Foe = c.ally_pick
+		if x == null or not c.alive() or not Foe.does(c.action, effect):
+			continue
+		if effect == "heal":
+			out[x] = int(out.get(x, 0)) + maxi(0, Foe.step_value(c.action, "heal"))
+		else:
+			out[x] = true
+	return out
+
+
+## A move's pick among its own (Ryan, 26 November): by the rule of its first step that lands on one
+## of its own (Foe.ally_effect), past what the casters in `by` already cover; null for a move that
+## lands on none of its own, or when none is left for it.
+func _pick_ally(f: Foe, by: Array) -> Foe:
+	match Foe.ally_effect(f.action):
+		"heal":
+			return heal_target(f, _ally_cover(by, "heal"))
+		"cleanse":
+			return cleanse_target(f, _ally_cover(by, "cleanse").keys())
+		"revive_once_ally":
+			return _unready_ally(f, _ally_cover(by, "revive_once_ally").keys())
+	return null
+
+
+## The one of its own a move's step lands on as it acts: its pick, while that stands on the field
+## and can be reached; none once the pick has fallen, gone or faded, since the enemy's turn never
+## picks again (Ryan, 26 November). A Cleanse whose pick carries nothing stays on it (his "It
+## stays") and lifts nothing.
+func ally_landing(f: Foe) -> Foe:
+	var x: Foe = f.ally_pick
+	if x == null or not x.alive() or not field_foes().has(x) or foe_phased(x):
+		return null
+	return x
+
+
+## The player's turn's one way a pick among the foes' own moves (Ryan, 26 November: "the only way
+## they shift is if the player shifts them ..., or if the intended target dies or otherwise
+## becomes invalid ... that should only happen on the players turn"): after each spend and as the
+## turn ends, a caster whose pick fell, left the field or faded draws again by its move's rule, in
+## the order they strike, past what the others cover. A move that drew none as the round opened
+## holds none; one a Disrupt turned drew for its new move as it turned. Then the freed stuns are
+## read again.
+func _keep_ally_picks() -> void:
+	if _foes_turn or state != State.ASSIGN:
+		return
+	for f in field_foes():
+		if not f.alive():
+			continue
+		if Foe.ally_effect(f.action).is_empty():
+			f.ally_pick = null
+		elif f.ally_pick != null and ally_landing(f) == null:
+			f.ally_pick = _pick_ally(f, _casters_ahead(f))
+	_refresh_freed()
+
+
+## A fight saved before the picks among the foes' own (26 November): every caster's drawn as
+## things stand, in the order they strike.
+func _draw_missing_ally_picks() -> void:
+	for f in field_foes():
+		if f.alive() and f.ally_pick == null and not Foe.ally_effect(f.action).is_empty():
+			f.ally_pick = _pick_ally(f, _casters_ahead(f))
+	_refresh_freed()
+
+
+## Would a cleanse picked on this foe lift a stun before it acts this round: one is cast ahead of it
+## in the order they strike, by a caster alive, not fresh, gathering nothing, yet to act and
+## unstunned (or freed in turn). A stun it carries is freed (_is_freed), and one laid on it now
+## would not hold (the bot's suppress_worth). Never in the foes' own turn, where the cleanse lifts
+## the stun itself.
+func cleanse_frees(x: Foe) -> bool:
+	if _foes_turn or x == null or not x.alive() or _acted.has(x):
+		return false
+	var order := field_foes()
+	var at := order.find(x)
+	for i in range(maxi(0, at)):
+		var c: Foe = order[i]
+		if c.ally_pick != x or not c.alive() or c.fresh or c.gathering() or _acted.has(c) or not Foe.does(c.action, "cleanse"):
+			continue
+		if c.is_suppressed() and not _is_freed(c):
+			continue
+		return true
+	return false
+
+
+## Is this stunned foe freed this round (Ryan, 26 November: "a stunned sprite shows no intent line,
+## but on cleanse it does show"): a cleanse picked on it lifts the stun before its turn
+## (cleanse_frees), so it acts.
+func _is_freed(x: Foe) -> bool:
+	return x != null and x.is_suppressed() and cleanse_frees(x)
+
+
+## Every foe's freed read, after anything that moves a stun, a pick or a cleanser (Foe.freed).
+func _refresh_freed() -> void:
+	for f in field_foes():
+		f.freed = _is_freed(f)
 
 
 ## A foe that splits (the Gel): destroyed, so many of the named foe step up at once (Ryan, 25
@@ -2644,6 +2778,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	# The fight ends the moment it is decided (Ryan, 22 September): the last foe down, or
 	# the last machine burnt out by its own heat, and nobody waits for End turn.
 	_refresh_allies()
+	_keep_ally_picks()   # a pick among the foes' own whose foe the spend felled draws again, and the stuns' freed read follows
 	_check_outcome()
 	return true
 
@@ -2738,6 +2873,7 @@ func _end_player_turn() -> void:
 			Effects.halve_buffs(ms.unit, holds)
 			Effects.entries_relight(ms.unit, round)   # a dark entry whose rounds are done lights as its machine's turn ends: a cooldown, a jam, Rapid's switch-off
 	_refresh_allies()
+	_keep_ally_picks()   # the turn's end is the player's: a pick its burns felled draws again before the foes' turn holds them
 	_check_outcome()
 
 
@@ -2765,6 +2901,9 @@ func _enemy_turn() -> void:
 	# decided, the foes after the blow that wrecks the last machine doing nothing.
 	_acted.clear()
 	_enemy_acting = true
+	_foes_turn = true   # the picks among the foes' own hold from here (Ryan, 26 November), and the cleanse lifts a stun itself
+	for f in field_foes():
+		f.freed = false
 	_drill_ticks()   # the drills at work, before the side's opening (the Mole's): a fight they end, the loop below breaks on
 	# The foes' turn starts (his four places: "Its turn Start: Armoured, Barrier, Ward"; Brittle
 	# with them, the team's blows having used it): every foe's plate, Barrier and Ward from its
@@ -4426,7 +4565,6 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 		log.append("%s: %s, and no machine stands to take it" % [f.display_name, str(a.get("name", effect))])
 		return
 	if first:
-		_mended = null
 		turn_specials.append({"foe": f, "name": str(a.get("name", "")), "kind": Foe.kind_of(a), "seq": _seq})
 		_seq += 1
 		if bool(a.get("once", false)):
@@ -4446,15 +4584,16 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			f.hp = mini(f.hp_max, f.hp + value)
 			log.append("%s: %s, recovers %d" % [f.display_name, str(a.get("name", "recovers")), f.hp - before])
 		"heal":
-			# Foes helping foes (15 October): the most hurt of its own by hull missing, itself
-			# included, the first in the order they stand on a tie (heal_target).
-			var hurt := heal_target(f)
+			# Foes helping foes (15 October): the most hurt of its own by HP missing, itself
+			# included, picked as the round opened (heal_target; Ryan, 26 November: "Intents pick
+			# their target at round start"), and never again in this turn: a pick that has fallen
+			# or gone takes nothing.
+			var hurt := ally_landing(f)
 			if hurt == null:
 				log.append("%s: %s, and none of its own is hurt" % [f.display_name, str(a.get("name", "heals"))])
 			else:
 				var before := hurt.hp
 				hurt.hp = mini(hurt.hp_max, hurt.hp + value)
-				_mended = hurt
 				log.append("%s: %s, heals %s for %d" % [f.display_name, str(a.get("name", "heals")), hurt.display_name, hurt.hp - before])
 		"brace_all":
 			# Armoured on every foe in the fight, on the one clock every Armoured runs (15
@@ -4484,8 +4623,9 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 		"revive_once_ally":
 			# Reraise on an ally (Ryan, 16 October: the promoted Cleric's, cast on the other
 			# party members, never itself): Undying on one of its own.
-			var ally := _unready_ally(f)
-			if ally == null:
+			# On its pick, drawn as the round opened (_unready_ally; Ryan, 26 November).
+			var ally := ally_landing(f)
+			if ally == null or ally.stays_down or Effects.has(ally, "risen"):
 				log.append("%s: %s, and none of its own needs readying" % [f.display_name, str(a.get("name", "readies"))])
 			else:
 				Effects.stack(ally, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_NONE)
@@ -4619,10 +4759,11 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			# the team laid off the most-marked of its own, itself included, its stun too (Ryan,
 			# 26 November: "Change the cleanse to remove suppress, I never approved that"); never
 			# Numbed, never a buff.
-			# A cleanse that follows a heal in one move has the heal's patient (the Cleric's Cure,
-			# Ryan's yes of 17 November: "Cure heals 4, then cleanses the same foe").
-			var same: bool = not first and _mended != null and _mended.alive()
-			var marked: Foe = _mended if same else cleanse_target(f)
+			# It lands on the move's pick, drawn as the round opened (cleanse_target; Ryan, 26
+			# November), and a cleanse that follows a heal in one move has the heal's patient, the
+			# move's one pick (the Cleric's Cure, Ryan's yes of 17 November: "Cure heals 4, then
+			# cleanses the same foe"). A pick that carries nothing stays (his "It stays").
+			var marked: Foe = ally_landing(f)
 			if marked == null:
 				log.append("%s: %s, and none of its own carries a mark" % [f.display_name, str(a.get("name", "cleanses"))])
 			else:
@@ -4734,14 +4875,15 @@ static func _turned_by(ms: MechState) -> String:
 	return ""
 
 
-## The one a Reraise on an ally readies: a live foe on the field other than the caster, not
-## readied already and able to get back up (one gone whole cannot); a party member before the
-## rest of its own, the heaviest hitter first (Foe.threat), then the order they stand. Null
-## when there is none.
-func _unready_ally(caster: Foe) -> Foe:
+## The one a Reraise on an ally picks, as the round opens (26 November): a live foe on the field
+## other than the caster, not readied already and able to get back up (one gone whole cannot), not
+## Phased and not another revive's pick (`covered`: two revivers never pick the same ally); a
+## party member before the rest of its own, the heaviest hitter first (Foe.threat), then the order
+## they stand. Null when there is none.
+func _unready_ally(caster: Foe, covered: Array = []) -> Foe:
 	var best: Foe = null
 	for o in field_foes():
-		if o == caster or not o.alive() or o.stays_down or Effects.has(o, "risen"):
+		if o == caster or not o.alive() or o.stays_down or Effects.has(o, "risen") or foe_phased(o) or covered.has(o):
 			continue
 		if best == null or (o.hero and not best.hero) or (o.hero == best.hero and o.threat() > best.threat()):
 			best = o
@@ -6019,6 +6161,7 @@ func _disrupt(foes: Array) -> void:
 		Effects.remove(foe, "aloft")   # and a foe that climbed for it comes down with it
 		foe.action = next
 		foe.last_special = "" if foe.attacks() else str(foe.action.get("id", ""))
+		foe.ally_pick = _pick_ally(foe, _casters_ahead(foe))   # its new move draws its own pick among its own, the player's shift
 		_begin_countdown(foe)
 		# Its pick holds (Ryan, 26 October: the intent moves on a Disrupt "only if the disrupt would
 		# result in an invalid target"): a new one when the machine is gone or Phased, or when the

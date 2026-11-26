@@ -1281,6 +1281,48 @@ func test_a_suppressed_foe_shows_its_chip_in_place_of_its_intent() -> void:
 	s.free()
 
 
+## A move on one of its own runs its line to its pick (Ryan, 26 November: "Can't we run a dashed
+## line to the sprite target?"), from the caster's feet to the top of its pick, and its hold names
+## the pick; a stun on that pick, which the cleanse lifts first, leaves its intent, its line and its
+## hold's intent showing (his: "a stunned sprite shows no intent line, but on cleanse it does show").
+func test_a_cleanse_runs_its_line_to_its_pick_and_a_freed_pick_keeps_its_intent() -> void:
+	var db := ContentDB.load_default()
+	var sk := Skirmish.new(1)
+	var m := db.make_mech("badger")
+	m.die = Die.single(Face.attack(5, Face.Reach.DIRECT, Face.Keyword.SUPPRESS))
+	sk.add_mech(m)
+	var healer := Foe.make("Cleanser", 500, 1)
+	healer.content_id = "caster"
+	healer.actions = [{"id": "hallow", "name": "Hallow", "kind": "defend", "effect": "cleanse", "weight": 1, "when": "ally_marked", "text": ""}]
+	healer.action = healer.actions[0]
+	var a := Foe.make("Ghoul", 500, 10)
+	a.content_id = "revenant"
+	Effects.stack(a, Effects.STATUS["vitriol"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	sk.add_foes([healer, a])
+	sk.layout = ["caster", "revenant"]   # the cleanser left, so it acts first
+	var s := SkirmishScreen.new()
+	s.setup(sk)
+	s._toggle_all_arrows(true)
+	assert_eq(sk.field_foes(), [healer, a] as Array[Foe], "the cleanser first in strike order")
+	assert_eq(healer.ally_pick, a, "its cleanse picks the marked one as the round opens")
+	var hv := s._foe_view_for(healer)
+	var av := s._foe_view_for(a)
+	var inv := s._arrows.get_global_transform().affine_inverse()
+	var line := [inv * hv.intent_anchor_global(), inv * av.bar_anchor_global()]
+	var to_pick := func() -> bool: return s._arrows.arrows.any(func(x: Array) -> bool: return x[0] == line[0] and x[1] == line[1] and x.size() <= 3)
+	assert_true(to_pick.call(), "a line from the cleanser's feet to the top of its pick, drawn as an intent's")
+	assert_eq(s._arrows.arrows.size(), 2, "with the pick's own line to the machine")
+	s._on_foe_held(hv)
+	assert_true(s._details_entry.text().contains("Target: Ghoul"), "its hold names its pick: %s" % s._details_entry.text())
+	s._use_die(0, a)
+	assert_true(a.is_suppressed() and a.freed, "stunned, and freed: the cleanse comes first")
+	assert_eq(av.intent_kind, "attack", "so its intent stays")
+	assert_true(to_pick.call() and s._arrows.arrows.size() == 2, "and both lines stay")
+	s._on_foe_held(av)
+	assert_true(s._details_entry.text().contains("INTENT"), "its hold keeps its intent: %s" % s._details_entry.text())
+	s.free()
+
+
 func test_the_last_kill_ends_the_fight_without_end_turn() -> void:
 	var db := ContentDB.load_default()
 	var sk := Skirmish.new(1)
@@ -1847,6 +1889,7 @@ func test_a_foe_the_round_kills_wears_the_destroyed_chip_and_keeps_its_intent() 
 	Effects.remove(a, "ablating")
 	a.hp = 1
 	cleric.action = cure
+	cleric.ally_pick = sk._pick_ally(cleric, [])   # its patient, drawn as the round's opening would (26 November)
 	s._refresh()
 	v = s._foe_view_for(a)
 	assert_eq(int(v.bars[0][3]), 3, "the Cure's heal coming, shown on its gauge before it lands")

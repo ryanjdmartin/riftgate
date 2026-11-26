@@ -93,7 +93,11 @@ document's job and every command are in `README.md`.
   on both sides (his "There should be only one": the engine's kindled reads as overcharged's
   entry), a Sprite's Cleanse lifts Suppressed (his "Change the cleanse to remove suppress, I never
   approved that": a cleanser acting before a stunned ally frees it, which gains no Numbed), and
-  Cleanse and Purge stay two effects (his "Keep cleanse and purge seperate").
+  Cleanse and Purge stay two effects (his "Keep cleanse and purge seperate"). Then a heal, a
+  cleanse and a revive an ally pick their foe as the round opens and move only in the player's
+  turn (his "Intents pick their target at round start"; a second caster passes over what the
+  first covers, an empty pick stays, and a line runs from the caster to its pick), so a stunned
+  pick a cleanser ahead of it will free shows its intent, which the Funnel-Web's Ambush reads.
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
   (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks
