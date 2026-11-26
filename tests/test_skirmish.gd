@@ -5658,11 +5658,10 @@ func test_a_foe_that_fades_is_out_of_reach_for_a_round_and_acts_all_the_same() -
 	assert_true(Skirmish.foe_phased(ghost), "and its next bolt fades it again: every other round")
 
 
-## The last foe standing does not fade, so a fight has a foe to end on; and a foe's Phased is
-## less strict than a machine's (Ryan, 15 November: "Phased on foes can be less strict since it's
-## balanced around their kit and theme"): its own side still reaches it, a rally's Empowered
-## among it.
-func test_the_last_foe_standing_does_not_fade_and_its_own_side_still_reaches_one_that_has() -> void:
+## The last foe standing does not fade, so a fight has a foe to end on; and a Phased foe's own side
+## reaches it only from a foe Phased too (Ryan, 26 November: "Phased can target other phased"; "The
+## 'less strict' line is deprecated"), so a rally from one not Phased passes it by.
+func test_the_last_foe_standing_does_not_fade_and_its_own_side_reaches_it_only_phased() -> void:
 	var sk := Skirmish.new(1, 2)
 	sk.add_mech(_mech("A", Die.single(Face.blank()), 0, 500))
 	var lone := _fader()
@@ -5688,7 +5687,7 @@ func test_the_last_foe_standing_does_not_fade_and_its_own_side_still_reaches_one
 	s2.start_round()
 	s2.end_round()
 	assert_true(s2.log.any(func(line) -> bool: return str(line).contains("hit 2 harder")), "the rally is called while it is Phased")
-	assert_true(Effects.has(ghost, "kindled"), "and reaches it with the rest of its side")
+	assert_false(Effects.has(ghost, "kindled"), "and passes it by: the caller is not Phased")
 	# The wait is a foe's own move too, and a Phased foe gains no second.
 	var s3 := Skirmish.new(1, 2)
 	s3.add_mech(_mech("A", Die.single(Face.blank()), 0, 500))
@@ -8289,6 +8288,33 @@ func test_a_foes_cleanse_lifts_a_stun_and_frees_its_ally_to_act() -> void:
 	assert_false(Effects.has(a, "suppressed"), "the cleanse lifted the stun")
 	assert_true(u.shield + u.hull < hit, "and the freed foe struck that turn")
 	assert_false(Effects.has(a, "numbed"), "it never lost its action, so it gains no Numbed")
+
+
+## A Phased unit may target another Phased unit on its own side, and nothing else may (Ryan, 26
+## November: "A phased sprite could heal another phased sprite, that's allowed"; "Phased can target
+## other phased"): a Phased healer picks a Phased ally, one not Phased passes it by, and a Phased
+## machine may spend on a Phased ally where one not Phased may not.
+func test_a_phased_unit_may_target_another_phased_unit_on_its_side() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.shield(5)), 40, 100))
+	sk.add_mech(_mech("B", Die.single(Face.shield(5)), 40, 100))
+	var healer := _ghoul(500, 1)
+	var hurt := _ghoul(500, 1)
+	sk.add_foes([healer, hurt])
+	sk.begin()
+	sk.start_round()
+	hurt.hp -= 10
+	Effects.grant_for_rounds(hurt, Effects.STATUS["phased"], "test", sk.round)
+	assert_eq(sk.heal_target(healer), null, "a healer not Phased passes the Phased one by")
+	Effects.grant_for_rounds(healer, Effects.STATUS["phased"], "test", sk.round)
+	assert_eq(sk.heal_target(healer), hurt, "a Phased healer reaches it")
+	assert_true(Skirmish.reaches_own(healer, hurt) and Skirmish.reaches_own(healer, healer), "and itself")
+	var a: Skirmish.MechState = sk.mechs[0]
+	var b: Skirmish.MechState = sk.mechs[1]
+	Effects.grant_for_rounds(b.unit, Effects.STATUS["phased"], "test", sk.round)
+	assert_false(sk.machine_targets_for(a, Face.shield(5)).has(b), "an ally not Phased cannot shield a Phased machine")
+	Effects.grant_for_rounds(a.unit, Effects.STATUS["phased"], "test", sk.round)
+	assert_true(sk.machine_targets_for(a, Face.shield(5)).has(b), "a Phased one can")
 
 
 ## A healer, a cleanser or a reviver of the given effect, its move's value `value`.

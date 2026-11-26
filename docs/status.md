@@ -98,6 +98,9 @@ document's job and every command are in `README.md`.
   turn (his "Intents pick their target at round start"; a second caster passes over what the
   first covers, an empty pick stays, and a line runs from the caster to its pick), so a stunned
   pick a cleanser ahead of it will free shows its intent, which the Funnel-Web's Ambush reads.
+  A Phased unit may target another Phased unit on its own side and nothing else may (his "Phased
+  can target other phased"), the session's "less strict" read that let a Phased foe's side reach
+  it retired (his "deprecated"); whether it crosses sides, and Phased's tip, wait on his answer.
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
   (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks
@@ -133,7 +136,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1496 tests, 407,120 checks, green on Godot 4.8-beta4 (26 November, a move on one of its own picking as the round opens). The runner fails a run
+- Tests: 1497 tests, 407,125 checks, green on Godot 4.8-beta4 (26 November, Phased targeting Phased on its own side). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).

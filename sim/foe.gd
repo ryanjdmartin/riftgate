@@ -486,9 +486,9 @@ func strikes() -> int:
 ##           phase: it fades as the round ends, Phased through the round after: out of the
 ##           team's reach and damaged by nothing, acting all the same; never while it is the
 ##           last foe standing, and never a foe Phased already, so none is out two rounds
-##           running (Ryan, 15 November: "I think we give this to the foes too"; "Phased on
-##           foes can be less strict since it's balanced around their kit and theme"; the
-##           Spectre's and the Wraith's, a step after their Hex Bolt, 17 November)
+##           running (Ryan, 15 November: "I think we give this to the foes too"; the
+##           Spectre's and the Wraith's, a step after their Hex Bolt, 17 November); its own side
+##           reaches it only from another foe Phased (Skirmish.reaches_own)
 ##   buff    revive_once: it gets back up once the next time it falls, whole, in its own slot
 ##           (Reraise); Suppress and Disrupt answer the telegraphed move, kill order the rest
 ##           revive_once_ally: its pick, one of its own as the round opens, never itself, not yet

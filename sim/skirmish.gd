@@ -916,7 +916,7 @@ func rallies_on(x: Foe) -> Array[Foe]:
 	for r in field_foes():
 		if r == x:
 			break
-		if rallies_now(r):
+		if rallies_now(r) and reaches_own(r, x):
 			out.append(r)
 	return out
 
@@ -1068,7 +1068,7 @@ func rally_worth(r: Foe) -> int:
 	var v := maxi(0, int(r.action.get("value", 0)))
 	var total := 0
 	for x in field_foes():
-		if not rallies_on(x).has(r) or not x.attacks() or x.is_suppressed() or not x.intends():
+		if not rallies_on(x).has(r) or not x.attacks() or x.stays_stunned() or not x.intends():
 			continue
 		var machines := targetable_mechs().size() if x.hits_all() else 1
 		total += (foe_blow(x) - x.damage_of(x.action, incoming_rally(x) - v)) * x.strikes() * machines
@@ -1280,8 +1280,8 @@ func machine_targets_for(ms: MechState, f: Face) -> Array[MechState]:
 	if f == null or not f.on_machines() or cannot_pay(ms, f):
 		return out
 	for who in live_mechs():
-		if who != ms and is_out(who):
-			continue   # an ally out of the fight cannot be targeted (Ryan, 20 October)
+		if who != ms and is_out(who) and not (is_phased(ms) and is_phased(who)):
+			continue   # an ally out of the fight cannot be targeted (Ryan, 20 October), but by a Phased one when it is Phased (26 November: "Phased can target other phased")
 		if f.act_again and (who == ms or not who.assigned):
 			continue   # an ally acting again: one whose die is spent (the Reveille Horn's charged form)
 		if f.action_price > 0 and who != ms and (not who.assigned or rerolls_left < f.action_price):
@@ -1362,15 +1362,22 @@ static func out_of_reach(foe: Foe) -> bool:
 	return foe != null and (Effects.has(foe, "aloft") or Effects.has(foe, "phased"))
 
 
-## Is this foe Phased (Ryan, 15 November: "I think we give this to the foes too"; "Phased on
-## foes can be less strict since it's balanced around their kit and theme"; 16 November:
+## Is this foe Phased (Ryan, 15 November: "I think we give this to the foes too"; 16 November:
 ## "Phased foes act")? It fades as the round its move lands in ends (_land_phases) and is back
 ## as the next one ends: out of the team's reach meanwhile, with an aim or without, and
 ## damaged by nothing, what it carries included, whose clocks run all the same. It acts, and
-## its own side still reaches it, a rally or a mend: less strict than a machine's, as he
-## allowed. Never the last foe standing, and never two rounds running.
+## its own side reaches it only from another foe Phased (reaches_own). Never the last foe
+## standing, and never two rounds running.
 static func foe_phased(foe: Foe) -> bool:
 	return foe != null and Effects.has(foe, "phased")
+
+
+## Does a foe's move reach one of its own (Ryan, 26 November: "Phased can target other phased"):
+## always, unless that one is Phased and the caster is not, so a Phased foe is out of its own
+## side's reach as of the team's but for another Phased foe's moves and its own (the "less strict"
+## read that let its side reach it, retired the same day: "The "less strict" line is deprecated").
+static func reaches_own(by: Foe, x: Foe) -> bool:
+	return not foe_phased(x) or foe_phased(by)
 
 
 ## Would a step that fades this foe (`phase`) lay its wait now? Never on one Phased already or
@@ -1925,13 +1932,14 @@ func _barrier_eats(foe: Foe, weapon: bool) -> bool:
 ## The foe a cleanse picks (28 October), as the round opens (Ryan, 26 November: "Intents pick their
 ## target at round start"): the one on its side, itself included, carrying the most of the team's
 ## marks and the stun (each status one; Effects.cleanse_marks), the first in strike order on a tie;
-## never one Phased (nothing targets it) or one another cleanse already takes (`covered`, Ryan: a
-## second cleanser passes over a Sprite the first covers); null when none is left carrying one.
-func cleanse_target(_f: Foe, covered: Array = []) -> Foe:
+## never one another cleanse already takes (`covered`, Ryan: a
+## second cleanser passes over a Sprite the first covers), and one Phased only from a Phased caster;
+## null when none is left carrying one.
+func cleanse_target(f: Foe, covered: Array = []) -> Foe:
 	var best: Foe = null
 	var most := 0
 	for o in field_foes():
-		if not o.alive() or foe_phased(o) or covered.has(o):
+		if not o.alive() or not reaches_own(f, o) or covered.has(o):
 			continue
 		var n := Effects.cleanse_marks(o)
 		if n > most:
@@ -1946,12 +1954,12 @@ func cleanse_target(_f: Foe, covered: Array = []) -> Foe:
 ## The foe a heal picks (15 October), as the round opens (26 November): the most hurt of its own
 ## by HP missing, itself included, the first in the order they stand on a tie, less what the heals
 ## already picked will mend (`mends`, foe -> points: a second healer passes over a Sprite the first
-## fills); never one Phased; null when none is left hurt.
-func heal_target(_f: Foe, mends: Dictionary = {}) -> Foe:
+## fills); one Phased only from a Phased healer; null when none is left hurt.
+func heal_target(f: Foe, mends: Dictionary = {}) -> Foe:
 	var hurt: Foe = null
 	var most := 0
 	for other in field_foes():
-		if not other.alive() or foe_phased(other):
+		if not other.alive() or (f != null and not reaches_own(f, other)):
 			continue
 		var missing := other.hp_max - other.hp - int(mends.get(other, 0))
 		if missing > most:
@@ -2006,7 +2014,7 @@ func _pick_ally(f: Foe, by: Array) -> Foe:
 ## stays") and lifts nothing.
 func ally_landing(f: Foe) -> Foe:
 	var x: Foe = f.ally_pick
-	if x == null or not x.alive() or not field_foes().has(x) or foe_phased(x):
+	if x == null or not x.alive() or not field_foes().has(x) or not reaches_own(f, x):
 		return null
 	return x
 
@@ -4602,7 +4610,7 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			var n := Effects.brace_stacks(value)
 			var braced := 0
 			for other in field_foes():
-				if other.alive() and n > 0:
+				if other.alive() and n > 0 and reaches_own(f, other):
 					Effects.stack(other, Effects.STATUS["braced"], Effects.SKIRMISH, "foe:" + f.content_id, n, Effects.status_decay(Effects.STATUS["braced"]))
 					braced += 1
 			log.append("%s: %s, %d of its own %s ×%d (armour +%d until their next turn)" % [f.display_name, str(a.get("name", "protects")), braced, Effects.STATUS["braced"]["name"], n, n * Effects.braced_armour()])
@@ -4612,7 +4620,7 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			# raised side by side add: three at the most on a goblin between two that wall.
 			var n := Effects.brace_stacks(value)
 			var walled: Array[Foe] = [f]
-			walled.append_array(foes_beside(f))
+			walled.append_array(foes_beside(f).filter(func(o: Foe) -> bool: return reaches_own(f, o)))
 			if n > 0:
 				for o in walled:
 					Effects.stack(o, Effects.STATUS["braced"], Effects.SKIRMISH, "foe:" + f.content_id, n, Effects.status_decay(Effects.STATUS["braced"]))
@@ -4666,7 +4674,7 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			# carries half to the next round; two rallies add.
 			var rallied := 0
 			for other in field_foes():
-				if other.alive():
+				if other.alive() and reaches_own(f, other):
 					Effects.stack(other, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:" + f.content_id, maxi(0, value), Effects.DECAY_HALF)
 					rallied += 1
 			log.append("%s: %s, %d hit %d harder, halving each turn" % [f.display_name, str(a.get("name", "rallies")), rallied, value])
@@ -4816,7 +4824,7 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			# lands, Suppressed excepted, and the damage does.
 			var warded := 0
 			for other in field_foes():
-				if other.alive():
+				if other.alive() and reaches_own(f, other):
 					Effects.stack(other, Effects.foe_ward(), Effects.SKIRMISH, "foe:" + f.content_id, 1, Effects.DECAY_ROUND)
 					warded += 1
 			log.append("%s: %s, %d of its own warded against the team's marks" % [f.display_name, str(a.get("name", "hallows")), warded])
@@ -4826,7 +4834,7 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 			# strike spend a stack each, their blows leaving Ablating 1 (15 November).
 			var primed := 0
 			for other in field_foes():
-				if other != f and other.alive():
+				if other != f and other.alive() and reaches_own(f, other):
 					Effects.stack(other, Effects.primed_foe(), Effects.SKIRMISH, "foe:" + f.content_id, maxi(1, value), Effects.DECAY_NONE)
 					primed += 1
 			log.append("%s: %s, %d Primed ×%d" % [f.display_name, str(a.get("name", "stokes")), primed, maxi(1, value)])
@@ -4877,13 +4885,14 @@ static func _turned_by(ms: MechState) -> String:
 
 ## The one a Reraise on an ally picks, as the round opens (26 November): a live foe on the field
 ## other than the caster, not readied already and able to get back up (one gone whole cannot), not
-## Phased and not another revive's pick (`covered`: two revivers never pick the same ally); a
+## Phased but to a Phased caster, and not another revive's pick (`covered`: two revivers never pick
+## the same ally); a
 ## party member before the rest of its own, the heaviest hitter first (Foe.threat), then the order
 ## they stand. Null when there is none.
 func _unready_ally(caster: Foe, covered: Array = []) -> Foe:
 	var best: Foe = null
 	for o in field_foes():
-		if o == caster or not o.alive() or o.stays_down or Effects.has(o, "risen") or foe_phased(o) or covered.has(o):
+		if o == caster or not o.alive() or o.stays_down or Effects.has(o, "risen") or not reaches_own(caster, o) or covered.has(o):
 			continue
 		if best == null or (o.hero and not best.hero) or (o.hero == best.hero and o.threat() > best.threat()):
 			best = o
@@ -5164,7 +5173,7 @@ func mergeable(f: Foe, a: Dictionary) -> Array[Foe]:
 	var kinds := Foe.kinds_named(a)
 	var out: Array[Foe] = []
 	for o in field_foes():
-		if o != f and o.alive() and kinds.has(o.content_id):
+		if o != f and o.alive() and kinds.has(o.content_id) and reaches_own(f, o):
 			out.append(o)
 	return out
 

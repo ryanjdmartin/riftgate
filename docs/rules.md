@@ -862,7 +862,8 @@ On a machine:
   a dashed edge), on a machine that has acted or not, and as the enemy's turn ends every machine
   that waits and still stands is Phased through the next round's end; one wrecked first never
   phases, and a foe's Purge takes the wait as any buff. While it stands no foe picks the
-  machine, a blow or a special at every machine passes it by, and no ally may spend on it.
+  machine, a blow or a special at every machine passes it by, and no ally may spend on it but
+  one Phased too: a Phased unit may target another Phased unit on its own side.
   Everything it carries ticks as ever, and nothing damages it: its Ablate takes no point and
   loses its stack, its Scorched and Sapped go, its Empowered and its Brittle halve, its
   Regenerating pays, so a round Phased waits a debuff out. It spends
@@ -876,9 +877,9 @@ On a machine:
   stands, so the round its move is announced is the window. Through the next round it is out
   of the team's reach as an Aloft foe is, no die dropped on it and nothing aimed elsewhere
   reaching it, and nothing damages it: what it carries ticks and takes no point, and a Mine on
-  it does it no harm. It acts all the same, and it is back as that round ends. A foe's is
-  less strict than a machine's in one way, its own side still reaching it, a rally's
-  Empowered or a mend. Two guards: the last foe standing does not fade, so a fight has a foe
+  it does it no harm. It acts all the same, and it is back as that round ends. Its own side
+  reaches it only from a foe Phased too, as a machine's allies do: a rally, a brace, a Ward, a
+  priming, a mend, a cleanse, a revive or a merge from one not Phased passes it by. Two guards: the last foe standing does not fade, so a fight has a foe
   to end on, and a foe Phased already gains no wait, so none is out two rounds running, and
   its intent wears Phased's mark only on a round the fade would land.
 - **Swallowed** (debuff, from a foe's swallow): the swallow lands as the round it is taken
@@ -1441,7 +1442,7 @@ Ablate, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Expo
   member not yet readied), a move with several of them on one pick (the Cleric's Cure). The foes
   pick in the order they strike and never double up: a heal passes over a foe the heals ahead of
   it fill, a cleanse over a foe another cleanse takes, a revive over another's pick, so a move
-  with none left for it is not cast; no pick falls on a Phased foe. The pick moves only in the
+  with none left for it is not cast; no pick falls on a Phased foe but a Phased caster's. The pick moves only in the
   player's turn, drawn again by its word when its foe falls or leaves the field, or for the new
   move a Disrupt turns it to; in the foes' turn it holds, and a pick that falls there takes the
   move with it. A Cleanse whose pick carries nothing lands on it all the same. Its line runs from
