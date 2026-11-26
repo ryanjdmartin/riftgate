@@ -265,7 +265,9 @@ def fight_hold(kind, o, rng, cap=40):
     """Ryan's second pass (25 November): the tank's every use on a Sprite entangles its target,
     its use on itself lets go, the hold costs while it stands, and a reboot breaks it with a stun.
 
-    o: tax (Heat the tank gains at its turn end while it holds), dot (HP its Sprite loses then),
+    o: lock (whether the other Frames may aim at the held Sprite: "always" barred, Ryan's words;
+    "crowd", barred while another Sprite stands; "none", never barred), tax (Heat the tank gains
+    at its turn end while it holds), dot (HP its Sprite loses then),
     stun ("none", "reboot": the reboot's break Suppresses, "every": every break does), letgo (how
     often the tank's die shows a piece it may use on itself: Armoured 2 as it lets go), through
     (the hold outlasts the reboot, no break), plate (armour more against its Sprite, before the
@@ -321,7 +323,19 @@ def fight_hold(kind, o, rng, cap=40):
                 doomed[f.target] = doomed.get(f.target, 0) + f.move[1]
         # Your turn: reboots first, as the player reads them off the intents.
         acting = []
-        only_partner = partner is not None and all(f is partner for f in live)
+        def barred(f):
+            """Whether the other Frames may not aim at f: the hold's lock, by o["lock"] (always;
+            crowd, while another Sprite stands; none)."""
+            if f is not partner or partner is None:
+                return False
+            lock = o.get("lock", "always")
+            if lock == "none":
+                return False
+            if lock == "crowd":
+                return any(g.hp > 0 and g is not partner for g in foes)
+            return True
+
+        only_partner = partner is not None and all(f is partner for f in live) and barred(partner)
         for m in up:
             aimed = any(f.target is m for f in live)
             tax = o.get("tax", 0) if (m.tank and partner is not None) else 0
@@ -340,7 +354,7 @@ def fight_hold(kind, o, rng, cap=40):
                 acting.append(m)
         tank_acts = tank in acting
         # The tank lets go by using something on itself, when its Sprite is all there is to aim at.
-        if tank_acts and partner is not None and all(f is partner for f in foes if f.hp > 0) \
+        if tank_acts and partner is not None and all(f is partner for f in foes if f.hp > 0) and barred(partner) \
                 and rng.random() < o.get("letgo", 0):
             let_go(o.get("stun") == "every")
             braced = 2
@@ -348,7 +362,7 @@ def fight_hold(kind, o, rng, cap=40):
         for m in acting:
             if m.tank:
                 continue
-            pool = [f for f in foes if f.hp > 0 and f is not partner]
+            pool = [f for f in foes if f.hp > 0 and not barred(f)]
             if pool:
                 kills = [f for f in pool if f.hp <= GUN - f.plate]
                 t = min(kills or pool, key=lambda f: f.hp)
@@ -431,9 +445,13 @@ HOLD_ROWS = [
     ("1 and 4: the reboot breaks it and stuns", {"stun": "reboot"}),
     ("The four: 2 Heat, 2 HP, a let-go", {"stun": "reboot", "tax": 2, "dot": 2, "letgo": 0.5}),
     ("1, 2 and 4, 1 HP, no Heat", {"stun": "reboot", "dot": 1, "letgo": 0.5}),
-    ("The same, 4 Armour against its Sprite", {"stun": "reboot", "dot": 1, "letgo": 0.5, "plate": 4}),
-    ("The same, every break stunning", {"stun": "every", "dot": 1, "letgo": 0.5}),
-    ("The same, its move on itself breaking free", {"stun": "reboot", "dot": 1, "letgo": 0.5, "selfbreak": True}),
+    ("The same, barred only while another Sprite stands", {"stun": "reboot", "dot": 1, "letgo": 0.5, "lock": "crowd"}),
+    ("Never barred: 1 and 4, 1 HP", {"stun": "reboot", "dot": 1, "lock": "none"}),
+    ("Never barred, no HP", {"stun": "reboot", "lock": "none"}),
+    ("Never barred, no stun", {"dot": 1, "lock": "none"}),
+    ("Never barred, 4 Armour against its Sprite", {"stun": "reboot", "dot": 1, "lock": "none", "plate": 4}),
+    ("Barred, every break stunning", {"stun": "every", "dot": 1, "letgo": 0.5}),
+    ("Barred, its move on itself breaking free", {"stun": "reboot", "dot": 1, "letgo": 0.5, "selfbreak": True}),
 ]
 
 

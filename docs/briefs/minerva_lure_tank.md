@@ -8,7 +8,8 @@ with Storm Petrel a close second. It can be simpler than Petrel, but hopefully n
 interesting." "The lure tank" is a working label; the name and the machine are Ryan's.
 
 **Status**: Ryan's idea of 25 November, Claude's round on it (the cage), his four brainstorms
-on that and Claude's read of them (the hold), all of 25 November, unanswered. **Maker**:
+and Claude's read of them (the hold), his issue of 26 November with the hold's bar and Claude's
+lean on it, unanswered. **Maker**:
 Minerva. **Proposed tier**: one. **Read first**: `docs/briefs/README.md` (ten a maker, the
 orbits); `docs/rules.md`, The reboot and Foes (a Sprite's target); the bible's redirection row,
 threat-shape row and armour row (section 5) and the Storm Petrel's row. The rounds before 25
@@ -202,15 +203,49 @@ Guard's failure. Here the price is the tank's hull (16 to 28 of its 36 a fight, 
 battle's), with the Numbed holes and one Sprite at a time; a Suppress-immune Sprite (the Pilgrim)
 makes every reboot bare.
 
+## The bar (26 November)
 
-1. The cage (a Drone entry, the slip line) or the hold (every hit, the reboot's stun): Ryan's
-   four lean to the hold.
-2. Whose "itself" lets go: the tank's use on itself, or the held Sprite's move on itself.
-3. The price while held: HP off the held Sprite (1), Heat on the tank, or the shield alone.
-4. Its edge against its Sprite: 4 Armour before the shield, or none.
-5. Area: sealed both ways, or the squad's area in and its Sprite's storms out.
-6. The bend of the redirection row against a lone elite.
-7. The machine and its name; numbers and stock; its branches.
+Ryan, 26 November: "Issue: against a lone elite, the tank is pretty much never allowed to attack.
+Or if it does, it becomes a janky hit last in the turn to lure, then self target/reboot first the
+next round to break it."
+
+**The root.** The bar ("Only the lure tank can target the entangled target") was the hold's
+price, and it is paid by the squad, against its most important target. The model (`--hold`)
+shows it doing nothing else: against the Nob, barred always and never barred read the same,
+because the bot plays exactly the sequence he names (the squad fires first, the tank holds last,
+and its reboot breaks the hold first the round after); against the Fell Rider and the Old Man,
+where the tank does not reboot every round, it is idle turns and hull (the others lose 2.6 and
+6.8 barred, 0 unbarred); in the Treant's grove and the horde it changes nothing, since the squad
+has other targets.
+
+**Claude's lean: bar the Sprite's own side, never the squad.** "Other Sprites cannot target it":
+the tether cuts the held Sprite off from its pack (no aimed heal, Cleanse or revival reaches it),
+and the squad aims at it as at any Sprite. Then:
+
+- The kit is three lines. The passive: "Commit: If used on a Sprite, apply Entangled to the
+  target." / "On Reboot: Apply Suppressed to the Entangled Sprite, then remove Entangled."
+  Entangled, a Debuff that never stacks, one a Frame: "Targets only the Frame that applied it." /
+  "Moves affect only that Frame and itself." / "Other Sprites cannot target it."
+- The tank never wants to let go, so idea 2 read as the tank's has no use. Read as the Sprite's
+  (its own brace or recovery breaking the hold), it becomes the foes' counter.
+- The price is the tank's hull and its reboots: unbarred, against the lone elites the others lose
+  nothing and the tank 16 to 26 of its 36; with 4 Armour against its Sprite, 3 to 10, too little
+  for an elite. So the stun is its hook to stay alive, and the plate goes.
+- Without the stun the others lose 4 to 12 against the lone elites: the stun is what covers the
+  reboot.
+
+The bend of the redirection row stands, and grows: against a lone elite the tank takes everything
+the Sprite does, and the squad gives up nothing for it.
+
+## Open for the session
+
+1. The bar: the Sprite's own side (the lean), the squad's (as written), or the squad's only while
+   another Sprite stands.
+2. Whose "itself" lets go: the held Sprite's move on itself (the foes' counter), or none.
+3. The price while held: HP off the held Sprite (1), Heat on the tank as a pace, or the hits alone.
+4. Area: sealed both ways, or its storms on every Frame.
+5. The bend of the redirection row against a lone elite.
+6. The machine and its name; numbers and stock; its branches.
 
 ## What the session hands back
 
