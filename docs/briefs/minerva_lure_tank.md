@@ -8,8 +8,8 @@ with Storm Petrel a close second. It can be simpler than Petrel, but hopefully n
 interesting." "The lure tank" is a working label; the name and the machine are Ryan's.
 
 **Status**: Ryan's idea of 25 November, Claude's round on it (the cage), his four brainstorms
-and Claude's read of them (the hold), his issue of 26 November with the hold's bar and Claude's
-lean on it, unanswered. **Maker**:
+and Claude's read of them (the hold), his issue of 26 November with the hold's bar, Claude's
+lean on it and his answer that it left a free lure, and the price that answers him, unanswered. **Maker**:
 Minerva. **Proposed tier**: one. **Read first**: `docs/briefs/README.md` (ten a maker, the
 orbits); `docs/rules.md`, The reboot and Foes (a Sprite's target); the bible's redirection row,
 threat-shape row and armour row (section 5) and the Storm Petrel's row. The rounds before 25
@@ -237,14 +237,55 @@ and the squad aims at it as at any Sprite. Then:
 The bend of the redirection row stands, and grows: against a lone elite the tank takes everything
 the Sprite does, and the squad gives up nothing for it.
 
+## The price (26 November)
+
+Ryan, 26 November, on the lean above: "A free, persistent lure without a strong tactical downside
+is very overpowered, you must see that." He is right, and the lean's own table said so: the
+others lost nothing to the lone elites. The bar lifted from the squad left the hold with no price
+in anything the tank values.
+
+**What the model says** (`--tether`: a tank that reboots whenever its shield is down and holds
+only while it stands), the hull the squad loses, the tank's and the others' together:
+
+| | The Nob alone | The Fell Rider alone | The Old Man, two Needlers | The Treant's grove |
+|---|---|---|---|---|
+| No drone | 46 | 43 | 67, won 69% | 9 |
+| A plain Lure entry, the round's pick | 50 | 44 | 58, won 87% | 11 |
+| The Drone's hold, the reboot letting its Sprite pick again | 50 | 40 | 51 | 9 |
+| The Drone's hold, the reboot stunning | 35 (the others 10) | 28 | 34 | 6 |
+| The same, 2 Hull a round held | 47 (the others 16, the tank 31) | 38 | 49, won 95% | 14 |
+| Every hit holding, the stun: the lean above | 28 (the others 0.7) | 20 | 22 | 6 |
+
+- A lure moves damage and barely removes it: under the reboot each Frame's shield takes a hit
+  fresh, so three shields spread a big hitter's hits as well as the tank's one takes them. Its
+  gain is keeping a hit off a Frame that cannot take it.
+- A hold alone is a lure: the tank reboots every other round against a big hitter, which ends it.
+- The reboot's stun is what removes damage: a quarter to a half off the squad's loss.
+- Weapons off while it holds prices little: nothing against the Nob (the hold ends at the reboot
+  that follows its first held hit, so there is no held round in which the tank wanted to fire),
+  2 to 5 hull against the others.
+- His idea 3 as Hull, not Heat, does: at 2 a round held the Drone's hold costs what it saves
+  against the Nob (protecting the others at the tank's hull), still pays against the Old Man, and
+  costs more than it saves in the Treant's grove, so holding is a call each fight. Claude had
+  tried idea 3 as Heat and called it a pace: the wrong form of it.
+- While every hit holds, any price on the hold is a price on attacking: the bar was one, the
+  burn would be another. So the hold is its own act, the Drone an entry on the die.
+
+**Claude's lean, the kit.** The Drone (Integrated equipment, heat 1): "Resolve: Apply Entangled
+to the target." Entangled (a Debuff that never stacks, one a Frame): "Targets only the Frame that
+applied it." / "Moves affect only that Frame and itself." / "Other Sprites cannot target it." The
+passive: "Turn End: If a Sprite is Entangled, lose 2 Hull." / "On Reboot: Apply Suppressed to the
+Entangled Sprite, then remove Entangled." / "Commit: If used on this Frame, remove Entangled." His
+idea 2 earns its place back as the way to stop paying without a reboot; his idea 1 goes, for the
+reason above. Nothing bars the squad, and the tank's weapons stay free.
+
 ## Open for the session
 
-1. The bar: the Sprite's own side (the lean), the squad's (as written), or the squad's only while
-   another Sprite stands.
-2. Whose "itself" lets go: the held Sprite's move on itself (the foes' counter), or none.
-3. The price while held: HP off the held Sprite (1), Heat on the tank as a pace, or the hits alone.
-4. Area: sealed both ways, or its storms on every Frame.
-5. The bend of the redirection row against a lone elite.
+1. The price: Hull a round held (2, or 1), or another the model has not tried.
+2. The hold as its own act (the Drone entry), every hit no longer setting it.
+3. The bar: the Sprite's own side, or none.
+4. Letting go: a use on itself (the tank's), with the held Sprite's own move breaking free too or not.
+5. Area: sealed both ways, or its storms on every Frame.
 6. The machine and its name; numbers and stock; its branches.
 
 ## What the session hands back
