@@ -164,7 +164,7 @@ const RECOIL_BODY := 1.2        # model units the whole machine kicks back along
 const AIM_UP := 0.22            # seconds a machine takes to turn onto its target before it fires (aim), the blow and its sound waiting on it (Ryan, 2 November: "make sure that the turns or aims happen before the sound effects"),
 const AIM_DOWN := 0.5           # and to turn back once the blow has landed
 const FIRE_HEFT := 0.1          # a firing slice's weight: snappier than an idle act's, so its wind-up lands on the blow
-const COUNT_SOURCES := ["shots", "ammo"]   # the numbers a count display may show, as the skirmish passes them (MechView3D.count_values)
+const COUNT_SOURCES := ["sustained_recoil", "ammo"]   # the numbers a count display may show, as the skirmish passes them (MechView3D.count_values)
 const COUNT_RISE := 0.08        # seconds a count display's part takes to light, its servo's time constant
 const COUNT_FALL := 0.35        # and to go dark again, a flare's fading included
 const COUNT_DEBUG_PERIOD := 1.0 # seconds a step under RIFTGATE_COUNT_DEBUG
@@ -935,11 +935,11 @@ func _setup_counts(cs: Variant) -> void:
 	_light_counts()
 
 
-## Show the numbers the screen passes (COUNT_SOURCES: the Cassowary's capacitor reads `shots`, a
-## cell a counted shot) on the model's count displays: the first n parts lit, the rest dark. A
-## number that falls flares every part of its display and lets them all go dark (the capacitor
-## discharging on its sixth shot, the one that counts double); the first look shows its number
-## as it stands. True when a display changes.
+## Show the numbers the screen passes (COUNT_SOURCES: the Cassowary's capacitor reads
+## `sustained_recoil`, a cell a stack) on the model's count displays: the first n parts lit, the
+## rest dark. A number that falls flares every part of its display and lets them all go dark (the
+## capacitor discharging on the hit that finds five, the one its Syntropy Cylinder doubles); the
+## first look shows its number as it stands. True when a display changes.
 func show_counts(values: Dictionary) -> bool:
 	var changed := false
 	for d in count_displays:

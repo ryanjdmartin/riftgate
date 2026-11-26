@@ -79,6 +79,7 @@ CURRENCIES = OrderedDict([
     ("muster", ("The Muster", "a store")),
     ("rage", ("Rage", "on a machine")),
     ("hopper", ("The hopper", "a store")),
+    ("sustained_recoil", ("Sustained Recoil", "a store")),
     ("essence", ("Souls", "a count, kept for the battle")),
     ("foe_buff", ("A foe's buffs (Armoured, Empowered, Getting Back Up; Primed, Barrier, Ward and Regenerating once the ladder lands)", "on a foe")),
     ("tags", ("Tags", "a label")),
@@ -106,7 +107,7 @@ FACE_FIELDS = {
     "passes_heat": [("heat", "reads"), ("ally_heat", "sets")], "heat_per_stack": [],   # the Puffin's dump (19 November): its heat onto an ally, a buff by the heat
     "spends_magazine": [("ammo", "reads")], "magazine_min": [("ammo", "reads")], "reloads_ammo": [("ammo", "sets")], "ammo_per_foe_hit": [("ammo", "sets")],
     "self_ablate": [("ablating_mech", "sets")], "volatile": [("hull_damage", "sets")], "strikes": [("strikes", "sets")],
-    "vents": [], "cooldown": [], "charged": [("muster", "reads")],
+    "vents": [], "cooldown": [], "charged": [("muster", "reads")], "advances_by": [("sustained_recoil", "reads")],
     "self_vent": [("heat", "sets")],   # the Knuckles of Fury cool their own machine as they strike (23 November)
     "rolls_target": [],
     # The rules written on their one piece (15 November, keywords before): the Combat Translocator's
@@ -131,11 +132,15 @@ EFFECTS = {
     "shield_per_heat": [], "self_status": [], "bank_rerolls": [("reroll", "reads"), ("reroll", "sets")],
     "shield_zap": [], "add_power": [], "hit_heat": [("heat", "sets")],   # the Incinerator's heat a hit (24 November)   # the Buzzard's zap and its Burst's raise of the cannon's number (18 November)
     "fill_hopper": [("hopper", "sets")], "hopper_plate": [("hopper", "reads"), ("braced", "sets")],
+    # The Cassowary's redesign (26 November): its weapon hits charge Sustained Recoil, its Deadeye reads
+    # it and its Quickdraw keeps a Spun Up a kill earns back.
+    "hit_charge": [("sustained_recoil", "sets"), ("strikes", "reads")], "ignore_armour": [], "ignore_barrier": [],
+    "restore_on_kill": [("kill", "reads"), ("spun_up", "sets")],
 }
 TRIGGERS = {"on_hull_damage": "hull_damage", "on_heat_gain": "heat", "on_blocked": None, "on_shield_granted": "shield_granted", "on_buff_granted": None, "on_kill": "kill", "on_round_kill": "kill", "on_foe_killed": "kill",
             "on_foe_status": "paradox_feed", "on_stack": None, "on_attack": None, "static": None,
-            "on_injury": None, "on_skirmish_start": None, "on_shield_gain": None, "on_damage": None, "on_struck": None, "on_turn_start": None}
-CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "nth_shot": None,
+            "on_injury": None, "on_skirmish_start": None, "on_shield_gain": None, "on_damage": None, "on_struck": None, "on_turn_start": None, "on_use": None}
+CONDITIONS = {"target_status": None, "attacker_status": None, "target_rank": "rank", "self_status": None,
               "target_no_intent": None, "shield_up": None, "target_unhurt": "missing_hp", "target_half": "missing_hp"}
 # A foe move's riders and effects, on machines.
 FOE_RIDERS = {"ablate": "ablating_mech", "brittle": "brittled_mech", "scorch": "scorched", "jam": "disabled", "corrupt": "corrupted", "expose": "exposure_mech"}
@@ -162,7 +167,8 @@ ENGINE_READERS = {
     "primed": ["the weapons it fires carry Ablate 1, a stack of Ablating a strike: most on strikes; a weapon fired spends a stack"],
     "barrier": ["the next blow deals nothing"],
     "ward": ["no rider lands this round"],
-    "spun_up": ["the next weapon spend +2 a stack"],
+    "spun_up": ["the next weapon spend +1 a stack"],
+    "sustained_recoil": ["every weapon hit a stack, up to five; the hit that finds five deals double and consumes them: most on strikes and areas"],
     "ricochet": ["a strike of 1 more a stack at the target once a weapon has fired: most on riders a strike and on flat buffs; hull damage halves it"],
     "phased": ["granted as the round ends: out of reach of both sides through the next, and it acts"],
     "sealed": ["armour +3, cooling stopped, 3 heat a turn"],

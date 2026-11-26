@@ -208,10 +208,11 @@
    "name": "Clydesdale",
    "designation": "Pattern 1 Combat Walker",
    "maker": "wainwright_sutler",
-   "tier": 2,
+   "tier": 1,
    "design": {
     "fantasy": "A massive, boxy, heavily armoured, and utilitarian quadruped walker, designed to fill whatever niche the team is lacking. Like its namesake, it has four thick legs and carries a massive payload on top.",
-    "niche": "Heavy cavalry"
+    "niche": "Heavy cavalry",
+    "notes": "Tier one since 26 November (Ryan: \"Either the Clydesdale or Dingo need to go down to t1\"; \"clyde\"). Its stock went to basics as tier one's did on 23 November (\"just basic pieces\"), each piece the W&S basic of its reach in place: Twin Autoguns for the Maxigun and the Enfilade Beam, Ankle Mortars for the Howitzer, the Airburst Shell and the Incendiary Shells; the Shoring Jack, a basic, stays. Its hull, shield, armour and slots are still its tier-two numbers, for the tier-one bench to size."
    },
    "codex": "Surprisingly, or perhaps not, the ever-pragmatic Wainwright & Sutler were the first surviving manufacturer to field a combat walker when the invasion first began. Not knowing the full scope of the threat, the Clydesdale was positioned as a rugged and effective jack-of-all trades, a true workhorse befitting its namesake. A hundred years later, and the original design is still barely changed, its signature W&S simplicity being favourited by pilots and maintenence crews alike. It also serves as an effective training vehicle, as its notoriously poor turning radius results in one less thing for a green pilot to worry about on the battlefield.",
    "hull": 40,
@@ -229,14 +230,14 @@
     "changeover"
    ],
    "loadout": [
-    "maxigun",
     "twin_autoguns",
-    "enfilade_beam",
+    "twin_autoguns",
+    "twin_autoguns",
     "shoring_jack",
     "ankle_mortar",
-    "howitzer",
-    "airburst_shell",
-    "incendiary_shells"
+    "ankle_mortar",
+    "ankle_mortar",
+    "ankle_mortar"
    ],
    "passive": {
     "id": "disappearing_carriages",
@@ -1545,7 +1546,7 @@
    "tier": 1,
    "design": {
     "fantasy": "Ryan's revolver (12 October): \"Whenever its die rolls, it moves to the next entry instead, in sequence.\" The six-shooter homage on a chicken walker: a squared cab on two long digitigrade legs, no arms, the revolver drum on the cab's flank clicking round a chamber at every roll. Ryan, 18 October: the first chamber randomized, \"like a revolver spinning, the only random factor we're able to inject in an otherwise deterministic chassis\". Named by Ryan, 19 October: the flightless bird that kills.",
-    "niche": "The maker's gunslinger, a damage dealer at tier one (Ryan, 18 October: promoted to damage class). Its die never rolls: each fight opens on a random chamber and steps from there, so the plan is adjacency (the shield before the big gun, the Rapid before the chamber it should double) and the team's rerolls are its dial. Every sixth shot counts double; its locked Spin-Up spins the cylinder and primes the next shot. Squishy on purpose (Ryan, 19 October: \"we're packing a lot of firepower in it\"), so the maker's tender deal holds no front, accepted."
+    "niche": "The maker's gunslinger, a damage dealer at tier one, the die that never rolls (Ryan, 26 November: the Spin-Up's spin \"fights against the rest of the machine, which is about breaking the random die rule in favour of determinism\"). Each skirmish opens on a random chamber and every roll steps it on; every weapon hit adds a stack of Sustained Recoil, and the hit that finds five consumes them to deal double. Its Negentropy Spinner moves the cylinder by the count, at least 1, so the count is both the double's clock and the Spinner's aim: at five it lands on the last hardpoint, where the doubled hit is meant to go, and a reroll steps it back onto the Spinner (his: \"use the spinner at 5 stacks, get to the entry right before it, reroll once, use the spinner again, and fire\"). Squishy on purpose (Ryan, 19 October: \"we're packing a lot of firepower in it\")."
    },
    "codex": "",
    "hull": 24,
@@ -1570,9 +1571,9 @@
     "laser_carbine"
    ],
    "passive": {
-    "id": "indexed_cylinder",
-    "name": "Indexed Cylinder",
-    "description": "Its die never rolls: each fight opens on a random chamber, and every roll steps it to the next entry in order. Every sixth shot counts double, its damage and the stacks it lays.",
+    "id": "syntropy_cylinder",
+    "name": "Syntropy Cylinder",
+    "description": "Skirmish Start: Start on a random component.\nOn Roll: Move instead to the next component in slot order.\nWeapons Gain:\n  Hit: If Sustained Recoil is 5, consume all to double damage dealt. Otherwise, gain 1 Sustained Recoil.",
     "effects": [
      {
       "trigger": "static",
@@ -1580,22 +1581,91 @@
       "value": 1
      },
      {
-      "trigger": "on_attack",
-      "effect": "multiply_damage",
-      "value": 2,
-      "when": "nth_shot",
-      "every": 6
-     },
-     {
-      "trigger": "on_attack",
-      "effect": "multiply_stacks",
-      "value": 2,
-      "when": "nth_shot",
-      "every": 6
+      "trigger": "static",
+      "effect": "hit_charge",
+      "value": "sustained_recoil",
+      "cap": 5,
+      "times": 2
      }
     ]
    },
-   "flavour": ""
+   "flavour": "",
+   "branches": [
+    {
+     "id": "quickdraw",
+     "name": "Quickdraw",
+     "design": {
+      "notes": "Ryan, 26 November: \"Quickdraw 1: Weapons Gain: On Kill: Restore Spun Up if consumed. Quickdraw 2: Spun Up: Weapons Gain: Commit: Consume all stacks to gain +1 damage per stack ({N}) and Rapid.\" The kill a weapon's use makes keeps the Spun Up it consumed; while the Cassowary carries Spun Up its weapons are Rapid, so the use that consumes it steps the cylinder on and acts again. The step's line drops the status tip's ({N}), which a step's line has no unit to fill, and lays his words out at one level, the game drawing a block one deep (the text standard's rule 41): Spun Up's heading, then its grant."
+     },
+     "steps": [
+      {
+       "description": "Weapons Gain:\n  On Kill: Restore Spun Up if consumed.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "restore_on_kill",
+         "value": "spun_up"
+        }
+       ]
+      },
+      {
+       "description": "Spun Up:\nWeapons Gain:\n  Commit: Consume all stacks to gain +1 damage per stack and Rapid.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "grant_keyword",
+         "value": "rapid",
+         "weapon_only": true,
+         "when": "self_status",
+         "status": "spun_up"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "deadeye",
+     "name": "Deadeye",
+     "design": {
+      "notes": "Ryan, 26 November: \"Deadeye 1: All weapons gain: Commit: If Sustained Recoil is 3 or more, Ignore Armour and Barrier. Deadeye 2: All Components gain: Resolve: Gain 1 Sustained Recoil.\" The count read as the use is committed, before its hits; Deadeye II's stack lands at every use's Resolve, equipment's and the Negentropy Spinner's too, after the Spinner's own move, up to the store's most."
+     },
+     "steps": [
+      {
+       "description": "Weapons Gain:\n  Commit: If Sustained Recoil is 3 or more, ignore Armour and Barrier.",
+       "effects": [
+        {
+         "trigger": "static",
+         "effect": "ignore_armour",
+         "value": 1,
+         "weapon_only": true,
+         "when": "self_status",
+         "status": "sustained_recoil",
+         "stacks": 3
+        },
+        {
+         "trigger": "static",
+         "effect": "ignore_barrier",
+         "value": 1,
+         "weapon_only": true,
+         "when": "self_status",
+         "status": "sustained_recoil",
+         "stacks": 3
+        }
+       ]
+      },
+      {
+       "description": "All Components Gain:\n  Resolve: Gain 1 Sustained Recoil.",
+       "effects": [
+        {
+         "trigger": "on_use",
+         "effect": "stack_status",
+         "value": "sustained_recoil"
+        }
+       ]
+      }
+     ]
+    }
+   ]
   },
   {
    "id": "cottonmouth",

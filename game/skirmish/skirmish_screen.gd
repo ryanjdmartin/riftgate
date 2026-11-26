@@ -104,6 +104,10 @@ var _act_debug_at := 0.0
 ## heat maximum, so it rages every turn: its flurry of Instant Knuckles and the reboot its Rage
 ## ends in are judged running.
 static var RAGE_DEBUG := OS.get_environment("RIFTGATE_RAGE_DEBUG") == "1"
+## A debug switch (RIFTGATE_RECOIL_DEBUG=1): every store whose bar glows while full is shown full, so
+## the Cassowary's Sustained Recoil glows and pulses all the time, to judge running (Ryan, 26
+## November: "When all are filled, the whole bar should glow and pulse").
+static var RECOIL_DEBUG := OS.get_environment("RIFTGATE_RECOIL_DEBUG") == "1"
 ## RIFTGATE_BREAK_DEBUG=1 draws a break point at three quarters of every foe's HP (the swallow's
 ## release, the golden rage's break), to judge the notch on a phone.
 static var BREAK_DEBUG := OS.get_environment("RIFTGATE_BREAK_DEBUG") == "1"
@@ -1261,9 +1265,6 @@ func _refresh(save: bool = true) -> void:
 		if not SEAL_DEBUG:
 			v.shell = ms.alive() and Effects.is_sealed(ms.unit)   # the sealed form's shell (the Polar Bear's, 2 November)
 		v.away = Skirmish.is_swallowed(ms)   # a foe's swallow (30 October): out of the fight, a ghost of itself
-		# The sixth shot's count as pips under the heat bar (Ryan, 19 October: the best spot).
-		var every := Effects.counts_shots(ms.unit)
-		v.pips = [Effects.stacks_of(ms.unit, "shots"), every] if every > 0 else []
 		# A capped store as a bar under the heat (Ryan, 21 and 22 October: every store a bar;
 		# 10 November: in the heat bar's shape, a segment a stack up to its cap), in its chip's
 		# colour and place.
@@ -1272,7 +1273,8 @@ func _refresh(save: bool = true) -> void:
 			var cap := Effects.store_cap(ms.unit, str(id)) if (Effects.STATUS[id].get("tags", []) as Array).has("store") else 0
 			if cap <= 0:
 				continue
-			v.store = [Effects.banked(ms.unit, str(id)), cap, _chip_colour(str(id)), status_glyph(str(id))]
+			var glows := bool(Effects.STATUS[id].get("glows_full", false))
+			v.store = [cap if glows and RECOIL_DEBUG else Effects.banked(ms.unit, str(id)), cap, _chip_colour(str(id)), status_glyph(str(id)), glows]
 			break
 		v.highlight = support.has(ms)
 		v.statuses = []
@@ -2115,8 +2117,8 @@ func _mech_rows(i: int) -> Array:
 		var id := str(d[5])
 		if int(d[3]) < Effects.SKIRMISH and not Effects.is_status(id):
 			continue
-		if id == "shots" or id == "muster" or id == "offhand" or _store_bar(ms, id):
-			continue   # the offhand's form rides its die's entries, never a chip on the machine (Ryan, 22 November);  a count shows as pips under the heat bar (the Cassowary's sixth shot), a capped store as its bar, and the gate by the Rapid it grants, never a chip
+		if id == "muster" or id == "offhand" or _store_bar(ms, id):
+			continue   # the offhand's form rides its die's entries, never a chip on the machine (Ryan, 22 November); a capped store shows as its bar, and the gate by the Rapid it grants, never a chip
 		if not first.has(id):
 			order.append(id)
 			first[id] = d
@@ -2182,7 +2184,7 @@ func _mech_rows(i: int) -> Array:
 		# chips should appear as pulsing opacity versions"), beside the skull when the round wrecks
 		# it (one may be the cause: an Ablating it lit on itself), the counts and stores that are no
 		# chip left out.
-		var skip: Array = ["shots", "muster"]
+		var skip: Array = ["muster"]
 		for id in fc.get("coming", {}).keys():
 			if _store_bar(ms, id):
 				skip.append(id)

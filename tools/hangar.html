@@ -1187,7 +1187,7 @@ function roman(n) {
   for (const [v, s] of marks) while (n >= v) { out += s; n -= v; }
   return out;
 }
-// A chassis whose passive makes its die step instead of roll (the Cassowary's Indexed Cylinder).
+// A chassis whose passive makes its die step instead of roll (the Cassowary's Syntropy Cylinder).
 const stepsDie = (e) => ((e.passive || {}).effects || []).some(x => x.effect === "step_die");
 // ------------------------------------------------------------------ formations
 // The Foes tab is formations first (20 November, Ryan: "Independent units don't matter anymore in

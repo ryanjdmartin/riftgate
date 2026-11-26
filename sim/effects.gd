@@ -52,7 +52,7 @@ const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes", "hit_heat"],
 	"on_injury": ["no_destroy"],
 	"on_struck": ["lay_status", "gain_heat"],   # a foe's hit landing on this machine, whatever it dealt: what it lays on the striker (the echidna's Sonic Needles, 20 November), the heat it gains (the Nemesis's Crucible Capacitor, 24 November)
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "rage_form", "heat_scale", "hot_hits", "reboot_piece", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_max", "hopper_plate", "count_status", "piece_form", "hold_status", "self_status", "shield_zap", "add_power", "offhand", "side_strike", "strike_again", "buff_status", "burrow", "momentum", "needles", "immune"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "rage_form", "heat_scale", "hot_hits", "reboot_piece", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_max", "hopper_plate", "hit_charge", "ignore_barrier", "restore_on_kill", "count_status", "piece_form", "hold_status", "self_status", "shield_zap", "add_power", "offhand", "side_strike", "strike_again", "buff_status", "burrow", "momentum", "needles", "immune"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat", "gain_heat"],
 	"on_blocked": ["stack_status", "gain_heat"],
 	"on_turn_start": ["gain_heat"],   # as this machine's turn starts (the Whip Scorpion's Obliterator, Ryan, 24 November: "Turn Start: Gain 1 heat")
@@ -67,6 +67,7 @@ const SUPPORTED_EFFECTS := {
 	"on_stack": ["add_stacks"],
 	"on_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_kill": ["stack_status", "add_shield", "vent_heat", "refill_shield"],
+	"on_use": ["stack_status"],   # every use of a component, once its hits are done (Resolve; the Cassowary's Deadeye II, Ryan, 26 November: "All Components gain: Resolve: Gain 1 Sustained Recoil")
 	"on_round_kill": ["stack_status"],   # the end of a round in which an attack of this machine's own killed, once however many fell (the Ammit's flare, Ryan, 16 November)
 	"on_foe_killed": ["stack_status", "add_shield"],   # every kill in this machine's fight, whoever made it, once for each foe (the Ammit's Essence, 12 November; the Buzzard's carrion, 18 November)
 }
@@ -484,12 +485,13 @@ const STATUS := {
 	# lifts it; a Ward turns the rider away as it turns any.
 	"brittled_mech": {"id": "brittled_mech", "name": "Brittle", "description": "Every blow it takes deals a point more a stack. Halves as its turn starts, rounded down.", "decay": "half",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
-	# The Cassowary's Spun Up (Ryan's go, 19 October; built 21 October): the Spin-Up's buff, its
-	# number a stack on the next weapon the machine spends, stacking, carried between turns until
-	# then (`spent_by`: the skirmish lifts every stack after a weapon's spend, equipment leaving
-	# them, since it only adds damage: Ryan, 26 October; a buff grants it with no rounds).
+	# The Cassowary's Spun Up (Ryan's go, 19 October; built 21 October; +1 a stack since 26 November:
+	# "Spun up needs to go to 1 at base"): the Negentropy Spinner's buff, its number a stack on the
+	# next weapon the machine spends, stacking, carried between turns until then (`spent_by`: the
+	# skirmish lifts every stack after a weapon's spend, equipment leaving them, since it only adds
+	# damage: Ryan, 26 October; a buff grants it with no rounds).
 	"spun_up": {"id": "spun_up", "name": "Spun Up", "description": "The next weapon it spends deals {value} more a stack and takes every stack; equipment leaves them standing. Carried between turns until then.", "decay": "none", "spent_by": "weapon",
-		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 2}]},
+		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 1}]},
 	# Ricochet (the Skua's, Ryan, 12 November: "After firing a weapon, it hits the primary target 1
 	# more time per stack, dealing 1 damage each time and applying all effects other than area
 	# keywords"; 11 November: "Lose half stacks of Ricochet on any hull damage"): a buff that lasts
@@ -498,11 +500,13 @@ const STATUS := {
 	# (`halves_on`, Skirmish._hull_damaged).
 	"ricochet": {"id": "ricochet", "name": "Ricochet", "description": "After a weapon fires, it hits its target again for 1, once a stack, with every effect but its area. Hull damage halves the stacks, rounded down.", "decay": "none", "lasts": "fight", "halves_on": "hull_damage",
 		"tags": ["buff"], "effects": []},
-	# A count a rule reads (the Cassowary's sixth shot, 21 October): every weapon and equipment the
-	# machine aims at a foe this fight, a stack each, kept only where a live effect counts them (nth_shot). A
-	# store with no effect of its own; the screen draws it as pips under the heat bar.
-	"shots": {"id": "shots", "name": "Shots", "description": "Every weapon and equipment it aims at a foe this fight, counted for a rule that lands on a number of them.", "decay": "none",
-		"tags": ["store", "count"], "effects": []},
+	# The Cassowary's Sustained Recoil (Ryan, 26 November: "Max 5 stacks. At 5 stacks, the next weapon
+	# hit deals double damage"): a store its weapons' hits fill a stack each, every hit consuming it
+	# whole once it is full to double that hit (hit_charge, read by Skirmish._hit). It lasts the
+	# skirmish, never decays and nothing cleanses it; the screen draws it as a bar of its cap's cells,
+	# glowing and pulsing whole while full ("indicating the next shot is the sixth").
+	"sustained_recoil": {"id": "sustained_recoil", "name": "Sustained Recoil", "description": "Every weapon hit adds a stack; at its most, the next weapon hit consumes them all to deal double damage.", "decay": "none", "glows_full": true,
+		"tags": ["store"], "effects": []},
 	# The block as a buff (Ryan, 14 October, the honest shield's upside; built 21 October), one
 	# machine at a time. A Barrier is Shocked's mirror on the machines' side: the next blow a
 	# foe lands on it deals nothing, so a rider that reads the hull (Destroy) finds none, its riders landing, and a blow of
@@ -728,7 +732,7 @@ const ROUND_HOLDERS := {"overcharged": "essence_flare"}
 ## instead?"): the blow is its spend's first by the strike order, its first strike's on its target
 ## (the skirmish says so in `ctx`), so an add on the next strike lands on that blow alone and on
 ## none of its area's; a forecast of the entry's number reads it as no first blow.
-const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "target_unhurt", "target_half", "shield_up", "sealed", "weapon", "first_blow"]
+const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "self_status", "ally_present", "target_no_intent", "attacker_status", "target_rank", "target_unhurt", "target_half", "shield_up", "sealed", "weapon", "first_blow"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "cooling", "shield_regen"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -1396,10 +1400,11 @@ static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionar
 				return false
 			var need := str(eff.get("reach", ""))
 			return need.is_empty() or (face != null and effective_reach(u, face) == Face.reach_from_name(need))
-		"nth_shot":
-			# Every n-th spend at a foe this fight (the Cassowary's sixth shot): this one, when the
-			# count so far is one short of a multiple of `every`.
-			return face != null and face.is_attack() and (stacks_of(u, "shots") + 1) % maxi(1, int(eff.get("every", 6))) == 0
+		"self_status":
+			# The machine itself carries a status, at least so many stacks (the Cassowary's branches,
+			# Ryan, 26 November: Deadeye's "If Sustained Recoil is 3 or more", Quickdraw's Rapid while
+			# it carries Spun Up), read as the use is committed.
+			return u.get("modifiers") != null and stacks_of(u, str(eff.get("status", ""))) >= maxi(1, int(eff.get("stacks", 1)))
 	var w := str(eff.get("when", ""))
 	if w.begins_with("tag_"):
 		return face != null and face.tags.has(w.substr(4))
@@ -1531,6 +1536,10 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dicti
 	# The Whip Scorpion's heat scale (Ryan, 23 November: "Deals -50% damage at zero heat to +100% damage
 	# at max heat, scaling linearly"), a multiply after every add (Skirmish.firer_ctx).
 	d_mult *= float(ctx.get("heat_scale", 1.0))
+	# A hit the machine's store discharges into (hit_charge: the Cassowary's Sustained Recoil, Ryan, 26
+	# November: "If Sustained Recoil is 5, consume all to double damage dealt"), a multiply after every
+	# add, so the hit's whole damage doubles; the Sprite's own reads come after (Skirmish._hit).
+	d_mult *= float(ctx.get("charged", 1.0))
 	var out_dmg := maxi(d_floor, int(roundf((float(dmg) * p_mult + d_add) * d_mult)))
 	var out_heat := maxi(0, int(roundf((heat + h_add) * h_mult)))
 	if face != null and face.is_debuff():
@@ -2085,6 +2094,7 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	# A weapon's blows ignoring armour by a state its machine carries (the Wild Boar's Juggernaut
 	# Drive, a written rule since 15 November, no keyword): a weapon alone.
 	var unarmours := base.is_weapon() and not base.ignores_armour and grants_ignore_armour(u, base, target)
+	var unbarriers := base.is_weapon() and not base.ignores_barrier and grants_ignore_barrier(u, base, target)   # past a Barrier by a state its machine carries (the Cassowary's Deadeye I)
 	# Damage past a kill spilling behind by a rule its machine wears (the Overrun Gearing's, a
 	# module's; a written rule since 15 November, no keyword): every entry aimed at a foe.
 	var spills := base.is_attack() and not base.spills and grants_spill(u, base, target)
@@ -2098,7 +2108,7 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	var named := entry_name(u, base)   # the name a branch's step gives the piece (the Aile Blitzer)
 	# A weapon that empties the hopper strikes once for every Ore it holds (the Bullion Fragmenter).
 	var ore := stacks_of(u, "hopper") if base.empties_hopper else -1
-	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not spills and not regranted and more == 0 and added.is_empty() and buff_to.is_empty() and named.is_empty() and ore < 0:
+	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not unbarriers and not spills and not regranted and more == 0 and added.is_empty() and buff_to.is_empty() and named.is_empty() and ore < 0:
 		return face
 	var c := base.duplicate_face() if base == face else base
 	c.reach = r
@@ -2131,6 +2141,8 @@ static func effective_face(u, face: Face, target = null) -> Face:
 		c.split = split
 	if unarmours:
 		c.ignores_armour = true
+	if unbarriers:
+		c.ignores_barrier = true
 	if spills:
 		c.spills = true
 	if regranted:
@@ -2161,6 +2173,15 @@ static func power_added(u, face: Face, target = null) -> int:
 static func grants_ignore_armour(u, face: Face, target = null) -> bool:
 	for pair in _taking_part(u, "static", face, target):
 		if str(pair[0].get("effect", "")) == "ignore_armour":
+			return true
+	return false
+
+
+## Does a live effect make this weapon's blows pass a Barrier (ignore_barrier, static, its `when`
+## honoured: the Cassowary's Deadeye I, "Ignore Armour and Barrier")?
+static func grants_ignore_barrier(u, face: Face, target = null) -> bool:
+	for pair in _taking_part(u, "static", face, target):
+		if str(pair[0].get("effect", "")) == "ignore_barrier":
 			return true
 	return false
 
@@ -2485,9 +2506,13 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 					# its stacks for every `stack_step` of `per_stack` held, rounded down.
 					if eff.has("per_stack"):
 						n *= stack_steps(u, eff)
-					# A store's cap (the Nemesis's rage, five; Ryan, 22 October): it banks no more.
+					# A store's cap (the Nemesis's rage, five; Ryan, 22 October): it banks no more. An
+					# effect that names none fills up to the most its store holds (the Cassowary's Deadeye
+					# II to its Sustained Recoil's five).
 					if int(eff.get("cap", 0)) > 0:
 						n = mini(n, int(eff["cap"]) - banked(who, id))
+					elif (STATUS[id].get("tags", []) as Array).has("store") and store_cap(who, id) > 0:
+						n = mini(n, store_cap(who, id) - banked(who, id))
 					if n > 0:
 						# A machine's Regenerating is the status in a machine's words, shield (the Buzzard's
 						# Sustain, 18 November); a foe's is hit points.
@@ -2605,6 +2630,8 @@ static func store_cap(u, id: String) -> int:
 		for eff in m.effects:
 			if str(eff.get("effect", "")) == "stack_status" and str(eff.get("value", "")) == id and int(eff.get("cap", 0)) > 0:
 				return int(eff["cap"])
+			if str(eff.get("effect", "")) == "hit_charge" and str(eff.get("value", "")) == id and int(eff.get("cap", 0)) > 0:
+				return int(eff["cap"])   # the store a weapon's hits charge (the Cassowary's Sustained Recoil)
 	return 0
 
 
@@ -2908,9 +2935,8 @@ static func turn_die(u) -> bool:
 	return true
 
 
-## Does this machine's die step instead of rolling (the Cassowary's Indexed Cylinder, Ryan's
-## wording of 12 October: "Whenever its die rolls, it moves to the next entry instead, in
-## sequence")?
+## Does this machine's die step instead of rolling (the Cassowary's Syntropy Cylinder, Ryan, 26
+## November: "On Roll: Move instead to the next component in slot order")?
 static func steps_die(u) -> bool:
 	for pair in _taking_part(u, "static", null):
 		if str(pair[0].get("effect", "")) == "step_die":
@@ -2918,24 +2944,36 @@ static func steps_die(u) -> bool:
 	return false
 
 
-## Every how many spends at a foe a live rule of this machine lands (the Cassowary's sixth
-## shot): the `every` of its first nth_shot effect, 0 when nothing counts. The skirmish keeps
-## the count only for a machine that has one, and the screen draws it as that many pips.
-static func counts_shots(u) -> int:
-	for m in live(u):
-		for eff in m.effects:
-			if str(eff.get("when", "")) == "nth_shot":
-				return maxi(1, int(eff.get("every", 6)))
-	return 0
+## The store this machine's weapon hits charge (hit_charge, static: the Cassowary's Syntropy
+## Cylinder, Ryan, 26 November: "Weapons Gain: On Hit: If Sustained Recoil is 5, consume all to double
+## damage dealt. Otherwise, gain 1 Sustained Recoil"): {status, cap, times}, the first live one's;
+## empty when nothing charges. Each weapon hit, an area's and a hit again's among them, finds the
+## store full and consumes it whole to multiply its damage by `times`, or adds a stack.
+static func hit_charge(u) -> Dictionary:
+	for pair in _taking_part(u, "static", null):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) == "hit_charge" and STATUS.has(str(eff.get("value", ""))) and int(eff.get("cap", 0)) > 0:
+			return {"status": str(eff["value"]), "cap": int(eff["cap"]), "times": float(eff.get("times", 2))}
+	return {}
 
 
-## Whether this machine's next spend at a foe is the one its count lands on.
-static func nth_shot_due(u) -> bool:
-	var every := counts_shots(u)
-	return every > 0 and (stacks_of(u, "shots") + 1) % every == 0
+## Whether the next weapon hit discharges this machine's charged store (hit_charge): it is full.
+static func charge_full(u) -> bool:
+	var c := hit_charge(u)
+	return not c.is_empty() and stacks_of(u, str(c["status"])) >= int(c["cap"])
 
 
-## What the stacks a spend at a foe lays are multiplied by (the sixth shot's double), through
+## Does a live effect keep this status through a weapon use that kills (restore_on_kill, static:
+## the Cassowary's Quickdraw I, Ryan, 26 November: "Weapons Gain: On Kill: Restore Spun Up if
+## consumed")?
+static func restores_on_kill(u, status_id: String) -> bool:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "restore_on_kill" and str(pair[0].get("value", "")) == status_id:
+			return true
+	return false
+
+
+## What the stacks a spend at a foe lays are multiplied by, through
 ## the on_attack multiply_stacks effects that hold for it: 1 when none does.
 static func stack_multiplier(u, face: Face, target = null) -> int:
 	var mult := 1
@@ -3552,6 +3590,9 @@ static func effect_text(eff: Dictionary) -> String:
 		"hold_status": body = "its %s does not decay" % str(STATUS.get(str(v), {}).get("name", v))
 		"hold_all": body = "no %s decays this round, any unit's" % str(STATUS.get(str(v), {}).get("name", v))
 		"ignore_armour": body = "its weapons ignore armour"
+		"ignore_barrier": body = "its weapons ignore Barrier"
+		"hit_charge": body = "each weapon hit adds a stack of %s, up to %d; at %d, the hit consumes them all for ×%s damage" % [str(STATUS.get(str(eff.get("value", "")), {}).get("name", vs)), int(eff.get("cap", 0)), int(eff.get("cap", 0)), str(eff.get("times", 2))]
+		"restore_on_kill": body = "a weapon use that kills keeps its %s" % str(STATUS.get(str(eff.get("value", "")), {}).get("name", vs))
 		"multiply_stacks": body = "the stacks it lays ×%s" % vs
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
 		"shield_zap": body = "each weapon it fires pays %d shield, when it holds that much, for +%s on its every blow" % [int(eff.get("cost", 0)), vs]
@@ -3612,7 +3653,7 @@ static func effect_text(eff: Dictionary) -> String:
 			lead += "blows from foes carrying %s: " % (str(STATUS[st]["name"]) if STATUS.has(st) else (st.capitalize() if not st.is_empty() else "a status"))
 		"ally_present": lead += "with an ally in the fight: "
 		"sealed": lead += "while sealed: "
-		"nth_shot": lead += "every %s shot: " % ordinal(int(eff.get("every", 6)))
+		"self_status": lead += "with %s %d or more: " % [str(STATUS.get(str(eff.get("status", "")), {}).get("name", eff.get("status", ""))), maxi(1, int(eff.get("stacks", 1)))]
 		"target_rank":
 			var by := str(eff.get("reach", ""))
 			lead += ("%s blows aimed at the %s rank: " % [by, str(eff.get("rank", "front"))]) if not by.is_empty() else ("aimed at the %s rank: " % str(eff.get("rank", "front")))

@@ -867,14 +867,14 @@
    "id": "spun_up",
    "category": "status",
    "name": "Spun Up",
-   "codex": "Weapons Gain:\n  Hit: +2 damage dealt per stack ({N}).\n  Resolve: Reduce stacks to 0.",
+   "codex": "Weapons Gain:\n  Commit: Consume all stacks to gain +1 damage per stack ({N}).",
    "status": "implemented",
    "design": {
-    "holes": "Spent whole by the next weapon, equipment leaving it: weapon only until balance says otherwise (Ryan, 26 October).",
+    "holes": "Ryan, 26 November: \"Spun up needs to go to 1 at base, the 2 was a holdover from larger numbers\", and his line \"Weapons Gain: Commit: Consume all stacks to gain +1 damage per stack ({N})\". Spent whole by the next weapon, equipment leaving it (26 October).",
     "table": {
      "kind": "buff",
      "on": "machine",
-     "stacks": "Yes: its bonus a stack, every stack spent by the next weapon",
+     "stacks": "Yes: +1 damage a stack, every stack spent by the next weapon",
      "lasts": "Until the next weapon it spends, across turns"
     }
    }
@@ -1008,17 +1008,17 @@
    }
   },
   {
-   "id": "shots",
+   "id": "sustained_recoil",
    "category": "resource",
-   "name": "Shots",
-   "codex": "Machine count, the Cassowary's: every weapon and equipment it aims at a foe this fight, shown as six pips under the heat bar, the sixth lit when it is next, where its sixth shot counts double. Shields, vents, buffs and spins are no shots. Never a chip; nothing cleanses it; it resets each fight.",
+   "name": "Sustained Recoil",
+   "codex": "Max 5 stacks. At 5 stacks, the next weapon hit deals double damage.",
    "status": "implemented",
    "design": {
-    "holes": "Kept only for a machine whose rule counts (an nth_shot condition).",
+    "holes": "Ryan, 26 November: \"Sustained Recoil (Resource): Max 5 stacks. At 5 stacks, the next weapon hit deals double damage.\" Every weapon hit, an area's included, adds a stack; the hit that finds five consumes them all. Its bar has five cells, glowing and pulsing whole while full (his: \"indicating the next shot is the sixth\"). The six-shot count it replaced (shots) is git's.",
     "table": {
      "kind": "store",
      "on": "machine",
-     "stacks": "Yes: one a weapon or equipment aimed at a foe",
+     "stacks": "Yes: one a weapon hit, up to five",
      "lasts": "The skirmish; never decays"
     }
    }
@@ -1593,6 +1593,16 @@
    "status": "implemented",
    "design": {
     "holes": "Built for the Skua's rewrite (Ryan, 11 November: \"Damaging an enemy grants it a stack of Ricochet (once per turn)\"). The stack lands after the spend that earned it, so none of that spend's shots bounce off it. The once-a-round gate is the effect's own (once: round), open to any effect an event fires."
+   }
+  },
+  {
+   "id": "on_use",
+   "category": "trigger",
+   "name": "On use",
+   "codex": "Passive trigger. Fires once after every use of this machine's components, its hits all done (Resolve), whatever the component: a status of its own (the Cassowary's Deadeye II, a Sustained Recoil). A blank entry is no use and fires nothing.",
+   "status": "implemented",
+   "design": {
+    "holes": "Built for the Cassowary's Deadeye II (Ryan, 26 November: \"All Components gain: Resolve: Gain 1 Sustained Recoil\"). It fires after the use's own reads: the Negentropy Spinner's advance reads the count before its Resolve adds one. A stack it lays on a store stops at the store's cap. Only stack_status runs on it today."
    }
   },
   {

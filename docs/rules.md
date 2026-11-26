@@ -138,7 +138,11 @@ fights against one pack at a time (a hunter's catch included). The depth lives i
   its Flakshot Spreader remade as the Flakshot Disperser (Indirect, Brittle 4, Spread,
   Penetrate); Harrier, its weapon strikes counting Brittle twice, then the Spreader remade as the
   Flakshot Repeater (Direct, 1 three times, Brittle 1, Spread 1). Neither form keeps the
-  Spreader's cooldown. The Echidna's, a tier one's: Spiker, its Supersonic Spike Tether as the
+  Spreader's cooldown. The Cassowary's, a tier one's: Quickdraw, a weapon use that kills keeping
+  the Spun Up it would consume, then its weapons Rapid while it is Spun Up (the use that consumes
+  it steps the cylinder on and acts again); Deadeye, its weapons ignoring Armour and Barrier while
+  it holds 3 Sustained Recoil or more, read as the use is committed, then a Sustained Recoil at
+  every use's Resolve, whatever the component, up to five, after the Spinner's own move. The Echidna's, a tier one's: Spiker, its Supersonic Spike Tether as the
   Hypersonic Spike Tether, Instant at a heat more, then its Sonic Needles taking a point a stack
   off the attacks of the foe they are in; Chaos, its needles' bolt leaving its foe one stack in
   place of none, then its weapons dealing 1 more to a foe for each stack of Sonic Needle in it.
@@ -266,8 +270,8 @@ whole. A second one renews to the larger count, never adds.
   showing; a copy of it may come up, at the odds its copies give it. Every roll inside the round
   follows the same rule (Rapid's free reroll, the Booster, the Uplink, the
   Reveille Horn), but Instant's, kept on purpose and shown on the die by its keyword: it rolls as
-  the round's opening roll does, itself included, and spins every chamber on the Cassowary's
-  die. Hold a die to lock it, and again to unlock it; spending
+  the round's opening roll does, itself included (on the Cassowary's stepping die it steps, as
+  every roll there does). Hold a die to lock it, and again to unlock it; spending
   unlocks it; locks clear each round. A double-tap shows the whole die, its loadout, every entry at its
   live numbers, the one showing marked.
 - **A folded die** (the Clydesdale's Disappearing Carriages): its hardpoints are two batteries
@@ -279,16 +283,21 @@ whole. A second one renews to the larger count, never adds.
   is the first. The codex dims the battery down; on the model the battery down is sunk in the
   hull under shut trapdoors, the battery up on the deck, and each battery's components take its
   own mounts in order, so one that shows nowhere leaves its own battery's mount bare.
-- **A stepping die** (the Cassowary's): it never rolls. Each fight opens on a random entry,
-  and every roll or reroll steps it to the next entry in order, Rapid's free reroll too; a
-  lock holds it. The die shows its next entry in its passive box, its mark and the number it
-  will show, and its readout and codex show its entries as a
-  cylinder, in order (the one showing lit and an arrow to the next, in the readout). Its Spin-Up, Instant, spins the whole die, the
-  entry showing included, the roll kept on purpose (Rerolls, above), so it may land on itself and
-  be spent again. Every sixth weapon or equipment it aims at a foe in the fight counts double,
-  its damage and the stacks it lays; the count shows as six cells under the heat bar, as a
-  store's are, the sixth apart by its shape (a heavier border, a diamond set in it) and
-  lit in the heat's colour when it is next, and a shield, a vent, a buff and a spin are no shots.
+- **A stepping die** (the Cassowary's Syntropy Cylinder): it never rolls. Each fight opens on a
+  random entry, and every roll or reroll steps it to the next entry in order, Rapid's free
+  reroll and Instant's too; a lock holds it. The die shows its next entry in its passive box, its
+  mark and the number it will show, and its readout and codex show its entries as a
+  cylinder, in order (the one showing lit and an arrow to the next, in the readout). Its
+  Negentropy Spinner, Instant, grants Spun Up 1 and moves the cylinder on by the machine's
+  Sustained Recoil as it is spent, at least one entry, in place of Instant's step, and never back
+  onto itself; its readout says the count and the component it lands on.
+- **Sustained Recoil** (the Cassowary's store): every weapon hit of the machine's gains a stack, up
+  to five, an area's hits among them in the order they land (the target, Spread's left and its
+  right, Penetrate's other rank); the hit that finds five consumes them all and deals double, and
+  the hits after it in the same use count again. A Ricochet's hit is the Frame's and counts none,
+  and equipment counts none. The die and the readout show the next hit's number doubled while it is
+  full. It shows as five cells under the heat bar, as a store's are, the whole bar glowing and
+  pulsing while full; it lasts the skirmish and never decays.
 - **The Quick-turn Avionics Relay** (the Needletail's passive): each round it acts twice,
   once with a weapon and once with equipment (a buff or a debuff), in either order. Spending a
   weapon sends every weapon on its die onto cooldown for the rest of the round, and spending
@@ -638,13 +647,12 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   Deflector's two).
 - **Instant** (any component): the die rolls again free, as the round's opening roll does,
   itself included, so the same entry may show again and be spent again, and the machine acts
-  again; on a stepping die the roll spins every chamber. Nothing goes dark, so an Instant
+  again; on a stepping die it steps, as every roll there does. Nothing goes dark, so an Instant
   component always carries a limiter: a cooldown, heat or a cost. A piece Instant only while its
-  machine rages has its machine's heat (the Nemesis's Knuckles of Fury, below). A piece locked on a stepping die (the Cassowary's
-  Spin-Up) needs none: its spin is a true roll over every chamber, so it lands on itself one
-  time in six, to be spent again, a fifth of a spin more a spend on average, and every other way
-  back to it in a round runs through the other chambers' switch-offs or the team's rerolls. An
-  entry is Rapid or Instant, never both.
+  machine rages has its machine's heat (the Nemesis's Knuckles of Fury, below). A piece locked on
+  a stepping die (the Cassowary's Negentropy Spinner) needs none: its move never lands back on it,
+  so only a team reroll brings it round to be spent again. An entry is Rapid or Instant, never
+  both.
 - **Cooldown** (a printed property on specific pieces; a passive may grant one to every weapon
   and equipment its machine aims at a foe, none does today, and the longer stands), a cost printed
   along the entry's foot by its clock: once spent, the entry is dark for the rest of the round
@@ -798,13 +806,13 @@ Barrier on itself, a cooldown of 1) or an ally's piece, its Drive waits (a buff 
 
 ### Buffs, debuffs and resistance
 A **store** is a capped resource a machine fills and spends (the Muster, the
-hopper, the Cassowary's shot count; the Musk Ox's magazine works the same way), its own kind
+hopper, the Cassowary's Sustained Recoil; the Musk Ox's magazine works the same way), its own kind
 and never a buff: each shows as a row under the heat in the heat bar's shape, by how it fills:
-one that comes in whole units (the hopper's loads, the magazine's ammo) as separate
+one that comes in whole units (the hopper's loads, the magazine's ammo, Sustained Recoil) as separate
 cells, each with its own border and a hairline of ground between them, the lit ones filled; one that
 fills by degrees (the Muster) as a meter
-with a notch a charge, a dragged charged piece's price pending on it; the shot count as cells too,
-its last marked as the shot that counts; and no Purge touches it, its filling or its use. An **Ability** is a
+with a notch a charge, a dragged charged piece's price pending on it; and no Purge touches it, its
+filling or its use. An **Ability** is a
 unit's own mechanic, the rule it plays by, and never a buff or a debuff, so no Purge
 or Cleanse touches it; its chip shows its mark cut out of a solid tile, ahead of the unit's
 other chips, and its hold line names it an Ability and says what goes on. A foe's: the Goblin
@@ -945,7 +953,7 @@ On a machine:
   machine it hits, and that move spends a stack; a special, or a move lost to a stun, spends
   none; stokings add their stacks; and a machine's Ward turns its Ablate away as it does an
   ablate.
-- **Spun Up** (buff): the next weapon the machine spends deals +2 a stack and takes every
+- **Spun Up** (buff): the next weapon the machine spends deals +1 a stack and takes every
   stack; equipment leaves them standing; carried between turns until a weapon takes it.
 - **Ricochet** (buff, the Skua's): after a weapon fires, it hits its target again for 1, once a
   stack, once all its own strikes are done. Each is the machine's hit, never the weapon's: its

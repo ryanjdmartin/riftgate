@@ -7663,9 +7663,10 @@ func test_rapid_switches_its_entry_off_for_the_round_and_prints_nothing() -> voi
 const STEP_PASSIVE := {"id": "test_step", "name": "Step", "description": "", "effects": [{"trigger": "static", "effect": "step_die", "value": 1}]}
 
 
-## A stepping die (the Cassowary's Indexed Cylinder, Ryan's wording of 12 October; built 21
-## October): the fight's first roll spins it to a random entry, then every roll steps it to the
-## next in order: the round's roll, a reroll, Rapid's free reroll; a lock holds it.
+## A stepping die (the Cassowary's Syntropy Cylinder, Ryan, 26 November: "Skirmish Start: Start on a
+## random component. On Roll: Move instead to the next component in slot order"; built 21 October):
+## the fight's first roll spins it to a random entry, then every roll steps it to the next in
+## order: the round's roll, a reroll, Rapid's free reroll; a lock holds it.
 func test_a_stepping_die_spins_once_then_steps_on_every_roll() -> void:
 	var opened := {}
 	for seed_value in range(40):
@@ -7715,9 +7716,10 @@ func test_a_stepping_die_spins_once_then_steps_on_every_roll() -> void:
 	assert_eq(s2.mechs[0].face_index, 1, "and its free reroll steps the die to the next")
 
 
-## Instant (Ryan, 12 November: "reroll after use, can land on itself"; the Spin-Up's spin of 19
-## October its first form): spent, the die rolls true over every entry, itself included, a spin on
-## a stepping die, and the machine acts again.
+## Instant (Ryan, 12 November: "reroll after use, can land on itself"): spent, the die rolls true
+## over every entry, itself included, and the machine acts again. A stepping die never rolls (Ryan,
+## 26 November: the spin "fights against the rest of the machine, which is about breaking the random
+## die rule in favour of determinism"), so on one its Instant steps to the next entry.
 func test_an_instant_entry_rolls_true_and_may_land_on_itself() -> void:
 	var spin := Face.from_dict({"kind": "buff", "status": "spun_up", "stacks": 1, "targets": "self", "keywords": ["instant"]})
 	assert_true(spin.has(K.INSTANT) and not spin.has_unique_rule(), "a keyword, never the star")
@@ -7735,12 +7737,84 @@ func test_an_instant_entry_rolls_true_and_may_land_on_itself() -> void:
 			sk.begin()
 			sk.start_round()
 			sk.mechs[0].face_index = 0
-			assert_true(sk.assign(0, sk.mechs[0]), "the spin is spent")
+			assert_true(sk.assign(0, sk.mechs[0]), "the Instant buff is spent")
 			assert_false(sk.mechs[0].assigned, "and the machine acts again")
 			landed[sk.mechs[0].face_index] = true
 			said = "\n".join(sk.log)
-		assert_eq(landed.size(), 3, "it lands anywhere, itself included%s: %s" % [" (a stepping die)" if stepping else "", str(landed.keys())])
-		assert_true(said.contains("the cylinder spins" if stepping else "instant, rolls again"), "the log says how it rolled")
+		if stepping:
+			assert_eq(landed.keys(), [1], "a stepping die steps to the next entry, every fight")
+		else:
+			assert_eq(landed.size(), 3, "it lands anywhere, itself included: %s" % str(landed.keys()))
+		assert_true(said.contains("instant, steps on" if stepping else "instant, rolls again"), "the log says how it moved")
+
+
+## The Negentropy Spinner (the Cassowary's, Ryan, 26 November: "Advance components a number of
+## places equal to current Sustained Recoil ({N}): {put resulting component here}"; the move exactly
+## the count, at least 1, in place of Instant's own): spent, its die moves on by the machine's
+## Sustained Recoil as the Spinner went out, at least one place, and never back onto the Spinner; its
+## readout names the count and the component it lands on.
+func test_the_negentropy_spinner_moves_a_stepping_die_by_its_count() -> void:
+	var spinner := Face.from_dict({"kind": "buff", "status": "spun_up", "stacks": 1, "targets": "self", "keywords": ["instant"], "advances_by": "sustained_recoil"})
+	assert_eq(spinner.advances_by, "sustained_recoil", "a buff carries its store")
+	assert_true(Face.from_dict(spinner.to_dict()).advances_by == "sustained_recoil", "and keeps it through the save")
+	assert_true(Face.from_dict({"kind": "attack", "power": 3, "advances_by": "sustained_recoil"}).advances_by.is_empty(), "a weapon carries none")
+	assert_true(spinner.has_unique_rule(), "its line is a rule of its own")
+	var faces: Array = [spinner]
+	for p in [1, 2, 3, 4, 5]:
+		var g := Face.attack(p, L)
+		g.component = "test_gun_%d" % p
+		faces.append(g)
+	for count in [0, 1, 3, 5]:
+		var sk := Skirmish.new(1)
+		var u := _mech("A", Die.of(faces), 40, 100)
+		u.grant_passive(STEP_PASSIVE)
+		sk.add_mech(u)
+		sk.add_foes([_ghoul(500, 1)])
+		sk.begin()
+		sk.start_round()
+		var ms: Skirmish.MechState = sk.mechs[0]
+		ms.face_index = 0
+		if count > 0:
+			Effects.stack(u, Effects.STATUS["sustained_recoil"], Effects.SKIRMISH, "test", count, Effects.DECAY_NONE)
+		var moves := maxi(1, count)
+		var shown := sk.shown_face(ms, ms.face())
+		assert_eq(shown.advance_now, moves, "the readout's count, %d stacks" % count)
+		assert_eq(shown.advance_onto, "test gun %d" % moves, "and the component it lands on")
+		assert_true(" ".join(shown.rule_phrases()).contains("(%d): test gun %d" % [moves, moves]), "the line names both: %s" % str(shown.rule_phrases()))
+		assert_true(sk.assign(0, ms), "spent")
+		assert_eq(ms.face_index, moves, "%d stacks move it %d" % [count, moves])
+		assert_false(ms.assigned, "and the machine acts again")
+		assert_true("\n".join(sk.log).contains("the cylinder advances %d" % moves), "the log says how far")
+	# A count that would bring it round onto itself goes one more.
+	var s3 := Skirmish.new(1)
+	var u3 := _mech("A", Die.of([spinner, Face.attack(1, L), Face.attack(2, L)]), 40, 100)
+	u3.grant_passive(STEP_PASSIVE)
+	s3.add_mech(u3)
+	s3.add_foes([_ghoul(500, 1)])
+	s3.begin()
+	s3.start_round()
+	var m3: Skirmish.MechState = s3.mechs[0]
+	m3.face_index = 0
+	assert_eq(Skirmish.advance_index(m3, 3), 1, "three places on a die of three: back on itself, so one more")
+	assert_eq(Skirmish.advance_index(m3, 2), 2, "two: the last")
+	assert_eq(Skirmish.advance_index(m3, 0), 1, "none: still one")
+	# The count is read as the Spinner goes out: what its use's Resolve adds moves it nothing.
+	var s4 := Skirmish.new(1)
+	var u4 := _mech("A", Die.of(faces), 40, 100)
+	u4.grant_passive(STEP_PASSIVE)
+	u4.grant_passive({"id": "test_resolve", "name": "Resolve", "description": "", "effects": [
+		{"trigger": "static", "effect": "hit_charge", "value": "sustained_recoil", "cap": 5, "times": 2},
+		{"trigger": "on_use", "effect": "stack_status", "value": "sustained_recoil"}]})
+	s4.add_mech(u4)
+	s4.add_foes([_ghoul(500, 1)])
+	s4.begin()
+	s4.start_round()
+	var m4: Skirmish.MechState = s4.mechs[0]
+	m4.face_index = 0
+	Effects.stack(u4, Effects.STATUS["sustained_recoil"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
+	assert_true(s4.assign(0, m4), "spent on two stacks")
+	assert_eq(m4.face_index, 2, "it moves two")
+	assert_eq(Effects.stacks_of(u4, "sustained_recoil"), 3, "and its Resolve's stack comes after")
 
 
 ## Spun Up (the Cassowary's, Ryan's go of 19 October; built 21 October): its number a stack on
@@ -7782,47 +7856,239 @@ func test_spun_up_lasts_until_a_weapon_takes_it_and_adds_its_number_a_stack() ->
 	assert_false(Effects.has(u, "spun_up"), "and spends it")
 
 
-## Every n-th shot (the Cassowary's sixth, Ryan's kit of 18 October; built 21 October): the
-## weapon or equipment aimed at a foe the count lands on doubles its damage and the
-## stacks it lays; a shield, a vent, a buff and a spin are no shots, and the count resets each
-## fight.
-func test_every_nth_shot_doubles_its_damage_and_the_stacks_it_lays() -> void:
+const RECOIL := {"id": "test_recoil", "name": "Recoil", "description": "", "effects": [
+	{"trigger": "static", "effect": "hit_charge", "value": "sustained_recoil", "cap": 5, "times": 2}]}
+
+
+func _recoil(u: Unit, n: int) -> void:
+	Effects.stack(u, Effects.STATUS["sustained_recoil"], Effects.SKIRMISH, "test", n, Effects.DECAY_NONE)
+
+
+## Sustained Recoil (the Cassowary's Syntropy Cylinder, Ryan, 26 November: "Weapons Gain: On Hit: If
+## Sustained Recoil is 5, consume all to double damage dealt. Otherwise, gain 1 Sustained Recoil"):
+## every weapon hit stacks one; the hit that finds five deals double and consumes them all, the die
+## and the bot reading it doubled; equipment stacks none, and the store goes with the fight.
+func test_sustained_recoil_stacks_a_weapon_hit_and_the_hit_that_finds_five_doubles() -> void:
+	var gun := Face.attack(10, L)
+	var probe := Face.attack(0, I, [K.EXPOSE])
 	var sk := Skirmish.new(1)
-	var torch := Face.attack(10, L, [K.ABLATE])
-	var u := _mech("A", Die.of([torch, Face.vent(10)]), 40, 100)
-	u.grant_passive({"id": "test_third", "name": "Third", "description": "", "effects": [
-		{"trigger": "on_attack", "effect": "multiply_damage", "value": 2, "when": "nth_shot", "every": 3},
-		{"trigger": "on_attack", "effect": "multiply_stacks", "value": 2, "when": "nth_shot", "every": 3}]})
+	var u := _mech("A", Die.of([gun, probe, Face.buff("ward")]), 40, 100)
+	u.grant_passive(RECOIL)
 	sk.add_mech(u)
-	var g := _ghoul(500, 1)
+	var g := _ghoul(500, 0)
 	sk.add_foes([g])
 	sk.begin()
 	var ms: Skirmish.MechState = sk.mechs[0]
-	assert_eq(Effects.counts_shots(u), 3, "the machine counts every third")
-	for k in range(2):
+	assert_eq(Effects.store_cap(u, "sustained_recoil"), 5, "it holds five")
+	var spend := func(at: int, target) -> int:
 		sk.start_round()
-		ms.face_index = 0
-		sk.assign(0, g)
+		ms.face_index = at
+		var was := g.hp
+		assert_true(sk.assign(0, target), "entry %d spent" % at)
 		sk.end_round()
-	assert_eq(Effects.stacks_of(u, "shots"), 2, "two shots counted")
+		return was - g.hp
+	for k in range(4):
+		assert_eq(spend.call(0, g), 10, "hit %d plain" % (k + 1))
+	assert_eq(Effects.stacks_of(u, "sustained_recoil"), 4, "four hits, four stacks")
+	spend.call(1, g)
+	spend.call(2, ms)
+	assert_eq(Effects.stacks_of(u, "sustained_recoil"), 4, "equipment, at a foe or on itself, stacks none")
+	assert_eq(spend.call(0, g), 10, "the fifth hit plain")
+	assert_true(Effects.charge_full(u), "five: the next hit doubles")
+	sk.start_round()
+	ms.face_index = 0
+	assert_eq(sk.shown_number_text(ms, ms.face(), g), "20", "the die shows it doubled")
+	assert_eq(Policy.make(Policy.GREEDY, 1).damage_outcomes(ms, gun, g), [[20.0, 1.0]], "and the bot prices it so")
+	var was := g.hp
+	assert_true(sk.assign(0, g), "the sixth")
+	assert_eq(was - g.hp, 20, "deals double")
+	assert_eq(Effects.stacks_of(u, "sustained_recoil"), 0, "and consumes them all")
+	assert_true("\n".join(sk.log).contains("Sustained Recoil discharges"), "the log says so")
+	sk.end_round()
+	_recoil(u, 3)
+	Effects.end_skirmish(u)
+	assert_eq(Effects.stacks_of(u, "sustained_recoil"), 0, "the store goes with the fight")
+
+
+## The doubling is the hit's, never the spend's (Ryan, 26 November: "it boosts the hit, not the whole
+## spend, and further hits in the same spend start counting again"): of three strikes on four stacks
+## the first fills it, the second doubles and empties it and the third counts again. An area's hits
+## count among them, in the order they land (the extra hits fire every event but the target's, the
+## standard's rule 33), and a Ricochet's hit, the Frame's, counts none.
+func test_sustained_recoil_doubles_one_hit_and_the_hits_after_it_count_again() -> void:
+	var twin := Face.attack(10, L)
+	twin.strikes = 3
+	var sk := Skirmish.new(1)
+	var u := _mech("A", Die.single(twin), 40, 100)
+	u.grant_passive(RECOIL)
+	sk.add_mech(u)
+	var g := _ghoul(500, 0)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	_recoil(u, 4)
+	assert_true(sk.assign(0, g), "three strikes on four stacks")
+	assert_eq(500 - g.hp, 10 + 20 + 10, "the first fills it, the second doubles and empties it, the third counts again")
+	assert_eq(Effects.stacks_of(u, "sustained_recoil"), 1, "one stack after")
+	var sweep := Face.attack(10, L, K.CLEAVE)
+	sweep.cleave = 4
+	var s2 := Skirmish.new(1)
+	var u2 := _mech("A", Die.single(sweep), 40, 100)
+	u2.grant_passive(RECOIL)
+	s2.add_mech(u2)
+	s2.add_foes([_ghoul(50, 0), _ghoul(50, 0), _ghoul(50, 0)])
+	s2.begin()
+	s2.start_round()
+	_recoil(u2, 4)
+	assert_true(s2.assign(0, s2.front[1]), "a Spread on four stacks")
+	assert_eq([50 - s2.front[1].hp, 50 - s2.front[0].hp, 50 - s2.front[2].hp], [10, 8, 4], "the target's hit fills it, its left's doubles, its right's counts again")
+	assert_eq(Effects.stacks_of(u2, "sustained_recoil"), 1, "one stack after")
+	var s3 := Skirmish.new(1)
+	var u3 := _mech("A", Die.single(Face.attack(10, L)), 40, 100)
+	u3.grant_passive(RECOIL)
+	s3.add_mech(u3)
+	var g3 := _ghoul(500, 0)
+	s3.add_foes([g3])
+	s3.begin()
+	s3.start_round()
+	Effects.stack(u3, Effects.STATUS["ricochet"], Effects.SKIRMISH, "test", 2, Effects.DECAY_NONE)
+	_recoil(u3, 4)
+	assert_true(s3.assign(0, g3), "a shot and two Ricochets on four stacks")
+	assert_eq(500 - g3.hp, 10 + 1 + 1, "the shot fills it; the Ricochets neither double nor count")
+	assert_eq(Effects.stacks_of(u3, "sustained_recoil"), 5, "full for the next")
+
+
+## A use that kills keeps the Spun Up it consumed where a passive says so (restore_on_kill: the
+## Cassowary's Quickdraw I, Ryan, 26 November: "Weapons Gain: On Kill: Restore Spun Up if consumed");
+## a use that kills nothing spends it as ever.
+func test_a_kill_restores_the_spun_up_its_weapon_consumed() -> void:
+	var sk := Skirmish.new(1)
+	var u := _mech("A", Die.single(Face.attack(10, L)), 40, 100)
+	u.grant_passive({"id": "test_quick", "name": "Quick", "description": "", "effects": [
+		{"trigger": "static", "effect": "restore_on_kill", "value": "spun_up"}]})
+	sk.add_mech(u)
+	var weak := _ghoul(5, 0)
+	var tough := _ghoul(500, 0)
+	sk.add_foes([weak, tough])
+	sk.begin()
+	sk.start_round()
+	Effects.grant_buff(u, "spun_up", 2, "buff", sk.round)
+	assert_true(sk.assign(0, weak), "a shot that kills")
+	assert_false(weak.alive(), "it falls")
+	assert_eq(Effects.stacks_of(u, "spun_up"), 2, "and the Spun Up stays")
+	assert_true("\n".join(sk.log).contains("the kill restores its Spun Up"), "the log says so")
+	sk.end_round()
+	sk.start_round()
+	var was := tough.hp
+	assert_true(sk.assign(0, tough), "a shot that kills nothing")
+	assert_eq(was - tough.hp, 10 + 2 * _rule("spun_up", "add_damage"), "the stacks still add")
+	assert_false(Effects.has(u, "spun_up"), "and are spent")
+
+
+## A keyword granted while its machine carries a status (a self_status condition: the Cassowary's
+## Quickdraw II, Ryan, 26 November: "Spun Up: Weapons Gain: Commit: Consume all stacks to gain +1
+## damage per stack ({N}) and Rapid"): while Spun Up its weapons are Rapid, so the use that consumes
+## it acts again; without it they are not, and equipment never is.
+func test_a_weapon_is_rapid_while_its_machine_is_spun_up() -> void:
+	var sk := Skirmish.new(1)
+	var gun := Face.attack(10, L)
+	var probe := Face.attack(0, I, [K.EXPOSE])
+	var u := _mech("A", Die.of([gun, probe, Face.attack(20, L)]), 40, 100)
+	u.grant_passive({"id": "test_draw", "name": "Draw", "description": "", "effects": [
+		{"trigger": "static", "effect": "grant_keyword", "value": "rapid", "weapon_only": true, "when": "self_status", "status": "spun_up"}]})
+	sk.add_mech(u)
+	var g := _ghoul(500, 0)
+	sk.add_foes([g])
+	sk.begin()
+	sk.start_round()
+	var ms: Skirmish.MechState = sk.mechs[0]
+	ms.face_index = 0
+	assert_false(Effects.effective_face(u, gun, g).has(K.RAPID), "no Spun Up, no Rapid")
+	Effects.grant_buff(u, "spun_up", 1, "buff", sk.round)
+	assert_true(Effects.effective_face(u, gun, g).has(K.RAPID), "Spun Up: Rapid")
+	assert_false(Effects.effective_face(u, probe, g).has(K.RAPID), "equipment never")
+	assert_true(sk.assign(0, g), "the shot")
+	assert_false(Effects.has(u, "spun_up"), "consumes it")
+	assert_false(ms.assigned, "and acts again")
+	assert_false(Effects.effective_face(u, gun, g).has(K.RAPID), "the next is plain again")
+
+
+## What holds at a count of a store the machine carries (a self_status condition with stacks: the
+## Cassowary's Deadeye I, Ryan, 26 November: "All weapons gain: Commit: If Sustained Recoil is 3 or
+## more, Ignore Armour and Barrier"), read as the use is committed.
+func test_weapons_ignore_armour_and_barrier_at_three_sustained_recoil() -> void:
+	for stacks in [2, 3]:
+		var sk := Skirmish.new(1)
+		var u := _mech("A", Die.of([Face.attack(10, L), Face.attack(0, I, [K.EXPOSE])]), 40, 100)
+		u.grant_passive({"id": "test_eye", "name": "Eye", "description": "", "effects": [
+			{"trigger": "static", "effect": "ignore_armour", "value": 1, "weapon_only": true, "when": "self_status", "status": "sustained_recoil", "stacks": 3},
+			{"trigger": "static", "effect": "ignore_barrier", "value": 1, "weapon_only": true, "when": "self_status", "status": "sustained_recoil", "stacks": 3}]})
+		sk.add_mech(u)
+		var plated := _ghoul(500, 0)
+		plated.armour = 4
+		var sheltered := _ghoul(500, 0)
+		sk.add_foes([plated, sheltered])
+		sk.begin()
+		sk.start_round()
+		var ms: Skirmish.MechState = sk.mechs[0]
+		_recoil(u, stacks)
+		var through: bool = int(stacks) >= 3
+		var face := Effects.effective_face(u, ms.die.faces[0], plated)
+		assert_eq(face.ignores_armour, through, "%d stacks: armour %s" % [stacks, "ignored" if through else "met"])
+		assert_eq(face.ignores_barrier, through, "%d stacks: a Barrier %s" % [stacks, "ignored" if through else "met"])
+		assert_false(Effects.effective_face(u, ms.die.faces[1], plated).ignores_barrier, "equipment never")
+		ms.face_index = 0
+		assert_true(sk.assign(0, plated), "a shot at the plated foe")
+		assert_eq(500 - plated.hp, 10 if through else 6, "its armour %s" % ("ignored" if through else "met"))
+		sk.end_round()
+		sk.start_round()
+		Effects.stack(sheltered, Effects.STATUS["barrier"], Effects.ROUNDS, "test", 1, Effects.DECAY_NONE, sk.round)
+		ms.face_index = 0
+		assert_true(sk.assign(0, sheltered), "a shot at the sheltered foe")
+		assert_eq(500 - sheltered.hp, 10 if through else 0, "its Barrier %s" % ("ignored" if through else "takes it"))
+
+
+## A stack at every use's Resolve (on_use: the Cassowary's Deadeye II, Ryan, 26 November: "All
+## Components gain: Resolve: Gain 1 Sustained Recoil"), whatever the component, after its hits, and
+## never past its store's most; a blank entry is no use.
+func test_every_use_gains_a_stack_at_its_resolve_up_to_the_store() -> void:
+	var sk := Skirmish.new(1)
+	var u := _mech("A", Die.of([Face.attack(10, L), Face.buff("ward"), Face.blank()]), 40, 100)
+	u.grant_passive(RECOIL)
+	u.grant_passive({"id": "test_resolve", "name": "Resolve", "description": "", "effects": [
+		{"trigger": "on_use", "effect": "stack_status", "value": "sustained_recoil"}]})
+	sk.add_mech(u)
+	var g := _ghoul(500, 0)
+	sk.add_foes([g])
+	sk.begin()
+	var ms: Skirmish.MechState = sk.mechs[0]
 	sk.start_round()
 	ms.face_index = 1
-	sk.assign(0, ms)
-	assert_eq(Effects.stacks_of(u, "shots"), 2, "a vent is no shot")
+	assert_true(sk.assign(0, ms), "a buff")
+	assert_eq(Effects.stacks_of(u, "sustained_recoil"), 1, "equipment's Resolve: one")
 	sk.end_round()
 	sk.start_round()
 	ms.face_index = 0
-	assert_true(Effects.nth_shot_due(u), "the third is next")
-	assert_eq(sk.shown_number_text(ms, ms.face(), g), "20", "and the die shows it doubled")
-	var hp := g.hp
-	var burning := Effects.stacks_of(g, "ablating")
-	sk.assign(0, g)
-	assert_eq(hp - g.hp, 20, "its damage doubled")
-	assert_eq(Effects.stacks_of(g, "ablating") - burning, 2, "and its Ablate's stack laid twice")
-	assert_true("\n".join(sk.log).contains("the third shot counts double"), "the log says so")
-	assert_false(Effects.nth_shot_due(u), "the count runs on")
-	Effects.end_skirmish(u)
-	assert_eq(Effects.stacks_of(u, "shots"), 0, "and resets with the fight")
+	assert_true(sk.assign(0, g), "a shot")
+	assert_eq(Effects.stacks_of(u, "sustained_recoil"), 3, "its hit one, its Resolve one")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 2
+	sk.assign(0, null)
+	assert_eq(Effects.stacks_of(u, "sustained_recoil"), 3, "a blank is no use")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 0
+	_recoil(u, 1)
+	assert_true(sk.assign(0, g), "a shot on four")
+	assert_eq(Effects.stacks_of(u, "sustained_recoil"), 5, "its hit fills it; its Resolve adds nothing past five")
+	sk.end_round()
+	sk.start_round()
+	ms.face_index = 0
+	var was := g.hp
+	assert_true(sk.assign(0, g), "a shot on five")
+	assert_eq(was - g.hp, 20, "doubled")
+	assert_eq(Effects.stacks_of(u, "sustained_recoil"), 1, "consumed, then its Resolve's one")
 
 
 const DRUM_PASSIVE := {"id": "test_drum", "name": "Drum", "description": "", "effects": [

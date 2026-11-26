@@ -151,7 +151,7 @@ kit beside it. Claude's first cut, moved by his words where they stand above:
 
 | | Pieces | What happens |
 |---|---|---|
-| **Glue** | the Honey Badger's Chainsaw Claw and Bullion Fragmenter (his word); the Cassowary's Spin-Up (his word); the Kite's Pinion Driver; the Nemesis's Knuckle of Fury; the Ammit's Soulcutter Talons and its Soul Siphon (12 November, his rework: the piece that spends what its passive banks); the Buzzard's Shield-burner Cannon; the Funnel-web's Web Bomb; the Storm Petrel's Hardlight Pulse; the Dingo's Combat Translocator; the Lammergeier's Lorentz Contractor and Syrinx Drone | stay locked, and ride their machine's tier (section 5) |
+| **Glue** | the Honey Badger's Chainsaw Claw and Bullion Fragmenter (his word); the Cassowary's Negentropy Spinner (the Spin-Up, his word); the Kite's Pinion Driver; the Nemesis's Knuckle of Fury; the Ammit's Soulcutter Talons and its Soul Siphon (12 November, his rework: the piece that spends what its passive banks); the Buzzard's Shield-burner Cannon; the Funnel-web's Web Bomb; the Storm Petrel's Hardlight Pulse; the Dingo's Combat Translocator; the Lammergeier's Lorentz Contractor and Syrinx Drone | stay locked, and ride their machine's tier (section 5) |
 | **Kept locked, a tweak before any cut** | the Stingray's Photosphere Lance; the Skua's Flechette Pod; the Baboon's Solar Flare Array; the Prairie Dog's Flakshot Repeater; the Wild Boar's Breaching Plow; the Dingo's Megataser Harpoon | each a round in chat toward something nobody else has (section 4); a piece that finds none becomes an ordinary weapon |
 | **Their own sessions'** | the Polar Bear's, the Puffin's, the Whip Scorpion's, the Swallowtail's, the Musk Ox's, the Needletail's and the Giant Petrel's | sorted when each session designs them, on this footing |
 | **None, as it stands** | the Cottonmouth (hard to make one for, not counted out); the Clydesdale held none until its batteries (11 November: its Changeover, glue for its identity, the bible's Clydesdale row) | nothing owed |
@@ -353,6 +353,7 @@ reason and not only the idea:
    the stock rule done, 20 November (a basic a flag on tier one).
 5. Done, 20 November: the machine's tier in the engine and the saves, a standard lift of its stat
    lines (no locked piece rises with it, his word), the hangar's upgrade verb. Still to come: the
-   branches as content proposed in chat, chassis by chassis (the Honey Badger's and the Prairie
-   Dog's built); each chassis's own lift once the scaling is in; the runner's rows at each tier;
-   the upgrade's price with the economy pass.
+   branches as content proposed in chat, chassis by chassis (the Honey Badger's, the Prairie
+   Dog's and the Cassowary's built, the Cassowary's with his redesign of 26 November; the
+   Clydesdale a tier one since then, its two picks to propose); each chassis's own lift once the
+   scaling is in; the runner's rows at each tier; the upgrade's price with the economy pass.

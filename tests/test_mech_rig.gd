@@ -1452,38 +1452,39 @@ func test_a_heat_glow_carries_its_machines_heat_in_its_colour_and_its_light() ->
 
 func test_a_count_display_lights_its_first_parts_and_a_fall_flares_them() -> void:
 	# The Cassowary's capacitor (Ryan, 2 November: "charging up for the sixth hit of its passive"):
-	# a cell lights for each counted shot, and the sixth shot, the one that counts double,
-	# discharges them, all six flaring and going dark. Headless the cells have no lit surfaces, so
-	# their light is read off the display itself.
+	# a cell lights for each stack of Sustained Recoil, five at its most, and the hit that finds
+	# five, the one its Syntropy Cylinder doubles, discharges them, all six flaring and going dark
+	# (Ryan, 26 November). Headless the cells have no lit surfaces, so their light is read off the
+	# display itself.
 	var pair := _rig_for("cassowary", 2)
 	var rig: MechRig = pair[0]
 	assert_eq(rig.count_displays.size(), 1, "one count display")
 	var d: Dictionary = rig.count_displays[0]
-	assert_eq(str(d["source"]), "shots", "showing the counted shots")
+	assert_eq(str(d["source"]), "sustained_recoil", "showing its Sustained Recoil")
 	assert_eq((d["parts"] as Array).size(), 6, "on six cells")
 	var on := float(d["on"])
 	var off := float(d["off"])
 	var flare := float(d["flare"])
 	assert_true(flare > on and on > off, "a flare brighter than a charged cell, a charged one brighter than a spent one")
-	var lit := func(i: int) -> float: return rig.count_light("shots", i)
+	var lit := func(i: int) -> float: return rig.count_light("sustained_recoil", i)
 	var settle := func(seconds: float) -> void:
 		var t := 0.0
 		while t < seconds:
 			rig.tick(1.0 / 60.0)
 			t += 1.0 / 60.0
 	for i in range(6):
-		assert_eq(lit.call(i), off, "dark before anything is counted (cell %d)" % (i + 1))
-	assert_true(rig.show_counts({"shots": 2}), "the first look")
+		assert_eq(lit.call(i), off, "dark before anything is stacked (cell %d)" % (i + 1))
+	assert_true(rig.show_counts({"sustained_recoil": 2}), "the first look")
 	assert_eq([lit.call(0), lit.call(1), lit.call(2)], [on, on, off], "shows its number as it stands")
-	assert_false(rig.show_counts({"shots": 2}), "the same number changes nothing")
+	assert_false(rig.show_counts({"sustained_recoil": 2}), "the same number changes nothing")
 	assert_false(rig.show_counts({"ammo": 9}), "nor a number it does not show")
-	assert_true(rig.show_counts({"shots": 5}), "three shots more")
+	assert_true(rig.show_counts({"sustained_recoil": 5}), "three hits more")
 	settle.call(0.05)
 	assert_true(lit.call(2) > off and lit.call(2) < on, "a cell lights over a moment (%f)" % lit.call(2))
 	settle.call(0.6)
-	assert_eq(rig.count_shown("shots"), 5, "five lit")
-	assert_eq([lit.call(4), lit.call(5)], [on, off], "the sixth dark: the next shot is the one that counts")
-	assert_true(rig.show_counts({"shots": 0}), "the sixth shot")
+	assert_eq(rig.count_shown("sustained_recoil"), 5, "five lit")
+	assert_eq([lit.call(4), lit.call(5)], [on, off], "the sixth dark: the next hit is the one that doubles")
+	assert_true(rig.show_counts({"sustained_recoil": 0}), "the hit that doubles")
 	for i in range(6):
 		assert_eq(lit.call(i), flare, "flares every cell (%d)" % (i + 1))
 	settle.call(0.3)
@@ -1491,22 +1492,22 @@ func test_a_count_display_lights_its_first_parts_and_a_fall_flares_them() -> voi
 	settle.call(2.0)
 	for i in range(6):
 		assert_eq(lit.call(i), off, "dark again (cell %d)" % (i + 1))
-	assert_true(rig.show_counts({"shots": 9}) and rig.count_shown("shots") == 6, "a number past its cells lights them all")
+	assert_true(rig.show_counts({"sustained_recoil": 9}) and rig.count_shown("sustained_recoil") == 6, "a number past its cells lights them all")
 	# RIFTGATE_COUNT_DEBUG counts it up a cell a second until it falls, to judge it running.
-	rig.show_counts({"shots": 0})
+	rig.show_counts({"sustained_recoil": 0})
 	rig.count_debug = true
 	settle.call(1.05)
-	assert_eq(rig.count_shown("shots"), 1, "the switch counts a cell a second")
+	assert_eq(rig.count_shown("sustained_recoil"), 1, "the switch counts a cell a second")
 	settle.call(6.0)
-	assert_eq(rig.count_shown("shots"), 0, "past its last cell it falls")
+	assert_eq(rig.count_shown("sustained_recoil"), 0, "past its last cell it falls")
 	pair[1].free()
 	var plain := _rig_for("clydesdale", 2)
-	assert_false((plain[0] as MechRig).show_counts({"shots": 3, "ammo": 3}), "a model with no display shows nothing")
+	assert_false((plain[0] as MechRig).show_counts({"sustained_recoil": 3, "ammo": 3}), "a model with no display shows nothing")
 	plain[1].free()
 
 
 func test_a_spin_is_held_while_the_machine_carries_its_status() -> void:
-	# The Cassowary's capacitor turns while it is Spun Up, the status its Spin-Up grants (Ryan, 2
+	# The Cassowary's capacitor turns while it is Spun Up, the status its Negentropy Spinner grants (Ryan, 2
 	# November: "It could spin for the spin up component"): up to speed as the status lands, run
 	# down and still once it is spent.
 	var pair := _rig_for("cassowary", 2)
@@ -1559,14 +1560,14 @@ func test_every_count_display_and_held_spin_names_what_the_game_passes() -> void
 		for status in (side.get("spin_held", {}) as Dictionary).keys():
 			assert_true(Effects.STATUS.has(str(status)), "%s: its spin is held by %s, a status the game lays" % [id, status])
 	var u := Unit.mech(0, "A", Vector2i.ZERO)
-	u.grant_passive({"id": "test_count", "name": "Count", "description": "", "effects": [{"trigger": "on_attack", "effect": "multiply_damage", "value": 2, "when": "nth_shot", "every": 6}]})
-	Effects.stack(u, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 7, Effects.DECAY_NONE)
+	u.grant_passive({"id": "test_charge", "name": "Charge", "description": "", "effects": [{"trigger": "static", "effect": "hit_charge", "value": "sustained_recoil", "cap": 5, "times": 2}]})
+	Effects.stack(u, Effects.STATUS["sustained_recoil"], Effects.SKIRMISH, "charge", 4, Effects.DECAY_NONE)
 	var ms := Skirmish.MechState.new()
 	ms.unit = u
 	ms.ammo = 3
 	var values := MechView3D.count_values(ms)
 	assert_eq(values.keys(), MechRig.COUNT_SOURCES, "every source the displays may show, and no other")
-	assert_eq(values, {"shots": 1, "ammo": 3}, "the shots toward the next that counts (seven shots, a sixth counted: one), the magazine")
+	assert_eq(values, {"sustained_recoil": 4, "ammo": 3}, "the Sustained Recoil its weapon hits have stacked, the magazine")
 
 
 func test_the_cassowary_plants_its_toes_and_rolls_onto_them() -> void:

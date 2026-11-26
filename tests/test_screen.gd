@@ -2171,23 +2171,33 @@ func test_the_barrier_and_the_ward_wear_chips_and_a_dark_entry_counts_its_rounds
 
 
 ## A stepping die (the Cassowary's, 21 October) shows its next chamber on the die and in the
-## hold, and a machine that counts its shots shows the count as cells under the heat bar, the last marked.
-func test_a_stepping_die_shows_its_next_chamber_and_its_shot_count() -> void:
+## hold, and the store its weapon hits charge (its Sustained Recoil, 26 November) is a bar of five
+## cells under the heat, glowing and pulsing whole while full, never a chip.
+func test_a_stepping_die_shows_its_next_chamber_and_its_charge_bar() -> void:
 	var s := _screen()
 	var ms: Skirmish.MechState = s.sk.mechs[0]
 	ms.unit.grant_passive({"id": "test_step", "name": "Step", "description": "", "effects": [
-		{"trigger": "static", "effect": "step_die", "value": 1},
-		{"trigger": "on_attack", "effect": "multiply_damage", "value": 2, "when": "nth_shot", "every": 6}]})
-	Effects.stack(ms.unit, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 5, Effects.DECAY_NONE)
+		{"trigger": "static", "effect": "step_die", "value": 1}]})
+	var charged: Skirmish.MechState = s.sk.mechs[1]
+	charged.unit.grant_passive({"id": "test_charge", "name": "Charge", "description": "", "effects": [
+		{"trigger": "static", "effect": "hit_charge", "value": "sustained_recoil", "cap": 5, "times": 2}]})
+	Effects.stack(charged.unit, Effects.STATUS["sustained_recoil"], Effects.SKIRMISH, "charge", 4, Effects.DECAY_NONE)
 	s._refresh()
 	var n := ms.die.faces.size()
 	assert_true(s._dice[0].next_face != null, "the die carries its next chamber")
 	assert_eq(s._dice[0].next_face.kind, ms.die.faces[(ms.face_index + 1) % n].kind, "the one it steps to")
-	assert_eq(s._mech_views[0].pips, [5, 6], "five shots of six: the sixth is next")
-	for r in s._mech_rows(0):
-		assert_false(str(r[2]).begins_with("Shots"), "the count is cells under the heat, never a chip")
+	var bar: Array = s._mech_views[1].store
+	assert_eq([int(bar[0]), int(bar[1]), bool(bar[4])], [4, 5, true], "four of five cells lit, on a bar that glows when full")
+	assert_false(s._mech_views[1]._store_glows(), "four is not full: no glow")
+	Effects.stack(charged.unit, Effects.STATUS["sustained_recoil"], Effects.SKIRMISH, "charge", 1, Effects.DECAY_NONE)
+	s._refresh()
+	assert_eq(int(s._mech_views[1].store[0]), 5, "five lit")
+	assert_true(s._mech_views[1]._store_glows(), "and the whole bar glows: the next hit doubles")
+	assert_true(s._mech_views[1]._has_pending(), "and pulses, the view drawing on")
+	for r in s._mech_rows(1):
+		assert_false(str(r[2]).begins_with("Sustained Recoil"), "the store is its bar, never a chip")
 	assert_true(s._dice[1].next_face == null, "a die that rolls shows none")
-	assert_true(s._mech_views[1].pips.is_empty(), "nor a count's cells")
+	assert_true(s._mech_views[2].store.is_empty(), "nor a store the machine has none of")
 	# A tap shows the entry alone, no cylinder (Ryan, 24 November: "single tap on the cassowary die
 	# doesn't need to show the whole circle"); the double-tap's whole die keeps it.
 	s._on_die_tapped(0)

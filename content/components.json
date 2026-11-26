@@ -1423,15 +1423,16 @@
   },
   {
    "id": "spin_up",
-   "name": "Spin-Up",
+   "name": "Negentropy Spinner",
    "maker": "wainwright_sutler",
    "shape": "none",
    "codex": "",
    "flavour": "",
    "design": {
     "stage": "draft",
-    "fantasy": "The cylinder's motor. Ryan, 18 October: \"spin the barrel, rapid, no cooldown, next component gets +5 damage or something\"; the drum spins up and the next shot leaves hotter, a minigun's spin-up inside a revolver's cylinder.",
-    "niche": "The Cassowary's locked combo piece: no damage, Instant with no cooldown, no heat and no Volatile (Rapid with a spin of its own until 12 November, when Ryan made the roll that may land on itself a keyword: \"the rapid no cooldown pieces change to a new keyword: Instant (reroll after use, can land on itself)\"), its roll a true spin of the cylinder over every chamber, itself included; each spin grants a stack of Spun Up for the next weapon spend, carried between turns. Its limiter is the cylinder and its odds: its spin lands on itself one time in six, to be spent again (Ryan, 19 October: \"I think we can allow the high-roll for the revolver spin, landing on itself, as an exception to the global rule\"), a fifth of a spin more a spend on average, each a stack of Spun Up; every other way back to it in a round runs through the other chambers' switch-offs or the team's rerolls. The chase: spin into a Rapid piece into the Spin-Up into the big gun."
+    "fantasy": "The cylinder's motor, turning it on by the count rather than at random (Ryan, 26 November: the Spin-Up's spin \"fights against the rest of the machine, which is about breaking the random die rule in favour of determinism\"). His pitch of 18 October stands in the Spun Up it grants: the drum spins up and the next shot leaves hotter.",
+    "niche": "The Cassowary's Integrated combo piece: no damage, Instant, no heat. Each use grants a stack of Spun Up and moves the cylinder by the Sustained Recoil count, at least 1, in place of its roll, never back onto itself, so where it lands is the count's: at five, the last hardpoint, the doubled hit's place. A reroll steps the cylinder back onto it, the one way it comes round again in a turn, so its chain is bounded by the team's rerolls.",
+    "notes": "Ryan, 26 November, in the Spin-Up's place: \"Negentropy Spinner: Instant. Gain 1 Spun Up. Advance components a number of places equal to current Sustained Recoil ({N}): {put resulting component here}\"; its math his of the same day, the move exactly the count, at least 1, in place of Instant's own roll, so it never lands back on itself. The id stays spin_up, which the model's rig keys its charge act to."
    },
    "face": {
     "kind": "buff",
@@ -1440,7 +1441,8 @@
     "targets": "self",
     "keywords": [
      "instant"
-    ]
+    ],
+    "advances_by": "sustained_recoil"
    },
    "passive": null,
    "tags": []

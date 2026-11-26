@@ -173,6 +173,9 @@ var spends_up_to: int = 0     # ...the most it spends, and so the most it grants
 var passes_heat: bool = false  # a buff on an ally: its machine's whole heat, its overheat with it, passes onto the ally it is spent on, past that ally's maximum too...
 var heat_per_stack: int = 0    # ...and the ally gains a stack of its status for every this many heat passed, rounded down (2); buff_stacks holds what it would grant now on the die as shown (Skirmish.shown_face)
 var holds_all: String = ""    # any entry: once it is spent, no unit's stacks of this status run down at this round's end, either side's (Skirmish.round_holds)
+var advances_by: String = ""  # a buff on a stepping die: the store whose stacks it moves the cylinder by, at least 1, in place of its own roll (the Cassowary's Negentropy Spinner, Ryan, 26 November: "Advance components a number of places equal to current Sustained Recoil")
+var advance_now: int = -1     # shown only: the places it would move now, and...
+var advance_onto: String = "" # ...the component it would land on (Skirmish.shown_face), for its readout's line; -1 and "" off a fight
 var empties_hopper: bool = false   # an attack: spent, it empties its machine's hopper and strikes once for every Ore it empties, a dead entry while the hopper is empty; it puts no Ore in (the Bullion Fragmenter, Ryan, 20 November)
 var braces: int = 0           # any entry: spending it Armours its owner, this many stacks, until its side's next turn begins (the Breaching Plow, 12 October)
 var cooldown: int = -1        # any entry: the rounds it sits out once spent, after the round of the spend (Ryan, 14 October; counted so since 12 November: "change the count so 1 is how I intended"), printed on it; -1 or 0, none (Rapid's own switch-off is the keyword's, never printed)
@@ -407,6 +410,7 @@ static func from_dict(d: Dictionary) -> Face:
 	f.shield_cost = maxi(0, int(d.get("shield_cost", 0)))
 	f.cooldown = maxi(0, int(d["cooldown"])) if d.has("cooldown") else -1
 	f.turns_die = bool(d.get("turns_die", false)) and f.kind == Kind.BUFF
+	f.advances_by = str(d.get("advances_by", "")) if f.kind == Kind.BUFF else ""
 	f.team_rerolls = maxi(0, int(d.get("team_rerolls", 0))) if f.kind == Kind.BUFF else 0
 	f.gathers_mines = bool(d.get("gathers_mines", false)) and f.kind == Kind.ATTACK
 	f.detonates = bool(d.get("detonates", false)) and f.kind == Kind.ATTACK
@@ -528,6 +532,8 @@ func to_dict() -> Dictionary:
 		d["cooldown"] = cooldown
 	if turns_die:
 		d["turns_die"] = true
+	if not advances_by.is_empty():
+		d["advances_by"] = advances_by
 	if team_rerolls > 0:
 		d["team_rerolls"] = team_rerolls
 	if gathers_mines:
@@ -646,7 +652,7 @@ func acts_again() -> bool:
 ## (3 November), so none of them is.
 func has_unique_rule() -> bool:
 	return vents_all or spends_shield or power_per_missing > 0 or finisher > 1 or not gates.is_empty() or not consumes.is_empty() or not holds.is_empty() or not front_status.is_empty() or disrupts_attackers or self_ablate > 0 or self_vent > 0 or ignores_armour or ignores_ward or ignores_barrier or swaps or webs or spills or empties_hopper or braces > 0 \
-		or turns_die or team_rerolls > 0 or gathers_mines or detonates \
+		or turns_die or not advances_by.is_empty() or team_rerolls > 0 or gathers_mines or detonates \
 		or fills_shield or cools_all or act_again or not charged.is_empty() \
 		or ammo_per_foe_hit > 0 or spends_magazine \
 		or not self_statuses.is_empty() or action_price > 0 or rolls_target or kill_rerolls > 0 \
@@ -796,6 +802,9 @@ func duplicate_face() -> Face:
 	f.braces = braces
 	f.cooldown = cooldown
 	f.turns_die = turns_die
+	f.advances_by = advances_by
+	f.advance_now = advance_now
+	f.advance_onto = advance_onto
 	f.team_rerolls = team_rerolls
 	f.gathers_mines = gathers_mines
 	f.detonates = detonates
@@ -935,6 +944,8 @@ func rule_phrases() -> Array[String]:
 		if not self_statuses.is_empty():
 			out.append(_self_text())
 	else:
+		if not advances_by.is_empty():
+			out.append(advance_text())
 		if team_rerolls > 0:
 			out.append(Templates.say("rule.team_rerolls", {"n": team_rerolls}))
 		if action_price > 0:
@@ -954,6 +965,14 @@ func rule_phrases() -> Array[String]:
 	if not charged.is_empty():
 		out.append(Templates.say("rule.charged", {"cost": charge_cost_text(), "form": charged_form().describe()}))
 	return out
+
+
+## The Negentropy Spinner's rule: by its store's count, at least 1, and in a fight the places it
+## would move now and the component it lands on (Skirmish.shown_face).
+func advance_text() -> String:
+	if advance_now >= 0 and not advance_onto.is_empty():
+		return Templates.say("rule.advances_by", {"status": status_name(advances_by), "n": advance_now, "component": advance_onto})
+	return Templates.say("rule.advances_by_plain", {"status": status_name(advances_by)})
 
 
 ## A status's name as the engine's table holds it (the vocabulary's word), so a rename follows.
@@ -1070,6 +1089,8 @@ func describe() -> String:
 				s += " " + Templates.say("entry.every_other_ally_unready" if not_acted else "entry.every_other_ally")
 			for k in keywords:
 				s += " " + keyword_label(k)
+			if not advances_by.is_empty():
+				s += " " + advance_text()   # the Negentropy Spinner's move, by its count
 			if action_price > 0:
 				s += " " + Templates.say("rule.action_price", {"n": action_price})   # the Immelmann Booster's ally use, after what it does on itself
 			if rolls_target:
