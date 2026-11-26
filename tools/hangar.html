@@ -1301,7 +1301,7 @@ function stepWords(st, onKiller) {
     case "revive_once": return `${vocabName("risen")}: gets back up once`;
     case "revive_once_ally": return `${vocabName("risen")} on one of its own`;
     case "summon": return `summons ${Number(st.count || 1)} × ${[].concat(st.foe || []).map(nm).join(" or ")}`;
-    case "rally": return `${vocabName("kindled")} ${v} on every foe`;
+    case "rally": return `${vocabName("overcharged")} ${v} on every foe`;
     case "prime": return `${vocabName("primed")} ${v} on every other foe`;
     case "ward_all": return "a Ward on every foe";
     case "merge": return `takes in every ${[].concat(st.foe || []).map(nm).join(", ")} on the field, +${v} a blow for each`;

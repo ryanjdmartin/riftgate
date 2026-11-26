@@ -474,9 +474,9 @@ func strikes() -> int:
 ##           brace_beside: Armoured, `value` stacks, on itself and every foe beside it in its rank
 ##           (Skirmish.foes_beside), on the same clock (the goblins' Shield Wall, 20 November:
 ##           "I said neighbors, not all"), so walls side by side add
-##           cleanse: every mark the team laid (Effects.TEAM_MARKS) off the most-marked of its
+##           cleanse: every mark the team laid and its stun (Effects.cleansed_marks) off the most-marked of its
 ##           own, itself included (Hallow, 28 October: the Marsh's lever); never Numbed, never
-##           Suppressed, never a buff
+##           a buff
 ##           barrier: a Barrier on itself, the next weapon blow it takes dealing nothing, until
 ##           popped or the end of the player's next turn (28 October)
 ##           regenerate: Regenerating `value` on itself, a regrowth at each of its next three

@@ -589,8 +589,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   machine's hit with a weapon on a foe carrying Cryo spends every stack and cools the hitter 1
   a stack, after the spend's own heat lands; equipment spends none.
 - **Suppress**: each foe hit is Suppressed; on a Numbed foe the stun strips a stack and lands
-  nothing; a Ward turns it away; one already suppressed for that action gains nothing more;
-  and a foe immune to it (An immunity, under Foes) takes none.
+  nothing; a Ward turns it away; one already suppressed for that action gains nothing more; a
+  foe's cleanse that comes first lifts it, so the foe acts; and a foe immune to it (An immunity,
+  under Foes) takes none.
 - **Shock**: every foe the hit reaches is Shocked after its blow, the ones it fells included, so
   a hit never spends its own Shock.
 - **Chain N**: as the use resolves, every foe on the field that conducts (a Shocked foe, or one
@@ -1520,8 +1521,9 @@ Ablate, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Expo
   jam, purge (Purge N: N stacks off every buff, for good, whatever
   granted it; the Djinn's Unmake at 1; never a last act's), cleanse
   (every mark the team laid, Ablate, Brittle, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox
-  and a Mine, off the most-marked of its own, itself included, the first in strike order on
-  a tie; never Numbed, never Suppressed; cast where one of its own carries a mark), barrier (a
+  and a Mine, and its stun, Suppressed, off the most-marked of its own, itself included, the
+  first in strike order on a tie, so a cleanser who acts before a stunned ally frees it to act;
+  never Numbed; cast where one of its own carries a mark), barrier (a
   Barrier on itself), phase (the wait for Phased on itself: Phased, above), regenerate (Regenerating, its value in stacks, on itself), ward all (a Ward on
   every foe on the field, itself included), prime (Primed, its value in stacks, on every other foe on the
   field, at once), swallow (its machine Swallowed for its rounds, never the last machine in the

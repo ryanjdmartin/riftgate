@@ -512,7 +512,7 @@ const STATUS := {
 	# his four places; a machine's at the round's end and a foe's at END TURN until then, neither
 	# a blow apart). A foe's (28 October), from its own specials, reads in
 	# its own words (foe_barrier, foe_ward): its Barrier pops on a weapon's blow alone, and its
-	# Ward turns the team's marks (TEAM_MARKS, turns_mark), Suppressed excepted.
+	# Ward turns the team's marks (TEAM_MARKS, turns_mark), and a stun and a Purge (2 November).
 	"barrier": {"id": "barrier", "name": "Barrier", "description": "The next blow a foe lands on it deals no damage; its riders land. Until its next turn starts.", "stacking": "renew", "single": true, "decay": "round",
 		"tags": ["buff"], "effects": []},
 	# Regenerating (28 October; one clock on both sides since 15 November, Ryan's mark: "These
@@ -663,13 +663,13 @@ static func foe_barrier() -> Dictionary:
 
 static func foe_ward() -> Dictionary:
 	var d: Dictionary = STATUS["ward"].duplicate(true)
-	d["description"] = "No mark the team lays lands on it but Suppressed: no Ablating, Brittle, Cryo, Vitriol, Shock, Expose, Web Bomb, Paradox or drone. Damage lands. Until its next turn starts."
+	d["description"] = "No mark the team lays lands on it, no stun and no Purge: no Ablating, Brittle, Cryo, Vitriol, Shock, Expose, Web Bomb, Paradox or drone. Damage lands. Until its next turn starts."
 	return d
 
 
 ## Does a Ward turn this mark away (28 October)? A foe under a Ward takes none of the team's
-## marks (TEAM_MARKS), Suppressed excepted, since Numbed stays the one stun resistance; a mark
-## id only ever lands on a foe, so a machine's Ward is never asked.
+## marks (TEAM_MARKS), and no stun either (Skirmish._suppress meets the Ward on its own path, 2
+## November); a mark id only ever lands on a foe, so a machine's Ward is never asked.
 static func turns_mark(u, id: String) -> bool:
 	return TEAM_MARKS.has(id) and has(u, "ward")
 
@@ -3017,9 +3017,9 @@ static func purge(u, n: int = 1) -> Array[String]:
 	return out
 
 
-## The marks the team lays on foes (28 October), what a foe's cleanse takes off its own: never
-## Numbed (the buff nothing removes), never Suppressed (so a stun stays sure), never Guarded or a
-## buff.
+## The marks the team lays on foes (28 October), what a Ward turns away (a stun it turns in
+## Skirmish._suppress): never Numbed (the buff nothing removes), never Guarded or a buff. A foe's
+## cleanse takes these and the stun (cleansed_marks, 26 November).
 const TEAM_MARKS := ["ablating", "brittled", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine", "pinned", "seared", "sapped", "applied_momentum", "frozen_momentum", "heated_momentum", "frozen", "sonic_needle"]
 
 
@@ -3032,10 +3032,26 @@ static func team_marks(u) -> int:
 	return n
 
 
-## A foe's cleanse: every mark the team laid on it goes. Returns the names that went.
+## What a foe's cleanse takes off its own: every mark the team laid and the stun (Ryan, 26 November:
+## "Change the cleanse to remove suppress, I never approved that"), so a cleanser who acts before a
+## stunned ally frees it to act. Numbed is a buff and stays; the Ward's marks stay TEAM_MARKS.
+static func cleansed_marks() -> Array:
+	return TEAM_MARKS + ["suppressed"]
+
+
+## How many of what a foe's cleanse takes this unit carries: whom a cleanser picks.
+static func cleanse_marks(u) -> int:
+	var n := 0
+	for id in cleansed_marks():
+		if has(u, id):
+			n += 1
+	return n
+
+
+## A foe's cleanse: every mark the team laid on it goes, and its stun. Returns the names that went.
 static func clear_marks(u) -> Array[String]:
 	var gone: Array[String] = []
-	for id in TEAM_MARKS:
+	for id in cleansed_marks():
 		if has(u, id):
 			remove(u, id)
 			gone.append(str(STATUS[id]["name"]))

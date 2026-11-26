@@ -566,7 +566,8 @@ def lints(s, planned_terms):
     for b in re.findall(r"\{([a-z_]+)\}", t):
         if b not in allowed:
             out.append("{%s} is filled by nothing here" % b)
-    if t != t.strip() or "  " in t:
+    # A grant's block line opens on two spaces (text standard, rule 41), drawn in beside a bar.
+    if t != t.strip() or "  " in re.sub(r"(?m)^  (?=\S)", "", t):
         out.append("stray spaces")
     if s["kind"] != "term":
         for name in planned_terms:

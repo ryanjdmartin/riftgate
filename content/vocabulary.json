@@ -553,10 +553,10 @@
    "id": "cleanse",
    "category": "keyword",
    "name": "Cleanse",
-   "codex": "Resolve: Remove every Debuff from the target, except those that cannot be cleansed.\nA Sprite's Cleanse removes every Debuff but Suppressed.",
+   "codex": "Resolve: Remove every Debuff from the target, except those that cannot be cleansed.",
    "status": "implemented",
    "design": {
-    "holes": ""
+    "holes": "A Sprite's Cleanse lifts Suppressed too since 26 November (Ryan: \"Change the cleanse to remove suppress, I never approved that\"), so its line says no more than a Frame's. Cleanse and Purge stay two effects (his the same day: \"Keep cleanse and purge seperate, I was confused\")."
    }
   },
   {
@@ -643,13 +643,13 @@
    "id": "overcharged",
    "category": "status",
    "name": "Empowered",
-   "codex": "Weapons Gain:\n  Hit: +1 damage dealt per stack ({N}).\nTurn End: Reduce stacks by half, rounded down.",
+   "codex": "Attacks Gain:\n  Hit: +1 damage dealt per stack ({N}).\nTurn End: Reduce stacks by half, rounded down.",
    "status": "implemented",
    "design": {
-    "holes": "Every grant is one status on the machine and the stacks add up. A halving rule has no duration, so a buff component grants stacks and no rounds. The name is a placeholder. It halves at END TURN since 16 November (Ryan: \"Empowered should decay at the end of turn, clearly, not end of round\"), so what a machine gains in the enemy's turn it carries whole into its next; at the round's end until then.",
+    "holes": "Every grant is one status on the machine and the stacks add up. A halving rule has no duration, so a buff component grants stacks and no rounds. The name is a placeholder. It halves at END TURN since 16 November (Ryan: \"Empowered should decay at the end of turn, clearly, not end of round\"), so what a machine gains in the enemy's turn it carries whole into its next; at the round's end until then. One term for both sides since 26 November (Ryan: \"'Both' empowereds? There should be only one.\"): the foes' Empowered, the engine's kindled (an add on a foe's attack where a machine's is an add on its attack's damage), reads as this entry (Terms.ALIASES).",
     "table": {
      "kind": "buff",
-     "on": "machine",
+     "on": "both",
      "stacks": "Yes: a damage point a stack",
      "lasts": "Halves as its turn ends, rounded down, until gone"
     }
@@ -2196,22 +2196,6 @@
      "on": "foe",
      "stacks": "Renews: a timer, one rage at a time",
      "lasts": "Laid as its turn ends, a stack going as each of its turns ends, ended early by a quarter of its HP lost or a Suppress"
-    }
-   }
-  },
-  {
-   "id": "kindled",
-   "category": "status",
-   "name": "Empowered",
-   "codex": "Attacks Gain:\n  Hit: +1 damage dealt per stack ({N}).\nTurn End: Reduce stacks by half, rounded down.",
-   "status": "implemented",
-   "design": {
-    "holes": "One clock on both sides since 4 November (Ryan: \"we try and make it work. If it's unbalanceable, we go back to separate keywords with different clocks\"); the next-move clock of 26 October retired. A rally says 2 at the least since 16 November (Ryan: \"Buffs and debuffs that decay at end of round should just have a minimum of 2\"): one stack halved to none before its rallier's next blow. His exit, for a move several foes may roll at once: \"apply 2 if none, otherwise 1\".",
-    "table": {
-     "kind": "buff",
-     "on": "foe",
-     "stacks": "Yes: each rally's value adds",
-     "lasts": "Halves as its turn ends, rounded down, until gone"
     }
    }
   },

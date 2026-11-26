@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 213 implemented, 5 planned, 0 idea.
+Status: 212 implemented, 5 planned, 0 idea.
 
 ## Damage
 
@@ -123,8 +123,7 @@ Cannot be used without Ore. | implemented |
 | **Destroy** | After Hit: If Hull damage was dealt, destroy the entry the target's die shows. | implemented |
 | **Corrupt** | Resolve: Apply {N} Corrupted per hit to the entry shown by each Frame hit. | implemented |
 | **Purge** | Resolve: Reduce stacks of every Buff on each unit hit by {N}. | implemented |
-| **Cleanse** | Resolve: Remove every Debuff from the target, except those that cannot be cleansed.
-A Sprite's Cleanse removes every Debuff but Suppressed. | implemented |
+| **Cleanse** | Resolve: Remove every Debuff from the target, except those that cannot be cleansed. | implemented |
 
 ## Status
 
@@ -150,7 +149,7 @@ Turn End: Reduce stacks to 0. | implemented |
 Exposed Sprites can be targeted regardless of reach.
 Sprites are forced to target an Exposed Frame at round start.
 Turn Start: Reduce stacks by 1. | implemented |
-| **Empowered** | Weapons Gain:
+| **Empowered** | Attacks Gain:
   Hit: +1 damage dealt per stack ({N}).
 Turn End: Reduce stacks by half, rounded down. | implemented |
 | **Sealed** | +3 Armour.
@@ -244,9 +243,6 @@ Lasts the skirmish. | implemented |
 Gain Suppressed upon losing 25% Max HP since the start of the effect.
 On Suppressed: Reduce stacks to 0.
 Turn End: Reduce stacks by 1. | implemented |
-| **Empowered** | Attacks Gain:
-  Hit: +1 damage dealt per stack ({N}).
-Turn End: Reduce stacks by half, rounded down. | implemented |
 | **Undying** | When defeated: Consumed to return with full HP, acting from next round. | implemented |
 | **Aloft** | Cannot be targeted or hit. Other statuses still count down.
 Removed when its gathered move lands. | implemented |
@@ -470,11 +466,12 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Golden Rage** (implemented): The Thunder Ape's (4 November); see Golden. Its weight is content's, 2 so it comes about a round in three while calm.
 - **Merge** (implemented): The King Gel's (30 October): every Gel, Bubble Gel, Metal Gel and half on the field. Content: effect merge, foe (an id or a list), value (the lift a foe taken in). A foe taken in leaves no last act and no split and is no kill of the team's; its pack's tally still counts it gone. It needs its kinds beside it, so the King Gel's escort is its own (an escort that names its boss).
 - **Purge** (implemented): One id, dispel, on both sides (28 October); numbered 2 November (Ryan: "lower everything by N and price accordingly", a softer answer to armour and damage stacking that prices cheap and common; the Null Field Emitter at Purge 2, a placeholder). One purge on either side (Effects.purge): N stacks off every buff, whatever granted it (Ryan, 8 November: "A stack is a stack, doesn't matter where it came from"); retired with it the purge by source of 28 October (a die entry's stacks gone for good, a store's, a form's or a passive's put to sleep until the player's turn), which he called cryptic. What the unit is, its form or its passive mechanic, is an Ability and no buff, so no purge reaches it (the same day).
+- **Cleanse** (implemented): A Sprite's Cleanse lifts Suppressed too since 26 November (Ryan: "Change the cleanse to remove suppress, I never approved that"), so its line says no more than a Frame's. Cleanse and Purge stay two effects (his the same day: "Keep cleanse and purge seperate, I was confused").
 - **Pinned** (implemented): Ryan, 11 November: "The Flak pin should be its own status that gets applied for one turn. I assume we're going to want a similar one for burning as well." Pinned Flak until 15 November, and what it holds Brittle since; the name is his ("Just \"Pinned.\"").
 - **Seared** (implemented): Ryan, 11 November: coded in beside Brittle's pin, "since the Mastema will want it as a fitted piece, if nothing else". No piece lays it yet. The name is his, 15 November: "Rename 'Seared.'"
 - **Sapped** (implemented): Ryan, 11 November: "I'd like to code in Weaken ... Weaken (debuff): Deals 1 less damage per stack with attacks ... Weaken can apply to both sides, it's not a bad soft CC from the foes to apply"; then "Weaken can change till after it's next turn then, instead of round end. Let's use Sapped." So a foe's Sapped laid in its turn reaches the machine's next attack.
 - **Exposed** (implemented): The id is exposure, since exposed names the formation word (and named an aim of the foes' until 17 November); a machine's is exposure_mech in the engine. The machine's half is Ryan's of 15 November, built 16 November: "all armour of all kinds"; "Exposed does not strip the petrel's resistant shield"; "keep the logic where enemies don't try and overkill. That helps keep it fair. So the whole field targets up until predicted death, then the rest pick intent targets as normal"; "Exposed sets the intents, everything after proceeds as normal"; "Lure wins". A session's reads where his words give none: a countdown's pick carried from the round before holds, and a machine out of reach (Phased as the round ended) draws nothing. Still his: whether a machine that stands Exposed may be marked again; built as no, so the whole field's fire comes every other round at most. The aim content called exposed went on 17 November with every aim of a foe's own. The machine's text is a session's draft, his to write.
-- **Empowered** (implemented): Every grant is one status on the machine and the stacks add up. A halving rule has no duration, so a buff component grants stacks and no rounds. The name is a placeholder. It halves at END TURN since 16 November (Ryan: "Empowered should decay at the end of turn, clearly, not end of round"), so what a machine gains in the enemy's turn it carries whole into its next; at the round's end until then.
+- **Empowered** (implemented): Every grant is one status on the machine and the stacks add up. A halving rule has no duration, so a buff component grants stacks and no rounds. The name is a placeholder. It halves at END TURN since 16 November (Ryan: "Empowered should decay at the end of turn, clearly, not end of round"), so what a machine gains in the enemy's turn it carries whole into its next; at the round's end until then. One term for both sides since 26 November (Ryan: "'Both' empowereds? There should be only one."): the foes' Empowered, the engine's kindled (an add on a foe's attack where a machine's is an add on its attack's damage), reads as this entry (Terms.ALIASES).
 - **Sealed** (implemented): One chip, renewing, never stacking: the armour it grants is tied to the form. The numbers are placeholders.
 - **Changed Over** (implemented): A working name and text, Claude's drafts of 11 November for Ryan to rewrite. One chip for the second battery, none for the first.
 - **Cryo** (implemented): Engine id cryoed, since the keyword holds cryo; the player reads Cryo on both.
@@ -576,7 +573,6 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Rebooting** (implemented): The reboot (Ryan, 13 November; folded in 15 November), a state of the machine and no status of the engine's table. A session's draft, his to write.
 - **Enraged** (implemented): The rage's value and the Nob's numbers are placeholders. Permanent for the fight, as built (Ryan, 4 November: "Nob permanent"; Claude's lean, since an elite's job is to make the player change plan). The rage is the foe's own from the start since 8 November: it was a Bellow, the Nob's opening move, so its first round fed nothing (Ryan: "It's not innate? ... That is so unbelievably incorrect").
 - **Golden** (implemented): Monster Hunter's Rajang by archetype, Ryan's read of 4 November (the golden rage "is a mode, not an attack ... a cycle that forces the player into a cycle of attack and defense, broken by a bold player with great timing"). Claude's translation: the window is the decision, shield through its rounds or burst a quarter of its HP through the extra plate to stagger it; the lost action is the bold play's pay, where the swallow's release loses none (the stun row's care; the exit if it reads as a free stun). The add is the move's value and the plate a point; numbers placeholders.
-- **Empowered** (implemented): One clock on both sides since 4 November (Ryan: "we try and make it work. If it's unbalanceable, we go back to separate keywords with different clocks"); the next-move clock of 26 October retired. A rally says 2 at the least since 16 November (Ryan: "Buffs and debuffs that decay at end of round should just have a minimum of 2"): one stack halved to none before its rallier's next blow. His exit, for a move several foes may roll at once: "apply 2 if none, otherwise 1".
 - **Aloft** (implemented): Ryan, 16 November: "I think the stoop can make it untargetable, yes. I don't think I'd call it phased though, it should still take damage from its riders, unlike phased. So it's different, should be a different buff, could be unique to the Roc for now if nothing else has that shape." And 17 November: "I'd say the roc doesn't get splashed while aloft." Content: aloft on a blow that gathers one round. Built on his second ruling as nothing new reaching it at all, with an aim or without, so equipment over every foe passes it by as a blast does and nothing breaks off a climb once it is up; what it carries is its own, a web and a Mine on it included. The name is a working one, his to change.
 - **Appropriated** (implemented): Ryan's mark of 15 November on the steal rider: "Doesn't need to be it's own rider. It grants Jammed on the target, and Gilgamesh gains Appropriated with the value. The ability should be renamed to Collect." Built 16 November as the first move written in steps: a blow that jams, then a step of its own (appropriate). His Ability, a count on his chip that follows what he holds (Ryan, the same day, of the purgeable buff a session had read from "gains": "I think Appropriated is a balance read. Maybe make it his ability, a number that fluctuates depending on what he's currently holding"). The swing is one strike at the piece's number, whatever strikes the piece had, and no keyword of the piece rides it. The steal rider and the foe's own field for what it held left the engine with it. The text is a session's draft.
 - **Swallowed** (implemented): Out of play, so everything it carries pauses (Ryan, 16 November: "Swallowed it's out of play so everything should pause"), where a Phased machine's ticks on: its Ablating, Scorched and Sapped wait, its Empowered and Brittle do not halve, its Regenerating pays nothing, it neither cools nor regenerates, a buff of its own holds nothing on the field (Essence Flare), and every timed status on it, a cooldown and a jam among them, moves a round later for each round's end it sits out: the rounds it sat out never came for it. Let go as its swallow's rounds run out, it is back before that round's end is read, the end it was owed from the round it was taken in; let go sooner, it goes on from where it stood. The swallow's own rounds run. It burns nothing while it is out and burns the turn it is back. A session's reads: an event of its fight still reaches it (a foe felled banks an Ammit's Essence), and a reboot it had begun before it was taken still recovers as the next round opens, the second half of a turn already given. Nothing cleanses it.

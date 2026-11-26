@@ -3228,6 +3228,16 @@ static func _cleanse_worth(f: Foe, sk: Skirmish) -> float:
 	return _marks_worth(sk.cleanse_target(f), sk)
 
 
+## What a stunned foe's move would threaten with its stun lifted, the stun a foe's cleanse takes
+## (26 November): its blow as _threat_now reads one, which reads nothing on a stunned foe; a
+## freed special counts nothing (a placeholder), so a freed cleanser is never read again.
+static func _freed_threat(f: Foe, sk: Skirmish) -> float:
+	if not f.intends() or not f.attacks():
+		return 0.0
+	var machines: int = sk.targetable_mechs().size() if f.hits_all() else 1
+	return float(sk.foe_blow(f) * f.strikes() * machines) + PRIMED_WORTH * float(Effects.stacks_of(f, "primed"))
+
+
 ## The team's marks on one foe, each at what laying it is worth: what a cleanse of it takes.
 static func _marks_worth(marked: Foe, sk: Skirmish) -> float:
 	if marked == null:
@@ -3237,10 +3247,12 @@ static func _marks_worth(marked: Foe, sk: Skirmish) -> float:
 		if not ms.assigned:
 			to_act.append(ms)
 	var worth := 0.0
-	for id in Effects.TEAM_MARKS:
+	for id in Effects.cleansed_marks():
 		if not Effects.has(marked, id):
 			continue
 		match id:
+			"suppressed":
+				worth += _freed_threat(marked, sk)   # the stun a cleanse would lift: the move it frees (26 November)
 			"shocked":
 				var best := 0.0
 				for ms in to_act:

@@ -1913,15 +1913,15 @@ func _barrier_eats(foe: Foe, weapon: bool) -> bool:
 
 
 ## The foe a cleanse lands on (28 October): the one on its side, itself included, carrying the
-## most of the team's marks (each status one), the first in strike order on a tie; null when
-## none carries one.
+## most of the team's marks and the stun (each status one; Effects.cleanse_marks), the first in
+## strike order on a tie; null when none carries one.
 func cleanse_target(f: Foe) -> Foe:
 	var best: Foe = null
 	var most := 0
 	for o in field_foes():
 		if not o.alive():
 			continue
-		var n := Effects.team_marks(o)
+		var n := Effects.cleanse_marks(o)
 		if n > most:
 			best = o
 			most = n
@@ -4616,8 +4616,9 @@ func _foe_acts(f: Foe, t: MechState, step: Dictionary = {}) -> void:
 					"" if taken.is_weapon() else ", a fake", Effects.STATUS["appropriated"]["name"], Effects.stacks_of(f, "appropriated")])
 		"cleanse":
 			# A foe's cleanse (28 October, the Marsh's lever: "debuffs are hard here"): every mark
-			# the team laid off the most-marked of its own, itself included; never Numbed, never
-			# Suppressed, never a buff.
+			# the team laid off the most-marked of its own, itself included, its stun too (Ryan,
+			# 26 November: "Change the cleanse to remove suppress, I never approved that"); never
+			# Numbed, never a buff.
 			# A cleanse that follows a heal in one move has the heal's patient (the Cleric's Cure,
 			# Ryan's yes of 17 November: "Cure heals 4, then cleanses the same foe").
 			var same: bool = not first and _mended != null and _mended.alive()

@@ -87,10 +87,13 @@ document's job and every command are in `README.md`.
   His list of 26 November is in: rule 41 (Hit By Weapon and On Weapon Hit where only a weapon's hit
   reads it, "Weapons Gain:", a rider naming each unit hit), Phased's tip his line and its sources
   "Round End: Gain Phased", Retaliate gone, the Text tab a card a term with a filter drawing its
-  matches alone; Purge on both sides and the Sprites' Cleanse on Suppressed wait on his answers.
-  The same day a grant became a block (his Sapped of 26 November): "Attacks Gain:" or "Weapons
-  Gain:" over lines indented two spaces, their events bare ("Hit:", "Resolve:"), drawn in the game
-  beside a bar; "On Hit" and "On Weapon Hit" are gone.
+  matches alone. The same day a grant became a block (his Sapped of 26 November): "Attacks Gain:"
+  or "Weapons Gain:" over lines indented two spaces, their events bare ("Hit:", "Resolve:"), drawn
+  in the game beside a bar; "On Hit" and "On Weapon Hit" are gone. Then Empowered became one term
+  on both sides (his "There should be only one": the engine's kindled reads as overcharged's
+  entry), a Sprite's Cleanse lifts Suppressed (his "Change the cleanse to remove suppress, I never
+  approved that": a cleanser acting before a stunned ally frees it, which gains no Numbed), and
+  Cleanse and Purge stay two effects (his "Keep cleanse and purge seperate").
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
   (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks

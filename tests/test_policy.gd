@@ -636,6 +636,26 @@ func test_greedy_values_a_cleanse_where_there_is_something_to_clear() -> void:
 	assert_true(pol.cleanse_score(sk, ms) > before, "a foe's disable is worth clearing, a cooldown is not")
 
 
+## A foe's cleanse lifts a stun (Ryan, 26 November): the bot reads a cleanser beside a stunned ally
+## at the blow its cleanse would free, where the stunned foe's own threat reads nothing.
+func test_the_bot_reads_a_cleanse_of_a_stun_at_the_blow_it_frees() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 100))
+	var healer := Foe.make("caster", 500, 1)
+	healer.actions = [{"id": "cleanse", "name": "Cleanse", "kind": "defend", "effect": "cleanse", "weight": 1, "when": "ally_marked", "text": ""}]
+	healer.action = healer.actions[0]
+	var g := _ghoul(500, 10)
+	sk.add_foes([healer, g])
+	sk.begin()
+	sk.start_round()
+	assert_eq(Policy._cleanse_worth(healer, sk), 0.0, "nothing to lift: nothing")
+	var blow := float(sk.foe_blow(g) * g.strikes())
+	assert_true(blow > 0.0, "the ghoul shows a blow")
+	assert_true(sk._suppress(g), "the stun lands")
+	assert_eq(Policy._threat_now(g, sk), 0.0, "a stunned foe threatens nothing")
+	assert_eq(Policy._cleanse_worth(healer, sk), blow, "the cleanse is worth the blow it frees")
+
+
 func test_greedy_values_a_shock_by_the_doubled_blow_to_come() -> void:
 	var sk := Skirmish.new(1, 1)
 	var projector := Face.attack(0, L, K.SHOCK)

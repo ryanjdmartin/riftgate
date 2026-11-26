@@ -8217,8 +8217,9 @@ func test_a_purge_takes_every_buffs_stacks_and_leaves_the_abilities() -> void:
 
 
 ## A foe's cleanse (28 October, the Marsh's lever): every mark the team laid comes off the
-## most-marked of its own, itself included; Numbed and Suppressed stay; a foe carrying only
-## Numbed is no target; and a special never fires twice running while another move is open.
+## most-marked of its own, itself included, and its stun (26 November); Numbed stays; a foe
+## carrying only Numbed is no target; and a special never fires twice running while another move
+## is open.
 func test_a_foes_cleanse_takes_the_teams_marks_off_the_most_marked_of_its_own() -> void:
 	var sk := Skirmish.new(1, 3)
 	var u := _mech("A", Die.single(Face.attack(1, L)), 40, 200)
@@ -8245,12 +8246,40 @@ func test_a_foes_cleanse_takes_the_teams_marks_off_the_most_marked_of_its_own() 
 	for id in ["ablating", "brittled", "shocked"]:
 		assert_false(Effects.has(b, id), "%s gone" % id)
 	assert_true(Effects.has(b, "numbed"), "Numbed stays: nothing removes it")
-	assert_true(Effects.has(b, "suppressed"), "and Suppressed stays: the stun is sure")
+	assert_false(Effects.has(b, "suppressed"), "and Suppressed goes (Ryan, 26 November: \"Change the cleanse to remove suppress, I never approved that\")")
 	assert_true(Effects.has(a, "cryoed"), "the other's mark stays: one foe a cleanse")
 	assert_true("\n".join(sk.log).contains("loses ablate"), "the log says what went")
 	# Never twice running while another move is open.
 	healer.actions = [{"id": "touch", "name": "Touch", "kind": "attack", "weight": 1, "text": ""}, healer.actions[0]]
 	assert_false(sk.legal_actions(healer).any(func(x) -> bool: return str(x.get("effect", "")) == "cleanse"), "the round after, the cleanse is not open")
+
+
+## A foe's cleanse lifts a stun (Ryan, 26 November: "Change the cleanse to remove suppress, I never
+## approved that"): a stun alone calls it, and a cleanser that acts before the stunned foe frees it
+## to act that turn, so it never lost its action and gains no Numbed.
+func test_a_foes_cleanse_lifts_a_stun_and_frees_its_ally_to_act() -> void:
+	var sk := Skirmish.new(1, 3)
+	var u := _mech("A", Die.single(Face.attack(1, L)), 40, 200)
+	sk.add_mech(u)
+	var healer := _caster("cleanse", "defend", "ally_marked")
+	var a := _ghoul(500, 7)
+	sk.add_foes([healer, a])
+	sk.begin()
+	if sk.field_foes()[0] != healer:
+		sk._swap(a, healer)   # the heavier hitter deploys first: the cleanser goes before it here
+	assert_eq(sk.field_foes(), [healer, a] as Array[Foe], "the cleanser first in strike order")
+	sk.start_round()
+	assert_eq(sk.cleanse_target(healer), null, "nothing marked: no target")
+	assert_true(sk._suppress(a), "the stun lands")
+	assert_eq(Effects.cleanse_marks(a), 1, "a stun is one of what a cleanse takes")
+	assert_eq(Effects.team_marks(a), 0, "and none of the team's marks, which a Ward turns")
+	assert_eq(sk.cleanse_target(healer), a, "a stun alone calls the cleanse")
+	assert_true(a.is_suppressed(), "stunned as the enemy's turn begins")
+	var hit := u.shield + u.hull
+	sk.end_round()
+	assert_false(Effects.has(a, "suppressed"), "the cleanse, first in strike order, lifted the stun")
+	assert_true(u.shield + u.hull < hit, "and the freed foe struck that turn")
+	assert_false(Effects.has(a, "numbed"), "it never lost its action, so it gains no Numbed")
 
 
 ## A foe's Barrier (the ladder's brief, B; 28 October): its special shelters itself, aimed at
