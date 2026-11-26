@@ -574,17 +574,19 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   republishes while he is on the page.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.677 on 25 November from this file at `596395f0` (the page's Version 530: the
-  graded tide's Decided row and its numbers, the switch-over, the rift's landing, and the
-  dials the page no longer has out of five rows), over v0.674 (Version 529, the same day, from
-  main's `8775e481`, checked against the live page byte for byte first). Before republishing,
+  Published at v0.679 on 26 November from this file at `52ec9147` (the page's Version 531: 26
+  November's rows, the grant a block, one Empowered, a Cleanse that lifts Suppressed, the
+  Cassowary's redesign and the Clydesdale at tier one), over v0.677 (Version 530, 25 November,
+  from `596395f0`, checked against the live page byte for byte first). Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
-  `596395f0` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  `52ec9147` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
   live source with the tool's wrapper line, its trailing newline and `</body></html>`
   stripped): check BASE against the live page byte for byte first. After main merges in,
   check the tables script's run against the file's tables before keeping it: a row it
-  reverts belongs to a branch not yet landed.
+  reverts belongs to a branch not yet landed. A publish is refused until the session has viewed
+  the live page, which is too long to read whole: the refusal counts as the view, and the merge's
+  result (its version bumped past both sides) goes up next.
 - The hangar: https://claude.ai/artifact/YAswJ7eGJ43ZFMQ6U1yhuH, source `tools/hangar.html`,
   files from `tools/hangar_data.py`'s printed map. Unpublished from
   `claude/formation-pass-feedback-rlvx5x`: four tier-one stock dice and the vocabulary's Seam,
