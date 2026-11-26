@@ -775,6 +775,10 @@ static func firer_ctx(ms: MechState, f: Face) -> Dictionary:
 	var scale := Effects.heat_damage_multiple(ms.unit, ms.heat, ms.heat_max)
 	if scale != 1.0:
 		ctx["heat_scale"] = scale
+	# The store its weapon hits charge, full (the Cassowary's Sustained Recoil at 5): its next hit
+	# doubles, so the die shows that hit's blow doubled.
+	if f != null and f.is_weapon() and Effects.charge_full(ms.unit):
+		ctx["charged"] = float(Effects.hit_charge(ms.unit)["times"])
 	return ctx
 
 
@@ -1483,6 +1487,21 @@ func shown_face(ms: MechState, f: Face, target: Foe = null) -> Face:
 		if sf == f:
 			sf = f.duplicate_face()
 		sf.buff_stacks = ms.heat / maxi(1, sf.heat_per_stack)
+	if sf != null and not sf.advances_by.is_empty() and Effects.steps_die(ms.unit):
+		# The Negentropy Spinner: how far its count would move the cylinder now and what it lands on
+		# (Ryan, 26 November: "Advance components a number of places equal to current Sustained Recoil
+		# ({N}): {put resulting component here}"), from its own place on the die.
+		var at := ms.die.faces.find(f)
+		if at >= 0:
+			if sf == f:
+				sf = f.duplicate_face()
+			var count := Effects.stacks_of(ms.unit, sf.advances_by)
+			var was := ms.face_index
+			ms.face_index = at
+			var onto := advance_index(ms, count)
+			ms.face_index = was
+			sf.advance_now = maxi(1, count)
+			sf.advance_onto = entry_name(ms, onto)
 	if sf == null or not sf.is_attack():
 		return sf
 	var heat := int(Effects.attack(ms.unit, sf, 0, sf.heat)["heat"])
@@ -2309,6 +2328,7 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	var spent_kind := _turn_kind(ms, f) if Effects.one_of_each(ms.unit) and not f.acts_again() else 0   # the kind the Relay sends onto cooldown: 1 the weapons, 2 the equipment, 0 none (a Rapid or Instant spend, a blank)
 	f = Effects.effective_face(ms.unit, f, target if target is Foe else null)   # the entry as this machine's passives make it, over the foe it is aimed at
 	var once := Effects.once_taken(ms.unit, Effects.rewritten(ms.unit, raw), target if target is Foe else null)   # what holds once a turn, read before the spend lays anything
+	var advance := Effects.stacks_of(ms.unit, f.advances_by) if not f.advances_by.is_empty() else -1   # the Negentropy Spinner's count, as it is spent: what its use's Resolve adds moves it nothing
 	if f.is_attack() and (not (target is Foe) or not targets_for_face(ms, raw).has(target)):
 		return false
 	# A Swap takes its second target with it (Ryan, 21 October: drag to the first, drop, then
@@ -2505,12 +2525,8 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 			if not f.self_statuses.is_empty() and ms.alive():
 				_self_grants(ms, f, 0)
 		Face.Kind.ATTACK:
-			# The sixth shot (the Cassowary's, Ryan's kit of 18 October): the spend the count
-			# lands on doubles its damage and the stacks it lays (an nth_shot rule read through
-			# the pipeline); every spend at a foe counts, and a weapon's spends the machine's Spun
-			# Up whole, equipment leaving it (Ryan, 26 October: "Spun up only interacts with damage").
-			if Effects.nth_shot_due(ms.unit):
-				log.append("%s: the %s shot counts double" % [ms.unit.display_name, Effects.ordinal(Effects.counts_shots(ms.unit))])
+			# A weapon's use takes the machine's Spun Up whole, equipment leaving it (Ryan, 26 October:
+			# "Spun up only interacts with damage"), once its hits are done.
 			var kills_before := team_kills   # the spend's kills are counted at its death check (is_kill)
 			if target != null:
 				# A Mine laid, the gather, the detonation and the Swap land in the rider phase,
@@ -2533,10 +2549,13 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 			# that grants Charged never spends the stack it has just laid.
 			if not f.self_statuses.is_empty() and target is Foe and ms.alive():
 				_self_grants(ms, f, _reached_last)
-			if Effects.counts_shots(ms.unit) > 0:
-				Effects.stack(ms.unit, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 1, Effects.DECAY_NONE)
-			if f.is_weapon() and Effects.remove(ms.unit, "spun_up"):
-				log.append("%s: the spin is spent" % ms.unit.display_name)
+			# A use that kills keeps it where a branch says so (the Cassowary's Quickdraw I, Ryan, 26
+			# November: "Weapons Gain: On Kill: Restore Spun Up if consumed").
+			if f.is_weapon() and Effects.has(ms.unit, "spun_up"):
+				if killed > 0 and Effects.restores_on_kill(ms.unit, "spun_up"):
+					log.append("%s: the kill restores its Spun Up" % ms.unit.display_name)
+				elif Effects.remove(ms.unit, "spun_up"):
+					log.append("%s: its Spun Up is spent" % ms.unit.display_name)
 			if f.is_weapon() and Effects.remove(ms.unit, "juggernaut"):
 				log.append("%s: its Juggernaut Drive is spent" % ms.unit.display_name)
 			# What waits on the next weapon fired goes with it, every strike of its spend having had it
@@ -2586,6 +2605,10 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 		var measure := "damaging_spends" if deals else "quiet_spends"
 		sponsorship[measure] = int(sponsorship[measure]) + 1
 	ms.assigned = true
+	# Every use's Resolve (on_use: the Cassowary's Deadeye II, Ryan, 26 November: "All Components gain:
+	# Resolve: Gain 1 Sustained Recoil"), once its hits and riders are done.
+	if f.kind != Face.Kind.BLANK and ms.alive():
+		Effects.fire(ms.unit, "on_use")
 	if not (f.acts_again() and Effects.one_of_each(ms.unit)):
 		ms.spends += 1   # on a one-of-each machine (the Needletail's) a Rapid or Instant spend is none of its spends (Ryan, 18 November: "rapid does not consume any of the spends")
 	# Its reboot's piece fired (the Whip Scorpion's Death Ray, Ryan, 23 November: "The death ray does
@@ -2611,16 +2634,19 @@ func _assign(mech_index: int, target = null, second = null) -> bool:
 	# Rapid: the die rerolls for free (never the same entry; a copy of it may come up, so
 	# stacked copies chain, each copy dark once spent), and the mech may act again; a stepping
 	# die's free reroll steps it. Instant (Ryan, 12 November: "reroll after use, can land on
-	# itself"): the die rolls again as the round opens, itself included, a spin on a stepping die
-	# (the Spin-Up's), so the same entry may show again and be spent again; its limit is what it
-	# costs and the odds (the cylinder's sixth; a raging machine's Knuckles of Fury, its heat). A fight already
-	# won, or a machine its own spend wrecked, rolls nothing.
+	# itself"): the die rolls again as the round opens, itself included, so the same entry may show
+	# again and be spent again; its limit is what it costs and the odds (a raging machine's Knuckles of
+	# Fury, its heat). A stepping die never rolls (Ryan, 26 November: the spin "fights against the rest
+	# of the machine"), so its Instant steps, and the Negentropy Spinner moves it by its count in place
+	# of the step. A fight already won, or a machine its own spend wrecked, rolls nothing.
 	if f.acts_again() and ms.alive() and not ms.rebooting and not (field_foes().is_empty() and reinforcements.is_empty()):
 		var instant := f.has(Face.Keyword.INSTANT)
-		_act_again(ms, instant)
+		_act_again(ms, instant, advance)
 		var how := "rapid, rolls again"
-		if instant:
-			how = "the cylinder spins" if Effects.steps_die(ms.unit) else "instant, rolls again"
+		if instant and advance >= 0 and Effects.steps_die(ms.unit):
+			how = "the cylinder advances %d" % maxi(1, advance)
+		elif instant:
+			how = "instant, steps on" if Effects.steps_die(ms.unit) else "instant, rolls again"
 		log.append("%s: %s" % [ms.unit.display_name, how])
 	# Two things a round (the Needletail's Quick-turn Avionics Relay, Ryan, 11 November; rewritten
 	# on 18 November: "just to send the 'unlit' kinds onto cooldown. There's no special cases or
@@ -3582,7 +3608,7 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	var laid := {}
 	var webbed: Array[Foe] = []
 	var riders: Array[Callable] = []   # every rider the strikes earn, in order, landed once the strikes are done (Ryan, 3 November)
-	var doubled := Effects.stack_multiplier(ms.unit, f, target)   # the stacks this spend lays, multiplied (the sixth shot)
+	var doubled := Effects.stack_multiplier(ms.unit, f, target)   # the stacks this spend lays, multiplied (an on_attack multiply_stacks)
 	var hit_heat := Effects.hit_heat(ms.unit, f, target)   # the heat each hit gives its machine (the Incinerator's)
 	var spend_heat := Effects.hit_heat(ms.unit, f, target, true)   # and what it gives once a spend, on the spend's first hit
 	var spend_heated := false   # that heat given: once a spend
@@ -3608,6 +3634,12 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 	# foe, the one the die was dropped on included, so it doubles and spends no Shock, sets off no
 	# Chain, feeds no Mine and lands no next strike's add, and with no target no Ricochet follows.
 	var bounces := Effects.stacks_of(ms.unit, "ricochet") if f.is_weapon() and not everyone else 0
+	# The store a weapon's hits charge (the Cassowary's Sustained Recoil, Ryan, 26 November: "On Hit:
+	# If Sustained Recoil is 5, consume all to double damage dealt. Otherwise, gain 1"; "it boosts the
+	# hit, not the whole spend, and further hits in the same spend start counting again"): every hit
+	# of the weapon's, an area's and a hit again's among them (the extra hits fire every event but the
+	# target's), in the order they land. A Ricochet's hit is the Frame's, never the weapon's.
+	var charge := Effects.hit_charge(ms.unit) if f.is_weapon() else {}
 	# The hits in the order they land, each a place of its own on the screen: every strike, the
 	# sword's hit again after each, then the Ricochet's.
 	var order: Array[int] = []
@@ -3633,6 +3665,20 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		else:
 			hit = spread
 			shapes = spread_shapes
+		# Which of this hit's blows the charged store discharges into: walked in the order they land,
+		# the store full doubling and emptying, short of it filling a stack.
+		var charged_foes := {}
+		var charged_side := false
+		if not charge.is_empty() and not bounce:
+			var held := Effects.stacks_of(ms.unit, str(charge["status"]))
+			for foe in hit:
+				if held >= int(charge["cap"]):
+					charged_foes[foe] = true
+					held = 0
+				else:
+					held = mini(int(charge["cap"]), held + 1)
+			if step == HIT_STRIKE and right != null and held >= int(charge["cap"]):
+				charged_side = true
 		if bounce:
 			h.base += 1
 		elif step == HIT_STRIKE and strike % split == 0:
@@ -3657,6 +3703,8 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			number = floori(number * again / 100.0)
 			h.base += number
 		var ctx := _zapped(_judged(judged_hp, target))
+		if charged_foes.has(target):
+			ctx["charged"] = float(charge["times"])
 		if bounce:
 			ctx["plain"] = true   # a Ricochet's hit: none of the entry's own damage rules (Effects.attack)
 		if at == 0 and not everyone:
@@ -3674,7 +3722,10 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 		# strike is read before any lands, so no blow of it reads what another did.
 		var blows := {}
 		for foe in hit:
-			blows[foe] = dmg if foe == target and not everyone else _area_blow(ms, f, int(shapes.get(foe, AREA_ALL)), foe, own, split, _zapped(_judged(judged_hp, foe))) + _foe_reads(f, reads, foe, not struck_once.has(foe))
+			var actx := _zapped(_judged(judged_hp, foe))
+			if charged_foes.has(foe):
+				actx["charged"] = float(charge["times"])
+			blows[foe] = dmg if foe == target and not everyone else _area_blow(ms, f, int(shapes.get(foe, AREA_ALL)), foe, own, split, actx) + _foe_reads(f, reads, foe, not struck_once.has(foe))
 		# Every blow of the strike in the strike order, [foe, its blow, the shape it stands in] (Ryan,
 		# 19 November: "Spread always computes before Penetrate, and Penetrate computes before
 		# Rifle"): the target, Spread's left and right, Penetrate's other rank, then the rifle's blow
@@ -3685,10 +3736,15 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 			landings.append([foe, blows[foe], int(shapes.get(foe, 0))])
 		if step == HIT_STRIKE and right != null:
 			var first_right := not struck_once.has(right) and not hit.has(right)
-			landings.append([right, _side_blow(ms, f, side, own, split, right, _zapped(_judged(judged_hp, right))) + _foe_reads(f, reads, right, first_right), AREA_SIDE])
+			var sctx := _zapped(_judged(judged_hp, right))
+			if charged_side:
+				sctx["charged"] = float(charge["times"])
+			landings.append([right, _side_blow(ms, f, side, own, split, right, sctx) + _foe_reads(f, reads, right, first_right), AREA_SIDE])
 		for landing_at in landings:
 			var foe: Foe = landing_at[0]
 			var shape: int = landing_at[2]
+			if not charge.is_empty() and not bounce:
+				_charge_hit(ms, charge)
 			var was_alive := foe.alive()
 			var hp_before := foe.hp
 			var first := not struck_once.has(foe)   # the foe's first blow of the spend
@@ -4760,23 +4816,38 @@ func _roll_again(ms: MechState) -> void:
 ## The machine acts again through Rapid's path: the die rolls for free, never onto the entry
 ## just spent (a copy of it may come up), a stepping die stepping; a folded die among its live
 ## entries, so a Changeover's roll lands on the battery it raised. Instant's roll (`itself`) is a
-## true roll over every live entry, itself included, a spin on a stepping die.
-func _act_again(ms: MechState, itself := false) -> void:
+## true roll over every live entry, itself included. A stepping die steps either way, or moves by
+## `advance` where its piece says so (the Negentropy Spinner's count, at least 1).
+func _act_again(ms: MechState, itself := false, advance := -1) -> void:
 	if previewing:
 		ms.assigned = false   # it acts again; the copy's die keeps its entry, a roll never promised
 		return
 	_rolled()
 	var live := Effects.live_entries(ms.unit, ms.die)
 	var only := _only_landing(ms, live, itself)
-	if only >= 0:
+	if Effects.steps_die(ms.unit):
+		ms.face_index = advance_index(ms, advance) if advance >= 0 else _step(ms)
+	elif only >= 0:
 		ms.face_index = only   # a roll that can land only one way draws nothing, so the undo takes the spend back
 	elif itself:
 		ms.face_index = ms.die.roll_among(rng, live)
-	elif Effects.steps_die(ms.unit):
-		ms.face_index = _step(ms)
 	else:
 		ms.face_index = ms.die.reroll_among(rng, live, ms.face_index)
 	ms.assigned = false
+
+
+## Where a stepping die lands moved `count` places on from the entry showing (the Negentropy
+## Spinner's, Ryan, 26 November: "Advance components a number of places equal to current Sustained
+## Recoil", at least 1): never back on the entry it moved from, so a count that would bring it round
+## to itself goes one more.
+static func advance_index(ms: MechState, count: int) -> int:
+	var n := ms.die.faces.size()
+	if n == 0 or ms.face_index < 0:
+		return ms.face_index
+	var at := (ms.face_index + maxi(1, count)) % n
+	if at == ms.face_index:
+		at = (at + 1) % n
+	return at
 
 
 ## The one entry a die rolling again can land on, or -1 where the roll has a choice (Ryan, 24
@@ -6365,6 +6436,30 @@ static func reboot_piece_at(ms: MechState) -> int:
 		if ms.die.faces[k].component == piece and not Effects.is_entry_disabled(ms.unit, k):
 			return k
 	return -1
+
+
+## One weapon hit on the charged store (the Cassowary's Sustained Recoil): full, it is consumed
+## whole, the hit doubled (_hit reads the same walk); short of full, it gains a stack.
+func _charge_hit(ms: MechState, charge: Dictionary) -> void:
+	var sid := str(charge["status"])
+	if Effects.stacks_of(ms.unit, sid) >= int(charge["cap"]):
+		Effects.remove(ms.unit, sid)
+		log.append("%s: %s discharges, the hit doubled" % [ms.unit.display_name, str(Effects.STATUS[sid]["name"])])
+	else:
+		Effects.stack(ms.unit, Effects.STATUS[sid], Effects.SKIRMISH, "charge", 1, Effects.DECAY_NONE)
+
+
+## What the entry at `at` of a machine's die is called, for a line that names where a move lands
+## (the Negentropy Spinner's readout): its component's name, a step's name for it, or an empty or
+## destroyed entry's word.
+func entry_name(ms: MechState, at: int) -> String:
+	if ms == null or at < 0 or at >= ms.die.faces.size():
+		return ""
+	var face: Face = ms.die.faces[at]
+	if face.kind == Face.Kind.BLANK or face.component.is_empty():
+		return Templates.say("entry.empty") if face.empty else Templates.say("entry.destroyed")
+	var renamed := Effects.entry_name(ms.unit, face)
+	return renamed if not renamed.is_empty() else _piece_name(ms, face.component)
 
 
 ## A component's name for the log: the form a branch's step remakes it as (the Obliterator's

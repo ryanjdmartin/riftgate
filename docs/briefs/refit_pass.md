@@ -224,7 +224,7 @@ placeholder gun, a second Twin Autoguns where a vent stood, with Claude's leans 
 
 | The machine | Lean | Why |
 |---|---|---|
-| The Cassowary | A Laser Carbine in the chamber after the Halo Projector | Its plan is adjacency, and its stock holds no big gun to line the doubled sixth shot up on |
+| The Cassowary | A Laser Carbine in the chamber after the Halo Projector | Its plan is adjacency, and its stock holds no big gun to line the doubled hit up on |
 | The Cottonmouth | A keyword shell of its maker's, the Incendiary Shells | Every gun it stocks leaves the drum as the same shot; a shell with a keyword shows what the drum does |
 | The Stingray, the Polar Bear, the Prairie Dog | Left | The Stingray's tier is to be placed, the Bear's kit is his, the Dog wants two guns to cash its Flak |
 

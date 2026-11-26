@@ -119,11 +119,14 @@ func test_the_tender_offers_one_tier_one_machine_from_each_city_maker() -> void:
 
 ## The mechanics audit (25 October): the tender drew on the run's own stream, so the runner's
 ## random pick of three reread Minerva's offer and the Polar Bear started every run it was
-## offered. On a stream of its own, an offered machine sits a run out as often as any other.
+## offered. On a stream of its own, an offered machine sits a run out as often as any other. Read
+## over 200 seeds: three picked of four makers' offers, a maker's slot sits out a quarter of the
+## runs, and a maker of four tier ones (Wainwright & Sutler's since 26 November) offers each a
+## quarter of them, so 60 seeds left a machine offered a dozen times and never sat out.
 func test_the_runners_pick_never_rereads_the_offer() -> void:
 	var db := ContentDB.load_default()
 	var sat_out := {}
-	for seed_value in range(1, 61):
+	for seed_value in range(1, 201):
 		var offered := Campaign.tender(db, seed_value)
 		var c := Campaign.new(seed_value)
 		var started := {}

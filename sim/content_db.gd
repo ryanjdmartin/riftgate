@@ -2001,7 +2001,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: braces is a positive number of stacks of Armoured, an armour point each" % where)
 	# Rolling again on a status (the Nemesis's fists on rage, 12 October to 11 November) and the
 	# spin (the Spin-Up's, 19 October) retired on 12 November: Instant is the roll that may land on
-	# itself, a spin on a stepping die. A heat a blow taken on an entry (the Siphon's, until 12
+	# itself (on a stepping die a step since 26 November). A heat a blow taken on an entry (the Siphon's, until 12
 	# November) and on a passive (the Whip Scorpion's, until 23 November) retired too: the heat a
 	# blow lays on a machine is a passive's gain_heat (the Nemesis's).
 	if fd.has("rolls_again_on"):
@@ -2009,7 +2009,13 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if fd.has("heat_per_blow"):
 		errs.append("%s: heat_per_blow is retired (23 November): the heat a blow lays on its machine is a passive's gain_heat" % where)
 	if fd.has("spins"):
-		errs.append("%s: spins is retired (12 November): Instant's roll is a spin on a stepping die" % where)
+		errs.append("%s: spins is retired (12 November): Instant is the roll that may land on itself" % where)
+	# The Negentropy Spinner's move (Ryan, 26 November): a buff on a stepping die that moves it by a
+	# store's count, at least 1, in place of its own roll.
+	if fd.has("advances_by"):
+		var st := str(fd["advances_by"])
+		if kind != "buff" or not Effects.STATUS.has(st) or not (Effects.STATUS[st].get("tags", []) as Array).has("store"):
+			errs.append("%s: advances_by names the store whose count moves the die, on a buff" % where)
 	# The cooldown (Ryan, 14 October; counted after the round of the spend since 12 November,
 	# "change the count so 1 is how I intended"): a printed property, the rounds the entry sits
 	# out once spent, a cost the die prints by its clock, so an entry with none leaves it out.
@@ -2031,10 +2037,11 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# entry dark for the rest of the round; Instant's roll may land on itself, so an Instant entry
 	# prints a cooldown or pays heat, hull or shield every spend; a piece Instant only while its
 	# machine rages has that machine's heat (the Nemesis's Knuckles of Fury). A piece locked on a stepping die
-	# has the cylinder and its odds for its limiter (the Cassowary's Spin-Up, Ryan, 19 October: a
-	# combo piece, its spin a true roll that lands on itself one time in its die's size, to be spent
-	# again, the high roll he allowed; the exit, a stepping-die piece that ever chains for sure gets a
-	# limiter of its own).
+	# has the cylinder for its limiter (the Cassowary's Negentropy Spinner, Ryan, 26 November: its
+	# move exactly its Sustained Recoil, at least 1, in place of Instant's own): the move never lands
+	# back on it, so only a team reroll brings it round to be spent again (his combo: at five, the
+	# Spinner to the chamber before it, a reroll, the Spinner again, and fire). The exit: a
+	# stepping-die piece that ever chains onto itself for free gets a limiter of its own.
 	if instant and not planned and not stepped and int(fd.get("cooldown", 0)) <= 0 \
 			and int(fd.get("heat", 0)) <= 0 and int(fd.get("volatile", 0)) <= 0 and int(fd.get("shield_cost", 0)) <= 0:
 		errs.append("%s: an Instant entry with no cooldown carries another limiter, heat, Volatile or a shield cost (the bible's Rapid row)" % where)
@@ -2131,7 +2138,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		# A buff grants one of the machines' statuses (the Changeover grants none: its rule is the
 		# turn of a folded die): it must exist and be theirs. A planned
 		# component may grant a machine status the vocabulary names but the engine lacks (the
-		# Spin-Up's Spun Up, 19 October), as it may carry a planned keyword: spent, it grants
+		# Spin-Up's Spun Up, 19 October, the Negentropy Spinner's since), as it may carry a planned keyword: spent, it grants
 		# nothing until the engine has the status.
 		var st := str(fd.get("status", ""))
 		var drafted_status: bool = planned and vocabulary.has(st) and vocabulary[st].get("status") != "implemented" \
@@ -2447,6 +2454,16 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		# The Honey Badger's Ore Hopper (20 November): the Ore a foe damaged puts in and the most the
 		# hopper holds, a raise of that most, and what the Ore is worth: value at `at` held, and
 		# `past` more for each Ore past it.
+		# The store a machine's weapon hits charge (the Cassowary's Sustained Recoil, 26 November): a
+		# store's id, its most, and what the hit that finds it full multiplies its damage by.
+		if effect == "hit_charge":
+			var st := str(eff.get("value", ""))
+			if not Effects.STATUS.has(st) or not (Effects.STATUS[st].get("tags", []) as Array).has("store") or int(eff.get("cap", 0)) < 1 or float(eff.get("times", 2)) <= 1.0:
+				errs.append("%s: hit_charge names a store (value), its most (cap, 1 or more) and the multiply of the hit that finds it full (times, more than 1)" % where)
+		if effect == "restore_on_kill" and not Effects.STATUS.has(str(eff.get("value", ""))):
+			errs.append("%s: restore_on_kill names the status a killing weapon use keeps" % where)
+		if str(eff.get("when", "")) == "self_status" and not Effects.STATUS.has(str(eff.get("status", ""))):
+			errs.append("%s: self_status names a status its machine carries (status), at least stacks of it" % where)
 		if effect == "fill_hopper" and (int(eff.get("value", 0)) < 1 or int(eff.get("cap", 0)) < 1):
 			errs.append("%s: fill_hopper needs value (the Ore a foe damaged puts in, positive) and cap (the most the hopper holds, positive)" % where)
 		if effect == "hopper_max" and int(eff.get("value", 0)) < 1:

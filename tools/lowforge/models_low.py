@@ -3168,7 +3168,7 @@ def _cassowary_drum_ring(cx, cz, r, flute):
 def cassowary(b):
     """Wainwright & Sutler "Cassowary" (Pattern 15 Gun Walker), first cut 31 October from Ryan's
     to-do line: a medium chicken walker in the maker's iron, the AT-ST silhouette, a squared cab
-    on two digitigrade legs, no arms, five hardpoints, the Spin-Up showing nowhere. Each leg a
+    on two digitigrade legs, no arms, five hardpoints, the Negentropy Spinner showing nowhere. Each leg a
     short thigh down and forward to the knee under the pelvis, the long drumstick of a shin back
     to a high hock, the shank down to the ball. The cab turns on a waist over the pelvis the legs
     hang from (a walker turns at the waist), its brow over a visor slit and two lamps, the chin
@@ -3176,9 +3176,10 @@ def cassowary(b):
     revolver than a literal one", "weird toes, not mechanical enough"): the revolver drum on the
     cab's flank is a capacitor bank now, six cells round a core between two end plates, wound
     with two copper coils, on its axle in straps off the cab under a lit spark gap; its cells
-    light one a counted shot, charging toward the sixth shot, the one its Indexed Cylinder
-    counts double, and all six flare and go dark as that shot discharges it (b.count, the
-    machine's `shots`); it spins while the machine is Spun Up, the status its Spin-Up grants
+    light one a stack of Sustained Recoil, charging toward the hit its Syntropy Cylinder
+    doubles, and they flare and go dark as that hit discharges it (b.count, the machine's
+    `sustained_recoil`, five of six lit when the next hit doubles); it spins while the machine is
+    Spun Up, the status its Negentropy Spinner grants
     (b.spin_held). The feet are the AT-ST's, broad and flat in iron: a heel block on the shank,
     three hinged toe plates on the ball, so the toes stay flat as the heel lifts. Mounts in the
     die's order: hp_1 the chin turret's Twin Autoguns, hp_2 the left pod's Rivet Gun, hp_3 the
@@ -3279,9 +3280,9 @@ def cassowary(b):
     # of capacitor, charging up for the sixth hit of its passive"): six cells round a core between
     # two end plates, wound with two copper coils, on an axle in straps off the cab, a spark gap
     # lit over its rear on an arm off the cab, two horns and the spark between them. Each cell's
-    # lens in either end plate and its window down its outside light, a cell a counted shot,
-    # cell_1 at the top first and the rest clockwise seen from behind; the sixth shot, the one the
-    # Indexed Cylinder counts double, discharges them, all six flaring and going dark (b.count).
+    # lens in either end plate and its window down its outside light, a cell a stack of Sustained
+    # Recoil, cell_1 at the top first and the rest clockwise seen from behind; the hit its Syntropy
+    # Cylinder doubles discharges them, all six flaring and going dark (b.count).
     # The bank spins while the machine is Spun Up (b.spin_held).
     DX, DY, DZ, DR = 23.5, 0.5, 72.0, 8.5
     Y0, Y1 = DY - 7.5, DY + 7.5
@@ -3315,7 +3316,7 @@ def cassowary(b):
             strip = lambda y: [tuple(w + t * 0.75 + Vector((0.0, y, 0.0)) - n * 0.2), tuple(w - t * 0.75 + Vector((0.0, y, 0.0)) - n * 0.2),
                                tuple(w - t * 0.75 + Vector((0.0, y, 0.0)) + n * 0.25), tuple(w + t * 0.75 + Vector((0.0, y, 0.0)) + n * 0.25)]
             _rings(b, [strip(Y0 + 0.9 - DY), strip(Y1 - 0.9 - DY)], "amber.spark", label)
-    b.count("shots", cells, on=6.0, off=-1.0, flare=14.0)   # hot when charged, unlit glass when not (lean hotter: the phone sees the rear plate in the cab's shadow)
+    b.count("sustained_recoil", cells, on=6.0, off=-1.0, flare=14.0)   # a cell lit a stack of Sustained Recoil, five lit when the next hit doubles (Ryan, 26 November); hot when charged, unlit glass when not (lean hotter: the phone sees the rear plate in the cab's shadow)
     b.spin_held("spun_up", "capacitor", 600.0)
     waist.__exit__(None, None, None)
 
@@ -3388,7 +3389,7 @@ def cassowary(b):
     tracks, body, stride = _cassowary_lope(sweep=40.0)
     b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
     b.move(accel=0.8, heft=0.17)
-    # Its Spin-Up plays a slice of its test charge as it is used (Ryan, 31 October: the cheapest
+    # Its Negentropy Spinner (the Spin-Up until 26 November, its id kept) plays a slice of its test charge as it is used (Ryan, 31 October: the cheapest
     # first; found unfired on 3 November): the capacitor drum spinning up three turns as the spark
     # gap crackles, to the snap at its top.
     b.fires = {"spin_up": ("test_charge", 0.9, 3.8)}

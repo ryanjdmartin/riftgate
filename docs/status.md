@@ -59,7 +59,9 @@ document's job and every command are in `README.md`.
   packs go to him as a table first ("I would mark a table"), so no session writes a pack, a
   leader's or a boss's numbers into content ahead of his marks; the hunters are pinned and
   the treant waits on him.
-- Branches. Main holds everything this file describes. `claude/game-ui-animation-tweaks-xiex10`
+- Branches. Main holds everything this file describes but `claude/cassowary-recoil`'s work (the
+  Cassowary's redesign, Ryan's of 26 November, and the Clydesdale at tier one), which waits on his
+  word to land. `claude/game-ui-animation-tweaks-xiex10`
   landed a third time on 25 November on Ryan's "yes republish the union, then merge into main"
   (the Cassowary setting off from standing straight into its lope, its body swelling once a step
   with no jolt at a landing), before that the same day on his "merge into main and update the
@@ -129,7 +131,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1488 tests, 407,073 checks, green on Godot 4.8-beta4 (26 November, one Empowered and a Cleanse that lifts Suppressed). The runner fails a run
+- Tests: 1494 tests, 407,236 checks, green on Godot 4.8-beta4 (26 November, the Cassowary's redesign and the Clydesdale at tier one). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -144,7 +146,7 @@ document's job and every command are in `README.md`.
   (`tools/lowforge/tiles/`) too: restore those. Screenshots there need `xvfb-run -a` and
   `--rendering-method gl_compatibility`; models build with `BPY_PYTHON` set to a python3.11
   venv holding `bpy==5.0.1`.
-- Saves: the battle's version is 44, the run's 34 and the quick run's 17 (`sim/save.gd`). A
+- Saves: the battle's version is 45, the run's 35 and the quick run's 18 (`sim/save.gd`). A
   save from an older version is set aside, so a change to what a save holds moves its version.
 
 ## How things stand
@@ -203,8 +205,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   locked pieces, at tier one on every die (the Wild Boar, the Echidna, the Skua, the Storm
   Petrel and the Cottonmouth went back to basics on 23 November, on his "just basic pieces"
   and, of the Cottonmouth's shell, "Send the cottonmouth to some kind of stock pieces and I'll
-  fix it in another session"; the sizing's reads of 17 to 20 November
-  were on their old dice): the basic guns deal 3 for 4 heat and the Laser Carbine 4 for 5, the Halo
+  fix it in another session", and the Clydesdale on 26 November as it moved to tier one, three
+  Twin Autoguns and its Shoring Jack on one battery and four Ankle Mortars on the other; the
+  sizing's reads of 17 to 20 November were on their old dice): the basic guns deal 3 for 4 heat and the Laser Carbine 4 for 5, the Halo
   Projector lays a Barrier and the Shoring Jack Armoured 2, and every piece that grants a
   Barrier sits out a round after. A machine moves 3 to 6 hexes. A basic is a tier-one piece with
   a flag (its blueprint a run's from the start), never a find. A machine holds a tier, its
@@ -220,7 +223,10 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   locked and tiers rows): the Storm Petrel carries the first two, the Buzzard two more, the
   Honey Badger (Miner, Smelter) and the Prairie Dog (Flakker, Harrier) theirs from Ryan's kits of
   20 November (the Badger's Ore, the Spreader; a grant held once a round, a piece remade whole and
-  a strike counting Brittle twice the engine they brought), the
+  a strike counting Brittle twice the engine they brought), the Cassowary (Quickdraw, Deadeye)
+  from his redesign of 26 November (every weapon hit a Sustained Recoil, the hit that finds five
+  doubled; its Negentropy Spinner moving the cylinder by the count, at least one, Instant stepping
+  a stepping die, Spun Up 1; `RIFTGATE_RECOIL_DEBUG=1` holds the bar full to judge its glow), the
   harness's UPG line fields a build at the tier its picks make. A step may tweak as many pieces as
   it needs (Ryan, 19 November); the Macaque's second steps touch its offhand and its Aile
   Booster. An upgraded piece wears a chevron a step under its place, on the die and down the
@@ -265,7 +271,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   (16 November: the Honey Badger, the Wild Boar, the Mole and the lure tank; on 20 November the
   Echidna took the Mole's place and the Mole went to tier two), so the Polar Bear is tier two in
   content and the Wild Boar tier one, its numbers still its tier two's but its armour 1 (Ryan, 20
-  November: "the Boar at tier 1 needs base armour 1, not 2"). The designs still to come
+  November: "the Boar at tier 1 needs base armour 1, not 2"); Wainwright & Sutler's four since
+  26 November, the Clydesdale his move down ("Either the Clydesdale or Dingo need to go down to
+  t1"; "clyde"), its numbers still its tier two's. The designs still to come
   are briefs: `docs/briefs/README.md` says what each waits on.
 - **The numbers.** Tier one alone is tuned (Ryan, 11 November), on the baseline: the second
   battle, four tier ones against a tier-one rift, a fight read at its rating (a flanker one
@@ -516,7 +524,8 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
      first battle down, its sizing his ("I'll handle that one"), tiers two and three up.
 2. **The design sessions, from the briefs**: each decision a bible row, each brief retired
    once its decisions are rows and content. The locked pieces' footing first (its own session
-   since 20 November), then the machine back in design (the Swallowtail), the built but
+   since 20 November; the Cassowary's redesign built 26 November, the Cottonmouth's and the
+   Skua's branch rounds with Ryan, the Clydesdale's two picks next), then the machine back in design (the Swallowtail), the built but
    unfinished (the Needletail, the Giant Petrel, the Musk Ox) and the gunship, the tier-one
    fronts (Minerva's lure tank, an Aphelion tier one), Claude's first rounds on his directions
    of 5 and 6 November, the rest as its session comes. The to-do's roster is grouped to match.

@@ -1811,6 +1811,10 @@ func damage_outcomes(ms: Skirmish.MechState, f: Face, target: Foe = null, area: 
 		# (the Parry's return, 19 November), as the resolver hands it.
 		var fctx := zctx.duplicate()
 		fctx["first_blow"] = true
+		# The store its weapon hits charge, full (the Cassowary's Sustained Recoil at 5): this use's
+		# first hit doubles, as the resolver walks it (Skirmish._hit).
+		if damaging and Effects.charge_full(ms.unit):
+			fctx["charged"] = float(Effects.hit_charge(ms.unit)["times"])
 		var opening: int = int(Effects.attack(ms.unit, f, Skirmish.split_share(v + fired, f.split), 0, target, fctx)["damage"]) + own
 		var first := maxi(0, (Effects.damage_taken(target, opening + eats, ms.unit, damaging) if target != null else opening + eats) - arm)
 		if barred:
@@ -1985,7 +1989,7 @@ func second_action(sk: Skirmish, ms: Skirmish.MechState, f: Face) -> bool:
 ## its machine acts again, about the die's own average blow, read plainly so the scorer never asks
 ## itself (as the reset gun's and the Horn's are). Nothing for a spend the Needletail's turn
 ## follows (`quick`, valued as its own), nor on a stepping die, whose cycle plan reads the chamber its
-## Rapid steps to and the chambers a spin may stop on (cycle_chain). The bot had valued none, so the
+## action again lands on (cycle_chain: a step, or the Negentropy Spinner's count). The bot had valued none, so the
 ## Laminar Deflector, the Pulse Vacillator, the Cryo Flinger, the Musk Ox's Quick Reload and the
 ## Immelmann Booster's own action again were each worth only what they did once.
 static func rapid_worth(ms: Skirmish.MechState, f: Face, quick: bool) -> float:
@@ -2988,56 +2992,45 @@ func reroll_worth(sk: Skirmish, ms: Skirmish.MechState) -> float:
 
 
 ## A stepping die's cycle (the Cassowary's, 3 November): what spending from chamber `at` this
-## round is worth, and where the dial rests after, as {value, rest}. A Rapid chamber acts again
-## on the chamber after it, known in advance, and a spin (the Spin-Up's) on a chamber drawn
-## from all of them, itself included, so its value carries the die's spun mean and the dial
-## rests anywhere (rest -1). Chambers read at their worth now, a dark one as blank. `read` is
-## cycle_read's, so a plan scores each chamber once.
+## round is worth, and where the dial rests after, as {value, rest}. A chamber that acts again
+## (Rapid or Instant) moves the dial on by its jump, known in advance: a step, or the Negentropy
+## Spinner's count (Ryan, 26 November), never back onto itself. Chambers read at their worth now, a
+## dark one as blank. `read` is cycle_read's, so a plan scores each chamber once; a chain is read at
+## most a lap of the die, so an Instant that comes round again ends it.
 func cycle_chain(sk: Skirmish, ms: Skirmish.MechState, at: int, read: Dictionary = {}) -> Dictionary:
 	if read.is_empty():
 		read = cycle_read(sk, ms)
 	var n := ms.die.faces.size()
-	var kinds: Array = read["kinds"]
+	var jumps: Array = read["jumps"]
 	var vals: Array = read["values"]
 	var value := 0.0
 	for seen in range(n):
 		value += float(vals[at])
-		match int(kinds[at]):
-			1:
-				return {"value": value + float(read["tail"]), "rest": -1}
-			2:
-				at = (at + 1) % n
-			_:
-				return {"value": value, "rest": at}
+		var jump := int(jumps[at])
+		if jump <= 0:
+			return {"value": value, "rest": at}
+		var next := (at + jump) % n
+		if next == at:
+			next = (next + 1) % n
+		at = next
 	return {"value": value, "rest": at}
 
 
-## Every chamber of a stepping die read once: its worth now, its kind (0 plain or dark, 1 a spin,
-## Instant's roll on a stepping die, 2 Rapid), what a spin brings after its own spend (a chamber drawn from all of them, each
-## played out one step deep, the spinning one landing on itself spinning again: E = (S + E) / n
-## + M / n over the S of the spinning chambers and the M of the rest, solved), and the die's
-## mean over its chambers played out, for a next round whose chamber a spin left to chance.
+## Every chamber of a stepping die read once: its worth now and its jump (0 for a chamber that ends
+## the action, a dark one's included; a step of 1 for Rapid and Instant; the Negentropy Spinner's
+## count, at least 1, as it stands now).
 func cycle_read(sk: Skirmish, ms: Skirmish.MechState) -> Dictionary:
 	var n := ms.die.faces.size()
 	var vals: Array = []
-	var kinds: Array = []
+	var jumps: Array = []
 	for i in range(n):
 		var f := _chamber_face(sk, ms, i)
 		vals.append(face_value(sk, ms, f))
-		kinds.append(0 if f == null else (1 if f.has(Face.Keyword.INSTANT) else (2 if f.has(Face.Keyword.RAPID) else 0)))
-	var spinning := 0
-	var total := 0.0
-	for i in range(n):
-		if int(kinds[i]) == 1:
-			spinning += 1
-			total += float(vals[i])
-		else:
-			total += float(vals[i]) + (float(vals[(i + 1) % n]) if int(kinds[i]) == 2 else 0.0)
-	var tail := 0.0 if spinning >= n or n == 0 else total / float(n - spinning)
-	var mean := 0.0
-	for i in range(n):
-		mean += float(vals[i]) + (tail if int(kinds[i]) == 1 else 0.0)
-	return {"values": vals, "kinds": kinds, "tail": tail, "mean": mean / float(maxi(1, n))}
+		var jump := 0
+		if f != null and f.acts_again():
+			jump = maxi(1, Effects.stacks_of(ms.unit, f.advances_by)) if not f.advances_by.is_empty() else 1
+		jumps.append(jump)
+	return {"values": vals, "jumps": jumps}
 
 
 ## A chamber as it would be spent: the one showing as the spend goes out (a charged form), any
@@ -3052,8 +3045,7 @@ func _chamber_face(sk: Skirmish, ms: Skirmish.MechState, i: int) -> Face:
 
 ## A stepping die's plan for the round's opening rerolls (the Cassowary's cycle, 3 November):
 ## for every count of steps the rerolls in hand allow, this round's chain from the chamber it
-## brings, plus the next round's from the chamber after where the dial rests, at CYCLE_AHEAD
-## (a spin's rest at the die's played-out mean). Returns {steps, gain}: the steps worth taking
+## brings, plus the next round's from the chamber after where the dial rests, at CYCLE_AHEAD. Returns {steps, gain}: the steps worth taking
 ## (the fewest on a tie) and what they add over standing.
 func cycle_plan(sk: Skirmish, ms: Skirmish.MechState, budget: int) -> Dictionary:
 	var n := ms.die.faces.size()
@@ -3063,9 +3055,7 @@ func cycle_plan(sk: Skirmish, ms: Skirmish.MechState, budget: int) -> Dictionary
 	var worth: Array[float] = []
 	for k in range(mini(budget, n - 1) + 1):
 		var c := cycle_chain(sk, ms, (ms.face_index + k) % n, read)
-		var ahead := float(read["mean"])
-		if int(c["rest"]) >= 0:
-			ahead = float(cycle_chain(sk, ms, (int(c["rest"]) + 1) % n, read)["value"])
+		var ahead := float(cycle_chain(sk, ms, (int(c["rest"]) + 1) % n, read)["value"])
 		worth.append(float(c["value"]) + CYCLE_AHEAD * ahead)
 	var best := 0
 	for k in range(worth.size()):

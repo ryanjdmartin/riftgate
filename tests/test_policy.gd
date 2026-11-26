@@ -1111,28 +1111,37 @@ func test_greedy_steps_a_stepping_die_through_a_weak_chamber_to_a_big_one() -> v
 	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND - 2, "two rerolls spent")
 
 
-## A spinning chamber (the Spin-Up's, Instant on a stepping die) is worth its own spend and the
-## spin after it, so the bot does not step away from it toward a chamber worth only a little more
-## than its stack.
-func test_greedy_keeps_a_spinning_chamber_for_the_spin_after_it() -> void:
+## The Negentropy Spinner's chamber (Instant on a stepping die, its count the machine's Sustained
+## Recoil: Ryan, 26 November) moves the dial a known number of places, so its chain is its own spend
+## and the chamber its count lands on, and the dial rests there; with no stacks it steps one, as
+## Instant does on a stepping die. The bot holds it when its jump finds the big gun.
+func test_greedy_reads_the_spinners_jump_in_its_cycle() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var spin := Face.buff("spun_up", 1, 1)
 	spin.keywords = [Face.Keyword.INSTANT]
+	spin.advances_by = "sustained_recoil"
 	var sk := Skirmish.new(1)
-	var u := _mech("A", Die.of([spin, Face.attack(6, L), Face.attack(6, L), Face.attack(6, L)]), 40, 100)
-	u.grant_passive({"id": "test_step", "name": "Step", "description": "", "effects": [{"trigger": "static", "effect": "step_die", "value": 1}]})
+	var u := _mech("A", Die.of([spin, Face.attack(2, L), Face.attack(2, L), Face.attack(30, L)]), 40, 100)
+	u.grant_passive({"id": "test_step", "name": "Step", "description": "", "effects": [
+		{"trigger": "static", "effect": "step_die", "value": 1},
+		{"trigger": "static", "effect": "hit_charge", "value": "sustained_recoil", "cap": 5, "times": 2}]})
 	sk.add_mech(u)
 	sk.add_foes([_ghoul(500, 1)])
 	sk.begin()
 	sk.start_round()
 	var ms: Skirmish.MechState = sk.mechs[0]
 	ms.face_index = 0
-	var own := pol.face_value(sk, ms, ms.die.faces[0])
-	var chain := float(pol.cycle_chain(sk, ms, 0)["value"])
-	assert_true(chain > own + 5.9, "the spin's chamber carries the spin: at least a six after its own spend")
-	assert_eq(int(pol.cycle_chain(sk, ms, 0)["rest"]), -1, "and leaves the dial anywhere")
+	assert_eq(pol.cycle_read(sk, ms)["jumps"], [1, 0, 0, 0], "no stacks: it steps one")
+	assert_eq(int(pol.cycle_chain(sk, ms, 0)["rest"]), 1, "onto the first two")
+	Effects.stack(u, Effects.STATUS["sustained_recoil"], Effects.SKIRMISH, "test", 3, Effects.DECAY_NONE)
+	var read := pol.cycle_read(sk, ms)
+	assert_eq(read["jumps"], [3, 0, 0, 0], "three stacks: three places")
+	var chain := pol.cycle_chain(sk, ms, 0, read)
+	assert_eq(int(chain["rest"]), 3, "onto the thirty, where the dial rests")
+	var own := float(read["values"][0])
+	assert_true(absf(float(chain["value"]) - own - float(read["values"][3])) < 0.001, "its own spend and the thirty's")
 	pol._greedy_rerolls(sk)
-	assert_eq(ms.face_index, 0, "the spin holds against a six")
+	assert_eq(ms.face_index, 0, "the Spinner holds: its jump finds the thirty")
 
 
 func _stepper(powers: Array) -> Skirmish:

@@ -61,6 +61,8 @@
   {"id": "rule.spills", "text": "damage past a kill spills into the foe behind", "fills": []},
   {"id": "rule.self_ablate", "text": "{status} {n} on itself", "fills": ["status", "n"]},
   {"id": "rule.self_vent", "text": "cools itself {n}", "fills": ["n"]},
+  {"id": "rule.advances_by", "text": "advance components a number of places equal to current {status}, at least 1 ({n}): {component}", "fills": ["status", "n", "component"]},
+  {"id": "rule.advances_by_plain", "text": "advance components a number of places equal to current {status}, at least 1", "fills": ["status"]},
   {"id": "rule.empties_hopper", "text": "a strike for every Ore it empties", "fills": []},
   {"id": "rule.cools_all", "text": "cools to nothing", "fills": []},
   {"id": "rule.braces", "text": {"one": "braces", "other": "braces ×{n}"}, "fills": ["n"], "count": "n"},

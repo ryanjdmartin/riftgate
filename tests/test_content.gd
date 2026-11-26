@@ -1856,8 +1856,8 @@ func test_a_brace_is_a_positive_number_of_stacks() -> void:
 
 
 ## Rolling again on a status (the Nemesis's fists on rage, 12 October to 11 November) and the
-## Spin-Up's spin retired on 12 November: Instant is the roll that may land on itself, a spin on a
-## stepping die, so either key is refused.
+## Spin-Up's spin retired on 12 November: Instant is the roll that may land on itself (a step on a
+## stepping die since 26 November), so either key is refused.
 func test_rolling_again_and_the_spin_are_retired_for_instant() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
@@ -1871,7 +1871,7 @@ func test_rolling_again_and_the_spin_are_retired_for_instant() -> void:
 	db.components["odd_plate"] = plate
 	var errs := db.validate()
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component odd_gun") and e.contains("rolls_again_on is retired")), "a roll again on a status is refused, Instant in its place")
-	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component odd_plate") and e.contains("spins is retired")), "a spin is refused, Instant's roll a spin on a stepping die")
+	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component odd_plate") and e.contains("spins is retired")), "a spin is refused, Instant in its place")
 
 
 func test_the_new_passive_fields_are_checked() -> void:
@@ -2971,12 +2971,13 @@ func test_a_cooldown_is_whole_rounds_and_every_instant_entry_carries_a_limiter()
 
 
 ## A piece locked on a stepping die has the cylinder for its Instant's limiter (the Cassowary's
-## Spin-Up, Ryan, 19 October; Instant since 12 November); anywhere else the same entry is refused,
-## and a status a weapon spends (Spun Up) is granted with no rounds.
+## Negentropy Spinner, the Spin-Up until 26 November, its id kept: its move never lands back on it,
+## so only a reroll brings it round); anywhere else the same entry is refused, and a status a weapon
+## spends (Spun Up) is granted with no rounds.
 func test_a_stepping_die_is_its_locked_instant_pieces_limiter() -> void:
 	var db := _fresh()
-	assert_false(db.validate().any(func(e: String) -> bool: return e.begins_with("component spin_up")), "the Spin-Up validates where it is locked")
-	assert_true(db.build_face(db.components["spin_up"]["face"]).has(Face.Keyword.INSTANT), "the Spin-Up is Instant")
+	assert_false(db.validate().any(func(e: String) -> bool: return e.begins_with("component spin_up")), "the Spinner validates where it is locked")
+	assert_true(db.build_face(db.components["spin_up"]["face"]).has(Face.Keyword.INSTANT), "the Spinner is Instant")
 	var loose: Dictionary = db.components["spin_up"].duplicate(true)
 	loose["tier"] = 1
 	db.components["test_loose_spin"] = loose
