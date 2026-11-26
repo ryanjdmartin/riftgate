@@ -7,6 +7,7 @@
   {"id": "kind.defend", "text": "Defend", "fills": []},
   {"id": "count.strikes", "text": "×{n}", "fills": ["n"]},
   {"id": "readout.grants", "text": "Grants {status} ×{n}", "fills": ["status", "n"]},
+  {"id": "readout.grants_round_end", "text": "Round End: Gain {status}", "fills": ["status"]},
   {"id": "count.rounds", "text": "for {n} rounds", "fills": ["n"]},
   {"id": "entry.shield", "text": "shield {n}", "fills": ["n"]},
   {"id": "entry.fills_shield", "text": "shield to its maximum", "fills": []},

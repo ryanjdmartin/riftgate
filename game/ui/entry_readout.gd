@@ -155,6 +155,10 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 				# a live source made, so its number reads plain.
 				var own_stacks := f.buff_stacks if not f.spends.is_empty() or f.passes_heat else base.buff_stacks
 				var line := Templates.parts("readout.grants", {"status": str(st.get("name", f.buff_status)), "n": num(str(f.buff_stacks), f.buff_stacks, own_stacks)})
+				# Phased lands as the round ends (Ryan, 15 November: "all sources of Phased should say 'at
+				# the end of this round, grant Phased'"), save in the trial that grants it at once.
+				if f.buff_status == "phased" and not Skirmish.phase_at_once:
+					line = Templates.parts("readout.grants_round_end", {"status": str(st.get("name", f.buff_status))})
 				if f.buff_rounds > 1:
 					line.append(word(Templates.say("count.rounds", {"n": f.buff_rounds})))
 				# The status's chip beside the equipment's mark, as the die's rail carries it with its

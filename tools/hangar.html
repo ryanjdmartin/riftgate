@@ -2551,7 +2551,7 @@ const TEXT_VIEWS = [
   {id: "components", label: "Components", what: "A component's every text: its codex, its flavour and its passive. A locked piece is its machine's own, so its texts are on its machine's card in Chassis.", group: "Maker"},
   {id: "modules", label: "Modules", what: "A module's every text: its rule, its codex and its flavour.", group: "Maker"},
   {id: "foes", label: "Foes", what: "A foe's every text: its codex and flavour, then each move's name and line, then its fall's.", group: "Domain"},
-  {id: "vocabulary", label: "Vocabulary", what: "Every term's entry, the rule as the player reads it, a card a category.", group: "Category"},
+  {id: "vocabulary", label: "Vocabulary", what: "Every term's entry, the rule as the player reads it, a card a term under its category.", group: "Category"},
   {id: "domains", label: "Domains", what: "A domain's flavour beside its name, and the caches' lines.", group: ""},
   {id: "templates", label: "Templates", what: "The words the game composes from a piece's numbers: a component's own rules, its readout's words, its lines on the die's hold in a fight, and a foe move's words. A brace is a value the game fills in ({n}, {per_load}); a template written in forms (one, other) picks one by its count. Under each, the pieces that print it, in the game's words.", group: ""},
   {id: "code", label: "In code", what: "The texts the code still holds: the status lines. Read only here: a note asks a session to change one.", group: ""},
@@ -2577,7 +2577,7 @@ const CODE_CARD = {"code.status": "Status lines"};
 function cardOf(s, view, locked) {
   if (view === "chassis") { const id = s.key === "chassis.entries" ? s.entry : locked.get(s.entry), ch = ctx().chassis.get(id) || {}; return {id: "c:" + id, entity: id, label: ch.name || s.name, group: "maker:" + (ch.maker || "")}; }
   if (view === "components" || view === "modules" || view === "foes") return {id: view[0] + ":" + s.entry, entity: s.entry, label: s.name, group: s.group};
-  if (view === "vocabulary") return {id: "v:" + s.group, entity: s.group, label: groupInfo(s.group).label, group: s.group};
+  if (view === "vocabulary") return {id: "v:" + s.entry, entity: s.entry, label: s.name, group: s.group};
   if (view === "domains") return s.key === "loot.entries" ? {id: "d:caches", entity: "caches", label: "The caches", group: ""} : {id: "d:" + s.entry, entity: s.entry, label: s.name, group: ""};
   if (view === "templates") return {id: "t:" + s.kind, entity: s.kind, label: (textKinds().find(k => k.id === s.kind) || {}).label || s.kind, group: ""};
   return {id: "k:" + s.key, entity: s.key, label: CODE_CARD[s.key] || s.key, group: ""};
@@ -2615,7 +2615,7 @@ const KIND_ROLE = {chassis_codex: "Codex", chassis_flavour: "Flavour", component
 const TITLE_ROLE = {designation: "Designation", passive: "Passive's name", move: "Move's name", "last act": "Last act's name", "upgrade direction": "Upgrade direction's name",
   "offhand form": "Offhand form's name", "upgraded piece": "Upgraded piece's name"};
 function rowLabel(s, card) {
-  if (card.view === "vocabulary" || card.view === "code" || card.view === "templates" || s.key === "loot.entries") return s.name + ((card.view === "code" || card.view === "templates") && s.sub ? " · " + s.sub : "");
+  if (card.view === "code" || card.view === "templates" || s.key === "loot.entries") return s.name + ((card.view === "code" || card.view === "templates") && s.sub ? " · " + s.sub : "");
   const piece = card.view === "chassis" && s.key === "components.entries" ? s.name + " · " : "";
   let role = s.kind === "title" ? (TITLE_ROLE[s.sub] || (s.sub ? s.sub + " (a name)" : "Name")) : (KIND_ROLE[s.kind] || s.kind);
   if (s.kind === "foe_move" && s.path.startsWith("on_death.")) role = "Last act";
@@ -2829,6 +2829,7 @@ function textContext(card) {
 }
 function renderTextView(main, view) {
   const f = tfilter(), info = TEXT_VIEWS.find(v => v.id === view);
+  if (!(state.texpand instanceof Set)) state.texpand = new Set();   // the cards opened whole under a filter
   if (["chassis", "components", "foes", "templates"].includes(view)) want("readouts", ensureReadouts);
   main.append(el("p", {class: "lede"}, info.what));
   const cards = textCards(view), active = textFiltered(f, view);
@@ -2854,9 +2855,15 @@ function renderTextView(main, view) {
       el("div", {class: "tchead"}, el("h3", {}, c.label), el("span", {class: "rcount"}, countWords(n) || "nothing written")));
     const said = textContext(c);
     if (said) card.append(said);
+    // Filtered, a card draws the texts that match alone, the rest a tap away (Ryan, 26 November:
+    // "The text tab lists entire groups, not individual entries").
+    const whole = !active || state.texpand.has(c.id);
     const rows = el("div", {class: "trows"});
-    for (const s of c.slots) rows.append(textRow(s, {label: rowLabel(s, c), hit: active && hits.has(s.id)}));
+    for (const s of c.slots) if (whole || hits.has(s.id)) rows.append(textRow(s, {label: rowLabel(s, c), hit: active && hits.has(s.id)}));
     card.append(rows);
+    const rest = c.slots.length - hits.size;
+    if (active && rest > 0) card.append(el("div", {class: "toolbar"}, el("button", {class: "linkbtn", id: "tx-" + safeId(c.id), onclick: () => { if (whole) state.texpand.delete(c.id); else state.texpand.add(c.id); render(); }},
+      whole ? "Show the matches alone" : `Show its other ${rest} text${rest === 1 ? "" : "s"}`)));
     main.append(card);
   }
   if (draw.length < shown.length) main.append(el("div", {class: "toolbar"}, el("button", {class: "btn", onclick: () => { state.tmore = (state.tmore || 0) + TEXT_CARDS_PAGE; render(); }}, `Show ${Math.min(TEXT_CARDS_PAGE, shown.length - draw.length)} more of ${cardsWord(shown.length - draw.length)}`)));

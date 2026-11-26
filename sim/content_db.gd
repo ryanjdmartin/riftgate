@@ -2136,8 +2136,8 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		var st := str(fd.get("status", ""))
 		var drafted_status: bool = planned and vocabulary.has(st) and vocabulary[st].get("status") != "implemented" \
 			and vocabulary[st].get("category") == "status" and str(vocabulary[st].get("design", {}).get("table", {}).get("on", "")) == "machine"
-		if drafted_status:
-			pass
+		if drafted_status or (planned and st.is_empty()):
+			pass   # a planned piece back in design may grant nothing yet (the Retribution Thurible, Retaliate gone on 26 November)
 		elif not Effects.STATUS.has(st):
 			errs.append("%s: a buff needs 'status', one of %s" % [where, ", ".join(Effects.MECH_STATUSES)])
 		elif not Effects.MECH_STATUSES.has(st):

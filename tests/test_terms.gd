@@ -259,7 +259,8 @@ func test_every_tip_keeps_the_standards_shape() -> void:
 	var took := RegEx.new()
 	took.compile("(?i)\\b(takes?|deals?) (\\d+|\\{N\\}) (hull )?damage\\b")
 	var labels := ["Turn Start", "Turn End", "Round End", "Commit", "On Hit", "When Hit", "After Hit", "After Being Hit", "Resolve",
-		"When defeated", "On Reboot", "Shield Broken", "Hull Damaged", "Skirmish Start", "On Suppressed", "On Burrowed"]
+		"When defeated", "On Reboot", "Shield Broken", "Hull Damaged", "Skirmish Start", "On Suppressed", "On Burrowed",
+		"Hit By Weapon", "On Weapon Hit", "Weapons Gain", "Weapons and Equipment Gain"]
 	var shown := 0
 	for kind in PauseMenu.GLOSSARY:
 		for id in db.vocabulary.keys():

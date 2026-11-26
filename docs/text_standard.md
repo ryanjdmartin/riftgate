@@ -19,7 +19,9 @@ section 4. `tests/test_terms.gd` holds every tip to the mechanical parts.
   (rerolls, Ore). The HUD's own voice (ENEMY PHASE) stays.
 - **Labels.** A timed line opens with its label and a colon, then a capital (rules 10 and 31).
   An always-on line has none.
-- **Conditions** sit inside the line: "On Hit: If targeted, ...". **Riders** land at Resolve.
+- **Conditions** sit inside the line: "On Hit: If targeted, ...". **Riders** land at Resolve and name
+  whom: "to each unit hit". **Hit By Weapon** and **On Weapon Hit** label what only a weapon's hit
+  sets off; **"Weapons Gain:"** what a piece gains (rule 41).
 - **Stacks.** "Apply N X" lays stacks, number first ("Apply 2 Brittle"); "Gain N X" on itself;
   "Reduce stacks by 1", "by half, rounded down", "to 0". A status that never stacks says
   "Consumed" when its own effect uses it up ("At 0 Heat: Consumed to Reboot immediately") and
@@ -107,8 +109,9 @@ A timed line opens with its label, then a colon: Turn Start, Turn End, Round End
 events (rule 31). "Its" never needs to say whose. Past those, the labels the tips use (his "The
 rest is fine", with "When broken -> Shield Broken", and his "Hull Damaged" of 24 November): When
 defeated, On Reboot, Shield Broken, Hull Damaged,
-Skirmish Start, When it would gain X, When X would be reduced, At N stacks, and On X as X is gained
-(his Golden's "On Suppressed", Drill Out's "On Burrowed"). "Lasts the skirmish."
+Skirmish Start, When it would gain X, When X would be reduced, At N stacks, On X as X is gained
+(his Golden's "On Suppressed", Drill Out's "On Burrowed"), Hit By Weapon and On Weapon Hit, and
+X Gain for what a piece gains (rule 41). "Lasts the skirmish."
 or "Lasts the battle." is a line of its own for what never counts down.
 - "As its turn ends it halves" → "Turn End: Reduce stacks by half, rounded down."
 
@@ -299,3 +302,20 @@ its source follows from where it comes from, so a line names only what differs:
   yes-no-no-yes and that becomes cleaner"), and the Mine brings the riders it banked.
 - "Also hits all other Sprites in the same column, dealing {N} damage. The extra hits are not Targeted." → "Also hits all other Sprites in the same column, dealing {N} damage."
 - "for 1 damage, with every effect of the weapon except area" (Ricochet) → "for 1 damage. No effect of the weapon applies."
+
+**41. A weapon's hit, a gain, and whom a rider lands on.** (settled 26 November: his word)
+- *Hit By Weapon* and *On Weapon Hit* label what only a weapon's hit sets off, so an equipment's
+  hit never reads as one (his: "I was avoiding the nuance between a weapon hit and an equipment
+  hit, thinking that the fact that an equipment doesn't deal damage would make things obvious. I
+  think that was wrong. We should use 'Hit By Weapon:' and 'On Weapon Hit:' where applicable").
+  When Hit and On Hit stay for every hit: a Sprite's attack on a Frame, and what an equipment's
+  hit sets off (Lure).
+- *X Gain:* labels what a piece gains while the status lasts (his: "X Gain, such as Weapons gain,
+  should be 'Weapons Gain:'").
+- A rider names whom it lands on: "to each unit hit", "to each Sprite hit" or "to each Frame hit"
+  (his: "Some keywords are missing 'to all targets hit' which I thought was implied but now think
+  is worth the extra words"), in rule 7's words, since *the target* is the one unit a use is aimed
+  at and only its hit is Targeted (rule 40).
+- "When Hit: If by a weapon, consume all stacks." (Cryo) → "Hit By Weapon: Consume all stacks."
+- "Weapons gain Shock." (Charged) → "Weapons Gain: Shock."
+- "Resolve: Apply {N} Brittle per hit." → "Resolve: Apply {N} Brittle per hit to each unit hit."

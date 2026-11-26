@@ -2,16 +2,16 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 213 implemented, 6 planned, 0 idea.
+Status: 213 implemented, 5 planned, 0 idea.
 
 ## Damage
 
 | Term | Codex | Status |
 |---|---|---|
 | **Hit for N** | Shield takes it first, then Armour reduces it.
-Barrier, Brittle, On Hit and When Hit effects apply. | implemented |
+Barrier, Brittle and hit effects apply. | implemented |
 | **Suffer N damage** | Not a hit. Shield takes it first.
-Armour, Barrier, Brittle, On Hit and When Hit effects do not apply. | implemented |
+Armour, Barrier, Brittle and hit effects do not apply. | implemented |
 | **Lose N** | Comes straight off the Hull, HP or Shield named.
 Nothing reduces or adds to it. | implemented |
 
@@ -107,37 +107,36 @@ Cannot be used without Ore. | implemented |
 |---|---|---|
 | **Spread** | Also hits all Sprites beside the target, dealing {N} damage. | implemented |
 | **Penetrate** | Also hits all other Sprites in the same column, dealing {N} damage. | implemented |
-| **Cryo** | Resolve: Apply {N} Cryo per hit. | implemented |
-| **Ablate** | Resolve: Apply {N} Ablate per hit. | implemented |
+| **Cryo** | Resolve: Apply {N} Cryo per hit to each Sprite hit. | implemented |
+| **Ablate** | Resolve: Apply {N} Ablate per hit to each unit hit. | implemented |
 | **Lure** | On Hit: Change intended target to this Frame. | implemented |
 | **Shock** | Resolve: Apply Shocked to each Sprite hit. | implemented |
 | **Expose** | Resolve: Apply 2 Exposed to each unit hit. | implemented |
 | **Disrupt** | Resolve: Sprites hit switch to the next move they can use, keeping their target. | implemented |
 | **Suppress** | Resolve: Apply Suppressed to each Sprite hit. | implemented |
-| **Brittle** | Resolve: Apply {N} Brittle per hit. | implemented |
-| **Sap** | Resolve: Apply {N} Sapped per hit. | implemented |
+| **Brittle** | Resolve: Apply {N} Brittle per hit to each unit hit. | implemented |
+| **Sap** | Resolve: Apply {N} Sapped per hit to each Sprite hit. | implemented |
 | **Chain** | Resolve: All Sprites with Shock lose {N} HP. | implemented |
 | **Rapid** | Resolve: Reroll this die for free, never onto this entry. This entry goes dark for the rest of the round. | implemented |
 | **Instant** | Resolve: Reroll this die for free. May land on this entry again. | implemented |
-| **Jam** | Resolve: Apply Jammed to the entry the target's die shows. | implemented |
+| **Jam** | Resolve: Apply Jammed to the entry shown by each Frame hit. | implemented |
 | **Destroy** | After Hit: If Hull damage was dealt, destroy the entry the target's die shows. | implemented |
-| **Corrupt** | Resolve: Apply {N} Corrupted per hit to the entry the target's die shows. | implemented |
+| **Corrupt** | Resolve: Apply {N} Corrupted per hit to the entry shown by each Frame hit. | implemented |
 | **Purge** | Resolve: Reduce stacks of every Buff on each unit hit by {N}. | implemented |
 | **Cleanse** | Resolve: Remove every Debuff from the target, except those that cannot be cleansed.
-A Sprite's Cleanse removes every Debuff but Suppressed from the Sprite with the most kinds of Debuff. | implemented |
+A Sprite's Cleanse removes every Debuff but Suppressed. | implemented |
 
 ## Status
 
 | Term | Codex | Status |
 |---|---|---|
-| **Juggernaut Drive** | Weapon hits ignore Armour.
+| **Juggernaut Drive** | Weapons Gain: Ignores Armour.
 Resolve: If a weapon was used, consumed. | implemented |
 | **Numbed** | When Suppressed would be applied: Prevent it and reduce stacks by 1.
 Turn End: Reduce stacks by 1. | implemented |
 | **Paradox** | When another Debuff is applied: Gain 1 stack per stack applied.
 At 5 or more stacks: Reduce stacks to 0 and gain Suppressed. | implemented |
-| **Retaliate** | Machine status. While it lasts, a foe that strikes this machine's bare hull is Shocked. It lasts the rounds the component that grants it says. | planned |
-| **Shocked** | When Hit: If targeted, consume to double damage received, before applying defensive effects.
+| **Shocked** | Hit By Weapon: If targeted, consume to double damage received, before applying defensive effects.
 Conducts Chain. | implemented |
 | **Pinned** | When Brittle would be reduced: Consumed to prevent it.
 Turn End: If there is no Brittle, removed. | implemented |
@@ -157,7 +156,7 @@ Resolve: If a weapon was used, removed.
 On Reboot: Removed. | implemented |
 | **Changed Over** | The die rolls the second battery, not the first.
 Lasts the battle. | implemented |
-| **Cryo** | When Hit: If by a weapon, consume all stacks. The attacker loses 1 Heat per stack ({N}). | implemented |
+| **Cryo** | Hit By Weapon: Consume all stacks. The attacker loses 1 Heat per stack ({N}). | implemented |
 | **Armoured** | +1 Armour per stack ({N}).
 Turn Start: Reduce stacks to 0. | implemented |
 | **Hardened Light** | When Hit: If Shield is up, -1 damage received per stack ({N}).
@@ -167,8 +166,7 @@ Shield Broken: Reduce stacks to 0. | implemented |
 On Reboot: Removed. | implemented |
 | **Corrupted** | Commit: Suffer 3 damage per stack ({N}).
 On Reboot: Reduce stacks to 0. | implemented |
-| **Phased** | Immune to all damage. Cannot be targeted or hit. Can still act.
-Other statuses still count down.
+| **Phased** | Cannot be damaged, targeted or hit by anything.
 Round End: Removed. | implemented |
 | **Ablate** | Turn End: Suffer 1 damage per stack ({N}), then reduce stacks by 1. | implemented |
 | **Suppressed** | May not act.
@@ -176,7 +174,7 @@ Turn End: Removed. Gain Numbed equal to stun resist: 1, 2 if massive, 3 if elite
 | **Vitriol** | Turn End: Lose 10% of current HP per stack ({N}), rounded down, then reduce stacks by 1.
 Cannot reduce HP below 1. | implemented |
 | **Web Bomb** | Round End: Consumed to apply Suppressed to this Sprite and the nearest Sprite to its right in the same rank, or to its left if none. | implemented |
-| **Spun Up** | Weapon hits deal +2 damage per stack ({N}).
+| **Spun Up** | On Weapon Hit: +2 damage per stack ({N}).
 Resolve: If a weapon was used, reduce stacks to 0. | implemented |
 | **Ricochet** | Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage. No effect of the weapon applies.
 Hull Damaged: Reduce stacks by half, rounded down.
@@ -185,14 +183,14 @@ Lasts the skirmish. | implemented |
 Skirmish Start: Gain 1 Empowered per 5 Essence.
 Round End: If this Frame killed a Sprite this round, gain 1 Empowered per 5 Essence.
 Lasts the battle. | implemented |
-| **Offhand** | Weapons and equipment used on a Sprite gain the armament shown.
+| **Offhand** | Weapons and Equipment Gain: The armament shown, when used on a Sprite.
 Resolve: If used on a Sprite, switch to the next armament.
 Skirmish Start: Switch to the first armament. | implemented |
-| **Aile Boost** | Weapons gain Indirect reach.
+| **Aile Boost** | Weapons Gain: Indirect reach.
 Resolve: If a weapon was used, consumed. | implemented |
-| **Aile Blitz** | Weapons gain Indirect reach and ignore Armour.
+| **Aile Blitz** | Weapons Gain: Indirect reach and Ignores Armour.
 Resolve: If a weapon was used, consumed. | implemented |
-| **Aile Assault** | Weapons gain Indirect reach.
+| **Aile Assault** | Weapons Gain: Indirect reach.
 Resolve: If a weapon was used, consumed. | implemented |
 | **Parry** | Counts damage prevented by Armour and Barrier from Sprite hits this round.
 Turn Start: The first weapon hit this turn gains +1 damage per 2 damage counted.
@@ -248,9 +246,9 @@ Cannot be cleansed. | implemented |
 Turn Start: Removed. | implemented |
 | **Ward** | Blocks every Debuff and Purge from the other side. Damage still applies.
 Turn Start: Removed. | implemented |
-| **Charged** | Weapons gain Shock.
+| **Charged** | Weapons Gain: Shock.
 Resolve: If a weapon was used, reduce stacks by 1. | implemented |
-| **Supercooled** | Weapons gain Cryo 1.
+| **Supercooled** | Weapons Gain: Cryo 1.
 Resolve: If a weapon was used, reduce stacks by 1. | implemented |
 | **Regenerating** | Turn End: Gain 1 Shield per stack ({N}) on a Frame, or 1 HP per stack on a Sprite, then reduce stacks by 1. | implemented |
 | **Burrowed** | +1 Armour.
@@ -396,7 +394,7 @@ Suppress delays it 1 round. Disrupt cancels it. | implemented |
 | **Follow-up** | Names the move its Sprite announces next round. Suppress or Disrupt on the first cancels the second. Once announced, the second can be Suppressed but not Disrupted. | implemented |
 | **Grudge** | +1 damage per Sprite the team has killed this skirmish. | implemented |
 | **Sprite move** | Each round every Sprite picks a move and a target before your turn, shown on its intent chip. Attack damage is the Sprite's attack times the move's factor. | implemented |
-| **Scorch** | Resolve: Apply {N} Scorched per hit. | implemented |
+| **Scorch** | Resolve: Apply {N} Scorched per hit to each Frame hit. | implemented |
 | **Menace** | A pack's threat rating: a patrol 1 or 2, a formation 3, an elite or a boss 4. The Rupture meter, Anathema and salvage count it. Killing a pack pays its remaining Menace. | implemented |
 | **Elite** | A unique Sprite leading its own pack, rated 4 Menace, arriving at a Fracture. It stands at the battle's tier. | implemented |
 | **Seal** | The boss cannot be attacked or join a skirmish until the Rupture breaks its seal. | implemented |
@@ -452,7 +450,6 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Golden Rage** (implemented): The Thunder Ape's (4 November); see Golden. Its weight is content's, 2 so it comes about a round in three while calm.
 - **Merge** (implemented): The King Gel's (30 October): every Gel, Bubble Gel, Metal Gel and half on the field. Content: effect merge, foe (an id or a list), value (the lift a foe taken in). A foe taken in leaves no last act and no split and is no kill of the team's; its pack's tally still counts it gone. It needs its kinds beside it, so the King Gel's escort is its own (an escort that names its boss).
 - **Purge** (implemented): One id, dispel, on both sides (28 October); numbered 2 November (Ryan: "lower everything by N and price accordingly", a softer answer to armour and damage stacking that prices cheap and common; the Null Field Emitter at Purge 2, a placeholder). One purge on either side (Effects.purge): N stacks off every buff, whatever granted it (Ryan, 8 November: "A stack is a stack, doesn't matter where it came from"); retired with it the purge by source of 28 October (a die entry's stacks gone for good, a store's, a form's or a passive's put to sleep until the player's turn), which he called cryptic. What the unit is, its form or its passive mechanic, is an Ability and no buff, so no purge reaches it (the same day).
-- **Retaliate** (planned): Cut as a buff word on 15 November (Ryan's mark on the vocabulary's table), its rule out of the engine. Kept as a planned draft, never shown, so the Retribution Thurible, back in design the same day ("It can have unique text but not until we sort out our fundamentals"), and two foes' planned moves still read: when the Thurible comes back its rule is its own text, and this entry goes.
 - **Pinned** (implemented): Ryan, 11 November: "The Flak pin should be its own status that gets applied for one turn. I assume we're going to want a similar one for burning as well." Pinned Flak until 15 November, and what it holds Brittle since; the name is his ("Just \"Pinned.\"").
 - **Seared** (implemented): Ryan, 11 November: coded in beside Brittle's pin, "since the Mastema will want it as a fitted piece, if nothing else". No piece lays it yet. The name is his, 15 November: "Rename 'Seared.'"
 - **Sapped** (implemented): Ryan, 11 November: "I'd like to code in Weaken ... Weaken (debuff): Deals 1 less damage per stack with attacks ... Weaken can apply to both sides, it's not a bad soft CC from the foes to apply"; then "Weaken can change till after it's next turn then, instead of round end. Let's use Sapped." So a foe's Sapped laid in its turn reaches the machine's next attack.

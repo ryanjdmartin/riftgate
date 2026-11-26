@@ -24,7 +24,7 @@
    "id": "damage_hit",
    "category": "damage",
    "name": "Hit for N",
-   "codex": "Shield takes it first, then Armour reduces it.\nBarrier, Brittle, On Hit and When Hit effects apply.",
+   "codex": "Shield takes it first, then Armour reduces it.\nBarrier, Brittle and hit effects apply.",
    "status": "implemented",
    "design": {
     "holes": "The three ways damage lands, the standard's rule 39 (Ryan, 24 November: \"I like hit for N, suffer N damage, and lose N hull as the format examples that we want\"), given a heading of their own in the keywords list on his yes of 25 November to a Damage section in place of reminders on each tip. Listed, never matched in a line (Terms.UNMATCHED): \"Hit\" is a label's word. The text is a session's draft."
@@ -34,7 +34,7 @@
    "id": "damage_suffer",
    "category": "damage",
    "name": "Suffer N damage",
-   "codex": "Not a hit. Shield takes it first.\nArmour, Barrier, Brittle, On Hit and When Hit effects do not apply.",
+   "codex": "Not a hit. Shield takes it first.\nArmour, Barrier, Brittle and hit effects do not apply.",
    "status": "implemented",
    "design": {
     "holes": "The three ways damage lands, the standard's rule 39 (Ryan, 24 November: \"I like hit for N, suffer N damage, and lose N hull as the format examples that we want\"), given a heading of their own in the keywords list on his yes of 25 November to a Damage section in place of reminders on each tip. Listed, never matched in a line (Terms.UNMATCHED): \"Hit\" is a label's word. The text is a session's draft."
@@ -244,7 +244,7 @@
    "id": "cryo",
    "category": "keyword",
    "name": "Cryo",
-   "codex": "Resolve: Apply {N} Cryo per hit.",
+   "codex": "Resolve: Apply {N} Cryo per hit to each Sprite hit.",
    "status": "implemented",
    "design": {
     "holes": "Other pieces may lay it (marked for reuse as a healthier ally cooling than a vent). A rider on the mark is benched until the roster has room. The cooling a stack is a placeholder."
@@ -254,7 +254,7 @@
    "id": "ablate",
    "category": "keyword",
    "name": "Ablate",
-   "codex": "Resolve: Apply {N} Ablate per hit.",
+   "codex": "Resolve: Apply {N} Ablate per hit to each unit hit.",
    "status": "implemented",
    "design": {
     "holes": "Its number rides on the face beside the keyword (ablate), and the validator asks for it. Burn until 15 November: the word is Ryan's, for an eroding that is not only fire (\"Ablating or ablate is very clinical, it fits the military notation, and evokes eating though armour to me\"). A session's draft, his to write."
@@ -324,7 +324,7 @@
    "id": "brittle",
    "category": "keyword",
    "name": "Brittle",
-   "codex": "Resolve: Apply {N} Brittle per hit.",
+   "codex": "Resolve: Apply {N} Brittle per hit to each unit hit.",
    "status": "implemented",
    "design": {
     "holes": "Its number rides on the face beside the keyword (brittle), and the validator asks for it. Flak on our side and Crush on the foes' until 15 November, one word on both since (Ryan: \"Crushed and flak - agreed, brittle\"). The word names the state, so a piece that lays it reads Brittle 2 and the Flak pieces keep their names; a verb for it is his to pick if he wants one. A session's draft, his to write."
@@ -334,7 +334,7 @@
    "id": "sap",
    "category": "keyword",
    "name": "Sap",
-   "codex": "Resolve: Apply {N} Sapped per hit.",
+   "codex": "Resolve: Apply {N} Sapped per hit to each Sprite hit.",
    "status": "implemented",
    "design": {
     "holes": "The keyword that lays Ryan's Sapped (11 November), first on the Baboon's Redshift Emitter."
@@ -344,7 +344,7 @@
    "id": "juggernaut",
    "category": "status",
    "name": "Juggernaut Drive",
-   "codex": "Weapon hits ignore Armour.\nResolve: If a weapon was used, consumed.",
+   "codex": "Weapons Gain: Ignores Armour.\nResolve: If a weapon was used, consumed.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 11 November: \"After gaining Barrier, its next weapon attack gains Breach. The next attack breach will need to be represented by a purgeable buff, I'd just call it 'Juggernaut Breach.'\" 15 November, Breach cut on our side: 'Change to explicit \"ignores armour.\"', so the state shows under the passive's own name and the word Breach is gone from the game.",
@@ -453,7 +453,7 @@
    "id": "jam",
    "category": "keyword",
    "name": "Jam",
-   "codex": "Resolve: Apply Jammed to the entry the target's die shows.",
+   "codex": "Resolve: Apply Jammed to the entry shown by each Frame hit.",
    "status": "implemented",
    "design": {
     "holes": "Disable until 15 November (Ryan: \"Rename to Jammed\"); the rider follows the pattern, Jam lays Jammed."
@@ -503,7 +503,7 @@
    "id": "corrupt",
    "category": "keyword",
    "name": "Corrupt",
-   "codex": "Resolve: Apply {N} Corrupted per hit to the entry the target's die shows.",
+   "codex": "Resolve: Apply {N} Corrupted per hit to the entry shown by each Frame hit.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -553,33 +553,17 @@
    "id": "cleanse",
    "category": "keyword",
    "name": "Cleanse",
-   "codex": "Resolve: Remove every Debuff from the target, except those that cannot be cleansed.\nA Sprite's Cleanse removes every Debuff but Suppressed from the Sprite with the most kinds of Debuff.",
+   "codex": "Resolve: Remove every Debuff from the target, except those that cannot be cleansed.\nA Sprite's Cleanse removes every Debuff but Suppressed.",
    "status": "implemented",
    "design": {
     "holes": ""
    }
   },
   {
-   "id": "retaliate",
-   "category": "status",
-   "name": "Retaliate",
-   "codex": "Machine status. While it lasts, a foe that strikes this machine's bare hull is Shocked. It lasts the rounds the component that grants it says.",
-   "status": "planned",
-   "design": {
-    "holes": "Cut as a buff word on 15 November (Ryan's mark on the vocabulary's table), its rule out of the engine. Kept as a planned draft, never shown, so the Retribution Thurible, back in design the same day (\"It can have unique text but not until we sort out our fundamentals\"), and two foes' planned moves still read: when the Thurible comes back its rule is its own text, and this entry goes.",
-    "table": {
-     "kind": "buff",
-     "on": "machine",
-     "stacks": "No: one does all it does",
-     "lasts": "The buff's rounds"
-    }
-   }
-  },
-  {
    "id": "shocked",
    "category": "status",
    "name": "Shocked",
-   "codex": "When Hit: If targeted, consume to double damage received, before applying defensive effects.\nConducts Chain.",
+   "codex": "Hit By Weapon: If targeted, consume to double damage received, before applying defensive effects.\nConducts Chain.",
    "status": "implemented",
    "design": {
     "holes": "",
@@ -707,7 +691,7 @@
    "id": "cryoed",
    "category": "status",
    "name": "Cryo",
-   "codex": "When Hit: If by a weapon, consume all stacks. The attacker loses 1 Heat per stack ({N}).",
+   "codex": "Hit By Weapon: Consume all stacks. The attacker loses 1 Heat per stack ({N}).",
    "status": "implemented",
    "design": {
     "holes": "Engine id cryoed, since the keyword holds cryo; the player reads Cryo on both.",
@@ -803,7 +787,7 @@
    "id": "phased",
    "category": "status",
    "name": "Phased",
-   "codex": "Immune to all damage. Cannot be targeted or hit. Can still act.\nOther statuses still count down.\nRound End: Removed.",
+   "codex": "Cannot be damaged, targeted or hit by anything.\nRound End: Removed.",
    "status": "implemented",
    "design": {
     "holes": "Ryan's mark, 15 November: \"New effect: \"Cannot be damaged or targeted by anything until the end of this round.\" We remove the awkward act clause, but still ensure that it cannot be buffed or interacted with by allies until it unphases\"; \"all sources of Phased should say \"at the end of this round, grant Phased.\"\"; and his answer: \"it's a safe reboot if you can pull it off. All phased granters need to be gated, it should be earned, with the caveat that you have to survive the current round\". Engine ids phased and phasing, the wait a source lays, a buff a Purge takes. Its own heat does not burn it (his ruling, 16 November, on a session's read that had the burn land: \"it shouldn't take damage from overheating since we don't need the exception. It does accumulate the stacks, though, which it will feel the round after\"). Everything it carries ticks (16 November: \"Everything ticks during phased. It doesn't take damage but it's a way of waiting out a debuff. That's why my clause of the self-cleanse and self-purge is our way out if it's broken\"), so its Ablating fades a stack a turn and takes nothing, and its Regenerating runs. A Volatile bite and a corrupted entry's bite are blocked with the rest (\"I think we block the damage as a feature, and see how bad it is once we have real hull cost pieces that matter\"). A session's reads of his words: it may spend on itself, and its Lure turns no pick. His spare clause is held until play asks for it (\"If that's too strong, I would add \"Remove all buffs and debuffs. Cannot gain any buffs or debuffs while Phased.\"\"). A foe's Phased is built since 17 November, on his yes to the bench's row for the Spectre and the Wraith (\"Phased on foes can be less strict since it's balanced around their kit and theme\"; 16 November: \"Phased foes act\"): the engine's effect phase, a move of a foe's own or a step of one, the wait landing as the round ends. Less strict in one way, a session's read: its own side still reaches it. Never the last foe standing, never two rounds running. Until 15 November: cannot act, take damage or be targeted until the round's end, granted at once to a machine yet to act. A session's draft, his to write.",
@@ -883,7 +867,7 @@
    "id": "spun_up",
    "category": "status",
    "name": "Spun Up",
-   "codex": "Weapon hits deal +2 damage per stack ({N}).\nResolve: If a weapon was used, reduce stacks to 0.",
+   "codex": "On Weapon Hit: +2 damage per stack ({N}).\nResolve: If a weapon was used, reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "Spent whole by the next weapon, equipment leaving it: weapon only until balance says otherwise (Ryan, 26 October).",
@@ -931,7 +915,7 @@
    "id": "offhand",
    "category": "status",
    "name": "Offhand",
-   "codex": "Weapons and equipment used on a Sprite gain the armament shown.\nResolve: If used on a Sprite, switch to the next armament.\nSkirmish Start: Switch to the first armament.",
+   "codex": "Weapons and Equipment Gain: The armament shown, when used on a Sprite.\nResolve: If used on a Sprite, switch to the next armament.\nSkirmish Start: Switch to the first armament.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Only its offhand swaps\"; \"It cycles after a spend\"; \"remove the manual weapon cycle\"; the spends that carry its rider turn it, his answer of the same day. The chip takes its armament's name and line (Beam Rifle, Beam Sword, Beam Shield, and the branches' Saber, Buckler, Bazooka and Pavise), each the passive's or a step's. The text is a session's draft.",
@@ -947,7 +931,7 @@
    "id": "aile_boost",
    "category": "status",
    "name": "Aile Boost",
-   "codex": "Weapons gain Indirect reach.\nResolve: If a weapon was used, consumed.",
+   "codex": "Weapons Gain: Indirect reach.\nResolve: If a weapon was used, consumed.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Rapid. Next weapon strike gains Indirect reach\"; \"Next weapon strike -> Next weapon fired. Applies to the whole spend\"; \"Booster's buff is the booster's name\". The text is a session's draft.",
@@ -963,7 +947,7 @@
    "id": "aile_blitz",
    "category": "status",
    "name": "Aile Blitz",
-   "codex": "Weapons gain Indirect reach and ignore Armour.\nResolve: If a weapon was used, consumed.",
+   "codex": "Weapons Gain: Indirect reach and Ignores Armour.\nResolve: If a weapon was used, consumed.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Aile Booster -> Aile Blitzer: 'Rapid. Next weapon strike gains Indirect reach and ignores armour.'\"; its name his (\"'Aile Blitz'\"). The text is a session's draft.",
@@ -979,7 +963,7 @@
    "id": "aile_assault",
    "category": "status",
    "name": "Aile Assault",
-   "codex": "Weapons gain Indirect reach.\nResolve: If a weapon was used, consumed.",
+   "codex": "Weapons Gain: Indirect reach.\nResolve: If a weapon was used, consumed.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Aile Booster -> Aile Assaulter: 'Rapid. Next weapon strike gains Indirect reach. Gain 1 Empowered.'\"; its name his (\"'Aile Assault'\"). The text is a session's draft.",
@@ -2357,7 +2341,7 @@
    "id": "scorch",
    "category": "foe",
    "name": "Scorch",
-   "codex": "Resolve: Apply {N} Scorched per hit.",
+   "codex": "Resolve: Apply {N} Scorched per hit to each Frame hit.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -2413,7 +2397,7 @@
    "id": "charged",
    "category": "status",
    "name": "Charged",
-   "codex": "Weapons gain Shock.\nResolve: If a weapon was used, reduce stacks by 1.",
+   "codex": "Weapons Gain: Shock.\nResolve: If a weapon was used, reduce stacks by 1.",
    "status": "implemented",
    "design": {
     "holes": "The Shock primer (Ryan, 2 November), Primed's cousin, so Chain is the arcs alone and the Shock supply is a kit choice; a keyword on the weapon fired, never a mark per hit (3 November: \"a multi-hit weapon with Shock would apply it after both hits\"), so a strikes gun never cashes what it just laid. Its first granter is the Storm Petrel's lure in its Striker branch (17 November: \"adds a self-grant of Charged stacks to the lure\"), two stacks a spend.",
@@ -2429,7 +2413,7 @@
    "id": "supercooled",
    "category": "status",
    "name": "Supercooled",
-   "codex": "Weapons gain Cryo 1.\nResolve: If a weapon was used, reduce stacks by 1.",
+   "codex": "Weapons Gain: Cryo 1.\nResolve: If a weapon was used, reduce stacks by 1.",
    "status": "implemented",
    "design": {
     "holes": "The Cryo primer (Ryan, 2 November: \"laying 1 cryo at a time makes sense, keeps it a little unique, and avoids massive cooling spikes\"; the name his pick), so any gun is a Cryo setter for a turn and the Cryo synergies open past the Cryo Flinger; a stack a strike after the hits (3 November: \"resulting in 2 applications, not apply-cash-apply-cash, and not hit-hit-apply once\"). No piece grants it yet.",
