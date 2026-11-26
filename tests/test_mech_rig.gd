@@ -1452,9 +1452,10 @@ func test_a_heat_glow_carries_its_machines_heat_in_its_colour_and_its_light() ->
 
 func test_a_count_display_lights_its_first_parts_and_a_fall_flares_them() -> void:
 	# The Cassowary's capacitor (Ryan, 2 November: "charging up for the sixth hit of its passive"):
-	# a cell lights for each stack of Sustained Recoil, five at its most, and the hit that finds
-	# five, the one its Syntropy Cylinder doubles, discharges them, all six flaring and going dark
-	# (Ryan, 26 November). Headless the cells have no lit surfaces, so their light is read off the
+	# a cell lights for each stack of Sustained Recoil and one more for the hit to come (Ryan, 26
+	# November: "either only 5, or that it has +1 to the current count"), so all six are lit when
+	# its Syntropy Cylinder doubles the next hit, and that hit discharges them, all six flaring, the
+	# first lighting again. Headless the cells have no lit surfaces, so their light is read off the
 	# display itself.
 	var pair := _rig_for("cassowary", 2)
 	var rig: MechRig = pair[0]
@@ -1462,6 +1463,7 @@ func test_a_count_display_lights_its_first_parts_and_a_fall_flares_them() -> voi
 	var d: Dictionary = rig.count_displays[0]
 	assert_eq(str(d["source"]), "sustained_recoil", "showing its Sustained Recoil")
 	assert_eq((d["parts"] as Array).size(), 6, "on six cells")
+	assert_eq(int(d["ahead"]), 1, "a cell lit ahead, for the hit to come")
 	var on := float(d["on"])
 	var off := float(d["off"])
 	var flare := float(d["flare"])
@@ -1473,33 +1475,36 @@ func test_a_count_display_lights_its_first_parts_and_a_fall_flares_them() -> voi
 			rig.tick(1.0 / 60.0)
 			t += 1.0 / 60.0
 	for i in range(6):
-		assert_eq(lit.call(i), off, "dark before anything is stacked (cell %d)" % (i + 1))
+		assert_eq(lit.call(i), off, "dark before the fight shows it (cell %d)" % (i + 1))
 	assert_true(rig.show_counts({"sustained_recoil": 2}), "the first look")
-	assert_eq([lit.call(0), lit.call(1), lit.call(2)], [on, on, off], "shows its number as it stands")
+	assert_eq([lit.call(0), lit.call(1), lit.call(2), lit.call(3)], [on, on, on, off], "two stacks and the hit to come: three lit")
 	assert_false(rig.show_counts({"sustained_recoil": 2}), "the same number changes nothing")
 	assert_false(rig.show_counts({"ammo": 9}), "nor a number it does not show")
 	assert_true(rig.show_counts({"sustained_recoil": 5}), "three hits more")
 	settle.call(0.05)
-	assert_true(lit.call(2) > off and lit.call(2) < on, "a cell lights over a moment (%f)" % lit.call(2))
+	assert_true(lit.call(3) > off and lit.call(3) < on, "a cell lights over a moment (%f)" % lit.call(3))
 	settle.call(0.6)
-	assert_eq(rig.count_shown("sustained_recoil"), 5, "five lit")
-	assert_eq([lit.call(4), lit.call(5)], [on, off], "the sixth dark: the next hit is the one that doubles")
-	assert_true(rig.show_counts({"sustained_recoil": 0}), "the hit that doubles")
+	assert_eq(rig.count_shown("sustained_recoil"), 6, "five stacks: all six lit, the next hit the one that doubles")
+	assert_eq(lit.call(5), on, "the sixth lit")
+	assert_true(rig.show_counts({"sustained_recoil": 0}), "the hit that doubles, its stacks spent")
 	for i in range(6):
 		assert_eq(lit.call(i), flare, "flares every cell (%d)" % (i + 1))
 	settle.call(0.3)
-	assert_true(lit.call(0) > off and lit.call(0) < flare, "and fades (%f)" % lit.call(0))
+	assert_true(lit.call(1) > off and lit.call(1) < flare, "and fades (%f)" % lit.call(1))
 	settle.call(2.0)
-	for i in range(6):
-		assert_eq(lit.call(i), off, "dark again (cell %d)" % (i + 1))
+	assert_eq(lit.call(0), on, "the first lit again: the next hit is the first")
+	for i in range(1, 6):
+		assert_eq(lit.call(i), off, "the rest dark again (cell %d)" % (i + 1))
 	assert_true(rig.show_counts({"sustained_recoil": 9}) and rig.count_shown("sustained_recoil") == 6, "a number past its cells lights them all")
-	# RIFTGATE_COUNT_DEBUG counts it up a cell a second until it falls, to judge it running.
-	rig.show_counts({"sustained_recoil": 0})
+	# RIFTGATE_COUNT_DEBUG counts it up a cell a second until it falls, to judge it running, in
+	# cells, its cell ahead among them.
 	rig.count_debug = true
 	settle.call(1.05)
-	assert_eq(rig.count_shown("sustained_recoil"), 1, "the switch counts a cell a second")
-	settle.call(6.0)
-	assert_eq(rig.count_shown("sustained_recoil"), 0, "past its last cell it falls")
+	assert_eq(rig.count_shown("sustained_recoil"), 0, "past its last cell it falls, every cell dark")
+	settle.call(1.0)
+	assert_eq(rig.count_shown("sustained_recoil"), 1, "then the switch counts a cell a second")
+	settle.call(5.0)
+	assert_eq(rig.count_shown("sustained_recoil"), 6, "up to all six")
 	pair[1].free()
 	var plain := _rig_for("clydesdale", 2)
 	assert_false((plain[0] as MechRig).show_counts({"sustained_recoil": 3, "ammo": 3}), "a model with no display shows nothing")

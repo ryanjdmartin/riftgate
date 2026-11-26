@@ -203,7 +203,7 @@ var _held_on: Dictionary = {}      # status -> whether it is held (hold_spin)
 var _held_speed: Dictionary = {}   # joint -> degrees a second it turns at now, eased toward what its held statuses ask
 var spin_debug: bool = false       # RIFTGATE_SPIN_DEBUG: every status's spin held and let go in turn
 var _spin_debug_t := 0.0
-var count_displays: Array = []     # [{"source", "parts": [[[material, its light at rest], ...] a part], "on", "off", "flare", "n", "k": [each part's light now]}]: the sidecar's counts (b.count)
+var count_displays: Array = []     # [{"source", "parts": [[[material, its light at rest], ...] a part], "on", "off", "flare", "ahead", "n", "k": [each part's light now]}]: the sidecar's counts (b.count)
 var count_debug: bool = false      # RIFTGATE_COUNT_DEBUG: every display counts up a part a second until it falls
 var _count_debug_t := 0.0
 var heat_glow: Dictionary = {}     # the sidecar's heat glow: {"mats": [[material, its standing floor]], "cold": Color, "hot": Color, "image": Image, "tile": ImageTexture}, empty for a model with none
@@ -931,22 +931,25 @@ func _setup_counts(cs: Variant) -> void:
 			parts.append(lit)
 			k.append(off)
 		count_displays.append({"source": str(c.get("source", "")), "parts": parts, "on": float(c.get("on", 1.5)), "off": off,
-			"flare": float(c.get("flare", 0.0)), "n": -1, "k": k})
+			"flare": float(c.get("flare", 0.0)), "ahead": int(c.get("ahead", 0)), "n": -1, "k": k})
 	_light_counts()
 
 
 ## Show the numbers the screen passes (COUNT_SOURCES: the Cassowary's capacitor reads
-## `sustained_recoil`, a cell a stack) on the model's count displays: the first n parts lit, the
-## rest dark. A number that falls flares every part of its display and lets them all go dark (the
-## capacitor discharging on the hit that finds five, the one its Syntropy Cylinder doubles); the
-## first look shows its number as it stands. True when a display changes.
+## `sustained_recoil`, a cell a stack) on the model's count displays: the first n parts lit, and a
+## display's `ahead` more (the capacitor's one, for the hit to come: Ryan, 26 November, "either
+## only 5, or that it has +1 to the current count", so its six cells are all lit when the next hit
+## doubles), the rest dark. A number that falls flares every part of its display and lets them all
+## go dark (the capacitor discharging on the hit that finds five, the one its Syntropy Cylinder
+## doubles), its cells ahead lighting again; the first look shows its number as it stands. True
+## when a display changes.
 func show_counts(values: Dictionary) -> bool:
 	var changed := false
 	for d in count_displays:
 		if not values.has(d["source"]):
 			continue
 		var size := (d["parts"] as Array).size()
-		var n := clampi(int(values[d["source"]]), 0, size)
+		var n := clampi(int(values[d["source"]]) + int(d["ahead"]), 0, size)
 		var was := int(d["n"])
 		if n == was:
 			continue
@@ -1268,7 +1271,7 @@ func tick(delta: float) -> void:
 			_count_debug_t -= COUNT_DEBUG_PERIOD
 			var up := {}
 			for d in count_displays:
-				up[d["source"]] = (maxi(0, int(d["n"])) + 1) % ((d["parts"] as Array).size() + 1)   # up to every part lit, then it falls
+				up[d["source"]] = (maxi(0, int(d["n"])) + 1) % ((d["parts"] as Array).size() + 1) - int(d["ahead"])   # a part more lit, up to every part, then it falls (counted in parts, what the display lights ahead taken off)
 			show_counts(up)
 	_counts_step(delta)
 	if heat_glow_debug and not heat_glow.is_empty():
