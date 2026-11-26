@@ -88,6 +88,9 @@ document's job and every command are in `README.md`.
   reads it, "Weapons Gain:", a rider naming each unit hit), Phased's tip his line and its sources
   "Round End: Gain Phased", Retaliate gone, the Text tab a card a term with a filter drawing its
   matches alone; Purge on both sides and the Sprites' Cleanse on Suppressed wait on his answers.
+  The same day a grant became a block (his Sapped of 26 November): "Attacks Gain:" or "Weapons
+  Gain:" over lines indented two spaces, their events bare ("Hit:", "Resolve:"), drawn in the game
+  beside a bar; "On Hit" and "On Weapon Hit" are gone.
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
   (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks
@@ -123,7 +126,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1485 tests, 406,808 checks, green on Godot 4.8-beta4 (26 November, rule 41's labels, Retaliate gone, the Text tab a card a term). The runner fails a run
+- Tests: 1486 tests, 407,081 checks, green on Godot 4.8-beta4 (26 November, a grant a block in the tips). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).

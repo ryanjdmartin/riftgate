@@ -264,7 +264,7 @@
    "id": "lure",
    "category": "keyword",
    "name": "Lure",
-   "codex": "On Hit: Change intended target to this Frame.",
+   "codex": "Hit: Change intended target to this Frame.",
    "status": "implemented",
    "design": {
     "holes": "No status and no chip: the arrow is the record. A draw by an ally is parked (the bible's redirection row)."
@@ -344,7 +344,7 @@
    "id": "juggernaut",
    "category": "status",
    "name": "Juggernaut Drive",
-   "codex": "Weapons Gain: Ignores Armour.\nResolve: If a weapon was used, consumed.",
+   "codex": "Weapons Gain:\n  Ignores Armour.\n  Resolve: Consumed.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 11 November: \"After gaining Barrier, its next weapon attack gains Breach. The next attack breach will need to be represented by a purgeable buff, I'd just call it 'Juggernaut Breach.'\" 15 November, Breach cut on our side: 'Change to explicit \"ignores armour.\"', so the state shows under the passive's own name and the word Breach is gone from the game.",
@@ -611,7 +611,7 @@
    "id": "sapped",
    "category": "status",
    "name": "Sapped",
-   "codex": "On Hit: -1 damage dealt per stack ({N}).\nTurn End: Reduce stacks to 0.",
+   "codex": "Attacks Gain:\n  Hit: -1 damage dealt per stack ({N}).\nTurn End: Reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 11 November: \"I'd like to code in Weaken ... Weaken (debuff): Deals 1 less damage per stack with attacks ... Weaken can apply to both sides, it's not a bad soft CC from the foes to apply\"; then \"Weaken can change till after it's next turn then, instead of round end. Let's use Sapped.\" So a foe's Sapped laid in its turn reaches the machine's next attack.",
@@ -643,7 +643,7 @@
    "id": "overcharged",
    "category": "status",
    "name": "Empowered",
-   "codex": "On Hit: +1 damage per stack ({N}).\nTurn End: Reduce stacks by half, rounded down.",
+   "codex": "Weapons Gain:\n  Hit: +1 damage dealt per stack ({N}).\nTurn End: Reduce stacks by half, rounded down.",
    "status": "implemented",
    "design": {
     "holes": "Every grant is one status on the machine and the stacks add up. A halving rule has no duration, so a buff component grants stacks and no rounds. The name is a placeholder. It halves at END TURN since 16 November (Ryan: \"Empowered should decay at the end of turn, clearly, not end of round\"), so what a machine gains in the enemy's turn it carries whole into its next; at the round's end until then.",
@@ -659,7 +659,7 @@
    "id": "sealed",
    "category": "status",
    "name": "Sealed",
-   "codex": "+3 Armour. Cooling disabled.\nTurn End: Gain 3 Heat.\nResolve: If a weapon was used, removed.\nOn Reboot: Removed.",
+   "codex": "+3 Armour.\nCooling disabled.\nTurn End: Gain 3 Heat.\nWeapons Gain:\n  Resolve: Removed.\nOn Reboot: Removed.",
    "status": "implemented",
    "design": {
     "holes": "One chip, renewing, never stacking: the armour it grants is tied to the form. The numbers are placeholders.",
@@ -739,7 +739,7 @@
    "id": "primed",
    "category": "status",
    "name": "Primed",
-   "codex": "Resolve: If this was an attack, apply 1 Ablate per hit and reduce stacks by 1.",
+   "codex": "Attacks Gain:\n  Resolve: Apply 1 Ablate per hit to each unit hit, then reduce stacks by 1.",
    "status": "implemented",
    "design": {
     "holes": "The third primer since 15 November, beside Charged and Supercooled (Ryan: \"give it the same format as cryo ... use a stack on firing\"; \"Primed - agreed, how many Ablate stacks does each Primed stack apply? Just one, like supercooled?\"; one, since Ablate 1 on a gun measures as about the point a Charged stack's Shock does). Until then every blow left a stack of Ablating a stack of Primed, for a buff's rounds on a machine and one move on a foe. A placeholder name.",
@@ -867,7 +867,7 @@
    "id": "spun_up",
    "category": "status",
    "name": "Spun Up",
-   "codex": "On Weapon Hit: +2 damage per stack ({N}).\nResolve: If a weapon was used, reduce stacks to 0.",
+   "codex": "Weapons Gain:\n  Hit: +2 damage dealt per stack ({N}).\n  Resolve: Reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "Spent whole by the next weapon, equipment leaving it: weapon only until balance says otherwise (Ryan, 26 October).",
@@ -883,7 +883,7 @@
    "id": "ricochet",
    "category": "status",
    "name": "Ricochet",
-   "codex": "Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage. No effect of the weapon applies.\nHull Damaged: Reduce stacks by half, rounded down.\nLasts the skirmish.",
+   "codex": "Weapons Gain:\n  Resolve: Hit the target again once per stack ({N}) for 1 damage. No effect of the weapon applies.\nHull Damaged: Reduce stacks by half, rounded down.\nLasts the skirmish.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 12 November: \"Ricochet (buff): After firing a weapon, it hits the primary target 1 more time per stack, dealing 1 damage each time and applying all effects other than area keywords\"; \"I'm leaving what applies in the ricochets open, if applying unique effects N more times is broken, then we dial it back and explicitly say 'keywords' instead of 'effects'\"; 11 November: \"Lose half stacks of Ricochet on any hull damage\". His first thought, a Ricochet on every foe a weapon hits, he dropped with Sweep. Claude's readings, built on his go and his to move: 1 in place of the entry's number and of its reads of the foe, the firer's adds on it; half rounded down at each blow, bite or overheat that takes hull, so a lone stack is lost; no cap; a buff a Purge takes.",
@@ -915,7 +915,7 @@
    "id": "offhand",
    "category": "status",
    "name": "Offhand",
-   "codex": "Weapons and Equipment Gain: The armament shown, when used on a Sprite.\nResolve: If used on a Sprite, switch to the next armament.\nSkirmish Start: Switch to the first armament.",
+   "codex": "Uses on a Sprite Gain:\n  The armament shown.\n  Resolve: Switch to the next armament.\nSkirmish Start: Switch to the first armament.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Only its offhand swaps\"; \"It cycles after a spend\"; \"remove the manual weapon cycle\"; the spends that carry its rider turn it, his answer of the same day. The chip takes its armament's name and line (Beam Rifle, Beam Sword, Beam Shield, and the branches' Saber, Buckler, Bazooka and Pavise), each the passive's or a step's. The text is a session's draft.",
@@ -931,7 +931,7 @@
    "id": "aile_boost",
    "category": "status",
    "name": "Aile Boost",
-   "codex": "Weapons Gain: Indirect reach.\nResolve: If a weapon was used, consumed.",
+   "codex": "Weapons Gain:\n  Indirect.\n  Resolve: Consumed.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Rapid. Next weapon strike gains Indirect reach\"; \"Next weapon strike -> Next weapon fired. Applies to the whole spend\"; \"Booster's buff is the booster's name\". The text is a session's draft.",
@@ -947,7 +947,7 @@
    "id": "aile_blitz",
    "category": "status",
    "name": "Aile Blitz",
-   "codex": "Weapons Gain: Indirect reach and Ignores Armour.\nResolve: If a weapon was used, consumed.",
+   "codex": "Weapons Gain:\n  Indirect.\n  Ignores Armour.\n  Resolve: Consumed.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Aile Booster -> Aile Blitzer: 'Rapid. Next weapon strike gains Indirect reach and ignores armour.'\"; its name his (\"'Aile Blitz'\"). The text is a session's draft.",
@@ -963,7 +963,7 @@
    "id": "aile_assault",
    "category": "status",
    "name": "Aile Assault",
-   "codex": "Weapons Gain: Indirect reach.\nResolve: If a weapon was used, consumed.",
+   "codex": "Weapons Gain:\n  Indirect.\n  Resolve: Consumed.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 19 November: \"Aile Booster -> Aile Assaulter: 'Rapid. Next weapon strike gains Indirect reach. Gain 1 Empowered.'\"; its name his (\"'Aile Assault'\"). The text is a session's draft.",
@@ -1979,7 +1979,7 @@
    "id": "consumes",
    "category": "component_property",
    "name": "Consumes",
-   "codex": "On Hit: If a weapon, consume all stacks of the named status on the Sprite hit. +{N} damage per stack consumed.\nCommit: If equipment, consume up to {N} of the named count from this Frame. Gain 1 stack of the granted status per one consumed.\nEquipment cannot be used with nothing to consume.",
+   "codex": "Hit: If a weapon, consume all stacks of the named status on the Sprite hit. +{N} damage per stack consumed.\nCommit: If equipment, consume up to {N} of the named count from this Frame. Gain 1 stack of the granted status per one consumed.\nEquipment cannot be used with nothing to consume.",
    "status": "implemented",
    "design": {
     "holes": "A mine laid from it eats its arrival's stacks. The equipment's form is the Quintessence Tap's (12 November, the Soul Siphon then), the engine's spends and spends_up_to; its text is a session's draft."
@@ -2107,7 +2107,7 @@
    "id": "scorched",
    "category": "status",
    "name": "Scorched",
-   "codex": "Uses aimed at a Sprite cost +1 Heat per stack ({N}).\nTurn End: Reduce stacks to 0.",
+   "codex": "Uses on a Sprite Gain:\n  Commit: +1 Heat per stack ({N}).\nTurn End: Reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "Placeholder numbers.",
@@ -2171,7 +2171,7 @@
    "id": "enraged",
    "category": "status",
    "name": "Enraged",
-   "codex": "On Hit: +1 damage per stack ({N}).\nWhen you use a component that is not a weapon: Gain 1 stack.\nLasts the skirmish.",
+   "codex": "Attacks Gain:\n  Hit: +1 damage dealt per stack ({N}).\nWhen you use a component that is not a weapon: Gain 1 stack.\nLasts the skirmish.",
    "status": "implemented",
    "design": {
     "holes": "The rage's value and the Nob's numbers are placeholders. Permanent for the fight, as built (Ryan, 4 November: \"Nob permanent\"; Claude's lean, since an elite's job is to make the player change plan). The rage is the foe's own from the start since 8 November: it was a Bellow, the Nob's opening move, so its first round fed nothing (Ryan: \"It's not innate? ... That is so unbelievably incorrect\").",
@@ -2187,7 +2187,7 @@
    "id": "golden",
    "category": "status",
    "name": "Golden",
-   "codex": "On Hit: +2 damage dealt.\n+1 Armour.\nGain Suppressed upon losing 25% Max HP since the start of the effect.\nOn Suppressed: Reduce stacks to 0.\nTurn End: Reduce stacks by 1.",
+   "codex": "Attacks Gain:\n  Hit: +2 damage dealt.\n+1 Armour.\nGain Suppressed upon losing 25% Max HP since the start of the effect.\nOn Suppressed: Reduce stacks to 0.\nTurn End: Reduce stacks by 1.",
    "status": "implemented",
    "design": {
     "holes": "Monster Hunter's Rajang by archetype, Ryan's read of 4 November (the golden rage \"is a mode, not an attack ... a cycle that forces the player into a cycle of attack and defense, broken by a bold player with great timing\"). Claude's translation: the window is the decision, shield through its rounds or burst a quarter of its HP through the extra plate to stagger it; the lost action is the bold play's pay, where the swallow's release loses none (the stun row's care; the exit if it reads as a free stun). The add is the move's value and the plate a point; numbers placeholders.",
@@ -2203,7 +2203,7 @@
    "id": "kindled",
    "category": "status",
    "name": "Empowered",
-   "codex": "On Hit: +1 damage per stack ({N}).\nTurn End: Reduce stacks by half, rounded down.",
+   "codex": "Attacks Gain:\n  Hit: +1 damage dealt per stack ({N}).\nTurn End: Reduce stacks by half, rounded down.",
    "status": "implemented",
    "design": {
     "holes": "One clock on both sides since 4 November (Ryan: \"we try and make it work. If it's unbalanceable, we go back to separate keywords with different clocks\"); the next-move clock of 26 October retired. A rally says 2 at the least since 16 November (Ryan: \"Buffs and debuffs that decay at end of round should just have a minimum of 2\"): one stack halved to none before its rallier's next blow. His exit, for a move several foes may roll at once: \"apply 2 if none, otherwise 1\".",
@@ -2397,7 +2397,7 @@
    "id": "charged",
    "category": "status",
    "name": "Charged",
-   "codex": "Weapons Gain: Shock.\nResolve: If a weapon was used, reduce stacks by 1.",
+   "codex": "Weapons Gain:\n  Shock.\n  Resolve: Reduce stacks by 1.",
    "status": "implemented",
    "design": {
     "holes": "The Shock primer (Ryan, 2 November), Primed's cousin, so Chain is the arcs alone and the Shock supply is a kit choice; a keyword on the weapon fired, never a mark per hit (3 November: \"a multi-hit weapon with Shock would apply it after both hits\"), so a strikes gun never cashes what it just laid. Its first granter is the Storm Petrel's lure in its Striker branch (17 November: \"adds a self-grant of Charged stacks to the lure\"), two stacks a spend.",
@@ -2413,7 +2413,7 @@
    "id": "supercooled",
    "category": "status",
    "name": "Supercooled",
-   "codex": "Weapons Gain: Cryo 1.\nResolve: If a weapon was used, reduce stacks by 1.",
+   "codex": "Weapons Gain:\n  Cryo 1.\n  Resolve: Reduce stacks by 1.",
    "status": "implemented",
    "design": {
     "holes": "The Cryo primer (Ryan, 2 November: \"laying 1 cryo at a time makes sense, keeps it a little unique, and avoids massive cooling spikes\"; the name his pick), so any gun is a Cryo setter for a turn and the Cryo synergies open past the Cryo Flinger; a stack a strike after the hits (3 November: \"resulting in 2 applications, not apply-cash-apply-cash, and not hit-hit-apply once\"). No piece grants it yet.",
@@ -2455,7 +2455,7 @@
    "id": "burrowed",
    "category": "status",
    "name": "Burrowed",
-   "codex": "+1 Armour.\nFixed: Inertia Drill\nTurn Start: Remove Broken, Overheated, Jammed and Corrupted. Gain 3 Shield and 5 Momentum, and lose 6 Heat.\nResolve: If Inertia Drill was used, removed.",
+   "codex": "+1 Armour.\nFixed: Inertia Drill\nTurn Start: Remove Broken, Overheated, Jammed and Corrupted. Gain 3 Shield and 5 Momentum, and lose 6 Heat.\nInertia Drill Gains:\n  Resolve: Removed.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 16 November: \"Instead of Reboot, it Burrows. While burrowed, it gains a unpurgable buff called 'Burrowed'\"; an unpurgeable buff is labelled an Ability by his rule of 8 November. Its turns under his of 24 November: \"When burrowed, it gains 50% shield regen, 50% cooling, and 50% Momentum generation\", \"50% of the final numbers, but represented as flat numbers\"; \"Burrow does not bank. But it does gain the 1 Armour.\" The text is a session's draft.",

@@ -41,12 +41,20 @@ const ICON := 0.86        # a term's icon, a share of its text's size
 const ICON_GAP := 3.0     # between a term's icon and its word
 const TAP_GROW := 6.0     # a term's tap area past its word, for a thumb
 const TAP_SLOP := 14.0    # how far a press may travel and still be a tap
+## A grant's block (Ryan, 26 November: "I want the block of things applied to the weapon or whatever
+## to be visually blocked, so it's clear when subsequent lines are part of the grant or not"): a tip's
+## line that opens with two spaces belongs to the "X Gain:" line above it, drawn indented beside a bar.
+const BLOCK_MARK := "  "
+const BLOCK_INDENT := 20.0  # a block's words, in from the line above
+const BLOCK_BAR_X := 6.0    # its bar, down the indent's middle
+const BLOCK_BAR_W := 3.0
 
 var lines: Array = []   # the readout as built, each {style, text, parts, place}: what tests read
 var _words: Array = []  # the words as laid out, each {text, font, px, ink, at, arrow, w, icon, glyph, terms}
 var _bars: Array = []   # the gauges as laid out, each {rect, frac, colour}
 var _chips: Array = []  # the chips' boxes as laid out, each {rect, glyph, colour}
 var _hits: Array = []   # the terms as laid out, each {rect, terms}: where a tap opens one
+var _blocks: Array = [] # a grant's block bars as laid out, each a Rect2
 var _press_at := Vector2.ZERO
 var _press_terms: Array = []
 
@@ -578,6 +586,7 @@ func set_lines(list: Array, width: float = WIDTH) -> void:
 	_bars.clear()
 	_chips.clear()
 	_hits.clear()
+	_blocks.clear()
 	# The marks' column (mark()): as wide as the most marks an effect or rule line carries, shared
 	# by every one of them so their words start together; a marked line of another kind (a state,
 	# a move's name) takes its own.
@@ -609,7 +618,13 @@ func set_lines(list: Array, width: float = WIDTH) -> void:
 			_:
 				var marks: Array = l.get("marks", [])
 				var n := column if MARKED.has(style) else marks.size()
-				if n == 0:
+				if bool(l.get("block", false)):
+					# A grant's line: in from the line above, its bar joined to the one before it.
+					var joined := i > 0 and bool(list[i - 1].get("block", false))
+					var top := (y - LEADING) if joined else (y + 2.0)
+					y = _flow(_spans(l), width, y, BLOCK_INDENT)
+					_blocks.append(Rect2(Vector2(BLOCK_BAR_X, top), Vector2(BLOCK_BAR_W, maxf(2.0, y - top))))
+				elif n == 0:
 					y = _flow(_spans(l), width, y)
 				else:
 					# Each mark in its box at the head; a field's chip (a foe's intent, riders and
@@ -791,12 +806,17 @@ static func chip_line(glyph: String, colour: Color, text: String) -> Dictionary:
 ## its terms highlighted, at `px` in `ink`; with `bold_head`, the name before its first colon in
 ## bold, as a chip's.
 static func prose_line(text: String, px: int = 17, ink: Color = Palette.INK, bold_head: bool = false) -> Dictionary:
+	var block := text.begins_with(BLOCK_MARK)
+	if block:
+		text = text.strip_edges(true, false)   # a grant's line: its words without the marking spaces
 	var cut := text.find(": ") if bold_head else -1
 	var parts: Array = [word(text)] if cut < 0 else [{"text": text.substr(0, cut + 1), "trend": 0, "gain": false, "bold": true}, word(text.substr(cut + 2))]
 	var l := parts_line("prose", parts)
 	l["px"] = px
 	l["ink"] = ink
 	l["text"] = text
+	if block:
+		l["block"] = true
 	return l
 
 
@@ -863,6 +883,8 @@ func _commit(row: Array, y: float) -> float:
 
 
 func _draw() -> void:
+	for r in _blocks:
+		draw_rect(r, Color(Palette.HUD, 0.85), true)   # a grant's bar, loud enough for a phone
 	for b in _bars:
 		var r: Rect2 = b["rect"]
 		draw_rect(r, Color(Palette.BG, 0.9), true)
