@@ -1880,6 +1880,11 @@ func _foe_rows(foe: Foe) -> Array:
 	var sap := Effects.stacks_of(foe, "sapped")
 	if sap > 0:
 		rows.append(status_row("sapped", "sap", "-%d" % sap, "Sapped ×%d: its blows %d lower until after its next turn" % [sap, sap], _foe_chip_colour("sapped")))
+	var gas := Effects.stacks_of(foe, "gassed")
+	if gas > 0:
+		# Volatile Gas (the Cottonmouth's Canister, 27 November): the cloud with its stacks, each a
+		# random debuff as the round ends.
+		rows.append(status_row("gassed", _foe_glyph("gassed"), str(gas), Templates.say("state.gassed", {"n": gas}), _foe_chip_colour("gassed")))
 	for sid in Effects.DRILL_STATUSES + ["frozen"]:
 		if Effects.has(foe, sid):
 			# The Mole's drill in it, in its branch's form, and the Glacial Mole's Frozen (24 November):

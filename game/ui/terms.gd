@@ -27,6 +27,7 @@ const TABLE := {
 	"rapid": ["rapid", "plain"], "instant": ["instant", "plain"],
 	"ablate": ["ablate", "heat"], "shock": ["shock", "heat"], "chain": ["chain", "heat"],
 	"brittle": ["brittle", "heat"], "sap": ["sap", "guard"],
+	"volatile_gas": ["gas", "plain"],   # the Cottonmouth's Canister's (27 November): its own cloud, in ink, since what it becomes is any group's
 	"cryo": ["cryo", "guard"], "lure": ["lure", "guard"], "disrupt": ["disrupt", "guard"],
 	"suppress": ["suppress", "guard"],
 	"dispel": ["dispel", "guard"], "cleanse": ["cleanse", "guard"],
@@ -51,7 +52,7 @@ const TABLE := {
 	"overcharged": ["overcharge", "heat"], "enraged": ["overcharge", "heat"], "golden": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
 	"rage": ["rapid", "heat"],   # the Nemesis's Rage (23 November): its Knuckles Instant, the fists' mark, in heat's group
 	"charged": ["shocked", "heat"], "supercooled": ["cryo", "guard"],
-	"brittled": ["brittle", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"], "ricochet": ["ricochet", "heat"],
+	"brittled": ["brittle", "heat"], "vitriol": ["vitriol", "heat"], "gassed": ["gas", "plain"], "spun_up": ["spin", "heat"], "ricochet": ["ricochet", "heat"],
 	"parry": ["spin", "heat"],   # the Beam Buckler's (19 November): what it blocks, next turn's first weapon's add, in Spun Up's family
 	"offhand": ["star", "plain"],   # the Macaque's armament, the star its rider wears on the die (Ryan, 19 November: "a unique (star) effect")
 	"aile_boost": ["rapid", "plain"], "aile_blitz": ["rapid", "plain"], "aile_assault": ["rapid", "plain"],   # the Aile Booster's dash, the Rapid piece's own mark

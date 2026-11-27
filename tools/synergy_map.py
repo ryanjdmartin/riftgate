@@ -44,6 +44,7 @@ CURRENCIES = OrderedDict([
     ("webbed", ("The Web Bomb's mark", "on a foe")),
     ("vitriol", ("Vitriol", "on a foe")),
     ("paradox", ("Paradox", "on a foe")),
+    ("gassed", ("Volatile Gas", "on a foe")),
     ("lure", ("A foe's turn drawn (Lure)", "on a foe")),
     ("disrupt", ("A foe's move changed (Disrupt)", "on a foe")),
     ("swap", ("A foe's place changed (Swap)", "on a foe")),
@@ -90,6 +91,7 @@ KEYWORDS = {
     "ablate": [("ablating", "sets")], "shock": [("shocked", "sets")], "suppress": [("suppressed", "sets")],
     "cryo": [("cryoed", "sets")], "brittle": [("brittled", "sets")],
     "expose": [("exposure", "sets")], "lure": [("lure", "sets")], "disrupt": [("disrupt", "sets")],
+    "volatile_gas": [("gassed", "sets")],
     "chain": [("shocked", "reads")], "cleave": [("strikes", "sets")], "penetrate": [("strikes", "sets")],
     "dispel": [("foe_buff", "reads")],
     "cleanse": [("ablating_mech", "reads"), ("brittled_mech", "reads"), ("exposure_mech", "reads"), ("scorched", "reads"), ("disabled", "reads"), ("corrupted", "reads")],
@@ -159,6 +161,7 @@ ENGINE_READERS = {
     "webbed": ["the burst at the end of its action: it and its neighbour Suppressed"],
     "vitriol": ["its tick: 10% of its current HP a stack, past armour"],
     "paradox": ["at three, Suppressed"],
+    "gassed": ["as the round ends, each stack a debuff the team lays, drawn at random from those the foe may take now (a stun among them)"],
     "lure": ["every foe reached turns on the spender, so whatever reads being struck pays (a Barrier, the Armoured and Sealed plate, and every reader of hull damage)"],
     "disrupt": ["the foe takes its next open move"],
     "swap": ["the two trade places: reach, the acting order, area"],
@@ -246,7 +249,7 @@ class Map:
                         self.add(cur, how, p)
             for k, v in f.items():
                 if k in ("kind", "reach", "power", "keywords", "heat", "targets", "status", "stacks", "rounds",
-                         "ablate", "brittle", "cryo", "cleave", "penetrate", "gates", "consumes", "per_consumed", "per_heat", "per_missing", "per_shield"):
+                         "ablate", "brittle", "cryo", "volatile_gas", "cleave", "penetrate", "gates", "consumes", "per_consumed", "per_heat", "per_missing", "per_shield"):
                     continue
                 if k not in FACE_FIELDS:
                     self.unmapped.append("%s: face field %s" % (e["name"], k))
@@ -329,7 +332,7 @@ class Map:
                 self.unmapped.append("%s: trigger %s" % (p["who"], trig))
             tcur = TRIGGERS.get(trig)
             if tcur == "paradox_feed":
-                for cur in ("ablating", "brittled", "shocked", "exposure", "cryoed", "suppressed", "webbed", "vitriol", "mine"):
+                for cur in ("ablating", "brittled", "shocked", "exposure", "cryoed", "suppressed", "webbed", "vitriol", "mine", "gassed"):
                     self.add(cur, "reads", dict(p, how="counts it"))
             elif tcur:
                 self.add(tcur, "reads", p)
@@ -340,7 +343,7 @@ class Map:
                 if eff.get("status"):
                     self.add(eff["status"], "reads", p)
                 else:
-                    for cur in ("ablating", "brittled", "shocked", "exposure", "cryoed", "suppressed", "webbed", "vitriol", "mine", "paradox"):
+                    for cur in ("ablating", "brittled", "shocked", "exposure", "cryoed", "suppressed", "webbed", "vitriol", "mine", "paradox", "gassed"):
                         self.add(cur, "reads", dict(p, how="any status"))
             if when == "attacker_status":
                 self.add(eff.get("status"), "reads", p)

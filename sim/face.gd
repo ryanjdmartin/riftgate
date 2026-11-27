@@ -43,7 +43,7 @@ enum Reach { NONE, DIRECT, INDIRECT, EVERY_FOE }   # Every Foe (4 November), bel
 ## team, its own machine among them, or every machine but its own, the Mooring Screens'; Ryan:
 ## "the difference is whether the center one is lit or not, its two modes"). `reaches_all` reads
 ## any of them.
-enum Keyword { NONE, CLEAVE, PENETRATE, ABLATE, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SHOCK, CRYO, BRITTLE, EXPOSE, DISPEL, INSTANT, SAP }
+enum Keyword { NONE, CLEAVE, PENETRATE, ABLATE, SUPPRESS, CHAIN, RAPID, CLEANSE, LURE, DISRUPT, SHOCK, CRYO, BRITTLE, EXPOSE, DISPEL, INSTANT, SAP, VOLATILE_GAS }
 ## Whom a component may be spent on (Ryan, 26 September): an attack (a weapon or a debuff)
 ## targets foes; a shield, a vent or a buff targets self and allies by default, and content may
 ## narrow one to self only or allies only, so the design space stays open; Every Ally and Every
@@ -65,15 +65,17 @@ const KEYWORD_NAMES := {
 	Keyword.CRYO: "cryo", Keyword.BRITTLE: "brittle",
 	Keyword.EXPOSE: "expose",
 	Keyword.DISPEL: "dispel", Keyword.INSTANT: "instant", Keyword.SAP: "sap",
+	Keyword.VOLATILE_GAS: "volatile_gas",
 }
 ## What the player reads where it differs from the content id (the vocabulary's name).
 ## Purge (28 October) is one id on both sides, dispel.
-const KEYWORD_LABELS := { Keyword.CLEAVE: "spread", Keyword.DISPEL: "purge" }
+const KEYWORD_LABELS := { Keyword.CLEAVE: "spread", Keyword.DISPEL: "purge", Keyword.VOLATILE_GAS: "volatile gas" }
 ## The status each foe hit gains from a keyword that lays one: the die's hold lists such a
 ## keyword as what the spend applies on hit, after its heat (Ryan, 25 October).
 const KEYWORD_STATUS := {
 	Keyword.ABLATE: "ablating", Keyword.CRYO: "cryoed", Keyword.BRITTLE: "brittled", Keyword.SHOCK: "shocked",
 	Keyword.SUPPRESS: "suppressed", Keyword.EXPOSE: "exposure", Keyword.SAP: "sapped",
+	Keyword.VOLATILE_GAS: "gassed",
 }
 ## The keywords that carry a number, each in the field of its name on the entry: the stacks a
 ## rider lays (Ablate, Cryo, Brittle), the blow an area keyword deals each foe past the target
@@ -83,6 +85,7 @@ const NUMBER_FIELDS := {
 	Keyword.ABLATE: "ablate", Keyword.CRYO: "cryo", Keyword.BRITTLE: "brittle",
 	Keyword.CLEAVE: "cleave", Keyword.PENETRATE: "penetrate",
 	Keyword.CHAIN: "chain", Keyword.DISPEL: "dispel", Keyword.SAP: "sap",
+	Keyword.VOLATILE_GAS: "volatile_gas",
 }
 ## The area keywords (Ryan, 11 and 12 October; numbered 28 October; two since Splash's cut).
 const AREA_KEYWORDS := [Keyword.CLEAVE, Keyword.PENETRATE]
@@ -125,6 +128,7 @@ var strikes: int = 1          # blows per use: a rapid-fire weapon lands many sm
 var ablate: int = 0             # an attack with Ablate: the stacks of Ablating each blow leaves (Ryan, 18 October: a numbered keyword, never read off the damage)
 var cryo: int = 0             # an attack with Cryo: the stacks of Cryo each foe it reaches gains (the Cryo Flinger, 20 October; a numbered keyword like Ablate)
 var sap: int = 0              # an attack with Sap: the stacks of Sapped each foe hit gains (the Baboon's Redshift Emitter, 11 November; numbered like Brittle)
+var volatile_gas: int = 0     # an attack with Volatile Gas: the stacks of it each Sprite hit gains, each turning into a random debuff as the round ends (the Cottonmouth's Volatile Gas Canister, Ryan, 27 November; numbered like Sap)
 var disrupts_attackers: bool = false   # a buff: every foe aiming at the machine it lands on is Disrupted (the Baboon's Retrocausal Shroud, 11 November)
 var brittle: int = 0             # an attack with Brittle: the stacks of Brittle each foe hit gains (the Flakshot Repeater, 21 October; numbered like Ablate)
 var cleave: int = 0           # an attack with Spread: the number each foe beside its target in its rank takes as its blow's (Ryan, 28 October: Spread N, the half retired)
@@ -388,6 +392,7 @@ static func from_dict(d: Dictionary) -> Face:
 		f.cryo = maxi(0, int(d.get("cryo", 0)))
 		f.brittle = maxi(0, int(d.get("brittle", 0)))
 		f.sap = maxi(0, int(d.get("sap", 0)))
+		f.volatile_gas = maxi(0, int(d.get("volatile_gas", 0)))
 		f.cleave = maxi(0, int(d.get("cleave", 0)))   # add_keyword gives an area keyword a number of one when it says none
 		f.penetrate = maxi(0, int(d.get("penetrate", 0)))
 		f.chain = maxi(0, int(d.get("chain", 0)))   # add_keyword gives Chain a number of one when it says none
@@ -489,6 +494,8 @@ func to_dict() -> Dictionary:
 		d["brittle"] = brittle
 	if sap > 0 and has(Keyword.SAP):
 		d["sap"] = sap
+	if volatile_gas > 0 and has(Keyword.VOLATILE_GAS):
+		d["volatile_gas"] = volatile_gas
 	if disrupts_attackers:
 		d["disrupts_attackers"] = true
 	if not is_debuff():
@@ -582,6 +589,8 @@ func add_keyword(kw: int) -> void:
 		brittle = 1
 	if kw == Keyword.SAP and sap <= 0:
 		sap = 1
+	if kw == Keyword.VOLATILE_GAS and volatile_gas <= 0:
+		volatile_gas = 1
 	if kw == Keyword.DISPEL and dispel <= 0:
 		dispel = 1   # Purge says its number; one when nothing says
 	if (AREA_KEYWORDS.has(kw) or kw == Keyword.CHAIN) and int(get(NUMBER_FIELDS[kw])) <= 0:
@@ -777,6 +786,7 @@ func duplicate_face() -> Face:
 	f.cryo = cryo
 	f.brittle = brittle
 	f.sap = sap
+	f.volatile_gas = volatile_gas
 	f.disrupts_attackers = disrupts_attackers
 	f.cleave = cleave
 	f.penetrate = penetrate
@@ -1135,6 +1145,8 @@ func describe() -> String:
 						n = brittle
 					Keyword.SAP:
 						n = sap
+					Keyword.VOLATILE_GAS:
+						n = volatile_gas
 					Keyword.DISPEL:
 						n = maxi(1, dispel)
 				if (AREA_KEYWORDS.has(k) or k == Keyword.CHAIN) and not is_debuff():

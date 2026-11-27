@@ -213,6 +213,9 @@ var _blasts: Array = []
 ## The enemy's turn is under way (_enemy_turn): a Mine's Disrupt does nothing then, the foes' moves
 ## being under way.
 var _enemy_acting := false
+## The round is ending (_finish_round): every foe has had this round's turn, so a stun laid now
+## (a web's burst, a Paradox the gas trips) costs it its next (_suppress).
+var _round_over := false
 ## The machine whose spend, or whose passed turn's release, is under way: the one that makes
 ## the kills its death check clears, as the kill trigger reads them (_after_kills). Null
 ## outside one: a tick's kill, a Mine blowing in the enemy's turn and a foe's own burst are
@@ -2764,10 +2767,123 @@ func field_holds(whom = null) -> Array:
 ## and its machines' allies and reads the outcome) and the round preview's copy (preview_round)
 ## both run it, so the preview's round ends as the round will.
 func _finish_round() -> void:
+	_round_over = true
 	_burst_webs()
 	_tick_mechs()
 	_round_kills()
 	_regrow_parts()
+	_transform_gas()   # last, so what the gas becomes acts from the next round
+	_round_over = false
+
+
+## Volatile Gas (the Cottonmouth's Volatile Gas Canister, Ryan, 27 November: "Round End: Transform
+## into another random debuff"): as the round ends, after every other end-of-round effect, each stack
+## on a Sprite turns into one stack of a debuff the team can lay, drawn from those it may become now
+## (gas_pool), each as likely, the stack after it drawing once that one has landed. What it becomes
+## lands as any of the team's marks does: a Ward turns it away, a Suppress is its next turn lost
+## (the stun's brake and immunity as ever), a Sonic Needle is its Echidna's, a Paradox its Baboon's
+## meter's. The round's preview draws nothing: the gas stands there as it is.
+func _transform_gas() -> void:
+	if previewing:
+		return
+	for foe in field_foes():
+		var n := Effects.stacks_of(foe, "gassed")
+		if n <= 0:
+			continue
+		Effects.remove(foe, "gassed")
+		for i in range(n):
+			var pool := gas_pool(foe)
+			if pool.is_empty():
+				log.append("%s's Volatile Gas has nothing it may become" % foe.display_name)
+				break
+			_gas_becomes(foe, pool[rng.randi_range(0, pool.size() - 1)])
+
+
+## The debuffs a stack of Volatile Gas on this Sprite may become now (the gas's `becomes`): never
+## one it carries already that does not stack (his: "if a non stacked debuff exists on a unit
+## already (like shock), don't choose that one"), nor one it is immune to; a conditional one only
+## while its condition holds (his: "it's fair to include conditional statuses if the condition is
+## met"): a pin only on a Sprite carrying what it holds (Pinned on Brittle, Seared on Ablate), a
+## Sonic Needle only while a machine in the fight lays them and reaches the Sprite (needler_of), a
+## Paradox only while one with a Paradox meter does.
+func gas_pool(foe: Foe) -> Array[String]:
+	var out: Array[String] = []
+	var immune_keys := {}
+	for kw in Face.KEYWORD_STATUS.keys():
+		immune_keys[Face.KEYWORD_STATUS[kw]] = Face.KEYWORD_NAMES[kw]
+	for v in Effects.STATUS["gassed"].get("becomes", []):
+		var sid := str(v)
+		if not Effects.STATUS.has(sid):
+			continue
+		var def: Dictionary = Effects.STATUS[sid]
+		if immune_keys.has(sid) and foe.immune_to(str(immune_keys[sid])):
+			continue
+		var single := str(def.get("stacking", "")) == "renew" or bool(def.get("single", false))
+		if sid == "suppressed":
+			if _suppressed_through(foe, round + 1):
+				continue
+		elif single and Effects.has(foe, sid):
+			continue
+		var held := ""
+		for eff in def.get("effects", []):
+			if str(eff.get("effect", "")) == "hold_status":
+				held = str(eff.get("value", ""))
+		if not held.is_empty() and not Effects.has(foe, held):
+			continue
+		match str(def.get("laid_by", "")):
+			"needles":
+				var needler := needler_of(sid)
+				if needler == null or not reaches(needler, foe):
+					continue
+			"paradox":
+				if _paradoxer(foe) == null:
+					continue
+		out.append(sid)
+	return out
+
+
+## The machine whose Paradox meter a Sprite's Paradox would be (Effects.paradox: the Baboon's), the
+## first in the team's order still in the fight that reaches it; null when none.
+func _paradoxer(foe: Foe) -> MechState:
+	for ms in mechs:
+		if ms.alive() and not is_swallowed(ms) and Effects.paradox(ms.unit)[1] > 0 and reaches(ms, foe):
+			return ms
+	return null
+
+
+## One stack of Volatile Gas lands as the debuff it drew (_transform_gas).
+func _gas_becomes(foe: Foe, sid: String) -> void:
+	var name := str(Effects.STATUS[sid]["name"])
+	if sid == "suppressed":
+		if _suppress(foe, null, true):
+			log.append("%s's Volatile Gas becomes %s" % [foe.display_name, name])
+			_foe_gained_status(foe, "suppressed")
+		return
+	if Effects.turns_mark(foe, sid):
+		log.append("%s's Ward turns away the %s its Volatile Gas became" % [foe.display_name, name])
+		return
+	var needler := needler_of(sid)
+	if needler != null:
+		log.append("%s's Volatile Gas becomes %s (%s's)" % [foe.display_name, name, needler.unit.display_name])
+		_lay_needles(needler, foe, 1)   # a stack, the bolt at its count
+		_foe_gained_status(foe, sid)   # a debuff gained, as a rider's needle is (_land_rider)
+		return
+	if sid == "paradox":
+		var baboon := _paradoxer(foe)
+		if baboon == null or Effects.stack(foe, Effects.STATUS["paradox"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE) == null:
+			return
+		log.append("%s's Volatile Gas becomes %s (%s's)" % [foe.display_name, name, baboon.unit.display_name])
+		if Effects.stacks_of(foe, "paradox") >= Effects.paradox(baboon.unit)[1]:
+			Effects.remove(foe, "paradox")
+			log.append("%s got trapped in a paradox! (%s)" % [foe.display_name, baboon.unit.display_name])
+			_suppress(foe, null, true)
+		return
+	var def: Dictionary = Effects.STATUS[sid]
+	var m = Effects.lay_timer(foe, def, "mech") if Effects.is_timer(sid) else Effects.stack(foe, def, Effects.SKIRMISH, "mech", 1, Effects.status_decay(def))
+	if m == null:
+		return
+	log.append("%s's Volatile Gas becomes %s" % [foe.display_name, name])
+	_foe_gained_status(foe, sid)
 
 
 ## What a machine's passive grants as the round ends, when an attack of its own killed in it
@@ -3947,6 +4063,13 @@ func _hit(ms: MechState, f: Face, target: Foe) -> Hits:
 				riders.append(func() -> void: _land_rider(foe, "brittled", brittle_laid, gained, turned))
 				if into_mine:
 					h.mine_stack("brittled", brittle_laid)
+			# Volatile Gas (the Cottonmouth's Canister, Ryan, 27 November): laid as Sap is, with the
+			# riders; it turns into other debuffs as the round ends (_transform_gas).
+			if rides and f.has(Face.Keyword.VOLATILE_GAS):
+				var gas_laid := _stacks_from(ms, "gassed", f.volatile_gas) * doubled
+				riders.append(func() -> void: _land_rider(foe, "gassed", gas_laid, gained, turned))
+				if into_mine:
+					h.mine_stack("gassed", gas_laid)
 			# A pin (the Hollow-point Harpoon's; Ryan, 16 November: "the next time it would decay, it
 			# doesn't"): laid after what the spend lays, spent by the decay it stops (Effects.spend_hold)
 			# or gone as its foe's turn ends where it held nothing (19 November).
@@ -5448,7 +5571,7 @@ static func mine_of(foe: Foe) -> Dictionary:
 static func mine_riders(f: Face) -> Dictionary:
 	var hits := maxi(1, f.strikes)
 	var stacks := {}
-	for k in [Face.Keyword.ABLATE, Face.Keyword.CRYO, Face.Keyword.BRITTLE, Face.Keyword.SAP]:
+	for k in [Face.Keyword.ABLATE, Face.Keyword.CRYO, Face.Keyword.BRITTLE, Face.Keyword.SAP, Face.Keyword.VOLATILE_GAS]:
 		if f.has(k):
 			var n := maxi(0, int(f.get(str(Face.NUMBER_FIELDS[k])))) * hits
 			if n > 0:
@@ -6004,8 +6127,9 @@ func _stacks_from(ms: MechState, status_id: String, n: int) -> int:
 func _suppress(foe: Foe, turned = null, ahead: bool = false) -> bool:
 	# A foe that has already acted this turn loses its next action instead of one it has taken,
 	# and so does one that stepped up mid-round (a split's half), the round's turn being over;
-	# `ahead` says the round itself is over (a web's burst), so every foe loses its next.
-	var next := ahead or _acted.has(foe) or foe.fresh
+	# `ahead` says the round itself is over (a web's burst), so every foe loses its next, and so
+	# does every stun laid while the round ends (_round_over: a Paradox a burst or the gas trips).
+	var next := ahead or _round_over or _acted.has(foe) or foe.fresh
 	if foe.immune_to("suppress"):
 		log.append("%s is immune: no stun lands on it" % foe.display_name)
 		return false   # its own Ability (Foe.immune): nothing gained, and nothing for the Paradox

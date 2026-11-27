@@ -21,6 +21,7 @@ or briefs; the pricing run of 27 and 28 October read the first set (the bible's 
 | The Web Bomb's mark | on a foe | Web Bomb (locked, Funnel-web) | the burst at the end of its action: it and its neighbour Suppressed; Baboon's Pocket Paradox: counts it; Susceptibility Tensor (module, tier 1): any status |
 | Vitriol | on a foe | Funnel-web's Ambush | its tick: 10% of its current HP a stack, past armour; Baboon's Pocket Paradox: counts it; Susceptibility Tensor (module, tier 1): any status |
 | Paradox | on a foe | Baboon's Pocket Paradox | at three, Suppressed; Susceptibility Tensor (module, tier 1): any status |
+| Volatile Gas | on a foe | Volatile Gas Canister (locked, Cottonmouth) | as the round ends, each stack a debuff the team lays, drawn at random from those the foe may take now (a stun among them); Baboon's Pocket Paradox: counts it; Susceptibility Tensor (module, tier 1): any status |
 | A foe's turn drawn (Lure) | on a foe | Proximity Klaxon (tier 1); Cryo Flinger (locked, Polar Bear); Supersonic Spike Tether (locked, Echidna); Shift Whistle (tier 3); Hardlight Pulse (locked, Storm Petrel) | every foe reached turns on the spender, so whatever reads being struck pays (a Barrier, the Armoured and Sealed plate, and every reader of hull damage) |
 | A foe's move changed (Disrupt) | on a foe | Differentiation Probe (tier 2) | the foe takes its next open move |
 | A foe's place changed (Swap) | on a foe | Combat Translocator (locked, Dingo) | the two trade places: reach, the acting order, area |
@@ -75,7 +76,7 @@ Tags, by the slottable pieces that wear them (locked in brackets); nothing but t
 
 What the map computes (what it means is the section after the map):
 
-- Unique to a chassis (set by locked pieces and passives alone, so a build reaches it only by fielding that machine): Exposed, Cryo, The Web Bomb's mark, Vitriol, Paradox, A foe's place changed (Swap), Spun Up, Ricochet, Sealed, Hardened Light, Regenerating, Charged, Mine, Rage, A foe's buffs (Armoured, Empowered, Getting Back Up; Primed, Barrier, Ward and Regenerating once the ladder lands).
+- Unique to a chassis (set by locked pieces and passives alone, so a build reaches it only by fielding that machine): Exposed, Cryo, The Web Bomb's mark, Vitriol, Paradox, Volatile Gas, A foe's place changed (Swap), Spun Up, Ricochet, Sealed, Hardened Light, Regenerating, Charged, Mine, Rage, A foe's buffs (Armoured, Empowered, Getting Back Up; Primed, Barrier, Ward and Regenerating once the ladder lands).
 - **Shocked** has one slottable setter, Polarity Projector (tier 1), stocked.
 - **A foe's move changed (Disrupt)** has one slottable setter, Differentiation Probe (tier 2).
 - **Empowered** has one slottable setter, Overcharge Coil (tier 2), stocked.

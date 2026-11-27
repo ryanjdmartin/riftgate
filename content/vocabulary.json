@@ -341,6 +341,16 @@
    }
   },
   {
+   "id": "volatile_gas",
+   "category": "keyword",
+   "name": "Volatile Gas",
+   "codex": "Resolve: Apply {N} Volatile Gas per hit to each Sprite hit.",
+   "status": "implemented",
+   "design": {
+    "holes": "The keyword that lays Ryan's Volatile Gas (27 November), first on the Cottonmouth's Volatile Gas Canister: \"On Hit: Apply 1 Volatile Gas\", in the standard's form (riders land at Resolve). Its number rides on the face beside it (volatile_gas), as Sap's does. The name shares its first word with Volatile, the hull cost a component prints; the text's matcher takes the longer name first."
+   }
+  },
+  {
    "id": "juggernaut",
    "category": "status",
    "name": "Juggernaut Drive",
@@ -620,6 +630,22 @@
      "on": "both",
      "stacks": "Yes: every Sap adds",
      "lasts": "Until after its next turn"
+    }
+   }
+  },
+  {
+   "id": "gassed",
+   "category": "status",
+   "name": "Volatile Gas",
+   "codex": "Round End: Transform into another random debuff.",
+   "status": "implemented",
+   "design": {
+    "holes": "Ryan, 27 November: \"Volatile Gas (Debuff): Round End: Transform into another random debuff.\" His implementation rules, not for the player: \"Can be any debuff that players can use, including exclusive ones like Vitriol where they make sense\"; \"if a non stacked debuff exists on a unit already (like shock), don't choose that one. Otherwise, everything is fair game and stacks\"; \"Suppress is obviously the high roll. If it's too easy, then we remove it\"; and \"it's fair to include conditional statuses if the condition is met. So pinned if the sprite hit has Brittle, sonic needle if the echidna is in the fight and functional, etc. Paradox if the baboon is present and functional, then.\" Built so: each stack draws its own debuff, each as likely, after every other end-of-round effect, from Ablate, Brittle, Cryo, Sapped, Shocked, Exposed, Suppressed and Vitriol, with Pinned on a Sprite carrying Brittle, Seared on one carrying Ablate, a Sonic Needle while the Echidna that lays them is in the fight and reaches it, and Paradox while a machine with the meter does; never one it carries that does not stack, nor one it is immune to; each lands as the team's mark does (a Ward turns it away). Left out, a session's lean: the Mine (its blast is the hit that laid it), the Web Bomb's mark (the high roll twice over), and the Mole's drill forms (their condition is the drill being in that Sprite). The round's preview draws nothing.",
+    "table": {
+     "kind": "debuff",
+     "on": "foe",
+     "stacks": "Yes: each stack turns into a debuff of its own",
+     "lasts": "Until the round ends"
     }
    }
   },

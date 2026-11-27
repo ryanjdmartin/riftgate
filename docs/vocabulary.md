@@ -2,7 +2,7 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 213 implemented, 5 planned, 0 idea.
+Status: 215 implemented, 5 planned, 0 idea.
 
 ## Damage
 
@@ -116,6 +116,7 @@ Cannot be used without Ore. | implemented |
 | **Suppress** | Resolve: Apply Suppressed to each Sprite hit. | implemented |
 | **Brittle** | Resolve: Apply {N} Brittle per hit to each unit hit. | implemented |
 | **Sap** | Resolve: Apply {N} Sapped per hit to each Sprite hit. | implemented |
+| **Volatile Gas** | Resolve: Apply {N} Volatile Gas per hit to each Sprite hit. | implemented |
 | **Chain** | Resolve: All Sprites with Shock lose {N} HP. | implemented |
 | **Rapid** | Resolve: Reroll this die for free, never onto this entry. This entry goes dark for the rest of the round. | implemented |
 | **Instant** | Resolve: Reroll this die for free. May land on this entry again. | implemented |
@@ -145,6 +146,7 @@ Turn End: Removed. | implemented |
 | **Sapped** | Attacks Gain:
   Hit: -1 damage dealt per stack ({N}).
 Turn End: Reduce stacks to 0. | implemented |
+| **Volatile Gas** | Round End: Transform into another random debuff. | implemented |
 | **Exposed** | All armour is negated.
 Exposed Sprites can be targeted regardless of reach.
 Sprites are forced to target an Exposed Frame at round start.
@@ -449,6 +451,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Swap** (implemented): A keyword until 15 November (Ryan: "Can be unique text, not a keyworded rider"): the piece's own rule, `swaps` on its entry, its mark kept on the die.
 - **Brittle** (implemented): Its number rides on the face beside the keyword (brittle), and the validator asks for it. Flak on our side and Crush on the foes' until 15 November, one word on both since (Ryan: "Crushed and flak - agreed, brittle"). The word names the state, so a piece that lays it reads Brittle 2 and the Flak pieces keep their names; a verb for it is his to pick if he wants one. A session's draft, his to write.
 - **Sap** (implemented): The keyword that lays Ryan's Sapped (11 November), first on the Baboon's Redshift Emitter.
+- **Volatile Gas** (implemented): The keyword that lays Ryan's Volatile Gas (27 November), first on the Cottonmouth's Volatile Gas Canister: "On Hit: Apply 1 Volatile Gas", in the standard's form (riders land at Resolve). Its number rides on the face beside it (volatile_gas), as Sap's does. The name shares its first word with Volatile, the hull cost a component prints; the text's matcher takes the longer name first.
 - **Juggernaut Drive** (implemented): Ryan, 11 November: "After gaining Barrier, its next weapon attack gains Breach. The next attack breach will need to be represented by a purgeable buff, I'd just call it 'Juggernaut Breach.'" 15 November, Breach cut on our side: 'Change to explicit "ignores armour."', so the state shows under the passive's own name and the word Breach is gone from the game.
 - **Numbed** (implemented): Ryan's clock (2 November): the chip reads as the rounds until it can be stunned again, so the stacks land after the decay phase; a stun lock costs its resist and one every round, so an all-in stun team can brute-force a boss at a price, and a Purge is the other key. The resist numbers are placeholders (content's resist; the bosses' by hand).
 - **Paradox** (implemented): The count is a placeholder (Ryan, 11 November: "we have no idea how many paradox stacks is balanced, we just decided on 3 or whatever as a placeholder without knowing how much status chips were going to get thrown around in the game as a whole"); a stack a debuff stack since that day, at five.
@@ -470,6 +473,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Pinned** (implemented): Ryan, 11 November: "The Flak pin should be its own status that gets applied for one turn. I assume we're going to want a similar one for burning as well." Pinned Flak until 15 November, and what it holds Brittle since; the name is his ("Just \"Pinned.\"").
 - **Seared** (implemented): Ryan, 11 November: coded in beside Brittle's pin, "since the Mastema will want it as a fitted piece, if nothing else". No piece lays it yet. The name is his, 15 November: "Rename 'Seared.'"
 - **Sapped** (implemented): Ryan, 11 November: "I'd like to code in Weaken ... Weaken (debuff): Deals 1 less damage per stack with attacks ... Weaken can apply to both sides, it's not a bad soft CC from the foes to apply"; then "Weaken can change till after it's next turn then, instead of round end. Let's use Sapped." So a foe's Sapped laid in its turn reaches the machine's next attack.
+- **Volatile Gas** (implemented): Ryan, 27 November: "Volatile Gas (Debuff): Round End: Transform into another random debuff." His implementation rules, not for the player: "Can be any debuff that players can use, including exclusive ones like Vitriol where they make sense"; "if a non stacked debuff exists on a unit already (like shock), don't choose that one. Otherwise, everything is fair game and stacks"; "Suppress is obviously the high roll. If it's too easy, then we remove it"; and "it's fair to include conditional statuses if the condition is met. So pinned if the sprite hit has Brittle, sonic needle if the echidna is in the fight and functional, etc. Paradox if the baboon is present and functional, then." Built so: each stack draws its own debuff, each as likely, after every other end-of-round effect, from Ablate, Brittle, Cryo, Sapped, Shocked, Exposed, Suppressed and Vitriol, with Pinned on a Sprite carrying Brittle, Seared on one carrying Ablate, a Sonic Needle while the Echidna that lays them is in the fight and reaches it, and Paradox while a machine with the meter does; never one it carries that does not stack, nor one it is immune to; each lands as the team's mark does (a Ward turns it away). Left out, a session's lean: the Mine (its blast is the hit that laid it), the Web Bomb's mark (the high roll twice over), and the Mole's drill forms (their condition is the drill being in that Sprite). The round's preview draws nothing.
 - **Exposed** (implemented): The id is exposure, since exposed names the formation word (and named an aim of the foes' until 17 November); a machine's is exposure_mech in the engine. The machine's half is Ryan's of 15 November, built 16 November: "all armour of all kinds"; "Exposed does not strip the petrel's resistant shield"; "keep the logic where enemies don't try and overkill. That helps keep it fair. So the whole field targets up until predicted death, then the rest pick intent targets as normal"; "Exposed sets the intents, everything after proceeds as normal"; "Lure wins". A session's reads where his words give none: a countdown's pick carried from the round before holds, and a machine out of reach (Phased as the round ended) draws nothing. Still his: whether a machine that stands Exposed may be marked again; built as no, so the whole field's fire comes every other round at most. The aim content called exposed went on 17 November with every aim of a foe's own. The machine's text is a session's draft, his to write.
 - **Empowered** (implemented): Every grant is one status on the machine and the stacks add up. A halving rule has no duration, so a buff component grants stacks and no rounds. The name is a placeholder. It halves at END TURN since 16 November (Ryan: "Empowered should decay at the end of turn, clearly, not end of round"), so what a machine gains in the enemy's turn it carries whole into its next; at the round's end until then. One term for both sides since 26 November (Ryan: "'Both' empowereds? There should be only one."): the foes' Empowered, the engine's kindled (an add on a foe's attack where a machine's is an add on its attack's damage), reads as this entry (Terms.ALIASES).
 - **Sealed** (implemented): One chip, renewing, never stacking: the armour it grants is tied to the form. The numbers are placeholders.

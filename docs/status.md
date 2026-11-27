@@ -132,7 +132,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1512 tests, 407,642 checks, green on Godot 4.8-beta4 (27 November, a needle's bolt the Echidna's and a swallow under each form of the grant, over Phased by source). The runner fails a run
+- Tests: 1528 tests, 407,763 checks, green on Godot 4.8-beta4 (27 November, the Cottonmouth's Volatile Gas Canister and its gas's draw as the round ends). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -203,7 +203,7 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   the bible's rows on the foes' rule set, targeting, Exposed and Phased.
 - **The machines.** Five makers and 27 chassis, 26 of them dealt (eleven at tier one, eleven at
   two, four at three); the Swallowtail is back in design, undealt (`"status": "planned"`), its
-  brief open. 84 components, 7 of them planned drafts nothing deals (the slottable shields and
+  brief open. 85 components, 7 of them planned drafts nothing deals (the slottable shields and
   vents, the Gravity Knuckles and the Tesla Gauntlets, the Retribution Thurible, the Solar Flare
   Array); 20 modules. A stock die is basics beside its
   locked pieces, at tier one on every die (the Wild Boar, the Echidna, the Skua, the Storm
@@ -430,7 +430,9 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   (the bible's death row; `tools/death_floor.gd` reads each). Ryan has passed the Nemesis's
   kneel, the Clydesdale's face-plant, the Funnel-web, the Cassowary, the Whip Scorpion and the
   Ammit; the rest wait on his read, and some still cross parts as they lie (the to-do). The
-  Cottonmouth fires every weapon from its drum. The Honey Badger and the Wild Boar wear
+  Cottonmouth fires every weapon from its drum, its Integrated Volatile Gas Canister among them
+  (27 November, his piece and his status; the rules' Volatile Gas, the bible's Cottonmouth row):
+  each Sprite its shot hits takes a gas that turns into a random debuff as the round ends. The Honey Badger and the Wild Boar wear
   Minerva's vent, the Polar Bear's (16 and 17 November). The Echidna is built (20 November, his
   kit that day, at tier one; the rules' Sonic Needle, the bible's Echidna row): every foe it
   strikes and every foe whose blow lands on it takes a Sonic Needle, a conductor of Chain, and
@@ -528,8 +530,8 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
      first battle down, its sizing his ("I'll handle that one"), tiers two and three up.
 2. **The design sessions, from the briefs**: each decision a bible row, each brief retired
    once its decisions are rows and content. The locked pieces' footing first (its own session
-   since 20 November; the Cassowary's redesign built 26 November; the Cottonmouth's die in
-   chat since 27 November, five hardpoints or four and an Integrated piece, then its branches;
+   since 20 November; the Cassowary's redesign built 26 November; the Cottonmouth's
+   Integrated Volatile Gas Canister built 27 November, its model's five barrels and its branches next;
    the Skua's round with Ryan; the Clydesdale's two picks), then the machine back in design (the Swallowtail), the built but
    unfinished (the Needletail, the Giant Petrel, the Musk Ox) and the gunship, the tier-one
    fronts (Minerva's lure tank, an Aphelion tier one), Claude's first rounds on his directions

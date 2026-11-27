@@ -247,7 +247,7 @@ static func effects_of(f: Face, shown: int = -1, base: Face = null, cooldown: in
 		var chip := [mark(Face.KEYWORD_NAMES[k], Glyphs.colour_for(Face.KEYWORD_NAMES[k]))] + ([star] if not gate.is_empty() else [])
 		var line: Dictionary
 		if Face.KEYWORD_STATUS.has(k):
-			var field: String = {Face.Keyword.ABLATE: "ablate", Face.Keyword.CRYO: "cryo", Face.Keyword.BRITTLE: "brittle", Face.Keyword.SAP: "sap"}.get(k, "")
+			var field: String = {Face.Keyword.ABLATE: "ablate", Face.Keyword.CRYO: "cryo", Face.Keyword.BRITTLE: "brittle", Face.Keyword.SAP: "sap", Face.Keyword.VOLATILE_GAS: "volatile_gas"}.get(k, "")
 			var numbered := not field.is_empty() and int(f.get(field)) > 0
 			var where := word(gate if not gate.is_empty() else Templates.say("readout.on_hit"))
 			var parts := Templates.parts("readout.apply_n", {"keyword": label, "n": num(str(f.get(field)), int(f.get(field)), int(base.get(field))), "where": where}) if numbered \

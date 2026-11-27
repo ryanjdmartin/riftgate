@@ -773,6 +773,31 @@
    ]
   },
   {
+   "id": "volatile_gas_canister",
+   "name": "Volatile Gas Canister",
+   "maker": "wainwright_sutler",
+   "shape": "none",
+   "codex": "",
+   "flavour": "",
+   "design": {
+    "stage": "draft",
+    "fantasy": "Ryan, 27 November: \"4 and an integrated\" for the Cottonmouth's die, the drum's own piece, after \"the model has 6 barrels, but it has 4 hardpoints\" and the identity its basics could not show at tier one.",
+    "niche": "The Cottonmouth's Integrated piece (Ryan, 27 November: \"Volatile Gas Canister / On Hit: Apply 1 Volatile Gas\"): the drum fires it as it fires everything, Indirect, its number and heat, Penetrate at the back rank or Spread at the front, so a shot gases two or three Sprites, and each stack turns into a random debuff as the round ends. The die shows what the drum does with a keyword whatever the stock. It prints no number or heat of its own: the drum's are its."
+   },
+   "face": {
+    "kind": "attack",
+    "reach": "indirect",
+    "power": 0,
+    "keywords": [
+     "volatile_gas"
+    ],
+    "volatile_gas": 1,
+    "heat": 0
+   },
+   "passive": null,
+   "tags": []
+  },
+  {
    "id": "combat_translocator",
    "name": "Combat Translocator",
    "maker": "wainwright_sutler",

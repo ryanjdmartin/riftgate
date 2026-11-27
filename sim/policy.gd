@@ -68,6 +68,7 @@ const DRILL_BRITTLE := 1.0       # a Brittle the drill holds on its foe: about o
 const DRILL_FOCUS := 0.5         # a use on a foe a drill is in: the Momentum it gives the drill's machine, a fifth of a turn more in the foe
 const NEEDLE_PROGRESS := 0.5     # a Sonic Needle short of its bolt: its share of the bolt, at the odds the bolt still comes (a first cut, 20 November)
 const BRITTLE_WEIGHT := 0.5         # a stack of Brittle, as the point it adds to each team blow the foe is likely to take while it lasts
+const GAS_POINT := 1.0             # a stack of Volatile Gas that becomes a debuff other than the stun: about a point of damage to come, read plainly
 const SWAP_WEIGHT := 0.25        # a foe brought into the front rank by a swap, as a share of its kill and its threat: it stands exposed to Direct fire
 const BUNCH_WEIGHT := 0.75       # what a swap adds to an ally's area entry this round, as a share: the ally may still spend elsewhere
 const COUNTDOWN_DISCOUNT := 0.75 # a gathering blow's worth now, for each round it still gathers: it lands later, and the fight may end first
@@ -808,6 +809,22 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 		for foe in sk.ridden_by(f, target, ms):
 			if foe.alive() and foe.attacks() and not foe.is_suppressed():
 				score += float(mini(sk.foe_blow(foe), f.sap) * foe.strikes()) * HULL_WEIGHT
+	# Volatile Gas (the Cottonmouth's Canister, 27 November): each stack turns into a random debuff as
+	# the round ends, one of those its Sprite may become now (Skirmish.gas_pool), each as likely: the
+	# stun worth the blow it stops, any other about a point of damage to come, on each Sprite reached
+	# at the odds it outlives the hit.
+	if f.has(Face.Keyword.VOLATILE_GAS):
+		for foe in sk.ridden_by(f, target, ms):
+			if not foe.alive() or Effects.turns_mark(foe, "gassed"):
+				continue
+			var pool := sk.gas_pool(foe)
+			if pool.is_empty():
+				continue
+			var each := 0.0
+			for sid in pool:
+				each += suppress_worth(sk, foe) * HULL_WEIGHT if sid == "suppressed" else GAS_POINT
+			var outlives := (1.0 - p_kill) if foe == target else 1.0
+			score += outlives * float(f.volatile_gas) * each / float(pool.size())
 	# Brittle (21 October): a point a stack on every team blow each foe reached takes while the
 	# stacks last on their clock, damage in hand for the team's blows (brittle_score).
 	if f.has(Face.Keyword.BRITTLE):

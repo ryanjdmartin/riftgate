@@ -247,7 +247,8 @@ landed, lost to a stun or skipped.
   cost; Numbed loses a stack, or lands on a foe that lost this turn to a stun; Golden loses a
   stack, and a foe that went gold this turn gains it after.
 - **The round ends**: Phased is granted or lost, Essence Flare goes, Swallowed loses a
-  stack and a swallow taken this round lands after, and a web bursts.
+  stack and a swallow taken this round lands after, a web bursts, and last Volatile Gas turns
+  into what it draws. A stun laid as the round ends costs the foe its next turn.
 - **It is spent**: the primers by a weapon fired, Spun Up, the Juggernaut Drive, the Aile buffs
   and a Parry's return by the next weapon, Shocked and Cryo by the weapon's hit that cashes them,
   Undying by its fall, a Mine by its foe's fall, a pin by the decay it stops, and a foe's jam by
@@ -684,6 +685,10 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   once no readout is open: the first such tap closes the open readout.
 - **Sap** (with a number; the Baboon's Redshift Emitter, beside a Purge 1): each foe hit gains
   that many stacks of Sapped a strike, laid once the strikes are done.
+- **Volatile Gas** (with a number; the Cottonmouth's Integrated Volatile Gas Canister): each foe
+  hit gains that many stacks of Volatile Gas a strike, laid once the strikes are done. The
+  Canister is equipment, so the Cottonmouth's drum fires it as its shot (4, Indirect, heat 6,
+  Spread 2 at the front, Penetrate 2 at the back), the gas on every foe the shot hits.
 - **Brittle** (with a number, the same on either side; Wainwright & Sutler's on-hit on ours):
   each foe hit gains that many stacks of Brittle a strike (Brittle 2: two stacks), laid once
   the strikes are done, so no strike of the spend feeds on what it lays. A foe's blow that
@@ -1143,6 +1148,19 @@ On a foe:
   multiplies, never below nothing: a foe's blow, its intent showing it, or a machine's weapon.
   Every stack goes after its next turn: a foe's at the end of its next action, a machine's at the
   end of the player's turn. A foe's Ward turns it away; a Cleanse clears it from a machine.
+- **Volatile Gas** (debuff, the Cottonmouth's): as the round ends, after everything else the
+  round's end does, each stack turns into one stack of another debuff the team lays, drawn at
+  random among those the foe may take now, each as likely, a stack drawing once the one before
+  has landed: Ablate, Brittle, Cryo, Sapped, Shocked, Exposed, a Suppress or Vitriol; Pinned on a
+  foe carrying Brittle and Seared on one carrying Ablate; a Sonic Needle while the Echidna fights
+  and reaches the foe (a stack of its, the bolt at its count); a Paradox while a machine with the
+  Paradox meter does (a stack of its meter). Never one the foe carries that does not stack
+  (Shocked, Exposed, a pin; a Suppress on a foe already to lose its next turn), nor one it is
+  immune to; a stack with nothing left to draw is lost. What it becomes lands as the team's mark
+  does: a Ward turns it away, a Suppress costs the foe its next turn (a Numbed foe strips a stack
+  instead), and each counts as a debuff gained for the Paradox, as the gas itself does. It never
+  decays of itself; a foe's cleanse takes it and a Ward turns it away. The round's preview shows
+  it as it stands, drawing nothing.
 - **Juggernaut Drive** (buff, the Wild Boar's passive waiting): gained as it gains a Barrier, one at a time; its
   next weapon attack ignores armour and lifts it, equipment leaving it standing. A purge takes it.
 - **Aile Boost**, **Aile Blitz**, **Aile Assault** (buffs, the Macaque's Aile Booster and its

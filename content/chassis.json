@@ -1689,7 +1689,9 @@
     "hover"
    ],
    "size": "light",
-   "fixed": [],
+   "fixed": [
+    "volatile_gas_canister"
+   ],
    "loadout": [
     "ankle_mortar",
     "twin_autoguns",

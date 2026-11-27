@@ -143,7 +143,7 @@ const STATUS := {
 	# The Baboon's Pocket Paradox as a meter (Ryan, 10 October): a status like any other, and
 	# it never decays; at the machine's count the foe is Suppressed and the Paradox clears.
 	"paradox": {"id": "paradox", "name": "Paradox", "description": "A paradox building, a stack for every debuff stack it gains: at the count every stack is consumed and it is Suppressed.",
-		"effects": []},
+		"laid_by": "paradox", "effects": []},
 	# The funnel-web's acid (Ryan's go, 18 October; Vitriol his word): a share of the foe's
 	# current hull a stack as its turn ends, past armour, after Ablating's flat tick, rounded down
 	# and never the last hit point, then a stack fades (Ablating's shape, stacking add): it
@@ -205,7 +205,7 @@ const STATUS := {
 		"tags": ["ability", "guard"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 0}]},
 	# Shocked (Ryan, 29 October): only a weapon's strike aimed at the foe reads it (aimed_only), so a
 	# blow that merely reaches it, an area's, a Chain's arc or a spill, neither doubles nor spends it.
-	"shocked": {"id": "shocked", "name": "Shocked", "description": "When a weapon's strike aimed at it lands, the blow deals double and the shock is spent; a blow that only reaches it neither doubles nor spends it.", "stacking": "renew",
+	"shocked": {"id": "shocked", "name": "Shocked", "description": "When a weapon's strike aimed at it lands, the blow deals double and the shock is spent; a blow that only reaches it neither doubles nor spends it.", "stacking": "renew", "decay": "none",
 		"tags": ["shock", "conducts"], "effects": [{"trigger": "static", "effect": "multiply_damage_taken", "value": 2, "aimed_only": true}]},
 	# Exposed (the Kestrel session, 20 and 21 October; built 21 October), the debuff: the foe
 	# stands in Direct reach of every machine as if its column's front were empty, and its
@@ -407,7 +407,7 @@ const STATUS := {
 	# (Skirmish._needle_bolt). Its text and, with the Spiker's sap, Sapped's two effects come from
 	# the rule that lays it (needle_spec); it lasts until a bolt spends it.
 	"sonic_needle": {"id": "sonic_needle", "name": "Sonic Needle", "description": "Conducts Chain. At its count of stacks, its machine fires Chain on every conductor, then the stacks go.", "decay": "none",
-		"tags": ["conducts"], "effects": []},
+		"laid_by": "needles", "tags": ["conducts"], "effects": []},   # laid_by: the passive effect whose machine it is (a Volatile Gas becomes one only while that machine is in the fight)
 	# The drill in its foe, and its branches' forms (Ryan, 24 November): a mark that never stacks,
 	# laid as the Inertia Drill resolves. As its foe's turn starts it lays its `tick`'s statuses
 	# (Brittle and the Pinned that holds it; the Glacial Mole's Cryo and Frozen, the Magma Mole's
@@ -458,6 +458,16 @@ const STATUS := {
 	# machine spends, equipment leaving it standing; a buff, so a purge takes it.
 	"juggernaut": {"id": "juggernaut", "name": "Juggernaut Drive", "description": "Its next weapon attack ignores armour.", "decay": "none", "spent_by": "weapon", "single": true, "stacking": "renew",
 		"tags": ["buff"], "effects": [{"trigger": "static", "effect": "ignore_armour", "value": 1}]},
+	# Volatile Gas (the Cottonmouth's Volatile Gas Canister, Ryan, 27 November: "Round End: Transform
+	# into another random debuff"): each stack turns into a stack of a debuff drawn from `becomes`, the
+	# team's, each as likely, as the round ends (Skirmish._transform_gas, which holds the conditions:
+	# his "if a non stacked debuff exists on a unit already (like shock), don't choose that one.
+	# Otherwise, everything is fair game and stacks", and "it's fair to include conditional statuses
+	# if the condition is met"). Never decays of itself; a team mark, so a Ward turns it away and a
+	# Sprite's cleanse lifts it.
+	"gassed": {"id": "gassed", "name": "Volatile Gas", "description": "Round End: Transform into another random debuff.", "decay": "none",
+		"becomes": ["ablating", "brittled", "cryoed", "sapped", "shocked", "exposure", "suppressed", "vitriol", "pinned", "seared", "sonic_needle", "paradox"],
+		"tags": [], "effects": []},
 	"sapped": {"id": "sapped", "name": "Sapped", "description": "Its attacks deal 1 less damage a stack. Every stack goes as its next turn ends.", "decay": "after_turn",
 		"tags": ["sap", CLEANSABLE], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": -1}, {"trigger": "static", "effect": "add_attack", "value": -1}]},
 	# Brittle, one state on either body (Ryan, 15 November: "Crushed and flak - agreed, brittle";
@@ -712,7 +722,7 @@ static func brace_stacks(value: int) -> int:
 ## What a foe carrying a status means (target_status, the Susceptibility Tensor; 10 October):
 ## what the team put on it. Never Numbed (a buff only a Purge lowers, 2 November), and never the foe's
 ## own buffs (Braced, Empowered, Undying).
-const FOE_STATUSES := ["ablating", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "brittled", "exposure", "mine", "pinned", "seared", "sapped", "applied_momentum", "frozen_momentum", "heated_momentum", "frozen", "sonic_needle"]
+const FOE_STATUSES := ["ablating", "suppressed", "shocked", "paradox", "vitriol", "webbed", "cryoed", "brittled", "exposure", "mine", "pinned", "seared", "sapped", "applied_momentum", "frozen_momentum", "heated_momentum", "frozen", "sonic_needle", "gassed"]
 ## The drill's forms a burrower's Inertia Drill lays (the Mole's and its branches'), each carrying its tick.
 const DRILL_STATUSES := ["applied_momentum", "frozen_momentum", "heated_momentum"]
 ## The status that holds each status a piece may hold on its target (Face.holds).
@@ -3071,7 +3081,7 @@ static func purge(u, n: int = 1) -> Array[String]:
 ## The marks the team lays on foes (28 October), what a Ward turns away (a stun it turns in
 ## Skirmish._suppress): never Numbed (the buff nothing removes), never Guarded or a buff. A foe's
 ## cleanse takes these and the stun (cleansed_marks, 26 November).
-const TEAM_MARKS := ["ablating", "brittled", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine", "pinned", "seared", "sapped", "applied_momentum", "frozen_momentum", "heated_momentum", "frozen", "sonic_needle"]
+const TEAM_MARKS := ["ablating", "brittled", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine", "pinned", "seared", "sapped", "applied_momentum", "frozen_momentum", "heated_momentum", "frozen", "sonic_needle", "gassed"]
 
 
 ## How many of the team's marks a foe carries, each status one mark.

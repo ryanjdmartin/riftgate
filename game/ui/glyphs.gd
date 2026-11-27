@@ -388,6 +388,13 @@ static func draw(ci: CanvasItem, id: String, c: Vector2, size: float, color: Col
 			]), color, width)
 			ci.draw_line(c + Vector2(-s * 0.95, s * 0.9), c + Vector2(-s * 0.35, s * 0.9), color, width * 0.9)
 			ci.draw_line(c + Vector2(s * 0.35, s * 0.9), c + Vector2(s * 0.95, s * 0.9), color, width * 0.9)
+		"gas":
+			# A cloud: three bumps over a flat foot (the Cottonmouth's Volatile Gas, 27 November, a
+			# debuff that turns into another as the round ends). No other mark is a cloud.
+			ci.draw_arc(c + Vector2(-s * 0.42, s * 0.12), s * 0.36, PI * 0.5, PI * 1.62, 14, color, width)
+			ci.draw_arc(c + Vector2(s * 0.02, -s * 0.18), s * 0.48, PI * 1.1, PI * 1.9, 14, color, width)
+			ci.draw_arc(c + Vector2(s * 0.45, s * 0.14), s * 0.34, PI * 1.32, PI * 2.5, 14, color, width)
+			ci.draw_line(c + Vector2(-s * 0.42, s * 0.48), c + Vector2(s * 0.45, s * 0.48), color, width)
 		"cryo":
 			# A snowflake: six arms, each with a fork near its tip (Cryo, the Polar Bear's mark,
 			# 20 October; its glyph from 21 October, the keyword and the foe's chip alike). The web

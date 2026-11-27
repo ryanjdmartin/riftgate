@@ -1895,6 +1895,11 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: Sap needs its number: the stacks of Sapped each foe hit gains" % where)
 	if fd.has("sap") and not Array(fd.get("keywords", [])).has("sap"):
 		errs.append("%s: sap is the Sap keyword's number: the entry needs the keyword" % where)
+	# Volatile Gas the same (the Cottonmouth's Canister, 27 November): the stacks each Sprite hit gains.
+	if Array(fd.get("keywords", [])).has("volatile_gas") and int(fd.get("volatile_gas", 0)) <= 0:
+		errs.append("%s: Volatile Gas needs its number: the stacks of it each Sprite hit gains" % where)
+	if fd.has("volatile_gas") and not Array(fd.get("keywords", [])).has("volatile_gas"):
+		errs.append("%s: volatile_gas is the Volatile Gas keyword's number: the entry needs the keyword" % where)
 	if fd.has("disrupts_attackers") and kind != "buff":
 		errs.append("%s: disrupts_attackers is a buff's: every foe aiming at the machine it lands on is Disrupted" % where)
 	if Array(fd.get("keywords", [])).has("brittle") and int(fd.get("brittle", 0)) <= 0:
