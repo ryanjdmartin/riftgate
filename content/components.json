@@ -688,15 +688,15 @@
    "id": "rhino_lock",
    "name": "Lock",
    "maker": "minerva",
-   "shape": "barrel",
+   "shape": "dish",
    "codex": "",
    "flavour": "",
    "status": "planned",
    "design": {
     "stage": "draft",
-    "fantasy": "A recovery winch's cable fired into a Sprite and hauled taut, the two held together for a round and the next, so neither reaches past the line (Ryan, 25 November: \"setting the drone on a target entangles them together\"; 27 November: \"the entanglement shouldn't let anything out, just like it doesn't let anything in\").",
+    "fantasy": "Quantum entanglement, never a line: a tractor beam thrown from the White Rhino's projector, its horn such as it is, pairing it with one Sprite for a round and the next, so neither reaches past the other (Ryan, 27 November: \"The lock is referencing quantum entanglement not physical. Shouldn't be a winch, this isn't W&S. More, I dunno, tractor beam. And it can be the \"horn\" such as it is on the model.\"; 25 November: \"setting the drone on a target entangles them together\"; 27 November: \"the entanglement shouldn't let anything out, just like it doesn't let anything in\").",
     "niche": "The White Rhino's lock, its Integrated equipment (Ryan's split of 27 November: \"split the entanglement onto a component, but put the drone onto the passive\"): Indirect, so it reaches a backliner, Entangle 2, and as it resolves the Sprite the Drone is on is Suppressed (his pick of 27 November, \"suppress the drone's target\"). Cooldown 1, so it is dark while its lock runs (his \"Presumably that means the lock goes on cooldown then, too\"). Not Rapid (his: \"I would rather it not have rapid\"); its own safety is Entangled's half damage.",
-    "notes": "\"Lock\" is a working label, his word for it; the name is his, and a Lock beside the die's own lock wants another. Heat 1, the Echidna's Tether's, a placeholder. The Suppress is a new face field the engine lacks (drone_suppress), so the piece is planned."
+    "notes": "\"Lock\" is a working label, his word for it; the name is his, and a Lock beside the die's own lock wants another. Heat 1, the Echidna's Tether's, a placeholder. The Suppress is a new face field the engine lacks (drone_suppress), so the piece is planned. Its shape (dish, an emitter) and its tag (Beam) are the session's on his tractor beam."
    },
    "face": {
     "kind": "attack",
@@ -712,7 +712,7 @@
    },
    "passive": null,
    "tags": [
-    "ballistic"
+    "beam"
    ]
   },
   {

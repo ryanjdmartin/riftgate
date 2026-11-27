@@ -44,13 +44,17 @@ Foes; `tools/lure_duel_model.py` (`--split` plays the kit) and the measurements 
 - 27 November, its model: "Make sure that the model isn't too on the nose for rhino, as with all
   models. It's tempting to slap a huge horn on there as a defining feature, when the kit doesn't
   actually use one. We'll want a drone model, too."
+- 27 November, its lock: "The lock is referencing quantum entanglement not physical. Shouldn't be a
+  winch, this isn't W&S. More, I dunno, tractor beam. And it can be the "horn" such as it is on the
+  model."
 
 ## The kit, decided
 
 - **The Drone**, its passive: every weapon it uses on a Sprite moves the Drone to that use's
   target. Draft: "Resolve: If a weapon was used on a Sprite, move the Drone to the target."
-- **The lock**, its Integrated equipment: Indirect, Entangle 2, Cooldown 1, heat 1, not Rapid; as
-  it resolves, the Sprite the Drone is on is Suppressed.
+- **The lock**, its Integrated equipment: quantum entanglement, never a line, thrown as a tractor
+  beam from a projector that is its horn, such as it is. Indirect, Entangle 2, Cooldown 1, heat 1,
+  not Rapid, a Beam; as it resolves, the Sprite the Drone is on is Suppressed.
 - **Entangled**, sealed both ways at half damage, a stack off at its Sprite's turn end, so it
   holds the round it is set and the next. Draft, worded after Phased: "Targets only the Frame that
   applied it." / "Affects only that Frame and itself." / "Cannot be targeted, damaged, or affected
@@ -73,18 +77,20 @@ lock's safety.
 ## Claude's round on the look (27 November)
 
 Nicknamed for how it acts, never drawn as the animal: the rhino reads in the mass and the lowered
-front, and the kit's two pieces are its features, a winch that throws the lock's cable and a
-cradle for the Drone. Minerva's livery, matte steel and military green; the white is in the name.
+front, and the kit's two pieces are its features, the lock's projector where a horn would stand
+(his: "it can be the 'horn' such as it is"), and a cradle for the Drone. The projector is a
+device, blunt and squared, with an emitter at its tip and coils down its length, so it reads as a
+horn by where it stands and as a machine by what it is. While the lock holds, a beam joins the
+projector to its Sprite: gameplay information, so its colour is checked against its grounds and
+it carries structure besides hue (a travelling pulse along it). Minerva's livery, matte steel and
+military green; the white is in the name.
 
-- **Look A, the recovery tractor.** A long, low tracked hull with its weight forward over the
-  front sprockets; a wide, flat dozer spade low on the nose (the white rhino's square lip as a
-  blade, and no horn); the winch amidships, its drum under a short boom with the cable's muzzle at
-  the tip, so the line runs from the boom to its Sprite while the lock holds; the Drone's cradle
-  on a raised rear deck. Plates overlap down the flanks in skirts.
+- **Look A, the low tractor.** A long, low tracked hull with its weight forward over the front
+  sprockets; the projector low on the nose, angled up and forward; the Drone's cradle on a raised
+  rear deck. Plates overlap down the flanks in skirts.
 - **Look B, the shouldered hauler.** Short and tall: a high armoured hump over the front tracks,
-  the winch drum built into its face and the cable firing from a slot under a sloped brow, the
-  engine decks falling away behind; the Drone perched on the crest of the hump, where an oxpecker
-  rides.
+  the projector set on the brow of the hump and the engine decks falling away behind; the Drone
+  perched on the crest of the hump, where an oxpecker rides.
 - **The Drone, either look.** A single ducted fan in a ring body, a sensor nose with a lit lens
   and a short stun prong, two short grip legs. It rides its cradle, hops to the target of each
   weapon the White Rhino uses and perches there, and dives with the prong as the lock fires: a
