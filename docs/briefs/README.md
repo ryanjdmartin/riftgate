@@ -242,6 +242,7 @@ One row a live brief; the to-do's Design sessions hold each one's task.
 | `refit_pass.md` | the reboot's spec and the refit pass's open calls | the battle and the kit | rule | his play and his calls |
 | `numbers_pass.md` | tier one sized against the reboot; the tier-one bench | the battle and the kit | rule | the foes' line's sizing, then his play |
 | `heat_pillar.md` | heat as a pillar: his frame, his overheat calls, what the reboot left open | every maker | rule | the heat session |
+| `graded_tide.md` | the battle's enemy side: packs rated one to three by the stretch of wall they make for, the leaders and the bosses as fixed entries | the battle | rule | his values from play, his marks on the Meadow's table, then a domain at a time |
 | `kestrel_line.md` | the Kestrel line's hub: what each fast flyer is for | Kestrel | all | the Giant Petrel's kit, the chassis that orbits Exposed, the last two slots |
 | `kestrel_magpie.md` | a support engine: the thief, the mimic, the cache | Kestrel | open | his pick of a direction |
 | `kestrel_owl.md` | the silent hunter, leaning to Cryo | Kestrel | open | his pick of where the stealth lives |
@@ -358,6 +359,9 @@ Each landed; its decisions are bible rows and content.
 - The six map shapes: `git show b2762d5:docs/briefs/map_shapes.md`
 - The long wall: `git show 68381ff:docs/briefs/long_wall_build.md`, its design
   `git show 68381ff:docs/long_wall_proposal.md`
+- The formation pass of 10 November, what was left of it: `git show 81b1e522:docs/formation_proposal.md`
+  (its bosses as fixed entries and its duelists' holes are `graded_tide.md`'s now)
+- The graded tide's proposal, with the trials cut on the way to it: `git show 81b1e522:docs/tide_proposal.md`
 
 The makers' first proposals, written under an older shield rule:
 `git show 2df9340:docs/arsenal_proposal.md`, and at that commit `ws_chassis_proposal.md`,

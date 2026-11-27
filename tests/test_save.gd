@@ -151,9 +151,11 @@ func test_a_battle_in_plan_round_trips() -> void:
 	assert_eq(JSON.stringify(SaveGame.to_dict(back)), JSON.stringify(SaveGame.to_dict(SaveGame.from_dict(JSON.parse_string(JSON.stringify(SaveGame.to_dict(back)))))), "stable")
 
 
-## The mechanics audit (25 October): a battle read back from its save dresses every pack Rift
-## Pressure spawns from the content (its move, and its hunt as its composition says), a resumed fight calls content up
-## as a fresh one does (a fallen Gel splits), and a final's commanders come back with it.
+## The mechanics audit (25 October): a battle read back from its save keeps the tide's lists (its
+## packs by rating, its hunting packs, and where each list stands) and dresses every pack Rift
+## Pressure spawns from the content (its move, its composition's pace where it names one, and its
+## hunt as its composition says), a resumed fight calls content up as a fresh one does (a fallen
+## Gel splits), and a final's commanders come back with it.
 func test_a_resumed_battle_dresses_its_spawns_and_its_fight_calls_content_up() -> void:
 	var b := Battle.new(4)
 	b.lineup = ["warrior"]
@@ -164,27 +166,45 @@ func test_a_resumed_battle_dresses_its_spawns_and_its_fight_calls_content_up() -
 	assert_eq(back.lineup, b.lineup, "the rift's commanders")
 	assert_eq(back.escort, b.escort, "and its escort")
 	var profiles: Dictionary = b.db.pack_profiles()
-	assert_eq(back.field.cycle.size(), b.field.cycle.size(), "the cycle rides in the save")
-	assert_eq(back.field.patrol_cycle.size(), b.field.patrol_cycle.size(), "and the tears' cycle")
-	assert_eq(back.field.cycle.map(func(c) -> String: return str(c.get("hunts", ""))), b.field.cycle.map(func(c) -> String: return str(c.get("hunts", ""))), "each composition's hunt with it")
-	assert_true(back.field.cycle.any(func(c) -> bool: return c.has("hunts")), "a hunting composition among them, to read")
-	for i in range(back.field.cycle.size()):
+	# A composition as the field reads it, whatever JSON made of its numbers.
+	var read := func(c: Dictionary) -> Array: return [str(c["id"]), str(c["size"]), str(c["faction"]), ContentDB.squad_of(c), str(c.get("lead", "")), str(c.get("hunts", "")), int(c.get("pace", 0)), c["members"], Array(c.get("layout", []))]
+	var ratings: Array = b.field.graded.keys()
+	ratings.sort()
+	var kept: Array = back.field.graded.keys()
+	kept.sort()
+	assert_false(ratings.is_empty(), "the tide has its lists by rating")
+	assert_eq(kept, ratings, "a list for every rating rides in the save")
+	for r in ratings:
+		assert_eq((back.field.graded[r] as Array).map(read), (b.field.graded[r] as Array).map(read), "the packs for %d as they were, in their order" % int(r))
+		assert_eq(int(back.field._graded_at.get(r, -1)), int(b.field._graded_at.get(r, -1)), "and where the list stands")
+	assert_eq(back.field.hunters.map(read), b.field.hunters.map(read), "the hunting packs with them, each composition's hunt with it")
+	assert_true(not back.field.hunters.is_empty() and back.field.hunters.all(func(c) -> bool: return c.has("hunts")), "a hunting composition among them, to read")
+	assert_eq(back.field._hunter_index, b.field._hunter_index, "and which comes next")
+	var by_id := {}
+	for c in tide_lists(back.field):
+		by_id[str(c["id"])] = c
+	var hunted := 0
+	for peak in range(4):   # a hunting pack comes out of the rift at the second peak and the fourth
 		var before := back.field.packs().size()
 		assert_true(back.field.tick_pressure(back.field.rift_pressure_max), "the rift spawns")
-		var spawned: Unit = back.field.packs()[before]
-		var p: Dictionary = profiles.get(spawned.foe_id, {})
-		assert_false(p.is_empty(), "a content foe: %s" % spawned.foe_id)
-		var pace := 99
-		for m in spawned.member_list():
-			pace = mini(pace, int(profiles.get(str(m[0]), {}).get("movespeed", Unit.PACK_MOVE)))
-		assert_eq(spawned.movespeed, pace, "%s: its move, the slowest" % spawned.foe_id)
-		var comp: Dictionary = {}
-		for c in back.field.cycle:
-			if str(c["id"]) == spawned.composition:
-				comp = c
-		assert_eq(spawned.behaviour, "hunt" if comp.has("hunts") else "push", "%s: its walk, its composition's" % spawned.composition)
-		if comp.has("hunts"):
-			assert_eq(spawned.hunts, str(comp["hunts"]), "%s: by its caveat" % spawned.composition)
+		var sent: Array = back.field.packs().slice(before)
+		assert_true(sent.size() >= Battlefield.sends_a_peak(), "peak %d: the rift's packs at least (%d)" % [peak + 1, sent.size()])
+		for spawned: Unit in sent:
+			var p: Dictionary = profiles.get(spawned.foe_id, {})
+			assert_false(p.is_empty(), "a content foe: %s" % spawned.foe_id)
+			var comp: Dictionary = by_id.get(spawned.composition, {})
+			assert_false(comp.is_empty(), "%s: one of the tide's own" % spawned.composition)
+			var pace := 99
+			for m in spawned.member_list():
+				pace = mini(pace, int(profiles.get(str(m[0]), {}).get("movespeed", Unit.PACK_MOVE)))
+			if int(comp.get("pace", 0)) > 0:
+				pace = int(comp["pace"])
+			assert_eq(spawned.movespeed, pace, "%s: its move, its composition's pace or else its slowest member's" % spawned.composition)
+			assert_eq(spawned.behaviour, "hunt" if comp.has("hunts") else "push", "%s: its walk, its composition's" % spawned.composition)
+			if comp.has("hunts"):
+				hunted += 1
+				assert_eq(spawned.hunts, str(comp["hunts"]), "%s: by its caveat" % spawned.composition)
+	assert_true(hunted > 0, "a hunting pack came out of the resumed rift, dressed to hunt")
 	var m: Unit = b.mechs()[0]
 	# A pack that fields a Gel, sent by the rift: whichever of the tier's formations holds one
 	# (the Meadow's stand in its formations since the pass of 10 November).

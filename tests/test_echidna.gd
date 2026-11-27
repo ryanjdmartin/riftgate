@@ -286,3 +286,56 @@ func test_chain_strikes_a_needled_target_too() -> void:
 	assert_true(sk.assign(0, a), "the Chain gun at the needled foe")
 	assert_eq(a.hp, 30 - 3 - 2, "the strike, then the arc")
 	assert_eq(b.hp, 30, "and nothing on a foe that conducts nothing")
+
+
+## The needles and Phased's rule (Ryan, 19 November: "Phased: Cannot be targeted, damaged, or
+## affected in any way by non-phased units"). The bolt is the Echidna's, since it fires it (Ryan,
+## 27 November: "worded in the Echidna passive as "the echidna fires" so that should be the
+## source"): from an Echidna that is not Phased it passes a Phased conductor by, and from a Phased
+## one it pings every conductor, whatever the foe it fires in. A Phased machine's needles are
+## needles still, its rule firing the bolt. And what a machine lays on its striker is the
+## machine's to land: a Phased striker takes no needle from a machine that is not Phased.
+func test_a_needles_bolt_is_the_echidnas_and_a_phased_striker_takes_a_phased_machines_needle_alone() -> void:
+	for faded in [false, true]:   # the Echidna
+		for held in [false, true]:   # the foe its bolt fires in
+			var u := _mech(Die.single(Face.attack(1, I)))
+			var a := _foe()
+			var plain := _foe()
+			var ghost := _foe()
+			var sk := _fight([u], [a, plain, ghost])
+			Effects.grant_for_rounds(ghost, Effects.STATUS["phased"], "test", sk.round)
+			if faded:
+				Effects.grant_for_rounds(u, Effects.STATUS["phased"], "test", sk.round)
+			if held:
+				Effects.grant_for_rounds(a, Effects.STATUS["phased"], "test", sk.round)
+			_needle(a, 2)
+			_needle(plain, 1)
+			_needle(ghost, 1)
+			var who := "%s, in %s" % ["a Phased Echidna" if faded else "an Echidna that is not Phased", "a Phased foe" if held else "a foe that is not Phased"]
+			var rule := Effects.needle_rule(u)
+			var bolt := Policy.new().bolt_worth(sk, sk.mechs[0], rule, a, a.hp)
+			if faded or not held:
+				assert_true(is_equal_approx(bolt, 6.0 if faded else 4.0), "the bot prices the bolt on the conductors the Echidna reaches (%s: %s)" % [who, bolt])
+				assert_true(sk.assign(0, a), "it lays the third needle (%s)" % who)
+				assert_eq(Effects.stacks_of(a, NEEDLE), 0, "and its rule fires the bolt (%s)" % who)
+				assert_eq([a.hp, plain.hp, ghost.hp], [30 - 1 - 2, 28, 28 if faded else 30], "the bolt of %s: the foe it fires in, the conductor that is not Phased, and the Phased one" % who)
+				continue
+			# An Echidna that is not Phased lays no needle on a Phased foe (its strike finds no such
+			# target; a blow struck back, below), so none of its bolts fires in one. Fired there all the
+			# same, it is the Echidna's still: the foe it fires in is passed by with the other Phased one.
+			assert_true(is_equal_approx(bolt, 2.0), "the bot prices such a bolt on the one conductor that Echidna reaches (%s: %s)" % [who, bolt])
+			assert_false(sk.assign(0, a), "it has no strike at a Phased foe (%s)" % who)
+			_needle(a, 1)
+			sk._needle_bolt(sk.mechs[0], a, rule)
+			assert_eq(Effects.stacks_of(a, NEEDLE), 0, "a bolt fired there spends its foe's stacks (%s)" % who)
+			assert_eq([a.hp, plain.hp, ghost.hp], [30, 28, 30], "and reaches what its Echidna reaches, never what its foe does (%s)" % who)
+	for faded in [false, true]:
+		var u := _mech(Die.single(Face.blank()))
+		var striker := _foe(30, 3)
+		var sk := _fight([u], [striker])
+		Effects.grant_for_rounds(striker, Effects.STATUS["phased"], "test", sk.round)
+		if faded:
+			Effects.grant_for_rounds(u, Effects.STATUS["phased"], "test", sk.round)
+		sk.end_round()
+		assert_eq(u.shield, 7, "the Phased foe's blow lands on the machine, Phased or not")
+		assert_eq(Effects.stacks_of(striker, NEEDLE), 1 if faded else 0, "and it takes the needle of a struck machine only where that machine is Phased too")

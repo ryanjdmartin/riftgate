@@ -66,8 +66,7 @@ var is_enemy: bool = false
 var massive: bool = false
 var bars: Array = []              # [[value, max, Color, (pending), (points a notch), (broken), (a break point)], ...]
 var bars_above: bool = false      # true: full-width gauges above the sprite; false: floating
-var pips: Array = []              # [count, of]: a count toward a shot drawn as cells under the gauges (the Cassowary's sixth shot), the last lit when it is next; empty for none
-var store: Array = []             # [count, cap, colour, glyph]: a capped store's bar under the heat, a segment a stack up to its cap, lit to its count (the Honey Badger's hopper, the Nemesis's rage); empty for none
+var store: Array = []             # [count, cap, colour, glyph, glows]: a capped store's bar under the heat, a segment a stack up to its cap, lit to its count (the Honey Badger's hopper, the Nemesis's rage), the whole bar glowing and pulsing while full where it glows (the Cassowary's Sustained Recoil); empty for none
 var sprite_density := 1.0         # a machine's render is this much larger than the frame it stands for (MechView3D.density); pixel art is 1
 var intent_kind: String = ""      # "attack", "defend", "heal", "buff", "debuff", or ""
 var intent_value: int = 0
@@ -156,7 +155,7 @@ func _init() -> void:
 ## What the view draws, to dress another as it (dress()): a foe the spend kills is stood in for by
 ## a copy of its view as it stood, its gauge ticking down a blow at a time, until its killing blow
 ## lands (Ryan, 2 November: "damage needs to be timed to the animation across the board").
-const LOOK := ["display_name", "is_enemy", "massive", "bars", "bars_above", "pips", "store", "sprite_density",
+const LOOK := ["display_name", "is_enemy", "massive", "bars", "bars_above", "store", "sprite_density",
 	"intent_kind", "intent_value", "intent_note", "intent_riders", "intent", "intent_dim", "statuses", "chip_wrap",
 	"sprite", "pixel_snap", "used_override", "breathe", "flip_h", "breathe_phase", "ground_shadow", "feet_y",
 	"hover", "sprite_at", "ground_at", "shadow_rx", "shadow_ratio", "empty_pad", "size", "texture_filter"]
@@ -182,11 +181,8 @@ func anchor_global() -> Vector2:
 
 
 func _bars_height() -> float:
-	return (bars.size() * BAR_STEP + _pips_step() + _store_step() + GAP) if bars_above and not bars.is_empty() else 0.0
+	return (bars.size() * BAR_STEP + _store_step() + GAP) if bars_above and not bars.is_empty() else 0.0
 
-
-func _pips_step() -> float:
-	return BAR_STEP if pips.size() >= 2 and int(pips[1]) > 0 else 0.0   # a gauge's step
 
 
 ## The room a capped store's bar takes in the stack: a gauge's own step.
@@ -196,7 +192,7 @@ func _store_step() -> float:
 
 ## The top of the stack of gauges above the drawing.
 func _bars_top() -> float:
-	return _visible().position.y - GAP - bars.size() * BAR_STEP - _pips_step() - _store_step()
+	return _visible().position.y - GAP - bars.size() * BAR_STEP - _store_step()
 
 
 func _scale() -> float:
@@ -278,7 +274,7 @@ func drawn_top() -> float:
 	if bars.is_empty() or dead:
 		return vis.position.y
 	if bars_above:
-		return vis.position.y - GAP - bars.size() * BAR_STEP - _pips_step() - _store_step()
+		return vis.position.y - GAP - bars.size() * BAR_STEP - _store_step()
 	return vis.position.y - FLOAT_LIFT
 
 
@@ -299,7 +295,13 @@ func _has_pending() -> bool:
 	for st in statuses:
 		if st.size() >= 4 and st[3] == "preview":
 			return true   # a buff on its way pulses
-	return false
+	return _store_glows()
+
+
+## A full store whose bar glows while full (the Cassowary's Sustained Recoil): it pulses, so the
+## view keeps drawing.
+func _store_glows() -> bool:
+	return store.size() >= 5 and bool(store[4]) and int(store[1]) > 0 and int(store[0]) >= int(store[1])
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -661,7 +663,7 @@ func _draw() -> void:
 			# Full-width gauges stacked above the drawing: hull, shield, heat.
 			var bx := size.x * 0.1
 			var bw := size.x * 0.8
-			var y := vis.position.y - GAP - bars.size() * BAR_STEP - _pips_step() - _store_step()
+			var y := vis.position.y - GAP - bars.size() * BAR_STEP - _store_step()
 			for b in bars:
 				_gauge(Rect2(bx, y, bw, BAR_H), b)
 				y += BAR_STEP
@@ -669,8 +671,6 @@ func _draw() -> void:
 			if _store_step() > 0.0:
 				_draw_store(Rect2(bx, y, bw, BAR_H))
 				y += _store_step()
-			if _pips_step() > 0.0:
-				_draw_pips(Rect2(bx, y, bw, BAR_H))
 		else:
 			# One small gauge floating above the drawing's top-right, with a leader dropping
 			# from a third of the way along its underside, diagonally down-left onto the sprite.
@@ -1130,41 +1130,6 @@ func _draw_dashed(rect: Rect2, color: Color, width: float) -> void:
 ## to read against any bar colour and for any kind of colour vision. Where it sits says
 ## which way the bar moves: inside the fill, that much is about to go; past the fill, that
 ## much is coming.
-## A count toward a shot as cells across the gauges' width, in the stores' own shape and row (the
-## Cassowary's sixth shot; pips from 21 October until Ryan, 10 November: "Cassowary's needs to
-## match as well - just need a different kind of indication that the sixth is special"): a cell
-## a shot, lit to the count, and the last, the one that counts double, apart from the rest by
-## structure: under a heavier border, a diamond set in it, at its row's own height. When it is next
-## the whole cell lights in the heat's colour and breathes, the diamond cut out of it.
-func _draw_pips(rect: Rect2) -> void:
-	var of := maxi(1, int(pips[1]))
-	var count := int(pips[0]) % of
-	var hud := Palette.HUD
-	for k in range(of - 1):
-		var cell := _cell_rect(k, of, rect)
-		var pts := Hud.slant(cell, 4.0)
-		Hud.fill_poly(self, Hud.slant(cell.grow(1.0), 4.0), Color(Palette.BG, 0.9))
-		if k < count:
-			Hud.fill_poly(self, Hud.slant(cell.grow(-2.0), 2.4) if cell.size.x >= 18.0 else pts, hud)
-		Hud.stroke_poly(self, pts, Color(hud, 0.95), 1.5)
-	var last := _cell_rect(of - 1, of, rect)   # its row's own height: taller, it touched the heat bar above (Ryan, 10 November)
-	var next := count == of - 1
-	var col: Color = Palette.HEAT if next else hud
-	var lpts := Hud.slant(last, 4.0)
-	Hud.fill_poly(self, Hud.slant(last.grow(1.0), 4.0), Color(Palette.BG, 0.92))
-	if next:
-		var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * PENDING_RATE)
-		Hud.fill_poly(self, lpts, Color(col, 0.7 + 0.3 * beat))
-	Hud.stroke_poly(self, lpts, Color(col, 1.0), 2.5)
-	var c := last.get_center()
-	var r := minf(last.size.y * 0.5 - 2.0, last.size.x * 0.3)
-	var gem := PackedVector2Array([c + Vector2(0, -r), c + Vector2(r, 0), c + Vector2(0, r), c + Vector2(-r, 0)])
-	if next:
-		draw_colored_polygon(gem, Color(Palette.BG, 0.95))
-	else:
-		draw_colored_polygon(gem, col)
-
-
 ## A capped store as one more bar under the heat, in the heat bar's own shape and place (Ryan, 10
 ## November: "Resource bars like the badgers should be the same shape as the other resource bars
 ## ... So the badger's should nestle under the Heat bar, same shape, divided into four clear
@@ -1181,7 +1146,25 @@ const CELL_GAP := 1.0        # the ground between two cells: a hairline, the bor
 const CELL_GAP_MANY := 1.0   # the same in a row of more than six (the magazine's ten)
 
 func _draw_store(rect: Rect2) -> void:
-	_draw_cells(rect, int(store[0]), int(store[1]), store[2] if store.size() >= 3 else Palette.HUD)
+	var col: Color = store[2] if store.size() >= 3 else Palette.HUD
+	_draw_cells(rect, int(store[0]), int(store[1]), col)
+	if _store_glows():
+		_draw_full_glow(rect, col)
+
+
+## A store that glows whole while full (the Cassowary's Sustained Recoil, Ryan, 26 November: "When
+## all are filled, the whole bar should glow and pulse, indicating the next shot is the sixth"): a
+## halo round the whole row and a heavy border over it, breathing together. Hot, for the phone (the
+## rule: every glow judged on a device has come back hotter); judged running, RIFTGATE_RECOIL_DEBUG=1
+## holds every such bar full.
+const FULL_GLOW_RATE := 6.0   # radians a second: a quick breath, so the bar reads as live
+func _draw_full_glow(rect: Rect2, col: Color) -> void:
+	var beat := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * FULL_GLOW_RATE)
+	for k in range(4):
+		var grow := 3.0 + 3.0 * float(k)
+		Hud.stroke_poly(self, Hud.slant(rect.grow(grow), 4.0 + grow * 0.5), Color(col, (0.55 - 0.12 * float(k)) * (0.45 + 0.55 * beat)), 3.0)
+	Hud.stroke_poly(self, Hud.slant(rect.grow(1.5), 4.0), Color(col, 0.75 + 0.25 * beat), 3.0)
+	Hud.fill_poly(self, Hud.slant(rect, 4.0), Color(Palette.INK, 0.18 * beat))
 
 
 ## A row of whole units as cells across `rect`: `count` of `cap` lit, and with `after` given the

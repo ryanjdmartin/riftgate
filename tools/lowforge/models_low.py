@@ -3064,98 +3064,92 @@ def _cassowary_pose(frames, until, hz=30.0):
     return tracks, out
 
 
-def _cassowary_stride(sweep, duty=0.6, lift=5.0, heel=-28.0, roll=0.3, flex=22.0, curl=-30.0, crouch=0.5, dip=1.6, nod=1.2,
-                      reach=0.97, n=60, carry=(0.08, 0.8), lean=0.0, hop=0.0):
-    """The Cassowary's walk (31 October), _plant's worked foot by foot for a digitigrade leg: each
-    foot's toes planted flat through its stance while the leg sweeps back under the body, and in
-    the stance's last `roll` the heel lifts, the shank tipping `heel` degrees about the ball with
-    the toes still flat, the push-off. Then the hock carries forward, lifted `lift`, as the ankle
-    flexes the foot up and forward under it, `flex` degrees, its toes curling `curl` (a bird's
-    swing: the hock stays low, so the knee never rises into the cab), and the foot reaches down
-    flat to land. The body rides as high as its planted legs allow kept `reach` of straight,
-    `crouch` lower, and drops `dip` and nods `nod` degrees onto each foot, never rolling. The feet
-    a half stride apart. Under a duty of a half it runs (24 November): both feet are up between
-    steps, the body carried across from one stance's ride to the next and `hop` higher at the
-    middle of the flight, and `lean` degrees nose down throughout. Returns (tracks, body, stride)
-    for b.gait with ease "linear"."""
-    stride = sweep / duty
+def _cassowary_stance(u, sweep, heel, roll):
+    """A planted foot `u` of the way through its stance: (ball y, ball z, shank, toes, True), its toes
+    flat while the body passes over them, the heel lifting in its last `roll` (the push-off, the shank
+    tipping `heel` degrees about the ball)."""
+    y0, z0 = _CASSOWARY_BALL
+    w = max(0.0, (u - (1.0 - roll)) / roll)
+    return y0 + sweep * 0.5 - sweep * u, z0, heel * w * w * (3.0 - 2.0 * w), 0.0, True
+
+
+def _cassowary_swing(s, sweep, heel, lift, flex, curl, carry=(0.08, 0.8)):
+    """A foot `s` of the way through its swing: (ball y, ball z, shank, toes, False), from where the
+    push-off left it to where it lands `sweep` ahead, the hock carried forward lifted `lift` as the
+    ankle folds the foot up under it, `flex` degrees, its toes curling `curl`, and reaching down flat
+    to land."""
+    y0, z0 = _CASSOWARY_BALL
     shank_swing = _cassowary_mono([(0.0, heel), (0.45, flex), (0.85, 0.0), (1.0, 0.0)])
     toes_swing = _cassowary_mono([(0.0, 0.0), (0.25, curl), (0.65, curl * 0.4), (0.85, 0.0), (1.0, 0.0)])
+    off_y, off_z = _cassowary_hock((y0 - sweep * 0.5, z0), heel)
+    land_y, land_z = _cassowary_hock((y0 + sweep * 0.5, z0), 0.0)
+    u = min(1.0, max(0.0, (s - carry[0]) / carry[1]))
+    w = u * u * (3.0 - 2.0 * u)
+    hy, hz = off_y + (land_y - off_y) * w, off_z + (land_z - off_z) * w
+    if s < 0.3:
+        hz += lift * (1.0 - (1.0 - s / 0.3) ** 2)
+    elif s < 0.62:
+        hz += lift
+    else:
+        hz += lift * (1.0 - ((s - 0.62) / 0.38) ** 2)
+    shank = shank_swing(s)[0]
+    oy, oz = _cassowary_hock((0.0, 0.0), shank)
+    return hy - oy, hz - oz, shank, toes_swing(s)[0], False
+
+
+def _cassowary_lope(sweep, duty=0.3, lift=10.0, heel=-34.0, roll=0.45, flex=36.0, curl=-28.0, bounce=2.5, crouch=1.0,
+                    lean=7.0, nod=1.5, reach=0.97, n=90):
+    """The Cassowary's run, a lope (Ryan, 25 November: "a real run, a lope, not a fast walk"; then "The
+    cassowary's run is very jerky, every time a foot touches down, it jumps. And the transition from
+    walk to run is janky. As a biped it can probably just take off into a run from standing"): each
+    foot planted `duty` of the stride through a stance of `sweep`, so the machine flies between its
+    steps, the swing lifted high with the ankle folded under the hock (_cassowary_stance,
+    _cassowary_swing). The body rides as a run's does, never as a walk's vault: one smooth swell a
+    step, lowest at mid-stance as the leg takes its weight and highest in the flight, `bounce` either
+    way of its middle, set as high as the planted legs allow kept `reach` of straight, `crouch` lower;
+    leaning `lean` degrees into the run, nose a further `nod` down at mid-stance and up in the flight.
+    Nothing jolts on a landing: the swell is already coming down to meet the foot. The feet a half
+    stride apart. Returns (tracks, body, stride) for b.gait with ease "linear"."""
+    stride = sweep / duty
     phases = {"l": 0.0, "r": 0.5}
-    y0, z0 = _CASSOWARY_BALL
-    off_y, off_z = _cassowary_hock((y0 - sweep * 0.5, z0), heel)   # the hock as the toes leave the ground
-    land_y, land_z = _cassowary_hock((y0 + sweep * 0.5, z0), 0.0)  # and as the foot lands
 
     def foot(side, p):
-        """(ball y, ball z, shank, toes, planted) at phase p."""
         q = (p - phases[side]) % 1.0
         if q < duty:
-            u = max(0.0, (q / duty - (1.0 - roll)) / roll)
-            return y0 + sweep * 0.5 - sweep * q / duty, z0, heel * u * u * (3.0 - 2.0 * u), 0.0, True
-        s = (q - duty) / (1.0 - duty)
-        u = min(1.0, max(0.0, (s - carry[0]) / carry[1]))
-        w = u * u * (3.0 - 2.0 * u)
-        hy, hz = off_y + (land_y - off_y) * w, off_z + (land_z - off_z) * w
-        if s < 0.3:
-            hz += lift * (1.0 - (1.0 - s / 0.3) ** 2)   # up briskly
-        elif s < 0.62:
-            hz += lift
-        else:
-            hz += lift * (1.0 - ((s - 0.62) / 0.38) ** 2)  # down gathering speed
-        shank = shank_swing(s)[0]
-        oy, oz = _cassowary_hock((0.0, 0.0), shank)
-        return hy - oy, hz - oz, shank, toes_swing(s)[0], False
+            return _cassowary_stance(q / duty, sweep, heel, roll)
+        return _cassowary_swing((q - duty) / (1.0 - duty), sweep, heel, lift, flex, curl)
 
     span = reach * (math.hypot(_CASSOWARY_KNEE[0] - _CASSOWARY_HIP[0], _CASSOWARY_KNEE[1] - _CASSOWARY_HIP[1])
                     + math.hypot(_CASSOWARY_HOCK[0] - _CASSOWARY_KNEE[0], _CASSOWARY_HOCK[1] - _CASSOWARY_KNEE[1]))
-    rides = []
-    for i in range(n + 1):
-        p = i / float(n)
-        ride = None
+    top = (duty + 0.5) * 0.5   # the middle of the flight after the left's stance
+
+    def swell(p):
+        """+1 in the middle of a flight, -1 at mid-stance: one swell a step."""
+        return math.cos(4.0 * math.pi * (p - top))
+
+    ps = [i / float(n) for i in range(n + 1)]
+    room = []   # how high the planted legs let the body ride, less the swell there
+    for p in ps:
         for side in ("l", "r"):
             y, z, shank, _toes, down = foot(side, p)
             if not down:
                 continue
             hy, hz = _cassowary_hock((y, z), shank)
             dy = hy - _CASSOWARY_HIP[0]
-            r = hz + math.sqrt(max(0.0, span * span - dy * dy)) - _CASSOWARY_HIP[1]
-            ride = r if ride is None else min(ride, r)
-        rides.append(None if ride is None else min(0.0, ride))
-    # In a run's flight no foot holds the body up: it carries across from the stance it left to
-    # the one it lands in (the cycle wraps), `hop` higher at the middle.
-    flown = [v for v in rides if v is not None]
-    for i in range(n + 1):
-        if rides[i] is not None or not flown:
-            continue
-        a = i
-        while rides[a % (n + 1)] is None:
-            a -= 1
-        b_ = i
-        while rides[b_ % (n + 1)] is None:
-            b_ += 1
-        u = (i - a) / float(b_ - a)
-        rides[i] = (rides[a % (n + 1)] * (1.0 - u) + rides[b_ % (n + 1)] * u + hop * math.sin(math.pi * u))
-    pose = []
-    for i in range(n + 1):
-        p = i / float(n)
-        ride = rides[i] if rides[i] is not None else 0.0
-        jolt = 0.0
-        for land in phases.values():
-            x = (p - land) % 1.0
-            jolt += x / 0.05 if x < 0.05 else ((1.0 - (x - 0.05) / 0.35) ** 2 if x < 0.4 else 0.0)
-        pose.append((ride - crouch - dip * jolt, -nod * jolt - lean))
+            room.append(hz + math.sqrt(max(0.0, span * span - dy * dy)) - _CASSOWARY_HIP[1] - bounce * swell(p))
+    base = min(0.0, min(room)) - crouch
+    pose = [(base + bounce * swell(p), -lean + nod * swell(p)) for p in ps]
     tracks = {}
     for side in ("l", "r"):
         rows = {j: [] for j in ("hip_", "knee_", "ankle_", "toe_")}
-        for i in range(n + 1):
-            p = i / float(n)
+        for i, p in enumerate(ps):
             y, z, shank, toes, _down = foot(side, p)
             dz, pitch = pose[i]
             for j, v in zip(("hip_", "knee_", "ankle_", "toe_"), _cassowary_solve((y, z), shank, toes, 0.0, dz, pitch)):
                 rows[j].append((p, round(v, 3)))
         for j, keys in rows.items():
             tracks[j + side] = (keys, 0.0)
-    body = [(i / float(n), 0.0, 0.0, round(dz, 3), 0.0, round(pitch, 3), 0.0) for i, (dz, pitch) in enumerate(pose)]
+    body = [(ps[i], 0.0, 0.0, round(dz, 3), 0.0, round(pitch, 3), 0.0) for i, (dz, pitch) in enumerate(pose)]
     return tracks, body, stride
 
 
@@ -3174,7 +3168,7 @@ def _cassowary_drum_ring(cx, cz, r, flute):
 def cassowary(b):
     """Wainwright & Sutler "Cassowary" (Pattern 15 Gun Walker), first cut 31 October from Ryan's
     to-do line: a medium chicken walker in the maker's iron, the AT-ST silhouette, a squared cab
-    on two digitigrade legs, no arms, five hardpoints, the Spin-Up showing nowhere. Each leg a
+    on two digitigrade legs, no arms, five hardpoints, the Negentropy Spinner showing nowhere. Each leg a
     short thigh down and forward to the knee under the pelvis, the long drumstick of a shin back
     to a high hock, the shank down to the ball. The cab turns on a waist over the pelvis the legs
     hang from (a walker turns at the waist), its brow over a visor slit and two lamps, the chin
@@ -3182,9 +3176,10 @@ def cassowary(b):
     revolver than a literal one", "weird toes, not mechanical enough"): the revolver drum on the
     cab's flank is a capacitor bank now, six cells round a core between two end plates, wound
     with two copper coils, on its axle in straps off the cab under a lit spark gap; its cells
-    light one a counted shot, charging toward the sixth shot, the one its Indexed Cylinder
-    counts double, and all six flare and go dark as that shot discharges it (b.count, the
-    machine's `shots`); it spins while the machine is Spun Up, the status its Spin-Up grants
+    light one a stack of Sustained Recoil, charging toward the hit its Syntropy Cylinder
+    doubles, and they flare and go dark as that hit discharges it (b.count, the machine's
+    `sustained_recoil`, a cell lit ahead for the hit to come, so all six when the next doubles); it spins while the machine is
+    Spun Up, the status its Negentropy Spinner grants
     (b.spin_held). The feet are the AT-ST's, broad and flat in iron: a heel block on the shank,
     three hinged toe plates on the ball, so the toes stay flat as the heel lifts. Mounts in the
     die's order: hp_1 the chin turret's Twin Autoguns, hp_2 the left pod's Rivet Gun, hp_3 the
@@ -3206,11 +3201,11 @@ def cassowary(b):
         x = s * LX
         hip, knee = (x,) + _CASSOWARY_HIP, (x,) + _CASSOWARY_KNEE
         hock, ball = (x,) + _CASSOWARY_HOCK, (x,) + _CASSOWARY_BALL
-        with b.joint("hip_" + side, hip, limits=(-35.0, 75.0)):   # what the acts and the strides ask, with a margin (the run reaches 66)
+        with b.joint("hip_" + side, hip, limits=(-45.0, 100.0)):   # what the acts and the strides ask, with a margin (the lope's swing reaches 94)
             b.prism("x", x, hip[1], hip[2], 5.6, 9.0, "steel.dark", 8, "hip_disc", phase=math.pi / 8)
             _beam(b, hip, knee, _sq(7.5, 10.0), _sq(6.5, 8.5), "steel.plate", "thigh")
             b.prism("x", x, knee[1], knee[2], 4.2, 9.0, "steel.dark", 8, "knee", phase=math.pi / 8)
-            with b.joint("knee_" + side, knee, limits=(-65.0, 25.0)):
+            with b.joint("knee_" + side, knee, limits=(-80.0, 45.0)):
                 # The drumstick, the leg's long visible stroke: a livery plate on its outer face
                 # and a tendon rod down its back.
                 _beam(b, knee, hock, _sq(6.0, 7.0), _sq(5.2, 6.0), "steel.panel", "shin")
@@ -3221,7 +3216,7 @@ def cassowary(b):
                 _beam(b, tuple(p0 + Vector((s * 3.4, 0.0, 0.0))), tuple(p1 + Vector((s * 3.4, 0.0, 0.0))), _sq(0.8, 6.4), _sq(0.8, 5.4), "livery.livery2", "shin_plate")
                 _beam(b, tuple(p0 + back * 3.6), tuple(p1 + back * 3.4), _poly(0.9, 6), _poly(0.9, 6), "steel.dark", "tendon")
                 b.prism("x", x, hock[1], hock[2], 3.6, 8.0, "steel.dark", 8, "hock", phase=math.pi / 8)
-                with b.joint("ankle_" + side, hock, limits=(-60.0, 65.0)):
+                with b.joint("ankle_" + side, hock, limits=(-60.0, 80.0)):
                     _beam(b, hock, ball, _sq(4.6, 5.0), _sq(4.2, 4.2), "steel.dark", "shank")
                     by = ball[1]
                     b.loft([(by - 10.0, rect(x, 8.0, 0.0, 2.6)), (by - 7.5, rect(x, 10.0, 0.0, 4.8)), (by - 0.6, rect(x, 10.0, 0.0, 4.8))], "steel.plate", "heel")
@@ -3285,9 +3280,10 @@ def cassowary(b):
     # of capacitor, charging up for the sixth hit of its passive"): six cells round a core between
     # two end plates, wound with two copper coils, on an axle in straps off the cab, a spark gap
     # lit over its rear on an arm off the cab, two horns and the spark between them. Each cell's
-    # lens in either end plate and its window down its outside light, a cell a counted shot,
-    # cell_1 at the top first and the rest clockwise seen from behind; the sixth shot, the one the
-    # Indexed Cylinder counts double, discharges them, all six flaring and going dark (b.count).
+    # lens in either end plate and its window down its outside light, a cell a stack of Sustained
+    # Recoil and one for the hit to come, cell_1 at the top first and the rest clockwise seen from
+    # behind, so all six are lit when its Syntropy Cylinder doubles the next hit; that hit
+    # discharges them, all six flaring and going dark (b.count).
     # The bank spins while the machine is Spun Up (b.spin_held).
     DX, DY, DZ, DR = 23.5, 0.5, 72.0, 8.5
     Y0, Y1 = DY - 7.5, DY + 7.5
@@ -3321,7 +3317,7 @@ def cassowary(b):
             strip = lambda y: [tuple(w + t * 0.75 + Vector((0.0, y, 0.0)) - n * 0.2), tuple(w - t * 0.75 + Vector((0.0, y, 0.0)) - n * 0.2),
                                tuple(w - t * 0.75 + Vector((0.0, y, 0.0)) + n * 0.25), tuple(w + t * 0.75 + Vector((0.0, y, 0.0)) + n * 0.25)]
             _rings(b, [strip(Y0 + 0.9 - DY), strip(Y1 - 0.9 - DY)], "amber.spark", label)
-    b.count("shots", cells, on=6.0, off=-1.0, flare=14.0)   # hot when charged, unlit glass when not (lean hotter: the phone sees the rear plate in the cab's shadow)
+    b.count("sustained_recoil", cells, on=6.0, off=-1.0, flare=14.0, ahead=1)   # a cell lit a stack of Sustained Recoil and one for the hit to come, all six lit when the next hit doubles (Ryan, 26 November: "either only 5, or that it has +1 to the current count"); hot when charged, unlit glass when not (lean hotter: the phone sees the rear plate in the cab's shadow)
     b.spin_held("spun_up", "capacitor", 600.0)
     waist.__exit__(None, None, None)
 
@@ -3383,23 +3379,18 @@ def cassowary(b):
     tracks["waist"] = _cassowary_dense([(0.6, 0.0, 0.0, 0.0), (1.4, -3.0, 0.0, 0.0), (2.5, -3.5, 0.0, 0.0), (2.7, 2.0, 0.0, 0.0), (3.1, 1.6, 0.0, 0.0), (4.0, -2.0, 0.0, 0.0),
                                         (4.15, 1.5, 0.0, 0.0), (5.0, 0.0, 0.0, 0.0)], 6.0)
     b.act("kick", 6.0, tracks, body=body, ease="linear", heft=0.07, glow=[(["lamp"], [(2.4, 0.0), (2.7, 8.0), (3.2, 8.0), (3.8, 0.0)])])
-    # Movement: a long digitigrade stride, the toes planted while the body passes over them, the
-    # heel lifting into the push-off, the ankle folding the foot up under the hock as it swings
-    # and reaching it down to land flat; the body dropping and nodding onto each foot. A sweep of
-    # 40, a stride of 67, so its four hexes a move are paced, not scurried (at 30 it took three
-    # steps a second at its map pace).
-    # It walks off the mark and runs once under way (Ryan, 24 November: "cassowary gait needs to
-    # accelerate into more of a run"): the run keeps the walk's stride, so the two play at one
-    # phase and crossfade by its speed, every foot where both gaits have it; its feet are down
-    # under half the stride, so it flies between steps, the swing lifted higher and the ankle
-    # folded further, the body lower, leaning into it and pitching harder onto each landing.
-    wtracks, wbody, wstride = _cassowary_stride(sweep=40.0, curl=-18.0)   # the toe plates droop on their hinges through the swing, less than a bird's toes curl
-    tracks, body, stride = _cassowary_stride(sweep=40.0 * 0.4 / 0.6, duty=0.4, lift=9.0, flex=34.0, curl=-26.0, crouch=3.0,
-                                             dip=2.4, nod=2.5, lean=6.0, hop=1.5, roll=0.4)
-    b.gait(stride=stride, tracks=tracks, body=body, ease="linear", start=("walk", 0.3, 0.75))
-    b.gait_option("walk", stride=wstride, tracks=wtracks, body=wbody, ease="linear")
-    b.move(accel=1.3, heft=0.17)
-    # Its Spin-Up plays a slice of its test charge as it is used (Ryan, 31 October: the cheapest
+    # Movement: it lopes, and sets off straight into the lope (Ryan, 24 November: "cassowary gait
+    # needs to accelerate into more of a run"; 25 November: "The cassowary run needs to be a real run,
+    # a lope, not a fast walk"; then "As a biped it can probably just take off into a run from
+    # standing"): two of its walk's old strides a stride, each foot down under a third of it, the
+    # knee coming up high in the swing, short of the cab, and the body swelling once a step as a
+    # run's does (_cassowary_lope). Quick off the mark, so the slow first strides are few. The walk
+    # it set off in until then, and the stride it changed in, are retired: the change read as a
+    # stumble, and the lope's dip and hop at each landing as a jump.
+    tracks, body, stride = _cassowary_lope(sweep=40.0)
+    b.gait(stride=stride, tracks=tracks, body=body, ease="linear")
+    b.move(accel=0.8, heft=0.17)
+    # Its Negentropy Spinner (the Spin-Up until 26 November, its id kept) plays a slice of its test charge as it is used (Ryan, 31 October: the cheapest
     # first; found unfired on 3 November): the capacitor drum spinning up three turns as the spark
     # gap crackles, to the snap at its top.
     b.fires = {"spin_up": ("test_charge", 0.9, 3.8)}

@@ -636,6 +636,26 @@ func test_greedy_values_a_cleanse_where_there_is_something_to_clear() -> void:
 	assert_true(pol.cleanse_score(sk, ms) > before, "a foe's disable is worth clearing, a cooldown is not")
 
 
+## A foe's cleanse lifts a stun (Ryan, 26 November): the bot reads a cleanser beside a stunned ally
+## at the blow its cleanse would free, where the stunned foe's own threat reads nothing.
+func test_the_bot_reads_a_cleanse_of_a_stun_at_the_blow_it_frees() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 100))
+	var healer := Foe.make("caster", 500, 1)
+	healer.actions = [{"id": "cleanse", "name": "Cleanse", "kind": "defend", "effect": "cleanse", "weight": 1, "when": "ally_marked", "text": ""}]
+	healer.action = healer.actions[0]
+	var g := _ghoul(500, 10)
+	sk.add_foes([healer, g])
+	sk.begin()
+	sk.start_round()
+	assert_eq(Policy._cleanse_worth(healer, sk), 0.0, "nothing to lift: nothing")
+	var blow := float(sk.foe_blow(g) * g.strikes())
+	assert_true(blow > 0.0, "the ghoul shows a blow")
+	assert_true(sk._suppress(g), "the stun lands")
+	assert_eq(Policy._threat_now(g, sk), 0.0, "a stunned foe threatens nothing")
+	assert_eq(Policy._cleanse_worth(healer, sk), blow, "the cleanse is worth the blow it frees")
+
+
 func test_greedy_values_a_shock_by_the_doubled_blow_to_come() -> void:
 	var sk := Skirmish.new(1, 1)
 	var projector := Face.attack(0, L, K.SHOCK)
@@ -1091,28 +1111,37 @@ func test_greedy_steps_a_stepping_die_through_a_weak_chamber_to_a_big_one() -> v
 	assert_eq(sk.rerolls_left, Skirmish.REROLLS_PER_ROUND - 2, "two rerolls spent")
 
 
-## A spinning chamber (the Spin-Up's, Instant on a stepping die) is worth its own spend and the
-## spin after it, so the bot does not step away from it toward a chamber worth only a little more
-## than its stack.
-func test_greedy_keeps_a_spinning_chamber_for_the_spin_after_it() -> void:
+## The Negentropy Spinner's chamber (Instant on a stepping die, its count the machine's Sustained
+## Recoil: Ryan, 26 November) moves the dial a known number of places, so its chain is its own spend
+## and the chamber its count lands on, and the dial rests there; with no stacks it steps one, as
+## Instant does on a stepping die. The bot holds it when its jump finds the big gun.
+func test_greedy_reads_the_spinners_jump_in_its_cycle() -> void:
 	var pol := Policy.make(Policy.GREEDY)
 	var spin := Face.buff("spun_up", 1, 1)
 	spin.keywords = [Face.Keyword.INSTANT]
+	spin.advances_by = "sustained_recoil"
 	var sk := Skirmish.new(1)
-	var u := _mech("A", Die.of([spin, Face.attack(6, L), Face.attack(6, L), Face.attack(6, L)]), 40, 100)
-	u.grant_passive({"id": "test_step", "name": "Step", "description": "", "effects": [{"trigger": "static", "effect": "step_die", "value": 1}]})
+	var u := _mech("A", Die.of([spin, Face.attack(2, L), Face.attack(2, L), Face.attack(30, L)]), 40, 100)
+	u.grant_passive({"id": "test_step", "name": "Step", "description": "", "effects": [
+		{"trigger": "static", "effect": "step_die", "value": 1},
+		{"trigger": "static", "effect": "hit_charge", "value": "sustained_recoil", "cap": 5, "times": 2}]})
 	sk.add_mech(u)
 	sk.add_foes([_ghoul(500, 1)])
 	sk.begin()
 	sk.start_round()
 	var ms: Skirmish.MechState = sk.mechs[0]
 	ms.face_index = 0
-	var own := pol.face_value(sk, ms, ms.die.faces[0])
-	var chain := float(pol.cycle_chain(sk, ms, 0)["value"])
-	assert_true(chain > own + 5.9, "the spin's chamber carries the spin: at least a six after its own spend")
-	assert_eq(int(pol.cycle_chain(sk, ms, 0)["rest"]), -1, "and leaves the dial anywhere")
+	assert_eq(pol.cycle_read(sk, ms)["jumps"], [1, 0, 0, 0], "no stacks: it steps one")
+	assert_eq(int(pol.cycle_chain(sk, ms, 0)["rest"]), 1, "onto the first two")
+	Effects.stack(u, Effects.STATUS["sustained_recoil"], Effects.SKIRMISH, "test", 3, Effects.DECAY_NONE)
+	var read := pol.cycle_read(sk, ms)
+	assert_eq(read["jumps"], [3, 0, 0, 0], "three stacks: three places")
+	var chain := pol.cycle_chain(sk, ms, 0, read)
+	assert_eq(int(chain["rest"]), 3, "onto the thirty, where the dial rests")
+	var own := float(read["values"][0])
+	assert_true(absf(float(chain["value"]) - own - float(read["values"][3])) < 0.001, "its own spend and the thirty's")
 	pol._greedy_rerolls(sk)
-	assert_eq(ms.face_index, 0, "the spin holds against a six")
+	assert_eq(ms.face_index, 0, "the Spinner holds: its jump finds the thirty")
 
 
 func _stepper(powers: Array) -> Skirmish:
@@ -1400,11 +1429,14 @@ func test_a_foes_threat_counts_every_step_of_its_move() -> void:
 	thief.hp -= 5
 	assert_true(is_equal_approx(Policy._threat_now(thief, sk), base + 3.0 / Policy.HULL_WEIGHT), "hurt, its three: %s" % Policy._threat_now(thief, sk))
 	thief.hp = thief.hp_max
-	# A bolt that fades its foe: next round's blow, the one nothing can answer.
+	# A bolt that fades its foe: next round's blow, the one only a Phased machine can answer.
 	var bolt := blow.duplicate()
 	bolt["also"] = [{"effect": "phase"}]
 	thief.action = bolt
 	assert_true(is_equal_approx(Policy._threat_now(thief, sk), base + 20.0 * Policy.AHEAD_SHARE), "a fade adds its next blow at a round ahead's share: %s" % Policy._threat_now(thief, sk))
+	Effects.stack(me.unit, Effects.STATUS["phasing"], Effects.SKIRMISH, "buff", 1, Effects.DECAY_NONE)
+	assert_true(is_equal_approx(Policy._threat_now(thief, sk), base), "nothing while a machine of ours waits for Phased itself: it will reach the foe where it goes")
+	Effects.remove(me.unit, "phasing")
 	Effects.grant_for_rounds(thief, Effects.STATUS["phased"], "test", sk.round + 1)
 	assert_true(is_equal_approx(Policy._threat_now(thief, sk), base), "a foe Phased already fades no further, so the step is worth nothing")
 	Effects.remove(thief, "phased")
@@ -1441,6 +1473,83 @@ func test_a_foes_threat_counts_every_step_of_its_move() -> void:
 	thief.target = me
 	assert_eq(Policy.steps_threat(thief, sk), 0.0, "a gathering move's steps wait for its blow")
 
+
+
+## The bot and Phased's rule (Ryan, 19 November: "Phased: Cannot be targeted, damaged, or affected
+## in any way by non-phased units"). Its options are the engine's, so a Phased machine's die goes on
+## a Phased foe and no other machine's does. It prices what a Phased machine's own entry and its own
+## heat cost it as on any machine. Phased is worth the blows of the foes that are not Phased, and
+## nothing against a Phased foe's. A Lure on a Phased machine is worth the pick of a foe that can
+## target it. And a foe's blow or special at every machine counts the machines that foe reaches.
+func test_the_bot_plays_by_phaseds_rule() -> void:
+	var sk := Skirmish.new(1, 2)
+	var gun := Face.attack(10, I)
+	var p := _mech("P", Die.single(gun), 40, 100)
+	var n := _mech("N", Die.single(gun.duplicate_face()), 0, 100)
+	sk.add_mech(p)
+	sk.add_mech(n)
+	var ghost := _ghoul(200, 5)
+	var solid := _ghoul(200, 7)
+	sk.add_foes([ghost, solid])
+	sk.begin()
+	sk.start_round()
+	Effects.grant_for_rounds(p, Effects.STATUS["phased"], "test", sk.round)
+	Effects.grant_for_rounds(ghost, Effects.STATUS["phased"], "test", sk.round)
+	var pm: Skirmish.MechState = sk.mechs[0]
+	var nm: Skirmish.MechState = sk.mechs[1]
+	ghost.target = nm
+	solid.target = nm
+	var pol := Policy.make(Policy.GREEDY)
+	var mine: Array = pol.options_for(sk, 0).map(func(o) -> Foe: return o["target"])
+	var theirs: Array = pol.options_for(sk, 1).map(func(o) -> Foe: return o["target"])
+	assert_true(mine.has(ghost) and mine.has(solid), "a Phased machine's options: every foe, the Phased one among them")
+	assert_eq(theirs, [solid], "a machine that is not Phased has none on the Phased foe")
+	# Its own entry's hull cost and its own heat, priced on a Phased machine as on any.
+	var hot := Face.attack(10, I, [], 20)
+	hot.volatile = 3
+	pm.heat_max = 10
+	nm.heat_max = 10
+	assert_true(is_equal_approx(Policy.volatile_cost(sk, pm, hot), 3.0 * Policy.HULL_WEIGHT), "a Volatile entry's hull, on a Phased machine too")
+	assert_true(pol.heat_cost(sk, pm, hot) > 0.0, "and the heat that would burn it")
+	assert_eq(int(sk.forecast(pm)["burn"]), 0, "nothing burns it yet")
+	pm.heat = 15
+	assert_eq(int(sk.forecast(pm)["burn"]), 5 * Skirmish.overheat_scale, "the forecast the bot reads burns a Phased machine past its maximum")
+	pm.heat = 0
+	# What Phased is worth on the machine the foes are on: the blows of the foe that is not Phased.
+	assert_true(is_equal_approx(pol.phased_score(sk, nm), 7.0 * Policy.HULL_WEIGHT), "Phased keeps off the 7 of the foe that is not Phased, and none of the Phased foe's 5 (%s)" % pol.phased_score(sk, nm))
+	solid.target = pm
+	assert_true(is_equal_approx(pol.phased_score(sk, nm), 0.0), "and is worth nothing against a Phased foe alone")
+	solid.target = nm
+	# A Lure on the Phased machine turns the Phased foe's pick, and no other's.
+	assert_eq(pol.lure_score(sk, pm, [solid]), 0.0, "a foe that cannot target it has no pick to turn")
+	assert_true(pol.lure_score(sk, pm, [ghost]) > 0.0, "the Phased foe's blow, turned onto its shield, is hull saved")
+	# A foe's blow or special at every machine counts the machines it reaches.
+	var storm := {"id": "storm", "name": "Storm", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": ["all"], "text": ""}
+	ghost.action = storm
+	solid.action = storm
+	assert_true(is_equal_approx(Policy._threat_now(solid, sk), 7.0) and is_equal_approx(Policy._threat_now(ghost, sk), 10.0), "a storm from a foe that is not Phased counts the one machine it reaches, a Phased foe's both")
+	var erupt := {"effect": "scorch_all", "value": 2}
+	assert_true(is_equal_approx(Policy.effect_cost(sk, ghost, erupt, null), 2.0 * Policy.effect_cost(sk, solid, erupt, null)) and Policy.effect_cost(sk, solid, erupt, null) > 0.0, "and so does a special at every machine")
+	solid.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all"]})}
+	var on_one := Policy.last_act_cost(sk, solid, nm)
+	assert_true(is_equal_approx(on_one, 7.0 * Policy.HULL_WEIGHT), "a last act at every machine from a foe that is not Phased: the one machine it reaches (%s)" % on_one)
+	Effects.grant_for_rounds(solid, Effects.STATUS["phased"], "test", sk.round)
+	assert_true(is_equal_approx(Policy.last_act_cost(sk, solid, nm), on_one + 7.0 * Policy.SHIELD_LOSS_WEIGHT), "and Phased, the same foe's lands on the Phased machine's shield as well")
+	Effects.remove(solid, "phased")
+	# And it plays a round by it: the Phased machine's die on the one foe left, a Phased one.
+	var s2 := Skirmish.new(1, 1)
+	var p2 := _mech("P", Die.single(Face.attack(10, I)), 0, 100)
+	var n2 := _mech("N", Die.single(Face.attack(10, I)), 0, 100)
+	s2.add_mech(p2)
+	s2.add_mech(n2)
+	var lone := _ghoul(200, 0)
+	s2.add_foes([lone])
+	s2.begin()
+	s2.start_round()
+	Effects.grant_for_rounds(p2, Effects.STATUS["phased"], "test", s2.round)
+	Effects.grant_for_rounds(lone, Effects.STATUS["phased"], "test", s2.round)
+	Policy.make(Policy.GREEDY).play_round(s2)
+	assert_eq(lone.hp, 190, "the Phased machine's gun lands on the Phased foe, and the other machine's has nowhere to go")
 
 
 ## The Swallowtail for the bot (21 October; the charge never primed since 22 October), synthetic:

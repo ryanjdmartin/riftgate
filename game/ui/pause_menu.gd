@@ -41,7 +41,7 @@ const TOOL_ROW := 66.0     # the colours page's row of tools above its BACK
 
 ## The keywords list's kinds, in the order the page shows them: the vocabulary's category and the
 ## page's heading for it.
-const GLOSSARY := [["reach", "REACH"], ["keyword", "KEYWORDS"], ["component_property", "RULES ON A COMPONENT"], ["status", "STATUSES"], ["foe", "SPRITES' MOVES"]]
+const GLOSSARY := [["damage", "DAMAGE"], ["reach", "REACH"], ["keyword", "KEYWORDS"], ["component_property", "RULES ON A COMPONENT"], ["status", "STATUSES"], ["foe", "SPRITES' MOVES"]]
 
 var _scrim: ColorRect
 var _panel: HudPanel
@@ -170,13 +170,11 @@ func _show_page(page: String) -> void:
 			_rows.add_child(_list)
 			var page_rows := _rows
 			_rows = _list.get_child(0)
-			_set_row("SET", [["GRADED", Settings.GRADED_SET], ["AS BUILT", _trials_as_built()]])   # the graded tide's first set in one press, and every dial back to the game's own
-			_credit("Graded: TIDE GRADED, SENDS 2, STRIKE 5, PACK BONUS +½.")
-			_choice_row("TIDE", "tide_form", Settings.TIDE_FORMS, Settings.TIDE_FORM_LABELS)   # the graded tide (Battlefield.graded_tide; Ryan, 23 November: "the far edges are 1s with a sprinkling of 2s, then 2s in between, and 3s coming right down the center")
-			_credit("Graded: packs for one to the wall's ends, for two between, for three down the middle. Next battle.")
+			_set_row("SET", [["GAME'S OWN", _trials_as_built()]])   # every dial back to the game's own in one press
+			_credit("The game's own: SENDS 2, STRIKE 5, PACK BONUS +½, FIELD DEPTH 12.")
 			_choice_row("SENDS", "mouth_sends", Settings.SENDS)   # the packs every mouth sends at a peak, the rift and each tear (Battlefield.sends_trial; Ryan, 24 November: "a very useful tuning dial for convergences")
 			_credit("Packs the rift and every tear send at a wave. Next battle.")
-			_choice_row("STRIKE", "wall_strike", Settings.STRIKES)   # what a pip of threat rating strikes the wall for, ten the game's (Battlefield.strike_trial; Ryan, 23 November: "Reduce foe damage to the wall so that quantity matters")
+			_choice_row("STRIKE", "wall_strike", Settings.STRIKES)   # what a pip of threat rating strikes the wall for, five the game's (Battlefield.strike_trial; Ryan, 23 November: "Reduce foe damage to the wall so that quantity matters")
 			_credit("What a pip of threat rating strikes the wall for. Next battle.")
 			_choice_row("PACK BONUS", "pack_bonus", Settings.PACK_BONUSES, Settings.PACK_BONUS_LABELS)   # what a pack pays the Rupture meter as it falls, on top of its rating (Battle.pack_bonus_trial; the same day: "a flat fracture bonus to a pack on top of the per-foe weight")
 			_credit("Pips a pack pays the Rupture as it falls, over its rating. Next battle.")
@@ -437,7 +435,7 @@ func _set_row(caption: String, sets: Array) -> void:
 	_rows.add_child(row)
 
 
-## Every trial dial at the game's own (the trials' page's AS BUILT).
+## Every trial dial at the game's own (the trials' page's GAME'S OWN).
 func _trials_as_built() -> Dictionary:
 	var out := {}
 	for key in Settings.TRIAL_KEYS:

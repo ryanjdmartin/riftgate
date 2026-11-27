@@ -19,12 +19,19 @@ section 4. `tests/test_terms.gd` holds every tip to the mechanical parts.
   (rerolls, Ore). The HUD's own voice (ENEMY PHASE) stays.
 - **Labels.** A timed line opens with its label and a colon, then a capital (rules 10 and 31).
   An always-on line has none.
-- **Conditions** sit inside the line: "On Hit: If targeted, ...". **Riders** land at Resolve.
+- **Conditions** sit inside the line: "When Hit: If targeted, ...". **Riders** land at Resolve and
+  name whom: "to each unit hit". **A grant is a block**: "Attacks Gain:" or "Weapons Gain:", then
+  what that thing gains on lines indented two spaces, its events bare ("Hit:", "Resolve:"), drawn
+  beside a bar. **Hit By Weapon** labels what only a weapon's hit sets off on the unit hit (rule 41).
 - **Stacks.** "Apply N X" lays stacks, number first ("Apply 2 Brittle"); "Gain N X" on itself;
   "Reduce stacks by 1", "by half, rounded down", "to 0". A status that never stacks says
   "Consumed" when its own effect uses it up ("At 0 Heat: Consumed to Reboot immediately") and
   "Removed" when it simply ends ("Turn Start: Removed."). A chip and a keyword on the die say
   "X N". A timer's stacks are its clock, never its strength.
+- **Damage.** "Hit for N" is a hit: Shield, then Armour, with Barrier, Brittle and When Hit. "Suffer
+  N damage" is not a hit: Shield first and nothing else. "Lose N Hull" comes off Hull alone (rule 39).
+  An extra hit of a use brings what the use's hits bring, a hit no use makes brings its number
+  alone, and only a hit on the target is Targeted: a line names only what differs (rule 40).
 - **Numbers.** Digits; rates use "per". A status's numbers are its own, never the move's or the
   passive's that laid it. `{N}` fills with the unit's current sum and goes only on a per-stack
   line ("+1 damage per stack ({N})"); in a keyword's tip it is the keyword's number.
@@ -37,7 +44,7 @@ section 4. `tests/test_terms.gd` holds every tip to the mechanical parts.
   - Brittle: "When Hit: +1 damage received per stack ({N}). / Turn Start: Reduce stacks by half, rounded down."
   - Shocked: "When Hit: If targeted, consume to double damage received, before applying defensive effects. / Conducts Chain."
   - Golden: "On Hit: +2 damage dealt. / +1 Armour. / Gain Suppressed upon losing 25% Max HP since the start of the effect. / On Suppressed: Reduce stacks to 0. / Turn End: Reduce stacks by 1."
-  - Penetrate: "Also hits all other Sprites in the same column, dealing {N} damage. The extra hits are not Targeted."
+  - Penetrate: "Also hits all other Sprites in the same column, dealing {N} damage."
 
 ## 2. The rules
 
@@ -60,12 +67,13 @@ buff on your whole team and a Sprite's attack on it. Built on the target lines a
 - "Any ally or self" → "Any Frame"
 - "Every Ally" → "Every Frame"
 
-**3. A piece calls the machine it's on "this machine".**
-That covers components, passives and modules. A status's tip calls the unit carrying it "it".
-- "costs its owner 3 hull" → "costs this machine 3 hull"
+**3. A piece calls the Frame it's on "this Frame".**
+That covers components, passives and modules (rule 1's word). A status's own lines name no
+carrier: they say what happens to it ("Gain 1 Brittle", rule 37).
+- "Its weapons deal +1 damage to a foe carrying Cryo." → "This Frame's weapons deal +1 damage to a Sprite carrying Cryo."
 
 **4. The player is "you".**
-The two halves of a round are "your turn" and "the foes' turn".
+The two halves of a round are "your turn" and "the Sprites' turn".
 - "at the end of the player's turn" → "at the end of your turn"
 
 **5. A Sprite makes moves.**
@@ -79,21 +87,21 @@ action" becomes "Sprite move" (renamed with rule 1).
 It's "Target:" plus the group, and for a weapon, its reach after a comma. Terms keep their
 capitals and everything else is sentence case. A move aimed at a place keeps its plain words
 ("Target: Empty places").
-- "Every foe" → "Every Foe"
-- "One of its own" → "Another foe"
+- "Every foe" → "Every Sprite"
+- "One of its own" → "Another Sprite"
 
-**7. "The target" and "each foe hit".**
-*The target* is the one unit the use or move is aimed at. *Each foe hit* (or *each unit hit*) is
+**7. "The target" and "each Sprite hit".**
+*The target* is the one unit the use or move is aimed at. *Each Sprite hit* (or *each unit hit*) is
 every unit it lands on: the target plus anything its area reaches. The tips use both.
 - "every foe the entry reaches is Exposed" → "Resolve: Apply 2 Exposed to each unit hit."
 
 **8. Area words.**
 *Beside* means left or right in the same rank. *Behind* and *in front of* mean the other rank of
 the same column. *Around* means all of those.
-- "every foe round its slot" → "every foe around it"
+- "every foe round its slot" → "every Sprite around it"
 
 **9. The attack's targeting word goes on its target line.** (settled 19 November: built)
-"Target: The hottest machine" and its kin. The four words wait on his sign-off (section 4).
+"Target: The hottest Frame" and its kin. The four words wait on his sign-off (section 4).
 
 ### When
 
@@ -102,14 +110,16 @@ A timed line opens with its label, then a colon: Turn Start, Turn End, Round End
 events (rule 31). "Its" never needs to say whose. Past those, the labels the tips use (his "The
 rest is fine", with "When broken -> Shield Broken", and his "Hull Damaged" of 24 November): When
 defeated, On Reboot, Shield Broken, Hull Damaged,
-Skirmish Start, When it would gain X, When X would be reduced, At N stacks. "Lasts the skirmish."
+Skirmish Start, When it would gain X, When X would be reduced, At N stacks, On X as X is gained
+(his Golden's "On Suppressed", Drill Out's "On Burrowed"), Hit By Weapon, and a grant's block,
+"X Gain:" with its thing's own Hit, Commit and Resolve under it (rule 41). "Lasts the skirmish."
 or "Lasts the battle." is a line of its own for what never counts down.
 - "As its turn ends it halves" → "Turn End: Reduce stacks by half, rounded down."
 
 **11. A status's timing lives in its tip.** (settled 22 November: his mark, 11-A)
 A text that applies a status gives its name and number, and states a time only when that source
 changes it.
-- "It roars and its fur goes gold: its blows hit 2 harder ... for three rounds" → "It roars and its fur goes gold: Golden 3."
+- "It roars and its fur goes gold: its blows hit 2 harder ... for three rounds" → "It roars and its fur goes gold: Gain 3 Golden."
 
 **12. Looking ahead.**
 Use "this round" and "next round". Something that lands later is "in 2 rounds"; something that
@@ -117,7 +127,7 @@ lasts is "for 2 rounds".
 - "two rounds on" → "in 2 rounds"
 
 **13. Round, skirmish, battle.** (settled 22 November: his mark, 13-A)
-A *round* is your turn plus the foes' turn, a *skirmish* one pack fought to the end, a *battle*
+A *round* is your turn plus the Sprites' turn, a *skirmish* one pack fought to the end, a *battle*
 the whole map. "Skirmish" is the noun; "fight" stays only as a verb.
 - "It lasts the fight" → "Lasts the skirmish."
 
@@ -135,13 +145,14 @@ A Cleanse or a Purge *removes*.
 
 **15. A term is written with its capitals.**
 That way it shows in its colour and can be tapped. Ordinary words stay lowercase.
-- "every machine scorched, ×4" → "every machine is Scorched 4"
+- "every machine scorched, ×4" → "Apply 4 Scorched." (the target on its own line, rule 6)
 
-**16. Stacks are written "Name N" on a chip, a readout and a move line.**
-"×" only means times, as in a weapon's hits or a multiplier. "+" and "−" only mean a change to a
-number. A sentence that lays stacks puts the number first ("Apply 1 Ablate", "Gain 3 Golden"), his word
-of 23 November.
-- "Grants Empowered ×2" → "Grants Empowered 2"
+**16. A label writes stacks "Name N"; a sentence puts the number first.**
+"Ablate 2" on a chip and on a keyword's line on the die; "Apply 1 Ablate" and "Gain 3 Golden" in a
+sentence, his word of 23 November ("Apply N Ablate, yes. Not Ablate 1. It's shorthand for 'Apply N
+stacks of Ablate.'"). "×" only means times, as in a weapon's hits or a multiplier. "+" and "−" only
+mean a change to a number.
+- "Grants Empowered ×2" → "Gain 2 Empowered"
 
 **17. A chip shows its stack count as a plain number.**
 "2" instead of "×2"; a single stack shows no number, a timer shows its count at one. This one
@@ -149,7 +160,7 @@ needs his eye on the phone.
 
 **18. A readout's first line says what kind of act it is.**
 Attack N, Buff, Debuff or Defend, the same four words on both sides.
-- "Grants Empowered ×2" → "Grants Empowered 2"
+- "Grants Empowered ×2" (the first line of a buff) → "Buff"
 
 **19. A keyword's line matches its chip on the die.**
 - "Apply Ablate 2 on hit" → "Ablate 2"
@@ -159,12 +170,12 @@ HP stays the only abbreviation.
 - "ATK 4 // ARM 1" → "ATTACK 4 // ARMOUR 1"
 
 **21. Attack and hit.** (settled 22 November: his word)
-An *attack* is one use of a weapon, or one attack move. A *hit* is one of its blows landing on a
-unit. "Blow", "strike" and "shot" leave the text.
+An *attack* is one use of a weapon, or one attack move. A *hit* is one blow landing on a unit,
+an attack's or another source's (rules 39 and 40). "Blow", "strike" and "shot" leave the text.
 
-**22. Defeated, wrecked, destroyed.** (changed 23 November: his word)
-A foe is *defeated* at 0 HP ("When it falls -> when defeated"), and whoever got it there *killed*
-it. A machine is *wrecked*. A component is *destroyed*. "Falls" and "felled" leave the text.
+**22. Defeated, wrecked, destroyed.** (settled 23 November: his word)
+A Sprite is *defeated* at 0 HP ("When it falls -> when defeated"), and whoever got it there *killed*
+it. A Frame is *wrecked*. A component is *destroyed*. "Falls" and "felled" leave the text.
 - "When this foe falls" → "When defeated"
 
 **23. A component is used, not spent.** (settled 22 November: his word)
@@ -187,20 +198,21 @@ word for a resource that is gone once paid (rerolls, Ore).
 - "a point a stack" → "1 per stack"
 
 **26. Repeat the noun.**
-- "a machine's as the player's turn ends, a foe's as its own turn does" → "a machine's Empowered at the end of your turn, and a foe's at the end of its own turn"
+- "a machine's as the player's turn ends, a foe's as its own turn does" → "a Frame's Empowered at the end of your turn, and a Sprite's at the end of its own turn"
 
 **27. A move's line keeps its voice.**
 The flavour stays as written. Any rule it states follows these rules, and by rule 11 a status it
 lays is named, not explained.
-- "Bloodlust: every foe on the field hits 2 harder, itself too, fading by half each round." → "Bloodlust: every foe, itself included, gains Empowered 2."
+- "Bloodlust: every foe on the field hits 2 harder, itself too, fading by half each round." → "Bloodlust: every Sprite, itself included, gains 2 Empowered."
 
-**28. A foe's page says what it is, then how it fights.** (settled 22 November: his mark, 28-B)
+**28. A Sprite's page says what it is, then how it fights.** (settled 22 November: his mark, 28-B)
 The lore stays word for word, and advice is cut entirely.
 
 **29. Retired words leave.**
 These follow from rulings he has already made: shields and vents as pieces (but the Musk Ox's
 reload and machines in design), overshield, Retaliate, a chassis's cooling, "braces" (Armoured),
-"burning" for Ablate, "enemy", "falls".
+"burning" for Ablate, "enemy", "falls"; and since, "foe" and "machine" (rule 1), "blow", "strike"
+and "shot" (rule 21), and "take N damage" (rule 39).
 
 ### Timing
 
@@ -209,7 +221,7 @@ rule says exactly when it acts. "These are not replacements for actual code hook
 
 **30. A property has no event.** (settled 22 November: his word)
 Spread, Penetrate, Instant and "Ignores Armour" are always on, so they are written bare.
-- "Penetrate" → "Also hits all other foes in the same column, dealing {N} damage. The extra hits are not Targeted."
+- "Penetrate" → "Also hits all other Sprites in the same column, dealing {N} damage."
 
 **31. A use's events, in order.** (settled 22 November: his words, Commit and Resolve)
 *Commit*: the target is chosen, before any hit. *On Hit* and *When Hit*: as each hit lands.
@@ -221,7 +233,7 @@ Turn Start, Turn End, Round End, and when it is consumed ("When Hit: If targeted
 double damage received").
 
 **33. Conditions.** (settled 22 November: his word)
-Inside the line: "If any foe hit was defeated", "If damage dealt", "If targeted". The extra hits
+Inside the line: "If any Sprite hit was defeated", "If damage dealt", "If targeted". The extra hits
 of Spread and Penetrate fire every event but the target's.
 
 **34. The Honey Badger, written so.** (settled 22 November: his example)
@@ -255,3 +267,64 @@ does.
 **38. Game nouns are capitalised.**
 His lines of 24 November write Heat, Max Heat, Debuffs and Reboot with capitals, beside Armour
 and Max HP: so do Shield, Hull, HP, Buff and Debuff. "Damage" stays lowercase, as his lines have it.
+
+### Damage
+
+**39. Hit, suffer, lose.** (settled 24 November: his word)
+His format of 24 November: "I like hit for N, suffer N damage, and lose N hull as the format
+examples that we want", for his ask the same day, "standardize the difference between something
+that hits, and is affected by armour and brittle and such like the Mole's Drill debuff, and flat
+damage that bypasses all that like Ablate." Three verbs for the three ways damage lands:
+- *Hit for N*: a hit. A Frame's Shield takes it first, then Armour comes off what reaches Hull or
+  HP; Barrier, Brittle and every When Hit apply. A status's own line says "take a hit for N damage".
+- *Suffer N damage*: not a hit. A Frame's Shield takes it first, then Hull or HP; Armour, Barrier,
+  Brittle and the hit events never touch it (Ablate, Corrupted).
+- *Lose N Hull* (HP, Shield): off that number alone, nothing before it (Volatile, Overheated,
+  Vitriol).
+
+Hull Damaged reads all three. The verb says what touches the damage, so no line adds "Ignores
+Armour and Barrier" to say it again.
+- "Turn End: Take 1 damage per stack ({N}), then reduce stacks by 1. Ignores Armour and Barrier." (Ablate) → "Turn End: Suffer 1 damage per stack ({N}), then reduce stacks by 1."
+- "Take 1 Hull damage per stack ({N}), ignoring Shield and Armour." (Overheated) → "Lose 1 Hull per stack ({N})."
+- "Then, take 1 damage" (Applied Momentum) → "Then, take a hit for 1 damage"
+
+**40. What a hit brings.** (settled 25 November: his go-ahead on the session's plan)
+Every hit meets the Sprite's Shield, Armour, Barrier and Brittle (rule 39). What it brings from
+its source follows from where it comes from, so a line names only what differs:
+- An extra hit of a use (Spread, Penetrate, the Beam Rifle, the Beam Sword, a reach over every
+  Sprite) starts from its own number and brings everything the use's own hits bring: this
+  Frame's bonuses, the weapon's damage rules, its keywords and its riders.
+- A hit no use makes (a Mine's blast, the spill past a kill, the Wild Boar's shove, the drill's
+  tick) brings its number alone and meets the Sprite's own Armour.
+- Only a hit on the use's target is Targeted, so no line says an extra hit is not. A reach over
+  every Sprite says so, since the die lands on a Sprite it does not target (rule 36).
+- The exceptions say themselves: Ricochet is the use's but brings this Frame's bonuses alone (his
+  of 25 November, of its buffs, damage rules, riders and Targeted: "I think it should change to
+  yes-no-no-yes and that becomes cleaner"), and the Mine brings the riders it banked.
+- "Also hits all other Sprites in the same column, dealing {N} damage. The extra hits are not Targeted." → "Also hits all other Sprites in the same column, dealing {N} damage."
+- "for 1 damage, with every effect of the weapon except area" (Ricochet) → "for 1 damage. No effect of the weapon applies."
+
+**41. A grant is a block, a weapon's hit, and whom a rider lands on.** (settled 26 November: his word)
+- What a status gives its carrier's attacks, weapons or uses is a block: an "X Gain:" line, then
+  what that thing gains on lines indented two spaces, each with its own event written bare (Hit,
+  Commit, Resolve), so "on" goes and no line need say "if a weapon was used" (his: "I want to
+  further specify the exact thing each buff or debuff applies to"; "I want the block of things
+  applied to the weapon or whatever to be visually blocked, so it's clear when subsequent lines are
+  part of the grant or not. And note that this lets us get rid of 'on' and simplify our verbs a lot
+  to be more clear"). The game draws a block in from the line above, beside a bar. "Attacks Gain"
+  where a Sprite may carry the status (rule 21: an attack is a weapon's use or an attack move),
+  "Weapons Gain" where only a Frame does, "Uses on a Sprite Gain" for a weapon's or equipment's use
+  on a Sprite, a piece's name for one piece ("Inertia Drill Gains"). A component's own hit is
+  "Hit:" too (Lure). "On Weapon Hit", a day old, goes with "On Hit".
+- *Hit By Weapon* labels what only a weapon's hit sets off on the unit hit, so an equipment's hit
+  never reads as one (his: "I was avoiding the nuance between a weapon hit and an equipment hit
+  ... We should use 'Hit By Weapon:' and 'On Weapon Hit:' where applicable"). When Hit stays for
+  every hit: a Sprite's attack on a Frame, an equipment's hit.
+- A rider names whom it lands on: "to each unit hit", "to each Sprite hit" or "to each Frame hit"
+  (his: "Some keywords are missing 'to all targets hit' which I thought was implied but now think
+  is worth the extra words"), in rule 7's words, since *the target* is the one unit a use is aimed
+  at and only its hit is Targeted (rule 40).
+- "On Hit: -1 damage dealt per stack ({N})." (Sapped) → "Attacks Gain: / Hit: -1 damage dealt per stack ({N})."
+- "On Weapon Hit: +2 damage per stack ({N}). Resolve: If a weapon was used, reduce stacks to 0." (Spun Up) → "Weapons Gain: / Hit: +2 damage dealt per stack ({N}). / Resolve: Reduce stacks to 0."
+- "When Hit: If by a weapon, consume all stacks." (Cryo) → "Hit By Weapon: Consume all stacks."
+- "Resolve: Apply {N} Brittle per hit." → "Resolve: Apply {N} Brittle per hit to each unit hit."

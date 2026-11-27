@@ -13157,3 +13157,205 @@ What it says, read as bands: the ping leaves the Echidna's band where the strike
 under half; it shortens its fights against armour rather than opening walls. Either direction
 adds five or six points, most of it against swarms (Antlion x3 by 93 and 73 points, Bubble Gel
 x2 by 60 and 71, Wolf x4 by 53 and 60, Spiker's first).
+
+## 24 November: the graded tide's fuller opening and the rift's landing
+
+For Ryan's read of the graded tide in play ("There needs to be more packs on the field at the
+start, for sure. And spawns from the rift should probably spawn outside of the shell, and on a
+hex that is on the side of where they're headed"), as built that day: the graded opening seven
+packs where it stood three (`Battle.graded_opening`), and a pack the rift sends landing on the
+ring outside the shell on its heading's side under either tide (`Battlefield.rift_landing`),
+which starts a pack bound for the middle six rows from the wall at twelve deep where it stood
+nine and walked round the rift.
+
+**The whole battle, a direction only** (`tools/battle_run.gd`, the same ten seeds, squad and
+dials as the entry of the same day above: the Meadow at Convergence 1, the bot's player, which
+gathers and holds no lane; the graded rows at `RIFTGATE_STRIKE=5 RIFTGATE_PACK_BONUS=50`). The
+row before it is that entry's:
+
+| The field | Won | The gate fell | Wiped | The Rupture reached, its turn | Hull at the Rupture | Fights for one a battle | Fights for two | Fights for three |
+|---|---|---|---|---|---|---|---|---|
+| As built, before | 20% | 10% | 70% | 70%, turn 6.6 | 36% | 3.8, 5.5 rounds, 3.1% of the squad's hull | 0.3, 5.3 rounds, 3.8% | 2.0, 5.3 rounds, 14.4% |
+| As built, the rift's landing | 10% | 30% | 60% | 70%, turn 5.4 | 37% | 3.4, 5.7 rounds, 3.6% | 0.9, 4.4 rounds, 15.8% | 1.9, 5.4 rounds, 11.6% |
+| Graded, SENDS 1, before | 60% | 10% | 30% | 90%, turn 8.1 | 65% | 3.2, 3.4 rounds, 0.2% | 3.4, 4.2 rounds, 2.6% | 1.3, 5.9 rounds, 4.1% |
+| Graded, SENDS 1, the opening and the landing | 50% | 20% | 30% | 70%, turn 8.0 | 64% | 4.7, 3.0 rounds, 0.1% | 5.0, 4.2 rounds, 3.4% | 1.4, 5.5 rounds, 4.5% |
+| Graded, SENDS 2, before | none | 50% | 50% | 50%, turn 9.8 | 54% | 4.1, 3.4 rounds, 0.4% | 3.7, 4.6 rounds, 4.8% | 1.6, 5.6 rounds, 5.6% |
+| Graded, SENDS 2, the opening and the landing | none | 80% | 20% | 50%, turn 10.2 | 38% | 4.4, 3.0 rounds, 0.2% | 5.1, 4.1 rounds, 3.8% | 1.8, 5.8 rounds, 3.9% |
+
+Read as a direction at ten seeds, a battle a tenth: at one send the bot's result holds with
+half again as many fights for one and for two a battle (4.7 for 3.2, 5.0 for 3.4), each still
+cheap; at two
+the gathering player loses the wall in eight battles of ten where it lost it in five; and as
+built the rift's packs reach the wall about a turn sooner (the Rupture at turn 5.4 for 6.6),
+the gate falling in three battles for one. Main moved between the two reads (the Mole's rework
+and the map's pass), none of it this squad's.
+
+## 25 November: the Skua's Ricochet without its riders, a Flak Cannon in its first slot
+
+`tools/balance.gd -- --seeds 200 --policies greedy --rows skua --set 'chassis/skua/loadout/0="flak_cannon"'`,
+every pack of the matrix (101), the Skua alone, 20,200 fights a run: before, at `56d23b9` (a
+Ricochet's bounce laid the weapon's riders, a stack a bounce), and after, at `ce1c7c0` (Ryan's
+"yes-no-no-yes" of 25 November: a bounce takes the machine's buffs and is Targeted, and carries
+no rider, no damage rule of the entry and none of its Ignores Armour). The stock Skua carries no
+rider (the Laser Carbine and two Twin Autoguns), so the change reads only on a fitted one: here
+the Flak Cannon (Brittle 2) in the Laser Carbine's place.
+
+| The Skua with a Flak Cannon | Win rate, the row's mean over 101 packs | Packs at 0% | Packs at 100% | Hull lost |
+|---|---|---|---|---|
+| Before: its bounces lay Brittle | 36.4% | 52 | 22 | 73.7% |
+| After: its bounces lay nothing | 35.3% | 56 | 22 | 74.9% |
+
+Six packs moved three points or more, all but one of them lone, high-HP Sprites, the long fights
+where a Brittle a bounce kept climbing: Barrow Giant x1 35% to 0%, Sandworm x1 82% to 57%, Treant
+x1 89% to 68%, Magma Elemental x1 89% to 78%, the Augur's final 34% to 25%; the Cleric's final 24%
+to 28%. Spends barely moved: the Twin Autoguns 42% to 41%, the Flak Cannon 33% to 32%, the
+Hypersonic Swoop 25% to 26%.
+
+What it says, read as bands: the row's band is unchanged (a point, a direction at this size); what
+the riders bought was the lone big Sprite, where they were the abuse case Ryan named in play.
+
+## 25 November: the Whip Scorpion with a bot that banks its heat
+
+`tools/reboot_probe.gd` as the entries of 24 November (168 formation fights at 8 seeds, 78 boss
+fights at 6, the greedy bot; the branches at tier three with the tier's lift), on
+`ccr-178e0404-ptuh2m` with main merged (`dcedf19f`) and the bot taught the machine's heat as fuel
+(`Policy.shot_worth`: its held heat a share of its next Ray, so it builds past half and holds there,
+fires the Ray where the shot beats the heat it banks, and reboots for no room or top-up; and a lay
+that reads Overheated at its own stacks where the spend takes it past its maximum). Before it, the
+24 November reads on the same stock.
+
+| The read | Formations: rounds, rebooted, own hull, squad | Bosses: rounds, rebooted, own hull, squad | Its Ray: shots a fight, heat a shot |
+|---|---|---|---|
+| The Whip Scorpion, the old bot | 6.1, 29%, 7%, 9% | 10.2, 29%, 13%, 19% | 1.64 and 2.69, 5.7 and 6.0 |
+| The Whip Scorpion, the bot banking its heat | 5.6, 22%, 7%, 9% | 9.1, 22%, 15%, 18% | 1.18 and 1.86, 8.3 and 8.4 |
+| Its Incinerator, the old bot | 5.3, 30%, 5%, 8% | 8.7, 29%, 8%, 16% | 1.43 and 2.24, 7.6 and 7.6 |
+| Its Incinerator, the bot banking its heat | 5.4, 24%, 5%, 8% | 8.3, 27%, 9%, 14% | 1.27 and 2.13, 9.0 and 8.7 |
+| Its Obliterator, the bot banking its heat | 4.9, 27%, 8%, 8% | 7.8, 28%, 16%, 15% | 1.32 and 2.17, 9.0 and 9.1 |
+
+What it says, a direction. Holding its heat is the better play, as the stock was built for: the
+base ends a boss fight a round sooner, firing a Ray of about 8 heat where it fired one of about 6,
+at a little more of its own hull. The Incinerator still never rides Overheated (0.00 overheats a
+boss fight): to this bot the burn outweighs 3 Ablate on its one target, the stock holding no area
+weapon. The Obliterator is the fastest of the three on its whole shot wide.
+
+## 25 November: the Nemesis's and the Whip Scorpion's rows at 200 seeds, each branch beside its lift
+
+`tools/balance.gd -- --seeds 200 --rows nemesis,whip_scorpion,team:nemesis@breaker,team:nemesis@berserker,team:whip_scorpion@incinerator,team:whip_scorpion@obliterator --team nemesis@breaker --team nemesis@berserker --team whip_scorpion@incinerator --team whip_scorpion@obliterator --policies random,greedy --noparty`
+in four parts at `3e845d64`, then `team:nemesis#3` and `team:whip_scorpion#3` in four more at
+`ee884e93` (the same engine and content), all eight merged: each machine alone against every pack
+of the matrix (92), on `ccr-178e0404-ptuh2m` with main merged (`dcedf19f`), Godot 4.8-beta4,
+294,400 fights. The forms as built that day: the Nemesis heated 1 by every hit it takes, its
+Breaker and Berserker on Ryan's design; the Whip Scorpion at Max Heat 12 on the Halo Projector's
+stock, its hits doubled past half its heat, no heat on its Ray, its Obliterator and Incinerator on
+his design, and the bot banking its heat for the Ray (the entry before). A branch's row is at tier
+three, its pick and the tier's lift together (content's standard lift, +4 hull and +2 shield). The
+runner's `#3`, built for this read, fields a machine at tier three with no pick, so each branch
+reads beside its lift alone. The columns are the 24 November rows entry's (its walls, easy and
+flat cells and its gap), read from the merged report.
+
+| The row | Wins, random / greedy | Walls | Easy | Flat | Gap, big / rank and file | Greedy: rounds, hull a fight | Peak heat, overheats a fight |
+|---|---|---|---|---|---|---|---|
+| The Nemesis, 24 November (its old heats) | 60.4% / 69.3% | 27 | 47 | 21 | 1.31 (10) / 1.43 | 5.7, 49% | 72%, 0.11 |
+| The Nemesis, a heat a hit | 54.2% / 62.5% | 34 | 42 | 26 | 1.41 (6) / 1.47 | 6.0, 53% | 63%, 0.06 |
+| Its tier three's lift alone | 58.9% / 67.4% | 29 | 45 | 23 | 1.41 (9) / 1.47 | 6.1, 46% | 70%, 0.09 |
+| Its Breaker, tier three | 59.7% / 68.9% | 27 | 45 | 20 | 1.38 (10) / 1.47 | 6.0, 45% | 70%, 0.09 |
+| Its Berserker, tier three | 66.9% / 76.0% | 23 | 52 | 13 | 1.38 (13) / 1.40 | 5.4, 40% | 75%, 0.10 |
+| The Whip Scorpion, 24 November (Max Heat 14, the Thermal Ray's stock) | 53.3% / 58.1% | 40 | 44 | 33 | 0.58 (4) / 0.99 | 5.8, 57% | 55%, 0.01 |
+| The Whip Scorpion, as built | 50.5% / 55.8% | 40 | 40 | 36 | 0.65 (4) / 1.22 | 6.3, 58% | 56%, 0.01 |
+| Its tier three's lift alone | 53.3% / 57.8% | 39 | 43 | 34 | 0.68 (4) / 1.22 | 6.8, 55% | 59%, 0.01 |
+| Its Incinerator, tier three | 58.6% / 63.6% | 32 | 47 | 32 | 0.76 (8) / 1.15 | 6.5, 49% | 68%, 0.01 |
+| Its Obliterator, tier three | 63.1% / 68.1% | 29 | 53 | 24 | 0.88 (7) / 1.23 | 5.4, 44% | 66%, 0.01 |
+
+Since 24 November's rows the content under these fights moved only in the Meadow's packs (main's
+graded tide; the foes' other changes are text, but the Thunder Ape's, in no pack here), while other
+sessions' engine work moved under them too (the tide's dials, Chain's ping, the statuses' clocks),
+so a row's move since that entry is a direction; the read is this run's rows side by side. Spends,
+greedy: the Knuckles of Fury 45% of the Nemesis's, 49% of its lift's and of its Breaker's, 59% of
+its Berserker's; the Whip Scorpion's Ray 35%, its guns 34% and 18%, the Halo Projector 12%, every
+row of it within three points of that. The pick share names a remade piece by its form since this
+read, so the Obliterator's is its Heliographic Doom Ray's.
+
+What it says, read as bands. The Nemesis on a heat a hit stands seven points and seven walls under
+its 24 November row, the losses the packs it had to rage to beat (Molten Gel x2 98% to 0%, the
+Marsh formation 95% to 0%, the Waste formation 66% to 0%, the Fiend of Fire 91% to 31%, Antlion x3
+76% to 11%), and still over the Whip Scorpion and the Buzzard (48.6% / 54.6% on 24 November). Tier
+three's lift alone gives back five points and part of those packs (Molten Gel to 58%, the Fiend to
+54%), but neither formation (4% and 0%). The Breaker adds a point and a half over its lift, all on
+armoured single foes (Salt Sandworm x1 38% to 66%, the Fiend 54% to 69%, the Grave and Charnel
+Giants, the Matador and the Emperor Scorpion by eleven to thirteen points). The Berserker adds eight
+and a half, its hull's heat and its Knuckles' Ablate together taking back every pack the Nemesis
+lost (the Marsh formation 4% to 100%, the Waste formation 0% to 78%, Floraison 0% to 89%, the Fiend
+and Molten Gel 98%); its Knuckles are 59% of its spends to its lift's 49%, so it rages more, and
+most of that is the heat its Rage runs on. The Berserker is the stronger of the two on every one of
+the 92 packs, and no branch of either machine loses a pack to its lift by ten points.
+
+The Whip Scorpion's row is two to three points under its 24 November one, its walls the same 40.
+The bot banking its heat moves its rank and file's gap from 0.99 to 1.22, greedy the quicker now,
+but its big fights read 0.65 to 0.88 in every row of it, greedy slower than random where both win,
+and at tier two greedy loses two packs to random by a band (Barrow Giant x1 71% / 38%, Fire Lizard
+x2 82% / 53%), heavy hitters whose blows its banked heat doubles, both closed by the lift alone (89%
+and 100%). The lift alone gives it two points. The Incinerator adds six over it, on single big
+foes, where an Ablate a use stacks (Frost Treant x1 1% to 76%, Basalt Elemental x1 0% to 69%, Night
+Sandworm x1 36% to 100%, Salt Sandworm x1 14% to 74%, Dusk Treant x1 19% to 72%). The Obliterator
+adds ten, on groups (Molten Gel x2 and Gel x3 0% to 100%, Death Knight x2 3% to 98%, Spectre x3 37%
+to 98%, the Meadow formation 0% to 62%) and on most of the same single foes; the Incinerator leads
+it by more than six points only on the Basalt Elemental (69% to 25%) and the Obsidian Tyrant (30%
+to 12%). The Incinerator's Overheated stacks never come into play (0.01 overheats a fight in every
+row of the Whip Scorpion's), so its row reads the Ablate it lays once a use.
+
+## 25 November: the switch-over, every domain on the graded tide
+
+For Ryan's "Go ahead with the switch-over" and his pick of the played set as the game's own
+numbers that day (two packs a mouth a peak, five a pip at the wall, half a pip a fallen pack):
+the graded tide the engine's one tide, the cycle of formations and patrols cut. The Meadow's
+row checks that the switched game is the tide he played; the other three say what a domain
+with no packs written for it plays in the meantime.
+
+**The whole battle, a direction only** (`tools/battle_run.gd -- --seeds 10`, a domain a run, no
+dial set: the Honey Badger, the Skua, the Cassowary and the Storm Petrel at Convergence 1, the
+bot's player, which gathers and holds no lane):
+
+| Domain | Won | The gate fell | Wiped | The Rupture reached, its turn | Hull at the Rupture | Fights for one a battle | Fights for two | Fights for three |
+|---|---|---|---|---|---|---|---|---|
+| The Meadow | none | 80% | 20% | 50%, turn 10.2 | 38% | 4.4, 3.0 rounds, 0.2% of the squad's hull | 5.1, 4.1 rounds, 3.8% | 1.8, 5.8 rounds, 3.9% |
+| The Marsh | none | 10% | 90% | 30%, turn 9.0 | 16% | 7.6, 7.5 rounds, 3.5% | none dealt | 1.5, 5.0 rounds, 10.4% |
+| The Waste | none | none | 100% | never | | 8.9, 7.1 rounds, 3.7% | 0.6, 5.2 rounds, 20.7% | 2.0, 5.6 rounds, 16.6% |
+| The Peak | 40% | 20% | 40% | 60%, turn 8.2 | 46% | 11.4, 4.8 rounds, 2.1% | none dealt | 2.0, 6.7 rounds, 12.2% |
+
+The Meadow's row is the row of 24 November's entry at SENDS 2, figure for figure, so the
+switch-over moved nothing of the tide he played. The other three have one pack for one machine
+at this Convergence, their duelist, and none for two, so the ends and the bands between are
+all duelists: eight to eleven fights for one a battle, at seven rounds each in the Marsh and
+the Waste where the Meadow's packs for one are three. The floor player is wiped by them in
+nine battles of ten in the Marsh and in every one in the Waste. Their tables are the brief's
+order (`docs/briefs/graded_tide.md`, section 8), and until each is written its domain is the
+harder for the switch-over.
+
+## 27 November: Phased by source, against the Marsh's ghosts
+
+For Ryan's rule of 19 November ("Phased: Cannot be targeted, damaged, or affected in any way by
+non-phased units"), built on his three yeses of 27 November (the bible's Phased row). Whether
+the rule moves a fight that fields a fading foe, with no machine of ours that phases.
+
+**The anchor read** (`tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth
+seeds=5 tier=2 ramp=5 kinds=formation,elite only=wight_host,grave_field,death_knights_retinue`:
+the six certain tier ones, every squad of three, against the Marsh's three tier-two formations
+that field Spectres; before is `ea10aaac`). Tier two is unsized and these are tier-one machines,
+so the figures are no read of the tier, only of the difference:
+
+| The formation | Before: won, rounds, of a four's hull | After |
+|---|---|---|
+| The wight host (three Spectres) | 96%, 9.6, 32.4% | 96%, 9.6, 32.4% |
+| The grave field (two) | 10%, 46.3, 54.9%, 52 stalled | 10%, 46.3, 54.9%, 52 stalled |
+| The death knights' retinue (two) | 23%, 17.2, 69.8% | 27%, 16.7, 68.5% |
+
+**The trace** (`tools/behaviour_trace.gd`, 3276 seeded fights, on both trees): 2975 are the
+same record byte for byte; the 301 that differ all field a Phased source, a Spectre or a Wraith
+in the pack or the Phase Inducer or the Mooring Screens in the kit, and their first differences
+read as the rule (a Phased machine ablating, burning and bitten by its own entry, a faded foe
+passed by its own side's rally, "cannot target").
+
+Read: against a squad with no piece that phases the rule moves little, a fight or two in one
+formation of three, since what changed for a faded foe is its own side's help and its own
+debuffs. Its weight is in the pieces of ours that phase, and those are a test piece and a
+machine in design.

@@ -290,8 +290,8 @@ squad of the six certain tier ones, of a four's hull):
 
 Two bench finds a die take a sixth off an elite's price and a fifth off a boss's, where two of
 today's take more than a third. What is left is about what a quarter more of a leader's hit
-points answers across the tier, half of what today's finds ask (`docs/tide_proposal.md`,
-section 5): the bench and the leaders' forms are sized together.
+points answers across the tier, half of what today's finds ask (`docs/briefs/graded_tide.md`,
+sections 4 and 6): the bench and the leaders' forms are sized together.
 
 The equipment is no part of the grid, with one line for him: the Blast Door is the Halo
 Projector's entry under another name, a Barrier with a round's cooldown, so it is one piece

@@ -20,6 +20,15 @@ func _screen(seed_value: int = 3, massive: Foe = null) -> SkirmishScreen:
 	return screen
 
 
+## The arrows the screen draws from one foe's intent, counted by where they start.
+func _arrows_from(s: SkirmishScreen, foe: Foe) -> int:
+	var fv := s._foe_view_for(foe)
+	if fv == null:
+		return 0
+	var from: Vector2 = s._arrows.get_global_transform().affine_inverse() * fv.intent_anchor_global()
+	return s._arrows.arrows.filter(func(x: Array) -> bool: return (x[0] as Vector2).is_equal_approx(from)).size()
+
+
 ## Jenny's heat lines (Ryan, 10 November: "The heat warning shouldn't fire every time, not
 ## anymore ... we only need to warn: -Every time we're overheating -The first time we reach over
 ## the warning threshold, but not again until we've got back under"): the warning once as a
@@ -526,8 +535,9 @@ func test_a_foe_aloft_is_drawn_out_of_reach_and_is_no_drop_target() -> void:
 	Effects.remove(foe, "aloft")
 	s._refresh()
 	assert_false(view.away, "back on the ground, it is drawn whole again")
-	# A Phased foe (17 November) is out of reach the same way and drawn the same, where it
-	# stands, under the chip a Phased machine wears.
+	# A Phased foe (17 November) is drawn the same, where it stands, under the chip a Phased
+	# machine wears, while it is out of reach: of every machine that is not Phased, so with no
+	# die in hand, and with the die of such a machine in hand.
 	Effects.grant_for_rounds(foe, Effects.STATUS["phased"], "test", sk.round + 1)
 	s._refresh()
 	assert_true(view.away, "Phased, it is drawn as what no die reaches")
@@ -535,7 +545,60 @@ func test_a_foe_aloft_is_drawn_out_of_reach_and_is_no_drop_target() -> void:
 	var faded: Array = s._foe_rows(foe).filter(func(row) -> bool: return str(row[2]).contains("Phased"))
 	assert_eq(faded.size(), 1, "it wears Phased's chip")
 	for i in range(sk.mechs.size()):
-		assert_false(sk.targets_for(i).has(foe), "no machine's die may be dropped on it")
+		assert_false(sk.targets_for(i).has(foe), "no die of a machine that is not Phased may be dropped on it")
+	# Only a Phased machine reaches it (Ryan, 19 November: "Phased: Cannot be targeted, damaged, or
+	# affected in any way by non-phased units"): its die in hand shows the foe whole and a
+	# target, and takes the drop; another machine's shows it out of reach and no target. The
+	# screen asks the fight, never a rule of its own.
+	for i in range(2):
+		var dm: Skirmish.MechState = sk.mechs[i]
+		dm.die = Die.single(Face.attack(3, Face.Reach.INDIRECT))
+		dm.face_index = 0
+		dm.assigned = false
+	Effects.grant_for_rounds(sk.mechs[0].unit, Effects.STATUS["phased"], "test", sk.round)
+	s._drag_from = 0
+	s._refresh(false)
+	assert_true(sk.targets_for(0).has(foe), "the fight lets a Phased machine's die drop on it")
+	assert_false(view.away, "so with that die in hand it is drawn whole")
+	assert_true(view.highlight, "and lit as a target")
+	assert_true(sk.can_assign(0, foe), "the drop is taken")
+	s._drag_from = 1
+	s._refresh(false)
+	assert_true(view.away and not view.highlight, "the die of a machine that is not Phased in hand: out of reach, and no target")
+	assert_false(sk.can_assign(1, foe), "and the drop is refused")
+	# A Phased ally is a drop target for a Phased machine's support entry alone.
+	for i in range(2):
+		sk.mechs[i].die = Die.single(Face.shield(3))
+		sk.mechs[i].face_index = 0
+	Effects.grant_for_rounds(sk.mechs[2].unit, Effects.STATUS["phased"], "test", sk.round)
+	s._drag_from = 0
+	s._refresh(false)
+	assert_true(s._mech_views[2].highlight, "a Phased machine's shield in hand lights the Phased ally")
+	s._drag_from = 1
+	s._refresh(false)
+	assert_false(s._mech_views[2].highlight, "the shield of a machine that is not Phased does not")
+	assert_true(s._mech_views[0].highlight == false and s._mech_views[1].highlight, "it lights itself, and not the other Phased machine")
+	# A blow at every machine draws its arrow to each machine its foe reaches.
+	s._drag_from = -1
+	s.show_all_arrows = true
+	var held_action: Dictionary = foe.action
+	var other: Foe = sk.field_foes()[1]
+	var held_other: Dictionary = other.action
+	var storm := {"id": "storm", "name": "Storm", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": ["all"], "text": ""}
+	foe.action = storm
+	other.action = storm
+	s._refresh(false)
+	s._refresh_arrows()
+	var live := sk.live_mechs().size()
+	var unphased := sk.live_mechs().filter(func(m) -> bool: return not Skirmish.is_phased(m)).size()
+	assert_eq(_arrows_from(s, foe), live, "a Phased foe's storm draws an arrow to every machine, Phased or not")
+	assert_eq(_arrows_from(s, other), unphased, "and a storm from a foe that is not Phased none to a Phased machine")
+	foe.action = held_action
+	other.action = held_other
+	s.show_all_arrows = false
+	for i in [0, 2]:
+		Effects.remove(sk.mechs[i].unit, "phased")
+	s._refresh(false)
 	# A blow that fades its foe wears Phased's mark on its intent, and never on a round the
 	# fade would lay nothing: the foe is Phased already, and none is out two rounds running.
 	var bolt := {"kind": "attack", "value": 3, "name": "Test Bolt", "also": [{"effect": "phase"}]}
@@ -845,7 +908,7 @@ func test_a_dies_readout_shows_the_entry_showing_with_its_effects_listed() -> vo
 	assert_eq(str(lines[0]["place"]), "I", "beside its place on the die")
 	var sf := s.sk.shown_face(ms, gun)
 	var n := s.sk.shown_number(ms, sf)
-	assert_eq(texts, [texts[0], "Attack %d ×2" % n, "Heat %d" % sf.heat, "Target: Enemy, Indirect", "Spread 2", "Apply Ablate 2 on hit", "Tags: Beam, Flame"],
+	assert_eq(texts, [texts[0], "Attack %d ×2" % n, "Heat %d" % sf.heat, "Target: Sprite, Indirect", "Spread 2", "Apply Ablate 2 on hit", "Tags: Beam, Flame"],
 		"a line a mark on the die, in the order a spend runs it, its numbers as the die prints them, and no source listed: %s" % str(texts))
 	var attack: Array = lines[1]["parts"]
 	assert_eq([int(attack[1]["trend"]), bool(attack[1]["gain"])], [1, true], "the blow moved up by the passive, the machine's gain: coloured, never explained")
@@ -927,7 +990,7 @@ func test_the_codex_row_joins_the_holds_lines_into_three() -> void:
 	var texts: Array[String] = []
 	for l in lines:
 		texts.append(str(l["text"]))
-	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3 ×2 · Heat 3 · Target: Enemy, Indirect", "Spread 2 · Apply Ablate 2 on hit · Rapid", "Test: a passive's line."],
+	assert_eq(texts, [db.component_name(gun.component).to_upper(), "Attack 3 ×2 · Heat 3 · Target: Sprite, Indirect", "Spread 2 · Apply Ablate 2 on hit · Rapid", "Test: a passive's line."],
 		"its name, its attributes, its keywords, its rules: %s" % str(texts))
 	assert_eq([str(lines[0]["type"]), str(lines[0]["tags"])], ["Weapon", "Beam, Flame"], "its type, then its tags, beside its name")
 	var types := {}
@@ -958,15 +1021,15 @@ func test_the_hold_reads_shields_debuffs_buffs_and_grants() -> void:
 		texts.append(str(l["text"]))
 	assert_eq(texts, ["Shield 6", "Target: Self", "Cleanse"], "its number, its target, its keyword: %s" % str(texts))
 	shield.targets = Face.Target.ALLY
-	assert_eq(EntryReadout.whom(shield), "Target: Any other ally", "an ally's")
+	assert_eq(EntryReadout.whom(shield), "Target: Another Frame", "an ally's")
 	shield.targets = Face.Target.SELF_ALLY
-	assert_eq(EntryReadout.whom(shield), "Target: Any ally or self", "either")
+	assert_eq(EntryReadout.whom(shield), "Target: Any Frame", "either")
 	var probe := Face.attack(0, Face.Reach.INDIRECT, [Face.Keyword.SUPPRESS])
 	probe.strikes = 2
 	probe.gates = {"suppress": {"when": "target_status", "status": "brittled"}}
 	var lines := EntryReadout.effects_of(probe)
 	assert_eq(str(lines[0]["text"]), "Debuff ×2", "a debuff prints no number")
-	assert_eq(str(lines[1]["text"]), "Target: Enemy, Indirect", "a weapon's target and reach")
+	assert_eq(str(lines[1]["text"]), "Target: Sprite, Indirect", "a weapon's target and reach")
 	assert_eq(str(lines[2]["text"]), "Apply Suppress %s" % Effects.gate_text(probe.gates["suppress"]), "a gated rider says where it lands")
 	assert_eq(str(EntryReadout.effects_of(Face.empty_slot())[0]["text"]), "Comes up blank: nothing fills it", "an empty hardpoint says what it does, its name the title")
 	var wreck := Face.blank()
@@ -2128,23 +2191,33 @@ func test_the_barrier_and_the_ward_wear_chips_and_a_dark_entry_counts_its_rounds
 
 
 ## A stepping die (the Cassowary's, 21 October) shows its next chamber on the die and in the
-## hold, and a machine that counts its shots shows the count as cells under the heat bar, the last marked.
-func test_a_stepping_die_shows_its_next_chamber_and_its_shot_count() -> void:
+## hold, and the store its weapon hits charge (its Sustained Recoil, 26 November) is a bar of five
+## cells under the heat, glowing and pulsing whole while full, never a chip.
+func test_a_stepping_die_shows_its_next_chamber_and_its_charge_bar() -> void:
 	var s := _screen()
 	var ms: Skirmish.MechState = s.sk.mechs[0]
 	ms.unit.grant_passive({"id": "test_step", "name": "Step", "description": "", "effects": [
-		{"trigger": "static", "effect": "step_die", "value": 1},
-		{"trigger": "on_attack", "effect": "multiply_damage", "value": 2, "when": "nth_shot", "every": 6}]})
-	Effects.stack(ms.unit, Effects.STATUS["shots"], Effects.SKIRMISH, "count", 5, Effects.DECAY_NONE)
+		{"trigger": "static", "effect": "step_die", "value": 1}]})
+	var charged: Skirmish.MechState = s.sk.mechs[1]
+	charged.unit.grant_passive({"id": "test_charge", "name": "Charge", "description": "", "effects": [
+		{"trigger": "static", "effect": "hit_charge", "value": "sustained_recoil", "cap": 5, "times": 2}]})
+	Effects.stack(charged.unit, Effects.STATUS["sustained_recoil"], Effects.SKIRMISH, "charge", 4, Effects.DECAY_NONE)
 	s._refresh()
 	var n := ms.die.faces.size()
 	assert_true(s._dice[0].next_face != null, "the die carries its next chamber")
 	assert_eq(s._dice[0].next_face.kind, ms.die.faces[(ms.face_index + 1) % n].kind, "the one it steps to")
-	assert_eq(s._mech_views[0].pips, [5, 6], "five shots of six: the sixth is next")
-	for r in s._mech_rows(0):
-		assert_false(str(r[2]).begins_with("Shots"), "the count is cells under the heat, never a chip")
+	var bar: Array = s._mech_views[1].store
+	assert_eq([int(bar[0]), int(bar[1]), bool(bar[4])], [4, 5, true], "four of five cells lit, on a bar that glows when full")
+	assert_false(s._mech_views[1]._store_glows(), "four is not full: no glow")
+	Effects.stack(charged.unit, Effects.STATUS["sustained_recoil"], Effects.SKIRMISH, "charge", 1, Effects.DECAY_NONE)
+	s._refresh()
+	assert_eq(int(s._mech_views[1].store[0]), 5, "five lit")
+	assert_true(s._mech_views[1]._store_glows(), "and the whole bar glows: the next hit doubles")
+	assert_true(s._mech_views[1]._has_pending(), "and pulses, the view drawing on")
+	for r in s._mech_rows(1):
+		assert_false(str(r[2]).begins_with("Sustained Recoil"), "the store is its bar, never a chip")
 	assert_true(s._dice[1].next_face == null, "a die that rolls shows none")
-	assert_true(s._mech_views[1].pips.is_empty(), "nor a count's cells")
+	assert_true(s._mech_views[2].store.is_empty(), "nor a store the machine has none of")
 	# A tap shows the entry alone, no cylinder (Ryan, 24 November: "single tap on the cassowary die
 	# doesn't need to show the whole circle"); the double-tap's whole die keeps it.
 	s._on_die_tapped(0)
@@ -2493,7 +2566,7 @@ func test_a_dies_readout_heads_each_line_with_its_mark() -> void:
 	assert_eq(str(by.get("shield", {}).get("text", "")), "Shield 3", "the shield's glyph on its number")
 	var target: Dictionary = {}
 	for l in lines:
-		if str(l.get("text", "")) == "Target: Any other ally":
+		if str(l.get("text", "")) == "Target: Another Frame":
 			target = l
 	assert_false(target.is_empty(), "whom it reaches, in words")
 	assert_eq((target.get("marks", []) as Array).map(func(m: Dictionary) -> String: return str(m.get("glyph", ""))), ["aim_ally"], "headed by the three hexes the die draws, the two beside lit")

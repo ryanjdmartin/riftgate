@@ -138,34 +138,15 @@ Ruby Colossus's Burrowing Tentacle and the Lancer's Jump purge before they land.
 
 ## 5. Phased by source
 
-### His rule, and what follows from it
+### His rule, built
 
-"Cannot be targeted, damaged, or affected in any way by non-phased units." Built as he stated
-it, each of these follows and is no question:
-
-- A Phased unit's own buffs and debuffs act on it again: Ablating and Vitriol take their points,
-  its Regenerating pays. A status already on it counts as its own.
-- Its own heat burns it past its maximum, and its own entry's costs land: a Volatile bite, a
-  corrupted entry's bite. Both were blocked by his rulings of 16 November, which this replaces.
-- Its allies cannot buff, mend, cleanse or shield it, unless they are Phased too. That
-  enforces his ruling of 15 November on both sides, so a ghost's own side stops reaching it.
-- A Phased unit may still act on everyone. A Phased machine hits Phased foes, and a Phased foe
-  hits every machine, Phased or not. "Bring a Phaser with you."
-- A non-Phased foe's blow at every machine passes a Phased machine by; a Phased foe's lands on
-  all of them.
-- A fall's curse from a non-Phased foe cannot reach a Phased killer, so a Phased machine pulls
-  up a Mandragora safely.
-- A non-Phased ally cannot extend a standing Phased.
-
-### The holes, where his words give two answers or none
-
-1. **A status's source.** Whether a status already on the unit acts as the unit's own. His
-   fallout says the damage-over-time ones do. I would read every status that way, so one check
-   covers everything: an effect's source is the unit that lands it now.
-2. **The battle's own effects.** Nothing in a fight today has no unit as its source. I would
-   keep it so: any future effect names one.
-3. **The guards.** The last foe standing never fades, and no foe fades two rounds running. I
-   would keep both: a squad without a Phaser still needs a foe to end the fight on.
+"Cannot be targeted, damaged, or affected in any way by non-phased units." Built 27 November as
+he stated it, on both sides, with the three readings he confirmed that day (a status already on
+a unit is the unit's own, an effect's source being the unit that lands it now; every effect
+has a unit as its source; the two guards stay). The rule as it runs is `docs/rules.md`
+(Phased), the decision and the forms it retired the bible's Phased row. What followed from
+his words, and the holes as they were put to him: `git show ea10aaac:docs/domain_statuses_proposal.md`,
+section 5.
 
 ### As a system
 
@@ -206,9 +187,8 @@ answer to what the intents show. What it raises:
 5. **The gate.** "All phased granters need to be gated, it should be earned." Whether the source
    rule balances it enough to relax that is his call.
 
-My lean: build the source rule as he stated it, the three readings above with it; and put the
-reactive form on a trial dial so he can play both, since the delay was his design and the
-reboot is the rule most at stake.
+The reactive form is on a trial dial so he can play both, since the delay was his design and
+the reboot is the rule most at stake.
 
 ### What it would need
 
@@ -255,6 +235,7 @@ buff, or are predicted to get one"). The bible's goblins' row and gel row hold t
   and it means the reactive form gives no safe reboot at all, where the delayed one gives the
   phased round to reboot in. Both forms are his to play since 20 November: TRIALS → PHASED, and
   the Phase Inducer, tier two, Phased on itself with a cooldown of one ("I need a tier 2
-  component that sets it for testing"). The source rule is not built.
+  component that sets it for testing"). The source rule is built (section 5), so both forms
+  are played under it.
 - **The rally.** His: "It's a foe move, they're all different." The formations that rally are laid
   out for his read; the hangar's Foes tab shows each formation by its name.

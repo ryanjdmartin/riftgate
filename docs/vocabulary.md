@@ -2,7 +2,18 @@
 
 Generated from `content/vocabulary.json` by `tools/export_vocabulary.gd`. Do not edit by hand; edit the JSON and re-run the tool.
 
-Status: 210 implemented, 6 planned, 0 idea.
+Status: 213 implemented, 5 planned, 0 idea.
+
+## Damage
+
+| Term | Codex | Status |
+|---|---|---|
+| **Hit for N** | Shield takes it first, then Armour reduces it.
+Barrier, Brittle and hit effects apply. | implemented |
+| **Suffer N damage** | Not a hit. Shield takes it first.
+Armour, Barrier, Brittle and hit effects do not apply. | implemented |
+| **Lose N** | Comes straight off the Hull, HP or Shield named.
+Nothing reduces or adds to it. | implemented |
 
 ## Resource
 
@@ -13,17 +24,17 @@ Status: 210 implemented, 6 planned, 0 idea.
 | **Shield** | Enemy damage hits shield before hull. A shield absorbs its number: a blow costs it its damage, and whatever it cannot absorb passes to the hull, armour coming off it there. Nothing mends a shield by itself: a reboot brings it back whole, and a component, a module or a passive may add to one that still stands, up to the chassis maximum. A shield at nothing is Broken, and takes none until its machine reboots. The shield is full as every fight opens, as the heat starts at zero; nothing returns on the map. | implemented |
 | **Heat** | A component that prints heat adds it when spent, and it stays: nothing cools a machine by itself. Heat may pass the chassis maximum, and what stands past it is Overheated: at the end of your turn, before the enemy acts, it burns hull one for one, every turn it stands there, and the first such turn since the machine's last reboot breaks its shield. A reboot takes the heat to nothing; a vent, a module or a passive that cools takes some off, what stands past the maximum first. A machine the burn wrecks is lost on its own turn. Foes never add heat: a Scorched machine's weapons and equipment aimed at foes run hotter for the turn. | implemented |
 | **Reroll** | Two rerolls per round, each rerolling every unlocked, unspent die. A reroll lands on any other component on the die, never the one showing; a second copy of the same component may come up. Rerolls may be spent before or after attacking, so a low damage roll is information for the rest of the round. Never pooled across rounds, unless a Giant Petrel fights: its Maverick's Playbook banks up to three left unspent as your turn ends, for the next round. | implemented |
-| **Rift Pressure** | Ticks once per battlefield phase, never inside a fight. It fills at the ramp's beat (3 turns, 2 from Convergence 8), a turn short of its peak as a battle opens, and the beat halves once at the Rupture. When full it resets and peaks: the rift sends the next composition of its cycle, every tear open before the peak sends a patrol, and new tears open, each peak's nearer the wall. It never stops: the boss's seal breaking does not quiet it. | implemented |
+| **Rift Pressure** | Ticks once per battlefield phase, never inside a fight. It fills at the ramp's beat (3 turns, 2 from Convergence 8), a turn short of its peak as a battle opens, and the beat halves once at the Rupture. When full it resets and peaks: the rift and every tear open before the peak each send 2 packs, a hunting pack comes out of the rift every second peak, and new tears open, each peak's nearer the wall. It never stops: the boss's seal breaking does not quiet it. | implemented |
 | **Rupture meter** | Fills by the menace of the packs you kill, in any fight however it ends, toward the tier's Fractures (three, four or five), each later one costing more. The last, the Rupture, takes the packs the field opens with and the rift's first two peaks send, one lone patrol left over, and 4 more for each elite the tier's Fractures bring. The Rupture breaks the boss's seal, and nothing else does: a cleared field is breathing room until the next peak. | implemented |
 | **Fracture** | A step of the Rupture meter, paid out as a fight ends. At the Fractures the tier names (tier one's first; tier two's first and third; tier three's first, second and fourth) an elite emerges at the rift, the lead domain's elites in turn and never twice in a battle. The last Fracture is the Rupture. | implemented |
-| **Gate Integrity** | Each pusher makes for a segment of the wall of its own, drawn as it is dealt. A pusher that ends its walk beside any hex of the gate or the wall strikes the gate's bar every turn: ten for each machine it is a fight for, less as it loses foes, at least one. The whole wall is the target, so no line plugs it. Gate integrity persists across battles and is repaired in the meta. | implemented |
-| **Shots** | Machine count, the Cassowary's: every weapon and equipment it aims at a foe this fight, shown as six pips under the heat bar, the sixth lit when it is next, where its sixth shot counts double. Shields, vents, buffs and spins are no shots. Never a chip; nothing cleanses it; it resets each fight. | implemented |
+| **Gate Integrity** | Each pusher makes for the stretch of the wall its threat rating sends it to: the ends for 1, the middle for 3, between them for 2. A pusher that ends its walk beside any hex of the gate or the wall strikes the gate's bar every turn: 5 for each Frame it is a fight for, less as it loses Sprites, at least 1. The whole wall is the target, so no line plugs it. Gate integrity persists across battles and is repaired in the meta. | implemented |
+| **Sustained Recoil** | Max 5 stacks. At 5 stacks, the next weapon hit deals double damage. | implemented |
 | **Armour** | A chassis number taken off every blow that reaches the hull, flat, never a percentage: a blow on bare hull and what passes a shield alike. A blow at or under the armour does nothing to the hull. Shield is not armoured: a blow on shield costs the shield its full damage. | implemented |
 | **Ore** | Machine store, the Honey Badger's hopper: every foe its weapons damage puts an Ore in it, up to three, and every raise its upgrades grant adds to that. Its Bullion Fragmenter empties it, a strike for every Ore, and puts none back. Lasts the skirmish; never decays, and no cleanse or Purge touches it. | implemented |
 | **Muster** | Machine store, the Swallowtail's: a charge its Integrated components spend for their charged forms. Every die that rolls fills it a sliver, about thirty rolls a charge, and a kill by its own guns five rolls' worth; stored up to its cap. Starts each fight empty and never decays; a store, so no Purge touches it. With a charge up, its Integrated components go out charged unasked, unless the charged form has nowhere to land; then the plain form goes out and the charge waits. | implemented |
 | **Ammo** | The Musk Ox's magazine, a row of cells under its heat bar, a cell an ammo. Its weapons spend ammo instead of heating it: 1 for every 2 heat a gun would make, rounded up, at least 1, the price printed where the gun's heat would be; a foe's Scorched still heats them. The magazine holds 10, opens each fight at 3 and gains 1 at the start of every round after the first; a vent the Musk Ox spends on itself adds 3, a shield 2, an entry that is both 3, once. With too little left, a gun cannot be spent (DRY). | implemented |
 | **Momentum** | Maximum 10.
-Gained while Burrowed.
+Gained by Burrowed and Applied Momentum.
 Drained by Applied Momentum. | implemented |
 
 ## Kit
@@ -50,7 +61,7 @@ Drained by Applied Momentum. | implemented |
 |---|---|---|
 | **Swap** | Second target: another Sprite or an empty slot.
 Resolve: The target and the second target swap places. Massive Sprites cannot move. | implemented |
-| **Volatile** | Commit: Lose {N} Hull. Ignores Shield and Armour. | implemented |
+| **Volatile** | Commit: Lose {N} Hull. | implemented |
 | **Shield cost** | Commit: Lose {N} Shield.
 Cannot be used without enough Shield. | implemented |
 | **Targets** | Which Frames this can be used on, shown as three hexes under its mark: the middle is this Frame, the sides are the other Frames. A filled hex can be chosen. | implemented |
@@ -70,11 +81,11 @@ A dark entry can be rolled but not used. | implemented |
 | **Finisher** | Commit: If the target is at or below half Max HP, double base damage. | implemented |
 | **Fixed** | Only the specified component may be used. | implemented |
 | **Gated** | The keyword applies only to Sprites that meet its condition at Commit. | implemented |
-| **Consumes** | On Hit: If a weapon, consume all stacks of the named status on the Sprite hit. +{N} damage per stack consumed.
+| **Consumes** | Hit: If a weapon, consume all stacks of the named status on the Sprite hit. +{N} damage per stack consumed.
 Commit: If equipment, consume up to {N} of the named count from this Frame. Gain 1 stack of the granted status per one consumed.
 Equipment cannot be used with nothing to consume. | implemented |
 | **Ablates its firer** | Resolve: Apply {N} Ablate to this Frame. | implemented |
-| **Ignores armour** | Hits ignore Armour. | implemented |
+| **Ignores Armour** | Armour does not reduce the damage. | implemented |
 | **Empties the hopper** | Commit: Consume all Ore. Hit once per Ore consumed. No Ore is gained from these hits.
 Cannot be used without Ore. | implemented |
 | **Braces** | Resolve: Apply {N} Armoured to this Frame. | implemented |
@@ -94,96 +105,104 @@ Cannot be used without Ore. | implemented |
 
 | Term | Codex | Status |
 |---|---|---|
-| **Spread** | Also hits all Sprites beside the target, dealing {N} damage. The extra hits are not Targeted. | implemented |
-| **Penetrate** | Also hits all other Sprites in the same column, dealing {N} damage. The extra hits are not Targeted. | implemented |
-| **Cryo** | Resolve: Apply {N} Cryo per hit. | implemented |
-| **Ablate** | Resolve: Apply {N} Ablate per hit. | implemented |
-| **Lure** | On Hit: Change intended target to this Frame. | implemented |
+| **Spread** | Also hits all Sprites beside the target, dealing {N} damage. | implemented |
+| **Penetrate** | Also hits all other Sprites in the same column, dealing {N} damage. | implemented |
+| **Cryo** | Resolve: Apply {N} Cryo per hit to each Sprite hit. | implemented |
+| **Ablate** | Resolve: Apply {N} Ablate per hit to each unit hit. | implemented |
+| **Lure** | Hit: Change intended target to this Frame. | implemented |
 | **Shock** | Resolve: Apply Shocked to each Sprite hit. | implemented |
 | **Expose** | Resolve: Apply 2 Exposed to each unit hit. | implemented |
 | **Disrupt** | Resolve: Sprites hit switch to the next move they can use, keeping their target. | implemented |
 | **Suppress** | Resolve: Apply Suppressed to each Sprite hit. | implemented |
-| **Brittle** | Resolve: Apply {N} Brittle per hit. | implemented |
-| **Sap** | Resolve: Apply {N} Sapped per hit. | implemented |
-| **Chain** | Resolve: All Sprites with Shock, Static, or Sonic Needle lose {N} HP. | implemented |
+| **Brittle** | Resolve: Apply {N} Brittle per hit to each unit hit. | implemented |
+| **Sap** | Resolve: Apply {N} Sapped per hit to each Sprite hit. | implemented |
+| **Chain** | Resolve: All Sprites with Shock lose {N} HP. | implemented |
 | **Rapid** | Resolve: Reroll this die for free, never onto this entry. This entry goes dark for the rest of the round. | implemented |
 | **Instant** | Resolve: Reroll this die for free. May land on this entry again. | implemented |
-| **Jam** | Resolve: Apply Jammed to the entry the target's die shows. | implemented |
+| **Jam** | Resolve: Apply Jammed to the entry shown by each Frame hit. | implemented |
 | **Destroy** | After Hit: If Hull damage was dealt, destroy the entry the target's die shows. | implemented |
-| **Corrupt** | Resolve: Apply {N} Corrupted per hit to the entry the target's die shows. | implemented |
+| **Corrupt** | Resolve: Apply {N} Corrupted per hit to the entry shown by each Frame hit. | implemented |
 | **Purge** | Resolve: Reduce stacks of every Buff on each unit hit by {N}. | implemented |
-| **Cleanse** | Resolve: Remove every Debuff from the target, except those that cannot be cleansed.
-A Sprite's Cleanse removes every Debuff but Suppressed from the Sprite with the most kinds of Debuff. | implemented |
+| **Cleanse** | Resolve: Remove every Debuff from the target, except those that cannot be cleansed. | implemented |
 
 ## Status
 
 | Term | Codex | Status |
 |---|---|---|
-| **Juggernaut Drive** | Weapon hits ignore Armour.
-Resolve: If a weapon was used, consumed. | implemented |
+| **Juggernaut Drive** | Weapons Gain:
+  Ignores Armour.
+  Resolve: Consumed. | implemented |
 | **Numbed** | When Suppressed would be applied: Prevent it and reduce stacks by 1.
 Turn End: Reduce stacks by 1. | implemented |
 | **Paradox** | When another Debuff is applied: Gain 1 stack per stack applied.
 At 5 or more stacks: Reduce stacks to 0 and gain Suppressed. | implemented |
-| **Retaliate** | Machine status. While it lasts, a foe that strikes this machine's bare hull is Shocked. It lasts the rounds the component that grants it says. | planned |
-| **Shocked** | When Hit: If targeted, consume to double damage received, before applying defensive effects.
+| **Shocked** | Hit By Weapon: If targeted, consume to double damage received, before applying defensive effects.
 Conducts Chain. | implemented |
 | **Pinned** | When Brittle would be reduced: Consumed to prevent it.
 Turn End: If there is no Brittle, removed. | implemented |
 | **Seared** | When Ablate would be reduced: Consumed to prevent it.
 Turn End: Removed. | implemented |
-| **Sapped** | On Hit: -1 damage dealt per stack ({N}).
+| **Sapped** | Attacks Gain:
+  Hit: -1 damage dealt per stack ({N}).
 Turn End: Reduce stacks to 0. | implemented |
 | **Exposed** | All armour is negated.
 Exposed Sprites can be targeted regardless of reach.
 Sprites are forced to target an Exposed Frame at round start.
 Turn Start: Reduce stacks by 1. | implemented |
-| **Empowered** | On Hit: +1 damage per stack ({N}).
+| **Empowered** | Attacks Gain:
+  Hit: +1 damage dealt per stack ({N}).
 Turn End: Reduce stacks by half, rounded down. | implemented |
-| **Sealed** | +3 Armour. Cooling disabled.
+| **Sealed** | +3 Armour.
+Cooling disabled.
 Turn End: Gain 3 Heat.
-Resolve: If a weapon was used, removed.
+Weapons Gain:
+  Resolve: Removed.
 On Reboot: Removed. | implemented |
 | **Changed Over** | The die rolls the second battery, not the first.
 Lasts the battle. | implemented |
-| **Cryo** | When Hit: If by a weapon, consume all stacks. The attacker loses 1 Heat per stack ({N}). | implemented |
+| **Cryo** | Hit By Weapon: Consume all stacks. The attacker loses 1 Heat per stack ({N}). | implemented |
 | **Armoured** | +1 Armour per stack ({N}).
 Turn Start: Reduce stacks to 0. | implemented |
 | **Hardened Light** | When Hit: If Shield is up, -1 damage received per stack ({N}).
 Shield Broken: Reduce stacks to 0. | implemented |
-| **Primed** | Resolve: If this was an attack, apply 1 Ablate per hit and reduce stacks by 1. | implemented |
+| **Primed** | Attacks Gain:
+  Resolve: Apply 1 Ablate per hit to each unit hit, then reduce stacks by 1. | implemented |
 | **Jammed** | This entry comes up blank.
 On Reboot: Removed. | implemented |
-| **Corrupted** | Commit: Take 3 damage per stack ({N}).
+| **Corrupted** | Commit: Suffer 3 damage per stack ({N}).
 On Reboot: Reduce stacks to 0. | implemented |
-| **Phased** | Immune to all damage. Cannot be targeted or hit. Can still act.
-Other statuses still count down.
+| **Phased** | Cannot be targeted, damaged, or affected in any way by non-Phased units.
 Round End: Removed. | implemented |
-| **Ablate** | Turn End: Take 1 damage per stack ({N}), then reduce stacks by 1.
-Ignores Armour and Barrier. | implemented |
+| **Ablate** | Turn End: Suffer 1 damage per stack ({N}), then reduce stacks by 1. | implemented |
 | **Suppressed** | May not act.
 Turn End: Removed. Gain Numbed equal to stun resist: 1, 2 if massive, 3 if elite, hero or boss. | implemented |
 | **Vitriol** | Turn End: Lose 10% of current HP per stack ({N}), rounded down, then reduce stacks by 1.
-Ignores Armour and Barrier. Cannot reduce HP below 1. | implemented |
+Cannot reduce HP below 1. | implemented |
 | **Web Bomb** | Round End: Consumed to apply Suppressed to this Sprite and the nearest Sprite to its right in the same rank, or to its left if none. | implemented |
-| **Spun Up** | Weapon hits deal +2 damage per stack ({N}).
-Resolve: If a weapon was used, reduce stacks to 0. | implemented |
-| **Ricochet** | Resolve: If a weapon was used, hit the target again once per stack ({N}) for 1 damage, with every effect of the weapon except area.
-After Being Hit: If Hull damage was taken, reduce stacks by half, rounded down.
+| **Spun Up** | Weapons Gain:
+  Commit: Consume all stacks to gain +1 damage per stack ({N}). | implemented |
+| **Ricochet** | Weapons Gain:
+  Resolve: Hit the target again once per stack ({N}) for 1 damage. No effect of the weapon applies.
+Hull Damaged: Reduce stacks by half, rounded down.
 Lasts the skirmish. | implemented |
 | **Essence** | When any Sprite is defeated: Gain 1 Essence.
 Skirmish Start: Gain 1 Empowered per 5 Essence.
 Round End: If this Frame killed a Sprite this round, gain 1 Empowered per 5 Essence.
 Lasts the battle. | implemented |
-| **Offhand** | Weapons and equipment used on a Sprite gain the armament shown.
-Resolve: If used on a Sprite, switch to the next armament.
+| **Offhand** | Uses on a Sprite Gain:
+  The armament shown.
+  Resolve: Switch to the next armament.
 Skirmish Start: Switch to the first armament. | implemented |
-| **Aile Boost** | Weapons gain Indirect reach.
-Resolve: If a weapon was used, consumed. | implemented |
-| **Aile Blitz** | Weapons gain Indirect reach and ignore Armour.
-Resolve: If a weapon was used, consumed. | implemented |
-| **Aile Assault** | Weapons gain Indirect reach.
-Resolve: If a weapon was used, consumed. | implemented |
+| **Aile Boost** | Weapons Gain:
+  Indirect.
+  Resolve: Consumed. | implemented |
+| **Aile Blitz** | Weapons Gain:
+  Indirect.
+  Ignores Armour.
+  Resolve: Consumed. | implemented |
+| **Aile Assault** | Weapons Gain:
+  Indirect.
+  Resolve: Consumed. | implemented |
 | **Parry** | Counts damage prevented by Armour and Barrier from Sprite hits this round.
 Turn Start: The first weapon hit this turn gains +1 damage per 2 damage counted.
 Resolve: If a weapon was used, consumed.
@@ -195,16 +214,17 @@ Turn Start: Reduce stacks by half, rounded down. | implemented |
 | **Destroyed component** | This entry is blank for the rest of the battle. Passive bonuses still apply. Passive abilities do not.
 After the battle: an Integrated component is rebuilt, a hardpoint's component is lost. | implemented |
 | **Mine** | Uses aimed at this Sprite by the Frame that laid it add their damage and riders to the Mine.
-When defeated: The Mine goes off, dealing 1 damage per stack ({N}) to every Sprite around it, with its riders. | implemented |
+When defeated: The Mine goes off, hitting every Sprite around it for 1 damage per stack ({N}), with its riders. | implemented |
 | **Rage** | Immune to all Debuffs.
 Fixed: Knuckles of Fury
 Reboot disabled.
 At 0 Heat: Consumed to Reboot immediately. | implemented |
 | **Ore** | At 3 Ore, base Armour increases by 1. | implemented |
-| **Scorched** | Uses aimed at a Sprite cost +1 Heat per stack ({N}).
+| **Scorched** | Uses on a Sprite Gain:
+  Commit: +1 Heat per stack ({N}).
 Turn End: Reduce stacks to 0. | implemented |
 | **Overheated** | Stacks equal Heat above Max Heat.
-Turn End: Take 1 Hull damage per stack ({N}), ignoring Shield and Armour. The first time since the last Reboot, reduce Shield to 0.
+Turn End: Lose 1 Hull per stack ({N}). The first time since the last Reboot, reduce Shield to 0.
 On Reboot: Reduce stacks to 0.
 Cannot be cleansed. | implemented |
 | **Broken** | Applied when Shield reaches 0. Shield cannot be gained.
@@ -212,16 +232,16 @@ Removed when a Reboot restores Shield.
 Cannot be cleansed. | implemented |
 | **Rebooting** | Applied by dragging the die of a Frame that has used nothing this turn onto REBOOT. Shield and Heat drop to 0 at once.
 Turn Start: Consumed to restore Shield to max and remove Broken. | implemented |
-| **Enraged** | On Hit: +1 damage per stack ({N}).
+| **Enraged** | Attacks Gain:
+  Hit: +1 damage dealt per stack ({N}).
 When you use a component that is not a weapon: Gain 1 stack.
 Lasts the skirmish. | implemented |
-| **Golden** | On Hit: +2 damage dealt.
+| **Golden** | Attacks Gain:
+  Hit: +2 damage dealt.
 +1 Armour.
 Gain Suppressed upon losing 25% Max HP since the start of the effect.
 On Suppressed: Reduce stacks to 0.
 Turn End: Reduce stacks by 1. | implemented |
-| **Empowered** | On Hit: +1 damage per stack ({N}).
-Turn End: Reduce stacks by half, rounded down. | implemented |
 | **Undying** | When defeated: Consumed to return with full HP, acting from next round. | implemented |
 | **Aloft** | Cannot be targeted or hit. Other statuses still count down.
 Removed when its gathered move lands. | implemented |
@@ -238,23 +258,27 @@ Cannot be cleansed. | implemented |
 Turn Start: Removed. | implemented |
 | **Ward** | Blocks every Debuff and Purge from the other side. Damage still applies.
 Turn Start: Removed. | implemented |
-| **Charged** | Weapons gain Shock.
-Resolve: If a weapon was used, reduce stacks by 1. | implemented |
-| **Supercooled** | Weapons gain Cryo 1.
-Resolve: If a weapon was used, reduce stacks by 1. | implemented |
+| **Charged** | Weapons Gain:
+  Shock.
+  Resolve: Reduce stacks by 1. | implemented |
+| **Supercooled** | Weapons Gain:
+  Cryo 1.
+  Resolve: Reduce stacks by 1. | implemented |
 | **Regenerating** | Turn End: Gain 1 Shield per stack ({N}) on a Frame, or 1 HP per stack on a Sprite, then reduce stacks by 1. | implemented |
-| **Burrowed** | Replaces Reboot. +1 Armour.
+| **Burrowed** | +1 Armour.
 Fixed: Inertia Drill
 Turn Start: Remove Broken, Overheated, Jammed and Corrupted. Gain 3 Shield and 5 Momentum, and lose 6 Heat.
-Resolve: If the Inertia Drill was used, removed. | implemented |
-| **Applied Momentum** | Turn Start: Gain 1 Brittle and Pinned. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.
-Resolve: The Mole gains 1 Momentum. | implemented |
-| **Frozen Momentum** | Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.
-Resolve: The Mole gains 1 Momentum. | implemented |
-| **Heated Momentum** | Turn Start: Gain 1 Brittle, 2 Ablate, Pinned, and Seared. Then, drain 5 Momentum from the Mole. If 0 Momentum, remove and return to the Mole.
-Resolve: The Mole gains 1 Momentum. | implemented |
-| **Frozen** | When any amount of Cryo would be consumed, consume 1 Numbed instead, if any, then remove Frozen. | implemented |
-| **Drill Out** | Inertia Drill is out until it returns, or the next burrow. | implemented |
+Inertia Drill Gains:
+  Resolve: Removed. | implemented |
+| **Applied Momentum** | Turn Start: Gain 1 Brittle and Pinned. Then, take a hit for 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.
+Resolve: If hit, the Mole gains 1 Momentum. | implemented |
+| **Frozen Momentum** | Turn Start: Gain 2 Brittle, 1 Cryo, Pinned, and Frozen. Then, take a hit for 1 damage and drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.
+Resolve: If hit, the Mole gains 1 Momentum. | implemented |
+| **Heated Momentum** | Turn Start: Gain 1 Brittle, 2 Ablate, Pinned, and Seared. Then, drain 5 Momentum from the Mole. If 0 Momentum, removed and returned to the Mole.
+Resolve: If hit, the Mole gains 1 Momentum. | implemented |
+| **Frozen** | When Cryo would be consumed: Consumed to prevent it. Consume 1 Numbed, if any. | implemented |
+| **Drill Out** | Removed when Applied Momentum returns to the Mole.
+On Burrowed: Removed. | implemented |
 | **Sonic Needle** | Gain 1 stack per hit from the Frame that laid it, and per hit this Sprite lands on that Frame.
 Conducts Chain.
 At 3 or more stacks: Chain 2 fires. Reduce stacks to 0. | implemented |
@@ -283,11 +307,11 @@ At 3 or more stacks: Chain 2 fires. Reduce stacks to 0. | implemented |
 | **Pack** | An enemy hex is a pack: a composition on one hex, its members listed on a hold, wearing its lead's picture, hunting when its composition says so, walking at its slowest member's pace. Its hold says first how many machines it is a fight for, its threat rating; a pusher walks to a segment of the wall of its own. A fight is the one pack you attack. A boss is one unit on one hex. | implemented |
 | **Footprint** | Every unit covers one hex, the boss included: it is occupied, counts for range, and is a tap target. The gate and the rift are wider structures. | implemented |
 | **Structure** | Gate and rift hexes are structures wider than one hex. Nobody stands on them. A pack that ends its walk beside a gate hex or a wall hex strikes the gate. A tear is a mouth, not a structure: its hex can be walked and stood on. | implemented |
-| **Spawn** | At a peak of Rift Pressure the next composition of the rift's cycle (the tier's formations and patrols in turn, the lead domain's and the guest's in turn) emerges at the rift, and every tear open before the peak sends a patrol. A spawn lands on the nearest free hex to its mouth with no machine beside it, at the end of the enemy's turn, so you see it and its walk for a whole turn and nothing lands on top of a detachment. | implemented |
+| **Spawn** | At a peak of Rift Pressure the rift sends 2 packs, each to a stretch of the wall of its own, and every tear open before the peak sends 2 to the wall near it. The pack for a stretch is the next of its threat rating the domain has, the lead domain's and the guest's in turn. A spawn lands on the nearest free hex to its mouth with no Frame beside it, the rift's outside its shell on the side they are headed, at the end of the enemy's turn, so you see it and its walk for a whole turn and nothing lands on top of a detachment. | implemented |
 | **Composition** | What the rift sends and what stands on the field when a battle starts: a patrol (a few foes, a fight for one machine or a pair), a formation (the body's fight), an elite leading its own, or a boss's escort. A composition is one pack on one hex: its members, listed on a hold, unpack into the fight together and come back by member. Each domain writes its compositions by tier, each dealt across a band of the ramp; the ramp sets how many stand at the start, never how thick they are. | implemented |
-| **Patrol** | The small composition: a few foes, a fight for one machine or for a pair, the threat rating its hold shows. Two stand on the flanks at the start (one from Convergence 8), and the tears send nothing else. | implemented |
-| **Formation** | The body's composition: a fight for three machines, the threat rating its hold shows. One stands on the field at the start (two from Convergence 3, three from 8), and the rift alone sends more, at its peaks. A domain's tier writes its formations; the lead's and the guest's come in turn. | implemented |
-| **Tear** | A mouth beside the rift's. At a peak of Rift Pressure the ramp's count of tears (one; two from Convergence 8) open on a row a few past the rift (row 4 at twelve deep), each peak's a row nearer the wall and never beside it, as far from the rift and the other tears as the row allows, and every tear open before the peak sends a patrol. A tear opens a peak before it first sends, so where the next flood comes from is known an interval ahead. Tears stay open and never close. | implemented |
+| **Patrol** | The small composition: a few foes, a fight for one machine or for a pair, the threat rating its hold shows. Its threat rating says where it makes for: 1 the wall's ends, 2 between the ends and the middle. | implemented |
+| **Formation** | The body's composition: a fight for three machines, the threat rating its hold shows. It makes for the middle of the wall. 1 stands before it at the start (2 from Convergence 3, 3 from 8). A domain's tier writes its formations; the lead's and the guest's come in turn. | implemented |
+| **Tear** | A mouth beside the rift's. At a peak of Rift Pressure the ramp's count of tears (one; two from Convergence 8) open on a row a few past the rift (row 4 at twelve deep), each peak's a row nearer the wall and never beside it, as far from the rift and the other tears as the row allows, and every tear open before the peak sends 2 packs to the wall near it. A tear opens a peak before it first sends, so where the next flood comes from is known an interval ahead. Tears stay open and never close. | implemented |
 | **Seam** | The flattening's edge: a circle about the rift, four hexes out as a battle opens and half a hex wider every round, stopping at the foot of the wall. It is a picture alone: no rule reads the ground inside it, and a tear opens wherever its own row has room. | implemented |
 
 ## Terrain
@@ -337,6 +361,7 @@ At 3 or more stacks: Chain 2 fires. Reduce stacks to 0. | implemented |
 | **At the end of a round it killed in** | Passive trigger. Fires as the round ends, after the enemy's turn, for a machine whose own attack killed in that round: once, however many foes fell and however many attacks felled them (the Ammit's flare). | implemented |
 | **On a foe killed** | Passive trigger. Fires as a death check counts a kill in this machine's fight, whoever or whatever made it, an ally's blow, an Ablate tick and a Mine's blast among them: a status, once for each foe that fell (the Ammit's Essence), or a shield gain like any (the Buzzard's). | implemented |
 | **On damaging a foe** | Passive trigger. Fires after a spend of this machine's weapons that took HP off a foe, however many foes it hurt: a status, a shield or a vent. An effect may fire once a round only (the Skua's stack of Ricochet). | implemented |
+| **On use** | Passive trigger. Fires once after every use of this machine's components, its hits all done (Resolve), whatever the component: a status of its own (the Cassowary's Deadeye II, a Sustained Recoil). A blank entry is no use and fires nothing. | implemented |
 | **On injury** | Passive trigger. Fires when a blow would destroy a component (a foe's Destroy, any of it on the hull). Effects: no_destroy (the component holds instead of being destroyed). | implemented |
 | **Always on** | Passive trigger. Its effects change a machine's numbers or a component's properties while a condition holds, rather than firing on an event: add_stat and multiply_stat on hull, shield, heat maximum, armour, move, cooling or shield regen; add_damage_taken and multiply_damage_taken on every incoming blow; set_reach on a component (direct or indirect while a condition holds); suppress, which turns off another effect by id or tag; and the rules a passive writes on its machine's entries, the star on the die: ignore_armour, and spillover (the Overrun Gearing's: damage past a kill in the front rank carries into the foe behind it in the same column, nothing standing behind a massive foe). | implemented |
 
@@ -385,7 +410,7 @@ Suppress delays it 1 round. Disrupt cancels it. | implemented |
 | **Follow-up** | Names the move its Sprite announces next round. Suppress or Disrupt on the first cancels the second. Once announced, the second can be Suppressed but not Disrupted. | implemented |
 | **Grudge** | +1 damage per Sprite the team has killed this skirmish. | implemented |
 | **Sprite move** | Each round every Sprite picks a move and a target before your turn, shown on its intent chip. Attack damage is the Sprite's attack times the move's factor. | implemented |
-| **Scorch** | Resolve: Apply {N} Scorched per hit. | implemented |
+| **Scorch** | Resolve: Apply {N} Scorched per hit to each Frame hit. | implemented |
 | **Menace** | A pack's threat rating: a patrol 1 or 2, a formation 3, an elite or a boss 4. The Rupture meter, Anathema and salvage count it. Killing a pack pays its remaining Menace. | implemented |
 | **Elite** | A unique Sprite leading its own pack, rated 4 Menace, arriving at a Fracture. It stands at the battle's tier. | implemented |
 | **Seal** | The boss cannot be attacked or join a skirmish until the Rupture breaks its seal. | implemented |
@@ -400,6 +425,9 @@ Suppress delays it 1 round. Disrupt cancels it. | implemented |
 
 Every entry whose `design.holes` is not empty. This is the list of things the mechanics do not do yet.
 
+- **Hit for N** (implemented): The three ways damage lands, the standard's rule 39 (Ryan, 24 November: "I like hit for N, suffer N damage, and lose N hull as the format examples that we want"), given a heading of their own in the keywords list on his yes of 25 November to a Damage section in place of reminders on each tip. Listed, never matched in a line (Terms.UNMATCHED): "Hit" is a label's word. The text is a session's draft.
+- **Suffer N damage** (implemented): The three ways damage lands, the standard's rule 39 (Ryan, 24 November: "I like hit for N, suffer N damage, and lose N hull as the format examples that we want"), given a heading of their own in the keywords list on his yes of 25 November to a Damage section in place of reminders on each tip. Listed, never matched in a line (Terms.UNMATCHED): "Hit" is a label's word. The text is a session's draft.
+- **Lose N** (implemented): The three ways damage lands, the standard's rule 39 (Ryan, 24 November: "I like hit for N, suffer N damage, and lose N hull as the format examples that we want"), given a heading of their own in the keywords list on his yes of 25 November to a Damage section in place of reminders on each tip. Listed, never matched in a line (Terms.UNMATCHED): "Hit" is a label's word. The text is a session's draft.
 - **HP** (implemented): A machine's health is its hull; the engine's code may say either word.
 - **Shield** (implemented): Shield sizes are placeholders. No chassis regenerates: the reboot refills a shield, and a passive, a module or a status may grant a regen.
 - **Heat** (implemented): Heat does nothing below the cap. Consider effects at high heat short of overflow. No chassis cools: the reboot vents, and a cooling a piece grants must stay below a typical weapon's heat or heat never matters (tuning).
@@ -426,7 +454,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Paradox** (implemented): The count is a placeholder (Ryan, 11 November: "we have no idea how many paradox stacks is balanced, we just decided on 3 or whatever as a placeholder without knowing how much status chips were going to get thrown around in the game as a whole"); a stack a debuff stack since that day, at five.
 - **Volatile** (implemented): Hull outright, where the Corrupted bite takes shield first. The number is a placeholder. A keyword with a chip until 26 October; a cost like heat since, so the die says the price and no chip does.
 - **Shield cost** (implemented): No piece carries it yet; the numbers are content's.
-- **Chain** (implemented): Ryan, 24 November, his text: "I want to change Chain. The under-armour ping is simpler. Resolve: All Sprites with Shock, Static, or Sonic Needle lose {N} HP." Static is the debuff of his Static machine of 4 November, not yet built (docs/briefs/aphelion_static.md), so only Shock and Sonic Needle conduct until it lands. His words, not yet signed on the Text tab.
+- **Chain** (implemented): Ryan, 24 November, his text: "I want to change Chain. The under-armour ping is simpler. Resolve: All Sprites with Shock, Static, or Sonic Needle lose {N} HP." Static is the debuff of his Static machine of 4 November, not yet built (docs/briefs/aphelion_static.md), so only Shock and Sonic Needle conduct until it lands. His words, not yet signed on the Text tab; 25 November, of the conductors: "the only non-exclusive conductor is Shock. So it's possible that we just need to mention Shock specifically", so Sonic Needle's and Static's own tips say they conduct it.
 - **Rapid** (implemented): Its limiter is its own switch-off, the entry dark for the rest of the round (Ryan, 12 November: "rapid gets its innate cooldown zero back without the explicit display"), which no cleanse lifts; a Rapid vent is never below tier three and a Rapid shield never below tier two (the bible's Rapid row).
 - **Instant** (implemented): Ryan, 12 November: "the rapid no cooldown pieces change to a new keyword: Instant (reroll after use, can land on itself)". Every Instant piece carries a limiter, which the validator holds content to: a cooldown, heat, Volatile or a shield cost, or the store a charged form spends; a piece locked on a stepping die has the cylinder's odds (the Spin-Up's), and a piece Instant only while its machine rages has its heat (the Nemesis's Knuckles of Fury). An entry is Rapid or Instant, never both.
 - **Jam** (implemented): Disable until 15 November (Ryan: "Rename to Jammed"); the rider follows the pattern, Jam lays Jammed.
@@ -438,12 +466,12 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Golden Rage** (implemented): The Thunder Ape's (4 November); see Golden. Its weight is content's, 2 so it comes about a round in three while calm.
 - **Merge** (implemented): The King Gel's (30 October): every Gel, Bubble Gel, Metal Gel and half on the field. Content: effect merge, foe (an id or a list), value (the lift a foe taken in). A foe taken in leaves no last act and no split and is no kill of the team's; its pack's tally still counts it gone. It needs its kinds beside it, so the King Gel's escort is its own (an escort that names its boss).
 - **Purge** (implemented): One id, dispel, on both sides (28 October); numbered 2 November (Ryan: "lower everything by N and price accordingly", a softer answer to armour and damage stacking that prices cheap and common; the Null Field Emitter at Purge 2, a placeholder). One purge on either side (Effects.purge): N stacks off every buff, whatever granted it (Ryan, 8 November: "A stack is a stack, doesn't matter where it came from"); retired with it the purge by source of 28 October (a die entry's stacks gone for good, a store's, a form's or a passive's put to sleep until the player's turn), which he called cryptic. What the unit is, its form or its passive mechanic, is an Ability and no buff, so no purge reaches it (the same day).
-- **Retaliate** (planned): Cut as a buff word on 15 November (Ryan's mark on the vocabulary's table), its rule out of the engine. Kept as a planned draft, never shown, so the Retribution Thurible, back in design the same day ("It can have unique text but not until we sort out our fundamentals"), and two foes' planned moves still read: when the Thurible comes back its rule is its own text, and this entry goes.
+- **Cleanse** (implemented): A Sprite's Cleanse lifts Suppressed too since 26 November (Ryan: "Change the cleanse to remove suppress, I never approved that"), so its line says no more than a Frame's. Cleanse and Purge stay two effects (his the same day: "Keep cleanse and purge seperate, I was confused").
 - **Pinned** (implemented): Ryan, 11 November: "The Flak pin should be its own status that gets applied for one turn. I assume we're going to want a similar one for burning as well." Pinned Flak until 15 November, and what it holds Brittle since; the name is his ("Just \"Pinned.\"").
 - **Seared** (implemented): Ryan, 11 November: coded in beside Brittle's pin, "since the Mastema will want it as a fitted piece, if nothing else". No piece lays it yet. The name is his, 15 November: "Rename 'Seared.'"
 - **Sapped** (implemented): Ryan, 11 November: "I'd like to code in Weaken ... Weaken (debuff): Deals 1 less damage per stack with attacks ... Weaken can apply to both sides, it's not a bad soft CC from the foes to apply"; then "Weaken can change till after it's next turn then, instead of round end. Let's use Sapped." So a foe's Sapped laid in its turn reaches the machine's next attack.
 - **Exposed** (implemented): The id is exposure, since exposed names the formation word (and named an aim of the foes' until 17 November); a machine's is exposure_mech in the engine. The machine's half is Ryan's of 15 November, built 16 November: "all armour of all kinds"; "Exposed does not strip the petrel's resistant shield"; "keep the logic where enemies don't try and overkill. That helps keep it fair. So the whole field targets up until predicted death, then the rest pick intent targets as normal"; "Exposed sets the intents, everything after proceeds as normal"; "Lure wins". A session's reads where his words give none: a countdown's pick carried from the round before holds, and a machine out of reach (Phased as the round ended) draws nothing. Still his: whether a machine that stands Exposed may be marked again; built as no, so the whole field's fire comes every other round at most. The aim content called exposed went on 17 November with every aim of a foe's own. The machine's text is a session's draft, his to write.
-- **Empowered** (implemented): Every grant is one status on the machine and the stacks add up. A halving rule has no duration, so a buff component grants stacks and no rounds. The name is a placeholder. It halves at END TURN since 16 November (Ryan: "Empowered should decay at the end of turn, clearly, not end of round"), so what a machine gains in the enemy's turn it carries whole into its next; at the round's end until then.
+- **Empowered** (implemented): Every grant is one status on the machine and the stacks add up. A halving rule has no duration, so a buff component grants stacks and no rounds. The name is a placeholder. It halves at END TURN since 16 November (Ryan: "Empowered should decay at the end of turn, clearly, not end of round"), so what a machine gains in the enemy's turn it carries whole into its next; at the round's end until then. One term for both sides since 26 November (Ryan: "'Both' empowereds? There should be only one."): the foes' Empowered, the engine's kindled (an add on a foe's attack where a machine's is an add on its attack's damage), reads as this entry (Terms.ALIASES).
 - **Sealed** (implemented): One chip, renewing, never stacking: the armour it grants is tied to the form. The numbers are placeholders.
 - **Changed Over** (implemented): A working name and text, Claude's drafts of 11 November for Ryan to rewrite. One chip for the second battery, none for the first.
 - **Cryo** (implemented): Engine id cryoed, since the keyword holds cryo; the player reads Cryo on both.
@@ -452,11 +480,11 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Primed** (implemented): The third primer since 15 November, beside Charged and Supercooled (Ryan: "give it the same format as cryo ... use a stack on firing"; "Primed - agreed, how many Ablate stacks does each Primed stack apply? Just one, like supercooled?"; one, since Ablate 1 on a gun measures as about the point a Charged stack's Shock does). Until then every blow left a stack of Ablating a stack of Primed, for a buff's rounds on a machine and one move on a foe. A placeholder name.
 - **Jammed** (implemented): Disabled until 15 November (Ryan: "Rename to Jammed"). The engine's own name for an entry switched off, by a jam or by a cooldown, stays disabled.
 - **Corrupted** (implemented): The bite is the status's own number in the engine's table, a placeholder.
-- **Phased** (implemented): Ryan's mark, 15 November: "New effect: "Cannot be damaged or targeted by anything until the end of this round." We remove the awkward act clause, but still ensure that it cannot be buffed or interacted with by allies until it unphases"; "all sources of Phased should say "at the end of this round, grant Phased.""; and his answer: "it's a safe reboot if you can pull it off. All phased granters need to be gated, it should be earned, with the caveat that you have to survive the current round". Engine ids phased and phasing, the wait a source lays, a buff a Purge takes. Its own heat does not burn it (his ruling, 16 November, on a session's read that had the burn land: "it shouldn't take damage from overheating since we don't need the exception. It does accumulate the stacks, though, which it will feel the round after"). Everything it carries ticks (16 November: "Everything ticks during phased. It doesn't take damage but it's a way of waiting out a debuff. That's why my clause of the self-cleanse and self-purge is our way out if it's broken"), so its Ablating fades a stack a turn and takes nothing, and its Regenerating runs. A Volatile bite and a corrupted entry's bite are blocked with the rest ("I think we block the damage as a feature, and see how bad it is once we have real hull cost pieces that matter"). A session's reads of his words: it may spend on itself, and its Lure turns no pick. His spare clause is held until play asks for it ("If that's too strong, I would add "Remove all buffs and debuffs. Cannot gain any buffs or debuffs while Phased.""). A foe's Phased is built since 17 November, on his yes to the bench's row for the Spectre and the Wraith ("Phased on foes can be less strict since it's balanced around their kit and theme"; 16 November: "Phased foes act"): the engine's effect phase, a move of a foe's own or a step of one, the wait landing as the round ends. Less strict in one way, a session's read: its own side still reaches it. Never the last foe standing, never two rounds running. Until 15 November: cannot act, take damage or be targeted until the round's end, granted at once to a machine yet to act. A session's draft, his to write.
+- **Phased** (implemented): Ryan's rule, 19 November: "Phased: Cannot be targeted, damaged, or affected in any way by non-phased units"; wanted "more core than niche". His three readings, 27 November: a status already on a unit is the unit's own, an effect's source being the unit that lands it now; every effect has a unit as its source; the two guards stay (the last foe standing never fades, none is out two rounds running). So only a Phased unit reaches a Phased unit, on both sides, an ally's help included; everything it carries acts on it, its heat burns it and its own entry's costs land. When it is granted is his of 15 November: "all sources of Phased should say "at the end of this round, grant Phased.""; "it's a safe reboot if you can pull it off. All phased granters need to be gated, it should be earned, with the caveat that you have to survive the current round". Engine ids phased and phasing, the wait a source lays, a buff a Purge takes. It may spend on itself (19 November: "I didn't count self targeting as targeting. A technicality"). Retired with the form it replaced (out of reach of both sides): its heat not burning it, its statuses ticking and taking nothing, an entry's bite blocked, his rulings of 16 November. The reactive form, granted at once, is a trial (TRIALS, PHASED); more foes and pieces that phase are proposed first (docs/domain_statuses_proposal.md).
 - **Ablate** (implemented): Engine ids ablating (a foe's) and ablating_mech (a machine's). Ryan's rule, 15 November, in the place of Burning as heat on a machine: "hits shield first, I think. Pretty deadly otherwise. Bypasses armour when damaging hull"; "Tick of ablate ignores barrier yes". A Phased machine takes no point and its stack fades all the same, and a Swallowed one's stacks wait (Ryan, 16 November: "Everything ticks during phased. It doesn't take damage but it's a way of waiting out a debuff"; "Swallowed it's out of play so everything should pause"). The foes' numbers are still the ones sized as heat, his to set. A session's draft, his to write.
 - **Vitriol** (implemented): Only the funnel-web's passive lays it; a keyword that ever carries it shares the word. Whether a tick passes Guarded is the parts' question, as Ablating's is. The word Corroded is kept for a foe's damage over time on machines.
 - **Web Bomb** (implemented): The burst catches the next foe to act beside it in its rank, the one to its left when none stands to its right; on a foe already suppressed it is wasted, and each half feeds the Paradox as the Suppress keyword's does. Named for its piece and its rider no keyword since 15 November (Ryan: "I don't think the rider needs to be listed as a keyword. It's a unique effect, and the debuff can be renamed \"web bomb.\""); the id is the engine's.
-- **Spun Up** (implemented): Spent whole by the next weapon, equipment leaving it: weapon only until balance says otherwise (Ryan, 26 October).
+- **Spun Up** (implemented): Ryan, 26 November: "Spun up needs to go to 1 at base, the 2 was a holdover from larger numbers", and his line "Weapons Gain: Commit: Consume all stacks to gain +1 damage per stack ({N})". Spent whole by the next weapon, equipment leaving it (26 October).
 - **Ricochet** (implemented): Ryan, 12 November: "Ricochet (buff): After firing a weapon, it hits the primary target 1 more time per stack, dealing 1 damage each time and applying all effects other than area keywords"; "I'm leaving what applies in the ricochets open, if applying unique effects N more times is broken, then we dial it back and explicitly say 'keywords' instead of 'effects'"; 11 November: "Lose half stacks of Ricochet on any hull damage". His first thought, a Ricochet on every foe a weapon hits, he dropped with Sweep. Claude's readings, built on his go and his to move: 1 in place of the entry's number and of its reads of the foe, the firer's adds on it; half rounded down at each blow, bite or overheat that takes hull, so a lone stack is lost; no cap; a buff a Purge takes.
 - **Essence** (implemented): Ryan's rework of 12 November, Souls then; Essence his name of 15 November ("Rename souls to Essence"). No cap by his call ("as part of the fantasy"), so it is no store, which is capped and wears a bar: an Ability, a chip with its count. The kill's flare is once a round, as it ends, when an attack of the Ammit's killed in it (Ryan, 16 November: "at the end of a round where the Ammit killed at least one enemy"); once an attack that killed from 12 November until then ("Flaring twice for an AoE is probably wrong, let's make it 'one of more killed' by an attack"), and once for each foe in the first build. The text is a session's draft.
 - **Offhand** (implemented): Ryan, 19 November: "Only its offhand swaps"; "It cycles after a spend"; "remove the manual weapon cycle"; the spends that carry its rider turn it, his answer of the same day. The chip takes its armament's name and line (Beam Rifle, Beam Sword, Beam Shield, and the branches' Saber, Buckler, Bazooka and Pavise), each the passive's or a step's. The text is a session's draft.
@@ -465,7 +493,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Aile Assault** (implemented): Ryan, 19 November: "Aile Booster -> Aile Assaulter: 'Rapid. Next weapon strike gains Indirect reach. Gain 1 Empowered.'"; its name his ("'Aile Assault'"). The text is a session's draft.
 - **Parry** (implemented): Ryan, 19 November: "Parry: 'The first weapon fired next turn gains bonus damage equal to half of all damage blocked by this machine this round (rounded down).'" What is blocked, his answer that day: what a Barrier and armour keep off, never the shield's soak. His of the same day, on the bonus: "Can we change it to 'next strike' instead?" (every strike of the next weapon, his first wording, made a busted area of the rifle that follows the shield), the next strike the spend's first blow by his strike order. Claude's reading: the count runs from the moment it is gained. It pays half the blow a Barrier stops, so a boss's biggest blow pays most, beside his taste of October ("No reward for being struck that scales with the enemy's blows"): his of 19 November, "The duelist is supposed to be a boss-killer, and this is a tier-3 capstone, yes, so it can be powerful". The text is a session's draft.
 - **Essence Flare** (implemented): Ryan, 12 November: "No Empowered decays this round. And I mean none, not ally or enemy." Pinned Empowered until 15 November, a chip on every unit holding Empowered and the round's own rule; then his: "This is not pinned empowered, this is an Ammit specific buff. I would give it to the Ammit only, even though it affects the whole battlefield"; "Grants the no-decay state which is represented as a buff on the Ammit called Essence Flare." That a Purge ends the hold follows from its being a buff.
-- **Shots** (implemented): Kept only for a machine whose rule counts (an nth_shot condition).
+- **Sustained Recoil** (implemented): Ryan, 26 November: "Sustained Recoil (Resource): Max 5 stacks. At 5 stacks, the next weapon hit deals double damage." Every weapon hit, an area's included, adds a stack; the hit that finds five consumes them all. Its bar has five cells, glowing and pulsing whole while full (his: "indicating the next shot is the sixth"). The six-shot count it replaced (shots) is git's.
 - **Brittle** (implemented): Engine ids brittled (a foe's) and brittled_mech (a machine's). Flak on a foe (Wainwright & Sutler's on-hit, 19 October) and Crushed on a machine (the World Eater's pin, 4 November, Monster Hunter's Defense Down by archetype; Ryan: "that inflicts Defense Down in game, something we don't have") until 15 November, folded on Ryan's mark ("We could consider making this one symmetrical and folding it into Flak as well, changing the name so it works on both sides") and his "agreed, brittle". One clock, the halving: a machine's stood whole through the next round until then, so a foe's Brittle 1 was the pack's for the turn it was laid in and gone by the next, and a foe lays 2 at the least since 16 November (Ryan: "Buffs and debuffs that decay at end of round should just have a minimum of 2"; the validator holds a foe's moves to it, and our own pieces are not held to it: "The minimum 2 is different for the player since they can sequence. So I wouldn't make it a blanket rule"). Adds before multiplies and before armour, to a weapon's blow of 0 too (Ryan, 25 October: "Flak and overcharge exist in part to get past armour"), so a Shocked foe carrying Brittle takes blow plus Brittle, doubled. Numbers are placeholders; Brittle beside Empowered at a point a stack each may read too strong, the two read together on the Prairie Dog's rows. A session's draft, his to write. It halves as its carrier's turn starts since 16 November (his four places, Brittle with what ends at a turn's start; at the round's end until then, no blow apart).
 - **Destroyed component** (implemented): No foe carries Destroy yet, so nothing is destroyed in play (Ryan, 15 November: "Only promoted form or superboss-level so we're not tuning the economy around it. No longer a general rule"). The campaign's hangar screen is not built.
 - **Mine** (implemented): Ryan, 9 November: "the lammergeier basically converts all hits to AoE hits, at the cost of a delay until Death". One Mine a spend at a flat 2 ("then look at per hit later if it's weak"); its riders the spend's whole result on the foe ("the mine should take the entire result of the spend, then apply it. So a 3-hit flak that burns 1 per hit if the target is under 50% HP, would result in adding a 2 damage mine with 3 flak, and 0-3 burn"), every hit's stacks as its machine deepened and doubled them and a gated keyword where its gate held ("if a gate is met when fired only, then apply it"); the numbered ones add up and the rest ride once; Chain rides as its arcs (Claude's lean, which he took); in the enemy's turn a Mine's Disrupt does nothing; a Suppress rides as fired, each foe the blast meets judging its own Numbed (Claude's read; Ryan: "Your reads are correct"). A mark the team laid: a Ward turns it away, a foe's cleanse takes it, the Paradox counts it. A foe taken into a merge hands its Mine to the merger.
@@ -497,6 +525,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **At the end of a round it killed in** (implemented): Ryan, 16 November, the Ammit's passive in his words: "At the start of the skirmish, or at the end of a round where the Ammit killed at least one enemy, the Essences Flare, granting 1 Empowered per 5 Essences it holds." A kill is an attack's, as the kill trigger counts it; a machine wrecked in the enemy's turn fires nothing.
 - **On a foe killed** (implemented): Built 12 November for the Ammit's Souls. It fires once for each foe that falls, which is what the trigger is: no effect opts into the count. A foe getting back up, a part and a Bomb's burst are no kill and fire nothing.
 - **On damaging a foe** (implemented): Built for the Skua's rewrite (Ryan, 11 November: "Damaging an enemy grants it a stack of Ricochet (once per turn)"). The stack lands after the spend that earned it, so none of that spend's shots bounce off it. The once-a-round gate is the effect's own (once: round), open to any effect an event fires.
+- **On use** (implemented): Built for the Cassowary's Deadeye II (Ryan, 26 November: "All Components gain: Resolve: Gain 1 Sustained Recoil"). It fires after the use's own reads: the Negentropy Spinner's advance reads the count before its Resolve adds one. A stack it lays on a store stops at the store's cap. Only stack_status runs on it today.
 - **Command die** (planned): Open question: whether the command die exists at all, or one-shots only.
 - **Reward pick** (planned): Built without one (Ryan, 24 October: maybe not warranted at all); decided after the meter is played, with the economy pass.
 - **City ability** (planned): Consider range limits from the gate so the push north leaves support behind.
@@ -530,7 +559,7 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Gated** (implemented): Suppress alone carries a gate today. A working name for Ryan's name pass.
 - **Consumes** (implemented): A mine laid from it eats its arrival's stacks. The equipment's form is the Quintessence Tap's (12 November, the Soul Siphon then), the engine's spends and spends_up_to; its text is a session's draft.
 - **Ablates its firer** (implemented): A working name for Ryan's name pass. It was fuel for a machine that wanted heat while a machine's Burning was heat; since Ablate (15 November) it is a price alone, the component pass's to read.
-- **Ignores armour** (implemented): Ryan, 15 November, with Breach cut on both sides: "I would remove Breach from the player's side. Ignores armour can be an explicitly written out property"; "the player armour piercing pieces should be higher tier, obviously, or gated, I think. Else they become obvious best faces for certain domains". On the Ammit's Soulcutter Talons, the Wild Boar's next weapon after a Barrier, and the Overclocked Railgun, whose tier is the component pass's. A session's draft, his to write.
+- **Ignores Armour** (implemented): Ryan, 15 November, with Breach cut on both sides: "I would remove Breach from the player's side. Ignores armour can be an explicitly written out property"; "the player armour piercing pieces should be higher tier, obviously, or gated, I think. Else they become obvious best faces for certain domains". On the Ammit's Soulcutter Talons, the Wild Boar's next weapon after a Barrier, and the Overclocked Railgun, whose tier is the component pass's. A session's draft, his to write.
 - **Empties the hopper** (implemented): Ryan, 20 November: "Empties the hopper, striking once for every load emptied. Grants no Ore." "Fragmenter is a dead face with no Ore." The numbers are placeholders.
 - **Braces** (implemented): A rule on one carrier, not a keyword, until another piece wants it; the stacks are a placeholder.
 - **Strikes** (implemented): Heat is paid once per use, not per strike.
@@ -545,7 +574,6 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Rebooting** (implemented): The reboot (Ryan, 13 November; folded in 15 November), a state of the machine and no status of the engine's table. A session's draft, his to write.
 - **Enraged** (implemented): The rage's value and the Nob's numbers are placeholders. Permanent for the fight, as built (Ryan, 4 November: "Nob permanent"; Claude's lean, since an elite's job is to make the player change plan). The rage is the foe's own from the start since 8 November: it was a Bellow, the Nob's opening move, so its first round fed nothing (Ryan: "It's not innate? ... That is so unbelievably incorrect").
 - **Golden** (implemented): Monster Hunter's Rajang by archetype, Ryan's read of 4 November (the golden rage "is a mode, not an attack ... a cycle that forces the player into a cycle of attack and defense, broken by a bold player with great timing"). Claude's translation: the window is the decision, shield through its rounds or burst a quarter of its HP through the extra plate to stagger it; the lost action is the bold play's pay, where the swallow's release loses none (the stun row's care; the exit if it reads as a free stun). The add is the move's value and the plate a point; numbers placeholders.
-- **Empowered** (implemented): One clock on both sides since 4 November (Ryan: "we try and make it work. If it's unbalanceable, we go back to separate keywords with different clocks"); the next-move clock of 26 October retired. A rally says 2 at the least since 16 November (Ryan: "Buffs and debuffs that decay at end of round should just have a minimum of 2"): one stack halved to none before its rallier's next blow. His exit, for a move several foes may roll at once: "apply 2 if none, otherwise 1".
 - **Aloft** (implemented): Ryan, 16 November: "I think the stoop can make it untargetable, yes. I don't think I'd call it phased though, it should still take damage from its riders, unlike phased. So it's different, should be a different buff, could be unique to the Roc for now if nothing else has that shape." And 17 November: "I'd say the roc doesn't get splashed while aloft." Content: aloft on a blow that gathers one round. Built on his second ruling as nothing new reaching it at all, with an aim or without, so equipment over every foe passes it by as a blast does and nothing breaks off a climb once it is up; what it carries is its own, a web and a Mine on it included. The name is a working one, his to change.
 - **Appropriated** (implemented): Ryan's mark of 15 November on the steal rider: "Doesn't need to be it's own rider. It grants Jammed on the target, and Gilgamesh gains Appropriated with the value. The ability should be renamed to Collect." Built 16 November as the first move written in steps: a blow that jams, then a step of its own (appropriate). His Ability, a count on his chip that follows what he holds (Ryan, the same day, of the purgeable buff a session had read from "gains": "I think Appropriated is a balance read. Maybe make it his ability, a number that fluctuates depending on what he's currently holding"). The swing is one strike at the piece's number, whatever strikes the piece had, and no keyword of the piece rides it. The steal rider and the foe's own field for what it held left the engine with it. The text is a session's draft.
 - **Swallowed** (implemented): Out of play, so everything it carries pauses (Ryan, 16 November: "Swallowed it's out of play so everything should pause"), where a Phased machine's ticks on: its Ablating, Scorched and Sapped wait, its Empowered and Brittle do not halve, its Regenerating pays nothing, it neither cools nor regenerates, a buff of its own holds nothing on the field (Essence Flare), and every timed status on it, a cooldown and a jam among them, moves a round later for each round's end it sits out: the rounds it sat out never came for it. Let go as its swallow's rounds run out, it is back before that round's end is read, the end it was owed from the round it was taken in; let go sooner, it goes on from where it stood. The swallow's own rounds run. It burns nothing while it is out and burns the turn it is back. A session's reads: an event of its fight still reaches it (a foe felled banks an Ammit's Essence), and a reboot it had begun before it was taken still recovers as the next round opens, the second half of a turn already given. Nothing cleanses it.

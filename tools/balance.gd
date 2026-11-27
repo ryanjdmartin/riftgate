@@ -43,7 +43,8 @@ extends SceneTree
 ## it names, its elites scaled as a battle scales them; 4 November), or "big" for every big fight and
 ## "rank_and_file" for the rest: 22 October, so the planner's gap reads the big fights alone),
 ## --team id,id (repeatable: a row of exactly those machines,
-## any number of them, so pairs and fours can be read beside the trios), --pack foe:n[+foe:n]
+## any number of them, so pairs and fours can be read beside the trios; an id may carry its branch
+## picks after an @ and a tier after a #, nemesis#3 the tier's lift with no pick, 25 November), --pack foe:n[+foe:n]
 ## (repeatable, 26 October: a composed pack beside the spawn lists', one foe type times a
 ## strength or several together, a front and a back in one fight, so the fight-size spectrum
 ## can be read: "goblin:3", "goblin:4+mandragora:2"; its id is "pack:" and the spec), --module id (every row
@@ -415,8 +416,8 @@ func _build_matrix() -> void:
 	for ids in custom_teams:
 		var team_ids: Array = []
 		for id in ids:
-			var cid := str(id).strip_edges()   # a chassis id, with its branch picks after an @ (mole@glacial, macaque@duelist+duelist), as the harness fields them
-			if not db.chassis.has(cid.split("@")[0]):
+			var cid := str(id).strip_edges()   # a chassis id, with its branch picks after an @ (mole@glacial, macaque@duelist+duelist), as the harness fields them, and a tier after a # (_entry)
+			if not db.chassis.has(_entry(cid)["id"]):
 				push_error("--team: no chassis '%s' (chassis: %s)" % [cid, ", ".join(db.chassis.keys())])
 				quit(1)
 				return
@@ -550,10 +551,41 @@ func _build_matrix() -> void:
 func _names(ids: Array) -> Array[String]:
 	var out: Array[String] = []
 	for id in ids:
-		var parts := str(id).split("@")
-		var nm := str(db.chassis[parts[0]].get("name", parts[0]))
-		out.append(nm if parts.size() < 2 else "%s (%s)" % [nm, parts[1].replace("+", ", ")])
+		var e := _entry(str(id))
+		var nm := str(db.chassis[e["id"]].get("name", e["id"]))
+		var notes: Array = (e["picks"] as Array).duplicate()
+		if int(e["tier"]) > 0:
+			notes.append("tier %d" % int(e["tier"]))
+		out.append(nm if notes.is_empty() else "%s (%s)" % [nm, ", ".join(notes)])
 	return out
+
+
+## The pieces a row's branches remake, by the name of their form (the Obliterator's Doom Ray,
+## 25 November), so the pick share names a piece as the battle log does: component id -> name,
+## the row's first machine that remakes it.
+func _forms(r: Dictionary) -> Dictionary:
+	var out := {}
+	for entry in r["chassis"]:
+		var e := _entry(str(entry))
+		if (e["picks"] as Array).is_empty():
+			continue
+		var u := db.make_mech(str(e["id"]), 1, Vector2i.ZERO, null, [], e["picks"], int(e["tier"]))
+		for f in u.die.faces:
+			var cid := str(f.component)
+			var nm := Effects.form_name(u, cid)
+			if not nm.is_empty() and not out.has(cid):
+				out[cid] = nm
+	return out
+
+
+## A team entry read: its chassis id, its branch picks after an @ and its tier after a #
+## (nemesis@breaker, nemesis#3: the machine at tier three, the tier's lift with no pick, so a
+## branch's row reads beside its lift alone; 25 November). Tier 0 is the picks' own.
+static func _entry(entry: String) -> Dictionary:
+	var at_tier := entry.split("#")
+	var parts := at_tier[0].split("@")
+	return {"id": parts[0], "picks": Array(parts[1].split("+", false)) if parts.size() > 1 else [],
+		"tier": int(at_tier[1]) if at_tier.size() > 1 else 0}
 
 
 func _has_pack(pid: String) -> bool:
@@ -574,14 +606,14 @@ func _fight(r: Dictionary, p: Dictionary, k: int, seed_value: int) -> Dictionary
 	var uid := 0
 	for entry in r["chassis"]:
 		uid += 1
-		var parts := str(entry).split("@")   # a chassis id and its branch picks (_names)
-		var cid := parts[0]
-		var picks: Array = Array(parts[1].split("+", false)) if parts.size() > 1 else []
+		var e := _entry(str(entry))   # a chassis id, its branch picks and its tier
+		var cid := str(e["id"])
+		var picks: Array = e["picks"]
 		var fitted := str(r.get("module", ""))
 		var mods: Array = Array(fits.get(cid, [])).duplicate()
 		if not fitted.is_empty():
 			mods.append(fitted)
-		var u := db.make_mech(cid, uid, Vector2i.ZERO, null, mods, picks)
+		var u := db.make_mech(cid, uid, Vector2i.ZERO, null, mods, picks, int(e["tier"]))
 		if not is_equal_approx(damage_scale, 1.0):
 			# The scale rides on every blow as a loadout modifier, the way a number is asked
 			# here, so the bot's outcomes and the resolver read the same thing.
@@ -703,12 +735,12 @@ const RATING_BUDGET := {1: 100.0 / 30.0, 2: 10.0, 3: 5.0, 4: 25.0}   # percent o
 func _rating() -> int:
 	var pool: Array = custom_teams[0] if not custom_teams.is_empty() else RATING_POOL
 	for cid in pool:
-		if not db.chassis.has(str(cid).split("@")[0]):
+		if not db.chassis.has(_entry(str(cid))["id"]):
 			push_error("--team: no chassis '%s'" % str(cid))
 			return 1
 	var four := 0.0
 	for cid in pool:
-		four += float(db.make_mech(str(cid).split("@")[0]).hull_max)
+		four += float(db.make_mech(_entry(str(cid))["id"]).hull_max)
 	four = 4.0 * four / float(maxi(1, pool.size()))
 	var tiers: Array = only_tiers if not only_tiers.is_empty() else [1]
 	var t0 := Time.get_ticks_msec()
@@ -1132,11 +1164,12 @@ func _report(fights: int, secs: float) -> String:
 				total += int(a["spends"][c])
 		var named: Array = []
 		var blanks: Array = []
+		var forms := _forms(r)
 		for c in spends.keys():
 			if not c in ["empty", "destroyed", "disabled"]:
 				var charged := str(c).ends_with(" (charged)")   # a muster's spend (the Swallowtail's), apart
 				var cid := str(c).trim_suffix(" (charged)")
-				named.append([db.component_name(cid) + (" charged" if charged else ""), spends[c], c])
+				named.append([str(forms.get(cid, db.component_name(cid))) + (" charged" if charged else ""), spends[c], c])
 		for c in ["empty", "destroyed", "disabled"]:
 			if spends.has(c):
 				blanks.append([c, spends[c]])

@@ -85,6 +85,10 @@ func load_dir(dir: String) -> void:
 	for m in c.get("makers", []):
 		makers[m["id"]] = m
 	components = _index(_read(dir + "components.json"))
+	# Each component's name for the battle log, which the fight's own code reads by id (Skirmish).
+	Skirmish.piece_names = {}
+	for cid in components.keys():
+		Skirmish.piece_names[str(cid)] = str(components[cid].get("name", str(cid)))
 	modules = _index(_read(dir + "modules.json"))
 	var lf := _read(dir + "loot.json")
 	loot = _index(lf)
@@ -885,9 +889,9 @@ static func boss_tier(t: int) -> Dictionary:
 ## 23 November: "A set form of each formation, for each C. Bosses too ... I'm barely scraping by
 ## some of these fights at C2 with stock units, if they don't scale with me they'll become a joke
 ## at C4"). A first number from a read, never his form, which is a fixed entry a Convergence
-## (docs/tide_proposal.md, section 5): a squad carrying two of tier one's finds a die pays a
+## (docs/briefs/graded_tide.md, section 4): a squad carrying two of tier one's finds a die pays a
 ## leader a third less, and half again the hit points puts the price back, so a fifth a
-## Convergence. A debug build's SETTINGS → TRIALS → LEADERS and RIFTGATE_LEADERS set it
+## Convergence. RIFTGATE_LEADERS sets it, a runner's what-if with no dial
 ## (Settings.field_trial).
 static var leader_step_trial: int = 0
 
@@ -1275,8 +1279,8 @@ func is_part(foe_id: String) -> bool:
 ## "we've either defined the escort or we haven't"; the content tests want every size at every tier), as the
 ## spawn lists did (the ladder's brief, D3), so a domain written for tier one fights at every
 ## tier. Nothing when the faction has none.
-## A composition written for a tide on trial (`tide`: "graded", the graded tide's packs) is dealt
-## by that tide alone: every other reader asks with no `tide` and never meets it.
+## A composition marked `tide`: "graded" is a pack written for the tide's bands (graded_packs):
+## every other reader asks with no `tide` and never meets it.
 func compositions(faction_id: String, tier: int, size: String = "", ramp: int = -1, tide: String = "") -> Array:
 	var out: Array = []
 	var sizes: Array = [size] if not size.is_empty() else COMPOSITION_SIZES
@@ -1285,11 +1289,11 @@ func compositions(faction_id: String, tier: int, size: String = "", ramp: int = 
 	return out
 
 
-## The graded tide's packs for a domain at a tier and a Convergence, a rating (1 to 3) to its
-## compositions in content order: the pushing patrols and formations written for it (`tide`:
-## "graded"), each by the machines it is for; and for a domain with none written, every pushing
-## patrol and formation it has, as built, so the tide runs on any domain. The hunting packs are
-## the caller's (Battle.setup deals them apart).
+## The tide's packs for a domain at a tier and a Convergence, a rating (1 to 3) to its
+## compositions in content order: the pushing patrols and formations written for its bands
+## (`tide`: "graded"), each by the machines it is for; and for a domain with none written yet,
+## every pushing patrol and formation it has, so the tide runs on any domain. The hunting packs
+## are the caller's (Battle.setup deals them apart).
 func graded_packs(faction_id: String, tier: int, ramp: int = -1) -> Dictionary:
 	var out := {}
 	var found: Array = compositions(faction_id, tier, "patrol", ramp, GRADED) + compositions(faction_id, tier, "formation", ramp, GRADED)
@@ -1997,7 +2001,7 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		errs.append("%s: braces is a positive number of stacks of Armoured, an armour point each" % where)
 	# Rolling again on a status (the Nemesis's fists on rage, 12 October to 11 November) and the
 	# spin (the Spin-Up's, 19 October) retired on 12 November: Instant is the roll that may land on
-	# itself, a spin on a stepping die. A heat a blow taken on an entry (the Siphon's, until 12
+	# itself (on a stepping die a step since 26 November). A heat a blow taken on an entry (the Siphon's, until 12
 	# November) and on a passive (the Whip Scorpion's, until 23 November) retired too: the heat a
 	# blow lays on a machine is a passive's gain_heat (the Nemesis's).
 	if fd.has("rolls_again_on"):
@@ -2005,7 +2009,13 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	if fd.has("heat_per_blow"):
 		errs.append("%s: heat_per_blow is retired (23 November): the heat a blow lays on its machine is a passive's gain_heat" % where)
 	if fd.has("spins"):
-		errs.append("%s: spins is retired (12 November): Instant's roll is a spin on a stepping die" % where)
+		errs.append("%s: spins is retired (12 November): Instant is the roll that may land on itself" % where)
+	# The Negentropy Spinner's move (Ryan, 26 November): a buff on a stepping die that moves it by a
+	# store's count, at least 1, in place of its own roll.
+	if fd.has("advances_by"):
+		var st := str(fd["advances_by"])
+		if kind != "buff" or not Effects.STATUS.has(st) or not (Effects.STATUS[st].get("tags", []) as Array).has("store"):
+			errs.append("%s: advances_by names the store whose count moves the die, on a buff" % where)
 	# The cooldown (Ryan, 14 October; counted after the round of the spend since 12 November,
 	# "change the count so 1 is how I intended"): a printed property, the rounds the entry sits
 	# out once spent, a cost the die prints by its clock, so an entry with none leaves it out.
@@ -2027,10 +2037,11 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 	# entry dark for the rest of the round; Instant's roll may land on itself, so an Instant entry
 	# prints a cooldown or pays heat, hull or shield every spend; a piece Instant only while its
 	# machine rages has that machine's heat (the Nemesis's Knuckles of Fury). A piece locked on a stepping die
-	# has the cylinder and its odds for its limiter (the Cassowary's Spin-Up, Ryan, 19 October: a
-	# combo piece, its spin a true roll that lands on itself one time in its die's size, to be spent
-	# again, the high roll he allowed; the exit, a stepping-die piece that ever chains for sure gets a
-	# limiter of its own).
+	# has the cylinder for its limiter (the Cassowary's Negentropy Spinner, Ryan, 26 November: its
+	# move exactly its Sustained Recoil, at least 1, in place of Instant's own): the move never lands
+	# back on it, so only a team reroll brings it round to be spent again (his combo: at five, the
+	# Spinner to the chamber before it, a reroll, the Spinner again, and fire). The exit: a
+	# stepping-die piece that ever chains onto itself for free gets a limiter of its own.
 	if instant and not planned and not stepped and int(fd.get("cooldown", 0)) <= 0 \
 			and int(fd.get("heat", 0)) <= 0 and int(fd.get("volatile", 0)) <= 0 and int(fd.get("shield_cost", 0)) <= 0:
 		errs.append("%s: an Instant entry with no cooldown carries another limiter, heat, Volatile or a shield cost (the bible's Rapid row)" % where)
@@ -2127,13 +2138,13 @@ func _validate_face(where: String, fd: Dictionary, errs: Array[String], planned:
 		# A buff grants one of the machines' statuses (the Changeover grants none: its rule is the
 		# turn of a folded die): it must exist and be theirs. A planned
 		# component may grant a machine status the vocabulary names but the engine lacks (the
-		# Spin-Up's Spun Up, 19 October), as it may carry a planned keyword: spent, it grants
+		# Spin-Up's Spun Up, 19 October, the Negentropy Spinner's since), as it may carry a planned keyword: spent, it grants
 		# nothing until the engine has the status.
 		var st := str(fd.get("status", ""))
 		var drafted_status: bool = planned and vocabulary.has(st) and vocabulary[st].get("status") != "implemented" \
 			and vocabulary[st].get("category") == "status" and str(vocabulary[st].get("design", {}).get("table", {}).get("on", "")) == "machine"
-		if drafted_status:
-			pass
+		if drafted_status or (planned and st.is_empty()):
+			pass   # a planned piece back in design may grant nothing yet (the Retribution Thurible, Retaliate gone on 26 November)
 		elif not Effects.STATUS.has(st):
 			errs.append("%s: a buff needs 'status', one of %s" % [where, ", ".join(Effects.MECH_STATUSES)])
 		elif not Effects.MECH_STATUSES.has(st):
@@ -2312,18 +2323,16 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 			errs.append("%s: side_strike is static: value, what the foe to the right of the target takes with every strike, 1 or more" % where)
 		if effect == "strike_again" and (trig != "static" or int(eff.get("value", 0)) < 1):
 			errs.append("%s: strike_again is static: value, the share of each strike's blow its hit again carries, in percent, 1 or more" % where)
-		# The burrow in a reboot's place (the Mole's, Ryan, 16 November; its numbers his of 24
-		# November): its piece the locked piece its die rolls alone while Burrowed (checked against the
-		# chassis's fixed pieces below), its cap on Momentum, Burrowed's armour, and what each turn under
-		# opens with: shield regained, heat cooled and Momentum gained, flat numbers.
+		# The burrow in a reboot's place (the Mole's, Ryan, 16 November): its piece the locked piece
+		# its die rolls alone while Burrowed (checked against the chassis's fixed pieces below). Its
+		# numbers are the statuses' own (Ryan, 24 November: "Move the effects on the mole's passive to
+		# the status chip"): Burrowed's armour and its turn's shield, cooling and Momentum, Momentum's cap.
 		if effect == "burrow":
 			if trig != "static" or str(eff.get("piece", "")).strip_edges().is_empty():
 				errs.append("%s: burrow is static: piece, the locked piece its die rolls alone while Burrowed" % where)
-			if int(eff.get("cap", 0)) < 1 or int(eff.get("armour", 0)) < 1:
-				errs.append("%s: burrow's cap (Momentum at most) and armour (Burrowed's) are 1 or more" % where)
-			for k in ["shield", "cool", "momentum"]:
-				if int(eff.get(k, -1)) < 0:
-					errs.append("%s: burrow's %s, what each turn under opens with, is 0 or more" % [where, k])
+			for k in ["cap", "armour", "shield", "cool", "momentum"]:
+				if eff.has(k):
+					errs.append("%s: burrow takes no %s since 24 November: the number is Burrowed's or Momentum's own (Effects.STATUS)" % [where, k])
 			for k in ["recover", "blow"]:
 				if eff.has(k):
 					errs.append("%s: burrow takes no %s since 24 November: a turn under opens with flat shield, cool and momentum, and the drill's blow is its status's" % [where, k])
@@ -2445,6 +2454,16 @@ func _validate_passive(where: String, p, errs: Array[String], one_off: bool = fa
 		# The Honey Badger's Ore Hopper (20 November): the Ore a foe damaged puts in and the most the
 		# hopper holds, a raise of that most, and what the Ore is worth: value at `at` held, and
 		# `past` more for each Ore past it.
+		# The store a machine's weapon hits charge (the Cassowary's Sustained Recoil, 26 November): a
+		# store's id, its most, and what the hit that finds it full multiplies its damage by.
+		if effect == "hit_charge":
+			var st := str(eff.get("value", ""))
+			if not Effects.STATUS.has(st) or not (Effects.STATUS[st].get("tags", []) as Array).has("store") or int(eff.get("cap", 0)) < 1 or float(eff.get("times", 2)) <= 1.0:
+				errs.append("%s: hit_charge names a store (value), its most (cap, 1 or more) and the multiply of the hit that finds it full (times, more than 1)" % where)
+		if effect == "restore_on_kill" and not Effects.STATUS.has(str(eff.get("value", ""))):
+			errs.append("%s: restore_on_kill names the status a killing weapon use keeps" % where)
+		if str(eff.get("when", "")) == "self_status" and not Effects.STATUS.has(str(eff.get("status", ""))):
+			errs.append("%s: self_status names a status its machine carries (status), at least stacks of it" % where)
 		if effect == "fill_hopper" and (int(eff.get("value", 0)) < 1 or int(eff.get("cap", 0)) < 1):
 			errs.append("%s: fill_hopper needs value (the Ore a foe damaged puts in, positive) and cap (the most the hopper holds, positive)" % where)
 		if effect == "hopper_max" and int(eff.get("value", 0)) < 1:
@@ -3629,7 +3648,7 @@ func _validate_factions(errs: Array[String]) -> void:
 			if c.has("pace") and not ((c["pace"] is float or c["pace"] is int) and int(c["pace"]) >= 1 and int(c["pace"]) <= 6 and float(c["pace"]) == floor(float(c["pace"]))):
 				errs.append("%s: pace is the hexes its pack walks a turn, 1 to 6 (absent: its slowest member's)" % cw)
 			if c.has("tide") and str(c["tide"]) != GRADED:
-				errs.append("%s: tide is '%s', the tide on trial it is written for (absent: the game's)" % [cw, GRADED])
+				errs.append("%s: tide is '%s', the mark of a pack written for the tide's bands (absent: a patrol or a formation as it stands)" % [cw, GRADED])
 			if c.has("hunts"):
 				# Whether its pack hunts, and whom (Ryan, 8 November: "The composition should say if
 				# it hunts, not the units"); an escort walks with its boss, which never hunts.

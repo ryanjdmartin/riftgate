@@ -49,7 +49,8 @@ FOE_EFFECTS_ON_FOES = {"brace": "braced", "brace_all": "braced", "brace_beside":
 # A special that is a rider's own mechanic, played as a whole move, counts under the rider.
 MOVE_AS_KEYWORD = {"ablate": "ablate", "jam": "jam", "scorch_all": "scorch", "corrupt_all": "corrupt", "swallow": "swallow", "merge": "merge", "dispel": "dispel", "golden": "golden_rage"}
 VIA_STATUS = {"primed": [("ablating", "foe")], "paradox": [("suppressed", "foe"), ("numbed", "foe")]}
-ENGINE_ALIASES = {"ablating_mech": "ablating", "brittled_mech": "brittled", "exposure_mech": "exposure",   # the same word on the other body
+ENGINE_ALIASES = {"kindled": "overcharged",   # the foes' Empowered, one term with the machines' (26 November)
+                  "ablating_mech": "ablating", "brittled_mech": "brittled", "exposure_mech": "exposure",   # the same word on the other body
                   "phasing": "phased",   # the wait for Phased, which is granted as the round ends (15 November)
                   "swallowing": "swallowed",   # the wait for Swallowed, which lands as the round ends (22 November)
                   "parry_strike": "parry"}   # the Parry's return, next turn's first weapon's add, under the same name (19 November)
@@ -65,7 +66,7 @@ PRINTED = [("strikes", "Strikes", lambda f: int(f.get("strikes", 1)) > 1),
            ("gated", "Gated", lambda f: bool(f.get("gates"))),
            ("consumes", "Consumes", lambda f: bool(f.get("consumes")) or bool(f.get("spends"))),   # a weapon's on its target, or equipment's of its own machine's count (the Quintessence Tap)
            ("self_ablate", "Ablates its firer", lambda f: int(f.get("self_ablate", 0) or 0) > 0),
-           ("ignores_armour", "Ignores armour", lambda f: bool(f.get("ignores_armour"))),
+           ("ignores_armour", "Ignores Armour", lambda f: bool(f.get("ignores_armour"))),
            ("hopper_property", "The hopper", lambda f: bool(f.get("empties_hopper"))),
            ("brace_property", "Braces", lambda f: int(f.get("braces", 0)) > 0),
            ("swap", "Swap", lambda f: bool(f.get("swaps"))),
@@ -113,6 +114,7 @@ class Tally:
         self.keywords = {}   # keyword -> {unlocked, locked, passive, foe, moves: [n, planned], foes: set}
 
     def grant(self, status, on, name, how, planned=False, foe=None, who=None):
+        status = ENGINE_ALIASES.get(status, status)   # an engine id under its term's row (the foes' Empowered)
         self.sources.setdefault(status, []).append(
             {"name": name, "how": how, "on": on, "planned": planned, "foe": foe, "who": who or name})
 
@@ -178,12 +180,10 @@ def tally(words):
 
     def passive(p, label, how, who):
         planned = (p or {}).get("status", "implemented") != "implemented"
-        counted = False
         for eff in ((p or {}).get("effects") or []):
             e = eff.get("effect")
-            if eff.get("when") == "nth_shot" and not counted:   # a rule on every n-th shot keeps the count
-                t.grant("shots", "machine", label, how, planned, who=who)
-                counted = True
+            if e == "hit_charge":   # the store a weapon's hits charge (the Cassowary's Sustained Recoil)
+                t.grant(str(eff.get("value")), "machine", label, how, planned, who=who)
             if e == "grant_keyword":
                 t.count(str(eff.get("value")), "passive", planned)
             elif e == "stack_status":

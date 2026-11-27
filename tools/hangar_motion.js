@@ -672,16 +672,17 @@ class Rig {
       if (!c || !Array.isArray(c.parts) || !c.parts.length) continue;
       const off = c.off ?? -0.85;
       this.countDisplays.push({source: c.source || "", parts: c.parts.map(p => this.litMaterials(p).map(m => [m, m.emissiveIntensity])),
-        on: c.on ?? 1.5, off, flare: c.flare ?? 0, n: -1, k: c.parts.map(() => off)});
+        on: c.on ?? 1.5, off, flare: c.flare ?? 0, ahead: c.ahead ?? 0, n: -1, k: c.parts.map(() => off)});
     }
     this.lightCounts();
   }
-  // MechRig.show_counts: the first n parts lit, the rest dark; a number that falls flares them all and lets them go dark.
+  // MechRig.show_counts: the first n parts lit and the display's `ahead` more (the Cassowary's capacitor's one, for the hit to
+  // come), the rest dark; a number that falls flares them all and lets them go dark.
   showCounts(values) {
     let changed = false;
     for (const d of this.countDisplays) {
       if (!(d.source in values)) continue;
-      const size = d.parts.length, n = clamp(Math.round(values[d.source]), 0, size), was = d.n;
+      const size = d.parts.length, n = clamp(Math.round(values[d.source]) + d.ahead, 0, size), was = d.n;
       if (n === was) continue;
       if (was < 0) d.k = d.k.map((_, i) => i < n ? d.on : d.off);
       else if (n < was && d.flare > 0) d.k = d.k.map(() => d.flare);
@@ -1435,7 +1436,7 @@ class Rig {
       if (this.countDebugT >= COUNT_DEBUG_PERIOD) {
         this.countDebugT -= COUNT_DEBUG_PERIOD;
         const up = {};
-        for (const d of this.countDisplays) up[d.source] = (Math.max(0, d.n) + 1) % (d.parts.length + 1);
+        for (const d of this.countDisplays) up[d.source] = (Math.max(0, d.n) + 1) % (d.parts.length + 1) - d.ahead;   // a part more lit, counted in parts
         this.showCounts(up);
       }
       this.countsStep(delta);

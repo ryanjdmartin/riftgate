@@ -104,6 +104,10 @@ var _act_debug_at := 0.0
 ## heat maximum, so it rages every turn: its flurry of Instant Knuckles and the reboot its Rage
 ## ends in are judged running.
 static var RAGE_DEBUG := OS.get_environment("RIFTGATE_RAGE_DEBUG") == "1"
+## A debug switch (RIFTGATE_RECOIL_DEBUG=1): every store whose bar glows while full is shown full, so
+## the Cassowary's Sustained Recoil glows and pulses all the time, to judge running (Ryan, 26
+## November: "When all are filled, the whole bar should glow and pulse").
+static var RECOIL_DEBUG := OS.get_environment("RIFTGATE_RECOIL_DEBUG") == "1"
 ## RIFTGATE_BREAK_DEBUG=1 draws a break point at three quarters of every foe's HP (the swallow's
 ## release, the golden rage's break), to judge the notch on a phone.
 static var BREAK_DEBUG := OS.get_environment("RIFTGATE_BREAK_DEBUG") == "1"
@@ -1112,7 +1116,7 @@ func _refresh(save: bool = true) -> void:
 	var support: Array[Skirmish.MechState] = []   # the machines a dragged shield, vent or buff may land on
 	var seconds: Array = []   # a pending Swap's second targets: foes and empty slots (Vector2i)
 	if not _pending.is_empty():
-		seconds = sk.swap_targets(_pending["primary"], sk.swap_carries(sk.mechs[int(_pending["mech"])]))
+		seconds = _swap_seconds()
 		for x in seconds:
 			if x is Foe:
 				targets.append(x)
@@ -1261,9 +1265,6 @@ func _refresh(save: bool = true) -> void:
 		if not SEAL_DEBUG:
 			v.shell = ms.alive() and Effects.is_sealed(ms.unit)   # the sealed form's shell (the Polar Bear's, 2 November)
 		v.away = Skirmish.is_swallowed(ms)   # a foe's swallow (30 October): out of the fight, a ghost of itself
-		# The sixth shot's count as pips under the heat bar (Ryan, 19 October: the best spot).
-		var every := Effects.counts_shots(ms.unit)
-		v.pips = [Effects.stacks_of(ms.unit, "shots"), every] if every > 0 else []
 		# A capped store as a bar under the heat (Ryan, 21 and 22 October: every store a bar;
 		# 10 November: in the heat bar's shape, a segment a stack up to its cap), in its chip's
 		# colour and place.
@@ -1272,7 +1273,8 @@ func _refresh(save: bool = true) -> void:
 			var cap := Effects.store_cap(ms.unit, str(id)) if (Effects.STATUS[id].get("tags", []) as Array).has("store") else 0
 			if cap <= 0:
 				continue
-			v.store = [Effects.banked(ms.unit, str(id)), cap, _chip_colour(str(id)), status_glyph(str(id))]
+			var glows := bool(Effects.STATUS[id].get("glows_full", false))
+			v.store = [cap if glows and RECOIL_DEBUG else Effects.banked(ms.unit, str(id)), cap, _chip_colour(str(id)), status_glyph(str(id)), glows]
 			break
 		v.highlight = support.has(ms)
 		v.statuses = []
@@ -1512,8 +1514,10 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	# Aloft (the Roc while its Stoop gathers, 16 November): no die may be dropped on it, so it is
 	# drawn as what is out of the fight is, a faint ghost under a dashed edge, and higher over its
 	# shadow. A first cut, to judge running (RIFTGATE_ALOFT_DEBUG=1 holds every foe so). A Phased
-	# foe (17 November) is out of reach the same way and drawn the same, where it stands.
-	v.away = Skirmish.out_of_reach(foe) or ALOFT_DEBUG
+	# foe (17 November) is drawn the same, where it stands, while it is out of reach: the fight
+	# says for whom (Skirmish.out_of_reach), the machine whose die is in hand, or a machine that
+	# is not Phased when none is. So a Phased machine's die lifted shows it solid, a target.
+	v.away = Skirmish.out_of_reach(foe, _die_in_hand()) or ALOFT_DEBUG
 	if Effects.has(foe, "aloft") or ALOFT_DEBUG:
 		v.hover = maxf(v.hover, WINGED_LIFT) + ALOFT_LIFT
 	v.breathe = true
@@ -1798,8 +1802,8 @@ func _foe_rows(foe: Foe) -> Array:
 		# chip beside its countdown says why the foe is no target; a Purge that reaches it takes it.
 		rows.append(status_row("aloft", _foe_glyph("aloft"), "", str(Effects.STATUS["aloft"]["name"]), _foe_chip_colour("aloft")))
 	if Skirmish.foe_phased(foe):
-		# A foe's Phased (17 November): out of the team's reach until the round's end, on the
-		# chip a Phased machine wears.
+		# A foe's Phased (17 November): in a Phased machine's reach alone until the round's
+		# end, on the chip a Phased machine wears.
 		rows.append(status_row("phased", status_glyph("phased"), "", str(Effects.STATUS["phased"]["name"]), _foe_chip_colour("phased")))
 	if foe.committed:
 		# An announced follow-up (2 November): committed, so no Disrupt turns it; a Suppress still takes
@@ -2115,8 +2119,8 @@ func _mech_rows(i: int) -> Array:
 		var id := str(d[5])
 		if int(d[3]) < Effects.SKIRMISH and not Effects.is_status(id):
 			continue
-		if id == "shots" or id == "muster" or id == "offhand" or _store_bar(ms, id):
-			continue   # the offhand's form rides its die's entries, never a chip on the machine (Ryan, 22 November);  a count shows as pips under the heat bar (the Cassowary's sixth shot), a capped store as its bar, and the gate by the Rapid it grants, never a chip
+		if id == "muster" or id == "offhand" or _store_bar(ms, id):
+			continue   # the offhand's form rides its die's entries, never a chip on the machine (Ryan, 22 November); a capped store shows as its bar, and the gate by the Rapid it grants, never a chip
 		if not first.has(id):
 			order.append(id)
 			first[id] = d
@@ -2182,7 +2186,7 @@ func _mech_rows(i: int) -> Array:
 		# chips should appear as pulsing opacity versions"), beside the skull when the round wrecks
 		# it (one may be the cause: an Ablating it lit on itself), the counts and stores that are no
 		# chip left out.
-		var skip: Array = ["shots", "muster"]
+		var skip: Array = ["muster"]
 		for id in fc.get("coming", {}).keys():
 			if _store_bar(ms, id):
 				skip.append(id)
@@ -2222,11 +2226,12 @@ func _refresh_arrows() -> void:
 			continue
 		if _turns.has(foe):
 			continue   # its arrow is the lure preview's, below
-		# A blow at every machine (`all`) draws an arrow to each live machine.
+		# A blow at every machine (`all`) draws an arrow to each live machine it reaches: none
+		# to a Phased one from a foe that is not Phased (Foe.intent_on).
 		var targets: Array[int] = []
 		if foe.reaches_every_machine():
 			for i in range(sk.mechs.size()):
-				if sk.mechs[i].alive():
+				if sk.mechs[i].alive() and Skirmish.reaches(foe, sk.mechs[i]):
 					targets.append(i)
 		else:
 			var target_index := sk.mechs.find(foe.target)
@@ -2423,13 +2428,13 @@ func _show_die(i: int) -> bool:
 		var returned := _parry_of(ms, sf) if not ms.assigned else 0
 		if returned > 0:
 			extra.append(EntryReadout.parry_line(returned))
-		# A burrower's drill (the Mole's): the form it lays, the turns its machine's Momentum keeps it
-		# in (its drain a turn), and what each of them does, by the drill's mark with the Momentum.
+		# A burrower's drill (the Mole's): the form it lays and the turns its machine's Momentum keeps
+		# it in (its drain a turn), by the drill's mark with the Momentum.
 		if not ms.assigned and sf.component != "" and sf.component == str(Effects.burrow_rule(ms.unit).get("piece", "")):
 			var tick := Effects.momentum_of(ms.unit, sf)
 			var have := Effects.stacks_of(ms.unit, "momentum")
 			var turns := maxi(1, ceili(float(have) / float(maxi(1, int(tick["drain"])))))
-			extra.append(EntryReadout.drill_line(str(tick["status"]), have, turns, int(tick["blow"]), tick["lays"]))
+			extra.append(EntryReadout.drill_line(str(tick["status"]), have, turns))
 		# The shield its zap pays for a weapon (the Buzzard's), by the same box.
 		var zap := _zap_cost(ms, sf) if not ms.assigned else 0
 		if zap > 0:
@@ -2924,6 +2929,22 @@ func _pin_aim() -> void:
 		_aim_at(fv.get_global_transform() * fv.drawing_rect().get_center(), true, true)
 
 
+## The machine whose die is in hand, dragged or waiting on a Swap's second target; null with
+## none. What the foes' views show as out of reach is read for it.
+func _die_in_hand() -> Skirmish.MechState:
+	var i: int = _drag_from if _drag_from >= 0 else int(_pending.get("mech", -1))
+	return sk.mechs[i] if i >= 0 and i < sk.mechs.size() else null
+
+
+## The second targets the Swap that waits may take, as the fight lists them for its machine
+## (Skirmish.swap_targets: the foes that machine reaches, and the empty slots).
+func _swap_seconds() -> Array:
+	if _pending.is_empty():
+		return []
+	var m: Skirmish.MechState = sk.mechs[int(_pending["mech"])]
+	return sk.swap_targets(_pending["primary"], sk.swap_carries(m), m)
+
+
 ## A tap on a slot while a Swap waits for its second target: the foe there, or the empty slot,
 ## if it is one the Swap may take. Any other tap leaves the Swap waiting.
 func _on_slot_tapped(rank: int, col: int) -> void:
@@ -2931,7 +2952,7 @@ func _on_slot_tapped(rank: int, col: int) -> void:
 		return
 	var foe := sk.foe_at(rank, col)
 	var second = foe if foe != null else Vector2i(rank, col)
-	if not sk.swap_targets(_pending["primary"], sk.swap_carries(sk.mechs[int(_pending["mech"])])).has(second):
+	if not _swap_seconds().has(second):
 		return
 	var i: int = _pending["mech"]
 	var primary: Foe = _pending["primary"]
@@ -2944,7 +2965,7 @@ func _on_slot_tapped(rank: int, col: int) -> void:
 ## A tap on a twin slot's right-hand half while a Swap waits for its second target.
 func _on_twin_tapped(rank: int, col: int) -> void:
 	var twin: Foe = sk.twins.get(Vector2i(rank, col), null)
-	if _pending.is_empty() or twin == null or not sk.swap_targets(_pending["primary"]).has(twin):
+	if _pending.is_empty() or twin == null or not _swap_seconds().has(twin):
 		return
 	var i: int = _pending["mech"]
 	var primary: Foe = _pending["primary"]

@@ -314,16 +314,16 @@ func _apply_pose() -> void:
 			# Every machine's own resource row part filled, to judge the rows beside the heat bar
 			# (10 November; RIFTGATE_TEAM=badger,nemesis,cassowary,swallowtail, then musk_ox): the
 			# Honey Badger's hopper at three loads of four, the
-			# Cassowary's count two short of its shot, the Swallowtail's Muster a charge and a
+			# Cassowary's Sustained Recoil full, the Swallowtail's Muster a charge and a
 			# half, the Musk Ox's magazine two down, and each machine a little hot.
 			for ms in s.sk.mechs:
 				var u: Unit = ms.unit
 				ms.heat = maxi(ms.heat, int(u.heat_max * 0.4))
 				if Effects.store_cap(u, "hopper") > 0:
 					Effects.add_loads(u, 3)
-				var every := Effects.counts_shots(u)
-				if every > 2:
-					Effects.stack(u, Effects.STATUS["shots"], Effects.SKIRMISH, "mech", every - 2, Effects.DECAY_NONE)
+				var charge := Effects.hit_charge(u)
+				if not charge.is_empty():
+					Effects.stack(u, Effects.STATUS[str(charge["status"])], Effects.SKIRMISH, "mech", int(charge["cap"]), Effects.DECAY_NONE)
 				var rule := Effects.muster_rule(u)
 				if not rule.is_empty():
 					Effects.stack(u, Effects.STATUS["muster"], Effects.SKIRMISH, "mech", int(int(rule.get("value", 30)) * 1.5), Effects.DECAY_NONE)

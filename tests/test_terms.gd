@@ -254,8 +254,13 @@ func test_every_tip_keeps_the_standards_shape() -> void:
 	var db := ContentDB.load_default()
 	var gone := RegEx.new()
 	gone.compile("(?i)\\b(foes?|foe's|machines?|machine's|enemy|enemies|blows?|strikes?|struck|falls|fell|felled)\\b")
+	# Damage lands three ways, each its verb (Ryan, 24 November: "I like hit for N, suffer N damage,
+	# and lose N hull as the format examples that we want"): "take N damage" says none of them.
+	var took := RegEx.new()
+	took.compile("(?i)\\b(takes?|deals?) (\\d+|\\{N\\}) (hull )?damage\\b")
 	var labels := ["Turn Start", "Turn End", "Round End", "Commit", "On Hit", "When Hit", "After Hit", "After Being Hit", "Resolve",
-		"When defeated", "On Reboot", "Shield Broken", "Hull Damaged", "Skirmish Start", "On Suppressed"]
+		"When defeated", "On Reboot", "Shield Broken", "Hull Damaged", "Skirmish Start", "On Suppressed", "On Burrowed",
+		"Hit By Weapon", "Hit"]
 	var shown := 0
 	for kind in PauseMenu.GLOSSARY:
 		for id in db.vocabulary.keys():
@@ -267,6 +272,8 @@ func test_every_tip_keeps_the_standards_shape() -> void:
 			assert_false(tip.contains(";"), "%s: no semicolon (%s)" % [id, tip])
 			var m := gone.search(tip)
 			assert_true(m == null, "%s: says '%s', a word the standard retired" % [id, m.get_string() if m != null else ""])
+			var t := took.search(tip)
+			assert_true(t == null, "%s: says '%s': a hit is 'hit for N', the rest 'suffer N damage' or 'lose N Hull' (the standard's rule 39)" % [id, t.get_string() if t != null else ""])
 			# A status that never stacks is consumed or removed, never reduced (Ryan, 24 November:
 			# "non-stacking statuses shouldn't say 'reduce to 0,' they can just say 'Consumed' or
 			# 'Removed' just like Shock"): one that renews, counts nothing and keeps no timer.
@@ -275,7 +282,17 @@ func test_every_tip_keeps_the_standards_shape() -> void:
 				var d: Dictionary = Effects.STATUS.get(sid, {})
 				if not d.is_empty() and Effects.status_stacking(d) == "renew" and not Effects.is_timer(sid) and not Effects.is_counted(sid):
 					assert_false(tip.to_lower().contains("stacks"), "%s never stacks: its tip says Consumed or Removed (%s)" % [id, tip])
-			for line in tip.split("\n"):
+			# A grant is a block (Ryan, 26 November: "I want the block of things applied to the weapon or
+			# whatever to be visually blocked"): an indented line hangs under an "X Gain:" line or another
+			# of its block, and "On Hit" is gone with the block's bare events.
+			var in_block := false
+			for raw in tip.split("\n"):
+				var line := raw.strip_edges(true, false)
+				if raw.begins_with(EntryReadout.BLOCK_MARK):
+					assert_true(in_block, "%s: an indented line hangs under an \"X Gain:\" line: %s" % [id, tip])
+				else:
+					in_block = line.ends_with("Gain:") or line.ends_with("Gains:")
+				assert_false(line.begins_with("On Hit:") or line.begins_with("On Weapon Hit:"), "%s: a grant's hit is \"Hit:\" in its block, a component's own too (rule 41): %s" % [id, line])
 				if str(kind[0]) == "status" and line.contains("{N}"):
 					assert_true(line.contains("per stack ({N})"), "%s: a status's {N} follows a per-stack amount: %s" % [id, line])
 				for label in labels:
@@ -283,3 +300,17 @@ func test_every_tip_keeps_the_standards_shape() -> void:
 						var rest: String = line.substr(label.length() + 2)
 						assert_true(not rest.is_empty() and rest[0] == rest[0].to_upper(), "%s: a capital after %s: %s" % [id, label, line])
 	assert_true(shown > 100, "every tip read: %d" % shown)
+
+
+## A grant's block draws in from its "X Gain:" line, beside one bar (Ryan, 26 November: "I want the
+## block of things applied to the weapon or whatever to be visually blocked").
+func test_a_grants_block_draws_indented_beside_a_bar() -> void:
+	var lines := [EntryReadout.prose_line("Weapons Gain:"), EntryReadout.prose_line("  Hit: +2 damage dealt per stack (3)."),
+		EntryReadout.prose_line("  Resolve: Reduce stacks to 0."), EntryReadout.prose_line("Turn End: Removed.")]
+	assert_true(bool(lines[1].get("block", false)) and str(lines[1]["text"]).begins_with("Hit:"), "an indented line is the block's, its spaces off its words")
+	assert_false(bool(lines[0].get("block", false)) or bool(lines[3].get("block", false)), "the lines around it are not")
+	var r := EntryReadout.new()
+	r.set_lines(lines, 400.0)
+	assert_eq(r._blocks.size(), 2, "a bar beside each of the block's lines")
+	assert_true((r._blocks[1] as Rect2).position.y <= (r._blocks[0] as Rect2).end.y + 0.5, "the second joined to the first: one bar down the block")
+	r.free()

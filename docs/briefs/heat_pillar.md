@@ -6,7 +6,7 @@ What a session on heat starts from: Ryan's frame, his calls on what an overheat 
 the questions the reboot left open. The reboot is heat's rule. **Read first**:
 `docs/rules.md` (Heat, The reboot); the bible's triangle row (section 2) and its reboot and
 heat rows (section 5); `docs/briefs/refit_pass.md`, section 22, for his rulings;
-`docs/briefs/numbers_pass.md` for the prices and the dials. This brief's long form stood on a
+`docs/briefs/numbers_pass.md` for the prices. This brief's long form stood on a
 chassis's own cooling and an overheat that burnt once. Its rules as built, its measures,
 Claude's bench and its reads to run are in git: `git show
 084500a7:docs/briefs/heat_pillar.md`.
@@ -62,8 +62,6 @@ Each has its home; this list points there.
 - Whether equipment carries a price in heat: his "every component having a price" against
   the cool play that a buff at no heat and a debuff device at one or two make of it (the
   bible's triangle row).
-- The vanilla's heat and what a point past the maximum burns: the HEAT and OVERHEAT dials,
-  his to play (the numbers brief, section 2).
 - The gauges, 12 or 14 on every chassis but the Musk Ox, which nothing has moved since the
   prices rose (the bible's triangle row).
 - Heat between fights: none today (Ryan, 4 November, against heat as a battle resource: the

@@ -52,19 +52,18 @@ func _wreck(b: Battle, u: Unit) -> void:
 	b.field.wrecks.append(u)
 
 
-## A field the gate outlasts after a wipe: its boss and one patrol, the rest gone. The horde's six
-## unopposed turns then wound the gate and leave it standing whatever a formation strikes for
-## (the strike follows the threat rating since 10 November, and with the packs walking straight
-## to the wall a formation and two patrols take a city's whole gate in those six turns).
+## A field the gate outlasts after a wipe: its boss and one pack, the lightest the opening stood
+## (the first of them), the rest gone. The horde's six unopposed turns then wound the gate and
+## leave it standing, where the whole opening takes a city's whole gate in those six turns (the
+## strike follows the threat rating, and every pack walks straight to its stretch of wall).
 func _thin(b: Battle) -> void:
-	var kept := false
+	var keep: Unit = null
 	for sq in b.field.packs():
-		if sq.is_boss:
-			continue
-		if sq.composition_size == "patrol" and not kept:
-			kept = true
-			continue
-		b.field.units.erase(sq)
+		if not sq.is_boss and (keep == null or sq.squad < keep.squad):
+			keep = sq
+	for sq in b.field.packs():
+		if not sq.is_boss and sq != keep:
+			b.field.units.erase(sq)
 
 
 func _destroy(u: Unit, idx: int) -> void:
@@ -120,11 +119,14 @@ func test_the_tender_offers_one_tier_one_machine_from_each_city_maker() -> void:
 
 ## The mechanics audit (25 October): the tender drew on the run's own stream, so the runner's
 ## random pick of three reread Minerva's offer and the Polar Bear started every run it was
-## offered. On a stream of its own, an offered machine sits a run out as often as any other.
+## offered. On a stream of its own, an offered machine sits a run out as often as any other. Read
+## over 200 seeds: three picked of four makers' offers, a maker's slot sits out a quarter of the
+## runs, and a maker of four tier ones (Wainwright & Sutler's since 26 November) offers each a
+## quarter of them, so 60 seeds left a machine offered a dozen times and never sat out.
 func test_the_runners_pick_never_rereads_the_offer() -> void:
 	var db := ContentDB.load_default()
 	var sat_out := {}
-	for seed_value in range(1, 61):
+	for seed_value in range(1, 201):
 		var offered := Campaign.tender(db, seed_value)
 		var c := Campaign.new(seed_value)
 		var started := {}
@@ -464,7 +466,7 @@ func test_a_wipe_lets_the_horde_strike_and_the_city_holds_wounded() -> void:
 	var front := str(c.fronts()[0])
 	var b := _battle(c)
 	quiet_start(b)
-	_thin(b)   # one patrol left to walk on the wall, so the wipe's strikes wound the gate and leave it standing
+	_thin(b)   # one pack left to walk on the wall, so the wipe's strikes wound the gate and leave it standing
 	for u in b.mechs():
 		_wreck(b, u)
 	b.foes_killed = 4
@@ -639,33 +641,63 @@ func test_a_rift_keeps_the_tier_it_opened_at_and_the_battle_reads_the_ramp() -> 
 	assert_eq(int(back.cities[late].rift.get("tier", -1)), 1, "the rift's tier rides in the save")
 
 
-func test_a_guests_spawns_join_the_rifts_cycle() -> void:
+## A guest's packs join the tide's lists (bible section 3: one lead and at most one guest a
+## battle): every pushing pack of the guest's that the ramp's gate holds stands in the list of its
+## rating in turn with the lead's, the lead's first, and its hunting patrols among the hunting
+## packs, as the two domains' patrols come in turn; the opening stands what the lists deal in
+## turn, never more packs for the guest; and a guest's pack the tide sends wears the guest's
+## faction.
+func test_a_guests_packs_join_the_tides_lists() -> void:
 	var db := ContentDB.load_default()
 	var facs: Array = db.factions.keys()
+	var lead := str(facs[0])
+	var guest := str(facs[1])
+	var team := func() -> Array: return [db.make_mech(str(db.default_team()[0]))]
 	var b := Battle.new(3)
-	b.guest = str(facs[1])
-	b.setup([db.make_mech(str(db.default_team()[0]))], str(facs[0]))
-	var guest_comps := 0
-	for c in b.field.cycle:
-		if str(c["faction"]) == str(facs[1]):
-			guest_comps += 1
-	assert_eq(guest_comps, db.compositions(str(facs[1]), 1, "formation", b.ramp).size() + db.compositions(str(facs[1]), 1, "patrol", b.ramp).size(), "every guest formation and patrol the ramp's gate holds is in the cycle")
-	var on_field := 0
-	var guests_on_field := 0
-	for u in b.field.packs():
-		if not u.is_boss:
-			on_field += 1
-			if u.faction == str(facs[1]):
-				guests_on_field += 1
-	assert_eq(on_field, Ramp.formations_at(0) + Ramp.patrols_at(0), "the ramp's count: a guest never doubles the field")
-	assert_eq(guests_on_field, Ramp.formations_at(0) / 2 + Ramp.patrols_at(0) / 2, "the lead's and the guest's in turn on the field, the lead's first")
-	# A guest composition the rift sends wears its own faction.
-	b.field.rift_pressure = b.field.rift_pressure_max - 1
-	b.field._cycle_index = 2   # the lead's formation, its patrol, then the guest's formation
-	b.field.tick_pressure(1)
-	var spawned: Unit = b.field.packs()[b.field.packs().size() - 1]
-	assert_eq(spawned.faction, str(facs[1]), "the guest's pack is the guest's")
-	assert_eq(spawned.composition_size, "formation", "its formation")
+	b.guest = guest
+	b.setup(team.call(), lead)
+	var f := b.field
+	var mine := tide_packs(db, lead, 1, b.ramp)
+	var theirs := tide_packs(db, guest, 1, b.ramp)
+	assert_false(theirs.is_empty(), "the guest has packs that push at the first tier")
+	var ratings: Array = f.graded.keys()
+	ratings.sort()
+	var both: Array = (mine.keys() + theirs.keys().filter(func(r) -> bool: return not mine.has(r)))
+	both.sort()
+	assert_eq(ratings, both, "a list for every rating either domain has a pack for")
+	var by_id := {}   # composition id -> its faction, for the packs below
+	for r in ratings:
+		var ids: Array = (f.graded[r] as Array).map(func(c) -> String: return str(c["id"]))
+		assert_eq(ids, in_turn(mine.get(r, []), theirs.get(r, [])), "rating %d: every pack of both the ramp's gate holds, the lead's and the guest's in turn, the lead's first" % int(r))
+		for c in f.graded[r]:
+			assert_eq(str(c["faction"]), guest if (theirs.get(r, []) as Array).has(str(c["id"])) else lead, "%s under its own domain" % str(c["id"]))
+			by_id[str(c["id"])] = str(c["faction"])
+	# The hunting packs apart: both domains' patrols in turn, those of them that hunt.
+	var hunting: Array = in_turn(db.compositions(lead, 1, "patrol", b.ramp), db.compositions(guest, 1, "patrol", b.ramp)).filter(func(c) -> bool: return not str(c.get("hunts", "")).is_empty())
+	assert_eq(f.hunters.map(func(c) -> String: return str(c["id"])), hunting.map(func(c) -> String: return str(c["id"])), "the hunting patrols of both, as their patrols come in turn")
+	for c in f.hunters:
+		assert_eq(str(c["faction"]), guest if db.compositions(guest, 1, "patrol", b.ramp).any(func(g) -> bool: return str(g["id"]) == str(c["id"])) else lead, "%s under its own domain" % str(c["id"]))
+		by_id[str(c["id"])] = str(c["faction"])
+	# On the field: the opening's count whoever the guest is, each pack the next of its list.
+	var alone := Battle.new(3)
+	alone.setup(team.call(), lead)
+	var opened: Array = f.packs().filter(func(u: Unit) -> bool: return not u.is_boss)
+	assert_eq(opened.size(), alone.field.packs().filter(func(u: Unit) -> bool: return not u.is_boss).size(), "the opening's count: a guest never doubles the field")
+	assert_eq(opened.size(), Battle.graded_opening(b.ramp, b.map.width).size(), "a pack for every place the opening stands one")
+	assert_eq(opening_off_lists(b), "", "each pack the opening stands is its list's next, the lead's or the guest's as it comes")
+	assert_true(opened.any(func(u: Unit) -> bool: return u.faction == guest) and opened.any(func(u: Unit) -> bool: return u.faction == lead), "so both domains stand before the wall")
+	# The tide sends from the same lists: every pack wears its composition's faction, and the
+	# guest's pushers come among them.
+	var guests_sent := 0
+	for peak in range(6):
+		var before := f.packs().size()
+		assert_true(f.tick_pressure(f.rift_pressure_max), "a peak")
+		for u in f.packs().slice(before):
+			assert_true(by_id.has((u as Unit).composition), "%s is one of the tide's" % (u as Unit).composition)
+			assert_eq((u as Unit).faction, str(by_id.get((u as Unit).composition, "")), "%s wears its own domain's faction" % (u as Unit).composition)
+			if (u as Unit).faction == guest and (u as Unit).behaviour == "push":
+				guests_sent += 1
+	assert_true(guests_sent > 0, "the guest's packs come with the tide (%d of its pushers in six peaks)" % guests_sent)
 
 
 func test_the_finale_is_due_at_the_threshold_and_fought_at_the_capital() -> void:
@@ -1017,7 +1049,7 @@ func test_a_battle_not_won_pays_no_favour() -> void:
 	var c := _run()
 	var b := _battle(c)
 	quiet_start(b)
-	_thin(b)   # one patrol left to walk on the wall, so the wipe's strikes leave the city standing
+	_thin(b)   # one pack left to walk on the wall, so the wipe's strikes leave the city standing
 	for u in b.mechs():
 		_wreck(b, u)
 	b.foes_killed = 3
@@ -1317,9 +1349,10 @@ func test_a_boss_unit_stands_at_its_battles_tier() -> void:
 	assert_eq(b2.boss.boss_tier, 2, "and its boss stands at it")
 
 
-## A battle fields its domain's spawn list at its tier (the ladder's brief, D3; 28 October): the
-## formation on the map is the lead's list at the tier, and the rift's cycle carries it and the
-## guest's at the same tier.
+## A battle fields its domain's packs at its tier (the ladder's brief, D3; 28 October): the tide's
+## lists hold the lead's and the guest's packs of that tier which the ramp's gate holds, each by
+## its rating, their hunting patrols apart, and nothing of another tier; and every pack on the map
+## at the start is one of them.
 func test_a_battle_fields_the_compositions_of_its_tier() -> void:
 	var db := ContentDB.load_default()
 	var facs: Array = db.factions.keys()
@@ -1328,16 +1361,30 @@ func test_a_battle_fields_the_compositions_of_its_tier() -> void:
 		b.tier = t
 		b.guest = str(facs[1])
 		b.setup([db.make_mech(str(db.default_team()[0]))], str(facs[0]))
-		var cycle: Array = b.field.cycle.map(func(c) -> String: return str(c["id"]))
+		var hunters: Array = b.field.hunters.map(func(c) -> String: return str(c["id"]))
+		var listed := 0
 		for fid in [facs[0], facs[1]]:
-			for c in db.compositions(str(fid), t + 1, "formation", b.ramp) + db.compositions(str(fid), t + 1, "patrol", b.ramp):
-				assert_true(cycle.has(str(c["id"])), "tier %d's %s, which the ramp's gate holds, in the rift's cycle" % [t + 1, str(c["id"])])
+			var packs := tide_packs(db, str(fid), t + 1, b.ramp)
+			for r in packs.keys():
+				var list: Array = (b.field.graded.get(r, []) as Array).map(func(c) -> String: return str(c["id"]))
+				for id in packs[r]:
+					listed += 1
+					assert_true(list.has(str(id)), "tier %d's %s, which the ramp's gate holds, in the tide's list for %d" % [t + 1, str(id), int(r)])
+			for c in db.compositions(str(fid), t + 1, "patrol", b.ramp):
+				if not str(c.get("hunts", "")).is_empty():
+					listed += 1
+					assert_true(hunters.has(str(c["id"])), "tier %d's %s, which hunts, among the tide's hunting packs" % [t + 1, str(c["id"])])
+		assert_eq(tide_lists(b.field).size(), listed, "tier %d: and the tide holds nothing else" % (t + 1))
 		var ids: Array = []
 		for fid in [facs[0], facs[1]]:
-			ids.append_array((db.compositions(str(fid), t + 1, "formation") + db.compositions(str(fid), t + 1, "patrol")).map(func(c) -> String: return str(c["id"])))
+			for size in ["formation", "patrol"]:
+				ids.append_array((db.compositions(str(fid), t + 1, size) + db.compositions(str(fid), t + 1, size, -1, ContentDB.GRADED)).map(func(c) -> String: return str(c["id"])))
+		var stood := 0
 		for u in b.field.packs():
 			if not u.is_boss:
+				stood += 1
 				assert_true(ids.has(u.composition), "%s on the field is one of tier %d's compositions, the lead's or the guest's" % [u.composition, t + 1])
+		assert_true(stood > 0, "tier %d: the opening stands its packs" % (t + 1))
 
 
 ## An escort's units are the foes of its domain's spawn list at the battle's tier (the ladder's

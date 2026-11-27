@@ -1353,7 +1353,7 @@
       "hp": 20, "attack": 8, "rank": "front",
       "actions": [
         { "id": "flurry", "name": "Flurry", "kind": "attack", "strikes": 2, "weight": 2, "text": "Two blows of {damage}, one after the other.", "status": "implemented" },
-        { "id": "counter", "name": "Counter", "kind": "defend", "effect": "retaliate", "weight": 1, "text": "Whatever strikes it up close is struck back.", "status": "planned" },
+        { "id": "counter", "name": "Counter", "kind": "defend", "effect": "counter", "weight": 1, "text": "Whatever strikes it up close is struck back.", "status": "planned" },
         { "id": "chakra", "name": "Chakra", "kind": "defend", "effect": "recover", "value": 4, "weight": 1, "when": "missing_hull", "text": "Breathes {value} HP back.", "status": "implemented" },
         { "id": "hundred_fists", "name": "Hundred Fists", "kind": "attack", "factor": 0.5, "strikes": 3, "weight": 2, "when": "below_half", "text": "Three blows of {damage} at anything, too fast to count.", "status": "implemented" }
       ],

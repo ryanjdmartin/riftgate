@@ -22,7 +22,8 @@ they run are `docs/rules.md`, and every run named here is in `docs/measurements.
   his word on who moves them: tier one is sized, its elites and bosses for a squad without the
   Barrier); the first battle scaled down and tiers two and three up (sections 10 and 13); the
   component pass (section 6).
-- **His to play or mark.** The dials (sections 11 and 23), 4-4-2's open places (section 13) and
+- **His to play or mark.** The graded tide's dials (`docs/briefs/graded_tide.md`, section 2),
+  4-4-2's open places (section 13) and
   the machines the rule reaches (each settled or landed in its bible row; their read retired 24
   November, `git show 302d6a4c:docs/reboot_machines_proposal.md`).
 
@@ -114,7 +115,7 @@ one, so its reads say what a rule does with today's foes and never what a player
 A stub. Landed 10 November: thirteen new foes, a role on every rank-and-file foe, the formations
 and hunters re-cut in `content/factions.json`, and an opening that places no hunter. Left: the
 foes' numbers (the numbers brief); the bosses' stat blocks and escorts, a session of their own
-(`docs/formation_proposal.md`, section 6); the rising threat (section 7).
+(`docs/briefs/graded_tide.md`, section 4); the rising threat (section 7).
 
 ## 10. The squad a battle is tuned for, by the Convergence (11 November)
 
@@ -181,13 +182,11 @@ second peak, a cleared field does nothing, and menace is a pack's threat rating,
 Equal worth is not equal difficulty: tuning each composition to its rating within a band is the
 numbers pass's, and what a boss pays and salvage's growth by tier are the economy pass's.
 
-**The dials of that day**, three of them gone since 24 November, when the trials' page was cut
-to what is played (`docs/tide_proposal.md`, section 3): the tide's density, for his
-"noticeably more spawns then the minimum number required", left to the packs every mouth sends
-at once; the fodder's worth on the meter left with no job, since at half the middle still won
-his play; the Rupture's beats stay two and are a runner's what-if (`RIFTGATE_BEATS`). The wall
-strike is on the page still, ten, five or three a pip, for his "each needs to do less to the
-wall".
+**The dials of that day** are the graded tide's now (`docs/briefs/graded_tide.md`, section 2):
+his "noticeably more spawns then the minimum number required" is the packs every mouth sends
+at once, and the wall strike is on the trials' page still, ten, five or three a pip, for his
+"each needs to do less to the wall". The Rupture's beats stay two, a runner's what-if
+(`RIFTGATE_BEATS`).
 
 **A second flank patrol a domain: a first proposal, nothing in content.** His words: "Another
 would probably be smart, yeah. Different enough that the same strategy doesn't strictly work on
@@ -209,9 +208,10 @@ two each is nearly free. Not in content until he picks: three of each rated one 
 the count by the budget (two Goblins, two Needlers, three Revenants, two Salamanders; this
 brief's lean), or three of each rated two.
 
-**Open, his:** his play of the four dials; the pickets' count; the first wave
-repeating the opening's formation (left, the list's second, or drawn by the seed); and what
-measures a battle's minutes against his ten to thirty, which nothing does yet.
+**Open, his:** the pickets' count, which is each domain's packs for the wall's ends under
+the graded tide (`docs/briefs/graded_tide.md`, section 3: the Meadow's are two goblins for one
+machine and three for two); and what measures a battle's minutes against his ten to thirty,
+which nothing does yet.
 
 ## 12. The player's side at tier one (12 November)
 
@@ -224,7 +224,7 @@ placeholder gun, a second Twin Autoguns where a vent stood, with Claude's leans 
 
 | The machine | Lean | Why |
 |---|---|---|
-| The Cassowary | A Laser Carbine in the chamber after the Halo Projector | Its plan is adjacency, and its stock holds no big gun to line the doubled sixth shot up on |
+| The Cassowary | A Laser Carbine in the chamber after the Halo Projector | Its plan is adjacency, and its stock holds no big gun to line the doubled hit up on |
 | The Cottonmouth | A keyword shell of its maker's, the Incendiary Shells | Every gun it stocks leaves the drum as the same shot; a shell with a keyword shows what the drum does |
 | The Stingray, the Polar Bear, the Prairie Dog | Left | The Stingray's tier is to be placed, the Bear's kit is his, the Dog wants two guns to cash its Flak |
 

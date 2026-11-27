@@ -258,3 +258,33 @@ func test_a_flooded_stretch_falls_into_the_chasm_beside_it() -> void:
 	assert_eq(m._falls_material().shader.resource_path, "res://game/battle/waterfall.gdshader", "drawn as falling water")
 	m.free()
 
+
+
+## A hex's dressing lies down under a machine and stands up again as it goes (Ryan, 25 November: "The
+## caches and terrain elements flickering in and out of existence when a frame moves through the hex
+## is weird. There has to be a better way"): whole a step away, flat on it, eased between, the mesh
+## squashed onto its ground rather than hidden.
+func test_a_hex_s_dressing_lies_down_under_a_machine() -> void:
+	var m := _chasm_map([])
+	var h := Hex.offset_to_axial(4, 5)
+	var n: Vector2i = h + Hex.DIRECTIONS[0]
+	var at := MapOrient.to_pixel(h, m.hex_px)
+	var next := MapOrient.to_pixel(n, m.hex_px)
+	assert_eq(m.standing(h, []), 1.0, "nothing near: whole")
+	assert_eq(m.standing(h, [at]), 0.0, "a machine on it: flat")
+	assert_eq(m.standing(h, [next]), 1.0, "a machine on the next hex: whole")
+	var between := m.standing(h, [at.lerp(next, 0.62)])
+	assert_true(between > 0.0 and between < 1.0, "a machine on its way between: eased (%.2f)" % between)
+	var mi := MeshInstance3D.new()
+	m._prop_meshes[h] = [mi]
+	m._flatten_props([at.lerp(next, 0.62)], {})
+	assert_true(mi.visible, "part-way down it still shows")
+	assert_true(absf(mi.transform.basis.get_scale().y - between) < 0.01, "squashed by as much")
+	m._flatten_props([at], {})
+	assert_false(mi.visible, "flat under the machine")
+	m._flatten_props([], {h: true})
+	assert_false(mi.visible, "a wreck's or a cache's hex keeps it flat")
+	m._flatten_props([], {})
+	assert_true(mi.visible and is_equal_approx(mi.transform.basis.get_scale().y, 1.0), "and it stands whole again once the machine has gone")
+	mi.free()
+	m.free()

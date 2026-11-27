@@ -1307,6 +1307,42 @@ func test_each_machine_in_a_fight_wears_its_place_in_the_queue() -> void:
 	s.free()
 
 
+## A shell wall stands on the highest ground outside its corner (Ryan, 25 November: "Raised terrain
+## looks weird next to the shell"): a cliff's or a crag's footing raises the end beside it, and an end
+## with nothing raised outside it stands at the shell's own level.
+func test_a_shell_wall_stands_on_the_ledge_beside_it() -> void:
+	var s := _screen()
+	var m: BattleMapView = s._map
+	var map: BattleMap = s.battle.field.map
+	var inside := {}
+	for h in map.shell_hexes():
+		inside[h] = true
+	for r in map.rift_hexes:
+		inside[r] = true
+	var shell: Vector2i = map.shell_hexes()[0]
+	var out := Vector2i(-999, -999)
+	for n in Hex.neighbors(shell):
+		if map.has(n) and not inside.has(n):
+			out = n
+			break
+	assert_ne(out, Vector2i(-999, -999), "a shell hex with ground outside it")
+	var corner: Vector2 = m.base(shell).lerp(m.base(out), 0.5)   # the shared edge's middle stands for its corners
+	var flat := m._ledge(shell, corner, inside)
+	var was_t: int = map.terrain_of(out)
+	var was_look := str(map.wall_look.get(out, ""))
+	map.terrain[out] = BattleMap.Terrain.MOUNTAIN
+	map.wall_look[out] = "cliffs"
+	var raised := m._ledge(shell, corner, inside)
+	assert_eq(flat, 0.0, "nothing raised outside: the shell's own level")
+	assert_eq(raised, float(DomainGround.RANGE_LOOKS["cliffs"]["lift"]) * DomainGround.scale_of(BattleMapView.HEX_SIZE), "beside a cliff: on its top")
+	map.terrain[out] = was_t
+	if was_look.is_empty():
+		map.wall_look.erase(out)
+	else:
+		map.wall_look[out] = was_look
+	s.free()
+
+
 func test_the_rift_shell_cracks_a_plate_a_fracture_and_bursts_at_the_rupture() -> void:
 	# The rift's shell over the seven hexes beside it (the bible's pacing row; built 16 November): a
 	# plate cracked for each Fracture earned, the shell burst at the Rupture. What the map finds

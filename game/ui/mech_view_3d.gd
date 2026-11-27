@@ -475,11 +475,10 @@ func show_heat(ms: Skirmish.MechState) -> void:
 
 
 ## The numbers a count display may show (MechRig.COUNT_SOURCES), for one machine in a fight:
-## `shots` its counted shots toward the next that counts (the pips under its heat bar, the
-## Cassowary's sixth shot), `ammo` its magazine's rounds (the Musk Ox's).
+## `sustained_recoil` its stacks (the Cassowary's capacitor, a cell lit a stack, five lit when its
+## next hit doubles), `ammo` its magazine's rounds (the Musk Ox's).
 static func count_values(ms: Skirmish.MechState) -> Dictionary:
-	var every := Effects.counts_shots(ms.unit)
-	return {"shots": Effects.stacks_of(ms.unit, "shots") % every if every > 0 else 0, "ammo": ms.ammo}
+	return {"sustained_recoil": Effects.stacks_of(ms.unit, "sustained_recoil"), "ammo": ms.ammo}
 
 
 ## Wear the plan: each row hangs its class shape on its pin, or bares the socket; then a burn

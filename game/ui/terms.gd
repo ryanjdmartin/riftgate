@@ -17,6 +17,8 @@ extends RefCounted
 ## Ids are the vocabulary's (content/vocabulary.json); a test ties the table to it, so a term
 ## added or renamed there fails the build until it has its row here. A glyph "" draws none.
 const TABLE := {
+	# Damage: the three ways it lands (the standard's rule 39), listed and never matched in a line.
+	"damage_hit": ["", "plain"], "damage_suffer": ["", "plain"], "damage_lose": ["", "plain"],
 	# Reach.
 	"direct": ["aim_direct", "plain"], "indirect": ["aim_indirect", "plain"],
 	# Keywords.
@@ -46,7 +48,7 @@ const TABLE := {
 	"kill_rerolls": ["reroll", "plain"], "team_rerolls": ["reroll", "plain"],
 	# Statuses.
 	"ablating": ["ablate", "heat"], "scorched": ["scorch", "heat"], "primed": ["primed", "heat"],
-	"overcharged": ["overcharge", "heat"], "kindled": ["overcharge", "heat"], "enraged": ["overcharge", "heat"], "golden": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
+	"overcharged": ["overcharge", "heat"], "enraged": ["overcharge", "heat"], "golden": ["overcharge", "heat"], "shocked": ["shocked", "heat"],
 	"rage": ["rapid", "heat"],   # the Nemesis's Rage (23 November): its Knuckles Instant, the fists' mark, in heat's group
 	"charged": ["shocked", "heat"], "supercooled": ["cryo", "guard"],
 	"brittled": ["brittle", "heat"], "vitriol": ["vitriol", "heat"], "spun_up": ["spin", "heat"], "ricochet": ["ricochet", "heat"],
@@ -85,11 +87,12 @@ const TABLE := {
 ## A die entry's own mark, by the engine's prefix on its status id, and the term it reads as.
 const ENTRY_MARKS := {"corrupted": "corrupted", "disabled": "jammed"}
 ## An engine status keyed apart from its term: a machine's Ablating, the Badger's hopper.
-const ALIASES := {"ablating_mech": "ablating", "brittled_mech": "brittled", "exposure_mech": "exposure", "phasing": "phased", "swallowing": "swallowed", "hopper": "hopper_property", "parry_strike": "parry"}
+const ALIASES := {"kindled": "overcharged", "ablating_mech": "ablating", "brittled_mech": "brittled", "exposure_mech": "exposure", "phasing": "phased", "swallowing": "swallowed", "hopper": "hopper_property", "parry_strike": "parry"}
 
 ## Terms never matched in prose: names a shown text uses as a plain word in their place
-## ("Targets any front-rank foe", a move that "Strikes twice").
-const UNMATCHED := ["targets", "strikes"]
+## ("Targets any front-rank foe", a move that "Strikes twice"), and the three ways damage lands,
+## whose words are a label's ("When Hit") and a line's own verbs.
+const UNMATCHED := ["targets", "strikes", "damage_hit", "damage_suffer", "damage_lose"]
 
 static var _rx: RegEx = null          # every matched name, longest first, with a number after it
 static var _skip_rx: RegEx = null     # names of things that hold a term's word (the Web Bomb)
@@ -147,7 +150,7 @@ static func status_colour(status_id: String) -> Color:
 
 
 ## What one term is, over its tip: the list's headings (PauseMenu.GLOSSARY) for one.
-const KINDS := {"reach": "REACH", "keyword": "KEYWORD", "component_property": "RULE ON A COMPONENT", "status": "STATUS", "foe": "A SPRITE'S MOVE"}
+const KINDS := {"damage": "DAMAGE", "reach": "REACH", "keyword": "KEYWORD", "component_property": "RULE ON A COMPONENT", "status": "STATUS", "foe": "A SPRITE'S MOVE"}
 ## A status's heading by what it is to its unit (Effects.status_kind; Ryan, 9 November: buffs and
 ## debuffs "clearly labeled as such, so that it's clear what gets purged").
 const STATUS_KINDS := {"buff": "BUFF // A PURGE TAKES IT", "debuff": "DEBUFF", "ability": "ABILITY // NOTHING STRIPS IT"}

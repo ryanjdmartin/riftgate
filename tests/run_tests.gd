@@ -88,13 +88,13 @@ func _run(f: String, inst, method: String) -> void:
 	inst.failures.clear()
 	inst.checks = 0
 	# Every test starts on the engine's own switches, so one that turns a trial on to read it
-	# never leaves it on for the next.
+	# never leaves it on for the next: each dial at the value that reads as the game's own (0 for
+	# the sends and the strike, -1 for the pack bonus, whose 0 is a bonus of none).
 	Ramp.depth_trial = 0
 	Battle.opening_trial = 0
 	Ramp.beats_trial = 0
-	Battlefield.graded_tide = false
-	Battlefield.sends_trial = 1
-	Battle.pack_bonus_trial = 0
+	Battlefield.sends_trial = 0
+	Battle.pack_bonus_trial = -1
 	Battlefield.strike_trial = 0
 	Skirmish.overheat_scale = 1
 	inst.script_errors_expected = 0

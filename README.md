@@ -137,10 +137,10 @@ its section 12 holds the questions only Ryan can settle, and the order of work i
     then retired to git: `briefs/` (its README says what each waits on), among them
     `briefs/refit_pass.md` (the reboot's rules, its section 22) and `briefs/numbers_pass.md`
     (tier one sized against the reboot: the yardsticks, the baseline, the defence side's
-    approach, the tier-one bench); `economy_pass.md`; `formation_proposal.md` (kept for the
-    bosses' stat blocks and the flankers' slate); `tide_proposal.md` (the graded tide, Ryan's
-    design of 23 November: his words, the design as read, the reads, where the session pushes
-    back, the Meadow's packs as a table for his marks);
+    approach, the tier-one bench) and `briefs/graded_tide.md` (the battle's enemy side: Ryan's
+    direction, locked on 25 November, the built numbers that are placeholders, the Meadow's
+    packs as a table for his marks, the leaders and the bosses as fixed entries, what is open
+    and the order); `economy_pass.md`;
     `locked_pieces_proposal.md`;
     `rules_sweep_proposal.md` (the
     rules sweep's limits on design space, for his marks); `bosses_proposal.md` (the
@@ -277,6 +277,7 @@ perl -e 'alarm 600; exec @ARGV' godot --headless --path . -s tools/balance.gd --
 #     greedy fights a fight, so run it on the team rows), --out path, --json path
 #   --rows badger,team     only those rows; --team badger,kite adds a row of exactly those machines,
 #     an id with its branch picks after an @ as the harness fields them (--team mole@glacial, row team:mole@glacial)
+#     and a tier after a # (--team nemesis#3: the tier's lift with no pick, to read a branch's row beside)
 #   --packs big | rank_and_file | elites | "treant x1,finale"   only those packs, by the JSON's ids;
 #     --pack goblin:4+mandragora:2 adds a composed pack; --boss-tiers the bosses by tier; --noparty
 #   --trace "kite|goblin x6|greedy|3"   plays that one fight and prints its log
@@ -321,7 +322,7 @@ perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/campaign_run
 # the map by the player that gathers (--rule muster, or defence), --domains to narrow; each cell won,
 # the gate fallen, wiped, the Rupture reached, the hull and the wrecks, and a ledger of every fight
 # (about twelve minutes on one core). The field's trial dials are read from the environment as
-# the game reads them (RIFTGATE_STRIKE=5 before the command, say), and --whole is a what-if on
+# the game reads them (RIFTGATE_STRIKE=10 before the command, say), and --whole is a what-if on
 # the map's player: it never fights a pack one short at the wall. The report names either.
 perl -e 'alarm 3600; exec @ARGV' godot --headless --path . -s tools/battle_run.gd -- --seeds 20
 
@@ -462,19 +463,17 @@ Each is an environment variable read as a run starts. "Standalone" is a scene ru
 #   RIFTGATE_AA=off|fxaa|msaa2|msaa4              the AA mode (the player's SETTINGS, AA MODE; MSAA 4X by default)
 #   RIFTGATE_SAFE=<top>,<bottom>                  keeps a phone's safe bands clear
 # Numbers on trial (a what-if over content, never a decision)
-#   RIFTGATE_GRADED=1                             the graded tide: packs rated one to three dealt by where they make for, ones to the wall's ends, twos between, threes down the middle
-#   RIFTGATE_SENDS=2                              the packs every mouth sends at a peak, the rift and each open tear, 1 to 4, 1 the game's
-#   RIFTGATE_STRIKE=5                             what a pip of threat rating strikes the wall for, 10 the game's
-#   RIFTGATE_PACK_BONUS=50                        what a pack pays the Rupture meter as it falls, on top of its rating, in hundredths of a pip, 0 the game's
+#   RIFTGATE_SENDS=3                              the packs every mouth sends at a peak, the rift and each open tear, 1 to 4, 2 the game's
+#   RIFTGATE_STRIKE=10                            what a pip of threat rating strikes the wall for, 5 the game's
+#   RIFTGATE_PACK_BONUS=100                       what a pack pays the Rupture meter as it falls, on top of its rating, in hundredths of a pip, 50 the game's
 #   RIFTGATE_FIELD_DEPTH=14                       the field's rows from the rift to the wall, 10 to 24, 12 the game's
 #   RIFTGATE_PHASED=at_once                       a machine's Phased at once until the round ends, round_end the game's (Phased as the round ends, through the next)
 # The same on the phone, a debug build's SETTINGS, TRIALS, each read as the next battle starts,
-# with no relaunch. The page holds what is tried in person and nothing else (24 November):
-#   TIDE (BUILT, GRADED), SENDS (1, 2, 3), STRIKE (10, 5, 3), PACK BONUS (NONE, +½, +1),
+# with no relaunch. The page holds what is tried in person and nothing else:
+#   SENDS (1, 2, 3), STRIKE (10, 5, 3), PACK BONUS (NONE, +½, +1),
 #   FIELD DEPTH (12, 14, 16), PHASED (ROUND END, AT ONCE), with the Phase Inducer, a tier-two
 #   component, to set it for testing
-# and over them SET: GRADED lays TIDE GRADED, SENDS 2, STRIKE 5 and PACK BONUS +½ at once;
-# AS BUILT sets every dial of the page back to the game's own
+# and over them SET: GAME'S OWN sets every dial of the page back to the game's own
 # The runners' what-ifs, with no dial on the phone
 #   RIFTGATE_REFIT=hotter=-1                      any spec the runners' --refit takes, read as the game starts
 #   RIFTGATE_OVERHEAT=2                           the hull an overheat burns a point of heat past the maximum, 1 the game's

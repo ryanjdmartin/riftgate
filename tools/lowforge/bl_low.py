@@ -1211,22 +1211,26 @@ class Build:
             raise ValueError("%s: the held spin's joint %s has limits on its axis, which would clamp its turn" % (self.name, joint))
         self.spins_held.setdefault(str(status), {})[joint] = float(speed)
 
-    COUNT_SOURCES = ("shots", "ammo")   # the numbers the game passes a count display (MechRig.COUNT_SOURCES)
+    COUNT_SOURCES = ("sustained_recoil", "ammo")   # the numbers the game passes a count display (MechRig.COUNT_SOURCES)
 
-    def count(self, source, parts, on=1.5, off=-0.85, flare=8.0):
+    def count(self, source, parts, on=1.5, off=-0.85, flare=8.0, ahead=0):
         """A count display: `parts` (lit labels, the first lit first) shown lit for as many as the
-        number `source` the game passes as the screen refreshes (`shots`, a machine's counted
-        shots toward the next that counts; `ammo`, its magazine's rounds: COUNT_SOURCES), the rest
+        number `source` the game passes as the screen refreshes (`sustained_recoil`, a machine's
+        stacks of it; `ammo`, its magazine's rounds: COUNT_SOURCES), and `ahead` more, the rest
         dark; a number that falls flares every part and lets them all go dark (MechRig.show_counts:
-        the Cassowary's capacitor, a cell a counted shot, discharging on the sixth, Ryan, 2
-        November). `on`, `off` and `flare` are each part's light as an offset from its light at
-        rest, as a glow key's: -1 dark. The parts are kept apart by the weld, as a glow's are."""
+        the Cassowary's capacitor, a cell a stack and one for the hit to come, every cell lit when
+        its Syntropy Cylinder doubles the next, discharging on it, Ryan, 2 and 26 November). `on`,
+        `off` and `flare` are each part's light as an offset from its light at rest, as a glow
+        key's: -1 dark. The parts are kept apart by the weld, as a glow's are."""
         if source not in self.COUNT_SOURCES:
             raise ValueError("%s: a count display shows one of %s, not %r" % (self.name, ", ".join(self.COUNT_SOURCES), source))
         parts = [parts] if isinstance(parts, str) else list(parts)
         if not parts or len(set(parts)) != len(parts):
             raise ValueError("%s: a count display names its parts, each once: %r" % (self.name, parts))
-        self.counts.append({"source": source, "parts": parts, "on": float(on), "off": float(off), "flare": float(flare)})
+        entry = {"source": source, "parts": parts, "on": float(on), "off": float(off), "flare": float(flare)}
+        if int(ahead) != 0:
+            entry["ahead"] = int(ahead)
+        self.counts.append(entry)
 
     def move(self, slide=0.0, bank=0.0, strafe=0.0, tilt=None, accel=None, heft=None, oversteer=0.0):
         """The cornering module's numbers for this machine (the joints row, 2 October):

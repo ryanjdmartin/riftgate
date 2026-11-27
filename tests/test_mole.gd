@@ -18,7 +18,7 @@ extends TestCase
 ## The statuses are the engine's; the passive and its numbers are the test's.
 
 const DRILL := "drill_test"
-const BURROW := {"trigger": "static", "effect": "burrow", "piece": DRILL, "cap": 10, "armour": 1, "shield": 3, "cool": 6, "momentum": 5}
+const BURROW := {"trigger": "static", "effect": "burrow", "piece": DRILL}
 const K := Face.Keyword
 
 
@@ -209,6 +209,30 @@ func test_the_mark_lays_brittle_and_a_pin_then_a_blow_then_drains_and_goes_home_
 	assert_false(Effects.has(u, "drill_out"), "and the drill comes home")
 
 
+## The drill's mark is a status its foe carries, so it works on a Phased foe as on any (Ryan, 19
+## November: "Phased: Cannot be targeted, damaged, or affected in any way by non-phased units";
+## what a unit carries is its own): its Brittle and its pin, then its blow. What passes between
+## the drill and its machine is the machine's own drill's, whichever of the two is Phased: the
+## Momentum drained, the homecoming at none.
+func test_the_mark_works_on_a_phased_foe_as_on_any() -> void:
+	var u := _mole()
+	var foe := _dummy(100)
+	var sk := _fight([u], [foe, _dummy(100)])
+	_dig(sk, 2)
+	sk.assign(0, foe)
+	var hp := foe.hp
+	Effects.grant_for_rounds(foe, Effects.STATUS["phased"], "test", sk.round + 1)   # Phased this round and the next, its drill in it
+	assert_false(sk.targets_for(0).has(foe), "the Mole, not Phased, has no die to drop on it")
+	sk.end_round()
+	assert_eq(foe.hp, hp - 2, "Phased, the mark's Brittle 1 and the blow of 1 it adds to land on it all the same")
+	assert_eq(Effects.stacks_of(foe, "brittled"), 1, "its Pinned holding the Brittle")
+	assert_eq(Effects.stacks_of(u, "momentum"), 5, "and its machine's 5 Momentum drained")
+	sk.start_round()
+	sk.end_round()
+	assert_eq(foe.hp, hp - 5, "the second turn: Brittle 2, a blow of 3")
+	assert_false(Effects.has(foe, "applied_momentum") or Effects.has(u, "drill_out"), "drained to none, the mark goes and the drill comes home from the Phased foe")
+
+
 func test_a_use_that_hits_the_drilled_foe_gives_the_mole_a_momentum_area_hits_included() -> void:
 	var u := _mole()
 	var g := _gunner()
@@ -357,3 +381,18 @@ func test_a_burrow_undoes_like_a_spend() -> void:
 	assert_true(sk.can_undo(), "the burrow can be taken back")
 	sk.undo()
 	assert_false(Effects.has(sk.mechs[0].unit, "burrowed"), "and is: up again")
+
+
+## Burrowed's numbers are its own and Momentum's cap is Momentum's (Ryan, 24 November: "Move the
+## effects on the mole's passive to the status chip"): a burrow passive carries its piece alone (the
+## burrower above has nothing else, and its turns under are the tests above), and each tip says the
+## number its status holds.
+func test_the_burrows_numbers_are_the_statuses_own() -> void:
+	var u := _mole(20)
+	assert_eq(Effects.store_cap(u, "momentum"), int(Effects.STATUS["momentum"]["cap"]), "Momentum's cap is its own")
+	assert_eq(Effects.store_cap(_gunner(), "momentum"), 0, "and a machine that reboots banks none")
+	var db := ContentDB.load_default()
+	var tip := str(db.vocabulary["burrowed"]["codex"])
+	for said in ["+%d Armour" % Effects.status_value_static("burrowed", "add_stat"), "%d Shield" % Effects.burrowed_number("shield"), "%d Momentum" % Effects.burrowed_number("momentum"), "%d Heat" % Effects.burrowed_number("cool")]:
+		assert_true(tip.contains(said), "Burrowed's tip says %s: %s" % [said, tip])
+	assert_true(str(db.vocabulary["momentum"]["codex"]).contains("Maximum %d" % int(Effects.STATUS["momentum"]["cap"])), "and Momentum's says its cap")

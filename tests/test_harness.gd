@@ -139,13 +139,15 @@ func test_a_battle_is_dealt_as_a_run_deals_it() -> void:
 	var dealt := {}
 	for who in [fac, s.guest]:
 		for size in ["formation", "patrol"]:
-			for c in db.compositions(str(who), 2, size):
+			for c in db.compositions(str(who), 2, size) + db.compositions(str(who), 2, size, -1, ContentDB.GRADED):
 				dealt[str(c["id"])] = true
 	for sq in b.field.packs():
 		if not sq.is_boss:
 			assert_true(dealt.has(sq.composition), "%s: one of the tier's compositions, as a run deals them" % sq.composition)
-	for w in b.field.cycle:
-		assert_true(dealt.has(str(w["id"])), "and so is every wave")
+	var waves := tide_lists(b.field)
+	assert_false(waves.is_empty(), "the tide has its lists")
+	for w in waves:
+		assert_true(dealt.has(str(w["id"])), "and so is every pack the tide holds (%s)" % str(w["id"]))
 	s.guest = fac
 	assert_eq(s.make_battle().guest, "", "the domain itself is no guest")
 	s.battle_boss = "no_such_boss"
@@ -372,7 +374,7 @@ func test_a_composition_is_picked_by_tier_and_rating() -> void:
 	var b := s.make_battle()
 	assert_eq(b.tier, 1, "a battle takes its own tier, never the fight's")
 	var only_it := true
-	for w in b.field.cycle:
+	for w in tide_lists(b.field):
 		only_it = only_it and str(w["id"]) == str(c["id"])
 	assert_false(only_it, "nor the composition picked: a run's waves")
 	s.save(TMP)
@@ -399,83 +401,108 @@ func test_a_composition_is_picked_by_tier_and_rating() -> void:
 
 ## The trials' page holds what is tried in person and nothing else (Ryan, 24 November: "clean up
 ## the trials tab. Remove anything no longer relevant ... just what is actually needed to try in
-## person versus just chatting it out"): the graded tide, the sends, the strike, the pack bonus,
-## the field's depth and when Phased lands, each the game's own until a debug build's setting or
-## the environment asks, read only where the game starts a battle; two sets lay the graded
-## tide's dials at once or the page back as built; and the dials that left have no row.
+## person versus just chatting it out"): the sends, the strike, the pack bonus, the field's depth
+## and when Phased lands, each the game's own until a debug build's setting or the environment
+## asks, read only where the game starts a battle; one set lays the page back at the game's own;
+## and the dials that left have no row, the tide's among them (the graded tide is the game's,
+## Ryan, 25 November: "Go ahead with the switch-over").
 func test_the_trials_page_holds_what_is_tried_in_person() -> void:
-	for env in ["RIFTGATE_GRADED", "RIFTGATE_SENDS", "RIFTGATE_STRIKE", "RIFTGATE_PACK_BONUS", "RIFTGATE_FIELD_DEPTH", "RIFTGATE_OPENING", "RIFTGATE_BEATS", "RIFTGATE_LEADERS"]:
+	for env in ["RIFTGATE_SENDS", "RIFTGATE_STRIKE", "RIFTGATE_PACK_BONUS", "RIFTGATE_FIELD_DEPTH", "RIFTGATE_OPENING", "RIFTGATE_BEATS", "RIFTGATE_LEADERS"]:
 		if not OS.get_environment(env).is_empty():
 			return
-	var asked := {"tide_form": "graded", "mouth_sends": "2", "wall_strike": "5", "pack_bonus": "50", "field_depth": "16"}
+	# Each dial asked off the game's own, on an option of its row.
+	var asked := {"mouth_sends": "3", "wall_strike": "10", "pack_bonus": "100", "field_depth": "16"}
 	var was := {}
-	for key in asked:
+	for key in Settings.TRIAL_KEYS:
 		was[key] = Settings.display.get(key, Settings.DISPLAY_DEFAULTS[key])
+	for key in asked:
+		assert_ne(str(asked[key]), str(Settings.DISPLAY_DEFAULTS[key]), "%s is asked off the game's own" % key)
 		Settings.display[key] = asked[key]
-	var read := func() -> Array: return [Battlefield.graded_tide, Battlefield.sends_trial, Battlefield.strike_trial, Battle.pack_bonus_trial, Ramp.depth_trial]
+	var read := func() -> Array: return [Battlefield.sends_trial, Battlefield.strike_trial, Battle.pack_bonus_trial, Ramp.depth_trial]
+	var answers := func() -> Array: return [Battlefield.sends_a_peak(), Battlefield.strike_per_pip(), Battle.pack_bonus(), Ramp.depth_at(0)]
+	var own := [0, 0, -1, 0]   # every dial at the value that reads as the game's own
 	Settings.field_trial()
-	assert_eq(read.call(), [false, 1, 0, 0, 0], "run alone, the saved settings move nothing")
+	assert_eq(read.call(), own, "run alone, the saved settings move nothing")
+	var games: Array = answers.call()
+	assert_eq(games.slice(0, 3), [Battlefield.SENDS_A_PEAK, Battlefield.STRIKE_PER_PIP, Battle.PACK_BONUS], "and the field answers with the game's own sends, strike and pack bonus")
 	Settings.field_trial(true)
-	assert_eq(read.call(), [true, 2, 5, 50, 16] if OS.is_debug_build() else [false, 1, 0, 0, 0], "where the game starts a battle, a debug build's settings are the trial")
-	assert_eq(Battlefield.strike_per_pip(), 5 if OS.is_debug_build() else Battlefield.STRIKE_PER_PIP, "and the field answers with the strike")
-	assert_eq(Ramp.depth_at(0), 16 if OS.is_debug_build() else 12, "and the ramp with the depth")
+	assert_eq(read.call(), [3, 10, 100, 16] if OS.is_debug_build() else own, "where the game starts a battle, a debug build's settings are the trial")
+	assert_eq(answers.call(), [3, 10, 100, 16] if OS.is_debug_build() else games, "and the field answers with the sends, the strike and the pack bonus, the ramp with the depth")
 	for key in asked:
 		Settings.display[key] = "a lot"
 	Settings.field_trial(true)
-	assert_eq(read.call(), [false, 1, 0, 0, 0], "a value that is no option asks for nothing")
-	Settings.display["wall_strike"] = str(Battlefield.STRIKE_PER_PIP)
+	assert_eq(read.call(), own, "a value that is no option asks for nothing")
+	# The game's own number on a dial is the game's, by whichever road: the strike reads as no
+	# trial, and the sends and the pack bonus answer as the game's do.
+	for key in Settings.TRIAL_KEYS:
+		Settings.display[key] = Settings.DISPLAY_DEFAULTS[key]
 	Settings.field_trial(true)
-	assert_eq(Battlefield.strike_trial, 0, "and the game's own strike is no trial")
+	assert_eq(Battlefield.strike_trial, 0, "the game's own strike is no trial")
+	assert_eq(answers.call(), games, "and the page as it ships is the game's own field")
+	# A pack bonus of none is a trial of its own, never the game's: the dial's NONE.
+	Settings.display["pack_bonus"] = "0"
+	Settings.field_trial(true)
+	assert_eq([Battle.pack_bonus_trial, Battle.pack_bonus()], [0, 0] if OS.is_debug_build() else [-1, Battle.PACK_BONUS], "NONE asks for no bonus where the game's own is one")
+	Settings.display["pack_bonus"] = Settings.DISPLAY_DEFAULTS["pack_bonus"]
+	Settings.field_trial(true)
 	# The dials that left the page: a build's saved setting for one moves nothing, and none is a
-	# setting. Three stay the runners' what-ifs by the environment alone.
-	var gone := {"field_opening": "2", "fodder_worth": "50", "rupture_beats": "3", "tide_density": "200", "pack_pace": "2", "rift_sends": "3", "flank_tears": "4", "leader_step": "20", "formation_form": "fodder", "overheat_burn": "2"}
+	# setting. Three stay the runners' what-ifs by the environment alone, and the tide's left with
+	# its question: the graded tide is the game's only one.
+	var gone := {"tide_form": "built", "field_opening": "2", "fodder_worth": "50", "rupture_beats": "3", "tide_density": "200", "pack_pace": "2", "rift_sends": "3", "flank_tears": "4", "leader_step": "20", "formation_form": "fodder", "overheat_burn": "2"}
 	for key in gone:
 		assert_false(Settings.DISPLAY_DEFAULTS.has(key), "%s is no setting" % key)
 		Settings.display[key] = gone[key]
 	Settings.field_trial(true)
 	assert_eq([Battle.opening_trial, Ramp.beats_trial, ContentDB.leader_step_trial, Skirmish.overheat_scale], [0, 0, 0, 1], "a dial an older build saved moves nothing")
-	assert_eq(read.call(), [false, 1, 0, 0, 0], "of the tide's either")
+	assert_eq(answers.call(), games, "and the field is the game's own still")
 	for key in gone:
 		Settings.display.erase(key)
 	assert_false(Settings.DISPLAY_DEFAULTS.has("reboot") or Settings.DISPLAY_DEFAULTS.has("shield_regen") or Settings.DISPLAY_DEFAULTS.has("shield_break"), "the reboot is the rule and no dial (folded in 15 November), the regen's dial went with the regen, and the block's with the rule that a blow past the shield reaches the hull")
-	# The page's keys and its sets.
-	assert_eq(Settings.TRIAL_KEYS, ["tide_form", "mouth_sends", "wall_strike", "pack_bonus", "field_depth", "phased_form"], "six dials")
+	# The page's keys and its set.
+	assert_eq(Settings.TRIAL_KEYS, ["mouth_sends", "wall_strike", "pack_bonus", "field_depth", "phased_form"], "five dials")
 	for key in Settings.TRIAL_KEYS:
 		assert_true(Settings.DISPLAY_DEFAULTS.has(key), "%s is a setting" % key)
-	assert_eq([str(Settings.DISPLAY_DEFAULTS["tide_form"]), str(Settings.DISPLAY_DEFAULTS["mouth_sends"]), str(Settings.DISPLAY_DEFAULTS["wall_strike"]), str(Settings.DISPLAY_DEFAULTS["pack_bonus"]), str(Settings.DISPLAY_DEFAULTS["field_depth"])], ["built", "1", str(Battlefield.STRIKE_PER_PIP), "0", "12"], "each ships on the game's own")
-	var options := {"tide_form": Settings.TIDE_FORMS, "mouth_sends": Settings.SENDS, "wall_strike": Settings.STRIKES, "pack_bonus": Settings.PACK_BONUSES}
-	for key in Settings.GRADED_SET.keys():
-		assert_true(options.has(key) and (options[key] as Array).has(str(Settings.GRADED_SET[key])), "the graded set lays %s on an option of its dial" % key)
-		assert_true(Settings.TRIAL_KEYS.has(key), "which AS BUILT sets back")
-		assert_ne(str(Settings.GRADED_SET[key]), str(Settings.DISPLAY_DEFAULTS[key]), "and moves it off the game's own")
+	assert_eq([str(Settings.DISPLAY_DEFAULTS["mouth_sends"]), str(Settings.DISPLAY_DEFAULTS["wall_strike"]), str(Settings.DISPLAY_DEFAULTS["pack_bonus"]), str(Settings.DISPLAY_DEFAULTS["field_depth"])], [str(Battlefield.SENDS_A_PEAK), str(Battlefield.STRIKE_PER_PIP), str(Battle.PACK_BONUS), str(games[3])], "each ships on the game's own")
+	var options := {"mouth_sends": Settings.SENDS, "wall_strike": Settings.STRIKES, "pack_bonus": Settings.PACK_BONUSES, "field_depth": Settings.FIELD_DEPTHS, "phased_form": Settings.PHASED_FORMS}
+	for key in Settings.TRIAL_KEYS:
+		assert_true(options.has(key) and (options[key] as Array).has(str(Settings.DISPLAY_DEFAULTS[key])), "the game's own %s is an option of its dial, so GAME'S OWN lays it on a button" % key)
 	if OS.is_debug_build():
 		var menu := PauseMenu.new()
 		menu._show_page("settings")
 		assert_true(_menu_labels(menu).has("TRIALS"), "a debug build's settings page opens the trials' page")
 		for d in Settings.FIELD_DEPTHS:
 			assert_false(_menu_labels(menu).has(str(d)), "and carries none of their rows itself (%s)" % d)
-		for key in Settings.GRADED_SET.keys():
-			Settings.display[key] = Settings.GRADED_SET[key]
+		Settings.display["mouth_sends"] = asked["mouth_sends"]   # one dial off the game's own
 		menu._show_page("trials")
 		var labels := _menu_labels(menu)
-		for want in ["GRADED", "AS BUILT", "BUILT", "+½", "+1", "NONE", "BACK"] + Settings.FIELD_DEPTHS + Settings.SENDS + Settings.STRIKES:
+		for want in ["GAME'S OWN", "+½", "+1", "NONE", "BACK"] + Settings.FIELD_DEPTHS + Settings.SENDS + Settings.STRIKES:
 			assert_true(labels.has(str(want)), "the trials' page offers %s" % str(want))
+		for left in ["GRADED", "BUILT", "AS BUILT"]:
+			assert_false(labels.has(left), "and no %s: the tide's row and its sets left the page" % left)
 		var captions: Array = []
 		for l in menu._rows.find_children("*", "Label", true, false):
 			captions.append(str((l as Label).text))
-		assert_eq(captions.filter(func(c: String) -> bool: return c == c.to_upper() and c.length() <= 12), ["TRIALS", "SET", "TIDE", "SENDS", "STRIKE", "PACK BONUS", "FIELD DEPTH", "PHASED"], "its title and its rows, and no other")
-		var filled := {}
-		for btn in menu._rows.find_children("*", "", true, false):
-			if btn is HudButton and ["GRADED", "AS BUILT"].has(str((btn as HudButton).text)):
-				filled[str((btn as HudButton).text)] = filled.get(str((btn as HudButton).text), false) or (btn as HudButton).filled
-		assert_eq(filled, {"GRADED": true, "AS BUILT": false}, "a set reads filled while every dial of it stands as it lays it")
-		assert_eq(menu._trials_as_built().keys().size(), Settings.TRIAL_KEYS.size(), "AS BUILT names every trial dial")
+		assert_eq(captions.filter(func(c: String) -> bool: return c == c.to_upper() and c.length() <= 12), ["TRIALS", "SET", "SENDS", "STRIKE", "PACK BONUS", "FIELD DEPTH", "PHASED"], "its title and its rows, and no other")
+		assert_eq(_set_buttons(menu, "GAME'S OWN"), [false], "one set, unfilled while a dial stands off the game's own")
+		Settings.display["mouth_sends"] = Settings.DISPLAY_DEFAULTS["mouth_sends"]
+		menu._show_page("trials")
+		assert_eq(_set_buttons(menu, "GAME'S OWN"), [true], "and filled while every dial stands as it lays it")
+		assert_eq(menu._trials_as_built().keys().size(), Settings.TRIAL_KEYS.size(), "GAME'S OWN names every trial dial")
 		for key in Settings.TRIAL_KEYS:
 			assert_eq(str(menu._trials_as_built()[key]), str(Settings.DISPLAY_DEFAULTS[key]), "at the game's own (%s)" % key)
 		menu.free()
-	for key in asked:
+	for key in was:
 		Settings.display[key] = was[key]
 	Settings.field_trial()
+
+
+## Whether each button reading `text` on the menu's page is filled, in the page's order.
+func _set_buttons(menu: PauseMenu, text: String) -> Array:
+	var out: Array = []
+	for btn in menu._rows.find_children("*", "", true, false):
+		if btn is HudButton and str((btn as HudButton).text) == text:
+			out.append((btn as HudButton).filled)
+	return out
 
 
 ## A lone fight from the menu reads the fight's trials as a battle does (when Phased lands is a

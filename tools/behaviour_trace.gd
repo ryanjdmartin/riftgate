@@ -12,7 +12,9 @@ extends SceneTree
 ## reads, the spend's blows, rolls, last acts and returns, the enemy turn's events, and the save's
 ## whole fight dictionary. Writes one line an event, its label and an md5, to <out>.hash, and every
 ## fight's log to <out>.log; `--fight "<id>"` writes one fight's events whole instead, to read the
-## first line two trees part on. About four minutes on four cores at two seeds.
+## first line two trees part on. A fight's record reads nothing of the fights before it, so the
+## fights that differ between two trees are the ones the change touched. About four minutes on
+## four cores at two seeds.
 ##   for i in 0 1 2 3; do godot --headless --path . -s tools/behaviour_trace.gd -- --out build/trace_$i --part $i/4 & done; wait
 ## Options: --out base (required), --seeds N (2), --part i/n (every n-th fight from the i-th),
 ## --fight id (one fight, its id as a .log's "###" line names it, written whole).
@@ -265,6 +267,10 @@ func _init() -> void:
 
 
 func _fight(db: ContentDB, team: Array, p: Dictionary, k: int, seed_value: int, fid: String) -> void:
+	# Every fight's record stands alone: the order a modifier was granted in (Effects._seq) is
+	# counted from nothing for each, where one count ran on through the whole process and every
+	# fight after the first two trees parted on read as different at its first event.
+	Effects._seq = 0
 	var sk := TraceSkirmish.new(seed_value)
 	sk.tr = self
 	sk.tag = fid

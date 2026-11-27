@@ -1268,16 +1268,45 @@ func test_a_compositions_ramp_gate_deals_it_and_its_tier_is_covered() -> void:
 	assert_eq(db.compositions("meadow", 1, "formation", 9).map(func(c) -> String: return str(c["id"])), ["gate_high"], "at C9, the high one alone")
 	assert_eq(db.compositions("meadow", 1, "formation").size(), 2, "no ramp asked: both")
 	assert_eq(db.compositions("meadow", 1, "formation", 9)[0]["ramp"], [6, Ramp.TOP], "the dealt entry carries its gate")
+	# A battle deals by its own Convergence, whichever way its domain's packs reach the tide
+	# (ContentDB.graded_packs). First its pushing patrols and formations by their ratings, as a
+	# domain with none written for the tide's bands plays: the Meadow's own such packs set aside,
+	# the two variants are its only packs for three.
+	db.factions["meadow"]["compositions"] = kept.filter(func(c) -> bool: return not c.has("tide"))
 	var b := Battle.new(3)
 	b.db = db
 	b.ramp = 9
 	b.setup([], "meadow")
+	var threes := 0
 	for sq in b.field.packs():
-		if sq.composition_size == "formation":
+		if not sq.is_boss and sq.squad == 3:
+			threes += 1
 			assert_eq(sq.composition, "gate_high", "a battle at C9 deals the variant its gate holds")
-	for w in b.field.cycle:
-		if str(w["size"]) == "formation":
-			assert_eq(str(w["id"]), "gate_high", "and the rift sends no other")
+	assert_true(threes > 0, "the battle opens with packs for three, so the gate is read")
+	assert_eq((b.field.graded[3] as Array).map(func(c) -> String: return str(c["id"])), ["gate_high"], "and the tide holds no other for three")
+	for w in tide_lists(b.field):
+		assert_true(ContentDB.ramp_holds(w, 9), "nor any pack whose gate shuts C9 out (%s)" % str(w["id"]))
+	# Then the packs written for the bands (`tide`: graded), which a domain that has any is dealt
+	# alone: the two variants written so, the one C9's gate holds is the tide's whole list.
+	var low_band := low.duplicate(true)
+	low_band["id"] = "band_low"
+	low_band["tide"] = ContentDB.GRADED
+	var high_band := high.duplicate(true)
+	high_band["id"] = "band_high"
+	high_band["tide"] = ContentDB.GRADED
+	db.factions["meadow"]["compositions"] = kept.filter(func(c) -> bool: return not c.has("tide")) + [low_band, high_band]
+	var g := Battle.new(3)
+	g.db = db
+	g.ramp = 9
+	g.setup([], "meadow")
+	assert_eq(tide_lists(g.field).filter(func(c) -> bool: return str(c.get("hunts", "")).is_empty()).map(func(c) -> String: return str(c["id"])), ["band_high"], "written for the bands, the variant C9's gate holds is all the tide deals")
+	var stood := 0
+	for sq in g.field.packs():
+		if not sq.is_boss:
+			stood += 1
+			assert_eq(sq.composition, "band_high", "and all the opening stands, a band with no pack of its rating dealt the nearest that has one")
+	assert_true(stood > 0, "the opening stands its packs")
+	db.factions["meadow"]["compositions"] = kept   # the Meadow as it was, the two variants its tier-one formations
 	# A gap in the tier's Convergences is refused, and so is a gate of the wrong shape.
 	high["ramp"] = [7, Ramp.TOP]
 	assert_true(db.validate().any(func(e) -> bool: return str(e).contains("no formation at tier 1 is dealt at Convergence 6")), "C6 held by none: refused")
@@ -1827,8 +1856,8 @@ func test_a_brace_is_a_positive_number_of_stacks() -> void:
 
 
 ## Rolling again on a status (the Nemesis's fists on rage, 12 October to 11 November) and the
-## Spin-Up's spin retired on 12 November: Instant is the roll that may land on itself, a spin on a
-## stepping die, so either key is refused.
+## Spin-Up's spin retired on 12 November: Instant is the roll that may land on itself (a step on a
+## stepping die since 26 November), so either key is refused.
 func test_rolling_again_and_the_spin_are_retired_for_instant() -> void:
 	var db := ContentDB.new()
 	db.load_dir(ContentDB.DIR)
@@ -1842,7 +1871,7 @@ func test_rolling_again_and_the_spin_are_retired_for_instant() -> void:
 	db.components["odd_plate"] = plate
 	var errs := db.validate()
 	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component odd_gun") and e.contains("rolls_again_on is retired")), "a roll again on a status is refused, Instant in its place")
-	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component odd_plate") and e.contains("spins is retired")), "a spin is refused, Instant's roll a spin on a stepping die")
+	assert_true(errs.any(func(e: String) -> bool: return e.begins_with("component odd_plate") and e.contains("spins is retired")), "a spin is refused, Instant in its place")
 
 
 func test_the_new_passive_fields_are_checked() -> void:
@@ -2165,11 +2194,11 @@ func test_an_aim_is_a_moves_word_on_a_move_aimed_at_one_machine() -> void:
 		for l in EntryReadout.move_lines(foe, a, db, live, target):
 			out.append(str(l["text"]))
 		return "\n".join(out)
-	assert_true(str(said.call(foe.actions[0], false, "")).contains("Target: The hottest machine"), "the codex: its word is the target's line (%s)" % str(said.call(foe.actions[0], false, "")))
-	assert_true(str(said.call(foe.actions[0], true, "Skua")).contains("Target: Skua, the hottest machine"), "a fight: the machine it picked, then its word")
+	assert_true(str(said.call(foe.actions[0], false, "")).contains("Target: The hottest Frame"), "the codex: its word is the target's line (%s)" % str(said.call(foe.actions[0], false, "")))
+	assert_true(str(said.call(foe.actions[0], true, "Skua")).contains("Target: Skua, the hottest Frame"), "a fight: the machine it picked, then its word")
 	assert_true(str(said.call(foe.actions[1], false, "")).contains("Target: Any machine"), "a blow with no word says any machine")
 	assert_true(str(said.call(foe.actions[1], true, "Skua")).contains("Target: Skua") and not str(said.call(foe.actions[1], true, "Skua")).contains("Skua,"), "and in a fight the machine alone")
-	assert_true(str(said.call(foe.actions[2], false, "")).contains("Target: The most buffed machine"), "a special aimed at one machine says its word the same way")
+	assert_true(str(said.call(foe.actions[2], false, "")).contains("Target: The most buffed Frame"), "a special aimed at one machine says its word the same way")
 
 
 ## An immunity is a foe's own Ability (17 November): a Suppress or a Disrupt, each always or
@@ -2942,12 +2971,13 @@ func test_a_cooldown_is_whole_rounds_and_every_instant_entry_carries_a_limiter()
 
 
 ## A piece locked on a stepping die has the cylinder for its Instant's limiter (the Cassowary's
-## Spin-Up, Ryan, 19 October; Instant since 12 November); anywhere else the same entry is refused,
-## and a status a weapon spends (Spun Up) is granted with no rounds.
+## Negentropy Spinner, the Spin-Up until 26 November, its id kept: its move never lands back on it,
+## so only a reroll brings it round); anywhere else the same entry is refused, and a status a weapon
+## spends (Spun Up) is granted with no rounds.
 func test_a_stepping_die_is_its_locked_instant_pieces_limiter() -> void:
 	var db := _fresh()
-	assert_false(db.validate().any(func(e: String) -> bool: return e.begins_with("component spin_up")), "the Spin-Up validates where it is locked")
-	assert_true(db.build_face(db.components["spin_up"]["face"]).has(Face.Keyword.INSTANT), "the Spin-Up is Instant")
+	assert_false(db.validate().any(func(e: String) -> bool: return e.begins_with("component spin_up")), "the Spinner validates where it is locked")
+	assert_true(db.build_face(db.components["spin_up"]["face"]).has(Face.Keyword.INSTANT), "the Spinner is Instant")
 	var loose: Dictionary = db.components["spin_up"].duplicate(true)
 	loose["tier"] = 1
 	db.components["test_loose_spin"] = loose

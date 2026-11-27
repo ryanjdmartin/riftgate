@@ -66,6 +66,9 @@ target.
      ping and spills.
    - Chain is a ping since 24 November (Ryan: "Resolve: All Sprites with Shock, Static, or Sonic
      Needle lose {N} HP"): a foe that is both Shocked and Static loses its N once, not twice.
+     Chain's tip names Shock alone since 25 November (Ryan: "the only non-exclusive conductor is
+     Shock. So it's possible that we just need to mention Shock specifically"), so Static's own tip
+     says "Conducts Chain", as Shocked's and Sonic Needle's do.
 5. **The name.** The debuff is Static. The passive trigger `static` is named "Always on" since 25
    November (Ryan: "Rename the trigger term"); its id stays the engine's, so the debuff needs an id
    of its own (`static_charge`, say) under the name.

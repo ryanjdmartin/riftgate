@@ -52,7 +52,7 @@ const SUPPORTED_EFFECTS := {
 	"on_attack": ["multiply_damage", "add_damage", "min_damage", "multiply_heat", "add_heat", "lay_status", "multiply_stacks", "multiply_printed", "split_strikes", "hit_heat"],
 	"on_injury": ["no_destroy"],
 	"on_struck": ["lay_status", "gain_heat"],   # a foe's hit landing on this machine, whatever it dealt: what it lays on the striker (the echidna's Sonic Needles, 20 November), the heat it gains (the Nemesis's Crucible Capacitor, 24 November)
-	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "rage_form", "heat_scale", "hot_hits", "reboot_piece", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_max", "hopper_plate", "count_status", "piece_form", "hold_status", "self_status", "shield_zap", "add_power", "offhand", "side_strike", "strike_again", "buff_status", "burrow", "momentum", "needles", "immune"],
+	"static": ["set_reach", "add_stat", "multiply_stat", "add_damage_taken", "multiply_damage_taken", "suppress", "grant_keyword", "ignore_armour", "spillover", "hold_all", "free_reroll", "one_of_each", "add_attack", "never_hunted", "extra_action", "hull_per_spend", "seal_form", "step_die", "fold_die", "rewrite_weapon", "rage_form", "heat_scale", "hot_hits", "reboot_piece", "shove_behind", "mine_on_spend", "muster", "carry", "forge", "bank_rerolls", "fill_hopper", "hopper_max", "hopper_plate", "hit_charge", "ignore_barrier", "restore_on_kill", "count_status", "piece_form", "hold_status", "self_status", "shield_zap", "add_power", "offhand", "side_strike", "strike_again", "buff_status", "burrow", "momentum", "needles", "immune"],
 	"on_hull_damage": ["stack_status", "add_shield", "vent_heat", "gain_heat"],
 	"on_blocked": ["stack_status", "gain_heat"],
 	"on_turn_start": ["gain_heat"],   # as this machine's turn starts (the Whip Scorpion's Obliterator, Ryan, 24 November: "Turn Start: Gain 1 heat")
@@ -67,6 +67,7 @@ const SUPPORTED_EFFECTS := {
 	"on_stack": ["add_stacks"],
 	"on_damage": ["stack_status", "add_shield", "vent_heat"],
 	"on_kill": ["stack_status", "add_shield", "vent_heat", "refill_shield"],
+	"on_use": ["stack_status"],   # every use of a component, once its hits are done (Resolve; the Cassowary's Deadeye II, Ryan, 26 November: "All Components gain: Resolve: Gain 1 Sustained Recoil")
 	"on_round_kill": ["stack_status"],   # the end of a round in which an attack of this machine's own killed, once however many fell (the Ammit's flare, Ryan, 16 November)
 	"on_foe_killed": ["stack_status", "add_shield"],   # every kill in this machine's fight, whoever made it, once for each foe (the Ammit's Essence, 12 November; the Buzzard's carrion, 18 November)
 }
@@ -255,24 +256,25 @@ const STATUS := {
 	# every die's roll a point and a kill by its own guns more, a charge every so many (the
 	# passive's muster rule), spent by its locked pieces' charged forms; never decays, and a
 	# store is a resource, so no Purge touches it (Ryan, 21 October).
-	# Phased (Ryan's mark, 15 November: "New effect: "Cannot be damaged or targeted by anything
-	# until the end of this round." We remove the awkward act clause, but still ensure that it
-	# cannot be buffed or interacted with by allies until it unphases"; "all sources of Phased
-	# should say "at the end of this round, grant Phased.""): out of reach of both sides for a
-	# round, the machine acting all the same. What a source lays is the wait for it (phasing),
-	# on a machine that must stand through the foes' turn first ("you have to survive the
-	# current round"); the skirmish lands it as that turn ends (_land_phases). Until then it
-	# could not act, take damage or be targeted until the round's end, and was granted at once,
-	# only to a machine that had not acted.
+	# Phased (Ryan, 19 November: "Phased: Cannot be targeted, damaged, or affected in any way by
+	# non-phased units"; 15 November: "all sources of Phased should say "at the end of this
+	# round, grant Phased.""), on a machine or a foe: only a Phased unit reaches it, whichever
+	# side it stands on, and it reaches everybody (reaches, the one question every path asks).
+	# What it carries is its own and acts on it in full, its heat and its own entry's costs
+	# among it. It carries no effect of its own: the skirmish reads the status. What a source
+	# lays is the wait for it (phasing), on a unit that must stand through the round first
+	# ("you have to survive the current round"); the skirmish lands it as the round ends
+	# (Skirmish._land_phases).
 	"muster": {"id": "muster", "name": "Muster", "description": "A charge its locked pieces spend for their charged forms. Every die that rolls fills it a sliver.", "decay": "none",
 		"tags": ["store"], "effects": []},
-	"phased": {"id": "phased", "name": "Phased", "description": "Cannot be damaged or targeted by anything until the end of this round.", "stacking": "renew",
+	"phased": {"id": "phased", "name": "Phased", "description": "Cannot be targeted, damaged, or affected in any way by non-phased units.", "stacking": "renew",
 		"tags": ["buff"], "effects": []},
 	"phasing": {"id": "phasing", "name": "Phasing", "description": "At the end of this round, gains Phased, if it still stands.", "stacking": "renew", "single": true,
 		"tags": ["buff"], "effects": []},
-	# Swallowed (a foe's swallow, Floraison's, 30 October): out of reach as a Phased machine is,
-	# laid by a foe and timed by its move, ended early by its swallower's fall; out of play too,
-	# so everything it carries pauses where a Phased machine's ticks (Skirmish.paused, 16 November).
+	# Swallowed (a foe's swallow, Floraison's, 30 October): out of the fight, which nothing
+	# reaches, laid by a foe and timed by its move, ended early by its swallower's fall; out of
+	# play too, so everything it carries pauses where a Phased machine's acts on it
+	# (Skirmish.paused, 16 November).
 	"swallowed": {"id": "swallowed", "name": "Swallowed", "description": "Out of the fight: it cannot act, take damage or be targeted, and everything it carries waits, until its rounds run out, its swallower falls, or its swallower loses a quarter of its HP.", "stacking": "renew", "decay": "round_end", "timer": true,
 		"tags": ["debuff"], "effects": []},
 	# The swallow on its way (Ryan, 22 November: "Round end, swallow it?"): the machine stays in
@@ -373,20 +375,22 @@ const STATUS := {
 	# a unpurgable buff called 'Burrowed' that grants 1 Armour ... and all its die faces change to
 	# its locked piece, the Inertia Drill, and it remains burrowed until it uses it"; his kit of the
 	# same day): an ability by his rule of 8 November (an unpurgeable buff is labelled an Ability,
-	# so no Purge takes it), its armour a point a stack, the stacks the burrow rule's `armour`, held
-	# from the burrow's own turn (24 November: "Burrow does not bank. But it does gain the 1
-	# Armour"). Its die rolls the Drill alone while it holds (live_entries), and the model holds the
-	# form of the same name. Each turn under opens with the rule's flat shield, cooling and
-	# Momentum (his of 24 November: "50% shield regen, 50% cooling, and 50% Momentum generation",
-	# "50% of the final numbers, but represented as flat numbers"). It goes as the Drill is fired.
-	"burrowed": {"id": "burrowed", "name": "Burrowed", "description": "Armour +{value} a stack. Its die rolls its Inertia Drill alone, and each of its turns opens with Broken and Overheated cleared, shield regained, heat cooled and Momentum gained. It comes up as it fires the Drill.", "decay": "none", "stacking": "renew",
+	# so no Purge takes it), its armour 1, held from the burrow's own turn (24 November: "Burrow
+	# does not bank. But it does gain the 1 Armour"). Its die rolls the Drill alone while it holds
+	# (live_entries), and the model holds the form of the same name. Each turn under opens with its
+	# flat shield, cooling and Momentum (his of 24 November: "50% shield regen, 50% cooling, and 50%
+	# Momentum generation", "50% of the final numbers, but represented as flat numbers"), the
+	# status's own numbers and never the passive's that grants it (Ryan, 24 November: "Move the
+	# effects on the mole's passive to the status chip"). It goes as the Drill is fired.
+	"burrowed": {"id": "burrowed", "name": "Burrowed", "description": "Armour +{value}. Its die rolls its Inertia Drill alone, and each of its turns opens with Broken and Overheated cleared, shield regained, heat cooled and Momentum gained. It comes up as it fires the Drill.", "decay": "none", "stacking": "renew",
+		"shield": 3, "cool": 6, "momentum": 5,
 		"tags": ["ability", "form"], "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 1}]},
 	# The Mole's Momentum (Ryan, 24 November: "Momentum is a Resource. It goes to 10 (subject to
-	# tuning)"): a store, capped by its burrow rule (store_cap), so nothing purges it. Each turn
+	# tuning)"): a store, its cap its own (store_cap, a burrower's), so nothing purges it. Each turn
 	# under adds the rule's share; every use that hits a foe its drill is in adds 1; the drill in a
 	# foe drains it as that foe's turn starts, and comes home when it runs out. A burrow that takes
 	# the drill home leaves it where it ended up.
-	"momentum": {"id": "momentum", "name": "Momentum", "description": "Gained while Burrowed and as the foe its drill is in is hit. Its drill drains it as that foe's turn starts. Capped.", "decay": "none",
+	"momentum": {"id": "momentum", "name": "Momentum", "description": "Gained while Burrowed and as the foe its drill is in is hit. Its drill drains it as that foe's turn starts. Capped.", "decay": "none", "cap": 10,
 		"tags": ["store"], "effects": []},
 	# The Drill in its foe (Ryan, 16 November: "Consumes all Conserved Momentum and grants a stack
 	# of Applied Momentum for each one. Applied Momentum decays 1 at the start of the target's
@@ -482,12 +486,13 @@ const STATUS := {
 	# lifts it; a Ward turns the rider away as it turns any.
 	"brittled_mech": {"id": "brittled_mech", "name": "Brittle", "description": "Every blow it takes deals a point more a stack. Halves as its turn starts, rounded down.", "decay": "half",
 		"tags": [CLEANSABLE], "effects": [{"trigger": "static", "effect": "add_damage_taken", "value": 1}]},
-	# The Cassowary's Spun Up (Ryan's go, 19 October; built 21 October): the Spin-Up's buff, its
-	# number a stack on the next weapon the machine spends, stacking, carried between turns until
-	# then (`spent_by`: the skirmish lifts every stack after a weapon's spend, equipment leaving
-	# them, since it only adds damage: Ryan, 26 October; a buff grants it with no rounds).
+	# The Cassowary's Spun Up (Ryan's go, 19 October; built 21 October; +1 a stack since 26 November:
+	# "Spun up needs to go to 1 at base"): the Negentropy Spinner's buff, its number a stack on the
+	# next weapon the machine spends, stacking, carried between turns until then (`spent_by`: the
+	# skirmish lifts every stack after a weapon's spend, equipment leaving them, since it only adds
+	# damage: Ryan, 26 October; a buff grants it with no rounds).
 	"spun_up": {"id": "spun_up", "name": "Spun Up", "description": "The next weapon it spends deals {value} more a stack and takes every stack; equipment leaves them standing. Carried between turns until then.", "decay": "none", "spent_by": "weapon",
-		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 2}]},
+		"tags": ["buff"], "effects": [{"trigger": "on_attack", "effect": "add_damage", "value": 1}]},
 	# Ricochet (the Skua's, Ryan, 12 November: "After firing a weapon, it hits the primary target 1
 	# more time per stack, dealing 1 damage each time and applying all effects other than area
 	# keywords"; 11 November: "Lose half stacks of Ricochet on any hull damage"): a buff that lasts
@@ -496,11 +501,13 @@ const STATUS := {
 	# (`halves_on`, Skirmish._hull_damaged).
 	"ricochet": {"id": "ricochet", "name": "Ricochet", "description": "After a weapon fires, it hits its target again for 1, once a stack, with every effect but its area. Hull damage halves the stacks, rounded down.", "decay": "none", "lasts": "fight", "halves_on": "hull_damage",
 		"tags": ["buff"], "effects": []},
-	# A count a rule reads (the Cassowary's sixth shot, 21 October): every weapon and equipment the
-	# machine aims at a foe this fight, a stack each, kept only where a live effect counts them (nth_shot). A
-	# store with no effect of its own; the screen draws it as pips under the heat bar.
-	"shots": {"id": "shots", "name": "Shots", "description": "Every weapon and equipment it aims at a foe this fight, counted for a rule that lands on a number of them.", "decay": "none",
-		"tags": ["store", "count"], "effects": []},
+	# The Cassowary's Sustained Recoil (Ryan, 26 November: "Max 5 stacks. At 5 stacks, the next weapon
+	# hit deals double damage"): a store its weapons' hits fill a stack each, every hit consuming it
+	# whole once it is full to double that hit (hit_charge, read by Skirmish._hit). It lasts the
+	# skirmish, never decays and nothing cleanses it; the screen draws it as a bar of its cap's cells,
+	# glowing and pulsing whole while full ("indicating the next shot is the sixth").
+	"sustained_recoil": {"id": "sustained_recoil", "name": "Sustained Recoil", "description": "Every weapon hit adds a stack; at its most, the next weapon hit consumes them all to deal double damage.", "decay": "none", "glows_full": true,
+		"tags": ["store"], "effects": []},
 	# The block as a buff (Ryan, 14 October, the honest shield's upside; built 21 October), one
 	# machine at a time. A Barrier is Shocked's mirror on the machines' side: the next blow a
 	# foe lands on it deals nothing, so a rider that reads the hull (Destroy) finds none, its riders landing, and a blow of
@@ -510,7 +517,7 @@ const STATUS := {
 	# his four places; a machine's at the round's end and a foe's at END TURN until then, neither
 	# a blow apart). A foe's (28 October), from its own specials, reads in
 	# its own words (foe_barrier, foe_ward): its Barrier pops on a weapon's blow alone, and its
-	# Ward turns the team's marks (TEAM_MARKS, turns_mark), Suppressed excepted.
+	# Ward turns the team's marks (TEAM_MARKS, turns_mark), and a stun and a Purge (2 November).
 	"barrier": {"id": "barrier", "name": "Barrier", "description": "The next blow a foe lands on it deals no damage; its riders land. Until its next turn starts.", "stacking": "renew", "single": true, "decay": "round",
 		"tags": ["buff"], "effects": []},
 	# Regenerating (28 October; one clock on both sides since 15 November, Ryan's mark: "These
@@ -661,15 +668,31 @@ static func foe_barrier() -> Dictionary:
 
 static func foe_ward() -> Dictionary:
 	var d: Dictionary = STATUS["ward"].duplicate(true)
-	d["description"] = "No mark the team lays lands on it but Suppressed: no Ablating, Brittle, Cryo, Vitriol, Shock, Expose, Web Bomb, Paradox or drone. Damage lands. Until its next turn starts."
+	d["description"] = "No mark the team lays lands on it, no stun and no Purge: no Ablating, Brittle, Cryo, Vitriol, Shock, Expose, Web Bomb, Paradox or drone. Damage lands. Until its next turn starts."
 	return d
 
 
 ## Does a Ward turn this mark away (28 October)? A foe under a Ward takes none of the team's
-## marks (TEAM_MARKS), Suppressed excepted, since Numbed stays the one stun resistance; a mark
-## id only ever lands on a foe, so a machine's Ward is never asked.
+## marks (TEAM_MARKS), and no stun either (Skirmish._suppress meets the Ward on its own path, 2
+## November); a mark id only ever lands on a foe, so a machine's Ward is never asked.
 static func turns_mark(u, id: String) -> bool:
 	return TEAM_MARKS.has(id) and has(u, "ward")
+
+
+## Phased's rule, the one question (Ryan, 19 November: "Phased: Cannot be targeted, damaged, or
+## affected in any way by non-phased units"): can `by` reach `whom`, a machine's Unit or a foe
+## each, on either side? Yes when `whom` is not Phased, when `by` is Phased too, or when they
+## are one unit, which always reaches itself. An effect's source is the unit that lands it now,
+## so what a status does is its carrier's (the readings he confirmed, 27 November): a Phased
+## unit's own statuses reach it, and a Mine or a web on a foe reaches what that foe reaches.
+## Nothing in a fight is without a unit as its source; asked with none, a Phased unit is out of
+## its reach.
+## Skirmish.reaches asks it of a machine in the fight; every list of whom a spend or a move
+## lands on is read through it.
+static func reaches(by, whom) -> bool:
+	if whom == null:
+		return false
+	return by == whom or not has(whom, "phased") or (by != null and has(by, "phased"))
 
 
 ## The armour one stack of Armoured adds (its add_stat): one, since 18 October.
@@ -726,7 +749,7 @@ const ROUND_HOLDERS := {"overcharged": "essence_flare"}
 ## instead?"): the blow is its spend's first by the strike order, its first strike's on its target
 ## (the skirmish says so in `ctx`), so an add on the next strike lands on that blow alone and on
 ## none of its area's; a forecast of the entry's number reads it as no first blow.
-const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "ally_present", "target_no_intent", "attacker_status", "nth_shot", "target_rank", "target_unhurt", "target_half", "shield_up", "sealed", "weapon", "first_blow"]
+const SUPPORTED_WHEN := ["reach_direct", "reach_indirect", "target_status", "self_status", "ally_present", "target_no_intent", "attacker_status", "target_rank", "target_unhurt", "target_half", "shield_up", "sealed", "weapon", "first_blow"]
 ## Stats a static effect may change: the mech's base numbers by these names.
 const STATS := ["hull", "shield", "heat", "armour", "move", "cooling", "shield_regen"]
 ## Effects that are bonuses (a destroyed component keeps them) rather than abilities.
@@ -1046,14 +1069,10 @@ static func decays_to_zero(def: Dictionary) -> bool:
 ## A machine's turn ends (END TURN): its turn statuses tick, Ablating's points for the caller to
 ## take before the overheat, then every stack that fades a turn loses one (Ablating,
 ## Regenerating, whose regrowth the caller reads first: regrowth), Scorched and Sapped go whole,
-## and the empty ones go. `spared`: nothing damages the machine (Phased), so its Ablating takes
-## no point, and fades a stack all the same (Ryan, 16 November: "Everything ticks during
-## phased. It doesn't take damage but it's a way of waiting out a debuff"). A Swallowed machine
-## is never asked: everything on it pauses.
-static func turn_tick(u, spared: bool = false) -> Dictionary:
+## and the empty ones go. A Phased machine's tick as any other's: what it carries is its own.
+## A Swallowed machine is never asked: everything on it pauses.
+static func turn_tick(u) -> Dictionary:
 	var out := tick_preview(u, true)
-	if spared:
-		out["hp"] = 0   # nothing damages it (Phased): its stacks tick and fade all the same
 	var keep: Array = []
 	for m in u.modifiers:
 		if m.decay == DECAY_TURN_ALL or m.decay == DECAY_AFTER_TURN:
@@ -1394,10 +1413,11 @@ static func _holds(u, eff: Dictionary, face: Face, target = null, ctx: Dictionar
 				return false
 			var need := str(eff.get("reach", ""))
 			return need.is_empty() or (face != null and effective_reach(u, face) == Face.reach_from_name(need))
-		"nth_shot":
-			# Every n-th spend at a foe this fight (the Cassowary's sixth shot): this one, when the
-			# count so far is one short of a multiple of `every`.
-			return face != null and face.is_attack() and (stacks_of(u, "shots") + 1) % maxi(1, int(eff.get("every", 6))) == 0
+		"self_status":
+			# The machine itself carries a status, at least so many stacks (the Cassowary's branches,
+			# Ryan, 26 November: Deadeye's "If Sustained Recoil is 3 or more", Quickdraw's Rapid while
+			# it carries Spun Up), read as the use is committed.
+			return u.get("modifiers") != null and stacks_of(u, str(eff.get("status", ""))) >= maxi(1, int(eff.get("stacks", 1)))
 	var w := str(eff.get("when", ""))
 	if w.begins_with("tag_"):
 		return face != null and face.tags.has(w.substr(4))
@@ -1489,7 +1509,8 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dicti
 	# The entry's own finish (the Kite's Pinion Driver, 11 November): its number multiplied against a
 	# foe at half its HP or less, on the printed number as a passive's double is, the buffs once
 	# after it; the HP the hit judged, as a passive's condition on it is.
-	if face != null and face.finishes(target, int(ctx.get("hp", -1))):
+	# A Ricochet's hit (ctx `plain`) is the machine's, never the entry's: no finish of its own.
+	if face != null and not bool(ctx.get("plain", false)) and face.finishes(target, int(ctx.get("hp", -1))):
 		p_mult *= float(face.finisher)
 	var parts: Array = _taking_part(u, "on_attack", face, target, ctx)
 	for pair in parts:
@@ -1528,6 +1549,10 @@ static func attack(u, face: Face, dmg: int, heat: int, target = null, ctx: Dicti
 	# The Whip Scorpion's heat scale (Ryan, 23 November: "Deals -50% damage at zero heat to +100% damage
 	# at max heat, scaling linearly"), a multiply after every add (Skirmish.firer_ctx).
 	d_mult *= float(ctx.get("heat_scale", 1.0))
+	# A hit the machine's store discharges into (hit_charge: the Cassowary's Sustained Recoil, Ryan, 26
+	# November: "If Sustained Recoil is 5, consume all to double damage dealt"), a multiply after every
+	# add, so the hit's whole damage doubles; the Sprite's own reads come after (Skirmish._hit).
+	d_mult *= float(ctx.get("charged", 1.0))
 	var out_dmg := maxi(d_floor, int(roundf((float(dmg) * p_mult + d_add) * d_mult)))
 	var out_heat := maxi(0, int(roundf((heat + h_add) * h_mult)))
 	if face != null and face.is_debuff():
@@ -2082,6 +2107,7 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	# A weapon's blows ignoring armour by a state its machine carries (the Wild Boar's Juggernaut
 	# Drive, a written rule since 15 November, no keyword): a weapon alone.
 	var unarmours := base.is_weapon() and not base.ignores_armour and grants_ignore_armour(u, base, target)
+	var unbarriers := base.is_weapon() and not base.ignores_barrier and grants_ignore_barrier(u, base, target)   # past a Barrier by a state its machine carries (the Cassowary's Deadeye I)
 	# Damage past a kill spilling behind by a rule its machine wears (the Overrun Gearing's, a
 	# module's; a written rule since 15 November, no keyword): every entry aimed at a foe.
 	var spills := base.is_attack() and not base.spills and grants_spill(u, base, target)
@@ -2095,7 +2121,7 @@ static func effective_face(u, face: Face, target = null) -> Face:
 	var named := entry_name(u, base)   # the name a branch's step gives the piece (the Aile Blitzer)
 	# A weapon that empties the hopper strikes once for every Ore it holds (the Bullion Fragmenter).
 	var ore := stacks_of(u, "hopper") if base.empties_hopper else -1
-	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not spills and not regranted and more == 0 and added.is_empty() and buff_to.is_empty() and named.is_empty() and ore < 0:
+	if base == face and r == face.reach and granted.is_empty() and raised.is_empty() and split <= 1 and not primed_shock and not primed_cryo and not primed_ablate and not unarmours and not unbarriers and not spills and not regranted and more == 0 and added.is_empty() and buff_to.is_empty() and named.is_empty() and ore < 0:
 		return face
 	var c := base.duplicate_face() if base == face else base
 	c.reach = r
@@ -2128,6 +2154,8 @@ static func effective_face(u, face: Face, target = null) -> Face:
 		c.split = split
 	if unarmours:
 		c.ignores_armour = true
+	if unbarriers:
+		c.ignores_barrier = true
 	if spills:
 		c.spills = true
 	if regranted:
@@ -2158,6 +2186,15 @@ static func power_added(u, face: Face, target = null) -> int:
 static func grants_ignore_armour(u, face: Face, target = null) -> bool:
 	for pair in _taking_part(u, "static", face, target):
 		if str(pair[0].get("effect", "")) == "ignore_armour":
+			return true
+	return false
+
+
+## Does a live effect make this weapon's blows pass a Barrier (ignore_barrier, static, its `when`
+## honoured: the Cassowary's Deadeye I, "Ignore Armour and Barrier")?
+static func grants_ignore_barrier(u, face: Face, target = null) -> bool:
+	for pair in _taking_part(u, "static", face, target):
+		if str(pair[0].get("effect", "")) == "ignore_barrier":
 			return true
 	return false
 
@@ -2214,6 +2251,19 @@ static func piece_form(u, face: Face) -> Face:
 	c.fixed = face.fixed
 	c.tags = face.tags.duplicate()
 	return c
+
+
+## The name a branch's step gives the piece it remakes (piece_form's `name`, the latest grant's: the
+## Obliterator's Heliographic Doom Ray), "" where none does.
+static func form_name(u, piece: String) -> String:
+	var best := ""
+	var seq := -1
+	for m in live(u):
+		for eff in m.effects:
+			if str(eff.get("trigger", "")) == "static" and str(eff.get("effect", "")) == "piece_form" and str(eff.get("entry", "")) == piece and m.seq > seq:
+				seq = m.seq
+				best = str(eff.get("name", ""))
+	return best
 
 
 ## The drum's shot from a weapon or a debuff and the rewrite that fires it.
@@ -2469,9 +2519,13 @@ static func fire(u, trigger: String, amount: int = 0, onto = null) -> Dictionary
 					# its stacks for every `stack_step` of `per_stack` held, rounded down.
 					if eff.has("per_stack"):
 						n *= stack_steps(u, eff)
-					# A store's cap (the Nemesis's rage, five; Ryan, 22 October): it banks no more.
+					# A store's cap (the Nemesis's rage, five; Ryan, 22 October): it banks no more. An
+					# effect that names none fills up to the most its store holds (the Cassowary's Deadeye
+					# II to its Sustained Recoil's five).
 					if int(eff.get("cap", 0)) > 0:
 						n = mini(n, int(eff["cap"]) - banked(who, id))
+					elif (STATUS[id].get("tags", []) as Array).has("store") and store_cap(who, id) > 0:
+						n = mini(n, store_cap(who, id) - banked(who, id))
 					if n > 0:
 						# A machine's Regenerating is the status in a machine's words, shield (the Buzzard's
 						# Sustain, 18 November); a foe's is hit points.
@@ -2583,12 +2637,14 @@ static func store_cap(u, id: String) -> int:
 				elif str(eff.get("effect", "")) == "hopper_max":
 					more += int(eff.get("value", 0)) * weight(m)
 		return cap + more if cap > 0 else 0
+	if id == "momentum":
+		return int(STATUS["momentum"].get("cap", 0)) if burrows(u) else 0   # the Mole's Momentum, up to its own cap
 	for m in live(u):
 		for eff in m.effects:
 			if str(eff.get("effect", "")) == "stack_status" and str(eff.get("value", "")) == id and int(eff.get("cap", 0)) > 0:
 				return int(eff["cap"])
-			if id == "momentum" and str(eff.get("effect", "")) == "burrow" and int(eff.get("cap", 0)) > 0:
-				return int(eff["cap"])   # the Mole's Momentum, up to its burrow's cap
+			if str(eff.get("effect", "")) == "hit_charge" and str(eff.get("value", "")) == id and int(eff.get("cap", 0)) > 0:
+				return int(eff["cap"])   # the store a weapon's hits charge (the Cassowary's Sustained Recoil)
 	return 0
 
 
@@ -2761,11 +2817,10 @@ static func folds_die(u) -> int:
 
 
 ## The burrow a machine takes in its reboot's place (burrow, static; the Mole's, Ryan, 16
-## November: "Instead of Reboot, it Burrows"; its numbers his of 24 November): {piece: the locked
-## piece its die rolls alone while Burrowed and never above ground (the Inertia Drill), cap: the
-## Momentum it holds at most, armour: Burrowed's armour, and what each turn under opens with:
-## shield, the shield it regains; cool, the heat it sheds; momentum, the Momentum it gains}; empty
-## for a machine that reboots.
+## November: "Instead of Reboot, it Burrows"): {piece: the locked piece its die rolls alone while
+## Burrowed and never above ground (the Inertia Drill)}; empty for a machine that reboots. The
+## numbers are the statuses' own (24 November): Burrowed's armour and what each turn under opens
+## with (burrowed_number), Momentum's cap (store_cap).
 static func burrow_rule(u) -> Dictionary:
 	for pair in _taking_part(u, "static", null):
 		if str(pair[0].get("effect", "")) == "burrow":
@@ -2775,6 +2830,12 @@ static func burrow_rule(u) -> Dictionary:
 
 static func burrows(u) -> bool:
 	return not burrow_rule(u).is_empty()
+
+
+## What each turn under opens with, Burrowed's own number (`shield`, the shield it regains; `cool`,
+## the heat it sheds; `momentum`, the Momentum it gains): flat, whatever grants it.
+static func burrowed_number(key: String) -> int:
+	return maxi(0, int(STATUS["burrowed"].get(key, 0)))
 
 
 ## What the drill lays in its foe, as its machine stands now, `face` its drill's entry
@@ -2887,9 +2948,8 @@ static func turn_die(u) -> bool:
 	return true
 
 
-## Does this machine's die step instead of rolling (the Cassowary's Indexed Cylinder, Ryan's
-## wording of 12 October: "Whenever its die rolls, it moves to the next entry instead, in
-## sequence")?
+## Does this machine's die step instead of rolling (the Cassowary's Syntropy Cylinder, Ryan, 26
+## November: "On Roll: Move instead to the next component in slot order")?
 static func steps_die(u) -> bool:
 	for pair in _taking_part(u, "static", null):
 		if str(pair[0].get("effect", "")) == "step_die":
@@ -2897,24 +2957,36 @@ static func steps_die(u) -> bool:
 	return false
 
 
-## Every how many spends at a foe a live rule of this machine lands (the Cassowary's sixth
-## shot): the `every` of its first nth_shot effect, 0 when nothing counts. The skirmish keeps
-## the count only for a machine that has one, and the screen draws it as that many pips.
-static func counts_shots(u) -> int:
-	for m in live(u):
-		for eff in m.effects:
-			if str(eff.get("when", "")) == "nth_shot":
-				return maxi(1, int(eff.get("every", 6)))
-	return 0
+## The store this machine's weapon hits charge (hit_charge, static: the Cassowary's Syntropy
+## Cylinder, Ryan, 26 November: "Weapons Gain: On Hit: If Sustained Recoil is 5, consume all to double
+## damage dealt. Otherwise, gain 1 Sustained Recoil"): {status, cap, times}, the first live one's;
+## empty when nothing charges. Each weapon hit, an area's and a hit again's among them, finds the
+## store full and consumes it whole to multiply its damage by `times`, or adds a stack.
+static func hit_charge(u) -> Dictionary:
+	for pair in _taking_part(u, "static", null):
+		var eff: Dictionary = pair[0]
+		if str(eff.get("effect", "")) == "hit_charge" and STATUS.has(str(eff.get("value", ""))) and int(eff.get("cap", 0)) > 0:
+			return {"status": str(eff["value"]), "cap": int(eff["cap"]), "times": float(eff.get("times", 2))}
+	return {}
 
 
-## Whether this machine's next spend at a foe is the one its count lands on.
-static func nth_shot_due(u) -> bool:
-	var every := counts_shots(u)
-	return every > 0 and (stacks_of(u, "shots") + 1) % every == 0
+## Whether the next weapon hit discharges this machine's charged store (hit_charge): it is full.
+static func charge_full(u) -> bool:
+	var c := hit_charge(u)
+	return not c.is_empty() and stacks_of(u, str(c["status"])) >= int(c["cap"])
 
 
-## What the stacks a spend at a foe lays are multiplied by (the sixth shot's double), through
+## Does a live effect keep this status through a weapon use that kills (restore_on_kill, static:
+## the Cassowary's Quickdraw I, Ryan, 26 November: "Weapons Gain: On Kill: Restore Spun Up if
+## consumed")?
+static func restores_on_kill(u, status_id: String) -> bool:
+	for pair in _taking_part(u, "static", null):
+		if str(pair[0].get("effect", "")) == "restore_on_kill" and str(pair[0].get("value", "")) == status_id:
+			return true
+	return false
+
+
+## What the stacks a spend at a foe lays are multiplied by, through
 ## the on_attack multiply_stacks effects that hold for it: 1 when none does.
 static func stack_multiplier(u, face: Face, target = null) -> int:
 	var mult := 1
@@ -2996,9 +3068,9 @@ static func purge(u, n: int = 1) -> Array[String]:
 	return out
 
 
-## The marks the team lays on foes (28 October), what a foe's cleanse takes off its own: never
-## Numbed (the buff nothing removes), never Suppressed (so a stun stays sure), never Guarded or a
-## buff.
+## The marks the team lays on foes (28 October), what a Ward turns away (a stun it turns in
+## Skirmish._suppress): never Numbed (the buff nothing removes), never Guarded or a buff. A foe's
+## cleanse takes these and the stun (cleansed_marks, 26 November).
 const TEAM_MARKS := ["ablating", "brittled", "cryoed", "vitriol", "shocked", "exposure", "webbed", "paradox", "mine", "pinned", "seared", "sapped", "applied_momentum", "frozen_momentum", "heated_momentum", "frozen", "sonic_needle"]
 
 
@@ -3011,10 +3083,26 @@ static func team_marks(u) -> int:
 	return n
 
 
-## A foe's cleanse: every mark the team laid on it goes. Returns the names that went.
+## What a foe's cleanse takes off its own: every mark the team laid and the stun (Ryan, 26 November:
+## "Change the cleanse to remove suppress, I never approved that"), so a cleanser who acts before a
+## stunned ally frees it to act. Numbed is a buff and stays; the Ward's marks stay TEAM_MARKS.
+static func cleansed_marks() -> Array:
+	return TEAM_MARKS + ["suppressed"]
+
+
+## How many of what a foe's cleanse takes this unit carries: whom a cleanser picks.
+static func cleanse_marks(u) -> int:
+	var n := 0
+	for id in cleansed_marks():
+		if has(u, id):
+			n += 1
+	return n
+
+
+## A foe's cleanse: every mark the team laid on it goes, and its stun. Returns the names that went.
 static func clear_marks(u) -> Array[String]:
 	var gone: Array[String] = []
-	for id in TEAM_MARKS:
+	for id in cleansed_marks():
 		if has(u, id):
 			remove(u, id)
 			gone.append(str(STATUS[id]["name"]))
@@ -3485,7 +3573,7 @@ static func effect_text(eff: Dictionary) -> String:
 		"reboot_piece": body = "its reboot fires its %s first" % str(eff.get("piece", "")).replace("_", " ")
 		"gain_heat": body = "+%s heat" % vs
 		"hit_heat": body = "+%s heat for each hit" % vs
-		"burrow": body = "it burrows in its reboot's place: Burrowed, armour +%d, its die rolls its %s alone, and each turn under regains %d shield, cools %d and gains %d Momentum, up to %d" % [maxi(1, int(eff.get("armour", 1))), str(eff.get("piece", "")).replace("_", " "), int(eff.get("shield", 0)), int(eff.get("cool", 0)), int(eff.get("momentum", 0)), int(eff.get("cap", 10))]
+		"burrow": body = "it burrows in its reboot's place: Burrowed, armour +%d, its die rolls its %s alone, and each turn under regains %d shield, cools %d and gains %d Momentum, up to %d" % [status_value_static("burrowed", "add_stat"), str(eff.get("piece", "")).replace("_", " "), burrowed_number("shield"), burrowed_number("cool"), burrowed_number("momentum"), int(STATUS["momentum"].get("cap", 0))]
 		"immune": body = "immune to %s" % str(STATUS.get(str(eff.get("value", "")), {}).get("name", str(eff.get("value", ""))))
 		"momentum":
 			var parts: Array[String] = []
@@ -3515,6 +3603,9 @@ static func effect_text(eff: Dictionary) -> String:
 		"hold_status": body = "its %s does not decay" % str(STATUS.get(str(v), {}).get("name", v))
 		"hold_all": body = "no %s decays this round, any unit's" % str(STATUS.get(str(v), {}).get("name", v))
 		"ignore_armour": body = "its weapons ignore armour"
+		"ignore_barrier": body = "its weapons ignore Barrier"
+		"hit_charge": body = "each weapon hit adds a stack of %s, up to %d; at %d, the hit consumes them all for ×%s damage" % [str(STATUS.get(str(eff.get("value", "")), {}).get("name", vs)), int(eff.get("cap", 0)), int(eff.get("cap", 0)), str(eff.get("times", 2))]
+		"restore_on_kill": body = "a weapon use that kills keeps its %s" % str(STATUS.get(str(eff.get("value", "")), {}).get("name", vs))
 		"multiply_stacks": body = "the stacks it lays ×%s" % vs
 		"free_reroll": body = "%s free reroll%s of this die a round" % [vs, "" if int(v) == 1 else "s"]
 		"shield_zap": body = "each weapon it fires pays %d shield, when it holds that much, for +%s on its every blow" % [int(eff.get("cost", 0)), vs]
@@ -3575,7 +3666,7 @@ static func effect_text(eff: Dictionary) -> String:
 			lead += "blows from foes carrying %s: " % (str(STATUS[st]["name"]) if STATUS.has(st) else (st.capitalize() if not st.is_empty() else "a status"))
 		"ally_present": lead += "with an ally in the fight: "
 		"sealed": lead += "while sealed: "
-		"nth_shot": lead += "every %s shot: " % ordinal(int(eff.get("every", 6)))
+		"self_status": lead += "with %s %d or more: " % [str(STATUS.get(str(eff.get("status", "")), {}).get("name", eff.get("status", ""))), maxi(1, int(eff.get("stacks", 1)))]
 		"target_rank":
 			var by := str(eff.get("reach", ""))
 			lead += ("%s blows aimed at the %s rank: " % [by, str(eff.get("rank", "front"))]) if not by.is_empty() else ("aimed at the %s rank: " % str(eff.get("rank", "front")))
