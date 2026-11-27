@@ -52,6 +52,9 @@ Foes; `tools/lure_duel_model.py` (`--split` plays the kit) and the measurements 
   up two very good words. Let's go with Polarity Inversion Field, applies Inverted Polarity. The
   drone can use something with Enforcer or Enforcement? Can I see a drone version with twinned
   fans?"
+- 27 November, the Drone: "Why does the drone need that flat platform at the bottom? I kind of like
+  the tandem cause it's different. I think just "Askari-class Enforcement Drone," or something
+  similar, shortened to "Enforcer" for gameplay text."
 - 27 November: "I think we should try a half-track for this one, it's not a silhouette we have
   yet, right? I can't tell looks without seeing them, so I'll need mock ups. Entanglement itself
   is a little too high tech for Minerva, they sit more at the Kestrel range of pseudo-science.
@@ -62,9 +65,8 @@ Foes; `tools/lure_duel_model.py` (`--split` plays the kit) and the measurements 
 
 ## The kit, decided
 
-- **The Drone**, its passive, Polarity Enforcer as a draft (his: "The drone can use something with
-  Enforcer or Enforcement?"): every weapon it uses on a Sprite moves the Drone, its Enforcer, to
-  that use's target. Draft: "Resolve: If a weapon was used on a Sprite, move the Enforcer to the
+- **The Drone**, its passive, the Askari-class Enforcement Drone, the Enforcer in gameplay text (his
+  names): every weapon it uses on a Sprite moves the Enforcer to that use's target. Draft: "Resolve: If a weapon was used on a Sprite, move the Enforcer to the
   target."
 - **The lock**, its Integrated equipment, the Polarity Inversion Field (his name): a field that
   isolates the White Rhino and one Sprite while they are joined, thrown from a projector that is
@@ -119,11 +121,10 @@ three classes as placeholders.
 ## Open for the session
 
 1. The look: A, B or C on the sheet, or his.
-2. The Drone's name: Polarity Enforcer (the draft), Enforcement Drone or Field Enforcer, and its
-   mark's (Enforcer, a draft). Name clashes wait on the component audit (his: "We'll audit the
-   components after, since the chassis texts should get first pick").
-3. Twinned fans for the Drone (his of 27 November: "Can I see a drone version with twinned
-   fans?"): the sheet's second round.
+2. The Drone's look: twinned fans in tandem, his lean ("I kind of like the tandem cause it's
+   different"); the third sheet shows it on each look, no stand under it.
+3. Name clashes wait on the component audit (his: "We'll audit the components after, since the
+   chassis texts should get first pick").
 4. Its branches, for tier two.
 5. Its numbers once the runner reads it (the bot to price a lock and the Drone's set-up first).
 

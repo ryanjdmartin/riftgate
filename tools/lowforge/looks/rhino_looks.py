@@ -156,7 +156,7 @@ def _wing(b, s, x, w, wy, wr, z_top, front, back):
             (wy + wr * 0.55, rect(x, w, z_top - 0.5, z_top + 1.5)), (front, rect(x, w, wr + 1.0, z_top - 3.0))], "steel.plate", "wing")
 
 
-def mnlook_rhino_a(b):
+def mnlook_rhino_a(b, drone="single"):
     """The long head: a long armoured bonnet over the front axle, the projector off its tip angled
     up and forward, a cab under a brow, the rear body over the tracks with a raised deck at the
     tail and the Drone's cradle on it."""
@@ -190,7 +190,7 @@ def mnlook_rhino_a(b):
         b.stock("hp_1", (0.0, -25.5, 36.7), "barrel", scale=0.85, carries="rivet_gun")
     b.stock("hp_2", (-27.0, -8.0, 31.5), "rack", scale=0.7, carries="ankle_mortar")
     b.pad("hp_3", (27.0, -8.0, 31.5), size=(7.0, 1.0))
-    _cradle(b, 0.0, 2.0, 41.0, 1.4)
+    _cradle(b, 0.0, 2.0, 41.0, 1.4, drone)
 
 
 mnlook_rhino_a.maker = MN
@@ -231,7 +231,7 @@ def mnlook_rhino_b(b, drone="single"):
 mnlook_rhino_b.maker = MN
 
 
-def mnlook_rhino_c(b):
+def mnlook_rhino_c(b, drone="single"):
     """The low ram: the cab forward over the wheels with a flat armoured face, the projector low
     between the wheels like a ram, a tall boxy body behind with overlapping skirts down the tracks,
     the Drone on a post at the rear corner."""
@@ -262,34 +262,31 @@ def mnlook_rhino_c(b):
     b.pad("hp_3", (20.0, 18.0, 40.5), size=(7.0, 1.0))
     # The Drone's post at the rear left corner.
     b.box(-21.0, -18.0, -41.0, -38.0, 38.0, 46.0, "steel.dark", "drone_post")
-    _cradle(b, -19.5, -39.5, 48.0, 1.4)
+    _cradle(b, -19.5, -39.5, 48.0, 1.4, drone)
 
 
 mnlook_rhino_c.maker = MN
 
 
 def mnlook_rhino_drone(b):
-    """The Drone alone, enlarged five times, on a plinth so its legs read."""
-    b.box(-9.0, 9.0, -9.0, 9.0, 0.0, 2.0, "steel.dark", "plinth")
-    _drone(b, (0.0, 0.0, 2.0), 5.0)
+    """The Drone alone, enlarged five times, standing on its own feet."""
+    _drone(b, (0.0, 0.0, 0.0), 5.0)
 
 
 mnlook_rhino_drone.maker = MN
 
 
 def mnlook_rhino_drone2_side(b):
-    """The Drone with twinned fans side by side, enlarged five times, on a plinth."""
-    b.box(-11.0, 11.0, -9.0, 9.0, 0.0, 2.0, "steel.dark", "plinth")
-    _drone_twin(b, (0.0, 0.0, 2.0), 5.0, "side")
+    """The Drone with twinned fans side by side, enlarged five times."""
+    _drone_twin(b, (0.0, 0.0, 0.0), 5.0, "side")
 
 
 mnlook_rhino_drone2_side.maker = MN
 
 
 def mnlook_rhino_drone2_tandem(b):
-    """The Drone with twinned fans in tandem, enlarged five times, on a plinth."""
-    b.box(-9.0, 9.0, -11.0, 11.0, 0.0, 2.0, "steel.dark", "plinth")
-    _drone_twin(b, (0.0, 0.0, 2.0), 5.0, "tandem")
+    """The Drone with twinned fans in tandem, enlarged five times."""
+    _drone_twin(b, (0.0, 0.0, 0.0), 5.0, "tandem")
 
 
 mnlook_rhino_drone2_tandem.maker = MN
@@ -303,8 +300,33 @@ def mnlook_rhino_b_twin(b):
 mnlook_rhino_b_twin.maker = MN
 
 
+def mnlook_rhino_a_tandem(b):
+    """The long head (A) with the tandem Drone on its cab."""
+    mnlook_rhino_a(b, drone="tandem")
+
+
+mnlook_rhino_a_tandem.maker = MN
+
+
+def mnlook_rhino_b_tandem(b):
+    """The shoulder (B) with the tandem Drone on its crest."""
+    mnlook_rhino_b(b, drone="tandem")
+
+
+mnlook_rhino_b_tandem.maker = MN
+
+
+def mnlook_rhino_c_tandem(b):
+    """The low ram (C) with the tandem Drone on its post."""
+    mnlook_rhino_c(b, drone="tandem")
+
+
+mnlook_rhino_c_tandem.maker = MN
+
+
 LOOKS = ["mnlook_rhino_a", "mnlook_rhino_b", "mnlook_rhino_c", "mnlook_rhino_drone", "mnlook_rhino_drone2_side",
-         "mnlook_rhino_drone2_tandem", "mnlook_rhino_b_twin"]
+         "mnlook_rhino_drone2_tandem", "mnlook_rhino_b_twin", "mnlook_rhino_a_tandem", "mnlook_rhino_b_tandem",
+         "mnlook_rhino_c_tandem"]
 
 _VIEWS = ["codex", "above", "skirmish", ("from the side", 90, 8)]
 SHEET = {
@@ -330,6 +352,20 @@ SHEET2 = {
         {"model": "mnlook_rhino_drone2_side", "label": "Twinned, side by side", "views": _DRONE_VIEWS},
         {"model": "mnlook_rhino_drone2_tandem", "label": "Twinned, in tandem", "views": _DRONE_VIEWS},
         {"model": "mnlook_rhino_b_twin", "label": "B with the side-by-side twin", "views": ["codex", "above", "skirmish", ("from the side", 90, 8)]},
+    ],
+}
+
+
+_LOOK_VIEWS = ["codex", "above", "skirmish", ("from the side", 90, 8)]
+SHEET3 = {
+    "title": "The White Rhino with the tandem Askari-class Enforcement Drone, 27 November (look tests, not content)",
+    "out": "docs/looks/minerva_white_rhino3.png",
+    "cell": (320, 320),
+    "rows": [
+        {"model": "mnlook_rhino_drone2_tandem", "label": "The Enforcer, tandem, enlarged", "views": _DRONE_VIEWS},
+        {"model": "mnlook_rhino_a_tandem", "label": "A, long head", "views": _LOOK_VIEWS},
+        {"model": "mnlook_rhino_b_tandem", "label": "B, shoulder", "views": _LOOK_VIEWS},
+        {"model": "mnlook_rhino_c_tandem", "label": "C, low ram", "views": _LOOK_VIEWS},
     ],
 }
 
