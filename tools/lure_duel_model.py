@@ -47,6 +47,7 @@ its entry shows, held; the others open the cage once nothing else stands, or reb
     python3 tools/lure_duel_model.py --tether        # the hold priced: a Drone entry, the stun, Hull a round held (fight_tether)
     python3 tools/lure_duel_model.py --ideas         # the ideas past his four, one loop for them all (fight_ideas)
     python3 tools/lure_duel_model.py --split         # his split: the lock a component, the Drone the passive (fight_split)
+    python3 tools/lure_duel_model.py --combo         # a weapon, then the Tether, in one round: the odds on the die
 """
 import argparse
 import random
@@ -852,6 +853,9 @@ def fight_split(kind, o, rng, cap=40):
       "facing"       o["plate"] more armour against the primed Sprite, before the shield
       "block"        the primed Sprite's first hit on the tank deals nothing, the Drone coming home
       "sap"          a point off its Sprite's every hit for each round it has been there, to o["cap"]
+      "beat"         the Drone a helper on its own clock: as each round opens, the Sprite it is on
+                     takes the round's beat of o["beats"] ("stun", "sapN", "brittleN" or "none"),
+                     in order, or one drawn level when o["random"] is set
     """
     squad = [Frame(tank=(i == 0)) for i in range(3)]
     tank = squad[0]
@@ -891,6 +895,18 @@ def fight_split(kind, o, rng, cap=40):
             stun(on)
             on = None
             primed = False
+        sap_now = brittle_now = 0
+        beat = "none"
+        if drone == "beat":
+            beats = o.get("beats", ["none"])
+            beat = rng.choice(beats) if o.get("random") else beats[(rounds - 1) % len(beats)]
+            if on is not None:
+                if beat == "stun":
+                    stun(on)
+                elif beat.startswith("sap"):
+                    sap_now = int(beat[3:])
+                elif beat.startswith("brittle"):
+                    brittle_now = int(beat[7:])
         doomed = {}
         for f in live:
             total = sum(w for w, _, _ in f.moves)
@@ -933,7 +949,9 @@ def fight_split(kind, o, rng, cap=40):
             if pool:
                 kills = [f for f in pool if f.hp <= GUN - f.plate]
                 t = min(kills or pool, key=lambda f: f.hp)
-                t.hp -= max(0, GUN - t.plate)
+                if brittle_now and on in pool:
+                    t = on   # the Brittle beat: the squad's round to hit it
+                t.hp -= max(0, GUN - t.plate + (brittle_now if t is on else 0))
                 m.heat += GUN_HEAT
             else:
                 idle += 1
@@ -956,6 +974,13 @@ def fight_split(kind, o, rng, cap=40):
                         # aimed at another Frame, the Drone's own Sprite when there is none.
                         stun(on)
                         hook = worst if (worst is not None and worst is not on) else on
+                    elif drone == "beat" and o.get("prepared"):
+                        # The helper's good rounds: hook its Sprite while it is stunned, or
+                        # while its Sap is on and its hit aimed at another Frame.
+                        if primed and on.stunned:
+                            hook = on
+                        elif primed and sap_now and worst is on:
+                            hook = on
                     elif worst is not None and worst.move[1] >= 6:
                         hook = worst
                     if hook is not None and o.get("prepared"):
@@ -981,7 +1006,7 @@ def fight_split(kind, o, rng, cap=40):
                 if fire:
                     kills = [f for f in pool if f.hp <= GUN - f.plate]
                     t = big if big is not None else min(kills or pool, key=lambda f: f.hp)
-                    t.hp -= max(0, GUN - t.plate)
+                    t.hp -= max(0, GUN - t.plate + (brittle_now if t is on else 0))
                     tank.heat += GUN_HEAT
                     shots += 1
                     if t.hp > 0 and t is not on:
@@ -1013,6 +1038,8 @@ def fight_split(kind, o, rng, cap=40):
                 dmg = n
                 plate = m.armour
                 if f is on:
+                    if sap_now:
+                        dmg = max(0, dmg - sap_now)
                     if drone == "sap":
                         dmg = max(0, dmg - min(o.get("cap", 3), rounds - since))
                     if primed and m is tank and drone == "facing":
@@ -1058,7 +1085,66 @@ SPLIT_ROWS = [
     ("No Tether: the reboot's Suppress alone", {"tether": False, "drone": "reboot_stun"}),
     ("No Tether: the Sap alone", {"tether": False, "drone": "sap", "cap": 3}),
     ("No Tether: the Armour alone", {"tether": False, "drone": "facing", "plate": 4}),
+    # The Drone on its own clock (Ryan, 27 November: "the drone suppresses every X rounds, not
+    # triggered", "a random or rotating debuff at the start of round to whatever it's on").
+    ("Lock, a Suppress every 3 rounds", {"lock": 2, "drone": "beat", "beats": ["none", "none", "stun"], "prepared": True}),
+    ("No Tether: a Suppress every 3 rounds", {"tether": False, "drone": "beat", "beats": ["none", "none", "stun"]}),
+    ("Lock, a Suppress every 4 rounds", {"lock": 2, "drone": "beat", "beats": ["none", "none", "none", "stun"], "prepared": True}),
+    ("No Tether: a Suppress every 4 rounds", {"tether": False, "drone": "beat", "beats": ["none", "none", "none", "stun"]}),
+    ("Lock, the rotation: Sap 2, Brittle 2, Suppress", {"lock": 2, "drone": "beat", "beats": ["sap2", "brittle2", "stun"], "prepared": True}),
+    ("No Tether: the rotation", {"tether": False, "drone": "beat", "beats": ["sap2", "brittle2", "stun"]}),
+    ("Lock, one of the three drawn each round", {"lock": 2, "drone": "beat", "beats": ["sap2", "brittle2", "stun"], "random": True, "prepared": True}),
+    ("No Tether: one of the three drawn each round", {"tether": False, "drone": "beat", "beats": ["sap2", "brittle2", "stun"], "random": True}),
 ]
+
+
+def combo_odds(trials=200000, seed=5):
+    """A weapon, then the Tether, in one round: the odds on the die (Ryan, 27 November, of the
+    Tether's Suppress with no round's wait: "a combo of rapid weapon into lure+suppress"). The
+    rules as written: a reroll lands on any other entry, never the one showing; a dark entry
+    can be rolled and not used; Rapid rerolls for nothing, never onto its own entry, and goes
+    dark. The player uses a Rapid weapon when it shows, the Tether when it shows, and spends a
+    reroll on anything else."""
+    rng = random.Random(seed)
+
+    def one(die, rerolls):
+        n = len(die)
+        show = rng.randrange(n)
+        dark = set()
+        fired = False
+        left = rerolls
+        while True:
+            e = die[show]
+            if show not in dark and e == "T":
+                return fired
+            if show not in dark and e == "R":
+                fired = True
+                dark.add(show)
+                show = rng.choice([i for i in range(n) if i != show])
+                continue
+            if left <= 0:
+                return False
+            left -= 1
+            show = rng.choice([i for i in range(n) if i != show])
+
+    def alone(n, rerolls):
+        show = rng.randrange(n)
+        left = rerolls
+        while show != 0:
+            if left <= 0:
+                return False
+            left -= 1
+            show = rng.choice([i for i in range(n) if i != show])
+        return True
+
+    print("| The die | No reroll | One | Both |")
+    print("|---|---|---|---|")
+    for name, die in (("The Tether, one Rapid weapon, two guns", "TRWW"), ("The Tether, two Rapid weapons, a gun", "TRRW"),
+                      ("The Tether, three Rapid weapons", "TRRR")):
+        cells = ["%.0f%%" % (100.0 * sum(1 for _ in range(trials) if one(die, r)) / trials) for r in (0, 1, 2)]
+        print("| %s: a weapon, then the Tether | %s |" % (name, " | ".join(cells)))
+    cells = ["%.0f%%" % (100.0 * sum(1 for _ in range(trials) if alone(4, r)) / trials) for r in (0, 1, 2)]
+    print("| The Tether alone showing, a die of four | %s |" % " | ".join(cells))
 
 
 IDEAS_ROWS = [
@@ -1126,7 +1212,11 @@ def main():
     ap.add_argument("--tether", action="store_true", help="the hold priced: a Drone entry, the reboot's stun, Hull a round held")
     ap.add_argument("--ideas", action="store_true", help="the ideas past his four: between rounds, no letting go, angrier, a price as set, the tug of war")
     ap.add_argument("--split", action="store_true", help="his split: the lock a component, the Drone the passive, by what the Drone does")
+    ap.add_argument("--combo", action="store_true", help="the odds of a weapon, then the Tether, in one round on the die")
     a = ap.parse_args()
+    if a.combo:
+        combo_odds()
+        return
     for kind, title in PACKS:
         print("\n### %s\n" % title)
         print("| The squad | Won | Rounds | Hull lost, the tank | Hull lost, the others | Wrecks | Turns with nothing to aim at |")

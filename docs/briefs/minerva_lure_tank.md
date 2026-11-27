@@ -10,8 +10,8 @@ interesting." "The lure tank" is a working label; the name and the machine are R
 **Status**: Ryan's idea of 25 November, Claude's round on it (the cage), his four brainstorms
 and Claude's read of them (the hold), his issue of 26 November with the hold's bar, Claude's
 lean on it and his answer that it left a free lure, the price that answers him, and the ideas past his
-four that he asked for on 27 November, and his split of that day (the lock a component, the Drone
-the passive) with Claude's read of it, unanswered. **Maker**:
+four that he asked for on 27 November, his split of that day (the lock a component, the Drone
+the passive) and his questions on the Drone's trigger, with Claude's reads, unanswered. **Maker**:
 Minerva. **Proposed tier**: one. **Read first**: `docs/briefs/README.md` (ten a maker, the
 orbits); `docs/rules.md`, The reboot and Foes (a Sprite's target); the bible's redirection row,
 threat-shape row and armour row (section 5) and the Storm Petrel's row. The rounds before 25
@@ -384,10 +384,61 @@ it can. His ideas 2 and 4 retire with this form: nothing lets go, and the stun i
 
 Claude's lean: the Suppress the hook fires, the Sap the alternative if the stun reads too sharp.
 
+## The Drone's trigger (27 November)
+
+Ryan, 27 November: "So if we simplified the interaction to just 'resolve: suppress the drone's
+target' that would open up a combo of rapid weapon into lure+suppress. It's not perfectly
+reliable, obviously. Do you read that as a chase piece, or abuse? Another angle: the drone
+suppresses every X rounds, not triggered. Or, the drone grants either a random or rotating debuff
+at the start of round to whatever it's on, like a little uncontrolled helper you can take
+advantage of if it's favourable."
+
+**The simpler line: a chase piece.** "Resolve: Apply Suppressed to the Sprite the Drone is on."
+
+- One Rapid weapon fits a hardpoint today, the Pulse Vacillator: Aphelion's, tier two, a found
+  blueprint, 2 damage for 5 heat. With basics the stun still takes two rounds, a weapon and then
+  the Tether, so tier one loses nothing by the simpler line.
+- The odds (`tools/lure_duel_model.py --combo`), a die of the Tether, the Vacillator and two
+  guns: a weapon and then the Tether in one round 8% of rounds with no reroll, 19% with one, 29%
+  with both; the Tether alone shows 67% with both. A second Rapid weapon makes it 51%, a third
+  65%: the number of Rapid weapons made is the dial.
+- It adds no stun. Numbed gates each Sprite, and a lock running its two rounds keeps the Tether
+  busy; the combo moves a stun a round earlier, onto an intent shown this round, which tier
+  two's Suppress pieces do from one entry (the Suppression Battery, the Backdraft Charge, 5
+  heat each). It costs 6 heat in the round.
+- What would make it abuse, so part of the rule: the Tether usable again while its lock runs
+  (a stun a round across a pack). One lock at a time, and the Tether waits it out.
+
+**The Drone on its own clock.** The Nob alone, the hull the squad loses, with the Tether and with
+none on the die (`--split`):
+
+| What the Drone does | With the Tether | With none | Rounds |
+|---|---|---|---|
+| Nothing: no kit | 46 | 46 | 10.0 |
+| The hook fires its Suppress | 34 | the Drone does nothing | 10.9 |
+| A Suppress every 3 rounds | 38 | 37 | 10.3 |
+| A Suppress every 4 rounds | 31 | 29 | 10.1 |
+| The rotation: Sap 2, Brittle 2, Suppress | 28 | 26 | 8.5 |
+| One of those three drawn each round | 26 | 25 | 8.8 |
+
+- Untriggered, the Drone does the kit's work by itself and the lock adds nothing to the squad's
+  whole: it only moves the loss onto the tank. The lure stops mattering, as it did with the
+  Suppress a reboot fired.
+- Every X rounds wants its X on the stun resist: at 3 an elite's Numbed takes every other one.
+- The helper is the strongest thing played and no small one: the Brittle beat is the squad's
+  damage, the fight a fifth shorter, and the tank a marker and a controller besides. Rotating and
+  drawn read level; a rotation can be planned and a draw only met, and the fun rule asks for
+  randomness the player can shift.
+- The way to keep the helper and the lure both: the hook fires whichever beat the Drone is
+  showing. Not played yet.
+
+Claude's lean: the simpler line, the hook its trigger.
+
 ## Open for the session
 
-1. What the Drone does: the Suppress the hook fires, the Sap, facing, or another.
-2. The lock: two rounds that nothing ends early, or another length or end.
+1. What the Drone does: the Suppress the hook fires (the simpler line), its own clock, the
+   helper, or the hook firing the helper's beat.
+2. The lock: two rounds that nothing ends early, one at a time, or another length or end.
 3. Whether the Tether is Rapid (the model's is not: the hook is the tank's use that round).
 4. Area: sealed both ways, or its storms on every Frame.
 5. The machine and its name; numbers and stock; its branches.
