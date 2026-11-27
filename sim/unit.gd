@@ -277,8 +277,24 @@ func recharge_shield(amount: int) -> int:
 
 
 ## Grant a content passive as a loadout modifier (tests and the hangar).
+## A passive, an upgrade or a module granted to this unit, its words naming it where they say
+## {self} (Ryan, 27 November: "Use self everywhere"): its description and a rule's own line, filled
+## as it is granted, so every readout that lists it names its Frame.
 func grant_passive(p: Dictionary, source: String = "chassis", component: String = "") -> void:
-	Effects.grant(self, Effects.make(p, Effects.LOADOUT, source, component))
+	Effects.grant(self, Effects.make(_named(p), Effects.LOADOUT, source, component))
+
+
+## A passive's words with {self} as this unit: its description and each effect's `line`.
+func _named(p: Dictionary) -> Dictionary:
+	if JSON.stringify(p).find("{self}") < 0:
+		return p
+	var who := Templates.self_of(self)
+	var out: Dictionary = p.duplicate(true)
+	out["description"] = Templates.with_self(str(out.get("description", "")), {"self": who})
+	for eff in out.get("effects", []):
+		if eff is Dictionary and (eff as Dictionary).has("line"):
+			eff["line"] = Templates.with_self(str(eff["line"]), {"self": who})
+	return out
 
 
 func damaged_component_count() -> int:

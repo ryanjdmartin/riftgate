@@ -12,7 +12,8 @@ section 4. `tests/test_terms.gd` holds every tip to the mechanical parts.
 ## 1. A tip at a glance
 
 - **Words.** *Frame* is ours, *Sprite* theirs, *unit* either; Frame and Sprite are capitalised and
-  never tappable. A Frame *uses* a component, and each blow that lands is a *hit*. A Sprite is
+  never tappable. A piece names its own Frame `{self}`: its name where one is open ("the
+  Nemesis"), "this Frame" where none is (rule 3). A Frame *uses* a component, and each blow that lands is a *hit*. A Sprite is
   *defeated*, and the Frame that did it *killed* it; a Frame is *wrecked*, a component *destroyed*.
   A chassis's built-in components are *Integrated*; *Fixed: X* means only X may be used.
   Never foe, machine, enemy, blow, strike, shot, falls or felled; "spend" only for a resource paid
@@ -67,10 +68,18 @@ buff on your whole team and a Sprite's attack on it. Built on the target lines a
 - "Any ally or self" → "Any Frame"
 - "Every Ally" → "Every Frame"
 
-**3. A piece calls the Frame it's on "this Frame".**
-That covers components, passives and modules (rule 1's word). A status's own lines name no
-carrier: they say what happens to it ("Gain 1 Brittle", rule 37).
-- "Its weapons deal +1 damage to a foe carrying Cryo." → "This Frame's weapons deal +1 damage to a Sprite carrying Cryo."
+**3. A piece names the Frame it's on: `{self}`.** (settled 27 November: his word)
+A component, a passive, an upgrade, a module and a tip say `{self}` for the Frame they are on
+(his: "Use self everywhere, it's more future proof"). It reads as the Frame's name wherever one
+is open, "the Nemesis", since a roster holds one of each chassis (his: "I want to lock in only
+ever having one of a chassis. Then, we can be more specific, instead of 'this frame' we can use
+'the Nemesis'"), and as "this Frame" where none is: the glossary, a piece in the stores. A
+Sprite is never named, two of one being their design: on one, `{self}` reads "this Sprite".
+It takes a capital where it opens a line or follows a label. A status's own lines still name no
+carrier where they say what happens to it ("Gain 1 Brittle", rule 37); a condition that needs
+its carrier says `{self}`.
+- "Its weapons deal +1 damage to a foe carrying Cryo." → "{self}'s weapons deal +1 damage to a Sprite carrying Cryo."
+- "Hit: Change intended target to this Frame." (Lure) → "Hit: Change intended target to {self}.", on the Nemesis's die "to the Nemesis"
 
 **4. The player is "you".**
 The two halves of a round are "your turn" and "the Sprites' turn".

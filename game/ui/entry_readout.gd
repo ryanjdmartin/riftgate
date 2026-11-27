@@ -91,7 +91,7 @@ static func lines_for(f: Face, place: int, shown: int, base: Face, states: Array
 			out.append(marked(text_line("state", str(st[0])), [st[1]]))
 		else:
 			out.append(text_line("state", str(st)))
-	var codex := str(comp.get("codex", ""))
+	var codex := Templates.with_self(str(comp.get("codex", "")))   # {self}: the Frame whose die it is, by name (Templates.self_name)
 	if not codex.is_empty():
 		out.append(text_line("codex", codex))
 	out.append_array(effects_of(f, shown, base, cooldown))

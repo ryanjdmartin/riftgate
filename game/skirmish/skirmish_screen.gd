@@ -393,7 +393,7 @@ static func _default_skirmish() -> Skirmish:
 	var team: Array = db.default_team()
 	var env := OS.get_environment("RIFTGATE_TEAM")
 	if not env.is_empty():
-		team = env.split(",")
+		team = ContentDB.one_of_each_chassis(Array(env.split(",")))   # one of each chassis (27 November)
 	# RIFTGATE_PAINT=badger:ff8800/223344,kite:ffffff repaints for a look (primary/secondary).
 	var paints := {}
 	for spec in OS.get_environment("RIFTGATE_PAINT").split(",", false):
@@ -2534,6 +2534,7 @@ func _close_pop() -> void:
 	var die := _pop.has("die")
 	_pop = {}
 	KeywordTip.fills = {}   # no unit open: its tips' sums go with it
+	Templates.self_name = ""   # and {self} with them
 	_details.visible = false
 	if die:
 		_refresh(false)   # its marks and its lure's preview go with it
@@ -2566,11 +2567,13 @@ func _show_pop() -> void:
 			_close_pop()
 			return
 		KeywordTip.fills = term_fills(foe)
+		Templates.self_name = Templates.self_of(foe)   # {self} names the unit open (27 November)
 		_show_details("", v, _foe_hold_lines(foe))
 	elif _pop.has("mech"):
 		var i: int = _pop["mech"]
 		var mv: UnitView = _mech_views[i]
 		KeywordTip.fills = term_fills(sk.mechs[i].unit)
+		Templates.self_name = Templates.self_of(sk.mechs[i].unit)   # {self} names the unit open (27 November)
 		_show_details("", mv, _mech_hold_lines(i), mv.drawn_top(), POP_GAP)
 
 
@@ -2698,6 +2701,7 @@ func _on_foe_double_tapped(v: UnitView) -> void:
 	var foe: Foe = _view_foe.get(v, null)
 	if foe != null:
 		KeywordTip.fills = term_fills(foe)
+		Templates.self_name = Templates.self_of(foe)   # {self} names the unit open (27 November)
 		_open_codex(ContentDB.load_default().codex_for_foe(foe))
 
 
@@ -2707,6 +2711,7 @@ func _on_mech_double_tapped(i: int) -> void:
 	# need to show the current die face. Codex entries should only ever show elements as they are
 	# outside the skirmish"): no entry showing marked.
 	KeywordTip.fills = term_fills(ms.unit)
+	Templates.self_name = Templates.self_of(ms.unit)   # {self} names the unit open (27 November)
 	_open_codex(ContentDB.load_default().codex_for_unit(ms.unit))
 
 
@@ -2753,6 +2758,7 @@ func _open_codex(entry: Dictionary) -> void:
 func _close_codex() -> void:
 	_codex.close()
 	KeywordTip.fills = {}
+	Templates.self_name = ""   # and {self} with them
 
 
 var _menu: PauseMenu = null

@@ -2150,6 +2150,11 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   squad slots; the first battle is fought by those three and brings the fourth machine (The
   first battle, below). 0 salvage, 100 Favour, a blueprint for every basic, the six of tier
   zero the game deals.
+- **One of each chassis**: a roster never holds two of one chassis, so a Frame's own words can
+  name it (`{self}`, the text standard's rule 3). The tender deals one of each, the first
+  battle's pick and every offer deal only a chassis the roster lacks, the quick campaign's draft
+  and offers the same, and the harness fields none twice. Sprites come in any number. The
+  balance runner may field a repeated chassis as a what-if, never by default.
 - **The first battle** is the Meadow's, and a run opens on it: a forced choice of city, no
   turn passed before it is fought. The first rifts are the opening domain's, the one content
   marks (a domain's `opening`; with none marked they roll as any other), so the two first

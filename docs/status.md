@@ -101,6 +101,11 @@ document's job and every command are in `README.md`.
   turn (his "Intents pick their target at round start"; a second caster passes over what the
   first covers, an empty pick stays, and a line runs from the caster to its pick), so a stunned
   pick a cleanser ahead of it will free shows its intent, which the Funnel-Web's Ambush reads.
+  On 27 November a roster holds one of each chassis (his "I want to lock in only ever having one
+  of a chassis"), so every piece names its Frame with `{self}` (his "Use self everywhere, it's
+  more future proof"): "the Nemesis" wherever a Frame is open, "this Frame" where none is, "this
+  Sprite" on a Sprite; the standard's rule 3, settled. The harness drops a repeated chassis, and
+  the balance runner fields one only with `--repeat-chassis`.
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
   (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks
@@ -136,7 +141,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1520 tests, 407,676 checks, green on Godot 4.8-beta4 (27 November, Phased by source taken in under the picks among their own). The runner fails a run
+- Tests: 1524 tests, 407,700 checks, green on Godot 4.8-beta4 (27 November, one of each chassis and {self}). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).

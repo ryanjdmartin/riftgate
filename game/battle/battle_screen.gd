@@ -218,7 +218,7 @@ static func _default_battle() -> Battle:
 	var ids: Array = db.default_team()
 	var env := OS.get_environment("RIFTGATE_TEAM")
 	if not env.is_empty():
-		ids = env.split(",")
+		ids = ContentDB.one_of_each_chassis(Array(env.split(",")))   # one of each chassis (27 November)
 	for id in ids:
 		if db.chassis.has(id):
 			team.append(db.make_mech(id))
@@ -986,7 +986,7 @@ static func cache_lines(_f: Battlefield, c: Dictionary) -> Array:
 	if bp > 0.0:
 		out.append(_said("Blueprint:", "a %d%% chance at one the run lacks" % roundi(bp * 100.0)))
 	if not str(e.get("codex", "")).is_empty():
-		out.append(EntryReadout.text_line("effect", str(e["codex"])))
+		out.append(EntryReadout.text_line("effect", Templates.with_self(str(e["codex"]), {"self": Templates.say("self.none")})))
 	out.append(EntryReadout.text_line("effect", "A machine standing on it as the turn ends claims it"))
 	return out
 

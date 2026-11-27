@@ -475,7 +475,7 @@ static func glossary(db: ContentDB) -> Array:
 			if str(e.get("category", "")) == str(kind[0]) and str(e.get("status", "")) == "implemented":
 				if str(kind[0]) == "foe" and not Terms.has(str(id)):
 					continue
-				entries.append([str(e.get("name", id)), str(e.get("codex", "")), str(id)])
+				entries.append([str(e.get("name", id)), Templates.with_self(str(e.get("codex", "")), {"self": Templates.say("self.none")}), str(id)])   # the glossary reads {self} as "this Frame": no unit is open
 		entries.sort_custom(func(a: Array, b: Array) -> bool: return str(a[0]).naturalnocasecmp_to(str(b[0])) < 0)
 		if entries.is_empty():
 			continue

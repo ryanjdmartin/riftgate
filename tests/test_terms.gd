@@ -238,6 +238,12 @@ func test_a_tip_fills_the_sum_its_unit_carries() -> void:
 	assert_eq(KeywordTip.filled("penetrate", "dealing {N} damage", {}), "dealing N damage", "a keyword's number stands as N")
 	assert_eq(KeywordTip.filled("swallowed", "upon {caster} losing", {"swallowed": {"N": 2, "caster": "Floraison"}}), "upon Floraison losing", "who laid it")
 	assert_eq(KeywordTip.filled("swallowed", "upon {caster} losing", {}), "upon its caster losing", "or its caster")
+	var was := Templates.self_name
+	Templates.self_name = ""
+	assert_eq(KeywordTip.filled("lure", "Hit: Change intended target to {self}.", {}), "Hit: Change intended target to this Frame.", "{self} with no Frame open")
+	Templates.self_name = Templates.self_of(Unit.mech(1, "Nemesis", Vector2i.ZERO))
+	assert_eq(KeywordTip.filled("lure", "Hit: Change intended target to {self}.", {}), "Hit: Change intended target to the Nemesis.", "and the Frame open, by name (27 November)")
+	Templates.self_name = was
 	var db := ContentDB.load_default()
 	for id in db.vocabulary.keys():
 		var said := KeywordTip.filled(str(id), str(db.vocabulary[id].get("codex", "")), {})
@@ -314,3 +320,50 @@ func test_a_grants_block_draws_indented_beside_a_bar() -> void:
 	assert_eq(r._blocks.size(), 2, "a bar beside each of the block's lines")
 	assert_true((r._blocks[1] as Rect2).position.y <= (r._blocks[0] as Rect2).end.y + 0.5, "the second joined to the first: one bar down the block")
 	r.free()
+
+
+## A Frame's text names it with {self}, never "this Frame" or "this machine" (Ryan, 27 November:
+## "Use self everywhere, it's more future proof"; the text standard's rule 3): every shown text in
+## content, the glossary's tips, the chassis' passives and upgrades, the components' and modules'
+## words and the templates, the trigger notes the player never reads aside.
+func test_shown_text_names_its_frame_with_self() -> void:
+	var db := ContentDB.load_default()
+	var said := RegEx.new()
+	said.compile("\\b[Tt]his (Frame|machine)\\b")
+	var found: Array[String] = []
+	for id in db.vocabulary.keys():
+		var e: Dictionary = db.vocabulary[id]
+		if str(e.get("category", "")) != "trigger" and said.search(str(e.get("codex", ""))) != null:
+			found.append("vocabulary %s" % id)
+	for id in db.chassis.keys():
+		var c: Dictionary = db.chassis[id]
+		if said.search(str((c.get("passive", {}) as Dictionary).get("description", ""))) != null:
+			found.append("passive %s" % id)
+		for b in c.get("branches", []):
+			for st in (b as Dictionary).get("steps", []):
+				if said.search(str((st as Dictionary).get("description", ""))) != null:
+					found.append("upgrade %s" % id)
+	for id in db.components.keys():
+		var comp: Dictionary = db.components[id]
+		if said.search(str(comp.get("codex", "")) + " " + JSON.stringify(comp.get("text", {}))) != null:
+			found.append("component %s" % id)
+	for id in db.modules.keys():
+		if said.search(JSON.stringify((db.modules[id] as Dictionary).get("text", {}))) != null:
+			found.append("module %s" % id)
+	for id in Templates.table().keys():
+		if str(id) != "self.none" and said.search(JSON.stringify(Templates.table()[id].get("text", ""))) != null:
+			found.append("template %s" % id)
+	assert_eq(found, [] as Array[String], "every Frame's text says {self}")
+
+
+## A passive, an upgrade and a module rule granted to a Frame name it where they say {self}, filled
+## as they are granted, so every readout that lists them reads its name.
+func test_a_granted_passive_names_its_frame() -> void:
+	var u := Unit.mech(1, "Nemesis", Vector2i.ZERO)
+	u.grant_passive({"id": "test_rage", "name": "Fury", "description": "Turn Start: {self} gains Rage.", "effects": [{"trigger": "static", "effect": "add_stat", "stat": "armour", "value": 0, "line": "When Hit: {self} gains 1 Heat."}]})
+	var rows := Effects.describe(u)
+	var row: Array = rows.filter(func(r) -> bool: return str(r[5]) == "test_rage")[0]
+	assert_eq(str(row[1]), "Turn Start: The Nemesis gains Rage.", "its description names it, a capital after the label")
+	var m = u.modifiers.filter(func(x) -> bool: return x.id == "test_rage")[0]
+	assert_eq(str(m.effects[0]["line"]), "When Hit: The Nemesis gains 1 Heat.", "and a rule's own line")
+

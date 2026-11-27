@@ -118,13 +118,15 @@ func _fill(ids: Array, near: Rect2) -> void:
 	_panel.position = Vector2(x, y)
 
 
-## A term's line with its marks filled: {N} the sum the open unit carries, {caster} who laid it.
+## A term's line with its marks filled: {N} the sum the open unit carries, {caster} who laid it,
+## {self} the unit itself ("the Nemesis"; Templates.with_self).
 ## With no unit open (the keywords list, a die's entry) the sum's own aside goes and a bare N or
 ## "its caster" stands in.
 static func filled(id: String, codex: String, with: Dictionary = fills) -> String:
 	var f: Dictionary = with.get(id, {})
 	for key in f.keys():
 		codex = codex.replace("{%s}" % key, str(f[key]))
+	codex = Templates.with_self(codex)   # {self}: the unit open, by name, or "this Frame" (Templates.self_name)
 	return codex.replace(" ({N})", "").replace("{N}", "N").replace("{caster}", "its caster")
 
 

@@ -563,6 +563,7 @@ def lints(s, planned_terms):
     allowed = {"damage", "value"} if s["kind"] in ("foe_move", "status_line", "passive", "module_text") else set(s.get("fills") or [])
     if s["kind"] == "term":
         allowed |= {"caster"}   # a tip's who-laid-it, filled from the unit whose readout is open (KeywordTip.filled; {N} is its sum)
+    allowed |= {"self"}   # the unit itself, by name where one is open, "this Frame" where none is (Templates.with_self; 27 November)
     for b in re.findall(r"\{([a-z_]+)\}", t):
         if b not in allowed:
             out.append("{%s} is filled by nothing here" % b)
