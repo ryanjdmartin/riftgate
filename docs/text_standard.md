@@ -35,15 +35,15 @@ section 4. `tests/test_terms.gd` holds every tip to the mechanical parts.
 - **Numbers.** Digits; rates use "per". A status's numbers are its own, never the move's or the
   passive's that laid it. `{N}` fills with the unit's current sum and goes only on a per-stack
   line ("+1 damage per stack ({N})"); in a keyword's tip it is the keyword's number.
-- **Shape.** Technical lines, not prose: "Only Knuckles of Fury available.", "Reboot disabled.",
+- **Shape.** Technical lines, not prose: "Fixed: Knuckles of Fury", "Reboot disabled.",
   "Cooling disabled." Precise and succinct, one effect a line, no semicolon. It names no other
   rule that may change, no piece that carries it, and never its own heading. Game nouns are
   capitalised as his lines write them: Heat, Max Heat, Shield, Hull, HP, Max HP, Armour, Buff,
   Debuff, Reboot.
 - **As written:**
   - Brittle: "When Hit: +1 damage received per stack ({N}). / Turn Start: Reduce stacks by half, rounded down."
-  - Shocked: "When Hit: If targeted, consume to double damage received, before applying defensive effects. / Conducts Chain."
-  - Golden: "On Hit: +2 damage dealt. / +1 Armour. / Gain Suppressed upon losing 25% Max HP since the start of the effect. / On Suppressed: Reduce stacks to 0. / Turn End: Reduce stacks by 1."
+  - Shocked: "Hit By Weapon: If targeted, consume to double damage received, before applying defensive effects. / Conducts Chain."
+  - Golden: "Attacks Gain: / Hit: +2 damage dealt. / +1 Armour. / Gain Suppressed upon losing 25% Max HP since the start of the effect. / On Suppressed: Reduce stacks to 0. / Turn End: Reduce stacks by 1."
   - Penetrate: "Also hits all other Sprites in the same column, dealing {N} damage."
 
 ## 2. The rules
@@ -261,7 +261,7 @@ hits (`docs/rules.md`, Every Foe).
 clause it can do without. A status's trigger lives on what grants it: the Nemesis's passive says
 "Turn Start: If at Max Heat or higher, remove all Debuffs and gain Rage.", and Rage says what it
 does.
-- "Its Knuckles of Fury are its only component, and gain Instant." → "Only Knuckles of Fury available." (Rage) and "During Rage, gain Instant." (the Knuckles)
+- "Its Knuckles of Fury are its only component, and gain Instant." → "Fixed: Knuckles of Fury" (Rage) and "During Rage, gain Instant." (the Knuckles)
 - "Cannot reboot by choice." → "Reboot disabled."
 
 **38. Game nouns are capitalised.**

@@ -573,7 +573,7 @@ Deleted on his word of 20 November: the vocabulary marks, the targeting scenes, 
 analysis, the effects listening page and the engagement sandbox (the README's docs line has the
 copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
 
-- The terminology standard, what is still his to mark (settled rules listed for reference; Version 15, 26 November, rule 41 the block form, ready for his marks): https://claude.ai/artifact/TXNpkS4zuPJ5c6sEpk9oF4,
+- The terminology standard, what is still his to mark (settled rules listed for reference; Version 16, 27 November, the seven calls the rounds of 26 November left open added to section 4, ready for his marks): https://claude.ai/artifact/TXNpkS4zuPJ5c6sEpk9oF4,
   made from `docs/text_standard.md`'s section 2 and `docs/terminology_proposal.md`'s section 4 by `tools/pages/terminology_marks_page.py` and
   published with the `db` and `user` capabilities. Each rule, call and name takes a mark and a
   note, saved in the collection `marks`, a document an item keyed by its id (`rule-13`,
