@@ -105,7 +105,11 @@ document's job and every command are in `README.md`.
   of a chassis"), so every piece names its Frame with `{self}` (his "Use self everywhere, it's
   more future proof"): "the Nemesis" wherever a Frame is open, "this Frame" where none is, "this
   Sprite" on a Sprite; the standard's rule 3, settled. The harness drops a repeated chassis, and
-  the balance runner fields one only with `--repeat-chassis`.
+  the balance runner fields one only with `--repeat-chassis`. The same day no status grows itself
+  (his, of Paradox: "I don't think stacks should be able to multiply themselves, so it should be
+  the baboon applying it, as the source"; the standard's rule 37): Paradox's, Essence's,
+  Enraged's and Sonic Needle's growth lines left their tips for what lays them, the Nob's Enrage a
+  template; whether their payoffs and the numbers in them follow waits on his answer.
   `ccr-bd73687d-w8qox1` (the deaths, the wrecks, the rift's shell, the muster) landed on 18
   November on Ryan's "You're good to clean up and merge into main", and `ccr-c1cf6f73-ql6n4q`
   (the look tests, Minerva under 4-4-2 and its vent, the Mole) the same day on his "looks
@@ -141,7 +145,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1525 tests, 407,718 checks, green on Godot 4.8-beta4 (27 November, one of each chassis and {self}, over a needle's bolt the Echidna's). The runner fails a run
+- Tests: 1526 tests, 407,717 checks, green on Godot 4.8-beta4 (27 November, no status growing itself). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).

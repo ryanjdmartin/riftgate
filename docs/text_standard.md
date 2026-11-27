@@ -269,9 +269,12 @@ hits (`docs/rules.md`, Every Foe).
 "You're still writing prose and not technical lines": a line states the rule, no "its" and no
 clause it can do without. A status's trigger lives on what grants it: the Nemesis's passive says
 "Turn Start: If at Max Heat or higher, remove all Debuffs and gain Rage.", and Rage says what it
-does.
+does. So a status never grows itself: its stacks come from what lays them, which says so (his,
+27 November, of Paradox: "I don't think stacks should be able to multiply themselves, so it
+should be the baboon applying it, as the source").
 - "Its Knuckles of Fury are its only component, and gain Instant." → "Fixed: Knuckles of Fury" (Rage) and "During Rage, gain Instant." (the Knuckles)
 - "Cannot reboot by choice." → "Reboot disabled."
+- "When another Debuff is applied: Gain 1 stack per stack applied." (Paradox) → the line leaves the tip; the Baboon's passive lays the stacks
 
 **38. Game nouns are capitalised.**
 His lines of 24 November write Heat, Max Heat, Debuffs and Reboot with capitals, beside Armour

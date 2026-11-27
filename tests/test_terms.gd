@@ -367,3 +367,24 @@ func test_a_granted_passive_names_its_frame() -> void:
 	var m = u.modifiers.filter(func(x) -> bool: return x.id == "test_rage")[0]
 	assert_eq(str(m.effects[0]["line"]), "When Hit: The Nemesis gains 1 Heat.", "and a rule's own line")
 
+
+## A status never grows itself (Ryan, 27 November, of Paradox: "I don't think stacks should be able
+## to multiply themselves, so it should be the baboon applying it, as the source"; the standard's
+## rule 37: "A status's trigger lives on what grants it"): no status's tip gains its own stacks.
+## Its stacks come from what lays them, which says so: the Baboon's passive, the Ammit's, the
+## Echidna's, the Nob's Enrage.
+func test_no_status_grows_itself() -> void:
+	var db := ContentDB.load_default()
+	var found: Array[String] = []
+	for id in db.vocabulary.keys():
+		var e: Dictionary = db.vocabulary[id]
+		if str(e.get("category", "")) != "status":
+			continue
+		var name := str(e.get("name", id))
+		var own := RegEx.new()
+		own.compile("\\bGains? (\\d+|\\{N\\}|a) (stacks?|%s)\\b|stacks? (gained|applied)" % name)
+		for line in str(e.get("codex", "")).split("\n"):
+			if own.search(line) != null:
+				found.append("%s: %s" % [id, line])
+	assert_eq(found, [] as Array[String], "every status's stacks come from what lays them")
+

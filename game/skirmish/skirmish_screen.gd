@@ -1687,7 +1687,9 @@ static func _step_marks(a: Dictionary, shown: Array = [], idle: Array = [], list
 func _foe_abilities(foe: Foe) -> Array:
 	var rows: Array = []
 	if foe.rage > 0:
-		rows.append(["overcharge", "", "Ability, Enrage: every shield, vent or equipment you spend makes it Enraged +%d" % foe.rage, _foe_chip_colour("enraged"), "ability"])
+		# Enraged's growth lives here, on what grants it (the standard's rule 37; Ryan, 27 November: a
+		# status's stacks never multiply themselves, their source applies them).
+		rows.append(["overcharge", "", Templates.say("ability.enrage", {"n": foe.rage}), _foe_chip_colour("enraged"), "ability"])
 	if foe.drains:
 		# The Vampire Lord's (Ryan, 15 November: "This should be moved to an ability on the unit
 		# since it's on every attack. Like the Nob"): the rule its every blow plays by.

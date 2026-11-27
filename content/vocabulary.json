@@ -376,7 +376,7 @@
    "id": "paradox",
    "category": "status",
    "name": "Paradox",
-   "codex": "When another Debuff is applied: Gain 1 stack per stack applied.\nAt 5 or more stacks: Reduce stacks to 0 and gain Suppressed.",
+   "codex": "At 5 or more stacks: Reduce stacks to 0 and gain Suppressed.",
    "status": "implemented",
    "design": {
     "holes": "The count is a placeholder (Ryan, 11 November: \"we have no idea how many paradox stacks is balanced, we just decided on 3 or whatever as a placeholder without knowing how much status chips were going to get thrown around in the game as a whole\"); a stack a debuff stack since that day, at five.",
@@ -899,7 +899,7 @@
    "id": "essence",
    "category": "status",
    "name": "Essence",
-   "codex": "When any Sprite is defeated: Gain 1 Essence.\nSkirmish Start: Gain 1 Empowered per 5 Essence.\nRound End: If {self} killed a Sprite this round, gain 1 Empowered per 5 Essence.\nLasts the battle.",
+   "codex": "Skirmish Start: Gain 1 Empowered per 5 Essence.\nRound End: If {self} killed a Sprite this round, gain 1 Empowered per 5 Essence.\nLasts the battle.",
    "status": "implemented",
    "design": {
     "holes": "Ryan's rework of 12 November, Souls then; Essence his name of 15 November (\"Rename souls to Essence\"). No cap by his call (\"as part of the fantasy\"), so it is no store, which is capped and wears a bar: an Ability, a chip with its count. The kill's flare is once a round, as it ends, when an attack of the Ammit's killed in it (Ryan, 16 November: \"at the end of a round where the Ammit killed at least one enemy\"); once an attack that killed from 12 November until then (\"Flaring twice for an AoE is probably wrong, let's make it 'one of more killed' by an attack\"), and once for each foe in the first build. The text is a session's draft.",
@@ -2181,7 +2181,7 @@
    "id": "enraged",
    "category": "status",
    "name": "Enraged",
-   "codex": "Attacks Gain:\n  Hit: +1 damage dealt per stack ({N}).\nWhen you use a component that is not a weapon: Gain 1 stack.\nLasts the skirmish.",
+   "codex": "Attacks Gain:\n  Hit: +1 damage dealt per stack ({N}).\nLasts the skirmish.",
    "status": "implemented",
    "design": {
     "holes": "The rage's value and the Nob's numbers are placeholders. Permanent for the fight, as built (Ryan, 4 November: \"Nob permanent\"; Claude's lean, since an elite's job is to make the player change plan). The rage is the foe's own from the start since 8 November: it was a Bellow, the Nob's opening move, so its first round fed nothing (Ryan: \"It's not innate? ... That is so unbelievably incorrect\").",
@@ -2561,7 +2561,7 @@
    "id": "sonic_needle",
    "category": "status",
    "name": "Sonic Needle",
-   "codex": "Gain 1 stack per hit from the Frame that laid it, and per hit this Sprite lands on that Frame.\nConducts Chain.\nAt 3 or more stacks: Chain 2 fires. Reduce stacks to 0.",
+   "codex": "Conducts Chain.\nAt 3 or more stacks: Chain 2 fires. Reduce stacks to 0.",
    "status": "implemented",
    "design": {
     "holes": "Ryan, 20 November: \"Sonic Needle - Conducts Chain. On 3 stacks, the Echidna fires Chain 2, then consume all stacks on this foe\"; his answers that day: the bolt is \"targeted at nothing. So the foe that hit 3 stacks and procced it would take 2 by definition\", and a stack a strike. Its branches tweak it: the Spiker's sap (1 less on the foe's attacks a stack) and Chaos's bolt leaving its foe one stack in place of none (Ryan, 21 November: \"reduce stacks to 1\"). The text is a session's draft.",
