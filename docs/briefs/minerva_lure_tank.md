@@ -47,13 +47,21 @@ Foes; `tools/lure_duel_model.py` (`--split` plays the kit) and the measurements 
 - 27 November, its lock: "The lock is referencing quantum entanglement not physical. Shouldn't be a
   winch, this isn't W&S. More, I dunno, tractor beam. And it can be the "horn" such as it is on the
   model."
+- 27 November: "I think we should try a half-track for this one, it's not a silhouette we have
+  yet, right? I can't tell looks without seeing them, so I'll need mock ups. Entanglement itself
+  is a little too high tech for Minerva, they sit more at the Kestrel range of pseudo-science.
+  Something like Polarity Enforcer, magnetism related, harmonics or resonance related. Anything
+  that would cause the field to isolate the two while they're connected. Whether that's
+  physically or through some shared attribute that would make them, I guess, unaffected by
+  others."
 
 ## The kit, decided
 
 - **The Drone**, its passive: every weapon it uses on a Sprite moves the Drone to that use's
   target. Draft: "Resolve: If a weapon was used on a Sprite, move the Drone to the target."
-- **The lock**, its Integrated equipment: quantum entanglement, never a line, thrown as a tractor
-  beam from a projector that is its horn, such as it is. Indirect, Entangle 2, Cooldown 1, heat 1,
+- **The lock**, its Integrated equipment: a field that isolates the White Rhino and one Sprite
+  while they are joined, magnetism or resonance, thrown from a projector that is its horn, such as
+  it is; "Entangled" a working label until he names the term. Indirect, Entangle 2, Cooldown 1, heat 1,
   not Rapid, a Beam; as it resolves, the Sprite the Drone is on is Suppressed.
 - **Entangled**, sealed both ways at half damage, a stack off at its Sprite's turn end, so it
   holds the round it is set and the next. Draft, worded after Phased: "Targets only the Frame that
@@ -74,33 +82,39 @@ having no big hitter to take. With half damage the lock is safe enough that hook
 shows does better than waiting a round for the Drone, so the set-up is the stun's, not the
 lock's safety.
 
-## Claude's round on the look (27 November)
+## The look round (27 November): three half-tracks and the Drone
 
-Nicknamed for how it acts, never drawn as the animal: the rhino reads in the mass and the lowered
-front, and the kit's two pieces are its features, the lock's projector where a horn would stand
-(his: "it can be the 'horn' such as it is"), and a cradle for the Drone. The projector is a
-device, blunt and squared, with an emitter at its tip and coils down its length, so it reads as a
-horn by where it stands and as a machine by what it is. While the lock holds, a beam joins the
-projector to its Sprite: gameplay information, so its colour is checked against its grounds and
-it carries structure besides hue (a travelling pulse along it). Minerva's livery, matte steel and
-military green; the white is in the name.
+His: "I think we should try a half-track for this one, it's not a silhouette we have yet, right?
+I can't tell looks without seeing them, so I'll need mock ups." No machine is a half-track (the
+Echidna's look round drew one on 15 November and he took the armoured car), and the engine moves
+five ways (tracked, walker, wheeled, hover, flyer), so the White Rhino is tracked for the rules
+and a half-track to look at. The sheet is `docs/looks/minerva_white_rhino.png`, built by
+`tools/lowforge/looks/rhino_looks.py` (`$BPY_PYTHON tools/lowforge/looks/sheet.py rhino_looks`):
+blockouts for proportion and placement, not detail.
 
-- **Look A, the low tractor.** A long, low tracked hull with its weight forward over the front
-  sprockets; the projector low on the nose, angled up and forward; the Drone's cradle on a raised
-  rear deck. Plates overlap down the flanks in skirts.
-- **Look B, the shouldered hauler.** Short and tall: a high armoured hump over the front tracks,
-  the projector set on the brow of the hump and the engine decks falling away behind; the Drone
-  perched on the crest of the hump, where an oxpecker rides.
-- **The Drone, either look.** A single ducted fan in a ring body, a sensor nose with a lit lens
-  and a short stun prong, two short grip legs. It rides its cradle, hops to the target of each
-  weapon the White Rhino uses and perches there, and dives with the prong as the lock fires: a
-  bird in how it moves, a machine in how it looks. A model of its own, which the screen moves.
+Every look carries the kit the same way: steered wheels forward under armoured wings, a track
+unit under each side of the rear body, the lock's projector where a horn would stand (blunt and
+squared, coil collars down it, a lit tip for its field), and the Drone on a cradle on top, where
+an oxpecker rides. Minerva's steel and green; the white is in the name. Each wears its stock's
+three classes as placeholders.
+
+- **A, the long head.** A long armoured bonnet over the front axle, the projector off its tip
+  angled up and forward; the cab the high point, broad-shouldered, with the Drone on its roof
+  behind the brow; the gun on a ring on the lower rear deck.
+- **B, the shoulder.** A short bonnet and a high armoured hump over the cab, the projector on the
+  hump's brow, the Drone on the hump's crest behind it; the gun on the rear deck.
+- **C, the low ram.** The cab forward over the wheels with a flat armoured face, the projector low
+  between the wheels like a ram, a tall boxy body behind with overlapping skirts down the tracks,
+  the Drone on a post at the rear corner.
+- **The Drone.** A ducted fan in a hollow green ring, a pod hung under it with a lit lens and a
+  stun prong at the nose, a small tail fin, two grip legs to perch on a Sprite.
 
 ## Open for the session
 
-1. The look: A, B, or his.
-2. The names of the Drone and the lock ("Lock" is his word as a working label, and the die's own
-   lock wants it kept apart).
+1. The look: A, B or C on the sheet, or his.
+2. The lock's field and its names: magnetism or resonance (his of 27 November), the term for
+   Entangled, the lock piece's name and the Drone's. His example, Polarity Enforcer, meets
+   Aphelion's Polarity Projector (the Lammergeier's stock, a Shock debuff).
 3. Its branches, for tier two.
 4. Its numbers once the runner reads it (the bot to price a lock and the Drone's set-up first).
 
