@@ -481,12 +481,12 @@ func strikes() -> int:
 ##           popped or the end of the player's next turn (28 October)
 ##           regenerate: Regenerating `value` on itself, a regrowth at each of its next three
 ##           actions after its ticks (28 October)
-##           phase: it fades as the round ends, Phased through the round after: out of the
-##           team's reach and damaged by nothing, acting all the same; never while it is the
-##           last foe standing, and never a foe Phased already, so none is out two rounds
-##           running (Ryan, 15 November: "I think we give this to the foes too"; "Phased on
-##           foes can be less strict since it's balanced around their kit and theme"; the
-##           Spectre's and the Wraith's, a step after their Hex Bolt, 17 November)
+##           phase: it fades as the round ends, Phased through the round after: only a Phased
+##           unit reaches it, of the team's or of its own side, what it carries acts on it and
+##           it acts on everybody all the same (Skirmish.reaches); never while it is the last
+##           foe standing, and never a foe Phased already, so none is out two rounds running
+##           (Ryan, 15 November: "I think we give this to the foes too"; the Spectre's and the
+##           Wraith's, a step after their Hex Bolt, 17 November)
 ##   buff    revive_once: it gets back up once the next time it falls, whole, in its own slot
 ##           (Reraise); Suppress and Disrupt answer the telegraphed move, kill order the rest
 ##           revive_once_ally: one of its own, never itself, not yet readied, comes back once
@@ -538,6 +538,9 @@ func strikes() -> int:
 ##           gave it, what a foe readied for itself staying its own (the Lich's fall, Ryan's
 ##           yes of 17 November: "Killed, every foe it readied loses its readiness to rise");
 ##           a fall's by sense, the one fall that pays the team
+## Each lands on what its foe reaches (Skirmish.reaches): one on its own side passes a Phased
+## foe by, and one on a machine or on every machine a Phased machine, unless the foe that makes
+## the move is Phased too (Skirmish.own_side, targetable_mechs).
 ## A move may do more than one of these: its first step is the move as written, and `also`
 ## lists what it does after, each an effect from these lists with its own fields (steps_of).
 ## A cleanse that follows a heal in one move lands on the foe the heal mended (the Cleric's
@@ -589,9 +592,11 @@ func intends() -> bool:
 ## Does this foe show intent on a machine (the funnel-web's ambush read, 18 October, as the
 ## HUD draws the arrows): alive, not suppressed, and its arrow on it, its pick or a blow at
 ## every machine, a gathering countdown included. A foe on a special that acts on nobody in
-## particular shows intent on no machine, whatever its pick. `u` is the machine's Unit.
+## particular shows intent on no machine, whatever its pick, and no foe shows any on a machine
+## it cannot reach (Effects.reaches: a Phased machine, where the foe is not Phased), a blow at
+## every machine passing that one by. `u` is the machine's Unit.
 func intent_on(u) -> bool:
-	if u == null or not intends() or is_suppressed():
+	if u == null or not intends() or is_suppressed() or not Effects.reaches(self, u):
 		return false
 	if reaches_every_machine():
 		return true

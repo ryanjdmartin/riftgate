@@ -13330,3 +13330,32 @@ the Waste where the Meadow's packs for one are three. The floor player is wiped 
 nine battles of ten in the Marsh and in every one in the Waste. Their tables are the brief's
 order (`docs/briefs/graded_tide.md`, section 8), and until each is written its domain is the
 harder for the switch-over.
+
+## 27 November: Phased by source, against the Marsh's ghosts
+
+For Ryan's rule of 19 November ("Phased: Cannot be targeted, damaged, or affected in any way by
+non-phased units"), built on his three yeses of 27 November (the bible's Phased row). Whether
+the rule moves a fight that fields a fading foe, with no machine of ours that phases.
+
+**The anchor read** (`tools/anchor_read.gd -- pool=badger,skua,storm_petrel,prairie_dog,cassowary,cottonmouth
+seeds=5 tier=2 ramp=5 kinds=formation,elite only=wight_host,grave_field,death_knights_retinue`:
+the six certain tier ones, every squad of three, against the Marsh's three tier-two formations
+that field Spectres; before is `ea10aaac`). Tier two is unsized and these are tier-one machines,
+so the figures are no read of the tier, only of the difference:
+
+| The formation | Before: won, rounds, of a four's hull | After |
+|---|---|---|
+| The wight host (three Spectres) | 96%, 9.6, 32.4% | 96%, 9.6, 32.4% |
+| The grave field (two) | 10%, 46.3, 54.9%, 52 stalled | 10%, 46.3, 54.9%, 52 stalled |
+| The death knights' retinue (two) | 23%, 17.2, 69.8% | 27%, 16.7, 68.5% |
+
+**The trace** (`tools/behaviour_trace.gd`, 3276 seeded fights, on both trees): 2975 are the
+same record byte for byte; the 301 that differ all field a Phased source, a Spectre or a Wraith
+in the pack or the Phase Inducer or the Mooring Screens in the kit, and their first differences
+read as the rule (a Phased machine ablating, burning and bitten by its own entry, a faded foe
+passed by its own side's rally, "cannot target").
+
+Read: against a squad with no piece that phases the rule moves little, a fight or two in one
+formation of three, since what changed for a faded foe is its own side's help and its own
+debuffs. Its weight is in the pieces of ours that phase, and those are a test piece and a
+machine in design.

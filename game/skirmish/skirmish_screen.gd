@@ -1116,7 +1116,7 @@ func _refresh(save: bool = true) -> void:
 	var support: Array[Skirmish.MechState] = []   # the machines a dragged shield, vent or buff may land on
 	var seconds: Array = []   # a pending Swap's second targets: foes and empty slots (Vector2i)
 	if not _pending.is_empty():
-		seconds = sk.swap_targets(_pending["primary"], sk.swap_carries(sk.mechs[int(_pending["mech"])]))
+		seconds = _swap_seconds()
 		for x in seconds:
 			if x is Foe:
 				targets.append(x)
@@ -1514,8 +1514,10 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	# Aloft (the Roc while its Stoop gathers, 16 November): no die may be dropped on it, so it is
 	# drawn as what is out of the fight is, a faint ghost under a dashed edge, and higher over its
 	# shadow. A first cut, to judge running (RIFTGATE_ALOFT_DEBUG=1 holds every foe so). A Phased
-	# foe (17 November) is out of reach the same way and drawn the same, where it stands.
-	v.away = Skirmish.out_of_reach(foe) or ALOFT_DEBUG
+	# foe (17 November) is drawn the same, where it stands, while it is out of reach: the fight
+	# says for whom (Skirmish.out_of_reach), the machine whose die is in hand, or a machine that
+	# is not Phased when none is. So a Phased machine's die lifted shows it solid, a target.
+	v.away = Skirmish.out_of_reach(foe, _die_in_hand()) or ALOFT_DEBUG
 	if Effects.has(foe, "aloft") or ALOFT_DEBUG:
 		v.hover = maxf(v.hover, WINGED_LIFT) + ALOFT_LIFT
 	v.breathe = true
@@ -1800,8 +1802,8 @@ func _foe_rows(foe: Foe) -> Array:
 		# chip beside its countdown says why the foe is no target; a Purge that reaches it takes it.
 		rows.append(status_row("aloft", _foe_glyph("aloft"), "", str(Effects.STATUS["aloft"]["name"]), _foe_chip_colour("aloft")))
 	if Skirmish.foe_phased(foe):
-		# A foe's Phased (17 November): out of the team's reach until the round's end, on the
-		# chip a Phased machine wears.
+		# A foe's Phased (17 November): in a Phased machine's reach alone until the round's
+		# end, on the chip a Phased machine wears.
 		rows.append(status_row("phased", status_glyph("phased"), "", str(Effects.STATUS["phased"]["name"]), _foe_chip_colour("phased")))
 	if foe.committed:
 		# An announced follow-up (2 November): committed, so no Disrupt turns it; a Suppress still takes
@@ -2224,11 +2226,12 @@ func _refresh_arrows() -> void:
 			continue
 		if _turns.has(foe):
 			continue   # its arrow is the lure preview's, below
-		# A blow at every machine (`all`) draws an arrow to each live machine.
+		# A blow at every machine (`all`) draws an arrow to each live machine it reaches: none
+		# to a Phased one from a foe that is not Phased (Foe.intent_on).
 		var targets: Array[int] = []
 		if foe.reaches_every_machine():
 			for i in range(sk.mechs.size()):
-				if sk.mechs[i].alive():
+				if sk.mechs[i].alive() and Skirmish.reaches(foe, sk.mechs[i]):
 					targets.append(i)
 		else:
 			var target_index := sk.mechs.find(foe.target)
@@ -2926,6 +2929,22 @@ func _pin_aim() -> void:
 		_aim_at(fv.get_global_transform() * fv.drawing_rect().get_center(), true, true)
 
 
+## The machine whose die is in hand, dragged or waiting on a Swap's second target; null with
+## none. What the foes' views show as out of reach is read for it.
+func _die_in_hand() -> Skirmish.MechState:
+	var i: int = _drag_from if _drag_from >= 0 else int(_pending.get("mech", -1))
+	return sk.mechs[i] if i >= 0 and i < sk.mechs.size() else null
+
+
+## The second targets the Swap that waits may take, as the fight lists them for its machine
+## (Skirmish.swap_targets: the foes that machine reaches, and the empty slots).
+func _swap_seconds() -> Array:
+	if _pending.is_empty():
+		return []
+	var m: Skirmish.MechState = sk.mechs[int(_pending["mech"])]
+	return sk.swap_targets(_pending["primary"], sk.swap_carries(m), m)
+
+
 ## A tap on a slot while a Swap waits for its second target: the foe there, or the empty slot,
 ## if it is one the Swap may take. Any other tap leaves the Swap waiting.
 func _on_slot_tapped(rank: int, col: int) -> void:
@@ -2933,7 +2952,7 @@ func _on_slot_tapped(rank: int, col: int) -> void:
 		return
 	var foe := sk.foe_at(rank, col)
 	var second = foe if foe != null else Vector2i(rank, col)
-	if not sk.swap_targets(_pending["primary"], sk.swap_carries(sk.mechs[int(_pending["mech"])])).has(second):
+	if not _swap_seconds().has(second):
 		return
 	var i: int = _pending["mech"]
 	var primary: Foe = _pending["primary"]
@@ -2946,7 +2965,7 @@ func _on_slot_tapped(rank: int, col: int) -> void:
 ## A tap on a twin slot's right-hand half while a Swap waits for its second target.
 func _on_twin_tapped(rank: int, col: int) -> void:
 	var twin: Foe = sk.twins.get(Vector2i(rank, col), null)
-	if _pending.is_empty() or twin == null or not sk.swap_targets(_pending["primary"]).has(twin):
+	if _pending.is_empty() or twin == null or not _swap_seconds().has(twin):
 		return
 	var i: int = _pending["mech"]
 	var primary: Foe = _pending["primary"]

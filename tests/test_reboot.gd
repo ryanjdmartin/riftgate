@@ -275,12 +275,12 @@ func test_heat_laid_on_a_rebooting_machine_stays_and_burns_like_any() -> void:
 	assert_eq(m.hull, 195, "thirty-five laid on it while it reboots, five past its maximum, burn like any machine's")
 
 
-## A machine out of reach does not burn: a Swallowed one has no turn to give, so it cannot
-## reboot either; a Phased one is damaged by nothing (Ryan, 16 November: "it shouldn't take
-## damage from overheating since we don't need the exception. It does accumulate the stacks,
-## though, which it will feel the round after") and acts, so it may reboot, bare where nothing
-## reaches it (15 November: "it's a safe reboot if you can pull it off").
-func test_a_machine_out_of_reach_does_not_burn_and_a_phased_one_may_reboot() -> void:
+## A Swallowed machine does not burn: it has no turn to give, so it cannot reboot either. A
+## Phased machine's heat is its own (Ryan, 19 November: "Phased: Cannot be targeted, damaged, or
+## affected in any way by non-phased units"; what a unit carries acts on it): it burns and
+## overheats as any machine does, the forecast showing it, and it acts, so it may reboot, bare
+## to the foes that reach it alone.
+func test_a_swallowed_machine_does_not_burn_and_a_phased_one_burns_and_may_reboot() -> void:
 	var m := _mech(1, "A", _gun(40), 40, 200, 30)
 	var sk := _fight([m, _mech(2, "B", _gun(0))], [Foe.make("dummy", 9000, 0)])
 	var ms: Skirmish.MechState = sk.mechs[0]
@@ -299,24 +299,31 @@ func test_a_machine_out_of_reach_does_not_burn_and_a_phased_one_may_reboot() -> 
 	assert_eq(m.hull, 180, "back in the fight, the stacks it still carries burn again")
 	sk.start_round()
 	Effects.grant_for_rounds(m, Effects.STATUS["phased"], "test", sk.round)
-	assert_true(Skirmish.is_out(ms), "Phased, it is out of reach this round")
-	assert_true(sk.can_reboot(0), "and free to reboot: the safe one")
-	assert_eq(int(sk.forecast(ms)["overheat"]), 0, "the forecast shows no burn on it this turn")
+	assert_true(Skirmish.is_phased(ms), "Phased this round")
+	assert_true(sk.can_reboot(0), "and free to reboot")
+	assert_eq([int(sk.forecast(ms)["overheat"]), int(sk.forecast(ms)["burn"])], [10, 10 * Skirmish.overheat_scale], "the forecast shows its burn this turn, Phased or not")
 	sk.assign(0, sk.front[0])
-	assert_eq(ms.overheat_stacks(), 50, "it fires again, and its heat past the maximum grows: the stacks accumulate")
+	assert_eq(ms.overheat_stacks(), 50, "it fires again, and its heat past the maximum grows")
 	sk.end_round()
-	assert_eq(m.hull, 180, "Phased, it takes nothing from its own heat")
-	assert_true(sk.overheats.is_empty(), "and the turn is no overheat")
-	sk.start_round()
-	sk.end_round()
-	assert_eq(m.hull, 130, "back in reach, it feels every stack the round after")
+	assert_eq(m.hull, 180 - 50 * Skirmish.overheat_scale, "Phased, its own heat burns it for every stack")
+	assert_eq(sk.overheats.size(), 1, "and the turn's burn is on record, as any machine's")
 	sk.start_round()
 	Effects.grant_for_rounds(m, Effects.STATUS["phased"], "test", sk.round)
 	assert_true(sk.reboot_mech(0), "it gives a Phased turn to the reboot")
 	sk.end_round()
-	assert_eq(m.hull, 130, "and burns nothing that turn")
+	assert_eq(m.hull, 180 - 50 * Skirmish.overheat_scale, "vented at the drop, it burns nothing that turn")
 	sk.start_round()
 	assert_eq([ms.heat, m.shield], [0, 40], "cold and whole the round after")
+	# Its first turn past its maximum is its overheat, Phased or not: its shield breaks.
+	var n := _mech(1, "A", _gun(40), 40, 200, 30)
+	var s2 := _fight([n, _mech(2, "B", _gun(0))], [Foe.make("dummy", 9000, 0)])
+	s2.start_round()
+	Effects.grant_for_rounds(n, Effects.STATUS["phased"], "test", s2.round)
+	s2.assign(0, s2.front[0])
+	s2.end_round()
+	assert_eq([n.hull, n.shield], [200 - 10 * Skirmish.overheat_scale, 0], "a Phased machine overheats: the hull burns and the shield breaks")
+	assert_true(s2.mechs[0].overheated and s2.mechs[0].shield_broken, "its one overheat between reboots, taken")
+	assert_true(bool(s2.overheats[0]["first"]), "and the record says it was the first")
 
 
 func test_a_blow_that_takes_a_shield_to_nothing_breaks_it_and_a_lesser_one_does_not() -> void:

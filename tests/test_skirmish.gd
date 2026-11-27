@@ -3446,7 +3446,7 @@ func test_a_disrupt_makes_the_foe_do_its_other_move_and_the_new_move_aims_for_it
 	sk.end_round()
 	assert_eq(Effects.stacks_of(sk.mechs[0].unit, "ablating_mech"), 2, "the stoke landed on its pick: two stacks of Ablating")
 	assert_eq(cold.shield, 40, "and no blow did")
-	# A pick the new move cannot keep (its machine Phased) is drawn again.
+	# A pick the new move cannot keep (its machine Phased, where the foe is not) is drawn again.
 	var sp := Skirmish.new(1, 1)
 	sp.add_mech(_mech("A", Die.single(Face.attack(10, L, K.DISRUPT)), 40, 200))
 	var phm := _mech("B", Die.single(Face.blank()), 0, 50)
@@ -3461,7 +3461,25 @@ func test_a_disrupt_makes_the_foe_do_its_other_move_and_the_new_move_aims_for_it
 	hp3.target = sp.mechs[1]
 	Effects.grant_for_rounds(phm, Effects.STATUS["phased"], "test", sp.round)
 	assert_true(sp.assign(0, hp3), "disrupted")
-	assert_eq(hp3.target, sp.mechs[0], "its machine Phased, it picks the one it may")
+	assert_eq(hp3.target, sp.mechs[0], "its machine Phased and beyond its reach, it picks the one it may")
+	# A Phased foe reaches a Phased machine, so its pick on one holds through the Disrupt.
+	var sq := Skirmish.new(1, 1)
+	var jammer := _mech("A", Die.single(Face.attack(10, L, K.DISRUPT)), 40, 200)
+	var held := _mech("B", Die.single(Face.blank()), 0, 50)
+	sq.add_mech(jammer)
+	sq.add_mech(held)
+	var hq := _ghoul(500, 20)
+	hq.actions = [Foe.basic_action(), _special("debuff", "ablate", {"value": 2})]
+	hq.actions[0]["weight"] = 1000
+	hq.action = hq.actions[0]
+	sq.add_foes([hq])
+	sq.begin()
+	sq.start_round()
+	hq.target = sq.mechs[1]
+	for unit in [jammer, held, hq]:
+		Effects.grant_for_rounds(unit, Effects.STATUS["phased"], "test", sq.round)
+	assert_true(sq.assign(0, hq), "a Phased machine disrupts the Phased foe")
+	assert_eq(hq.target, sq.mechs[1], "and its pick on the Phased machine holds: it may still target it")
 	# A move aimed at no one machine (a brace) holds no pick, so turned into a blow it takes the
 	# next machine in line (Ryan, 26 October: a buff to an attack "should still retarget").
 	var sb := Skirmish.new(1, 1)
@@ -5430,6 +5448,9 @@ func test_a_foe_that_climbs_is_no_target_while_its_blow_gathers() -> void:
 	assert_true(Skirmish.out_of_reach(roc), "through the player's next turn it is out of the dice's reach")
 	assert_false(sk.targets_for(0).has(roc), "no die may be dropped on it")
 	assert_true(sk.targets_for(0).has(other), "the foe beside it is a target as ever")
+	Effects.grant_for_rounds(a, Effects.STATUS["phased"], "test", sk.round)
+	assert_true(Skirmish.out_of_reach(roc, sk.mechs[0]) and not sk.targets_for(0).has(roc), "nor a Phased machine's: Aloft keeps its own rule, whoever asks")
+	Effects.remove(a, "phased")
 	assert_false(sk.assign(0, roc), "and a spend at it is refused")
 	assert_eq(roc.hp, 60, "so nothing aimed touched it")
 	var hull := a.hull
@@ -5442,11 +5463,13 @@ func test_a_foe_that_climbs_is_no_target_while_its_blow_gathers() -> void:
 	assert_true(Foe.climbs(trip.actions[0]), "a save keeps the move that climbs")
 
 
-## Aloft is not Phased (Ryan, 16 November: "it should still take damage from its riders, unlike
-## phased. So it's different, should be a different buff"): what the foe carries still wears at
-## it. And nothing new reaches it, with an aim or without (17 November: "the roc doesn't get
-## splashed while aloft"): a neighbour's Spread, a blow at every foe, a Chain's arc, a Mine's
-## blast beside it, a spill and a shove from the foe in front all pass it by.
+## Aloft is a buff of its own, never Phased (Ryan, 16 November: "it should still take damage
+## from its riders ... So it's different, should be a different buff"): what the foe carries
+## wears at it, as what a Phased foe carries does since 19 November, and nothing new reaches it
+## from anybody, with an aim or without (17 November: "the roc doesn't get splashed while
+## aloft"): a neighbour's Spread, a blow at every foe, a Chain's arc, a Mine's blast beside it,
+## a spill and a shove from the foe in front all pass it by, where a Phased foe is in a Phased
+## unit's reach.
 func test_a_foe_aloft_takes_what_it_carries_and_nothing_that_lands_elsewhere() -> void:
 	var sk := Skirmish.new(1, 2)
 	var sweep := Face.attack(20, I, K.CLEAVE)
@@ -5602,20 +5625,65 @@ func _fader(hp: int = 60, atk: int = 5) -> Foe:
 	return f
 
 
+# ---------------------------------------------------------------- Phased, by source
+
+## Phased on a unit by hand, a machine's Unit or a foe, through the end of the round `ahead`
+## rounds on from the fight's own (this round when unsaid): a test's way past the wait.
+func _phase(sk: Skirmish, who, ahead: int = 0) -> void:
+	Effects.grant_for_rounds(who, Effects.STATUS["phased"], "test", sk.round + ahead)
+
+
+## Phased's rule (Ryan, 19 November: "Phased: Cannot be targeted, damaged, or affected in any way
+## by non-phased units"), the one question every path asks of who lands a thing and whom it
+## lands on: a unit reaches another unless that one is Phased and it is not, on its own side and
+## across the two, and it always reaches itself.
+func test_a_unit_reaches_another_unless_that_one_is_phased_and_it_is_not() -> void:
+	var sk := Skirmish.new(1, 2)
+	sk.add_mech(_mech("A", Die.single(Face.blank())))
+	sk.add_mech(_mech("B", Die.single(Face.blank())))
+	var f := _ghoul()
+	var g := _ghoul()
+	sk.add_foes([f, g])
+	sk.begin()
+	sk.start_round()
+	var a: Skirmish.MechState = sk.mechs[0]
+	var b: Skirmish.MechState = sk.mechs[1]
+	for pair in [[a, b], [a, f], [f, a], [f, g]]:
+		assert_true(Skirmish.reaches(pair[0], pair[1]), "neither Phased: one reaches the other")
+	_phase(sk, b.unit)
+	_phase(sk, g)
+	assert_false(Skirmish.reaches(a, b) or Skirmish.reaches(f, b), "a Phased machine is out of the reach of an ally and of a foe that are not Phased")
+	assert_false(Skirmish.reaches(a, g) or Skirmish.reaches(f, g), "and a Phased foe out of a machine's and of its own side's")
+	assert_true(Skirmish.reaches(b, a) and Skirmish.reaches(b, f) and Skirmish.reaches(g, a) and Skirmish.reaches(g, f), "a Phased unit reaches everybody")
+	assert_true(Skirmish.reaches(b, g) and Skirmish.reaches(g, b), "and what is Phased reaches what is Phased, across the sides")
+	assert_true(Skirmish.reaches(b, b) and Skirmish.reaches(g, g), "a unit always reaches itself")
+	assert_false(Skirmish.reaches(null, b) or Skirmish.reaches(null, g), "with no unit as its source, nothing reaches a Phased unit")
+	assert_true(Skirmish.reaches(null, a) and Skirmish.reaches(null, f), "and anything reaches one that is not")
+	assert_true(Skirmish.reaches(b.unit, g) and not Skirmish.reaches(a.unit, g) and not Skirmish.reaches(f, b.unit), "a machine's Unit asks and answers as the machine does")
+	assert_true(Skirmish.is_out(b, f) and Skirmish.is_out(b, a) and not Skirmish.is_out(b, g) and not Skirmish.is_out(b, b), "is_out asks it of a machine")
+	assert_true(Skirmish.out_of_reach(g, a) and Skirmish.out_of_reach(g, f) and not Skirmish.out_of_reach(g, b) and not Skirmish.out_of_reach(g, g), "and out_of_reach of a foe")
+	assert_eq([Array(sk.targetable_mechs(f)), Array(sk.targetable_mechs(g))], [[a], [a, b]], "the machines a foe may pick: the Phased one for the Phased foe alone")
+	assert_eq([Array(sk.own_side(f)), Array(sk.own_side(g))], [[f], [f, g]], "and its own side as its moves reach it")
+
+
 ## A foe's Phased (Ryan, 15 November: "I think we give this to the foes too"; 16 November:
 ## "Phased foes act"; his yes of 17 November to the ghosts' row: "After Hex Bolt it fades:
-## Phased through the next round, and it still acts"). The round its bolt lands it stands
-## solid, the window. As that round ends it fades. Through the next nothing of the team's
-## reaches it, with an aim or without, and nothing it carries damages it while its clocks run;
-## it acts all the same. It is back as that round ends, and never out two rounds running.
-func test_a_foe_that_fades_is_out_of_reach_for_a_round_and_acts_all_the_same() -> void:
+## Phased through the next round, and it still acts"), under his rule of 19 November. The round
+## its bolt lands it stands solid, the window. As that round ends it fades. Through the next no
+## die of a machine that is not Phased is dropped on it and nothing such a machine aims
+## elsewhere reaches it; a Phased machine's die lands on it as on any foe; what it carries is
+## its own and takes its points; and it acts all the same. It is back as that round ends, and
+## never out two rounds running.
+func test_a_faded_foe_is_reached_by_a_phased_machine_alone_and_what_it_carries_acts_on_it() -> void:
 	var sk := Skirmish.new(1, 2)
 	var sweep := Face.attack(20, I, K.CLEAVE)
 	sweep.cleave = 10
 	var a := _mech("A", Die.single(sweep), 0, 500)
 	var b := _mech("B", Die.single(Face.attack(6, E)), 0, 500)
+	var c := _mech("C", Die.single(Face.attack(7, I)), 0, 500)
 	sk.add_mech(a)
 	sk.add_mech(b)
+	sk.add_mech(c)
 	var ghost := _fader()
 	var other := _ghoul(500, 0)
 	sk.add_foes([ghost, other])
@@ -5624,38 +5692,87 @@ func test_a_foe_that_fades_is_out_of_reach_for_a_round_and_acts_all_the_same() -
 	assert_false(Skirmish.out_of_reach(ghost), "the round it throws its bolt it stands solid: the window")
 	assert_true(sk.targets_for(0).has(ghost), "and is a target like any")
 	Effects.stack(ghost, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 3)
-	var hull := a.hull + b.hull
+	var per := _rule("ablating", "tick_hp")
+	var hull := a.hull + b.hull + c.hull
 	sk.end_round()
 	assert_true(Skirmish.foe_phased(ghost), "as the round its bolt landed in ends, it fades")
-	assert_eq(hull - (a.hull + b.hull), 5, "its bolt landed first")
+	assert_eq(hull - (a.hull + b.hull + c.hull), 5, "its bolt landed first")
 	var solid_hp := ghost.hp
-	assert_true(solid_hp < 60, "and its Ablating took its points that turn: it stands through the round first (%d)" % solid_hp)
+	assert_eq(solid_hp, 60 - 3 * per, "and its Ablating took its points that turn: it stands through the round first")
 	sk.start_round()
+	_phase(sk, c)   # C follows it
 	assert_true(ghost.intends(), "Phased, it announces a move like any")
-	assert_false(sk.targets_for(0).has(ghost) or sk.targets_for(1).has(ghost), "no die may be dropped on it")
-	assert_false(sk.assign(0, ghost), "and a spend at it is refused")
+	assert_false(sk.targets_for(0).has(ghost) or sk.targets_for(1).has(ghost), "no die of a machine that is not Phased may be dropped on it")
+	assert_true(sk.targets_for(2).has(ghost) and sk.can_assign(2, ghost), "a Phased machine's may")
+	assert_false(sk.assign(0, ghost), "and a spend at it from the first is refused")
 	assert_true(sk.assign(0, other), "a Spread on the foe beside it")
 	assert_true(sk.assign(1, other), "and a blow at every foe")
 	assert_eq(ghost.hp, solid_hp, "both pass it by")
-	assert_eq(sk.hp_after_ticks(ghost), solid_hp, "and its gauge forecasts no loss to what it carries")
+	assert_true(sk.assign(2, ghost), "the Phased machine's gun, dropped on it")
+	assert_eq(ghost.hp, solid_hp - 7, "lands as on any foe")
 	var stacks := Effects.stacks_of(ghost, "ablating")
-	hull = a.hull + b.hull
+	assert_eq(stacks, 2, "two stacks of its Ablating left")
+	assert_eq(sk.hp_after_ticks(ghost), ghost.hp - stacks * per, "its gauge forecasts what it carries will take, Phased or not")
+	hull = a.hull + b.hull + c.hull
 	sk.end_round()
-	assert_eq(hull - (a.hull + b.hull), 5, "it acts all the same: its bolt lands")
-	assert_eq(ghost.hp, solid_hp, "what it carries takes nothing while it is Phased")
-	assert_true(Effects.stacks_of(ghost, "ablating") < stacks, "and its clock runs all the same (%d to %d)" % [stacks, Effects.stacks_of(ghost, "ablating")])
+	assert_eq(hull - (a.hull + b.hull + c.hull), 5, "it acts all the same: its bolt lands")
+	assert_eq(ghost.hp, solid_hp - 7 - stacks * per, "and what it carries takes its points while it is Phased")
+	assert_eq(Effects.stacks_of(ghost, "ablating"), stacks - 1, "a stack fading as on any foe")
 	assert_false(Skirmish.foe_phased(ghost), "as that round ends it is back, and the bolt it threw while Phased faded nothing: never two rounds running")
 	sk.start_round()
-	assert_true(sk.targets_for(0).has(ghost), "solid again, a target once more")
+	assert_true(sk.targets_for(0).has(ghost), "solid again, a target for every machine once more")
 	sk.end_round()
 	assert_true(Skirmish.foe_phased(ghost), "and its next bolt fades it again: every other round")
 
 
-## The last foe standing does not fade, so a fight has a foe to end on; and a foe's Phased is
-## less strict than a machine's (Ryan, 15 November: "Phased on foes can be less strict since it's
-## balanced around their kit and theme"): its own side still reaches it, a rally's Empowered
-## among it.
-func test_the_last_foe_standing_does_not_fade_and_its_own_side_still_reaches_one_that_has() -> void:
+## What a Phased foe carries acts on it exactly as on the foe beside it that is not Phased: its
+## Ablating and its Vitriol take their points, its Regenerating pays, its Empowered and its
+## Brittle halve, its Sapped goes, and its ticks may fell it, the kill counted as any tick's is.
+func test_what_a_phased_foe_carries_acts_on_it_as_on_any_foe() -> void:
+	var sk := Skirmish.new(1, 2)
+	var m := _mech("A", Die.single(Face.blank()), 0, 500)
+	m.grant_passive({"id": "test_tally", "name": "Tally", "description": "", "effects": [{"trigger": "on_foe_killed", "effect": "stack_status", "value": "overcharged"}]})
+	sk.add_mech(m)
+	var ghost := _ghoul(400, 0)
+	var solid := _ghoul(400, 0)
+	sk.add_foes([ghost, solid])
+	sk.begin()
+	sk.start_round()
+	_phase(sk, ghost, 1)
+	for f in [ghost, solid]:
+		f.hp = 300
+		Effects.stack(f, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 3)
+		Effects.stack(f, Effects.STATUS["vitriol"], Effects.SKIRMISH, "mech", 2)
+		Effects.stack(f, Effects.STATUS["regenerating"], Effects.SKIRMISH, "foe:x", 2, Effects.DECAY_TICK)
+		Effects.stack(f, Effects.STATUS["kindled"], Effects.SKIRMISH, "foe:x", 4, Effects.DECAY_HALF)
+		Effects.stack(f, Effects.STATUS["brittled"], Effects.SKIRMISH, "mech", 4, Effects.status_decay(Effects.STATUS["brittled"]))
+		Effects.stack(f, Effects.STATUS["sapped"], Effects.SKIRMISH, "mech", 1, Effects.status_decay(Effects.STATUS["sapped"]))
+	var read := func(f: Foe) -> Array:
+		return [f.hp, Effects.stacks_of(f, "ablating"), Effects.stacks_of(f, "vitriol"), Effects.stacks_of(f, "regenerating"), Effects.stacks_of(f, "kindled"), Effects.stacks_of(f, "brittled"), Effects.stacks_of(f, "sapped")]
+	assert_eq(sk.hp_after_ticks(ghost), sk.hp_after_ticks(solid), "the two gauges forecast the same loss")
+	assert_true(sk.hp_after_ticks(ghost) < 300, "and it is a loss")
+	sk.end_round()
+	assert_eq(read.call(ghost), read.call(solid), "the foes' turn reads the two alike")
+	assert_true(ghost.hp < 300, "its Ablating and its Vitriol took their points, its Regenerating paying after them")
+	assert_eq([Effects.stacks_of(ghost, "ablating"), Effects.stacks_of(ghost, "vitriol"), Effects.stacks_of(ghost, "regenerating")], [2, 1, 1], "and each lost its stack")
+	assert_eq([Effects.stacks_of(ghost, "kindled"), Effects.stacks_of(ghost, "brittled"), Effects.has(ghost, "sapped")], [2, 2, false], "its Empowered and its Brittle halved and its Sapped went")
+	assert_false("\n".join(sk.log).contains("takes nothing"), "no line says it was spared")
+	# Its tick may fell it, and the kill is counted as any tick's kill is.
+	sk.start_round()
+	assert_true(Skirmish.foe_phased(ghost), "Phased still")
+	ghost.hp = 2
+	assert_eq(sk.hp_after_ticks(ghost), 0, "its gauge shows the fall coming")
+	sk.end_round()
+	assert_false(ghost.alive() or sk.field_foes().has(ghost), "what a Phased foe carries fells it")
+	assert_eq(sk.team_kills, 1, "a kill, as the death check counts any")
+	assert_eq(Effects.stacks_of(m, "overcharged"), 1, "and what reads a foe's fall reads it")
+
+
+## The two guards stand (the last foe standing does not fade, so a fight has a foe to end on;
+## a foe Phased already gains no wait, so none is out two rounds running). And a foe's own
+## side reaches it no more than ours reaches a Phased machine: a rally passes it by, on the
+## blow it shows and as it lands, unless the rallier is Phased too.
+func test_the_last_foe_standing_does_not_fade_and_a_rally_passes_a_faded_foe_by() -> void:
 	var sk := Skirmish.new(1, 2)
 	sk.add_mech(_mech("A", Die.single(Face.blank()), 0, 500))
 	var lone := _fader()
@@ -5666,22 +5783,27 @@ func test_the_last_foe_standing_does_not_fade_and_its_own_side_still_reaches_one
 	assert_false(Skirmish.foe_phased(lone), "alone, it throws its bolt and stays")
 	assert_false(Effects.has(lone, "phasing"), "and the wait is gone with the round")
 	assert_true("\n".join(sk.log).contains("the last one standing"), "the log says why: %s" % sk.log[sk.log.size() - 1])
-	var s2 := Skirmish.new(1, 2)
-	s2.add_mech(_mech("A", Die.single(Face.blank()), 0, 500))
-	var ghost := _fader()
-	var caller := _ghoul(500, 0)
-	caller.actions = [_special("buff", "rally", {"value": 2})]
-	caller.action = caller.actions[0]
-	s2.add_foes([ghost, caller])
-	s2.begin()
-	s2.start_round()
-	s2.end_round()
-	assert_true(Skirmish.foe_phased(ghost), "with another foe standing it fades")
-	Effects.remove(ghost, "kindled")
-	s2.start_round()
-	s2.end_round()
-	assert_true(s2.log.any(func(line) -> bool: return str(line).contains("hit 2 harder")), "the rally is called while it is Phased")
-	assert_true(Effects.has(ghost, "kindled"), "and reaches it with the rest of its side")
+	for faded in [false, true]:
+		var s2 := Skirmish.new(1, 2)
+		s2.add_mech(_mech("A", Die.single(Face.blank()), 0, 500))
+		var caller := _ghoul(500, 9)   # the heavier hitter as the fight is laid out: it stands left and acts first
+		var ghost := _ghoul(500, 5)
+		s2.add_foes([ghost, caller])
+		s2.begin()
+		caller.actions = [_special("buff", "rally", {"value": 2})]
+		caller.action = caller.actions[0]
+		_phase(s2, ghost, 1)
+		if faded:
+			_phase(s2, caller, 1)
+		s2.start_round()
+		assert_eq(Array(s2.field_foes()), [caller, ghost], "the caller acts ahead of the ghost")
+		assert_true(s2.rallies_now(caller), "and rallies this round")
+		assert_eq(s2.incoming_rally(ghost), 2 if faded else 0, "the rally on its way reaches a Phased foe only from a Phased rallier")
+		assert_eq(s2.foe_blow(ghost), 7 if faded else 5, "so the blow its intent shows is lifted only then")
+		s2.end_round()
+		assert_true(s2.log.any(func(line) -> bool: return str(line).contains("%d hit 2 harder" % (2 if faded else 1))), "the rally is called, and counts whom it reached")
+		assert_true(Effects.has(caller, "kindled"), "the rallier is Empowered by its own rally, as ever")
+		assert_eq(Effects.has(ghost, "kindled"), faded, "and the Phased foe only by a Phased rallier's")
 	# The wait is a foe's own move too, and a Phased foe gains no second.
 	var s3 := Skirmish.new(1, 2)
 	s3.add_mech(_mech("A", Die.single(Face.blank()), 0, 500))
@@ -5698,6 +5820,683 @@ func test_the_last_foe_standing_does_not_fade_and_its_own_side_still_reaches_one
 	s3.end_round()
 	assert_false(Skirmish.foe_phased(veil), "and cast again while Phased it adds nothing: back the round after")
 	assert_true("\n".join(s3.log).contains("cannot fade again so soon"), "the log says so")
+
+
+## A field for the rule's reach tests: one machine with `face` on its die, Phased or not, before
+## three foes abreast and one behind the first, the middle one and the one behind Phased by
+## hand. Returns [the fight, left, ghost (beside it, Phased), right, wraith (behind it, Phased)].
+func _haunted(face: Face, phased: bool, front_hp: int = 500) -> Array:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("M", Die.single(face), 0, 500))
+	var left := _ghoul(front_hp, 0)
+	var ghost := _ghoul(500, 0)
+	var right := _ghoul(500, 0)
+	var wraith := _archer(500, 0)
+	sk.add_foes([left, ghost, right, wraith])
+	sk.begin()
+	sk.start_round()
+	_phase(sk, ghost)
+	_phase(sk, wraith)
+	if phased:
+		_phase(sk, sk.mechs[0].unit)
+	return [sk, left, ghost, right, wraith]
+
+
+## Only a Phased machine's fire reaches a Phased foe, with an aim or without: the same entry in
+## two hands, a machine that is not Phased and one that is. From the first a Spread beside it,
+## a Penetrate in front of it, a blow at every foe, Chain's ping, the damage past a kill, a
+## shove from the foe in front, the foe to the right and a Swap's second target all pass it by;
+## from the second each reaches it as it reaches any foe.
+func test_an_area_an_arc_and_a_spill_reach_a_phased_foe_from_a_phased_machine_alone() -> void:
+	for phased in [false, true]:
+		var who := "a Phased machine" if phased else "a machine that is not Phased"
+		var sweep := Face.attack(4, I, [K.CLEAVE, K.PENETRATE])
+		sweep.cleave = 3
+		sweep.penetrate = 2
+		var h := _haunted(sweep, phased)
+		var sk: Skirmish = h[0]
+		var left: Foe = h[1]
+		var ghost: Foe = h[2]
+		var right: Foe = h[3]
+		var wraith: Foe = h[4]
+		var ms: Skirmish.MechState = sk.mechs[0]
+		assert_eq([left.column, ghost.column, right.column, wraith.rank, wraith.column], [0, 1, 2, 1, 0], "three abreast, and one behind the first")
+		assert_eq([sk.targets_for(0).has(ghost), sk.targets_for(0).has(wraith)], [phased, phased], "%s: its die on a Phased foe" % who)
+		assert_eq(Array(sk.reached_by(sweep, left, ms)), [left, ghost, wraith] if phased else [left], "%s: what its Spread and its Penetrate reach" % who)
+		assert_eq(sk.area_shapes(sweep, left, ms).size(), 2 if phased else 0, "%s: the shapes of the strike" % who)
+		assert_eq(Array(sk.ridden_by(sweep, left, ms)).has(ghost), phased, "%s: the foes its riders land on" % who)
+		assert_eq(sk.right_of(left, ms), ghost if phased else null, "%s: the foe to the right" % who)
+		assert_eq(sk.swap_targets(left, false, ms).has(ghost), phased, "%s: a Swap's second target" % who)
+		assert_true(sk.assign(0, left), "the sweep, dropped on the foe beside and before them")
+		assert_eq([500 - left.hp, 500 - ghost.hp, 500 - wraith.hp], [4, 3, 2] if phased else [4, 0, 0], "%s: its Spread and its Penetrate" % who)
+		# A blow at every foe.
+		h = _haunted(Face.attack(5, E), phased)
+		sk = h[0]
+		assert_true(sk.assign(0, h[1]), "a blow at every foe")
+		assert_eq([500 - h[1].hp, 500 - h[2].hp, 500 - h[3].hp, 500 - h[4].hp], [5, 5, 5, 5] if phased else [5, 0, 5, 0], "%s: a blow at every foe" % who)
+		# Chain's ping, on two conductors, one Phased and one not.
+		var arc := Face.attack(1, I, [K.CHAIN])
+		arc.chain = 2
+		h = _haunted(arc, phased)
+		sk = h[0]
+		for conductor in [h[2], h[3]]:
+			Effects.stack(conductor, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+		assert_eq(Array(sk.conductors(arc, h[1], sk.mechs[0])), [h[2], h[3]] if phased else [h[3]], "%s: the conductors its Chain strikes" % who)
+		assert_true(sk.assign(0, h[1]), "the arc fired")
+		assert_eq([500 - h[2].hp, 500 - h[3].hp], [2, 2] if phased else [0, 2], "%s: Chain's ping" % who)
+		# The damage past a kill, into the Phased foe behind.
+		h = _haunted(_spiller(Face.attack(40, L)), phased, 10)
+		sk = h[0]
+		assert_true(sk.assign(0, h[1]), "the front foe felled")
+		assert_eq(500 - h[4].hp, 30 if phased else 0, "%s: what its blow had past the kill" % who)
+		# A shove from the foe in front (a share of its maximum HP driven into the foe behind).
+		h = _haunted(Face.attack(5, L), phased)
+		sk = h[0]
+		sk.mechs[0].unit.grant_passive({"id": "test_shove", "name": "Shove", "description": "", "effects": [{"trigger": "static", "effect": "shove_behind", "value": 10}]})
+		assert_true(sk.assign(0, h[1]), "the front foe struck")
+		assert_eq(500 - h[4].hp, 50 if phased else 0, "%s: the shove into the foe behind" % who)
+		# A twin slot's Phased half, beside the half the blow is aimed at.
+		h = _haunted(sweep.duplicate_face(), phased)
+		sk = h[0]
+		var half := Foe.make("half", 500, 0)
+		sk._set_contents(Vector2i(0, 2), [h[3], half])
+		_phase(sk, half)
+		assert_eq(Array(sk.reached_by(sweep, h[3], sk.mechs[0])).has(half), phased, "%s: an area on a twin slot and its Phased half" % who)
+		assert_eq(sk.area_shapes(sweep, h[3], sk.mechs[0]).has(half), phased, "%s: and the half's shape" % who)
+		assert_true(sk.assign(0, h[3]), "the sweep on the solid half")
+		assert_eq(500 - half.hp, 3 if phased else 0, "%s: the Spread on its Phased twin" % who)
+
+
+## A Mine's blast is the foe's that carried it (what a status does is its carrier's): on a
+## Phased foe it meets every foe it would, Phased or not; on a foe that is not Phased it passes
+## a Phased foe beside it by, whoever laid it and whoever sets it off. And a machine takes a
+## Mine off a Phased foe only when it is Phased itself.
+func test_a_mines_blast_reaches_what_its_carrier_reaches() -> void:
+	# A Mine on a foe that is not Phased, a Phased foe beside it: the fall's blast passes it by.
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("M", Die.single(Face.attack(50, I)), 0, 500))
+	var ghost := _ghoul(500, 0)
+	var carrier := _ghoul(10, 0)
+	var plain := _ghoul(500, 0)
+	sk.add_foes([ghost, carrier, plain])
+	sk.begin()
+	sk.start_round()
+	_phase(sk, ghost)
+	sk._add_mine(carrier, 6, {})
+	assert_eq(Array(sk.mine_reach(0, 1, false, carrier)), [carrier, plain], "its reach: itself and the foe beside it that is not Phased")
+	assert_true(sk.assign(0, carrier), "its carrier felled")
+	assert_eq([ghost.hp, plain.hp], [500, 494], "the blast lands on the one and passes the Phased one by")
+	# A Mine on a Phased foe: its blast meets every foe beside it, Phased or not.
+	var s2 := Skirmish.new(1, 3)
+	var m2 := _mech("M", Die.single(Face.attack(50, I)), 0, 500)
+	s2.add_mech(m2)
+	var solid := _ghoul(500, 0)
+	var haunt := _ghoul(10, 0)
+	var spectre := _ghoul(500, 0)
+	s2.add_foes([solid, haunt, spectre])
+	s2.begin()
+	s2.start_round()
+	_phase(s2, haunt)
+	_phase(s2, spectre)
+	_phase(s2, m2)
+	s2._add_mine(haunt, 6, {})
+	assert_eq(Array(s2.mine_reach(0, 1, false, haunt)), [haunt, solid, spectre], "a Phased carrier's reach: every foe it would meet")
+	assert_true(s2.assign(0, haunt), "a Phased machine fells the Phased carrier")
+	assert_eq([solid.hp, spectre.hp], [494, 494], "its blast lands on the foe that is not Phased and on the Phased one alike")
+	# Set off by a drone, the blast is still its carrier's, never the drone's machine's.
+	var drone := Face.attack(1, I)
+	drone.detonates = true
+	var s3 := Skirmish.new(1, 3)
+	var m3 := _mech("M", Die.single(drone), 0, 500)
+	s3.add_mech(m3)
+	var g3 := _ghoul(500, 0)
+	var c3 := _ghoul(500, 0)
+	var p3 := _ghoul(500, 0)
+	s3.add_foes([g3, c3, p3])
+	s3.begin()
+	s3.start_round()
+	_phase(s3, g3)
+	_phase(s3, m3)
+	s3._add_mine(c3, 6, {})
+	assert_true(s3.assign(0, c3), "a Phased machine's drone sets off the Mine on a foe that is not Phased")
+	assert_eq([g3.hp, c3.hp, p3.hp], [500, 500 - 1 - 6, 494], "the blast is that foe's: it passes the Phased foe beside it by")
+	# The gather: a Mine on a Phased foe stays where it is for a machine that cannot reach it.
+	for phased in [false, true]:
+		var gather := Face.attack(1, I)
+		gather.gathers_mines = true
+		var s4 := Skirmish.new(1, 3)
+		var m4 := _mech("M", Die.single(gather), 0, 500)
+		s4.add_mech(m4)
+		var t4 := _ghoul(500, 0)
+		var g4 := _ghoul(500, 0)
+		var c4 := _ghoul(500, 0)
+		s4.add_foes([t4, g4, c4])
+		s4.begin()
+		s4.start_round()
+		_phase(s4, g4)
+		if phased:
+			_phase(s4, m4)
+		s4._add_mine(g4, 4, {})
+		s4._add_mine(c4, 3, {})
+		assert_true(s4.assign(0, t4), "the gather")
+		assert_eq(int(Skirmish.mine_of(t4).get("damage", 0)), 7 if phased else 3, "it takes the Mine off the Phased foe only when its machine is Phased")
+		assert_eq(Skirmish.mine_of(g4).is_empty(), phased, "which otherwise stays where it lay")
+
+
+## A web is its carrier's too: on a foe that is not Phased its burst catches no Phased
+## neighbour, and on a Phased foe it bursts on it and catches the foe beside it, Phased or not.
+func test_a_webs_burst_catches_what_its_carrier_reaches() -> void:
+	var sk := Skirmish.new(1, 3)
+	sk.add_mech(_mech("M", Die.single(Face.blank()), 0, 500))
+	var a := _ghoul(500, 0)
+	var ghost := _ghoul(500, 0)
+	var c := _ghoul(500, 0)
+	sk.add_foes([a, ghost, c])
+	sk.begin()
+	sk.start_round()
+	_phase(sk, ghost, 1)
+	assert_eq([sk.web_catch(a), sk.web_catch(c)], [null, null], "a web on either foe beside it catches nobody: its one neighbour is Phased")
+	assert_eq(sk.web_catch(ghost), c, "a web on the Phased foe catches the foe to its right")
+	Effects.stack(a, Effects.STATUS["webbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	sk.end_round()
+	sk.start_round()
+	assert_true(a.is_suppressed(), "the web on the foe that is not Phased bursts on it")
+	assert_false(ghost.is_suppressed() or c.is_suppressed(), "and catches nobody")
+	var s2 := Skirmish.new(1, 3)
+	s2.add_mech(_mech("M", Die.single(Face.blank()), 0, 500))
+	var a2 := _ghoul(500, 0)
+	var ghost2 := _ghoul(500, 0)
+	var c2 := _ghoul(500, 0)
+	s2.add_foes([a2, ghost2, c2])
+	s2.begin()
+	s2.start_round()
+	_phase(s2, ghost2, 1)
+	Effects.stack(ghost2, Effects.STATUS["webbed"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+	s2.end_round()
+	s2.start_round()
+	assert_true(ghost2.is_suppressed(), "a web on a Phased foe is its own, and bursts on it")
+	assert_true(c2.is_suppressed(), "catching the foe beside it")
+
+## What a foe's special at every machine laid on this one, by its effect.
+func _laid_by(u: Unit, effect: String) -> bool:
+	match effect:
+		"scorch_all":
+			return Effects.has(u, "scorched")
+		"brittle_all":
+			return Effects.has(u, "brittled_mech")
+		"sap_all":
+			return Effects.has(u, "sapped")
+		"corrupt_all":
+			return Effects.corrupt_stacks(u, 0) > 0
+	return false
+
+
+## The foes' side of the rule. A foe that is not Phased never picks a Phased machine, whatever
+## its move's word, and its blow or its special at every machine passes that machine by; a
+## Phased foe picks among them all by its usual rules, strikes the one it picks with its riders,
+## and its blow or its special at every machine lands on the Phased machine too. The intents,
+## the forecast and the round preview read the same.
+func test_a_phased_foe_picks_and_strikes_any_machine_and_no_other_foe_reaches_a_phased_one() -> void:
+	var sk := Skirmish.new(1, 2)
+	var a := _mech("A", Die.single(Face.blank()), 0, 100)
+	var p := _mech("P", Die.single(Face.blank()), 0, 60)
+	sk.add_mech(a)
+	sk.add_mech(p)
+	var solid := _ghoul(500, 7)
+	var ghost := _ghoul(500, 4)
+	for f in [solid, ghost]:
+		f.actions = [{"id": "bite", "name": "Bite", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": ["scorch"], "scorch": 1, "aim": "weakest", "text": ""}]
+		f.action = f.actions[0]
+	sk.add_foes([solid, ghost])
+	sk.begin()
+	_phase(sk, p, 1)
+	_phase(sk, ghost, 1)
+	sk.start_round()
+	assert_eq(solid.target, sk.mechs[0], "a foe that is not Phased never picks the Phased machine, the weakest though it is")
+	assert_eq(ghost.target, sk.mechs[1], "a Phased foe picks by its move's own word among them all: the weakest, Phased or not")
+	assert_true(ghost.intent_on(p) and not solid.intent_on(p), "the Phased foe alone shows intent on the Phased machine")
+	assert_eq([Array(sk.attackers_of(sk.mechs[0])), Array(sk.attackers_of(sk.mechs[1]))], [[solid], [ghost]], "and the forecast's attackers are those")
+	assert_eq([int(sk.forecast(sk.mechs[0])["incoming"]), int(sk.forecast(sk.mechs[1])["incoming"])], [7, 4], "each machine's incoming")
+	sk.end_round()
+	assert_eq([a.hull, p.hull], [93, 56], "each blow lands on its pick: a Phased foe damages a Phased machine as it would any")
+	assert_eq([Effects.stacks_of(a, "scorched"), Effects.stacks_of(p, "scorched")], [1, 1], "its rider with it")
+	# A pick that went out of its reach is drawn again, and a Phased foe's stands.
+	var s1 := Skirmish.new(1, 2)
+	var a1 := _mech("A", Die.single(Face.blank()), 0, 100)
+	var p1 := _mech("P", Die.single(Face.blank()), 0, 100)
+	s1.add_mech(p1)
+	s1.add_mech(a1)
+	var solid1 := _ghoul(500, 7)
+	var ghost1 := _ghoul(500, 4)
+	s1.add_foes([solid1, ghost1])
+	s1.begin()
+	s1.start_round()
+	solid1.target = s1.mechs[0]
+	ghost1.target = s1.mechs[0]
+	_phase(s1, p1)
+	_phase(s1, ghost1)
+	s1.end_round()
+	assert_eq([p1.hull, a1.hull], [96, 93], "the foe that is not Phased strikes the next machine in line, and the Phased foe its pick")
+	assert_true("\n".join(s1.log).contains("revenant hits A"), "the log has the blow that moved")
+	# A blow at every machine.
+	var s2 := Skirmish.new(1, 2)
+	var a2 := _mech("A", Die.single(Face.blank()), 0, 100)
+	var p2 := _mech("P", Die.single(Face.blank()), 0, 100)
+	s2.add_mech(a2)
+	s2.add_mech(p2)
+	var storm := _ghoul(500, 3)
+	var ghost_storm := _ghoul(500, 5)
+	for f in [storm, ghost_storm]:
+		f.actions = [{"id": "storm", "name": "Storm", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": ["all"], "text": ""}]
+		f.action = f.actions[0]
+	s2.add_foes([storm, ghost_storm])
+	s2.begin()
+	_phase(s2, p2, 1)
+	_phase(s2, ghost_storm, 1)
+	s2.start_round()
+	assert_true(storm.intent_on(a2) and not storm.intent_on(p2), "a blow at every machine from a foe that is not Phased shows no intent on the Phased machine")
+	assert_true(ghost_storm.intent_on(a2) and ghost_storm.intent_on(p2), "a Phased foe's shows it on every one")
+	assert_eq([Array(s2.acting_on(s2.mechs[0])), Array(s2.acting_on(s2.mechs[1]))], [[ghost_storm, storm], [ghost_storm]], "acting_on reads the same")
+	assert_eq([s2.targetable_mechs(storm).size(), s2.targetable_mechs(ghost_storm).size()], [1, 2], "the machines each reaches")
+	var pv := s2.preview_round()
+	assert_eq([int(pv["mechs"][0]["incoming"]), int(pv["mechs"][1]["incoming"])], [8, 5], "the round preview plays it so")
+	assert_eq(pv["foes"][ghost_storm]["struck"], [0, 1], "the Phased storm striking both")
+	assert_eq(pv["foes"][storm]["struck"], [0], "and the other the one it reaches")
+	s2.end_round()
+	assert_eq([a2.hull, p2.hull], [92, 95], "the Phased machine takes the Phased foe's storm alone")
+	# A special at every machine.
+	for effect in ["scorch_all", "brittle_all", "sap_all", "corrupt_all"]:
+		for faded in [false, true]:
+			var s3 := Skirmish.new(1, 1)
+			var a3 := _mech("A", Die.single(Face.attack(1, L)), 0, 100)
+			var p3 := _mech("P", Die.single(Face.attack(1, L)), 0, 100)
+			s3.add_mech(a3)
+			s3.add_mech(p3)
+			var caster := _ghoul(500, 0)
+			caster.actions = [_special("debuff", effect, {"value": 2})]
+			caster.action = caster.actions[0]
+			s3.add_foes([caster])
+			s3.begin()
+			_phase(s3, p3, 1)
+			if faded:
+				_phase(s3, caster, 1)
+			s3.start_round()
+			s3.end_round()
+			assert_true(_laid_by(a3, effect), "%s: it lands on the machine that is not Phased" % effect)
+			assert_eq(_laid_by(p3, effect), faded, "%s from a foe %s: on the Phased machine" % [effect, "that is Phased" if faded else "that is not Phased"])
+
+
+## The machines' side of the rule's reach across their own: no ally spends on a Phased machine
+## unless it is Phased too, a shield, a vent, a buff or a cleanse alike; a grant over the squad
+## passes it by the same way; and a machine always reaches itself.
+func test_no_ally_spends_on_a_phased_machine_but_a_phased_one() -> void:
+	var mend := Face.shield(5)
+	mend.add_keyword(K.CLEANSE)
+	var entries := {"a shield": Face.shield(5), "a vent": Face.vent(5), "a buff": Face.buff("overcharged", 2), "a cleanse": mend}
+	for what in entries.keys():
+		for faded in [false, true]:
+			var sk := Skirmish.new(1, 1)
+			var s := _mech("S", Die.single((entries[what] as Face).duplicate_face()), 10, 100)
+			var p := _mech("P", Die.single(Face.blank()), 10, 100)
+			p.shield_max = 40
+			var n := _mech("N", Die.single(Face.blank()), 10, 100)
+			sk.add_mech(s)
+			sk.add_mech(p)
+			sk.add_mech(n)
+			sk.add_foes([_ghoul(500, 0)])
+			sk.begin()
+			sk.start_round()
+			_phase(sk, p)
+			if faded:
+				_phase(sk, s)
+			sk.mechs[1].heat = 9
+			Effects.stack(p, Effects.STATUS["scorched"], Effects.SKIRMISH, "foe:x", 1, Effects.status_decay(Effects.STATUS["scorched"]))
+			var f := sk.mechs[0].face()
+			var who := "a Phased ally" if faded else "an ally that is not Phased"
+			assert_eq(sk.machine_targets_for(sk.mechs[0], f).has(sk.mechs[1]), faded, "%s from %s: the Phased machine as its target" % [what, who])
+			assert_true(sk.machine_targets_for(sk.mechs[0], f).has(sk.mechs[2]) and sk.machine_targets_for(sk.mechs[0], f).has(sk.mechs[0]), "%s: the machine that is not Phased, and itself, as ever" % what)
+			assert_eq(sk.can_assign(0, sk.mechs[1]), faded, "%s from %s: the drop" % [what, who])
+			var before := [p.shield, sk.mechs[1].heat, Effects.stacks_of(p, "overcharged"), Effects.has(p, "scorched")]
+			assert_eq(sk.assign(0, sk.mechs[1]), faded, "%s from %s: the spend" % [what, who])
+			var after := [p.shield, sk.mechs[1].heat, Effects.stacks_of(p, "overcharged"), Effects.has(p, "scorched")]
+			assert_eq(after != before, faded, "%s from %s: what it does to the Phased machine" % [what, who])
+	# A grant over the squad passes a Phased ally by unless its spender is Phased too.
+	for faded in [false, true]:
+		var team := Face.shield(10)
+		team.targets = Face.Target.ALLY
+		team.reaches_all = true
+		var sk := Skirmish.new(1, 1)
+		var s := _mech("S", Die.single(team), 10, 100)
+		var p := _mech("P", Die.single(Face.blank()), 10, 100)
+		p.shield_max = 40
+		var n := _mech("N", Die.single(Face.blank()), 10, 100)
+		n.shield_max = 40
+		sk.add_mech(s)
+		sk.add_mech(p)
+		sk.add_mech(n)
+		sk.add_foes([_ghoul(500, 0)])
+		sk.begin()
+		sk.start_round()
+		_phase(sk, p)
+		if faded:
+			_phase(sk, s)
+		assert_eq(Array(sk.reached_machines(sk.mechs[0], team)), [sk.mechs[1], sk.mechs[2]] if faded else [sk.mechs[2]], "the allies a shield over the squad lands on")
+		assert_true(sk.assign(0, sk.mechs[2]), "the team shield, dropped on the ally in reach")
+		assert_eq([p.shield, n.shield], [20 if faded else 10, 20], "it passes the Phased ally by unless its spender is Phased")
+	# A Phased machine spends on itself, and on any foe.
+	var s5 := Skirmish.new(1, 1)
+	var own := _mech("P", Die.single(Face.shield(5)), 10, 100)
+	own.shield_max = 40
+	s5.add_mech(own)
+	s5.add_mech(_mech("N", Die.single(Face.blank()), 10, 100))
+	s5.add_foes([_ghoul(500, 0)])
+	s5.begin()
+	s5.start_round()
+	_phase(s5, own)
+	assert_true(s5.assign(0, s5.mechs[0]), "a Phased machine shields itself")
+	assert_eq(own.shield, 15, "and the shield stands")
+
+
+## A second grant while Phased stands carries it through the round after only from the machine
+## itself or from a Phased ally: an ally that is not Phased cannot reach it to lay the wait, by
+## its own entry or by a grant over the squad.
+func test_a_standing_phased_is_carried_on_by_itself_or_a_phased_ally_alone() -> void:
+	for how in ["an ally that is not Phased", "a grant over the squad from one", "a Phased ally", "a Phased ally's grant over the squad", "itself"]:
+		var veil := Face.buff("phased")
+		if how.contains("over the squad"):
+			veil.targets = Face.Target.ALLY
+			veil.reaches_all = true
+		var sk := Skirmish.new(1, 1)
+		var g := _mech("G", Die.single(veil), 0, 500)
+		var p := _mech("P", Die.single(Face.buff("phased")), 0, 500)
+		var n := _mech("N", Die.single(Face.blank()), 0, 500)
+		sk.add_mech(g)
+		sk.add_mech(p)
+		sk.add_mech(n)
+		sk.add_foes([_ghoul(500, 0)])
+		sk.begin()
+		sk.start_round()
+		_phase(sk, p)   # it stands Phased through this round's end
+		if how.begins_with("a Phased ally"):
+			_phase(sk, g)
+		var carried: bool = how == "itself" or how.begins_with("a Phased ally")
+		match how:
+			"itself":
+				assert_true(sk.assign(1, sk.mechs[1]), "its own entry, on itself")
+			"an ally that is not Phased", "a Phased ally":
+				assert_eq(sk.assign(0, sk.mechs[1]), carried, "%s: its entry dropped on the Phased machine" % how)
+			_:
+				assert_true(sk.assign(0, sk.mechs[2]), "%s, dropped on the ally in reach" % how)
+				assert_true(Effects.has(n, "phasing"), "which waits for its own Phased")
+		assert_eq(Effects.has(p, "phasing"), carried, "%s: the wait laid on the machine that stands Phased" % how)
+		sk.end_round()
+		sk.start_round()
+		assert_eq(Skirmish.is_phased(sk.mechs[1]), carried, "%s: Phased through the round after" % how)
+
+
+## A foe's state as its own side's moves change it: its HP, its Armoured, Ward, Primed, Undying and
+## Empowered, the marks a cleanse lifts, and whether it still stands on the field.
+func _side_state(f: Foe) -> Array:
+	return [f.hp, Effects.stacks_of(f, "braced"), Effects.has(f, "ward"), Effects.stacks_of(f, "primed"), Effects.has(f, "risen"), Effects.stacks_of(f, "kindled"), Effects.cleanse_marks(f), f.rank]
+
+
+## A foe's own side reaches a Phased foe no more than ours reaches a Phased machine: a mend, a
+## cleanse, a wall, a ward, a priming, a readying, a rally and a merge each pass it by, landing
+## on the foe that is not Phased, unless the foe that makes the move is Phased too. A fall's
+## steps on its own side reach it the same way, and a move's condition reads only what its foe
+## may reach.
+func test_a_foes_move_on_its_own_side_passes_a_phased_foe_by_unless_it_is_phased_too() -> void:
+	for effect in ["heal", "cleanse", "brace_all", "ward_all", "prime", "brace_beside", "revive_once_ally", "rally", "merge"]:
+		for faded in [false, true]:
+			var sk := Skirmish.new(1, 3)
+			sk.add_mech(_mech("A", Die.single(Face.blank()), 0, 500))
+			var ghost := _ghoul(30, 0)
+			var caster := _ghoul(30, 0)
+			var plain := _ghoul(30, 0)
+			ghost.content_id = "kin"
+			plain.content_id = "kin"
+			caster.content_id = "caster"
+			var extra := {"value": 2}
+			if effect == "merge":
+				extra["foe"] = "kin"
+			sk.add_foes([ghost, caster, plain])
+			sk.begin()
+			sk.start_round()
+			caster.actions = [_special("buff", effect, extra)]
+			caster.action = caster.actions[0]
+			_phase(sk, ghost)
+			if faded:
+				_phase(sk, caster)
+			ghost.hp = 10   # the most hurt, and the most marked
+			plain.hp = 25
+			for id in ["shocked", "brittled"]:
+				Effects.stack(ghost, Effects.STATUS[id], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+			Effects.stack(plain, Effects.STATUS["shocked"], Effects.SKIRMISH, "mech", 1, Effects.DECAY_NONE)
+			var who := "a Phased foe" if faded else "a foe that is not Phased"
+			var was_ghost := _side_state(ghost)
+			var was_plain := _side_state(plain)
+			sk._foe_acts(caster, null)
+			assert_eq(_side_state(ghost) != was_ghost, faded, "%s from %s: what it does to the Phased foe" % [effect, who])
+			if not faded:
+				assert_true(_side_state(plain) != was_plain, "%s from %s: it lands on the foe it reaches" % [effect, who])
+	# A fall's steps on its own side: the readiness it takes back, and the rally it leaves.
+	for effect in ["unready_all", "rally"]:
+		for faded in [false, true]:
+			var sk := Skirmish.new(1, 3)
+			var m := _mech("A", Die.single(Face.attack(40, I)), 0, 500)
+			sk.add_mech(m)
+			var ghost := _ghoul(500, 0)
+			var lich := _falls_with(effect, 2)
+			lich.content_id = "lich"
+			var plain := _ghoul(500, 0)
+			sk.add_foes([ghost, lich, plain])
+			sk.begin()
+			sk.start_round()
+			_phase(sk, ghost)
+			if faded:
+				_phase(sk, lich)
+				_phase(sk, m)   # only a Phased machine fells a Phased foe
+			for f in [ghost, plain]:
+				Effects.stack(f, Effects.STATUS["risen"], Effects.SKIRMISH, "foe:lich", 1, Effects.DECAY_NONE)
+			assert_true(sk.assign(0, lich), "the foe falls")
+			var who := "a Phased foe" if faded else "a foe that is not Phased"
+			if effect == "unready_all":
+				assert_false(Effects.has(plain, "risen"), "its fall takes the readiness it gave the foe it reaches")
+				assert_eq(Effects.has(ghost, "risen"), not faded, "the fall of %s: the Phased foe's readiness" % who)
+			else:
+				assert_true(Effects.has(plain, "kindled"), "its fall lifts the foe it reaches")
+				assert_eq(Effects.has(ghost, "kindled"), faded, "the fall of %s: its rally on the Phased foe" % who)
+	# A move's condition reads only what its foe may reach: a mender with none but a Phased foe to
+	# mend does not announce its mend.
+	for faded in [false, true]:
+		var sk := Skirmish.new(1, 2)
+		sk.add_mech(_mech("A", Die.single(Face.blank()), 0, 500))
+		var ghost := _ghoul(30, 0)
+		var healer := _ghoul(30, 0)
+		healer.actions = [Foe.basic_action(), _special("defend", "heal", {"value": 5, "when": "ally_hurt"})]
+		sk.add_foes([ghost, healer])
+		sk.begin()
+		sk.start_round()
+		_phase(sk, ghost)
+		if faded:
+			_phase(sk, healer)
+		ghost.hp = 10
+		assert_eq(sk.heal_target(healer), ghost if faded else null, "whom its mend would reach")
+		assert_eq(sk.legal_actions(healer).any(func(a) -> bool: return str(a.get("effect", "")) == "heal"), faded, "and so whether it may announce one")
+
+## A standing Phased is purged by a Phased unit alone (the wait for it is an ordinary buff a
+## purge takes before it lands: test_phased_waits_for_the_rounds_end). A purger that is not
+## Phased reads no buff on a Phased machine, never picks it and takes nothing from it; a Phased
+## purger takes its Phased. And a machine's Purge reaches a Phased foe's from a Phased machine
+## alone, which brings the foe back into every machine's reach.
+func test_a_standing_phased_is_purged_by_a_phased_unit_alone() -> void:
+	for faded in [false, true]:
+		var sk := Skirmish.new(1, 2)
+		var p := _mech("P", Die.single(Face.blank()), 0, 100)
+		var n := _mech("N", Die.single(Face.blank()), 0, 100)
+		sk.add_mech(p)
+		sk.add_mech(n)
+		var priest := _purger()
+		priest.actions[0]["weight"] = 1000   # its purge whenever it may, at that weight
+		priest.actions.append(Foe.basic_action())
+		sk.add_foes([priest, _ghoul(500, 0)])
+		sk.begin()
+		_phase(sk, p, 2)   # through the round after this one, so what is left of it shows
+		if faded:
+			_phase(sk, priest, 2)
+		var who := "a Phased purger" if faded else "a purger that is not Phased"
+		assert_eq(sk.legal_actions(priest).any(func(a) -> bool: return str(a.get("effect", "")) == "dispel"), faded, "%s: a buff it may purge, the machine's Phased" % who)
+		sk.start_round()
+		assert_eq(str(priest.action.get("effect", "")) == "dispel", faded, "%s: its move" % who)
+		assert_eq(priest.target, sk.mechs[0] if faded else sk.mechs[1], "%s: its pick" % who)
+		sk.end_round()
+		assert_eq(Skirmish.is_phased(sk.mechs[0]), not faded, "%s: the machine's Phased as the round ends" % who)
+		assert_eq("\n".join(sk.log).contains("purges P"), faded, "%s: the log" % who)
+	# A machine's Purge on a Phased foe.
+	var s2 := Skirmish.new(1, 2)
+	var stripper := Face.attack(1, I, [K.DISPEL])
+	stripper.dispel = 1
+	var phaser := _mech("Phaser", Die.single(stripper), 0, 100)
+	var solid := _mech("Solid", Die.single(stripper.duplicate_face()), 0, 100)
+	s2.add_mech(phaser)
+	s2.add_mech(solid)
+	var ghost := _ghoul(500, 0)
+	s2.add_foes([ghost, _ghoul(500, 0)])
+	s2.begin()
+	s2.start_round()
+	_phase(s2, ghost)
+	_phase(s2, phaser)
+	assert_false(s2.targets_for(1).has(ghost), "a machine that is not Phased has no Purge to drop on it")
+	assert_true(s2.assign(0, ghost), "the Phased machine's Purge, dropped on the Phased foe")
+	assert_false(Skirmish.foe_phased(ghost), "takes its Phased as it takes any buff")
+	assert_true(s2.targets_for(1).has(ghost), "and it is back in every machine's reach")
+
+
+## What a machine lays on a foe with no die dropped on it is that machine's to land all the
+## same, so none of it reaches a Phased foe from a machine that is not Phased: what it lays on
+## a foe that strikes it, the Paradox its meter lays on a foe that gains a mark, what its entry
+## lays on the foe in front of it, and the Disrupt its entry lays on the foes aiming at an ally.
+func test_what_a_machine_lays_unaimed_reaches_a_phased_foe_only_when_it_is_phased() -> void:
+	# What it lays on its striker.
+	var sk := Skirmish.new(1, 1)
+	var n := _mech("N", Die.single(Face.blank()), 0, 100)
+	n.grant_passive({"id": "test_barbs", "name": "Barbs", "description": "", "effects": [{"trigger": "on_struck", "effect": "lay_status", "value": "brittled", "stacks": 1}]})
+	var p := _mech("P", Die.single(Face.blank()), 0, 100)
+	p.grant_passive({"id": "test_frost", "name": "Frost", "description": "", "effects": [{"trigger": "on_struck", "effect": "lay_status", "value": "cryoed", "stacks": 1}]})
+	sk.add_mech(n)
+	sk.add_mech(p)
+	var ghost := _ghoul(500, 1)
+	ghost.actions = [{"id": "storm", "name": "Storm", "kind": "attack", "factor": 1.0, "strikes": 1, "weight": 1, "keywords": ["all"], "text": ""}]
+	ghost.action = ghost.actions[0]
+	sk.add_foes([ghost])
+	sk.begin()
+	_phase(sk, p, 1)
+	_phase(sk, ghost, 1)
+	sk.start_round()
+	sk.end_round()
+	assert_eq([n.hull, p.hull], [99, 99], "the Phased foe's storm lands on both machines")
+	assert_eq([Effects.stacks_of(ghost, "brittled"), Effects.stacks_of(ghost, "cryoed")], [0, 1], "and only the Phased machine lays its mark on its striker")
+	# The Paradox a meter lays.
+	for faded in [false, true]:
+		var s2 := Skirmish.new(1, 1)
+		var meter := _mech("Meter", Die.single(Face.blank()), 0, 100)
+		meter.grant_passive({"id": "test_paradox", "name": "Paradox", "description": "", "effects": [{"trigger": "on_foe_status", "effect": "paradox", "value": 9}]})
+		var marker := _mech("Marker", Die.single(Face.attack(1, I, [K.SHOCK])), 0, 100)
+		s2.add_mech(meter)
+		s2.add_mech(marker)
+		var g2 := _ghoul(500, 0)
+		s2.add_foes([g2])
+		s2.begin()
+		s2.start_round()
+		_phase(s2, g2)
+		_phase(s2, marker)
+		if faded:
+			_phase(s2, meter)
+		assert_true(s2.assign(1, g2), "a Phased machine marks the Phased foe")
+		assert_true(Effects.has(g2, "shocked"), "its Shock lands")
+		assert_eq(Effects.has(g2, "paradox"), faded, "and the ally's meter lays its Paradox only when that ally is Phased too")
+	# What an entry lays on the foe in front of the machine it lands on.
+	for faded in [false, true]:
+		var lance := Face.buff("overcharged")
+		lance.front_status = "sapped"
+		lance.front_stacks = 1
+		var h := _haunted(lance, faded)
+		var s3: Skirmish = h[0]
+		assert_eq(s3.mech_column(s3.mechs[0]), 1, "the machine stands before the Phased foe")
+		assert_eq(s3.foe_in_front(s3.mechs[0], s3.mechs[0]), h[2] if faded else h[1], "the foe in front it may reach: the Phased one for a Phased machine, else the next the search finds")
+		assert_true(s3.assign(0, s3.mechs[0]), "the lance, spent on itself")
+		assert_eq([Effects.has(h[2], "sapped"), Effects.has(h[1], "sapped")], [faded, not faded], "and its mark lands there")
+	# The Disrupt an entry lays on the foes aiming at an ally.
+	for faded in [false, true]:
+		var shroud := Face.buff("overcharged")
+		shroud.targets = Face.Target.ALLY
+		shroud.disrupts_attackers = true
+		var s4 := Skirmish.new(1, 2)
+		var caster := _mech("S", Die.single(shroud), 0, 100)
+		var ally := _mech("T", Die.single(Face.blank()), 0, 100)
+		s4.add_mech(caster)
+		s4.add_mech(ally)
+		var solid := _ghoul(500, 3)
+		var spectre := _ghoul(500, 3)
+		for f in [solid, spectre]:
+			f.actions = [Foe.basic_action(), _special("defend", "brace", {"value": 1})]
+			f.actions[0]["weight"] = 1000
+		s4.add_foes([solid, spectre])
+		s4.begin()
+		s4.start_round()
+		for f in [solid, spectre]:
+			f.action = f.actions[0]
+			f.target = s4.mechs[1]
+		_phase(s4, spectre)
+		if faded:
+			_phase(s4, caster)
+		assert_true(s4.assign(0, s4.mechs[1]), "the shroud, on the ally both foes aim at")
+		assert_false(solid.attacks(), "the foe that is not Phased is turned to its other move")
+		assert_eq(spectre.attacks(), not faded, "and the Phased foe only by a Phased machine's shroud")
+
+
+## A swallow and the rule. No foe that is not Phased takes a Phased machine: a pick on one is
+## drawn again as any is. One on its way lands as the round ends all the same: the wait is a
+## status its machine carries, its own, Phased by then or not.
+func test_a_swallow_passes_a_phased_machine_by_and_one_on_its_way_lands_on_it() -> void:
+	var gulp := {"id": "swallow", "name": "Swallow", "kind": "debuff", "effect": "swallow", "value": 2, "weight": 1, "text": ""}
+	var sk := Skirmish.new(1, 1)
+	var a := _mech("A", Die.single(Face.blank()), 0, 500)
+	var b := _mech("B", Die.single(Face.blank()), 0, 500)
+	var c := _mech("C", Die.single(Face.blank()), 0, 500)
+	sk.add_mech(a)
+	sk.add_mech(b)
+	sk.add_mech(c)
+	var maw := _ghoul(500, 0)
+	maw.actions = [gulp]
+	maw.action = gulp
+	sk.add_foes([maw])
+	sk.begin()
+	sk.start_round()
+	maw.target = sk.mechs[0]
+	_phase(sk, a)
+	assert_eq(sk.swallowable(maw).size(), 2, "the machines it may take: the two that are not Phased")
+	sk.end_round()
+	assert_false(Skirmish.is_swallowed(sk.mechs[0]), "the Phased machine is not taken")
+	assert_true(Skirmish.is_swallowed(sk.mechs[1]), "the next in line is")
+	# A swallow already on its way.
+	var veil := Face.buff("phased")
+	var s2 := Skirmish.new(1, 1)
+	var d := _mech("D", Die.single(veil), 0, 500)
+	var e := _mech("E", Die.single(Face.blank()), 0, 500)
+	s2.add_mech(d)
+	s2.add_mech(e)
+	var maw2 := _ghoul(500, 0)
+	maw2.actions = [gulp.duplicate()]
+	maw2.action = maw2.actions[0]
+	s2.add_foes([maw2])
+	s2.begin()
+	s2.start_round()
+	maw2.target = s2.mechs[0]
+	assert_true(s2.assign(0, s2.mechs[0]), "it lays its own wait for Phased")
+	s2.end_round()
+	assert_true(Skirmish.is_phased(s2.mechs[0]), "it stood through the round, so it is Phased")
+	assert_true(Skirmish.is_swallowed(s2.mechs[0]), "and Swallowed too: the swallow laid on it before is its own to carry")
 
 
 func test_a_longer_countdown_holds_its_pick_and_a_suppress_holds_its_blow() -> void:
@@ -6068,26 +6867,35 @@ func _meteor_beast(hp: int = 30) -> Foe:
 	return f
 
 
-## A blow at every machine reaches the machines in the fight (the audit's ninth bug, 8
-## November): a last act on every machine passes a Phased one by, its blow and its riders alike,
-## as a foe's turn always has.
-func test_a_last_act_at_every_machine_passes_a_machine_out_of_the_fight_by() -> void:
-	var sk := Skirmish.new(1, 2)
-	var a := _mech("A", Die.single(Face.attack(40, I)), 0, 100)
-	var b := _mech("B", Die.single(Face.blank()), 0, 100)
-	sk.add_mech(a)
-	sk.add_mech(b)
-	var beast := Foe.make("gargantuan_king", 30, 20)
-	beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all", "scorch"], "scorch": 1})}
-	sk.add_foes([beast, _ghoul(500, 0)])
-	sk.begin()
-	sk.start_round()
-	Effects.grant_for_rounds(b, Effects.STATUS["phased"], "test", sk.round)
-	assert_true(Skirmish.is_phased(sk.mechs[1]), "B is out of the fight")
-	assert_true(sk.assign(0, beast), "the beast falls")
-	assert_true(a.hull < 100 and Effects.has(a, "scorched"), "its Meteor lands on A, scorching it")
-	assert_eq(b.hull, 100, "and passes the Phased machine by")
-	assert_false(Effects.has(b, "scorched"), "its riders too")
+## A blow at every machine reaches the machines its foe reaches (the audit's ninth bug, 8
+## November; the rule of 19 November): a last act on every machine from a foe that is not
+## Phased passes a Phased machine by, its blow and its riders alike, as that foe's turn does;
+## a Phased foe's lands on every machine, the Phased ones too.
+func test_a_last_act_at_every_machine_lands_on_the_machines_its_foe_reaches() -> void:
+	for faded in [false, true]:
+		var sk := Skirmish.new(1, 2)
+		var a := _mech("A", Die.single(Face.attack(40, I)), 0, 100)
+		var b := _mech("B", Die.single(Face.blank()), 0, 100)
+		var c := _mech("C", Die.single(Face.blank()), 0, 100)
+		sk.add_mech(a)
+		sk.add_mech(b)
+		sk.add_mech(c)
+		var beast := Foe.make("gargantuan_king", 30, 20)
+		beast.on_death = {"blow": Foe.death_blow_from({"name": "Meteor", "factor": 1.0, "keywords": ["all", "scorch"], "scorch": 1})}
+		sk.add_foes([beast, _ghoul(500, 0)])
+		sk.begin()
+		sk.start_round()
+		Effects.grant_for_rounds(b, Effects.STATUS["phased"], "test", sk.round)
+		if faded:
+			Effects.grant_for_rounds(beast, Effects.STATUS["phased"], "test", sk.round)
+			Effects.grant_for_rounds(a, Effects.STATUS["phased"], "test", sk.round)   # only a Phased machine fells a Phased foe
+		assert_true(Skirmish.is_phased(sk.mechs[1]), "B is Phased")
+		assert_true(sk.assign(0, beast), "the beast falls")
+		assert_true(c.hull < 100 and Effects.has(c, "scorched"), "its Meteor lands on the machine that is not Phased, scorching it")
+		assert_eq(b.hull, 80 if faded else 100, "and on the Phased machine only from a Phased foe")
+		assert_eq(Effects.has(b, "scorched"), faded, "its riders with it or not at all")
+		assert_eq(a.hull, 80, "the machine that felled it takes it either way: it was in its reach")
+		assert_eq(sk.last_acts[0]["mechs"], [0, 1, 2] if faded else [0, 2], "and the screen is told which machines it struck")
 
 
 func test_a_last_act_lands_the_moment_its_foe_falls() -> void:
@@ -6168,7 +6976,8 @@ func test_a_fall_that_blesses_lifts_the_foes_still_standing() -> void:
 ## A fall's curse, an effect aimed at one machine, lands on the machine that made the kill (Ryan,
 ## 16 November: "if the effect is a curse, then it should apply to the killer, and the dodge is
 ## ablating it"), whatever the foe's own pick was; a Ward on the killer turns it away; a kill no
-## machine made, a tick's, lands it on nobody; and a killer out of the fight is out of its reach.
+## machine made, a tick's, lands it on nobody; and a Phased killer is beyond the reach of a foe
+## that is not Phased, its curse and its blow alike, where a Phased foe's fall reaches it.
 func test_a_falls_curse_lands_on_the_killer_and_a_tick_dodges_it() -> void:
 	var sk := Skirmish.new(1, 2)
 	var a := _mech("A", Die.single(Face.attack(40, I)), 0, 100)
@@ -6211,18 +7020,38 @@ func test_a_falls_curse_lands_on_the_killer_and_a_tick_dodges_it() -> void:
 	assert_false(g3.alive(), "it burns down as its turn ends")
 	assert_false(Effects.is_entry_disabled(e, s3.mechs[0].face_index), "and its curse lands on nobody, its pick included")
 	assert_true("\n".join(s3.log).contains("no machine stands to take it"), "the log says so")
-	# A killer out of the fight is out of the curse's reach too.
-	var s4 := Skirmish.new(1, 2)
-	var h := _mech("H", Die.single(Face.attack(40, I)), 0, 100)
-	s4.add_mech(h)
-	var g4 := _falls_with("jam")
-	s4.add_foes([g4, _ghoul(500, 1)])
-	s4.begin()
-	s4.start_round()
-	Effects.grant_for_rounds(h, Effects.STATUS["phased"], "test", s4.round)
-	assert_true(s4.assign(0, g4), "a Phased machine makes the kill")
-	assert_false(Effects.is_entry_disabled(h, s4.mechs[0].face_index), "nothing reaches it")
-	assert_eq(int(s4.last_acts[0]["cursed"]), -1, "so the curse lands on nobody")
+	# A Phased killer is beyond the reach of a foe that is not Phased, its curse and its blow
+	# alike; the fall of a Phased foe reaches it as it reaches any machine.
+	for faded in [false, true]:
+		var who := "a Phased foe" if faded else "a foe that is not Phased"
+		var s4 := Skirmish.new(1, 2)
+		var h := _mech("H", Die.single(Face.attack(40, I)), 0, 100)
+		s4.add_mech(h)
+		var g4 := _falls_with("jam")
+		s4.add_foes([g4, _ghoul(500, 1)])
+		s4.begin()
+		s4.start_round()
+		Effects.grant_for_rounds(h, Effects.STATUS["phased"], "test", s4.round)
+		if faded:
+			Effects.grant_for_rounds(g4, Effects.STATUS["phased"], "test", s4.round)
+		assert_eq(Policy.fall_steps_cost(s4, g4, s4.mechs[0]) > 0.0, faded, "the bot prices the curse of %s on a Phased killer only where it will land" % who)
+		assert_true(s4.assign(0, g4), "a Phased machine makes the kill")
+		assert_eq(Effects.is_entry_disabled(h, s4.mechs[0].face_index), faded, "the curse of %s on a Phased killer" % who)
+		assert_eq(int(s4.last_acts[0]["cursed"]), 0 if faded else -1, "the fall of %s: whom the screen is told it cursed" % who)
+		var s5 := Skirmish.new(1, 2)
+		var k := _mech("K", Die.single(Face.attack(40, I)), 0, 100)
+		s5.add_mech(k)
+		var knight := Foe.make("revenant", 10, 6)
+		knight.on_death = {"blow": Foe.death_blow_from({"name": "Throes", "factor": 1.0})}
+		s5.add_foes([knight, _ghoul(500, 0)])
+		s5.begin()
+		s5.start_round()
+		Effects.grant_for_rounds(k, Effects.STATUS["phased"], "test", s5.round)
+		if faded:
+			Effects.grant_for_rounds(knight, Effects.STATUS["phased"], "test", s5.round)
+		assert_true(s5.assign(0, knight), "a Phased machine fells it")
+		assert_eq(k.hull, 94 if faded else 100, "the last blow of %s on a Phased killer" % who)
+		assert_eq("\n".join(s5.log).contains("Throes lands on nobody"), not faded, "the fall of %s: what the log says of its blow" % who)
 
 
 ## One fall, two machines: its blow lands where a move's does, on the foe's own pick, and its
@@ -6267,7 +7096,8 @@ func test_a_falls_blow_lands_on_its_killer_and_on_nobody_when_it_has_none() -> v
 
 
 ## A fall strikes first and then does the rest, in the order written: its blow, then each
-## effect by that effect's own rules, a machine out of the fight passed by.
+## effect by that effect's own rules, a machine beyond its reach passed by (here a Phased one,
+## the foe not being Phased).
 func test_a_fall_strikes_and_then_does_the_rest() -> void:
 	var sk := Skirmish.new(1, 2)
 	var a := _mech("A", Die.single(Face.attack(40, I)), 0, 100)
@@ -6285,7 +7115,7 @@ func test_a_fall_strikes_and_then_does_the_rest() -> void:
 	sk.start_round()
 	Effects.grant_for_rounds(c, Effects.STATUS["phased"], "test", sk.round)
 	assert_true(sk.assign(0, beast), "the beast falls")
-	assert_eq([a.hull, b.hull, c.hull], [90, 90, 100], "its blow lands on every machine in the fight")
+	assert_eq([a.hull, b.hull, c.hull], [90, 90, 100], "its blow lands on every machine in its reach")
 	assert_eq([Effects.stacks_of(a, "scorched"), Effects.stacks_of(b, "scorched"), Effects.stacks_of(c, "scorched")], [2, 2, 0], "then its scorch, the Phased machine passed by")
 	assert_eq([Effects.stacks_of(a, "brittled_mech"), Effects.stacks_of(b, "brittled_mech"), Effects.stacks_of(c, "brittled_mech")], [2, 2, 0], "then its Brittle, the Phased machine passed by again")
 	assert_eq(sk.last_acts[0]["effects"], ["scorch_all", "brittle_all"], "in the order written")
@@ -7512,9 +8342,11 @@ func test_a_ward_turns_away_every_rider_for_the_round() -> void:
 ## The Ward turns away every rider, a special's too (Ryan, 25 October: "Should stop all riders,
 ## even from non-damaging attacks"): a Stoke's Ablating, a Stone's switch-off, an Eruption's
 ## Scorched and a Diamond Dust's Corrupted, on the warded machine while the bare one beside it
-## takes the all-machine ones; and a Phased machine is out of a special on every machine as it
-## is out of a blow at every machine (the mechanics audit, 25 October).
-func test_a_ward_turns_away_a_specials_riders_and_phased_is_out_of_them() -> void:
+## takes the all-machine ones; and a special on every machine from a foe that is not Phased
+## passes a Phased machine by as its blow at every machine does (the mechanics audit, 25
+## October; a Phased foe's lands on it:
+## test_a_phased_foe_picks_and_strikes_any_machine_and_no_other_foe_reaches_a_phased_one).
+func test_a_ward_turns_away_a_specials_riders_and_one_at_every_machine_passes_a_phased_one_by() -> void:
 	for effect in ["ablate", "jam", "scorch_all", "corrupt_all"]:
 		var sk := Skirmish.new(1, 1)
 		var warded := _mech("W", Die.single(Face.buff("ward")), 30, 100)
@@ -7552,7 +8384,7 @@ func test_a_ward_turns_away_a_specials_riders_and_phased_is_out_of_them() -> voi
 	sk3.start_round()
 	Effects.grant_buff(out, "phased", 1, "test", sk3.round)
 	sk3.end_round()
-	assert_eq(Effects.stacks_of(out, "scorched"), 0, "the Phased machine is out of the eruption")
+	assert_eq(Effects.stacks_of(out, "scorched"), 0, "the eruption of a foe that is not Phased passes the Phased machine by")
 	assert_eq(Effects.stacks_of(left, "scorched"), 2, "the other takes it")
 
 
@@ -10324,7 +11156,8 @@ func test_the_muster_fills_on_every_roll_and_a_kill_and_buys_a_charged_form() ->
 ## this round (the piece's own filter; Ryan, 22 October: never a selective protection). Phased is
 ## granted as the round ends (15 November): they keep their dice and stand through the enemy's
 ## turn as any machine, and as it ends they are Phased through the next round, where no foe
-## picks them, no blow reaches them, no ally may spend on them, and they act. Once any ally has
+## that is not Phased picks them, no blow of such a foe reaches them, no ally that is not
+## Phased may spend on them, and they act. Once any ally has
 ## acted the charged form has nowhere to land: the plain shield goes out and the charge waits.
 func test_the_team_shield_reaches_every_ally_and_its_charge_phases_them_as_the_round_ends() -> void:
 	var screens := Face.shield(10)
@@ -10356,7 +11189,7 @@ func test_the_team_shield_reaches_every_ally_and_its_charge_phases_them_as_the_r
 	assert_true(sk.charge_lands(sk.mechs[0]), "a charge up and no ally has acted: it goes out charged")
 	assert_true(sk.assign(0, sk.mechs[1]), "charged: Phased queued on every ally")
 	assert_true(Effects.has(a, "phasing") and Effects.has(b, "phasing"), "A and B both wait for it")
-	assert_false(Effects.has(a, "phased") or Skirmish.is_out(sk.mechs[1]), "neither is Phased yet")
+	assert_false(Effects.has(a, "phased") or Skirmish.is_phased(sk.mechs[1]), "neither is Phased yet")
 	assert_false(sk.mechs[1].assigned or sk.mechs[2].assigned, "they keep their dice: no action is its price")
 	for f in sk.field_foes():
 		assert_eq(f.target, sk.mechs[1], "the foes' picks stand: it is in the fight this round")
@@ -10366,17 +11199,17 @@ func test_the_team_shield_reaches_every_ally_and_its_charge_phases_them_as_the_r
 	assert_true(Effects.has(a, "phased") and Effects.has(b, "phased") and not Effects.has(a, "phasing"), "as the round ends, both are Phased")
 	assert_true("\n".join(sk.log).contains("A is Phased: out of reach until the next round's end"), "the log says so")
 	sk.start_round()
-	assert_true(Skirmish.is_out(sk.mechs[1]) and Skirmish.is_out(sk.mechs[2]), "through the next round")
+	assert_true(Skirmish.is_phased(sk.mechs[1]) and Skirmish.is_phased(sk.mechs[2]), "through the next round")
 	for f in sk.field_foes():
-		assert_eq(f.target, sk.mechs[0], "no foe picks a Phased machine: the Carrier alone may be picked")
-	assert_false(sk.machine_targets_for(sk.mechs[0], screens).has(sk.mechs[1]), "no ally may spend on it")
+		assert_eq(f.target, sk.mechs[0], "no foe that is not Phased picks a Phased machine: the Carrier alone may be picked")
+	assert_false(sk.machine_targets_for(sk.mechs[0], screens).has(sk.mechs[1]), "the Carrier, not Phased itself, may not spend on it")
 	assert_true(sk.can_spend(1), "and it acts")
 	var foe_hp: int = sk.front[0].hp
 	assert_true(sk.assign(1, sk.front[0]), "its gun fires")
 	assert_eq(sk.front[0].hp, foe_hp - 10, "and lands")
 	var held := a.hull + a.shield
 	sk.end_round()
-	assert_eq(a.hull + a.shield, held, "nothing reaches it in the enemy's turn")
+	assert_eq(a.hull + a.shield, held, "no foe reaches it in the enemy's turn: none of them is Phased")
 	sk.start_round()
 	assert_false(Effects.has(a, "phased") or Effects.has(b, "phased"), "gone at that round's end")
 	# One ally acted first: never a selective protection, so the plain shield, the charge kept.
@@ -10392,13 +11225,13 @@ func test_the_team_shield_reaches_every_ally_and_its_charge_phases_them_as_the_r
 	assert_eq(Effects.muster_charges(c), 1, "the charge waits")
 
 
-## Phased (Ryan's mark and answer, 15 November: "Cannot be damaged or targeted by anything until
-## the end of this round"; "all sources of Phased should say "at the end of this round, grant
-## Phased""; "you have to survive the current round"): a source lays the wait for it, on a
-## machine that has acted or not; a machine wrecked before the round ends never phases, and a
-## foe's Purge takes the wait as it takes any buff. A Phased machine may spend on itself, a
-## second grant carrying it through the round after, and its Lure turns no pick, since nothing
-## may target it.
+## When Phased is granted (Ryan, 15 November: "all sources of Phased should say "at the end of
+## this round, grant Phased""; "you have to survive the current round"): a source lays the wait
+## for it, on a machine that has acted or not; a machine wrecked before the round ends never
+## phases, and a foe's Purge takes the wait as it takes any buff. A Phased machine may spend on
+## itself, a second grant of its own carrying it through the round after. Its Lure turns the
+## pick of a foe that can target it, a Phased one, and no other's (his rule of 19 November:
+## "Phased: Cannot be targeted, damaged, or affected in any way by non-phased units").
 func test_phased_waits_for_the_rounds_end_and_a_wrecked_or_purged_machine_never_phases() -> void:
 	var veil := Face.buff("phased")
 	var sk := Skirmish.new(1, 2)
@@ -10419,16 +11252,16 @@ func test_phased_waits_for_the_rounds_end_and_a_wrecked_or_purged_machine_never_
 	assert_false(Effects.has(doomed, "phased"), "a machine wrecked before the round ends never phases")
 	assert_true(Effects.has(a, "phased") and not Effects.has(a, "phasing"), "A, standing, does")
 	sk.start_round()
-	assert_true(sk.targetable_mechs().is_empty() and g.target == null, "nothing may target it, and no foe picks it")
+	assert_true(sk.targetable_mechs(g).is_empty() and g.target == null, "no foe that is not Phased may target it, and none picks it")
 	assert_true(sk.machine_targets_for(sk.mechs[0], sk.mechs[0].face()).has(sk.mechs[0]), "it may spend on itself")
 	assert_true(sk.assign(0, null), "and does: Phased queued again")
 	sk.end_round()
-	assert_eq(a.hull, 100, "the blow of a foe with nothing to strike is lost")
+	assert_eq(a.hull, 100, "the blow of a foe with no machine in its reach is lost")
 	sk.start_round()
-	assert_true(Skirmish.is_phased(sk.mechs[0]), "the second grant carries it through the round after")
+	assert_true(Skirmish.is_phased(sk.mechs[0]), "the second grant, its own, carries it through the round after")
 	sk.end_round()
 	sk.start_round()
-	assert_false(Skirmish.is_phased(sk.mechs[0]), "and without a third it is back in reach")
+	assert_false(Skirmish.is_phased(sk.mechs[0]), "and without a third it is back in every foe's reach")
 	# A foe's Purge takes the wait: it is a buff a die entry bought.
 	var s2 := Skirmish.new(2, 2)
 	var u := _mech("U", Die.single(Face.attack(1, L)), 0, 100)
@@ -10439,27 +11272,36 @@ func test_phased_waits_for_the_rounds_end_and_a_wrecked_or_purged_machine_never_
 	s2.start_round()
 	s2.end_round()
 	assert_false(Effects.has(u, "phasing") or Effects.has(u, "phased"), "purged before the round ends, it never phases")
-	# A Phased machine's Lure turns no pick.
+	# A Phased machine's Lure turns the pick of a foe that can target it, a Phased one, and no
+	# other's: it reaches both, and only the one may turn on it.
 	var s3 := Skirmish.new(3, 2)
-	var lurer := _mech("L", Die.single(Face.attack(0, I, [K.LURE])), 0, 100)
+	var lurer := _mech("L", Die.single(Face.attack(0, E, [K.LURE])), 0, 100)
 	var bait := _mech("B", Die.single(Face.blank()), 0, 100)
 	s3.add_mech(lurer)
 	s3.add_mech(bait)
 	var hunter := _ghoul(300, 10)
-	s3.add_foes([hunter])
+	var spectre := _ghoul(300, 4)
+	s3.add_foes([hunter, spectre])
 	s3.begin()
 	s3.start_round()
 	Effects.grant_for_rounds(lurer, Effects.STATUS["phased"], "test", s3.round)
+	Effects.grant_for_rounds(spectre, Effects.STATUS["phased"], "test", s3.round)
 	hunter.target = s3.mechs[1]
-	assert_true(s3.assign(0, hunter), "the lure spent")
-	assert_eq(hunter.target, s3.mechs[1], "the foe keeps its pick: nothing may target a Phased machine")
-	assert_true("\n".join(s3.log).contains("L lures nothing"), "and the log says so")
+	spectre.target = s3.mechs[1]
+	assert_eq(Array(s3.lure_turns(s3.mechs[0])), [spectre], "the arrows its Lure would turn: the Phased foe's alone")
+	assert_true(s3.assign(0, hunter), "the lure spent, over every foe")
+	assert_eq(hunter.target, s3.mechs[1], "the foe that is not Phased keeps its pick: it may not target a Phased machine")
+	assert_eq(spectre.target, s3.mechs[0], "the Phased foe turns on it")
+	assert_true("\n".join(s3.log).contains("L lures revenant") and "\n".join(s3.log).contains("lured, but revenant cannot target L"), "and the log says both: %s" % "\n".join(s3.log.slice(-2)))
+	var hull := lurer.hull
+	s3.end_round()
+	assert_eq([hull - lurer.hull, 100 - bait.hull], [4, 10], "so the Phased foe's blow lands on the lurer and the other's on its pick")
 
 
 ## The Phased trial at once (Ryan, 20 November: "Set the debug toggle for phased"; the TRIALS
-## page's PHASED, Skirmish.phase_at_once): a machine's Phased lands as its entry is spent, out of
-## reach until the round ends, and the foe whose pick it was draws again; off, it waits for the
-## round's end as built.
+## page's PHASED, Skirmish.phase_at_once): a machine's Phased lands as its entry is spent, until
+## the round ends, and the foe whose pick it was and that can no longer reach it draws again,
+## a Phased foe keeping its pick; off, it waits for the round's end as built.
 func test_phased_at_once_lands_as_it_is_spent_and_the_foes_pick_again() -> void:
 	var veil := Face.buff("phased")
 	var sk := Skirmish.new(1, 2)
@@ -10468,20 +11310,24 @@ func test_phased_at_once_lands_as_it_is_spent_and_the_foes_pick_again() -> void:
 	sk.add_mech(a)
 	sk.add_mech(b)
 	var g := _ghoul(300, 10)
-	sk.add_foes([g])
+	var spectre := _ghoul(300, 3)
+	sk.add_foes([g, spectre])
 	sk.begin()
 	Skirmish.phase_at_once = true
 	sk.start_round()
 	g.target = sk.mechs[0]
+	spectre.target = sk.mechs[0]
+	Effects.grant_for_rounds(spectre, Effects.STATUS["phased"], "test", sk.round)
 	assert_true(sk.assign(0, null), "A spends its Phase on itself")
 	Skirmish.phase_at_once = false   # the switch is read as the entry is spent; the rest of the test runs the game's own
 	assert_true(Skirmish.is_phased(sk.mechs[0]) and not Effects.has(a, "phasing"), "Phased at once, with no wait")
-	assert_eq(g.target, sk.mechs[1], "the foe that picked it picks again, the next machine in line")
+	assert_eq(g.target, sk.mechs[1], "the foe that picked it and is not Phased picks again, the next machine in line")
+	assert_eq(spectre.target, sk.mechs[0], "the Phased foe keeps its pick: it reaches the machine still")
 	sk.end_round()
-	assert_eq(a.hull, 100, "nothing reaches A in the foes' turn")
-	assert_true(b.hull < 100, "the blow lands on B")
+	assert_eq(a.hull, 97, "only the Phased foe's blow reaches A in the foes' turn")
+	assert_eq(b.hull, 90, "the other's lands on B")
 	sk.start_round()
-	assert_false(Skirmish.is_phased(sk.mechs[0]), "and it is back in reach as the next round opens")
+	assert_false(Skirmish.is_phased(sk.mechs[0]), "and it is back in every foe's reach as the next round opens")
 	# Off, the game's own: the wait, then Phased as the round ends.
 	var s2 := Skirmish.new(2, 2)
 	var c := _mech("C", Die.single(veil.duplicate_face()), 0, 100)
@@ -10785,7 +11631,8 @@ func test_a_multi_strike_gun_pays_its_heat_once_a_spend() -> void:
 
 
 ## The enemy's turn goes on past a foe with no machine to strike (the audit's 13, 27 October):
-## every machine Phased, the first foe's blow is lost and the second still ticks its Ablating.
+## every machine Phased and neither foe, the first foe's blow is lost and the second still ticks
+## its Ablating.
 func test_the_enemy_turn_goes_on_when_no_machine_can_be_struck() -> void:
 	var sk := Skirmish.new(1, 2)
 	var a := _mech("A", Die.single(Face.attack(10, L)), 40, 100)
@@ -10798,7 +11645,7 @@ func test_the_enemy_turn_goes_on_when_no_machine_can_be_struck() -> void:
 	Effects.grant_buff(a, "phased", 1, "test", sk.round)
 	Effects.stack(second, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 3)
 	sk.end_round()
-	assert_eq(a.hull + a.shield, 140, "nothing reaches the Phased machine")
+	assert_eq(a.hull + a.shield, 140, "no foe that is not Phased reaches the Phased machine")
 	assert_eq(second.hp, 97, "the second foe's Ablating ticked: the turn went on past the first")
 	assert_eq(Effects.stacks_of(second, "ablating"), 2, "and a stack faded")
 	assert_true("\n".join(sk.log).contains("no machine to strike"), "the log says the first had nobody to strike")

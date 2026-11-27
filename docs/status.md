@@ -183,7 +183,10 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   tier two and up among the rank and file, one machine at a time: the Goblin Warchief, the
   Basilisk, the Alpha Warg, the Lich, the Wild Huntsman and the Piercing Eye lay it.
   The Roc is Aloft while its Stoop gathers and nothing reaches it; the Spectre and the Wraith
-  fade after their Hex Bolt, Phased through the next round and still acting; the Pilgrim is
+  fade after their Hex Bolt, Phased through the next round and still acting, reached by a
+  Phased machine alone (Phased is by source since 27 November, his rule of the 19th: only what
+  is Phased reaches what is Phased, and what a Phased unit carries, its heat among it, is its
+  own and acts on it); the Pilgrim is
   immune to Suppress and its knife purges before it lands, the one move with a step ahead of
   its blow, and the Obsidian Tyrant and the Ruby Colossus to Disrupt while Firestorm
   and Ultima gather. Four falls do more than strike: the root line's scream, the Gorgon's
@@ -503,8 +506,8 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    machines; the code's ramp 1), the first battle built, the bot pricing a purge. In this
    order from here:
    - His marks on the rest of `docs/domain_statuses_proposal.md`, then its rows built and
-     read: a foe's Sap rider for the Ghost line, and Phased by source with his ruling on a
-     ghost's own side, in one pass; his read of the formations that rally (the hangar's Foes
+     read: a foe's Sap rider for the Ghost line (Phased by source and a ghost's own side are
+     built since 27 November, on his word); his read of the formations that rally (the hangar's Foes
      tab shows each formation by name since 20 November, and the table went to him again by
      those names the same day).
    - Every tier-one leader read again at sixty fights or more (the shaman's warband reads 33%

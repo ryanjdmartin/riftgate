@@ -141,25 +141,37 @@ func test_a_rebooting_machine_takes_its_tick_on_the_hull() -> void:
 	assert_eq(Effects.stacks_of(u, "ablating_mech"), 1, "and still Ablating: a reboot is no cleanse")
 
 
-## Out of reach, two ways (Ryan, 16 November). A Phased machine takes no point and its stacks
-## fade all the same ("Everything ticks during phased. It doesn't take damage but it's a way of
-## waiting out a debuff"); a Swallowed one's wait ("Swallowed it's out of play so everything
-## should pause"), and tick the turn it is back.
-func test_a_phased_machines_stacks_fade_and_take_nothing_and_a_swallowed_ones_wait() -> void:
+## Two that no blow reaches, and they part on what they carry. A Phased machine's Ablating is its
+## own and acts on it in full (Ryan, 19 November: "Phased: Cannot be targeted, damaged, or
+## affected in any way by non-phased units"; a status already on a unit is that unit's own): its
+## points, the shield first, and a stack fading, as on any machine, and a tick that wrecks it
+## wrecks it. A Swallowed one's wait ("Swallowed it's out of play so everything should pause"),
+## and tick the turn it is back.
+func test_a_phased_machines_ablating_takes_its_points_and_a_swallowed_ones_waits() -> void:
 	var u := _mech(1, "A", 10, 100)
 	var other := _mech(2, "B", 10, 100)
 	var sk := _fight([u, other], [Foe.make("dummy", 900, 0)])
 	sk.start_round()
 	_ablating(u, 2)
 	Effects.grant_buff(u, "phased", 1, "test", sk.round)
-	assert_eq(int(sk.forecast(sk.mechs[0])["ablated"]), 0, "the forecast counts none while it is Phased")
+	assert_eq(int(sk.forecast(sk.mechs[0])["ablated"]), 2 * _per(), "the forecast counts its tick, Phased or not")
 	sk.end_round()
-	assert_eq([u.shield, u.hull], [10, 100], "nothing damages a Phased machine, its own tick included")
-	assert_eq(Effects.stacks_of(u, "ablating_mech"), 1, "and a stack fades all the same")
+	assert_eq([u.shield, u.hull], [10 - 2 * _per(), 100], "Phased, its own tick takes its points off the shield")
+	assert_eq(Effects.stacks_of(u, "ablating_mech"), 1, "and a stack fades")
+	assert_eq(sk.ablations.size(), 1, "on record for the replay, as any machine's")
 	sk.start_round()
-	assert_false(Skirmish.is_out(sk.mechs[0]), "back in reach")
+	assert_false(Skirmish.is_phased(sk.mechs[0]), "Phased no longer")
 	sk.end_round()
-	assert_eq([u.shield, Effects.stacks_of(u, "ablating_mech")], [9, 0], "the turn it is back, the stack left takes its point and goes")
+	assert_eq([u.shield, Effects.stacks_of(u, "ablating_mech")], [10 - 3 * _per(), 0], "the stack left takes its point and goes: the round Phased waited nothing out")
+	# A tick that wrecks a Phased machine wrecks it.
+	var w := _mech(1, "A", 0, 2)
+	var s3 := _fight([w, _mech(2, "B", 10, 100)], [Foe.make("dummy", 900, 0)])
+	s3.start_round()
+	_ablating(w, 3)
+	Effects.grant_buff(w, "phased", 1, "test", s3.round)
+	assert_true(bool(s3.forecast(s3.mechs[0])["destroyed"]), "the forecast says its tick will wreck it")
+	s3.end_round()
+	assert_false(s3.mechs[0].alive(), "and it does: what a Phased machine carries may wreck it")
 	var v := _mech(1, "A", 10, 100)
 	var sk2 := _fight([v, _mech(2, "B", 10, 100)], [Foe.make("dummy", 900, 0)])
 	sk2.start_round()

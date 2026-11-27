@@ -159,20 +159,25 @@ func test_a_lure_wins_and_a_machine_out_of_reach_is_passed_by() -> void:
 	assert_eq([f1.target, f2.target], [sk.mechs[0], sk.mechs[0]], "both on the Exposed machine")
 	assert_true(sk.assign(1, f1), "B lures one")
 	assert_eq([f1.target, f2.target], [sk.mechs[1], sk.mechs[0]], "Lure wins: the blow comes off it")
-	# Phased as the round ended, it is out of the picks: the round bought a round ahead answers it.
+	# Phased as the round ended, it is out of the picks of every foe that is not Phased: the round
+	# bought a round ahead answers it. A Phased foe reaches it, and its pick turns on the mark.
 	var sk2 := Skirmish.new(2, 3)
 	var p := _mech("A", Die.single(Face.blank()), 0, 500)
 	var q := _mech("B", Die.single(Face.blank()), 0, 500)
-	sk2.add_mech(p)
 	sk2.add_mech(q)
+	sk2.add_mech(p)
 	var g := Foe.make("revenant", 500, 10)
-	sk2.add_foes([g])
+	var ghost := Foe.make("revenant", 500, 10)
+	sk2.add_foes([g, ghost])
 	sk2.begin()
 	_expose(p, 1)
 	Effects.grant_for_rounds(p, Effects.STATUS["phased"], "test", 1)
+	Effects.grant_for_rounds(ghost, Effects.STATUS["phased"], "test", 1)
 	sk2.start_round()
-	assert_eq(sk2.exposed_mech(), null, "an Exposed machine out of reach draws nothing")
-	assert_eq(g.target, sk2.mechs[1], "and the foe picks another")
+	assert_eq(sk2.exposed_mech(g), null, "an Exposed machine beyond a foe's reach draws nothing from it")
+	assert_eq(g.target, sk2.mechs[0], "and that foe picks another")
+	assert_eq(sk2.exposed_mech(ghost), sk2.mechs[1], "a Phased foe reaches the Phased machine")
+	assert_eq(ghost.target, sk2.mechs[1], "and turns on it as the mark asks")
 
 
 # ---------------------------------------------------------------- how it lands
