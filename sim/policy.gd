@@ -1036,13 +1036,13 @@ func needle_worth(sk: Skirmish, ms: Skirmish.MechState, foe: Foe, n: int, left: 
 
 
 ## A needle bolt's worth now (Skirmish._needle_bolt): Chain's ping of its number on every conductor
-## the foe it fires from reaches (the bolt is that foe's: a Phased conductor loses none to a foe
-## that is not Phased), that foe among them with the HP it keeps (`left`), flat and capped at what
-## it has, a kill at its bonus.
+## the machine that fires it reaches (the bolt is the Echidna's, `ms`: a Phased conductor loses none
+## to one that is not Phased), the foe it fires in among them with the HP it keeps (`left`), flat
+## and capped at what it has, a kill at its bonus.
 func bolt_worth(sk: Skirmish, ms: Skirmish.MechState, rule: Dictionary, from: Foe, left: int) -> float:
 	var chain := int(rule.get("chain", 0))
-	var foes := sk.conducting_foes(from, from)
-	if left > 0 and not Skirmish.out_of_reach(from, from):
+	var foes := sk.conducting_foes(from, ms)
+	if left > 0 and not Skirmish.out_of_reach(from, ms):
 		foes.append(from)
 	var worth := 0.0
 	for c in foes:
@@ -1139,6 +1139,11 @@ static func heat_shield_gain(ms: Skirmish.MechState, f: Face) -> int:
 	return mini(per * maxi(0, heat_of(ms, f)), maxi(0, ms.unit.shield_max - ms.unit.shield))
 
 
+## How deep the bot is in pricing a grant as a buff (self_grant_worth): above none, an entry's
+## blow is read without what it lays on its own machine.
+var _pricing_grant := 0
+
+
 ## What a spend lays on its own machine is worth (the entry's self_statuses as its machine's
 ## branches make it: the Hardlight Pulse's Hardened Light, a Ward, Charged; Ryan, 18 November):
 ## Hardened Light a point off every blow it meets while its shield stands, read as that much
@@ -1147,10 +1152,17 @@ static func heat_shield_gain(ms: Skirmish.MechState, f: Face) -> int:
 ## its cap; a Ward as a Ward piece is (ward_score); Charged a Shock on each of its next fires, its
 ## own blow again as a Charged buff is worth. Placeholders, as every weight.
 func self_grant_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) -> float:
-	if f == null or f.self_statuses.is_empty() or target == null:
+	if f == null or f.self_statuses.is_empty() or target == null or _pricing_grant > 0:
 		return 0.0
 	var reached := sk.reached_by(f, target, ms)
-	var lured := sk.ridden_by(f, target, ms) if f.has(Face.Keyword.LURE) else []   # a Chain's arc lures nothing (18 November)
+	# The foes its Lure turns, none for an entry with no Lure (a Chain's arc lures nothing, 18
+	# November). Typed and filled, never one or the other in a line: a list of foes given a
+	# plain empty list is an error, which threw for every entry that lays a status on its own
+	# machine and carries no Lure (the Macaque's Aile Booster on its Valkyrie steps), the
+	# worth of its grant lost to the bot.
+	var lured: Array[Foe] = []
+	if f.has(Face.Keyword.LURE):
+		lured = sk.ridden_by(f, target, ms)
 	var worth := 0.0
 	for g in f.self_statuses:
 		var id := str(g.get("status", ""))
@@ -1177,8 +1189,13 @@ func self_grant_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe
 					worth += parry_worth(sk, ms)
 			_:
 				# Any other machine status (the Macaque's offhand: Armoured, a Barrier, Empowered), at
-				# the price a buff granting it on this machine carries.
+				# the price a buff granting it on this machine carries. That price reads the blow of
+				# the entry the die shows, which is this entry, so the grant is left out of that
+				# blow while it is priced (_pricing_grant): asked again from inside, it would ask
+				# itself its worth forever.
+				_pricing_grant += 1
 				worth += buff_score(sk, ms, Face.buff(id, n))
+				_pricing_grant -= 1
 	return worth
 
 
