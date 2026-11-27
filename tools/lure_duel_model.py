@@ -45,6 +45,7 @@ its entry shows, held; the others open the cage once nothing else stands, or reb
     python3 tools/lure_duel_model.py --shows 1       # a drone no die rolls: there whenever wanted
     python3 tools/lure_duel_model.py --hold          # Ryan's second pass: every hit holds, the reboot breaks it (fight_hold)
     python3 tools/lure_duel_model.py --tether        # the hold priced: a Drone entry, the stun, Hull a round held (fight_tether)
+    python3 tools/lure_duel_model.py --ideas         # the ideas past his four, one loop for them all (fight_ideas)
 """
 import argparse
 import random
@@ -616,6 +617,240 @@ def tether_cell(kind, o, trials, seed):
     return [v / trials for v in tot]
 
 
+def fight_ideas(kind, o, rng, cap=40):
+    """The ideas past Ryan's four (27 November), one loop for them all. The Drone is an entry on
+    the die, set on the biggest hitter when it shows; nothing else sets the hold.
+
+    o: drone (False: the same tank with no Drone), start ("now": the hold takes at once and turns
+    its Sprite's pick, as a Lure does; "next": it takes as the next round opens), lure_now (with
+    "next": the Drone Lures this round as well), bar (no other Frame may aim at the held Sprite,
+    the whole of a round it is held), end ("reboot": the tank's reboot ends it; "never": only its
+    Sprite's defeat does), end_at ("now" or "round_end": when a reboot's ending lands), stun (the
+    tank's reboot Suppresses the held Sprite), rage (a point more on every hit of the held
+    Sprite's for each round it has been held), rage_keep (the points stay once it is let go;
+    otherwise they halve each round it is not held), commit_at (the tank sets the Drone only
+    once its Sprite stands at this share of its HP or under), plate (armour more against its
+    Sprite, before the shield), burn (Hull the tank loses each round it holds), pack (a hold
+    needs another Sprite standing: alone on the field the Drone is a plain Lure), toll (Hull the
+    tank loses each time another Frame's use hurts the held Sprite), tug (the tug of war: the
+    count the hold starts at; the tank's use on its Sprite adds 1, its Sprite's hit that reaches
+    the tank's Hull takes 1; at tug_win it is Suppressed and let go, the Drone ready; at 0 it
+    breaks free and the Drone is dark until the tank reboots), launch (Hull the tank loses each
+    time it sets the Drone), shows."""
+    squad = [Frame(tank=(i == 0)) for i in range(3)]
+    tank = squad[0]
+    foes = pack(kind)
+    full = {f: f.hp for f in foes}
+    rage = {f: 0 for f in foes}
+    partner = queued = None
+    leaving = False
+    dark = False          # the tug lost: the Drone waits on its tank's reboot
+    rope = 0              # the tug of war's count
+    rounds = idle = stuns = held = 0
+    while rounds < cap:
+        if partner is not None and (partner.hp <= 0 or tank.hull <= 0):
+            partner = None
+        if queued is not None and queued.hp > 0 and tank.hull > 0:
+            partner, queued = queued, None
+        queued = None
+        live = [f for f in foes if f.hp > 0]
+        up = [m for m in squad if m.hull > 0]
+        if not live or not up:
+            break
+        rounds += 1
+        for m in up:
+            if m.rebooting:
+                m.rebooting = False
+                m.shield = m.shield_max
+        doomed = {}
+        for f in live:
+            total = sum(w for w, _, _ in f.moves)
+            r = rng.random() * total
+            for w, k, n in f.moves:
+                r -= w
+                if r < 0:
+                    f.move = (k, n)
+                    break
+            f.target = None
+            if f.move[0] == "hit":
+                if f is partner:
+                    f.target = tank
+                else:
+                    open_to = [m for m in up if doomed.get(m, 0) < m.shield + m.hull] or up
+                    f.target = rng.choice(open_to)
+                doomed[f.target] = doomed.get(f.target, 0) + f.move[1]
+        if o.get("pack") and partner is not None and all(f is partner for f in live):
+            partner = None   # the pack rule: alone on the field, nothing holds it (its pick stands)
+        barred = partner if (o.get("bar") and partner is not None) else None
+        nothing_else = barred is not None and all(f is barred for f in live)
+        acting = []
+        for m in up:
+            aimed = any(f.target is m for f in live)
+            if m.tank:
+                must = m.shield == 0 or m.heat + GUN_HEAT > GAUGE
+                if nothing_else and o.get("end") == "reboot":
+                    must = True   # the rest round: its reboot ends the hold
+            else:
+                must = m.heat + GUN_HEAT > GAUGE or (m.shield == 0 and aimed and m.heat >= GUN_HEAT)
+                if nothing_else and (m.heat > 0 or m.shield < m.shield_max):
+                    must = True   # nothing it may aim at: it rests under the hold
+            if must:
+                m.rebooting = True
+                m.shield = 0
+                m.heat = 0
+                if m.tank:
+                    dark = False
+                if m.tank and partner is not None:
+                    if o.get("stun") and partner.hp > 0:
+                        if partner.numbed > 0:
+                            partner.numbed -= 1
+                        else:
+                            partner.stunned = True
+                            stuns += 1
+                    if o.get("end") == "reboot":
+                        if o.get("end_at") == "round_end":
+                            leaving = True
+                        else:
+                            partner = None
+            else:
+                acting.append(m)
+
+        def shoot(m, pool):
+            kills = [f for f in pool if f.hp <= GUN - f.plate]
+            t = min(kills or pool, key=lambda f: f.hp)
+            t.hp -= max(0, GUN - t.plate)
+            m.heat += GUN_HEAT
+
+        for m in acting:
+            if m.tank:
+                continue
+            pool = [f for f in foes if f.hp > 0 and f is not barred]
+            if pool:
+                before = partner.hp if partner is not None else 0
+                shoot(m, pool)
+                if partner is not None and partner.hp < before:
+                    tank.hull -= o.get("toll", 0)   # shared wounds: its Sprite hurt, the tank pays
+            else:
+                idle += 1
+        if partner is not None and partner.hp <= 0:
+            partner = None
+        if tank in acting:
+            pool = [f for f in foes if f.hp > 0]
+            if pool:
+                big = max(pool, key=lambda f: (f.biggest(), f.hp))
+                if o.get("drone", True) and partner is None and queued is None and big.biggest() >= 6 \
+                        and tank.shield > 0 and big.hp <= o.get("commit_at", 1.0) * full[big] and not dark \
+                        and rng.random() < o.get("shows", SHOWS):
+                    tank.heat += 1
+                    tank.hull -= o.get("launch", 0)   # a price printed on the Drone, paid as it is set
+                    rope = o.get("tug", 0)
+                    if o.get("pack") and len(pool) == 1:
+                        if big.move[0] == "hit":
+                            big.target = tank   # alone on the field: a plain Lure, the round's pick
+                    elif o.get("start", "now") == "now":
+                        partner = big
+                        if big.move[0] == "hit":
+                            big.target = tank
+                    else:
+                        queued = big
+                        if o.get("lure_now") and big.move[0] == "hit":
+                            big.target = tank
+                shoot(tank, [partner] if partner is not None and partner.hp > 0 else pool)
+                if o.get("tug") and partner is not None and partner.hp > 0:
+                    rope += 1
+                    if rope >= o.get("tug_win", 4):
+                        if partner.numbed > 0:
+                            partner.numbed -= 1
+                        else:
+                            partner.stunned = True
+                            stuns += 1
+                        partner = None   # hauled in: the hold ends, the Drone ready
+        if partner is not None and partner.hp <= 0:
+            partner = None
+        if partner is not None:
+            held += 1
+            tank.hull -= o.get("burn", 0)
+        for m in [m for m in squad if m.hull > 0]:
+            if m.heat > GAUGE:
+                m.hull -= m.heat - GAUGE
+                m.shield = 0
+        for f in foes:
+            if f.hp <= 0:
+                continue
+            if f.stunned:
+                f.stunned = False
+                f.numbed = f.resist
+                continue
+            k, n = f.move
+            is_held = f is partner and tank.hull > 0
+            if k == "hit":
+                t = f.target if f.target is not None and f.target.hull > 0 else next((m for m in squad if m.hull > 0), None)
+                hits = [t] if t is not None else []
+            elif k == "all":
+                hits = [m for m in squad if m.hull > 0]
+            else:
+                hits = []
+            for m in hits:
+                dmg = n + rage[f]
+                plate = m.armour
+                if is_held and m is tank and o.get("plate", 0):
+                    dmg = max(0, dmg - plate - o["plate"])
+                    plate = 0
+                took = min(m.shield, dmg)
+                m.shield -= took
+                through = max(0, dmg - took - plate)
+                m.hull -= through
+                if o.get("tug") and is_held and m is tank and through > 0:
+                    rope -= 1
+            if o.get("tug") and f is partner and rope <= 0:
+                partner = None   # it breaks free: the Drone dark until its tank reboots
+                dark = True
+            if f.numbed > 0:
+                f.numbed -= 1
+        for f in foes:
+            if f.hp > 0 and o.get("rage", 0):
+                if f is partner:
+                    rage[f] += o["rage"]
+                elif not o.get("rage_keep"):
+                    rage[f] //= 2
+        if leaving:
+            partner = None
+            leaving = False
+    won = not [f for f in foes if f.hp > 0]
+    a_lost = sum(m.hull_max - max(0, m.hull) for m in squad if m is not tank)
+    wrecks = sum(1 for m in squad if m.hull <= 0)
+    tank_wrecked = 1 if tank.hull <= 0 else 0
+    return won, rounds, tank.hull_max - max(0, tank.hull), a_lost, wrecks, idle, stuns, held, tank_wrecked
+
+
+def ideas_cell(kind, o, trials, seed):
+    rng = random.Random(seed)
+    tot = [0.0] * 9
+    for _ in range(trials):
+        for i, v in enumerate(fight_ideas(kind, o, rng)):
+            tot[i] += v
+    return [v / trials for v in tot]
+
+
+IDEAS_ROWS = [
+    ("No Drone, the same tank", {"drone": False}),
+    ("The free one: held at once, the reboot ending it with a stun", {"start": "now", "end": "reboot", "stun": True}),
+    ("A. Between rounds: his bar whole, the hold taking and leaving as a round ends", {"start": "next", "lure_now": True, "bar": True, "end": "reboot", "end_at": "round_end", "stun": True}),
+    ("A without the Lure the round it is set", {"start": "next", "bar": True, "end": "reboot", "end_at": "round_end", "stun": True}),
+    ("A without the stun", {"start": "next", "lure_now": True, "bar": True, "end": "reboot", "end_at": "round_end"}),
+    ("B. No letting go, set at once", {"start": "now", "end": "never"}),
+    ("B set at half its HP", {"start": "now", "end": "never", "commit_at": 0.5}),
+    ("B set at once, the reboot stunning", {"start": "now", "end": "never", "stun": True}),
+    ("C. Angrier: 1 a round held, kept", {"start": "now", "end": "reboot", "stun": True, "rage": 1, "rage_keep": True}),
+    ("C. Angrier: 2 a round held, fading", {"start": "now", "end": "reboot", "stun": True, "rage": 2}),
+    ("D. 3 Hull as the Drone is set", {"start": "now", "end": "reboot", "stun": True, "launch": 3}),
+    ("E. The tug of war, 2 to 4", {"start": "now", "end": "never", "tug": 2, "tug_win": 4}),
+    ("E with 2 Armour against its Sprite", {"start": "now", "end": "never", "tug": 2, "tug_win": 4, "plate": 2}),
+    ("Set aside: alone on the field, a plain Lure", {"start": "now", "bar": True, "pack": True, "end": "reboot", "stun": True}),
+    ("Set aside: 2 Hull when another Frame hurts it", {"start": "now", "end": "reboot", "stun": True, "toll": 2}),
+]
+
+
 TETHER_ROWS = [
     ("No drone, the same tank", {"set": "none"}),
     ("A plain Lure entry: the round's pick", {"set": "drone", "off": False, "break": "none", "persist": False}),
@@ -660,6 +895,7 @@ def main():
     ap.add_argument("--shows", type=float, default=SHOWS, help="how often the drone is there to set when wanted (1 for a drone no die rolls)")
     ap.add_argument("--hold", action="store_true", help="Ryan's second pass: every hit holds, a reboot breaks it")
     ap.add_argument("--tether", action="store_true", help="the hold priced: a Drone entry, the reboot's stun, Hull a round held")
+    ap.add_argument("--ideas", action="store_true", help="the ideas past his four: between rounds, no letting go, angrier, a price as set, the tug of war")
     a = ap.parse_args()
     for kind, title in PACKS:
         print("\n### %s\n" % title)
@@ -677,6 +913,13 @@ def main():
             for label, o in TETHER_ROWS:
                 c = tether_cell(kind, o, a.trials, 11)
                 print("| %s | %.0f%% | %.1f | %.1f | %.1f | %.1f | %.2f | %.1f | %.1f |" % (label, 100 * c[0], c[1], c[2], c[3], c[2] + c[3], c[4], c[6], c[7]))
+        if a.ideas:
+            print("\nThe ideas past his four (27 November): the Drone an entry, its Sprite's storms on every Frame.\n")
+            print("| The idea | Won | Rounds | Hull lost, the tank | Hull lost, the others | The squad's whole | The tank wrecked | Turns with nothing to aim at | Stuns |")
+            print("|---|---|---|---|---|---|---|---|---|")
+            for label, o in IDEAS_ROWS:
+                c = ideas_cell(kind, o, a.trials, 11)
+                print("| %s | %.0f%% | %.1f | %.1f | %.1f | %.1f | %.0f%% | %.1f | %.1f |" % (label, 100 * c[0], c[1], c[2], c[3], c[2] + c[3], 100 * c[8], c[5], c[6]))
         if a.hold:
             print("\nThe hold (Ryan's second pass): its stuns and its tank's reboots a fight.\n")
             print("| The hold | Won | Rounds | Hull lost, the tank | Hull lost, the others | Wrecks | Turns with nothing to aim at | Stuns | Reboots, the tank |")

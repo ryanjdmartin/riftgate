@@ -9,7 +9,8 @@ interesting." "The lure tank" is a working label; the name and the machine are R
 
 **Status**: Ryan's idea of 25 November, Claude's round on it (the cage), his four brainstorms
 and Claude's read of them (the hold), his issue of 26 November with the hold's bar, Claude's
-lean on it and his answer that it left a free lure, and the price that answers him, unanswered. **Maker**:
+lean on it and his answer that it left a free lure, the price that answers him, and the ideas past his
+four that he asked for on 27 November, unanswered. **Maker**:
 Minerva. **Proposed tier**: one. **Read first**: `docs/briefs/README.md` (ten a maker, the
 orbits); `docs/rules.md`, The reboot and Foes (a Sprite's target); the bible's redirection row,
 threat-shape row and armour row (section 5) and the Storm Petrel's row. The rounds before 25
@@ -279,14 +280,60 @@ Entangled Sprite, then remove Entangled." / "Commit: If used on this Frame, remo
 idea 2 earns its place back as the way to stop paying without a reboot; his idea 1 goes, for the
 reason above. Nothing bars the squad, and the tank's weapons stay free.
 
+## Ideas past his four (27 November)
+
+Ryan, 27 November: "Do you have any other ideas outside of what I proposed? Or in combination
+with the general concept?"
+
+**What undid every form so far.** A two-round cycle: the tank sets the hold last in a turn, and
+its reboot breaks it first the turn after. Nothing charged during the squad's turn survives it:
+the bar is the jank he named, and a toll of 2 Hull whenever another Frame hurts the held Sprite
+changes nothing against the Nob. So a downside has to act on the cycle. `tools/lure_duel_model.py
+--ideas`, the Drone an entry on the die in every row, its Sprite's storms on every Frame:
+
+| | The Nob: the others lose | the tank loses | the tank wrecked | The Old Man, two Needlers: won |
+|---|---|---|---|---|
+| No Drone | 32 | 15 | 5% | 70% |
+| The free one (26 November's lean) | 8 | 22 | 5% | 98% |
+| A. Between rounds | 8 | 25 | 17% | 97% |
+| B. No letting go, set at half its HP | 20 | 26 | 20% | 72% |
+| C. Angrier, 1 a round held, kept | 11 | 27 | 28% | 63% |
+| D. 3 Hull as the Drone is set | 10 | 30 | 40% | 91% |
+| E. The tug of war | 14 | 34 | 67% | 89% |
+| E with 2 Armour against its Sprite | 9 | 22 | 8% | 98% |
+
+- **A. The tether changes only between rounds.** His rule whole (it targets only the tank, only
+  the tank targets it). The Drone's order takes hold as the next round opens, with a Lure the
+  round it is set; a reboot Suppresses the held Sprite at once and lets it go as the round ends.
+  A held round cannot be dodged, so the bar bites for the whole of it; against a lone elite it is
+  the squad's planned rest, every Frame rebooting under the hold. The tank's weapons are free.
+  The Nob's fight runs 11.4 rounds for 9.7. Without the stun the tank is wrecked in 82% of them.
+- **B. No letting go.** The hold lasts until its Sprite is defeated, nothing bars the squad, and
+  the tank's reboots under it are bare. The downside is the commitment: set at once the tank is
+  wrecked in 86% of the Nob's fights, at half its HP in 20%, the squad's loss then no Drone's (46)
+  moved off the others. It cannot carry the stun (the others lose 2.4 with it).
+- **C. It gets angrier.** A point more on its every hit for each round held, kept. His idea 3 in
+  another form. It makes whom matter: a held storm grows on every Frame, so the Old Man held
+  reads worse than no Drone.
+- **D. A price as it is set.** Volatile or a shield cost printed on the Drone, or a reroll. A
+  price and no tactic; a reroll is the dice's own currency and the same in every fight, and the
+  model has no dice to read it with.
+- **E. The tug of war.** The hold a count from 2: the tank's use on its Sprite adds 1, its
+  Sprite's hit that reaches the tank's Hull takes 1; at 4 it is Suppressed and let go, at 0 it
+  breaks free and the Drone is dark until Reboot. The stun is earned, and a brace, a Barrier or
+  plate on the tank wins it. In the bot's hands, which give it none, the tank loses every tug
+  with the Nob.
+- **Set aside**: alone on the field the Drone a plain Lure (it ends the lone-elite trouble and
+  leaves a weak tank there: the squad loses 40 to the Nob, 46 with no Drone), and the toll.
+
+Claude's lean: A, with C the dial to add if it reads too strong.
+
 ## Open for the session
 
-1. The price: Hull a round held (2, or 1), or another the model has not tried.
+1. Which idea to take further: A to E above, the Hull a round held of 26 November, or another.
 2. The hold as its own act (the Drone entry), every hit no longer setting it.
-3. The bar: the Sprite's own side, or none.
-4. Letting go: a use on itself (the tank's), with the held Sprite's own move breaking free too or not.
-5. Area: sealed both ways, or its storms on every Frame.
-6. The machine and its name; numbers and stock; its branches.
+3. Area: sealed both ways, or its storms on every Frame.
+4. The machine and its name; numbers and stock; its branches.
 
 ## What the session hands back
 
