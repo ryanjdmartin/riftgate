@@ -46,6 +46,7 @@ its entry shows, held; the others open the cage once nothing else stands, or reb
     python3 tools/lure_duel_model.py --hold          # Ryan's second pass: every hit holds, the reboot breaks it (fight_hold)
     python3 tools/lure_duel_model.py --tether        # the hold priced: a Drone entry, the stun, Hull a round held (fight_tether)
     python3 tools/lure_duel_model.py --ideas         # the ideas past his four, one loop for them all (fight_ideas)
+    python3 tools/lure_duel_model.py --split         # his split: the lock a component, the Drone the passive (fight_split)
 """
 import argparse
 import random
@@ -832,6 +833,234 @@ def ideas_cell(kind, o, trials, seed):
     return [v / trials for v in tot]
 
 
+def fight_split(kind, o, rng, cap=40):
+    """Ryan's split (27 November): the entanglement a component, the Drone the passive. A weapon
+    the tank uses on a Sprite moves the Drone to its target; the Tether, its Integrated
+    equipment, moves nothing. The Drone is primed on a Sprite it has been on since the round
+    began. The Tether here is the round's pick and no more, as a Lure is, so what the Drone
+    adds reads apart from any hold.
+
+    o: tether (False: none on the die), rapid (the Tether Rapid: the tank fires as well), shows
+    (the Tether showing when wanted), lock (0: the Tether the round's pick alone, a Lure; N: his
+    lock for N rounds, the round it is set among them: its Sprite targets only the tank, no other
+    Frame may aim at it, and nothing ends it early), prepared (the tank hooks only the Sprite its
+    Drone is primed on, its shield whole, its Sprite's Numbed gone where the Drone stuns), drone:
+      "none"
+      "hook_stun"    the Tether, wherever it goes, Suppresses the Sprite the Drone is primed on
+      "reboot_stun"  the tank's reboot Suppresses the Sprite the Drone is on
+      "count"        o["count"] rounds on one Sprite and it is Suppressed, the Drone coming home
+      "facing"       o["plate"] more armour against the primed Sprite, before the shield
+      "block"        the primed Sprite's first hit on the tank deals nothing, the Drone coming home
+      "sap"          a point off its Sprite's every hit for each round it has been there, to o["cap"]
+    """
+    squad = [Frame(tank=(i == 0)) for i in range(3)]
+    tank = squad[0]
+    foes = pack(kind)
+    drone = o.get("drone", "none")
+    on = None             # the Sprite the Drone is on
+    since = 0             # the round it got there
+    held = None           # the Sprite in his lock
+    left = 0              # the rounds it has left
+    rounds = stuns = shots = hooks = idle = 0
+
+    def stun(f):
+        nonlocal stuns
+        if f.numbed > 0:
+            f.numbed -= 1
+            return False
+        f.stunned = True
+        stuns += 1
+        return True
+
+    while rounds < cap:
+        live = [f for f in foes if f.hp > 0]
+        up = [m for m in squad if m.hull > 0]
+        if not live or not up:
+            break
+        rounds += 1
+        if on is not None and (on.hp <= 0 or tank.hull <= 0):
+            on = None
+        if held is not None and (held.hp <= 0 or tank.hull <= 0):
+            held = None
+        for m in up:
+            if m.rebooting:
+                m.rebooting = False
+                m.shield = m.shield_max
+        primed = on is not None and since < rounds
+        if drone == "count" and on is not None and rounds - since >= o.get("count", 3) - 1:
+            stun(on)
+            on = None
+            primed = False
+        doomed = {}
+        for f in live:
+            total = sum(w for w, _, _ in f.moves)
+            r = rng.random() * total
+            for w, k, n in f.moves:
+                r -= w
+                if r < 0:
+                    f.move = (k, n)
+                    break
+            f.target = None
+            if f.move[0] == "hit":
+                if f is held:
+                    f.target = tank
+                else:
+                    open_to = [m for m in up if doomed.get(m, 0) < m.shield + m.hull] or up
+                    f.target = rng.choice(open_to)
+                doomed[f.target] = doomed.get(f.target, 0) + f.move[1]
+        acting = []
+        nothing_else = held is not None and all(f is held for f in live)
+        for m in up:
+            aimed = any(f.target is m for f in live)
+            if m.tank:
+                must = m.shield == 0 or m.heat + GUN_HEAT > GAUGE
+            else:
+                must = m.heat + GUN_HEAT > GAUGE or (m.shield == 0 and aimed and m.heat >= GUN_HEAT)
+                if nothing_else and (m.heat > 0 or m.shield < m.shield_max):
+                    must = True   # barred from the one Sprite standing: it rests under the lock
+            if must:
+                m.rebooting = True
+                m.shield = 0
+                m.heat = 0
+                if m.tank and drone == "reboot_stun" and on is not None and on.hp > 0 and not on.stunned:
+                    stun(on)
+            else:
+                acting.append(m)
+        for m in acting:
+            if m.tank:
+                continue
+            pool = [f for f in foes if f.hp > 0 and f is not held]
+            if pool:
+                kills = [f for f in pool if f.hp <= GUN - f.plate]
+                t = min(kills or pool, key=lambda f: f.hp)
+                t.hp -= max(0, GUN - t.plate)
+                m.heat += GUN_HEAT
+            else:
+                idle += 1
+        if on is not None and on.hp <= 0:
+            on = None
+            primed = False
+        if tank in acting:
+            pool = [f for f in foes if f.hp > 0]
+            if pool:
+                big = max(pool, key=lambda f: (f.biggest(), f.hp))
+                if big.biggest() < 6:
+                    big = None
+                fire = True
+                if o.get("tether", True) and rng.random() < o.get("shows", SHOWS):
+                    astray = [f for f in pool if f.move[0] == "hit" and f.target is not tank and not f.stunned]
+                    worst = max(astray, key=lambda f: f.move[1]) if astray else None
+                    hook = None
+                    if drone == "hook_stun" and primed and on.numbed == 0 and not on.stunned and on.move[0] != "idle":
+                        # The primed Sprite loses its move; the Tether itself goes to the worst hit
+                        # aimed at another Frame, the Drone's own Sprite when there is none.
+                        stun(on)
+                        hook = worst if (worst is not None and worst is not on) else on
+                    elif worst is not None and worst.move[1] >= 6:
+                        hook = worst
+                    if hook is not None and o.get("prepared"):
+                        # The player who sets up: the hook goes only onto the Sprite the Drone is
+                        # primed on, with a whole shield to take its first hit, and for a Drone
+                        # that stuns, only once its Sprite's Numbed is gone.
+                        ready = primed and hook is on and tank.shield == tank.shield_max
+                        if drone in ("reboot_stun", "hook_stun") and on is not None and on.numbed > 0:
+                            ready = False
+                        if not ready:
+                            hook = None
+                    if hook is not None and held is not None and o.get("lock", 0):
+                        hook = None   # one lock at a time: it runs its rounds out
+                    if hook is not None:
+                        hooks += 1
+                        tank.heat += 1
+                        if hook.move[0] == "hit" and not hook.stunned:
+                            hook.target = tank
+                        if o.get("lock", 0):
+                            held = hook
+                            left = o["lock"]
+                        fire = bool(o.get("rapid"))
+                if fire:
+                    kills = [f for f in pool if f.hp <= GUN - f.plate]
+                    t = big if big is not None else min(kills or pool, key=lambda f: f.hp)
+                    t.hp -= max(0, GUN - t.plate)
+                    tank.heat += GUN_HEAT
+                    shots += 1
+                    if t.hp > 0 and t is not on:
+                        on = t
+                        since = rounds
+        if on is not None and on.hp <= 0:
+            on = None
+        for m in [m for m in squad if m.hull > 0]:
+            if m.heat > GAUGE:
+                m.hull -= m.heat - GAUGE
+                m.shield = 0
+        primed = on is not None and since < rounds
+        for f in foes:
+            if f.hp <= 0:
+                continue
+            if f.stunned:
+                f.stunned = False
+                f.numbed = f.resist
+                continue
+            k, n = f.move
+            if k == "hit":
+                t = f.target if f.target is not None and f.target.hull > 0 else next((m for m in squad if m.hull > 0), None)
+                hits = [t] if t is not None else []
+            elif k == "all":
+                hits = [m for m in squad if m.hull > 0]
+            else:
+                hits = []
+            for m in hits:
+                dmg = n
+                plate = m.armour
+                if f is on:
+                    if drone == "sap":
+                        dmg = max(0, dmg - min(o.get("cap", 3), rounds - since))
+                    if primed and m is tank and drone == "facing":
+                        dmg = max(0, dmg - plate - o.get("plate", 4))
+                        plate = 0
+                    if primed and m is tank and drone == "block":
+                        on = None
+                        primed = False
+                        continue
+                took = min(m.shield, dmg)
+                m.shield -= took
+                m.hull -= max(0, dmg - took - plate)
+            if f.numbed > 0:
+                f.numbed -= 1
+        if held is not None:
+            left -= 1
+            if left <= 0:
+                held = None
+    won = not [f for f in foes if f.hp > 0]
+    a_lost = sum(m.hull_max - max(0, m.hull) for m in squad if m is not tank)
+    wrecks = sum(1 for m in squad if m.hull <= 0)
+    return won, rounds, tank.hull_max - max(0, tank.hull), a_lost, wrecks, (1 if tank.hull <= 0 else 0), shots, stuns, hooks, idle
+
+
+def split_cell(kind, o, trials, seed):
+    rng = random.Random(seed)
+    tot = [0.0] * 10
+    for _ in range(trials):
+        for i, v in enumerate(fight_split(kind, o, rng)):
+            tot[i] += v
+    return [v / trials for v in tot]
+
+
+SPLIT_ROWS = [
+    ("No Tether, no Drone", {"tether": False}),
+    ("The lock alone, hooked whenever it shows", {"lock": 2}),
+    ("Lock, the hook firing the Drone's Suppress", {"lock": 2, "drone": "hook_stun", "prepared": True}),
+    ("The same, hooked whenever it shows", {"lock": 2, "drone": "hook_stun"}),
+    ("Lock, 4 Armour against the Drone's Sprite", {"lock": 2, "drone": "facing", "plate": 4, "prepared": True}),
+    ("Lock, the Drone's Sap to 3", {"lock": 2, "drone": "sap", "cap": 3, "prepared": True}),
+    ("Lock, the Drone taking a hit", {"lock": 2, "drone": "block", "prepared": True}),
+    ("Lock, the reboot firing the Drone's Suppress", {"lock": 2, "drone": "reboot_stun", "prepared": True}),
+    ("No Tether: the reboot's Suppress alone", {"tether": False, "drone": "reboot_stun"}),
+    ("No Tether: the Sap alone", {"tether": False, "drone": "sap", "cap": 3}),
+    ("No Tether: the Armour alone", {"tether": False, "drone": "facing", "plate": 4}),
+]
+
+
 IDEAS_ROWS = [
     ("No Drone, the same tank", {"drone": False}),
     ("The free one: held at once, the reboot ending it with a stun", {"start": "now", "end": "reboot", "stun": True}),
@@ -896,6 +1125,7 @@ def main():
     ap.add_argument("--hold", action="store_true", help="Ryan's second pass: every hit holds, a reboot breaks it")
     ap.add_argument("--tether", action="store_true", help="the hold priced: a Drone entry, the reboot's stun, Hull a round held")
     ap.add_argument("--ideas", action="store_true", help="the ideas past his four: between rounds, no letting go, angrier, a price as set, the tug of war")
+    ap.add_argument("--split", action="store_true", help="his split: the lock a component, the Drone the passive, by what the Drone does")
     a = ap.parse_args()
     for kind, title in PACKS:
         print("\n### %s\n" % title)
@@ -913,6 +1143,13 @@ def main():
             for label, o in TETHER_ROWS:
                 c = tether_cell(kind, o, a.trials, 11)
                 print("| %s | %.0f%% | %.1f | %.1f | %.1f | %.1f | %.2f | %.1f | %.1f |" % (label, 100 * c[0], c[1], c[2], c[3], c[2] + c[3], c[4], c[6], c[7]))
+        if a.split:
+            print("\nHis split (27 November): the lock a component for two rounds, the Drone moved by the tank's weapons.\n")
+            print("| The kit | Won | Rounds | Hull lost, the tank | Hull lost, the others | The squad's whole | The tank wrecked | Weapons the tank used | Stuns | Hooks |")
+            print("|---|---|---|---|---|---|---|---|---|---|")
+            for label, o in SPLIT_ROWS:
+                c = split_cell(kind, o, a.trials, 11)
+                print("| %s | %.0f%% | %.1f | %.1f | %.1f | %.1f | %.0f%% | %.1f | %.1f | %.1f |" % (label, 100 * c[0], c[1], c[2], c[3], c[2] + c[3], 100 * c[5], c[6], c[7], c[8]))
         if a.ideas:
             print("\nThe ideas past his four (27 November): the Drone an entry, its Sprite's storms on every Frame.\n")
             print("| The idea | Won | Rounds | Hull lost, the tank | Hull lost, the others | The squad's whole | The tank wrecked | Turns with nothing to aim at | Stuns |")

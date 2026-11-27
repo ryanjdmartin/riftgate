@@ -10,7 +10,8 @@ interesting." "The lure tank" is a working label; the name and the machine are R
 **Status**: Ryan's idea of 25 November, Claude's round on it (the cage), his four brainstorms
 and Claude's read of them (the hold), his issue of 26 November with the hold's bar, Claude's
 lean on it and his answer that it left a free lure, the price that answers him, and the ideas past his
-four that he asked for on 27 November, unanswered. **Maker**:
+four that he asked for on 27 November, and his split of that day (the lock a component, the Drone
+the passive) with Claude's read of it, unanswered. **Maker**:
 Minerva. **Proposed tier**: one. **Read first**: `docs/briefs/README.md` (ten a maker, the
 orbits); `docs/rules.md`, The reboot and Foes (a Sprite's target); the bible's redirection row,
 threat-shape row and armour row (section 5) and the Storm Petrel's row. The rounds before 25
@@ -328,12 +329,68 @@ changes nothing against the Nob. So a downside has to act on the cycle. `tools/l
 
 Claude's lean: A, with C the dial to add if it reads too strong.
 
+## His split (27 November)
+
+Ryan, 27 November: "What if we split the entanglement onto a component, but put the drone onto
+the passive? Hitting with a weapon moves the drone, so the engagement wouldn't move it. I'm not
+sure what the drone does, but something that would make you want to move it to your intended
+lure target the round before? Like a delayed suppress or a channeled effect or something? So it
+can set up to offer personal safety while luring, or split its focus as the situation demands
+it?"
+
+**The reading.** Two pieces. The Drone is the passive: it moves to the target of every weapon
+the tank uses, and it is primed on a Sprite it began the round on. The lock is a component, the
+Tether, Integrated equipment: it moves nothing, so the tank's guns are free and the lock is a
+deliberate act. What follows from his words: an area weapon moves the Drone to its target, a
+weapon that hits every Sprite has none and moves nothing, and equipment never moves it.
+
+**The lock, Claude's lean:** his rule whole for two rounds, the round it is set among them, and
+nothing ending it early. The Tether: "Resolve: Apply 2 Entangled to the target." Entangled, a
+timer: "Targets only the Frame that applied it." / "Only that Frame can target it." / "Round End:
+Reduce stacks by 1." No release means no dodge and no trap past one barred round, which against
+a lone elite is the squad's rest. It makes the lock its own downside: `tools/lure_duel_model.py
+--split`, hooked with no help whenever the Tether shows, the tank is wrecked in 69% of the Nob's
+fights. So the Drone is what makes a hook safe, and setting it up a round ahead is the play.
+
+**What the Drone does**, played with a tank that hooks only the Sprite its Drone is primed on,
+its shield whole (the Nob alone, then the Old Man with two Needlers):
+
+| | The others lose | The tank loses | The tank wrecked | The Old Man: won |
+|---|---|---|---|---|
+| No Tether, no Drone | 32 | 15 | 5% | 66% |
+| The lock alone, hooked whenever it shows | 26 | 33 | 69% | 64% |
+| The hook fires the Drone's Suppress | 19 | 16 | 3% | 92% |
+| 4 Armour against the Drone's Sprite, before Shield | 18 | 10 | 0% | 100% |
+| The Drone's Sap, 1 a round it has stayed, to 3 | 12 | 18 | 5% | 100% |
+| The Drone takes its Sprite's next hit, and comes home | 19 | 6 | 0% | 100% |
+| The reboot fires the Drone's Suppress | 20 | 8 | 0% | 98% |
+| That Suppress with no Tether on the die | 24 | 6 | 0% | 98% |
+
+- **The Suppress the hook fires** (his first example). The Tether adds: "Resolve: Apply Suppressed
+  to the Sprite the Drone began this round on", wherever the Tether itself goes. On one Sprite it
+  is the safe hook: stunned the first round of its lock, the second landing on a whole shield.
+  On two it is his split: one loses its turn, the other comes at the tank. The one form where
+  each piece needs the other; Numbed is its brake. The tank still bleeds (16 hull).
+- **The Sap** (his second, a channel). The Drone's Sprite hits for 1 less for each round the
+  Drone has stayed, to 3, on every Frame. Kindest to the squad, storms included (the Old Man's
+  others lose 26 for 35), and strong with no Tether at all (the others lose 24), which wants its
+  cap watched.
+- **Facing**: Minerva's plate, and the tank's own safety alone; the split gains nothing by it.
+- **Set aside**: a Suppress the reboot fires. The Drone alone then does the kit's work (24 and 6
+  with no Tether), and the lure stops mattering.
+
+The tank fires a weapon in five or six of the Nob's ten rounds, for three when it hooks whenever
+it can. His ideas 2 and 4 retire with this form: nothing lets go, and the stun is the hook's.
+
+Claude's lean: the Suppress the hook fires, the Sap the alternative if the stun reads too sharp.
+
 ## Open for the session
 
-1. Which idea to take further: A to E above, the Hull a round held of 26 November, or another.
-2. The hold as its own act (the Drone entry), every hit no longer setting it.
-3. Area: sealed both ways, or its storms on every Frame.
-4. The machine and its name; numbers and stock; its branches.
+1. What the Drone does: the Suppress the hook fires, the Sap, facing, or another.
+2. The lock: two rounds that nothing ends early, or another length or end.
+3. Whether the Tether is Rapid (the model's is not: the hook is the tank's use that round).
+4. Area: sealed both ways, or its storms on every Frame.
+5. The machine and its name; numbers and stock; its branches.
 
 ## What the session hands back
 
