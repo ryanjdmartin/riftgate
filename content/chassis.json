@@ -839,11 +839,10 @@
    "name": "Dingo",
    "designation": "Pattern 12 Support Car",
    "maker": "wainwright_sutler",
-   "tier": 1,
+   "tier": 2,
    "design": {
     "fantasy": "A small, nimble, lightly armoured vehicle designed to support heavy armour in combat. Able to stealthily avoid combat until its allies are in position for a flanking or pincer attack, then capitalize on openings in combat.",
     "niche": "combat support",
-    "notes": "Tier one since 27 November, the Cottonmouth up in its place (Ryan: \"What if we flipped this to t2 and dingo back to t1?\"; \"go ahead with the swap\"), as his 4-4-2 note had it (\"the Dingo down\", \"The cars stay\"). Its two locked pieces show its identity with no finds, so its stock went to basics as tier one's did on 23 November: an Ankle Mortar, the maker's basic of its reach, for the Airburst Shell, which went to the Cottonmouth; its two Twin Autoguns stay. Its hull, shield and slots are still its tier-two numbers, for the tier-one bench to size; as a tier one it picks twice, its branches to be proposed.",
     "name_clash": "Kept (Ryan, 29 September). Dingo is a Heavy Gear Northern gear, an obscure resin-era release in a niche property and a biped, so no silhouette resemblance; the Bundeswehr's ATF Dingo, a four-wheeled armoured car, is the closer match and the homage W&S's register is built on. Say Dingo and people picture the dog: the coincidence tier."
    },
    "codex": "",
@@ -863,7 +862,7 @@
     "combat_translocator"
    ],
    "loadout": [
-    "ankle_mortar",
+    "airburst_shell",
     "twin_autoguns",
     "twin_autoguns"
    ],
@@ -1673,11 +1672,10 @@
    "name": "Cottonmouth",
    "designation": "Pattern 16 Hover Gunboat",
    "maker": "wainwright_sutler",
-   "tier": 2,
+   "tier": 1,
    "design": {
     "fantasy": "Ryan, 13 October: a simple hovercraft with a deck gun, and everything it fires goes through the deck gun. Ryan, 19 October: \"I picture it honestly not as a deck gun, but like a big rotating set of barrels with the guns mounted (invisibly) inside, like a multi shot grenade launcher. We call it a fan boat but the profile is more sophisticated than that, it is still future-tech after all.\" Named by Ryan, 19 October: the water moccasin, the bayou's snake.",
-    "niche": "The maker's versatility in a third form, of reach (Ryan, 19 October: the Clydesdale's is loadout, the gunship's stats, this one's reach), a tier one that plugs holes in many draft compositions. Every weapon it fires leaves the drum as the drum's Indirect shot with the weapon's own keywords, so a keyword shell of any maker becomes an area shot at any reach; the shape follows the aim (the back rank punched through, the front rank sprayed), so a column or a row is the decision on every shot. It spreads statuses well, which steps on Aphelion's toes and is fine (Ryan: status spread is no monopoly and no complete identity). It locks nothing, as the Clydesdale and the gunship do.",
-    "notes": "Tier two since 27 November, the Dingo down in its place (Ryan: \"What if we flipped this to t2 and dingo back to t1?\"; \"go ahead with the swap, shells on the cottonmouth\"), after the holes were named: a chassis's tier is complexity, it went to tier one on 18 October as not earning tier two, and the tier-one sizing read it among its six. At tier one its stock was basics, so every shot was the same plain 4; at tier two its die carries two of its maker's keyword shells in the Ankle Mortars' places, the Incendiary Shells (its tier-one shell of 19 November) and the Airburst Shell (the Dingo's), so the drum shows from the first fight what it does with a keyword. Its hull, shield and slots are still its tier-one numbers, for the bench to size; as a tier two it picks once, its branches two single steps to be proposed."
+    "niche": "The maker's versatility in a third form, of reach (Ryan, 19 October: the Clydesdale's is loadout, the gunship's stats, this one's reach), a tier one that plugs holes in many draft compositions. Every weapon it fires leaves the drum as the drum's Indirect shot with the weapon's own keywords, so a keyword shell of any maker becomes an area shot at any reach; the shape follows the aim (the back rank punched through, the front rank sprayed), so a column or a row is the decision on every shot. It spreads statuses well, which steps on Aphelion's toes and is fine (Ryan: status spread is no monopoly and no complete identity). It locks nothing, as the Clydesdale and the gunship do."
    },
    "codex": "",
    "hull": 20,
@@ -1693,10 +1691,10 @@
    "size": "light",
    "fixed": [],
    "loadout": [
-    "incendiary_shells",
+    "ankle_mortar",
     "twin_autoguns",
     "halo_projector",
-    "airburst_shell"
+    "ankle_mortar"
    ],
    "passive": {
     "id": "adaptive_munitions_drum",
