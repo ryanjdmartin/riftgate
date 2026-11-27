@@ -578,13 +578,14 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   republishes while he is on the page.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.679 on 26 November from this file at `52ec9147` (the page's Version 531: 26
-  November's rows, the grant a block, one Empowered, a Cleanse that lifts Suppressed, the
-  Cassowary's redesign and the Clydesdale at tier one), over v0.677 (Version 530, 25 November,
-  from `596395f0`, checked against the live page byte for byte first). Before republishing,
+  Published at v0.681 on 27 November from this file (the page's Version 532: Phased by source,
+  its row, its tip and section 12's item, and the Cassowary's capacitor cells), merged onto
+  v0.679 (Version 531, 26 November, from `52ec9147`, checked against the live page byte for
+  byte first; a publish not built on the live version is refused, so the merge's base is the
+  live page's own file). Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
-  `52ec9147` unless the live page says otherwise, OURS this branch's file, THEIRS the saved
+  the commit of the last publish unless the live page says otherwise, OURS this branch's file, THEIRS the saved
   live source with the tool's wrapper line, its trailing newline and `</body></html>`
   stripped): check BASE against the live page byte for byte first. After main merges in,
   check the tables script's run against the file's tables before keeping it: a row it
