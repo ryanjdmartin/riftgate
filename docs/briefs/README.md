@@ -174,7 +174,7 @@ moves he has not marked stand as its plan.
 | Minerva (10) | Honey Badger; the Wild Boar (down, 16 November); the Echidna (down, 20 November); *the lure tank* | the Polar Bear (up, 16 November); the Mole (up, 20 November; the squad's marker since 24 November); *the Cryo party defence*; *the immune one*, the Pangolin his stand-in name | *the siege battery*; *the battlecruiser* |
 | Kestrel (10) | Skua; Storm Petrel | Buzzard; Kite; Needletail; the Puffin (up, 19 November) | Lammergeier; Giant Petrel |
 | Kestrel's two, tiers open | *the Snowy Owl*, leaning to Cryo | *the Magpie*, its slot open to another design | |
-| Wainwright & Sutler (10) | Prairie Dog; Cassowary; Cottonmouth | Dingo; Clydesdale; funnel-web; Whip Scorpion; *the gunship* | Swallowtail, back in design; Musk Ox |
+| Wainwright & Sutler (10) | Prairie Dog; Cassowary; Cottonmouth; Clydesdale | Dingo; funnel-web; Whip Scorpion; *the gunship* | Swallowtail, back in design; Musk Ox |
 | Aphelion (9, one open) | the Macaque; *Static*; *the Barrier and Ward support*, the defensive tier one | the Stingray (up, 20 November); Baboon, dealt at tier one, its tier placed later; *the jellyfish* with the status detonator; *the time-shifter*; one open, the time area's if it wants it | *the Carrier*; *the Macross* with the aura-shifter |
 | The Arsenal (8, two open) | none | Nemesis; *Misharu*; *the Onryō*; *the Zoids walker* | Ammit; *Mastema*; *Minos*; *the thunder figure* |
 

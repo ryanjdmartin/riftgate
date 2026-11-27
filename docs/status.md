@@ -528,8 +528,9 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
      first battle down, its sizing his ("I'll handle that one"), tiers two and three up.
 2. **The design sessions, from the briefs**: each decision a bible row, each brief retired
    once its decisions are rows and content. The locked pieces' footing first (its own session
-   since 20 November; the Cassowary's redesign built 26 November, the Cottonmouth's and the
-   Skua's branch rounds with Ryan, the Clydesdale's two picks next), then the machine back in design (the Swallowtail), the built but
+   since 20 November; the Cassowary's redesign built 26 November; the Cottonmouth's die in
+   chat since 27 November, five hardpoints or four and an Integrated piece, then its branches;
+   the Skua's round with Ryan; the Clydesdale's two picks), then the machine back in design (the Swallowtail), the built but
    unfinished (the Needletail, the Giant Petrel, the Musk Ox) and the gunship, the tier-one
    fronts (Minerva's lure tank, an Aphelion tier one), Claude's first rounds on his directions
    of 5 and 6 November, the rest as its session comes. The to-do's roster is grouped to match.
