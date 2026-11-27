@@ -478,8 +478,9 @@ func targetable_mechs(by = null) -> Array[MechState]:
 ## either side to either side? Yes when `whom` is not Phased, when `by` is Phased too, or when
 ## they are one unit, which always reaches itself (Effects.reaches). An effect's source is the
 ## unit that lands it now: a spend's is its machine, a move's or a fall's its foe, and what a
-## status does is its carrier's, so everything a Phased unit carries acts on it, and a Mine, a
-## web or a needle's bolt on a foe reaches what that foe reaches. So a Phased unit acts on
+## status does is its carrier's, so everything a Phased unit carries acts on it, and a Mine or a
+## web on a foe reaches what that foe reaches. Where a piece's own words name who lands a thing,
+## they say whose it is: a needle's bolt is the Echidna's, which fires it. So a Phased unit acts on
 ## everybody, and nothing of a unit that is not Phased lands on it: no pick and no die, no
 ## blow, area or arc, no rider, debuff, purge or cleanse, no buff, mend or shield, its own
 ## side's included. Every list of whom a spend or a move lands on is read through here, so the
@@ -4351,9 +4352,9 @@ func conductors(f: Face, target: Foe, by: MechState = null) -> Array[Foe]:
 ## flat: no armour, Brittle or Barrier reads it, no Shock is doubled or spent, and it is no hit, so
 ## nothing a hit sets off follows it (no rider, no needle, no Cryo cashed, no Momentum). What it
 ## fells falls at the death check that follows. `source` is the unit that lands it, the machine
-## that fired, or the foe a Mine blew on or a needle's bolt fires in: it reaches the conductors
-## that unit reaches (conducting_foes), so a Phased foe loses none to a machine or a foe that is
-## not Phased. `by` names it in the log, and
+## that fired (a weapon's, or the Echidna's needles' bolt) or the foe a Mine blew on: it reaches
+## the conductors that unit reaches (conducting_foes), so a Phased foe loses none to a machine or
+## a foe that is not Phased. `by` names it in the log, and
 ## `beat` is the screen's moment for a spend's; 0 for none (the foes' turn records none on a foe).
 func _chain_ping(by: String, n: int, beat: int, source = null) -> void:
 	if n <= 0:
@@ -5102,7 +5103,10 @@ func rage_on_field() -> int:
 ## The Phased trial's grant (phase_at_once): Phased now, until the round ends, and every foe
 ## whose pick it was and that can no longer reach it (reaches: every one that is not Phased)
 ## draws its pick again from the machines in its reach, as the round's opening draws one, so
-## its intent moves under the player's eyes. A Phased foe keeps its pick.
+## its intent moves under the player's eyes. A Phased foe keeps its pick. A swallower is a foe
+## as any (Ryan, 27 November: "If phased takes effect immediately, the swallow target should
+## change like any other attack"): its swallow is taken on its new pick, under its own guard
+## (_swallow: never the last machine in its reach).
 func _phase_at_once(w: MechState, src: String) -> void:
 	Effects.grant_for_rounds(w.unit, Effects.STATUS["phased"], src, round)
 	log.append("%s is Phased: out of reach until the round ends" % w.unit.display_name)
@@ -5242,7 +5246,10 @@ func _swallow(f: Foe, t: MechState, rounds: int) -> void:
 ## The swallows on their way land as the round ends, after its count (Swallowed, a timer): each
 ## machine waiting is Swallowed for the swallow's rounds, out of the fight from the next round,
 ## and the foes on it look elsewhere. The wait is a status its machine carries, so it lands on
-## one Phased by then as on any (reaches: what a unit carries is its own).
+## one Phased by then as on any (reaches: what a unit carries is its own): Phased granted as
+## the round ends lands after the swallow is taken, and the swallow closes on it (Ryan, 27
+## November, of that reading: "your take sounds right"). Granted at once it fades before any
+## swallow is taken, and its swallower picks again (_phase_at_once).
 func _land_swallows() -> void:
 	for ms in mechs:
 		var due: Array = ms.unit.modifiers.filter(func(m) -> bool: return m.id == "swallowing")
@@ -5894,14 +5901,16 @@ func _lay_needles(ms: MechState, foe: Foe, n: int) -> void:
 ## to 1"). In a spend, its blows
 ## land a beat after the spend's for the screen; what it fells falls at the death check that follows,
 ## the spend's, or in the foes' turn the one after the action whose blow brought it (a striker it
-## fells strikes no more: _strike). The needles are a status the foe carries, so the bolt is that
-## foe's (reaches: what a status does is its carrier's), as a Mine's blast is: from a Phased foe
-## it pings every conductor, and from any other it passes the Phased ones by.
+## fells strikes no more: _strike). The bolt is the Echidna's, since it fires it (Ryan, 27
+## November, of whose it is while a unit is Phased: "worded in the Echidna passive as "the
+## echidna fires" so that should be the source"): from a Phased Echidna it pings every conductor,
+## and from one that is not it passes the Phased ones by, whatever the foe it fires in. With two
+## in a squad the rule is the first's (needler_of), and so is the bolt.
 func _needle_bolt(ms: MechState, foe: Foe, rule: Dictionary) -> void:
 	var sid := str(rule["status"])
 	var chain := int(rule.get("chain", 0))
 	log.append("%s's needles fire in %s: Chain %d" % [ms.unit.display_name, foe.display_name, chain])
-	_chain_ping("%s's needles" % ms.unit.display_name, chain, _next_beat() if not _enemy_acting else 0, foe)   # the foes' turn records no blow on a foe
+	_chain_ping("%s's needles" % ms.unit.display_name, chain, _next_beat() if not _enemy_acting else 0, ms)   # the foes' turn records no blow on a foe
 	var keeps := int(rule.get("keeps", 0))
 	if keeps <= 0:
 		Effects.remove(foe, sid)

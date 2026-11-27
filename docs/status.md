@@ -132,7 +132,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1511 tests, 407,624 checks, green on Godot 4.8-beta4 (27 November, the bot pricing a grant an entry lays on its own machine, over Phased by source). The runner fails a run
+- Tests: 1512 tests, 407,642 checks, green on Godot 4.8-beta4 (27 November, a needle's bolt the Echidna's and a swallow under each form of the grant, over Phased by source). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -578,6 +578,8 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   republishes while he is on the page.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
+  The file is at v0.682, one edit ahead of the page: his two rulings of 27 November in the
+  Phased row (a needle's bolt is the Echidna's; a swallow follows the form of the grant).
   Published at v0.681 on 27 November from this file (the page's Version 532: Phased by source,
   its row, its tip and section 12's item, and the Cassowary's capacitor cells), merged onto
   v0.679 (Version 531, 26 November, from `52ec9147`, checked against the live page byte for

@@ -880,19 +880,23 @@ On a machine:
   a bite of its own entry lands: a hull cost (Volatile), a passive's hull price on a spend, a
   corrupted entry's. It spends its die on any foe, Phased or not, on itself, or on a Phased
   ally, and it may reboot. Its Lure turns the pick of a foe that can reach it and no other.
-  A status is its carrier's whoever laid it, so what was on its way lands: a swallow already
-  taken closes on it as the round ends, though no foe that is not Phased starts one. A hold on
-  the field (Essence Flare) holds nothing on a unit its holder cannot reach. Under the trial
-  that grants it at once, only the foes that can no longer reach it pick again.
+  A status is its carrier's whoever laid it, so what was on its way lands: granted as the
+  round ends, it is not Phased yet while the foes act, so a swallow aimed at it is taken and
+  closes on it as the round ends, though no foe that is not Phased starts one on a machine
+  Phased already. A hold on the field (Essence Flare) holds nothing on a unit its holder
+  cannot reach. Under the trial that grants it at once, the foes that can no longer reach it
+  pick again as it fades, a swallower as any other: its swallow is taken on the machine its
+  pick moves to, or on none where that is the last in its reach. A Phased foe keeps its pick.
   On a foe (the Spectre's and the Wraith's, a step after their Hex Bolt, or a move of a foe's
   own): the wait is laid as the move lands and the foe fades as that round ends, if it still
   stands, so the round its move is announced is the window. Through the next round only a
   Phased machine reaches it: no other machine's die is dropped on it, and nothing such a
-  machine aims elsewhere reaches it, an area, a bounce, a Chain's arc, a lay on the foe in
-  front (which passes to the next foe it reaches), a needle struck back, or the blast of a
-  Mine or the burst of a web on a foe that is not Phased. What it carries is its own and acts
-  on it in full: a Mine or a web on it, whose blast and burst reach what the foe itself
-  reaches, a needle's bolt, and the drill's mark with its blow. It
+  machine aims elsewhere reaches it, an area, a bounce, a Chain's arc, a needle's bolt (the
+  Echidna's, which fires it, whatever foe it fires in), a lay on the foe in front (which
+  passes to the next foe it reaches), a needle struck back, or the blast of a Mine or the
+  burst of a web on a foe that is not Phased. What it carries is its own and acts on it in
+  full: a Mine or a web on it, whose blast and burst reach what the foe itself reaches, and
+  the drill's mark with its blow. It
   acts all the same, on every machine, Phased or not, and it is back as that round ends. Its
   own side reaches it no more than ours reaches a Phased machine: a rally's Empowered or a
   mend passes it by unless its source is Phased. Two guards: the last foe standing does not
@@ -1094,7 +1098,8 @@ On a foe:
   to 3 fires the bolt before the next lands: the Echidna fires Chain 2, aimed at nothing, so every
   foe on the field that conducts loses 2 HP, that foe included while it stands, as Chain's ping
   does (no rider and no needle, a Shock neither doubled nor spent, no armour, Brittle or Barrier
-  reading it); then every stack on that foe is consumed. A foe the
+  reading it); then every stack on that foe is consumed. The bolt is the Echidna's, so a Phased
+  foe loses none of it unless the Echidna is Phased too. A foe the
   strike fells takes its riders as any does, and its bolt fires on the others all the same; a
   foe whose own blow brings its bolt and fells it strikes no more that turn. A foe's cleanse
   takes the needles, a Ward turns them away, and they last until a bolt spends them. With no
