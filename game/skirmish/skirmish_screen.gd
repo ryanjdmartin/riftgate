@@ -393,7 +393,7 @@ static func _default_skirmish() -> Skirmish:
 	var team: Array = db.default_team()
 	var env := OS.get_environment("RIFTGATE_TEAM")
 	if not env.is_empty():
-		team = env.split(",")
+		team = ContentDB.one_of_each_chassis(Array(env.split(",")))   # one of each chassis (27 November)
 	# RIFTGATE_PAINT=badger:ff8800/223344,kite:ffffff repaints for a look (primary/secondary).
 	var paints := {}
 	for spec in OS.get_environment("RIFTGATE_PAINT").split(",", false):
@@ -1551,7 +1551,7 @@ func _fill_foe_view(v: UnitView, foe: Foe, targets: Array[Foe], slot: int = 0) -
 	# The intent is this round's chosen attack: a sword, its damage, and a mark for a double
 	# strike; a suppressed foe shows no intent, only the status; a dead one
 	# threatens nothing.
-	v.intent_kind = "" if (foe.is_suppressed() or not foe.intends()) else Foe.kind_of(foe.action)
+	v.intent_kind = "" if not foe.shows_intent() else Foe.kind_of(foe.action)
 	# A move still gathering (a countdown) shows the blow it will land; its rounds are a chip.
 	var read := _intent_read(foe)   # the readout's chip is _intent_chip's, the same read
 	v.intent_value = read[0]
@@ -1830,7 +1830,7 @@ func _foe_rows(foe: Foe) -> Array:
 	# shows. The chip pulses on a dashed edge until the rally lands, so it never reads as one
 	# the foe carries by hue alone; a foe showing no blow wears none, its move gaining nothing.
 	var coming := sk.incoming_rally(foe)
-	var shows_blow := foe.intends() and not foe.is_suppressed() and (foe.attacks() or foe.gathering())
+	var shows_blow := foe.shows_intent() and (foe.attacks() or foe.gathering())
 	var rally_chip := shows_blow and coming > 0
 	if shows_blow and (coming > 0 or PREVIEW_DEBUG):
 		var who: Array[String] = []
@@ -2220,9 +2220,22 @@ func _refresh_arrows() -> void:
 	# solid, the ones the lure would turn dashed (below).
 	var lurer := (_drag_from if _drag_from >= 0 else _read_die()) if not _turns.is_empty() else -1
 	for foe in sk.field_foes():
-		# A foe on a special that acts on nobody in particular (a regrow, a rally) has no arrow:
-		# it holds no pick, and the ambush read says so too (Foe.intent_on, 18 October).
-		if not foe.intends() or foe.is_suppressed() or foe.acts_on_nobody():
+		if not foe.shows_intent():
+			continue   # a stun takes its action, and no cleanse lifts it first
+		# A move on one of its own (a heal, a cleanse, a revive) runs its line to its pick, drawn
+		# as the round opened (Ryan, 26 November: "Can't we run a dashed line to the sprite
+		# target?"): from the caster's feet to the top of the one it lands on, shown with the
+		# rest and whenever either is open; none on itself.
+		var pick := sk.ally_landing(foe)
+		if pick != null and pick != foe:
+			var cv := _foe_view_for(foe)
+			var pv := _foe_view_for(pick)
+			if cv != null and pv != null and (show_all_arrows or _pop.get("foe") == foe or _pop.get("foe") == pick):
+				list.append([inv * cv.intent_anchor_global(), inv * pv.bar_anchor_global(), Palette.ENEMY])
+		# A foe on a special that acts on nobody in particular (a regrow, a rally) has no arrow
+		# to a machine: it holds no pick there, and the ambush read says so too (Foe.intent_on,
+		# 18 October).
+		if foe.acts_on_nobody():
 			continue
 		if _turns.has(foe):
 			continue   # its arrow is the lure preview's, below
@@ -2521,6 +2534,7 @@ func _close_pop() -> void:
 	var die := _pop.has("die")
 	_pop = {}
 	KeywordTip.fills = {}   # no unit open: its tips' sums go with it
+	Templates.self_name = ""   # and {self} with them
 	_details.visible = false
 	if die:
 		_refresh(false)   # its marks and its lure's preview go with it
@@ -2553,11 +2567,13 @@ func _show_pop() -> void:
 			_close_pop()
 			return
 		KeywordTip.fills = term_fills(foe)
+		Templates.self_name = Templates.self_of(foe)   # {self} names the unit open (27 November)
 		_show_details("", v, _foe_hold_lines(foe))
 	elif _pop.has("mech"):
 		var i: int = _pop["mech"]
 		var mv: UnitView = _mech_views[i]
 		KeywordTip.fills = term_fills(sk.mechs[i].unit)
+		Templates.self_name = Templates.self_of(sk.mechs[i].unit)   # {self} names the unit open (27 November)
 		_show_details("", mv, _mech_hold_lines(i), mv.drawn_top(), POP_GAP)
 
 
@@ -2621,12 +2637,15 @@ func _foe_hold_lines(foe: Foe) -> Array:
 	for r in _foe_rows(foe):
 		out.append(EntryReadout.chip_line(str(r[0]), r[3], str(r[2])))
 	# A suppressed foe's intent clears here too (Ryan, 14 October): its Suppressed chip says what
-	# it does this round, as the chip does under its sprite.
-	if foe.is_suppressed() or foe.action.is_empty():
+	# it does this round, as the chip does under its sprite; one a cleanse frees first shows it.
+	if foe.stays_stunned() or foe.action.is_empty():
 		return out
 	var target := ""
 	if foe.target != null and foe.aims_at_one():
 		target = foe.target.unit.display_name
+	var pick := sk.ally_landing(foe)
+	if target.is_empty() and pick != null:
+		target = Templates.say("foe_target.self") if pick == foe else pick.display_name   # its pick among its own (26 November)
 	out.append({"style": "caption", "text": "INTENT", "parts": [], "place": ""})
 	var move := EntryReadout.move_lines(foe, foe.action, db, true, target)
 	move[0]["style"] = "name"
@@ -2645,7 +2664,7 @@ func _foe_hold_lines(foe: Foe) -> Array:
 ## or empty when it shows none: its move's kind, its blow (or a special's value) with its strikes,
 ## its riders.
 func _intent_chip(foe: Foe) -> Array:
-	if foe.is_suppressed() or not foe.intends():
+	if not foe.shows_intent():
 		return []
 	var read := _intent_read(foe)
 	var value: int = read[0]
@@ -2682,6 +2701,7 @@ func _on_foe_double_tapped(v: UnitView) -> void:
 	var foe: Foe = _view_foe.get(v, null)
 	if foe != null:
 		KeywordTip.fills = term_fills(foe)
+		Templates.self_name = Templates.self_of(foe)   # {self} names the unit open (27 November)
 		_open_codex(ContentDB.load_default().codex_for_foe(foe))
 
 
@@ -2691,6 +2711,7 @@ func _on_mech_double_tapped(i: int) -> void:
 	# need to show the current die face. Codex entries should only ever show elements as they are
 	# outside the skirmish"): no entry showing marked.
 	KeywordTip.fills = term_fills(ms.unit)
+	Templates.self_name = Templates.self_of(ms.unit)   # {self} names the unit open (27 November)
 	_open_codex(ContentDB.load_default().codex_for_unit(ms.unit))
 
 
@@ -2737,6 +2758,7 @@ func _open_codex(entry: Dictionary) -> void:
 func _close_codex() -> void:
 	_codex.close()
 	KeywordTip.fills = {}
+	Templates.self_name = ""   # and {self} with them
 
 
 var _menu: PauseMenu = null

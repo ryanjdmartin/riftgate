@@ -117,7 +117,7 @@ The move lines, the templates, the passives and the modules follow, kind by kind
 ## 4. Calls that aren't rules
 
 The questions the tips' drafts raised (23 November), each settled since and kept for the record,
-then the names the to-do routes here.
+then the calls the rounds of 26 November left open, then the names the to-do routes here.
 
 **A rider's event.** (settled 23 November: his word)
 Resolve, Primed's line too: "Riders can be resolve, you're correct that matches better to what
@@ -167,6 +167,60 @@ stays for what passes the Shield too.
 
 His answer: "I like hit for N, suffer N damage, and lose N hull as the format examples that we
 want."
+
+### Open since 26 November
+
+**Whom a rider names.**
+His ask of 26 November: "Some keywords are missing 'to all targets hit' which I thought was
+implied but now think is worth the extra words." Built as "to each unit hit" (rule 41), since
+*the target* is the one unit a use is aimed at and only its hit is Targeted (rule 7), so "targets
+hit" could read as the aimed one alone.
+- **A:** "to each unit hit", as built.
+  - "Resolve: Apply {N} Brittle per hit." → "Resolve: Apply {N} Brittle per hit to each unit hit."
+- **B:** "to all targets hit", his words.
+  - "Resolve: Apply {N} Brittle per hit." → "Resolve: Apply {N} Brittle per hit to all targets hit."
+
+**Barrier's hit line.**
+On a Sprite only a weapon's hit spends a Barrier; on a Frame a Sprite's attack does, a Sprite
+having no weapons. His line, "When Hit: Consumed to reduce damage to 0.", reads for both, where
+rule 41 puts Hit By Weapon on what only a weapon's hit sets off.
+- **A:** One line for both sides, his, as it reads.
+- **B:** Split by side: "Hit By Weapon: Consumed to reduce damage to 0." on a Sprite's Barrier, his
+  line on a Frame's.
+
+**The carrier's own "On".**
+Rule 41 took "On" off a grant's events ("On Hit" became "Hit:" inside a block). The labels of a
+unit's own events keep it: On Reboot (Jammed), On Suppressed (his Golden), On Burrowed (his Drill
+Out), since they are the carrier's events and no grant's.
+- **A:** Keep "On" on the carrier's own events.
+- **B:** Drop it there too: "Reboot:", "Suppressed:", "Burrowed:".
+
+**Parry as a block.**
+Parry's add lands on the first weapon hit of the Frame's next turn, a grant a later event opens,
+which no block says today: "Turn Start: The first weapon hit this turn gains +1 damage per 2
+damage counted." and "Resolve: If a weapon was used, consumed."
+- **A:** Leave Parry's lines as they read.
+- **B:** A block its turn's start opens, "Turn Start: Weapons Gain:" over "Hit: +1 damage dealt
+  per 2 damage counted." and "Resolve: Consumed.", which widens it from the first hit to every
+  hit of the turn's first weapon.
+
+**The Knuckles' Instant.**
+His line on the Knuckles of Fury, "During Rage, gain Instant.", could live on Rage as a grant
+under rule 41: "Knuckles of Fury Gains:" over "Instant." It stays on the Knuckles until his word.
+- **A:** Keep it on the Knuckles, his line.
+- **B:** Move it onto Rage as a block.
+
+**Sapped's grant.**
+His Sapped example read "Weapons Gain:". It is built as "Attacks Gain:", since a Sprite carries
+Sapped and has no weapons, and an attack is a weapon's use or an attack move (rule 21).
+- **A:** "Attacks Gain:", as built.
+- **B:** "Weapons Gain:", his example.
+
+**The wait for Phased.**
+While a Frame waits for its Phased to land (Phasing, its chip on a dashed edge), the chip opens
+Phased's own tip.
+- **A:** Keep Phased's tip on the wait.
+- **B:** The wait its own tip: "Round End: Gain Phased."
 
 **Names.**
 - **Aloft.** The Roc's climb out of reach, a working name. Pick: Keep · Soaring · Airborne

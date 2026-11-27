@@ -490,8 +490,10 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 		if not foes.has(f):
 			foes.append(f)
 	var foe_dicts: Array = []
+	var ally_picks: Array = []   # each foe's pick among its own (Ryan, 26 November), by its place in the list
 	for f in foes:
 		foe_dicts.append(_foe_dict(f, sk))
+		ally_picks.append(foes.find(f.ally_pick) if f.ally_pick != null else -1)
 	var front: Array = []
 	var back: Array = []
 	for col in range(sk.columns):
@@ -509,7 +511,7 @@ static func _skirmish_dict(sk: Skirmish, field: Battlefield) -> Dictionary:
 	return {
 		"rng": str(sk.rng.state), "columns": sk.columns, "terrain": sk.terrain, "ground": sk.ground,
 		"round": sk.round, "rerolls_left": sk.rerolls_left, "banked": sk.banked, "state": sk.state, "outcome": sk.outcome,
-		"log": sk.log, "mechs": mechs, "packs": packs, "foes": foe_dicts, "front": front, "back": back,
+		"log": sk.log, "mechs": mechs, "packs": packs, "foes": foe_dicts, "ally_picks": ally_picks, "front": front, "back": back,
 		"reinforcements": queue, "committed": sk.committed, "layout": sk.layout, "twins": paired, "corpses": held,
 		"kills": _typed_tallies(sk.kills),
 		"roll_marks": sk.roll_marks, "history": sk.history,   # the trail's bars and the undo's snapshots (2 November)
@@ -689,6 +691,17 @@ static func _skirmish_into(sk: Skirmish, d: Dictionary, lookup: Callable) -> voi
 			if h is Dictionary:
 				sk.history.append(h)
 	sk.team_kills = int(d.get("team_kills", 0))   # the foes the team has killed this fight (30 October)
+	# Each foe's pick among its own (Ryan, 26 November: "Intents pick their target at round start"),
+	# by its place in the list, and the stuns its cleanses free; a save from before draws them as
+	# things stand.
+	var picks = d.get("ally_picks", null)
+	if picks is Array:
+		for i in range(foes.size()):
+			var pi := int(picks[i]) if i < (picks as Array).size() else -1
+			foes[i].ally_pick = foes[pi] if pi >= 0 and pi < foes.size() else null
+		sk._refresh_freed()
+	else:
+		sk._draw_missing_ally_picks()
 
 
 ## A fight saved before the one kill tally (8 November): its kills worked out as they were then,

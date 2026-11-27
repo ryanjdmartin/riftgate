@@ -39,6 +39,8 @@ var actions: Array = []          # implemented attack actions; at least the basi
 var rank: int = -1               # 0 front, 1 back, -1 in reserve
 var column: int = -1
 var target: RefCounted = null    # Skirmish.MechState, its pick, drawn as intents are telegraphed for a move aimed at one machine; null for any other move (intends)
+var ally_pick: Foe = null        # the one of its own this round's move lands on (ALLY_PICKED: a heal, a cleanse, a revive), drawn as the round opens; null for a move that picks none (Skirmish._pick_ally)
+var freed: bool = false          # Suppressed, and a cleanse picked on it lands before it acts this round, so it acts and shows its intent (Skirmish._refresh_freed); the player's turn's read alone
 var action: Dictionary = {}      # this round's chosen action
 var modifiers: Array = []        # statuses on this foe (ablating, suppressed, numbed...): Effects.Modifier list
 var recorder = null              # the round preview's copy alone (Skirmish.preview_round): an Array every grant and stack this foe gains is noted in (Effects._record); null in any fight that plays
@@ -467,16 +469,16 @@ func strikes() -> int:
 ##           sides, Ryan, 16 October: an effect and the buff it creates share a name)
 ##           recover: regains `value` hit points, itself (the treants' Recover; "regrow" until
 ##           15 November, Ryan: "it can just be named Heal, or Recover if it's self-only")
-##           heal: the most hurt of its own, itself included, regains `value` (Cure;
-##           "regrow_ally" until then)
+##           heal: its pick, the most hurt of its own as the round opens, itself included,
+##           regains `value` (Cure; "regrow_ally" until then; ally_pick)
 ##           brace_all: Armoured, `value` stacks, on every foe in the fight, on the same clock
 ##           (Protect, 15 October): until the foes' next turn opens
 ##           brace_beside: Armoured, `value` stacks, on itself and every foe beside it in its rank
 ##           (Skirmish.foes_beside), on the same clock (the goblins' Shield Wall, 20 November:
 ##           "I said neighbors, not all"), so walls side by side add
-##           cleanse: every mark the team laid and its stun (Effects.cleansed_marks) off the most-marked of its
-##           own, itself included (Hallow, 28 October: the Marsh's lever); never Numbed, never
-##           a buff
+##           cleanse: every mark the team laid and its stun (Effects.cleansed_marks) off its pick,
+##           the most-marked of its own as the round opens, itself included (Hallow, 28 October:
+##           the Marsh's lever; ally_pick); never Numbed, never a buff
 ##           barrier: a Barrier on itself, the next weapon blow it takes dealing nothing, until
 ##           popped or the end of the player's next turn (28 October)
 ##           regenerate: Regenerating `value` on itself, a regrowth at each of its next three
@@ -489,9 +491,10 @@ func strikes() -> int:
 ##           Wraith's, a step after their Hex Bolt, 17 November)
 ##   buff    revive_once: it gets back up once the next time it falls, whole, in its own slot
 ##           (Reraise); Suppress and Disrupt answer the telegraphed move, kill order the rest
-##           revive_once_ally: one of its own, never itself, not yet readied, comes back once
-##           the next time it falls (Reraise, the promoted Cleric's, 16 October): a party
-##           member first, the heaviest hitter among them, then the rest of its own the same way
+##           revive_once_ally: its pick, one of its own as the round opens, never itself, not yet
+##           readied, comes back once the next time it falls (Reraise, the promoted Cleric's, 16
+##           October; ally_pick): a party member first, the heaviest hitter among them, then the
+##           rest of its own the same way
 ##           summon: `count` foes of `foe` take empty slots of their rank at once, the nearest
 ##           its column, their round over; a call for several stands as many as fit, and a
 ##           summoner with room for none never picks it (Raise; Skirmish.legal_actions)
@@ -552,8 +555,34 @@ const ACTION_EFFECTS := {
 }
 
 ## Foe effects that act on nobody in particular, so a lure has nothing to turn and no machine
-## is shown intent (the ambush read below).
+## is shown intent (the ambush read below). A heal, a cleanse and a revive pick one of the foe's
+## own instead (ALLY_PICKED, ally_pick), drawn as the round opens.
 const UNTARGETED_EFFECTS := ["brace", "recover", "heal", "brace_all", "brace_beside", "cleanse", "barrier", "regenerate", "revive_once", "revive_once_ally", "summon", "rally", "prime", "ward_all", "drain_rerolls", "brittle_all", "sap_all", "scorch_all", "corrupt_all", "merge", "golden", "unready_all", "phase"]
+
+
+## The steps that land on one of the foe's own, picked as the round opens (Ryan, 26 November:
+## "Intents pick their target at round start"): a heal's patient, a cleanse's, a revive's. A move
+## has one pick among its own, drawn by its first such step's rule, and every such step after it
+## lands on the same foe (the Cleric's Cure: "Cure heals 4, then cleanses the same foe").
+const ALLY_PICKED := ["heal", "cleanse", "revive_once_ally"]
+
+
+## The effect whose rule draws a move's pick among its own (ALLY_PICKED), "" when none of its
+## steps lands on one of its own.
+static func ally_effect(a: Dictionary) -> String:
+	for st in effects_of(a):
+		var e := str(st.get("effect", ""))
+		if ALLY_PICKED.has(e):
+			return e
+	return ""
+
+
+## The value of a move's first step with this effect (a heal's points), 0 when it has none.
+static func step_value(a: Dictionary, effect: String) -> int:
+	for st in effects_of(a):
+		if str(st.get("effect", "")) == effect:
+			return int(st.get("value", 0))
+	return 0
 
 
 ## Does this round's move act on nobody in particular (one of UNTARGETED_EFFECTS)? It draws
@@ -589,14 +618,27 @@ func intends() -> bool:
 	return target != null or not aims_at_one()
 
 
+## Does this foe show its intent this round: it intends, and no stun takes its action, or a
+## cleanse picked on it lifts the stun before it acts (freed; Ryan, 26 November: "a stunned sprite
+## shows no intent line, but on cleanse it does show").
+func shows_intent() -> bool:
+	return intends() and not stays_stunned()
+
+
+## Does a stun take this round's action from it: Suppressed, and no cleanse picked on it lifts the
+## stun before it acts (freed). What the intents and the bot read; the fight itself reads the stun.
+func stays_stunned() -> bool:
+	return is_suppressed() and not freed
+
+
 ## Does this foe show intent on a machine (the funnel-web's ambush read, 18 October, as the
-## HUD draws the arrows): alive, not suppressed, and its arrow on it, its pick or a blow at
-## every machine, a gathering countdown included. A foe on a special that acts on nobody in
-## particular shows intent on no machine, whatever its pick, and no foe shows any on a machine
-## it cannot reach (Effects.reaches: a Phased machine, where the foe is not Phased), a blow at
-## every machine passing that one by. `u` is the machine's Unit.
+## HUD draws the arrows): alive, not suppressed or freed of its stun (shows_intent), and its
+## arrow on it, its pick or a blow at every machine, a gathering countdown included. A foe on a
+## special that acts on nobody in particular shows intent on no machine, whatever its pick, and no
+## foe shows any on a machine it cannot reach (Effects.reaches: a Phased machine, where the foe is
+## not Phased), a blow at every machine passing that one by. `u` is the machine's Unit.
 func intent_on(u) -> bool:
-	if u == null or not intends() or is_suppressed() or not Effects.reaches(self, u):
+	if u == null or not shows_intent() or not Effects.reaches(self, u):
 		return false
 	if reaches_every_machine():
 		return true

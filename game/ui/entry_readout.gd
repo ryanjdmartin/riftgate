@@ -91,7 +91,7 @@ static func lines_for(f: Face, place: int, shown: int, base: Face, states: Array
 			out.append(marked(text_line("state", str(st[0])), [st[1]]))
 		else:
 			out.append(text_line("state", str(st)))
-	var codex := str(comp.get("codex", ""))
+	var codex := Templates.with_self(str(comp.get("codex", "")))   # {self}: the Frame whose die it is, by name (Templates.self_name)
 	if not codex.is_empty():
 		out.append(text_line("codex", codex))
 	out.append_array(effects_of(f, shown, base, cooldown))
@@ -404,6 +404,8 @@ static func move_lines(f: Foe, a: Dictionary, db: ContentDB, live: bool = false,
 			whom = everyone   # the term, as a blow at every machine says it
 		elif key == "any_machine":
 			whom = at_target if live and not target.is_empty() else _anyone(word_for)
+		elif live and not target.is_empty() and Foe.ALLY_PICKED.has(str(a.get("effect", ""))):
+			whom = target   # in a fight, its pick among its own, drawn as the round opened (26 November)
 		else:
 			whom = Templates.say("foe_target." + key)
 		out.append(text_line("effect", kind, "attr"))

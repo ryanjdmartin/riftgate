@@ -526,8 +526,9 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   under its chip as the field draws it, a line a mark: its move's name,
   its blow as it will land read against its own, the machine it is aimed at by name with its
   move's word after it ("Skua, the hottest machine"), when it
-  lands, its riders and its text. The colours are the unit's, so a foe hitting harder is green
-  and up. A suppressed foe shows no intent.
+  lands, its riders and its text; a move on one of its own names its pick. The colours are the
+  unit's, so a foe hitting harder is green and up. A suppressed foe shows no intent, unless a
+  cleanse picked on it comes first in the order they strike, which frees it: it shows its intent.
 - **The codex** (double-tap a machine or a foe) is the unit between fights, never a combat
   effect: its numbers, each its chassis's or its kind's own with the change its loadout and
   the battle make in a bracket beside it, the change green up or red down with its arrow
@@ -599,8 +600,8 @@ Every foe a strike reaches takes a blow of its own, read in one order:
   a stack, after the spend's own heat lands; equipment spends none.
 - **Suppress**: each foe hit is Suppressed; on a Numbed foe the stun strips a stack and lands
   nothing; a Ward turns it away; one already suppressed for that action gains nothing more; a
-  foe's cleanse that comes first lifts it, so the foe acts; and a foe immune to it (An immunity,
-  under Foes) takes none.
+  cleanse picked on the foe that comes first lifts it, so the foe acts and shows its intent; and
+  a foe immune to it (An immunity, under Foes) takes none.
 - **Shock**: every foe the hit reaches is Shocked after its blow, the ones it fells included, so
   a hit never spends its own Shock.
 - **Chain N**: as the use resolves, every foe on the field that conducts (a Shocked foe, or one
@@ -1446,12 +1447,12 @@ Ablate, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Expo
   plain claw. The Red Dragon's Breath and the Black Mage's Fire and Flare go for the hottest
   and the Djinn's Unmake for the most buffed; no move carries the strongest or the weakest
   yet. A move at every machine or at nobody (a brace, a regrow, a rally, a scorch all) draws no
-  pick and shows no arrow. A
+  pick and shows no arrow; one on one of its own draws its pick there (below). A
   machine that stands Exposed comes before every word (Exposed, above). The
   foes pick in the order they strike and never over-commit: a machine the blows already picked
   would wreck through its shield and armour is passed over while another stands (a blow at
-  every machine counts on each; a special, a suppressed foe and a countdown still gathering
-  count nothing). The pick is a commitment, smart as it is made and never after (Slice and Dice's model): during the player's turn it moves only by a Lure, by the
+  every machine counts on each; a special, a suppressed foe no cleanse frees and a countdown
+  still gathering count nothing). The pick is a commitment, smart as it is made and never after (Slice and Dice's model): during the player's turn it moves only by a Lure, by the
   machine leaving the fight (Swallowed), or by a Disrupt whose foe finds its machine
   gone or out of the fight; a machine Phased as the round ended is out of the picks the next
   round opens with for every foe that is not Phased, such a foe's carried pick drawn again and
@@ -1460,6 +1461,16 @@ Ablate, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Expo
   so the player can tell the pick it
   will make, and the round preview shows it. The preview never moves a pick: a foe aimed at a machine the round will wreck stays
   aimed at it, and the preview shows where its blow lands after.
+- **A pick among its own**: a heal, a cleanse or a revive an ally picks the foe it lands on as
+  the round opens, by its own word (the most hurt, the most marked, the heaviest-hitting party
+  member not yet readied), a move with several of them on one pick (the Cleric's Cure). The foes
+  pick in the order they strike and never double up: a heal passes over a foe the heals ahead of
+  it fill, a cleanse over a foe another cleanse takes, a revive over another's pick, so a move
+  with none left for it is not cast; no pick falls on a Phased foe but a Phased caster's. The pick moves only in the
+  player's turn, drawn again by its word when its foe falls or leaves the field, or for the new
+  move a Disrupt turns it to; in the foes' turn it holds, and a pick that falls there takes the
+  move with it. A Cleanse whose pick carries nothing lands on it all the same. Its line runs from
+  the caster's feet to the top of its pick, drawn as an intent's.
 - **A blow** is the move's number, the foe's base attack times the move's factor, rounded to
   the nearest whole, plus its adds: its Empowered, its swarm for each other live foe of its
   type and its grudge (its number for every foe the team has killed this fight, every fall but a
@@ -1532,11 +1543,11 @@ Ablate, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Expo
   comes only as Collect's follow-up, only while he holds something, and the swing spends it. A
   Ward turns the jam and the take away together.
 - **A special** stands in the blow's place as a move's first step, or follows it as a later one: brace (Armoured, its value in stacks, an armour point each, until the
-  foes' next turn opens), recover (regains its value, itself), heal (the most hurt of its own, itself included, regains its
+  foes' next turn opens), recover (regains its value, itself), heal (its pick, the most hurt of its own as the round opens, itself included, regains its
   value), brace all (the same on every foe in the fight, on the same clock), brace beside (the
   same on itself and on every foe beside it in its rank, a massive foe in a column beside it
   among them, so walls raised side by side add: the goblins' Shield Wall), revive once,
-  revive an ally (Undying on one of its own, never itself, not readied already: a
+  revive an ally (Undying on its pick, one of its own as the round opens, never itself, not readied already: a
   party member first, the heaviest hitter among them, then the rest of its own the same way),
   summon,
   rally (Empowered at its value on every foe on the field, itself too, at once), golden (the rage: Golden for the rounds it says, 1 to 5 and three unsaid, no value; only while calm), drain rerolls, ablate (stacks of Ablate on one machine), Brittle (stacks of Brittle on one
@@ -1546,9 +1557,10 @@ Ablate, Suppressed, Shocked, Paradox, Vitriol, the Web Bomb, Cryo, Brittle, Expo
   jam, purge (Purge N: N stacks off every buff, for good, whatever
   granted it; the Djinn's Unmake at 1; never a last act's), cleanse
   (every mark the team laid, Ablate, Brittle, Cryo, Vitriol, Shocked, Exposed, the Web Bomb, the Paradox
-  and a Mine, and its stun, Suppressed, off the most-marked of its own, itself included, the
-  first in strike order on a tie, so a cleanser who acts before a stunned ally frees it to act;
-  never Numbed; cast where one of its own carries a mark), barrier (a
+  and a Mine, and its stun, Suppressed, off its pick, the most-marked of its own as the round
+  opens, itself included, the first in strike order on a tie, so a cleanser who acts before its
+  stunned pick frees it to act; never Numbed; cast where one of its own carries a mark no other
+  cleanse takes), barrier (a
   Barrier on itself), phase (the wait for Phased on itself: Phased, above), regenerate (Regenerating, its value in stacks, on itself), ward all (a Ward on
   every foe on the field, itself included), prime (Primed, its value in stacks, on every other foe on the
   field, at once), swallow (its machine Swallowed for its rounds, never the last machine in the
@@ -1688,9 +1700,9 @@ is no survivor, and each of them counts as a kill as any foe does: A kill, above
   indirect; the target carries a debuff; an ally is in the fight; the component carries a tag;
   the target shows no intent on this machine (the funnel-web's: a foe shows intent as its
   arrow is drawn, on its pick or on every machine, a gathering countdown included, and none
-  when aimed at another machine, Suppressed, or on a special that acts on nobody in
-  particular; read at the spend, before the spend's own riders, each foe reached judged
-  alone); the rank the spend is aimed at (the Cottonmouth's grants, judged on the aim), and on
+  when aimed at another machine, Suppressed with no cleanse to free it first, or on a special
+  that acts on nobody in particular; read at the spend, before the spend's own riders, each foe
+  reached judged alone); the rank the spend is aimed at (the Cottonmouth's grants, judged on the aim), and on
   an attack's own effects the rank of each foe struck with the spend's reach beside it (the Ram
   Frame's Direct blows at the front rank, the Artillery Rangefinder's Indirect blows at the
   back, a point each); the striker carries a status (the Prairie Dog's fight
@@ -2143,6 +2155,11 @@ Headless only (`sim/campaign.gd`); no screen drives a run yet.
   squad slots; the first battle is fought by those three and brings the fourth machine (The
   first battle, below). 0 salvage, 100 Favour, a blueprint for every basic, the six of tier
   zero the game deals.
+- **One of each chassis**: a roster never holds two of one chassis, so a Frame's own words can
+  name it (`{self}`, the text standard's rule 3). The tender deals one of each, the first
+  battle's pick and every offer deal only a chassis the roster lacks, the quick campaign's draft
+  and offers the same, and the harness fields none twice. Sprites come in any number. The
+  balance runner may field a repeated chassis as a what-if, never by default.
 - **The first battle** is the Meadow's, and a run opens on it: a forced choice of city, no
   turn passed before it is fought. The first rifts are the opening domain's, the one content
   marks (a domain's `opening`; with none marked they roll as any other), so the two first

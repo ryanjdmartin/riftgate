@@ -22,6 +22,11 @@ static var _loaded := false
 ## piece's lines use which template, for the hangar's Text tab).
 static var tracing := false
 static var traced: Array = []
+## Whom {self} names in a text (Ryan, 27 November: "Use self everywhere, it's more future proof"):
+## the unit whose readout is open, by self_of, set by the screen showing it and cleared as it
+## closes, as the tips' sums are (KeywordTip.fills); "" for none, where {self} reads "this Frame".
+## A roster holds one of each chassis, so a Frame's name is one Frame.
+static var self_name := ""
 
 
 static func table() -> Dictionary:
@@ -48,6 +53,46 @@ static func say(id: String, values: Dictionary = {}) -> String:
 	var out := fill(t, values)
 	if tracing:
 		traced.append([id, out])
+	return out
+
+
+## The words {self} stands for with no unit given: the unit in context (self_name), else
+## "this Frame" (the template self.none).
+static func self_word() -> String:
+	return self_name if not self_name.is_empty() else say("self.none")
+
+
+## A unit's {self}: a Frame by its chassis's name ("the Nemesis", the template self.frame), a
+## Sprite "this Sprite" (self.sprite: two of one Sprite is their design, so a name names none),
+## nothing "this Frame" (self.none).
+static func self_of(u) -> String:
+	if u == null:
+		return say("self.none")
+	if u is Foe:
+		return say("self.sprite")
+	return say("self.frame", {"name": str(u.get("display_name"))})
+
+
+## `text` with every {self} as the words it stands for: `values`' "self" when given, else
+## self_word; capitalised where it opens the text, a line or a block's line, or follows a label's
+## colon or a full stop. Resolved over the whole text before any brace is filled, so a template
+## laid out as parts still reads its sentence.
+static func with_self(text: String, values: Dictionary = {}) -> String:
+	if text.find("{self}") < 0:
+		return text
+	var who := str(values["self"]) if values.has("self") else self_word()
+	var out := ""
+	var i := 0
+	while true:
+		var at := text.find("{self}", i)
+		if at < 0:
+			out += text.substr(i)
+			break
+		out += text.substr(i, at - i)
+		var before := text.substr(0, at)
+		var opens := before.is_empty() or before.ends_with("\n") or before.ends_with("\n  ") or before.ends_with(": ") or before.ends_with(". ")
+		out += (who.substr(0, 1).to_upper() + who.substr(1)) if opens else who
+		i = at + "{self}".length()
 	return out
 
 
@@ -80,8 +125,10 @@ static func plural(n: int) -> String:
 
 
 ## `text` with each {name} replaced by its value, in one pass, so a value is never read again
-## as a template; a brace with no value is left as it stands.
+## as a template; a brace with no value is left as it stands. {self} is always filled
+## (with_self).
 static func fill(text: String, values: Dictionary) -> String:
+	text = with_self(text, values)
 	var out := ""
 	var i := 0
 	while i < text.length():
@@ -110,7 +157,7 @@ static func fill(text: String, values: Dictionary) -> String:
 ## number moved); the words around it, values given as plain text among them, run together as
 ## one plain part, so a line keeps the parts the readout lays it out by.
 static func parts(id: String, values: Dictionary = {}) -> Array:
-	var text := form(id, values)
+	var text := with_self(form(id, values), values)
 	var filled := fill(text, values)
 	if tracing:
 		traced.append([id, filled])

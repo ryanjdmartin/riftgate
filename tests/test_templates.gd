@@ -8,7 +8,7 @@ extends TestCase
 ## the values the code gives, in the form its count picks. Synthetic templates where the rule is
 ## the filling's, never an entry's words.
 
-const PREFIXES := ["rule", "entry", "readout", "target", "kind", "gate", "rank", "cost", "hold", "state", "move", "aim", "when", "foe_target", "term", "count"]
+const PREFIXES := ["rule", "entry", "readout", "target", "kind", "gate", "rank", "cost", "hold", "state", "move", "aim", "when", "foe_target", "term", "count", "self"]
 
 
 ## Every template id written out in the engine's and the screens' code.
@@ -126,3 +126,30 @@ func test_the_die_readout_reads_its_words_from_content() -> void:
 	var rules := EntryReadout.effects_of(f).filter(func(l: Dictionary) -> bool: return str(l.get("group", "")) == "rule")
 	assert_true(rules.any(func(l: Dictionary) -> bool: return str(l["text"]) == EntryReadout.capital(said)), "and the readout prints it: %s" % str(rules))
 	assert_true(f.describe().contains(said), "and the compact line: %s" % f.describe())
+
+
+## {self} names the unit a text is about (Ryan, 27 November: "Use self everywhere, it's more future
+## proof"): the value given, else the unit open, else "this Frame"; a Frame by its chassis's name
+## and a Sprite as "this Sprite"; capitalised where it opens a line, a block's line or a sentence
+## after a label, never in the middle of one; and a template laid out as parts reads it whole.
+func test_self_names_the_unit_a_text_is_about() -> void:
+	var was := Templates.self_name
+	Templates.self_name = ""
+	assert_eq(Templates.with_self("Hit: Change intended target to {self}."), "Hit: Change intended target to this Frame.", "with no unit open, this Frame")
+	assert_eq(Templates.with_self("Resolve: {self} gains the status shown."), "Resolve: This Frame gains the status shown.", "a capital after a label")
+	assert_eq(Templates.with_self("{self}'s weapon hits count Brittle twice."), "This Frame's weapon hits count Brittle twice.", "and where it opens the text")
+	assert_eq(Templates.with_self("Attacks Gain:\n  {self} gains 1 Heat."), "Attacks Gain:\n  This Frame gains 1 Heat.", "and where it opens a block's line")
+	var nemesis := Unit.mech(1, "Nemesis", Vector2i.ZERO)
+	assert_eq(Templates.self_of(nemesis), "the Nemesis", "a Frame by its chassis's name")
+	assert_eq(Templates.self_of(Foe.make("Goblin", 10, 1)), "this Sprite", "a Sprite never by name: two of one is their design")
+	assert_eq(Templates.self_of(null), "this Frame", "none, this Frame")
+	assert_eq(Templates.with_self("Round End: If {self} killed a Sprite.", {"self": Templates.self_of(nemesis)}), "Round End: If the Nemesis killed a Sprite.", "a unit given names it, in lower case mid-sentence")
+	Templates.self_name = Templates.self_of(nemesis)
+	assert_eq(Templates.with_self("Hit: Change intended target to {self}."), "Hit: Change intended target to the Nemesis.", "the unit open names it")
+	assert_eq(Templates.fill("Spent on an ally, takes up to {n} of its heat onto {self}", {"n": 3}), "Spent on an ally, takes up to 3 of its heat onto the Nemesis", "a template's other braces fill beside it")
+	var said := ""
+	for part in Templates.parts("hold.pull", {"n": 3}):
+		said += ("" if said.is_empty() else " ") + str(part["text"])
+	assert_true(said.ends_with("onto the Nemesis"), "laid out as parts, the name stays whole and in lower case: %s" % said)
+	Templates.self_name = was
+

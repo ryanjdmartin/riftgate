@@ -264,7 +264,7 @@
    "id": "lure",
    "category": "keyword",
    "name": "Lure",
-   "codex": "Hit: Change intended target to this Frame.",
+   "codex": "Hit: Change intended target to {self}.",
    "status": "implemented",
    "design": {
     "holes": "No status and no chip: the arrow is the record. A draw by an ally is parked (the bible's redirection row)."
@@ -413,7 +413,7 @@
    "id": "targets",
    "category": "component_property",
    "name": "Targets",
-   "codex": "Which Frames this can be used on, shown as three hexes under its mark: the middle is this Frame, the sides are the other Frames. A filled hex can be chosen.",
+   "codex": "Which Frames this can be used on, shown as three hexes under its mark: the middle is {self}, the sides are the other Frames. A filled hex can be chosen.",
    "status": "implemented",
    "design": {
     "holes": ""
@@ -899,7 +899,7 @@
    "id": "essence",
    "category": "status",
    "name": "Essence",
-   "codex": "When any Sprite is defeated: Gain 1 Essence.\nSkirmish Start: Gain 1 Empowered per 5 Essence.\nRound End: If this Frame killed a Sprite this round, gain 1 Empowered per 5 Essence.\nLasts the battle.",
+   "codex": "When any Sprite is defeated: Gain 1 Essence.\nSkirmish Start: Gain 1 Empowered per 5 Essence.\nRound End: If {self} killed a Sprite this round, gain 1 Empowered per 5 Essence.\nLasts the battle.",
    "status": "implemented",
    "design": {
     "holes": "Ryan's rework of 12 November, Souls then; Essence his name of 15 November (\"Rename souls to Essence\"). No cap by his call (\"as part of the fantasy\"), so it is no store, which is capped and wears a bar: an Ability, a chip with its count. The kill's flare is once a round, as it ends, when an attack of the Ammit's killed in it (Ryan, 16 November: \"at the end of a round where the Ammit killed at least one enemy\"); once an attack that killed from 12 November until then (\"Flaring twice for an AoE is probably wrong, let's make it 'one of more killed' by an attack\"), and once for each foe in the first build. The text is a session's draft.",
@@ -1699,7 +1699,7 @@
    "id": "self_statuses",
    "category": "component_property",
    "name": "On itself",
-   "codex": "Resolve: This Frame gains the status shown. Where shown: once per Sprite hit, up to the cap shown.",
+   "codex": "Resolve: {self} gains the status shown. Where shown: once per Sprite hit, up to the cap shown.",
    "status": "implemented",
    "design": {
     "holes": "Its carrier the Storm Petrel's Hardlight Pulse (Ryan, 18 November): Hardened Light 1, up to 3, printed on the piece; its branches take it further through the pipeline (self_status): the Defence direction a Ward and a cap of 4, then a stack for each foe hit and a cap of 5, the Striker's Charged 1 and then 2. Its first form the lock's own Regenerating on itself (regenerates, 30 October to 17 November). Machine buffs and a Ward, never a Barrier, which keeps its pieces and its cooldown."
@@ -1939,7 +1939,7 @@
    "id": "passes_heat",
    "category": "component_property",
    "name": "Passes heat",
-   "codex": "Resolve: Move all of this Frame's Heat to the target. The target gains 1 stack of the shown status per Y Heat moved, rounded down.",
+   "codex": "Resolve: Move all of {self}'s Heat to the target. The target gains 1 stack of the shown status per Y Heat moved, rounded down.",
    "status": "implemented",
    "design": {
     "holes": "Its carrier the Puffin's dump (Ryan, 11 November: \"A locked piece can transfer the Puffins heat to another unit along with a buff based on heat moved\"; \"just allies\"; 19 November, Empowered for every 2: \"that needs data\"). An ally its heat takes past the maximum burns as the turn ends, his \"forcing an overheat\". The codex is a session's draft."
@@ -1989,7 +1989,7 @@
    "id": "consumes",
    "category": "component_property",
    "name": "Consumes",
-   "codex": "Hit: If a weapon, consume all stacks of the named status on the Sprite hit. +{N} damage per stack consumed.\nCommit: If equipment, consume up to {N} of the named count from this Frame. Gain 1 stack of the granted status per one consumed.\nEquipment cannot be used with nothing to consume.",
+   "codex": "Hit: If a weapon, consume all stacks of the named status on the Sprite hit. +{N} damage per stack consumed.\nCommit: If equipment, consume up to {N} of the named count from {self}. Gain 1 stack of the granted status per one consumed.\nEquipment cannot be used with nothing to consume.",
    "status": "implemented",
    "design": {
     "holes": "A mine laid from it eats its arrival's stacks. The equipment's form is the Quintessence Tap's (12 November, the Soul Siphon then), the engine's spends and spends_up_to; its text is a session's draft."
@@ -1999,7 +1999,7 @@
    "id": "self_ablate",
    "category": "component_property",
    "name": "Ablates its firer",
-   "codex": "Resolve: Apply {N} Ablate to this Frame.",
+   "codex": "Resolve: Apply {N} Ablate to {self}.",
    "status": "implemented",
    "design": {
     "holes": "A working name for Ryan's name pass. It was fuel for a machine that wanted heat while a machine's Burning was heat; since Ablate (15 November) it is a price alone, the component pass's to read."
@@ -2029,7 +2029,7 @@
    "id": "brace_property",
    "category": "component_property",
    "name": "Braces",
-   "codex": "Resolve: Apply {N} Armoured to this Frame.",
+   "codex": "Resolve: Apply {N} Armoured to {self}.",
    "status": "implemented",
    "design": {
     "holes": "A rule on one carrier, not a keyword, until another piece wants it; the stacks are a placeholder."

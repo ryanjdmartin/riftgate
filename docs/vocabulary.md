@@ -64,31 +64,31 @@ Resolve: The target and the second target swap places. Massive Sprites cannot mo
 | **Volatile** | Commit: Lose {N} Hull. | implemented |
 | **Shield cost** | Commit: Lose {N} Shield.
 Cannot be used without enough Shield. | implemented |
-| **Targets** | Which Frames this can be used on, shown as three hexes under its mark: the middle is this Frame, the sides are the other Frames. A filled hex can be chosen. | implemented |
+| **Targets** | Which Frames this can be used on, shown as three hexes under its mark: the middle is {self}, the sides are the other Frames. A filled hex can be chosen. | implemented |
 | **Cooldown** | Resolve: This entry goes dark for the rest of the round and the next {N} rounds.
 A dark entry can be rolled but not used. | implemented |
 | **Gather** | Resolve: Every other Sprite's Mine merges into the target's Mine. | implemented |
 | **Detonate** | Resolve: The target's Mine goes off, including this use's addition. | implemented |
-| **On itself** | Resolve: This Frame gains the status shown. Where shown: once per Sprite hit, up to the cap shown. | implemented |
+| **On itself** | Resolve: {self} gains the status shown. Where shown: once per Sprite hit, up to the cap shown. | implemented |
 | **An ally's action** | Resolve: If the target Frame's die is used, spend {N} rerolls to reroll it onto a different entry. It can act again. | implemented |
 | **Rolls its die** | Resolve: The target's die rerolls onto a different entry. A used die cannot reroll. | implemented |
 | **Rerolls a kill** | Resolve: If any Sprite hit was defeated, gain {N} rerolls. | implemented |
 | **Grants a reroll** | Resolve: Gain {N} rerolls. | implemented |
 | **Vents all** | Commit: Reduce Heat to 0. +X damage per Y Heat vented, as shown on the entry. | implemented |
 | **Fires the shield** | Commit: Reduce Shield to 0. +X damage per Y Shield spent, as shown on the entry. | implemented |
-| **Passes heat** | Resolve: Move all of this Frame's Heat to the target. The target gains 1 stack of the shown status per Y Heat moved, rounded down. | implemented |
+| **Passes heat** | Resolve: Move all of {self}'s Heat to the target. The target gains 1 stack of the shown status per Y Heat moved, rounded down. | implemented |
 | **Grows with missing HP** | Commit: +X damage per Y HP the target is missing, as shown on the entry. | implemented |
 | **Finisher** | Commit: If the target is at or below half Max HP, double base damage. | implemented |
 | **Fixed** | Only the specified component may be used. | implemented |
 | **Gated** | The keyword applies only to Sprites that meet its condition at Commit. | implemented |
 | **Consumes** | Hit: If a weapon, consume all stacks of the named status on the Sprite hit. +{N} damage per stack consumed.
-Commit: If equipment, consume up to {N} of the named count from this Frame. Gain 1 stack of the granted status per one consumed.
+Commit: If equipment, consume up to {N} of the named count from {self}. Gain 1 stack of the granted status per one consumed.
 Equipment cannot be used with nothing to consume. | implemented |
-| **Ablates its firer** | Resolve: Apply {N} Ablate to this Frame. | implemented |
+| **Ablates its firer** | Resolve: Apply {N} Ablate to {self}. | implemented |
 | **Ignores Armour** | Armour does not reduce the damage. | implemented |
 | **Empties the hopper** | Commit: Consume all Ore. Hit once per Ore consumed. No Ore is gained from these hits.
 Cannot be used without Ore. | implemented |
-| **Braces** | Resolve: Apply {N} Armoured to this Frame. | implemented |
+| **Braces** | Resolve: Apply {N} Armoured to {self}. | implemented |
 | **Strikes** | Hits per use. Each hit deals full damage and is reduced by Armour separately. | implemented |
 
 ## Reach
@@ -109,7 +109,7 @@ Cannot be used without Ore. | implemented |
 | **Penetrate** | Also hits all other Sprites in the same column, dealing {N} damage. | implemented |
 | **Cryo** | Resolve: Apply {N} Cryo per hit to each Sprite hit. | implemented |
 | **Ablate** | Resolve: Apply {N} Ablate per hit to each unit hit. | implemented |
-| **Lure** | Hit: Change intended target to this Frame. | implemented |
+| **Lure** | Hit: Change intended target to {self}. | implemented |
 | **Shock** | Resolve: Apply Shocked to each Sprite hit. | implemented |
 | **Expose** | Resolve: Apply 2 Exposed to each unit hit. | implemented |
 | **Disrupt** | Resolve: Sprites hit switch to the next move they can use, keeping their target. | implemented |
@@ -187,7 +187,7 @@ Hull Damaged: Reduce stacks by half, rounded down.
 Lasts the skirmish. | implemented |
 | **Essence** | When any Sprite is defeated: Gain 1 Essence.
 Skirmish Start: Gain 1 Empowered per 5 Essence.
-Round End: If this Frame killed a Sprite this round, gain 1 Empowered per 5 Essence.
+Round End: If {self} killed a Sprite this round, gain 1 Empowered per 5 Essence.
 Lasts the battle. | implemented |
 | **Offhand** | Uses on a Sprite Gain:
   The armament shown.

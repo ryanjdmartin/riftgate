@@ -636,8 +636,9 @@ func test_greedy_values_a_cleanse_where_there_is_something_to_clear() -> void:
 	assert_true(pol.cleanse_score(sk, ms) > before, "a foe's disable is worth clearing, a cooldown is not")
 
 
-## A foe's cleanse lifts a stun (Ryan, 26 November): the bot reads a cleanser beside a stunned ally
-## at the blow its cleanse would free, where the stunned foe's own threat reads nothing.
+## A foe's cleanse lifts a stun on its pick, drawn as the round opens (Ryan, 26 November): a stun
+## laid there is worth nothing to the bot, the pick freed still threatens its blow, the cleanse is
+## worth the blow it frees, and a stun on a foe no cleanse picked holds.
 func test_the_bot_reads_a_cleanse_of_a_stun_at_the_blow_it_frees() -> void:
 	var sk := Skirmish.new(1, 3)
 	sk.add_mech(_mech("A", Die.single(Face.attack(1, L)), 40, 100))
@@ -645,15 +646,27 @@ func test_the_bot_reads_a_cleanse_of_a_stun_at_the_blow_it_frees() -> void:
 	healer.actions = [{"id": "cleanse", "name": "Cleanse", "kind": "defend", "effect": "cleanse", "weight": 1, "when": "ally_marked", "text": ""}]
 	healer.action = healer.actions[0]
 	var g := _ghoul(500, 10)
-	sk.add_foes([healer, g])
+	var h := _ghoul(500, 10)
+	sk.add_foes([healer, g, h])
 	sk.begin()
+	if sk.field_foes()[0] != healer:
+		sk._swap(sk.field_foes()[0], healer)   # the cleanser strikes first
+	Effects.stack(g, Effects.STATUS["ablating"], Effects.SKIRMISH, "mech", 1)
 	sk.start_round()
-	assert_eq(Policy._cleanse_worth(healer, sk), 0.0, "nothing to lift: nothing")
+	assert_eq(healer.ally_pick, g, "the cleanse picks the marked ghoul as the round opens")
+	var before := Policy._cleanse_worth(healer, sk)
 	var blow := float(sk.foe_blow(g) * g.strikes())
 	assert_true(blow > 0.0, "the ghoul shows a blow")
+	assert_eq(Policy.suppress_worth(sk, g), 0.0, "a stun on the cleanse's pick is worth nothing: the cleanse lifts it first")
+	assert_true(Policy.suppress_worth(sk, h) > 0.0, "one on the other ghoul holds")
 	assert_true(sk._suppress(g), "the stun lands")
-	assert_eq(Policy._threat_now(g, sk), 0.0, "a stunned foe threatens nothing")
-	assert_eq(Policy._cleanse_worth(healer, sk), blow, "the cleanse is worth the blow it frees")
+	sk._refresh_freed()
+	assert_true(g.freed, "freed, the cleanse coming first")
+	assert_true(is_equal_approx(Policy._threat_now(g, sk), blow), "so it still threatens its blow")
+	assert_true(is_equal_approx(Policy._cleanse_worth(healer, sk) - before, blow), "and the cleanse is worth the blow it frees")
+	assert_true(sk._suppress(h), "a stun on the other")
+	sk._refresh_freed()
+	assert_eq(Policy._threat_now(h, sk), 0.0, "holds: a stunned foe no cleanse frees threatens nothing")
 
 
 func test_greedy_values_a_shock_by_the_doubled_blow_to_come() -> void:
@@ -1461,6 +1474,8 @@ func test_a_foes_threat_counts_every_step_of_its_move() -> void:
 	thief.target = null
 	assert_eq(Policy._threat_now(thief, sk), 0.0, "nobody hurt, nobody marked: a cure with no patient")
 	ally.hp -= 10
+	thief.ally_pick = sk._pick_ally(thief, [])   # its patient, drawn as the round opens would (26 November)
+	assert_eq(thief.ally_pick, ally, "its patient the hurt one")
 	assert_true(is_equal_approx(Policy._threat_now(thief, sk), 4.0 / Policy.HULL_WEIGHT), "its four on the hurt one")
 	Effects.stack(ally, Effects.STATUS["ablating"], Effects.SKIRMISH, "test", 2, Effects.status_decay(Effects.STATUS["ablating"]))
 	assert_true(is_equal_approx(Policy._threat_now(thief, sk), (4.0 + 2.0) / Policy.HULL_WEIGHT), "and the two stacks it would lift off the same foe: %s" % Policy._threat_now(thief, sk))

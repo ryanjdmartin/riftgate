@@ -776,7 +776,7 @@ func codex_for_unit(u: Unit) -> Dictionary:
 		"title": u.display_name,
 		"subtitle": " // ".join(_plate_parts(c, maker, u)),
 		"designation": str(c.get("designation", "")),   # the maker's long name; the title is the nickname
-		"body": str(c.get("codex", "")),   # never fantasy: that field is design notes and homages
+		"body": Templates.with_self(str(c.get("codex", "")), {"self": Templates.self_of(u)}),   # never fantasy: that field is design notes and homages; {self} the machine itself
 		"stats": stats,
 		# Hardpoints are not a number here: the component list shows them as sockets.
 		# The machine's numbers, never its state (Ryan, 22 September: the codex is the spec
@@ -984,6 +984,23 @@ func bench_of(faction_id: String) -> Array:
 ## is the one the standalone screens and the harness fight.
 func default_team(count: int = 3) -> Array:
 	return chassis.keys().slice(0, count)
+
+
+## The chassis a roster may field, one of each (Ryan, 27 November: "I want to lock in only ever
+## having one of a chassis"; docs/rules.md, One of each chassis): `ids` in order, a chassis named a
+## second time dropped with a warning. An id may carry its branch picks after an @ and its tier
+## after a #, as the harness and the runner write them; the chassis is what stands before them.
+static func one_of_each_chassis(ids: Array) -> Array:
+	var out: Array = []
+	var seen := {}
+	for spec in ids:
+		var cid := str(spec).split("@")[0].split("#")[0].strip_edges()
+		if seen.has(cid):
+			push_warning("one of each chassis: %s is fielded once" % cid)
+			continue
+		seen[cid] = true
+		out.append(spec)
+	return out
 
 
 ## The maker whose city is the capital (the Council's own house, `capital` on its entry in

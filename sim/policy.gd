@@ -806,7 +806,7 @@ func attack_score(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe) ->
 	# strikes a point lower a stack, never below nothing.
 	if f.has(Face.Keyword.SAP):
 		for foe in sk.ridden_by(f, target, ms):
-			if foe.alive() and foe.attacks() and not foe.is_suppressed():
+			if foe.alive() and foe.attacks() and not foe.stays_stunned():
 				score += float(mini(sk.foe_blow(foe), f.sap) * foe.strikes()) * HULL_WEIGHT
 	# Brittle (21 October): a point a stack on every team blow each foe reached takes while the
 	# stacks last on their clock, damage in hand for the team's blows (brittle_score).
@@ -1030,7 +1030,7 @@ func needle_worth(sk: Skirmish, ms: Skirmish.MechState, foe: Foe, n: int, left: 
 	var short := int(after[1]) - (start if int(after[0]) == 0 else 0)
 	worth += maxf(0.0, float(short)) / float(at) * bolt * NEEDLE_PROGRESS
 	var sap := int(rule.get("sap", 0))
-	if sap > 0 and left > 0 and foe.attacks() and not foe.is_suppressed():
+	if sap > 0 and left > 0 and foe.attacks() and not foe.stays_stunned():
 		worth += float(mini(sk.foe_blow(foe), sap * n) * foe.strikes()) * HULL_WEIGHT
 	return worth
 
@@ -1071,7 +1071,7 @@ func lured_needles(sk: Skirmish, ms: Skirmish.MechState, f: Face, foes: Array) -
 		return 0.0
 	var worth := 0.0
 	for foe in foes:
-		if not foe.alive() or not foe.aims_at_one() or foe.target == ms or not foe.attacks() or foe.is_suppressed() or Skirmish.is_out(ms, foe):
+		if not foe.alive() or not foe.aims_at_one() or foe.target == ms or not foe.attacks() or foe.stays_stunned() or Skirmish.is_out(ms, foe):
 			continue   # a foe that cannot target it is not turned, and strikes it with nothing
 		var own := 0
 		for pair in Effects.laid_statuses(ms.unit, f, foe):
@@ -1175,7 +1175,7 @@ func self_grant_worth(sk: Skirmish, ms: Skirmish.MechState, f: Face, target: Foe
 			"hardened":
 				var blows := 0
 				for foe in sk.field_foes():
-					if foe.alive() and foe.attacks() and not foe.is_suppressed() and not Skirmish.is_out(ms, foe) and (foe.target == ms or lured.has(foe)):
+					if foe.alive() and foe.attacks() and not foe.stays_stunned() and not Skirmish.is_out(ms, foe) and (foe.target == ms or lured.has(foe)):
 						blows += maxi(1, foe.strikes())
 				if ms.unit.shield > 0 and not ms.shield_broken:
 					worth += shield_gain_worth(sk, ms, mini(blows * n, ms.unit.shield_max)) * HARDENED_ROUNDS
@@ -1206,7 +1206,7 @@ func parry_worth(sk: Skirmish, ms: Skirmish.MechState) -> float:
 	var kept := 0
 	var barred := false
 	for foe in sk.field_foes():
-		if not foe.alive() or not foe.attacks() or foe.is_suppressed() or foe.target != ms:
+		if not foe.alive() or not foe.attacks() or foe.stays_stunned() or foe.target != ms:
 			continue
 		for s in range(maxi(1, foe.strikes())):
 			var blow := sk.foe_blow(foe)
@@ -2195,7 +2195,7 @@ func lure_score(sk: Skirmish, who: Skirmish.MechState, foes: Array) -> float:
 ## discount, less the blow of the move the disrupt turns it to (Skirmish.disrupt_next), when that
 ## lands this round.
 static func disrupt_score(sk: Skirmish, foe: Foe) -> float:
-	if foe.is_suppressed() or not foe.alive() or foe.committed or foe.immune_to("disrupt"):
+	if foe.stays_stunned() or not foe.alive() or foe.committed or foe.immune_to("disrupt"):
 		return 0.0   # an announced follow-up holds (2 November), and so does a gather its foe is immune through: a disrupt turns nothing
 	var now := countdown_threat(foe, sk) if foe.gathering() else _threat_now(foe, sk)
 	if now <= 0.0:
@@ -2218,7 +2218,7 @@ static func countdown_threat(f: Foe, sk: Skirmish = null) -> float:
 	if not f.gathering() or not f.alive():
 		return 0.0
 	var machines: int = sk.live_mechs().size() if sk != null and f.reaches_every_machine() else 1
-	var rounds := f.charge + (1 if f.is_suppressed() else 0)
+	var rounds := f.charge + (1 if f.stays_stunned() else 0)
 	var blow := sk.foe_blow(f) if sk != null else f.damage()
 	return float(blow * f.strikes() * machines) * pow(COUNTDOWN_DISCOUNT, float(rounds))
 
@@ -2226,8 +2226,8 @@ static func countdown_threat(f: Foe, sk: Skirmish = null) -> float:
 ## What stopping a foe's next action is worth (a Suppress): this round's blow, and on a gathering
 ## countdown the round it is held, its blow landing a round later. Nothing on a foe already held.
 static func suppress_worth(sk: Skirmish, f: Foe) -> float:
-	if f.is_suppressed():
-		return 0.0
+	if f.is_suppressed() or (sk != null and sk.cleanse_frees(f)):
+		return 0.0   # held already, or a cleanse picked on it lifts the stun before it acts (26 November)
 	return _threat_now(f, sk) + countdown_threat(f, sk) * (1.0 - COUNTDOWN_DISCOUNT)
 
 
@@ -2383,12 +2383,16 @@ static func effect_cost(sk: Skirmish, by: Foe, st: Dictionary, pick: Skirmish.Me
 					if o != by:
 						cost += float(value * o.strikes()) * HULL_WEIGHT
 		"heal":
-			# The points the heal gives back to the most hurt of its side, the healer too
-			# while it stands.
+			# The points the heal gives back: a move's to its pick, drawn as the round opened
+			# (Skirmish.ally_landing, 26 November); a fall's to the most hurt of its side.
 			var most := 0
-			for o in sk.own_side(by):
-				if o != by or not falling:
-					most = maxi(most, o.hp_max - o.hp)
+			if not falling:
+				var x := sk.ally_landing(by)
+				most = 0 if x == null else x.hp_max - x.hp
+			else:
+				for o in sk.own_side(by):
+					if o != by:
+						most = maxi(most, o.hp_max - o.hp)
 			cost += float(mini(value, most))
 		"recover":
 			if not falling:
@@ -2397,7 +2401,7 @@ static func effect_cost(sk: Skirmish, by: Foe, st: Dictionary, pick: Skirmish.Me
 			# After a heal in the same move it lands on the heal's patient (the Cleric's
 			# Cure); a cleanse of its own is priced where the move is (_cleanse_worth).
 			if not falling:
-				cost += _marks_worth(sk.heal_target(by), sk)
+				cost += _marks_worth(sk.ally_landing(by), sk)
 		"prime":
 			for o in sk.own_side(by):
 				if o != by:
@@ -2477,7 +2481,7 @@ static func purges_coming(sk: Skirmish, who: Skirmish.MechState) -> int:
 		return 0
 	var n := 0
 	for f in sk.field_foes():
-		if not f.alive() or f.is_suppressed() or not f.intends() or f.gathering() or f.target != who:
+		if not f.alive() or f.stays_stunned() or not f.intends() or f.gathering() or f.target != who:
 			continue
 		if str(f.action.get("effect", "")) == "dispel":
 			n += maxi(1, int(f.action.get("value", 1)))
@@ -2496,7 +2500,7 @@ const PRICED_MOVES := ["rally", "cleanse", "barrier", "ward_all", "prime", "rege
 ## where the move is one the reads below do not already price, and every step it does also.
 ## Nothing while it gathers: a countdown's steps land with its blow.
 static func steps_threat(f: Foe, sk: Skirmish) -> float:
-	if sk == null or not f.intends() or f.is_suppressed() or f.gathering():
+	if sk == null or not f.intends() or f.stays_stunned() or f.gathering():
 		return 0.0
 	var pick: Skirmish.MechState = f.target as Skirmish.MechState
 	if pick != null and (not pick.alive() or Skirmish.is_out(pick, f)):
@@ -2533,8 +2537,8 @@ static func web_stuns(f: Foe) -> bool:
 	if f == null or not f.alive() or f.immune_to("suppress"):
 		return false
 	var left := maxi(0, Effects.stacks_of(f, "numbed") - 1)
-	if f.is_suppressed():
-		left += f.stun_resist()
+	if f.stays_stunned():
+		left += f.stun_resist()   # it loses this turn to the stun, so it recovers; a freed one never does
 	return left <= 0
 
 
@@ -2662,7 +2666,7 @@ func buff_score(sk: Skirmish, who: Skirmish.MechState, f: Face, by: Skirmish.Mec
 	# point lower a stack on each strike, never more than the blow, if it is to strike at all.
 	if f.front_status == "sapped":
 		var foe := sk.foe_in_front(who, by if by != null else who)
-		if foe != null and foe.attacks() and not foe.is_suppressed():
+		if foe != null and foe.attacks() and not foe.stays_stunned():
 			score += float(mini(sk.foe_blow(foe), f.front_stacks) * foe.strikes()) * HULL_WEIGHT
 	return score
 
@@ -2743,7 +2747,7 @@ func ward_score(sk: Skirmish, who: Skirmish.MechState) -> float:
 	# Every step of a move that is an effect, its own special or what it does also (16
 	# November: a move is a short list of steps).
 	for a in sk.field_foes():
-		if not a.alive() or a.is_suppressed() or a.gathering():
+		if not a.alive() or a.stays_stunned() or a.gathering():
 			continue
 		var on_it: bool = a.target == who
 		for st in Foe.effects_of(a.action):
@@ -3191,13 +3195,13 @@ static func _threat_now(f: Foe, sk: Skirmish = null) -> float:
 	if sk != null and sk.rallies_now(f):
 		return float(sk.rally_worth(f))
 	var steps := steps_threat(f, sk) if sk != null else 0.0
-	if sk != null and not f.is_suppressed():
+	if sk != null and not f.stays_stunned():
 		match str(f.action.get("effect", "")):
 			"cleanse":
 				return _cleanse_worth(f, sk) + steps
 			"barrier", "ward_all", "prime", "regenerate":
 				return _foe_buff_worth(f, sk) + steps
-	if not f.intends() or f.is_suppressed() or not f.attacks():
+	if not f.intends() or f.stays_stunned() or not f.attacks():
 		return steps
 	var machines: int = sk.targetable_mechs(f).size() if sk != null and f.hits_all() else 1
 	var blow := sk.foe_blow(f) if sk != null else f.damage()
@@ -3243,7 +3247,7 @@ static func barrier_stakes(sk: Skirmish, foe: Foe, except: Skirmish.MechState = 
 ## that foe, Brittle its stacks for every machine still to act, Ablating its stacks, every other mark
 ## a point.
 static func _cleanse_worth(f: Foe, sk: Skirmish) -> float:
-	return _marks_worth(sk.cleanse_target(f), sk)
+	return _marks_worth(sk.ally_landing(f), sk)
 
 
 ## What a stunned foe's move would threaten with its stun lifted, the stun a foe's cleanse takes

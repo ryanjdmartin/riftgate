@@ -44,7 +44,9 @@ extends SceneTree
 ## "rank_and_file" for the rest: 22 October, so the planner's gap reads the big fights alone),
 ## --team id,id (repeatable: a row of exactly those machines,
 ## any number of them, so pairs and fours can be read beside the trios; an id may carry its branch
-## picks after an @ and a tier after a #, nemesis#3 the tier's lift with no pick, 25 November), --pack foe:n[+foe:n]
+## picks after an @ and a tier after a #, nemesis#3 the tier's lift with no pick, 25 November; one
+## of each chassis, a team naming one twice refused unless --repeat-chassis asks the what-if, never
+## the default: Ryan, 27 November), --pack foe:n[+foe:n]
 ## (repeatable, 26 October: a composed pack beside the spawn lists', one foe type times a
 ## strength or several together, a front and a back in one fight, so the fight-size spectrum
 ## can be read: "goblin:3", "goblin:4+mandragora:2"; its id is "pack:" and the spec), --module id (every row
@@ -92,6 +94,7 @@ var only_rows: Array = []   # --rows: the row ids to run, all when empty
 var boss_tiers := false     # --boss-tiers: every boss at tiers two and three, with its escort and alone (2 November)
 var only_packs: Array = []  # --packs: the pack ids to run ("big" and "rank_and_file" for the two kinds), all when empty
 var custom_teams: Array = []  # --team: extra rows, each a list of chassis ids; the curve read's team when one is given
+var repeat_chassis := false   # --repeat-chassis: a --team may name a chassis twice, a what-if the game never fields (one of each chassis, 27 November)
 var only_tiers: Array = []    # --tiers: the curve read's tiers (1 to 3), all when empty
 var only_sizes: Array = []    # --sizes: the curve read's sizes (patrol, formation, elite), all when empty
 var only_domains: Array = []  # --domains: the curve read's domains, all when empty
@@ -123,6 +126,13 @@ func _init() -> void:
 		push_error("--part %s: a part is i/n with i from 0 to n-1 (0/4 to 3/4)" % bad_part)
 		quit(1)
 		return
+	# One of each chassis (Ryan, 27 November): a --team naming one twice is a what-if, asked for
+	# with --repeat-chassis and never the default, in every read that takes a team.
+	for t in custom_teams:
+		if not repeat_chassis and ContentDB.one_of_each_chassis(t).size() < (t as Array).size():
+			push_error("--team: %s names a chassis twice; a roster holds one of each (pass --repeat-chassis for the what-if)" % ",".join(PackedStringArray(t)))
+			quit(1)
+			return
 	db = ContentDB.load_default()
 	if not db.load_errors.is_empty():
 		push_error("content did not load: " + "\n".join(db.load_errors))
@@ -271,6 +281,8 @@ func _parse_args() -> void:
 				i += 1
 			"--shield-ahead":
 				shield_ahead = true
+			"--repeat-chassis":
+				repeat_chassis = true
 			"--guard":
 				guard_weight = clampf(float(v), 0.0, 1.0)
 				i += 1

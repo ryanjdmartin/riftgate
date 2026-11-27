@@ -3268,3 +3268,14 @@ func test_sweep_is_refused_and_a_weapon_may_reach_every_foe() -> void:
 		fd.merge(gone, true)
 		db._validate_face("test", fd, errs)
 		assert_true(errs.any(func(e) -> bool: return e.contains("are gone (9 November)")), "refused: %s" % str(gone))
+
+
+## One of each chassis (Ryan, 27 November: "I want to lock in only ever having one of a chassis"):
+## a roster a team setting names keeps each chassis once, in order, a branch pick or a tier beside
+## an id naming the same chassis; and the content's starting team never repeats one.
+func test_a_roster_fields_one_of_each_chassis() -> void:
+	assert_eq(ContentDB.one_of_each_chassis(["nemesis", "kite", "nemesis", "mole@glacial", "mole#2"]), ["nemesis", "kite", "mole@glacial"], "a chassis named again drops, picks and tiers aside")
+	var db := ContentDB.load_default()
+	var team := db.default_team(4)
+	assert_eq(ContentDB.one_of_each_chassis(team), team, "the starting team names each chassis once")
+

@@ -750,7 +750,7 @@
      },
      "steps": [
       {
-       "description": "The first strike from this machine on a Brittle foe each turn is Rapid.",
+       "description": "The first strike from {self} on a Brittle foe each turn is Rapid.",
        "effects": [
         {
          "trigger": "static",
@@ -796,7 +796,7 @@
      },
      "steps": [
       {
-       "description": "This machine's weapon strikes count Brittle twice.",
+       "description": "{self}'s weapon strikes count Brittle twice.",
        "effects": [
         {
          "trigger": "static",
@@ -1200,7 +1200,7 @@
    "passive": {
     "id": "exothermic_suite",
     "name": "Exothermic Suite",
-    "description": "Heat is the suite's power. Every stack this machine applies, to a foe, an ally or itself, is one deeper for every 5 heat it carries. Numbed excepted, as always.",
+    "description": "Heat is the suite's power. Every stack {self} applies, to a foe, an ally or itself, is one deeper for every 5 heat it carries. Numbed excepted, as always.",
     "effects": [
      {
       "trigger": "on_stack",
