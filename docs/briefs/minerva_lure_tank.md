@@ -56,7 +56,8 @@ Foes; `tools/lure_duel_model.py` (`--split` plays the kit) and the measurements 
   applied it." / "Affects only that Frame and itself." / "Cannot be targeted, damaged, or affected
   in any way by units other than that Frame." / "Deals half damage, rounded down." / "Turn End:
   Reduce stacks by 1."
-- **Its numbers**, placeholders: hull 36, shield 8, armour 2, Max Heat 12, move 3, three
+- **Its numbers**, placeholders: hull 36, shield 8, armour 1 (his tier-one Boar's, 20 November:
+  "the Boar at tier 1 needs base armour 1, not 2"), Max Heat 12, move 3, three
   hardpoints stocked with basics (the Rivet Gun, the Ankle Mortar so the Drone reaches a
   backliner, the Shoring Jack). Tracked until a look is picked.
 

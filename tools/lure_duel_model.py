@@ -1103,8 +1103,9 @@ SPLIT_ROWS = [
     ("No Tether: the Armour alone", {"tether": False, "drone": "facing", "plate": 4}),
     # The White Rhino as settled (27 November): the lock two rounds on Cooldown 1, sealed both
     # ways, its Sprite dealing half damage, the hook firing the Drone's Suppress.
-    ("The White Rhino as settled", {"lock": 2, "drone": "hook_stun", "prepared": True, "cooldown": 1, "sealed": True, "half": True}),
-    ("The same, hooked whenever the lock shows", {"lock": 2, "drone": "hook_stun", "cooldown": 1, "sealed": True, "half": True}),
+    ("The White Rhino as settled", {"lock": 2, "drone": "hook_stun", "prepared": True, "cooldown": 1, "sealed": True, "half": True, "squad": {"armour": 1}}),
+    ("The same, hooked whenever the lock shows", {"lock": 2, "drone": "hook_stun", "cooldown": 1, "sealed": True, "half": True, "squad": {"armour": 1}}),
+    ("The same tank, no lock and no Drone", {"tether": False, "squad": {"armour": 1}}),
     # The Drone on its own clock (Ryan, 27 November: "the drone suppresses every X rounds, not
     # triggered", "a random or rotating debuff at the start of round to whatever it's on").
     ("Lock, a Suppress every 3 rounds", {"lock": 2, "drone": "beat", "beats": ["none", "none", "stun"], "prepared": True}),

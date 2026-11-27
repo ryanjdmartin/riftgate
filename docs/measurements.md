@@ -13390,5 +13390,8 @@ beside the same tank with no lock and no Drone: the Nob alone 29 for 46 (the oth
 Needlers 43 for 68 (won 98% for 66%), the Treant's grove 10 for 13, the Goblin horde 9 for 9 (no
 hitter of 6 for the lock to take). Hooked whenever the lock shows rather than a round after the
 Drone is set: the Nob 26, the Fell Rider 22, the Old Man 34. Armour 1 for 2 adds 1 to 3 hull a
-fight; hull 32 for 36 changes nothing the model reads.
+fight; hull 32 for 36 changes nothing the model reads. At armour 1 (Ryan's tier-one Boar's,
+taken the same day), beside the same tank at armour 1 with no lock and no Drone: the Nob 31 for
+49, the Fell Rider 29 for 45, the Old Man 46 for 71 (won 96% for 58%), the Treant's grove 11 for
+14, the Goblin horde 10 for 10.
 
