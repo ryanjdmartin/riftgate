@@ -451,7 +451,12 @@ a Warhammer 40,000 vehicle, a Halo vehicle), so the name wants a word with it: "
 "White Rhino" are free, and read as Minerva's Honey Badger, Polar Bear and Wild Boar do. The black
 rhino is the solitary, short-tempered one, and the oxpeckers that ride it are its alarm (their
 Swahili name, askari wa kifaru, "the rhino's guard"): a beast that sees poorly, charges what it
-has fixed on, and carries a bird that spots for it. Floated beside it, 27 November: the Cape
+has fixed on, and carries a bird that spots for it. Oxpeckers are African and ride both African
+rhinos, the white as well as the black; the black is the studied pairing (a 2020 study found the
+birds' alarm calls let black rhinos detect people they would otherwise miss). The Asian rhinos
+live outside the oxpeckers' range, and the Indian rhino carries cattle egrets and mynas instead,
+its skin folds the armour plates of Dürer's woodcut. Every rhino species' name is free. Floated
+beside it, 27 November: the Cape
 buffalo with its oxpecker or egret (its horn boss a plate), the Nile crocodile and its plover (the
 bite that does not let go), and Elasmotherium (an Ice Age rhino with one great horn).
 
