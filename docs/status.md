@@ -132,7 +132,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1510 tests, 407,616 checks, green on Godot 4.8-beta4 (27 November, Phased by source over the Cassowary's capacitor cells). The runner fails a run
+- Tests: 1510 tests, 407,616 checks, green on Godot 4.8-beta4 (27 November, the Cottonmouth a tier two and the Dingo a tier one, over Phased by source). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -147,7 +147,7 @@ document's job and every command are in `README.md`.
   (`tools/lowforge/tiles/`) too: restore those. Screenshots there need `xvfb-run -a` and
   `--rendering-method gl_compatibility`; models build with `BPY_PYTHON` set to a python3.11
   venv holding `bpy==5.0.1`.
-- Saves: the battle's version is 45, the run's 35 and the quick run's 18 (`sim/save.gd`). A
+- Saves: the battle's version is 45, the run's 36 and the quick run's 19 (`sim/save.gd`). A
   save from an older version is set aside, so a change to what a save holds moves its version.
 
 ## How things stand
@@ -206,12 +206,14 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   brief open. 84 components, 7 of them planned drafts nothing deals (the slottable shields and
   vents, the Gravity Knuckles and the Tesla Gauntlets, the Retribution Thurible, the Solar Flare
   Array); 20 modules. A stock die is basics beside its
-  locked pieces, at tier one on every die (the Wild Boar, the Echidna, the Skua, the Storm
-  Petrel and the Cottonmouth went back to basics on 23 November, on his "just basic pieces"
-  and, of the Cottonmouth's shell, "Send the cottonmouth to some kind of stock pieces and I'll
-  fix it in another session", and the Clydesdale on 26 November as it moved to tier one, three
-  Twin Autoguns and its Shoring Jack on one battery and four Ankle Mortars on the other; the
-  sizing's reads of 17 to 20 November were on their old dice): the basic guns deal 3 for 4 heat and the Laser Carbine 4 for 5, the Halo
+  locked pieces, at tier one on every die (the Wild Boar, the Echidna, the Skua and the Storm
+  Petrel went back to basics on 23 November, on his "just basic pieces"; the Clydesdale on 26
+  November as it moved to tier one, three Twin Autoguns and its Shoring Jack on one battery and
+  four Ankle Mortars on the other; the Dingo on 27 November as it moved to tier one, an Ankle
+  Mortar for its Airburst Shell; the sizing's reads of 17 to 20 November were on their old
+  dice). The Cottonmouth, a tier two since 27 November, stocks two of its maker's keyword shells,
+  the Incendiary Shells and the Airburst Shell, in its Ankle Mortars' places (his "shells on the
+  cottonmouth"): the basic guns deal 3 for 4 heat and the Laser Carbine 4 for 5, the Halo
   Projector lays a Barrier and the Shoring Jack Armoured 2, and every piece that grants a
   Barrier sits out a round after. A machine moves 3 to 6 hexes. A basic is a tier-one piece with
   a flag (its blueprint a run's from the start), never a find. A machine holds a tier, its
@@ -270,14 +272,17 @@ was built for his eye is a first cut with a judge or play line in the to-do's Ry
   directions, the Parry the Duelist's capstone, its return on the next strike alone; its
   name and designation Ryan's, the Macaque "for now", Capuchin held for a gentler walker). The Giant Petrel's kit, the Musk Ox
   and the gunship are unfinished by his own notes. Four tier ones a maker (4-4-2) is his lean
-  (the refit brief's section 13); the six certain ones are the Honey Badger, the Skua, the
-  Storm Petrel, the Prairie Dog, the Cassowary and the Cottonmouth, and Minerva's four are his
+  (the refit brief's section 13); the six certain ones the sizing read were the Honey Badger,
+  the Skua, the Storm Petrel, the Prairie Dog, the Cassowary and the Cottonmouth, a tier two
+  since 27 November (the foes' line's pool to re-cut), and Minerva's four are his
   (16 November: the Honey Badger, the Wild Boar, the Mole and the lure tank; on 20 November the
   Echidna took the Mole's place and the Mole went to tier two), so the Polar Bear is tier two in
   content and the Wild Boar tier one, its numbers still its tier two's but its armour 1 (Ryan, 20
-  November: "the Boar at tier 1 needs base armour 1, not 2"); Wainwright & Sutler's four since
-  26 November, the Clydesdale his move down ("Either the Clydesdale or Dingo need to go down to
-  t1"; "clyde"), its numbers still its tier two's. The designs still to come
+  November: "the Boar at tier 1 needs base armour 1, not 2"); Wainwright & Sutler's four are the
+  Prairie Dog, the Cassowary, the Clydesdale (his move down of 26 November: "Either the Clydesdale
+  or Dingo need to go down to t1"; "clyde") and the Dingo (27 November, the Cottonmouth up in its
+  place: "What if we flipped this to t2 and dingo back to t1?"), each mover on its old numbers
+  until the bench. The designs still to come
   are briefs: `docs/briefs/README.md` says what each waits on.
 - **The numbers.** Tier one alone is tuned (Ryan, 11 November), on the baseline: the second
   battle, four tier ones against a tier-one rift, a fight read at its rating (a flanker one
@@ -528,8 +533,9 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
      first battle down, its sizing his ("I'll handle that one"), tiers two and three up.
 2. **The design sessions, from the briefs**: each decision a bible row, each brief retired
    once its decisions are rows and content. The locked pieces' footing first (its own session
-   since 20 November; the Cassowary's redesign built 26 November, the Cottonmouth's and the
-   Skua's branch rounds with Ryan, the Clydesdale's two picks next), then the machine back in design (the Swallowtail), the built but
+   since 20 November; the Cassowary's redesign built 26 November; the Cottonmouth a tier two
+   with its shells and the Dingo a tier one since 27 November, the Cottonmouth's single pick
+   and the Dingo's two next, then the Clydesdale's two; the Skua's round with Ryan), then the machine back in design (the Swallowtail), the built but
    unfinished (the Needletail, the Giant Petrel, the Musk Ox) and the gunship, the tier-one
    fronts (Minerva's lure tank, an Aphelion tier one), Claude's first rounds on his directions
    of 5 and 6 November, the rest as its session comes. The to-do's roster is grouped to match.
