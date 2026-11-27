@@ -132,7 +132,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1512 tests, 407,642 checks, green on Godot 4.8-beta4 (27 November, a needle's bolt the Echidna's and a swallow under each form of the grant, over Phased by source). The runner fails a run
+- Tests: 1512 tests, 407,707 checks, green on Godot 4.8-beta4 (27 November, the White Rhino planned in content, over main's Phased by source). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -531,8 +531,8 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    since 20 November; the Cassowary's redesign built 26 November, the Cottonmouth's and the
    Skua's branch rounds with Ryan, the Clydesdale's two picks next), then the machine back in design (the Swallowtail), the built but
    unfinished (the Needletail, the Giant Petrel, the Musk Ox) and the gunship, the tier-one
-   fronts (Minerva's lure tank, its kit decided 27 November, the bible's row: the Drone and the
-   lock that Suppresses the Drone's Sprite, the machine and numbers next; an Aphelion tier one), Claude's first rounds on his directions
+   fronts (Minerva's White Rhino, its kit decided and planned in content on 27 November, the
+   bible's row: his pick of a look next; an Aphelion tier one), Claude's first rounds on his directions
    of 5 and 6 November, the rest as its session comes. The to-do's roster is grouped to match.
 3. **The refit pass's tail** (`docs/briefs/refit_pass.md`): his word on the first battle's
    block, his marks on the flanks' second patrols, the stock

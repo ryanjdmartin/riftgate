@@ -844,7 +844,11 @@ def fight_split(kind, o, rng, cap=40):
     o: tether (False: none on the die), rapid (the Tether Rapid: the tank fires as well), shows
     (the Tether showing when wanted), lock (0: the Tether the round's pick alone, a Lure; N: his
     lock for N rounds, the round it is set among them: its Sprite targets only the tank, no other
-    Frame may aim at it, and nothing ends it early), prepared (the tank hooks only the Sprite its
+    Frame may aim at it, and nothing ends it early), cooldown (the lock piece dark for the rest of
+    its round and so many more), sealed (Ryan, 27 November: "the entanglement shouldn't let
+    anything out, just like it doesn't let anything in": its Sprite's hit on every Frame lands on
+    the tank alone), half (its Sprite deals half damage, rounded down: his "50% damage reduction
+    from the entangled target"), squad (the tank's numbers: a dict of hull, shield, armour), prepared (the tank hooks only the Sprite its
     Drone is primed on, its shield whole, its Sprite's Numbed gone where the Drone stuns), drone:
       "none"
       "hook_stun"    the Tether, wherever it goes, Suppresses the Sprite the Drone is primed on
@@ -859,8 +863,15 @@ def fight_split(kind, o, rng, cap=40):
     """
     squad = [Frame(tank=(i == 0)) for i in range(3)]
     tank = squad[0]
+    for k, v in (o.get("squad") or {}).items():
+        setattr(tank, k, v)
+        if k == "shield":
+            tank.shield_max = v
+        if k == "hull":
+            tank.hull_max = v
     foes = pack(kind)
     drone = o.get("drone", "none")
+    lit_at = 0            # the round the lock piece lights again (its cooldown)
     on = None             # the Sprite the Drone is on
     since = 0             # the round it got there
     held = None           # the Sprite in his lock
@@ -965,7 +976,7 @@ def fight_split(kind, o, rng, cap=40):
                 if big.biggest() < 6:
                     big = None
                 fire = True
-                if o.get("tether", True) and rng.random() < o.get("shows", SHOWS):
+                if o.get("tether", True) and rounds >= lit_at and rng.random() < o.get("shows", SHOWS):
                     astray = [f for f in pool if f.move[0] == "hit" and f.target is not tank and not f.stunned]
                     worst = max(astray, key=lambda f: f.move[1]) if astray else None
                     hook = None
@@ -1002,6 +1013,8 @@ def fight_split(kind, o, rng, cap=40):
                         if o.get("lock", 0):
                             held = hook
                             left = o["lock"]
+                        if o.get("cooldown") is not None:
+                            lit_at = rounds + o["cooldown"] + 1
                         fire = bool(o.get("rapid"))
                 if fire:
                     kills = [f for f in pool if f.hp <= GUN - f.plate]
@@ -1027,15 +1040,18 @@ def fight_split(kind, o, rng, cap=40):
                 f.numbed = f.resist
                 continue
             k, n = f.move
+            is_held = f is held and tank.hull > 0
             if k == "hit":
                 t = f.target if f.target is not None and f.target.hull > 0 else next((m for m in squad if m.hull > 0), None)
                 hits = [t] if t is not None else []
             elif k == "all":
-                hits = [m for m in squad if m.hull > 0]
+                hits = [tank] if (is_held and o.get("sealed")) else [m for m in squad if m.hull > 0]
             else:
                 hits = []
             for m in hits:
                 dmg = n
+                if is_held and o.get("half"):
+                    dmg = dmg // 2
                 plate = m.armour
                 if f is on:
                     if sap_now:
@@ -1085,6 +1101,10 @@ SPLIT_ROWS = [
     ("No Tether: the reboot's Suppress alone", {"tether": False, "drone": "reboot_stun"}),
     ("No Tether: the Sap alone", {"tether": False, "drone": "sap", "cap": 3}),
     ("No Tether: the Armour alone", {"tether": False, "drone": "facing", "plate": 4}),
+    # The White Rhino as settled (27 November): the lock two rounds on Cooldown 1, sealed both
+    # ways, its Sprite dealing half damage, the hook firing the Drone's Suppress.
+    ("The White Rhino as settled", {"lock": 2, "drone": "hook_stun", "prepared": True, "cooldown": 1, "sealed": True, "half": True}),
+    ("The same, hooked whenever the lock shows", {"lock": 2, "drone": "hook_stun", "cooldown": 1, "sealed": True, "half": True}),
     # The Drone on its own clock (Ryan, 27 November: "the drone suppresses every X rounds, not
     # triggered", "a random or rotating debuff at the start of round to whatever it's on").
     ("Lock, a Suppress every 3 rounds", {"lock": 2, "drone": "beat", "beats": ["none", "none", "stun"], "prepared": True}),

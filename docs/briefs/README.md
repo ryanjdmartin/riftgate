@@ -171,7 +171,7 @@ moves he has not marked stand as its plan.
 
 | Maker | Tier one | Tier two | Tier three |
 |---|---|---|---|
-| Minerva (10) | Honey Badger; the Wild Boar (down, 16 November); the Echidna (down, 20 November); *the lure tank* | the Polar Bear (up, 16 November); the Mole (up, 20 November; the squad's marker since 24 November); *the Cryo party defence*; *the immune one*, the Pangolin his stand-in name | *the siege battery*; *the battlecruiser* |
+| Minerva (10) | Honey Badger; the Wild Boar (down, 16 November); the Echidna (down, 20 November); the White Rhino (the lure tank, planned 27 November) | the Polar Bear (up, 16 November); the Mole (up, 20 November; the squad's marker since 24 November); *the Cryo party defence*; *the immune one*, the Pangolin his stand-in name | *the siege battery*; *the battlecruiser* |
 | Kestrel (10) | Skua; Storm Petrel | Buzzard; Kite; Needletail; the Puffin (up, 19 November) | Lammergeier; Giant Petrel |
 | Kestrel's two, tiers open | *the Snowy Owl*, leaning to Cryo | *the Magpie*, its slot open to another design | |
 | Wainwright & Sutler (10) | Prairie Dog; Cassowary; Cottonmouth | Dingo; Clydesdale; funnel-web; Whip Scorpion; *the gunship* | Swallowtail, back in design; Musk Ox |
@@ -215,7 +215,7 @@ information"). `docs/synergy_map.md` is the built content's view, piece by piece
 - **Being struck (5), the largest:** Misharu, the Onryō, the Nemesis's rage, the echidna and
   the Cryo party defence. A blow on hull is the roster's most crowded state.
 - **Lure (3, 4 with the jellyfish):** the Polar Bear, the Storm Petrel and the lure tank,
-  apart by shape (the lure tank's a cage on one Sprite, its round of 25 November).
+  apart by shape (the White Rhino's a lock on one Sprite, sealed both ways, since 27 November).
 - **Cryo (3, 4 with the Macross):** the Polar Bear lays it, the Cryo party defence keeps it
   and blows it up, the Snowy Owl cashes it to stay unseen. The detonation is the one to check
   for room.
@@ -248,7 +248,7 @@ One row a live brief; the to-do's Design sessions hold each one's task.
 | `kestrel_owl.md` | the silent hunter, leaning to Cryo | Kestrel | open | his pick of where the stealth lives |
 | `ws_swallowtail.md` | the Swallowtail's rework, three locked pieces open | Wainwright & Sutler | 3 | parked: his session, its niche first |
 | `ws_gunship.md` | proposal, Claude's first round | Wainwright & Sutler | 2 | his own session |
-| `minerva_lure_tank.md` | the tier-one tank: a drone cages one Sprite with it | Minerva | 1 | his calls |
+| `minerva_lure_tank.md` | the White Rhino, the tier-one tank: its Drone marks, its lock holds and Suppresses (kit decided, planned) | Minerva | 1 | his pick of a look |
 | `minerva_cryo_defence.md` | Cryo for the party, detonated by a locked piece | Minerva | 2 | Claude's round on his direction |
 | `minerva_immune.md` | immune to every buff and debuff, lent to an ally | Minerva | 2 | his calls |
 | `minerva_siege_battery.md` | his H-tank, a charge | Minerva | 3 | parked until he picks it up |

@@ -13380,3 +13380,15 @@ tank row of 27 November.
   kit's work with no lock on the die (the Nob's fight 25 to 37 hull with none, 26 to 38 with it),
   so the lure stops mattering.
 
+## 27 November: the White Rhino as settled, in the model
+
+`python3 tools/lure_duel_model.py --split`, its row "The White Rhino as settled": the lock two
+rounds on Cooldown 1, sealed both ways, its Sprite dealing half damage, the hook firing the
+Drone's Suppress, the tank at hull 36, shield 8 and armour 2, a die of four. The squad's hull lost,
+beside the same tank with no lock and no Drone: the Nob alone 29 for 46 (the others 18, the tank
+11, the tank wrecked in 1% of fights), the Fell Rider alone 27 for 43, the Old Man with two
+Needlers 43 for 68 (won 98% for 66%), the Treant's grove 10 for 13, the Goblin horde 9 for 9 (no
+hitter of 6 for the lock to take). Hooked whenever the lock shows rather than a round after the
+Drone is set: the Nob 26, the Fell Rider 22, the Old Man 34. Armour 1 for 2 adds 1 to 3 hull a
+fight; hull 32 for 36 changes nothing the model reads.
+
