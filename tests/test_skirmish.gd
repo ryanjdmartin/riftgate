@@ -6507,6 +6507,36 @@ func test_a_swallow_passes_a_phased_machine_by_and_one_on_its_way_lands_on_it() 
 	assert_true(Skirmish.is_swallowed(s2.mechs[0]), "and Swallowed too: the swallow laid on it before is its own to carry")
 
 
+## A swallow under the Phased trial at once (Ryan, 27 November: "If phased takes effect
+## immediately, the swallow target should change like any other attack"): its machine fades as
+## the entry is spent, before any swallow is taken, so the swallower's pick is drawn again with
+## every other foe's and the swallow is taken on the machine it moved to. Its own guard holds on
+## the new pick: with one machine left in its reach it takes none.
+func test_a_swallow_aimed_at_a_machine_phased_at_once_picks_again_as_any_attack() -> void:
+	var gulp := {"id": "swallow", "name": "Swallow", "kind": "debuff", "effect": "swallow", "value": 2, "weight": 1, "text": ""}
+	for squad in [3, 2]:
+		var sk := Skirmish.new(1, 1)
+		sk.add_mech(_mech("A", Die.single(Face.buff("phased")), 0, 500))
+		for i in range(squad - 1):
+			sk.add_mech(_mech("B%d" % i, Die.single(Face.blank()), 0, 500))
+		var maw := _ghoul(500, 0)
+		maw.actions = [gulp.duplicate()]
+		maw.action = maw.actions[0]
+		sk.add_foes([maw])
+		sk.begin()
+		Skirmish.phase_at_once = true
+		sk.start_round()
+		maw.target = sk.mechs[0]
+		assert_true(sk.assign(0, sk.mechs[0]), "A spends its Phase on itself (a squad of %d)" % squad)
+		Skirmish.phase_at_once = false   # read as the entry is spent; the rest runs the game's own
+		assert_true(Skirmish.is_phased(sk.mechs[0]), "Phased at once (a squad of %d)" % squad)
+		var picked: Skirmish.MechState = maw.target
+		assert_true(picked != null and picked != sk.mechs[0], "the swallower's pick moves off it, as any foe's does (a squad of %d)" % squad)
+		sk.end_round()
+		assert_false(Skirmish.is_swallowed(sk.mechs[0]), "the machine that faded is not taken (a squad of %d)" % squad)
+		assert_eq(Skirmish.is_swallowed(picked), squad == 3, "the machine its pick moved to is, while another stands in its reach (a squad of %d)" % squad)
+
+
 func test_a_longer_countdown_holds_its_pick_and_a_suppress_holds_its_blow() -> void:
 	var sk := Skirmish.new(1, 1)
 	var a := _mech("A", Die.single(Face.attack(10, L, K.SUPPRESS)), 0, 100)

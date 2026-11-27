@@ -141,7 +141,7 @@ document's job and every command are in `README.md`.
   beta2, so the desk moves with the repo). The notes are godotengine.org's (blocked here; read from
   the godot-website repository's article sources on GitHub). The next check is due 5 December
   (`CLAUDE.md`, Session handoff); date this line again after each.
-- Tests: 1524 tests, 407,700 checks, green on Godot 4.8-beta4 (27 November, one of each chassis and {self}). The runner fails a run
+- Tests: 1525 tests, 407,718 checks, green on Godot 4.8-beta4 (27 November, one of each chassis and {self}, over a needle's bolt the Echidna's). The runner fails a run
   whose tests never ran, so read the checks' count, never the exit code alone. One SCRIPT
   ERROR in every run's log is the runner's own test, raised on purpose. About four minutes in a
   cloud session; words after `--` run only the files whose names hold one (`-- loot rig`).
@@ -587,11 +587,11 @@ copies and the roster analysis in git; the sandbox's source is `docs/canvas/`).
   republishes while he is on the page.
 
 - The bible: https://claude.ai/artifact/LnfQcNkQhaDQNsMTTxrjCF, from `docs/design-bible.html`.
-  Published at v0.681 on 27 November from this file (the page's Version 532: Phased by source,
-  its row, its tip and section 12's item, and the Cassowary's capacitor cells), merged onto
-  v0.679 (Version 531, 26 November, from `52ec9147`, checked against the live page byte for
-  byte first; a publish not built on the live version is refused, so the merge's base is the
-  live page's own file). Before republishing,
+  Published at v0.682 on 27 November from this file (the page's Version 533: his two rulings
+  of that day in the Phased row, a needle's bolt the Echidna's and a swallow following the
+  form of the grant), onto v0.681 (Version 532, from `ebe3ac92`, checked against the live
+  page byte for byte first; a publish not built on the live version is refused, so a merge's
+  base is the live page's own file). Before republishing,
   read the live page; if another session moved it, publish a three-way merge onto it row by
   row (`tools/pages/bible_merge.py`: BASE the last publish both started from, the file of
   the commit of the last publish unless the live page says otherwise, OURS this branch's file, THEIRS the saved

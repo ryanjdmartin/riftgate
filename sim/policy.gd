@@ -1036,13 +1036,13 @@ func needle_worth(sk: Skirmish, ms: Skirmish.MechState, foe: Foe, n: int, left: 
 
 
 ## A needle bolt's worth now (Skirmish._needle_bolt): Chain's ping of its number on every conductor
-## the foe it fires from reaches (the bolt is that foe's: a Phased conductor loses none to a foe
-## that is not Phased), that foe among them with the HP it keeps (`left`), flat and capped at what
-## it has, a kill at its bonus.
+## the machine that fires it reaches (the bolt is the Echidna's, `ms`: a Phased conductor loses none
+## to one that is not Phased), the foe it fires in among them with the HP it keeps (`left`), flat
+## and capped at what it has, a kill at its bonus.
 func bolt_worth(sk: Skirmish, ms: Skirmish.MechState, rule: Dictionary, from: Foe, left: int) -> float:
 	var chain := int(rule.get("chain", 0))
-	var foes := sk.conducting_foes(from, from)
-	if left > 0 and not Skirmish.out_of_reach(from, from):
+	var foes := sk.conducting_foes(from, ms)
+	if left > 0 and not Skirmish.out_of_reach(from, ms):
 		foes.append(from)
 	var worth := 0.0
 	for c in foes:
