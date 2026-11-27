@@ -4,8 +4,8 @@
 
 The session designs Ryan's White Rhino, the lure tank of his 4-4-2: "THE tier-1 tank option, with
 Storm Petrel a close second." Its kit is decided (25 to 27 November, the bible's White Rhino row)
-and planned in content (`white_rhino`, its lock `rhino_lock`, the terms `entangle`, `entangled`
-and `rhino_drone`), so what is left is its look and its Drone's model, the two names, and its
+and planned in content (`white_rhino`, its lock `polarity_inversion_field`, the terms `invert`,
+`inverted_polarity` and `rhino_drone`), so what is left is its look and its Drone's model, the two names, and its
 branches. The rounds that reached the kit (the cage, the hold, the bar, the price, the ideas past
 his four, the split and the trigger) stand in git at `536f3d70`.
 
@@ -47,6 +47,11 @@ Foes; `tools/lure_duel_model.py` (`--split` plays the kit) and the measurements 
 - 27 November, its lock: "The lock is referencing quantum entanglement not physical. Shouldn't be a
   winch, this isn't W&S. More, I dunno, tractor beam. And it can be the "horn" such as it is on the
   model."
+- 27 November, the names: "I'm not worried about conflicts. We'll audit the components after,
+  since the chassis texts should get first pick. Polarity projector is a weak name anyway, using
+  up two very good words. Let's go with Polarity Inversion Field, applies Inverted Polarity. The
+  drone can use something with Enforcer or Enforcement? Can I see a drone version with twinned
+  fans?"
 - 27 November: "I think we should try a half-track for this one, it's not a silhouette we have
   yet, right? I can't tell looks without seeing them, so I'll need mock ups. Entanglement itself
   is a little too high tech for Minerva, they sit more at the Kestrel range of pseudo-science.
@@ -57,13 +62,15 @@ Foes; `tools/lure_duel_model.py` (`--split` plays the kit) and the measurements 
 
 ## The kit, decided
 
-- **The Drone**, its passive: every weapon it uses on a Sprite moves the Drone to that use's
-  target. Draft: "Resolve: If a weapon was used on a Sprite, move the Drone to the target."
-- **The lock**, its Integrated equipment: a field that isolates the White Rhino and one Sprite
-  while they are joined, magnetism or resonance, thrown from a projector that is its horn, such as
-  it is; "Entangled" a working label until he names the term. Indirect, Entangle 2, Cooldown 1, heat 1,
-  not Rapid, a Beam; as it resolves, the Sprite the Drone is on is Suppressed.
-- **Entangled**, sealed both ways at half damage, a stack off at its Sprite's turn end, so it
+- **The Drone**, its passive, Polarity Enforcer as a draft (his: "The drone can use something with
+  Enforcer or Enforcement?"): every weapon it uses on a Sprite moves the Drone, its Enforcer, to
+  that use's target. Draft: "Resolve: If a weapon was used on a Sprite, move the Enforcer to the
+  target."
+- **The lock**, its Integrated equipment, the Polarity Inversion Field (his name): a field that
+  isolates the White Rhino and one Sprite while they are joined, thrown from a projector that is
+  its horn, such as it is. Indirect, Invert 2 (the keyword's name the session's draft), Cooldown 1,
+  heat 1, not Rapid, a Beam; as it resolves, the Sprite the Drone is on is Suppressed.
+- **Inverted Polarity** (his name), sealed both ways at half damage, a stack off at its Sprite's turn end, so it
   holds the round it is set and the next. Draft, worded after Phased: "Targets only the Frame that
   applied it." / "Affects only that Frame and itself." / "Cannot be targeted, damaged, or affected
   in any way by units other than that Frame." / "Deals half damage, rounded down." / "Turn End:
@@ -112,14 +119,16 @@ three classes as placeholders.
 ## Open for the session
 
 1. The look: A, B or C on the sheet, or his.
-2. The lock's field and its names: magnetism or resonance (his of 27 November), the term for
-   Entangled, the lock piece's name and the Drone's. His example, Polarity Enforcer, meets
-   Aphelion's Polarity Projector (the Lammergeier's stock, a Shock debuff).
-3. Its branches, for tier two.
-4. Its numbers once the runner reads it (the bot to price a lock and the Drone's set-up first).
+2. The Drone's name: Polarity Enforcer (the draft), Enforcement Drone or Field Enforcer, and its
+   mark's (Enforcer, a draft). Name clashes wait on the component audit (his: "We'll audit the
+   components after, since the chassis texts should get first pick").
+3. Twinned fans for the Drone (his of 27 November: "Can I see a drone version with twinned
+   fans?"): the sheet's second round.
+4. Its branches, for tier two.
+5. Its numbers once the runner reads it (the bot to price a lock and the Drone's set-up first).
 
 ## What the session hands back
 
 On his pick of a look, the model and the Drone's model built and judged running; the engine for
-the Drone, Entangled and the lock's Suppress, with the bot's price for them; the content out of
+the Drone, Inverted Polarity and the lock's Suppress, with the bot's price for them; the content out of
 planned, the rules' terms and the vocabulary's, and this brief retired.

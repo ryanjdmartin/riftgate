@@ -54,6 +54,58 @@ def _horn(b, base, tip, w0, w1):
     _beam(b, _lerp(base, tip, 0.93), _lerp(base, tip, 1.02), _sq(w1 * 0.8, w1 * 0.8), _sq(w1 * 0.6, w1 * 0.6), FIELD, "projector_field")
 
 
+def _duct(b, cx, cy, zr, R, k, tag=""):
+    """A ducted fan: a hollow eight-sided green band of radius `R` at height `zr`, its floor
+    dark, the fan's hub and three blades inside it."""
+    n = 8
+    for i in range(n):
+        a0, a1 = 2.0 * math.pi * i / n + math.pi / 8, 2.0 * math.pi * (i + 1) / n + math.pi / 8
+        p0 = (cx + R * math.cos(a0), cy + R * math.sin(a0), zr)
+        p1 = (cx + R * math.cos(a1), cy + R * math.sin(a1), zr)
+        _beam(b, p0, p1, _sq(0.9 * k, 1.5 * k), _sq(0.9 * k, 1.5 * k), "livery.livery2", "drone_ring" + tag)
+    b.prism("z", cx, cy, zr - 0.6 * k, R - 0.4 * k, 0.3 * k, "bore.dark", 8, "drone_duct" + tag, phase=math.pi / 8)
+    b.prism("z", cx, cy, zr, 1.0 * k, 1.4 * k, "steel.dark", 6, "drone_hub" + tag)
+    for a in (0.3, 0.3 + math.pi * 2 / 3, 0.3 + math.pi * 4 / 3):
+        dx, dy = math.cos(a) * (R - 0.8 * k), math.sin(a) * (R - 0.8 * k)
+        _beam(b, (cx, cy, zr + 0.2 * k), (cx + dx, cy + dy, zr + 0.2 * k), _sq(1.0 * k, 0.25 * k), _sq(0.7 * k, 0.2 * k), "steel.plate", "drone_blade" + tag)
+
+
+def _drone_body(b, P, k, pod_back=-3.0, pod_front=3.6):
+    """The Drone's pod hung under its fans, forward to a lit lens and a stun prong, a tail fin, and
+    two grip legs splayed under it to perch on. `P` maps the Drone's own (x, y, z) to the world."""
+    _beam(b, P(0.0, pod_back, -1.6), P(0.0, pod_front, -1.9), _sq(2.6 * k, 2.0 * k), _sq(2.2 * k, 1.8 * k), "steel.panel", "drone_pod")
+    _beam(b, P(0.0, pod_front, -1.9), P(0.0, pod_front + 1.8, -2.0), _sq(2.2 * k, 1.8 * k), _sq(1.4 * k, 1.2 * k), "steel.dark", "drone_nose")
+    _beam(b, P(0.0, pod_front + 1.7, -1.9), P(0.0, pod_front + 2.3, -1.9), _sq(0.9 * k, 0.9 * k), _sq(0.8 * k, 0.8 * k), LENS, "drone_lens")
+    _spike(b, P(0.0, pod_front + 1.0, -2.8), P(0.0, pod_front + 3.6, -3.6), 0.28 * k, "steel.dark", "drone_prong")
+    _beam(b, P(0.0, pod_back, -1.2), P(0.0, pod_back - 1.4, 0.6), _sq(0.4 * k, 1.4 * k), _sq(0.3 * k, 0.8 * k), "steel.plate", "drone_fin")
+    for s in (-1.0, 1.0):
+        _beam(b, P(s * 0.9, 0.4, -2.4), P(s * 2.0, 0.9, -5.0), _sq(0.5 * k, 0.5 * k), _sq(0.4 * k, 0.4 * k), "steel.dark", "drone_leg")
+        fx, fy, fz = P(s * 2.0, 0.9, -5.0)
+        b.box(fx - 0.5 * k, fx + 0.5 * k, fy - 0.9 * k, fy + 1.1 * k, fz - 0.2 * k, fz + 0.2 * k, "steel.dark", "drone_foot")
+
+
+def _drone_twin(b, o, k=1.0, layout="side"):
+    """The Drone with twinned fans: two smaller ducts side by side on a bridge over the pod
+    (`layout` "side"), or one ahead of the other along a longer pod ("tandem"), the same pod,
+    lens, prong, fin and legs under them."""
+    ox, oy, oz = o
+    zr = oz + 5.2 * k
+
+    def P(x, y, z):
+        return (ox + x * k, oy + y * k, zr + z * k)
+
+    R = 3.0 * k
+    if layout == "side":
+        for s, t in ((-1.0, "_l"), (1.0, "_r")):
+            _duct(b, ox + s * 3.5 * k, oy, zr, R, k, t)
+        _beam(b, P(-2.2, 0.0, -0.4), P(2.2, 0.0, -0.4), _sq(1.6 * k, 1.0 * k), _sq(1.6 * k, 1.0 * k), "steel.plate", "drone_bridge")
+        _drone_body(b, P, k)
+    else:
+        for y, t in ((3.4, "_f"), (-3.4, "_b")):
+            _duct(b, ox, oy + y * k, zr, R, k, t)
+        _drone_body(b, P, k, pod_back=-5.2, pod_front=4.4)
+
+
 def _drone(b, o, k=1.0):
     """The Drone at `o` (its feet's height is o's z), `k` its scale: a horizontal ducted fan in
     a green ring, a pod hung under the ring running forward to a lit lens, a stun prong under the
@@ -64,37 +116,19 @@ def _drone(b, o, k=1.0):
     def P(x, y, z):
         return (ox + x * k, oy + y * k, zr + z * k)
 
-    # The duct: a hollow eight-sided band, its floor dark, the fan's hub and blades inside it.
-    R, n = 4.3 * k, 8
-    for i in range(n):
-        a0, a1 = 2.0 * math.pi * i / n + math.pi / 8, 2.0 * math.pi * (i + 1) / n + math.pi / 8
-        p0 = (ox + R * math.cos(a0), oy + R * math.sin(a0), zr)
-        p1 = (ox + R * math.cos(a1), oy + R * math.sin(a1), zr)
-        _beam(b, p0, p1, _sq(0.9 * k, 1.5 * k), _sq(0.9 * k, 1.5 * k), "livery.livery2", "drone_ring")
-    b.prism("z", ox, oy, zr - 0.6 * k, 3.9 * k, 0.3 * k, "bore.dark", 8, "drone_duct", phase=math.pi / 8)
-    b.prism("z", ox, oy, zr, 1.0 * k, 1.4 * k, "steel.dark", 6, "drone_hub")
-    for a in (0.3, 0.3 + math.pi * 2 / 3, 0.3 + math.pi * 4 / 3):
-        dx, dy = math.cos(a) * 3.5 * k, math.sin(a) * 3.5 * k
-        _beam(b, (ox, oy, zr + 0.2 * k), (ox + dx, oy + dy, zr + 0.2 * k), _sq(1.0 * k, 0.25 * k), _sq(0.7 * k, 0.2 * k), "steel.plate", "drone_blade")
-    # The pod under the ring, forward to the nose.
-    _beam(b, P(0.0, -3.0, -1.6), P(0.0, 3.6, -1.9), _sq(2.6 * k, 2.0 * k), _sq(2.2 * k, 1.8 * k), "steel.panel", "drone_pod")
-    _beam(b, P(0.0, 3.6, -1.9), P(0.0, 5.4, -2.0), _sq(2.2 * k, 1.8 * k), _sq(1.4 * k, 1.2 * k), "steel.dark", "drone_nose")
-    _beam(b, P(0.0, 5.3, -1.9), P(0.0, 5.9, -1.9), _sq(0.9 * k, 0.9 * k), _sq(0.8 * k, 0.8 * k), LENS, "drone_lens")
-    _spike(b, P(0.0, 4.6, -2.8), P(0.0, 7.2, -3.6), 0.28 * k, "steel.dark", "drone_prong")
-    _beam(b, P(0.0, -3.0, -1.2), P(0.0, -4.4, 0.6), _sq(0.4 * k, 1.4 * k), _sq(0.3 * k, 0.8 * k), "steel.plate", "drone_fin")
-    # The grip legs: down and out from the pod's belly, a small foot and claw on each.
-    for s in (-1.0, 1.0):
-        _beam(b, P(s * 0.9, 0.4, -2.4), P(s * 2.0, 0.9, -5.0), _sq(0.5 * k, 0.5 * k), _sq(0.4 * k, 0.4 * k), "steel.dark", "drone_leg")
-        fx, fy, fz = P(s * 2.0, 0.9, -5.0)
-        b.box(fx - 0.5 * k, fx + 0.5 * k, fy - 0.9 * k, fy + 1.1 * k, fz - 0.2 * k, fz + 0.2 * k, "steel.dark", "drone_foot")
+    _duct(b, ox, oy, zr, 4.3 * k, k)
+    _drone_body(b, P, k)
 
 
-def _cradle(b, cx, cy, z, k=1.0):
+def _cradle(b, cx, cy, z, k=1.0, drone="single"):
     """The Drone's cradle: a low frame of two rails on short posts, the Drone standing on it."""
     for s in (-1.0, 1.0):
         b.box(cx + s * 2.0 * k - 0.6, cx + s * 2.0 * k + 0.6, cy - 3.0 * k, cy + 3.0 * k, z, z + 1.0, "steel.dark", "cradle_rail")
         b.box(cx + s * 2.0 * k - 0.5, cx + s * 2.0 * k + 0.5, cy - 0.5, cy + 0.5, z - 2.0, z, "steel.dark", "cradle_post")
-    _drone(b, (cx, cy, z + 1.0), k)
+    if drone == "single":
+        _drone(b, (cx, cy, z + 1.0), k)
+    else:
+        _drone_twin(b, (cx, cy, z + 1.0), k, drone)
 
 
 def _running_gear(b, ty0, ty1, tx, tw, th, wy, wr, ww, wx):
@@ -162,7 +196,7 @@ def mnlook_rhino_a(b):
 mnlook_rhino_a.maker = MN
 
 
-def mnlook_rhino_b(b):
+def mnlook_rhino_b(b, drone="single"):
     """The shoulder: a short bonnet and a high armoured hump over the cab, the projector on the
     hump's brow, the Drone perched on the hump's crest behind it."""
     _running_gear(b, -44.0, 2.0, 22.0, 16.0, 19.0, 26.0, 12.0, 11.0, 24.5)
@@ -191,7 +225,7 @@ def mnlook_rhino_b(b):
         b.stock("hp_1", (0.0, -22.5, 32.2), "barrel", scale=0.85, carries="rivet_gun")
     b.stock("hp_2", (-27.5, 0.0, 33.0), "rack", scale=0.7, carries="ankle_mortar")
     b.pad("hp_3", (27.5, 0.0, 33.0), size=(7.0, 1.0))
-    _cradle(b, 0.0, -4.0, 46.5, 1.4)
+    _cradle(b, 0.0, -4.0, 46.5, 1.4, drone)
 
 
 mnlook_rhino_b.maker = MN
@@ -243,7 +277,34 @@ def mnlook_rhino_drone(b):
 mnlook_rhino_drone.maker = MN
 
 
-LOOKS = ["mnlook_rhino_a", "mnlook_rhino_b", "mnlook_rhino_c", "mnlook_rhino_drone"]
+def mnlook_rhino_drone2_side(b):
+    """The Drone with twinned fans side by side, enlarged five times, on a plinth."""
+    b.box(-11.0, 11.0, -9.0, 9.0, 0.0, 2.0, "steel.dark", "plinth")
+    _drone_twin(b, (0.0, 0.0, 2.0), 5.0, "side")
+
+
+mnlook_rhino_drone2_side.maker = MN
+
+
+def mnlook_rhino_drone2_tandem(b):
+    """The Drone with twinned fans in tandem, enlarged five times, on a plinth."""
+    b.box(-9.0, 9.0, -11.0, 11.0, 0.0, 2.0, "steel.dark", "plinth")
+    _drone_twin(b, (0.0, 0.0, 2.0), 5.0, "tandem")
+
+
+mnlook_rhino_drone2_tandem.maker = MN
+
+
+def mnlook_rhino_b_twin(b):
+    """The shoulder (B) with the side-by-side twin on its crest, to see the Drone at the size it rides."""
+    mnlook_rhino_b(b, drone="side")
+
+
+mnlook_rhino_b_twin.maker = MN
+
+
+LOOKS = ["mnlook_rhino_a", "mnlook_rhino_b", "mnlook_rhino_c", "mnlook_rhino_drone", "mnlook_rhino_drone2_side",
+         "mnlook_rhino_drone2_tandem", "mnlook_rhino_b_twin"]
 
 _VIEWS = ["codex", "above", "skirmish", ("from the side", 90, 8)]
 SHEET = {
@@ -257,3 +318,18 @@ SHEET = {
         {"model": "mnlook_rhino_drone", "label": "Drone, enlarged", "views": ["codex", ("side", 90, 8), ("front", 0, 12), "above"]},
     ],
 }
+
+
+_DRONE_VIEWS = ["codex", ("side", 90, 8), ("front", 0, 12), "above"]
+SHEET2 = {
+    "title": "The White Rhino's Drone with twinned fans, 27 November (look tests, not content)",
+    "out": "docs/looks/minerva_white_rhino2.png",
+    "cell": (320, 320),
+    "rows": [
+        {"model": "mnlook_rhino_drone", "label": "One fan (the first sheet)", "views": _DRONE_VIEWS},
+        {"model": "mnlook_rhino_drone2_side", "label": "Twinned, side by side", "views": _DRONE_VIEWS},
+        {"model": "mnlook_rhino_drone2_tandem", "label": "Twinned, in tandem", "views": _DRONE_VIEWS},
+        {"model": "mnlook_rhino_b_twin", "label": "B with the side-by-side twin", "views": ["codex", "above", "skirmish", ("from the side", 90, 8)]},
+    ],
+}
+

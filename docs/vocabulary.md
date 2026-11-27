@@ -124,7 +124,7 @@ Cannot be used without Ore. | implemented |
 | **Corrupt** | Resolve: Apply {N} Corrupted per hit to the entry shown by each Frame hit. | implemented |
 | **Purge** | Resolve: Reduce stacks of every Buff on each unit hit by {N}. | implemented |
 | **Cleanse** | Resolve: Remove every Debuff from the target, except those that cannot be cleansed. | implemented |
-| **Entangle** | Resolve: Apply {N} Entangled to the target. | planned |
+| **Invert** | Resolve: Apply {N} Inverted Polarity to the target. | planned |
 
 ## Status
 
@@ -283,12 +283,12 @@ On Burrowed: Removed. | implemented |
 | **Sonic Needle** | Gain 1 stack per hit from the Frame that laid it, and per hit this Sprite lands on that Frame.
 Conducts Chain.
 At 3 or more stacks: Chain 2 fires. Reduce stacks to 0. | implemented |
-| **Entangled** | Targets only the Frame that applied it.
+| **Inverted Polarity** | Targets only the Frame that applied it.
 Affects only that Frame and itself.
 Cannot be targeted, damaged, or affected in any way by units other than that Frame.
 Deals half damage, rounded down.
 Turn End: Reduce stacks by 1. | planned |
-| **Drone** | A Frame's Drone is on it. | planned |
+| **Enforcer** | A Frame's Enforcer is on it. | planned |
 
 ## Formation
 
@@ -602,6 +602,6 @@ Every entry whose `design.holes` is not empty. This is the list of things the me
 - **Frozen** (implemented): Ryan, 24 November, the Glacial Mole's: "Frozen: Debuff. When any amount of Cryo would be consumed, consume 1 Numbed instead, if any, then remove Frozen"; "It gets the cooling. It is preserved regardless of numbed existing." His words, not yet signed on the Text tab.
 - **Drill Out** (implemented): Ryan, 16 November: "It returns to the Mole when it burrows, taking the debuff with it"; 18 November, "Build the toggle". The text is a session's draft.
 - **Sonic Needle** (implemented): Ryan, 20 November: "Sonic Needle - Conducts Chain. On 3 stacks, the Echidna fires Chain 2, then consume all stacks on this foe"; his answers that day: the bolt is "targeted at nothing. So the foe that hit 3 stacks and procced it would take 2 by definition", and a stack a strike. Its branches tweak it: the Spiker's sap (1 less on the foe's attacks a stack) and Chaos's bolt leaving its foe one stack in place of none (Ryan, 21 November: "reduce stacks to 1"). The text is a session's draft.
-- **Entangle** (planned): The White Rhino's lock (Ryan, 27 November): two stacks, so its target is held the round it is set and the next; the piece goes dark for the same span (Cooldown 1), one lock at a time. Draft text, the session's.
-- **Entangled** (planned): Ryan, 25 November: "Only the lure tank can target the entangled target, and the entangled target can only target the lure tank." 27 November: "the entanglement shouldn't let anything out, just like it doesn't let anything in" (sealed both ways, so a hit on every Frame lands on its Frame alone, and the squad's area, Chain's ping and a Mine's blast pass it by), "two stacks that decay at the end of the sprites turn", and "the 50% damage reduction from the entangled target". Statuses already on it keep counting down and ticking. Draft text, the session's, worded after Phased's.
-- **Drone** (planned): The White Rhino's Drone, its passive's mark on a Sprite (Ryan, 27 November: "split the entanglement onto a component, but put the drone onto the passive. Hitting with a weapon moves the drone"): the Sprite its lock Suppresses. Whether a Ward or a Cleanse touches it is the build's question. Draft text, the session's.
+- **Invert** (planned): The White Rhino's Polarity Inversion Field (Ryan, 27 November: "Let's go with Polarity Inversion Field, applies Inverted Polarity."): two stacks, so its target is held the round it is set and the next; the piece goes dark for the same span (Cooldown 1), one at a time. The keyword's name, Invert, is the session's draft beside his status's; its text the session's.
+- **Inverted Polarity** (planned): Ryan, 27 November: "Let's go with Polarity Inversion Field, applies Inverted Polarity." A field Minerva would build ("Entanglement itself is a little too high tech for Minerva ... Anything that would cause the field to isolate the two while they're connected"). Ryan, 25 November: "Only the lure tank can target the entangled target, and the entangled target can only target the lure tank." 27 November: "the entanglement shouldn't let anything out, just like it doesn't let anything in" (sealed both ways, so a hit on every Frame lands on its Frame alone, and the squad's area, Chain's ping and a Mine's blast pass it by), "two stacks that decay at the end of the sprites turn", and "the 50% damage reduction from the entangled target". Statuses already on it keep counting down and ticking. Draft text, the session's, worded after Phased's.
+- **Enforcer** (planned): The White Rhino's Drone, its passive's mark (its name a draft on his "The drone can use something with Enforcer or Enforcement?", 27 November) on a Sprite (Ryan, 27 November: "split the entanglement onto a component, but put the drone onto the passive. Hitting with a weapon moves the drone"): the Sprite its lock Suppresses. Whether a Ward or a Cleanse touches it is the build's question. Draft text, the session's.

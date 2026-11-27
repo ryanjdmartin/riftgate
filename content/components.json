@@ -685,8 +685,8 @@
    ]
   },
   {
-   "id": "rhino_lock",
-   "name": "Lock",
+   "id": "polarity_inversion_field",
+   "name": "Polarity Inversion Field",
    "maker": "minerva",
    "shape": "dish",
    "codex": "",
@@ -694,21 +694,21 @@
    "status": "planned",
    "design": {
     "stage": "draft",
-    "fantasy": "A field thrown from the White Rhino's projector, its horn such as it is, that isolates it and one Sprite while they are joined, magnetism or resonance, never a line and never quantum (Ryan, 27 November: \"The lock is referencing quantum entanglement not physical. Shouldn't be a winch, this isn't W&S. More, I dunno, tractor beam. And it can be the 'horn' such as it is on the model.\" Then: \"Entanglement itself is a little too high tech for Minerva, they sit more at the Kestrel range of pseudo-science. Something like Polarity Enforcer, magnetism related, harmonics or resonance related. Anything that would cause the field to isolate the two while they're connected. Whether that's physically or through some shared attribute that would make them, I guess, unaffected by others.\"). The term's name is his pick; \"Entangled\" is a working label he has retired.",
-    "niche": "The White Rhino's lock, its Integrated equipment (Ryan's split of 27 November: \"split the entanglement onto a component, but put the drone onto the passive\"): Indirect, so it reaches a backliner, Entangle 2, and as it resolves the Sprite the Drone is on is Suppressed (his pick of 27 November, \"suppress the drone's target\"). Cooldown 1, so it is dark while its lock runs (his \"Presumably that means the lock goes on cooldown then, too\"). Not Rapid (his: \"I would rather it not have rapid\"); its own safety is Entangled's half damage.",
-    "notes": "\"Lock\" is a working label, his word for it; the name is his, and a Lock beside the die's own lock wants another. Heat 1, the Echidna's Tether's, a placeholder. The Suppress is a new face field the engine lacks (drone_suppress), so the piece is planned. Its shape (dish, an emitter) and its tag (Beam) are the session's on his tractor beam."
+    "fantasy": "A field thrown from the White Rhino's projector, its horn such as it is, that isolates it and one Sprite while they are joined, magnetism or resonance, never a line and never quantum (Ryan, 27 November: \"The lock is referencing quantum entanglement not physical. Shouldn't be a winch, this isn't W&S. More, I dunno, tractor beam. And it can be the 'horn' such as it is on the model.\" Then: \"Entanglement itself is a little too high tech for Minerva, they sit more at the Kestrel range of pseudo-science. Something like Polarity Enforcer, magnetism related, harmonics or resonance related. Anything that would cause the field to isolate the two while they're connected. Whether that's physically or through some shared attribute that would make them, I guess, unaffected by others.\"). The field inverts the pair's polarity against the world, so nothing else reaches either while they are joined.",
+    "niche": "The White Rhino's lock, its Integrated equipment (Ryan's split of 27 November: \"split the entanglement onto a component, but put the drone onto the passive\"): Indirect, so it reaches a backliner, Invert 2, laying Inverted Polarity, and as it resolves the Sprite the Drone is on is Suppressed (his pick of 27 November, \"suppress the drone's target\"). Cooldown 1, so it is dark while its lock runs (his \"Presumably that means the lock goes on cooldown then, too\"). Not Rapid (his: \"I would rather it not have rapid\"); its own safety is Inverted Polarity's half damage.",
+    "notes": "Its name and its status's are his (27 November: \"Let's go with Polarity Inversion Field, applies Inverted Polarity.\"); a component audit follows the chassis texts' first pick (his: \"We'll audit the components after, since the chassis texts should get first pick\"). Heat 1, the Echidna's Tether's, a placeholder. The Suppress is a new face field the engine lacks (drone_suppress), so the piece is planned. Its shape (dish, an emitter) and its tag (Beam) are the session's."
    },
    "face": {
     "kind": "attack",
     "reach": "indirect",
     "power": 0,
     "keywords": [
-     "entangle"
+     "invert"
     ],
-    "entangle": 2,
     "cooldown": 1,
     "heat": 1,
-    "drone_suppress": true
+    "drone_suppress": true,
+    "invert": 2
    },
    "passive": null,
    "tags": [
