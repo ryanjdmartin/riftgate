@@ -13359,3 +13359,24 @@ Read: against a squad with no piece that phases the rule moves little, a fight o
 formation of three, since what changed for a faded foe is its own side's help and its own
 debuffs. Its weight is in the pieces of ours that phase, and those are a test piece and a
 machine in design.
+
+## 27 November: the lure tank's split, in a model apart from content
+
+`python3 tools/lure_duel_model.py --split` and `--combo` (the model's head says what it plays and
+how far to trust it: a squad of three with no kit, rerolls or riders, the reboot as the rules have
+it, tier one's packs as content had them on 25 November), at `2cdc7888`. Cited by the bible's lure
+tank row of 27 November.
+
+- The lock alone (his rule for two rounds, nothing ending it early), hooked with no help whenever
+  it shows: the tank wrecked in 69% of the Nob's fights, the squad losing 59 hull against 46 with
+  no lock. The lock is its own downside.
+- The lock with the Drone's Suppress, the tank hooking only the Sprite its Drone is primed on and
+  its shield whole: the Nob's fight 34 hull for 46, the tank wrecked in 3%; the Old Man's won 92%
+  for 66%.
+- A weapon and then the lock in one round, on a die of the lock, one Rapid weapon and two guns:
+  8% of rounds with no reroll, 19% with one, 29% with both; 51% with two Rapid weapons, 65% with
+  three. The lock alone shows 67% of rounds with both rerolls.
+- The Drone untriggered (a Suppress every 3 or 4 rounds, a rotating or drawn debuff) does the
+  kit's work with no lock on the die (the Nob's fight 25 to 37 hull with none, 26 to 38 with it),
+  so the lure stops mattering.
+

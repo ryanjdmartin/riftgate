@@ -531,7 +531,8 @@ Each a session of its own; Ryan's play runs beside them (the to-do's Ryan list).
    since 20 November; the Cassowary's redesign built 26 November, the Cottonmouth's and the
    Skua's branch rounds with Ryan, the Clydesdale's two picks next), then the machine back in design (the Swallowtail), the built but
    unfinished (the Needletail, the Giant Petrel, the Musk Ox) and the gunship, the tier-one
-   fronts (Minerva's lure tank, an Aphelion tier one), Claude's first rounds on his directions
+   fronts (Minerva's lure tank, its kit decided 27 November, the bible's row: the Drone and the
+   lock that Suppresses the Drone's Sprite, the machine and numbers next; an Aphelion tier one), Claude's first rounds on his directions
    of 5 and 6 November, the rest as its session comes. The to-do's roster is grouped to match.
 3. **The refit pass's tail** (`docs/briefs/refit_pass.md`): his word on the first battle's
    block, his marks on the flanks' second patrols, the stock

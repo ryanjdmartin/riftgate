@@ -11,7 +11,8 @@ interesting." "The lure tank" is a working label; the name and the machine are R
 and Claude's read of them (the hold), his issue of 26 November with the hold's bar, Claude's
 lean on it and his answer that it left a free lure, the price that answers him, and the ideas past his
 four that he asked for on 27 November, his split of that day (the lock a component, the Drone
-the passive) and his questions on the Drone's trigger, with Claude's reads, unanswered. **Maker**:
+the passive) and his questions on the Drone's trigger, with Claude's reads; and his go of
+27 November on the "suppress the drone's target" version, the machine next. **Maker**:
 Minerva. **Proposed tier**: one. **Read first**: `docs/briefs/README.md` (ten a maker, the
 orbits); `docs/rules.md`, The reboot and Foes (a Sprite's target); the bible's redirection row,
 threat-shape row and armour row (section 5) and the Storm Petrel's row. The rounds before 25
@@ -434,14 +435,33 @@ none on the die (`--split`):
 
 Claude's lean: the simpler line, the hook its trigger.
 
+## His go (27 November)
+
+Ryan, 27 November: "Lets go with the 'suppress the drone's target' version. My initial thought
+was a rhino with its little bird friend. But there might be other thematic options, too?"
+
+The kit's core is decided (the bible's lure tank row): the Drone its passive, moved to the target
+of every weapon it uses on a Sprite; the lock its Integrated equipment, his rule both ways, which
+as it resolves Suppresses the Sprite the Drone is on; one lock at a time (Claude's condition for a
+chase piece). "The Tether" is a working label, and the Echidna's Supersonic Spike Tether holds the
+word: the lock piece wants a name of its own.
+
+**The machine.** His rhino and its oxpecker. "Rhino" is reserved three times (a BattleTech 'Mech,
+a Warhammer 40,000 vehicle, a Halo vehicle), so the name wants a word with it: "Black Rhino" and
+"White Rhino" are free, and read as Minerva's Honey Badger, Polar Bear and Wild Boar do. The black
+rhino is the solitary, short-tempered one, and the oxpeckers that ride it are its alarm (their
+Swahili name, askari wa kifaru, "the rhino's guard"): a beast that sees poorly, charges what it
+has fixed on, and carries a bird that spots for it. Floated beside it, 27 November: the Cape
+buffalo with its oxpecker or egret (its horn boss a plate), the Nile crocodile and its plover (the
+bite that does not let go), and Elasmotherium (an Ice Age rhino with one great horn).
+
 ## Open for the session
 
-1. What the Drone does: the Suppress the hook fires (the simpler line), its own clock, the
-   helper, or the hook firing the helper's beat.
-2. The lock: two rounds that nothing ends early, one at a time, or another length or end.
-3. Whether the Tether is Rapid (the model's is not: the hook is the tank's use that round).
-4. Area: sealed both ways, or its storms on every Frame.
-5. The machine and its name; numbers and stock; its branches.
+1. The machine and its name: the Black Rhino and its oxpecker, or another.
+2. The lock: two rounds that nothing ends early (Claude's lean), or another length or end.
+3. Whether the lock piece is Rapid (the model's is not: the hook is the tank's use that round).
+4. Area: its storms on every Frame (as the model plays it, and as Lure is beaten), or sealed.
+5. The names of the Drone and the lock piece; numbers and stock; its branches.
 
 ## What the session hands back
 
